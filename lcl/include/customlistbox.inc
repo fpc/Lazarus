@@ -1,10 +1,22 @@
+// included by stdctrls.pp
+
+{ if not HandleAllocated then
+    FItems contains a normal TStringList
+  else
+    FItems contains an interface specific TStrings descendent
+}
+
+
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.CreateHandle                                        }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.CreateHandle;
 var NewStrings : TStrings;
 begin
+//writeln('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
   inherited CreateHandle;
+//writeln('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
+  // create
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   NewStrings.Assign(Items);
   FItems.Free;
@@ -12,6 +24,7 @@ begin
   { Sync other properties }
   CNSendMessage(LM_SETBORDER, Self, nil);
   UpdateSelectionMode;
+//writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -20,11 +33,14 @@ end;
 procedure TCustomListBox.DestroyHandle;
 var NewStrings : TStrings;
 begin
+//writeln('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
   NewStrings:= TStringList.Create;
   NewStrings.Assign(Items);
   FItems.Free;
   FItems:= NewStrings;
+//writeln('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
   inherited DestroyHandle;
+//writeln('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -77,7 +93,8 @@ end;
 procedure TCustomListBox.SetSelected(Index : integer; Val : boolean);
 var Message : TLMSetSel;
 begin
-  if (Index < 0) or (Index >= Items.Count) then raise Exception.Create('List index out of bounds');
+  if (Index < 0) or (Index >= Items.Count) then
+    raise Exception.Create('List index out of bounds');
   HandleNeeded;
   Message.Index:= Index;
   Message.Selected:= Val;
@@ -89,7 +106,8 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomListBox.GetSelected(Index : integer) : boolean;
 begin
-  if (Index < 0) or (Index >= Items.Count) then raise Exception.Create('List index out of bound.');
+  if (Index < 0) or (Index >= Items.Count) then
+    raise Exception.Create('List index out of bound.');
   Result:= (CNSendMessage(LM_GETSEL, Self, @Index) >= 0);
 end;
 
@@ -133,7 +151,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.SetItems(Value : TStrings);
 begin
-  if Value <> FItems then begin
+  if (Value <> FItems) then begin
+//writeln('[TCustomListBox.SetItems] A FItems=',FItems.ClassName,' Value=',Value.ClassName);
     FItems.Assign(Value);
   end;
 end;
@@ -156,19 +175,23 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListBox.Destroy;
 begin
-  if FItems <> nil then FItems.Free;
   inherited Destroy;
+  FItems.Free;
 end;
 
 function TCustomListBox.GetItemIndex : integer;
 begin
+//writeln('[TCustomListBox.GetItemIndex] A ',FItems.ClassName);
   Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
+//writeln('[TCustomListBox.GetItemIndex] END ');
 end;
 
 procedure TCustomListBox.SetItemIndex(Val : integer);
 begin
   if (Val < 0) or (Val >= FItems.Count) then raise Exception.Create('Out of bounds');
+//writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
+//writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -180,3 +203,4 @@ begin
 end;
 
 
+// back to stdctrls.pp

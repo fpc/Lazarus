@@ -20,11 +20,12 @@ var AStr, BStr : PChar;
 begin
   gtk_label_get(PGtkLabel(PGtkBin(a)^.child), @AStr);
   gtk_label_get(PGtkLabel(PGtkBin(b)^.child), @BStr);
+//writeln('DefaultCompareFunc "',AStr,'" "',BStr,'"');
   Result:= strcomp(AStr, BStr);
 end;
 
 {*************************************************************}
-{                      TGtkListStringList methods                                          }
+{                      TGtkListStringList methods             }
 {*************************************************************}
 
 {------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ procedure TGtkListStringList.SetSorted(Val : boolean);
 begin
   if Val <> FSorted then begin
     FSorted:= Val;
-    Sort;
+    if FSorted then Sort;
   end;
 end;
 
@@ -61,8 +62,17 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Sort;
+var sl: TStringList;
 begin
-  FGtkList^.children:= g_list_sort(FGtkList^.children, @DefaultCompareFunc);
+  // sort internally (sorting in the widget would be slow and unpretty ;)
+  sl:=TStringList.Create;
+  sl.Assign(Self);
+  sl.Sort; // currently this is quicksort -> 
+             // Disadvantages: - worst case on sorted list
+             //                - not keeping order
+             // ToDo: replace by mergesort and add customsort
+  Assign(sl);
+  sl.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -74,12 +84,15 @@ end;
 procedure TGtkListStringList.Assign(Source : TPersistent);
 var Counter : integer;
 begin
+  if (Source=Self) or (Source=nil) then exit;
+//writeln('[TGtkListStringList.Assign] A ',Source.Classname);
   { Do not call inherited Assign as it does things we do not want to happen }
   if Source is TStrings then begin
     Clear;
     for Counter:= TStrings(Source).Count - 1 downto 0 do 
       Insert(0, TStrings(Source)[Counter]);
   end else inherited Assign(Source);
+//writeln('[TGtkListStringList.Assign] END ',Source.Classname);
 end;
 
 {------------------------------------------------------------------------------
@@ -93,11 +106,17 @@ var Item : PChar;
       ALabel : PGtkWidget;
       ListItem : PGtkListItem;
 begin
+//writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
   if (Index < 0) or (Index >= Count) then raise Exception.Create('Out of bounds.')
   else begin
+    if FGtkList=nil then begin
+      Result:='';
+      exit;
+    end;
     ListItem:= g_list_nth_data(FGtkList^.children, Index);
     ALabel:= PGtkBin(ListItem)^.child;
-    if ALabel = nil then Result:= ''
+    if ALabel = nil then
+      Result:= ''
     else begin
       Item:=nil;
       gtk_label_get (PGtkLabel(ALabel), @Item);
@@ -148,12 +167,34 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Insert(Index : integer; const S : string);
 var li : PGtkWidget;
+  l, m, r, cmp: integer;
 begin
+//writeln('[TGtkListStringList.Insert] Index=',Index,' Count=',Count,' ',S);
+  if FSorted then begin
+    l:=0;
+    r:=Count-1;
+    m:=l;
+    while (l<=r) do begin
+      m:=(l+r) shr 1;
+      cmp:=AnsiCompareText(S,Strings[m]);
+      if cmp<0 then
+        r:=m-1
+      else if cmp>0 then
+        l:=m+1
+      else
+        break;
+    end;
+    if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
+      inc(m);
+    Index:=m;
+  end;
+  if (Index < 0) or (Index > Count) then raise Exception.Create('Out of bounds.');
   li:= gtk_list_item_new_with_label(PChar(S));
   gtk_widget_show(li);
   gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
-  if FSorted then Sort;
 end;
+
+
 
 {*************************************************************}
 {                      TGtkCListStringList methods            }
@@ -335,6 +376,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/10/31 10:38:26  lazarus
+  MG: fixed sorted customlistbox
+
   Revision 1.2  2001/09/30 08:34:52  lazarus
   MG: fixed mem leaks and fixed range check errors
 

@@ -18,15 +18,15 @@ type
   protected
     function Get(Index : Integer) : string; override;
     function GetCount : integer; override;
-	  procedure SetSorted(Val : boolean); virtual;
-    public
+    procedure SetSorted(Val : boolean); virtual;
+  public
     constructor Create(List : PGtkList);
     procedure Assign(Source : TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
-  	procedure Sort; virtual;
-  	property Sorted : boolean read FSorted write SetSorted;
+    procedure Sort; virtual;
+    property Sorted : boolean read FSorted write SetSorted;
   end;
 
   TGtkCListStringList = class(TStrings)
@@ -58,6 +58,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/10/31 10:38:26  lazarus
+  MG: fixed sorted customlistbox
+
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 
