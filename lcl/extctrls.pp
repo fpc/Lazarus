@@ -615,8 +615,10 @@ type
     FColumns: integer;
     FReading: boolean;
     FOnClick: TNotifyEvent;
+    FLastClickedItemIndex: integer;
     procedure ItemsChanged(Sender: TObject);
     procedure Clicked(Sender: TObject); virtual;
+    procedure Changed(Sender: TObject); virtual;
     procedure DoPositionButtons;
     procedure SetColumnLayout(const AValue: TColumnLayout);
   protected
@@ -627,6 +629,7 @@ type
     procedure SetItemIndex(Value: integer);
     function GetItemIndex: integer;
     procedure Resize; override;
+    procedure CheckItemIndexChanged; virtual;
   protected
     property ItemIndex: integer read GetItemIndex write SetItemIndex default -1;
     property Items: TStrings read FItems write SetItem;
@@ -993,6 +996,9 @@ end.
 
  {
   $Log$
+  Revision 1.134  2005/03/25 17:47:55  mattias
+  implemented TMemo text for gtk2, TRadioGroup.OnClick is now called whenever ItemIndex changed, so it works now also under gtk2 Delphi compatible  from Andrew Haines
+
   Revision 1.133  2005/03/07 00:52:51  mattias
   various Delphi compatibilities  from C Western
 

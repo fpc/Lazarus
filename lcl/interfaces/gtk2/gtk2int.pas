@@ -144,7 +144,7 @@ uses
 // Gtk2WSCheckLst,
 // Gtk2WSCListBox,
  Gtk2WSComCtrls,
-// Gtk2WSControls,
+ Gtk2WSControls,
 // Gtk2WSDbCtrls,
 // Gtk2WSDBGrids,
 // Gtk2WSDialogs,
@@ -599,6 +599,9 @@ end.
 
 {
   $Log$
+  Revision 1.43  2005/03/25 17:47:55  mattias
+  implemented TMemo text for gtk2, TRadioGroup.OnClick is now called whenever ItemIndex changed, so it works now also under gtk2 Delphi compatible  from Andrew Haines
+
   Revision 1.42  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

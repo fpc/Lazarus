@@ -67,6 +67,7 @@ begin
   //TStringList(FItems).OnChanging := @ItemsChanged;
   TStringList(FItems).OnChange := @ItemsChanged;
   FItemIndex  := -1;
+  FLastClickedItemIndex := -1;
   FButtonList := TList.Create;
   FColumns  := 1;
   FColumnLayout := clHorizontalThenVertical;
@@ -118,6 +119,7 @@ begin
     Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
     Temp.AutoSize := False;
     Temp.OnClick := @Clicked;
+    Temp.OnChange := @Changed;
     FButtonList.Add(Temp);
   end;
   if FHiddenButton=nil then begin
@@ -283,6 +285,20 @@ begin
   inherited Resize;
 end;
 
+procedure TCustomRadioGroup.CheckItemIndexChanged;
+begin
+  if FCreatingWnd then exit;
+  if [csLoading,csDestroying]*ComponentState<>[] then exit;
+  UpdateRadioButtonStates;
+  if [csDesigning]*ComponentState<>[] then exit;
+  if FLastClickedItemIndex=FItemIndex then exit;
+  FLastClickedItemIndex:=FItemIndex;
+  EditingDone;
+  // for Delphi compatility: OnClick should be invoked, whenever ItemIndex
+  // has changed
+  if Assigned (FOnClick) then FOnClick(Self);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.CanModify
   Params:  none
@@ -320,11 +336,18 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
-  if FCreatingWnd then exit;
-  UpdateRadioButtonStates;
-  if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
-  EditingDone;
-  if Assigned (FOnClick) then FOnClick(Self);
+  CheckItemIndexChanged;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomRadioGroup.Changed
+  Params: sender - the calling object
+
+  Checks for changes. Does the same as Clicked for Delphi compatibility.
+ ------------------------------------------------------------------------------}
+Procedure TCustomRadioGroup.Changed(Sender : TObject);
+Begin
+  CheckItemIndexChanged;
 end;
 
 {------------------------------------------------------------------------------
@@ -386,6 +409,9 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TCustomRadioGroup.UpdateRadioButtonStates;
+  
+  Read all Checked properties of all radiobuttons, to update any changes in
+  the interface to the LCL.
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.UpdateRadioButtonStates;
 var
@@ -399,6 +425,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2005/03/25 17:47:55  mattias
+  implemented TMemo text for gtk2, TRadioGroup.OnClick is now called whenever ItemIndex changed, so it works now also under gtk2 Delphi compatible  from Andrew Haines
+
   Revision 1.7  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 
