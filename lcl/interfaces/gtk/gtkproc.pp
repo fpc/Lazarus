@@ -406,7 +406,7 @@ Function GetWindowFunction(AForm : TCustomForm) : Longint;
 
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 
-Procedure LoadGDKCursors;
+function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
 
 var
