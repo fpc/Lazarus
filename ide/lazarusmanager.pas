@@ -6,8 +6,11 @@ unit LazarusManager;
 interface
 
 uses
+{$IFDEF win32}
+  Windows,
+{$ENDIF}
   Classes, SysUtils, Process,
-  FileUtil, Forms,
+  LCLProc, FileUtil, Forms,
   LazConf,
   StartLazOpts, Splash;
   
@@ -33,9 +36,13 @@ type
     FStartLazarusOptions: TStartLazarusOptions;
     FLazarusProcess: TLazarusProcess;
     FLazarusPath: string;
+    FLazarusPID: Integer;
+    FCmdLineParams: TStrings;
+    procedure ParseCommandLine;
     function GetLazarusPath(const FileName: string): string;
     procedure RenameLazarusExecutables;
     procedure LazarusProcessStart(Sender: TObject);
+    procedure WaitForLazarus;
   public
     constructor Create; reintroduce;
     destructor Destroy; override;
@@ -51,12 +58,39 @@ begin
   SplashForm := TSplashForm.Create(Self);
   ShowSplash;
   FStartLazarusOptions := TStartLazarusOptions.Create;
+  ParseCommandLine;
 end;
 
 destructor TLazarusManager.Destroy;
 begin
+  FreeAndNil(FCmdLineParams);
   FreeAndNil(FStartLazarusOptions);
   inherited Destroy;
+end;
+
+procedure TLazarusManager.ParseCommandLine;
+const
+  LazarusPidOpt='--lazarus-pid=';
+var
+  i: Integer;
+  Param: string;
+begin
+  FCmdLineParams := TStringList.Create;
+  FLazarusPID := 0;
+  for i := 1 to ParamCount do begin
+    Param := ParamStr(i);
+    if LeftStr(Param,length(LazarusPidOpt))=LazarusPidOpt then begin
+      try
+        FLazarusPID :=
+          StrToInt(RightStr(Param,Length(Param)-Length(LazarusPidOpt)));
+      except
+        DebugLn('Failed to parse %s',[Param]);
+        FLazarusPid := 0;
+      end;
+    end
+    else
+      FCmdLineParams.Add(Param);
+  end;
 end;
 
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
@@ -90,10 +124,32 @@ begin
   SplashForm.Hide;
 end;
 
+procedure TLazarusManager.WaitForLazarus;
+  procedure WaitForPid(PID: integer);
+  {$IFDEF win32}
+  var
+    ProcessHandle: THandle;
+  begin
+    ProcessHandle := OpenProcess(SYNCHRONIZE, false, PID);
+    WaitForSingleObject(ProcessHandle, INFINITE);
+  end;
+  {$ELSE}
+  begin
+    DebugLn('WaitForPid not implemented for this OS. We just wait 5 seconds');
+    Sleep(5000);
+  end;
+  {$ENDIF}
+begin
+  if FLazarusPID<>0 then begin
+    WaitForPID(FLazarusPID);
+  end;
+end;
+
 procedure TLazarusManager.Run;
 var
   Restart: boolean;
 begin
+  WaitForLazarus;
   repeat
     SplashForm.Show;
     Application.ProcessMessages;
@@ -125,7 +181,7 @@ begin
   FProcess := TProcess.Create(nil);
   FProcess.Options := [];
   FProcess.ShowWindow := swoShow;
-  FProcess.CommandLine := FLazarusPath + ' --no-splash-screen  --by-starter';
+  FProcess.CommandLine := FLazarusPath + ' --no-splash-screen --started-by-startlazarus';
 end;
 
 destructor TLazarusProcess.Destroy;
@@ -153,6 +209,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.6  2004/10/27 20:49:26  vincents
+  Lazarus can be restarted, even if not started by startlazarus (only win32 implemented).
+
   Revision 1.5  2004/09/27 22:05:40  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 

@@ -769,6 +769,7 @@ uses
   
 var
   SkipAutoLoadingLastProject: boolean;
+  StartedByStartLazarus: boolean;
 
 //==============================================================================
 
@@ -788,6 +789,7 @@ const
   SecondaryConfPathOptShort='--scp=';
   NoSplashScreenOptLong='--no-splash-screen';
   NoSplashScreenOptShort='--nsc';
+  StartedByStartLazarusOpt='--started-by-startlazarus';
   SkipLastProjectOpt='--skip-last-project';
   DebugLogOpt='--debug-log=';
 
@@ -815,6 +817,7 @@ var
   AValue: string;
 begin
   SkipAutoLoadingLastProject:=false;
+  StartedByStartLazarus:=false;
   if (ParamCount>0)
   and ((AnsiCompareText(ParamStr(1),'--help')=0)
     or (AnsiCompareText(ParamStr(1),'-help')=0)
@@ -875,6 +878,8 @@ begin
     end;
     if ParamIsOption(i,SkipLastProjectOpt) then
       SkipAutoLoadingLastProject:=true;
+    if ParamIsOption(i,StartedByStartLazarusOpt) then
+      StartedByStartLazarus:=true;
   end;
 end;
 
@@ -2392,10 +2397,38 @@ end;
 
 {$IFDEF UseStartLazarus}
 procedure TMainIDE.mnuRestartClicked(Sender: TObject);
+
+  procedure StartStarter;
+  var
+    StartLazProcess: TProcess;
+    ExeName: string;
+  begin
+    StartLazProcess := TProcess.Create(nil);
+    try
+      StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
+      ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
+        'startlazarus' + GetDefaultExecutableExt;
+      if not FileExists(ExeName) then begin
+        ShowMessage(format(lisCannotFindLazarusStarter,
+          [LineEnding, ExeName]));
+        exit;
+      end;
+      StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
+        [ExeName, ProcessID]);
+      StartLazProcess.Execute;
+    finally
+      StartLazProcess.Free;
+    end;
+  end;
+  
 begin
   mnuQuitClicked(Sender);
-  if Application.Terminated then
-    ExitCode := 99;
+  if Application.Terminated then begin
+    if StartedByStartLazarus then
+      ExitCode := 99
+    else
+      StartStarter;
+  end;
 end;
 {$ENDIF}
 
@@ -10921,6 +10954,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.785  2004/10/27 20:49:26  vincents
+  Lazarus can be restarted, even if not started by startlazarus (only win32 implemented).
+
   Revision 1.784  2004/10/15 12:04:08  mattias
   calling updating notebook tab after realize, needed for close btns
 

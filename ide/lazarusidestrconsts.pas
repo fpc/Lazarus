@@ -494,6 +494,7 @@ resourcestring
     +'method. Plz fix the error shown in the message window.';
   lisStopDebugging = 'Stop Debugging?';
   lisStopTheDebugging = 'Stop the debugging?';
+  lisCannotFindLazarusStarter = 'Cannot find lazarus starter:%s%s';
 
   // resource files
   lisResourceFileComment =
