@@ -446,7 +446,7 @@ begin
     FOnChanging(Self,Result);
 end;
 
-function TCustomTabControl.CanShowTab(TabIndex: Integer): Boolean;
+function TCustomTabControl.CanShowTab(ATabIndex: Integer): Boolean;
 begin
   Result:=true;
 end;
@@ -463,7 +463,7 @@ begin
     FOnChange(Self);
 end;
 
-procedure TCustomTabControl.DrawTab(TabIndex: Integer; const Rect: TRect;
+procedure TCustomTabControl.DrawTab(ATabIndex: Integer; const Rect: TRect;
   Active: Boolean);
 begin
   if Assigned(FOnDrawTab) then
@@ -472,7 +472,7 @@ begin
     Canvas.FillRect(Rect);
 end;
 
-function TCustomTabControl.GetImageIndex(TabIndex: Integer): Integer;
+function TCustomTabControl.GetImageIndex(ATabIndex: Integer): Integer;
 begin
   Result:=TabIndex;
   if Assigned(FOnGetImageIndex) then
@@ -643,6 +643,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/09/12 20:59:05  vincents
+  fix fpc 1.0.x compilation
+
   Revision 1.4  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 

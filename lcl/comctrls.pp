@@ -402,10 +402,10 @@ type
     procedure SetTabWidth(const AValue: Smallint);
   protected
     function CanChange: Boolean; dynamic;
-    function CanShowTab(TabIndex: Integer): Boolean; virtual;
+    function CanShowTab(ATabIndex: Integer): Boolean; virtual;
     procedure Change; dynamic;
-    procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); virtual;
-    function GetImageIndex(TabIndex: Integer): Integer; virtual;
+    procedure DrawTab(ATabIndex: Integer; const Rect: TRect; Active: Boolean); virtual;
+    function GetImageIndex(ATabIndex: Integer): Integer; virtual;
     procedure Loaded; override;
     procedure CreateWnd; override;
     procedure DestroyHandle; override;
@@ -2551,6 +2551,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.150  2004/09/12 20:59:05  vincents
+  fix fpc 1.0.x compilation
+
   Revision 1.149  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 
