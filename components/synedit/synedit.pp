@@ -4129,8 +4129,9 @@ procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
   LastMouseCaret:=Point(-1,-1);
   {$IFDEF VerboseFocus}
-  writeln('[TCustomSynEdit.WMSetFocus] A');
+  writeln('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
   {$ENDIF}
+  UpdateCaret;
   //InitializeCaret;
   //if FHideSelection and SelAvail then
   //  Invalidate;
