@@ -248,7 +248,7 @@ type
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TComboBoxStyle); virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    procedure KeyPress(var Key : Char); override;
+    procedure KeyPress(var Key : TCharacter); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
@@ -1158,6 +1158,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.158  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.157  2004/08/13 10:20:19  mattias
   fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
 

@@ -131,13 +131,13 @@ type
     of object;
 
   THookedCommandEvent = procedure(Sender: TObject; AfterProcessing: boolean;
-    var Handled: boolean; var Command: TSynEditorCommand; var AChar: char;
+    var Handled: boolean; var Command: TSynEditorCommand; var AChar: TCharacter;
     Data: pointer; HandlerData: pointer) of object;
 
   TPaintEvent = procedure(Sender: TObject; ACanvas: TCanvas) of object;
 
   TProcessCommandEvent = procedure(Sender: TObject;
-    var Command: TSynEditorCommand; var AChar: char; Data: pointer) of object;
+    var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer) of object;
 
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
     string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
@@ -510,7 +510,7 @@ type
     procedure InvalidateBracketHighlight(OnlyIfCaretMoved: boolean);
     {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: Char); override;
+    procedure KeyPress(var Key: TCharacter); override;
     {$IFDEF SYN_LAZARUS}
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     {$ENDIF}
@@ -532,7 +532,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
       override;
     procedure NotifyHookedCommandHandlers(AfterProcessing: boolean;
-      var Command: TSynEditorCommand; var AChar: char; Data: pointer); virtual;
+      var Command: TSynEditorCommand; var AChar: Tcharacter; Data: pointer); virtual;
     procedure Paint; override;
     procedure PaintGutter(AClip: TRect; FirstLine, LastLine: integer); virtual;
     procedure PaintTextLines(AClip: TRect; FirstLine, LastLine,
@@ -563,14 +563,14 @@ type
     {$ENDIF}
     SavedCanvas: TCanvas; // the normal TCustomControl canvas during paint
     procedure DoOnClearBookmark(var Mark: TSynEditMark); virtual;               // djlp - 2000-08-29
-    procedure DoOnCommandProcessed(Command: TSynEditorCommand; AChar: char;
+    procedure DoOnCommandProcessed(Command: TSynEditorCommand; AChar: TCharacter;
       Data: pointer); virtual;
     // no method DoOnDropFiles, intercept the WM_DROPFILES instead
     procedure DoOnGutterClick(X, Y: integer); virtual;
     procedure DoOnPaint; virtual;
     procedure DoOnPlaceMark(var Mark: TSynEditMark); virtual;
     procedure DoOnProcessCommand(var Command: TSynEditorCommand;
-      var AChar: char; Data: pointer); virtual;
+      var AChar: TCharacter; Data: pointer); virtual;
     function DoOnReplaceText(const ASearch, AReplace: string;
       Line, Column: integer): TSynReplaceAction; virtual;
     function DoOnSpecialLineColors(Line: integer;
@@ -589,7 +589,7 @@ type
     procedure ClearAll;
     procedure ClearBookMark(BookMark: Integer);
     procedure ClearSelection;
-    procedure CommandProcessor(Command: TSynEditorCommand; AChar: char;
+    procedure CommandProcessor(Command: TSynEditorCommand; AChar: TCharacter;
       Data: pointer); virtual;
     procedure ClearUndo;
     procedure CopyToClipboard;
@@ -1823,7 +1823,7 @@ begin
   GutterChanged(Self);
 end;
 
-procedure TCustomSynEdit.KeyPress(var Key: Char);
+procedure TCustomSynEdit.KeyPress(var Key: TCharacter);
 begin
 {$IFDEF SYN_MBCSSUPPORT}
   if (fImeCount > 0) then begin
@@ -5785,7 +5785,7 @@ begin
 end;
 
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
-  AChar: char; Data: pointer);
+  AChar: TCharacter; Data: pointer);
 begin
   {$IFDEF VerboseKeys}
   DebugLn('[TCustomSynEdit.CommandProcessor] ',Command
@@ -6459,14 +6459,14 @@ begin
 end;
 
 procedure TCustomSynEdit.DoOnCommandProcessed(Command: TSynEditorCommand;
-  AChar: char; Data: pointer);
+  AChar: TCharacter; Data: pointer);
 begin
   if Assigned(fOnCommandProcessed) then
     fOnCommandProcessed(Self, Command, AChar, Data);
 end;
 
 procedure TCustomSynEdit.DoOnProcessCommand(var Command: TSynEditorCommand;
-  var AChar: char; Data: pointer);
+  var AChar: TCharacter; Data: pointer);
 begin
   if Command < ecUserFirst then begin
     if Assigned(FOnProcessCommand) then
@@ -8114,7 +8114,7 @@ begin
 end;
 
 procedure TCustomSynEdit.NotifyHookedCommandHandlers(AfterProcessing: boolean;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
 var
   Handled: boolean;
   i: integer;

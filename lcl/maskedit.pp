@@ -82,8 +82,8 @@ type
     FOldValue: string;
     function IsCharAlpha(AChar: Char): Boolean;
     function IsCharAlphaNumeric(AChar: Char): Boolean;
-    function DoInputChar(var NewChar: Char; MaskOffset: Integer): Boolean;
-    function InputChar(var NewChar: Char; Offset: Integer): Boolean;
+    function DoInputChar(var NewChar: TCharacter; MaskOffset: Integer): Boolean;
+    function InputChar(var NewChar: TCharacter; Offset: Integer): Boolean;
     function DeleteSelection(var Value: string; Offset: Integer;
       Len: Integer): Boolean;
     function InputString(var Value: string; const NewValue: string;
@@ -95,7 +95,7 @@ type
     function GetMasked: Boolean;
     function GetMaskText: string;
     function GetMaxLength: Integer;
-    function CharKeys(var CharCode: Char): Boolean;
+    function CharKeys(var CharCode: TCharacter): Boolean;
     procedure SetEditText(const Value: string);
     procedure SetEditMask(const Value: string);
     procedure SetMaxLength(Value: Integer);
@@ -111,7 +111,7 @@ type
     procedure SetCursor(Pos: Integer);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: Char); override;
+    procedure KeyPress(var Key: TCharacter); override;
     function EditCanModify: Boolean; virtual;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
@@ -622,7 +622,7 @@ begin
   end;
 end;
 
-procedure TCustomMaskEdit.KeyPress(var Key: Char);
+procedure TCustomMaskEdit.KeyPress(var Key: TCharacter);
 begin
   inherited KeyPress(Key);
   if IsMasked and (Key <> #0) and not (Char(Key) in [^V, ^X, ^C]) then
@@ -843,7 +843,7 @@ begin
   end;
 end;
 
-function TCustomMaskEdit.CharKeys(var CharCode: Char): Boolean;
+function TCustomMaskEdit.CharKeys(var CharCode: TCharacter): Boolean;
 var
   Txt: string;
   OldPos: Integer;
@@ -1187,7 +1187,7 @@ begin
   end;
 end;
 
-function TCustomMaskEdit.InputChar(var NewChar: Char; Offset: Integer): Boolean;
+function TCustomMaskEdit.InputChar(var NewChar: TCharacter; Offset: Integer): Boolean;
 var
   MaskOffset: Integer;
   CType: TMaskCharType;
@@ -1237,7 +1237,7 @@ begin
   if AChar in MyCharSet then result := True;
 end;
 
-function TCustomMaskEdit.DoInputChar(var NewChar: Char; MaskOffset: Integer): Boolean;
+function TCustomMaskEdit.DoInputChar(var NewChar: TCharacter; MaskOffset: Integer): Boolean;
 var
   Dir: TMaskDirectives;
   Str: string;
@@ -1383,7 +1383,7 @@ var
   NewOffset, MaskOffset, Temp: Integer;
   CType: TMaskCharType;
   NewVal: string;
-  NewChar: Char;
+  NewChar: TCharacter;
 begin
   Result := Offset;
   if NewValue = '' then Exit;

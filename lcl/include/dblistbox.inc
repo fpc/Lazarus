@@ -110,7 +110,7 @@ begin
 end;
 
 { Protected Methods}
-procedure TDBListBox.KeyPress(var Key: Char);
+procedure TDBListBox.KeyPress(var Key: TCharacter);
 begin
   inherited KeyPress(Key);
   case Key of
@@ -200,6 +200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.4  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

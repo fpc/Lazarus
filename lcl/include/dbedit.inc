@@ -122,7 +122,7 @@ begin
 end;
 
 { Protected Methods}
-procedure TDBEdit.KeyPress(var Key: Char);
+procedure TDBEdit.KeyPress(var Key: TCharacter);
 begin
   inherited KeyPress(Key);
   case Key of
@@ -224,6 +224,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.6  2004/08/08 20:51:15  mattias
   replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
 

@@ -55,7 +55,8 @@ uses
   Menus,
 {$ENDIF}
   SynEdit,
-  SynEditKeyCmds;
+  SynEditKeyCmds,
+  Controls;
 
 type
   TAbstractSynPlugin = class(TComponent)
@@ -87,7 +88,7 @@ type
     procedure UnHookEditor(aEditor: TCustomSynEdit;
       aCommandID: TSynEditorCommand; aShortCut: TShortCut);
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var aChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand; var aChar: TCharacter;
       Data: pointer; HandlerData: pointer); virtual; abstract;
   end;
 
@@ -132,7 +133,7 @@ type
   protected
     procedure SetCurrentString(const Value: String); virtual;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var aChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand; var aChar: TCharacter;
       Data: pointer; HandlerData: pointer); override;
     procedure DoExecute; override;
     procedure DoAccept; override;
@@ -483,7 +484,7 @@ end;
 
 procedure TAbstractSynCompletion.OnCommand(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
-  var Command: TSynEditorCommand; var aChar: char; Data,
+  var Command: TSynEditorCommand; var aChar: TCharacter; Data,
   HandlerData: pointer);
 var
   iString: String;

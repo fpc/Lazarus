@@ -168,11 +168,11 @@ type
     Procedure ReParent(AParent: TWinControl);
 
     Procedure ProcessCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
     Procedure ProcessUserCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
     Procedure UserCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
     Procedure ccOnTimer(sender: TObject);
     Procedure ccAddMessage(Texts: String);
 
@@ -454,10 +454,10 @@ type
     procedure MoveActivePageLeft;
     procedure MoveActivePageRight;
     Procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
        var Handled: boolean);
     Procedure ParentCommandProcessed(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+       var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
        var Handled: boolean);
 
     // marks
@@ -902,7 +902,7 @@ begin
 end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
-   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+   var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
 begin
   if (FSourceNoteBook<>nil)
   and (snIncrementalFind in FSourceNoteBook.States) then begin
@@ -961,7 +961,7 @@ begin
 end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
 var
   I: Integer;
   P: TPoint;
@@ -1125,7 +1125,7 @@ Begin
 end;
 
 Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
 var Handled: boolean;
 begin
   Handled:=true;
@@ -3846,7 +3846,7 @@ end;
 procedure TSourceNotebook.ViewCallStackClick(Sender: TObject);
 var
   Command: TSynEditorCommand;
-  AChar: char;
+  AChar: TCharacter;
   Data: pointer;
   Handled: boolean;
 begin
@@ -4180,7 +4180,7 @@ Begin
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
   var Handled: boolean);
 begin
   FProcessingCommand:=true;
@@ -4253,7 +4253,7 @@ begin
 end;
 
 Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
   var Handled: boolean);
 begin
   if Assigned(FOnUserCommandProcessed) then begin

@@ -159,6 +159,11 @@ const
 
 
 type
+{$IFDEF GTK2}
+  TCharacter = WideChar;
+{$ELSE GTK2}
+  TCharacter = Char;
+{$ENDIF GTK2}
   TWinControl = class;
   TControl = class;
   TWinControlClass = class of TWinControl;
@@ -330,7 +335,7 @@ type
 
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
-  TKeyPressEvent = procedure(Sender: TObject; var Key: Char) of Object;
+  TKeyPressEvent = procedure(Sender: TObject; var Key: TCharacter) of Object;
 
   TMouseEvent = Procedure(Sender : TOBject; Button: TMouseButton;
                           Shift : TShiftState; X, Y: Integer) of object;
@@ -1426,7 +1431,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
-    procedure KeyPress(var Key: Char); dynamic;
+    procedure KeyPress(var Key: TCharacter); dynamic;
     procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
   protected
     Function  FindNextControl(CurrentControl: TControl; GoForward,
@@ -2390,6 +2395,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.234  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.233  2004/08/09 21:12:42  mattias
   implemented FormStyle fsSplash for splash screens
 

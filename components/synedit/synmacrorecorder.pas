@@ -204,7 +204,7 @@ type
     procedure DoAddEditor(aEditor: TCustomSynEdit); override;
     procedure DoRemoveEditor(aEditor: TCustomSynEdit); override;
     procedure OnCommand(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var aChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand; var aChar: TCharacter;
       Data: pointer; HandlerData: pointer); override;
     function CreateMacroEvent(aCmd: TSynEditorCommand): TSynMacroEvent;
   protected
@@ -502,7 +502,7 @@ end;
 
 procedure TCustomSynMacroRecorder.OnCommand(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
-  var Command: TSynEditorCommand; var aChar: char; Data,
+  var Command: TSynEditorCommand; var aChar: TCharacter; Data,
   HandlerData: pointer);
 var
   iEvent: TSynMacroEvent;

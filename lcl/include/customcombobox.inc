@@ -406,7 +406,7 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
-procedure TCustomComboBox.KeyPress(var Key : Char);
+procedure TCustomComboBox.KeyPress(var Key : TCharacter);
 begin
   if (Style=csDropDownList) and (Ord(Key)>31) then
     Key:=#0
@@ -790,6 +790,9 @@ end;
 
 {
   $Log$
+  Revision 1.42  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.41  2004/07/16 21:49:00  mattias
   added RTTI controls
 

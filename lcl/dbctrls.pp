@@ -130,7 +130,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure KeyPress(var Key: Char); override;
+    procedure KeyPress(var Key: TCharacter); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -257,7 +257,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure KeyPress(var Key: Char); override;
+    procedure KeyPress(var Key: TCharacter); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -1248,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.16  2004/08/08 20:51:15  mattias
   replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
 

@@ -2138,7 +2138,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyPress
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyPress(var Key: Char);
+Procedure TWinControl.KeyPress(var Key: TCharacter);
 begin
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
@@ -2234,7 +2234,7 @@ end;
 Function TWinControl.DoKeyPress(Var Message : TLMKey): Boolean;
 var
   F: TCustomForm;
-  C: Char;
+  C: TCharacter;
 begin
   Result := True;
   F := GetParentForm(Self);
@@ -2245,7 +2245,8 @@ begin
   if not (csNoStdEvents in ControlStyle)
   then with Message do
   begin
-    C := Char(CharCode);
+    C := TCharacter(CharCode);
+    writeLn('[TWinControl.DoKeyPress] ',HexStr(ord(C),4));
     KeyPress(C);
     CharCode := Ord(C);
     if Char(CharCode) = #0 then Exit;
@@ -3791,6 +3792,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.260  2004/08/13 16:40:47  mazen
+  + TCharater type used to allow UTF8 keyboard with gtk2
+
   Revision 1.259  2004/08/04 07:32:01  micha
   fix win32 keyhandling, send cn_char
 

@@ -49,7 +49,8 @@ uses
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, SynEdit, SynEditKeyCmds;
+  Classes, SynEdit, SynEditKeyCmds,
+  Controls;
 
 type
   {$IFDEF SYN_LAZARUS}
@@ -82,7 +83,7 @@ type
     procedure SetAutoCompleteList(Value: TStrings); virtual;
     procedure SetEditor(Value: TCustomSynEdit);
     procedure SynEditCommandHandler(Sender: TObject; AfterProcessing: boolean;
-      var Handled: boolean; var Command: TSynEditorCommand; var AChar: char;
+      var Handled: boolean; var Command: TSynEditorCommand; var AChar: TCharacter;
       Data: pointer; HandlerData: pointer);
   public
     constructor Create(AOwner: TComponent); override;
@@ -562,7 +563,7 @@ end;
 
 procedure TCustomSynAutoComplete.SynEditCommandHandler(Sender: TObject;
   AfterProcessing: boolean; var Handled: boolean;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer;
   HandlerData: pointer);
 begin
   if not AfterProcessing and not Handled and (Command = ecAutoCompletion) then
