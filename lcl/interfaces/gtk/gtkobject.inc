@@ -854,6 +854,7 @@ var
   LogBrush: TLogBrush;
   logPen : TLogPen;
 begin
+  FillChar(LogBrush,SizeOf(TLogBrush),0);
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
   LogBrush.lbStyle := BS_SOLID;
@@ -6754,6 +6755,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.308  2002/12/27 09:05:50  mattias
+  fixed uninitialized logbrush
+
   Revision 1.307  2002/12/27 08:46:32  mattias
   changes for fpc 1.1
 
