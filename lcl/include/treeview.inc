@@ -450,8 +450,11 @@ begin
   if AValue=GetSelected then exit;
   if AValue then
     Include(FStates,nsSelected)
-  else
+  else begin
     Exclude(FStates,nsSelected);
+    if (TreeView<>nil) and (TreeView.Selected=Self) then
+      TreeView.Selected:=nil;
+  end;
   Update;
   { ToDo:
   if Value then
@@ -816,13 +819,15 @@ begin
 {$IFDEF TREEVIEW_DEBUG}
 writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
 {$ENDIF}
+  Selected:=false;
   if Owner<>nil then begin
     Owner.ClearCache;
     if FParent=nil then
       Owner.MoveTopLvlNode(Owner.IndexOfTopLvlItem(Self),-1,Self);
-    if Owner.Owner<>nil then
+    if Owner.Owner<>nil then begin
       Owner.Owner.FStates:=Owner.Owner.FStates+[tvsMaxRightNeedsUpdate,
         tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
+    end;
   end;
   if FPrevBrother<>nil then FPrevBrother.FNextBrother:=FNextBrother;
   if FNextBrother<>nil then FNextBrother.FPrevBrother:=FPrevBrother;
@@ -847,6 +852,7 @@ writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
     end;
     if FParent.Count=0 then begin
       FParent.Expanded:=false;
+      FParent.HasChildren:=false;
     end;
     FParent:=nil;
   end;

@@ -1304,6 +1304,9 @@ end.
 
 {
   $Log$
+  Revision 1.51  2002/03/05 08:14:59  lazarus
+  MG: updates for codetools defines editor
+
   Revision 1.50  2002/02/25 23:18:54  lazarus
   MG: jump history will now try to save relative filenames
 

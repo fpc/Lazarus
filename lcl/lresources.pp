@@ -16,7 +16,7 @@
   ToDo:
 
 }
-unit lresources;
+unit LResources;
 
 {$mode objfpc}{$H+}
 

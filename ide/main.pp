@@ -2308,15 +2308,15 @@ Begin
         CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CompilerUnitSearchPath);
         if CompilerTemplate<>nil then begin
-          CodeToolBoss.DefineTree.ReplaceSameNameAddFirst(CompilerTemplate);
+          CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
           // create compiler macros to simulate the Makefiles of the FPC sources
           FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath);
           if FPCSrcTemplate<>nil then begin
-            CodeToolBoss.DefineTree.RemoveDefineTemplateByName(
+            CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
                                                            FPCSrcTemplate.Name);
-            FPCSrcTemplate.InsertAfter(CompilerTemplate);
+            FPCSrcTemplate.InsertBehind(CompilerTemplate);
           end else begin
             MessageDlg('FPC Source Directory error',
               'Please check the freepascal source directory',
@@ -4894,6 +4894,7 @@ begin
           with SrcEdit.EditorComponent do begin
             BlockBegin:=CaretXY;
             BlockEnd:=CaretXY;
+            LeftChar:=Max(CaretXY.X-CharsInWindow,1);
           end;
           SrcEdit.ErrorLine:=CaretXY.Y;
         end;
@@ -5146,7 +5147,6 @@ begin
   FOpenEditorsOnCodeToolChange:=false;
   
   CodeToolsOpts.AssignTo(CodeToolBoss);
-
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
     writeln('');
     writeln('NOTE: Compiler Filename not set! (see Environment Options)');
@@ -6216,6 +6216,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.239  2002/03/05 08:14:58  lazarus
+  MG: updates for codetools defines editor
+
   Revision 1.238  2002/03/02 11:08:36  lazarus
   MG: fixed method search diff proc, fixed synedit insert in empty line, small fixes, started define editor
 

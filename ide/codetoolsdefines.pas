@@ -16,7 +16,16 @@
   Author: Mattias Gaertner
 
   Abstract:
-    - TCodeToolsDefinesEditor
+    - TCodeToolsDefinesEditor is an editor for the CodeTools DefineTree used by
+      the IDE. The DefineTree defines all values, that are not in the sources,
+      but are provided by for example Makefiles, compiler command lines and
+      compiler config files.
+      
+    There are three types of nodes:
+      - auto generated: These are created by the IDE.
+      - project specific: These nodes are saved in the project info file (.lpi)
+      - the rest are global nodes, saved in the codetoolsoptions.xml file.
+
 }
 unit CodeToolsDefines;
 
@@ -47,8 +56,10 @@ type
     MoveNodeLvlDownMenuItem: TMenuItem;
     InsertBehindMenuItem: TMenuItem;
     InsertBehindDefineMenuItem: TMenuItem;
-    InsertBehindDefineAllMenuItem: TMenuItem;
+    InsertBehindDefineRecurseMenuItem: TMenuItem;
     InsertBehindUndefineMenuItem: TMenuItem;
+    InsertBehindUndefineRecurseMenuItem: TMenuItem;
+    InsertBehindUndefineAllMenuItem: TMenuItem;
     InsertBehindBlockMenuItem: TMenuItem;
     InsertBehindDirectoryMenuItem: TMenuItem;
     InsertBehindIfMenuItem: TMenuItem;
@@ -58,8 +69,10 @@ type
     InsertBehindElseMenuItem: TMenuItem;
     InsertAsChildMenuItem: TMenuItem;
     InsertAsChildDefineMenuItem: TMenuItem;
-    InsertAsChildDefineAllMenuItem: TMenuItem;
+    InsertAsChildDefineRecurseMenuItem: TMenuItem;
     InsertAsChildUndefineMenuItem: TMenuItem;
+    InsertAsChildUndefineRecurseMenuItem: TMenuItem;
+    InsertAsChildUndefineAllMenuItem: TMenuItem;
     InsertAsChildBlockMenuItem: TMenuItem;
     InsertAsChildDirectoryMenuItem: TMenuItem;
     InsertAsChildIfMenuItem: TMenuItem;
@@ -100,18 +113,30 @@ type
     DeleteFilePathBitBtn: TBitBtn;
     InsertFilePathBitBtn: TBitBtn;
 
-    procedure SaveAndExitMenuItemClick(Sender: TObject);
-    procedure DontSaveAndExitMenuItemClick(Sender: TObject);
+    // misc
     procedure FormResize(Sender: TObject);
     procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
                                     Shift: TShiftState;  X,Y: integer);
+    procedure ProjectSpecificCheckBoxClick(Sender: TObject);
+
+    // exit menu
+    procedure SaveAndExitMenuItemClick(Sender: TObject);
+    procedure DontSaveAndExitMenuItemClick(Sender: TObject);
+    
+    // value notebook
     procedure ValueNoteBookPageChanged(Sender: TObject);
     procedure MoveFilePathUpBitBtnClick(Sender: TObject);
     procedure MoveFilePathDownBitBtnClick(Sender: TObject);
     procedure DeleteFilePathBitBtnClick(Sender: TObject);
     procedure InsertFilePathBitBtnClick(Sender: TObject);
+    
+    // edit menu
     procedure InsertNodeMenuItemClick(Sender: TObject);
-    procedure ProjectSpecificCheckBoxClick(Sender: TObject);
+    procedure MoveNodeUpMenuItemClick(Sender: TObject);
+    procedure MoveNodeDownMenuItemClick(Sender: TObject);
+    procedure MoveNodeLvlUpMenuItemClick(Sender: TObject);
+    procedure MoveNodeLvlDownMenuItemClick(Sender: TObject);
+    procedure DeleteNodeMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -127,6 +152,9 @@ type
     procedure SetTypeLabel;
     function ValueToFilePathText(const AValue: string): string;
     procedure InsertNewNode(Behind: boolean; Action: TDefineAction);
+    function FindUniqueName: string;
+    function ConsistencyCheck: integer;
+    procedure SetValuesEditable(AValue: boolean);
   public
     procedure Assign(ACodeToolBoss: TCodeToolManager;
       Options: TCodeToolsOptions);
@@ -140,12 +168,6 @@ function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
 
 
 implementation
-
-const
-  DefineActionNames: array[TDefineAction] of string = (
-      'None', 'Block', 'Define', 'Undefine', 'DefineAll',
-      'If', 'IfDef', 'IfNDef', 'ElseIf', 'Else', 'Directory'
-    );
 
 type
   TWinControlClass = class of TWinControl;
@@ -288,7 +310,10 @@ end;
 
 procedure TCodeToolsDefinesEditor.ValueNoteBookPageChanged(Sender: TObject);
 begin
-  if ValueNoteBook.PageIndex=0 then ValueAsPathToValueAsText;
+  if ValueNoteBook.PageIndex=0 then
+    ValueAsPathToValueAsText
+  else
+    ValueAsFilePathsSynEdit.Text:=ValueToFilePathText(ValueAsTextSynEdit.Text);
 end;
 
 procedure TCodeToolsDefinesEditor.MoveFilePathUpBitBtnClick(Sender: TObject);
@@ -333,8 +358,10 @@ var Behind: boolean;
 begin
   Behind:=(TMenuItem(Sender).Parent=InsertBehindMenuItem);
   if Sender=InsertBehindDefineMenuItem then Action:=da_Define
-  else if Sender=InsertBehindDefineAllMenuItem then Action:=da_DefineAll
+  else if Sender=InsertBehindDefineRecurseMenuItem then Action:=da_DefineRecurse
   else if Sender=InsertBehindUndefineMenuItem then Action:=da_Undefine
+  else if Sender=InsertBehindUndefineRecurseMenuItem then Action:=da_UndefineRecurse
+  else if Sender=InsertBehindUndefineAllMenuItem then Action:=da_UndefineAll
   else if Sender=InsertBehindBlockMenuItem then Action:=da_Block
   else if Sender=InsertBehindDirectoryMenuItem then Action:=da_Directory
   else if Sender=InsertBehindIfMenuItem then Action:=da_If
@@ -343,8 +370,10 @@ begin
   else if Sender=InsertBehindElseIfMenuItem then Action:=da_ElseIf
   else if Sender=InsertBehindElseMenuItem then Action:=da_Else
   else if Sender=InsertAsChildDefineMenuItem then Action:=da_Define
-  else if Sender=InsertAsChildDefineAllMenuItem then Action:=da_DefineAll
+  else if Sender=InsertAsChildDefineRecurseMenuItem then Action:=da_DefineRecurse
   else if Sender=InsertAsChildUndefineMenuItem then Action:=da_Undefine
+  else if Sender=InsertAsChildUndefineRecurseMenuItem then Action:=da_UndefineRecurse
+  else if Sender=InsertAsChildUndefineAllMenuItem then Action:=da_UndefineAll
   else if Sender=InsertAsChildBlockMenuItem then Action:=da_Block
   else if Sender=InsertAsChildDirectoryMenuItem then Action:=da_Directory
   else if Sender=InsertAsChildIfMenuItem then Action:=da_If
@@ -355,17 +384,136 @@ begin
   InsertNewNode(Behind,Action);
 end;
 
+procedure TCodeToolsDefinesEditor.MoveNodeUpMenuItemClick(Sender: TObject);
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode, PrevDefNode: TDefineTemplate;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if (SelTreeNode=nil) or (SelTreeNode.GetPrevSibling=nil) then exit;
+  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+  PrevDefNode:=SelDefNode.Prior;
+  // move node up in TreeView
+  SelTreeNode.MoveTo(SelTreeNode.GetPrevSibling,naInsert);
+  // move node up in DefineTree
+  SelDefNode.Unbind;
+  SelDefNode.InsertInFront(PrevDefNode);
+  SelTreeNode.MakeVisible;
+end;
+
+procedure TCodeToolsDefinesEditor.MoveNodeDownMenuItemClick(Sender: TObject);
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode, NextDefNode: TDefineTemplate;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if (SelTreeNode=nil) or (SelTreeNode.GetNextSibling=nil) then exit;
+  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+  NextDefNode:=SelDefNode.Next;
+  // move node down in TreeView
+  if SelTreeNode.GetNextSibling.GetNextSibling<>nil then
+    SelTreeNode.MoveTo(SelTreeNode.GetNextSibling.GetNextSibling,naInsert)
+  else
+    SelTreeNode.MoveTo(SelTreeNode.GetNextSibling,naAdd);
+  // move node down in DefineTree
+  SelDefNode.Unbind;
+  SelDefNode.InsertBehind(NextDefNode);
+  SelTreeNode.MakeVisible;
+end;
+
+procedure TCodeToolsDefinesEditor.MoveNodeLvlUpMenuItemClick(Sender: TObject);
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode, PrevDefNode: TDefineTemplate;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if (SelTreeNode=nil) or (SelTreeNode.Parent=nil) then exit;
+  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+  if SelDefNode.IsAutoGenerated then begin
+    MessageDlg('Node is readonly','Auto generated nodes can not be edited.',
+      mtInformation,[mbCancel],0);
+    exit;
+  end;
+  // move node one lvl up in TreeView
+  if SelTreeNode.Parent.GetNextSibling<>nil then
+    SelTreeNode.MoveTo(SelTreeNode.Parent.GetNextSibling,naInsert)
+  else
+    SelTreeNode.MoveTo(SelTreeNode.Parent,naAdd);
+  // move node one lvl up in DefineTree
+  PrevDefNode:=SelDefNode.Parent;
+  SelDefNode.Unbind;
+  SelDefNode.InsertBehind(PrevDefNode);
+  SetNodeImages(SelTreeNode,true);
+  SelTreeNode.MakeVisible;
+end;
+
+procedure TCodeToolsDefinesEditor.MoveNodeLvlDownMenuItemClick(Sender: TObject);
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode, PrevDefNode: TDefineTemplate;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if (SelTreeNode=nil) or (SelTreeNode.GetPrevSibling=nil) then exit;
+  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+  PrevDefNode:=SelDefNode.Prior;
+  if (SelDefNode.IsAutoGenerated) or (PrevDefNode.IsAutoGenerated) then begin
+    MessageDlg('Node is readonly','Auto generated nodes can not be edited.',
+      mtInformation,[mbCancel],0);
+    exit;
+  end;
+  if (not (PrevDefNode.Action in DefineActionBlocks)) then begin
+    MessageDlg('Invalid previous node',
+      'Previous node can not contain child nodes.',
+      mtInformation,[mbCancel],0);
+    exit;
+  end;
+  // move node one lvl down in TreeView
+  SelTreeNode.MoveTo(SelTreeNode.GetPrevSibling,naAddChild);
+  // move node one lvl up in DefineTree
+  SelDefNode.Unbind;
+  PrevDefNode.AddChild(SelDefNode);
+  SetNodeImages(SelTreeNode.Parent,true);
+  SelTreeNode.MakeVisible;
+end;
+
+procedure TCodeToolsDefinesEditor.DeleteNodeMenuItemClick(Sender: TObject);
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if (SelTreeNode=nil) then exit;
+  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+  if (SelDefNode.IsAutoGenerated) then begin
+    MessageDlg('Node is readonly','Auto generated nodes can not be edited.',
+      mtInformation,[mbCancel],0);
+    exit;
+  end;
+  if FLastSelectedNode=SelTreeNode then FLastSelectedNode:=nil;
+writeln(' AAA1 ',ConsistencyCheck);
+  // delete node in TreeView
+  SelTreeNode.Free;
+  // delete node in DefineTree
+  SelDefNode.Unbind;
+  SelDefNode.Free;
+writeln(' AAA2 ',ConsistencyCheck);
+end;
+
 procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
 var
   SelTreeNode: TTreeNode;
   SelDefNode: TDefineTemplate;
 begin
-  if not SelectedItemGroupBox.Enabled then exit;
   SelTreeNode:=DefineTreeView.Selected;
   if SelTreeNode=nil then exit;
   SelDefNode:=TDefineTemplate(SelTreeNode.Data);
   if ProjectSpecificCheckBox.Checked=(dtfProjectSpecific in SelDefNode.Flags)
   then exit;
+  if SelDefNode.IsAutoGenerated then begin
+    MessageDlg('Node is readonly','Auto generated nodes can not be edited.',
+      mtInformation,[mbCancel],0);
+    exit;
+  end;
   if ProjectSpecificCheckBox.Checked then
     Include(SelDefNode.Flags,dtfProjectSpecific)
   else
@@ -417,8 +565,10 @@ begin
     Height:=22;
     Name:='TheImageList';
     AddResImg('define_22x22');
-    AddResImg('defineall_22x22');
+    AddResImg('definerecurse_22x22');
     AddResImg('undefine_22x22');
+    AddResImg('undefinerecurse_22x22');
+    AddResImg('undefineall_22x22');
     AddResImg('block_22x22');
     AddResImg('directory_22x22');
     AddResImg('if_22x22');
@@ -451,37 +601,56 @@ begin
   AddMenuItem(EditMenuItem,'EditMenuItem','Edit',nil);
   AddMenuItem(MoveNodeUpMenuItem,'MoveNodeUpMenuItem','Move node up',
               EditMenuItem);
+  MoveNodeUpMenuItem.OnClick:=@MoveNodeUpMenuItemClick;
+  
   AddMenuItem(MoveNodeDownMenuItem,'MoveNodeDownMenuItem','Move node down',
               EditMenuItem);
+  MoveNodeDownMenuItem.OnClick:=@MoveNodeDownMenuItemClick;
+  
   AddMenuItem(MoveNodeLvlUpMenuItem,'MoveNodeLvlUpMenuItem','Move node one level up',
               EditMenuItem);
+  MoveNodeLvlUpMenuItem.OnClick:=@MoveNodeLvlUpMenuItemClick;
+              
   AddMenuItem(MoveNodeLvlDownMenuItem,'MoveNodeLvlDownMenuItem','Move node one level down',
               EditMenuItem);
+  MoveNodeLvlDownMenuItem.OnClick:=@MoveNodeLvlDownMenuItemClick;
+  
   EditMenuItem.Add(CreateSeperator);
-  AddMenuItem(InsertBehindMenuItem,'InsertBehindMenuItem','Insert node behind',
+  AddMenuItem(InsertBehindMenuItem,'InsertBehindMenuItem','Insert node below',
               EditMenuItem);
   AddMenuItem(InsertAsChildMenuItem,'InsertAsChildMenuItem','Insert node as child',
               EditMenuItem);
   EditMenuItem.Add(CreateSeperator);
   AddMenuItem(DeleteNodeMenuItem,'DeleteNodeMenuItem','Delete node',
               EditMenuItem);
-  EditMenuItem.Add(CreateSeperator);
+  DeleteNodeMenuItem.OnClick:=@DeleteNodeMenuItemClick;
+              
+{  EditMenuItem.Add(CreateSeperator);
   AddMenuItem(CopyToClipbrdMenuItem,'CopyToClipbrdMenuItem','Copy to clipboard',
               EditMenuItem);
   AddMenuItem(PasteFromClipbrdMenuItem,'PasteFromClipbrdMenuItem',
-              'Paste from clipboard',EditMenuItem);
+              'Paste from clipboard',EditMenuItem);}
 
   // insert node behind submenu
   AddMenuItem(InsertBehindDefineMenuItem,'InsertBehindDefineMenuItem','Define',
               InsertBehindMenuItem);
-  AddMenuItem(InsertBehindDefineAllMenuItem,'InsertBehindDefineAllMenuItem','Define All',
+  AddMenuItem(InsertBehindDefineRecurseMenuItem,
+              'InsertBehindDefineRecurseMenuItem','Define Recurse',
               InsertBehindMenuItem);
-  AddMenuItem(InsertBehindUndefineMenuItem,'InsertBehindUndefineMenuItem','Undefine',
+  AddMenuItem(InsertBehindUndefineMenuItem,
+              'InsertBehindUndefineMenuItem','Undefine',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindUndefineRecurseMenuItem,
+              'InsertBehindUndefineRecurseMenuItem','Undefine Recurse',
+              InsertBehindMenuItem);
+  AddMenuItem(InsertBehindUndefineAllMenuItem,
+              'InsertBehindUndefineAllMenuItem','Undefine All',
               InsertBehindMenuItem);
   InsertBehindMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertBehindBlockMenuItem,'InsertBehindBlockMenuItem','Block',
               InsertBehindMenuItem);
-  AddMenuItem(InsertBehindDirectoryMenuItem,'InsertBehindDirectoryMenuItem','Directory',
+  AddMenuItem(InsertBehindDirectoryMenuItem,
+              'InsertBehindDirectoryMenuItem','Directory',
               InsertBehindMenuItem);
   InsertBehindMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertBehindIfMenuItem,'InsertBehindIfMenuItem','If',
@@ -501,14 +670,23 @@ begin
   // insert node as child submenu
   AddMenuItem(InsertAsChildDefineMenuItem,'InsertAsChildDefineMenuItem','Define',
               InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildDefineAllMenuItem,'InsertAsChildDefineAllMenuItem','Define All',
+  AddMenuItem(InsertAsChildDefineRecurseMenuItem,
+              'InsertAsChildDefineRecurseMenuItem','Define Recurse',
               InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildUndefineMenuItem,'InsertAsChildUndefineMenuItem','Undefine',
+  AddMenuItem(InsertAsChildUndefineMenuItem,
+              'InsertAsChildUndefineMenuItem','Undefine',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildUndefineRecurseMenuItem,
+              'InsertAsChildUndefineRecurseMenuItem','Undefine Recurse',
+              InsertAsChildMenuItem);
+  AddMenuItem(InsertAsChildUndefineAllMenuItem,
+              'InsertAsChildUndefineAllMenuItem','Undefine All',
               InsertAsChildMenuItem);
   InsertAsChildMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertAsChildBlockMenuItem,'InsertAsChildBlockMenuItem','Block',
               InsertAsChildMenuItem);
-  AddMenuItem(InsertAsChildDirectoryMenuItem,'InsertAsChildDirectoryMenuItem','Directory',
+  AddMenuItem(InsertAsChildDirectoryMenuItem,
+              'InsertAsChildDirectoryMenuItem','Directory',
               InsertAsChildMenuItem);
   InsertAsChildMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertAsChildIfMenuItem,'InsertAsChildIfMenuItem','If',
@@ -526,11 +704,11 @@ begin
       InsertAsChildMenuItem[i].OnClick:=@InsertNodeMenuItemClick;
 
   // tools
-  AddMenuItem(ToolsMenuItem,'ToolsMenuItem','Tools',nil);
+{  AddMenuItem(ToolsMenuItem,'ToolsMenuItem','Tools',nil);
   AddMenuItem(OpenPreviewMenuItem,'OpenPreviewMenuItem','Open Preview',
               ToolsMenuItem);
   AddMenuItem(ShowMacroListMenuItem,'ShowMacroListMenuItem','Show Macros',
-              ToolsMenuItem);
+              ToolsMenuItem);}
 
   // templates
   AddMenuItem(InsertTemplateMenuItem,'InsertTemplateMenuItem',
@@ -658,29 +836,31 @@ begin
   ADefineTemplate:=TDefineTemplate(ANode.Data);
   case ADefineTemplate.Action of
     da_Define: ANode.ImageIndex:=0;
-    da_DefineAll: ANode.ImageIndex:=1;
+    da_DefineRecurse: ANode.ImageIndex:=1;
     da_Undefine: ANode.ImageIndex:=2;
-    da_Block: ANode.ImageIndex:=3;
-    da_Directory: ANode.ImageIndex:=4;
-    da_If: ANode.ImageIndex:=5;
-    da_IfDef: ANode.ImageIndex:=6;
-    da_IfNDef: ANode.ImageIndex:=7;
-    da_ElseIf: ANode.ImageIndex:=8;
-    da_Else: ANode.ImageIndex:=9;
+    da_UndefineRecurse: ANode.ImageIndex:=3;
+    da_UndefineAll: ANode.ImageIndex:=4;
+    da_Block: ANode.ImageIndex:=5;
+    da_Directory: ANode.ImageIndex:=6;
+    da_If: ANode.ImageIndex:=7;
+    da_IfDef: ANode.ImageIndex:=8;
+    da_IfNDef: ANode.ImageIndex:=9;
+    da_ElseIf: ANode.ImageIndex:=10;
+    da_Else: ANode.ImageIndex:=11;
   else
     ANode.ImageIndex:=-1;
   end;
   ANode.SelectedIndex:=ANode.ImageIndex;
   if ADefineTemplate.IsAutoGenerated then begin
     if ADefineTemplate.IsProjectSpecific then
-      ANode.StateIndex:=13
+      ANode.StateIndex:=15
     else
-      ANode.StateIndex:=11;
+      ANode.StateIndex:=13;
   end else begin
     if ADefineTemplate.IsProjectSpecific then
-      ANode.StateIndex:=12
+      ANode.StateIndex:=14
     else
-      ANode.StateIndex:=10;
+      ANode.StateIndex:=12;
   end;
   if WithSubNodes then begin
     ANode:=ANode.GetFirstChild;
@@ -697,21 +877,15 @@ var s: string;
 begin
   s:=ValueAsFilePathsSynEdit.Text;
   l:=length(s);
-  if (l>0) and (s[l] in [#13,#10]) then begin
-    // remove line end at end of Text, that was added automatically
-    dec(l);
-    if (l>0) and (s[l] in [#13,#10]) and (s[l]<>s[l+1]) then
-      dec(l);
-    SetLength(s,l);
-  end;
   // replace line ends with semicolon
   i:=1;
   j:=1;
   while i<=l do begin
     if s[i] in [#10,#13] then begin
       inc(i);
-      if (i<l) and (s[i] in [#10,#13]) and (s[i]<>s[i+1]) then
+      if (i<l) and (s[i] in [#10,#13]) and (s[i-1]<>s[i]) then begin
         inc(i);
+      end;
       s[j]:=';';
       inc(j);
     end else begin
@@ -720,7 +894,9 @@ begin
       inc(j);
     end;
   end;
-  SetLength(s,j-1);
+  dec(j);
+  while (j>=1) and (s[j]=';') do dec(j);
+  SetLength(s,j);
   ValueAsTextSynEdit.Text:=s;
 end;
 
@@ -764,7 +940,7 @@ begin
   end;
   if SelTreeNode<>nil then begin
     SelDefNode:=TDefineTemplate(SelTreeNode.Data);
-    SelectedItemGroupBox.Enabled:=true;
+    SetValuesEditable(not SelDefNode.IsAutoGenerated);
     ProjectSpecificCheckBox.Checked:=dtfProjectSpecific in SelDefNode.Flags;
     NameEdit.Text:=SelDefNode.Name;
     DescriptionEdit.Text:=SelDefNode.Description;
@@ -781,7 +957,7 @@ begin
     ValueAsFilePathsSynEdit.Options:=ValueAsTextSynEdit.Options;
     ValueAsFilePathsSynEdit.ReadOnly:=ValueAsTextSynEdit.ReadOnly;
   end else begin
-    SelectedItemGroupBox.Enabled:=false;
+    SetValuesEditable(false);
     NameEdit.Text:='';
     DescriptionEdit.Text:='';
     VariableEdit.Text:='';
@@ -823,11 +999,10 @@ end;
 
 procedure TCodeToolsDefinesEditor.InsertNewNode(Behind: boolean;
   Action: TDefineAction);
-var SelTreeNode, NodeInFront, ParentNode, ANode, FirstNode,
+var SelTreeNode, NodeInFront, ParentNode,
   NewTreeNode: TTreeNode;
   NewDefNode: TDefineTemplate;
   NewName, NewDescription, NewVariable, NewValue: string;
-  i: integer;
 begin
   SelTreeNode:=DefineTreeView.Selected;
   NodeInFront:=nil;
@@ -853,31 +1028,20 @@ begin
   end;
   if (ParentNode<>nil) and (TDefineTemplate(ParentNode.Data).IsAutoGenerated)
   then begin
-    MessageDlg('Invalid Parent','Auto created nodes can not be edited,'#13
+    MessageDlg('Invalid parent','Auto created nodes can not be edited,'#13
      +'nor can they have non auto created child nodes.',mtInformation,[mbCancel]
      ,0);
     exit;
   end;
-  // find an unique name
-  if ParentNode<>nil then
-    FirstNode:=ParentNode.GetFirstChild
-  else
-    FirstNode:=nil;
-  if FirstNode=nil then FirstNode:=NodeInFront;
-  if FirstNode<>nil then begin
-    while FirstNode.GetPrevSibling<>nil do
-      FirstNode:=FirstNode.GetPrevSibling;
+  if (ParentNode<>nil)
+  and (not (TDefineTemplate(ParentNode.Data).Action in DefineActionBlocks)) then
+  begin
+    MessageDlg('Invalid parent node',
+      'Parent node can not contain child nodes.',
+      mtInformation,[mbCancel],0);
+    exit;
   end;
-  i:=0;
-  repeat
-    inc(i);
-    ANode:=FirstNode;
-    while ANode<>nil do begin
-      if TDefineTemplate(ANode.Data).Name='NewNode'+IntToStr(i) then break;
-      ANode:=ANode.GetNextSibling;
-    end;
-  until ANode=nil;
-  NewName:='NewNode'+IntToStr(i);
+  NewName:=FindUniqueName;
   NewDescription:=NewName;
   NewVariable:='';
   NewValue:='';
@@ -895,7 +1059,7 @@ begin
 
   // add node to define tree
   if NodeInFront<>nil then
-    NewDefNode.InsertAfter(TDefineTemplate(NodeInFront.Data))
+    NewDefNode.InsertBehind(TDefineTemplate(NodeInFront.Data))
   else if ParentNode<>nil then
     TDefineTemplate(ParentNode.Data).AddChild(NewDefNode)
   else
@@ -903,6 +1067,99 @@ begin
 
   SetNodeImages(NewTreeNode,true);
   DefineTreeView.Selected:=NewTreeNode;
+  ShowSelectedValues;
+end;
+
+function TCodeToolsDefinesEditor.FindUniqueName: string;
+var i: integer;
+begin
+  i:=1;
+  while (DefineTree.FindDefineTemplateByName('NewNode'+IntToStr(i),false)<>nil)
+  do inc(i);
+  Result:='NewNode'+IntToStr(i);
+end;
+
+function TCodeToolsDefinesEditor.ConsistencyCheck: integer;
+
+  function CheckNode(ATreeNode: TTreeNode): integer;
+  var ADefNode, DummyDefNode: TDefineTemplate;
+  begin
+    if ATreeNode=nil then exit;
+    ADefNode:=TDefineTemplate(ATreeNode.Data);
+//writeln(' CheckNode "',ATreeNode.Text,'" "',ADefNode.Name,'"');
+    if ADefNode=nil then begin
+      Result:=-1;  exit;
+    end;
+    if (ATreeNode.GetPrevSibling<>nil)
+    and (TDefineTemplate(ATreeNode.GetPrevSibling.Data)<>ADefNode.Prior) then
+    begin
+      Result:=-2;  exit;
+    end;
+    if (ATreeNode.GetNextSibling<>nil)
+    and (TDefineTemplate(ATreeNode.GetNextSibling.Data)<>ADefNode.Next) then
+    begin
+      write(' ERROR: ',ATreeNode.GetNextSibling.Text,' ');
+      if ADefNode.Next<>nil then write('ADefNode.Next=',ADefNode.Next.Name,' ')
+      else write('ADefNode.Next=nil ');
+      DummyDefNode:=TDefineTemplate(ATreeNode.GetNextSibling.Data);
+      if DummyDefNode<>nil then
+        writeln('ATreeNode.GetNextSibling.Next=',DummyDefNode.Name)
+      else
+        writeln('ATreeNode.GetNextSibling.Next=nil');
+writeln('=============================================');
+DefineTreeView.WriteDebugReport('TV ',true);
+writeln('=============================================');
+DefineTree.WriteDebugReport;
+writeln('=============================================');
+      Result:=-3;  exit;
+    end;
+    if (ATreeNode.GetFirstChild<>nil)
+    and (TDefineTemplate(ATreeNode.GetFirstChild.Data)<>ADefNode.FirstChild)
+    then begin
+      Result:=-4;  exit;
+    end;
+    Result:=CheckNode(ATreeNode.GetFirstChild);
+    if Result<0 then exit;
+    Result:=CheckNode(ATreeNode.GetNextSibling);
+    if Result<0 then exit;
+  end;
+
+begin
+  Result:=DefineTreeView.ConsistencyCheck;
+  if Result<0 then begin
+    dec(Result,100000);
+    exit;
+  end;
+  Result:=DefineTree.ConsistencyCheck;
+  if Result<0 then begin
+    dec(Result,200000);
+    exit;
+  end;
+  Result:=CheckNode(DefineTreeView.Items.GetFirstNode);
+  if Result<0 then begin
+    dec(Result,300000);
+    exit;
+  end;
+  Result:=0;
+end;
+
+procedure TCodeToolsDefinesEditor.SetValuesEditable(AValue: boolean);
+begin
+  SelectedItemGroupBox.Enabled:=true;
+  TypeLabel.Enabled:=AValue;
+  ProjectSpecificCheckBox.Enabled:=AValue;
+  NameLabel.Enabled:=AValue;
+  NameEdit.Enabled:=AValue;
+  DescriptionLabel.Enabled:=AValue;
+  DescriptionEdit.Enabled:=AValue;
+  VariableLabel.Enabled:=AValue;
+  VariableEdit.Enabled:=AValue;
+  ValueAsTextSynEdit.ReadOnly:=not AValue;
+  ValueAsFilePathsSynEdit.ReadOnly:=not AValue;
+  MoveFilePathUpBitBtn.Enabled:=AValue;
+  MoveFilePathDownBitBtn.Enabled:=AValue;
+  DeleteFilePathBitBtn.Enabled:=AValue;
+  InsertFilePathBitBtn.Enabled:=AValue;
 end;
 
 procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;
