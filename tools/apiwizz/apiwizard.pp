@@ -21,7 +21,7 @@
  ***************************************************************************/
 }
 {
-@author(M. Weustink <weus@quicknet.nl>)                       
+@author(M. Weustink <marc@dommelstein.net>)                       
 @created(02-May-2000)
 }
 unit APIWizard;
@@ -31,7 +31,7 @@ interface
 {$Mode objfpc}
 
 uses
-  LCLLinux, buttons, 
+  LCLIntf, buttons, 
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls;
 
@@ -648,6 +648,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/09/25 23:03:13  marc
+  = Changed LCLLinux to LCLIntf
+
   Revision 1.2  2000/08/14 12:31:12  lazarus
   Minor modifications for SynEdit .
   Shane

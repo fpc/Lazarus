@@ -21,7 +21,7 @@
  ***************************************************************************/
 }
 {
-@author(M. Weustink <weus@quicknet.nl>)                       
+@author(M. Weustink <marc@dommelstein.net>)                       
 @created(02-May-2000)
 }
 program APIWizz;
@@ -39,6 +39,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/09/25 23:03:13  marc
+  = Changed LCLLinux to LCLIntf
+
   Revision 1.2  2003/01/17 16:28:42  mattias
   updated translation files
 
