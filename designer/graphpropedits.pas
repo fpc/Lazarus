@@ -354,15 +354,17 @@ var
 begin
   Pixmap := TBitmap(GetOrdValue);
   TheDialog := TGraphicPropertyEditorForm.Create(Application);
-  If not Pixmap.Empty then begin
+  If (Pixmap <> nil) and not Pixmap.Empty then begin
     TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
     TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
-    With TheDialog.Preview.Picture.Bitmap.Canvas do begin
+    With TheDialog.Preview.Picture.Pixmap.Canvas do begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
       Draw(0, 0, Pixmap);
     end;
-  end;
+  end
+  else
+    Pixmap := TPixmap.Create;
   try
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
@@ -384,8 +386,9 @@ begin
           end;
       end
       else
-        Pixmap.FreeImage;
+        Pixmap.FreeImage
     end;
+    SetOrdValue(longint(Pixmap));
   finally
     TheDialog.Free;
   end;
