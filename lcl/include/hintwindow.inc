@@ -32,6 +32,7 @@ begin
   Parent := nil;
   Color := clInfoBk;
   Canvas.Font := Screen.HintFont;
+  BorderStyle := bsNone;
   Caption := 'THintWindow';
   SetBounds(1,1,25,25);
   FHideInterval := 3000;
