@@ -93,6 +93,7 @@ type
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;
     procedure DisposeGDIObject(GdiObject: PGdiObject);
     function NewDC: PDeviceContext;
+    procedure DisposeDC(pDC: PDeviceContext);
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
     function CreateDefaultPen: PGdiObject;
@@ -429,6 +430,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/08/21 14:06:40  lazarus
+  MG: added TDeviceContextMemManager
+
   Revision 1.62  2002/08/21 08:13:37  lazarus
   MG: accelerated new/dispose of gdiobjects
 
