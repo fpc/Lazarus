@@ -74,6 +74,7 @@ type
 const
   // ToDo: find the constant in the fpc units.
   EndOfLine: shortstring={$IFDEF win32}#13+{$ENDIF}#10;
+  EmptyLine: shortstring={$IFDEF win32}#13#10#13#10{$ELSE}#10#10{$ENDIF};
 
 // files
 function BackupFile(const Filename, BackupFilename: string): boolean;
