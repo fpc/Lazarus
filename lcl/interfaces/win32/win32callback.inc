@@ -520,6 +520,10 @@ Begin
             // multiline edit doesn't send EN_CHANGE, so use EN_UPDATE
             EN_UPDATE:    LMessage.Msg := CM_TEXTCHANGED;
           end
+        else if (lWinControl is TCustomListBox) then
+          case Hi(WParam) of
+            LBN_SELCHANGE:    LMessage.Msg := LM_SELCHANGE;
+          end
         else if lWinControl is TCustomCombobox then
           case Hi(WParam) of
             CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
@@ -1476,6 +1480,9 @@ end;
 
 {
   $Log$
+  Revision 1.169  2004/11/26 12:26:13  vincents
+  implemented SelectionChange event
+
   Revision 1.168  2004/11/26 11:23:38  vincents
   fixed sending two lm_setfocus message for combobox.
 

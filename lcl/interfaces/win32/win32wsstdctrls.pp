@@ -429,7 +429,8 @@ begin
     end;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     pClassName := 'LISTBOX';
-    Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS);
+    Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS or
+                       LBS_NOTIFY);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
