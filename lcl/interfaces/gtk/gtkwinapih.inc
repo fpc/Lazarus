@@ -112,7 +112,7 @@ function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; ov
 Function GetParent(Handle : HWND): HWND; override;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
@@ -215,6 +215,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.79  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 

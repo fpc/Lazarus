@@ -79,6 +79,12 @@ Function FillRect(DC: HDC; Const Rect: TRect; Brush: HBRUSH): Boolean; Override;
 { Draws a 3D border in GTK native style. }
 Function Frame3D(DC: HDC; Var Rect: TRect; Const FrameWidth: Integer; Const Style: TBevelCut): Boolean; Override;
 
+function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): Boolean; Override;
+function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
+function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; Override;
+
 Function GetActiveWindow: HWND; Override;
 Function GetCapture: HWND; Override;
 Function GetCaretPos(Var LPPoint: TPoint): Boolean; Override;
@@ -182,6 +188,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.37  2003/11/07 18:48:52  micha
   symmetry getdesignerdc, releasedesignerdc
 

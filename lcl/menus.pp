@@ -322,7 +322,7 @@ uses
 var
   CommandPool: TBits;
 
-function UniqueCommand: Word;
+function UniqueCommand: LongInt;
 begin
   if CommandPool=nil then
     CommandPool:=TBits.Create(32);
@@ -388,6 +388,9 @@ end.
 
 {
   $Log$
+  Revision 1.54  2003/11/10 16:15:31  micha
+  cleanups; win32 fpimage support
+
   Revision 1.53  2003/10/26 17:34:41  micha
   new interface method to attach a menu to window
 

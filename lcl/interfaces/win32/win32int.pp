@@ -91,6 +91,10 @@ Type
     Function SetProperties(Sender: TObject): Integer;
     Procedure AttachMenu(Sender: TObject);
 
+    Procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
+    procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
+        Desc: PRawImageDescription);
+
     Function WinRegister: Boolean;
     Function ToolBtnWinRegister: Boolean;
     Procedure SetOwner(Window: HWND; Owner: TObject);
@@ -181,6 +185,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.49  2003/11/08 17:41:03  micha
   compiler warning cleanups
 

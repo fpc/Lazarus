@@ -982,7 +982,7 @@ begin
   Result:=false;
 end;
 
-function TInterfaceBase.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC;
+function TInterfaceBase.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result:=false;
@@ -1848,6 +1848,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2003/11/10 16:15:31  micha
+  cleanups; win32 fpimage support
+
   Revision 1.109  2003/11/07 22:50:44  mattias
   fixed finding sysutilh.inc
 

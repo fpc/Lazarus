@@ -31,7 +31,7 @@
 {$EndIf}
 
 const
-  BOOL_TEXT: array[Boolean] of string = ('False', 'True');  
+  BOOL_TEXT: array[Boolean] of string = ('False', 'True');
 
 //##apiwiz##sps##   // Do not remove
 
@@ -57,10 +57,10 @@ end;
   The angles angle1 and angle2 are 1/16th of a degree. For example, a full
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position. 
+  Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-function TgtkObject.Arc(DC: HDC; 
+function TgtkObject.Arc(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
 var
   DCOrigin: TPoint;
@@ -129,16 +129,16 @@ end;
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext 
-           XSrc, YSrc:            The left/top corner of the source rectangle   
-           Rop:                   The raster operation to be performed 
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
+           Rop:                   The raster operation to be performed
   Returns: True if succesful
 
-  The BitBlt function copies a bitmap from a source context into a destination 
+  The BitBlt function copies a bitmap from a source context into a destination
   context using the specified raster operation.
  ------------------------------------------------------------------------------}
-function TgtkObject.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
-  SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
+function TgtkObject.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
                        Height, ROP);
@@ -237,7 +237,7 @@ end;
   Function: CheckMenuItem
   Params:  hndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean
   Returns: Nothing
-  
+
 
  ------------------------------------------------------------------------------}
 function TgtkObject.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
@@ -277,7 +277,7 @@ end;
   Function: ClientToScreen
   Params:  Handle : HWND; var P : TPoint
   Returns: true on success
-  
+
   Converts the client-area coordinates of P to screen coordinates.
  ------------------------------------------------------------------------------}
 Function TgtkObject.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
@@ -296,7 +296,7 @@ Begin
   // Todo: calculate offset, since platform specific
   Inc(P.X, Position.X);
   Inc(P.Y, Position.Y);
-  
+
   Assert(False, Format('Trace:  [GTKObject.ClientToScreen] Handle: 0x%x --> (%d, %d)', [Integer(Handle), P.X, P.y]));
   Result := True;
 end;
@@ -335,7 +335,7 @@ var FormatAtom, FormatTry: Cardinal;
   SelData: TGtkSelectionData;
   CompoundTextList: PPGChar;
   CompoundTextCount: integer;
-  
+
   function IsFormatSupported(Format: cardinal): boolean;
   var a: integer;
      AllID: cardinal;
@@ -421,7 +421,7 @@ begin
     writeln('[TgtkObject.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',Now);
     {$EndIf}
     if FormatAtom=0 then exit;
-   
+
     // request data from owner
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
     try
@@ -431,7 +431,7 @@ begin
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>FormatAtom) then
         exit;
-    
+
       // write data to stream
       if (SelData.Data<>nil) and (SelData.Length>0) then begin
         if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
@@ -472,7 +472,7 @@ end;
   Returns: true on success
            Count contains the number of supported formats
            List is an array of TClipboardType
-           
+
   ! List will be created. You must free it yourself with FreeMem(List) !
  ------------------------------------------------------------------------------}
 function TGtkObject.ClipboardGetFormats(ClipboardType: TClipboardType;
@@ -484,7 +484,7 @@ var AllID: cardinal;
   Cnt, i: integer;
   AddTextPlain: boolean;
   SelData: TGtkSelectionData;
-  
+
   function IsFormatSupported(Format: cardinal): boolean;
   var a: integer;
   begin
@@ -501,12 +501,12 @@ var AllID: cardinal;
     end;
     Result:=false;
   end;
-  
+
   function IsFormatSupported(Formats: TGtkClipboardFormats): boolean;
   var Format: TGtkClipboardFormat;
   begin
     for Format:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
-      if (Format in Formats) 
+      if (Format in Formats)
       and (IsFormatSupported(
                 gdk_atom_intern(PGChar(GtkClipboardFormatName[Format]),GdkTrue)))
       then begin
@@ -515,8 +515,8 @@ var AllID: cardinal;
       end;
     Result:=false;
   end;
-  
-  
+
+
 begin
   {$IfDef DEBUG_CLIPBOARD}
   writeln('[TgtkObject.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',Now);
@@ -530,7 +530,7 @@ begin
   AllID:=gdk_atom_intern('TARGETS',GdkFalse);
 
   SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
-  
+
   try
     {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetFormats] Checking TARGETS answer ',
@@ -562,7 +562,7 @@ begin
       // also knows 'TEXT' and 'STRING'. These formats can automagically
       // transformed into the lcl format, so the lcl format is also supported
       // and will be added to the list
-    
+
       AddTextPlain:=false;
       if (not IsFormatSupported(gdk_atom_intern('text/plain',GdkTrue)))
       and (IsFormatSupported([gfCOMPOUND_TEXT,gfTEXT,gfSTRING,gfFILE_NAME,
@@ -571,7 +571,7 @@ begin
         AddTextPlain:=true;
         inc(Count);
       end;
-  
+
       // copy normal supported formats
       GetMem(List,SizeOf(TClipboardFormat)*Count);
       i:=0;
@@ -584,7 +584,7 @@ begin
         List[i]:=FormatAtoms[i];
         inc(i);
       end;
-    
+
       // add all lcl formats that the gtk-interface can transform from the
       // supported formats
       if AddTextPlain then begin
@@ -606,9 +606,9 @@ end;
            FormatCount - number of formats
            Formats - array of TClipboardFormat. The supported formats the owner
                       provides.
-                      
+
   Returns: true on success
-  
+
   Sets the supported formats and requests ownership for the clipboard.
   Each time the clipboard is read the OnRequestProc will be executed.
   If someone else requests the ownership, the OnRequestProc will be executed
@@ -618,7 +618,7 @@ function TgtkObject.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   OnRequestProc: TClipboardRequestEvent;  FormatCount: integer;
   Formats: PClipboardFormat): boolean;
 var TargetEntries: PGtkTargetEntry;
-  
+
   function IsFormatSupported(FormatID: cardinal): boolean;
   var i: integer;
   begin
@@ -671,11 +671,11 @@ begin
       Result:=true;
       exit;
     end;
-    
+
     // registering targets
-    
+
     FreeClipboardTargetEntries(ClipboardType);
-    
+
     // the gtk-interface adds automatically some gtk formats the lcl does not
     // know
     ExpFormatCnt:=FormatCount;
@@ -711,16 +711,16 @@ begin
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       if ClipboardExtraGtkFormats[ClipboardType][gtkFormat] then
         AddTargetEntry(i,GtkClipboardFormatName[gtkFormat]);
-        
+
     // set the supported formats
     ClipboardTargetEntries[ClipboardType]:=TargetEntries;
     ClipboardTargetEntryCnt[ClipboardType]:=ExpFormatCnt;
-    
+
     // reset the clipboard widget (this will set the new target list)
     OldClipboardWidget:=ClipboardWidget;
     SetClipboardWidget(nil);
     SetClipboardWidget(OldClipboardWidget);
-    
+
     // taking the ownership
     {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetOwnerShip] C');
@@ -732,12 +732,12 @@ begin
       {$EndIf}
       exit;
     end;
-    
+
     {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetOwnerShip] YEAH, got it!');
     {$EndIf}
     ClipboardHandler[ClipboardType]:=OnRequestProc;
-      
+
     Result:=true;
   end else
     { the gtk does not support this kind of clipboard, so the application can
@@ -782,13 +782,13 @@ var
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
 
-  if (BitCount < 1) or (Bitcount > 32) 
+  if (BitCount < 1) or (Bitcount > 32)
   then begin
     Result := 0;
     WriteLn(Format('ERROR: [TgtkObject.CreateBitmap] Illegal depth %d', [BitCount]));
     Exit;
   end;
-  
+
 //write('TgtkObject.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
 
@@ -797,7 +797,7 @@ begin
   // if the bitcount is the system depth create a Pixmap
   // if depth is 1 then a Bitmap
   // else an image
-  
+
   {if BitCount > 1
   then begin
     Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbPixmap', [])); }
@@ -814,7 +814,7 @@ begin
         gdk_pixmap_new(DefGdkWindow, Width, Height, BitCount);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end;
-    
+
     If GdiObject^.Visual <> nil then
       gdk_visual_ref(GdiObject^.Visual)
     else begin
@@ -887,7 +887,7 @@ begin
 
   if (RawImage.Description.Width=0) or (RawImage.Description.Height=0) then
     exit;
-    
+
   try
     {$IFDEF VerboseRawImage}
     writeln('TgtkObject.CreateBitmapFromRawImage A ',
@@ -963,7 +963,7 @@ begin
                          RawImage.Description.Depth);
     GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     Bitmap:=HBITMAP(GdiObject);
-    
+
     // mask
     If (RawImage.Mask<>nil) then begin
       GdiObject^.GDIBitmapMaskObject :=
@@ -1013,7 +1013,7 @@ begin
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
 //writeln('[TgtkObject.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
-  GObject^.IsNullBrush := False; 
+  GObject^.IsNullBrush := False;
   with LogBrush do
   begin
     case lbStyle of
@@ -1023,14 +1023,14 @@ begin
           //GObject^.GDIBrushFill := GDK_STIPPLED;
           //GObject^.GDIBrushPixmap :=
           //  gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
-	  GObject^.IsNullBrush := True;   
+	  GObject^.IsNullBrush := True;
         end;
-        
+
       BS_SOLID:          // Solid brush.
         begin
           GObject^.GDIBrushFill := GDK_SOLID;
         end;
-        
+
       BS_HATCHED:        // Hatched brush.
         begin
           GObject^.GDIBrushFill := GDK_STIPPLED;
@@ -1057,7 +1057,7 @@ begin
               sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Hatch %d', [lbHatch]);
           end;
         end;
-        
+
       BS_DIBPATTERN,     // A pattern brush defined by a device-independent
            // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
            // lbHatch member contains a handle to a packed DIB.Windows 95:
@@ -1076,7 +1076,7 @@ begin
           then GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
           else sError := 'WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported bitmap';
         end;
-        
+
       else
         sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Style %d'
                         , [lbStyle]);
@@ -1301,7 +1301,7 @@ begin
   pNewDC.CurrentFont := CreateDefaultFont;
   pNewDC.CurrentBrush := CreateDefaultBrush;
   pNewDC.CurrentPen := CreateDefaultPen;
-  
+
   Result := HDC(pNewDC);
 
   Assert(False,Format('trace:  [TgtkObject.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
@@ -1366,7 +1366,7 @@ begin
   // For info about xlfd see:
   //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
   // Lets fill in all the xlfd parts. Assume we have scalable fonts
-  
+
   //writeln('TgtkObject.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
 
   Result := 0;
@@ -1374,7 +1374,7 @@ begin
 
   try
     GdiObject^.LogFont := LogFont;
-    
+
     // set default values
     FontNameRegistry := '*';
     Foundry := '*';
@@ -1394,7 +1394,7 @@ begin
 
     // check if LongFontName is in XLFD format and get nicer defaults
     // This way, the user can set X fonts that are not supported by TFont.
-    
+
     //writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
     //' Long="',LongFontName,'" ',IsFontNameXLogicalFontDesc(LongFontName)
     //,' ',ord(LogFont.lfFaceName[0]));
@@ -1416,7 +1416,7 @@ begin
       CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
       CharSetCoding    := ExtractXLFDItem(LongFontName,14);
     end;
-    
+
     with LogFont do
     begin
 
@@ -1488,7 +1488,7 @@ begin
         // TODO: make more accurate (implement the meaning of
         //       positive and negative heigtht values.
         PixelSize := IntToStr(Abs(lfHeight));
-        
+
         // Since we use pixelsize, it isn't allowed to give a value here
         PointSize := '*';
 
@@ -1525,7 +1525,7 @@ begin
 
   //write('CreateFontIndirect->');
     LoadFont;
-    
+
     if GdiObject^.GDIFontObject = nil
     then begin
       if (WeightName='normal') then begin
@@ -1556,7 +1556,7 @@ begin
         LoadFont;
       end;
     end;
-    
+
     if GdiObject^.GDIFontObject = nil
     then begin
       // try instead of italic  oblique
@@ -1667,7 +1667,7 @@ begin
     PaletteColormap := GDK_Colormap_new(PaletteVisual, GdkTrue);
 
     EndGDKErrorTrap;
-    
+
     RGBTable := TDynHashArray.Create(-1);
     RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
     IndexTable := TDynHashArray.Create(-1);
@@ -1851,21 +1851,21 @@ end;
   Returns: longint
 
   Combine the 2 Source Regions into the Destination Region using the specified
-  Combine Mode. The Destination must already be initialized. The Return value 
+  Combine Mode. The Destination must already be initialized. The Return value
   is the Destination's Region type, or ERROR.
-  
+
   The Combine Mode can be one of the following:
       RGN_AND  : Gets a region of all points which are in both source regions
 
       RGN_COPY : Gets an exact copy of the first source region
 
-      RGN_DIFF : Gets a region of all points which are in the first source 
+      RGN_DIFF : Gets a region of all points which are in the first source
                  region but not in the second.(Source1 - Source2)
 
-      RGN_OR   : Gets a region of all points which are in either the first 
+      RGN_OR   : Gets a region of all points which are in either the first
                  source region or in the second.(Source1 + Source2)
 
-      RGN_XOR  : Gets all points which are in either the first Source Region 
+      RGN_XOR  : Gets all points which are in either the first Source Region
                  or in the second, but not in both.
 
   The result can be one of the following constants
@@ -2218,7 +2218,7 @@ begin
             If PaletteColormap <> nil then
               gdk_colormap_unref(PaletteColormap);
             EndGDKErrorTrap;
-            
+
             RGBTable.Free;
             IndexTable.Free;
           end;
@@ -2249,7 +2249,7 @@ var
 begin
   GTKObject := PGTKObject(Handle);
   Result := true;
-  
+
   if GTKObject<>nil then begin
     if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
@@ -2290,7 +2290,7 @@ var
     //if Widget<>nil then begin
 
     // use the gtk paint functions to draw a widget style dependent button
-    
+
     // set State (the interior filling style)
     if (DFCS_INACTIVE and uState)<>0 then begin
       // button disabled
@@ -2341,7 +2341,7 @@ var
         State := GTK_STATE_ACTIVE;
       aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
     end;
-        
+
     if aStyle<>nil then begin
       If (DFCS_FLAT and uState)<>0 then
         gtk_paint_flat_box(aStyle,aDC.Drawable,
@@ -2364,7 +2364,7 @@ var
     end;
     Result := True;
   end;
-  
+
   procedure DrawCheck;
   var
     State: TGtkStateType;
@@ -2398,7 +2398,7 @@ var
     DCOrigin:=GetDCOffset(aDC);
 
     Style := GetStyle('checkbox');
-    
+
     If Style = nil then
       Style := GetStyle('gtk_default');
 
@@ -2423,7 +2423,7 @@ var
         gtk_draw_check(Style,aDC.Drawable, State,
           Shadow, Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
           Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
-      {$EndIf}	
+      {$EndIf}
       Result := True;
     end;
   end;
@@ -2438,14 +2438,14 @@ begin
       Widget:=ClientWidget;
   end else
     Widget:=nil;
-    
+
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
       end;
     DFC_MENU:
       begin
-      
+
       end;
     DFC_SCROLL:
       begin
@@ -2481,11 +2481,11 @@ begin
               Assert(False, 'Trace:State ButtonCheck');
               DrawCheck;
             end;
-        else  
+        else
           WriteLn(Format('ERROR: [TgtkObject.DrawFrameControl] Unknown State 0x%x', [uState]));
         end;
       end;
-  else  
+  else
     WriteLn(Format('ERROR: [TgtkObject.DrawFrameControl] Unknown type %d', [uType]));
   end;
 end;
@@ -2522,7 +2522,7 @@ begin
       R := Rect;
       Dec(R.Right);
       Dec(R.Bottom);
-      
+
       // try to use the gdk functions, so that the current theme is used
       BInner := False;
       BOuter := False;
@@ -2600,7 +2600,7 @@ begin
         then gdk_draw_line(Drawable, GC, Left, Bottom, Right + 1, Bottom);
         if (grfFlags and BF_RIGHT) = BF_RIGHT
         then gdk_draw_line(Drawable, GC, Right, Top, Right, Bottom + 1);
-  
+
         InflateRect(R, -1, -1);
       end;
 
@@ -2608,9 +2608,9 @@ begin
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerTL, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @InnerBR, 1);
-      
+
       //Draw interiour
-      if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and 
+      if ((grfFlags and BF_MIDDLE) = BF_MIDDLE) and
         not CurrentBrush^.IsNullBrush
       then begin
         Width := R.Right - R.Left + 1;
@@ -2708,7 +2708,7 @@ var
       If (Flags and DT_WordBreak) <> DT_WordBreak then
         MaxLength := Count*TM.tmMaxCharWidth;
       Self.WordWrap(DC, Str, MaxLength, Lines, NumLines);
-      
+
       If (Lines = nil) or (NumLines = 0) then
         exit;
 
@@ -2718,9 +2718,9 @@ var
         GetTextExtentPoint(DC, Lines[J], StrLen(Lines[J]), AP);
         LineWidth := Max(LineWidth, AP.cX);
       end;
-      
+
       LineWidth := Min(MaxLength, LineWidth);
-      
+
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
     end;
@@ -2922,11 +2922,11 @@ end;
   Method:   Ellipse
   Params:   X1, Y1, X2, Y2
   Returns:  Nothing
-  
+
   Use Ellipse to draw a filled circle or ellipse.
 
  ------------------------------------------------------------------------------}
-function TgtkObject.Ellipse(DC: HDC; 
+function TgtkObject.Ellipse(DC: HDC;
   x1,y1,x2,y2: Integer): Boolean;
 var
   x,y,width,height: integer;
@@ -2956,7 +2956,7 @@ begin
         y:=y2;
         height:=y1-y2;
       end;
-      
+
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
@@ -2977,7 +2977,7 @@ begin
                      0, 360 shl 6);
       end else
         Result := False;
-        
+
       EndGDKErrorTrap;
     end;
   end;
@@ -3107,13 +3107,13 @@ begin
       Result := False;
     end else begin
       // TODO: implement other parameters.
-      
+
       // to reduce flickering calculate first and then paint
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       buffered := false;
       UseFont:=nil;
       buffer := Drawable;
-      
+
       if (Str<>nil) and (Count>0) then begin
         if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
           UseFont := GetDefaultFont(false);
@@ -3138,7 +3138,7 @@ begin
           Result := False;
         end;
       end;
-      
+
       //If we don't have double buffering, try and buffer each block of text,
       //otherwise most text "flashes" by disapearing and then redrawing on account
       //of the two passes, first one to draw bg and then another to draw fg.
@@ -3302,7 +3302,7 @@ end;
 
 {------------------------------------------------------------------------------
   function Frame(DC: HDC; const ARect: TRect): Integer; override;
-  
+
   Draws the border of a rectangle.
  ------------------------------------------------------------------------------}
 function TGtkObject.Frame(DC: HDC; const ARect: TRect): Integer;
@@ -3337,7 +3337,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkObject.Frame3d(DC : HDC; var ARect : TRect;
   const FrameWidth : integer; const Style : TBevelCut) : boolean;
-  
+
 const GTKThinShadowType: array[TBevelCut] of integer =
   (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
 const GTKStrongShadowType: array[TBevelCut] of integer =
@@ -3666,7 +3666,7 @@ begin
       ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
       ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
       ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
-      
+
       Result:=true;
     end;
   end;
@@ -3729,7 +3729,7 @@ end;
   Function: GetClipBox
   Params: dc, lprect
   Returns: Integer
- 
+
   Returns the smallest rectangle which includes the entire current
   Clipping Region, or if no Clipping Region is set, the current
   dimensions of the Drawable.
@@ -3766,14 +3766,14 @@ begin
     end
     else begin
       Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
-      gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
+      gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject,
         @CRect);
       lpRect^.Left   := CRect.X-DCOrigin.X;
       lpRect^.Top    := CRect.Y-DCOrigin.Y;
       lpRect^.Right  := lpRect^.Left + CRect.Width;
       lpRect^.Bottom := lpRect^.Top + CRect.Height;
     end;
-  end;  
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3820,7 +3820,7 @@ end;
   Function: GetClipRGN
   Params: dc, rgn
   Returns: Integer
- 
+
   Returns a copy of the current Clipping Region.
 
   The result can be one of the following constants
@@ -3875,7 +3875,7 @@ begin
       gdk_region_destroy(PGdiObject(RGN)^.GDIRegionObject);
     // set the new region in RGN
     PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
-    
+
     Result := RegionType(ClipRegionWithDCOffset);
     //writeln('TGTKObject.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
     //  ' DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',Result);
@@ -3885,7 +3885,7 @@ begin
       Result := 1;
   end;
   If Result = ERROR then
-    Result := -1;  
+    Result := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -3899,12 +3899,12 @@ end;
 Function TGTKObject.GetCmdLineParamDescForInterface: string;
 const
   e = {$IfDef win32}#13+{$EndIf}#10;
-  
+
   function b(const s: string): string;
   begin
     Result:=BreakString(s,75,22)+e+e;
   end;
-  
+
 begin
   Result:=
      b(rsgtkOptionNoTransient)
@@ -3965,7 +3965,7 @@ begin
 
     if TopList <> nil
     then g_list_free(TopList);
-    
+
   finally
     EndGDKErrorTrap;
   end;
@@ -4051,7 +4051,7 @@ begin
     Result := 1;
 
   //For Size in MM, MM = (Pixels*100)/(PPI*25.4)
-  
+
   HORZSIZE : { Horizontal size in millimeters }
     Result := Round((GetDeviceCaps(DC, HORZRES) * 100) /
                     (GetDeviceCaps(DC, LOGPIXELSX) * 25.4));
@@ -4063,7 +4063,7 @@ begin
   //So long as gdk_screen_width_mm is acurate, these should be
   //acurate for Screen GDKDrawables. Once we get Metafiles
   //we will also have to add internal support for Papersizes etc..
-  
+
   LOGPIXELSX : { Logical pixels per inch in X }
     Result := Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
 
@@ -4075,7 +4075,7 @@ begin
       Result:=Visual^.colormap_size
     else
       Result:=0;
-      
+
   NUMRESERVED: { number of reserverd colors in color palette }
     Result:=0;
 
@@ -4158,9 +4158,9 @@ var
 begin
   // Default to 0
   Result := 0;
-  
+
   BeginGDKErrorTrap;
-  
+
   TopList := gdk_window_get_toplevels;
   List := TopList;
   while List <> nil do
@@ -4184,7 +4184,7 @@ begin
 
   if TopList <> nil
   then g_list_free(TopList);
-  
+
   EndGDKErrorTrap;
 end;
 
@@ -4228,7 +4228,7 @@ begin
   {$ENDIF}
 
   // try extended keys
-  if Result = 0 
+  if Result = 0
   then begin
     nVirtKey := nVirtKey or KEYMAP_EXTENDED;
     {$IFDEF Use_KeyStateList}
@@ -4237,7 +4237,7 @@ begin
     Implement this
     {$ENDIF}
   end;
-  
+
   {$IFDEF Use_KeyStateList}
   // add toggle
   if Result <> 0 then
@@ -4336,7 +4336,7 @@ begin
 
               biCompression := 0;
               biSizeImage := 0;
-              
+
               biXPelsPerMeter := 0;
               biYPelsPerMeter := 0;
 
@@ -4403,7 +4403,7 @@ begin
               bmWidth := biWidth;
               bmHeight := biHeight;
               bmBitsPixel := biBitCount;
-              
+
               //Need to retrieve actual Number of Colors if Indexed Image
               if (bmBitsPixel < 16) then begin
                 biClrUsed   := NumColors;
@@ -4421,7 +4421,7 @@ begin
             end;
           end;
         end;
-        
+
       gdiBrush:
         begin
           Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiBrush');
@@ -4515,10 +4515,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC;
+  function TgtkObject.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
     const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
  ------------------------------------------------------------------------------}
-function TgtkObject.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC;
+function TgtkObject.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 var
   GDIImg: PGDIObject;
@@ -4529,7 +4529,7 @@ var
 begin
   Result:=false;
   FillChar(NewRawImage,SizeOf(NewRawImage),0);
-  
+
   if (not IsValidGDIObject(SrcBitmap)) then begin
     writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid SrcBitmap!');
     exit;
@@ -4712,7 +4712,7 @@ begin
         Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
 
   end;
-  
+
   if Adjustment<>nil then begin
     with ScrollInfo, Adjustment^ do begin
       // POS
@@ -4801,7 +4801,7 @@ begin
       Result := FStockNullPen;
     WHITE_PEN:           // White pen.
       Result := FStockWhitePen;
-      
+
    (* ANSI_FIXED_FONT:     // Fixed-pitch (monospace) system font.
       begin
         {If FStockFixedFont = 0 then
@@ -4850,7 +4850,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetSysColor(nIndex: Integer): DWORD;
 begin
-  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) 
+  if (nIndex < 0) or (nIndex > MAX_SYS_COLORS)
   then begin
     Result := 0;
     // raise an exception
@@ -5371,7 +5371,7 @@ end;
   Function: GetWindowRect
   Params:  none
   Returns: 0
-  
+
   After the call, ARect will be the control area in screen coordinates.
   That means, Left and Top will be the screen coordinate of the TopLeft pixel
   of the Handle object and Right and Bottom will be the screen coordinate of
@@ -5453,7 +5453,7 @@ end;
           NumMeshes - Number of Meshes
           Mode - Gradient Type, either Triangle,
                  Vertical Rect, Horizontal Rect
-          
+
   Returns: true on success
 
   Performs multiple Gradient Fills, either a Three way Triangle Gradient,
@@ -5728,7 +5728,7 @@ begin
   gdkRect.Y := Rect^.Top;
   gdkRect.Width := (Rect^.Right - Rect^.Left);
   gdkRect.Height := (Rect^.Bottom - Rect^.Top);
-  
+
   PaintWidget:=GetFixedWidget(Widget);
   if PaintWidget=nil then PaintWidget:=Widget;
 
@@ -5740,14 +5740,14 @@ begin
       Inc(gdkRect.Y, PaintWidget^.Allocation.y);
     end;
   {$EndIf}
-  
+
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
                               gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-                             
+
 end;
 
 {------------------------------------------------------------------------------
@@ -5803,19 +5803,19 @@ end;
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext 
-           XSrc, YSrc:            The left/top corner of the source rectangle   
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
            Mask:                  The handle of a monochrome bitmap
            XMask, YMask:          The left/top corner of the mask rectangle
-           Rop:                   The raster operation to be performed 
+           Rop:                   The raster operation to be performed
   Returns: True if succesful
 
-  The MaskBlt function copies a bitmap from a source context into a destination 
+  The MaskBlt function copies a bitmap from a source context into a destination
   context using the specified mask and raster operation.
  ------------------------------------------------------------------------------}
-function TgtkObject.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
-  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; 
-  Rop: DWORD): Boolean; 
+function TgtkObject.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer;
+  Rop: DWORD): Boolean;
 begin
   Result:=false;
 end;
@@ -5848,7 +5848,7 @@ begin
     Result:= (ModalResult = 0);
     if not Result then Integer(data^):= ModalResult
     else WriteLn('Do not close !!!');
-  end else Result:= false;    
+  end else Result:= false;
 end;
 
 function TgtkObject.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
@@ -5885,50 +5885,50 @@ begin
   g_signal_connect(PGtkObject(Dialog), 'delete-event', TGtkSignalFunc(@MessageBoxClosed), @ADialogResult);
   gtk_window_set_default_size(PGtkWindow(Dialog), 100, 100);
   ALabel:= gtk_label_new(lpText);
-  gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.vbox), ALabel);    
+  gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.vbox), ALabel);
   DialogType:= (uType and $0000000F);
-  if DialogType = MB_OKCANCEL 
+  if DialogType = MB_OKCANCEL
   then begin
     CreateButton(PChar(rsMbOK), IDOK);
     CreateButton(PChar(rsMbCancel), IDCANCEL);
-  end 
+  end
   else begin
-    if DialogType = MB_ABORTRETRYIGNORE 
+    if DialogType = MB_ABORTRETRYIGNORE
     then begin
       CreateButton(PChar(rsMbAbort), IDABORT);
       CreateButton(PChar(rsMbRetry), IDRETRY);
       CreateButton(PChar(rsMbIgnore), IDIGNORE);
-    end 
+    end
     else begin
-      if DialogType = MB_YESNOCANCEL 
+      if DialogType = MB_YESNOCANCEL
       then begin
         CreateButton(PChar(rsMbYes), IDYES);
         CreateButton(PChar(rsMbNo), IDNO);
         CreateButton(PChar(rsMbCancel), IDCANCEL);
-      end 
+      end
       else begin
-        if DialogType = MB_YESNO 
+        if DialogType = MB_YESNO
         then begin
           CreateButton(PChar(rsMbYes), IDYES);
           CreateButton(PChar(rsMbNo), IDNO);
-        end 
+        end
         else begin
-          if DialogType = MB_RETRYCANCEL 
+          if DialogType = MB_RETRYCANCEL
           then begin
             CreateButton(PChar(rsMbRetry), IDRETRY);
             CreateButton(PChar(rsMbCancel), IDCANCEL);
-          end 
+          end
           else begin
             { We have no buttons to show. Create the default of OK button }
             CreateButton(PChar(rsMbOK), IDOK);
-          end;  
+          end;
         end;
       end;
     end;
   end;
   gtk_window_set_title(PGtkWindow(Dialog), lpCaption);
   gtk_window_set_position(PGtkWindow(Dialog), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal(PGtkWindow(Dialog), true);  
+  gtk_window_set_modal(PGtkWindow(Dialog), true);
   gtk_widget_show_all(Dialog);
   while ADialogResult = 0 do begin
     Application.HandleMessage;
@@ -6015,7 +6015,7 @@ end;
 {------------------------------------------------------------------------------
   function TgtkObject.PairSplitterSetPosition(SplitterHandle: hWnd;
     var NewPosition: integer): Boolean;
-    
+
   Negative values for NewPosition will only read the value
  ------------------------------------------------------------------------------}
 function TgtkObject.PairSplitterSetPosition(SplitterHandle: hWnd;
@@ -6044,7 +6044,7 @@ function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 var
   vlItem : TGtkMessageQueueItem;
-begin 
+begin
   //TODO Filtering
   writeln('Peek !!!' );
   vlItem := fMessageQueue.FirstMessageItem;
@@ -6156,7 +6156,7 @@ begin
       SelectGDKBrushProps(DC);
 
       BeginGDKErrorTrap;
-      
+
       If not CurrentBrush^.IsNullBrush then
         if Winding then begin
           // store old clipping
@@ -6188,7 +6188,7 @@ begin
         Result:=false;
 
       EndGDKErrorTrap;
-      
+
       FreeMem(PointArray);
 
       Result := True;
@@ -6231,7 +6231,7 @@ begin
         end;
       end else
         Result:=false;
-        
+
       FreeMem(PointArray);
     end;
   end;
@@ -6245,12 +6245,12 @@ end;
           lParam:
   Returns: True if succesful
 
-  The PostMessage function places (posts) a message in the message queue and 
+  The PostMessage function places (posts) a message in the message queue and
   then returns without waiting.
  ------------------------------------------------------------------------------}
 function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
   lParam: LongInt): Boolean;
-  
+
   function ParentPaintMessageInQueue: boolean;
   var
     Target: TControl;
@@ -6272,7 +6272,7 @@ function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
       end;
     end;
   end;
-  
+
   procedure CombinePaintMessages(NewMsg:PMsg);
   // combine NewMsg and OldMsg paint message into NewMsg and free OldMsg
   var
@@ -6310,7 +6310,7 @@ function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
     end;
     fMessageQueue.RemoveMessage(vlItem,FPMF_All,true);
   end;
-  
+
 var
   AMessage: PMsg;
 begin
@@ -6321,11 +6321,11 @@ begin
   AMessage^.Message := Msg;
   AMessage^.WParam := WParam;
   AMessage^.LParam := LParam;
-//  Message^.Time := 
+//  Message^.Time :=
 
   if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then begin
     { Obsolete, because InvalidateRectangle now works.
-    
+
     // paint messages are the most expensive messages in the LCL
     // A paint message to a control will also repaint all child controls.
     // -> check if there is already a paint message for one of its parents
@@ -6334,7 +6334,7 @@ begin
       FinalizePaintTagMsg(AMessage^);
       exit;
     end;}
-  
+
     // delete old paint message to this widget,
     // so that the widget repaints only once
 
@@ -6346,11 +6346,11 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   RadialArc
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
-  Use RadialArc to draw an elliptically curved line with the current Pen. The 
-  values sx,sy, and ex,ey represent the starting and ending radial-points 
+  Use RadialArc to draw an elliptically curved line with the current Pen. The
+  values sx,sy, and ex,ey represent the starting and ending radial-points
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
@@ -6455,7 +6455,7 @@ begin
   if IsValidDC(DC)
   then with TDeviceContext(DC) do
   begin
-  
+
   end;
 end;
 
@@ -6592,7 +6592,7 @@ var
   CurrentGroupIndex: Integer;
 begin
   Result := False;
-  
+
   if not gtk_is_radio_menu_item(Pointer(hndMenu))
   then begin
     writeln('WARNING: TgtkObject.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
@@ -6664,7 +6664,7 @@ end;
     end;
     Result:=nil;
   end;
-  
+
 var
   RadioGroup: PGSList;
   AMenuItem: TMenuItem;
@@ -6729,7 +6729,7 @@ end;
   Params:  none
   Returns: True if succesful
 
-  The ReleaseCapture function releases the mouse capture from a window 
+  The ReleaseCapture function releases the mouse capture from a window
   and restores normal mouse input processing.
  ------------------------------------------------------------------------------}
 function TgtkObject.ReleaseCapture: Boolean;
@@ -6805,7 +6805,7 @@ begin
           writeln('TgtkObject.ReleaseDC: ',E.Message);
         end;
       end;
-      
+
       DisposeDC(aDC);
       Result := 1;
     end;
@@ -6828,7 +6828,7 @@ var
 begin
   Assert(False, Format('Trace:> [TgtkObject.RestoreDC] DC:0x%x, SavedDC: %d', [DC, SavedDC]));
   Result := IsValidDC(DC) and (SavedDC <> 0);
-  if Result 
+  if Result
   then begin
     pSavedDC := TDeviceContext(DC);
     Count:=Abs(SavedDC);
@@ -6838,8 +6838,8 @@ begin
       dec(Count);
     end;
 
-    // TODO copy bitmap also 
-    
+    // TODO copy bitmap also
+
     ClipRegionChanged:=false;
     if (aDC.ClipRegion<>0) and (pSavedDC.ClipRegion <> aDC.ClipRegion) then
     begin
@@ -6848,12 +6848,12 @@ begin
       ClipRegionChanged:=true;
       aDC.ClipRegion := 0;
     end;
-      
+
     if aDC.GC<>nil then begin
       gdk_gc_unref(aDC.GC);
       aDC.GC:=nil;
     end;
-    
+
     Result := CopyDCData(aDC, pSavedDC);
     aDC.SavedContext := pSavedDC.SavedContext;
     pSavedDC.SavedContext := nil;
@@ -6861,7 +6861,7 @@ begin
       SelectGDIRegion(HDC(aDC));
     //writeln('TgtkObject.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
 
-    
+
     // free saved DC
 
     //prevent deleting of copied objects:
@@ -6939,10 +6939,10 @@ end;
 {------------------------------------------------------------------------------
   Function: SaveDc
   Params:  DC: a DC to save
-  Returns: 0 if the functions fails otherwise a positive integer identifing 
+  Returns: 0 if the functions fails otherwise a positive integer identifing
            the saved DC
 
-  The SaveDC function saves the current state of the specified device 
+  The SaveDC function saves the current state of the specified device
   context (DC) by copying its elements to a context stack.
 -------------------------------------------------------------------------------}
 function TgtkObject.SaveDC(DC: HDC): Integer;
@@ -6950,7 +6950,7 @@ var
   aDC, aSavedDC: TDeviceContext;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SaveDC]  0x%x', [Integer(DC)]));
-  
+
   Result := 0;
   if IsValidDC(DC)
   then begin
@@ -6961,7 +6961,7 @@ begin
     aDC.SavedContext:= aSavedDC;
     Result:=1;
   end;
-  
+
   Assert(False, Format('Trace:< [TgtkObject.SaveDC]  0x%x --> %d', [Integer(DC), Result]));
 end;
 
@@ -7023,13 +7023,13 @@ end;
            hrgnUpdate: handle of update region
            prcUpdate:  pointer to update rectangle
            flags:      scrolling flags
-           
+
   Returns: True if succesfull;
 
-  The ScrollWindowEx function scrolls the content of the specified window's 
+  The ScrollWindowEx function scrolls the content of the specified window's
   client area
  ------------------------------------------------------------------------------}
-function TgtkObject.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean; 
+function TgtkObject.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
 begin
   Result := False;
 end;
@@ -7039,7 +7039,7 @@ end;
   Params:  DC, RGN
   Returns: longint
 
-  Sets the DeviceContext's ClipRegion. The Return value 
+  Sets the DeviceContext's ClipRegion. The Return value
   is the new clip regions type, or ERROR.
 
   The result can be one of the following constants
@@ -7070,7 +7070,7 @@ begin
       and ((SavedContext=nil) or (SavedContext.ClipRegion<>ClipRegion)) then
         DeleteObject(ClipRegion);
       ClipRegion := 0;
-      
+
       If (GC = nil) or (RGN = 0) then begin
         if GC<>nil then
           SelectGDIRegion(DC);
@@ -7111,7 +7111,7 @@ begin
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
   then begin
     case PGdiObject(GDIObj)^.GDIType of
-    
+
       gdiBitmap:
         with TDeviceContext(DC) do
         begin
@@ -7136,7 +7136,7 @@ begin
           gdk_gc_set_function(GC, GDK_COPY);
           SelectedColors := dcscCustom;
         end;
-        
+
       gdiBrush:
         with TDeviceContext(DC), PGdiObject(GDIObj)^ do
         begin
@@ -7155,7 +7155,7 @@ begin
           end;
           SelectedColors := dcscCustom;
         end;
-        
+
       gdiFont:
         with TDeviceContext(DC) do
         begin
@@ -7171,7 +7171,7 @@ begin
           Exclude(DCFlags,dcfTextMetricsValid);
           SelectedColors := dcscCustom;
         end;
-        
+
       gdiPen:
         with TDeviceContext(DC) do
         begin
@@ -7181,7 +7181,7 @@ begin
           if GC <> nil then SelectGDKPenProps(DC);
           SelectedColors := dcscCustom;
         end;
-        
+
       gdiRegion:
       begin
         with TDeviceContext(DC) do
@@ -7222,8 +7222,8 @@ end;
           lParam:
   Returns:
 
-  The SendMessage function sends the specified message to a window or windows. 
-  The function calls the window procedure for the specified window and does 
+  The SendMessage function sends the specified message to a window or windows.
+  The function calls the window procedure for the specified window and does
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
 function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt;
@@ -7241,7 +7241,7 @@ begin
   AMessage.WParam := WParam;
   AMessage.LParam := LParam;
   AMessage.Result := 0;
-  
+
   Target := GetLCLObject(Pointer(HandleWnd));
 
   if Target<>nil then begin
@@ -7326,7 +7326,7 @@ begin
       // free DC
       ReleaseDC(0,AMessage.WParam);
       AMessage.WParam:=0;
-      
+
       if (csDesigning in TComponent(Target).ComponentState)
       and (TObject(Target) is TWinControl) then
         SendPaintMessagesForInternalWidgets(TWinControl(Target));
@@ -7336,8 +7336,8 @@ end;
 
 {------------------------------------------------------------------------------
   function SetActiveWindow(Handle: HWND): HWND;
-  
-  
+
+
 ------------------------------------------------------------------------------}
 function TgtkObject.SetActiveWindow(Handle: HWND): HWND;
 begin
@@ -7491,7 +7491,7 @@ begin
 
   if Result<>Value then begin
     // capture changes
-  
+
     // If the gtk-interface has grabbed the mouse, it is somewhere in the stack
     // of grabs. The gtk uses a grab stack to handle parent-child chains of
     // mouse events. But we stop this chain anyway, the LCL can set and release
@@ -7516,7 +7516,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: SetCaretPos
-  Params:  new position x, y 
+  Params:  new position x, y
   Returns: true on success
 
  ------------------------------------------------------------------------------}
@@ -7525,12 +7525,12 @@ var
   FocusObject: PGTKObject;
 begin
   FocusObject := PGTKObject(GetFocus);
-  Result:=SetCaretPosEx(LongInt(FocusObject),X,Y);  
+  Result:=SetCaretPosEx(LongInt(FocusObject),X,Y);
 end;
 
 {------------------------------------------------------------------------------
   Function: SetCaretPos
-  Params:  new position x, y 
+  Params:  new position x, y
   Returns: true on success
 
  ------------------------------------------------------------------------------}
@@ -7540,7 +7540,7 @@ var
 begin
   GtkObject := PGTKObject(Handle);
   Result := GtkObject <> nil;
-  
+
   if Result then begin
     if gtk_type_is_a(gtk_object_type(GtkObject), GTKAPIWidget_GetType)
     then begin
@@ -7630,7 +7630,7 @@ begin
   if not GTK_WIDGET_VISIBLE(Widget) then
     RaiseException('TgtkObject.SetFocus: Widget is not visible');
   {$EndIf}
-  
+
   if GtkWidgetIsA(TopLevel, gtk_window_get_type)
   then begin
     // TopLevel is a gtkwindow
@@ -7697,7 +7697,7 @@ begin
   else begin
     NewFocusWidget:=Widget;
   end;
-  
+
   if (NewFocusWidget <> nil) and not gtk_widget_has_focus(NewFocusWidget) then begin
     // grab the focus to the parent window
     if (Screen<>nil)
@@ -7745,7 +7745,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer; 
+function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
@@ -7756,7 +7756,7 @@ var
 begin
   Result := 0;
   if (Handle = 0) then exit;
-  
+
   Adjustment := nil;
   Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
   If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
@@ -7808,7 +7808,7 @@ begin
       Page_Size := nPage;
       Page_Increment := nPage;
     end;
-    
+
     {writeln('');
     writeln('[TgtkObject.SetScrollInfo] Result=',Result,
     ' Lower=',round(Lower),
@@ -7860,7 +7860,7 @@ end;
   Params:  cElements: the number of elements
            lpaElements: array with element numbers
            lpaRgbValues: array with colors
-  Returns: 0 if unsuccesful 
+  Returns: 0 if unsuccesful
 
   The SetSysColors function sets the colors for one or more display elements.
  ------------------------------------------------------------------------------}
@@ -7875,7 +7875,7 @@ var
 begin
   Result := False;
   if cElements > MAX_SYS_COLORS then Exit;
-  
+
   for n := 0 to cElements - 1 do
   begin
     Element := PLongArray(lpaElements)^[n];
@@ -7885,7 +7885,7 @@ begin
     SysColorMap[PLongArray(lpaElements)^[n]] := PLongArray(lpaRgbValues)^[n];
     //Assert(False, Format('Trace:[TgtkObject.SetSysColor] Index %d (%8x) --> %8x', [PLongArray(lpaElements)^[n], SysColorMap[PLongArray(lpaElements)^[n]], PLongArray(lpaRgbValues)^[n]]));
   end;
-  
+
   //TODO send WM_SYSCOLORCHANGE
   Result := True;
 end;
@@ -8116,7 +8116,7 @@ end;
 
 {------------------------------------------------------------------------------
   function ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-  
+
   nCmdShow:
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
@@ -8172,19 +8172,19 @@ end;
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext 
-           XSrc, YSrc:            The left/top corner of the source rectangle   
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
            SrcWidth, SrcHeight:   The size of the source rectangle
-           Rop:                   The raster operation to be performed 
+           Rop:                   The raster operation to be performed
   Returns: True if succesful
 
-  The StretchBlt function copies a bitmap from a source rectangle into a 
-  destination rectangle using the specified raster operation. If needed it 
-  resizes the bitmap to fit the dimensions of the destination rectangle. 
-  Sizing is done according to the stretching mode currently set in the 
+  The StretchBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified raster operation. If needed it
+  resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
   destination device context.
   If SrcDC contains a mask the pixmap will be copied with this transparency.
-  
+
   ToDo: Mirroring, extended NonDrawable support (Image, Bitmap, etc)
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
@@ -8198,7 +8198,7 @@ var
   ScaleBMP : hBITMAP;
   Scale : PGdiObject;
   temp_mask : PGdkPixmap;
-  
+
   {$IfDef Win32}
   Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
     Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
@@ -8391,7 +8391,7 @@ var
       SRCClip := SRCBitmap^.GDIBitmapMaskObject
     else
       SRCClip := nil;
-      
+
     // create a temporary buffer for raster operations and scaling
     Case ROP of
       WHITENESS,
@@ -8422,7 +8422,7 @@ var
 
     // copy the destination GC values into the temporary GC (fGC)
     GDK_GC_COPY(fGC, DestGC);
-    
+
     // clear any previous clipping in the temporary GC (fGC)
     gdk_gc_set_clip_region(fGC,  nil);
     gdk_gc_set_clip_rectangle (fGC,  nil);
@@ -8432,7 +8432,7 @@ var
     gdk_window_copy_area(Scale^.GDIPixmapObject, fGC, 0, 0,
        SRC, XSRC, YSRC, SRCWidth, SRCHeight);
     EndGDKErrorTrap;
-    
+
     // restore the raster operation back to SRCCOPY in the destination GC
     GDK_GC_Set_Function(DestGC, GDK_Copy);
 
@@ -8550,7 +8550,7 @@ var
       DestDevContext.GC,X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
     EndGDKErrorTrap;
-    
+
     // unset clipping mask for transparency
     ResetClipping(DestDevContext.GC);
 
@@ -8728,23 +8728,23 @@ end;
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext 
-           XSrc, YSrc:            The left/top corner of the source rectangle   
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
            SrcWidth, SrcHeight:   The size of the source rectangle
            Mask:                  The handle of a monochrome bitmap
            XMask, YMask:          The left/top corner of the mask rectangle
-           Rop:                   The raster operation to be performed 
+           Rop:                   The raster operation to be performed
   Returns: True if succesful
 
-  The StretchMaskBlt function copies a bitmap from a source rectangle into a 
+  The StretchMaskBlt function copies a bitmap from a source rectangle into a
   destination rectangle using the specified mask and raster operation. If needed
-  it resizes the bitmap to fit the dimensions of the destination rectangle. 
-  Sizing is done according to the stretching mode currently set in the 
+  it resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
   destination device context.
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
-  XMask, YMask: Integer; Rop: DWORD): Boolean; 
+  XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
   Result:=false;
 end;
@@ -9057,6 +9057,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.299  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.298  2003/11/08 22:53:11  mattias
   workaround for gtk1 invalidate bug
 

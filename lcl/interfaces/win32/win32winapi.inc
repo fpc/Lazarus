@@ -1324,6 +1324,187 @@ begin
   Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
 end;
 
+procedure TWin32Object.FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
+    Desc: PRawImageDescription);
+begin
+  Desc^.Format := ricfRGBA;
+  Desc^.HasPalette := BitmapInfo.bmBitsPixel <= 8;   // if true, each pixel is an index in the palette
+  Desc^.Depth := BitmapInfo.bmBitsPixel;   // used bits per pixel
+  Desc^.Width := BitmapInfo.bmWidth;
+  Desc^.Height := BitmapInfo.bmHeight;
+  Desc^.PaletteColorCount := 0;             // TODO, also `ColorCount'
+  Desc^.ByteOrder := riboLSBFirst;
+  Desc^.LineOrder := riloTopToBottom;
+  Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
+  Desc^.BitsPerPixel := Desc^.Depth;    // bits per pixel. can be greater than Depth.
+  Desc^.LineEnd := rileWordBoundary;
+  Desc^.RedPrec := 8;                  // red precision. bits for red
+  Desc^.GreenPrec := 8;
+  Desc^.BluePrec := 8;
+  Desc^.AlphaPrec := 8;
+  Desc^.RedShift := 24;
+  Desc^.GreenShift := 16; // bitshift. Direction: from least to most signifikant
+  Desc^.BlueShift := 8;
+  Desc^.AlphaShift := 0;
+  Desc^.AlphaSeparate := false; // the alpha is stored as separate Mask
+  // The next values are only valid, if there is a separate alpha mask
+  Desc^.AlphaBitsPerPixel := 8; // bits per alpha mask pixel.
+  Desc^.AlphaLineEnd := rileWordBoundary;
+end;
+
+function TWin32Object.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+  Desc: PRawImageDescription): Boolean;
+var
+  BitmapInfo: Windows.TBitmap;
+begin
+  Result := Windows.GetObject(Bitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  if Result then
+    FillRawImageDescription(BitmapInfo, Desc);
+end;
+
+function TWin32Object.GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean;
+begin
+  Result := true;
+
+  FillChar(Desc^, SizeOf(Desc^), 0);
+  Desc^.Format := ricfRGBA;
+  Desc^.HasPalette := (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0;
+  Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL);
+  // Width and Height not relevant
+  Desc^.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
+  Desc^.ByteOrder := riboLSBFirst;
+  Desc^.LineOrder := riloTopToBottom;
+  Desc^.ColorCount := Desc^.PaletteColorCount;
+  if Desc^.HasPalette then
+    Desc^.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES)
+  else
+    Desc^.BitsPerPixel := Desc^.Depth;
+  Desc^.LineEnd := rileWordBoundary;
+  Desc^.RedPrec := 8;                  // red precision. bits for red
+  Desc^.GreenPrec := 8;
+  Desc^.BluePrec := 8;
+  Desc^.AlphaPrec := 8;
+  Desc^.RedShift := 24;
+  Desc^.GreenShift := 16; // bitshift. Direction: from least to most signifikant
+  Desc^.BlueShift := 8;
+  Desc^.AlphaShift := 0;
+  Desc^.AlphaSeparate := false; // the alpha is stored as separate Mask
+  // The next values are only valid, if there is a separate alpha mask
+  Desc^.AlphaBitsPerPixel := 8; // bits per alpha mask pixel.
+  Desc^.AlphaLineEnd := rileWordBoundary;
+end;
+
+function TWin32Object.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+var
+  SrcWidth, SrcHeight: Integer;
+  hMemDC: HDC;
+  hMemBitmap: HBITMAP;
+  hOldObject: HGDIOBJ;
+begin
+  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
+
+  // make bitmap compatible to src device
+  SrcWidth := SrcRect.Right - SrcRect.Left;
+  SrcHeight := SrcRect.Bottom - SrcRect.Top;
+  hMemBitmap := Windows.CreateCompatibleBitmap(SrcDC, SrcWidth, SrcHeight);
+  Result := hMemBitmap <> 0;
+  if not Result then exit;
+
+  // make memory device context compatible to device, to select bitmap in for copying
+  hMemDC := Windows.CreateCompatibleDC(SrcDC);
+  Result := hMemDC <> 0;
+  hOldObject := Windows.SelectObject(hMemDC, hMemBitmap);
+
+  // copy srcdc -> membitmap
+  Result := Result and Windows.BitBlt(hMemDC, 0, 0, SrcWidth, SrcHeight,
+        SrcDC, SrcRect.Left, SrcRect.Top, SRCCOPY);
+
+  // done copying, deselect bitmap from dc
+  Windows.SelectObject(hMemDC, hOldObject);
+
+  // copy membitmap -> rawimage
+  Result := Result and GetRawImageFromBitmap(hMemBitmap, 0,
+    Rect(0, 0, SrcWidth, SrcHeight), NewRawImage);
+
+  // free temporary stuff
+  Windows.DeleteDC(hMemDC);
+  Windows.DeleteObject(hMemBitmap);
+end;
+
+procedure TWin32Object.AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
+var
+  SrcLine, DestLine: PByte;
+  LineLen: Cardinal;
+  I: Integer;
+begin
+  // allocate memory for pixel data, N scanlines
+  Size := (SrcRect.Bottom-SrcRect.Top)*BitmapInfo.bmWidthBytes;
+  GetMem(Data, Size);
+  // copy lines
+  SrcLine := BitmapInfo.bmBits + SrcRect.Top*BitmapInfo.bmWidthBytes + SrcRect.Left*BitmapInfo.bmBitsPixel;
+  DestLine := Data;
+  LineLen := (SrcRect.Right-SrcRect.Left)*BitmapInfo.bmBitsPixel;
+  for I := SrcRect.Top to SrcRect.Bottom - 1 do
+  begin
+    Move(SrcLine^, DestLine^, LineLen);
+    Inc(SrcLine, BitmapInfo.bmWidthBytes);
+    Inc(DestLine, LineLen);
+  end;
+end;
+
+function TWin32Object.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+var
+  BitmapInfo: Windows.TBitmap;
+  ARect: TRect;
+begin
+  FillChar(NewRawImage, SizeOf(NewRawImage), 0);
+  Result := Windows.GetObject(SrcBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+  if not Result then exit;
+
+  FillRawImageDescription(BitmapInfo, @NewRawImage.Description);
+  ARect := SrcRect;
+  if ARect.Top > BitmapInfo.bmHeight then
+    ARect.Top := BitmapInfo.bmHeight;
+  if ARect.Bottom > BitmapInfo.bmHeight then
+    ARect.Bottom := BitmapInfo.bmHeight;
+  if ARect.Left > BitmapInfo.bmWidth then
+    ARect.Left := BitmapInfo.bmWidth;
+  if ARect.Right > BitmapInfo.bmWidth then
+    ARect.Right := BitmapInfo.bmWidth;
+
+  // copy bitmap
+  AllocAndCopy(BitmapInfo, ARect, NewRawImage.Data, NewRawImage.MaskSize);
+
+  // check mask
+  if SrcMaskBitmap <> 0 then
+  begin
+    Result := Windows.GetObject(SrcMaskBitmap, SizeOf(BitmapInfo), @BitmapInfo) > 0;
+    if not Result then exit;
+
+    AllocAndCopy(BitmapInfo, ARect, NewRawImage.Mask, NewRawImage.MaskSize);
+    NewRawImage.Description.AlphaSeparate := true;
+  end;
+end;
+
+function TWin32Object.CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean;
+begin
+  Bitmap := Windows.CreateBitmap(
+    RawImage.Description.Width, RawImage.Description.Height,
+    1, RawImage.Description.Depth,
+    RawImage.Data);
+  Result := Bitmap <> 0;
+  if not Result then exit;
+
+  if RawImage.Description.AlphaSeparate then
+  begin
+    MaskBitmap := Windows.CreateBitmap(
+      RawImage.Description.Width, RawImage.Description.Height,
+      1, RawImage.Description.AlphaBitsPerPixel,
+      RawImage.Mask);
+    Result := Result and (MaskBitmap <> 0);
+  end;
+end;
+
 function TWin32Object.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
 begin
@@ -2533,6 +2714,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.70  2003/11/09 10:35:19  mattias
   started Menu icons for win32 intf from Martin Smat
 

@@ -1,13 +1,13 @@
-{ 
- /*************************************************************************** 
+{
+ /***************************************************************************
                          GTKINT.pp  -  GTKInterface Object
-                             ------------------- 
- 
-                   Initial Revision  : Thu July 1st CST 1999 
- 
- 
- ***************************************************************************/ 
- 
+                             -------------------
+
+                   Initial Revision  : Thu July 1st CST 1999
+
+
+ ***************************************************************************/
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -21,10 +21,10 @@
  *                                                                           *
  *****************************************************************************
  }
- 
+
 unit GtkInt;
- 
-{$mode objfpc} 
+
+{$mode objfpc}
 {$LONGSTRINGS ON}
 
 interface
@@ -103,11 +103,11 @@ type
     FStockGrayBrush: HBRUSH;
     FStockDkGrayBrush: HBRUSH;
     FStockWhiteBrush: HBRUSH;
-    
+
     FStockNullPen: HPEN;
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
-    
+
     {$Ifdef GTK2}
     FDefaultFontDesc : PPangoFontDescription;
     {$Else}
@@ -120,7 +120,7 @@ type
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
     procedure PassCmdLineOptions; override;
-    
+
     // styles
     procedure FreeAllStyles; virtual;
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
@@ -146,14 +146,14 @@ type
 
     // clipboard
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
-    
+
     // device contexts
     function IsValidDC(const DC: HDC): Boolean;virtual;
     function NewDC: TDeviceContext;virtual;
     procedure DisposeDC(aDC: TDeviceContext);virtual;
     function CreateDCForWidget(TheWidget: PGtkWidget; TheWindow: PGdkWindow;
       WithChildWindows: boolean): HDC;
-    
+
     // GDIObjects
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;virtual;
     function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
@@ -215,7 +215,7 @@ type
     // listview
     procedure ListViewChangeItem(TheListView: TObject; Index: integer);
     procedure ListViewAddItem(TheListView: TObject);
-    
+
     // listbox
     function GetTopIndex(Sender: TObject): integer;virtual;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;virtual;
@@ -279,7 +279,7 @@ type
     Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
                                     SetupProps : Boolean); Virtual;
   public
-    constructor Create; 
+    constructor Create;
     destructor Destroy; override;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
                               data : pointer) : integer; override;
@@ -293,7 +293,7 @@ type
     function DestroyTimer(TimerHandle: integer) : boolean; override;
 
     {$I gtkwinapih.inc}
-    
+
   public
     property RCFilename: string read FRCFilename write SetRCFilename;
   end;
@@ -321,7 +321,7 @@ begin
 
   MouseCaptureWidget := nil;
   MouseCapureByLCL := false;
-  
+
   LastLeft:=EmptyLastMouseClick;
   LastMiddle:=EmptyLastMouseClick;
   LastRight:=EmptyLastMouseClick;
@@ -335,7 +335,7 @@ begin
     ClipboardTargetEntries[c]:=nil;
     ClipboardTargetEntryCnt[c]:=0;
   end;
-  
+
   // mouse cursors
   for cr:=Low(GDKMouseCursors) to High(GDKMouseCursors) do begin
     GDKMouseCursors[cr]:=nil;
@@ -379,7 +379,7 @@ begin
     if ced^.Data.Data<>nil then FreeMem(ced^.Data.Data);
     Dispose(ced);
   end;
-  for c:=Low(TClipboardType) to High(TClipboardType) do 
+  for c:=Low(TClipboardType) to High(TClipboardType) do
     FreeClipboardTargetEntries(c);
   ClipboardSelectionData.Free;
   ClipboardSelectionData:=nil;
@@ -399,6 +399,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.156  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.155  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 

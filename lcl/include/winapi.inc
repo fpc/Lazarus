@@ -531,7 +531,7 @@ begin
   Result := InterfaceObject.GetRawImageFromDevice(SrcDC,SrcRect,NewRawImage);
 end;
 
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC;
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
   Result := InterfaceObject.GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,
@@ -1261,7 +1261,7 @@ end;
  ------------------------------------------------------------------------------}
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
   Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision,
-  Quality, PitchAndFamily: Cardinal; FaceName: PChar): HFONT;
+  Quality, PitchAndFamily: Byte; FaceName: PChar): HFONT;
 var
   LogFont: TLogFont;
 begin
@@ -1692,6 +1692,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2003/11/10 16:15:31  micha
+  cleanups; win32 fpimage support
+
   Revision 1.101  2003/11/07 18:48:52  micha
   symmetry getdesignerdc, releasedesignerdc
 

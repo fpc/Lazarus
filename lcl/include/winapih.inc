@@ -149,7 +149,7 @@ function GetPaletteEntries(Palette: HPALETTE; StartIndex, NumEntries: UINT;
 Function GetParent(Handle : HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -347,7 +347,7 @@ function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
   Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision,
-  Quality, PitchAndFamily: Cardinal; FaceName: PChar): HFONT;
+  Quality, PitchAndFamily: Byte; FaceName: PChar): HFONT;
 function CreatePen(Style, Width: Integer; Color: TColorRef): HPEN;
 function CreateRectRgnIndirect(const ARect: TRect): HRGN;
 
@@ -400,6 +400,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/11/10 16:15:32  micha
+  cleanups; win32 fpimage support
+
   Revision 1.91  2003/11/07 18:48:52  micha
   symmetry getdesignerdc, releasedesignerdc
 
