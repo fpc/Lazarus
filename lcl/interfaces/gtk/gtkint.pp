@@ -32,95 +32,94 @@ interface
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
   ExtCtrls, Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
-  gtkdef,
- DynHashArray, LazQueue, Calendar, Arrow, GraphType;
+  gtkDef, DynHashArray, LazQueue, Calendar, Arrow, GraphType;
 
 type
-   TgtkObject = class(TInterfaceBase)
-   private
-      FKeyStateList: TList; // Keeps track of which keys are pressed
-      FDeviceContexts: TDynHashArray;// hasharray of HDC
-      FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
-      FMessageQueue: TLazQueue;      // queue of PMsg
-      FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem 
-      FGTKToolTips: PGtkToolTips;
-      FAccelGroup: PgtkAccelGroup;
-      FTimerData : TList;       // keeps track of timer event structures
-      FDefaultFont : PGdkFont;
+  TgtkObject = class(TInterfaceBase)
+  private
+    FKeyStateList: TList; // Keeps track of which keys are pressed
+    FDeviceContexts: TDynHashArray;// hasharray of HDC
+    FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
+    FMessageQueue: TLazQueue;      // queue of PMsg
+    FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem 
+    FGTKToolTips: PGtkToolTips;
+    FAccelGroup: PgtkAccelGroup;
+    FTimerData : TList;       // keeps track of timer event structures
+    FDefaultFont : PGdkFont;
 
-      FStockNullBrush: HBRUSH;
-      FStockBlackBrush: HBRUSH;
-      FStockLtGrayBrush: HBRUSH;
-      FStockGrayBrush: HBRUSH;
-      FStockDkGrayBrush: HBRUSH;
-      FStockWhiteBrush: HBRUSH;
-      
-      procedure CreateComponent(Sender : TObject);
-      procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
-      procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
-      function  GetLabel(CompStyle: Integer; P : Pointer) : String;
-      procedure AssignSelf(Child ,Data : Pointer);
-      procedure ReDraw(Child : Pointer);
-      Procedure SetCursor(Sender : TObject);
-      procedure SetClipboardWidget(TargetWidget: PGtkWidget);
-      
-      function IsValidDC(const DC: HDC): Boolean;
-      function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
-      function IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
-      function NewGDIObject(const GDIType: TGDIType): PGdiObject;
-      function NewDC: PDeviceContext;
-      function CreateDefaultBrush: PGdiObject;
-      function CreateDefaultFont: PGdiObject;
-      function CreateDefaultPen: PGdiObject;
+    FStockNullBrush: HBRUSH;
+    FStockBlackBrush: HBRUSH;
+    FStockLtGrayBrush: HBRUSH;
+    FStockGrayBrush: HBRUSH;
+    FStockDkGrayBrush: HBRUSH;
+    FStockWhiteBrush: HBRUSH;
+    
+    procedure CreateComponent(Sender : TObject);
+    procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
+    procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
+    function  GetLabel(CompStyle: Integer; P : Pointer) : String;
+    procedure AssignSelf(Child ,Data : Pointer);
+    procedure ReDraw(Child : Pointer);
+    Procedure SetCursor(Sender : TObject);
+    procedure SetClipboardWidget(TargetWidget: PGtkWidget);
+    
+    function IsValidDC(const DC: HDC): Boolean;
+    function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
+    function IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
+    function NewGDIObject(const GDIType: TGDIType): PGdiObject;
+    function NewDC: PDeviceContext;
+    function CreateDefaultBrush: PGdiObject;
+    function CreateDefaultFont: PGdiObject;
+    function CreateDefaultPen: PGdiObject;
 
-      procedure ShowHide(Sender : TObject);
-      procedure AddNBPage(Parent,Child: TObject; Index: Integer);
-      procedure RemoveNBPage(Parent: TObject; Index: Integer);
-      procedure SetText(Child,Data : Pointer);
-      procedure SetColor(Sender : TObject);
-      Procedure SetPixel(Sender : TObject; Data : Pointer);
-      Procedure GetPixel(Sender : TObject; Data : Pointer);
-      function GetValue (Sender : TObject; Data : pointer) : integer;
-      function SetValue (Sender : TObject; Data : pointer) : integer;
-      function SetProperties (Sender: TObject) : integer;
-      procedure AttachMenu(Sender: TObject);
-      procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
-        Color: TColor);
-      
-      function HashPaintMessage(p: pointer): integer;
-      function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
-   protected
-      Cursor_Watch    : pGDKCursor;
-      Cursor_Arrow    : pGDKCursor;
-      Cursor_Cross    : pGDKCursor;
-      Cursor_Hand1    : pGDKCursor;
-      Cursor_XTerm    : pGDKCursor;
-      Cursor_StdArrow : pGDKCursor;
-      Cursor_HSplit   : pGDKCursor;
-      Cursor_VSplit   : pGDKCursor;
-      Cursor_SizeNWSE : pGDKCursor;
-      Cursor_SizeNS   : pGDKCursor;
-      Cursor_SizeNESW : pGDKCursor;
-      Cursor_SizeWE   : pGDKCursor;
+    procedure ShowHide(Sender : TObject);
+    procedure AddNBPage(Parent,Child: TObject; Index: Integer);
+    procedure RemoveNBPage(Parent: TObject; Index: Integer);
+    procedure SetText(Child,Data : Pointer);
+    procedure SetColor(Sender : TObject);
+    Procedure SetPixel(Sender : TObject; Data : Pointer);
+    Procedure GetPixel(Sender : TObject; Data : Pointer);
+    function  GetValue(Sender : TObject; Data : pointer) : integer;
+    function  SetValue(Sender : TObject; Data : pointer) : integer;
+    function  SetProperties (Sender: TObject) : integer;
+    procedure AttachMenu(Sender: TObject);
+    procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
+      Color: TColor);
+    
+    function HashPaintMessage(p: pointer): integer;
+    function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
+  protected
+    Cursor_Watch    : pGDKCursor;
+    Cursor_Arrow    : pGDKCursor;
+    Cursor_Cross    : pGDKCursor;
+    Cursor_Hand1    : pGDKCursor;
+    Cursor_XTerm    : pGDKCursor;
+    Cursor_StdArrow : pGDKCursor;
+    Cursor_HSplit   : pGDKCursor;
+    Cursor_VSplit   : pGDKCursor;
+    Cursor_SizeNWSE : pGDKCursor;
+    Cursor_SizeNS   : pGDKCursor;
+    Cursor_SizeNESW : pGDKCursor;
+    Cursor_SizeWE   : pGDKCursor;
 
-   public
-      constructor Create; 
-      destructor Destroy; override;
-      function GetText(Sender: TControl; var Text: String): Boolean; override;
-      procedure SetLabel(Sender : TObject; Data : Pointer);
-      function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
-      procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-      procedure RemoveCallbacks(Sender : TObject); override;
-      procedure DoEvents; override;
-      procedure HandleEvents; override;
-      procedure WaitMessage; override;
-      procedure AppTerminate; override;
-      procedure Init; override;
-      function  UpdateHint(Sender: TObject): Integer; override;
-      function  RecreateWnd(Sender: TObject): Integer; override;
+  public
+    constructor Create; 
+    destructor Destroy; override;
+    function  GetText(Sender: TControl; var Text: String): Boolean; override;
+    procedure SetLabel(Sender : TObject; Data : Pointer);
+    function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
+    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
+    procedure RemoveCallbacks(Sender : TObject); override;
+    procedure DoEvents; override;
+    procedure HandleEvents; override;
+    procedure WaitMessage; override;
+    procedure AppTerminate; override;
+    procedure Init; override;
+    function  UpdateHint(Sender: TObject): Integer; override;
+    function  RecreateWnd(Sender: TObject): Integer; override;
 
-      {$I gtkwinapih.inc}
-   end;
+    {$I gtkwinapih.inc}
+  end;
 
 {$I gtklistslh.inc}
 
@@ -326,6 +325,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/02/25 18:46:06  lazarus
+  MG: fixed nested record parsing
+
   Revision 1.29  2002/02/25 16:48:13  lazarus
   MG: new IDE window layout system
 
