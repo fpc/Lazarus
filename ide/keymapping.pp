@@ -195,7 +195,7 @@ const
   
   // components menu
   ecConfigCustomComps    = ecUserFirst + 900;
-  ecEditPackage          = ecUserFirst + 901;
+  ecOpenPackage          = ecUserFirst + 901;
   ecOpenPackageFile      = ecUserFirst + 902;
   ecPackageGraph         = ecUserFirst + 903;
 
@@ -629,7 +629,7 @@ begin
     
     // components menu
     ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
-    ecEditPackage           : Result:= lisMenuEditPackage;
+    ecOpenPackage           : Result:= lisMenuOpenPackage;
     ecOpenPackageFile       : Result:= lisMenuOpenPackageFile;
     ecPackageGraph          : Result:= lisMenuPackageGraph;
 
@@ -1467,7 +1467,7 @@ begin
   // components menu
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
   Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Edit package',ecEditPackage,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open package',ecOpenPackage,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open package file',ecOpenPackageFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Package graph',ecPackageGraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 

@@ -155,12 +155,11 @@ end;
 
 constructor TPackageLink.Create;
 begin
-  FVersion:=TPkgVersion.Create;
+  inherited Create;
 end;
 
 destructor TPackageLink.Destroy;
 begin
-  FVersion.Free;
   inherited Destroy;
 end;
 

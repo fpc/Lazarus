@@ -68,7 +68,7 @@ type
       const OldName: string);
     procedure PkgManagerAddPackage(Pkg: TLazPackage);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
-    procedure mnuPkgEditPackageClicked(Sender: TObject);
+    procedure mnuPkgOpenPackageClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
   private
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
@@ -235,7 +235,7 @@ begin
   ShowConfigureCustomComponents;
 end;
 
-procedure TPkgManager.mnuPkgEditPackageClicked(Sender: TObject);
+procedure TPkgManager.mnuPkgOpenPackageClicked(Sender: TObject);
 begin
   DoShowOpenInstalledPckDlg;
 end;
@@ -458,7 +458,7 @@ procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDE do begin
     itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
-    itmPkgEditPackage.OnClick :=@mnuPkgEditPackageClicked;
+    itmPkgOpenPackage.OnClick :=@mnuPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
   end;

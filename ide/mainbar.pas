@@ -281,7 +281,7 @@ type
     
     // components menu
     itmCompsConfigCustomComps: TMenuItem;
-    itmPkgEditPackage: TMenuItem;
+    itmPkgOpenPackage: TMenuItem;
     itmPkgOpenPackageFile: TMenuItem;
     itmPkgOpenRecent: TMenuItem;
     itmPkgPkgGraph: TMenuItem;
@@ -1084,11 +1084,11 @@ begin
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
-  itmPkgEditPackage := TMenuItem.Create(Self);
-  itmPkgEditPackage.Name:='itmPkgEditPackage';
-  itmPkgEditPackage.Caption := lisMenuEditPackage;
+  itmPkgOpenPackage := TMenuItem.Create(Self);
+  itmPkgOpenPackage.Name:='itmPkgOpenPackage';
+  itmPkgOpenPackage.Caption := lisMenuOpenPackage;
   {$IFDEF EnablePkgs}
-  mnuComponents.Add(itmPkgEditPackage);
+  mnuComponents.Add(itmPkgOpenPackage);
   {$ENDIF}
 
   itmPkgOpenPackageFile := TMenuItem.Create(Self);
@@ -1318,7 +1318,7 @@ begin
 
     // components menu
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
-    itmPkgEditPackage.ShortCut:=CommandToShortCut(ecEditPackage);
+    itmPkgOpenPackage.ShortCut:=CommandToShortCut(ecOpenPackage);
     itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
     itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
 

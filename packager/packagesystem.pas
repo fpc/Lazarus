@@ -104,6 +104,7 @@ type
       Flags: TFindPackageFlags): TAVLTreeNode;
     function FindAPackageWithName(const PkgName: string;
       IgnorePackage: TLazPackage): TLazPackage;
+    function FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
     function FindUnit(StartPackage: TLazPackage; const TheUnitName: string;
       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
@@ -312,6 +313,17 @@ begin
         Result:=TLazPackage(ANode.Data);
     end;
   end;
+end;
+
+function TLazPackageGraph.FindPackageWithID(PkgID: TLazPackageID): TLazPackage;
+var
+  ANode: TAVLTreeNode;
+begin
+  ANode:=FTree.Find(PkgID);
+  if ANode<>nil then
+    Result:=TLazPackage(ANode.Data)
+  else
+    Result:=nil;
 end;
 
 function TLazPackageGraph.FindUnit(StartPackage: TLazPackage;
@@ -698,6 +710,11 @@ var
   PkgLink: TPackageLink;
 begin
   Result:=lprUndefined;
+  APackage:=Dependency.RequiredPackage;
+  if APackage<>nil then begin
+    Result:=lprSuccess;
+    exit;
+  end;
   // search in opened packages
   ANode:=FindWithDependency(Dependency,Flags);
   if (ANode=nil) then begin
@@ -714,6 +731,7 @@ begin
   end;
   if ANode<>nil then begin
     APackage:=TLazPackage(ANode.Data);
+    Dependency.RequiredPackage:=APackage;
     Result:=lprSuccess;
   end else begin
     Result:=lprSuccess;

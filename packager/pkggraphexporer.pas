@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  ExtCtrls, Menus, Dialogs, AVL_Tree, LazarusIDEStrConsts, IDEProcs,
+  ExtCtrls, Menus, Dialogs, Graphics, AVL_Tree, LazarusIDEStrConsts, IDEProcs,
   IDEOptionDefs, EnvironmentOpts, PackageDefs, PackageSystem;
   
 type
@@ -52,9 +52,16 @@ type
     InfoMemo: TMemo;
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
+    procedure PkgTreeViewExpanding(Sender: TObject; Node: TTreeNode;
+      var AllowExpansion: Boolean);
   private
     fSortedPackages: TAVLTree;
     procedure SetupComponents;
+    function GetPackageImageIndex(Pkg: TLazPackage): integer;
+    procedure GetDependency(ANode: TTreeNode; var Pkg: TLazPackage;
+      var Dependency: TPkgDependency);
+    function SearchParentNodeWithText(ANode: TTreeNode;
+      const NodeText: string): TTreeNode;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -73,6 +80,14 @@ var
 implementation
 
 uses Math;
+
+var
+  ImgIndexPackage,
+  ImgIndexInstallPackage,
+  ImgIndexUninstallPackage,
+  ImgIndexCirclePackage,
+  ImgIndexMissingPackage: integer;
+
 
 { TPkgGraphExplorer }
 
@@ -112,20 +127,100 @@ begin
   UpdateAll;
 end;
 
+procedure TPkgGraphExplorer.PkgTreeViewExpanding(Sender: TObject;
+  Node: TTreeNode; var AllowExpansion: Boolean);
+var
+  Pkg, ChildPackage: TLazPackage;
+  Dependency: TPkgDependency;
+  Cnt: Integer;
+  i: Integer;
+  ViewNode: TTreeNode;
+  NodeText: String;
+  NodeImgIndex: Integer;
+  NextViewNode: TTreeNode;
+begin
+  // add child nodes
+  GetDependency(Node,Pkg,Dependency);
+  if Dependency<>nil then begin
+    // node is a not fullfilled dependency
+    AllowExpansion:=false;
+  end else begin
+    // node is a package
+    ViewNode:=Node.GetFirstChild;
+    Cnt:=Pkg.RequiredPkgCount;
+    for i:=0 to Cnt-1 do begin
+      Dependency:=Pkg.RequiredPkgs[i];
+      // find required package
+      if PackageGraph.OpenDependency(Dependency,fpfSearchPackageEverywhere,
+        ChildPackage)=lprSuccess then
+      begin
+        // package found
+        NodeText:=ChildPackage.IDAsString;
+        if SearchParentNodeWithText(Node,NodeText)<>nil then
+          NodeImgIndex:=ImgIndexCirclePackage
+        else
+          NodeImgIndex:=GetPackageImageIndex(ChildPackage);
+      end else begin
+        // package not found
+        NodeText:=Dependency.AsString;
+        NodeImgIndex:=ImgIndexMissingPackage;
+        // Todo broken packages
+      end;
+      // add node
+      if ViewNode=nil then
+        ViewNode:=PkgTreeView.Items.AddChild(Node,NodeText)
+      else
+        ViewNode.Text:=NodeText;
+      ViewNode.ImageIndex:=NodeImgIndex;
+      ViewNode.StateIndex:=ViewNode.ImageIndex;
+      ViewNode.Expanded:=false;
+      ViewNode.HasChildren:=
+                      (ChildPackage<>nil) and (ChildPackage.RequiredPkgCount>0);
+      ViewNode:=ViewNode.GetNextSibling;
+    end;
+    // delete unneeded nodes
+    while ViewNode<>nil do begin
+      NextViewNode:=ViewNode.GetNextSibling;
+      ViewNode.Free;
+      ViewNode:=NextViewNode;
+    end;
+  end;
+end;
+
 procedure TPkgGraphExplorer.SetupComponents;
+
+  procedure AddResImg(const ResName: string);
+  var Pixmap: TPixmap;
+  begin
+    Pixmap:=TPixmap.Create;
+    Pixmap.TransparentColor:=clWhite;
+    Pixmap.LoadFromLazarusResource(ResName);
+    ImageList.Add(Pixmap,nil)
+  end;
+
 begin
   ImageList:=TImageList.Create(Self);
   with ImageList do begin
-    Width:=16;
-    Height:=16;
+    Width:=17;
+    Height:=17;
     Name:='ImageList';
+    ImgIndexPackage:=Count;
+    AddResImg('pkg_package');
+    ImgIndexInstallPackage:=Count;
+    AddResImg('pkg_package_installed');
+    ImgIndexUninstallPackage:=Count;
+    AddResImg('pkg_package_uninstall');
+    ImgIndexCirclePackage:=Count;
+    AddResImg('pkg_package_circle');
+    ImgIndexMissingPackage:=Count;
+    AddResImg('pkg_conflict');
   end;
   
   PkgTreeLabel:=TLabel.Create(Self);
   with PkgTreeLabel do begin
     Name:='PkgTreeLabel';
     Parent:=Self;
-    Caption:='Required Packages Tree:';
+    Caption:='Loaded Packages:';
   end;
   
   PkgTreeView:=TTreeView.Create(Self);
@@ -133,13 +228,15 @@ begin
     Name:='PkgTreeView';
     Parent:=Self;
     Options:=Options+[tvoRightClickSelect];
+    Images:=Self.ImageList;
+    OnExpanding:=@PkgTreeViewExpanding;
   end;
 
   PkgListLabel:=TLabel.Create(Self);
   with PkgListLabel do begin
     Name:='PkgListLabel';
     Parent:=Self;
-    Caption:='Packages requiring the selected package:';
+    Caption:='Required by Packages:';
   end;
 
   PkgListBox:=TListBox.Create(Self);
@@ -152,6 +249,66 @@ begin
   with InfoMemo do begin
     Name:='InfoMemo';
     Parent:=Self;
+  end;
+end;
+
+function TPkgGraphExplorer.GetPackageImageIndex(Pkg: TLazPackage): integer;
+begin
+  if Pkg.Installed<>pitNope then begin
+    if Pkg.AutoInstall<>pitNope then begin
+      Result:=ImgIndexInstallPackage;
+    end else begin
+      Result:=ImgIndexUninstallPackage;
+    end;
+  end else begin
+    Result:=ImgIndexPackage;
+  end;
+end;
+
+procedure TPkgGraphExplorer.GetDependency(ANode: TTreeNode;
+  var Pkg: TLazPackage; var Dependency: TPkgDependency);
+// if Dependency<>nil then Pkg is the Parent
+var
+  Cnt: Integer;
+  i: Integer;
+  NodeText: String;
+  NodePackageID: TLazPackageID;
+begin
+  // keep in mind, that packages can be deleted and the node is outdated
+  Pkg:=nil;
+  Dependency:=nil;
+  NodePackageID:=TLazPackageID.Create;
+  try
+    // try to find a package
+    NodeText:=ANode.Text;
+    if NodePackageID.StringToID(NodeText) then
+      Pkg:=PackageGraph.FindPackageWithID(NodePackageID);
+    if Pkg<>nil then exit;
+    // try to find the parent package
+    if (ANode.Parent=nil) or (not NodePackageID.StringToID(ANode.Parent.Text))
+    then
+      exit;
+    Pkg:=PackageGraph.FindPackageWithID(NodePackageID);
+    if Pkg=nil then exit;
+    // there is a parent package -> search the dependency
+    Cnt:=Pkg.RequiredPkgCount;
+    for i:=0 to Cnt-1 do begin
+      Dependency:=Pkg.RequiredPkgs[i];
+      if Dependency.AsString=NodeText then exit;
+    end;
+    Dependency:=nil;
+  finally
+    NodePackageID.Free;
+  end;
+end;
+
+function TPkgGraphExplorer.SearchParentNodeWithText(ANode: TTreeNode;
+  const NodeText: string): TTreeNode;
+begin
+  Result:=ANode;
+  while Result<>nil do begin
+    if Result.Text=NodeText then exit;
+    Result:=Result.Parent;
   end;
 end;
 
@@ -213,6 +370,9 @@ begin
       ViewNode:=PkgTreeView.Items.Add(nil,CurPkg.IDAsString)
     else
       ViewNode.Text:=CurPkg.IDAsString;
+    ViewNode.HasChildren:=CurPkg.RequiredPkgCount>0;
+    ViewNode.ImageIndex:=GetPackageImageIndex(CurPkg);
+    ViewNode.StateIndex:=ViewNode.ImageIndex;
     ViewNode:=ViewNode.GetNextSibling;
     HiddenNode:=fSortedPackages.FindSuccessor(HiddenNode);
     inc(CurIndex);
