@@ -78,7 +78,6 @@ function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):L
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
-procedure RaiseGDBException(const Msg: string);
 
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
@@ -88,6 +87,29 @@ function DeleteAmpersands(var Str : String) : Longint;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 function ComparePointers(p1, p2: Pointer): integer;
+
+
+// debugging
+procedure RaiseGDBException(const Msg: string);
+
+procedure DebugLn;
+procedure DebugLn(const s: string);
+procedure DebugLn(const s1,s2: string);
+procedure DebugLn(const s1,s2,s3: string);
+procedure DebugLn(const s1,s2,s3,s4: string);
+procedure DebugLn(const s1,s2,s3,s4,s5: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
+
+procedure DbgOut(const s: string);
+procedure DbgOut(const s1,s2: string);
+
+function DbgS(const i: integer): string;
+function DbgS(const r: TRect): string;
+function DbgS(const p: TPoint): string;
 
 
 implementation
@@ -416,9 +438,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure RaiseGDBException(const Msg: string);
 begin
-  writeln(rsERRORInLCL, Msg);
+  debugln(rsERRORInLCL, Msg);
   // creates an exception, that gdb catches:
-  writeln(rsCreatingGdbCatchableError);
+  debugln(rsCreatingGdbCatchableError);
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
@@ -539,6 +561,87 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+procedure DebugLn;
+begin
+  writeln;
+end;
+
+procedure DebugLn(const s: string);
+begin
+  writeln(s);
+end;
+
+procedure DebugLn(const s1, s2: string);
+begin
+  writeln(s1,s2);
+end;
+
+procedure DebugLn(const s1, s2, s3: string);
+begin
+  writeln(s1,s2,s3);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4: string);
+begin
+  writeln(s1,s2,s3,s4);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5: string);
+begin
+  writeln(s1,s2,s3,s4,s5);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6: string);
+begin
+  writeln(s1,s2,s3,s4,s5,s6);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7: string);
+begin
+  writeln(s1,s2,s3,s4,s5,s6,s7);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8: string);
+begin
+  writeln(s1,s2,s3,s4,s5,s6,s7,s8);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9: string);
+begin
+  writeln(s1,s2,s3,s4,s5,s6,s7,s8,s9);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10: string);
+begin
+  writeln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10);
+end;
+
+procedure DBGOut(const s: string);
+begin
+  write(s);
+end;
+
+procedure DBGOut(const s1, s2: string);
+begin
+  write(s1,s2);
+end;
+
+function DbgS(const i: integer): string;
+begin
+  Result:=IntToStr(i);
+end;
+
+function DbgS(const r: TRect): string;
+begin
+  Result:=' l='+IntToStr(r.Left)+',t='+IntToStr(r.Top)
+         +',r='+IntToStr(r.Right)+',b='+IntToStr(r.Bottom);
+end;
+
+function DbgS(const p: TPoint): string;
+begin
+  Result:=' x='+IntToStr(p.x)+',y='+IntToStr(p.y);
 end;
 
 initialization

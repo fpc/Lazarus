@@ -365,7 +365,7 @@ end;
 Procedure TControl.ChangeScale(M,D : Integer);
 Begin
   // TODO: TCONTROL.CHANGESCALE
-  Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
+  //Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
 end;
 
 {------------------------------------------------------------------------------
@@ -915,14 +915,14 @@ function TControl.GetClientOrigin: TPoint;
   end;
 
 Begin
-  Assert(False, Format('Trace:[TControl.GetClientOrigin] %s',  [Classname]));
+  //Assert(False, Format('Trace:[TControl.GetClientOrigin] %s',  [Classname]));
   if Parent = nil then
     RaiseParentNil;
     //raise EInvalidOperation.CreateFmt(SParentRequired, [Name]);
   Result := Parent.ClientOrigin;
   Inc(Result.X, FLeft);
   Inc(Result.Y, FTop);
-  Assert(False, Format('Trace:[TControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
+  //Assert(False, Format('Trace:[TControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
 
 {------------------------------------------------------------------------------}
@@ -936,7 +936,7 @@ begin
   P := ClientOrigin;
   Result.X := Point.X - P.X;
   Result.Y := Point.Y - P.Y;
-  Assert(False, Format('Trace:[TControl.ScreenToCLient] %s: Point(%d, %d) Org(%d, %d) --> (%d, %d)',  [Classname, Point.x,  point.y, p.x, p.y, result.x, result.y]));
+  //Assert(False, Format('Trace:[TControl.ScreenToCLient] %s: Point(%d, %d) Org(%d, %d) --> (%d, %d)',  [Classname, Point.x,  point.y, p.x, p.y, result.x, result.y]));
 end;
 
 {------------------------------------------------------------------------------
@@ -1348,7 +1348,7 @@ begin
             begin
               if FDragMode = dmAutomatic
               then begin
-                Assert(False, 'Trace:Begin AutoDrag called');
+                //Assert(False, 'Trace:Begin AutoDrag called');
                 BeginAutoDrag;
                 { The VCL holds up the mouse down for dmAutomatic
                   and sends it, when it decides, if it is a drag operation or
@@ -2865,7 +2865,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 begin
-  Assert(False, Format('Trace:[TControl.WMWindowPosChanged] %s', [ClassName]));
+  //Assert(False, Format('Trace:[TControl.WMWindowPosChanged] %s', [ClassName]));
   // TODO : Docksites and constraints
 
   { Do not handle this message and leave it to WMSize and WMMove }
@@ -2890,7 +2890,7 @@ begin
   {$IFDEF CHECK_POSITION}
   writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
   {$ENDIF}
-  Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
+  //Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
   SetBoundsKeepBase(Left,Top,Message.Width,Message.Height,Parent<>nil);
 end;
@@ -2923,6 +2923,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.184  2004/05/11 10:53:59  mattias
+  replaced writeln by debugln
+
   Revision 1.183  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

@@ -2435,7 +2435,9 @@ end;
 {------------------------------------------------------------------------------}
 function TWinControl.GetHandle: HWND;
 begin
-  if not HandleAllocated then Assert(False, Format('Trace:[TWinControl.GetHandle] %s(%s)', [ClassNAme, Name]));
+  if not HandleAllocated then
+    //Assert(False, Format('Trace:[TWinControl.GetHandle] %s(%s)', [ClassNAme, Name]))
+    ;
   HandleNeeded;
   Result := FHandle;
 end;
@@ -3517,6 +3519,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.226  2004/05/11 10:53:59  mattias
+  replaced writeln by debugln
+
   Revision 1.225  2004/05/11 09:49:46  mattias
   started sending CN_KEYUP
 

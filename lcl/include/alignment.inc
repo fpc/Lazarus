@@ -19,16 +19,11 @@
 {------------------------------------------------------------------------------}
 constructor TAlignment.Create(AOwner : TComponent);
 begin
-
- Assert(False, 'Trace:Inside of TAlignment Constructor');
-
- inherited Create(AOwner);
-
- Assert(False, 'Trace:Call of inherited create in TAlignment Constructor Success');
-
- fCompStyle := csAlignMent;
-
- Assert(False, 'Trace:Calling CreateComponent from TAlignment Constructor');
+  //Assert(False, 'Trace:Inside of TAlignment Constructor');
+  inherited Create(AOwner);
+  //Assert(False, 'Trace:Call of inherited create in TAlignment Constructor Success');
+  fCompStyle := csAlignMent;
+  //Assert(False, 'Trace:Calling CreateComponent from TAlignment Constructor');
 
   CreateComponent(AOwner);
 

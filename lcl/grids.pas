@@ -758,48 +758,48 @@ begin
     case Msg of
       CM_BASE..CM_MOUSEWHEEL:
         case Msg of
-          CM_MOUSEENTER:          WriteLn(hex, 'CM_MOUSEENTER');
-          CM_MOUSELEAVE:          WriteLn(hex, 'CM_MOUSELEAVE');
-          CM_TEXTCHANGED:           WriteLn(hex, 'CM_TEXTCHANGED');
-          CM_PARENTCTL3DCHANGED:    WriteLn(hex, 'CM_PARENTCTL3DCHANGED');
-          CM_UIACTIVATE:            WriteLn(hex, 'CM_UIACTIVATE');
-          CM_CONTROLLISTCHANGE:     WriteLn(hex, 'CM_CONTROLLISTCHANGE');
+          CM_MOUSEENTER:          DebugLn(hex, 'CM_MOUSEENTER');
+          CM_MOUSELEAVE:          DebugLn(hex, 'CM_MOUSELEAVE');
+          CM_TEXTCHANGED:           DebugLn(hex, 'CM_TEXTCHANGED');
+          CM_PARENTCTL3DCHANGED:    DebugLn(hex, 'CM_PARENTCTL3DCHANGED');
+          CM_UIACTIVATE:            DebugLn(hex, 'CM_UIACTIVATE');
+          CM_CONTROLLISTCHANGE:     DebugLn(hex, 'CM_CONTROLLISTCHANGE');
           
-          CM_PARENTCOLORCHANGED:  WriteLn(hex, 'CM_PARENTCOLORCHANGED');
-          CM_PARENTFONTCHANGED:   WriteLn(hex, 'CM_PARENTFONTCHANGED');
-          CM_PARENTSHOWHINTCHANGED: WriteLn(hex, 'CM_PARENTSHOWHINTCHANGED');
-          CM_PARENTBIDIMODECHANGED: WriteLn(hex, 'CM_PARENTBIDIMODECHANGED');
-          CM_CONTROLCHANGE:         WriteLn(Hex, 'CM_CONTROLCHANGE');
-          CM_SHOWINGCHANGED:        WriteLn(Hex, 'CM_SHOWINGCHANGED');
-          CM_VISIBLECHANGED:        WriteLn(Hex, 'CM_VISIBLECHANGED');
-          else                    WriteLn(Hex, 'CM_BASE + ', Msg - CM_BASE);
+          CM_PARENTCOLORCHANGED:  DebugLn(hex, 'CM_PARENTCOLORCHANGED');
+          CM_PARENTFONTCHANGED:   DebugLn(hex, 'CM_PARENTFONTCHANGED');
+          CM_PARENTSHOWHINTCHANGED: DebugLn(hex, 'CM_PARENTSHOWHINTCHANGED');
+          CM_PARENTBIDIMODECHANGED: DebugLn(hex, 'CM_PARENTBIDIMODECHANGED');
+          CM_CONTROLCHANGE:         DebugLn(Hex, 'CM_CONTROLCHANGE');
+          CM_SHOWINGCHANGED:        DebugLn(Hex, 'CM_SHOWINGCHANGED');
+          CM_VISIBLECHANGED:        DebugLn(Hex, 'CM_VISIBLECHANGED');
+          else                    DebugLn(Hex, 'CM_BASE + ', Msg - CM_BASE);
         end;
       else
         case Msg of
           //CN_BASE MESSAGES
-          CN_COMMAND:             WriteLn(hex, 'LM_CNCOMMAND');
+          CN_COMMAND:             DebugLn(hex, 'LM_CNCOMMAND');
           // NORMAL MESSAGES
-          LM_SETFOCUS:            WriteLn(hex, 'LM_SetFocus');
-          LM_LBUTTONDOWN:         WriteLn(hex, 'LM_MOUSEDOWN');
-          LM_LBUTTONUP:           WriteLn(hex, 'LM_LBUTTONUP');
-          LM_RBUTTONDOWN:         WriteLn(hex, 'LM_RBUTTONDOWN');
-          LM_RBUTTONUP:           WriteLn(hex, 'LM_RBUTTONUP');
-          LM_GETDLGCODE:          WriteLn(hex, 'LM_GETDLGCODE');
-          LM_KEYDOWN:             WriteLn(hex, 'LM_KEYDOWN');
-          LM_KEYUP:               WriteLn(hex, 'LM_KEYUP');
-          LM_CAPTURECHANGED:      WriteLn(hex, 'LM_CAPTURECHANGED');
-          LM_ERASEBKGND:          WriteLn(hex, 'LM_ERASEBKGND');
-          LM_KILLFOCUS:           WriteLn(hex, 'LM_KILLFOCUS');
-          LM_CHAR:                WriteLn(hex, 'LM_CHAR');
-          LM_SHOWWINDOW:          WriteLn(hex, 'LM_SHOWWINDOW');
-          LM_SIZE:                WriteLn(hex, 'LM_SIZE');
-          LM_WINDOWPOSCHANGED:    WriteLn(hex, 'LM_WINDOWPOSCHANGED');
-          LM_HSCROLL:             WriteLn(hex, 'LM_HSCROLL');
-          LM_VSCROLL:             WriteLn(hex, 'LM_VSCROLL');
+          LM_SETFOCUS:            DebugLn(hex, 'LM_SetFocus');
+          LM_LBUTTONDOWN:         DebugLn(hex, 'LM_MOUSEDOWN');
+          LM_LBUTTONUP:           DebugLn(hex, 'LM_LBUTTONUP');
+          LM_RBUTTONDOWN:         DebugLn(hex, 'LM_RBUTTONDOWN');
+          LM_RBUTTONUP:           DebugLn(hex, 'LM_RBUTTONUP');
+          LM_GETDLGCODE:          DebugLn(hex, 'LM_GETDLGCODE');
+          LM_KEYDOWN:             DebugLn(hex, 'LM_KEYDOWN');
+          LM_KEYUP:               DebugLn(hex, 'LM_KEYUP');
+          LM_CAPTURECHANGED:      DebugLn(hex, 'LM_CAPTURECHANGED');
+          LM_ERASEBKGND:          DebugLn(hex, 'LM_ERASEBKGND');
+          LM_KILLFOCUS:           DebugLn(hex, 'LM_KILLFOCUS');
+          LM_CHAR:                DebugLn(hex, 'LM_CHAR');
+          LM_SHOWWINDOW:          DebugLn(hex, 'LM_SHOWWINDOW');
+          LM_SIZE:                DebugLn(hex, 'LM_SIZE');
+          LM_WINDOWPOSCHANGED:    DebugLn(hex, 'LM_WINDOWPOSCHANGED');
+          LM_HSCROLL:             DebugLn(hex, 'LM_HSCROLL');
+          LM_VSCROLL:             DebugLn(hex, 'LM_VSCROLL');
           
-          LM_MOUSEMOVE:           ;//WriteLn(hex, 'LM_MOUSEMOVE');
-          LM_MOUSEWHEEL:          WriteLn(Hex, 'LM_MOUSEWHEEL');
-          else                    WriteLn(hex, GetMessageName(Msg));
+          LM_MOUSEMOVE:           ;//DebugLn(hex, 'LM_MOUSEMOVE');
+          LM_MOUSEWHEEL:          DebugLn(Hex, 'LM_MOUSEWHEEL');
+          else                    DebugLn(hex, GetMessageName(Msg));
         end;
     end;
   end;
@@ -885,13 +885,13 @@ begin
     end;
 
     {$IfDef EditorDbg}
-    write('SetEditor-> Editor=',FEditor.Name,' ');
-    if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then write('EO_AUTOSIZE ');
-    if FEditorOptions and EO_HOOKKEYS = EO_HOOKKEYS then write('EO_HOOKKEYS ');
-    if FEditorOptions and EO_HOOKEXIT = EO_HOOKEXIT then write('EO_HOOKEXIT ');
-    if FEditorOptions and EO_SELECTALL= EO_SELECTALL then write('EO_SELECTALL ');
-    if FEditorOptions and EO_WANTCHAR = EO_WANTCHAR then write('EO_WANTCHAR ');
-    WriteLn;
+    DBGOut('SetEditor-> Editor=',FEditor.Name,' ');
+    if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then DBGOut('EO_AUTOSIZE ');
+    if FEditorOptions and EO_HOOKKEYS = EO_HOOKKEYS then DBGOut('EO_HOOKKEYS ');
+    if FEditorOptions and EO_HOOKEXIT = EO_HOOKEXIT then DBGOut('EO_HOOKEXIT ');
+    if FEditorOptions and EO_SELECTALL= EO_SELECTALL then DBGOut('EO_SELECTALL ');
+    if FEditorOptions and EO_WANTCHAR = EO_WANTCHAR then DBGOut('EO_WANTCHAR ');
+    DebugLn;
     {$Endif}
   end;
 end;
@@ -1171,7 +1171,7 @@ begin
     FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(Tw);
     if Tw<FixedCols then FGCache.FixedWidth:=FGCache.GridWidth;
     {$IfDef dbgScroll}
-    WriteLn('FGCache.AccumWidth[',Tw,']=',Integer(FGCache.AccumWidth[Tw]));
+    DebugLn('FGCache.AccumWidth[',Tw,']=',Integer(FGCache.AccumWidth[Tw]));
     {$Endif}
   end;
   FGCache.Gridheight:=0;
@@ -1181,7 +1181,7 @@ begin
     FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(Tw);
     if Tw<FixedRows then FGCache.FixedHeight:=FGCache.GridHeight;
     {$IfDef dbgScroll}
-    WriteLn('FGCache.AccumHeight[',Tw,']=',Integer(FGCache.AccumHeight[Tw]));
+    DebugLn('FGCache.AccumHeight[',Tw,']=',Integer(FGCache.AccumHeight[Tw]));
     {$Endif}
   end;
 
@@ -1222,8 +1222,8 @@ begin
   Dec(FGCache.ClientHeight, DH);
   
   {$Ifdef DbgScroll}
-  WriteLn('Width=',Width,' Height=',height, ' GWidth=',TW,' GHeight=',TH,' HsbRange=',HsbRange, ' VsbRange=',VSbRange, ' Vbar=',VSbVisible, ' HSb=',HsbVisible);
-  WriteLn('ClientWidth=', FGCAche.ClientWidth, ' ClientHeight=', FGCache.ClientHeight);
+  DebugLn('Width=',Width,' Height=',height, ' GWidth=',TW,' GHeight=',TH,' HsbRange=',HsbRange, ' VsbRange=',VSbRange, ' Vbar=',VSbVisible, ' HSb=',HsbVisible);
+  DebugLn('ClientWidth=', FGCAche.ClientWidth, ' ClientHeight=', FGCache.ClientHeight);
   {$endif}
 
   //FGCache.ClientWidth:= Width - DV;
@@ -1296,7 +1296,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    WriteLn('ScrollbarRange: Which=',Which,' Range=',aRange);
+    DebugLn('ScrollbarRange: Which=',Which,' Range=',aRange);
     {$endif}
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
@@ -1320,7 +1320,7 @@ var
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    WriteLn('ScrollbarPosition: Which=',Which, ' Value= ',Value);
+    DebugLn('ScrollbarPosition: Which=',Which, ' Value= ',Value);
     {$endif}
     if Which = SB_VERT then Vis := FVSbVisible else
     if Which = SB_HORZ then Vis := FHSbVisible
@@ -1356,7 +1356,7 @@ procedure TCustomGrid.ScrollBarShow(Which: Integer; aValue: boolean);
 begin
   if HandleAllocated then begin
     {$Ifdef DbgScroll}
-    WriteLn('ScrollbarShow: Which=',Which, ' Avalue=',AValue);
+    DebugLn('ScrollbarShow: Which=',Which, ' Avalue=',AValue);
     {$endif}
     ShowScrollBar(Handle,Which,aValue);
     if Which in [SB_BOTH, SB_VERT] then FVSbVisible := AValue else
@@ -1509,7 +1509,7 @@ procedure TCustomGrid.Paint;
 begin
   Inherited Paint;
   if FUpdateCount=0 then begin
-    //WriteLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
+    //DebugLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
     //DebugRect('Paint.ClipRect=',Canvas.ClipRect);
     DrawEdges;
     DrawBackGround;
@@ -1707,7 +1707,7 @@ begin
          (IsCellVisible(FCol,ARow) or (Rs and (ARow>=Top) and (ARow<=Bottom)))
       then begin
         if EditorShouldEdit and (FEditor<>nil)and(FEditor.Visible) then begin
-          //WriteLn('No Draw Focus Rect');
+          //DebugLn('No Draw Focus Rect');
         end else begin
           ColRowToOffset(True, True, FCol, R.Left, R.Right);
           DrawFocusRect(FCol,FRow, R, [gdFocused]);
@@ -1769,11 +1769,12 @@ end;
 
 procedure DebugRect(S:string; R:TRect);
 begin
-  WriteLn(S, 'L=',R.Left, ' T=',R.Top, ' R=',R.Right,' B=',R.Bottom);
+  DebugLn(S,dbgs(r));
 end;
+
 procedure DebugPoint(S:string; P:TPoint);
 begin
-  WriteLn(S, 'X=',P.X,' Y=',P.Y);
+  DebugLn(S,dbgs(p));
 end;
 
 procedure TCustomGrid.DrawCellGrid(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
@@ -1867,7 +1868,7 @@ end;
 procedure TCustomGrid.WMEraseBkgnd(var message: TLMEraseBkgnd);
 begin
   message.Result:=1;
-  //WriteLn('TCustomGrid.WMEraseBkgnd');
+  //DebugLn('TCustomGrid.WMEraseBkgnd');
 end;
 
 procedure TCustomGrid.WMGetDlgCode(var Msg: TLMNoParams);
@@ -1895,7 +1896,7 @@ begin
   }
 
   {$IfDef dbgScroll}
-  WriteLn('HSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
+  DebugLn('HSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
   {$Endif}
 
 
@@ -1933,16 +1934,16 @@ begin
     end;
 
     {$Ifdef dbgScroll}
-    WriteLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
+    DebugLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
     {$Endif}
     ScrollBarPosition(SB_HORZ, C);
     C:= C + FGCache.FixedWidth + Integer(BorderStyle);
     {$Ifdef dbgScroll}
-    WriteLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
+    DebugLn('---- Position=',C, ' FixedWidth=',FGCache.FixedWidth);
     {$Endif}
     TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
     {$Ifdef dbgScroll}
-    WriteLn('---- Offset=',C, ' TL=',TL,' TLColOFf=', FGCache.TLColOff);
+    DebugLn('---- Offset=',C, ' TL=',TL,' TLColOFf=', FGCache.TLColOff);
     {$Endif}
     if not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
 
@@ -1976,7 +1977,7 @@ begin
   EndUpdate(uoNone);
   }
   {$IfDef dbgScroll}
-  WriteLn('VSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
+  DebugLn('VSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
   {$Endif}
 
   if FGCache.VScrDiv<=0 then Exit;
@@ -2011,16 +2012,16 @@ begin
     end;
 
     {$Ifdef dbgScroll}
-    WriteLn('---- Position=',C, ' FixedHeight=',FGCache.FixedHeight);
+    DebugLn('---- Position=',C, ' FixedHeight=',FGCache.FixedHeight);
     {$Endif}
     ScrollBarPosition(SB_VERT, C);
     C:= C + FGCache.FixedHeight + Integer(BorderStyle);
     {$Ifdef dbgScroll}
-    WriteLn('---- NewPosition=',C);
+    DebugLn('---- NewPosition=',C);
     {$Endif}
     TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
     {$Ifdef dbgScroll}
-    WriteLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
+    DebugLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
     {$Endif}
     if not (goSmoothScroll in Options) then FGCache.TLRowOff:=0;
 
@@ -2052,7 +2053,7 @@ var
   Ch: Char;
 begin
   Ch:=Char(message.CharCode);
-  //WriteLn(ClassName,'.WMchar CharCode= ',message.CharCode);
+  //DebugLn(ClassName,'.WMchar CharCode= ',message.CharCode);
   if (goEditing in Options) and (Ch in [^H, #32..#255]) then
     EditorShowChar(Ch)
   else
@@ -2558,7 +2559,7 @@ begin
   if not (ssLeft in Shift) then Exit;
   if csDesigning in componentState then Exit;
 
-  {$IfDef dbgFocus} WriteLn('MouseDown INIT'); {$Endif}
+  {$IfDef dbgFocus} DebugLn('MouseDown INIT'); {$Endif}
 
   Gz:=MouseToGridZone(X,Y, False);
   case Gz of
@@ -2617,13 +2618,13 @@ begin
         end;
         (*
         if (GoEditing in Options)and(FEditor=nil) and not Focused then begin
-          {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
+          {$IfDef dbgFocus} DebugLn('  AUTO-FOCUSING '); {$Endif}
           LCLIntf.SetFocus(Self.Handle);
         end;
         *)
       end;
   end;
-  {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
+  {$ifDef dbgFocus} DebugLn('MouseDown END'); {$Endif}
 end;
 
 procedure TCustomGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2658,7 +2659,7 @@ var
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if not FGCache.ValidGrid then Exit;
-  {$IfDef dbgFocus}WriteLn('MouseUP INIT');{$Endif}
+  {$IfDef dbgFocus}DebugLn('MouseUP INIT');{$Endif}
   Cur:=MouseToCell(Point(x,y));
   case fGridState of
     gsSelecting:
@@ -2670,7 +2671,7 @@ begin
       end;
     gsColMoving:
       begin
-        //WriteLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
+        //DebugLn('Move Col From ',Fsplitter.x,' to ', FMoveLast.x);
         if FMoveLast.X>=0 then begin
           MoveColRow(True, Fsplitter.X, FMoveLast.X);
           Cursor:=crDefault;
@@ -2679,7 +2680,7 @@ begin
       end;
     gsRowMoving:
       begin
-        //WriteLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
+        //DebugLn('Move Row From ',Fsplitter.Y,' to ', FMoveLast.Y);
         if FMoveLast.Y>=0 then begin
           MoveColRow(False, Fsplitter.Y, FMoveLast.Y);
           Cursor:=crDefault;
@@ -2688,7 +2689,7 @@ begin
       end;
   end;
   fGridState:=gsNormal;
-  {$IfDef dbgFocus}WriteLn('MouseUP  END  RND=',Random);{$Endif}
+  {$IfDef dbgFocus}DebugLn('MouseUP  END  RND=',Random);{$Endif}
 end;
 
 procedure TCustomGrid.DblClick;
@@ -2697,13 +2698,13 @@ begin
     if (goDblClickAutoSize in Options) then begin
       AutoAdjustColumn( FSplitter.X );
     end {else
-      WriteLn('Got Doubleclick on Col Resizing: AutoAdjust?');}
+      DebugLn('Got Doubleclick on Col Resizing: AutoAdjust?');}
   end else
   if  (goDblClickAutoSize in Options) and
       (goRowSizing in Options) and
       (Cursor=crVSplit) then begin
       {
-        WriteLn('Got DoubleClick on Row Resizing: AutoAdjust?');
+        DebugLn('Got DoubleClick on Row Resizing: AutoAdjust?');
       }
   end
   else
@@ -2752,9 +2753,9 @@ end;
 procedure TCustomGrid.doExit;
 begin
   if FEditorShowing then begin
-    {$IfDef dbgFocus}WriteLn('DoExit - EditorShowing');{$Endif}
+    {$IfDef dbgFocus}DebugLn('DoExit - EditorShowing');{$Endif}
   end else begin
-    {$IfDef dbgFocus}WriteLn('DoExit - Ext');{$Endif}
+    {$IfDef dbgFocus}DebugLn('DoExit - Ext');{$Endif}
     Invalidate;
   end;
   inherited doExit;
@@ -2764,9 +2765,9 @@ procedure TCustomGrid.doEnter;
 begin
   inherited doEnter;
   if FEditorHiding then begin
-    {$IfDef dbgFocus}WriteLn('DoEnter - EditorHiding');{$Endif}
+    {$IfDef dbgFocus}DebugLn('DoEnter - EditorHiding');{$Endif}
   end else begin
-    {$IfDef dbgFocus}WriteLn('DoEnter - Ext');{$Endif}
+    {$IfDef dbgFocus}DebugLn('DoEnter - Ext');{$Endif}
     if EditorShouldEdit then begin
       SelectEditor;
       if Feditor=nil then Invalidate
@@ -2875,7 +2876,7 @@ begin
       end;
 
     {$IfDef Dbg}
-    else WriteLn(ClassName,'.KeyDown: ', Key);
+    else DebugLn(ClassName,'.KeyDown: ', Key);
     {$Endif}
   end;
 end;
@@ -2927,7 +2928,7 @@ procedure TCustomGrid.InvalidateCol(ACol: Integer);
 var
   R: TRect;
 begin
-  {$ifdef dbg} WriteLn('InvalidateCol  Col=',aCol); {$Endif}
+  {$ifdef dbg} DebugLn('InvalidateCol  Col=',aCol); {$Endif}
   R:=CellRect(aCol, FTopLeft.y);
   R.Top:=0; // Full Column
   R.Bottom:=FGCache.MaxClientXY.Y;
@@ -2938,7 +2939,7 @@ procedure TCustomGrid.InvalidateRow(ARow: Integer);
 var
   R: TRect;
 begin
-  {$ifdef dbg} WriteLn('InvalidateRow  Row=',aRow); {$Endif}
+  {$ifdef dbg} DebugLn('InvalidateRow  Row=',aRow); {$Endif}
   R:=CellRect(fTopLeft.x, aRow);
   R.Left:=0; // Full row
   R.Right:=FGCache.MaxClientXY.X;
@@ -2955,7 +2956,7 @@ begin
   if (not Result) then Exit;
 
   BeforeMoveSelection(DCol,DRow);
-  {$IfDef dbgFocus}WriteLn(' MoveExtend INIT FCol= ',FCol, ' FRow= ',FRow);{$Endif}
+  {$IfDef dbgFocus}DebugLn(' MoveExtend INIT FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 
   LastEditor:=Editor;
   WasVis:=(LastEditor<>nil)and(LastEditor.Visible);
@@ -2998,7 +2999,7 @@ begin
 
   ProcessEditor(LastEditor,DCol,DRow,WasVis);
 
-  {$IfDef dbgFocus}WriteLn(' MoveExtend FIN FCol= ',FCol, ' FRow= ',FRow);{$Endif}
+  {$IfDef dbgFocus}DebugLn(' MoveExtend FIN FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 end;
 
 function TCustomGrid.MoveNextSelectable(Relative: Boolean; DCol, DRow: Integer
@@ -3157,7 +3158,7 @@ var
   R: TRect;
 begin
   {$IfDef dbgPaint}
-    WriteLn('InvalidateCell  Col=',aCol, ' Row=',aRow,' Redraw=',Redraw);
+    DebugLn('InvalidateCell  Col=',aCol, ' Row=',aRow,' Redraw=',Redraw);
   {$Endif}
   R:=CellRect(aCol, aRow);
   InvalidateRect(Handle, @R, Redraw);
@@ -3195,13 +3196,13 @@ begin
   if not FEditorHiding and (Editor<>nil) and Editor.HandleAllocated and Editor.Visible then
   begin
     FEditorMode:=False;
-    {$IfDef dbgFocus} WriteLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}
     FEditorHiding:=True;
     Editor.Visible:=False;
     Editor.Parent:=nil;
     LCLIntf.SetFocus(Self.Handle);
     FEDitorHiding:=False;
-    {$IfDef dbgFocus} WriteLn('EditorHide FIN'); {$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorHide FIN'); {$Endif}
   end;
 end;
 
@@ -3214,7 +3215,7 @@ begin
   if (goEditing in Options) and
      not FEditorShowing and (Editor<>nil) and not Editor.Visible then
   begin
-    {$IfDef dbgFocus} WriteLn('EditorShow INIT FCol=',FCol,' FRow=',FRow);{$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorShow INIT FCol=',FCol,' FRow=',FRow);{$Endif}
     FEditorMode:=True;
     FEditorShowing:=True;
 
@@ -3225,7 +3226,7 @@ begin
     LCLIntf.SetFocus(Editor.Handle);
     InvalidateCell(FCol,FRow,True);
     FEditorShowing:=False;
-    {$IfDef dbgFocus} WriteLn('EditorShow FIN');{$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorShow FIN');{$Endif}
   end;
 end;
 
@@ -3275,7 +3276,7 @@ end;
 procedure TCustomGrid.EditorExit(Sender: TObject);
 begin
   if not FEditorHiding then begin
-    {$IfDef dbgFocus} WriteLn('EditorExit INIT');{$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorExit INIT');{$Endif}
     FEditorHiding:=True;
     EditorGetValue;
     if Editor<>nil then begin
@@ -3284,7 +3285,7 @@ begin
       //InvalidateCell(FCol,FRow, True);
     end;
     FEditorHiding:=False;
-    {$IfDef dbgFocus} WriteLn('EditorExit FIN'); {$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorExit FIN'); {$Endif}
   end;
 end;
 
@@ -3302,7 +3303,7 @@ begin
       if (Key=VK_TAB) and not (goTabs in Options) then begin
           // let the focus go
           KeyDown(Key, Shift);
-          //WriteLn('Editor KeyTab Pressed, Focus Should leave the grid');
+          //DebugLn('Editor KeyTab Pressed, Focus Should leave the grid');
           Exit;
       end;
       Key:=0;
@@ -3606,7 +3607,7 @@ begin
   FGCache.AccumHeight:=TList.Create;
   FGSMHBar := GetSystemMetrics(SM_CYHSCROLL) + 3;
   FGSMVBar := GetSystemMetrics(SM_CXVSCROLL) + 3;
-  //WriteLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
+  //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
   //AutoScroll:=False;
   FBorderStyle := bsSingle; //bsNone;
@@ -3634,16 +3635,16 @@ begin
   FixedRows:=1;
   Editor:=nil;
 
-  //writeLn('Setting color');
+  //DebugLn('Setting color');
   Color:=clWindow;
-  //writeLn('Color', IntToHex(color, 4), ColorToString(Color));
+  //DebugLn('Color', IntToHex(color, 4), ColorToString(Color));
   Color:=clWhite;
-  //writeLn('Color', IntToHex(Color, 4), ColorToString(Color));
+  //DebugLn('Color', IntToHex(Color, 4), ColorToString(Color));
 end;
 
 destructor TCustomGrid.Destroy;
 begin
-  {$Ifdef dbg}WriteLn('TCustomGrid.Destroy');{$Endif}
+  {$Ifdef dbg}DebugLn('TCustomGrid.Destroy');{$Endif}
   FreeThenNil(FGCache.AccumWidth);
   FreeThenNil(FGCache.AccumHeight);
   FreeThenNil(FCols);
@@ -3758,15 +3759,15 @@ procedure Tvirtualgrid.Setcolcount(const Avalue: Integer);
 begin
   if FColCount=Avalue then Exit;
   {$Ifdef dbgMem}
-    WriteLn('TVirtualGrid.SetColCount Value=',AValue);
+    DebugLn('TVirtualGrid.SetColCount Value=',AValue);
   {$Endif}
   FColCount:=AValue;
   {$Ifdef dbgMem}
-    write('TVirtualGrid.SetColCount->FCOLS: ');
+    DBGOut('TVirtualGrid.SetColCount->FCOLS: ');
   {$Endif}
   FCols.SetLength(FColCount, 1);
   {$Ifdef dbgMem}
-    write('TVirtualGrid.SetColCount->FCELLS(',FColCount,',',FRowCount,'): ');
+    DBGOut('TVirtualGrid.SetColCount->FCELLS(',FColCount,',',FRowCount,'): ');
   {$Endif}
   FCells.SetLength(FColCount, FRowCount);
 end;
@@ -3776,15 +3777,15 @@ procedure Tvirtualgrid.Setrowcount(const Avalue: Integer);
 begin
   if FRowCount=AValue then Exit;
   {$Ifdef dbgMem}
-    WriteLn('TVirtualGrid.SetRowCount Value=',AValue);
+    DebugLn('TVirtualGrid.SetRowCount Value=',AValue);
   {$Endif}
   FRowCount:=AValue;
   {$Ifdef dbgMem}
-    write('TVirtualGrid.SetRowCount->FROWS: ');
+    DBGOut('TVirtualGrid.SetRowCount->FROWS: ');
   {$Endif}
   FRows.SetLength(FRowCount,1);
   {$Ifdef dbgMem}
-    write('TVirtualGrid.SetRowCount->FCELLS(',FColCount,',',FRowCount,'): ');
+    DBGOut('TVirtualGrid.SetRowCount->FCELLS(',FColCount,',',FRowCount,'): ');
   {$Endif}
   FCells.SetLength(FColCount, FRowCount);
 end;
@@ -3801,9 +3802,9 @@ end;
 
 procedure Tvirtualgrid.Clear;
 begin
-  {$Ifdef dbgMem}write('FROWS: ');{$Endif}FRows.Clear;
-  {$Ifdef dbgMem}write('FCOLS: ');{$Endif}FCols.Clear;
-  {$Ifdef dbgMem}write('FCELLS: ');{$Endif}FCells.Clear;
+  {$Ifdef dbgMem}DBGOut('FROWS: ');{$Endif}FRows.Clear;
+  {$Ifdef dbgMem}DBGOut('FCOLS: ');{$Endif}FCols.Clear;
+  {$Ifdef dbgMem}DBGOut('FCELLS: ');{$Endif}FCells.Clear;
   FColCount:=0;
   FRowCount:=0;
 end;
@@ -3844,7 +3845,7 @@ procedure Tvirtualgrid.Dodestroyitem (Sender: Tobject; Col,Row: Integer;
   var Item: Pointer);
 begin
   {$Ifdef dbgMem}
-    WriteLn('TVirtualGrid.doDestroyItem Col=',Col,' Row= ',
+    DebugLn('TVirtualGrid.doDestroyItem Col=',Col,' Row= ',
             Row,' Item=',Integer(Item));
   {$endif}
   if Item<>nil then begin
@@ -3861,7 +3862,7 @@ procedure Tvirtualgrid.doNewitem(Sender: Tobject; Col,Row:Integer;
   var Item: Pointer);
 begin
   {$Ifdef dbgMem}
-    WriteLn('TVirtualGrid.doNewItem Col=',Col,' Row= ',
+    DebugLn('TVirtualGrid.doNewItem Col=',Col,' Row= ',
             Row,' Item=',Integer(Item));
   {$endif}
   if Sender=FCols then begin
@@ -3880,7 +3881,7 @@ end;
 constructor TVirtualGrid.Create;
 begin
   Inherited Create;
-  {$Ifdef dbg}WriteLn('TVirtualGrid.Create');{$Endif}
+  {$Ifdef dbg}DebugLn('TVirtualGrid.Create');{$Endif}
   FCells:=TArray.Create;
   FCells.OnDestroyItem:=@doDestroyItem;
   FCells.OnNewItem:=@doNewItem;
@@ -3896,7 +3897,7 @@ end;
 
 destructor TVirtualGrid.Destroy;
 begin
-  {$Ifdef dbg}WriteLn('TVirtualGrid.Destroy');{$Endif}
+  {$Ifdef dbg}DebugLn('TVirtualGrid.Destroy');{$Endif}
   Clear;
   FreeThenNil(FRows);
   FreeThenNil(FCols);
@@ -3938,31 +3939,31 @@ procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
 begin
   write(Name,'.WndProc msg= ');
   case TheMessage.Msg of
-    LM_SHOWWINDOW: WriteLn('LM_SHOWWINDOW');
-    LM_SETFOCUS: WriteLn('LM_SETFOCUS');
-    LM_PAINT: WriteLn('LM_PAINT');
-    LM_KEYUP: WriteLn('LM_KEYUP');
-    LM_WINDOWPOSCHANGED: WriteLn('LM_WINDOWPOSCHANGED');
-    LM_MOVE: WriteLn('LM_MOVE');
-    LM_KILLFOCUS: WriteLn('LM_KILLFOCUS');
+    LM_SHOWWINDOW: DebugLn('LM_SHOWWINDOW');
+    LM_SETFOCUS: DebugLn('LM_SETFOCUS');
+    LM_PAINT: DebugLn('LM_PAINT');
+    LM_KEYUP: DebugLn('LM_KEYUP');
+    LM_WINDOWPOSCHANGED: DebugLn('LM_WINDOWPOSCHANGED');
+    LM_MOVE: DebugLn('LM_MOVE');
+    LM_KILLFOCUS: DebugLn('LM_KILLFOCUS');
     CM_BASE..CM_MOUSEWHEEL:
       begin
         case TheMessage.Msg of
-          CM_MOUSEENTER: WriteLn('CM_MOUSEENTER');
-          CM_MOUSELEAVE: WriteLn('CM_MOUSELEAVE');
-          CM_VISIBLECHANGED: WriteLn('CM_VISIBLECHANGED');
-          CM_TEXTCHANGED: WriteLn('CM_TEXTCHANGED');
-          CM_SHOWINGCHANGED: WriteLn('CM_SHOWINGCHANGED');
-          else WriteLn('CM_BASE + ',TheMessage.Msg-CM_BASE);
+          CM_MOUSEENTER: DebugLn('CM_MOUSEENTER');
+          CM_MOUSELEAVE: DebugLn('CM_MOUSELEAVE');
+          CM_VISIBLECHANGED: DebugLn('CM_VISIBLECHANGED');
+          CM_TEXTCHANGED: DebugLn('CM_TEXTCHANGED');
+          CM_SHOWINGCHANGED: DebugLn('CM_SHOWINGCHANGED');
+          else DebugLn('CM_BASE + ',TheMessage.Msg-CM_BASE);
         end
 
       end;
     CN_BASE..CN_NOTIFY:
       begin
-        WriteLn('CN_BASE + ',TheMessage.Msg-CN_BASE);
+        DebugLn('CN_BASE + ',TheMessage.Msg-CN_BASE);
       end;
     else
-      WriteLn(TheMessage.Msg,' (',IntToHex(TheMessage.Msg, 4),')');
+      DebugLn(TheMessage.Msg,' (',IntToHex(TheMessage.Msg, 4),')');
   end;
   inherited WndProc(TheMessage);
 end;
@@ -3991,7 +3992,7 @@ procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
   end;
 begin
   {$IfDef dbg}
-  WriteLn('INI: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
+  DebugLn('INI: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
   {
   case Key of
@@ -4004,7 +4005,7 @@ begin
   end;
   inherited keyDown(key, shift);
   {$IfDef dbg}
-  WriteLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
+  DebugLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
 end;
 
@@ -4156,8 +4157,8 @@ end;
 
 destructor TDrawGrid.Destroy;
 begin
-  {$Ifdef dbg}WriteLn('TDrawGrid.Destroy');{$Endif}
-  //WriteLn('Font.Name',Font.Name);
+  {$Ifdef dbg}DebugLn('TDrawGrid.Destroy');{$Endif}
+  //DebugLn('Font.Name',Font.Name);
   FreeThenNil(FGrid);
   inherited Destroy;
 end;
@@ -4379,7 +4380,7 @@ procedure TStringGrid.DefineProperties(Filer: TFiler);
     AntGrid: TStringGrid;
   begin
     AntGrid := TStringGrid(Filer.Ancestor);
-    //WriteLn('TStringGrid.DefineProperties: Ancestor=',Integer(AntGrid));
+    //DebugLn('TStringGrid.DefineProperties: Ancestor=',Integer(AntGrid));
     if AntGrid<>nil then begin
       result:=false;
       for i:=0 to AntGrid.ColCount-1 do
@@ -4560,9 +4561,9 @@ begin
   inherited SetEditText(aCol, aRow, aValue);
 end;
 
-constructor TStringGrid.Create(AOWner: TComponent);
+constructor TStringGrid.Create(AOwner: TComponent);
 begin
-  inherited Create(AOWner);
+  inherited Create(AOwner);
   if not (csDesigning in componentState) then begin
     FDefEditor:=TStringCellEditor.Create(nil);
     FDefEditor.Name:='Default_StringCellEditor';
@@ -4580,7 +4581,7 @@ end;
 
 destructor TStringGrid.Destroy;
 begin
-  {$Ifdef dbg}WriteLn('TStringGrid.Destroy');{$Endif}
+  {$Ifdef dbg}DebugLn('TStringGrid.Destroy');{$Endif}
   if FdefEditor<>nil then begin
     FDefEDitor.Parent:=nil;
     FreeThenNil(FDefEditor);
