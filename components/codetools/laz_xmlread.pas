@@ -901,7 +901,7 @@ var
       p:=OldBuf;
       while (p<buf) and (p[0] in WhitespaceChars) do
         inc(p);
-      if p=buf then
+      if p<buf then
         CreateTextNode(OldBuf,DataLen);
       Result := True;
     end else
@@ -1343,6 +1343,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/10/01 08:27:35  lazarus
+  MG: fixed parsing textnodes
+
   Revision 1.4  2002/09/13 16:58:27  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 

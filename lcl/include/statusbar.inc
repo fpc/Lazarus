@@ -24,7 +24,8 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   Color := clBtnFace;
   Height := 19;
-  Setbounds(0,TWinControl(AOwner).Height-21,TWinControl(AOwner).Width,20);
+  SetBounds(0,TWinControl(AOwner).ClientHeight-21,
+            TWinControl(AOwner).ClientWidth,20);
   Align := alBottom;
   FPanels := TStatusPanels.Create(Self);
   FCanvas := TControlCanvas.Create;
