@@ -58,6 +58,8 @@ begin
    FItemIndex  := -1;
    FButtonList := TList.Create;
    FColumns    := 1;
+   Width:= 250;
+   Height := 200;
 end;
 
 {------------------------------------------------------------------------------
@@ -241,6 +243,10 @@ end;
 
 {
   $Log$
+  Revision 1.2  2000/12/29 15:04:07  lazarus
+  Added more images to the resource.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

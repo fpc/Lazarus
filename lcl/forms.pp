@@ -175,6 +175,7 @@ type
       property ClientWidth;
       property Enabled;
       property FormStyle;
+      property PopupMenu;
       property Position;
       property Visible;
 //      property WindowState;

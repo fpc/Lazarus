@@ -247,12 +247,13 @@ begin
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
           ,TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
   RegisterComponents('Standard','Buttons',[TButton,TBitBtn,TSpeedButton]);
-  RegisterComponents('Additional','ExtCtrls',[TNoteBook,TTimer,TPaintBox
+  RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TProgressBar
           ,TToolBar,TToolButton,TTrackBar]);
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
+  RegisterComponents('System','ExtCtrls',[TTimer]);
 
   RegisterComponentsProc:=nil;
 

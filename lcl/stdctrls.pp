@@ -53,6 +53,7 @@ type
    TGroupBox = class(TCustomGroupBox)                                                         
    published
      property Caption;
+     property Visible;
    end;                                                                                        
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable);      
@@ -215,6 +216,7 @@ type
       property OnClick;
       property DragMode;
       property Text;
+      property Visible;
    end;
 
 
@@ -477,6 +479,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/12/29 15:04:07  lazarus
+  Added more images to the resource.
+  Shane
+
   Revision 1.4  2000/12/01 15:50:39  lazarus
   changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
   Shane

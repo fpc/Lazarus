@@ -293,9 +293,11 @@ type
   public
      constructor Create (AOwner : TComponent); override;
   published
+     property Enabled;
      property ItemIndex;
      property Items;
      property Columns;
+     property Visible;
   end;
 
 const
@@ -319,6 +321,10 @@ end.
 
  {
   $Log$
+  Revision 1.2  2000/12/29 15:04:07  lazarus
+  Added more images to the resource.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 
