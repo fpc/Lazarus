@@ -47,20 +47,13 @@ uses
   DialogProcs, IDEProcs, LazarusIDEStrConsts;
 
 type
-  TRepairLFMDialog = class(TForm)
-    ErrorsGroupBox: TGroupBox;
-    LFMGroupBox: TGroupBox;
-    ErrorsListBox: TListBox;
-    RemoveAllButton: TButton;
-    CancelButton: TButton;
-    LFMSynEdit: TSynEdit;
-    procedure RemoveAllButtonClick(Sender: TObject);
+  TDelphi2LazarusDialog = class(TForm)
   private
   public
   end;
 
 var
-  RepairLFMDialog: TRepairLFMDialog;
+  Delphi2LazarusDialog: TDelphi2LazarusDialog;
   
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
@@ -72,6 +65,9 @@ function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
   AddLRSCode: boolean): TModalResult;
+function LoadUnitAndLFMFile(const UnitFileName: string;
+  var UnitCode, LFMCode: TCodeBuffer): TModalResult;
+function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
 
 implementation
 
@@ -226,11 +222,33 @@ begin
   Result:=mrOk;
 end;
 
-{ TRepairLFMDialog }
-
-procedure TRepairLFMDialog.RemoveAllButtonClick(Sender: TObject);
+function LoadUnitAndLFMFile(const UnitFileName: string;
+  var UnitCode, LFMCode: TCodeBuffer): TModalResult;
+var
+  LFMFilename: string;
 begin
+  UnitCode:=nil;
+  LFMCode:=nil;
+  Result:=LoadCodeBuffer(UnitCode,UnitFileName,
+                         [lbfCheckIfText,lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  LFMFilename:=ChangeFileExt(UnitFileName,'.lfm');
+  if FileExists(LFMFilename) then begin
+    Result:=LoadCodeBuffer(LFMCode,LFMFilename,
+                           [lbfCheckIfText,lbfUpdateFromDisk]);
+    if Result<>mrOk then exit;
+  end;
+end;
 
+function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
+begin
+  if not LFMtoLRSfile(LFMFilename) then begin
+    Result:=MessageDlg('Error creating lrs',
+      'Unable to convert lfm to lrs and write lrs file.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  Result:=mrOk;
 end;
 
 initialization

@@ -528,6 +528,7 @@ function ShowEditorOptionsDialog:TModalResult;
 function StrToLazSyntaxHighlighter(const s: string): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
+
 implementation
 
 
@@ -1791,45 +1792,48 @@ begin
   case AddHilightAttr of
   ahaTextBlock:
     begin
-      BG:=clNavy;
-      FG:=clWhite;
+      NewBG:=clNavy;
+      NewFG:=clWhite;
     end;
   ahaExecutionPoint:
     begin
-      BG:=clDKGray;
-      FG:=clWhite;
+      NewBG:=clDKGray;
+      NewFG:=clWhite;
     end;
   ahaEnabledBreakpoint:
     begin
-      BG:=clRed;
-      FG:=clWhite;
+      NewBG:=clRed;
+      NewFG:=clWhite;
     end;
   ahaDisabledBreakpoint:
     begin
-      BG:=clGreen;
-      FG:=clBlack;
+      NewBG:=clGreen;
+      NewFG:=clBlack;
     end;
   ahaInvalidBreakpoint:
     begin
-      BG:=clOlive;
-      FG:=clGreen;
+      NewBG:=clOlive;
+      NewFG:=clGreen;
     end;
   ahaUnknownBreakpoint:
     begin
-      BG:=clRed;
-      FG:=clBlack;
+      NewBG:=clRed;
+      NewFG:=clBlack;
     end;
   ahaErrorLine:
     begin
-      BG:=$50a0ff;
-      FG:=clBlack;
+      NewBG:=$50a0ff;
+      NewFG:=clBlack;
     end;
   else
     begin
-      BG:=clWhite;
-      FG:=clBlack;
+      NewBG:=clWhite;
+      NewFG:=clBlack;
     end;
   end;
+  Special:=(NewFG<>clNone) or (NewBG<>clNone);
+  if NewFG<>clNone then FG:=NewFG;
+  if NewBG<>clNone then BG:=NewBG;
 end;
 
 procedure TEditorOptions.GetSynEditSelectedColor(ASynEdit:TSynEdit);

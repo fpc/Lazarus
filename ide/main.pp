@@ -6455,32 +6455,33 @@ var
   LRSFilename: String;
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  UnitCode, LFMCode: TCodeBuffer;
 begin
   // check file and directory
-  writeln('TMainIDE.DoConvertDelphiUnit A');
+  writeln('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
   Result:=CheckDelphiFileExt(DelphiFilename);
   if Result<>mrOk then exit;
   Result:=CheckFilenameForLCLPaths(DelphiFilename);
   if Result<>mrOk then exit;
   // close Delphi files in editor
-  writeln('TMainIDE.DoConvertDelphiUnit B ',DelphiFilename);
+  writeln('TMainIDE.DoConvertDelphiUnit Close files in editor');
   Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
   if Result<>mrOk then exit;
   DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
   Result:=DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
   if Result<>mrOk then exit;
   // rename files (.pas,.dfm) lowercase
-  writeln('TMainIDE.DoConvertDelphiUnit C');
+  writeln('TMainIDE.DoConvertDelphiUnit Rename files');
   Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,false);
   if Result<>mrOk then exit;
   // convert .dfm file to .lfm file
-  writeln('TMainIDE.DoConvertDelphiUnit D ',DFMFilename);
+  writeln('TMainIDE.DoConvertDelphiUnit Convert dfm to lfm');
   if DFMFilename<>'' then begin
     Result:=ConvertDFMFileToLFMFile(DFMFilename);
     if Result<>mrOk then exit;
   end;
   // create empty .lrs file
-  writeln('TMainIDE.DoConvertDelphiUnit E');
+  writeln('TMainIDE.DoConvertDelphiUnit Create empty lrs');
   LazarusUnitFilename:=ConvertDelphiToLazarusFilename(DelphiFilename);
   if DFMFilename<>'' then begin
     LRSFilename:=ChangeFileExt(LazarusUnitFilename,'.lrs');
@@ -6493,7 +6494,7 @@ begin
   // remove {$R *.dfm} directive
   // add initialization
   // add {$i unit.lrs} directive
-  writeln('TMainIDE.DoConvertDelphiUnit F');
+  writeln('TMainIDE.DoConvertDelphiUnit Convert delphi source');
   FOpenEditorsOnCodeToolChange:=true;
   try
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then begin
@@ -6507,10 +6508,25 @@ begin
       exit;
     end;
 
-    // ToDo: check lfm
-    writeln('TMainIDE.DoConvertDelphiUnit G');
-    // ToDo: convert lfm to lrs
-    writeln('TMainIDE.DoConvertDelphiUnit H');
+    // check the LFM file and the pascal unit
+    writeln('TMainIDE.DoConvertDelphiUnit Check new .lfm and .pas file');
+    Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode);
+    if Result<>mrOk then exit;
+    if not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg) then
+    begin
+      DoJumpToCompilerMessage(-1,true);
+      exit;
+    end;
+    
+    // save LFM file
+    writeln('TMainIDE.DoConvertDelphiUnit Save LFM');
+    Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,false);
+    if Result<>mrOk then exit;
+
+    // convert lfm to lrs
+    writeln('TMainIDE.DoConvertDelphiUnit Convert lfm to lrs');
+    Result:=ConvertLFMtoLRSfile(LFMCode.Filename);
+    if Result<>mrOk then exit;
   finally
     FOpenEditorsOnCodeToolChange:=false;
   end;
@@ -10213,6 +10229,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.679  2003/12/16 13:42:02  mattias
+  implemented basic Repair broken LFM wizard
+
   Revision 1.678  2003/11/28 23:24:57  mattias
   implemented Clean Directories
 

@@ -64,11 +64,11 @@ type
 function InitLazResourceComponent(Instance: TComponent;
   RootAncestor: TClass): Boolean;
 
-procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
-  ResourceName, ResourceType:AnsiString);
-function LFMtoLRSfile(LFMfilename:ansistring):boolean;
+procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
+  const ResourceName, ResourceType: String);
+function LFMtoLRSfile(const LFMfilename: string): boolean;
  // returns true if successful
-function LFMtoLRSstream(LFMStream,LFCStream:TStream):boolean;
+function LFMtoLRSstream(LFMStream, LFCStream: TStream): boolean;
  // returns true if successful
 function FindLFMClassName(LFMStream: TStream):AnsiString;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
@@ -102,7 +102,7 @@ begin
 end;}
 
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
-  ResourceName, ResourceType:AnsiString);
+  const ResourceName, ResourceType: String);
 { example ResStream:
   LazarusResources.Add('ResourceName','ResourceType',
     #123#45#34#78#18#72#45#34#78#18#72#72##45#34#78#45#34#78#184#34#78#145#34#78
@@ -212,36 +212,36 @@ begin
     Result:='';
 end;
 
-function LFMtoLRSfile(LFMfilename:ansistring):boolean;
+function LFMtoLRSfile(const LFMfilename: string):boolean;
 // returns true if successful
 var
-  LFMFileStream,LFCFileStream:TFileStream;
-  LFMMemStream,LFCMemStream:TMemoryStream;
-  LFCfilename,LFMfilenameExt:ansistring;
+  LFMFileStream, LRSFileStream: TFileStream;
+  LFMMemStream, LRSMemStream: TMemoryStream;
+  LRSfilename, LFMfilenameExt: string;
 begin
   Result:=true;
   try
     LFMFileStream:=TFileStream.Create(LFMfilename,fmOpenRead);
     LFMMemStream:=TMemoryStream.Create;
-    LFCMemStream:=TMemoryStream.Create;
+    LRSMemStream:=TMemoryStream.Create;
     try
       LFMMemStream.CopyFrom(LFMFileStream,LFMFileStream.Size);
       LFMMemStream.Position:=0;
       LFMfilenameExt:=ExtractFileExt(LFMfilename);
-      LFCfilename:=copy(LFMfilename,1,
+      LRSfilename:=copy(LFMfilename,1,
                     length(LFMfilename)-length(LFMfilenameExt))+'.lrs';
-      Result:=LFMtoLRSstream(LFMMemStream,LFCMemStream);
+      Result:=LFMtoLRSstream(LFMMemStream,LRSMemStream);
       if not Result then exit;
-      LFCMemStream.Position:=0;
-      LFCFileStream:=TFileStream.Create(LFCfilename,fmCreate);
+      LRSMemStream.Position:=0;
+      LRSFileStream:=TFileStream.Create(LRSfilename,fmCreate);
       try
-        LFCFileStream.CopyFrom(LFCMemStream,LFCMemStream.Size);
+        LRSFileStream.CopyFrom(LRSMemStream,LRSMemStream.Size);
       finally
-        LFCFileStream.Free;
+        LRSFileStream.Free;
       end;
     finally
       LFMMemStream.Free;
-      LFCMemStream.Free;
+      LRSMemStream.Free;
       LFMFileStream.Free;
     end;
   except
@@ -252,7 +252,7 @@ begin
   end;
 end;
 
-function LFMtoLRSstream(LFMStream,LFCStream:TStream):boolean;
+function LFMtoLRSstream(LFMStream,LRSStream:TStream):boolean;
 // returns true if successful
 var FormClassName:ansistring;
   BinStream:TMemoryStream;
@@ -264,14 +264,14 @@ begin
     try
       ObjectTextToBinary(LFMStream,BinStream);
       BinStream.Position:=0;
-      BinaryToLazarusResourceCode(BinStream,LFCStream,FormClassName
+      BinaryToLazarusResourceCode(BinStream,LRSStream,FormClassName
         ,'FORMDATA');
     finally
       BinStream.Free;
     end;
   except
     on E: Exception do begin
-      writeln('LFMtoLFCstream ',E.Message);
+      writeln('LFMtoLRSstream ',E.Message);
       Result:=false;
     end;
   end;

@@ -215,6 +215,8 @@ type
     function AsString: string;
     procedure AddToTree(ATree: TLFMTree);
     procedure Unbind;
+    function FindParentError: TLFMError;
+    function FindContextNode: TLFMTreeNode;
   end;
   
   { TLFMTree }
@@ -240,6 +242,8 @@ type
     function PositionToCaret(p: integer): TPoint;
     procedure AddError(ErrorType: TLFMErrorType; LFMNode: TLFMTreeNode;
       const ErrorMessage: string; ErrorPosition: integer);
+    function FindErrorAtLine(Line: integer): TLFMError;
+    function FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
   end;
   
 const
@@ -328,6 +332,24 @@ begin
   NewError.Caret:=PositionToCaret(NewError.Position);
   writeln('TLFMTree.AddError ',NewError.AsString);
   NewError.AddToTree(Self);
+end;
+
+function TLFMTree.FindErrorAtLine(Line: integer): TLFMError;
+begin
+  Result:=FirstError;
+  while Result<>nil do begin
+    if (Result.Caret.Y=Line) and (Line>=1) then exit;
+    Result:=Result.NextError;
+  end;
+end;
+
+function TLFMTree.FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
+begin
+  Result:=FirstError;
+  while Result<>nil do begin
+    if (Result.Node=Node) and (Node<>nil) then exit;
+    Result:=Result.NextError;
+  end;
 end;
 
 procedure TLFMTree.ProcessValue;
@@ -730,6 +752,28 @@ begin
   if PrevError<>nil then PrevError.NextError:=NextError;
   PrevError:=nil;
   NextError:=nil;
+end;
+
+function TLFMError.FindParentError: TLFMError;
+var
+  CurNode: TLFMTreeNode;
+begin
+  Result:=nil;
+  if (Node=nil) or (Tree=nil) then exit;
+  CurNode:=Node.Parent;
+  while CurNode<>nil do begin
+    Result:=Tree.FindErrorAtNode(CurNode);
+    if Result<>nil then exit;
+    CurNode:=CurNode.Parent;
+  end;
+end;
+
+function TLFMError.FindContextNode: TLFMTreeNode;
+begin
+  Result:=Node;
+  while (Result<>nil)
+  and (not (Result.TheType in [lfmnProperty,lfmnObject])) do
+    Result:=Result.Parent;
 end;
 
 { TLFMNameParts }
