@@ -106,6 +106,7 @@ constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
 begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
+    Name:='LazFindReplaceDialog';
     Caption:='';
     Width:=400;
     Height:=266;
@@ -329,7 +330,7 @@ procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
 var Component: TFindDlgComponent;
 begin
-  //writeln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key);
+  //writeln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key,' RETURN=',VK_RETURN,' TAB=',VK_TAB,' DOWN=',VK_DOWN,' UP=',VK_UP);
   if (Key=VK_RETURN) then
     OkButtonClick(Sender)
   else if (Key=VK_ESCAPE) then

@@ -639,8 +639,8 @@ procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
   if FItemIndex = Val then exit;
   FItemIndex:= Val;
-  if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
-    Text:=FItems[FItemIndex];
+  //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
+  //  Text:=FItems[FItemIndex];
   if HandleAllocated then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 end;
@@ -719,6 +719,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2002/10/04 20:46:51  lazarus
+  MG: improved TComboBox.SetItemIndex
+
   Revision 1.18  2002/10/04 14:24:14  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
