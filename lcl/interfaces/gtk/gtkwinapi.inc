@@ -2130,7 +2130,10 @@ var
 
     Style := gtk_style_attach(GetStyle('checkbox'),pDC^.Drawable);
     Widget := GetStyleWidget('checkbox');
+
+    // Do we really need to set this?
     GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+
     Widget^.Window := pDC^.Drawable;
     gtk_paint_check(Style,pDC^.Drawable, State,
       Shadow, nil, Widget, 'checkbutton',
@@ -7165,6 +7168,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.139  2002/09/30 20:19:14  lazarus
+  MG: fixed flickering of modal forms
+
   Revision 1.138  2002/09/27 20:52:25  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
