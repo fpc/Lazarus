@@ -804,7 +804,7 @@ type
 
   TLMDestroy = TLMNoParams;
 
-  TLMShortCut = packed record
+  TLMShortCut = record
     Handle : HWND;
     OldKey : Word;
     OldModifier : TShiftState;
@@ -1057,6 +1057,9 @@ end.
 
 {
   $Log$
+  Revision 1.54  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.53  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 

@@ -37,6 +37,10 @@ interface
 { $DEFINE VerboseMouseBugfix}
 { $DEFINE RaiseExceptionOnNilPointers}
 
+{$DEFINE Use_KeyStateList} // keep track of keystates instead of using OS
+                           // This is the old mode and might be removed
+
+
 {$IFDEF win32}
 {$DEFINE NoGdkPixbufLib}
 {$ELSE}
@@ -59,7 +63,12 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  xlib,
+  {$IFDEF UNIX}
+  x, xlib,
+  {$ENDIF}
+  {$IFDEF WIN32}
+  Windows,
+  {$ENDIF}
   SysUtils, Classes, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   VclGlobals, LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
   GraphType, GraphMath, Graphics;
@@ -68,7 +77,7 @@ uses
 type
   TgtkObject = class(TInterfaceBase)
   protected
-    FKeyStateList: TList; // Keeps track of which keys are pressed
+    FKeyStateList_: TList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
     FMessageQueue: TGtkMessageQueue;      // queue of PMsg
@@ -85,7 +94,9 @@ type
     {$Else}
     FNoteBookCloseBtnPixbuf : PGdkPixbuf;
     {$EndIf}
-    
+
+    FLogHandlerID: guint; // ID returend by set_handler
+
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
     FStockLtGrayBrush: HBRUSH;
@@ -257,7 +268,7 @@ type
     procedure RemoveCallbacks(Sender : TObject); virtual;
   public
     // for gtk specific components:
-    FLogHandlerID: Cardinal;
+//    FLogHandlerID: Cardinal;
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
@@ -298,6 +309,7 @@ uses
 {$I gtklistsl.inc}
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
+
 
 procedure InternalInit;
 var
@@ -386,6 +398,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.153  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.152  2003/09/22 19:17:26  ajgenius
   begin implementing GtkTreeView for ListBox/CListBox
 

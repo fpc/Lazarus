@@ -416,6 +416,15 @@ begin
     inherited KeyDown(Key, Shift);
 end;
 
+procedure TCustomComboBox.KeyPress(var Key : Char);
+begin
+  if (Style=csDropDownList) and (Ord(Key)>31) then
+    Key:=#0
+  else
+    Inherited KeyPress(Key);
+end;
+
+
 {------------------------------------------------------------------------------
   function TCustomComboBox.SelectItem(const AnItem: String): Boolean;
 
@@ -789,6 +798,9 @@ end;
 
 {
   $Log$
+  Revision 1.33  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.32  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

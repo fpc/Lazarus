@@ -66,19 +66,29 @@ begin
 end;
 
 function TSSHGDBMIDebugger.ParseInitialization: Boolean;
+
+  function CheckReadLine(var ALine: String): Boolean;
+  // does a checked read
+  // returns True if we shoul process it
+  // returns Flase if it is the gdb prompt
+  begin
+    ALine := ReadLine(True);
+    Result := Pos('(gdb)', ALine) = 0;
+    if Result
+    then ALine := StripLN(ReadLine);
+  end;
 var
   Line, S: String;
 begin
   Result := False;
   
-  Line := StripLN(ReadLine);
-  while Line = '' do
-  begin
-    Line := ReadLine(True);
-    if Pos('(gdb)', Line) > 0 then Break;
-    Line := StripLN(ReadLine);
-  end;
-  
+  // strip leading empty lines
+  while CheckReadLine(Line) and (Line = '') do;
+
+  // succesfull login ?
+  while Pos('try again', Line) > 0 do CheckReadLine(Line);
+
+(*
   if Pos('authenticity', Line) > 0
   then begin
     //
@@ -93,7 +103,9 @@ begin
       Line := StripLN(ReadLine);
     until Pos('password:', Line) > 0
   end;
+*)
 
+(*
   while Pos('password:', Line) > 0 do
   begin
     if not InputQuery('Debugger', 'Enter ' + Line, S)
@@ -121,7 +133,7 @@ begin
     // Next attempt
     Line := StripLN(ReadLine);
   end;
-  
+*)
   if Pos('(gdb)', Line) > 0
   then Result := inherited ParseInitialization
   else begin
@@ -140,6 +152,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.3  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

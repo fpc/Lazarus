@@ -63,6 +63,7 @@ function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): H
 Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 
+Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
@@ -74,6 +75,7 @@ function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
 function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
+Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
 Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;  override;
@@ -130,10 +132,12 @@ function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
+Procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
 function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 function IsWindowVisible(handle: HWND): boolean; override;
 
+Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
 function LineTo(DC: HDC; X, Y: Integer): Boolean; override;
 
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; override;
@@ -198,15 +202,11 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; X
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
-//##apiwiz##eps##   // Do not remove
-
+function VkKeyScan(AChar: Char): Short; override;
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
 
-Procedure InitializeCriticalSection(var CritSection: TCriticalSection); Override;
-Procedure EnterCriticalSection(var CritSection: TCriticalSection); Override;
-Procedure LeaveCriticalSection(var CritSection: TCriticalSection); Override;
-Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
+//##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 
 // included by gtkint.pp
@@ -214,6 +214,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.77  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 

@@ -352,7 +352,7 @@ end;
 
 Function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 Begin
-  Result := MapIrregularVirtualKey(Key);
+  Result := Key;
   if WordRec(Result).Hi <> 0 then begin
     Result:=0;
     exit;
@@ -386,6 +386,9 @@ end.
 
 {
   $Log$
+  Revision 1.52  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.51  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

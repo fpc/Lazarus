@@ -175,11 +175,6 @@ end;
 -------------------------------------------------------------------------------}
   {$IFDEF CustomFonts}
   procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
-  {$IFDEF Win32}
-  begin
-    // not supported under win32
-  end;
-  {$ELSE not win32}
   var
     RCStyle: PGtkRcStyle;
   begin
@@ -200,7 +195,6 @@ end;
     gtk_rc_style_unref(RCStyle);
     {$EndIf}
   end;
-  {$ENDIF not win32}
   {$ENDIF CustomFonts}
 
 function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
@@ -573,78 +567,127 @@ function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 var
   Msg: TLMKey;
-  Code,
-  KeyCode: Word;
-  Flags: Integer;
-  Toggle, Extended, SysKey: Boolean;
-  ShiftState: TShiftState;
   EventStopped: Boolean;
-  TopLevel: PGtkWidget;
-  theString : PPgChar;
+  EventString: ^TByteArray; // GTK1 and GTK2 workaround
+                            // (and easy access to bytes)
 
-  procedure StopKeyEvent(const EventName: PChar);
+  procedure StopKeyEvent(const AEventName: PChar);
   begin
-    if not EventStopped then begin
-      g_signal_stop_emission_by_name (GTK_OBJECT (Widget), EventName);
-      EventStopped:=true;
+    if not EventStopped
+    then begin
+      g_signal_stop_emission_by_name(PGtkObject(Widget), AEventName);
+      EventStopped := True;
     end;
-    gdk_event_key_get_string(Event, theString);
-    If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
-      {$IfNDef Win32}
-      If theString^ <> nil then begin
-        theString^[0] := Char(Msg.CharCode);
-        theString^[1] := #0;
+    if (Msg.CharCode >= 31)
+    or (Msg.CharCode = 0)
+    then begin
+      //MWE: Why is the string set if we stop the event ?
+      //MWE: still need to skip on win32 ?
+      {MWE:.$IfNDef Win32}
+
+      if EventString <> nil
+      then begin
+        EventString^[0] := Msg.CharCode;
+        EventString^[1] := 0;
       end;
-      {$EndIf}
+
+      {MWE:.$EndIf}
+      
       Event^.KeyVal := Msg.CharCode;
-      If Msg.CharCode <> VK_UNKNOWN then
-        KeyCode := Msg.CharCode
-      else
-        KeyCode := $FFFF;
-    end else begin
+    end
+    else begin
       Event^.KeyVal := 0;
-      KeyCode := $FFFF;
     end;
   end;
   
+  function CanSendChar: Boolean;
+  begin
+    Result := False;
+    if Event^.Length > 1 then Exit;
+    
+    // Check if CTRL is pressed
+    if ((Event^.State and GDK_CONTROL_MASK) <> 0)
+    then begin
+      // Check if we pressed ^@
+      if (Event^.Length = 0)
+      and (Event^.KeyVal = GDK_KEY_AT)
+      then begin
+        Result := True;
+        Exit;
+      end;
+      // check if we send the ^Char subset
+      if (Event^.Length = 1) and (EventString <> nil)
+      then begin
+        Result := (EventString^[0] > 0) and (EventString^[0] < $20);
+      end;
+      Exit;
+    end;
+    
+    Result := (Event^.Length = 1) and (EventString <> nil);
+  end;
+  
+var
+  VKey: TVKeyRecord;
+  CommonKeyData: Integer;
+  Flags: Integer;
+  SysKey: Boolean;
+  R: Boolean;
+  TopLevel: PGtkWidget;
 begin
-  Result := true;
-  
-  EventStopped:=false;
-  
+  R := True;
+  EventStopped := False;
+
+  {$IFDEF GTK2}
+  EventString := Pointer(Event^._string);
+  {$ELSE}
+  EventString := Pointer(Event^.theString);
+  {$ENDIF}
+
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
   FillChar(Msg,SizeOf(Msg),0);
-  GetGTKKeyInfo(Event,KeyCode,Msg.CharCode,SysKey,Extended,Toggle,ShiftState);
+
+  VKey := KeySymToVKey(Event^.keyval);
+
   Flags := 0;
-  if Extended then Flags := KF_EXTENDED;
-  if SysKey then Flags := Flags or KF_ALTDOWN;
-  Msg.KeyData := $00000000; //TODO: OEM char
+  if (VKey.Flags and VKEY_FLAG_EXT) <> 0
+  then Flags := KF_EXTENDED;
 
+  SysKey := False;
+  if (VKey.Flags and VKEY_FLAG_ALT) = 0
+  then begin
+    // VKey is without ALT so Alt is syskey
+    SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
+  end
+  else begin
+    // VKey is with ALT so SHFT Alt is syskey
+    SysKey := (Event^.State and (GDK_MOD1_MASK or GDK_SHIFT_MASK)) = (GDK_MOD1_MASK or GDK_SHIFT_MASK);
+  end;
 
-  //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
+  if SysKey
+  then Flags := Flags or KF_ALTDOWN;
+  CommonKeyData := MVKeyInfo[VKey.VKey].KeyCode shl 16; // ScanCode
 
   case gdk_event_get_type(Event) of
   GDK_KEY_RELEASE:
     begin
-      {writeln('[GTKKeyUpDown] RELEASE ',TControl(Data).Name,':',TControl(Data).ClassName,
-        ' Code=',KeyCode,
-        ' Char=',Msg.CharCode,' Sys=',SysKey,' Ext=',Extended,' Toggle=',Toggle);}
       EventTrace('key up', data);
+
+      Msg.CharCode := VKey.VKey;
       if SysKey
       then Msg.msg := LM_SYSKEYUP
       else Msg.msg := LM_KEYUP;
 
       Flags := Flags or KF_UP or KF_REPEAT;
 
-      Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
+      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {always};
 
       // send the message directly to the LCL
       Msg.Result:=0;
-      Code := Msg.CharCode;
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Data, Msg)=0;
+      R := DeliverMessage(Data, Msg) = 0;
 
-      If Msg.CharCode <> Code then begin
+      if Msg.CharCode <> VKey.VKey
+      then begin
         // key was handled by LCL
         StopKeyEvent('key_release_event');
       end;
@@ -652,19 +695,10 @@ begin
     
   GDK_KEY_PRESS:
     begin
-    
-      {writeln('[GTKKeyUpDown] PRESS ',TControl(Data).Name,':',TControl(Data).ClassName,
-        ' Widget=',HexStr(Cardinal(Widget),8));
-      writeln('  Event^.KeyVal=',Event^.KeyVal,
-        ' State=',HexStr(Cardinal(Event^.State),8),
-        ' KeyCode=',KeyCode,
-        ' VK=',Msg.CharCode,
-        ' SysKey=',SysKey,
-        ' Extended=',Extended,
-        ' Toggle=',Toggle
-        );}
-  
       EventTrace('key down', data);
+
+      Msg.CharCode := VKey.VKey;
+
       if SysKey
       then Msg.msg := LM_SYSKEYDOWN
       else Msg.msg := LM_KEYDOWN;
@@ -672,59 +706,79 @@ begin
       // todo  repeat
       // Flags := Flags or KF_REPEAT;
 
-      Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
-      Code := Msg.CharCode;
+      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
+      
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
-      //writeln('GTKKeyUpDown Key Send to ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Code=VK_TAB);
-      Result := DeliverMessage(Data, Msg)=0;
+      R := DeliverMessage(Data, Msg) = 0;
 
-      If Msg.CharCode <> Code then begin
+      if Msg.CharCode <> Vkey.Vkey
+      then begin
         // key was changed by LCL
-        //writeln('GTKKeyUpDown Key CHANGED 1 ',TControl(Data).Name,':',TControl(Data).ClassName);
         StopKeyEvent('key_press_event');
       end;
 
-      if (KeyCode <> $FFFF)
+      if not EventStopped and CanSendChar
       then begin
         EventTrace('char', data);
         FillChar(Msg,SizeOf(Msg),0);
-        Msg.KeyData := $00000000; //TODO: OEM char
-        if SysKey then
-          Msg.msg := LM_SYSCHAR
-        else
-          Msg.msg := LM_CHAR;
-        Msg.CharCode := KeyCode;
+
+        Msg.KeyData := CommonKeyData;
+
+        if SysKey
+        then Msg.msg := LM_SYSCHAR
+        else Msg.msg := LM_CHAR;
+
+        if Event^.Length = 0
+        then Msg.CharCode := 0 // ^@ was pressed
+        else Msg.CharCode := EventString^[0];
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
-        Result:=DeliverMessage(Data, Msg)=0;
-        If Msg.CharCode <> KeyCode then begin
+        R := DeliverMessage(Data, Msg) = 0;
+
+        if (Event^.Length > 0) and (Msg.CharCode <> EventString^[0])
+        then begin
           // key was handled by lcl
-          //writeln('GTKKeyUpDown Key CHANGED 2 ',TControl(Data).Name,':',TControl(Data).ClassName);
           StopKeyEvent('key_press_event');
         end;
       end;
+      
       //This is disabled on account of the
       //strange behaviour in TSynEdit
-      If Msg.CharCode = VK_TAB then
-        If TObject(Data) is TControl then begin
-          TopLevel := gtk_widget_get_toplevel(Widget);
-          if GtkWidgetIsA(TopLevel, gtk_window_get_type)
-          and (PGtkWindow(TopLevel)^.focus_widget=Widget) then begin
-            StopKeyEvent('key_press_event');
-            //writeln('GTKKeyUpDown ',TControl(Data).Name,':',TControl(Data).ClassName);
-            Result:=TControl(Data).PerformTab(not (ssShift in ShiftState));
-            If Result then begin
-              {$IfNDef Win32}
-              gdk_event_key_get_string(Event, theString);
-              theString^[0] := #0;
-              {$EndIf}
-              Event^.KeyVal := 0;
-            end;
+      if  (Msg.CharCode = VK_TAB)
+      and (TObject(Data) is TControl)
+      then begin
+        TopLevel := gtk_widget_get_toplevel(Widget);
+        if GtkWidgetIsA(TopLevel, gtk_window_get_type)
+        and (PGtkWindow(TopLevel)^.focus_widget = Widget)
+        then begin
+          StopKeyEvent('key_press_event');
+          // ??? Forward was true when shift was pressed
+          //     to me that is backward
+          R := TControl(Data).PerformTab((Event^.State and GDK_SHIFT_MASK) = 0);
+          if R
+          then begin
+            //MWE: still need to skip on win32 ?
+            {MWE:.$IfNDef Win32}
+
+            if (EventString <> nil)
+            and (Event^.Length > 0)
+            then EventString^[0] := 0;
+
+            {MWE:.$EndIf}
+            Event^.KeyVal := 0;
           end;
         end;
+      end;
     end;
   end;
+
+  {$IFDEF GTK1}
+  Result := R;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
+
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
@@ -1081,11 +1135,11 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
 var
   DesignOnlySignal: boolean;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
+  {$IFDEF GTK1}
   Result := True;
-  {$endif}
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -1121,11 +1175,11 @@ end;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
+  {$IFDEF GTK1}
   Result := True;
-  {$endif}
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 
   {$IFDEF VerboseMouseBugfix}
   writeln('[GTKMotionNotifyAfter] ',
@@ -1367,11 +1421,11 @@ function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
 var
   DesignOnlySignal: boolean;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
+  {$IFDEF GTK1}
   Result := True;
-  {$endif}
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 
   {$IFDEF VerboseMouseBugfix}
   writeln('');
@@ -1423,11 +1477,11 @@ end;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
+  {$IFDEF GTK1}
   Result := True;
-  {$endif}
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnPressAfter] ',
@@ -1543,11 +1597,11 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
 var
   DesignOnlySignal: boolean;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
+  {$IFDEF GTK1}
   Result := True;
-  {$endif}
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1591,11 +1645,11 @@ end;
 function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  {$ifdef GTK2}
-  Result := False;
-  {$Else}
+  {$IFDEF GTK1}
   Result := True;
-  {$endif}
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnReleaseAfter] ',
@@ -1948,7 +2002,7 @@ begin
 
   GDK_KEY_RELEASE, GDK_KEY_PRESS:
     begin
-      if Event^.KeyVal=GDK_KEY_Escape
+      if Event^.KeyVal = GDK_KEY_Escape
       then begin
         StoreCommonDialogSetup(TCommonDialog(data));
         TCommonDialog(data).UserChoice:=mrCancel;
@@ -2787,75 +2841,100 @@ end;
 function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 var
-  //Msg: TLMKey;
-  KeyCode, VirtKeyCode: Word;
-  ListCode: Integer;
-  ListCodeToggle: integer;
-  Toggle, Extended, SysKey: Boolean;
-  ShiftState: TShiftState;
   KeyStateList: TList;
   
-  procedure UpdateExtraKeyState(ListCode: integer; Pressed: boolean);
+  procedure UpdateToggleList(const AVKeyCode: Integer);
   begin
-    if Pressed then begin
-      if KeyStateList.IndexOf(Pointer(ListCode)) <0 then begin
-        KeyStateList.Add(Pointer(ListCode));
-      end;
-    end else begin
-      KeyStateList.Remove(Pointer(ListCode));
-      // just remove the togglekey if present
-      KeyStateList.Remove(Pointer(ListCode or KEYMAP_TOGGLE));
-      // just remove the extendedkey if present
-      KeyStateList.Remove(Pointer(ListCode or KEYMAP_EXTENDED));
+    // Check for a toggle
+    // If the remove was successfull, the key was on
+    // else it was off so we should set the toggle flag
+    if KeyStateList.Remove(Pointer(AVKeyCode or KEYMAP_TOGGLE)) < 0
+    then KeyStateList.Add(Pointer(AVKeyCode or KEYMAP_TOGGLE));
+  end;
+  
+  procedure UpdateList(const AVKeyCode: Integer; const APressed: Boolean);
+  begin
+    if AVKeyCode = 0 then Exit;
+    if APressed
+    then begin
+      if KeyStateList.IndexOf(Pointer(AVKeyCode)) < 0
+      then KeyStateList.Add(Pointer(AVKeyCode));
+    end
+    else begin
+      KeyStateList.Remove(Pointer(AVKeyCode));
     end;
   end;
 
-  procedure CheckExtraKeyState(ListCode: integer; Pressed: boolean);
-  begin
-    if VirtKeyCode<>ListCode then
-      UpdateExtraKeyState(ListCode,Pressed)
-    else if gdk_event_get_type(Event)=GDK_KEY_PRESS then
-      UpdateExtraKeyState(ListCode,true)
-    else if gdk_event_get_type(Event)=GDK_KEY_RELEASE then
-      UpdateExtraKeyState(ListCode,false);
-  end;
-
+const
+  STATE_MAP: array[0..3] of Byte = (
+    GDK_SHIFT_MASK,
+    GDK_CONTROL_MASK,
+    GDK_MOD1_MASK,
+    GDK_MOD4_MASK
+  );
+  VK_MAP: array[0..3] of array[0..2] of Byte = (
+    // (Main key, alt key 1, alt key 2) to check
+    (VK_SHIFT, VK_LSHIFT, VK_RSHIFT),
+    (VK_CONTROL, VK_LCONTROL, VK_RCONTROL),
+    (VK_MENU, VK_LMENU, VK_RMENU),
+    (VK_LWIN, VK_RWIN, 0)
+  );
+var
+  VKey: TVKeyRecord;
+  Pressed: Boolean;
+  n: Integer;
 begin
-  if (Widget=nil) then ;
-  GetGTKKeyInfo(Event,KeyCode,VirtKeyCode,SysKey,Extended,Toggle,ShiftState);
-  KeyStateList:=TList(FuncData);
-  ListCode:=KeyToListCode(KeyCode, VirtKeyCode, Extended);
-
-  // update Ctrl, Shift, Alt
-  CheckExtraKeyState(VK_CONTROL,ssCtrl in ShiftState);
-  CheckExtraKeyState(VK_SHIFT,ssShift in ShiftState);
-  CheckExtraKeyState(VK_MENU,ssAlt in ShiftState);
-
-  case gdk_event_get_type(Event) of
-    GDK_KEY_PRESS:
-      begin
-        if KeyStateList.IndexOf(Pointer(ListCode)) <0
-        then begin
-          KeyStateList.Add(Pointer(ListCode));
-          ListCodeToggle:=ListCode or KEYMAP_TOGGLE;
-          if Toggle
-          and (KeyStateList.IndexOf(Pointer(ListCodeToggle)) <0) then
-            KeyStateList.Add(Pointer(ListCodeToggle));
-        end;
-        //else WriteLn(Format('WARNING: [GTKKeySnooper] Pressed key (0x%x) already pressed (LC=0x%x)', [KeyCode, ListCode]));
-      end;
-    GDK_KEY_RELEASE:
-      begin
-        {if KeyStateList.Remove(Pointer(ListCode)) = -1 then
-          WriteLn(Format('WARNING: [GTKKeySnooper] Released key (0x%x) not pressed (LC=0x%x)', [KeyCode, ListCode]));}
-        KeyStateList.Remove(Pointer(ListCode));
-        // just remove the togglekey if present
-        KeyStateList.Remove(Pointer(ListCode or KEYMAP_TOGGLE));
-      end;
-  else
-    WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d',[gdk_event_get_type(Event)]));
-  end;
   Result := 0;
+  
+  // TODO: Remove when KeyStateList is obsolete
+
+  case {$IFDEF GTK2} Event^._Type {$ELSE} Event^.theType {$ENDIF} of
+    GDK_KEY_PRESS: Pressed := True;
+    GDK_KEY_RELEASE: Pressed := False;
+  else
+    // not interested
+    Exit;
+  end;
+
+  VKey := KeySymToVKey(Event^.keyval);
+
+  if VKey.VKey = $FF
+  then begin
+    WriteLN('[WARNING] Key pressed without VKey: ',
+      {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF} );
+    Exit;
+  end;
+  
+  KeyStateList := TList(FuncData);
+  if KeyStateList = nil then Exit;
+  
+  UpdateList(Vkey.VKey, Pressed);
+  if IsToggleKey(Vkey.VKey)
+  then UpdateToggleList(Vkey.VKey);
+
+  // Add special left and right codes
+  case Event^.KeyVal of
+    GDK_Key_Shift_L:    UpdateList(VK_LSHIFT, Pressed);
+    GDK_Key_Shift_R:    UpdateList(VK_RSHIFT, Pressed);
+    GDK_Key_Control_L:  UpdateList(VK_LCONTROL, Pressed);
+    GDK_Key_Control_R:  UpdateList(VK_RCONTROL, Pressed);
+    GDK_Key_Alt_L:      UpdateList(VK_LMENU, Pressed);
+    GDK_Key_Alt_R:      UpdateList(VK_RMENU, Pressed);
+  end;
+
+  // Recheck the list against the modifiers
+  for n := 0 to High(STATE_MAP) do
+  begin
+    // Skip our current key, since the state is updated after the event
+    if VKey.Vkey = VK_MAP[n][0] then Continue;
+    if VKey.Vkey = VK_MAP[n][1] then Continue;
+    if VKey.Vkey = VK_MAP[n][2] then Continue;
+
+    UpdateList(VK_MAP[n][0], (STATE_MAP[n] and Event^.State) <> 0);
+    UpdateList(VK_MAP[n][1], (STATE_MAP[n] and Event^.State) <> 0);
+    UpdateList(VK_MAP[n][2], (STATE_MAP[n] and Event^.State) <> 0);
+  end;
+
 end;
 
 function gtkYearChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -3107,6 +3186,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.202  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.201  2003/10/03 01:25:01  ajgenius
   add more gtk1i<->gtk2 key & event wrappers,
   move more GTK2 workarounds from gtk to gtk2 interface,

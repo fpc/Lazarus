@@ -251,7 +251,7 @@ PM_Noremove = 0;
 PM_Remove = 1;
 
 //==============================================
-// Font constants
+// Keyboard constants
 //==============================================
 
 //------------
@@ -267,6 +267,9 @@ PM_Remove = 1;
 //-------------
 // Virtual keys
 //-------------
+//
+// Source: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winui/WinUI/WindowsUserInterface/UserInput/VirtualKeyCodes.asp
+//
   VK_UNKNOWN    = 0; // defined by LCL
   VK_LBUTTON    = 1;
   VK_RBUTTON    = 2;
@@ -346,10 +349,13 @@ PM_Remove = 1;
   VK_Y	        = $59;
   VK_Z	        = $5A;
 
-  VK_LWIN       = 91;
-  VK_RWIN       = 92;
-  VK_APPS       = 93;
-  VK_NUMPAD0    = 96;
+  VK_LWIN       = $5B;
+  VK_RWIN       = $5C;
+  VK_APPS       = $5D;
+  // $5E reserved
+  VK_SLEEP      = $5F;
+  
+  VK_NUMPAD0    = 96; // $60
   VK_NUMPAD1    = 97;
   VK_NUMPAD2    = 98;
   VK_NUMPAD3    = 99;
@@ -388,42 +394,109 @@ PM_Remove = 1;
   VK_F21        = 132;
   VK_F22        = 133;
   VK_F23        = 134;
-  VK_F24        = 135;
-  VK_NUMLOCK    = 144;
-  VK_SCROLL     = 145;
+  VK_F24        = 135; // $87
+  
+  // $88-$8F unassigned
+  
+  VK_NUMLOCK    = $90;
+  VK_SCROLL     = $91;
+  
+  // $92-$96  OEM specific
+  // $97-$9F  Unassigned
   
   // not in VCL defined:
+  //MWE: And should not be used.
+  //     The keys they are on map to another VK
+
+(*
   VK_EQUAL      = 187;
   VK_COMMA      = 188;
   VK_POINT      = 190;
   VK_SLASH      = 191;
   VK_AT         = 192;
-
+*)
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
   // Used only as parameters to GetAsyncKeyState() and GetKeyState().
   // No other API or message will distinguish left and right keys in this way
-  VK_LSHIFT     = 160;
-  VK_RSHIFT     = 161;
-  VK_LCONTROL   = 162;
-  VK_RCONTROL   = 163;
-  VK_LMENU      = 164;
-  VK_RMENU      = 165;
+  VK_LSHIFT     = $A0;
+  VK_RSHIFT     = $A1;
+  VK_LCONTROL   = $A2;
+  VK_RCONTROL   = $A3;
+  VK_LMENU      = $A4;
+  VK_RMENU      = $A5;
   
-  VK_PROCESSKEY = 229;
-  VK_ATTN       = 246;
-  VK_CRSEL      = 247;
-  VK_EXSEL      = 248;
-  VK_EREOF      = 249;
-  VK_PLAY       = 250;
-  VK_ZOOM       = 251;
-  VK_NONAME     = 252;
-  VK_PA1        = 253;
-  VK_OEM_CLEAR  = 254;
+  VK_BROWSER_BACK        = $A6;
+  VK_BROWSER_FORWARD     = $A7;
+  VK_BROWSER_REFRESH     = $A8;
+  VK_BROWSER_STOP        = $A9;
+  VK_BROWSER_SEARCH      = $AA;
+  VK_BROWSER_FAVORITES   = $AB;
+  VK_BROWSER_HOME        = $AC;
+  VK_VOLUME_MUTE         = $AD;
+  VK_VOLUME_DOWN         = $AE;
+  VK_VOLUME_UP           = $AF;
+  VK_MEDIA_NEXT_TRACK    = $B0; 
+  VK_MEDIA_PREV_TRACK    = $B1; 
+  VK_MEDIA_STOP          = $B2; 
+  VK_MEDIA_PLAY_PAUSE    = $B3; 
+  VK_LAUNCH_MAIL         = $B4;
+  VK_LAUNCH_MEDIA_SELECT = $B5; 
+  VK_LAUNCH_APP1         = $B6; 
+  VK_LAUNCH_APP2         = $B7; 
+  // $B8-$B9 Reserved
+  VK_OEM_1               = $BA; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the ';:' key 
+  VK_OEM_PLUS            = $BB; // For any country/region, the '+' key 
+  VK_OEM_COMMA           = $BC; // For any country/region, the ',' key 
+  VK_OEM_MINUS           = $BD; // For any country/region, the '-' key 
+  VK_OEM_PERIOD          = $BE; // For any country/region, the '.' key 
+  VK_OEM_2               = $BF; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the '/?' key 
+  VK_OEM_3               = $C0; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the '`~' key 
+  // $C1-$D7 Reserved 
+  // $D8-$DA Unassigned 
+  VK_OEM_4               = $DB; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the '[{' key 
+  VK_OEM_5               = $DC; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the '\|' key 
+  VK_OEM_6               = $DD; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the ']}' key 
+  VK_OEM_7               = $DE; // Used for miscellaneous characters; it can vary by keyboard. 
+                                // For the US standard keyboard, the 'single-quote/double-quote' key 
+  VK_OEM_8               = $DF; // Used for miscellaneous characters; it can vary by keyboard. 
+  
+  // $E0 Reserved 
+  // $E1 OEM specific 
+  VK_OEM_102             = $E2; // Either the angle bracket key or the backslash key on the RT 102-key keyboard 
+                 
+  // $E3-$E4 OEM specific
+  
+  VK_PROCESSKEY          = $E7; // IME Process key
+  
+  // $E8 Unassigned
+  // $E9-$F5 OEM specific
+  
+  VK_ATTN       = $F6;
+  VK_CRSEL      = $F7;
+  VK_EXSEL      = $F8;
+  VK_EREOF      = $F9;
+  VK_PLAY       = $FA;
+  VK_ZOOM       = $FB;
+  VK_NONAME     = $FC;
+  VK_PA1        = $FD;
+  VK_OEM_CLEAR  = $FE;
   
   // all other keys with no virtual key code are mapped to
   // VK_IRREGULAR + KeyCode
-  VK_IRREGULAR  = 1000;
+  // MWE: Obsolete
+  // VK_IRREGULAR  = 1000;
+
+
+//==============================================
+//
+//==============================================
 
 const
 
@@ -1756,7 +1829,6 @@ type
 function hiword(i: integer): word;
 function loword(i: integer): word;
 Function Char2VK(C : Char) : Word;
-function MapIrregularVirtualKey(vk: word): word;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 
 
@@ -1782,28 +1854,6 @@ begin
   end;
 end;
 
-function MapIrregularVirtualKey(vk: word): word;
-begin
-  if vk<VK_IRREGULAR then begin
-    Result:=vk;
-    exit;
-  end;
-  case vk-VK_IRREGULAR of
-  
-  ord('0')..ord('9'):
-    Result:=vk-VK_IRREGULAR-ord('0')+VK_0;
-    
-  ord('A')..ord('Z'):
-    Result:=vk-VK_IRREGULAR-ord('A')+VK_A;
-
-  ord('a')..ord('z'):
-    Result:=vk-VK_IRREGULAR-ord('a')+VK_A;
-
-  else
-    Result:=vk;
-  end;
-end;
-
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 begin
   Result:=(int64(nNumber)*int64(nNumerator)) div nDenominator;
@@ -1814,6 +1864,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.43  2003/10/15 20:33:36  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

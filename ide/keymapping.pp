@@ -413,8 +413,6 @@ begin
       VirtualKeyStrings:=TStringHashList.Create(true);
       for i:=1 to 300 do
         VirtualKeyStrings.Add(KeyAndShiftStateToStr(i,[]),Pointer(i));
-      for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
-        VirtualKeyStrings.Add(KeyAndShiftStateToStr(i,[]),Pointer(i));
     end;
   end else
     exit;
@@ -1290,84 +1288,79 @@ var
     if ssShift in ShiftState then AddAttribute('Shift');
   end;
   
+  // Tricky routine. This only works for western languages
+  // TODO: This should be replaces by the winapi VKtoChar functions
+  //
   procedure AddKey;
   begin
     if p>0 then  AddStr(' ');
     
     case Key of
-    VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
-    VK_LBUTTON    :AddStr(srVK_LBUTTON);
-    VK_RBUTTON    :AddStr(srVK_RBUTTON);
-    VK_CANCEL     :AddStr(dlgCancel);
-    VK_MBUTTON    :AddStr(srVK_MBUTTON);
-    VK_BACK       :AddStr(srVK_BACK);
-    VK_TAB        :AddStr(srVK_TAB);
-    VK_CLEAR      :AddStr(srVK_CLEAR);
-    VK_RETURN     :AddStr(srVK_RETURN);
-    VK_SHIFT      :AddStr(srVK_SHIFT);
-    VK_CONTROL    :AddStr(srVK_CONTROL);
-    VK_MENU       :AddStr(srVK_MENU);
-    VK_PAUSE      :AddStr(srVK_PAUSE);
-    VK_CAPITAL    :AddStr(srVK_CAPITAL);
-    VK_KANA       :AddStr(srVK_KANA);
-  //  VK_HANGUL     :AddStr('Hangul');
-    VK_JUNJA      :AddStr(srVK_JUNJA);
-    VK_FINAL      :AddStr(srVK_FINAL);
-    VK_HANJA      :AddStr(srVK_HANJA );
-  //  VK_KANJI      :AddStr('Kanji');
-    VK_ESCAPE     :AddStr(srVK_ESCAPE);
-    VK_CONVERT    :AddStr(srVK_CONVERT);
-    VK_NONCONVERT :AddStr(srVK_NONCONVERT);
-    VK_ACCEPT     :AddStr(srVK_ACCEPT);
-    VK_MODECHANGE :AddStr(srVK_MODECHANGE);
-    VK_SPACE      :AddStr(srVK_SPACE);
-    VK_PRIOR      :AddStr(srVK_PRIOR);
-    VK_NEXT       :AddStr(srVK_NEXT);
-    VK_END        :AddStr(srVK_END);
-    VK_HOME       :AddStr(srVK_HOME);
-    VK_LEFT       :AddStr(srVK_LEFT);
-    VK_UP         :AddStr(srVK_UP);
-    VK_RIGHT      :AddStr(srVK_RIGHT);
-    VK_DOWN       :AddStr(dlgdownword);
-    VK_SELECT     :AddStr(lismenuselect);
-    VK_PRINT      :AddStr(srVK_PRINT);
-    VK_EXECUTE    :AddStr(srVK_EXECUTE);
-    VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
-    VK_INSERT     :AddStr(srVK_INSERT);
-    VK_DELETE     :AddStr(dlgeddelete);
-    VK_HELP       :AddStr(srVK_HELP);
-    VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
-    VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
-    VK_LWIN       :AddStr(srVK_LWIN);
-    VK_RWIN       :AddStr(srVK_RWIN);
-    VK_APPS       :AddStr(srVK_APPS);
-    VK_NUMPAD0..VK_NUMPAD9:  AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
-    VK_MULTIPLY   :AddStr('*');
-    VK_ADD        :AddStr('+');
-    VK_SEPARATOR  :AddStr('|');
-    VK_SUBTRACT   :AddStr('-');
-    VK_DECIMAL    :AddStr('.');
-    VK_DIVIDE     :AddStr('/');
-    VK_F1..VK_F24 : AddStr('F'+IntToStr(Key-VK_F1+1));
-    VK_NUMLOCK    :AddStr(srVK_NUMLOCK);
-    VK_SCROLL     :AddStr(srVK_SCROLL);
-    VK_EQUAL      :AddStr('=');
-    VK_COMMA      :AddStr(',');
-    VK_POINT      :AddStr('.');
-    VK_SLASH      :AddStr('/');
-    VK_AT         :AddStr('@');
+      VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
+      VK_LBUTTON    :AddStr(srVK_LBUTTON);
+      VK_RBUTTON    :AddStr(srVK_RBUTTON);
+      VK_CANCEL     :AddStr(dlgCancel);
+      VK_MBUTTON    :AddStr(srVK_MBUTTON);
+      VK_BACK       :AddStr(srVK_BACK);
+      VK_TAB        :AddStr(srVK_TAB);
+      VK_CLEAR      :AddStr(srVK_CLEAR);
+      VK_RETURN     :AddStr(srVK_RETURN);
+      VK_SHIFT      :AddStr(srVK_SHIFT);
+      VK_CONTROL    :AddStr(srVK_CONTROL);
+      VK_MENU       :AddStr(srVK_MENU);
+      VK_PAUSE      :AddStr(srVK_PAUSE);
+      VK_CAPITAL    :AddStr(srVK_CAPITAL);
+      VK_KANA       :AddStr(srVK_KANA);
+    //  VK_HANGUL     :AddStr('Hangul');
+      VK_JUNJA      :AddStr(srVK_JUNJA);
+      VK_FINAL      :AddStr(srVK_FINAL);
+      VK_HANJA      :AddStr(srVK_HANJA );
+    //  VK_KANJI      :AddStr('Kanji');
+      VK_ESCAPE     :AddStr(srVK_ESCAPE);
+      VK_CONVERT    :AddStr(srVK_CONVERT);
+      VK_NONCONVERT :AddStr(srVK_NONCONVERT);
+      VK_ACCEPT     :AddStr(srVK_ACCEPT);
+      VK_MODECHANGE :AddStr(srVK_MODECHANGE);
+      VK_SPACE      :AddStr(srVK_SPACE);
+      VK_PRIOR      :AddStr(srVK_PRIOR);
+      VK_NEXT       :AddStr(srVK_NEXT);
+      VK_END        :AddStr(srVK_END);
+      VK_HOME       :AddStr(srVK_HOME);
+      VK_LEFT       :AddStr(srVK_LEFT);
+      VK_UP         :AddStr(srVK_UP);
+      VK_RIGHT      :AddStr(srVK_RIGHT);
+      VK_DOWN       :AddStr(dlgdownword);
+      VK_SELECT     :AddStr(lismenuselect);
+      VK_PRINT      :AddStr(srVK_PRINT);
+      VK_EXECUTE    :AddStr(srVK_EXECUTE);
+      VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
+      VK_INSERT     :AddStr(srVK_INSERT);
+      VK_DELETE     :AddStr(dlgeddelete);
+      VK_HELP       :AddStr(srVK_HELP);
+      VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
+      VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
+      VK_LWIN       :AddStr(srVK_LWIN);
+      VK_RWIN       :AddStr(srVK_RWIN);
+      VK_APPS       :AddStr(srVK_APPS);
+      VK_NUMPAD0..VK_NUMPAD9:  AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
+      VK_MULTIPLY   :AddStr('*');
+      VK_ADD        :AddStr('+');
+      VK_SEPARATOR  :AddStr('|');
+      VK_SUBTRACT   :AddStr('-');
+      VK_DECIMAL    :AddStr('.');
+      VK_DIVIDE     :AddStr('/');
+      VK_F1..VK_F24 : AddStr('F'+IntToStr(Key-VK_F1+1));
+      VK_NUMLOCK    :AddStr(srVK_NUMLOCK);
+      VK_SCROLL     :AddStr(srVK_SCROLL);
+//    VK_EQUAL      :AddStr('=');
+//    VK_COMMA      :AddStr(',');
+//    VK_POINT      :AddStr('.');
+//    VK_SLASH      :AddStr('/');
+//    VK_AT         :AddStr('@');
     else
-      if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then
-      begin
-        AddStr(srVK_IRREGULAR);
-        AddStr(chr(Key-VK_IRREGULAR));
-      end
-      else
-      begin
-        AddStr(UnknownVKPrefix);
-        AddStr(IntToStr(Key));
-        AddStr(UnknownVKPostfix);
-      end;
+      AddStr(UnknownVKPrefix);
+      AddStr(IntToStr(Key));
+      AddStr(UnknownVKPostfix);
     end;
   end;
   

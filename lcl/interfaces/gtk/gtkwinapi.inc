@@ -3905,12 +3905,14 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCursorPos(var lpPoint: TPoint ): Boolean;
-{$IfDef GTK2}
+{$IFDEF GTK2}
 begin
+  // TODO: GTK2 GetCursorPos
   writeln('TGTKObject.GetCursorPos ToDo');
   Result:=false;
 end;
-{$Else}
+{$ELSE}
+{$IFDEF UNIX}
 var
   root, child: pointer;
   winx, winy: Integer;
@@ -3918,30 +3920,40 @@ var
   TopList, List: PGList;
 begin
   Result := False;
+
   BeginGDKErrorTrap;
-  TopList := gdk_window_get_toplevels;
-  List := TopList;
-  while List <> nil do
-  begin
-    if (List^.Data <> nil)
-    and gdk_window_is_visible(List^.Data)
-    then begin
-      XQueryPointer(gdk_window_xdisplay(List^.Data),
-                    gdk_window_xwindow(List^.Data),
-                    @root, @child, @lpPoint.X, @lpPoint.Y, @winx, @winy, @xmask);
+  try
+    TopList := gdk_window_get_toplevels;
+    List := TopList;
+    while List <> nil do
+    begin
+      if (List^.Data <> nil)
+      and gdk_window_is_visible(List^.Data)
+      then begin
+        XQueryPointer(gdk_window_xdisplay(List^.Data),
+                      gdk_window_xwindow(List^.Data),
+                      @root, @child, @lpPoint.X, @lpPoint.Y, @winx, @winy, @xmask);
 
-      Result := True;
-      Break;
+        Result := True;
+        Break;
+      end;
+      List := g_list_next(List);
     end;
-    List := g_list_next(List);
+
+    if TopList <> nil
+    then g_list_free(TopList);
+    
+  finally
+    EndGDKErrorTrap;
   end;
-
-  if TopList <> nil
-  then g_list_free(TopList);
-  EndGDKErrorTrap;
 end;
-{$EndIf}
-
+{$ELSE}
+begin
+  // TODO: GTK1-win32 GetCursorPos
+  Result := False;
+end;
+{$ENDIF unix}
+{$ENDIF gkt2}
 {------------------------------------------------------------------------------
   Function: GetDC
   Params:  none
@@ -4169,20 +4181,29 @@ begin
     VK_LCONTROL: nVirtKey := VK_CONTROL;
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
-  Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) >=0];
+  {$IFDEF Use_KeyStateList}
+  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(nVirtKey)) >=0];
+  {$ELSE}
+  Implement this
+  {$ENDIF}
 
   // try extended keys
   if Result = 0 
   then begin
     nVirtKey := nVirtKey or KEYMAP_EXTENDED;
-    Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) >=0];
+    {$IFDEF Use_KeyStateList}
+    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(nVirtKey)) >=0];
+    {$ELSE}
+    Implement this
+    {$ENDIF}
   end;
   
+  {$IFDEF Use_KeyStateList}
   // add toggle
   if Result <> 0 then
-    Result := Result or TOGGLESTATE[FKeyStateList.IndexOf(Pointer(
+    Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
                                              nVirtKey or KEYMAP_TOGGLE)) >=0];
-
+  {$ENDIF}
   //Assert(False, Format('Trace:[TgtkObject.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
 
@@ -4633,7 +4654,7 @@ begin
         Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
       else  //clist
       if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type) then
-        Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(Scroll)){$EndIf};
+        Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
 
     SB_VERT:
       If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
@@ -4644,7 +4665,7 @@ begin
         Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
       else  //clist
       if GtkWidgetIsA(PGtkWidget(Scroll), gtk_clist_get_type) then
-        Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(Scroll)){$EndIf};
+        Adjustment := gtk_clist_get_vadjustment(PgtkCList(Scroll));
 
     SB_CTL:
       if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
@@ -5640,10 +5661,6 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
-  {$IfDef Win32}
-  AWindow: PGdkWindow;
-  Event : TGDKEvent;
-  {$ENDIF}
 begin
   //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
@@ -5683,23 +5700,14 @@ begin
       Inc(gdkRect.Y, PaintWidget^.Allocation.y);
     end;
   {$EndIf}
-
-  {$IfDef Win32}
-  if bErase then begin
-    AWindow:=GetControlWindow(PaintWidget);
-    if AWindow<>nil then
-      gdk_window_clear_area(AWindow,
-                            gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-  end;
-  gtk_widget_draw(PaintWidget, @gdkRect);
-  {$Else}
+  
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(PaintWidget,
                              gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-  {$EndIf}
+                             
 end;
 
 {------------------------------------------------------------------------------
@@ -7723,7 +7731,7 @@ begin
         Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
       else  //clist
       if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type) then
-        Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(Scroll)){$EndIf};
+        Adjustment := gtk_clist_get_hadjustment(PgtkCList(Scroll));
 
     SB_VERT:
       If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
@@ -7734,7 +7742,7 @@ begin
         Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
       else  //clist
       if GtkWidgetIsA(PGtkWidget(Scroll), gtk_clist_get_type) then
-        Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(Scroll)){$EndIf};
+        Adjustment := gtk_clist_get_vadjustment(PgtkCList(Scroll));
 
     SB_CTL:
       if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
@@ -8795,6 +8803,18 @@ begin
 end;
 {$EndIf}
 {------------------------------------------------------------------------------
+  Function: VkKeyScan
+  Params: AChar: Character to translate
+  Returns: LoByte: VK-code
+           HiByte: ALT | CTRL | SHIFT pressed -> bit2 | bit1 | bit0
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.VkKeyScan(AChar: Char): Short;
+begin
+  Result := CharToVkAndFlags(AChar);
+end;
+
+{------------------------------------------------------------------------------
   Function: WindowFromPoint
   Params: Point: Specifies the x and y Coords
   Returns: The handle of the gtkwidget.  If none exist, then NULL is returned.
@@ -8823,6 +8843,11 @@ begin
   else
     Assert(False, 'Trace:Result = nil');
 end;
+
+//##apiwiz##eps##   // Do not remove
+
+// Placed CriticalSectionSupport outside the API wizard bounds
+// so it won't affect sorting etc.
 
 {$IfDef Critical_Sections_Support}
 
@@ -8968,8 +8993,6 @@ begin
 end;
 {$EndIf}
 
-//##apiwiz##eps##   // Do not remove
-
 {$IfDef ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -8978,6 +9001,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.292  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.291  2003/10/15 20:33:37  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

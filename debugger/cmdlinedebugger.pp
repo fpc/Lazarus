@@ -154,17 +154,6 @@ begin
 {$ENDIF}
 end;
 
-(*
-procedure SetPGid(APID, APGID: Integer);
-var
-  sr: SyscallRegs;
-begin
-  sr.reg2 := APID;
-  sr.reg3 := APGID;
-  SysCall(Syscall_nr_setpgid, sr);
-end;
-*)
-
 //////////////////////////////////////////////////
 
 { TCmdLineDebugger }
@@ -382,6 +371,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.22  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.21  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

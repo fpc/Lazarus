@@ -246,6 +246,90 @@ const
 
 type
   TGdkPixBufBuffer = {$IFDEF Gtk2}Pguchar{$ELSE}PChar{$ENDIF};
+  
+  
+// MWE: All the IFDEFs for GTK2 annoyed me so I defined all (most) constants here
+{$IFNDEF GTK2}
+  {$I gtkkeysyms.inc}
+{$ENDIF}
+
+// MWE:
+// Additional GDK_KEY_xxx definitions, not defined in GDK. Since GDK (on Linux)
+// simply passes the X vvalue I definde those extra here as GDKX_KEY_xxx
+// I don't know what the values are in win32 so I assume the same
+// Original source: /usr/X11R6/include/X11/XF86keysym.h
+ 
+
+// Keys found on some "Internet" keyboards.
+
+  GDKX_KEY_Standby          = $1008FF10;
+  GDKX_KEY_AudioLowerVolume = $1008FF11;
+  GDKX_KEY_AudioMute        = $1008FF12;
+  GDKX_KEY_AudioRaiseVolume = $1008FF13;
+  GDKX_KEY_AudioPlay        = $1008FF14;
+  GDKX_KEY_AudioStop        = $1008FF15;
+  GDKX_KEY_AudioPrev        = $1008FF16;
+  GDKX_KEY_AudioNext        = $1008FF17;
+  GDKX_KEY_HomePage         = $1008FF18;
+  GDKX_KEY_Mail             = $1008FF19;
+  GDKX_KEY_Start            = $1008FF1A;
+  GDKX_KEY_Search           = $1008FF1B;
+  GDKX_KEY_AudioRecord      = $1008FF1C;
+
+// These are sometimes found on PDA's (e.g. Palm, PocketPC or elsewhere) 
+  GDKX_KEY_Calculator       = $1008FF1D;
+  GDKX_KEY_Memo             = $1008FF1E;
+  GDKX_KEY_ToDoList         = $1008FF1F;
+  GDKX_KEY_Calendar         = $1008FF20;
+  GDKX_KEY_PowerDown        = $1008FF21;
+  GDKX_KEY_ContrastAdjust   = $1008FF22;
+  GDKX_KEY_RockerUp         = $1008FF23;
+  GDKX_KEY_RockerDown       = $1008FF24;
+  GDKX_KEY_RockerEnter      = $1008FF25;
+                                   
+// Some more "Internet" keyboard symbols 
+  GDKX_KEY_Back             = $1008FF26;
+  GDKX_KEY_Forward          = $1008FF27;
+  GDKX_KEY_Stop             = $1008FF28;
+  GDKX_KEY_Refresh          = $1008FF29;
+  GDKX_KEY_PowerOff         = $1008FF2A;
+  GDKX_KEY_WakeUp           = $1008FF2B;
+  GDKX_KEY_Eject            = $1008FF2C;
+  GDKX_KEY_ScreenSaver      = $1008FF2D;
+  GDKX_KEY_WWW              = $1008FF2E;
+  GDKX_KEY_Sleep            = $1008FF2F;
+  GDKX_KEY_Favorites        = $1008FF30;
+  GDKX_KEY_AudioPause       = $1008FF31;
+  GDKX_KEY_AudioMedia       = $1008FF32;
+  GDKX_KEY_MyComputer       = $1008FF33;
+  GDKX_KEY_VendorHome       = $1008FF34;
+  GDKX_KEY_LightBulb        = $1008FF35;
+  GDKX_KEY_Shop             = $1008FF36;
+  GDKX_KEY_History          = $1008FF37;
+  GDKX_KEY_OpenURL          = $1008FF38;
+  GDKX_KEY_AddFavorite      = $1008FF39;
+  GDKX_KEY_HotLinks         = $1008FF3A;
+  GDKX_KEY_BrightnessAdjust = $1008FF3B;
+  GDKX_KEY_Finance          = $1008FF3C;
+  GDKX_KEY_Community        = $1008FF3D;
+
+  GDKX_KEY_Launch0          = $1008FF40;
+  GDKX_KEY_Launch1          = $1008FF41;
+  GDKX_KEY_Launch2          = $1008FF42;
+  GDKX_KEY_Launch3          = $1008FF43;
+  GDKX_KEY_Launch4          = $1008FF44;
+  GDKX_KEY_Launch5          = $1008FF45;
+  GDKX_KEY_Launch6          = $1008FF46;
+  GDKX_KEY_Launch7          = $1008FF47;
+  GDKX_KEY_Launch8          = $1008FF48;
+  GDKX_KEY_Launch9          = $1008FF49;
+  GDKX_KEY_LaunchA          = $1008FF4A;
+  GDKX_KEY_LaunchB          = $1008FF4B;
+  GDKX_KEY_LaunchC          = $1008FF4C;
+  GDKX_KEY_LaunchD          = $1008FF4D;
+  GDKX_KEY_LaunchE          = $1008FF4E;
+  GDKX_KEY_LaunchF          = $1008FF4F;
+  
 
 function NewPGDIObject: PGDIObject;
 procedure DisposePGDIObject(GDIObject: PGdiObject);
@@ -461,6 +545,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.48  2003/09/19 00:41:51  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 

@@ -1,4 +1,4 @@
-{ 
+{
  /*************************************************************************** 
                                stdctrls.pp
                                -----------
@@ -247,7 +247,8 @@ type
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TComboBoxStyle); virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-
+    procedure KeyPress(var Key : Char); override;
+    
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
@@ -1475,6 +1476,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.108  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.107  2003/09/26 18:19:40  ajgenius
   add minor TEdit/TMemo properties for delphi compatiblitity
 

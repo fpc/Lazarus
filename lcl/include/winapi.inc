@@ -201,6 +201,11 @@ Begin
   Result := InterfaceObject.CreateRectRgn(X1,Y1,X2,Y2);
 end;
 
+Procedure DeleteCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.DeleteCriticalSection(CritSection);
+end;
+
 function DeleteDC(hDC: HDC): Boolean;
 begin
   Result := InterfaceObject.DeleteDC(hDC);
@@ -254,6 +259,11 @@ end;
 Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 Begin
   Result:=InterfaceObject.EndPaint(Handle,PS);
+end;
+
+procedure EnterCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.EnterCriticalSection(CritSection);
 end;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
@@ -694,6 +704,16 @@ end;
 function IsWindowVisible(handle: HWND): boolean;
 begin
   Result := InterfaceObject.IsWindowVisible(Handle);
+end;
+
+procedure InitializeCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.InitializeCriticalSection(CritSection);
+end;
+
+procedure LeaveCriticalSection(var CritSection: TCriticalSection);
+begin
+  InterfaceObject.LeaveCriticalSection(CritSection);
 end;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
@@ -1146,29 +1166,14 @@ begin
   Result := InterfaceObject.UpdateWindow(Handle);
 end;
 
+function VkKeyScan(AChar: Char): Short;
+begin
+  Result := InterfaceObject.VkKeyScan(AChar);
+end;
+
 function WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := InterfaceObject.WindowFromPoint(Point);
-end;
-
-Procedure InitializeCriticalSection(var CritSection: TCriticalSection);
-begin
-  InterfaceObject.InitializeCriticalSection(CritSection);
-end;
-
-Procedure EnterCriticalSection(var CritSection: TCriticalSection);
-begin
-  InterfaceObject.EnterCriticalSection(CritSection);
-end;
-
-Procedure LeaveCriticalSection(var CritSection: TCriticalSection);
-begin
-  InterfaceObject.LeaveCriticalSection(CritSection);
-end;
-
-Procedure DeleteCriticalSection(var CritSection: TCriticalSection);
-begin
-  InterfaceObject.DeleteCriticalSection(CritSection);
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -1677,6 +1682,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.98  2003/09/01 07:27:41  mattias
   fixed typo
 

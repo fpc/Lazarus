@@ -1201,6 +1201,758 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: KeySymToVKeyArray
+  Params:    AKeySym: The keysym the array is requested for
+             ACreate: True if the array should be created if it does not exist
+  Returns:   PVKeyArray: The VKey array for the LSByte of KeySym
+
+  Retrieves or constructs a VKeyArray for VK lookup on KeySyms.
+ ------------------------------------------------------------------------------}
+function KeySymToVKeyArray(const AKeySym: Cardinal; const ACreate: Boolean): PVKeyArray1;
+var
+  K: Byte;
+  P2: PVKeyArray2;
+  P3: PVKeyArray3;
+begin
+  Result := nil;
+
+  K := AKeySym shr 24;
+  P3 := MKeySymToVK[K];
+  if P3 = nil
+  then begin
+    if not ACreate then Exit;
+    New(P3);
+    FillChar(P3^, SizeOf(P3^), 0);
+    MKeySymToVK[K] := P3;
+  end;
+
+  K := AKeySym shr 16;
+  P2 := P3^[K];
+  if P2 = nil
+  then begin
+    if not ACreate then Exit;
+    New(P2);
+    FillChar(P2^, SizeOf(P2^), 0);
+    P3^[K] := P2;
+  end;
+
+  K := AKeySym shr 8;
+  Result := P2^[K];
+  if Result = nil
+  then begin
+    if not ACreate then Exit;
+    New(Result);
+    FillChar(Result^, SizeOf(Result^), 0);
+    P2^[K] := Result;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: KeySymToVKey
+  Params:    AKeySym: The keysym the array is requested for
+  Returns:   The VKey for the KeySym
+
+  Retrieves a VKey for a KeySyms.
+ ------------------------------------------------------------------------------}
+function KeySymToVKey(const AKeySym: Cardinal): TVKeyRecord;
+var
+  P: PVKeyArray1;
+begin
+  P := KeySymToVKeyArray(AKeySym, False);
+  if P = nil
+  then begin
+    Result.VKey := $FF;
+    Result.Flags := $FF;
+  end
+  else begin
+    Result := P^[AKeySym and $FF];
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Procedure: InitKeyboardTables
+  Params:    none
+  Returns:   none
+
+  Initializes the CharToVK and CKeyToVK tables
+ ------------------------------------------------------------------------------}
+{$IFDEF UNIX}
+{$DEFINE InitKeyboardTables}
+procedure InitKeyboardTables;
+  procedure FindVKeyInfo(const AKeySym: TKeySym; var AVKey: Byte; var AExtended: Boolean);
+  begin
+    AExtended := False;
+    AVKey := $FF;
+
+    case AKeySym of
+      32..255: begin
+        case Chr(AKeySym) of // Normal ASCII chars
+          // only unshifted is needed for first match
+          // 'A'..'Z',
+          '0'..'9',
+          ' ':      AVKey := AKeySym;                       
+          'a'..'z': AVKey := AKeySym - Ord('a') + Ord('A');
+          '+': AVKey := VK_OEM_PLUS;
+          ',': AVKey := VK_OEM_COMMA;
+          '-': AVKey := VK_OEM_MINUS;
+          '.': AVKey := VK_OEM_PERIOD;
+
+          // try the US keycodes first
+          ';': AVKey := VK_OEM_1;
+          '/': AVKey := VK_OEM_2;
+          '`': AVKey := VK_OEM_3;
+          '[': AVKey := VK_OEM_4;
+          '\': AVKey := VK_OEM_5;
+          ']': AVKey := VK_OEM_6;
+          '''': AVKey := VK_OEM_7;
+        end;
+      end;
+
+      GDK_KEY_KP_Space:     AVKey := VK_SPACE;
+      GDK_KEY_KP_ENTER:     AVKey := VK_Return;
+      GDK_KEY_Tab,
+      GDK_KEY_ISO_Left_Tab,
+      GDK_KEY_KP_Tab:       AVKey := VK_TAB;
+      GDK_KEY_RETURN:       AVKey := VK_RETURN;
+//    GDK_KEY_LINEFEED;     AVKey := $0A;
+
+      // Cursor block / keypad
+      GDK_KEY_INSERT:
+      begin
+        AExtended := True;
+        AVKey := VK_INSERT;
+      end;
+      GDK_KEY_HOME:
+      begin
+        AExtended := True;
+        AVKey := VK_HOME;
+      end;
+      GDK_KEY_LEFT:
+      begin
+        AExtended := True;
+        AVKey := VK_LEFT;
+      end;
+      GDK_KEY_UP:
+      begin
+        AExtended := True;
+        AVKey := VK_UP;
+      end;
+      GDK_KEY_RIGHT:
+      begin
+        AExtended := True;
+        AVKey := VK_RIGHT;
+      end;
+      GDK_KEY_DOWN:
+      begin
+        AExtended := True;
+        AVKey := VK_DOWN;
+      end;
+      GDK_KEY_PAGE_UP:
+      begin
+        AExtended := True;
+        AVKey := VK_PRIOR;
+      end;
+      GDK_KEY_PAGE_DOWN:
+      begin
+        AExtended := True;
+        AVKey := VK_NEXT;
+      end;
+      GDK_KEY_END:
+      begin
+        AExtended := True;
+        AVKey := VK_END;
+      end;
+      GDK_KEY_KP_INSERT:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_INSERT;
+      end;
+      GDK_KEY_KP_HOME:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_HOME;
+      end;
+      GDK_KEY_KP_LEFT:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_LEFT;
+      end;
+      GDK_KEY_KP_UP:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_UP;
+      end;
+      GDK_KEY_KP_RIGHT:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_RIGHT;
+      end;
+      GDK_KEY_KP_DOWN:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_DOWN;
+      end;
+      GDK_KEY_KP_PAGE_UP:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_PRIOR;
+      end;
+      GDK_KEY_KP_PAGE_DOWN:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_NEXT;
+      end;
+      GDK_KEY_KP_END:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_END;
+      end;
+      GDK_KEY_Num_Lock:
+      begin
+        AExtended := True;
+        AVKey := VK_NUMLOCK;
+      end;
+      GDK_KEY_KP_F1:
+      begin
+        // I guess it is extended to differentiate between normal Fn
+        AExtended := True;
+        AVKey := VK_F1;
+      end;
+      GDK_KEY_KP_F2:
+      begin
+        // I guess it is extended to differentiate between normal Fn
+        AExtended := True;
+        AVKey := VK_F2;
+      end;
+      GDK_KEY_KP_F3:
+      begin
+        // I guess it is extended to differentiate between normal Fn
+        AExtended := True;
+        AVKey := VK_F3;
+      end;
+      GDK_KEY_KP_F4:
+      begin
+        // I guess it is extended to differentiate between normal Fn
+        AExtended := True;
+        AVKey := VK_F4;
+      end;
+      GDK_KEY_KP_Multiply:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_MULTIPLY;
+      end;
+      GDK_KEY_KP_Add:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_ADD;
+      end;
+      GDK_KEY_KP_Separator:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_SEPARATOR;
+      end;
+      GDK_KEY_KP_Subtract:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_SUBTRACT;
+      end;
+      GDK_KEY_KP_Decimal:
+      begin
+        // Keypad key is not extended
+        AVKey := VK_DECIMAL;
+      end;
+      GDK_KEY_KP_Divide:
+      begin
+        AExtended := True;
+        AVKey := VK_DIVIDE;
+      end;
+      GDK_KEY_KP_0..GDK_KEY_KP_9:
+      begin
+        // Keypad key is not extended, it is identified by VK
+        AVKey := VK_NUMPAD0 + AKeySym - GDK_KEY_KP_0;
+      end;
+      
+      GDK_KEY_BackSpace:    AVKey := VK_BACK;
+      GDK_KEY_Clear:        AVKey := VK_CLEAR;
+      GDK_KEY_Pause:        AVKey := VK_PAUSE;
+      GDK_KEY_Scroll_Lock:  AVKey := VK_SCROLL;
+      GDK_KEY_Sys_Req:      AVKey := VK_SNAPSHOT;
+      GDK_KEY_Escape:       AVKey := VK_ESCAPE;
+      GDK_KEY_Delete:       AVKey := VK_DELETE;
+
+      GDK_KEY_Kanji:        AVKey := VK_KANJI;
+
+      GDK_Key_Select:       AVKey := VK_SELECT;
+      GDK_Key_Print:        AVKey := VK_PRINT;
+      GDK_Key_Execute:      AVKey := VK_EXECUTE;
+      GDK_Key_Cancel:       AVKey := VK_CANCEL;
+      GDK_Key_Help:         AVKey := VK_HELP;
+      GDK_Key_Break:        AVKey := VK_CANCEL;
+      GDK_Key_Mode_switch:  AVKey := VK_MODECHANGE;
+      GDK_Key_Caps_Lock:    AVKey := VK_CAPITAL;
+      GDK_Key_Shift_L:      AVKey := VK_SHIFT;
+      GDK_Key_Shift_R:      AVKey := VK_SHIFT;
+      GDK_Key_Control_L:    AVKey := VK_CONTROL;
+      GDK_Key_Control_R:    AVKey := VK_CONTROL;
+//      GDK_Key_Meta_L:       AVKey := VK_MENU;  //shifted alt, so it is found by alt
+//      GDK_Key_Meta_R:       AVKey := VK_MENU;
+      GDK_Key_Alt_L:        AVKey := VK_MENU;
+      GDK_Key_Alt_R:        AVKey := VK_MENU;
+      GDK_Key_Super_L:      AVKey := VK_LWIN;
+      GDK_Key_Super_R:      AVKey := VK_RWIN;
+      GDK_Key_Menu:         AVKey := VK_APPS;
+
+      // Function keys
+      GDK_KEY_F1..GDK_KEY_F24:  AVKey := VK_F1 + AKeySym - GDK_Key_F1;
+      
+      // Extra keys on a "internet" keyboard
+      GDKX_KEY_Sleep:
+      begin
+        AExtended := True;
+        AVKey := VK_SLEEP;
+      end;
+      GDKX_KEY_AudioLowerVolume:
+      begin
+        AExtended := True;
+        AVKey := VK_VOLUME_DOWN;
+      end;
+      GDKX_KEY_AudioMute:
+      begin
+        AExtended := True;
+        AVKey := VK_VOLUME_MUTE;
+      end;
+      GDKX_KEY_AudioRaiseVolume:
+      begin
+        AExtended := True;
+        AVKey := VK_VOLUME_UP;
+      end;
+      GDKX_KEY_AudioPlay:
+      begin
+        AExtended := True;
+        AVKey := VK_MEDIA_PLAY_PAUSE;
+      end;
+      GDKX_KEY_AudioStop:
+      begin
+        AExtended := True;
+        AVKey := VK_MEDIA_STOP;
+      end;
+      GDKX_KEY_AudioPrev:
+      begin
+        AExtended := True;
+        AVKey := VK_MEDIA_PREV_TRACK;
+      end;
+      GDKX_KEY_AudioNext:
+      begin
+        AExtended := True;
+        AVKey := VK_MEDIA_NEXT_TRACK;
+      end;
+      GDKX_KEY_Mail:
+      begin
+        AExtended := True;
+        AVKey := VK_LAUNCH_MAIL;
+      end;
+      GDKX_KEY_HomePage:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_HOME;
+      end;
+      GDKX_KEY_Back:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_BACK;
+      end;
+      GDKX_KEY_Forward:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_FORWARD;
+      end;
+      GDKX_KEY_Stop:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_STOP;
+      end;
+      GDKX_KEY_Refresh:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_REFRESH;
+      end;
+      GDKX_KEY_WWW:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_HOME;
+      end;
+      GDKX_KEY_Favorites:
+      begin
+        AExtended := True;
+        AVKey := VK_BROWSER_FAVORITES;
+      end;
+      GDKX_KEY_AudioMedia:
+      begin
+        AExtended := True;
+        AVKey := VK_LAUNCH_MEDIA_SELECT;
+      end;
+      GDKX_KEY_MyComputer:
+      begin
+        AExtended := True;
+        AVKey := VK_LAUNCH_APP1;
+      end;
+      GDKX_KEY_Calculator:
+      begin
+        AExtended := True;
+        AVKey := VK_LAUNCH_APP2;
+      end;                    
+      
+      // For faster cases, group by families
+      $400..$4FF: begin
+        // Katakana
+      end;
+
+      $500..$5FF: begin
+        // Arabic
+        case AKeySym of
+          GDK_KEY_arabic_hamza:                  AVKey := VK_X;
+          GDK_KEY_arabic_hamzaonwaw:             AVKey := VK_C;
+          GDK_KEY_arabic_hamzaonyeh:             AVKey := VK_Z;
+          GDK_KEY_arabic_alef:                   AVKey := VK_H;
+          GDK_KEY_arabic_beh:                    AVKey := VK_F;
+          GDK_KEY_arabic_tehmarbuta:             AVKey := VK_M;
+          GDK_KEY_arabic_teh:                    AVKey := VK_J;
+          GDK_KEY_arabic_theh:                   AVKey := VK_E;
+          GDK_KEY_arabic_jeem:                   AVKey := VK_OEM_4;
+          GDK_KEY_arabic_hah:                    AVKey := VK_P;
+          GDK_KEY_arabic_khah:                   AVKey := VK_O;
+          GDK_KEY_arabic_dal:                    AVKey := VK_OEM_6;
+          GDK_KEY_arabic_thal:                   AVKey := VK_OEM_3;
+          GDK_KEY_arabic_ra:                     AVKey := VK_V;
+          GDK_KEY_arabic_zain:                   AVKey := VK_OEM_PERIOD;
+          GDK_KEY_arabic_seen:                   AVKey := VK_S;
+          GDK_KEY_arabic_sheen:                  AVKey := VK_A;
+          GDK_KEY_arabic_sad:                    AVKey := VK_W;
+          GDK_KEY_arabic_dad:                    AVKey := VK_Q;
+          GDK_KEY_arabic_tah:                    AVKey := VK_OEM_7;
+          GDK_KEY_arabic_zah:                    AVKey := VK_OEM_2;
+          GDK_KEY_arabic_ain:                    AVKey := VK_U;
+          GDK_KEY_arabic_ghain:                  AVKey := VK_Y;
+          GDK_KEY_arabic_feh:                    AVKey := VK_T;
+          GDK_KEY_arabic_qaf:                    AVKey := VK_R;
+          GDK_KEY_arabic_kaf:                    AVKey := VK_OEM_1;
+          GDK_KEY_arabic_lam:                    AVKey := VK_G;
+          GDK_KEY_arabic_meem:                   AVKey := VK_L;
+          GDK_KEY_arabic_noon:                   AVKey := VK_K;
+          GDK_KEY_arabic_heh:                    AVKey := VK_I;
+          GDK_KEY_arabic_waw:                    AVKey := VK_OEM_COMMA;
+          GDK_KEY_arabic_alefmaksura:            AVKey := VK_N;
+          GDK_KEY_arabic_yeh:                    AVKey := VK_D;
+        end;
+      end;
+
+      $600..$6FF: begin
+        // Cyrillic
+
+        // MWE:
+        // These VK codes are not compatible with all cyrillic KBlayouts
+        // Example:
+        // VK_A on a russian layout generates a cyrillic_EF
+        // VK_A on a serbian layout generates a cyrillic_A
+        //
+        // Mapping cyrillic_A to VK_A is easier so that encoding is used.
+        // Maybe in future we can take the KBLayout into account
+        case AKeySym of
+          GDK_KEY_cyrillic_a..GDK_KEY_cyrillic_ze:
+          begin
+            AVKey := VK_A + AKeySym - GDK_KEY_cyrillic_a;
+          end;
+          // Capital is not needed, the lower will match
+          //GDK_KEY_cyrillic_A..GDK_KEY_cyrillic_ZE:
+          //begin
+          //  AVKey := VK_A + AKeySym - GDK_KEY_cyrillic_A;
+          //end;
+        end;
+      end;
+
+      $700..$7FF: begin
+        // Greek
+        case AKeySym of
+          // Capital is not needed, the lower will match
+          GDK_KEY_greek_alpha:           AVKey := VK_A;
+          GDK_KEY_greek_beta:            AVKey := VK_B;
+          GDK_KEY_greek_gamma:           AVKey := VK_G;
+          GDK_KEY_greek_delta:           AVKey := VK_D;
+          GDK_KEY_greek_epsilon:         AVKey := VK_E;
+          GDK_KEY_greek_zeta:            AVKey := VK_Z;
+          GDK_KEY_greek_eta:             AVKey := VK_H;
+          GDK_KEY_greek_theta:           AVKey := VK_U;
+          GDK_KEY_greek_iota:            AVKey := VK_I;
+          GDK_KEY_greek_kappa:           AVKey := VK_K;
+          GDK_KEY_greek_lamda:           AVKey := VK_L;
+          GDK_KEY_greek_mu:              AVKey := VK_M;
+          GDK_KEY_greek_nu:              AVKey := VK_N;
+          GDK_KEY_greek_xi:              AVKey := VK_J;
+          GDK_KEY_greek_omicron:         AVKey := VK_O;
+          GDK_KEY_greek_pi:              AVKey := VK_P;
+          GDK_KEY_greek_rho:             AVKey := VK_R;
+          GDK_KEY_greek_sigma:           AVKey := VK_S;
+          GDK_KEY_greek_finalsmallsigma: AVKey := VK_W;
+          GDK_KEY_greek_tau:             AVKey := VK_T;
+          GDK_KEY_greek_upsilon:         AVKey := VK_Y;
+          GDK_KEY_greek_phi:             AVKey := VK_F;
+          GDK_KEY_greek_chi:             AVKey := VK_X;
+          GDK_KEY_greek_psi:             AVKey := VK_C;
+          GDK_KEY_greek_omega:           AVKey := VK_V;
+        end;
+      end;
+      
+      $C00..$CFF: begin
+        // Hebrew
+        // Shifted keys will produce A..Z so the VK codes will be assigned there
+      end;
+      
+      $D00..$DFF: begin
+        // Thai
+        // To many differences to assign VK codes through lookup 
+        // Thai Kedmanee and Thai Pattachote are complete different layouts
+      end;
+      
+      $E00..$EFF: begin
+        // Korean
+      end;
+    end;
+  end;
+
+  procedure NextFreeVK(var AFreeVK: Byte);
+  begin
+    case AFreeVK of
+      $96: AFreeVK := $E1;
+      $E1: AFreeVK := $E3;
+      $E4: AFreeVK := $E6;
+      $E6: AFreeVK := $E9;
+      $F5: begin
+        WriteLN('[WARNING] Out of OEM specific VK codes, changing to unassigned');
+        AFreeVK := $88;
+      end;
+      $8F: AFreeVK := $97;
+      $9F: AFreeVK := $D8;
+      $DA: AFreeVK := $E5;
+      $E5: AFreeVK := $E8;
+      $E8: begin
+        WriteLN('[WARNING] Out of unassigned VK codes, assigning $FF');
+        AFreeVK := $FF;
+      end;
+      $FF: AFreeVK := $FF; // stay there
+    else
+      Inc(AFreeVK);
+    end;
+  end;
+  
+const
+  KEYFLAGS: array[0..3] of Byte = (
+    $00,
+    VKEY_FLAG_SHIFT,
+    VKEY_FLAG_ALT,
+    VKEY_FLAG_SHIFT or VKEY_FLAG_ALT
+  );
+  EXTFLAG: array[Boolean] of Byte = (
+    $00,
+    VKEY_FLAG_EXT
+  );
+  XEVENTSTATE: array[0..3] of DWord = (
+    0,
+    GDK_SHIFT_MASK,
+    GDK_MOD1_MASK,
+    GDK_MOD1_MASK or GDK_SHIFT_MASK
+  );
+
+var
+  Display: Pointer;
+  n, m: Integer;
+  LoKey, HiKey: Integer;
+  KeySym: array[0..3] of TKeySym;
+  VKey, FreeVK, Flags, idx: Byte;
+  Extended, HasKey, ComputeVK, WarningShown: Boolean;
+  K: PVKeyArray1;
+  KeySymChars: array[0..16] of Char;
+  KeySymCharLen: Integer;
+  XKeyEvent: TXKeyEvent;
+begin
+  Display := X11Display;
+  if Display = nil then Exit;
+  
+  // Init dummy XEvent to retrieve the char corresponding to a key
+  FillChar(XKeyEvent, SizeOf(XKeyEvent), 0);
+  XKeyEvent._Type := GDK_KEY_PRESS;
+  XKeyEvent.Display := Display;
+  XKeyEvent.Same_Screen := True;
+
+  // Retrieve the KeyCode bounds
+  XDisplayKeyCodes(Display, @LoKey, @HiKey);
+
+  Assert((LoKey >= 0) and (HiKey <= 255)); // perdef
+  FreeVK := $92; // first OEM specific VK
+  WarningShown := False;
+  for n := LoKey to HiKey do
+  begin
+    VKey := $FF;
+    HasKey := False;
+    for m := 0 to 3 do
+    begin
+      KeySym[m] := XKeyCodeToKeysym(Display, n, m);
+      if (VKey = $FF) and (KeySym[m] <> 0)
+      then begin
+        HasKey := True;
+        FindVKeyInfo(KeySym[m], VKey, Extended);
+      end;
+    end;
+    // Continue if there is no keysym found
+    if not HasKey then Continue;
+    
+    ComputeVK := VKey = $FF;
+    if ComputeVK
+    then begin
+      VKey := FreeVK;
+      NextFreeVK(FreeVK);
+    end;
+
+    for m := 0 to 3 do
+    begin
+      if KeySym[m] = 0 then Continue;
+      if (m > 1) and (KeySym[m] = KeySym[m - 2]) then Continue;
+
+      if VKey <> $FF
+      then
+
+      if VKey = $FF
+      then Flags := $FF
+      else begin
+        Flags := KEYFLAGS[m] or EXTFLAG[Extended];
+        MVKeyInfo[VKey].KeySym[m] := KeySym[m];
+      end;
+
+      K := KeySymToVKeyArray(KeySym[m], True);
+      idx := KeySym[m] and $FF;
+
+      // some X servers define separate keycodes for "dead-key" chars.
+      // So we might have already a VK assigned
+      if K^[idx].VKey <> 0
+      then begin
+        // VK assigned
+        // if the current VK is computed then return it to the pool
+        // else use the new VK. If the assigned VK was computed, bad luck.
+        // Some day we might this do smarter, but since those extra keys
+        // are at the end, we probably wont hit the situation.
+        if ComputeVK
+        then begin
+          FreeVK := VKey;
+          VKey := K^[idx].VKey;
+          Flags := K^[idx].Flags;
+        end;
+      end;
+      K^[idx].VKey := VKey;
+      K^[idx].Flags := Flags;
+
+      // Retrieve the chars for this KeySym
+      XKeyEvent.KeyCode := n;
+      XKeyEvent.State := XEVENTSTATE[m];
+      KeySymCharLen := XLookupString(@XKeyEvent, KeySymChars, SizeOf(KeySymChars) - 1, nil, nil);
+      if (KeySymCharLen > 0) and (KeySymChars[KeySymCharLen - 1] = #0)
+      then Dec(KeySymCharLen)
+      else KeySymChars[KeySymCharLen] := #0;
+      if (KeySymCharLen <= 0) then Continue;
+
+      // Warn if the KeySymChar is longer than 1.
+      if KeySymCharLen > 1
+      then begin
+        if not WarningShown
+        then begin
+          WarningShown := True;
+          WriteLN('[WARNING] *******************************************************');
+          WriteLN('[WARNING] **                                                   **');
+          WriteLN('[WARNING] ** Multibyte character encodings (like UTF8) are not **');
+          WriteLN('[WARNING] ** supported at the moment.                          **');
+          WriteLN('[WARNING] ** For full keyboard event support, make sure that   **');
+          WriteLN('[WARNING] ** the LANG environment var has no UTF8              **');
+          WriteLN('[WARNING] **                                                   **');
+          WriteLN('[WARNING] *******************************************************');
+        end;
+        Continue;
+      end;
+
+      // If we are here length(KeySymChars) = 1
+
+      MCharToVK[KeySymChars[0]].VKey := VKey;
+      MCharToVK[KeySymChars[0]].Flags := Flags;
+
+      if VKey <> $FF
+      then MVKeyInfo[VKey].KeyChar[m] := KeySymChars[0];
+    end;
+    MKeyCodeToVK[n] := VKey;
+    if VKey <> $FF
+    then MVKeyInfo[VKey].KeyCode := n;
+  end;
+end;
+{$ENDIF}
+
+{$IFDEF WIN32}
+{$DEFINE InitKeyboardTables}
+procedure InitKeyboardTables;
+var
+  n: Integer;
+  VK: Byte;
+begin
+  for n := 0 to 255 do
+  begin
+    MCharToVK[Chr(n)] := Windows.VkKeyScan(Chr(n));
+    VK := MapVirtualKey(n, 3);
+    MKeyCodeToVK[n] := VK;
+    MVKToKeyCode[VK] := n;
+  end
+end;
+{$ENDIF}
+
+{$IFNDEF InitKeyboardTables}
+procedure InitKeyboardTables;
+begin
+  WriteLN('[WARNING] Keyboardtables not initialized (platform not supported)');
+end;
+{$ENDIF}
+
+{------------------------------------------------------------------------------
+  Function:  CharToVKandFlags
+  Params:    AChar: A character to translate
+  Returns:   LoByte: The VK code
+             HiByte: The A|C|S conbination the get this key
+
+ ------------------------------------------------------------------------------}
+function CharToVKandFlags(const AChar: Char): Word;
+begin
+  Result := MCharToVK[AChar].VKey
+         or (MCharToVK[AChar].Flags and VKEY_FLAG_KEY_MASK) shl 8;
+end;
+
+{------------------------------------------------------------------------------
+  Function:  GetVKeyInfo
+  Params:    AVKey: A virtual key to get the info for
+  Returns:   A Info record
+
+  This function is more a safety to make sure MVkeyInfo isn't accessed out of
+  it's bounds
+ ------------------------------------------------------------------------------}
+function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
+begin
+  Result := MVKeyInfo[AVKey];
+end;
+
+{------------------------------------------------------------------------------
+  Function:  IsToggleKey
+  Params:    AVKey: A Virtual key
+  Returns:   True if the requeste dkey is a toggle key
+
+ ------------------------------------------------------------------------------}
+function IsToggleKey(const AVKey: Byte): Boolean;
+begin
+  Result := AVKey in [VK_CAPITAL, VK_SCROLL, VK_NUMLOCK];
+end;
+
+{------------------------------------------------------------------------------
   Procedure: GTKEventState2ShiftState
   Params:    KeyState: The gtk keystate
   Returns:   the TShiftState for the given KeyState
@@ -1224,369 +1976,6 @@ begin
 //if (KeyState and GDK_BUTTON4_MASK) <> 0 then Result := Result + [??WheelMouse??];
 //if (KeyState and GDK_BUTTON5_MASK) <> 0 then Result := Result + [??WheelMouse??];
   if (KeyState and GDK_RELEASE_MASK) <> 0 then Result := Result + [ssAltGr];
-end;
-
-
-{------------------------------------------------------------------------------
- ------------------------------------------------------------------------------}
-function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
-begin
-  if VirtKeyCode = VK_UNKNOWN then
-    Result := KEYMAP_VKUNKNOWN or KeyCode
-  else
-    Result := VirtKeyCode;
-  if Extended then
-    Result := Result or KEYMAP_EXTENDED;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: GetGTKKeyInfo
-  Params:  Event:      Requested info  
-           KeyCode:    the ASCII key code of the eventkey
-           VirtualKey: the virtual key code of the eventkey
-           SysKey:     True if the key is a syskey
-           Extended:   True if the key is an extended key
-           Toggle:     True if the key is a toggle key and its value is on
-  Returns: Nothing
-  
-  GetGTKKeyInfo returns information about the given key event
- ------------------------------------------------------------------------------}
-procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
-  var SysKey, Extended, Toggle: Boolean; var ShiftState: TShiftState);
-begin
-  VirtualKey := VK_UNKNOWN;
-  KeyCode := $FFFF;
-  ShiftState := GTKEventState2ShiftState(Event^.State);
-  SysKey := (ssAlt in ShiftState);
-  Extended := False;
-  Toggle := False;
-  
-  {write('GetGTKKeyInfo Event^.KeyVal=',Event^.KeyVal,' Event^.Length=',Event^.Length,' ');
-  if Event^.Length>0 then write(ord(Event^.theString[0]));
-  writeln('');}
-
-  //writeln('GetGTKKeyInfo ',Event^.KeyVal,' ',HexStr(Cardinal(Event^.KeyVal),8));
-
-  case Event^.KeyVal of
-    // Normal ASCII chars
-    32..255:
-      begin
-        // Assign key code
-        KeyCode := Event^.KeyVal;
-        
-        //TODO: create VK_ code --> [*] and [8] have a different KeyCode but same VK_ code on US keyboard
-        case Chr(KeyCode) of
-          '@': VirtualKey:=VK_AT;
-          'A'..'Z', 
-          '0'..'9', 
-          ' ':      VirtualKey := KeyCode;
-          'a'..'z': VirtualKey := KeyCode - Ord('a') + Ord('A');
-          '/': VirtualKey := VK_SLASH;
-          ',': VirtualKey := VK_COMMA;
-          '=': VirtualKey := VK_EQUAL;
-          '*': VirtualKey := VK_MULTIPLY;
-          '+': VirtualKey := VK_ADD;
-          '-': VirtualKey := VK_SUBTRACT;
-          '.': VirtualKey := VK_POINT;
-        end;
-        // look for control code
-        if (ssCtrl in ShiftState) and (Chr(KeyCode) in ['@'..'Z']) then
-          Dec(KeyCode, Ord('@'));
-      end;
-      
-    GDK_key_dead_circumflex:
-      begin
-        KeyCode := Ord('^');
-      end;
-      
-    GDK_KEY_KP_Space:
-      begin
-        KeyCode := VK_SPACE;
-        VirtualKey := VK_SPACE;
-      end;
-
-    GDK_KEY_KP_ENTER:
-     begin
-        KeyCode := VK_Return;
-        VirtualKey := VK_Return;
-      end;
-
-    GDK_KEY_Tab, GDK_KEY_ISO_Left_Tab, GDK_KEY_KP_Tab:
-      begin
-        KeyCode := VK_TAB;
-        VirtualKey := VK_TAB;
-      end;
-
-    GDK_KEY_RETURN:
-      begin
-        KeyCode := VK_RETURN;
-        VirtualKey := VK_RETURN;
-      end;
-
-    GDK_KEY_LINEFEED:
-      begin
-        KeyCode := $0A;
-        VirtualKey := $0A;
-      end;
- 
-    // Cursor block / keypad
-    GDK_KEY_INSERT:
-      begin
-        VirtualKey := VK_INSERT;
-        Extended := True;
-      end;
-
-    GDK_KEY_HOME:
-      begin
-        VirtualKey := VK_HOME;
-        Extended := True;
-      end;
-
-    GDK_KEY_LEFT:
-      begin
-        VirtualKey := VK_LEFT;
-        Extended := True;
-      end;
-
-    GDK_KEY_UP:
-      begin
-        VirtualKey := VK_UP;
-        Extended := True;
-      end;
-
-    GDK_KEY_RIGHT:
-      begin
-        VirtualKey := VK_RIGHT;
-        Extended := True;
-      end;
-
-    GDK_KEY_DOWN:
-      begin
-        VirtualKey := VK_DOWN;
-        Extended := True;
-      end;
-
-    GDK_KEY_Page_Up:
-      begin
-        VirtualKey := VK_PRIOR;
-        Extended := True;
-      end;
-
-    GDK_KEY_Page_Down:
-      begin
-        VirtualKey := VK_NEXT;
-        Extended := True;
-      end;
-
-    GDK_KEY_End:
-      begin
-        VirtualKey := VK_END;
-        Extended := True;
-      end;
-    
-    GDK_KEY_KP_INSERT:
-      VirtualKey := VK_INSERT;
-    GDK_KEY_KP_HOME:
-      VirtualKey := VK_HOME;
-    GDK_KEY_KP_LEFT:
-      VirtualKey := VK_LEFT;
-    GDK_KEY_KP_UP:
-      VirtualKey := VK_UP;
-    GDK_KEY_KP_RIGHT:
-      VirtualKey := VK_RIGHT;
-    GDK_KEY_KP_DOWN:
-      VirtualKey := VK_DOWN;
-    GDK_KEY_KP_PAGE_UP:
-      VirtualKey := VK_PRIOR;
-    GDK_KEY_KP_PAGE_DOWN:
-      VirtualKey := VK_NEXT;
-    GDK_KEY_KP_END:
-      VirtualKey := VK_END;
-
-    GDK_KEY_Num_Lock:
-      VirtualKey := VK_NUMLOCK;
-    GDK_KEY_KP_F1:
-      VirtualKey := VK_F1;
-    GDK_KEY_KP_F2:
-      VirtualKey := VK_F2;
-    GDK_KEY_KP_F3:
-      VirtualKey := VK_F3;
-    GDK_KEY_KP_F4:
-      VirtualKey := VK_F4;
-
-    GDK_KEY_KP_EQUAL:
-      begin
-        VirtualKey := VK_EQUAL;
-        if not (ssCtrl in ShiftState) then KeyCode := Ord('=');
-      end;
-
-    GDK_KEY_KP_Multiply:
-      begin
-        VirtualKey := VK_MULTIPLY;
-        if not (ssCtrl in ShiftState) then KeyCode := Ord('*');
-      end;
-
-    GDK_KEY_KP_Add:
-      begin
-        VirtualKey := VK_ADD;
-        if not (ssCtrl in ShiftState) then KeyCode := Ord('+');
-      end;
-
-    GDK_KEY_KP_Separator:
-      begin
-        VirtualKey := VK_SEPARATOR;
-//        if not CtrlDown then KeyCode := Ord('????'); 
-      end;
-
-    GDK_KEY_KP_Subtract:
-      begin
-        VirtualKey := VK_SUBTRACT;
-        if not (ssCtrl in ShiftState) then KeyCode := Ord('-');
-      end;
-
-    GDK_KEY_KP_Decimal:
-      begin
-        VirtualKey := VK_DECIMAL;
-        if not (ssCtrl in ShiftState) then KeyCode := Ord('.');
-      end;
-
-    GDK_KEY_KP_Divide:
-      begin
-        VirtualKey := VK_DIVIDE;
-        Extended := True;
-        if not (ssCtrl in ShiftState) then KeyCode := Ord('/');
-      end;
-
-    GDK_KEY_KP_0..GDK_KEY_KP_9:
-      begin
-        VirtualKey := VK_NUMPAD0 + (Event^.KeyVal -
-                              GDK_KEY_KP_0);
-        if not (ssCtrl in ShiftState) then
-          KeyCode := Ord('0') + (Event^.KeyVal -
-                              GDK_KEY_KP_0);
-      end;
-
-    GDK_KEY_BackSpace:
-      VirtualKey := VK_BACK;
-
-    GDK_KEY_Clear:
-      VirtualKey := VK_CLEAR;
-    GDK_KEY_Pause:
-      VirtualKey := VK_PAUSE;
-    GDK_KEY_Scroll_Lock:
-      VirtualKey := VK_SCROLL;
-    GDK_KEY_Sys_Req:
-      VirtualKey := VK_SNAPSHOT;
-    GDK_KEY_Escape:
-      VirtualKey := VK_ESCAPE;
-    GDK_KEY_Delete:
-      VirtualKey := VK_DELETE;
-    
-//    GDK_Multi_key = $FF20;
-//    GDK_SingleCandidate = $FF3C;
-//    GDK_MultipleCandidate = $FF3D;
-//    GDK_PreviousCandidate = $FF3E;
-
-    GDK_KEY_Kanji:
-      VirtualKey := VK_KANJI;
-
-//    GDK_Muhenkan = $FF22;
-//    GDK_Henkan_Mode = $FF23;
-//    GDK_Henkan = $FF23;
-//    GDK_Romaji = $FF24;
-//    GDK_Hiragana = $FF25;
-//    GDK_Katakana = $FF26;
-//    GDK_Hiragana_Katakana = $FF27;
-//    GDK_Zenkaku = $FF28;
-//    GDK_Hankaku = $FF29;
-//    GDK_Zenkaku_Hankaku = $FF2A;
-//    GDK_Touroku = $FF2B;
-//    GDK_Massyo = $FF2C;
-//    GDK_Kana_Lock = $FF2D;
-//    GDK_Kana_Shift = $FF2E;
-//    GDK_Eisu_Shift = $FF2F;
-//    GDK_Eisu_toggle = $FF30;
-//    GDK_Zen_Koho = $FF3D;
-//    GDK_Mae_Koho = $FF3E;
-
-    GDK_KEY_Select:
-      VirtualKey := VK_SELECT;
-    GDK_KEY_Print:
-      VirtualKey := VK_PRINT;
-    GDK_KEY_Execute:
-      VirtualKey := VK_EXECUTE;
-
-    GDK_KEY_Menu:
-      VirtualKey := VK_MENU;
-//    GDK_Find = $FF68;
-    GDK_KEY_Cancel:
-      VirtualKey := VK_CANCEL;
-    GDK_KEY_Help:
-      VirtualKey := VK_HELP;
-    GDK_KEY_Break:
-      VirtualKey := VK_CANCEL;
-    GDK_KEY_Mode_switch:
-      VirtualKey := VK_MODECHANGE;
-//    GDK_script_switch = $FF7E;
-
-    GDK_KEY_Caps_Lock:
-      VirtualKey := VK_CAPITAL;
-//    GDK_Shift_Lock = $FFE6;
-
-    GDK_KEY_Shift_L:
-      begin
-        VirtualKey := VK_SHIFT;
-      end;
-
-    GDK_KEY_Shift_R:
-      begin
-        VirtualKey := VK_SHIFT;
-        Extended := True;
-      end;
-
-    GDK_KEY_Control_L:
-      begin
-        VirtualKey := VK_CONTROL;
-      end;
-
-    GDK_KEY_Control_R:
-      begin
-        VirtualKey := VK_CONTROL;
-        Extended := True;
-      end;
-
-    GDK_KEY_Alt_L:
-      begin
-        SysKey := True;
-        VirtualKey:= VK_MENU; 
-      end; 
-
-    GDK_KEY_Alt_R:
-      begin
-        SysKey := True;
-        VirtualKey:= VK_MENU; 
-        Extended := True;
-      end;
-    
-    // Function keys
-      GDK_KEY_F1..GDK_KEY_F24:
-      VirtualKey := VK_F1 + (Event^.KeyVal -
-                                  GDK_KEY_F1);
-
-    //By VVI - fixing cyrillic keys
-    //GDK_* is like a koi8-r, it is KOI8-R code +$600.
-      GDK_KEY_cyrillic_io..GDK_KEY_cyrillic_Capital_hardsign:
-     KeyCode := Event^.KeyVal mod $100;
-  end;
-
-  if VirtualKey=VK_UNKNOWN then begin
-    // map all other keys to VK_IRREGULAR + KeyCode
-    if ShortInt(KeyCode)>=0 then
-      VirtualKey := MapIrregularVirtualKey(VK_IRREGULAR + KeyCode)
-    else
-      VirtualKey := VK_IRREGULAR;
-  end;
-  //writeln('GetGTKKeyInfo END ',VirtualKey,' VK_L=',VK_L);
 end;
 
 {------------------------------------------------------------------------------
@@ -2970,7 +3359,9 @@ begin
   if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
   if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
   if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
-  GDKKey:= VK2GDK(Msg.NewKey);
+
+  // Send the unmodified keysym ?
+  GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[0];
 
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
@@ -5005,7 +5396,9 @@ end;
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 var
   {$IFDEF GTK1}
+  {$IFDEF UNIX}
   theFonts : PPChar;
+  {$ENDIF UNIX}
   {$Else}
   Widget : PGTKWidget;
   Context : PPangoContext;
@@ -5016,20 +5409,18 @@ var
 begin
   ScreenFonts.Clear;
   {$IFDEF GTK1}
-  {$IfNdef Win32}
-  If X11Display = nil then
-    X11Display := XOpenDisplay(GDK_GET_DISPLAY);
+  {$IFDEF UNIX}
   theFonts := XListFonts(X11Display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
-  For I := 0 to N - 1 do
-    If theFonts[I] <> nil then begin
+  for I := 0 to N - 1 do
+    if theFonts[I] <> nil then begin
       Tmp := ExtractFamilyFromXLFDName(AnsiString(theFonts[I]));
-      If Tmp <> '' then
-        If ScreenFonts.IndexOf(Tmp) < 0 then
+      if Tmp <> '' then
+        if ScreenFonts.IndexOf(Tmp) < 0 then
           ScreenFonts.Append(Tmp);
     end;
    XFreeFontNames(theFonts);
-  {$EndIf Win32}
-  {$Else}
+  {$ENDIF UNIX}
+  {$ELSE}
    Widget := GetStyleWidget('default');
    if Widget = nil then begin
      exit;//raise an error here I guess
@@ -5041,16 +5432,16 @@ begin
    families := nil;
    pango_context_list_families(Context, @families, @n);
 
-   For I := 0 to N - 1 do
-     If families[I] <> nil then begin
+   for I := 0 to N - 1 do
+     if families[I] <> nil then begin
        Tmp := StrPas(pango_font_family_get_name(families[I]));
-       If Tmp <> '' then
-         If ScreenFonts.IndexOf(Tmp) < 0 then
+       if Tmp <> '' then
+         if ScreenFonts.IndexOf(Tmp) < 0 then
            ScreenFonts.Append(Tmp);
     end;
    if (families <> nil) then
      g_free(families);
-  {$EndIf GTK2}
+  {$ENDIF GTK2}
 end;
 
 {$IFDEF ASSERT_IS_ON}
@@ -5063,6 +5454,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.217  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.216  2003/10/15 20:33:37  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

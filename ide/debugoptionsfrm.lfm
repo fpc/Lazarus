@@ -8,13 +8,14 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   POSITION = podefaultposonly
   HORZSCROLLBAR.PAGE = 481
   VERTSCROLLBAR.PAGE = 443
-  LEFT = 636
+  LEFT = 632
   HEIGHT = 442
-  TOP = 78
+  TOP = 42
   WIDTH = 480
   object nbDebugOptions: TNOTEBOOK
     ALIGN = altop
-    PAGEINDEX = 3
+    ANCHORS = [aktop, akleft]
+    PAGEINDEX = 0
     HEIGHT = 398
     WIDTH = 480
     object pgGeneral: TPAGE
@@ -26,9 +27,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       TOP = 28
       WIDTH = 476
       object gbDebuggerType: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'Debugger type and path'
         CLIENTHEIGHT = 69
         CLIENTWIDTH = 468
+        COLOR = -2147483633
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 0
         LEFT = 2
@@ -36,17 +40,19 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         TOP = 8
         WIDTH = 472
         object cmbDebuggerType: TCOMBOBOX
+          ANCHORS = [aktop, akleft]
           MAXLENGTH = 0
+          ONCHANGE = cmbDebuggerTypeCHANGE
           PARENTCTL3D = False
           TABORDER = 0
           TABSTOP = True
-          ONCHANGE = cmbDebuggerTypeCHANGE
           LEFT = 6
           HEIGHT = 25
           TOP = 5
           WIDTH = 268
         end
         object cmbDebuggerPath: TCOMBOBOX
+          ANCHORS = [aktop, akleft]
           MAXLENGTH = 0
           PARENTCTL3D = False
           TABORDER = 1
@@ -57,6 +63,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 428
         end
         object cmdOpenDebuggerPath: TBUTTON
+          ANCHORS = [aktop, akleft]
           CAPTION = '...'
           TABSTOP = True
           TABORDER = 2
@@ -68,9 +75,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gbAdditionalSearchPath: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'Additional search path'
         CLIENTHEIGHT = 35
         CLIENTWIDTH = 468
+        COLOR = -2147483633
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 1
         LEFT = 2
@@ -78,6 +88,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         TOP = 100
         WIDTH = 472
         object txtAdditionalPath: TEDIT
+          ANCHORS = [aktop, akleft]
           TABSTOP = True
           TABORDER = 0
           LEFT = 6
@@ -86,6 +97,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 428
         end
         object cmdOpenAdditionalPath: TBUTTON
+          ANCHORS = [aktop, akleft]
           CAPTION = '...'
           TABSTOP = True
           TABORDER = 1
@@ -96,9 +108,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gbDebuggerSpecific: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'Debugger specific options (depends on type of debugger)'
         CLIENTHEIGHT = 187
         CLIENTWIDTH = 468
+        COLOR = -2147483633
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 2
         LEFT = 2
@@ -116,9 +131,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       TOP = 28
       WIDTH = 476
       object gbGeneral: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'General'
         CLIENTHEIGHT = 115
         CLIENTWIDTH = 226
+        COLOR = -2147483633
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 0
         LEFT = 4
@@ -127,6 +145,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         WIDTH = 230
         object chkClearLogOnRun: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Clear log on run'
           DRAGCURSOR = 0
@@ -139,6 +158,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkLimitLinecount: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Limit linecount to'
           DRAGCURSOR = 0
@@ -162,10 +182,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
       end
       object gbMessages: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'Messages'
         CLIENTHEIGHT = 171
         CLIENTWIDTH = 228
+        COLOR = -2147483633
         ENABLED = False
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 1
         LEFT = 242
@@ -174,6 +197,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         WIDTH = 232
         object chkMessagesBreakpoint: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Breakpoint'
           DRAGCURSOR = 0
@@ -186,6 +210,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesProcess: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Process'
           DRAGCURSOR = 0
@@ -198,6 +223,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesThread: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Thread'
           DRAGCURSOR = 0
@@ -210,6 +236,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesModule: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Module'
           DRAGCURSOR = 0
@@ -222,6 +249,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesOutput: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Output'
           DRAGCURSOR = 0
@@ -234,6 +262,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesWindow: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Window'
           DRAGCURSOR = 0
@@ -246,6 +275,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object chkMessagesInterface: TCHECKBOX
           ALLOWGRAYED = True
+          ANCHORS = [aktop, akleft]
           AUTOSIZE = True
           CAPTION = 'Interface'
           DRAGCURSOR = 0
@@ -267,9 +297,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       TOP = 28
       WIDTH = 476
       object bgIgnoreExceptions: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'Ignore these exceptions'
         CLIENTHEIGHT = 311
         CLIENTWIDTH = 464
+        COLOR = -2147483633
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 0
         LEFT = 4
@@ -277,6 +310,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         TOP = 8
         WIDTH = 468
         object cmdExceptionRemove: TBUTTON
+          ANCHORS = [aktop, akleft]
           ENABLED = False
           CAPTION = 'Remove'
           TABSTOP = True
@@ -288,6 +322,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 75
         end
         object cmdExceptionAdd: TBUTTON
+          ANCHORS = [aktop, akleft]
           CAPTION = 'Add'
           TABSTOP = True
           TABORDER = 1
@@ -298,6 +333,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 75
         end
         object clbExceptions: TCHECKLISTBOX
+          ANCHORS = [aktop, akleft]
           ONCLICK = clbExceptionsCLICK
           TABORDER = 2
           TABSTOP = True
@@ -310,6 +346,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object chkBreakOnException: TCHECKBOX
         ALLOWGRAYED = True
+        ANCHORS = [aktop, akleft]
         AUTOSIZE = True
         CAPTION = 'Break on Lazarus Exceptions'
         DRAGCURSOR = 0
@@ -330,9 +367,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       TOP = 28
       WIDTH = 476
       object gbSignals: TGROUPBOX
+        ANCHORS = [aktop, akleft]
         CAPTION = 'Signals'
         CLIENTHEIGHT = 337
         CLIENTWIDTH = 464
+        COLOR = -2147483633
+        PARENTCOLOR = True
         PARENTCTL3D = False
         TABORDER = 0
         LEFT = 4
@@ -340,6 +380,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         TOP = 8
         WIDTH = 468
         object cmdSignalRemove: TBUTTON
+          ANCHORS = [aktop, akleft]
           ENABLED = False
           CAPTION = 'Remove'
           TABSTOP = True
@@ -350,6 +391,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 75
         end
         object cmdSignalAdd: TBUTTON
+          ANCHORS = [aktop, akleft]
           CAPTION = 'Add'
           TABSTOP = True
           TABORDER = 1
@@ -359,6 +401,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           WIDTH = 75
         end
         object lvSignals: TLISTVIEW
+          ANCHORS = [aktop, akleft]
+          COLOR = -2147483633
           COLUMNS = <          
             item
               CAPTION = 'Name'
@@ -391,6 +435,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
   end
   object cmdCancel: TBUTTON
+    ANCHORS = [aktop, akleft]
     MODALRESULT = 2
     CANCEL = True
     CAPTION = 'Cancel'
@@ -402,6 +447,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     WIDTH = 75
   end
   object cmdOK: TBUTTON
+    ANCHORS = [aktop, akleft]
     DEFAULT = True
     CAPTION = 'OK'
     TABSTOP = True

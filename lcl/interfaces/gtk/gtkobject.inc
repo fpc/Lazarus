@@ -160,7 +160,9 @@ begin
   FFixWidgetsResized := TDynHashArray.Create(-1);
   
   FTimerData  := TList.Create;
-  FKeyStateList := TList.Create;
+  {$IFDEF Use_KeyStateList}
+  FKeyStateList_ := TList.Create;
+  {$ENDIF}
 
   FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
   FRCFileParsed := false;
@@ -180,7 +182,11 @@ begin
   // Initialize Stringlist for holding styles
   Styles := TStringlist.Create;
 
-  gtk_key_snooper_install(@GTKKeySnooper, FKeyStateList);
+  {$IFDEF Use_KeyStateList}
+  gtk_key_snooper_install(@GTKKeySnooper, FKeyStateList_);
+  {$ELSE}
+  gtk_key_snooper_install(@GTKKeySnooper, nil);
+  {$ENDIF}
 
   // Init tooltips
   FGTKToolTips := gtk_tooltips_new;
@@ -375,7 +381,9 @@ begin
   FMessageQueue.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
-  FKeyStateList.Free;
+  {$IFDEF Use_KeyStateList}
+  FKeyStateList_.Free;
+  {$ENDIF}
   FTimerData.Free;
   
   // finally remove our loghandler
@@ -1461,6 +1469,7 @@ procedure TGtkObject.AppInit;
 begin
   If Assigned(Screen) then
     FillScreenFonts(Screen.Fonts);
+  InitKeyboardTables;
 end;
 
 
@@ -3851,7 +3860,7 @@ begin
                   end;      
 
    {$EndIf}
-   csPage:
+  csPage:
     SetNotebookPageTabLabel;
     
   csComboBox    :
@@ -8454,6 +8463,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.433  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.432  2003/10/06 16:13:52  ajgenius
   partly fixed gtk2 mouse offsets;
   added new includes to gtk2 lpk

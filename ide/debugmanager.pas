@@ -1031,7 +1031,8 @@ begin
   FExceptions := TManagedExceptions.Create;
   // Temp hack
   FExceptions.Add('ECodetoolError');
-  
+  FExceptions.Add('EFOpenError');
+
   FSignals := TManagedSignals.Create;
 
   FUserSourceFiles := TStringList.Create;
@@ -1353,12 +1354,12 @@ begin
     FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
     FDebugger.OnDbgOutput := @OnDebuggerOutput;
     FDebugger.OnException := @OnDebuggerException;
-    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
     if FDebugger.State = dsNone
     then FDebugger.Init;
 
     FDebugger.FileName := LaunchingApplication;
     FDebugger.Arguments := LaunchingParams;
+    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
     NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
     if NewWorkingDir='' then
       NewWorkingDir:=Project1.ProjectDirectory;
@@ -1574,6 +1575,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.63  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.62  2003/08/20 15:06:57  mattias
   implemented Build+Run File
 

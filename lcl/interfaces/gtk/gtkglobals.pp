@@ -299,6 +299,7 @@ type
 var
   ModalWindows: TList; // list of PGtkWindow
 
+
 implementation
 
 initialization

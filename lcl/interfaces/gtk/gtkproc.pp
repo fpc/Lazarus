@@ -19,7 +19,7 @@ unit GTKProc;
 interface
 
 {$IFDEF win32}
-{$DEFINE NoGdkPixbufLib}
+{.$DEFINE NoGdkPixbufLib}
 {$ELSE}
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
@@ -29,11 +29,13 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IFDEF UNIX}
   {$IFDEF GTK1}
-  {$Ifndef Win32}
-  X, XLib,//Font retrieval
-  {$EndIf}
-  {$EndIf}
+  // MWE:
+  // TODO: check if the new keyboard routines require X on GTK2
+  X, XLib, XUtil, //Font retrieval and Keyboard handling
+  {$ENDIF}
+  {$ENDIF}
   InterfaceBase,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
@@ -43,7 +45,7 @@ uses
   LMessages, Controls, Forms, VclGlobals, LCLProc,
   LCLStrConsts, LCLIntf, LCLType, gtkDef, DynHashArray, LazLinkedList,
   GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
-  ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
+  ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
   Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals;
 
 
@@ -323,10 +325,22 @@ Procedure InitializePalette(Pal : PGDIObject; Entries : PPALETTEENTRY; RGBCount 
 function GetIndexAsKey(p: pointer): pointer;
 function GetRGBAsKey(p: pointer): pointer;
 
-function GTKEventState2ShiftState(KeyState: Word): TShiftState;
-function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
-procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
-  var SysKey, Extended, Toggle: Boolean; var ShiftState: TShiftState);
+
+// Keyboard functions
+type
+  TVKeyInfo = record
+    KeyCode: Byte;
+    KeySym: array[0..3] of Integer;
+    KeyChar: array[0..3] of Char;
+  end;
+
+procedure InitKeyboardTables;
+function CharToVKandFlags(const AChar: Char): Word;
+function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
+function IsToggleKey(const AVKey: Byte): Boolean;
+//function GTKEventState2ShiftState(KeyState: Word): TShiftState;
+//function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
+// ----
 
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
@@ -398,9 +412,11 @@ var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
   
 {$IFDEF GTK1}
-var
-  X11Display : Pointer;//only needed to get X fonts
-{$EndIf}
+// MWE:
+// TODO: check if the new keyboard routines require X on GTK2
+function X11Display: Pointer;
+{$ENDIF}
+
 procedure InitDesignSignalMasks;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
 function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
@@ -526,105 +542,6 @@ procedure BeginGDKErrorTrap;
 procedure EndGDKErrorTrap;
 
 {$Ifdef GTK1}
-  const
-    GDK_key_dead_circumflex = GDK_dead_circumflex;
-    GDK_KEY_KP_Space = GDK_KP_Space;
-    GDK_KEY_KP_ENTER = GDK_KP_ENTER;
-    GDK_KEY_Tab = GDK_Tab;
-    GDK_KEY_ISO_Left_Tab = GDK_ISO_Left_Tab;
-    GDK_KEY_KP_Tab = GDK_KP_Tab;
-    GDK_KEY_RETURN = GDK_Return;
-    GDK_KEY_LINEFEED = GDK_LINEFEED;
-    GDK_KEY_INSERT = GDK_INSERT;
-    GDK_KEY_HOME = GDK_HOME;
-    GDK_KEY_LEFT = GDK_LEFT;
-    GDK_KEY_UP = GDK_UP;
-    GDK_KEY_RIGHT = GDK_RIGHT;
-    GDK_KEY_DOWN = GDK_DOWN;
-    GDK_KEY_Page_Up = GDK_Page_Up;
-    GDK_KEY_Page_Down = GDK_Page_Down;
-    GDK_KEY_End = GDK_End;
-    GDK_KEY_KP_INSERT = GDK_KP_INSERT;
-    GDK_KEY_KP_HOME = GDK_KP_HOME;
-    GDK_KEY_KP_LEFT = GDK_KP_LEFT;
-    GDK_KEY_KP_UP = GDK_KP_UP;
-    GDK_KEY_KP_RIGHT = GDK_KP_RIGHT;
-    GDK_KEY_KP_DOWN = GDK_KP_DOWN;
-    GDK_KEY_KP_PAGE_UP = GDK_KP_PAGE_UP;
-    GDK_KEY_KP_PAGE_DOWN = GDK_KP_PAGE_DOWN;
-    GDK_KEY_KP_END = GDK_KP_END;
-    GDK_KEY_Num_Lock = GDK_Num_Lock;
-    GDK_KEY_KP_F1 = GDK_KP_F1;
-    GDK_KEY_KP_F2 = GDK_KP_F2;
-    GDK_KEY_KP_F3 = GDK_KP_F3;
-    GDK_KEY_KP_F4 = GDK_KP_F4;
-    GDK_KEY_KP_EQUAL = GDK_KP_EQUAL;
-    GDK_KEY_KP_Multiply = GDK_KP_Multiply;
-    GDK_KEY_KP_Add = GDK_KP_Add;
-    GDK_KEY_KP_Separator = GDK_KP_Separator;
-    GDK_KEY_KP_Subtract = GDK_KP_Subtract;
-    GDK_KEY_KP_Decimal = GDK_KP_Decimal;
-    GDK_KEY_KP_Divide = GDK_KP_Divide;
-    GDK_KEY_KP_0 = GDK_KP_0;
-    GDK_KEY_KP_1 = GDK_KP_1;
-    GDK_KEY_KP_2 = GDK_KP_2;
-    GDK_KEY_KP_3 = GDK_KP_3;
-    GDK_KEY_KP_4 = GDK_KP_4;
-    GDK_KEY_KP_5 = GDK_KP_5;
-    GDK_KEY_KP_6 = GDK_KP_6;
-    GDK_KEY_KP_7 = GDK_KP_7;
-    GDK_KEY_KP_8 = GDK_KP_8;
-    GDK_KEY_KP_9 = GDK_KP_9;
-    GDK_KEY_BackSpace = GDK_BackSpace;
-    GDK_KEY_Clear = GDK_Clear_Key;
-    GDK_KEY_Pause = GDK_Pause;
-    GDK_KEY_Scroll_Lock = GDK_Scroll_Lock;
-    GDK_KEY_Sys_Req = GDK_Sys_Req;
-    GDK_KEY_Escape = GDK_Escape;
-    GDK_KEY_Delete = GDK_Delete_Key;
-    GDK_KEY_Kanji = GDK_Kanji;
-    GDK_KEY_Select = GDK_Select;
-    GDK_KEY_Print = GDK_Print;
-    GDK_KEY_Execute = GDK_Execute;
-    GDK_KEY_Menu = GDK_Menu;
-    GDK_KEY_Cancel = GDK_Cancel;
-    GDK_KEY_Help = GDK_Help;
-    GDK_KEY_Break = GDK_Break;
-    GDK_KEY_Mode_switch = GDK_Mode_switch;
-    GDK_KEY_Caps_Lock = GDK_Caps_Lock;
-    GDK_KEY_Shift_L = GDK_Shift_L;
-    GDK_KEY_Shift_R = GDK_Shift_R;
-    GDK_KEY_Control_L = GDK_Control_L;
-    GDK_KEY_Control_R = GDK_Control_R;
-    GDK_KEY_Alt_L = GDK_Alt_L;
-    GDK_KEY_Alt_R = GDK_Alt_R;
-    GDK_KEY_F1 = GDK_F1;
-    GDK_KEY_F2 = GDK_F2;
-    GDK_KEY_F3 = GDK_F3;
-    GDK_KEY_F4 = GDK_F4;
-    GDK_KEY_F5 = GDK_F5;
-    GDK_KEY_F6 = GDK_F6;
-    GDK_KEY_F7 = GDK_F7;
-    GDK_KEY_F8 = GDK_F8;
-    GDK_KEY_F9 = GDK_F9;
-    GDK_KEY_F10 = GDK_F10;
-    GDK_KEY_F11 = GDK_F11;
-    GDK_KEY_F12 = GDK_F12;
-    GDK_KEY_F13 = GDK_F13;
-    GDK_KEY_F14 = GDK_F14;
-    GDK_KEY_F15 = GDK_F15;
-    GDK_KEY_F16 = GDK_F16;
-    GDK_KEY_F17 = GDK_F17;
-    GDK_KEY_F18 = GDK_F18;
-    GDK_KEY_F19 = GDK_F19;
-    GDK_KEY_F20 = GDK_F20;
-    GDK_KEY_F21 = GDK_F21;
-    GDK_KEY_F22 = GDK_F22;
-    GDK_KEY_F23 = GDK_F23;
-    GDK_KEY_F24 = GDK_F24;
-    GDK_KEY_cyrillic_io = GDK_cyrillic_io;
-    GDK_KEY_cyrillic_Capital_hardsign = GDK_cyrillic_Capital_hardsign;
-
   type
      PGtkOldEditable = PGtkEditable;
 
@@ -703,6 +620,42 @@ procedure EndGDKErrorTrap;
 
 implementation
 
+const
+  VKEY_FLAG_SHIFT    = $01;
+  VKEY_FLAG_CTRL     = $02;
+  VKEY_FLAG_ALT      = $04;
+  VKEY_FLAG_KEY_MASK = $07;
+  VKEY_FLAG_EXT      = $10; // extended key
+  
+
+type
+  TVKeyRecord = packed record
+    VKey: Byte;
+    Flags: Byte; // indicates if Alt | Ctrl | Shift is needed
+                 // extended state
+  end;
+  
+  PVKeyArray1 = ^TVKeyArray1;
+  TVKeyArray1 = array[Byte] of TVKeyRecord;
+ 
+  PVKeyArray2 = ^TVKeyArray2;
+  TVKeyArray2 = array[Byte] of PVkeyArray1;
+
+  PVKeyArray3 = ^TVKeyArray3;
+  TVKeyArray3 = array[Byte] of PVkeyArray2;
+
+var
+  MCharToVK: array[Char] of TVKeyRecord;
+  MKeyCodeToVK: array[Byte] of Byte;
+  MVKeyInfo: array[Byte] of TVKeyInfo;
+  MKeySymToVK: array[Byte] of PVKeyArray3;
+
+{$IFDEF UNIX}
+{$IFDEF GTK1}
+  MX11Display: Pointer;
+{$ENDIF}
+{$ENDIF}
+
 var
   GdkTrapIsSet : Boolean;
   GdkTrapCalls : Integer;
@@ -740,27 +693,50 @@ begin
     UpdateSysColorMap(AWidget);
 end;
 
+{$IFDEF UNIX}
+{$IFDEF GTK1}
+// MWE:
+// TODO: check if the new keyboard routines require X on GTK2
+function X11Display: Pointer;
+begin
+  if MX11Display = nil
+  then MX11Display := XOpenDisplay(GDK_GET_DISPLAY);
+  Result := MX11Display;
+end;
+{$ENDIF}
+{$ENDIF}
+
+
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
 initialization
-  {$IFDEF GTK1} //only needed to get X fonts
-  X11Display := nil;
-  {$EndIf}
+{$IFDEF UNIX}
+{$IFDEF GTK1}
+  MX11Display := nil;
+{$ENDIF}
+{$ENDIF}
+
+  FillChar(MCharToVK, SizeOf(MCharToVK), $FF);
+  FillChar(MKeyCodeToVK, SizeOf(MKeyCodeToVK), $FF);
+  FillChar(MKeySymToVK, SizeOf(MKeySymToVK), 0);
+  FillChar(MVKeyInfo, SizeOf(MVKeyInfo), 0);
+
+
   GdkTrapIsSet := False;
   GdkTrapCalls := 0;
 
-Finalization
+finalization
+  {$IFDEF UNIX}
+  {$IFDEF GTK1}
+  if MX11Display <> nil
+  then XCloseDisplay(MX11Display);
+
+  MX11Display := nil;
+  {$ENDIF}
+  {$ENDIF}
+
   GdkTrapCalls := 0;
   EndGDKErrorTrap;
-
-  {$IFDEF GTK1} //only needed to get X fonts
-  {$IfNdef Win32}
-  If X11Display <> nil then
-    XCloseDisplay(X11Display);
-  {$EndIf}
-  X11Display := nil;
-  {$EndIf}
-
 end.
 

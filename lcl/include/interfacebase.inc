@@ -1799,6 +1799,11 @@ begin
   Result := false;
 end;
 
+function TInterfaceBase.VkKeyScan(AChar: Char): Short;
+begin
+  Result := -1; // $FFFF
+end;
+
 Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := 0;
@@ -1828,6 +1833,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2003/10/16 23:54:27  marc
+  Implemented new gtk keyevent handling
+
   Revision 1.103  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 
