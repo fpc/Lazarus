@@ -1581,7 +1581,8 @@ begin
           while (TestPos>SrcStart) do begin
             if (Source[TestPos]='/') and (Source[TestPos-1]='/') then begin
               // this is a comment line end -> search further
-              dec(TestPos);
+              while (TestPos>SrcStart) and (Source[TestPos]='/') do
+                dec(TestPos);
               break;
             end else if Source[TestPos] in [#10,#13] then begin
               // no comment, the line end ist really there :)

@@ -1601,7 +1601,8 @@ resourcestring
   
   // component palette
   lisCompPalOpenPackage = 'Open package';
-  
+  lisCompPalOpenUnit = 'Open unit';
+
   // macro promp dialog
   lisMacroPromptEnterData = 'Enter data';
   lisMacroPromptEnterRunParameters = 'Enter run parameters';

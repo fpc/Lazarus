@@ -100,9 +100,12 @@ type
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
     procedure mnuPkgOpenPackageClicked(Sender: TObject);
+
+    // component palette
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
-      PaletteChanged: boolean);
+                                           PaletteChanged: boolean);
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
+    procedure IDEComponentPaletteOpenUnit(Sender: TObject);
 
     // misc
     procedure OnApplicationIdle(Sender: TObject);
@@ -253,6 +256,12 @@ procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
 begin
   if (Sender=nil) or (not (Sender is TLazPackage)) then exit;
   DoOpenPackage(TLazPackage(Sender));
+end;
+
+procedure TPkgManager.IDEComponentPaletteOpenUnit(Sender: TObject);
+begin
+  if (Sender=nil) or (not (Sender is TPkgFile)) then exit;
+  MainIDE.DoOpenMacroFile(Self,TPkgFile(Sender).Filename);
 end;
 
 procedure TPkgManager.GetDependencyOwnerDescription(
@@ -1231,14 +1240,19 @@ begin
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
+var
+  CompPalette: TComponentPalette;
 begin
   inherited Create(TheOwner);
   OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
 
   // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;
-  IDEComponentPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
-  TComponentPalette(IDEComponentPalette).OnOpenPackage:=@IDEComponentPaletteOpenPackage;
+  CompPalette:=TComponentPalette(IDEComponentPalette);
+  if CompPalette=nil then ;
+  CompPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
+  CompPalette.OnOpenPackage:=@IDEComponentPaletteOpenPackage;
+  CompPalette.OnOpenUnit:=@IDEComponentPaletteOpenUnit;
 
   // package links
   PkgLinks:=TPackageLinks.Create;

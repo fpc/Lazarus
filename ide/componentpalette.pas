@@ -49,14 +49,17 @@ type
   TComponentPalette = class(TBaseComponentPalette)
     PopupMenu: TPopupMenu;
     OpenPackageMenuItem: TMenuItem;
+    OpenUnitMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
     procedure OpenPackageClicked(Sender: TObject);
+    procedure OpenUnitClicked(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
     fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
     FNoteBook: TNotebook;
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
+    FOnOpenUnit: TNotifyEvent;
     FSelected: TRegisteredComponent;
     fUnregisteredIcon: TBitmap;
     fUpdatingNotebook: boolean;
@@ -85,6 +88,7 @@ type
     property NoteBook: TNotebook read FNoteBook write SetNoteBook;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
+    property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
   end;
 
 implementation
@@ -132,6 +136,17 @@ begin
     OnOpenPackage(PkgComponent.PkgFile.LazPackage);
 end;
 
+procedure TComponentPalette.OpenUnitClicked(Sender: TObject);
+var
+  PkgComponent: TPkgComponent;
+begin
+  PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
+  if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
+  or (PkgComponent.PkgFile.LazPackage=nil) then exit;
+  if Assigned(OnOpenUnit) then
+    OnOpenUnit(PkgComponent.PkgFile);
+end;
+
 procedure TComponentPalette.PopupMenuPopup(Sender: TObject);
 var
   PkgComponent: TPkgComponent;
@@ -143,9 +158,12 @@ begin
     APackage:=PkgComponent.PkgFile.LazPackage;
   if APackage=nil then begin
     OpenPackageMenuItem.Visible:=false;
+    OpenUnitMenuItem.Visible:=false;
   end else begin
     OpenPackageMenuItem.Caption:='Open Package '+APackage.IDAsString;
     OpenPackageMenuItem.Visible:=true;
+    OpenUnitMenuItem.Caption:='Open Unit '+PkgComponent.PkgFile.Filename;
+    OpenUnitMenuItem.Visible:=true;
   end;
 end;
 
@@ -214,6 +232,14 @@ begin
     OnClick:=@OpenPackageClicked;
   end;
   PopupMenu.Items.Add(OpenPackageMenuItem);
+
+  OpenUnitMenuItem:=TMenuItem.Create(PopupMenu);
+  with OpenUnitMenuItem do begin
+    Name:='OpenUnitMenuItem';
+    Caption:=lisCompPalOpenUnit;
+    OnClick:=@OpenUnitClicked;
+  end;
+  PopupMenu.Items.Add(OpenUnitMenuItem);
 end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
