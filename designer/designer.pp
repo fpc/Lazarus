@@ -1106,14 +1106,15 @@ end;
 
 procedure TDesigner.BuildPopupMenu;
 var
-  ControlSelIsNotEmpty, FormIsSelected, OnlyNonVisualCompsAreSelected,
+  ControlSelIsNotEmpty,
+  FormIsSelected,
+  OnlyNonVisualCompsAreSelected,
   CompsAreSelected: boolean;
 begin
   if FPopupMenu<>nil then FPopupMenu.Free;
 
   ControlSelIsNotEmpty:=ControlSelection.Count>0;
-  FormIsSelected:=ControlSelIsNotEmpty 
-    and (ControlSelection[0].Component is TCustomForm);
+  FormIsSelected:=ControlSelection.IsSelected(Form);
   OnlyNonVisualCompsAreSelected:=
     ControlSelection.OnlyNonVisualComponentsSelected;
   CompsAreSelected:=ControlSelIsNotEmpty and not FormIsSelected;
@@ -1148,7 +1149,7 @@ begin
   with FScaleMenuItem do begin
     Caption := 'Scale';
     OnClick := @OnScalePopupMenuClick;
-    Enabled := CompsAreSelected and OnlyNonVisualCompsAreSelected;
+    Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
   end;
   FPopupMenu.Items.Add(FScaleMenuItem);
 
@@ -1156,7 +1157,7 @@ begin
   with FSizeMenuItem do begin
     Caption := 'Size';
     OnClick := @OnSizePopupMenuClick;
-    Enabled := CompsAreSelected and OnlyNonVisualCompsAreSelected;
+    Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
   end;
   FPopupMenu.Items.Add(FSizeMenuItem);
   
