@@ -436,8 +436,6 @@ var
     EnabledFlag: boolean): TMenuItem;
   begin
     if FilesPopupMenu.Items.Count<=ItemCnt then begin
-    end;
-    if FilesPopupMenu.Items.Count<=ItemCnt then begin
       Result:=TMenuItem.Create(Self);
       FilesPopupMenu.Items.Add(Result);
     end else begin
@@ -455,24 +453,27 @@ var
     FileTypeMenuItem: TMenuItem;
     CurPFT: TPkgFileType;
     NewMenuItem: TMenuItem;
+    VirtualFileExists: Boolean;
   begin
     FileTypeMenuItem:=AddPopupMenuItem(lisAF2PFileType, nil, true);
+    VirtualFileExists:=(CurFile.FileType=pftVirtualUnit)
+                       and FileExists(CurFile.Filename);
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
       NewMenuItem:=TMenuItem.Create(Self);
       NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
       NewMenuItem.OnClick:=@ChangeFileTypeMenuItemClick;
-      if CurPFT=CurFile.FileType then
+      if CurPFT=CurFile.FileType then begin
         // menuitem to keep the current type
+        NewMenuItem.Enabled:=true;
+        NewMenuItem.Checked:=true;
+      end else if VirtualFileExists then
+        // a virtual unit that exists can be changed into anything
         NewMenuItem.Enabled:=true
-      else if (CurFile.FileType=pftVirtualUnit)
-      or (CurPFT=pftVirtualUnit) then
-        // a virtual unit can not be changed
-        NewMenuItem.Enabled:=false
-      else if (CurPFT<>pftUnit) then
-        // all other files can be changed into a non unit type
+      else if (not (CurPFT in PkgFileUnitTypes)) then
+        // all other files can be changed into all non unit types
         NewMenuItem.Enabled:=true
       else if FilenameIsPascalUnit(CurFile.Filename) then
-        // a unit can be changed into anything
+        // a pascal file can be changed into anything
         NewMenuItem.Enabled:=true
       else
         // default is to not allow
@@ -1062,8 +1063,11 @@ begin
     if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
       if (not FilenameIsPascalUnit(CurFile.Filename))
       and (CurPFT in [pftUnit,pftVirtualUnit]) then exit;
-      CurFile.FileType:=CurPFT;
-      UpdateAll;
+      if CurFile.FileType<>CurPFT then begin
+        CurFile.FileType:=CurPFT;
+        LazPackage.Modified:=true;
+        UpdateAll;
+      end;
       exit;
     end;
   end;

@@ -55,7 +55,6 @@ interface
 
 // verbosity
 { $DEFINE CTDEBUG}
-{ $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedBaseContexts}
@@ -1274,22 +1273,18 @@ var
       APath:=APath+PathDelim;
     // search as FPC: first lowercase, then keeping case, then uppercase
     if SearchSource then begin
-      {$IFNDEF win32}
-      if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
-      if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
-      {$ENDIF}
       if LoadFile(ADir+AnUnitName+'.pp',Result) then exit;
       if LoadFile(ADir+AnUnitName+'.pas',Result) then exit;
       {$IFNDEF win32}
+      if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
+      if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
       if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.pp',Result) then exit;
       if LoadFile(ADir+UpperCaseStr(AnUnitName)+'.pas',Result) then exit;
       {$ENDIF}
     end else begin
-      {$IFNDEF win32}
-      if LoadFile(ADir+lowercase(AnUnitName)+CompiledSrcExt,Result) then exit;
-      {$ENDIF}
       if LoadFile(ADir+AnUnitName+CompiledSrcExt,Result) then exit;
       {$IFNDEF win32}
+      if LoadFile(ADir+lowercase(AnUnitName)+CompiledSrcExt,Result) then exit;
       if LoadFile(ADir+UpperCaseStr(AnUnitName)+CompiledSrcExt,Result) then exit;
       {$ENDIF}
     end;
@@ -1345,7 +1340,7 @@ var
     Result:=nil;
     UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
     {$IFDEF ShowTriedFiles}
-    DebugLn('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',length(UnitLinks));
+    DebugLn('TFindDeclarationTool.FindUnitSource.SearchUnitInUnitLinks length(UnitLinks)=',dbgs(length(UnitLinks)));
     {$ENDIF}
     UnitLinkStart:=1;
     while UnitLinkStart<=length(UnitLinks) do begin
@@ -1359,8 +1354,8 @@ var
       UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
       if UnitLinkLen>0 then begin
         {$IFDEF ShowTriedFiles}
-        DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',CompareSubStrings(TheUnitName,UnitLinks,1,
-          UnitLinkStart,UnitLinkLen,false));
+        DebugLn('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'" ',
+          dbgs(CompareSubStrings(TheUnitName,UnitLinks,1,UnitLinkStart,UnitLinkLen,false)));
         {$ENDIF}
         if (UnitLinkLen=length(TheUnitName))
         and (CompareText(PChar(TheUnitName),length(TheUnitName),
@@ -2906,7 +2901,7 @@ var
   ReferencePos: TCodeXYPosition;
   MaxPos: Integer;
   CursorNode: TCodeTreeNode;
-  Found: Boolean;
+  UnitStartFound, Found: Boolean;
 
   procedure AddReference;
   var
@@ -2935,14 +2930,25 @@ var
   var
     IdentEndPos: LongInt;
   begin
+    if (not IsComment) then begin
+      UnitStartFound:=true;
+    end;
     IdentEndPos:=StartPos;
     while (IdentEndPos<=MaxPos) and (IsIdentChar[Src[IdentEndPos]]) do
       inc(IdentEndPos);
     //debugln('ReadIdentifier ',copy(Src,StartPos,IdentEndPos-StartPos));
     if (IdentEndPos-StartPos=length(Identifier))
     and (CompareIdentifiers(PChar(Identifier),@Src[StartPos])=0)
-    and (IsComment or (not SkipComments)) then begin
-      debugln('Identifier with same name found at: ',dbgs(StartPos),' ',GetIdentifier(@Src[StartPos]),' CleanDeclCursorPos=',dbgs(CleanDeclCursorPos),' ',dbgs(MaxPos));
+    and ((not IsComment)
+         or ((not SkipComments) and UnitStartFound))
+    then begin
+      debugln('Identifier with same name found at: ',
+        dbgs(StartPos),' ',GetIdentifier(@Src[StartPos]),
+        ' CleanDeclCursorPos=',dbgs(CleanDeclCursorPos),
+        ' MaxPos='+dbgs(MaxPos),
+        ' IsComment='+dbgs(IsComment),
+        ' SkipComments='+dbgs(SkipComments),
+        ' UnitStartFound='+dbgs(UnitStartFound));
       if CleanPosToCaret(StartPos,ReferencePos) then
         debugln('  x=',dbgs(ReferencePos.X),' y=',dbgs(ReferencePos.Y),' ',ReferencePos.Code.Filename);
 
@@ -2964,21 +2970,24 @@ var
           Params.Clear;
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                        fdfExceptionOnNotFound];
+        if NodeIsForwardDeclaration(CursorNode) then begin
+          debugln('Node is forward declaration');
+          Params.Flags:=Params.Flags+[fdfSearchForward,fdfIgnoreCurContextNode];
+        end;
         Params.ContextNode:=CursorNode;
         //debugln(copy(Src,Params.ContextNode.StartPos,200));
         Params.SetIdentifier(Self,@Src[StartPos],@CheckSrcIdentifier);
 
-        if not IsComment then begin
-          // search identifier
-          Found:=FindDeclarationOfIdentAtCursor(Params);
-        end else begin
-          // search identifier in comment -> if not found, this is no bug
-          // => silently ignore
-          try
+        // search identifier in comment -> if not found, this is no bug
+        // => silently ignore
+        try
+          if fdfSearchForward in Params.Flags then
+            Found:=FindIdentifierInContext(Params)
+          else
             Found:=FindDeclarationOfIdentAtCursor(Params);
-          except
-            on E: ECodeToolError do ;
-          end;
+        except
+          on E: ECodeToolError do
+            if not IsComment then raise;
         end;
 
         if Found and (Params.NewNode<>nil) then begin
@@ -3007,6 +3016,7 @@ var
     //CommentStart: LongInt;
   begin
     StartPos:=1;
+    UnitStartFound:=false;
     while StartPos<=MaxPos do begin
       case Src[StartPos] of
       

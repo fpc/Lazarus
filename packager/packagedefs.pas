@@ -2113,7 +2113,8 @@ begin
     PkgFile.AutoReferenceSourceDir:=true;
     PkgFile.UpdateSourceDirectoryReference;
     //writeln('TLazPackage.UpdateSourceDirectories A ',PkgFile.Filename,' ',
-    //  ' ',PkgFile.FileType=pftUnit,' ',PkgFile.Removed,
+    //  ' ',PkgFileTypeNames[PkgFile.FileType],' ',PkgFile.Removed,
+    //  ' HasPkg=',dbgs(PkgFile.LazPackage=Self),
     //  ' Need=',PkgFile.FSourceDirNeedReference,
     //  ' Is=',PkgFile.FSourceDirectoryReferenced);
   end;
