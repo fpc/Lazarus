@@ -386,7 +386,7 @@ begin
   if GraphicClass = nil then
     raise EInvalidGraphic.CreateFmt('Unknown picture extension', [Ext]);
 
-    NewGraphic := GraphicClass.Create;
+  NewGraphic := GraphicClass.Create;
 
   ok:=false;
   try

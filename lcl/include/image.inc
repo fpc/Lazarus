@@ -16,16 +16,16 @@
 
 constructor TImage.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
-   FCompStyle := csImage;
-   ControlStyle:= [csCaptureMouse, csDoubleClicks];
-   FAutoSize := False;
-   FCenter := False;
-   FStretch := False;
-   FTransparent := True;
-   FPicture := TPicture.Create;
-   FPicture.OnChange := @PictureChanged;
-   Setbounds(0,0,100,100);
+  inherited Create(AOwner);
+  FCompStyle := csImage;
+  ControlStyle:= [csCaptureMouse, csDoubleClicks];
+  FAutoSize := False;
+  FCenter := False;
+  FStretch := False;
+  FTransparent := True;
+  FPicture := TPicture.Create;
+  FPicture.OnChange := @PictureChanged;
+  Setbounds(0,0,100,100);
 end;
 
 destructor TImage.Destroy;

@@ -195,6 +195,8 @@ type
     procedure DoMoveActivePageLeft; virtual;
     procedure DoMoveActivePageRight; virtual;
     procedure DoMoveActivePage(CurIndex, NewIndex: Integer); virtual;
+    procedure AddMenuItemsForPages(ParentMenuItem: TMenuItem); virtual;
+    procedure ShowPageMenuItemClick(Sender: TObject);
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -545,6 +547,19 @@ const
   nbvDeletePage    = 2;
   nbvMovePageLeft  = 3;
   nbvMovePageRight = 4;
+  nbvShowPage      = 5;
+
+procedure TNotebookComponentEditor.ShowPageMenuItemClick(Sender: TObject);
+var
+  AMenuItem: TMenuItem;
+  NewPageIndex: integer;
+begin
+  AMenuItem:=TMenuItem(Sender);
+  if (AMenuItem=nil) or (not (AMenuItem is TMenuItem)) then exit;
+  NewPageIndex:=AMenuItem.MenuIndex;
+  if (NewPageIndex<0) or (NewPageIndex>=Notebook.PageCount) then exit;
+  NoteBook.PageIndex:=NewPageIndex;
+end;
 
 procedure TNotebookComponentEditor.AddNewPageToDesigner(Index: integer);
 var
@@ -623,6 +638,23 @@ begin
   GetDesigner.Modified;
 end;
 
+procedure TNotebookComponentEditor.AddMenuItemsForPages(
+  ParentMenuItem: TMenuItem);
+var
+  i: integer;
+  NewMenuItem: TMenuItem;
+begin
+  ParentMenuItem.Enabled:=NoteBook.PageCount>0;
+  for i:=0 to NoteBook.PageCount-1 do begin
+    NewMenuItem:=TMenuItem.Create(ParentMenuItem);
+    NewMenuItem.Name:='ShowPage'+IntToStr(i);
+    NewMenuItem.Caption:=
+      TPage(Notebook.PageList[i]).Name+' "'+Notebook.Pages[i]+'"';
+    NewMenuItem.OnClick:=@ShowPageMenuItemClick;
+    ParentMenuItem.Add(NewMenuItem);
+  end;
+end;
+
 procedure TNotebookComponentEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
@@ -642,6 +674,7 @@ begin
     nbvDeletePage:    Result:='Delete page';
     nbvMovePageLeft:  Result:='Move page left';
     nbvMovePageRight: Result:='Move page right';
+    nbvShowPage:      Result:='Show page ...';
   else
     Result:='';
   end;
@@ -649,7 +682,7 @@ end;
 
 function TNotebookComponentEditor.GetVerbCount: Integer;
 begin
-  Result:=5;
+  Result:=6;
 end;
 
 procedure TNotebookComponentEditor.PrepareItem(Index: Integer;
@@ -662,6 +695,7 @@ begin
     nbvDeletePage:    AnItem.Enabled:=Notebook.PageIndex>=0;
     nbvMovePageLeft:  AnItem.Enabled:=Notebook.PageIndex>0;
     nbvMovePageRight: AnItem.Enabled:=Notebook.PageIndex<Notebook.PageCount-1;
+    nbvShowPage:      AddMenuItemsForPages(AnItem);
   end;
 end;
 
