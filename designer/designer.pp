@@ -91,6 +91,7 @@ type
     FSizeMenuItem: TMenuItem;
     FBringToFrontMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
+    FDeleteSelectionMenuItem: TMenuItem;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -120,6 +121,7 @@ type
     MouseUpPos: TPoint;
     LastMouseMovePos: TPoint;
     PopupMenuComponentEditor: TBaseComponentEditor;
+    LastFormCursor: TCursor;
 
     function PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
     function SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
@@ -144,6 +146,7 @@ type
     procedure OnSizePopupMenuClick(Sender: TObject);
     procedure OnBringToFrontMenuClick(Sender: TObject);
     procedure OnSendToBackMenuClick(Sender: TObject);
+    procedure OnDeleteSelectionMenuClick(Sender: TObject);
     Procedure OnFormActivated;
     procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
 
@@ -254,6 +257,7 @@ begin
   FHintWindow.AutoHide := True;
   
   DDC:=TDesignerDeviceContext.Create;
+  LastFormCursor:=crDefault;
 end;
 
 destructor TDesigner.Destroy;
@@ -813,6 +817,8 @@ begin
 
   OldMouseMovePos:= LastMouseMovePos;
   LastMouseMovePos:= GetFormRelativeMousePosition(Form);
+  if (OldMouseMovePos.X=LastMouseMovePos.X)
+  and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
 
   Grabber:= ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y);
   if Grabber = nil then
@@ -820,7 +826,10 @@ begin
   else begin
     ACursor:= Grabber.Cursor;
   end;
-  CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
+  if ACursor<>LastFormCursor then begin
+    LastFormCursor:=ACursor;
+    CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
+  end;
 
   if MouseDownComponent=nil then exit;
 
@@ -1149,6 +1158,11 @@ begin
   end;
 end;
 
+procedure TDesigner.OnDeleteSelectionMenuClick(Sender: TObject);
+begin
+  DoDeleteSelectedComponents;
+end;
+
 function TDesigner.GetGridColor: TColor;
 begin
   Result:=EnvironmentOptions.GridColor;
@@ -1336,6 +1350,18 @@ begin
 end;
 
 procedure TDesigner.BuildPopupMenu;
+
+  procedure AddSeparator;
+  var
+    NewMenuItem: TMenuItem;
+  begin
+    NewMenuItem:=TMenuItem.Create(FPopupMenu);
+    with NewMenuItem do begin
+      Caption:='-';
+    end;
+    FPopupMenu.Items.Add(NewMenuItem);
+  end;
+
 var
   ControlSelIsNotEmpty,
   FormIsSelected,
@@ -1394,6 +1420,8 @@ begin
   end;
   FPopupMenu.Items.Add(FSizeMenuItem);
   
+  AddSeparator;
+  
   FBringToFrontMenuItem := TMenuItem.Create(FPopupMenu);
   with FBringToFrontMenuItem do begin
     Caption:= 'Bring to front';
@@ -1409,6 +1437,16 @@ begin
     Enabled:= CompsAreSelected;
   end;
   FPopupMenu.Items.Add(FSendToBackMenuItem);
+  
+  AddSeparator;
+  
+  FDeleteSelectionMenuItem:=TMenuItem.Create(FPopupMenu);
+  with FDeleteSelectionMenuItem do begin
+    Caption:= 'Delete selection';
+    OnClick:=@OnDeleteSelectionMenuClick;
+    Enabled:= ControlSelIsNotEmpty;
+  end;
+  FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
