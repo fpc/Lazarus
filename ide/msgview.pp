@@ -175,17 +175,15 @@ var
   Temp : Integer;  //this temporarily holds the line # of the selection
 begin
   if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
-      Begin
-         Temp := GetSelectedLineIndex;
-         if Temp <> LastSelectedIndex then
-            Begin
-               LastSelectedIndex := Temp;
-               If Assigned(OnSelectionChanged) then
-                  OnSelectionChanged(self);
-             end;
-
-      end;
-      
+  Begin
+    Temp := GetSelectedLineIndex;
+    if Temp <> LastSelectedIndex then
+    Begin
+      LastSelectedIndex := Temp;
+    end;
+    If Assigned(OnSelectionChanged) then
+      OnSelectionChanged(self);
+  end;
 end;
 
 initialization
