@@ -284,7 +284,6 @@ var
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
-    Storage:=nil;
     try
       FileVersion:=XMLConfig.GetValue('HelpOptions/Version/Value',0);
       if (FileVersion<>0) and (FileVersion<HelpOptionsVersion) then
@@ -292,17 +291,24 @@ begin
         
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');
-        HelpViewers.Load(Storage);
+        try
+          HelpViewers.Load(Storage);
+        finally
+          FreeAndNil(Storage);
+        end;
       end;
 
       if HelpDatabases<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Databases');
-        HelpDatabases.Load(Storage);
+        try
+          HelpDatabases.Load(Storage);
+        finally
+          FreeAndNil(Storage);
+        end;
       end;
 
     finally
       XMLConfig.Free;
-      Storage.Free;
     end;
   except
     on E: Exception do begin
