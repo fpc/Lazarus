@@ -911,6 +911,7 @@ type
   // modifing
   TPropHookModified = procedure of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
+  TPropHookRefreshPropertyValues = procedure of object;
 
   TPropertyEditorHook = class
   private
@@ -941,6 +942,7 @@ type
     // modifing
     FOnModified: TPropHookModified;
     FOnRevert: TPropHookRevert;
+    FOnRefreshPropertyValues: TPropHookRefreshPropertyValues;
 
     procedure SetLookupRoot(AComponent:TComponent);
   public
@@ -973,6 +975,7 @@ type
     // modifing
     procedure Modified;
     procedure Revert(Instance:TPersistent; PropInfo:PPropInfo);
+    procedure RefreshPropertyValues;
 
     // lookup root
     property OnChangeLookupRoot:TPropHookChangeLookupRoot
@@ -1001,6 +1004,7 @@ type
     // modifing events
     property OnModified:TPropHookModified read FOnModified write FOnModified;
     property OnRevert:TPropHookRevert read FOnRevert write FOnRevert;
+    property OnRefreshPropertyValues:TPropHookRefreshPropertyValues read FOnRefreshPropertyValues write FOnRefreshPropertyValues;
   end;
 
 //==============================================================================
@@ -2797,6 +2801,7 @@ begin
       exit;
     end;
     SetValue(FormMethodName);
+    PropertyHook.RefreshPropertyValues;
   end;
   PropertyHook.ShowMethod(FormMethodName);
 end;
@@ -4017,6 +4022,12 @@ PropInfo:PPropInfo);
 begin
   if Assigned(FOnRevert) then
     FOnRevert(Instance,PropInfo);
+end;
+
+procedure TPropertyEditorHook.RefreshPropertyValues;
+begin
+  if Assigned(FOnRefreshPropertyValues) then
+    FOnRefreshPropertyValues();
 end;
 
 procedure TPropertyEditorHook.SetLookupRoot(AComponent:TComponent);
