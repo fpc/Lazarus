@@ -40,6 +40,10 @@ msgstr "&Удалить"
 msgid "Add ..."
 msgstr "Добавить..."
 
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Очистить"
@@ -51,6 +55,10 @@ msgstr "Подтверждаете очистку всех изображений ?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Удалить"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr ""
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -84,6 +92,14 @@ msgstr "Инспектор объектов"
 msgid "Properties"
 msgstr "Свойства"
 
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr ""
+
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
 msgstr "Редактор Сетки строк"
@@ -99,4 +115,8 @@ msgstr "Подэлемент"
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
 msgstr "Неизвестный"
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr ""
 

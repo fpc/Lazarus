@@ -30,6 +30,10 @@ msgstr "&Supprimer"
 msgid "Add ..."
 msgstr "Ajouter ..."
 
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Effacer"
@@ -41,6 +45,10 @@ msgstr "Confirmez vous la suppression de toutes les images ?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Supprimer"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr ""
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -74,6 +82,14 @@ msgstr "Inspecteur d'objet"
 msgid "Properties"
 msgstr "Propriétés"
 
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr ""
+
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
 msgstr ""
@@ -88,5 +104,9 @@ msgstr "Sous élément"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
+msgstr ""
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
 msgstr ""
 

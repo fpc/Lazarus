@@ -30,6 +30,10 @@ msgstr "&Esborrar"
 msgid "Add ..."
 msgstr "Afegir ..."
 
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr "Netejar"
@@ -41,6 +45,10 @@ msgstr "Confirmar esborrar totes les imatges ?"
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Esborrar"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr ""
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -74,6 +82,14 @@ msgstr "Inspector d'objectes"
 msgid "Properties"
 msgstr "Propietats"
 
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr ""
+
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
 msgstr ""
@@ -88,5 +104,9 @@ msgstr "Sub-element"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
+msgstr ""
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
 msgstr ""
 

@@ -221,7 +221,7 @@ msgid "(unknown macro: %s)"
 msgstr "(nieznane makro: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.0 beta"
+msgid "0.9.1 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -1780,6 +1780,10 @@ msgstr "B³±d"
 msgid "Error creating file"
 msgstr "B³±d przy tworzeniu pliku"
 
+#: lazarusidestrconsts:liserrorcreatinglrs
+msgid "Error creating lrs"
+msgstr ""
+
 #: lazarusidestrconsts:liserrordeletingfile
 msgid "Error deleting file"
 msgstr "B³±d podczas usuwania pliku"
@@ -1839,6 +1843,10 @@ msgstr ""
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
 msgstr "B³±d: nieprawid³owy kompilator: %s"
+
+#: lazarusidestrconsts:liserrors
+msgid "Errors"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
@@ -3072,6 +3080,10 @@ msgstr "Interfejs LCL"
 msgid "LCL Interface specific options:"
 msgstr "Opcje interfejsu LCL:"
 
+#: lazarusidestrconsts:lislclunitpathmissing
+msgid "LCL unit path missing"
+msgstr ""
+
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
 msgstr "Typ widgetu LCL"
@@ -3103,6 +3115,10 @@ msgstr "Poziom 3 (Poziom 2 + mniej istotne)"
 #: lazarusidestrconsts:lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
 msgstr "LFM - formularz Lazarusa jako tekst"
+
+#: lazarusidestrconsts:lislfmfile
+msgid "LFM file"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertlgplnotice
 msgid "LGPL notice"
@@ -4276,6 +4292,10 @@ msgstr "Release"
 msgid "Remove"
 msgstr "Usuñ"
 
+#: lazarusidestrconsts:lisremoveallinvalidproperties
+msgid "Remove all invalid properties"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditremovedependency
 msgid "Remove dependency"
 msgstr "Usuñ zale¿no¶æ"
@@ -5392,6 +5412,10 @@ msgstr "Plik kompilatora \"%s\" nie jest wykonywalny."
 msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Plik kompilatora dla pakietu %s nie jest wykonywalny:%s%s"
 
+#: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
+msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
+msgstr ""
+
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."
 msgstr "Plik odpluskwiacza \"%s\" nie jest wykonywalny."
@@ -5503,6 +5527,10 @@ msgstr "G³ówny katalog Lazarusa"
 #: lazarusidestrconsts:lispkgsysthelcllazaruscomponentlibrarycontainsallbase
 msgid "The LCL - Lazarus Component Library contains all base components for form editing."
 msgstr "LCL (Biblioteka Komponentów Lazarusa) zawiera wszystkie bazowe komponenty do tworzenia formularzy."
+
+#: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
+msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -5847,6 +5875,10 @@ msgstr "Nie mogê wyczy¶ciæ katalogu docelowego"
 #: lazarusidestrconsts:lisunabletoconvertfileerror
 msgid "Unable to convert file %s%s%s%sError: %s"
 msgstr "Nie mogê zamieniæ pliku %s%s%s%sB³±d: %s"
+
+#: lazarusidestrconsts:lisunabletoconvertlfmtolrsandwritelrsfile
+msgid "Unable to convert lfm to lrs and write lrs file."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletoconverttextformdataoffileintobinarystream
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"

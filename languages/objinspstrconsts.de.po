@@ -30,6 +30,10 @@ msgstr "Loeschen"
 msgid "Add ..."
 msgstr ""
 
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr ""
+
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
 msgstr ""
@@ -40,6 +44,10 @@ msgstr ""
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oiserror
+msgid "Error"
 msgstr ""
 
 #: objinspstrconsts:oisevents
@@ -74,6 +82,14 @@ msgstr "Object Inspector"
 msgid "Properties"
 msgstr "Properties"
 
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr ""
+
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
 msgstr ""
@@ -88,5 +104,9 @@ msgstr ""
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
+msgstr ""
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
 msgstr ""
 

@@ -2,6 +2,14 @@
 msgid "Object Inspector"
 msgstr ""
 
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr ""
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr ""
+
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
 msgstr ""
@@ -24,6 +32,18 @@ msgstr ""
 
 #: objinspstrconsts:oisevents
 msgid "Events"
+msgstr ""
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr ""
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption

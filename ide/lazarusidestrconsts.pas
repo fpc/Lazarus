@@ -42,11 +42,7 @@ uses
   
 resourcestring
   // version
-  lisLazarusVersionString = '0.9.0 beta';
-  lisNoStringConstantFound = 'No String Constant Found';
-  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The Make '
-    +'Resourcestring Function expects a string constant.%sPlease select the '
-    +'expression and try again.';
+  lisLazarusVersionString = '0.9.1 beta';
 
   // command line help
   listhisHelpMessage = 'this help message';
@@ -1530,7 +1526,11 @@ resourcestring
   lisMakeResStrInsertAlphabetically = 'Insert alphabetically';
   lisMakeResStrInsertContexttSensitive = 'Insert context sensitive';
   lisMakeResStrSourcePreview = 'Source preview';
-  
+  lisNoStringConstantFound = 'No String Constant Found';
+  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The Make '
+    +'Resourcestring Function expects a string constant.%sPlease select the '
+    +'expression and try again.';
+
   // diff dialog
   lisDiffDlgText1 = 'Text1';
   lisDiffDlgOnlySelection = 'Only selection';
