@@ -625,6 +625,7 @@ end;
 procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
 var CurRow:TOIPropertyGridRow;
 begin
+writeln('#################### TOIPropertyGrid.ValueButtonClick');
   if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
   begin
     CurRow:=Rows[FItemIndex];

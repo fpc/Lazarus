@@ -1,4 +1,3 @@
-unit jitforms;
 {
   Author: Mattias Gaertner
 
@@ -17,6 +16,7 @@ unit jitforms;
     -activate SetDesigning in TJITForm.Create when LCL is ready for components
       in designing state
 }
+unit JITForms;
 
 {$mode objfpc}{$H+}
 
@@ -80,6 +80,7 @@ type
     function FindFormByName(AName:shortstring):integer;
     procedure GetUnusedNames(var FormName,FormClassName:shortstring);
     procedure AddNewMethod(JITForm:TForm; AName:ShortString);
+    function CreateNewMethod(JITForm:TForm; AName:ShortString): TMethod;
     procedure RemoveMethod(JITForm:TForm; AName:ShortString);
     procedure RenameMethod(JITForm:TForm; OldName,NewName:ShortString);
     procedure RenameFormClass(JITForm:TForm; NewName:ShortString);
@@ -155,7 +156,12 @@ end;
 procedure TJITForms.DestroyJITForm(JITForm:TForm);
 var a:integer;
 begin
+  if JITForm=nil then
+    raise Exception.Create('TJITForms.DestroyJITForm JITForm=nil');
   a:=IndexOf(JITForm);
+  if a<0 then
+    raise Exception.Create('TJITForms.DestroyJITForm JITForm.ClassName='+
+      JITForm.ClassName);
   if a>=0 then DestroyJITForm(a);
 end;
 
@@ -318,20 +324,18 @@ begin
 end;
 
 procedure TJITForms.AddNewMethod(JITForm:TForm; AName:ShortString);
-var CodeTemplate,NewCode:Pointer;
-  CodeSize:integer;
 begin
-  if JITForm.MethodAddress(AName)<>nil then exit;
-  CodeTemplate:=MethodAddress('DoNothing');
-  CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
-  GetMem(NewCode,CodeSize);
-  Move(CodeTemplate^,NewCode^,CodeSize);
-  DoAddNewMethod(JITForm.ClassType,AName,NewCode);
+  CreateNewmethod(JITForm,AName);
 end;
 
 procedure TJITForms.RemoveMethod(JITForm:TForm; AName:ShortString);
 var OldCode:Pointer;
 begin
+  if JITForm=nil then
+    raise Exception.Create('TJITForms.RemoveMethod JITForm=nil');
+  if IndexOf(JITForm)<0 then
+    raise Exception.Create('TJITForms.RemoveMethod JITForm.ClassName='+
+      JITForm.ClassName);
   OldCode:=nil;
   DoRemoveMethod(JITForm.ClassType,AName,OldCode);
   FreeMem(OldCode);
@@ -339,12 +343,41 @@ end;
 
 procedure TJITForms.RenameMethod(JITForm:TForm; OldName,NewName:ShortString);
 begin
+  if JITForm=nil then
+    raise Exception.Create('TJITForms.RenameMethod JITForm=nil');
+  if IndexOf(JITForm)<0 then
+    raise Exception.Create('TJITForms.RenameMethod JITForm.ClassName='+
+      JITForm.ClassName);
   DoRenameMethod(JITForm.ClassType,OldName,NewName);
 end;
 
 procedure TJITForms.RenameFormClass(JITForm:TForm; NewName:ShortString);
 begin
+  if JITForm=nil then
+    raise Exception.Create('TJITForms.RenameFormClass JITForm=nil');
+  if IndexOf(JITForm)<0 then
+    raise Exception.Create('TJITForms.RenameFormClass JITForm.ClassName='+
+      JITForm.ClassName);
   DoRenameClass(JITForm.ClassType,NewName);
+end;
+
+function TJITForms.CreateNewMethod(JITForm: TForm; AName: ShortString): TMethod;
+var CodeTemplate,NewCode:Pointer;
+  CodeSize:integer;
+begin
+  if JITForm=nil then
+    raise Exception.Create('TJITForms.CreateNewMethod JITForm=nil');
+  if IndexOf(JITForm)<0 then
+    raise Exception.Create('TJITForms.CreateNewMethod JITForm.ClassName='+
+      JITForm.ClassName);
+  if JITForm.MethodAddress(AName)<>nil then exit;
+  CodeTemplate:=MethodAddress('DoNothing');
+  CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
+  GetMem(NewCode,CodeSize);
+  Move(CodeTemplate^,NewCode^,CodeSize);
+  DoAddNewMethod(JITForm.ClassType,AName,NewCode);
+  Result.Data:=JITForm;
+  Result.Code:=NewCode;
 end;
 
 //------------------------------------------------------------------------------
@@ -591,7 +624,6 @@ procedure TJITForms.ReaderCreateComponent(Reader: TReader;
 begin
 //  writeln('[TJITForms.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
 end;
-
 
 //==============================================================================
 

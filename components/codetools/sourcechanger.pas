@@ -39,6 +39,8 @@ unit SourceChanger;
 
 interface
 
+{ $DEFINE CTDEBUG}
+
 uses
   Classes, SysUtils, CodeCache, BasicCodeTools, SourceLog, LinkScanner,
   AVL_Tree, KeywordFuncLists;
@@ -83,7 +85,8 @@ type
         AddBeginEnd: boolean): string;
     function BeautifyStatement(const AStatement: string; IndentSize: integer
         ): string;
-    function AddClassNameToProc(const AProcCode, AClassName: string): string;
+    function AddClassAndNameToProc(const AProcCode, AClassName,
+        AMethodName: string): string;
     function BeautifyWord(const AWord: string; WordPolicy: TWordPolicy): string;
     function BeautifyKeyWord(const AWord: string): string;
     function BeautifyIdentifier(const AWord: string): string;
@@ -646,7 +649,7 @@ end;
 constructor TBeautifyCodeOptions.Create;
 begin
   LineLength:=80;
-  LineEnd:=#13#10;
+  LineEnd:={$IFDEF win32}#13+{$ENDIF}#10;
   Indent:=2;
   ClassPartInsertPolicy:=cpipLast;
   ProcedureInsertPolicy:=pipClassOrder;
@@ -888,9 +891,10 @@ begin
 //writeln('**********************************************************');
 end;
 
-function TBeautifyCodeOptions.AddClassNameToProc(
-  const AProcCode, AClassName: string): string;
+function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,
+  AMethodName: string): string;
 var StartPos, NamePos, ProcLen: integer;
+  s: string;
 begin
   if CompareSubStrings('CLASS ',AProcCode,1,1,6,false)<>0 then
     StartPos:=1
@@ -907,11 +911,32 @@ begin
   NamePos:=StartPos;
   while (StartPos<=ProcLen) and (IsIdentChar[AProcCode[StartPos]]) do
     inc(StartPos);
-  if (StartPos<=ProcLen) and (AProcCode[StartPos]<>'.') then
-    Result:=copy(AProcCode,1,NamePos-1)+AClassName+'.'
+  if (NamePos=StartPos)
+  or (CompareSubStrings('OF',AProcCode,1,NamePos,2,false)=0) then
+  begin
+    // there is no name yet
+    s:=AMethodName;
+    if AClassName<>'' then
+      s:=AClassName+'.'+s;
+    if IsIdentChar[AProcCode[NamePos-1]] then
+      s:=' '+s;
+    if IsIdentChar[AProcCode[NamePos]] then
+      s:=s+' ';
+    Result:=copy(AProcCode,1,NamePos-1)+s
            +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1)
-  else
-    Result:=AProcCode;
+  end else begin
+    // there is already a name
+    if AClassName<>'' then begin
+      while (StartPos<=ProcLen) and (IsSpaceChar[AProcCode[StartPos]]) do
+        inc(StartPos);
+      if (StartPos<=ProcLen) and (AProcCode[StartPos]<>'.') then
+        Result:=copy(AProcCode,1,NamePos-1)+AClassName+'.'
+               +copy(AProcCode,NamePos,length(AProcCode)-NamePos+1)
+      else
+        Result:=AProcCode;
+    end else
+      Result:=AProcCode;
+  end;
 end;
 
 function TBeautifyCodeOptions.BeautifyWord(const AWord: string;

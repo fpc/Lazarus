@@ -100,13 +100,13 @@ TCustomFormEditor
     FComponentInterfaceList : TList; //used to track and find controls
     FSelectedComponents : TComponentSelectionList;
     FObj_Inspector : TObjectInspector;
-    JITFormList : TJITForms;
   protected
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector);
   public
+    JITFormList : TJITForms;
     constructor Create;
     destructor Destroy; override;
 

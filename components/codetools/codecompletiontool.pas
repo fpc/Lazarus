@@ -719,8 +719,8 @@ var
   var ProcCode: string;
   begin
     ProcCode:=ANodeExt.ExtTxt1;
-    ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassNameToProc(
-                 ProcCode,TheClassName);
+    ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+                 ProcCode,TheClassName,'');
 {$IFDEF CTDEBUG}
 writeln('>>> InsertProcBody ',TheClassName,' "',ProcCode,'"');
 {$ENDIF}
@@ -793,8 +793,8 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
           with NewNodeExt do begin
             Txt:=UpperCaseStr(TheClassName)+'.'
                   +ANodeExt.Txt;       // Name+ParamTypeList
-            ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassNameToProc(
-               ANodeExt.ExtTxt1,TheClassName); // complete proc head code
+            ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+               ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
           end;
           ClassProcs.Add(NewNodeExt);
         end;
@@ -912,8 +912,8 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
           end;
           if (ProcCode<>'') then begin
             ProcCode:=
-              ASourceChangeCache.BeautifyCodeOptions.AddClassNameToProc(
-                ProcCode,TheClassName);
+              ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+                ProcCode,TheClassName,'');
             ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                         ProcCode,Indent,true);
             ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,

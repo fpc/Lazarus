@@ -1994,10 +1994,12 @@ var
   FormMethodName: shortstring;
 begin
   FormMethodName := GetValue;
+writeln('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
   if (FormMethodName = '')
   or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
     if FormMethodName = '' then
       FormMethodName := GetFormMethodName;
+writeln('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
     if FormMethodName = '' then begin
       {raise EPropertyError.CreateRes(@SCannotCreateName);}
       exit;
@@ -2009,7 +2011,7 @@ end;
 
 function TMethodPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paSortList, paRevertable];
+  Result := [paMultiSelect, paDialog, paValueList, paSortList, paRevertable];
 end;
 
 function TMethodPropertyEditor.GetEditLimit: Integer;
@@ -2092,12 +2094,11 @@ var
   NewMethodExists,NewMethodIsCompatible,NewMethodIsPublished,
   NewIdentIsMethod: boolean;
 begin
-writeln('### TMethodPropertyEditor.SetValue A');
+writeln('### TMethodPropertyEditor.SetValue A NewValue=',NewValue);
   CurValue:= GetValue;
   NewMethodExists:=PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
 writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
-exit;
   if NewMethodExists then begin
     if not NewIdentIsMethod then begin
       if MessageDlg('Incompatible Identifier',

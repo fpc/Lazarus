@@ -1249,7 +1249,7 @@ var
   function LoadSourceCaseSensitive(const AbsoluteFilename: string): pointer;
   var Path, FileNameOnly: string;
   begin
-    Path:=ExtractFilePath(AbsoluteFilename);
+    Path:=ExpandFilename(ExtractFilePath(AbsoluteFilename));
     FileNameOnly:=ExtractFilename(AbsoluteFilename);
     Result:=nil;
     if FileExists(Path+FileNameOnly) then

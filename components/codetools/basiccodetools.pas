@@ -146,6 +146,8 @@ function CleanCodeFromComments(const DirtyCode: string;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 function GetIdentifier(Identifier: PChar): string;
 
+function TrimCodeSpace(const ACode: string): string;
+
 function GetIndentStr(Indent: integer): string;
 
 //-----------------------------------------------------------------------------
@@ -1704,6 +1706,53 @@ begin
   SetLength(Result,Indent);
   if Indent>0 then
     FillChar(Result[1],length(Result),' ');
+end;
+
+function TrimCodeSpace(const ACode: string): string;
+// turn all lineends and special chars to space
+// space is combined to one char
+// space which is not needed is removed.
+// space is only needed between two words or between 2-char operators
+const
+  NonSpaceSymbols = [',',';','(',')','[',']'];
+var CodePos, ResultPos, CodeLen, SpaceEndPos: integer;
+  c1, c2: char;
+begin
+  CodeLen:=length(ACode);
+  SetLength(Result,CodeLen);
+  CodePos:=1;
+  ResultPos:=1;
+  while CodePos<=CodeLen do begin
+    if ACode[CodePos]>#32 then begin
+      Result[ResultPos]:=ACode[CodePos];
+      inc(ResultPos);
+      inc(CodePos);
+    end else begin
+      SpaceEndPos:=CodePos;
+      while (SpaceEndPos<=CodeLen) and (ACode[SpaceEndPos]<=#32) do
+        inc(SpaceEndPos);
+      if (CodePos>1) and (SpaceEndPos<=CodeLen) then begin
+        c1:=ACode[CodePos-1];
+        c2:=ACode[SpaceEndPos];
+        if (IsIdChar[c1] and IsIdChar[c2])
+        // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+        or ((c2='=') and  (c1 in [':','+','-','/','*','>','<']))
+        or ((c1='<') and (c2='>'))
+        or ((c1='>') and (c2='<'))
+        or ((c1='.') and (c2='.'))
+        or ((c1='*') and (c2='*'))
+        or ((c1='@') and (c2='@')) then
+        begin
+          // keep one space
+          Result[ResultPos]:=' ';
+          inc(ResultPos);
+        end;
+      end;
+      // skip space
+      CodePos:=SpaceEndPos;
+    end;
+  end;
+  SetLength(Result,ResultPos-1);
 end;
 
 
