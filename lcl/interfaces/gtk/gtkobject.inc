@@ -350,7 +350,7 @@ var
   j: Integer;
   ATransientWindow1: PTransientWindow;
   ATransientWindow2: PTransientWindow;
-  ParentWindow: PGtkWindow;
+  ParentTransientWindow: PTransientWindow;
 begin
   AllWindows:=nil;
 
@@ -432,22 +432,16 @@ begin
     // For now, just use the creation order
 
     
-    // set all transient relationships
+    // set all transient relationships for LCL windows
+    ParentTransientWindow:=nil;
     for i:=0 to AllWindows.Count-1 do begin
       ATransientWindow:=PTransientWindow(AllWindows[i]);
-      //write('UpdateTransientWindows: ',i);
-      //if ATransientWindow^.Component<>nil then
-      //  write(' Transient: ',ATransientWindow^.Component.Name,':',
-      //                       ATransientWindow^.Component.ClassName);
-      if i>0 then begin
-        ParentWindow:=PTransientWindow(AllWindows[i-1])^.GtkWindow;
-        //if PTransientWindow(AllWindows[i-1])^.Component<>nil then
-        //  write(' Parent: ',PTransientWindow(AllWindows[i-1])^.Component.Name,':',
-        //                    PTransientWindow(AllWindows[i-1])^.Component.ClassName);
-      end else
-        ParentWindow:=nil;
-      //writeln('');
-      gtk_window_set_transient_for(ATransientWindow^.GtkWindow,ParentWindow);
+      if ATransientWindow^.Component=nil then continue;
+      if ParentTransientWindow<>nil then begin
+        gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
+                                     ParentTransientWindow^.GtkWindow);
+      end;
+      ParentTransientWindow:=ATransientWindow;
     end;
   end;
 
@@ -3481,7 +3475,7 @@ begin
   RemoveCallbacks(Sender);
 
   if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then begin
-    writeln('tgtkObject.DestroyLCLControl Untransient ',Sender.ClassName);
+    //writeln('tgtkObject.DestroyLCLControl Untransient ',Sender.ClassName);
     UntransientWindow(PGtkWindow(Widget));
   end;
 
@@ -7047,6 +7041,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.334  2003/03/17 13:54:34  mattias
+  fixed setting activecontrol after createwnd
+
   Revision 1.333  2003/03/17 13:00:35  mattias
   improved but not fixed transient windows
 
