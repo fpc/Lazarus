@@ -14,19 +14,22 @@
     <Description Value="SQLite"/>
     <License Value="LGPL"/>
     <Version Major="1" Release="1"/>
-    <Files Count="1">
+    <Files Count="2">
       <Item1>
         <Filename Value="sqlitedataset.pas"/>
         <HasRegisterProc Value="True"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="SQLiteDataset"/>
       </Item1>
+      <Item2>
+        <Filename Value="sqliteresources.pas"/>
+        <UnitName Value="SQLiteResources"/>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item1>
     </RequiredPkgs>
     <UsageOptions>

@@ -8,7 +8,7 @@ unit SQLiteLaz;
 interface
 
 uses
-  SQLiteDataset, LazarusPackageIntf; 
+  SQLiteDataset, SQLiteResources, LazarusPackageIntf; 
 
 implementation
 
