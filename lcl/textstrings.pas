@@ -21,7 +21,7 @@
  *****************************************************************************
 
   TTextStrings is a TStrings descendent that is optimized for handling the
-  complete text as whole instead of as line by line as in TStringList.
+  complete text as whole (instead of as line by line as in TStringList).
   
   UNDER CONSTRUCTION by Mattias Gaertner
   
@@ -32,6 +32,7 @@
     - CustomSort
     - Find
     - Index
+    - Add
 }
 unit TextStrings;
 
@@ -43,7 +44,9 @@ uses
   Classes, SysUtils, LCLStrConsts;
   
 type
-  TLineRange = record
+  { TTextStrings }
+
+  TTextLineRange = record
     StartPos: integer; // start of line in Text
     EndPos: integer; // end of line in Text (= start of newline character(s))
     Line: string; // cached line as string
@@ -58,7 +61,7 @@ type
     FArraysValid: boolean;
     FLineCount: integer;
     FLineCapacity: integer;
-    FLineRanges: ^TLineRange;// array of TLineRange
+    FLineRanges: ^TTextLineRange;// array of TTextLineRange
     FText: string;
     FUpdateCount: integer;
     function GetTextStr: string; override;
@@ -78,7 +81,8 @@ type
     procedure SetText(TheText: PChar); override;
     procedure Insert(Index: Integer; const S: string); override;
     procedure Delete(Index: Integer); override;
-    procedure Exchange(FromIndex, ToIndex: Integer); override;
+    procedure Exchange(Index1, Index2: Integer); override;
+    procedure MakeTextBufferUnique;
   public
     property Text: string read FText write SetTextStr;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -132,7 +136,7 @@ begin
   FLineCapacity:=FLineCount;
   // build line range list
   if FLineCount>0 then begin
-    ArraySize:=FLineCount*SizeOf(TLineRange);
+    ArraySize:=FLineCount*SizeOf(TTextLineRange);
     GetMem(FLineRanges,ArraySize);
     FillChar(FLineRanges^,ArraySize,0);
     p:=1;
@@ -283,11 +287,11 @@ begin
       FLineCapacity:=8
     else
       FLineCapacity:=FLineCapacity shl 1;
-    ReAllocMem(FLineRanges,SizeOf(TLineRange)*FLineCapacity);
+    ReAllocMem(FLineRanges,SizeOf(TTextLineRange)*FLineCapacity);
   end;
   if Index<FLineCount then begin
     System.Move(FLineRanges[Index],FLineRanges[Index+1],
-         (FLineCount-Index)*SizeOf(TLineRange));
+         (FLineCount-Index)*SizeOf(TTextLineRange));
     for i:=Index+1 to FLineCount do begin
       inc(FLineRanges[i].StartPos,NewLineLen);
       inc(FLineRanges[i].EndPos,NewLineLen);
@@ -316,7 +320,7 @@ begin
   FLineRanges[Index].Line:='';
   if Index<FLineCount then begin
     System.Move(FLineRanges[Index+1],FLineRanges[Index],
-         (FLineCount-Index)*SizeOf(TLineRange));
+         (FLineCount-Index)*SizeOf(TTextLineRange));
     for i:=Index to FLineCount-1 do begin
       dec(FLineRanges[i].StartPos,OldLineLen);
       dec(FLineRanges[i].EndPos,OldLineLen);
@@ -324,28 +328,26 @@ begin
   end;
 end;
 
-procedure TTextStrings.Exchange(FromIndex, ToIndex: Integer);
+procedure TTextStrings.Exchange(Index1, Index2: Integer);
 var
-  MovingLineLen: Integer;
-  TxtLen: Integer;
+  LineLen1: Integer;
+  LineLen2: Integer;
 begin
-  if FromIndex=ToIndex then exit;
+  if Index1=Index2 then exit;
   if not FArraysValid then BuildArrays;
-  MovingLineLen:=GetLineLen(FromIndex,true);
+  LineLen1:=GetLineLen(Index1,true);
+  LineLen2:=GetLineLen(Index2,true);
+  if (LineLen1<1) and (LineLen2<1) then exit;
   // adjust text
-  if MovingLineLen>0 then begin
-    // make string unique (refcount=1) and allocate moving mem
-    TxtLen:=length(FText);
-    SetLength(FText,TxtLen+MovingLineLen);
-    // save moving line
-    System.Move(FText[FLineRanges[FromIndex].StartPos],FText[TxtLen+1],
-                MovingLineLen);
-    if FromIndex<ToIndex then begin
+  MakeTextBufferUnique;
 
-    end else begin
+  
+end;
 
-    end;
-  end;
+procedure TTextStrings.MakeTextBufferUnique;
+begin
+  // make string unique (refcount=1) to be able to edit it directly
+  UniqueString(FText);
 end;
 
 end.

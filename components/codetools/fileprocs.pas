@@ -120,12 +120,15 @@ end;
 
 function FileIsExecutable(const AFilename: string): boolean;
 begin
-  try
-    CheckIfFileIsExecutable(AFilename);
-    Result:=true;
-  except
-    Result:=false;
-  end;
+  {$IFDEF win32}
+  Result:=true;
+  {$ELSE}
+  {$IFDEF Ver1_0}
+  Result:= Linux.Access(AFilename,Linux.X_OK);
+  {$ELSE}
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
+  {$ENDIF}
+  {$ENDIF}
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
@@ -229,18 +232,24 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}(BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.R_OK){$IFNDEF Ver1_0}=0){$ENDIF};
+  {$IFDEF Ver1_0}
+  Result:= Linux.Access(AFilename,Linux.R_OK);
+  {$ELSE}
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
+  {$ENDIF}
   {$ENDIF}
 end;
 
 function FileIsWritable(const AFilename: string): boolean;
 begin
   {$IFDEF win32}
-  Result:=((FileGetAttr(AFilename) and faReadOnly)>0);
+  Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}(BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.W_OK){$IFNDEF Ver1_0}=0){$ENDIF};
+  {$IFDEF Ver1_0}
+  Result:= Linux.Access(AFilename,Linux.W_OK);
+  {$ELSE}
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
+  {$ENDIF}
   {$ENDIF}
 end;
 
