@@ -51,6 +51,7 @@ Begin
   if FSimplePanel <> Value then
   Begin
     FSimplePanel := Value;
+    //debugln('TStatusBar.SetSimplePanel FSimplePanel=',dbgs(FSimplePanel),' ',dbgsName(Self));
     UpdateHandleObject(-1);
   end;
 End;
@@ -119,6 +120,7 @@ begin
     TWSStatusBarClass(WidgetSetClass).PanelUpdate(Self,PanelIndex);
   end else begin
     // update all panels
+    //DebugLn('TStatusBar.UpdateHandleObject C update all panels');
     TWSStatusBarClass(WidgetSetClass).Update(Self);
     if SimplePanel then
       FHandlePanelCount:=1

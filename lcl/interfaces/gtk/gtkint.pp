@@ -230,10 +230,6 @@ type
     Function GetCaption(Sender : TObject) : String; virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
-    procedure OldUpdateStatusBarPanels(StatusBar: TObject;
-                                    StatusBarWidget: PGtkWidget); virtual;
-    procedure OldUpdateStatusBarPanel(StatusBar: TObject; Index: integer;
-                                   StatusPanelWidget: PGtkWidget); virtual;
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
@@ -442,6 +438,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.223  2005/03/05 23:00:16  mattias
+  adding panels to statusbar during designing now sets SimplePanel:=false
+
   Revision 1.222  2005/02/28 18:21:43  mattias
   fixed gtk file dialog with empty filter  from Collin
 

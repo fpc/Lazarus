@@ -3553,6 +3553,7 @@ begin
   Collection.Items[i].Index:=i+1;
   CollectionListBox.ItemIndex:=i+1;
   FillCollectionListBox;
+  SelectInObjectInspector(false);
   Modified;
 end;
 
@@ -3566,6 +3567,7 @@ begin
   Collection.Items[i].Index:=i-1;
   CollectionListBox.ItemIndex:=i-1;
   FillCollectionListBox;
+  SelectInObjectInspector(false);
   Modified;
 end;
 

@@ -5656,7 +5656,7 @@ begin
 
   // check new panel count
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
-  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
+  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',dbgs(NewPanelCount),' CurPanelCount=',dbgs(CurPanelCount));
   if CurPanelCount<>NewPanelCount then
     RaiseGDBException('');
 
@@ -8099,6 +8099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.349  2005/03/05 23:00:16  mattias
+  adding panels to statusbar during designing now sets SimplePanel:=false
+
   Revision 1.348  2005/03/05 20:40:57  mattias
   allowing gtk1 ascii keys
 

@@ -18,12 +18,27 @@
  *****************************************************************************
 }
 constructor TStatusPanel.Create(aCollection: TCollection);
+var
+  AStatusBar: TStatusBar;
 begin
   FWidth := 50;
   FBevel := pbLowered;
   FParentBiDiMode := True;
   FAlignment := taLeftJustify;
   inherited Create(aCollection);
+  
+  AStatusBar:=StatusBar;
+  //debugln('TStatusPanel.Create A ',dbgsName(AStatusBar),' ',dbgs(csDesigning in AStatusBar.ComponentState));
+  if (AStatusBar<>nil)
+  and ([csLoading,csDestroying]*AStatusBar.ComponentState=[]) then begin
+    if (csDesigning in AStatusBar.ComponentState)
+    and AStatusBar.SimplePanel and (AStatusBar.Panels.Count=1) then begin
+      // first added panel during designing
+      AStatusBar.SimplePanel:=false;
+    end else begin
+      AStatusBar.InvalidatePanel(Index,[ppText]);
+    end;
+  end;
 end;
 
 destructor TStatusPanel.Destroy;

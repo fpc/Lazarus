@@ -109,7 +109,7 @@ type
 
   { TStatusBar }
 
-  TStatusBar = Class(TWinControl)
+  TStatusBar = class(TWinControl)
   private
     FCanvas: TCanvas;
     FHandlePanelCount: integer; // realized panels in the Handle object
@@ -2404,6 +2404,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.169  2005/03/05 23:00:16  mattias
+  adding panels to statusbar during designing now sets SimplePanel:=false
+
   Revision 1.168  2005/02/28 22:05:06  vincents
   listview fixes for fpc 1.0.x
 
