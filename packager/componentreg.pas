@@ -154,6 +154,7 @@ type
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
                                 Component: TRegisteredComponent); virtual;
     procedure OnComponentVisibleChanged(AComponent: TRegisteredComponent); virtual;
+    procedure Update; virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -405,7 +406,10 @@ end;
 
 procedure TBaseComponentPalette.DoChange;
 begin
-  if FUpdateLock>0 then fChanged:=true;
+  if FUpdateLock>0 then
+    fChanged:=true
+  else
+    Update;
 end;
 
 procedure TBaseComponentPalette.DoEndUpdate(Changed: boolean);
@@ -429,6 +433,11 @@ procedure TBaseComponentPalette.OnComponentVisibleChanged(
   AComponent: TRegisteredComponent);
 begin
   DoChange;
+end;
+
+procedure TBaseComponentPalette.Update;
+begin
+
 end;
 
 constructor TBaseComponentPalette.Create;

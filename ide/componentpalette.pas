@@ -72,7 +72,8 @@ type
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
-                                Component: TRegisteredComponent); override;
+                                     Component: TRegisteredComponent); override;
+    procedure Update; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -244,7 +245,7 @@ end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
 begin
-  if Changed then UpdateNoteBookButtons;
+  if Changed or fNoteBookNeedsUpdate then UpdateNoteBookButtons;
   inherited DoEndUpdate(Changed);
 end;
 
@@ -260,6 +261,12 @@ procedure TComponentPalette.OnPageRemovedComponent(Page: TBaseComponentPage;
 begin
   fComponents.Remove(Component);
   inherited OnPageRemovedComponent(Page, Component);
+end;
+
+procedure TComponentPalette.Update;
+begin
+  inherited Update;
+  UpdateNoteBookButtons;
 end;
 
 constructor TComponentPalette.Create;
@@ -346,6 +353,7 @@ begin
     fNoteBookNeedsUpdate:=false;
     exit;
   end;
+  //writeln('TComponentPalette.UpdateNoteBookButtons A');
   fUpdatingNotebook:=true;
   OldActivePage:=FNoteBook.ActivePage;
   // remove every page in the notebook without a visible page
@@ -417,14 +425,16 @@ begin
             OnClick := @ComponentBtnClick;
             Hint := CurComponent.ComponentClass.ClassName;
             SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
-            inc(ButtonX,ComponentPaletteBtnWidth+2);
             CurBtn.PopupMenu:=Self.PopupMenu;
           end;
+          //writeln('TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name);
         end;
       end else if CurComponent.Button<>nil then begin
+        //writeln('TComponentPalette.UpdateNoteBookButtons Destroy Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name);
         CurComponent.Button.Free;
         CurComponent.Button:=nil;
       end;
+      inc(ButtonX,ComponentPaletteBtnWidth+2);
     end;
   end;
   // restore active page
@@ -437,6 +447,7 @@ begin
   // unlock
   fUpdatingNotebook:=false;
   fNoteBookNeedsUpdate:=false;
+  //writeln('TComponentPalette.UpdateNoteBookButtons END');
 end;
 
 procedure TComponentPalette.OnGetNonVisualCompIconCanvas(Sender: TObject;

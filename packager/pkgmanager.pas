@@ -1387,11 +1387,14 @@ end;
 procedure TPkgManager.LoadInstalledPackages;
 begin
   IDEComponentPalette.BeginUpdate(true);
-  LoadStaticBasePackages;
-  LoadStaticCustomPackages;
-  IDEComponentPalette.EndUpdate;
-  
-  LoadAutoInstallPackages;
+  try
+    LoadStaticBasePackages;
+    LoadStaticCustomPackages;
+
+    LoadAutoInstallPackages;
+  finally
+    IDEComponentPalette.EndUpdate;
+  end;
 end;
 
 procedure TPkgManager.UnloadInstalledPackages;
@@ -1409,10 +1412,8 @@ end;
 
 procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
-  {$IFNDEF DisablePkgs}
   TComponentPalette(IDEComponentPalette).NoteBook:=MainIDE.ComponentNotebook;
   TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
-  {$ENDIF}
 end;
 
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage;
