@@ -39,7 +39,7 @@ uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
   Dialogs, ControlSelection, CustomFormEditor, UnitEditor, CompReg, Menus,
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
-  DesignerProcs, PropEdits, ComponentEditors, KeyMapping;
+  DesignerProcs, PropEdits, ComponentEditors, KeyMapping,LazarusIDEStrConsts;
 
 type
   TDesigner = class;
@@ -745,7 +745,7 @@ var
     and (ControlSelection.SelectionForm<>nil)
     and (ControlSelection.SelectionForm<>Form)
     then begin
-      MessageDlg('Invalid mutliselection',
+      MessageDlg(fdInvalidMutliselectionCap,
         'Multiselected components must be of a single form.',
         mtInformation,[mbOk],0);
       exit;
@@ -1578,7 +1578,7 @@ begin
 
   FAlignMenuItem := TMenuItem.Create(FPopupMenu);
   with FAlignMenuItem do begin
-    Caption := 'Align';
+    Caption := fdmAlignWord;
     OnClick := @OnAlignPopupMenuClick;
     Enabled := CompsAreSelected;
   end;
@@ -1586,7 +1586,7 @@ begin
 
   FMirrorHorizontalMenuItem := TMenuItem.Create(FPopupMenu);
   with FMirrorHorizontalMenuItem do begin
-    Caption := 'Mirror horizontal';
+    Caption := fdmMirrorHorizontal;
     OnClick := @OnMirrorHorizontalPopupMenuClick;
     Enabled := CompsAreSelected;
   end;
@@ -1594,7 +1594,7 @@ begin
 
   FMirrorVerticalMenuItem := TMenuItem.Create(FPopupMenu);
   with FMirrorVerticalMenuItem do begin
-    Caption := 'Mirror vertical';
+    Caption := fdmMirrorVertical;
     OnClick := @OnMirrorVerticalPopupMenuClick;
     Enabled := CompsAreSelected;
   end;
@@ -1602,7 +1602,7 @@ begin
 
   FScaleMenuItem := TMenuItem.Create(FPopupMenu);
   with FScaleMenuItem do begin
-    Caption := 'Scale';
+    Caption := fdmScaleWord;
     OnClick := @OnScalePopupMenuClick;
     Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
   end;
@@ -1610,7 +1610,7 @@ begin
 
   FSizeMenuItem := TMenuItem.Create(FPopupMenu);
   with FSizeMenuItem do begin
-    Caption := 'Size';
+    Caption := fdmSizeWord;
     OnClick := @OnSizePopupMenuClick;
     Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
   end;
@@ -1620,7 +1620,7 @@ begin
   
   FBringToFrontMenuItem := TMenuItem.Create(FPopupMenu);
   with FBringToFrontMenuItem do begin
-    Caption:= 'Bring to front';
+    Caption:= fdmBringTofront;
     OnClick:= @OnBringToFrontMenuClick;
     Enabled:= CompsAreSelected;
   end;
@@ -1628,7 +1628,7 @@ begin
   
   FSendToBackMenuItem:= TMenuItem.Create(FPopupMenu);
   with FSendToBackMenuItem do begin
-    Caption:= 'Send to back';
+    Caption:= fdmSendtoback;
     OnClick:= @OnSendToBackMenuClick;
     Enabled:= CompsAreSelected;
   end;
@@ -1638,7 +1638,7 @@ begin
   
   FDeleteSelectionMenuItem:=TMenuItem.Create(FPopupMenu);
   with FDeleteSelectionMenuItem do begin
-    Caption:= 'Delete selection';
+    Caption:= fdmDeleteSelection;
     OnClick:=@OnDeleteSelectionMenuClick;
     Enabled:= ControlSelIsNotEmpty and (not FormIsSelected);
   end;
