@@ -7468,10 +7468,13 @@ var
   ev : TgdkEvent;
   Window : PgdkWindow;
   Widget : PgtkWidget;
+  p: TPoint;
 begin
   Result := 0;
 
-  Window := gdk_window_at_pointer(@Point.x,@Point.Y);
+  // !!!gdk_window_at_pointer changes the coordinates!!!
+  p:=Point;
+  Window := gdk_window_at_pointer(@p.x,@p.Y);
   if window <> nil then
   Begin
     ev.any.window := Window;
@@ -7638,6 +7641,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.204  2003/01/01 12:38:53  mattias
+  clean ups
+
   Revision 1.203  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 
