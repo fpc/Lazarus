@@ -368,10 +368,10 @@ begin
       Case Key of
         VK_Up,
         VK_Right:
-          TSpeedButton(MaxBtn).Click;
+          TCustomSpeedButton(MaxBtn).Click;
         VK_Down,
         VK_Left:
-          TSpeedButton(MinBtn).Click;
+          TCustomSpeedButton(MinBtn).Click;
       end;
 end;
 

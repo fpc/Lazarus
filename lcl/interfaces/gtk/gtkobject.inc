@@ -3187,11 +3187,11 @@ begin
 
       LM_BTNDEFAULT_CHANGED :
       Begin
-        if (TButton(Sender).Default)
+        if (TCustomButton(Sender).Default)
         and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
           //gtk_widget_grab_default(pgtkwidget(handle))
         else begin
-          {DebugLn('LM_BTNDEFAULT_CHANGED ',TButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
+          {DebugLn('LM_BTNDEFAULT_CHANGED ',TCustomButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
             ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
             ' realized=',GTK_WIDGET_REALIZED(PGtkWidget(Handle)),
             ' mapped=',GTK_WIDGET_MAPPED(PGtkWidget(Handle)),
@@ -4646,7 +4646,7 @@ begin
 
     LM_ENTER :
     begin
-      if ALCLObject is TButton then
+      if ALCLObject is TCustomButton then
         ConnectSenderSignal(gObject, 'enter', @gtkenterCB)
       else
         ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
@@ -4654,7 +4654,7 @@ begin
 
     LM_EXIT :
     begin
-      if ALCLObject is TButton then
+      if ALCLObject is TCustomButton then
         ConnectSenderSignal(gObject, 'leave', @gtkleaveCB)
       else
         ConnectSenderSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
@@ -9197,6 +9197,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.514  2004/07/15 10:43:39  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.513  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

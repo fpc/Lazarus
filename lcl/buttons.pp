@@ -54,8 +54,8 @@ type
 
   {TNumGlyphs holds the number of glyphs in an image.
     We restrict it to 4 to stay compatible but we don't NEED to.
-    If we change this the code in SetNumGlyphs for @link(TSpeedButton) needs to
-    be changed }
+    If we change this the code in SetNumGlyphs for @link(TCustomSpeedButton)
+    needs to be changed }
   TNumGlyphs = 1..4;
 
   TCustomButton = class(TButtonControl)
@@ -146,7 +146,7 @@ type
   end;
 
 
-  { TBitBtn }
+  { TCustomBitBtn }
                  
   // when adding items here, also update TBitBtn.GetCaptionOfKind               
   TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp, bkYes, bkNo,
@@ -154,7 +154,7 @@ type
                  bkNoToAll, bkYesToAll);
   TBitBtnKinds = set of TBitBtnKind;
 
-  TBitBtn = class(TButton)
+  TCustomBitBtn = class(TCustomButton)
   private
     FButtonGlyph: TButtonGlyph;
     FKind: TBitBtnKind;
@@ -181,15 +181,27 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; Override;
   published
+    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
+    property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
+    property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
+    property Margin: integer read FMargin write SetMargin default -1;
+    property Spacing: Integer read FSpacing write SetSpacing default 3;
+  end;
+  
+  
+  { TBitBtn }
+  
+  TBitBtn = class(TCustomBitBtn)
+  published
     property Action;
     property Align;
     property Anchors;
     property Constraints;
     property Default;
-    property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
-    property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
-    property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
-    property Margin: integer read FMargin write SetMargin default -1;
+    property Glyph;
+    property Kind;
+    property Layout;
+    property Margin;
     property ModalResult;
     property OnChangeBounds;
     property OnClick;
@@ -202,7 +214,7 @@ type
     property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Spacing : Integer read FSpacing write SetSpacing default 3;
+    property Spacing;
     property Visible;
   end;
 
@@ -219,9 +231,9 @@ type
   end;
 
 
-  { TSpeedButton }
+  { TCustomSpeedButton }
 
-  TSpeedButton = class(TGraphicControl)
+  TCustomSpeedButton = class(TGraphicControl)
   private
     FAllowAllUp : Boolean;
     FDown : Boolean;
@@ -273,14 +285,8 @@ type
     destructor Destroy; override;
     procedure Click; override;
   published
-    property Action;
-    property Align;
-    property Anchors;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
-    property Constraints;
-    property Caption;
     property Down: Boolean read FDown write SetDown default false;
-    property Enabled;
     property Flat: Boolean read FFlat write SetFlat default false;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
@@ -289,6 +295,29 @@ type
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Spacing: integer read FSpacing write SetSpacing default 4;
     property Transparent: Boolean read FTransparent write SetTransparent default false;
+  end;
+  
+  
+  { TSpeedButton }
+  
+  TSpeedButton = class(TCustomSpeedButton)
+  published
+    property Action;
+    property Align;
+    property Anchors;
+    property AllowAllUp;
+    property Constraints;
+    property Caption;
+    property Down;
+    property Enabled;
+    property Flat;
+    property Glyph;
+    property GroupIndex;
+    property Layout;
+    property Margin;
+    property NumGlyphs;
+    property Spacing;
+    property Transparent;
     property Visible;
     property OnClick;
     property OnMouseDown;
@@ -343,6 +372,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2004/07/15 10:43:38  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.73  2004/07/13 17:47:14  mattias
   fixed mouse enter/leave for TSpeedButton
 

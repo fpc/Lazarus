@@ -4284,60 +4284,77 @@ type
   private
     procedure MemoChanged(Sender: TObject);
   public
-    Memo : TMemo;
-    OKButton, CancelButton : TBitBtn;
-    Bevel : TBevel;
-    StatusLabel : TLabel;
-    constructor Create(AOwner : TComponent); override;
+    Memo: TMemo;
+    OKButton, CancelButton: TBitBtn;
+    Bevel: TBevel;
+    StatusLabel: TLabel;
+    constructor Create(AOwner: TComponent); override;
   end;
 
 constructor TStringsPropEditorDlg.Create(AOwner : TComponent);
+var
+  x: Integer;
+  y: Integer;
+  MaxX: LongInt;
+  MaxY: LongInt;
+  w: Integer;
 begin
   inherited Create(AOwner);
   Position := poScreenCenter;
-  Height := 250;
   Width := 350;
+  Height := 250;
   Caption := 'Strings Editor Dialog';
 
   Bevel:= TBevel.Create(Self);
+  x:=4;
+  y:=4;
+  MaxX:=Self.ClientWidth;
+  MaxY:=Self.ClientHeight;
   with Bevel do begin
     Parent:= Self;
-    SetBounds(4, 4, 342, 213);
-    Anchors:= [akLeft, akTop, akRight, akBottom];
     Shape:= bsFrame;
+    SetBounds(x, y, MaxX-2*x, MaxY-y-34);
+    Anchors:= [akLeft, akTop, akRight, akBottom];
+  end;
+
+  StatusLabel:= TLabel.Create(Self);
+  x:=8;
+  y:=8;
+  with StatusLabel do begin
+    Parent:= Self;
+    SetBounds(x,y,MaxX-2*x, Height);
+    Anchors:= [akLeft, akTop, akRight];
+    Caption:= '0 lines, 0 chars';
   end;
 
   Memo := TMemo.Create(self);
+  y:=StatusLabel.Top+StatusLabel.Height;
   with Memo do begin
     Parent:= Self;
-    SetBounds(12, 32, 326, 176);
+    SetBounds(x,y,MaxX-2*x,MaxY-y-38);
     Anchors:= [akLeft, akTop, akRight, akBottom];
 //    Scrollbars:= ssVertical;   // GTK 1.x does not implement horizontal scrollbars for GtkText
     Memo.OnChange:= @MemoChanged;
   end;
 
-  StatusLabel:= TLabel.Create(Self);
-  with StatusLabel do begin
-    Parent:= Self;
-    SetBounds(12, 12, 326, 17);
-    Caption:= '0 lines, 0 chars';
-  end;
-
   OKButton := TBitBtn.Create(Self);
+  x:=MaxX;
+  y:=MaxY-30;
+  w:=80;
   with OKButton do Begin
     Parent := Self;
     Kind:= bkOK;
-    Left := 192;
-    Top := 221;
+    dec(x,w+8);
+    SetBounds(x,y,w,Height);
     Anchors:= [akRight, akBottom];
   end;
 
   CancelButton := TBitBtn.Create(self);
   with CancelButton do Begin
-    Parent := self;
+    Parent := Self;
     Kind:= bkCancel;
-    Left := 271;
-    Top := 221;
+    dec(x,w+8);
+    SetBounds(x,y,w,Height);
     Anchors:= [akRight, akBottom];
   end;
 end;

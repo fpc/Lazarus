@@ -16,9 +16,9 @@
 }
 
 {------------------------------------------------------------------------------}
-{       TBitBtn Constructor                                                    }
+{       TCustomBitBtn Constructor                                                    }
 {------------------------------------------------------------------------------}
-constructor TBitBtn.Create(TheOwner: TComponent);
+constructor TCustomBitBtn.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csBitBtn;
@@ -34,15 +34,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TBitBtn destructor                                                     }
+{       TCustomBitBtn destructor                                                     }
 {------------------------------------------------------------------------------}
-destructor TBitBtn.Destroy;
+destructor TCustomBitBtn.Destroy;
 Begin
   FreeThenNil(FButtonGlyph);
   inherited Destroy;
 end;
 
-Procedure TBitBtn.Click;
+Procedure TCustomBitBtn.Click;
 var
   Form : TCustomForm;
 Begin
@@ -56,30 +56,30 @@ Begin
   inherited Click;
 End;
 
-Function TBitBtn.GetGlyph : TBitmap;
+Function TCustomBitBtn.GetGlyph : TBitmap;
 Begin
   Result := FButtonGlyph.Glyph;
 end;
 
-Function TBitBtn.IsGlyphStored: Boolean;
+Function TCustomBitBtn.IsGlyphStored: Boolean;
 begin
   Result := (Kind = bkCustom) and (FButtonGlyph.Glyph <> nil)
             and (not FButtonGlyph.Glyph.Empty)
             and (FButtonGlyph.Glyph.Width>0) and (FButtonGlyph.Glyph.Height>0);
 end;
 
-Procedure TBitBtn.SetGlyph(AValue: TBitmap);
+Procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
 Begin
   FButtonGlyph.Glyph := AValue;
 end;
 
-procedure TBitBtn.GlyphChanged(Sender: TObject);
+procedure TCustomBitBtn.GlyphChanged(Sender: TObject);
 begin
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);
 end;
 
-procedure TBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+procedure TCustomBitBtn.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
   var
@@ -107,7 +107,7 @@ begin
   end;
 end;
 
-procedure TBitBtn.SetKind(AValue: TBitBtnKind);
+procedure TCustomBitBtn.SetKind(AValue: TBitBtnKind);
 Begin
   if FKind = AValue then Exit;
   FKind := AValue;
@@ -116,7 +116,7 @@ Begin
   RealizeKind;
 end;
 
-procedure TBitBtn.SetLayout(AValue: TButtonLayout);
+procedure TCustomBitBtn.SetLayout(AValue: TButtonLayout);
 Begin
   if FLayout = AValue then Exit;
   FLayout := AValue;
@@ -124,7 +124,7 @@ Begin
   then TWSBitBtnClass(WidgetSetClass).SetLayout(Self, FLayout);
 end;
 
-procedure TBitBtn.SetMargin(const AValue: integer);
+procedure TCustomBitBtn.SetMargin(const AValue: integer);
 begin
   if FMargin = AValue then Exit;
   FMargin := AValue;
@@ -132,7 +132,7 @@ begin
   then TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);
 end;
 
-Procedure TBitBtn.SetSpacing(AValue: Integer);
+Procedure TCustomBitBtn.SetSpacing(AValue: Integer);
 Begin
   if (FSpacing = AValue) or (AValue < 0) then Exit;
   FSpacing := AValue;
@@ -140,7 +140,7 @@ Begin
   then TWSBitBtnClass(WidgetSetClass).SetSpacing(Self, FSpacing);
 end;
 
-procedure TBitBtn.RealizeKind;
+procedure TCustomBitBtn.RealizeKind;
 var
   ABitmap: TBitmap;
 begin
@@ -164,7 +164,7 @@ end;
 { Return the caption associated with the akind value.
   This function replaces BitBtnCaption const because the localizing
   dont work with an const array }
-function TBitBtn.GetCaptionOfKind(aKind: TBitBtnKind): String;
+function TCustomBitBtn.GetCaptionOfKind(aKind: TBitBtnKind): String;
 begin
   Result:='';
   case aKind of
@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-procedure TBitBtn.InitializeWnd;
+procedure TCustomBitBtn.InitializeWnd;
 begin
   inherited;
   TWSBitBtnClass(WidgetSetClass).SetGlyph(Self, Glyph);

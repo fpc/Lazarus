@@ -1,7 +1,7 @@
 {%MainUnit ../buttons.pp}
 
 {******************************************************************************
-                                   TSpeedButton
+                                   TCustomSpeedButton
  ******************************************************************************
 
  *****************************************************************************
@@ -25,13 +25,13 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
-  Method:  TSpeedbutton.Create
+  Method:  TCustomSpeedButton.Create
   Params:  none
   Returns: Nothing
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TSpeedbutton.Create(AOwner: TComponent);
+constructor TCustomSpeedButton.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
   FCompStyle := csSpeedButton;
@@ -51,36 +51,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedbutton.Destroy
+  Method: TCustomSpeedButton.Destroy
   Params:  None
   Returns: Nothing
 
   Destructor for the class.
  ------------------------------------------------------------------------------}
-destructor TSpeedbutton.Destroy;
+destructor TCustomSpeedButton.Destroy;
 begin
   FreeAndNil(FGlyph);
   inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedbutton.Click
+  Method: TCustomSpeedButton.Click
   Params:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedbutton.Click;
+procedure TCustomSpeedButton.Click;
 begin
   inherited Click;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetAllowAllUp
+  Method: TCustomSpeedButton.SetAllowAllUp
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetAllowAllUp(Value : Boolean);
+procedure TCustomSpeedButton.SetAllowAllUp(Value : Boolean);
 begin
   if FAllowAllUp <> Value
   then begin
@@ -90,12 +90,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetDown
+  Method: TCustomSpeedButton.SetDown
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetDown(Value : Boolean);
+procedure TCustomSpeedButton.SetDown(Value : Boolean);
 var
   OldState: TButtonState;
   OldDown: Boolean;
@@ -117,12 +117,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetFlat
+  Method: TCustomSpeedButton.SetFlat
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetFlat(const Value : boolean);
+procedure TCustomSpeedButton.SetFlat(const Value : boolean);
 begin
   if FFlat <> Value then begin
     FFlat := Value;
@@ -131,24 +131,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetGlyph
+  Method: TCustomSpeedButton.SetGlyph
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetGlyph(Value : TBitmap);
+procedure TCustomSpeedButton.SetGlyph(Value : TBitmap);
 begin
   FGlyph.Glyph := Value;
   Invalidate;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetGroupIndex
+  Method: TCustomSpeedButton.SetGroupIndex
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetGroupIndex(const Value : Integer);
+procedure TCustomSpeedButton.SetGroupIndex(const Value : Integer);
 begin
   if FGroupIndex <> Value
   then begin
@@ -158,12 +158,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetMargin
+  Method: TCustomSpeedButton.SetMargin
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetMargin(const Value : Integer);
+procedure TCustomSpeedButton.SetMargin(const Value : Integer);
 begin
   if FMargin <> Value then begin
     FMargin := Value;
@@ -172,12 +172,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetNumGlyphs
+  Method: TCustomSpeedButton.SetNumGlyphs
   Params: Value : Integer = Number of glyphs in the file/resource
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetNumGlyphs(Value : integer);
+procedure TCustomSpeedButton.SetNumGlyphs(Value : integer);
 Begin
   if Value < 0 then Value := 1;
   if Value > 4 then Value := 4;
@@ -190,12 +190,12 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetSpacing
+  Method: TCustomSpeedButton.SetSpacing
   Params: Value:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetSpacing(const Value : Integer);
+procedure TCustomSpeedButton.SetSpacing(const Value : Integer);
 begin
   if FSpacing <> Value then begin
     FSpacing := Value;
@@ -204,9 +204,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TSpeedButton.RealSetText(const Value: TCaption);
+  procedure TCustomSpeedButton.RealSetText(const Value: TCaption);
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.RealSetText(const Value: TCaption);
+procedure TCustomSpeedButton.RealSetText(const Value: TCaption);
 begin
   if Caption=Value then exit;
   inherited RealSetText(Value);
@@ -214,9 +214,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TSpeedButton.UpdateState(InvalidateOnChange: boolean);
+  procedure TCustomSpeedButton.UpdateState(InvalidateOnChange: boolean);
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.UpdateState(InvalidateOnChange: boolean);
+procedure TCustomSpeedButton.UpdateState(InvalidateOnChange: boolean);
 var
   OldState: TButtonState;
 begin
@@ -243,9 +243,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TSpeedButton.GetDrawFlags: integer;
+  function TCustomSpeedButton.GetDrawFlags: integer;
  ------------------------------------------------------------------------------}
-function TSpeedButton.GetDrawFlags: integer;
+function TCustomSpeedButton.GetDrawFlags: integer;
 begin
   // if flat and not mouse in control and not down, don't draw anything
   if FFlat and not FMouseInControl and not (FState in [bsDown, bsExclusive]) then
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+procedure TCustomSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 
   procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
   begin
@@ -289,18 +289,18 @@ begin
   end;
 end;
 
-function TSpeedButton.GetActionLinkClass: TControlActionLinkClass;
+function TCustomSpeedButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TSpeedButtonActionLink;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.UpdateExclusive
+  Method: TCustomSpeedButton.UpdateExclusive
   Params: none
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.UpdateExclusive;
+procedure TCustomSpeedButton.UpdateExclusive;
 var
   msg : TLMessage;
 begin
@@ -315,46 +315,46 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TSpeedButton.GetGlyph
+  Function: TCustomSpeedButton.GetGlyph
   Params: none
   Returns:  The bitmap
 
  ------------------------------------------------------------------------------}
-function TSpeedbutton.GetGlyph : TBitmap;
+function TCustomSpeedButton.GetGlyph : TBitmap;
 begin
   Result := FGlyph.Glyph;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.GetNumGlyphs
+  Method: TCustomSpeedButton.GetNumGlyphs
   Params: none
   Returns:  The number stored in TButtonGlyph(FGlyph).NumGlyphs
 
  ------------------------------------------------------------------------------}
-Function TSpeedButton.GetNumGlyphs : Integer;
+Function TCustomSpeedButton.GetNumGlyphs : Integer;
 Begin
   Result :=  TButtonGlyph(fGlyph).NumGlyphs;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.GlyphChanged
+  Method: TCustomSpeedButton.GlyphChanged
   Params: Sender - The glyph that changed
   Returns:  zippo
 
  ------------------------------------------------------------------------------}
-Procedure TSpeedButton.GlyphChanged(Sender : TObject);
+Procedure TCustomSpeedButton.GlyphChanged(Sender : TObject);
 Begin
   //redraw the button;
   Invalidate;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedbutton.Paint
+  Method: TCustomSpeedButton.Paint
   Params: none
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedbutton.Paint;
+procedure TCustomSpeedButton.Paint;
 var
   PaintRect: TRect;
   GlyphWidth, GlyphHeight: Integer;
@@ -377,13 +377,13 @@ begin
     BrushStyle:= bsSolid;}
 
   FLastDrawFlags:=GetDrawFlags;
-  //DebugLn('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
+  //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
   
   // do not draw anything if flat and mouse not in control (simplified)
   if FLastDrawFlags <> 0 then
     DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
       PaintRect, DFC_BUTTON, FLastDrawFlags);
-  //writeln('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
+  //writeln('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name,
   //  ' DFCS_BUTTONPUSH=',FLastDrawFlags and DFCS_BUTTONPUSH,
   //  ' DFCS_PUSHED=',FLastDrawFlags and DFCS_PUSHED,
   //  ' DFCS_INACTIVE=',FLastDrawFlags and DFCS_INACTIVE,
@@ -499,7 +499,7 @@ begin
     end
     else
       Canvas.Font.Color := clBtnText;
-    //DebugLn('TSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
+    //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
     Canvas.TextRect(PaintRect, 0, 0, Caption, TXTStyle);
   end;
 
@@ -507,14 +507,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.MouseDown
+  Method: TCustomSpeedButton.MouseDown
   Params: Button:
           Shift:
           X, Y:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
+procedure TCustomSpeedButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
@@ -534,13 +534,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.MouseMove
+  Method: TCustomSpeedButton.MouseMove
   Params: Shift:
           X, Y:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
+procedure TCustomSpeedButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   NewState: TButtonState;
 begin
@@ -573,14 +573,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.MouseUp
+  Method: TCustomSpeedButton.MouseUp
   Params: Button:
           Shift:
           X, Y:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TCustomSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   OldState: TButtonState;
@@ -603,12 +603,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetLayout
+  Method: TCustomSpeedButton.SetLayout
   Params: Value: new layout value
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetLayout(const Value : TButtonLayout);
+procedure TCustomSpeedButton.SetLayout(const Value : TButtonLayout);
 begin
   if Value <> FLayout then begin
     FLayout:= Value;
@@ -617,12 +617,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.SetTransparent
+  Method: TCustomSpeedButton.SetTransparent
   Params: Value: new transparency value
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetTransparent(const Value : boolean);
+procedure TCustomSpeedButton.SetTransparent(const Value : boolean);
 begin
   if Value <> FTransparent then begin
     FTransparent:= Value;
@@ -635,18 +635,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.CMButtonPressed
+  Method: TCustomSpeedButton.CMButtonPressed
   Params: Message:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.CMButtonPressed(var Message : TLMessage);
+procedure TCustomSpeedButton.CMButtonPressed(var Message : TLMessage);
 var
-  Sender : TSpeedButton;
+  Sender : TCustomSpeedButton;
 begin
   if Message.WParam = WParam(FGroupIndex)
   then begin
-    Sender := TSpeedButton(Message.LParam);
+    Sender := TCustomSpeedButton(Message.LParam);
     if Sender <> Self
     then begin
       if Sender.Down and FDown
@@ -662,24 +662,24 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.CMEnabledChanged
+  Method: TCustomSpeedButton.CMEnabledChanged
   Params: Message:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.CMEnabledChanged(var Message: TLMEssage);
+procedure TCustomSpeedButton.CMEnabledChanged(var Message: TLMEssage);
 Begin
   //Should create a new glyph based on the new state
   Invalidate;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.MouseEnter
+  Method: TCustomSpeedButton.MouseEnter
   Params:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseEnter;
+procedure TCustomSpeedButton.MouseEnter;
 begin
   inherited MouseEnter;
   if csDesigning in ComponentState then exit;
@@ -693,12 +693,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.MouseLeave
+  Method: TCustomSpeedButton.MouseLeave
   Params:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseLeave;
+procedure TCustomSpeedButton.MouseLeave;
 begin
   inherited MouseLeave;
   if csDesigning in ComponentState then exit;
@@ -716,14 +716,14 @@ end;
 procedure TSpeedButtonActionLink.AssignClient(AClient: TObject);
 begin
   inherited AssignClient(AClient);
-  FClient := AClient as TSpeedButton;
+  FClient := AClient as TCustomSpeedButton;
 end;
 
 function TSpeedButtonActionLink.IsCheckedLinked: Boolean;
 var
-  SpeedButton: TSpeedButton;
+  SpeedButton: TCustomSpeedButton;
 begin
-  SpeedButton:=TSpeedButton(FClient);
+  SpeedButton:=TCustomSpeedButton(FClient);
   Result := inherited IsCheckedLinked
             and (SpeedButton.GroupIndex <> 0)
             and SpeedButton.AllowAllUp
@@ -732,21 +732,21 @@ end;
 
 function TSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 var
-  SpeedButton: TSpeedButton;
+  SpeedButton: TCustomSpeedButton;
 begin
-  SpeedButton:=TSpeedButton(FClient);
-  Result := (SpeedButton is TSpeedButton) and
+  SpeedButton:=TCustomSpeedButton(FClient);
+  Result := (SpeedButton is TCustomSpeedButton) and
     (SpeedButton.GroupIndex = (Action as TCustomAction).GroupIndex);
 end;
 
 procedure TSpeedButtonActionLink.SetGroupIndex(Value: Integer);
 begin
-  if IsGroupIndexLinked then TSpeedButton(FClient).GroupIndex := Value;
+  if IsGroupIndexLinked then TCustomSpeedButton(FClient).GroupIndex := Value;
 end;
 
 procedure TSpeedButtonActionLink.SetChecked(Value: Boolean);
 begin
-  if IsCheckedLinked then TSpeedButton(FClient).Down := Value;
+  if IsCheckedLinked then TCustomSpeedButton(FClient).Down := Value;
 end;
 
 
@@ -761,8 +761,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/07/15 10:43:38  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.58  2004/07/13 17:47:15  mattias
-  fixed mouse enter/leave for TSpeedButton
+  fixed mouse enter/leave for TCustomSpeedButton
 
   Revision 1.57  2004/06/28 20:03:33  mattias
   fixed TGtkWidgetSet.DrawFrameControl
@@ -797,13 +800,13 @@ end;
   started new TToolBar
 
   Revision 1.47  2004/02/10 00:05:03  mattias
-  TSpeedButton now uses MaskBlt
+  TCustomSpeedButton now uses MaskBlt
 
   Revision 1.46  2004/02/05 09:45:33  mattias
-  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+  implemented Actions for TCustomSpeedButton, TMenuItem, TCheckBox
 
   Revision 1.45  2004/02/02 18:01:31  mattias
-  added TSpeedButton.Action and TBitBtn.Action
+  added TCustomSpeedButton.Action and TBitBtn.Action
 
   Revision 1.44  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
@@ -923,10 +926,10 @@ end;
   MG: small bugfixes
 
   Revision 1.25  2002/09/06 16:14:19  lazarus
-  MG: fixed removing TSpeedButton
+  MG: fixed removing TCustomSpeedButton
 
   Revision 1.24  2002/09/03 22:31:25  lazarus
-  MG: removed old workaround in TSpeedButton
+  MG: removed old workaround in TCustomSpeedButton
 
   Revision 1.23  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
@@ -944,7 +947,7 @@ end;
   MG: fixed speedbutton in designmode
 
   Revision 1.18  2002/08/24 13:41:29  lazarus
-  MG: fixed TSpeedButton.SetDown and Invalidate
+  MG: fixed TCustomSpeedButton.SetDown and Invalidate
 
   Revision 1.17  2002/08/22 16:43:35  lazarus
   MG: improved theme support from Andrew
@@ -962,7 +965,7 @@ end;
   MG: reduced hints
 
   Revision 1.12  2002/02/24 20:51:24  lazarus
-  Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
+  Improved TCustomSpeedButton (Glyph, Spacing, Margin, drawing)
   Added PageCount to TNotebook
   Optimized component selection buttons a bit.
 
@@ -982,7 +985,7 @@ end;
   MG: fixed many unreleased DC and GDIObj bugs
 
   Revision 1.5  2001/02/06 14:52:47  lazarus
-  Changed TSpeedbutton in gtkobject so it erases itself when it's set to visible=false;
+  Changed TCustomSpeedButton in gtkobject so it erases itself when it's set to visible=false;
   Shane
 
   Revision 1.4  2001/01/12 18:46:50  lazarus

@@ -137,7 +137,7 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
-    procedure DrawBitBtnImage(BitBtn: TBitBtn; ButtonCaption: PChar);
+    procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
@@ -285,6 +285,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2004/07/15 10:43:39  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.90  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

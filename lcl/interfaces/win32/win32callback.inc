@@ -418,7 +418,7 @@ Begin
       begin
         if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
           LMessage.Msg := LM_ACTIVATE;
-      end else if OwnerObject is TButton then
+      end else if OwnerObject is TCustomButton then
         case Hi(WParam) of
           BN_CLICKED:   LMessage.Msg := LM_CLICKED;
           BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
@@ -1276,6 +1276,9 @@ end;
 
 {
   $Log$
+  Revision 1.128  2004/07/15 10:43:39  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.127  2004/07/12 13:04:14  micha
   cleanup: move default handling to DefaultHandler
 

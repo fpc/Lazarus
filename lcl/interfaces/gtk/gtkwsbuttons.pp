@@ -71,10 +71,10 @@ type
     class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
   public
     class function CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; override;
-    class procedure SetGlyph(const ABitBtn: TBitBtn; const AValue: TBitmap); override;
-    class procedure SetLayout(const ABitBtn: TBitBtn; const AValue: TButtonLayout); override;
-    class procedure SetMargin(const ABitBtn: TBitBtn; const AValue: Integer); override;
-    class procedure SetSpacing(const ABitBtn: TBitBtn; const AValue: Integer); override;
+    class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
+    class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
+    class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
+    class procedure SetSpacing(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -109,13 +109,14 @@ begin
 end;
 
 
-function TGtkWSButton.CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; 
+function TGtkWSButton.CreateHandle(const AComponent: TComponent;
+  const AParams: TCreateParams): THandle;
 var
-  Button: TButton;
+  Button: TCustomButton;
   WidgetInfo: PWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  Button := AComponent as TButton;
+  Button := AComponent as TCustomButton;
 
   Result := THandle(gtk_button_new_with_label('button'));
   if Result = 0 then Exit;
@@ -186,12 +187,12 @@ end;
 
 function TGtkWSBitBtn.CreateHandle(const AComponent: TComponent; const AParams: TCreateParams): THandle; 
 var
-  BitBtn: TBitBtn;
+  BitBtn: TCustomBitBtn;
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  BitBtn := AComponent as TBitBtn;
+  BitBtn := AComponent as TCustomBitBtn;
 
   Result := THandle(gtk_button_new);
   if Result = 0 then Exit;
@@ -229,7 +230,8 @@ begin
   TGtkWSButton.SetCallbacks(PGtkWidget(Result), WidgetInfo);
 end;
 
-procedure TGtkWSBitBtn.SetGlyph(const ABitBtn: TBitBtn; const AValue: TBitmap); 
+procedure TGtkWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
+  const AValue: TBitmap);
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
@@ -267,7 +269,8 @@ begin
   end;
 end;
 
-procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TBitBtn; const AValue: TButtonLayout); 
+procedure TGtkWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
+  const AValue: TButtonLayout);
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
@@ -280,7 +283,8 @@ begin
   UpdateLayout(BitBtnInfo, AValue, ABitBtn.Margin);
 end;
 
-procedure TGtkWSBitBtn.SetMargin(const ABitBtn: TBitBtn; const AValue: Integer); 
+procedure TGtkWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
+  const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
@@ -293,7 +297,8 @@ begin
   UpdateMargin(BitBtnInfo, ABitBtn.Layout, AValue);
 end;
 
-procedure TGtkWSBitBtn.SetSpacing(const ABitBtn: TBitBtn; const AValue: Integer); 
+procedure TGtkWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
+  const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
@@ -451,8 +456,8 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TButton, TGtkWSButton);
-  RegisterWSComponent(TBitBtn, TGtkWSBitBtn); // register it to fallback to default
-//  RegisterWSComponent(TSpeedButton, TGtkWSSpeedButton);
+  RegisterWSComponent(TCustomButton, TGtkWSButton);
+  RegisterWSComponent(TCustomBitBtn, TGtkWSBitBtn); // register it to fallback to default
+//  RegisterWSComponent(TCustomSpeedButton, TGtkWSSpeedButton);
 ////////////////////////////////////////////////////
 end.

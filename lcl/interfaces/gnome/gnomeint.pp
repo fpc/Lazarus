@@ -199,7 +199,8 @@ var
   //Caption : AnsiString;
   StrTemp : PChar;               // same as "caption" but as PChar
   p          : pointer;          // ptr to the newly created GtkWidget
-  Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
+  Box       : Pointer;           // currently only used for TCustomBitBtn
+                                 // and TCustomForm and TCustomListView
   ParentForm: TCustomForm;
   CompStyle : Longint;
   DoFinishComp,
@@ -277,6 +278,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2004/07/15 10:43:38  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.25  2004/03/26 21:20:54  vincents
   Fixed line endings
 

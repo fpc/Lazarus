@@ -179,7 +179,7 @@ end;
     {$IFDEF NoStyle}
     exit;
     {$ENDIF}
-    if not (AWinControl is TButton) then exit;
+    if not (AWinControl is TCustomButton) then exit;
     DebugLn('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
     RCStyle:=gtk_rc_style_new;
     g_free(RCStyle^.font_name);
@@ -3114,6 +3114,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.239  2004/07/15 10:43:38  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.238  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

@@ -40,7 +40,6 @@ procedure TControlCanvas.CreateFont;
 begin
   inherited CreateFont;
   //DebugLn('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
-  //if Control.ClassName='TSpeedButton' then RaiseGDBException('ARRGH');
 end;
 
 {------------------------------------------------------------------------------
@@ -114,6 +113,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/07/15 10:43:38  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.7  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

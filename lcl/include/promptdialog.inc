@@ -70,13 +70,14 @@ begin
     // search old focused button
     OldFocusControl:=FindOwnerControl(LCLIntf.GetFocus);
     if (OldFocusControl=nil) or (GetParentForm(OldFocusControl)<>Self)
-    or (not (OldFocusControl is TButton)) then
+    or (not (OldFocusControl is TCustomButton)) then
     begin
       OldFocusControl:=nil;
       for i:=0 to ComponentCount-1 do
-        if (Components[i] is TButton) and (TButton(Components[i]).Default) then
+        if (Components[i] is TCustomButton)
+        and (TCustomButton(Components[i]).Default) then
         begin
-          OldFocusControl:=TButton(Components[i]);
+          OldFocusControl:=TCustomButton(Components[i]);
           break;
         end;
     end;
@@ -100,7 +101,7 @@ begin
           inc(i);
           if i>=ComponentCount then i:=0;
         end;
-        if Components[i] is TButton then begin
+        if Components[i] is TCustomButton then begin
           NewFocusControl:=TWinControl(Components[i]);
           break;
         end;
@@ -337,9 +338,10 @@ begin
   end;
 
   for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then
+    if (Components[i] is TCustomBitBtn)
+    and (TCustomBitBtn(Components[i]).Default) then
     begin
-      ActiveControl:=TBitBtn(Components[i]);
+      ActiveControl:=TCustomBitBtn(Components[i]);
       break;
     end;
   end;
@@ -379,6 +381,9 @@ end;
 
 {
    $Log$
+   Revision 1.16  2004/07/15 10:43:38  mattias
+   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
    Revision 1.15  2004/04/20 09:18:44  micha
    reserve enough space for glyph on button in message dialogs
 

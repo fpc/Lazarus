@@ -504,7 +504,7 @@ end;
 { TCalcButton }
 
 type
-  TCalcButton = class(TSpeedButton)
+  TCalcButton = class(TCustomSpeedButton)
   private
     FKind: TCalcBtnKind;
   public
@@ -579,7 +579,7 @@ type
     procedure SetDisplay(R: Double);
     function GetDisplay: Double;
     procedure UpdateMemoryLabel;
-    function FindButton(Key: Char): TSpeedButton;
+    function FindButton(Key: Char): TCustomSpeedButton;
     procedure BtnClick(Sender: TObject);
   protected
     procedure ErrorBeep;
@@ -854,7 +854,7 @@ end;
 procedure TCalculatorPanel.CalcKeyPress(Sender: TObject; var Key: Char);
 
 var
-  Btn: TSpeedButton;
+  Btn: TCustomSpeedButton;
 
 begin
   Btn:=FindButton(Key);
@@ -864,7 +864,7 @@ begin
     CalcKey(Key);
 end;
 
-function TCalculatorPanel.FindButton(Key: Char): TSpeedButton;
+function TCalculatorPanel.FindButton(Key: Char): TCustomSpeedButton;
 const
   ButtonChars = '0123456789_./*-+Q%R='#8'C';
 var
@@ -884,9 +884,9 @@ begin
     I:=0;
     While (Result=Nil) and (I<ControlCount) do
       begin
-      if Controls[I] is TSpeedButton then
-        If BtnTag=TSpeedButton(Controls[I]).Tag then
-          Result:=TSpeedButton(Controls[I]);
+      if Controls[I] is TCustomSpeedButton then
+        If BtnTag=TCustomSpeedButton(Controls[I]).Tag then
+          Result:=TCustomSpeedButton(Controls[I]);
       Inc(I);
       end;
     end;

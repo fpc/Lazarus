@@ -213,9 +213,9 @@ var
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
   // - for csBitBtn
-  Box       : Pointer;           // currently only used for TBitBtn
-  pixmapwid : pGtkWidget;        // currently only used for TBitBtn
-  label1    : pgtkwidget;        // currently only used for TBitBtn
+  Box       : Pointer;           // currently only used for TCustomBitBtn
+  pixmapwid : pGtkWidget;        // currently only used for TCustomBitBtn
+  label1    : pgtkwidget;        // currently only used for TCustomBitBtn
   ParentForm: TCustomForm;
   AccelText : PChar;
   AccelKey  : guint;
@@ -1380,6 +1380,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.13  2004/07/15 10:43:39  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.12  2004/05/22 14:35:33  mattias
   fixed button return key
 

@@ -74,8 +74,8 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TButton, TGnomeWSButton);
-//  RegisterWSComponent(TBitBtn, TGnomeWSBitBtn);
-//  RegisterWSComponent(TSpeedButton, TGnomeWSSpeedButton);
+//  RegisterWSComponent(TCustomButton, TGnomeWSButton);
+//  RegisterWSComponent(TCustomBitBtn, TGnomeWSBitBtn);
+//  RegisterWSComponent(TCustomSpeedButton, TGnomeWSSpeedButton);
 ////////////////////////////////////////////////////
 end.

@@ -342,7 +342,7 @@ Begin
 
   Case TControl(Sender).FCompStyle Of
     csBitBtn:
-      DrawBitBtnImage(TBitBtn(Sender), PChar(Data));
+      DrawBitBtnImage(TCustomBitBtn(Sender), PChar(Data));
     csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
     csColorDialog, csFontDialog:
     Begin
@@ -598,7 +598,7 @@ Begin
       LM_BTNDEFAULT_CHANGED:
       Begin
         WindowStyle := Windows.GetWindowLong(Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
-        If TButton(Sender).Default then
+        If TCustomButton(Sender).Default then
           WindowStyle := WindowStyle or BS_DEFPUSHBUTTON
         else
           WindowStyle := WindowStyle or BS_PUSHBUTTON;
@@ -642,8 +642,8 @@ Begin
       //TBitBtn
       LM_IMAGECHANGED, LM_LAYOUTCHANGED:
       Begin
-        if Sender is TBitBtn then
-          DrawBitBtnImage(TBitBtn(Sender), PChar(TBitBtn(Sender).Caption));
+        if Sender is TCustomBitBtn then
+          DrawBitBtnImage(TCustomBitBtn(Sender), PChar(TCustomBitBtn(Sender).Caption));
       End;
 {Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
 and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters.
@@ -739,15 +739,15 @@ activate_time : the time at which the activation event occurred.
         Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
         If Sender Is TCanvas Then
           ReDraw(TCanvas(Sender))
-        Else If Not (Sender Is TSpeedbutton) Then
+        Else If Not (Sender Is TCustomSpeedbutton) Then
           ReDraw(Sender)
-        Else If Sender Is TSpeedButton Then
-          If TSpeedbutton(Sender).Visible Then
-            TSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
+        Else If Sender Is TCustomSpeedButton Then
+          If TCustomSpeedButton(Sender).Visible Then
+            TCustomSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
           Else
           Begin
-            SizeRect := TSpeedButton(sender).BoundsRect;
-            InvalidateRect(TSpeedButton(Sender).Parent.Handle, @SizeRect, True);
+            SizeRect := TCustomSpeedButton(sender).BoundsRect;
+            InvalidateRect(TCustomSpeedButton(Sender).Parent.Handle, @SizeRect, True);
           End;
       End;
       LM_ADDPAGE:
@@ -1357,13 +1357,14 @@ type
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.DrawBitBtnImage
-  Params:  BitBtn: The TBitBtn to update the image of
+  Params:  BitBtn: The TCustomBitBtn to update the image of
            ButtonCaption: new button caption
   Returns: Nothing
 
   Updates the button image combining the glyph and caption
  ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.DrawBitBtnImage(BitBtn: TBitBtn; ButtonCaption: PChar);
+procedure TWin32WidgetSet.DrawBitBtnImage(BitBtn: TCustomBitBtn;
+  ButtonCaption: PChar);
 var
   BitmapHandle: HBITMAP; // Handle of the button glyph
   BitBtnLayout: TButtonLayout; // Layout of button and glyph
@@ -2172,7 +2173,7 @@ Begin
     csBitBtn:
     Begin
       pClassName := 'BUTTON';
-      if TBitBtn(Sender).Default Then
+      if TCustomBitBtn(Sender).Default Then
         Flags := Flags or BS_DEFPUSHBUTTON
       else
         Flags := Flags or BS_PUSHBUTTON;
@@ -2182,7 +2183,7 @@ Begin
     csButton:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating Button');
-      if TButton(Sender).Default Then
+      if TCustomButton(Sender).Default Then
         Flags := Flags or BS_DEFPUSHBUTTON
       else
         Flags := Flags or BS_PUSHBUTTON;
@@ -3341,6 +3342,9 @@ End;
 
 {
   $Log$
+  Revision 1.222  2004/07/15 10:43:39  mattias
+  added TCustomButton, TCustomBitBtn, TCustomSpeedButton
+
   Revision 1.221  2004/07/08 20:42:24  micha
   cleanup: do not free nil resource
 
