@@ -6036,12 +6036,11 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
-var
 {$IfDef VerboseMouseCapture}
+var
   Sender : TObject;
   CurMouseCaptureHandle: PGtkWidget;
 {$EndIf}
-  OldCaptureWidget: PGtkWidget;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
   {$IfDef VerboseMouseCapture}
@@ -6075,18 +6074,17 @@ begin
     // mouse captures at any time and X can freeze, when a grab is not realeased
     // and the window is destroyed.
     // -> remove all grabs
-    repeat
-      OldCaptureWidget:=gtk_grab_get_current;
-      if OldCaptureWidget<>nil then
-        gtk_grab_remove(OldCaptureWidget)
-      else
-        break;
-    until false;
+    ReleaseMouseCapture(false);
 
     // grab
     if (Value<>0) then begin
+      {$IfNDef NoMouseCapture}
       gtk_grab_add(PgtkWidget(Value));
+      {$EndIf}
     end;
+    {$IfDef VerboseMouseCapture}
+    writeln('TgtkObject.SetCapture RESULT: gtk=',HexStr(Cardinal(gtk_grab_get_current),8));
+    {$EndIf}
   end;
 
   UpdateMouseCaptureControl;
@@ -7402,6 +7400,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.164  2002/10/20 21:49:11  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.163  2002/10/20 19:03:57  lazarus
   AJ: minor fixes for FPC 1.1
 
