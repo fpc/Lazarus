@@ -33,7 +33,6 @@ unit IDEComp;
 
 {$mode objfpc}{$H+}
 
-{ $DEFINE DATABASE}
 { $DEFINE INTERBASE}
 
 interface

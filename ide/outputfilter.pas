@@ -63,7 +63,7 @@ type
     fPrgSourceFilename: string;
     FStopExecute: boolean;
     procedure DoAddFilteredLine(const s: string);
-    procedure DoAddLastLinkerMessages;
+    procedure DoAddLastLinkerMessages(SkipLastLine: boolean);
     procedure DoAddLastAssemblerMessages;
     function SearchIncludeFile(const ShortIncFilename: string): string;
     procedure SetStopExecute(const AValue: boolean);
@@ -323,7 +323,7 @@ begin
             SkipMessage:=not (Project.CompilerOptions.ShowErrors
                               or Project.CompilerOptions.ShowAll);
             if copy(s,j+2,length(s)-j-1)='Error while linking' then begin
-              DoAddLastLinkerMessages;
+              DoAddLastLinkerMessages(true);
             end
             else if copy(s,j+2,length(AsmError))=AsmError then begin
               DoAddLastAssemblerMessages;
@@ -349,10 +349,10 @@ begin
       // subdirectory
       // -> prepend the current subdirectory
       Msg:=s;
-      if (fCompilingHistory<>nil) then begin
-        Filename:=TrimFilename(copy(Msg,1,FilenameEndPos));
-        if not FilenameIsAbsolute(Filename) then begin
-          // filename is relative
+      Filename:=TrimFilename(copy(Msg,1,FilenameEndPos));
+      if not FilenameIsAbsolute(Filename) then begin
+        // filename is relative
+        if (fCompilingHistory<>nil) then begin
           // the compiler writes a line compiling ./subdir/unit.pas
           // and then writes the messages without any path
           // -> prepend this subdirectory
@@ -372,13 +372,13 @@ begin
             end;
             dec(i);
           end;
-          if i<0 then begin
-            // this file is not a compiled pascal source
-            // -> search for include files
-            Filename:=SearchIncludeFile(Filename);
-            Msg:=Filename+copy(Msg,FileNameEndPos+1,length(Msg)-FileNameEndPos);
-            FileNameEndPos:=length(Filename);
-          end;
+        end;
+        if i<0 then begin
+          // this file is not a compiled pascal source
+          // -> search for include files
+          Filename:=SearchIncludeFile(Filename);
+          Msg:=Filename+copy(Msg,FileNameEndPos+1,length(Msg)-FileNameEndPos);
+          FileNameEndPos:=length(Filename);
         end;
       end;
       
@@ -390,7 +390,7 @@ begin
           Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end;
-      
+
       // add line
       if not SkipMessage then
         DoAddFilteredLine(Msg);
@@ -497,7 +497,7 @@ begin
     OnOutputString(s);
 end;
 
-procedure TOutputFilter.DoAddLastLinkerMessages;
+procedure TOutputFilter.DoAddLastLinkerMessages(SkipLastLine: boolean);
 var i: integer;
 begin
   // read back to 'Linking' message
@@ -505,8 +505,10 @@ begin
   while (i>=0) and (LeftStr(fOutput[i],length('Linking '))<>'Linking ') do
     dec(i);
   inc(i);
+  // output skipped messages
   while (i<fOutput.Count) do begin
-    if (fOutput[i]<>'') then
+    if (fOutput[i]<>'')
+    and ((i<fOutput.Count-1) or (not SkipLastLine)) then
       DoAddFilteredLine(fOutput[i]);
     inc(i);
   end;

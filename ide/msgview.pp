@@ -37,8 +37,8 @@ unit MsgView;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEOptionDefs,
-  EnvironmentOpts;
+  Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEProcs,
+  IDEOptionDefs, EnvironmentOpts;
 
 type
 
@@ -107,7 +107,7 @@ end;
 {------------------------------------------------------------------------------
   TMessagesView.Add
 ------------------------------------------------------------------------------}
-Procedure  TMessagesView.Add(const Msg: String);
+Procedure TMessagesView.Add(const Msg: String);
 Begin
   if FLastLineIsProgress then begin
     MessageView.Items[MessageView.Items.Count-1]:=Msg;
