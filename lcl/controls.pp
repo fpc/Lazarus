@@ -281,6 +281,7 @@ type
   TControlState = set of TControlStateType;
 
 
+  { TControlCanvas }
 
   TControlCanvas = class(TCanvas)
   private
@@ -297,9 +298,11 @@ type
     property Control: TControl read FControl write SetControl;
   end;
 
-  {TDragImageList}
-   TDragImageList = class(TCustomImageList)
-    end;
+
+  { TDragImageList }
+  
+  TDragImageList = class(TCustomImageList)
+  end;
 
 
 
@@ -314,6 +317,9 @@ type
          WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean) of object;
   TMouseWheelUpDownEvent = Procedure(Sender: TObject;
           Shift: TShiftState; MousePos: TPoint; var Handled: Boolean) of object;
+
+
+  { TDragObject }
           
   TDragState = (dsDragEnter, dsDragLEave, dsDragMove);
   TDragMode = (dmManual , dmAutomatic);
@@ -389,7 +395,10 @@ type
   end;
 
   TDragControlObject = class(TBaseDragControlObject)
-   end;
+  end;
+  
+
+  { TSizeConstraints }
 
   TConstraintSize = 0..MaxInt;
   
@@ -468,7 +477,6 @@ type
     FControlStyle: TControlStyle;
     FCtl3D : Boolean;
     FCursor : TCursor;
-    //FDesktopFont: Boolean;
     FDragCursor : TCursor;
     FDragKind : TDragKind;
     FDragMode : TDragMode;
@@ -733,9 +741,6 @@ type
   end;
 
 
-  TLMEnter = TLMNoPara;
-  TLMExit  = TLMNoPara;
-
   TCreateParams = record
     Caption: PChar;
     Style: Cardinal;
@@ -751,6 +756,7 @@ type
   TBorderWidth = 0..MaxInt;
 
   TGetChildProc = procedure(Child: TComponent) of Object;
+
 
   { TWinControl }
 
@@ -958,7 +964,6 @@ type
 
   TCustomControl = class(TWinControl)
   private
-//   FOnPaint : TNotifyEvent;
     FCanvas: TCanvas;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
@@ -973,10 +978,9 @@ type
   { TImageList }
  
   TImageList = class(TDragImageList)
-//  published
-//  Property Height;
-//  Property Width;
-//    property Count : Integer read FCount;
+  published
+    Property Height;
+    Property Width;
   end;
 
 
@@ -1439,6 +1443,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2003/02/27 09:52:00  mattias
+  published TImgList.Width and Height
+
   Revision 1.102  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
