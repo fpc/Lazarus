@@ -52,6 +52,8 @@ End;
   applications
  ------------------------------------------------------------------------------}
 Function WindowProc(Window: HWnd; Msg: UInt; WParam: WParam; LParam: LParam): LResult;
+Type
+  PLMInsertText = ^TLMInsertText;
 Var
   C: Cardinal;
   CbObj: PObject;
@@ -67,11 +69,13 @@ Var
   PS: PaintStruct;
   R: TRect;
   Rec: PLazObject;
+  WinProcess: Boolean;
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
   Result := 0;
   LMessage.Msg := -1;
+  WinProcess := True;
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
   OwnerObject := TObject(GetProp(Window, 'Lazarus'));
@@ -85,6 +89,43 @@ Begin
   Assert(False, Format('Trace:WindowProc - Window Value: $%S; Msg Value: %S; WParam: $%S; LParam: $%S', [IntToHex(Window, 4), WM_To_String(Msg), IntToHex(WParam, 4), IntToHex(LParam, 4)]));
 
   Case Msg Of
+    LM_MONTHCHANGED..LM_DAYCHANGED:
+    Begin
+      If OwnerObject Is TCalendar Then
+        LMessage.Msg := Msg;
+    End;
+    WM_ACTIVATE:
+    Begin
+      Case Lo(WParam) Of
+        WA_ACTIVE:
+        Begin
+          LMessage.Msg := LM_ACTIVATE;
+        End;
+        WA_INACTIVE:
+        Begin
+          LMessage.Msg := LM_DEACTIVATE;
+        End;
+      End;
+    End;
+    WM_CAPTURECHANGED:
+    Begin
+      LMessage.Msg := LM_CHANGED;
+    End;
+    CB_DELETESTRING, LB_DELETESTRING:
+    Begin
+      LMessage.Msg := LM_DELETETEXT;
+    End;
+    CB_INSERTSTRING, LB_INSERTSTRING:
+    Begin
+      With PLMInsertText(@LMessage)^ Do
+      Begin
+        Msg := LM_INSERTTEXT;
+        Position := WParam;
+        NewText := String(LParam);
+        Length := System.Length(NewText);
+        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+      End;
+    End;
     WM_CHANGECBCHAIN:
     Begin
       If OldClipboardViewer <> WParam Then
@@ -92,9 +133,40 @@ Begin
       Else
         OldClipboardViewer := LParam;
     End;
-    WM_DRAWCLIPBOARD:
+    WM_CLOSE:
     Begin
-      SendMessage(OldClipboardViewer, Msg, 0, 0);
+      LMessage.Msg := LM_CLOSEQUERY;
+    End;
+    WM_COMMAND:
+    Begin
+      OwnerObject := TObject(GetProp(LParam, 'Lazarus'));
+      Case Hi(WParam) Of
+        0:
+        Begin
+          LMessage.Msg := LM_CLICKED;
+        End;
+        BN_KILLFOCUS, EN_KILLFOCUS:
+        Begin
+          LMessage.Msg := LM_EXIT;
+        End;
+        EN_CHANGE:
+        Begin
+          LMessage.Msg := CM_TEXTCHANGED;
+        End;
+      End;
+    End;
+    WM_CREATE:
+    Begin
+      Assert(False, 'Trace:WindowProc - Got WM_CREATE');
+      LMessage.Msg := LM_CREATE;
+    End;
+    WM_COPY:
+    Begin
+      LMessage.Msg := LM_COPYTOCLIP;
+    End;
+    WM_CUT:
+    Begin
+      LMessage.Msg := LM_CUTTOCLIP;
     End;
     WM_DESTROY:
     Begin
@@ -102,26 +174,275 @@ Begin
       ChangeClipboardChain(Window, OldClipboardViewer);
       For C := 0 To WndList.Count - 1 Do
         EnumProps(HWND(WndList[C]), @PropEnumProc);
+      LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
+    End;
+    WM_DRAWCLIPBOARD:
+    Begin
+      SendMessage(OldClipboardViewer, Msg, 0, 0);
+    End;
+    WM_ENABLE:
+    Begin
+      If WParam <> 0 Then
+        LMessage.Msg := LM_SETEDITABLE;
+    End;
+    WM_HSCROLL:
+    Begin
+      With TLMScroll(LMessage) Do
+      Begin
+        Msg := LM_HSCROLL;
+        ScrollCode := Lo(WParam);
+        Pos := Hi(WParam);
+        ScrollBar := LParam;
+      End;
+    End;
+    WM_KEYDOWN:
+    Begin
+      With TLMKey(LMessage) Do
+      Begin
+        Msg := LM_SYSKEYUP;
+        KeyData := LParam;
+        CharCode := WParam;
+      End;
+    End;
+    WM_KEYUP:
+    Begin
+      With TLMKey(LMessage) Do
+      Begin
+        Msg := LM_SYSKEYUP;
+        KeyData := LParam;
+        CharCode := WParam;
+      End;
+    End;
+    WM_KILLFOCUS:
+    Begin
+      LMessage.Msg := LM_KILLFOCUS;
+    End;
+    //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
+    WM_LBUTTONDBLCLK:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_LBUTTONDBLCLK;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_LBUTTONDOWN:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_LBUTTONDOWN;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_LBUTTONUP:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_LBUTTONUP;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_MBUTTONDBLCLK:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_MBUTTONDBLCLK;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_MBUTTONDOWN:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_MBUTTONDOWN;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_MBUTTONUP:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_MBUTTONUP;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    {WM_MOUSEHOVER:
+    Begin
+      LMessage.Msg := LM_ENTER;
+    End;
+    WM_MOUSELEAVE:
+    Begin
+      LMessage.Msg := LM_LEAVE;
+    End;}
+    WM_MOUSEMOVE:
+    Begin
+      With TLMMouseMove(LMessage) Do
+      Begin
+        Msg := LM_MOUSEMOVE;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    {WM_MOUSEWHEEL:
+    Begin
+      With TLMMouseEvent(LMessage) Do
+      Begin
+        Msg := LM_MOUSEWHEEL;
+        WheelDelta := Hi(WParam);
+        X := Lo(LParam);
+        Y := Hi(LParam);
+        State := GetShiftState;
+        UserData := GetWindowLong(Window, GWL_USERDATA);
+      End;
+    End;}
+    WM_MOVE:
+    Begin
+      With TLMMove(LMessage) Do
+      Begin
+        Msg := LM_MOVE;
+        MoveType := WParam;
+        XPos := Lo(LParam);
+        YPos := Lo(LParam);
+      End;
+    End;
+    //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
+    WM_NCLBUTTONDOWN:
+    Begin
+      Assert(False, 'Trace:WindowProc - Got WM_NCLBUTTONDOWN');
     End;
     WM_NOTIFY:
     Begin
+      With TLMNotify(LMessage) Do
+      Begin
+        Msg := LM_NOTIFY;
+        IDCtrl := WParam;
+        NMHdr := PNMHDR(LParam);
+      End;
     End;
-    WM_MOVE:
+    WM_PAINT:
     Begin
-      LMessage.Msg := LM_MOVE;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
+      With TLMPaint(LMessage) Do
+      Begin
+        Msg := LM_PAINT;
+        DC := GetDC(Window);
+        Unused := 0;
+        ReleaseDC(Window, DC);
+      End;
+    End;
+    WM_PASTE:
+    Begin
+      LMessage.Msg := LM_PASTEFROMCLIP;
+    End;
+    WM_RBUTTONDBLCLK:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_RBUTTONDBLCLK;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_RBUTTONDOWN:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_RBUTTONDOWN;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_RBUTTONUP:
+    Begin
+      With TLMMouse(LMessage) Do
+      Begin
+        Msg := LM_RBUTTONUP;
+        XPos := Lo(LParam);
+        YPos := Hi(LParam);
+        Keys := WParam;
+      End;
+    End;
+    WM_SETFOCUS:
+    Begin
+      LMessage.Msg := LM_SETFOCUS;
     End;
     WM_SHOWWINDOW:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_SHOWWINDOW');
-      LMessage.Msg := LM_SHOWWINDOW;
-      TLMShowWindow(LMessage).Show := WParam <> 0;
+      With TLMShowWindow(LMessage) Do
+      Begin
+        Msg := LM_SHOWWINDOW;
+        Show := WParam <> 0;
+        Status := LParam;
+      End;
     End;
     WM_SIZE:
     Begin
-      LMessage.Msg := LM_SIZE;
+      With TLMSize(LMessage) Do
+      Begin
+        Msg := LM_SIZE;
+        SizeType := WParam;
+        Width := Lo(LParam);
+        Height := Hi(LParam);
+      End;
+    End;
+    WM_SYSKEYDOWN:
+    Begin
+      With TLMKey(LMessage) Do
+      Begin
+        Msg := LM_SYSKEYDOWN;
+        KeyData := LParam;
+        CharCode := WParam;
+      End;
+    End;
+    WM_SYSKEYUP:
+    Begin
+      With TLMKey(LMessage) Do
+      Begin
+        Msg := LM_SYSKEYUP;
+        KeyData := LParam;
+        CharCode := WParam;
+      End;
+    End;
+    WM_TIMER:
+    Begin
+      LMessage.Msg := LM_TIMER;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+    End;
+    WM_VSCROLL:
+    Begin
+      With TLMScroll(LMessage) Do
+      Begin
+        Msg := LM_VSCROLL;
+        ScrollCode := Lo(WParam);
+        Pos := Hi(WParam);
+        ScrollBar := LParam;
+      End;
+    End;
+    WM_WINDOWPOSCHANGED:
+    Begin
+      With TLMWindowPosMsg(LMessage) Do
+      Begin
+        Msg := LM_WINDOWPOSCHANGED;
+        Unused := WParam;
+        WindowPos := PWindowPos(LParam);
+      End;
     End;
   End;
 
@@ -136,7 +457,12 @@ Begin
         End;
   {$ENDIF}
 
-  Result := DefWindowProc(Window, Msg, WParam, LParam);
+  If (OwnerObject <> Nil) And (LMessage.Msg <> -1) Then
+    DeliverMessage(OwnerObject, LMessage);
+
+  If WinProcess Then
+    Result := DefWindowProc(Window, Msg, WParam, LParam);
+
   Assert(False, 'Trace:WindowProc - Exit');
 End;
 
@@ -1162,6 +1488,9 @@ end;}
 
 {
   $Log$
+  Revision 1.5  2002/01/25 13:22:56  lazarus
+  Keith: Added initial support for events
+
   Revision 1.4  2002/01/17 03:17:44  lazarus
   Keith: Fixed TPage creation
 
