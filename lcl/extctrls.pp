@@ -85,7 +85,7 @@ type
     property Width stored False;
     property Height stored False;
     property TabOrder stored False;
-    property Visible stored False;
+    property Visible;
   end;
 
   TCustomNotebook = class;
@@ -506,6 +506,9 @@ end.
 
  {
   $Log$
+  Revision 1.35  2002/10/16 13:06:42  lazarus
+  MG: fixed TPage.Visible
+
   Revision 1.34  2002/10/15 16:01:36  lazarus
   MG: fixed timers
 
