@@ -3761,20 +3761,24 @@ begin
     btnOK := TBitbtn.Create(self);
     with btnOK do
     Begin
+      Name:='btnOK';
       Parent := self;
       Top := 70;
       Left := 40;
       kind := bkOK;
+      Default:=false;
       Visible := True;
     end;
 
     btnCancel := TBitbtn.Create(self);
     with btnCancel do
     Begin
+      Name:='btnCancel';
       Parent := self;
       Top := 70;
       Left := 120;
       kind := bkCancel;
+      Default:=false;
       Visible := True;
     end;
 
