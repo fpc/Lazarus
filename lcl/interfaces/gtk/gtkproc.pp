@@ -444,7 +444,7 @@ Function CreateFormContents(var FormWidget : Pointer) : Pointer;
 function IndexOfStyle(const WName : String): integer;
 Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
-Function GetStyleWidget(WName : String) : PGTKWidget;
+Function GetStyleWidget(const WName : String) : PGTKWidget;
 function LoadDefaultFont: PGDKFont;
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
