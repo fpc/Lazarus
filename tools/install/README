@@ -15,14 +15,11 @@ Creating the fpcsrc tgz:
   therefore much faster, but it may miss removing every old, unnecessary files.
   
   The download and pack script:
-  The script create_fpc_snapshot_tgz.sh makes a cvs export of the fpc.
+  The script create_fpc_export_tgz.sh makes a cvs export of the fpc.
   
-  For the current 1.0.7 use
-  ./create_fpc_snapshot_tgz.sh fpcsrc-1.0.7-20030315.tgz -r FIXES_1_0_0
+  For 1.0.7: ./create_fpc_export_tgz.sh stable 03/01/03
 
-  For the the 1.1 from december 25, 2002 use
-  ./create_fpc_snapshot_tgz.sh fpcsrc-1.1-20021225.tgz -D 25/12/02
-  
+  For 1.1: ./create_fpc_export_tgz.sh devel 12/25/02
 
   The copy and pack script:
   The script create_fpc_tgz_from_local_dir.sh needs as parameter the fpc cvs
@@ -38,8 +35,9 @@ Creating the lazarus tgz:
   therefore much faster, but it may miss removing all old, unnecessary files.
 
   The download and pack script:
-  The script create_lazarus_snapshot_tgz.sh makes a cvs export of lazarus and
-  compress it to lazarus-0.8.5.tgz.
+  The script create_lazarus_export_tgz.sh makes a cvs export of lazarus and
+  compress it. For example:
+  ./create_lazarus_export_tgz.sh lazarus-20030316.tgz
   
   The copy and pack script:
   The script create_lazarus_tgz_from_local_dir.sh needs as parameter the
