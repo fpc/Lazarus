@@ -52,6 +52,7 @@ type
     FTargetListBox: TListBox;
     FTargetProgress: TProgressBar;
     FTestStrings: TStrings;
+    procedure ExecDone;
     procedure ShowStrings;
   public
     constructor Create(CreateSuspended: boolean);
@@ -79,6 +80,7 @@ type
           Listbox2: TListBox;
           Thread1: TThread1;
           Thread2: TThread2;
+          ThreadList: TList;
 	  Button1: TButton;
     	  Button2: TButton;
 	  Button3: TButton;
@@ -92,6 +94,7 @@ type
           mnuFile: TMainMenu;
           itmFileQuit: TMenuItem;
           constructor Create(AOwner: TComponent); override;	
+          destructor Destroy; override;
           procedure LoadMainMenu;
 	  procedure mnuQuitClicked(Sender : TObject);
 	protected
@@ -105,6 +108,7 @@ type
 	  procedure Button8CLick(Sender : TObject);
 	  procedure Button9CLick(Sender : TObject);
 	  procedure Button10CLick(Sender : TObject);
+          function CloseQuery: boolean; override;
 	end;
 
 threadvar
@@ -124,7 +128,23 @@ end;
 
 destructor TAThread.Destroy;
 begin
+  inherited;
+
   FTestStrings.Free;
+end;
+
+procedure TAThread.ExecDone;
+var
+  lPos: integer;
+begin
+  Form1.ThreadList.Remove(Self);
+  FTargetListBox.Items.Insert(0, 'Thread terminated');
+  if Form1.ThreadList.Count = 0 then
+  begin
+    lPos := Pos('[', Form1.Caption);
+    if lPos > 0 then
+      Form1.Caption := Copy(Form1.Caption, 1, lPos - 1) + '[done, ready to exit]';
+  end;
 end;
 
 procedure TAThread.ShowStrings;
@@ -182,7 +202,9 @@ begin
     DoCalculation;
     Synchronize(@ShowStrings);
     threadvartest := 10;
+    if Terminated then break;
   end;
+  Synchronize(@ExecDone);
 end;
 
 constructor TThread2.Create;
@@ -209,7 +231,9 @@ begin
     DoCalculation;
     if (i and $3) = $3 then
       Synchronize(@ShowStrings);
+    if Terminated then break;
   end;
+  Synchronize(@ExecDone);
 end;
 
 
@@ -217,7 +241,29 @@ constructor TForm1.Create(AOwner: TComponent);
 begin
    inherited Create(AOwner);
    Caption := 'Thread Synchronize Demo v0.1';
+   ThreadList := TList.Create;
    LoadMainMenu;
+end;
+
+destructor TForm1.Destroy;
+begin
+  inherited;
+
+  FreeAndNil(ThreadList);
+end;
+
+function TForm1.CloseQuery: boolean;
+var
+  I: integer;
+begin
+  if ThreadList.Count > 0 then
+  begin
+    Caption := Caption + ' [wait for threads termination]';
+    for I := 0 to ThreadList.Count - 1 do
+      TThread(ThreadList.Items[I]).Terminate;
+    Result := false;
+  end else
+    inherited;
 end;
 
 procedure TForm1.Button1Click(Sender : TObject);
@@ -298,8 +344,9 @@ begin
         threadvartest := 20;
         Thread1 := TThread1.Create;
         Thread2 := TThread2.Create;
+        ThreadList.Add(Thread1);
+        ThreadList.Add(Thread2);
 
-        threadvartest := 20;
 End;
 
 procedure TForm1.Button9Click(Sender : TObject);
