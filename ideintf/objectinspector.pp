@@ -1641,19 +1641,7 @@ begin
         Brush.Color:=FBackgroundColor;
         FillRect(SpaceRect);
       end;
-      // draw border
-      Pen.Color:=cl3DDkShadow;
-      for a:=0 to BorderWidth-1 do begin
-        MoveTo(a,Self.Height-1-a);
-        LineTo(a,a);
-        LineTo(Self.Width-1-a,a);
-      end;
-      Pen.Color:=cl3DLight;
-      for a:=0 to BorderWidth-1 do begin
-        MoveTo(Self.Width-1-a,a);
-        LineTo(Self.Width-1-a,Self.Height-1-a);
-        LineTo(a,Self.Height-1-a);
-      end;
+      // don't draw border: borderstyle=bsSingle
     end;
   end else begin
     for a:=0 to FRows.Count-1 do begin
