@@ -562,7 +562,7 @@ begin
     if FirstModal=AllWindows.Count then begin
       // there is no modal window
       // -> break all transient window relation ships
-      for i:=0 to AllWindows.Count-1 do begin
+      for i:=AllWindows.Count-1 downto 0 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         {$IFDEF VerboseTransient}
         write('TgtkObject.UpdateTransientWindows  Untransient ',i);
@@ -604,10 +604,12 @@ begin
       for i:=0 to AllWindows.Count-1 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         if (ATransientWindow^.Component<>nil)
-        and GTK_WIDGET_VISIBLE(PgtkWidget(ATransientWindow^.GtkWindow)) then begin
+        and GTK_WIDGET_VISIBLE(PgtkWidget(ATransientWindow^.GtkWindow)) then
+        begin
           if ParentTransientWindow<>nil then begin
             {$IFDEF VerboseTransient}
-            writeln('Set TRANSIENT Parent=',
+            writeln('Define TRANSIENT ',
+            ' Parent=',
               ParentTransientWindow^.Component.Name,':',
                 ParentTransientWindow^.Component.ClassName,
               ' Index=',ParentTransientWindow^.SortIndex,
@@ -629,17 +631,36 @@ begin
       // do the setup in two separate steps:
 
       // break unneeded transient relationships
-      for i:=0 to AllWindows.Count-1 do begin
+      for i:=AllWindows.Count-1 downto 0 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         OldTransientParent:=ATransientWindow^.GtkWindow^.transient_parent;
-        if (OldTransientParent<>ATransientWindow^.TransientParent) then
+        if (OldTransientParent<>ATransientWindow^.TransientParent) then begin
+          {$IFDEF VerboseTransient}
+          writeln('Break old TRANSIENT i=',i,'/',AllWindows.Count,
+          ' OldTransientParent=',HexStr(Cardinal(OldTransientParent),8),
+          ' Child=',ATransientWindow^.Component.Name,':',
+                             ATransientWindow^.Component.ClassName,
+            ' Index=',ATransientWindow^.SortIndex,
+            ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
+            '');
+          {$ENDIF}
           gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
+        end;
       end;
 
       // setup transient relationships
       for i:=0 to AllWindows.Count-1 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         if ATransientWindow^.TransientParent=nil then continue;
+        {$IFDEF VerboseTransient}
+        writeln('Set TRANSIENT i=',i,'/',AllWindows.Count,
+        ' Child=',ATransientWindow^.Component.Name,':',
+                           ATransientWindow^.Component.ClassName,
+          ' Index=',ATransientWindow^.SortIndex,
+          ' Wnd=',HexStr(Cardinal(ATransientWindow^.GtkWindow),8),
+          ' Parent=',HexStr(Cardinal(ATransientWindow^.TransientParent),8),
+          '');
+        {$ENDIF}
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,
                                      ATransientWindow^.TransientParent);
       end;
@@ -9203,6 +9224,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.456  2004/01/27 10:09:44  mattias
+  fixed renaming of DFM to LFM
+
   Revision 1.455  2004/01/23 13:55:30  mattias
   style widgets are now realized, so all values are initialized
 

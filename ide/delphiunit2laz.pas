@@ -58,7 +58,8 @@ var
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
 function ConvertDelphiToLazarusFilename(const DelphiFilename: string): string;
-function ConvertDFMToLFMFilename(const DFMFilename: string): string;
+function ConvertDFMToLFMFilename(const DFMFilename: string;
+  KeepCase: boolean): string;
 function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
   RenameDFMFile: boolean): TModalResult;
@@ -126,13 +127,16 @@ begin
           +lowercase(ExtractFileName(DelphiFilename));
 end;
 
-function ConvertDFMToLFMFilename(const DFMFilename: string): string;
+function ConvertDFMToLFMFilename(const DFMFilename: string;
+  KeepCase: boolean): string;
 begin
-  if DFMFilename<>'' then
-    Result:=ExtractFilePath(DFMFilename)
-            +lowercase(ExtractFilenameOnly(DFMFilename))
-            +'.lfm'
-  else
+  if DFMFilename<>'' then begin
+    // platform and fpc independent unitnames are lowercase, so are the lfm files
+    Result:=lowercase(ExtractFilenameOnly(DFMFilename));
+    if KeepCase then
+      Result:=ExtractFilenameOnly(DFMFilename);
+    Result:=ExtractFilePath(DFMFilename)+Result+'.lfm';
+  end else
     Result:='';
 end;
 
@@ -159,7 +163,7 @@ begin
   if RenameDFMFile then begin
     DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
     if DFMFilename<>'' then begin
-      LFMFilename:=ConvertDFMToLFMFilename(DFMFilename);
+      LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,false);
       Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
       if Result<>mrOK then exit;
     end;
@@ -197,7 +201,8 @@ begin
         exit;
       end;
     end;
-    LFMFilename:=ConvertDFMToLFMFilename(DFMFilename);
+    // converting dfm file, without renaming unit -> keep case
+    LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,true);
     try
       LFMStream.SaveToFile(LFMFilename);
     except

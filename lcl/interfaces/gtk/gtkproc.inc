@@ -2502,6 +2502,9 @@ var
 begin
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
+  {$IFDEF VerboseTransient}
+  writeln('DestroyCommonDialogAddOns ',ADialog.Name,':',ADialog.ClassName);
+  {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
   
@@ -6210,6 +6213,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.250  2004/01/27 10:09:44  mattias
+  fixed renaming of DFM to LFM
+
   Revision 1.249  2004/01/26 11:55:35  mattias
   fixed resizing synedit
 
