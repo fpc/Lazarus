@@ -965,7 +965,7 @@ begin
   if CListWidget=nil then exit;
   
   
-  if ALV.ViewStyle in [vsIcon, vsSmallIcon]
+  if TLVHack(ALV).ViewStyle in [vsIcon, vsSmallIcon]
   then begin
     // TODO: implement
   end
