@@ -542,6 +542,7 @@ function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
     StartPos: Integer;
     EndPos: Integer;
     c: Char;
+    CurLine: String;
   begin
     Result:='';
     // write each option into a line of its own
@@ -558,7 +559,7 @@ function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
         '''','"','`':
           begin
             repeat
-              inc(c);
+              inc(EndPos);
               if (OptionString[EndPos]=c) then begin
                 inc(EndPos);
                 break;
@@ -570,8 +571,16 @@ function SaveIDEMakeOptions(Options: TBuildLazarusOptions;
           inc(EndPos);
         end;
       end;
-      if EndPos>StartPos then
-        Result:=Result+copy(OptionString,StartPos,EndPos-StartPos)+LineEnding;
+      if (EndPos>StartPos) then begin
+        CurLine:=Trim(copy(OptionString,StartPos,EndPos-StartPos));
+        if (length(CurLine)>2) and (CurLine[1] in ['''','"','`'])
+        and (CurLine[1]=CurLine[length(CurLine)]) then begin
+          // whole line enclosed in quotation marks
+          // in fpc config this is forbidden and gladfully unncessary
+          CurLine:=copy(CurLine,2,length(CurLine)-2);
+        end;
+        Result:=Result+CurLine+LineEnding;
+      end;
       StartPos:=EndPos;
     until StartPos>length(OptionString);
   end;
