@@ -32,16 +32,16 @@ interface
 
 uses
   Classes, SysUtils, fpImage, AvgLvlTree, LCLIntf, LCLType, LCLProc, GraphType;
-  
+
 type
   { TLazIntfImage }
   { This descendent of TFPCustomImage stores its image data as raw images and
     is therefore able to directly interchange images with the LCL interfaces.
 
     Usage examples:
-    
+
     1. Loading a .xpm file into a TBitmap:
-    
+
       var
         BmpHnd,MaskHnd: HBitmap;
         Bitmap1: TBitmap;
@@ -69,7 +69,7 @@ type
         // do something with the Bitmap1
         ...
       end;
-      
+
 
     2. Saving a TBitmap to a .xpm file:
 
@@ -149,11 +149,11 @@ type
                                                    write SetDataDescription;
     property AutoCreateMask: boolean read FAutoCreateMask write SetAutoCreateMask;
   end;
-  
-  
+
+
   { TLazAVLPalette }
   { This descendent of TFPPalette uses a AVL tree for speed up. }
-  
+
   TLazAVLPalette = class(TFPPalette)
   protected
     FAVLPalette: TAvgLvlTree; // tree of PLazAVLPaletteEntry 'color to index'
@@ -170,10 +170,10 @@ type
     function Add(const NewColor: TFPColor): integer; override;
     procedure CheckConsistency; virtual;
   end;
-  
-  
+
+
   { TArrayNodesTree }
-  
+
   PArrayNode = ^TArrayNode;
   TArrayNode = class
   public
@@ -202,7 +202,7 @@ type
     function FindLastSibling: TArrayNode;
     procedure ConsistencyCheck;
   end;
-  
+
   TArrayNodesTree = class
   public
     Root: TArrayNode;
@@ -216,8 +216,8 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck;
   end;
-  
-  
+
+
   { TLazReaderXPM }
   { This is a FPImage reader for xpm images. }
 
@@ -238,8 +238,8 @@ type
     constructor Create; override;
     destructor Destroy; override;
   end;
-  
-  
+
+
   { TLazWriterXPM }
   { This is a FPImage writer for xpm images. }
 
@@ -255,7 +255,7 @@ type
     property NibblesPerSample: word read FNibblesPerSample
                                     write SetNibblesPerSample;
   end;
-  
+
 
 procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
                              LineEnd: TRawImageLineEnd;
@@ -633,7 +633,7 @@ begin
         Result.Green:=Result.Red;
         Result.Blue:=Result.Blue;
       end;
-      
+
     else
       Result.Red:=0;
       Result.Green:=0;
@@ -760,13 +760,13 @@ end;
 function TLazIntfImage.CheckDescription(
   const ADescription: TRawImageDescription; ExceptionOnError: boolean
     ): boolean;
-    
+
   procedure DoError(const Msg: string);
   begin
     if ExceptionOnError then Raise FPImageException.Create(Msg);
     writeln('TLazIntfImage.CheckDescription: ',Msg);
   end;
-    
+
 begin
   Result:=false;
   // check format
@@ -775,7 +775,7 @@ begin
   then begin
     DoError('Invalid Raw Image Description Format'); exit;
   end;
-  
+
   Result:=true;
 end;
 
@@ -788,7 +788,7 @@ begin
     y:=Height-y;
   Position:=FLineStarts[y];
   BitOffset:=FDataDescription.BitsPerPixel*cardinal(x)+Position.Bit;
-  Position.Bit:=BitOffset and 7;
+  Position.Bit:=7 - (BitOffset and 7);
   inc(Position.Byte,BitOffset shr 3);
 end;
 
@@ -801,7 +801,7 @@ begin
     y:=Height-y;
   Position:=FMaskLineStarts[y];
   BitOffset:=FDataDescription.AlphaBitsPerPixel*cardinal(x)+Position.Bit;
-  Position.Bit:=BitOffset and 7;
+  Position.Bit:=7 - (BitOffset and 7);
   inc(Position.Byte,BitOffset shr 3);
 end;
 
@@ -927,7 +927,7 @@ begin
       ColorChar:=Char(FPixelData[0]);
       FillChar(FPixelData^,FPixelDataSize,ColorChar);
     end;
-    
+
   16:
     begin
       SetInternalColor(0,0,Color);
@@ -951,7 +951,7 @@ begin
       for x:=0 to Width-1 do
         SetInternalColor(x,y,Color);
   end;
-  
+
   // ToDo: mask
 end;
 
@@ -962,7 +962,7 @@ type
     Color: TFPColor;
   end;
   PXPMPixelToColorEntry = ^TXPMPixelToColorEntry;
-  
+
 procedure TLazReaderXPM.ClearPixelToColorTree;
 var
   Entry: PXPMPixelToColorEntry;
@@ -989,13 +989,13 @@ type
     StartPos: integer;
     EndPos: integer;
   end;
-  
+
 var
   SrcPos: integer;
   Src: String;
   SrcLen: Integer;
   CurLineNumber, LastLineStart: integer;
-  
+
   procedure RaiseXPMReadError(const Msg: string; ReadPos: integer);
   var
     CurColumn: Integer;
@@ -1012,7 +1012,7 @@ var
   begin
     while SrcPos<=SrcLen do begin
       case Src[SrcPos] of
-      
+
       #10,#13:
         begin
           // count linenumbers for nicer error output
@@ -1041,7 +1041,7 @@ var
           end else
             RaiseXPMReadError('syntax error',SrcPos);
         end;
-        
+
       '"':
         begin
           // start of a string constant
@@ -1068,7 +1068,7 @@ var
     if ExceptionOnNotFound then
       Raise Exception.Create('Unexpected end of xpm stream');
   end;
-  
+
   function ReadNumber(var ReadPos: integer;
     ExceptionOnNotFound: Boolean): integer;
   begin
@@ -1099,7 +1099,7 @@ var
     //writeln('ReadHeader A Width=',FWidth,' Height=',FHeight,' ColorCount=',FColorCount,' CharsPerPixel=',FCharsPerPixel);
     // ToDo: parse XPMExt tag
   end;
-  
+
   function HexToColor(HexStart, HexEnd: integer): TFPColor;
 
     procedure ReadHexNumber(var StartPos: integer; Len: integer;
@@ -1128,7 +1128,7 @@ var
       3: Number:=Number or (Number shr 12);
       end;
     end;
-  
+
   var
     HexLen: Integer;
     SampleLen: Integer;
@@ -1149,7 +1149,7 @@ var
     ReadHexNumber(SampleStart,SampleLen,Result.Blue);
     Result.Alpha:=alphaOpaque;
   end;
-  
+
   function TextToColor(TextStart, TextEnd: integer): TFPColor;
   var
     s: String;
@@ -1214,7 +1214,7 @@ var
     else
       Result := FPImage.colTransparent;
   end;
-  
+
   procedure AddColor(PixelStart: integer; const AColor: TFPColor;
     IntArray: PInteger);
   var
@@ -1280,7 +1280,7 @@ var
       AddColor(PixelStart,NewColor,IntArray);
     end;
   end;
-  
+
   procedure ReadPixels(IntArray: PInteger);
   var
     y: Integer;
@@ -1324,7 +1324,7 @@ var
             HexStr(Cardinal(CurEntry2^.Color.Blue),4),',',
             HexStr(Cardinal(CurEntry2^.Color.Alpha),4));
         end;}
-        
+
         {writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
           ' RefPixel=',PXPMPixelToColorEntry(Node.Data)^.Pixel,
           ' Color=',
@@ -1403,7 +1403,7 @@ type
     Index: integer;
   end;
   PLazAVLPaletteEntry = ^TLazAVLPaletteEntry;
-  
+
 function CompareLazAVLPaletteEntries(
   Entry1, Entry2: PLazAVLPaletteEntry): integer;
 begin
