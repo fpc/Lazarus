@@ -507,6 +507,15 @@ end;
 
 function TGDBMIDebugger.GDBStop: Boolean;
 begin
+  if State = dsError 
+  then begin
+    // We don't know the state of the debugger, 
+    // force a reinit. Let's hope this works.
+    DebugProcess.Terminate(0);
+    Done;
+    Exit;
+  end;
+
   if State = dsRun
   then GDBPause;
 
@@ -1137,6 +1146,12 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2002/11/05 22:41:13  lazarus
+  MWE:
+    * Some minor debugger updates
+    + Added evaluate to debugboss
+    + Added hint debug evaluation
+
   Revision 1.7  2002/05/10 06:57:48  lazarus
   MG: updated licenses
 
