@@ -29,6 +29,7 @@
       - Application.CreateForm statements
       - published variables
       - resource strings
+      - IDE directives
 
 }
 unit StdCodeTools;
@@ -200,6 +201,11 @@ type
           
     // register procedure
     function HasInterfaceRegisterProc(var HasRegisterProc: boolean): boolean;
+    
+    // IDE % directives
+    function GetIDEDirectives(DirectiveList: TStrings): boolean;
+    function SetIDEDirectives(DirectiveList: TStrings;
+          SourceChangeCache: TSourceChangeCache): boolean;
   end;
 
 
@@ -1772,6 +1778,91 @@ begin
     end;
     ANode:=ANode.NextBrother;
   end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.GetIDEDirectives(DirectiveList: TStrings): boolean;
+var
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  Result:=false;
+  DirectiveList.Clear;
+  BuildTree(true);
+  EndPos:=1;
+  repeat
+    StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
+    if StartPos>SrcLen then break;
+    EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
+    DirectiveList.Add(copy(Src,StartPos,EndPos-StartPos));
+    if EndPos>SrcLen then break;
+    StartPos:=EndPos;
+  until false;
+  Result:=true;
+end;
+
+function TStandardCodeTool.SetIDEDirectives(DirectiveList: TStrings;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  InsertPos: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  InsertTxt: String;
+  ImplementationNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if SourceChangeCache=nil then exit;
+  SourceChangeCache.MainScanner:=Scanner;
+  BuildTree(false);
+
+  // find first old IDE directive
+  InsertPos:=FindNextIDEDirective(Src,1,Scanner.NestedComments);
+  if InsertPos>SrcLen then InsertPos:=0;
+
+  // remove all old IDE directives
+  if InsertPos>=1 then
+    EndPos:=InsertPos
+  else
+    EndPos:=1;
+  repeat
+    // find next IDE directive
+    StartPos:=FindNextIDEDirective(Src,EndPos,Scanner.NestedComments);
+    if StartPos>SrcLen then break;
+    EndPos:=FindCommentEnd(Src,StartPos,Scanner.NestedComments);
+    // remove also space in front of directive
+    while (StartPos>1) and (Src[StartPos-1] in [' ',#9]) do dec(StartPos);
+    // remove also space behind directive
+    while (EndPos<=SrcLen) and (Src[EndPos] in [' ',#9]) do inc(EndPos);
+    if (EndPos<=SrcLen) and (Src[EndPos] in [#10,#13]) then begin
+      inc(EndPos);
+      if (EndPos<=SrcLen) and (Src[EndPos] in [#10,#13])
+      and (Src[EndPos]<>Src[EndPos-1]) then
+        inc(EndPos);
+    end;
+    // remove directive
+    SourceChangeCache.Replace(gtNone,gtNone,StartPos,EndPos,'');
+    if EndPos>SrcLen then break;
+    StartPos:=EndPos;
+  until false;
+  
+  // find a nice insert position
+  ImplementationNode:=FindImplementationNode;
+  if (ImplementationNode<>nil)
+  and (ImplementationNode.StartPos<=InsertPos) then
+    InsertPos:=0;
+  if InsertPos<1 then begin
+    // set default insert position
+    InsertPos:=1;
+    if (Tree<>nil) and (Tree.Root<>nil) then
+      InsertPos:=Tree.Root.StartPos;
+  end;
+  
+  // add directives
+  InsertTxt:=ChompLineEndsAtEnd(DirectiveList.Text);
+  if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+                            InsertTxt) then exit;
+  if not SourceChangeCache.Apply then exit;
+
   Result:=true;
 end;
 

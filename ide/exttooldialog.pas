@@ -282,7 +282,8 @@ begin
   if (not Macros.SubstituteStr(Filename)) then exit;
   if (not Macros.SubstituteStr(WorkingDir)) then exit;
   if (not Macros.SubstituteStr(Params)) then exit;
-  Filename:=FindProgram(Filename,GetCurrentDir,false);
+  if not FilenameIsAbsolute(Filename) then
+    Filename:=FindProgram(Filename,GetCurrentDir,false);
   CmdLine:=Filename;
   if Params<>'' then
     CmdLine:=CmdLine+' '+Params;

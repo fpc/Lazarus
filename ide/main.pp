@@ -79,7 +79,7 @@ uses
   ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
-  FindReplaceDialog, FindInFilesDlg, CodeExplorer,
+  FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg,
   // main ide
   MainBar;
 
@@ -195,7 +195,10 @@ type
     procedure mnuStopProjectClicked(Sender : TObject);
     procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
-    
+    procedure mnuBuildFileClicked(Sender : TObject);
+    procedure mnuRunFileClicked(Sender : TObject);
+    procedure mnuConfigBuildFileClicked(Sender : TObject);
+
     // components menu
 
     // tools menu
@@ -526,6 +529,11 @@ type
     function DoExecuteCompilationTool(Tool: TCompilationTool;
                                       const WorkingDir, ToolTitle: string
                                       ): TModalResult; override;
+    function DoBuildFile: TModalResult;
+    function DoRunFile: TModalResult;
+    function DoConfigBuildFile: TModalResult;
+    function GetIDEDirectives(AnUnitInfo: TUnitInfo;
+                              DirectiveList: TStrings): TModalResult;
 
     // useful information methods
     procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
@@ -636,6 +644,7 @@ type
     function OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
                                         const UnparsedValue: string): string;
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
+    function OnMacroFuncMakeExe(const Filename:string; var Abort: boolean):string;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
@@ -1271,6 +1280,8 @@ begin
                     lisProjectSrcPath,nil,[]));
   MacroList.Add(TTransferMacro.Create('ConfDir','',
                     lisProjectSrcPath,nil,[]));
+  MacroList.Add(TTransferMacro.Create('MakeExe','',
+                    lisMakeExe,@OnMacroFuncMakeExe,[]));
 
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
@@ -1517,18 +1528,21 @@ end;
 procedure TMainIDE.SetupRunMenu;
 begin
   inherited;
-  itmProjectBuild.OnClick := @mnuBuildProjectClicked;
-  itmProjectBuildAll.OnClick := @mnuBuildAllProjectClicked;
-  itmProjectAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
-  itmProjectRun.OnClick := @mnuRunProjectClicked;
-  itmProjectPause.Enabled := false;
-  itmProjectPause.OnClick := @mnuPauseProjectClicked;
-  itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
-  itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
-  itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
-  itmProjectStop.OnClick := @mnuStopProjectClicked;
-  itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
-  itmProjectRunParameters.OnClick := @mnuRunParametersClicked;
+  itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
+  itmRunMenuBuildAll.OnClick := @mnuBuildAllProjectClicked;
+  itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
+  itmRunMenuRun.OnClick := @mnuRunProjectClicked;
+  itmRunMenuPause.Enabled := false;
+  itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
+  itmRunMenuStepInto.OnClick := @mnuStepIntoProjectClicked;
+  itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
+  itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
+  itmRunMenuStop.OnClick := @mnuStopProjectClicked;
+  itmRunMenuCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
+  itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
+  itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
+  itmRunMenuRunFile.OnClick := @mnuRunFileClicked;
+  itmRunMenuConfigBuildFile.OnClick := @mnuConfigBuildFileClicked;
 end;
 
 procedure TMainIDE.SetupComponentsMenu;
@@ -1818,11 +1832,29 @@ begin
    ecSaveAll:
      DoSaveAll([sfCheckAmbigiousFiles]);
 
-   ecBuild,
+   ecBuild:
+     begin
+       GetCurrentUnit(ASrcEdit,AnUnitInfo);
+       if (AnUnitInfo<>nil)
+       and AnUnitInfo.BuildFileIfActive then
+         DoBuildFile
+       else
+         DoBuildProject(Command=ecBuildAll);
+     end;
+     
    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
    ecAbortBuild:  DoAbortBuild;
     
-   ecRun:         DoRunProject;
+   ecRun:
+     begin
+       GetCurrentUnit(ASrcEdit,AnUnitInfo);
+       if (AnUnitInfo<>nil)
+       and AnUnitInfo.RunFileIfActive then
+         DoRunFile
+       else
+         DoRunProject;
+     end;
+     
    ecPause:       DebugBoss.DoPauseProject;
    ecStepInto:    DebugBoss.DoStepIntoProject;
    ecStepOver:    DebugBoss.DoStepOverProject;
@@ -2350,6 +2382,21 @@ begin
   finally
     frmCompilerOptions.Free;
   end;
+end;
+
+procedure TMainIDE.mnuBuildFileClicked(Sender: TObject);
+begin
+  DoBuildFile;
+end;
+
+procedure TMainIDE.mnuRunFileClicked(Sender: TObject);
+begin
+  DoRunFile;
+end;
+
+procedure TMainIDE.mnuConfigBuildFileClicked(Sender: TObject);
+begin
+  DoConfigBuildFile;
 end;
 
 procedure TMainIDE.mnuRunParametersClicked(Sender : TObject);
@@ -5870,6 +5917,250 @@ begin
   end;
 end;
 
+function TMainIDE.DoBuildFile: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  DirectiveList: TStringList;
+  BuildWorkingDir: String;
+  BuildCommand: String;
+  BuildScan: TIDEDirBuildScanFlags;
+  ProgramFilename: string;
+  Params: string;
+  ExtTool: TExternalToolOptions;
+  Filename: String;
+begin
+  Result:=mrCancel;
+  if ToolStatus<>itNone then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    if Result<>mrOk then exit;
+  end;
+  DirectiveList:=TStringList.Create;
+  try
+    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    if Result<>mrOk then exit;
+
+    // get values form directive list
+    // build
+    BuildWorkingDir:=GetIDEStringDirective(DirectiveList,
+                                         IDEDirectiveNames[idedBuildWorkingDir],
+                                         '');
+    if BuildWorkingDir='' then
+      BuildWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+    if not MacroList.SubstituteStr(BuildWorkingDir) then begin
+      Result:=mrCancel;
+      exit;
+    end;
+    BuildCommand:=GetIDEStringDirective(DirectiveList,
+                                      IDEDirectiveNames[idedBuildCommand],
+                                      IDEDirDefaultBuildCommand);
+    if (not MacroList.SubstituteStr(BuildCommand))
+    or (BuildCommand='') then begin
+      Result:=mrCancel;
+      exit;
+    end;
+    BuildScan:=GetIDEDirBuildScanFromString(GetIDEStringDirective(DirectiveList,
+                                   IDEDirectiveNames[idedBuildScan],''));
+
+    SourceNotebook.ClearErrorLines;
+
+    SplitCmdLine(BuildCommand,ProgramFilename,Params);
+    if not FilenameIsAbsolute(ProgramFilename) then begin
+      Filename:=FindProgram(ProgramFilename,BuildWorkingDir,true);
+      if Filename<>'' then ProgramFilename:=Filename;
+    end;
+    if ProgramFilename='' then begin
+      Result:=mrCancel;
+      exit;
+    end;
+
+    ExtTool:=TExternalToolOptions.Create;
+    try
+      ExtTool.Filename:=ProgramFilename;
+      ExtTool.ScanOutputForFPCMessages:=idedbsfFPC in BuildScan;
+      ExtTool.ScanOutputForMakeMessages:=idedbsfMake in BuildScan;
+      ExtTool.ScanOutput:=true;
+      ExtTool.Title:='Build File '+ActiveUnitInfo.Filename;
+      ExtTool.WorkingDirectory:=BuildWorkingDir;
+      ExtTool.CmdLineParams:=Params;
+
+      // run
+      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+    finally
+      // clean up
+      ExtTool.Free;
+    end;
+  finally
+    DirectiveList.Free;
+  end;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoRunFile: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  RunFlags: TIDEDirRunFlags;
+  AlwaysBuildBeforeRun: boolean;
+  RunWorkingDir: String;
+  RunCommand: String;
+  ProgramFilename: string;
+  Params: string;
+  ExtTool: TExternalToolOptions;
+  Filename: String;
+  DirectiveList: TStringList;
+begin
+  Result:=mrCancel;
+  if ToolStatus<>itNone then exit;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    if Result<>mrOk then exit;
+  end;
+  DirectiveList:=TStringList.Create;
+  try
+    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    if Result<>mrOk then exit;
+    
+    RunFlags:=GetIDEDirRunFlagFromString(
+                 GetIDEStringDirective(DirectiveList,
+                                       IDEDirectiveNames[idedRunFlags],''));
+    AlwaysBuildBeforeRun:=idedrfBuildBeforeRun in RunFlags;
+    if AlwaysBuildBeforeRun then begin
+      Result:=DoBuildFile;
+      if Result<>mrOk then exit;
+    end;
+    RunWorkingDir:=GetIDEStringDirective(DirectiveList,
+                                       IDEDirectiveNames[idedRunWorkingDir],'');
+    if RunWorkingDir='' then
+      RunWorkingDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+    if not MacroList.SubstituteStr(RunWorkingDir) then begin
+      Result:=mrCancel;
+      exit;
+    end;
+    RunCommand:=GetIDEStringDirective(DirectiveList,
+                                    IDEDirectiveNames[idedRunCommand],
+                                    IDEDirDefaultRunCommand);
+    if (not MacroList.SubstituteStr(RunCommand))
+    or (RunCommand='') then begin
+      Result:=mrCancel;
+      exit;
+    end;
+
+    SourceNotebook.ClearErrorLines;
+
+    SplitCmdLine(RunCommand,ProgramFilename,Params);
+    if not FilenameIsAbsolute(ProgramFilename) then begin
+      Filename:=FindProgram(ProgramFilename,RunWorkingDir,true);
+      if Filename<>'' then ProgramFilename:=Filename;
+    end;
+    if ProgramFilename='' then begin
+      Result:=mrCancel;
+      exit;
+    end;
+
+    ExtTool:=TExternalToolOptions.Create;
+    try
+      ExtTool.Filename:=ProgramFilename;
+      ExtTool.Title:='Run File '+ActiveUnitInfo.Filename;
+      ExtTool.WorkingDirectory:=RunWorkingDir;
+      ExtTool.CmdLineParams:=Params;
+
+      // run
+      Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+    finally
+      // clean up
+      ExtTool.Free;
+    end;
+  finally
+    DirectiveList.Free;
+  end;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoConfigBuildFile: TModalResult;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  DirectiveList: TStringList;
+  CodeResult: Boolean;
+  BuildFileDialog: TBuildFileDialog;
+begin
+  Result:=mrCancel;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
+    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    if Result<>mrOk then exit;
+  end;
+  DirectiveList:=TStringList.Create;
+  try
+    Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
+    if Result<>mrOk then exit;
+
+    BuildFileDialog:=TBuildFileDialog.Create(Self);
+    try
+      BuildFileDialog.DirectiveList:=DirectiveList;
+      BuildFileDialog.BuildFileIfActive:=ActiveUnitInfo.BuildFileIfActive;
+      BuildFileDialog.RunFileIfActive:=ActiveUnitInfo.RunFileIfActive;
+      BuildFileDialog.MacroList:=MacroList;
+      BuildFileDialog.Filename:=
+        CreateRelativePath(ActiveUnitInfo.Filename,Project1.ProjectDirectory);
+      if BuildFileDialog.ShowModal<>mrOk then begin
+        Result:=mrCancel;
+        exit;
+      end;
+      ActiveUnitInfo.BuildFileIfActive:=BuildFileDialog.BuildFileIfActive;
+      ActiveUnitInfo.RunFileIfActive:=BuildFileDialog.RunFileIfActive;
+    finally
+      BuildFileDialog.Free;
+    end;
+
+    // save IDE directives
+    if FilenameIsPascalSource(ActiveUnitInfo.Filename) then begin
+      // parse source for IDE directives (i.e. % comments)
+      CodeResult:=CodeToolBoss.SetIDEDirectives(ActiveUnitInfo.Source,
+                                                DirectiveList);
+      ApplyCodeToolChanges;
+      if not CodeResult then begin
+        DoJumpToCodeToolBossError;
+        exit;
+      end;
+
+    end else begin
+      // ToDo: load .lfi file
+      exit;
+    end;
+
+  finally
+    DirectiveList.Free;
+  end;
+
+  Result:=mrOk;
+end;
+
+function TMainIDE.GetIDEDirectives(AnUnitInfo: TUnitInfo;
+  DirectiveList: TStrings): TModalResult;
+var
+  CodeResult: Boolean;
+begin
+  Result:=mrCancel;
+  if FilenameIsPascalSource(AnUnitInfo.Filename) then begin
+    // parse source for IDE directives (i.e. % comments)
+    CodeResult:=CodeToolBoss.GetIDEDirectives(AnUnitInfo.Source,DirectiveList);
+    if not CodeResult then begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+  end else begin
+    // ToDo: load .lfi file
+    exit;
+  end;
+  Result:=mrOk;
+end;
+
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
 var
   OpenDialog: TOpenDialog;
@@ -6761,6 +7052,20 @@ function TMainIDE.OnMacroPromptFunction(const s:string;
 begin
   Result:=s;
   Abort:=(ShowMacroPromptDialog(Result)<>mrOk);
+end;
+
+function TMainIDE.OnMacroFuncMakeExe(const Filename: string; var Abort: boolean
+  ): string;
+var
+  OldExt: String;
+  ExeExt: String;
+begin
+  Result:=Filename;
+  OldExt:=ExtractFileExt(Filename);
+  ExeExt:=LazConf.GetDefaultExecutableExt;
+  if OldExt<>ExeExt then
+    Result:=copy(Result,1,length(Result)-length(OldExt))+ExeExt;
+writeln('TMainIDE.OnMacroFuncMakeExe A ',Filename,' ',Result);
 end;
 
 procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
@@ -9445,6 +9750,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.642  2003/08/20 15:06:57  mattias
+  implemented Build+Run File
+
   Revision 1.641  2003/08/18 21:17:41  mattias
   implemented loading lpr command line projects
 

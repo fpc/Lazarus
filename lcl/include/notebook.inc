@@ -23,7 +23,7 @@ begin
   inherited Create(AOwner);
   TabPosition := tpTop;
   ShowTabs := True;
-  Setbounds(1,1,200,200);
+  SetInitialBounds(0,0,200,200);
 end;
 
 {------------------------------------------------------------------------------
@@ -36,6 +36,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2003/08/20 15:06:57  mattias
+  implemented Build+Run File
+
   Revision 1.2  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

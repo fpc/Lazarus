@@ -88,6 +88,7 @@ resourcestring
   lisProjectUnitPath = 'Project Unit Path';
   lisProjectIncPath = 'Project Include Path';
   lisProjectSrcPath = 'Project Src Path';
+  lisMakeExe = 'Make Executable';
   lisConfigDirectory = 'Lazarus config directory';
 
   // main bar menu
@@ -207,7 +208,10 @@ resourcestring
   lisMenuResetDebugger = 'Reset debugger';
   lisMenuCompilerOptions = 'Compiler Options...';
   lisMenuRunParameters = 'Run Parameters ...';
-  
+  lisMenuBuildFile = 'Build File';
+  lisMenuRunFile = 'Run File';
+  lisMenuConfigBuildFile = 'Configure Build+Run File';
+
   lisMenuOpenPackage = 'Open package';
   lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file';
@@ -1145,6 +1149,9 @@ resourcestring
   srkmecResetDebugger             = 'reset debugger';
   srkmecRunParameters             = 'run parameters';
   srkmecCompilerOptions           = 'compiler options';
+  srkmecBuildFile                 = 'build file';
+  srkmecRunFile                   = 'run file';
+  srkmecConfigBuildFile           = 'config build file';
   // tools menu
   srkmecExtToolSettings           = 'External tools settings';
   srkmecBuildLazarus              = 'Build lazarus';

@@ -2782,7 +2782,7 @@ procedure TLinkScanner.DeleteRange(CleanStartPos,CleanEndPos: integer);
 
   this can do unexpected things if
     - include files are included twice
-    - comiler directives like IFDEF - ENDIF are partially destroyed
+    - compiler directives like IFDEF - ENDIF are partially destroyed
     
   ToDo: keep include directives
 }

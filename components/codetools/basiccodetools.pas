@@ -45,6 +45,8 @@ function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
+function FindNextIDEDirective(const ASource: string; StartPos: integer;
+    NestedComments: boolean): integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 
@@ -80,7 +82,8 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean): integer;
-    
+function ChompLineEndsAtEnd(const s: string): string;
+
 // brackets
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
     NestedComments: boolean): integer;
@@ -1685,6 +1688,16 @@ begin
   end;
 end;
 
+function ChompLineEndsAtEnd(const s: string): string;
+var
+  EndPos: Integer;
+begin
+  EndPos:=length(s)+1;
+  while (EndPos>1) and (s[EndPos-1] in [#10,#13]) do dec(EndPos);
+  Result:=s;
+  SetLength(Result,EndPos-1);
+end;
+
 function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
   NestedComments: boolean): integer;
 var
@@ -1926,6 +1939,63 @@ begin
   Result:=CompareText(@Find[FindStartPos],Min(length(Find)-FindStartPos+1,Len),
                       @Txt[TxtStartPos],Min(length(Txt)-TxtStartPos+1,Len),
                       CaseSensitive);
+end;
+
+function FindNextIDEDirective(const ASource: string; StartPos: integer;
+  NestedComments: boolean): integer;
+var
+  MaxPos: integer;
+begin
+  MaxPos:=length(ASource);
+  Result:=StartPos;
+  while (Result<=MaxPos) do begin
+    case ASource[Result] of
+    '''':
+      begin
+        inc(Result);
+        while (Result<=MaxPos) do begin
+          if (ASource[Result]<>'''') then
+            inc(Result)
+          else begin
+            inc(Result);
+            break;
+          end;
+        end;
+      end;
+
+    '/':
+      begin
+        inc(Result);
+        if (Result<=MaxPos) and (ASource[Result]='/') then begin
+          // skip Delphi comment
+          while (Result<=MaxPos) and (not (ASource[Result] in [#10,#13])) do
+            inc(Result);
+        end;
+      end;
+
+    '{':
+      begin
+        if (Result<MaxPos) and (ASource[Result+1]='%') then
+          exit;
+        // skip pascal comment
+        Result:=FindCommentEnd(ASource,Result,NestedComments);
+      end;
+
+    '(':
+      begin
+        if (Result<MaxPos) and (ASource[Result+1]='*') then begin
+          // skip TP comment
+          Result:=FindCommentEnd(ASource,Result,NestedComments);
+        end else
+          inc(Result);
+      end;
+
+    else
+      inc(Result);
+    end;
+
+  end;
+  if Result>MaxPos+1 then Result:=MaxPos+1;
 end;
 
 function CleanCodeFromComments(const DirtyCode: string;

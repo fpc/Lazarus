@@ -398,6 +398,12 @@ type
           NewMethodName: string): boolean;
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
+          
+    // IDE % directives
+    function GetIDEDirectives(Code: TCodeBuffer;
+          DirectiveList: TStrings): boolean;
+    function SetIDEDirectives(Code: TCodeBuffer;
+          DirectiveList: TStrings): boolean;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1502,6 +1508,36 @@ begin
     SourceChangeCache.Clear;
     Result:=FCurCodeTool.CreatePublishedMethod(UpperCaseStr(AClassName),
               NewMethodName,ATypeInfo,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GetIDEDirectives(Code: TCodeBuffer;
+  DirectiveList: TStrings): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.GetIDEDirectives(DirectiveList);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.SetIDEDirectives(Code: TCodeBuffer;
+  DirectiveList: TStrings): boolean;
+begin
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetIDEDirectives A ',Code.Filename);
+  {$ENDIF}
+  Result:=false;
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.SetIDEDirectives(DirectiveList,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

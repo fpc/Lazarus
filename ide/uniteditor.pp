@@ -215,14 +215,6 @@ type
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
     procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
     
-    // gutter
-    //procedure CreateBreakPoint(const ALine: Integer);
-    //procedure SetBreakPointMark(const ALine: Integer; const AType: TSrcEditMarkerType);
-    //function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
-    //function  IsBreakPointMark(const AMark: TSynEditMark): Boolean;
-    //procedure RemoveBreakPoint(const ALine: Integer); overload;
-    //procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
-
     // selections
     function SelectionAvailable: boolean;
     function GetText(OnlySelection: boolean): string;

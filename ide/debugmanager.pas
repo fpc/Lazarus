@@ -793,16 +793,16 @@ begin
   with MainIDE do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
     RunSpeedButton.Enabled := (dcRun in FDebugger.Commands) or (FDebugger.State = dsIdle);
-    itmProjectRun.Enabled := RunSpeedButton.Enabled;
+    itmRunMenuRun.Enabled := RunSpeedButton.Enabled;
     PauseSpeedButton.Enabled := dcPause in FDebugger.Commands;
-    itmProjectPause.Enabled := PauseSpeedButton.Enabled;
+    itmRunMenuPause.Enabled := PauseSpeedButton.Enabled;
     StepIntoSpeedButton.Enabled := (dcStepInto in FDebugger.Commands) or (FDebugger.State = dsIdle);
-    itmProjectStepInto.Enabled := StepIntoSpeedButton.Enabled;
+    itmRunMenuStepInto.Enabled := StepIntoSpeedButton.Enabled;
     StepOverSpeedButton.Enabled := (dcStepOver in FDebugger.Commands)  or (FDebugger.State = dsIdle);
-    itmProjectStepOver.Enabled := StepOverSpeedButton.Enabled;
+    itmRunMenuStepOver.Enabled := StepOverSpeedButton.Enabled;
 
-    itmProjectRunToCursor.Enabled := dcRunTo in FDebugger.Commands;
-    itmProjectStop.Enabled := dcStop in FDebugger.Commands;;
+    itmRunMenuRunToCursor.Enabled := dcRunTo in FDebugger.Commands;
+    itmRunMenuStop.Enabled := dcStop in FDebugger.Commands;;
 
     // TODO: add other debugger menuitems
     // TODO: implement by actions
@@ -1083,7 +1083,7 @@ begin
     itmViewDebugOutput.OnClick := @mnuViewDebugDialogClick;
     itmViewDebugOutput.Tag := Ord(ddtOutput);
 
-    itmProjectResetDebugger.OnClick := @mnuResetDebuggerClicked;
+    itmRunMenuResetDebugger.OnClick := @mnuResetDebuggerClicked;
     
     itmEnvDebuggerOptions.OnClick := @mnuDebuggerOptionsClick;
   end;
@@ -1574,6 +1574,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.62  2003/08/20 15:06:57  mattias
+  implemented Build+Run File
+
   Revision 1.61  2003/08/15 14:28:47  mattias
   clean up win32 ifdefs
 

@@ -169,6 +169,9 @@ const
   ecStopProgram          = ecUserFirst + 408;
   ecResetDebugger        = ecUserFirst + 409;
   ecBuildLazarus         = ecUserFirst + 410;
+  ecBuildFile            = ecUserFirst + 411;
+  ecRunFile              = ecUserFirst + 412;
+  ecConfigBuildFile      = ecUserFirst + 413;
 
   // project menu
   ecNewProject           = ecUserFirst + 500;
@@ -643,7 +646,10 @@ begin
     ecResetDebugger         : Result:= srkmecResetDebugger;
     ecRunParameters         : Result:= srkmecRunParameters;
     ecCompilerOptions       : Result:= srkmecCompilerOptions;
-    
+    ecBuildFile             : Result:= srkmecBuildFile;
+    ecRunFile               : Result:= srkmecRunFile;
+    ecConfigBuildFile       : Result:= srkmecConfigBuildFile;
+
     // components menu
     ecOpenPackage           : Result:= lisMenuOpenPackage;
     ecOpenPackageFile       : Result:= lisMenuOpenPackageFile;
@@ -1492,6 +1498,9 @@ begin
   Add(C,'Reset debugger',ecResetDebugger,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Compiler options',ecCompilerOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Build File',ecBuildFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Run File',ecRunFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Config "Build File"',ecConfigBuildFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];

@@ -80,6 +80,7 @@ type
   private
     fAutoRevertLockCount: integer;
     fBookmarks: TFileBookmarks;
+    FBuildFileIfActive: boolean;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
     fEditorIndex: integer;
@@ -104,6 +105,7 @@ type
     fOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
     FResourceFilename: string;
+    FRunFileIfActive: boolean;
     fSource: TCodeBuffer;
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
@@ -123,12 +125,14 @@ type
     function GetPrevPartOfProject: TUnitInfo;
     function GetPrevUnitWithComponent: TUnitInfo;
     function GetPrevUnitWithEditorIndex: TUnitInfo;
+    procedure SetBuildFileIfActive(const AValue: boolean);
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
     procedure SetIsPartOfProject(const AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetProject(const AValue: TProject);
+    procedure SetRunFileIfActive(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
@@ -176,16 +180,17 @@ type
     property PrevPartOfProject: TUnitInfo read GetPrevPartOfProject;
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
+    property BuildFileIfActive: boolean read FBuildFileIfActive write SetBuildFileIfActive;
+    property Component: TComponent read fComponent write SetComponent;
+    property ComponentName: string read fComponentName write fComponentName;
+    property ComponentResourceName: string read fComponentResourceName
+                                           write fComponentResourceName;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex:integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
-    property Component: TComponent read fComponent write SetComponent;
-    property ComponentName: string read fComponentName write fComponentName;
-    property ComponentResourceName: string read fComponentResourceName
-                                           write fComponentResourceName;
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
                                  read fIsPartOfProject write SetIsPartOfProject;
@@ -199,6 +204,7 @@ type
     property Project: TProject read FProject write SetProject;
     property ResourceFileName: string
                                  read FResourceFilename write FResourceFilename;
+    property RunFileIfActive: boolean read FRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
                                read fSyntaxHighlighter write fSyntaxHighlighter;
@@ -688,6 +694,7 @@ end;
 procedure TUnitInfo.Clear;
 begin
   FBookmarks.Clear;
+  FBuildFileIfActive:=false;
   fComponent := nil;
   fComponentName := '';
   fComponentResourceName := '';
@@ -696,18 +703,19 @@ begin
   fCustomHighlighter := false;
   fEditorIndex := -1;
   fFilename := '';
+  fFileReadOnly := false;
   fHasResources := false;
   FIgnoreFileDateOnDiskValid:=false;
   fIsPartOfProject := false;
-  Loaded := false;
   fModified := false;
-  fUserReadOnly := false;
-  fFileReadOnly := false;
-  if fSource<>nil then fSource.Clear;
+  FRunFileIfActive:=false;
   fSyntaxHighlighter := lshText;
   fTopLine := -1;
   fUnitName := '';
   fUsageCount:=-1;
+  fUserReadOnly := false;
+  if fSource<>nil then fSource.Clear;
+  Loaded := false;
 end;
 
 
@@ -724,6 +732,10 @@ begin
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetValue(Path+'Filename/Value',AFilename);
+  XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
+                           FBuildFileIfActive,false);
+  XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
+                           FRunFileIfActive,false);
   XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
   XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
   XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',fIsPartOfProject,false);
@@ -755,6 +767,9 @@ begin
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
   fFilename:=AFilename;
+  FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',
+                                           false);
+  FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
   fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
   if fComponentName='' then
     fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
@@ -1086,6 +1101,13 @@ begin
   Result:=fPrev[uilWithEditorIndex];
 end;
 
+procedure TUnitInfo.SetBuildFileIfActive(const AValue: boolean);
+begin
+  if FBuildFileIfActive=AValue then exit;
+  FBuildFileIfActive:=AValue;
+  Modified:=true;
+end;
+
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
 begin
   if fEditorIndex=AValue then exit;
@@ -1154,6 +1176,13 @@ begin
     if IsAutoRevertLocked then Project.AddToList(Self,uilAutoRevertLocked);
     if IsPartOfProject then Project.AddToList(Self,uilPartOfProject);
   end;
+end;
+
+procedure TUnitInfo.SetRunFileIfActive(const AValue: boolean);
+begin
+  if FRunFileIfActive=AValue then exit;
+  FRunFileIfActive:=AValue;
+  Modified:=true;
 end;
 
 
@@ -2666,6 +2695,9 @@ end.
 
 {
   $Log$
+  Revision 1.134  2003/08/20 15:06:57  mattias
+  implemented Build+Run File
+
   Revision 1.133  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

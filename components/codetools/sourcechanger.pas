@@ -380,7 +380,7 @@ begin
     Result:=TSourceChangeCacheEntry(ANode.Data);
     if Result.ToPos<=FromPos then
       ANode:=ANode.Left
-    else if Result.FromPos>ToPos then
+    else if Result.FromPos>=ToPos then
       ANode:=ANode.Right
     else
       exit;
@@ -413,6 +413,7 @@ var
   NewEntry: TSourceChangeCacheEntry;
   p: pointer;
   IsDirectChange: boolean;
+  IntersectionEntry: TSourceChangeCacheEntry;
 begin
   {$IFDEF CTDEBUG}
   writeln('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
@@ -446,9 +447,12 @@ begin
       {$ENDIF}
     end;
   end;
-  if FindEntryInRange(FromPos,ToPos)<>nil then begin
+  IntersectionEntry:=FindEntryInRange(FromPos,ToPos);
+  if IntersectionEntry<>nil then begin
     {$IFDEF CTDEBUG}
-    writeln('TSourceChangeCache.ReplaceEx IGNORED, because intersection found');
+    writeln('TSourceChangeCache.ReplaceEx IGNORED, because intersection found: ',
+      IntersectionEntry.FromPos,'-',IntersectionEntry.ToPos,
+      ' IsDelete=',IntersectionEntry.IsDeleteOperation);
     {$ENDIF}
     exit;
   end;
@@ -607,13 +611,23 @@ var
         end;
       gtNewLine:
         begin
-          NeededLineEnds:=CountNeededLineEndsToAddBackward(FromSrc,FromPos-1,1);
+          if FromPos>1 then
+            NeededLineEnds:=1
+          else
+            NeededLineEnds:=0;
+          NeededLineEnds:=CountNeededLineEndsToAddBackward(FromSrc,FromPos-1,
+                                                           NeededLineEnds);
           if NeededLineEnds>0 then
             InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
         end;
       gtEmptyLine:
         begin
-          NeededLineEnds:=CountNeededLineEndsToAddBackward(FromSrc,FromPos-1,2);
+          if FromPos>1 then
+            NeededLineEnds:=2
+          else
+            NeededLineEnds:=1;
+          NeededLineEnds:=CountNeededLineEndsToAddBackward(FromSrc,FromPos-1,
+                                                           NeededLineEnds);
           for i:=1 to NeededLineEnds do
             InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
         end;
@@ -679,7 +693,7 @@ begin
         if PrecEntry.IsAtSamePos(CurEntry) then begin
           {$IFDEF CTDEBUG}
           writeln('TSourceChangeCache.Apply EntryAtSamePos Pos=',PrecEntry.FromPos,'-',PrecEntry.ToPos,
-          ' Text="',PrecEntry.Text,'"');
+          ' InsertText="',InsertText,'"');
           {$ENDIF}
           BetweenGap:=PrecEntry.AfterGap;
           if ord(BetweenGap)<ord(CurEntry.FrontGap) then
@@ -696,7 +710,7 @@ begin
             end;
           end else begin
             // the behind operation is a delete only operation
-            InsertText:='';
+            // (Note: With the after gap, it is possible to insert text anyway)
           end;
           InsertText:=PrecEntry.Text+InsertText;
         end else

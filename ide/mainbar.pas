@@ -297,19 +297,22 @@ type
     itmProjectOptions: TMenuItem;
 
     // run menu
-    itmProjectBuild: TMenuItem;
-    itmProjectBuildAll: TMenuItem;
-    itmProjectAbortBuild: TMenuItem;
-    itmProjectRun: TMenuItem;
-    itmProjectPause: TMenuItem;
-    itmProjectStepInto: TMenuItem;
-    itmProjectStepOver: TMenuItem;
-    itmProjectRunToCursor: TMenuItem;
-    itmProjectStop: TMenuItem;
-    itmProjectResetDebugger: TMenuItem;
-    itmProjectCompilerSettings: TMenuItem;
-    itmProjectRunParameters: TMenuItem;
-    
+    itmRunMenuBuild: TMenuItem;
+    itmRunMenuBuildAll: TMenuItem;
+    itmRunMenuAbortBuild: TMenuItem;
+    itmRunMenuCompilerSettings: TMenuItem;
+    itmRunMenuRun: TMenuItem;
+    itmRunMenuPause: TMenuItem;
+    itmRunMenuStepInto: TMenuItem;
+    itmRunMenuStepOver: TMenuItem;
+    itmRunMenuRunToCursor: TMenuItem;
+    itmRunMenuStop: TMenuItem;
+    itmRunMenuRunParameters: TMenuItem;
+    itmRunMenuResetDebugger: TMenuItem;
+    itmRunMenuBuildFile: TMenuItem;
+    itmRunMenuRunFile: TMenuItem;
+    itmRunMenuConfigBuildFile: TMenuItem;
+
     // components menu
     itmPkgOpenPackage: TMenuItem;
     itmPkgOpenPackageFile: TMenuItem;
@@ -1113,78 +1116,93 @@ end;
 
 procedure TMainIDEBar.SetupRunMenu;
 begin
-  itmProjectBuild := TMenuItem.Create(Self);
-  itmProjectBuild.Name:='itmProjectBuild';
-  itmProjectBuild.Caption := lisMenuBuild;
-  itmProjectBuild.Graphic:=LoadPixmap('menu_build');
-  mnuRun.Add(itmProjectBuild);
+  itmRunMenuBuild := TMenuItem.Create(Self);
+  itmRunMenuBuild.Name:='itmRunMenuBuild';
+  itmRunMenuBuild.Caption := lisMenuBuild;
+  itmRunMenuBuild.Graphic:=LoadPixmap('menu_build');
+  mnuRun.Add(itmRunMenuBuild);
 
-  itmProjectBuildAll := TMenuItem.Create(Self);
-  itmProjectBuildAll.Name:='itmProjectBuildAll';
-  itmProjectBuildAll.Caption := lisMenuBuildAll;
-  itmProjectBuildAll.Graphic:=LoadPixmap('menu_buildall');
-  mnuRun.Add(itmProjectBuildAll);
+  itmRunMenuBuildAll := TMenuItem.Create(Self);
+  itmRunMenuBuildAll.Name:='itmRunMenuBuildAll';
+  itmRunMenuBuildAll.Caption := lisMenuBuildAll;
+  itmRunMenuBuildAll.Graphic:=LoadPixmap('menu_buildall');
+  mnuRun.Add(itmRunMenuBuildAll);
 
-  itmProjectAbortBuild := TMenuItem.Create(Self);
-  itmProjectAbortBuild.Name:='itmProjectAbortBuild';
-  itmProjectAbortBuild.Caption := lisMenuAbortBuild;
-  mnuRun.Add(itmProjectAbortBuild);
+  itmRunMenuAbortBuild := TMenuItem.Create(Self);
+  itmRunMenuAbortBuild.Name:='itmRunMenuAbortBuild';
+  itmRunMenuAbortBuild.Caption := lisMenuAbortBuild;
+  mnuRun.Add(itmRunMenuAbortBuild);
 
-  mnuRun.Add(CreateMenuSeparator);
-
-  itmProjectRun := TMenuItem.Create(Self);
-  itmProjectRun.Name:='itmProjectRun';
-  itmProjectRun.Caption := lisMenuProjectRun;
-  itmProjectRun.Graphic:=LoadPixmap('menu_run');
-  mnuRun.Add(itmProjectRun);
-
-  itmProjectPause := TMenuItem.Create(Self);
-  itmProjectPause.Name:='itmProjectPause';
-  itmProjectPause.Caption := lisMenuPause;
-  itmProjectPause.Enabled := false;
-  itmProjectPause.Graphic:=LoadPixmap('menu_pause');
-  mnuRun.Add(itmProjectPause);
-
-  itmProjectStepInto := TMenuItem.Create(Self);
-  itmProjectStepInto.Name:='itmProjectStepInto';
-  itmProjectStepInto.Caption := lisMenuStepInto;
-  itmProjectStepInto.Graphic:=LoadPixmap('menu_stepinto');
-  mnuRun.Add(itmProjectStepInto);
-
-  itmProjectStepOver := TMenuItem.Create(Self);
-  itmProjectStepOver.Name:='itmProjectStepOver';
-  itmProjectStepOver.Caption := lisMenuStepOver;
-  itmProjectStepOver.Graphic:=LoadPixmap('menu_stepover');
-  mnuRun.Add(itmProjectStepOver);
-
-  itmProjectRunToCursor := TMenuItem.Create(Self);
-  itmProjectRunToCursor.Name:='itmProjectRunToCursor';
-  itmProjectRunToCursor.Caption := lisMenuRunToCursor;
-  mnuRun.Add(itmProjectRunToCursor);
-
-  itmProjectStop := TMenuItem.Create(Self);
-  itmProjectStop.Name:='itmProjectStop';
-  itmProjectStop.Caption := lisMenuStop;
-  mnuRun.Add(itmProjectStop);
+  itmRunMenuCompilerSettings := TMenuItem.Create(Self);
+  itmRunMenuCompilerSettings.Name:='itmRunMenuCompilerSettings';
+  itmRunMenuCompilerSettings.Caption := lisMenuCompilerOptions;
+  mnuRun.Add(itmRunMenuCompilerSettings);
 
   mnuRun.Add(CreateMenuSeparator);
 
-  itmProjectResetDebugger := TMenuItem.Create(Self);
-  itmProjectResetDebugger.Name:='itmProjectResetDebugger';
-  itmProjectResetDebugger.Caption := lisMenuResetDebugger;
-  mnuRun.Add(itmProjectResetDebugger);
+  itmRunMenuRun := TMenuItem.Create(Self);
+  itmRunMenuRun.Name:='itmRunMenuRun';
+  itmRunMenuRun.Caption := lisMenuProjectRun;
+  itmRunMenuRun.Graphic:=LoadPixmap('menu_run');
+  mnuRun.Add(itmRunMenuRun);
+
+  itmRunMenuPause := TMenuItem.Create(Self);
+  itmRunMenuPause.Name:='itmRunMenuPause';
+  itmRunMenuPause.Caption := lisMenuPause;
+  itmRunMenuPause.Enabled := false;
+  itmRunMenuPause.Graphic:=LoadPixmap('menu_pause');
+  mnuRun.Add(itmRunMenuPause);
+
+  itmRunMenuStepInto := TMenuItem.Create(Self);
+  itmRunMenuStepInto.Name:='itmRunMenuStepInto';
+  itmRunMenuStepInto.Caption := lisMenuStepInto;
+  itmRunMenuStepInto.Graphic:=LoadPixmap('menu_stepinto');
+  mnuRun.Add(itmRunMenuStepInto);
+
+  itmRunMenuStepOver := TMenuItem.Create(Self);
+  itmRunMenuStepOver.Name:='itmRunMenuStepOver';
+  itmRunMenuStepOver.Caption := lisMenuStepOver;
+  itmRunMenuStepOver.Graphic:=LoadPixmap('menu_stepover');
+  mnuRun.Add(itmRunMenuStepOver);
+
+  itmRunMenuRunToCursor := TMenuItem.Create(Self);
+  itmRunMenuRunToCursor.Name:='itmRunMenuRunToCursor';
+  itmRunMenuRunToCursor.Caption := lisMenuRunToCursor;
+  mnuRun.Add(itmRunMenuRunToCursor);
+
+  itmRunMenuStop := TMenuItem.Create(Self);
+  itmRunMenuStop.Name:='itmRunMenuStop';
+  itmRunMenuStop.Caption := lisMenuStop;
+  mnuRun.Add(itmRunMenuStop);
 
   mnuRun.Add(CreateMenuSeparator);
 
-  itmProjectCompilerSettings := TMenuItem.Create(Self);
-  itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
-  itmProjectCompilerSettings.Caption := lisMenuCompilerOptions;
-  mnuRun.Add(itmProjectCompilerSettings);
+  itmRunMenuRunParameters := TMenuItem.Create(Self);
+  itmRunMenuRunParameters.Name:='itmRunMenuRunParameters';
+  itmRunMenuRunParameters.Caption := lisMenuRunParameters;
+  mnuRun.Add(itmRunMenuRunParameters);
 
-  itmProjectRunParameters := TMenuItem.Create(Self);
-  itmProjectRunParameters.Name:='itmProjectRunParameters';
-  itmProjectRunParameters.Caption := lisMenuRunParameters;
-  mnuRun.Add(itmProjectRunParameters);
+  itmRunMenuResetDebugger := TMenuItem.Create(Self);
+  itmRunMenuResetDebugger.Name:='itmRunMenuResetDebugger';
+  itmRunMenuResetDebugger.Caption := lisMenuResetDebugger;
+  mnuRun.Add(itmRunMenuResetDebugger);
+
+  mnuRun.Add(CreateMenuSeparator);
+
+  itmRunMenuBuildFile := TMenuItem.Create(Self);
+  itmRunMenuBuildFile.Name:='itmRunMenuBuildFile';
+  itmRunMenuBuildFile.Caption := lisMenuBuildFile;
+  mnuRun.Add(itmRunMenuBuildFile);
+
+  itmRunMenuRunFile := TMenuItem.Create(Self);
+  itmRunMenuRunFile.Name:='itmRunMenuRunFile';
+  itmRunMenuRunFile.Caption := lisMenuRunFile;
+  mnuRun.Add(itmRunMenuRunFile);
+
+  itmRunMenuConfigBuildFile := TMenuItem.Create(Self);
+  itmRunMenuConfigBuildFile.Name:='itmRunMenuConfigBuildFile';
+  itmRunMenuConfigBuildFile.Caption := lisMenuConfigBuildFile;
+  mnuRun.Add(itmRunMenuConfigBuildFile);
 end;
 
 procedure TMainIDEBar.SetupComponentsMenu;
@@ -1443,18 +1461,21 @@ begin
     itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
 
     // run menu
-    itmProjectBuild.ShortCut:=CommandToShortCut(ecBuild);
-    itmProjectBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
-    itmProjectAbortBuild.ShortCut:=CommandToShortCut(ecAbortBuild);
-    itmProjectRun.ShortCut:=CommandToShortCut(ecRun);
-    itmProjectPause.ShortCut:=CommandToShortCut(ecPause);
-    itmProjectStepInto.ShortCut:=CommandToShortCut(ecStepInto);
-    itmProjectStepOver.ShortCut:=CommandToShortCut(ecStepOver);
-    itmProjectRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
-    itmProjectStop.ShortCut:=CommandToShortCut(ecStopProgram);
-    itmProjectResetDebugger.ShortCut:=CommandToShortCut(ecResetDebugger);
-    itmProjectCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
-    itmProjectRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
+    itmRunMenuBuild.ShortCut:=CommandToShortCut(ecBuild);
+    itmRunMenuBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
+    itmRunMenuAbortBuild.ShortCut:=CommandToShortCut(ecAbortBuild);
+    itmRunMenuRun.ShortCut:=CommandToShortCut(ecRun);
+    itmRunMenuPause.ShortCut:=CommandToShortCut(ecPause);
+    itmRunMenuStepInto.ShortCut:=CommandToShortCut(ecStepInto);
+    itmRunMenuStepOver.ShortCut:=CommandToShortCut(ecStepOver);
+    itmRunMenuRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
+    itmRunMenuStop.ShortCut:=CommandToShortCut(ecStopProgram);
+    itmRunMenuResetDebugger.ShortCut:=CommandToShortCut(ecResetDebugger);
+    itmRunMenuCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
+    itmRunMenuRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
+    itmRunMenuBuildFile.ShortCut:=CommandToShortCut(ecBuildFile);
+    itmRunMenuRunFile.ShortCut:=CommandToShortCut(ecRunFile);
+    itmRunMenuConfigBuildFile.ShortCut:=CommandToShortCut(ecConfigBuildFile);
 
     // components menu
     itmPkgOpenPackage.ShortCut:=CommandToShortCut(ecOpenPackage);

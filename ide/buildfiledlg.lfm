@@ -3,6 +3,7 @@ object BuildFileDialog: TBuildFileDialog
   CLIENTHEIGHT = 344
   CLIENTWIDTH = 414
   KEYPREVIEW = True
+  ONCREATE = BuildFileDialogCREATE
   ONKEYDOWN = BuildFileDialogKEYDOWN
   POSITION = poscreencenter
   HORZSCROLLBAR.PAGE = 415
@@ -13,10 +14,10 @@ object BuildFileDialog: TBuildFileDialog
   WIDTH = 414
   object OkButton: TBUTTON
     ANCHORS = [akleft, akbottom]
-    MODALRESULT = 1
     CAPTION = 'Ok'
     TABSTOP = True
     TABORDER = 0
+    ONCLICK = OkButtonCLICK
     LEFT = 106
     HEIGHT = 25
     TOP = 310
@@ -36,53 +37,65 @@ object BuildFileDialog: TBuildFileDialog
   object Notebook1: TNOTEBOOK
     ALIGN = altop
     ANCHORS = [aktop, akleft, akright, akbottom]
-    PAGEINDEX = 1
-    HEIGHT = 303
+    PAGEINDEX = 2
+    HEIGHT = 304
     WIDTH = 414
     object GeneralPage: TPAGE
       CAPTION = 'Options'
       CLIENTWIDTH = 410
-      CLIENTHEIGHT = 273
+      CLIENTHEIGHT = 274
       LEFT = 2
-      HEIGHT = 273
+      HEIGHT = 274
       TOP = 28
       WIDTH = 410
-      object OverrideBuildProjectCheckbox: TCHECKBOX
-        ALLOWGRAYED = True
-        AUTOSIZE = True
-        CAPTION = 'On build project execute the Compile command instead'
-        DRAGCURSOR = 0
+      object WhenFileIsActiveGroupbox: TGROUPBOX
+        CAPTION = 'When this file is active in source editor ...'
+        CLIENTHEIGHT = 64
+        CLIENTWIDTH = 397
+        PARENTCTL3D = False
         TABORDER = 0
-        TABSTOP = True
-        LEFT = 14
-        HEIGHT = 20
+        LEFT = 6
+        HEIGHT = 81
         TOP = 12
-        WIDTH = 384
-      end
-      object OverrideRunProjectCheckbox: TCHECKBOX
-        ALLOWGRAYED = True
-        AUTOSIZE = True
-        CAPTION = 'On run project execute the Run command instead'
-        DRAGCURSOR = 0
-        TABORDER = 1
-        TABSTOP = True
-        LEFT = 14
-        HEIGHT = 20
-        TOP = 44
-        WIDTH = 384
+        WIDTH = 401
+        object OverrideBuildProjectCheckbox: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'On build project execute the Build File command instead'
+          DRAGCURSOR = 0
+          TABORDER = 0
+          TABSTOP = True
+          LEFT = 6
+          HEIGHT = 20
+          TOP = 9
+          WIDTH = 384
+        end
+        object OverrideRunProjectCheckbox: TCHECKBOX
+          ALLOWGRAYED = True
+          AUTOSIZE = True
+          CAPTION = 'On run project execute the Run File command instead'
+          DRAGCURSOR = 0
+          TABORDER = 1
+          TABSTOP = True
+          LEFT = 6
+          HEIGHT = 20
+          TOP = 33
+          WIDTH = 384
+        end
       end
     end
-    object CompilePage: TPAGE
-      CAPTION = 'Compile'
+    object BuildPage: TPAGE
+      CAPTION = 'Build'
       CLIENTWIDTH = 410
-      CLIENTHEIGHT = 273
+      CLIENTHEIGHT = 274
+      ONRESIZE = BuildPageRESIZE
       LEFT = 2
-      HEIGHT = 273
+      HEIGHT = 274
       TOP = 28
       WIDTH = 410
-      object CompileCommandGroupbox: TGROUPBOX
+      object BuildCommandGroupbox: TGROUPBOX
         ANCHORS = [aktop, akleft, akright]
-        CAPTION = 'Compile Command'
+        CAPTION = 'Build Command'
         CLIENTHEIGHT = 53
         CLIENTWIDTH = 398
         PARENTCTL3D = False
@@ -91,7 +104,7 @@ object BuildFileDialog: TBuildFileDialog
         HEIGHT = 70
         TOP = 52
         WIDTH = 402
-        object CompileCommandMemo: TMEMO
+        object BuildCommandMemo: TMEMO
           ALIGN = alclient
           LINES.Strings = (
             'CompileCommandMemo'
@@ -103,8 +116,9 @@ object BuildFileDialog: TBuildFileDialog
           WIDTH = 398
         end
       end
-      object CompileScanForFPCMsgCheckbox: TCHECKBOX
+      object BuildScanForFPCMsgCheckbox: TCHECKBOX
         ALLOWGRAYED = True
+        ANCHORS = [aktop, akleft, akright]
         AUTOSIZE = True
         CAPTION = 'Scan for FPC messages'
         DRAGCURSOR = 0
@@ -115,8 +129,9 @@ object BuildFileDialog: TBuildFileDialog
         TOP = 122
         WIDTH = 388
       end
-      object CompScanForMakeMsgCheckbox: TCHECKBOX
+      object BuildScanForMakeMsgCheckbox: TCHECKBOX
         ALLOWGRAYED = True
+        ANCHORS = [aktop, akleft, akright]
         AUTOSIZE = True
         CAPTION = 'Scan for Make messages'
         DRAGCURSOR = 0
@@ -127,69 +142,52 @@ object BuildFileDialog: TBuildFileDialog
         TOP = 146
         WIDTH = 388
       end
-      object CompileMacrosGroupbox: TGROUPBOX
-        ANCHORS = [aktop, akleft, akright]
-        CAPTION = 'Macros'
-        CLIENTHEIGHT = 81
+      object BuildWorkingDirGroupbox: TGROUPBOX
+        CAPTION = 'Working directory (Leave empty for file path)'
+        CLIENTHEIGHT = 31
         CLIENTWIDTH = 398
         PARENTCTL3D = False
         TABORDER = 3
         LEFT = 4
-        HEIGHT = 98
-        TOP = 170
-        WIDTH = 402
-        object CompileMacrosListbox: TLISTBOX
-          ALIGN = alleft
-          TABORDER = 0
-          TABSTOP = True
-          TOPINDEX = -1
-          HEIGHT = 81
-          WIDTH = 296
-        end
-        object CompileAddMacroButton: TBUTTON
-          CAPTION = 'Add'
-          TABSTOP = True
-          TABORDER = 1
-          LEFT = 312
-          HEIGHT = 25
-          TOP = 9
-          WIDTH = 75
-        end
-      end
-      object CompileWorkingDirGroupbox: TGROUPBOX
-        CAPTION = 'Working directory'
-        CLIENTHEIGHT = 31
-        CLIENTWIDTH = 398
-        PARENTCTL3D = False
-        TABORDER = 4
-        LEFT = 4
         HEIGHT = 48
         TOP = 4
         WIDTH = 402
-        object Combobox1: TCOMBOBOX
+        object BuildWorkDirCombobox: TCOMBOBOX
           ANCHORS = [aktop, akleft, akright]
           MAXLENGTH = 0
           PARENTCTL3D = False
           TABORDER = 0
           TABSTOP = True
-          TEXT = 'CompileWorkDirCombobox'
+          TEXT = 'BuildWorkDirCombobox'
           HEIGHT = 25
-          WIDTH = 396
+          WIDTH = 368
+        end
+        object BuildBrowseWorkDirButton: TBUTTON
+          ANCHORS = [aktop, akright]
+          CAPTION = '...'
+          TABSTOP = True
+          TABORDER = 1
+          ONCLICK = BuildBrowseWorkDirButtonCLICK
+          LEFT = 368
+          HEIGHT = 23
+          WIDTH = 24
         end
       end
     end
     object RunPage: TPAGE
       CAPTION = 'Run'
       CLIENTWIDTH = 410
-      CLIENTHEIGHT = 273
+      CLIENTHEIGHT = 274
+      ONRESIZE = RunPageRESIZE
       LEFT = 2
-      HEIGHT = 273
+      HEIGHT = 274
       TOP = 28
       WIDTH = 410
       object AlwaysCompileFirstCheckbox: TCHECKBOX
         ALLOWGRAYED = True
+        ANCHORS = [aktop, akleft, akright]
         AUTOSIZE = True
-        CAPTION = 'Always run the Compile command before'
+        CAPTION = 'Always Build before Run'
         DRAGCURSOR = 0
         TABORDER = 0
         TABSTOP = True
@@ -207,7 +205,7 @@ object BuildFileDialog: TBuildFileDialog
         TABORDER = 1
         LEFT = 4
         HEIGHT = 70
-        TOP = 76
+        TOP = 92
         WIDTH = 404
         object RunCommandMemo: TMEMO
           ALIGN = alclient
@@ -221,78 +219,37 @@ object BuildFileDialog: TBuildFileDialog
           WIDTH = 400
         end
       end
-      object RunScanForFPCMsgCheckbox: TCHECKBOX
-        ALLOWGRAYED = True
-        AUTOSIZE = True
-        CAPTION = 'Scan for FPC messages'
-        DRAGCURSOR = 0
-        TABORDER = 2
-        TABSTOP = True
-        LEFT = 10
-        HEIGHT = 20
-        TOP = 148
-        WIDTH = 388
-      end
-      object RunScanForMakeMsgCheckbox: TCHECKBOX
-        ALLOWGRAYED = True
-        AUTOSIZE = True
-        CAPTION = 'Scan for Make messages'
-        DRAGCURSOR = 0
-        TABORDER = 3
-        TABSTOP = True
-        LEFT = 10
-        HEIGHT = 20
-        TOP = 172
-        WIDTH = 392
-      end
-      object RunMacrosGroupbox: TGROUPBOX
-        ANCHORS = [aktop, akleft, akright]
-        CAPTION = 'Macros'
-        CLIENTHEIGHT = 57
-        CLIENTWIDTH = 398
-        PARENTCTL3D = False
-        TABORDER = 4
-        LEFT = 4
-        HEIGHT = 74
-        TOP = 196
-        WIDTH = 402
-        object RunMacrosListbox: TLISTBOX
-          ALIGN = alleft
-          TABORDER = 0
-          TABSTOP = True
-          TOPINDEX = -1
-          HEIGHT = 57
-          WIDTH = 296
-        end
-        object RunAddMacroButton: TBUTTON
-          CAPTION = 'Add'
-          TABSTOP = True
-          TABORDER = 1
-          LEFT = 312
-          HEIGHT = 25
-          TOP = 9
-          WIDTH = 75
-        end
-      end
       object RunWorkDirGroupbox: TGROUPBOX
         ANCHORS = [aktop, akleft, akright]
-        CAPTION = 'Working Directory'
+        CAPTION = 'Working Directory (Leave empty for file path)'
         CLIENTHEIGHT = 32
         CLIENTWIDTH = 400
         PARENTCTL3D = False
-        TABORDER = 5
+        TABORDER = 2
         LEFT = 4
         HEIGHT = 49
-        TOP = 27
+        TOP = 36
         WIDTH = 404
         object RunWorkDirCombobox: TCOMBOBOX
+          ANCHORS = [aktop, akleft, akright]
           MAXLENGTH = 0
           PARENTCTL3D = False
           TABORDER = 0
           TABSTOP = True
           TEXT = 'RunWorkDirCombobox'
           HEIGHT = 25
-          WIDTH = 396
+          WIDTH = 364
+        end
+        object RunBrowseWorkDirButton: TBUTTON
+          ANCHORS = [aktop, akright]
+          CAPTION = '...'
+          TABSTOP = True
+          TABORDER = 1
+          ONCLICK = BuildBrowseWorkDirButtonCLICK
+          LEFT = 368
+          HEIGHT = 23
+          WIDTH = 27
+          HELPTYPE = htkeyword
         end
       end
     end
