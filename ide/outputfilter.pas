@@ -179,7 +179,7 @@ begin
       end;
       inc(i);
     end;
-    OutputLine:=copy(Buf,LineStart,Count-LineStart+1);
+    OutputLine:=OutputLine+copy(Buf,LineStart,Count-LineStart+1);
   until Count=0;
   TheProcess.WaitOnExit;
   if ErrorExists and (ofoExceptionOnError in Options) then
@@ -483,7 +483,7 @@ begin
     dec(i);
   inc(i);
   while (i<fOutput.Count) do begin
-    if (fOutput[i]<>'') and (fOutput[i][1]='-') then
+    if (fOutput[i]<>'') then
       DoAddFilteredLine(fOutput[i]);
     inc(i);
   end;
