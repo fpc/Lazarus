@@ -2390,10 +2390,9 @@ var
     Result := fTextOffset + Pred(Col) * fCharWidth;
   end;
 
-  // CharsBefore tells if Token starts at column one or not
-
   procedure PaintToken(const Token: string;
     TokenLen, CharsBefore, First, Last: integer);
+  // CharsBefore tells if Token starts at column one or not
   var
     pszText: PChar;
     nX, nCharsToPaint: integer;
@@ -2408,19 +2407,20 @@ var
         pszText := nil;
         nCharsToPaint := 0;
       end else begin
-{$IFDEF SYN_MBCSSUPPORT}
+        {$IFDEF SYN_MBCSSUPPORT}
         if (First > 1) and (ByteType(Token, First) = mbTrailByte) then begin
           Dec(First);
           Dec(nX, fCharWidth);
         end;
-{$ENDIF}
+        {$ENDIF}
         pszText := PChar(@Token[First]);
         nCharsToPaint := Min(Last - First + 1, TokenLen - First + 1);
       end;
       {$IFDEF SYN_LAZARUS}
       // Draw the right edge under the text if necessary
       if bDoRightEdge and (not (eoHideRightMargin in Options))
-      and (nRightEdge>=rcToken.Left) and (nRightEdge<rcToken.Right) then begin
+      and (nRightEdge<rcToken.Right) and (nRightEdge>=rcToken.Left)
+      then begin
         // draw background
         InternalFillRect(dc,rcToken);
         // draw edge
@@ -2578,13 +2578,14 @@ var
         or (not (fsUnderline in Style) and not (fsUnderline in TokenAccu.Style)
           and TokenIsSpaces)
       then
-      // either special colors or same colors
+        // either special colors or same colors
         if bSpecialLine or bLineSelected or
         // background color must be the same and
         ((TokenAccu.BG = Background) and
-          // foreground color must be the same or token is only spaces
-          ((TokenAccu.FG = Foreground) or TokenIsSpaces))
-          then bCanAppend := TRUE;
+        // foreground color must be the same or token is only spaces
+        ((TokenAccu.FG = Foreground) or TokenIsSpaces))
+        then
+          bCanAppend := TRUE;
       // If we can't append it, then we have to paint the old token chars first.
       if not bCanAppend then
         PaintHighlightToken(FALSE);
