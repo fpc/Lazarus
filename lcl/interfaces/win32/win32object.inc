@@ -583,7 +583,8 @@ Begin
               DeleteMenu((Sender as TMenuItem).Parent.Handle, TMenuItem(Sender).Command, MF_BYCOMMAND);
             AMenu:=TMenuItem(Sender).GetParentMenu;
             if (AMenu<>nil) and (AMenu.Parent<>nil)
-            and (AMenu.Parent is TCustomForm) then
+            and (AMenu.Parent is TCustomForm)
+            and TCustomForm(AMenu.Parent).HandleAllocated then
               DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
           End
           Else
@@ -2029,7 +2030,7 @@ Begin
         Exit;
       End;
     End;
-    csFrame, csGroupBox, csPanel:
+    csFrame, csGroupBox:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
@@ -2091,12 +2092,6 @@ Begin
       Window := CreateWindow(WC_TABCONTROL, Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
     End;
-    {csPanel:
-    Begin
-      Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - code TPanel');
-      TControl(Sender).FCompStyle := csGroupBox;
-      CNSendMessage(LM_CREATE, Sender, Nil);
-    End;}
     csRadioButton:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTORADIOBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
@@ -2163,18 +2158,19 @@ Begin
       SetProp(Window, 'Lazarus', Sender);
       DoSubClass := false;
     End;
-    {csGroupBox:
-    Begin
-      Assert(False, 'Trace:TODO: Code csGroupBox.  Is this the same as csFrame?');
-      TControl(Sender).FCompStyle := csFrame;
-      IntSendMessage3(LM_CREATE, Sender, Nil);
-    End;}
     // TPage - Notebook page
     csPage:
     Begin
       Assert(False, 'Trace:Create a csPage component.');
       Window := CreateWindowEx(WS_EX_CONTROLPARENT, @ClsName, Nil, Flags and not WS_VISIBLE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       ShowWindow(Window, SW_HIDE);
+      SetProp(Window, 'Lazarus', Sender);
+      DoSubClass := false;
+    End;
+    csPanel:
+    Begin
+      Assert(False, 'Trace:Create a csPanel component.');
+      Window := CreateWindowEx(0, @ClsName, Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       DoSubClass := false;
     End;
@@ -2833,6 +2829,9 @@ End;
 
 {
   $Log$
+  Revision 1.95  2003/08/25 16:18:16  mattias
+  fixed background color of TPanel and clicks of TSpeedButton from Micha
+
   Revision 1.94  2003/08/23 21:17:09  mattias
   several fixes for the win32 intf, added pending OnResize events
 

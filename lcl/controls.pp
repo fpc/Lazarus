@@ -1102,6 +1102,7 @@ type
     procedure HandleNeeded;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; override;
     Procedure SetTextBuf(Buffer : PChar); override;
+    procedure EraseBackground(DC: HDC); virtual;
   public
     property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read FBrush;
@@ -1660,6 +1661,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.144  2003/08/25 16:18:15  mattias
+  fixed background color of TPanel and clicks of TSpeedButton from Micha
+
   Revision 1.143  2003/08/23 21:17:08  mattias
   several fixes for the win32 intf, added pending OnResize events
 

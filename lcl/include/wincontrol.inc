@@ -1364,6 +1364,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TWinControl.EraseBackground;
+------------------------------------------------------------------------------}
+procedure TWinControl.EraseBackground(DC: HDC);
+var
+  ARect: TRect;
+begin
+  if DC=0 then exit;
+  CreateBrush;
+  ARect:=Rect(0,0,Width,Height);
+  FillRect(DC,ARect,FBrush.Handle)
+end;
+
+{------------------------------------------------------------------------------
   TWinControl ControlAtPos
   Params: const Pos : TPoint
           AllowDisabled: Boolean
@@ -2256,7 +2269,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMPaint(var Msg: TLMPaint);
 var
-  dc,Memdc : hdc;
+  DC,MemDC : HDC;
   MemBitmap, OldBitmap : HBITMAP;
   PS : TPaintStruct;
   MemWidth: Integer;
@@ -2450,15 +2463,10 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
-var
-  ARect: TRect;
 begin
   if {not FDoubleBuffered or} (Message.DC<>0) and (wcfEraseBackground in FFlags)
-  then begin
-    CreateBrush;
-    ARect:=Rect(0,0,Width,Height);
-    FillRect(Message.DC,ARect,FBrush.Handle)
-  end;
+  then
+    EraseBackground(Message.DC);
 end;
 
 {------------------------------------------------------------------------------
@@ -2976,6 +2984,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.163  2003/08/25 16:18:15  mattias
+  fixed background color of TPanel and clicks of TSpeedButton from Micha
+
   Revision 1.162  2003/08/23 21:17:09  mattias
   several fixes for the win32 intf, added pending OnResize events
 

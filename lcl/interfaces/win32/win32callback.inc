@@ -141,6 +141,58 @@ Var
     end;
   end;
   
+  function SendPaintMessage: boolean;
+  var
+    DC,MemDC : HDC;
+    MemBitmap, OldBitmap : HBITMAP;
+    PS : TPaintStruct;
+    MemWidth: Integer;
+    MemHeight: Integer;
+    AWinControl: TWinControl;
+  begin
+    Result:=false;
+
+    // try using the received DC
+    With TLMPaint(LMessage) Do
+    Begin
+      Msg := LM_PAINT;
+      DC := WParam;
+    end;
+    // not completed, therefore deactivated
+    exit;
+
+    if (TLMPaint(LMessage).DC<>0)
+    or (OwnerObject=nil) or (not (OwnerObject is TWinControl)) then
+      exit;
+
+    // create a paint message
+    AWinControl:=TWinControl(OwnerObject);
+    Result:=true;
+    DC := GetDC(0);
+    MemWidth:=AWinControl.Width;
+    MemHeight:=AWinControl.Height;
+
+
+    MemBitmap := CreateCompatibleBitmap(DC, MemWidth, MemHeight);
+    ReleaseDC(0, DC);
+    MemDC := CreateCompatibleDC(0);
+    OldBitmap := SelectObject(MemDC, MemBitmap);
+    try
+      DC := BeginPaint(AWinControl.Handle, PS);
+      AWinControl.EraseBackground(MemDC);
+      TLMPaint(LMessage).DC := MemDC;
+      DeliverMessage(OwnerObject, PLMsg^);
+      TLMPaint(LMessage).DC := 0;
+      //TODO:bitblt
+      BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
+      EndPaint(AWinControl.Handle, PS);
+    finally
+      SelectObject(MemDC, OldBitmap);
+      DeleteDC(MemDC);
+      DeleteObject(MemBitmap);
+    end;
+  end;
+
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -435,15 +487,8 @@ Begin
     End;
     WM_PAINT:
     Begin
-      With TLMPaint(LMessage) Do
-      Begin
-        Msg := LM_PAINT;
-//        DC := GetDC(Window);
-//        Unused := 0;
-//        ReleaseDC(Window, DC);
-        DC := WParam;
-      End;
-      WinProcess := false;
+      if SendPaintMessage then exit;
+      WinProcess:=false;
     End;
     WM_PASTE:
     Begin
@@ -707,6 +752,9 @@ end;
 
 {
   $Log$
+  Revision 1.55  2003/08/25 16:18:15  mattias
+  fixed background color of TPanel and clicks of TSpeedButton from Micha
+
   Revision 1.54  2003/08/23 21:17:09  mattias
   several fixes for the win32 intf, added pending OnResize events
 
