@@ -55,6 +55,7 @@ interface
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
+{ $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
@@ -1533,7 +1534,7 @@ var
       begin
         // search next in parent
         ContextNode:=ContextNode.Parent;
-        {$IFDEF ShowTriedIdentifiers}
+        {$IFDEF ShowTriedParentContexts}
         writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  ContextNode=',ContextNode.DescAsString);
         {$ENDIF}
         case ContextNode.Desc of
@@ -2139,6 +2140,8 @@ begin
   // -> find class name
   MoveCursorToNodeStart(ProcContextNode);
   ReadNextAtom; // read keyword
+  if UpAtomIs('CLASS') then
+    ReadNextAtom;
   ReadNextAtom; // read classname
   ClassNameAtom:=CurPos;
   ReadNextAtom;
@@ -2895,6 +2898,7 @@ begin
     CurPos.StartPos:=-1;
     RaiseExceptionFmt(ctsUnitNotFound,[AnUnitName]);
   end else if NewCode=TCodeBuffer(Scanner.MainCode) then begin
+    // Searching again in hidden unit
     writeln('WARNING: Searching again in hidden unit: "',NewCode.Filename,'"');
   end else begin
     // source found -> get codetool for it
@@ -3013,20 +3017,22 @@ begin
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
       if Result then exit;
     end;
-    // try hidden used unit 'system'
-    if (CurUnitType>sutSystem)
-    and CompareSrcIdentifiers(Params.Identifier,PChar(SystemAlias))
-    or CompareSrcIdentifiers(Params.Identifier,'system') then begin
-      // the system unit name itself is searched -> rename searched identifier
-      Params.Save(OldInput);
-      try
-        Params.SetIdentifier(Self,PChar(SystemAlias),nil);
+    if (CurUnitType>sutSystem) then begin
+      // try hidden used unit 'system'
+      if not CompareSrcIdentifiers(Params.Identifier,'system')
+      then begin
         Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
-      finally
-        Params.Load(OldInput);
+      end else begin
+        // the system unit name itself is searched -> rename searched identifier
+        Params.Save(OldInput);
+        try
+          Params.SetIdentifier(Self,PChar(SystemAlias),nil);
+          Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
+        finally
+          Params.Load(OldInput);
+        end;
       end;
-    end else
-      Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
+    end;
     if Result then exit;
   end;
 end;
