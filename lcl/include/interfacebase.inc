@@ -412,6 +412,12 @@ begin
   Result := false;
 end;
 
+function TInterfaceBase.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; 
+  Filled,Continuous: boolean): boolean; 
+begin
+  Result := false;
+end;
+
 function TInterfaceBase.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
   Winding: boolean): boolean; 
 begin
@@ -426,6 +432,21 @@ end;
 
 function TInterfaceBase.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; 
   lParam: LongInt): Boolean;
+begin
+  Result := False;
+end;
+
+function TInterfaceBase.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TInterfaceBase.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := False;
+end;
+
+function TInterfaceBase.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 begin
   Result := False;
 end;
@@ -627,6 +648,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/08/13 07:08:24  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.37  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 
