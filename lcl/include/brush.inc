@@ -16,6 +16,24 @@
  *                                                                           *
  *****************************************************************************
 }
+
+{ TBrushHandleCache }
+
+procedure TBrushHandleCache.RemoveItem(Item: TResourceCacheItem);
+begin
+  //debugln('TBrushHandleCache.RemoveItem ',HexStr(Cardinal(Item.Handle),8));
+  DeleteObject(Item.Handle);
+  inherited RemoveItem(Item);
+end;
+
+constructor TBrushHandleCache.Create;
+begin
+  inherited Create(SizeOf(TBrushData));
+end;
+
+
+{ TBrush }
+
 {------------------------------------------------------------------------------
   Method: TBrush.SetColor
   Params: Value: the new value
@@ -146,6 +164,7 @@ end;
 function TBrush.GetHandle: HBRUSH;
 var
   LogBrush: TLogBrush;
+  CachedBrush: TBlockResourceCacheDescriptor;
 begin
   if FBrushData.Handle = 0
   then begin
@@ -170,7 +189,15 @@ begin
       end;
       lbColor := ColorRef(FBrushData.Color);
     end;
-    FBrushData.Handle := CreateBrushIndirect(LogBrush);
+    CachedBrush:=BrushResourceCache.FindDescriptor(@LogBrush);
+    if CachedBrush<>nil then begin
+      CachedBrush.Item.IncreaseRefCount;
+      FBrushData.Handle := CachedBrush.Item.Handle;
+    end else begin
+      FBrushData.Handle := CreateBrushIndirect(LogBrush);
+      BrushResourceCache.AddResource(FBrushData.Handle,@LogBrush);
+    end;
+    FBrushHandleCached:=true;
   end;
 
   Result := FBrushData.Handle;
@@ -188,7 +215,11 @@ begin
   if FBrushData.Handle <> 0
   then begin
     //TODO: what if a brush is currently selected
-    DeleteObject(FBrushData.Handle);
+    if FBrushHandleCached then begin
+      BrushResourceCache.FindItem(FBrushData.Handle).DecreaseRefCount;
+      FBrushHandleCached:=false;
+    end else
+      DeleteObject(FBrushData.Handle);
     FBrushData.Handle := 0;
   end;
 end;
@@ -196,6 +227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/08/11 21:10:30  mattias
+  implemented TBrushHandleCache
+
   Revision 1.8  2004/08/11 20:57:09  mattias
   moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
 

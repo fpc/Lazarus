@@ -497,9 +497,17 @@ type
     Style: TBrushStyle;
   end;
 
+  TBrushHandleCache = class(TBlockResourceCache)
+  protected
+    procedure RemoveItem(Item: TResourceCacheItem); override;
+  public
+    constructor Create;
+  end;
+
   TBrush = class(TGraphicsObject)
   private
     FBrushData: TBrushData;
+    FBrushHandleCached: boolean;
     procedure FreeHandle;
   protected
     function GetHandle: HBRUSH;
@@ -1218,6 +1226,7 @@ var
   ScreenInfo: TLMScreenInit;
   
   PenResourceCache: TPenHandleCache;
+  BrushResourceCache: TBrushHandleCache;
 
 const
   FontCharsets: array[0..18] of TIdentMapEntry = (
@@ -1679,6 +1688,7 @@ procedure InterfaceFinal;
 begin
   //debugln('Graphics.InterfaceFinal');
   FreeAndNil(PenResourceCache);
+  FreeAndNil(BrushResourceCache);
 end;
 
 initialization
@@ -1687,6 +1697,7 @@ initialization
   OnLoadGraphicFromClipboardFormat:=nil;
   OnSaveGraphicToClipboardFormat:=nil;
   PenResourceCache:=TPenHandleCache.Create;
+  BrushResourceCache:=TBrushHandleCache.Create;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
   RegisterInterfaceFinalizationHandler(@InterfaceFinal);
@@ -1704,6 +1715,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2004/08/11 21:10:30  mattias
+  implemented TBrushHandleCache
+
   Revision 1.140  2004/08/11 20:57:09  mattias
   moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
 
