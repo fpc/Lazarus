@@ -158,47 +158,10 @@ begin
   QuickTrace:=true;
 end;
 
-function IntToStr(i: longint): string;
-var
-  NewLen, p: integer;
-  Negated: boolean;
-  j: integer;
-begin
-  if i<>0 then begin
-    NewLen:=0;
-    if i<0 then begin
-      Negated:=true;
-      i:=-i;
-      inc(NewLen);
-    end else begin
-      Negated:=false;
-    end;
-    j:=i;
-    while (j>0) do begin
-      j:=j div 10;
-      inc(NewLen);
-    end;
-    SetLength(IntToStr,NewLen);
-    p:=1;
-    if Negated then begin
-      IntToStr[p]:='-';
-      inc(p);
-    end;
-    j:=i;
-    while (j>0) do begin
-      IntToStr[p]:=chr(ord('0')+(j mod 10));
-      j:=j div 10;
-      inc(p);
-    end;
-  end else begin
-    IntToStr:='0';
-  end;
-end;
-
 procedure CheckHeapWrtMemCnt(const txt: ansistring);
 var p: pointer;
 begin
-  writeln('>>> memcheck.pp - CheckHeap "',txt,'" ',IntToStr(MemCheck_getmem_cnt));
+  writeln('>>> memcheck.pp - CheckHeap2 "',txt,'" ',MemCheck_getmem_cnt);
   QuickTrace:=false;
   GetMem(p,4);
   FreeMem(p);
@@ -1165,6 +1128,9 @@ finalization
 end.
 {
   $Log$
+  Revision 1.9  2002/09/13 08:11:46  lazarus
+  MG: fixed memcheck output
+
   Revision 1.8  2002/09/13 07:01:20  lazarus
   MG: fixed memcheck
 

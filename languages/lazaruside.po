@@ -627,6 +627,6 @@ msgid "Step Over"
 msgstr ""
 
 #: lazarusidestrconsts:lisgplnotice
-msgid "This program is free software; you can redistribute it and/or modify\015it under the terms of the GNU General Public License as published by\015the Free Software Foundation; either version 2 of the License, or\015(at your option) any later version.\015\015This program is distributed in the hope that it will be useful,\015but WITHOUT ANY WARRANTY; without even the implied warranty of\015MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\015GNU Library General Public License for more details.\015\015You should have received a copy of the GNU General Public License\015along with this program; if not, write to the Free Software\015Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\015"
+msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
 msgstr ""
 

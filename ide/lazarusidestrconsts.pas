@@ -254,19 +254,19 @@ ResourceString
   lisHintStepOver = 'Step Over';
   
   lisGPLNotice =
-    'This program is free software; you can redistribute it and/or modify'#13
-   +'it under the terms of the GNU General Public License as published by'#13
-   +'the Free Software Foundation; either version 2 of the License, or'#13
-   +'(at your option) any later version.'#13
-   +''#13
-   +'This program is distributed in the hope that it will be useful,'#13
-   +'but WITHOUT ANY WARRANTY; without even the implied warranty of'#13
-   +'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the'#13
-   +'GNU Library General Public License for more details.'#13
-   +''#13
-   +'You should have received a copy of the GNU General Public License'#13
-   +'along with this program; if not, write to the Free Software'#13
-   +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.'#13;
+    'This program is free software; you can redistribute it and/or modify '
+   +'it under the terms of the GNU General Public License as published by '
+   +'the Free Software Foundation; either version 2 of the License, or '
+   +'(at your option) any later version. '
+   +'%s'
+   +'This program is distributed in the hope that it will be useful, '
+   +'but WITHOUT ANY WARRANTY; without even the implied warranty of '
+   +'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the '
+   +'GNU Library General Public License for more details. '
+   +'%s'
+   +'You should have received a copy of the GNU General Public License '
+   +'along with this program; if not, write to the Free Software '
+   +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. ';
 
   
 implementation
