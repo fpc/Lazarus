@@ -1060,15 +1060,19 @@ Begin
 end;
 
 function TInterfaceBase.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
+{ After the call, ARect will be the control area in screen coordinates.
+  That means, Left and Top will be the screen coordinate of the TopLeft pixel
+  of the Handle object and Right and Bottom will be the screen coordinate of
+  the BottomRight pixel. }
 begin
   Result := 0;
 end;
 
 function TInterfaceBase.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
-// return the position of the left, top coordinate relative to the clientorigin
-// of its parent. This is normally the Left, Top of a TWinControl. But not
-// during moving/sizing.
+{ returns the position of the left, top coordinate relative to the clientorigin
+  of its parent. This is normally the Left, Top of a TWinControl. But not
+  during moving/sizing. }
 var
   ChildRect: TRect;
   ParentLeftTop: TPoint;
@@ -1091,6 +1095,7 @@ end;
 
 Function TInterfaceBase.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
+// Returns the current Width and Height
 begin
   Result:=false;
 end;
@@ -1805,6 +1810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2003/07/20 06:39:03  mattias
+  added comments
+
   Revision 1.97  2003/07/20 06:27:19  mattias
   fixed GetWindowRelativePosition
 

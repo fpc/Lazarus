@@ -246,7 +246,9 @@ end;
 {------------------------------------------------------------------------------
   Function: ClientToScreen
   Params:  Handle : HWND; var P : TPoint
-  Returns: Nothing
+  Returns: true on success
+  
+  Converts the client-area coordinates of P to screen coordinates.
  ------------------------------------------------------------------------------}
 Function TgtkObject.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 var
@@ -5020,7 +5022,7 @@ end;
   Params:  none
   Returns: Nothing
 
-  Returns the x-coordinates and y-coordinates of the window origin for the
+  Returns the x- and y-coordinates of the window origin for the
   specified device context.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
@@ -8606,6 +8608,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.263  2003/07/20 06:39:03  mattias
+  added comments
+
   Revision 1.262  2003/07/08 20:09:40  mattias
   updated build fpc rpm script
 
