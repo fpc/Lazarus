@@ -2696,46 +2696,13 @@ begin
 end;
 
 procedure TCustomTreeView.DestroyWnd;
-//var Node: TTreeNode;
 begin
   Include(FStates,tvsStateChanging);
-  {if (Items<>nil) and (Items.Count > 0) then begin
-    FMemStream := TMemoryStream.Create;
-    Items.WriteData(FMemStream);
-    Items.WriteExpandedState(FMemStream);
-    FMemStream.Position := 0;
-    Node := GetTopItem;
-    if Node <> nil then FSaveTopIndex := Node.AbsoluteIndex;
-    Node := Selected;
-    if Node <> nil then FSaveIndex := Node.AbsoluteIndex;
-  end;}
   inherited DestroyWnd;
   if Canvas<>nil then
     TControlCanvas(Canvas).FreeHandle;
 end;
 
-{procedure TCustomTreeView.EditWndProc(var Message: TLMessage);
-begin
-  with Message do
-  begin
-    case Msg of
-      LM_KEYDOWN,
-      LM_SYSKEYDOWN: if DoKeyDown(TLMKey(Message)) then Exit;
-      LM_CHAR: if DoKeyPress(TLMKey(Message)) then Exit;
-      LM_KEYUP,
-      LM_SYSKEYUP: if DoKeyUp(TLMKey(Message)) then Exit;
-      CN_KEYDOWN,
-      CN_CHAR, CN_SYSKEYDOWN,
-      CN_SYSCHAR:
-        begin
-          WndProc(Message);
-          Exit;
-        end;
-    end;
-    Result := CallWindowProc(FDefEditProc, FEditHandle, Msg, WParam, LParam);
-  end;
-end;
-}
 procedure TCustomTreeView.BeginUpdate;
 begin
   inc(FUpdateCount);

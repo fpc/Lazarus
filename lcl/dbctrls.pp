@@ -132,7 +132,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure KeyPress(var Key: char); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -260,7 +260,7 @@ Type
     procedure SetDataField(Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure KeyPress(var Key: char); override;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent;
@@ -1248,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/09/01 11:12:04  mattias
+  replaced KeyPress dependencies with KeyDown
+
   Revision 1.22  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss
 

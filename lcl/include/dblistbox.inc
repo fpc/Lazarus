@@ -110,29 +110,23 @@ begin
 end;
 
 { Protected Methods}
-procedure TDBListBox.KeyPress(var Key: char);
+procedure TDBListBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyPress(Key);
-  case Key of
+  inherited KeyDown(Key,Shift);
+  if Key=VK_ESCAPE then begin
+    //cancel out of editing by reset on esc
+    FDataLink.Reset;
+    Key := VK_UNKNOWN;
+  end else if (Key<>VK_UNKNOWN) then begin
     //make sure we call edit to ensure the datset is in edit,
     //this is for where the datasource is in autoedit, so we aren't
-    //read only even though the dataset isn't realy in edit and
+    //read only even though the dataset isn't really in edit
     //if this validates false make sure the entry doesn't change
-    //since listbox doesn't have its own read only we gots to fake it
+    //since listbox doesn't have its own read only yet we gots to fake it
     //here
-    #32..#255:
-      begin
-        if FDataLink.Edit then
-           exit;
-
-         Key := #0;
-      end;
-    //cancel out of editing by reset on esc
-    #27:
-      begin
-        FDataLink.Reset;
-        Key := #0;
-      end;
+    if FDataLink.Edit then
+       exit;
+    Key := VK_UNKNOWN;
   end;
 end;
 
@@ -196,6 +190,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/09/01 11:12:04  mattias
+  replaced KeyPress dependencies with KeyDown
+
   Revision 1.7  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss
 

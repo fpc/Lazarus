@@ -625,8 +625,8 @@ end;
 procedure TCustomMaskEdit.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
-  if IsMasked and (Key <> #0) and not (Char(Key) in [^V, ^X, ^C]) then
-  begin
+  // TODO UTF8
+  if IsMasked and ((Key=#9) or (Key > #31)) then begin
     CharKeys(Key);
     Key := #0;
   end;

@@ -134,22 +134,19 @@ begin
 end;
 
 { Protected Methods}
-procedure TDBEdit.KeyPress(var Key: char);
+procedure TDBEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited KeyPress(Key);
-  case Key of
+  inherited KeyDown(Key,Shift);
+  if Key=VK_ESCAPE then begin
+    //cancel out of editing by reset on esc
+    FDataLink.Reset;
+    SelectAll;
+    Key := VK_UNKNOWN;
+  end else if (Key<>VK_UNKNOWN) then begin
     //make sure we call edit to ensure the datset is in edit,
     //this is for where the datasource is in autoedit, so we aren't
     //read only even though the dataset isn't realy in edit
-    #8,#32..#255:
-      FDataLink.Edit;
-    //cancel out of editing by reset on esc
-    #27:
-      begin
-        FDataLink.Reset;
-        SelectAll;
-        Key := #0;
-      end;
+    FDataLink.Edit;
   end;
 end;
 
@@ -237,6 +234,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/09/01 11:12:04  mattias
+  replaced KeyPress dependencies with KeyDown
+
   Revision 1.9  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss
 
