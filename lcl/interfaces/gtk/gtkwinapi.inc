@@ -2968,7 +2968,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCapture: HWND;
 begin
-  Result := MCaptureHandle;
+  Result := HWnd(gtk_grab_get_current);
 end;
 
 {------------------------------------------------------------------------------
@@ -6030,11 +6030,12 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
-{$IfDef VerboseMouseCapture}
 var
+{$IfDef VerboseMouseCapture}
   Sender : TObject;
   CurMouseCaptureHandle: PGtkWidget;
 {$EndIf}
+  OldCaptureWidget: PGtkWidget;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
   {$IfDef VerboseMouseCapture}
@@ -6050,57 +6051,39 @@ begin
 
   CurMouseCaptureHandle:=gtk_grab_get_current;
   writeln('  gtk=',HexStr(Cardinal(CurMouseCaptureHandle),8),
-    ' MCaptureHandle=',HexStr(Cardinal(MCaptureHandle),8));
+    ' MouseCaptureWidget=',HexStr(Cardinal(MouseCaptureWidget),8));
   {$EndIf}
 
-  //CaptureHandle is defined in gtkint.pp pivate var definition.
-  
-  //MWE: there are some problems with grabbing the pointer and tabs
-  //     so back to gtk_grab
-  
-  if MCaptureHandle <> 0 then
-    //gdk_pointer_ungrab(0);
-    gtk_grab_remove(pgtkwidget(MCaptureHandle));
-  
   // return old capture handle
-  Result := MCaptureHandle;
+  Result := GetCapture;
+
+  // check that the widget is a widget with a LCL control
+  if (Value<>0) and (GetLCLObject(Pointer(Value))=nil) then exit;
+
+  if Result<>Value then begin
+    // capture changes
   
-  if (Value<>0) and (GetLCLObject(Pointer(Value))<>nil) then begin
-    MCaptureHandle := Value;
+    // If the gtk-interface has grabbed the mouse, it is somewhere in the stack
+    // of grabs. The gtk uses a grab stack to handle parent-child chains of
+    // mouse events. But we stop this chain anyway, the LCL can set and release
+    // mouse captures at any time and X can freeze, when a grab is not realeased
+    // and the window is destroyed.
+    // -> remove all grabs
+    repeat
+      OldCaptureWidget:=gtk_grab_get_current;
+      if OldCaptureWidget<>nil then
+        gtk_grab_remove(OldCaptureWidget)
+      else
+        break;
+    until false;
 
-    if MCaptureHandle <> 0 then begin
-      gtk_grab_add(Pointer(MCaptureHandle));
-      {$IfDef VerboseMouseCapture}
-      CurMouseCaptureHandle:=gtk_grab_get_current;
-      if CurMouseCaptureHandle<>PgtkWidget(MCaptureHandle) then
-        writeln('  WARNING: SetCapture failed: Tried to set to: ',
-          HexStr(Cardinal(MCaptureHandle),8),
-          ', but it is: ',HexStr(Cardinal(CurMouseCaptureHandle),8));
-      {$EndIf}
-
-
-  //    gtk_grab_add(pGTKWidget(FCaptureHandle));
-  {
-      if gdk_pointer_grab(PGTKWidget(Value)^.Window, gtk_False,
-        GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK or
-        GDK_BUTTON_MOTION_MASK or GDK_BUTTON1_MOTION_MASK or
-        GDK_BUTTON2_MOTION_MASK or GDK_BUTTON3_MOTION_MASK or
-        GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK,
-        PGTKWidget(Value)^.Window, nil, 0) <> 0
-      then begin
-        FCaptureHandle := 0;
-        Result := 0;
-        assert(False, Format('trace:[TgtkObject.SetCapture] 0x%x failed', [Value]));
-      end;
-  }
-  // Writeln('SetCapture result is '+inttostr(result));
-      SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
+    // grab
+    if (Value<>0) then begin
+      gtk_grab_add(PgtkWidget(Value));
     end;
-  end else begin
-    MCaptureHandle:=0;
   end;
-     
-  Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
+
+  UpdateMouseCaptureControl;
 end;
 
 {------------------------------------------------------------------------------
@@ -7376,6 +7359,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.161  2002/10/17 21:00:18  lazarus
+  MG: fixed uncapturing of mouse
+
   Revision 1.160  2002/10/17 15:09:33  lazarus
   MG: made mouse capturing more strict
 
