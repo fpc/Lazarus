@@ -2064,8 +2064,6 @@ begin
       	      min_aspect:= 0;
       	      max_aspect:= 1;
       	    end;
-            if Sender is TCustomForm then
-              writeln('LM_SETGEOMETRY ',Sender.ClassName);
             gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
                                         GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
           end;
@@ -6526,6 +6524,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.273  2002/10/30 13:50:26  lazarus
+  MG: fixed message without handle
+
   Revision 1.272  2002/10/30 13:20:11  lazarus
   MG: fixed example
 
