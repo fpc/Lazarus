@@ -454,17 +454,24 @@ begin
     MessI.Keys := 0;
     case event^.Button of
          1 : begin
-               if (LMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
+               if (LMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
                MessI.Keys := MessI.Keys or MK_LBUTTON;
-               if (now - LLastClick) <= ((1/86400)*(DblClickTime/1000)) then
+               if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
                   Event^.theType := gdk_2Button_press;
                LLastClick := Now;
 
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_LBUTTONDOWN
                 else
+               if event^.thetype = gdk_2button_press then
                    begin
                      MessI.Msg := LM_LBUTTONDBLCLK;
+                     LLastClick := -1;
+                   end
+                else
+               if event^.thetype = gdk_3button_press then
+                   begin
+                     MessI.Msg := LM_LBUTTONTRIPLECLK;
                      LLastClick := -1;
                    end;
 
@@ -472,37 +479,51 @@ begin
 
              end;
          2 : begin
-               if (MMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
+               if (MMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
 
                MessI.Keys := MessI.Keys or MK_MBUTTON;
                
-               if (now - MLastClick) <= ((1/86400)*(DblClickTime/1000)) then
+               if ((now - MLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
                   Event^.theType := gdk_2Button_press;
                MLastClick := Now;
 
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_MBUTTONDOWN
                else
+               if event^.thetype = gdk_2button_press then
                  Begin
                    MessI.Msg := LM_MBUTTONDBLCLK;
                    MLastClick := -1;
+                   end
+                else
+               if event^.thetype = gdk_3button_press then
+                   begin
+                     MessI.Msg := LM_MBUTTONTRIPLECLK;
+                     LLastClick := -1;
                  end;
                MMouseButtonDown := True;
              end;
          3 : begin
-               if (RMouseButtonDown) and (not (Event^.theType = gdk_2button_press)) then Exit;
+               if (RMouseButtonDown) and (not ((Event^.theType = gdk_2button_press) or (Event^.theType = gdk_3button_press))) then Exit;
                MessI.Keys := MessI.Keys or MK_RBUTTON;
 
-               if (now - RLastClick) <= ((1/86400)*(DblClickTime/1000)) then
+               if ((now - RLastClick) <= ((1/86400)*(DblClickTime/1000))) and (not (Event^.theType = gdk_3button_press)) then
                   Event^.theType := gdk_2Button_press;
                RLastClick := Now;
 
                if event^.thetype = gdk_button_press then
                  MessI.Msg := LM_RBUTTONDOWN
                else
+               if event^.thetype = gdk_2button_press then
                  Begin
                    MessI.Msg := LM_RBUTTONDBLCLK;
                    RLastClick := -1;
+                   end
+                else
+               if event^.thetype = gdk_3button_press then
+                   begin
+                     MessI.Msg := LM_RBUTTONTRIPLECLK;
+                     LLastClick := -1;
                  end;
                RMouseButtonDown := True;
              end;
@@ -1553,6 +1574,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/03/29 19:11:38  lazarus
+  Added Triple Click
+  Shane
+
   Revision 1.65  2002/03/27 00:33:54  lazarus
   MWE:
     * Cleanup in lmessages
