@@ -5525,7 +5525,11 @@ begin
 //write('  TgtkObject.CreateDefaultBrush ->');
   Result := NewGDIObject(gdiBrush);
   Result^.GDIBrushFill := GDK_SOLID;
-  gdk_color_white(gdk_colormap_get_system, @Result^.GDIBrushColor);
+  Result^.GDIBrushColor.ColorRef := 0;
+  Result^.GDIBrushColor.Colormap := gdk_colormap_get_system;
+  gdk_color_white(Result^.GDIBrushColor.Colormap, @Result^.GDIBrushColor.Color);
+  With Result^.GDIBrushColor.Color do
+    Result^.GDIBrushColor.ColorRef := RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
 end;
 
 {------------------------------------------------------------------------------
@@ -5563,7 +5567,11 @@ begin
 //write('  TgtkObject.CreateDefaultPen ->');
   Result := NewGDIObject(gdiPen);
   Result^.GDIPenStyle := PS_SOLID;
-  gdk_color_black(gdk_colormap_get_system, @Result^.GDIPenColor);
+  Result^.GDIPenColor.ColorRef := 0;
+  Result^.GDIPenColor.Colormap := gdk_colormap_get_system;
+  gdk_color_black(Result^.GDIPenColor.Colormap, @Result^.GDIPenColor.Color);
+  With Result^.GDIPenColor.Color do
+    Result^.GDIPenColor.ColorRef := RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
 end;
 
 {------------------------------------------------------------------------------
@@ -5837,6 +5845,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.218  2002/09/18 17:07:28  lazarus
+  MG: added patch from Andrew
+
   Revision 1.217  2002/09/16 17:34:37  lazarus
   MG: fixed mem leak in TComboBox
 
