@@ -39,6 +39,7 @@ begin
   with Canvas do begin
     ARect:=Bounds(0, 0, Width, Height);
     Frame3d(ARect,FBorderWidth,bvRaised);
+    InflateRect(ARect,-FBorderWidth,-FBorderWidth);
     Brush.Color:=ButtonColor;
     FillRect(ARect);
   end;
