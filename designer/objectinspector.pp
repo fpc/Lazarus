@@ -652,16 +652,16 @@ begin
     NewValue:=ValueEdit.Text
   else
     NewValue:=ValueComboBox.Text;
-writeln('TOIPropertyGrid.SetRowValue A ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+  //writeln('TOIPropertyGrid.SetRowValue A ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
   if length(NewValue)>CurRow.Editor.GetEditLimit then
     NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
   if NewValue<>CurRow.Editor.GetVisualValue then begin
     Include(FStates,pgsApplyingValue);
     try
       try
-writeln('TOIPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+        //writeln('TOIPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
         CurRow.Editor.SetValue(NewValue);
-writeln('TOIPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+        //writeln('TOIPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
       except
         on E: Exception do begin
           MessageDlg('Error',E.Message,mtError,[mbOk],0);
@@ -687,7 +687,7 @@ writeln('TOIPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Vis
         if OldExpanded then
           ExpandRow(FItemIndex);
       end;
-writeln('TOIPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      //writeln('TOIPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
     finally
       Exclude(FStates,pgsApplyingValue);
     end;

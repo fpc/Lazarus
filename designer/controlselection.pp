@@ -254,6 +254,7 @@ type
     FStates: TControlSelStates;
 
     FOnChange: TNotifyEvent;
+    FOnPropertiesChanged: TNotifyEvent;
 
     function GetCacheGuideLines: boolean;
     function GetGrabberColor: TColor;
@@ -269,6 +270,7 @@ type
     procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
     procedure SetGrabberSize(const NewSize: integer);
     procedure DoChange;
+    procedure DoChangeProperties;
     procedure SetRubberbandActive(const AValue: boolean);
     procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
@@ -374,6 +376,8 @@ type
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
     property MarkerColor: TColor read GetMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnPropertiesChanged: TNotifyEvent
+      read FOnPropertiesChanged write FOnPropertiesChanged;
     procedure DrawMarker(AComponent: TComponent; DC: TDesignerDeviceContext);
     procedure DrawMarkerAt(DC: TDesignerDeviceContext;
       ALeft, ATop, AWidth, AHeight: integer);
@@ -718,7 +722,10 @@ end;
 
 procedure TControlSelection.EndUpdate;
 begin
-  if FUpdateLock<=0 then exit;
+  if FUpdateLock<=0 then begin
+    writeln('WARNING: TControlSelection.EndUpdate FUpdateLock=',FUpdateLock);
+    exit;
+  end;
   dec(FUpdateLock);
   if FUpdateLock=0 then begin
     if cssBoundsNeedsUpdate in FStates then UpdateBounds;
@@ -735,7 +742,10 @@ end;
 
 procedure TControlSelection.EndResizing(ApplyUserBounds: boolean);
 begin
-  if FResizeLockCount<=0 then exit;
+  if FResizeLockCount<=0 then begin
+    writeln('WARNING: TControlSelection.EndResizing FResizeLockCount=',FResizeLockCount);
+    exit;
+  end;
   if FResizeLockCount=1 then
     if ApplyUserBounds then DoApplyUserBounds;
   dec(FResizeLockCount);
@@ -971,7 +981,7 @@ end;
 
 procedure TControlSelection.UpdateRealBounds;
 var i:integer;
-  LeftTop:TPoint;
+  LeftTop: TPoint;
 begin
   if FControls.Count>=1 then begin
     LeftTop:=GetParentFormRelativeTopLeft(Items[0].Component);
@@ -994,6 +1004,7 @@ begin
     end;
     AdjustGrabbers;
     InvalidateGuideLines;
+    DoChangeProperties;
   end;
 end;
 
@@ -1588,6 +1599,11 @@ begin
     Exclude(FStates,cssChangedDuringLock);
     if Assigned(fOnChange) then fOnChange(Self);
   end;
+end;
+
+procedure TControlSelection.DoChangeProperties;
+begin
+  if Assigned(OnPropertiesChanged) then OnPropertiesChanged(Self);
 end;
 
 procedure TControlSelection.SetRubberbandActive(const AValue: boolean);
