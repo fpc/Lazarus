@@ -321,6 +321,14 @@ type
       MenuItem: PGtkWidget;
     end;
 
+// some callbacks
+function GTKHiddenRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; forward; cdecl;
+function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; forward; cdecl;
+function GTKMotionNotify(Widget:PGTKWidget; event: PGDKEventMotion;
+  data: gPointer): GBoolean; forward; cdecl;
+function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; forward; cdecl;
 
 {$I dragicons.inc}
 {$I gtkproc.inc}
@@ -387,6 +395,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/06/26 15:11:09  lazarus
+  MG: added new tool: Guess misplaced $IFDEF/$ENDIF
+
   Revision 1.51  2002/06/21 16:59:15  lazarus
   MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
 
