@@ -251,6 +251,7 @@ begin
     hWndOwner := GetOwnerHandle(AOpenDialog);
     hInstance := System.hInstance;
     lpStrFilter := StrAlloc(Length(FFilter)+1);
+    nFilterIndex := AOpenDialog.FilterIndex;
     Move(PChar(FFilter)^, lpStrFilter^, Length(FFilter)+1);
     lpStrFile := FName;
     lpStrTitle := PChar(AOpenDialog.Title);
@@ -312,6 +313,7 @@ begin
     Files.Clear;
     if UserResult then 
     begin
+      AOpenDialog.FilterIndex := OpenFile.nFilterIndex;
       if not (ofOldStyleDialog in Options) then // Win32 returns diferent types of strings
         SetFilesProperty(Files)
       else
