@@ -207,6 +207,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
+  // interface object and screen
   if (InterfaceObject=nil)
   or (AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0) then begin
     writeln('ERROR: ',rsNoInterfaceObject);
@@ -214,6 +215,7 @@ begin
   end;
   InterfaceObject.AppInit;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
+  // application icon
   if LazarusResources.Find('MAINICON')<>nil then begin
     if FIcon=nil then begin
       FIcon:=TIcon.Create;
@@ -1003,6 +1005,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.52  2003/04/29 19:00:43  mattias
   added package gtkopengl
 

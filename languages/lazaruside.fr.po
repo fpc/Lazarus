@@ -379,6 +379,10 @@ msgstr "Action sur les ambiguïtés"
 msgid "Ambigious file found"
 msgstr "Ambiguïté de fichier trouvé"
 
+#: lazarusidestrconsts:lisambigiousfilefoundthisfilecanbemistakenwithdelete
+msgid "Ambigious file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambigious file?"
+msgstr ""
+
 #: lazarusidestrconsts:lisambigiousfilesfound
 msgid "Ambigious files found"
 msgstr "Ambiguïtés des fichiers trouvé"
@@ -667,6 +671,10 @@ msgstr "Appel de la procédure %sRegister%s de l'unité sélectionnée"
 msgid "Call Stack"
 msgstr "Pile d'appel"
 
+#: lazarusidestrconsts:liscannotcreatefile
+msgid "Can not create file %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr "Ne peut pas référencer des composants sans unité"
@@ -883,9 +891,9 @@ msgstr "Virgule"
 msgid "Command "
 msgstr "Commande "
 
-#: lazarusidestrconsts:liscommandafterpublishingproject
-msgid "Command after publishing project"
-msgstr "Commande après la publication d'un projet"
+#: lazarusidestrconsts:liscommandafterpublishingmodule
+msgid "Command after publishing module"
+msgstr ""
 
 #: lazarusidestrconsts:srkmcatcmdcmd
 msgid "Command commands"
@@ -1255,10 +1263,6 @@ msgstr "Délai"
 msgid "Delete"
 msgstr "Supprime"
 
-#: lazarusidestrconsts:lisdeleteambigiousfile2
-msgid "Delete ambigious file %s%s%s?"
-msgstr "Suprimer les ambiguités de fichier %s%s%s ?"
-
 #: lazarusidestrconsts:lisdeleteambigiousfile
 msgid "Delete ambigious file?"
 msgstr "Suprimer les ambiguités de fichier ?"
@@ -1454,6 +1458,10 @@ msgstr "Pas de ligne de séparation après"
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Pas de ligne de séparation devant "
+
+#: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
+msgid "Do you really want to forget all changes to package %s and reload it from file?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -3211,6 +3219,10 @@ msgstr ""
 msgid "New Unit"
 msgstr "Nouvelle unité"
 
+#: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
+msgid "New unit not in unitpath"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsnewline
 msgid "Newline"
 msgstr "Nouvelle_ligne"
@@ -3815,6 +3827,10 @@ msgstr "Confirmer le remplacement"
 msgid "Property completion"
 msgstr "Propriété d'achèvement"
 
+#: lazarusidestrconsts:lispkgeditpublishpackage
+msgid "Publish Package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project"
 msgstr "Publier le projet"
@@ -4057,6 +4073,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditrevertpackage
+msgid "Revert package?"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_right
@@ -4929,6 +4949,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthefileisalreadyinthepackage
 msgid "The file %s%s%s%sis already in the package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditthefileiscurrentlynotintheunitpathofthepackage
+msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
@@ -5830,6 +5854,14 @@ msgstr "Voir les unités"
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
 msgstr "Voir points de suivi"
+
+#: lazarusidestrconsts:lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pisvirtualunit
+msgid "Virtual unit (file is not in package)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

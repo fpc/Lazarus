@@ -370,6 +370,10 @@ msgstr "Длинные имена файлов:"
 msgid "Ambigious file found"
 msgstr ""
 
+#: lazarusidestrconsts:lisambigiousfilefoundthisfilecanbemistakenwithdelete
+msgid "Ambigious file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambigious file?"
+msgstr ""
+
 #: lazarusidestrconsts:lisambigiousfilesfound
 msgid "Ambigious files found"
 msgstr ""
@@ -658,6 +662,10 @@ msgstr ""
 msgid "Call Stack"
 msgstr "Стек вызовов"
 
+#: lazarusidestrconsts:liscannotcreatefile
+msgid "Can not create file %s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsyscannotregistercomponentswithoutunit
 msgid "Can not register components without unit"
 msgstr ""
@@ -874,8 +882,8 @@ msgstr "Запятая"
 msgid "Command "
 msgstr "Команда"
 
-#: lazarusidestrconsts:liscommandafterpublishingproject
-msgid "Command after publishing project"
+#: lazarusidestrconsts:liscommandafterpublishingmodule
+msgid "Command after publishing module"
 msgstr ""
 
 #: lazarusidestrconsts:srkmcatcmdcmd
@@ -1246,10 +1254,6 @@ msgstr "Задержка"
 msgid "Delete"
 msgstr "Удалить"
 
-#: lazarusidestrconsts:lisdeleteambigiousfile2
-msgid "Delete ambigious file %s%s%s?"
-msgstr ""
-
 #: lazarusidestrconsts:lisdeleteambigiousfile
 msgid "Delete ambigious file?"
 msgstr ""
@@ -1445,6 +1449,10 @@ msgstr "Не разрывать строку после:"
 #: lazarusidestrconsts:dlgnotsplitlinefront
 msgid "Do not split line In front of:"
 msgstr "Не разрывать строку перед:"
+
+#: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
+msgid "Do you really want to forget all changes to package %s and reload it from file?"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
@@ -3202,6 +3210,10 @@ msgstr ""
 msgid "New Unit"
 msgstr "Создать модуль"
 
+#: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
+msgid "New unit not in unitpath"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsnewline
 msgid "Newline"
 msgstr "Новая строка"
@@ -3806,6 +3818,10 @@ msgstr "Подтверждать замену"
 msgid "Property completion"
 msgstr "Завершение свойств"
 
+#: lazarusidestrconsts:lispkgeditpublishpackage
+msgid "Publish Package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project"
 msgstr "Опубликовать проект"
@@ -4048,6 +4064,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditrevertpackage
+msgid "Revert package?"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_right
@@ -4920,6 +4940,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthefileisalreadyinthepackage
 msgid "The file %s%s%s%sis already in the package %s."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditthefileiscurrentlynotintheunitpathofthepackage
+msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
 msgstr ""
 
 #: lazarusidestrconsts:listhefileseemstobeaprogramclosecurrentproject
@@ -5821,6 +5845,14 @@ msgstr "Показать модули"
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
 msgstr "Показать наблюдения"
+
+#: lazarusidestrconsts:lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lisaf2pisvirtualunit
+msgid "Virtual unit (file is not in package)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"

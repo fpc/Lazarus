@@ -167,6 +167,8 @@ type
     procedure RefreshButtonClick(Sender: TObject);
     procedure SelectUnitButtonClick(Sender: TObject);
     procedure ShowProjectButtonClick(Sender: TObject);
+    procedure UnitDependenciesViewClose(Sender: TObject;
+      var Action: TCloseAction);
     procedure UnitDependenciesViewResize(Sender: TObject);
     procedure UnitHistoryListChange(Sender: TObject);
     procedure UnitHistoryListKeyUp(Sender: TObject; var Key: Word;
@@ -252,6 +254,12 @@ begin
     if NewFilename<>'' then
       RootFilename:=NewFilename;
   end;
+end;
+
+procedure TUnitDependenciesView.UnitDependenciesViewClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
 
 procedure TUnitDependenciesView.UnitDependenciesViewResize(Sender: TObject);
@@ -423,110 +431,106 @@ constructor TUnitDependenciesView.Create(TheOwner: TComponent);
   end;
   
 var
-  ALayout: TIDEWindowLayout;
-  W      : Integer;
+  W: Integer;
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then
+
+  Name:=NonModalIDEWindowNames[nmiwUnitDependenciesName];
+  Caption := dlgUnitDepCaption;
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+
+  SrcTypeImageList:=TImageList.Create(Self);
+  with SrcTypeImageList do
   begin
-    Name:=NonModalIDEWindowNames[nmiwUnitDependenciesName];
-    Caption := dlgUnitDepCaption;
-    ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
-    ALayout.Form:=TForm(Self);
-    ALayout.Apply;
-    
-    SrcTypeImageList:=TImageList.Create(Self);
-    with SrcTypeImageList do
-    begin
-      Name:='SrcTypeImageList';
-      Width:=22;
-      Height:=22;
-      AddResImg(SrcTypeImageList,'srctype_unknown_22x22');            // 0
-      AddResImg(SrcTypeImageList,'srctype_unit_22x22');               // 1
-      AddResImg(SrcTypeImageList,'srctype_program_22x22');            // 2
-      AddResImg(SrcTypeImageList,'srctype_library_22x22');            // 3
-      AddResImg(SrcTypeImageList,'srctype_package_22x22');            // 4
-      AddResImg(SrcTypeImageList,'srctype_filenotfound_22x22');       // 5
-      AddResImg(SrcTypeImageList,'srctype_parseerror_22x22');         // 6
-      AddResImg(SrcTypeImageList,'srctype_forbiddencircle_22x22');    // 7
-      AddResImg(SrcTypeImageList,'srctype_circle_22x22');             // 8
-    end;
-
-    UnitHistoryList:=TComboBox.Create(Self);
-    with UnitHistoryList do
-    begin
-      Name:='UnitHistoryList';
-      Parent:=Self;
-      Left:=0;
-      Top:=0;
-      Width:=Parent.ClientWidth-Left;
-      RefreshHistoryList;
-      OnKeyUp:=@UnitHistoryListKeyUp;
-      OnChange:=@UnitHistoryListChange;
-      Visible:=true;
-    end;
-    
-    W:=90; //Used foro simplified the update
-    SelectUnitButton:=TBitBtn.Create(Self);
-    with SelectUnitButton do
-    begin
-      Name:='SelectUnitButton';
-      Parent:=Self;
-      Left:=0;
-      Top:=UnitHistoryList.Top+UnitHistoryList.Height+2;
-      Width:=W;
-      Caption:=dlgUnitDepBrowse;
-      OnClick:=@SelectUnitButtonClick;
-      Visible:=true;
-    end;
-    
-    RefreshButton:=TBitBtn.Create(Self);
-    with RefreshButton do
-    begin
-      Name:='RefreshButton';
-      Parent:=Self;
-      Left:=SelectUnitButton.Left+SelectUnitButton.Width+5;
-      Top:=SelectUnitButton.Top;
-      Width:=W;
-      Height:=SelectUnitButton.Height;
-      Caption:=dlgUnitDepRefresh;
-      OnClick:=@RefreshButtonClick;
-      Visible:=true;
-    end;
-    
-    ShowProjectButton:=TBitBtn.Create(Self);
-    with ShowProjectButton do
-    begin
-      Name:='ShowProjectButton';
-      Parent:=Self;
-      Left:=RefreshButton.Left+RefreshButton.Width+5;
-      Top:=RefreshButton.Top;
-      Width:=W;
-      Height:=RefreshButton.Height;
-      Caption:=dlgEnvProject;
-      OnClick:=@ShowProjectButtonClick;
-      Visible:=true;
-    end;
-
-    UnitTreeView:=TTreeView.Create(Self);
-    with UnitTreeView do begin
-      Name:='UnitTreeView';
-      Parent:=Self;
-      Left:=0;
-      Top:=SelectUnitButton.Top+SelectUnitButton.Height+2;
-      Width:=Parent.ClientWidth;
-      Height:=Parent.ClientHeight-Top;
-      OnExpanding:=@UnitTreeViewExpanding;
-      OnCollapsing:=@UnitTreeViewCollapsing;
-      Images:=SrcTypeImageList;
-      //StateImages:=SrcTypeImageList;
-      OnAdvancedCustomDrawItem:=@UnitTreeViewAdvancedCustomDrawItem;
-      OnMouseDown:=@UnitTreeViewMouseDown;
-      Visible:=true;
-    end;
-    
-    OnResize:=@UnitDependenciesViewResize;
+    Name:='SrcTypeImageList';
+    Width:=22;
+    Height:=22;
+    AddResImg(SrcTypeImageList,'srctype_unknown_22x22');            // 0
+    AddResImg(SrcTypeImageList,'srctype_unit_22x22');               // 1
+    AddResImg(SrcTypeImageList,'srctype_program_22x22');            // 2
+    AddResImg(SrcTypeImageList,'srctype_library_22x22');            // 3
+    AddResImg(SrcTypeImageList,'srctype_package_22x22');            // 4
+    AddResImg(SrcTypeImageList,'srctype_filenotfound_22x22');       // 5
+    AddResImg(SrcTypeImageList,'srctype_parseerror_22x22');         // 6
+    AddResImg(SrcTypeImageList,'srctype_forbiddencircle_22x22');    // 7
+    AddResImg(SrcTypeImageList,'srctype_circle_22x22');             // 8
   end;
+
+  UnitHistoryList:=TComboBox.Create(Self);
+  with UnitHistoryList do
+  begin
+    Name:='UnitHistoryList';
+    Parent:=Self;
+    Left:=0;
+    Top:=0;
+    Width:=Parent.ClientWidth-Left;
+    RefreshHistoryList;
+    OnKeyUp:=@UnitHistoryListKeyUp;
+    OnChange:=@UnitHistoryListChange;
+    Visible:=true;
+  end;
+  
+  W:=90; //Used foro simplified the update
+  SelectUnitButton:=TBitBtn.Create(Self);
+  with SelectUnitButton do
+  begin
+    Name:='SelectUnitButton';
+    Parent:=Self;
+    Left:=0;
+    Top:=UnitHistoryList.Top+UnitHistoryList.Height+2;
+    Width:=W;
+    Caption:=dlgUnitDepBrowse;
+    OnClick:=@SelectUnitButtonClick;
+    Visible:=true;
+  end;
+  
+  RefreshButton:=TBitBtn.Create(Self);
+  with RefreshButton do
+  begin
+    Name:='RefreshButton';
+    Parent:=Self;
+    Left:=SelectUnitButton.Left+SelectUnitButton.Width+5;
+    Top:=SelectUnitButton.Top;
+    Width:=W;
+    Height:=SelectUnitButton.Height;
+    Caption:=dlgUnitDepRefresh;
+    OnClick:=@RefreshButtonClick;
+    Visible:=true;
+  end;
+  
+  ShowProjectButton:=TBitBtn.Create(Self);
+  with ShowProjectButton do
+  begin
+    Name:='ShowProjectButton';
+    Parent:=Self;
+    Left:=RefreshButton.Left+RefreshButton.Width+5;
+    Top:=RefreshButton.Top;
+    Width:=W;
+    Height:=RefreshButton.Height;
+    Caption:=dlgEnvProject;
+    OnClick:=@ShowProjectButtonClick;
+    Visible:=true;
+  end;
+
+  UnitTreeView:=TTreeView.Create(Self);
+  with UnitTreeView do begin
+    Name:='UnitTreeView';
+    Parent:=Self;
+    Left:=0;
+    Top:=SelectUnitButton.Top+SelectUnitButton.Height+2;
+    Width:=Parent.ClientWidth;
+    Height:=Parent.ClientHeight-Top;
+    OnExpanding:=@UnitTreeViewExpanding;
+    OnCollapsing:=@UnitTreeViewCollapsing;
+    Images:=SrcTypeImageList;
+    //StateImages:=SrcTypeImageList;
+    OnAdvancedCustomDrawItem:=@UnitTreeViewAdvancedCustomDrawItem;
+    OnMouseDown:=@UnitTreeViewMouseDown;
+    Visible:=true;
+  end;
+  
+  OnResize:=@UnitDependenciesViewResize;
+  OnClose:=@UnitDependenciesViewClose;
 end;
 
 destructor TUnitDependenciesView.Destroy;

@@ -39,13 +39,22 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Dialogs, CompilerOptions, EditorOptions,
-  EnvironmentOpts, KeyMapping, UnitEditor, Project, IDEProcs,
-  Debugger, RunParamsOpts, ExtToolDialog, LazarusIDEStrConsts,
-  ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg, FileCtrl;
-  
+  Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl,
+  CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
+  Project, IDEProcs, Debugger, RunParamsOpts, ExtToolDialog, IDEOptionDefs,
+  LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg,
+  Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm, GDBMIDebugger,
+  CallStackDlg;
+
+
 type
-  TDebugDialogType = (ddtOutput, ddtBreakpoints, ddtWatches, ddtLocals, ddtCallStack);
+  TDebugDialogType = (
+    ddtOutput,
+    ddtBreakpoints,
+    ddtWatches,
+    ddtLocals,
+    ddtCallStack
+    );
 
   TDebugManager = class(TBaseDebugManager)
     // Menu events
@@ -64,7 +73,7 @@ type
   private
     FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
                                    // Else to own objet
-    FWatches: TDBGWatches;         // Points to debugger watchess if available
+    FWatches: TDBGWatches;         // Points to debugger watches if available
                                    // Else to own objet
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
@@ -100,12 +109,11 @@ type
 
 implementation
 
-uses
-  Menus,
-  Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm, GDBMIDebugger, 
-  CallStackDlg;
+const
+  DebugDlgIDEWindow: array[TDebugDialogType] of TNonModalIDEWindow = (
+    nmiwDbgOutput,  nmiwBreakPoints, nmiwWatches, nmiwLocals, nmiwCallStack
+  );
 
- 
 //-----------------------------------------------------------------------------
 // Menu events
 //-----------------------------------------------------------------------------
@@ -335,20 +343,26 @@ const
 begin
   if FDialogs[ADialogType] = nil
   then begin
-    try
+    //try
       FDialogs[ADialogType] := DEBUGDIALOGCLASS[ADialogType].Create(Self);
-    except
+    {except
       on E: Exception do begin
         WriteLN('[ERROR] IDE: Probably FPC bug #1888 caused an exception while creating class ''', DEBUGDIALOGCLASS[ADialogType].ClassName, '''');
         WriteLN('[ERROR] IDE: Exception message: ', E.Message);
         Exit;
       end;
-    end;
+    end;}
+    FDialogs[ADialogType].Name:=
+      NonModalIDEWindowNames[DebugDlgIDEWindow[ADialogType]];
     FDialogs[ADialogType].Tag := Integer(ADialogType);
     FDialogs[ADialogType].OnDestroy := @DebugDialogDestroy;
     DoInitDebugger;
     FDialogs[ADialogType].Debugger := FDebugger;
+writeln('TDebugManager.ViewDebugDialog A ',FDialogs[ADialogType].Name);
+    EnvironmentOptions.IDEWindowLayoutList.Apply(
+                              FDialogs[ADialogType],FDialogs[ADialogType].Name);
   end;
+writeln('TDebugManager.ViewDebugDialog B ',FDialogs[ADialogType].Name,' ',FDialogs[ADialogType].Left,',',FDialogs[ADialogType].Top,',',FDialogs[ADialogType].Width,',',FDialogs[ADialogType].Height);
   FDialogs[ADialogType].Show;
   FDialogs[ADialogType].BringToFront;
 end;
@@ -365,10 +379,10 @@ end;
 constructor TDebugManager.Create(TheOwner: TComponent);
 var
   DialogType: TDebugDialogType;
-begin                          
-  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do 
+begin
+  for DialogType := Low(TDebugDialogType) to High(TDebugDialogType) do
     FDialogs[DialogType] := nil; 
-  
+
   FDebugger := nil;
   FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
   FWatches := TDBGWatches.Create(nil, TDBGWatch);
@@ -666,6 +680,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.14  2003/05/18 10:42:57  mattias
+  implemented deleting empty submenus
+
   Revision 1.13  2003/05/03 23:00:33  mattias
   localization
 

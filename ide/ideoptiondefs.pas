@@ -46,7 +46,12 @@ type
     nmiwCodeExplorerName,
     nmiwClipbrdHistoryName,
     nmiwPkgGraphExplorer,
-    nmiwProjectInspector
+    nmiwProjectInspector,
+    nmiwDbgOutput,
+    nmiwBreakPoints,
+    nmiwWatches,
+    nmiwLocals,
+    nmiwCallStack
     );
 
   // form names for non modal IDE windows:
@@ -60,7 +65,12 @@ const
     'CodeExplorer',
     'ClipBrdHistory',
     'PkgGraphExplorer',
-    'ProjectInspector'
+    'ProjectInspector',
+    'DbgOutput',
+    'BreakPoints',
+    'Watches',
+    'Locals',
+    'CallStack'
    );
 
 type

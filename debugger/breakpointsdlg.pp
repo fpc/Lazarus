@@ -126,6 +126,7 @@ end;
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
 begin
   inherited;
+  Name:='BreakPointsDlg';
   FBreakpointsNotification := TDBGBreakPointsNotification.Create;
   FBreakpointsNotification.AddReference;
   FBreakpointsNotification.OnAdd := @BreakPointAdd;
@@ -271,6 +272,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.9  2003/05/18 10:42:57  mattias
+  implemented deleting empty submenus
+
   Revision 1.8  2003/02/28 19:10:25  mattias
   added new ... dialog
 

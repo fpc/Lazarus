@@ -194,6 +194,10 @@ msgstr ""
 msgid "Revert"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgeditpublishpackage
+msgid "Publish Package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
 msgstr ""
@@ -902,8 +906,8 @@ msgstr ""
 msgid "Unable to clean up %s%s%s.%sPlease check permissions."
 msgstr ""
 
-#: lazarusidestrconsts:liscommandafterpublishingproject
-msgid "Command after publishing project"
+#: lazarusidestrconsts:liscommandafterpublishingmodule
+msgid "Command after publishing module"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoaddtoprojectbecausethereisalreadyaunitwith
@@ -1014,8 +1018,8 @@ msgstr ""
 msgid "Delete ambigious file?"
 msgstr ""
 
-#: lazarusidestrconsts:lisdeleteambigiousfile2
-msgid "Delete ambigious file %s%s%s?"
+#: lazarusidestrconsts:lisambigiousfilefoundthisfilecanbemistakenwithdelete
+msgid "Ambigious file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambigious file?"
 msgstr ""
 
 #: lazarusidestrconsts:lislazaruseditorv
@@ -4426,6 +4430,10 @@ msgstr ""
 msgid "Unit"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgfiletypevirtualunit
+msgid "Virtual Unit"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypelfm
 msgid "LFM - Lazarus form text"
 msgstr ""
@@ -4708,6 +4716,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatefile
 msgid "Unable to create file"
+msgstr ""
+
+#: lazarusidestrconsts:liscannotcreatefile
+msgid "Can not create file %s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatefilename
@@ -5578,6 +5590,10 @@ msgstr ""
 msgid "Has Register procedure"
 msgstr ""
 
+#: lazarusidestrconsts:lisaf2pisvirtualunit
+msgid "Virtual unit (file is not in package)"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2pfiletype
 msgid "File Type"
 msgstr ""
@@ -6100,6 +6116,22 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckeditmodified
 msgid "Modified: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditnewunitnotinunitpath
+msgid "New unit not in unitpath"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditthefileiscurrentlynotintheunitpathofthepackage
+msgid "The file %s%s%s%sis currently not in the unitpath of the package.%s%sAdd %s%s%s to UnitPath?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditrevertpackage
+msgid "Revert package?"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgeditdoyoureallywanttoforgetallchangestopackageand
+msgid "Do you really want to forget all changes to package %s and reload it from file?"
 msgstr ""
 
 #: lazarusidestrconsts:lispckoptsusage

@@ -232,6 +232,7 @@ type
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
     procedure GetDefaultFPCSourceDirectory;
+    procedure CreateWindowLayout(const TheFormID: string);
     property OnApplyWindowLayout: TOnApplyIDEWindowLayout
                          read FOnApplyWindowLayout write SetOnApplyWindowLayout;
     
@@ -582,6 +583,7 @@ implementation
 
 
 const MaxComboBoxCount: integer = 20;
+
 
 function Max(i, j: integer): integer;
 begin
@@ -1213,22 +1215,7 @@ begin
 end;
 
 procedure TEnvironmentOptions.InitLayoutList;
-
-  procedure CreateWindowLayout(const TheFormID: string);
-  var
-    NewLayout: TIDEWindowLayout;
-  begin
-    NewLayout:=TIDEWindowLayout.Create;
-    with NewLayout do begin
-      FormID:=TheFormID;
-      WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-         iwpCustomPosition,iwpUseWindowManagerSetting];
-    end;
-    IDEWindowLayoutList.Add(NewLayout);
-  end;
-  
 var
-  i: integer;
   l: TNonModalIDEWindow;
 begin
   fIDEWindowLayoutList:=TIDEWindowLayoutList.Create;
@@ -1237,17 +1224,31 @@ begin
     if l<>nmiwNone then
       CreateWindowLayout(NonModalIDEWindowNames[l]);
   CreateWindowLayout(DefaultObjectInspectorName);
-
-  for i:=0 to fIDEWindowLayoutList.Count-1 do begin
-    IDEWindowLayoutList[i].OnApply:=@InternOnApplyWindowLayout;
-    IDEWindowLayoutList[i].DefaultWindowPlacement:=iwpRestoreWindowGeometry;
-  end;
 end;
 
 procedure TEnvironmentOptions.InternOnApplyWindowLayout(
   ALayout: TIDEWindowLayout);
 begin
   if Assigned(OnApplyWindowLayout) then OnApplyWindowLayout(ALayout);
+end;
+
+procedure TEnvironmentOptions.CreateWindowLayout(const TheFormID: string);
+var
+  NewLayout: TIDEWindowLayout;
+begin
+  if TheFormID='' then
+    RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID empty');
+  if IDEWindowLayoutList.ItemByFormID(TheFormID)<>nil then
+    RaiseException('TEnvironmentOptions.CreateWindowLayout TheFormID exists');
+  NewLayout:=TIDEWindowLayout.Create;
+  with NewLayout do begin
+    FormID:=TheFormID;
+    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
+       iwpCustomPosition,iwpUseWindowManagerSetting];
+    OnApply:=@Self.InternOnApplyWindowLayout;
+    DefaultWindowPlacement:=iwpRestoreWindowGeometry;
+  end;
+  IDEWindowLayoutList.Add(NewLayout);
 end;
 
 function TEnvironmentOptions.FileHasChangedOnDisk: boolean;

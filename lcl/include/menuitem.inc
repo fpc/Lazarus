@@ -790,18 +790,17 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TMenuItem.SetParentComponent(AValue : TComponent);
 begin
-  if assigned (FParent) and (FParent = AValue)
-  then exit;
+  if (FParent = AValue) then exit;
 
-  if assigned (FParent) and (FParent <> AValue)
-  then TMenuItem (FParent).Remove (self);
+  if Assigned(FParent) then
+    FParent.Remove(Self);
 
   if assigned (AValue) then
   begin
     if (AValue is TMenu)
-      then TMenu (AValue).Items.Add (Self)
+      then TMenu(AValue).Items.Add(Self)
     else if (AValue is TMenuItem)
-      then TMenuItem (AValue).Add (Self)
+      then TMenuItem(AValue).Add(Self)
     else
       raise Exception.Create('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
    end;
@@ -954,6 +953,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.33  2003/04/19 18:37:58  mattias
   implemented adding OnClick, when clicking on designer menuitem
 
@@ -1081,6 +1083,9 @@ end;
 
 
   $Log$
+  Revision 1.34  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.33  2003/04/19 18:37:58  mattias
   implemented adding OnClick, when clicking on designer menuitem
 
