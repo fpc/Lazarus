@@ -1069,6 +1069,7 @@ end;
 
 procedure TGDBMIBreakPoint.DoActionChange;
 begin
+  Changed(False);
 end;
 
 procedure TGDBMIBreakPoint.DoEnableChange;
@@ -1081,10 +1082,12 @@ begin
 
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d',
                                           [CMD[Enabled], FBreakID], False);
+  Changed(false);
 end;
 
 procedure TGDBMIBreakPoint.DoExpressionChange;
 begin
+  Changed(False);
 end;
 
 procedure TGDBMIBreakPoint.Hit;
@@ -1668,6 +1671,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.13  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.12  2003/05/27 17:53:44  mattias
   fixed getting target PID for fpc1.1 programs
 
