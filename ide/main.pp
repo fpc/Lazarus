@@ -9733,9 +9733,10 @@ begin
   ActiveUnitInfo:=nil;
   if (ADesigner<>nil) then
     ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
-  else if GlobalDesignHook.LookupRoot<>nil then
+  else if (GlobalDesignHook.LookupRoot<>nil)
+  and (GlobalDesignHook.LookupRoot is TComponent) then
     ActiveUnitInfo:=
-      Project1.UnitWithComponent(GlobalDesignHook.LookupRoot)
+      Project1.UnitWithComponent(TComponent(GlobalDesignHook.LookupRoot))
   else
     ActiveUnitInfo:=nil;
   if (ActiveUnitInfo<>nil) then begin
@@ -10235,6 +10236,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.689  2003/12/27 01:26:00  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.688  2003/12/26 15:55:38  mattias
   fixed message jumping
 

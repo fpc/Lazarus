@@ -52,7 +52,7 @@ type
     destructor Destroy; override;
     procedure RebuildComponentNodes; virtual;
     procedure UpdateComponentNodesValues; virtual;
-    function CreateNodeCaption(AComponent: TComponent): string; virtual;
+    function CreateNodeCaption(APersistent: TPersistent): string; virtual;
   public
     property Selections: TComponentSelectionList read GetSelections
                                                  write SetSelections;
@@ -167,42 +167,45 @@ procedure TComponentTreeView.RebuildComponentNodes;
 var
   OldExpanded: TTreeNodeExpandedState;
   NewNode: TTreeNode;
-  RootComponent: TComponent;
+  RootObject: TPersistent;
   i: Integer;
   AComponent: TComponent;
   RootNode: TTreeNode;
   AControl: TControl;
+  RootComponent: TComponent;
 begin
   BeginUpdate;
   // save old expanded state and clear
   OldExpanded:=TTreeNodeExpandedState.Create(Self);
   Items.Clear;
 
-  RootComponent:=PropertyEditorHook.LookupRoot;
-  if RootComponent<>nil then begin
+  RootObject:=PropertyEditorHook.LookupRoot;
+  if RootObject<>nil then begin
     // first add the lookup root
-    RootNode:=Items.Add(nil,CreateNodeCaption(RootComponent));
-    RootNode.Data:=RootComponent;
+    RootNode:=Items.Add(nil,CreateNodeCaption(RootObject));
+    RootNode.Data:=RootObject;
     RootNode.ImageIndex:=-1;
-    RootNode.MultiSelected:=Selections.IndexOf(RootComponent)>=0;
+    RootNode.MultiSelected:=Selections.IndexOf(RootObject)>=0;
 
     // add components in creation order and TControl.Parent relationship
-    for i:=0 to RootComponent.ComponentCount-1 do begin
-      AComponent:=RootComponent.Components[i];
-      if AComponent is TControl then begin
-        AControl:=TControl(AComponent);
-        if (AControl.Parent<>nil) and (AControl.Parent<>RootComponent) then
-          // child controls will be added recursively, not here
-          continue;
+    if RootObject is TComponent then begin
+      RootComponent:=TComponent(RootObject);
+      for i:=0 to RootComponent.ComponentCount-1 do begin
+        AComponent:=RootComponent.Components[i];
+        if AComponent is TControl then begin
+          AControl:=TControl(AComponent);
+          if (AControl.Parent<>nil) and (AControl.Parent<>RootComponent) then
+            // child controls will be added recursively, not here
+            continue;
+        end;
+        NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
+        NewNode.Data:=AComponent;
+        NewNode.ImageIndex:=-1;
+        NewNode.MultiSelected:=Selections.IndexOf(AComponent)>=0;
+        if AComponent is TWinControl then
+          AddChildControls(TWinControl(AComponent),NewNode);
       end;
-      NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
-      NewNode.Data:=AComponent;
-      NewNode.ImageIndex:=-1;
-      NewNode.MultiSelected:=Selections.IndexOf(AComponent)>=0;
-      if AComponent is TWinControl then
-        AddChildControls(TWinControl(AComponent),NewNode);
     end;
-    
     RootNode.Expand(true);
   end;
 
@@ -229,9 +232,11 @@ begin
   UpdateComponentNode(Items.GetFirstNode);
 end;
 
-function TComponentTreeView.CreateNodeCaption(AComponent: TComponent): string;
+function TComponentTreeView.CreateNodeCaption(APersistent: TPersistent): string;
 begin
-  Result:=AComponent.Name+': '+AComponent.ClassName;
+  Result:=APersistent.ClassName;
+  if APersistent is TComponent then
+    Result:=TComponent(APersistent).Name+': '+Result;
 end;
 
 end.

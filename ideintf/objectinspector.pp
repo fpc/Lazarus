@@ -2250,8 +2250,9 @@ begin
                                                     @HookGetSelectedComponents);
     // select root component
     FComponentList.Clear;
-    if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil) then
-      FComponentList.Add(FPropertyEditorHook.LookupRoot);
+    if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
+    and (FPropertyEditorHook.LookupRoot is TComponent) then
+      FComponentList.Add(TComponent(FPropertyEditorHook.LookupRoot));
     FillComponentComboBox;
     PropertyGrid.PropertyEditorHook:=FPropertyEditorHook;
     EventGrid.PropertyEditorHook:=FPropertyEditorHook;
@@ -2331,11 +2332,11 @@ begin
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)
-    and (FPropertyEditorHook.LookupRoot<>nil) then begin
-      Root:=FPropertyEditorHook.LookupRoot;
+    and (FPropertyEditorHook.LookupRoot<>nil)
+    and (FPropertyEditorHook.LookupRoot is TComponent) then begin
+      Root:=TComponent(FPropertyEditorHook.LookupRoot);
       AddComponentToList(Root,NewList);
   //writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
-      if Root is TComponent then
         for a:=0 to TComponent(Root).ComponentCount-1 do
           AddComponentToList(TComponent(Root).Components[a],NewList);
     end;
@@ -2434,10 +2435,10 @@ begin
   if FUpdatingAvailComboBox then exit;
   if (FPropertyEditorHook=nil) or (FPropertyEditorHook.LookupRoot=nil) then
     exit;
-  Root:=FPropertyEditorHook.LookupRoot;
-  if (not (Root is TComponent))
-  or (AvailCompsComboBox.Text=ComponentToString(Root))
-  then begin
+  if not (FPropertyEditorHook.LookupRoot is TComponent) then
+    exit;
+  Root:=TComponent(FPropertyEditorHook.LookupRoot);
+  if (AvailCompsComboBox.Text=ComponentToString(Root)) then begin
     SetSelectedComponent(Root);
   end else begin
     for a:=0 to Root.ComponentCount-1 do begin

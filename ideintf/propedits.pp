@@ -872,7 +872,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdateLock: integer;
-    function IndexOf(AComponent: TComponent): integer;
+    function IndexOf(APersistent: TPersistent): integer;
     procedure Clear;
     function IsEqual(SourceSelectionList: TComponentSelectionList): boolean;
     property Count:integer read GetCount;
@@ -4244,10 +4244,10 @@ begin
   Result:=FUpdateLock;
 end;
 
-function TComponentSelectionList.IndexOf(AComponent: TComponent): integer;
+function TComponentSelectionList.IndexOf(APersistent: TPersistent): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (Items[Result]<>AComponent) do dec(Result);
+  while (Result>=0) and (Items[Result]<>APersistent) do dec(Result);
 end;
 
 procedure TComponentSelectionList.Assign(

@@ -212,7 +212,7 @@ begin
 
   // create debugger specific options components
   // temp hack
-  if SameText(FCurDebuggerClass.ClassName, 'TSSHGDBMIDEBUGGER')
+  if AnsiCompareText(FCurDebuggerClass.ClassName, 'TSSHGDBMIDEBUGGER')=0
   then begin
     AMemo:=TMemo.Create(Self);
     FDebuggerSpecificComponents.Add(AMemo);
