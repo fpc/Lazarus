@@ -2895,7 +2895,7 @@ initialization
   IdentCompletionTimer:=nil;
   AWordCompletion:=nil;
 
-{$I designer/bookmark.lrs}
+{$I images/bookmark.lrs}
 
 finalization
   aWordCompletion.Free;
