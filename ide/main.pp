@@ -3754,7 +3754,7 @@ begin
     // settings during restoration will work
     SaveSourceEditorProjectSpecificSettings;
     SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
-      AFilename,-1),AnUnitInfo.Source);
+      AFilename,-1),AnUnitInfo.Source,false);
     NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEditorCreated:=true;
     itmFileClose.Enabled:=True;
@@ -3835,8 +3835,8 @@ begin
 
   // create a new sourceeditor
   SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
-                         NewUnitInfo.Filename,-1),
-                         NewUnitInfo.Source);
+                                               NewUnitInfo.Filename,-1),
+                         NewUnitInfo.Source,true);
   itmFileClose.Enabled:=True;
   itmFileCloseAll.Enabled:=True;
   NewSrcEdit:=SourceNotebook.GetActiveSE;
@@ -8059,6 +8059,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.499  2003/03/27 08:50:47  mattias
+  find declaration: implemented file type
+
   Revision 1.498  2003/03/26 10:56:30  mattias
   added ToDo List from Olivier
 
