@@ -281,7 +281,7 @@ type
   TOnSelectComponentInOI = procedure(AComponent:TComponent) of object;
 
   TObjectInspector = class (TCustomForm)
-    AvailCompsComboBox : TComboBox;
+    AvailCompsComboBox: TComboBox;
     NoteBook:TNoteBook;
     PropertyGrid:TOIPropertyGrid;
     EventGrid:TOIPropertyGrid;
@@ -290,7 +290,7 @@ type
     ColorsPopupMenuItem:TMenuItem;
     BackgroundColPopupMenuItem:TMenuItem;
     ShowHintsPopupMenuItem:TMenuItem;
-    procedure AvailComboBoxChange(Sender:TObject);
+    procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
     procedure PropEditRefreshPropertyValues;
@@ -1921,7 +1921,7 @@ begin
     Parent:=Self;
     Style:=csDropDown;
     Text:='';
-    OnChange:=@AvailComboBoxChange;
+    OnCloseUp:=@AvailComboBoxCloseUp;
     //Sorted:=true;
     Align:= alTop;
     Visible:=true;
@@ -2085,7 +2085,7 @@ begin
   EventGrid.RefreshPropertyValues;
 end;
 
-procedure TObjectInspector.AvailComboBoxChange(Sender:TObject);
+procedure TObjectInspector.AvailComboBoxCloseUp(Sender:TObject);
 var NewComponent,Root:TComponent;
   a:integer;
 
