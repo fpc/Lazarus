@@ -382,7 +382,16 @@ Begin
         end
       else if OwnerObject is TCustomCombobox then
         case Hi(WParam) of
-          CBN_EDITCHANGE, CBN_SELCHANGE: LMessage.Msg := LM_CHANGED;
+	  { no need to handle CBN_SELCHANGED here: upon receiving of CBN_SELCHANGED,
+	    text is not actually changed yet }
+          CBN_EDITCHANGE{, CBN_SELCHANGED}: LMessage.Msg := LM_CHANGED;
+	  { closeup message is sent before text is actually changed... *sigh*
+	    itemindex is updated, so set text manually }
+	  CBN_CLOSEUP: 
+	  begin
+	    with TCustomComboBox(OwnerObject) do
+	      Text := Items[ItemIndex];
+	  end;
         end;
       // no specific message found? try send a general msg
       if LMessage.Msg = LM_NULL then
@@ -1138,6 +1147,9 @@ end;
 
 {
   $Log$
+  Revision 1.101  2004/05/08 07:21:10  micha
+  fix closeup event; set text manually because windows has only set itemindex, but not the text yet
+
   Revision 1.100  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes
