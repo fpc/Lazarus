@@ -590,8 +590,7 @@ type
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
-    property UsageOptions: TPkgAdditionalCompilerOptions
-      read FUsageOptions;
+    property UsageOptions: TPkgAdditionalCompilerOptions read FUsageOptions;
   end;
   
   PLazPackage = ^TLazPackage;

@@ -106,6 +106,7 @@ type
     procedure AddBitBtnClick(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
+    procedure ChangeFileTypeMenuItemClick(Sender: TObject);
     procedure CompileAllClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompilerOptionsBitBtnClick(Sender: TObject);
@@ -121,12 +122,11 @@ type
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
-    procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean
-      );
+    procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure PackageEditorFormResize(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
-      ARect: TRect; State: TOwnerDrawState);
+                                        ARect: TRect; State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
@@ -316,8 +316,13 @@ begin
     if Removed then begin
       // re-add file
       AFilename:=PkgFile.Filename;
-      if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
-        PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+      if PkgFile.FIleType=pftUnit then begin
+        if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
+          PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+      end else begin
+        if not CheckAddingUnitFilename(LazPackage,d2ptFile,
+          PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+      end;
       PkgFile.Filename:=AFilename;
       LazPackage.UnremovePkgFile(PkgFile);
       UpdateAll;
@@ -335,60 +340,83 @@ end;
 
 procedure TPackageEditorForm.FilesPopupMenuPopup(Sender: TObject);
 var
-  CurNode: TTreeNode;
   ItemCnt: Integer;
   CurDependency: TPkgDependency;
   Removed: boolean;
-  
-  procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
-    EnabledFlag: boolean);
-  var
-    CurMenuItem: TMenuItem;
+  CurFile: TPkgFile;
+
+  function AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
+    EnabledFlag: boolean): TMenuItem;
   begin
     if FilesPopupMenu.Items.Count<=ItemCnt then begin
-      CurMenuItem:=TMenuItem.Create(Self);
-      FilesPopupMenu.Items.Add(CurMenuItem);
-    end else
-      CurMenuItem:=FilesPopupMenu.Items[ItemCnt];
-    CurMenuItem.Caption:=ACaption;
-    CurMenuItem.OnClick:=AnEvent;
-    CurMenuItem.Enabled:=EnabledFlag;
+      Result:=TMenuItem.Create(Self);
+      FilesPopupMenu.Items.Add(Result);
+    end else begin
+      Result:=FilesPopupMenu.Items[ItemCnt];
+      while Result.Count>0 do Result.Delete(Result.Count-1);
+    end;
+    Result.Caption:=ACaption;
+    Result.OnClick:=AnEvent;
+    Result.Enabled:=EnabledFlag;
     inc(ItemCnt);
   end;
   
+  procedure AddFileTypeMenuItem;
+  var
+    FileTypeMenuItem: TMenuItem;
+    CurPFT: TPkgFileType;
+    NewMenuItem: TMenuItem;
+  begin
+    FileTypeMenuItem:=AddPopupMenuItem('File Type',nil,true);
+    for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
+      NewMenuItem:=TMenuItem.Create(Self);
+      NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
+      NewMenuItem.OnClick:=@ChangeFileTypeMenuItemClick;
+      NewMenuItem.Enabled:=(CurPFT<>pftUnit)
+                           or FilenameIsPascalUnit(CurFile.Filename);
+      FileTypeMenuItem.Add(NewMenuItem);
+    end;
+  end;
+  
 begin
-  CurNode:=FilesTreeView.Selected;
   ItemCnt:=0;
   CurDependency:=GetCurrentDependency(Removed);
-  if CurNode<>nil then begin
-    if CurNode.Parent<>nil then begin
-      if CurNode.Parent=FilesNode then begin
-        AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Remove file',@RemoveBitBtnClick,
-                         RemoveBitBtn.Enabled);
-      end else if (CurDependency<>nil) and (not Removed) then begin
-        AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,
-                         RemoveBitBtn.Enabled);
-        AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
-                         (CurDependency.PrevRequiresDependency<>nil)
-                         and (not LazPackage.ReadOnly));
-        AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
-                         (CurDependency.NextRequiresDependency<>nil)
-                         and (not LazPackage.ReadOnly));
-      end else if (CurNode.Parent=RemovedFilesNode) then begin
-        AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Add file',@ReAddMenuItemClick,
-                         AddBitBtn.Enabled);
-      end else if (CurNode.Parent=RemovedRequiredNode) then begin
-        AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Re-Add dependency',@ReAddMenuItemClick,
-                         AddBitBtn.Enabled);
-      end;
-    end;
-  end else begin
+  if CurDependency=nil then
+    CurFile:=GetCurrentFile(Removed)
+  else
+    CurFile:=nil;
 
+  if CurFile<>nil then begin
+    if not Removed then begin
+      AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
+      AddPopupMenuItem('Remove file',@RemoveBitBtnClick,
+                       RemoveBitBtn.Enabled);
+      AddFileTypeMenuItem;
+    end else begin
+      AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
+      AddPopupMenuItem('Re-Add file',@ReAddMenuItemClick,
+                       AddBitBtn.Enabled);
+    end;
   end;
+
+  if CurDependency<>nil then begin
+    if (not Removed) then begin
+      AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
+      AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,
+                       RemoveBitBtn.Enabled);
+      AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
+                       (CurDependency.PrevRequiresDependency<>nil)
+                       and (not LazPackage.ReadOnly));
+      AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
+                       (CurDependency.NextRequiresDependency<>nil)
+                       and (not LazPackage.ReadOnly));
+    end else begin
+      AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
+      AddPopupMenuItem('Re-Add dependency',@ReAddMenuItemClick,
+                       AddBitBtn.Enabled);
+    end;
+  end;
+  
   if ItemCnt>0 then
     AddPopupMenuItem('-',nil,true);
 
@@ -803,6 +831,30 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
+var
+  i: Integer;
+  CurItem: TMenuItem;
+  CurPFT: TPkgFileType;
+  Removed: boolean;
+  CurFile: TPkgFile;
+begin
+  CurItem:=TMenuItem(Sender);
+  i:=CurItem.Parent.IndexOf(CurItem);
+  if i<0 then exit;
+  CurFile:=GetCurrentFile(Removed);
+  if CurFile=nil then exit;
+  for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
+    if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
+      if (not FilenameIsPascalUnit(CurFIle.Filename))
+      and (CurPFT=pftUnit) then exit;
+      CurFile.FileType:=CurPFT;
+      UpdateAll;
+      exit;
+    end;
+  end;
+end;
+
 procedure TPackageEditorForm.CompileAllClick(Sender: TObject);
 begin
   DoCompile(true);
@@ -1155,7 +1207,6 @@ begin
     CurFile:=LazPackage.Files[i];
     CurNode.Text:=CurFile.GetShortFilename;
     SetImageIndex(CurNode,CurFile);
-writeln('AAA1 ',CurNode.Text,' ',CurNode.ImageIndex,' ',ImageIndexBinary,' ',CurFile.FileType=pftBinary);
     CurNode:=CurNode.GetNextSibling;
   end;
   while CurNode<>nil do begin
@@ -1170,7 +1221,7 @@ writeln('AAA1 ',CurNode.Text,' ',CurNode.ImageIndex,' ',ImageIndexBinary,' ',Cur
     if RemovedFilesNode=nil then begin
       RemovedFilesNode:=
         FilesTreeView.Items.Add(RequiredPackagesNode,
-                'Removed Files (are not saved)');
+                'Removed Files (these entries are not saved to the lpk file)');
       RemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
       RemovedFilesNode.SelectedIndex:=RemovedFilesNode.ImageIndex;
     end;
@@ -1233,7 +1284,8 @@ begin
   if CurDependency<>nil then begin
     if RemovedRequiredNode=nil then begin
       RemovedRequiredNode:=
-        FilesTreeView.Items.Add(nil,'Removed required packages (are not saved)');
+        FilesTreeView.Items.Add(nil,
+          'Removed required packages (these entries are not saved to the lpk file)');
       RemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
       RemovedRequiredNode.SelectedIndex:=RemovedRequiredNode.ImageIndex;
     end;
@@ -1293,7 +1345,8 @@ begin
     FilePropsGroupBox.Enabled:=true;
     FilePropsGroupBox.Caption:='File Properties';
     // set Register Unit checkbox
-    CallRegisterProcCheckBox.Enabled:=not LazPackage.ReadOnly;
+    CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
+                                      and (CurFile.FileType=pftUnit);
     CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in CurFile.Flags;
     // fetch all registered plugins
     CurListIndex:=0;

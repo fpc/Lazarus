@@ -2425,7 +2425,6 @@ begin
   chkDebugDBX.Checked := CompilerOpts.GenerateDebugDBX;
   chkUseLineInfoUnit.Checked := CompilerOpts.UseLineInfoUnit;
   chkUseHeaptrc.Checked := CompilerOpts.UseHeaptrc;
-  chkUseHeaptrc.Enabled:=EnabledLinkerOpts;
   chkGenGProfCode.Checked := CompilerOpts.GenGProfCode;
   chkSymbolsStrip.Checked := CompilerOpts.StripSymbols;
   chkSymbolsStrip.Enabled:=EnabledLinkerOpts;

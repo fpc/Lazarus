@@ -383,6 +383,7 @@ type
     procedure SaveEnvironment; virtual; abstract;
     procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
        OnClickEvent: TNotifyEvent); virtual;
+    procedure DoJumpToCodeToolBossError; virtual; abstract;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); virtual; abstract;
   end;
 

@@ -229,46 +229,52 @@ begin
   end;
 
   // check file extension
-  if not FilenameIsPascalUnit(AFilename) then begin
-    MessageDlg('File not unit',
-      'Pascal units must have the extension .pp or .pas',
-      mtWarning,[mbCancel],0);
-    exit;
-  end;
-
-  // check unitname
-  AnUnitName:=ExtractFileNameOnly(AFilename);
-  if not IsValidIdent(AnUnitName) then begin
-    MessageDlg('File not unit',
-      +'"'+AnUnitName+'" is not a valid unit name.',
-      mtWarning,[mbCancel],0);
-    exit;
-  end;
-
-  // check if unitname already exists in package
-  PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
-  if PkgFile<>nil then begin
-    if PkgFile.LazPackage=LazPackage then begin
-      MessageDlg('Unitname already exists',
-        'The unitname "'+AnUnitName+'" already exists in this package.',
-        mtError,[mbCancel],0);
+  if AddFileType in [d2ptUnit,d2ptNewComponent] then begin
+    if not FilenameIsPascalUnit(AFilename) then begin
+      MessageDlg('File not unit',
+        'Pascal units must have the extension .pp or .pas',
+        mtWarning,[mbCancel],0);
       exit;
-    end else begin
-      if MessageDlg('Unitname already exists',
-        'The unitname "'+AnUnitName+'" already exists in the package:'#13
-        +PkgFile.LazPackage.IDAsString,
-        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
     end;
   end;
 
-  // check if unitname is a componentclass
-  if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
-    if MessageDlg('Ambigious Unit Name',
-      'The unit name "'+AnUnitName+'" is the same as an registered component.'#13
-      +'Using this can cause strange error messages.',
-      mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
-    then
+  // check unitname
+  if AddFileType in [d2ptUnit,d2ptNewComponent] then begin
+    AnUnitName:=ExtractFileNameOnly(AFilename);
+    if not IsValidIdent(AnUnitName) then begin
+      MessageDlg('File not unit',
+        +'"'+AnUnitName+'" is not a valid unit name.',
+        mtWarning,[mbCancel],0);
       exit;
+    end;
+
+    // check if unitname already exists in package
+    PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
+    if PkgFile<>nil then begin
+      if PkgFile.LazPackage=LazPackage then begin
+        MessageDlg('Unitname already exists',
+          'The unitname "'+AnUnitName+'" already exists in this package.',
+          mtError,[mbCancel],0);
+        exit;
+      end else begin
+        if MessageDlg('Unitname already exists',
+          'The unitname "'+AnUnitName+'" already exists in the package:'#13
+          +PkgFile.LazPackage.IDAsString,
+          mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore then exit;
+      end;
+    end;
+
+    // check if unitname is a componentclass
+    if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
+      if MessageDlg('Ambigious Unit Name',
+        'The unit name "'+AnUnitName+'" is the same as an registered component.'#13
+        +'Using this can cause strange error messages.',
+        mtWarning,[mbCancel,mbIgnore],0)<>mrIgnore
+      then
+        exit;
+    end;
+  end else begin
+    AnUnitName:='';
   end;
 
   // check if file already exists in package
@@ -281,10 +287,10 @@ begin
     exit;
   end;
 
-  // check if file is part of project or marked readonly
+  // check if file is part of project
   if Assigned(OnGetIDEFileInfo) then begin
     IDEFileFlags:=[];
-    OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject,ifsReadOnly],
+    OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject{,ifsReadOnly}],
                      IDEFileFlags);
     if (ifsPartOfProject in IDEFileFlags) then begin
       MessageDlg('File is used',
@@ -293,12 +299,12 @@ begin
         mtError,[mbCancel],0);
       exit;
     end;
-    if (ifsReadOnly in IDEFileFlags) then begin
+    {if (ifsReadOnly in IDEFileFlags) then begin
       MessageDlg('File is readonly',
         'The file "'+AFilename+'" is marked as readonly.',
         mtError,[mbCancel],0);
       exit;
-    end;
+    end;}
   end;
 
   // ok

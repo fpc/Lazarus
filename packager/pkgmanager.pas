@@ -104,6 +104,9 @@ type
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionPkgIncPath(Data: Pointer): boolean;
+    function DoGetUnitRegisterInfo(const AFilename: string;
+                          var TheUnitName: string; var HasRegisterProc: boolean;
+                          IgnoreErrors: boolean): TModalResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -272,22 +275,8 @@ end;
 procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
   const AFilename: string; var TheUnitName: string; var HasRegisterProc: boolean
   );
-var
-  ExpFilename: String;
-  CodeBuffer: TCodeBuffer;
 begin
-  ExpFilename:=CleanAndExpandFilename(AFilename);
-  // create default values
-  TheUnitName:='';
-  HasRegisterProc:=false;
-  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
-  CodeBuffer:=CodeToolBoss.LoadFile(ExpFilename,true,false);
-  if CodeBuffer<>nil then begin
-    TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-    CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer,HasRegisterProc);
-  end;
-  if TheUnitName='' then
-    TheUnitName:=ExtractFileNameOnly(ExpFilename);
+  DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
 end;
 
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
@@ -937,6 +926,39 @@ begin
   PkgID.Free;
 end;
 
+function TPkgManager.DoGetUnitRegisterInfo(const AFilename: string;
+  var TheUnitName: string; var HasRegisterProc: boolean; IgnoreErrors: boolean
+  ): TModalResult;
+  
+  function ErrorsHandled: boolean;
+  begin
+    if (CodeToolBoss.ErrorMessage='') or IgnoreErrors then exit;
+    MainIDE.DoJumpToCodeToolBossError;
+    Result:=false;
+  end;
+  
+var
+  ExpFilename: String;
+  CodeBuffer: TCodeBuffer;
+begin
+  Result:=mrCancel;
+  ExpFilename:=CleanAndExpandFilename(AFilename);
+  // create default values
+  TheUnitName:='';
+  HasRegisterProc:=false;
+  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
+  CodeBuffer:=CodeToolBoss.LoadFile(ExpFilename,true,false);
+  if CodeBuffer<>nil then begin
+    TheUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+    if not ErrorsHandled then exit;
+    CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer,HasRegisterProc);
+    if not ErrorsHandled then exit;
+  end;
+  if TheUnitName='' then
+    TheUnitName:=ExtractFileNameOnly(ExpFilename);
+  Result:=mrOk;
+end;
+
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1467,7 +1489,7 @@ var
 begin
   Result:=mrCancel;
   
-writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+  writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
   
   if APackage.AutoCreated then exit;
 
@@ -1733,6 +1755,8 @@ var
   ActiveUnitInfo: TUnitInfo;
   PkgFile: TPkgFile;
   Filename: String;
+  TheUnitName: String;
+  HasRegisterProc: Boolean;
 begin
   MainIDE.GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   if ActiveSourceEditor=nil then exit;
@@ -1761,12 +1785,19 @@ begin
   if PkgFile<>nil then begin
     Result:=MessageDlg('File is already in package',
       'The file "'+Filename+'"'#13
-      +'is already in the package '+PkgFile.LazPackage.IDAsString+'.'#13,
+      +'is already in the package '+PkgFile.LazPackage.IDAsString+'.',
       mtWarning,[mbIgnore,mbCancel,mbAbort],0);
     if Result<>mrIgnore then exit;
   end;
   
-  Result:=ShowAddFileToAPackageDlg(Filename);
+  TheUnitName:='';
+  HasRegisterProc:=false;
+  if FilenameIsPascalUnit(Filename) then begin
+    Result:=DoGetUnitRegisterInfo(Filename,TheUnitName,HasRegisterProc,false);
+    if Result<>mrOk then exit;
+  end;
+  
+  Result:=ShowAddFileToAPackageDlg(Filename,TheUnitName,HasRegisterProc);
 end;
 
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;
