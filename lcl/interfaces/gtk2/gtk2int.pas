@@ -59,6 +59,9 @@ type
 {$IfDef GTK2_2}//we need a GTK2_2 FLAG somehow
 Procedure  gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
 function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
+
+procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPixbuf; src_x, src_y, dest_x, dest_y, width, height : gint;
+                                             dither : TGdkRgbDither; x_dither, y_dither : gint); cdecl; external gdklib;
 {$Else}
   {$IfNDef Win32}
   Function gdk_x11_drawable_get_xdisplay(drawable : PGdkDrawable) :   PDisplay; cdecl; external gdklib;
@@ -158,8 +161,6 @@ begin
   else
     pixbuf := gtk_icon_set_render_icon(IconSet, GetStyle('window'), GTK_TEXT_DIR_NONE, GTK_STATE_NORMAL, GTK_ICON_SIZE_DIALOG, GetStyleWidget('window'), nil);
 
-  gtk_icon_set_unref(IconSet);
-
   Pixmap := NewGDIObject(gdiBitmap);
   With Pixmap^ do begin
     GDIBitmapType := gbPixmap;
@@ -178,6 +179,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2003/09/09 04:15:08  ajgenius
+  more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
+
   Revision 1.5  2003/09/06 22:56:03  ajgenius
   started gtk2 stock icon overrides
   partial/temp(?) workaround for dc paint offsets

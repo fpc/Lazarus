@@ -494,11 +494,28 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
   function gtk_class_get_type(aclass : Pointer) : TGtkType;
 
-  //routines to mimic similar GTK2 routines-->
+  //routines to mimic GObject routines/behaviour-->
+  procedure g_signal_emit_by_name(anObject:PGtkObject; name:Pgchar; args:array of const); cdecl; overload; external gtkdll name 'gtk_signal_emit_by_name';
+  procedure g_signal_emit_by_name(anObject:PGtkObject; name:Pgchar); cdecl; overload; external gtkdll name 'gtk_signal_emit_by_name';
+
+  Procedure g_signal_handlers_destroy(anObject : PGtkObject); cdecl; external gtkdll name 'gtk_signal_handlers_destroy';
+  Procedure g_signal_stop_emission_by_name(anObject : PGtkObject; detailed_signal : Pgchar); cdecl; external gtkdll name 'gtk_signal_emit_stop_by_name';
+  Function g_signal_connect(anObject : PGtkObject; name : Pgchar; func : TGtkSignalFunc; func_data : gpointer) : guint; cdecl; external gtkdll name 'gtk_signal_connect';
+  Function g_signal_connect_after(anObject : PGtkObject; name : Pgchar; func : TGtkSignalFunc; func_data : gpointer) : guint; cdecl; external gtkdll name 'gtk_signal_connect_after';
+  Function g_signal_lookup(name : Pgchar; anObject : TGTKType) : guint; cdecl; external gtkdll name 'gtk_signal_lookup';
+
+  //routines to mimic similar GTK2 routines/behaviour-->
   function gtk_object_get_class(anobject : Pointer) : Pointer;
   Function gtk_window_get_modal(window:PGtkWindow):gboolean;
   Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
   Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
+  Function gtk_image_new : PGTKWidget;
+  Function gtk_toolbar_new : PGTKWidget;
+
+  //routines to mimic similar GDK2 routines/behaviour-->
+  procedure gdk_image_unref(Image : PGdkImage);
+  Function gdk_image_get_colormap(Image : PGDKImage) : PGdkColormap;
+  Procedure gdk_colormap_query_color(colormap : PGDKColormap; Pixel : gulong; Result : PGDKColor);
 
   //Wrapper around misnamed "regions" routines -->
   Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
@@ -508,13 +525,23 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
   function gdk_region_copy(region: PGDKRegion): PGDKRegion;
   function gdk_region_rectangle(rect: PGdkRectangle): PGDKRegion;
 
-  //Wrapper around window geometry like gtk2 -->
+  //routines to mimic similar GDK2 routines/behaviour-->
+  Function gdk_pixmap_create_from_xpm_d (window : PGdkWindow; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
+  Function gdk_pixmap_colormap_create_from_xpm_d (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
+  Function gdk_pixmap_colormap_create_from_xpm (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; filename : Pgchar) : PGdkPixmap;
+
+  {$IfNDef NoGdkPixbufLib}
+  Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
+  {$EndIf}
+  
+  //Wrapper around window functions like gtk2 -->
   Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
   Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
+  Function gdk_drawable_get_image(Drawable : PGDKDrawable; x, y, width, height : gint) : PGdkImage;
+  Function gdk_drawable_get_colormap(Drawable : PGDKDrawable) : PGdkColormap;
 {$EndIF}
 
 {$Ifdef GTK2}
-  Procedure gtk_signal_handlers_destroy(anObject : PGtkObject);
   function gtk_class_get_type(aclass : Pointer) : TGtkType;
 
   //we wrap our own versions to handle nil tests -->

@@ -499,7 +499,7 @@ var
   procedure StopKeyEvent(const EventName: PChar);
   begin
     if not EventStopped then begin
-      gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), EventName);
+      g_signal_stop_emission_by_name (GTK_OBJECT (Widget), EventName);
       EventStopped:=true;
     end;
     If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
@@ -528,7 +528,7 @@ var
   end;
   
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   EventStopped:=false;
   
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
@@ -565,7 +565,7 @@ begin
       Msg.Result:=0;
       Code := Msg.CharCode;
       NotifyApplicationUserInput(Msg.Msg);
-      Result := DeliverMessage(Data, Msg)=0;
+      {$Ifdef GTk1}result:={$EndIf}DeliverMessage(Data, Msg){$Ifdef GTk1}=0{$EndIf};
 
       If Msg.CharCode <> Code then begin
         // key was handled by LCL
@@ -600,7 +600,7 @@ begin
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
       //writeln('GTKKeyUpDown Key Send to ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Code=VK_TAB);
-      Result := DeliverMessage(Data, Msg)=0;
+      {$Ifdef GTk1}result:={$EndIf}DeliverMessage(Data, Msg){$Ifdef GTk1}=0{$EndIf};
 
       If Msg.CharCode <> Code then begin
         // key was changed by LCL
@@ -620,7 +620,7 @@ begin
         Msg.CharCode := KeyCode;
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
-        Result := DeliverMessage(Data, Msg)=0;
+        {$Ifdef GTk1}result:={$EndIf}DeliverMessage(Data, Msg){$Ifdef GTk1}=0{$EndIf};
         If Msg.CharCode <> KeyCode then begin
           // key was handled by lcl
           //writeln('GTKKeyUpDown Key CHANGED 2 ',TControl(Data).Name,':',TControl(Data).ClassName);
@@ -636,7 +636,7 @@ begin
           and (PGtkWindow(TopLevel)^.focus_widget=Widget) then begin
             StopKeyEvent('key_press_event');
             //writeln('GTKKeyUpDown ',TControl(Data).Name,':',TControl(Data).ClassName);
-            Result := TControl(Data).PerformTab(ssShift in ShiftState);
+            {$Ifdef GTk1}result:={$EndIf}TControl(Data).PerformTab(ssShift in ShiftState);
             If Result then begin
               {$IfNDef Win32}
               {$ifdef GTK2}
@@ -978,7 +978,7 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
 var
   DesignOnlySignal: boolean;
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -998,7 +998,7 @@ begin
     if not ControlGetsMouseMoveBefore(TControl(Data)) then exit;
   end else begin
     // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+    g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
@@ -1014,14 +1014,14 @@ end;
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   {$IFDEF VerboseMouseBugfix}
   writeln('[GTKMotionNotifyAfter] ',
     TControl(Data).Name,':',TControl(Data).ClassName);
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
-  gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+  g_signal_stop_emission_by_name(PGTKObject(Widget),'motion-notify-event');
 
   UpdateMouseCaptureControl;
   
@@ -1269,7 +1269,7 @@ function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
 var
   DesignOnlySignal: boolean;
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   
   {$IFDEF VerboseMouseBugfix}
   writeln('');
@@ -1304,7 +1304,7 @@ begin
     // stop the signal, so that the widget does not auto react
     if (TControl(Data).FCompStyle<>csNotebook)
     or (event^.Button<>1) then
-      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+      g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
   end;
   
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
@@ -1321,7 +1321,7 @@ end;
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnPressAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
@@ -1332,7 +1332,7 @@ begin
   UpdateMouseCaptureControl;
 
   // stop the signal, so that it is not sent to the parent widgets
-  gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+  g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
 
   if (csDesigning in TComponent(Data).ComponentState) then exit;
   if ControlGetsMouseDownBefore(TControl(Data)) then exit;
@@ -1436,7 +1436,7 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
 var
   DesignOnlySignal: boolean;
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1463,7 +1463,7 @@ begin
   end else begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
-      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+      g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
   end;
   
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
@@ -1480,7 +1480,7 @@ end;
 function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  Result:=true;
+  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnReleaseAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
@@ -1488,7 +1488,7 @@ begin
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
-  gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+  g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
 
   UpdateMouseCaptureControl;
 
@@ -1985,7 +1985,7 @@ begin
 
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'enter');
+    g_signal_stop_emission_by_name(PGTKObject(Widget),'enter');
   end;
 
   Mess.msg := CM_MOUSEENTER;
@@ -2002,7 +2002,7 @@ begin
 
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'leave');
+    g_signal_stop_emission_by_name(PGTKObject(Widget),'leave');
   end;
 
   Mess.msg := CM_MOUSELEAVE;
@@ -2164,7 +2164,7 @@ begin
       gtk_editable_insert_text(PGtkEditable(widget), char, NewTextLength - CutLength, Position);
     end;
     
-    gtk_signal_emit_stop_by_name(PGtkObject(widget), 'insert_text');
+    g_signal_stop_emission_by_name(PGtkObject(widget), 'insert_text');
   end;
 end;
 
@@ -2370,7 +2370,7 @@ begin
   if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'focus-in-event');
+    g_signal_stop_emission_by_name(PGTKObject(Widget),'focus-in-event');
   end;
 
   MessI.msg := LM_Enter;
@@ -2388,7 +2388,7 @@ begin
   if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'focus-out-event');
+    g_signal_stop_emission_by_name(PGTKObject(Widget),'focus-out-event');
   end;
 
   MessI.msg := LM_Exit;
@@ -2849,6 +2849,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.187  2003/09/09 04:15:08  ajgenius
+  more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
+
   Revision 1.186  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

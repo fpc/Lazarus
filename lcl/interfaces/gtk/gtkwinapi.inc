@@ -1693,9 +1693,8 @@ begin
   try
     GdiObject^.GDIPixmapObject :=
       gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
-             {$IfDef GTK1}@{$EndIf}(GdiObject^.GDIBitmapMaskObject), p, Data);
+             GdiObject^.GDIBitmapMaskObject, p, Data);
 
-//    gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
     Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
     If GdiObject^.Visual <> nil then
       GDK_Visual_UnRef(GdiObject^.Visual);
@@ -5487,6 +5486,13 @@ begin
   PaintWidget:=GetFixedWidget(Widget);
   if PaintWidget=nil then PaintWidget:=Widget;
 
+  {$IfDef GTK2}
+    if (PaintWidget<>nil) and not GtkWidgetIsA(PaintWidget,GTK_TYPE_WINDOW) then begin
+      Inc(gdkRect.X, PaintWidget^.Allocation.x);
+      Inc(gdkRect.Y, PaintWidget^.Allocation.y);
+    end;
+  {$EndIf}
+
   {$IfNDef Win32}
   if bErase then
     gtk_widget_queue_clear_area(PaintWidget,
@@ -5623,7 +5629,7 @@ var Dialog, ALabel : PGtkWidget;
         gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(IDCANCEL));
       end;
       gtk_object_set_data(PGtkObject(AButton), 'modal_result', Pointer(RetValue));
-      gtk_signal_connect(PGtkObject(AButton), 'clicked', TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
+      g_signal_connect(PGtkObject(AButton), 'clicked', TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
       gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.action_area), AButton);
     end;
 
@@ -5635,7 +5641,7 @@ begin
 
   ADialogResult:= 0;
   Dialog:= gtk_dialog_new;
-  gtk_signal_connect(PGtkObject(Dialog), 'delete-event', TGtkSignalFunc(@MessageBoxClosed), @ADialogResult);
+  g_signal_connect(PGtkObject(Dialog), 'delete-event', TGtkSignalFunc(@MessageBoxClosed), @ADialogResult);
   gtk_window_set_default_size(PGtkWindow(Dialog), 100, 100);
   ALabel:= gtk_label_new(lpText);
   gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.vbox), ALabel);    
@@ -8046,8 +8052,8 @@ var
     DeleteObject(ScaleBMP);
     ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
     Scale := PGdiObject(ScaleBMP);
-    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,{$IfDef GTK1}@{$EndIf}Scale^.GDIPixmapObject,
-      {$IfDef GTK1}@{$EndIf}Scale^.GDIBitmapMaskObject,0);
+    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,Scale^.GDIPixmapObject,
+      Scale^.GDIBitmapMaskObject,0);
     GDK_Pixbuf_Unref(ScaleDest);
     Result := True;
   {$Else not NoGdkPixbufLib}
@@ -8710,6 +8716,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.276  2003/09/09 04:15:08  ajgenius
+  more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
+
   Revision 1.275  2003/09/06 20:23:53  ajgenius
   fixes for gtk2
   added more wrappers for gtk1/gtk2 converstion and sanity

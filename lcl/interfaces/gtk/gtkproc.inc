@@ -105,6 +105,37 @@ begin
     menu_item^.flag0:=menu_item^.flag0 and (not bm_right_justify);
 end;
 
+Function gtk_image_new :PGTKWidget;
+begin
+  result := gtk.gtk_image_new(nil,nil);
+end;
+
+Function gtk_toolbar_new : PGTKWidget;
+begin
+  result := gtk.gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
+end;
+
+procedure gdk_image_unref(Image : PGdkImage);
+begin
+  gdk_window_unref(PGdkWindow(Image));
+end;
+
+Function gdk_image_get_colormap(Image : PGDKImage) : PGdkColormap;
+begin
+  result := gdk_window_get_colormap(PGdkWindow(Image));
+end;
+
+Procedure gdk_colormap_query_color(colormap : PGDKColormap; Pixel : gulong; Result : PGDKColor);
+var
+  GdkColorContext: PGdkColorContext;
+begin
+  if (Colormap = nil) or (Result = nil) then exit;
+  GdkColorContext:= gdk_color_context_new(gdk_colormap_get_visual(colormap),colormap);
+  Result^.Pixel := Pixel;
+  gdk_color_context_query_color(GdkColorContext, Result);
+  gdk_color_context_free(GdkColorContext);
+end;
+
 Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
 begin
   result := gdk_regions_intersect(source1, source2);
@@ -143,6 +174,30 @@ begin
   gdk_region_destroy(EmptyRegion);
 end;
 
+Function gdk_pixmap_create_from_xpm_d (window : PGdkWindow; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
+begin
+  result := gdk.gdk_pixmap_create_from_xpm_d(window, @mask, transparent_color, data)
+end;
+
+Function gdk_pixmap_colormap_create_from_xpm_d (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; data : PPgchar) : PGdkPixmap;
+begin
+  result := gdk.gdk_pixmap_colormap_create_from_xpm_d(window, colormap, @mask, transparent_color, data)
+end;
+
+Function gdk_pixmap_colormap_create_from_xpm (window : PGdkWindow; colormap: PGdkColormap; var mask : PGdkBitmap; transparent_color : PGdkColor; filename : Pgchar) : PGdkPixmap;
+begin
+  result := gdk.gdk_pixmap_colormap_create_from_xpm(window, colormap, @mask, transparent_color, filename)
+end;
+
+{$IfNDef NoGdkPixbufLib}
+
+Procedure gdk_pixbuf_render_pixmap_and_mask(pixbuf : PGdkPixbuf; var pixmap_return : PGdkPixmap; var mask_return : PGdkBitmap; alpha_threshold : gint);
+begin
+  gdkpixbuf.gdk_pixbuf_render_pixmap_and_mask(pixbuf, @pixmap_return, @mask_return, alpha_threshold);
+end;
+
+{$EndIf}
+
 Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
 begin
   gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @result);
@@ -152,6 +207,17 @@ Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
 begin
   gdk_window_get_geometry(Drawable, nil, nil, Width, Height, nil);
 end;
+
+Function gdk_drawable_get_image(Drawable : PGDKDrawable; x, y, width, height : gint) : PGdkImage;
+begin
+  result := gdk_image_get(Drawable, x, y, width, height);
+end;
+
+Function gdk_drawable_get_colormap(Drawable : PGDKDrawable) : PGdkColormap;
+begin
+  result := gdk_window_get_colormap(Drawable);
+end;
+
 {$EndIf}
 
 {$Ifdef GTK2}
@@ -177,11 +243,6 @@ begin
     result := GTK2.gtk_window_get_modal(window)
   else
     result := False;
-end;
-
-Procedure gtk_signal_handlers_destroy(anObject : PGtkObject);
-begin
-  g_signal_handlers_destroy(PGObject(anObject));
 end;
 
 Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
@@ -2063,11 +2124,11 @@ begin
   // - check if a handler already exists
   // - Find the realize handler to change data
   Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
-  SignalID := gtk_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
+  SignalID := g_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
   if SignalID<0 then
     RaiseGDBException('ConnectSignal');
   if csfConnectRealize in SFlags then
-    RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))
+    RealizeID := g_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))
   else
     RealizeID := 0;
   RealizeHandler := nil;
@@ -2115,10 +2176,10 @@ begin
   // -> register handler
   //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
   if csfAfter in SFlags then
-    gtk_signal_connect_after(AnObject, ASignal,
+    g_signal_connect_after(AnObject, ASignal,
                              TGTKSignalFunc(ACallBackProc),LCLComponent)
   else
-    gtk_signal_connect      (AnObject, ASignal,
+    g_signal_connect      (AnObject, ASignal,
                              TGTKSignalFunc(ACallBackProc),LCLComponent);
 
   // update signal mask which will be set in the realize handler
@@ -2133,9 +2194,9 @@ begin
   if (csfConnectRealize in SFlags)
   and (RealizeHandler = nil) and (RealizeID<>0) then begin
     //writeln('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
-    gtk_signal_connect(AnObject, 'realize',
+    g_signal_connect(AnObject, 'realize',
       TGTKSignalFunc(@GTKRealizeCB), LCLComponent);
-    gtk_signal_connect_after(AnObject, 'realize',
+    g_signal_connect_after(AnObject, 'realize',
       TGTKSignalFunc(@GTKRealizeAfterCB), LCLComponent);
   end;
 
@@ -2208,23 +2269,32 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   var
     ScrolledWindow: PGtkScrolledWindow;
     BinWidget: PGtkBin;
+    {$IFDEF Gtk2}
+    ChildEntry2: PGList;
+    {$ELSE}
     ChildEntry: PGSList;
+    {$ENDIF}
     ChildWidget: PGtkWidget;
   begin
     //if AWinControl is TListView then writeln('ConnectChilds A ',HexStr(Cardinal(TheWidget),8));
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
       //if AWinControl is TListView then writeln('ConnectChilds B ');
       // this is a container widget -> connect all childs
-      {$IfDef GTK2}
-      ChildEntry:=nil;
-      {$else}
+      {$IFDEF Gtk2}
+      ChildEntry2:=gtk_container_get_children(PGtkContainer(TheWidget));
+      while ChildEntry2<>nil do begin
+        if PGtkWidget(ChildEntry2^.Data)<>TheWidget then
+          ConnectSignals(PGtkWidget(ChildEntry2^.Data));
+        ChildEntry2:=ChildEntry2^.Next;
+      end;
+      {$ELSE}
       ChildEntry:=PGtkContainer(TheWidget)^.resize_widgets;
-      {$endif}
       while ChildEntry<>nil do begin
         ChildWidget:=PGtkWidget(ChildEntry^.Data);
         ConnectSignals(ChildWidget);
         ChildEntry:=ChildEntry^.Next;
       end;
+      {$endif}
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_BIN) then begin
       //if AWinControl is TListView then writeln('ConnectChilds C ');
@@ -3092,7 +3162,7 @@ begin
     if (OldCheckMenuItemToggleSize=0) then
       OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
     {$endif}
-    gtk_signal_connect_after(PGTKObject(MenuItemWidget), 'toggled',
+    g_signal_connect_after(PGTKObject(MenuItemWidget), 'toggled',
       TGTKSignalFunc(@GTKCheckMenuToggeledCB), Pointer(LCLMenuItem));
   end;
 
@@ -3487,19 +3557,11 @@ end;
   
   this is a helper function for WaitForClipboardAnswer
  ------------------------------------------------------------------------------}
-{$IFDEF Gtk2}
-function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gboolean; cdecl;
+function WaitForClipbrdAnswerDummyTimer(Client: Pointer): {$IFDEF Gtk2}gboolean{$ELSE}gint{$ENDIF}; cdecl;
 begin
   if CLient=nil then ;
-  Result:=true; // go on, make sure getting a message at least every second
+  Result:=GdkTrue; // go on, make sure getting a message at least every second
 end;
-{$ELSE}
-function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gint; cdecl;
-begin
-  if CLient=nil then ;
-  Result:=1; // go on, make sure getting a message at least every second
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: WaitForClipboardAnswer
@@ -3617,7 +3679,7 @@ begin
     writeln('[RequestSelectionData] TimeID=',TimeID);
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
-                             FormatID, TimeID){$IFDEF Gtk2}=false{$ELSE}<>0{$ENDIF}
+                             FormatID, TimeID)<>GdkFalse
     then
       break;
     ClipboardSelectionData.Remove(c);
@@ -4390,9 +4452,6 @@ Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
   Colormap: PGDKColormap) : TGDIRGB;
 var
   Color: TGDKColor;
-{$IFDEF Gtk1}
-  GdkColorContext: PGdkColorContext;
-{$ENDIF}
 begin
   FillChar(Result, SizeOf(TGDIRGB),0);
 
@@ -4403,14 +4462,7 @@ begin
   
   gdk_error_trap_push;
 
-  {$IFDEF Gtk2}
   gdk_colormap_query_color(colormap, pixel, @color);
-  {$ELSE}
-  Color.Pixel := Pixel;
-  GdkColorContext := gdk_color_context_new(Visual,Colormap);
-  gdk_color_context_query_color(GdkColorContext,@Color);
-  gdk_color_context_free(GdkColorContext);
-  {$ENDIF}
 
   Result.Red := Color.Red shr 8;
   Result.Green := Color.Green shr 8;
@@ -4538,6 +4590,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.200  2003/09/09 04:15:08  ajgenius
+  more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
+
   Revision 1.199  2003/09/06 22:56:03  ajgenius
   started gtk2 stock icon overrides
   partial/temp(?) workaround for dc paint offsets

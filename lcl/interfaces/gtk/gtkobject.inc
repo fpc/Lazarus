@@ -1563,15 +1563,8 @@ begin
     ColorMap:=gdk_colormap_get_system;
   GdiObject^.GDIPixmapObject :=
     gdk_pixmap_colormap_create_from_xpm(Window,Colormap,
-           {$IFDEF Gtk2}
-           GdiObject^.GDIBitmapMaskObject,
-           {$ELSE}
-           @(GdiObject^.GDIBitmapMaskObject),
-           {$ENDIF}
-           p, Filename);
+           GdiObject^.GDIBitmapMaskObject, p, Filename);
   GdiObject^.GDIBitmapType:=gbPixmap;
-//  gdk_window_get_geometry(GdiObject^.GDIPixmapObject,
-//    nil, nil, @Width, @Height, @Depth);
   gdk_drawable_get_size(GdiObject^.GDIPixmapObject,@Width, @Height);
   Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
   
@@ -1618,17 +1611,9 @@ var
 
     TMP := CreateCompatibleBitmap(0, Width, Height);
     gdk_pixbuf_render_pixmap_and_mask(Src,
-      {$IFDEF Gtk2}
       PGDIObject(TMP)^.GDIPixmapObject,
       PGDIObject(TMP)^.GDIBitmapMaskObject,
-      {$ELSE}
-      @PGDIObject(TMP)^.GDIPixmapObject,
-      PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject),
-      {$ENDIF}
       0);
-
-//    gdk_window_get_geometry(PGDIObject(TMP)^.GDIPixmapObject,
-//      nil, nil, nil, nil, @Depth);
 
   Depth := gdk_drawable_get_depth(PGDIObject(TMP)^.GDIPixmapObject);
 
@@ -1730,17 +1715,10 @@ Type
 
     With PGDIObject(Bitmap)^ do begin
       gdk_pixbuf_render_pixmap_and_mask(Src,
-        {$IFDEF Gtk2}
         GDIPixmapObject,
         GDIBitmapMaskObject,
-        {$ELSE}
-        @GDIPixmapObject,
-        PPGDKBitmap(@GDIBitmapMaskObject),
-        {$ENDIF}
         0);
 
-//      gdk_window_get_geometry(GDIPixmapObject,
-//        nil, nil, nil, nil, @Depth);
 
   Depth := gdk_drawable_get_depth(GDIPixmapObject);
       If Visual <> nil then
@@ -2637,7 +2615,7 @@ begin
                      GTK_DEST_DEFAULT_ALL,
                      target_table, TargetEntrys - 1,
                      GDK_ACTION_COPY or GDK_ACTION_MOVE);
-            gtk_signal_connect( PgtkObject(p), 'drag_data_received',
+            g_signal_connect( PgtkObject(p), 'drag_data_received',
                       TGTKSignalFunc( @edit_drag_data_received), Sender);
 
             gtk_drag_source_set (p, GDK_BUTTON1_MASK,
@@ -2646,7 +2624,7 @@ begin
             gtk_drag_source_set_icon (p,
                             gtk_widget_get_colormap (pgtkwidget(p)),
                             drag_icon, drag_mask);
-            gtk_signal_connect (GTK_OBJECT (p), 'drag_data_get',
+            g_signal_connect (GTK_OBJECT (p), 'drag_data_get',
                       GTK_SIGNAL_FUNC (@Edit_source_drag_data_get), Sender);
             gtk_signal_connect (GTK_OBJECT (p), 'drag_data_delete',
                       GTK_SIGNAL_FUNC (@Edit_source_drag_data_delete), Sender);
@@ -2658,7 +2636,7 @@ begin
                      GTK_DEST_DEFAULT_ALL,
                      target_table, TargetEntrys - 1,
                      GDK_ACTION_COPY or GDK_ACTION_MOVE);
-            gtk_signal_connect( PgtkObject(p), 'drag_data_received',
+            g_signal_connect( PgtkObject(p), 'drag_data_received',
                       TGTKSignalFunc( @edit_drag_data_received), Sender);
 
             gtk_drag_source_set (p, GDK_BUTTON1_MASK,
@@ -2667,9 +2645,9 @@ begin
             gtk_drag_source_set_icon (p,
                             gtk_widget_get_colormap (pgtkwidget(p)),
                             drag_icon, drag_mask);
-            gtk_signal_connect (GTK_OBJECT (p), 'drag_data_get',
+            g_signal_connect (GTK_OBJECT (p), 'drag_data_get',
                       GTK_SIGNAL_FUNC (@Edit_source_drag_data_get), Sender);
-            gtk_signal_connect (GTK_OBJECT (p), 'drag_data_delete',
+            g_signal_connect (GTK_OBJECT (p), 'drag_data_delete',
                       GTK_SIGNAL_FUNC (@Edit_source_drag_data_delete), Sender);
             end;
           *)
@@ -3919,9 +3897,9 @@ begin
     LM_PAINT :
     begin
       ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
-      {$IFDEF Gtk1}
+      {$Ifdef GTK1}
       ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
-      {$ENDIF}
+      {$EndIf}
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
@@ -3962,7 +3940,6 @@ begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
-      {$IfDef GTK1}
       else if (Sender is TCustomForm) then begin
         ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown,
                             GDK_KEY_PRESS_MASK);
@@ -3973,7 +3950,6 @@ begin
                           GDK_KEY_PRESS_MASK);
       ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
                           GDK_KEY_RELEASE_MASK);
-      {$EndIf}
     end;
     
     LM_MONTHCHANGED :  //calendar
@@ -4019,12 +3995,10 @@ begin
           @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end
       else begin
-      {$IfDef GTK1}
         ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
         ConnectSenderSignalAfter(gFixed, 'motion-notify-event',
                       @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
-      {$EndIf}
       end;
     end;
 
@@ -4050,12 +4024,10 @@ begin
         //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
       end
       else begin
-      {$IfDef GTK1}
         ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
                       GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-press-event',
                       @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
-      {$EndIf}
       end;
     end;
 
@@ -4082,12 +4054,10 @@ begin
         //                GDK_BUTTON_RELEASE_MASK);
       end
       else begin
-      {$IfDef GTK1}
         ConnectSenderSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-release-event',
                            @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
-      {$EndIf}
       end;
     end;
 
@@ -4343,12 +4313,12 @@ begin
   else
     ImplWidget:=nil;
 
-  gtk_signal_handlers_destroy(PGtkObject(MainWidget));
+  g_signal_handlers_destroy(PGtkObject(MainWidget));
   if (ClientWidget<>nil) and (ClientWidget<>MainWidget) then
-    gtk_signal_handlers_destroy(PGtkObject(ClientWidget));
+    g_signal_handlers_destroy(PGtkObject(ClientWidget));
   if (ImplWidget<>nil)
   and (ImplWidget<>ClientWidget) and (ImplWidget<>MainWidget) then
-    gtk_signal_handlers_destroy(PGtkObject(ImplWidget));
+    g_signal_handlers_destroy(PGtkObject(ImplWidget));
 end;
 
 {-------------------------------------------------------------------------------
@@ -4621,15 +4591,15 @@ begin
   SetLCLObject(AWindow,ADialog);
 
   // connect events
-  gtk_signal_connect(gtk_object(AWindow),
+  g_signal_connect(gtk_object(AWindow),
     'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
+  g_signal_connect(gtk_object(AWindow),
     'delete-event', gtk_Signal_Func(@gtkDialogCloseQueryCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
+  g_signal_connect(gtk_object(AWindow),
     'key-press-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
+  g_signal_connect(gtk_object(AWindow),
     'key-release-event', gtk_Signal_Func(@GTKDialogKeyUpDownCB), ADialog);
-  gtk_signal_connect(gtk_object(AWindow),
+  g_signal_connect(gtk_object(AWindow),
     'realize', gtk_Signal_Func(@GTKDialogRealizeCB), ADialog);
 
   // set default size
@@ -4704,7 +4674,7 @@ begin
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsHistoryMenuItem',
         HistoryList[i]);
       // add activation signal and add to menu
-      gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
+      g_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
                          gtk_signal_func(@GTKDialogMenuActivateCB),
                          OpenDialog);
       gtk_menu_append({$IfNdef GTK2}PGTKMenu{$EndIf}(MenuWidget), MenuItemWidget);
@@ -4901,7 +4871,7 @@ begin
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsFilterMenuItem',
         FilterList[i]);
       // add activation signal and add to menu
-      gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
+      g_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
                          gtk_signal_func(@GTKDialogMenuActivateCB),
                          OpenDialog);
       gtk_menu_append({$IfNdef GTK2}PGTKMenu{$EndIf}(MenuWidget), MenuItemWidget);
@@ -4997,7 +4967,7 @@ begin
   if ofAllowMultiSelect in OpenDialog.Options then
   begin
     LastFileSelectRow := -1;
-    gtk_signal_connect(gtk_object(PGtkCList(
+    g_signal_connect(gtk_object(PGtkCList(
       PGtkFileSelection(SelWidget)^.file_list)),
       'select-row',
       gtk_signal_func(@gtkOpenDialogRowSelectCB), OpenDialog);
@@ -5010,18 +4980,18 @@ begin
   if (ofShowHelp in OpenDialog.Options)
   and (GTK_FILE_SELECTION(SelWidget)^.Help_Button<>nil) then begin
     gtk_widget_show(GTK_FILE_SELECTION(SelWidget)^.Help_Button);
-    gtk_signal_connect( gtk_object((PGtkFileSelection(SelWidget))^.help_button),
+    g_signal_connect( gtk_object((PGtkFileSelection(SelWidget))^.help_button),
       'clicked', gtk_signal_func(@gtkDialogHelpclickedCB), OpenDialog);
   end;
 
   // connect selection entry (edit field for filename)
   if (GTK_FILE_SELECTION(SelWidget)^.selection_entry<>nil) then begin
     SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.selection_entry,OpenDialog);
-    gtk_signal_connect(
+    g_signal_connect(
       gtk_object((PGtkFileSelection(SelWidget))^.selection_entry),
       'key-press-event', gtk_signal_func(@GTKDialogKeyUpDownCB),
       OpenDialog);
-    gtk_signal_connect(
+    g_signal_connect(
       gtk_object((PGtkFileSelection(SelWidget))^.selection_entry),
       'focus-in-event', gtk_signal_func(@GTKDialogFocusInCB), OpenDialog);
   end;
@@ -5029,14 +4999,14 @@ begin
   // connect dir list (list of directories)
   if (GTK_FILE_SELECTION(SelWidget)^.dir_list<>nil) then begin
     SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.dir_list,OpenDialog);
-    gtk_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.dir_list),
+    g_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.dir_list),
       'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
   end;
 
   // connect file list (list of files in current directory)
   if (GTK_FILE_SELECTION(SelWidget)^.file_list<>nil) then begin
     SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.file_list,OpenDialog);
-    gtk_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.file_list),
+    g_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.file_list),
       'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
   end;
 
@@ -5091,14 +5061,14 @@ begin
    a gtk win32 dll implementation problem where the headers implementation
    does not match the linux version**** }
   {$IFNDEF WIN32}
-    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.ok_button),
+    g_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.ok_button),
       'clicked', gtk_signal_func(@gtkDialogOKclickedCB), FileDialog);
-    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.cancel_button),
+    g_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.cancel_button),
       'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), FileDialog);
   {$ELSE}
-    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.cancel_button),
+    g_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.cancel_button),
       'clicked', gtk_signal_func(@gtkDialogOKclickedCB), FileDialog);
-    gtk_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.help_button),
+    g_signal_connect(gtk_object(PGtkFileSelection(SelWidget)^.help_button),
       'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), FileDialog);
   {$ENDIF}
 
@@ -5121,13 +5091,13 @@ begin
   SelWidget := gtk_font_selection_dialog_new(Title);
 
   // connect Ok, Cancel and Apply Button
-  gtk_signal_connect(
+  g_signal_connect(
     gtk_object(PGtkFontSelectionDialog(SelWidget)^.ok_button),
     'clicked', gtk_signal_func(@gtkDialogOKclickedCB), FontDialog);
-  gtk_signal_connect(
+  g_signal_connect(
     gtk_object(PGtkFontSelectionDialog(SelWidget)^.cancel_button),
     'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), FontDialog);
-  gtk_signal_connect(
+  g_signal_connect(
     gtk_object(PGtkFontSelectionDialog(SelWidget)^.apply_button),
     'clicked', gtk_signal_func(@gtkDialogApplyclickedCB), FontDialog);
   if fdApplyButton in FontDialog.Options then
@@ -5327,7 +5297,7 @@ begin
   //drag icons
   if Drag_Icon = nil then
     Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                         gtk_widget_get_colormap (Result), {$IfDef GTK1}@{$EndIf}Drag_Mask,
+                         gtk_widget_get_colormap (Result), Drag_Mask,
                          nil, @IMGDrag_Icon);
 
   // main menu
@@ -5584,9 +5554,9 @@ begin
       // color dialog
       // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION(
       //   GTK_COLOR_SELECTION_DIALOG(P)^.colorsel), GTK_UPDATE_DISCONTINUOUS);
-      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button),
+      g_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button),
         'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-      gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button),
+      g_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button),
         'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
       InitializeCommonDialog(TCommonDialog(Sender),p);
     end;
@@ -5658,7 +5628,7 @@ begin
 
   csImage :
     Begin
-      p := gtk_image_new({$IfDef GTK1}nil,nil{$EndIf});
+      p := gtk_image_new();
     end;
 
 
@@ -5878,7 +5848,7 @@ begin
 
   csToolbar:
     begin
-       p := gtk_toolbar_new({$IfDef GTK1}GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH{$EndIf});
+       p := gtk_toolbar_new();
        gtk_widget_show (P);
     end;
 
@@ -6126,10 +6096,9 @@ begin
     on e: Exception do
       writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
   end;
-  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,{$IfDef GTK1}@{$EndIf}PixmapMask,nil,ImgData);
+  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,PixmapMask,nil,ImgData);
   FreeMem(ImgData);
 end;
-
 {-------------------------------------------------------------------------------
   method TGtkObject GetNoteBookCloseBtnPixmap
   Params: ANoteBook: TCustomNotebook; APage: TPage
@@ -6339,7 +6308,7 @@ var
                             TabCloseBtnPixmapWidget);
         end;
         gtk_widget_show(TabCloseBtnWidget);
-        gtk_signal_connect(PGtkObject(TabCloseBtnWidget), 'clicked',
+        g_signal_connect(PGtkObject(TabCloseBtnWidget), 'clicked',
           TGTKSignalFunc(@gtkNoteBookCloseBtnClicked), APage);
         gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabCloseBtnWidget);
       end;
@@ -6530,7 +6499,6 @@ end;
   Set the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
-{$IfDef GTK1}
 var
   aDC     : TDeviceContext;
   X: Integer;
@@ -6551,9 +6519,6 @@ begin
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
   gdk_gc_set_foreground(aDC.GC, @GDKColor);
   gdk_draw_point(aDC.Drawable, aDC.GC, X,Y);
-{$Else}
-begin
-{$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -6565,12 +6530,11 @@ end;
   Get the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
 procedure TgtkObject.GetPixel(Sender : TObject; Data : Pointer);
-{$IfDef GTK1}
 var
   aDC    : TDeviceContext;
   Image  : pGDKImage;
   GDKColor: TGDKColor;
-  GdkColorContext: PGdkColorContext;
+  Colormap : PGDKColormap;
   X: Integer;
   Y: Integer;
   DCOrigin: TPoint;
@@ -6587,24 +6551,25 @@ begin
   inc(X,DCOrigin.X);
   inc(Y,DCOrigin.Y);
 
-  gdk_window_get_size(aDC.Drawable, @MaxX, @MaxY);
+  gdk_drawable_get_size(aDC.Drawable, @MaxX, @MaxY);
   if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
 
-  Image := gdk_image_get(PGdkWindow(aDC.Drawable),X,Y,1,1);
+  Image := gdk_drawable_get_image(aDC.Drawable,X,Y,1,1);
   if Image = nil then exit;
 
-  GDKColor.Pixel := gdk_image_get_pixel(Image,0,0);
-  gdk_window_unref(PGdkWindow(Image));
-  
-  GdkColorContext:=
-           gdk_color_context_new(gdk_visual_get_system,gdk_colormap_get_system);
-  gdk_color_context_query_color(GdkColorContext,@GDKColor);
-  gdk_color_context_free(GdkColorContext);
-    
+  colormap := gdk_image_get_colormap(image);
+
+  if colormap = nil then
+    colormap := gdk_drawable_get_colormap(aDC.Drawable);
+
+  if colormap = nil then
+    colormap := gdk_colormap_get_system;
+
+  gdk_colormap_query_color(colormap, gdk_image_get_pixel(Image,0,0), @GDKColor);
+
+  gdk_image_unref(Image);
+
   TLMSetGetPixel(data^).PixColor := TGDKColorToTColor(GDKColor);
-{$Else}
-begin
-{$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -6739,7 +6704,7 @@ begin
     begin
       if Handle = nil then Exit;
       gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
-      gtk_signal_emit_by_name (PGtkObject
+      g_signal_emit_by_name (PGtkObject
          (gtk_range_get_adjustment (
              GTK_RANGE (handle))), 'value_changed');
     end;
@@ -7905,11 +7870,11 @@ begin
   ClipboardWidget:=TargetWidget;
   if ClipboardWidget<>nil then begin
     // connect widget to all clipboard signals
-    gtk_signal_connect(PGtkObject(ClipboardWidget),'selection_received',
+    g_signal_connect(PGtkObject(ClipboardWidget),'selection_received',
       TGTKSignalFunc(@ClipboardSelectionReceivedHandler),0);
-    gtk_signal_connect(PGtkObject(ClipboardWidget),'selection_get',
+    g_signal_connect(PGtkObject(ClipboardWidget),'selection_get',
       TGTKSignalFunc(@ClipboardSelectionRequestHandler),0);
-    gtk_signal_connect(PGtkObject(ClipboardWidget),'selection_clear_event',
+    g_signal_connect(PGtkObject(ClipboardWidget),'selection_clear_event',
       TGTKSignalFunc(@ClipboardSelectionLostOwnershipHandler),0);
     // add all supported targets for all clipboard types
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
@@ -8148,6 +8113,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.410  2003/09/09 04:15:08  ajgenius
+  more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
+
   Revision 1.409  2003/09/06 20:23:53  ajgenius
   fixes for gtk2
   added more wrappers for gtk1/gtk2 converstion and sanity
