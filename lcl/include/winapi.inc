@@ -405,7 +405,12 @@ begin
   Result := InterfaceObject.GetRGNBox(RGN, lpRect);
 end;
 
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+begin
+  Result := InterfaceObject.GetScrollBarSize(Handle, BarKind);
+end;
+
+function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 begin
   Result := InterfaceObject.GetScrollInfo(Handle, BarFlag, ScrollInfo);
 end;
@@ -1375,6 +1380,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/10/31 21:29:47  lazarus
+  MG: implemented TControlScrollBar.Size
+
   Revision 1.59  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 

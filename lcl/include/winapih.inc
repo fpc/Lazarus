@@ -116,6 +116,7 @@ function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 Function GetParent(Handle : HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function GetScrollPos --> independent
 //function GetScrollRange --> independent
@@ -334,6 +335,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/10/31 21:29:47  lazarus
+  MG: implemented TControlScrollBar.Size
+
   Revision 1.52  2002/10/23 14:36:53  lazarus
   AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
      fixed TGraphicPropertyEditor for when Property is nil.
