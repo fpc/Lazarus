@@ -249,7 +249,7 @@ Type
   protected
     procedure Change; virtual;
     procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+                           Operation: TOperation); override;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     property DataLink: TFieldDataLink read FDataLink;
@@ -304,6 +304,8 @@ Type
     function GetFieldCheckState: TCheckBoxState; virtual;
     procedure DataChange(Sender: TObject); virtual;
     procedure UpdateData(Sender: TObject); virtual;
+    procedure Notification(AComponent: TComponent;
+                           Operation: TOperation); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -363,6 +365,8 @@ Type
     procedure SetComboText(const NewText: string); virtual;
     procedure DataChange(Sender: TObject); virtual;
     procedure EditingChange(Sender: TObject); virtual;
+    procedure Notification(AComponent: TComponent;
+                           Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -427,6 +431,8 @@ Type
     function WordWrapIsStored: boolean; virtual;
     procedure DataChange(Sender: TObject); virtual;
     procedure EditingChange(Sender: TObject); virtual;
+    procedure Notification(AComponent: TComponent;
+                           Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -456,6 +462,61 @@ Type
     property Visible;
     property WordWrap stored WordWrapIsStored;
   end;
+  
+  
+  { TDBGroupBox }
+  
+  TDBGroupBox = class(TCustomGroupBox)
+    FDataLink: TFieldDataLink;
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    procedure SetDataField(const AValue: string);
+    procedure SetDataSource(const AValue: TDataSource);
+  protected
+    procedure DataChange(Sender: TObject); virtual;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Field: TField read GetField;
+  published
+    property Align;
+    property Anchors;
+    property Caption;
+    property ClientHeight;
+    property ClientWidth;
+    property Color;
+    property Constraints;
+    property Ctl3D;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property Enabled;
+    property Font;
+    property OnClick;
+    property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+  end;
+  
 
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
@@ -789,12 +850,16 @@ end;
 {$Include dbcheckbox.inc}
 {$Include dbcombobox.inc}
 {$Include dbmemo.inc}
+{$Include dbgroupbox.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/09/18 14:00:09  mattias
+  implemented TDBGroupBox
+
   Revision 1.7  2003/09/18 12:15:01  mattias
   fixed is checks for TCustomXXX controls
 

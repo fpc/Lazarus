@@ -1160,7 +1160,7 @@ Begin
   OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
   if OwnerObject is TWinControl then begin
     TheWinControl:=TWinControl(OwnerObject);
-    if TheWinControl is TGroupBox then begin
+    if TheWinControl is TCustomGroupBox then begin
       // The client area of a groupbox under win32 is the whole size, including
       // the frame. The LCL defines the client area without the frame.
       // -> Adjust the client size
@@ -2475,6 +2475,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2003/09/18 14:00:09  mattias
+  implemented TDBGroupBox
+
   Revision 1.59  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 

@@ -118,6 +118,16 @@ begin
     end;
 end;
 
+procedure TDBCheckBox.Notification(AComponent: TComponent; Operation: TOperation
+  );
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) then begin
+    if (FDataLink<>nil) and (AComponent=DataSource) then
+      DataSource:=nil;
+  end;
+end;
+
 function TDBCheckBox.ValueEqualsField(const AValue, AFieldText: string
   ): boolean;
 begin

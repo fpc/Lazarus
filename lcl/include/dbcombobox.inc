@@ -101,6 +101,16 @@ begin
   // ToDo
 end;
 
+procedure TDBComboBox.Notification(AComponent: TComponent; Operation: TOperation
+  );
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) then begin
+    if (FDataLink<>nil) and (AComponent=DataSource) then
+      DataSource:=nil;
+  end;
+end;
+
 procedure TDBComboBox.UpdateData(Sender: TObject);
 begin
   // ToDo: use Field.Text

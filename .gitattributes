@@ -809,6 +809,7 @@ lcl/include/customupdown.inc svneol=native#text/pascal
 lcl/include/dbcheckbox.inc svneol=native#text/pascal
 lcl/include/dbcombobox.inc svneol=native#text/pascal
 lcl/include/dbedit.inc svneol=native#text/pascal
+lcl/include/dbgroupbox.inc svneol=native#text/pascal
 lcl/include/dblistbox.inc svneol=native#text/pascal
 lcl/include/dbmemo.inc svneol=native#text/pascal
 lcl/include/dbradiogroup.inc svneol=native#text/pascal

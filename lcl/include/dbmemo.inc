@@ -98,6 +98,15 @@ begin
   inherited ReadOnly:=not (FDataLink.Editing and FDBMemoLoaded);
 end;
 
+procedure TDBMemo.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation=opRemove) then begin
+    if (FDataLink<>nil) and (AComponent=DataSource) then
+      DataSource:=nil;
+  end;
+end;
+
 procedure TDBMemo.UpdateData(Sender: TObject);
 begin
   FDataLink.Field.AsString:=Text;
