@@ -119,6 +119,11 @@ begin
   Result := FShowAccelChar;
 end;
 
+function TCustomStaticText.CanTab: boolean;
+begin
+  Result:=false;
+end;
+
 constructor TCustomStaticText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -182,6 +187,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2004/08/04 09:57:17  mattias
+  TStaticText.CanTab=false
+
   Revision 1.6  2004/05/21 09:03:55  micha
   implement new borderstyle
   - centralize to twincontrol (protected)

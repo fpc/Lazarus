@@ -1048,6 +1048,7 @@ type
     Procedure SetFocusControl(Value : TWinControl);
     Procedure SetShowAccelChar(Value : Boolean);
     Function GetShowAccelChar : Boolean;
+    function CanTab: boolean; override;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
@@ -1057,6 +1058,9 @@ type
     constructor Create(AOwner: TComponent); override;
     Procedure Paint; override;
   end;
+  
+  
+  { TStaticText }
 
   TStaticText = class(TCustomStaticText)
   published
@@ -1154,6 +1158,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.155  2004/08/04 09:57:17  mattias
+  TStaticText.CanTab=false
+
   Revision 1.154  2004/07/16 21:49:00  mattias
   added RTTI controls
 

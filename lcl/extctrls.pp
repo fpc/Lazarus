@@ -392,7 +392,7 @@ type
     constructor Create(TheOwner: TComponent); override;
   public
     property Align default alLeft;
-    property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsLine;
+    property ResizeStyle: TResizeStyle read FResizeStyle write SetResizeStyle default rsUpdate;
     property AutoSnap: boolean read FAutoSnap write SetAutoSnap default true;
     property Beveled: boolean read FBeveled write SetBeveled default false;
     property MinSize: integer read FMinSize write SetMinSize default 30;
@@ -967,6 +967,9 @@ end.
 
  {
   $Log$
+  Revision 1.113  2004/08/04 09:57:17  mattias
+  TStaticText.CanTab=false
+
   Revision 1.112  2004/07/17 15:08:35  mattias
   fixed tab for TPanel and TPage
 
