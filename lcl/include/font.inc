@@ -27,13 +27,8 @@ type
   end;
   PLogFontAndName = ^TLogFontAndName;
 
-function CompareLogFontAndNameWithResDesc(AKey, ADesc: Pointer): integer;
-var
-  Key: PLogFontAndName;
-  Desc: TFontHandleCacheDescriptor;
+function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName; Desc: TFontHandleCacheDescriptor): integer;
 begin
-  Key := PLogFontAndName(AKey);
-  Desc := TFontHandleCacheDescriptor(ADesc);
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
   //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
   if Result=0 then
@@ -71,7 +66,7 @@ function TFontHandleCache.FindFont(TheFont: HFONT): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.FindKey(@THandle(TheFont),@ComparePHandleWithResourceCacheItem);
+  ANode:=FItems.FindKey(@THandle(TheFont), TListSortCompare(@ComparePHandleWithResourceCacheItem));
   if ANode<>nil then
     Result:=TResourceCacheItem(ANode.Data)
   else
@@ -87,7 +82,7 @@ begin
   LogFontAndName.LogFont:=LogFont;
   LogFontAndName.LongFontName:=LongFontName;
   ANode:=FDescriptors.Findkey(@LogFontAndName,
-                              @CompareLogFontAndNameWithResDesc);
+                            TListSortCompare(@CompareLogFontAndNameWithResDesc));
   if ANode<>nil then
     Result:=TFontHandleCacheDescriptor(ANode.Data)
   else
@@ -954,6 +949,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/11/04 00:52:23  marc
+  * Changed typing fixes to casting
+
   Revision 1.17  2004/11/03 22:13:48  marc
   * Fixed fpc stronger typing
 

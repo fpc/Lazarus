@@ -112,10 +112,9 @@ end;
 
 { TGdkFontCache }
 
-function CompareGdkFontWithResItem(Font, Item: Pointer): integer;
-// Font = PGDKFont
+function CompareGdkFontWithResItem(Font: PGDKFont; Item: TGdkFontCacheItem): integer;
 begin
-  Result := ComparePointers(Font, TGdkFontCacheItem(Item).GdkFont);
+  Result := ComparePointers(Font, Item.GdkFont);
 end;
 
 function CompareLogFontAndNameWithResDesc(AKey, ADesc: Pointer): integer;
@@ -171,7 +170,7 @@ function TGdkFontCache.FindGDKFont(TheGdkFont: PGDKFont): TGdkFontCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.Findkey(TheGdkFont,@CompareGdkFontWithResItem);
+  ANode:=FItems.Findkey(TheGdkFont,TListSortCompare(@CompareGdkFontWithResItem));
   if ANode<>nil then
     Result:=TGdkFontCacheItem(ANode.Data)
   else

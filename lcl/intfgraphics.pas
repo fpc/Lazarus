@@ -2236,17 +2236,14 @@ type
   end;
   PLazAVLPaletteEntry = ^TLazAVLPaletteEntry;
 
-function CompareLazAVLPaletteEntries(Entry1, Entry2: Pointer): integer;
+function CompareLazAVLPaletteEntries(Entry1, Entry2: PLazAVLPaletteEntry): integer;
 begin
-  with PLazAVLPaletteEntry(Entry1)^ do
-    Result := Palette.CompareEntries(Index,
-                PLazAVLPaletteEntry(Entry2)^.Index);
+  Result := Entry1^.Palette.CompareEntries(Entry1^.Index, Entry2^.Index);
 end;
 
-function ComparePFPColorAndLazAVLPalEntry(PColor, Entry: Pointer): integer;
+function ComparePFPColorAndLazAVLPalEntry(PColor: PFPColor; Entry: PLazAVLPaletteEntry): integer;
 begin
-  with PLazAVLPaletteEntry(Entry)^ do
-    Result := Palette.CompareColorWithEntries(PFPColor(PColor)^, Index);
+  Result := Entry^.Palette.CompareColorWithEntries(PColor^, Entry^.Index);
 end;
 
 procedure TLazAVLPalette.SetCount(NewCount: integer);
@@ -2270,7 +2267,7 @@ begin
   inherited SetCount(NewCount);
   // create tree if not already done
   if (FAVLPalette=nil) and (FCount>0) then
-    FAVLPalette:=TAvgLvlTree.Create(@CompareLazAVLPaletteEntries);
+    FAVLPalette:=TAvgLvlTree.Create(TListSortCompare(@CompareLazAVLPaletteEntries));
   if FAVLPalette=nil then exit;
   // add new colors to 'color to index' tree and 'index to node' array
   while FAVLPalette.Count<FCount do begin
@@ -2316,7 +2313,7 @@ var
   Node: TAvgLvlTreeNode;
 begin
   if FAVLPalette<>nil then
-    Node:=FAVLPalette.FindKey(@AColor,@ComparePFPColorAndLazAVLPalEntry)
+    Node:=FAVLPalette.FindKey(@AColor,TListSortCompare(@ComparePFPColorAndLazAVLPalEntry))
   else
     Node:=nil;
   if Node<>nil then

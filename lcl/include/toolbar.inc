@@ -21,21 +21,18 @@
 
 {$IFNDEF OldToolBar}
 
-function CompareToolBarControl(AControl1, AControl2: Pointer): integer;
+function CompareToolBarControl(Control1, Control2: TControl): integer;
 var
   ToolBar: TToolBar;
   Row1: Integer;
   Row2: Integer;
   BtnHeight: Integer;
-  Control1, Control2: TControl;
 begin
   Result:=0;
-  Control1 := TControl(AControl1);
   if not (Control1.Parent is TToolBar) then Exit;
 
   ToolBar := TToolBar(Control1.Parent);
   BtnHeight := ToolBar.FRealizedButtonHeight;
-  Control2 := TControl(AControl2);
 
   Row1:=(Control1.Top+(BtnHeight div 2)) div ToolBar.FRealizedButtonHeight;
   Row2:=(Control2.Top+(BtnHeight div 2)) div ToolBar.FRealizedButtonHeight;
@@ -526,7 +523,7 @@ begin
     end;
     // sort OrderedControls
     if FRealizedButtonHeight=0 then FRealizedButtonHeight:=FButtonHeight;
-    OrderedControls.Sort(@CompareToolBarControl);
+    OrderedControls.Sort(TListSortCompare(@CompareToolBarControl));
     
     // position OrderedControls
     ARect:=ClientRect;
@@ -2088,6 +2085,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2004/11/04 00:52:23  marc
+  * Changed typing fixes to casting
+
   Revision 1.32  2004/11/03 22:13:48  marc
   * Fixed fpc stronger typing
 

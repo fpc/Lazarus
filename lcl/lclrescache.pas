@@ -139,24 +139,25 @@ type
                                            read FOnCompareDescPtrWithDescriptor;
   end;
 
-function ComparePHandleWithResourceCacheItem(HandlePtr, Item: Pointer): integer;
-function CompareDescPtrWithBlockResDesc(ADescPtr, AItem: Pointer): integer;
+function ComparePHandleWithResourceCacheItem(HandlePtr: PHandle; Item:
+  TResourceCacheItem): integer;
+function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
+  Item: TBlockResourceCacheDescriptor): integer;
 
 
 implementation
 
 
-function ComparePHandleWithResourceCacheItem(HandlePtr, Item: Pointer): integer;
+function ComparePHandleWithResourceCacheItem(HandlePtr: PHandle; Item:
+  TResourceCacheItem): integer;
 begin
-  Result := CompareHandles(PHandle(HandlePtr)^, TResourceCacheItem(Item).Handle);
+  Result := CompareHandles(HandlePtr^, Item.Handle);
 end;
 
-function CompareDescPtrWithBlockResDesc(ADescPtr, AItem: Pointer): integer;
-var
-  Item: TBlockResourceCacheDescriptor;
+function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
+  Item: TBlockResourceCacheDescriptor): integer;
 begin
-  Item := TBlockResourceCacheDescriptor(AItem);
-  Result := CompareMemRange(ADescPtr, Item.Data,
+  Result := CompareMemRange(DescPtr, Item.Data,
               TBlockResourceCache(Item.Cache).DataSize);
 end;
 
@@ -358,7 +359,7 @@ function THandleResourceCache.FindItem(Handle: THandle): TResourceCacheItem;
 var
   ANode: TAvgLvlTreeNode;
 begin
-  ANode:=FItems.FindKey(@Handle,@ComparePHandleWithResourceCacheItem);
+  ANode:=FItems.FindKey(@Handle,TListSortCompare(@ComparePHandleWithResourceCacheItem));
   if ANode<>nil then
     Result:=TResourceCacheItem(ANode.Data)
   else
@@ -372,7 +373,7 @@ begin
   inherited Create;
   FDataSize:=TheDataSize;
   FResourceCacheDescriptorClass:=TBlockResourceCacheDescriptor;
-  FOnCompareDescPtrWithDescriptor:=@CompareDescPtrWithBlockResDesc;
+  FOnCompareDescPtrWithDescriptor:=TListSortCompare(@CompareDescPtrWithBlockResDesc);
 end;
 
 function TBlockResourceCache.FindDescriptor(DescPtr: Pointer
