@@ -1370,15 +1370,9 @@ End;
   Retrieves a handle to one of the predefined stock objects.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetStockObject(Value: Integer): LongInt;
-Var 
-  StockObj: Integer;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.GetStockObject] %d ', [Value]));
-  If Value = SYSTEM_FONT then
-    StockObj:= DEFAULT_GUI_FONT
-  Else
-    StockObj:= Value;
-  Result := Windows.GetStockObject(StockObj);
+  Result := Windows.GetStockObject(Value);
   Assert(False, Format('Trace:< [TWin32Object.GetStockObject] %d --> 0x%x', [Value, Result]));
 End;
 
@@ -2475,6 +2469,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2003/09/27 09:52:44  mattias
+  TScrollBox for win32 intf from Karl
+
   Revision 1.61  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

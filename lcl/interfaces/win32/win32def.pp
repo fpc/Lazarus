@@ -119,7 +119,10 @@ type
     TimerID: UINT;         // the windows timer ID for this timer
     TimerFunc: TFNTimerProc; // owner function to handle timer
   end;
-
+  // In the way that ScrollWindow is implemented at Windows unit
+  // It's not possible to pass a pointer as argument
+  // which prevents the use of nil   
+  function ScrollWindow(hWnd:HWND; XAmount:longint; YAmount:longint;lpRect,lpClipRect:LPRECT):WINBOOL; external 'user32' name 'ScrollWindow';
 var
   // FTimerData contains the currently running timers
   FTimerData : TList;   // list of PWin32Timerinfo
@@ -131,6 +134,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/09/27 09:52:44  mattias
+  TScrollBox for win32 intf from Karl
+
   Revision 1.7  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 

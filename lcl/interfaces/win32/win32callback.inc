@@ -92,6 +92,7 @@ Var
   TheWinControl: TWinControl;
   WinProcess: Boolean;
   PrevWndProc: Pointer;
+  NewPos: Integer; //Used by TScrollingWindow
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -340,6 +341,36 @@ Begin
         ScrollCode := Lo(WParam);
         Pos := Hi(WParam);
         ScrollBar := LParam;
+        If OwnerObject Is TScrollingWinControl Then
+        With TScrollingWinControl(OwnerObject).HorzScrollbar do
+        begin
+          NewPos := Position;
+          case ScrollCode of
+          SB_LINEUP:
+            Dec(NewPos, Increment);
+          SB_LINEDOWN:
+            Inc(NewPos, Increment);
+          SB_PAGEUP:
+            Dec(NewPos, Page);
+          SB_PAGEDOWN:
+            Inc(NewPos, Page);
+          SB_THUMBPOSITION, SB_THUMBTRACK:
+            NewPos := Pos;
+          SB_TOP:
+            NewPos := 0;
+          SB_BOTTOM:
+            NewPos := Range;
+          end;
+          Windows.GetClientRect(Window,@R);
+          if NewPos < 0 then NewPos := 0;
+          if NewPos > (Range - (Page - 1)) then Begin
+            NewPos := Range - (Page - 1);
+            Win32Def.ScrollWindow(Window,Position - NewPos,0,nil,@R);
+            Position:=NewPos;
+            Exit;
+          End;
+          Win32Def.ScrollWindow(Window,Position - NewPos,0,nil,@R);
+        end;
       End;
     End;
     WM_ERASEBKGND:
@@ -593,6 +624,36 @@ Begin
         ScrollCode := Lo(WParam);
         Pos := Hi(WParam);
         ScrollBar := LParam;
+        If OwnerObject Is TScrollingWinControl Then
+        With TScrollingWinControl(OwnerObject).VertScrollbar do
+        begin
+          NewPos := Position;
+          case ScrollCode of
+          SB_LINEUP:
+            Dec(NewPos, Increment);
+          SB_LINEDOWN:
+            Inc(NewPos, Increment);
+          SB_PAGEUP:
+            Dec(NewPos, Page);
+          SB_PAGEDOWN:
+            Inc(NewPos, Page);
+          SB_THUMBPOSITION, SB_THUMBTRACK:
+            NewPos := Pos;
+          SB_TOP:
+            NewPos := 0;
+          SB_BOTTOM:
+            NewPos := Range;
+          end;
+          Windows.GetClientRect(Window,@R);
+          if NewPos < 0 then NewPos := 0;
+          if NewPos > (Range - (Page - 1)) then Begin
+            NewPos := Range - (Page - 1);
+            Win32Def.ScrollWindow(Window,0,Position - NewPos,nil,@R);
+            Position:=NewPos;
+            Exit;
+          End;
+          Win32Def.ScrollWindow(Window,0,Position - NewPos,nil,@R);
+        end;
       End;
     End;
     WM_WINDOWPOSCHANGED:
@@ -775,6 +836,9 @@ end;
 
 {
   $Log$
+  Revision 1.61  2003/09/27 09:52:44  mattias
+  TScrollBox for win32 intf from Karl
+
   Revision 1.60  2003/09/24 20:43:27  mattias
   fixed wordwrap from Micha
 

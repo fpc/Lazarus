@@ -75,11 +75,11 @@ Type
     FStockWhiteBrush: HBRUSH;
 
     Procedure CreateComponent(Sender: TObject);
-    Function RecreateWnd(Sender: TObject): Integer; virtual;
+    Function RecreateWnd(Sender: TWinControl): Integer; virtual;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
     Procedure SetLabel(Sender: TObject; Data: Pointer);
     Procedure AddChild(Parent, Child: HWND);
-    Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
+    Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
     Procedure SetCursor(Sender: TObject);
@@ -186,6 +186,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/09/27 09:52:44  mattias
+  TScrollBox for win32 intf from Karl
+
   Revision 1.42  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

@@ -373,15 +373,14 @@ Var
   ListItemIndex: TListItem;
   LVI: LV_ITEM;
   PStr, PStr2: PChar;
-  R, R2, NewRect: TRECT;
+  SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE and LM_REDRAW
   S: String;
-  //SelectionMode: DWORD; // currently only used for listboxes
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
   AMenu: TMenu;
   TheWinControl: TWinControl;
-
+  
   Procedure DrawOwnerButton;
   var flags:integer; // How the button looks like (pressed or not pressed)
       BitmapHandle: HBITMAP; // Handle of bitmap
@@ -469,7 +468,7 @@ Begin
     LM_SETDESIGNING:
       if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
     LM_RECREATEWND:
-      Result := RecreateWnd(Sender);
+      Result := RecreateWnd(TWinControl(Sender));
     LM_ATTACHMENU:
       AttachMenu(Sender);
         //SH: think of TBitmap.handle!!!!
@@ -707,51 +706,45 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETSIZE:
         Begin
-          If (Sender Is TWinControl) and TWinControl(Sender).HandleAllocated Then
+          If (Sender Is TWinControl) Then // Handle is already tested --> see above 
+          With PRect(Data)^ do
           begin
             TheWinControl:=TWinControl(Sender);
-            NewRect := PRect(Data)^;
-            {Get the width and height for the form}
-            If TheWinControl.FCompStyle = csForm Then
+            SizeRect := PRect(Data)^;
+            Case TheWinControl.FCompStyle of            
+            csForm:
             begin
               // the LCL defines the size of a form without border, win32 with.
               // -> adjust size according to BorderStyle
-              R:=NewRect;
               Case TCustomForm(Sender).BorderStyle of
               bsSizeable,bsSingle,bsDialog:
-                Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
+                Windows.AdjustWindowRect(@SizeRect,WS_OVERLAPPEDWINDOW,false);
               bsToolWindow,bsSizeToolWin:
-                Windows.AdjustWindowRectEx(@R,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
+                Windows.AdjustWindowRectEx(@SizeRect,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
               //bsNone: -> Do Nothing
               End;
-              NewRect.Right:=NewRect.Left+(R.Right-R.Left);
-              NewRect.Bottom:=NewRect.Top+(R.Bottom-R.Top);
-            end
-            else if TheWinControl.FCompStyle = csPage then
+            end;
+            csPage:
             begin
-              if TheWinControl.Parent.HandleAllocated then
-              begin
+              if TheWinControl.Parent.HandleAllocated then Begin
                 Windows.SendMessage(TheWinControl.Parent.Handle,
-                                    TCM_AdjustRect, 0, LPARAM(@NewRect));
-              end
-            end
-            else if TheWinControl.FCompStyle = csComboBox then
+                                    TCM_AdjustRect, 0, LPARAM(@SizeRect));
+                Left := SizeRect.Left;
+                Top := SizeRect.Top;
+              end;                
+            end;
+            csComboBox:
               begin
                 // the height of a combobox is fixed
-                Windows.GetWindowRect(TheWinControl.Handle,@R);
-                NewRect.Bottom:=NewRect.Top+(R.Bottom-R.Top);
+                Windows.GetWindowRect(Handle,@SizeRect);
+                SizeRect.Right:=Right;
+                SizeRect.Left:=Left;
               end;
-            {Adjust for scrollbar}
-//              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
-//                R.Right := R.Right + GetSystemMetrics(SM_CXVSCROLL);
-//              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_HSCROLL) <> 0 then
-//                R.Bottom := R.Bottom + GetSystemMetrics(SM_CYHSCROLL);
-            {writeln('win32: LM_SETSIZE ',TheWinControl.Name,':',TheWinControl.ClassName,
-                ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);}
-            ResizeChild(Sender, NewRect.Left, NewRect.Top,
-                        NewRect.Right - NewRect.Left, NewRect.Bottom - NewRect.Top);
-          end;
-        End;
+            end; //case
+            ResizeChild(TheWinControl, Left, Top, 
+               SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
+          end; //with
+        end; //LM_SETSIZE
         LM_SHOWMODAL:
         Begin
           If Sender Is TCommonDialog Then 
@@ -781,8 +774,8 @@ activate_time :	the time at which the activation event occurred.
               TSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
             Else
             Begin
-              R2 := TSpeedButton(sender).BoundsRect;
-              InvalidateRect(TSpeedButton(Sender).Parent.Handle, @R2, True);
+              SizeRect := TSpeedButton(sender).BoundsRect;
+              InvalidateRect(TSpeedButton(Sender).Parent.Handle, @SizeRect, True);
             End;
         End;
         LM_ADDPAGE:
@@ -871,8 +864,8 @@ activate_time :	the time at which the activation event occurred.
         LM_INVALIDATE:
         Begin
           Assert(False, 'Trace:Trying to invalidate window... !!!');
-          GetClientRect(Handle, R);
-          InvalidateRect(Handle, @R, True);
+          GetClientRect(Handle, SizeRect);
+          InvalidateRect(Handle, @SizeRect, True);
         End;
         LM_SETFORMICON:
         Begin
@@ -1036,7 +1029,7 @@ activate_time :	the time at which the activation event occurred.
         LM_SETSELMODE:
         Begin
         If Sender Is TCustomListBox Then
-          RecreateWnd(Sender);
+          RecreateWnd(TWinControl(Sender));
         End;
         LM_SETBORDER:
         Begin
@@ -1188,29 +1181,21 @@ End;
   Creates a window again
  ------------------------------------------------------------------------------}
 
-Function TWin32Object.RecreateWnd(Sender: TObject): Integer;
+Function TWin32Object.RecreateWnd(Sender: TWinControl): Integer;
 Var
-  AParent,AWinControl : TWinControl;
+  AParent : TWinControl;
 Begin
-  //could we just call IntSendMessage??
+  With Sender do
+  Begin
+    AParent := Parent;
+    // Destroy the window
+    Parent := Nil;
+    // Recreate the window
+    Parent := AParent;
 
-  //destroy old widget
-  // Not Necessary -> See TControl.SetParent
-  // If TWinControl(Sender).Handle <> 0 Then
-  //  DestroyWindow(TWinControl(Sender).Handle);
-  AWinControl:= TWinControl(Sender);
-  AParent := AWinControl.Parent;
-  //Not necessary
-  //AParent.RemoveControl(TControl(Sender));
-
-  AWinControl.Parent := Nil;
-  AWinControl.Parent := AParent;
-
-  ResizeChild(Sender,AWinControl.Left,AWinControl.Top,
-              AWinControl.Width,AWinControl.Height);
-  ShowHide(Sender);
-
-  Result := 0;
+    ResizeChild(Sender,Left,Top,Width,Height);
+    ShowHide(Sender);    
+  End;
 End;
 
 {------------------------------------------------------------------------------
@@ -1752,19 +1737,16 @@ End;
 
   Resize a window
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.ResizeChild(Sender: TObject;
+Procedure TWin32Object.ResizeChild(Sender: TWinControl;
   Left, Top, Width, Height: Integer);
-Var
-  Handle: HWND;
-  AWinControl: TWinControl;
-  {$IFDEF VerboseSizeMsg}
+
+{$IFDEF VerboseSizeMsg}
+Var    
   OldLeft: Integer;
   OldTop: Integer;
-  {$ENDIF}
+{$ENDIF}
 Begin
-  AWinControl:=TWinControl(Sender);
-  if not AWinControl.HandleAllocated then exit;
-  Handle := AWinControl.Handle;
+  // if not Sender.HandleAllocated then exit; --> Already checked (LM_SETSIZE and LM_RECREATEWND)
   {$IFDEF VerboseSizeMsg}
   OldLeft:=Left;
   OldTop:=Top;
@@ -1776,7 +1758,7 @@ Begin
     ' Win32=',Left,',',Top,',',Width,',',Height,
     '');
   {$ENDIF}
-  MoveWindow(Handle, Left, Top, Width, Height, True);
+  MoveWindow(Sender.Handle, Left, Top, Width, Height, True);
   LCLControlSizeNeedsUpdate(Sender,true);
 End;
 
@@ -1951,7 +1933,7 @@ Begin
         Flags := Flags Or BS_PUSHBUTTON
       Else
         Flags := Flags Or BS_DEFPUSHBUTTON;
-      Window := CreateWindow('BUTTON', StrTemp, Flags, Left, Top, Width, Height - 8, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('BUTTON', StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     End;
     csCalendar:
     Begin
@@ -1979,11 +1961,13 @@ Begin
     End;
     csImage:
     Begin
-      DC := Windows.GetDC(Handle);
-      With TImage(Sender).Picture.Bitmap Do
-        Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
-      SetOwner(Window, Sender);
-      ReleaseDC(Handle, DC);
+     // The bitmap creation is done inside TBitMap.HandleNeeded
+     // For now, just commented the code. Todo: remove it later if really not needed 
+     // DC := Windows.GetDC(Handle);
+     // With TImage(Sender).Picture.Bitmap Do
+     //  Window := CreateBitmap(Width, Height, GetDeviceCaps(DC, PLANES), BitsPerPixel[Monochrome], Nil);
+     // SetOwner(Window, Sender);
+     // ReleaseDC(Handle, DC);
     End;
     csListBox:
     Begin
@@ -2028,7 +2012,7 @@ Begin
     csFixed:
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
-      Window := CreateWindow(ClsName, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(@ClsName, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       DoSubClass := false;
     End;
     csFont:
@@ -2064,7 +2048,7 @@ Begin
       If TCustomForm(Sender).FormStyle = fsStayOnTop Then
         FlagsEx:= FlagsEx or WS_EX_TOPMOST;
       try
-        Window := CreateWindowEx(FlagsEx,ClsName, StrTemp,Flags, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+        Window := CreateWindowEx(FlagsEx,@ClsName, StrTemp,Flags, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       except
         writeln('Exception occured creating window');
       end;
@@ -2082,7 +2066,7 @@ Begin
     End;
     csHintWindow:
     Begin
-      Window := CreateWindow(ClsName, StrTemp,WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(@ClsName, StrTemp,WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       DoSubClass := false;
     End;
     csFrame, csGroupBox:
@@ -2146,10 +2130,16 @@ Begin
       End;
       Window := CreateWindow('SCROLLBAR', Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
     End;
+    csScrollBox:
+    Begin
+      //Todo: Make control respond to user scroll request  
+      Window := CreateWindowEx(WS_EX_CLIENTEDGE, @ClsName, Nil, Flags or WS_HSCROLL or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      DoSubClass:=False;
+    End;
     csScrolledWindow:
     Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
-      Window := CreateWindow(ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(@ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
       DoSubClass := false;
     End;
     csSpinEdit:
@@ -2654,7 +2644,7 @@ begin
            Integer(Smooth) * PBS_SMOOTH) or
          ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
            Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
-        Self.RecreateWnd(Sender);
+        Self.RecreateWnd(TWinControl(Sender));
 
       SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
       SendMessage(Handle, PBM_SETPOS, Position, 0);
@@ -2843,6 +2833,9 @@ End;
 
 {
   $Log$
+  Revision 1.114  2003/09/27 09:52:44  mattias
+  TScrollBox for win32 intf from Karl
+
   Revision 1.113  2003/09/24 20:43:27  mattias
   fixed wordwrap from Micha
 
