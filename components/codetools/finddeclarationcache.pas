@@ -70,30 +70,31 @@ type
 
   {
     2. code tree node cache:
-      Some nodes (class, interface, implementation, program, type, var, const,
-        ...) contain a node
-      cache. A node cache caches identifier requests of direct child nodes.
-      Because node caches can store information of used units, the cahce must be
+      Some nodes (class, proc, record) contain a node cache. A node cache caches
+      search results of searched identifiers for child nodes.
+      
+      Every entry in the node cache describes the following relationship:
+        Identifier+Range -> Source Position
+      and can be interpreted as:
+      Identifier is a PChar to the beginning of an identifier string.
+      Range is a clenaed source range (CleanStartPos-CleanEndPos).
+      Source position is a tuple of NewTool, NewNode, NewCleanPos.
+      If the current context node is a child of a caching node and it is in the
+      range, then the result is valid. If NewNode=nil then there is no such
+      identifier valid at the context node.
+
+      Every node that define local identifiers contains a node cache.
+      These are: class, proc, record, withstatement
+      
+      Because node caches can store information of used units, the cache must be
       deleted every time a used unit is changed. Currently all node caches are
       resetted every time the GlobalWriteLock increases.
 
-
-       every 'cache' node get a list of
-         Identifier+CleanBackwardPos+CleanForwardPos -> TFindContext
-         This information means: if an identifier is searched at a
-         child node (not sub child node!) within the bounds, the cached
-         FindContext is valid.
-       'cache' nodes are:
-         - section nodes e.g. interface, program, ...
-         - class nodes
-       this cache must be deleted, every time the code tree changes, or
-       one of the used units changes.
-       
-       
-       
-       
-       
   }
+const
+  AllNodeCacheDescs = [ctnClass, ctnProcedure, ctnRecordType, ctnWithStatement];
+  
+type
   PCodeTreeNodeCacheEntry = ^TCodeTreeNodeCacheEntry;
   TCodeTreeNodeCacheEntry = record
     Identifier: PChar;
@@ -116,6 +117,8 @@ type
     function FindAVLNode(Identifier: PChar; CleanPos: integer): TAVLTreeNode;
     function FindAVLNodeInRange(Identifier: PChar;
       CleanStartPos, CleanEndPos: integer): TAVLTreeNode;
+    function FindInRange(Identifier: PChar;
+      CleanStartPos, CleanEndPos: integer): PCodeTreeNodeCacheEntry;
     function FindNearestAVLNode(Identifier: PChar;
       CleanStartPos, CleanEndPos: integer; InFront: boolean): TAVLTreeNode;
     function FindNearest(Identifier: PChar;
@@ -132,11 +135,15 @@ type
     procedure WriteDebugReport(const Prefix: string);
     function ConsistencyCheck: integer;
   end;
-
-const
-  // all node types which can hold a cache
-  AllNodeCacheDescs = [ctnClass, ctnInterface, ctnInitialization, ctnProgram];
   
+  {
+    3. Base type node cache
+    
+    ToDo:
+  
+  }
+
+
   //----------------------------------------------------------------------------
 type
   TGlobalIdentifierTree = class
@@ -473,7 +480,7 @@ end;
 constructor TCodeTreeNodeCache.Create(AnOwner: TCodeTreeNode);
 begin
   inherited Create;
-  Owner:=AnOwner;
+  if AnOwner<>nil then BindToOwner(AnOwner);
 end;
 
 destructor TCodeTreeNodeCache.Destroy;
@@ -652,11 +659,13 @@ var
   Entry: PCodeTreeNodeCacheEntry;
 begin
   Result:=FindNearestAVLNode(Identifier,CleanStartPos,CleanEndPos,true);
-  Entry:=PCodeTreeNodeCacheEntry(Result.Data);
-  if (CleanStartPos>Entry^.CleanEndPos)
-  or (CleanEndPos<Entry^.CleanStartPos) then begin
-    // node is not in range
-    Result:=nil;
+  if Result<>nil then begin
+    Entry:=PCodeTreeNodeCacheEntry(Result.Data);
+    if (CleanStartPos>Entry^.CleanEndPos)
+    or (CleanEndPos<Entry^.CleanStartPos) then begin
+      // node is not in range
+      Result:=nil;
+    end;
   end;
 end;
 
@@ -684,7 +693,6 @@ begin
       else begin
         // cached result with identifier found
         // -> check range
-        NextNode:=Result;
         if CleanStartPos>=Entry^.CleanEndPos then begin
           NextNode:=FItems.FindSuccessor(Result);
           DirectionSucc:=true;
@@ -698,7 +706,6 @@ begin
         while (NextNode<>nil) do begin
           Entry:=PCodeTreeNodeCacheEntry(NextNode.Data);
           if CompareIdentifiers(Identifier,Entry^.Identifier)<>0 then begin
-            Result:=nil;
             exit;
           end;
           Result:=NextNode;
@@ -712,6 +719,7 @@ begin
           else
             NextNode:=FItems.FindPrecessor(Result);
         end;
+        exit;
       end;
     end;
   end else begin
@@ -781,6 +789,17 @@ function TCodeTreeNodeCache.FindNearest(Identifier: PChar; CleanStartPos,
 var Node: TAVLTreeNode;
 begin
   Node:=FindNearestAVLNode(Identifier,CleanStartPos,CleanEndPos,InFront);
+  if Node<>nil then
+    Result:=PCodeTreeNodeCacheEntry(Node.Data)
+  else
+    Result:=nil;
+end;
+
+function TCodeTreeNodeCache.FindInRange(Identifier: PChar; CleanStartPos,
+  CleanEndPos: integer): PCodeTreeNodeCacheEntry;
+var Node: TAVLTreeNode;
+begin
+  Node:=FindAVLNodeInRange(Identifier,CleanStartPos,CleanEndPos);
   if Node<>nil then
     Result:=PCodeTreeNodeCacheEntry(Node.Data)
   else

@@ -78,6 +78,7 @@ type
     ErrorPosition: TCodeXYPosition;
     
     property Scanner: TLinkScanner read FScanner write SetScanner;
+    function MainFilename: string;
     
     function FindDeepestNodeAtPos(P: integer;
       ExceptionOnNotFound: boolean): TCodeTreeNode;
@@ -1479,6 +1480,14 @@ end;
 procedure TCustomCodeTool.DeactivateGlobalWriteLock;
 begin
   if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(false);
+end;
+
+function TCustomCodeTool.MainFilename: string;
+begin
+  if (Scanner<>nil) and (Scanner.MainCode<>nil) then
+    Result:=TCodeBuffer(Scanner.MainCode).Filename
+  else
+    Result:='(unknown mainfilename)';
 end;
 
 { ECodeToolError }

@@ -469,8 +469,6 @@ begin
   end;
   FCurCodeTool:=TCodeCompletionCodeTool(GetCodeToolForSource(MainCode,true));
   FCurCodeTool.ErrorPosition.Code:=nil;
-  FCurCodeTool.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-  FCurCodeTool.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}
@@ -1358,6 +1356,8 @@ begin
   Result.JumpCentered:=FJumpCentered;
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
   TFindDeclarationTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+  Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
+  Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
 end;
 
 function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
@@ -1393,6 +1393,7 @@ procedure TCodeToolManager.OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
 begin
   WriteLockIsSet:=FWriteLockCount>0;
   WriteLockStep:=FWriteLockStep;
+//writeln(' FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
 end;
 
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);

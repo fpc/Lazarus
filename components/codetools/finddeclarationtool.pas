@@ -45,6 +45,7 @@ interface
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
+{ $DEFINE ShowNodeCache}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -230,6 +231,7 @@ type
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     FFirstNodeCache: TCodeTreeNodeCache;
     FLastNodeCachesGlobalWriteLockStep: integer;
+    FRootNodeCache: TCodeTreeNodeCache;
     {$IFDEF CTDEBUG}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -277,6 +279,12 @@ type
   protected
     procedure DoDeleteNodes; override;
     procedure ClearNodeCaches(Force: boolean);
+    function CreateNewNodeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
+    function GetNodeCache(Node: TCodeTreeNode;
+      CreateIfNotExists: boolean): TCodeTreeNodeCache;
+    procedure AddResultToNodeCaches(Identifier: PChar;
+      StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
+      Params: TFindDeclarationParams);
     function FindDeclarationOfIdentifier(
       Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
@@ -339,7 +347,7 @@ const
                              fdfClassPrivate];
   fdfGlobals = [fdfExceptionOnNotFound, fdfIgnoreUsedUnits];
   fdfGlobalsSameIdent = fdfGlobals+[fdfIgnoreMissingParams,fdfFirstIdentFound,
-                                    fdfOnlyCompatibleProc];
+                                    fdfOnlyCompatibleProc,fdfSearchInAncestors];
   fdfDefaultForExpressions = [fdfSearchInParentNodes,fdfSearchInAncestors,
                               fdfExceptionOnNotFound]+fdfAllClassVisibilities;
   
@@ -430,6 +438,10 @@ writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsSt
       end;
       if CursorNode.Desc=ctnProcedureHead then
         CursorNode:=CursorNode.Parent;
+      if CursorNode.Desc=ctnProcedure then begin
+        BuildSubTreeForProcHead(CursorNode);
+        CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+      end;
       MoveCursorToCleanPos(CleanCursorPos);
       while (CurPos.StartPos>1) and (IsIdentChar[Src[CurPos.StartPos-1]]) do
         dec(CurPos.StartPos);
@@ -787,40 +799,41 @@ function TFindDeclarationTool.FindIdentifierInContext(
 var LastContextNode, StartContextNode, ContextNode: TCodeTreeNode;
   IsForward: boolean;
   IdentifierFoundResult: TIdentifierFoundResult;
-  ParentsNodeCache: TCodeTreeNodeCache;
-  NearestNodeCacheEntry: PCodeTreeNodeCacheEntry;
-  
+  LastNodeCache: TCodeTreeNodeCache;
+  LastCacheEntry: PCodeTreeNodeCacheEntry;
+
   function FindInNodeCache: boolean;
-  var Node: TCodeTreeNode;
+  var
+    NodeCache: TCodeTreeNodeCache;
   begin
     Result:=false;
-    Node:=ContextNode.Parent;
-    if (Node<>nil) and (Node.Desc in [ctnClassPublic,ctnClassPrivate,
-      ctnClassProtected,ctnClassPublished])
-    then
-      Node:=Node.Parent;
-    if (Node<>nil) and (Node.Cache<>nil) then begin
-      // parent node has a cache object
-      if (Node.Cache is TCodeTreeNodeCache) then begin
-        // parent has node cache
-        // -> search if result already in cache
-        if ParentsNodeCache<>TCodeTreeNodeCache(Node.Cache) then begin
-          // parent cache changed -> search new nearest node
-          ParentsNodeCache:=TCodeTreeNodeCache(Node.Cache);
-          NearestNodeCacheEntry:=ParentsNodeCache.FindNearest(
-              Params.Identifier,
-              ContextNode.StartPos,ContextNode.EndPos,
-              not (fdfSearchForward in Params.Flags));
-        end;
-        if (NearestNodeCacheEntry<>nil)
-        and (NearestNodeCacheEntry^.CleanStartPos<ContextNode.EndPos)
-        and (NearestNodeCacheEntry^.CleanEndPos>ContextNode.StartPos) then begin
-          // cached result found
-          Params.SetResult(NearestNodeCacheEntry);
-          Result:=true;
-          exit;
-        end;
-      end;
+    NodeCache:=GetNodeCache(ContextNode,false);
+    if (NodeCache<>LastNodeCache) then begin
+      // NodeCache changed -> search nearest cache entry for the identifier
+      LastNodeCache:=NodeCache;
+      if NodeCache<>nil then begin
+        LastCacheEntry:=NodeCache.FindNearest(Params.identifier,
+                    ContextNode.StartPos,ContextNode.EndPos,
+                    not (fdfSearchForward in Params.Flags));
+      end else
+        LastCacheEntry:=nil;
+    end;
+    if (LastCacheEntry<>nil)
+    and (LastCacheEntry^.CleanStartPos<ContextNode.EndPos)
+    and (LastCacheEntry^.CleanEndPos>ContextNode.StartPos)
+    then begin
+      // cached result found
+      Params.SetResult(LastCacheEntry);
+      {$IFDEF ShowNodeCache}
+      writeln(':::: TFindDeclarationTool.FindIdentifierInContext.FindInNodeCache');
+      writeln('  Ident=',GetIdentifier(Params.Identifier),
+              ' ContextNode=',ContextNode.DescAsString,
+              ' Self=',MainFilename);
+      if (Params.NewNode<>nil) then
+        writeln('  NewTool=',Params.NewCodeTool.MainFilename,
+                ' NewNode=',Params.NewNode.DescAsString);
+      {$ENDIF}
+      Result:=true;
     end;
   end;
   
@@ -828,14 +841,13 @@ begin
   ContextNode:=Params.ContextNode;
   StartContextNode:=ContextNode;
   Result:=false;
-
-  if ContextNode<>nil then begin
-  
-    // initialize cache search
-    ParentsNodeCache:=nil;
-    NearestNodeCacheEntry:=nil;
-
-    // search ...
+  if ContextNode=nil then begin
+    RaiseException('[TFindDeclarationTool.FindIdentifierInContext] '
+      +' internal error: Params.ContextNode=nil');
+  end;
+  try
+    LastNodeCache:=nil;
+    LastCacheEntry:=nil;
     repeat
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
@@ -849,8 +861,10 @@ if (ContextNode.Desc=ctnClass) then
   writeln('  ContextNode.LastChild=',ContextNode.LastChild<>nil);
 {$ENDIF}
       // search in cache
-      Result:=FindInNodeCache;
-      if Result then exit;
+      if FindInNodeCache then begin
+        Result:=(Params.NewNode<>nil);
+        exit;
+      end;
       
       // search identifier in current context
       LastContextNode:=ContextNode;
@@ -864,6 +878,9 @@ if (ContextNode.Desc=ctnClass) then
         ctnRecordType, ctnRecordCase, ctnRecordVariant,
         ctnParameterList:
           begin
+            // these nodes build a parent-child relationship. But in pascal
+            // they just define a range and not a context.
+            // -> search in all childs
             if ContextNode.Desc=ctnClass then begin
               // just-in-time parsing for class node
               BuildSubTreeForClass(ContextNode);
@@ -1093,9 +1110,19 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] Searching in Parent  Con
         until false;
       end;
     until ContextNode=nil;
-  end else begin
-    // DeepestNode=nil -> ignore
+    
+  finally
+    if Result and (not (fdfDoNotCache in Params.NewFlags)) then begin
+      // add result to caches
+      AddResultToNodeCaches(Params.Identifier,StartContextNode,ContextNode,
+        fdfSearchForward in Params.Flags,Params);
+    end;
   end;
+  // if we are here, the identifier was not found
+  // add result to cache
+  AddResultToNodeCaches(Params.Identifier,StartContextNode,ContextNode,
+    fdfSearchForward in Params.Flags,nil);
+
   if fdfExceptionOnNotFound in Params.Flags then begin
     if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
       Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
@@ -1593,7 +1620,7 @@ begin
       end;
       AddNodeToStack(@NodeStack,Result.Node);
 {$IFDEF ShowTriedContexts}
-writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString);
+writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
 {$ENDIF}
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
@@ -1603,10 +1630,12 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.Des
       and ((Result.Node.SubDesc and ctnsForwardDeclaration)>0) then
       begin
         // search the real class
-        
+{$IFDEF ShowTriedContexts}
+writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
+{$ENDIF}
+
         // ToDo: check for circles in ancestor chain
-        
-        
+
         ClassIdentNode:=Result.Node.Parent;
         if (ClassIdentNode=nil) or (not (ClassIdentNode.Desc=ctnTypeDefinition))
         then begin
@@ -1619,7 +1648,8 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.Des
           Params.SetIdentifier(Self,@Src[ClassIdentNode.StartPos],
                                @CheckSrcIdentifier);
           Params.Flags:=[fdfSearchInParentNodes,fdfSearchForward,
-                         fdfIgnoreUsedUnits,fdfExceptionOnNotFound]
+                         fdfIgnoreUsedUnits,fdfExceptionOnNotFound,
+                         fdfIgnoreCurContextNode]
                         +(fdfGlobals*Params.Flags);
           Params.ContextNode:=ClassIdentNode;
           FindIdentifierInContext(Params);
@@ -2434,6 +2464,7 @@ writeln(DebugPrefix,'TFindDeclarationTool.FindIdentifierInInterface',
   // ToDo: build codetree for ppu, ppw, dcu files
   
   // build tree for pascal source
+  ClearNodeCaches(false);
   BuildTree(true);
   
   // search identifier in cache
@@ -3112,6 +3143,7 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
         Params.IdentifierTool.ReadNextAtom;
         ExprInputList:=Params.IdentifierTool.CreateParamExprList(
                            Params.IdentifierTool.CurPos.EndPos,Params);
+        Params.Load(OldInput);
         // create compatibility lists
         CompListSize:=SizeOf(TTypeCompatibility)*ExprInputList.Count;
         if CompListSize>0 then begin
@@ -3121,7 +3153,6 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
           BestCompatibilityList:=nil;
           CurCompatibilityList:=nil;
         end;
-        Params.Load(OldInput);
         try
           Include(Params.Flags,fdfFirstIdentFound);
           // check the first proc for compatibility
@@ -3550,7 +3581,7 @@ begin
           exit;
         end else begin
           // this is the first check in this GlobalWriteLockStep
-          FLastNodecachesGlobalWriteLockStep:=GlobalWriteLockStep;
+          FLastNodeCachesGlobalWriteLockStep:=GlobalWriteLockStep;
           // proceed normally ...
         end;
       end;
@@ -3560,6 +3591,10 @@ begin
     NodeCache:=FFirstNodeCache;
     FFirstNodeCache:=NodeCache.Next;
     NodeCacheMemManager.DisposeNode(NodeCache);
+  end;
+  if FRootNodeCache<>nil then begin
+    NodeCacheMemManager.DisposeNode(FRootNodeCache);
+    FRootNodeCache:=nil;
   end;
 end;
 
@@ -3586,6 +3621,102 @@ procedure TFindDeclarationTool.ActivateGlobalWriteLock;
 begin
   inherited;
   ClearNodeCaches(false);
+end;
+
+function TFindDeclarationTool.GetNodeCache(Node: TCodeTreeNode;
+  CreateIfNotExists: boolean): TCodeTreeNodeCache;
+begin
+  while (Node<>nil) and (not (Node.Desc in AllNodeCacheDescs)) do
+    Node:=Node.Parent;
+  if Node<>nil then begin
+    if (Node.Cache=nil) and CreateIfNotExists then
+      CreateNewNodeCache(Node);
+    if (Node.Cache<>nil) and (Node.Cache is TCodeTreeNodeCache) then
+      Result:=TCodeTreeNodeCache(Node.Cache)
+    else
+      Result:=nil;
+  end else begin
+    if (FRootNodeCache=nil) and CreateIfNotExists then
+      FRootNodeCache:=CreateNewNodeCache(nil);
+    Result:=FRootNodeCache;
+  end;
+end;
+
+procedure TFindDeclarationTool.AddResultToNodeCaches(Identifier: PChar;
+  StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
+  Params: TFindDeclarationParams);
+var Node: TCodeTreeNode;
+  CurNodeCache, LastNodeCache: TCodeTreeNodeCache;
+  CleanStartPos, CleanEndPos: integer;
+  NewNode: TCodeTreeNode;
+  NewTool: TPascalParserTool;
+  NewCleanPos: integer;
+begin
+{$IFDEF ShowNodeCache}
+write('TFindDeclarationTool.AddResultToNodeCaches ',
+' Ident=',GetIdentifier(Identifier),
+' StartNode=',StartNode.DescAsString,'="',copy(Src,StartNode.StartPos,12),'"');
+if EndNode<>nil then
+  write(' EndNode=',EndNode.DescAsString,'="',copy(Src,EndNode.StartPos,12),'"')
+else
+  write(' EndNode=nil');
+write(' SearchedForward=',SearchedForward);
+writeln('');
+writeln('    Self=',MainFilename);
+if Params<>nil then begin
+  writeln('    NewNode=',Params.NewNode.DescAsString,
+             ' NewTool=',Params.NewCodeTool.MainFilename);
+end else begin
+  writeln('    NOT FOUND');
+end;
+{$ENDIF}
+  Node:=StartNode;
+  LastNodeCache:=nil;
+  if Params<>nil then begin
+    NewNode:=Params.NewNode;
+    NewTool:=Params.NewCodeTool;
+    NewCleanPos:=Params.NewCleanPos;
+  end else begin
+    NewNode:=nil;
+    NewTool:=nil;
+  end;
+  CleanStartPos:=StartNode.StartPos;
+  CleanEndPos:=StartNode.EndPos;
+  if EndNode<>nil then begin
+    if EndNode.StartPos<CleanStartPos then
+      CleanStartPos:=EndNode.StartPos;
+    if EndNode.EndPos>CleanEndPos then
+      CleanEndPos:=EndNode.EndPos;
+  end else begin
+    if not SearchedForward then
+      CleanStartPos:=1
+    else
+      CleanEndPos:=SrcLen+1;
+  end;
+  while (Node<>nil) do begin
+    if (Node.Desc in AllNodeCacheDescs) then begin
+      if (Node.Cache=nil) then
+        CreateNewNodeCache(Node);
+      if (Node.Cache is TCodeTreeNodeCache) then begin
+        CurNodeCache:=TCodeTreeNodeCache(Node.Cache);
+        if LastNodeCache<>CurNodeCache then begin
+          CurNodeCache.Add(Identifier,CleanStartPos,CleanEndPos,
+                           NewNode,NewTool,NewCleanPos);
+          LastNodeCache:=CurNodeCache;
+        end;
+      end;
+    end;
+    Node:=Node.Parent;
+    if (EndNode<>nil) and (Node=EndNode.Parent) then break;
+  end;
+end;
+
+function TFindDeclarationTool.CreateNewNodeCache(
+  Node: TCodeTreeNode): TCodeTreeNodeCache;
+begin
+  Result:=TCodeTreeNodeCache.Create(Node);
+  Result.Next:=FFirstNodeCache;
+  FFirstNodeCache:=Result;
 end;
 
 
