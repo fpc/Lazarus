@@ -323,7 +323,7 @@ begin
   WinHandle := AWinControl.Handle;
   GetWindowRect(WinHandle, @PageRect);
   GetWindowRect(GetParent(WinHandle), @ParentRect);
-  OffsetRect(PageRect, -ParentRect.Left, -ParentRect.Top);
+  OffsetRect(@PageRect, -ParentRect.Left, -ParentRect.Top);
   // if differ, then update page to new bounds
   if (wLeft <> PageRect.Left) or (wTop <> PageRect.Top)
       or (wWidth <> (PageRect.Right - PageRect.Left))
@@ -439,7 +439,7 @@ begin
       SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
     end;
     if (OldPageIndex >= 0) and (OldPageIndex<>AIndex)
-    and (OldPageIndex < ANotebook.PageList.Count)
+    and (OldPageIndex < ANotebook.PageCount)
     and (ANotebook.CustomPage(OldPageIndex).HandleAllocated)
       then ShowWindow(ANotebook.CustomPage(OldPageIndex).Handle, SW_HIDE);
   end;
