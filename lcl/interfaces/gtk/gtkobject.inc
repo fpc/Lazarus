@@ -4406,24 +4406,21 @@ Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
   Handle : Pointer; SetupProps : Boolean);
 
   {$IFDEF CustomFonts}
-  procedure SetWidgetFont(AWinControl: TWinControl; AWidget: PGtkWidget);
-  var
-    AStyle: PGtkStyle;
+  procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
+  {$IFDEF Win32}
   begin
-    writeln('SetWidgetFont A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
-    AStyle:=gtk_widget_get_style(AWidget);
-    if Style=nil then begin
-      writeln('SetWidgetFont B no style');
-      exit;
-    end;
-    AGdkFont:=AStyle^.Font;
-    if AGdkFont=nil then begin
-      writeln('SetWidgetFont C no font');
-      exit;
-    end;
-    
+    // not supported under win32
   end;
-  {$ENDIF}
+  {$ELSE not win32}
+  var
+    RCStyle: TGtkRcStyle;
+  begin
+    writeln('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
+    FillChar(RCStyle,SizeOf(TGtkRcStyle),0);
+    //gtk_widget_modify_style(AWidget,@RCStyle);
+  end;
+  {$ENDIF not win32}
+  {$ENDIF CustomFonts}
   
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
@@ -4465,8 +4462,8 @@ begin
       gtk_widget_set_app_paintable(Handle,true);
     {$EndIf}
     {$IFDEF CustomFonts}
-    if AComponent is TWinControl then
-      SetWidgetFont(TWinControl(Sender),PGtkWidget(Handle));
+    if Sender is TWinControl then
+      ModifyWidgetStyle(TWinControl(Sender),PGtkWidget(Handle));
     {$ENDIF}
     HookSignals(Sender);
   end;
@@ -7350,6 +7347,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.371  2003/06/09 10:07:34  mattias
+  updated russian localization from Vasily
+
   Revision 1.370  2003/06/09 09:31:40  mattias
   fixed 1_0_8 difference
 
