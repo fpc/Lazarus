@@ -150,7 +150,7 @@ type
   TDeviceContext = class
   public
     // device handles
-    hWnd: HWND; 
+    Wnd: HWND; 
     GC: pgdkGC;
     Drawable: PGDKDrawable;
     
@@ -392,7 +392,7 @@ end;
 
 procedure TDeviceContext.Clear;
 begin
-  hWnd:=0;
+  Wnd:=0;
   GC:=nil;
   Drawable:=nil;
   
@@ -427,6 +427,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/10/20 19:03:56  lazarus
+  AJ: minor fixes for FPC 1.1
+
   Revision 1.26  2002/10/17 15:09:32  lazarus
   MG: made mouse capturing more strict
 
