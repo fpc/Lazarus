@@ -6,7 +6,7 @@ CommandLine=$@
 echo $CommandLine
 $CommandLine
 echo "--------------------------------------------------"
-echo "Press return"
+echo "Press enter"
 read
 
 # end.
