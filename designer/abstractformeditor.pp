@@ -17,10 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 }
+{$H+}
 unit AbstractFormEditor;
 
 {$mode objfpc}
-
 interface
 
 uses
@@ -28,13 +28,14 @@ uses
 
 type
 
-  TPropertyType = (ptUnknown, ptINteger, ptChar, ptString, ptFloat, ptSet, ptClass, ptMethod, ptVariant);
+  TPropertyType = (ptUnknown, ptInteger, ptChar, ptEnumeration,ptFloat,ptString,ptSet,
+                   ptClass, ptMethod,ptWChar, ptLString, LWString, ptVariant);
 
-  TComponentInterface = class
+  TIComponentInterface = class
     public
       Function GetComponentType    : String; virtual; abstract;
       Function GetComponentHandle  : LongInt; virtual; abstract;
-      Function GetParent           : TComponentInterface; virtual; abstract;
+      Function GetParent           : TIComponentInterface; virtual; abstract;
       Function IsTControl          : Boolean; virtual; abstract;
       Function GetPropCount	   : Integer; virtual; abstract;
       Function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
@@ -47,10 +48,10 @@ type
       Function SetPropbyName(Name : String; const Value) : Boolean; virtual; abstract;
 
       Function GetControlCount: Integer; virtual; abstract;
-      Function GetControl(Index : Integer): TComponentInterface; virtual; abstract;
+      Function GetControl(Index : Integer): TIComponentInterface; virtual; abstract;
 
       Function GetComponentCount: Integer; virtual; abstract;
-      Function GetComponent(Index : Integer): TComponentInterface; virtual; abstract;
+      Function GetComponent(Index : Integer): TIComponentInterface; virtual; abstract;
 
       Function Select : Boolean; virtual; abstract;
       Function Focus : Boolean; virtual; abstract;
@@ -69,15 +70,15 @@ type
    public
      Function Filename : String; virtual; abstract;
      Function FormModified : Boolean; virtual; abstract;
-     Function FindComponent(const Name : String) : TComponentInterface; virtual; abstract;
+     Function FindComponent(const Name : String) : TIComponentInterface; virtual; abstract;
 
-     Function GetComponentByHandle(const Value : Longint): TComponentInterface; virtual; abstract;
+     Function GetComponentByHandle(const Value : Longint): TIComponentInterface; virtual; abstract;
 
      Function GetSelCount : Integer; virtual; abstract;
-     Function GetSelComponent(Index : Integer) : TComponentInterface; virtual; abstract;
+     Function GetSelComponent(Index : Integer) : TIComponentInterface; virtual; abstract;
 
-     Function CreateComponent(CI : TComponentInterface; TypeName : String;
-                             X,Y,W,H : Integer): TComponentInterface; virtual; abstract;
+     Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+                             X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
   end;
 
 
