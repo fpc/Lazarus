@@ -520,6 +520,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{       TWinControl.CanTab
+}
+{------------------------------------------------------------------------------}
+Function TWinControl.CanTab: Boolean;
+begin
+  Result := True;
+end;
+
+{------------------------------------------------------------------------------}
 {  TWinControl GetChildren                                                     }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
@@ -640,16 +649,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl GetTabOrder                                                     }
-{------------------------------------------------------------------------------}
-Function TWinControl.GetTabOrder : TTabOrder;
-Begin
-  if FParent <> nil 
-  then Result := FTabOrder //TODO:get this from parent tablist
-  else Result := -1;
-end;
-
-{------------------------------------------------------------------------------}
 {  TWinControl UpdateShowing                                                   }
 {------------------------------------------------------------------------------}
 procedure TWinControl.UpdateShowing;
@@ -729,19 +728,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl UpdateTabOrder                                                  }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.UpdateTabOrder(Value : TTabOrder);
-Begin
-  Assert(False, 'Trace:TODO:[TWinControl.UpdateTabOrder]');
-end;
-
-{------------------------------------------------------------------------------}
 {  TWinControl Focused                                                         }
 {------------------------------------------------------------------------------}
 Function TWinControl.Focused : Boolean;
 Begin
-  Result := (FHandle <> 0) and (GetFocus = FHandle);
+  Result := CanTab and ((FHandle <> 0) and (GetFocus = FHandle));
 end;
 
 {------------------------------------------------------------------------------}
@@ -759,6 +750,63 @@ begin
         Result := TControl(FWinControls[I]);
         Exit;
       end;
+end;
+
+{------------------------------------------------------------------------------}
+{  TWinControl FindNextControl                                                 }
+{------------------------------------------------------------------------------}
+Function TWinControl.FindNextControl(CurrentControl : TControl;
+  GoForward, CheckTabStop, CheckParent : Boolean) : TControl;
+var
+  List : TList;
+  Next : TControl;
+  I, J : Longint;
+begin
+  Try
+    Result := nil;
+    List := TList.Create;
+    GetTabOrderList(List);
+    If List.Count > 0 then begin
+      J := List.IndexOf(CurrentControl) + 1;
+      If J >= List.Count then
+        J := -1
+      else
+        Dec(J);
+      I := J;
+      Repeat
+        If GoForward then
+          Inc(I);
+	If List[I] <> nil then begin
+	  Next := TControl(List[I]);
+	  If ((Not CheckTabStop or Next.TabStop) and
+	    (not CheckParent or (Next.Parent = Self)))
+	    and (Next.Enabled and Next.Visible)
+	  then
+	    Result := Next;
+        end;
+      until (Result <> nil) or (I = J) or ((I + 1)>= List.Count);
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{  TWinControl GetTabOrderList                                                 }
+{------------------------------------------------------------------------------}
+Procedure TWinControl.GetTabOrderList(List : TList);
+var
+  I : Integer;
+  Control : TControl;
+begin
+  If FTabList <> nil then
+    For I := 0 to FTabList.Count - 1 do begin
+      Control := TControl(FTabList[I]);
+      If Control.CanTab then
+        List.Add(Control);
+      If Control is TWinControl then
+        TWinControl(Control).GetTabOrderList(List);
+    end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1185,14 +1233,6 @@ begin
     Form.FocusControl(self)
   else if Visible and HandleAllocated then
     LCLLinux.SetFocus(Handle);
-end;
-
-{------------------------------------------------------------------------------}
-{  TWinControl SetTabOrder                                                      }
-{------------------------------------------------------------------------------}
-Procedure TWinControl.SetTabOrder(Value : TTabOrder);
-Begin
-  FTabOrder := Value;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1988,9 +2028,60 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
-Begin
+
+  Function TopLevelAncestor(TopControl : TWinControl) : TWinControl;
+  begin
+    Result := nil;
+
+    If TopControl = nil then
+      exit;
+
+    If TopControl is TForm then
+      Result := TForm(TopControl)
+    else
+      Result := TopLevelAncestor(TopControl.Parent);
+  end;
+  
+var
+  I : Integer;
+  List : TList;
+  FirstFocus, OFocus, NFocus : TControl;
+  TopLevel : TWinControl;
+begin
   Assert(False, Format('Trace:[TWinControl.WMKeyDown] %s', [ClassName]));
   if not DoKeyDown(Message) then {inherited} ;  // there is nothing to inherit
+  NFocus := nil;
+  OFocus := nil;
+  TopLevel := TopLevelAncestor(Self);
+  If TopLevel = nil then
+    exit;
+  Case Message.CharCode of
+    VK_Tab    : begin
+                  try
+                    List := TList.Create;
+                    TopLevel.GetTabOrderList(List);
+                    FirstFocus := nil;
+                    For I := 0 to List.Count - 1 do
+                      If List[I] <> nil then begin
+                        If I = 0 then
+                          FirstFocus := TControl(List[I]);
+                        If TControl(List[I]).Focused then begin
+	                  OFocus := TControl(List[I]);
+	                  Break;
+	                end;
+                      end;
+                  Finally
+                    List.Free;
+                  end;
+                  NFocus := TopLevel.FindNextControl(OFocus,True,True,True);
+                  If (NFocus <> nil) and (NFocus <> OFocus) then
+                    NFocus.SetFocus
+                  else
+                    If FirstFocus <> nil then
+                      FirstFocus.SetFocus;
+                  Message.CharCode := 0;
+                end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2409,6 +2500,69 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2002/09/27 20:52:23  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.87  2002/09/16 15:42:17  lazarus
   MG: fixed calling DestroyHandle if not HandleAllocated
 
