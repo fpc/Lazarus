@@ -512,23 +512,20 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  GTKMotionNotify
-  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
-  Returns: GBoolean
-  
-  Called whenever the mouse is moved over a widget.
-  The gtk event is translated into a lcl MouseMove message.
-  
-  
+  procedure DeliverMouseMoveMessage(Widget:PGTKWidget; Event: PGDKEventMotion;
+    AWinControl: TWinControl);
+
+  Translate a gdk mouse motion event into a LCL mouse move message and send it.
+
   Mouse coordinate mapping:
-  
+
   Why mapping:
   An lcl control can consists of several gtk widgets, and any message to them is
   send to the lcl control. The gtk sends the coordinates relative to the
   emitting gdkwindow (not relative to the gtkwidget). And the area of a lcl
   control can belong to several gdkwindows. Therefore the mouse coordinates must
   be mapped.
-  
+
   What the lcl expects:
   For Delphi compatibility the mouse coordinates must be relative to the client
   area of the control.
@@ -537,39 +534,16 @@ end;
   If the mouse is on the top-left pixel of the container widget then the
   coordinates can be negative, if there is frame around the client area.
 -------------------------------------------------------------------------------}
-function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
-  Data: gPointer): GBoolean; cdecl;
+procedure DeliverMouseMoveMessage(Widget:PGTKWidget; Event: PGDKEventMotion;
+  AWinControl: TWinControl);
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
   MappedXY: TPoint;
-  DesignOnlySignal: boolean;
 begin
-  Result:=true;
-  
-  {$IFDEF VerboseMouseBugfix}
-  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
-  writeln('[GTKMotionNotify] ',
-    TControl(Data).Name,':',TControl(Data).ClassName,
-    ' Widget=',HexStr(Cardinal(Widget),8),
-    ' DSO=',DesignOnlySignal,
-    ' Event^.X=',trunc(Event^.X),' Event^.Y=',trunc(Event^.Y)
-    );
-  {$ENDIF}
-
-  CheckMouseCaptureHandle(Widget);
-
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
-    if DesignOnlySignal then exit;
-  end else begin
-    // stop the signal, so that the widget does not auto react
-    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
-  end;
-
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
-                                         PGtkWidget(TWinControl(Data).Handle));
+                                         PGtkWidget(AWinControl.Handle));
 
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
@@ -592,8 +566,59 @@ begin
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
-  DeliverMessage(Data, Msg);
-  //DeliverPostMessage(Data,Msg);
+  DeliverMessage(AWinControl, Msg);
+end;
+
+{-------------------------------------------------------------------------------
+  function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
+  
+  Returns true, if mouse move event should be sent before the widget istelf
+  reacts.
+-------------------------------------------------------------------------------}
+function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
+begin
+  // currently there are no controls, that need after events.
+  Result:=true;
+end;
+
+{-------------------------------------------------------------------------------
+  GTKMotionNotify
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+  
+  Called whenever the mouse is moved over a widget.
+  The gtk event is translated into a lcl MouseMove message.
+  
+-------------------------------------------------------------------------------}
+function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
+  Data: gPointer): GBoolean; cdecl;
+var
+  DesignOnlySignal: boolean;
+begin
+  Result:=true;
+  
+  {$IFDEF VerboseMouseBugfix}
+  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
+  writeln('[GTKMotionNotify] ',
+    TControl(Data).Name,':',TControl(Data).ClassName,
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' DSO=',DesignOnlySignal,
+    ' Event^.X=',trunc(Event^.X),' Event^.Y=',trunc(Event^.Y)
+    );
+  {$ENDIF}
+
+  CheckMouseCaptureHandle(Widget);
+
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
+    if DesignOnlySignal then exit;
+    if not ControlGetsMouseMoveBefore(TControl(Data)) then exit;
+  end else begin
+    // stop the signal, so that the widget does not auto react
+    gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+  end;
+
+  DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
@@ -616,17 +641,37 @@ begin
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
 
   CheckMouseCaptureHandle(Widget);
+  
+  if (csDesigning in TComponent(Data).ComponentState) then exit;
+  if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
+
+  DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
-  gtkMouseBtnPress
-  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
-  Returns: GBoolean
+  function ControlGetsMouseDownBefore(AControl: TControl): boolean;
 
-  Called whenever the mouse is over a widget and a mouse button is pressed.
+  Returns true, if mouse down event should be sent before the widget istelf
+  reacts.
 -------------------------------------------------------------------------------}
-function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
+function ControlGetsMouseDownBefore(AControl: TControl): boolean;
+begin
+  case AControl.fCompStyle of
+  csCheckBox:
+    Result:=false;
+  else
+    Result:=true;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
+    AWinControl: TWinControl);
+
+  Translate a gdk mouse press event into a LCL mouse down message and send it.
+-------------------------------------------------------------------------------}
+procedure DeliverMouseDownMessage(widget: PGtkWidget; event : pgdkEventButton;
+  AWinControl: TWinControl);
 const
   WHEEL_DELTA : array[Boolean] of Integer = (-1, 1);
 var
@@ -635,36 +680,35 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
   EventXY: TPoint;
-  DesignOnlySignal: boolean;
 
 { $DEFINE VerboseMouseBugfix}
 
   function CheckMouseButtonDown(var LastMouse: TLastMouseClick;
     BtnKey, MsgNormal, MsgDouble, MsgTriple, MsgQuad: longint): boolean;
-    
+
     function LastClickInSameGdkWindow: boolean;
     begin
       Result:=(LastMouse.Window<>nil) and (LastMouse.Window=Event^.Window);
     end;
-    
+
     function LastClickAtSamePosition: boolean;
     begin
       Result:= (Abs(EventXY.X-LastMouse.WindowPoint.X)<=DblClickThreshold)
            and (Abs(EventXY.Y-LastMouse.WindowPoint.Y)<=DblClickThreshold);
     end;
-    
+
     function LastClickInTime: boolean;
     begin
       Result:=((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)));
     end;
-    
+
     function TestIfMultiClick: boolean;
     begin
       Result:=LastClickInSameGdkWindow
           and LastClickAtSamePosition
           and LastClickInTime;
     end;
-    
+
   var
     IsMultiClick: boolean;
   begin
@@ -695,7 +739,7 @@ var
       end else begin
         LastMouse.ClickCount:=2;
       end;
-      
+
     gdk_3button_press:
       // the gtk itself has detected a triple click
       if (LastMouse.ClickCount>=3)
@@ -711,7 +755,7 @@ var
     else
       begin
         inc(LastMouse.ClickCount);
-        
+
         if (LastMouse.ClickCount<=4)
         and IsMultiClick
         then begin
@@ -734,7 +778,7 @@ var
     LastMouse.Window := Event^.Window;
     LastMouse.WindowPoint := EventXY;
     LastMouse.Down := True;
-    LastMouse.Component:=TComponent(Data);
+    LastMouse.Component:=AWinControl;
 
     case LastMouse.ClickCount of
     1: MessI.Msg := MsgNormal;
@@ -749,47 +793,10 @@ var
   end;
 
 begin
-  Result:=true;
-  
-  {$IFDEF VerboseMouseBugfix}
-  writeln('');
-  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
-  writeln('[gtkMouseBtnPress] ',
-    TComponent(Data).Name,':',TObject(Data).ClassName,
-    ' Widget=',HexStr(Cardinal(Widget),8),
-    ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
-    ' DSO=',DesignOnlySignal,
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),
-    ' Type=',Event^.theType);
-  {$ENDIF}
-  //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
-  //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
-  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
-  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8),
-  //' Window=',HexStr(Cardinal(Widget^.Window),8)
-  //);
-  //if GetFixedWidget(Widget)<>nil then
-  //  writeln('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
-
-  EventTrace('Mouse button Press', data);
-  Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
-
-  CheckMouseCaptureHandle(Widget);
-
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
-    if DesignOnlySignal then exit;
-  end else begin
-    // stop the signal, so that the widget does not auto react
-    if (TControl(Data).FCompStyle<>csNotebook)
-    or (event^.Button<>1) then
-      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
-  end;
-
   EventXY:=Point(trunc(Event^.X),trunc(Event^.Y));
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
-                                         PGtkWidget(TWinControl(Data).Handle));
+                                         PGtkWidget(AWinControl.Handle));
 
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
@@ -798,20 +805,19 @@ begin
     MessE.X := MappedXY.X;
     MessE.Y := MappedXY.Y;
     MessE.State := ShiftState;
-    MessE.UserData := Data;
+    MessE.UserData := AWinControl;
     MessE.Button := 0;
 
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    //DeliverPostMessage(Data, MessE);
-    DeliverMessage(Data, MessE);
+    DeliverMessage(AWinControl, MessE);
   end
   else begin
     // a normal mouse button is pressed
     MessI.Keys := 0;
     case event^.Button of
-    
+
     1: if not CheckMouseButtonDown(LastLeft,
               MK_LBUTTON, LM_LBUTTONDOWN,
               LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK, LM_LBUTTONQUADCLK)
@@ -847,9 +853,61 @@ begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    //DeliverPostMessage(Data, MessI);
-    DeliverMessage(Data, MessI);
+    DeliverMessage(AWinControl, MessI);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  gtkMouseBtnPress
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is over a widget and a mouse button is pressed.
+-------------------------------------------------------------------------------}
+function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; cdecl;
+var
+  DesignOnlySignal: boolean;
+begin
+  Result:=true;
+  
+  {$IFDEF VerboseMouseBugfix}
+  writeln('');
+  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
+  writeln('[gtkMouseBtnPress] ',
+    TComponent(Data).Name,':',TObject(Data).ClassName,
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
+    ' DSO=',DesignOnlySignal,
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),
+    ' Type=',Event^.theType);
+  {$ENDIF}
+  //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
+  //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
+  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
+  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8),
+  //' Window=',HexStr(Cardinal(Widget^.Window),8)
+  //);
+  //if GetFixedWidget(Widget)<>nil then
+  //  writeln('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
+
+  EventTrace('Mouse button Press', data);
+  Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
+
+  CheckMouseCaptureHandle(Widget);
+
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
+    if DesignOnlySignal then exit;
+    if not ControlGetsMouseDownBefore(TControl(Data)) then exit;
+  end else begin
+    // stop the signal, so that the widget does not auto react
+    if (TControl(Data).FCompStyle<>csNotebook)
+    or (event^.Button<>1) then
+      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+  end;
+  
+  DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
@@ -871,26 +929,45 @@ begin
     ' ',Trunc(Event^.X),',',Trunc(Event^.Y));}
   {$ENDIF}
 
+  CheckMouseCaptureHandle(Widget);
+
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
 
-  CheckMouseCaptureHandle(Widget);
+  if (csDesigning in TComponent(Data).ComponentState) then exit;
+  if ControlGetsMouseDownBefore(TControl(Data)) then exit;
+
+  DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
-  gtkMouseBtnRelease
-  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
-  Returns: GBoolean
+  function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 
-  Called whenever the mouse is over a widget and a mouse button is released.
+  Returns true, if mouse up event should be sent before the widget istelf
+  reacts.
 -------------------------------------------------------------------------------}
-function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
-  data: gPointer) : GBoolean; cdecl;
+function ControlGetsMouseUpBefore(AControl: TControl): boolean;
+begin
+  case AControl.fCompStyle of
+  csCheckBox:
+    Result:=false;
+  else
+    Result:=true;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure DeliverMouseUpMessage(widget: PGtkWidget; event : pgdkEventButton;
+    AWinControl: TWinControl);
+
+  Translate a gdk mouse release event into a LCL mouse up message and send it.
+-------------------------------------------------------------------------------}
+procedure DeliverMouseUpMessage(widget: PGtkWidget; event : pgdkEventButton;
+  AWinControl: TWinControl);
 var
   MessI : TLMMouse;
   ShiftState: TShiftState;
   MappedXY: TPoint;
-  DesignOnlySignal: boolean;
 
   function CheckMouseButtonUp(var LastMouse: TLastMouseClick;
     MsgUp: longint): boolean;
@@ -899,39 +976,11 @@ var
     LastMouse.Down := False;
     Result:=true;
  end;
-  
+
 begin
-  Result:=true;
-
-  {$IFDEF VerboseMouseBugfix}
-  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-  writeln('[gtkMouseBtnRelease] A ',
-    TComponent(Data).Name,':',TObject(Data).ClassName,' ',
-    ' Widget=',HexStr(Cardinal(Widget),8),
-    ' DSO=',DesignOnlySignal,
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
-  {$ENDIF}
-
-  //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
-  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
-  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
-
-  CheckMouseCaptureHandle(Widget);
-
-  if not (csDesigning in TComponent(Data).ComponentState) then begin
-    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-    if DesignOnlySignal then exit;
-  end else begin
-    // stop the signal, so that the widget does not auto react
-    if TControl(Data).FCompStyle<>csNotebook then
-      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
-  end;
-
-  EventTrace('Mouse button release', data);
-  Assert(False, Format('Trace:[gtkMouseBtnRelease] ', []));
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
-                                         PGtkWidget(TWinControl(Data).Handle));
+                                         PGtkWidget(AWinControl.Handle));
 
   case event^.Button of
 
@@ -953,7 +1002,7 @@ begin
 
   MessI.XPos := MappedXY.X;
   MessI.YPos := MappedXY.Y;
-  
+
   ShiftState := gtkeventstate2shiftstate(Event^.State);
   MessI.Keys := 0;
   if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
@@ -966,10 +1015,51 @@ begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    //DeliverPostMessage(Data, MessI);
     MessI.Result := 0;
-    DeliverMessage(Data, MessI);
+    DeliverMessage(AWinControl, MessI);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  gtkMouseBtnRelease
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is over a widget and a mouse button is released.
+-------------------------------------------------------------------------------}
+function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; cdecl;
+var
+  DesignOnlySignal: boolean;
+begin
+  Result:=true;
+
+  {$IFDEF VerboseMouseBugfix}
+  DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
+  writeln('[gtkMouseBtnRelease] A ',
+    TComponent(Data).Name,':',TObject(Data).ClassName,' ',
+    ' Widget=',HexStr(Cardinal(Widget),8),
+    ' DSO=',DesignOnlySignal,
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),' Btn=',event^.Button);
+  {$ENDIF}
+
+  //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
+  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
+  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
+
+  CheckMouseCaptureHandle(Widget);
+
+  if not (csDesigning in TComponent(Data).ComponentState) then begin
+    DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
+    if DesignOnlySignal then exit;
+    if not ControlGetsMouseUpBefore(TControl(Data)) then exit;
+  end else begin
+    // stop the signal, so that the widget does not auto react
+    if TControl(Data).FCompStyle<>csNotebook then
+      gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+  end;
+  
+  DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
 end;
 
 {-------------------------------------------------------------------------------
@@ -994,7 +1084,14 @@ begin
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
 
   CheckMouseCaptureHandle(Widget);
+
+  if (csDesigning in TComponent(Data).ComponentState) then exit;
+  if ControlGetsMouseUpBefore(TControl(Data)) then exit;
+
+  DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
 end;
+
+
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
@@ -2255,6 +2352,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.128  2002/09/16 08:54:03  lazarus
+  MG: gtk mlouse events can now be fetched before or after
+
   Revision 1.127  2002/09/10 06:49:19  lazarus
   MG: scrollingwincontrol from Andrew
 
