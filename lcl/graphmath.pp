@@ -52,10 +52,10 @@ Procedure Angles2Coords(X,Y, Width, Height : Integer;
 Procedure Arc2Bezier(X, Y, Width, Height : Longint; Angle1, Angle2,
   Rotation : Extended; var Points : TBezier);
 
-Function Bezier(C1,C2,C3,C4 : TFloatPoint): TBezier; Overload;
-Function Bezier(C1,C2,C3,C4 : TPoint): TBezier; Overload;
+Function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier; Overload;
+Function Bezier(const C1,C2,C3,C4 : TPoint): TBezier; Overload;
 
-Procedure Bezier2Polyline(Bezier : TBezier; var Points : PPoint;
+Procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
   var Count : Longint);
 
 Procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
@@ -73,13 +73,11 @@ Function Distance(Pt, SP, EP : TFloatPoint) : Extended; overload;
 
 Function EccentricAngle(PT : TPoint; Rect : TRect) : Extended;
 
-Function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : 
-Longint;
+Function EllipseRadialLength(Rect : TRect; EccentricAngle : Extended) : Longint;
 
 Function FloatPoint(AX,AY : Extended): TFloatPoint;
 
-Function LineEndPoint(StartPoint : TPoint; Angle, Length : Extended) : 
-TPoint;
+Function LineEndPoint(StartPoint : TPoint; Angle, Length : Extended) : TPoint;
 
 Procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint); Overload;
@@ -447,7 +445,7 @@ end;
   routines.
 
 ------------------------------------------------------------------------------}
-Function Bezier(C1,C2,C3,C4 : TFloatPoint): TBezier;
+Function Bezier(const C1,C2,C3,C4 : TFloatPoint): TBezier;
 begin
   Result[0] := C1;
   Result[1] := C2;
@@ -464,7 +462,7 @@ end;
   routines.
 
 ------------------------------------------------------------------------------}
-Function Bezier(C1,C2,C3,C4 : TPoint): TBezier;
+Function Bezier(const C1,C2,C3,C4 : TPoint): TBezier;
 begin
   Result[0] := FloatPoint(C1.X,C1.Y);
   Result[1] := FloatPoint(C2.X,C2.Y);
@@ -486,7 +484,7 @@ end;
   by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-Procedure Bezier2Polyline(Bezier : TBezier; var Points : PPoint;
+Procedure Bezier2Polyline(const Bezier : TBezier; var Points : PPoint;
   var Count : Longint);
 var
   Pt : TPoint;
@@ -635,10 +633,10 @@ end;
 
   Use Coords2Angles to convert the coords for Start and End Radial-Points, such
   as are used in the Windows API Arc Pie and Chord routines, into an Eccentric
-  (aka Radial) Angle and an Angle-Length, such as are used in X-Windows and
-  GTK. The angles angle1 and angle2 are returned in 1/16th of a degree. For
-  example, a full circle equals 5760 (16*360).  Zero degrees is at the
-  3'o clock position.
+  (aka Radial) counter clockwise Angle and an Angle-Length, such as are used in
+  X-Windows and GTK. The angles angle1 and angle2 are returned in 1/16th of a
+  degree. For example, a full circle equals 5760 (16*360). Zero degrees is at
+  the 3'o clock position.
 
 ------------------------------------------------------------------------------}
 Procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
@@ -1087,6 +1085,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.2  2002/11/12 10:16:14  lazarus
   MG: fixed TMainMenu creation
 

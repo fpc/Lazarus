@@ -5804,35 +5804,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   Pie
-  Params:   DC,x,y,width,height,angle1,angle2
-  Returns:  Nothing
-
-  Use Pie to draw a filled pie-shaped wedge on the canvas.
-  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
-  counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position. 
-
- ------------------------------------------------------------------------------}
-function TgtkObject.Pie(DC: HDC;
-  x,y,width,height,angle1,angle2 : Integer): Boolean;
-begin
-  Result := IsValidDC(DC);
-  if Result
-  then with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      WriteLn('WARNING: [TgtkObject.Pie] Uninitialized GC');
-      Result := False;
-    end
-    else
-      Result := Inherited Pie(DC, x, y, width, height, angle1, angle2);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method:  PolyBezier
   Params:  DC, Points, NumPts, Filled, Continous
   Returns: Boolean
@@ -8730,6 +8701,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.269  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.268  2003/08/18 13:21:23  mattias
   renamed lazqueue to lazlinkedlist, patch from Jeroen
 

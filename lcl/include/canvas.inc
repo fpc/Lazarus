@@ -300,7 +300,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TCanvas.Pie
+  Method:   TCanvas.RadialPie
   Params:   x,y,width,height,angle1,angle2
   Returns:  Nothing
 
@@ -311,16 +311,16 @@ end;
   Zero degrees is at the 3'o clock position. 
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Pie(x,y,width,height,angle1,angle2 : Integer);
+procedure TCanvas.RadialPie(x,y,width,height,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.Pie(FHandle,x,y,width,height,angle1,angle2);
+  LCLLinux.RadialPieWithAngles(FHandle,x,y,width,height,angle1,angle2);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TCanvas.Pie
+  Method:   TCanvas.RadialPie
   Params:   x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
@@ -329,11 +329,33 @@ end;
   the Bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Pie(x,y,width,height,sx,sy,ex,ey : Integer);
+procedure TCanvas.RadialPie(x,y,width,height,sx,sy,ex,ey: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.RadialPie(FHandle,x,y,width,height,sx,sy,ex,ey);
+  Changed;
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Pie
+  Params:   EllipseX1, EllipseY1, EllipseX2, EllipseY2,
+            StartX, StartY, EndX, EndY
+  Returns:  Nothing
+
+  Use Pie to draw a filled Pie-shaped wedge on the canvas. The pie is part of
+  an ellipse between the points EllipseX1, EllipseY1, EllipseX2, EllipseY2.
+  The values StartX, StartY and EndX, EndY represent the starting and ending
+  radial-points between which the Bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+procedure TCanvas.Pie(EllipseX1, EllipseY1, EllipseX2, EllipseY2,
+  StartX, StartY, EndX, EndY: Integer);
+begin
+  Changing;
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.Pie(FHandle,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+               StartX,StartY,EndX,EndY);
   Changed;
 end;
 
@@ -1216,6 +1238,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.50  2003/07/04 08:54:53  mattias
   implemented 16bit rawimages for gtk
 

@@ -1658,29 +1658,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:   Pie
-  Params:   DC, X, Y, Width, Height, Angle1, Angle2
-  Returns:  Nothing
-
-  Use Pie to draw a filled pie-shaped wedge on the canvas.
-  The angles angle1 and angle2 are 1/16th of a degree. For example, a full
-  circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
-  counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position.
-
-  NOTE: This just calls Arc
- ------------------------------------------------------------------------------}
-Function TWin32Object.Pie(DC: HDC;
-  X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
-var
-  SX, SY, EX, EY : Longint;
-Begin
-  // Old: Result := Arc(DC, X, Y, Width, Height, Angle1, Angle2);
-  Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
-  Result := Windows.Pie(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
-End;
-
-{------------------------------------------------------------------------------
   Method:  PolyBezier
   Params:  DC, Points, NumPts, Filled, Continous
   Returns: Boolean
@@ -2446,6 +2423,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.52  2003/08/17 12:51:35  mattias
   added directory selection dialog from Vincent
 

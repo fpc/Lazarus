@@ -105,6 +105,8 @@ var
 
 implementation
 
+uses Math;
+
 {$I interfacebase.inc}
 
 initialization
@@ -118,6 +120,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.31  2003/08/12 23:51:51  marc
   + Introduced interface exceptions
 

@@ -557,8 +557,10 @@ type
     Procedure Line(X1,Y1,X2,Y2 : Integer); // short for MoveTo();LineTo();
     Procedure LineTo(X1,Y1 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
-    procedure Pie(x,y,width,height,angle1,angle2 : Integer);
-    procedure Pie(x,y,width,height,SX,SY,EX,EY : Integer);
+    procedure RadialPie(x,y,width,height,angle1,angle2 : Integer);
+    procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer);
+    procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+                  StartX,StartY,EndX,EndY: Integer);
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
                          Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
@@ -1028,6 +1030,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.79  2003/07/20 06:27:19  mattias
   fixed GetWindowRelativePosition
 

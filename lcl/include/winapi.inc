@@ -750,9 +750,11 @@ begin
                                         wMsgFilterMin,wMsgFilterMax,wRemoveMsg);
 end;
 
-function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean;
+function Pie(DC: HDC; EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+  StartX,StartY,EndX,EndY: Integer): Boolean;
 begin
-  Result := InterfaceObject.Pie(DC,x,y,width,height,angle1,angle2);
+  Result := InterfaceObject.Pie(DC,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+                                StartX,StartY,EndX,EndY);
 end;
 
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; 
@@ -772,7 +774,8 @@ begin
   Result := InterfaceObject.Polyline(DC,Points,NumPts);
 end;
 
-function PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
+function PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
+  lParam: LongInt): Boolean;
 begin
   Result := InterfaceObject.PostMessage(Handle, Msg, wParam, lParam);
 end;
@@ -795,6 +798,13 @@ end;
 function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 begin
   Result := InterfaceObject.RadialPie(DC, x,y,width,height,sx,sy,ex,ey);
+end;
+
+function RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
+  Angle1,Angle2: Integer): Boolean;
+begin
+  Result := InterfaceObject.RadialPieWithAngles(DC,
+                                                X,Y,Width,Height,Angle1,Angle2);
 end;
 
 function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
@@ -1660,6 +1670,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.93  2003/07/29 00:28:42  marc
   + Implemented GetCursorPos
 

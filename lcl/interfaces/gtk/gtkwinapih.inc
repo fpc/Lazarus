@@ -143,7 +143,6 @@ function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): B
 function PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; override;
 function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean; override;
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
-function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
@@ -212,6 +211,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.74  2003/07/29 00:28:43  marc
   + Implemented GetCursorPos
 

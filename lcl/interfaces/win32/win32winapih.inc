@@ -121,7 +121,6 @@ Function MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Inte
 Function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; Override;
 
 Function PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean; Override;
-Function Pie(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
 Function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: Boolean): Boolean; Override;
 Function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
 Function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
@@ -179,6 +178,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.31  2003/08/13 21:23:10  mattias
   fixed log
 

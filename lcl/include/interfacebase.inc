@@ -1337,22 +1337,13 @@ Begin
 End;
 
 function TInterfaceBase.Pie(DC: HDC; 
-  x,y,width,height,angle1,angle2 : Integer): Boolean;
-var
-  Points : PPoint;
-  Count : Longint;
+  EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+  StartX,StartY,EndX,EndY: Integer): Boolean;
 begin
-  Result := False;
-  Points := nil;
-  Count := 0;
-  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
-  Inc(Count,2);
-  ReallocMem(Points, Count*SizeOf(TPoint));
-  Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
-  Points[Count - 1] := Points[0];
-  Polygon(DC, Points, Count, True);
-  ReallocMem(Points, 0);
-  Result := True;
+  Result := RadialPie(DC,
+                      Min(EllipseX1,EllipseX2), Min(EllipseY1,EllipseY2),
+                      Abs(EllipseX2-EllipseX1), Abs(EllipseY2-EllipseY1),
+                      StartX,StartY, EndX,EndY);
 end;
 
 function TInterfaceBase.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
@@ -1417,7 +1408,26 @@ var
   A1, A2 : Extended;
 Begin
   Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := Pie(DC, X, Y, Width, Height, Round(A1), Round(A2));
+  Result := RadialPieWithAngles(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
+
+function TInterfaceBase.RadialPieWithAngles(DC: HDC; X,Y,Width,Height,
+  Angle1, Angle2: Integer): Boolean;
+var
+  Points : PPoint;
+  Count : Longint;
+begin
+  Result := False;
+  Points := nil;
+  Count := 0;
+  PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
+  Inc(Count,2);
+  ReallocMem(Points, Count*SizeOf(TPoint));
+  Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
+  Points[Count - 1] := Points[0];
+  Polygon(DC, Points, Count, True);
+  ReallocMem(Points, 0);
+  Result := True;
 End;
 
 function TInterfaceBase.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
@@ -1525,10 +1535,10 @@ begin
 
     Pen := SelectObject(DC, GetStockObject(NULL_PEN));
 
-    Pie(DC, X1, Y1, RX, RY, 90*16,90*16);
-    Pie(DC, X2 - RX, Y1, RX, RY, 0, 90*16);
-    Pie(DC, X1, Y2 - RY, RX, RY, 180*16,90*16);
-    Pie(DC, X2 - RX, Y2 - RY, RX, RY, 270*16,90*16);
+    RadialPieWithAngles(DC, X1, Y1, RX, RY, 90*16,90*16);
+    RadialPieWithAngles(DC, X2 - RX, Y1, RX, RY, 0, 90*16);
+    RadialPieWithAngles(DC, X1, Y2 - RY, RX, RY, 180*16,90*16);
+    RadialPieWithAngles(DC, X2 - RX, Y2 - RY, RX, RY, 270*16,90*16);
 
     Rectangle(DC, X1 + (RX div 2) - 1, Y1, X2 - (RX div 2) + 1, Y2 + 1);
     Rectangle(DC, X1, Y1 + (RY div 2) - 1, X2 + 1, Y2 - (RY div 2) + 1);
@@ -1810,6 +1820,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2003/08/18 19:24:18  mattias
+  fixed TCanvas.Pie
+
   Revision 1.98  2003/07/20 06:39:03  mattias
   added comments
 
