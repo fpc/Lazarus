@@ -46,15 +46,9 @@ interface
 {$endif}
 
 uses
-//  Windows,
   SysUtils, Classes, IDEProcs;
 
   { Config Path Functions }
-  {
-    @abstract(Use a these functions to manage config paths )
-    Introduced by Curtis White <cwhite@aracnet.com>
-    Currently maintained by Curtis White <cwhite@aracnet.com>
-  }
 
   { The primary config path is the local or user specific path.
     If the primary config path does not exists, it will automatically be
@@ -77,11 +71,13 @@ implementation
 
 {$I lazconf.inc}
 
-
 end.
 
 {
   $Log$
+  Revision 1.7  2002/07/01 05:11:34  lazarus
+  MG: improved default path to lazarus and ppc386
+
   Revision 1.6  2002/05/10 06:57:42  lazarus
   MG: updated licenses
 

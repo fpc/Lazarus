@@ -103,12 +103,7 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  if FileIsExecutable('/usr/bin/ppc386') then
-    Result:='/usr/bin/ppc386'
-  else if FileIsExecutable('/opt/fpc/ppc386') then
-    Result:='/opt/fpc/ppc386'
-  else
-    Result:='';
+  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
 end;
 
 initialization
@@ -117,6 +112,9 @@ initialization
 
 {
   $Log$
+  Revision 1.7  2002/07/01 05:11:34  lazarus
+  MG: improved default path to lazarus and ppc386
+
   Revision 1.6  2002/05/10 06:57:51  lazarus
   MG: updated licenses
 

@@ -495,7 +495,7 @@ begin
   FShowHintsForMainSpeedButtons:=false;
 
   // files
-  FLazarusDirectory:=ExtractFilePath(ParamStr(0));
+  FLazarusDirectory:=ExpandFilename(ExtractFilePath(ParamStr(0)));
   FLazarusDirsHistory:=TStringList.Create;
   FCompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;

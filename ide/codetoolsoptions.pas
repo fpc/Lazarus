@@ -314,7 +314,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
     FileVersion:=XMLConfig.GetValue('CodeToolsOptions/Version/Value',0);
-    if FileVersion<CodeToolsOptionsVersion then
+    if (FileVersion<>0) and (FileVersion<CodeToolsOptionsVersion) then
       writeln('Note: loading old codetools options file: ',FFileName);
 
     // General
