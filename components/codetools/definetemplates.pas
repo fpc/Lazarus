@@ -1568,7 +1568,7 @@ var
           // template for a sub directory
           {$ifdef win32}
           if CurPath='' then
-            SubPath:=ReadValue(DefTempl.Value,CurValue)
+            SubPath:=ReadValue(DefTempl.Value,CurPath)
           else
             SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value,CurPath);
           {$else}
