@@ -27,7 +27,6 @@
          workaround
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
-    -Message Dialogs on errors
 
     -many more... see XXX
 }
@@ -2227,6 +2226,7 @@ procedure TPropertyEditor.PropDrawName(ACanvas:TCanvas; const ARect:TRect;
 var
   Style : TTextStyle;
 begin
+  FillChar(Style,SizeOf(Style),0);
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
@@ -2235,6 +2235,7 @@ begin
     ShowPrefix := False;
     WordBreak := False;
     SingleLine := True;
+    SystemFont := true;
   end;
   ACanvas.TextRect(ARect, 2,0,GetName, Style);
 end;
