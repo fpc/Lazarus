@@ -217,7 +217,7 @@ endif
 export LCL_PLATFORM
 ifndef LAZARUS_CONFIG_DIR
 ifeq ($(OS_TARGET),win32)
-LAZARUS_CONFIG_DIR=
+LAZARUS_CONFIG_DIR=.
 else
 LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
 endif

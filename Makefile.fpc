@@ -54,7 +54,7 @@ export LCL_PLATFORM
 # user config
 ifndef LAZARUS_CONFIG_DIR
 ifeq ($(OS_TARGET),win32)
-LAZARUS_CONFIG_DIR=
+LAZARUS_CONFIG_DIR=.
 else
 LAZARUS_CONFIG_DIR=$(HOME)/.lazarus
 endif
@@ -75,7 +75,7 @@ ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
-        
+
 idepkg:
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) @$(LAZARUS_IDE_CONFIG)'
 
