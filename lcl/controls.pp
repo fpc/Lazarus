@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, vclglobals, LCLType, LCLProc, GraphType, Graphics,
-  LMessages, LCLLinux, InterfaceBase, ImgList, UTrace, Menus;
+  LMessages, LCLLinux, InterfaceBase, ImgList, UTrace, Menus, ActnList;
 
 
 const
@@ -425,10 +425,40 @@ type
 
   TTabOrder = -1..32767;
 
+
+  { TControlActionLink }
+
+  TControlActionLink = class(TActionLink)
+  protected
+    FClient: TControl;
+    procedure AssignClient(AClient: TObject); override;
+    function IsCaptionLinked: Boolean; override;
+    function IsEnabledLinked: Boolean; override;
+    function IsHelpLinked: Boolean;  override;
+    function IsHintLinked: Boolean; override;
+    function IsVisibleLinked: Boolean; override;
+    function IsOnExecuteLinked: Boolean; override;
+    function DoShowHint(var HintStr: string): Boolean; virtual;
+    procedure SetCaption(const Value: string); override;
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetHint(const Value: string); override;
+    procedure SetHelpContext(Value: THelpContext); override;
+    procedure SetHelpKeyword(const Value: string); override;
+    procedure SetHelpType(Value: THelpType); override;
+    procedure SetVisible(Value: Boolean); override;
+    procedure SetOnExecute(Value: TNotifyEvent); override;
+  end;
+
+  TControlActionLinkClass = class of TControlActionLink;
+
+
   { TControl }
+  
+  TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
 
   TControl = class(TComponent)
   private
+    FActionLink: TControlActionLink;
     FAnchors : TAnchors;
     FAlign : TAlign;
     FAutoSize : Boolean;
@@ -445,6 +475,9 @@ type
     FEnabled : Boolean;
     FFont : TFont;
     FHeight: Integer;
+    FHelpContext: THelpContext;
+    FHelpKeyword: String;
+    FHelpType: THelpType;
     FHostDockSite : TWinControl;
     FHint : String;
     FIsControl : Boolean;
@@ -461,6 +494,7 @@ type
     FOnClick: TNotifyEvent;
     FOnConstrainedResize : TConstrainedResizeEvent;
     FOnDblClick : TNotifyEvent;
+    FOnShowHint: TControlShowHintEvent;
     FOnTripleClick : TNotifyEvent;
     FOnQuadClick : TNotifyEvent;
     FOnDragDrop : TDragDropEvent;
@@ -486,6 +520,7 @@ type
     procedure CheckMenuPopup(const P : TSmallPoint);
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
+    function IsHelpContextStored: boolean;
     procedure SetAlign(Value : TAlign);
     procedure SetBoundsRect(const Rect : TRect);
     procedure SetClientHeight(Value: Integer);
@@ -496,6 +531,8 @@ type
     procedure SetCursor(Value : TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
+    procedure SetHelpContext(const AValue: THelpContext);
+    procedure SetHelpKeyword(const AValue: String);
     procedure SetLeft(Value: Integer);
     procedure SetMouseCapture(Value : Boolean);
     procedure SetParentShowHint(Value : Boolean);
@@ -548,6 +585,7 @@ type
     procedure CMHitTest(Var Message: TCMHittest) ; Message CM_HITTEST;
     procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
+    procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     procedure Resize;
@@ -593,6 +631,9 @@ type
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
+    procedure DoOnShowHint(HintInfo: Pointer);
+  protected
+    property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
     property DragCursor: TCursor read FDragCursor write FDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
@@ -646,7 +687,6 @@ type
     procedure Update; //override;   //pbd
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
-
   public
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
     property Align : TAlign read FAlign write SetAlign;
@@ -671,6 +711,10 @@ type
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
+    property HelpType: THelpType read FHelpType write FHelpType default htContext;
+    property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpContextStored;
+    property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
   published
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
@@ -1374,6 +1418,7 @@ end;
 {$I controlcanvas.inc}
 {$I scrolledwindow.inc}
 {$I wincontrol.inc}
+{$I controlactionlink.inc}
 {$I control.inc}
 {$I graphiccontrol.inc}
 {$I customcontrol.inc}
@@ -1397,6 +1442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2002/11/06 15:59:24  lazarus
+  MG: fixed codetools abort
+
   Revision 1.88  2002/11/05 21:21:35  lazarus
   MG: fixed moving button with LEFT and RIGHT in messagedlgs
 
