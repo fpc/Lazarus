@@ -1221,7 +1221,7 @@ var
 begin
   Result := nil;
 
-  K := AKeySym shr 24;
+  K := Byte(AKeySym shr 24);
   P3 := MKeySymToVK[K];
   if P3 = nil
   then begin
@@ -1231,7 +1231,7 @@ begin
     MKeySymToVK[K] := P3;
   end;
 
-  K := AKeySym shr 16;
+  K := Byte(AKeySym shr 16);
   P2 := P3^[K];
   if P2 = nil
   then begin
@@ -1241,7 +1241,7 @@ begin
     P3^[K] := P2;
   end;
 
-  K := AKeySym shr 8;
+  K := Byte(AKeySym shr 8);
   Result := P2^[K];
   if Result = nil
   then begin
@@ -5539,6 +5539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.226  2003/11/15 15:30:34  marc
+  * Fixed range chek errors in KeySymtoVKeyArray
+
   Revision 1.225  2003/11/07 22:50:44  mattias
   fixed finding sysutilh.inc
 
