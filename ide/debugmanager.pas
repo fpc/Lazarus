@@ -220,7 +220,6 @@ procedure TManagedBreakPoints.MasterUpdate(const ASender: TDBGBreakPoints;
   var
     n: Integer;
   begin
-writeln('TManagedBreakPoints.MasterUpdate A ',ABreakpoint.ClassName,' ',ABreakpoint.Source,' ',ABreakpoint.Line);
     for n := 0 to Count - 1 do
     begin
       Result := TManagedBreakPoint(Items[n]);
@@ -239,9 +238,14 @@ begin
   end
   else begin
     bp := FindItem;
+writeln('TManagedBreakPoints.MasterUpdate B ',ABreakpoint.ClassName,' ',
+  ABreakpoint.Source,' ',ABreakpoint.Line,' ',bp <> nil);
     if bp <> nil then begin
       bp.UpdateSourceMark;
       Update(bp);
+    end else begin
+      writeln('WARNING: TManagedBreakPoints.MasterUpdate unknown breakpoint: ',
+              ABreakpoint.Source,' ',ABreakpoint.Line);
     end;
   end;
 end;
@@ -572,7 +576,7 @@ begin
   if ALocation.SrcLine = -1 
   then begin
     MessageDlg(lisExecutionPaused,
-      Format(lisExecutionPausedAdress, [#13#13, ALocation.Adress, #13,
+      Format(lisExecutionPausedAdress, [#13#13, ALocation.Address, #13,
         ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
       mtInformation, [mbOK],0);
     
@@ -1344,6 +1348,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.38  2003/05/29 18:47:27  mattias
+  fixed reposition sourcemark
+
   Revision 1.37  2003/05/29 17:40:10  marc
   MWE: * Fixed string resolving
        * Updated exception handling

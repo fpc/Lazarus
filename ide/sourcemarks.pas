@@ -287,7 +287,9 @@ end;
 procedure TSourceMark.SetColumn(const Value: Integer);
 begin
   if Column=Value then exit;
+  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
   inherited SetColumn(Value);
+  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
 end;
 
@@ -300,7 +302,9 @@ end;
 procedure TSourceMark.SetLine(const Value: Integer);
 begin
   if Line=Value then exit;
+  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Remove(Self);
   inherited SetLine(Value);
+  if FSourceMarks<>nil then FSourceMarks.fSortedItems.Add(Self);
   DoPositionChanged;
 end;
 
@@ -569,6 +573,8 @@ begin
   EditorAndLine.Line:=ALine;
   AVLNode:=fSortedItems.FindLeftMostKey(@EditorAndLine,
                                         @CompareEditorAndLineWithMark);
+if ALine=50 then
+  writeln('TSourceMarks.GetMarksForLine ',Aline,' ',AVLNode<>nil);
   while (AVLNode<>nil) do begin
     CurMark:=TSourceMark(AVLNode.Data);
     if CompareEditorAndLineWithMark(@EditorAndLine,CurMark)<>0 then break;

@@ -68,7 +68,7 @@ type
 const
   EditorOptsFormatVersion = 2;
   
-  AdditionalHighlightAttributes : array[TAdditionalHilightAttribute] of string =
+  AdditionalHighlightAttributes: array[TAdditionalHilightAttribute] of string =
   (
     '',
     'Text block',

@@ -41,7 +41,7 @@ uses
 
 type
   TDBGLocationRec = record
-    Adress: Pointer;
+    Address: Pointer;
     FuncName: String;
     SrcFile: String;
     SrcLine: Integer;
@@ -2287,6 +2287,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.34  2003/05/29 18:47:27  mattias
+  fixed reposition sourcemark
+
   Revision 1.33  2003/05/29 17:40:10  marc
   MWE: * Fixed string resolving
        * Updated exception handling
