@@ -3238,9 +3238,10 @@ begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
   if (ProcNode=nil) or (ProcNode.StartPos<1) then exit;
-  if ProcNode.Desc=ctnProcedureHead then
+  if ProcNode.Desc=ctnProcedureHead then begin
     ProcNode:=ProcNode.Parent;
-  if ProcNode=nil then exit;
+    if ProcNode=nil then exit;
+  end;
   if not ProcNode.Desc in [ctnProcedure,ctnProcedureType] then exit;
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin

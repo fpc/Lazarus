@@ -1276,34 +1276,29 @@ begin
           end;
         end;
         
-      ctnProcedure,ctnProcedureHead,
+      ctnProcedure,ctnProcedureHead:
+        begin
+
+          // ToDo: ppu, ppw, dcu files
+
+          Result:=Result+NewTool.ExtractProcHead(NewNode,
+            [phpWithStart,phpWithVarModifiers,phpWithParameterNames,
+             phpWithDefaultValues,phpWithResultType,phpWithOfObject]);
+          IdentAdded:=true;
+        end;
+        
       ctnProperty,
       ctnProgram,ctnUnit,ctnPackage,ctnLibrary:
         begin
           IdentNode:=NewNode;
-          if IdentNode.Desc=ctnProcedureHead then
-            IdentNode:=IdentNode.Parent;
 
           // ToDo: ppu, ppw, dcu files
         
           NewTool.MoveCursorToNodeStart(IdentNode);
           NewTool.ReadNextAtom;
           Result:=Result+NewTool.GetAtom+' ';
-          if (IdentNode.Desc=ctnProcedure) and (NewTool.UpAtomIs('CLASS')) then
-          begin
-            NewTool.ReadNextAtom;
-            Result:=Result+NewTool.GetAtom+' ';
-          end;
           NewTool.ReadNextAtom;
-          Result:=Result+NewTool.GetAtom;
-          if (IdentNode.Desc=ctnProcedure) then begin
-            NewTool.ReadNextAtom;
-            if NewTool.AtomIsChar('.') then begin
-              NewTool.ReadNextAtom;
-              Result:=Result+'.'+NewTool.GetAtom+' ';
-            end;
-          end;
-          Result:=Result+' ';
+          Result:=Result+NewTool.GetAtom+' ';
           IdentAdded:=true;
         end;
       else
