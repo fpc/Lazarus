@@ -3264,6 +3264,11 @@ begin
   and (Result[1] in ['O','o']) and (Result[2] in ['N','n'])
   then
     System.Delete(Result,1,2);
+  {$IFDEF Ver1_0}
+  // the 1.0.x compilers have only uppercase RTTI. Make the names a little more
+  // nicer
+  Result := copy(Result,1,1)+lowercase(copy(Result,2,length(Result)-1));
+  {$ENDIF}
 end;
 
 function TMethodPropertyEditor.GetValue: ansistring;
