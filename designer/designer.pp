@@ -234,7 +234,7 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.RemoveControl] ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
-  // remove all child controls
+  // remove all child controls owned by the form
   if (AComponent is TWinControl) then begin
     i:=Form.ComponentCount-1;
     while (i>=0) do begin
@@ -319,20 +319,20 @@ begin
   OldDuringPaintControl:=FDuringPaintControl;
   FDuringPaintControl:=true;
   Sender.Dispatch(TheMessage);
-  
 
-  //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
-  if (ControlSelection.IsSelected(Sender)) then begin
-    // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
-    ControlSelection.DrawMarker(Sender,TheMessage.DC);
-  end;
-  //if OldDuringPaintControl=false then begin
+  if TheMessage.DC<>0 then begin
+    //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+    if (ControlSelection.IsSelected(Sender)) then begin
+      // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+      ControlSelection.DrawMarker(Sender,TheMessage.DC);
+    end;
     DrawNonVisualComponents(TheMessage.DC);
     ControlSelection.DrawGrabbers(TheMessage.DC);
     ControlSelection.DrawGuideLines(TheMessage.DC);
     if ControlSelection.RubberBandActive then
       ControlSelection.DrawRubberBand(TheMessage.DC);
-  //  end;
+  end;
+    
   FDuringPaintControl:=OldDuringPaintControl;
 end;
 
