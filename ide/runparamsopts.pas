@@ -291,12 +291,12 @@ constructor TRunParamsOptsDlg.Create(AnOwner: TComponent);
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-  
+
     Caption:='Run parameters';
     SetBounds((Screen.Width-500) div 2,(Screen.Height-450) div 2,500,450);
   
     SetupNotebook;
-    
+
     OkButton:=TButton.Create(Self);
     with OkButton do begin
       Name:='OkButton';
@@ -331,7 +331,7 @@ begin
     Pages.Add('Environment');
     Visible:=true;
   end;
-  
+
   SetupLocalPage;
   SetupEnvironmentPage;
 end;
@@ -340,7 +340,6 @@ procedure TRunParamsOptsDlg.SetupLocalPage;
 var w: integer;
 begin
   w:=Self.ClientWidth-15;
-  
   HostApplicationGroupBox:=TGroupBox.Create(Self);
   with HostApplicationGroupBox do begin
     Name:='HostApplicationGroupBox';
@@ -388,21 +387,21 @@ begin
     Visible:=true;
   end;
   
-  UseLaunchingApplicationBevel:=TBevel.Create(Self);
+{  UseLaunchingApplicationBevel:=TBevel.Create(Self);
   with UseLaunchingApplicationBevel do begin
     Name:='UseLaunchingApplicationBevel';
     Parent:=NoteBook.Page[0];
     SetBounds(
       5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
     Visible:=true;
-  end;
+  end;}
   
   UseLaunchingApplicationCheckBox:=TCheckBox.Create(Self);
   with UseLaunchingApplicationCheckBox do begin
     Name:='UseLaunchingApplicationCheckBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(UseLaunchingApplicationBevel.Left+10,
-      UseLaunchingApplicationBevel.Top,250,25);
+    SetBounds(15,
+      CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,250,25);
     Caption:='Use launching application';
     Checked:=false;
     Visible:=true;
@@ -412,8 +411,9 @@ begin
   with UseLaunchingApplicationEdit do begin
     Name:='UseLaunchingApplicationEdit';
     Parent:=NoteBook.Page[0];
-    SetBounds(UseLaunchingApplicationBevel.Left+5,
-                 UseLaunchingApplicationBevel.Top+25,w-15,25);
+    SetBounds(UseLaunchingApplicationCheckBox.Left,
+                 UseLaunchingApplicationCheckBox.Top
+                 +UseLaunchingApplicationCheckBox.Height+2,w-15,25);
     Caption:='';
     Visible:=true;
   end;
@@ -422,8 +422,8 @@ begin
   with WorkingDirectoryGroupBox do begin
     Name:='WorkingDirectoryGroupBox';
     Parent:=NoteBook.Page[0];
-    SetBounds(5,UseLaunchingApplicationBevel.Top
-                   +UseLaunchingApplicationBevel.Height+10,w,60);
+    SetBounds(5,UseLaunchingApplicationEdit.Top
+                   +UseLaunchingApplicationEdit.Height+15,w,60);
     Caption:='Working directory';
     Visible:=true;
   end;
@@ -495,7 +495,7 @@ begin
     Columns.Add;
     Columns[0].Caption:='Variable';
     Columns[0].Width:=130;
-    Columns[0].Width:=130;
+    Columns[1].Caption:='Value';
     Columns.EndUpdate;
     ViewStyle := vsReport;
     Sorted := true;
@@ -532,7 +532,8 @@ begin
     Sorted := true;
     Visible:=true;
   end;
-  
+  FreeAndNil(UserOverridesListView);
+
   UserOverridesAddButton:=TButton.Create(Self);
   with UserOverridesAddButton do begin
     Name:='UserOverridesAddButton';
