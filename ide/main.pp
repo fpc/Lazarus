@@ -54,7 +54,8 @@ uses
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
-  DiskDiffsDialog, UnitDependencies, PublishProjectDlg,
+  DiskDiffsDialog, UnitDependencies, PublishProjectDlg, ClipBoardHistory,
+  ProcessList,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -5109,6 +5110,9 @@ begin
     try
       Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
       Writeln('    WorkingDir "',FRunProcess.CurrentDirectory,'"');
+      // just run the program and don't care (no watch, no debugging)
+      // just check from time to time, if it has terminated and clean up
+      GetDefaultProcessList.Add(FRunProcess);
       FRunProcess.Execute;
       ToolStatus:=itNone;
       Result := mrOk;
@@ -7110,6 +7114,8 @@ end;
 procedure TMainIDE.OnApplicationIdle(Sender: TObject);
 begin
   UpdateWindowsMenu;
+  GetDefaultProcessList.FreeStoppedProcesses;
+  EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -7545,6 +7551,9 @@ begin
     if ALayout.FormID=DefaultCodeExplorerName then begin
       ALayout.Form.SetBounds(Screen.Width-200,130,170,Max(50,Screen.Height-230));
     end else
+    if ALayout.FormID=DefaultClipbrdHistoryName then begin
+      ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
+    end else
     if ALayout.FormID=DefaultMessagesViewName then begin
       ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
         Max(50,Screen.Width-300),80);
@@ -7589,6 +7598,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.450  2003/01/06 10:51:40  mattias
+  freeing stopped external tools
+
   Revision 1.449  2003/01/04 11:58:32  mattias
   added Windows menu to IDE
 
