@@ -310,8 +310,6 @@ Begin
   if (ControlSelection.SelectionForm<>Form)
   or (ControlSelection.IsSelected(Form)) then exit;
   ControlSelection.MoveSelection(DiffX, DiffY);
-  if ControlSelection.OnlyNonVisualComponentsSelected then
-    FCustomForm.Invalidate;
 end;
 
 Procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
@@ -466,7 +464,7 @@ begin
         if Assigned(FOnPropertiesChanged) then
           FOnPropertiesChanged(Self);
       end;
-      ControlSelection.InvalidGuideLinesCache;
+      ControlSelection.InvalidateGuideLinesCache;
     end;
   end;
 end;
@@ -484,13 +482,13 @@ begin
           FOnPropertiesChanged(Self);
       end;
     end;
-    ControlSelection.InvalidGuideLinesCache;
+    ControlSelection.InvalidateGuideLinesCache;
   end;
 end;
 
 procedure TDesigner.MouseDownOnControl(Sender: TControl;
   var TheMessage: TLMMouse);
-var i,
+var
   CompIndex:integer;
   SelectedCompClass: TRegisteredComponent;
   NonVisualComp: TComponent;
@@ -586,12 +584,12 @@ Begin
                   mtInformation,[mbOk],0);
               end else begin
                 ControlSelection.Add(MouseDownComponent);
-                InvalidateWithParent(MouseDownComponent);
+                //InvalidateWithParent(MouseDownComponent);
               end;
             end else begin
               // remove from multiselection
               ControlSelection.Delete(CompIndex);
-              InvalidateWithParent(MouseDownComponent);
+              //InvalidateWithParent(MouseDownComponent);
             end;
           end else begin
             // no shift key (single selection)
@@ -600,13 +598,13 @@ Begin
               // select only this component
 
               // invalidate old components
-              for i:=0 to ControlSelection.Count-1 do
-                if ControlSelection[i].Component is TControl then
-                  InvalidateWithParent(TControl(ControlSelection[i].Component));
+              //for i:=0 to ControlSelection.Count-1 do
+              //  if ControlSelection[i].Component is TControl then
+              //    InvalidateWithParent(TControl(ControlSelection[i].Component));
 
               // clear old selection and select new component
               ControlSelection.AssignComponent(MouseDownComponent);
-              InvalidateWithParent(MouseDownComponent);
+              //InvalidateWithParent(MouseDownComponent);
             end;
           end;
         end;
@@ -730,7 +728,7 @@ var
         // this resets the component palette to the selection tool
         FOnUnselectComponentClass(Self);
         
-    Form.Invalidate;
+    //Form.Invalidate;
     {$IFDEF VerboseDesigner}
     writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
        '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
@@ -783,7 +781,7 @@ var
     if (not (ssShift in Shift)) then begin
       // select only the mouse down component
       if ControlSelection.AssignComponent(MouseDownComponent) then
-        Form.Invalidate;
+        {Form.Invalidate};
       if (MouseDownClickCount=2)
       and (ControlSelection.SelectionForm=Form) then begin
         // Double Click -> invoke 'Edit' of the component editor
@@ -798,7 +796,7 @@ var
   begin
     if ControlSelection.RubberbandActive then begin
       ControlSelection.RubberbandActive:=false;
-      Form.Invalidate;
+      //Form.Invalidate;
     end;
   end;
   
@@ -941,7 +939,7 @@ begin
         ControlSelection.SizeSelection(
           LastMouseMovePos.X-OldMouseMovePos.X,
           LastMouseMovePos.Y-OldMouseMovePos.Y);
-        FCustomForm.Invalidate;
+        //FCustomForm.Invalidate;
         if Assigned(OnModified) then OnModified(Self);
       end else begin
         // no grabber resizing
@@ -961,7 +959,7 @@ begin
             LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
           then begin
             if Assigned(OnModified) then OnModified(Self);
-            FCustomForm.Invalidate;
+            //FCustomForm.Invalidate;
             //SendCachedLCLMessages;
           end;
         end
@@ -976,7 +974,7 @@ begin
           else
             ControlSelection.RubberbandType:=rbtCreating;
           ControlSelection.RubberBandActive:=true;
-          FCustomForm.Invalidate;
+          //FCustomForm.Invalidate;
         end;
       end;
     end
@@ -1080,7 +1078,7 @@ begin
     MarkComponentForDeletion(ControlSelection[i].Component);
   // clear selection by selecting the form
   SelectOnlythisComponent(FCustomForm);
-  Form.Invalidate;
+  //Form.Invalidate;
   // delete marked components
   while DeletingComponents.Count>0 do
     RemoveComponentAndChilds(
@@ -1151,7 +1149,7 @@ end;
 procedure TDesigner.Modified;
 Begin
   ControlSelection.SaveBounds;
-  Form.Invalidate;
+  //Form.Invalidate;
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
