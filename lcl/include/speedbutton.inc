@@ -655,7 +655,7 @@ begin
 
   inherited CMMouseEnter(Message);
 
-  if  FFlat and not FMouseInControl 
+  if  {FFlat and }not FMouseInControl
   and Enabled and (GetCapture = 0) 
   then begin
     FMouseInControl := True;
@@ -675,7 +675,7 @@ begin
 
    inherited CMMouseLeave(Message);
 
-   if  FFlat and FMouseInControl 
+   if  {FFlat and }FMouseInControl
    and Enabled and not FDragging 
    then begin
      FMouseInCOntrol := False;
@@ -692,6 +692,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/08/22 16:43:35  lazarus
+  MG: improved theme support from Andrew
+
   Revision 1.16  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
