@@ -90,10 +90,8 @@ uses
   function GetDefaultTargetOS: string;
 
 const
-  // ToDo: find the constant in the fpc units.
-  LineBreak = {$IFDEF win32}#13+{$ENDIF}#10;
-  EmptyLine = LineBreak+LineBreak;
-  EndOfLine: shortstring = LineBreak;
+  EmptyLine = LineEnding + LineEnding;
+  EndOfLine: shortstring = LineEnding;
 
 implementation
 
@@ -150,6 +148,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.23  2003/12/21 13:58:05  mattias
   renamed DirectoryExists to DirPathExists to reduce ambigiousity
 

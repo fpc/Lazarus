@@ -109,43 +109,43 @@ procedure GetEncloseSelectionParams(TheType: TEncloseSelectionType;
 begin
   case TheType of
   estTryFinally:
-    Template:='try'+LineBreak
-             +'  <selection>'+LineBreak
-             +'finally'+LineBreak
-             +'  |'+LineBreak
-             +'end;'+LineBreak;
+    Template:='try'+LineEnding
+             +'  <selection>'+LineEnding
+             +'finally'+LineEnding
+             +'  |'+LineEnding
+             +'end;'+LineEnding;
 
   estTryExcept:
-    Template:='try'+LineBreak
-             +'  <selection>'+LineBreak
-             +'except'+LineBreak
-             +'  |'+LineBreak
-             +'end;'+LineBreak;
+    Template:='try'+LineEnding
+             +'  <selection>'+LineEnding
+             +'except'+LineEnding
+             +'  |'+LineEnding
+             +'end;'+LineEnding;
 
   estBeginEnd:
-    Template:='begin'+LineBreak
-             +'  |<selection>'+LineBreak
-             +'end;'+LineBreak;
+    Template:='begin'+LineEnding
+             +'  |<selection>'+LineEnding
+             +'end;'+LineEnding;
 
   estForBeginEnd:
-    Template:='for | do begin'+LineBreak
-             +'  <selection>'+LineBreak
-             +'end;'+LineBreak;
+    Template:='for | do begin'+LineEnding
+             +'  <selection>'+LineEnding
+             +'end;'+LineEnding;
 
   estWhileDoBeginEnd:
-    Template:='while | do begin'+LineBreak
-             +'  <selection>'+LineBreak
-             +'end;'+LineBreak;
+    Template:='while | do begin'+LineEnding
+             +'  <selection>'+LineEnding
+             +'end;'+LineEnding;
 
   estRepeatUntil:
-    Template:='repeat'+LineBreak
-             +'  <selection>'+LineBreak
-             +'until |;'+LineBreak;
+    Template:='repeat'+LineEnding
+             +'  <selection>'+LineEnding
+             +'until |;'+LineEnding;
 
   estPascalComment:
-    Template:='{'+LineBreak
-             +'  |<selection>'+LineBreak
-             +'}'+LineBreak;
+    Template:='{'+LineEnding
+             +'  |<selection>'+LineEnding
+             +'}'+LineEnding;
 
   else
     RaiseException('GetEnclosedSelectionParams');

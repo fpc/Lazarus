@@ -207,14 +207,14 @@ begin
   NeededLineEnds:=CountNeededLineEndsToAddBackward(Src,InsertAtom.StartPos-1,
                                                    NeededLineEnds);
   for i:=1 to NeededLineEnds do
-    NewResData:=EndOfLine+NewResData;
+    NewResData:=LineEnding+NewResData;
   // add start gap
   NeededLineEnds:=CountNeededLineEndsToAddBackward(ResourceData,
                                                    length(ResourceData),2);
   NeededLineEnds:=CountNeededLineEndsToAddForward(Src,InsertAtom.EndPos,
                                                   NeededLineEnds);
   for i:=1 to NeededLineEnds do
-    NewResData:=NewResData+EndOfLine;
+    NewResData:=NewResData+LineEnding;
   // replace
   ResourceCode.Replace(InsertAtom.StartPos,
                        InsertAtom.EndPos-InsertAtom.StartPos,

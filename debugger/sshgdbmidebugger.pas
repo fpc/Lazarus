@@ -144,7 +144,7 @@ begin
   if Pos('authenticity', Line) > 0
   then begin
     //
-    S := Line + LineBreak + ReadLine + ReadLine;
+    S := Line + LineEnding + ReadLine + ReadLine;
     if MessageDlg('Debugger', S, mtConfirmation, [mbYes, mbNo], 0) <> mrYes
     then begin
       SendCmdLn('no');
@@ -172,7 +172,7 @@ begin
     // something else, read the line
     Line := ReadLine;
     if MessageDlg('Debugger',
-      'Response: ' + LineBreak + Line + LineBreak + 'Continue ?',
+      'Response: ' + LineEnding + Line + LineEnding + 'Continue ?',
       mtConfirmation, [mbYes, mbNo], 0) <> mrYes
     then begin
       DebugProcess.Terminate(0);
@@ -191,7 +191,7 @@ begin
   else begin
     // We got an unexpected result
     MessageDlg('Debugger',
-      'Unexpected result:' + LineBreak + Line + LineBreak + 'The debugger wil be terminated.',
+      'Unexpected result:' + LineEnding + Line + LineEnding + 'The debugger wil be terminated.',
       mtInformation, [mbOK], 0);
     DebugProcess.Terminate(0);
   end;
@@ -206,6 +206,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.8  2004/01/09 00:10:51  marc
   * More debugger properties
   * Fixed debugger for regcall callingconvention in RTL

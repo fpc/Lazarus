@@ -1399,7 +1399,7 @@ end;
 
 procedure TSourceEditor.InsertCVSKeyword(const AKeyWord: string);
 begin
-  FEditor.SelText:='$'+AKeyWord+'$'+EndOfLine;
+  FEditor.SelText:='$'+AKeyWord+'$'+LineEnding;
 end;
 
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
@@ -4385,7 +4385,7 @@ begin
         if not (AMark is TSourceMark) then continue;
         CurHint:=AMark.GetHint;
         if CurHint='' then continue;
-        if HintStr<>'' then HintStr:=HintStr+EndOfLine;
+        if HintStr<>'' then HintStr:=HintStr+LineEnding;
         HintStr:=HintStr+CurHint;
       end;
       if HintStr<>'' then

@@ -226,10 +226,6 @@ procedure ReadRawNextPascalAtom(const Source: string;
 const
   MaxLineLength: integer = 80;
 
-const
-  // ToDo: find the constant in the fpc units.
-  EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
-
 //=============================================================================
 
 implementation
@@ -396,7 +392,7 @@ begin
   if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
   then begin
     // no uses section in interface -> add one
-    Source.Insert(ProgramTermEnd,EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;');
+    Source.Insert(ProgramTermEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=ProgramTermEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
@@ -430,7 +426,7 @@ begin
   if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
   then begin
     // no uses section after program term -> add one
-    Source.Insert(ProgramTermEnd,EndOfline+EndOfline+'uses'+EndOfline+'  ;');
+    Source.Insert(ProgramTermEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=ProgramTermEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
@@ -456,7 +452,7 @@ begin
   if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
   then begin
     // no uses section in interface -> add one
-    Source.Insert(InterfaceWordEnd,EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;');
+    Source.Insert(InterfaceWordEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=InterfaceWordEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
@@ -484,7 +480,7 @@ begin
   if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
   then begin
     // no uses section in interface -> add one
-    Source.Insert(InterfaceWordEnd,EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;');
+    Source.Insert(InterfaceWordEnd,LineEnding+LineEnding+'uses'+LineEnding+'  ;');
     UsesEnd:=InterfaceWordEnd;
     ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
@@ -610,7 +606,7 @@ begin
   Source.Insert(UsesStart,s+NewUnitTerm);
   GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
   if (LineEnd-LineStart>MaxLineLength) or (NewInFile<>'') then
-    Source.Insert(UsesStart,EndOfLine+'  ');
+    Source.Insert(UsesStart,LineEnding+'  ');
   Result:=true;
 end;
 
@@ -648,7 +644,7 @@ begin
   Source.Insert(UsesStart,s+NewUnitTerm);
   GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
   if (LineEnd-LineStart>MaxLineLength) or (InFileName<>'') then
-    Source.Insert(UsesStart,EndOfLine+'  ');
+    Source.Insert(UsesStart,LineEnding+'  ');
   Result:=true;
 end;
 
@@ -703,7 +699,7 @@ begin
     ,EndPosition,false);
   if Position<1 then exit;
   Source.Insert(Position,
-         'Application.CreateForm('+AClassName+','+AName+');'+EndOfLine+'  ');
+         'Application.CreateForm('+AClassName+','+AName+');'+LineEnding+'  ');
   Result:=true;
 end;
 
@@ -786,7 +782,7 @@ begin
     Source.Replace(StartPos,EndPos-StartPos,AddCode);
   end else begin
     // add resource
-    Source.Insert(length(Source.Source)+1,EndOfLine+AddCode);
+    Source.Insert(length(Source.Source)+1,LineEnding+AddCode);
   end;
   Result:=true;
 end;
@@ -866,7 +862,7 @@ begin
         NextSpaces:='    ';
       end;
       Source.Insert(AtomStart,
-              PriorSpaces+ComponentName+': '+ComponentClassName+';'+EndOfLine
+              PriorSpaces+ComponentName+': '+ComponentClassName+';'+LineEnding
              +NextSpaces);
       Result:=true;
       exit;

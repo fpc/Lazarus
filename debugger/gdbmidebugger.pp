@@ -951,11 +951,11 @@ begin
   Line := StripLN(ReadLine);
   while DebugProcessRunning and (Line <> '(gdb) ') do
   begin
-    S := S + Line + LineBreak;
+    S := S + Line + LineEnding;
     Line := StripLN(ReadLine);
   end;
   if S <> ''
-  then MessageDlg('Debugger', 'Initialization output: ' + LineBreak + S,
+  then MessageDlg('Debugger', 'Initialization output: ' + LineEnding + S,
     mtInformation, [mbOK], 0);
 end;
 
@@ -1022,7 +1022,7 @@ begin
             if (RightStr(S, 2) = '\n') and (RightStr(S, 3) <> '\\n')
             then begin
               // Delete lineend symbol & add lineend
-              S := Copy(S, 1, Length(S) - 2) + LineBreak;
+              S := Copy(S, 1, Length(S) - 2) + LineEnding;
             end;
             AResultValues := AResultValues + S;
           end
@@ -2247,6 +2247,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.42  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.41  2004/01/09 00:10:51  marc
   * More debugger properties
   * Fixed debugger for regcall callingconvention in RTL

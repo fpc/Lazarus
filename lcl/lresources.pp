@@ -94,7 +94,7 @@ var LazarusResources:TLResourceList;
 implementation
 
 
-const LineEnd:ShortString={$IFDEF win32}#13+{$ENDIF}#10;
+const LineEnd:ShortString= LineEnding;
 
 {function UTF8Decode(const S: UTF8String): WideString;
 begin

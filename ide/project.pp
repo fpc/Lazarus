@@ -988,7 +988,7 @@ var AResourceFilename :string;
 begin
   if fSource=nil then exit;
   NewSource:='';
-  LE:=EndOfLine;
+  LE:=LineEnding;
   if NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule] then begin
     fUnitName:=NewUnitName;
     AResourceFilename:=fUnitName+ResourceFileExt;
@@ -2815,6 +2815,9 @@ end.
 
 {
   $Log$
+  Revision 1.147  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.146  2004/01/03 20:19:22  mattias
   fixed reopening virtual files
 

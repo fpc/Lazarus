@@ -70,7 +70,7 @@ begin
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
   
-  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineBreak,LineBreak,LineBreak]);
+  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding]);
   Button1.Caption:=lisClose;
 
   OnResize:=@AboutFormResize;

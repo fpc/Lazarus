@@ -3999,12 +3999,9 @@ end;
   the interface.
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetCmdLineParamDescForInterface: string;
-const
-  e = {$IfDef win32}#13+{$EndIf}#10;
-
   function b(const s: string): string;
   begin
-    Result:=BreakString(s,75,22)+e+e;
+    Result:=BreakString(s,75,22)+LineEnding+LineEnding;
   end;
 
 begin
@@ -9226,6 +9223,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.318  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.317  2004/01/15 22:36:24  mattias
   workaround for fpc fpu bug and added calendar debugging msg
 

@@ -180,7 +180,7 @@ constructor TCmdLineDebugger.Create(const AExternalDebugger: String);
 begin
   FDbgProcess := nil;
   FLineEnds := TStringList.Create;
-  FLineEnds.Add(LineBreak);
+  FLineEnds.Add(LineEnding);
   FReading := False;
   FFlushAfterRead := False;
   FPeekOffset := 0;
@@ -367,7 +367,7 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-    FDbgProcess.Input.Write(LineBreak, 1);
+    FDbgProcess.Input.Write(LineEnding, 1);
   end
   else begin
     WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
@@ -389,6 +389,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.27  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.26  2004/01/05 15:22:42  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 

@@ -323,7 +323,7 @@ var
 begin
   Result:=mrCancel;
   // create sourcecode
-  LE:=EndOfLine;
+  LE:=LineEnding;
   UsesLine:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
   if System.Pos(Params.UsedUnitname,UsesLine)<1 then
     UsesLine:=UsesLine+', '+Params.UsedUnitname;
@@ -2188,7 +2188,7 @@ begin
   end;
 
   // collect unitnames
-  e:=EndOfLine;
+  e:=LineEnding;
   UsedUnits:='';
   RegistrationCode:='';
   for i:=0 to APackage.FileCount-1 do begin
@@ -2622,7 +2622,7 @@ begin
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
     if not Dependency.RequiredPackage.AutoCreated then
-      StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+EndOfLine;
+      StaticPackagesInc:=StaticPackagesInc+Dependency.PackageName+','+LineEnding;
     Dependency:=Dependency.NextRequiresDependency;
   end;
   StaticPckIncludeFile:=ConfigDir+'staticpackages.inc';

@@ -531,7 +531,7 @@ begin
     // filename and title
     InfoStr:=Format(lisOIPFilename, [Pkg.Filename]);
     // state
-    InfoStr:=Format(lisPckExplState, [InfoStr+LineBreak]);
+    InfoStr:=Format(lisPckExplState, [InfoStr+LineEnding]);
     if Pkg.AutoCreated then
       AddState(lisPckExplAutoCreated);
     if Pkg.Installed<>pitNope then
@@ -540,7 +540,7 @@ begin
       AddState(lisPckExplInstallOnNextStart);
     if (Pkg.AutoInstall=pitNope) and (Pkg.Installed<>pitNope) then
       AddState(lisPckExplUninstallOnNextStart);
-    InfoStr:=Format(lisOIPDescriptionDescription, [InfoStr+LineBreak,
+    InfoStr:=Format(lisOIPDescriptionDescription, [InfoStr+LineEnding,
       BreakString(Pkg.Description, 60, length(lisOIPDescription))]);
   end;
   InfoMemo.Text:=InfoStr;

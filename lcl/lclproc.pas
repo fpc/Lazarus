@@ -447,8 +447,6 @@ begin
 end;
 
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
-const
-  NewLine = {$IfDef win32}#13+{$EndIf}#10;
 var
   SrcLen: Integer;
   APos: Integer;
@@ -515,7 +513,7 @@ begin
         inc(SplitPos);
       Result:=Result+copy(Src,1,SplitPos-1);
     end else begin
-      Result:=Result+copy(Src,1,SplitPos-1)+NewLine;
+      Result:=Result+copy(Src,1,SplitPos-1)+LineEnding;
     end;
     // append indent
     if Indent>0 then

@@ -3087,7 +3087,7 @@ var
     UnitLink:=FindUnitLink(AnUnitName);
     //writeln('AddFPCSourceLinkForUnit ',AnUnitName,' ',UnitLink<>nil);
     if UnitLink=nil then exit;
-    s:=AnUnitName+' '+UnitLink.Filename+EndOfLine;
+    s:=AnUnitName+' '+UnitLink.Filename+LineEnding;
     UnitLinkList:=UnitLinkList+s;
   end;
 

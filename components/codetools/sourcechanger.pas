@@ -887,7 +887,7 @@ end;
 constructor TBeautifyCodeOptions.Create;
 begin
   LineLength:=80;
-  LineEnd:={$IFDEF win32}#13+{$ENDIF}#10;
+  LineEnd:=System.LineEnding;
   Indent:=2;
   TabWidth:=8;
   ClassPartInsertPolicy:=cpipLast;

@@ -442,9 +442,9 @@ end;
 procedure TManagedBreakPoint.OnSourceMarkGetHint(SenderMark: TSourceMark;
   var Hint: string);
 begin
-  Hint:=GetBreakPointStateDescription(Self)+LineBreak
-      +'Hitcount: '+IntToStr(Hitcount)+LineBreak
-      +'Action: '+GetBreakPointActionsDescription(Self)+LineBreak
+  Hint:=GetBreakPointStateDescription(Self)+LineEnding
+      +'Hitcount: '+IntToStr(Hitcount)+LineEnding
+      +'Action: '+GetBreakPointActionsDescription(Self)+LineEnding
       +'Condition: '+Expression;
 end;
 
@@ -1668,6 +1668,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.66  2004/01/17 13:29:04  mattias
+  using now fpc constant LineEnding   from Vincent
+
   Revision 1.65  2004/01/05 15:22:41  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 

@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    - simple file functions anf fpc additions
+    - simple file functions and fpc additions
 }
 unit FileProcs;
 
@@ -43,8 +43,6 @@ type
 
 
 const
-  // ToDo: find the constant in the fpc units.
-  EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
   SpecialChar = '#'; // used to use PathDelim, e.g. #\
   {$ifdef win32}
   {$define CaseInsensitiveFilenames}

@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, ExtCtrls,
   FileCtrl, LResources, Dialogs, LCLProc,
-  LazConf, IDEProcs, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
+  IDEProcs, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
   PackageSystem;
 
 type
@@ -126,11 +126,11 @@ begin
        Format(lisOIPFilename, [CurPkg.Filename]);
     if CurPkg.AutoCreated then
       HintStr:=Format(lisOIPThisPackageWasAutomaticallyCreated, [HintStr+
-        LineBreak]);
+        LineEnding]);
     if CurPkg.Missing then
       HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound, [
-        HintStr+EndOfLine]);
-    HintStr:=Format(lisOIPDescriptionDescription, [HintStr+EndOfLine,
+        HintStr+LineEnding]);
+    HintStr:=Format(lisOIPDescriptionDescription, [HintStr+LineEnding,
       BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
     HintMemo.Text:=HintStr;
   end else begin
