@@ -25,13 +25,13 @@ unit AllUnits;
 interface
 
 uses
-  InterfaceBase, Interfaces,   LCLStrConsts,
+  InterfaceBase, Interfaces,      LCLStrConsts,
 	Buttons,       Extctrls,        Registry,     VCLGlobals,   Calendar,
 	Clipbrd,       Filectrl,        Forms,        LCLLinux,     Spin,
 	Comctrls,      Graphics,        LMessages,    Stdctrls,     Arrow,
   Controls,      Imglist,         Menus,        Toolwin,      Dialogs,
   Messages,      UTrace,          DynHashArray, Clistbox,     Lazqueue,
-  ActnList,      GraphicsMath;
+  ActnList,      GraphicsMath,    LCLMemManager;
 
 implementation
 
@@ -40,6 +40,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/08/21 08:13:37  lazarus
+  MG: accelerated new/dispose of gdiobjects
+
   Revision 1.13  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 
