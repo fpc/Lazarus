@@ -180,7 +180,7 @@ type
       YPos: SmallInt);
     1: (
       Pos: TSmallPoint;
-      Result: LongInt);
+      Result: LRESULT);
   end;
 
   TCMHitTest = TLMNCHitTest;
@@ -189,7 +189,7 @@ type
     Msg: Cardinal;
     Control: TControl;
     Inserting: Boolean;
-    Result: Longint;
+    Result: LRESULT;
   End;
 
   TCMDialogChar = TLMKEY;
@@ -397,7 +397,7 @@ type
     Reserved1: Byte; // for Delphi compatibility
     Reserved2: Word; // for Delphi compatibility
     DragRec: PDragRec;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
   TDragObject = class(TObject)
@@ -1158,7 +1158,7 @@ type
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
     Procedure SetTextBuf(Buffer: PChar); virtual;
-    Function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LongInt;
+    Function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
     Function  ScreenToClient(const APoint: TPoint): TPoint;
     Function  ClientToScreen(const APoint: TPoint): TPoint;
     Function  ScreenToControl(const APoint: TPoint): TPoint;
@@ -2899,6 +2899,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.280  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.279  2005/02/03 15:10:22  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

@@ -792,6 +792,8 @@ type
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
 
+  //TODO: move to LMessages ?
+
   // application hint stuff
   PHintInfo = ^THintInfo;
   THintInfo = record
@@ -810,16 +812,16 @@ type
 
   TCMHintShow = record
     Msg: Cardinal;
-    Reserved: Integer;
+    Reserved: WPARAM;
     HintInfo: PHintInfo;
-    Result: Integer;
+    Result: LRESULT;
   end;
 
   TCMHintShowPause = record
     Msg: Cardinal;
     WasActive: Integer;
     Pause: PInteger;
-    Result: Integer;
+    Result: LRESULT;
   end;
 
   TAppHintTimerType = (ahtNone, ahtShowHint, ahtHideHint, ahtReshowHint);
@@ -1261,7 +1263,7 @@ end;
 // anything, I just map the Integer to the TFocusState.
 function SaveFocusState: TFocusState;
 begin
-  Result := TFocusState(FocusCount);
+  Result := TFocusState(PtrInt(FocusCount));
 end;
 
 procedure RestoreFocusState(FocusState: TFocusState);

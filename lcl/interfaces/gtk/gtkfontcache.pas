@@ -226,7 +226,7 @@ begin
   Result.LogFont:=LogFont;
   FDescriptors.Add(Result);
   if FindGDKFontDesc(LogFont,LongFontName)=nil then begin
-    debugln('TGdkFontCache.Add Added: ',HexStr(Cardinal(Result),8),' LongFontName=',Result.LongFontName,' ',LogFontToString(Result.LogFont));
+    DebugLn('TGdkFontCache.Add Added: %p LongFontName=%s LogFont=%s', [Pointer(Result), Result.LongFontName, LogFontToString(Result.LogFont)]);
     DumpDescriptors;
     RaiseGDBException('');
   end;
@@ -264,7 +264,7 @@ begin
   i:=1;
   while ANode<>nil do begin
     Desc:=TGdkFontCacheDescriptor(ANode.Data);
-    debugln('TGdkFontCache.DumpDescriptors ',dbgs(i),' ',HexStr(Cardinal(Desc),8),' ',Desc.LongFontName,' ',LogFontToString(Desc.LogFont));
+    DebugLn('TGdkFontCache.DumpDescriptors %d %p %s %s', [i, Pointer(Desc), Desc.LongFontName, LogFontToString(Desc.LogFont)]);
     ANode:=FDescriptors.FindSuccessor(ANode);
     inc(i);
   end;

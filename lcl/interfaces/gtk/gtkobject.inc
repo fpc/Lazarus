@@ -989,11 +989,8 @@ procedure TGtkWidgetSet.SendCachedGtkMessages;
 
     procedure RaiseInvalidLCLControl;
     begin
-      RaiseException('SendCachedGtkResizeNotifications'
-        +' FixWidget='+HexStr(Cardinal(FixWidget),8)
-        +' MainWidget='+HexStr(Cardinal(MainWidget),8)
-        +' LCLControl='+HexStr(Cardinal(LCLControl),8)
-        );
+      RaiseException('SendCachedGtkResizeNotifications FixWidget=%p MainWidget=%p LCLControl=%p',
+                    [FixWidget, MainWidget, Pointer(LCLControl)]);
     end;
 
   begin
@@ -1587,14 +1584,14 @@ function TGtkWidgetSet.CreateTimer(Interval: integer;
 var
   TimerInfo: PGtkITimerinfo;
 begin
-  if ((Interval < 1) or (TimerFunc = nil))
+  if ((Interval < 1) or (not Assigned(TimerFunc)))
   then
     Result := 0
   else begin
     New(TimerInfo);
     TimerInfo^.TimerFunc := TimerFunc;
     {$IFDEF VerboseTimer}
-    DebugLn('TGtkWidgetSet.SetTimer ',HexStr(Cardinal(TimerInfo),8),' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+    DebugLn('TGtkWidgetSet.SetTimer %p CurTimerCount=%d OldTimerCount=%d', [TimerInfo, FTimerData.Count, FOldTimerData.Count]);
     {$ENDIF}
     Result:= gtk_timeout_add(Interval, @gtkTimerCB, TimerInfo);
     if Result = 0 then
@@ -2775,12 +2772,12 @@ var
   
   procedure RaiseSrcDrawableNil;
   begin
-    RaiseException('TGtkWidgetSet.StretchCopyArea SrcDC='+HexStr(Cardinal(SrcDevContext),8)+' Drawable=nil');
+    RaiseException('TGtkWidgetSet.StretchCopyArea SrcDC=%p Drawable=nil', [Pointer(SrcDevContext)]);
   end;
 
   procedure RaiseDestDrawableNil;
   begin
-    RaiseException('TGtkWidgetSet.StretchCopyArea DestDC='+HexStr(Cardinal(DestDevContext),8)+' Drawable=nil');
+    RaiseException('TGtkWidgetSet.StretchCopyArea DestDC=%p Drawable=nil', [Pointer(DestDevContext)]);
   end;
 
 var
@@ -6847,10 +6844,10 @@ begin
 
   // find all line starts and line ends
   repeat
-    LinesList.Add(Pointer(LineStart));
+    LinesList.Add(Pointer(PtrInt(LineStart)));
     // find line end
     LineEnd:=FindLineEnd(LineStart);
-    LinesList.Add(Pointer(LineEnd));
+    LinesList.Add(Pointer(PtrInt(LineEnd)));
     // find next line start
     LineStart:=LineEnd;
     if AText[LineStart] in [#10,#13] then begin
@@ -7003,6 +7000,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.624  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.623  2005/02/05 14:53:35  mattias
   fixed for gtk TScrollBar  from Andrew Haines
 

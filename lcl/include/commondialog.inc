@@ -59,7 +59,7 @@ begin
   Result:=FHandle<>0;
 end;
 
-procedure TCommonDialog.SetHandle(const AValue: integer);
+procedure TCommonDialog.SetHandle(const AValue: THandle);
 begin
   FHandle:=AValue;
 end;
@@ -97,6 +97,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.18  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

@@ -666,9 +666,9 @@ begin
   Result := InterfaceObject.SetBkMode(DC, bkMode);
 end;
 
-Function SetCapture(value : Longint): Longint;
-Begin
-  Result := InterfaceObject.SetCapture(Value);
+function SetCapture(AHandle: HWND): HWND;
+begin
+  Result := InterfaceObject.SetCapture(AHandle);
 end;
 
 function SetCaretPos(X, Y: Integer): Boolean;
@@ -1330,6 +1330,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.117  2005/02/05 09:05:50  micha
   add platform independent winapi function IsWindowEnabled
 

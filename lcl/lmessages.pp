@@ -247,45 +247,48 @@ const
   //-------------
 
 type
-  UINT = LongWord;
-  BOOL = Boolean;
+// Defined in LCLType
+//  UINT = LongWord;
+//  BOOL = Boolean;
 
 
   { LCL Messages }
 
   TLMDrawItems = record
     Msg: Cardinal;
-    Ctl : HWND;
-    DrawItemStruct : PDrawItemStruct;
-    Result : LongInt;
+    Ctl: HWND;
+    DrawItemStruct: PDrawItemStruct;
+    Result: LRESULT;
   end;
 
   TLMDrawListItem = record
     // message from the interface to the LCL
     Msg: Cardinal;
-    Unused : LongInt;
+    Unused: PtrInt;
     DrawListItemStruct : PDrawListItemStruct;
-    Result : LongInt;
+    Result: LRESULT;
   end;
 
   TLMMeasureItem = record
     // message from the interface to the LCL
     Msg: Cardinal;
-    idCtl: Cardinal;
+    idCtl: PtrUint;
     MeasureItemStruct: PMeasureItemStruct;
-    Result: LongInt;
+    Result: LRESULT;
   end;
 
 {$if defined(ver1_0) or not(defined(win32))}
   TLMNoParams = record
     Msg: Cardinal;
-    Unused: array[0..3] of Word;
-    Result: Longint;
+    Unused: array[0..1] of PtrInt;
+    Result: LRESULT;
   end;
 {$else}
   TLMNoParams = TWMNoParams;
 {$endif}
 
+(*
+//TODO: Remove
   TLMCanvasCreate = Record
      pparent : Pointer;
      pCanvas : Pointer;
@@ -319,22 +322,26 @@ type
      PenColor : TGraphicsColor;
      ReDraw : Boolean;
     end;
+*)
 
   TLMEraseBkgnd = record
-      Msg: Cardinal;
-      DC: HDC;
-      Unused: Longint;
-      Result: Longint;
-    end;
+    Msg: Cardinal;
+    DC: HDC;
+    Unused: PtrInt;
+    Result: LRESULT;
+  end;
 
   TLMGetText = record
-      Msg: Cardinal;
-      TextMax: Integer;
-      Text: PChar;
-      Result: Longint;
-    end;
+    Msg: Cardinal;
+    TextMax: PtrInt;
+    Text: PChar;
+    Result: LRESULT;
+  end;
 
   TLMGetTextLength = TLMNoParams;
+
+(*
+//TODO: remove
 
   PLMInsertText = ^TLMInsertText;
   TLMInsertText = record
@@ -344,14 +351,14 @@ type
     Position : Integer;
     UserData : Pointer;
   end;
-
+*)
 
   TLMKey = record
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
-    KeyData: Longint;
-    Result: Longint;
+    KeyData: PtrInt;
+    Result: LRESULT;
   end;
 
   TLMChar = TLMKey;
@@ -362,70 +369,75 @@ type
   TLMSysKeyUp = TLMKey;
 
 
-  TLMMouse = packed record
-     Msg : Cardinal;
-     Keys : LongInt;
-     case Integer of
-     0: (
-        XPos: SmallInt;
-        YPos: SmallInt);
-     1: (
-        Pos : TSmallPoint;
-        Result : LongInt);
-     end;
-
+  TLMMouse = record
+    Msg : Cardinal;
+    Keys: PtrInt;
+    case Integer of
+    0: (
+       XPos: SmallInt;
+       YPos: SmallInt);
+    1: (
+       Pos : TSmallPoint);
+    2: (
+       Dummy: LPARAM; // needed for64 bit alignment
+       Result: LRESULT);
+  end;
 
   TLMMouseMove = TLMMouse;
 
   TLMMove = record
     Msg: Cardinal;
-    MoveType: Integer; // 0 = update, 1 = force RequestAlign,
-                       // 128 = Source is Interface (Widget has moved)
+    MoveType: PtrInt; // 0 = update, 1 = force RequestAlign,
+                      // 128 = Source is Interface (Widget has moved)
     case Integer of
-      0: (
-        XPos: Smallint;
-        YPos: Smallint);
-      1: (
-        Pos: TSmallPoint;
-        Result: Longint);
+    0: (
+       XPos: Smallint;
+       YPos: Smallint);
+    1: (
+       Pos : TSmallPoint);
+    2: (
+       Dummy: LPARAM; // needed for64 bit alignment
+       Result: LRESULT);
   end;
 
   TLMActivate = record
-      Msg: Cardinal;
-      Active: BOOL;
-      Minimized : WordBool;
-      ActiveWindow : HWND;
-      Result: Longint;
-    end;
+    Msg: Cardinal;
+    Active: WordBool;
+    Minimized: WordBool;
+    ActiveWindow: HWND;
+    Result: LRESULT;
+  end;
 
   TLMNCActivate = record
     Msg: Cardinal;
-    Active: BOOL;
-    Unused: Longint;
-    Result: Longint;
+    Active: LongBool;
+    Unused: LPARAM;
+    Result: LRESULT;
   end;
 
-  TLMNotify = packed record
+  TLMNotify = record
     Msg: Cardinal;
-    IDCtrl: Longint;
+    IDCtrl: PtrInt;
     NMHdr: PNMHdr;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
-  TLMNotifyFormat = packed record
+  TLMNotifyFormat = record
     Msg: Cardinal;
     From: HWND;
-    Command: Longint;
-    Result: Longint;
+    Command: LPARAM;
+    Result: LRESULT;
   end;
 
-  TLMPaint = packed record
+  TLMPaint = record
     Msg: Cardinal;
     DC: HDC;
     PaintStruct: PPaintStruct;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
+(*
+//TODO: Remove
   TLMResize = record
     Msg : Cardinal;
     Left  : Integer;
@@ -436,9 +448,10 @@ type
   end;
 
   TLMMoveResize = TLMResize;
+*)
 
   PWindowPos = ^TWindowPos;
-  tagWINDOWPOS = packed record
+  tagWINDOWPOS = record
     hwnd: THANDLE; //hwnd: hwnd doesnt compile on the next line
     hwndInsertAfter: THANDLE;
     x: Integer;
@@ -452,9 +465,9 @@ type
 
   TLMWindowPosMsg = record
     Msg: Cardinal;
-    Unused: Integer;
+    Unused: WPARAM;
     WindowPos: PWindowPos;
-    Result: Longint;
+    Result: LPARAM;
   end;
 
   TLMWindowPosChanged = TLMWindowPosMsg;
@@ -463,8 +476,8 @@ type
   {PNCCalcSizeParams}
   PNCCalcSizeParams = ^TNCCalcSizeParams;
   tagNCCalcSize_Params = packed record
-    rgrc : Array[0..2] of TRect;
-    lpPos : pWindowPos;
+    rgrc: array[0..2] of TRect;
+    lpPos: PWindowPos;
   end;
   TNCCalcSizeParams = tagNCCalcSize_Params;
   ncCalcSizeParams = tagNCCalcSize_Params;
@@ -472,7 +485,7 @@ type
 
   TLMNCCalcSize = record
     Msg: Cardinal;
-    CalcValidRects: BOOL;
+    CalcValidRects: LongBool;
     CalcSize_Params: PNCCalcSizeParams;
     Result: Longint;
   end;
@@ -481,37 +494,39 @@ type
 
   TLMSysCommand = record
     Msg: Cardinal;
-    case CmdType: Longint of
+    case CmdType: PtrInt of
       SC_HOTKEY: (
-        ActivateWnd: HWND);
+        ActivateWnd: HWND;
+        Result: LRESULT);
       SC_KEYMENU: (
         Key: Word);
       SC_CLOSE, SC_HSCROLL, SC_MAXIMIZE, SC_MINIMIZE, SC_MOUSEMENU, SC_MOVE,
       SC_NEXTWINDOW, SC_PREVWINDOW, SC_RESTORE, SC_SCREENSAVE, SC_SIZE,
       SC_TASKLIST, SC_VSCROLL: (
         XPos: Smallint;
-        YPos: Smallint;
-        Result: Longint);
+        YPos: Smallint);
   end;
 
   TLMSysDeadChar = record
     Msg: Cardinal;
     CharCode: Word;
     Unused: Word;
-    KeyData: Longint;
-    Result: Longint;
+    KeyData: LPARAM;
+    Result: LRESULT;
   end;
 
 
   TLMSystemError = record
     Msg: Cardinal;
     ErrSpec: Word;
-    Unused: Longint;
-    Result: Longint;
+    Unused: LPARAM;
+    Result: LRESULT;
   end;
 
   TLMTimeChange = TLMNoParams;
 
+//  TODO: REmove
+(*
   //Used to set the statusbar's text
   PLMSetControlText = ^TLMSetControlText;
   TLMSetControlText = record
@@ -519,27 +534,31 @@ type
     Panel : Integer;
     Userdata : PChar;
   end;
+*)
 
-  TLMSetText = packed record
-    Msg : cardinal;
-    Unused : Longint;
-    Text : PChar;
-    Result : Longint;
+  TLMSetText = record
+    Msg: Cardinal;
+    Unused: WPARAM;
+    Text: PChar;
+    Result: LRESULT;
   end;
 
-
+//TODO: Remove
+(*
   TLMKeyEvent = Record
-    Msg : Cardinal;
-    KeyChar : Char;
-    Key : Word;
+    Msg: Cardinal;
+    KeyChar: Char;
+    Key: Word;
     State : TShiftState;
     Length : Integer;
     Str : PChar;
     UserData : Pointer;
    end;
+*)
 
+//TODO: make compatible with WM_MOUSEWHEEL ?
   PLMMouseEvent = ^TLMMouseEvent;
-  TLMMouseEvent = Record
+  TLMMouseEvent = record
     Msg : Cardinal;
     Button : LongInt;
     WheelDelta : Longint; { -1 for up, 1 for down }
@@ -547,8 +566,7 @@ type
     X     : Integer;
     Y    : Integer;
     UserData : Pointer;
-
-    end;
+  end;
 
   TLMLButtonDown = TLMMouse;
   TLMRButtonDown = TLMMouse;
@@ -566,38 +584,40 @@ type
   TLMRButtonUp = TLMMouse;
   TLMMButtonUp = TLMMouse;
 
-  TLMSetFocus = packed record
+  TLMSetFocus = record
     Msg: Cardinal;
     FocusedWnd: HWND;
-    Unused: LongInt;
-    Result : LongInt;
-  End;
+    Unused: LPARAM;
+    Result: LRESULT;
+  end;
 
 {$if defined(ver1_0) or not(defined(win32))}
-  TLMSize = packed record
+  TLMSize = record
     Msg: Cardinal;
-    SizeType: LongInt; // see LCLType.pp (e.g. Size_Restored)
-    Width : Word;
-    Height : Word;
-    Result : LongInt;
+    SizeType: PtrInt; // see LCLType.pp (e.g. Size_Restored)
+    Width: Word;
+    Height: Word;
+    Result: LResult;
   End;
 {$else}
   TLMSize = TWMSize;
 {$endif}
 
-  TLMNoPara = packed record
-    Msg : Cardinal;
+  TLMNoPara = record
+    Msg: Cardinal;
   end;
 
   PLMessage = ^TLMessage;
 {$if defined(ver1_0) or not(defined(win32))}
-  TLMessage = packed record
+  TLMessage = record
     Msg : Cardinal;
     case Integer of
       0 : (
         WParam: LclType.WPARAM;
-      	LParam : LclType.LPARAM;
-      	Result : LclType.LRESULT);
+      	LParam: LclType.LPARAM;
+      	Result: LclType.LRESULT);
+      {$IFNDEF CPU64}
+      // on a 64 bit platform these make no sense
       1 : (
       	WParamLo: Word;
       	WParamHi: Word;
@@ -605,6 +625,7 @@ type
       	LParamHi: Word;
       	ResultLo: Word;
       	ResultHi: Word);
+      {$ENDIF}
     end;
 {$else}
   TLMessage = TMessage;
@@ -615,11 +636,11 @@ type
 
 {$if defined(ver1_0) or not(defined(win32))}
   TLMScroll = record
-    Msg : Cardinal;
-    ScrollCode : SmallInt; // SB_xxx
-    Pos : SmallInt;
-    ScrollBar : HWND;
-    Result : LongInt;
+    Msg: Cardinal;
+    ScrollCode: SmallInt; // SB_xxx
+    Pos: SmallInt;
+    ScrollBar: HWND;
+    Result: LRESULT;
   end;
 
   TLMHScroll = TLMScroll;
@@ -634,8 +655,8 @@ type
   TLMShowWindow = record
     Msg: Cardinal;
     Show: LongBool;
-    Status: Longint;
-    Result: Longint;
+    Status: LPARAM;
+    Result: LRESULT;
   end;
 {$else}
   TLMShowWindow = TWMShowWindow;
@@ -647,26 +668,28 @@ type
   TLMKillFocus = TWMKillFocus;
 {$endif}
 
-  TLMNCHITTEST = packed record
-    Msg : cardinal;
-    Unused : LongInt;
+  TLMNCHITTEST = record
+    Msg: cardinal;
+    Unused: WPARAM;
     case Integer of
-      0 : (
-           XPos : SmallInt;
-           YPos : SmallInt);
-      1 : (
-           Pos : TSmallPoint;
-           Result : LongInt);
+    0 : (
+         XPos : SmallInt;
+         YPos : SmallInt);
+    1 : (
+         Pos : TSmallPoint);
+    2: (
+       Dummy: LPARAM; // needed for64 bit alignment
+       Result: LRESULT);
   end;
 
   TLMDestroy = TLMNoParams;
 
-  TLMCommand = packed record
+  TLMCommand = record
     Msg: Cardinal;
     ItemID: Word;
     NotifyCode: Word;
     Ctl: HWND;
-    Result: Longint;
+    Result: LRESULT;
   end;
 
 
@@ -784,6 +807,9 @@ end.
 
 {
   $Log$
+  Revision 1.125  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.124  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

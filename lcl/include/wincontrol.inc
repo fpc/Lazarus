@@ -923,7 +923,7 @@ begin
       {$IFDEF VerboseDrag}
       DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
       {$ENDIF}
-      DragMsg.Result:=longint(TargetControl);
+      DragMsg.Result := LRESULT(TargetControl);
     end;
 
   else
@@ -1635,7 +1635,7 @@ begin
       {$ENDIF}
     end;
     Control.Perform(TheMessage.Msg, WParam(TheMessage.Keys),
-                    LParam(PointToSmallPoint(P)));
+                    LParam(Integer(PointToSmallPoint(P))));
     Result := True;
   end;
 end;
@@ -1964,7 +1964,7 @@ var
               (Enabled or AllowDisabled)
               and
               (Perform(CM_HITTEST, 0,
-                       LParam(PointToSmallPoint(ControlPos))) <> 0)
+                       LParam(Integer(PointToSmallPoint(ControlPos)))) <> 0)
              )
             );
       {$IFDEF VerboseMouseBugfix}
@@ -4464,6 +4464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.310  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.309  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

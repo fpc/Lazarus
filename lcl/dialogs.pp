@@ -71,7 +71,7 @@ type
 
   TCommonDialog = class(TLCLComponent)
   private
-    FHandle : integer;
+    FHandle : THandle;
     FHeight: integer;
     FWidth: integer;
     FOnCanClose: TCloseQueryEvent;
@@ -79,7 +79,7 @@ type
     FTitle : string;
     FUserChoice: integer;
     FHelpContext: THelpContext;
-    procedure SetHandle(const AValue: integer);
+    procedure SetHandle(const AValue: THandle);
     procedure SetHeight(const AValue: integer);
     procedure SetWidth(const AValue: integer);
   protected
@@ -88,7 +88,7 @@ type
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
     function Execute: boolean; virtual;
-    property Handle: integer read FHandle write SetHandle;
+    property Handle: THandle read FHandle write SetHandle;
     property Title: string read FTitle write FTitle;
     property UserChoice: integer read FUserChoice write FUserChoice;
     procedure Close; virtual;
@@ -423,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.58  2005/01/27 19:03:51  mattias
   added QuestionDlg - a MessageDlg with custom buttons
 

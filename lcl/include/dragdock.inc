@@ -57,7 +57,7 @@ end;
   Send a CM_DRAG (TCMDrag) message to MsgTarget.
 -------------------------------------------------------------------------------}
 Function SendDragMessage(MsgTarget: TControl; Msg: TDragMessage;
-  Source: TDragObject; Target: TControl; const Position: TPoint): longint;
+  Source: TDragObject; Target: TControl; const Position: TPoint): LRESULT;
 var
   DragRec: TDragRec;
   DragMsg: TCMDrag;
@@ -362,6 +362,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.8  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.7  2005/01/13 00:13:36  mattias
   fixed dragging over nil
 

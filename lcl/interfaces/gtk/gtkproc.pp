@@ -286,6 +286,7 @@ var
 
 // debugging
 procedure RaiseException(const Msg: string);
+procedure RaiseException(const Msg: string; Args: array of const);
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
 function GetWidgetDebugReport(Widget: PGtkWidget): string;
@@ -410,7 +411,7 @@ function PaletteAddIndex(Pal: PGDIObject; I, RGB: Longint): Boolean;
 function PaletteDeleteIndex(Pal: PGDIObject; I: Longint): Boolean;
 function PaletteIndexToRGB(Pal: PGDIObject; I: longint): longint;
 function PaletteRGBToIndex(Pal: PGDIObject; RGB: longint): longint;
-Procedure InitializePalette(Pal: PGDIObject; Entries: PPALETTEENTRY; RGBCount: Longint);
+procedure InitializePalette(const Pal: PGDIObject; const Entries: PPaletteEntry; const RGBCount: Longint);
 function GetIndexAsKey(p: pointer): pointer;
 function GetRGBAsKey(p: pointer): pointer;
 

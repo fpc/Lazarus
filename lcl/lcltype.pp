@@ -79,30 +79,36 @@ type
 
 
 {$ifndef win32}
+  {$IFDEF CPU64}
+  // temp solution for 32bit system.Thandle
+  THandle = type PtrInt;
+  HANDLE = THandle;
+  {$ENDIF}
+
   { Provided for compatibility with Windows registry ONLY }
   HKEY  = Integer;
-  HDC   = type LongWord;
-  HHOOK = type LongWord;
-  HFONT = type LongWord;
-  HGDIOBJ = type LongWord;
-  HPEN  = type LongWord;
-  HRGN  = type LongWord;
-  HINST = type LongWord;
-  HICON = type LongWord;
+  HDC   = type THandle;
+  HHOOK = type THandle;
+  HFONT = type THandle;
+  HGDIOBJ = type THandle;
+  HPEN  = type THandle;
+  HRGN  = type THandle;
+  HINST = type THandle;
+  HICON = type THandle;
   HCURSOR = HICON;
+  HGLOBAL = type THandle;
+  HWND    = type THandle;
+  HMENU   = type THandle;
+  HBITMAP = type THandle;
+  HPALETTE = type THandle;
+  HBRUSH = type THandle;
+
   Bool    = LongBool;
-  HGLOBAL = THandle;
   Short   = SmallInt;
-  HWND    = THandle;
-  HMENU   = type LongWord;
-  HBITMAP = type LongWord;
-  HPALETTE = type LongWord;
 
-  HBRUSH = type LongWord;
-
-  WPARAM = type LongInt;
-  LPARAM = type LongInt;
-  LRESULT = type LongInt;
+  WPARAM = type PtrInt; //LongInt;
+  LPARAM = type PtrInt; //LongInt;
+  LRESULT = type PtrInt; //LongInt;
 
 {$else}
   HKEY  = Windows.HKEY;
@@ -129,6 +135,8 @@ type
   LPARAM = Windows.LPARAM;
   LRESULT = Windows.LRESULT;
 {$endif}
+
+  TLCLIntfHandle = type THandle;
 
   PHKEY = ^HKEY;
 
@@ -1718,10 +1726,10 @@ type
   LOGFONT = LOGFONTA;
 
   PLogBrush = ^TLogBrush;
-  tagLOGBRUSH = packed record
+  tagLOGBRUSH = record
     lbStyle: LongWord;
     lbColor: TColorRef;
-    lbHatch: Longint;
+    lbHatch: PtrInt;
   end;
   TLogBrush = tagLOGBRUSH;
   LOGBRUSH = tagLOGBRUSH;
@@ -1944,11 +1952,11 @@ type
 
 type
   PMsg = ^TMsg;
-  tagMSG = packed record
+  tagMSG = record
     hwnd: HWND;
     message: LongWord;
-    wParam: Longint;
-    lParam: Longint;
+    wParam: WPARAM;
+    lParam: LPARAM;
     time: DWORD;
     pt: TPoint;
   end;
@@ -2312,6 +2320,9 @@ end.
 
 {
   $Log$
+  Revision 1.75  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.74  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

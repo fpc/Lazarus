@@ -57,7 +57,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure DefaultButtonChanged(const AButton: TCustomButton); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
@@ -74,7 +74,7 @@ type
     class procedure UpdateLayout(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
     class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
   public
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): THandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TBitmap); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -114,7 +114,7 @@ end;
 
 
 function TGtkWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): THandle;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   Button: TCustomButton;
   WidgetInfo: PWidgetInfo;
@@ -218,7 +218,7 @@ end;
  right, so the invisible is always in position 3. 
 }
 function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): THandle;
+  const AParams: TCreateParams): TLCLIntfHandle;
 var
   BitBtn: TCustomBitBtn;
   WidgetInfo: PWidgetInfo;

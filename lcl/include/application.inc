@@ -968,10 +968,10 @@ var
   Form: TCustomForm;
 begin
   Form := Screen.ActiveForm;
-  if (Form<>nil) and (Form.Perform(Msg, 0, Longint(Action)) = 1) then
+  if (Form<>nil) and (Form.Perform(Msg, 0, PtrInt(Action)) = 1) then
     Result:=true
   else if (MainForm<>Form) and (MainForm<>nil)
-    and (MainForm.Perform(Msg, 0, Longint(Action)) = 1)
+    and (MainForm.Perform(Msg, 0, PtrInt(Action)) = 1)
   then
     Result:=true;
   // Disable action if no "user" handler is available
@@ -1356,6 +1356,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.96  2005/02/05 09:05:50  micha
   add platform independent winapi function IsWindowEnabled
 

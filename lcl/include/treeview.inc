@@ -1432,7 +1432,7 @@ var FMergedItems: TTreeNodeArray;
 begin
   if FCount>0 then begin
     if Owner<>nil then Owner.ClearCache;
-    if SortProc=nil then SortProc:=@DefaultTreeViewSort;
+    if not Assigned(SortProc) then SortProc:=@DefaultTreeViewSort;
     GetMem(FMergedItems,SizeOf(Pointer)*FCount);
     MergeSort(FItems,FMergedItems,0,FCount-1);
     {
@@ -1627,11 +1627,9 @@ end;
 procedure TTreeNode.WriteDebugReport(const Prefix: string; Recurse: boolean);
 var i: integer;
 begin
-  DbgOut(Prefix);
-  DbgOut('TTreeNode.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  DbgOut('%s%s.WriteDebugReport Self=%p',[Prefix, ClassName, Pointer(Self)]);
   ConsistencyCheck;
-  DbgOut(' Text=',Text);
-  DebugLn('');
+  DebugLn(' Text=',Text);
   if Recurse then begin
     for i:=0 to FCount-1 do
       Items[i].WriteDebugReport(Prefix+'  ',true);
@@ -2264,7 +2262,8 @@ begin
       RaiseGDBException('');
     if (i<FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>FTopLvlItems[i+1])
     then begin
-      DebugLn(' CONSISTENCY i=',dbgs(i),' FTopLvlCount=',dbgs(FTopLvlCount),' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
+      DebugLn(' CONSISTENCY i=%d FTopLvlCount=%d FTopLvlItems[i]=%p FTopLvlItems[i].FNextBrother=%p FTopLvlItems[i+1]=%p',
+             [i, FTopLvlCount, Pointer(FTopLvlItems[i]), Pointer(FTopLvlItems[i].FNextBrother), Pointer(FTopLvlItems[i+1])]);
       RaiseGDBException('');
     end;
     if (i=FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>nil) then
@@ -2281,8 +2280,7 @@ end;
 procedure TTreeNodes.WriteDebugReport(const Prefix: string; AllNodes: boolean);
 var Node: TTreeNode;
 begin
-  write(Prefix);
-  write('TTreeNodes.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  DbgOut('%s%s.WriteDebugReport Self=%p', [Prefix, ClassName, Pointer(Self)]);
   ConsistencyCheck;
   DebugLn('');
   if AllNodes then begin
@@ -2494,10 +2492,7 @@ end;
 
 procedure TTreeStrings.WriteDebugReport(const Prefix: string);
 begin
-  write(Prefix);
-  write('TTreeStrings.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
-  write(' Consistency=',ConsistencyCheck);
-  DebugLn('');
+  DebugLn('%sTTreeStrings.WriteDebugReport Self=%p Consistency=%d', [Prefix, Pointer(Self), ConsistencyCheck]);
 end;
 
 
@@ -2544,7 +2539,6 @@ destructor TCustomTreeView.Destroy;
 begin
   Images:=nil;
   FreeThenNil(FTreeNodes);
-  FreeThenNil(FChangeTimer);
   FreeThenNil(FSaveItems);
   FreeThenNil(FDragImage);
   FreeThenNil(FImageChangeLink);
@@ -3452,11 +3446,6 @@ begin
   Invalidate;
 end;
 
-procedure TCustomTreeView.SetChangeDelay(Value: Integer);
-begin
-  FChangeTimer.Interval := Value;
-end;
-
 procedure TCustomTreeView.SetDefaultItemHeight(Value: integer);
 begin
   if (tvoAutoItemHeight in FOptions) and (not (csLoading in ComponentState))
@@ -3480,11 +3469,6 @@ begin
     Result := FBottomItem;
   end else
     Result := nil;
-end;
-
-function TCustomTreeView.GetChangeDelay: Integer;
-begin
-  Result := FChangeTimer.Interval;
 end;
 
 function TCustomTreeView.GetDropTarget: TTreeNode;
@@ -4541,8 +4525,7 @@ end;
 procedure TCustomTreeView.WriteDebugReport(const Prefix: string;
   AllNodes: boolean);
 begin
-  DbgOut(Prefix);
-  DbgOut('TCustomTreeView.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  DbgOut('%s%s.WriteDebugReport Self=%p', [Prefix, ClassName, Pointer(Self)]);
   ConsistencyCheck;
   DebugLn('');
   if AllNodes then begin

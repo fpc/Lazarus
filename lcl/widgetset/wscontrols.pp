@@ -83,7 +83,7 @@ type
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                          var PreferredWidth, PreferredHeight: integer); virtual;
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): HWND; virtual;
+      const AParams: TCreateParams): TLCLIntfHandle; virtual;
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual;

@@ -319,11 +319,11 @@ type
     Rect: TRect;
   end;
 
-  TLMGtkPaint = packed record
+  TLMGtkPaint = record
     Msg: Cardinal;
     Data: TLMGtkPaintData; // WParam
-    Unused: longint;       // LParam
-    Result: longint;
+    Unused: LPARAM;       // LParam
+    Result: LRESULT;
   end;
 
 var

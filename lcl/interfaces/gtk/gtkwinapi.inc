@@ -1744,38 +1744,32 @@ begin
   Assert(False, 'trace:[TGtkWidgetSet.CreatePalette]');
   GObject := NewGDIObject(gdiPalette);
 
-  with LogPalette, GObject^ do
-  begin
-    SystemPalette := False;
+  GObject^.SystemPalette := False;
+  GObject^.PaletteRealized := False;
+  GObject^.VisualType := GDK_VISUAL_PSEUDO_COLOR;
+  GObject^.PaletteVisual := nil;
 
-    PaletteRealized := False;
+  {$IFDEF DebugGDKTraps}
+  BeginGDKErrorTrap;
+  {$ENDIF}
 
-    VisualType := GDK_VISUAL_PSEUDO_COLOR;
-
-    PaletteVisual := nil;
-
-    {$IFDEF DebugGDKTraps}
-    BeginGDKErrorTrap;
-    {$ENDIF}
-
-    PaletteVisual := gdk_visual_get_best_with_type(VisualType);
-    If PaletteVisual = nil then begin
-      PaletteVisual := GDK_Visual_Get_System;
-      GDK_Visual_Ref(PaletteVisual);
-    end;
-    PaletteColormap := GDK_Colormap_new(PaletteVisual, GdkTrue);
-
-    {$IFDEF DebugGDKTraps}
-    EndGDKErrorTrap;
-    {$ENDIF}
-
-    RGBTable := TDynHashArray.Create(-1);
-    RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
-    IndexTable := TDynHashArray.Create(-1);
-    IndexTable.OnGetKeyForHashItem:=@GetIndexAsKey;
-    InitializePalette(GObject, LogPalette.palPalEntry,
-      MemSize(Pointer(LogPalette.palPalEntry)) div SizeOf(tagRGBQuad));
+  GObject^.PaletteVisual := gdk_visual_get_best_with_type(GObject^.VisualType);
+  if GObject^.PaletteVisual = nil
+  then begin
+    GObject^.PaletteVisual := GDK_Visual_Get_System;
+    GDK_Visual_Ref(GObject^.PaletteVisual);
   end;
+  GObject^.PaletteColormap := GDK_Colormap_new(GObject^.PaletteVisual, GdkTrue);
+
+  {$IFDEF DebugGDKTraps}
+  EndGDKErrorTrap;                                    e
+  {$ENDIF}
+
+  GObject^.RGBTable := TDynHashArray.Create(-1);
+  GObject^.RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
+  GObject^.IndexTable := TDynHashArray.Create(-1);
+  GObject^.IndexTable.OnGetKeyForHashItem:=@GetIndexAsKey;
+  InitializePalette(GObject, LogPalette.palPalEntry, LogPalette.palNumEntries);
 
   Result := HPALETTE(GObject);
 end;
@@ -4523,7 +4517,7 @@ begin
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
   {$IFDEF Use_KeyStateList}
-  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(nVirtKey)) >=0];
+  Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey))) >=0];
   {$ELSE}
   Implement this
   {$ENDIF}
@@ -4533,7 +4527,7 @@ begin
   then begin
     nVirtKey := nVirtKey or KEYMAP_EXTENDED;
     {$IFDEF Use_KeyStateList}
-    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(nVirtKey)) >=0];
+    Result := KEYSTATE[FKeyStateList_.IndexOf(Pointer(PtrInt(nVirtKey))) >=0];
     {$ELSE}
     Implement this
     {$ENDIF}
@@ -4543,7 +4537,7 @@ begin
   // add toggle
   if Result <> 0 then
     Result := Result or TOGGLESTATE[FKeyStateList_.IndexOf(Pointer(
-                                             nVirtKey or KEYMAP_TOGGLE)) >=0];
+                                    PtrInt(nVirtKey or KEYMAP_TOGGLE))) >=0];
   {$ENDIF}
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
@@ -6087,7 +6081,7 @@ var Dialog, ALabel : PGtkWidget;
       if RetValue = IDCANCEL then begin
         gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(IDCANCEL));
       end;
-      gtk_object_set_data(PGtkObject(AButton), 'modal_result', Pointer(RetValue));
+      gtk_object_set_data(PGtkObject(AButton), 'modal_result', Pointer(PtrInt(RetValue)));
       g_signal_connect(PGtkObject(AButton), 'clicked', TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
       gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.action_area), AButton);
     end;
@@ -6841,7 +6835,7 @@ begin
   RadioGroup := GetGroup;
 
   // Set new group
-  gtk_object_set_data(Pointer(hndMenu), GROUPIDX_DATANAME, Pointer(GroupIndex));
+  gtk_object_set_data(Pointer(hndMenu), GROUPIDX_DATANAME, Pointer(PtrInt(GroupIndex)));
   if RadioGroup = nil
   then begin
     // We're the only member, get a group
@@ -7714,12 +7708,12 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.SetCapture(Value: Longint): Longint;
+function TGtkWidgetSet.SetCapture(AHandle: HWND): HWND;
 var
   Widget: PGtkWidget;
 begin
-  Assert(False, Format('Trace:> [TGtkWidgetSet.SetCapture] 0x%x', [Value]));
-  Widget:=PGtkWidget(Value);
+  Assert(False, Format('Trace:> [TGtkWidgetSet.SetCapture] 0x%x', [AHandle]));
+  Widget := PGtkWidget(AHandle);
   {$IfDef VerboseMouseCapture}
   DebugLn('TGtkWidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
   {$EndIf}
@@ -7728,7 +7722,7 @@ begin
   Result := GetCapture;
   
   // capture
-  CaptureMouseForWidget(Widget,mctLCL);
+  CaptureMouseForWidget(Widget, mctLCL);
 end;
 
 {------------------------------------------------------------------------------
@@ -8217,39 +8211,43 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
   NewLong: Longint): LongInt;
+var
+  Data: Pointer;
+  WI: PWidgetInfo;
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
   Result:=0;
+  Data := Pointer(PtrInt(NewLong));
 
   case idx of
     GWL_WNDPROC :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'WNDPROC',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'WNDPROC',Data);
       end;
     GWL_HINSTANCE :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'HINSTANCE',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'HINSTANCE',Data);
       end;
     GWL_HWNDPARENT :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'HWNDPARENT',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'HWNDPARENT',Data);
       end;
     GWL_STYLE :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'Style',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'Style',Data);
       end;
     GWL_EXSTYLE :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'ExStyle',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'ExStyle',Data);
       end;
     GWL_USERDATA :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'Userdata',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'Userdata',Data);
       end;
     GWL_ID :
       begin
-        gtk_object_set_data(pgtkobject(Handle),'ID',pointer(NewLong));
+        gtk_object_set_data(pgtkobject(Handle),'ID',Data);
       end;
   end; //case
   Assert(False, Format('Trace:< [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
@@ -8896,6 +8894,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.394  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.393  2005/02/05 13:33:05  mattias
   implemented gtkwidgetset.IsWindowEnabled
 

@@ -1,4 +1,4 @@
-// included by gtkproc.pp
+{%MainUnit gtkproc.pp}
 
 {******************************************************************************
                         Misc Support Functs  
@@ -534,6 +534,11 @@ begin
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
+procedure RaiseException(const Msg: string; Args: array of const);
+begin
+  RaiseException(Format(Msg, Args));
+end;
+
 {------------------------------------------------------------------------------
   function CreatePChar(const s: string): PChar;
 
@@ -636,12 +641,14 @@ var
   WinWidgetInfo: PWinWidgetInfo;
   FixedWidget: PGTKWidget;
 begin
-  Result:=HexStr(Cardinal(Widget),8);
-  if Widget=nil then exit;
-  Result:=Result+'='+GetWidgetClassName(Widget);
-  Result:=Result+' '+WidgetFlagsToString(Widget);
+  if Widget = nil
+  then begin
+    Result := 'nil';
+    exit;
+  end;
+  Result := Format('%p=%s %s', [Pointer(Widget), GetWidgetClassName(Widget), WidgetFlagsToString(Widget)]);
   LCLObject:=GetNearestLCLObject(Widget);
-  Result:=Result+' LCLObject='+HexStr(Cardinal(LCLObject),8);
+  Result := Result + Format(' LCLObject=%p', [Pointer(LCLObject)]);
   if LCLObject=nil then exit;
   if LCLObject is TControl then
     Result:=Result+'='+TControl(LCLObject).Name+':'+LCLObject.ClassName
@@ -651,12 +658,9 @@ begin
     AWinControl:=TWinControl(LCLObject);
     if AWinControl.HandleAllocated then begin
       MainWidget:=PGTKWidget(AWinControl.Handle);
-      if MainWidget=Widget then begin
-        Result:=Result+'<Is MainWidget>';
-      end else begin
-        Result:=Result+'<MainWidget='+HexStr(Cardinal(MainWidget),8)
-                      +'='+GetWidgetClassName(MainWidget)+'>';
-      end;
+      if MainWidget=Widget
+      then Result:=Result+'<Is MainWidget>'
+      else Result:=Result+Format('<MainWidget=%p=%s>', [Pointer(MainWidget), GetWidgetClassName(MainWidget)]);
       FixedWidget:=GetFixedWidget(MainWidget);
       if FixedWidget=Widget then
         Result:=Result+'<Is FixedWidget>';
@@ -665,7 +669,8 @@ begin
         if WinWidgetInfo^.CoreWidget = Widget then
           Result:=Result+'<Is CoreWidget>';
       end;
-    end else begin
+    end
+    else begin
       Result:=Result+'<NOT HandleAllocated>'
     end;
   end;
@@ -1019,7 +1024,7 @@ begin
       end;
   end else
   if Msg^.Msg=LM_GtkPAINT then begin
-    FreeThenNil(TLMGtkPaint(Msg^).Data);
+    FreeThenNil(TLMGtkPaintData(Msg^.WParam));
   end;
 end;
 
@@ -1421,7 +1426,7 @@ function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 var
   GCValues: TGDKGCValues;
 begin
-  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
+//  Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
   if Result
   then begin
@@ -1466,7 +1471,7 @@ begin
       SavedContext := nil;
     end;
   end;
-  Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
+//  Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
 end;
 
 Function RegionType(RGN: PGDKRegion) : Longint;
@@ -1874,19 +1879,18 @@ begin
     Result := RGBIndex^.Index;
 end;
 
-Procedure InitializePalette(Pal : PGDIObject; Entries : PPALETTEENTRY; RGBCount : Longint);
+procedure InitializePalette(const Pal: PGDIObject; const Entries: PPaletteEntry; const RGBCount: Longint);
 var
-  PalEntries : PPALETTEENTRY;
-  I : Integer;
-  RGBValue : Longint;
+  I: Integer;
+  RGBValue: Longint;
 begin
-  PalEntries := Entries;
-  For I := 0 to RGBCount - 1 do begin
-    If PaletteIndexExists(Pal, I) then
+  for I := 0 to RGBCount - 1 do
+  begin
+    if PaletteIndexExists(Pal, I) then
       PaletteDeleteIndex(Pal, I);
-    With PalEntries[I] do
+    with Entries[I] do
       RGBValue := RGB(peRed, peGreen, peBlue) {or (peFlags shl 32)??};
-    If not PaletteRGBExists(Pal, RGBValue) then
+    if not PaletteRGBExists(Pal, RGBValue) then
       PaletteAddIndex(Pal, I, RGBValue);
   end;
 end;
@@ -4352,7 +4356,7 @@ end;
 
 procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
 begin
-  gtk_object_set_data(PGtkObject(Widget),'LCLDesignMask',Pointer(NewMask));
+  gtk_object_set_data(PGtkObject(Widget),'LCLDesignMask',Pointer(PtrInt(NewMask)));
 end;
 
 function GetDesignOnlySignalFlag(Widget: PGtkWidget;
@@ -7929,6 +7933,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.332  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.331  2005/02/03 21:10:07  vincents
   fixed compilation of gtk2 interface on windows
 

@@ -1592,7 +1592,7 @@ procedure TCustomGrid.Setrowheights(Arow: Integer; Avalue: Integer);
 begin
   if AValue<0 then AValue:=-1;
   if AValue<>Integer(FRows[ARow]) then begin
-    FRows[ARow]:=Pointer(AValue);
+    FRows[ARow]:=Pointer(PtrInt(AValue));
     VisualChange;
     if (FEditor<>nil)and(Feditor.Visible)and(ARow<=FRow) then EditorPos;
     RowHeightsChanged;
@@ -1614,7 +1614,7 @@ end;
 
 procedure TCustomGrid.SetRawColWidths(ACol: Integer; AValue: Integer);
 begin
-  FCols[ACol]:=Pointer(Avalue);
+  FCols[ACol]:=Pointer(PtrInt(Avalue));
 end;
 
 procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer);
@@ -1832,7 +1832,7 @@ var
     FGCache.GridWidth:=0;
     FGCache.FixedWidth:=0;
     For i:=0 To ColCount-1 do begin
-      FGCache.AccumWidth[i]:=Pointer(FGCache.GridWidth);
+      FGCache.AccumWidth[i]:=Pointer(PtrInt(FGCache.GridWidth));
       FGCache.GridWidth:=FGCache.GridWidth + GetColWidths(i);
       if i<FixedCols then FGCache.FixedWidth:=FGCache.GridWidth;
       {$IfDef dbgVisualChange}
@@ -1842,7 +1842,7 @@ var
     FGCache.Gridheight:=0;
     FGCache.FixedHeight:=0;
     For i:=0 To RowCount-1 do begin
-      FGCache.AccumHeight[i]:=Pointer(FGCache.Gridheight);
+      FGCache.AccumHeight[i]:=Pointer(PtrInt(FGCache.Gridheight));
       FGCache.Gridheight:=FGCache.Gridheight+GetRowHeights(i);
       if i<FixedRows then FGCache.FixedHeight:=FGCache.GridHeight;
       {$IfDef dbgVisualChange}
@@ -4118,8 +4118,12 @@ end;
 
 procedure TCustomGrid.ProcessEditor(LastEditor: TWinControl; DCol, DRow: Integer; WasVis: Boolean);
   procedure RestoreEditor;
+  var
+    WC: TWinControl;
   begin
-    SwapInt(Integer(FEditor),Integer(LastEditor));
+    WC := FEditor;
+    FEditor := LastEditor;
+    LastEditor := WC;
     SwapInt(FCol,DCol);
     SwapInt(FRow,DRow);
   end;

@@ -888,7 +888,7 @@ end;
 
 function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
-  var Size: TSize): BOOL;
+  var Size: TSize): Boolean;
 begin
   if MaxCount<>nil then MaxCount^:=Count;
   if PartialWidths<>nil then
@@ -1263,13 +1263,13 @@ begin
   Result := 0;
 end;
 
-Function TWidgetSet.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
+function TWidgetSet.SetBkMode(DC: HDC; bkMode : Integer): Integer;
 begin
   Result := 0;
 end;
 
-Function TWidgetSet.SetCapture(value : Longint) : Longint;
-Begin
+function TWidgetSet.SetCapture(AHandle: HWND): HWND;
+begin
   Result := 0;
 End;
 
@@ -1420,6 +1420,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.18  2005/02/05 09:05:50  micha
   add platform independent winapi function IsWindowEnabled
 

@@ -510,7 +510,7 @@ begin
 
     lisSelected: begin 
       AIsSet := (CListWidget^.selection <> nil)
-            and (g_list_find(CListWidget^.selection, Pointer(Aindex)) <> nil);
+            and (g_list_find(CListWidget^.selection, Pointer(PtrInt(Aindex))) <> nil);
       Result := True;
     end;
   end;

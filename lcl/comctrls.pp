@@ -34,6 +34,7 @@ unit ComCtrls;
 {$mode objfpc}
 {$H+}
 
+
 interface
 
 uses
@@ -1896,7 +1897,6 @@ type
     //procedure EditWndProc(var Message: TLMessage);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
-    function GetChangeDelay: Integer;
     function GetDropTarget: TTreeNode;
     function GetHideSelection: boolean;
     function GetHotTrack: boolean;
@@ -1916,7 +1916,6 @@ type
     procedure SetAutoExpand(Value: Boolean);
     procedure SetBackgroundColor(Value: TColor);
     procedure SetBottomItem(Value: TTreeNode);
-    procedure SetChangeDelay(Value: Integer);
     procedure SetDefaultItemHeight(Value: integer);
     procedure SetExpandSignType(Value: TTreeViewExpandSignType);
     procedure SetDropTarget(Value: TTreeNode);
@@ -2021,7 +2020,6 @@ type
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle default bsSingle;
-    property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay default 0;
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
@@ -2133,7 +2131,6 @@ type
     property BackgroundColor;
     property BorderStyle;
     property BorderWidth;
-    property ChangeDelay;
     property Color;
     property Ctl3D;
     property Constraints;
@@ -2297,6 +2294,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.162  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.161  2005/01/28 16:45:43  mattias
   added TTreeView.OnCustomCreateItem  from Andre Haines
 

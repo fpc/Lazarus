@@ -310,7 +310,7 @@ begin
   then begin
     MSg.MSg := CM_ButtonPressed;
     Msg.WParam := FGroupIndex;
-    Msg.LParam := Longint(self);
+    Msg.LParam := PtrInt(self);
     Msg.Result := 0;
     Parent.Broadcast(Msg);
   end;
@@ -769,6 +769,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.62  2005/01/04 14:23:37  micha
   implement transparency (actually, non-transparency)
 

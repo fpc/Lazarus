@@ -21,14 +21,14 @@ var
   p: Pointer;
 begin
   Result := inherited Add(S);
-  ShortCut:=TextToShortCut(S);
-  p:=Pointer(Cardinal(ShortCut));
+  ShortCut := TextToShortCut(S);
+  p := Pointer(PtrUInt(ShortCut));
   Objects[Result] := TObject(p);
 end;
 
 function TShortCutList.GetShortCuts(Index: Integer): TShortCut;
 begin
-  Result := TShortCut(Cardinal(Objects[Index]));
+  Result := TShortCut(PtrUInt(Objects[Index]));
 end;
 
 function TShortCutList.IndexOfShortCut(const Shortcut: TShortCut): Integer;
@@ -37,7 +37,7 @@ var
 begin
   Result := -1;
   for I := 0 to Count - 1 do
-    if TShortCut(Cardinal(Objects[I])) = ShortCut then
+    if TShortCut(PtrUInt(Objects[I])) = ShortCut then
     begin
       Result := I;
       break;

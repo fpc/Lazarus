@@ -1,3 +1,4 @@
+{%MainUnit gtkproc.pp}
 {
  *****************************************************************************
  *                                                                           *
@@ -2634,8 +2635,8 @@ var
     // Check for a toggle
     // If the remove was successfull, the key was on
     // else it was off so we should set the toggle flag
-    if KeyStateList.Remove(Pointer(AVKeyCode or KEYMAP_TOGGLE)) < 0
-    then KeyStateList.Add(Pointer(AVKeyCode or KEYMAP_TOGGLE));
+    if KeyStateList.Remove(Pointer(PtrInt(AVKeyCode or KEYMAP_TOGGLE))) < 0
+    then KeyStateList.Add(Pointer(PtrInt(AVKeyCode or KEYMAP_TOGGLE)));
   end;
 
   procedure UpdateList(const AVKeyCode: Integer; const APressed: Boolean);
@@ -2643,11 +2644,11 @@ var
     if AVKeyCode = 0 then Exit;
     if APressed
     then begin
-      if KeyStateList.IndexOf(Pointer(AVKeyCode)) < 0
-      then KeyStateList.Add(Pointer(AVKeyCode));
+      if KeyStateList.IndexOf(Pointer(PtrInt(AVKeyCode))) < 0
+      then KeyStateList.Add(Pointer(PtrInt(AVKeyCode)));
     end
     else begin
-      KeyStateList.Remove(Pointer(AVKeyCode));
+      KeyStateList.Remove(Pointer(PtrInt(AVKeyCode)));
     end;
   end;
 
@@ -2985,6 +2986,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.261  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.260  2005/01/22 23:53:43  mattias
   fixed gtk2 intf  from Peter Vreman
 

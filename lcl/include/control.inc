@@ -60,7 +60,7 @@ begin
     if csLButtonDown in ControlState then begin
       GetCursorPos(p);
       P := ScreenToClient(p);
-      Perform(LM_LBUTTONUP, 0, LParam(PointToSmallPoint(p)));
+      Perform(LM_LBUTTONUP, 0, Integer(PointToSmallPoint(p)));
     end;
 
     if Threshold < 0 then
@@ -927,7 +927,7 @@ end;
        TControl.Perform
 
 ------------------------------------------------------------------------------}
-Function TControl.Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LongInt;
+Function TControl.Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LRESULT;
 var
   Message : TLMessage;
 begin
@@ -1054,7 +1054,7 @@ Begin
   case DragMsg.DragMessage of
 
     dmFindTarget:
-      DragMsg.Result := longint(Self);
+      DragMsg.Result := PtrInt(Self);
 
     dmDragEnter, dmDragLeave, dmDragMove:
       begin
@@ -3467,6 +3467,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.245  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.244  2005/02/05 15:57:45  mattias
   fixed dereferencing anchorsides
 

@@ -1,3 +1,4 @@
+{%MainUnit gtkint.pp}
 {******************************************************************************
                                  gtklistsl.inc
                  TGtkListStringList and TGtkCListStringList
@@ -938,9 +939,10 @@ begin
   CS^.Arr[0] := @CS^.Str;
   for K := 1 to 15 do begin
     CS^.Arr[K] := StrScan(CS^.Arr[K-1], #9);
-    if Assigned(CS^.Arr[K]) then begin
+    if Assigned(CS^.Arr[K])
+    then begin
       CS^.Arr[K][0] := #0;
-      inc(integer(CS^.Arr[K]));
+      Inc(CS^.Arr[K]);
     end else
       break;
   end;
@@ -962,6 +964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2005/02/05 16:09:52  marc
+  * first 64bit changes
+
   Revision 1.27  2004/07/17 14:24:31  mattias
   fixed freeing synedit PrimarySelection and sending gtklist DrawItem msg for destroing controls
 
