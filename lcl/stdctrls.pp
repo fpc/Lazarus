@@ -38,12 +38,15 @@ interface
 
 uses
   VCLGlobals, Classes, SysUtils, LCLType, Graphics, GraphType, LMessages,
-  Controls, Forms, ExtendedStrings, LCLLinux, GraphicsMath;
+  Controls, ExtendedStrings, LCLLinux, GraphicsMath;
 
 
 type
 
   { TScrollBar }
+  TScrollBarKind = (sbHorizontal, sbVertical);
+  TScrollBarInc = 1..32768;
+  TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
 
   TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth,
     ssAutoHorizontal, ssAutoVertical, ssAutoBoth);
@@ -1406,6 +1409,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/10/24 19:35:34  lazarus
+  AJ: Fixed forms <-> stdctrls circular uses
+
   Revision 1.60  2002/10/24 10:05:51  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 

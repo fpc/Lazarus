@@ -47,10 +47,6 @@ type
   TWindowState = (wsNormal, wsMinimized, wsMaximized);
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
-  TScrollBarKind = (sbHorizontal, sbVertical);
-  TScrollBarInc = 1..32768;
-  TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
-
   TScrollingWinControl = class;
 
   TControlScrollBar = class(TPersistent)
