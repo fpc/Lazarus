@@ -1491,6 +1491,10 @@ begin
   if not Result then exit;
   OriginDiff.X := DCOrg.X - winOrg.X - ORect.Left;
   OriginDiff.Y := DCOrg.Y - winOrg.Y - ORect.Top;
+  Result := Windows.GetWindowOrgEx(PaintDC, winOrg);
+  if not Result then exit;
+  dec(OriginDiff.X, winOrg.X);
+  dec(OriginDiff.Y, winOrg.Y);
 end;
 
 function TWin32WidgetSet.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
@@ -3116,6 +3120,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.141  2005/03/25 16:59:38  micha
+  fix dc origin to take window origin into account (fixed drawing invisible components on graphiccontrols in designer)
+
   Revision 1.140  2005/03/25 16:41:35  micha
   implement TWin32WidgetSet.GetDCOriginRelativeToWindow
 
