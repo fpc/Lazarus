@@ -792,7 +792,10 @@ begin
   if not EnvironmentOptions.SnapToGrid then exit;
   GridSizeY:=CleanGridSizeY;
   // add half GridSizeY, so that rounding is correct
-  NearestGridY:=NearestInt.Level+(GridSizeY div 2);
+  if NearestInt.Level>=0 then
+    NearestGridY:=NearestInt.Level+(GridSizeY div 2)
+  else
+    NearestGridY:=NearestInt.Level-(GridSizeY div 2);
   // round
   dec(NearestGridY,NearestGridY mod GridSizeY);
   ImproveNearestInt(NearestInt,NearestGridY);
@@ -1114,7 +1117,10 @@ begin
   if not EnvironmentOptions.SnapToGrid then exit;
   GridSizeX:=CleanGridSizeX;
   // add half GridSizeX, so that rounding is correct
-  NearestGridX:=NearestInt.Level+(GridSizeX div 2);
+  if NearestInt.Level>=0 then
+    NearestGridX:=NearestInt.Level+(GridSizeX div 2)
+  else
+    NearestGridX:=NearestInt.Level-(GridSizeX div 2);
   // round
   dec(NearestGridX,NearestGridX mod GridSizeX);
   ImproveNearestInt(NearestInt,NearestGridX);
