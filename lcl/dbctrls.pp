@@ -699,10 +699,10 @@ Type
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
 
-    Property Date write SetDate;
+    Property Date write SetDate stored False;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
 
-    property DisplaySettings;
+    property DisplaySettings stored False;
     property Visible;
     property OnClick;
     property OnMouseMove;
@@ -1248,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/09/22 15:03:19  ajgenius
+  partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
+
   Revision 1.14  2003/09/19 16:10:31  mattias
   started TDBNavigator
 

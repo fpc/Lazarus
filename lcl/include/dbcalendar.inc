@@ -117,9 +117,10 @@ procedure TDBCalendar.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = DataSource)
-  then
-     DataSource := nil;
+  if (Operation=opRemove) then begin
+    if (FDataLink<>nil) and (AComponent=DataSource) then
+      DataSource:=nil;
+  end;
 end;
 
 procedure TDBCalendar.WMKillFocus(var Message: TLMKillFocus);
@@ -154,6 +155,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/09/22 15:03:19  ajgenius
+  partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
+
   Revision 1.1  2003/09/18 15:27:07  ajgenius
   added initial TDBCalendar
 

@@ -73,9 +73,10 @@ begin
   // if the datasource is being removed then we need to make sure
   // we are updated or we can get AV/Seg's *cough* as I foolishly
   // discovered firsthand....
-  if (Operation = opRemove) and (AComponent = DataSource)
-  then
-     DataSource := nil;
+  if (Operation=opRemove) then begin
+    if (FDataLink<>nil) and (AComponent=DataSource) then
+      DataSource:=nil;
+  end;
 end;
 
 { Public Methods}
@@ -97,6 +98,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/09/22 15:03:19  ajgenius
+  partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
+
   Revision 1.1  2003/09/14 18:40:55  ajgenius
   add initial TFieldDataLink, TDBEdit and TDBText
 
