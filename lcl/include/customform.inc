@@ -488,19 +488,60 @@ end;
 {------------------------------------------------------------------------------}
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
+ try
+    CreateNew(AOwner, 1);
+    if (ClassType <> TForm) and not (csDesigning in ComponentState) then
+    begin
+      Include(FFormState, fsCreating);
+      try
+//        if not InitInheritedComponent(Self, TForm) then
+//          raise EResNotFound.CreateFmt('Resource %s not found', [ClassName]);
+      finally
+        Exclude(FFormState, fsCreating);
+      end;
+    end;
+  finally
+  end;
+end;
+
+constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
+Begin
+Writeln('CREATING TCUSTOMFORM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
   FBorderStyle:= bsSizeable;
   inherited Create(AOwner);
-  fCompStyle:= csForm;
+fCompStyle:= csForm;
 
   FFormState := [];
   FMenu	:= nil;	
 
+  ControlStyle := [csAcceptsControls, csCaptureMouse, csClickEvents,
+    csSetCaption, csDoubleClicks];
+  Left := 0;
+  Top := 0;
+  Width := 320;
+  Height := 240;
+  Visible := False;
+  ParentColor := False;
+  ParentFont := False;
+  Ctl3D := True;
+//  FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
+  FBorderStyle := bsSizeable;
+  FWindowState := wsNormal;
+//  FDefaultMonitor := dmActiveForm;
+//  FIcon := TIcon.Create;
+//  FIcon.OnChange := IconChanged;
+//  FInCMParentBiDiModeChanged := False;
   {apply a drawing surface}
   FCanvas := TControlCanvas.Create;
   FCanvas.Control := Self;
   FKeyPreview :=  False;
   Color := clBtnface;
-end;
+//  FPixelsPerInch := Screen.PixelsPerInch;
+//  FPrintScale := poProportional;
+//  FloatingDockSiteClass := TWinControlClass(ClassType);
+  Screen.AddForm(Self);
+
+End;
 
 {------------------------------------------------------------------------------}
 {  TCustomForm CreateParams                                                      }
@@ -730,6 +771,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/09 14:15:04  lazarus
+  Changed the TCUstomForm create function.  I am getting it ready to read the resources to auto-create the controls...
+
+  Anslo changes TScreen.AddForm and TScreen.RemoveForm.  They were being passed TFOrm's instead of TCustomForms.
+  Shane
+
   Revision 1.2  2000/07/23 19:01:33  lazarus
   menus will be destroyed now, stoppok
 

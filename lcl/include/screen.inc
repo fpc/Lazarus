@@ -37,13 +37,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Function: TScreen.FAddForm
+  Function: TScreen.AddForm
   Params:   FForm: The form to be added
   Returns:  Nothing
 
   Do not use this procedure. This procedure is used by TScreen internally.
  ------------------------------------------------------------------------------}
-procedure TScreen.FAddForm(FForm: TForm);
+procedure TScreen.AddForm(FForm: TCustomForm);
 begin
   FFormList.Add(FForm);
 end;
@@ -105,13 +105,13 @@ end;
 
 {------------------------------------------------------------------------------
 
-  Function: TScreen.FRemoveForm
+  Function: TScreen.RemoveForm
   Params:   FForm: The form to be removed
   Returns:  Nothing
 
   Do not use this procedure. This procedure is used by TScreen internally.
  ------------------------------------------------------------------------------}
-procedure TScreen.FRemoveForm(FForm: TForm);
+procedure TScreen.RemoveForm(FForm: TCustomForm);
 begin
   FFormList.Remove(FForm);
 end;

@@ -132,6 +132,7 @@ type
     property OnCloseQuery : TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery stored IsForm;
   public
     constructor Create(AOwner: TComponent); override;
+    constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
     procedure BeforeDestruction; override;
     destructor Destroy; override;
     procedure Close;
@@ -175,11 +176,11 @@ type
     Function GetForms(IIndex: Integer): TForm;
     function GetHeight : Integer;
     function GetWidth : Integer;
+    procedure AddForm(FForm: TCustomForm);
+    procedure RemoveForm(FForm: TCustomForm);
   public
     constructor Create(AOwner : TComponent); override;
     Destructor Destroy; Override;
-    procedure FAddForm(FForm: TForm);     // TODO: if you know any other way, please implement it
-    procedure FRemoveForm(FForm: TForm);  // TODO: if you know any other way, please implement it
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property PixelsPerInch : integer read FPixelsPerInch;
