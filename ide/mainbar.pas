@@ -135,6 +135,8 @@ type
     itmEditUpperCaseBlock: TMenuItem;
     itmEditLowerCaseBlock: TMenuItem;
     itmEditTabsToSpacesBlock: TMenuItem;
+    itmEditCommentBlock: TMenuItem;
+    itmEditUncommentBlock: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;
@@ -385,6 +387,8 @@ begin
   itmEditUnindentBlock.Graphic:=LoadPixmap('menu_unindent');
   mnuEdit.Add(itmEditUnindentBlock);
 
+  mnuEdit.Add(CreateMenuSeparator);
+
   itmEditUpperCaseBlock := TMenuItem.Create(Self);
   itmEditUpperCaseBlock.Name:='itmEditUpperCaseBlock';
   itmEditUpperCaseBlock.Caption := lisMenuUpperCaseSelection;
@@ -395,10 +399,24 @@ begin
   itmEditLowerCaseBlock.Caption := lisMenuLowerCaseSelection;
   mnuEdit.Add(itmEditLowerCaseBlock);
 
+  mnuEdit.Add(CreateMenuSeparator);
+
   itmEditTabsToSpacesBlock := TMenuItem.Create(Self);
   itmEditTabsToSpacesBlock.Name:='itmEditTabsToSpacesBlock';
   itmEditTabsToSpacesBlock.Caption := lisMenuTabsToSpacesSelection;
   mnuEdit.Add(itmEditTabsToSpacesBlock);
+
+  mnuEdit.Add(CreateMenuSeparator);
+
+  itmEditCommentBlock := TMenuItem.Create(Self);
+  itmEditCommentBlock.Name:='itmEditCommentBlock';
+  itmEditCommentBlock.Caption := lisMenuCommentSelection;
+  mnuEdit.Add(itmEditCommentBlock);
+
+  itmEditUncommentBlock := TMenuItem.Create(Self);
+  itmEditUncommentBlock.Name:='itmEditUncommentBlock';
+  itmEditUncommentBlock.Caption := lisMenuUncommentSelection;
+  mnuEdit.Add(itmEditUncommentBlock);
 
   mnuEdit.Add(CreateMenuSeparator);
 
@@ -774,6 +792,8 @@ begin
     itmEditUpperCaseBlock.ShortCut:=CommandToShortCut(ecSelectionUpperCase);
     itmEditLowerCaseBlock.ShortCut:=CommandToShortCut(ecSelectionLowerCase);
     itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
+    itmEditCommentBlock.ShortCut:=CommandToShortCut(ecSelectionComment);
+    itmEditUncommentBlock.ShortCut:=CommandToShortCut(ecSelectionUncomment);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);

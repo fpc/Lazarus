@@ -1,8 +1,8 @@
 {  $Id$  }
 {
  /***************************************************************************
-                          main.pp  -  Toolbar
-                          -------------------
+                            main.pp  -  Toolbar
+                            -------------------
                    TMainIDE is the application toolbar window.
 
 
@@ -92,6 +92,8 @@ type
     procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
     procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
+    procedure mnuEditCommentBlockClicked(Sender: TObject);
+    procedure mnuEditUncommentBlockClicked(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
@@ -162,7 +164,8 @@ type
     Procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 
-    //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
+    // this is fired when the editor is focused, changed, ?.
+    //   Anything that causes the status change
     Procedure OnSrcNotebookEditorChanged(Sender : TObject);
     
     Procedure OnSrcNotebookFileNew(Sender : TObject);
@@ -1245,6 +1248,8 @@ begin
   itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
   itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
   itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
+  itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
+  itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
 end;
 
@@ -6402,6 +6407,16 @@ begin
   DoEditMenuCommand(ecSelectionTabs2Spaces);
 end;
 
+procedure TMainIDE.mnuEditCommentBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionComment);
+end;
+
+procedure TMainIDE.mnuEditUncommentBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionUncomment);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6487,6 +6502,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.341  2002/08/16 19:00:54  lazarus
+  MG: added Un-/Comment Selection
+
   Revision 1.340  2002/08/16 17:47:37  lazarus
   MG: added some IDE menuicons, fixed submenu indicator bug
 

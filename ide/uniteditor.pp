@@ -213,6 +213,8 @@ type
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
     procedure TabsToSpacesInSelection;
+    procedure CommentSelection;
+    procedure UncommentSelection;
 
 
     // editor commands
@@ -862,6 +864,12 @@ Begin
   ecSelectionTabs2Spaces:
     TabsToSpacesInSelection;
 
+  ecSelectionComment:
+    CommentSelection;
+
+  ecSelectionUnComment:
+    UncommentSelection;
+
   else
     begin
       Handled:=false;
@@ -1007,7 +1015,40 @@ begin
   OldBlockEnd:=FEditor.BlockEnd;
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
+  // ToDo: replace step by step to keep bookmarks and breakpoints
   FEditor.SelText:=TabsToSpaces(EditorComponent.SelText,EditorComponent.TabWidth);
+  FEditor.BlockBegin:=OldBlockBegin;
+  FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.CommentSelection;
+var OldBlockBegin, OldBlockEnd: TPoint;
+begin
+  if not EditorComponent.SelAvail then exit;
+  OldBlockBegin:=FEditor.BlockBegin;
+  OldBlockEnd:=FEditor.BlockEnd;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  // ToDo: replace step by step to keep bookmarks and breakpoints
+  FEditor.SelText:=CommentLines(EditorComponent.SelText);
+  FEditor.BlockBegin:=OldBlockBegin;
+  FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.UncommentSelection;
+var OldBlockBegin, OldBlockEnd: TPoint;
+begin
+  if not EditorComponent.SelAvail then exit;
+  OldBlockBegin:=FEditor.BlockBegin;
+  OldBlockEnd:=FEditor.BlockEnd;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  // ToDo: replace step by step to keep bookmarks and breakpoints
+  FEditor.SelText:=UncommentLines(EditorComponent.SelText);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
   FEditor.EndUndoBlock;

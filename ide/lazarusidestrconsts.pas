@@ -114,6 +114,8 @@ ResourceString
   lisMenuUpperCaseSelection = 'Uppercase selection';
   lisMenuLowerCaseSelection = 'Lowercase selection';
   lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
+  lisMenuCommentSelection = 'Comment selection';
+  lisMenuUncommentSelection = 'Uncomment selection';
   lisMenuCompleteCode = 'Complete Code';
   
   lisMenuFind = 'Find';

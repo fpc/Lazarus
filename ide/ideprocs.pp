@@ -71,6 +71,8 @@ procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
 function TabsToSpaces(const s: string; TabWidth: integer): string;
+function CommentLines(const s: string): string;
+function UncommentLines(const s: string): string;
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 function NameToValidIdentifier(const s: string): string;
 
@@ -744,6 +746,101 @@ begin
       exit;
     end;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  function CommentLines(const s: string): string;
+
+  Comment every line with a Delphicomment //
+-------------------------------------------------------------------------------}
+function CommentLines(const s: string): string;
+var
+  CurPos: integer;
+  Dest: string;
+  
+  procedure FindLineEnd;
+  begin
+    while (CurPos<=length(Dest))
+    and (not (Dest[CurPos] in [#10,#13])) do
+      inc(CurPos);
+  end;
+
+  procedure CommentLine;
+  begin
+    Dest:=LeftStr(Dest,CurPos-1)+'//'+RightStr(Dest,length(Dest)-CurPos+1);
+    FindLineEnd;
+  end;
+
+begin
+  Dest:=s;
+  CurPos:=1;
+  // find code start in line
+  while (CurPos<=length(Dest)) do begin
+    case Dest[CurPos] of
+    
+    ' ',#9:
+      // skip space
+      inc(CurPos);
+
+    #10,#13:
+      // line end found -> skip
+      inc(CurPos);
+
+    else
+      // code start found
+      CommentLine;
+    end;
+  end;
+  Result:=Dest;
+end;
+
+{-------------------------------------------------------------------------------
+  function CommentLines(const s: string): string;
+
+  Uncomment every line with a Delphicomment //
+-------------------------------------------------------------------------------}
+function UncommentLines(const s: string): string;
+var
+  CurPos: integer;
+  Dest: string;
+
+  procedure FindLineEnd;
+  begin
+    while (CurPos<=length(Dest))
+    and (not (Dest[CurPos] in [#10,#13])) do
+      inc(CurPos);
+  end;
+
+  procedure UncommentLine;
+  begin
+    Dest:=LeftStr(Dest,CurPos-1)+RightStr(Dest,length(Dest)-CurPos-1);
+    FindLineEnd;
+  end;
+
+begin
+  Dest:=s;
+  CurPos:=1;
+  // find Delphi comment line
+  while (CurPos<=length(Dest)) do begin
+    case Dest[CurPos] of
+
+    ' ',#9:
+      // skip space
+      inc(CurPos);
+
+    #10,#13:
+      // line end found -> skip
+      inc(CurPos);
+
+    else
+      // code start found
+      if (Dest[CurPos]='/') and (CurPos<length(Dest)) and (Dest[CurPos+1]='/')
+      then
+        UncommentLine;
+      FindLineEnd;
+    end;
+  end;
+  Result:=Dest;
 end;
 
 end.
