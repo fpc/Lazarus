@@ -151,6 +151,7 @@ type
                                 ALine: integer): TModalResult; override;
     function DoDeleteBreakPointAtMark(
                         const ASourceMark: TSourceMark): TModalResult; override;
+    function DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint): TModalresult; override;
     function DoCreateWatch(const AExpression: string): TModalResult; override;
   end;
   
@@ -168,21 +169,26 @@ type
   private
     FMaster: TDBGBreakPoint;
     FSourceMark: TSourceMark;
-    procedure SetSourceMark(const AValue: TSourceMark);
-    procedure OnSourceMarkPositionChanged(Sender: TObject);
-    procedure OnSourceMarkBeforeFree(Sender: TObject);
-    procedure OnSourceMarkGetHint(SenderMark: TSourceMark; var Hint: string);
   protected
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure DoChanged; override;
     function GetHitCount: Integer; override;
     function GetValid: TValidState; override;
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure DoChanged; override;
+    procedure OnSourceMarkBeforeFree(Sender: TObject);
+    procedure OnSourceMarkCreatePopupMenu(SenderMark: TSourceMark;
+                                          const AddMenuItem: TAddMenuItemProc);
+    procedure OnSourceMarkGetHint(SenderMark: TSourceMark; var Hint: string);
+    procedure OnSourceMarkPositionChanged(Sender: TObject);
+    procedure OnToggleEnableMenuItemClick(Sender: TObject);
+    procedure OnDeleteMenuItemClick(Sender: TObject);
+    procedure OnViewPropertiesMenuItemClick(Sender: TObject);
     procedure SetEnabled(const AValue: Boolean); override;
     procedure SetExpression(const AValue: String); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
+    procedure SetSourceMark(const AValue: TSourceMark);
+    procedure UpdateSourceMark;
     procedure UpdateSourceMarkImage;
     procedure UpdateSourceMarkLineColor;
-    procedure UpdateSourceMark;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -251,6 +257,7 @@ begin
     FSourceMark.Line:=Line;
     FSourceMark.Visible:=true;
     FSourceMark.AddGetHintHandler(@OnSourceMarkGetHint);
+    FSourceMark.AddCreatePopupMenuHandler(@OnSourceMarkCreatePopupMenu);
     UpdateSourceMark;
   end;
 end;
@@ -258,6 +265,21 @@ end;
 procedure TManagedBreakPoint.OnSourceMarkPositionChanged(Sender: TObject);
 begin
   Changed;
+end;
+
+procedure TManagedBreakPoint.OnToggleEnableMenuItemClick(Sender: TObject);
+begin
+  Enabled:=not Enabled;
+end;
+
+procedure TManagedBreakPoint.OnDeleteMenuItemClick(Sender: TObject);
+begin
+  Free;
+end;
+
+procedure TManagedBreakPoint.OnViewPropertiesMenuItemClick(Sender: TObject);
+begin
+  DebugBoss.DoViewBreakPointProperties(Self);
 end;
 
 procedure TManagedBreakPoint.OnSourceMarkBeforeFree(Sender: TObject);
@@ -272,6 +294,20 @@ begin
       +'Hitcount: '+IntToStr(Hitcount)+EndOfLine
       +'Action: '+GetBreakPointActionsDescription(Self)+EndOfLine
       +'Condition: '+Expression;
+end;
+
+procedure TManagedBreakPoint.OnSourceMarkCreatePopupMenu(
+  SenderMark: TSourceMark; const AddMenuItem: TAddMenuItemProc);
+begin
+  // add enable/disable toggle menu item
+  if Enabled then
+    AddMenuItem('Disable Breakpoint',true,@OnToggleEnableMenuItemClick)
+  else
+    AddMenuItem('Enable Breakpoint',true,@OnToggleEnableMenuItemClick);
+  AddMenuItem('Delete Breakpoint',true,@OnDeleteMenuItemClick);
+  AddMenuItem('View Breakpoint Properties',false,@OnViewPropertiesMenuItemClick);
+  // add separator
+  AddMenuItem('-',true,nil);
 end;
 
 procedure TManagedBreakPoint.AssignTo(Dest: TPersistent);
@@ -572,7 +608,7 @@ begin
   if (ADebugger<>FDebugger) or (ADebugger=nil) then
     RaiseException('TDebugManager.OnDebuggerChangeState');
 
-  if Destroying then exit;
+  if Destroying or (MainIDE=nil) or (MainIDE.ToolStatus=itExiting) then exit;
 
   WriteLN('[TDebugManager.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
 
@@ -1310,6 +1346,13 @@ writeln('TDebugManager.DoDeleteBreakPointAtMark B ',OldBreakPoint.ClassName,' ',
   Result:=DoEndChangeDebugger;
 end;
 
+function TDebugManager.DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint
+  ): TModalresult;
+begin
+  Result:=mrCancel;
+  // ToDo
+end;
+
 function TDebugManager.DoCreateWatch(const AExpression: string): TModalResult;
 var
   NewWatch: TDBGWatch;
@@ -1375,6 +1418,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.47  2003/06/04 16:34:11  mattias
+  implemented popupmenu items in source editor for breakpoints
+
   Revision 1.46  2003/06/04 13:34:58  mattias
   implemented breakpoints hints for source editor
 

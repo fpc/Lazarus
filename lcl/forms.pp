@@ -1142,8 +1142,11 @@ begin
     CreateNew(TheOwner,0);
     if (ClassType <> TDataModule) and not (csDesigning in ComponentState) then
     begin
+      {$IFDEF UseFCLInitResourceComponent}
+      if not Inic.InitInheritedComponent(Self, TDataModule) then begin
+      {$ELSE}
       if not InitResourceComponent(Self, TForm) then begin
-      //if not InitInheritedComponent(Self, TDataModule) then
+      {$ENDIF}
         raise EResNotFound.CreateFmt(lisLCLResourceSNotFound, [ClassName]);
       end;
       if OldCreateOrder then DoCreate;
@@ -1339,6 +1342,13 @@ end;
 {$I hintwindow.inc}
 
 
+{$IFDEF UseFCLInitResourceComponent}
+function LCLInitComponent(Instance: TComponent; RootAncestor: TClass): boolean;
+begin
+  Result:=InitResourceComponent(Instance,RootAncestor);
+end;
+{$ENDIF}
+
 initialization
   FocusCount := 0;
   Focusmessages := True;
@@ -1346,6 +1356,10 @@ initialization
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
+  
+{$IFDEF UseFCLInitResourceComponent}
+  RegisterInitComponentHandler(TComponent,@LCLInitComponent);
+{$ENDIF}
 
 finalization
   //writeln('forms.pp - finalization section');

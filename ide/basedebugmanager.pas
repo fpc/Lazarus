@@ -76,6 +76,7 @@ type
                                 ): TModalResult; virtual; abstract;
     function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
                                      ): TModalResult; virtual; abstract;
+    function DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
     function DoCreateWatch(const AExpression: string): TModalResult; virtual; abstract;
 
   public

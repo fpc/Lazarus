@@ -38,7 +38,7 @@ unit SourceMarks;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Graphics, GraphType, Controls,
+  Classes, SysUtils, LCLProc, LResources, Graphics, GraphType, Controls, Menus,
   AVL_Tree, SynEdit, IDEProcs, EditorOptions;
   
 type
@@ -49,11 +49,18 @@ type
   
   TGetSourceMarkHintEvent =
     procedure(SenderMark: TSourceMark; var Hint: string) of object;
+  TAddMenuItemProc =
+    function (const NewCaption: string; const NewEnabled: boolean;
+              const NewOnClick: TNotifyEvent): TMenuItem of object;
+  TCreateSourceMarkPopupMenuEvent =
+    procedure(SenderMark: TSourceMark;
+              const AddMenuItem: TAddMenuItemProc) of object;
 
   TSourceMarkHandler = (
     smhPositionChanged,
     smhBeforeFree,
-    smhGetHint
+    smhGetHint,
+    smhCreatePopupMenu
     );
     
   TSourceMark = class(TSynEditMark)
@@ -91,6 +98,7 @@ type
                                   ALine: integer): integer;
     function GetFilename: string;
     function GetHint: string; virtual;
+    procedure CreatePopupMenuItems(AddMenuItemProc: TAddMenuItemProc);
   public
     // handlers
     procedure RemoveAllHandlersForObject(HandlerObject: TObject);
@@ -100,6 +108,10 @@ type
     procedure RemoveBeforeFreeHandler(OnBeforeFree: TNotifyEvent);
     procedure AddGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
     procedure RemoveGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
+    procedure AddCreatePopupMenuHandler(
+                            OnCreatePopupMenu: TCreateSourceMarkPopupMenuEvent);
+    procedure RemoveCreatePopupMenuHandler(
+                            OnCreatePopupMenu: TCreateSourceMarkPopupMenuEvent);
   public
     // properties
     property Data: TObject read FData write SetData;
@@ -380,6 +392,16 @@ begin
     TGetSourceMarkHintEvent(FHandlers[smhGetHint][i])(Self,Result);
 end;
 
+procedure TSourceMark.CreatePopupMenuItems(AddMenuItemProc: TAddMenuItemProc);
+var
+  i: Integer;
+begin
+  i:=FHandlers[smhCreatePopupMenu].Count;
+  while FHandlers[smhCreatePopupMenu].NextDownIndex(i) do
+    TCreateSourceMarkPopupMenuEvent(FHandlers[smhCreatePopupMenu][i])
+      (Self,AddMenuItemProc);
+end;
+
 procedure TSourceMark.RemoveAllHandlersForObject(HandlerObject: TObject);
 var
   HandlerType: TSourceMarkHandler;
@@ -419,6 +441,18 @@ end;
 procedure TSourceMark.RemoveGetHintHandler(OnGetHint: TGetSourceMarkHintEvent);
 begin
   FHandlers[smhGetHint].Remove(TMethod(OnGetHint));
+end;
+
+procedure TSourceMark.AddCreatePopupMenuHandler(
+  OnCreatePopupMenu: TCreateSourceMarkPopupMenuEvent);
+begin
+  AddHandler(smhCreatePopupMenu,TMethod(OnCreatePopupMenu));
+end;
+
+procedure TSourceMark.RemoveCreatePopupMenuHandler(
+  OnCreatePopupMenu: TCreateSourceMarkPopupMenuEvent);
+begin
+  FHandlers[smhCreatePopupMenu].Remove(TMethod(OnCreatePopupMenu));
 end;
 
 { TSourceMarks }

@@ -58,6 +58,7 @@ type
   // The IDE is at anytime in a specific state:
   TIDEToolStatus = (
     itNone,      // The default mode. All editing allowed.
+    itExiting,   // the ide is shutting down
     itBuilder,   // compiling (the project, a package, an external tool)
                  //    Loading/Saving/Debugging is not allowed.
     itDebugger,  // debugging the project.

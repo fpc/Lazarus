@@ -931,8 +931,8 @@ resourcestring
   uemReadOnly = 'Read Only';
   uemUnitInfo = 'Unit Info';
   uemDebugWord = 'Debug';
-  uemToggleBreakpoint = '&Toggle Breakpoint';
-  uemAddWatchAtCursor = '&Add Watch At Cursor';
+  uemAddBreakpoint = '&Add Breakpoint';
+  uemAddWatchAtCursor = 'Add &Watch At Cursor';
   uemRunToCursor='&Run to Cursor';
   uemMoveEditorLeft='Move Editor Left';
   uemMoveEditorRight='Move Editor Right';
