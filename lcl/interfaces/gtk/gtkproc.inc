@@ -292,7 +292,7 @@ begin
   then begin
     with DestinationDC do
     begin
-      hWnd := SourceDC.hWnd;
+      Wnd := SourceDC.Wnd;
       Drawable := SourceDC.Drawable;
       if GC<>nil then begin
         gdk_gc_unref(GC);
@@ -1236,8 +1236,8 @@ var
 begin
   if (DC<>nil) then begin
     Result:=DC.Origin;
-    if (DC.SpecialOrigin) and (DC.hWnd<>0) then begin
-      Fixed := GetFixedWidget(PGTKWidget(DC.hWnd));
+    if (DC.SpecialOrigin) and (DC.Wnd<>0) then begin
+      Fixed := GetFixedWidget(PGTKWidget(DC.Wnd));
       if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
         // ToDo: add comment
         Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
@@ -3523,6 +3523,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.131  2002/10/20 19:03:57  lazarus
+  AJ: minor fixes for FPC 1.1
+
   Revision 1.130  2002/10/18 16:08:10  lazarus
   AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
 
