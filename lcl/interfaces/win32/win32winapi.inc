@@ -2042,16 +2042,6 @@ Begin
     Result := HideCaret(Handle)
 End;
 
-Function TWin32Object.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
-var
-  ComboBox: TCustomComboBox;
-Begin
-  ComboBox := TObject(GetProp(Handle, 'Lazarus')) as TCustomComboBox;
-  if ComboBox = nil then exit;
-  Windows.MoveWindow(Handle, ComboBox.Left, ComboBox.Top, ComboBox.Width, ComboBox.Height + 15 * MinItemCount + 2, TRUE);
-  Result := true;
-End;
-
 {------------------------------------------------------------------------------
   Method:  SetFocus
   Params:  HWnd - Handle of new focus window
@@ -2391,6 +2381,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2003/08/13 16:26:07  mattias
+  fixed combobox height from Vincent
+
   Revision 1.48  2003/07/29 22:32:48  marc
   * Applied patch from Vincent Snijders
 

@@ -32,6 +32,7 @@ Type
     FSender: TControl;
     FEditHeight: Integer;
     FItemHeight: Integer;
+    FDropDownCount: Integer;
     //Win32 Flags
     FFlagSort: Cardinal;
     FFlagGetText:Cardinal;
@@ -85,6 +86,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/08/13 16:26:07  mattias
+  fixed combobox height from Vincent
+
   Revision 1.6  2003/07/28 06:42:42  mattias
   removed debuggging SetName, Patch from Karl Brandt
 

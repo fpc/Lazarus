@@ -604,7 +604,7 @@ begin
         
         DestroyWindow(ListHandle);
         
-        NewHandle:= CreateWindow('COMBOBOX', Nil, ListFlags, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
+        NewHandle:= CreateWindow('COMBOBOX', Nil, ListFlags or WS_VSCROLL, Left, Top, Width, Height, ParentHandle, HMENU(Nil), HInstance, Nil);
         Handle:=NewHandle;
         SendMessage(NewHandle, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
 		
@@ -752,6 +752,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.18  2003/08/13 16:26:07  mattias
+  fixed combobox height from Vincent
+
   Revision 1.17  2003/08/11 20:18:46  mattias
   fixed position of control in TGroupBox from Micha
 

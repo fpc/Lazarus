@@ -93,6 +93,7 @@ Var
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
+  LMChar: TLMChar; // used by WM_CHAR
   LMMouse: TLMMouse; // used by WM_LBUTTONDBLCLK
   LMMouseMove: TLMMouseMove; // used by WM_MOUSEMOVE
   LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
@@ -190,6 +191,17 @@ Begin
         NewText := PChar(LParam);
         Length := System.Length(NewText);
 //        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+      End;
+    End;
+    WM_CHAR:
+    Begin
+      PLMsg:=@LMChar;
+      With LMChar Do
+      Begin
+        Msg := LM_CHAR;
+        KeyData := LParam;
+        CharCode := WParam;
+        writeln('WM_CHAR KeyData=',KeyData,' CharCode=',CharCode);
       End;
     End;
     WM_CLOSE:
@@ -505,9 +517,7 @@ Begin
       End;
     End;
     WM_SIZE:
-    Begin
-      if not (OwnerObject is TCustomComboBox) then
-      begin
+    Begin      
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
@@ -522,7 +532,6 @@ Begin
         if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0 then
           Height := Height - GetSystemMetrics(SM_CYHSCROLL);
       End;
-      end;
     End;
     WM_SYSKEYDOWN:
     Begin
@@ -645,6 +654,9 @@ end;
 
 {
   $Log$
+  Revision 1.50  2003/08/13 16:26:07  mattias
+  fixed combobox height from Vincent
+
   Revision 1.49  2003/08/12 14:02:54  mattias
   fixed keypress/keyup, createcaret on synedit focus
 

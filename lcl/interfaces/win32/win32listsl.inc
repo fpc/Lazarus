@@ -40,7 +40,11 @@ Begin
   Result := StrComp(AStr, BStr);
 end;
 
-
+Procedure SetComboHeight(Handle:THandle;ALeft,Atop,AWidth,AHeight,AEditHeight:Integer);
+begin
+  MoveWindow(Handle,ALeft,ATop,AWidth,AHeight,true);
+  SendMessage(Handle, WM_SIZE, 0, MakeLParam(AWidth,AEditHeight));
+end;
 {*************************************************************}
 {                      TWin32ListStringList methods           }
 {*************************************************************}
@@ -52,6 +56,8 @@ end;
 
  ------------------------------------------------------------------------------}
 Constructor TWin32ListStringList.Create(List : HWND; TheOwner: TControl);
+Var
+  R:TRect;
 Begin
   Inherited Create;
   If List = HWND(Nil) Then
@@ -71,9 +77,12 @@ Begin
                FFlagDeleteString:=CB_DELETESTRING;
                FFlagInsertString:=CB_INSERTSTRING;
                FFlagAddString:=CB_ADDSTRING;
-               
-               FEditHeight:= SendMessage(FWin32List,CB_GETITEMHEIGHT,-1,0);
+               //Get edit and item sizes
+               Windows.GetClientRect(FWin32List,@R);
+               FEditHeight:= R.Bottom;    
                FItemHeight:= SendMessage(FWin32List,CB_GETITEMHEIGHT,0,0);
+               FDropDownCount:= TComboBox(TheOwner).DropDownCount;
+               If FDropDownCount = 0 then FDropDownCount:= 8;
     	       end;
     csListBox:begin
     	      FFlagSort:=LBS_SORT;
@@ -130,9 +139,16 @@ Begin
   { Do not call inherited Assign as it does things we do not want to happen }
   If Source Is TStrings Then
   Begin
-    Clear;
+    SendMessage(FWin32List,FFlagResetContent, 0, 0); // Clear;
     For Counter := TStrings(Source).Count - 1 DownTo 0 Do 
-      Insert(0, TStrings(Source)[Counter]);
+      SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
+    if FSender.FCompStyle=csComboBox Then
+    begin
+      if Count = 0 then
+        SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight)
+      else
+        SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDropDownCount*FItemHeight + 2,FEditHeight);    
+    end;
   End
   Else
     inherited Assign(Source);
@@ -179,7 +195,7 @@ End;
 Procedure TWin32ListStringList.Clear;
 Begin	
   if FSender.FCompStyle=csComboBox Then
-    FSender.Height := FEditHeight + FItemHeight;
+    SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight);
   SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
@@ -193,7 +209,7 @@ Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
   If (FSender.FCompStyle = csComboBox)
   and (GetCount <= 1) Then
-    FSender.Height := FEditHeight + FItemHeight;
+    SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight);    
   SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
 
@@ -205,6 +221,9 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
+  If (FSender.FCompStyle = csComboBox) 
+  and (GetCount = 0) Then
+    SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight);    
   If FSorted Then
     SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
   Else 
@@ -378,8 +397,8 @@ End;
 { =============================================================================
 
   $Log$
-  Revision 1.11  2003/08/12 14:02:54  mattias
-  fixed keypress/keyup, createcaret on synedit focus
+  Revision 1.12  2003/08/13 16:26:07  mattias
+  fixed combobox height from Vincent
 
   Revision 1.10  2003/07/28 06:42:42  mattias
   removed debuggging SetName, Patch from Karl Brandt

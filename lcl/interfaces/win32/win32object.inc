@@ -651,14 +651,19 @@ activate_time :	the time at which the activation event occurred.
                   Left := R.Left;
                   Top := R.Top;
                 end
-              end;
-              R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top);
+              end
+              else if TControl(Sender).FCompStyle = csComboBox then
+                begin
+                  Windows.GetWindowRect(TWinControl(Sender).Handle,@R);
+                  R.Right:=Right;
+                  R.Left:=Left;
+                end;
               {Adjust for scrollbar}
 //              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
 //                R.Right := R.Right + GetSystemMetrics(SM_CXVSCROLL);
 //              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_HSCROLL) <> 0 then
 //                R.Bottom := R.Bottom + GetSystemMetrics(SM_CYHSCROLL);
-              ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
+               ResizeChild(Sender, Left, Top, R.Right - R.Left, R.Bottom - R.Top);
             end;
           end;
         End;
@@ -1848,7 +1853,7 @@ Begin
     End;
     csComboBox:
     Begin
-      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_DROPDOWN, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('COMBOBOX', Nil, Flags Or CBS_DROPDOWN or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
     End;
     csImage:
@@ -2735,6 +2740,9 @@ End;
 
 {
   $Log$
+  Revision 1.85  2003/08/13 16:26:07  mattias
+  fixed combobox height from Vincent
+
   Revision 1.84  2003/08/12 16:09:54  mattias
   fixed sizing from Vincent
 
