@@ -38,7 +38,7 @@ interface
 
 uses
   VCLGlobals, Classes, SysUtils, LCLType, LCLProc, Graphics, GraphType,
-  LMessages, Controls, ExtendedStrings, LCLLinux, GraphicsMath, Forms;
+  LMessages, Controls, ExtendedStrings, LCLLinux, GraphMath, Forms;
 
 
 type
@@ -1382,6 +1382,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/10/26 15:15:47  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.64  2002/10/26 11:20:30  lazarus
   MG: broke some interfaces.pp circles
 

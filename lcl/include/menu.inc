@@ -64,7 +64,7 @@ end;
 procedure TMenu.CreateHandle;
 var i: integer;
 begin
-  InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil); // CreateComponent(nil);
+  SendMsgToInterface(LM_CREATE, Self, nil); // CreateComponent(nil);
   // initiate creation of subitems
   // Note: FItems is a MenuItem, by using Createhandle all subitems will be
   //       created.
@@ -170,6 +170,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.14  2002/10/24 09:37:39  lazarus
   MG: broke menus.pp <-> controls.pp circle
 

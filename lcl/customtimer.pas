@@ -59,9 +59,6 @@ type
 
 implementation
 
-uses
-  Interfaces;
-
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }
   SNoTimers = 'No timers available';
@@ -127,7 +124,7 @@ procedure TCustomTimer.KillTimer;
 begin
   Assert(False, 'Trace:In TCustomTimer.KillTimer');
   if FTimerHandle <> cIdNoTimer then begin
-    InterfaceObject.KillTimer (integer(Self), 1);
+    LCLLinux.KillTimer (integer(Self), 1);
     FTimerHandle := cIdNoTimer;
   end;
 end;
@@ -143,7 +140,7 @@ procedure TCustomTimer.UpdateTimer;
 begin
   KillTimer;
   if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then
-    FTimerHandle := InterfaceObject.SetTimer(Integer(Self), 1,
+    FTimerHandle := LCLLinux.SetTimer(Integer(Self), 1,
                       FInterval, @TimerCBProc);
   if FTimerHandle=0 then begin
     FTimerHandle:=cIdNoTimer;

@@ -296,7 +296,6 @@ function ShortCutToText(ShortCut: TShortCut): string;
 
 implementation
 
-uses Interfaces;
 
 { Menu command managment }
 
@@ -354,6 +353,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2002/10/26 15:15:47  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.32  2002/10/26 11:20:30  lazarus
   MG: broke some interfaces.pp circles
 

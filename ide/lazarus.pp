@@ -45,6 +45,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
+  Interfaces,
   Forms,
   Splash,
   Main,
@@ -87,6 +88,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2002/10/26 15:15:42  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.38  2002/10/10 20:34:32  lazarus
   MG: fixed freeing Glyph in TBitBtn.SetKind
 

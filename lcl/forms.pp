@@ -37,8 +37,9 @@ interface
 
 
 uses
-  Classes, Controls, VCLGlobals, SysUtils, LCLLinux, LCLType, LCLProc,
-  GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList;
+  Classes, Controls, VCLGlobals, SysUtils, LCLType, LCLProc, LCLLinux,
+  InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
+  ClipBrd;
 
 type
   // form position policies:
@@ -521,15 +522,16 @@ type
 var
   MessageBoxFunction: TMessageBoxFunction;
 
+procedure FreeInterfaceObject;
+
 implementation
 
+uses
+  LResources, Math;
 
-uses 
-  Interfaces, LResources, Math;
-
-const
-  FocusMessages : Boolean = true;
-  FocusCount: Integer = 0;
+var
+  FocusMessages: Boolean;
+  FocusCount: Integer;
 
 //------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
@@ -722,6 +724,15 @@ begin
     TForm(AComponent.Owner).Designer.Modified;
 end;
 
+procedure FreeInterfaceObject;
+begin
+  Application.Free;
+  Application:=nil;
+  FreeAllClipBoards;
+  InterfaceObject.Free;
+  InterfaceObject:=nil;
+end;
+
 //==============================================================================
 
 
@@ -735,15 +746,14 @@ end;
 
 
 initialization
+  FocusCount := 0;
+  Focusmessages := True;
+  LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
-  LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
-  LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
-  Focusmessages := True;
 
 finalization
   writeln('forms.pp - finalization section');
-  LCLProc.SendApplicationMessageFunction:=nil;
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
   Application.Free;
   Application:= nil;

@@ -71,7 +71,7 @@ procedure TMenuItem.CreateHandle;
 var i: Integer;
 begin
   //writeln('TMenuItem.CreateHandle START ',Name,':',ClassName);
-  InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil);
+  SendMsgToInterface(LM_CREATE, Self, nil);
   if FItems<>nil then begin
     for i := 0 to Count - 1 do begin
       Items[i].HandleNeeded;
@@ -81,7 +81,7 @@ begin
   begin
     Parent.HandleNeeded;
     if Parent.HandleAllocated then
-      InterfaceObject.IntSendMessage3(LM_ATTACHMENU, Self, nil);
+      SendMsgToInterface(LM_ATTACHMENU, Self, nil);
     if HandleAllocated then begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;  
@@ -407,7 +407,7 @@ begin
       dec(i);
     end;
   end;
-  InterfaceObject.IntSendMessage3(LM_DESTROY, Self, nil);
+  SendMsgToInterface(LM_DESTROY, Self, nil);
   FHandle:=0;
 end;
 
@@ -559,7 +559,7 @@ begin
   if FCaption = AValue then exit;
   FCaption := AValue;
   if HandleAllocated then
-    InterfaceObject.IntSendMessage3(LM_SetLabel, Self, PChar(AValue));
+    SendMsgToInterface(LM_SetLabel, Self, PChar(AValue));
 end;
 
 {------------------------------------------------------------------------------
@@ -844,7 +844,7 @@ begin
   end else begin
     ShortCutToKey(Value, Msg.NewKey, Msg.NewModifier);
   end;
-  InterfaceObject.IntSendMessage3(LM_SETSHORTCUT, Self, @Msg);
+  SendMsgToInterface(LM_SETSHORTCUT, Self, @Msg);
 end;
 
 {------------------------------------------------------------------------------
@@ -917,6 +917,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.28  2002/10/22 18:54:56  lazarus
   MG: fixed menu streaming
 
@@ -1029,6 +1032,9 @@ end;
 
 
   $Log$
+  Revision 1.29  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.28  2002/10/22 18:54:56  lazarus
   MG: fixed menu streaming
 

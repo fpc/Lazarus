@@ -999,8 +999,13 @@ begin
         Add('');
         Add('uses');
         case fProjectType of
-          ptProgram, ptCustomProgram:  Add('  Classes;');
-          ptApplication:  Add('  Forms;');
+          ptProgram, ptCustomProgram:
+            Add('  Classes;');
+          ptApplication:
+            begin
+              Add('  Interfaces,');
+              Add('  Forms;');
+            end;
         else
           Add('  { add your units here };');
         end;
@@ -2075,6 +2080,9 @@ end.
 
 {
   $Log$
+  Revision 1.84  2002/10/26 15:15:43  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.83  2002/10/13 09:35:37  lazarus
   MG: added publish project
 
