@@ -407,14 +407,14 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.ClientToScreen(Handle: HWND; Var P: TPoint): Boolean;
 var
-  LeftOffset, TopOffset: integer;
+  ORect: TRect;
 Begin
   Result := Boolean(Windows.ClientToScreen(Handle, @P));
   if not Result then exit;
-  Result := GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset);
+  Result := GetLCLClientBoundsOffset(Handle, ORect);
   if not Result then exit;
-  inc(P.X,LeftOffset);
-  inc(P.Y,TopOffset);
+  inc(P.X, ORect.Left);
+  inc(P.Y, ORect.Top);
 End;
 
 {------------------------------------------------------------------------------
@@ -1286,14 +1286,17 @@ End;
 
   Retrieves the coordinates of a window's client area.
  ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetClientBounds(Handle: HWND; Var Rect: TRect): Boolean;
+function TWin32WidgetSet.GetClientBounds(Handle: HWND; var Rect: TRect): Boolean;
 var
-  LeftOffset, TopOffset: integer;
+  ARect: TRect;
 begin
-  Result := Boolean(GetClientRect(Handle, Rect));
+  Result := Boolean(Windows.GetClientRect(Handle, @Rect));
   if not Result then exit;
-  if not GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset) then exit;
-  OffsetRect(Rect,LeftOffset,TopOffset);
+  if not GetLCLClientBoundsOffset(Handle, ARect) then exit;
+  Inc(Rect.Left, ARect.Left);
+  Inc(Rect.Top, ARect.Top);
+  Inc(Rect.Right, ARect.Right);
+  Inc(Rect.Bottom, ARect.Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -1305,39 +1308,11 @@ end;
   Retrieves the dimension of a window's client area.
   Left and Top are always 0,0
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.GetClientRect(Handle: HWND; Var Rect: TRect): Boolean;
-var
-  OwnerObject: TObject;
-  TheWinControl: TWinControl;
-  TM: TextMetricA;
-  DC: HDC;
-Begin
-  Result := Boolean(Windows.GetClientRect(Handle, @Rect));
-  if not Result then exit;
-  OwnerObject := TObject(Windows.GetProp(Handle, 'Wincontrol'));
-  if OwnerObject is TWinControl then begin
-    TheWinControl:=TWinControl(OwnerObject);
-    if TheWinControl is TCustomGroupBox then begin
-      // The client area of a groupbox under win32 is the whole size, including
-      // the frame. The LCL defines the client area without the frame.
-      // -> Adjust the client size
-      DC := Windows.GetDC(Handle);
-      GetTextMetrics(DC, TM);
-      dec(Rect.Bottom,TM.TMHeight+2); // subtract the top frame with the caption
-                                     // and subtract the bottom frame
-      dec(Rect.Right,2+2); // subtract the left and right frame border
-      ReleaseDC(Handle, DC);
-      {writeln('TWin32WidgetSet.GetClientRect ',TheWinControl.Name,':',TheWinControl.ClassName,
-        ' ClientRect=',Rect.Right,',',Rect.Bottom,
-        ' CurLCLBounds=',TheWinControl.Left,',',TheWinControl.Top,',',TheWinControl.Width,',',TheWinControl.Height);}
-    end else
-    if TheWinControl is TCustomNoteBook then begin
-      // Can't use complete client rect in win32 interface, top part contains the tabs
-      Windows.SendMessage(TheWinControl.Handle, TCM_AdjustRect, 0, LPARAM(@Rect));
-      OffsetRect(Rect, -Rect.Left, -Rect.Top);
-    end;
-  end;
-End;
+function TWin32WidgetSet.GetClientRect(Handle: HWND; var Rect: TRect): Boolean;
+begin
+  Result := GetClientBounds(Handle, Rect);
+  OffsetRect(Rect, -Rect.Left, -Rect.Top);
+end;
 
 {------------------------------------------------------------------------------
   Function: GetClipBox
@@ -1403,13 +1378,13 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.GetDC(HWnd: HWND): HDC;
 var
-  LeftOffset, TopOffset: integer;
+  ORect: TRect;
 Begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.GetDC] HWND: 0x%x', [HWnd]));
   Result := Windows.GetDC(HWnd);
   if (Result<>0) and (HWnd<>0)
-  and GetLCLClientOriginOffset(HWnd,LeftOffset,TopOffset) then begin
-    MoveWindowOrgEx(Result,LeftOffset,TopOffset);
+  and GetLCLClientBoundsOffset(HWnd, ORect) then begin
+    MoveWindowOrgEx(Result, ORect.Left, ORect.Top);
   end;
   Assert(False, Format('Trace:< [TWin32WidgetSet.GetDC] Got 0x%x', [Result]));
 End;
@@ -1965,7 +1940,6 @@ var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
-  LeftOffset, TopOffset: integer;
 begin
   Result:=false;
   if not Windows.GetWindowRect(Handle,@R) then exit;
@@ -1975,10 +1949,10 @@ begin
   if ParentHandle<>0 then
   begin
     if not Windows.ScreenToClient(ParentHandle,@LeftTop) then exit;
-    if not GetLCLClientOriginOffset(ParentHandle,LeftOffset,TopOffset) then
+    if not GetLCLClientBoundsOffset(ParentHandle, R) then
       exit;
-    dec(LeftTop.X,LeftOffset);
-    dec(LeftTop.Y,TopOffset);
+    dec(LeftTop.X, R.Left);
+    dec(LeftTop.Y, R.Top);
   end;
   Left:=LeftTop.X;
   Top:=LeftTop.Y;
@@ -2053,14 +2027,14 @@ End;
 Function TWin32WidgetSet.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
 Var
   Flags: UINT;
-  LeftOffset, TopOffset: Integer;
+  ORect: TRect;
 Begin
 //  Result := Windows.InvalidateRect(aHandle, Windows.RECT(Rect^), bErase);
   Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
   if BErase then
     Flags := Flags or RDW_ERASE;
-  GetLCLClientOriginOffset(aHandle, LeftOffset, TopOffset);
-  OffsetRect(Rect^, LeftOffset, TopOffset);
+  GetLCLClientBoundsOffset(aHandle, ORect);
+  OffsetRect(Rect^, ORect.Left, ORect.Top);
   Result := Boolean(Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags));
 End;
 
@@ -2995,6 +2969,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2004/05/29 11:45:19  micha
+  cleanup lcl<->win32 bounds code, remove duplicate code
+
   Revision 1.114  2004/05/21 11:20:26  micha
   remove unused variable; fixes compiler warning
 

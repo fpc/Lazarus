@@ -125,7 +125,6 @@ Var
   R: TRect;
   P: TPoint;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
-  LeftOffset, TopOffset: Integer;
   OwnerObject: TObject;
   MsgObject: TObject;
   TheWinControl: TWinControl;
@@ -197,10 +196,9 @@ Var
     PS : TPaintStruct;
     MemWidth: Integer;
     MemHeight: Integer;
-    LeftOffset: Integer;
-    TopOffset: Integer;
     AWinControl: TWinControl;
     PaintMsg: TLMPaint;
+    ORect: TRect;
   begin
     // note: ignores the received DC
     // do not use default deliver message
@@ -220,7 +218,12 @@ Var
       PaintMsg.DC := MemDC;
     end;
     
-    GetLclClientOriginOffset(AWinControl.Handle, LeftOffset, TopOffset);
+    if not GetLCLClientBoundsOffset(AWinControl.Handle, ORect) then
+    begin
+      ORect.Left := 0;
+      ORect.Top := 0;
+      { we don't use ORect.Right and ORect.Bottom, initialize here if needed }
+    end;
     try
       DC := Windows.BeginPaint(Window, @PS);
       PaintMsg.Msg := LM_PAINT;
@@ -228,9 +231,9 @@ Var
       if not AWinControl.DoubleBuffered then
         PaintMsg.DC := DC;
       AWinControl.EraseBackground(PaintMsg.DC);
-      MoveWindowOrgEx(PaintMsg.DC, LeftOffset, TopOffset);
+      MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
       DeliverMessage(OwnerObject, PaintMsg);
-      MoveWindowOrgEx(PaintMsg.DC, -LeftOffset, -TopOffset);
+      MoveWindowOrgEx(PaintMsg.DC, -ORect.Left, -ORect.Top);
       if AWinControl.DoubleBuffered then
         Windows.BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
       Windows.EndPaint(Window, @PS);
@@ -920,18 +923,18 @@ Begin
   // convert from win32 client to lcl client pos
   if PLMsg = @LMMouseMove then
   begin
-    if GetLCLClientOriginOffset(Window,LeftOffset,TopOffset) then
+    if GetLCLClientBoundsOffset(Window, R) then
     begin
-      Dec(LMMouseMove.XPos, LeftOffset);
-      Dec(LMMouseMove.YPos, TopOffset);
+      Dec(LMMouseMove.XPos, R.Left);
+      Dec(LMMouseMove.YPos, R.Top);
     end;
   end else
   if PLMsg = @LMMouse then
   begin
-    if GetLCLClientOriginOffset(Window,LeftOffset,TopOffset) then
+    if GetLCLClientBoundsOffset(Window, R) then
     begin
-      Dec(LMMouse.XPos, LeftOffset);
-      Dec(LMMouse.YPos, TopOffset);
+      Dec(LMMouse.XPos, R.Left);
+      Dec(LMMouse.YPos, R.Top);
     end;
   end;
 
@@ -1158,6 +1161,9 @@ end;
 
 {
   $Log$
+  Revision 1.108  2004/05/29 11:45:19  micha
+  cleanup lcl<->win32 bounds code, remove duplicate code
+
   Revision 1.107  2004/05/23 13:35:19  micha
   fix multiple mouse wheel messages
 

@@ -659,8 +659,8 @@ End;
     Hence, the LeftOffset is the frame width and the TopOffset is the caption
     height.
 -------------------------------------------------------------------------------}
-function GetLCLClientOriginOffset(Sender: TObject;
-  var LeftOffset, TopOffset: integer): boolean;
+function GetLCLClientBoundsOffset(Sender: TObject;
+  var ORect: TRect): boolean;
 var
   TM: TextMetricA;
   DC: HDC;
@@ -669,63 +669,75 @@ var
   ARect: TRect;
 Begin
   Result:=false;
-  LeftOffset:=0;
-  TopOffset:=0;
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
+  ORect.Left := 0;
+  ORect.Top := 0;
+  ORect.Bottom := 0;
+  ORect.Right := 0;
   If (TheWinControl is TCustomGroupBox) Then
   Begin
     // The client area of a groupbox under win32 is the whole size, including
     // the frame. The LCL defines the client area without the frame.
     // -> Adjust the position
     DC := Windows.GetDC(Handle);
+    // add the upper frame with the caption
     GetTextMetrics(DC, TM);
-    inc(TopOffset,TM.TMHeight); // add the upper frame with the caption
-    inc(LeftOffset,2); // add the left frame border
+    ORect.Top := TM.TMHeight; 
+    // add the left frame border
+    ORect.Left := 2;
+    ORect.Right := -2;
+    ORect.Bottom := -2;
     ReleaseDC(Handle, DC);
   End Else
   If TheWinControl is TCustomNoteBook then begin
     // Can't use complete client rect in win32 interface, top part contains the tabs
     Windows.GetClientRect(Handle, @ARect);
-    Windows.SendMessage(Handle, TCM_AdjustRect, 0, LPARAM(@ARect));
-    LeftOffset := ARect.Left;
-    TopOffset := ARect.Top;
+    ORect := ARect;
+    Windows.SendMessage(Handle, TCM_AdjustRect, 0, LPARAM(@ORect));
+    Dec(ORect.Right, ARect.Right);
+    Dec(ORect.Bottom, ARect.Bottom);
   end;
+{  
+  if (Windows.GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_CLIENTEDGE) <> 0 then
+  begin
+    Dec(LeftOffset, Windows.GetSystemMetrics(SM_CXEDGE));
+    Dec(TopOffset, Windows.GetSystemMetrics(SM_CYEDGE));
+  end;
+}  
   Result:=true;
 end;
 
-function GetLCLClientOriginOffset(Handle: HWnd;
-  var LeftOffset, TopOffset: integer): boolean;
+function GetLCLClientBoundsOffset(Handle: HWnd;
+  var Rect: TRect): boolean;
 var
   OwnerObject: TObject;
 begin
   OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
-  Result:=GetLCLClientOriginOffset(OwnerObject,LeftOffset,TopOffset);
+  Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
 Procedure LCLBoundsToWin32Bounds(Sender: TObject;
   var Left, Top, Width, Height: Integer);
 var
-  LeftOffset: integer;
-  TopOffset: integer;
+  ORect: TRect;
 Begin
   if (Sender=nil) or (not (Sender is TWinControl)) then exit;
-  GetLCLClientOriginOffset(TWinControl(Sender).Parent,LeftOffset,TopOffset);
-  inc(Left,LeftOffset);
-  inc(Top,TopOffset);
+  if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
+  inc(Left, ORect.Left);
+  inc(Top, ORect.Top);
 End;
 
 Procedure Win32PosToLCLPos(Sender: TObject; var Left, Top: SmallInt);
 var
-  LeftOffset: integer;
-  TopOffset: integer;
+  ORect: TRect;
 Begin
   if (Sender=nil) or (not (Sender is TWinControl)) then exit;
-  GetLCLClientOriginOffset(TWinControl(Sender).Parent,LeftOffset,TopOffset);
-  dec(Left,LeftOffset);
-  dec(Top,TopOffset);
+  if not GetLCLClientBoundsOffset(TWinControl(Sender).Parent, ORect) then exit;
+  dec(Left, ORect.Left);
+  dec(Top, ORect.Top);
 End;
 
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
@@ -761,6 +773,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.42  2004/05/29 11:45:19  micha
+  cleanup lcl<->win32 bounds code, remove duplicate code
+
   Revision 1.41  2004/05/14 15:20:47  micha
   fix sizing when menu is attached to window
 
