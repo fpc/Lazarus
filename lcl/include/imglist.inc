@@ -18,10 +18,6 @@
  *****************************************************************************
 }
 
-const
-  SInvalidIndex = 'Invalid ImageList Index';
-  SInvalidImageSize = 'Invalid image size';
-
 {------------------------------------------------------------------------------
   Method:  CopyImage
   Params:  Destination, Source: the destination/source canvas
@@ -982,6 +978,9 @@ end;
 {
 
   $Log$
+  Revision 1.17  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.16  2003/02/27 09:52:00  mattias
   published TImgList.Width and Height
 

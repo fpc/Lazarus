@@ -28,9 +28,9 @@ unit Grids;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, LCLLinux, Controls, GraphType, Graphics,
-  Forms, VCLGlobals, DynamicArray, LMessages, Messages, XMLCfg, StdCtrls,
-  LResources;
+  Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLLinux, Controls,
+  GraphType, Graphics, Forms, VCLGlobals, DynamicArray, LMessages, Messages,
+  XMLCfg, StdCtrls, LResources;
 
 Const
   //GRIDFILEVERSION = 1; // Original
@@ -757,6 +757,7 @@ Begin
     End;
   End;
 End;
+
 Function LoadCellAttrFromXMLPath(Cfg: TXMLConfig; Path: String): TCellAttr;
 begin
   Result:=GetDefaultCellAttr;
@@ -1881,12 +1882,14 @@ end;
 
 procedure TCustomGrid.CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
 begin
-  If AFRow<0 Then Raise EGridException.Create('FixedRows<0');
-  If AFCol<0 Then Raise EGridException.Create('FixedCols<0');
+  If AFRow<0 Then
+    Raise EGridException.Create('FixedRows<0');
+  If AFCol<0 Then
+    Raise EGridException.Create('FixedCols<0');
   If (ACol>0)And(aFCol>=ACol) Then
-    Raise EGridException.Create('FixedCols can''t be >= ColCount');
+    raise EGridException.Create(rsFixedColsTooBig);
   If (ARow>0)And(aFRow>=ARow) Then
-    Raise EGridException.Create('FixedRows can''t be >= RowCount');
+    raise EGridException.Create(rsFixedRowsTooBig);
 end;
 
 { Save to the cache the current visible grid (excluding fixed cells) }
@@ -3171,12 +3174,12 @@ Var
   Version: Integer;
 begin
   If Not FileExists(FileName) Then
-    Raise Exception.Create('Grid file doesn''t exists');
+    raise Exception.Create(rsGridFileDoesNotExists);
     
   Cfg:=TXMLConfig.Create(FileName);
   Try
     Version:=cfg.GetValue('grid/version',-1);
-    if Version=-1 Then Raise Exception.Create('Not a valid grid file');
+    if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
     BeginUpdate;
     LoadContent(Cfg);
     EndUpdate(True);
@@ -3214,11 +3217,9 @@ function TVirtualGrid.GetCells(Col, Row: Integer): PCellProps;
 begin
   // todo: Check range
   Result:=nil;
-  try
-    Result:=FCells[Col,Row];
-  Except
-    WriteLn('GetCell: Index Out of range Cell[Col=',Col,' Row=',Row,']');
-  End;
+  if (Col<0) or (Row<0) or (Col>=ColCount) or (Row>=RowCount) then
+    raise EGridException.CreateFmt(rsIndexOutOfRange, [Col, Row]);
+  Result:=FCells[Col,Row];
 end;
 
 Function Tvirtualgrid.Getrows(Row: Integer): Pcellprops;
@@ -4259,8 +4260,6 @@ begin
   End;
   inherited Destroy;
 end;
-
-
 
 end.
 

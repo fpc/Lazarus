@@ -18,10 +18,6 @@
 
 
 const
-  NoInterfaceObject =
-    'No interface object. '
-    +'Plz check if the unit "interfaces" was added to the programs uses clause.';
-
   DefHintColor = clInfoBk;  { default hint window color }
   DefHintPause = 500;       { default pause before hint window displays (ms) }
   DefHintShortPause = 0;    { default reshow pause }
@@ -207,8 +203,8 @@ procedure TApplication.Initialize;
 begin
   if (InterfaceObject=nil)
   or (AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0) then begin
-    writeln('ERROR: ',NoInterfaceObject);
-    raise Exception.Create(NoInterfaceObject);
+    writeln('ERROR: ',rsNoInterfaceObject);
+    raise Exception.Create(rsNoInterfaceObject);
   end;
   InterfaceObject.AppInit;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
@@ -859,6 +855,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.46  2003/01/13 20:39:19  mattias
   changed the no interfaceobject message
 

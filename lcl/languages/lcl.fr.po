@@ -28,6 +28,14 @@ msgstr ""
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr ""
 
+#: lclstrconsts:rssindexoutofbounds
+msgid "%s Index %d out of bounds 0-%d"
+msgstr ""
+
+#: lclstrconsts:rsisalreadyassociatedwith
+msgid "%s is already associated with %s"
+msgstr ""
+
 #: lclstrconsts:rsmball
 msgid "&All"
 msgstr "&Tout"
@@ -65,11 +73,11 @@ msgid "(file not found: \"%s\")"
 msgstr ""
 
 #: lclstrconsts:rsgtkoptionclass
-msgid "--class classname     Following Xt conventions, the class of aprogram is the program name with the initialcharacter capitalized. For example, the classname for gimp is \"Gimp\". If --class isspecified, the class of the program will beset to \"classname\"."
+msgid "--class classname     Following Xt conventions, the class of aprogram is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
 msgstr ""
 
 #: lclstrconsts:rsgtkoptiondisplay
-msgid "--display h:s:d       Connect to the specified X server, where \"h\" isthe hostname, \"s\" is the server number (usually0), and \"d\" is the display number (typicallyomitted). If --display is not specified, theDISPLAY environment variable is used."
+msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
 msgstr ""
 
 #: lclstrconsts:rsgoptionfatalwarnings
@@ -97,7 +105,7 @@ msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
 msgstr ""
 
 #: lclstrconsts:rsgtkoptionname
-msgid "--name programe       Set program name to \"progname\". If notspecified, program name will be set toParamStr(0)."
+msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStr(0)."
 msgstr ""
 
 #: lclstrconsts:rsgtkoptionnoxshm
@@ -105,7 +113,11 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr ""
 
 #: lclstrconsts:rsgtkoptionsync
-msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. Thismakes debugging X protocol erros easier,because X request buffering will be disabled andX errors will be received immediatey after theprotocol request that generated the error hasbeen processed by the X server."
+msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+msgstr ""
+
+#: lclstrconsts:rsacontrolcannothaveitselfasparent
+msgid "A control can't have itself as parent"
 msgstr ""
 
 #: lclstrconsts:rsmbabort
@@ -120,17 +132,57 @@ msgstr ""
 msgid "Cancel"
 msgstr "Annuler"
 
+#: lclstrconsts:scannotfocus
+msgid "Cannot focus a disabled or invisible window"
+msgstr ""
+
+#: lclstrconsts:rscanvasdoesnotallowdrawing
+msgid "Canvas does not allow drawing"
+msgstr ""
+
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
 msgstr "Confirmation"
+
+#: lclstrconsts:rscreatinggdbcatchableerror
+msgid "Creating gdb catchable error:"
+msgstr ""
 
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Personalisé"
 
+#: lclstrconsts:sduplicatemenus
+msgid "Duplicate menus"
+msgstr ""
+
 #: lclstrconsts:rsmterror
 msgid "Error"
 msgstr "Erreur"
+
+#: lclstrconsts:rserrorcreatingdevicecontext
+msgid "Error creating device context for %s.%s"
+msgstr ""
+
+#: lclstrconsts:rserrorinlcl
+msgid "ERROR in LCL: "
+msgstr ""
+
+#: lclstrconsts:rserroroccurredinataddressframe
+msgid "Error occurred in %s at %sAddress %s%s Frame %s"
+msgstr ""
+
+#: lclstrconsts:rserrorreadingproperty
+msgid "Error reading %s%s%s: %s"
+msgstr ""
+
+#: lclstrconsts:rswin32error
+msgid "Error:"
+msgstr ""
+
+#: lclstrconsts:rsexception
+msgid "Exception"
+msgstr ""
 
 #: lclstrconsts:rsfileinformation
 msgid "File information"
@@ -144,13 +196,101 @@ msgstr ""
 msgid "File must exist"
 msgstr ""
 
+#: lclstrconsts:rsfixedcolstoobig
+msgid "FixedCols can't be >= ColCount"
+msgstr ""
+
+#: lclstrconsts:rsfixedrowstoobig
+msgid "FixedRows can't be >= RowCount"
+msgstr ""
+
+#: lclstrconsts:rsformstreamingerror
+msgid "Form streaming \"%s\" error: %s"
+msgstr ""
+
+#: lclstrconsts:rsgridfiledoesnotexists
+msgid "Grid file doesn't exists"
+msgstr ""
+
+#: lclstrconsts:rsgroupindexcannotbelessthanprevious
+msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
+msgstr ""
+
+#: lclstrconsts:rsindexoutofrange
+msgid "Index Out of range Cell[Col=%d Row=%d]"
+msgstr ""
+
 #: lclstrconsts:rsmtinformation
 msgid "Information"
 msgstr "Information"
 
+#: lclstrconsts:sinvalidactioncreation
+msgid "Invalid action creation"
+msgstr ""
+
+#: lclstrconsts:sinvalidactionenumeration
+msgid "Invalid action enumeration"
+msgstr ""
+
+#: lclstrconsts:sinvalidactionregistration
+msgid "Invalid action registration"
+msgstr ""
+
+#: lclstrconsts:sinvalidactionunregistration
+msgid "Invalid action unregistration"
+msgstr ""
+
+#: lclstrconsts:rsinvaliddate
+msgid "Invalid Date :%s"
+msgstr ""
+
+#: lclstrconsts:rsinvalidformobjectstream
+msgid "invalid Form object stream"
+msgstr ""
+
+#: lclstrconsts:sinvalidimagesize
+msgid "Invalid image size"
+msgstr ""
+
+#: lclstrconsts:sinvalidindex
+msgid "Invalid ImageList Index"
+msgstr ""
+
+#: lclstrconsts:rsinvalidpropertyvalue
+msgid "Invalid property value"
+msgstr ""
+
+#: lclstrconsts:rsinvalidstreamformat
+msgid "Invalid stream format"
+msgstr ""
+
+#: lclstrconsts:rslistmustbeempty
+msgid "List must be empty"
+msgstr ""
+
+#: lclstrconsts:smenuindexerror
+msgid "Menu index out of range"
+msgstr ""
+
+#: lclstrconsts:smenuitemisnil
+msgid "MenuItem is nil"
+msgstr ""
+
+#: lclstrconsts:rsnointerfaceobject
+msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
+msgstr ""
+
+#: lclstrconsts:snotimers
+msgid "No timers available"
+msgstr ""
+
 #: lclstrconsts:rsmbnotoall
 msgid "No to all"
 msgstr "Non pour tout"
+
+#: lclstrconsts:rsnotavalidgridfile
+msgid "Not a valid grid file"
+msgstr ""
 
 #: lclstrconsts:rsfdopenfile
 msgid "Open existing file"
@@ -168,8 +308,16 @@ msgstr ""
 msgid "permissions user group size date time"
 msgstr ""
 
+#: lclstrconsts:rspropertydoesnotexist
+msgid "Property %s does not exist"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
+msgstr ""
+
+#: lclstrconsts:rsscrollbaroutofrange
+msgid "ScrollBar property out of range"
 msgstr ""
 
 #: lclstrconsts:rsselectfonttitle
@@ -178,6 +326,10 @@ msgstr ""
 
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
+msgstr ""
+
+#: lclstrconsts:smenunotfound
+msgid "Sub-menu is not in menu"
 msgstr ""
 
 #: lclstrconsts:rsfdfilealreadyexists
@@ -200,9 +352,25 @@ msgstr ""
 msgid "Unable to load default font"
 msgstr ""
 
+#: lclstrconsts:rsunknownpictureextension
+msgid "Unknown picture extension"
+msgstr ""
+
+#: lclstrconsts:rsunsupportedbitmapformat
+msgid "Unsupported bitmap format."
+msgstr ""
+
+#: lclstrconsts:rsunsupportedclipboardformat
+msgid "Unsupported clipboard format: %s"
+msgstr ""
+
 #: lclstrconsts:rsmtwarning
 msgid "Warning"
 msgstr "Avertissement"
+
+#: lclstrconsts:rswin32warning
+msgid "Warning:"
+msgstr ""
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"

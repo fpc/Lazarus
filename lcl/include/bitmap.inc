@@ -125,7 +125,7 @@ begin
       pf16bit : n:= 16;
       pf24bit : n:= 24;
       pf32bit : n:= 32;
-      else raise EInvalidOperation.Create('Unsupported bitmap format.');
+      else raise EInvalidOperation.Create(rsUnsupportedBitmapFormat);
     end;
     UseWidth := Width;
     UseHeight := Height;
@@ -528,6 +528,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.26  2003/02/04 14:36:19  mattias
   fixed set method in OI
 

@@ -37,9 +37,9 @@ interface
 
 
 uses
-  Classes, Controls, VCLGlobals, SysUtils, LCLType, LCLProc, LCLLinux,
-  InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
-  ClipBrd;
+  Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
+  LCLLinux, InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer,
+  ActnList, ClipBrd;
 
 type
   TProcedure = procedure;
@@ -749,9 +749,10 @@ var
   Mess : String;
 Begin
   Writeln('[FORMS.PP] ExceptionOccurred Procedure');
-  Mess := 'Error occurred in '+Sender.ClassName+' at '#13#10'Address '+HexStr(Cardinal(Addr),8)+#13#10'Frame '+HexStr(Cardinal(Frame),8);
+  Mess := Format(rsErrorOccurredInAtAddressFrame, [Sender.ClassName, #13#10,
+    HexStr(Cardinal(Addr), 8), #13#10, HexStr(Cardinal(Frame), 8)]);
   if Application<>nil then
-    Application.MessageBox(PChar(Mess),'Exception',mb_IconError+mb_Ok)
+    Application.MessageBox(PChar(Mess), PChar(rsException), mb_IconError+mb_Ok)
   else
     writeln(Mess);
 end;
@@ -861,12 +862,13 @@ function InitResourceComponent(Instance: TComponent;
     try
       MemStream.Write(CompResource.Value[1],length(CompResource.Value));
       MemStream.Position:=0;
-      writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
+      //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       try
         Instance:=MemStream.ReadComponent(Instance);
       except
         on E: Exception do begin
-          writeln('Form streaming "',ClassType.ClassName,'" error: ',E.Message);
+          writeln(Format(rsFormStreamingError, [ClassType.ClassName, E.Message])
+            );
           exit;
         end;
       end;
@@ -985,7 +987,7 @@ initialization
   Application:= TApplication.Create(nil);
 
 finalization
-  writeln('forms.pp - finalization section');
+  //writeln('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
   HintWindowClass:=THintWindow;
   FreeThenNil(Application);

@@ -50,7 +50,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, vclGlobals, Graphics, GraphType;
+  SysUtils, Classes, LCLStrConsts, vclGlobals, Graphics, GraphType;
 
 type
   TImageIndex = type integer;
@@ -187,6 +187,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.10  2003/02/26 23:31:53  mattias
   added imagelisteditor from Olivier
 

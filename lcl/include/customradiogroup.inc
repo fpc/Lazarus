@@ -209,7 +209,7 @@ begin
   if FReading then FItemIndex:=Value
   else begin
     if (Value < -1) or (Value >= FItems.Count) then
-        raise Exception.Create('TCustomRadioGroup.SetItemIndex : Index out of bounds');
+      raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Value,FItems.Count]);
 
     if (HandleAllocated) and (Value <> FItemIndex) then
     begin
@@ -348,6 +348,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.15  2003/01/24 13:53:53  mattias
   fixed TRadioGroup.Items editing in IDE
 

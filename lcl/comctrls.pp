@@ -38,9 +38,9 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, LclLinux, LCLType, LCLProc, StdCtrls,
-  ExtCtrls, vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin,
-  CommCtrl, Buttons, Math;
+  SysUtils, Classes, LCLStrConsts, Controls, Forms, LclLinux, LCLType, LCLProc,
+  StdCtrls, ExtCtrls, vclGlobals, lMessages, Menus, ImgList, GraphType,
+  Graphics, ToolWin, CommCtrl, Buttons, Math;
 
 type
   TStatusPanelStyle = (psText, psOwnerDraw);
@@ -1724,6 +1724,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.65  2003/03/06 17:15:39  ajgenius
   added Math to uses. new updown arrow code uses max
 

@@ -88,7 +88,7 @@ end;
 procedure TScrollBar.SetParams(APosition, AMin, AMax: Integer);
 begin
   if AMax < AMin then
-    raise EInvalidOperation.Create(SScrollBarRange);
+    raise EInvalidOperation.Create(rsScrollBarOutOfRange);
   if APosition < AMin then APosition := AMin;
   if APosition > AMax then APosition := AMax;
   if (FMin <> AMin) or (FMax <> AMax) then

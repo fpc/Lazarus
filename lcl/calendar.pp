@@ -33,7 +33,7 @@ unit Calendar;
 interface
 
 uses
-  SysUtils, Classes, Controls, vclGlobals, lMessages;
+  SysUtils, Classes, LCLStrConsts, Controls, vclGlobals, lMessages;
   
   
 Type
@@ -118,14 +118,11 @@ procedure TCalendar.SetDate(const AValue: String);
 begin
    try
      StrtoDate(AValue);  //test to see if valid date....
-
      FDate := AValue;
      SetProps;
    except
-     raise EInvalidDate.CreateFmt('Invalid Date :%s',[AValue]);
-   //raise an error
+     raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue]);
    end;
-   
 end;
 
 function TCalendar.GetDisplaySettings: TDisplaySettings;

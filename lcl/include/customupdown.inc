@@ -276,7 +276,7 @@ begin
         (Parent.Controls[I] <> Self)
       then
         if TCustomUpDown(Parent.Controls[I]).Associate = Value then
-          raise Exception.CreateFmt('%s is already associated with %s',
+          raise Exception.CreateFmt(rsIsAlreadyAssociatedWith,
             [Value.Name, Parent.Controls[I].Name]);
 
   if FAssociate <> nil then

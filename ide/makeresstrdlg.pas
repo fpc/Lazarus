@@ -689,6 +689,8 @@ begin
     exit;
   HistoryList:=
     InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
+  if HistoryList.Count=0 then
+    HistoryList.Assign(IdentPrefixComboBox.Items);
   HistoryList.Push(IdentPrefixComboBox.Text);
 end;
 
@@ -701,6 +703,8 @@ begin
     exit;
   HistoryList:=
     InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true);
+  if HistoryList.Count=0 then
+    HistoryList.Assign(IdentLengthComboBox.Items);
   HistoryList.Push(IdentLengthComboBox.Text);
 end;
 

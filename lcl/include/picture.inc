@@ -385,7 +385,7 @@ begin
   System.Delete(Ext, 1, 1); // delete '.'
   GraphicClass := GetPicFileFormats.FindExt(Ext);
   if GraphicClass = nil then
-    raise EInvalidGraphic.CreateFmt('Unknown picture extension', [Ext]);
+    raise EInvalidGraphic.CreateFmt(rsUnknownPictureExtension, [Ext]);
 
   NewGraphic := GraphicClass.Create;
 
@@ -419,8 +419,8 @@ var
 begin
   GraphicClass := PicClipboardFormats.FindFormat(FormatID);
   if GraphicClass = nil then
-    raise EInvalidGraphic.Create('Unsupported clipboard format: '
-      +ClipboardFormatToMimeType(FormatID));
+    raise EInvalidGraphic.CreateFmt(rsUnsupportedClipboardFormat,
+      [ClipboardFormatToMimeType(FormatID)]);
 
   NewGraphic := GraphicClass.Create;
   ok:=false;

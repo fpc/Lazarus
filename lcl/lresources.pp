@@ -34,7 +34,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Strings;
+  Classes, SysUtils, LCLStrConsts, Strings;
 
 type
   TLResource = class
@@ -285,6 +285,7 @@ end;
 
 procedure TLResourceList.Add(const Name,ValueType: AnsiString;
   Values: array of string);
+const ProcName = 'TLResourceList.Add';
 var
   NewLResource: TLResource;
   i, TotalLen, ValueCount, p: integer;
@@ -295,7 +296,12 @@ begin
   
   ValueCount:=High(Values)-Low(Values)+1;
   case ValueCount of
-    0: raise Exception.Create('TLResourceList.Add: no values');
+    0:
+      begin
+        NewLResource.Free;
+        exit;
+      end;
+    
     1: NewLResource.Value:=Values[0];
   else
     TotalLen:=0;
@@ -493,13 +499,12 @@ end;
 
 procedure PropValueError;
 begin
-  ReadError('Invalid property value' {@SInvalidPropertyValue});
+  ReadError(rsInvalidPropertyValue);
 end;
 
 procedure PropertyNotFound(const Name: string);
 begin
-  raise EReadError.CreateFmt('Property %s does not exist' {@SUnknownProperty},
-                             [Name]);
+  ReadError(Format(rsPropertyDoesNotExist,[Name]));
 end;
 
 procedure TDelphiReader.SkipBytes(Count: Integer);
@@ -529,7 +534,7 @@ var
 begin
   Read(Signature, SizeOf(Signature));
   if Signature <> Longint(FilerSignature) then
-    ReadError('Invalid stream format'{@SInvalidImage});
+    ReadError(rsInvalidStreamFormat);
 end;
 
 procedure TDelphiReader.Read(var Buf; Count: Longint);
@@ -719,7 +724,7 @@ var
   L: Integer;
 begin
   if NextValue in [dvaWString, dvaUTF8String] then begin
-    ReadError('TDelphiReader.ReadString: not implemented yet: NextValue is a wide or utf8 string');
+    ReadError('TDelphiReader.ReadString: WideString and UTF8String are not implemented yet');
     //Result := ReadWideString;
   end else
   begin
@@ -1115,8 +1120,8 @@ var
       dvaInt64:
         WriteStr(IntToStr(Reader.ReadInt64));
     else
-      raise EReadError.CreateFmt('Error reading %s%s%s: %s'{@sPropertyException},
-        [ObjectName, '.', PropName, Ord(Reader.NextValue)]);
+      ReadError(Format(rsErrorReadingProperty,
+        [ObjectName, '.', PropName, Ord(Reader.NextValue)]));
     end;
   end;
 
@@ -1260,7 +1265,7 @@ begin
     TextStream.CopyFrom(FormStream,FormStream.Size);
 
   else
-    raise Exception.Create('invalid Form object stream');
+    raise Exception.Create(rsInvalidFormObjectStream);
   end;
 end;
 

@@ -26,7 +26,7 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LMessages, VCLGlobals;
+  Classes, SysUtils, LCLStrConsts, LCLType, LMessages, VCLGlobals;
 
 
 type
@@ -67,7 +67,6 @@ uses
 
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }
-  SNoTimers = 'No timers available';
 
 {------------------------------------------------------------------------------
   Method: TCustomTimer.Create

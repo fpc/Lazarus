@@ -45,8 +45,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLLinux, LCLType, LCLProc, VCLGlobals, LMessages,
-  ActnList, Graphics, ImgList;
+  Classes, SysUtils, LCLStrConsts, LCLLinux, LCLType, LCLProc, VCLGlobals,
+  LMessages, ActnList, Graphics, ImgList;
 
 
 type
@@ -362,6 +362,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.37  2003/02/23 10:42:06  mattias
   implemented changing TMenuItem.GroupIndex at runtime
 

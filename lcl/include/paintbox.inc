@@ -1,3 +1,5 @@
+// included by extctrls.pp
+
 { TPaintBox
 
  *****************************************************************************
@@ -33,5 +35,8 @@ begin
       Rectangle(0, 0, Width - 1, Height - 1);
     end;
   if Assigned(FOnPaint) then
-   FOnPaint(Self);
+    FOnPaint(Self);
 end;
+
+// included by extctrls.pp
+

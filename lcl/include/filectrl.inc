@@ -315,7 +315,9 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
-  {$IFNDEF win32}
+  {$IFDEF win32}
+  raise Exception.Create('"'+AFilename+'" is not symlink');
+  {$ELSE}
   if {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(AFilename)='' then begin
     AText:='"'+AFilename+'"';
     case LinuxError of
@@ -343,12 +345,11 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsSymlink(const AFilename: string): boolean;
 begin
-  try
-    CheckIfFileIsSymlink(AFilename);
-    Result:=true;
-  except
-    Result:=false;
-  end;
+  {$IFDEF win32}
+  Result:=false;
+  {$ELSE}
+  Result:=({$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(AFilename)<>'');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -382,7 +383,6 @@ end;
  ------------------------------------------------------------------------------}
 function GetFileDescription(const AFilename: string): string;
 {$IFDEF win32}
-
 {$ELSE}
 var
   info: stat;
@@ -540,12 +540,12 @@ end;
  ------------------------------------------------------------------------------}
 function FileIsExecutable(const AFilename: string): boolean;
 begin
-  try
-    CheckIfFileIsExecutable(AFilename);
-    Result:=true;
-  except
-    Result:=false;
-  end;
+  {$IFDEF win32}
+  Result:=true;
+  {$ELSE}
+  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -813,6 +813,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.15  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 

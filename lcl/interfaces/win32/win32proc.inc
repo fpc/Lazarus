@@ -29,123 +29,6 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
-  Function: CS_To_String
-  Params: CompStyle - Component Style
-  Returns: The component style name
-
-  Converts a component style identIfier into the correct component style name
- ------------------------------------------------------------------------------}
-Function CS_To_String(CompStyle: Integer): String;
-Begin
-  Case CompStyle of
-    csNone:
-      Result := 'csNone';
-    csAlignment:
-      Result := 'csAlignment';
-    csBox:
-      Result := 'csBox';
-    csButton:
-      Result := 'csButton';
-    csComboBox:
-      Result := 'csComboBox';
-    csCheckbox:
-      Result := 'csCheckbox';
-    csEdit:
-      Result := 'csEdit';
-    csForm:
-      Result := 'csForm';
-    csLabel:
-      Result := 'csLabel';
-    csGTKTable:
-      Result := 'csGTKTable';
-    csScrollBar:
-      Result := 'csScrollBar';
-    csListView:
-      Result := 'csListView';
-    csMainForm:
-      Result := 'csMainForm';
-    csMemo:
-      Result := 'csMemo';
-    csMainMenu:
-      Result := 'csMainMenu';
-    csMenuBar:
-      Result := 'csMenuBar';
-    csMenuItem:
-      Result := 'csMenuItem';
-    csNotebook:
-      Result := 'csNotebook';
-    csFileDialog:
-      Result := 'csFileDialog';
-    csRadioButton:
-      Result := 'csRadioButton';
-    csScrolledWinDow:
-      Result := 'csScrolledWinDow';
-    csSpinEdit:
-      Result := 'csSpinEdit';
-    csStatusBar:
-      Result := 'csStatusBar';
-    csTable:
-      Result := 'csTable';
-    csToggleBox:
-      Result := 'csToggleBox';
-    25: //csVScrollBar
-      Result := 'csVScrollBar';
-    csFrame:
-      Result := 'csFrame';
-    csButtonBox:
-      Result := 'csButtonBox';
-    csCanvas:
-      Result := 'csCanvas';
-    csGroupBox:
-      Result := 'csGroupBox';
-    csFont:
-      Result := 'csFont';
-    csPen:
-      Result := 'csPen';
-    csBrush:
-      Result := 'csBrush';
-    33: //csTimer
-      Result := 'csTimer';
-    csPage:
-      Result := 'csPage';
-    csColorDialog:
-      Result := 'csColorDialog';
-    csListBox:
-      Result := 'csListBox';
-    csFontDialog:
-      Result := 'csFontDialog';
-    csProgressBar:
-      Result := 'csProgressBar';
-    csTrackBar:
-      Result := 'csTrackBar';
-    csFixed:
-      Result := 'csFixed';
-    csImage:
-      Result := 'csImage';
-    csToolbar:
-      Result := 'csToolbar';
-    csToolButton:
-      Result := 'csToolButton';
-    csBitBtn:
-      Result := 'csBitBtn';
-    csCListBox:
-      Result := 'csCListBox';
-    csSpeedButton:
-      Result := 'csSpeedButton';
-    csPopupMenu:
-      Result := 'csPopupMenu';
-    csHintWinDow:
-      Result := 'csHintWinDow';
-    csCalEndar:
-      Result := 'csCalEndar';
-    csArrow:
-      Result := 'csArrow';
-    Else
-      Result := Format('Unknown component style %D', [CompStyle]);
-  End; {Case}
-End;
-
-{------------------------------------------------------------------------------
   Function: WM_To_String
   Params: WM_Message - a WinDows message
   Returns: A WinDows-message name
@@ -409,11 +292,11 @@ Begin
       Case IsConsole Of
         True:
         Begin
-          WriteLn('Warning:', Message);
+          WriteLn(rsWin32Warning, Message);
         End;
         False:
         Begin
-          MessageBox(0, PChar(Message), 'Warning', MB_OK);
+          MessageBox(0, PChar(Message), rsWin32Warning, MB_OK);
         End;
       End;
     End;
@@ -422,7 +305,7 @@ Begin
       Case IsConsole Of
         True:
         Begin
-          WriteLn('Error:', Message);
+          WriteLn(rsWin32Error, Message);
         End;
         False:
         Begin
@@ -834,6 +717,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.14  2003/03/11 07:46:44  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.13  2003/01/27 11:25:40  mattias
   menu accelerator patch from Martin Smat
 

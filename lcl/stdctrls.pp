@@ -37,8 +37,9 @@ interface
 
 
 uses
-  VCLGlobals, Classes, SysUtils, LCLType, LCLProc, Graphics, GraphType,
-  LMessages, Controls, ExtendedStrings, LCLLinux, GraphMath, Forms;
+  VCLGlobals, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc,
+  Graphics, GraphType, LMessages, Controls, ExtendedStrings, LCLLinux,
+  GraphMath, Forms;
 
 
 type
@@ -940,8 +941,6 @@ type
   end;
     }
 
-const
-  SScrollBarRange = 'ScrollBar property out of range';
 
 
 {$IFDef NewCheckBox}
@@ -1394,6 +1393,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.78  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 

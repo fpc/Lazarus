@@ -36,9 +36,9 @@ Interface
   successful compilation.
 }
 Uses
-  Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray, ExtCtrls, Forms,
-  GraphMath, GraphType, InterfaceBase, LCLLinux, LCLType, LMessages,
-  StdCtrls, SysUtils, VCLGlobals, Win32Def;
+  {Windows, }Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
+  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLLinux, LCLType,
+  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def;
 
 Type
   { Virtual alignment-control record }
@@ -188,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2003/03/11 07:46:44  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.27  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 

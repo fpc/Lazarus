@@ -26,7 +26,7 @@ unit ActnList;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ImgList;
+  Classes, SysUtils, LCLStrConsts, LCLProc, ImgList;
   
 type
 
@@ -290,13 +290,6 @@ var
 
 
 implementation
-
-
-const
-  SInvalidActionRegistration = 'Invalid action registration';
-  SInvalidActionUnregistration = 'Invalid action unregistration';
-  SInvalidActionEnumeration = 'Invalid action enumeration';
-  SInvalidActionCreation = 'Invalid action creation';
 
 
 procedure RegisterActions(const CategoryName: string;

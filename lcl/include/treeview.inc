@@ -54,10 +54,10 @@ begin
   raise ETreeNodeError.Create(Msg);
 end;
 
-{procedure TreeNodeErrorFmt(const Msg: string; Format: array of const);
+procedure TreeNodeErrorFmt(const Msg: string; Format: array of const);
 begin
   raise ETreeNodeError.CreateFmt(Msg, Format);
-end;}
+end;
 
 function IndexOfNodeAtTop(NodeArray: TTreeNodeArray; Count, y: integer): integer;
 // NodeArray must be sorted via Top
@@ -795,8 +795,7 @@ end;
 function TTreeNode.GetItems(AnIndex: Integer): TTreeNode;
 begin
   if (AnIndex<0) or (AnIndex>=Count) then
-    TreeNodeError('TTreeNode.GetItems: Index '+IntToStr(AnIndex)
-                 +' out of bounds '+IntToStr(Count));
+    TreeNodeErrorFmt(rssIndexOutOfBounds,[ClassName, AnIndex, Count]);
   Result:=FItems[AnIndex];
   {Result := GetFirstChild;
   while (Result <> nil) and (Index > 0) do
@@ -810,8 +809,7 @@ end;
 procedure TTreeNode.SetItems(AnIndex: Integer; AValue: TTreeNode);
 begin
   if (AnIndex<0) or (AnIndex>=Count) then
-    TreeNodeError('TTreeNode.SetItems: Index '+IntToStr(AnIndex)
-                 +' out of bounds '+IntToStr(Count));
+    TreeNodeErrorFmt(rssIndexOutOfBounds, [ClassName, AnIndex, Count]);
   Items[AnIndex].Assign(AValue);
 end;
 

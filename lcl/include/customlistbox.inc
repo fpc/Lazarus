@@ -230,7 +230,7 @@ end;
 procedure TCustomListBox.SetSelected(Index : integer; Val : boolean);
 begin
   if (Index < 0) or (Index >= Items.Count) then
-    raise Exception.Create('List index out of bounds');
+    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,Items.Count]);
   //writeln('TCustomListBox.SetSelected A ',Items.Count);
   if HandleAllocated then begin
     //writeln('TCustomListBox.SetSelected B ',Items.Count);
@@ -250,8 +250,7 @@ end;
 function TCustomListBox.GetSelected(Index : integer) : boolean;
 begin
   if (Index < 0) or (Index >= Items.Count) then
-    raise Exception.Create('TCustomListBox.GetSelected: index '+IntToStr(Index)
-      +' out of bound. Count='+IntToStr(Items.Count));
+    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,Items.Count]);
   if HandleAllocated then
     Result:= (CNSendMessage(LM_GETSEL, Self, @Index) > 0)
   else
@@ -380,7 +379,8 @@ end;
 
 procedure TCustomListBox.SetItemIndex(Val : integer);
 begin
-  if (Val < 0) or (Val >= FItems.Count) then raise Exception.Create('Out of bounds');
+  if (Val < 0) or (Val >= FItems.Count) then
+    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Val,FItems.Count]);
 //writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
   if HandleAllocated then

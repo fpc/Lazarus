@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {******************************************************************************
                                      TGraphicControl
  ******************************************************************************
@@ -82,9 +84,15 @@ begin
   Assert(False, Format('Trace:[TGraphicControl.Paint] %s', [ClassName]));
 end;
 
+// included by controls.pp
+
+
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.5  2002/09/13 11:49:47  lazarus
   Cleanups, extended TStatusBar, graphic control cleanups.
 

@@ -71,9 +71,7 @@ procedure TCustomMemo.SetLines(Value : TStrings);
 begin
   if Value <> nil then
   begin
-    Assert(False, 'Trace:Assigning Lines');
     FLines.Assign(Value);
-    Assert(False, 'Trace:Assigned Lines');
   end;
 end;
 
@@ -112,6 +110,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.8  2002/10/30 13:50:26  lazarus
   MG: fixed message without handle
 

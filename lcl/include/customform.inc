@@ -18,10 +18,6 @@
  *****************************************************************************
 }
 
-const
-  sDuplicateMenus = 'TCustomForm.SetMenu Duplicate menus';
-  SCannotFocus = 'Cannot focus a disabled or invisible window';
-
 { $DEFINE CHECK_POSITION}
 
 {------------------------------------------------------------------------------}
@@ -1302,6 +1298,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.86  2003/02/28 19:54:05  mattias
   added ShowWindow
 

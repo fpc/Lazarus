@@ -1,3 +1,5 @@
+// included by extctrls.pp
+
 { TImage
 
  *****************************************************************************
@@ -133,3 +135,6 @@ begin
     StretchDraw(iRect, Picture.Graphic);
   end;
 end;
+
+// included by extctrls.pp
+

@@ -17,10 +17,6 @@
  *                                                                           *
  *****************************************************************************
 }
-const
-  SMenuNotFound   = 'Sub-menu is not in menu';
-  SMenuIndexError = 'Menu index out of range';
-  SMenuItemIsNil  = 'MenuItem is nil';
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.Add
@@ -260,7 +256,7 @@ end;
 function TMenuItem.GetItem(Index: Integer): TMenuItem;
 begin
   if FItems = nil then
-    raise EMenuError.Create('Menu index out of range');
+    raise EMenuError.CreateFmt(rsIndexOutOfRange,[ClassName,Index,0]);
   Result := TMenuItem(FItems[Index]);
 end;
 
@@ -764,20 +760,20 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TMenuItem.SetParentComponent(AValue : TComponent);
 begin
-   if assigned (FParent) and (FParent = AValue)
-      then exit;
+  if assigned (FParent) and (FParent = AValue)
+  then exit;
 
-   if assigned (FParent) and (FParent <> AValue)
-      then TMenuItem (FParent).Remove (self);
+  if assigned (FParent) and (FParent <> AValue)
+  then TMenuItem (FParent).Remove (self);
 
-   if assigned (AValue) then
-   begin
-      if (AValue is TMenu)
-         then TMenu (AValue).Items.Add (Self)
-      else if (AValue is TMenuItem)
-         then TMenuItem (AValue).Add (Self)
-      else
-         raise Exception.Create ('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
+  if assigned (AValue) then
+  begin
+    if (AValue is TMenu)
+      then TMenu (AValue).Items.Add (Self)
+    else if (AValue is TMenuItem)
+      then TMenuItem (AValue).Add (Self)
+    else
+      raise Exception.Create('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
    end;
 end;
 
@@ -914,8 +910,7 @@ begin
   for i:=0 to GetCount-1 do
     if i<Position then begin
       if Items[i].GroupIndex>Value then
-        raise EMenuError.Create('GroupIndex cannot be less than a previous '
-                                +'menu item''s GroupIndex')
+        raise EMenuError.Create(rsGroupIndexCannotBeLessThanPrevious)
     end
     else
       // Ripple change to menu items at Position and after
@@ -929,6 +924,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.30  2003/02/23 10:42:06  mattias
   implemented changing TMenuItem.GroupIndex at runtime
 
@@ -1047,6 +1045,9 @@ end;
 
 
   $Log$
+  Revision 1.31  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.30  2003/02/23 10:42:06  mattias
   implemented changing TMenuItem.GroupIndex at runtime
 
