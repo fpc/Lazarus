@@ -439,15 +439,6 @@ Begin
     LM_ATTACHMENU:
       AttachMenu(Sender);
         //SH: think of TBitmap.handle!!!!
-    LM_APPENDTEXT:
-    Begin
-      if (Data <> nil)
-      and (PChar(Data)^ <> #0)
-      then begin
-        S := (Sender as TCustomMemo).Text + PChar(Data);
-        SetLabel(Sender, PChar(S));
-      end;
-    End;
     LM_SCREENINIT:
     Begin
       if Sender=nil then Handle := GetDesktopWindow
@@ -495,6 +486,15 @@ Begin
       Exit;
     End;
     Case LM_Message of
+      LM_APPENDTEXT:
+      Begin
+        if (Data <> nil) and (PChar(Data)^ <> #0) then 
+        begin
+  	  GetText(TComponent(Sender), Handle, S);
+          S := S + PChar(Data);
+          SetLabel(Sender, PChar(S));
+        end;
+      End;
       LM_SETTEXT:
         SetText(Handle, Data);
       LM_ADDCHILD:
@@ -3025,6 +3025,9 @@ End;
 
 {
   $Log$
+  Revision 1.181  2004/03/05 15:41:42  micha
+  fix appendtext to actually *append* text, not replace
+
   Revision 1.180  2004/03/05 13:57:25  micha
   fix bug 208: cursor changes when creating submenu
 
