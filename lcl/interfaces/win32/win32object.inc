@@ -2892,6 +2892,7 @@ var MenuInfo: MENUITEMINFO;
     Style: integer;
     Mask: integer;
     Msg: TLMShortCut;
+    AMenuItem: TMenuItem;
 
   function GetCheckBitmap(checked: boolean): HBitmap;
   {TODO: create "checked" icon}
@@ -2908,19 +2909,19 @@ var MenuInfo: MENUITEMINFO;
   begin
     maxWidth:=GetSystemMetrics(SM_CXMENUCHECK);
     maxHeight:=GetSystemMetrics(SM_CYMENUCHECK);
-    if (maxWidth>=TMenuItem(Sender).Bitmap.Width) and (maxHeight>=TMenuItem(Sender).Bitmap.Height) then Result:=TMenuItem(Sender).Bitmap.Handle
+    if (maxWidth>=AMenuItem.Bitmap.Width) and (maxHeight>=AMenuItem.Bitmap.Height) then Result:=AMenuItem.Bitmap.Handle
     else
     begin
-      newWidth:=min(maxWidth, TMenuItem(Sender).Bitmap.Width);
-      newHeight:=min(maxHeight, TMenuItem(Sender).Bitmap.Height);
+      newWidth:=min(maxWidth, AMenuItem.Bitmap.Width);
+      newHeight:=min(maxHeight, AMenuItem.Bitmap.Height);
       hdcScreen:=GetDC(GetDesktopWindow);
       hdcOrigBitmap:=CreateCompatibleDC(hdcScreen);
       hdcNewBitmap:=CreateCompatibleDC(hdcScreen);
       hbmpCheck:=CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
       ReleaseDC(GetDesktopWindow, hdcScreen);
-      OldOrigBitmap:=SelectObject(hdcOrigBitmap, TMenuItem(Sender).Bitmap.Handle);
+      OldOrigBitmap:=SelectObject(hdcOrigBitmap, AMenuItem.Bitmap.Handle);
       OldCheckmark:=SelectObject(hdcNewBitmap, hbmpCheck);
-      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcOrigBitmap, 0, 0, TMenuItem(Sender).Bitmap.Width, TMenuItem(Sender).Bitmap.Height, SRCCOPY);
+      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcOrigBitmap, 0, 0, AMenuItem.Bitmap.Width, AMenuItem.Bitmap.Height, SRCCOPY);
       SelectObject(hdcOrigBitmap, OldOrigBitmap);
       hbmpCheck:=SelectObject(hdcNewBitmap, OldCheckmark);
       DeleteDC(hdcNewBitmap);
@@ -2931,40 +2932,42 @@ var MenuInfo: MENUITEMINFO;
   end;
 
 Begin
-  ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
-
+  AMenuItem:=TMenuItem(Sender);
+  ParentMenuHandle := AMenuItem.Parent.Handle;
 
   {Following part fixes the case when an item is added in runtime
   but the parent item has not defined the submenu flag (hSubmenu=0) }
-  if TMenuItem(Sender).Parent.Parent<>nil then
+  if AMenuItem.Parent.Parent<>nil then
   begin
-    ParentOfParent := TMenuItem(Sender).Parent.Parent.Handle;
+    ParentOfParent := AMenuItem.Parent.Parent.Handle;
     with MenuInfo do begin
       cbSize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, TMenuItem(Sender).Parent.Command,
+    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
                     false, @MenuInfo);
     if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
     begin
       MenuInfo.hSubmenu:=ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, TMenuItem(Sender).Parent.Command,
+      SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
                       false, MenuInfo);
     end;
   end;
 
-  Mask := MIIM_ID or MIIM_DATA;
+  Mask := MIIM_ID or MIIM_DATA or MIIM_STATE;
   Style:=0;
-  if (TMenuItem(Sender).Count > 0) then Mask := Mask or MIIM_SUBMENU;
-  MenuHandle := TMenuItem(Sender).Handle;
+  if (AMenuItem.Count > 0) then Mask := Mask or MIIM_SUBMENU;
+  MenuHandle := AMenuItem.Handle;
   with MenuInfo do begin
     cbsize:=sizeof(MENUITEMINFO);
+    if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
+    if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
     fMask:=Mask;
     fType:=Style;
-    wID:=TMenuItem(Sender).Command; {value may only be 16 bit wide!}
+    wID:=AMenuItem.Command; {value may only be 16 bit wide!}
     hSubmenu:=MenuHandle;
     dwItemData:=integer(Sender);
-    if TmenuItem(Sender).HasIcon then {adds the menuitem icon}
+    if AmenuItem.HasIcon then {adds the menuitem icon}
     begin
       fMask:=fMask or MIIM_CHECKMARKS;
       hbmpUnchecked:=GetCheckBitmap(false);
@@ -2973,14 +2976,14 @@ Begin
        implemented in LCL}
     end;
   end;
-  InsertMenuItem(ParentMenuHandle, TMenuItem(Sender).Parent.IndexOf(TMenuItem(Sender)), true, @MenuInfo);
-  if TMenuItem(Sender).ShortCut <> 0 then
+  InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.IndexOf(AMenuItem), true, @MenuInfo);
+  if AMenuItem.ShortCut <> 0 then
   begin
     Msg.Handle:=MenuHandle;
-    ShortCutToKey(TMenuItem(Sender).ShortCut, Msg.NewKey, Msg.NewModifier);
+    ShortCutToKey(AMenuItem.ShortCut, Msg.NewKey, Msg.NewModifier);
     IntSendMessage3(LM_SETSHORTCUT, Sender, @Msg);
   end
-  else SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption));
+  else SetLabel(Sender, LPSTR(AMenuItem.Caption));
 End;
 
 
@@ -3004,6 +3007,11 @@ End;
 
 {
   $Log$
+  Revision 1.168  2004/02/16 22:01:31  marc
+  * Applied patch from Martin Smat
+    this patch fixes showing menuitem initially defined as Checked=true
+    or Enabled=false
+
   Revision 1.167  2004/02/15 19:26:48  micha
   fixed: remove GetAncestor dependency; code obsolete? works without too...
 
