@@ -21,7 +21,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TStandardCodeTool enhances TFindDeclarationTool with many standard code
+    TStandardCodeTool enhances TIdentCompletionTool with many standard code
     editing functions for the following categories:
       - source name
       - uses sections
@@ -45,12 +45,12 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
-  FindDeclarationTool, PascalParserTool, SourceLog, KeywordFuncLists,
+  IdentCompletionTool, PascalParserTool, SourceLog, KeywordFuncLists,
   BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger,
   CustomCodeTool;
 
 type
-  TStandardCodeTool = class(TFindDeclarationTool)
+  TStandardCodeTool = class(TIdentCompletionTool)
   private
     function ReadTilGuessedUnclosedBlock(MinCleanPos: integer;
       ReadOnlyOneBlock: boolean): boolean;

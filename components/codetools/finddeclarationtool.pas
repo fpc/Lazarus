@@ -28,9 +28,8 @@
   ToDo:
     - ignore errors behind cursor (implemented, not tested)
     - variants
-    - interfaces
     - Get and Set property access parameter lists
-    - predefined funcs Low, High
+    - predefined funcs Low, High for arrays
     - find declaration in dead code
     - make @Proc context sensitive (started, but not complete)
     - operator overloading
