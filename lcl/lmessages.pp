@@ -244,6 +244,7 @@ LM_MBUTTONUP = $0208;
 LM_MBUTTONDBLCLK = $0209;
 LM_MOUSEWHEEL = $020A;
 LM_MOUSELAST = $020A;
+// for triple and quad clicks see below
 
 LM_CAPTURECHANGED = $0215;
 LM_DROPFILES = $0233;
@@ -315,6 +316,12 @@ LM_MONTHCHANGED = LM_USER+65;
 LM_YEARCHANGED = LM_USER+66;
 LM_DAYCHANGED = LM_USER+67;
 
+LM_LBUTTONTRIPLECLK = LM_USER+68;
+LM_LBUTTONQUADCLK = LM_USER+69;
+LM_MBUTTONTRIPLECLK = LM_USER+70;
+LM_MBUTTONQUADCLK = LM_USER+71;
+LM_RBUTTONTRIPLECLK = LM_USER+72;
+LM_RBUTTONQUADCLK = LM_USER+73;
 
 LM_UNKNOWN = LM_User+99;
 
@@ -635,6 +642,12 @@ TLMMButtonDown = TLMMouse;
 TLMLButtonDblClk = TLMMouse;
 TLMRButtonDblClk = TLMMouse;
 TLMMButtonDblClk = TLMMouse;
+TLMLButtonTripleClk = TLMMouse;
+TLMRButtonTripleClk = TLMMouse;
+TLMMButtonTripleClk = TLMMouse;
+TLMLButtonQuadClk = TLMMouse;
+TLMRButtonQuadClk = TLMMouse;
+TLMMButtonQuadClk = TLMMouse;
 TLMLButtonUp = TLMMouse;
 TLMRButtonUp = TLMMouse;
 TLMMButtonUp = TLMMouse;
@@ -818,6 +831,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2002/03/29 17:12:52  lazarus
+  MG: added Triple and Quad mouse clicks to lcl and synedit
+
   Revision 1.23  2002/03/27 00:33:54  lazarus
   MWE:
     * Cleanup in lmessages

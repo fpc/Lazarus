@@ -160,7 +160,11 @@ type
 
   TSynStateFlag = (sfCaretChanged, sfScrollbarChanged, sfLinesChanging,
     sfIgnoreNextChar, sfCaretVisible, sfDblClicked, sfPossibleGutterClick,
-    sfWaitForDragging, sfInsideRedo);                                           //mh 2000-10-30
+    {$IFDEF SYN_LAZARUS}
+    sfTripleClicked, sfQuadClicked,
+    {$ENDIF}
+    sfWaitForDragging, sfInsideRedo
+    );                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
   TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
@@ -440,6 +444,7 @@ type
     procedure SetWordBlock(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
     procedure SetLineBlock(Value: TPoint);
+    procedure SetParagraphBlock(Value: TPoint);
     {$ENDIF}
     procedure SizeOrFontChanged(bFont: boolean);
     procedure StatusChanged(AChanges: TSynStatusChanges);
@@ -452,6 +457,10 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure DblClick; override;
+    {$IFDEF SYN_LAZARUS}
+    procedure TripleClick; override;
+    procedure QuadClick; override;
+    {$ENDIF}
     procedure DecPaintLock;
     procedure DestroyWnd; override;
     procedure DragOver(Source: TObject; X, Y: Integer;
@@ -708,6 +717,8 @@ type
     // inherited events
     property OnClick;
     property OnDblClick;
+    property OnTripleClick;
+    property OnQuadClick;
     property OnDragDrop;
     property OnDragOver;
 {$IFDEF SYN_COMPILER_4_UP}
@@ -1079,7 +1090,8 @@ begin
   fGutter.OnChange := {$IFDEF FPC}@{$ENDIF}GutterChanged;
   fGutterWidth := fGutter.Width;
   fTextOffset := fGutterWidth + 2;
-  ControlStyle := ControlStyle + [csOpaque, csSetCaption];
+  ControlStyle := ControlStyle + [csOpaque, csSetCaption
+                    {$IFDEF SYN_LAZARUS}, csTripleClicks, csQuadClicks{$ENDIF}];
   Height := 150;
   Width := 200;
   Cursor := crIBeam;
@@ -1722,7 +1734,11 @@ begin
   if (Button = mbLeft) and bStartDrag then
     Include(fStateFlags, sfWaitForDragging)
   else begin
-    if not (sfDblClicked in fStateFlags) then begin
+    {$IFDEF SYN_LAZARUS}
+    if ([sfDblClicked,sfTripleClicked,sfQuadClicked]*fStateFlags=[]) then begin
+    {$ELSE}
+    if (sfDblClicked in fStateFlags) then begin
+    {$ENDIF}
       if ssShift in Shift then
         SetBlockEnd(CaretXY)
       else begin
@@ -1914,7 +1930,9 @@ begin
   if (sfPossibleGutterClick in fStateFlags) and (X < fGutterWidth) then
     DoOnGutterClick(X, Y)
   else
-  if fStateFlags * [sfDblClicked, sfWaitForDragging] = [sfWaitForDragging] then
+  if fStateFlags * [sfDblClicked,
+      {$IFDEF SYN_LAZARUS}sfTripleClicked,sfQuadClicked,{$ENDIF}
+      sfWaitForDragging] = [sfWaitForDragging] then
   begin
     ComputeCaret(X, Y);
     SetBlockBegin(CaretXY);
@@ -1922,14 +1940,22 @@ begin
     Exclude(fStateFlags, sfWaitForDragging);
   end;
   if (Button=mbLeft) 
-  and (fStateFlags * [sfDblClicked, sfWaitForDragging] = []) then begin
+  and (fStateFlags * [sfDblClicked,
+    {$IFDEF SYN_LAZARUS}sfTripleClicked,sfQuadClicked,{$ENDIF}
+    sfWaitForDragging] = []) then
+  begin
     {$IFDEF SYN_LAZARUS}
     AquirePrimarySelection;
     {$ENDIF}
   end;
+  {$IFDEF SYN_LAZARUS}
+  fStateFlags:=fStateFlags-[sfDblClicked,sfTripleClicked,sfQuadClicked,
+                            sfPossibleGutterClick];
+  {$ELSE}
   Exclude(fStateFlags, sfDblClicked);
   Exclude(fStateFlags, sfPossibleGutterClick);
-//writeln('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  {$ENDIF}
+  //writeln('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
 procedure TCustomSynEdit.DoOnGutterClick(X, Y: integer);
@@ -4195,7 +4221,26 @@ begin
   fBlockBegin:=Point(1,MinMax(Value.y, 1, Lines.Count));
   fBlockEnd:=Point(1,MinMax(Value.y+1, 1, Lines.Count));
   CaretXY:=fBlockEnd;
-//writeln(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //writeln(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  InvalidateLine(Value.Y);
+  StatusChanged([scSelection]);
+end;
+
+procedure TCustomSynEdit.SetParagraphBlock(Value: TPoint);
+var ParagraphStartLine, ParagraphEndLine: integer;
+begin
+  ParagraphStartLine:=MinMax(Value.y, 1, Lines.Count);
+  ParagraphEndLine:=MinMax(Value.y+1, 1, Lines.Count);
+  while (ParagraphStartLine>1)
+  and (Trim(Lines[ParagraphStartLine-1])<>'') do
+    dec(ParagraphStartLine);
+  while (ParagraphEndLine<Lines.Count)
+  and (Trim(Lines[ParagraphEndLine-1])<>'') do
+    inc(ParagraphEndLine);
+  fBlockBegin:=Point(1,ParagraphStartLine);
+  fBlockEnd:=Point(1,ParagraphEndLine);
+  CaretXY:=fBlockEnd;
+  //writeln(' FFF3 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
 end;
@@ -4224,6 +4269,42 @@ begin
   end else
     inherited;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.TripleClick;
+var
+  ptMouse: TPoint;
+begin
+  GetCursorPos(ptMouse);
+  ptMouse := ScreenToClient(ptMouse);
+  if ptMouse.X >= fGutterWidth + 2 then begin
+    if not (eoNoSelection in fOptions) then begin
+      SetLineBlock(PixelsToRowColumn(ptMouse))
+    end;
+    inherited;
+    Include(fStateFlags, sfTripleClicked);
+    MouseCapture := FALSE;
+  end else
+    inherited;
+end;
+
+procedure TCustomSynEdit.QuadClick;
+var
+  ptMouse: TPoint;
+begin
+  GetCursorPos(ptMouse);
+  ptMouse := ScreenToClient(ptMouse);
+  if ptMouse.X >= fGutterWidth + 2 then begin
+    if not (eoNoSelection in fOptions) then begin
+      SetParagraphBlock(PixelsToRowColumn(ptMouse))
+    end;
+    inherited;
+    Include(fStateFlags, sfTripleClicked);
+    MouseCapture := FALSE;
+  end else
+    inherited;
+end;
+{$ENDIF}
 
 function TCustomSynEdit.GetCanUndo: Boolean;
 begin
