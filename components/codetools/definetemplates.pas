@@ -78,8 +78,9 @@ const
   DCUSrcPathMacroName      = ExternalMacroStart+'DCUSrcPath';
   CompiledSrcPathMacroName = ExternalMacroStart+'CompiledSrcPath';
 
-  // virtual directory
+  // virtual directories
   VirtualDirectory='VIRTUALDIRECTORY';
+  VirtualTempDir='TEMPORARYDIRECTORY';
   
   // FPC operating systems and processor types
   FPCOperatingSystemNames: array[1..19] of shortstring =(

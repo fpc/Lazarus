@@ -46,6 +46,7 @@ type
   TCodeBuffer = class(TSourceLog)
   private
     FFilename: string;
+    FReferenceCount: integer;
     FScanner: TLinkScanner;
     FOnSetScanner: TNotifyEvent;
     FOnSetFilename: TNotifyEvent;
@@ -64,17 +65,15 @@ type
     procedure SetIsDeleted(const NewValue: boolean);
     procedure MakeFileDateValid;
   public
-    property Scanner: TLinkScanner read FScanner write SetScanner;
-    property LastIncludedByFile: string
-          read GetLastIncludedByFile write FLastIncludedByFile;
-    property Filename: string read FFilename write SetFilename;
+    constructor Create;
+    destructor Destroy;  override;
+    function ConsistencyCheck: integer; // 0 = ok
+    procedure WriteDebugReport;
     function LoadFromFile(const AFilename: string): boolean; override;
     function Reload: boolean; // = LoadFromFile(Filename)
     function Revert: boolean; // ignore changes and reload source
     function SaveToFile(const AFilename: string): boolean; override;
     function Save: boolean;
-    property LoadDateValid: boolean read FLoadDateValid;
-    property LoadDate: longint read FLoadDate;
     function FileDateOnDisk: longint;
     function FileNeedsUpdate: boolean;
     function FileOnDiskNeedsUpdate: boolean;
@@ -83,17 +82,23 @@ type
     function AutoRevertFromDisk: boolean;
     procedure LockAutoDiskRevert;
     procedure UnlockAutoDiskRevert;
-    property OnSetScanner: TNotifyEvent read FOnSetScanner write FOnSetScanner;
-    property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
-    property IsVirtual: boolean read FIsVirtual;
-    property IsDeleted: boolean read FIsDeleted write SetIsDeleted;
-    property GlobalWriteLockStepOnLastLoad: integer
-          read FGlobalWriteLockStepOnLastLoad write FGlobalWriteLockStepOnLastLoad;
+    procedure IncrementRefCount;
+    procedure ReleaseRefCount;
+  public
     property CodeCache: TCodeCache read FCodeCache write FCodeCache;
-    constructor Create;
-    destructor Destroy;  override;
-    function ConsistencyCheck: integer; // 0 = ok
-    procedure WriteDebugReport;
+    property Filename: string read FFilename write SetFilename;
+    property GlobalWriteLockStepOnLastLoad: integer
+       read FGlobalWriteLockStepOnLastLoad write FGlobalWriteLockStepOnLastLoad;
+    property IsDeleted: boolean read FIsDeleted write SetIsDeleted;
+    property IsVirtual: boolean read FIsVirtual;
+    property LastIncludedByFile: string read GetLastIncludedByFile
+                                        write FLastIncludedByFile;
+    property LoadDate: longint read FLoadDate;
+    property LoadDateValid: boolean read FLoadDateValid;
+    property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
+    property OnSetScanner: TNotifyEvent read FOnSetScanner write FOnSetScanner;
+    property Scanner: TLinkScanner read FScanner write SetScanner;
+    property ReferenceCount: integer read FReferenceCount;
   end;
   
   TIncludedByLink = class
@@ -109,6 +114,7 @@ type
   private
     FItems: TAVLTree;  // tree of TCodeBuffer
     FIncludeLinks: TAVLTree; // tree of TIncludedByLink
+    FDestroying: boolean;
     FExpirationTimeInDays: integer;
     FGlobalWriteLockIsSet: boolean;
     FGlobalWriteLockStep: integer;
@@ -140,6 +146,7 @@ type
     function FindFile(AFilename: string): TCodeBuffer;
     function LastIncludedByFile(const IncludeFilename: string): string;
     function LoadFile(const AFilename: string): TCodeBuffer;
+    procedure RemoveCodeBuffer(Buffer: TCodeBuffer);
     function LoadIncludeLinksFromFile(const AFilename: string): boolean;
     function LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
                                      const XMLPath: string): boolean;
@@ -218,6 +225,7 @@ end;
 
 destructor TCodeCache.Destroy;
 begin
+  FDestroying:=true;
   Clear;
   FIncludeLinks.FreeAndClear;
   FIncludeLinks.Free;
@@ -287,6 +295,12 @@ begin
   end;
 end;
 
+procedure TCodeCache.RemoveCodeBuffer(Buffer: TCodeBuffer);
+begin
+  if not FDestroying then
+    FItems.Remove(Buffer);
+end;
+
 function TCodeCache.CreateFile(const AFilename: string): TCodeBuffer;
 begin
   Result:=FindFile(AFileName);
@@ -296,7 +310,7 @@ begin
     Result:=TCodeBuffer.Create;
     Result.FileName:=AFileName;
     FItems.Add(Result);
-    Result.FCodeCache:=Self;
+    Result.FCodeCache:=Self;// must be called after FileName:=
     Result.LastIncludedByFile:=FindIncludeLink(Result.Filename);
   end;
 end;
@@ -725,6 +739,7 @@ end;
 destructor TCodeBuffer.Destroy;
 begin
   if Scanner<>nil then Scanner.Free;
+  if FCodeCache<>nil then FCodeCache.RemoveCodeBuffer(Self);
   inherited Destroy;
 end;
 
@@ -887,6 +902,18 @@ end;
 procedure TCodeBuffer.UnlockAutoDiskRevert;
 begin
   if FAutoDiskRevertLock>0 then dec(FAutoDiskRevertLock);
+end;
+
+procedure TCodeBuffer.IncrementRefCount;
+begin
+  inc(FReferenceCount);
+end;
+
+procedure TCodeBuffer.ReleaseRefCount;
+begin
+  if FReferenceCount=0 then
+    raise Exception.Create('TCodeBuffer.ReleaseRefCount');
+  dec(FReferenceCount);
 end;
 
 function TCodeBuffer.ConsistencyCheck: integer; // 0 = ok

@@ -799,7 +799,7 @@ begin
     else if (FDataLink.DataSet<>nil)and FDatalink.Active then begin
       F := GetDsFieldFromGridColumn(FromIndex);
       if F<>nil then begin
-        {$IFDEF VER1_0_10}
+        {$IFNDEF VER1_0_10}
         TProtFields(FDatalink.DataSet.Fields).SetFieldIndex( F, ToIndex - FixedCols );
         {$ENDIF}
       end;
@@ -1770,6 +1770,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2004/08/07 07:03:29  mattias
+  implemented virtual temporary ct files
+
   Revision 1.11  2004/08/06 06:51:15  mattias
   fixed compilation for fpc 1.0.10
 

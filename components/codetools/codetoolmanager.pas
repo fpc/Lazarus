@@ -152,7 +152,9 @@ type
     function LoadFile(const ExpandedFilename: string;
           UpdateFromDisk, Revert: boolean): TCodeBuffer;
     function CreateFile(const AFilename: string): TCodeBuffer;
-    function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string; 
+    function CreateTempFile(const AFilename: string): TCodeBuffer;
+    procedure ReleaseTempFile(Buffer: TCodeBuffer);
+    function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string;
           var NewBuffer: TCodeBuffer): boolean;
     function FilenameHasSourceExt(const AFilename: string): boolean;
     property OnSearchUsedUnit: TOnSearchUsedUnit
@@ -576,6 +578,26 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('****** TCodeToolManager.CreateFile "',AFilename,'" ',Result<>nil);
   {$ENDIF}
+end;
+
+function TCodeToolManager.CreateTempFile(const AFilename: string): TCodeBuffer;
+var
+  i: Integer;
+  TempFilename: string;
+begin
+  i:=1;
+  repeat
+    TempFilename:=VirtualTempDir+PathDelim+IntToStr(i)+PathDelim+AFilename;
+    Result:=FindFile(TempFilename);
+    if (Result<>nil) and (Result.ReferenceCount=0) then exit;
+  until Result=nil;
+  Result:=SourceCache.CreateFile(TempFilename);
+  Result.IncrementRefCount;
+end;
+
+procedure TCodeToolManager.ReleaseTempFile(Buffer: TCodeBuffer);
+begin
+  Buffer.ReleaseRefCount;
 end;
 
 function TCodeToolManager.SaveBufferAs(OldBuffer: TCodeBuffer;

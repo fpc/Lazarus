@@ -843,6 +843,7 @@ begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
     end;
     fUnitName:=NewUnitName;
+    Modified:=true;
     if Project<>nil then Project.Modified:=true;
   end;
 end;
@@ -1667,9 +1668,11 @@ begin
   if AddToProjectFile and (MainUnitID>=0) and (MainUnitID<>NewIndex) then begin
     // add unit to uses section
     ShortUnitName:=AnUnit.UnitName;
-    if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then
+    if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then begin
       CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
         ShortUnitName,'');
+      MainUnitInfo.Modified:=true;
+    end;
   end;
   EndUpdate;
   Modified:=true;
@@ -1696,12 +1699,16 @@ begin
   if (MainUnitID>=0) then begin
     // remove unit from uses section and from createforms in program file
     if (OldUnitInfo.IsPartOfProject) then begin
-      if (OldUnitInfo.UnitName<>'') then
-        CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnitID].Source,
+      if (OldUnitInfo.UnitName<>'') then begin
+        CodeToolBoss.RemoveUnitFromAllUsesSections(MainUnitInfo.Source,
           OldUnitInfo.UnitName);
-      if (OldUnitInfo.ComponentName<>'') then
-        CodeToolBoss.RemoveCreateFormStatement(Units[MainUnitID].Source,
+        MainUnitInfo.Modified:=true;
+      end;
+      if (OldUnitInfo.ComponentName<>'') then begin
+        CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
           OldUnitInfo.ComponentName);
+        MainUnitInfo.Modified:=true;
+      end;
     end;
   end;
 
@@ -2518,6 +2525,7 @@ begin
       // rename unit in program uses section
       CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
         ,OldUnitName,NewUnitName,'');
+      MainUnitInfo.Modified:=true;
     end;
   end;
 end;
@@ -2852,6 +2860,9 @@ end.
 
 {
   $Log$
+  Revision 1.156  2004/08/07 07:03:29  mattias
+  implemented virtual temporary ct files
+
   Revision 1.155  2004/08/04 16:58:15  mattias
   fixed setting Modified for hidden lpr file when adding CreateFormStatement
 

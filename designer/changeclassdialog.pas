@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, AVGLvlTree, PropEdits, LazarusIDEStrConsts, ComponentReg,
-  FormEditingIntf, LFMTrees;
+  FormEditingIntf, CheckLFMDlg;
 
 type
   TChangeClassDlg = class(TForm)
@@ -118,7 +118,7 @@ begin
     FormEditingHook.SaveSelectionToStream(ComponentStream);
     // parse
 
-    // change class
+    // change classname
 
     // check properties
 

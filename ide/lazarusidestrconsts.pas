@@ -418,6 +418,15 @@ resourcestring
     +'Paths->Other Unit Files';
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
     +'Define Template for Free Pascal Sources';
+  lisClassNotFound = 'Class not found';
+  lisClassIsNotARegisteredComponentClassUnableToPaste = 'Class %s%s%s is not '
+    +'a registered component class.%sUnable to paste.';
+  lisControlNeedsParent = 'Control needs parent';
+  lisTheClassIsATControlAndCanNotBePastedOntoANonContro = 'The class %s%s%s '
+    +'is a TControl and can not be pasted onto a non control.%sUnable to paste.';
+  lisConversionError = 'Conversion error';
+  lisUnableToConvertComponentTextIntoBinaryFormat = 'Unable to convert '
+    +'component text into binary format:%s%s';
   lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
     +'create Define Template for Lazarus Sources';
   lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%'

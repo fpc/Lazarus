@@ -79,6 +79,8 @@ type
   
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   const OnOutput: TOnOutputString): boolean;
+function CheckLFMText(PascalBuffer: TCodeBuffer; const LFMText: string;
+  const OnOutput: TOnOutputString): boolean;
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree): boolean;
 
@@ -120,13 +122,29 @@ var
   end;
   
 begin
-  Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,nil,LFMTree);
+  LFMTree:=nil;
   try
+    Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,nil,LFMTree);
     if Result then exit;
     WriteLFMErrors;
     Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
   finally
     LFMTree.Free;
+  end;
+end;
+
+function CheckLFMText(PascalBuffer: TCodeBuffer; const LFMText: string;
+  const OnOutput: TOnOutputString): boolean;
+var
+  LFMBuf: TCodeBuffer;
+begin
+  Result:=false;
+  LFMBuf:=CodeToolBoss.CreateTempFile('temp.lfm');
+  try
+    LFMBuf.Source:=LFMText;
+    Result:=CheckLFMBuffer(PascalBuffer,LFMBuf,OnOutput);
+  finally
+    CodeToolBoss.ReleaseTempFile(LFMBuf);
   end;
 end;
 

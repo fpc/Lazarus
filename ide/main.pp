@@ -8185,19 +8185,18 @@ begin
   // check if component class is registered
   ARegComp:=IDEComponentPalette.FindComponent(NewClassName);
   if ARegComp=nil then begin
-    MessageDlg('Class not found',
-      'Class "'+NewClassName+'" is not a registered component class.'#13
-      +'Unable to paste.',
+    MessageDlg(lisClassNotFound,
+      Format(lisClassIsNotARegisteredComponentClassUnableToPaste, ['"',
+        NewClassName, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
 
   // check if there is a valid parent
   if (ParentControl=nil) and ARegComp.IsTControl then begin
-    MessageDlg('Control needs parent',
-      'The class "'+NewClassName+'" is a TControl and can not be pasted '
-      +'onto a non control.'#13
-      +'Unable to paste.',
+    MessageDlg(lisControlNeedsParent,
+      Format(lisTheClassIsATControlAndCanNotBePastedOntoANonContro, ['"',
+        NewClassName, '"', #13]),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -8209,9 +8208,9 @@ begin
       ObjectTextToBinary(TxtCompStream,BinCompStream);
     except
       on E: Exception do begin
-        MessageDlg('Conversion error',
-          'Unable to convert component text into binary format:'#13
-          +E.Message,
+        MessageDlg(lisConversionError,
+          Format(lisUnableToConvertComponentTextIntoBinaryFormat, [#13,
+            E.Message]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -10489,6 +10488,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.743  2004/08/07 07:03:29  mattias
+  implemented virtual temporary ct files
+
   Revision 1.742  2004/08/05 21:20:46  mattias
   moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
 
