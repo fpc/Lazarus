@@ -135,17 +135,17 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication GetExename                                                }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication GetExename
+------------------------------------------------------------------------------}
 Function TApplication.GetEXEName: String;
 Begin
   Result := ParamStr(0);
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication Notification  "Performs Application Level Operations"     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication Notification  "Performs Application Level Operations"
+------------------------------------------------------------------------------}
 procedure TApplication.Notification(AComponent : TComponent;
   Operation : TOperation);
 begin
@@ -172,32 +172,17 @@ begin
   if FHintControl = AControl then FHintControl:=nil;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication ProcesssMessage  "Process a message (MSg)"     }
-{------------------------------------------------------------------------------}
-(*
-Function TApplication.ProcessMessage(Var Msg : TMsg) : Boolean;
-Begin
-//TODO: Finish TApplication.ProcessMessage(msg : TMsg);
-Result := False;
-if PeekMessage(Msg, 0,0,0,PM_REMOVE) then
-  Begin
-  Result := true;
-  end;
-end;
-*)
-
-{------------------------------------------------------------------------------}
-{       TApplication ProcesssMessages  "Enter the messageloop and process until empty"     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TApplication ProcesssMessages  "Enter the messageloop and process until empty"
+------------------------------------------------------------------------------}
 procedure TApplication.ProcessMessages;
 begin
   InterfaceObject.HandleEvents;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication HintMouseMEssage     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TApplication HintMouseMEssage
+------------------------------------------------------------------------------}
 procedure TApplication.HintMouseMessage(Control : TControl;
   var AMessage : TLMessage);
 begin
@@ -205,11 +190,11 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{       TApplication Initialize                                                }
-{       Makes a call to the coponent engine to provide any initialization that }
-{       needs to occur.                                                        }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication Initialize
+       Makes a call to the coponent engine to provide any initialization that
+       needs to occur.
+------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
   if (InterfaceObject=nil)
@@ -849,6 +834,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/11/29 15:14:47  mattias
+  replaced many invalidates by invalidaterect
+
   Revision 1.39  2002/11/23 13:48:43  mattias
   added Timer patch from Vincent Snijders
 

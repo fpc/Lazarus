@@ -609,6 +609,7 @@ type
     procedure DestroyComponent;
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
+    procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
@@ -1448,6 +1449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2002/11/29 15:14:47  mattias
+  replaced many invalidates by invalidaterect
+
   Revision 1.91  2002/11/21 18:49:52  mattias
   started OnMouseEnter and OnMouseLeave
 

@@ -141,9 +141,9 @@ begin
     FLastResize.X:= AWidth - FWidth;
     FLastResize.Y:= AHeight - FHeight;
 
-    {writeln('TControl.ChangeBounds A ',Name,':',ClassName);
-    InvalidateControl(Visible, False);
-    writeln('TControl.ChangeBounds B ',Name,':',ClassName);}
+    //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
+    InvalidateControl(Visible, False, true);
+    //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
     DoSetBounds(ALeft,ATop,AWidth,AHeight);
 
     if SizeChanged then
@@ -404,7 +404,7 @@ begin
   if (not (csDesigning in ComponentState)
     or (csNoDesignVisible in ControlStyle))
   and (not (csLoading in ComponentState)) then begin
-    InvalidateControl(true, FVisible and (csOpaque in ControlStyle));
+    InvalidateControl(true, FVisible and (csOpaque in ControlStyle),true);
   end;
 end;
 
@@ -948,7 +948,6 @@ Begin
   InvalidateControl(Visible, csOpaque in ControlStyle);
 end;
 
-
 {------------------------------------------------------------------------------}
 {       TControl DoMouseDown  "Event Handler"                                 }
 {------------------------------------------------------------------------------}
@@ -1415,17 +1414,19 @@ var
   begin
     Result := True;
     List := FParent.FControls;
-    I := List.IndexOf(Self);
-    while I > 0 do
-    begin
-      Dec(I);
-      C := TControl(List[I]);
-      with C do
-        if C.Visible and (csOpaque in ControlStyle) then
-        begin
-          IntersectRect(R, Rect, BoundsRect);
-          if EqualRect(R, Rect) then Exit;
-        end;
+    if List<>nil then begin
+      I := List.IndexOf(Self);
+      while I > 0 do
+      begin
+        Dec(I);
+        C := TControl(List[I]);
+        with C do
+          if C.Visible and (csOpaque in ControlStyle) then
+          begin
+            IntersectRect(R, Rect, BoundsRect);
+            if EqualRect(R, Rect) then Exit;
+          end;
+      end;
     end;
     Result := False;
   end;
@@ -1437,15 +1438,20 @@ begin
   and (not (csLoading in Parent.ComponentState)) then
   begin
     Rect := BoundsRect;
-    // ToDo: don't invalidate non TWinControls. Because some of them do not
-    //       invalidate, but wants to paint
-    //       This is a hack, till all TControls are fixed
-    if Self is TWinControl then begin
-      InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
-        (csOpaque in Parent.ControlStyle) or BackgroundClipped));
-    end;
-    CNSendMessage(LM_REDRAW,Self,Nil);
+    InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
+      (csOpaque in Parent.ControlStyle) or BackgroundClipped));
   end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.InvalidateControl(IsVisible, IsOpaque,
+    IgnoreWinControls: Boolean);
+------------------------------------------------------------------------------}
+procedure TControl.InvalidateControl(IsVisible, IsOpaque,
+  IgnoreWinControls: Boolean);
+begin
+  if IgnoreWinControls and (Self is TWinControl) then exit;
+  InvalidateControl(IsVisible,IsOpaque);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1814,7 +1820,7 @@ begin
       begin
         FParent.FControls.Delete(i);
         FParent.FControls.Insert(Position,Self);
-        InvalidateControl(Visible,True);
+        InvalidateControl(Visible,True,True);
       end;
     end;
   end;
@@ -1889,8 +1895,8 @@ begin
   //writeln('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
   SetParent(nil);
-  FConstraints.Free;
-  FFont.Free;
+  FreeThenNil(FConstraints);
+  FreeThenNil(FFont);
   //writeln('[TControl.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
   //writeln('[TControl.Destroy] END ',Name,':',ClassName);
@@ -2076,6 +2082,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.106  2002/11/29 15:14:47  mattias
+  replaced many invalidates by invalidaterect
+
   Revision 1.105  2002/11/27 14:37:37  mattias
   added form editor options for rubberband and colors
 
