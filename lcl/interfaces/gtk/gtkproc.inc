@@ -1156,6 +1156,13 @@ begin
 
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetPen
+  Params: f : PgdkDrawable; Value : TgdkColor
+  Result: pgdkGC;
+
+
+ ------------------------------------------------------------------------------}
 Function GetPen(f : PgdkDrawable; Value : TgdkColor) : pgdkGC;
 Var
   gc : PgdkGC;
@@ -1324,6 +1331,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.43  2002/06/04 15:17:23  lazarus
+  MG: improved TFont for XLFD font names
+
   Revision 1.42  2002/05/31 06:45:23  lazarus
   MG: deactivated new system colors, till we got a consistent solution
 
