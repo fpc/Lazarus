@@ -290,12 +290,12 @@ begin
   FGTKToolTips := gtk_tooltips_new;   
   gtk_object_ref(PGTKObject(FGTKToolTips));
   gtk_toolTips_Enable(FGTKToolTips);
-  FG.red := $FFFFFF;
-  FG.Green := $FFFFFF;
-  fg.blue := $FFFFFF;
-  BG.REd := $444444;
-  bg.Green := $ffffff;
-  bg.Blue := $111111;
+  FG.red := $FFFF;
+  FG.Green := $FFFF;
+  fg.blue := $FFFF;
+  BG.REd := $4444;
+  bg.Green := $ffff;
+  bg.Blue := $1111;
   
   gtk_toolTips_set_colors(FGTKToolTips,@FG,@BG);
 
@@ -3323,6 +3323,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.73  2001/11/17 09:42:26  lazarus
+  MG: fixed range check errors for FG,BG in Init
+
   Revision 1.72  2001/11/16 20:08:39  lazarus
   Object inspector has hints now.
   Shane
