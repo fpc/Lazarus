@@ -419,18 +419,20 @@ begin
         //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
         //OldGdkFunction:=ForeGroundGCValues.thefunction;
         gdk_gc_set_function(ForeGroundGC,GDK_invert);
-        
-        // draw the caret
-        //writeln('DRAWING');
-        gdk_draw_rectangle(
-          PGTKWidget(Client)^.Window, 
-          ForeGroundGC,
-          1,
-          X, Y-1,  // Y-1 for Delphi compatibility
-          Width, Height
-        );
-        // restore draw function
-        gdk_gc_set_function(ForeGroundGC,GDK_COPY);
+        try
+          // draw the caret
+          //writeln('DRAWING');
+          gdk_draw_rectangle(
+            PGTKWidget(Client)^.Window,
+            ForeGroundGC,
+            1,
+            X, Y-1,  // Y-1 for Delphi compatibility
+            Width, Height
+          );
+        finally
+          // restore draw function
+          gdk_gc_set_function(ForeGroundGC,GDK_COPY);
+        end;
       end else
         writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
       IsDrawn := True;
@@ -727,6 +729,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/06/09 14:00:42  lazarus
+  MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
+
   Revision 1.29  2002/06/06 14:41:29  lazarus
   MG: if completion form visible it will now get all synedit keys
 
