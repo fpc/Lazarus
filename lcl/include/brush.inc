@@ -44,10 +44,10 @@ Procedure TBrush.SetColor(Value : TColor);
 begin
   if FColor <> Value
   then begin
-    FreeHandle;
     {$IFDEF UseFPCanvas}
     SetColor(Value,TColorToFPColor(Value));
     {$ELSE}
+    FreeHandle;
     FColor := Value;
     Changed;
     {$ENDIF}
@@ -267,6 +267,7 @@ end;
 procedure TBrush.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
 begin
   if (NewColor=Color) and (NewFPColor=FPColor) then exit;
+  FreeHandle;
   FColor:=NewColor;
   inherited SetFPColor(NewFPColor);
   Changed;
@@ -282,6 +283,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2005/01/14 14:46:35  mattias
+  fixed freeing brush handle on SetColor and fixed freeing splashform
+
   Revision 1.16  2005/01/10 18:44:44  mattias
   implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
 

@@ -94,6 +94,7 @@ begin
   if Application.OnIdle=@ApplicationOnIdle then
     Application.OnIdle:=nil;
   inherited Destroy;
+  SplashForm:=nil;
 end;
 
 procedure TSplashForm.Click; 
@@ -123,8 +124,8 @@ procedure TSplashForm.Paint;
 begin
   inherited Paint;
   if FPixmap <>nil
-  then Canvas.Copyrect(Bounds(0, 0, Width, Height)
-     ,FPixmap.Canvas, Rect(0,0, Width, Height));
+  then Canvas.Copyrect(Bounds(0, 0, Width, Height),FPixmap.Canvas,
+                       Rect(0,0, Width, Height));
 end;
 
 procedure TSplashForm.StartTimer;
@@ -141,6 +142,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2005/01/14 14:46:35  mattias
+  fixed freeing brush handle on SetColor and fixed freeing splashform
+
   Revision 1.19  2003/09/18 09:21:02  mattias
   renamed LCLLinux to LCLIntf
 

@@ -209,6 +209,7 @@ end;
 procedure TLazarusManager.LazarusProcessStart(Sender: TObject);
 begin
   SplashForm.Hide;
+  FreeThenNil(SplashForm);
   Application.ProcessMessages;
 end;
 
@@ -314,6 +315,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.18  2005/01/14 14:46:35  mattias
+  fixed freeing brush handle on SetColor and fixed freeing splashform
+
   Revision 1.17  2005/01/10 08:49:28  vincents
   implemented passing command line parameters to lazarus
 
