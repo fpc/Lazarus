@@ -4301,7 +4301,7 @@ begin
   
   // check for special files
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
-  and (not FilenameIsAbsolute(AFilename)) and FileExists(AFilename) then begin
+  and FilenameIsAbsolute(AFilename) and FileExists(AFilename) then begin
     // check for project information files (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       if MessageDlg('Open Project?',
@@ -8632,6 +8632,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.547  2003/05/01 10:40:06  mattias
+  open special files for lpi files
+
   Revision 1.546  2003/04/29 19:00:41  mattias
   added package gtkopengl
 
