@@ -782,10 +782,16 @@ begin
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end;
     
-    If GdiObject^.Visual = nil then
-      GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount)
-    else
-      gdk_visual_ref(GdiObject^.Visual);
+    If GdiObject^.Visual <> nil then
+      gdk_visual_ref(GdiObject^.Visual)
+    else begin
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
+      if GdiObject^.Visual=nil then begin
+        writeln('Warning: [TgtkObject.CreateBitmap] No visual for depth ',
+                BitCount,'. Using default.');
+        GdiObject^.Visual := gdk_visual_get_system;
+      end;
+    end;
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
 
@@ -8078,6 +8084,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.238  2003/05/20 21:41:07  mattias
+  started loading/saving breakpoints
+
   Revision 1.237  2003/05/19 08:16:33  mattias
   fixed allocation of dc backcolor
 
