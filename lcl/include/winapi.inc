@@ -154,9 +154,9 @@ begin
   Result := InterfaceObject.CreatePixmapIndirect(Data, TransColor);
 end;
 
-function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN;
+function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN;
 Begin
-  Result := InterfaceObject.CreatePolygonRgn(Points, NumPts, Winding);
+  Result := InterfaceObject.CreatePolygonRgn(Points, NumPts, FillMode);
 end;
 
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
@@ -597,6 +597,11 @@ begin
   Result := InterfaceObject.PostMessage(Handle, Msg, wParam, lParam);
 end;
 
+function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean;
+begin
+  Result := InterfaceObject.PtInRegion(RGN,X,Y);
+end;
+
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 begin
   Result := InterfaceObject.RadialChord(DC, x,y,width,height,sx,sy,ex,ey);
@@ -994,6 +999,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
+ ------------------------------------------------------------------------------}
+function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+begin
+  Result := InterfaceObject.CreateEllipticRgn(p1,p2,p3,p4);
+end;
+
+{------------------------------------------------------------------------------
+  function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
+ ------------------------------------------------------------------------------}
+function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
+begin
+  with ARect do
+    Result:=CreateEllipticRgn(Left,Top,Right,Bottom);
+end;
+
+{------------------------------------------------------------------------------
   Function: CreateFont
   Params:
   Returns:
@@ -1047,6 +1069,14 @@ begin
   Result := CreatePenIndirect(LogPen);
 end;
 
+{------------------------------------------------------------------------------
+  function CreateRectRgnIndirect(const ARect: TRect): HRGN;
+-------------------------------------------------------------------------------}
+function CreateRectRgnIndirect(const ARect: TRect): HRGN;
+begin
+  with ARect do
+    Result:=CreateRectRgn(Left,Top,Right,Bottom);
+end;
 
 {------------------------------------------------------------------------------
   Function: EndPaint
@@ -1408,6 +1438,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/12/25 13:30:37  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.65  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 

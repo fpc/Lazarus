@@ -65,14 +65,17 @@ function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; {$IFD
 function CreateCompatibleDC(DC: HDC): HDC; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
   var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+//function CreateEllipticRgnIndirect --> independent
 //function CreateFont --> independent
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreatePen --> independent
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+//function CreateRectRgnIndirect --> independent
 
 function DeleteDC(hDC: HDC): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DeleteObject(GDIObject: HGDIOBJ): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -163,6 +166,7 @@ function PolyBezier(DC: HDC; Points: PPoint;  NumPts: Integer; Filled, Continuou
 function Polygon(DC: HDC; Points: PPoint;  NumPts: Integer; Winding: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+Function PtInRegion(RGN: HRGN; X, Y: Integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function PtInRect --> independent
 
 function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -289,10 +293,12 @@ Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;
 
 Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
+function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
   Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision,
   Quality, PitchAndFamily: Cardinal; FaceName: PChar): HFONT;
 function CreatePen(Style, Width: Integer; Color: TColorRef): HPEN;
+function CreateRectRgnIndirect(const ARect: TRect): HRGN;
 
 Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 function EqualRect(const lprc1, lprc2: TRect): Boolean;
@@ -337,6 +343,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/12/25 13:30:37  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.58  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 
