@@ -52,10 +52,6 @@ type
   { workaround problem with fcl }
   TAbstractReader = TReader;
 
-  { TTabPosition - Move to TTabbedNotebook when it is created }
-  TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
-
-
   { TCustomPage }
 
   TPageFlag = (
@@ -123,6 +119,16 @@ type
 
 
   { TCustomNotebook }
+
+  TTabChangingEvent = procedure(Sender: TObject;
+    var AllowChange: Boolean) of object;
+
+  TTabPosition = (tpTop, tpBottom, tpLeft, tpRight);
+
+  TTabStyle = (tsTabs, tsButtons, tsFlatButtons);
+
+  TTabGetImageEvent = procedure(Sender: TObject; TabIndex: Integer;
+    var ImageIndex: Integer) of object;
 
   TNoteBookOption = (nboShowCloseButtons, nboMultiLine);
   TNoteBookOptions = set of TNoteBookOption;
@@ -966,6 +972,9 @@ end.
 
  {
   $Log$
+  Revision 1.117  2004/09/08 22:59:54  mattias
+  started TTabControl
+
   Revision 1.116  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

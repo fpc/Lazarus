@@ -3130,7 +3130,7 @@ begin
   FEnabled := True;
   FHelpType := htContext;
   FTabOrder := -1;
-  TabStop := False;
+  FTabStop := False;
   FDragCursor := crDrag;
   FFloatingDockSiteClass := TCustomDockForm;
   //DebugLn('TControl.Create END ',Name,':',ClassName);
@@ -3275,6 +3275,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.214  2004/09/08 22:59:54  mattias
+  started TTabControl
+
   Revision 1.213  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

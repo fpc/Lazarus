@@ -1096,7 +1096,7 @@ type
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
     property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
-    property TabStop: Boolean read FTabStop write SetTabStop;
+    property TabStop: Boolean read FTabStop write SetTabStop default false;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
   public
     // docking properties
@@ -2410,6 +2410,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.245  2004/09/08 22:59:54  mattias
+  started TTabControl
+
   Revision 1.244  2004/09/08 08:20:50  mattias
   fixed find in files searching at end of line
 

@@ -42,6 +42,10 @@ uses
   Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl, Buttons;
 
 type
+  THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
+    htOnIndent, htOnLabel, htOnRight, htOnStateIcon, htToLeft, htToRight);
+  THitTests = set of THitTest;
+
   TStatusPanelStyle = (psText, psOwnerDraw);
   TStatusPanelBevel = (pbNone, pbLowered, pbRaised);
 
@@ -265,6 +269,156 @@ type
     //property OnStartDrag;
     //property OnUnDock;
   end;
+
+
+  {$IFDEF EnableTabControl}
+
+  { TCustomTabControl }
+  
+  TCustomTabControl = class;
+
+  TDrawTabEvent = procedure(Control: TCustomTabControl; TabIndex: Integer;
+    const Rect: TRect; Active: Boolean) of object;
+
+  TCustomTabControl = class(TWinControl)
+  private
+    FCanvas: TCanvas;
+    FHotTrack: Boolean;
+    FImageChangeLink: TChangeLink;
+    FImages: TCustomImageList;
+    FMultiLine: Boolean;
+    FMultiSelect: Boolean;
+    FOnChange: TNotifyEvent;
+    FOnChanging: TTabChangingEvent;
+    FOnDrawTab: TDrawTabEvent;
+    FOnGetImageIndex: TTabGetImageEvent;
+    FOwnerDraw: Boolean;
+    FRaggedRight: Boolean;
+    FScrollOpposite: Boolean;
+    FStyle: TTabStyle;
+    FTabHeight: Smallint;
+    FTabIndex: integer;
+    FTabPosition: TTabPosition;
+    FTabWidth: Smallint;
+    FTabs: TStrings;
+    function GetDisplayRect: TRect;
+    function GetTabIndex: Integer;
+    procedure SetHotTrack(const AValue: Boolean);
+    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetMultiLine(const AValue: Boolean);
+    procedure SetMultiSelect(const AValue: Boolean);
+    procedure SetOwnerDraw(const AValue: Boolean);
+    procedure SetRaggedRight(const AValue: Boolean);
+    procedure SetScrollOpposite(const AValue: Boolean);
+    procedure SetStyle(const AValue: TTabStyle);
+    procedure SetTabHeight(const AValue: Smallint);
+    procedure SetTabPosition(const AValue: TTabPosition);
+    procedure SetTabs(const AValue: TStrings);
+    procedure SetTabWidth(const AValue: Smallint);
+  protected
+    function CanChange: Boolean; dynamic;
+    function CanShowTab(TabIndex: Integer): Boolean; virtual;
+    procedure Change; dynamic;
+    procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); virtual;
+    function GetImageIndex(TabIndex: Integer): Integer; virtual;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetTabIndex(Value: Integer); virtual;
+    procedure UpdateTabImages;
+    procedure ImageListChange(Sender: TObject); virtual;
+  protected
+    property DisplayRect: TRect read GetDisplayRect;
+    property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
+    property Images: TCustomImageList read FImages write SetImages;
+    property MultiLine: Boolean read FMultiLine write SetMultiLine default False;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
+    property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab;
+    property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex write FOnGetImageIndex;
+    property OwnerDraw: Boolean read FOwnerDraw write SetOwnerDraw default False;
+    property RaggedRight: Boolean read FRaggedRight write SetRaggedRight default False;
+    property ScrollOpposite: Boolean read FScrollOpposite
+                                     write SetScrollOpposite default False;
+    property Style: TTabStyle read FStyle write SetStyle default tsTabs;
+    property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
+    property TabIndex: Integer read GetTabIndex write SetTabIndex default -1;
+    property TabPosition: TTabPosition read FTabPosition write SetTabPosition
+                                       default tpTop;
+    property Tabs: TStrings read FTabs write SetTabs;
+    property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    function IndexOfTabAt(X, Y: Integer): Integer;
+    function GetHitTestInfoAt(X, Y: Integer): THitTests;
+    function TabRect(Index: Integer): TRect;
+    function RowCount: Integer;
+    procedure ScrollTabs(Delta: Integer);
+    property Canvas: TCanvas read FCanvas;
+    property TabStop default True;
+  end;
+
+
+  { TTabControl }
+
+  TTabControl = class(TCustomTabControl)
+  public
+    property DisplayRect;
+  published
+    property Align;
+    property Anchors;
+    property Constraints;
+    property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property HotTrack;
+    property Images;
+    property MultiLine;
+    property MultiSelect;
+    property OnChange;
+    property OnChangeBounds;
+    property OnChanging;
+    property OnContextPopup;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnDrawTab;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnGetImageIndex;
+    property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnUnDock;
+    property OwnerDraw;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property RaggedRight;
+    property ScrollOpposite;
+    property ShowHint;
+    property Style;
+    property TabHeight;
+    property TabIndex;
+    property TabOrder;
+    property TabPosition;
+    property Tabs;
+    property TabStop;
+    property TabWidth;
+    property Visible;
+  end;
+  {$ENDIF EnableTabControl}
 
 
   { Custom draw }
@@ -1519,10 +1673,6 @@ type
     Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
     var PaintImages, DefaultDraw: Boolean) of object;
 
-  THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,
-    htOnIndent, htOnLabel, htOnRight, htOnStateIcon, htToLeft, htToRight);
-  THitTests = set of THitTest;
-
   TTreeNodeCompare = function(Node1, Node2: TTreeNode): integer of object;
 
   PTreeNodeInfo = ^TTreeNodeInfo;
@@ -2287,6 +2437,7 @@ end;
 {$I statuspanels.inc}
 {$I tabsheet.inc}
 {$I pagecontrol.inc}
+{$I tabcontrol.inc}
 { $I alignment.inc}
 {$I listcolumns.inc}
 {$I listcolumn.inc}
@@ -2300,12 +2451,14 @@ end;
 {$I trackbar.inc}
 {$I treeview.inc}
 
-
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.145  2004/09/08 22:59:54  mattias
+  started TTabControl
+
   Revision 1.144  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 
