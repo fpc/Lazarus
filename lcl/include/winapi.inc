@@ -1,3 +1,5 @@
+// included by lclintf.pp
+
 (******************************************************************************
   All Winapi related stuff goes here.
   This file is used by LCLIntf.pas
@@ -404,20 +406,21 @@ begin
   Result := InterfaceObject.GetTextColor(DC);
 end;
 
-function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, p4: Integer;
-  p5, p6: PInteger; var Size: TSize): BOOL;
+function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer;
+  MaxCount, PartialWidths: PInteger; var Size: LCLType.TSize): Boolean;
 begin
-  Result := InterfaceObject.GetTextExtentExPoint(DC,Str,Count,p4,p5,p6,Size);
+  Result := InterfaceObject.GetTextExtentExPoint(DC,Str,Count,MaxWidth,MaxCount,
+                                                 PartialWidths,Size);
 end;
 
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
-  var Size: TSize): Boolean;
+  var Size: LCLType.TSize): Boolean;
 begin
   Result := InterfaceObject.GetTextExtentPoint(DC, Str, Count, Size);
 end;
 
 function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer;
-  var Size: TSize): Boolean;
+  var Size: LCLType.TSize): Boolean;
 begin
   Result := InterfaceObject.GetTextExtentPoint32(DC, Str, Count, Size);
 end;
@@ -1296,6 +1299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2004/03/06 21:57:14  mattias
+  fixed compilation under fpc 1.9.3
+
   Revision 1.109  2004/02/23 08:19:04  micha
   revert intf split
 

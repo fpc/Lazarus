@@ -1,3 +1,5 @@
+// included by interfacebase.pp and lclintf.pp
+
 (******************************************************************************
   All Winapi related stuff goes here.
   This file is used by both LCLIntf.pas and InterfaceBase.pp
@@ -128,7 +130,7 @@ function GetSystemPaletteEntries(DC: HDC; StartIndex, NumEntries: UINT;
   var PaletteEntries): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSystemMetrics(nIndex: Integer): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextColor(DC: HDC) : TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, p4: Integer; p5, p6: PInteger; var Size: TSize): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger; var Size: TSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextExtentPoint32(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -292,6 +294,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2004/03/06 21:57:14  mattias
+  fixed compilation under fpc 1.9.3
+
   Revision 1.97  2004/02/23 08:19:04  micha
   revert intf split
 

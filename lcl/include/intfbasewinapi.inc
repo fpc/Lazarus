@@ -1,3 +1,5 @@
+// included by interfacebase.pp
+
 { $Id$ }
 {******************************************************************************
                                   TWidgetSet
@@ -880,13 +882,17 @@ begin
 end;
 
 function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
-  Count, p4: Integer; p5, p6: PInteger; var Size: TSize): BOOL;
+  Count, MaxWidth: Integer; MaxCount, PartialWidths: PInteger;
+  var Size: TSize): BOOL;
 begin
+  if MaxCount<>nil then MaxCount^:=Count;
+  if PartialWidths<>nil then
+    writeln('Warning: TWidgetSet.GetTextExtentExPoint PartialWidths not implemented yet');
   Result := GetTextExtentPoint(DC,Str,Count,Size);
 end;
 
-function TWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar;
-  Count: Integer; var Size: TSize): Boolean;
+function TWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
+  var Size: TSize): Boolean;
 begin
   Result := False;
 end;
@@ -1398,6 +1404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/03/06 21:57:14  mattias
+  fixed compilation under fpc 1.9.3
+
   Revision 1.9  2004/03/05 00:14:02  marc
   * Renamed TInterfaceBase to TWidgetSet
 

@@ -1092,7 +1092,7 @@ begin
   if NewHeight<=0 then NewHeight:=1;
 
   {$IFDEF VerboseSizeMsg}
-  LCLObject:=GetParentLCLObject(Widget);
+  LCLObject:=GetNearestLCLObject(Widget);
   write('TGtkWidgetSet.RealizeWidgetSize Widget=',HexStr(Cardinal(Widget),8),
     ' New=',NewWidth,',',NewHeight);
   if (LCLObject<>nil) and (LCLObject is TControl) then begin
@@ -9283,6 +9283,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.478  2004/03/06 21:57:14  mattias
+  fixed compilation under fpc 1.9.3
+
   Revision 1.477  2004/03/06 17:12:19  mattias
   fixed CreateBrushIndirect
 

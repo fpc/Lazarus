@@ -41,8 +41,8 @@ unit LCLIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType, InterfaceBase,
-  LResources;
+  Strings, Math, Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType,
+  InterfaceBase, LResources;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -77,12 +77,10 @@ function GetTickStep: DWord;
 
 implementation
 
+{$IFNDEF Win32}
 uses
-  Strings, Math
-  {$IFNDEF Win32}
-  , {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}
-  {$ENDIF}
-  ;
+  {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF};
+{$ENDIF}
 
 var
   FPredefinedClipboardFormats:
@@ -184,6 +182,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2004/03/06 21:57:14  mattias
+  fixed compilation under fpc 1.9.3
+
   Revision 1.13  2004/02/23 08:19:04  micha
   revert intf split
 
