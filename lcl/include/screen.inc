@@ -33,6 +33,7 @@ begin
   FHintFont.Style := [];
   FHintFont.Size := 12;
   FHintFont.Pitch := fpDefault;
+  FSaveFocusedList := TList.Create;
 end;
 
 {------------------------------------------------------------------------------
@@ -45,7 +46,11 @@ end;
 Destructor TScreen.Destroy;
 begin
   FHintFont.Free;
+  FHintFont:=nil;
   FFormList.Free;
+  FFormList:=nil;
+  FSaveFocusedList.Free;
+  FSaveFocusedList:=nil;
   inherited Destroy;
 end;
 {
@@ -91,11 +96,8 @@ end;
   This function is used by the Forms property.
  ------------------------------------------------------------------------------}
 Function TScreen.GetForms(IIndex: Integer): TForm;
-var
-  FForm: TForm;
 begin
-  FForm := TForm(FFormList.Items[IIndex]);
-  Result := FForm;
+  Result := TForm(FFormList.Items[IIndex]);
 end;
 
 
@@ -108,7 +110,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TScreen.GetWidth : Integer;
 begin
-result := GetSystemMetrics(SM_CXSCREEN);
+  Result := GetSystemMetrics(SM_CXSCREEN);
 end;
 
 
@@ -121,7 +123,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TScreen.GetHeight : Integer;
 begin
-result := GetSystemMetrics(SM_CYSCREEN);
+  Result := GetSystemMetrics(SM_CYSCREEN);
 end;
 
 {------------------------------------------------------------------------------

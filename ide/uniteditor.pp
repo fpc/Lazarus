@@ -3441,10 +3441,11 @@ begin
   inherited Create(AOwner);
 
   if LazarusResources.Find(ClassName)=nil then begin
-    position := poScreenCenter;
+    Position := poScreenCenter;
     Width := 250;
     Height := 100;
-    Caption := 'Goto';
+    Caption := 'Goto line';
+    BorderStyle:= bsDialog;
 
     Label1 := TLabel.Create(self);
     with Label1 do
