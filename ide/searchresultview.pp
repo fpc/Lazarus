@@ -201,7 +201,7 @@ var
   i: integer;
   SearchObj: TLazSearch;
 begin
-  result:= nil;
+  Result:= nil;
   SearchObj:= TLazSearch.Create;
   SearchObj.SearchString:= SearchText;
   if Assigned(ResultsNoteBook) then
@@ -233,7 +233,8 @@ begin
       end;//else
     end;//
   end;//if
-  result:= NewListBox.Items;
+  if NewListBox<>nil then
+    Result:= NewListBox.Items;
 end;//AddResult
 
 procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
@@ -411,7 +412,7 @@ var
   i: integer;
   ThePage: TPage;
 begin
-  result:= nil;
+  Result:= nil;
   if (APageIndex > -1) and (APageIndex < ResultsNoteBook.Pages.Count) then
   begin
     ThePage:= ResultsNoteBook.Page[APageIndex];
@@ -430,7 +431,7 @@ begin
 end;//GetListBox
 
 initialization
-  { $I searchresultview.lrs}
+  {$I searchresultview.lrs}
 
 end.
 

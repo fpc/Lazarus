@@ -1,0 +1,15 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TSearchResultsView','FORMDATA',[
+  'TPF0'#18'TSearchResultsView'#17'SearchResultsView'#7'CAPTION'#6#17'SearchRes'
+  +'ultsView'#12'CLIENTHEIGHT'#3#225#0#11'CLIENTWIDTH'#3#31#3#8'ONCREATE'#7#11
+  +'Form1Create'#18'HORZSCROLLBAR.PAGE'#3' '#3#18'VERTSCROLLBAR.PAGE'#3#226#0#4
+  +'LEFT'#3#24#1#6'HEIGHT'#3#225#0#3'TOP'#3#133#1#5'WIDTH'#3#31#3#0#9'TNOTEBOOK'
+  +#15'ResultsNoteBook'#5'ALIGN'#7#8'albottom'#7'ANCHORS'#11#5'aktop'#6'akleft'
+  +#0#17'ONCLOSETABCLICKED'#7#30'ResultsNoteBookClosetabclicked'#7'OPTIONS'#11
+  +#19'nboshowclosebuttons'#12'nbomultiline'#0#6'HEIGHT'#3#185#0#3'TOP'#2'('#5
+  +'WIDTH'#3#31#3#0#0#7'TBUTTON'#14'btnSearchAgain'#7'ANCHORS'#11#5'aktop'#6'ak'
+  +'left'#0#7'CAPTION'#6#12'Search Again'#7'TABSTOP'#9#8'TABORDER'#2#1#7'ONCLIC'
+  +'K'#7#19'btnSearchAgainClick'#4'LEFT'#2#8#6'HEIGHT'#2#25#3'TOP'#2#8#5'WIDTH'
+  +#2's'#0#0#0
+]);

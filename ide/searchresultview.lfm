@@ -1,0 +1,32 @@
+object SearchResultsView: TSearchResultsView
+  CAPTION = 'SearchResultsView'
+  CLIENTHEIGHT = 225
+  CLIENTWIDTH = 799
+  ONCREATE = Form1Create
+  HORZSCROLLBAR.PAGE = 800
+  VERTSCROLLBAR.PAGE = 226
+  LEFT = 280
+  HEIGHT = 225
+  TOP = 389
+  WIDTH = 799
+  object ResultsNoteBook: TNOTEBOOK
+    ALIGN = albottom
+    ANCHORS = [aktop, akleft]
+    ONCLOSETABCLICKED = ResultsNoteBookClosetabclicked
+    OPTIONS = [nboshowclosebuttons, nbomultiline]
+    HEIGHT = 185
+    TOP = 40
+    WIDTH = 799
+  end
+  object btnSearchAgain: TBUTTON
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Search Again'
+    TABSTOP = True
+    TABORDER = 1
+    ONCLICK = btnSearchAgainClick
+    LEFT = 8
+    HEIGHT = 25
+    TOP = 8
+    WIDTH = 115
+  end
+end

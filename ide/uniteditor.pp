@@ -408,6 +408,7 @@ type
     
     fAutoFocusLock: integer;
     fCustomPopupMenuItems: TList;
+    FOnShowSearchResultsView: TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -522,6 +523,7 @@ type
     procedure ReplaceClicked(Sender : TObject);
     procedure IncrementalFindClicked(Sender : TObject);
     procedure FindInFiles(AProject: TProject);
+    procedure ShowSearchResultsView;
 
     procedure GotoLineClicked(Sender: TObject);
     
@@ -615,6 +617,8 @@ type
                                read FOnViewJumpHistory write FOnViewJumpHistory;
     property OnAddWatchAtCursor: TOnAddWatch
                              read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
+    property OnShowSearchResultsView: TNotifyEvent
+                   read FOnShowSearchResultsView write FOnShowSearchResultsView;
   end;
  
   //=============================================================================
@@ -3408,7 +3412,7 @@ Begin
         end;//if
         try
           SearchForm:= TSearchForm.Create(SearchResultsView);
-          SearchResultsView.ShowOnTop;
+          ShowSearchResultsView;
           with SearchForm do
           begin
             SearchOptions:= FindInFilesDialog.Options;
@@ -3443,6 +3447,11 @@ Begin
     end;//if
   end;//if
 End;//FindInFilesClicked
+
+procedure TSourceNotebook.ShowSearchResultsView;
+begin
+  if Assigned(OnShowSearchResultsView) then OnShowSearchResultsView(Self);
+end;
 
 procedure TSourceNotebook.GotoLineClicked(Sender: TObject);
 var SrcEdit: TSourceEditor;

@@ -273,9 +273,10 @@ type
     procedure OnSrcNotebookShowHintForSource(SrcEdit: TSourceEditor;
           ClientPos: TPoint; CaretPos: TPoint);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
-    procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
+    procedure OnSrcNotebookToggleFormUnit(Sender: TObject);
     procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
-    procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
+    procedure OnSrcNotebookViewJumpHistory(Sender: TObject);
+    procedure OnSrcNotebookShowSearchResultsView(Sender: TObject);
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectComponents(Sender: TObject);
@@ -1213,6 +1214,7 @@ begin
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
+  SourceNotebook.OnShowSearchResultsView := @OnSrcNotebookShowSearchResultsView;
   DebugBoss.ConnectSourceNotebookEvents;
 
   // connect search menu to sourcenotebook
@@ -9417,6 +9419,11 @@ begin
      [mbOk],0);
 end;
 
+procedure TMainIDE.OnSrcNotebookShowSearchResultsView(Sender: TObject);
+begin
+  CreateSearchResultWindow;
+end;
+
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
   if ToolStatus=itCodeTools then begin
@@ -10084,6 +10091,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.668  2003/11/15 14:04:16  mattias
+  added searchresultsview.lfm
+
   Revision 1.667  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 
