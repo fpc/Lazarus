@@ -617,6 +617,7 @@ begin
     Add('ABSTRACT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISPID'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DYNAMIC'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INLINE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MESSAGE'    ,{$ifdef FPC}@{$endif}AllwaysTrue);

@@ -889,6 +889,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
 
  proc specifiers with parameters:
    message <id or number>
+   dispid <id>
 }
 var IsFunction, HasForwardModifier: boolean;
   ParseAttr: TParseProcHeadAttributes;
@@ -1185,6 +1186,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    external <id or number> index <id>;
    [alias: <string constant>]
    [external name <string constant>]
+   dispid <id>;
 }
 
   procedure RaiseKeyWordExampleExpected;
@@ -1270,7 +1272,7 @@ begin
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     if IsSpecifier then begin
       // read specifier
-      if UpAtomIs('MESSAGE') then begin
+      if UpAtomIs('MESSAGE') or UpAtomIs('DISPID') then begin
         ReadNextAtom;
         ReadConstant(true,false,[]);
       end else if UpAtomIs('EXTERNAL') then begin

@@ -3488,6 +3488,7 @@ function TDefinePool.CreateDelphiCompilerDefinesTemplate(
   DelphiVersion: integer; Owner: TObject): TDefineTemplate;
 var
   DefTempl: TDefineTemplate;
+  VerMacro: String;
 begin
   DefTempl:=TDefineTemplate.Create('Delphi'+IntToStr(DelphiVersion)
       +' Compiler Defines',
@@ -3508,28 +3509,17 @@ begin
 
   // version
   case DelphiVersion of
-  3:
-    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_110',
-        Format(ctsDefineMacroName,['VER_110']),
-        'VER_110','',da_DefineRecurse));
-  4:
-    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_125',
-        Format(ctsDefineMacroName,['VER_125']),
-        'VER_125','',da_DefineRecurse));
-  5:
-    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_130',
-        Format(ctsDefineMacroName,['VER_130']),
-        'VER_130','',da_DefineRecurse));
-  6:
-    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_140',
-        Format(ctsDefineMacroName,['VER_140']),
-        'VER_140','',da_DefineRecurse));
+  3: VerMacro:='VER_110';
+  4: VerMacro:='VER_125';
+  5: VerMacro:='VER_130';
+  6: VerMacro:='VER_140';
   else
     // else define Delphi 7
-    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_150',
-        Format(ctsDefineMacroName,['VER_150']),
-        'VER_150','',da_DefineRecurse));
+    VerMacro:='VER_150';
   end;
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro '+VerMacro,
+      Format(ctsDefineMacroName,[VerMacro]),
+      VerMacro,'',da_DefineRecurse));
 
   DefTempl.AddChild(TDefineTemplate.Create(
      Format(ctsDefineMacroName,[ExternalMacroStart+'Compiler']),
