@@ -133,6 +133,7 @@ type
     FOnCloseTabClicked: TNotifyEvent;
     FOptions: TNoteBookOptions;
     fPageIndex: Integer;
+    fPageIndexOnLastChange: integer;
     fPageList: TList;  // List of TCustomPage
     //fMultiLine: boolean;
     fOnPageChanged: TNotifyEvent;
@@ -834,6 +835,9 @@ end.
 
  {
   $Log$
+  Revision 1.83  2003/12/23 18:15:37  mattias
+  fixed TNoteBook.OnPageChanged for user PageIndex
+
   Revision 1.82  2003/10/23 16:15:30  micha
   compatibility with new 1.1
 

@@ -4076,6 +4076,7 @@ Procedure TSourceNotebook.NotebookPageChanged(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
+  //writeln('TSourceNotebook.NotebookPageChanged ',Notebook.Pageindex,' ',TempEditor <> nil,' fAutoFocusLock=',fAutoFocusLock);
   if TempEditor <> nil then
   begin
     if fAutoFocusLock=0 then begin

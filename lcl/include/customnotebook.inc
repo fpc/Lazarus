@@ -658,6 +658,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
 Begin
+  fPageIndexOnLastChange:=fPageIndex;
   if ([csLoading,csDestroying]*ComponentState=[])
   and (not fAddingPages) then begin
     if Assigned(fOnPageChanged) then fOnPageChanged(Self);
@@ -667,6 +668,7 @@ end;
 procedure TCustomNotebook.Loaded;
 begin
   inherited Loaded;
+  fPageIndexOnLastChange:=PageIndex;
   if HandleAllocated then DoCreateWnd;
 end;
 
@@ -678,15 +680,16 @@ Begin
   with Message do
     Case NMHdr^.code of
       TCN_SELCHANGE:
-        if FPageIndex<>NMHDR^.idfrom then begin
-          //set the page from the NMHDR^.idfrom
+        begin
+          // set the page from the NMHDR^.idfrom
           if ([csLoading,csDestroying]*ComponentState=[])
           and (not fAddingPages) then begin
             FPageIndex := NMHDR^.idfrom;
             if FPageIndex>=PageCount then
               FPageIndex:=-1;
             UpdateAllDesignerFlags;
-            Change;
+            if fPageIndexOnLastChange<>fPageIndex then
+              Change;
             if csDesigning in ComponentState then
               OwnerFormDesignerModified(Self);
           end;
@@ -782,6 +785,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/12/23 18:15:37  mattias
+  fixed TNoteBook.OnPageChanged for user PageIndex
+
   Revision 1.39  2003/12/23 14:52:11  mattias
   TNoteBook.PageChanged not during loading
 

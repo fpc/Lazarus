@@ -1459,8 +1459,8 @@ var
   UnitOutDir: String;
   OutFilename: String;
 begin
-  // first case: fully specific target filename
   if (TargetFilename <> '') and FilenameIsAbsolute(TargetFilename) then begin
+    // fully specific target filename
     Result:=TargetFilename;
   end else begin
     // calculate output directory
