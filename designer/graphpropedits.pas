@@ -803,7 +803,6 @@ begin
   FontDialog := TFontDialog.Create(Application);
   try
     FontDialog.Font := TFont(GetOrdValue);
-    //FontDialog.HelpContext := hcDFontEditor;
     FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
     if FontDialog.Execute then
       SetOrdValue(Longint(FontDialog.Font));
@@ -818,8 +817,9 @@ var
 begin
   Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
   AComponent:=GetComponent(0);
-  if (AComponent<>nil) and (AComponent is TControl) then
-    Include(Result,paReadOnlySubProperties);
+  if (AComponent<>nil) and (AComponent is TControl)
+  and (not (AComponent is TStaticText)) then
+    Result:=Result+[paDisableSubProperties]-[paDialog];
 end;
 
 
