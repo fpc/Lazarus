@@ -364,8 +364,11 @@ begin
     if Removed then begin
       // re-add file
       AFilename:=PkgFile.Filename;
-      if PkgFile.FIleType=pftUnit then begin
+      if PkgFile.FileType=pftUnit then begin
         if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
+          PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
+      end else if PkgFile.FileType=pftVirtualUnit then begin
+        if not CheckAddingUnitFilename(LazPackage,d2ptVirtualUnit,
           PackageEditors.OnGetIDEFileInfo,AFilename) then exit;
       end else begin
         if not CheckAddingUnitFilename(LazPackage,d2ptFile,
@@ -422,8 +425,16 @@ var
       NewMenuItem:=TMenuItem.Create(Self);
       NewMenuItem.Caption:=GetPkgFileTypeLocalizedName(CurPFT);
       NewMenuItem.OnClick:=@ChangeFileTypeMenuItemClick;
-      NewMenuItem.Enabled:=(CurPFT<>pftUnit)
-                           or FilenameIsPascalUnit(CurFile.Filename);
+      if CurPFT=CurFile.FileType then
+        NewMenuItem.Enabled:=true
+      else if CurFile.FileType=pftVirtualUnit then
+        NewMenuItem.Enabled:=false
+      else if (CurPFT<>pftUnit) then
+        NewMenuItem.Enabled:=true
+      else if FilenameIsPascalUnit(CurFile.Filename) then
+        NewMenuItem.Enabled:=true
+      else
+        NewMenuItem.Enabled:=false;
       FileTypeMenuItem.Add(NewMenuItem);
     end;
   end;
@@ -817,6 +828,15 @@ begin
       UpdateAll;
     end;
 
+  d2ptVirtualUnit:
+    begin
+      // add virtual unit file
+      with AddParams do
+        LazPackage.AddFile(UnitFilename,UnitName,FileType,PkgFileFlags,cpNormal);
+      PackageEditors.DeleteAmbigiousFiles(LazPackage,AddParams.UnitFilename);
+      UpdateAll;
+    end;
+
   d2ptNewComponent:
     begin
       ExtendUnitPathForNewUnit(AddParams.UnitFilename);
@@ -939,8 +959,8 @@ begin
   if CurFile=nil then exit;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
     if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
-      if (not FilenameIsPascalUnit(CurFIle.Filename))
-      and (CurPFT=pftUnit) then exit;
+      if (not FilenameIsPascalUnit(CurFile.Filename))
+      and (CurPFT in [pftUnit,pftVirtualUnit]) then exit;
       CurFile.FileType:=CurPFT;
       UpdateAll;
       exit;
@@ -1275,7 +1295,7 @@ procedure TPackageEditorForm.UpdateFiles;
   procedure SetImageIndex(ANode: TTreeNode; PkgFile: TPkgFile);
   begin
     case PkgFile.FileType of
-    pftUnit:
+    pftUnit,pftVirtualUnit:
       if PkgFile.HasRegisterProc then
         ANode.ImageIndex:=ImageIndexRegisterUnit
       else
@@ -1614,10 +1634,14 @@ var
   NewDirectory: String;
   UnitPath: String;
   i: Integer;
+  ShortDirectory: String;
 begin
   if LazPackage=nil then exit;
   // check if directory is already in the unit path of the package
   NewDirectory:=ExtractFilePath(AFilename);
+  ShortDirectory:=NewDirectory;
+  LazPackage.ShortenFilename(ShortDirectory);
+  if ShortDirectory='' then exit;
   UnitPath:=LazPackage.GetUnitPath(false);
   i:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
   if i>=1 then begin
@@ -1625,10 +1649,9 @@ begin
     exit;
   end;
   // ask user to add the unit path
-  LazPackage.ShortenFilename(NewDirectory);
   if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
       Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
-        AFilename, '"', #13, #13, #13, '"', NewDirectory, '"']),
+        AFilename, '"', #13, #13, #13, '"', ShortDirectory, '"']),
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
   then exit;
   // add path

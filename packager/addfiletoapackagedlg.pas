@@ -253,7 +253,7 @@ begin
     with Items do begin
       BeginUpdate;
       for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
-        if pft=pftUnit then continue;
+        if pft in [pftUnit,pftVirtualUnit] then continue;
         Add(GetPkgFileTypeLocalizedName(pft));
       end;
       EndUpdate;
@@ -349,7 +349,7 @@ begin
   if FileTypeRadioGroup.Visible then begin
     i:=0;
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-      if CurPFT=pftUnit then continue;
+      if CurPFT in [pftUnit,pftVirtualUnit] then continue;
       if FileTypeRadioGroup.ItemIndex=i then begin
         Result:=CurPFT;
         exit;
@@ -381,7 +381,7 @@ begin
   if FileType=AValue then exit;
   i:=0;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
-    if CurPFT=pftUnit then continue;
+    if CurPFT in [pftUnit,pftVirtualUnit] then continue;
     if CurPFT=AValue then break;
     inc(i);
   end;
@@ -390,7 +390,7 @@ begin
   else
     FileTypeRadioGroup.ItemIndex:=-1;
 
-  ShowUnitProps:=(AValue=pftUnit);
+  ShowUnitProps:=(AValue in [pftUnit,pftVirtualUnit]);
   UnitNameLabel.Visible:=ShowUnitProps;
   UnitNameEdit.Visible:=ShowUnitProps;
   HasRegisterProcCheckBox.Visible:=ShowUnitProps;

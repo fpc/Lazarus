@@ -1421,6 +1421,7 @@ resourcestring
   
   // packages
   lisPkgFileTypeUnit = 'Unit';
+  lisPkgFileTypeVirtualUnit = 'Virtual Unit';
   lisPkgFileTypeLFM = 'LFM - Lazarus form text';
   lisPkgFileTypeLRS = 'LRS - Lazarus resource';
   lisPkgFileTypeInclude = 'Include file';
@@ -1857,6 +1858,7 @@ resourcestring
     +'package %s.';
   lisAF2PUnitName = 'Unit Name: ';
   lisAF2PHasRegisterProcedure = 'Has Register procedure';
+  lisAF2PIsVirtualUnit = 'Virtual unit (file is not in package)';
   lisAF2PFileType = 'File Type';
   lisAF2PDestinationPackage = 'Destination Package';
   lisAF2PShowAll = 'Show All';

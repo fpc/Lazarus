@@ -46,6 +46,7 @@ uses
 type
   TAddToPkgType = (
     d2ptUnit,
+    d2ptVirtualUnit,
     d2ptNewComponent,
     d2ptRequiredPkg,
     d2ptFile
@@ -83,6 +84,7 @@ type
     AddUnitSrcNameLabel: TLabel;
     AddUnitSrcNameEdit: TEdit;
     AddUnitHasRegisterCheckBox: TCheckBox;
+    AddUnitIsVirtualCheckBox: TCheckBox;
     AddSecondaryFilesCheckBox: TCheckBox;
     AddUnitUpdateButton: TButton;
     AddUnitButton: TButton;
@@ -124,6 +126,7 @@ type
     procedure AddToPackageDlgClose(Sender: TObject; var Action: TCloseAction);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
+    procedure AddUnitIsVirtualCheckBoxClick(Sender: TObject);
     procedure AddUnitPageResize(Sender: TObject);
     procedure AddUnitUpdateButtonClick(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
@@ -210,7 +213,8 @@ begin
 
   // normalize filename
   AFilename:=TrimFilename(AFilename);
-  if (not FilenameIsAbsolute(AFilename)) then begin
+  if (AddFileType<>d2ptVirtualUnit) and (not FilenameIsAbsolute(AFilename)) then
+  begin
     if LazPackage.HasDirectory then
       AFilename:=LazPackage.Directory+AFilename
     else begin
@@ -223,17 +227,19 @@ begin
   end;
 
   // check if file exists
-  if not FileExists(AFilename) then begin
-    if AddFileType=d2ptUnit then begin
-      MessageDlg(lisFileNotFound,
-        Format(lisPkgMangFileNotFound, ['"', AFilename, '"']), mtError, [
-          mbCancel], 0);
-      exit;
+  if (FilenameIsAbsolute(AFilename)) then begin
+    if (not FileExists(AFilename)) then begin
+      if AddFileType=d2ptUnit then begin
+        MessageDlg(lisFileNotFound,
+          Format(lisPkgMangFileNotFound, ['"', AFilename, '"']), mtError, [
+            mbCancel], 0);
+        exit;
+      end;
     end;
   end;
 
   // check file extension
-  if AddFileType in [d2ptUnit,d2ptNewComponent] then begin
+  if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
     if not FilenameIsPascalUnit(AFilename) then begin
       MessageDlg(lisA2PFileNotUnit,
         lisA2PPascalUnitsMustHaveTheExtensionPPOrPas,
@@ -243,7 +249,7 @@ begin
   end;
 
   // check unitname
-  if AddFileType in [d2ptUnit,d2ptNewComponent] then begin
+  if AddFileType in [d2ptUnit,d2ptNewComponent,d2ptVirtualUnit] then begin
     AnUnitName:=ExtractFileNameOnly(AFilename);
     if not IsValidIdent(AnUnitName) then begin
       MessageDlg(lisA2PFileNotUnit,
@@ -283,33 +289,31 @@ begin
   end;
 
   // check if file already exists in package
-  PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
-  if PkgFile<>nil then begin
-    Msg:=Format(lisA2PFileAlreadyExistsInTheProject, ['"', AFilename, '"']);
-    if PkgFile.Filename<>AFilename then
-      Msg:=Format(lisA2PExistingFile, [#13, '"', PkgFile.Filename, '"']);
-    MessageDlg(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel], 0);
-    exit;
+  if FilenameIsAbsolute(AFilename) then begin
+    PkgFile:=LazPackage.FindPkgFile(AFilename,true,true);
+    if PkgFile<>nil then begin
+      Msg:=Format(lisA2PFileAlreadyExistsInTheProject, ['"', AFilename, '"']);
+      if PkgFile.Filename<>AFilename then
+        Msg:=Format(lisA2PExistingFile, [#13, '"', PkgFile.Filename, '"']);
+      MessageDlg(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel], 0);
+      exit;
+    end;
   end;
 
   // check if file is part of project
-  if Assigned(OnGetIDEFileInfo) then begin
-    IDEFileFlags:=[];
-    OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject{,ifsReadOnly}],
-                     IDEFileFlags);
-    if (ifsPartOfProject in IDEFileFlags) then begin
-      MessageDlg(lisA2PFileIsUsed,
-        Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea, ['"',
-          AFilename, '"', #13]),
-        mtError,[mbCancel],0);
-      exit;
+  if FilenameIsAbsolute(AFilename) then begin
+    if Assigned(OnGetIDEFileInfo) then begin
+      IDEFileFlags:=[];
+      OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject],
+                       IDEFileFlags);
+      if (ifsPartOfProject in IDEFileFlags) then begin
+        MessageDlg(lisA2PFileIsUsed,
+          Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea, ['"',
+            AFilename, '"', #13]),
+          mtError,[mbCancel],0);
+        exit;
+      end;
     end;
-    {if (ifsReadOnly in IDEFileFlags) then begin
-      MessageDlg('File is readonly',
-        'The file "'+AFilename+'" is marked as readonly.',
-        mtError,[mbCancel],0);
-      exit;
-    end;}
   end;
 
   // ok
@@ -373,21 +377,34 @@ end;
 procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
 begin
   FillChar(Params,SizeOf(Params),0);
-  Params.AddType:=d2ptUnit;
+  if not AddUnitIsVirtualCheckBox.Checked then begin
+    // normal unit
+    Params.AddType:=d2ptUnit;
 
-  Params.UnitFilename:=AddUnitFilenameEdit.Text;
-  Params.UnitName:=AddUnitSrcNameEdit.Text;
-  Params.FileType:=pftUnit;
-  Params.PkgFileFlags:=[];
-  Params.AutoAddLFMFile:=AddSecondaryFilesCheckBox.Checked;
-  Params.AutoAddLRSFile:=AddSecondaryFilesCheckBox.Checked;
-  if AddUnitHasRegisterCheckBox.Checked then
-    Include(Params.PkgFileFlags,pffHasRegisterProc);
+    Params.UnitFilename:=AddUnitFilenameEdit.Text;
+    Params.UnitName:=AddUnitSrcNameEdit.Text;
+    Params.FileType:=pftUnit;
+    Params.PkgFileFlags:=[];
+    Params.AutoAddLFMFile:=AddSecondaryFilesCheckBox.Checked;
+    Params.AutoAddLRSFile:=AddSecondaryFilesCheckBox.Checked;
+    if AddUnitHasRegisterCheckBox.Checked then
+      Include(Params.PkgFileFlags,pffHasRegisterProc);
+  end else begin
+    // virtual unit
+    Params.AddType:=d2ptVirtualUnit;
 
+    Params.UnitFilename:=ExtractFilename(AddUnitFilenameEdit.Text);
+    Params.UnitName:=AddUnitSrcNameEdit.Text;
+    Params.FileType:=pftVirtualUnit;
+    Params.PkgFileFlags:=[];
+    Params.AutoAddLFMFile:=false;
+    Params.AutoAddLRSFile:=false;
+  end;
+  
   // check filename
   if not CheckAddingUnitFilename(LazPackage,Params.AddType,
     OnGetIDEFileInfo,Params.UnitFilename) then exit;
-
+    
   // check unitname
   if AnsiCompareText(Params.UnitName,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
@@ -534,6 +551,17 @@ begin
   end;
 end;
 
+procedure TAddToPackageDlg.AddUnitIsVirtualCheckBoxClick(Sender: TObject);
+var
+  VirtualFile: Boolean;
+begin
+  VirtualFile:=AddUnitIsVirtualCheckBox.Checked;
+  AddUnitFileBrowseButton.Enabled:=not VirtualFile;
+  AddUnitHasRegisterCheckBox.Enabled:=not VirtualFile;
+  AddUnitUpdateButton.Enabled:=not VirtualFile;
+  AddSecondaryFilesCheckBox.Enabled:=not VirtualFile;
+end;
+
 procedure TAddToPackageDlg.AddUnitPageResize(Sender: TObject);
 var
   x: Integer;
@@ -566,6 +594,10 @@ begin
   with AddUnitHasRegisterCheckBox do
     SetBounds(x,y,Parent.ClientWidth-2*x,Height);
   inc(y,AddUnitHasRegisterCheckBox.Height+5);
+
+  with AddUnitIsVirtualCheckBox do
+    SetBounds(x,y,Parent.ClientWidth-2*x,Height);
+  inc(y,AddUnitIsVirtualCheckBox.Height+5);
 
   with AddSecondaryFilesCheckBox do
     SetBounds(x,y,Parent.ClientWidth-2*x,Height);
@@ -997,6 +1029,14 @@ begin
     Caption:=lisAF2PHasRegisterProcedure;
   end;
 
+  AddUnitIsVirtualCheckBox:=TCheckBox.Create(Self);
+  with AddUnitIsVirtualCheckBox do begin
+    Name:='AddUnitIsVirtualCheckBox';
+    Parent:=AddUnitPage;
+    Caption:=lisAF2PIsVirtualUnit;
+    OnClick:=@AddUnitIsVirtualCheckBoxClick;
+  end;
+
   AddSecondaryFilesCheckBox:=TCheckBox.Create(Self);
   with AddSecondaryFilesCheckBox do begin
     Name:='AddSecondaryFilesCheckBox';
@@ -1327,11 +1367,11 @@ var
   HasRegisterProc: boolean;
   Filename: String;
 begin
-  if Assigned(OnGetUnitRegisterInfo) then begin
+  if Assigned(OnGetUnitRegisterInfo) and not AddUnitIsVirtualCheckBox.Checked
+  then begin
     Filename:=AddUnitFilenameEdit.Text;
     LazPackage.LongenFilename(Filename);
-    OnGetUnitRegisterInfo(Self,Filename,
-                          AnUnitName,HasRegisterProc);
+    OnGetUnitRegisterInfo(Self,Filename,AnUnitName,HasRegisterProc);
     AddUnitSrcNameEdit.Text:=AnUnitName;
     AddUnitHasRegisterCheckBox.Checked:=HasRegisterProc;
   end;

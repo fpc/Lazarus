@@ -115,6 +115,7 @@ type
 
   TPkgFileType = (
     pftUnit,    // file is pascal unit
+    pftVirtualUnit,// file is virtual pascal unit
     pftLFM,     // lazarus form text file
     pftLRS,     // lazarus resource file
     pftInclude, // include file
@@ -662,9 +663,10 @@ const
   LazPkgXMLFileVersion = 1;
   
   PkgFileTypeNames: array[TPkgFileType] of string = (
-    'pftUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftText', 'pftBinary');
+    'pftUnit', 'pftVirtualUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftText',
+    'pftBinary');
   PkgFileTypeIdents: array[TPkgFileType] of string = (
-    'Unit', 'LFM', 'LRS', 'Include', 'Text', 'Binary');
+    'Unit', 'Virtual Unit', 'LFM', 'LRS', 'Include', 'Text', 'Binary');
   PkgFileFlag: array[TPkgFileFlag] of string = (
     'pffHasRegisterProc', 'pffReportedAsRemoved');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
@@ -750,6 +752,7 @@ function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 begin
   case FileType of
   pftUnit: Result:=lisPkgFileTypeUnit;
+  pftVirtualUnit: Result:=lisPkgFileTypeUnit;
   pftLFM: Result:=lisPkgFileTypeLFM;
   pftLRS: Result:=lisPkgFileTypeLRS;
   pftInclude: Result:=lisPkgFileTypeInclude;
