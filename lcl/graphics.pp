@@ -529,6 +529,8 @@ type
                       const Style : TBevelCut);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
     Procedure Rectangle(const Rect: TRect); 
+    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
+    Procedure RoundRect(const Rect : TRect; RX,RY : Integer);
     Procedure Line(X1,Y1,X2,Y2 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
     Procedure LineTo(X1,Y1 : Integer);
@@ -869,6 +871,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/09/18 17:07:24  lazarus
+  MG: added patch from Andrew
+
   Revision 1.44  2002/09/12 05:56:15  lazarus
   MG: gradient fill, minor issues from Andrew
 
