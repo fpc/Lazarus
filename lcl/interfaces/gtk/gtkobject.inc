@@ -414,9 +414,16 @@ begin
     gtk_window_set_default_size(Window,Width,Height);
 
   // resize
+  if assigned(PGtkWidget(Window)^.Window) then
+    // widget is realized, resize gdkwindow directly
+    gdk_window_move_resize(PGtkWidget(Window)^.Window,AWinControl.Left,
+      AWinControl.Top,Width,Height)
+  else
+    // widget is not yet realized, force resize needed for shrinking under gtk1)
+    gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
   //if (PGtkWidget(Window)^.allocation.Width<>Width)
   //and (PGtkWidget(Window)^.allocation.Height<>Height) then begin
-    gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
+    //gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
     gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
   //end;
 
@@ -9291,6 +9298,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.487  2004/04/03 12:51:17  mattias
+  fixed shrinking forms under gtk  from vincent
+
   Revision 1.486  2004/04/02 20:44:08  mattias
   fixed LM_LV_AddItem message in gtk intf from  Andrew H.
 
