@@ -85,6 +85,7 @@ type
     property Top stored False;
     property Width stored False;
     property Height stored False;
+    property OnResize;
     property TabOrder stored False;
     property Visible;
   end;
@@ -200,6 +201,7 @@ type
     property OnCloseTabClicked;
     //property MultiLine;
     property OnPageChanged;
+    property OnResize;
     property Options;
     property PageIndex;
     property ShowTabs;
@@ -560,6 +562,9 @@ end.
 
  {
   $Log$
+  Revision 1.49  2003/01/21 23:07:14  mattias
+  applied patch from Jesus for many grid improvements
+
   Revision 1.48  2003/01/04 20:55:55  mattias
   published TNoteBook.Align
 
