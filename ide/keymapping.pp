@@ -84,11 +84,12 @@ const
   ecSelectionComment     = ecUserFirst + 54;
   ecSelectionUncomment   = ecUserFirst + 55;
   ecSelectionSort        = ecUserFirst + 56;
-  ecSelectToBrace        = ecUserFirst + 57;
-  ecSelectCodeBlock      = ecUserFirst + 58;
-  ecSelectLine           = ecUserFirst + 59;
-  ecSelectParagraph      = ecUserFirst + 60;
-  
+  ecSelectionBreakLines  = ecUserFirst + 57;
+  ecSelectToBrace        = ecUserFirst + 58;
+  ecSelectCodeBlock      = ecUserFirst + 59;
+  ecSelectLine           = ecUserFirst + 60;
+  ecSelectParagraph      = ecUserFirst + 61;
+
   // insert text
   ecInsertCharacter      = ecUserFirst + 80;
   ecInsertGPLNotice      = ecUserFirst + 81;
@@ -491,6 +492,7 @@ begin
   ecSelectionComment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionUncomment: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
   ecSelectionSort: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  ecSelectionBreakLines: SetResult(VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // editing
   ecBlockIndent: SetResult(VK_I,[ssCtrl],VK_UNKNOWN,[]);
@@ -1094,6 +1096,7 @@ begin
     ecSelectionComment      : Result:= lismenucommentselection;
     ecSelectionUncomment    : Result:= lismenuuncommentselection;
     ecSelectionSort         : Result:= lismenusortselection;
+    ecSelectionBreakLines   : Result:= lismenusortselection;
     ecSelectToBrace         : Result:= lismenuselecttobrace;
     ecSelectCodeBlock       : Result:= lismenuselectcodeblock;
     ecSelectLine            : Result:= lismenuselectline;
@@ -1889,6 +1892,7 @@ begin
   AddDefault(C,'Comment selection',ecSelectionComment);
   AddDefault(C,'Uncomment selection',ecSelectionUncomment);
   AddDefault(C,'Sort selection',ecSelectionSort);
+  AddDefault(C,'Break Lines in selection',ecSelectionBreakLines);
 
   // editing
   C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEditOnly)];

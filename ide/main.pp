@@ -127,6 +127,7 @@ type
     procedure mnuEditCommentBlockClicked(Sender: TObject);
     procedure mnuEditUncommentBlockClicked(Sender: TObject);
     procedure mnuEditSortBlockClicked(Sender: TObject);
+    procedure mnuEditSelectionBreakLinesClicked(Sender: TObject);
     procedure mnuEditSelectAllClick(Sender: TObject);
     procedure mnuEditSelectCodeBlockClick(Sender: TObject);
     procedure mnuEditSelectToBraceClick(Sender: TObject);
@@ -1444,6 +1445,7 @@ begin
   itmEditCommentBlock.OnClick:=@mnuEditCommentBlockClicked;
   itmEditUncommentBlock.OnClick:=@mnuEditUncommentBlockClicked;
   itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
+  itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
   itmEditSelectAll.OnClick:=@mnuEditSelectAllClick;
   itmEditSelectToBrace.OnClick:=@mnuEditSelectToBraceClick;
   itmEditSelectCodeBlock.OnClick:=@mnuEditSelectCodeBlockClick;
@@ -9726,6 +9728,11 @@ begin
   DoEditMenuCommand(ecSelectionSort);
 end;
 
+procedure TMainIDE.mnuEditSelectionBreakLinesClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionBreakLines);
+end;
+
 procedure TMainIDE.mnuEditSelectAllClick(Sender: TObject);
 begin
   DoEditMenuCommand(ecSelectAll);
@@ -9935,6 +9942,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.664  2003/11/07 16:29:59  mattias
+  implemented Break Lines in Selection
+
   Revision 1.663  2003/11/06 19:13:34  mattias
   fixed loading forms with errors
 

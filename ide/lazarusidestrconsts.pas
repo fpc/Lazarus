@@ -132,6 +132,7 @@ resourcestring
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
   lisMenuSortSelection = 'Sort selection';
+  lisMenuBeakLinesInSelection = 'Break Lines in selection';
   lisMenuSelect = 'Select';
   lisMenuSelectAll = 'Select all';
   lisMenuSelectToBrace = 'Select to brace';

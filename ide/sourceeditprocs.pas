@@ -34,7 +34,7 @@ unit SourceEditProcs;
 interface
 
 uses
-  Classes, SysUtils, BasicCodeTools, CodeTree, CodeToolManager,
+  Classes, SysUtils, LCLProc, BasicCodeTools, CodeTree, CodeToolManager,
   PascalParserTool, IdentCompletionTool, GraphType, Graphics, EditorOptions,
   SynEdit, SynCompletion;
 
@@ -50,6 +50,7 @@ procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
   var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
+function BreakLinesInText(const s: string; MaxLineLength: integer): string;
 
 
 implementation
@@ -294,6 +295,11 @@ begin
     or (ilcfStartIsLValue in IdentList.ContextFlags) then
       inc(CursorToLeft);
   end;
+end;
+
+function BreakLinesInText(const s: string; MaxLineLength: integer): string;
+begin
+  Result:=BreakString(s,MaxLineLength,GetLineIndent(s,1));
 end;
 
 end.

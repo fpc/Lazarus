@@ -227,6 +227,7 @@ type
     procedure CommentSelection;
     procedure UncommentSelection;
     procedure SortSelection;
+    procedure BreakLinesInSelection;
     procedure SelectToBrace;
     procedure SelectCodeBlock;
     procedure SelectLine;
@@ -1063,6 +1064,9 @@ Begin
   ecSelectionSort:
     SortSelection;
 
+  ecSelectionBreakLines:
+    BreakLinesInSelection;
+
   ecSelectToBrace:
     SelectToBrace;
 
@@ -1276,6 +1280,20 @@ begin
                              NewSortedText)=mrOk
   then
     EditorComponent.SelText:=NewSortedText;
+end;
+
+procedure TSourceEditor.BreakLinesInSelection;
+var
+  OldSelection: String;
+begin
+  if not EditorComponent.SelAvail then exit;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  // ToDo: replace step by step to keep bookmarks and breakpoints
+  OldSelection:=EditorComponent.SelText;
+  FEditor.SelText:=BreakLinesInText(OldSelection,FEditor.RightEdge);
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
 end;
 
 procedure TSourceEditor.SelectToBrace;
