@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <Package Version="2">
+    <Name Value="MemDSLaz"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Memory (TMemDataset) dataset package for Lazarus"/>
+    <License Value="LGPL"/>
+    <Version Minor="1" Release="1"/>
+    <Files Count="3">
+      <Item1>
+        <Filename Value="registermemds.lrs"/>
+        <Type Value="LRS"/>
+      </Item1>
+      <Item2>
+        <Filename Value="registermemds.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="registermemds"/>
+      </Item2>
+      <Item3>
+        <Filename Value="memds.pp"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="memds"/>
+      </Item3>
+    </Files>
+    <Type Value="RunAndDesignTime"/>
+    <RequiredPkgs Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)/"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

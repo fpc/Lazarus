@@ -1,0 +1,25 @@
+LazarusResources.Add('tmemdataset','XPM',[
+  '/* XPM */'#10'static char *tsdfdataset[]={'#10'"22 23 51 1",'#10'"a c #00000'
+  +'0",'#10'"t c #000008",'#10'"s c #000010",'#10'"b c #000400",'#10'"c c #0004'
+  +'08",'#10'"u c #000410",'#10'"I c #000800",'#10'"v c #000810",'#10'"J c #000'
+  +'c00",'#10'"# c #080408",'#10'"V c #080800",'#10'"T c #080808",'#10'"r c #08'
+  +'0c00",'#10'"F c #296929",'#10'"i c #bdbebd",'#10'"n c #bdbec5",'#10'"O c #b'
+  +'dbecd",'#10'"G c #bdc2c5",'#10'"M c #bdc2cd",'#10'"q c #c5c2bd",'#10'"f c #'
+  +'c5c2c5",'#10'"o c #c5c2cd",'#10'"d c #c5c6c5",'#10'"h c #c5c6cd",'#10'"S c '
+  +'#c5c6d5",'#10'"p c #c5cabd",'#10'"U c #c5cad5",'#10'"m c #c5ceb4",'#10'"w c'
+  +' #c5cec5",'#10'"j c #cdc6cd",'#10'"k c #cdcacd",'#10'"g c #cdcad5",'#10'"l '
+  +'c #cdceb4",'#10'"E c #cdcec5",'#10'"e c #cdcecd",'#10'"H c #de1c10",'#10'"Q'
+  +' c #e6eeff",'#10'"R c #eee6ff",'#10'"C c #eeeaff",'#10'"A c #eeeeff",'#10'"'
+  +'N c #eef6ff",'#10'"y c #f6f2ff",'#10'"B c #f6f6ee",'#10'"K c #f6f6ff",'#10
+  +'"z c #f6faff",'#10'"P c #f6ffff",'#10'"D c #fff2ff",'#10'"L c #fff6ff",'#10
+  +'"W c #fffaf6",'#10'"x c #fffaff",'#10'". c #ffffff",'#10'".#aaaaaaabaaabaca'
+  +'abaa.",'#10'".adbefghhiejklmnoplqa.",'#10'".braassstabaaabuvtabb.",'#10'".a'
+  +'wa.xyx..ky.z.A.xy.a.",'#10'".aBb.xxCx.d..aaaaaD.b.",'#10'".aEb.FaFa.G.aHHHH'
+  +'Ha.a.",'#10'".IBJ.KyLL.M.aHNzLHa.a.",'#10'".awazFaaF.O..PPQHHaKI.",'#10'".a'
+  +'.c.xRLAxS..KzHHaK.a.",'#10'".TdazFaaa.UKz.HHaxx.a.",'#10'".a.c.xxAL.o...Hax'
+  +'A..a.",'#10'".Vda.FaaFKh.yyHax...a.",'#10'".azc..K...nW.xKx.K.xa.",'#10'".a'
+  +'ea.x.K.xk.xxHa...xc.",'#10'".aaTaaactttts.Ha.caac.",'#10'".................'
+  +'.....",'#10'".a...a.aaaa.a...a.....",'#10'".aa.aa.a....aa.aa.....",'#10'".a'
+  +'.a.a.aa...a.a.a.....",'#10'".a...a.a....a...a.....",'#10'".a...a.a....a...a'
+  +'.....",'#10'".a...a.aaaa.a...a.....",'#10'"......................"};'#10
+]);
