@@ -199,8 +199,9 @@ procedure InternalInit;
 var c: TClipboardType;
 begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
+
+  MouseCaptureWidget := nil;
   
-  MCaptureHandle := 0;
   LastLeft:=EmptyLastMouseClick;
   LastMiddle:=EmptyLastMouseClick;
   LastRight:=EmptyLastMouseClick;
@@ -259,6 +260,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2002/10/17 21:00:17  lazarus
+  MG: fixed uncapturing of mouse
+
   Revision 1.90  2002/10/15 22:28:05  lazarus
   AJ: added forcelinebreaks
 
