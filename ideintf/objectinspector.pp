@@ -2238,7 +2238,7 @@ begin
        'ObjectInspectorOptions/ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=XMLConfig.GetValue(
-         'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
+         'ObjectInspectorOptions/GridBackgroundColor',clBackground);
     FShowHints:=XMLConfig.GetValue(
          'ObjectInspectorOptions/ShowHints',false);
   except
@@ -2257,7 +2257,8 @@ begin
   try
     XMLConfig:=GetXMLCfg;
 
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds,true);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds,
+                             false);
     if FSaveBounds then begin
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
@@ -2265,9 +2266,8 @@ begin
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
     end;
     XMLConfig.SetValue('ObjectInspectorOptions/Bounds/PropertyGridSplitterX',
-                       FPropertyGridSplitterX);
-    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/EventGridSplitterX',
-                       FEventGridSplitterX);
+                       110);
+    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
                              FDefaultItemHeight,20);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
@@ -2277,7 +2277,8 @@ begin
 
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
                              FGridBackgroundColor,clBackground);
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,false);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,
+                             false);
 
     if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except
