@@ -92,8 +92,11 @@ const
   FPCOperatingSystemAlternativeNames: array[1..1] of shortstring =(
       'unix' // see GetDefaultSrcOSForTargetOS
     );
-  FPCProcessorNames: array[1..3] of shortstring =(
-      'i386', 'powerpc', 'm68k'
+  FPCOperatingSystemAlternative2Names: array[1..1] of shortstring =(
+      'bsd' // see GetDefaultSrcOS2ForTargetOS
+    );
+  FPCProcessorNames: array[1..4] of shortstring =(
+      'i386', 'powerpc', 'm68k', 'x86_64'
     );
 
   Lazarus_CPU_OS_Widget_Combinations: array[1..21] of string = (
@@ -446,6 +449,7 @@ function SearchUnitInUnitLinks(const UnitLinks, TheUnitName: string;
   var UnitLinkStart, UnitLinkEnd: integer; var Filename: string): boolean;
 function CreateUnitLinksTree(const UnitLinks: string): TAVLTree;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
+function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   var CPU, OS, WidgetSet: string);
 
@@ -621,13 +625,24 @@ end;
 function GetDefaultSrcOSForTargetOS(const TargetOS: string): string;
 begin
   Result:='';
-  if (AnsiCompareText(TargetOS,'linux')=0)
-  or (AnsiCompareText(TargetOS,'freebsd')=0)
-  or (AnsiCompareText(TargetOS,'netbsd')=0)
-  or (AnsiCompareText(TargetOS,'openbsd')=0)
-  or (AnsiCompareText(TargetOS,'darwin')=0)
+  if (CompareText(TargetOS,'linux')=0)
+  or (CompareText(TargetOS,'freebsd')=0)
+  or (CompareText(TargetOS,'netbsd')=0)
+  or (CompareText(TargetOS,'openbsd')=0)
+  or (CompareText(TargetOS,'darwin')=0)
   then
     Result:='unix';
+end;
+
+function GetDefaultSrcOS2ForTargetOS(const TargetOS: string): string;
+begin
+  Result:='';
+  if (CompareText(TargetOS,'freebsd')=0)
+  or (CompareText(TargetOS,'netbsd')=0)
+  or (CompareText(TargetOS,'openbsd')=0)
+  or (CompareText(TargetOS,'darwin')=0)
+  then
+    Result:='bsd';
 end;
 
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
@@ -2725,6 +2740,7 @@ var CmdLine: string;
   OutputLine, Buf: String;
   NewDefTempl: TDefineTemplate;
   SrcOS: string;
+  SrcOS2: String;
 begin
   //DebugLn('CreateFPCTemplate ',PPC386Path,' ',PPCOptions);
   Result:=nil;
@@ -2798,16 +2814,25 @@ begin
       i:=1;
       while i<=OutLen do begin
         if Buf[i] in [#10,#13] then begin
+          // define #TargetOS
           TargetOS:=copy(Buf,1,i-1);
           NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
             ctsDefaultppc386TargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
           AddTemplate(NewDefTempl);
+          // define #SrcOS
           SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
           if SrcOS='' then SrcOS:=TargetOS;
           NewDefTempl:=TDefineTemplate.Create('Define SrcOS',
             ctsDefaultppc386SourceOperatingSystem,
             ExternalMacroStart+'SrcOS',SrcOS,da_DefineRecurse);
+          AddTemplate(NewDefTempl);
+          // define #SrcOS2
+          SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
+          if SrcOS2='' then SrcOS2:=TargetOS;
+          NewDefTempl:=TDefineTemplate.Create('Define SrcOS2',
+            ctsDefaultppc386Source2OperatingSystem,
+            ExternalMacroStart+'SrcOS2',SrcOS2,da_DefineRecurse);
           AddTemplate(NewDefTempl);
           break;
         end;
@@ -2873,11 +2898,11 @@ function TDefinePool.CreateFPCSrcTemplate(
   UnitLinkListValid: boolean; var UnitLinkList: string;
   Owner: TObject): TDefineTemplate;
 var
-  Dir, TargetOS, SrcOS, TargetProcessor, UnitLinks,
-  IncPathMacro: string;
+  Dir, TargetOS, SrcOS, SrcOS2, TargetProcessor, UnitLinks,
+  IncPathMacro, SrcPathMacro: string;
   DS: char; // dir separator
   UnitTree: TAVLTree; // tree of TUnitNameLink
-  DefaultSrcOS: string;
+  DefaultSrcOS, DefaultSrcOS2: string;
 
   procedure GatherUnits; forward;
 
@@ -2927,6 +2952,22 @@ var
     // replace Operating System and Processor Type with macros
     var DirStart, DirEnd, i: integer;
       DirName: string;
+      
+      function ReplaceDir(const MacroValue, DefaultMacroValue,
+        MacroName: string): boolean;
+      begin
+        Result:=false;
+        if CompareText(MacroValue,DirName)=0 then begin
+          if CompareText(DirName,DefaultMacroValue)=0 then
+            inc(DefaultMacroCount);
+          BuildMacroFilename:=copy(BuildMacroFilename,1,DirStart-1)+MacroName+
+            copy(BuildMacroFilename,DirEnd,length(BuildMacroFilename)-DirEnd+1);
+          inc(DirEnd,length(MacroName)-length(DirName));
+          DirName:=MacroName;
+          Result:=true;
+        end;
+      end;
+      
     begin
       DefaultMacroCount:=0;
       Result:=copy(AFilename,length(FPCSrcDir)+1,
@@ -2945,39 +2986,31 @@ var
           // replace operating system
           for i:=Low(FPCOperatingSystemNames) to High(FPCOperatingSystemNames)
           do
-            if FPCOperatingSystemNames[i]=DirName then begin
-              if CompareText(DirName,DefaultTargetOS)=0 then
-                inc(DefaultMacroCount);
-              Result:=copy(Result,1,DirStart-1)+TargetOS+
-                      copy(Result,DirEnd,length(Result)-DirEnd+1);
-              inc(DirEnd,length(TargetOS)-length(DirName));
-              DirName:=TargetOS;
+            if ReplaceDir(FPCOperatingSystemNames[i],DefaultTargetOS,TargetOS)
+            then
               break;
-            end;
           // replace operating system class
           for i:=Low(FPCOperatingSystemAlternativeNames)
               to High(FPCOperatingSystemAlternativeNames)
           do
-            if FPCOperatingSystemAlternativeNames[i]=DirName then begin
-              if CompareText(DirName,DefaultSrcOS)=0 then
-                inc(DefaultMacroCount);
-              Result:=copy(Result,1,DirStart-1)+SrcOS+
-                      copy(Result,DirEnd,length(Result)-DirEnd+1);
-              inc(DirEnd,length(SrcOS)-length(DirName));
-              DirName:=SrcOS;
+            if ReplaceDir(FPCOperatingSystemAlternativeNames[i],DefaultSrcOS,
+              SrcOS)
+            then
               break;
-            end;
+          // replace operating system secondary class
+          for i:=Low(FPCOperatingSystemAlternative2Names)
+              to High(FPCOperatingSystemAlternative2Names)
+          do
+            if ReplaceDir(FPCOperatingSystemAlternative2Names[i],DefaultSrcOS2,
+              SrcOS2)
+            then
+              break;
           // replace processor type
           for i:=Low(FPCProcessorNames) to High(FPCProcessorNames) do
-            if FPCProcessorNames[i]=DirName then begin
-              if CompareText(DirName,DefaultProcessorName)=0 then
-                inc(DefaultMacroCount);
-              Result:=copy(Result,1,DirStart-1)+TargetProcessor+
-                      copy(Result,DirEnd,length(Result)-DirEnd+1);
-              inc(DirEnd,length(TargetProcessor)-length(DirName));
-              DirName:=TargetProcessor;
+            if ReplaceDir(FPCProcessorNames[i],DefaultProcessorName,
+              TargetProcessor)
+            then
               break;
-            end;
         end;
         DirStart:=DirEnd;
       end;
@@ -3013,11 +3046,11 @@ var
         repeat
           AFilename:=FileInfo.Name;
           if (AFilename='.') or (AFilename='..') then continue;
-          //writeln('Browse Filename=',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0);
+          //debugln('Browse Filename=',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0);
           i:=High(IgnoreDirs);
           while (i>=Low(IgnoreDirs)) and (AFilename<>IgnoreDirs[i]) do dec(i);
           //if CompareText(AFilename,'fcl')=0 then
-          //  writeln('Browse ',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0,' Ignore=',i>=Low(IgnoreDirs));
+          //  debugln('Browse ',AFilename,' IsDir=',(FileInfo.Attr and faDirectory)>0,' Ignore=',i>=Low(IgnoreDirs));
           if i>=Low(IgnoreDirs) then continue;
           AFilename:=ADirPath+AFilename;
           if (FileInfo.Attr and faDirectory)>0 then begin
@@ -3230,7 +3263,42 @@ var
       ParentDefTempl.AddChild(IfTemplate);
     end;
   end;
+  
+  procedure AddSrcOSDefines(ParentDefTempl: TDefineTemplate);
+  var
+    IfTargetOSIsNotSrcOS: TDefineTemplate;
+    RTLSrcOSDir: TDefineTemplate;
+    IfTargetOSIsNotSrcOS2: TDefineTemplate;
+    RTLSrcOS2Dir: TDefineTemplate;
+  begin
+    // if TargetOS<>SrcOS
+    IfTargetOSIsNotSrcOS:=TDefineTemplate.Create(
+      'IF TargetOS is not SrcOS',
+      ctsIfTargetOSIsNotSrcOS,'',''''+TargetOS+'''<>'''+SrcOS+'''',da_If);
+    // rtl/$(#SrcOS)
+    RTLSrcOSDir:=TDefineTemplate.Create('SrcOS',SrcOS,'',
+      SrcOS,da_Directory);
+    IfTargetOSIsNotSrcOS.AddChild(RTLSrcOSDir);
+    RTLSrcOSDir.AddChild(TDefineTemplate.Create('Include Path',
+      'include path to TargetProcessor directories',
+      ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
+      da_DefineRecurse));
+    ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS);
 
+    // if TargetOS<>SrcOS2
+    IfTargetOSIsNotSrcOS2:=TDefineTemplate.Create(
+      'IF TargetOS is not SrcOS2',
+      ctsIfTargetOSIsNotSrcOS,'',''''+TargetOS+'''<>'''+SrcOS2+'''',da_If);
+    // rtl/$(#SrcOS2)
+    RTLSrcOS2Dir:=TDefineTemplate.Create('SrcOS2',SrcOS2,'',
+      SrcOS2,da_Directory);
+    IfTargetOSIsNotSrcOS2.AddChild(RTLSrcOS2Dir);
+    RTLSrcOS2Dir.AddChild(TDefineTemplate.Create('Include Path',
+      'include path to TargetProcessor directories',
+      ExternalMacroStart+'IncPath',IncPathMacro+';'+TargetProcessor,
+      da_DefineRecurse));
+    ParentDefTempl.AddChild(IfTargetOSIsNotSrcOS2);
+  end;
 
 //  function CreateFPCSrcTemplate(const FPCSrcDir,
 //      UnitSearchPath: string;
@@ -3242,7 +3310,6 @@ var
   RTLWin32Dir: TDefineTemplate;
   FCLDBDir: TDefineTemplate;
   FCLDBInterbaseDir: TDefineTemplate;
-  SrcPathMacro: String;
   InstallerDir: TDefineTemplate;
 begin
   {$IFDEF VerboseFPCSrcScan}
@@ -3255,12 +3322,14 @@ begin
   if Dir[length(Dir)]<>DS then Dir:=Dir+DS;
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
+  SrcOS2:='$('+ExternalMacroStart+'SrcOS2)';
   TargetProcessor:='$('+ExternalMacroStart+'TargetProcessor)';
   IncPathMacro:='$('+ExternalMacroStart+'IncPath)';
   SrcPathMacro:='$('+ExternalMacroStart+'SrcPath)';
   UnitLinks:=ExternalMacroStart+'UnitLinks';
   UnitTree:=nil;
   DefaultSrcOS:=GetDefaultSrcOSForTargetOS(DefaultTargetOS);
+  DefaultSrcOS2:=GetDefaultSrcOS2ForTargetOS(DefaultTargetOS);
 
 
   Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
@@ -3319,7 +3388,7 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
-  // rtl/$(TargetOS)
+  // rtl/$(#TargetOS)
   if TargetOS<>'' then begin
     RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
                                      TargetOS,da_Directory);
@@ -3334,16 +3403,6 @@ begin
       Format(ctsAddsDirToSourcePath,[TargetProcessor]),
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
-    
-    // rtl/darwin uses rtl/bsd/
-    RTLOSDir:=TDefineTemplate.Create('darwin','rtl/darwin','',
-                                     'darwin',da_Directory);
-    s:=SrcPathMacro
-      +';'+Dir+'rtl'+DS+'bsd'+DS;
-    RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
-      Format(ctsAddsDirToSourcePath,[TargetProcessor]),
-      ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
-    RTLDir.AddChild(RTLOSDir);
   end;
   // rtl/win32
   RTLWin32Dir:=TDefineTemplate.Create('Win32','Win32','','win32',da_Directory);
@@ -3354,6 +3413,7 @@ begin
       IncPathMacro+';wininc',da_Define));
 
   AddProcessorTypeDefine(RTLDir);
+  AddSrcOSDefines(RTLDir);
 
   // fcl
   FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',

@@ -166,6 +166,7 @@ ResourceString
   ctsDefaultppc386Symbol = 'Default ppc386 symbol';
   ctsDefaultppc386TargetOperatingSystem = 'Default ppc386 target Operating System';
   ctsDefaultppc386SourceOperatingSystem = 'Default ppc386 source Operating System';
+  ctsDefaultppc386Source2OperatingSystem = 'Default ppc386 source Operating System 2';
   ctsDefaultppc386TargetProcessor = 'Default ppc386 target processor';
   ctsFreePascalCompilerInitialMacros = 'Free Pascal Compiler initial macros';
   ctsFreePascalSourcesPlusDesc = 'Free Pascal Sources, %s';
@@ -183,6 +184,8 @@ ResourceString
   ctsIncludeDirectoriesPlusDirs = 'include directories: %s';
   ctsPackageDirectories = 'Package directories';
   ctsUtilsDirectories = 'Utils directories';
+  ctsIfTargetOSIsNotSrcOS = 'If TargetOS<>SrcOS';
+  ctsIfTargetOSIsNotSrcOS2 = 'If TargetOS<>SrcOS2';
   ctsInstallerDirectories = 'Installer directories';
   ctsDefsForLazarusSources = 'Definitions for the Lazarus Sources';
   ctsAddsDirToSourcePath = 'adds %s to SrcPath';
