@@ -113,6 +113,7 @@ begin
   // owner could be a popupmenu too
   if (AMenuItem.Owner is TWinControl) and
       TWinControl(AMenuItem.Owner).HandleAllocated and
+      TWinControl(AMenuItem.Owner).Visible and
       ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
     DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
 end;
@@ -251,6 +252,7 @@ begin
   // owner could be a popupmenu too
   if (AMenuItem.Owner is TWinControl) and
       TWinControl(AMenuItem.Owner).HandleAllocated and
+      TWinControl(AMenuItem.Owner).Visible and
       ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
     DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
 end;
@@ -271,6 +273,7 @@ begin
   if (AMenu<>nil) and (AMenu.Parent<>nil)
   and (AMenu.Parent is TCustomForm)
   and TCustomForm(AMenu.Parent).HandleAllocated 
+  and TCustomForm(AMenu.Parent).Visible
   and not (csDestroying in AMenu.Parent.ComponentState) then
     DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
 end;

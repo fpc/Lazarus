@@ -682,6 +682,17 @@ Begin
       LMessage.Result := DLGC_WANTALLKEYS;
       WinProcess := false;
     End;
+{
+    * TODO: make it work... icon does not show up yet, so better disable it
+    WM_GETICON:
+    begin
+      if WindowInfo^.WinControl is TCustomForm then
+      begin
+        LMessage.Result := TCustomForm(WindowInfo^.WinControl).GetIconHandle;
+        WinProcess := false;
+      end;
+    end;
+}
     WM_KEYDOWN:
     Begin
       NotifyUserInput := True;
@@ -1430,6 +1441,9 @@ end;
 
 {
   $Log$
+  Revision 1.152  2004/10/29 18:55:30  micha
+  speed up menu creation
+
   Revision 1.151  2004/10/29 14:24:17  micha
   make code possible safer, with better typecasts and use of GlobalAddAtom, because windows are global
 
