@@ -4,12 +4,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   CLIENTHEIGHT = 442
   CLIENTWIDTH = 480
   ONCREATE = DebuggerOptionsFormCREATE
+  ONDESTROY = DebuggerOptionsFormDESTROY
   POSITION = podefaultposonly
   HORZSCROLLBAR.PAGE = 481
   VERTSCROLLBAR.PAGE = 443
-  LEFT = 482
+  LEFT = 523
   HEIGHT = 442
-  TOP = 291
+  TOP = 319
   WIDTH = 480
   object nbDebugOptions: TNOTEBOOK
     ALIGN = altop
@@ -18,13 +19,18 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     WIDTH = 480
     object pgGeneral: TPAGE
       CAPTION = 'General'
+      CLIENTWIDTH = 476
+      CLIENTHEIGHT = 368
       LEFT = 2
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
       object gbDebuggerType: TGROUPBOX
         CAPTION = 'Debugger type and path'
+        CLIENTHEIGHT = 37
+        CLIENTWIDTH = 468
         PARENTCTL3D = False
+        TABORDER = 0
         LEFT = 2
         HEIGHT = 54
         TOP = 8
@@ -32,6 +38,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         object cmbDebuggerType: TCOMBOBOX
           MAXLENGTH = 0
           PARENTCTL3D = False
+          TABORDER = 0
           TABSTOP = True
           LEFT = 6
           HEIGHT = 25
@@ -60,6 +67,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbAdditionalSearchPath: TGROUPBOX
         CAPTION = 'Additional search path'
+        CLIENTHEIGHT = 35
+        CLIENTWIDTH = 468
         PARENTCTL3D = False
         TABORDER = 1
         LEFT = 2
@@ -68,6 +77,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         WIDTH = 472
         object txtAdditionalPath: TEDIT
           TABSTOP = True
+          TABORDER = 0
           LEFT = 6
           HEIGHT = 25
           TOP = 5
@@ -85,6 +95,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbDebuggerSpecific: TGROUPBOX
         CAPTION = 'Debugger specific options (depends on type of debugger)'
+        CLIENTHEIGHT = 227
+        CLIENTWIDTH = 468
         PARENTCTL3D = False
         TABORDER = 2
         LEFT = 2
@@ -95,13 +107,18 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
     object pgEventLog: TPAGE
       CAPTION = 'Event Log'
+      CLIENTWIDTH = 476
+      CLIENTHEIGHT = 368
       LEFT = 2
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
       object gbGeneral: TGROUPBOX
         CAPTION = 'General'
+        CLIENTHEIGHT = 115
+        CLIENTWIDTH = 226
         PARENTCTL3D = False
+        TABORDER = 0
         LEFT = 4
         HEIGHT = 132
         TOP = 8
@@ -111,6 +128,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AUTOSIZE = True
           CAPTION = 'Clear log on run'
           DRAGCURSOR = 0
+          TABORDER = 0
           TABSTOP = True
           LEFT = 4
           HEIGHT = 20
@@ -131,10 +149,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object seLimitLinecount: TSPINEDIT
           ENABLED = False
-          CLIMB_RATE = 1
-          MINVALUE = 1
-          MAXVALUE = 10000
-          VALUE = 1
+          CLIMB_RATE = 7.62096543442854E-34
+          MINVALUE = 7.62096543442854E-34
+          MAXVALUE = 7.62096543442854E-34
+          VALUE = 7.62096543442854E-34
           LEFT = 28
           HEIGHT = 20
           TOP = 53
@@ -143,6 +161,8 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbMessages: TGROUPBOX
         CAPTION = 'Messages'
+        CLIENTHEIGHT = 171
+        CLIENTWIDTH = 228
         ENABLED = False
         PARENTCTL3D = False
         TABORDER = 1
@@ -155,6 +175,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           AUTOSIZE = True
           CAPTION = 'Breakpoint'
           DRAGCURSOR = 0
+          TABORDER = 0
           TABSTOP = True
           LEFT = 4
           HEIGHT = 20
@@ -237,34 +258,28 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
     object pgExceptions: TPAGE
       CAPTION = 'Language Exceptions'
+      CLIENTWIDTH = 476
+      CLIENTHEIGHT = 368
       LEFT = 2
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
       object bgIgnoreExceptions: TGROUPBOX
         CAPTION = 'Ignore these exceptions'
+        CLIENTHEIGHT = 311
+        CLIENTWIDTH = 464
         PARENTCTL3D = False
+        TABORDER = 0
         LEFT = 4
         HEIGHT = 328
         TOP = 8
         WIDTH = 468
-        object sbExceptions: TSCROLLBOX
-          AUTOSIZE = False
-          DRAGCURSOR = 0
-          PARENTCTL3D = False
-          TABSTOP = True
-          HORZSCROLLBAR.PAGE = 444
-          VERTSCROLLBAR.PAGE = 262
-          LEFT = 8
-          HEIGHT = 265
-          TOP = 5
-          WIDTH = 447
-        end
         object cmdExceptionRemove: TBUTTON
           ENABLED = False
           CAPTION = 'Remove'
           TABSTOP = True
-          TABORDER = 1
+          TABORDER = 0
+          ONCLICK = cmdExceptionRemoveCLICK
           LEFT = 380
           HEIGHT = 25
           TOP = 277
@@ -273,12 +288,22 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         object cmdExceptionAdd: TBUTTON
           CAPTION = 'Add'
           TABSTOP = True
-          TABORDER = 2
+          TABORDER = 1
           ONCLICK = cmdExceptionAddCLICK
           LEFT = 300
           HEIGHT = 25
           TOP = 277
           WIDTH = 75
+        end
+        object clbExceptions: TCHECKLISTBOX
+          ONCLICK = clbExceptionsCLICK
+          TABORDER = 2
+          TABSTOP = True
+          TOPINDEX = -1
+          LEFT = 8
+          HEIGHT = 264
+          TOP = 5
+          WIDTH = 448
         end
       end
       object chkBreakOnException: TCHECKBOX
@@ -286,7 +311,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         AUTOSIZE = True
         CAPTION = 'Break on Lazarus Exceptions'
         DRAGCURSOR = 0
-        ONCHANGE = chkBreakOnExceptionCHANGE
         TABORDER = 1
         TABSTOP = True
         LEFT = 2
@@ -297,13 +321,18 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     end
     object pgSignals: TPAGE
       CAPTION = 'OS Exceptions'
+      CLIENTWIDTH = 476
+      CLIENTHEIGHT = 368
       LEFT = 2
       HEIGHT = 368
       TOP = 28
       WIDTH = 476
       object gbSignals: TGROUPBOX
         CAPTION = 'Signals'
+        CLIENTHEIGHT = 337
+        CLIENTWIDTH = 464
         PARENTCTL3D = False
+        TABORDER = 0
         LEFT = 4
         HEIGHT = 354
         TOP = 8
@@ -312,6 +341,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           ENABLED = False
           CAPTION = 'Remove'
           TABSTOP = True
+          TABORDER = 0
           LEFT = 381
           HEIGHT = 25
           TOP = 305
@@ -375,6 +405,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
     CAPTION = 'OK'
     TABSTOP = True
     TABORDER = 2
+    ONCLICK = cmdOKCLICK
     LEFT = 320
     HEIGHT = 25
     TOP = 408

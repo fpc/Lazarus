@@ -110,6 +110,7 @@ constructor TCheckListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCompStyle := csCheckListBox;
+  FItemDataOffset := inherited GetCachedDataSize;
 end;
 
 function TCheckListBox.GetCachedDataSize: Integer;
@@ -153,6 +154,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/07/09 00:13:18  marc
+  * fixed cached items.object storage if TCheckListBox
+  * Changed DebuggerOptions dialog to use new TCheckListBox
+
   Revision 1.2  2003/07/07 23:58:43  marc
   + Implemented TCheckListBox.Checked[] property
 

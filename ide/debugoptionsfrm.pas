@@ -6,10 +6,12 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, Menus, Spin, BaseDebugManager, Debugger;
+  StdCtrls, Buttons, ComCtrls, Menus, Spin, BaseDebugManager, Debugger,
+  CheckLst;
 
 type
   TDebuggerOptionsForm = class (TForm )
+    clbExceptions: TCHECKLISTBOX;
     chkMessagesInterface: TCHECKBOX;
     chkClearLogOnRun: TCHECKBOX;
     chkLimitLinecount: TCHECKBOX;
@@ -30,6 +32,7 @@ type
     chkBreakOnException: TCHECKBOX;
     cmbDebuggerType: TCOMBOBOX;
     cmbDebuggerPath: TCOMBOBOX;
+    N1: TMENUITEM;
     seLimitLinecount: TSPINEDIT;
     txtAdditionalPath: TEDIT;
     gbDebuggerType: TGROUPBOX;
@@ -50,16 +53,17 @@ type
     pgEventLog: TPAGE;
     pgGeneral: TPAGE;
     popSignal: TPOPUPMENU;
-    sbExceptions: TSCROLLBOX;
-    procedure DebuggerOptionsFormCREATE (Sender: TObject );
-    procedure chkBreakOnExceptionCHANGE (Sender: TObject );
+    procedure DebuggerOptionsFormCREATE(Sender: TObject);
+    procedure DebuggerOptionsFormDESTROY(Sender: TObject);
+    procedure clbExceptionsCLICK (Sender: TObject );
     procedure cmdExceptionAddCLICK (Sender: TObject );
+    procedure cmdExceptionRemoveCLICK (Sender: TObject );
+    procedure cmdOKCLICK (Sender: TObject );
   private
-    procedure AddExceptionLine(const AException: TIDEException);
-    procedure ExceptionEnableClick(Sender: TObject);
+    FExceptionDeleteList: TStringList;
+    procedure AddExceptionLine(const AException: TIDEException; AName: String);
   public
-    { public declarations }
-  end; 
+  end;
 
 var
   DebuggerOptionsForm: TDebuggerOptionsForm;
@@ -68,43 +72,89 @@ implementation
 
 { TDebuggerOptionsForm }
 
-procedure TDebuggerOptionsForm.AddExceptionLine(const AException: TIDEException);
+procedure TDebuggerOptionsForm.AddExceptionLine(const AException: TIDEException; AName: String);
 var
-  cb: TCheckBox;
+  idx: Integer;
 begin
-  cb := TCheckBox.Create(self);
-  cb.Top := Maxint div 2;
-  cb.Align := alTop;
-  cb.Caption := AException.Name;
-  cb.Checked := AException.Enabled;
-  cb.Parent := sbExceptions;
-  cb.Visible := True;
-  cb.Tag := Integer(AException);
-  cb.OnClick := @ExceptionEnableClick;
+  if (AName = '') and (AException <> nil)
+  then AName := AException.Name;
+  if AName = '' then Exit;
+
+  idx := clbExceptions.Items.AddObject(AName, AException);
+  clbExceptions.Checked[idx] := (AException = nil) or AException.Enabled;
 end;
 
-procedure TDebuggerOptionsForm.chkBreakOnExceptionCHANGE (Sender: TObject );
+procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
 begin
-
+  cmdExceptionRemove.Enabled :=  clbExceptions.ItemIndex <> -1;
 end;
 
 procedure TDebuggerOptionsForm.cmdExceptionAddCLICK(Sender: TObject);
 var
+  idx: Integer;
   S: String;
-  IdeException: TIDEException;
 begin
-  if InputQuery('Add Exception', 'Enter the name of the exception', S)
+  if not InputQuery('Add Exception', 'Enter the name of the exception', S)
+  then Exit;
+  
+  if clbExceptions.Items.IndexOf(S) = -1
   then begin
-    try
-      IdeException := DebugBoss.Exceptions.Add(S);
-    except
-      on E: EDBGExceptions do
-      begin
-        ShowMessage(E.Message);
-        Exit;
+    idx := FExceptionDeleteList.IndexOf(S);
+    if idx = -1
+    then begin
+      AddExceptionLine(nil, S);
+    end
+    else begin
+      AddExceptionLine(TIDEException(FExceptionDeleteList.Objects[idx]), S);
+      FExceptionDeleteList.Delete(idx);
+    end;
+  end
+  else begin
+    MessageDlg('Duplicate Exception name', mtError, [mbOK], 0);
+  end;
+end;
+
+procedure TDebuggerOptionsForm.cmdExceptionRemoveCLICK(Sender: TObject);
+var
+  idx: Integer;
+  obj: TObject;
+begin
+  idx := clbExceptions.ItemIndex;
+  if idx <> -1
+  then begin
+    obj := clbExceptions.Items.Objects[idx];
+    if obj <> nil
+    then FExceptionDeleteList.AddObject(clbExceptions.Items[idx], obj);
+    clbExceptions.Items.Delete(idx);
+  end;
+  cmdExceptionRemove.Enabled :=  clbExceptions.ItemIndex <> -1;
+end;
+
+procedure TDebuggerOptionsForm.cmdOKCLICK (Sender: TObject );
+var
+  n: Integer;
+  ie: TIDEException;
+begin
+  for n := 0 to FExceptionDeleteList.Count - 1 do
+    FExceptionDeleteList.Objects[n].Free;
+    
+  for n := 0 to clbExceptions.Items.Count - 1 do
+  begin
+    ie := TIDEException(clbExceptions.Items.Objects[n]);
+    if ie = nil
+    then begin
+      ie := DebugBoss.Exceptions.Add(clbExceptions.Items[n]);
+      ie.Enabled := clbExceptions.Checked[n];
+    end
+    else begin
+      ie.BeginUpdate;        //ie^
+      try
+        ie.Name := clbExceptions.Items[n];
+        ie.Enabled := clbExceptions.Checked[n];
+      finally
+        ie.EndUpdate;
       end;
     end;
-    AddExceptionLine(IdeException);
   end;
 end;
 
@@ -112,20 +162,20 @@ procedure TDebuggerOptionsForm.DebuggerOptionsFormCREATE(Sender: TObject);
 var
   n: Integer;
 begin
+  FExceptionDeleteList := TStringList.Create;
+  FExceptionDeleteList.Sorted := True;
+
   for n := 0 to DebugBoss.Exceptions.Count - 1 do
   begin
-    AddExceptionLine(DebugBoss.Exceptions[n]);
+    AddExceptionLine(DebugBoss.Exceptions[n], '');
   end;
 end;
 
-procedure TDebuggerOptionsForm.ExceptionEnableClick(Sender: TObject);
-var
-  IdeException: TIDEException;
+procedure TDebuggerOptionsForm.DebuggerOptionsFormDESTROY(Sender: TObject);
 begin
-  IDEException := TIDEException(TCheckBox(Sender).Tag);
-  if IDEException <> nil
-  then IDEException.Enabled := TCheckBox(Sender).Checked;
+  FreeAndNil(FExceptionDeleteList);
 end;
+
 
 initialization
   {$I debugoptionsfrm.lrs}

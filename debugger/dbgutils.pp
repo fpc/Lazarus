@@ -254,8 +254,6 @@ procedure TDelayedUdateItem.BeginUpdate;
 begin
   Inc(FUpdateCount);
   if FUpdateCount = 1 then FDoChanged := False;
-  
-  WriteLn(Classname,'.BeginUpdate count=', FUpdateCount);
 end;
 
 procedure TDelayedUdateItem.Changed;
@@ -279,20 +277,21 @@ end;
 procedure TDelayedUdateItem.EndUpdate;
 begin
   Dec(FUpdateCount);
-  WriteLn(Classname,'.EndUpdate A count=', FUpdateCount);
   if FUpdateCount < 0 then raise EInvalidOperation.Create('TDelayedUdateItem.EndUpdate');
   if (FUpdateCount = 0) and FDoChanged
   then begin
     DoChanged;
     FDoChanged := False;
-    WriteLn(Classname,'.EndUpdate B');
   end;
-  WriteLn(Classname,'.EndUpdate C');
 end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2003/07/09 00:13:18  marc
+  * fixed cached items.object storage if TCheckListBox
+  * Changed DebuggerOptions dialog to use new TCheckListBox
+
   Revision 1.7  2003/06/13 19:21:31  marc
   MWE: + Added initial signal and exception handling
 
