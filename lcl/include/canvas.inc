@@ -542,50 +542,66 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.TextRect
-  Params:   Rect,X,Y,Text
+  Params:   Rect, X, Y, Text
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
 Procedure TCanvas.TextRect(Rect: TRect; X,Y : Integer; const Text : String);
 begin
-  RequiredState([csHandleValid, csFontValid, csBrushValid]);
-  ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, @Rect, pChar(Text), Length(Text), nil);
-  MoveTo(X + TextWidth(Text), Y);
+  TextRect(Rect,X,Y,Text,TextStyle);
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.TextRect
-  Params:   Rect, X, Y, Text
-, Style
+  Params:   Rect, X, Y, Text, Style
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.TextRect(Rect: TRect; X, Y : Integer; const Text : String; const Style : TTextStyle);
-var X1, Y1 : integer;
-    TS : TSize;
-    Options : Longint;
+var
+  Options : Longint;
+  fRect : TRect;
 begin
-  RequiredState([csHandleValid, csFontValid, csBrushValid]);
-  TS:= TextExtent(Text);
-
-  { Compute the rectangle for text }
+  Rect.Left := Rect.Left + X;
+  Rect.Top := Rect.Top + Y;
+  Options := 0;
   case Style.Alignment of
-    taRightJustify : X1:= Rect.Right - TS.cx;
-    taCenter : X1:= Rect.Left + ((Rect.Right - Rect.Left - TS.cx) div 2);
-    else X1:= Rect.Left + X;
+    taRightJustify : Options := DT_RIGHT;
+    taCenter : Options := DT_Center;
   end;
   case Style.Layout of
-    tlCenter : Y1:= Rect.Top + ((Rect.Bottom - Rect.Top - TS.cy) div 2);
-    tlBottom : Y1:= Rect.Bottom - TS.cy;
-    else Y1:= Rect.Top + Y;
+    tlCenter : Options := Options or DT_VCENTER;
+    tlBottom : Options := Options or DT_BOTTOM;
   end;
-  
-  if Style.Opaque then Options:= ETO_OPAQUE
-  else Options:= 0;
-  if Style.Clipping then Options:= Options or ETO_CLIPPED;
-  
-  ExtTextOut(FHandle, X1, Y1, Options, @Rect, pChar(Text), Length(Text), nil);
-  MoveTo(X1 + TS.cx, Y1);
+  If Style.WordBreak then
+    Options := Options or DT_WORDBREAK
+  else
+    If Style.SingleLine then
+      Options := Options or DT_SINGLELINE;
+
+  If not Style.Clipping then
+    Options := Options or DT_NOCLIP;
+
+  If not Style.ShowPrefix then
+    Options := Options or DT_NOPREFIX;
+
+  fRect := Rect;
+  RequiredState([csHandleValid, csFontValid]);
+  DrawText(Self.Handle, pChar(Text), Length(Text), fRect, DT_CALCRECT or Options);
+  case Style.Alignment of
+    taRightJustify : OffsetRect(fRect, Rect.Right - fRect.Right, 0);
+    taCenter : OffsetRect(fRect, (Rect.Right - fRect.Right) div 2, 0);
+  end;
+  case Style.Layout of
+    tlCenter : OffsetRect(fRect, 0, (Rect.Bottom - Rect.Top) div 2 - (fRect.Bottom - fRect.Top) div 2);
+    tlBottom : OffsetRect(fRect, 0, Rect.Bottom - fRect.Bottom);
+  end;
+  If Style.Opaque then begin
+    RequiredState([csHandleValid, csBrushValid]);
+    FillRect(fRect);
+  end;
+  RequiredState([csHandleValid, csFontValid]);
+  DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options)
 end;
 
 
@@ -596,9 +612,14 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.TextOut(X,Y: Integer; const Text: String);
+var
+  Flags : Cardinal;
 begin
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
-  ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, nil,
+  Flags := 0;
+  If TextStyle.Opaque then
+    Flags := ETO_Opaque;
+  ExtTextOut(FHandle, X, Y, Flags, nil,
              PChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);
 end;
@@ -740,6 +761,17 @@ begin
   FSavedBrushHandle := 0;
   FCopyMode := cmSrcCopy;
   FPenPos := Point(0, 0);
+  FLockCount := 0;
+  InitializeCriticalSection(FLock);
+  With FTextStyle do begin
+    Alignment := taLeftJustify;
+    Layout := tlTop;
+    WordBreak := True;
+    SingleLine := False;
+    Clipping := True;
+    ShowPrefix := True;
+    Opaque := False;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -789,6 +821,8 @@ begin
   FFont.Free;
   FPen.Free;
   FBrush.Free;
+  if FLockCount <> 0 then
+     DeleteCriticalSection(FLock);
   inherited Destroy;
 end;
 
@@ -955,9 +989,34 @@ begin
   Result := TextExtent(Text).cY;
 end;
 
+{------------------------------------------------------------------------------
+  Function: TCanvas.Lock
+  Params:   none
+  Returns:  nothing
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Lock;
+begin
+  EnterCriticalSection(FLock);
+  Inc(FLockCount);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TCanvas.Unlock
+  Params:   none
+  Returns:  nothing
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Unlock;
+begin
+  LeaveCriticalSection(FLock);
+  Dec(FLockCount);
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.22  2002/08/15 15:46:48  lazarus
   MG: added changes from Andrew (Clipping)
 
