@@ -699,13 +699,13 @@ end;
 procedure TMainIDEBase.SetupHelpMenu;
 begin
   with MainIDEBar do begin
-    CreateMenuItem(mnuHelp,itmHelpAboutLazarus,'itmHelpAboutLazarus',
-                   lisMenuAboutLazarus);
     CreateMenuItem(mnuHelp,itmHelpOnlineHelp,'itmHelpOnlineHelp',
                    lisMenuOnlineHelp);
-    mnuHelp.Add(CreateMenuSeparator);
     CreateMenuItem(mnuHelp,itmHelpConfigureHelp,'itmHelpConfigureHelp',
                    lisMenuConfigureHelp);
+    mnuHelp.Add(CreateMenuSeparator);
+    CreateMenuItem(mnuHelp,itmHelpAboutLazarus,'itmHelpAboutLazarus',
+                   lisMenuAboutLazarus);
   end;
 end;
 
