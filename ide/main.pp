@@ -525,7 +525,8 @@ type
 
     // useful file methods
     function FindUnitFile(const AFilename: string): string; override;
-    function FindSourceFile(const AFilename: string): string; override;
+    function FindSourceFile(const AFilename, BaseDirectory: string;
+                            Flags: TFindSourceFlags): string; override;
     function DoSaveStreamToFile(AStream:TStream; const Filename:string;
                                 IsPartOfProject:boolean): TModalResult;
     function DoSaveStringToFile(const Filename, Src,
@@ -904,18 +905,25 @@ begin
   
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
-  Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
-
-  FreeThenNil(Project1);
+  // free control selection
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
     TheControlSelection.OnSelectionFormChanged:=nil;
     FreeThenNil(TheControlSelection);
   end;
+  
+  // disconnect handlers
+  Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
+  Application.RemoveOnIdleHandler(@OnApplicationIdle);
+  Screen.RemoveHandlerRemoveForm(@OnScreenRemoveForm);
+
+  // free project, if it is still there
+  FreeThenNil(Project1);
   FreeThenNil(FormEditor1);
   FreeThenNil(PkgBoss);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(TheCompiler);
+  FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
   FreeThenNil(CodeToolsOpts);
@@ -923,7 +931,6 @@ begin
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(InputHistories);
-  FreeThenNil(HiddenWindowsOnRun);
 
   writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
@@ -6811,7 +6818,8 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TMainIDE.FindSourceFile(const AFilename: string): string;
+  function TMainIDE.FindSourceFile(const AFilename, BaseDirectory: string;
+    Flags: TFindSourceFlags): string;
 
   AFilename can be an absolute or relative filename, of a source file or a
   compiled unit (.ppu, .ppw).
@@ -6823,64 +6831,161 @@ end;
   its include path. Then all used package source directories are searched.
   Finally the fpc sources are searched.
 ------------------------------------------------------------------------------}
-function TMainIDE.FindSourceFile(const AFilename: string): string;
+function TMainIDE.FindSourceFile(const AFilename, BaseDirectory: string;
+  Flags: TFindSourceFlags): string;
 var
   SearchFile: String;
   SearchPath: String;
   CompiledSrcExt: String;
   CompiledFilename: String;
+  CurBaseDir: String;
   BaseDir: String;
+  AlreadySearchedPaths: string;
+  StartUnitPath: String;
+  
+  procedure MarkPathAsSearched(const AddSearchPath: string);
+  begin
+    AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,AddSearchPath);
+  end;
+  
+  function SearchIndirectIncludeFile: string;
+  var
+    UnitPath: String;
+    CurDir: String;
+    AlreadySearchedUnitDirs: String;
+    CompiledUnitPath: String;
+    AllSrcPaths: String;
+    CurSrcPath: String;
+    CurIncPath: String;
+    PathPos: Integer;
+    AllIncPaths: String;
+  begin
+    if CompiledSrcExt='' then exit;
+    // get unit path for compiled units
+    UnitPath:=TrimSearchPath(BaseDir+';'+StartUnitPath,BaseDir);
+
+    // Extract all directories with compiled units
+    CompiledUnitPath:='';
+    AlreadySearchedUnitDirs:='';
+    PathPos:=1;
+    while PathPos<=length(UnitPath) do begin
+      CurDir:=GetNextDirectoryInSearchPath(UnitPath,PathPos);
+      // check if directory already tested
+      if SearchDirectoryInSearchPath(AlreadySearchedUnitDirs,CurDir,1)>0 then
+        continue;
+      AlreadySearchedUnitDirs:=MergeSearchPaths(AlreadySearchedUnitDirs,CurDir);
+      // check if directory contains a compiled unit
+      if FindFirstFileWithExt(CurDir,CompiledSrcExt)<>'' then
+        CompiledUnitPath:=CompiledUnitPath+';'+CurDir;
+    end;
+    
+    // collect all src paths for the compiled units
+    AllSrcPaths:=CompiledUnitPath;
+    PathPos:=1;
+    while PathPos<=length(CompiledUnitPath) do begin
+      CurDir:=GetNextDirectoryInSearchPath(CompiledUnitPath,PathPos);
+      CurSrcPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(CurDir);
+      CurSrcPath:=TrimSearchPath(CurSrcPath,CurDir);
+      AllSrcPaths:=MergeSearchPaths(AllSrcPaths,CurSrcPath);
+    end;
+    // add fpc src directories
+    // ToDo
+    
+    // collect all include paths
+    AllIncPaths:=AllSrcPaths;
+    PathPos:=1;
+    while PathPos<=length(AllSrcPaths) do begin
+      CurDir:=GetNextDirectoryInSearchPath(AllSrcPaths,PathPos);
+      CurIncPath:=CodeToolBoss.GetIncludePathForDirectory(CurDir);
+      CurIncPath:=TrimSearchPath(CurIncPath,CurDir);
+      AllIncPaths:=MergeSearchPaths(AllIncPaths,CurIncPath);
+    end;
+    
+    SearchFile:=AFilename;
+    SearchPath:=AllIncPaths;
+    Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    MarkPathAsSearched(SearchPath);
+  end;
+  
 begin
   if FilenameIsAbsolute(AFilename) then begin
-    Result:=AFilename;
+    if FileExists(AFilename) then
+      Result:=AFilename
+    else
+      Result:='';
     exit;
   end;
 
-  // first search file in unit path
-  BaseDir:=Project1.ProjectDirectory;
-  SearchFile:=ExtractFilename(AFilename);
-  SearchPath:=Project1.CompilerOptions.OtherUnitFiles;
-  Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-  if Result<>'' then exit;
-  
-  // if file is a pascal unit, then search for the compiled version in the
-  // unit path, all inherited unit paths and the fpc sources
+  AlreadySearchedPaths:='';
+  BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
+  CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
+  if (fsfSearchForProject in Flags)
+  and (CompareFilenames(BaseDir,TrimFilename(Project1.ProjectDirectory))=0)
+  then
+    StartUnitPath:=Project1.CompilerOptions.OtherUnitFiles
+  else
+    StartUnitPath:=CodeToolBoss.GetUnitPathForDirectory(BaseDir);
+  StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
+
+  // search file in base directory
+  Result:=TrimFilename(BaseDir+AFilename);
+  if FileExists(Result) then exit;
+  MarkPathAsSearched(BaseDir);
+
+  // if file is pascal unit, search via unit paths
   if FilenameIsPascalUnit(SearchFile) then begin
-    CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
-    SearchFile:=ChangeFileExt(LowerCase(ExtractFilename(AFilename)),
-                              CompiledSrcExt);
-    SearchPath:=Project1.CompilerOptions.GetUnitPath(false);
-    CompiledFilename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-    if CompiledFilename<>'' then begin
-      // compiled version found -> search for source in CompiledSrcPath
-      BaseDir:=ExtractFilePath(CompiledFilename);
-      SearchPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(BaseDir);
-      SearchFile:=ExtractFilename(AFilename);
-      Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-      if Result<>'' then exit;
+    // first search file in unit path
+    SearchFile:=AFilename;
+    SearchPath:=StartUnitPath;
+    Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    if Result<>'' then exit;
+    MarkPathAsSearched(SearchPath);
+
+    // search for the compiled version in the
+    // unit path and all inherited unit paths
+    if CompiledSrcExt<>'' then begin
+      SearchFile:=ChangeFileExt(LowerCase(ExtractFilename(AFilename)),
+                                CompiledSrcExt);
+      SearchPath:=Project1.CompilerOptions.GetUnitPath(false);
+      CompiledFilename:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      if CompiledFilename<>'' then begin
+        // compiled version found -> search for source in CompiledSrcPath
+        CurBaseDir:=ExtractFilePath(CompiledFilename);
+        SearchPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(CurBaseDir);
+        SearchFile:=ExtractFilename(AFilename);
+        Result:=SearchFileInPath(SearchFile,CurBaseDir,SearchPath,';',[]);
+        if Result<>'' then exit;
+      end;
     end;
     
     // search unit in fpc source directory
-    BaseDir:=Project1.ProjectDirectory;
     Result:=CodeToolBoss.FindUnitInUnitLinks(BaseDir,
                                              ExtractFilenameOnly(AFilename));
     if Result<>'' then exit;
   end;
   
-  // search in include path
-  BaseDir:=Project1.ProjectDirectory;
-  SearchFile:=ExtractFilename(AFilename);
-  SearchPath:=Project1.CompilerOptions.IncludeFiles;
-  Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-  if Result<>'' then exit;
-  
-  // search include file in source directories of all required packages
-  SearchFile:=ExtractFilename(AFilename);
-  Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
-  if Result<>'' then exit;
+  if fsfUseIncludePaths in Flags then begin
+    // search in include path
+    SearchFile:=AFilename;
+    if (fsfSearchForProject in Flags) then
+      SearchPath:=Project1.CompilerOptions.IncludeFiles
+    else
+      SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
+    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
+    Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    if Result<>'' then exit;
+    MarkPathAsSearched(SearchPath);
 
-  // search include file in fpc source directory
-  // ToDo
+    // search include file in source directories of all required packages
+    SearchFile:=AFilename;
+    Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
+    if Result<>'' then exit;
+
+    Result:=SearchIndirectIncludeFile;
+    if Result<>'' then exit;
+  end;
+  
+  Result:='';
 end;
 
 //------------------------------------------------------------------------------
@@ -8841,6 +8946,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.581  2003/05/25 15:31:11  mattias
+  implemented searching for indirect include files
+
   Revision 1.580  2003/05/25 12:12:36  mattias
   added TScreen handlers, implemented TMainIDE.UnHideIDE
 
