@@ -752,8 +752,9 @@ begin
   begin
     Form := GetParentForm(Self);
     if (Form <> nil) and (Form.Designer <> nil)
-    and Form.Designer.IsDesignMsg(Self,TheMessage) then
+    and Form.Designer.IsDesignMsg(Self,TheMessage) then begin
       Exit;
+    end;
   end
   else
   begin
@@ -1939,6 +1940,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.91  2002/10/11 07:28:03  lazarus
+  MG: gtk interface now sends keyboard events via DeliverMessage
+
   Revision 1.90  2002/10/09 10:22:54  lazarus
   MG: fixed client origin coordinates
 
