@@ -967,7 +967,6 @@ begin
   EndOfSourceFound:=false;
   CommentStyle:=CommentNone;
   CommentLevel:=0;
-  FNestedComments:=false;
   CompilerMode:=cmFPC;
   PascalCompiler:=pcFPC;
   IfLevel:=0;
@@ -989,6 +988,7 @@ begin
       CompilerMode:=cm;
 
   // nested comments
+  FNestedComments:=false;
   if (PascalCompiler=pcFPC) and (CompilerMode in [cmFPC,cmOBJFPC])
   and ((FInitValues.IsDefined(NestedCompilerDefine))
     or (CompareFileExt(MainFilename,'pp',false)=0))
