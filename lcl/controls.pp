@@ -182,31 +182,31 @@ type
   TDate = type TDateTime;
   TTime = type TDateTime;
 
-TCMMouseWheel = record
-  MSg: Cardinal;
-  ShiftState : TShiftState;
-  Unused : Byte;
-  WheelData : SmallInt;
-  case Integer of
-  0 : (
-    XPos : SmallInt;
-    YPos : SmallInt);
-  1 : (
-    Pos : TSmallPoint;
-    Result : LongInt);
+  TCMMouseWheel = record
+    MSg: Cardinal;
+    ShiftState : TShiftState;
+    Unused : Byte;
+    WheelData : SmallInt;
+    case Integer of
+    0 : (
+      XPos : SmallInt;
+      YPos : SmallInt);
+    1 : (
+      Pos : TSmallPoint;
+      Result : LongInt);
   end;
 
-TCMHitTest = TLMNCHitTest;
+  TCMHitTest = TLMNCHitTest;
 
-TCMControlChange = record
-  Msg : Cardinal;
-  Control : TControl;
-  Inserting : Boolean;
-  Result : Longint;
+  TCMControlChange = record
+    Msg : Cardinal;
+    Control : TControl;
+    Inserting : Boolean;
+    Result : Longint;
   End;
 
-TCMDialogChar = TLMKEY;
-TCMDialogKey = TLMKEY;
+  TCMDialogChar = TLMKEY;
+  TCMDialogKey = TLMKEY;
 
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient);
   TAlignSet = set of TAlign;
@@ -216,7 +216,8 @@ TCMDialogKey = TLMKEY;
   TCursor = -32768..32767;
 
   TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop);
-  TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow, bsSizeToolWin);
+  TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow,
+                      bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
   TControlBorderStyle = TBorderStyle;
 
@@ -278,18 +279,26 @@ TCMDialogKey = TLMKEY;
 
 
 
+  TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
+  TKeyPressEvent = procedure(Sender: TObject; var Key: Char) of Object;
+  
+  TMouseEvent = Procedure(Sender : TOBject; Button: TMouseButton;
+                          Shift : TShiftState; X, Y: Integer) of object;
+  TMouseMoveEvent = Procedure(Sender: TObject; Shift: TShiftState;
+                              X, Y: Integer) of object;
+  TMouseWheelEvent = Procedure(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean) of object;
+  TMouseWheelUpDownEvent = Procedure(Sender: TObject;
+          Shift: TShiftState; MousePos: TPoint; var Handled: Boolean) of object;
+          
   TDragState = (dsDragEnter, dsDragLEave, dsDragMove);
   TDragMode = (dmManual , dmAutomatic);
   TDragKind = (dkDrag, dkDock);
-  TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
-  TKeyPressEvent = procedure(Sender: TObject; var Key: Char) of Object;
-  TMouseEvent = Procedure(Sender : TOBject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer) of object;
-  TMouseMoveEvent = Procedure(Sender: TObject; Shift: TShiftState; X, Y: Integer) of object;
-  TMouseWheelEvent = Procedure(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean) of object;
-  TMouseWheelUpDownEvent = Procedure(Sender: TObject; Shift: TShiftState; MousePos: TPoint; var Handled: Boolean) of object;
-  TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop, dmDragCancel,dmFindTarget);
-  TDragOverEvent = Procedure(Sender , Source: TObject; X,Y : Integer; State: TDragState; Var Accept: Boolean) of Object;
-  TDragDropEvent = Procedure(Sender , Source: TObject; X,Y : Integer) of Object;
+  TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop,
+                  dmDragCancel,dmFindTarget);
+  TDragOverEvent = Procedure(Sender, Source: TObject;
+               X,Y : Integer; State: TDragState; Var Accept: Boolean) of Object;
+  TDragDropEvent = Procedure(Sender, Source: TObject; X,Y : Integer) of Object;
 
   TDragObject = class;
 
@@ -448,7 +457,7 @@ TCMDialogKey = TLMKEY;
     procedure SetCursor(Value : TCursor);
     procedure SetHeight(Value: Integer);
     procedure SetLeft(Value: Integer);
-    procedure SetMOuseCapture(Value : Boolean);
+    procedure SetMouseCapture(Value : Boolean);
     procedure SetParentShowHint(Value : Boolean);
     procedure SetPopupMenu(Value : TPopupMenu);
     procedure SetShowHint(Value : Boolean);
@@ -630,6 +639,9 @@ TCMDialogKey = TLMKEY;
   private
     FAlignLevel : Word;
     FBorderWidth : TBorderWidth;
+    FBoundsLockCount: integer;
+    FBoundsRealized: TRect;
+    FBrush: TBrush;
     FControls : TList;
     FDefWndProc : Pointer;
     //FDockSite : Boolean;
@@ -647,19 +659,18 @@ TCMDialogKey = TLMKEY;
     FOnExit  : TNotifyEvent;
     FParentWindow : hwnd;
     FParentCtl3D : Boolean;
-    FResizeLock : boolean;
     FHandle: Hwnd;
     FShowing : Boolean;
     FTabList : TList;
     FTabOrder : Integer;
     FTabStop : Boolean;
     FWinControls : TList;
-    FBrush: TBrush;
     procedure AlignControl(AControl : TControl);
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     function GetControl(const Index: Integer): TControl;
     function GetControlCount: Integer;
     function GetHandle : HWND;
+    function GetIsResizing: boolean;
     procedure SetHandle(NewHandle: HWND);
     Function GetTabOrder: TTabOrder;
     Procedure SetBorderWidth(Value : TBorderWidth);
@@ -696,6 +707,8 @@ TCMDialogKey = TLMKEY;
     procedure WMChar(var Message: TLMChar); message LM_CHAR;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure WMDestroy(var Message: TLMDestroy); message LM_DESTROY;
+    procedure WMMove(var Message: TLMMove); message LM_MOVE;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
 
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure DestroyHandle; virtual;
@@ -732,7 +745,7 @@ TCMDialogKey = TLMKEY;
     Function  IsControlMouseMsg(var Message : TLMMOuse): Boolean;
     property BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
-    property IsResizing : Boolean read FResizeLock;
+    property IsResizing : Boolean read GetIsResizing;
 
     property  ParentCtl3D : Boolean read FParentCtl3D write SetParentCtl3d default True;
     { events }
@@ -749,6 +762,8 @@ TCMDialogKey = TLMKEY;
     constructor CreateParented(ParentWindow: HWnd);
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
+    procedure BeginUpdateBounds;
+    procedure EndUpdateBounds;
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
     Function Focused : Boolean; dynamic;
@@ -767,6 +782,7 @@ TCMDialogKey = TLMKEY;
     Function FindChildControl(ControlName : String) : TControl;
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
+    property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read FBrush;
     property Controls[Index: Integer]: TControl read GetControl;
     property ControlCount: Integer read GetControlCount;
@@ -875,12 +891,6 @@ implementation
 //uses clause
 //Needs dialogs for the SetVisible procedure.
 Uses Forms, Dialogs, Interfaces;
-
-procedure Twincontrol.SetHandle(NewHandle: HWND);
-begin
-  FHandle:=NewHandle;
-end;
-
 
 var
   CaptureControl: TControl;
@@ -1196,6 +1206,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/03/16 21:40:54  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.33  2002/03/14 23:25:51  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 
