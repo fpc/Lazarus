@@ -143,7 +143,7 @@ begin
   //hwnd should be a PgtkWidget.
   Result := True;
   try
-    gdk_window_raise(PgtkWidget(hwnd)^.window);
+    gdk_window_raise(GetControlWindow(PgtkWidget(hwnd)));
   except
     on E: Exception do begin
       writeln('TGTKObject.BringWindowToTop: ',E.Message);
@@ -603,7 +603,7 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] A');
     begin
       // end ownership
       if (ClipBoardWidget <> nil) and
-         (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType]) = ClipboardWidget^.window) then
+         (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType]) = GetControlWindow(ClipboardWidget)) then
       begin
         gtk_selection_owner_set(nil,ClipboardTypeAtoms[ClipboardType],0);
       end;
@@ -734,24 +734,55 @@ begin
   // if depth is 1 then a Bitmap
   // else an image
   
-  if BitCount = gdk_visual_get_system^.Depth
+  {if BitCount > 1
   then begin
-    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbPixmap', []));
+    Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbPixmap', [])); }
     GdiObject^.GDIBitmapType := gbPixmap;
-    GdiObject^.GDIPixmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
-  end 
-  else if Bitcount = 1 
+    If BitCount = 1 then
+      GdiObject^.GDIBitmapType := gbBitmap;
+
+
+    If BitCount = 1 then begin
+      GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+    end
+    else begin
+      GdiObject^.GDIPixmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
+      GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
+    end;
+    If GdiObject^.Visual = nil then
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount)
+    else
+      gdk_visual_ref(GdiObject^.Visual);
+
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+
+    If BitmapBits <> nil then
+      LoadFromPixbufData(hBitmap(GdiObject), BitmapBits);
+
+  {end
+  else if Bitcount = 1
   then begin
     Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbBitmap', []));
     GdiObject^.GDIBitmapType := gbBitmap;
     GdiObject^.GDIBitmapObject := gdk_pixmap_new(nil, Width, Height, BitCount);
-  end
+
+    GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
+    If GdiObject^.Visual = nil then
+      GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount)
+    else
+       gdk_visual_ref(GdiObject^.Visual);
+
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1)
+  end;
   else begin
     Assert(False, Format('Trace:  [TgtkObject.CreateBitmap] gbImage', []));
     GdiObject^.GDIBitmapType := gbImage;
     GdiObject^.GDIRawImageObject := NewGDIRawImage(Width, Height, BitCount);
-  end;
-  
+    GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+  end;}
+
   Result := HBITMAP(GdiObject);
 //writeln('[TgtkObject.CreateBitmap] ',HexStr(Result,8));
   Assert(False, Format('Trace:< [TgtkObject.CreateBitmap] --> 0x%x', [Integer(Result)]));
@@ -941,6 +972,214 @@ begin
   Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
+function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+  BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+const
+  PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
+  TempBuffer : array[0..2] of Byte = (0,0,0);
+var
+  {$IfNDef NoGDKPixbuflib}
+  Source : PGDKPixbuf;
+  rowstride, PixelPos : Longint;
+  Pixels : PByte;
+  {$Else}
+  Source : PImage;//The MONDO slow way...
+  {$EndIf}
+  FDIB : TDIBSection;
+  X, Y : Longint;
+  PadSize, Pos : Longint;
+  
+  Procedure DataSourceInitialize(Bitmap : PGDIObject; Width : Longint);
+  begin
+    Source := nil;
+    
+    case Bitmap^.GDIBitmapType of
+      gbBitmap:
+        If Bitmap^.GDIBitmapObject <> nil then begin
+         {$IfNDef NoGDKPixbuflib}
+           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
+             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+           rowstride := gdk_pixbuf_get_rowstride(Source);
+           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+         {$else}
+           gdk_error_trap_push; //try to prevent GDK from killing us...
+           Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
+             StartScan + NumScans);
+           gdk_error_trap_pop;
+         {$EndIf}
+        end;
+      gbPixmap:
+        If Bitmap^.GDIPixmapObject <> nil then begin
+         {$IfNDef NoGDKPixbuflib}
+           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIPixmapObject,
+             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+           rowstride := gdk_pixbuf_get_rowstride(Source);
+           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+         {$else}
+           gdk_error_trap_push; //try to prevent GDK from killing us...
+           Source := gdk_image_get(Bitmap^.GDIPixmapObject, StartScan, 0, Width,
+             StartScan + NumScans);
+           gdk_error_trap_pop;
+         {$EndIf}
+        end;
+      gbImage :
+        If Bitmap^.GDIRawImageObject <> nil then begin
+          Writeln('WARNING : [TgtkObject.GetDIBits] support for gdiImage unimplimented!.');
+        end;
+    end;
+  end;
+
+  Function DataSourceGetGDIRGB(Bitmap : PGDIObject; X, Y : Longint) : TGDIRGB;
+  {$IfNDef NoGDKPixbuflib}
+  begin
+     PixelPos := rowstride*Y + X*3;
+
+     If Bitmap <> nil then
+       While Bitmap = nil do; //Keep compiler happy..
+
+     With Result do begin
+       Red := Pixels[PixelPos + 0];
+       Green := Pixels[PixelPos + 1];
+       Blue := Pixels[PixelPos + 2];
+     end;
+
+  {$else}
+  var
+    Pixel : Longint;
+  begin
+    Pixel := 0;
+
+    gdk_error_trap_push;//try to prevent GDK from killing us...
+
+    Result := gdk_image_get_pixel(Source, X, Y);
+
+    gdk_error_trap_pop;
+
+    Result := GDKPixel2GDIRGB(Pixel, Bitmap^.Visual, Bitmap^.Colormap);
+  {$EndIf}
+  end;
+
+  Procedure DataSourceFinalize;
+  begin
+  {$IfNDef NoGDKPixbuflib}
+    GDK_Pixbuf_Unref(Source);
+  {$else}
+    gdk_error_trap_push; //try to prevent GDK from killing us...
+    gdk_image_destroy(Source);
+    gdk_error_trap_pop;
+  {$EndIf}
+  end;
+
+  Procedure WriteData(Value : PByte; Size : Longint);
+  var
+    I : Longint;
+  begin
+    For I := 0 to Size - 1 do
+      PByte(Bits)[Pos + I] := Value[I];
+    Inc(Pos, Size);
+  end;
+
+begin
+  Assert(False, 'trace:[TgtkObject.InternalGetDIBits]');
+  Result := 0;
+  if IsValidGDIObject(Bitmap)
+  then begin
+    case PGDIObject(Bitmap)^.GDIType of
+      gdiBitmap:
+        begin
+          FillChar(FDIB, sizeof(FDIB), 0);
+          GetObject(Bitmap, SizeOf(FDIB), @FDIB);
+          BitInfo.bmiHeader := FDIB.dsBmih;
+
+          With PGDIObject(Bitmap)^, BitInfo.bmiHeader do begin
+            If not DIB then begin
+              NumScans := biHeight;
+              StartScan := 0;
+            end;
+
+            If BitSize <= 0 then
+              BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)*(NumScans + StartScan);
+            If MemSize(Bits) <> (BitSize + 5) then begin
+              writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
+              exit;
+            end;
+            Pos := 0;
+            PadSize := (Longint(biSizeImage) div biHeight) - biWidth*3;
+            DataSourceInitialize(PGDIObject(Bitmap), biWidth);
+            If DIB then begin
+              for Y := NumScans - 1 downto 0 do begin
+                for X := 0 to biwidth - 1 do begin
+                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
+                    TempBuffer[0]  := Blue;
+                    TempBuffer[1] := Green;
+                    TempBuffer[2]   := Red;
+                  end;
+                  WriteData(TempBuffer, 3);
+                end;
+                WriteData(PadLine, PadSize);
+              end;
+            end
+            else
+              for Y := 0 to NumScans - 1 do begin
+                for X := 0 to biwidth - 1 do begin
+                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
+                    TempBuffer[0]  := Blue;
+                    TempBuffer[1] := Green;
+                    TempBuffer[2]   := Red;
+                  end;
+                  WriteData(TempBuffer, 3);
+                end;
+                WriteData(PadLine, PadSize);
+              end;
+            end;
+          DataSourceFinalize;
+        end;
+      else
+        writeln('WARNING: [TgtkObject.InternalGetDIBits] not a Bitmap!');
+    end;
+  end
+  else
+    writeln('WARNING: [TgtkObject.InternalGetDIBits] invalid Bitmap!');
+end;
+
+function Tgtkobject.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+  Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+begin
+  Assert(False, 'trace:[TgtkObject.GetDIBits]');
+  Result := 0;
+  if IsValidGDIObject(Bitmap)
+  then begin
+    case PGDIObject(Bitmap)^.GDIType of
+      gdiBitmap:
+        Result := InternalGetDIBits(DC, Bitmap, StartScan, NumScans, -1, Bits,
+                                      BitInfo, Usage, True);
+      else
+        writeln('WARNING: [TgtkObject.GetDIBits] not a Bitmap!');
+    end;
+  end
+  else
+    writeln('WARNING: [TgtkObject.GetDIBits] invalid Bitmap!');
+end;
+
+function Tgtkobject.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+var
+  BitInfo : tagBitmapInfo;
+begin
+  Assert(False, 'trace:[TgtkObject.GetBitmapBits]');
+  Result := 0;
+  if IsValidGDIObject(Bitmap)
+  then begin
+    case PGDIObject(Bitmap)^.GDIType of
+      gdiBitmap:
+        Result := InternalGetDIBits(0, Bitmap, 0, 0, Count, Bits, BitInfo, 0, False);
+      else
+        writeln('WARNING: [TgtkObject.GetBitmapBits] not a Bitmap!');
+    end;
+  end
+  else
+    writeln('WARNING: [TgtkObject.GetBitmapBits] invalid Bitmap!');
+end;
+
 {------------------------------------------------------------------------------
   Function: CreateCompatibleDC
   Params:  none
@@ -976,6 +1215,7 @@ begin
   pNewDC^.CurrentPen := CreateDefaultPen;
   
   Result := HDC(pNewDC);
+
   Assert(False,Format('trace:  [TgtkObject.CreateCompatibleDC] DC: 0x%x --> 0x%x', [Integer(DC), Integer(Result)]));
 end;
 
@@ -1346,6 +1586,7 @@ var
   Window: PGdkWindow;
   ColorMap: PGdkColormap;
   P: Pointer;
+  Depth : Longint;
 begin
   GdiObject := NewGDIObject(gdiBitmap);
   if TransColor >= 0 then begin
@@ -1361,6 +1602,17 @@ begin
   GdiObject^.GDIPixmapObject :=
     gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
            @(GdiObject^.GDIBitmapMaskObject), p, Data);
+
+  gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
+  GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
+
+  If GdiObject^.Visual = nil then
+    GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
+  else
+    gdk_visual_ref(GdiObject^.Visual);
+
+  GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+  
   GdiObject^.GDIBitmapType:=gbPixmap;
   Result := HBITMAP(GdiObject);
 end;
@@ -1665,6 +1917,10 @@ begin
           begin
             if Result and (GDIBitmapObject <> nil)
             then gdk_bitmap_unref(GDIBitmapObject);
+            If Visual <> nil then
+              gdk_visual_ref(Visual);
+            If Colormap <> nil then
+              gdk_colormap_ref(Colormap);
           end;
         gdiPen:
           begin
@@ -1796,7 +2052,7 @@ var
 
       Case Shadow of
         GTK_SHADOW_NONE:
-          gtk_paint_flat_box(aStyle,Widget^.Window,
+          gtk_paint_flat_box(aStyle,GetControlWindow(Widget),
              State,
              Shadow,
              nil,
@@ -1805,7 +2061,7 @@ var
              Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
              Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
         else
-          gtk_paint_box(aStyle,Widget^.Window,
+          gtk_paint_box(aStyle,GetControlWindow(Widget),
              State,
              Shadow,
              nil,
@@ -2393,7 +2649,7 @@ begin
         DCOrigin:=GetDCOffset(PDeviceContext(DC));
         for i:= 1 to FrameWidth do begin
           gtk_draw_shadow(ClientWidget^.thestyle,
-                          ClientWidget^.window, GTK_STATE_NORMAL,
+                          GetControlWindow(Widget), GTK_STATE_NORMAL,
                           GtkShadowType[Style],
                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                           Rect.Right - Rect.Left-1, Rect.Bottom - Rect.Top-1);
@@ -2525,9 +2781,9 @@ begin
   if Handle = 0 then Exit;
   Widget := pgtkwidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
-  if (ClientWidget <> nil) and (ClientWidget^.Window<>nil) then begin
-    ClientWindow:=ClientWidget^.Window;
-    MainWindow:=Widget^.Window;
+  if (ClientWidget <> nil) and (GetControlWindow(ClientWidget)<>nil) then begin
+    ClientWindow:=GetControlWindow(ClientWidget);
+    MainWindow:=GetControlWindow(Widget);
     gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
     inc(MainOrigin.X,Widget^.Allocation.X);
     inc(MainOrigin.Y,Widget^.Allocation.Y);
@@ -2773,16 +3029,15 @@ begin
     // create a new devicecontext for this window
     P := NewDC;
     p^.hWnd := hWnd;
-    p^.SpecialOrigin:=GtkWidgetIsA(PGtkWidget(p^.hWnd),GTK_LAYOUT_GET_TYPE);
-    if ClientWidget^.Window = nil
+    p^.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
+    if GetControlWindow(ClientWidget) = nil
     then begin
       Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
       //force creation
       gtk_widget_realize(ClientWidget);
     end;
-    p^.Drawable := ClientWidget^.Window;
+    p^.Drawable := GetControlWindow(ClientWidget);
     p^.GC := gdk_gc_new(p^.Drawable);
-
     gdk_window_get_size(P^.Drawable, @X, @Y);
     gdk_gc_set_function(p^.GC, GDK_COPY);
 
@@ -2804,6 +3059,7 @@ begin
     p^.CurrentPen := CreateDefaultPen;
   end;
   
+
   Result := HDC(p);
   Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
 end;
@@ -2891,6 +3147,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 var
+  NumColors : Longint;
   BitmapSection : TDIBSECTION;
 begin
   Assert(False, 'trace:[TgtkObject.GetObject]');
@@ -2908,27 +3165,29 @@ begin
               BitmapSection.dsBm, BitmapSection.dsBmih
             do begin
               {dsBM - BITMAP}
-              //bmType := ???;
+              bmType := $4D42;
               bmWidth := 0 ;
               bmHeight := 0;
-              {bmWidthBytes: Longint;
-              bmPlanes: Word;
-              bmBitsPixel: Word;
-              bmBits: Pointer; }
+              {bmWidthBytes: Longint;}
+              bmPlanes := 1;//Does Bitmap Format support more?
+              bmBitsPixel := 1;
+              bmBits := nil;
 
               {dsBmih - BITMAPINFOHEADER}
-              biSize := 0;
+              biSize := 40;
               biWidth := 0;
               biHeight := 0;
-              biPlanes := 0;
+              biPlanes := bmPlanes;
               biBitCount := 1;
 
-              {biCompression : DWORD;
-              biSizeImage : DWORD;
-              biXPelsPerMeter : Longint;
-              biYPelsPerMeter : Longint;
-              biClrUsed : DWORD;
-              biClrImportant : DWORD;}
+              biCompression := 0;
+              biSizeImage := 0;
+              
+              biXPelsPerMeter := 0;
+              biYPelsPerMeter := 0;
+
+              biClrUsed   := 0;
+              biClrImportant := 0;
 
               {dsBitfields: array[0..2] of DWORD;
               dshSection: THandle;
@@ -2936,25 +3195,74 @@ begin
               case GDIBitmapType of
                 gbBitmap:
                   If GDIBitmapObject <> nil then begin
-                    GDK_WINDOW_GET_SIZE(GDIBitmapObject, @bmWidth, @bmHeight);
-                    biSize := 0;
+                    GDK_WINDOW_GET_SIZE(GDIBitmapObject, @biWidth, @biHeight);
+                    NumColors := 2;
                   end;
                 gbPixmap:
                   If GDIPixmapObject <> nil then begin
                     gdk_window_get_geometry(GDIPixmapObject, nil, nil,
-                      @bmWidth, @bmHeight, @biBitCount);
-                    biSize := 0;
+                      @biWidth, @biHeight, nil);
+
+                    If Visual = nil then begin
+                      Visual := gdk_visual_get_system;
+                      gdk_visual_ref(Visual);
+                    end;
+
+                    biBitCount := Visual^.Depth;
+                    If biBitCount < 24 then
+                      NumColors := Colormap^.Size;
                   end;
                 gbImage :
                   If GDIRawImageObject <> nil then
                     With GDIRawImageObject^ do begin
-                      bmHeight := Height;
-                      bmWidth := Width;
+                      biHeight := Height;
+                      biWidth := Width;
                       biBitCount := Depth;
+                      If Depth < 24 then
+                        NumColors := Colormap^.Size;
                     end;
               end;
-              biWidth := bmWidth;
-              biHeight := bmHeight;
+
+              // Andrew, plz check this:
+              if (biBitCount <> 24) and
+                ((biWidth mod (biBitCount div 8)) <> 0)
+              then
+                biSizeImage := biWidth  + (biBitCount div 8)
+              else
+                biSizeImage := biWidth;
+              {if (biBitCount <> 24) and
+                ((biWidth mod (8 div biBitCount)) <> 0)
+              then
+                biSizeImage := biWidth  + (8 div biBitCount)
+              else
+                biSizeImage := biWidth;}
+
+              if ((biWidth*biBitCount div 8) mod 4) = 0 then
+                biSizeImage := biSizeImage*biBitCount div 8
+              else
+                biSizeImage := (biSizeImage*biBitCount div 8) + 4;
+
+              biSizeImage := biSizeImage*biHeight;
+
+              //I have no idea what I am doing here, but whatever...
+              If GetSystemMetrics(SM_CXSCREEN) >= biWidth then
+                biXPelsPerMeter := Round(GetSystemMetrics(SM_CXSCREEN) * 100 / 2.54)
+              else
+                biXPelsPerMeter := Round(biWidth * 100 / 2.54);
+
+              If GetSystemMetrics(SM_CYSCREEN) >= biHeight then
+                biYPelsPerMeter := Round(GetSystemMetrics(SM_CYSCREEN) * 100 / 2.54)
+              else
+                biYPelsPerMeter := Round(biHeight * 100 / 2.54);
+
+              bmWidth := biWidth;
+              bmHeight := biHeight;
+              bmBitsPixel := biBitCount;
+              //Need to retrieve actual Number of Colors if Indexed Image
+              if (bmBitsPixel < 24) then begin
+                biClrUsed   := NumColors;
+                biClrImportant := biClrUsed;
+              end;
             end;
             if BufSize >= SizeOf(BitmapSection)
             then begin
@@ -3677,9 +3985,9 @@ begin
   if Handle <> 0 then
   begin
     Widget := pgtkwidget(Handle);
-    if Widget^.Window <> nil then Begin
-      gdk_window_get_origin(Widget^.Window, @X, @Y);
-      gdk_window_get_size(Widget^.Window, @W, @H);
+    if GetControlWindow(Widget) <> nil then Begin
+      gdk_window_get_origin(GetControlWindow(Widget), @X, @Y);
+      gdk_window_get_size(GetControlWindow(Widget), @W, @H);
     end
     else
     Begin
@@ -3804,7 +4112,7 @@ begin
   if Widget=nil then Widget:=PgtkWidget(aHandle);
 
   if bErase then
-    gdk_window_clear_area(Widget^.Window,
+    gdk_window_clear_area(GetControlWindow(Widget),
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_draw(Widget, @gdkRect);
@@ -4762,7 +5070,7 @@ Begin
         Y := 0;
       end
       else
-        gdk_window_get_origin(Widget^.Window, @X, @Y);
+        gdk_window_get_origin(GetControlWindow(Widget), @X, @Y);
    end;
 
   //writeln('[TGTKObject.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
@@ -5318,6 +5626,7 @@ const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
   Adjustment: PGtkAdjustment;
+  Scroll : PGTKWidget;
 begin
 //  Assert(False, 'Trace:[TgtkObject.SetScrollInfo]');
   with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [fMask, nMin, nMax, nPage, nPos]));
@@ -5326,46 +5635,51 @@ begin
   if (Handle <> 0)
   then begin
     Adjustment := nil;
+    Scroll := GTK_Object_Get_Data(PGTKObject(Handle), 'scroll_area');
+    If (Scroll = nil) or not gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
+      gtk_scrolled_window_get_type)
+    then
+      Scroll := PGTKWidget(Handle);
+
     case SBStyle of
-    
       SB_HORZ:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
-         gtk_scrolled_window_get_type) 
+        If gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
+         gtk_scrolled_window_get_type)
         then
           Adjustment := gtk_scrolled_window_get_hadjustment(
-                           PGTKScrolledWindow(Handle))
+                           PGTKScrolledWindow(Scroll))
         else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
           gtk_hscrollbar_get_type) 
         then
-          Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment
+          Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
         else  //clist
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
           gtk_clist_get_type)
         then
-          Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(handle)){$EndIf};
+          Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(Scroll)){$EndIf};
 
       SB_VERT:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
-                         gtk_scrolled_window_get_type) 
+        If gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
+         gtk_scrolled_window_get_type)
         then
           Adjustment := gtk_scrolled_window_get_vadjustment(
-                           PGTKScrolledWindow(Handle))
+                           PGTKScrolledWindow(Scroll))
         else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
           gtk_vscrollbar_get_type) 
         then
-          Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment
+          Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
         else  //clist
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
           gtk_clist_get_type)
         then
-          Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(handle)){$EndIf};
+          Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(Scroll)){$EndIf};
 
       SB_CTL:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_range_get_type)
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)), gtk_range_get_type)
         then begin
-          Adjustment := gtk_range_get_adjustment(PGTKRange(Handle));
+          Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
         end;
         
     end;
@@ -5399,26 +5713,26 @@ begin
       begin
         if  (Handle <> 0) then
         begin
-          if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+          if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
                            gtk_scrolled_window_get_type)
           then
           begin
             if SBStyle in [SB_BOTH, SB_HORZ]
-              then gtk_object_set(PGTKObject(Handle), 'hscrollbar_policy',
+              then gtk_object_set(PGTKObject(Scroll), 'hscrollbar_policy',
                                   [POLICY[bRedraw], nil]);
             if SBStyle in [SB_BOTH, SB_VERT]
-              then gtk_object_set(PGTKObject(Handle), 'vscrollbar_policy',
+              then gtk_object_set(PGTKObject(Scroll), 'vscrollbar_policy',
                                   [POLICY[bRedraw], nil]);
           end
           else
           begin
             if (SBSTYLE = SB_CTL)
-            and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+            and gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
                               gtk_widget_get_type)
             then
-              gtk_widget_show(PGTKWidget(Handle))
+              gtk_widget_show(PGTKWidget(Scroll))
             else
-              gtk_widget_hide(PGTKWidget(Handle))
+              gtk_widget_hide(PGTKWidget(Scroll))
           end;
         end;
 {  writeln('TgtkObject.SetScrollInfo: ',
@@ -6415,6 +6729,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.127  2002/09/10 06:49:22  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.126  2002/09/09 14:01:06  lazarus
   MG: improved TScreen and ShowModal
 
