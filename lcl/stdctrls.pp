@@ -138,7 +138,6 @@ type
       procedure CreateHandle; override;
       procedure DestroyHandle; override;
       procedure DoChange(var msg); message LM_CHANGED;
-      procedure AttachSignals; override;
       function GetSelLength : integer;
       function GetSelStart : integer;
       function GetSelText : string;
@@ -263,7 +262,6 @@ type
   protected
     Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
     Procedure Change; dynamic;
-    procedure AttachSignals; override;
 
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
@@ -286,8 +284,6 @@ type
       FScrollBars: TScrollStyle;
       FWordWrap: Boolean;
    protected
-//      procedure AttachSignals; override;
-
       procedure SetLines(Value : TStrings);
       procedure SetWordWrap(Value : Boolean);
    public
@@ -583,6 +579,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.21  2002/02/20 23:33:24  lazarus
   MWE:
     + Published OnClick for TMenuItem

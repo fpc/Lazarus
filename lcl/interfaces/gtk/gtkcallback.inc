@@ -19,12 +19,13 @@ LastFileSelectRow : gint;
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
 begin
-  if TObject(Target) is TWinControl 
-  then begin
+  if TObject(Target) is TWinControl then
+  begin
     Result := PostMessage(TWinControl(Target).Handle, TLMessage(Message).Msg,
       TLMessage(Message).WParam, TLMessage(Message).LParam);
-  end 
-  else begin
+  end
+  else
+  begin
     Result := DeliverMessage(Target, Message) = 0;
   end;
 end;
@@ -1591,6 +1592,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.63  2002/03/23 19:05:52  lazarus
   MG: pascal lowercase for open new unit
 

@@ -60,7 +60,6 @@ type
   TPage = class(TWinControl)
   private
   protected
-    procedure AttachSignals; override;
     procedure ReadState(Reader: TAbstractReader); override;
     //procedure Paint; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
@@ -437,6 +436,10 @@ end.
 
  {
   $Log$
+  Revision 1.21  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.20  2002/03/14 23:25:51  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 

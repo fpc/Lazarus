@@ -625,7 +625,6 @@ type
     procedure SetOrientation (Value : TProgressBarOrientation);
   protected
     procedure ApplyChanges;
-    procedure AttachSignals; override;
     procedure InitializeWnd; override;
 {    procedure SetBarTextFormat; }
   public
@@ -990,7 +989,6 @@ type
   protected
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
-    procedure AttachSignals; override;
     procedure InitializeWnd; override;
 { ... what about these?
     procedure CreateParams(var Params: TCreateParams); override;
@@ -1783,6 +1781,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.29  2002/03/24 16:38:00  lazarus
   MWE:
     * Fixed bug on ListItems.Delete

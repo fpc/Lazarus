@@ -77,8 +77,6 @@ type
     procedure ShortcutChanged(const OldValue, Value : TShortcut);
   protected
     procedure CreateHandle; virtual;
-    procedure AttachSignals; virtual;
-    procedure DetachSignals; virtual;
     procedure DoClicked(var msg); message LM_ACTIVATE;               //'activate';
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
@@ -203,6 +201,10 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.7  2002/02/20 23:33:24  lazarus
   MWE:
     + Published OnClick for TMenuItem

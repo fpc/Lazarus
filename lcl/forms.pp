@@ -114,7 +114,6 @@ type
     procedure WMDestroy(var message: TLMDestroy); message LM_DESTROY;
   protected
     FFormState: TFormState;
-    procedure AttachSignals; override;
     function CloseQuery : boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;

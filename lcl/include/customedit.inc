@@ -110,28 +110,13 @@ Begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-
-{------------------------------------------------------------------------------
-  Method:  TCustomEdit.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-procedure TCustomEdit.AttachSignals; 
-begin
-  inherited AttachSignals;
-  SetCallback(LM_CHANGED);
-  SetCallback(LM_CUTTOCLIP);
-  SetCallback(LM_COPYTOCLIP);
-  SetCallback(LM_PASTEFROMCLIP);
-end;
-
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.5  2002/02/25 16:48:13  lazarus
   MG: new IDE window layout system
 

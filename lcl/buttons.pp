@@ -61,8 +61,7 @@ type
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure WMDefaultClicked(var Message: TMessage); message LM_CLICKED;
   protected
-    procedure AttachSignals; override;
-    procedure Click; override;      
+    procedure Click; override;
     //TODO: make this compatible
     procedure CreateWnd; override;
     property OnMouseEnter : TNotifyEvent read FOnEnter write FOnEnter;
@@ -243,6 +242,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/03/25 17:59:19  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.13  2002/02/24 20:51:23  lazarus
   Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
   Added PageCount to TNotebook

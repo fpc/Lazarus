@@ -260,7 +260,6 @@ writeln('[TCustomNotebook.CreateWnd] D');
   SetTabPosition(fTabPosition);
   SetPageIndex(FPageIndex);
 
-  SetCallback(LM_CHANGED);
 {$IFDEF NOTEBOOK_DEBUG}
 writeln('[TCustomNotebook.CreateWnd] END');
 {$ENDIF}
@@ -535,6 +534,10 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.13  2002/02/24 20:51:24  lazarus
   Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
   Added PageCount to TNotebook

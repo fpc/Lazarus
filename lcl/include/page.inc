@@ -30,22 +30,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TPage.AttachSignals
-  Params:  None
-  Returns: Nothing
-
-  Attaches signals.
- ------------------------------------------------------------------------------}
-procedure TPage.AttachSignals; 
-begin
-  inherited AttachSignals;
-
-  Assert(False, 'Trace:[TPage.AttachSignals] Assign Callback Signals');  
-  SetCallback(LM_Paint);
-  SetCallback(LM_WINDOWPOSCHANGED);
-end;
-
-{------------------------------------------------------------------------------
   TPage ReadState
  ------------------------------------------------------------------------------}
 procedure TPage.ReadState(Reader: TAbstractReader);
@@ -100,6 +84,10 @@ end;
 
 {
   $Log$
+  Revision 1.6  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.5  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation

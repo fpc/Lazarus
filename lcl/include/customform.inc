@@ -7,17 +7,6 @@
 { $DEFINE CHECK_POSITION}
 
 {------------------------------------------------------------------------------}
-{       TCustomForm AttachSignals                                              }
-{------------------------------------------------------------------------------}
-procedure TCustomForm.AttachSignals;
-begin
-  inherited AttachSignals;
-  SetCallback(LM_CONFIGUREEVENT);
-  SetCallback(LM_CLOSEQUERY);
-  SetCallBack(LM_Activate);
-end;
-
-{------------------------------------------------------------------------------}
 {       TCustomForm ClientWndProc                                              }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.ClientWndProc(var MEssage: TLMessage);
@@ -969,6 +958,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.37  2002/03/18 11:44:41  lazarus
   MG: TForm.Position will now considered before creating form on 0,0
 

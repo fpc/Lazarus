@@ -51,8 +51,8 @@ begin
     Parent.HandleNeeded;
     if Parent.HandleAllocated 
     then InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil); 
-    if FHandle <> 0 then begin
-      AttachSignals;
+    if FHandle <> 0 then
+    begin
       if ShortCut <> 0 then ShortcutChanged(0, Shortcut);
     end;  
   end;
@@ -66,34 +66,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TMenuItem.AttachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called after the window is created but before the controls are created 
-  and the cached propeties are set. 
-  This is the only place where a call to SetCallBack is made.
- ------------------------------------------------------------------------------}
-procedure TMenuItem.AttachSignals; 
-begin
-  InterfaceObject.SetCallback(LM_ACTIVATE, Self);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.DetachSignals
-  Params:  none
-  Returns: Nothing
-
-  Gets called the moment the window is about to be destroyed. All callbacks 
-  should be removed here.
- ------------------------------------------------------------------------------}
-procedure TMenuItem.DetachSignals; 
-begin
-  InterfaceObject.RemoveCallbacks(Self);
-end;
-
-
-{------------------------------------------------------------------------------
   Method:  TMenuItem.Delete
   Params:  Index: 
   Returns: Nothing
@@ -103,7 +75,6 @@ end;
 procedure TMenuItem.Delete(Index: Integer);
 begin
   //TODO: Complete
-  DetachSignals;
 end;
 
 {------------------------------------------------------------------------------
@@ -438,6 +409,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.9  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 
@@ -491,6 +466,10 @@ end;
 
 
   $Log$
+  Revision 1.10  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.9  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 
