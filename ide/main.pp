@@ -5919,7 +5919,10 @@ procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
   NewForm: TCustomForm);
 begin
   if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
-
+  if OldForm<>nil then
+    OldForm.Invalidate;
+  if NewForm<>nil then
+    NewForm.Invalidate;
 end;
 
 
@@ -7288,6 +7291,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.407  2002/10/09 12:27:44  lazarus
+  MG: fixed maxdist of guidelines
+
   Revision 1.406  2002/10/06 17:55:43  lazarus
   MG: JITForms now sets csDesigning before creation
 
