@@ -1074,7 +1074,6 @@ begin
     MarkComponentForDeletion(ControlSelection[i].Component);
   // clear selection by selecting the form
   SelectOnlythisComponent(FCustomForm);
-  //Form.Invalidate;
   // delete marked components
   while DeletingComponents.Count>0 do
     RemoveComponentAndChilds(
