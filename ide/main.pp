@@ -2432,7 +2432,7 @@ CodeToolBoss.SourceCache.WriteAllFileNames;
 writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
 {$ENDIF}
     LFMCode:=nil;
-    if ResourceCode<>nil then begin
+    if (ResourceCode<>nil) and (not ResourceCode.IsVirtual) then begin
       Result:=DoLoadCodeBuffer(LFMCode,
           ChangeFileExt(ResourceCode.Filename,'.lfm'),false,false,true);
       if Result<>mrOk then exit;
@@ -2479,24 +2479,19 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
                NewSource) then exit;
         if ResourceCode<>nil then begin
           // rename Resource file and form text file
-          // the resource include line in the code will be changed later
+          // the resource include line in the code will be changed later when
+          // changing the unitname
           CodeToolBoss.SaveBufferAs(ResourceCode,
             ChangeFileExt(NewFilename,ResourceFileExt),ResourceCode);
-          LinkIndex:=-1;
-          ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit D ',ResourceCode<>nil);
 if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
 {$ENDIF}
-          if LFMCode<>nil then begin
-            if not CodeToolBoss.SaveBufferAs(LFMCode,
-              ChangeFileExt(NewFilename,'.lfm'),LFMCode) then
-                LFMCode:=nil;
-          end;
+          LFMCode:=nil;
         end else begin
           // removing support files
-          // The IDE automatically opens lfm files. SaveAs makes sure, that there
-          // is no old lfm file left, which does not belong to the file
+          // The IDE automatically opens lfm files. SaveAs makes sure, that
+          // there is no old lfm file left, which does not belong to the file
           DeleteFile(ChangeFileExt(NewFilename,'.lfm'));
         end;
 {$IFDEF IDE_DEBUG}
@@ -2508,6 +2503,8 @@ writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
         NewUnitName:=ExtractFileNameOnly(ActiveUnitInfo.Filename);
         // change unitname in source (resource filename is also changed)
         ActiveUnitInfo.UnitName:=NewUnitName;
+        LinkIndex:=-1;
+        ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
         // change unitname on SourceNotebook
         NewPageName:=SourceNoteBook.FindUniquePageName(
             ActiveUnitInfo.Filename,SourceNoteBook.NoteBook.PageIndex);
@@ -2553,117 +2550,131 @@ CheckHeap(IntToStr(GetMem_Cnt));
   if ResourceCode<>nil then begin
     // save lrs - lazarus resource file and lfm - lazarus form text file
 
-    // stream component to binary stream
-    BinCompStream:=TMemoryStream.Create;
-    try
-      repeat
-        try
-          BinCompStream.Position:=0;
-          Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
-          try
-            Writer:=TWriter.Create(Driver);
-            try
-              Writer.WriteDescendent(ActiveUnitInfo.Form,nil);
-            finally
-              Writer.Free;
-            end;
-          finally
-            Driver.Free;
-          end;
-        except
-          ACaption:='Streaming error';
-          AText:='Unable to stream '
-              +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName+'.';
-          Result:=MessageDlg(ACaption, AText, mterror,
-                     [mbabort, mbretry, mbignore], 0);
-          if Result=mrAbort then exit;
-          if Result=mrIgnore then Result:=mrOk;
-        end;
-      until Result<>mrRetry;
-      // create lazarus form resource code
-      MemStream:=TMemoryStream.Create;
+    if (ActiveUnitInfo.Form<>nil) then begin
+      // stream component to resource code and to lfm file
+      
+      // stream component to binary stream
+      BinCompStream:=TMemoryStream.Create;
       try
-        BinCompStream.Position:=0;
-        BinaryToLazarusResourceCode(BinCompStream,MemStream
-          ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
-        MemStream.Position:=0;
-        SetLength(CompResourceCode,MemStream.Size);
-        MemStream.Read(CompResourceCode[1],length(CompResourceCode));
-      finally
-        MemStream.Free;
-      end;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
-{$ENDIF}
-      // replace lazarus form resource code
-      if (not CodeToolBoss.AddLazarusResource(ResourceCode,
-         'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
-      begin
-        ACaption:='Resource error';
-        AText:='Unable to add resource '
-          +'T'+ActiveUnitInfo.FormName+':FORMDATA to resource file '#13
-          +'"'+ResourceCode.FileName+'".'#13
-          +'Probably a syntax error.';
-        Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
-        if Result=mrCancel then Result:=mrAbort;
-        exit;
-      end;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.DoSaveEditorUnit F ',ResourceCode.Modified);
-{$ENDIF}
-      if not SaveToTestDir then begin
-        if ResourceCode.Modified then begin
-          Result:=DoSaveCodeBufferToFile(ResourceCode,ResourceCode.Filename,
-              ActiveUnitInfo.IsPartOfProject);
-          if not Result=mrOk then exit;
-          Result:=mrCancel;
-        end;
-      end else begin
-        // ToDo: calculate a better resource filename
-{$IFDEF IDE_DEBUG}
-writeln('>>>>>>>>>>>>> ',TestFilename,' ',ChangeFileExt(TestFilename,ResourceFileExt));
-{$ENDIF}
-        Result:=DoSaveCodeBufferToFile(ResourceCode,
-                    ChangeFileExt(TestFilename,ResourceFileExt),false);
-        if not Result=mrOk then exit;
-        Result:=mrCancel;
-      end;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.DoSaveEditorUnit G ',LFMCode<>nil);
-{$ENDIF}
-      if (not SaveToTestDir) and (LFMCode<>nil) then begin
         repeat
           try
-            // transform binary to text
-            TxtCompStream:=TMemoryStream.Create;
+            BinCompStream.Position:=0;
+            Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
             try
-              BinCompStream.Position:=0;
-              ObjectBinaryToText(BinCompStream,TxtCompStream);
-              TxtCompStream.Position:=0;
-              LFMCode.LoadFromStream(TxtCompStream);
-              Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,
-                               ActiveUnitInfo.IsPartOfProject);
-              if not Result=mrOk then exit;
-              Result:=mrCancel;
+              Writer:=TWriter.Create(Driver);
+              try
+                Writer.WriteDescendent(ActiveUnitInfo.Form,nil);
+              finally
+                Writer.Free;
+              end;
             finally
-              TxtCompStream.Free;
+              Driver.Free;
             end;
           except
             ACaption:='Streaming error';
-            AText:='Unable to transform binary component stream of '
-               +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName
-               +' into text.';
-            Result:=MessageDlg(ACaption, AText, mterror,
-                                [mbabort, mbretry, mbignore], 0);
+            AText:='Unable to stream '
+                +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName+'.';
+            Result:=MessageDlg(ACaption, AText, mtError,
+                       [mbAbort, mbRetry, mbIgnore], 0);
             if Result=mrAbort then exit;
             if Result=mrIgnore then Result:=mrOk;
           end;
         until Result<>mrRetry;
+        // create lazarus form resource code
+        MemStream:=TMemoryStream.Create;
+        try
+          BinCompStream.Position:=0;
+          BinaryToLazarusResourceCode(BinCompStream,MemStream
+            ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
+          MemStream.Position:=0;
+          SetLength(CompResourceCode,MemStream.Size);
+          MemStream.Read(CompResourceCode[1],length(CompResourceCode));
+        finally
+          MemStream.Free;
+        end;
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
+{$ENDIF}
+        // replace lazarus form resource code
+        if (not CodeToolBoss.AddLazarusResource(ResourceCode,
+           'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
+        begin
+          ACaption:='Resource error';
+          AText:='Unable to add resource '
+            +'T'+ActiveUnitInfo.FormName+':FORMDATA to resource file '#13
+            +'"'+ResourceCode.FileName+'".'#13
+            +'Probably a syntax error.';
+          Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+          if Result=mrCancel then Result:=mrAbort;
+          exit;
+        end;
+        if (not SaveToTestDir) then begin
+          // save lfm file
+          if LFMCode=nil then begin
+            LFMCode:=CodeToolBoss.CreateFile(
+                            ChangeFileExt(ResourceCode.Filename,'.lfm'));
+          end;
+          if LFMCode<>nil then begin
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoSaveEditorUnit E2 LFM=',LFMCode.Filename);
+{$ENDIF}
+            repeat
+              try
+                // transform binary to text
+                TxtCompStream:=TMemoryStream.Create;
+                try
+                  BinCompStream.Position:=0;
+                  ObjectBinaryToText(BinCompStream,TxtCompStream);
+                  TxtCompStream.Position:=0;
+                  LFMCode.LoadFromStream(TxtCompStream);
+                  Result:=DoSaveCodeBufferToFile(LFMCode,LFMCode.Filename,
+                                   ActiveUnitInfo.IsPartOfProject);
+                  if not Result=mrOk then exit;
+                  Result:=mrCancel;
+                finally
+                  TxtCompStream.Free;
+                end;
+              except
+                ACaption:='Streaming error';
+                AText:='Unable to transform binary component stream of '
+                   +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName
+                   +' into text.';
+                Result:=MessageDlg(ACaption, AText, mtError,
+                                    [mbAbort, mbRetry, mbIgnore], 0);
+                if Result=mrAbort then exit;
+                if Result=mrIgnore then Result:=mrOk;
+              end;
+            until Result<>mrRetry;
+            Result:=mrCancel;
+          end;
+        end;
+      finally
+        BinCompStream.Free;
+      end;
+    end;
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoSaveEditorUnit F ',ResourceCode.Modified);
+{$ENDIF}
+    if not SaveToTestDir then begin
+      if ResourceCode.Modified then begin
+        Result:=DoSaveCodeBufferToFile(ResourceCode,ResourceCode.Filename,
+            ActiveUnitInfo.IsPartOfProject);
+        if not Result=mrOk then exit;
         Result:=mrCancel;
       end;
-    finally
-      BinCompStream.Free;
+    end else begin
+      // ToDo: calculate a better resource filename
+{$IFDEF IDE_DEBUG}
+writeln('>>>>>>>>>>>>> ',TestFilename,' ',ChangeFileExt(TestFilename,ResourceFileExt));
+{$ENDIF}
+      Result:=DoSaveCodeBufferToFile(ResourceCode,
+                  ChangeFileExt(TestFilename,ResourceFileExt),false);
+      if not Result=mrOk then exit;
+      Result:=mrCancel;
     end;
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoSaveEditorUnit G ',LFMCode<>nil);
+{$ENDIF}
   end;
   if not SaveToTestDir then begin
     ActiveUnitInfo.Modified:=false;
@@ -3539,7 +3550,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
     Result:=DoOpenEditorFile(AFilename,false);
     exit;
   end;
-  if not FileIsText(AFilename) then begin
+  if FileExists(AFilename) and (not FileIsText(AFilename)) then begin
     ACaption:='File not text';
     AText:='File "'+AFilename+'"'#13
           +'does not look like a text file.'#13
@@ -4252,7 +4263,8 @@ var
 begin
   repeat
 writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
-    if CheckIfText and (not FileIsText(AFilename)) then begin
+    if CheckIfText and FileExists(AFilename) and (not FileIsText(AFilename)) 
+    then begin
       ACaption:='File not text';
       AText:='File "'+AFilename+'"'#13
             +'does not look like a text file.'#13
@@ -5478,6 +5490,9 @@ end.
 =======
 
   $Log$
+  Revision 1.194  2001/12/28 11:01:20  lazarus
+  MG: fixed save as with lfm and lrs files
+
   Revision 1.193  2001/12/20 19:11:22  lazarus
   Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
   Shane
@@ -5492,6 +5507,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.194  2001/12/28 11:01:20  lazarus
+  MG: fixed save as with lfm and lrs files
+
   Revision 1.193  2001/12/20 19:11:22  lazarus
   Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
   Shane
