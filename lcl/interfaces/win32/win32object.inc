@@ -461,7 +461,7 @@ Begin
   Assert(False, 'Trace:WinRegister - Start');
   With WindowClass Do
   Begin
-    Style := 0{CS_HRedraw or CS_VRedraw};
+    Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
     LPFnWndProc := @WindowProc;
     CbClsExtra := 40;
     CbWndExtra := 40;
@@ -1310,6 +1310,9 @@ End;
 
 {
   $Log$
+  Revision 1.290  2004/10/13 20:03:22  vincents
+  From Jesus: Set default window class style to CS_DBLCLKS.
+
   Revision 1.289  2004/10/06 12:50:38  micha
   remove obsolete code
 
