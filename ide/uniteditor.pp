@@ -772,6 +772,7 @@ begin
   GetDialogPosition(FindReplaceDlg.Width,FindReplaceDlg.Height,ALeft,ATop);
   FindReplaceDlg.Left:=ALeft;
   FindReplaceDlg.Top:=ATop;
+  
   if (FindReplaceDlg.ShowModal = mrCancel) then begin
     EditorComponent.SetFocus;
     exit;
