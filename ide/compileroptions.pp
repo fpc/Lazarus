@@ -42,7 +42,7 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  Laz_XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs;
+  Laz_XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs, LazarusIDEStrConsts;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -1350,7 +1350,7 @@ begin
 
   Assert(False, 'Trace:Compiler Options Form Created');
   SetBounds((Screen.Width-440) div 2,(Screen.Height-500) div 2,435,480);
-  Caption := 'Compiler Options';
+  Caption := dlgCompilerOptions ;
   OnShow := @CreateForm;
   
   nbMain := TNotebook.Create(Self);
@@ -1362,13 +1362,13 @@ begin
 
   // Add the pages 
   if nbMain.PageCount>0 then
-    nbMain.Pages[0] := 'Search Paths'
+    nbMain.Pages[0] := dlgSearchPaths 
   else
-    nbMain.Pages.Add('Search Paths');
-  nbMain.Pages.Add('Parsing');
-  nbMain.Pages.Add('Code Generation');
-  nbMain.Pages.Add('Linking');
-  nbMain.Pages.Add('Other');
+    nbMain.Pages.Add(dlgSearchPaths );
+  nbMain.Pages.Add(dlgCOParsing );
+  nbMain.Pages.Add(dlgCodeGeneration );
+  nbMain.Pages.Add(dlgCOLinking );
+  nbMain.Pages.Add(dlgCOOther );
 
 {
   bvlButtonBar := TBevel.Create(Self);
@@ -1485,7 +1485,7 @@ begin
     end;
     inc(i);
   end;
-  MessageDlg('Show compiler options','Options: '#13+TestStr,mtInformation,
+  MessageDlg(dlgShowCompilerOptions,dlgCOOpts+#13+TestStr,mtInformation,
     [mbOk],0);
 end;
 
@@ -1741,7 +1741,7 @@ begin
     Left := 10;
     Height := 45;
     Width := 250;
-    Caption := 'Style:';
+    Caption := dlgCOStyle;
     Visible := True;
   end;
 
@@ -1753,7 +1753,7 @@ begin
     Left := 10;
     Height := 16;
     Width := 50;
-    Caption := 'Intel';
+    Caption := 'Intel';//Really we should localize this? :)
     Visible := True;
   end;
 
@@ -1777,7 +1777,7 @@ begin
     Left := 150;
     Height := 16;
     Width := 50;
-    Caption := 'As-Is';
+    Caption := dlgCOAsIs ;
     Visible := True;
   end;
 
@@ -1789,7 +1789,7 @@ begin
     Left := 10;
     Height := 316;
     Width := Self.ClientWidth-28;
-    Caption := 'Symantec Checking:';
+    Caption := dlgSymantecChecking ;
     Visible := True;
   end;
 
@@ -1797,7 +1797,7 @@ begin
   with chkSymD2Ext do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Delphi 2 Extensions';
+    Caption := dlgDelphi2Ext ;
     Top := 10;
     Left := 5;
     Height := 16;
@@ -1809,7 +1809,7 @@ begin
   with chkSymCOper do
   begin
     Parent := grpSymantecChk;
-    Caption := 'C Style Operators (*=, +=, /= and -=)';
+    Caption := dlgCOCOps;
     Top := 34;
     Left := 5;
     Height := 16;
@@ -1821,7 +1821,7 @@ begin
   with chkSymIncludeAssertions do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Include Assertion Code';
+    Caption := dlgAssertCode ;
     Top := 58;
     Left := 5;
     Height := 16;
@@ -1833,7 +1833,7 @@ begin
   with chkSymAllowLab do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Allow LABEL and GOTO';
+    Caption := dlgLabelGoto ;
     Top := 82;
     Left := 5;
     Height := 16;
@@ -1845,7 +1845,7 @@ begin
   with chkSymCPPInline do
   begin
     Parent := grpSymantecChk;
-    Caption := 'C++ Styled INLINE';
+    Caption := dlgCppInline ;
     Top := 106;
     Left := 5;
     Height := 16;
@@ -1857,7 +1857,7 @@ begin
   with chkSymCMacros do
   begin
     Parent := grpSymantecChk;
-    Caption := 'C Style Macros (global)';
+    Caption := dlgCMacro;
     Top := 130;
     Left := 5;
     Height := 16;
@@ -1869,7 +1869,7 @@ begin
   with chkSymTP7Compat do
   begin
     Parent := grpSymantecChk;
-    Caption := 'TP/BP 7.0 Compatible';
+    Caption := dlgBP7Cptb ;
     Top := 154;
     Left := 5;
     Height := 16;
@@ -1881,7 +1881,7 @@ begin
   with chkSymConstInit do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Constructor name must be ''' + 'init' + ''' (destructor must be ''' + 'done' + ''')';
+    Caption := dlgInitDoneOnly ;
     Top := 178;
     Left := 5;
     Height := 16;
@@ -1893,7 +1893,7 @@ begin
   with chkSymStaticKwd do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Static Keyword in Objects';
+    Caption := dlgStaticKeyword ;
     Top := 202;
     Left := 5;
     Height := 16;
@@ -1905,7 +1905,7 @@ begin
   with chkSymDelphiCompat do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Delphi Compatible';
+    Caption := dlgDeplhiComp;
     Top := 226;
     Left := 5;
     Height := 16;
@@ -1917,7 +1917,7 @@ begin
   with chkSymUseAnsiStrings do
   begin
     Parent := grpSymantecChk;
-    Caption := 'Use Ansi Strings';
+    Caption := dlgCOAnsiStr ;
     Top := 250;
     Left := 5;
     Height := 16;
@@ -1929,7 +1929,7 @@ begin
   with chkSymGPCCompat do
   begin
     Parent := grpSymantecChk;
-    Caption := 'GPC (GNU Pascal Compiler) Compatible';
+    Caption := dlgGPCComp ;
     Top := 274;
     Left := 5;
     Height := 16;
@@ -1955,11 +1955,11 @@ begin
     Left := 10;
     Height := 70;
     Width := 85;
-    Caption := 'Unit Style:';
+    Caption := dlgCOUnitStyle ;
     with Items do begin
-      Add('Static');
-      Add('Dynamic');
-      Add('Smart');
+      Add(dlgStatic );
+      Add(dlgDynamic );
+      Add(dlgCOSmart );
     end;
     Visible := True;
   end;
@@ -1973,7 +1973,7 @@ begin
     Left := grpUnitStyle.Left + grpUnitStyle.Width + 10;
     Height := 70;
     Width := 165;
-    Caption := 'Checks:';
+    Caption := dlgCOChecks ;
     Visible := True;
   end;
 
@@ -1993,7 +1993,7 @@ begin
   with chkChecksRange do
   begin
     Parent := grpChecks;
-    Caption := 'Range';
+    Caption := dlgCORange ;
     Top := 8;
     Left := 85;
     Height := 16;
@@ -2005,7 +2005,7 @@ begin
   with chkChecksOverflow do
   begin
     Parent := grpChecks;
-    Caption := 'Overflow';
+    Caption := dlgCOOverflow ;
     Top := 29;
     Left := 5;
     Height := 16;
@@ -2017,7 +2017,7 @@ begin
   with chkChecksStack do
   begin
     Parent := grpChecks;
-    Caption := 'Stack';
+    Caption := dlgCOStack ;
     Top := 29;
     Left := 85;
     Height := 16;
@@ -2035,7 +2035,7 @@ begin
     Left := grpChecks.Left + grpChecks.Width + 10;
     Height := 55;
     Width := 80;
-    Caption := 'Heap Size:';
+    Caption := dlgHeapSize +':';
     Visible := True;
   end;
 
@@ -2043,7 +2043,7 @@ begin
   with edtHeapSize do
   begin
     Parent := grpHeapSize;
-    Caption := 'Heap Size';
+    Caption := dlgHeapSize ;
     Top := 8;
     Left := 5;
     Height := 23;
@@ -2062,7 +2062,7 @@ begin
     Left := 10;
     Height := 70;
     Width := 110;
-    Caption := 'Generate:';
+    Caption := dlgCOGenerate ;
     Visible := True;
   end;
 
@@ -2074,7 +2074,7 @@ begin
     Left := 5;
     Height := 16;
     Width := 95;
-    Caption := 'Faster Code';
+    Caption := dlgCOFast;
     Visible := True;
   end;
 
@@ -2086,7 +2086,7 @@ begin
     Left := 5;
     Height := 16;
     Width := 95;
-    Caption := 'Smaller Code';
+    Caption := dlgCOSmaller ;
     Visible := True;
   end;
 
@@ -2101,7 +2101,7 @@ begin
     Left := grpGenerate.Left + grpGenerate.Width + 10;
     Height := 90;
     Width := 230;
-    Caption := 'Target Processor:';
+    Caption := dlgTargetProc ;
     Visible := True;
   end;
 
@@ -2152,7 +2152,7 @@ begin
     Left := 10;
     Height := 132;
     Width := 350;
-    Caption := 'Optimizations:';
+    Caption :=   dlgOptimiz ;
     Visible := True;
   end;
 
@@ -2160,7 +2160,7 @@ begin
   with chkOptVarsInReg do
   begin
     Parent := grpOptimizations;
-    Caption := 'Keep certain variables in registers';
+    Caption := dlgCOKeepVarsReg ;
     Top := 5;
     Left := 5;
     Height := 16;
@@ -2172,7 +2172,7 @@ begin
   with chkOptUncertain do
   begin
     Parent := grpOptimizations;
-    Caption := 'Uncertain Optimizations';
+    Caption := dlgUncertOpt ;
     Top := 26;
     Left := 5;
     Height := 16;
@@ -2197,7 +2197,7 @@ begin
   with radOptLevel1 do
   begin
     Parent := grpOptimizations;
-    Caption := 'Level 1 (Quick Optimizations)';
+    Caption :=  dlgLevel1Opt ;
     Top := 52;
     Left := 5;
     Height := 16;
@@ -2209,7 +2209,7 @@ begin
   with radOptLevel2 do
   begin
     Parent := grpOptimizations;
-    Caption := 'Level 2 (Level 1 + Slower Optimizations)';
+    Caption := dlgLevel2Opt;
     Top := 73;
     Left := 5;
     Height := 16;
@@ -2221,7 +2221,7 @@ begin
   with radOptLevel3 do
   begin
     Parent := grpOptimizations;
-    Caption := 'Level 3 (Level 2 + Uncertain)';
+    Caption := dlgLevel3Opt ;
     Top := 94;
     Left := 5;
     Height := 16;
@@ -2247,7 +2247,7 @@ begin
     Left := 10;
     Height := 151;
     Width := Self.ClientWidth-28;
-    Caption := 'Debugging:';
+    Caption := dlgCODebugging ;
     Visible := True;
   end;
 
@@ -2255,7 +2255,7 @@ begin
   with chkDebugGDB do
   begin
     Parent := grpDebugging;
-    Caption := 'Generate Debugging Info For GDB (Slows Compiling)';
+    Caption := dlgCOGDB ;
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2267,7 +2267,7 @@ begin
   with chkDebugDBX do
   begin
     Parent := grpDebugging;
-    Caption := 'Generate Debugging Info For DBX (Slows Compiling)';
+    Caption := dlgCODBX;
     Top := 27;
     Left := 8;
     Height := 16;
@@ -2279,7 +2279,7 @@ begin
   with chkUseLineInfoUnit do
   begin
     Parent := grpDebugging;
-    Caption := 'Display Line Numbers in Run-time Error Backtraces';
+    Caption := dlgLNumsBct;
     Top := 48;
     Left := 8;
     Height := 16;
@@ -2291,7 +2291,7 @@ begin
   with chkUseHeaptrc do
   begin
     Parent := grpDebugging;
-    Caption := 'Use Heaptrc Unit';
+    Caption := dlgCOHeaptrc ;
     Top := 69;
     Left := 8;
     Height := 16;
@@ -2303,7 +2303,7 @@ begin
   with chkGenGProfCode do
   begin
     Parent := grpDebugging;
-    Caption := 'Generate code for gprof';
+    Caption := dlgGPROF ;
     Top := 90;
     Left := 8;
     Height := 16;
@@ -2315,7 +2315,7 @@ begin
   with chkSymbolsStrip do
   begin
     Parent := grpDebugging;
-    Caption := 'Strip Symbols From Executable';
+    Caption := dlgCOStrip;
     Top := 111;
     Left := 8;
     Height := 16;
@@ -2333,7 +2333,7 @@ begin
     Left := 10;
     Height := 70;
     Width := Self.ClientWidth-28;
-    Caption := 'Link Libraries:';
+    Caption := dlgLinkLibraries ;
     Visible := True;
   end;
 
@@ -2341,7 +2341,7 @@ begin
   with radLibsLinkDynamic do
   begin
     Parent := grpLinkLibraries;
-    Caption := 'Link With Dynamic Libraries';
+    Caption := dlgLinkDinLibs;
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2353,7 +2353,7 @@ begin
   with radLibsLinkStatic do
   begin
     Parent := grpLinkLibraries;
-    Caption := 'Link With Static Libraries';
+    Caption := dlgLinkStatLibs ;
     Top := 27;
     Left := 8;
     Height := 16;
@@ -2371,7 +2371,7 @@ begin
     Left := 10;
     Height := 75;
     Width := Self.ClientWidth-28;
-    Caption := 'Options:';
+    Caption := dlgCOOpts;
     Visible := True;
   end;
 
@@ -2379,7 +2379,7 @@ begin
   with chkOptionsLinkOpt do
   begin
     Parent := grpOptions;
-    Caption := 'Pass Options To The Linker (Delimiter is space)';
+    Caption := dlgPassOptsLinker ;
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2416,7 +2416,7 @@ begin
     Left := 10;
     Height := 212;
     Width := Self.ClientWidth-28;
-    Caption := 'Verbosity:';
+    Caption := dlgVerbosity;
     Visible := True;
   end;
 
@@ -2424,7 +2424,7 @@ begin
   with chkErrors do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Errors';
+    Caption := dlgCOShowErr ;
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2436,7 +2436,7 @@ begin
   with chkWarnings do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Warnings';
+    Caption := dlgShowWarnings ;
     Top := 27;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2448,7 +2448,7 @@ begin
   with chkNotes do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Notes';
+    Caption := dlgShowNotes ;
     Top := 48;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2460,7 +2460,7 @@ begin
   with chkHints do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Hints';
+    Caption := dlgShowHint ;
     Top := 69;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2472,7 +2472,7 @@ begin
   with chkGeneralInfo do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show General Info';
+    Caption := dlgShowGeneralInfo ;
     Top := 90;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2484,7 +2484,7 @@ begin
   with chkLineNumbers do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Line Numbers';
+    Caption := dlgShowLineNumbers ;
     Top := 111;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2496,7 +2496,7 @@ begin
   with chkAllProcsOnError do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show all procs on error';
+    Caption := dlgShowProcsError ;
     Top := 132;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2508,7 +2508,7 @@ begin
   with chkEverything do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Everything';
+    Caption := dlgShowEverything ;
     Top := 153;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
@@ -2520,7 +2520,7 @@ begin
   with chkDebugInfo do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Debug Info';
+    Caption := dlgShowDebugInfo ;
     Top := 6;
     Left := (grpVerbosity.ClientWidth div 2)+4;
     Height := 16;
@@ -2532,7 +2532,7 @@ begin
   with chkUsedFiles do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Used Files';
+    Caption := dlgShowUsedFiles ;
     Top := 27;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2544,7 +2544,7 @@ begin
   with chkTriedFiles do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Tried Files';
+    Caption := dlgShowTriedFiles ;
     Top := 48;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2556,7 +2556,7 @@ begin
   with chkDefinedMacros do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Defined Macros';
+    Caption := dlgShowDefinedMacros ;
     Top := 69;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2568,7 +2568,7 @@ begin
   with chkCompiledProc do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Compiled Procedures';
+    Caption := dlgShowCompiledProcedures ;
     Top := 90;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2580,7 +2580,7 @@ begin
   with chkConditionals do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Conditionals';
+    Caption := dlgShowConditionals ;
     Top := 111;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2592,7 +2592,7 @@ begin
   with chkNothing do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Nothing (only errors)';
+    Caption := dlgShowNothing ;
     Top := 132;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2604,7 +2604,7 @@ begin
   with chkFPCLogo do
   begin
     Parent := grpVerbosity;
-    Caption := 'Write an FPC Logo';
+    Caption := dlgWriteFPCLogo ;
     Top := 153;
     Left := chkDebugInfo.Left;
     Height := chkDebugInfo.Height;
@@ -2616,7 +2616,7 @@ begin
   with chkHintsForUnusedProjectUnits do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Hints for unused project units';
+    Caption := dlgHintsUnused ;
     Top := 174;
     Left := ChkErrors.Left;
     Height := ChkErrors.Height;
@@ -2634,7 +2634,7 @@ begin
     Left := 10;
     Height := 95;
     Width := Self.ClientWidth-28;
-    Caption := 'Config Files:';
+    Caption := dlgConfigFiles ;
     Visible := True;
   end;
 
@@ -2642,7 +2642,7 @@ begin
   with chkConfigFile do
   begin
     Parent := grpConfigFile;
-    Caption := 'Use Compiler Config File (fpc.cfg)';
+    Caption := dlgUseFpcCfg ;
     Top := 6;
     Left := 8;
     Height := 16;
@@ -2654,7 +2654,7 @@ begin
   with chkAdditionalConfigFile do
   begin
     Parent := grpConfigFile;
-    Caption := 'Use Additional Compiler Config File';
+    Caption := dlgUseAdditionalConfig ;
     Top := 27;
     Left := 8;
     Height := 16;
@@ -2684,7 +2684,7 @@ begin
     Left := 10;
     Height := 50;
     Width := 200;
-    Caption := 'Stop after number of errors:';
+    Caption := dlgStopAfterNrErr ;
     Visible := True;
   end;
 
@@ -2716,7 +2716,7 @@ begin
     Top := 7;
     Width := Self.ClientWidth-28;
     Height := 50;
-    Caption := 'Other Unit Files (Delimiter is semicolon):';
+    Caption := dlgOtherUnitFiles ;
     Visible := True;
   end;
 
@@ -2756,7 +2756,7 @@ begin
     Top := grpOtherUnits.Top+grpOtherUnits.Height+5;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
-    Caption := 'Include Files:';
+    Caption := dlgCOIncFiles ;
     Visible := True;
   end;
 
@@ -2796,7 +2796,7 @@ begin
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
-    Caption := 'Other Sources:  (.pp/.pas files)';
+    Caption := dlgCOSources ;
     Visible := True;
   end;
 
@@ -2836,7 +2836,7 @@ begin
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
-    Caption := 'Libraries:';
+    Caption := dlgCOLibraries ;
     Visible := True;
   end;
 
@@ -2876,7 +2876,7 @@ begin
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
-    Caption := 'Path To Compiler:';
+    Caption := dlgToFPCPath ;
     Visible := True;
   end;
 
@@ -2902,7 +2902,7 @@ begin
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
     Height := grpOtherUnits.Height;
-    Caption := 'Unit output directory:';
+    Caption := dlgUnitOutp ;
     Visible := True;
   end;
 
@@ -2928,7 +2928,7 @@ begin
     Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
     Width:=150;
     Height:=45;
-    Caption:='LCL Widget Type';
+    Caption:=dlgLCLWidgetType ;
     with Items do begin
       Add('gtk');
       Add('win32');
@@ -2956,7 +2956,7 @@ begin
     Height := 23; 
     Top := Self.Height - btnApply.Height - 15;
     Left := Self.Width - btnApply.Width - 10;
-    Caption := 'Apply';
+    Caption := dlgButApply;
     OnClick := @ButtonApplyClicked;
     Visible := True;
   end;
@@ -2969,7 +2969,7 @@ begin
     Height := 23; 
     Top := Self.Height - btnCancel.Height - 15;
     Left := btnApply.Left - btnCancel.Width - 5;
-    Caption := 'Cancel';
+    Caption := dlgCancel ;
     OnClick := @ButtonCancelClicked;
     Visible := True;
   end;
@@ -2995,7 +2995,7 @@ begin
     Height := 23; 
     Top := Self.Height - btnTest.Height - 15;
     Left := btnOK.Left - btnTest.Width - 5;
-    Caption := 'Show Options';
+    Caption := dlgCOShowOptions ;
     OnClick := @ButtonTestClicked;
     Visible := True;
   end;

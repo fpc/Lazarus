@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils, IDEProcs, LazConf, LResources, Forms, Controls, Buttons,
   ExtCtrls, StdCtrls, ComCtrls, Dialogs, Laz_XMLCfg, CodeToolManager,
-  DefineTemplates, SourceChanger, EditDefineTree, SynEdit;
+  DefineTemplates, SourceChanger, EditDefineTree, SynEdit,LazarusIDEStrConsts;
 
 type
   TCodeToolsOptions = class
@@ -583,7 +583,7 @@ begin
     Width:=485;
     Height:=435;
     Position:=poScreenCenter;
-    Caption:='CodeTools Options';
+    Caption:=dlgCodeToolsOpts;
     OnResize:=@CodeToolsOptsDlgResize;
 
     NoteBook:=TNoteBook.Create(Self);
@@ -592,12 +592,13 @@ begin
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       if PageCount>0 then
-        Pages[0]:='General'
+        Pages[0]:=lisMenuInsertGeneral
       else
-        Pages.Add('General');;
-      Pages.Add('Code Creation');
-      Pages.Add('Line Splitting');
-      Pages.Add('Space');
+        Pages.Add(lisMenuInsertGeneral);;//by VVI - using first phrase, otherwise we''ll encounter a problem with .po 
+	
+      Pages.Add(dlgCodeCreation);
+      Pages.Add(dlgLineSplitting );
+      Pages.Add(dlgSpaceNotCosmos);
     end;
 
     SetupGeneralPage;
@@ -615,7 +616,7 @@ begin
       Height:=23;
       Left:=Self.ClientWidth-Width-15;
       Top:=Self.ClientHeight-Height-15;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
@@ -651,7 +652,7 @@ begin
     Name:='SrcPathGroupBox';
     Parent:=NoteBook.Page[0];
     SetBounds(8,7,Self.ClientWidth-20,51);
-    Caption:='Additional Source search path for all projects (.pp;.pas)';
+    Caption:=dlgAdditionalSrcPath ;
     Visible:=true;
   end;
   
@@ -669,7 +670,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(8,SrcPathGroupBox.Top+SrcPathGroupBox.Height+7,
       SrcPathGroupBox.Width,95);
-    Caption:='Jumping (e.g. Method Jumping)';
+    Caption:=dlgJumpingETC;
     Visible:=true;
   end;
 
@@ -678,7 +679,7 @@ begin
     Name:='AdjustTopLineDueToCommentCheckBox';
     Parent:=JumpingGroupBox;
     SetBounds(5,6,Parent.ClientWidth-10,Height);
-    Caption:='Adjust top line due to comment in front';
+    Caption:=dlgAdjustTopLine;
     Visible:=true;
   end;
 
@@ -690,7 +691,7 @@ begin
       AdjustTopLineDueToCommentCheckBox.Top+2
       +AdjustTopLineDueToCommentCheckBox.Height,
       AdjustTopLineDueToCommentCheckBox.Width,Height);
-    Caption:='Center Cursor Line';
+    Caption:=dlgcentercursorline;
     Visible:=true;
   end;
 
@@ -701,7 +702,7 @@ begin
     SetBounds(JumpCenteredCheckBox.Left,
       JumpCenteredCheckBox.Top+JumpCenteredCheckBox.Height+2,
       JumpCenteredCheckBox.Width,Height);
-    Caption:='Cursor beyond EOL';
+    Caption:=dlgcursorbeyondeol;
     Visible:=true;
   end;
 end;
@@ -714,11 +715,11 @@ begin
     Parent:=NoteBook.Page[1];
     SetBounds(8,6,
       (Self.ClientWidth div 2)-12,80);
-    Caption:='Class part insert policy';
+    Caption:=dlgClassInsertPolicy ;
     with Items do begin
       BeginUpdate;
-      Add('Alphabetically');
-      Add('Last');
+      Add(dlgAlphabetically);
+      Add(dlgCDTLast);
       EndUpdate;
     end;
     Visible:=true;
@@ -733,12 +734,12 @@ begin
       ClassPartInsertPolicyRadioGroup.Top,
       ClassPartInsertPolicyRadioGroup.Width,
       ClassPartInsertPolicyRadioGroup.Height);
-    Caption:='Method insert policy';
+    Caption:=dlgMethodInsPolicy ;
     with Items do begin
       BeginUpdate;
-      Add('Alphabetically');
-      Add('Last');
-      Add('Class order');
+      Add(dlgAlphabetically);
+      Add(dlgCDTLast);
+      Add(dlgCDTClassOrder );
       EndUpdate;
     end;
     Visible:=true;
@@ -752,13 +753,13 @@ begin
       ClassPartInsertPolicyRadioGroup.Top
        +ClassPartInsertPolicyRadioGroup.Height+7,
       (Self.ClientWidth div 2)-12,100);
-    Caption:='Keyword policy';
+    Caption:=dlgKeywordPolicy ;
     with Items do begin
       BeginUpdate;
-      Add('None');
-      Add('lowercase');
-      Add('UPPERCASE');
-      Add('Lowercase, first letter up');
+      Add(dlgEnvNone);
+      Add(dlgCDTLower);
+      Add(dlgCDTUPPERCASE);
+      Add(dlg1UP2low);
       EndUpdate;
     end;
     OnClick:=@UpdateExamples;
@@ -772,13 +773,13 @@ begin
     SetBounds(KeyWordPolicyRadioGroup.Left+KeyWordPolicyRadioGroup.Width+8,
       KeyWordPolicyRadioGroup.Top,
       KeyWordPolicyRadioGroup.Width,KeyWordPolicyRadioGroup.Height);
-    Caption:='Identifier policy';
+    Caption:=dlgIdentifierPolicy;
     with Items do begin
       BeginUpdate;
-      Add('None');
-      Add('lowercase');
-      Add('UPPERCASE');
-      Add('Lowercase, first letter up');
+      Add(dlgEnvNone);
+      Add(dlgCDTLower);
+      Add(dlgCDTUPPERCASE);
+      Add(dlg1UP2low);
       EndUpdate;
     end;
     OnClick:=@UpdateExamples;
@@ -792,7 +793,7 @@ begin
     SetBounds(KeyWordPolicyRadioGroup.Left,
       KeyWordPolicyRadioGroup.Top+KeyWordPolicyRadioGroup.Height+7,
       Self.ClientWidth-20,125);
-    Caption:='Property completion';
+    Caption:=dlgPropertyCompletion ;
     Visible:=true;
   end;
 
@@ -801,7 +802,7 @@ begin
     Name:='PropertyCompletionCheckBox';
     Parent:=PropertyCompletionGroupBox;
     SetBounds(6,5,200,Height);
-    Caption:='Complete properties';
+    Caption:=dlgCompleteProperties ;
     Visible:=true;
   end;
 
@@ -812,7 +813,7 @@ begin
     SetBounds(PropertyCompletionCheckBox.Left,
       PropertyCompletionCheckBox.Top+PropertyCompletionCheckBox.Height+5,
       100,Height);
-    Caption:='Read prefix';
+    Caption:=dlgCDTReadPrefix ;
     Visible:=true;
   end;
 
@@ -831,7 +832,7 @@ begin
     SetBounds(6,PropertyReadIdentPrefixLabel.Top
       +PropertyReadIdentPrefixLabel.Height+5,
       PropertyReadIdentPrefixLabel.Width,Height);
-    Caption:='Write prefix';
+    Caption:=dlgCDTWritePrefix ;
     Visible:=true;
   end;
 
@@ -851,7 +852,7 @@ begin
     SetBounds(6,PropertyWriteIdentPrefixLabel.Top
       +PropertyWriteIdentPrefixLabel.Height+5,
       PropertyReadIdentPrefixLabel.Width,Height);
-    Caption:='Stored postfix';
+    Caption:=dlgCDTStoredPostfix;
     Visible:=true;
   end;
 
@@ -870,7 +871,7 @@ begin
     Parent:=PropertyCompletionGroupBox;
     SetBounds((PropertyCompletionGroupBox.ClientWidth-20) div 2,
       PropertyReadIdentPrefixLabel.Top,120,Height);
-    Caption:='Variable prefix';
+    Caption:=dlgCDTVariablePrefix ;
     Visible:=true;
   end;
 
@@ -890,7 +891,7 @@ begin
     SetBounds(PrivatVariablePrefixLabel.Left,
       PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
       120,Height);
-    Caption:='Set property Variable';
+    Caption:=dlgSetPropertyVariable ;
     Visible:=true;
   end;
 
@@ -912,7 +913,7 @@ begin
     Name:='LineLengthLabel';
     Parent:=NoteBook.Page[2];
     SetBounds(8,7,Canvas.TextWidth('Max line length: '),Height);
-    Caption:='Max line length:';
+    Caption:=dlgMaxLineLength ;
     Visible:=true;
   end;
 
@@ -933,7 +934,7 @@ begin
     Parent:=NoteBook.Page[2];
     SetBounds(6,LineLengthLabel.Top+LineLengthLabel.Height+7,
       (Self.ClientWidth-24) div 2,150);
-    Caption:='Do not split line In front of:';
+    Caption:=dlgNotSplitLineFront ;
     CreateAtomCheckBoxes(DoNotSplitLineInFrontGroupBox,DoNotSplitAtoms,2);
     OnClick:=@UpdateExamples;
     Visible:=true;
@@ -947,7 +948,7 @@ begin
       DoNotSplitLineInFrontGroupBox.Top+DoNotSplitLineInFrontGroupBox.Height+7,
       DoNotSplitLineInFrontGroupBox.Width,
       DoNotSplitLineInFrontGroupBox.Height);
-    Caption:='Do not split line after:';
+    Caption:=dlgNotSplitLineAfter ;
     CreateAtomCheckBoxes(DoNotSplitLineAfterGroupBox,DoNotSplitAtoms,2);
     OnClick:=@UpdateExamples;
     Visible:=true;
@@ -962,7 +963,7 @@ begin
     Top:=LineLengthLabel.Top;
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
-    Caption:='Preview (Max line length = 1)';
+    Caption:=dlgCDTPreview;
     Visible:=true;
   end;
   
@@ -983,7 +984,7 @@ begin
     Parent:=NoteBook.Page[3];
     SetBounds(6,6,
       (Self.ClientWidth-24) div 2,150);
-    Caption:='Insert space in front of';
+    Caption:=dlgInsSpaceFront ;
     CreateAtomCheckBoxes(DoInsertSpaceInFrontGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
     Visible:=true;
@@ -998,7 +999,7 @@ begin
       DoInsertSpaceInFrontGroupBox.Top,
       DoInsertSpaceInFrontGroupBox.Width,
       DoInsertSpaceInFrontGroupBox.Height);
-    Caption:='Insert space after';
+    Caption:=dlgInsSpaceAfter ;
     CreateAtomCheckBoxes(DoInsertSpaceAfterGroupBox,DoInsertSpaceAtoms,2);
     OnClick:=@UpdateExamples;
     Visible:=true;
@@ -1012,7 +1013,7 @@ begin
     Top:=DoInsertSpaceInFrontGroupBox.Top+DoInsertSpaceInFrontGroupBox.Height+7;
     Width:=Self.ClientWidth-10-Left;
     Height:=Self.ClientHeight-92-Top;
-    Caption:='Preview';
+    Caption:=dlgWRDPreview ;
     Visible:=true;
   end;
 

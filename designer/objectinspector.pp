@@ -37,7 +37,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, GraphPropEdits,
-  TypInfo, Messages, LResources, Laz_XMLCfg, Menus, Dialogs;
+  TypInfo, Messages, LResources, Laz_XMLCfg, Menus, Dialogs,LazarusIdeStrConsts;
 
 
 type
@@ -1737,7 +1737,7 @@ constructor TObjectInspector.Create(AnOwner: TComponent);
 
 begin
   inherited Create(AnOwner);
-  Caption := 'Object Inspector';
+  Caption := dlgObjInsp;
   FPropertyEditorHook:=nil;
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;

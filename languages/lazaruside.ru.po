@@ -2,6 +2,10 @@
 msgid "Selection tool"
 msgstr "Инструмент выбора"
 
+#: lazarusidestrconsts:lismenuconvertdfmtolfm
+msgid "Convert DFM file to LFM"
+msgstr "Преобразовать DFM в LFM"
+
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
 msgstr "Колонка курсора в этом редакторе"
@@ -118,6 +122,14 @@ msgstr "Создать форму"
 msgid "Open"
 msgstr "Открыть"
 
+#: lazarusidestrconsts:lismenurevert
+msgid "Revert"
+msgstr "Обратный экспорт"
+
+#: lazarusidestrconsts:lismenusettings
+msgid "Configure custom tools ..."
+msgstr "Настроить инструменты пользователя"
+
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
 msgstr "Открыть недавнее"
@@ -185,6 +197,10 @@ msgstr "Нижний регистр выделения"
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
 msgstr "ТАБ сделать пробелами в выделенном"
+
+#: lazarusidestrconsts:lismenuviewunitdependencies
+msgid "View Unit Dependencies"
+msgstr "Показать зависимости модулей"
 
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
@@ -348,6 +364,10 @@ msgstr "Вывод отладчика"
 msgid "New Project"
 msgstr "Создать проект"
 
+#: lazarusidestrconsts:lismenunewprojectfromfile
+msgid "New Project from file"
+msgstr "Создать проект из файла"
+
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
 msgstr "Открыть проект"
@@ -505,7 +525,7 @@ msgid "Please check the compiler name"
 msgstr "Проверьте имя компилятора"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
+msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers.\nFor example: Write a nicer about dialog with a logo."
 msgstr "Лицензия: GPL/LGPL\015Lazarus - это библиотеки классов для FreePascal, эмулирующие Delphi.\015Free Pascal - это (L)GPLьный компилятор, запускаемый под Linux,\015Win32, OS/2, 68K и др. Free Pascal разработан\015для компиляции програм с синтаксисом Delphi, который, естественно, ООП.\015Lazarus - утраченне звено, которое позволит Вам\015разрабатывать программы типа Delphis подо всеми вышеуказанными платформами.\015IDE когда-нибудь станет инструментом RAD, как и Delphi.\015\015По мере роста Lazarus, нам нужно больше разработчиков.\015Например, написать лучший диалог 'О программе' с логотипом."
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
@@ -527,6 +547,10 @@ msgstr "Слово \"%s\" - неправильный идентификатор языка паскаль."
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
 msgstr "Сохранить все"
+
+#: lazarusidestrconsts:lismenuviewtoggleformunit
+msgid "Toggle form/unit view"
+msgstr "Переключить форму/модуль"
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -1123,4 +1147,481 @@ msgstr "Удалить"
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
 msgstr "Выровнять код по"
+
+#: lazarusidestrconsts:dlgcodetoolsopts
+msgid "CodeTools Options"
+msgstr "Параметры CodeTools"
+
+#: lazarusidestrconsts:dlgcodecreation
+msgid "Code Creation"
+msgstr "Создание кода"
+
+#: lazarusidestrconsts:dlglinesplitting
+msgid "Line Splitting"
+msgstr "Разрыв строк"
+
+#: lazarusidestrconsts:dlgspacenotcosmos
+msgid "Space"
+msgstr "Пробел"
+
+#: lazarusidestrconsts:dlgadditionalsrcpath
+msgid "Additional Source search path for all projects (.pp;.pas)"
+msgstr "Дополнительные пути исходников для всех проектов (.pp;.pas)"
+
+#: lazarusidestrconsts:dlgjumpingetc
+msgid "Jumping (e.g. Method Jumping)"
+msgstr "Переход (например, по методу)"
+
+#: lazarusidestrconsts:dlgadjusttopline
+msgid "Adjust top line due to comment in front"
+msgstr "Выровнять верхнюю строку по комментарию"
+
+#: lazarusidestrconsts:dlgcentercursorline
+msgid "Center Cursor Line"
+msgstr "Курсор в центре"
+
+#: lazarusidestrconsts:dlgcursorbeyondeol
+msgid "Cursor beyond EOL"
+msgstr "Курсор вне конца строки"
+
+#: lazarusidestrconsts:dlgclassinsertpolicy
+msgid "Class part insert policy"
+msgstr "Политика вставки частей класса"
+
+#: lazarusidestrconsts:dlgalphabetically
+msgid "Alphabetically"
+msgstr "По алфавиту"
+
+#: lazarusidestrconsts:dlgcdtlast
+msgid "Last"
+msgstr "Последним"
+
+#: lazarusidestrconsts:dlgmethodinspolicy
+msgid "Method insert policy"
+msgstr "Политика вставки методов"
+
+#: lazarusidestrconsts:dlgcdtclassorder
+msgid "Class order"
+msgstr "В порядке классов"
+
+#: lazarusidestrconsts:dlgkeywordpolicy
+msgid "Keyword policy"
+msgstr "Политика ключевых слов"
+
+#: lazarusidestrconsts:dlgcdtlower
+msgid "lowercase"
+msgstr "нижний регистр"
+
+#: lazarusidestrconsts:dlgcdtuppercase
+msgid "UPPERCASE"
+msgstr "ВЕРХНИЙ РЕГИСТР"
+
+#: lazarusidestrconsts:dlg1up2low
+msgid "Lowercase, first letter up"
+msgstr "Только 1я буква заглавная"
+
+#: lazarusidestrconsts:dlgidentifierpolicy
+msgid "Identifier policy"
+msgstr "Политика идентификаторов"
+
+#: lazarusidestrconsts:dlgpropertycompletion
+msgid "Property completion"
+msgstr "Завершение свойств"
+
+#: lazarusidestrconsts:dlgcompleteproperties
+msgid "Complete properties"
+msgstr "Завершать свойства"
+
+#: lazarusidestrconsts:dlgcdtreadprefix
+msgid "Read prefix"
+msgstr "Префикс READ"
+
+#: lazarusidestrconsts:dlgcdtwriteprefix
+msgid "Write prefix"
+msgstr "Префикс WRITE"
+
+#: lazarusidestrconsts:dlgcdtstoredpostfix
+msgid "Stored postfix"
+msgstr "Префикс STORED"
+
+#: lazarusidestrconsts:dlgcdtvariableprefix
+msgid "Variable prefix"
+msgstr "Префикс переменной"
+
+#: lazarusidestrconsts:dlgsetpropertyvariable
+msgid "Set property Variable"
+msgstr "Переменная свойства"
+
+#: lazarusidestrconsts:dlgmaxlinelength
+msgid "Max line length:"
+msgstr "max длина строки:"
+
+#: lazarusidestrconsts:dlgnotsplitlinefront
+msgid "Do not split line In front of:"
+msgstr "Не разрывать строку перед:"
+
+#: lazarusidestrconsts:dlgnotsplitlineafter
+msgid "Do not split line after:"
+msgstr "Не разрывать строку после:"
+
+#: lazarusidestrconsts:dlgcdtpreview
+msgid "Preview (Max line length = 1)"
+msgstr "Предпросмотр(max длина=1)"
+
+#: lazarusidestrconsts:dlginsspacefront
+msgid "Insert space in front of"
+msgstr "Вставлять пробелы перед"
+
+#: lazarusidestrconsts:dlginsspaceafter
+msgid "Insert space after"
+msgstr "Вставлять пробелы после"
+
+#: lazarusidestrconsts:dlgwrdpreview
+msgid "Preview"
+msgstr "Предпросмотр"
+
+#: lazarusidestrconsts:locwndsrceditor
+msgid "Lazarus Source Editor"
+msgstr "Редактор исходного кода Lazarus"
+
+#: lazarusidestrconsts:dlgcompileroptions
+msgid "Compiler Options"
+msgstr "Опции компилятора"
+
+#: lazarusidestrconsts:dlgsearchpaths
+msgid "Search Paths"
+msgstr "Пути поиска"
+
+#: lazarusidestrconsts:dlgcoparsing
+msgid "Parsing"
+msgstr "Обработка"
+
+#: lazarusidestrconsts:dlgcodegeneration
+msgid "Code Generation"
+msgstr "Создание кода"
+
+#: lazarusidestrconsts:dlgcolinking
+msgid "Linking"
+msgstr "Связывание"
+
+#: lazarusidestrconsts:dlgcoother
+msgid "Other"
+msgstr "Другое"
+
+#: lazarusidestrconsts:dlgshowcompileroptions
+msgid "Show compiler options"
+msgstr "Показать опции компилятора"
+
+#: lazarusidestrconsts:dlgcoopts
+msgid "Options: "
+msgstr "Параметры: "
+
+#: lazarusidestrconsts:dlgcostyle
+msgid "Style:"
+msgstr "Стиль:"
+
+#: lazarusidestrconsts:dlgcoasis
+msgid "As-Is"
+msgstr "Как-есть"
+
+#: lazarusidestrconsts:dlgsymantecchecking
+msgid "Symantec Checking:"
+msgstr "Проверка семантики:"
+
+#: lazarusidestrconsts:dlgdelphi2ext
+msgid "Delphi 2 Extensions"
+msgstr "Расширения Delphi 2"
+
+#: lazarusidestrconsts:dlgcocops
+msgid "C Style Operators (*=, +=, /= and -=)"
+msgstr "Операторы стиля C (*=, +=, /= and -=)"
+
+#: lazarusidestrconsts:dlgassertcode
+msgid "Include Assertion Code"
+msgstr "Включить код Assert"
+
+#: lazarusidestrconsts:dlglabelgoto
+msgid "Allow LABEL and GOTO"
+msgstr "Разрешить LABEL и GOTO"
+
+#: lazarusidestrconsts:dlgcppinline
+msgid "C++ Styled INLINE"
+msgstr "INLINE стиля C++"
+
+#: lazarusidestrconsts:dlgcmacro
+msgid "C Style Macros (global)"
+msgstr "Макросы стиля C (глобально)"
+
+#: lazarusidestrconsts:dlgbp7cptb
+msgid "TP/BP 7.0 Compatible"
+msgstr "Совместимость с TP/BP 7.0"
+
+#: lazarusidestrconsts:dlginitdoneonly
+msgid "Constructor name must be 'init' (destructor must be 'done')"
+msgstr "Конструктор должен быть 'init' (деструктор - 'done')"
+
+#: lazarusidestrconsts:dlgstatickeyword
+msgid "Static Keyword in Objects"
+msgstr "Ключевое слово Static в объектах"
+
+#: lazarusidestrconsts:dlgdeplhicomp
+msgid "Delphi Compatible"
+msgstr "Совместимость с Delphi"
+
+#: lazarusidestrconsts:dlgcoansistr
+msgid "Use Ansi Strings"
+msgstr "Использовать строки Ansi"
+
+#: lazarusidestrconsts:dlggpccomp
+msgid "GPC (GNU Pascal Compiler) Compatible"
+msgstr "Совместимость с GPC (GNU Pascal Compiler)"
+
+#: lazarusidestrconsts:dlgcounitstyle
+msgid "Unit Style:"
+msgstr "Стиль модулей:"
+
+#: lazarusidestrconsts:dlgstatic
+msgid "Static"
+msgstr "Статические"
+
+#: lazarusidestrconsts:dlgdynamic
+msgid "Dynamic"
+msgstr "Динамические"
+
+#: lazarusidestrconsts:dlgcosmart
+msgid "Smart"
+msgstr "'Умные'"
+
+#: lazarusidestrconsts:dlgcochecks
+msgid "Checks:"
+msgstr "Проверка:"
+
+#: lazarusidestrconsts:dlgcorange
+msgid "Range"
+msgstr "Диапазона"
+
+#: lazarusidestrconsts:dlgcooverflow
+msgid "Overflow"
+msgstr "Переполнения"
+
+#: lazarusidestrconsts:dlgcostack
+msgid "Stack"
+msgstr "Стека"
+
+#: lazarusidestrconsts:dlgheapsize
+msgid "Heap Size"
+msgstr "Размер кучи"
+
+#: lazarusidestrconsts:dlgcogenerate
+msgid "Generate:"
+msgstr "Создать:"
+
+#: lazarusidestrconsts:dlgcofast
+msgid "Faster Code"
+msgstr "Быстрый код"
+
+#: lazarusidestrconsts:dlgcosmaller
+msgid "Smaller Code"
+msgstr "Меньший код"
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target Processor:"
+msgstr "Процессор бинарника:"
+
+#: lazarusidestrconsts:dlgoptimiz
+msgid "Optimizations:"
+msgstr "Оптимизация:"
+
+#: lazarusidestrconsts:dlgcokeepvarsreg
+msgid "Keep certain variables in registers"
+msgstr "Хранить нек. переменные в регистрах"
+
+#: lazarusidestrconsts:dlguncertopt
+msgid "Uncertain Optimizations"
+msgstr "Нестандартная оптимизация"
+
+#: lazarusidestrconsts:dlglevel1opt
+msgid "Level 1 (Quick Optimizations)"
+msgstr "Уровень 1 (быстрая)"
+
+#: lazarusidestrconsts:dlglevel2opt
+msgid "Level 2 (Level 1 + Slower Optimizations)"
+msgstr "Уровень 2 (уровень 1 + более медленная)"
+
+#: lazarusidestrconsts:dlglevel3opt
+msgid "Level 3 (Level 2 + Uncertain)"
+msgstr "Уровень 3 (уровень 3 + нестандартная)"
+
+#: lazarusidestrconsts:dlgcodebugging
+msgid "Debugging:"
+msgstr "Отладка:"
+
+#: lazarusidestrconsts:dlgcogdb
+msgid "Generate Debugging Info For GDB (Slows Compiling)"
+msgstr "Генерировать информацию для GDB (замедляет сборку)"
+
+#: lazarusidestrconsts:dlgcodbx
+msgid "Generate Debugging Info For DBX (Slows Compiling)"
+msgstr "Генерировать информацию для DBX (замедляет сборку)"
+
+#: lazarusidestrconsts:dlglnumsbct
+msgid "Display Line Numbers in Run-time Error Backtraces"
+msgstr "Выдать номера строк в ошибках времени исполнения"
+
+#: lazarusidestrconsts:dlgcoheaptrc
+msgid "Use Heaptrc Unit"
+msgstr "Использовать модуль Heaprc"
+
+#: lazarusidestrconsts:dlggprof
+msgid "Generate code for gprof"
+msgstr "Создать код для gprof"
+
+#: lazarusidestrconsts:dlgcostrip
+msgid "Strip Symbols From Executable"
+msgstr "Вырезать символы из бинарника"
+
+#: lazarusidestrconsts:dlglinklibraries
+msgid "Link Libraries:"
+msgstr "Связывать с библиотеками:"
+
+#: lazarusidestrconsts:dlglinkdinlibs
+msgid "Link With Dynamic Libraries"
+msgstr "Связать с динамическими библиотеками"
+
+#: lazarusidestrconsts:dlglinkstatlibs
+msgid "Link With Static Libraries"
+msgstr "Связать со статическими библиотеками"
+
+#: lazarusidestrconsts:dlgpassoptslinker
+msgid "Pass Options To The Linker (Delimiter is space)"
+msgstr "Передать опции линкеру (отделять пробелами)"
+
+#: lazarusidestrconsts:dlgverbosity
+msgid "Verbosity:"
+msgstr "Подробность:"
+
+#: lazarusidestrconsts:dlgcoshowerr
+msgid "Show Errors"
+msgstr "Показать ошибки"
+
+#: lazarusidestrconsts:dlgshowwarnings
+msgid "Show Warnings"
+msgstr "Показать предупреждения"
+
+#: lazarusidestrconsts:dlgshownotes
+msgid "Show Notes"
+msgstr "Показать заметки"
+
+#: lazarusidestrconsts:dlgshowhint
+msgid "Show Hints"
+msgstr "Показать подсказки"
+
+#: lazarusidestrconsts:dlgshowgeneralinfo
+msgid "Show General Info"
+msgstr "Показать общие сведения"
+
+#: lazarusidestrconsts:dlgshowprocserror
+msgid "Show all procs on error"
+msgstr "Все проц-ры при ошибках"
+
+#: lazarusidestrconsts:dlgshoweverything
+msgid "Show Everything"
+msgstr "Показать все"
+
+#: lazarusidestrconsts:dlgshowdebuginfo
+msgid "Show Debug Info"
+msgstr "Отладочные сведения"
+
+#: lazarusidestrconsts:dlgshowusedfiles
+msgid "Show Used Files"
+msgstr "Использованные файлы"
+
+#: lazarusidestrconsts:dlgshowtriedfiles
+msgid "Show Tried Files"
+msgstr "Испытываемые файлы"
+
+#: lazarusidestrconsts:dlgshowdefinedmacros
+msgid "Show Defined Macros"
+msgstr "Показать макросы"
+
+#: lazarusidestrconsts:dlgshowcompiledprocedures
+msgid "Show Compiled Procedures"
+msgstr "Откомпирированные проц-ры"
+
+#: lazarusidestrconsts:dlgshowconditionals
+msgid "Show Conditionals"
+msgstr "Показать условия"
+
+#: lazarusidestrconsts:dlgshownothing
+msgid "Show Nothing (only errors)"
+msgstr "Ничего (только ошибки)"
+
+#: lazarusidestrconsts:dlgwritefpclogo
+msgid "Write an FPC Logo"
+msgstr "Выдать логотип FPC"
+
+#: lazarusidestrconsts:dlghintsunused
+msgid "Show Hints for unused project units"
+msgstr "Подсказки для ненужных модулей проекта"
+
+#: lazarusidestrconsts:dlgconfigfiles
+msgid "Config Files:"
+msgstr "Файлы настроек:"
+
+#: lazarusidestrconsts:dlgusefpccfg
+msgid "Use Compiler Config File (fpc.cfg)"
+msgstr "Использовать файл настроек fpc.cfg"
+
+#: lazarusidestrconsts:dlguseadditionalconfig
+msgid "Use Additional Compiler Config File"
+msgstr "Дополнительный файл настроек компилятора"
+
+#: lazarusidestrconsts:dlgstopafternrerr
+msgid "Stop after number of errors:"
+msgstr "Останов после числа ошибок"
+
+#: lazarusidestrconsts:dlgotherunitfiles
+msgid "Other Unit Files (Delimiter is semicolon):"
+msgstr "Другие файлы модулей (разделять точкой с запятой)"
+
+#: lazarusidestrconsts:dlgcoincfiles
+msgid "Include Files:"
+msgstr "Включаемые файлы:"
+
+#: lazarusidestrconsts:dlgcosources
+msgid "Other Sources:  (.pp/.pas files)"
+msgstr "Другие исходники: (файлы .pp/.pas)"
+
+#: lazarusidestrconsts:dlgcolibraries
+msgid "Libraries:"
+msgstr "Библиотека:"
+
+#: lazarusidestrconsts:dlgtofpcpath
+msgid "Path To Compiler:"
+msgstr "Путь к компилятору:"
+
+#: lazarusidestrconsts:dlgunitoutp
+msgid "Unit output directory:"
+msgstr "Каталог для собранных модулей:"
+
+
+#: lazarusidestrconsts:dlgbutapply
+msgid "Apply"
+msgstr "Применить"
+
+#: lazarusidestrconsts:dlgcoshowoptions
+msgid "Show Options"
+msgstr "Показать опции"
+
+#: lazarusidestrconsts:dlgmainviewforms
+msgid "View project forms"
+msgstr "Показать формы проекта"
+
+#: lazarusidestrconsts:dlgmainviewunits
+msgid "View project units"
+msgstr "Показать модули проекта"
+
+#: lazarusidestrconsts:dlgmulti
+msgid "Multi"
+msgstr "Мульти"
 

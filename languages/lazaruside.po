@@ -350,6 +350,10 @@ msgstr ""
 msgid "Forms..."
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewunitdependencies
+msgid "View Unit Dependencies"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
 msgstr ""
@@ -1216,5 +1220,485 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodetoolsopts
+msgid "CodeTools Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodecreation
+msgid "Code Creation"
+msgstr ""
+
+#: lazarusidestrconsts:dlglinesplitting
+msgid "Line Splitting"
+msgstr ""
+
+#: lazarusidestrconsts:dlgspacenotcosmos
+msgid "Space"
+msgstr ""
+
+#: lazarusidestrconsts:dlgadditionalsrcpath
+msgid "Additional Source search path for all projects (.pp;.pas)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgjumpingetc
+msgid "Jumping (e.g. Method Jumping)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgadjusttopline
+msgid "Adjust top line due to comment in front"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcentercursorline
+msgid "Center Cursor Line"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcursorbeyondeol
+msgid "Cursor beyond EOL"
+msgstr ""
+
+#: lazarusidestrconsts:dlgclassinsertpolicy
+msgid "Class part insert policy"
+msgstr ""
+
+#: lazarusidestrconsts:dlgalphabetically
+msgid "Alphabetically"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtlast
+msgid "Last"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmethodinspolicy
+msgid "Method insert policy"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtclassorder
+msgid "Class order"
+msgstr ""
+
+#: lazarusidestrconsts:dlgkeywordpolicy
+msgid "Keyword policy"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtlower
+msgid "lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtuppercase
+msgid "UPPERCASE"
+msgstr ""
+
+#: lazarusidestrconsts:dlg1up2low
+msgid "Lowercase, first letter up"
+msgstr ""
+
+#: lazarusidestrconsts:dlgidentifierpolicy
+msgid "Identifier policy"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpropertycompletion
+msgid "Property completion"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcompleteproperties
+msgid "Complete properties"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtreadprefix
+msgid "Read prefix"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtwriteprefix
+msgid "Write prefix"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtstoredpostfix
+msgid "Stored postfix"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtvariableprefix
+msgid "Variable prefix"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsetpropertyvariable
+msgid "Set property Variable"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmaxlinelength
+msgid "Max line length:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgnotsplitlinefront
+msgid "Do not split line In front of:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgnotsplitlineafter
+msgid "Do not split line after:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcdtpreview
+msgid "Preview (Max line length = 1)"
+msgstr ""
+
+#: lazarusidestrconsts:dlginsspacefront
+msgid "Insert space in front of"
+msgstr ""
+
+#: lazarusidestrconsts:dlginsspaceafter
+msgid "Insert space after"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwrdpreview
+msgid "Preview"
+msgstr ""
+
+#: lazarusidestrconsts:locwndsrceditor
+msgid "Lazarus Source Editor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcompileroptions
+msgid "Compiler Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsearchpaths
+msgid "Search Paths"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoparsing
+msgid "Parsing"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodegeneration
+msgid "Code Generation"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcolinking
+msgid "Linking"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoother
+msgid "Other"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowcompileroptions
+msgid "Show compiler options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoopts
+msgid "Options: "
+msgstr ""
+
+#: lazarusidestrconsts:dlgcostyle
+msgid "Style:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoasis
+msgid "As-Is"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsymantecchecking
+msgid "Symantec Checking:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdelphi2ext
+msgid "Delphi 2 Extensions"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcocops
+msgid "C Style Operators (*=, +=, /= and -=)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgassertcode
+msgid "Include Assertion Code"
+msgstr ""
+
+#: lazarusidestrconsts:dlglabelgoto
+msgid "Allow LABEL and GOTO"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcppinline
+msgid "C++ Styled INLINE"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcmacro
+msgid "C Style Macros (global)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbp7cptb
+msgid "TP/BP 7.0 Compatible"
+msgstr ""
+
+#: lazarusidestrconsts:dlginitdoneonly
+msgid "Constructor name must be 'init' (destructor must be 'done')"
+msgstr ""
+
+#: lazarusidestrconsts:dlgstatickeyword
+msgid "Static Keyword in Objects"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdeplhicomp
+msgid "Delphi Compatible"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoansistr
+msgid "Use Ansi Strings"
+msgstr ""
+
+#: lazarusidestrconsts:dlggpccomp
+msgid "GPC (GNU Pascal Compiler) Compatible"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcounitstyle
+msgid "Unit Style:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgstatic
+msgid "Static"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdynamic
+msgid "Dynamic"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcosmart
+msgid "Smart"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcochecks
+msgid "Checks:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcorange
+msgid "Range"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcooverflow
+msgid "Overflow"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcostack
+msgid "Stack"
+msgstr ""
+
+#: lazarusidestrconsts:dlgheapsize
+msgid "Heap Size"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcogenerate
+msgid "Generate:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcofast
+msgid "Faster Code"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcosmaller
+msgid "Smaller Code"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtargetproc
+msgid "Target Processor:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgoptimiz
+msgid "Optimizations:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcokeepvarsreg
+msgid "Keep certain variables in registers"
+msgstr ""
+
+#: lazarusidestrconsts:dlguncertopt
+msgid "Uncertain Optimizations"
+msgstr ""
+
+#: lazarusidestrconsts:dlglevel1opt
+msgid "Level 1 (Quick Optimizations)"
+msgstr ""
+
+#: lazarusidestrconsts:dlglevel2opt
+msgid "Level 2 (Level 1 + Slower Optimizations)"
+msgstr ""
+
+#: lazarusidestrconsts:dlglevel3opt
+msgid "Level 3 (Level 2 + Uncertain)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodebugging
+msgid "Debugging:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcogdb
+msgid "Generate Debugging Info For GDB (Slows Compiling)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodbx
+msgid "Generate Debugging Info For DBX (Slows Compiling)"
+msgstr ""
+
+#: lazarusidestrconsts:dlglnumsbct
+msgid "Display Line Numbers in Run-time Error Backtraces"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoheaptrc
+msgid "Use Heaptrc Unit"
+msgstr ""
+
+#: lazarusidestrconsts:dlggprof
+msgid "Generate code for gprof"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcostrip
+msgid "Strip Symbols From Executable"
+msgstr ""
+
+#: lazarusidestrconsts:dlglinklibraries
+msgid "Link Libraries:"
+msgstr ""
+
+#: lazarusidestrconsts:dlglinkdinlibs
+msgid "Link With Dynamic Libraries"
+msgstr ""
+
+#: lazarusidestrconsts:dlglinkstatlibs
+msgid "Link With Static Libraries"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpassoptslinker
+msgid "Pass Options To The Linker (Delimiter is space)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgverbosity
+msgid "Verbosity:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoshowerr
+msgid "Show Errors"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowwarnings
+msgid "Show Warnings"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshownotes
+msgid "Show Notes"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowhint
+msgid "Show Hints"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowgeneralinfo
+msgid "Show General Info"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowprocserror
+msgid "Show all procs on error"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshoweverything
+msgid "Show Everything"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowdebuginfo
+msgid "Show Debug Info"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowusedfiles
+msgid "Show Used Files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowtriedfiles
+msgid "Show Tried Files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowdefinedmacros
+msgid "Show Defined Macros"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowcompiledprocedures
+msgid "Show Compiled Procedures"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowconditionals
+msgid "Show Conditionals"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshownothing
+msgid "Show Nothing (only errors)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwritefpclogo
+msgid "Write an FPC Logo"
+msgstr ""
+
+#: lazarusidestrconsts:dlghintsunused
+msgid "Show Hints for unused project units"
+msgstr ""
+
+#: lazarusidestrconsts:dlgconfigfiles
+msgid "Config Files:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgusefpccfg
+msgid "Use Compiler Config File (fpc.cfg)"
+msgstr ""
+
+#: lazarusidestrconsts:dlguseadditionalconfig
+msgid "Use Additional Compiler Config File"
+msgstr ""
+
+#: lazarusidestrconsts:dlgstopafternrerr
+msgid "Stop after number of errors:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgotherunitfiles
+msgid "Other Unit Files (Delimiter is semicolon):"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoincfiles
+msgid "Include Files:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcosources
+msgid "Other Sources:  (.pp/.pas files)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcolibraries
+msgid "Libraries:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtofpcpath
+msgid "Path To Compiler:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgunitoutp
+msgid "Unit output directory:"
+msgstr ""
+
+#: lazarusidestrconsts:dlglclwidgettype
+msgid "LCL Widget Type"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbutapply
+msgid "Apply"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoshowoptions
+msgid "Show Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmainviewforms
+msgid "View project forms"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmainviewunits
+msgid "View project units"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmulti
+msgid "Multi"
 msgstr ""
 
