@@ -1238,8 +1238,7 @@ begin
   //get the parent until parent is nil
   While Window.Parent <> nil do
   Window := Window.Parent;
-  Writeln('window is ',Window.NAme);
-  
+
   Window2 := self;
   while Window2.Parent <> nil do
      Window2 := Window2.Parent;

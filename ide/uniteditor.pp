@@ -169,7 +169,14 @@ type
     procedure FindNext;
     procedure FindPrevious;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
+
+    //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
+    
+    //used to get teh x,y of the caret if the caret was where the mouse is
+    //used in
+    //GetWordAtPosition
+    Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
     
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
 //    property Control : TComponent read FControl write FControl; //commented out on 11-14-2001
@@ -1394,20 +1401,12 @@ var
   LineNum : Integer;
   XLine : Integer;
   EditorLine,Texts : String;
+  CaretPos : TPoint;
 begin
   Result := '';
-  //Figure out the line number
-  TopLine := FEditor.TopLine;
-  LineHeight := FEditor.LineHeight;
-//  Writeln('GetWord...,',position.X,',',Position.Y);
-  if Position.Y > 1 then
-     LineNum := Position.Y div LineHeight
-     else
-     LineNum := 1;
-  LineNum := LineNUm + (TopLine-1);
-  XLine := Position.X div FEditor.CharWidth;
-  if XLine = 0 then inc(XLine);
-  
+  Caretpos := GetCaretPosfromCursorPos(Position);
+  LineNum := CaretPos.Y;
+  XLine := CaretPos.X;
   EditorLine := FEditor.Lines[LineNum];
 //  Writeln('XLine and LineNum = ',XLine,',',LineNum);
   if Length(trim(EditorLine)) = 0 then Exit;
@@ -1462,6 +1461,29 @@ begin
   if Assigned(ONKeyDown) then
      OnKeyDown(Sender, Key, Shift);
      
+end;
+
+Function TSourceEditor.GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
+var
+  TopLine : Integer;
+  LineHeight : Integer;
+  LineNum : Integer;
+  XLine : Integer;
+  EditorLine,Texts : String;
+begin
+  //Figure out the line number
+  TopLine := FEditor.TopLine;
+  LineHeight := FEditor.LineHeight;
+  if CursorPos.Y > 1 then
+     LineNum := CursorPos.Y div LineHeight
+     else
+     LineNum := 1;
+  LineNum := LineNUm + (TopLine-1);
+  XLine := CursorPos.X div FEditor.CharWidth;
+  if XLine = 0 then inc(XLine);
+  
+  Result.X := XLine;
+  Result.Y := LineNum;
 end;
 
 {------------------------------------------------------------------------}
