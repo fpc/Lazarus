@@ -245,7 +245,7 @@ begin
       end;
 
       if TheWinControl<>nil then begin
-        SetCursor(TheWinControl, nil);
+        SetCursor(TheWinControl, crDefault);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
         {$IFDEF CustomFonts}
         ModifyWidgetStyle(TheWinControl,Widget);
@@ -3070,6 +3070,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.226  2004/04/11 18:58:25  micha
+  fix (lm_)setcursor changes for gtk target
+
   Revision 1.225  2004/04/09 11:25:20  mattias
   changed OnKeyPress keys are not delegated back to the gtk
 

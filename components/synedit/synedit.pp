@@ -281,8 +281,8 @@ type
     procedure WMMouseWheel(var Msg: TLMMouseEvent); message LM_MOUSEWHEEL;
 {$ELSE}
     procedure WMMouseWheel(var Msg: TMessage); message WM_MOUSEWHEEL;
-{$ENDIF}
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
+{$ENDIF}
     procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
@@ -7031,6 +7031,9 @@ begin
     Result := FALSE;
 end;
 
+{$IFNDEF SYN_LAZARUS}
+{ LCL never sends WM_SETCURSOR messages, use OnMouseMove and then set cursor }
+    
 procedure TCustomSynEdit.WMSetCursor(var Msg: TWMSetCursor);
 var
   ptCursor, ptLineCol: TPoint;
@@ -7038,28 +7041,22 @@ begin
   GetCursorPos(ptCursor);
   ptCursor := ScreenToClient(ptCursor);
   if (ptCursor.X < fGutterWidth) then
-    {$IFNDEF SYN_LAZARUS}
     // ToDo TStreenCursors
     SetCursor(Screen.Cursors[fGutter.Cursor])
-    {$ENDIF}
   else begin
     ptLineCol.X := (LeftChar * fCharWidth + ptCursor.X - fGutterWidth - 2)
       div fCharWidth;
     ptLineCol.Y := TopLine + ptCursor.Y div fTextHeight;
     if (eoDragDropEditing in fOptions) and IsPointInSelection(ptLineCol) then
-      {$IFNDEF SYN_LAZARUS}
       // ToDo TStreenCursors
       SetCursor(Screen.Cursors[crDefault])
-      {$ENDIF}
     else
-      {$IFNDEF SYN_LAZARUS}
       // ToDo WMSetCursor
       inherited WMSetCursor(Msg);
-      {$ELSE}
-      ;
-      {$ENDIF}
   end;
 end;
+
+{$endif}
 
 procedure TCustomSynEdit.BookMarkOptionsChanged(Sender: TObject);
 begin

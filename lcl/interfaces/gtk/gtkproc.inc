@@ -3412,7 +3412,7 @@ end;
 
   Sets the cursor for a widget.
  ------------------------------------------------------------------------------}
-procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
+procedure SetCursor(AWinControl : TWinControl; ACursor: TCursor);
 
   procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
   begin
@@ -3451,10 +3451,10 @@ begin
 
     AWindow:=GetControlWindow(AWidget);
     if AWindow = nil then exit;
-    if Data = nil then
+    if ACursor = crDefault then
       SetCursorRecursive(AWindow, GetGDKMouseCursor(crDefault))
     else begin
-      NewCursor:= GetGDKMouseCursor(Integer(Data));
+      NewCursor:= GetGDKMouseCursor(ACursor);
       if NewCursor <> nil then SetCursorRecursive(AWindow, NewCursor);
     end;  
     
@@ -6747,6 +6747,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.275  2004/04/11 18:58:26  micha
+  fix (lm_)setcursor changes for gtk target
+
   Revision 1.274  2004/04/08 18:27:51  mattias
   fixed memleak in TDefaultComponentEditor.Edit
 

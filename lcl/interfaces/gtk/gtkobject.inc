@@ -3147,8 +3147,6 @@ begin
       ShowHide(Sender);
     end;
 
-  LM_SetCursor : gtkproc.SetCursor(TWinControl(Sender), Data);
-
   LM_SetLabel  : SetLabel(Sender,Data);
 
   LM_GETVALUE  : Result := GetValue(Sender, data);
@@ -3163,7 +3161,7 @@ begin
     begin
       // change cursor
       if Sender is TWinControl then
-        gtkproc.SetCursor(TWinControl(Sender), Data);
+        gtkproc.SetCursor(TWinControl(Sender), TCursor(Data));
     end;
 
   LM_RECREATEWND : Result := RecreateWnd(sender);
@@ -9384,6 +9382,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.494  2004/04/11 18:58:25  micha
+  fix (lm_)setcursor changes for gtk target
+
   Revision 1.493  2004/04/09 22:59:09  mattias
   fixed mem leak in CreateFilter menu items for file dialog
 

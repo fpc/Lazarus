@@ -416,7 +416,7 @@ function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
   SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
-procedure SetCursor(AWinControl: TWinControl; Data: Pointer);
+procedure SetCursor(AWinControl: TWinControl; ACursor: TCursor);
 
 // mouse capturing
 procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);

@@ -1369,8 +1369,8 @@ begin
     FHintTimer.Enabled := False;
 
     // hide hint
-    FHintTimer.Enabled :=
-          (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
+//    FHintTimer.Enabled :=
+//          (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
     if FHintWindow.Visible then
       FHintWindow.Visible := False;
   end;
