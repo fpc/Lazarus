@@ -591,6 +591,7 @@ type
     procedure RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
     procedure AddOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
     procedure RemoveOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
+    procedure DoBeforeMouseMessage(CurMouseControl: TControl);
   public
     property Exename: String read GetExeName;
     property Handle: THandle read FHandle;

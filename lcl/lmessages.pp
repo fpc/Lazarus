@@ -332,9 +332,11 @@ const
   LM_MBUTTONQUADCLK = LM_USER+71;
   LM_RBUTTONTRIPLECLK = LM_USER+72;
   LM_RBUTTONQUADCLK = LM_USER+73;
+  LM_MOUSEENTER     = LM_USER+74;
+  LM_MOUSELEAVE     = LM_USER+75;
   LM_MOUSELAST2     = LM_RBUTTONQUADCLK;
 
-  LM_GRABFOCUS      = LM_USER+74;
+  LM_GRABFOCUS      = LM_USER+79;
 
   LM_DRAWLISTITEM   = LM_User+80;
   
@@ -882,6 +884,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2002/11/21 18:49:52  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.38  2002/10/25 10:42:08  lazarus
   MG: broke minor circles
 
