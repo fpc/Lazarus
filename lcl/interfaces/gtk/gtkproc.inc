@@ -404,8 +404,11 @@ begin
   end;
 end;
 
-Procedure EnsureGCColor(DC: hDC; GC: PGDKGC; var GDIColor: TGDIColor;
+Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush: Boolean; AsBackground: Boolean);
+var
+  GC: PGDKGC;
+  GDIColor: TGDIColor;
 
   Procedure EnsureAsGCValues;
   var
@@ -450,8 +453,17 @@ Procedure EnsureGCColor(DC: hDC; GC: PGDKGC; var GDIColor: TGDIColor;
   end;
   
 begin
+  GC:=TDeviceContext(DC).GC;
   with TDeviceContext(DC) do
   begin
+    case ColorType of
+    dccCurrentBackColor: GDIColor:=CurrentBackColor;
+    dccCurrentTextColor: GDIColor:=CurrentTextColor;
+    dccGDIBrushColor   : GDIColor:=CurrentBrush^.GDIBrushColor;
+    dccGDIPenColor     : GDIColor:=CurrentPen^.GDIPenColor;
+    else
+      exit;
+    end;
     Case GDIColor.ColorRef of
       clScrollbar,
       clInfoBk,
@@ -475,48 +487,6 @@ begin
       else
         EnsureAsColor;
     end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: SelectGDKBrushProps
-  Params:  DC: a (LCL)devicecontext
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the brush
- ------------------------------------------------------------------------------}
-procedure SelectGDKBrushProps(DC: HDC);
-begin
-  with TDeviceContext(DC), CurrentBrush^ do
-  begin
-    Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.ColorRef]));
-
-    EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
-    EnsureGCColor(DC, GC, GDIBrushColor, GDIBrushFill = GDK_Solid, False);//Brush Color
-    
-    If GDIBrushFill <> GDK_Solid then
-      If GDIBrushPixmap <> nil then begin
-        gdk_gc_set_fill(GC, GDIBrushFill);
-        gdk_error_trap_push;//Image errors can kill us
-        gdk_gc_set_Stipple(GC,GDIBrushPixmap);
-      end
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: SelectGDKTextProps
-  Params:  DC: a (LCL)devicecontext
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the Textcolor
- ------------------------------------------------------------------------------}
-procedure SelectGDKTextProps(DC: HDC);
-begin
-  with TDeviceContext(DC) do
-  begin
-    EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
-    EnsureGCColor(DC, GC, CurrentTextColor, False, False);//Font Color
-    Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Color.Pixel, CurrentTextColor.Color.Red, CurrentTextColor.Color.Green, CurrentTextColor.Color.Blue]));
   end;
 end;
 
@@ -3519,6 +3489,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.117  2002/10/08 13:42:25  lazarus
+  MG: added TDevContextColorType
+
   Revision 1.116  2002/10/08 10:08:47  lazarus
   MG: accelerated GDIColor allocating
 
