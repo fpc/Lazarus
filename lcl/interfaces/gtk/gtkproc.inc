@@ -277,11 +277,12 @@ begin
       if GC<>nil then begin
         gdk_gc_unref(GC);
         GC:=nil;
+        DCFlags:=DCFlags-[dcfPenSelected];
       end;
       if (SourceDC.GC <> nil) and (Drawable <> nil) then begin
         gdk_gc_get_values(SourceDC.GC, @GCValues);
-        //GC := gdk_gc_new(Drawable);
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
+        DCFlags:=DCFlags-[dcfPenSelected];
       end;
       Origin := SourceDC.Origin;
       SpecialOrigin := SourceDC.SpecialOrigin;
@@ -390,8 +391,8 @@ begin
   gdk_colormap_alloc_color(GDIColor.Colormap, @GDIColor.Color,True,True);
 end;
 
-Procedure EnsureGCColor(DC : hDC; GC : PGDKGC; var GDIColor : TGDIColor;
-  IsSolidBrush : Boolean; AsBackground : Boolean);
+Procedure EnsureGCColor(DC: hDC; GC: PGDKGC; var GDIColor: TGDIColor;
+  IsSolidBrush: Boolean; AsBackground: Boolean);
 
   Procedure EnsureAsGCValues;
   var
@@ -486,38 +487,6 @@ begin
         gdk_error_trap_push;//Image errors can kill us
         gdk_gc_set_Stipple(GC,GDIBrushPixmap);
       end
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: SelectGDKPenProps
-  Params:  DC: a (LCL)devicecontext
-  Returns: Nothing
-
-  Sets the forecolor and fill according to the pen
- ------------------------------------------------------------------------------}
-procedure SelectGDKPenProps(DC: HDC);
-begin
-  with TDeviceContext(DC), CurrentPen^ do
-  begin
-    IsNullPen := GDIPenStyle = PS_NULL;
-    EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
-    EnsureGCColor(DC, GC, GDIPenColor, False, False);//Pen Color
-    if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
-    then begin
-      gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, 0, 0)
-    end 
-    else begin
-      gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_ON_OFF_DASH, 0, 0);
-      case GDIPenStyle of
-        PS_DASH:       gdk_gc_set_dashes(GC, 0, [4,4], 2);
-        PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
-        PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
-        PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
-       {This is DEADLY!!!}
-        //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
-      end;  
-    end;
   end;
 end;
 
@@ -3537,6 +3506,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.115  2002/10/07 20:50:59  lazarus
+  MG: accelerated SelectGDKPenProps
+
   Revision 1.114  2002/10/06 17:55:46  lazarus
   MG: JITForms now sets csDesigning before creation
 
