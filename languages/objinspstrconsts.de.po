@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2005-03-11 18:37+0100\n"
-"Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2005-03-13 15:59+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -15,23 +15,23 @@ msgstr "Bilder"
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr "Eigenschaft des Eintrags"
+msgstr "Eigenschaften des Eintrags"
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
-msgstr "Einträge"
+msgstr " Einträge "
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr " Ausgewähltes Bild"
+msgstr " Ausgewähltes Bild "
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s: bereits registriert"
+msgstr "%s: Bereits registriert"
 
 #: objinspstrconsts:oishelpnotregistered
 msgid "%s: Not registered"
-msgstr "%s: nicht registriert"
+msgstr "%s: Nicht registriert"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
@@ -79,11 +79,11 @@ msgstr "Aktionslisteneditor"
 
 #: objinspstrconsts:oisadd
 msgid "Add"
-msgstr "Zufügen"
+msgstr "Hinzufügen"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
-msgstr "Zufügen ..."
+msgstr "Hinzufügen ..."
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -135,7 +135,7 @@ msgstr "Löschen bestätigen"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
-msgstr "Bestätigen Sie, daß alle Bilder gelöscht werden sollen?"
+msgstr "Alle Bilder löschen?"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
@@ -147,11 +147,11 @@ msgstr "Löschen"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr "Löschen  des Eintrags %s%s%s?"
+msgstr "Eintrags %s%s%s löschen?"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr "Editiere Aktionsliste"
+msgstr "Aktionsliste bearbeiten"
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -183,7 +183,7 @@ msgstr "Fließkomma"
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr "Die Hilfedatenbank %s%s%s hat keinen Viewer für die Hilfeseite des Typs %s gefunden"
+msgstr "Hilfedatenbank %s%s%s konnte keinen Betrachter für die Hilfeseite des Typs %s finden"
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
@@ -199,7 +199,7 @@ msgstr "Hilfekontext %s nicht gefunden."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "Hilfeschlüsselwort %s%s%s nicht in Datenbank %s%s%s  gefunden."
+msgstr "Schlüsselwort %s%s%s konnte nicht in Hilfedatenbank %s%s%s gefunden werden."
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
@@ -215,7 +215,7 @@ msgstr "Bildindex"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr "Bildlisteneditor"
+msgstr "ImageList Editor"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -231,15 +231,15 @@ msgstr "Interface"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
-msgstr "Label"
+msgstr "Bezeichnung"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr "Listview-Editor"
+msgstr "ListView Editor"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr "Bilddialog laden"
+msgstr "Bild-Laden Dialog"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -255,7 +255,7 @@ msgstr "Kein HTML-Browser gefunden%s Bitte definieren Sie einen in Hilfe->Hilfe 
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
-msgstr "Keine Hilfe gefunden für die Zeile %d, Spalte %d von %s."
+msgstr "Keine Hilfe für Zeile %d, Spalte %d von %s gefunden."
 
 #: objinspstrconsts:oisobject
 msgid "Object"
@@ -299,11 +299,11 @@ msgstr "Zeichenkette"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr "Stringgrid-Editor ..."
+msgstr "StringGrid Editor"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr "Stringgrid-Editor ..."
+msgstr ""
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
@@ -319,7 +319,7 @@ msgstr "Die Hilfedatenbank %s%s%s konnte die Datei %s%s%s nicht finden."
 
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr "Das Makro %s in BrowserParams wird durch den URL ersetzt"
+msgstr "Das Makro %s in \"Hilfe->Hilfe einstellen->Betrachter->BrowserParams\" wird durch die URL ersetzt."
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"

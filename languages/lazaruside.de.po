@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2005-03-12 21:45+0100\n"
-"Last-Translator: Jörg Braun <jb@toolbox-mag.de>\n"
+"PO-Revision-Date: 2005-03-13 15:59+0100\n"
+"Last-Translator: \n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisskiploadinglastproject
 msgid "                      Skip loading last project"
-msgstr ""
+msgstr "                      Altes Projekt nicht laden"
 
 #: lazarusidestrconsts:lisfilewheredebugoutputiswritten
 msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
@@ -26,11 +26,11 @@ msgstr "                        Datei, in die die Debugger-Ausgabe geschrieben w
 
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
-msgstr ""
+msgstr "                      Haupteinstellungsverzeichnis, dort speichert Lazarus seine Konfigurationsdateien. Standard ist"
 
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
-msgstr ""
+msgstr "                      sekundäres Konfigurationsverzeichnis, dort sucht Lazarus nach Konfigurationsschablonen. Standard ist"
 
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
@@ -54,11 +54,11 @@ msgstr " steht im Konflikt mit "
 
 #: lazarusidestrconsts:liscompiling
 msgid "%s (compiling ...)"
-msgstr "%s (kompiliere ...)"
+msgstr "%s (kompiliere...)"
 
 #: lazarusidestrconsts:lisdebugging
 msgid "%s (debugging ...)"
-msgstr "%s (Debugge ...)"
+msgstr "%s (Debugge...)"
 
 #: lazarusidestrconsts:lisnewproject
 msgid "%s - (new project)"
@@ -86,15 +86,15 @@ msgstr "%s Projektverzeichnis"
 
 #: lazarusidestrconsts:lisisaninvalidprojectnamepleasechooseanotheregproject
 msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
-msgstr ""
+msgstr "%s%s%s ist ein ungültiger Projektname.%sBitte wählen Sie einen anderen (z.B. project1.lpi)"
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
-msgstr ""
+msgstr "%s%s%s ist kein gültiger Bezeichner."
 
 #: lazarusidestrconsts:lisa2pisnotavalidunitname
 msgid "%s%s%s is not a valid unit name."
-msgstr ""
+msgstr "%s%s%s ist kein gültiger Unit-Name"
 
 #: lazarusidestrconsts:liscoclickokifaresuretodothat
 msgid "%s%sClick OK if are sure to do that."
@@ -126,11 +126,11 @@ msgstr "%s/Nur lesbar"
 
 #: lazarusidestrconsts:lispkgmangaddingnewdependencyforpackagepackage
 msgid "%sAdding new Dependency for package %s: package %s%s"
-msgstr ""
+msgstr "%sFüge neue Abhängigkeit für Paket %s hinzu: Paket %s%s"
 
 #: lazarusidestrconsts:lispkgmangaddingnewdependencyforprojectpackage
 msgid "%sAdding new Dependency for project %s: package %s%s"
-msgstr ""
+msgstr "%sFüge neue Abhängigkeit für Projekt %s hinzu: Paket %s%s"
 
 #: lazarusidestrconsts:lispkgmangbothpackagesareconnectedthismeanseitheronepackageu
 msgid "%sBoth packages are connected. This means, either one package uses the other, or they are both used by a third package."
@@ -154,7 +154,7 @@ msgstr "%sStatus: "
 
 #: lazarusidestrconsts:lispkgmangthefollowingunitswillbeaddedtotheusessectionof
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
-msgstr ""
+msgstr "%sDie folgenden Units werden zum uses-Abschnitt von %s%s hinzugefügt:%s%s%s"
 
 #: lazarusidestrconsts:lisoipthispackageisinstalledbutthelpkfilewasnotfound
 msgid "%sThis package is installed, but the lpk file was not found"
@@ -166,11 +166,11 @@ msgstr "%sDieses Paket wurde automatisch erzeugt"
 
 #: lazarusidestrconsts:uemaddbreakpoint
 msgid "&Add Breakpoint"
-msgstr ""
+msgstr "H&altepunkt hinzufügen"
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
-msgstr ""
+msgstr "Seite s&chließen"
 
 #: lazarusidestrconsts:lismenucomponents
 msgid "&Components"
@@ -250,19 +250,19 @@ msgstr "(unbekanntes Makro: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "0.9.7 beta"
-msgstr ""
+msgstr "0.9.7 beta"
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
-msgstr ""
+msgstr "<Wählen Sie eine Datei>"
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
-msgstr ""
+msgstr "<Keine Variable gewählt>"
 
 #: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
 msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
-msgstr ""
+msgstr "Ein %s darf keine TControls enthalten.%sSie können nur nichtvisuelle Komponenten darafu ablegen."
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -270,27 +270,27 @@ msgstr "Die Datei %s%s%s ist bereits vorhanden.%sErsetzen?"
 
 #: lazarusidestrconsts:lisa2papascalunitmusthavetheextensionpporpas
 msgid "A pascal unit must have the extension .pp or .pas"
-msgstr ""
+msgstr "Eine Pascal-Unit muss die Erweiterung \".pp\" oder \".pas\" haben"
 
 #: lazarusidestrconsts:lispkgmangarequiredpackageswasnotfound
 msgid "A required packages was not found. See package graph."
-msgstr ""
+msgstr "Ein benötigtes Paket wurde nicht gefunden. Bitte überprüfen Sie den Paketgraphen."
 
 #: lazarusidestrconsts:lisedtexttoolavalidtoolneedsatleastatitleandafilename
 msgid "A valid tool needs at least a title and a filename."
-msgstr ""
+msgstr "Ein gültiges Werkzeug muss zumindest einen Titel und eine auszuführende Datei besitzen."
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
-msgstr "Build abbrechen"
+msgstr "Kompilieren abbrechen"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
-msgstr ""
+msgstr "Über"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
-msgstr ""
+msgstr "Über Lazarus"
 
 #: lazarusidestrconsts:srvk_accept
 msgid "Accept"
@@ -306,11 +306,11 @@ msgstr "Aktiviere die Syntax regulärer Ausdrücke für Text und Ersetzen (ziemlich
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: lazarusidestrconsts:lisaddtoproject
 msgid "Add %s to project?"
-msgstr ""
+msgstr "Soll %s zum Projekt hinzugefügt werden?"
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
@@ -318,11 +318,11 @@ msgstr "Beobachtungspunkte beim Cursor &hinzufügen"
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
-msgstr ""
+msgstr "Datei hinzufügen"
 
 #: lazarusidestrconsts:lisa2paddfiles
 msgid "Add Files"
-msgstr ""
+msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts:lisa2paddlfmlrsfilesiftheyexist
 msgid "Add LFM, LRS files, if they exist"
@@ -330,7 +330,7 @@ msgstr "LFS- und LRS-Dateien hinzufügen wenn es sie gibt"
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
-msgstr ""
+msgstr "Unit hinzufügen"
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
 msgid "Add active unit to a package"
@@ -338,43 +338,43 @@ msgstr "Aktive Unit zu einem Package hinzufügen"
 
 #: lazarusidestrconsts:lispckeditaddanitem
 msgid "Add an item"
-msgstr "Einen Punkt hinzufügen"
+msgstr "Eintrag hinzufügen"
 
 #: lazarusidestrconsts:lismenuaddbreakpoint
 msgid "Add breakpoint"
-msgstr ""
+msgstr "Haltepunkt hinzufügen"
 
 #: lazarusidestrconsts:liscodetempladdcodetemplate
 msgid "Add code template"
-msgstr ""
+msgstr "Codeschablone hinzufügen"
 
 #: lazarusidestrconsts:lismenuaddtoproject
 msgid "Add editor file to Project"
-msgstr ""
+msgstr "Datei im Editor in Projekt aufnehmen"
 
 #: lazarusidestrconsts:lisprojaddeditorfile
 msgid "Add editor files"
-msgstr ""
+msgstr "Dateien im Editor hinzufügen"
 
 #: lazarusidestrconsts:lisaf2paddfiletoapackage
 msgid "Add file to a package"
-msgstr ""
+msgstr "Datei in Paket aufnehmen"
 
 #: lazarusidestrconsts:lisprojaddaddfiletoproject
 msgid "Add file to project:"
-msgstr ""
+msgstr "Datei in Projekt aufnehmen:"
 
 #: lazarusidestrconsts:lisprojaddfiles
 msgid "Add files"
-msgstr ""
+msgstr "Dateien hinzufügen"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
-msgstr ""
+msgstr "Dateien in Paket aufnehmen"
 
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
-msgstr ""
+msgstr "Sprungmarke hinzufügen"
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -382,39 +382,39 @@ msgstr "Speichere Cursorposition"
 
 #: lazarusidestrconsts:lispckoptsaddoptionstodependentpackagesandprojects
 msgid "Add options to dependent packages and projects"
-msgstr ""
+msgstr "Einstellungen zu abhängigen Paketen und Projekten hinzufügen"
 
 #: lazarusidestrconsts:lispckoptsaddpathstodependentpackagesprojects
 msgid "Add paths to dependent packages/projects"
-msgstr ""
+msgstr "Pfade zu abhängigen Paketen und Projekten aufnehmen"
 
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
-msgstr ""
+msgstr "In Paket aufnehmen"
 
 #: lazarusidestrconsts:lisprojaddtoproject
 msgid "Add to project"
-msgstr ""
+msgstr "In Projekt aufnehmen"
 
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
-msgstr ""
+msgstr "Überwachten Ausdrück hinzufügen..."
 
 #: lazarusidestrconsts:dlgedadd
 msgid "Add..."
-msgstr ""
+msgstr "Hinzufügen..."
 
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
-msgstr ""
+msgstr "Zusätzlicher Quellcodesuchpfad für alle Projekte (.pp; .pas)"
 
 #: lazarusidestrconsts:lisadditionalcompileroptionsinheritedfrompackages
 msgid "Additional compiler options inherited from packages"
-msgstr ""
+msgstr "Zusätzliche von anderen Paketen übernommene Compileroptionen "
 
 #: lazarusidestrconsts:lisfriadditionalfilestosearchegpathpaspath2pp
 msgid "Additional files to search (e.g. /path/*.pas;/path2/*.pp)"
-msgstr ""
+msgstr "Zusätzliche zu suchende Dateien (z.B. *.pas;*.pp)"
 
 #: lazarusidestrconsts:dlgadjusttopline
 msgid "Adjust top line due to comment in front"
@@ -462,7 +462,7 @@ msgstr "Alternative Taste"
 
 #: lazarusidestrconsts:lisa2pambigiousancestortype
 msgid "Ambigious Ancestor Type"
-msgstr "Unklarer Vorfahrtyp"
+msgstr "Unklarer Vorfahrentyp"
 
 #: lazarusidestrconsts:lisa2pambigiousclassname
 msgid "Ambigious Class Name"
@@ -502,11 +502,11 @@ msgstr "Mehrdeutige Units gefunden"
 
 #: lazarusidestrconsts:lisa2pancestortype
 msgid "Ancestor Type"
-msgstr "Elterntyp"
+msgstr "Vorfahrentyp"
 
 #: lazarusidestrconsts:lismakeresstrappendtosection
 msgid "Append to section"
-msgstr ""
+msgstr "Dem Abschnitt anhängen"
 
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
@@ -522,11 +522,11 @@ msgstr "Applikation%sEin grafisches LCL/Free-Pascal-Programm. Die Programmdatei 
 
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
-msgstr ""
+msgstr "Übernehmen"
 
 #: lazarusidestrconsts:lispckeditapplychanges
 msgid "Apply changes"
-msgstr ""
+msgstr "Änderungen übernehmen"
 
 #: lazarusidestrconsts:rslanguagearabic
 msgid "Arabic"
@@ -558,7 +558,7 @@ msgstr "Autor:"
 
 #: lazarusidestrconsts:dlgautoform
 msgid "Auto create form when opening unit"
-msgstr ""
+msgstr "Formular beim Öfnen einer Unit automatisch erstellen"
 
 #: lazarusidestrconsts:liscodetoolsdefsautocreatednodesreadonly
 msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
@@ -566,15 +566,15 @@ msgstr "Automatisch erzeugte Knoten können nicht bearbeitet werden,%sund sie kön
 
 #: lazarusidestrconsts:dlgautodel
 msgid "Auto delete file"
-msgstr ""
+msgstr "Datei automatisch löschen"
 
 #: lazarusidestrconsts:liscodetoolsdefsautogeneratednodescannotbeedited
 msgid "Auto generated nodes can not be edited."
-msgstr ""
+msgstr "Automatisch erstellte Einträge können nicht bearbeitet werden."
 
 #: lazarusidestrconsts:dlgautoident
 msgid "Auto indent"
-msgstr ""
+msgstr "Automatisch Einziehen"
 
 #: lazarusidestrconsts:lispckoptsautorebuildwhenrebuildingall
 msgid "Auto rebuild when rebuilding all"
@@ -582,11 +582,11 @@ msgstr "Automatischer Neubau wenn alle neu gebaut wird"
 
 #: lazarusidestrconsts:dlgautoren
 msgid "Auto rename file lowercase"
-msgstr ""
+msgstr "Dateinamen automatisch in kleinschreiben"
 
 #: lazarusidestrconsts:dlgautosave
 msgid "Auto save"
-msgstr "Automatisches Sichern"
+msgstr "Automatisches Speichern"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
@@ -602,7 +602,7 @@ msgstr "Automatisch (oder Englisch)"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyincrementversiononbuild
 msgid "Automatically increment version on build"
-msgstr ""
+msgstr "Versionsnummer beim Übersetzen automatisch erhöhen"
 
 #: lazarusidestrconsts:lispkgmangautomaticallyinstalledpackages
 msgid "Automatically installed packages"
@@ -610,19 +610,19 @@ msgstr "Automatisch installierte Packages"
 
 #: lazarusidestrconsts:lispckoptsautomaticallyrebuildasneeded
 msgid "Automatically rebuild as needed"
-msgstr "Bei Bedarf automatischer Rebuild"
+msgstr "Bei Bedarf automatische neu kompilieren"
 
 #: lazarusidestrconsts:dlgavailableforms
 msgid "Available forms:"
-msgstr ""
+msgstr "Verfügbare Formulare:"
 
 #: lazarusidestrconsts:lisavailablepackages
 msgid "Available packages"
-msgstr ""
+msgstr "Verfügbare Pakete"
 
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
-msgstr ""
+msgstr "Zurück"
 
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background color"
@@ -630,7 +630,7 @@ msgstr "Hintergrundfarbe"
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
-msgstr ""
+msgstr "Rücktaste"
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
@@ -642,7 +642,7 @@ msgstr "Sicherung der Datei fehlgeschlagen"
 
 #: lazarusidestrconsts:lisfrbackwardsearch
 msgid "Backward search"
-msgstr ""
+msgstr "Rückwärts suchen"
 
 #: lazarusidestrconsts:dlgbehindmethods
 msgid "Behind methods"
@@ -650,7 +650,7 @@ msgstr "Hinter der Methode"
 
 #: lazarusidestrconsts:lispkgfiletypebinary
 msgid "Binary"
-msgstr ""
+msgstr "Binär"
 
 #: lazarusidestrconsts:liscodetoolsdefsblock
 msgid "Block"
@@ -658,7 +658,7 @@ msgstr "Block"
 
 #: lazarusidestrconsts:dlgblockindent
 msgid "Block indent:"
-msgstr ""
+msgstr "Blockeinzug"
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
@@ -718,7 +718,7 @@ msgstr "Nach dem Compiler (%s) durchsuchen"
 
 #: lazarusidestrconsts:dlgunitdepbrowse
 msgid "Browse..."
-msgstr "Durchsuchen ..."
+msgstr "Durchsuchen..."
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
@@ -770,7 +770,7 @@ msgstr "Kompiliere Lazarus"
 
 #: lazarusidestrconsts:lisbuildnumber
 msgid "Build Number"
-msgstr "Build-Nummer"
+msgstr "Build"
 
 #: lazarusidestrconsts:lisbuildpkgreg
 msgid "Build Package Registration"
@@ -998,7 +998,7 @@ msgstr "Klassenreihenfolge"
 
 #: lazarusidestrconsts:dlgclassinsertpolicy
 msgid "Class part insert policy"
-msgstr ""
+msgstr "Richtlinie für das Einfügen von Klassenteilen"
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
@@ -1026,11 +1026,11 @@ msgstr "Säubern und neu erzeugen"
 
 #: lazarusidestrconsts:srvk_clear
 msgid "Clear"
-msgstr ""
+msgstr "Leeren"
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
-msgstr "Klicken Sie auf einen der obigen Einträge  um die Diff anzuzeigen"
+msgstr "Klicken Sie auf einen der obigen Einträge um das Diff anzuzeigen"
 
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
@@ -1166,7 +1166,7 @@ msgstr "Befehl:"
 
 #: lazarusidestrconsts:lismenucommentselection
 msgid "Comment selection"
-msgstr "Kommentarauswahl"
+msgstr "Auswahl kommentieren"
 
 #: lazarusidestrconsts:liscodetemplcomment
 msgid "Comment:"
@@ -1230,7 +1230,7 @@ msgstr "Compilerpfad (%s)"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
-msgstr "Vervollständige Code"
+msgstr "Code vervollständigen"
 
 #: lazarusidestrconsts:srkmeccompletecode
 msgid "Complete code"
@@ -1282,7 +1282,7 @@ msgstr "Externe Komponenten einrichten"
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
-msgstr "Externe Werkzeuge einrichten ..."
+msgstr "Externe Werkzeuge einrichten..."
 
 #: lazarusidestrconsts:lismenueditinstallpkgs
 msgid "Configure installed packages"
@@ -1586,7 +1586,7 @@ msgstr "Debug"
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
-msgstr "Debugger Ausgaben"
+msgstr "Debuggerausgaben"
 
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
@@ -1602,7 +1602,7 @@ msgstr "Debuggerfehler"
 
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Debuggerfehler%sSchluck, der Debugger ging in den Fehlerstatus%sSichern Sie jetzt Ihre Arbeit!%sDrücken Sie Stop und hoffen Sie das beste."
+msgstr "Debuggerfehler%sDer Debugger ging in den Fehlerzustand%sSpeichern Sie jetzt Ihre Arbeit!%sDrücken Sie Stop und hoffen Sie das beste."
 
 #: lazarusidestrconsts:lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -1610,7 +1610,7 @@ msgstr "Debugger ungültig"
 
 #: lazarusidestrconsts:dlgcodebugpath
 msgid "Debugger path addition (none):"
-msgstr ""
+msgstr "Zusätzlicher Debuggerpfad (keiner):"
 
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
@@ -1650,11 +1650,11 @@ msgstr "Löschen"
 
 #: lazarusidestrconsts:lismenueditordeletefromtemplate
 msgid "Delete From Template..."
-msgstr "Aus der Vorlage löschen ..."
+msgstr "Aus der Vorlage löschen..."
 
 #: lazarusidestrconsts:lismenueditordeleteitem
 msgid "Delete Item"
-msgstr "Item löschen"
+msgstr "Eintrag löschen"
 
 #: lazarusidestrconsts:srkmecdeletelastchar
 msgid "Delete Last Char"
@@ -1738,7 +1738,7 @@ msgstr "Delphi-2-Erweiterungen"
 
 #: lazarusidestrconsts:dlgdeplhicomp
 msgid "Delphi Compatible"
-msgstr "Delphikompatibel"
+msgstr "Delphi-kompatibel"
 
 #: lazarusidestrconsts:lisa2pdependency
 msgid "Dependency"
@@ -1958,11 +1958,11 @@ msgstr "Element"
 
 #: lazarusidestrconsts:liscodetoolsdefselse
 msgid "Else"
-msgstr ""
+msgstr "Else"
 
 #: lazarusidestrconsts:liscodetoolsdefselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf"
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
@@ -1998,7 +1998,7 @@ msgstr "Übersetzungssprache angeben"
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "Entire Scope"
-msgstr ""
+msgstr "Gesamter Bereich"
 
 #: lazarusidestrconsts:dlgrunoenvironment
 msgid "Environment"
@@ -2086,7 +2086,7 @@ msgstr "Fehler beim Schreiben %s%s%s%s%s"
 
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewritingprojectinfofile
 msgid "Error while writing project info file %s%s%s%s%s"
-msgstr "Fehler beim Schreiben der Projektinfodatei %s%s%s%s%s"
+msgstr "Fehler beim Schreiben der Projekteinstellungsdatei %s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangerrorwritingfile
 msgid "Error writing file"
@@ -2110,7 +2110,7 @@ msgstr "Fehler"
 
 #: lazarusidestrconsts:srvk_escape
 msgid "Escape"
-msgstr ""
+msgstr "Escape"
 
 #: lazarusidestrconsts:lismenuevaluate
 msgid "Evaluate/Modify ..."
@@ -2158,7 +2158,7 @@ msgstr "Beenden"
 
 #: lazarusidestrconsts:liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
-msgstr "Beenden ohne Sichern"
+msgstr "Beenden ohne speichern"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
@@ -2182,11 +2182,11 @@ msgstr "Eigenschaften der externen Werkzeuge"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
-msgstr ""
+msgstr "Zusätzlicher Zeilenabstand"
 
 #: lazarusidestrconsts:lisextract
 msgid "Extract"
-msgstr ""
+msgstr "Extrahieren"
 
 #: lazarusidestrconsts:uemextractproc
 msgid "Extract Procedure"
@@ -2230,11 +2230,11 @@ msgstr "Datei %s%s%s bereits im Projekt im vorhanden."
 
 #: lazarusidestrconsts:lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
-msgstr "Datei %s%s%s wurde geänder. Sichern?"
+msgstr "Datei %s%s%s wurde geändert. Speichern?"
 
 #: lazarusidestrconsts:lisfileisvirtual
 msgid "File %s%s%s is virtual."
-msgstr "Datei %s%s%s ist virtuell."
+msgstr "Die Datei %s%s%s wurde noch nicht gespeichert."
 
 #: lazarusidestrconsts:lispkgmangfilenotfound
 msgid "File %s%s%s not found."
@@ -2482,7 +2482,7 @@ msgstr "Formulare"
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
-msgstr "Forms..."
+msgstr "Formulare..."
 
 #: lazarusidestrconsts:lisfrforwardsearch
 msgid "Forward search"
@@ -2534,7 +2534,7 @@ msgstr "Funktion: Dateipfad extrahieren"
 
 #: lazarusidestrconsts:dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
-msgstr "Kompatibel zum GPC (GNU Pascal Compiler)"
+msgstr "Kompatibel zu GPC (GNU Pascal Compiler)"
 
 #: lazarusidestrconsts:lismenuinsertgplnotice
 msgid "GPL notice"
@@ -2638,7 +2638,7 @@ msgstr "Taste fangen"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
-msgstr ""
+msgstr "Grabberfarbe"
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
@@ -2658,7 +2658,7 @@ msgstr "Gittergröße Y"
 
 #: lazarusidestrconsts:srkmecguessmisplacedifdef
 msgid "Guess misplaced $IFDEF"
-msgstr ""
+msgstr "Falsch gesetzte $IFDEF raten"
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
@@ -2690,7 +2690,7 @@ msgstr "OnClick-Ereignis bedienen"
 
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
-msgstr ""
+msgstr "Hanja"
 
 #: lazarusidestrconsts:lisaf2phasregisterprocedure
 msgid "Has Register procedure"
@@ -2718,7 +2718,7 @@ msgstr "Hilfe"
 
 #: lazarusidestrconsts:lishelpcontextnotfound
 msgid "Help Context not found"
-msgstr "Hilfekontext nicht gefunden"
+msgstr "Hilfeeintrag nicht gefunden"
 
 #: lazarusidestrconsts:lishelpdatabasenotfound
 msgid "Help Database not found"
@@ -2734,11 +2734,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lishelpviewererror
 msgid "Help Viewer Error"
-msgstr "Fehler des Hilfeviewers"
+msgstr "Hilfebetrachterfehler"
 
 #: lazarusidestrconsts:lishelpviewernotfound
 msgid "Help Viewer not found"
-msgstr "Hilfeviewer nicht gefunden"
+msgstr "Hilfebetrachter nicht gefunden"
 
 #: lazarusidestrconsts:srkmcarhelpmenu
 msgid "Help menu commands"
@@ -2778,11 +2778,11 @@ msgstr "Hinweise für die Haupt-Speedbuttons (Öffnen, Speichern, ...)"
 
 #: lazarusidestrconsts:srvk_home
 msgid "Home"
-msgstr ""
+msgstr "Pos1"
 
 #: lazarusidestrconsts:dlghomekeyjumpstoneareststart
 msgid "Home key jumps to nearest start"
-msgstr ""
+msgstr "Pos1 springt zum nächsten Anfang"
 
 #: lazarusidestrconsts:lishorizontal
 msgid "Horizontal"
@@ -2790,7 +2790,7 @@ msgstr "Horizontal"
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
-msgstr ""
+msgstr "Horizontale Rasterschrittweite"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -2810,7 +2810,7 @@ msgstr "IDE-Optionen"
 
 #: lazarusidestrconsts:uepins
 msgid "INS"
-msgstr ""
+msgstr "Einfg"
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
@@ -2830,7 +2830,7 @@ msgstr "Bezeichner-Vervollständigung"
 
 #: lazarusidestrconsts:dlgidentifierpolicy
 msgid "Identifier policy"
-msgstr ""
+msgstr "Bezeichnerrichtlinie"
 
 #: lazarusidestrconsts:lisfriidentifier
 msgid "Identifier: %s"
@@ -2838,7 +2838,7 @@ msgstr "Bezeichner: %s"
 
 #: lazarusidestrconsts:liscodetoolsdefsif
 msgid "If"
-msgstr ""
+msgstr "If"
 
 #: lazarusidestrconsts:uenotimpltext
 msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
@@ -2846,11 +2846,11 @@ msgstr "Wenn Sie uns helfen können, diese Funktion zu implementieren, senden Sie
 
 #: lazarusidestrconsts:liscodetoolsdefsifdef
 msgid "IfDef"
-msgstr ""
+msgstr "IfDef"
 
 #: lazarusidestrconsts:liscodetoolsdefsifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "IfNDef"
 
 #: lazarusidestrconsts:dlgignoreverb
 msgid "Ignore"
@@ -3078,11 +3078,11 @@ msgstr "Einfügemodus"
 
 #: lazarusidestrconsts:lismenueditorinsertnewitemafter
 msgid "Insert New Item (after)"
-msgstr "Neuen Eintrage einfügen (dahinter)"
+msgstr "Neuen Einträge einfügen (dahinter)"
 
 #: lazarusidestrconsts:lismenueditorinsertnewitembefore
 msgid "Insert New Item (before)"
-msgstr "Neuen Eintrage einfügen (vorher)"
+msgstr "Neuen Einträge einfügen (vorher)"
 
 #: lazarusidestrconsts:liscodetoolsdefsinserttemplate
 msgid "Insert Template"
@@ -3134,7 +3134,7 @@ msgstr "Text einfügen"
 
 #: lazarusidestrconsts:lismenuinspect
 msgid "Inspect ..."
-msgstr ""
+msgstr "Inspizieren..."
 
 #: lazarusidestrconsts:lispckeditinstall
 msgid "Install"
@@ -3398,7 +3398,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srvk_junja
 msgid "Junja"
-msgstr ""
+msgstr "Junja"
 
 #: lazarusidestrconsts:srvk_kana
 msgid "Kana"
@@ -3446,7 +3446,7 @@ msgstr "Schlüsselwort"
 
 #: lazarusidestrconsts:dlgkeywordpolicy
 msgid "Keyword policy"
-msgstr ""
+msgstr "Schlüsselwortrichtlinie"
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
@@ -3766,7 +3766,7 @@ msgstr "Menüeditor"
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr "Meldungen ..."
+msgstr "Meldungen..."
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
@@ -3822,7 +3822,7 @@ msgstr "Geändert: %s"
 
 #: lazarusidestrconsts:lispckeditmore
 msgid "More ..."
-msgstr "Weiter ..."
+msgstr "Weiter..."
 
 #: lazarusidestrconsts:srvk_lbutton
 msgid "Mouse Button Left"
@@ -3962,7 +3962,7 @@ msgstr ""
 
 #: lazarusidestrconsts:fdinvalidmutliselectiontext
 msgid "Multiselected components must be of a single form."
-msgstr ""
+msgstr "Mehrfachselektion nur auf einem Formular möglich."
 
 #: lazarusidestrconsts:lisnotecouldnotcreatedefinetemplateforfreepascal
 msgid "NOTE: Could not create Define Template for Free Pascal Sources"
@@ -3998,7 +3998,7 @@ msgstr "Neu"
 
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
-msgstr "Neu ..."
+msgstr "Neu..."
 
 #: lazarusidestrconsts:lisa2pnewcomponent
 msgid "New Component"
@@ -4018,7 +4018,7 @@ msgstr "Neues Projekt aus Datei"
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
-msgstr ""
+msgstr "Neue Anforderung"
 
 #: lazarusidestrconsts:lismenueditornewtemplatedescription
 msgid "New Template Description..."
@@ -4046,19 +4046,19 @@ msgstr "Die neue Unit ist nicht im Unitpfad"
 
 #: lazarusidestrconsts:liscodetoolsdefsnewnode
 msgid "NewNode"
-msgstr "NeuerKnoten"
+msgstr "Neuer Knoten"
 
 #: lazarusidestrconsts:lispkgmangnewpackage
 msgid "NewPackage"
-msgstr "NeuesPackage"
+msgstr "Neues Paket"
 
 #: lazarusidestrconsts:liscodetoolsoptsnewline
 msgid "Newline"
-msgstr ""
+msgstr "Zeilenumbruch"
 
 #: lazarusidestrconsts:srvk_next
 msgid "Next"
-msgstr ""
+msgstr "Nächstes"
 
 #: lazarusidestrconsts:lisnoresourcestringsectionfound
 msgid "No ResourceString Section found"
@@ -4162,7 +4162,7 @@ msgstr "Zahlenblock %d"
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
-msgstr ""
+msgstr "Üb"
 
 #: lazarusidestrconsts:lispckoptsobject
 msgid "Object"
@@ -4230,7 +4230,7 @@ msgstr "Projekt öffnen?"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
-msgstr "Öffne wieder"
+msgstr "Wieder öffnen"
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project"
@@ -4346,7 +4346,7 @@ msgstr "Systemvariablen überschreiben"
 
 #: lazarusidestrconsts:srkmecoverwritemode
 msgid "Overwrite Mode"
-msgstr "Überschreibemodus"
+msgstr "Überschreiben-Modus"
 
 #: lazarusidestrconsts:lisoverwritefile
 msgid "Overwrite file?"
@@ -4450,7 +4450,7 @@ msgstr "Name des Reiters zu lang"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr ""
+msgstr "Zeichne Designerelemente nur wenn nicht beschäftigt (reduziert Prozessorbelastung, für langsamerere Rechner)"
 
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
@@ -4470,7 +4470,7 @@ msgstr "Elternknoten kann keine Kindknoten enthalten."
 
 #: lazarusidestrconsts:dlgcoparsing
 msgid "Parsing"
-msgstr ""
+msgstr "Parse"
 
 #: lazarusidestrconsts:lisa2ppascalunitsmusthavetheextensionpporpas
 msgid "Pascal units must have the extension .pp or .pas"
@@ -4478,7 +4478,7 @@ msgstr "Pascal-Unit müssen die Endung .pp oder .pas besitzen"
 
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
-msgstr ""
+msgstr "Dem Linker zusätzliche Optionen übergeben (Leerzeichen trennt)"
 
 #: lazarusidestrconsts:lismenupaste
 msgid "Paste"
@@ -4510,7 +4510,7 @@ msgstr "Pfade (schreibgeschützt):"
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
-msgstr "Stop"
+msgstr "Pause"
 
 #: lazarusidestrconsts:srvk_pause
 msgid "Pause key"
@@ -4518,7 +4518,7 @@ msgstr "Pausetaste"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent caret"
-msgstr ""
+msgstr "Ständig sichtbarer Cursor"
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
@@ -4538,11 +4538,11 @@ msgstr "Btte öffnen Sie eine Unit vor dem Starten."
 
 #: lazarusidestrconsts:srkmpresskey
 msgid "Please press a key ..."
-msgstr "Beliebige Taste drücken ..."
+msgstr "Beliebige Taste drücken..."
 
 #: lazarusidestrconsts:lispkgmangpleasesavethefilebeforeaddingittoapackage
 msgid "Please save the file before adding it to a package."
-msgstr "Bitte sichern Sie die Datei vor dem Hinzufügen in ein Paket."
+msgstr "Bitte speichern Sie die Datei vor dem Hinzufügen in ein Paket."
 
 #: lazarusidestrconsts:lisoippleaseselectapackage
 msgid "Please select a package"
@@ -4594,7 +4594,7 @@ msgstr "Drucken"
 
 #: lazarusidestrconsts:listodolistprintlist
 msgid "Print todo items"
-msgstr "ToDo-Einträged rucken"
+msgstr "ToDo-Einträge drucken"
 
 #: lazarusidestrconsts:srvk_prior
 msgid "Prior"
@@ -4614,7 +4614,7 @@ msgstr "Prozedur"
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
-msgstr ""
+msgstr "Prozedureeinfügerichtlinie"
 
 #: lazarusidestrconsts:lisprocedurewithinterface
 msgid "Procedure with interface"
@@ -4650,7 +4650,7 @@ msgstr "Projekt %s%s%s erfolgreich gebaut. :)"
 
 #: lazarusidestrconsts:lisedtdefprojectincpath
 msgid "Project IncPath"
-msgstr ""
+msgstr "Projekt-Includepfad"
 
 #: lazarusidestrconsts:lisprojectincpath
 msgid "Project Include Path"
@@ -4706,7 +4706,7 @@ msgstr "Projektdateien"
 
 #: lazarusidestrconsts:lisprojectinfofiledetected
 msgid "Project info file detected"
-msgstr "Projekt-Infodatei gefunden"
+msgstr "Projekteinstellungsdatei gefunden"
 
 #: lazarusidestrconsts:lisprojectisrunnable
 msgid "Project is runnable"
@@ -4730,7 +4730,7 @@ msgstr "Benutzer nach Daten fragen"
 
 #: lazarusidestrconsts:lishlpoptsproperties
 msgid "Properties:"
-msgstr "Eigenschaften:"
+msgstr "Eigenschaften"
 
 #: lazarusidestrconsts:dlgpropertycompletion
 msgid "Property completion"
@@ -4746,11 +4746,11 @@ msgstr "Public-Methode (öffentlich)"
 
 #: lazarusidestrconsts:lispkgeditpublishpackage
 msgid "Publish Package"
-msgstr "Publish-Paket"
+msgstr "Paket veröffentlichen"
 
 #: lazarusidestrconsts:lismenupublishproject
 msgid "Publish Project"
-msgstr "Publiziere Projekt"
+msgstr "Projekt veröffentlichen"
 
 #: lazarusidestrconsts:lispublishprojdir
 msgid "Publish project directory"
@@ -4826,11 +4826,11 @@ msgstr "Wiederholen"
 
 #: lazarusidestrconsts:lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr "Designer-Zeichnen verringern"
+msgstr "Aktualisieren des Designer verringern"
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
-msgstr ""
+msgstr "Refactoring"
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
@@ -5086,7 +5086,7 @@ msgstr "Farbe des rechten Rands"
 
 #: lazarusidestrconsts:dlgrightmousemovescursor
 msgid "Right mouse moves caret"
-msgstr ""
+msgstr "Rechtsklick bewegt den Cursor"
 
 #: lazarusidestrconsts:lisrightsides
 msgid "Right sides"
@@ -5110,7 +5110,7 @@ msgstr "Datei ausführen"
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr "Startparameter ..."
+msgstr "Startparameter..."
 
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
@@ -5166,11 +5166,11 @@ msgstr "Speichern als"
 
 #: lazarusidestrconsts:dlgcharcasefileact
 msgid "Save As - auto rename pascal files lower case"
-msgstr ""
+msgstr "Speichern unter "
 
 #: lazarusidestrconsts:lismenueditorsaveastemplate
 msgid "Save As Template..."
-msgstr "Sichern als Vorlage ..."
+msgstr "Als Vorlage speichern..."
 
 #: lazarusidestrconsts:lispckeditsavechanges
 msgid "Save Changes?"
@@ -5178,11 +5178,11 @@ msgstr "Änderungen speichern"
 
 #: lazarusidestrconsts:lispkgmangsavepackagelpk
 msgid "Save Package %s (*.lpk)"
-msgstr "Paket %s (*.lpk) sichern?"
+msgstr "Paket %s (*.lpk) speichern?"
 
 #: lazarusidestrconsts:lispkgmangsavepackage
 msgid "Save Package?"
-msgstr "Paket sichern?"
+msgstr "Paket speichern?"
 
 #: lazarusidestrconsts:lismenusaveproject
 msgid "Save Project"
@@ -5190,7 +5190,7 @@ msgstr "Projekt speichern"
 
 #: lazarusidestrconsts:lissaveprojectlpi
 msgid "Save Project %s (*.lpi)"
-msgstr "Projekt %s (*.lpi) sichern"
+msgstr "Projekt %s (*.lpi) speichern"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As..."
@@ -5202,7 +5202,7 @@ msgstr "Alles speichern"
 
 #: lazarusidestrconsts:lissaveallmessagestofile
 msgid "Save all messages to file"
-msgstr "Alle Meldungen in Datei sichern"
+msgstr "Alle Meldungen in Datei speichern"
 
 #: lazarusidestrconsts:liscodetoolsdefssaveandexit
 msgid "Save and Exit"
@@ -5214,15 +5214,15 @@ msgstr "Speichern und Dialog beenden"
 
 #: lazarusidestrconsts:lissaveandrebuildide
 msgid "Save and rebuild IDE"
-msgstr "Sichern und IDE neu bauen"
+msgstr "Speichern und IDE neu bauen"
 
 #: lazarusidestrconsts:srkmecsaveas
 msgid "Save as"
-msgstr "Sichern als"
+msgstr "Speichern als"
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
-msgstr "Änderungen in Projekt %s sichern?"
+msgstr "Änderungen in Projekt %s speichern?"
 
 #: lazarusidestrconsts:lissavechanges
 msgid "Save changes?"
@@ -5230,27 +5230,27 @@ msgstr "Änderungen speichern?"
 
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
-msgstr "Sichern der Desktop-Einstellung in Datei"
+msgstr "Speichern der Desktop-Einstellungen in eine Datei"
 
 #: lazarusidestrconsts:dlgsaveeditorinfo
 msgid "Save editor info for closed files"
-msgstr "Editorinformationen für geschlossene Dateien sichern"
+msgstr "Editorinformationen für geschlossene Dateien speichern"
 
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
-msgstr "Editorinformationen nur für Projektdateien sichern"
+msgstr "Editorinformationen nur für Projektdateien speichern"
 
 #: lazarusidestrconsts:lissavefilebeforeclosingform
 msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
-msgstr "Sichern der Datei %s%s%s%svor dem Schließen des Formulars %s%s%s?"
+msgstr "Speichern der Datei %s%s%s%svor dem Schließen des Formulars %s%s%s?"
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
-msgstr "Paket sichern"
+msgstr "Paket speichern"
 
 #: lazarusidestrconsts:lispkgmangsavepackage2
 msgid "Save package?"
-msgstr "Paket sichern?"
+msgstr "Paket speichern?"
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
@@ -5350,7 +5350,7 @@ msgstr "Wo suchen"
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
-msgstr "Suche ..."
+msgstr "Suche..."
 
 #: lazarusidestrconsts:lisuesearching
 msgid "Searching: %s"
@@ -5446,7 +5446,7 @@ msgstr "Hilfeeintrag auswählen"
 
 #: lazarusidestrconsts:lisselectanode
 msgid "Select a node"
-msgstr "Knoten wählen"
+msgstr "Eintrag wählen"
 
 #: lazarusidestrconsts:lisnpselectaprojecttype
 msgid "Select a project type"
@@ -5490,7 +5490,7 @@ msgstr "Auswahl bis zum absoluten Ende"
 
 #: lazarusidestrconsts:lismenuselecttobrace
 msgid "Select to brace"
-msgstr ""
+msgstr "Bis zu Klammer"
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode
 msgid "Selected Node:"
@@ -5550,7 +5550,7 @@ msgstr "Umsch"
 
 #: lazarusidestrconsts:srkmecshifttab
 msgid "Shift Tab"
-msgstr "Umsch Tab"
+msgstr "Umsch-Tab"
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
 msgid "Should the file be renamed lowercase to%s%s%s%s?"
@@ -5714,7 +5714,7 @@ msgstr "Ans Gitter kleben"
 
 #: lazarusidestrconsts:srvk_snapshot
 msgid "Snapshot"
-msgstr ""
+msgstr "Abbild"
 
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -5766,11 +5766,11 @@ msgstr "Quelltext-Vorschau"
 
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
-msgstr ""
+msgstr "Leerzeichen"
 
 #: lazarusidestrconsts:lisspaceequally
 msgid "Space equally"
-msgstr ""
+msgstr "Gleichmäßig aufteilen"
 
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
@@ -5810,7 +5810,7 @@ msgstr "Status"
 
 #: lazarusidestrconsts:dlgstatickeyword
 msgid "Static Keyword in Objects"
-msgstr "Statisches Schlüsselwort in Objekten"
+msgstr "\"static\"-Schlüsselwort in Objekten"
 
 #: lazarusidestrconsts:lishintstepinto
 msgid "Step Into"
@@ -5834,7 +5834,7 @@ msgstr "Halt"
 
 #: lazarusidestrconsts:lisstopdebugging
 msgid "Stop Debugging?"
-msgstr "Debugging abbrechen?"
+msgstr "Debuggen abbrechen?"
 
 #: lazarusidestrconsts:dlgstopafternrerr
 msgid "Stop after number of errors:"
@@ -5866,7 +5866,7 @@ msgstr "Stings mit identischen Werten:"
 
 #: lazarusidestrconsts:dlgcostrip
 msgid "Strip Symbols From Executable"
-msgstr "Strip Symbole aus der ausführbaren Datei"
+msgstr "Debuggersymbole aus der ausführbaren Datei entfernen"
 
 #: lazarusidestrconsts:dlgcostyle
 msgid "Style:"
@@ -6118,11 +6118,11 @@ msgstr "Das Testverzeichnis wurde nicht gefunden:%s%s%s%s%s(siehe Umgebungsoptio
 
 #: lazarusidestrconsts:lisa2ptheancestortypehasthesamenameastheunit
 msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
-msgstr "Der Vorfahrtyp %s%s%s besitzt den selben Namen wie%sdie Unit %s%s%s."
+msgstr "Der Vorfahrentyp %s%s%s besitzt den selben Namen wie%sdie Unit %s%s%s."
 
 #: lazarusidestrconsts:lisa2ptheancestortypeisnotavalidpascalidentifier
 msgid "The ancestor type %s%s%s is not a valid pascal identifier."
-msgstr "Der Vorfahrtyp %s%s%sist kein gültiger Pascal-Bezeichner."
+msgstr "Der Vorfahrentyp %s%s%sist kein gültiger Pascal-Bezeichner."
 
 #: lazarusidestrconsts:listheclassisatcontrolandcannotbepastedontoanoncontro
 msgid "The class %s%s%s is a TControl and can not be pasted onto a non control.%sUnable to paste."
@@ -6130,7 +6130,7 @@ msgstr "Die Klasse %s%s%s ist ein TControl und kann nicht auf ein Nicht-Control 
 
 #: lazarusidestrconsts:lisa2ptheclassnameandancestortypearethesame
 msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
-msgstr "Der Klassenname %s%s%s und der Vorfahrtyp %s%s%s sind gleich."
+msgstr "Der Klassenname %s%s%s und der Vorfahrentyp %s%s%s sind gleich."
 
 #: lazarusidestrconsts:lisa2ptheclassnameexistsalreadyinpackagefile
 msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
@@ -6282,7 +6282,7 @@ msgstr "Der Dateiname %s%s%s wird von%sdem Paket %s%s%s%sin der Datei %s%s%s gen
 
 #: lazarusidestrconsts:lispkgmangthefilenamedoesnotcorrespondtothepackage
 msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
-msgstr "Der Dateiname %s%s%s korrespondierte nicht mit dem Paketnamen %s%s%s in der Datei.%sSoll der Paketname in %s%s%s geändert werden?"
+msgstr "Der Dateiname %s%s%s stimmte nicht dem Paketnamen %s%s%s in der Datei überein.%sSoll der Paketname zu %s%s%s geändert werden?"
 
 #: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
 msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
@@ -6430,7 +6430,7 @@ msgstr "Die Ursprungskomponente kann nicht gelöscht werden."
 
 #: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
 msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
-msgstr "Die Unit %s%s%s ist bereits vorhanden.%sIgnorieren wird das Umbenennen erzwingen,%sAbbrechen wird das Sichern dieses Quelltext abbrechen%und den gesamten Speichervorgang unterbinden."
+msgstr "Die Unit %s%s%s ist bereits vorhanden.%s\"Ignorieren\" wird ein Umbenennen erzwingen,%s\"Abbrechen\" wird das Speichern dieses Quelltext abbrechen%und den gesamten Speichervorgang unterbinden."
 
 #: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
@@ -6610,7 +6610,7 @@ msgstr "Werkzeugmenübefehle"
 
 #: lazarusidestrconsts:dlgtooltipeval
 msgid "Tooltip expression evaluation"
-msgstr ""
+msgstr "Tooltip Ausdrückeauswertung"
 
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
@@ -6670,7 +6670,7 @@ msgstr "Kann den den Ressoucen-Header-Kommentar nicht zu der Ressourcendatei %s%
 
 #: lazarusidestrconsts:lisunabletobackupfileto
 msgid "Unable to backup file %s%s%s to %s%s%s!"
-msgstr "Kann Datei %s%s%s nicht nach %s%s%s sichern!"
+msgstr "Kann Datei %s%s%s nicht nach %s%s%s speichern!"
 
 #: lazarusidestrconsts:lisprojoptsunabletochangetheautocreateformlist
 msgid "Unable to change the auto create form list in the program source.%sPlz fix errors first."
@@ -6878,7 +6878,7 @@ msgstr "Das Tool %s%s%s:%s%s kann nicht ausgeführt werden"
 
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
-msgstr "Unfähig die Datei %s%s%s zu sichern"
+msgstr "Unfähig die Datei %s%s%s zu speichern"
 
 #: lazarusidestrconsts:lisunabletoshowmethodplzfixtheerrorshowninthemessage
 msgid "Unable to show method. Plz fix the error shown in the message window."
@@ -6966,7 +6966,7 @@ msgstr "Rückgängig"
 
 #: lazarusidestrconsts:dlgundoaftersave
 msgid "Undo after save"
-msgstr "Undo nach dem Sichern"
+msgstr "Undo nach dem Speichern"
 
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit:"
@@ -6998,7 +6998,7 @@ msgstr "Paket deinstallieren?"
 
 #: lazarusidestrconsts:lisuninstallselection
 msgid "Uninstall selection"
-msgstr ""
+msgstr "Auswahl deinstallieren"
 
 #: lazarusidestrconsts:lispkgfiletypeunit
 msgid "Unit"
@@ -7122,7 +7122,7 @@ msgstr "Verwende Ansi-Strings"
 
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
-msgstr "Verwende Unit Heaptrc"
+msgstr "Heaptrc-Unit verwenden"
 
 #: lazarusidestrconsts:dlgusecustomconfig
 msgid "Use addional Compiler Config File"
@@ -7138,7 +7138,7 @@ msgstr "Verwende Anzeige"
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
-msgstr ""
+msgstr "Startapplikation verwenden"
 
 #: lazarusidestrconsts:dlgusefpccfg
 msgid "Use standard Compiler Config File (fpc.cfg)"
@@ -7214,7 +7214,7 @@ msgstr "Vertikal"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr ""
+msgstr "Vertikale Rasterschrittweite"
 
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
@@ -7370,7 +7370,7 @@ msgstr "Warnung: Unklare Datei gefunden: %s%s%s. Quelldatei ist: %s%s%s"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
-msgstr "Überwachte Punkte"
+msgstr "Überwachte Ausdrücke"
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
@@ -7486,7 +7486,7 @@ msgstr "Datei bauen"
 
 #: lazarusidestrconsts:srkmecbuild
 msgid "build program/project"
-msgstr ""
+msgstr "Programm/Projekt erstellen"
 
 #: lazarusidestrconsts:dlglefttopclr
 msgid "color for left, top"
@@ -7594,7 +7594,7 @@ msgstr "Nein"
 
 #: lazarusidestrconsts:dlgnoautomaticrenaming
 msgid "no automatic renaming"
-msgstr ""
+msgstr "Kein automatisches Umbenennen"
 
 #: lazarusidestrconsts:lisnoname
 msgid "noname"
@@ -7602,7 +7602,7 @@ msgstr "unbenannt"
 
 #: lazarusidestrconsts:liscodetoolsdefsnoneselected
 msgid "none selected"
-msgstr ""
+msgstr "Nichts ausgewählt"
 
 #: lazarusidestrconsts:lisobjectpath
 msgid "object path"
@@ -7614,7 +7614,7 @@ msgstr "Paket %s nicht gesichert"
 
 #: lazarusidestrconsts:lispkgmangpackagemainsourcefile
 msgid "package main source file"
-msgstr ""
+msgstr "Pakethauptquelldatei"
 
 #: lazarusidestrconsts:srkmecpause
 msgid "pause program"
@@ -7634,7 +7634,7 @@ msgstr "Debugger zurücksetzen"
 
 #: lazarusidestrconsts:srvk_rwin
 msgid "right windows key"
-msgstr ""
+msgstr "Rechte Windowstaste"
 
 #: lazarusidestrconsts:srkmecrunfile
 msgid "run file"
@@ -7698,7 +7698,7 @@ msgstr "BEREICHSPRÜFUNGEN angeschaltet"
 
 #: lazarusidestrconsts:lispkgmangstaticpackagesconfigfile
 msgid "static packages config file"
-msgstr ""
+msgstr "Konfigurationsdatei für statische Pakete"
 
 #: lazarusidestrconsts:srkmecstopprogram
 msgid "stop program"
