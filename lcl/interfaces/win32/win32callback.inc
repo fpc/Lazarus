@@ -1043,12 +1043,13 @@ Begin
     WM_MEASUREITEM:
     Begin
       if TObject(WParam) is TWinControl then
-        lWinControl := TWinControl(LParam)
-      else
+      begin
+        lWinControl := TWinControl(WParam);
+        LMessage.Msg := LM_MEASUREITEM;
+        LMessage.LParam := LParam;
+        LMessage.WParam := WParam;
+      end else
         lWinControl := nil;
-      LMessage.Msg := LM_MEASUREITEM;
-      LMessage.LParam := LParam;
-      LMessage.WParam := WParam;
     End;
     WM_THEMECHANGED:
     begin
@@ -1429,6 +1430,9 @@ end;
 
 {
   $Log$
+  Revision 1.149  2004/10/29 10:38:39  micha
+  fix typo, use wparam, not lparam
+
   Revision 1.148  2004/10/29 09:52:08  micha
   fix crash on showing tabpage
   fix painting of radiobutton in groupbox (non-tabpage-parent)
