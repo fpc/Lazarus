@@ -796,6 +796,9 @@ type
   TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionClass: String;
                                  const AExceptionText: String) of object;
 
+  TDebuggerProperties = class(TPersistent)
+  end;
+
   TDebugger = class(TObject)
   private
     FArguments: String;
@@ -828,6 +831,8 @@ type
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
   protected
+    class function CreateProperties: TDebuggerProperties; virtual;
+    
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
     function  CreateCallStack: TDBGCallStack; virtual;
@@ -858,6 +863,8 @@ type
 
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
+    class function GetProperties: TDebuggerProperties;
+    class procedure SetProperties(const AProperties: TDebuggerProperties);
     
     procedure Init; virtual;                         // Initializes the debugger
     procedure Done; virtual;                         // Kills the debugger
@@ -873,7 +880,7 @@ type
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  TargetIsStarted: boolean; virtual;
 
-  public
+  public 
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TDBGCallStack read FCallStack;
@@ -954,6 +961,9 @@ const
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
   );
+  
+var
+  MDebuggerProperties: TDebuggerProperties;
 
 function DBGCommandNameToCommand(const s: string): TDBGCommand;
 begin
@@ -1081,6 +1091,11 @@ end;
 function TDebugger.CreateLocals: TDBGLocals;
 begin
   Result := TDBGLocals.Create(Self);
+end;
+
+class function TDebugger.CreateProperties: TDebuggerProperties; 
+begin
+  Result := TDebuggerProperties.Create;
 end;
 
 function TDebugger.CreateSignals: TDBGSignals;
@@ -1211,6 +1226,13 @@ begin
   Result := COMMANDMAP[State] * GetSupportedCommands;
 end;
 
+class function TDebugger.GetProperties: TDebuggerProperties;
+begin
+  if MDebuggerProperties = nil
+  then MDebuggerProperties := CreateProperties;
+  Result := MDebuggerProperties;
+end;
+
 function TDebugger.GetState: TDBGState;
 begin
   Result := FState;
@@ -1308,6 +1330,17 @@ begin
     if (FFilename <> '') and (FState = dsIdle) and ChangeFileName
     then SetState(dsStop);
   end;
+end;
+
+class procedure SetProperties(const AProperties: TDebuggerProperties);
+begin
+  if MDebuggerProperties = nil 
+  then begin
+    GetDebuggerProperties;
+    if MDebuggerProperties = nil // they weren't created ?
+    then Exit;
+  end;
+  MDebuggerProperties.Assign(AProperties);
 end;
 
 procedure TDebugger.SetState(const AValue: TDBGState);
@@ -3091,9 +3124,18 @@ begin
   inherited SetItem(Aindex, AValue);
 end;
 
+initialization
+  MDebuggerProperties := nil;
+
+finalization
+  MDebuggerProperties.Free;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.52  2003/12/27 01:05:03  marc
+  + Added debugger properties
+
   Revision 1.51  2003/08/08 10:24:48  mattias
   fixed initialenabled, debuggertype, linkscaner open string constant
 
