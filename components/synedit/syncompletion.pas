@@ -43,17 +43,19 @@ interface
 uses
 {$IFDEF SYN_LAZARUS}
   LCLLinux, LMessages,
- LCLType, GraphType,
+  LCLType, GraphType,
 {$ELSE}
   Windows,
 {$ENDIF}
   Classes, Messages, Graphics, Forms, Controls, StdCtrls, Menus,
-  SysUtils, SynEditTypes, SynEditKeyCmds, SynEditHighlighter, SynEdit;
+  SysUtils, SynEditTypes, SynEditKeyCmds, SynEditHighlighter,
+  {$IFDEF SYN_LAZARUS}SynEditTextBuffer,{$ENDIF} SynEdit;
 
 type
   TSynBaseCompletionPaintItem = function(AKey: string; ACanvas: TCanvas;
     X, Y: integer
-    {$IFDEF SYN_LAZARUS}; Selected: boolean{$ENDIF}): boolean of object;
+    {$IFDEF SYN_LAZARUS}; Selected: boolean{$ENDIF}
+    ): boolean of object;
   TCodeCompletionEvent = procedure(var Value: string; Shift: TShiftState)
     of object;
   TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
@@ -337,7 +339,7 @@ begin
 // added the VK_XXX codes to make it more readable / maintainable
     VK_RETURN:
       if Assigned(OnValidate) then OnValidate(Self, Shift);
-    VK_ESCAPE, VK_SPACE:
+    VK_ESCAPE{$IFNDEF SYN_LAZARUS}, VK_SPACE{$ENDIF}:
       if Assigned(OnCancel) then OnCancel(Self);
     // I do not think there is a worst way to do this, but laziness rules :-)
     VK_PRIOR:
@@ -377,7 +379,12 @@ begin
     #33..'z': begin
         if Assigned(OnKeyPress) then
           OnKeyPress(self, Key);
+        {$ifdef SYN_LAZARUS}
+        if Key in [#33..'z'] then
+          CurrentString := CurrentString + key;
+        {$else}
         CurrentString := CurrentString + key;
+        {$ENDIF}
       end;
     #8:
       if Assigned(OnKeyPress) then OnKeyPress(self, Key); 
@@ -888,16 +895,34 @@ end;
 procedure TSynCompletion.Validate(Sender: TObject; Shift: TShiftState);
 var
   F: TSynBaseCompletionForm;
-  Value: string;
-  {$IFNDEF SYN_LAZARUS}
+  Value, CurLine: string;
+  {$IFDEF SYN_LAZARUS}
+  NewCaretXY: TPoint;
+  {$Else}
   Pos: TPoint;
   {$ENDIF}
 begin
   F := Sender as TSynBaseCompletionForm;
   if F.CurrentEditor <> nil then
     with F.CurrentEditor as TCustomSynEdit do begin
+      BeginUndoBlock;
       BlockBegin := Point(CaretX - length(CurrentString), CaretY);
+      {$IFDEF SYN_LAZARUS}
+      if ssShift in Shift then begin
+        // replace only prefix
+        BlockEnd := Point(CaretX, CaretY);
+      end else begin
+        // replace the whole word
+        NewCaretXY:=CaretXY;
+        CurLine:=TSynEditStringList(Lines).ExpandedStrings[NewCaretXY.Y - 1];
+        while (NewCaretXY.X<=length(CurLine))
+        and (CurLine[NewCaretXY.X] in ['a'..'z','A'..'Z','0'..'9','_']) do
+          inc(NewCaretXY.X);
+        BlockEnd := NewCaretXY;
+      end;
+      {$ELSE}
       BlockEnd := Point(CaretX, CaretY);
+      {$ENDIF}
       if Position>=0 then begin
         if Assigned(FOnCodeCompletion) then begin
           Value := ItemList[Position];
@@ -908,15 +933,14 @@ begin
       end;       
       {$IFNDEF SYN_LAZARUS}
       with Editor do begin
-        Pos.x := CaretX;
-        Pos.y := CaretY;
+        Pos := CaretXY;
         Perform(LM_MBUTTONDOWN, 0, 0);
         Application.ProcessMessages;
-        CaretX := Pos.x;
-        CaretY := Pos.y;
+        CaretXY := Pos;
       end;
       SetFocus;
       {$ENDIF}
+      EndUndoBlock;
     end;
 end;
 
@@ -950,8 +974,8 @@ constructor TSynCompletion.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Form.OnKeyPress := {$IFDEF FPC}@{$ENDIF}KeyPress;
-  Form.OnKeyDelete := {$IFDEF FPC}@{$ENDIF}backspace;
-  Form.OnValidate := {$IFDEF FPC}@{$ENDIF}validate;
+  Form.OnKeyDelete := {$IFDEF FPC}@{$ENDIF}Backspace;
+  Form.OnValidate := {$IFDEF FPC}@{$ENDIF}Validate;
   Form.OnCancel := {$IFDEF FPC}@{$ENDIF}Cancel;
   Form.OnPaint:=@OnFormPaint;
   FEndOfTokenChr := '()[].';

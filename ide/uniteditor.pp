@@ -816,7 +816,12 @@ begin
       if FaOwner<>nil then
         TSourceNotebook(FaOwner).AddJumpPointClicked(Self);
     end;
-    
+
+  else
+    if (CurCompletionControl<>nil)
+    and (not (AChar in ['a'..'z','A'..'Z','0'..'9',#128..#255])) then begin
+
+    end;
   end;
 end;
 
@@ -2141,7 +2146,8 @@ Begin
     ctTemplateCompletion:
       begin
         if Value<>'' then
-          FCodeTemplateModul.ExecuteCompletion(Value,GetActiveSE.EditorComponent);
+          FCodeTemplateModul.ExecuteCompletion(Value,
+                                               GetActiveSE.EditorComponent);
         Value:='';
       end;
     ctWordCompletion:
