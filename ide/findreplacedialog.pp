@@ -329,6 +329,7 @@ procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
 var Component: TFindDlgComponent;
 begin
+  //writeln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key);
   if (Key=VK_RETURN) then
     OkButtonClick(Sender)
   else if (Key=VK_ESCAPE) then

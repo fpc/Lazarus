@@ -33,7 +33,7 @@
     - Get and Set property access parameter lists
     - predefined funcs Pred, Succ, Val, Low, High
     - find declaration in dead code
-    - make @Proc context sensitive
+    - make @Proc context sensitive (started but not complete)
     - operator overloading
     - ppu, ppw, dcu files
 }
@@ -73,54 +73,113 @@ type
   TFindDeclarationTool = class;
 
   TVariableAtomType = (
-    vatNone, vatSpace, vatIdentifier, vatPreDefIdentifier, vatPoint, vatAS,
-    vatINHERITED, vatUp, vatRoundBracketOpen, vatRoundBracketClose,
-    vatEdgedBracketOpen, vatEdgedBracketClose, vatAddrOp);
+    vatNone,             // undefined
+    vatSpace,            // empty or space
+    vatIdentifier,       // an identifier
+    vatPreDefIdentifier, // an identifier with special meaning to the compiler
+    vatPoint,            // .
+    vatAS,               // AS keyword
+    vatINHERITED,        // INHERITED keyword
+    vatUp,               // ^
+    vatRoundBracketOpen, // (
+    vatRoundBracketClose,// )
+    vatEdgedBracketOpen, // [
+    vatEdgedBracketClose,// ]
+    vatAddrOp            // @
+    );
+    
 const
+  // for nicer output
   VariableAtomTypeNames: array[TVariableAtomType] of string =
-    ('<None>','Space','Ident','PreDefIdent','Point','AS','INHERITED','Up^ ',
-     'Bracket(','Bracket)','Bracket[','Bracket]', 'AddrOperator@ ');
+    ('<None>',
+     'Space',
+     'Ident',
+     'PreDefIdent',
+     'Point',
+     'AS',
+     'INHERITED',
+     'Up^ ',
+     'Bracket(',
+     'Bracket)',
+     'Bracket[',
+     'Bracket]',
+     'AddrOperator@ '
+     );
      
 type
   // searchpath delimiter is semicolon
   TOnGetSearchPath = function(Sender: TObject): string of object;
+  
   TOnGetCodeToolForBuffer = function(Sender: TObject;
     Code: TCodeBuffer): TFindDeclarationTool of object;
 
+  // flags/states for searching
   TFindDeclarationFlag = (
-    fdfSearchInParentNodes, // if identifier not found in current context,
-                            //    proceed in prior nodes on same lvl and parents
     fdfSearchInAncestors,   // if context is a class, search also in
                             //    ancestors/interfaces
+    fdfSearchInParentNodes, // if identifier not found in current context,
+                            //    proceed in prior nodes on same lvl and parents
     fdfIgnoreCurContextNode,// skip context and proceed in prior/parent context
+    fdfIgnoreUsedUnits,     // stay in current source
+    fdfSearchForward,       // instead of searching in prior nodes, search in
+                            //    next nodes (successors)
+                            
     fdfExceptionOnNotFound, // raise exception if identifier not found
                             //    predefined identifiers will not raise
     fdfExceptionOnPredefinedIdent,// raise an exception even if the identifier
                             // is an predefined exception
-    fdfIgnoreUsedUnits,     // stay in current source
-    fdfSearchForward,       // instead of searching in prior nodes, search in
-                            //    next nodes (successors)
+                            
     fdfIgnoreClassVisibility,//find inaccessible private+protected fields
     fdfClassPublished,
     fdfClassPublic,
     fdfClassProtected,
     fdfClassPrivate,
+    
     fdfIgnoreMissingParams, // found proc fits, even if parameters are missing
     fdfOnlyCompatibleProc,  // incompatible procs are ignored
-    fdfFunctionResult,      // if function is found, return result type
     fdfIgnoreOverloadedProcs,// ignore param lists and take the first proc found
+    
     fdfFindVariable,        // do not search for the base type of a variable,
                             //   instead return the variable declaration
+    fdfFunctionResult,      // if function is found, return result type
+    
     fdfCollect,             // return every reachable identifier
     fdfTopLvlResolving      // set, when searching for an identifier of the
                             //   top lvl variable
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
   
+const
+  // for nicer output
+  FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
+    'fdfSearchInAncestors',
+    'fdfSearchInParentNodes',
+    'fdfIgnoreCurContextNode',
+    'fdfIgnoreUsedUnits',
+    'fdfSearchForward',
+    'fdfExceptionOnNotFound',
+    'fdfExceptionOnPredefinedIdent',
+    'fdfIgnoreClassVisibility',
+    'fdfClassPublished',
+    'fdfClassPublic',
+    'fdfClassProtected',
+    'fdfClassPrivate',
+    'fdfIgnoreMissingParams',
+    'fdfOnlyCompatibleProc',
+    'fdfIgnoreOverloadedProcs',
+    'fdfFindVariable',
+    'fdfFunctionResult',
+    'fdfCollect',
+    'fdfTopLvlResolving'
+  );
+
+type
+  // flags/states for result
   TFoundDeclarationFlag = (
       fdfDoNotCache
     );
   TFoundDeclarationFlags = set of TFoundDeclarationFlag;
+
 
   TFindDeclarationParams = class;
   
@@ -137,11 +196,38 @@ type
     The Freepascal compiler can automatically convert them
   }
   TExpressionTypeDesc = (
-    xtNone, xtContext, xtChar, xtReal, xtSingle, xtDouble,
-    xtExtended, xtCurrency, xtComp, xtInt64, xtCardinal, xtQWord, xtBoolean,
-    xtByteBool, xtLongBool, xtString, xtAnsiString, xtShortString, xtWideString,
-    xtPChar, xtPointer, xtFile, xtText, xtConstOrdInteger, xtConstString,
-    xtConstReal, xtConstSet, xtConstBoolean, xtLongInt, xtWord, xtNil);
+    xtNone,      // undefined
+    xtContext,   // a node
+    xtChar,      // char
+    xtReal,      // real
+    xtSingle,    // single
+    xtDouble,    // double
+    xtExtended,  // extended
+    xtCurrency,  // currency
+    xtComp,      // comp
+    xtInt64,     // int64
+    xtCardinal,  // cardinal
+    xtQWord,     // qword
+    xtBoolean,   // boolean
+    xtByteBool,  // bytebool
+    xtLongBool,  // longbool
+    xtString,    // string
+    xtAnsiString,// ansistring
+    xtShortString,// shortstring
+    xtWideString,// widestring
+    xtPChar,     // pchar
+    xtPointer,   // pointer
+    xtFile,      // file
+    xtText,      // text
+    xtConstOrdInteger,// enums, number, integer
+    xtConstString,// string, string constant, char constant
+    xtConstReal, // real number
+    xtConstSet,  // [] set
+    xtConstBoolean,// true, false
+    xtLongint,   // longint
+    xtWord,      // word
+    xtNil        // nil  = pointer, class, procedure, method, ...
+    );
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
@@ -155,7 +241,7 @@ const
 
   xtAllTypes = [Low(TExpressionTypeDesc)..High(TExpressionTypeDesc)]-[xtNone];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
-  xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongInt, xtWord];
+  xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongint, xtWord];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtLongBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
@@ -196,7 +282,7 @@ type
 const
   TypeCompatibilityNames: array[TTypeCompatibility] of string = (
        'Exact',
-       'Compatible', // convertable, but not usable for var params
+       'Compatible', // convertable, but not allowed for var params
        'Incompatible'
      );
 
@@ -292,6 +378,9 @@ type
     procedure ClearInput;
     procedure ClearFoundProc;
   end;
+  
+  
+  { TFindDeclarationTool }
 
   TFindDeclarationTool = class(TPascalParserTool)
   private
@@ -447,28 +536,6 @@ const
                 +fdfAllClassVisibilities;
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
                               fdfExceptionOnNotFound]+fdfAllClassVisibilities;
-
-  FindDeclarationFlagNames: array[TFindDeclarationFlag] of string = (
-    'fdfSearchInParentNodes',
-    'fdfSearchInAncestors',
-    'fdfIgnoreCurContextNode',
-    'fdfExceptionOnNotFound',
-    'fdfExceptionOnPredefinedIdent',
-    'fdfIgnoreUsedUnits',
-    'fdfSearchForward',
-    'fdfIgnoreClassVisibility',
-    'fdfClassPublished',
-    'fdfClassPublic',
-    'fdfClassProtected',
-    'fdfClassPrivate',
-    'fdfIgnoreMissingParams',
-    'fdfOnlyCompatibleProc',
-    'fdfFunctionResult',
-    'fdfIgnoreOverloadedProcs',
-    'fdfFindVariable',
-    'fdfCollect',
-    'fdfTopLvlResolving'
-  );
 
 function ExprTypeToString(ExprType: TExpressionType): string;
 function CreateFindContext(NewTool: TFindDeclarationTool;

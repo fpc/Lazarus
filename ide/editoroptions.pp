@@ -51,7 +51,8 @@ uses
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
-  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs, LazarusIDEStrConsts;
+  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs,
+  LazarusIDEStrConsts;
 
 type
 {$ifdef NEW_EDITOR_SYNEDIT}
@@ -72,7 +73,8 @@ type
      lshCPP, lshPerl);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
-    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint, ahaErrorLine);
+    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint,
+    ahaErrorLine);
 
 const
   EditorOptsFormatVersion = 2;
@@ -2895,7 +2897,7 @@ function TEditorOptionsForm.KeyMappingRelationToString(
 var s:AnsiString;
 begin
   with KeyRelation do begin
-    Result:=copy(Name,1,37);
+    Result:=copy(EditorCommandLocalizedName(Command,Name),1,37);
     if length(Result)<37 then begin
       SetLength(s,(37-length(Result)));
       FillChar(s[1],length(s),' ');

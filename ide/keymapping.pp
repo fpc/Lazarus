@@ -299,6 +299,8 @@ function ShowKeyMappingEditForm(Index:integer;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 function EditorCommandToDescriptionString(cmd: word):AnsiString;
+function EditorCommandLocalizedName(cmd: word;
+  const DefaultName: string): string;
 function StrToVKCode(const s: string): integer;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
@@ -316,6 +318,11 @@ const
 
   VirtualKeyStrings: TStringHashList = nil;
   
+function EditorCommandLocalizedName(cmd: word;
+  const DefaultName: string): string;
+begin
+  Result:=DefaultName;
+end;
 
 function StrToVKCode(const s: string): integer;
 var
@@ -747,14 +754,14 @@ var
     VK_LWIN       :AddStr('left windows key');
     VK_RWIN       :AddStr('right windows key');
     VK_APPS       :AddStr('application key');
-    VK_NUMPAD0..VK_NUMPAD9:AddStr('Numpad '+IntToStr(Key-VK_NUMPAD0));
+    VK_NUMPAD0..VK_NUMPAD9: begin AddStr('Numpad ');AddStr(IntToStr(Key-VK_NUMPAD0)); end;
     VK_MULTIPLY   :AddStr('*');
     VK_ADD        :AddStr('+');
     VK_SEPARATOR  :AddStr('|');
     VK_SUBTRACT   :AddStr('-');
     VK_DECIMAL    :AddStr('.');
     VK_DIVIDE     :AddStr('/');
-    VK_F1..VK_F24 :AddStr('F'+IntToStr(Key-VK_F1+1));
+    VK_F1..VK_F24 :begin AddStr('F'); AddStr(IntToStr(Key-VK_F1+1)); end;
     VK_NUMLOCK    :AddStr('Numlock');
     VK_SCROLL     :AddStr('Scroll');
     VK_EQUAL      :AddStr('=');
@@ -1025,10 +1032,7 @@ begin
     ACaption:='No No No';
     AText:=' The key "'+KeyAndShiftStateToStr(NewKey1,NewShiftState1)+'"'
             +' is already connected to "'+DummyRelation.Name+'".';
-
-//    Application.MessageBox(PChar(AText),PChar(ACaption),0);
     MessageDlg(ACaption,AText,mterror,[mbok],0);
-
     exit;
   end;
   NewKey2:=StrToVKCode(Key2KeyComboBox.Text);
