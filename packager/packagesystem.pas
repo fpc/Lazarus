@@ -138,6 +138,7 @@ type
                                     ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
     procedure AddPackage(APackage: TLazPackage);
+    procedure ReplacePackage(OldPackage, NewPackage: TLazPackage);
     procedure AddStaticBasePackages;
     procedure ClosePackage(APackage: TLazPackage);
     procedure MarkNeededPackages;
@@ -149,6 +150,7 @@ type
                          const NewName: string; NewVersion: TPkgVersion): TList;
     function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
     function PackageIsNeeded(APackage: TLazPackage): boolean;
+    function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
     procedure RegisterStaticPackages;
     procedure AddDependencyToPackage(APackage: TLazPackage;
                                      Dependency: TPkgDependency);
@@ -335,7 +337,8 @@ begin
   if FUpdateLock=1 then begin
     fChanged:=Change;
     if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
-  end;
+  end else
+    fChanged:=fChanged or Change;
 end;
 
 procedure TLazPackageGraph.EndUpdate;
@@ -816,6 +819,14 @@ begin
   EndUpdate;
 end;
 
+procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
+begin
+  BeginUpdate(true);
+  Delete(fItems.IndexOf(OldPackage));
+  AddPackage(NewPackage);
+  EndUpdate;
+end;
+
 procedure TLazPackageGraph.AddStaticBasePackages;
 begin
   // FCL
@@ -865,8 +876,6 @@ begin
     // get needed package from stack
     dec(StackPtr);
     Pkg:=PkgStack[StackPtr];
-    // mark package as needed
-    Pkg.Flags:=Pkg.Flags+[lpfNeeded,lpfVisited];
     // put all required packages on stack
     Dependency:=Pkg.FirstRequiredDependency;
     while Dependency<>nil do begin
@@ -891,8 +900,9 @@ var
 begin
   BeginUpdate(false);
   MarkNeededPackages;
-  for i:=FItems.Count-1 downto 0 do
+  for i:=FItems.Count-1 downto 0 do begin
     if not (lpfNeeded in Packages[i].Flags) then Delete(i);
+  end;
   EndUpdate;
 end;
 
@@ -970,21 +980,53 @@ begin
 end;
 
 function TLazPackageGraph.PackageIsNeeded(APackage: TLazPackage): boolean;
+// check if package is currently in use (installed, autoinstall, editor open)
+// !!! it does not check if any needed package needs this package
 begin
   Result:=true;
   // check if package is open, installed or will be installed
   if (APackage.Installed<>pitNope) or (APackage.AutoInstall<>pitNope)
   or ((APackage.Editor<>nil) and (APackage.Editor.Visible)) then
   begin
-    Result:=true;
-    exit;
-  end;
-  // check if package is used
-  if (APackage.FirstUsedByDependency=nil) then begin
-    Result:=false;
     exit;
   end;
   Result:=false;
+end;
+
+function TLazPackageGraph.PackageCanBeReplaced(
+  OldPackage, NewPackage: TLazPackage): boolean;
+var
+  Dependency: TPkgDependency;
+begin
+  Result:=false;
+  if PackageIsNeeded(OldPackage) then exit;
+
+  // check all used-by dependencies
+  Dependency:=OldPackage.FirstUsedByDependency;
+  if Dependency<>nil then begin
+    MarkNeededPackages;
+    while Dependency<>nil do begin
+      if (not Dependency.IsCompatible(NewPackage)) then begin
+        // replacing will break this dependency
+        // -> check if Owner is needed
+        if (Dependency.Owner=nil) then begin
+          // dependency has no owner -> can be broken
+        end else if (Dependency.Owner is TLazPackage) then begin
+          if lpfNeeded in TLazPackage(Dependency.Owner).Flags then begin
+            // a needed package needs old package -> can no be broken
+            exit;
+          end else begin
+            // an unneeded package needs old package -> can be broken
+          end;
+        end else begin
+          // an other thing (e.g. a project) needs old package -> can not be broken
+          exit;
+        end;
+      end;
+      Dependency:=Dependency.NextUsedByDependency;
+    end;
+  end;
+  Result:=true;
 end;
 
 procedure TLazPackageGraph.RegisterStaticPackages;

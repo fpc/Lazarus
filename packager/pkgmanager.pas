@@ -277,7 +277,7 @@ end;
 
 procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
 begin
-  PkgLinks.AddUserLink(Pkg);
+  if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;
@@ -608,15 +608,21 @@ begin
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindAPackageWithName(APackage.Name,nil);
   if ConflictPkg<>nil then begin
-    Result:=MessageDlg('Package Name already loaded',
-      'There is already a package with the name "'+APackage.Name+'" loaded'#13
-      +'from file "'+ConflictPkg.Filename+'".',
-      mtError,[mbCancel,mbAbort],0);
-    exit;
+    if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
+      Result:=MessageDlg('Package Name already loaded',
+        'There is already a package with the name "'+APackage.Name+'" loaded'#13
+        +'from file "'+ConflictPkg.Filename+'".'#13
+        +'See Components -> Package Graph.',
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+    
+    // replace package
+    PackageGraph.ReplacePackage(ConflictPkg,APackage);
+  end else begin
+    // add to graph
+    PackageGraph.AddPackage(APackage);
   end;
-  
-  // add to graph
-  PackageGraph.AddPackage(APackage);
 
   // save package file links
   PkgLinks.SaveUserLinks;
@@ -670,8 +676,28 @@ function TPkgManager.DoOpenPackageFile(AFilename: string; Flags: TPkgOpenFlags
 var
   APackage: TLazPackage;
   XMLConfig: TXMLConfig;
+  AlternativePkgName: String;
 begin
   AFilename:=CleanAndExpandFilename(AFilename);
+  
+  // check file extension
+  if CompareFileExt(AFilename,'.lpk',false)<>0 then begin
+    Result:=MessageDlg('Invalid file extension',
+      'The file "'+AFilename+'" is not a lazarus package.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  
+  // check filename
+  AlternativePkgName:=ExtractFileNameOnly(AFilename);
+  if (AlternativePkgName='') or (not IsValidIdent(AlternativePkgName)) then
+  begin
+    Result:=MessageDlg('Invalid package filename',
+      'The package file name "'+AlternativePkgName+'" in'#13
+      +'"'+AFilename+'" is not a valid lazarus package name.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
 
   // check if package is already loaded
   APackage:=PackageGraph.FindPackageWithFilename(AFilename,true);
@@ -692,6 +718,7 @@ begin
     Result:=mrCancel;
     APackage:=TLazPackage.Create;
     try
+
       // load the package file
       try
         XMLConfig:=TXMLConfig.Create(AFilename);
@@ -709,8 +736,22 @@ begin
           exit;
         end;
       end;
+
+      // newly loaded is not modified
       APackage.Modified:=false;
+
+      // check if package name and file name correspond
+      if (AnsiCompareText(AlternativePkgName,APackage.Name)<>0) then begin
+        Result:=MessageDlg('Filename differs from Packagename',
+          'The filename "'+ExtractFileName(AFilename)+'" does not correspond '
+          +'to the package name "'+APackage.Name+'" in the file.'#13
+          +'Change package name to "'+AlternativePkgName+'"?',
+          mtConfirmation,[mbYes,mbCancel,mbAbort],0);
+        if Result<>mrYes then exit;
+        APackage.Name:=AlternativePkgName;
+      end;
       
+      // integrate it into the graph
       Result:=AddPackageToGraph(APackage);
     finally
       if Result<>mrOk then APackage.Free;

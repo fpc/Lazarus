@@ -63,6 +63,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function MakeSense: boolean;
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
     property Filename: string read FFilename write SetFilename;
@@ -188,6 +189,13 @@ end;
 destructor TPackageLink.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TPackageLink.MakeSense: boolean;
+begin
+  Result:=(Name<>'') and IsValidIdent(Name)
+           and PackageFileNameIsValid(Filename)
+           and (AnsiCompareText(Name,ExtractFileNameOnly(Filename))=0);
 end;
 
 { TPackageLinks }
@@ -337,7 +345,7 @@ begin
       NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       NewPkgLink.Filename:=NewFilename;
-      if IsValidIdent(NewPkgLink.Name) then
+      if NewPkgLink.MakeSense then
         FGlobalLinks.Add(NewPkgLink)
       else
         NewPkgLink.Free;
@@ -385,7 +393,8 @@ begin
       NewPkgLink.Version.LoadFromXMLConfig(XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
       NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
-      if IsValidIdent(NewPkgLink.Name) then
+      
+      if NewPkgLink.MakeSense then
         FUserLinks.Add(NewPkgLink)
       else
         NewPkgLink.Free;
@@ -575,6 +584,7 @@ var
   OldLink: TPackageLink;
   NewLink: TPackageLink;
 begin
+  BeginUpdate;
   // check if link already exists
   OldLink:=FindLinkWithPackageID(APackage);
   if (OldLink<>nil) then begin
@@ -587,8 +597,12 @@ begin
   NewLink:=TPackageLink.Create;
   NewLink.AssignID(APackage);
   NewLink.Filename:=APackage.Filename;
-  FUserLinks.Add(NewLink);
-  Modified:=true;
+  if NewLink.MakeSense then begin
+    FUserLinks.Add(NewLink);
+    Modified:=true;
+  end else
+    FUserLinks.Free;
+  EndUpdate;
 end;
 
 procedure TPackageLinks.RemoveLink(APackageID: TLazPackageID);
@@ -596,12 +610,14 @@ var
   ANode: TAVLTreeNode;
   OldLink: TPackageLink;
 begin
+  BeginUpdate;
   // remove from user links
   ANode:=FUserLinks.Find(APackageID);
   if ANode<>nil then begin
     OldLink:=TPackageLink(ANode.Data);
     FUserLinks.Remove(ANode);
     OldLink.Free;
+    Modified:=true;
   end;
   // remove from global links
   ANode:=FGlobalLinks.Find(APackageID);
@@ -609,8 +625,9 @@ begin
     OldLink:=TPackageLink(ANode.Data);
     FGlobalLinks.Remove(ANode);
     OldLink.Free;
+    Modified:=true;
   end;
-  Modified:=true;
+  EndUpdate;
 end;
 
 
