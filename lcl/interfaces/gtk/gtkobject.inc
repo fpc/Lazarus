@@ -293,11 +293,10 @@ var
   //Info: PGtkWindowGeometryInfo;
 begin
   Width:=AWinControl.Width;
-  if Width<0 then
-    Width:=0;
+  // 0 and negative values have a special meaning, so don't use them
+  if Width<=0 then Width:=1;
   Height:=AWinControl.Height;
-  if Height<0 then
-    Height:=0;
+  if Height<=0 then Height:=1;
     
   //writeln('TgtkObject.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
   // set geometry default size
@@ -336,7 +335,7 @@ begin
   end else if (Sender is TCustomForm) then begin
     GtkWindow:=PGtkWindow(TCustomForm(Sender).Handle);
     gtk_window_set_default_size(GtkWindow,
-                          TControl(Sender).Width,TControl(Sender).Height);
+                  Max(1,TControl(Sender).Width),Max(1,TControl(Sender).Height));
     gtk_widget_set_uposition(PGtkWidget(GtkWindow),
                              TControl(Sender).Left, TControl(Sender).Top);
   end else begin
@@ -646,11 +645,11 @@ procedure TgtkObject.SendCachedLCLMessages;
       if not IsTopLevelWidget then begin
         // resize widget
         LCLWidth:=LCLControl.Width;
-        if LCLWidth<0 then
-          LCLWidth:=0;
+        if LCLWidth<=0 then
+          LCLWidth:=1;
         LCLHeight:=LCLControl.Height;
-        if LCLHeight<0 then
-          LCLHeight:=0;
+        if LCLHeight<=0 then
+          LCLHeight:=1;
         if (LCLWidth>10000) or (LCLHeight>10000) then begin
           WriteBigWarning;
         end;
@@ -933,8 +932,8 @@ end;
 procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 begin
-  if NewWidth<0 then NewWidth:=0;
-  if NewHeight<0 then NewHeight:=0;
+  if NewWidth<=0 then NewWidth:=1;
+  if NewHeight<=0 then NewHeight:=1;
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
   if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
     // the combobox has an entry, which height is not resized
@@ -7325,6 +7324,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.373  2003/06/10 12:28:23  mattias
+  fixed anchoring controls
+
   Revision 1.372  2003/06/09 14:39:52  mattias
   implemented setting working directory for debugger
 
