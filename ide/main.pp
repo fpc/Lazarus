@@ -287,6 +287,9 @@ type
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
       Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
+    procedure OnDesignerPasteComponent(Sender: TObject; LookupRoot: TComponent;
+      TxtCompStream: TStream; ParentControl: TWinControl;
+      var NewComponent: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
       AComponentClass: TRegisteredComponent);
@@ -1996,6 +1999,7 @@ Begin
            @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
+    OnPasteComponent:=@OnDesignerPasteComponent;
     OnProcessCommand:=@OnProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnRemoveComponent:=@OnDesignerRemoveComponent;
@@ -7205,6 +7209,76 @@ begin
   DoShowEnvGeneralOptions(eodpFormEditor);
 end;
 
+procedure TMainIDE.OnDesignerPasteComponent(Sender: TObject;
+  LookupRoot: TComponent; TxtCompStream: TStream; ParentControl: TWinControl;
+  var NewComponent: TComponent);
+var
+  NewClassName: String;
+  ARegComp: TRegisteredComponent;
+  BinCompStream: TMemoryStream;
+  CInterface: TComponentInterface;
+begin
+writeln('TMainIDE.OnDesignerPasteComponent A');
+  NewComponent:=nil;
+
+  // check the class of the new component
+  NewClassName:=FindLFMClassName(TxtCompStream);
+
+  // check if component class is registered
+  ARegComp:=IDEComponentPalette.FindComponent(NewClassName);
+  if ARegComp=nil then begin
+    MessageDlg('Class not found',
+      'Class "'+NewClassName+'" is not a registered component class.'#13
+      +'Unable to paste.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+
+  // check if there is a valid parent
+  if (ParentControl=nil) and ARegComp.IsTControl then begin
+    MessageDlg('Control needs parent',
+      'The class "'+NewClassName+'" is a TControl and can not be pasted '
+      +'onto a non control.'#13
+      +'Unable to paste.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  // convert text to binary format
+  BinCompStream:=TMemoryStream.Create;
+  try
+    try
+      ObjectTextToBinary(TxtCompStream,BinCompStream);
+    except
+      on E: Exception do begin
+        MessageDlg('Conversion error',
+          'Unable to convert component text into binary format:'#13
+          +E.Message,
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
+    
+    BinCompStream.Position:=0;
+
+    // create the component
+    CInterface := TComponentInterface(
+                     FormEditor1.CreateChildComponentFromStream(BinCompStream,
+                     ARegComp.ComponentClass,LookupRoot,ParentControl));
+    if CInterface=nil then begin
+      writeln('TMainIDE.OnDesignerPasteComponent FAILED');
+      exit;
+    end;
+    NewComponent:=CInterface.Component;
+    
+    writeln('TMainIDE.OnDesignerPasteComponent E  ToDo: add new components to source');
+    // add all new components to the source
+    // ToDo
+  finally
+    BinCompStream.Free;
+  end;
+end;
+
 procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
 begin
   ObjectInspector1.RefreshPropertyValues;
@@ -9160,6 +9234,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.607  2003/06/17 23:26:53  mattias
+  started copy/paste for components
+
   Revision 1.606  2003/06/16 22:52:47  mattias
   fixed Visible=true for new forms
 
