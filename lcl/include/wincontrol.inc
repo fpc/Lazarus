@@ -1200,17 +1200,17 @@ begin
   if FParent <> nil then
   begin
     FTabOrder := GetTabOrder;
-    Count := FParent.FTabList.Count;
+    Count := ListCount(FParent.FTabList);
     if NewTabOrder < 0 then NewTabOrder := Count;
     if FTabOrder = -1 then Inc(Count);
     if NewTabOrder >= Count then NewTabOrder := Count - 1;
     if NewTabOrder <> FTabOrder then
     begin
       if FTabOrder <> - 1 then
-        FParent.FTabList.Delete(FTabOrder);
+        ListDelete(FParent.FTabList,FTabOrder);
       if NewTabOrder <> -1 then
       begin
-        FParent.FTabList.Insert(NewTabOrder, Self);
+        ListInsert(FParent.FTabList,NewTabOrder,Self);
         FTabOrder := NewTabOrder;
       end;
     end;
@@ -3021,7 +3021,6 @@ begin
   FParentCtl3D:=true;
   FTabOrder := -1;
   FTabStop := False;
-  FTabList := TList.Create;
 end;
 
 {------------------------------------------------------------------------------}
@@ -4012,7 +4011,7 @@ end;
 function TWinControl.GetTabOrder: TTabOrder;
 begin
   if FParent <> nil then
-    Result := TTabOrder(FParent.FTabList.IndexOf(Self))
+    Result := ListIndexOf(FParent.FTabList,Self)
   else
     Result := FTabOrder;
 end;
@@ -4382,6 +4381,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.305  2005/01/23 15:05:23  mattias
+  fixed TabList access
+
   Revision 1.304  2005/01/21 19:18:35  mattias
   implemented option to reduce designer painting
 

@@ -48,5 +48,15 @@ Begin
   End;
 End;
 
+Procedure ListDelete(var List : TList; Index: integer);
+Begin
+  if List=nil then exit;
+  List.Delete(Index);
+  if List.Count = 0 then begin
+    List.Free;
+    List := nil;
+  End;
+End;
+
 // included by controls.pp
 
