@@ -268,7 +268,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
-msgstr ""
+msgstr "Tietoja"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
@@ -300,7 +300,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfile
 msgid "Add File"
-msgstr ""
+msgstr "Lisää tiedosto"
 
 #: lazarusidestrconsts:lisa2paddfiles
 msgid "Add Files"
@@ -340,7 +340,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddaddfiletoproject
 msgid "Add file to project:"
-msgstr ""
+msgstr "Lisää tiedosto projektiin:"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -374,10 +374,6 @@ msgstr ""
 msgid "Add..."
 msgstr ""
 
-#: lazarusidestrconsts:ideadditional
-msgid "Additional"
-msgstr ""
-
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr ""
@@ -396,6 +392,10 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
+msgstr ""
+
+#: lazarusidestrconsts:lisalignment
+msgid "Alignment"
 msgstr ""
 
 #: lazarusidestrconsts:dlgallfiles
@@ -574,6 +574,10 @@ msgstr ""
 msgid "Available forms:"
 msgstr "Käytettävissä olevat lomakkeet:"
 
+#: lazarusidestrconsts:lisavailablepackages
+msgid "Available packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
 msgstr ""
@@ -617,6 +621,14 @@ msgstr "Lihavoitu"
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
 msgstr "Kirjainmerkki"
+
+#: lazarusidestrconsts:lisbottomspaceequally
+msgid "Bottom space equally"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottoms
+msgid "Bottoms"
+msgstr ""
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket Highlight"
@@ -808,6 +820,14 @@ msgstr "katalaani"
 
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
+msgstr ""
+
+#: lazarusidestrconsts:liscenterinwindow
+msgid "Center in window"
+msgstr ""
+
+#: lazarusidestrconsts:liscenters
+msgid "Centers"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetemplchange
@@ -1290,6 +1310,10 @@ msgstr "Kopio"
 msgid "Copy Error"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyallmessagestoclipboard
+msgid "Copy all messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
 msgstr ""
@@ -1348,7 +1372,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditorcreatesubmenu
 msgid "Create Submenu"
-msgstr ""
+msgstr "Luo alivalikko"
 
 #: lazarusidestrconsts:lisnewcreateanewcgiapplicationtheprogramfileismaintained
 msgid "Create a new cgi application.%sThe program file is maintained by Lazarus."
@@ -1474,10 +1498,6 @@ msgstr ""
 msgid "Cut selection to clipboard"
 msgstr ""
 
-#: lazarusidestrconsts:idedataaccess
-msgid "Data Access"
-msgstr ""
-
 #: lazarusidestrconsts:lisdate
 msgid "Date"
 msgstr ""
@@ -1556,7 +1576,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditordeleteitem
 msgid "Delete Item"
-msgstr ""
+msgstr "Poista valikon kohta"
 
 #: lazarusidestrconsts:srkmecdeletelastchar
 msgid "Delete Last Char"
@@ -1710,10 +1730,6 @@ msgstr ""
 msgid "Deutsch"
 msgstr "saksa"
 
-#: lazarusidestrconsts:idedialogs
-msgid "Dialogs"
-msgstr ""
-
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
 msgstr "Eroavuudet"
@@ -1724,7 +1740,7 @@ msgstr "Suunta"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertbehinddirectory
 msgid "Directory"
-msgstr ""
+msgstr "Kansio"
 
 #: lazarusidestrconsts:dlgdirectorydoesnotexist
 msgid "Directory does not exist"
@@ -1808,7 +1824,7 @@ msgstr "Käyttöliittymä"
 
 #: lazarusidestrconsts:liscodetoolsdefsedit
 msgid "Edit"
-msgstr ""
+msgstr "Muokkaa"
 
 #: lazarusidestrconsts:lispckediteditgeneraloptions
 msgid "Edit General Options"
@@ -1970,6 +1986,10 @@ msgstr ""
 msgid "Error reading file: %s"
 msgstr ""
 
+#: lazarusidestrconsts:liserrorreadingpackagelistfromfile
+msgid "Error reading package list from file%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
 msgstr ""
@@ -1988,6 +2008,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangerrorwritingfile
 msgid "Error writing file"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorwritingpackagelisttofile
+msgid "Error writing package list to file%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:liserror
@@ -2048,7 +2072,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsexit
 msgid "Exit"
-msgstr ""
+msgstr "Lopeta"
 
 #: lazarusidestrconsts:liscodetoolsdefsexitwithoutsave
 msgid "Exit without Save"
@@ -2056,6 +2080,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
+msgstr ""
+
+#: lazarusidestrconsts:lisexportlist
+msgid "Export list"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
@@ -2096,7 +2124,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfpcsrcpath
 msgid "FPC source directory"
-msgstr ""
+msgstr "FPC:n (FreePascal:n) lähdekoodin kansio"
 
 #: lazarusidestrconsts:lisenvoptdlgfpcsrcdirnotfoundmsg
 msgid "FPC source directory \"%s\" not found."
@@ -2272,11 +2300,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
-msgstr ""
+msgstr "Etsi seuraava"
 
 #: lazarusidestrconsts:lisfrifindreferences
 msgid "Find References"
-msgstr ""
+msgstr "Etsi tunnisteet"
 
 #: lazarusidestrconsts:srkmecfindblockotherend
 msgid "Find block other end"
@@ -2288,7 +2316,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
-msgstr ""
+msgstr "Etsi koodilohkon alku"
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
@@ -2568,7 +2596,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditorhandleonclickevent
 msgid "Handle OnClick Event"
-msgstr ""
+msgstr "Käsittele kohdan OnClick-tapahtuma"
 
 #: lazarusidestrconsts:srvk_hanja
 msgid "Hanja"
@@ -2588,7 +2616,7 @@ msgstr "heprea"
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
-msgstr ""
+msgstr "Korkeus:"
 
 #: lazarusidestrconsts:srvk_help
 msgid "Help"
@@ -2658,6 +2686,10 @@ msgstr "Vihjetekstit työkalupainikkeille"
 msgid "Home"
 msgstr ""
 
+#: lazarusidestrconsts:lishorizontal
+msgid "Horizontal"
+msgstr ""
+
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
 msgstr "Apupisteiden välinen etäisyys vaakasuunnassa"
@@ -2684,7 +2716,7 @@ msgstr "Lisää"
 
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
-msgstr ""
+msgstr "Käsiteltävä tunniste on"
 
 #: lazarusidestrconsts:lismakeresstridentifierlength
 msgid "Identifier Length:"
@@ -2762,6 +2794,10 @@ msgstr "Jätä huomiotta välilyönnit rivin alussa"
 msgid "Ime Str"
 msgstr ""
 
+#: lazarusidestrconsts:lisimportlist
+msgid "Import list"
+msgstr ""
+
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
 msgstr ""
@@ -2824,7 +2860,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuconditionalselection
 msgid "Insert $IFDEF..."
-msgstr ""
+msgstr "Ehdollinen kääntäminen"
 
 #: lazarusidestrconsts:srkmecinsertcvsauthor
 msgid "Insert CVS keyword Author"
@@ -2912,7 +2948,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
-msgstr ""
+msgstr "Lisää valmiista malleista..."
 
 #: lazarusidestrconsts:srkmecinsertgplnotice
 msgid "Insert GPL notice"
@@ -2944,11 +2980,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditorinsertnewitemafter
 msgid "Insert New Item (after)"
-msgstr ""
+msgstr "Lisää uusi valikon kohta (jälkeen)"
 
 #: lazarusidestrconsts:lismenueditorinsertnewitembefore
 msgid "Insert New Item (before)"
-msgstr ""
+msgstr "Lisää uusi valikon kohta (eteen)"
 
 #: lazarusidestrconsts:liscodetoolsdefsinserttemplate
 msgid "Insert Template"
@@ -3014,16 +3050,20 @@ msgstr ""
 msgid "Install package in the IDE"
 msgstr ""
 
+#: lazarusidestrconsts:lisinstallselection
+msgid "Install selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
 msgstr ""
 
-#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
-msgid "Installing the package %s will automatically install the package(s):%s%s"
+#: lazarusidestrconsts:lisinstalledpackages
+msgid "Installed Packages"
 msgstr ""
 
-#: lazarusidestrconsts:ideinterbase
-msgid "Interbase Data Access"
+#: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
+msgid "Installing the package %s will automatically install the package(s):%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:dlgintvinsec
@@ -3410,6 +3450,14 @@ msgstr ""
 msgid "Left"
 msgstr ""
 
+#: lazarusidestrconsts:lisleftsides
+msgid "Left sides"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftspaceequally
+msgid "Left space equally"
+msgstr ""
+
 #: lazarusidestrconsts:dlgleftpos
 msgid "Left:"
 msgstr ""
@@ -3608,11 +3656,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditormenueditor
 msgid "Menu Editor"
-msgstr ""
+msgstr "Valikkomuokkain"
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr ""
+msgstr "Kääntäjän viestit"
 
 #: lazarusidestrconsts:dlgmethodinspolicy
 msgid "Method insert policy"
@@ -3640,10 +3688,6 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmmirrorvertical
 msgid "Mirror vertical"
-msgstr ""
-
-#: lazarusidestrconsts:idemisc
-msgid "Misc"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvmisc
@@ -3914,6 +3958,10 @@ msgstr ""
 msgid "No String Constant Found"
 msgstr ""
 
+#: lazarusidestrconsts:lisnochange
+msgid "No change"
+msgstr ""
+
 #: lazarusidestrconsts:lisnocodeselected
 msgid "No code selected"
 msgstr "Ei valittua koodia"
@@ -4128,11 +4176,11 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"
-msgstr ""
+msgstr "Sijoita apupisteiden mukaan"
 
 #: lazarusidestrconsts:fdmsnaptoguidelinesoption
 msgid "Option: Snap to guide lines"
-msgstr ""
+msgstr "Sijoita kohdistusviivojen mukaan"
 
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"
@@ -4276,6 +4324,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackagesmusthavetheextensionlpk
 msgid "Packages must have the extension .lpk"
+msgstr ""
+
+#: lazarusidestrconsts:lispackagestoinstallintheide
+msgid "Packages to install in the IDE"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2ppagenametoolong
@@ -4544,7 +4596,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpromptonreplace
 msgid "Prompt On Replace"
-msgstr "Kysy vielä muutoksen vahvistusta"
+msgstr "Kysy vielä muutoksille vahvistusta"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -4772,7 +4824,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
-msgstr ""
+msgstr "Uudelleen nimeä kaikki tunnisteet"
 
 #: lazarusidestrconsts:lisrenamefilefailed
 msgid "Rename file failed"
@@ -4902,6 +4954,14 @@ msgstr "Oikea marginaaliviiva"
 msgid "Right margin color"
 msgstr "Oikean marginaaliviivan väri"
 
+#: lazarusidestrconsts:lisrightsides
+msgid "Right sides"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightspaceequally
+msgid "Right space equally"
+msgstr ""
+
 #: lazarusidestrconsts:dlgrubberbandgroup
 msgid "Rubber band"
 msgstr ""
@@ -4998,8 +5058,20 @@ msgstr "Tallenna Projekti nimellä ..."
 msgid "Save all"
 msgstr "Tallenna kaikki"
 
+#: lazarusidestrconsts:lissaveallmessagestofile
+msgid "Save all messages to file"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefssaveandexit
 msgid "Save and Exit"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveandexitdialog
+msgid "Save and exit dialog"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveandrebuildide
+msgid "Save and rebuild IDE"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecsaveas
@@ -5032,6 +5104,10 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
+msgstr "Skaalaa"
+
+#: lazarusidestrconsts:lisscalingfactor
+msgid "Scaling factor:"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
@@ -5192,7 +5268,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditorselecttemplate
 msgid "Select Template:"
-msgstr ""
+msgstr "Valitse valmis malli:"
 
 #: lazarusidestrconsts:srkmecselup
 msgid "Select Up"
@@ -5444,7 +5520,7 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmsizeword
 msgid "Size"
-msgstr ""
+msgstr "Koko"
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
@@ -5488,11 +5564,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
-msgstr ""
+msgstr "Lajittele lohko"
 
 #: lazarusidestrconsts:lismenuviewsourceeditor
 msgid "Source Editor"
-msgstr ""
+msgstr "Lähdekoodi editori"
 
 #: lazarusidestrconsts:srkmcatsrcnotebook
 msgid "Source Notebook commands"
@@ -5522,6 +5598,10 @@ msgstr ""
 msgid "Space"
 msgstr ""
 
+#: lazarusidestrconsts:lisspaceequally
+msgid "Space equally"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
 msgstr ""
@@ -5536,10 +5616,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
-msgstr ""
-
-#: lazarusidestrconsts:idestandard
-msgid "Standard"
 msgstr ""
 
 #: lazarusidestrconsts:lismenutemplatedescriptionstandardeditmenu
@@ -5666,10 +5742,6 @@ msgstr ""
 msgid "Syntax check"
 msgstr ""
 
-#: lazarusidestrconsts:idesystem
-msgid "System"
-msgstr ""
-
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
 msgstr ""
@@ -5732,7 +5804,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenueditortemplatepreview
 msgid "Template Preview"
-msgstr ""
+msgstr "Mallin esikatselu"
 
 #: lazarusidestrconsts:dlgtplfname
 msgid "Template file name"
@@ -6354,8 +6426,16 @@ msgstr ""
 msgid "Tooltip symbol Tools"
 msgstr ""
 
+#: lazarusidestrconsts:listopspaceequally
+msgid "Top space equally"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtoppos
 msgid "Top:"
+msgstr ""
+
+#: lazarusidestrconsts:listops
+msgid "Tops"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
@@ -6718,6 +6798,10 @@ msgstr ""
 msgid "Uninstall package?"
 msgstr ""
 
+#: lazarusidestrconsts:lisuninstallselection
+msgid "Uninstall selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeunit
 msgid "Unit"
 msgstr ""
@@ -6926,6 +7010,10 @@ msgstr ""
 msgid "Version"
 msgstr "Versio"
 
+#: lazarusidestrconsts:lisvertical
+msgid "Vertical"
+msgstr ""
+
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
 msgstr "Apupisteiden välinen etäisyys pystysuunnassa"
@@ -6980,7 +7068,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewunitinfo
 msgid "View Unit Information"
-msgstr ""
+msgstr "Näytä käännösyksikön (Unit) tietoja"
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
@@ -7092,7 +7180,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
-msgstr ""
+msgstr "Leveys:"
 
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
@@ -7192,11 +7280,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlglefttopclr
 msgid "color for left, top"
-msgstr ""
+msgstr "väri vasemmalla ja ylhäällä"
 
 #: lazarusidestrconsts:dlgrightbottomclr
 msgid "color for right, bottom"
-msgstr ""
+msgstr "väri oikealla ja alhaalls"
 
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"

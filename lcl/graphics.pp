@@ -479,9 +479,9 @@ type
     {$IFDEF UseFPCanvas}
     {$ELSE}
     FFontName: string;
-    FSize: Integer;   // Important: because of rounding errors both are stored
-                      //    This way setting Height and reading it will result
-                      //    in the same value
+    FSize: Integer;   // Important: because of rounding errors both Size and
+                      // Height are stored. This way setting Height and reading
+                      // it again will result in the same value
     {$ENDIF}
     FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
     procedure FreeHandle;
@@ -1873,6 +1873,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.165  2004/12/26 22:39:56  mattias
+  updated finnish translation  from Seppo
+
   Revision 1.164  2004/12/23 22:38:18  mattias
   implemented TIElementName of link of RTTI controls for set elements
 

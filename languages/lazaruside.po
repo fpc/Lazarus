@@ -498,6 +498,14 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyallmessagestoclipboard
+msgid "Copy all messages to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveallmessagestofile
+msgid "Save all messages to file"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr ""
@@ -1584,34 +1592,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lislgplnotice
 msgid "Copyright (C) <year> <name of author>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr ""
-
-#: lazarusidestrconsts:idestandard
-msgid "Standard"
-msgstr ""
-
-#: lazarusidestrconsts:ideadditional
-msgid "Additional"
-msgstr ""
-
-#: lazarusidestrconsts:idemisc
-msgid "Misc"
-msgstr ""
-
-#: lazarusidestrconsts:idesystem
-msgid "System"
-msgstr ""
-
-#: lazarusidestrconsts:idedialogs
-msgid "Dialogs"
-msgstr ""
-
-#: lazarusidestrconsts:idedataaccess
-msgid "Data Access"
-msgstr ""
-
-#: lazarusidestrconsts:ideinterbase
-msgid "Interbase Data Access"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbakdirectory
@@ -2975,7 +2955,7 @@ msgid "Forms"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpomisc
-msgid "Misc"
+msgid "Miscellaneous"
 msgstr ""
 
 #: lazarusidestrconsts:dlgapplicationsettings
@@ -4734,6 +4714,10 @@ msgstr ""
 msgid "Write error"
 msgstr ""
 
+#: lazarusidestrconsts:liserrorwritingpackagelisttofile
+msgid "Error writing package list to file%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefserrorwhilewriting
 msgid "Error while writing %s%s%s%s%s"
 msgstr ""
@@ -4744,6 +4728,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsreaderror
 msgid "Read error"
+msgstr ""
+
+#: lazarusidestrconsts:liserrorreadingpackagelistfromfile
+msgid "Error reading package list from file%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
@@ -7736,5 +7724,105 @@ msgstr ""
 
 #: lazarusidestrconsts:liserrormovingcomponent2
 msgid "Error moving component %s:%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisinstalledpackages
+msgid "Installed Packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisavailablepackages
+msgid "Available packages"
+msgstr ""
+
+#: lazarusidestrconsts:lisexportlist
+msgid "Export list"
+msgstr ""
+
+#: lazarusidestrconsts:lisimportlist
+msgid "Import list"
+msgstr ""
+
+#: lazarusidestrconsts:lisuninstallselection
+msgid "Uninstall selection"
+msgstr ""
+
+#: lazarusidestrconsts:lispackagestoinstallintheide
+msgid "Packages to install in the IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lisinstallselection
+msgid "Install selection"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveandrebuildide
+msgid "Save and rebuild IDE"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveandexitdialog
+msgid "Save and exit dialog"
+msgstr ""
+
+#: lazarusidestrconsts:lisalignment
+msgid "Alignment"
+msgstr ""
+
+#: lazarusidestrconsts:lishorizontal
+msgid "Horizontal"
+msgstr ""
+
+#: lazarusidestrconsts:lisnochange
+msgid "No change"
+msgstr ""
+
+#: lazarusidestrconsts:listops
+msgid "Tops"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftsides
+msgid "Left sides"
+msgstr ""
+
+#: lazarusidestrconsts:liscenters
+msgid "Centers"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottoms
+msgid "Bottoms"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightsides
+msgid "Right sides"
+msgstr ""
+
+#: lazarusidestrconsts:liscenterinwindow
+msgid "Center in window"
+msgstr ""
+
+#: lazarusidestrconsts:lisspaceequally
+msgid "Space equally"
+msgstr ""
+
+#: lazarusidestrconsts:listopspaceequally
+msgid "Top space equally"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottomspaceequally
+msgid "Bottom space equally"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftspaceequally
+msgid "Left space equally"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightspaceequally
+msgid "Right space equally"
+msgstr ""
+
+#: lazarusidestrconsts:lisvertical
+msgid "Vertical"
+msgstr ""
+
+#: lazarusidestrconsts:lisscalingfactor
+msgid "Scaling factor:"
 msgstr ""
 

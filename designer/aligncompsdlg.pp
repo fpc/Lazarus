@@ -30,7 +30,8 @@ unit AlignCompsDlg;
 interface
 
 uses
-  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, LResources;
+  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, LResources,
+  LazarusIDEStrConsts;
 
 type
   TAlignComponentsDialog = class(TForm)
@@ -56,7 +57,6 @@ var AlignComponentsDialog: TAlignComponentsDialog;
 begin
   AlignComponentsDialog:=TAlignComponentsDialog.Create(nil);
   with AlignComponentsDialog do begin
-    SetBounds((Screen.Width-365) div 2,(Screen.Height-225) div 2,355,215);
     HorizontalRadioGroup.ItemIndex:=0;
     VerticalRadioGroup.ItemIndex:=0;
     Result:=ShowModal;
@@ -72,55 +72,48 @@ constructor TAlignComponentsDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(Classname)=nil then begin
-    SetBounds((Screen.Width-365) div 2,(Screen.Height-225) div 2,355,215);
-    Caption:='Alignment';
+    SetBounds((Screen.Width-400) div 2,(Screen.Height-280) div 2,410,290);
+    Caption:=lisAlignment;
 
     HorizontalRadioGroup:=TRadioGroup.Create(Self);
     with HorizontalRadioGroup do begin
       Name:='HorizontalRadioGroup';
-      Parent:=Self;
-      Left:=5;
-      Top:=5;
-      Width:=170;
-      Height:=165;
-      Caption:='Horizontal';
+      SetBounds(5,5,(Self.ClientWidth div 2)-15,Self.ClientHeight-45);
+      Caption:=lisHorizontal;
       with Items do begin
         BeginUpdate;
-        Add('No change');
-        Add('Left sides');
-        Add('Centers');
-        Add('Right sides');
-        Add('Center in window');
-        Add('Space equally');
-        Add('Left space equally');
-        Add('Right space equally');
+        Add(lisNoChange);
+        Add(lisLeftSides);
+        Add(lisCenters);
+        Add(lisRightSides);
+        Add(lisCenterInWindow);
+        Add(lisSpaceEqually);
+        Add(lisLeftSpaceEqually);
+        Add(lisRightSpaceEqually);
         EndUpdate;
       end;
-      Show;
+      Parent:=Self;
     end;
 
     VerticalRadioGroup:=TRadioGroup.Create(Self);
     with VerticalRadioGroup do begin
       Name:='VerticalRadioGroup';
-      Parent:=Self;
-      Left:=180;
-      Top:=5;
-      Width:=170;
-      Height:=165;
-      Caption:='Vertical';
+      SetBounds(HorizontalRadioGroup.Left+HorizontalRadioGroup.Width+5,5,
+                HorizontalRadioGroup.Width,HorizontalRadioGroup.Height);
+      Caption:=lisVertical;
       with Items do begin
         BeginUpdate;
-        Add('No change');
-        Add('Tops');
-        Add('Centers');
-        Add('Bottoms');
-        Add('Center in window');
-        Add('Space equally');
-        Add('Top space equally');
-        Add('Bottom space equally');
+        Add(lisNoChange);
+        Add(lisTops);
+        Add(lisCenters);
+        Add(lisBottoms);
+        Add(lisCenterInWindow);
+        Add(lisSpaceEqually);
+        Add(lisTopSpaceEqually);
+        Add(lisBottomSpaceEqually);
         EndUpdate;
       end;
-      Show;
+      Parent:=Self;
     end;
 
     OkButton:=TButton.Create(Self);
@@ -128,10 +121,10 @@ begin
       Name:='OkButton';
       Parent:=Self;
       Left:=145;
-      Top:=179;
+      Top:=Self.ClientHeight-32;
       Width:=75;
       Height:=25;
-      Caption:='Ok';
+      Caption:=dlgButApply;
       OnClick:=@OkButtonClick;
       Show;
     end;
@@ -144,7 +137,7 @@ begin
       Top:=OkButton.Top;
       Width:=75;
       Height:=25;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Show;
     end;

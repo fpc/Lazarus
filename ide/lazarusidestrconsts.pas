@@ -612,15 +612,6 @@ resourcestring
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
 
-  // IDE components
-  ideStandard = 'Standard';
-  ideAdditional = 'Additional';
-  ideMisc = 'Misc';
-  ideSystem = 'System';
-  ideDialogs = 'Dialogs';
-  ideDataAccess = 'Data Access';
-  ideInterbase = 'Interbase Data Access';
-
   // Environment dialog
   dlgBakDirectory='(no subdirectoy)';
   
@@ -985,7 +976,7 @@ resourcestring
   dlgProjectOptions = 'Project Options';
   dlgPOApplication = 'Application';
   dlgPOFroms = 'Forms';
-  dlgPOMisc = 'Misc';
+  dlgPOMisc = 'Miscellaneous';
   dlgApplicationSettings = 'Application Settings';
   dlgPOTitle = 'Title:';
   dlgPOOutputSettings = 'Output Settings';
@@ -2625,6 +2616,22 @@ resourcestring
   lisInstallSelection = 'Install selection';
   lisSaveAndRebuildIDE = 'Save and rebuild IDE';
   lisSaveAndExitDialog = 'Save and exit dialog';
+  lisAlignment = 'Alignment';
+  lisHorizontal = 'Horizontal';
+  lisNoChange = 'No change';
+  lisTops = 'Tops';
+  lisLeftSides = 'Left sides';
+  lisCenters = 'Centers';
+  lisBottoms = 'Bottoms';
+  lisRightSides = 'Right sides';
+  lisCenterInWindow = 'Center in window';
+  lisSpaceEqually = 'Space equally';
+  lisTopSpaceEqually = 'Top space equally';
+  lisBottomSpaceEqually = 'Bottom space equally';
+  lisLeftSpaceEqually = 'Left space equally';
+  lisRightSpaceEqually = 'Right space equally';
+  lisVertical = 'Vertical';
+  lisScalingFactor = 'Scaling factor:';
 
 implementation
 end.

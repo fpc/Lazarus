@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls,
-  ExtCtrls, LResources;
+  ExtCtrls, LResources, LazarusIDEStrConsts;
 
 type
   TScaleComponentsDialog = class(TForm)
@@ -57,7 +57,6 @@ var ScaleComponentsDialog: TScaleComponentsDialog;
 begin
   ScaleComponentsDialog:=TScaleComponentsDialog.Create(nil);
   with ScaleComponentsDialog do begin
-    SetBounds((Screen.Width-270) div 2,(Screen.Height-110) div 2,260,100);
     PercentEdit.Text:='100';
     Result:=ShowModal;
     ScaleInPercent:=StrToIntDef(ScaleComponentsDialog.PercentEdit.Text,100);
@@ -93,7 +92,7 @@ begin
       Top:=15;
       Width:=90;
       Height:=25;
-      Caption:='Scaling factor:';
+      Caption:=lisScalingFactor;
       Visible:=true;
     end;
 
@@ -128,7 +127,7 @@ begin
       Top:=Bevel.Top+Bevel.Height+10;
       Width:=75;
       Height:=25;
-      Caption:='Ok';
+      Caption:=dlgButApply;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -141,12 +140,11 @@ begin
       Top:=OkButton.Top;
       Width:=75;
       Height:=25;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
   end;
-  DebugLn('[TScaleComponentsDialog.Create] END');
 end;
 
 procedure TScaleComponentsDialog.OkButtonClick(Sender: TObject);

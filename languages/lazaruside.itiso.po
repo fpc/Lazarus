@@ -384,10 +384,6 @@ msgstr ""
 msgid "Add..."
 msgstr "Aggiungi..."
 
-#: lazarusidestrconsts:ideadditional
-msgid "Additional"
-msgstr "Aggiuntivo"
-
 #: lazarusidestrconsts:dlgadditionalsrcpath
 msgid "Additional Source search path for all projects (.pp;.pas)"
 msgstr "Percorso di ricerca aggiuntivo codice sorgente per tutti i progetti (.pp;.pas)"
@@ -407,6 +403,10 @@ msgstr "Aggiusta linea in testa a causa del commento nel frontespizio"
 #: lazarusidestrconsts:fdmalignword
 msgid "Align"
 msgstr "Allinea"
+
+#: lazarusidestrconsts:lisalignment
+msgid "Alignment"
+msgstr ""
 
 #: lazarusidestrconsts:dlgallfiles
 msgid "All files"
@@ -584,6 +584,10 @@ msgstr "Esegui automaticamente il build se necessario"
 msgid "Available forms:"
 msgstr "Form disponibili:"
 
+#: lazarusidestrconsts:lisavailablepackages
+msgid "Available packages"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
 msgstr "Indietro"
@@ -627,6 +631,14 @@ msgstr "Grassetto"
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
 msgstr "Segnalibro"
+
+#: lazarusidestrconsts:lisbottomspaceequally
+msgid "Bottom space equally"
+msgstr ""
+
+#: lazarusidestrconsts:lisbottoms
+msgid "Bottoms"
+msgstr ""
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket Highlight"
@@ -819,6 +831,14 @@ msgstr "Catalano"
 #: lazarusidestrconsts:dlgcentercursorline
 msgid "Center Cursor Line"
 msgstr "Centra riga cursore"
+
+#: lazarusidestrconsts:liscenterinwindow
+msgid "Center in window"
+msgstr ""
+
+#: lazarusidestrconsts:liscenters
+msgid "Centers"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetemplchange
 msgid "Change"
@@ -1300,6 +1320,10 @@ msgstr "Copia"
 msgid "Copy Error"
 msgstr ""
 
+#: lazarusidestrconsts:liscopyallmessagestoclipboard
+msgid "Copy all messages to clipboard"
+msgstr ""
+
 #: lazarusidestrconsts:liscopyerror2
 msgid "Copy error"
 msgstr "Errore di copia"
@@ -1483,10 +1507,6 @@ msgstr "Taglia i componenti selezionati negli appunti"
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
 msgstr "Taglia la selezione negli appunti"
-
-#: lazarusidestrconsts:idedataaccess
-msgid "Data Access"
-msgstr "Accesso ai dati"
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
@@ -1719,10 +1739,6 @@ msgstr "La directory di destinazione %s%s%s non è valida.%sScegliere un percorso
 #: lazarusidestrconsts:rslanguagedeutsch
 msgid "Deutsch"
 msgstr "Tedesco"
-
-#: lazarusidestrconsts:idedialogs
-msgid "Dialogs"
-msgstr "Dialoghi"
 
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
@@ -1980,6 +1996,10 @@ msgstr "Errore nella lettura del file"
 msgid "Error reading file: %s"
 msgstr "Errore nella lettura file: %s"
 
+#: lazarusidestrconsts:liserrorreadingpackagelistfromfile
+msgid "Error reading package list from file%s%s%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefserrorreadingprojectinfofile
 msgid "Error reading project info file %s%s%s%s%s"
 msgstr "Errore durante la lettura del file delle informazioni sul progetto %s%s%s%s%s"
@@ -1999,6 +2019,10 @@ msgstr "Errore durante la scrittura del file delle informazioni sul progetto %s%
 #: lazarusidestrconsts:lispkgmangerrorwritingfile
 msgid "Error writing file"
 msgstr "Errore nella scrittura del file"
+
+#: lazarusidestrconsts:liserrorwritingpackagelisttofile
+msgid "Error writing package list to file%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:liserror
 msgid "Error: "
@@ -2067,6 +2091,10 @@ msgstr "Esci senza salvare"
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Nome file espanso del file dell'editor corrente"
+
+#: lazarusidestrconsts:lisexportlist
+msgid "Export list"
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolexternaltools
 msgid "External Tools"
@@ -2668,6 +2696,10 @@ msgstr "Dritte per i principali bottoni veloci (apri, salva, ...)"
 msgid "Home"
 msgstr "Inizio"
 
+#: lazarusidestrconsts:lishorizontal
+msgid "Horizontal"
+msgstr ""
+
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
 msgstr "Ampiezza passo orizzontale della griglia"
@@ -2771,6 +2803,10 @@ msgstr "Ignora spazi all'inizio delle righe"
 #: lazarusidestrconsts:srkmecimestr
 msgid "Ime Str"
 msgstr "Str Ime"
+
+#: lazarusidestrconsts:lisimportlist
+msgid "Import list"
+msgstr ""
 
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
@@ -3024,17 +3060,21 @@ msgstr "Installa alla prossima partenza"
 msgid "Install package in the IDE"
 msgstr "Installa pacchetto nell'IDE"
 
+#: lazarusidestrconsts:lisinstallselection
+msgid "Install selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispckexplinstalled
 msgid "Installed"
 msgstr "Installato"
 
+#: lazarusidestrconsts:lisinstalledpackages
+msgid "Installed Packages"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgmanginstallingthepackagewillautomaticallyinstall
 msgid "Installing the package %s will automatically install the package(s):%s%s"
 msgstr "Installando il pacchetto %s automaticamente installerà i pacchetti:%s%s"
-
-#: lazarusidestrconsts:ideinterbase
-msgid "Interbase Data Access"
-msgstr "Accesso ai dati Interbase"
 
 #: lazarusidestrconsts:dlgintvinsec
 msgid "Interval in secs"
@@ -3420,6 +3460,14 @@ msgstr ""
 msgid "Left"
 msgstr "Sinistra"
 
+#: lazarusidestrconsts:lisleftsides
+msgid "Left sides"
+msgstr ""
+
+#: lazarusidestrconsts:lisleftspaceequally
+msgid "Left space equally"
+msgstr ""
+
 #: lazarusidestrconsts:dlgleftpos
 msgid "Left:"
 msgstr "Sinistra:"
@@ -3651,10 +3699,6 @@ msgstr "Speculare orizzontale"
 #: lazarusidestrconsts:fdmmirrorvertical
 msgid "Mirror vertical"
 msgstr "Speculare verticale"
-
-#: lazarusidestrconsts:idemisc
-msgid "Misc"
-msgstr "Varie"
 
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
@@ -3923,6 +3967,10 @@ msgstr "Non è stata trovata nessuna sezione ResourceString"
 #: lazarusidestrconsts:lisnostringconstantfound
 msgid "No String Constant Found"
 msgstr "Nessuna stringa costante trovata"
+
+#: lazarusidestrconsts:lisnochange
+msgid "No change"
+msgstr ""
 
 #: lazarusidestrconsts:lisnocodeselected
 msgid "No code selected"
@@ -4287,6 +4335,10 @@ msgstr "Tipo pacchetto"
 #: lazarusidestrconsts:lispkgmangpackagesmusthavetheextensionlpk
 msgid "Packages must have the extension .lpk"
 msgstr "Il pacchetto deve avere l'estensione .lpk"
+
+#: lazarusidestrconsts:lispackagestoinstallintheide
+msgid "Packages to install in the IDE"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2ppagenametoolong
 msgid "Page Name too long"
@@ -4912,6 +4964,14 @@ msgstr "Margine destro"
 msgid "Right margin color"
 msgstr "Colore margine destro"
 
+#: lazarusidestrconsts:lisrightsides
+msgid "Right sides"
+msgstr ""
+
+#: lazarusidestrconsts:lisrightspaceequally
+msgid "Right space equally"
+msgstr ""
+
 #: lazarusidestrconsts:dlgrubberbandgroup
 msgid "Rubber band"
 msgstr "Elastico"
@@ -5008,9 +5068,21 @@ msgstr "Salva progetto con nome..."
 msgid "Save all"
 msgstr ""
 
+#: lazarusidestrconsts:lissaveallmessagestofile
+msgid "Save all messages to file"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefssaveandexit
 msgid "Save and Exit"
 msgstr "Salva ed esci"
+
+#: lazarusidestrconsts:lissaveandexitdialog
+msgid "Save and exit dialog"
+msgstr ""
+
+#: lazarusidestrconsts:lissaveandrebuildide
+msgid "Save and rebuild IDE"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecsaveas
 msgid "Save as"
@@ -5043,6 +5115,10 @@ msgstr ""
 #: lazarusidestrconsts:fdmscaleword
 msgid "Scale"
 msgstr "Scala"
+
+#: lazarusidestrconsts:lisscalingfactor
+msgid "Scaling factor:"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pupdateunitnameandhasregisterprocedure
 msgid "Scan Unit for Unit Name and Register procedure"
@@ -5532,6 +5608,10 @@ msgstr "Anteprima del sorgente"
 msgid "Space"
 msgstr "Spazio"
 
+#: lazarusidestrconsts:lisspaceequally
+msgid "Space equally"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
 msgstr "Barra spaziatrice"
@@ -5547,10 +5627,6 @@ msgstr "Src"
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
 msgstr "Stack"
-
-#: lazarusidestrconsts:idestandard
-msgid "Standard"
-msgstr "Standard"
 
 #: lazarusidestrconsts:lismenutemplatedescriptionstandardeditmenu
 msgid "Standard Edit Menu"
@@ -5675,10 +5751,6 @@ msgstr "SybEdit - l'editor componenti usato da Lazarus. http://sourceforge.net/p
 #: lazarusidestrconsts:srkmecsyntaxcheck
 msgid "Syntax check"
 msgstr "Controllo sintassi"
-
-#: lazarusidestrconsts:idesystem
-msgid "System"
-msgstr "Sistema"
 
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
@@ -6364,9 +6436,17 @@ msgstr "Suggerimenti sulle valutazioni delle espressioni"
 msgid "Tooltip symbol Tools"
 msgstr "Suggerimenti sugli strumenti simboli"
 
+#: lazarusidestrconsts:listopspaceequally
+msgid "Top space equally"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtoppos
 msgid "Top:"
 msgstr "Cima:"
+
+#: lazarusidestrconsts:listops
+msgid "Tops"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
 msgid "Trim Trailing Spaces"
@@ -6728,6 +6808,10 @@ msgstr "Disinstallare pacchetto %s?"
 msgid "Uninstall package?"
 msgstr "Disinstallare pacchetto?"
 
+#: lazarusidestrconsts:lisuninstallselection
+msgid "Uninstall selection"
+msgstr ""
+
 #: lazarusidestrconsts:lispkgfiletypeunit
 msgid "Unit"
 msgstr "Unit"
@@ -6935,6 +7019,10 @@ msgstr ""
 #: lazarusidestrconsts:lisversion
 msgid "Version"
 msgstr "Versione"
+
+#: lazarusidestrconsts:lisvertical
+msgid "Vertical"
+msgstr ""
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
