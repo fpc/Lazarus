@@ -222,18 +222,17 @@ type
       var FG, BG: TColor);
   published
     // general options
-    property SynEditOptions:TSynEditorOptions
-        read fSynEditOptions write fSynEditOptions
-        default SynEditDefaultOptions;
+    property SynEditOptions:TSynEditorOptions read fSynEditOptions
+                            write fSynEditOptions default SynEditDefaultOptions;
     property CtrlMouseLinks: boolean read fCtrlMouseLinks write fCtrlMouseLinks;
-    property ShowTabCloseButtons: boolean
-        read fShowTabCloseButtons write fShowTabCloseButtons;
-    property UndoAfterSave:boolean
-        read fUndoAfterSave write fUndoAfterSave default true;
-    property FindTextAtCursor:boolean
-        read fFindTextAtCursor write fFindTextAtCursor default true;
+    property ShowTabCloseButtons: boolean read fShowTabCloseButtons
+                                          write fShowTabCloseButtons;
+    property UndoAfterSave: boolean read fUndoAfterSave
+                                    write fUndoAfterSave default true;
+    property FindTextAtCursor: boolean read fFindTextAtCursor
+                                       write fFindTextAtCursor default true;
     property UseSyntaxHighlight:boolean
-        read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
+                read fUseSyntaxHighlight write fUseSyntaxHighlight default true;
     property CopyWordAtCursorOnCopyNone: boolean read FCopyWordAtCursorOnCopyNone
                                               write FCopyWordAtCursorOnCopyNone;
     property ShowGutterHints: boolean read FShowGutterHints write FShowGutterHints;

@@ -7970,7 +7970,11 @@ end;
 
 procedure TCustomSynEdit.SetSelWord;
 begin
+  {$IFDEF SYN_LAZARUS}
+  SetWordBlock(PhysicalToLogicalPos(CaretXY));
+  {$ELSE}
   SetWordBlock(CaretXY);
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.SetExtraLineSpacing(const Value: integer);

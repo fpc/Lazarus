@@ -655,7 +655,7 @@ type
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
-    procedure FixFilesCaseSensitivity;
+    function FixFilesCaseSensitivity: boolean;
     // required dependencies (plus removed required dependencies)
     function FindDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -2631,7 +2631,7 @@ begin
   end;
 end;
 
-procedure TLazPackage.FixFilesCaseSensitivity;
+function TLazPackage.FixFilesCaseSensitivity: boolean;
 var
   SrcDirs: TStringList;
   
@@ -2647,7 +2647,7 @@ var
     if OnlyExact then exit;
     // then search for case insensitive match
     Result:=List.Count-1;
-    while (Result>=0) and (AnsiCompareText(Filename,List[Result])<>0) do
+    while (Result>=0) and (CompareText(Filename,List[Result])<>0) do
       dec(Result);
   end;
 
@@ -2691,6 +2691,7 @@ var
   NewFilename: String;
   CurDir: String;
 begin
+  Result:=false;
   Cnt:=FileCount;
   SrcDirs:=nil;
   try
@@ -2711,6 +2712,7 @@ begin
             AppendPathDelim(ExtractFilePath(CurFile.Filename))+NewShortFilename;
         //debugln('TLazPackage.FixFilesCaseSensitivity New ',dbgs(i),' NewFilename=',NewFilename);
         CurFile.Filename:=NewFilename;
+        Result:=true;
       end;
     end;
   finally

@@ -1888,8 +1888,10 @@ end;
 
 procedure TPackageEditorForm.DoFixFilesCase;
 begin
-  LazPackage.FixFilesCaseSensitivity;
+  if LazPackage.FixFilesCaseSensitivity then
+    LazPackage.Modified:=true;
   UpdateFiles;
+  UpdateButtons;
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
