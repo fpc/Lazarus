@@ -1386,22 +1386,63 @@ var
 
   procedure DrawBitmap(Enabled: boolean);
   var
+    SrcDC, MaskDC: HBITMAP;
+    MaskBmp, OldSrcBmp, OldMaskBmp: HBITMAP;
+    BkColor: TColorRef;
+    
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     BitmapFlags: integer; // flags for glyph (enabled or disabled)
     TextFlags: integer; // flags for caption (enabled or disabled)
   begin
     BitmapFlags := DST_BITMAP;
     TextFlags := DST_PREFIXTEXT;
-    if not Enabled then
-    begin
-      BitmapFlags := BitmapFlags or DSS_DISABLED;
-      TextFlags := TextFlags or DSS_DISABLED;
-    end;
+
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
-    Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
+    if Enabled or FThemesActive
+    then begin
+      // themed 
+      if not Enabled 
+      then begin
+        BitmapFlags := BitmapFlags or DSS_DISABLED;
+        TextFlags := TextFlags or DSS_DISABLED;
+      end;
+      
+      Windows.FillRect(hdcNewBitmap, BitmapRect, BitBtn.Brush.Handle);
+      if BitmapHandle <> 0 
+      then DrawState(hdcNewBitmap, 0, nil, BitmapHandle, 0, XDestBitmap, YDestBitmap, 0, 0, BitmapFlags);
+    end
+    else begin
+      // non themed 
+      // When disabled only create a black and white image
+      // Let windows itself draw the disabled state
+      Windows.FillRect(hdcNewBitmap, BitmapRect, Windows.GetStockObject(WHITE_BRUSH));
+      if BitmapHandle <> 0 
+      then begin
+        // Create a source DC
+        SrcDC := CreateCompatibleDC(hdcNewBitmap);
+        OldSrcBmp := SelectObject(SrcDC, BitmapHandle);
+        // Create a mask DC
+        MaskBmp := CreateBitmap(BitmapInfo.bmWidth, BitmapInfo.bmHeight, 1, 1, nil);
+        MaskDC := CreateCompatibleDC(hdcNewBitmap);
+        OldMaskBmp := SelectObject(MaskDC, MaskBmp);
+        // Create the black and white image
+        BkColor := SetBkColor(SrcDC, BitBtn.Brush.Color);
+        BitBlt(MaskDC, 0, 0, BitmapInfo.bmWidth, BitmapInfo.bmHeight, SrcDC, 0, 0, SrcCopy);
+        SetBkColor(SrcDC, BkColor);
+        // Draw the black and white image
+        BitBlt(hdcNewBitmap, XDestBitmap, YDestBitmap, BitmapInfo.bmWidth, BitmapInfo.bmHeight,
+               MaskDC, 0, 0, SRCCOPY);  
+  
+        SelectObject(SrcDC, OldSrcBmp);
+        DeleteDC(SrcDC);
+  
+        SelectObject(MaskDC, OldMaskBmp);
+        DeleteDC(MaskDC);
+        DeleteObject(MaskBmp);
+      end;  
+    end;
+    
     SetBkMode(hdcNewBitmap, TRANSPARENT);
-    if BitmapHandle <> 0 then
-      DrawState(hdcNewBitmap, 0, nil, BitmapHandle, 0, XDestBitmap, YDestBitmap, 0, 0, BitmapFlags);
     DrawState(hdcNewBitmap, 0, nil, LPARAM(ButtonCaption), 0, XDestText, YDestText, 0, 0, TextFlags);
     SelectObject(hdcNewBitmap, OldBitmapHandle);
   end;
@@ -3342,6 +3383,9 @@ End;
 
 {
   $Log$
+  Revision 1.224  2004/07/27 00:07:48  marc
+  * Fixed disabled state of bitbtns
+
   Revision 1.223  2004/07/16 21:49:00  mattias
   added RTTI controls
 

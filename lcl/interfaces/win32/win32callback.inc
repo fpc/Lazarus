@@ -521,6 +521,13 @@ Begin
     Begin
       If WParam <> 0 Then
         LMessage.Msg := LM_SETEDITABLE;
+      
+      // ugly hack to give bitbtns a nice look
+      // When no theming active, the internal image needs to be 
+      // recreated when the enabled state is changed
+      if not TWin32WidgetSet(InterfaceObject).ThemesActive
+      and (OwnerObject is TBitBtn)
+      then TWin32WidgetSet(InterfaceObject).DrawBitBtnImage(TBitBtn(OwnerObject), PChar(TBitBtn(OwnerObject).Caption));
     End;
     WM_HSCROLL:
     Begin
@@ -1276,6 +1283,9 @@ end;
 
 {
   $Log$
+  Revision 1.129  2004/07/27 00:07:48  marc
+  * Fixed disabled state of bitbtns
+
   Revision 1.128  2004/07/15 10:43:39  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 
