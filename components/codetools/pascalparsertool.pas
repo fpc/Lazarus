@@ -237,6 +237,7 @@ type
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
+    function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
@@ -3467,6 +3468,16 @@ begin
     end else
       Node:=Node.Parent;
   end;
+end;
+
+function TPascalParserTool.NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then exit;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if UpAtomIs('CLASS') then ReadNextAtom;
+  Result:=UpAtomIs('FUNCTION');
 end;
 
 function TPascalParserTool.NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode

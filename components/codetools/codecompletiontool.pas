@@ -1048,6 +1048,8 @@ writeln('[TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode]');
         if ProcCall[i]=';' then ProcCall[i]:=',';
       if ProcCall[length(ProcCall)]<>';' then
         ProcCall:=ProcCall+';';
+      if NodeIsFunction(ProcNode) then
+        ProcCall:=BeautifyCodeOptions.BeautifyIdentifier('Result')+':='+ProcCall;
       ProcCode:=ProcCode+BeautifyCodeOptions.LineEnd
                   +'begin'+BeautifyCodeOptions.LineEnd
                   +GetIndentStr(BeautifyCodeOptions.Indent)
