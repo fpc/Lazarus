@@ -912,7 +912,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
-//  Writeln('TCONTROL WMLBUTTONUP 1');
+//  Writeln('TCONTROL WMLBUTTONUP A ',Name,':',ClassName);
   if csCaptureMouse in ControlStyle then
      MouseCapture := False;
 
@@ -925,7 +925,7 @@ begin
     end;
   end;
   DoMouseUp(Message, mbLeft);
-//  Writeln('TCONTROL WMLBUTTONUP 2');
+//  Writeln('TCONTROL WMLBUTTONUP END');
 end;
 
 {------------------------------------------------------------------------------
@@ -1769,6 +1769,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.58  2002/07/23 07:40:51  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.57  2002/07/09 17:18:22  lazarus
   MG: fixed parser for external vars
 
