@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Spin,
+  Spin,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
@@ -52,7 +52,15 @@ type
   { TWSCustomSpinEdit }
 
   TWSCustomSpinEdit = class(TWSWinControl)
+  public
+    class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; virtual;
+    class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; virtual;
+    class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; virtual;
+
+    class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); virtual;
+    class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); virtual;
   end;
+  TWSCustomSpinEditClass = class of TWSCustomSpinEdit;
 
   { TWSSpinEdit }
 
@@ -62,13 +70,38 @@ type
 
 implementation
 
+{ TWSCustomSpinEdit }
+
+function  TWSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer;
+begin
+  result := -1;
+end;
+
+function  TWSCustomSpinEdit.GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer;
+begin
+  result := 0;
+end;
+
+function  TWSCustomSpinEdit.GetValue(const ACustomSpinEdit: TCustomSpinEdit): single;
+begin
+  result := 0.0;
+end;
+
+procedure TWSCustomSpinEdit.SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer);
+begin
+end;
+
+procedure TWSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomSpinEdit, TWSCustomSpinEdit);
+  RegisterWSComponent(TCustomSpinEdit, TWSCustomSpinEdit);
 //  RegisterWSComponent(TSpinEdit, TWSSpinEdit);
 ////////////////////////////////////////////////////
 end.

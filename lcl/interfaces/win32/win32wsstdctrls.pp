@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses;
+  WSStdCtrls, WSLCLClasses, Classes, Windows;
 
 type
 
@@ -69,6 +69,18 @@ type
   private
   protected
   public
+    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+
+    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
+    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+
+    class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
   { TWin32WSComboBox }
@@ -102,6 +114,11 @@ type
   private
   protected
   public
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
   end;
 
   { TWin32WSCustomMemo }
@@ -200,6 +217,12 @@ type
   public
   end;
 
+{ useful helper functions }
+
+function  EditGetSelStart(WinHandle: HWND): integer;
+function  EditGetSelLength(WinHandle: HWND): integer;
+procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
+procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
 implementation
 
@@ -214,6 +237,129 @@ begin
   TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomListBox);
 end;
 
+{ TWin32WSCustomComboBox }
+
+function  TWin32WSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := Low(SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil)));
+end;
+
+function  TWin32WSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := SendMessage(ACustomComboBox.Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil));
+end;
+
+function  TWin32WSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := SendMessage(ACustomComboBox.Handle, CB_GETCURSEL, 0, 0);
+  if Result = LB_ERR Then
+  Begin
+    Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index '+
+        'via LM_GETITEMINDEX; try selecting an item first');
+    Result := -1;
+  End;
+end;
+
+function  TWin32WSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := integer(GetProp(ACustomComboBox.Handle, 'MAXLENGTH'));
+end;
+
+procedure TWin32WSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
+begin
+  SendMessage(ACustomComboBox.Handle, CB_SETEDITSEL, 0, MakeLParam(NewStart, NewStart));
+end;
+
+procedure TWin32WSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  startpos, endpos: integer;
+  winhandle: HWND;
+begin
+  winhandle := ACustomComboBox.Handle;
+  SendMessage(winhandle, CB_GETEDITSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
+  endpos := startpos + NewLength;
+  SendMessage(winhandle, CB_SETEDITSEL, 0, MakeLParam(startpos, endpos));
+end;
+
+procedure TWin32WSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+begin
+  SendMessage(ACustomComboBox.Handle, CB_SETCURSEL, Windows.WParam(NewIndex), 0);
+end;
+
+procedure TWin32WSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+var
+  winhandle: HWND;
+begin
+  winhandle := ACustomComboBox.Handle;
+  SendMessage(winhandle, CB_LIMITTEXT, NewLength, 0);
+  SetProp(winhandle, 'MAXLENGTH', NewLength);
+end;
+
+function  TWin32WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+var
+  winhandle: HWND;
+begin
+  winhandle := ACustomComboBox.Handle;
+  Result := TWin32ListStringList.Create(winhandle, ACustomComboBox);
+  SetProp(winhandle, 'List', dword(Result));
+end;
+
+procedure TWin32WSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+begin
+  TWin32ListStringList(AList).Sorted := IsSorted;
+end;
+
+{ TWin32WSCustomEdit helper functions }
+
+function EditGetSelStart(WinHandle: HWND): integer;
+begin
+  SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@Result), 0);
+end;
+
+function EditGetSelLength(WinHandle: HWND): integer;
+var
+  startpos, endpos: integer;
+begin
+  SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@startpos), Windows.LPARAM(@endpos));
+  Result := endpos - startpos;
+end;
+
+procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
+begin
+  SendMessage(WinHandle, EM_SETSEL, Windows.WParam(NewStart), Windows.LParam(NewStart));
+end;
+
+procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
+var
+  startpos, endpos: integer;
+begin
+  Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
+  endpos := startpos + NewLength;
+  Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(startpos), Windows.LParam(endpos));
+end;
+
+{ TWin32WSCustomEdit }
+
+function  TWin32WSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result := EditGetSelStart(ACustomEdit.Handle);
+end;
+
+function  TWin32WSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result := EditGetSelLength(ACustomEdit.Handle);
+end;
+
+procedure TWin32WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+begin
+  EditSetSelStart(ACustomEdit.Handle, NewStart);
+end;
+
+procedure TWin32WSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  EditSetSelLength(ACustomEdit.Handle, NewLength);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -225,11 +371,11 @@ initialization
 //  RegisterWSComponent(TScrollBar, TWin32WSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWin32WSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWin32WSComboBox);
   RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
 //  RegisterWSComponent(TListBox, TWin32WSListBox);
-//  RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
+  RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
 //  RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
 //  RegisterWSComponent(TEdit, TWin32WSEdit);
 //  RegisterWSComponent(TMemo, TWin32WSMemo);

@@ -33,7 +33,7 @@ begin
   inherited CreateWnd;
 
   // get the interface based item list
-  NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
+  NewStrings:= TWSCustomComboBoxClass(WidgetSetClass).GetItems(Self);
   // then delete internal list
   if (FItems<>NewStrings) and (FItems<>nil) then begin
     NewStrings.Assign(FItems);
@@ -44,7 +44,7 @@ begin
   ParentColor := false;
 
   if FItemIndex <> -1 then
-    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
   CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
@@ -141,7 +141,7 @@ begin
   if Val<>MaxLength then begin
     fMaxlength:=Val;
     if HandleAllocated then
-      CNSendMessage(LM_SETLIMITTEXT, Self, @Val);
+      TWSCustomComboBoxClass(WidgetSetClass).SetMaxLength(Self, Val);
   end;
 end;
 
@@ -155,7 +155,7 @@ end;
 function TCustomComboBox.GetMaxLength : integer;
 begin
   if HandleAllocated then
-    fMaxLength := CNSendMessage(LM_GETLIMITTEXT, Self, nil);
+    fMaxLength := TWSCustomComboBoxClass(WidgetSetClass).GetMaxLength(Self);
   Result:=fMaxLength;
 end;
 
@@ -280,7 +280,7 @@ end;
 function TCustomComboBox.GetSelStart : integer;
 begin
   if HandleAllocated then
-    fSelStart:=CNSendMessage(LM_GETSELSTART, Self, nil);
+    fSelStart:=TWSCustomComboBoxClass(WidgetSetClass).GetSelStart(Self);
   Result:=fSelStart;
 end;
 
@@ -295,7 +295,7 @@ procedure TCustomComboBox.SetSelStart(Val : integer);
 begin
   fSelStart:=Val;
   if HandleAllocated then
-    CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
+    TWSCustomComboBoxClass(WidgetSetClass).SetSelStart(Self, Val);
 end;
 
 {------------------------------------------------------------------------------
@@ -308,7 +308,7 @@ end;
 function TCustomComboBox.GetSelLength : integer;
 begin
   if HandleAllocated then
-    fSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
+    fSelLength := TWSCustomComboBoxClass(WidgetSetClass).GetSelLength(Self);
   Result:=fSelLength;
 end;
 
@@ -323,7 +323,7 @@ procedure TCustomComboBox.SetSelLength(Val : integer);
 begin
   fSelLength:=Val;
   if HandleAllocated then
-    CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
+    TWSCustomComboBoxClass(WidgetSetClass).SetSelLength(Self, Val);
 end;
 
 {------------------------------------------------------------------------------
@@ -688,7 +688,7 @@ end;
 function TCustomComboBox.GetItemIndex : integer;
 begin
   if HandleAllocated then
-    FItemIndex:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
+    FItemIndex:= TWSCustomComboBoxClass(WidgetSetClass).GetItemIndex(Self);
   Result:=FItemIndex;
 end;
 
@@ -706,7 +706,7 @@ begin
   //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
   //  Text:=FItems[FItemIndex];
   if HandleAllocated then
-    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+    TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -783,22 +783,18 @@ end;
   procedure TCustomComboBox.UpdateSorted;
  ------------------------------------------------------------------------------}
 procedure TCustomComboBox.UpdateSorted;
-var
-  AMessage : TLMSort;
 begin
   if not HandleAllocated then exit;
-  with AMessage do begin
-    Msg:= LM_SORT;
-    List:= Items;
-    IsSorted:= FSorted;
-  end;
-  CNSendMessage(LM_SORT, Self, @AMessage);
+  TWSCustomComboBoxClass(WidgetSetClass).Sort(Self, Items, FSorted);
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.45  2004/09/07 09:44:46  micha
+  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+
   Revision 1.44  2004/09/01 10:25:58  mattias
   added some project flags to start getting rid of TProjectType
 

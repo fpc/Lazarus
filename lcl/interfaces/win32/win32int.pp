@@ -238,7 +238,7 @@ Uses
 // Win32WSMaskEdit,
 // Win32WSMenus,
 // Win32WSPairSplitter,
-// Win32WSSpin,
+ Win32WSSpin,
  Win32WSStdCtrls,
 // Win32WSToolwin,
 ////////////////////////////////////////////////////
@@ -285,6 +285,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2004/09/07 09:44:46  micha
+  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+
   Revision 1.94  2004/08/27 08:55:23  micha
   implement tapplication.minimize for win32, stub for gtk
 

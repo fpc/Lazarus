@@ -46,7 +46,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls;
+  WSLCLClasses, WSControls, Classes;
 
 type
   { TWSScrollBar }
@@ -67,7 +67,21 @@ type
   { TWSCustomComboBox }
 
   TWSCustomComboBox = class(TWSWinControl)
+  public
+    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; virtual;
+    
+    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); virtual;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
+    class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); virtual;
+    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); virtual;
+
+    class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; virtual;
+    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); virtual;
   end;
+  TWSCustomComboBoxClass = class of TWSCustomComboBox;
 
   { TWSComboBox }
 
@@ -90,7 +104,14 @@ type
   { TWSCustomEdit }
 
   TWSCustomEdit = class(TWSWinControl)
+  public
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
+
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); virtual;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
   end;
+  TWSCustomEditClass = class of TWSCustomEdit;
 
   { TWSCustomMemo }
 
@@ -161,6 +182,73 @@ procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
 end;
 
+{ TWSCustomComboBox }
+
+function  TWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  result := -1;
+end;
+
+function  TWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  result := 0;
+end;
+
+function  TWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  result := -1;
+end;
+
+function  TWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  result := 0;
+end;
+
+procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
+begin
+end;
+
+procedure TWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+end;
+
+procedure TWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+begin
+end;
+
+procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+end;
+
+function  TWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+begin
+  result := nil;
+end;
+
+procedure TWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+begin
+end;
+
+{ TWSCustomEdit }
+
+function  TWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+begin
+  result := -1;
+end;
+
+function  TWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  result := 0;
+end;
+
+procedure TWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+begin
+end;
+
+procedure TWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -170,11 +258,11 @@ initialization
 //  RegisterWSComponent(TScrollBar, TWSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWSComboBox);
   RegisterWSComponent(TCustomListBox, TWSCustomListBox);
 //  RegisterWSComponent(TListBox, TWSListBox);
-//  RegisterWSComponent(TCustomEdit, TWSCustomEdit);
+  RegisterWSComponent(TCustomEdit, TWSCustomEdit);
 //  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
 //  RegisterWSComponent(TEdit, TWSEdit);
 //  RegisterWSComponent(TMemo, TWSMemo);

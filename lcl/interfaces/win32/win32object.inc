@@ -423,7 +423,7 @@ Var
   //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
-  I, Num: Integer;
+  Num: Integer;
   PStr, PStr2: PChar;
   SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
   S: String;
@@ -801,15 +801,6 @@ activate_time : the time at which the activation event occurred.
       LM_GETITEMINDEX :
       Begin
         Case (Sender as TControl).FCompStyle Of
-          csComboBox:
-          Begin
-            Result := SendMessage(Handle, CB_GETCURSEL, 0, 0);
-            if Result = LB_ERR Then
-            Begin
-              Assert(False, 'Trace:[TWin32WidgetSet.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
-              Result := -1;
-            End;
-          End;
           csListBox, csCListBox:
           Begin
             Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
@@ -828,7 +819,6 @@ activate_time : the time at which the activation event occurred.
       LM_SETITEMINDEX :
       Begin
         Case (Sender as TControl).FCompStyle Of
-          csComboBox: Windows.SendMessage(Handle, CB_SETCURSEL, Windows.WParam(Integer(Data)), 0);
           csListBox, csCListBox:
           Begin
             If TListBox(Sender).MultiSelect Then
@@ -842,73 +832,6 @@ activate_time : the time at which the activation event occurred.
             ChangeActivePage(TLMNotebookEvent(Data^));
           End;
         End;
-      End;
-      LM_GETSELSTART:
-      begin
-        case (Sender as TControl).FCompStyle of
-          csComboBox:
-            begin
-              Result := Low(Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil)));
-            end;
-          csEdit:
-            begin
-              Windows.SendMessage(Handle, EM_GETSEL, Windows.WPARAM(@i), 0);
-              Result := i;
-            end;
-        end;
-      end;
-      LM_GETSELLEN:
-      begin
-        case (Sender as TControl).FCompStyle of
-          csComboBox:
-            begin
-              Result := Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil));
-            end;
-          csEdit:
-            begin
-              Windows.SendMessage(Handle, EM_GETSEL, Windows.WPARAM(@i), Windows.LPARAM(@num));
-              Result := num-i;
-            end;
-        end;
-      end;
-      LM_GETLIMITTEXT:
-      Begin
-        If (Sender as TControl).FCompStyle = csComboBox Then
-        Begin
-          Result := Integer(GetProp(Handle, 'LIMIT_TEXT'));
-        End;
-      End;
-      LM_SETSELSTART:
-      Begin
-        if Sender is TControl then
-        case TControl(Sender).FCompStyle of
-          csComboBox:
-            begin
-              SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(integer(Data), integer(Data)));
-            end;
-          csEdit:
-            begin
-              SendMessage(Handle, EM_SETSEL, Windows.WParam(Data), Windows.LParam(Data));
-            end;
-        end;
-      End;
-      LM_SETSELLEN:
-      Begin
-        if Sender is TControl then
-        Case TControl(Sender).FCompStyle of
-          csComboBox:
-            begin
-              Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.Wparam(@i), Windows.LParam(@Num));
-              Num := i + Integer(Data);
-              Windows.SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam( i, Num ));
-            end;
-          csEdit:
-            begin
-              Windows.SendMessage(Handle, EM_GETSEL, Windows.Wparam(@i), Windows.LParam(@Num));
-              Num := i + Integer(Data);
-              Windows.SendMessage(Handle, EM_SETSEL, Windows.WParam(i), Windows.LParam(Num));
-            end;
-        end;
       End;
       LM_GETLINECOUNT:
       Begin
@@ -944,7 +867,7 @@ activate_time : the time at which the activation event occurred.
         If  (Sender Is TControl) And Assigned(Data) Then
         Begin
           Case TControl(Sender).FCompStyle Of
-            csComboBox, csListBox:
+            csListBox:
               TWin32ListStringList(TLMSort(Data^).List).Sorted :=
                 TLMSort(Data^).IsSorted;
             csCListBox:
@@ -1338,8 +1261,6 @@ Begin
   Str := Lowercase(PChar(@Cls[0]));
   If Str = 'edit' Then
     Msg := CB_LIMITTEXT
-  Else If Str = 'combo' Then
-    Msg := EM_LIMITTEXT
   Else
     Exit;
 
@@ -2666,10 +2587,6 @@ Begin
       With ST Do
         TLMCalendar(Data^).Date := EncodeDate(WYear,WMonth,WDay);
     End;
-    csSpinEdit:
-    Begin
-      Single(Data^) := SendMessage(Handle, UDM_GETPOS, 0, 0);
-    End;
     Else
       Assert (True, Format('WARNING:[TWin32WidgetSet.GetValue]] failed for %S', [Sender.ClassName]));
   End;
@@ -3092,6 +3009,9 @@ End;
 
 {
   $Log$
+  Revision 1.231  2004/09/07 09:44:46  micha
+  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+
   Revision 1.230  2004/09/06 15:08:32  micha
   implement LM_GETSELLEN en LM_GETSELSTART for win32 edit controls
 

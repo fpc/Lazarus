@@ -133,6 +133,9 @@ procedure Register;
 
 Implementation
 
+uses
+  WSSpin;
+
 procedure Register;
 begin
   RegisterComponents('Misc',[TSpinEdit]);

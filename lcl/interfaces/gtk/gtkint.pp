@@ -359,8 +359,8 @@ uses
 // GtkWSMaskEdit,
 // GtkWSMenus,
 // GtkWSPairSplitter,
-// GtkWSSpin,
-// GtkWSStdCtrls,
+ GtkWSSpin,
+ GtkWSStdCtrls,
 // GtkWSToolwin,
 ////////////////////////////////////////////////////
   Buttons, StdCtrls, PairSplitter, Math,
@@ -462,6 +462,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.189  2004/09/07 09:44:46  micha
+  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+
   Revision 1.188  2004/09/02 09:16:59  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

@@ -108,7 +108,7 @@ end;
 function TCustomEdit.GetSelStart : integer;
 begin
   if HandleAllocated then
-    FSelStart:= CNSendMessage(LM_GETSELSTART, Self, nil);
+    FSelStart:= TWSCustomEditClass(WidgetSetClass).GetSelStart(Self);
   Result:= FSelStart;
 end;
 
@@ -123,7 +123,7 @@ procedure TCustomEdit.SetSelStart(Val : integer);
 begin
   FSelStart:= Val;
   if HandleAllocated then
-    CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
+    TWSCustomEditClass(WidgetSetClass).SetSelStart(Self, Val);
 end;
 
 {------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ end;
 function TCustomEdit.GetSelLength : integer;
 begin
   if HandleAllocated then
-    FSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
+    FSelLength := TWSCustomEditClass(WidgetSetClass).GetSelLength(Self);
   Result:= FSelLength;
 end;
 
@@ -151,7 +151,7 @@ procedure TCustomEdit.SetSelLength(Val : integer);
 begin
   FSelLength:= Val;
   if HandleAllocated then
-    CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
+    TWSCustomEditClass(WidgetSetClass).SetSelLength(Self, Val);
 end;
 
 {------------------------------------------------------------------------------
@@ -380,6 +380,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2004/09/07 09:44:46  micha
+  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+
   Revision 1.31  2004/08/25 20:16:12  marc
   * fixed infinite for maxlength
 

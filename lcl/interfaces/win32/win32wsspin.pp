@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Spin,
+  Spin,
 ////////////////////////////////////////////////////
-  WSSpin, WSLCLClasses;
+  WSSpin, WSLCLClasses, Win32WSStdCtrls, Windows;
 
 type
 
@@ -45,6 +45,12 @@ type
   private
   protected
   public
+    class function  GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
+    class function  GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer; override;
+    class function  GetValue(const ACustomSpinEdit: TCustomSpinEdit): single; override;
+
+    class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); override;
   end;
 
   { TWin32WSSpinEdit }
@@ -58,6 +64,33 @@ type
 
 implementation
 
+{ TWin32WSCustomSpinEdit }
+
+function  TWin32WSCustomSpinEdit.GetSelStart(const ACustomSpinEdit: TCustomSpinEdit): integer;
+begin
+  Result := EditGetSelStart(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0));
+end;
+
+function  TWin32WSCustomSpinEdit.GetSelLength(const ACustomSpinEdit: TCustomSpinEdit): integer;
+begin
+  Result := EditGetSelLength(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0));
+end;
+
+function  TWin32WSCustomSpinEdit.GetValue(const ACustomSpinEdit: TCustomSpinEdit): single;
+begin
+  Result := SendMessage(ACustomSpinEdit.Handle, UDM_GETPOS, 0, 0);
+end;
+
+procedure TWin32WSCustomSpinEdit.SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer);
+begin
+  EditSetSelStart(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0), NewStart); 
+end;
+
+procedure TWin32WSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
+begin
+  EditSetSelLength(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0), NewLength); 
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -66,7 +99,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomSpinEdit, TWin32WSCustomSpinEdit);
+  RegisterWSComponent(TCustomSpinEdit, TWin32WSCustomSpinEdit);
 //  RegisterWSComponent(TSpinEdit, TWin32WSSpinEdit);
 ////////////////////////////////////////////////////
 end.

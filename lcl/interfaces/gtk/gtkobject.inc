@@ -3505,9 +3505,6 @@ begin
       {$Else}
       begin
         case TControl(Sender).fCompStyle of
-          csComboBox:
-            Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
-
           csCListBox:
             begin
               Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
@@ -3541,9 +3538,6 @@ begin
       LM_GETITEMINDEX :
       begin
         case TControl(Sender).fCompStyle of
-           csComboBox:
-             Result:=GetComboBoxItemIndex(TComboBox(Sender));
-
           {$IFdef GTK1}
            csListBox, csCheckListBox:
              begin
@@ -3595,9 +3589,6 @@ begin
         if Handle<>0 then begin
           case TControl(Sender).fCompStyle of
 
-          csComboBox:
-            SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
-
           {$IFdef GTK1}
           csListBox, csCheckListBox:
           begin
@@ -3628,106 +3619,6 @@ begin
           {$EndIf}
           end;
         end;
-
-      LM_GETSELSTART :
-      begin
-        if (Sender is TControl) then begin
-          case TControl(Sender).fCompStyle of
-          csComboBox:
-            Widget:= PGtkWidget(PGtkCombo(Handle)^.entry);
-          {$IfDef GTK1}
-          csEdit, csMemo:
-        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
-          {$EndIf}
-      else
-        Widget:= nil;
-          end;
-      if Widget <> nil then begin
-            if PGtkOldEditable(Widget)^.selection_start_pos
-               < PGtkOldEditable(Widget)^.selection_end_pos
-            then
-              Result:= PGtkOldEditable(Widget)^.selection_start_pos
-        else
-          Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
-          end else Result:= 0;
-        end;
-      end;
-
-      LM_GETSELLEN :
-      begin
-        if (Sender is TControl) then begin
-          case TControl(Sender).fCompStyle of
-          csComboBox:
-            with PGtkOldEditable(PGtkCombo(Handle)^.entry)^ do begin
-              Result:= Abs(integer(selection_end_pos)-integer(selection_start_pos));
-            end;
-          {$IfDef GTK1}
-          csEdit, csMemo:
-        begin
-          Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
-              with PGtkOldEditable(Widget)^ do begin
-                Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
-              end;
-        end;
-          {$EndIf}
-          end;
-        end;
-      end;
-
-      LM_GETLIMITTEXT :
-      begin
-        if (Sender is TControl)
-        and (TControl(Sender).fCompStyle = csComboBox) then
-        begin
-          Result:= PGtkEntry(PGtkCombo(Handle)^.entry)^.text_max_length;
-        end;
-      end;
-
-      LM_SETSELSTART:
-      begin
-        if (Sender is TControl) then begin
-          case TControl(Sender).fCompStyle of
-            csComboBox:
-              Widget:=PGtkCombo(Handle)^.entry;
-
-          {$IfDef GTK1}
-            csEdit, csMemo:
-              Widget:=GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
-          {$EndIf}
-
-          else
-            Widget:=nil;
-          end;
-
-          if Widget<>nil then begin
-            gtk_editable_set_position(PGtkOldEditable(Widget), Integer(Data));
-          end;
-        end;
-      end;
-
-      LM_SETSELLEN :
-      begin
-        if (Sender is TControl) then begin
-          case TControl(Sender).fCompStyle of
-            csComboBox:
-              Widget:=PGtkCombo(Handle)^.entry;
-
-          {$IfDef GTK1}
-            csEdit, csMemo:
-              Widget:=GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
-          {$EndIf}
-
-          else
-            Widget:=nil;
-          end;
-
-          if Widget<>nil then begin
-            gtk_editable_select_region(PGtkOldEditable(Widget),
-              gtk_editable_get_position(PGtkOldEditable(Widget)),
-              gtk_editable_get_position(PGtkOldEditable(Widget)) + Integer(Data));
-          end;
-        end;
-      end;
 
       LM_GetLineCount :
       begin
@@ -3840,21 +3731,12 @@ begin
       end;
       {$EndIf}
 
-      LM_SETLIMITTEXT :
-      begin
-        if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox)
-        then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(Handle)^.entry),
-                                      Integer(Data^));
-      end;
-
       LM_SORT:
       begin
         if  (Sender is TControl) and assigned (data) then
         begin
           case TControl(Sender).fCompStyle of
-          csComboBox
           {$Ifdef GTK1}
-          ,
           csListBox,
           csCheckListBox
           {$EndIf}         : TGtkListStringList(TLMSort(Data^).List).Sorted:=
@@ -9273,6 +9155,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.539  2004/09/07 09:44:46  micha
+  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+
   Revision 1.538  2004/09/06 22:24:52  mattias
   started the carbon LCL interface
 

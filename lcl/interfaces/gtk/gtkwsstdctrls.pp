@@ -33,9 +33,14 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  StdCtrls,
+  StdCtrls,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, GtkInt;
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  {$ENDIF}
+  WSStdCtrls, WSLCLClasses, GtkInt, Classes;
 
 type
 
@@ -69,6 +74,18 @@ type
   private
   protected
   public
+    class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+
+    class procedure SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+    class procedure SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer); override;
+    class procedure SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer); override;
+
+    class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
   end;
 
   { TGtkWSComboBox }
@@ -101,6 +118,11 @@ type
   private
   protected
   public
+    class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
+    class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
+    class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
   end;
 
   { TGtkWSCustomMemo }
@@ -167,14 +189,6 @@ type
   public
   end;
 
-  { TGtkWSCheckBox }
-
-  TGtkWSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
-  end;
-
   { TGtkWSToggleBox }
 
   TGtkWSToggleBox = class(TWSToggleBox)
@@ -210,6 +224,128 @@ type
 
 implementation
 
+uses
+   Buttons, PairSplitter, Math,
+     GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
+       ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
+
+
+{ helper routines }
+
+function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
+begin
+  if Widget <> nil then 
+  begin
+    if PGtkOldEditable(Widget)^.selection_start_pos
+       < PGtkOldEditable(Widget)^.selection_end_pos
+    then
+      Result:= PGtkOldEditable(Widget)^.selection_start_pos
+    else
+      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
+  end else 
+    Result:= 0;
+end;
+
+procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
+begin
+  if Widget<>nil then 
+  begin
+    gtk_editable_select_region(PGtkOldEditable(Widget),
+      gtk_editable_get_position(PGtkOldEditable(Widget)),
+      gtk_editable_get_position(PGtkOldEditable(Widget)) + NewLength);
+  end;
+end;
+
+
+{ TGtkWSCustomComboBox }
+
+function  TGtkWSCustomComboBox.GetSelStart(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result := WidgetGetSelStart(PGtkWidget(PGtkCombo(ACustomComboBox.Handle)^.entry));
+end;
+
+function  TGtkWSCustomComboBox.GetSelLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  with PGtkOldEditable(PGtkCombo(ACustomComboBox.Handle)^.entry)^ do begin
+    Result:= Abs(integer(selection_end_pos)-integer(selection_start_pos));
+  end;
+end;
+
+function  TGtkWSCustomComboBox.GetItemIndex(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  // TODO: ugly typecast to tcombobox
+  Result:=GetComboBoxItemIndex(TComboBox(ACustomComboBox));
+end;
+
+function  TGtkWSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
+begin
+  Result:= PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry)^.text_max_length;
+end;
+
+procedure TGtkWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
+begin
+  gtk_editable_set_position(PGtkOldEditable(PGtkCombo(ACustomComboBox.Handle)^.entry), NewStart);
+end;
+
+procedure TGtkWSCustomComboBox.SetSelLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+  WidgetSetSelLength(PGtkCombo(ACustomComboBox.Handle)^.entry, NewLength);
+end;
+
+procedure TGtkWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
+begin
+  // TODO: ugly typecast
+  SetComboBoxItemIndex(TComboBox(ACustomComboBox), NewIndex);
+end;
+
+procedure TGtkWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+  gtk_entry_set_max_length(PGtkEntry(PGtkCombo(ACustomComboBox.Handle)^.entry), NewLength);
+end;
+
+function  TGtkWSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
+begin
+  Result := TStrings(gtk_object_get_data(PGtkObject(ACustomComboBox.Handle), 'LCLList'));
+end;
+
+procedure TGtkWSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
+begin
+  TGtkListStringList(AList).Sorted := IsSorted;
+end;
+
+{ TGtkWSCustomEdit }
+
+function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
+begin
+  {$IfDef GTK1}
+  Result := WidgetGetSelStart(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget);
+  {$EndIf}
+end;
+
+function  TGtkWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  {$IfDef GTK1}
+  with PGtkOldEditable(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget)^ do begin
+    Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
+  end;
+  {$EndIf}
+end;
+
+procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+begin
+  {$IfDef GTK1}
+  gtk_editable_set_position(PGtkOldEditable(GetWidgetInfo(
+    Pointer(ACustomEdit.Handle), true)^.CoreWidget), NewStart);
+  {$EndIf}
+end;
+
+procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  {$IfDef GTK1}
+  WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget, NewLength);
+  {$EndIf}
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -221,11 +357,11 @@ initialization
 //  RegisterWSComponent(TScrollBar, TGtkWSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TGtkWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
-//  RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
+  RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
 //  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
-//  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
+  RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
 //  RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
 //  RegisterWSComponent(TEdit, TGtkWSEdit);
 //  RegisterWSComponent(TMemo, TGtkWSMemo);
