@@ -35,8 +35,13 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TCustomEdit.SetCharCase(Value : TEditCharCase);
 Begin
-FCharCase := Value;
-CNSendMessage(LM_SETPROPERTIES, Self, nil);
+if FCharCase <> value then
+   Begin
+    FCharCase := Value;
+    if FCharCase = ecUpperCase then Text := Uppercase(Text)
+       else
+    if FCharCase = ecLowerCase then Text := Lowercase(Text);
+   end;
 End;
 
 {------------------------------------------------------------------------------
@@ -78,8 +83,26 @@ End;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 Procedure TCustomEdit.CMTextChanged(var Message : TLMessage);
+var
+  Temp : String;
 Begin
-//inherited CMTextChanged(MEssage);
+
+//check to see if the charcase should effect the text.
+if FCharCase = ecUppercase then
+   Begin
+    Temp := Uppercase(text);
+    if Temp <> Text then Text := Temp;
+   end
+else
+if FCharCase = ecLowercase then
+   Begin
+    Temp := Lowercase(text);
+    if Temp <> Text then Text := Temp;
+   end;
+
+
+
+Writeln('CMTEXTCHANGED');
 Modified := True;
 if HandleAllocated then Change;
 End;
@@ -87,6 +110,7 @@ End;
 Procedure TCustomEdit.Change;
 Begin
 //inherited Change;
+Writeln('CHANGED');
 if Assigned(FOnChange) then FOnChange(Self);
 end;
 
@@ -112,6 +136,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/04 15:09:05  lazarus
+  Tested TCustomEdit.Readonly, MaxLength and CharCase.
+  Shane
+
   Revision 1.2  2001/01/04 13:52:00  lazarus
   Minor changes to TEdit.
   Not tested.

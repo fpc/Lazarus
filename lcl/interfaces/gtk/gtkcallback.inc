@@ -71,7 +71,7 @@ var
 begin
    Result := True;
    EventTrace('changed', data);
-   Mess.Msg := LM_CHANGED;
+   Mess.Msg := CM_TEXTCHANGED; //  Changed on 01/04/2001 from LM_CHANGED to CM_TEXTCHANGED by Shane for TCustomEdit
    Result := DeliverMessage(Data, Mess) = 0;
 end;
 
@@ -1090,6 +1090,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/01/04 15:09:05  lazarus
+  Tested TCustomEdit.Readonly, MaxLength and CharCase.
+  Shane
+
   Revision 1.9  2000/12/19 18:43:13  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

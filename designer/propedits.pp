@@ -2976,7 +2976,7 @@ end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
+  Result := [paDialog, paRevertable, paReadOnly];
 end;
 
 //==============================================================================

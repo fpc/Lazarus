@@ -1243,7 +1243,7 @@ begin
        else if sender is TCustomCombobox
           then ConnectSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
-          ConnectSignal(gObject, 'changed', @gtkchangedCB);
+            ConnectSignal(gObject, 'changed', @gtkchangedCB);
 
     LM_CLICKED :
     begin
@@ -2345,7 +2345,7 @@ begin
       csEdit :
           with (TCustomEdit(Sender)) do
              Begin
-               gtk_entry_set_editable(PgtkEntry(handle),TCustomEdit(sender).ReadOnly);
+               gtk_entry_set_editable(PgtkEntry(handle),not(TCustomEdit(sender).ReadOnly));
                gtk_entry_set_max_length(PgtkEntry(handle),TCustomEdit(sender).MaxLength);
              end;
 
@@ -2700,6 +2700,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.15  2001/01/04 15:09:05  lazarus
+  Tested TCustomEdit.Readonly, MaxLength and CharCase.
+  Shane
+
   Revision 1.14  2001/01/04 13:52:00  lazarus
   Minor changes to TEdit.
   Not tested.

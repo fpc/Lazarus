@@ -178,8 +178,9 @@ type
     Procedure SetMaxLength(Value : Integer);
     Procedure SetModified(Value : Boolean);
     Procedure SetReadOnly(Value : Boolean);
-    Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
+//    Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
   protected
+    Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
     Procedure Change; dynamic;
 
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
@@ -490,6 +491,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/04 15:09:05  lazarus
+  Tested TCustomEdit.Readonly, MaxLength and CharCase.
+  Shane
+
   Revision 1.6  2001/01/04 13:52:00  lazarus
   Minor changes to TEdit.
   Not tested.
