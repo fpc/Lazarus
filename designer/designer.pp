@@ -757,10 +757,10 @@ var
       or (ControlSelection.SelectionForm<>Form);
     // if user press Control key, then component candidates are only childs of
     // the control, where the mouse started
-    MaxParentControl:=nil;
-    if (ssCtrl in shift) and (MouseDownComponent is TControl) then begin
-      MaxParentControl:=TControl(MouseDownComponent);
-    end;
+    if (ssCtrl in shift) and (MouseDownComponent is TControl) then
+      MaxParentControl:=TControl(MouseDownComponent)
+    else
+      MaxParentControl:=Form;
     SelectionChanged:=false;
     ControlSelection.SelectWithRubberBand(
       Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged,
