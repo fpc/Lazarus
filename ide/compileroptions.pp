@@ -42,7 +42,7 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg;
+  XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -948,7 +948,7 @@ begin
   if (UseLineInfoUnit) then
     switches := switches + ' -gl';
 
-  { Use Heaptrc Unix }
+  { Use Heaptrc Unit }
   if (UseHeaptrc) then
     switches := switches + ' -gh';
 
@@ -967,7 +967,7 @@ begin
   }
   case (LinkStyle) of
     1:  switches := switches + ' -XD';
-    2:  ; // this is the default  switches := switches + ' -XS';
+    2:  switches := switches + ' -XS';
     3:  switches := switches + ' -XX';
   end;
 
@@ -1033,7 +1033,7 @@ begin
 
   { Use Additional Config File     @ = yes and path }
   if (AdditionalConfigFile) and (ConfigFilePath<>'') then
-    switches := switches + ' ' + '@' + ConfigFilePath;
+    switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
 
   { ------------- Search Paths Tab ---------------- }
   if (IncludeFiles <> '') then
@@ -1049,7 +1049,7 @@ begin
   
   { Unit output directory }
   if UnitOutputDirectory<>'' then
-    switches := switches + ' -FU' + UnitOutputDirectory;
+    switches := switches + ' '+PrepareCmdLineOption('-FU'+UnitOutputDirectory);
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -1102,7 +1102,7 @@ begin
     tempsw:=CreateTargetFilename(MainSourceFilename);
     if (tempsw <> ChangeFileExt(MainSourceFilename,''))
     or (UnitOutputDirectory<>'') then
-      switches := switches + ' -o' + tempsw;
+      switches := switches + ' '+PrepareCmdLineOption('-o' + tempsw);
   end;
 
   fOptionsString := switches;
@@ -1135,7 +1135,7 @@ begin
     begin
       if (tempsw <> '') then
         tempsw := tempsw + ' ';
-      tempsw := tempsw + switch + SS;
+      tempsw := tempsw + PrepareCmdLineOption(switch + SS);
       Break;
     end
     else if (M = 1) then
@@ -1147,7 +1147,7 @@ begin
     begin
       if (tempsw <> '') then
         tempsw := tempsw + ' ';
-      tempsw := tempsw + switch + Copy (SS, 1, M - 1);
+      tempsw := tempsw + PrepareCmdLineOption(switch + Copy (SS, 1, M - 1));
       SS := Copy (SS, M + 1, Length(SS));
     end;
   until (SS = '') or (M = 0);

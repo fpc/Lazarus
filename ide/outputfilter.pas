@@ -62,6 +62,7 @@ type
     fPrgSourceFilename: string;
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages;
+    procedure DoAddLastAssemblerMessages;
     function SearchIncludeFile(const ShortIncFilename: string): string;
   public
     procedure Execute(TheProcess: TProcess);
@@ -206,6 +207,8 @@ function TOutputFilter.ReadFPCompilerLine(const s: string): boolean;
      <filename>(123) <ErrorType>: <some text>
      <filename>(456) <ErrorType>: <some text> in line (123)
 }
+const
+  AsmError = 'Error while assembling';
 var i, j, FilenameEndPos: integer;
   MsgTypeName, Filename, Msg: string;
   MsgType: TErrorType;
@@ -309,6 +312,9 @@ begin
                               or Project.CompilerOptions.ShowAll);
             if copy(s,j+2,length(s)-j-1)='Error while linking' then begin
               DoAddLastLinkerMessages;
+            end
+            else if copy(s,j+2,length(AsmError))=AsmError then begin
+              DoAddLastAssemblerMessages;
             end;
           end;
 
@@ -472,6 +478,22 @@ begin
   inc(i);
   while (i<fOutput.Count) do begin
     if (fOutput[i]<>'') and (fOutput[i][1]='-') then
+      DoAddFilteredLine(fOutput[i]);
+    inc(i);
+  end;
+end;
+
+procedure TOutputFilter.DoAddLastAssemblerMessages;
+const
+  AsmStartMsg = 'Assembler messages:';
+var i: integer;
+begin
+  // read back to 'Assembler messages:' message
+  i:=fOutput.Count-1;
+  while (i>=0) and (LeftStr(fOutput[i],length(AsmStartMsg))<>AsmStartMsg) do
+    dec(i);
+  while (i<fOutput.Count-1) do begin
+    if (fOutput[i]<>'') then
       DoAddFilteredLine(fOutput[i]);
     inc(i);
   end;

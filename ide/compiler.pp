@@ -105,7 +105,7 @@ begin
   ProjectDir:=ExtractFilePath(ProjectFilename);
   if not SetCurrentDir(ProjectDir) then exit;
   try
-    CmdLine := ConvertSpecialFileChars(AProject.CompilerOptions.CompilerPath);
+    CmdLine := AProject.CompilerOptions.CompilerPath;
     
     if Assigned(FOnCmdLineCreate) then begin
       Abort:=false;
@@ -189,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2002/07/05 12:34:08  lazarus
+  MG: assembler errors are now shown in output
+
   Revision 1.31  2002/07/05 10:53:25  lazarus
   MG: fixed compiling for invalid programnames
 
