@@ -1446,12 +1446,12 @@ begin
   FIgnoreErrorAfterCursorPos:=ACursorPos;
   LastErrorCheckedForIgnored:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  write('TLinkScanner.SetIgnoreErrorAfter ');
+  DbgOut'TLinkScanner.SetIgnoreErrorAfter ');
   if FIgnoreErrorAfterCode<>nil then
-    write(OnGetFileName(Self,FIgnoreErrorAfterCode))
+    DbgOutOnGetFileName(Self,FIgnoreErrorAfterCode))
   else
-    write('nil');
-  write(' ',FIgnoreErrorAfterCursorPos);
+    DbgOut'nil');
+  DbgOut' ',IntToStr(FIgnoreErrorAfterCursorPos));
   DebugLn('');
   {$ENDIF}
 end;

@@ -1831,12 +1831,12 @@ begin
   FIgnoreErrorAfter:=AValue;
   LastErrorCheckedForIgnored:=false;
   {$IFDEF ShowIgnoreErrorAfter}
-  write('TCustomCodeTool.SetIgnoreErrorAfter ');
+  DbgOut'TCustomCodeTool.SetIgnoreErrorAfter ');
   if FIgnoreErrorAfter.Code<>nil then
-    write(FIgnoreErrorAfter.Code.Filename)
+    DbgOutFIgnoreErrorAfter.Code.Filename)
   else
-    write('nil');
-  write(' ',FIgnoreErrorAfter.P);
+    DbgOut'nil');
+  DbgOut' ',FIgnoreErrorAfter.P);
   DebugLn('');
   {$ENDIF}
   if Scanner<>nil then
@@ -1901,28 +1901,28 @@ procedure TCustomCodeTool.WriteDebugTreeReport;
   procedure WriteSrcSubString(A,Len: integer);
   var i: integer;
   begin
-    write('"');
+    DbgOut('"');
     for i:=A to A+Len-1 do begin
       if (i>0) and (i<SrcLen) and (ord(Src[i])>31) then
-        write(Src[i]);
+        DbgOut(Src[i]);
     end;
-    write('"');
+    DbgOut('"');
   end;
 
   procedure WriteSubTree(RootNode: TCodeTreeNode; Indent: string);
   begin
     while RootNode<>nil do begin
-      write(Indent);
+      DbgOut(Indent);
       with RootNode do begin
-        write(NodeDescToStr(Desc),'(',NodeSubDescToStr(Desc,SubDesc),')  ');
-        write(' Start=',StartPos,' ');
+        DbgOut(NodeDescToStr(Desc)+'('+NodeSubDescToStr(Desc,SubDesc)+')  ');
+        DbgOut(' Start='+DbgS(StartPos),' ');
         WriteSrcSubString(StartPos,5);
-        write(' End=',EndPos,' ');
+        DbgOut(' End='+DbgS(EndPos)+' ');
         WriteSrcSubString(EndPos-5,5);
         {$ifdef fpc}
-        write(' Self=',HexStr(Cardinal(RootNode),8));
-        write(' P=',HexStr(Cardinal(Parent),8));
-        write(' NB=',HexStr(Cardinal(NextBrother),8));
+        DbgOut(' Self=',HexStr(Cardinal(RootNode),8));
+        DbgOut(' P=',HexStr(Cardinal(Parent),8));
+        DbgOut(' NB=',HexStr(Cardinal(NextBrother),8));
         //write(' PB=',HexStr(Cardinal(PriorBrother),8));
         //write(' FC=',HexStr(Cardinal(FirstChild),8));
         //write(' LC=',HexStr(Cardinal(LastChild),8));

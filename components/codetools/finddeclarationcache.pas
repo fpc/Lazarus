@@ -900,8 +900,8 @@ begin
     while Node<>nil do begin
       Entry:=PCodeTreeNodeCacheEntry(Node.Data);
       write(Prefix,' Ident="',GetIdentifier(Entry^.Identifier),'"');
-      write(' Flags=[',NodeCacheEntryFlagsAsString(Entry^.Flags),']');
-      write(' Node=',Entry^.NewNode<>nil);
+      DbgOut(' Flags=[',NodeCacheEntryFlagsAsString(Entry^.Flags),']');
+      DbgOut(' Node=',DbgS(Entry^.NewNode<>nil));
       DebugLn('');
       Node:=FItems.FindSuccessor(Node);
     end;

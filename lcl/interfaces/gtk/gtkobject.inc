@@ -321,7 +321,7 @@ begin
     HashItem:=FDeviceContexts.FirstHashItem;
     while (n<7) and (HashItem<>nil) do
     begin
-      write(' ',HexStr(Cardinal(HashItem^.Item),8));
+      DbgOut(' ',HexStr(Cardinal(HashItem^.Item),8));
       HashItem:=HashItem^.Next;
       inc(n);
     end;
@@ -545,9 +545,9 @@ begin
       for i:=AllWindows.Count-1 downto 0 do begin
         ATransientWindow:=PTransientWindow(AllWindows[i]);
         {$IFDEF VerboseTransient}
-        write('TGtkWidgetSet.UpdateTransientWindows  Untransient ',i);
+        DbgOut('TGtkWidgetSet.UpdateTransientWindows  Untransient ',i);
         if ATransientWindow^.Component<>nil then
-          write(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
+          DbgOut(' ',ATransientWindow^.Component.Name,':',ATransientWindow^.Component.ClassName);
         DebugLn('');
         {$ENDIF}
         gtk_window_set_transient_for(ATransientWindow^.GtkWindow,nil);
@@ -667,12 +667,12 @@ var
 {$ENDIF}
 begin
   {$IFDEF VerboseTransient}
-  write('TGtkWidgetSet.UntransientWindow ',HexStr(Cardinal(GtkWindow),8));
+  DbgOut('TGtkWidgetSet.UntransientWindow ',HexStr(Cardinal(GtkWindow),8));
   LCLObject:=GetLCLObject(PGtkWidget(GtkWindow));
   if LCLObject<>nil then
-    write(' LCLObject=',LCLObject.ClassName)
+    DbgOut(' LCLObject=',LCLObject.ClassName)
   else
-    write(' LCLObject=nil');
+    DbgOut(' LCLObject=nil');
   DebugLn('');
   {$ENDIF}
   // hide window, so that UpdateTransientWindows untransients it
@@ -7496,7 +7496,7 @@ var
 begin
   {$IFDEF VerboseSizeMsg}
   LCLControl:=TWinControl(GetLCLObject(Widget));
-  write('PPP TGtkWidgetSet.SetResizeRequest Widget=',HexStr(Cardinal(Widget),8));
+  DbgOut('PPP TGtkWidgetSet.SetResizeRequest Widget=',HexStr(Cardinal(Widget),8));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then
       DebugLn(' ',LCLControl.Name,':',LCLControl.ClassName)
@@ -7898,6 +7898,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.579  2004/09/17 20:30:13  vincents
+  replaced write by DbgOut
+
   Revision 1.578  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 

@@ -947,20 +947,20 @@ var
   AVLNode: TAVLTreeNode;
   ANodeExt: TCodeTreeNodeExtension;
 begin
-  DebugLn('TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree ExtTree.Count=',dbgs(ExtTree.Count));
+  DebugLn('TMethodJumpingCodeTool.WriteCodeTreeNodeExtTree ExtTree.Count=',DbgS(ExtTree.Count));
   AVLNode:=ExtTree.FindLowest;
   while AVLNode<>nil do begin
     ANodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-    write('  ');
+    DbgOut('  ');
     if ANodeExt.Node<>nil then begin
-      write('Node=',ANodeExt.Node.DescAsString,' Node.Start=',ANodeExt.Node.StartPos);
-      write(' "',StringToPascalConst(copy(Src,ANodeExt.Node.StartPos,30)),'"');
+      DbgOut('Node=',ANodeExt.Node.DescAsString,' Node.Start=',DbgS(ANodeExt.Node.StartPos));
+      DbgOut(' "',StringToPascalConst(copy(Src,ANodeExt.Node.StartPos,30)),'"');
     end else
-      write('Node=nil');
-    write(' Position=',ANodeExt.Position);
-    write(' Txt="',ANodeExt.Txt,'"');
-    write(' ExtTxt1="',ANodeExt.ExtTxt1,'"');
-    write(' ExtTxt2="',ANodeExt.ExtTxt2,'"');
+      DbgOut('Node=nil');
+    DbgOut(' Position=',Dbgs(ANodeExt.Position));
+    DbgOut(' Txt="',ANodeExt.Txt,'"');
+    DbgOut(' ExtTxt1="',ANodeExt.ExtTxt1,'"');
+    DbgOut(' ExtTxt2="',ANodeExt.ExtTxt2,'"');
     DebugLn();
     AVLNode:=ExtTree.FindSuccessor(AVLNode);
   end;

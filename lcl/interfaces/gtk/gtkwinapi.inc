@@ -192,7 +192,7 @@ var
   AForm: TCustomForm;
 begin
   {$IFDEF VerboseFocus}
-  write('TGtkWidgetSet.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
+  DbgOut('TGtkWidgetSet.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
   if LCLObject<>nil then
     DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
@@ -8687,6 +8687,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.367  2004/09/17 20:30:13  vincents
+  replaced write by DbgOut
+
   Revision 1.366  2004/09/10 16:28:51  mattias
   implemented very rudimentary TTabControl
 

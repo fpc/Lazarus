@@ -1100,7 +1100,7 @@ Begin
       RaiseGDBException(SCannotFocus);
       // EInvalidOperation.Create(SCannotFocus);
     {$IFDEF VerboseFocus}
-    write('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',FActive);
+    DbgOut('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',DbgS(FActive));
     if FActiveControl<>nil then
       DebugLn(' OldActiveControl=',DbgSName(FActiveControl))
     else
@@ -1808,6 +1808,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.158  2004/09/17 20:30:13  vincents
+  replaced write by DbgOut
+
   Revision 1.157  2004/09/15 07:57:59  micha
   convert LM_SETFORMICON message to interface method
 

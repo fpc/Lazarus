@@ -1087,10 +1087,10 @@ begin
     {$IFDEF CTDEBUG}
     WriteDebugReport(true,false,false,false,false);
     {$ENDIF}
-    write('### TCodeToolManager.HandleException: "'+ErrorMessage+'"');
-    if ErrorLine>0 then write(' at Line=',ErrorLine);
-    if ErrorColumn>0 then write(' Col=',ErrorColumn);
-    if ErrorCode<>nil then write(' in "',ErrorCode.Filename,'"');
+    DbgOut('### TCodeToolManager.HandleException: "'+ErrorMessage+'"');
+    if ErrorLine>0 then DbgOut(' at Line=',DbgS(ErrorLine));
+    if ErrorColumn>0 then DbgOut(' Col=',DbgS(ErrorColumn));
+    if ErrorCode<>nil then DbgOut(' in "',ErrorCode.Filename,'"');
     DebugLn('');
   end;
   // raise or catch

@@ -3102,7 +3102,7 @@ var
     if AnUnitName='' then exit;
     UnitLink:=FindUnitLink(AnUnitName);
     {$IFDEF VerboseFPCSrcScan}
-    write('AddFPCSourceLinkForUnit ',AnUnitName,' ');
+    DbgOut('AddFPCSourceLinkForUnit ',AnUnitName,' ');
     if UnitLink<>nil then
       DebugLn(' -> ',UnitLink.Filename)
     else

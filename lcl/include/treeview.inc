@@ -1177,8 +1177,8 @@ begin
       tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
 
   {$IFDEF TREEVIEW_DEBUG}
-  write('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
-  ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
+  DbgOut('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
+  ,' ANode=',DbgS(ANode<>nil),' AddMode=',AddModeNames[AddMode]);
   if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
   {$ENDIF}
@@ -4768,8 +4768,8 @@ end;
 procedure TCustomTreeView.WriteDebugReport(const Prefix: string;
   AllNodes: boolean);
 begin
-  write(Prefix);
-  write('TCustomTreeView.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  DbgOut(Prefix);
+  DbgOut('TCustomTreeView.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
   ConsistencyCheck;
   DebugLn('');
   if AllNodes then begin

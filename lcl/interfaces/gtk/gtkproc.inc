@@ -3654,13 +3654,13 @@ begin
   end else begin
     {$IFDEF RaiseExceptionOnNilPointers}
     LCLobject:=GetLCLObject(TheWidget);
-    write('GetWidgetOrigin ');
+    DbgOut('GetWidgetOrigin ');
     if LCLObject=nil then
-      write(' LCLObject=nil')
+      DbgOut(' LCLObject=nil')
     else if LCLObject is TControl then
-      write(' LCLObject=',TControl(LCLObject).Name,':',TControl(LCLObject).ClassName)
+      DbgOut(' LCLObject=',TControl(LCLObject).Name,':',TControl(LCLObject).ClassName)
     else
-      write(' LCLObject=',TControl(LCLObject).ClassName);
+      DbgOut(' LCLObject=',TControl(LCLObject).ClassName);
     DebugLn('');
     RaiseException('GetWidgetOrigin Window=nil');
     {$ENDIF}
@@ -5123,7 +5123,7 @@ var
 {$ENDIF}
 begin
   {$IFDEF VerboseSizeMsg}
-  write('SaveSizeNotification Widget=',HexStr(Cardinal(Widget),8));
+  DbgOut('SaveSizeNotification Widget=',HexStr(Cardinal(Widget),8));
   LCLControl:=TWinControl(GetLCLObject(Widget));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then
@@ -5169,14 +5169,14 @@ begin
       //  ' FixWidget=',HexStr(Cardinal(FixWidget),8),
       //  ' MainWidget=',HexStr(Cardinal(MainWidget),8));
     end else begin
-      write('ERROR: SaveClientSizeNotification ',
+      DbgOut('ERROR: SaveClientSizeNotification ',
         ' LCLControl=',LCLControl.ClassName,
         ' FixWidget=',HexStr(Cardinal(FixWidget),8),
         ' MainWidget=',HexStr(Cardinal(MainWidget),8));
       RaiseGDBException('SaveClientSizeNotification');
     end;
   end else begin
-    write('ERROR: SaveClientSizeNotification LCLControl=nil',
+    DbgOut('ERROR: SaveClientSizeNotification LCLControl=nil',
       ' FixWidget=',HexStr(Cardinal(FixWidget),8),
       ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
     RaiseGDBException('SaveClientSizeNotification');
@@ -7282,6 +7282,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.309  2004/09/17 20:30:13  vincents
+  replaced write by DbgOut
+
   Revision 1.308  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 
