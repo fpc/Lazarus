@@ -49,12 +49,13 @@ end;
 {------------------------------------------------------------------------------
   procedure TMenu.SetParent(const AValue: TComponent);
 
-  Creates the handle ( = object).
  ------------------------------------------------------------------------------}
 procedure TMenu.SetParent(const AValue: TComponent);
 begin
-  // ToDo
+  if FParent=AValue then exit;
   FParent:=AValue;
+  if (Items<>nil) and Items.HandleAllocated then
+    DestroyHandle;
 end;
 
 procedure TMenu.ImageListChange(Sender: TObject);
@@ -241,6 +242,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/12/05 13:20:29  mattias
+  destroying TMenu Handle when Set Parent=nil
+
   Revision 1.26  2004/11/10 20:53:18  vincents
   Destroy menu handle, when destroying form handle.
 

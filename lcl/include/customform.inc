@@ -1013,7 +1013,10 @@ begin
       if (Screen.Forms[I].Menu = Value) and (Screen.Forms[I] <> Self) then
         raise EInvalidOperation.CreateFmt(sDuplicateMenus, [Value.Name]);
 
-  if FMenu<>nil then FMenu.Parent:=nil;
+  if FMenu<>nil then begin
+    FMenu.Parent:=nil;
+    
+  end;
 
   if (csDestroying in ComponentState) or
     ((Value <> nil) and (csDestroying in Value.ComponentState))
@@ -1820,6 +1823,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.166  2004/12/05 13:20:29  mattias
+  destroying TMenu Handle when Set Parent=nil
+
   Revision 1.165  2004/11/20 11:20:06  mattias
   implemented creating classes at run time from any TComponent descendant
 
