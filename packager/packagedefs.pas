@@ -684,7 +684,7 @@ type
   
 
 const
-  LazPkgXMLFileVersion = 1;
+  LazPkgXMLFileVersion = 2;
   
   PkgFileTypeNames: array[TPkgFileType] of string = (
     'pftUnit', 'pftVirtualUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftText',
@@ -2068,7 +2068,6 @@ var
 begin
   Flags:=Flags+[lpfLoading];
   FileVersion:=XMLConfig.GetValue(Path+'Version',0);
-  if FileVersion=1 then ;
   OldFilename:=Filename;
   BeginUpdate;
   Clear;
@@ -2076,10 +2075,11 @@ begin
   LockModified;
   PathDelimChanged:=XMLConfig.GetValue(Path+'PathDelim/Value','/')<>'/';
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
+  FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
+                                          LazPackageTypeIdents[lptRunTime]));
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
   FAutoUpdate:=NameToAutoUpdatePolicy(
                                 XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
-  FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
   FLicense:=XMLConfig.GetValue(Path+'License/Value','');
   FVersion.LoadFromXMLConfig(XMLConfig,Path+'Version/',FileVersion);
@@ -2088,13 +2088,15 @@ begin
   OutputStateFile:=SwitchPathDelims(
                             XMLConfig.GetValue(Path+'OutputStateFile/Value',''),
                             PathDelimChanged);
-  FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
-                                          LazPackageTypeIdents[lptRunTime]));
   LoadFiles(Path+'Files/',FFiles);
   UpdateSourceDirectories;
   LoadFlags(Path);
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,Self,false);
+  if FileVersion<2 then
+    FCompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
+  else
+    FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
                                   PathDelimChanged);
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
@@ -2127,6 +2129,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   end;
 
 begin
+  XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelim,'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');

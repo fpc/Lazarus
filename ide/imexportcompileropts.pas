@@ -83,6 +83,7 @@ function DoImportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 function DoExportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
   CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function GetXMLPathForCompilerOptionsInFile(const Filename: string): string;
 
 implementation
 
@@ -106,6 +107,7 @@ function DoImportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
 var
   XMLConfig: TXMLConfig;
   FreeCompilerOpts: Boolean;
+  Path: String;
 begin
   Result:=mrCancel;
   try
@@ -123,7 +125,8 @@ begin
       CompilerOpts:=TBaseCompilerOptions.Create(nil);
       FreeCompilerOpts:=true;
     end;
-    CompilerOpts.LoadFromXMLConfig(XMLConfig,'CompilerOptions/');
+    Path:=GetXMLPathForCompilerOptionsInFile(Filename);
+    CompilerOpts.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
     if CompOptsDialog<>nil then
       CompOptsDialog.GetCompilerOptions(CompilerOpts);
   finally
@@ -138,6 +141,7 @@ function DoExportComilerOptions(CompOptsDialog: TfrmCompilerOptions;
 var
   XMLConfig: TXMLConfig;
   FreeCompilerOpts: Boolean;
+  Path: String;
 begin
   FreeCompilerOpts:=false;
   if (CompOptsDialog<>nil) then begin
@@ -150,7 +154,8 @@ begin
     try
       XMLConfig:=TXMLConfig.Create(Filename);
       try
-        CompilerOpts.SaveToXMLConfig(XMLConfig,'CompilerOptions/');
+        Path:=GetXMLPathForCompilerOptionsInFile(Filename);
+        CompilerOpts.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
         XMLConfig.Flush;
       finally
         XMLConfig.Free;
@@ -165,6 +170,33 @@ begin
   finally
     if FreeCompilerOpts then
       CompilerOpts.Free;
+  end;
+end;
+
+function ReadIntFromXMLConfig(const Filename, Path: string;
+  DefaultValue, ValueForReadError: integer): integer;
+var
+  XMLConfig: TXMLConfig;
+begin
+  Result:=ValueForReadError;
+  if FileExists(Filename) then
+    try
+      XMLConfig:=TXMLConfig.Create(Filename);
+      Result:=XMLConfig.GetValue(Path,DefaultValue);
+    except
+      Result:=ValueForReadError;
+    end;
+end;
+
+function GetXMLPathForCompilerOptionsInFile(const Filename: string): string;
+var
+  FileVersion: Integer;
+begin
+  Result:='';
+  if CompareFileExt(Filename,'.lpk',false)=0 then begin
+    FileVersion:=ReadIntFromXMLConfig(Filename,'Package/Version',0,2);
+    if FileVersion>=2 then
+      Result:='Package/';
   end;
 end;
 

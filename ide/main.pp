@@ -500,6 +500,7 @@ type
     function DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult;
+    function DoImExportCompilerOptions(Sender: TObject): TModalResult; override;
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
@@ -5329,6 +5330,27 @@ begin
                          GetProjPublishDir);
 end;
 
+function TMainIDE.DoImExportCompilerOptions(Sender: TObject): TModalResult;
+var
+  CompOptsDialog: TfrmCompilerOptions;
+  ImExportResult: TImExportCompOptsResult;
+  Filename: string;
+begin
+  Result:=mrOk;
+  if not (Sender is TfrmCompilerOptions) then
+    RaiseException('TMainIDE.OnCompilerOptionsImExport');
+  CompOptsDialog:=TfrmCompilerOptions(Sender);
+  ImExportResult:=ShowImExportCompilerOptionsDialog(
+                                          CompOptsDialog.CompilerOpts,Filename);
+  if (ImExportResult=iecorCancel) or (Filename='') then exit;
+  if ImExportResult=iecorImport then
+    Result:=DoImportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
+                                   Filename)
+  else if ImExportResult=iecorExport then
+    Result:=DoExportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,
+                                   Filename);
+end;
+
 function TMainIDE.DoShowProjectInspector: TModalResult;
 begin
   if ProjInspector=nil then begin
@@ -9215,20 +9237,8 @@ begin
 end;
 
 procedure TMainIDE.OnCompilerOptionsImExport(Sender: TObject);
-var
-  CompOptsDialog: TfrmCompilerOptions;
-  ImExportResult: TImExportCompOptsResult;
-  Filename: string;
 begin
-  if not (Sender is TfrmCompilerOptions) then exit;
-  CompOptsDialog:=TfrmCompilerOptions(Sender);
-  ImExportResult:=ShowImExportCompilerOptionsDialog(
-                                          CompOptsDialog.CompilerOpts,Filename);
-  if (ImExportResult=iecorCancel) or (Filename='') then exit;
-  if ImExportResult=iecorImport then
-    DoImportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,Filename)
-  else if ImExportResult=iecorExport then
-    DoExportComilerOptions(CompOptsDialog,CompOptsDialog.CompilerOpts,Filename);
+  DoImExportCompilerOptions(Sender);
 end;
 
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
@@ -9782,6 +9792,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.647  2003/09/15 15:03:05  mattias
+  Import and Export of package compiler options
+
   Revision 1.646  2003/09/10 12:13:48  mattias
   implemented Import and Export of compiler options
 

@@ -3,6 +3,15 @@
   <Package>
     <Name Value="GTKOpenGL"/>
     <Author Value="Mattias Gaertner, Satan"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib"/>
+        <LCLWidgetType Value="gtk"/>
+      </SearchPaths>
+      <Other>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
     <Description Value="OpenGL for LCL - components: TGtkGlAreaControl
 Please make sure that you link to the right libgtkgl. If you accidently link to libgtkgl-2.0 then you will mix gtk1 and gtk2 libraries, which will result in strange errors, up to freezing your windowmanager."/>
     <License Value="LGPL-2"/>
@@ -50,13 +59,4 @@ Please make sure that you link to the right libgtkgl. If you accidently link to 
       <UseExcludeFileFilter Value="True"/>
     </PublishOptions>
   </Package>
-  <CompilerOptions>
-    <SearchPaths>
-      <UnitOutputDirectory Value="lib/"/>
-      <LCLWidgetType Value="gtk"/>
-    </SearchPaths>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
-  </CompilerOptions>
 </CONFIG>

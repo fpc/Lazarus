@@ -82,6 +82,7 @@ type
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
                               var HasRegisterProc: boolean);
+    procedure OnPackageEditorImExportCompilerOptions(Sender: TObject);
     // package graph
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
@@ -399,6 +400,11 @@ procedure TPkgManager.OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
   );
 begin
   DoGetUnitRegisterInfo(AFilename,TheUnitName,HasRegisterProc,true);
+end;
+
+procedure TPkgManager.OnPackageEditorImExportCompilerOptions(Sender: TObject);
+begin
+  MainIDE.DoImExportCompilerOptions(Sender);
 end;
 
 function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
@@ -1369,6 +1375,7 @@ begin
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
   PackageEditors.OnDeleteAmbigiousFiles:=@OnPackageEditorDeleteAmbigiousFiles;
+  PackageEditors.OnImExportCompilerOptions:=@OnPackageEditorImExportCompilerOptions;
 
   // package macros
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
