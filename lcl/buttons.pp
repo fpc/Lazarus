@@ -165,6 +165,9 @@ type
    
    
   { TSpeedButton }
+  
+  TMyCollectionItem = class(TCollectionItem)
+  end;
 
   TSpeedButton = class(TGraphicControl)
   private
@@ -271,6 +274,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/09/09 07:26:42  lazarus
+  MG: started TCollectionPropertyEditor
+
   Revision 1.25  2002/09/05 14:57:55  lazarus
   MG: added show pages menu to TNotebookcomponenteditor
 
