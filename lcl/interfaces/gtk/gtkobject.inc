@@ -5652,7 +5652,6 @@ begin
       // create the menu items in the filter menu
       MenuItemWidget:=gtk_menu_item_new_with_label(
                                PFileSelFilterEntry(FilterList[i])^.Description);
-      SetLCLObject(MenuItemWidget,OpenDialog);
       // connect the new MenuItem to the FilterList entry
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsFilterMenuItem',
         FilterList[i]);
@@ -9385,6 +9384,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.493  2004/04/09 22:59:09  mattias
+  fixed mem leak in CreateFilter menu items for file dialog
+
   Revision 1.492  2004/04/08 18:27:51  mattias
   fixed memleak in TDefaultComponentEditor.Edit
 
