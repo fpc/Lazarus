@@ -1177,26 +1177,22 @@ end;
 
 procedure SetCaptureControl(Control : TControl);
 begin
-  Assert(Control = nil, Format('Trace:[SetCaptureControl] %s', [Control.ClassName]));
-  Assert(Control <> nil , Format('Trace:[SetCaptureControl] %s', ['<nil>']));
-
+  {$IFDEF VerboseMouseCapture}
+  writeln('SetCaptureControl ',HexStr(Cardinal(Control),8),' ',HexStr(Cardinal(CaptureControl),8));
+  {$ENDIF}
   ReleaseCapture;
   CaptureControl := nil;
   if Control <> nil 
   then begin
-    Assert(False, Format('Trace:[SetCaptureControl] for %s', [Control.ClassName]));
-    if not (Control is TWinControl) 
+    if not (Control is TWinControl)
     then begin
       if Control.Parent = nil then Exit;
       
       CaptureControl := Control;
-      Assert(False, 'Trace:[SetCaptureControl] CaptureControl is set to Control');
       Control := Control.Parent;
     end;
-    Assert(False, Format('Trace:[SetCaptureControl] Calling SetCapture for %s', [Control.ClassName]));
     SetCapture(TWinControl(Control).Handle);
   end;
-
 end;
 
 { Cursor translation function }
@@ -1298,6 +1294,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/08/22 16:22:39  lazarus
+  MG: started debugging of mouse capturing
+
   Revision 1.57  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 
