@@ -99,7 +99,8 @@ type
     itmFileSaveAs: TMenuItem; 
     itmFileSaveAll: TMenuItem; 
     itmFileClose: TMenuItem; 
-    itmFileQuit: TMenuItem; 
+    itmFileCloseAll: TMenuItem;
+    itmFileQuit: TMenuItem;
 
     itmEditUndo: TMenuItem; 
     itmEditRedo: TMenuItem; 
@@ -186,6 +187,7 @@ type
     procedure mnuSaveAsClicked(Sender : TObject);
     procedure mnuSaveAllClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
+    procedure mnuCloseAllClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
 
     // edit menu
@@ -1190,6 +1192,13 @@ begin
   itmFileClose.OnClick := @mnuCloseClicked;
   mnuFile.Add(itmFileClose);
 
+  itmFileCloseAll := TMenuItem.Create(Self);
+  itmFileCloseAll.Name:='itmFileCloseAll';
+  itmFileCloseAll.Caption := 'Close All';
+  itmFileCloseAll.Enabled := False;
+  itmFileCloseAll.OnClick := @mnuCloseAllClicked;
+  mnuFile.Add(itmFileCloseAll);
+
   mnuFile.Add(CreateSeperator);
 
   itmFileQuit := TMenuItem.Create(Self);
@@ -1723,6 +1732,12 @@ procedure TMainIDE.mnuCloseClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   DoCloseEditorUnit(SourceNoteBook.NoteBook.PageIndex,true);
+end;
+
+procedure TMainIDE.mnuCloseAllClicked(Sender : TObject);
+begin
+  while (SourceNoteBook.NoteBook<>nil)
+  and (DoCloseEditorUnit(SourceNoteBook.NoteBook.PageIndex,true)=mrOk) do ;
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileNew(Sender : TObject);
@@ -6029,6 +6044,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.235  2002/02/25 23:04:23  lazarus
+  MG: added close all menuitem
+
   Revision 1.234  2002/02/25 22:56:55  lazarus
   MG: fixed resetting error line before compiling
 
