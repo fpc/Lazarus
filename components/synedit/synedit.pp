@@ -2129,6 +2129,7 @@ begin
       and IsPointInSelection({$IFDEF SYN_LAZARUS}LogCaretXY{$ELSE}CaretXY{$ENDIF})
     then
       bStartDrag := TRUE;
+    //debugln('TCustomSynEdit.MouseDown bStartDrag=',dbgs(bStartDrag));
   end;
   if (Button = mbLeft) and bStartDrag then
     Include(fStateFlags, sfWaitForDragging)
@@ -2187,7 +2188,7 @@ begin
     Include(fStateFlags, sfPossibleGutterClick);
   Windows.SetFocus(Handle);
   {$ENDIF}
-//DebugLn('TCustomSynEdit.MouseDown END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  //debugln('TCustomSynEdit.MouseDown END sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' ');
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2210,18 +2211,20 @@ begin
     If Cursor <> crDefault then
       Cursor := crDefault;
 
+  //debugln('TCustomSynEdit.MouseMove sfWaitForDragging=',dbgs(sfWaitForDragging in fStateFlags),' MouseCapture=',dbgs(MouseCapture));
   if MouseCapture
   and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
+      //debugln('TCustomSynEdit.MouseMove BeginDrag');
       BeginDrag(false);
     end;
   end else if (ssLeft in Shift)
   and MouseCapture
   then begin
-//DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
+    //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
     if (X >= fGutterWidth)
       and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
       and (Y >= 0)

@@ -942,6 +942,8 @@ begin
     AddFile('dbgrids.pas','DBGrids',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('editbtn.pas','EditBtn',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('actnlist.pas','ActnList',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('stdactns.pas','StdActns',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('dbactns.pas','DBActns',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('filectrl.pp','FileCtrl',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('xmlpropstorage.pas','XMLPropStorage',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('inipropstorage.pas','IniPropStorage',pftUnit,[pffHasRegisterProc],cpBase);

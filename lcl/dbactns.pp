@@ -131,7 +131,17 @@ type
     property DataSource;
   end;
 
+
+procedure Register;
+
 implementation
+
+procedure Register;
+begin
+  RegisterNoIcon([TDataSetFirst,TDataSetLast,TDataSetNext,
+    TDataSetPrior,TDataSetRefresh,TDataSetCancel,TDataSetDelete,TDataSetEdit,
+    TDataSetInsert,TDataSetPost]);
+end;
 
 
 { ---------------------------------------------------------------------

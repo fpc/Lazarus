@@ -1,0 +1,67 @@
+object FormActStandard: TFormActStandard
+  BorderStyle = bsDialog
+  Caption = 'FormActStandard'
+  ClientHeight = 439
+  ClientWidth = 330
+  KeyPreview = True
+  OnClose = FormActStandardClose
+  OnKeyPress = FormActStandardKeyPress
+  PixelsPerInch = 112
+  Position = poOwnerFormCenter
+  HorzScrollBar.Page = 329
+  VertScrollBar.Page = 438
+  Left = 289
+  Height = 439
+  Top = 160
+  Width = 330
+  object LabelHeadLine: TLabel
+    AutoSize = True
+    Caption = 'LabelHeadLine'
+    Color = clNone
+    Left = 12
+    Height = 12
+    Top = 9
+    Width = 85
+  end
+  object tvActStdList: TTreeView
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoExpand = True
+    DefaultItemHeight = 14
+    HideSelection = False
+    HotTrack = True
+    ReadOnly = True
+    RightClickSelect = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+    OnDblClick = tvActStdListDblClick
+    Options = [tvoAutoExpand, tvoAutoItemHeight, tvoHotTrack, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+    Left = 8
+    Height = 367
+    Top = 32
+    Width = 313
+  end
+  object btnCancel: TBitBtn
+    Anchors = [akRight, akBottom]
+    Caption = 'Cancel'
+    Kind = bkCancel
+    ModalResult = 2
+    TabOrder = 2
+    Left = 230
+    Height = 25
+    Top = 408
+    Width = 91
+  end
+  object btnOK: TBitBtn
+    Anchors = [akRight, akBottom]
+    Caption = '&OK'
+    Default = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = btnOKClick
+    TabOrder = 1
+    Left = 127
+    Height = 25
+    Top = 408
+    Width = 91
+  end
+end

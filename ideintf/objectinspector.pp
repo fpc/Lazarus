@@ -1063,6 +1063,7 @@ begin
       FCurrentButton.Enabled:=not NewRow.IsDisabled;
   end;
   Exclude(FStates,pgsChangingItemIndex);
+  Invalidate;
 end;
 
 function TOICustomPropertyGrid.GetRowCount:integer;
@@ -1667,20 +1668,31 @@ begin
     Font:=FNameFont;
     CurRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
     Font:=OldFont;
-    // draw frame
-    Pen.Color:=cl3DDkShadow;
-    MoveTo(NameRect.Left,NameRect.Bottom-1);
-    LineTo(NameRect.Right-1,NameRect.Bottom-1);
-    LineTo(NameRect.Right-1,NameRect.Top-1);
-    if ARow=FItemIndex then begin
-      Pen.Color:=cl3DDkShadow;
+    // draw frame for name
+    if ARow<>FItemIndex then begin
+      Pen.Style := psDot;
+      Pen.Color:=cl3DShadow;
       MoveTo(NameRect.Left,NameRect.Bottom-1);
-      LineTo(NameRect.Left,NameRect.Top);
+      LineTo(NameRect.Right-1,NameRect.Bottom-1);
+    end else begin
+      Pen.Color:=cl3DDKShadow;
+      MoveTo(NameRect.Left,NameRect.Top-1);
+      LineTo(NameRect.Right-1,NameRect.Top-1);
+      Pen.Color:=cl3DShadow;
+      MoveTo(NameRect.Left,NameRect.Top);
       LineTo(NameRect.Right-1,NameRect.Top);
-      Pen.Color:=cl3DLight;
-      MoveTo(NameRect.Left+1,NameRect.Bottom-2);
-      LineTo(NameRect.Right-1,NameRect.Bottom-2);
+      Pen.Color:=clWhite;
+      MoveTo(NameRect.Left,NameRect.Bottom-1);
+      LineTo(NameRect.Right-1,NameRect.Bottom-1);
     end;
+
+    Pen.Color:=clWhite;
+    Pen.Style := psSolid;
+    LineTo(NameRect.Right-1,NameRect.Top-1);
+    Pen.Color:=cl3DShadow;
+    MoveTo(NameRect.Right-2,NameRect.Bottom-1);
+    LineTo(NameRect.Right-2,NameRect.Top-1);
+    Pen.Style := psSolid;
     // draw value background
     if FBackgroundColor<>clNone then begin
       Brush.Color:=FBackgroundColor;
@@ -1697,17 +1709,18 @@ begin
       Font:=OldFont;
     end;
     CurRow.LastPaintedValue:=CurRow.Editor.GetVisualValue;
-    // draw frame
-    Pen.Color:=cl3DDkShadow;
+    // draw frame for value
+    Pen.Color:=cl3DShadow;
+    if ARow=FItemIndex then
+      Pen.Style := psSolid
+    else
+      Pen.Style := psDot;
     MoveTo(ValueRect.Left-1,ValueRect.Bottom-1);
     LineTo(ValueRect.Right,ValueRect.Bottom-1);
     Pen.Color:=cl3DLight;
     MoveTo(ValueRect.Left,ValueRect.Bottom-1);
     LineTo(ValueRect.Left,ValueRect.Top);
-    if ARow=FItemIndex then begin
-      MoveTo(ValueRect.Left,ValueRect.Bottom-2);
-      LineTo(ValueRect.Right,ValueRect.Bottom-2);
-    end;
+    Pen.Style := psSolid;
   end;
 end;
 

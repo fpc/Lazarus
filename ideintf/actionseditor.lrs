@@ -1,0 +1,85 @@
+{ To jest automatycznie wygenerowany plik zasobów lazarusa }
+
+LazarusResources.Add('TActionListEditor','FORMDATA',[
+  'TPF0'#17'TActionListEditor'#16'ActionListEditor'#7'Caption'#6#16'ActionListE'
+  +'ditor'#12'ClientHeight'#3','#1#11'ClientWidth'#3#144#1#10'KeyPreview'#9#10
+  +'OnKeyPress'#7#24'ActionListEditorKeyPress'#13'PixelsPerInch'#2'p'#8'Positio'
+  +'n'#7#14'poScreenCenter'#18'HorzScrollBar.Page'#3#143#1#18'VertScrollBar.Pag'
+  +'e'#3'+'#1#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#159#0#5'Width'#3#144#1#0
+  +#6'TPanel'#6'Panel2'#5'Align'#7#5'alTop'#22'BorderSpacing.OnChange'#13#10'Be'
+  +'velOuter'#7#6'bvNone'#12'ClientHeight'#2#26#11'ClientWidth'#3#144#1#11'Full'
+  +'Repaint'#8#8'TabOrder'#2#1#6'Height'#2#26#3'Top'#2#26#5'Width'#3#144#1#0#6
+  +'TLabel'#11'lblCategory'#8'AutoSize'#9#22'BorderSpacing.OnChange'#13#7'Capti'
+  +'on'#6#11'Categories:'#5'Color'#7#6'clNone'#4'Left'#2#6#6'Height'#2#17#3'Top'
+  +#2#6#5'Width'#2'E'#0#0#6'TLabel'#7'lblName'#8'AutoSize'#9#22'BorderSpacing.O'
+  +'nChange'#13#7'Caption'#6#8'Actions:'#5'Color'#7#6'clNone'#4'Left'#3#162#0#6
+  +'Height'#2#17#3'Top'#2#6#5'Width'#2'1'#0#0#0#9'TSplitter'#8'Splitter'#8'Auto'
+  +'Snap'#8#6'Height'#3#248#0#11'ParentColor'#9#11'OnCanResize'#7#17'SplitterCa'
+  +'nResize'#6'Cursor'#7#8'crHSplit'#4'Left'#3#152#0#6'Height'#3#248#0#3'Top'#2
+  +'4'#5'Width'#2#5#0#0#6'TPanel'#6'Panel1'#5'Align'#7#5'alTop'#22'BorderSpacin'
+  +'g.OnChange'#13#10'BevelInner'#7#8'bvRaised'#10'BevelOuter'#7#9'bvLowered'#12
+  +'ClientHeight'#2#26#11'ClientWidth'#3#144#1#11'FullRepaint'#8#8'TabOrder'#2#0
+  +#6'Height'#2#26#5'Width'#3#144#1#0#12'TSpeedButton'#6'btnAdd'#6'Action'#7#6
+  +'ActNew'#22'BorderSpacing.OnChange'#13#4'Flat'#9#9'NumGlyphs'#2#0#7'Spacing'
+  +#2#0#8'ShowHint'#9#14'ParentShowHint'#8#6'Height'#2#22#5'Width'#2#24#0#0#12
+  +'TSpeedButton'#9'btnDelete'#6'Action'#7#9'ActDelete'#22'BorderSpacing.OnChan'
+  +'ge'#13#4'Flat'#9#9'NumGlyphs'#2#0#7'Spacing'#2#0#8'ShowHint'#9#14'ParentSho'
+  +'wHint'#8#4'Left'#2'#'#6'Height'#2#22#3'Top'#2#2#5'Width'#2#24#0#0#12'TSpeed'
+  +'Button'#5'btnUp'#6'Action'#7#9'ActMoveUp'#22'BorderSpacing.OnChange'#13#4'F'
+  +'lat'#9#9'NumGlyphs'#2#0#7'Spacing'#2#0#8'ShowHint'#9#14'ParentShowHint'#8#4
+  +'Left'#2'@'#6'Height'#2#22#3'Top'#2#2#5'Width'#2#24#0#0#12'TSpeedButton'#7'b'
+  +'tnDown'#6'Action'#7#11'ActMoveDown'#22'BorderSpacing.OnChange'#13#4'Flat'#9
+  +#9'NumGlyphs'#2#0#7'Spacing'#2#0#8'ShowHint'#9#14'ParentShowHint'#8#4'Left'#2
+  +'Y'#6'Height'#2#22#3'Top'#2#2#5'Width'#2#24#0#0#12'TSpeedButton'#20'SBShowMe'
+  +'nuNewActions'#10'AllowAllUp'#9#4'Flat'#9#10'Glyph.Data'#10'v'#0#0#0'r'#0#0#0
+  +'/* XPM */'#10'static char * btn_downarrow_xpm[] = {'#10'"5 3 2 1",'#10'" '#9
+  +'c None",'#10'".'#9'c #000000",'#10'".....",'#10'" ... ",'#10'"  .  "};'#10
+  +#10'GroupIndex'#2#1#9'NumGlyphs'#2#0#7'Spacing'#2#0#7'OnClick'#7#25'SBShowMe'
+  +'nuNewActionsClick'#8'ShowHint'#9#14'ParentShowHint'#8#4'Left'#2#25#6'Height'
+  +#2#22#3'Top'#2#2#5'Width'#2#10#0#0#0#8'TListBox'#13'lstActionName'#5'Align'#7
+  +#8'alClient'#22'BorderSpacing.OnChange'#13#14'ExtendedSelect'#9#7'OnClick'#7
+  +#18'lstActionNameClick'#10'OnDblClick'#7#21'lstActionNameDblClick'#9'OnKeyDo'
+  +'wn'#7#20'lstActionNameKeyDown'#11'OnMouseDown'#7#22'lstActionNameMouseDown'
+  +#9'PopupMenu'#7#14'PopMenuActions'#8'TabOrder'#2#2#8'TopIndex'#2#255#4'Left'
+  +#3#157#0#6'Height'#3#248#0#3'Top'#2'4'#5'Width'#3#243#0#0#0#8'TListBox'#11'l'
+  +'stCategory'#5'Align'#7#6'alLeft'#22'BorderSpacing.OnChange'#13#14'ExtendedS'
+  +'elect'#9#7'OnClick'#7#16'lstCategoryClick'#11'OnMouseDown'#7#22'lstActionNa'
+  +'meMouseDown'#8'TabOrder'#2#3#8'TopIndex'#2#255#6'Height'#3#248#0#3'Top'#2'4'
+  +#5'Width'#3#152#0#0#0#11'TActionList'#11'ActionList1'#3'top'#3#240#0#0#7'TAc'
+  +'tion'#9'ActDelete'#9'OnExecute'#7#16'ActDeleteExecute'#8'OnUpdate'#7#15'Act'
+  +'DeleteUpdate'#8'ShortCut'#2'.'#8'Category'#6#9'AddDelete'#0#0#7'TAction'#6
+  +'ActNew'#9'OnExecute'#7#13'ActNewExecute'#8'ShortCut'#2'-'#8'Category'#6#9'A'
+  +'ddDelete'#0#0#7'TAction'#9'ActNewStd'#9'OnExecute'#7#16'ActNewStdExecute'#8
+  +'ShortCut'#3'-@'#8'Category'#6#9'AddDelete'#0#0#7'TAction'#9'ActMoveUp'#9'On'
+  +'Execute'#7#18'ActMoveDownExecute'#8'OnUpdate'#7#15'ActMoveUpUpdate'#8'Short'
+  +'Cut'#3'&@'#8'Category'#6#10'MoveUpDown'#0#0#7'TAction'#11'ActMoveDown'#9'On'
+  +'Execute'#7#18'ActMoveDownExecute'#8'OnUpdate'#7#17'ActMoveDownUpdate'#8'Sho'
+  +'rtCut'#3'(@'#8'Category'#6#10'MoveUpDown'#0#0#7'TAction'#21'ActCreateExecut'
+  +'eEvent'#7'Caption'#6#9'OnExecute'#9'OnExecute'#7#28'ActCreateExecuteEventEx'
+  +'ecute'#8'OnUpdate'#7#22'ActCreateExecuteUpdate'#8'Category'#6#12'CreateEven'
+  +'ts'#0#0#7'TAction'#18'ActCreateHintEvent'#7'Caption'#6#6'OnHint'#9'OnExecut'
+  +'e'#7#20'ActCreateHintExecute'#8'OnUpdate'#7#22'ActCreateExecuteUpdate'#8'Ca'
+  +'tegory'#6#12'CreateEvents'#0#0#7'TAction'#20'ActCreateUpdateEvent'#7'Captio'
+  +'n'#6#8'OnUpdate'#9'OnExecute'#7#22'ActCreateUpdateExecute'#8'OnUpdate'#7#22
+  +'ActCreateExecuteUpdate'#8'Category'#6#12'CreateEvents'#0#0#0#10'TPopupMenu'
+  +#14'PopMenuActions'#7'OnPopup'#7#19'PopMenuActionsPopup'#4'left'#3#161#0#3't'
+  +'op'#3#5#1#0#9'TMenuItem'#21'mItemActListNewAction'#6'Action'#7#6'ActNew'#7
+  +'Caption'#6#10'New Action'#7'OnClick'#7#13'ActNewExecute'#0#0#9'TMenuItem'#24
+  ,'mItemActListNewStdAction'#6'Action'#7#9'ActNewStd'#7'OnClick'#7#16'ActNewSt'
+  +'dExecute'#0#0#9'TMenuItem'#9'MenuItem3'#7'Caption'#6#1'-'#0#0#9'TMenuItem'
+  +#25'mItemCreateOnExecuteEvent'#6'Action'#7#21'ActCreateExecuteEvent'#7'OnCli'
+  +'ck'#7#28'ActCreateExecuteEventExecute'#0#0#9'TMenuItem'#22'mItemCreateOnHin'
+  +'tEvent'#6'Action'#7#18'ActCreateHintEvent'#7'OnClick'#7#20'ActCreateHintExe'
+  +'cute'#0#0#9'TMenuItem'#24'mItemCreateOnUpdateEvent'#6'Action'#7#20'ActCreat'
+  +'eUpdateEvent'#7'OnClick'#7#22'ActCreateUpdateExecute'#0#0#9'TMenuItem'#9'Me'
+  +'nuItem8'#7'Caption'#6#1'-'#0#0#9'TMenuItem'#9'MenuItem4'#6'Action'#7#9'ActM'
+  +'oveUp'#7'Caption'#6#7'Move Up'#7'OnClick'#7#18'ActMoveDownExecute'#0#0#9'TM'
+  +'enuItem'#9'MenuItem5'#6'Action'#7#11'ActMoveDown'#7'Caption'#6#9'Move Down'
+  +#7'OnClick'#7#18'ActMoveDownExecute'#0#0#9'TMenuItem'#9'MenuItem6'#7'Caption'
+  +#6#1'-'#0#0#9'TMenuItem'#21'mItemActListDelAction'#6'Action'#7#9'ActDelete'#7
+  +'Caption'#6#6'Delete'#7'OnClick'#7#16'ActDeleteExecute'#0#0#0#10'TPopupMenu'
+  +#21'PopMenuToolBarActions'#3'top'#3#200#0#0#9'TMenuItem'#21'mItemToolBarNewA'
+  +'ction'#6'Action'#7#6'ActNew'#7'Default'#9#7'OnClick'#7#13'ActNewExecute'#0#0
+  +#9'TMenuItem'#24'mItemToolBarNewStdAction'#6'Action'#7#9'ActNewStd'#7'OnClic'
+  +'k'#7#16'ActNewStdExecute'#0#0#0#0
+]);

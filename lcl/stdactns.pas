@@ -467,8 +467,23 @@ type
   end;}
 
 
+procedure Register;
 
 implementation
+
+procedure Register;
+begin
+  // register edit actions
+  RegisterNoIcon([TEditCut,TEditCopy,TEditPaste,TEditSelectAll,
+                  TEditUndo,TEditDelete]);
+  // register help actions
+  RegisterNoIcon([THelpAction,THelpContents,THelpTopicSearch,
+                  THelpOnHelp,THelpContextAction]);
+  // register dialog actions
+  RegisterNoIcon([TFontEdit,TColorSelect]);
+  // register file actions
+  RegisterNoIcon([TFileOpen,TFileOpenWith,TFileSaveAs,TFileExit]);
+end;
 
 { TEditAction }
 
