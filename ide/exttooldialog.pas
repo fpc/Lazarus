@@ -106,6 +106,17 @@ function ShowExtToolDialog(ExtToolList: TExternalToolList;
 
 implementation
 
+// to get more detailed error messages consider the os
+ {$IFDEF Linux}
+uses
+ {$IFDEF Ver1_0}
+  Linux
+ {$ELSE}
+  Unix
+ {$ENDIF}
+ ;
+ {$ENDIF}
+
 
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
   TransferMacros: TTransferMacroList):TModalResult;
@@ -221,7 +232,7 @@ end;
 
 function TExternalToolList.Run(Index: integer;
   Macros: TTransferMacroList): TModalResult;
-var WorkingDir, Filename, Params: string;
+var WorkingDir, Filename, Params, AText: string;
   TheProcess: TProcess;
 begin
   Result:=mrCancel;
@@ -233,6 +244,28 @@ begin
   and Macros.SubstituteStr(WorkingDir)
   and Macros.SubstituteStr(Params) then begin
 writeln('[TExternalToolList.Run] ',Filename,' ',Params);
+    // TProcess does not report, if a program can not be executed
+    // to get good error messages consider the OS
+    {$IFDEF linux}
+    if not {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(Filename,
+      {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then 
+    begin
+      case LinuxError of
+      sys_eacces: AText:='execute access denied for "'+Filename+'"';
+      sys_enoent: AText:='a directory component in "'+Filename+'"'
+                            +' does not exist or is a dangling symlink';
+      sys_enotdir: AText:='a directory component in "'+Filename+'"'
+                            +' is not a directory';
+      sys_enomem: AText:='insufficient memory';
+      sys_eloop: AText:='"'+Filename+'" has a circular symbolic link';
+      else
+        AText:='unable to execute "'+Filename+'"';
+      end;
+      MessageDlg('Error executing tool',
+        AText, mtError, [mbOk], 0);
+      exit;
+    end;
+    {$ENDIF linux}
     try
       TheProcess:=TProcess.Create(Filename+' '+Params,[poRunSuspended,
         poUsePipes, poNoConsole]);

@@ -380,6 +380,13 @@ var
 implementation
 
 uses
+ {$IFDEF Linux}
+ {$IFDEF Ver1_0}
+  Linux,
+ {$ELSE}
+  Unix,
+ {$ENDIF}     
+ {$ENDIF}
   ViewUnit_dlg, Math, LResources, Designer;
 
 
@@ -3562,6 +3569,26 @@ writeln('[TMainIDE.DoRunProject] A');
       begin
         try
           writeln('  EXECUTING "',ProgramFilename,'"');
+          // TProcess does not report, if a program can not be executed
+          // to get good error messages consider the OS
+          {$IFDEF linux}
+          if not {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(ProgramFilename,
+            {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then 
+          begin
+            case LinuxError of
+            sys_eacces: AText:='execute access denied for "'+ProgramFilename+'"';
+            sys_enoent: AText:='a directory component in "'+ProgramFilename+'"'
+                                  +' does not exist or is a dangling symlink';
+            sys_enotdir: AText:='a directory component in "'+ProgramFilename+'"'
+                                  +' is not a directory';
+            sys_enomem: AText:='insufficient memory';
+            sys_eloop: AText:='"'+ProgramFilename+'" has a circular symbolic link';
+            else
+              AText:='unable to execute "'+ProgramFilename+'"';
+            end;
+            raise Exception.Create(AText);
+          end;
+          {$ENDIF linux}
           TheProcess:=TProcess.Create(ProgramFilename,
              [poRunSuspended,poUsePipes,poNoConsole]);
         
@@ -4756,6 +4783,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.154  2001/11/21 12:51:00  lazarus
+  MG: added some more error messages for TProcess
+
   Revision 1.153  2001/11/20 19:39:45  lazarus
   MG: DoRunProject writes the programfilename
 
