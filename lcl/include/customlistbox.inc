@@ -458,6 +458,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomListBox.ItemAtPos(const Pos: TPoint; Existing: Boolean
+    ): Integer;
+
+  Returns item index at y coordinate (including scrolling)
+------------------------------------------------------------------------------}
+function TCustomListBox.ItemAtPos(const Pos: TPoint; Existing: Boolean
+  ): Integer;
+begin
+  Result:=GetIndexAtY(Pos.Y);
+  if Existing then begin
+    if Result>=Items.Count then Result:=-1;
+  end else begin
+    if (Result<0) and (Result>Items.Count) and PtInRect(ClientRect,Pos) then
+      Result:=Items.Count;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   function TCustomListBox.ItemRect(Index: Integer): TRect;
   
   Returns coordinates of an item (including scrolling)

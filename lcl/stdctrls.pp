@@ -383,6 +383,7 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     function GetIndexAtY(Y: integer): integer;
+    function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
     procedure Clear;
   public
@@ -1467,6 +1468,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.116  2004/01/12 15:04:41  mattias
+  implemented TCustomListBox.ItemAtPos
+
   Revision 1.115  2004/01/11 11:57:54  mattias
   implemented TCustomListBox.ItemRect for gtk1 intf
 
