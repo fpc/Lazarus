@@ -1080,6 +1080,7 @@ begin
   AddAttribute(fSymbolAttri);
   {$IFDEF SYN_LAZARUS}
   fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective);
+  fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
   {$ENDIF}
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);

@@ -706,10 +706,10 @@ begin
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
     SampleSource:=
-      '{ Comment }'#13+
+      ' { Comment }'#13+
       '{$R- compiler directive}'#13+
       'procedure TForm1.Button1Click(Sender: TObject);'#13+
-      'var'#13+
+      'var  // Delphi Comment'#13+
       '  Number, I, X: Integer;'#13+
       'begin'#13+
       '  Number := 12345;'#13+
@@ -1870,8 +1870,8 @@ begin
   // initialize previews
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
     PreviewEdits[a]:=nil;
-  PreviewSyn:=GetHighlighter(TPreviewPasSyn,
-              GetCurColorScheme(TPreviewPasSyn.GetLanguageName),true);
+  s:=GetCurColorScheme(TPreviewPasSyn.GetLanguageName);
+  PreviewSyn:=GetHighlighter(TPreviewPasSyn,s,true);
   CurLanguageID:=EditorOpts.HighlighterList.FindByClass(
     TCustomSynClass(PreviewSyn.ClassType));
 
@@ -1879,14 +1879,15 @@ begin
   PreviewEdits[2]:=ColorPreview;
   PreviewEdits[3]:=CodeTemplateCodePreview;
   for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
-    if PreviewEdits[a]<>nil then with PreviewEdits[a] do begin
-      if EditorOpts.UseSyntaxHighlight then
-        Highlighter:=PreviewSyn;
-      EditorOpts.GetSynEditSettings(PreviewEdits[a]);
-      EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
-      if a<>3 then
-        Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
-    end;
+    if PreviewEdits[a]<>nil then
+      with PreviewEdits[a] do begin
+        if EditorOpts.UseSyntaxHighlight then
+          Highlighter:=PreviewSyn;
+        EditorOpts.GetSynEditSettings(PreviewEdits[a]);
+        EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
+        if a<>3 then
+          Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
+      end;
   end;
   CodeTemplateCodePreview.Gutter.Visible:=false;
 
