@@ -55,6 +55,7 @@ const
   GM_SETGRID    = LM_USER + 102;
   GM_SETPOS     = LM_USER + 103;
   GM_SELECTALL  = LM_USER + 104;
+  GM_SETMASK    = LM_USER + 105;
 
 const
   CA_LEFT     =   $1;
@@ -153,17 +154,21 @@ type
  type
 
   { Default cell editor for TStringGrid }
-  TStringCellEditor=class(TCustomEdit)
+  TStringCellEditor=class(TCustomMaskEdit)
   private
     FGrid: TCustomGrid;
   protected
     //procedure WndProc(var TheMessage : TLMessage); override;
+    procedure Change; override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure msg_SetMask(var Msg: TGridMessage); message GM_SETMASK;
     procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
   end;
+  
+  
   
   TOnDrawCell =
     procedure(Sender: TObject; Col, Row: Integer; aRect: TRect;
@@ -289,7 +294,6 @@ type
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     procedure CacheVisibleGrid;
     procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
-    function  ColRowToOffset(IsCol,Fisical:Boolean; index: Integer; var Ini,Fin:Integer): Boolean;
     function  doColSizing(X,Y: Integer): Boolean;
     function  doRowSizing(X,Y: Integer): Boolean;
     procedure doColMoving(X,Y: Integer);
@@ -298,7 +302,6 @@ type
     procedure EditorGetValue;
     procedure EditorHide;
     procedure EditorPos;
-    procedure EditorReset;
     procedure EditorSelectAll;
     procedure EditorShowChar(Ch: Char);
     procedure EditorSetMode(const AValue: Boolean);
@@ -316,7 +319,8 @@ type
     function  GetVisibleGrid: TRect;
     function  GetVisibleRowCount: Integer;
     procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Ts: TTextStyle);
-    function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
+    procedure ReadColWidths(Reader: TReader);
+    procedure ReadRowHeights(Reader: TReader);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetCol(Valor: Integer);
@@ -343,6 +347,8 @@ type
     procedure SetTopRow(const AValue: Integer);
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
+    procedure WriteColWidths(Writer: TWriter);
+    procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     procedure WMChar(var message: TLMChar); message LM_CHAR;
@@ -353,10 +359,12 @@ type
     procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
     procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
+    function  ColRowToOffset(IsCol,Fisical:Boolean; index: Integer; var Ini,Fin:Integer): Boolean;
     procedure ColWidthsChanged; dynamic;
     procedure CreateWnd; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DblClick; override;
+    procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
     procedure doExit; override;
     procedure doEnter; override;
@@ -371,11 +379,13 @@ type
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect; aState:TGridDrawstate); virtual;
     //procedure DrawInteriorCells; virtual;
     procedure DrawRow(aRow: Integer); virtual;
-    procedure EditorCancel; virtual;
     procedure EditordoGetValue; virtual;
     procedure EditordoSetValue; virtual;
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
+    function  GetEditMask(ACol, ARow: Longint): string; dynamic;
+    function  GetEditText(ACol, ARow: Longint): string; dynamic;
+    procedure SetEditText(ACol, ARow: Longint; const Value: string); dynamic;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
@@ -392,6 +402,7 @@ type
     function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
     procedure MoveSelection; virtual;
+    function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
     procedure Paint; override;
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
     procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
@@ -487,13 +498,19 @@ type
     procedure SortColRow(IsColumn: Boolean; index,FromIndex,ToIndex: Integer); overload;
   end;
 
+  TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
+  TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
+
   TDrawGrid=class(TCustomGrid)
   private
     FOnColRowDeleted: TgridOperationEvent;
     FOnColRowExchanged: TgridOperationEvent;
     FOnColRowMoved: TgridOperationEvent;
+    FOnGetEditMask: TGetEditEvent;
+    FOnGetEditText: TGetEditEvent;
     FOnHeaderClick: THdrEvent;
     FOnSelectCell: TOnSelectcellEvent;
+    FOnSetEditText: TSetEditEvent;
   protected
     FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
@@ -504,8 +521,11 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect; aState: TGridDrawstate); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
+    function  GetEditMask(aCol, aRow: Longint): string; override;
+    function  GetEditText(aCol, aRow: Longint): string; override;
     function  SelectCell(aCol,aRow: Integer): boolean; override;
     procedure SetColor(Value: TColor); override;
+    procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
   public
   
@@ -581,6 +601,8 @@ type
     property OnDrawCell;
     property OnEnter;
     property OnExit;
+    property OnGetEditMask: TGetEditEvent read FOnGetEditMask write FOnGetEditMask;
+    property OnGetEditText: TGetEditEvent read FOnGetEditText write FOnGetEditText;
     property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
     property OnKeyDown;
     property OnKeyPress;
@@ -591,16 +613,15 @@ type
     property OnSelectEditor;
     property OnSelection;
     property OnSelectCell: TOnSelectCellEvent read FOnSelectCell write FOnSelectCell;
+    property OnSetEditText: TSetEditEvent read FOnSetEditText write FOnSetEditText;
     property OnTopleftChanged;
+
 {
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDock;
     property OnEndDrag;
-    property OnGetEditMask: TGetEditEvent read FOnGetEditMask write FOnGetEditMask;
-    property OnGetEditText: TGetEditEvent read FOnGetEditText write FOnGetEditText;
-    property OnSetEditText: TSetEditEvent read FOnSetEditText write FOnSetEditText;
     property OnStartDock;
     property OnStartDrag;
     property OnMouseWheelDown;
@@ -625,10 +646,13 @@ type
       procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
       procedure EditordoGetValue; override;
       procedure EditordoSetValue; override;
+      function  GetEditText(aCol, aRow: Integer): string; override;
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
       procedure SaveContent(cfg: TXMLConfig); override;
       //procedure DrawInteriorCells; override;
       procedure SelectEditor; override;
+      procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
+
     public
       constructor Create(AOWner: TComponent); override;
       destructor Destroy; override;
@@ -1620,11 +1644,6 @@ begin
   WriteLn(S, 'X=',P.X,' Y=',P.Y);
 end;
 
-procedure register;
-begin
-  RegisterComponents('Additional',[TStringGrid,TDrawGrid]);
-end;
-
 procedure TCustomGrid.DrawCellGrid(Rect: TRect; aCol,aRow: Integer; aState: TGridDrawState);
 var
   dv,dh: Boolean;
@@ -1705,6 +1724,30 @@ begin
     //GetClipBox(Canvas.Handle, @Rtmp);
     //DebugRect('end Rect = ', Rtmp);
     DeleteObject(tmpRGN);
+  end;
+end;
+
+procedure TCustomGrid.ReadColWidths(Reader: TReader);
+var
+  i: integer;
+begin
+  with Reader do begin
+    ReadListBegin;
+    for i:=0 to ColCount-1 do
+      ColWidths[I] := ReadInteger;
+    ReadListEnd;
+  end;
+end;
+
+procedure TCustomGrid.ReadRowHeights(Reader: TReader);
+var
+  i: integer;
+begin
+  with Reader do begin
+    ReadListBegin;
+    for i:=0 to RowCount-1 do
+      RowHeights[I] := ReadInteger;
+    ReadListEnd;
   end;
 end;
 
@@ -1952,6 +1995,30 @@ begin
               Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight);
       end;
   end; {if FUpd...}
+end;
+
+procedure TCustomGrid.WriteColWidths(Writer: TWriter);
+var
+  i: Integer;
+begin
+  with writer do begin
+    WriteListBegin;
+    for i:=0 to ColCount-1 do
+      WriteInteger(ColWidths[i]);
+    WriteListEnd;
+  end;
+end;
+
+procedure TCustomGrid.WriteRowHeights(Writer: TWriter);
+var
+  i: integer;
+begin
+  with writer do begin
+    WriteListBegin;
+    for i:=0 to RowCount-1 do
+      WriteInteger(RowHeights[i]);
+    WriteListEnd;
+  end;
 end;
 
 procedure TCustomGrid.CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -2280,7 +2347,7 @@ begin
 
   if not FGCache.ValidGrid then Exit;
   if not (ssLeft in Shift) then Exit;
-  if csDesigning in componentState then Exit;
+  //if csDesigning in componentState then Exit;
 
   {$IfDef dbgFocus} WriteLn('MouseDown INIT'); {$Endif}
   
@@ -2313,7 +2380,7 @@ begin
         FSplitter.X:=Y;
       end;
     gzNormal:
-      begin
+      if Not (csDesigning in componentState) then begin
         fGridState:=gsSelecting;
         FSplitter:=MouseToCell(Point(X,Y));
 
@@ -2427,6 +2494,39 @@ begin
   end
   else
     Inherited DblClick;
+end;
+
+procedure TCustomGrid.DefineProperties(Filer: TFiler);
+  function SonIguales(L1,L2: TList): boolean;
+  var
+    i: Integer;
+  begin
+    Result:=False; // store by default
+    for i:=0 to L1.Count-1 do begin
+      Result:=L1[i]=L2[i];
+      if Not Result then break;
+    end;
+  end;
+  function NeedWidths: boolean;
+  begin
+    if Filer.Ancestor <> nil then
+      Result := not SonIguales(TCustomGrid(Filer.Ancestor).FCols, FCols)
+    else
+      Result := True;
+  end;
+  function NeedHeights: boolean;
+  begin
+    if Filer.Ancestor <> nil then
+      Result := not SonIguales(TCustomGrid(Filer.Ancestor).FRows, FRows)
+    else
+      Result := True;
+  end;
+begin
+  inherited DefineProperties(Filer);
+  with Filer do begin
+    DefineProperty('ColWidths',  @ReadColWidths,  @WriteColWidths,  NeedWidths);
+    DefineProperty('RowHeights', @ReadRowHeights, @WriteRowHeights, NeedHeights);
+  end;
 end;
 
 procedure TCustomGrid.DestroyHandle;
@@ -2587,9 +2687,11 @@ var
   gz: TGridZone;
 begin
   Gz:=MouseToGridZone(Mouse.x, Mouse.y, False);
-  if gz=gzNormal then Result:=MouseToCell(Mouse)
-  else begin
-    Result:=MouseToCell(Mouse);
+  Result:=MouseToCell(Mouse);
+  //if gz=gzNormal then Result:=MouseToCell(Mouse)
+  //else begin
+  if gz<>gzNormal then begin
+    //Result:=MouseToCell(Mouse);
     if (gz=gzFixedRows)or(gz=gzFixedCells) then begin
       Result.x:= fTopLeft.x-1;
       if Result.x<FFixedCols then Result.x:=FFixedCols;
@@ -2754,22 +2856,36 @@ var
   WillVis: Boolean;
 begin
   WillVis:=(FEditor<>nil)and EditorShouldEdit;
-
   if WillVis or WasVis then begin
     if not WillVis then HideLastEditor else
     if not WasVis then  EditorShow
     else begin
+      {
+      LastEditor.Visible:=False;
+      lastEditor.Parent:=nil;
+      FEditorMode:=False;
+      EditorShow;
+      }
+      HideLastEditor;
+      EditorShow;
+      {
       if LastEditor=FEditor then begin
+        // only to swap DCol<->FCol and DRow<->FRow
+        // Hide editor in old position
         RestoreEditor;
         EditordoGetValue;
         RestoreEditor;
+        // Move Editor to new position and set its value
         EditorPos;
         EditordoSetValue;
       end else begin
+        // Hide old editor type a
         LastEditor.Visible:=False;
         lastEditor.Parent:=nil;
+        // Show new editor type b
         EditorShow;
       end;
+      }
     end;
   end;
 end;
@@ -2857,36 +2973,41 @@ end;
 
 procedure TCustomGrid.EditorHide;
 begin
-  if (Editor<>nil) and Editor.HandleAllocated and Editor.Visible then begin
-    if not FEditorHiding then begin
-      {$IfDef dbgFocus} WriteLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}
-      FEditorHiding:=True;
-      Editor.Visible:=False;
-      Editor.Parent:=nil;
-      LCLIntf.SetFocus(Self.Handle);
-      FEDitorHiding:=False;
-      {$IfDef dbgFocus} WriteLn('EditorHide FIN'); {$Endif}
-    end;
+  if not FEditorHiding and (Editor<>nil) and Editor.HandleAllocated and Editor.Visible then
+  begin
+    FEditorMode:=False;
+    {$IfDef dbgFocus} WriteLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}
+    FEditorHiding:=True;
+    Editor.Visible:=False;
+    Editor.Parent:=nil;
+    LCLIntf.SetFocus(Self.Handle);
+    FEDitorHiding:=False;
+    {$IfDef dbgFocus} WriteLn('EditorHide FIN'); {$Endif}
   end;
 end;
 
 procedure TCustomGrid.EditorShow;
 begin
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then exit;
+  if not HandleAllocated then
+    Exit;
   
-  if (goEditing in Options) then
-    if (Editor<>nil) and not Editor.Visible then begin
-      if not FEditorShowing then begin
-        {$IfDef dbgFocus} WriteLn('EditorShow INIT FCol=',FCol,' FRow=',FRow);{$Endif}
-        FEditorShowing:=True;
-        ScrollToCell(FCol,FRow);
-        EditorReset;
-        LCLIntf.SetFocus(Editor.Handle);
-        FEditorShowing:=False;
-        InvalidateCell(FCol,FRow,True);
-        {$IfDef dbgFocus} WriteLn('EditorShow FIN');{$Endif}
-      end;
-    end;
+  if (goEditing in Options) and
+     not FEditorShowing and (Editor<>nil) and not Editor.Visible then
+  begin
+    {$IfDef dbgFocus} WriteLn('EditorShow INIT FCol=',FCol,' FRow=',FRow);{$Endif}
+    FEditorMode:=True;
+    FEditorShowing:=True;
+    
+    ScrollToCell(FCol,FRow);
+    EditorSetValue;
+    Editor.Parent:=Self;
+    Editor.Visible:=True;
+    LCLIntf.SetFocus(Editor.Handle);
+    InvalidateCell(FCol,FRow,True);
+    FEditorShowing:=False;
+    {$IfDef dbgFocus} WriteLn('EditorShow FIN');{$Endif}
+  end;
 end;
 
 procedure TCustomGrid.EditorPos;
@@ -2909,13 +3030,6 @@ begin
       FEditor.Dispatch(Msg);
     end;
   end;
-end;
-
-procedure TCustomGrid.EditorReset;
-begin
-  EditorSetValue;
-  Editor.Parent:=Self;
-  Editor.Visible:=True;
 end;
 
 procedure TCustomGrid.EditorSelectAll;
@@ -3026,9 +3140,10 @@ end;
 
 procedure TCustomGrid.EditorSetMode(const AValue: Boolean);
 begin
-  if not AValue then
-    EditorCancel
-  else
+  if not AValue then begin
+    EditorHide;
+    //SetFocus;
+  end else
   begin
     EditorShow;
   end;
@@ -3037,6 +3152,20 @@ end;
 function TCustomGrid.GetSelectedColor: TColor;
 begin
   Result:=FSelectedColor;
+end;
+
+function TCustomGrid.GetEditMask(ACol, ARow: Longint): string;
+begin
+  result:='';
+end;
+
+function TCustomGrid.GetEditText(ACol, ARow: Longint): string;
+begin
+  result:='';
+end;
+
+procedure TCustomGrid.SetEditText(ACol, ARow: Longint; const Value: string);
+begin
 end;
 
 procedure TCustomGrid.SetSelectedColor(const AValue: TColor);
@@ -3058,12 +3187,6 @@ end;
 function TCustomGrid.GetFixedcolor: TColor;
 begin
   result:=FFixedColor;
-end;
-
-procedure TCustomGrid.EditorCancel;
-begin
-  EditorHide;
-  SetFocus;
 end;
 
 procedure TCustomGrid.ColWidthsChanged;
@@ -3578,6 +3701,7 @@ begin
   else             FRows.ExchangeColRow(True, index, WithIndex);
 end;
 
+
 {
 procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
 begin
@@ -3613,6 +3737,13 @@ begin
 end;
 }
 { TStringCellEditor }
+
+procedure TStringCellEditor.Change;
+begin
+  inherited Change;
+  if FGrid<>nil then FGrid.SetEditText(FGrid.Col, FGrid.Row, Text);
+end;
+
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
   procedure doInherited;
   begin
@@ -3644,6 +3775,11 @@ begin
   {$IfDef dbg}
   WriteLn('FIN: Key=',Key,' SelStart=',SelStart,' SelLenght=',SelLength);
   {$Endif}
+end;
+
+procedure TStringCellEditor.msg_SetMask(var Msg: TGridMessage);
+begin
+  EditMask:=msg.Value;
 end;
 
 
@@ -3679,6 +3815,7 @@ end;
 procedure TDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
   aState:TGridDrawState);
 begin
+  PrepareCanvas(aCol, aRow, aState);
   if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then
     OnDrawCell(Self,aCol,aRow,aRect,aState)
   else
@@ -3739,6 +3876,23 @@ begin
   if Assigned(OnHeaderClick) then OnHeaderClick(Self, IsColumn, index);
 end;
 
+function TDrawGrid.GetEditMask(aCol, aRow: Longint): string;
+begin
+  result:='';
+  if assigned(OnGetEditMask) then OnGetEditMask(self, aCol, aRow, Result);
+end;
+
+function TDrawGrid.GetEditText(aCol, aRow: Longint): string;
+begin
+  result:='';
+  if assigned(OnGetEditText) then OnGetEditText(self, aCol, aRow, Result);
+end;
+
+procedure TDrawGrid.SetEditText(ACol, ARow: Longint; const Value: string);
+begin
+  if Assigned(OnSetEditText) then OnSetEditText(Self, aCol, aRow, Value);
+end;
+
 procedure TDrawGrid.SizeChanged(OldColCount, OldRowCount: Integer);
 begin
   if OldColCount<>ColCount then fGrid.ColCount:=ColCOunt;
@@ -3779,8 +3933,6 @@ end;
 procedure TDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
 begin
-  PrepareCanvas(aCol, aRow, aState);
-  
   if DefaultDrawing or (csDesigning in ComponentState) then
     Canvas.TextStyle.Clipping:=False;
 
@@ -3857,8 +4009,14 @@ begin
 end;
 
 procedure TStringGrid.SetCols(index: Integer; const AValue: TStrings);
+var
+  i: Integer;
 begin
-
+  if Avalue=nil then exit;
+  for i:=0 to AValue.Count-1 do begin
+    Cells[index, i]:= AValue[i];
+    Objects[Index, i]:= AValue.Objects[i];
+  end;
 end;
 
 procedure TStringGrid.SetObjects(ACol, ARow: Integer; AValue: TObject);
@@ -3875,8 +4033,14 @@ begin
 end;
 
 procedure TStringGrid.SetRows(index: Integer; const AValue: TStrings);
+var
+  i: Integer;
 begin
-
+  if Avalue=nil then exit;
+  for i:=0 to AValue.Count-1 do begin
+    Cells[i, index]:= AValue[i];
+    Objects[i, Index]:= AValue.Objects[i];
+  end;
 end;
 
 procedure TStringGrid.AutoAdjustColumn(aCol: Integer);
@@ -3925,6 +4089,7 @@ procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 var
   S: string;
+  ts: TTextStyle;
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
   S:=Cells[aCol,aRow];
@@ -3940,13 +4105,12 @@ begin
     Msg.MsgID:=GM_GETVALUE;
     Msg.grid:=Self;
     Msg.Col:=FCol;
-    msg.Row:=FRow;
-    msg.Value:=Cells[FCol,FRow];
+    Msg.Row:=FRow;
+    Msg.Value:=Cells[FCol,FRow]; // default value
     FEditor.Dispatch(Msg);
-    Cells[FCol,FRow]:=msg.Value;
-    //FEditor.Perform(GM_GETVALUE, Integer(Self), Integer(@Msg));
+    SetEditText(FCol, FRow, msg.Value);
+    //Cells[FCol,FRow]:=msg.Value;
   end;
-  //inherited EditorGetValue;
 end;
 
 procedure TStringGrid.EditordoSetValue;
@@ -3954,14 +4118,27 @@ var
   msg: TGridMessage;
 begin
   if FEditor<>nil then begin
+    // Set the editor mask
+    Msg.MsgID:=GM_SETMASK;
+    Msg.Grid:=Self;
+    Msg.Col:=FCol;
+    Msg.Row:=FRow;
+    Msg.Value:=GetEditMask(FCol, FRow);
+    FEditor.Dispatch(Msg);
+    // Set the editor value
     Msg.MsgID:=GM_SETVALUE;
     Msg.Grid:=Self;
     Msg.Col:=FCol;
     Msg.Row:=FRow;
-    Msg.Value:=Cells[FCol,FRow];
+    Msg.Value:=GetEditText(Fcol, FRow); //Cells[FCol,FRow];
     FEditor.Dispatch(Msg);
   end;
-  //inherited EditorSetValue;
+end;
+
+function TStringGrid.GetEditText(aCol, aRow: Integer): string;
+begin
+  Result:=Cells[aCol, aRow];
+  if Assigned(OnGetEditText) then OnGetEditText(Self, aCol, aRow, result);
 end;
 
 procedure TStringGrid.SaveContent(cfg: TXMLConfig);
@@ -4064,6 +4241,12 @@ begin
   inherited SelectEditor;
 end;
 
+procedure TStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
+begin
+  if Cells[aCol, aRow]<>aValue Then Cells[aCol, aRow]:= aValue;
+  inherited SetEditText(aCol, aRow, aValue);
+end;
+
 constructor TStringGrid.Create(AOWner: TComponent);
 begin
   inherited Create(AOWner);
@@ -4076,6 +4259,7 @@ begin
   end else begin
     FDefEditor:=nil;
   end;
+  Canvas.TextStyle.Layout:=tlCenter;
 end;
 
 destructor TStringGrid.Destroy;
@@ -4088,9 +4272,23 @@ begin
   inherited Destroy;
 end;
 
+
+procedure Register;
+begin
+  RegisterComponents('Additional',[TStringGrid,TDrawGrid]);
+end;
+
 end.
 
 {  The_Log
+VERSION: 0.8.6:
+----------------
+Date: 20-Dic-2003
+- Added GetEditText, GetEditMask, SetEditText and events OnGetEditText, OnGetEditMask, OnSetEditText
+- Added ColWidths and RowHeights lfm storing
+- Changed Default CellEditor from TCustomEdit to TCustomMaskEdit
+- Added Test StringGridEditor (enabled with -dWithGridEditor)
+
 VERSION: 0.8.5:
 ----------------
 Date: 15-Sept-2003

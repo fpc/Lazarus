@@ -27,7 +27,8 @@ unit ComponentEditors;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls, PropEdits, Menus, ExtCtrls;
+  Classes, SysUtils, TypInfo, Forms, Controls, Menus, ExtCtrls, Grids, Buttons,
+  PropEdits, ObjInspStrConsts;
 
 
 { TComponentEditorDesigner }
@@ -218,9 +219,23 @@ type
     function Notebook: TCustomNotebook; override;
     function Page: TCustomPage; virtual;
   end;
-  
-{ Register a component editor to be created when a component derived from
-  ComponentClass is the only selection in the designer }
+
+
+{ TStringGridComponentEditor
+  The default componenteditor for TStringGrid }
+
+  TStringGridComponentEditor = class(TDefaultComponentEditor)
+  protected
+    procedure DoShowEditor;
+    procedure AssignGrid(dstGrid, srcGrid: TStringGrid);
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+  end;
+
+
+{ Register a component editor }
 type
   TRegisterComponentEditorProc =
     procedure (ComponentClass: TComponentClass;
@@ -647,6 +662,159 @@ begin
   Result:=TCustomPage(GetComponent);
 end;
 
+{ TStringGridEditorDlg }
+
+Type
+  TStringGridEditorDlg=Class(TForm)
+  private
+    FGrid: TStringGrid;
+    procedure OnFixedRows(Sender: TObject);
+    procedure OnFixedCols(Sender: TObject);
+  public
+    constructor create(AOwner: TComponent); override;
+  end;
+
+procedure TStringGridEditorDlg.OnFixedRows(Sender: TObject);
+begin
+  FGrid.FixedRows := FGrid.FixedRows + 1 - 2 * (Sender as TComponent).Tag;
+end;
+
+procedure TStringGridEditorDlg.OnFixedCols(Sender: TObject);
+begin
+  FGrid.FixedCols := FGrid.FixedCols + 1 - 2 * (Sender as TComponent).Tag;
+end;
+
+constructor TStringGridEditorDlg.create(AOwner: TComponent);
+begin
+  inherited create(AOwner);
+  BorderStyle:=bsDialog;
+  SetBounds(0,0,350,320);
+  Position :=poScreenCenter;
+  Caption  :=cesStringGridEditor2;
+
+  FGrid:=TStringGrid.Create(Self);
+  FGrid.Parent:=Self;
+  FGrid.SetBounds(5,5,Width-15, 250);
+  FGrid.FixedCols:=0;
+  FGrid.FixedRows:=0;
+  FGrid.Options:=Fgrid.Options + [goEditing,goColSizing,goRowSizing];
+
+  With TButton.Create(Self) do begin
+    parent:=self;
+    SetBounds(5, FGrid.Top + Fgrid.Height + 10, 80, 18);
+    Tag:=0;
+    Caption:='+ FixedRows';
+    OnClick:=@OnFixedRows;
+  end;
+  With TButton.Create(Self) do begin
+    parent:=self;
+    SetBounds(5, FGrid.Top + Fgrid.Height + 30, 80, 18);
+    Tag:=1;
+    Caption:='- FixedRows';
+    OnClick:=@OnFixedRows;
+  end;
+  With TButton.Create(Self) do begin
+    parent:=self;
+    SetBounds(90, FGrid.Top + Fgrid.Height + 10, 80, 18);
+    Tag:=0;
+    Caption:='+ FixedCols';
+    OnClick:=@OnFixedCols;
+  end;
+  With TButton.Create(Self) do begin
+    parent:=self;
+    Left:=90;
+    SetBounds(90, FGrid.Top + Fgrid.Height + 30, 80, 18);
+    Tag:=1;
+    Caption:='- FixedCols';
+    OnClick:=@OnFixedCols;
+  end;
+
+  //Bnt Ok
+  With TBitBtn.Create(self) do
+  begin
+    Left  := 240;
+    Top   := FGrid.Top + Fgrid.Height + 5;
+    Width := 99;
+    Kind  := bkOk;
+    Parent:= self;
+  end;
+
+  //Bnt Cancel
+  With TBitBtn.Create(self) do
+  begin
+    Left  := 240;
+    Top   := FGrid.Top + Fgrid.Height + height + 5;
+    Width := 99;
+    Kind  := bkCancel;
+    Parent:= self;
+  end;
+
+  // Save/load buttons
+end;
+
+{ TStringGridComponentEditor }
+
+procedure TStringGridComponentEditor.DoShowEditor;
+Var Dlg : TStringGridEditorDlg;
+    Hook: TPropertyEditorHook;
+    aGrid: TStringGrid;
+begin
+  Dlg:=TStringGridEditorDlg.Create(Application);
+  try
+    If GetComponent is TStringGrid then
+    begin
+      aGrid:=TStringGrid(GetComponent);
+      GetHook(Hook);
+      AssignGrid(Dlg.FGrid, aGrid);
+
+      //ShowEditor
+      if Dlg.ShowModal=mrOK then
+      begin
+        //Apply the modifications
+        AssignGrid(aGrid, Dlg.FGrid);
+        //not work :o( aImg.AddImages(Dlg.fGrid);
+        if Assigned(Hook) then
+          Hook.Modified(Self);
+      end;
+    end;
+  finally
+    Dlg.Free;
+  end;
+end;
+
+procedure TStringGridComponentEditor.AssignGrid(dstGrid, srcGrid: TStringGrid);
+var
+  i,j: integer;
+begin
+  DstGrid.BeginUpdate;
+  DstGrid.Clear;
+  Dstgrid.ColCount:=srcGrid.ColCount;
+  DstGrid.RowCount:=srcGrid.RowCount;
+  DstGrid.FixedRows:=srcGrid.FixedRows;
+  Dstgrid.FixedCols:=srcGrid.FixedCols;
+  for i:=0 to srcGrid.RowCount-1 do DstGrid.RowHeights[i]:=srcGrid.RowHeights[i];
+  for i:=0 to srcGrid.ColCount-1 do DstGrid.ColWidths[i]:=srcGrid.ColWidths[i];
+  for i:=0 to srcGrid.ColCount-1 do
+    for j:=0 to srcGrid.RowCount-1 do
+      if srcGrid.Cells[i,j]<>'' then dstGrid.Cells[i,j]:=srcGrid.Cells[i,j];
+  DstGrid.EndUpdate(uoFull);
+end;
+
+procedure TStringGridComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  doShowEditor;
+end;
+
+function TStringGridComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result:=cesStringGridEditor;
+end;
+
+function TStringGridComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
 //------------------------------------------------------------------------------
 
 procedure InternalFinal;
@@ -667,7 +835,8 @@ initialization
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage,TPageComponentEditor);
-  
+  RegisterComponentEditor(TStringGrid,TStringGridComponentEditor);
+
 finalization
   InternalFinal;
 

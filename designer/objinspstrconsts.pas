@@ -25,7 +25,6 @@ resourcestring
   oiscDelete = '&Delete';
   oisUnknown = 'Unknown';
 
-  // component editors commands
   oisProperties='Properties';
   oisEvents='Events';
 
@@ -46,6 +45,11 @@ resourcestring
   sccsILBtnAdd     = 'Add ...';
   sccsILBtnClear   = 'Clear';
   sccsILConfirme   = 'Confirme clear all images ?';
+
+  // component editors
+  cesStringGridEditor = 'StringGrid Editor ...';
+  cesStringGridEditor2 = 'StringGrid Editor';
+
 
 implementation
 
