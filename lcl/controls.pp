@@ -516,7 +516,6 @@ type
     Procedure UpdateTaborder(value : TTabOrder);
   protected
     AutoSizing : Boolean;
-
     FControlState: TControlState;
     procedure AdjustSize; dynamic;
     procedure DoAutoSize; Virtual;
@@ -629,6 +628,7 @@ type
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
     function HasParent : Boolean; override;
+    function IsParentOf(AControl: TControl): boolean; virtual;
     procedure Refresh;
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
@@ -962,6 +962,7 @@ function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) :
 Function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const Pos : TPoint) : TWinControl;
 Function FindControl(Handle : hwnd) : TWinControl;
+function FindLCLControl(const ScreenPos : TPoint) : TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
 Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
@@ -1033,6 +1034,21 @@ begin
   if Handle <> 0 
   then Result := TWinControl(GetProp(Handle,'WinControl'))
   else Result := nil;
+end;
+
+function FindLCLControl(const ScreenPos : TPoint) : TControl;
+var
+  AWinControl: TWinControl;
+  ClientPos: TPoint;
+begin
+  Result:=nil;
+  // find wincontrol at mouse cursor
+  AWinControl:=FindLCLWindow(ScreenPos);
+  if AWinControl=nil then exit;
+  // find control at mouse cursor
+  ClientPos:=AWinControl.ScreenToClient(ScreenPos);
+  Result:=AWinControl.ControlAtPos(ClientPos,true);
+  if Result=nil then Result:=AWinControl;
 end;
 
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
@@ -1386,6 +1402,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2002/11/04 19:49:35  lazarus
+  MG: added persistent hints for main ide bar
+
   Revision 1.85  2002/11/03 22:40:28  lazarus
   MG: fixed ControlAtPos
 
