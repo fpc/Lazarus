@@ -171,14 +171,14 @@ Begin
   $000E: Result := 'WM_GETTEXTLENGTH';
   $000F: Result := 'WM_PAINT';
   $0010: Result := 'WM_CLOSE';
-  $0011: Result := 'WM_QUERYEndSESSION';
+  $0011: Result := 'WM_QUERYENDSESSION';
   $0012: Result := 'WM_QUIT';
   $0013: Result := 'WM_QUERYOPEN';
   $0014: Result := 'WM_ERASEBKGND';
   $0015: Result := 'WM_SYSCOLORCHANGE';
   $0016: Result := 'WM_EndSESSION';
   $0017: Result := 'WM_SYSTEMERROR';
-  $0018: Result := 'WM_SHOWWINDoW';
+  $0018: Result := 'WM_SHOWWINDOW';
   $0019: Result := 'WM_CTLCOLOR';
   $001A: Result := 'WM_WININICHANGE or WM_SETTINGCHANGE';
   $001B: Result := 'WM_DEVMODECHANGE';
@@ -208,19 +208,19 @@ Begin
   $0039: Result := 'WM_COMPAREITEM';
   $003D: Result := 'WM_GETOBJECT';
   $0041: Result := 'WM_COMPACTING';
-  $0044: Result := 'WM_COMMNOTIfY { obsolete in Win32}';
+  $0044: Result := 'WM_COMMNOTIFY { obsolete in Win32}';
   $0046: Result := 'WM_WINDOWPOSCHANGING';
   $0047: Result := 'WM_WINDOWPOSCHANGED';
   $0048: Result := 'WM_POWER';
   $004A: Result := 'WM_COPYDATA';
   $004B: Result := 'WM_CANCELJOURNAL';
-  $004E: Result := 'WM_NOTIfY';
+  $004E: Result := 'WM_NOTIFY';
   $0050: Result := 'WM_INPUTLANGCHANGEREQUEST';
   $0051: Result := 'WM_INPUTLANGCHANGE';
   $0052: Result := 'WM_TCARD';
   $0053: Result := 'WM_HELP';
   $0054: Result := 'WM_USERCHANGED';
-  $0055: Result := 'WM_NOTIfYFORMAT';
+  $0055: Result := 'WM_NOTIFYFORMAT';
   $007B: Result := 'WM_CONTEXTMENU';
   $007C: Result := 'WM_STYLECHANGING';
   $007D: Result := 'WM_STYLECHANGED';
@@ -899,6 +899,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.5  2002/01/18 09:07:44  lazarus
+  Keith: Fixed menu creation
+
   Revision 1.4  2002/01/17 03:17:44  lazarus
   Keith: Fixed TPage creation
 

@@ -107,7 +107,7 @@ Begin
   Data := '';
   Result := True;
   Case Sender.FCompStyle Of
-    csComboBox, csEdit, csMemo:
+    {csComboBox, }csEdit, csMemo:
     Begin
       CapLen := GetWindowTextLength((Sender As TWinControl).Handle);
       GetWindowText((Sender As TWinControl).Handle, @Caption, CapLen + 1);
@@ -183,19 +183,20 @@ Begin
     csComboBox:
     Begin
       Assert(False, Format('Trace:TWin32Object.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
+      Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
       Assert(False, 'Trace:TWin32Object.SetLabel - I''m not sure if this''ll work');
-      SendMessage(Handle, CB_DELETESTRING, (Sender As TComboBox).ItemIndex, 0);
-      SendMessage(Handle, CB_INSERTSTRING, (Sender As TComboBox).ItemIndex, LPARAM((Sender As TComboBox).Text));
+      //SendMessage(Handle, CB_DELETESTRING, (Sender As TComboBox).ItemIndex, 0);
+      SendMessage(Handle, CB_INSERTSTRING, (Sender As TComboBox).ItemIndex, LPARAM(Data));
     End;
     csPage:
     Begin
       Assert(False, 'Trace: TWin32Object.SetLabel - Got csPage');
       Assert(False, Format('Trace: TWin32Object.SetLabel - Class Name: %S', [Sender.ClassName]));
       TCI.mask := TCIF_TEXT;
-      TCI.pszText := PChar((Sender As TWinControl).Caption);
+      TCI.pszText := Data;
       //Assert(False, Format('Trace: TWin32Object.SetLabel - Page Index: %N', [PTabInfo(Data)^.Index]));
       //Assert(False, Format('Trace: TWin32Object.SetLabel - Page Index: %S', [StrPas(PTabInfo(Data)^.Caption)]));
-      SendMessage(Handle, TCM_SETITEM, PLMNotebookEvent(@Sender)^.Page, LPARAM(@TCI));
+      SendMessage(Handle, TCM_SETITEM, ((Sender As TPage).Parent As TNotebook).PageIndex, LPARAM(@TCI));
       //Assert(False, Format('Trace: TWin32Object.SetLabel - PTabInfo(@Sender)^.Index: %N', [PTabInfo(@Sender)^.Index]));
       //Assert(False, Format('Trace: TWin32Object.SetLabel - PTabInfo(@Sender)^.Caption: %S', [StrPas(PTabInfo(@Sender)^.Caption)]));
     End;
@@ -650,6 +651,7 @@ activate_time :	the time at which the activation event occurred.
             iString := Integer(PStr);
           End;
 
+          SendMessage(Handle, TB_BUTTONSTRUCTSIZE, SizeOf(tbb), 0);
           SendMessage(Handle, TB_ADDBUTTONS, WParam(UInt(IntSendMessage3(LM_TB_BUTTONCOUNT, Sender, Nil) + 1)), LParam(LPTBButton(@tbb)));
           StrDispose(pStr);
           StrDispose(pStr2);
@@ -1343,8 +1345,21 @@ End;
   WARNING: Sender will be casted to TControl, CLEANUP!
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetCursor(Sender: TObject);
+Var
+  Child: HWND;
+  Cursor: PChar;
+  Res: HCURSOR;
 Begin
-  LoadCursor((Sender As TWinControl).Handle, MakeIntResource(Word(Integer(((Sender As TControl).Cursor)))));
+  Assert(False, 'Trace:TWin32Object.SetCursor - Start');
+  Assert(False, Format('Trace:TWin32Object.SetCursor - Sender --> %S', [Sender.ClassName]));
+  Assert(False, 'Trace:TWin32Object.SetCursor - Getting the window');
+  //Child := (Sender As TWinControl).Handle;
+  Assert(False, 'Trace:TWin32Object.SetCursor - Getting the cursor');
+  Cursor := MakeIntResource(Word(Integer(((Sender As TControl).Cursor))));
+  Assert(False, 'Trace:TWin32Object.SetCursor - Loading the cursor');
+  Res := LoadCursor(0, Cursor);
+  Assert(False, Format('Trace:Cursor handle --> 0x%X', [Res]));
+  Assert(False, 'Trace:TWin32Object.SetCursor - Exit');
 End;
 
 {------------------------------------------------------------------------------
@@ -1461,7 +1476,8 @@ Type
   TCustomColors = Array[1..16] Of ColorRef;
 Var
   AccelIndex: Byte;
-  Bottom, CompStyle, Left, Right, Top: Integer;
+  AItems: TMenuItem;
+  Bottom, CompStyle, I, J, K, Left, Right, Top: Integer;
   Buddy, Handle, ParentWindow, Window: HWnd;
   Caption : String;
   ColorSelect: TChooseColor;
@@ -1469,6 +1485,7 @@ Var
   DC: HDC;
   Flags, RGBIO: DWord;
   Height, Width: Integer;
+  MnuIdx: Cardinal;
   OpenFile: OpenFileName;
   Parent: HWND;
   ParentControl: TObject;
@@ -1762,10 +1779,48 @@ Begin
       Window := CreateMenu;
       FMenu := Window;
       Assert(False, Format('Trace:Main menu owner --> %S', [((Sender As TComponent).Owner As TWinControl).ClassName]));
-      SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, (Sender As TMenu).Handle);
-      DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
-      SetProp(Window, 'Lazarus', @Sender);
-      SetName(Window, StrTemp);
+      //DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
+      With (Sender As TMenu) Do
+      Begin
+        StrDispose(StrTemp);
+        For I := 0 To Items.Count - 1 Do
+        Begin
+          Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].ClassName, I, Items[I].Caption]));
+          StrTemp := StrAlloc(Length(Items[I].Caption) + 1);
+          StrPCopy(StrTemp, Items[I].Caption);
+          Items[I].Handle := CreateMenu;
+          AppendMenu(Window, MF_POPUP, Items[I].Handle, StrTemp);
+          For J := 0 To Items[I].Count - 1 Do
+          Begin
+            Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].Items[J].ClassName, J, Items[I].Items[J].Caption]));
+            Inc(FControlIndex);
+            StrDispose(StrTemp);
+            StrTemp := StrAlloc(Length(Items[I].Items[J].Caption) + 1);
+            StrPCopy(StrTemp, Items[I].Items[J].Caption);
+            Items[I].Items[J].Handle := CreatePopupMenu;
+            Windows.AppendMenu(Items[I].Handle, MF_STRING, FControlIndex, StrTemp);
+            If Items[I].Items[J].Count > 0 Then
+            Begin
+              For K := 0 To Items[I].Items[J].Count - 1 Do
+              Begin
+                Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].Items[J].Items[K].ClassName, K, Items[I].Items[J].Items[K].Caption]));
+                Inc(FControlIndex);
+                StrDispose(StrTemp);
+                StrTemp := StrAlloc(Length(Items[I].Items[J].Items[K].Caption) + 1);
+                StrPCopy(StrTemp, Items[I].Items[J].Items[K].Caption);
+                Items[I].Items[J].Items[K].Handle := CreatePopupMenu;
+                Windows.AppendMenu(Items[I].Items[J].Handle, MF_STRING, FControlIndex, StrTemp);
+              End;
+            End;
+          End;
+          Windows.DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
+          Assert(False, Format('Trace:Menu handle: 0x%X, item handle: 0x%X', [Window, Items[I].Handle]));
+        End;
+      End;
+      Windows.SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, Window);
+      Windows.DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
+      Self.SetProp(Window, 'Lazarus', @Sender);
+      Self.SetName(Window, StrTemp);
     End;
     csMenuItem:
     Begin
@@ -2481,8 +2536,14 @@ Var
   AccelKey: Integer;
   AccelGroup: HACCEL;
   MenuParent, MenuItem: HMENU;
+  MI: TMenuItem;
+  PStr: PChar;
 Begin
-  Assert(False, 'Trace:TODO: Code TWin32Object.AttachMenu');
+  {PStr := StrAlloc(Length((Sender As TMenuItem).Caption) + 1);
+  StrPCopy(PStr, (Sender As TMenuItem).Caption);
+  Windows.AppendMenu((Sender As TMenuItem).Parent.GetParentMenu.Handle, MF_STRING OR MF_POPUP, (Sender As TMenuItem).Handle, PStr);
+  StrDispose(PStr);}
+  {Assert(False, 'Trace:TODO: Code TWin32Object.AttachMenu');
   Assert(False, Format('Trace:[TWin32Object.AttachMenu] Sender is %S', [Sender.ClassName]));
   Assert(False, Format('Trace:[TWin32Object.AttachMenu] Sending windowed control is %S', [(Sender As TComponent).Owner.ClassName]));
 
@@ -2493,11 +2554,12 @@ Begin
   End
   Else If Sender Is TMenuItem Then
   Begin
-    SetAccelKey(((Sender As TComponent).Owner As TWinControl).Handle, Pointer(73));
+    Assert(False, Format('Trace:[TWin32Object.AttachMenu] Parent is %S', [(Sender As TMenuItem).Parent.GetParentMenu.ClassName]));
+    //SetAccelKey(((Sender As TComponent).Owner As TWinControl).Handle, Pointer(73));
     If ((Sender As TMenuItem).Parent.GetParentMenu <> Nil) And ((Sender As TMenuItem).Parent.GetParentMenu.Items.IndexOf(TMenuItem(Sender)) <> - 1) Then
-      AppendMenu((Sender As TMenuItem).Parent.Handle, MF_String Or MF_Popup, (Sender As TMenuItem).Handle, PChar((Sender As TMenuItem).Caption));
+      AppendMenu((Sender As TMenuItem).Parent.GetParentMenu.Handle, MF_String Or MF_Popup, (Sender As TMenuItem).Handle, PChar((Sender As TMenuItem).Caption));
   End;
-  Assert(False, 'Trace:TWin32Object.AttachMenu: exiting');
+  Assert(False, 'Trace:TWin32Object.AttachMenu: exiting');}
   {with (Sender as TMenuItem) do
   begin
     MenuItem := Handle;
@@ -2890,6 +2952,9 @@ End;
 
 {
   $Log$
+  Revision 1.8  2002/01/18 09:07:44  lazarus
+  Keith: Fixed menu creation
+
   Revision 1.7  2002/01/18 00:02:45  lazarus
   Keith: TPage can now be a parent
 
