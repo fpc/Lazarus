@@ -194,6 +194,10 @@ end;
                  
 type 
   TLVHack = class(TCustomListView)
+  {$IFDEF VER1_0}
+  protected
+    property SmallImages;
+  {$ENDIF}
   end;
                  
 procedure TGtkWSCustomListView.InternalChangeItem(const ACListWidget: PGtkCList; const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); 
