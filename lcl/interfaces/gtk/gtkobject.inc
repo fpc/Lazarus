@@ -578,7 +578,8 @@ var
       // this is a container widget -> go through all childs
       ChildEntry:=PGtkContainer(PaintWidget)^.resize_widgets;
       while ChildEntry<>nil do begin
-        ForAllChilds(PGtkWidget(ChildEntry^.Data));
+        if PGtkWidget(ChildEntry^.Data)<>PaintWidget then
+          ForAllChilds(PGtkWidget(ChildEntry^.Data));
         ChildEntry:=ChildEntry^.Next;
       end;
     end;
@@ -6527,6 +6528,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.275  2002/10/31 18:54:17  lazarus
+  MG: fixed loop
+
   Revision 1.274  2002/10/30 17:43:35  lazarus
   AJ: added IsNullBrush checks to reduce pointless color allocations & GDK function calls
 
