@@ -3483,6 +3483,7 @@ end;
 
 procedure TCollectionPropertyEditorForm.AddClick(Sender: TObject);
 begin
+  if Collection=nil then exit;
   Collection.Add;
   FillCollectionListBox;
 end;
@@ -3492,6 +3493,7 @@ var
   I : Integer;
   NewItemIndex: Integer;
 begin
+  if Collection=nil then exit;
   I := CollectionListBox.ItemIndex;
   if (i>=0) and (i<Collection.Count) then begin
     if MessageDlg(oisConfirmDelete,
@@ -3534,6 +3536,7 @@ procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
 var
   i: LongInt;
 begin
+  if Collection=nil then exit;
   i:=CollectionListBox.ItemIndex;
   if i>=Collection.Count-1 then exit;
   Collection.Items[i].Index:=i+1;
@@ -3545,6 +3548,7 @@ procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
 var
   i: LongInt;
 begin
+  if Collection=nil then exit;
   i:=CollectionListBox.ItemIndex;
   if i<=0 then exit;
   Collection.Items[i].Index:=i-1;
@@ -3577,6 +3581,7 @@ var
   i: LongInt;
 begin
   i:=CollectionListBox.ItemIndex;
+  AddButton.Enabled:=Collection<>nil;
   DeleteButton.Enabled:= i > -1;
   MoveUpButton.Enabled:=i>0;
   MoveDownButton.Enabled:=(i>=0) and (i<Collection.Count-1);
@@ -3592,8 +3597,10 @@ end;
 procedure TCollectionPropertyEditorForm.PersistentDeleting(
   APersistent: TPersistent);
 begin
-  if APersistent=OwnerPersistent then
+  if APersistent=OwnerPersistent then begin
     SetCollection(nil,nil,'');
+    Hide;
+  end;
 end;
 
 procedure TCollectionPropertyEditorForm.RefreshPropertyValues;
