@@ -206,6 +206,8 @@ type
   TBorderStyle = bsNone..bsSingle;
   TControlBorderStyle = TBorderStyle;
 
+  TControlRoleForForm = (crffNormal, crffDefault, crffCancel);
+
   TBevelCut = TGraphicsBevelCut;
 
   TMouseButton = (mbLeft, mbRight, mbMiddle);
@@ -1024,6 +1026,7 @@ type
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
     procedure SetTempCursor(Value: TCursor);
+    procedure SetRoleForForm(NewRole: TControlRoleForForm); virtual;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
@@ -2334,6 +2337,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.223  2004/07/04 20:07:08  micha
+  form notifies control of new role
+
   Revision 1.222  2004/07/03 14:59:42  mattias
   fixed keydown geting all keys
 

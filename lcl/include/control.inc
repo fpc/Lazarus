@@ -247,6 +247,10 @@ begin
   Invalidate;
 end;
 
+procedure TControl.SetRoleForForm(NewRole: TControlRoleForForm);
+begin
+end;
+
 procedure TControl.SetAction(Value: TBasicAction);
 begin
   if (Value=Action) then exit;
@@ -3213,6 +3217,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.202  2004/07/04 20:07:08  micha
+  form notifies control of new role
+
   Revision 1.201  2004/07/03 14:59:42  mattias
   fixed keydown geting all keys
 

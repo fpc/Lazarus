@@ -96,6 +96,12 @@ begin
   DoSendBtnDefault;
 end;
 
+procedure TButton.SetRoleForForm(NewRole: TControlRoleForForm);
+begin
+  Default := NewRole = crffDefault;
+  Cancel := NewRole = crffCancel;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TButton.SetCancel
   Params:  NewCancel - new cancel value
@@ -210,6 +216,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/07/04 20:07:08  micha
+  form notifies control of new role
+
   Revision 1.29  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 

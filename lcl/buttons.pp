@@ -81,6 +81,7 @@ type
 
     procedure ExecuteDefaultAction; override;
     procedure ExecuteCancelAction; override;
+    procedure SetRoleForForm(NewRole: TControlRoleForForm); override;
   published
     property Action;
     property Anchors;
@@ -333,6 +334,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2004/07/04 20:07:08  micha
+  form notifies control of new role
+
   Revision 1.69  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 

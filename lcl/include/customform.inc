@@ -193,36 +193,36 @@ begin
 end;
 
 procedure TCustomForm.SetCancelControl(NewControl: TControl);
-//var
-//  lControl: TControl;
+var
+  lControl: TControl;
 begin
   if NewControl <> FCancelControl then
   begin
     // prevent inf. recursion problems
-//    lControl := FCancelControl;
-//    FCancelControl := nil;
-//    if lControl <> nil then
-//      (lControl as TControl).Cancel := false;
+    lControl := FCancelControl;
+    FCancelControl := nil;
+    if lControl <> nil then
+      lControl.SetRoleForForm(crffNormal);
     FCancelControl := NewControl;
-//    if NewControl <> nil then
-//      (NewControl as TControl).Cancel := true;
+    if NewControl <> nil then
+      NewControl.SetRoleForForm(crffCancel);
   end;
 end;
 
 procedure TCustomForm.SetDefaultControl(NewControl: TControl);
-//var
-//  lControl: TControl;
+var
+  lControl: TControl;
 begin
   if NewControl <> FDefaultControl then
   begin
     // prevent inf. recursion problems
-//    lControl := FDefaultControl;
-//    FDefaultControl := nil;
-//    if lControl <> nil then
-//      (lControl as TControl).Default := false;
+    lControl := FDefaultControl;
+    FDefaultControl := nil;
+    if lControl <> nil then
+      lControl.SetRoleForForm(crffNormal);
     FDefaultControl := NewControl;
-//    if NewControl <> nil then
-//      (NewControl as TControl).Default := true;
+    if NewControl <> nil then
+      NewControl.SetRoleForForm(crffDefault);
   end;
 end;
 
@@ -1641,6 +1641,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.143  2004/07/04 20:07:08  micha
+  form notifies control of new role
+
   Revision 1.142  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 
