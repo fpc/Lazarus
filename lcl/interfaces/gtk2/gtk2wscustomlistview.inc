@@ -17,7 +17,15 @@
 
 type
   TLVHack = class(TCustomListView)
+  {$IFDEF VER1_0}
+  protected
+    property Columns;
+    property MultiSelect;
+    property SmallImages;
+    property ViewStyle;
+  {$ENDIF}
   end;
+
 ////////////////////////////////////////
 ////   Event Code  /////////////////////
 ////////////////////////////////////////
@@ -225,7 +233,7 @@ NewListStore: PGtkListStore;
 nColumns: Integer;
 i: Integer;
 begin
-  nColumns := (ALV.Columns.Count*2);
+  nColumns := (TLVHack(ALV).Columns.Count*2);
   if nColumns = 0 then nColumns := 2; // Add One Column By Default
   GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
   for i := 0 to (nColumns div 2)-1 do begin
@@ -250,11 +258,11 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
   gtk_list_store_clear(PGtkListStore(Widgets^.TreeModel));
-  for i := 0 to ALV.Items.Count-1 do begin
-    Item := ALV.Items.Item[i];
+  for i := 0 to TLVHack(ALV).Items.Count-1 do begin
+    Item := TLVHack(ALV).Items.Item[i];
     ItemInsert(ALV, i , Item);
     ItemSetText(ALV, i, Item, 0, Item.Caption);
-    for X := 0 to Min(Item.SubItems.Count-1, ALV.Columns.Count-2) do begin
+    for X := 0 to Min(Item.SubItems.Count-1, TLVHack(ALV).Columns.Count-2) do begin
       ItemSetText(ALV, i, Item, x+1, Item.SubItems.Strings[x]);
     end;
   end;
@@ -405,7 +413,7 @@ begin
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
-  if gtk_tree_model_get_n_columns(Widgets^.TreeModel) div 2 < ALV.Columns.Count then begin
+  if gtk_tree_model_get_n_columns(Widgets^.TreeModel) div 2 < TLVHack(ALV).Columns.Count then begin
 
     ReCreateListStore(ALV, PTVWidgets(Widgets^.WidgetInfo^.UserData));
     ReCreateItems(ALV);
@@ -867,7 +875,7 @@ begin
 
   gtk_widget_show(PGtkWidget(ScrollWidget));
 
-  nColumns := (ListView.Columns.Count*2){+1};
+  nColumns := (TLVHack(ListView).Columns.Count*2){+1};
 
   if nColumns = 0 then nColumns := 2; // Add One Column By Default
 
@@ -1206,7 +1214,7 @@ procedure TGtk2WSCustomListView.SetViewStyle(const ALV: TCustomListView;
         GtkColumn: PGtkTreeViewColumn;
         i: Integer;
       begin
-        for i := 1 to ALV.Columns.Count-1 do begin
+        for i := 1 to TLVHack(ALV).Columns.Count-1 do begin
           GtkColumn := gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), i);
           if not(Show) or (Show and Boolean(g_object_get_data(G_OBJECT(GtkColumn), PChar('Visible')))) then
             gtk_tree_view_column_set_visible(GtkColumn, Show);
