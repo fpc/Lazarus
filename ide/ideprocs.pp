@@ -162,7 +162,9 @@ begin
 end;
 
 procedure CheckIfFileIsExecutable(const AFilename: string);
+{$IFNDEF win32}
 var AText: string;
+{$ENDIF}
 begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
@@ -217,11 +219,11 @@ begin
   if (DirectoryName<>'')
   and (DirectoryName[length(DirectoryName)]=PathDelim) then
     DirectoryName:=copy(DirectoryName,1,length(DirectoryName)-1);
-  if FindFirst(DirectoryName,faAnyFile,sr)=0 then
+  if SysUtils.FindFirst(DirectoryName,faAnyFile,sr)=0 then
     Result:=((sr.Attr and faDirectory)>0)
   else
     Result:=false;
-  FindClose(sr);
+  SysUtils.FindClose(sr);
 end;
 
 function ForceDirectory(DirectoryName: string): boolean;
@@ -245,7 +247,7 @@ end;
 function FileIsReadable(const AFilename: string): boolean;
 begin
   {$IFDEF win32}
-  Result:=true;
+  Result:=FileExists(AFilename);
   {$ELSE}
   Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.R_OK);
