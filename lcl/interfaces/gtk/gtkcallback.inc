@@ -1919,8 +1919,10 @@ begin
   end;
   
   // get keystates
-  if Scroll <> nil 
-  then gdk_window_get_pointer(PGTKWidget(Scroll)^.Window, @X, @Y, @Mask);
+  if Scroll <> nil then
+    gdk_window_get_pointer(PGTKWidget(Scroll)^.Window, @X, @Y, @Mask)
+  else
+    Mask:=0;
 
   with Msg do
   begin
@@ -2253,6 +2255,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.126  2002/09/09 17:41:19  lazarus
+  MG: added multiselection to TTreeView
+
   Revision 1.125  2002/09/07 12:14:50  lazarus
   EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
   behaviour.
