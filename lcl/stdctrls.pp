@@ -168,18 +168,26 @@ type
 
   TCustomEdit = class(TWinControl)
   private
-    FReadOnly : Boolean;
+    FMaxLength : Integer;
     FModified : Boolean;
+    FReadOnly : Boolean;
+    FCharCase : TEditCharCase;
     FOnChange : TNotifyEvent;
     Function GetModified : Boolean;
+    Procedure SetCharCase(Value : TEditCharCase);
+    Procedure SetMaxLength(Value : Integer);
     Procedure SetModified(Value : Boolean);
     Procedure SetReadOnly(Value : Boolean);
     Procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
   protected
     Procedure Change; dynamic;
-    property ReadOnly : Boolean read FReadOnly write SetReadOnly default false;
+
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
+    property CharCase : TEditCharCase read FCharCase write SetCharCase default ecNormal;
+    property MaxLength : Integer read FMaxLength write SetMaxLength default 0;
+    property ReadOnly : Boolean read FReadOnly write SetReadOnly default false;
+
     constructor Create(AOwner: TComponent); override;
     property Modified : Boolean read GetModified write SetModified;
     property Text;
@@ -214,7 +222,10 @@ type
    published
       property OnChange;
       property OnClick;
+      property CharCase;
       property DragMode;
+      property MaxLength;
+      property ReadOnly;
       property Text;
       property Visible;
    end;
@@ -479,6 +490,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/01/04 13:52:00  lazarus
+  Minor changes to TEdit.
+  Not tested.
+  Shane
+
   Revision 1.5  2000/12/29 15:04:07  lazarus
   Added more images to the resource.
   Shane

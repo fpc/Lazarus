@@ -29,6 +29,27 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  TCustomEdit.SetCharCase
+  Params:  Value to set FCharCase to
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+Procedure TCustomEdit.SetCharCase(Value : TEditCharCase);
+Begin
+FCharCase := Value;
+CNSendMessage(LM_SETPROPERTIES, Self, nil);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  TCustomEdit.SetMaxLength
+  Params:  Value to set FMaxLength to
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+Procedure TCustomEdit.SetMaxLength(Value : Integer);
+Begin
+FMaxLength := Value;
+CNSendMessage(LM_SETPROPERTIES, Self, nil);
+End;
+{------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
   Params:  Value to set FModified to
   Returns: Nothing
@@ -39,6 +60,7 @@ FModified := Value;
 End;
 
 
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetReadOnly
   Params:  Value to set FReadOnly to
@@ -47,7 +69,7 @@ End;
 Procedure TCustomEdit.SetReadOnly(Value : Boolean);
 Begin
 FReadOnly := Value;
-//TODO: Call SendMessage
+CNSendMessage(LM_SETPROPERTIES, Self, nil);
 End;
 
 {------------------------------------------------------------------------------
@@ -90,6 +112,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/01/04 13:52:00  lazarus
+  Minor changes to TEdit.
+  Not tested.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

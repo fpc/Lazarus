@@ -2342,6 +2342,13 @@ begin
    Assert (Handle = nil, 'WARNING: [TgtkObject.SetProperties] --> got nil pointer');
    
    case TControl(Sender).fCompStyle of
+      csEdit :
+          with (TCustomEdit(Sender)) do
+             Begin
+               gtk_entry_set_editable(PgtkEntry(handle),TCustomEdit(sender).ReadOnly);
+               gtk_entry_set_max_length(PgtkEntry(handle),TCustomEdit(sender).MaxLength);
+             end;
+
       csProgressBar :
          with (TProgressBar (Sender)) do
          begin
@@ -2693,6 +2700,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.14  2001/01/04 13:52:00  lazarus
+  Minor changes to TEdit.
+  Not tested.
+  Shane
+
   Revision 1.13  2000/12/29 19:20:27  lazarus
   Shane
 

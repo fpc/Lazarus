@@ -133,6 +133,7 @@ type
     procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueButtonClick(Sender: TObject);
     procedure TrackBarChange(Sender:TObject);
+
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;

@@ -584,17 +584,13 @@ type
   end;
 
 { TStringsPropertyEditor
-  PropertyEditor editor for the TStrings property.  Brings up the dialog for entering test. }
+  PropertyEditor editor for the TStrings property.
+  Brings up the dialog for entering test. }
 
   TStringsPropertyEditor = class(TClassPropertyEditor)
   public
     procedure Edit; override;
-    function GetValue: string; override;
     function GetAttributes: TPropertyAttributes; override;
-
-    procedure GetValues(Proc: TGetStringProc);
-    procedure SetValue(const NewValue: string); override;
-
   end;
 
 //==============================================================================
@@ -1049,7 +1045,7 @@ function GetStrProp(Instance: TObject; PropInfo: PPropInfo): AnsiString;
 var
   Index, IValue: LongInt;
   ShortResult: ShortString;
-  AnsiResult:AnsiString;
+  AnsiResult: AnsiString;
 begin
   SetIndexValues(PropInfo, Index, IValue);
   case Propinfo^.PropType^.Kind of
@@ -2908,159 +2904,80 @@ begin
 end;
 
 { TStringsPropertyEditor }
-{**}
-type
-  TStringsPropEditor = class(TForm)
-    public
-     Memo1 : TMemo;
-     OKButton : TButton;
-     CancelButton : TButton;
-     constructor Create(AOwner : TComponent); override;
-    end;
 
-constructor TStringsPropEditor.Create(AOwner : TComponent);
+type
+  TStringsPropEditorDlg = class(TForm)
+  public
+    Memo1 : TMemo;
+    OKButton : TButton;
+    CancelButton : TButton;
+    constructor Create(AOwner : TComponent); override;
+  end;
+
+constructor TStringsPropEditorDlg.Create(AOwner : TComponent);
 Begin
-  inherited;
+  inherited Create(AOwner);
   position := poScreenCenter;
   Height := 200;
   Width := 300;
+  Caption := 'Strings Editor Dialog';
+
   Memo1 := TMemo.Create(self);
-  Memo1.Parent := Self;
-  Memo1.Left := 0;
-  Memo1.Top := 0;
-  memo1.Height := Height-50;
-  Memo1.Width := Width -1;
-  memo1.Visible := true;
+  with Memo1 do begin
+    Parent := Self;
+    SetBounds(0,0,Width -1,Height-1);
+    Visible := true;
+  end;
 
   OKButton := TButton.Create(self);
   with OKButton do
-      Begin
-        Parent := self;
-        Caption := '&OK';
-        ModalResult := mrOK;
-        Left := self.width div 2;
-        top := self.height -45;
-        Visible := true;
-      end;
+    Begin
+      Parent := self;
+      Caption := '&OK';
+      ModalResult := mrOK;
+      Left := self.width div 2;
+      top := self.height -45;
+      Visible := true;
+    end;
 
   CancelButton := TButton.Create(self);
   with CancelButton do
-      Begin
-        Parent := self;
-        Caption := '&Cancel';
-        ModalResult := mrCancel;
-        Left := (self.width div 2) + 75;
-        top := self.height -45;
-        Visible := true;
-      end;
+    Begin
+      Parent := self;
+      Caption := '&Cancel';
+      ModalResult := mrCancel;
+      Left := (self.width div 2) + 75;
+      top := self.height -45;
+      Visible := true;
+    end;
 
 end;
 
 
 procedure TStringsPropertyEditor.Edit;
-type
-  TGetStrFunc=function(const StrValue:string):Integer of object;
 var
-  TheDialog: TStringsPropEditor;
-
-  I:Integer;
-  Values:TStringList;
-  AddValue:TGetStrFunc;
-
-  StringsType: PTypeInfo;
-  Count : Integer;
+  TheDialog: TStringsPropEditorDlg;
+  Strings:TStrings;
 begin
-Writeln('edit');
-Count := 0;
-  Values:=TStringList.Create;
   try
-    AddValue:=@Values.Add;
-    GetValues(TGetStringProc(AddValue));
-       writeln('Create the TheDialog');
-       TheDialog:=TStringsPropEditor.Create(Application);
-       writeln('Created the TheDialog');
-       TheDialog.Memo1.Lines.Assign(Values);
-       TheDialog.Caption:='Strings Editor Dialog';
-       try
-         if (TheDialog.ShowModal = mrOK) then
-            begin
-            //what do I do here?
-//what do I do here?
-                StringsType := GetPropType;
-                writeln('StringsType.Name is '+StringsType^.Name);
-                with GetTypeData(StringsType)^ do
-                Begin
-                 if TheDialog.Memo1.Lines.Count > 0 then
-                    begin
-                       for I := 0 to TheDialog.Memo1.Lines.Count-1 do
-                        Begin
-                        Writeln('i= '+inttostr(i));
-                        with FPropList^[0] do
-                             SetStrProp(Instance,PropInfo,TheDialog.Memo1.Lines[i]);
-                        Writeln('i= '+inttostr(i));
-                        end;
-                    end;
-                end;
-            end;
-       finally
-        TheDialog.Free;
-       end;
-
-  finally
-    Values.Free;
-  end;
-
-
-
-end;
-
-
-procedure TStringsPropertyEditor.GetValues(Proc: TGetStringProc);
-var
-  I: Integer;
-  StringsType: PTypeInfo;
-begin
-Writeln('GETVALUES');
-//what do I do here?
-  StringsType := GetPropType;
-  writeln('StringsType.Name is '+StringsType^.Name);
-  with GetTypeData(StringsType)^ do
-    Begin
-    if PropCount > 0 then
-        begin
-        for I := 0 to PropCount-1 do
-          with FPropList^[i] do proc(GetStrProp(Instance,PropInfo));
-        end;
+    Strings:=TStrings(GetOrdValue);
+    TheDialog:=TStringsPropEditorDlg.Create(Application);
+    TheDialog.Memo1.Lines.Assign(Strings);
+    try
+      if (TheDialog.ShowModal = mrOK) then
+        Strings.Assign(TheDialog.Memo1.Lines);
+    finally
+      TheDialog.Free;
     end;
+  finally
+    Strings.Free;
+  end;
 end;
 
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect,paDialog, paRevertable];
+  Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
 end;
-
-
-function  TStringsPropertyEditor.GetValue: string;
-Begin
-Result := '(TStrings)';
-end;
-
-procedure  TStringsPropertyEditor.SetValue(const NewValue: string);
-var
-  I: Integer;
-begin
-Writeln('SETVALUES');
-Writeln('Newvalue = '+NewValue);
-{  I := GetStrValueA(GetPropType, NewValue);
-  if I < 0 then begin
-    {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
-    exit;
-  end;
-  SetStrValue(I);
-}
-end;
-
-
 
 //==============================================================================
 
