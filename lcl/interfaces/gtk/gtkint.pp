@@ -170,7 +170,8 @@ type
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
-    procedure ShowModal(Sender: TObject);
+    procedure ShowModal(Sender: TObject); virtual;
+    procedure UpdateTransientWindows; virtual;
 
     Function GetCaption(Sender : TObject) : String; virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
@@ -329,6 +330,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2003/03/15 18:32:38  mattias
+  implemented transient windows for all cases
+
   Revision 1.121  2003/03/15 09:42:49  mattias
   fixed transient windows
 
