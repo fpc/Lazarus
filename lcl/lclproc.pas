@@ -79,6 +79,9 @@ function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):L
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 procedure FreeThenNil(var AnObject: TObject);
 
+{ the LCL interfaces finalization sections are called before the finalization
+  sections of the LCL. Those parts, that should be finalized after the LCL, can
+  be registered here. }
 procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
 procedure CallInterfaceFinalizationHandlers;
 

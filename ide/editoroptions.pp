@@ -422,8 +422,8 @@ type
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
 
     // color
-    procedure ColorElementListBoxMouseUp(Sender:TObject;
-       Button:TMouseButton; Shift:TShiftState; X,Y:integer);
+    procedure ColorElementListBoxSelectionChange(Sender: TObject;
+       User: boolean);
     procedure ColorPreviewMouseUp(Sender:TObject;
        Button:TMouseButton; Shift:TShiftState; X,Y:integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: integer;
@@ -2753,29 +2753,11 @@ var a, i:integer;
 begin
   Old:=CurHighlightElement;
   CurHighlightElement:=nil;
-  a:=0;
-  while a<ColorElementListBox.Items.Count do begin
-    if ColorElementListBox.Selected[a] then begin
-      i:=PreviewSyn.AttrCount-1;
-      while (i>=0) do begin
-        if ColorElementListBox.Items[a]=PreviewSyn.Attribute[i].Name then
-          break;
-        dec(i);
-      end;
-      if i>=0 then begin
-        CurHighlightElement:=PreviewSyn.Attribute[i];
-        break;
-      end;
-    end;
-    inc(a);
-  end;
-  if (CurHighlightElement=nil) and (ColorElementListBox.Items.Count>0) then
-  begin
-    // none selected -> select one
-    ColorElementListBox.Selected[0]:=true;
+  a:=ColorElementListBox.ItemIndex;
+  if (a>=0) then begin
     i:=PreviewSyn.AttrCount-1;
     while (i>=0) do begin
-      if ColorElementListBox.Items[0]=PreviewSyn.Attribute[i].Name then begin
+      if ColorElementListBox.Items[a]=PreviewSyn.Attribute[i].Name then begin
         CurHighlightElement:=PreviewSyn.Attribute[i];
         break;
       end;
@@ -2925,8 +2907,8 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.ColorElementListBoxMouseUp(Sender:TObject;
-  Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+procedure TEditorOptionsForm.ColorElementListBoxSelectionChange(Sender: TObject;
+  User: boolean);
 begin
   FindCurHighlightElement;
 end;
@@ -4588,7 +4570,7 @@ begin
     Width:=ColorElementLabel.Width;
     Height:=170;
     MultiSelect:=false;
-    OnMouseUp:=@ColorElementListBoxMouseUp;
+    OnSelectionChange := @ColorElementListBoxSelectionChange;
   end;
 
   SetAttributeToDefaultButton:=TButton.Create(Self);

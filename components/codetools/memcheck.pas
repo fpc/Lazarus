@@ -128,7 +128,7 @@ type
     must be a multiple of 8
     because otherwise you will get
     problems when releasing the usual memory part !!
-    sizeof(theap_mem_info = 16+tracesize*4 so
+    sizeof(theap_mem_info = 16+tracesize*sizeof(pointer) so
     tracesize must be even !! PM }
   pheap_mem_info = ^theap_mem_info;
   theap_mem_info = record
@@ -1301,7 +1301,7 @@ type
     must be a multiple of 8
     because otherwise you will get
     problems when releasing the usual memory part !!
-    sizeof(theap_mem_info = 16+tracesize*4 so
+    sizeof(theap_mem_info = 16+tracesize*sizeof(pointer) so
     tracesize must be even !! PM }
   theap_mem_info = record
     previous,
@@ -2359,6 +2359,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2004/11/26 16:57:22  mattias
+  replaced some mosuedown with selectionchanged events   from Vincent
+
   Revision 1.37  2004/11/22 23:24:24  mattias
   fixed 1.0.10 compilation  from Vincent
 

@@ -212,13 +212,13 @@ begin
   end;
   FCurItem:=nil;
   FEndItem:=nil;
-  FCurSize:=FItemSize*4;
+  FCurSize:=FItemSize*4; // 4 items
 end;
 
 constructor TLCLNonFreeMemManager.Create(TheItemSize: integer);
 begin
   FItemSize:=TheItemSize;
-  FFirstSize:=FItemSize*4;
+  FFirstSize:=FItemSize*4; // 4 items
   FCurSize:=FFirstSize;
 end;
 

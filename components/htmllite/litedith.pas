@@ -642,6 +642,9 @@ var
   // From Delphi 3.02 graphics.pas
   // There is a bug in the ByteSwapColors from Delphi 3.0
   procedure ByteSwapColors(var Colors; Count: Integer);
+  {$IFDEF SYN_LAZARUS}
+  {$ERROR use of assembler is not platform independency}
+  {$ENDIF}
   var   // convert RGB to BGR and vice-versa.  TRGBQuad <-> TPaletteEntry
     SysInfo: TSystemInfo;
   begin
