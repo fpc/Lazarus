@@ -881,6 +881,7 @@ images/btn_run.ico -text svneol=unset#image/x-icon
 images/btn_run.xpm -text svneol=native#image/x-xpixmap
 images/btn_save.ico -text svneol=unset#image/x-icon
 images/btn_save.xpm -text svneol=native#image/x-xpixmap
+images/btn_saveall.bmp -text svneol=native#image/bmp
 images/btn_saveall.ico -text svneol=unset#image/x-icon
 images/btn_saveall.xpm -text svneol=native#image/x-xpixmap
 images/btn_stepinto.ico -text svneol=unset#image/x-icon
