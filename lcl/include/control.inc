@@ -705,9 +705,9 @@ begin
       end
       else begin
         if TheMessage.Msg = CM_VISIBLECHANGED
-        then
-          with TheMessage do
-            SendDockNotification(Msg,WParam,LParam);
+        then begin
+          with TheMessage do SendDockNotification(Msg,WParam,LParam);
+	end;    
       end;
     end;
   end;
@@ -1799,6 +1799,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.76  2002/09/03 20:02:01  lazarus
+  Intermediate UI patch to show a bug.
+
   Revision 1.75  2002/09/03 08:40:53  lazarus
   MG: lazarus now requires the stable 1.0.6 fpc with ssTriple
 
