@@ -712,10 +712,35 @@ uses
 -------------------------------------------------------------------------------}
 procedure TMainIDE.ParseCmdLineOptions;
 const
-  PrimaryConfPathOpt='--primary-config-path=';
-  SecondaryConfPathOpt='--secondary-config-path=';
-  NoSplashScreenOpt='--no-splash-screen';
-var i: integer;
+  PrimaryConfPathOptLong='--primary-config-path=';
+  PrimaryConfPathOptShort='--pcp=';
+  SecondaryConfPathOptLong='--secondary-config-path=';
+  SecondaryConfPathOptShort='--scp=';
+  NoSplashScreenOptLong='--no-splash-screen';
+  NoSplashScreenOptShort='--nsc';
+
+  function ParamIsOption(ParamIndex: integer;
+    const Option: string): boolean;
+  begin
+    Result:=AnsiCompareText(ParamStr(ParamIndex),Option)=0;
+  end;
+
+  function ParamIsOptionPlusValue(ParamIndex: integer;
+    const Option: string; var AValue: string): boolean;
+  var
+    p: String;
+  begin
+    p:=ParamStr(ParamIndex);
+    Result:=AnsiCompareText(LeftStr(p,length(Option)),Option)=0;
+    if Result then
+      AValue:=copy(p,length(Option)+1,length(p))
+    else
+      AValue:='';
+  end;
+
+var
+  i: integer;
+  AValue: string;
 begin
   if (ParamCount>0)
   and ((AnsiCompareText(ParamStr(1),'--help')=0)
@@ -730,13 +755,20 @@ begin
     writeln('');
     writeln('--help or -?             ', listhisHelpMessage);
     writeln('');
-    writeln(PrimaryConfPathOpt,' <path>');
+    writeln(PrimaryConfPathOptLong,' <path>');
+    writeln('or ',PrimaryConfPathOptShort,' <path>');
     writeln(BreakString(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
                         75, 22), GetPrimaryConfigPath);
-    writeln(SecondaryConfPathOpt,' <path>');
+    writeln('');
+    writeln(SecondaryConfPathOptLong,' <path>');
+    writeln('or ',SecondaryConfPathOptShort,' <path>');
     writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                         75, 22), GetSecondaryConfigPath);
-    writeln(NoSplashScreenOpt,'    ',lisDoNotShowSplashScreen);
+    writeln('');
+    writeln(NoSplashScreenOptLong);
+    writeln('or ',NoSplashScreenOptShort);
+    writeln(BreakString(lisDoNotShowSplashScreen,75, 22));
+    writeln('');
     writeln('');
     writeln('');
     writeln(lisCmdLineLCLInterfaceSpecificOptions);
@@ -746,20 +778,22 @@ begin
     Halt;
   end;
   for i:=1 to ParamCount do begin
-    if AnsiCompareText(LeftStr(ParamStr(i),length(PrimaryConfPathOpt)),
-      PrimaryConfPathOpt)=0 then
-    begin
-      SetPrimaryConfigPath(copy(ParamStr(i),length(PrimaryConfPathOpt)+1,
-               length(ParamStr(i))));
+    if ParamIsOptionPlusValue(i,PrimaryConfPathOptLong,AValue) then begin
+      SetPrimaryConfigPath(AValue);
     end;
-    if AnsiCompareText(LeftStr(ParamStr(i),length(SecondaryConfPathOpt)),
-      SecondaryConfPathOpt)=0 then
-    begin
-      SetSecondaryConfigPath(copy(ParamStr(i),length(SecondaryConfPathOpt)+1,
-               length(ParamStr(i))));
+    if ParamIsOptionPlusValue(i,PrimaryConfPathOptShort,AValue) then begin
+      SetPrimaryConfigPath(AValue);
     end;
-    if AnsiCompareText(ParamStr(i),NoSplashScreenOpt)=0 then
+    if ParamIsOptionPlusValue(i,SecondaryConfPathOptLong,AValue) then begin
+      SetSecondaryConfigPath(AValue);
+    end;
+    if ParamIsOptionPlusValue(i,SecondaryConfPathOptShort,AValue) then begin
+      SetSecondaryConfigPath(AValue);
+    end;
+    if ParamIsOption(i,NoSplashScreenOptLong)
+    or ParamIsOption(i,NoSplashScreenOptShort) then begin
       ShowSplashScreen:=false;
+    end;
   end;
 end;
 
@@ -10106,6 +10140,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.672  2003/11/22 15:29:20  mattias
+  added short cmd line params
+
   Revision 1.671  2003/11/22 15:14:12  mattias
   prepared IDE units for split
 

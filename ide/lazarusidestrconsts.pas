@@ -57,7 +57,7 @@ resourcestring
   lisIDEOptions = 'IDE Options:';
   lisCmdLineLCLInterfaceSpecificOptions =
     'LCL Interface specific options:';
-  lisDoNotShowSplashScreen = 'Do not show splash screen';
+  lisDoNotShowSplashScreen = '                      Do not show splash screen';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor =
     '                      secondary config '
     +'directory, where Lazarus searches for config template files. Default is ';

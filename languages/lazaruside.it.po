@@ -7,6 +7,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "                      Do not show splash screen"
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr "                      directory di configurazione primaria, dove Lazarus memorizza i file di configurazione. Il valore predefinito è"
@@ -1586,10 +1590,6 @@ msgstr "Display (non per win32, per esempio 198.112.45.11:0, x.org:1, hydra:0.1)
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Mostra i numeri di linea nelle backtrace degli errori di esecuzione"
-
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "Do not show splash screen"
-msgstr "Non mostrare schermata di avvio"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"

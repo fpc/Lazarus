@@ -1,3 +1,7 @@
+#: lazarusidestrconsts:lisdonotshowsplashscreen
+msgid "                      Do not show splash screen"
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr "                     главный каталог настроек, где Lazarus хранит свои файлы настроек. По умолчанию "
@@ -1577,10 +1581,6 @@ msgstr "Дисплей (не для win32, напр., 198.112.45.11:0, x.org:1, hydra:0.1)"
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Выдать номера строк в ошибках времени исполнения"
-
-#: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "Do not show splash screen"
-msgstr "Не показывать заставку"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"

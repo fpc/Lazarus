@@ -31,7 +31,7 @@ msgid "LCL Interface specific options:"
 msgstr ""
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
-msgid "Do not show splash screen"
+msgid "                      Do not show splash screen"
 msgstr ""
 
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
