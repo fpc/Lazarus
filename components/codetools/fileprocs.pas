@@ -294,7 +294,7 @@ begin
             inc(SrcPos,2);
             continue;
           end else if (DestPos=3) and (Result[1]=PathDelim)
-          and (Result[2]=PathDelim) then
+          and (Result[2]=PathDelim) then begin
             //  5. \\..    -> skip .., keep \\
             inc(SrcPos,2);
             continue;

@@ -81,7 +81,7 @@ procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
     +#83#187#6#78#83
   );
 }
-const LineEnd:ShortString={$IFDEF win32}#13{$ENDIF}#10;
+const LineEnd:ShortString={$IFDEF win32}#13#10{$ELSE}#10{$ENDIF};
 var s, Indent: ShortString;
   p, x: integer;
   c, h: char;

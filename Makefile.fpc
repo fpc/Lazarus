@@ -47,7 +47,6 @@ export RCPP?=$(strip $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH))))
 
 %.res: %.rc
         windres -i $< -o $@ --preprocessor $(RCPP)
-#        $(strip $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH))))
 
 ide:
 ifeq ($(OS_TARGET), win32)
