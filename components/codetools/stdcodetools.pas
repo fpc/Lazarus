@@ -311,7 +311,8 @@ begin
     if Result=nil then exit;
   end;
   Result:=Result.FirstChild;
-  if (Result<>nil) and (Result.Desc<>ctnUsesSection) then Result:=nil;
+  if (Result=nil) then exit;
+  if (Result.Desc<>ctnUsesSection) then Result:=nil;
 end;
 
 function TStandardCodeTool.FindImplementationUsesSection: TCodeTreeNode;
@@ -322,7 +323,8 @@ begin
     Result:=Result.NextBrother;
   if Result=nil then exit;
   Result:=Result.FirstChild;
-  if (Result=nil) or (Result.Desc<>ctnUsesSection) then exit;
+  if (Result=nil) then exit;
+  if (Result.Desc<>ctnUsesSection) then Result:=nil;
 end;
 
 function TStandardCodeTool.RenameUsedUnit(const OldUpperUnitName,
@@ -535,9 +537,10 @@ begin
   try
     MainUsesSection:=UsesSectionToFilenames(MainUsesNode);
     ImplementationUsesSection:=UsesSectionToFilenames(ImplementatioUsesNode);
-  finally
+  except
     FreeAndNil(MainUsesSection);
     FreeAndNil(ImplementationUsesSection);
+    raise;
   end;
   Result:=true;
 end;
@@ -559,8 +562,9 @@ var
   NewCode: TCodeBuffer;
   UnitFilename: string;
 begin
-  MoveCursorToUsesEnd(UsesNode);
   Result:=TStringList.Create;
+  if UsesNode=nil then exit;
+  MoveCursorToUsesEnd(UsesNode);
   repeat
     // read prior unit name
     ReadPriorUsedUnit(UnitNameAtom, InAtom);

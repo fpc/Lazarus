@@ -107,9 +107,9 @@ destructor TTreeNode.Destroy;
 //  Node: TTreeNode;
 //  CheckValue: Integer;
 begin
-{$IFDEF TREEVIEW_DEBUG}
-writeln('[TTreeNode.Destroy] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
-{$ENDIF}
+  {$IFDEF TREEVIEW_DEBUG}
+  writeln('[TTreeNode.Destroy] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
+  {$ENDIF}
   FDeleting := True;
   HasChildren := false;
   Unbind;
@@ -368,8 +368,10 @@ function TTreeNode.DoCanExpand(ExpandIt: Boolean): Boolean;
 begin
   Result := False;
   if (TreeView<>nil) and HasChildren then begin
-    if ExpandIt then Result := TreeView.CanExpand(Self)
-    else Result := TreeView.CanCollapse(Self);
+    if ExpandIt then
+      Result := TreeView.CanExpand(Self)
+    else
+      Result := TreeView.CanCollapse(Self);
   end;
 end;
 
@@ -584,8 +586,8 @@ procedure TTreeNode.SetHasChildren(AValue: Boolean);
 //var Item: TTVItem;
 begin
   if AValue=HasChildren then exit;
-//writeln('[TTreeNode.SetHasChildren] Self=',HexStr(Cardinal(Self),8),
-//' Self.Text=',Text,' AValue=',AValue);
+  //writeln('[TTreeNode.SetHasChildren] Self=',HexStr(Cardinal(Self),8),
+  //' Self.Text=',Text,' AValue=',AValue);
   if AValue then
     Include(FStates,nsHasChildren)
   else begin
@@ -1024,7 +1026,7 @@ begin
     taInsert:
       begin
         // insert node in front of ANode
-//writeln('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',HexStr(Cardinal(ANode),8));
+        //writeln('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',HexStr(Cardinal(ANode),8));
         FNextBrother:=ANode;
         FPrevBrother:=ANode.GetPrevSibling;
         if Owner<>nil then begin
@@ -1040,12 +1042,12 @@ begin
     Owner.Owner.FStates:=Owner.Owner.FStates+[tvsMaxRightNeedsUpdate,
       tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
 
-{$IFDEF TREEVIEW_DEBUG}
-write('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
-,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
-if ANode<>nil then write(' ANode.Text=',ANode.Text);
-writeln('');
-{$ENDIF}
+  {$IFDEF TREEVIEW_DEBUG}
+  write('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
+  ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
+  if ANode<>nil then write(' ANode.Text=',ANode.Text);
+  writeln('');
+  {$ENDIF}
 
 {var
   I: Integer;
@@ -1815,7 +1817,10 @@ begin
   Result:=GetLastNode;
   while (Result<>nil) and (Result.Expanded) do begin
     Node:=Result.GetLastChild;
-    if Node<>nil then Result:=Node;
+    if Node<>nil then
+      Result:=Node
+    else
+      exit;
   end;
 end;
 
@@ -1956,10 +1961,10 @@ procedure TTreeNodes.MoveTopLvlNode(TopLvlFromIndex, TopLvlToIndex: integer;
   Node: TTreeNode);
 var i: integer;
 begin
-{$IFDEF TREEVIEW_DEBUG}
-writeln('[TTreeNodes.MoveTopLvlNode] TopLvlFromIndex=',TopLvlFromIndex,
-' TopLvlToIndex=',TopLvlToIndex,' Node.Text=',Node.Text);
-{$ENDIF}
+  {$IFDEF TREEVIEW_DEBUG}
+  writeln('[TTreeNodes.MoveTopLvlNode] TopLvlFromIndex=',TopLvlFromIndex,
+  ' TopLvlToIndex=',TopLvlToIndex,' Node.Text=',Node.Text);
+  {$ENDIF}
   if (TopLvlFromIndex>=FTopLvlCount) then
     TreeNodeError('TTreeNodes.MoveTopLvlNode TopLvlFromIndex>FTopLvlCount');
   if (TopLvlToIndex>FTopLvlCount) then
@@ -2155,10 +2160,10 @@ begin
       exit;
     end;
     inc(RealCount,Node.SubTreeCount);
-//writeln(' ConsistencyCheck: B  ',RealCount,',',Node.SubTreeCount);
+    //writeln(' ConsistencyCheck: B  ',RealCount,',',Node.SubTreeCount);
     Node:=Node.FNextBrother;
   end;
-//writeln(' ConsistencyCheck: B  ',RealCount,',',FCount);
+  //writeln(' ConsistencyCheck: B  ',RealCount,',',FCount);
   if RealCount<>FCount then exit(-3);
   if (FTopLvlCapacity<=0) and (FTopLvlItems<>nil) then exit(-4);
   if (FTopLvlCapacity>0) and (FTopLvlItems=nil) then exit(-5);
@@ -2170,7 +2175,7 @@ begin
       exit(-9);
     if (i<FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>FTopLvlItems[i+1])
     then begin
-writeln(' CONSISTENCY i=',i,' FTopLvlCount=',FTopLvlCount,' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
+      writeln(' CONSISTENCY i=',i,' FTopLvlCount=',FTopLvlCount,' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
       exit(-10);
     end;
     if (i=FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>nil) then
@@ -3179,18 +3184,18 @@ end;
 function TCustomTreeView.IsNodeVisible(ANode: TTreeNode): Boolean;
 begin
   Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
-//writeln('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
-//' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
+  //writeln('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
+  //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
-//writeln('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
-//' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
+    //writeln('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
+    //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
     if (FScrolledTop>=ANode.Top+ANode.Height)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth<ANode.Top)
     then
       Result:=false;
   end;
-//writeln('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
-//' Node.Text=',ANode.Text,' Visible=',Result);
+  //writeln('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
+  //' Node.Text=',ANode.Text,' Visible=',Result);
 end;
 
 procedure TCustomTreeView.Loaded;
@@ -3751,7 +3756,7 @@ end;
 procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
 begin
   inherited CMDrag(AMessage);
-writeln('TCustomTreeView.CMDrag ',ord(AMessage.DragMessage));
+  writeln('TCustomTreeView.CMDrag ',ord(AMessage.DragMessage));
   with AMessage, DragRec^ do
     case DragMessage of
       dmDragMove:
@@ -3774,7 +3779,7 @@ var
   Node: TTreeNode;
 begin
   Node := GetNodeAt(X, Y);
-writeln('TCustomTreeView.DoDragOver ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
+  writeln('TCustomTreeView.DoDragOver ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
   begin

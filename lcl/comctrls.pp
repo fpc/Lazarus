@@ -1396,8 +1396,8 @@ type
     property OnDeletion: TTVExpandedEvent read FOnDeletion write FOnDeletion;
     property OnEditing: TTVEditingEvent read FOnEditing write FOnEditing;
     property OnEdited: TTVEditedEvent read FOnEdited write FOnEdited;
-    property OnExpanding: TTVExpandingEvent read FOnExpanding write FOnExpanding;
     property OnExpanded: TTVExpandedEvent read FOnExpanded write FOnExpanded;
+    property OnExpanding: TTVExpandingEvent read FOnExpanding write FOnExpanding;
     property OnGetImageIndex: TTVExpandedEvent
       read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetSelectedIndex: TTVExpandedEvent
@@ -1521,8 +1521,8 @@ type
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    property OnExpanding;
     property OnExpanded;
+    property OnExpanding;
     property OnGetImageIndex;
     property OnGetSelectedIndex;
     property OnKeyDown;
@@ -1600,6 +1600,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/09/14 10:39:40  lazarus
+  MG: added expanding to unit dependencies
+
   Revision 1.46  2002/09/14 08:38:05  lazarus
   MG: added TListView notification from Vincent
 

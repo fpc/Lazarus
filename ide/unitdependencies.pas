@@ -44,38 +44,85 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
-  CodeToolManager, EnvironmentOpts, LResources, IDEOptionDefs,
+  CodeToolManager, CodeCache, EnvironmentOpts, LResources, IDEOptionDefs,
   LazarusIDEStrConsts, InputHistory;
   
 type
 
   { TUnitNode }
+  
+  TUnitNodeFlag = (
+    unfImplementation,// this unit was used in an implementation uses section
+    unfCircle,        // this unit is the parent of itself
+    unfFileNotFound,  // this unit file was not found
+    unfParseError     // error parsing the source
+    );
+  TUnitNodeFlags = set of TUnitNodeFlag;
+  
+  TUnitNodeSourceType = (
+    unstUnknown,
+    unstUnit,
+    unstProgram,
+    unstLibrary,
+    unstPackage
+    );
+    
+const
+  UnitNodeSourceTypeNames: array[TUnitNodeSourceType] of string = (
+    '?',
+    'Unit',
+    'Program',
+    'Library',
+    'Package'
+    );
 
+type
   TUnitNode = class
   private
+    FChildCount: integer;
+    FCodeBuffer: TCodeBuffer;
     FFilename: string;
     FFirstChild: TUnitNode;
+    FFlags: TUnitNodeFlags;
     FLastChild: TUnitNode;
     FNextSibling: TUnitNode;
     FParent: TUnitNode;
     FPrevSibling: TUnitNode;
     FShortFilename: string;
+    FSourceType: TUnitNodeSourceType;
     FTreeNode: TTreeNode;
+    procedure SetCodeBuffer(const AValue: TCodeBuffer);
     procedure SetFilename(const AValue: string);
+    procedure SetParent(const AValue: TUnitNode);
     procedure SetShortFilename(const AValue: string);
     procedure SetTreeNode(const AValue: TTreeNode);
     procedure CreateShortFilename;
+    procedure UnbindFromParent;
+    procedure AddToParent;
+    procedure AddChild(const AFilename: string; ACodeBuffer: TCodeBuffer;
+      InImplementation: boolean);
+    procedure UpdateSourceType;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure ClearChilds;
     procedure CreateChilds;
+    procedure ClearGrandChildren;
+    procedure CreateGrandChildren;
+    function FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer): TUnitNode;
+    function HasChildren: boolean;
+    function IsImplementationNode: boolean;
+    property ChildCount: integer read FChildCount;
+    property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property Filename: string read FFilename write SetFilename;
     property FirstChild: TUnitNode read FFirstChild;
+    property Flags: TUnitNodeFlags read FFlags;
     property LastChild: TUnitNode read FLastChild;
     property NextSibling: TUnitNode read FNextSibling;
     property PrevSibling: TUnitNode read FPrevSibling;
-    property Parent: TUnitNode read FParent;
+    property Parent: TUnitNode read FParent write SetParent;
     property ShortFilename: string read FShortFilename write SetShortFilename;
+    property SourceType: TUnitNodeSourceType read FSourceType;
     property TreeNode: TTreeNode read FTreeNode write SetTreeNode;
   end;
 
@@ -88,11 +135,16 @@ type
     UnitTreeView: TTreeView;
     RefreshButton: TBitBtn;
     procedure UnitDependenciesViewResize(Sender: TObject);
+    procedure UnitTreeViewCollapsing(Sender: TObject; Node: TTreeNode;
+          var AllowCollapse: Boolean);
+    procedure UnitTreeViewExpanding(Sender: TObject; Node: TTreeNode;
+          var AllowExpansion: Boolean);
   private
+    FRootCodeBuffer: TCodeBuffer;
     FRootFilename: string;
+    FRootNode: TUnitNode;
     FRootShortFilename: string;
     FRootValid: boolean;
-    FRootNode: TUnitNode;
     procedure DoResize;
     procedure ClearTree;
     procedure RebuildTree;
@@ -117,6 +169,30 @@ implementation
 procedure TUnitDependenciesView.UnitDependenciesViewResize(Sender: TObject);
 begin
   DoResize;
+end;
+
+procedure TUnitDependenciesView.UnitTreeViewCollapsing(Sender: TObject;
+  Node: TTreeNode; var AllowCollapse: Boolean);
+var
+  UnitNode: TUnitNode;
+begin
+  AllowCollapse:=true;
+  UnitNode:=TUnitNode(Node.Data);
+  UnitNode.ClearGrandChildren;
+end;
+
+procedure TUnitDependenciesView.UnitTreeViewExpanding(Sender: TObject;
+  Node: TTreeNode; var AllowExpansion: Boolean);
+var
+  UnitNode: TUnitNode;
+begin
+  UnitNode:=TUnitNode(Node.Data);
+  if UnitNode.HasChildren then begin
+    AllowExpansion:=true;
+    UnitNode.CreateGrandChildren;
+  end else begin
+    AllowExpansion:=false;
+  end;
 end;
 
 procedure TUnitDependenciesView.DoResize;
@@ -151,6 +227,7 @@ begin
   ClearTree;
   if RootFilename='' then exit;
   FRootNode:=TUnitNode.Create;
+  FRootNode.CodeBuffer:=FRootCodeBuffer;
   FRootNode.Filename:=RootFilename;
   FRootNode.ShortFilename:=FRootShortFilename;
   UnitTreeView.Items.Clear;
@@ -162,6 +239,7 @@ procedure TUnitDependenciesView.SetRootFilename(const AValue: string);
 begin
   if FRootFilename=AValue then exit;
   FRootFilename:=AValue;
+  FRootCodeBuffer:=CodeToolBoss.FindFile(FRootFilename);
   FRootShortFilename:=FRootFilename;
   RebuildTree;
   UpdateUnitTree;
@@ -238,6 +316,8 @@ begin
       Top:=SelectUnitButton.Top+SelectUnitButton.Height+2;
       Width:=Parent.ClientWidth;
       Height:=Parent.ClientHeight-Top;
+      OnExpanding:=@UnitTreeViewExpanding;
+      OnCollapsing:=@UnitTreeViewCollapsing;
       Visible:=true;
     end;
     
@@ -253,11 +333,28 @@ end;
 
 { TUnitNode }
 
+procedure TUnitNode.SetCodeBuffer(const AValue: TCodeBuffer);
+begin
+  if CodeBuffer=AValue then exit;
+  FCodeBuffer:=AValue;
+  if CodeBuffer<>nil then
+    Filename:=CodeBuffer.Filename;
+end;
+
 procedure TUnitNode.SetFilename(const AValue: string);
 begin
-  if FFilename=AValue then exit;
+  if Filename=AValue then exit;
   FFilename:=AValue;
+  FSourceType:=unstUnknown;
   CreateShortFilename;
+end;
+
+procedure TUnitNode.SetParent(const AValue: TUnitNode);
+begin
+  if Parent=AValue then exit;
+  UnbindFromParent;
+  FParent:=AValue;
+  if Parent<>nil then AddToParent;
 end;
 
 procedure TUnitNode.SetShortFilename(const AValue: string);
@@ -270,11 +367,12 @@ end;
 
 procedure TUnitNode.SetTreeNode(const AValue: TTreeNode);
 begin
-  if FTreeNode=AValue then exit;
+  if TreeNode=AValue then exit;
   FTreeNode:=AValue;
-  if FTreeNode<>nil then begin
-    FTreeNode.Text:=ShortFilename;
-
+  if TreeNode<>nil then begin
+    TreeNode.Text:=ShortFilename;
+    TreeNode.Data:=Self;
+    TreeNode.HasChildren:=HasChildren;
   end;
 end;
 
@@ -283,21 +381,160 @@ begin
   ShortFilename:=Filename;
 end;
 
+procedure TUnitNode.UnbindFromParent;
+begin
+  if TreeNode<>nil then begin
+    TreeNode.Free;
+    TreeNode:=nil;
+  end;
+  if Parent<>nil then begin
+    if Parent.FirstChild=Self then Parent.FFirstChild:=NextSibling;
+    if Parent.LastChild=Self then Parent.FLastChild:=PrevSibling;
+    Dec(Parent.FChildCount);
+  end;
+  if NextSibling<>nil then NextSibling.FPrevSibling:=PrevSibling;
+  if PrevSibling<>nil then PrevSibling.FNextSibling:=NextSibling;
+  FNextSibling:=nil;
+  FPrevSibling:=nil;
+  FParent:=nil;
+end;
+
+procedure TUnitNode.AddToParent;
+begin
+  if Parent=nil then exit;
+  
+  FPrevSibling:=Parent.LastChild;
+  FNextSibling:=nil;
+  Parent.FLastChild:=Self;
+  if Parent.FirstChild=nil then Parent.FFirstChild:=Self;
+  if PrevSibling<>nil then PrevSibling.FNextSibling:=Self;
+  Inc(Parent.FChildCount);
+  
+  if Parent.TreeNode<>nil then begin
+    Parent.TreeNode.HasChildren:=true;
+    TreeNode:=Parent.TreeNode.TreeNodes.AddChild(Parent.TreeNode,'');
+    if Parent.TreeNode.Expanded then begin
+      CreateChilds;
+    end;
+  end;
+end;
+
+procedure TUnitNode.AddChild(const AFilename: string; ACodeBuffer: TCodeBuffer;
+  InImplementation: boolean);
+var
+  NewNode: TUnitNode;
+begin
+  NewNode:=TUnitNode.Create;
+  NewNode.CodeBuffer:=ACodeBuffer;
+  NewNode.Filename:=AFilename;
+  if ACodeBuffer<>nil then begin
+    if FindParentWithCodeBuffer(ACodeBuffer)<>nil then
+      Include(NewNode.FFlags,unfCircle);
+  end else begin
+    Include(NewNode.FFlags,unfFileNotFound);
+  end;
+  if InImplementation then
+    Include(NewNode.FFlags,unfImplementation);
+  NewNode.Parent:=Self;
+end;
+
+procedure TUnitNode.UpdateSourceType;
+var
+  SourceKeyWord: string;
+begin
+  FSourceType:=unstUnknown;
+  if CodeBuffer=nil then exit;
+  SourceKeyWord:=CodeToolBoss.GetSourceType(CodeBuffer,false);
+  for FSourceType:=Low(TUnitNodeSourceType) to High(TUnitNodeSourceType) do
+    if AnsiCompareText(SourceKeyWord,UnitNodeSourceTypeNames[FSourceType])=0
+    then
+      exit;
+  FSourceType:=unstUnknown;
+end;
+
 constructor TUnitNode.Create;
 begin
-
+  inherited Create;
+  FSourceType:=unstUnknown;
 end;
 
 destructor TUnitNode.Destroy;
 begin
+  ClearChilds;
+  Parent:=nil;
   inherited Destroy;
 end;
 
-procedure TUnitNode.CreateChilds;
-//var
-//  UsedInterfaceFilenames, UsedImplementation: TStrings;
+procedure TUnitNode.ClearChilds;
 begin
-  //CodeToolBoss.FindUsedUnits();
+  while LastChild<>nil do
+    LastChild.Free;
+end;
+
+procedure TUnitNode.CreateChilds;
+var
+  UsedInterfaceFilenames, UsedImplementationFilenames: TStrings;
+  i: integer;
+begin
+  ClearChilds;
+  UpdateSourceType;
+  if CodeBuffer=nil then exit;
+  if CodeToolBoss.FindUsedUnits(CodeBuffer,
+                                UsedInterfaceFilenames,
+                                UsedImplementationFilenames) then
+  begin
+    Exclude(FFlags,unfParseError);
+    for i:=0 to UsedInterfaceFilenames.Count-1 do
+      AddChild(UsedInterfaceFilenames[i],
+               TCodeBuffer(UsedInterfaceFilenames.Objects[i]),false);
+    UsedInterfaceFilenames.Free;
+    for i:=0 to UsedImplementationFilenames.Count-1 do
+      AddChild(UsedImplementationFilenames[i],
+               TCodeBuffer(UsedImplementationFilenames.Objects[i]),true);
+    UsedImplementationFilenames.Free;
+  end else begin
+    Include(FFlags,unfParseError);
+  end;
+end;
+
+procedure TUnitNode.ClearGrandChildren;
+var
+  AChildNode: TUnitNode;
+begin
+  AChildNode:=FirstChild;
+  while AChildNode<>nil do begin
+    AChildNode.ClearChilds;
+    AChildNode:=AChildNode.NextSibling;
+  end;
+end;
+
+procedure TUnitNode.CreateGrandChildren;
+var
+  AChildNode: TUnitNode;
+begin
+  AChildNode:=FirstChild;
+  while AChildNode<>nil do begin
+    AChildNode.CreateChilds;
+    AChildNode:=AChildNode.NextSibling;
+  end;
+end;
+
+function TUnitNode.FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer
+  ): TUnitNode;
+begin
+  Result:=Parent;
+  while (Result<>nil) and (Result.CodeBuffer<>ACodeBuffer) do
+    Result:=Result.Parent;
+end;
+
+function TUnitNode.HasChildren: boolean;
+begin
+  Result:=FChildCount>0;
+end;
+
+function TUnitNode.IsImplementationNode: boolean;
+begin
+  Result:=unfImplementation in FFlags;
 end;
 
 end.
