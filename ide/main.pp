@@ -1919,9 +1919,9 @@ end;
 Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
 Begin
   MessagesView.Show;
-  if Not Assigned(ColumnDlg1) then
-    ColumnDlg1 := TColumnDlg1.Create(self);
-  ColumnDlg1.ShowModal;
+//  if Not Assigned(ColumnDlg1) then
+//    ColumnDlg1 := TColumnDlg1.Create(self);
+//  ColumnDlg1.ShowModal;
 //  CreateLFM(ColumnDlg1);
 End;
 
@@ -5494,6 +5494,10 @@ end.
 =======
 
   $Log$
+  Revision 1.196  2001/12/31 22:45:41  lazarus
+  Took out some test code.
+  Shane
+
   Revision 1.195  2001/12/31 22:42:59  lazarus
   Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
   Shane
@@ -5515,6 +5519,10 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.196  2001/12/31 22:45:41  lazarus
+  Took out some test code.
+  Shane
+
   Revision 1.195  2001/12/31 22:42:59  lazarus
   Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
   Shane
