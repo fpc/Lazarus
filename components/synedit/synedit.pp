@@ -4080,7 +4080,9 @@ end;
 procedure TCustomSynEdit.WMKillFocus(var Msg: TWMKillFocus);
 begin
   inherited;
-writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
+  {$IFDEF VerboseFocus}
+  writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
+  {$ENDIF}
   {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=Point(-1,-1);
   if not (eoPersistentCaret in fOptions) then
@@ -4092,7 +4094,6 @@ writeln('[TCustomSynEdit.WMKillFocus] A ',Name);
   {$ENDIF}
   if FHideSelection and SelAvail then
     Invalidate;
-writeln('[TCustomSynEdit.WMKillFocus] END ',Name);
 end;
 
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
