@@ -6339,12 +6339,24 @@ begin
 {begin}                                                                         //mh 2000-11-20
   BeginUndoBlock;
   try
+    {$IFDEF SYN_LAZARUS}
+    if SelAvail then begin
+      fUndoList.AddChange({crSelDelete} crDelete, fBlockBegin, fBlockEnd,
+        GetSelText, SelectionMode);
+      StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
+      EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
+    end else begin
+      StartOfBlock := CaretXY;
+      EndOfBlock := CaretXY;
+    end;
+    {$ELSE}
     if SelAvail then begin
       fUndoList.AddChange({crSelDelete} crDelete, fBlockBegin, fBlockEnd,
         GetSelText, SelectionMode);
     end;
     StartOfBlock := minPoint(fBlockBegin, fBlockEnd);
     EndOfBlock := maxPoint(fBlockBegin, fBlockEnd);
+    {$ENDIF}
     fBlockBegin := StartOfBlock;
     fBlockEnd := EndOfBlock;
     LockUndo;
