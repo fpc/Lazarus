@@ -450,7 +450,20 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: ansistring; override;
+    function GetValue: AnsiString; override;
+  end;
+  
+{ TCustomListPropertyEditor
+  }
+  TCustomListPropertyEditor = class(TPropertyEditor)
+  protected
+    function GetListName: AnsiString; virtual;
+    function GetElementCount: integer; virtual;
+    function GetElement(Index: integer): TPropertyEditor; virtual;
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetProperties(Proc: TGetPropEditProc); override;
+    function GetValue: AnsiString; override;
   end;
 
 { TClassPropertyEditor
@@ -2041,6 +2054,48 @@ begin
       Result := Result + GetEnumName(TypeInfo, I);
     end;
   Result := Result + ']';
+end;
+
+{ TCustomListPropertyEditor }
+
+function TCustomListPropertyEditor.GetListName: AnsiString;
+begin
+  Result:='';
+end;
+
+function TCustomListPropertyEditor.GetElementCount: integer;
+begin
+  Result:=0;
+end;
+
+function TCustomListPropertyEditor.GetElement(Index: integer): TPropertyEditor;
+begin
+  Result:=nil;
+end;
+
+function TCustomListPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:= [paSubProperties, paReadOnly];
+end;
+
+procedure TCustomListPropertyEditor.GetProperties(Proc: TGetPropEditProc);
+var
+  i, ElementCount: integer;
+begin
+  ElementCount:=GetElementCount;
+  for i:=0 to ElementCount-1 do
+    Proc(GetElement(i));
+end;
+
+function TCustomListPropertyEditor.GetValue: AnsiString;
+var
+  ElementCount: integer;
+begin
+  ElementCount:=GetElementCount;
+  if ElementCount<>1 then
+    Result:=IntToStr(GetElementCount)+' items'
+  else
+    Result:='1 item';
 end;
 
 { TClassPropertyEditor }
