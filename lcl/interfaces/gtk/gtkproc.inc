@@ -3494,6 +3494,27 @@ begin
   end;
 end;
 
+Procedure FillScreenFonts(ScreenFonts : TStrings);
+var
+  theFonts : PPChar;
+  Tmp,Tmp2 : AnsiString;
+  I, N,L : Integer;
+begin
+  ScreenFonts.Clear;
+  {$IfNdef Win32}
+  If X11Display = nil then
+    X11Display := XOpenDisplay(GDK_GET_DISPLAY);
+  theFonts := XListFonts(X11Display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
+  For I := 0 to N - 1 do
+    If theFonts[I] <> nil then begin
+      Tmp := ExtractFamilyFromXLFDName(AnsiString(theFonts[I]));
+      If Tmp <> '' then
+        If ScreenFonts.IndexOf(Tmp) < 0 then
+          ScreenFonts.Append(Tmp);
+    end;
+  {$EndIf Win32}
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -3502,6 +3523,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.130  2002/10/18 16:08:10  lazarus
+  AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
+
   Revision 1.129  2002/10/17 21:00:18  lazarus
   MG: fixed uncapturing of mouse
 
