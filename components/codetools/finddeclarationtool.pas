@@ -1130,6 +1130,9 @@ var
     NodeCache: TCodeTreeNodeCache;
   begin
     Result:=false;
+    // the node cache is identifier based
+    if (fdfCollect in Params.Flags) then exit;
+    
     NodeCache:=GetNodeCache(ContextNode,false);
     if (NodeCache<>LastNodeCache) then begin
       // NodeCache changed -> search nearest cache entry for the identifier
@@ -1210,7 +1213,8 @@ var
       exit;
     end;
     if not (fdfExceptionOnNotFound in Params.Flags) then exit;
-    if WordIsPredefinedIdentifier.DoIt(Params.Identifier)
+    if (Params.Identifier<>nil)
+    and WordIsPredefinedIdentifier.DoIt(Params.Identifier)
     and not (fdfExceptionOnPredefinedIdent in Params.Flags) then exit;
     // identifier was not found and exception is wanted
     // -> raise exception
@@ -1239,7 +1243,8 @@ var
   //          false if search should continue
   begin
     Result:=false;
-    if CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
+    if (fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
       writeln('  Definition Identifier found="',GetIdentifier(Params.Identifier),'"');
@@ -1263,7 +1268,8 @@ var
     MoveCursorToNodeStart(ContextNode);
     ReadNextAtom; // read keyword
     ReadNextAtom; // read name
-    if CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
+    if (fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
     begin
       // identifier found
       {$IFDEF ShowTriedIdentifiers}
@@ -1282,12 +1288,13 @@ var
   //          false if search should continue
   begin
     Result:=false;
-    if (Params.Identifier[0]<>'[') then begin
+    if (fdfCollect in Params.Flags)
+    or (Params.Identifier[0]<>'[') then begin
       MoveCursorToNodeStart(ContextNode);
       ReadNextAtom; // read keyword 'property'
       ReadNextAtom; // read name
-      if CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then
-      begin
+      if (fdfCollect in Params.Flags)
+      or CompareSrcIdentifiers(CurPos.StartPos,Params.Identifier) then begin
         // identifier found
         {$IFDEF ShowTriedIdentifiers}
         writeln('  Property Identifier found="',GetIdentifier(Params.Identifier),'"');
@@ -1454,7 +1461,7 @@ var
 begin
   Result:=false;
   InitNodesAndCacheAccess;
-  
+
   {$IFDEF ShowTriedContexts}
   writeln('[TFindDeclarationTool.FindIdentifierInContext] Start Ident=',
   '"',GetIdentifier(Params.Identifier),'"',
@@ -1603,9 +1610,13 @@ begin
   CurContextNode:=CurContextNode.FirstChild;
   while CurContextNode<>nil do begin
     if (CurContextNode.Desc in [ctnEnumIdentifier])
-    and CompareSrcIdentifiers(CurContextNode.StartPos,Params.Identifier)
+    and ((fdfCollect in Params.Flags)
+      or CompareSrcIdentifiers(CurContextNode.StartPos,Params.Identifier))
     then begin
       // identifier found
+      
+      // ToDo: fdfCollect
+      
       Result:=true;
       Params.SetResult(Self,CurContextNode);
       exit;

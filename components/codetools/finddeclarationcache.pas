@@ -784,7 +784,7 @@ begin
     raise Exception.Create('[TCodeTreeNodeCache.FindNearestAVLNode]'
       +' internal error: CleanStartPos>CleanEndPos');
   end;
-  if FItems<>nil then begin
+  if (FItems<>nil) and (Identifier<>nil) then begin
     Result:=FItems.Root;
     while Result<>nil do begin
       Entry:=PCodeTreeNodeCacheEntry(Result.Data);

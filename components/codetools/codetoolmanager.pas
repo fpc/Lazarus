@@ -1246,9 +1246,9 @@ function TCodeToolManager.ListAllCreateFormStatements(
   Code: TCodeBuffer): TStrings;
 begin
   Result:=nil;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.ListAllCreateFormStatements A ',Code.Filename);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.ListAllCreateFormStatements A ',Code.Filename);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.ListAllCreateFormStatements;
@@ -1261,9 +1261,9 @@ function TCodeToolManager.SetAllCreateFromStatements(Code: TCodeBuffer;
   List: TStrings): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.SetAllCreateFromStatements A ',Code.Filename);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.SetAllCreateFromStatements A ',Code.Filename);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
@@ -1276,9 +1276,9 @@ function TCodeToolManager.PublishedVariableExists(Code: TCodeBuffer;
   const AClassName, AVarName: string): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.PublishedVariableExists A ',Code.Filename,' ',AClassName,':',AVarName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.PublishedVariableExists A ',Code.Filename,' ',AClassName,':',AVarName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindPublishedVariable(UpperCaseStr(AClassName),
@@ -1292,9 +1292,9 @@ function TCodeToolManager.AddPublishedVariable(Code: TCodeBuffer;
   const AClassName, VarName, VarType: string): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.AddPublishedVariable A ',Code.Filename,' ',AClassName,':',VarName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.AddPublishedVariable A ',Code.Filename,' ',AClassName,':',VarName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddPublishedVariable(UpperCaseStr(AClassName),
