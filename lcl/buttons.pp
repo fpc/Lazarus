@@ -87,6 +87,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Anchors;
+    property Align;
     property Default : Boolean read FDefault write SetDefault default false;
     property Enabled;
     property ModalResult : TModalResult read FModalResult write FModalResult default mrNone;
@@ -290,6 +291,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/03/08 21:51:57  mattias
+  make resource string dialog nearly complete
+
   Revision 1.36  2003/02/28 10:21:16  mattias
   lcl localization from Olivier
 
