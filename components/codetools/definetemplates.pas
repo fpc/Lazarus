@@ -3280,6 +3280,16 @@ begin
       Format(ctsAddsDirToSourcePath,[TargetProcessor]),
       ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
+    
+    // rtl/darwin uses rtl/bsd/
+    RTLOSDir:=TDefineTemplate.Create('darwin','rtl/darwin','',
+                                     'darwin',da_Directory);
+    s:=SrcPathMacro
+      +';'+Dir+'rtl'+DS+'bsd'+DS;
+    RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
+      Format(ctsAddsDirToSourcePath,[TargetProcessor]),
+      ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
+    RTLDir.AddChild(RTLOSDir);
   end;
   // rtl/win32
   RTLWin32Dir:=TDefineTemplate.Create('Win32','Win32','','win32',da_Directory);
