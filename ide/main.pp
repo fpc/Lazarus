@@ -61,7 +61,7 @@ uses
   // lcl
   LCLProc, LCLMemManager, LCLType, LCLIntf, LMessages, LResources, StdCtrls,
   Forms, Buttons, Menus, FileCtrl, Controls, GraphType, Graphics, ExtCtrls,
-  Dialogs,
+  Dialogs, InterfaceBase, {SetDesigning}
   // codetools
   AVL_Tree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
   DefineTemplates,
@@ -1779,7 +1779,7 @@ end;
 Procedure TMainIDE.SetDesigning(AComponent: TComponent; Value : Boolean);
 Begin
   AComponent.SetDesigning(Value);
-  if Value then CNSendMessage(LM_SETDESIGNING, AComponent, nil);
+  if Value then InterfaceObject.SetDesigning(AComponent);
 end;
 
 {------------------------------------------------------------------------------}
@@ -10813,6 +10813,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.778  2004/09/24 17:24:40  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.777  2004/09/22 19:05:58  mattias
   various fixes for TCustomMemo, RTTIControls, FindReferences
 
