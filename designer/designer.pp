@@ -888,7 +888,7 @@ Begin
   Handled:=false;
   Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
                                                  TheMessage.CharCode,Shift);
-  if Assigned(OnProcessCommand) then begin
+  if Assigned(OnProcessCommand) and (Command<>ecNone) then begin
     OnProcessCommand(Self,Command,Handled);
     if Handled or (Command=ecNone) then exit;
   end;
