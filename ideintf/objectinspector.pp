@@ -188,7 +188,6 @@ type
     FDragging:boolean;
     FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
-    FBorderStyle:TBorderStyle;
     FStates: TOIPropertyGridStates;
 
     // hint stuff
@@ -246,7 +245,6 @@ type
           ARect: TRect; State: TOwnerDrawState);
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
-    procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetBackgroundColor(const AValue: TColor);
     procedure UpdateScrollBar;
   protected
@@ -293,8 +291,7 @@ type
     property NameFont:TFont read FNameFont write FNameFont;
     property ValueFont:TFont read FValueFont write FValueFont;
     property DefaultValueFont:TFont read FDefaultValueFont write FDefaultValueFont;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
-       default bsSingle;
+    property BorderStyle default bsSingle;
     property ItemIndex:integer read FItemIndex write SetItemIndex;
     property ExpandedProperties:TStringList 
        read FExpandedProperties write FExpandedProperties;
@@ -562,28 +559,15 @@ end;
 
 procedure TOIPropertyGrid.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
   ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
 begin
   inherited CreateParams(Params);
   with Params do begin
     {$R-}
     WindowClass.Style := WindowClass.Style and not ClassStylesOff;
-    Style := Style or WS_VSCROLL or BorderStyles[fBorderStyle]
-      or WS_CLIPCHILDREN;
+    Style := Style or WS_VSCROLL or WS_CLIPCHILDREN;
     {$R+}
-    if NewStyleControls and Ctl3D and (fBorderStyle = bsSingle) then begin
-      Style := Style and not Cardinal(WS_BORDER);
-      ExStyle := ExStyle or WS_EX_CLIENTEDGE;
-    end;
-  end;
-end;
-
-procedure TOIPropertyGrid.SetBorderStyle(Value: TBorderStyle);
-begin
-  if fBorderStyle <> Value then begin
-    fBorderStyle := Value;
-    Invalidate;
+    ExStyle := ExStyle or WS_EX_CLIENTEDGE;
   end;
 end;
 

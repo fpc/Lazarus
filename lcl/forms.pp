@@ -337,7 +337,6 @@ type
   private
     FActive: Boolean;
     FActiveControl: TWinControl;
-    FBorderStyle: TFormBorderStyle;
     FDesigner: TIDesigner;
     FDummyTextHeight: Longint;
     FFormState: TFormState;
@@ -372,7 +371,7 @@ type
     function IsKeyPreviewStored: boolean;
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
-    procedure SetBorderStyle(Value : TFormBorderStyle);
+    procedure SetFormBorderStyle(Value: TFormBorderStyle);
     procedure SetDesigner(Value : TIDesigner);
     procedure SetFormStyle(Value : TFormStyle);
     procedure SetIcon(AValue: TIcon);
@@ -410,7 +409,8 @@ type
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
-    Procedure SetZOrder(Topmost: Boolean); override;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); override;
+    procedure SetZOrder(Topmost: Boolean); override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent;
@@ -446,7 +446,7 @@ type
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property BorderStyle: TFormBorderStyle
-                      read FBorderStyle write SetBorderStyle default bsSizeable;
+                      read FBorderStyle write SetFormBorderStyle default bsSizeable;
     property Caption stored IsForm;
     property Color default clBtnFace;
     property Designer: TIDesigner read FDesigner write SetDesigner;

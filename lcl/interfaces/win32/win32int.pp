@@ -101,7 +101,6 @@ Type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
-    Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
     Procedure SetLabel(Sender: TObject; Data: Pointer);
@@ -157,6 +156,7 @@ Type
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
+    Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
     // create and destroy
@@ -254,6 +254,11 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2004/05/21 09:03:55  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.79  2004/05/14 17:48:39  micha
   fix itemheight of listbox, handle measureitem message
 

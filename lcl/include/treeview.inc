@@ -2881,14 +2881,6 @@ begin
   end;
 end;
 
-procedure TCustomTreeView.SetBorderStyle(Value: TBorderStyle);
-begin
-  if BorderStyle <> Value then begin
-    FBorderStyle := Value;
-    Invalidate;
-  end;
-end;
-
 procedure TCustomTreeView.Paint;
 begin
   DoPaint;

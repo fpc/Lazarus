@@ -287,7 +287,7 @@ Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
       // retrieve page handle from tab as extra check (in case page isn't added yet).
       TCI.mask := TCIF_PARAM;
       Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
-      if TCI.lParam=Page.Handle then
+      if dword(TCI.lParam)=Page.Handle then
       begin
         Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
         TCI.mask := TCIF_TEXT;
@@ -1923,6 +1923,9 @@ Begin
       Flags := Flags or WS_TABSTOP;
     Assert(False, 'Trace:Setting dimentions');
     LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
+    if Sender is TCustomControl then
+      if TCustomControl(Sender).BorderStyle = bsSingle then
+        FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     {$IFDEF VerboseSizeMsg}
     writeln('TWin32WidgetSet.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
@@ -2049,9 +2052,6 @@ Begin
       pClassName := @ClsName;
       WindowTitle := StrCaption;
       SubClassWndProc := nil;
-      if Sender is TTreeView then
-        if TTreeView(Sender).BorderStyle = bsSingle then
-	  FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
     End;
     csForm:
     Begin
@@ -2997,6 +2997,11 @@ End;
 
 {
   $Log$
+  Revision 1.197  2004/05/21 09:03:55  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.196  2004/05/20 21:28:54  marc
   * Fixed win32 listview
 

@@ -334,7 +334,9 @@ type
     fMouseDownX: integer;
     fMouseDownY: integer;
     fBookMarkOpt: TSynBookMarkOpt;
+{$ifndef SYN_LAZARUS}    
     fBorderStyle: TBorderStyle;
+{$endif}    
     fHideSelection: boolean;
     fMouseWheelAccumulator: integer;
     fOverwriteCaret: TSynEditCaretType;
@@ -429,8 +431,9 @@ type
     procedure SetBlockEnd(Value: TPoint);
     {$IFDEF SYN_LAZARUS}
     procedure SetBlockIndent(const AValue: integer);
-    {$ENDIF}
+    {$ELSE}
     procedure SetBorderStyle(Value: TBorderStyle);
+    {$ENDIF}
     procedure SetCaretAndSelection(ptCaret, ptBefore, ptAfter: TPoint);
     procedure SetCaretX(Value: Integer);
     procedure SetCaretY(Value: Integer);
@@ -706,7 +709,7 @@ type
   protected
     property BookMarkOptions: TSynBookMarkOpt
       read fBookMarkOpt write fBookMarkOpt;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
+    property BorderStyle {$ifndef SYN_LAZARUS}: TBorderStyle read FBorderStyle write SetBorderStyle{$endif}
       default bsSingle;
     {$IFDEF SYN_LAZARUS}
     property BlockIndent: integer read fBlockIndent write SetBlockIndent default 2;
@@ -5546,6 +5549,8 @@ begin
   end;
 end;
 
+{$ifndef SYN_LAZARUS}
+
 procedure TCustomSynEdit.SetBorderStyle(Value: TBorderStyle);
 begin
   if fBorderStyle <> Value then begin
@@ -5553,6 +5558,8 @@ begin
     RecreateWnd;
   end;
 end;
+
+{$endif}
 
 procedure TCustomSynEdit.SetHideSelection(const Value: boolean);
 begin

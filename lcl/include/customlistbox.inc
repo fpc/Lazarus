@@ -112,17 +112,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{ procedure TCustomListBox.SetBorderStyle                                      }
-{------------------------------------------------------------------------------}
-procedure TCustomListBox.SetBorderStyle(Val : TBorderStyle);
-begin
-  if FBorderStyle <> Val then begin
-    FBorderStyle:= Val;
-    if HandleAllocated then CNSendMessage(LM_SETBORDER, Self, nil);
-  end;
-end;
-
-{------------------------------------------------------------------------------}
 { procedure TCustomListBox.UpdateSelectionMode                                 }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSelectionMode;

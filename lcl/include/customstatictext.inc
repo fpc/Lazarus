@@ -88,17 +88,17 @@ begin
   Result := FAlignment;
 end;
 
-Procedure TCustomStaticText.SetBorderStyle(Value : TStaticBorderStyle);
+Procedure TCustomStaticText.SetStaticBorderStyle(Value : TStaticBorderStyle);
 begin
-  If FBorderStyle <> Value then begin
-    FBorderStyle := Value;
+  If FStaticBorderStyle <> Value then begin
+    FStaticBorderStyle := Value;
     Invalidate;
   end;
 end;
 
-Function TCustomStaticText.GetBorderStyle : TStaticBorderStyle;
+Function TCustomStaticText.GetStaticBorderStyle : TStaticBorderStyle;
 begin
-  Result := FBorderStyle;
+  Result := FStaticBorderStyle;
 end;
 
 Procedure TCustomStaticText.SetShowAccelChar(Value : Boolean);
@@ -182,6 +182,11 @@ end;
 
 {
   $Log$
+  Revision 1.6  2004/05/21 09:03:55  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.5  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

@@ -815,7 +815,6 @@ type
     FBevelInner, FBevelOuter : TPanelBevel;
     FBevelWidth : TBevelWidth;
     FBorderWidth : TBorderWidth;
-    FBorderStyle : TControlBorderStyle;
     FAlignment : TAlignment;
 //    FCaption : TCaption;
     FFullRepaint: Boolean;
@@ -824,7 +823,6 @@ type
     procedure SetBevelOuter(const Value: TPanelBevel);
     procedure SetBevelWidth(const Value: TBevelWidth);
     procedure SetBorderWidth(const Value: TBorderWidth);
-    procedure SetBorderStyle(const Value: TControlBorderStyle);
   protected
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure RealSetText(const Value: TCaption); override;
@@ -837,7 +835,6 @@ type
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
-    property BorderStyle: TControlBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property Color default clBtnFace;
     property Caption read GetText write SetText;
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
@@ -931,6 +928,11 @@ end.
 
  {
   $Log$
+  Revision 1.103  2004/05/21 09:03:54  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.102  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

@@ -130,14 +130,6 @@ begin
   InflateRect(Rect, -BevelSize, -BevelSize);
 end;
 
-procedure TCustomPanel.SetBorderStyle(const Value: TControlBorderStyle);
-begin
-  if FBorderStyle <> Value then begin
-    FBorderStyle := Value;
-    Invalidate;
-  end;
-end;
-
 procedure TCustomPanel.RealSetText(const Value: TCaption);
 begin
   if Caption <> Value 

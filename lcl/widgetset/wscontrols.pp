@@ -65,6 +65,8 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
+    class procedure BorderStyleChanged(const AWinControl: TWinControl); virtual;
+  
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
@@ -104,6 +106,10 @@ begin
 end;
 
 { TWSWinControl }
+
+procedure TWSWinControl.BorderStyleChanged(const AWinControl: TWinControl);
+begin
+end;
 
 function TWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean; 
 begin

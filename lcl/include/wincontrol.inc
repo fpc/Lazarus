@@ -987,6 +987,15 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TWinControl SetBorderStyle                                                  }
+{------------------------------------------------------------------------------}
+procedure TWinControl.SetBorderStyle(NewStyle: TBorderStyle);
+begin
+  FBorderStyle := NewStyle;
+  TWSWinControlClass(WidgetSetClass).BorderStyleChanged(self);
+end;
+
+{------------------------------------------------------------------------------}
 {  TWinControl SetBorderWidth                                                  }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.SetBorderWidth(value : TBorderWidth);
@@ -2383,6 +2392,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TWinControl GetBorderStyle
+------------------------------------------------------------------------------}
+function TWinControl.GetBorderStyle: TBorderStyle;
+begin
+  Result := TBorderStyle(FBorderStyle);
+end;
+
+{------------------------------------------------------------------------------
   TWinControl GetBrush
 ------------------------------------------------------------------------------}
 function TWinControl.GetBrush: TBrush;
@@ -2465,6 +2482,10 @@ end;
 constructor TWinControl.Create(TheOwner : TComponent);
 begin
   FCreatingHandle := False;
+  // do not set borderstyle, as tcustomform needs to set it before calling 
+  // inherited, to have it set before handle is created via streaming
+  // use property that bsNone is zero
+  //FBorderStyle := bsNone;
   inherited Create(TheOwner);
   FCompStyle := csWinControl;
   FChildSizing:=TControlChildSizing.Create(Self);
@@ -3523,6 +3544,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.230  2004/05/21 09:03:55  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.229  2004/05/19 18:41:54  micha
   trigger repaint on borderwidth change
 

@@ -972,18 +972,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm SetBorderStyle                                                      }
+{       TCustomForm SetBorderStyle                                             }
 {------------------------------------------------------------------------------}
-Procedure TCustomForm.SetBorderStyle(Value : TFormBorderStyle);
-Begin
+procedure TCustomForm.SetBorderStyle(NewStyle: TBorderStyle);
+begin
+  SetFormBorderStyle(NewStyle);
+end;
+
+{------------------------------------------------------------------------------}
+{       TCustomForm SetFormBorderStyle                                         }
+{------------------------------------------------------------------------------}
+procedure TCustomForm.SetFormBorderStyle(Value: TFormBorderStyle);
+begin
   if FBorderStyle = Value then exit;
   //TODO: Finish SETBORDERSTYLE
   FBorderStyle := Value;
   Include(FFormState,fsBorderStyleChanged);
+  inherited SetBorderStyle(Value);
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm UpdateWindowState                                                      }
+{       TCustomForm UpdateWindowState                                          }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.UpdateWindowState;
 Begin
@@ -992,7 +1001,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm SetWindowState                                                      }
+{       TCustomForm SetWindowState                                             }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetWindowState(Value : TWindowState);
 const
@@ -1602,6 +1611,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.136  2004/05/21 09:03:55  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.135  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

@@ -263,7 +263,6 @@ type
   TCustomGrid=class(TCustomControl)
   private
     FAutoAdvance: TAutoAdvance;
-    FBorderStyle: TBorderStyle;
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
     FEditorHiding: Boolean;
@@ -339,7 +338,6 @@ type
     procedure ReadRowHeights(Reader: TReader);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
     function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
-    procedure SetBorderStyle(const AValue: TBorderStyle);
     procedure SetCol(Valor: Integer);
     procedure SetColwidths(Acol: Integer; Avalue: Integer);
     procedure SetColCount(Valor: Integer);
@@ -445,12 +443,13 @@ type
     procedure TopLeftChanged; dynamic;
     function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
     procedure VisualChange; virtual;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure WMHScroll(var message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var message : TLMVScroll); message LM_VScroll;
     procedure WndProc(var TheMessage : TLMessage); override;
 
     property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property BorderStyle default bsSingle;
     property Col: Integer read FCol write SetCol;
     property ColCount: Integer read GetColCount write SetColCount;
     property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
@@ -2300,10 +2299,12 @@ begin
   end;
 end;
 
-procedure TCustomGrid.SetBorderStyle(const AValue: TBorderStyle);
+procedure TCustomGrid.SetBorderStyle(NewStyle: TBorderStyle);
 begin
-  if FBorderStyle<>AValue Then begin
-    FBorderStyle := AValue;
+  if BorderStyle<>NewStyle then 
+  begin
+    inherited;
+    
     VisualChange;
     if CheckTopLeft(Col, Row, True, True) then
       VisualChange;
@@ -3699,7 +3700,7 @@ begin
   inherited Create(AOwner);
   //AutoScroll:=False;
   FFocusRectVisible := True;
-  FBorderStyle := bsSingle; //bsNone;
+  BorderStyle := bsSingle;
   FDefaultDrawing := True;
   FOptions:=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,

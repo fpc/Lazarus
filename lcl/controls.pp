@@ -1240,8 +1240,8 @@ type
 
   TWinControl = class(TControl)
   private
-    FAlignLevel : Word;
-    FBorderWidth : TBorderWidth;
+    FAlignLevel: Word;
+    FBorderWidth: TBorderWidth;
     FBoundsLockCount: integer;
     FBoundsRealized: TRect;
     FBrush: TBrush;
@@ -1280,6 +1280,7 @@ type
     FCreatingHandle: Boolean; // Set when constructing the handle
                               // Only used for checking
     procedure AlignControl(AControl : TControl);
+    function GetBorderStyle: TBorderStyle;
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
     function GetControlCount: Integer;
@@ -1292,11 +1293,13 @@ type
     procedure SetChildSizing(const AValue: TControlChildSizing);
     procedure SetDockSite(const AValue: Boolean);
     procedure SetHandle(NewHandle: HWND);
-    Procedure SetBorderWidth(Value : TBorderWidth);
-    Procedure SetParentCtl3D(Value : Boolean);
+    procedure SetBorderWidth(Value : TBorderWidth);
+    procedure SetParentCtl3D(Value : Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
   protected
+    FBorderStyle: TFormBorderStyle;
+
     procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -1371,6 +1374,7 @@ type
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
     procedure Update; override;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
@@ -1407,6 +1411,8 @@ type
     procedure SetZOrderPosition(NewPosition: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
+    
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
   public
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
@@ -1522,6 +1528,7 @@ type
     procedure Paint; virtual;
 
     property Canvas: TCanvas read FCanvas write FCanvas;
+    property BorderStyle;
   end;
 
 
@@ -2262,6 +2269,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.201  2004/05/21 09:03:54  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.200  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

@@ -444,7 +444,6 @@ type
 
   TCustomListView = class(TWinControl)
   private
-    FBorderStyle: TBorderStyle;
     FDefItemHeight: integer;
     FSmallImages : TCustomImageList;
     FListItems : TListItems;
@@ -508,7 +507,6 @@ type
     procedure ImageChanged(Sender : TObject);
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
-//    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Columns: TListColumns read FColumns write SetColumns;
 //    property ColumnClick: Boolean read FColumnClick write SetColumnClick default True;
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight;
@@ -1801,7 +1799,6 @@ type
   TCustomTreeView = class(TCustomControl)
   private
     FBackgroundColor: TColor;
-    FBorderStyle: TBorderStyle;
     FBottomItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
@@ -1881,7 +1878,6 @@ type
     procedure OnChangeTimer(Sender: TObject);
     procedure SetAutoExpand(Value: Boolean);
     procedure SetBackgroundColor(Value: TColor);
-    procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetBottomItem(Value: TTreeNode);
     procedure SetChangeDelay(Value: Integer);
     procedure SetDefaultItemHeight(Value: integer);
@@ -1987,8 +1983,7 @@ type
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
-    property BorderStyle: TBorderStyle
-      read FBorderStyle write SetBorderStyle default bsSingle;
+    property BorderStyle default bsSingle;
     property ChangeDelay: Integer read GetChangeDelay write SetChangeDelay default 0;
     property HideSelection: Boolean
       read GetHideSelection write SetHideSelection default True;
@@ -2258,6 +2253,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2004/05/21 09:03:54  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.126  2004/05/20 21:28:54  marc
   * Fixed win32 listview
 

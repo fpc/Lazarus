@@ -62,6 +62,7 @@ type
   private
   protected
   public
+    class procedure BorderStyleChanged(const AWinControl: TWinControl); override;
   end;
 
   { TWin32WSGraphicControl }
@@ -92,11 +93,16 @@ type
 implementation
 
 uses
-  Windows, Win32Int;
+  Windows, Win32Int, InterfaceBase;
 
 procedure TWin32WSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin
   Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
+end;
+
+procedure TWin32WSWinControl.BorderStyleChanged(const AWinControl: TWinControl);
+begin
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(AWinControl);
 end;
 
 initialization
@@ -109,7 +115,7 @@ initialization
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TDragImageList, TWin32WSDragImageList);
   RegisterWSComponent(TControl, TWin32WSControl);
-//  RegisterWSComponent(TWinControl, TWin32WSWinControl);
+  RegisterWSComponent(TWinControl, TWin32WSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);
 //  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);
 //  RegisterWSComponent(TImageList, TWin32WSImageList);

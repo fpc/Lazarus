@@ -344,7 +344,6 @@ type
 
   TCustomListBox = class(TWinControl)
   private
-    FBorderStyle: TBorderStyle;
     FCanvas: TCanvas;
     FExtendedSelect, FMultiSelect : boolean;
     FIntegralHeight: boolean;
@@ -374,7 +373,6 @@ type
     function GetSelected(Index : integer) : boolean;
     function GetCachedDataSize: Integer; virtual; // returns the amount of data needed per item
     function GetCachedData(const AIndex: Integer): Pointer;
-    procedure SetBorderStyle(Val : TBorderStyle); virtual;
     procedure SetExtendedSelect(Val : boolean); virtual;
     procedure SetItemIndex(Val : integer); virtual;
     procedure SetItems(Value : TStrings); virtual;
@@ -397,7 +395,7 @@ type
   public
     property Align;
     property Anchors;
-    property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property BorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property Constraints;
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
@@ -1002,8 +1000,8 @@ type
   TCustomStaticText = class(TCustomControl)
   Private
     FAlignment: TAlignment;
-    FBorderStyle: TStaticBorderStyle;
-    FFocusControl : TWinControl;
+    FStaticBorderStyle: TStaticBorderStyle;
+    FFocusControl: TWinControl;
     FShowAccelChar: Boolean;
     Procedure FontChange(Sender : TObject);
   protected
@@ -1015,14 +1013,14 @@ type
 
     Procedure SetAlignment(Value : TAlignment);
     Function GetAlignment : TAlignment;
-    Procedure SetBorderStyle(Value : TStaticBorderStyle);
-    Function GetBorderStyle : TStaticBorderStyle;
+    Procedure SetStaticBorderStyle(Value : TStaticBorderStyle);
+    Function GetStaticBorderStyle : TStaticBorderStyle;
     Procedure SetFocusControl(Value : TWinControl);
     Procedure SetShowAccelChar(Value : Boolean);
     Function GetShowAccelChar : Boolean;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment;
-    property BorderStyle: TStaticBorderStyle read GetBorderStyle write SetBorderStyle;
+    property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
     property FocusControl : TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar;
   public
@@ -1546,6 +1544,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2004/05/21 09:03:54  micha
+  implement new borderstyle
+  - centralize to twincontrol (protected)
+  - public expose at tcustomcontrol to let interface access it
+
   Revision 1.141  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved
