@@ -67,7 +67,7 @@ begin
   FTimer := TTimer.Create(self);
   with FTimer do
   begin
-    Interval := 2000;
+    Interval := 500;
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
@@ -101,7 +101,7 @@ end;
 
 procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: Boolean);
 begin
-//  Hide;
+  Hide;
 end;
 
 procedure TSplashForm.HideFormTimer(Sender : TObject);
@@ -131,7 +131,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/05/08 16:47:01  lazarus
+       Turned the ApplicationIdle feature back on.  MAH
+
   Revision 1.13  2002/05/08 14:45:57  lazarus
+
      New About Dialog Window added; Splash screen modified to stay visible
      longer.  MAH
 
