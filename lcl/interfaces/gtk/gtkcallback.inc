@@ -1841,6 +1841,9 @@ begin
     colorSel := PGtkColorSelection(PGtkColorSelectionDialog(FPointer)^.colorsel);
     gtk_color_selection_get_current_color(colorsel, @newColor);
     TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
+    {$IFDEF VerboseColorDialog}
+    writeln('gtkDialogOKclickedCB ',HexStr(Cardinal(TColorDialog(theDialog).Color),8));
+    {$ENDIF}
   end
   else if theDialog is TFontDialog then
   begin
@@ -3227,6 +3230,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.213  2004/01/14 20:09:49  mattias
+  added TColorDialog debugging
+
   Revision 1.212  2004/01/13 10:41:40  mattias
   fixed statusbar updating all panels
 

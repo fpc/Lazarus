@@ -194,6 +194,13 @@ begin
   Color^.red := gushort(Trunc(colorArray[0] * $FFFF));
   Color^.green := gushort(Trunc(colorArray[1] * $FFFF));
   Color^.blue := gushort(Trunc(colorArray[2] * $FFFF));
+  {$IFDEF VerboseColorDialog}
+  writeln('gtk_color_selection_get_current_color ',
+    ' Red=',HexStr(Cardinal(Color^.Red),8),
+    ' Green=',HexStr(Cardinal(Color^.Green),8),
+    ' Blue=',HexStr(Cardinal(Color^.Blue),8),
+    '');
+  {$ENDIF}
 end;
 
 Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection;
@@ -201,6 +208,13 @@ Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection;
 var
   SelectionColor: PGDouble;
 begin
+  {$IFDEF VerboseColorDialog}
+  writeln('gtk_color_selection_set_current_color ',
+    ' Red=',HexStr(Cardinal(Color^.Red),8),
+    ' Green=',HexStr(Cardinal(Color^.Green),8),
+    ' Blue=',HexStr(Cardinal(Color^.Blue),8),
+    '');
+  {$ENDIF}
   GetMem(SelectionColor,4*SizeOf(GDouble));
   try
     SelectionColor[0]:=gdouble(Color^.Red)/65535;
@@ -5731,6 +5745,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.245  2004/01/14 20:09:50  mattias
+  added TColorDialog debugging
+
   Revision 1.244  2004/01/13 16:39:02  mattias
   changed consistency stops during var renaming to errors
 

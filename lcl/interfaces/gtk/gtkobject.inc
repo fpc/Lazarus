@@ -6987,7 +6987,13 @@ var
   SelectionColor: TGDKColor;
   colorSel : PGTKCOLORSELECTION;
 begin
+  {$IFDEF VerboseColorDialog}
+  writeln('TgtkObject.SetColorDialogColor Start Color=',HexStr(Cardinal(Color),8));
+  {$ENDIF}
   Color:=ColorToRGB(Color);
+  {$IFDEF VerboseColorDialog}
+  writeln('TgtkObject.SetColorDialogColor Converted Color=',HexStr(Cardinal(Color),8));
+  {$ENDIF}
   SelectionColor.Pixel := 0;
   SelectionColor.Red :=  Red(Color) shl 8;
   SelectionColor.Green:= Green(Color) shl 8;
@@ -8685,6 +8691,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.453  2004/01/14 20:09:50  mattias
+  added TColorDialog debugging
+
   Revision 1.452  2004/01/13 16:39:02  mattias
   changed consistency stops during var renaming to errors
 
