@@ -619,24 +619,48 @@ begin
   Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
 end;
 
+Procedure NotifyUser(const DialogMessage : String; DialogType : longint);
+begin
+  PromptUser('', DialogMessage, DialogType, [idButtonOK], -1, -1);
+end;
+
+Procedure NotifyUserAtXY(const DialogMessage : String; DialogType : longint; X, Y : Longint);
+begin
+  PromptUserAtXY('', DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
+end;
+
 Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint);
 begin
-  InterfaceObject.NotifyUser(DialogCaption, DialogMessage, DialogType);
+  PromptUser(DialogCaption, DialogMessage, DialogType, [idButtonOK], -1, -1);
 end;
 
 Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint);
 begin
-  InterfaceObject.NotifyUserAtXY(DialogCaption, DialogMessage, DialogType, X,Y);
+  PromptUserAtXY(DialogCaption, DialogMessage, DialogType, [idButtonOK], -1, -1, X, Y);
 end;
 
-Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint) : Longint;
+Function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
+  DefaultIndex, EscapeResult : Longint) : Longint;
 begin
-  Result := InterfaceObject.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons);
+  Result := InterfaceObject.PromptUser('', DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult);
 end;
 
-Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint; X, Y : Longint) : Longint;
+Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
+  DefaultIndex, EscapeResult : Longint) : Longint;
 begin
-  Result := InterfaceObject.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, X, Y);
+  Result := InterfaceObject.PromptUser(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult);
+end;
+
+Function PromptUserAtXY(const DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
+  DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUserAtXY('', DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult, X, Y);
+end;
+
+Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; Buttons : Array of Longint;
+  DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint;
+begin
+  Result := InterfaceObject.PromptUserAtXY(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex, EscapeResult, X, Y);
 end;
 
 function RightJustifyMenuItem(HndMenu: HMenu;
@@ -1329,6 +1353,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/10/14 18:36:57  lazarus
+  AJ: Improvements/Fixes to new PromptUser API
+
   Revision 1.55  2002/10/12 16:36:40  lazarus
   AJ: added new QueryUser/NotifyUser
 
