@@ -1084,18 +1084,21 @@ procedure TBaseCompilerOptions.SetTargetCPU(const AValue: string);
 begin
   if fTargetCPU=AValue then exit;
   fTargetCPU:=AValue;
+  IncreaseCompilerParseStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetProc(const AValue: Integer);
 begin
   if fTargetProc=AValue then exit;
   fTargetProc:=AValue;
+  IncreaseCompilerParseStamp;
 end;
 
 procedure TBaseCompilerOptions.SetTargetOS(const AValue: string);
 begin
   if fTargetOS=AValue then exit;
   fTargetOS:=AValue;
+  IncreaseCompilerParseStamp;
 end;
 
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
