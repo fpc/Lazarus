@@ -527,6 +527,16 @@ begin
     LastGatheredIdentParent:=CurContextParent;
     inc(LastGatheredIdentLevel);
   end;
+  
+  if FoundContext.Tool<>Self then begin
+    // identifier is in another unit
+    if (FoundContext.Node.Parent<>nil) then begin
+      if (FoundContext.Node.Parent.Desc=ctnClassPrivate) then begin
+        // skip private definitions in other units
+        exit;
+      end;
+    end;
+  end;
 
   Ident:=nil;
   case FoundContext.Node.Desc of

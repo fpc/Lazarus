@@ -78,6 +78,7 @@ type
     function GetUnitName: string; virtual; abstract;
     function GetPriority: TComponentPriority; virtual;
     procedure AddToPalette; virtual;
+    function Createable: boolean; virtual;
   public
     property ComponentClass: TComponentClass read FComponentClass;
     property PageName: string read FPageName;
@@ -195,6 +196,11 @@ end;
 procedure TIDEComponent.AddToPalette;
 begin
   IDEComponentPalette.AddComponent(Self);
+end;
+
+function TIDEComponent.Createable: boolean;
+begin
+  Result:=true;
 end;
 
 { TIDEComponentPage }

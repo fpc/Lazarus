@@ -72,6 +72,7 @@ type
     procedure ConsistencyCheck; override;
     function Icon: TBitmap;
     function HasIcon: boolean;
+    function Createable: boolean; override;
   public
     property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
   end;
@@ -115,6 +116,7 @@ type
   private
     FComponentPriority: TComponentPriority;
     FComponents: TList; // list of TPkgComponent
+    FDeleted: boolean;
     FFilename: string;
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
@@ -122,6 +124,7 @@ type
     FUnitName: string;
     function GetComponents(Index: integer): TPkgComponent;
     function GetHasRegisteredProc: boolean;
+    procedure SetDeleted(const AValue: boolean);
     procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
@@ -143,6 +146,7 @@ type
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
     function GetResolvedFilename: string;
   public
+    property Deleted: boolean read FDeleted write SetDeleted;
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
@@ -509,6 +513,12 @@ begin
   Result:=pffHasRegisterProc in FFlags;
 end;
 
+procedure TPkgFile.SetDeleted(const AValue: boolean);
+begin
+  if FDeleted=AValue then exit;
+  FDeleted:=AValue;
+end;
+
 function TPkgFile.GetComponents(Index: integer): TPkgComponent;
 begin
   Result:=TPkgComponent(FComponents[Index]);
@@ -567,6 +577,7 @@ end;
 
 procedure TPkgFile.Clear;
 begin
+  FDeleted:=false;
   FFilename:='';
   FFlags:=[];
   FFileType:=pftUnit;
@@ -1520,6 +1531,11 @@ end;
 function TPkgComponent.HasIcon: boolean;
 begin
   Result:=Page.PageName<>'';
+end;
+
+function TPkgComponent.Createable: boolean;
+begin
+  Result:=not PkgFile.Deleted;
 end;
 
 { TLazPackageID }
