@@ -1730,6 +1730,12 @@ const
 type
   TShortCut = Low(Word)..High(Word);   {should be moved to classes}
 
+{$IFDEF VER1_1}
+type
+  TRTLCriticalSection = pointer;
+{$ENDIF}
+
+
 function hiword(i: integer): word;
 function loword(i: integer): word;
 Function Char2VK(C : Char) : Word;
@@ -1791,6 +1797,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2003/03/16 13:47:45  mattias
+  improved rpm building and added support for 1.0.7
+
   Revision 1.33  2003/02/28 19:54:05  mattias
   added ShowWindow
 

@@ -7,7 +7,9 @@ Source: %{name}-%{version}-%{release}.tgz
 Summary: FreePascal sources
 Packager: Mattias Gaertner (mattias@freepascal.org)
 URL: http://www.freepascal.org/
-BuildRoot: %{_tmppath}/fpcsrc-build
+BuildRoot: %{_tmppath}/fpcsrc-build%{version}
+
+%define fpcsrcdir %{_datadir}/fpcsrc
 
 %description
 The Free Pascal Compiler is a Turbo Pascal 7.0 and Delphi compatible 32bit
@@ -27,19 +29,19 @@ bindings and many more.
 
 %install
 if [ %{buildroot} != "/" ]; then
-	rm -rf %{buildroot}
+  rm -rf %{buildroot}
 fi
-mkdir -p %{buildroot}%{_datadir}/fpcsrc
-cp -a fpc/* %{buildroot}%{_datadir}/fpcsrc/
+mkdir -p %{buildroot}%{fpcsrc}
+cp -a fpc/* %{buildroot}%{fpcsrc}/
 
 %clean
 if [ %{buildroot} != "/" ]; then
-	rm -rf %{buildroot}
+  rm -rf %{buildroot}
 fi
 
 %files
 %defattr(-,root,root)
-%{_datadir}/fpcsrc
+%{fpcsrc}
 
 %changelog
 

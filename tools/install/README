@@ -49,62 +49,21 @@ Creating the lazarus tgz:
 
 RPM:
 
-Creating the fpc rpm:
+Creating the fpc and the fpcsrc rpm:
 
-  fpc 1.0.7:
-    ToDo: write a script for this
-    
-    As a user of your choice:
-    Install the latest fpc package you can get. You will need it to compile the
-    compiler itself. Then download the fpc cvs of the FIXES_1_0_0 branch and
-    compile the RTL and the compiler with 'make rtl' and 'make compiler'.
-    Before you create the rpm, you should define a release tag. Open
-    <fpc>/install/fpc.spec and change the Release tag to laz.20030307. The number
-    is simply the date, when this README was written. Use the current date.
-    The default fpc.cfg is created with the samplecfg script. This is done with a
-    fixed fpc version. To create a fpc.cfg, that can be used with the fpc 1.1 and
-    with fpc 1.0.x you should change the samplecfg call in <fpc>/install/fpc.spec:
-    Search for 'samplecfg' and change the line:
-    %{fpcdir}/samplecfg %{_libdir}/fpc/\$version
+  There are two versions of the compiler: the stable 1.0.7 and the unstable
+  developer version 1.1. To build them, you must install fpc first. Install the
+  latest fpc package you can get. Note: The 1.0.7 can not be built with a 1.1
+  compiler.
+  The create_fpc_rpm.sh works nearly automatically. Become root and execute it.
+  For 1.0.7: ./create_fpc_rpm.sh stable
+  For 1.1:   ./create_fpc_rpm.sh devel
 
-    As root:
-    The fpc and fpcdoc RPMs can be created with 'make rpm'. If you only want to
-    create the fpc RPM, then use 'make rpm NODOCS=1'.
-    The RPMs are normally created under /usr/src/redhat/RPMS/i386/
-
-  fpc 1.1:
-    Warning: the fpc 1.1 is unstable.
-    Install the latest fpc package you can get. You will need it to compile the
-    compiler itself.
-    The create_fpc-1.1_rpm.sh works nearly automatically. Become root and
-    execute it. First it checks if the fpc source tgz is already created and
-    if not, it automatically downloads it. Due to the unstability of 1.1, the
-    script does not use the current version, but the latest known to work with
-    lazarus. Then it unpacks the source, compiles it and builds the rpm.
-    Normally you can find the rpms under
-    /usr/src/redhat/RPMS/i386/ and /usr/src/redhat/SRPMS/.
-
-
-Creating the fpcsrc rpm:
-
-  fpc 1.0.7:
-    As a user of your choice:
-    Create the fpcsrc-1.0.7-1.tgz of 'Creating the fpcsrc tgz'.
-
-    As root:
-    Put the fpcsrc-1.0.7-1.tgz into /usr/src/redhat/SOURCES/.
-    Run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will create the src rpm and the rpm
-    for the current system (e.g. redhat 7.3).
-
-  fpc 1.1:
-    As root execute create_fpcsrc-1.1_rpm.sh
-
-  The src rpm can be used to create rpms for any system by building it on the
-  destination system.
-  The fpcsrc rpm will simply copy the files into /usr/share/fpcsrc. It does
-  not contain any binaries, so the rpm is system independent. The lazarus
-  IDE searches the fpc src automatically in /usr/share/fpcsrc and so the user
-  does not need to setup this path.
+  What it does: First it checks if the fpc source tgz is already created and
+  if not, it automatically downloads it. The script does not use the current
+  version, but the latest known to work with lazarus. Then it unpacks the
+  source, compiles it and builds the rpm. Normally you can find the rpms under
+  /usr/src/redhat/RPMS/i386/ and /usr/src/redhat/SRPMS/.
 
 
 Creating the lazarus rpm:
