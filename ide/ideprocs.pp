@@ -853,17 +853,33 @@ end;
 
 procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
-var p: integer;
+var p, s, l: integer;
+  quote: char;
 begin
   p:=1;
-  while (p<=length(CmdLine)) and (CmdLine[p]>' ') do begin
-    if (CmdLine[p] in ['/','\']) and (CmdLine[p]<>PathDelim) then begin
-      // skip special char
+  s:=1;
+  if (CmdLine[p] in ['"','''']) then
+  begin
+    // skip quoted string
+    quote:=CmdLine[p];
+    inc(s);
+    repeat
+      inc(p);
+    until (p>Length(CmdLine)) or (CmdLine[p]=quote);
+    // go past last character or quoted string
+    l:=p-s;
+    inc(p);
+  end else begin
+    while (p<=length(CmdLine)) and (CmdLine[p]>' ') do begin
+      if (CmdLine[p] in ['/','\']) and (CmdLine[p]<>PathDelim) then begin
+        // skip special char
+        inc(p);
+      end;
       inc(p);
     end;
-    inc(p);
+    l:=p-s;
   end;
-  ProgramFilename:=LeftStr(CmdLine,p-1);
+  ProgramFilename:=Copy(CmdLine,s,l);
   while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
   Params:=RightStr(CmdLine,length(CmdLine)-p+1);
 end;

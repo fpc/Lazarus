@@ -461,7 +461,7 @@ begin
     GDBStop;
     if AValue <> ''
     then begin
-      SendCmdLn('file %s', [AValue], True);
+      SendCmdLn('file "%s"', [AValue], True);
       FHasSymbols := Pos('no debugging symbols', OutputLines.Text) = 0;
       if not FHasSymbols
       then DebugLn('WARNING: File ''',AValue, ''' has no debug symbols');
@@ -598,6 +598,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.13  2005/01/16 19:02:02  micha
+  fix bug 506: pass quoted files and paths to gdb that possibly contain spaces
+
   Revision 1.12  2004/09/14 21:30:36  vincents
   replaced writeln by DebugLn
 

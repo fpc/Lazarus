@@ -390,6 +390,15 @@ begin
   Result.Add(AResultValues);
 end;
 
+function ConvertToGDBPath(APath: string): string;
+// GDB wants forward slashes in its filenames, even on win32.
+begin
+  Result := APath;
+  if DirectorySeparator <> '/' then
+    Result := StringReplace(Result, DirectorySeparator, '/', [rfReplaceAll]);
+  Result := '"' + Result + '"';
+end;              
+  
 { =========================================================================== }
 { TGDBMIDebuggerProperties }
 { =========================================================================== }
@@ -411,23 +420,6 @@ begin
 end;
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
-  function GetFileNameForGDB: string;
-  // GDB wants forward slashes in its filenames, even on win32.
-  var
-    SeperatorPos: integer;
-  begin
-    Result := FileName;
-    if DirectorySeparator = '/' then Exit;
-
-    repeat
-      SeperatorPos := Pos(DirectorySeparator, Result);
-      if SeperatorPos <= 0 then Exit;
-      
-      Delete(Result, SeperatorPos, 1);
-      Insert('/', Result, SeperatorPos);
-    until False;
-  end;              
-  
   procedure ClearBreakpoint(var ABreakID: Integer);
   begin
     if ABreakID = -1 then Exit;
@@ -446,7 +438,7 @@ begin
   ClearBreakpoint(FRunErrorBreakID);
 
 
-  S := GetFileNameForGDB; 
+  S := ConvertToGDBPath(FileName); 
   if not ExecuteCommand('-file-exec-and-symbols %s', [S], ResultState, [cfIgnoreError]) then Exit;
   if  (ResultState = dsError) 
   and (FileName <> '')
@@ -1895,7 +1887,7 @@ begin
   end;
 
   if WorkingDir <> ''
-  then ExecuteCommand('-environment-cd %s', [WorkingDir], []);
+  then ExecuteCommand('-environment-cd %s', [ConvertToGDBPath(WorkingDir)], []);
 
   FTargetFlags := [tfHasSymbols]; // Set until proven otherwise
 
@@ -2654,6 +2646,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.58  2005/01/16 19:02:02  micha
+  fix bug 506: pass quoted files and paths to gdb that possibly contain spaces
+
   Revision 1.57  2004/11/22 22:00:21  mattias
   fixed cgilazide uses clause
 

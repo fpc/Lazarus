@@ -8506,6 +8506,8 @@ begin
 end;
 
 function TMainIDE.GetRunCommandLine: string;
+var
+  TargetFileName: string;
 begin
   if Project1.RunParameterOptions.UseLaunchingApplication then
     Result := Project1.RunParameterOptions.LaunchingApplicationPathPlusParams
@@ -8516,10 +8518,11 @@ begin
   then begin
     Result:=Project1.RunParameterOptions.CmdLineParams;
     if MacroList.SubstituteStr(Result) then begin
+      TargetFileName:='"'+GetProjectTargetFilename+'"';
       if Result='' then
-        Result:=GetProjectTargetFilename
+        Result:=TargetFileName
       else
-        Result:=GetProjectTargetFilename+' '+Result;
+        Result:=TargetFilename+' '+Result;
     end else
       Result:='';
   end else begin
@@ -11379,6 +11382,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.835  2005/01/16 19:02:02  micha
+  fix bug 506: pass quoted files and paths to gdb that possibly contain spaces
+
   Revision 1.834  2005/01/16 13:34:54  mattias
   implemented loading .lpk on cmd line
 

@@ -95,12 +95,12 @@ endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
 idepkg:
-        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT) @$(LAZARUS_IDE_CONFIG)'
+        $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT) @$(LAZARUS_IDE_CONFIG)'
 
 #-----------------------------------------------------------------------------
 starter:
@@ -110,7 +110,7 @@ endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
 else
-        $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT)'
+        $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
 endif
 
 #-----------------------------------------------------------------------------
