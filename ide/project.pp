@@ -285,9 +285,11 @@ type
     function IndexOfUnitWithFormName(const AFormName: string;
        OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
+    function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
+    function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     Function UnitWithForm(AForm: TComponent): TUnitInfo;
-    
+
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
@@ -611,9 +613,9 @@ begin
   fFilename:=AFilename;
   fFormName:=XMLConfig.GetValue(Path+'FormName/Value','');
   HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
-  fIsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
+  IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
-  fReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
+  ReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
   AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
@@ -1922,6 +1924,24 @@ begin
   end;
 end;
 
+function TProject.ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
+begin
+  Result:=fFirstPartOfProject;
+  while Result<>nil do begin
+    if CompareFileNames(AFilename,Result.Filename)=0 then exit;
+    Result:=Result.NextPartOfProject;
+  end;
+end;
+
+function TProject.ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
+begin
+  Result:=fFirstPartOfProject;
+  while Result<>nil do begin
+    if AnsiCompareText(AnUnitName,Result.UnitName)=0 then exit;
+    Result:=Result.NextPartOfProject;
+  end;
+end;
+
 procedure TProject.SetSrcPath(const NewSrcPath: string);
 begin
   if FSrcPath=NewSrcPath then exit;
@@ -2080,6 +2100,9 @@ end.
 
 {
   $Log$
+  Revision 1.85  2002/10/30 22:28:49  lazarus
+  MG: fixed used virtual files and IsPartOfProject Bug
+
   Revision 1.84  2002/10/26 15:15:43  lazarus
   MG: broke LCL<->interface circles
 

@@ -339,6 +339,8 @@ const
 type
   TOnIdentifierFound = function(Params: TFindDeclarationParams;
     FoundContext: TFindContext): TIdentifierFoundResult of object;
+  TOnFindUsedUnit = function(SrcTool: TFindDeclarationTool;
+    const TheUnitName, TheUnitInFilename: string): TCodeBuffer of object;
 
   TFindDeclarationInput = record
     Flags: TFindDeclarationFlags;
@@ -396,6 +398,7 @@ type
   private
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
+    FOnFindUsedUnit: TOnFindUsedUnit;
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     FFirstNodeCache: TCodeTreeNodeCache;
     FLastNodeCachesGlobalWriteLockStep: integer;
@@ -538,6 +541,8 @@ type
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
+    property OnFindUsedUnit: TOnFindUsedUnit
+      read FOnFindUsedUnit write FOnFindUsedUnit;
     function ConsistencyCheck: integer; override;
   end;
 
@@ -1062,7 +1067,7 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
         break;
     end;
   end;
-
+  
 
 var CurDir, UnitSrcSearchPath: string;
   MainCodeIsVirtual: boolean;
@@ -1096,7 +1101,8 @@ begin
     if FilenameIsAbsolute(AnUnitInFilename) then begin
       Result:=TCodeBuffer(Scanner.OnLoadSource(Self,AnUnitInFilename,true));
     end else begin
-      // search file in current directory
+      // file is virtual
+      // -> search file in current directory
       CurDir:=AppendPathDelim(CurDir);
       if not LoadFile(CurDir+AnUnitInFilename,Result) then begin
         // search AnUnitInFilename in searchpath
@@ -1121,6 +1127,10 @@ begin
         Result:=SearchUnitInUnitLinks(AnUnitName);
       end;
     end;
+  end;
+  if (Result=nil) and Assigned(OnFindUsedUnit) then begin
+    // no unit found
+    Result:=OnFindUsedUnit(Self,AnUnitName,AnUnitInFilename);
   end;
 end;
 

@@ -53,6 +53,9 @@ type
   TOnAfterApplyChanges = procedure(Manager: TCodeToolManager) of object;
   
   TCodeTool = TEventsCodeTool;
+  
+  TOnSearchUsedUnit = function(const SrcFilename: string;
+    const TheUnitName, TheUnitInFilename: string): TCodeBuffer of object;
 
   TCodeToolManager = class
   private
@@ -72,6 +75,7 @@ type
     FJumpCentered: boolean;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
@@ -85,6 +89,8 @@ type
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
                                     var Value: string);
     procedure OnGlobalValuesChanged;
+    function DoOnFindUsedUnit(SrcTool: TFindDeclarationTool; const TheUnitName,
+          TheUnitInFilename: string): TCodeBuffer;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
@@ -128,6 +134,8 @@ type
     function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string; 
           var NewBuffer: TCodeBuffer): boolean;
     function FilenameHasSourceExt(const AFilename: string): boolean;
+    property OnSearchUsedUnit: TOnSearchUsedUnit
+          read FOnSearchUsedUnit write FOnSearchUsedUnit;
     
     // exception handling
     property CatchExceptions: boolean
@@ -1506,6 +1514,18 @@ begin
   end;
 end;
 
+function TCodeToolManager.DoOnFindUsedUnit(SrcTool: TFindDeclarationTool;
+  const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+var
+  AFilename: string;
+begin
+  if Assigned(OnSearchUsedUnit) then
+    Result:=OnSearchUsedUnit(SrcTool.MainFilename,
+                             TheUnitName,TheUnitInFilename)
+  else
+    Result:=nil;
+end;
+
 function TCodeToolManager.OnScannerGetInitValues(Code: Pointer;
   var AChangeStep: integer): TExpressionEvaluator;
 begin
@@ -1652,6 +1672,7 @@ begin
   Result.JumpCentered:=FJumpCentered;
   Result.CursorBeyondEOL:=FCursorBeyondEOL;
   TFindDeclarationTool(Result).OnGetCodeToolForBuffer:=@OnGetCodeToolForBuffer;
+  TFindDeclarationTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
   Result.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
   Result.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
 end;
