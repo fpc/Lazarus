@@ -1053,6 +1053,9 @@ procedure TControl.SetMouseCapture(Value : Boolean);
 begin
   if MouseCapture <> Value
   then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('TControl.SetMouseCapture ',Name,':',ClassName,' NewValue=',Value);
+    {$ENDIF}
     if Value 
     then SetCaptureControl(Self) 
     else SetCaptureControl(nil);
@@ -1748,6 +1751,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.62  2002/08/22 16:22:39  lazarus
+  MG: started debugging of mouse capturing
+
   Revision 1.61  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 
