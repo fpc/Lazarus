@@ -1032,6 +1032,7 @@ resourcestring
   fdmBringTofront='Bring to front';
   fdmSendtoback='Send to back';
   fdmDeleteSelection='Delete selection';
+  lisChangeClass = 'Change Class';
   fdmSnapToGridOption='Option: Snap to grid';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
   fdmShowOptions='Show Options for form editing';

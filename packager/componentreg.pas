@@ -29,7 +29,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-
+    Classes and functions to register components.
 }
 unit ComponentReg;
 
@@ -139,6 +139,7 @@ type
   
   TEndUpdatePaletteEvent =
     procedure(Sender: TObject; PaletteChanged: boolean) of object;
+  TGetComponentClass = procedure(const AClass: TComponentClass) of object;
 
   TBaseComponentPalette = class
   private
@@ -177,6 +178,7 @@ type
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
     procedure ShowHideControls(Show: boolean);
+    procedure IterateRegisteredClasses(Proc: TGetComponentClass);
   public
     property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
     property UpdateLock: integer read FUpdateLock;
@@ -617,6 +619,20 @@ begin
   for i:=0 to Count-1 do
     Pages[i].ShowHideControls(Show);
   EndUpdate;
+end;
+
+procedure TBaseComponentPalette.IterateRegisteredClasses(
+  Proc: TGetComponentClass);
+var
+  i: Integer;
+  APage: TBaseComponentPage;
+  j: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    APage:=Pages[i];
+    for j:=0 to APage.Count-1 do
+      Proc(APage[j].ComponentClass);
+  end;
 end;
 
 

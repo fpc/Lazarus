@@ -41,7 +41,7 @@ uses
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
-  ControlSelection;
+  ControlSelection, ChangeClassDialog;
 
 type
   TDesigner = class;
@@ -82,6 +82,7 @@ type
   private
     FAlignMenuItem: TMenuItem;
     FBringToFrontMenuItem: TMenuItem;
+    fChangeClassMenuItem: TMenuItem;
     FCopyMenuItem: TMenuItem;
     FCutMenuItem: TMenuItem;
     FDeleteSelectionMenuItem: TMenuItem;
@@ -176,11 +177,13 @@ type
     function DoCopySelectionToClipboard: boolean;
     procedure DoPasteSelectionFromClipboard;
     procedure DoShowTabOrderEditor;
+    procedure DoShowChangeClassDialog;
     procedure GiveComponentsNames;
     procedure NotifyComponentAdded(AComponent: TComponent);
 
     // popup menu
     procedure BuildPopupMenu;
+    procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure OnAlignPopupMenuClick(Sender: TObject);
     procedure OnMirrorHorizontalPopupMenuClick(Sender: TObject);
     procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
@@ -193,8 +196,8 @@ type
     procedure OnCutMenuClick(Sender: TObject);
     procedure OnPasteMenuClick(Sender: TObject);
     procedure OnDeleteSelectionMenuClick(Sender: TObject);
+    procedure OnChangeClassMenuClick(Sender: TObject);
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
-    procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
     procedure OnShowOptionsMenuItemClick(Sender: TObject);
     procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
 
@@ -709,6 +712,13 @@ procedure TDesigner.DoShowTabOrderEditor;
 begin
   if ShowTabOrderDialog(FLookupRoot)=mrOk then
     Modified;
+end;
+
+procedure TDesigner.DoShowChangeClassDialog;
+begin
+  if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected)
+  then
+    ShowChangeClassDialog(ControlSelection[0].Component);
 end;
 
 procedure TDesigner.GiveComponentsNames;
@@ -1871,6 +1881,11 @@ begin
   DoDeleteSelectedComponents;
 end;
 
+procedure TDesigner.OnChangeClassMenuClick(Sender: TObject);
+begin
+  DoShowChangeClassDialog;
+end;
+
 procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
 begin
   EnvironmentOptions.SnapToGrid:=not EnvironmentOptions.SnapToGrid;
@@ -2299,9 +2314,20 @@ begin
   with FDeleteSelectionMenuItem do begin
     Caption:= fdmDeleteSelection;
     OnClick:=@OnDeleteSelectionMenuClick;
-    Enabled:= ControlSelIsNotEmpty and (not LookupRootIsSelected);
+    Enabled:= CompsAreSelected;
   end;
   FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
+
+  AddSeparator;
+
+  // extras
+  fChangeClassMenuItem:=TMenuItem.Create(FPopupMenu);
+  with fChangeClassMenuItem do begin
+    Caption:= lisChangeClass;
+    OnClick:=@OnChangeClassMenuClick;
+    Enabled:= CompsAreSelected and (ControlSelection.Count=1);
+  end;
+  FPopupMenu.Items.Add(fChangeClassMenuItem);
 
   AddSeparator;
   

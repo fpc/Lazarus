@@ -122,6 +122,13 @@ begin
   SortSelectionDialog.Free;
 end;
 
+function ShowSortSelectionDialogBase(const TheText: string;
+  Highlighter: TObject; var SortedText: string): TModalResult;
+begin
+  Result:=ShowSortSelectionDialog(TheText,Highlighter as TSynCustomHighlighter,
+                                  SortedText);
+end;
+
 type
   TTextBlockCompareSettings = class
   public
@@ -597,7 +604,7 @@ begin
 end;
 
 initialization
-  TextTools.ShowSortSelectionDialogFunc:=@ShowSortSelectionDialog;
+  TextTools.ShowSortSelectionDialogFunc:=@ShowSortSelectionDialogBase;
   TextTools.SortTextFunc:=@SortText;
 
 end.
