@@ -39,8 +39,8 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, vclglobals, GraphType, Graphics, LMessages, LCLLinux,
-  ImgList, UTrace, Menus, LCLType;
+  Classes, SysUtils, vclglobals, LCLType, LCLProc, GraphType, Graphics,
+  LMessages, LCLLinux, ImgList, UTrace, Menus;
 
 
 const
@@ -955,6 +955,8 @@ function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) :
 Function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
 Function FindLCLWindow(const Pos : TPoint) : TWinControl;
 Function FindControl(Handle : hwnd) : TWinControl;
+
+function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
 Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
 
 procedure SetCaptureControl(Control : TControl);
@@ -1025,6 +1027,11 @@ begin
   if Handle <> 0 
   then Result := TWinControl(GetProp(Handle,'WinControl'))
   else Result := nil;
+end;
+
+function SendAppMessage(Msg: Cardinal; WParam, LParam: Longint): Longint;
+begin
+  Result:=LCLProc.SendApplicationMessage(Msg,WParam,LParam);
 end;
 
 Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
@@ -1373,6 +1380,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2002/10/26 11:05:59  lazarus
+  MG: broke actnlist <-> forms circle
+
   Revision 1.79  2002/10/24 10:05:50  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 
