@@ -149,8 +149,8 @@ begin
     try
       TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := CmdLine;
-      TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutput];
-      TheProcess.ShowWindow := swoNone;
+      TheProcess.Options:= [poUsePipes, poStdErrToOutput];
+      TheProcess.ShowWindow := swoHide;
       Result:=mrOk;
       try
         TheProcess.CurrentDirectory:=ProjectDir;
@@ -190,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2004/11/19 13:52:18  vincents
+  call compiler with same process settings as other external tools.
+
   Revision 1.45  2004/09/27 22:05:40  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 
