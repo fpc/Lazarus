@@ -60,49 +60,16 @@ end;
 {       TApplication Messagebox     }
 {------------------------------------------------------------------------------}
 function TApplication.MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
-var
-  DlgType : TMsgDlgType;
-  Buttons : TMsgDlgButtons;
 begin
-  //This uses TMessageBox class in MessageDialogs.inc
-  if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
-    Buttons := [mbREtry, mbCancel]
-  else
-  if (Flags and MB_YESNO) = MB_YESNO then
-    Buttons := [mbYes, mbNo]
-  else
-  if (Flags and MB_YESNOCANCEL) = MB_YESNOCANCEL then
-    Buttons := [mbYes, mbNo, mbCancel]
-  else
-  if (Flags and MB_ABORTRETRYIGNORE) = MB_ABORTRETRYIGNORE then
-    Buttons := [mbAbort, mbRetry, mbIgnore]
-  else
-  if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
-    Buttons := [mbOK,mbCancel]
-  else
-  if (Flags and MB_OK) = MB_OK then
-    Buttons := [mbOK]
-  else
-    Buttons := [mbOK];
-
-   
-  if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
-    DlgTYpe := mtConfirmation
-  else
-  if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
-    DlgTYpe := mtInformation
-  else
-  if (Flags and MB_ICONERROR) = MB_ICONERROR then
-    DlgTYpe := mtError
-  else
-  if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
-    DlgTYpe := mtWarning
-  else
-    DlgTYpe := mtCustom;
-
-
-  Result := MessageDlg(Caption,Text,DlgType,Buttons,0);
-
+  if Assigned(MessageBoxFunction) then
+    Result:=MessageBoxFunction(Text,Caption,Flags)
+  else begin
+    writeln('WARNING: TApplication.MessageBox: no MessageBoxFunction');
+    writeln('  Caption="',Caption,'"');
+    writeln('  Text="',Text,'"');
+    writeln('  Flags=',HexStr(Cardinal(Flags),8));
+    Result:=0;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -410,6 +377,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/10/24 10:37:05  lazarus
+  MG: broke dialogs.pp <-> forms.pp circle
+
   Revision 1.27  2002/10/24 10:15:24  lazarus
   MG: broke buttons.pp <-> forms.pp circle
 
