@@ -38,8 +38,8 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo,
-  Messages, LResources, Laz_XMLCfg, Menus, Dialogs;
+  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, GraphPropEdits,
+  TypInfo, Messages, LResources, Laz_XMLCfg, Menus, Dialogs;
 
 
 type
