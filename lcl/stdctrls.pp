@@ -681,6 +681,7 @@ type
     property Anchors;
     property Caption;
     property Color;
+    property Constraints;
     property FocusControl;
     property Font;
     property Visible;
@@ -688,6 +689,13 @@ type
     property ParentFont;
     property ShowAccelChar;
     property WordWrap;
+    property OnChangeBounds;
+    property OnResize;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
   end;
 
 
@@ -1012,6 +1020,10 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnChangeBounds;
+    property OnResize;
   end;
 
 var
@@ -1496,6 +1508,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2004/02/23 20:06:05  mattias
+  published TLabel.OnMouseXXX
+
   Revision 1.132  2004/02/22 10:43:20  mattias
   added child-parent checks
 
