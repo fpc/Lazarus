@@ -1842,7 +1842,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.AddControl;
 begin
-  CNSendMessage(LM_AddChild, Self, nil);
+  TWSControlClass(WidgetSetClass).AddControl(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -3275,6 +3275,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.215  2004/09/11 13:06:48  micha
+  convert LM_ADDCHILD message to interface method
+
   Revision 1.214  2004/09/08 22:59:54  mattias
   started TTabControl
 

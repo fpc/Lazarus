@@ -57,6 +57,7 @@ type
   { TWSControl }
 
   TWSControl = class(TWSLCLComponent)
+    class procedure AddControl(const AControl: TControl); virtual;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); virtual;
   end;
 
@@ -97,10 +98,12 @@ type
 
 implementation
 
-uses
-  LMessages;
 
 { TWSControl }
+
+procedure TWSControl.AddControl(const AControl: TControl);
+begin
+end;
 
 procedure TWSControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin

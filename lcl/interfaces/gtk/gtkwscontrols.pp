@@ -58,8 +58,9 @@ type
     // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   public
+    class procedure AddControl(const AControl: TControl); override;
+
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-    
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
@@ -104,6 +105,35 @@ uses
 
 { TGtkWSWinControl }
   
+procedure TGtkWSWinControl.AddControl(const AControl: TControl);
+var
+  AParent: TWinControl;
+  ParentWidget: PGTKWidget;
+  ChildWidget: PGTKWidget;
+  pFixed: PGTKWidget;
+begin
+  {$IFDEF OldToolBar}
+  if (AControl.Parent is TToolbar) then
+    exit;
+  {$ENDIF}
+  
+  AParent := TWinControl(AControl).Parent;
+  //debugln('LM_AddChild: ',TWinControl(Sender).Name,' ',dbgs(AParent<>nil));
+  if not Assigned(AParent) then begin
+    Assert(true, Format('Trace: [TGtkWSWinControl.AddControl] %s --> Parent is not assigned', [AControl.ClassName]));
+  end else begin
+    Assert(False, Format('Trace:  [TGtkWSWinControl.AddControl] %s --> Calling Add Child: %s', [AParent.ClassName, AControl.ClassName]));
+    ParentWidget := Pgtkwidget(AParent.Handle);
+    pFixed := GetFixedWidget(ParentWidget);
+    if pFixed <> ParentWidget then begin
+      // parent changed for child
+      ChildWidget := PgtkWidget(TWinControl(AControl).Handle);
+      FixedPutControl(pFixed, ChildWidget, AParent.Left, AParent.Top);
+      RegroupAccelerator(ChildWidget);
+    end;
+  end;
+end;
+
 function TGtkWSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var
   CS: PChar;

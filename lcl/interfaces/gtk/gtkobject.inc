@@ -3096,7 +3096,6 @@ var
   handle      : hwnd;                  // handle of sender
   pStr        : PChar;                 // temporary string pointer, must be allocated/disposed when used!
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
-  AParent     : TWinControl;           // only used twice, replace with typecasts!
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
   Rect        : TRect;
@@ -3152,25 +3151,6 @@ begin
     begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
-
-      LM_AddChild :
-      begin
-        {$IFDEF OldToolBar}
-        If (TControl(Sender).Parent is TToolbar) then Begin
-          exit;
-        end;
-        {$ENDIF}
-        AParent := (Sender as TWinControl).Parent;
-        //debugln('LM_AddChild: ',TWinControl(Sender).Name,' ',dbgs(AParent<>nil));
-        if Not Assigned(AParent) then Begin
-          Assert(true, Format('Trace: [TGtkWidgetSet.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
-        end
-        else Begin
-          Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-          AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle),
-                   AParent.Left, AParent.Top);
-        end;
-      end;
 
       LM_BRINGTOFRONT:
       begin
@@ -3837,27 +3817,6 @@ begin
     end;
   end;
   //DebugLn('[TGtkWidgetSet.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
-end;
-
-{------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.AddChild
-  Params:  parent -
-           child  -
-           left, top -
-  Returns: Nothing
-
-  *Note: Adds A Child to a Parent Widget
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.AddChild(Parent,Child : Pointer; Left,Top: Integer);
-var
-  pFixed: PGTKWidget;
-begin
-  pFixed := GetFixedWidget(PGtkWidget(Parent));
-  if pFixed <> Parent then begin
-    // parent changed for child
-    FixedPutControl(pFixed, Child, Left, Top);
-    RegroupAccelerator(Child);
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8696,6 +8655,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.550  2004/09/11 13:06:48  micha
+  convert LM_ADDCHILD message to interface method
+
   Revision 1.549  2004/09/10 20:19:13  micha
   convert LM_CLB_G/SETCHECKED to interface methods
 

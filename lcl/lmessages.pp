@@ -50,7 +50,6 @@ const
   LM_SetTop         = LM_ComUser+4;
   LM_SetWidth       = LM_ComUser+5;
   LM_SetHeight      = LM_ComUser+6;
-  LM_AddChild       = LM_ComUser+7;
   LM_Setsize        = LM_ComUser+8;
   LM_AssignEvent    = LM_ComUser+10;
   LM_AssignSelf     = LM_ComUser+11;
@@ -851,7 +850,6 @@ begin
   LM_SetTop         :Result:='LM_SetTop';
   LM_SetWidth       :Result:='LM_SetWidth';
   LM_SetHeight      :Result:='LM_SetHeight';
-  LM_AddChild       :Result:='LM_AddChild';
   LM_Setsize        :Result:='LM_Setsize';
   LM_AssignEvent    :Result:='LM_AssignEvent';
   LM_AssignSelf     :Result:='LM_AssignSelf';
@@ -1019,6 +1017,9 @@ end.
 
 {
   $Log$
+  Revision 1.84  2004/09/11 13:06:48  micha
+  convert LM_ADDCHILD message to interface method
+
   Revision 1.83  2004/09/10 20:19:13  micha
   convert LM_CLB_G/SETCHECKED to interface methods
 

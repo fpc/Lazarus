@@ -64,8 +64,9 @@ type
   private
   protected
   public
+    class procedure AddControl(const AControl: TControl); override;
+  
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
-
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -102,6 +103,34 @@ implementation
 
 uses
   Windows, Win32Int, Win32WSButtons;
+
+
+{ TWin32WSWinControl }
+
+procedure TWin32WSWinControl.AddControl(const AControl: TControl);
+var
+  ParentPanelHandle, ParentHandle, ChildHandle: HWND;
+begin
+  {$ifdef OldToolbar}
+  if (TWinControl(Sender).Parent is TToolbar) then
+    exit;
+  {$endif}
+
+  with TWinControl(AControl) do
+  begin
+    Assert(False, Format('Trace:[TWin32WSWinControl.AddControl] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
+    ParentHandle := Parent.Handle;
+    ChildHandle := Handle;
+  end;
+
+  Assert(False, 'Trace:AddControl - Parent Window Handle is $' + IntToHex(LongInt(ParentHandle), 8));
+  Assert(False, 'Trace:AddControl - Child Window Handle is $' + IntToHex(LongInt(ChildHandle), 8));
+  // handle groupbox exception
+  ParentPanelHandle := Windows.GetProp(ChildHandle, 'ParentPanel');
+  if ParentPanelHandle <> 0 then
+    ChildHandle := ParentPanelHandle;
+  SetParent(ChildHandle, ParentHandle);
+end;
 
 function  TWin32WSWinControl.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
 var

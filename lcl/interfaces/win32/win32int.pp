@@ -131,7 +131,6 @@ Type
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
-    Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
@@ -280,6 +279,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2004/09/11 13:06:49  micha
+  convert LM_ADDCHILD message to interface method
+
   Revision 1.103  2004/09/10 20:19:13  micha
   convert LM_CLB_G/SETCHECKED to interface methods
 

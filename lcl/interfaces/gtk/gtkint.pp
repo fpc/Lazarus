@@ -149,7 +149,6 @@ type
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
-    procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
     procedure AssignSelf(Child ,Data : Pointer);virtual;
 
     // clipboard
@@ -458,6 +457,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.199  2004/09/11 13:06:48  micha
+  convert LM_ADDCHILD message to interface method
+
   Revision 1.198  2004/09/10 20:19:13  micha
   convert LM_CLB_G/SETCHECKED to interface methods
 

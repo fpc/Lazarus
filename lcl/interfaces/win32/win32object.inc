@@ -296,22 +296,6 @@ Begin
       Exit;
     End;
     Case LM_Message of
-      LM_ADDCHILD:
-      Begin
-        Assert(False, 'Trace:Adding a child to Parent');
-        If (TWinControl(Sender).Parent is TToolbar) Then
-        Begin
-          Exit;
-        End
-        Else
-        Begin
-          With (Sender As TWinControl) Do
-          Begin
-            Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> Calling Add Child: %S', [Parent.ClassName, ClassName]));
-            AddChild(Parent.Handle, Handle);
-          End;
-        End;
-      End;
       LM_BRINGTOFRONT:
       Begin
         Assert(False, 'Trace:TODO: [TWin32WidgetSet.IntSendMessage3] - LM_BRINGTOFRONT');
@@ -1420,27 +1404,6 @@ Begin
   if not suppressMove then
     MoveWindow(WinHandle, Left, Top, Width, Height, True);
   LCLControlSizeNeedsUpdate(Sender,False);
-End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AddChild
-  Params:  Parent - Parent to which the child will be added
-           Child  - Child to add
-  Returns: Nothing
-
-  Adds A Child to a Parent
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.AddChild(Parent, Child: HWND);
-var
-  ParentPanel: HWND;
-Begin
-  Assert(False, 'Trace:AddChild - Parent Window Handle is $' + IntToHex(LongInt(Parent), 8));
-  Assert(False, 'Trace:AddChild - Child Window Handle is $' + IntToHex(LongInt(Child), 8));
-  // handle groupbox exception
-  ParentPanel := Windows.GetProp(Child, 'ParentPanel');
-  if ParentPanel <> 0 then
-    Child := ParentPanel;
-  SetParent(Child, Parent);
 End;
 
 {------------------------------------------------------------------------------
@@ -2605,6 +2568,9 @@ End;
 
 {
   $Log$
+  Revision 1.242  2004/09/11 13:06:49  micha
+  convert LM_ADDCHILD message to interface method
+
   Revision 1.241  2004/09/10 20:19:13  micha
   convert LM_CLB_G/SETCHECKED to interface methods
 
