@@ -1,0 +1,46 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus TGTKGLAreaControl for Free Pascal
+#
+
+[package]
+#name=lazarus-gtkglarea
+name=lazarus
+version=0.7a
+
+[target]
+units=gtkglarea_int gtkglarea exampleform gtkglarea_demo
+   
+
+[default]
+            
+[compiler]
+options=-gl -k-lGL
+unitdir=. ../../../lcl/units ../../../lcl/units/gtk
+
+[require]
+packages=rtl fcl gtk opengl
+
+[clean]
+files=gtkglarea_demo
+
+[install]
+
+[dist]
+zipname=lazarus.gtkglarea.$(ZIPSUFFIX)
+
+[rules]
+.PHONY: cleartarget all makefile makefiles
+
+cleartarget:
+        -$(DEL) gtkglarea_demo
+
+all: cleartarget gtkglarea_demo$(PPUEXT)
+        -$(DEL) *$(PPUEXT)
+
+makefile: Makefile.fpc
+        -$(FPCMAKE) -w
+       
+makefiles: makefile
+
+# end.
