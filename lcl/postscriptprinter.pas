@@ -826,40 +826,41 @@ procedure TPostScript.BeginDoc;
 var
    I: Integer;
 begin
-
-     FCanvas.Clear;
-     FDocument.Clear;
+  FCanvas.Clear;
+  FDocument.Clear;
      
-     // destroy the patterns
-      if NumPatterns > 0 then begin
-         for I := 0 to NuMPatterns-1 do begin
-             Patterns[i].Free;
-         end;
-      end;
+  // destroy the patterns
+  if NumPatterns > 0 then
+  begin
+    for I := 0 to NuMPatterns-1 do
+    begin
+      Patterns[i].Free;
+      Patterns[i]:=nil;
+    end;
+    NumPatterns:=0;
+  end;
 
-      // free the pattern pointer memory
-      Reallocmem(Patterns, 0);
+  // free the pattern pointer memory
+  Reallocmem(Patterns, 0);
 
-     FDocument.Add('%!PS-Adobe-3.0');
-     FDocument.Add('%%BoundingBox: 0 0 612 792');
-     FDocument.Add('%%Creator: '+Application.ExeName);
-     FDocument.Add('%%Title: '+FTitle);
-     FDocument.Add('%%Pages: (atend)');
-     FDocument.Add('%%PageOrder: Ascend');
+  FDocument.Add('%!PS-Adobe-3.0');
+  FDocument.Add('%%BoundingBox: 0 0 612 792');
+  FDocument.Add('%%Creator: '+Application.ExeName);
+  FDocument.Add('%%Title: '+FTitle);
+  FDocument.Add('%%Pages: (atend)');
+  FDocument.Add('%%PageOrder: Ascend');
 
-     // Choose a standard font in case the user doesn't
-     FDocument.Add('/AvantGarde-Book findfont');
-     FDocument.Add('10 scalefont');
-     FDocument.Add('setfont');
+  // Choose a standard font in case the user doesn't
+  FDocument.Add('/AvantGarde-Book findfont');
+  FDocument.Add('10 scalefont');
+  FDocument.Add('setfont');
 
-     // start our first page
-     FPageNumber := 1;
-     FDocument.Add('%%Page: 1 1'); // I'm still not sure why u put the page # twice
-     FDocument.Add('newpath');
+  // start our first page
+  FPageNumber := 1;
+  FDocument.Add('%%Page: 1 1'); // I'm still not sure why u put the page # twice
+  FDocument.Add('newpath');
 
-     UpdateBoundingBox;
-
-
+  UpdateBoundingBox;
 end;
 
 { Copy current page into the postscript and start a new one }
