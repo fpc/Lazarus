@@ -177,7 +177,7 @@ begin
       TrimmedIdentifier:=GetIdentifier(Params.Identifier);
     end;
   end;
-  //writeln('RRR ',TrimmedIdentifier);
+  writeln('RRR ',TrimmedIdentifier,' ',Params.NewNode.DescAsString);
   FullTopLvlName:=FullTopLvlName+TrimmedIdentifier;
   Result:=ifrSuccess;
 end;

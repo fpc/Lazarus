@@ -1184,6 +1184,14 @@ var
     if NewResult then begin
       // identifier found
       if CallOnIdentifierFound then begin
+        {
+        write('[TFindDeclarationTool.FindIdentifierInContext] CallOnIdentifierFound Ident=',
+        '"',GetIdentifier(Params.Identifier),'"',
+        ' StartContext="',StartContextNode.DescAsString,'" "',copy(Src,StartContextNode.StartPos,20),'"',
+        ' File="',ExtractFilename(MainFilename)+'"',
+        ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
+        );
+        }
         IdentFoundResult:=Params.NewCodeTool.DoOnIdentifierFound(Params,
                             Params.NewNode);
         Result:=IdentFoundResult<>ifrProceedSearch;
@@ -1520,14 +1528,14 @@ begin
         ctnUsesSection:
           begin
             if FindIdentifierInUsesSection(ContextNode,Params)
-            and CheckResult(true,true) then
+            and CheckResult(true,false) then
               exit;
           end;
 
         ctnWithVariable:
           begin
             if FindIdentifierInWithVarContext(ContextNode,Params)
-            and CheckResult(true,true) then
+            and CheckResult(true,false) then
               exit;
           end;
 
@@ -1915,30 +1923,19 @@ begin
   NameAtom:=CurPos;
   ReadNextAtom;
   if AtomIsChar('.') then begin
-    // proc is a method body (no declaration).
+    // proc is a method body (not a declaration).
     // -> proceed the search normally ...
   end else begin
     // proc is a proc declaration
-    if not (fdfCollect in Params.Flags) then begin
-      if CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier) then begin
-        // proc identifier found
-        {$IFDEF ShowTriedContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
-        {$ENDIF}
-        Params.SetResult(Self,ProcContextNode,NameAtom.StartPos);
-        Result:=DoOnIdentifierFound(Params,ProcContextNode);
-        {$IFDEF ShowTriedContexts}
-        if Result=ifrSuccess then
-          writeln('[TFindDeclarationTool.FindIdentifierInProcContext] ',
-            ' Params.NewCodeTool="',TCodeBuffer(Params.NewCodeTool.Scanner.MainCode).Filename,'"',
-            ' Params.NewNode="',Params.NewNode.DescAsString,'"'
-            );
-        {$ENDIF}
-      end else begin
-        // proceed the search normally ...
-      end;
+    if CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier) then begin
+      // proc identifier found
+      {$IFDEF ShowTriedContexts}
+      writeln('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');
+      {$ENDIF}
+      Params.SetResult(Self,ProcContextNode,NameAtom.StartPos);
+      Result:=ifrSuccess;
     end else begin
-      Result:=DoOnIdentifierFound(Params,ProcContextNode);
+      // proceed the search normally ...
     end;
   end;
 end;
@@ -2008,25 +2005,17 @@ begin
     end;
   end else begin
     // proc is not a method
-    if not (fdfCollect in Params.Flags) then begin
-      if CompareSrcIdentifiers(ClassNameAtom.StartPos,Params.Identifier) then
-      begin
-        // proc identifier found
-        {$IFDEF ShowTriedContexts}
-        writeln('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc Identifier found="',GetIdentifier(Params.Identifier),'"');
-        {$ENDIF}
-        Result:=true;
-        Params.SetResult(Self,ProcContextNode,ClassNameAtom.StartPos);
-        exit;
-      end else begin
-        // proceed the search normally ...
-      end;
+    if CompareSrcIdentifiers(ClassNameAtom.StartPos,Params.Identifier) then
+    begin
+      // proc identifier found
+      {$IFDEF ShowTriedContexts}
+      writeln('[TFindDeclarationTool.FindIdentifierInClassOfMethod]  Proc Identifier found="',GetIdentifier(Params.Identifier),'"');
+      {$ENDIF}
+      Result:=true;
+      Params.SetResult(Self,ProcContextNode,ClassNameAtom.StartPos);
+      exit;
     end else begin
-      IdentifierFoundResult:=DoOnIdentifierFound(Params,ProcContextNode);
-      if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
-        Result:=(IdentifierFoundResult=ifrSuccess);
-        exit;
-      end;
+      // proceed the search normally ...
     end;
   end;
 end;
