@@ -292,6 +292,7 @@ type
   private
     fBlockBegin: TPoint;
     fBlockEnd: TPoint;
+    fBlockIndent: integer;
     fCaretX: Integer;
     {$IFDEF SYN_LAZARUS}
     fCtrlMouseActive: boolean;
@@ -422,6 +423,9 @@ type
     procedure SelectedColorsChanged(Sender: TObject);
     procedure SetBlockBegin(Value: TPoint);
     procedure SetBlockEnd(Value: TPoint);
+    {$IFDEF SYN_LAZARUS}
+    procedure SetBlockIndent(const AValue: integer);
+    {$ENDIF}
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetCaretAndSelection(ptCaret, ptBefore, ptAfter: TPoint);
     procedure SetCaretX(Value: Integer);
@@ -666,6 +670,9 @@ type
       read fBookMarkOpt write fBookMarkOpt;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
       default bsSingle;
+    {$IFDEF SYN_LAZARUS}
+    property BlockIndent: integer read fBlockIndent write SetBlockIndent default 2;
+    {$ENDIF}
     property ExtraLineSpacing: integer
       read fExtraLineSpacing write SetExtraLineSpacing default 0;
     property Gutter: TSynGutter read fGutter write SetGutter;
@@ -774,6 +781,9 @@ type
 {$ENDIF}
     property OnStartDrag;
     // TCustomSynEdit properties
+    {$IFDEF SYN_LAZARUS}
+    property BlockIndent;
+    {$ENDIF}
     property BookMarkOptions;
     property BorderStyle;
     property ExtraLineSpacing;
@@ -1132,6 +1142,7 @@ begin
   fLastMouseCaret := Point(-1,-1);
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
+  fBlockIndent := 2;
 {$ELSE}
   fFontDummy.Name := 'Courier New';
   fFontDummy.Size := 10;
@@ -3279,6 +3290,14 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetBlockIndent(const AValue: integer);
+begin
+  if fBlockIndent=AValue then exit;
+  fBlockIndent:=AValue;
+end;
+{$ENDIF}
+
 procedure TCustomSynEdit.SetCaretX(Value: Integer);
 begin
   SetCaretXY(Point(Value, CaretY));
@@ -4704,7 +4723,8 @@ begin
             x := 1;
           end else begin
             e := Item.fChangeEndPos.y;
-            x := Item.fChangeEndPos.x + fTabWidth;
+            x := Item.fChangeEndPos.x
+                      + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF};
           end;
           InsertBlock(Point(1, Item.fChangeStartPos.y),
             Point(1, e), PChar(Item.fChangeStr));
@@ -4713,7 +4733,9 @@ begin
             Item.fChangeEndPos, Item.fChangeStr, Item.fChangeSelMode);
           // restore the selection
           SetCaretAndSelection(Point(1, Item.fChangeEndPos.Y + 1),
-            Point(Item.fChangeStartPos.x + fTabWidth, Item.fChangeStartPos.y),
+            Point(Item.fChangeStartPos.x +
+                    {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF},
+                  Item.fChangeStartPos.y),
             Point(x, Item.fChangeEndPos.y));
         end;
       crUnindent :
@@ -4743,8 +4765,9 @@ begin
             StrToDelete := Run;
           until Run^ = #0;
           // restore selection
-          CaretPt := Point(Item.fChangeStartPos.x - fTabWidth,
-            Item.fChangeStartPos.y);
+          CaretPt := Point(Item.fChangeStartPos.x -
+                        {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF},
+                      Item.fChangeStartPos.y);
           SetCaretAndSelection(CaretPt, CaretPt,
             Point(Item.fChangeEndPos.x - Len, Item.fChangeEndPos.y));
         end;
@@ -4887,7 +4910,7 @@ begin
           TmpPos := Item.fChangeEndPos;
           if TmpPos.x = 1 then
             Dec(TmpPos.y);
-          TmpPos.x := fTabWidth + 1;
+          TmpPos.x := {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+1;
           BlockEnd := TmpPos;
           // add to redo list
           fRedoList.AddChange(Item.fChangeReason, Item.fChangeStartPos,
@@ -6991,18 +7014,21 @@ begin
       x := 1;
     end else begin
       e := BE.y;
-      x := BE.x + FTabWidth;
+      x := BE.x + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF};
     end;
-    InsertStrLen := (FTabWidth + 2) * (e - BB.y) + FTabWidth + 1;
+    InsertStrLen := ({$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2)
+                     * (e - BB.y)
+                     + {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+1;
     //               chars per line * lines-1    + last line + null char
     StrToInsert := StrAlloc(InsertStrLen);
     try
       Run := StrToInsert;
-      Spaces := StringOfChar(#32, FTabWidth);
+      Spaces := StringOfChar(#32,
+                       {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF});
       for i := BB.Y to e-1 do
       begin
         StrPCopy(Run, Spaces+#13#10);
-        Inc(Run,FTabWidth+2);
+        Inc(Run,{$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2);
       end;
       StrPCopy(Run, Spaces);
 
@@ -7013,7 +7039,8 @@ begin
     end;
   finally
     fSelectionMode := OrgSelectionMode;
-    SetCaretAndSelection(OrgCaretPos, Point(BB.x + fTabWidth, BB.y),
+    SetCaretAndSelection(OrgCaretPos, Point(BB.x +
+      {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}, BB.y),
       Point(x, BE.y));
   end;
 end;
@@ -7040,7 +7067,9 @@ var
   begin
     Result := 0;
     Run := Line;
-    while (Run[0] = ' ') and (Result < FTabWidth) do begin
+    while (Run[0] = ' ')
+    and (Result < {$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}) do
+    begin
       Inc(Result);
       Inc(Run);
       SomethingToDelete := True;
@@ -7065,7 +7094,8 @@ begin
       e := BE.y;
 
     // build string to delete
-    StrToDeleteLen := (FTabWidth + 2) * (e - BB.y) + FTabWidth + 1;
+    StrToDeleteLen := ({$IFDEF SYN_LAZARUS}fBlockIndent{$ELSE}fTabWidth{$ENDIF}+2)
+                       * (e - BB.y) + FTabWidth + 1;
     //                 chars per line * lines-1    + last line + null char
     FullStrToDelete := StrAlloc(StrToDeleteLen);
     try
