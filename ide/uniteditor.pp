@@ -681,7 +681,8 @@ var a,x,y:integer;
 begin
   if FAOwner<>nil then
     TSourceNotebook(FAOwner).UpdateStatusBar;
-  AText:='Replace this occurrence of '''+ASearch+''' with '''+AReplace+'''?';
+  AText:='Replace this occurrence of "'+ASearch+'"'#13
+         +' with "'+AReplace+'"?';
 
   GetDialogPosition(300,150,X,Y);
   a:=MessageDlgPos(AText,mtconfirmation,

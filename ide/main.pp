@@ -32,9 +32,9 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LclLinux, Compiler, StdCtrls, Forms, Buttons,
-  Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls, Graphics,
-  ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager, CodeCache,
+  Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
+  Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
+  Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager, CodeCache,
   DefineTemplates, MsgView, NewProjectDlg, IDEComp, AbstractFormEditor,
   FormEditor, CustomFormEditor, ObjectInspector, PropEdits, ControlSelection,
   UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
@@ -629,11 +629,11 @@ begin
   FreeThenNil(HintTimer1);
   FreeThenNil(HintWindow1);
 
-writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
+  writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
-writeln('[TMainIDE.Destroy] END');
+  writeln('[TMainIDE.Destroy] END');
 end;
 
 procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
@@ -660,10 +660,10 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookGetMethods] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnPropHookGetMethods] ************');
+  {$ENDIF}
   if not CodeToolBoss.GetCompatiblePublishedMethods(ActiveUnitInfo.Source,
     ActiveUnitInfo.Form.ClassName,TypeData,Proc) then
   begin
@@ -688,11 +688,12 @@ end;
 
 procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
 Begin
-writeln('[TMainIDE.FormCloseQuery]');
+  writeln('[TMainIDE.FormCloseQuery]');
   CanClose:=true;
 
   if SomethingOfProjectIsModified then begin
-    if (Application.MessageBox('Save changes to project?','Project changed', MB_IconQuestion+mb_YesNo))=mrYes then
+    if (MessageDlg(lisProjectChanged,lisSaveChangesToProject,
+      mtConfirmation,[mbYes,mbNo],0)=mrYes) then
     begin
       CanClose:=DoSaveProject([])<>mrAbort;
       if CanClose=false then exit;
@@ -717,7 +718,6 @@ procedure TMainIDE.SetupSpeedButtons;
     begin
       Name := AName;
       Parent := pnlSpeedButtons;
-//      Parent := Self;
       Enabled := True;
       Top := ATop;
       Left := ALeft;
@@ -730,7 +730,6 @@ procedure TMainIDE.SetupSpeedButtons;
       if mfLeft in AMoveFlags then Inc(ALeft, Width + 1);
       Hint := AHint;
       OnMouseMove := @MainMouseMoved;
-//writeln('---- W=',Width,',',Height,' Transparent=',Transparent);
       Visible := True;
     end;
   end;
@@ -746,17 +745,15 @@ begin
     Name := 'pnlSpeedButtons';
     Top := 0;
     Left:= 0;
-//    Width:= 160;
-//    Height:= 60;
     Caption:= '';
   end;
 
 
   ButtonTop := 1;
   ButtonLeft := 1;
-  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, 'New Unit');
+  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lsiHintNewUnit);
 
-  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, 'Open');
+  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lsiHintOpen);
 
   // store left
   n := ButtonLeft;
@@ -764,21 +761,21 @@ begin
   OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
   
-  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, 'Save');
-  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, 'Save all');
-  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, 'New Form');
-  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, 'Toggle Form/Unit');
+  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, lsiHintSave);
+  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, lsiHintSaveAll);
+  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, lsiHintNewForm);
+  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lsiHintToggleFormUnit);
 
-// new row
+  // new row
   ButtonLeft := 1;
-  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, 'View Units');
-  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, 'View Forms');
+  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lsiHintViewUnits);
+  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lsiHintViewForms);
   inc(ButtonLeft,13);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, 'Run');
-  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, 'Pause');
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, lsiHintRun);
+  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, lsiHintPause);
   PauseSpeedButton.Enabled:=false;
-  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, 'Step Into');
-  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, 'Step Over');
+  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, lsiHintStepInto);
+  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, lsiHintStepOver);
   
   pnlSpeedButtons.Width := ButtonLeft+1;
   pnlSpeedButtons.Height := ButtonTop+1;
@@ -788,12 +785,12 @@ begin
   OpenFilePopUpMenu := TPopupMenu.Create(self);
   OpenFilePopupMenu.Name:='OpenFilePopupMenu';
   OpenFilePopupMenu.AutoPopup := False;
-{ 
-  MenuItem := TMenuItem.Create(Self);
-  MenuItem.Caption := 'No files have been opened';
-  MenuItem.OnClick := nil;
-  OpenFilePopupMenu.Items.Add(MenuItem);
-}
+  {
+    MenuItem := TMenuItem.Create(Self);
+    MenuItem.Caption := 'No files have been opened';
+    MenuItem.OnClick := nil;
+    OpenFilePopupMenu.Items.Add(MenuItem);
+  }
 end;
 
 procedure TMainIDE.SetupComponentNoteBook;
@@ -803,9 +800,7 @@ begin
   with ComponentNotebook do begin
     Parent := Self;
     Name := 'ComponentNotebook';
-//    Align := alBottom;
     Left := ToggleFormSpeedBtn.Left + ToggleFormSpeedBtn.Width + 4;
-//    Top :=50+ 2;
     Top := 0;
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
@@ -847,7 +842,7 @@ begin
         GroupIndex:= 1;
         Down := True;
         Name := 'GlobalMouseSpeedButton'+IntToStr(PageCount);
-        Hint := 'Selection tool';
+        Hint := lisSelectionTool;
         OnMouseMove := @MainMouseMoved;
       end;
       for x := 0 to RegCompPage.Count-1 do //for every component on the page....
@@ -970,39 +965,39 @@ procedure TMainIDE.SetupTransferMacros;
 begin
   MacroList:=TTransferMacroList.Create;
   MacroList.Add(TTransferMacro.Create('Col','',
-                    'Cursor column in current editor',nil,[]));
+                    lisCursorColumnInCurrentEditor,nil,[]));
   MacroList.Add(TTransferMacro.Create('Row','',
-                    'Cursor row in current editor',nil,[]));
+                    lisCursorRowInCUrrentEditor,nil,[]));
   MacroList.Add(TTransferMacro.Create('CompPath','',
-                    'Compiler filename',nil,[]));
+                    lisCompilerFilename,nil,[]));
   MacroList.Add(TTransferMacro.Create('CurToken','',
-                    'Word at cursor in current editor',nil,[]));
+                    lisWordAtCursorInCurrentEditor,nil,[]));
   MacroList.Add(TTransferMacro.Create('EdFile','',
-                    'Expanded filename of current editor file',nil,[]));
+                    lisExpandedFilenameOfCurrentEditor,nil,[]));
   MacroList.Add(TTransferMacro.Create('FPCSrcDir','',
-                    'Freepascal source directory',nil,[]));
+                    lisFreePascalSourceDirectory,nil,[]));
   MacroList.Add(TTransferMacro.Create('LazarusDir','',
-                    'Lazarus directory',nil,[]));
+                    lisLazarusDirectory,nil,[]));
   MacroList.Add(TTransferMacro.Create('LCLWidgetType','',
-                    'LCL Widget Type',nil,[]));
+                    lisLCLWidgetType,nil,[]));
   MacroList.Add(TTransferMacro.Create('Params','',
-                    'Command line parameters of program',nil,[]));
+                    lisCommandLineParamsOfProgram,nil,[]));
   MacroList.Add(TTransferMacro.Create('Prompt','',
-                    'Prompt for value',@OnMacroPromptFunction,[tmfInteractive]));
+                    lisPromptForValue,@OnMacroPromptFunction,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('ProjFile','',
-                    'Project filename',nil,[]));
+                    lisProjectFilename,nil,[]));
   MacroList.Add(TTransferMacro.Create('ProjPath','',
-                    'Project directory',nil,[]));
+                    lisProjectDirectory,nil,[]));
   MacroList.Add(TTransferMacro.Create('Save','',
-                    'save current editor file',nil,[tmfInteractive]));
+                    lisSaveCurrentEditorFile,nil,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('SaveAll','',
-                    'save all modified files',nil,[tmfInteractive]));
+                    lisSaveAllModified,nil,[tmfInteractive]));
   MacroList.Add(TTransferMacro.Create('TargetFile','',
-                    'Target filename of project',nil,[]));
+                    lisTargetFilenameOfProject,nil,[]));
   MacroList.Add(TTransferMacro.Create('TargetCmdLine','',
-                    'Target filename + params',nil,[]));
+                    lisTargetFilenamePlusParams,nil,[]));
   MacroList.Add(TTransferMacro.Create('RunCmdLine','',
-                    'Launching target command line',nil,[]));
+                    lisLaunchingCmdLine,nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
 end;
 
@@ -1014,9 +1009,9 @@ end;
 
 procedure TMainIDE.SetupStartProject;
 begin
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.Create A ***********');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.Create A ***********');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   // load command line project or last project or create a new project
   if (ParamCount>0) and (ParamStr(ParamCount)[1]<>'-')
@@ -1028,17 +1023,17 @@ writeln('TMainIDE.Create A ***********');
   and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)=mrOk) then
   begin
     // last project loaded
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.Create last project loaded successfully');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.Create last project loaded successfully');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   end else
     // create new project
     DoNewProject(ptApplication);
 
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.Create B');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.Create B');
+  {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
@@ -1052,47 +1047,47 @@ begin
 
   mnuFile := TMenuItem.Create(Self);
   mnuFile.Name:='mnuFile';
-  mnuFile.Caption := '&File';
+  mnuFile.Caption := lisMenuFile;
   mnuMain.Items.Add(mnuFile);
 
   mnuEdit := TMenuItem.Create(Self);
   mnuEdit.Name:='mnuEdit';
-  mnuEdit.Caption := '&Edit';
+  mnuEdit.Caption := lisMenuEdit;
   mnuMain.Items.Add(mnuEdit);
 
   mnuSearch := TMenuItem.Create(Self);
   mnuSearch.Name:='mnuSearch';
-  mnuSearch.Caption := '&Search';
+  mnuSearch.Caption := lisMenuSearch;
   mnuMain.Items.Add(mnuSearch);
 
   mnuView := TMenuItem.Create(Self);
   mnuView.Name:='mnuView';
-  mnuView.Caption := '&View';
+  mnuView.Caption := lisMenuView;
   mnuMain.Items.Add(mnuView);
 
   mnuProject := TMenuItem.Create(Self);
   mnuProject.Name:='mnuProject';
-  mnuProject.Caption := '&Project';
+  mnuProject.Caption := lisMenuProject;
   mnuMain.Items.Add(mnuProject);
 
   mnuRun := TMenuItem.Create(Self);
   mnuRun.Name:='mnuRun';
-  mnuRun.Caption := '&Run';
+  mnuRun.Caption := lisMenuRun;
   mnuMain.Items.Add(mnuRun);
 
   mnuTools := TMenuItem.Create(Self);
   mnuTools.Name:='mnuTools';
-  mnuTools.Caption := '&Tools';
+  mnuTools.Caption := lisMenuTools;
   mnuMain.Items.Add(mnuTools);
 
   mnuEnvironment := TMenuItem.Create(Self);
   mnuEnvironment.Name:='mnuEnvironment';
-  mnuEnvironment.Caption := 'E&nvironment';
+  mnuEnvironment.Caption := lisMenuEnvironent;
   mnuMain.Items.Add(mnuEnvironment);
 
   mnuHelp := TMenuItem.Create(Self);
   mnuHelp.Name:='mnuHelp';
-  mnuHelp.Caption := '&Help';
+  mnuHelp.Caption := lisMenuHelp;
   mnuMain.Items.Add(mnuHelp);
 
   SetupFileMenu;
@@ -1124,13 +1119,13 @@ procedure TMainIDE.SetupFileMenu;
 begin
   itmFileNewUnit := TMenuItem.Create(Self);
   itmFileNewUnit.Name:='itmFileNewUnit';
-  itmFileNewUnit.Caption := 'New Unit';
+  itmFileNewUnit.Caption := lisMenuNewUnit;
   itmFileNewUnit.OnClick := @mnuNewUnitClicked; // ToDo:  new dialog
   mnuFile.Add(itmFileNewUnit);
 
   itmFileNewForm := TMenuItem.Create(Self);
   itmFileNewForm.Name:='itmFileNewForm';
-  itmFileNewForm.Caption := 'New Form';
+  itmFileNewForm.Caption := lisMenuNewForm;
   itmFileNewForm.OnClick := @mnuNewFormClicked;
   mnuFile.Add(itmFileNewForm);
 
@@ -1138,13 +1133,13 @@ begin
 
   itmFileOpen := TMenuItem.Create(Self);
   itmFileOpen.Name:='itmFileOpen';
-  itmFileOpen.Caption := 'Open';
+  itmFileOpen.Caption := lisMenuOpen;
   itmFileOpen.OnClick := @mnuOpenClicked;
   mnuFile.Add(itmFileOpen);
 
   itmFileRecentOpen := TMenuItem.Create(Self);
   itmFileRecentOpen.Name:='itmFileRecentOpen';
-  itmFileRecentOpen.Caption := 'Open Recent';
+  itmFileRecentOpen.Caption := lisMenuOpenRecent;
   mnuFile.Add(itmFileRecentOpen);
 
   AddRecentSubMenu(itmFileRecentOpen,EnvironmentOptions.RecentOpenFiles,
@@ -1152,32 +1147,32 @@ begin
 
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
-  itmFileSave.Caption := 'Save';
+  itmFileSave.Caption := lisMenuSave;
   itmFileSave.OnClick := @mnuSaveClicked;
   mnuFile.Add(itmFileSave);
 
   itmFileSaveAs := TMenuItem.Create(Self);
   itmFileSaveAs.Name:='itmFileSaveAs';
-  itmFileSaveAs.Caption := 'Save As';
+  itmFileSaveAs.Caption := lisMenuSaveAs;
   itmFileSaveAs.OnClick := @mnuSaveAsClicked;
   mnuFile.Add(itmFileSaveAs);
 
   itmFileSaveAll := TMenuItem.Create(Self);
   itmFileSaveAll.Name:='itmFileSaveAll';
-  itmFileSaveAll.Caption := 'Save All';
+  itmFileSaveAll.Caption := lisMenuSaveAll;
   itmFileSaveAll.OnClick := @mnuSaveAllClicked;
   mnuFile.Add(itmFileSaveAll);
 
   itmFileClose := TMenuItem.Create(Self);
   itmFileClose.Name:='itmFileClose';
-  itmFileClose.Caption := 'Close';
+  itmFileClose.Caption := lisMenuClose;
   itmFileClose.Enabled := False;
   itmFileClose.OnClick := @mnuCloseClicked;
   mnuFile.Add(itmFileClose);
 
   itmFileCloseAll := TMenuItem.Create(Self);
   itmFileCloseAll.Name:='itmFileCloseAll';
-  itmFileCloseAll.Caption := 'Close All';
+  itmFileCloseAll.Caption := lisMenuCloseAll;
   itmFileCloseAll.Enabled := False;
   itmFileCloseAll.OnClick := @mnuCloseAllClicked;
   mnuFile.Add(itmFileCloseAll);
@@ -1186,7 +1181,7 @@ begin
 
   itmFileQuit := TMenuItem.Create(Self);
   itmFileQuit.Name:='itmFileQuit';
-  itmFileQuit.Caption := 'Quit';
+  itmFileQuit.Caption := lisMenuQuit;
   itmFileQuit.OnClick := @mnuQuitClicked;
   mnuFile.Add(itmFileQuit);
 
@@ -1196,13 +1191,13 @@ procedure TMainIDE.SetupEditMenu;
 begin
   itmEditUndo := TMenuItem.Create(nil);
   itmEditUndo.Name:='itmEditUndo';
-  itmEditUndo.Caption := 'Undo';
+  itmEditUndo.Caption := lisMenuUndo;
   itmEditUndo.OnClick:=@mnuEditUndoClicked;
   mnuEdit.Add(itmEditUndo);
 
   itmEditRedo := TMenuItem.Create(nil);
   itmEditRedo.Name:='itmEditRedo';
-  itmEditRedo.Caption := 'Redo';
+  itmEditRedo.Caption := lisMenuRedo;
   itmEditRedo.OnClick:=@mnuEditRedoClicked;
   mnuEdit.Add(itmEditRedo);
 
@@ -1210,19 +1205,19 @@ begin
 
   itmEditCut  := TMenuItem.Create(nil);
   itmEditCut.Name:='itmEditCut';
-  itmEditCut.Caption := 'Cut';
+  itmEditCut.Caption := lisMenuCut;
   itmEditCut.OnClick:=@mnuEditCutClicked;
   mnuEdit.Add(itmEditCut);
 
   itmEditCopy := TMenuItem.Create(nil);
   itmEditCopy.Name:='itmEditCopy';
-  itmEditCopy.Caption := 'Copy';
+  itmEditCopy.Caption := lisMenuCopy;
   itmEditCopy.OnClick:=@mnuEditCopyClicked;
   mnuEdit.Add(itmEditCopy);
 
   itmEditPaste := TMenuItem.Create(nil);
   itmEditPaste.Name:='itmEditPaste';
-  itmEditPaste.Caption := 'Paste';
+  itmEditPaste.Caption := lisMenuPaste;
   itmEditPaste.OnClick:=@mnuEditPasteClicked;
   mnuEdit.Add(itmEditPaste);
 
@@ -1230,13 +1225,13 @@ begin
 
   itmEditIndentBlock := TMenuItem.Create(nil);
   itmEditIndentBlock.Name:='itmEditIndentBlock';
-  itmEditIndentBlock.Caption := 'Indent selection';
+  itmEditIndentBlock.Caption := lisMenuIndentSelection;
   itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
   mnuEdit.Add(itmEditIndentBlock);
 
   itmEditUnindentBlock := TMenuItem.Create(nil);
   itmEditUnindentBlock.Name:='itmEditUnindentBlock';
-  itmEditUnindentBlock.Caption := 'Unindent selection';
+  itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
   itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
   mnuEdit.Add(itmEditUnindentBlock);
 
@@ -1244,7 +1239,7 @@ begin
 
   itmEditCompleteCode := TMenuItem.Create(nil);
   itmEditCompleteCode.Name:='itmEditCompleteCode';
-  itmEditCompleteCode.Caption := 'Complete Code';
+  itmEditCompleteCode.Caption := lisMenuCompleteCode;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
   mnuEdit.Add(itmEditCompleteCode);
 end;
@@ -1253,86 +1248,86 @@ procedure TMainIDE.SetupSearchMenu;
 begin
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.Name:='itmSearchFind';
-  itmSearchFind.Caption := 'Find';
+  itmSearchFind.Caption := lisMenuFind;
   mnuSearch.add(itmSearchFind);
 
   itmSearchFindNext := TMenuItem.Create(nil);
   itmSearchFindNext.Name:='itmSearchFindNext';
-  itmSearchFindNext.Caption := 'Find &Next';
+  itmSearchFindNext.Caption := lisMenuFindNext;
   itmSearchFindNext.Enabled := False;
   mnuSearch.add(itmSearchFindNext);
 
   itmSearchFindPrevious := TMenuItem.Create(nil);
   itmSearchFindPrevious.Name:='itmSearchFindPrevious';
-  itmSearchFindPrevious.Caption := 'Find &Previous';
+  itmSearchFindPrevious.Caption := lisMenuFindPrevious;
   itmSearchFindPrevious.Enabled := False;
   mnuSearch.add(itmSearchFindPrevious);
 
   itmSearchFindInFiles := TMenuItem.Create(nil);
   itmSearchFindInFiles.Name:='itmSearchFindInFiles';
-  itmSearchFindInFiles.Caption := 'Find &in files';
+  itmSearchFindInFiles.Caption := lisMenuFindInFiles;
   itmSearchFindInFiles.Enabled := False;
   mnuSearch.add(itmSearchFindInFiles);
 
   itmSearchReplace := TMenuItem.Create(nil);
   itmSearchReplace.Name:='itmSearchReplace';
-  itmSearchReplace.Caption := 'Replace';
+  itmSearchReplace.Caption := lisMenuReplace;
   mnuSearch.add(itmSearchReplace);
 
   mnuSearch.Add(CreateSeperator);
 
   itmGotoLine := TMenuItem.Create(nil);
   itmGotoLine.Name:='itmGotoLine';
-  itmGotoLine.Caption := 'Goto line';
+  itmGotoLine.Caption := lisMenuGotoLine;
   mnuSearch.add(itmGotoLine);
 
   mnuSearch.Add(CreateSeperator);
 
   itmJumpBack := TMenuItem.Create(nil);
   itmJumpBack.Name:='itmJumpBack';
-  itmJumpBack.Caption := 'Jump back';
+  itmJumpBack.Caption := lisMenuJumpBack;
   mnuSearch.add(itmJumpBack);
 
   itmJumpForward := TMenuItem.Create(nil);
   itmJumpForward.Name:='itmJumpForward';
-  itmJumpForward.Caption := 'Jump forward';
+  itmJumpForward.Caption := lisMenuJumpForward;
   mnuSearch.add(itmJumpForward);
 
   itmAddJumpPoint := TMenuItem.Create(nil);
   itmAddJumpPoint.Name:='itmAddJumpPoint';
-  itmAddJumpPoint.Caption := 'Add jump point to history';
+  itmAddJumpPoint.Caption := lisMenuAddJumpPointToHistory;
   mnuSearch.add(itmAddJumpPoint);
 
   itmJumpHistory := TMenuItem.Create(nil);
   itmJumpHistory.Name:='itmJumpHistory';
-  itmJumpHistory.Caption := 'View Jump-History';
+  itmJumpHistory.Caption := lisMenuViewJumpHistory;
   mnuSearch.add(itmJumpHistory);
 
   mnuSearch.Add(CreateSeperator);
 
   itmFindBlockOtherEnd := TMenuItem.Create(nil);
   itmFindBlockOtherEnd.Name:='itmFindBlockOtherEnd';
-  itmFindBlockOtherEnd.Caption := 'Find other end of code block';
+  itmFindBlockOtherEnd.Caption := lisMenuFindBlockOtherEndOfCodeBlock;
   mnuSearch.add(itmFindBlockOtherEnd);
 
   itmFindBlockStart := TMenuItem.Create(nil);
   itmFindBlockStart.Name:='itmFindBlockStart';
-  itmFindBlockStart.Caption := 'Find code block start';
+  itmFindBlockStart.Caption := lisMenuFindCodeBlockStart;
   mnuSearch.add(itmFindBlockStart);
 
   itmFindDeclaration := TMenuItem.Create(nil);
   itmFindDeclaration.Name:='itmFindDeclaration';
-  itmFindDeclaration.Caption := 'Find Declaration at cursor';
+  itmFindDeclaration.Caption := lisMenuFindDeclarationAtCursor;
   mnuSearch.add(itmFindDeclaration);
 
   itmOpenFileAtCursor := TMenuItem.Create(nil);
   itmOpenFileAtCursor.Name:='itmOpenFileAtCursor';
-  itmOpenFileAtCursor.Caption := 'Open filename at cursor';
+  itmOpenFileAtCursor.Caption := lisMenuOpenFilenameAtCursor;
   mnuSearch.add(itmOpenFileAtCursor);
   
   itmGotoIncludeDirective := TMenuItem.Create(nil);
   itmGotoIncludeDirective.Name:='itmGotoIncludeDirective';
-  itmGotoIncludeDirective.Caption := 'Goto include directive';
+  itmGotoIncludeDirective.Caption := lisMenuGotoIncludeDirective;
   itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
   mnuSearch.add(itmGotoIncludeDirective);
 end;
@@ -1341,20 +1336,20 @@ procedure TMainIDE.SetupViewMenu;
 begin
   itmViewInspector := TMenuItem.Create(Self);
   itmViewInspector.Name:='itmViewInspector';
-  itmViewInspector.Caption := 'Object Inspector';
+  itmViewInspector.Caption := lisMenuViewObjectInspector;
   itmViewInspector.OnClick := @mnuViewInspectorClicked;
   mnuView.Add(itmViewInspector);
 
   itmViewProject  := TMenuItem.Create(Self);
   itmViewProject.Name:='itmViewProject';
-  itmViewProject.Caption := 'Project Explorer';
+  itmViewProject.Caption := lisMenuViewProjectExplorer;
   mnuView.Add(itmViewProject);
 
   mnuView.Add(CreateSeperator);
 
   itmViewCodeExplorer := TMenuItem.Create(Self);
   itmViewCodeExplorer.Name:='itmViewCodeExplorer';
-  itmViewCodeExplorer.Caption := 'Code Explorer';
+  itmViewCodeExplorer.Caption := lisMenuViewCodeExplorer;
   itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
   mnuView.Add(itmViewCodeExplorer);
 
@@ -1362,13 +1357,13 @@ begin
 
   itmViewUnits := TMenuItem.Create(Self);
   itmViewUnits.Name:='itmViewUnits';
-  itmViewUnits.Caption := 'Units...';
+  itmViewUnits.Caption := lisMenuViewUnits;
   itmViewUnits.OnClick := @mnuViewUnitsClicked;
   mnuView.Add(itmViewUnits);
 
   itmViewForms := TMenuItem.Create(Self);
   itmViewForms.Name:='itmViewForms';
-  itmViewForms.Caption := 'Forms...';
+  itmViewForms.Caption := lisMenuViewForms;
   itmViewForms.OnClick := @mnuViewFormsClicked;
   mnuView.Add(itmViewForms);
 
@@ -1376,33 +1371,33 @@ begin
 
   itmViewMessage := TMenuItem.Create(Self);
   itmViewMessage.Name:='itmViewMessage';
-  itmViewMessage.Caption := 'Messages';
+  itmViewMessage.Caption := lisMenuViewMessages;
   itmViewMessage.OnClick := @mnuViewMessagesClick;
   mnuView.Add(itmViewMessage);
 
   itmViewDebugWindows := TMenuItem.Create(Self);
   itmViewDebugWindows.Name := 'itmViewDebugWindows';
-  itmViewDebugWindows.Caption := 'Debug windows';
+  itmViewDebugWindows.Caption := lisMenuDebugWindows;
   mnuView.Add(itmViewDebugWindows);
   
   itmViewWatches := TMenuItem.Create(Self);
   itmViewWatches.Name:='itmViewWatches';
-  itmViewWatches.Caption := 'Watches';
+  itmViewWatches.Caption := lisMenuViewWatches;
   itmViewDebugWindows.Add(itmViewWatches);
 
   itmViewBreakPoints := TMenuItem.Create(Self);
   itmViewBreakPoints.Name:='itmViewBreakPoints';
-  itmViewBreakPoints.Caption := 'BreakPoints';
+  itmViewBreakPoints.Caption := lisMenuViewBreakPoints;
   itmViewDebugWindows.Add(itmViewBreakPoints);
 
   itmViewLocals := TMenuItem.Create(Self);
   itmViewLocals.Name:='itmViewLocals';
-  itmViewLocals.Caption := 'Local Variables';
+  itmViewLocals.Caption := lisMenuViewLocalVariables;
   itmViewDebugWindows.Add(itmViewLocals);
 
   itmViewDebugOutput := TMenuItem.Create(Self);
   itmViewDebugOutput.Name:='itmViewDebugOutput';
-  itmViewDebugOutput.Caption := 'Debug output';
+  itmViewDebugOutput.Caption := lisMenuViewDebugOutput;
   itmViewDebugWindows.Add(itmViewDebugOutput);
 end;
 
@@ -1410,19 +1405,19 @@ procedure TMainIDE.SetupProjectMenu;
 begin
   itmProjectNew := TMenuItem.Create(Self);
   itmProjectNew.Name:='itmProjectNew';
-  itmProjectNew.Caption := 'New Project';
+  itmProjectNew.Caption := lisMenuNewProject;
   itmProjectNew.OnClick := @mnuNewProjectClicked;
   mnuProject.Add(itmProjectNew);
 
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
-  itmProjectOpen.Caption := 'Open Project';
+  itmProjectOpen.Caption := lisMenuOpenProject;
   itmProjectOpen.OnClick := @mnuOpenProjectClicked;
   mnuProject.Add(itmProjectOpen);
 
   itmProjectRecentOpen := TMenuItem.Create(Self);
   itmProjectRecentOpen.Name:='itmProjectRecentOpen';
-  itmProjectRecentOpen.Caption := 'Open Recent Project';
+  itmProjectRecentOpen.Caption := lisMenuOpenRecentProject;
   mnuProject.Add(itmProjectRecentOpen);
 
   AddRecentSubMenu(itmProjectRecentOpen,EnvironmentOptions.RecentProjectFiles,
@@ -1430,13 +1425,13 @@ begin
 
   itmProjectSave := TMenuItem.Create(Self);
   itmProjectSave.Name:='itmProjectSave';
-  itmProjectSave.Caption := 'Save Project';
+  itmProjectSave.Caption := lisMenuSaveProject;
   itmProjectSave.OnClick := @mnuSaveProjectClicked;
   mnuProject.Add(itmProjectSave);
 
   itmProjectSaveAs := TMenuItem.Create(Self);
   itmProjectSaveAs.Name:='itmProjectSaveAs';
-  itmProjectSaveAs.Caption := 'Save Project As...';
+  itmProjectSaveAs.Caption := lisMenuSaveProjectAs;
   itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
   mnuProject.Add(itmProjectSaveAs);
 
@@ -1444,13 +1439,13 @@ begin
 
   itmProjectAddTo := TMenuItem.Create(Self);
   itmProjectAddTo.Name:='itmProjectAddTo';
-  itmProjectAddTo.Caption := 'Add active unit to Project';
+  itmProjectAddTo.Caption := lisMenuAddUnitToProject;
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   mnuProject.Add(itmProjectAddTo);
 
   itmProjectRemoveFrom := TMenuItem.Create(Self);
   itmProjectRemoveFrom.Name:='itmProjectRemoveFrom';
-  itmProjectRemoveFrom.Caption := 'Remove from Project';
+  itmProjectRemoveFrom.Caption := lisMenuRemoveUnitFromProject;
   itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
   mnuProject.Add(itmProjectRemoveFrom);
 
@@ -1458,7 +1453,7 @@ begin
 
   itmProjectViewSource := TMenuItem.Create(Self);
   itmProjectViewSource.Name:='itmProjectViewSource';
-  itmProjectViewSource.Caption := 'View Source';
+  itmProjectViewSource.Caption := lisMenuViewSource;
   itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
   mnuProject.Add(itmProjectViewSource);
 
@@ -1466,7 +1461,7 @@ begin
 
   itmProjectOptions := TMenuItem.Create(Self);
   itmProjectOptions.Name:='itmProjectOptions';
-  itmProjectOptions.Caption := 'Project Options...';
+  itmProjectOptions.Caption := lisMenuProjectOptions;
   itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
   mnuProject.Add(itmProjectOptions);
 end;
@@ -1475,13 +1470,13 @@ procedure TMainIDE.SetupRunMenu;
 begin
   itmProjectBuild := TMenuItem.Create(Self);
   itmProjectBuild.Name:='itmProjectBuild';
-  itmProjectBuild.Caption := 'Build';
+  itmProjectBuild.Caption := lisMenuBuild;
   itmProjectBuild.OnClick := @mnuBuildProjectClicked;
   mnuRun.Add(itmProjectBuild);
 
   itmProjectBuildAll := TMenuItem.Create(Self);
   itmProjectBuildAll.Name:='itmProjectBuildAll';
-  itmProjectBuildAll.Caption := 'Build all';
+  itmProjectBuildAll.Caption := lisMenuBuildAll;
   itmProjectBuildAll.OnClick := @mnuBuildAllProjectClicked;
   mnuRun.Add(itmProjectBuildAll);
 
@@ -1489,38 +1484,38 @@ begin
 
   itmProjectRun := TMenuItem.Create(Self);
   itmProjectRun.Name:='itmProjectRun';
-  itmProjectRun.Caption := 'Run';
+  itmProjectRun.Caption := lisMenuProjectRun;
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   mnuRun.Add(itmProjectRun);
 
   itmProjectPause := TMenuItem.Create(Self);
   itmProjectPause.Name:='itmProjectPause';
-  itmProjectPause.Caption := 'Pause';
+  itmProjectPause.Caption := lisMenuPause;
   itmProjectPause.OnClick := @mnuPauseProjectClicked;
   itmProjectPause.Enabled := false;
   mnuRun.Add(itmProjectPause);
 
   itmProjectStepInto := TMenuItem.Create(Self);
   itmProjectStepInto.Name:='itmProjectStepInto';
-  itmProjectStepInto.Caption := 'Step into';
+  itmProjectStepInto.Caption := lisMenuStepInto;
   itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
   mnuRun.Add(itmProjectStepInto);
 
   itmProjectStepOver := TMenuItem.Create(Self);
   itmProjectStepOver.Name:='itmProjectStepOver';
-  itmProjectStepOver.Caption := 'Step over';
+  itmProjectStepOver.Caption := lisMenuStepOver;
   itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
   mnuRun.Add(itmProjectStepOver);
 
   itmProjectRunToCursor := TMenuItem.Create(Self);
   itmProjectRunToCursor.Name:='itmProjectRunToCursor';
-  itmProjectRunToCursor.Caption := 'Run to cursor';
+  itmProjectRunToCursor.Caption := lisMenuRunToCursor;
   itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
   mnuRun.Add(itmProjectRunToCursor);
 
   itmProjectStop := TMenuItem.Create(Self);
   itmProjectStop.Name:='itmProjectStop';
-  itmProjectStop.Caption := 'Stop';
+  itmProjectStop.Caption := lisMenuStop;
   itmProjectStop.OnClick := @mnuStopProjectClicked;
   mnuRun.Add(itmProjectStop);
 
@@ -1528,13 +1523,13 @@ begin
 
   itmProjectCompilerSettings := TMenuItem.Create(Self);
   itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
-  itmProjectCompilerSettings.Caption := 'Compiler Options...';
+  itmProjectCompilerSettings.Caption := lisMenuCompilerOptions;
   itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   mnuRun.Add(itmProjectCompilerSettings);
 
   itmProjectRunParameters := TMenuItem.Create(Self);
   itmProjectRunParameters.Name:='itmProjectRunParameters';
-  itmProjectRunParameters.Caption := 'Run Parameters ...';
+  itmProjectRunParameters.Caption := lisMenuRunParameters;
   itmProjectRunParameters.OnClick := @mnuRunParametersClicked;
   mnuRun.Add(itmProjectRunParameters);
 end;
@@ -1543,31 +1538,31 @@ procedure TMainIDE.SetupToolsMenu;
 begin
   itmToolConfigure := TMenuItem.Create(Self);
   itmToolConfigure.Name:='itmToolConfigure';
-  itmToolConfigure.Caption := 'Settings ...';
+  itmToolConfigure.Caption := lisMenuSettings;
   itmToolConfigure.OnClick := @mnuToolConfigureClicked;
   mnuTools.Add(itmToolConfigure);
 
   itmToolSyntaxCheck := TMenuItem.Create(Self);
   itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
-  itmToolSyntaxCheck.Caption := 'Quick syntax check';
+  itmToolSyntaxCheck.Caption := lisMenuQuickSyntaxCheck;
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   mnuTools.Add(itmToolSyntaxCheck);
 
   itmToolGuessUnclosedBlockCheck := TMenuItem.Create(Self);
   itmToolGuessUnclosedBlockCheck.Name:='itmToolGuessUnclosedBlockCheck';
-  itmToolGuessUnclosedBlockCheck.Caption := 'Guess unclosed block';
+  itmToolGuessUnclosedBlockCheck.Caption := lisMenuGuessUnclosedBlock;
   itmToolGuessUnclosedBlockCheck.OnClick := @mnuToolGuessUnclosedBlockClicked;
   mnuTools.Add(itmToolGuessUnclosedBlockCheck);
 
   itmToolBuildLazarus := TMenuItem.Create(Self);
   itmToolBuildLazarus.Name:='itmToolBuildLazarus';
-  itmToolBuildLazarus.Caption := 'Build Lazarus';
+  itmToolBuildLazarus.Caption := lisMenuBuildLazarus;
   itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
   mnuTools.Add(itmToolBuildLazarus);
 
   itmToolConfigureBuildLazarus := TMenuItem.Create(Self);
   itmToolConfigureBuildLazarus.Name:='itmToolConfigureBuildLazarus';
-  itmToolConfigureBuildLazarus.Caption := 'Configure "Build Lazarus"';
+  itmToolConfigureBuildLazarus.Caption := lisMenuConfigureBuildLazarus;
   itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   mnuTools.Add(itmToolConfigureBuildLazarus);
 end;
@@ -1576,25 +1571,25 @@ procedure TMainIDE.SetupEnvironmentMenu;
 begin
   itmEnvGeneralOptions := TMenuItem.Create(nil);
   itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
-  itmEnvGeneralOptions.Caption := 'General options';
+  itmEnvGeneralOptions.Caption := lisMenuGeneralOptions;
   itmEnvGeneralOptions.OnCLick := @mnuEnvGeneralOptionsClicked;
   mnuEnvironment.Add(itmEnvGeneralOptions);
 
   itmEnvEditorOptions := TMenuItem.Create(nil);
   itmEnvEditorOptions.Name:='itmEnvEditorOptions';
-  itmEnvEditorOptions.Caption := 'Editor options';
+  itmEnvEditorOptions.Caption := lisMenuEditorOptions;
   itmEnvEditorOptions.OnCLick := @mnuEnvEditorOptionsClicked;
   mnuEnvironment.Add(itmEnvEditorOptions);
 
   itmEnvCodeToolsOptions := TMenuItem.Create(nil);
   itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
-  itmEnvCodeToolsOptions.Caption := 'CodeTools options';
+  itmEnvCodeToolsOptions.Caption := lisMenuCodeToolsOptions;
   itmEnvCodeToolsOptions.OnCLick := @mnuEnvCodeToolsOptionsClicked;
   mnuEnvironment.Add(itmEnvCodeToolsOptions);
 
   itmEnvCodeToolsDefinesEditor := TMenuItem.Create(nil);
   itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
-  itmEnvCodeToolsDefinesEditor.Caption := 'CodeTools defines editor';
+  itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
   itmEnvCodeToolsDefinesEditor.OnCLick := @mnuEnvCodeToolsDefinesEditorClicked;
   mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
 end;
@@ -1603,7 +1598,7 @@ procedure TMainIDE.SetupHelpMenu;
 begin
   itmHelpAboutLazarus := TMenuItem.Create(nil);
   itmHelpAboutLazarus.Name:='itmHelpAboutLazarus';
-  itmHelpAboutLazarus.Caption := 'About Lazarus';
+  itmHelpAboutLazarus.Caption := lisMenuAboutLazarus;
   itmHelpAboutLazarus.OnCLick := @mnuHelpAboutLazarusClicked;
   mnuHelp.Add(itmHelpAboutLazarus);
 end;
@@ -1696,7 +1691,7 @@ begin
   or (Sender is TSourceNoteBook) then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
-      OpenDialog.Title:='Open file';
+      OpenDialog.Title:=lisOpenFile;
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       OpenDialog.Options:=[ofAllowMultiSelect];
       if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
@@ -1868,12 +1863,8 @@ var ActiveSrcEdit:TSourceEditor;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  ShortUnitName:=ExtractFileName(ActiveUnitInfo.Filename);
-  if ShortUnitName='' then
-    ShortUnitName:='(unsaved)';
+  ShortUnitName:=ActiveSrcEdit.ShortName;
   AFilename:=ActiveUnitInfo.Filename;
-  if AFileName='' then
-    AFileName:='(unsaved)';
   ShowUnitInfoDlg(ShortUnitName,
     LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
     ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
@@ -1891,13 +1882,13 @@ end;
 
 Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
 Begin
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.SetDefaultsforForm] A');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TMainIDE.SetDefaultsforForm] A');
+  {$ENDIF}
   aForm.Designer := TDesigner.Create(aForm, TheControlSelection);
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.SetDefaultsforForm] B');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TMainIDE.SetDefaultsforForm] B');
+  {$ENDIF}
   with TDesigner(aForm.Designer) do begin
     FormEditor := FormEditor1;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
@@ -1922,13 +1913,13 @@ var CanClose: boolean;
 begin
   CanClose:=true;
   OnCloseQuery(Sender, CanClose);
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.mnuQuitClicked 1');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.mnuQuitClicked 1');
+  {$ENDIF}
   if CanClose then Close;
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.mnuQuitClicked 2');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.mnuQuitClicked 2');
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -1977,7 +1968,7 @@ begin
   if Sender=itmProjectOpen then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
-      OpenDialog.Title:='Open Project File (*.lpi)';
+      OpenDialog.Title:=lisOpenProjectFile+' (*.lpi)';
       OPenDialog.Filter := '*.lpi';
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
       if OpenDialog.Execute then begin
@@ -2237,12 +2228,12 @@ Begin
                                                            FPCSrcTemplate.Name);
             FPCSrcTemplate.InsertBehind(CompilerTemplate);
           end else begin
-            MessageDlg('FPC Source Directory error',
-              'Please check the freepascal source directory',
+            MessageDlg(lisFPCSourceDirectoryError,
+              lisPLzCheckTheFPCSourceDirectory,
               mtError,[mbOk],0);
           end;
         end else begin
-          MessageDlg('Compiler error','Please check the compiler name',
+          MessageDlg(lisCompilerError,lisPlzCheckTheCmpilerName,
             mtError,[mbOk],0);
         end;
       end;
@@ -2288,20 +2279,7 @@ end;
 
 procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
 begin
-  MessageDlg('About Lazarus',
-    'Lazarus '+Version_String+#13
-    +'License: GPL/LGPL'
-    +#13
-    +'Lazarus are the class libraries for Free Pascal that emulate Delphi.'#13
-    +'Free Pascal is a (L)GPL''ed compiler that runs on Linux,'#13
-    +'Win32, OS/2, 68K and more. Free Pascal is designed to be able to'#13
-    +'understand and compile Delphi syntax, which is of course OOP.'#13
-    +'Lazarus is the missing part of the puzzle that will allow you to'#13
-    +'develop Delphi like programs in all of the above platforms.'#13
-    +'The IDE will eventually become a RAD tool like Delphi.'#13
-    +#13
-    +'As Lazarus is growing we need more developers.'#13
-    +'For example: Write a nicer about dialog with a logo.'
+  MessageDlg(lisAboutLazarus,'Lazarus '+Version_String+#13+lisAboutLazarusMsg
     ,mtInformation, [mbOk], 0);
 end;
 
@@ -2346,8 +2324,7 @@ begin
   // create a buffer for the new resource file and for the LFM file
   ResourceCode:=
     CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,ResourceFileExt));
-  ResourceCode.Source:=
-    '{ This is an automatically generated lazarus resource file }';
+  ResourceCode.Source:=lisResourceFileComment;
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
 
   // clear formeditor
@@ -2448,7 +2425,7 @@ begin
   SaveDialog:=TSaveDialog.Create(Application);
   try
     // show save dialog
-    SaveDialog.Title:='Save '+SaveAsFilename+' (*'+SaveAsFileExt+')';
+    SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
     SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
     if not SaveDialog.Execute then begin
@@ -2468,11 +2445,8 @@ begin
   if NewUnitName='' then exit;
   if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
   begin
-    Result:=MessageDlg('Unitname already in project',
-       'The unit "'+NewUnitName+'" already exists.'#13
-       +'Ignore will force the renaming,'#13
-       +'Cancel will cancel the saving of this source and'#13
-       +'Abort will abort the whole saving.',
+    Result:=MessageDlg(lsiUnitNameAlreadyExistsCap,
+       Format(lsiUnitNameAlreadyExistsText,[NewUnitName]),
         mtConfirmation,[mbIgnore,mbCancel,mbAbort],0);
     if Result=mrIgnore then
       Result:=mrCancel
@@ -2481,9 +2455,9 @@ begin
   end;
   if FilenameIsPascalUnit(NewFilename) then begin
     if not IsValidIdent(NewUnitName) then begin
-      Result:=MessageDlg('Invalid Pascal Identifier',
-        'The name "'+NewUnitName+'" is not a valid pascal identifier.'
-        ,mtWarning,[mbIgnore,mbCancel],0);
+      Result:=MessageDlg(lsiInvalidPascalIdentifierCap,
+        Format(lsiInvalidPascalIdentifierText,[NewUnitName]),
+        mtWarning,[mbIgnore,mbCancel],0);
       if Result=mrCancel then exit;
       Result:=mrCancel;
     end;
@@ -6219,6 +6193,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.266  2002/03/29 23:22:20  lazarus
+  MG: started internationalization of IDE
+
   Revision 1.265  2002/03/29 14:32:46  lazarus
   MG: further internationalization
 

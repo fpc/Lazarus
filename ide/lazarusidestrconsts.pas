@@ -1,0 +1,200 @@
+{  $Id$  }
+{
+ /***************************************************************************
+                          lazarusidestrconsts.pas
+                          -----------------------
+              This unit contains all resource strings of the IDE
+
+
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+}
+unit LazarusIDEStrConsts;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils; 
+  
+ResourceString
+  // component palette
+  lisSelectionTool = 'Selection tool';
+  
+  // macros
+  lisCursorColumnInCurrentEditor = 'Cursor column in current editor';
+  lisCursorRowInCUrrentEditor = 'Cursor row in current editor';
+  lisCompilerFilename = 'Compiler filename';
+  lisWordAtCursorInCurrentEditor = 'Word at cursor in current editor';
+  lisExpandedFilenameOfCurrentEditor = 'Expanded filename of current editor file';
+  lisFreePascalSourceDirectory = 'Freepascal source directory';
+  lisLazarusDirectory = 'Lazarus directory';
+  lisLCLWidgetType = 'LCL Widget Type';
+  lisCommandLineParamsOfProgram = 'Command line parameters of program';
+  lisPromptForValue = 'Prompt for value';
+  lisProjectFilename = 'Project filename';
+  lisProjectDirectory = 'Project directory';
+  lisSaveCurrentEditorFile = 'save current editor file';
+  lisSaveAllModified = 'save all modified files';
+  lisTargetFilenameOfProject = 'Target filename of project';
+  lisTargetFilenamePlusParams = 'Target filename + params';
+  lisLaunchingCmdLine = 'Launching target command line';
+  
+  // main bar menu
+  lisMenuFile = '&File';
+  lisMenuEdit = '&Edit';
+  lisMenuSearch = '&Search';
+  lisMenuView = '&View';
+  lisMenuProject = '&Project';
+  lisMenuRun = '&Run';
+  lisMenuTools = '&Tools';
+  lisMenuEnvironent = 'E&nvironment';
+  lisMenuHelp = '&Help';
+  
+  lisMenuNewUnit = 'New Unit';
+  lisMenuNewForm = 'New Form';
+  lisMenuOpen = 'Open';
+  lisMenuOpenRecent = 'Open Recent';
+  lisMenuSave = 'Save';
+  lisMenuSaveAs = 'Save As';
+  lisMenuSaveAll = 'Save All';
+  lisMenuClose = 'Close';
+  lisMenuCloseAll = 'Close All';
+  lisMenuQuit = 'Quit';
+  
+  lisMenuUndo = 'Undo';
+  lisMenuRedo = 'Redo';
+  lisMenuCut = 'Cut';
+  lisMenuCopy = 'Copy';
+  lisMenuPaste = 'Paste';
+  lisMenuIndentSelection = 'Indent selection';
+  lisMenuUnindentSelection = 'Unindent selection';
+  lisMenuCompleteCode = 'Complete Code';
+  
+  lisMenuFind = 'Find';
+  lisMenuFindNext = 'Find &Next';
+  lisMenuFindPrevious = 'Find &Previous';
+  lisMenuFindInFiles = 'Find &in files';
+  lisMenuReplace = 'Replace';
+  lisMenuGotoLine = 'Goto line';
+  lisMenuJumpBack = 'Jump back';
+  lisMenuJumpForward = 'Jump forward';
+  lisMenuAddJumpPointToHistory = 'Add jump point to history';
+  lisMenuViewJumpHistory = 'View Jump-History';
+  lisMenuFindBlockOtherEndOfCodeBlock = 'Find other end of code block';
+  lisMenuFindCodeBlockStart = 'Find code block start';
+  lisMenuFindDeclarationAtCursor = 'Find Declaration at cursor';
+  lisMenuOpenFilenameAtCursor = 'Open filename at cursor';
+  lisMenuGotoIncludeDirective = 'Goto include directive';
+  
+  lisMenuViewObjectInspector = 'Object Inspector';
+  lisMenuViewProjectExplorer = 'Project Explorer';
+  lisMenuViewCodeExplorer = 'Code Explorer';
+  lisMenuViewUnits = 'Units...';
+  lisMenuViewForms = 'Forms...';
+  lisMenuViewMessages = 'Messages';
+  lisMenuDebugWindows = 'Debug windows';
+  lisMenuViewWatches = 'Watches';
+  lisMenuViewBreakPoints = 'BreakPoints';
+  lisMenuViewLocalVariables = 'Local Variables';
+  lisMenuViewDebugOutput = 'Debug output';
+  lisMenuNewProject = 'New Project';
+  lisMenuOpenProject = 'Open Project';
+  lisMenuOpenRecentProject = 'Open Recent Project';
+  lisMenuSaveProject = 'Save Project';
+  lisMenuSaveProjectAs = 'Save Project As...';
+  lisMenuAddUnitToProject = 'Add active unit to Project';
+  lisMenuRemoveUnitFromProject = 'Remove from Project';
+  lisMenuViewSource = 'View Source';
+  lisMenuProjectOptions = 'Project Options...';
+  
+  lisMenuBuild = 'Build';
+  lisMenuBuildAll = 'Build all';
+  lisMenuProjectRun = 'Run';
+  lisMenuPause = 'Pause';
+  lisMenuStepInto = 'Step into';
+  lisMenuStepOver = 'Step over';
+  lisMenuRunToCursor = 'Run to cursor';
+  lisMenuStop = 'Stop';
+  lisMenuCompilerOptions = 'Compiler Options...';
+  lisMenuRunParameters = 'Run Parameters ...';
+  
+  lisMenuSettings = 'Settings ...';
+  lisMenuQuickSyntaxCheck = 'Quick syntax check';
+  lisMenuGuessUnclosedBlock = 'Guess unclosed block';
+  lisMenuBuildLazarus = 'Build Lazarus';
+  lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
+  
+  lisMenuGeneralOptions = 'General options';
+  lisMenuEditorOptions = 'Editor options';
+  lisMenuCodeToolsOptions = 'CodeTools options';
+  lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor';
+  
+  lisMenuAboutLazarus = 'About Lazarus';
+
+  // resource files
+  lisResourceFileComment =
+    '{ This is an automatically generated lazarus resource file }';
+
+  // file dialogs
+  lisOpenFile = 'Open file';
+  lisOpenProjectFile = 'Open Project File';
+  lisSaveSpace = 'Save ';
+
+  // dialogs
+  lisSaveChangesToProject = 'Save changes to project?';
+  lisProjectChanged = 'Project changed';
+
+  lisFPCSourceDirectoryError = 'FPC Source Directory error';
+  lisPLzCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
+  lisCompilerError = 'Compiler error';
+  lisPlzCheckTheCmpilerName = 'Please check the compiler name';
+  lisAboutLazarus = 'About Lazarus';
+  lisAboutLazarusMsg =
+     'License: GPL/LGPL'
+    +#13
+    +'Lazarus are the class libraries for Free Pascal that emulate Delphi.'#13
+    +'Free Pascal is a (L)GPL''ed compiler that runs on Linux,'#13
+    +'Win32, OS/2, 68K and more. Free Pascal is designed to be able to'#13
+    +'understand and compile Delphi syntax, which is of course OOP.'#13
+    +'Lazarus is the missing part of the puzzle that will allow you to'#13
+    +'develop Delphi like programs in all of the above platforms.'#13
+    +'The IDE will eventually become a RAD tool like Delphi.'#13
+    +#13
+    +'As Lazarus is growing we need more developers.'#13
+    +'For example: Write a nicer about dialog with a logo.';
+  lsiUnitNameAlreadyExistsCap = 'Unitname already in project';
+  lsiUnitNameAlreadyExistsText = 'The unit "%s" already exists.'#13
+       +'Ignore will force the renaming,'#13
+       +'Cancel will cancel the saving of this source and'#13
+       +'Abort will abort the whole saving.';
+  lsiInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
+  lsiInvalidPascalIdentifierText = 'The name "%s" is not a valid pascal identifier.';
+
+  // hints
+  lsiHintNewUnit = 'New Unit';
+  lsiHintOpen = 'Open';
+  lsiHintSave = 'Save';
+  lsiHintSaveAll = 'Save all';
+  lsiHintNewForm = 'New Form';
+  lsiHintToggleFormUnit = 'Toggle Form/Unit';
+  lsiHintViewUnits = 'View Units';
+  lsiHintViewForms = 'View Forms';
+  lsiHintRun = 'Run';
+  lsiHintPause = 'Pause';
+  lsiHintStepInto = 'Step Into';
+  lsiHintStepOver = 'Step Over';
+
+implementation
+
+end.
+
