@@ -1165,7 +1165,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.Repaint;
 var
- DC: HDC;
+  DC: HDC;
 begin
   if (Visible or (csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle))
@@ -1750,6 +1750,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.66  2002/08/26 17:28:20  lazarus
+  MG: fixed speedbutton in designmode
+
   Revision 1.65  2002/08/24 13:41:29  lazarus
   MG: fixed TSpeedButton.SetDown and Invalidate
 
