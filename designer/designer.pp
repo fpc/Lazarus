@@ -26,14 +26,10 @@ interface
 
 uses
   Classes, LCLLinux, Forms, Controls, LMessages, Graphics, ControlSelection,
-  CustomFormEditor, FormEditor, UnitEditor, CompReg;
+  CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus, AlignCompsDlg,
+  SizeCompsDlg, ScaleCompsDlg;
 
 type
-  TGridPoint = record
-      x: integer;
-      y: integer;
-    end;
-
   TOnGetSelectedComponentClass = procedure(Sender: TObject; 
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
@@ -41,9 +37,9 @@ type
   TOnAddComponent = procedure(Sender: TObject; Component: TComponent;
     ComponentClass: TRegisteredComponent) of object;
   TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
-     of object;
+    of object;
   TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
-      AComponent: TComponent; var IconCanvas: TCanvas) of object;
+    AComponent: TComponent; var IconCanvas: TCanvas) of object;
 
   TDesigner = class(TIDesigner)
   private
@@ -61,12 +57,18 @@ type
     FOnRemoveComponent: TOnRemoveComponent;
     FOnSetDesigning: TOnSetDesigning;
     FOnUnselectComponentClass: TNotifyEvent;
+    FPopupMenu: TPopupMenu;
+    FAlignMenuItem: TMenuItem;
+    FMirrorHorizontalMenuItem: TMenuItem;
+    FMirrorVerticalMenuItem: TMenuItem;
+    FScaleMenuItem: TMenuItem;
+    FSizeMenuItem: TMenuItem;
 
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
     procedure InvalidateWithParent(AComponent: TComponent);
   protected
-    MouseDownComponent : TComponent;
+    MouseDownComponent, MouseDownSender : TComponent;
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
 
     function PaintControl(Sender: TControl; Message: TLMPaint):boolean;
@@ -74,7 +76,8 @@ type
     function MoveControl(Sender: TControl; Message: TLMMove):boolean;
     Procedure MouseDownOnControl(Sender : TControl; Message : TLMMouse);
     Procedure MouseMoveOnControl(Sender : TControl; var Message : TLMMouse);
-    Procedure MouseUpOnControl(Sender : TControl; Message:TLMMouse);
+    Procedure MouseLeftUpOnControl(Sender : TControl; Message:TLMMouse);
+    Procedure MouseRightUpOnControl(Sender : TControl; Message:TLMMouse);
     Procedure KeyDown(Sender : TControl; Message:TLMKEY);
     Procedure KeyUP(Sender : TControl; Message:TLMKEY);
 
@@ -82,6 +85,12 @@ type
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
 
+    procedure BuildPopupMenu;
+    procedure OnAlignPopupMenuClick(Sender: TObject);
+    procedure OnMirrorHorizontalPopupMenuClick(Sender: TObject);
+    procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
+    procedure OnScalePopupMenuClick(Sender: TObject);
+    procedure OnSizePopupMenuClick(Sender: TObject);
   public
     ControlSelection : TControlSelection;
     constructor Create(Customform : TCustomform; AControlSelection: TControlSelection);
@@ -114,8 +123,11 @@ type
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     procedure DrawNonVisualComponents(DC: HDC);
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
-         read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
+       read FOnGetNonVisualCompIconCanvas write FOnGetNonVisualCompIconCanvas;
   end;
+
+
+var GridSizeX, GridSizeY: integer;
 
 
 implementation
@@ -132,8 +144,6 @@ const
   mk_control =   8;
   mk_mbutton = $10;
 
-var
-  GridPoints : TGridPoint;
 
 constructor TDesigner.Create(CustomForm : TCustomForm; 
   AControlSelection: TControlSelection);
@@ -148,6 +158,8 @@ end;
 
 destructor TDesigner.Destroy;
 Begin
+  if FPopupMenu<>nil then
+    FPopupMenu.Free;
   Inherited Destroy;
 end;
 
@@ -259,6 +271,7 @@ Begin
   FHasSized:=false;
   if (MouseDownComponent<>nil) or (getParentForm(Sender)=nil) then exit;
   MouseDownComponent:=Sender;
+  MouseDownSender:=Sender; 
 
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   MouseX:=Message.Pos.X+SenderOrigin.X;
@@ -349,7 +362,7 @@ writeln('[TDesigner.MouseDownOnControl] Grabber activated');
 writeln('[TDesigner.MouseDownOnControl] END');
 End;
 
-procedure TDesigner.MouseUpOnControl(Sender : TControl; Message:TLMMouse);
+procedure TDesigner.MouseLeftUpOnControl(Sender : TControl; Message:TLMMouse);
 var
   ParentCI, NewCI : TComponentInterface;
   NewLeft, NewTop, NewWidth, NewHeight,
@@ -381,7 +394,7 @@ Begin
   dec(MouseY,MouseDownPos.Y);
 
   writeln('************************************************************');
-  write('MouseUpOnControl');
+  write('MouseLeftUpOnControl');
   write(' ',Sender.Name,':',Sender.ClassName,' Origin=',SenderOrigin.X,',',SenderOrigin.Y);
   write(' Msg=',Message.Pos.X,',',Message.Pos.Y);
   write(' Mouse=',MouseX,',',MouseY);
@@ -396,17 +409,23 @@ Begin
     // left mouse button
     if SelectedCompClass = nil then begin
       // selection mode
+      ControlSelection.BeginUpdate;
       if not FHasSized then begin
-        ControlSelection.BeginUpdate;
         if RubberBandWasActive then begin
           if (not (ssShift in Shift)) 
           or ((ControlSelection.Count=1) 
            and (ControlSelection[0].Component is TCustomForm)) then
             ControlSelection.Clear;
-          ControlSelection.SelectWithRubberBand(SenderParentForm,ssShift in Shift);
+          ControlSelection.SelectWithRubberBand(
+            SenderParentForm,ssShift in Shift);
           if ControlSelection.Count=0 then
             ControlSelection.Add(SenderParentForm);
           ControlSelection.RubberbandActive:=false;
+        end else begin
+          if (not (ssShift in Shift)) then begin
+            ControlSelection.Clear;
+            ControlSelection.Add(Sender);
+          end;
         end;
         ControlSelection.EndUpdate;
         SenderParentForm.Invalidate;
@@ -445,12 +464,13 @@ Begin
           FOnAddComponent(Self,NewCI.Control,SelectedCompClass);
 
         SelectOnlyThisComponent(TComponent(NewCI.Control));
-        Writeln('Calling ControlClick with nil from MouseUpOnControl');
+        Writeln('Calling ControlClick with nil from MouseLeftUpOnControl');
         if not (ssShift in Shift) then
           if Assigned(FOnUnselectComponentClass) then
             // this resets the component toolbar to the mouse. (= selection tool)
             FOnUnselectComponentClass(Self);
-        if Assigned(FOnSetDesigning) then FOnSetDesigning(Self,FCustomForm,True);
+        if Assigned(FOnSetDesigning) then
+          FOnSetDesigning(Self,FCustomForm,True);
         Form.Invalidate;
 writeln('NEW COMPONENT ADDED: ',Form.ComponentCount,'  ',NewCI.Control.Owner.Name);
       end;
@@ -461,7 +481,8 @@ writeln('NEW COMPONENT ADDED: ',Form.ComponentCount,'  ',NewCI.Control.Owner.Nam
   FHasSized:=false;
 
   MouseDownComponent:=nil;
-writeln('[TDesigner.MouseUpOnControl] END');
+  MouseDownSender:=nil;
+writeln('[TDesigner.MouseLeftUpOnControl] END');
 end;
 
 Procedure TDesigner.MouseMoveOnControl(Sender : TControl; var Message : TLMMouse);
@@ -470,28 +491,38 @@ var
   SenderOrigin:TPoint;
   SenderParentForm:TCustomForm;
   MouseX, MouseY :integer;
+  s: string;
 Begin
+  if MouseDownComponent=nil then exit;
+
   SenderParentForm:=GetParentForm(Sender);
   if SenderParentForm=nil then exit;
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
-{  if (Message.keys and MK_LButton) = MK_LButton then begin
+  
+  // MG: workaround for mouse move coordinate bug in gtk-interfaces
+  s:=lowercase(MouseDownSender.ClassName);
+  if (s='tbutton') then begin
     MouseX:=Message.Pos.X;
     MouseY:=Message.Pos.Y;
-  end else begin}
+  end else begin
+  // MG: workaround end
     MouseX:=Message.Pos.X+SenderOrigin.X;
     MouseY:=Message.Pos.Y+SenderOrigin.Y;
-//  end;
+  end;
 
-  if MouseDownComponent=nil then exit;
-
-  if true then begin
+  if (Message.keys and MK_LButton) = MK_LButton then begin
     Write('MouseMoveOnControl'
-          ,' ',Sender.Name,':',Sender.ClassName
+          ,' ',Sender.ClassName
+          ,' ',GetCaptureControl<>nil
           ,' ',Sender.Left,',',Sender.Top
           ,' Origin=',SenderOrigin.X,',',SenderOrigin.Y
           ,' Msg=',Message.Pos.x,',',Message.Pos.Y
           ,' Mouse=',MouseX,',',MouseY
     );
+    write(' ',MouseDownComponent is TWinControl);
+    if (MouseDownComponent is TControl) then begin
+      write(' ',csCaptureMouse in TWinControl(MouseDownComponent).ControlStyle);
+    end;
     writeln();
   end;
 
@@ -509,7 +540,8 @@ Begin
       if Assigned(FOnPropertiesChanged) then
         FOnPropertiesChanged(Self);
     end else begin
-      if (not (MouseDownComponent is TCustomForm)) and (ControlSelection.Count>=1)
+      if (not (MouseDownComponent is TCustomForm))
+      and (ControlSelection.Count>=1)
       and not (ControlSelection[0].Component is TCustomForm) then begin
         // move selection
         FHasSized:=true;
@@ -519,7 +551,8 @@ Begin
           FOnPropertiesChanged(Self);
       end else begin
         // rubberband selection/creation
-        ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,MouseX,MouseY);
+        ControlSelection.RubberBandBounds:=
+          Rect(MouseDownPos.X,MouseDownPos.Y,MouseX,MouseY);
         ControlSelection.RubberBandActive:=true;
         SenderParentForm.Invalidate;
       end;
@@ -528,6 +561,18 @@ Begin
     ControlSelection.ActiveGrabber:=nil;
   end;
   LastMouseMovePos:=Point(MouseX,MouseY);
+end;
+
+procedure TDesigner.MouseRightUpOnControl(Sender : TControl; Message:TLMMouse);
+var
+  MouseX, MouseY : Integer;
+  SenderOrigin: TPoint;
+begin
+  SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
+  MouseX:=Message.Pos.X+SenderOrigin.X;
+  MouseY:=Message.Pos.Y+SenderOrigin.Y;
+  BuildPopupMenu;
+  FPopupMenu.Popup(MouseX,MouseY);
 end;
 
 {
@@ -610,21 +655,22 @@ end;
 
 function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
 Begin
-  result := false;
+  Result := false;
   if csDesigning in Sender.ComponentState then begin
 
-    if ((Message.msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST)) then
+    if ((Message.Msg >= LM_MOUSEFIRST) and (Message.Msg <= LM_MOUSELAST)) then
       Result := true
     else
-    if ((Message.msg >= LM_KeyFIRST) and (Message.msg <= LM_KeyLAST)) then
+    if ((Message.Msg >= LM_KeyFIRST) and (Message.Msg <= LM_KeyLAST)) then
       Result:=true;
 
-    case Message.MSG of
+    case Message.Msg of
       LM_PAINT:   Result:=PaintControl(Sender,TLMPaint(Message));
       LM_KEYDOWN: KeyDown(Sender,TLMKey(Message));
       LM_KEYUP:   KeyUP(Sender,TLMKey(Message));
-      LM_LBUTTONDOWN,LM_RBUTTONDOWN:  MouseDownOnControl(sender,TLMMouse(Message));
-      LM_LBUTTONUP,LM_RBUTTONUP:    MouseUpOnControl(sender,TLMMouse(Message));
+      LM_LBUTTONDOWN,LM_RBUTTONDOWN:  MouseDownOnControl(Sender,TLMMouse(Message));
+      LM_LBUTTONUP:    MouseLeftUpOnControl(Sender,TLMMouse(Message));
+      LM_RBUTTONUP:    MouseRightUpOnControl(sender,TLMMouse(Message));
       LM_MOUSEMOVE:    MouseMoveOnControl(Sender, TLMMouse(Message));
       LM_SIZE:    Result:=SizeControl(Sender,TLMSize(Message));
       LM_MOVE:    Result:=MoveControl(Sender,TLMMove(Message));
@@ -648,8 +694,8 @@ Begin
       writeln('[TDesigner.Notification] opRemove '+
         ''''+AComponent.ClassName+'.'+AComponent.Name+'''');
       if (AComponent is TControl) then
-        if ControlSelection.IsSelected(TControl(AComponent)) then
-          ControlSelection.Remove(TControl(AComponent));
+        if ControlSelection.IsSelected(AComponent) then
+          ControlSelection.Remove(AComponent);
     end;
 end;
 
@@ -666,9 +712,9 @@ begin
         //if Controlatpos(Point(x,y),True) = nil then
          MoveTo(x,y);
          LineTo(x+1,y);
-         Inc(y, GridPoints.Y);
+         Inc(y, GridSizeY);
       end;
-      Inc(x, GridPoints.X);
+      Inc(x, GridSizeX);
     end;
   end;
 end;
@@ -766,9 +812,147 @@ begin
   Result:=nil;
 end;
 
+procedure TDesigner.BuildPopupMenu;
+var
+  ControlSelIsNotEmpty, FormIsSelected, OnlyNonVisualCompsAreSelected,
+  CompsAreSelected: boolean;
+begin
+  if FPopupMenu<>nil then FPopupMenu.Free;
+
+  ControlSelIsNotEmpty:=ControlSelection.Count>0;
+  FormIsSelected:=ControlSelIsNotEmpty 
+    and (ControlSelection[0].Component is TCustomForm);
+  OnlyNonVisualCompsAreSelected:=
+    ControlSelection.OnlyNonVisualComponentsSelected;
+  CompsAreSelected:=ControlSelIsNotEmpty and not FormIsSelected;
+
+  FPopupMenu:=TPopupMenu.Create(nil);
+
+  FAlignMenuItem := TMenuItem.Create(nil);
+  with FAlignMenuItem do begin
+    Caption := 'Align';
+    OnClick := @OnAlignPopupMenuClick;
+    Enabled := CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FAlignMenuItem);
+
+  FMirrorHorizontalMenuItem := TMenuItem.Create(nil);
+  with FMirrorHorizontalMenuItem do begin
+    Caption := 'Mirror horizontal';
+    OnClick := @OnMirrorHorizontalPopupMenuClick;
+    Enabled := CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FMirrorHorizontalMenuItem);
+
+  FMirrorVerticalMenuItem := TMenuItem.Create(nil);
+  with FMirrorVerticalMenuItem do begin
+    Caption := 'Mirror vertical';
+    OnClick := @OnMirrorVerticalPopupMenuClick;
+    Enabled := CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FMirrorVerticalMenuItem);
+
+  FScaleMenuItem := TMenuItem.Create(nil);
+  with FScaleMenuItem do begin
+    Caption := 'Scale';
+    OnClick := @OnScalePopupMenuClick;
+    Enabled := CompsAreSelected and OnlyNonVisualCompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FScaleMenuItem);
+
+  FSizeMenuItem := TMenuItem.Create(nil);
+  with FSizeMenuItem do begin
+    Caption := 'Size';
+    OnClick := @OnSizePopupMenuClick;
+    Enabled := CompsAreSelected and OnlyNonVisualCompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FSizeMenuItem);
+end;
+
+procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
+var HorizAlignment, VertAlignment: TComponentAlignment;
+begin
+  if ShowAlignComponentsDialog=mrOk then begin
+    case AlignComponentsDialog.HorizontalRadioGroup.ItemIndex of
+     0: HorizAlignment:=csaNone;
+     1: HorizAlignment:=csaSides1;
+     2: HorizAlignment:=csaCenters;
+     3: HorizAlignment:=csaSides2;
+     4: HorizAlignment:=csaCenterInWindow;
+     5: HorizAlignment:=csaSpaceEqually;
+     6: HorizAlignment:=csaSide1SpaceEqually;
+     7: HorizAlignment:=csaSide2SpaceEqually;
+    end;
+    case AlignComponentsDialog.VerticalRadioGroup.ItemIndex of
+     0: VertAlignment:=csaNone;
+     1: VertAlignment:=csaSides1;
+     2: VertAlignment:=csaCenters;
+     3: VertAlignment:=csaSides2;
+     4: VertAlignment:=csaCenterInWindow;
+     5: VertAlignment:=csaSpaceEqually;
+     6: VertAlignment:=csaSide1SpaceEqually;
+     7: VertAlignment:=csaSide2SpaceEqually;
+    end;
+    ControlSelection.AlignComponents(HorizAlignment,VertAlignment);
+  end;
+  ControlSelection.SaveBounds;
+end;
+
+procedure TDesigner.OnMirrorHorizontalPopupMenuClick(Sender: TObject);
+begin
+  ControlSelection.MirrorHorizontal;
+  ControlSelection.SaveBounds;
+end;
+
+procedure TDesigner.OnMirrorVerticalPopupMenuClick(Sender: TObject);
+begin
+  ControlSelection.MirrorVertical;
+  ControlSelection.SaveBounds;
+end;
+
+procedure TDesigner.OnScalePopupMenuClick(Sender: TObject);
+begin
+  if ShowScaleComponentsDialog=mrOk then begin
+    ControlSelection.ScaleComponents(
+      StrToIntDef(ScaleComponentsDialog.PercentEdit.Text,100));
+  end;
+  ControlSelection.SaveBounds;
+end;
+
+procedure TDesigner.OnSizePopupMenuClick(Sender: TObject);
+var HorizSizing, VertSizing: TComponentSizing;
+  AWidth, AHeight: integer;
+begin
+  if ShowSizeComponentsDialog=mrOk then begin
+    case SizeComponentsDialog.WidthRadioGroup.ItemIndex of
+     0: HorizSizing:=cssNone;
+     1: HorizSizing:=cssShrinkToSmallest;
+     2: HorizSizing:=cssGrowToLargest;
+     3: HorizSizing:=cssFixed;
+    end;
+    case SizeComponentsDialog.HeightRadioGroup.ItemIndex of
+     0: VertSizing:=cssNone;
+     1: VertSizing:=cssShrinkToSmallest;
+     2: VertSizing:=cssGrowToLargest;
+     3: VertSizing:=cssFixed;
+    end;
+    if HorizSizing=cssFixed then
+      AWidth:=StrToIntDef(SizeComponentsDialog.WidthEdit.Text,0)
+    else
+      AWidth:=0;
+    if VertSizing=cssFixed then
+      AHeight:=StrToIntDef(SizeComponentsDialog.HeightEdit.Text,0)
+    else
+      AHeight:=0;
+    ControlSelection.SizeComponents(HorizSizing,AWidth,VertSizing,AHeight);
+  end;
+  ControlSelection.SaveBounds;
+end;
+
+
 initialization
-  GridPoints.x := 10;
-  GridPoints.Y := 10;
+  GridSizex := 10;
+  GridSizeY := 10;
 
 end.
 

@@ -98,6 +98,12 @@ type
     procedure SaveBounds;
   end;
 
+  TComponentAlignment = (csaNone, csaSides1, csaCenters, csaSides2,
+      csaCenterInWindow, csaSpaceEqually, csaSide1SpaceEqually,
+      csaSide2SpaceEqually);
+  TComponentSizing = (cssNone, cssShrinkToSmallest, cssGrowToLargest, cssFixed);
+  TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
+
   TControlSelection = class(TObject)
   private
     FControls: TList;  // list of TSelectedComponent
@@ -135,14 +141,21 @@ type
     function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
     procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
     procedure SetGrabberSize(const NewSize: integer);
-    procedure AdjustGrabber;
     procedure DoChange;
     procedure SetVisible(const Value: Boolean);
     function GetItems(Index:integer):TSelectedControl;
     procedure SetItems(Index:integer; ASelectedControl:TSelectedControl);
     procedure SetActiveGrabber(AGrabber:TGrabber);
     procedure SetRubberBandBounds(ARect:TRect);
+    function CompareInts(i1, i2: integer): integer;
+    function CompareLeft(Index1, Index2: integer): integer;
+    function CompareTop(Index1, Index2: integer): integer;
+    function CompareRight(Index1, Index2: integer): integer;
+    function CompareBottom(Index1, Index2: integer): integer;
+    function CompareHorCenter(Index1, Index2: integer): integer;
+    function CompareVertCenter(Index1, Index2: integer): integer;
   protected
+    procedure AdjustGrabber;
   public
     constructor Create; 
     destructor Destroy; override;
@@ -164,6 +177,12 @@ type
     procedure SizeSelection(dx, dy: integer);  
       // size all controls depending on ActiveGrabber.
       // if ActiveGrabber=nil then Right,Bottom
+    procedure AlignComponents(HorizAlignment, VertAlignment: TComponentAlignment);
+    procedure MirrorHorizontal;
+    procedure MirrorVertical;
+    procedure SizeComponents(HorizSizing: TComponentSizing; AWidth: integer;
+          VertSizing: TComponentSizing; AHeight: integer);
+    procedure ScaleComponents(Percent: integer);
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     procedure DrawGrabbers(DC: HDC);
@@ -184,6 +203,7 @@ type
     procedure DrawRubberband(DC: HDC);
     function OnlyNonVisualComponentsSelected: boolean;
     procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
+    procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read FVisible write SetVisible;
   end;
 
@@ -635,7 +655,7 @@ begin
   FIsResizing:=true;
   for i:=0 to FControls.Count-1 do begin
     with Items[i] do begin
-writeln('TControlSelection.MoveSelection ',i,'   ',OldLeft,',',OldTop,'  d=',dx,',',dy);
+//writeln('TControlSelection.MoveSelection ',i,'   ',OldLeft,',',OldTop,'  d=',dx,',',dy);
       SetBounds(OldLeft+dx,OldTop+dy,Width,Height)
     end;
   end;
@@ -947,6 +967,308 @@ begin
     for i:=0 to FControls.Count-1 do
       Result:=Result and (not (Items[i].Component is TControl));
   end;
+end;
+
+
+function TControlSelection.CompareInts(i1, i2: integer): integer;
+begin
+  if i1<i2 then Result:=-1
+  else if i1=i2 then Result:=0
+  else Result:=1;
+end;
+
+function TControlSelection.CompareLeft(Index1, Index2: integer): integer;
+begin
+  Result:=CompareInts(Items[Index1].Left,Items[Index2].Left);
+end;
+
+function TControlSelection.CompareTop(Index1, Index2: integer): integer;
+begin
+  Result:=CompareInts(Items[Index1].Top,Items[Index2].Top);
+end;
+
+function TControlSelection.CompareRight(Index1, Index2: integer): integer;
+begin
+  Result:=CompareInts(Items[Index1].Left+Items[Index1].Width
+                     ,Items[Index2].Left+Items[Index2].Width);
+end;
+
+function TControlSelection.CompareBottom(Index1, Index2: integer): integer;
+begin
+  Result:=CompareInts(Items[Index1].Top+Items[Index1].Height
+                     ,Items[Index2].Top+Items[Index2].Height);
+end;
+
+function TControlSelection.CompareHorCenter(Index1, Index2: integer): integer;
+begin
+  Result:=CompareInts(Items[Index1].Left+(Items[Index1].Width div 2)
+                     ,Items[Index2].Left+(Items[Index2].Width div 2));
+end;
+
+function TControlSelection.CompareVertCenter(Index1, Index2: integer): integer;
+begin
+  Result:=CompareInts(Items[Index1].Top+(Items[Index1].Height div 2)
+                     ,Items[Index2].Top+(Items[Index2].Height div 2));
+end;
+
+procedure TControlSelection.AlignComponents(
+  HorizAlignment, VertAlignment: TComponentAlignment);
+var i, ALeft, ATop, ARight, ABottom, HorCenter, VertCenter,
+  HorDiff, VertDiff, TotalWidth, TotalHeight, HorSpacing, VertSpacing,
+  x, y: integer;
+begin
+  if (FControls.Count=0) or (Items[0].Component is TCustomForm)
+  or ((HorizAlignment=csaNone) and (VertAlignment=csaNone)) then exit;
+  BeginUpdate;
+  FIsResizing:=true;
+
+  // initializing
+  ALeft:=Items[0].Left;
+  ATop:=Items[0].Top;
+  ARight:=ALeft+Items[0].Width;
+  ABottom:=ATop+Items[0].Height;
+  TotalWidth:=Items[0].Width;
+  TotalHeight:=Items[0].Height;
+  for i:=1 to FControls.Count-1 do begin
+    ALeft:=Min(ALeft,Items[i].Left);
+    ATop:=Min(ATop,Items[i].Top);
+    ARight:=Max(ARight,Items[i].Left+Items[i].Width);
+    ABottom:=Max(ABottom,Items[i].Top+Items[i].Height);
+    inc(TotalWidth,Items[i].Width);
+    inc(TotalHeight,Items[i].Height);
+  end;
+
+  // move components horizontally
+  case HorizAlignment of
+    csaSides1, csaCenters, csaSides2, csaCenterInWindow:
+      begin
+        HorCenter:=(ALeft+ARight) div 2;
+        HorDiff:=(FCustomForm.Width div 2)-HorCenter;
+        for i:=0 to FControls.Count-1 do begin
+          case HorizAlignment of
+           csaSides1:  Items[i].Left:=ALeft;
+           csaCenters: Items[i].Left:=HorCenter-(Items[i].Width div 2);
+           csaSides2:  Items[i].Left:=ARight-Items[i].Width;
+           csaCenterInWindow: Items[i].Left:=Items[i].Left+HorDiff;
+          end;
+        end;
+      end;
+    csaSpaceEqually:
+      begin
+        HorSpacing:=(ARight-ALeft-TotalWidth) div (FControls.Count-1);
+        x:=ALeft;
+        Sort(@CompareHorCenter);
+        for i:=0 to FControls.Count-1 do begin
+          Items[i].Left:=x;
+          Inc(x,Items[i].Width+HorSpacing);
+        end;
+      end;
+    csaSide1SpaceEqually:
+      begin
+        Sort(@CompareLeft);
+        HorSpacing:=(Items[Count-1].Left-ALeft) div FControls.Count;
+        x:=ALeft;
+        for i:=0 to FControls.Count-1 do begin
+          Items[i].Left:=x;
+          inc(x,HorSpacing);
+        end;
+      end;
+    csaSide2SpaceEqually:
+      begin
+        Sort(@CompareRight);
+        HorSpacing:=(ARight-ALeft-Items[0].Width) div FControls.Count;
+        x:=ARight;
+        for i:=FControls.Count-1 downto 0 do begin
+          Items[i].Left:=x-Items[i].Width;
+          dec(x,HorSpacing);
+        end;
+      end;
+  end;
+
+  // move components vertically
+  case VertAlignment of
+    csaSides1, csaCenters, csaSides2, csaCenterInWindow:
+      begin
+        VertCenter:=(ATop+ABottom) div 2;
+        VertDiff:=(FCustomForm.Height div 2)-VertCenter;
+        for i:=0 to FControls.Count-1 do begin
+          case VertAlignment of
+           csaSides1:  Items[i].Top:=ATop;
+           csaCenters: Items[i].Top:=VertCenter-(Items[i].Height div 2);
+           csaSides2:  Items[i].Top:=ABottom-Items[i].Height;
+           csaCenterInWindow: Items[i].Top:=Items[i].Top+VertDiff;
+          end;
+        end;
+      end;
+    csaSpaceEqually:
+      begin
+        VertSpacing:=(ABottom-ATop-TotalHeight) div (FControls.Count-1);
+        y:=ATop;
+        Sort(@CompareVertCenter);
+        for i:=0 to FControls.Count-1 do begin
+          Items[i].Top:=y;
+          Inc(y,Items[i].Height+VertSpacing);
+        end;
+      end;
+    csaSide1SpaceEqually:
+      begin
+        Sort(@CompareTop);
+        VertSpacing:=(Items[Count-1].Top-ATop) div FControls.Count;
+        y:=ATop;
+        for i:=0 to FControls.Count-1 do begin
+          Items[i].Top:=y;
+          inc(y,VertSpacing);
+        end;
+      end;
+    csaSide2SpaceEqually:
+      begin
+        Sort(@CompareBottom);
+        VertSpacing:=(ABottom-ATop-Items[0].Height) div FControls.Count;
+        y:=ABottom;
+        for i:=FControls.Count-1 downto 0 do begin
+          Items[i].Top:=y-Items[i].Height;
+          dec(y,VertSpacing);
+        end;
+      end;
+  end;
+      
+  FIsResizing:=false;
+  EndUpdate;
+end;
+
+procedure TControlSelection.MirrorHorizontal;
+var i, ALeft, ARight, Middle: integer;
+begin
+  if (FControls.Count=0) or (Items[0].Component is TCustomForm) then exit;
+  BeginUpdate;
+  FIsResizing:=true;
+
+  // initializing
+  ALeft:=Items[0].Left;
+  ARight:=ALeft+Items[0].Width;
+  for i:=1 to FControls.Count-1 do begin
+    ALeft:=Min(ALeft,Items[i].Left);
+    ARight:=Max(ARight,Items[i].Left+Items[i].Width);
+  end;
+  Middle:=(ALeft+ARight) div 2;
+
+  // move components
+  for i:=0 to FControls.Count-1 do begin
+    Items[i].Left:=2*Middle-Items[i].Left-Items[i].Width;
+  end;
+
+  FIsResizing:=false;
+  EndUpdate;
+end;
+
+procedure TControlSelection.MirrorVertical;
+var i, ATop, ABottom, Middle: integer;
+begin
+  if (FControls.Count=0) or (Items[0].Component is TCustomForm) then exit;
+  BeginUpdate;
+  FIsResizing:=true;
+
+  // initializing
+  ATop:=Items[0].Top;
+  ABottom:=ATop+Items[0].Height;
+  for i:=1 to FControls.Count-1 do begin
+    ATop:=Min(ATop,Items[i].Top);
+    ABottom:=Max(ABottom,Items[i].Top+Items[i].Height);
+  end;
+  Middle:=(ATop+ABottom) div 2;
+
+  // move components
+  for i:=0 to FControls.Count-1 do begin
+    Items[i].Top:=2*Middle-Items[i].Top-Items[i].Height;
+  end;
+
+  FIsResizing:=false;
+  EndUpdate;
+end;
+
+procedure TControlSelection.SizeComponents(
+  HorizSizing: TComponentSizing; AWidth: integer;
+  VertSizing: TComponentSizing; AHeight: integer);
+var i: integer;
+begin
+  if (FControls.Count=0) or (Items[0].Component is TCustomForm) then exit;
+  BeginUpdate;
+  FIsResizing:=true;
+
+  // initialize
+  case HorizSizing of
+    cssShrinkToSmallest, cssGrowToLargest:
+      AWidth:=Items[0].Width;
+    cssFixed:
+      if AWidth<1 then HorizSizing:=cssNone;
+  end;
+  case VertSizing of
+    cssShrinkToSmallest, cssGrowToLargest:
+      AHeight:=Items[0].Height;
+    cssFixed:
+      if AHeight<1 then VertSizing:=cssNone;
+  end;
+  for i:=1 to FControls.Count-1 do begin
+    case HorizSizing of
+     cssShrinkToSmallest: AWidth:=Min(AWidth,Items[i].Width);
+     cssGrowToLargest:    AWidth:=Max(AWidth,Items[i].Width);
+    end;
+    case VertSizing of
+     cssShrinkToSmallest: AHeight:=Min(AHeight,Items[i].Height);
+     cssGrowToLargest:    AHeight:=Max(AHeight,Items[i].Height);
+    end;
+  end;
+
+  // size components
+  for i:=0 to FControls.Count-1 do begin
+    if Items[i].Component is TControl then begin
+      if HorizSizing=cssNone then AWidth:=Items[i].Width;
+      if VertSizing=cssNone then AHeight:=Items[i].Height;
+      TControl(Items[i].Component).SetBounds(Items[i].Left,Items[i].Top,
+        Max(1,AWidth), Max(1,AHeight));
+    end;
+  end;  
+  
+  FIsResizing:=false;
+  EndUpdate;
+end;
+
+procedure TControlSelection.ScaleComponents(Percent: integer);
+var i: integer;
+begin
+  if (FControls.Count=0) or (Items[0].Component is TCustomForm) then exit;
+  BeginUpdate;
+  FIsResizing:=true;
+
+  if Percent<1 then Percent:=1;
+  if Percent>1000 then Percent:=1000;
+  // size components
+  for i:=0 to FControls.Count-1 do begin
+    if Items[i].Component is TControl then begin
+      TControl(Items[i].Component).SetBounds(Items[i].Left,Items[i].Top,
+        Max(1,(Items[i].Width*Percent) div 100),
+        Max(1,(Items[i].Height*Percent) div 100));
+    end;
+  end;  
+
+  FIsResizing:=false;
+  EndUpdate;
+end;
+
+procedure TControlSelection.Sort(SortProc: TSelectionSortCompare);
+var a, b: integer;
+  h: Pointer;
+begin
+  for a:=0 to FControls.Count-1 do begin
+    for b:=a+1 to FControls.Count-1 do begin
+      if SortProc(a,b)>0 then begin
+        h:=FControls[a];
+        FControls[a]:=FControls[b];
+        FControls[b]:=h;
+      end;
+    end;
+  end;
+  DoChange;
 end;
 
 end.
