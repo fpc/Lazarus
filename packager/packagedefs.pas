@@ -155,7 +155,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-      FileVersion: integer);
+      FileVersion: integer; AdjustPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ConsistencyCheck;
     function IsVirtual: boolean;
@@ -1134,13 +1134,14 @@ begin
 end;
 
 procedure TPkgFile.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  FileVersion: integer);
+  FileVersion: integer; AdjustPathDelims: boolean);
 var
   AFilename: String;
 begin
   if FileVersion=1 then ;
   Clear;
-  AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
+  AFilename:=SwitchPathDelims(XMLConfig.GetValue(Path+'Filename/Value',''),
+                              AdjustPathDelims);
   FPackage.LongenFilename(AFilename);
   Filename:=AFilename;
   FileType:=PkgFileTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',''));
@@ -1952,6 +1953,7 @@ procedure TLazPackage.LoadFromXMLConfig(XMLConfig: TXMLConfig;
 var
   FileVersion: integer;
   OldFilename: String;
+  PathDelimChanged: boolean;
 
   procedure LoadFiles(const ThePath: string; List: TList);
   var
@@ -1963,7 +1965,7 @@ var
     for i:=0 to NewCount-1 do begin
       PkgFile:=TPkgFile.Create(Self);
       PkgFile.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
-                                FileVersion);
+                                FileVersion,PathDelimChanged);
       List.Add(PkgFile);
     end;
   end;
@@ -1985,6 +1987,7 @@ begin
   Clear;
   Filename:=OldFilename;
   LockModified;
+  PathDelimChanged:=XMLConfig.GetValue(Path+'PathDelim/Value','/')<>'/';
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
   FAutoUpdate:=NameToAutoUpdatePolicy(
@@ -1995,15 +1998,19 @@ begin
   FVersion.LoadFromXMLConfig(XMLConfig,Path+'Version/',FileVersion);
   LoadFiles(Path+'Files/',FFiles);
   LoadFlags(Path);
-  FIconFile:=XMLConfig.GetValue(Path+'IconFile/Value','');
-  FName:=XMLConfig.GetValue(Path+'Name/Value','');
-  OutputStateFile:=XMLConfig.GetValue(Path+'OutputStateFile/Value','');
+  FIconFile:=SwitchPathDelims(XMLConfig.GetValue(Path+'IconFile/Value',''),
+                              PathDelimChanged);
+  OutputStateFile:=SwitchPathDelims(
+                            XMLConfig.GetValue(Path+'OutputStateFile/Value',''),
+                            PathDelimChanged);
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,Self,false);
-  FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
-  fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/');
+  FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
+                                  PathDelimChanged);
+  fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
+                                    PathDelimChanged);
   EndUpdate;
   Modified:=false;
   UnlockModified;
@@ -2032,6 +2039,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   end;
 
 begin
+  XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelim,'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
   XMLConfig.SetDeleteValue(Path+'AutoUpdate/Value',AutoUpdateNames[FAutoUpdate],

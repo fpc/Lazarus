@@ -78,14 +78,15 @@ type
     pcosLinkerOptions,// additional linker options
     pcosCustomOptions,// additional options
     pcosOutputDir,    // the output directory
-    pcosCompilerPath  // the filename of the compiler
+    pcosCompilerPath, // the filename of the compiler
+    pcosDebugPath     // additional debug search path
     );
   TParsedCompilerOptStrings = set of TParsedCompilerOptString;
   
 
 const
   ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,pcosObjectPath,
-                               pcosLibraryPath,pcosSrcPath];
+                               pcosLibraryPath,pcosSrcPath,pcosDebugPath];
   ParsedCompilerFilenames = [pcosCompilerPath];
   ParsedCompilerDirectories = [pcosOutputDir];
   ParsedCompilerFiles =
@@ -136,7 +137,8 @@ type
     procedure Clear;
     function IsEqual(Params: TCompilationTool): boolean;
     procedure Assign(Src: TCompilationTool);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
@@ -292,6 +294,8 @@ type
     function GetParsedPath(Option: TParsedCompilerOptString;
                            InheritedOption: TInheritedCompilerOption;
                            RelativeToBaseDir: boolean): string;
+    function ShortenPath(const SearchPath: string;
+                               MakeAlwaysRelative: boolean): string;
     function GetCustomOptions: string;
   public
     { Properties }
@@ -431,7 +435,8 @@ type
     constructor Create(TheOwner: TObject);
     destructor Destroy; override;
     procedure Clear;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                AdjustPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function GetOwnerName: string; virtual;
   public
@@ -996,9 +1001,13 @@ end;
   procedure TBaseCompilerOptions.SetIncludeFiles(const AValue: String);
 ------------------------------------------------------------------------------}
 procedure TBaseCompilerOptions.SetIncludeFiles(const AValue: String);
+var
+  NewValue: String;
 begin
-  if fIncludeFiles=AValue then exit;
-  fIncludeFiles:=AValue;
+  NewValue:=ShortenPath(AValue,false);
+  if NewValue<>AValue then
+  if fIncludeFiles=NewValue then exit;
+  fIncludeFiles:=NewValue;
   ParsedOpts.SetUnparsedValue(pcosIncludePath,fIncludeFiles);
 end;
 
@@ -1017,16 +1026,23 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetSrcPath(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FSrcPath=AValue then exit;
-  FSrcPath:=AValue;
+  NewValue:=ShortenPath(AValue,false);
+  if FSrcPath=NewValue then exit;
+  FSrcPath:=NewValue;
   ParsedOpts.SetUnparsedValue(pcosSrcPath,FSrcPath);
 end;
 
 procedure TBaseCompilerOptions.SetDebugPath(const AValue: string);
+var
+  NewValue: String;
 begin
-  if fDebugPath=AValue then exit;
-  fDebugPath:=AValue;
+  NewValue:=ShortenPath(AValue,false);
+  if fDebugPath=NewValue then exit;
+  fDebugPath:=NewValue;
+  ParsedOpts.SetUnparsedValue(pcosDebugPath,fDebugPath);
 end;
 
 procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
@@ -1044,9 +1060,12 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetLibraries(const AValue: String);
+var
+  NewValue: String;
 begin
-  if fLibraries=AValue then exit;
-  fLibraries:=AValue;
+  NewValue:=ShortenPath(AValue,false);
+  if fLibraries=NewValue then exit;
+  fLibraries:=NewValue;
   ParsedOpts.SetUnparsedValue(pcosLibraryPath,fLibraries);
 end;
 
@@ -1058,9 +1077,12 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetOtherUnitFiles(const AValue: String);
+var
+  NewValue: String;
 begin
-  if fOtherUnitFiles=AValue then exit;
-  fOtherUnitFiles:=AValue;
+  NewValue:=ShortenPath(AValue,false);
+  if fOtherUnitFiles=NewValue then exit;
+  fOtherUnitFiles:=NewValue;
   ParsedOpts.SetUnparsedValue(pcosUnitPath,fOtherUnitFiles);
 end;
 
@@ -1072,9 +1094,12 @@ begin
 end;
 
 procedure TBaseCompilerOptions.SetObjectPath(const AValue: string);
+var
+  NewValue: String;
 begin
-  if FObjectPath=AValue then exit;
-  FObjectPath:=AValue;
+  NewValue:=ShortenPath(AValue,false);
+  if FObjectPath=NewValue then exit;
+  FObjectPath:=NewValue;
   ParsedOpts.SetUnparsedValue(pcosObjectPath,FObjectPath);
 end;
 
@@ -1084,6 +1109,13 @@ end;
 procedure TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string);
 var
   p: String;
+  PathDelimChanged: boolean;
+  
+  function f(const Filename: string): string;
+  begin
+    Result:=SwitchPathDelims(Filename,PathDelimChanged);
+  end;
+  
 begin
   { Load the compiler options from the XML file }
   if Path='' then
@@ -1091,18 +1123,20 @@ begin
   else
     p:=Path;
 
+  PathDelimChanged:=XMLConfigFile.GetValue(p+'PathDelim/Value', '/')<>PathDelim;
+
   { Target }
   TargetFilename := XMLConfigFile.GetValue(p+'Filename/Value', '');
 
   { SearchPaths }
   p:='CompilerOptions/SearchPaths/';
-  IncludeFiles := XMLConfigFile.GetValue(p+'IncludeFiles/Value', '');
-  Libraries := XMLConfigFile.GetValue(p+'Libraries/Value', '');
-  OtherUnitFiles := XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', '');
-  UnitOutputDirectory := XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', '');
+  IncludeFiles := f(XMLConfigFile.GetValue(p+'IncludeFiles/Value', ''));
+  Libraries := f(XMLConfigFile.GetValue(p+'Libraries/Value', ''));
+  OtherUnitFiles := f(XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', ''));
+  UnitOutputDirectory := f(XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', ''));
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
-  ObjectPath := XMLConfigFile.GetValue(p+'ObjectPath/Value', '');
-  SrcPath := XMLConfigFile.GetValue(p+'SrcPath/Value', '');
+  ObjectPath := f(XMLConfigFile.GetValue(p+'ObjectPath/Value', ''));
+  SrcPath := f(XMLConfigFile.GetValue(p+'SrcPath/Value', ''));
 
   { Parsing }
   p:='CompilerOptions/Parsing/';
@@ -1147,7 +1181,7 @@ begin
   StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
   LinkStyle := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1);
   PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
-  LinkerOptions := XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', '');
+  LinkerOptions := f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', ''));
     
   { Messages }
   p:='CompilerOptions/Other/';
@@ -1174,14 +1208,14 @@ begin
   p:='CompilerOptions/Other/';
   DontUseConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
   AdditionalConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false);
-  ConfigFilePath := XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg');
+  ConfigFilePath := f(XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg'));
   CustomOptions := XMLConfigFile.GetValue(p+'CustomOptions/Value', '');
 
   { Compilation }
-  CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value','$(CompPath)');
+  CompilerPath := f(XMLConfigFile.GetValue(p+'CompilerPath/Value','$(CompPath)'));
   fSkipCompiler := XMLConfigFile.GetValue(p+'SkipCompiler/Value',false);
-  ExecuteBefore.LoadFromXMLConfig(XMLConfig,p+'ExecuteBefore/');
-  ExecuteAfter.LoadFromXMLConfig(XMLConfig,p+'ExecuteAfter/');
+  ExecuteBefore.LoadFromXMLConfig(XMLConfig,p+'ExecuteBefore/',PathDelimChanged);
+  ExecuteAfter.LoadFromXMLConfig(XMLConfig,p+'ExecuteAfter/',PathDelimChanged);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1224,6 +1258,8 @@ begin
     p:='CompilerOptions/Target/'
   else
     p:=Path;
+    
+  XMLConfigFile.SetDeleteValue(p+'PathDelim/Value', PathDelim, '/');
 
   { Target }
   XMLConfigFile.SetDeleteValue(p+'Filename/Value', TargetFilename,'');
@@ -1471,6 +1507,16 @@ begin
   
   // eliminate line breaks
   Result:=SpecialCharsToSpaces(Result);
+end;
+
+function TBaseCompilerOptions.ShortenPath(const SearchPath: string;
+  MakeAlwaysRelative: boolean): string;
+begin
+  Result:=TrimSearchPath(SearchPath,'');
+  if MakeAlwaysRelative then
+    Result:=CreateRelativeSearchPath(Result,BaseDirectory)
+  else
+    Result:=ShortenSearchPath(Result,BaseDirectory,BaseDirectory);
 end;
 
 {------------------------------------------------------------------------------
@@ -2542,6 +2588,7 @@ procedure TfrmCompilerOptions.FileBrowseBtnClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
   DefaultFilename: String;
+  NewFilename: String;
 begin
   OpenDialog:=TOpenDialog.Create(Self);
   try
@@ -2559,6 +2606,9 @@ begin
     if DefaultFilename<>'' then
       OpenDialog.InitialDir:=ExtractFilePath(DefaultFilename);
     if OpenDialog.Execute then begin
+      NewFilename:=TrimFilename(OpenDialog.Filename);
+      if CompilerOpts<>nil then
+        NewFilename:=CompilerOpts.ShortenPath(NewFilename,false);
       if Sender=btnCompiler then begin
         edtCompiler.Text:=OpenDialog.Filename;
       end else if Sender=btnUnitOutputDir then begin
@@ -4541,6 +4591,8 @@ begin
     AButton:=TPathEditorButton(Sender);
     if AButton.CurrentPathEditor.ModalResult<>mrOk then exit;
     NewPath:=AButton.CurrentPathEditor.Path;
+    if CompilerOpts<>nil then
+      NewPath:=CompilerOpts.ShortenPath(NewPath,false);
     if AButton=OtherUnitsPathEditBtn then begin
       edtOtherUnits.Text:=NewPath;
     end else
@@ -4675,15 +4727,21 @@ begin
 end;
 
 procedure TAdditionalCompilerOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; AdjustPathDelims: boolean);
+  
+  function f(const Filename: string): string;
+  begin
+    Result:=SwitchPathDelims(Filename,AdjustPathDelims);
+  end;
+  
 begin
   Clear;
-  CustomOptions:=XMLConfig.GetValue(Path+'CustomOptions/Value','');
-  IncludePath:=XMLConfig.GetValue(Path+'IncludePath/Value','');
-  LibraryPath:=XMLConfig.GetValue(Path+'LibraryPath/Value','');
-  LinkerOptions:=XMLConfig.GetValue(Path+'LinkerOptions/Value','');
-  ObjectPath:=XMLConfig.GetValue(Path+'ObjectPath/Value','');
-  UnitPath:=XMLConfig.GetValue(Path+'UnitPath/Value','');
+  CustomOptions:=f(XMLConfig.GetValue(Path+'CustomOptions/Value',''));
+  IncludePath:=f(XMLConfig.GetValue(Path+'IncludePath/Value',''));
+  LibraryPath:=f(XMLConfig.GetValue(Path+'LibraryPath/Value',''));
+  LinkerOptions:=f(XMLConfig.GetValue(Path+'LinkerOptions/Value',''));
+  ObjectPath:=f(XMLConfig.GetValue(Path+'ObjectPath/Value',''));
+  UnitPath:=f(XMLConfig.GetValue(Path+'UnitPath/Value',''));
 end;
 
 procedure TAdditionalCompilerOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -4830,9 +4888,10 @@ begin
 end;
 
 procedure TCompilationTool.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
+  const Path: string; DoSwitchPathDelims: boolean);
 begin
-  Command:=XMLConfig.GetValue(Path+'Command/Value','');
+  Command:=SwitchPathDelims(XMLConfig.GetValue(Path+'Command/Value',''),
+                            DoSwitchPathDelims);
   ScanForFPCMessages:=XMLConfig.GetValue(Path+'ScanForFPCMsgs/Value',false);
   ScanForMakeMessages:=XMLConfig.GetValue(Path+'ScanForMakeMsgs/Value',false);
 end;

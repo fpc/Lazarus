@@ -79,7 +79,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
+    function Load(XMLConfig: TXMLConfig; const Path: string;
+                  AdjustPathDelims: boolean): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure AssignEnvironmentTo(Strings: TStrings);
     
@@ -219,7 +220,13 @@ begin
 end;
 
 function TRunParamsOptions.Load(XMLConfig: TXMLConfig;
-  const Path: string): TModalResult;
+  const Path: string; AdjustPathDelims: boolean): TModalResult;
+
+
+  function f(const Filename: string): string;
+  begin
+    Result:=SwitchPathDelims(Filename,AdjustPathDelims);
+  end;
 
   procedure LoadUserOverrides(const APath: string);
   var i, Cnt: integer;
@@ -235,23 +242,23 @@ function TRunParamsOptions.Load(XMLConfig: TXMLConfig;
 
 begin
   // local options
-  fHostApplicationFilename:=XMLConfig.GetValue(
+  fHostApplicationFilename:=f(XMLConfig.GetValue(
     Path+'RunParams/local/HostApplicationFilename/Value',
-      fHostApplicationFilename);
-  fCmdLineParams:=XMLConfig.GetValue(
+      fHostApplicationFilename));
+  fCmdLineParams:=f(XMLConfig.GetValue(
     Path+'RunParams/local/CommandLineParams/Value',
-      fCmdLineParams);
+      fCmdLineParams));
   fUseLaunchingApplication:=XMLConfig.GetValue(
     Path+'RunParams/local/LaunchingApplication/Use',
       fUseLaunchingApplication);
-  fLaunchingApplicationPathPlusParams:=XMLConfig.GetValue(
+  fLaunchingApplicationPathPlusParams:=f(XMLConfig.GetValue(
     Path+'RunParams/local/LaunchingApplication/PathPlusParams',
-      fLaunchingApplicationPathPlusParams);
+      fLaunchingApplicationPathPlusParams));
   if (fLaunchingApplicationPathPlusParams='') then
     fLaunchingApplicationPathPlusParams:=DefaultLauncherApplication;
-  fWorkingDirectory:=XMLConfig.GetValue(
+  fWorkingDirectory:=f(XMLConfig.GetValue(
     Path+'RunParams/local/WorkingDirectory/Value',
-      fWorkingDirectory);
+      fWorkingDirectory));
   fUseDisplay:=XMLConfig.GetValue(
     Path+'RunParams/local/Display/Use',
       fUseDisplay);

@@ -300,6 +300,7 @@ type
     fOnFileBackup: TOnFileBackup;
     FOnLoadProjectInfo: TOnLoadProjectInfo;
     FOnSaveProjectInfo: TOnSaveProjectInfo;
+    fPathDelimChanged: boolean;
     fProjectDirectory: string;
     fProjectInfoFile: String;  // the lpi filename
     fProjectType: TProjectType;
@@ -1464,6 +1465,9 @@ begin
     end;
 
     try
+      fPathDelimChanged:=
+        XMLConfig.GetValue('ProjectOptions/PathDelim/Value', '/')<>PathDelim;
+
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue('ProjectOptions/Version/Value',0);
       ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
@@ -1498,10 +1502,11 @@ begin
       if FileVersion<2 then CompilerOptions.SrcPath:=OldSrcPath;
 
       // load the Publish Options
-      PublishOptions.LoadFromXMLConfig(xmlconfig,'ProjectOptions/PublishOptions/');
+      PublishOptions.LoadFromXMLConfig(xmlconfig,
+                            'ProjectOptions/PublishOptions/',fPathDelimChanged);
 
       // load the Run Parameter Options
-      RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
+      RunParameterOptions.Load(xmlconfig,'ProjectOptions/',fPathDelimChanged);
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
       CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
@@ -1516,6 +1521,7 @@ begin
 
     finally
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
+      fPathDelimChanged:=false;
       xmlconfig.Free;
       xmlconfig:=nil;
     end;
@@ -2159,7 +2165,8 @@ begin
   if AFileName='' then exit;
   ProjectPath:=ProjectDirectory;
   if ProjectPath='' then ProjectPath:=GetCurrentDir;
-  DoDirSeparators(AFilename);
+  if fPathDelimChanged then
+    DoDirSeparators(AFilename);
   AFilename:=TrimFilename(AFilename);
   if Load then begin
     // make filename absolute
@@ -2654,6 +2661,9 @@ end.
 
 {
   $Log$
+  Revision 1.130  2003/06/25 17:22:47  mattias
+  added automatic linux-windows file conversions
+
   Revision 1.129  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 

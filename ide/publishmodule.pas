@@ -77,7 +77,8 @@ type
     destructor Destroy; override;
     procedure Clear; virtual;
     procedure LoadDefaults; virtual;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string); virtual;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string;
+                                AdjustPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string); virtual;
     function FileCanBePublished(const AFilename: string): boolean; virtual;
     procedure LockModified;
@@ -279,14 +280,20 @@ begin
 end;
 
 procedure TPublishModuleOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const APath: string);
+  const APath: string; AdjustPathDelims: boolean);
+
+  function f(const Filename: string): string;
+  begin
+    Result:=SwitchPathDelims(Filename,AdjustPathDelims);
+  end;
+
 var
   XMLVersion: integer;
 begin
   XMLVersion:=XMLConfig.GetValue(APath+'Version/Value',0);
-  FDestinationDirectory:=XMLConfig.GetValue(APath+'DestinationDirectory/Value',
-                                            GetDefaultDestinationDir);
-  FCommandAfter:=XMLConfig.GetValue(APath+'CommandAfter/Value','');
+  FDestinationDirectory:=f(XMLConfig.GetValue(APath+'DestinationDirectory/Value',
+                                            GetDefaultDestinationDir));
+  FCommandAfter:=f(XMLConfig.GetValue(APath+'CommandAfter/Value',''));
   IgnoreBinaries:=XMLConfig.GetValue(APath+'IgnoreBinaries/Value',true);
   UseIncludeFileFilter:=XMLConfig.GetValue(APath+'UseIncludeFileFilter/Value',
                                             true);

@@ -215,7 +215,8 @@ type
     procedure SetSaveEditorInfoOfNonProjectFiles(const AValue: boolean);
   public
     procedure LoadDefaults; override;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string); override;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string;
+                                AdjustPathDelims: boolean); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string); override;
     function WriteFlags: TProjectWriteFlags;
   public
@@ -725,11 +726,11 @@ begin
 end;
 
 procedure TPublishProjectOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const APath: string);
+  const APath: string; AdjustPathDelims: boolean);
 //var
 //  XMLVersion: integer;
 begin
-  inherited LoadFromXMLConfig(XMLConfig,APath);
+  inherited LoadFromXMLConfig(XMLConfig,APath,AdjustPathDelims);
   //XMLVersion:=XMLConfig.GetValue(APath+'Version/Value',0);
   FSaveClosedEditorFilesInfo:=XMLConfig.GetValue(
              APath+'SaveClosedEditorFilesInfo/Value',SaveClosedEditorFilesInfo);

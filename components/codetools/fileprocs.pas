@@ -460,10 +460,14 @@ var
   ExpPath: String;
   l: integer;
 begin
-  ExpFile:=CleanAndExpandFilename(Filename);
-  ExpPath:=CleanAndExpandDirectory(Path);
+  if Path='' then begin
+    Result:=false;
+    exit;
+  end;
+  ExpFile:=TrimFilename(Filename);
+  ExpPath:=AppendPathDelim(TrimFilename(Path));
   l:=length(ExpPath);
-  Result:=(length(ExpFile)>l) and (ExpFile[l+1]=PathDelim)
+  Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l]=PathDelim)
           and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
 end;
 
