@@ -94,7 +94,7 @@ var
 implementation
 
 uses
-  SysUtils, LCLStrConsts, Menus, Dialogs, StdCtrls, ExtCtrls,
+  SysUtils, LCLStrConsts, Menus, Dialogs, StdCtrls, ExtCtrls, Forms,
   LCLIntf; //remove this unit when GetWindowSize is moved to TWSWinControl
 
 {$IFOPT C-}
@@ -772,8 +772,14 @@ Begin
   TheWinControl:=TWinControl(Sender);
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  ORect.Left := 0;
-  ORect.Top := 0;
+  if TheWinControl is TScrollingWinControl then
+  begin
+    ORect.Left := -TScrollingWinControl(TheWinControl).HorzScrollBar.Position;
+    ORect.Top := -TScrollingWinControl(TheWinControl).VertScrollBar.Position;
+  end else begin
+    ORect.Left := 0;
+    ORect.Top := 0;
+  end;
   ORect.Bottom := 0;
   ORect.Right := 0;
   If (TheWinControl is TCustomGroupBox) Then

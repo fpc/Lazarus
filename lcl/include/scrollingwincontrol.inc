@@ -120,21 +120,8 @@ begin
 end;
 
 procedure TScrollingWinControl.ScrollBy(DeltaX, DeltaY: Integer);
-var
-  Control: TControl;
-  I: integer;
 begin
   TWSScrollingWinControlClass(WidgetSetClass).ScrollBy(Self, DeltaX, DeltaY);
-  for I := 0 to ControlCount - 1 do
-  begin
-    Control := Controls[I];
-    if not (Control is TWinControl) or not TWinControl(Control).HandleAllocated then
-    begin
-      // widgetset does not know about this control
-      Control.SetBounds(Control.Left+DeltaX, Control.Top+DeltaY, 
-        Control.Width, Control.Height);
-    end;
-  end;
   Invalidate;
 end;
 
