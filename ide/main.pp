@@ -116,18 +116,12 @@ type
     itmViewCompilerSettings: TMenuItem;
     itmEnvironmentOptions: TMenuItem; 
     CheckBox1 : TCheckBox; 
-//    Notebook1 : TTabbedNotebook;
-    notebook1 : TNotebook;
+    Notebook1 : TNotebook;
     cmdTest: TButton;
     cmdTest2: TButton;
     LAbel2 : TLabel;
 { event handlers }
     procedure mnuNewFormClicked(Sender : TObject);
-    procedure mnuOpenClicked(Sender : TObject);
-    procedure mnuSaveClicked(Sender : TObject);
-    procedure mnuSaveAsClicked(Sender : TObject);
-    procedure mnuSaveAllClicked(Sender : TObject);
-    procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
     procedure mnuViewInspectorClicked(Sender : TObject);
     procedure mnuViewCompilerSettingsClicked(Sender : TObject);
@@ -154,14 +148,9 @@ type
     Procedure FileOpenedEvent(Sender : TObject; Filename : String);
     Procedure FileSavedEvent(Sender : TObject; Filename : String);
 
-//    procedure MouseDownOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
-//    procedure MouseMoveOnControl(Sender : TObject; Shift : TShiftState; X, Y: Integer);
-//    procedure MouseUpOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
-    Procedure COntrolClick(Sender : TObject);
+    Procedure ControlClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
 
-//    function FindDesigner(ChildComponent:TComponent):TDesigner;
-//    procedure SelectOnlyThisComponent(AComponent:TComponent);
     procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
   private
@@ -438,7 +427,6 @@ begin
     Enabled := True;
     Top := 28;
     Left := Speedbutton3.Left + 26;
-    OnClick := @mnuOpenCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Flat := true;
@@ -491,7 +479,6 @@ begin
     Enabled := False;
     Top := 28;
     Left := Speedbutton4_2.Left + 13;
-    OnClick := @mnuSaveCLicked;
     Glyph := Pixmap1;
     NumGlyphs := 2;
     Visible := True;
@@ -513,7 +500,6 @@ begin
     Enabled := False;
     Top := 28;
     Left := Speedbutton5.left + 26;
-    OnClick := @mnuSaveAllCLicked;
     Glyph := Pixmap1;
     NumGlyphs := 2;
     Visible := True;
@@ -813,25 +799,29 @@ begin
   
   itmFileNew := TMenuItem.Create(Self);
   itmFileNew.Caption := 'New Unit';
+  itmFileNew.Name := 'FileNew';
 //  itmFileNew.OnClick := @mnuNewClicked;
   mnuFile.Add(itmFileNew);
 
   itmFileNewForm := TMenuItem.Create(Self);
   itmFileNewForm.Caption := 'New Form';
   itmFileNewForm.OnClick := @mnuNewFormClicked;
+  itmFileNewForm.Name := 'FileNewForm';
   mnuFile.Add(itmFileNewForm);
 
   itmFileOpen := TMenuItem.Create(Self);
   itmFileOpen.Caption := 'Open';
-  itmFileOpen.OnClick := @mnuOpenClicked;
+  itmFileOpen.Name := 'FileOpen';
   mnuFile.Add(itmFileOpen);
 
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Caption := 'Save';
+  itmFileSave.Name := 'FileSave';
   mnuFile.Add(itmFileSave);
 
   itmFileSaveAs := TMenuItem.Create(Self);
   itmFileSaveAs.Caption := 'Save As';
+  itmFileSaveAs.Name := 'FileSaveAs';
   mnuFile.Add(itmFileSaveAs);
 
   itmFileSaveAll := TMenuItem.Create(Self);
@@ -1105,24 +1095,6 @@ Begin
   Assert(False, 'Trace:Exiting SetName_Form');
 end;
 
-procedure TMainIDE.mnuSaveClicked(Sender : TObject);
-begin
-//this is no longer used.  TSourceNotebook.SaveClicked is called
-end;
-
-{------------------------------------------------------------------------------}
-
-Procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
-Begin
-//this is no longer used.  TSourceNotebook.SaveAsClicked is called
-end;
-
-Procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
-Begin
-//this is no longer used.  TSourceNotebook.SaveAllClicked is called
-
-End;
-
 
 Procedure TMainIDE.mnuToggleFormClicked(Sender : TObject);
 Begin
@@ -1172,9 +1144,6 @@ var
   Speedbutton : TSpeedbutton;
   Temp : TControl;
 begin
-   Writeln('In ControlClick with nil?');
-   if Sender=nil then Writeln('yep, Sender is nil');
-
   if Sender is TSpeedButton then
      Begin
        Writeln('sender is a speedbutton');
@@ -1463,15 +1432,6 @@ end;
 
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.mnuOpenClicked(Sender : TObject);
-var
-  Str : TStringList;
-  SList : TUnitInfo;
-  Texts : String;
-begin
-
-end;
-{------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
@@ -1585,12 +1545,6 @@ If TSourceEditor(Sender).IsControlUnit then
 //   Writeln('Result = '+Inttostr(CreateLFM(FindDialog1)));
    Writeln('Result = '+Inttostr(CreateLFM(MainIDE)));
    end;
-end;
-
-
-Procedure TMainIDE.mnuCloseClicked(Sender : TObject);
-Begin
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -1904,6 +1858,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2001/01/13 03:09:37  lazarus
+  Minor changes
+  Shane
+
   Revision 1.40  2001/01/12 18:46:49  lazarus
   Named the speedbuttons in MAINIDE and took out some writelns.
   Shane

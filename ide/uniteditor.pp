@@ -319,8 +319,8 @@ Begin
                 begin
                 if pos(Value,texts2) <> 0 then
                    begin
-                     CurrentCursorYLine := I;
                      FEditor.TopLine := I-1;
+                     CurrentCursorYLine := I+1;
                      Result := I;
                      Break;
                    end;
@@ -351,7 +351,7 @@ Begin
                 if pos(Value,texts2) <> 0 then
                    begin
                      FEditor.TopLine := I;
-                     CurrentCursorYLine := I;
+                     CurrentCursorYLine := I+1;
                      Result := I;
                      Break;
                    end;
@@ -452,6 +452,7 @@ var
   AppDIr : String;
   TempDir : String;
   Num : Integer;
+  DirDelimiter : Char;
 Begin
   Texts := TextunderCursor;
   if Length(Texts) <= 1 then Exit;
@@ -481,6 +482,7 @@ Begin
 
 // if Not Found then
 //Get the search directories
+  DirDelimiter := '/';
   SearchDir := TMainIDE(TSourceNotebook(FAOwner).MainIDE).SearchPaths;
   Writeln('Searcvhdir is '+Searchdir);
   Num := pos(';',SearchDir);
@@ -489,6 +491,8 @@ Begin
   if Num = 0 then Num := Length(SearchDir)+1;
   TempDir := Copy(SearchDir,1,num-1);
   Delete(SearchDir,1,Num);
+  if tempDir[Length(TempDir)] <> DirDelimiter then
+     TempDir := TempDir + DirDelimiter;
   Found := True;
   if FileExists(TempDir+Lowercase(Texts)) then TSOurceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts))
      else
@@ -500,8 +504,10 @@ Begin
   Num := pos(';',SearchDir);
   end; //while
 
+  If not Found then
+     Application.MessageBox('File not found','Error',MB_OK);
 
-Writeln('FILE TO OPEN WAS '+Texts);
+
 end;
 
 
@@ -1164,7 +1170,7 @@ Procedure TSourceNotebook.OpenClicked(Sender: TObject);
 Var
     TempEditor : TSourceEditor;
 Begin
-   if (sender is TMenuItem) then  //the down arrow next to open was selected
+   if (sender is TMenuItem) and (TMenuItem(sender).name <> 'FileOpen') then  //the down arrow next to open was selected
        OpenFile(TMenuItem(sender).Caption)
    else
    Begin

@@ -21,6 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 }
+{$H+}
 unit compiler;
 
 {$mode objfpc}
@@ -236,6 +237,10 @@ end.
 
 {
   $Log$
+  Revision 1.3  2001/01/13 03:09:37  lazarus
+  Minor changes
+  Shane
+
   Revision 1.2  2000/12/20 20:04:30  lazarus
   Made PRoject Build compile the active unit.  This way we can actually play with it by compiling units.
 

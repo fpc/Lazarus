@@ -2268,7 +2268,9 @@ begin
    Assert (Handle = nil, 'WARNING: [TgtkObject.GetValue] --> got nil pointer (no gtkobject)');
    
    case TControl(Sender).fCompStyle of
-      csTrackbar   : integer (data^) := round (gtk_range_get_adjustment (GTK_RANGE (handle))^.value);
+      csTrackbar   : if handle <> nil then integer(data^) := round(gtk_range_get_adjustment (GTK_RANGE (handle))^.value) else
+                                     integer(data^) := 0;
+
 
       csRadiobutton,
       csCheckbox   : if gtk_toggle_button_get_active (PGtkToggleButton (handle))
@@ -2309,6 +2311,7 @@ begin
       csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
    
       csTrackbar   : begin
+                        if Handle = nil then Exit;
                         gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
                         gtk_signal_emit_by_name (PGtkObject (gtk_range_get_adjustment (GTK_RANGE (handle))), 'value_changed');
                      end;
@@ -2705,6 +2708,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.18  2001/01/13 03:09:37  lazarus
+  Minor changes
+  Shane
+
   Revision 1.17  2001/01/10 20:12:29  lazarus
   Added the Nudge feature to the IDE.
   Shane
