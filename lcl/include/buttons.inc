@@ -23,6 +23,12 @@
 constructor TButton.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
+  With FShortcut do begin
+    OldKey := 0;
+    OldModifier := [ssCtrl];
+    NewModifier := [ssCtrl];
+    NewKey := 0;
+  end;
   {set the component style to csButton}
   fCompStyle := csButton;
   ControlStyle:=ControlStyle-[csClickEvents];
@@ -42,6 +48,8 @@ end;
 procedure TButton.CreateWnd;
 begin
   inherited CreateWnd;
+  If HandleAllocated then
+    SetText(Caption);//To ensure shortcut is set
 end;
 
 {------------------------------------------------------------------------------
@@ -121,9 +129,30 @@ begin
   Click;
 end;
 
+procedure TButton.SetText(const Value: TCaption);
+var
+  ParseStr : String;
+  AccelIndex : Longint;
+begin
+  Inherited SetText(Value);
+  If not HandleAllocated then exit;
+  ParseStr := Value;
+  AccelIndex := DeleteAmpersands(ParseStr);
+  If AccelIndex > -1 then begin
+    With FShortcut do begin
+      Handle := Self.Handle;
+      OldKey := NewKey;
+      NewKey := Char2VK(ParseStr[AccelIndex]);
+    end;
+    CNSendMessage(LM_SETSHORTCUT, Self, @FShortcut);
+  end;
+end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/08/27 06:40:50  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.8  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

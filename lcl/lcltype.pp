@@ -1430,10 +1430,19 @@ const
 
 
 function MapIrregularVirtualKey(vk: word): word;
+Function Char2VK(C : Char) : Word;
 
 
 implementation
 
+Function Char2VK(C : Char) : Word;
+begin
+  Case C of
+    '0'..'9' :Result := VK_0 + Ord(C) - Ord('0');
+    'a'..'z' :Result := VK_A + Ord(C) - Ord('a');
+    'A'..'Z' :Result := VK_A + Ord(C) - Ord('A');
+  end;
+end;
 
 function MapIrregularVirtualKey(vk: word): word;
 begin
@@ -1461,6 +1470,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2002/08/27 06:40:50  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.11  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
