@@ -245,6 +245,8 @@ begin
     Indent := '';
   end;
   if IsPascal then begin
+    f := ifdef(f);
+    s := ifdef(s);
     if HasNewline then begin
       Result := Result + Indent + f + LineEnding + Indent + Text + LineEnding;
       if IsElse then
@@ -270,13 +272,13 @@ begin
         Result := Result + Text + ' {$ENDIF}';
     end;
   end else begin
-    Result := Result + '#ifdef ' + f + LineEnding + indent + Text + LineEnding;
+    Result := Result + ifdef(f) + LineEnding + indent + Text + LineEnding;
     if IsElse then
       Result := Result + '#else' + LineEnding
     else begin
       Result := Result + '#endif /* ' + f + ' */' + LineEnding;
       if IsTwo then
-        Result := Result + '#ifdef '+ s + LineEnding;
+        Result := Result + ifdef(s) + LineEnding;
     end;
     if IsTwo then begin
       Result := Result + indent + Text + LineEnding + '#endif /* ';

@@ -2095,7 +2095,7 @@ begin
     case Key of
       VK_RETURN:
       begin
-        if Form.DefaultControl <> nil then 
+        if Form.DefaultControl <> nil then
         begin
           Form.DefaultControl.ExecuteDefaultAction;
           Key := VK_UNKNOWN;
@@ -3755,6 +3755,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.252  2004/07/04 11:09:43  mattias
+  fixed IFDEF tool for blocks  from Colin
+
   Revision 1.251  2004/07/03 14:59:42  mattias
   fixed keydown geting all keys
 
