@@ -291,14 +291,13 @@ Begin
     End;
     WM_MOVE:
     Begin
-      Windows.GetWindowRect(Window, @R);
       With TLMMove(LMessage) Do
       Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := 0;
-        XPos := R.Left;
-        YPos := R.Top;
+        XPos := LoWord(LParam);
+        YPos := HiWord(LParam);
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -375,13 +374,12 @@ Begin
     End;
     WM_SIZE:
     Begin
-      Windows.GetClientRect(Window, @R);
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
         SizeType := WParam;
-        Width := R.Right - R.Left;
-        Height := R.Bottom - R.Top;
+        Width := LoWord(LParam);
+        Height := HiWord(LParam);
       End;
     End;
     WM_SYSKEYDOWN:
@@ -426,6 +424,10 @@ Begin
         Unused := WParam;
         WindowPos := PWindowPos(LParam);
       End;
+      GetClientRect(Window, R);
+      SendMessage(Window, WM_MOVE, 0, MakeLParam(PWindowPos(LParam)^.x, PWindowPos(LParam)^.y));
+      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
+      WinProcess:=false;
     End;
   End;
 
@@ -477,6 +479,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2002/12/09 17:53:22  mattias
+  Patch from Martin for reszing windows
+
   Revision 1.19  2002/12/04 20:39:16  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 
