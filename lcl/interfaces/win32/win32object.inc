@@ -543,7 +543,8 @@ activate_time :	the time at which the activation event occurred.
               begin
                  R.Right:=Left + Right;
                  R.Bottom:=Top + Bottom;
-                 Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
+                 if (Sender is TCustomForm) and ((Sender as TCustomForm).Menu<>nil) then Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,true)
+                 else Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
                  R.Right:=R.Right - R.Left;
                  R.Bottom:=R.Bottom - R.Top; 
               end;
@@ -2623,6 +2624,9 @@ End;
 
 {
   $Log$
+  Revision 1.29  2002/12/04 19:25:10  mattias
+  fix for resizing window with a menu from Martin Smat
+
   Revision 1.28  2002/11/26 20:51:05  mattias
   applied clipbrd patch from Vincent
 
