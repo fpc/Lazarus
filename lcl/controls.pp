@@ -924,7 +924,6 @@ type
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
     procedure FontChanged(Sender: TObject); virtual;
     function GetAction: TBasicAction; virtual;
-    function GetVisible: Boolean; virtual;
     function RealGetText: TCaption; virtual;
     procedure RealSetText(const Value: TCaption); virtual;
     procedure SetAction(Value: TBasicAction); virtual;
@@ -1007,6 +1006,7 @@ type
     function ColorIsStored: boolean; virtual;
     function HasParent: Boolean; override;
     function IsParentOf(AControl: TControl): boolean; virtual;
+    function IsVisible: Boolean; virtual;
     procedure Refresh;
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
@@ -1072,7 +1072,7 @@ type
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
-    property Visible: Boolean read GetVisible write SetVisible stored IsVisibleStored default True;
+    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
     property TabStop: Boolean read FTabStop write SetTabStop;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
@@ -2322,6 +2322,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.211  2004/06/20 21:21:49  micha
+  fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
+
   Revision 1.210  2004/06/20 20:25:47  micha
   fix tabbing to next control to skip invisible notebook pages
 

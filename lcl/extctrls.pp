@@ -77,7 +77,6 @@ type
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
     procedure DestroyHandle; override;
-    function GetVisible: Boolean; override;
     function GetPageIndex: integer;
     procedure SetPageIndex(AValue: Integer);
     property TabVisible: Boolean read GetTabVisible write SetTabVisible default True;
@@ -86,6 +85,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function CanTab: boolean; override;
+    function IsVisible: Boolean; override;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
     property Left stored False;
     property Top stored False;
@@ -930,6 +930,9 @@ end.
 
  {
   $Log$
+  Revision 1.106  2004/06/20 21:21:49  micha
+  fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
+
   Revision 1.105  2004/06/20 20:25:47  micha
   fix tabbing to next control to skip invisible notebook pages
 

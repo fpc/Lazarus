@@ -889,13 +889,16 @@ activate_time : the time at which the activation event occurred.
             begin
               OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
               Windows.SendMessage(Handle,TCM_SETCURSEL, Windows.WPARAM(Page),0);
-              if (Page>=0)
-              And ((Parent As TCustomNotebook).CustomPage(Page).HandleAllocated)
-                then ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
-              if (OldPageIndex>=0) and (OldPageIndex<>Page)
-              and (OldPageIndex < TCustomNotebook(Parent).PageList.Count)
-              and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
-                then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
+              if not (csDestroying in (Parent as TCustomNotebook).ComponentState) then
+              begin
+                // create handle if not already done, need to show!
+                if (Page>=0) and (Page < TCustomNotebook(Parent).PageCount) then 
+                  ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
+                if (OldPageIndex>=0) and (OldPageIndex<>Page)
+                and (OldPageIndex < TCustomNotebook(Parent).PageList.Count)
+                and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
+                  then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
+              end;
             end;
           End;
         End;
@@ -2153,17 +2156,11 @@ Begin
   Else If (Sender Is TCommonDialog) Then
     CompStyle := TCommonDialog(Sender).FCompStyle;
 
-  If Caption = '' Then
-    Caption := CS_To_String(CompStyle);
-
   Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [Sender.ClassName, Caption]));
   Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
 
   // until here remove when debug not needed
-  If Caption = '' Then
-    Caption := 'Blank';
-  StrCaption := StrAlloc(Length(Caption) + 1);
-  StrPCopy(StrCaption, Caption);
+  StrCaption := PChar(Caption);
   Assert(False, 'Trace:CreateComponent - Control Style is ' + CS_To_String(CompStyle));
 
   Case CompStyle Of
@@ -2601,12 +2598,6 @@ Begin
         Assert(False, 'Trace:CreateComponent - Assigning P to TFont');
         TFont(Sender).Handle := Window;
       End;
-  End;
-
-  Try
-    StrDispose(StrCaption);
-  Except
-    Assert(False, 'Trace:Warning: Tried to dispose a string that was not allocated');
   End;
 
   case CompStyle of
@@ -3246,6 +3237,9 @@ End;
 
 {
   $Log$
+  Revision 1.214  2004/06/20 21:21:49  micha
+  fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
+
   Revision 1.213  2004/06/20 20:36:55  micha
   remove old obsolete/commented toolbutton code
   rename lazarusform classname to window, because we use it for panels, notebookpages, etc too

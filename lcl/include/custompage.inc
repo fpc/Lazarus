@@ -172,13 +172,13 @@ begin
   DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 
-function TCustomPage.GetVisible: Boolean;
+function TCustomPage.IsVisible: Boolean;
 begin
   if Parent is TCustomNotebook then
   begin
     Result := PageIndex = TCustomNotebook(Parent).PageIndex;
   end else begin
-    Result := true;
+    Result := inherited;
   end;
 end;
 

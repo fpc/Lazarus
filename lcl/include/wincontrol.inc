@@ -1270,7 +1270,7 @@ begin
         //DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',I);
         If (((Not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
-        and (Next.Enabled and Next.Visible)
+        and (Next.Enabled and Next.IsVisible)
         and ((not OnlyWinControls) or (Next is TWinControl)) then
           Result := Next;
       until (Result <> nil);
@@ -3659,6 +3659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.238  2004/06/20 21:21:49  micha
+  fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
+
   Revision 1.237  2004/06/20 20:25:47  micha
   fix tabbing to next control to skip invisible notebook pages
 

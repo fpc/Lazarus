@@ -622,9 +622,9 @@ begin
     Result := Width;
 end;
 
-function TControl.GetVisible: Boolean;
+function TControl.IsVisible: Boolean;
 begin
-  Result := FVisible and ((Parent = nil) or (Parent.Visible));
+  Result := FVisible and ((Parent = nil) or (Parent.IsVisible));
 end;
 
 {------------------------------------------------------------------------------}
@@ -3190,6 +3190,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.195  2004/06/20 21:21:49  micha
+  fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
+
   Revision 1.194  2004/06/20 20:25:47  micha
   fix tabbing to next control to skip invisible notebook pages
 
