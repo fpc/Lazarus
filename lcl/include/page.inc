@@ -150,9 +150,17 @@ begin
     Result:=TCustomNotebook(Parent).PageList.IndexOf(Self);
 end;
 
+function TPage.CanTab: boolean;
+begin
+  Result:=false;
+end;
+
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.13  2003/06/10 17:23:35  mattias
+  implemented tabstop
+
   Revision 1.12  2002/12/22 22:42:55  mattias
   custom controls now support child wincontrols
 
