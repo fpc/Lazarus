@@ -43,7 +43,7 @@ uses
   // components
   AVL_Tree, PropEdits, ObjectInspector, IDECommands,
   // IDE
-  JITForms, NonControlForms, AbstractFormEditor, ComponentReg, IDEProcs,
+  JITForms, NonControlForms, FormEditingIntf, ComponentReg, IDEProcs,
   ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
@@ -160,14 +160,18 @@ each control that's dropped onto the form
                            const OldMethodName, NewMethodName: shortstring);
     procedure SaveHiddenDesignerFormProperties(AComponent: TComponent);
     
+    function DesignerCount: integer; override;
+    function GetDesigner(Index: integer): TIDesigner; override;
+
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
     function CreateUniqueComponentName(AComponent: TComponent): string;
     function CreateUniqueComponentName(const AClassName: string;
-      OwnerComponent: TComponent): string;
+                                       OwnerComponent: TComponent): string;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
     procedure CreateChildComponentInterfaces(AComponent: TComponent);
     Function CreateComponent(ParentCI : TIComponentInterface;
-      TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
+                             TypeClass: TComponentClass;
+                             X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateComponentFromStream(BinStream: TStream;
                        AncestorType: TComponentClass;
                        Interactive: boolean): TIComponentInterface; override;
@@ -893,6 +897,23 @@ begin
   NonControlForm:=FindNonControlForm(AComponent);
   if NonControlForm<>nil then
     NonControlForm.DoSaveBounds;
+end;
+
+function TCustomFormEditor.DesignerCount: integer;
+begin
+  Result:=JITFormList.Count+JITDataModuleList.Count;
+end;
+
+function TCustomFormEditor.GetDesigner(Index: integer): TIDesigner;
+var
+  AForm: TCustomForm;
+begin
+  if Index<JITFormList.Count then
+    Result:=JITFormList[Index].Designer
+  else begin
+    AForm:=GetDesignerForm(JITDataModuleList[Index-JITFormList.Count]);
+    Result:=TIDesigner(AForm.Designer);
+  end;
 end;
 
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent

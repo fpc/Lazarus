@@ -968,7 +968,7 @@ begin
   FreeThenNil(Project1);
 
   // free IDE parts
-  FreeThenNil(FormEditor1);
+  FreeFormEditor;
   FreeThenNil(PkgBoss);
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(TheCompiler);
@@ -10489,6 +10489,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.742  2004/08/05 21:20:46  mattias
+  moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
+
   Revision 1.741  2004/08/04 16:58:15  mattias
   fixed setting Modified for hidden lpr file when adding CreateFormStatement
 

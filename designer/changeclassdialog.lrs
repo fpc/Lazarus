@@ -17,16 +17,17 @@ LazarusResources.Add('TChangeClassDlg','FORMDATA',[
   +#0#0#0#0#0#9'TGroupBox'#11'NewGroupBox'#7'Caption'#6#11'NewGroupBox'#12'Clie'
   +'ntHeight'#3#231#0#11'ClientWidth'#3#196#0#11'ParentColor'#9#8'TabOrder'#2#1
   +#4'Left'#3#216#0#6'Height'#3#248#0#3'Top'#2#8#5'Width'#3#200#0#0#9'TComboBox'
-  +#16'NewClassComboBox'#9'MaxLength'#2#0#8'TabOrder'#2#0#4'Text'#6#16'NewClass'
-  +'ComboBox'#4'Left'#2#14#6'Height'#2#25#3'Top'#2#9#5'Width'#3#174#0#0#0#9'TGr'
-  +'oupBox'#19'NewAncestorGroupBox'#5'Align'#7#8'alBottom'#7'Caption'#6#19'NewA'
-  +'ncestorGroupBox'#12'ClientHeight'#3#175#0#11'ClientWidth'#3#192#0#11'Parent'
-  +'Color'#9#8'TabOrder'#2#1#6'Height'#3#192#0#3'Top'#2''''#5'Width'#3#196#0#0#8
-  +'TListBox'#19'NewAncestorsListBox'#5'Align'#7#8'alClient'#16'ClickOnSelChang'
-  +'e'#8#8'TabOrder'#2#0#8'TopIndex'#2#255#6'Height'#3#175#0#5'Width'#3#192#0#0
-  +#0#0#0#7'TButton'#8'OkButton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Capti'
-  +'on'#6#2'Ok'#11'ModalResult'#2#1#8'TabOrder'#2#2#4'Left'#3#192#0#6'Height'#2
-  +#25#3'Top'#3#14#1#5'Width'#2'['#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11
-  +#7'akRight'#8'akBottom'#0#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOr'
-  +'der'#2#3#4'Left'#3'@'#1#6'Height'#2#25#3'Top'#3#14#1#5'Width'#2'['#0#0#0
+  +#16'NewClassComboBox'#9'MaxLength'#2#0#13'OnEditingDone'#7#27'NewClassComboB'
+  +'oxEditingDone'#8'TabOrder'#2#0#4'Text'#6#16'NewClassComboBox'#4'Left'#2#14#6
+  +'Height'#2#25#3'Top'#2#9#5'Width'#3#174#0#0#0#9'TGroupBox'#19'NewAncestorGro'
+  +'upBox'#5'Align'#7#8'alBottom'#7'Caption'#6#19'NewAncestorGroupBox'#12'Clien'
+  +'tHeight'#3#175#0#11'ClientWidth'#3#192#0#11'ParentColor'#9#8'TabOrder'#2#1#6
+  +'Height'#3#192#0#3'Top'#2''''#5'Width'#3#196#0#0#8'TListBox'#19'NewAncestors'
+  +'ListBox'#5'Align'#7#8'alClient'#16'ClickOnSelChange'#8#8'TabOrder'#2#0#8'To'
+  +'pIndex'#2#255#6'Height'#3#175#0#5'Width'#3#192#0#0#0#0#0#7'TButton'#8'OkBut'
+  +'ton'#7'Anchors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6#2'Ok'#11'ModalResu'
+  +'lt'#2#1#8'TabOrder'#2#2#4'Left'#3#192#0#6'Height'#2#25#3'Top'#3#14#1#5'Widt'
+  +'h'#2'['#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#7'akRight'#8'akBottom'
+  +#0#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#3#4'Left'#3'@'#1
+  +#6'Height'#2#25#3'Top'#3#14#1#5'Width'#2'['#0#0#0
 ]);

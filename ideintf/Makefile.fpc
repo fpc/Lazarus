@@ -28,7 +28,8 @@ implicitunits=actionseditor \
   propedits \
   helpintf \
   texttools \
-  actionseditor
+  actionseditor \
+  formeditingintf
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \

@@ -239,7 +239,7 @@ End;
 ------------------------------------------------------------------------------}
 procedure TControl.EditingDone;
 begin
-
+  if Assigned(OnEditingDone) then OnEditingDone(Self);
 end;
 
 procedure TControl.FontChanged(Sender: TObject);
@@ -3220,6 +3220,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.207  2004/08/05 21:20:47  mattias
+  moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
+
   Revision 1.206  2004/07/25 01:04:45  mattias
   TXMLPropStorage basically working
 

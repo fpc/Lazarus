@@ -721,7 +721,7 @@ procedure TDesigner.DoShowChangeClassDialog;
 begin
   if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected)
   then
-    ShowChangeClassDialog(ControlSelection[0].Persistent);
+    ShowChangeClassDialog(Self,ControlSelection[0].Persistent);
 end;
 
 procedure TDesigner.GiveComponentsNames;

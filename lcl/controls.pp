@@ -672,8 +672,7 @@ type
     chtOnChangeBounds
     );
 
-(*
- * Note on TControl.Caption
+{* Note on TControl.Caption
  * The VCL implementation relies on the virtual Get/SetTextBuf to 
  * exchange text between widgets and VCL. This means a lot of 
  * (unnecesary) text copies.
@@ -686,31 +685,31 @@ type
  * To keep things optimal, LCL implementations should always 
  * override RealGet/SetText. Get/SetTextBuf is only kept for
  * compatibility.
- *)  
+ }
 
   TControl = class(TLCLComponent)
   private
     FActionLink: TControlActionLink;
-    FAlign : TAlign;
-    FAnchors : TAnchors;
-    FAutoSize : Boolean;
+    FAlign: TAlign;
+    FAnchors: TAnchors;
+    FAutoSize: Boolean;
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
     FBorderSpacing: TControlBorderSpacing;
-    FCaption : TCaption;
-    FColor : TColor;
-    FConstraints : TSizeConstraints;
+    FCaption: TCaption;
+    FColor: TColor;
+    FConstraints: TSizeConstraints;
     FControlFlags: TControlFlags;
     FControlHandlers: array[TControlHandlerType] of TMethodList;
     FControlStyle: TControlStyle;
-    FCtl3D : Boolean;
-    FCursor : TCursor;
+    FCtl3D: Boolean;
+    FCursor: TCursor;
     FDockOrientation: TDockOrientation;
-    FDragCursor : TCursor;
-    FDragKind : TDragKind;
-    FDragMode : TDragMode;
-    FEnabled : Boolean;
+    FDragCursor: TCursor;
+    FDragKind: TDragKind;
+    FDragMode: TDragMode;
+    FEnabled: Boolean;
     FFloatingDockSiteClass: TWinControlClass;
     FFont: TFont;
     FHeight: Integer;
@@ -736,9 +735,9 @@ type
     FOnConstrainedResize : TConstrainedResizeEvent;
     FOnContextPopup: TContextPopupEvent;
     FOnDblClick: TNotifyEvent;
-    FOnDoneEditing: TNotifyEvent;
     FOnDragDrop: TDragDropEvent;
     FOnDragOver: TDragOverEvent;
+    FOnEditingDone: TNotifyEvent;
     FOnEndDock: TEndDragEvent;
     FOnEndDrag: TEndDragEvent;
     FOnMouseDown: TMouseEvent;
@@ -761,7 +760,7 @@ type
     FShowHint: Boolean;
     FSizeLock: integer;
     FTabOrder: integer;
-    FTabStop : Boolean;
+    FTabStop: Boolean;
     FTBDockHeight: Integer;
     FTop: Integer;
     FUndockHeight: Integer;
@@ -993,7 +992,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
-    property OnDoneEditing: TNotifyEvent read FOnDoneEditing write FOnDoneEditing;
+    property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
   public
     FCompStyle: Byte; // enables (valid) use of 'IN' operator (this is a hack
       // for speed. It will be replaced by the use of the widgetset classes.
@@ -2389,6 +2388,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.232  2004/08/05 21:20:47  mattias
+  moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
+
   Revision 1.231  2004/08/03 09:01:54  mattias
   LCL now handles for non win32 CN_CHAR
 

@@ -58,6 +58,7 @@ object ChangeClassDlg: TChangeClassDlg
     Width = 200
     object NewClassComboBox: TComboBox
       MaxLength = 0
+      OnEditingDone = NewClassComboBoxEditingDone
       TabOrder = 0
       Text = 'NewClassComboBox'
       Left = 14

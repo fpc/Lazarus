@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, CustomFormEditor, Controls, Forms, Buttons, SysUtils, Graphics,
-  ObjectInspector, Designer;
+  ObjectInspector, Designer, FormEditingIntf;
 
 type
   TFormEditor = class(TCustomFormEditor)
@@ -45,11 +45,26 @@ type
   end;
 
 var
-  FormEditor1 : TFormEditor;
+  FormEditor1: TFormEditor;
+  
+procedure CreateFormEditor;
+procedure FreeFormEditor;
 
 
 implementation
 
+procedure CreateFormEditor;
+begin
+  FormEditor1 := TFormEditor.Create;
+  FormEditingHook := FormEditor1;
+end;
+
+procedure FreeFormEditor;
+begin
+  FormEditingHook:=nil;
+  FormEditor1.Free;
+  FormEditor1:=nil;
+end;
 
 procedure TFormEditor.SetObj_Inspector(AnObjectInspector: TObjectInspector);
 begin

@@ -316,6 +316,7 @@ type
     property OnCloseUp;
     property OnDrawItem;
     property OnDropDown;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -1158,6 +1159,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.156  2004/08/05 21:20:47  mattias
+  moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
+
   Revision 1.155  2004/08/04 09:57:17  mattias
   TStaticText.CanTab=false
 

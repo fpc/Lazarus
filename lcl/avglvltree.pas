@@ -15,6 +15,9 @@
   Author: Mattias Gaertner
   
   Abstract:
+    The Tree is sorted ascending from left to right. That means Compare gives
+    positive values for comparing right with left.
+  
     TAvgLvlTree is an Average Level binary Tree. This binary tree is always
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
@@ -29,6 +32,11 @@ uses
   Classes, SysUtils, FPCAdds;
 
 type
+  TAvgLvlTree = class;
+  
+  TObjectSortCompare = function(Tree: TAvgLvlTree; Data1, Data2: Pointer
+                                ): integer of object;
+
   TAvgLvlTreeNode = class
   public
     Parent, Left, Right: TAvgLvlTreeNode;
@@ -36,21 +44,24 @@ type
     Data: Pointer;
     procedure Clear;
     function TreeDepth: integer; // longest WAY down. e.g. only one node => 0 !
-    constructor Create;
-    destructor Destroy; override;
   end;
   PAvgLvlTreeNode = ^TAvgLvlTreeNode;
 
   TAvgLvlTree = class
   private
-    FOnCompare: TListSortCompare;
     FCount: integer;
+    FOnCompare: TListSortCompare;
+    FOnObjectCompare: TObjectSortCompare;
     procedure BalanceAfterInsert(ANode: TAvgLvlTreeNode);
     procedure BalanceAfterDelete(ANode: TAvgLvlTreeNode);
     function FindInsertPos(Data: Pointer): TAvgLvlTreeNode;
     procedure SetOnCompare(const AValue: TListSortCompare);
+    procedure SetOnObjectCompare(const AValue: TObjectSortCompare);
+    procedure SetCompares(const NewCompare: TListSortCompare;
+                          const NewObjectCompare: TObjectSortCompare);
   public
     Root: TAvgLvlTreeNode;
+    function Compare(Data1, Data2: Pointer): integer;
     function Find(Data: Pointer): TAvgLvlTreeNode;
     function FindKey(Key: Pointer;
       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
@@ -76,6 +87,7 @@ type
     procedure MoveDataLeftMost(var ANode: TAvgLvlTreeNode);
     procedure MoveDataRightMost(var ANode: TAvgLvlTreeNode);
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
+    property OnObjectCompare: TObjectSortCompare read FOnObjectCompare write SetOnObjectCompare;
     procedure Clear;
     procedure FreeAndClear;
     procedure FreeAndDelete(ANode: TAvgLvlTreeNode);
@@ -84,6 +96,7 @@ type
     procedure WriteReportToStream(s: TStream; var StreamSize: TStreamSeekType);
     function ReportAsString: string;
     constructor Create(OnCompareMethod: TListSortCompare);
+    constructor Create(OnCompareMethod: TObjectSortCompare);
     constructor Create;
     destructor Destroy; override;
   end;
@@ -145,7 +158,7 @@ begin
   inc(FCount);
   if Root<>nil then begin
     InsertPos:=FindInsertPos(ANode.Data);
-    InsertComp:=fOnCompare(ANode.Data,InsertPos.Data);
+    InsertComp:=Compare(ANode.Data,InsertPos.Data);
     ANode.Parent:=InsertPos;
     if InsertComp<0 then begin
       // insert to the left
@@ -482,7 +495,12 @@ constructor TAvgLvlTree.Create(OnCompareMethod: TListSortCompare);
 begin
   inherited Create;
   FOnCompare:=OnCompareMethod;
-  FCount:=0;
+end;
+
+constructor TAvgLvlTree.Create(OnCompareMethod: TObjectSortCompare);
+begin
+  inherited Create;
+  FOnObjectCompare:=OnCompareMethod;
 end;
 
 constructor TAvgLvlTree.Create;
@@ -640,7 +658,7 @@ var Comp: integer;
 begin
   Result:=Root;
   while (Result<>nil) do begin
-    Comp:=fOnCompare(Data,Result.Data);
+    Comp:=Compare(Data,Result.Data);
     if Comp=0 then exit;
     if Comp<0 then begin
       Result:=Result.Left
@@ -650,8 +668,8 @@ begin
   end;
 end;
 
-function TAvgLvlTree.FindKey(Key: Pointer; OnCompareKeyWithData: TListSortCompare
-  ): TAvgLvlTreeNode;
+function TAvgLvlTree.FindKey(Key: Pointer;
+  OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
 var Comp: integer;
 begin
   Result:=Root;
@@ -688,7 +706,7 @@ begin
     Result:=ANode;
     repeat
       LeftNode:=FindPrecessor(Result);
-      if (LeftNode=nil) or (fOnCompare(Data,LeftNode.Data)<>0) then break;
+      if (LeftNode=nil) or (Compare(Data,LeftNode.Data)<>0) then break;
       Result:=LeftNode;
     until false;
   end else begin
@@ -706,7 +724,7 @@ begin
     Result:=ANode;
     repeat
       RightNode:=FindSuccessor(Result);
-      if (RightNode=nil) or (fOnCompare(Data,RightNode.Data)<>0) then break;
+      if (RightNode=nil) or (Compare(Data,RightNode.Data)<>0) then break;
       Result:=RightNode;
     until false;
   end else begin
@@ -719,7 +737,7 @@ var Comp: integer;
 begin
   Result:=Root;
   while (Result<>nil) do begin
-    Comp:=fOnCompare(Data,Result.Data);
+    Comp:=Compare(Data,Result.Data);
     if Comp=0 then exit;
     if Comp<0 then begin
       if Result.Left<>nil then
@@ -741,7 +759,7 @@ begin
   while (Result<>nil) do begin
     if Result.Data=Data then break;
     Result:=FindSuccessor(Result);
-    if fOnCompare(Data,Result.Data)<>0 then Result:=nil;
+    if Compare(Data,Result.Data)<>0 then Result:=nil;
   end;
 end;
 
@@ -752,7 +770,7 @@ begin
   Result:=Find(Data);
   while (Result<>nil) do begin
     Left:=FindPrecessor(Result);
-    if (Left=nil) or (fOnCompare(Data,Left.Data)<>0) then break;
+    if (Left=nil) or (Compare(Data,Left.Data)<>0) then break;
     Result:=Left;
   end;
 end;
@@ -764,7 +782,7 @@ begin
   Result:=Find(Data);
   while (Result<>nil) do begin
     Right:=FindSuccessor(Result);
-    if (Right=nil) or (fOnCompare(Data,Right.Data)<>0) then break;
+    if (Right=nil) or (Compare(Data,Right.Data)<>0) then break;
     Result:=Right;
   end;
 end;
@@ -774,7 +792,7 @@ var Comp: integer;
 begin
   Result:=Root;
   while (Result<>nil) do begin
-    Comp:=fOnCompare(Data,Result.Data);
+    Comp:=Compare(Data,Result.Data);
     if Comp<0 then begin
       if Result.Left<>nil then
         Result:=Result.Left
@@ -823,7 +841,7 @@ begin
   LeftMost:=ANode;
   repeat
     PreNode:=FindPrecessor(LeftMost);
-    if (PreNode=nil) or (FOnCompare(ANode,PreNode)<>0) then break;
+    if (PreNode=nil) or (Compare(ANode,PreNode)<>0) then break;
     LeftMost:=PreNode;
   until false;
   if LeftMost=ANode then exit;
@@ -841,7 +859,7 @@ begin
   RightMost:=ANode;
   repeat
     PostNode:=FindSuccessor(RightMost);
-    if (PostNode=nil) or (FOnCompare(ANode,PostNode)<>0) then break;
+    if (PostNode=nil) or (Compare(ANode,PostNode)<>0) then break;
     RightMost:=PostNode;
   until false;
   if RightMost=ANode then exit;
@@ -867,7 +885,7 @@ var RealCount: integer;
       if ANode.Left.Parent<>ANode then begin
         Result:=-2;  exit;
       end;
-      if fOnCompare(ANode.Left.Data,ANode.Data)>0 then begin
+      if Compare(ANode.Left.Data,ANode.Data)>0 then begin
         Result:=-3;  exit;
       end;
       Result:=CheckNode(ANode.Left);
@@ -878,7 +896,7 @@ var RealCount: integer;
       if ANode.Right.Parent<>ANode then begin
         Result:=-4;  exit;
       end;
-      if fOnCompare(ANode.Data,ANode.Right.Data)>0 then begin
+      if Compare(ANode.Data,ANode.Right.Data)>0 then begin
         Result:=-5;  exit;
       end;
       Result:=CheckNode(ANode.Right);
@@ -995,11 +1013,28 @@ begin
 end;
 
 procedure TAvgLvlTree.SetOnCompare(const AValue: TListSortCompare);
+begin
+  if AValue=nil then
+    SetCompares(nil,FOnObjectCompare)
+  else
+    SetCompares(AValue,nil);
+end;
+
+procedure TAvgLvlTree.SetOnObjectCompare(const AValue: TObjectSortCompare);
+begin
+  if AValue=nil then
+    SetCompares(FOnCompare,nil)
+  else
+    SetCompares(nil,AValue);
+end;
+
+procedure TAvgLvlTree.SetCompares(const NewCompare: TListSortCompare;
+  const NewObjectCompare: TObjectSortCompare);
 var List: PPointer;
   ANode: TAvgLvlTreeNode;
   i, OldCount: integer;
 begin
-  if FOnCompare=AValue then exit;
+  if (FOnCompare=NewCompare) and (FOnObjectCompare=NewObjectCompare) then exit;
   // sort the tree again
   if Count>0 then begin
     OldCount:=Count;
@@ -1016,7 +1051,8 @@ begin
       // clear the tree
       Clear;
       // set the new compare function
-      FOnCompare:=AValue;
+      FOnCompare:=NewCompare;
+      FOnObjectCompare:=NewObjectCompare;
       // re-add all nodes
       for i:=0 to OldCount-1 do
         Add(List[i]);
@@ -1026,20 +1062,16 @@ begin
   end;
 end;
 
+function TAvgLvlTree.Compare(Data1, Data2: Pointer): integer;
+begin
+  if Assigned(FOnCompare) then
+    Result:=FOnCompare(Data1,Data2)
+  else
+    Result:=FOnObjectCompare(Self,Data1,Data2);
+end;
+
 
 { TAvgLvlTreeNode }
-
-constructor TAvgLvlTreeNode.Create;
-begin
-  inherited Create;
-
-end;
-
-destructor TAvgLvlTreeNode.Destroy;
-begin
-
-  inherited Destroy;
-end;
 
 function TAvgLvlTreeNode.TreeDepth: integer;
 // longest WAY down. e.g. only one node => 0 !
