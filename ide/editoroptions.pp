@@ -706,7 +706,7 @@ begin
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
     SampleSource:=
-      ' { Comment }'#13+
+      '{ Comment }'#13+
       '{$R- compiler directive}'#13+
       'procedure TForm1.Button1Click(Sender: TObject);'#13+
       'var  // Delphi Comment'#13+

@@ -2394,6 +2394,11 @@ var
     sToken: string; // highlighter token info
     nTokenPos, nTokenLen: integer;
     attr: TSynHighlighterAttributes;
+    {$IFDEF SYN_LAZARUS}
+    BracketChar: char;
+    BracketFGCol, BracketBGCol: TColor;
+    BracketStyle: TFontStyles;
+    {$ENDIF}
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
@@ -2527,12 +2532,47 @@ var
                   Font.Style);
             end else begin
               // Bracket Highlighting
-              if Assigned(attr) then
-                AddHighlightToken(sToken, nTokenPos, nTokenLen, attr.Foreground,
-                  attr.Background, attr.Style+[fsBold])
-              else
-                AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
-                  Font.Style+[fsBold]);
+              if Assigned(attr) then begin
+                BracketFGCol:=attr.Foreground;
+                BracketBGCol:=attr.Background;
+                BracketStyle:=attr.Style;
+              end else begin
+                BracketFGCol:=colFG;
+                BracketBGCol:=colBG;
+                BracketStyle:=Font.Style;
+              end;
+              if ((nTokenPos=nBracketX) and (nLine=nBracketY))
+              or ((nTokenPos=nAntiBracketX) and (nLine=nAntiBracketY)) then
+              begin
+                // bracket at start
+                // draw the bracket bold
+                AddHighlightToken(sToken[1], nTokenPos, 1,
+                  BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
+                System.Delete(sToken,1,1);
+                dec(nTokenLen);
+                inc(nTokenPos);
+              end;
+              if (nTokenLen>0) then begin
+                // draw the rest
+                if ((nTokenPos+nTokenLen-1=nBracketX) and (nLine=nBracketY))
+                or ((nTokenPos+nTokenLen-1=nAntiBracketX)
+                     and (nLine=nAntiBracketY)) then
+                begin
+                  // bracket at end
+                  BracketChar:=sToken[nTokenLen];
+                  System.Delete(sToken,nTokenLen,1);
+                  dec(nTokenLen);
+                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
+                    BracketFGCol, BracketBGCol, BracketStyle);
+                  inc(nTokenPos,nTokenLen);
+                  AddHighlightToken(BracketChar, nTokenPos, 1,
+                    BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
+                end else begin
+                  // draw rest
+                  AddHighlightToken(sToken,nTokenPos,nTokenLen,BracketFGCol,
+                    BracketBGCol, BracketStyle)
+                end;
+              end;
             end;
             {$ELSE}
             if Assigned(attr) then
