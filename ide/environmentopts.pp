@@ -44,8 +44,10 @@ uses
 const
   EnvOptsVersion: integer = 101;
 
-type
   //----------------------------------------------------------------------------
+  
+  { Backup }
+type
   TBackupType = (
      bakNone,             // no backup files
      bakSymbolInFront,    // .~pp
@@ -62,6 +64,10 @@ type
     SubDirectory: string;
   end;
   
+  
+  { Debugging }
+
+type
   TDebuggerType = (dtNone, dtGnuDebugger);
 
 const
@@ -69,11 +75,17 @@ const
     '(None)','GNU debugger (gdb)'
   );
 
+
+  { Naming }
+
 type
   TPascalExtType = (petNone, petPAS, petPP);
 
 const
   PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
+
+
+  { IDE Language (Human, not computer) }
 
 type
   TLazarusLanguage = (llAutomatic, llEnglish, llGerman);
@@ -86,6 +98,9 @@ const
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
     '', 'en', 'de'
   );
+  
+  
+  { Ambigious files }
 
 type
   TAmbigiousFileAction = (
@@ -106,6 +121,9 @@ const
       'Ignore'
     );
 
+
+  { Environment Options }
+
 type
   { class for storing environment options }
   TEnvironmentOptions = class
@@ -121,6 +139,7 @@ type
     
     // window layout
     FIDEWindowLayoutList: TIDEWindowLayoutList;
+    FIDEDialogLayoutList: TIDEDialogLayoutList;
 
     // form editor
     FShowGrid: boolean;
@@ -204,6 +223,8 @@ type
     // windows
     property IDEWindowLayoutList: TIDEWindowLayoutList
         read FIDEWindowLayoutList write FIDEWindowLayoutList;
+    property IDEDialogLayoutList: TIDEDialogLayoutList
+        read FIDEDialogLayoutList write FIDEDialogLayoutList;
 
     // form editor
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -533,6 +554,7 @@ begin
 
   // windows
   InitLayoutList;
+  FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
 
   // form editor
   FShowGrid:=true;
@@ -607,6 +629,7 @@ begin
   FFPCSourceDirHistory.Free;
   FDebuggerFileHistory.Free;
   FTestBuildDirHistory.Free;
+  FIDEDialogLayoutList.Free;
   fIDEWindowLayoutList.Free;
   inherited Destroy;
 end;
@@ -712,6 +735,8 @@ begin
     // windows
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
       'EnvironmentOptions/Desktop/');
+    FIDEDialogLayoutList.LoadFromXMLConfig(XMLConfig,
+      'EnvironmentOptions/Desktop/Dialogs');
 
     // form editor
     FShowGrid:=XMLConfig.GetValue(
@@ -900,6 +925,8 @@ begin
     // windows
     FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,
       'EnvironmentOptions/Desktop/');
+    FIDEDialogLayoutList.SaveToXMLConfig(XMLConfig,
+      'EnvironmentOptions/Desktop/Dialogs');
 
     // form editor
     XMLConfig.SetValue(
@@ -1311,7 +1338,7 @@ begin
     Name:='ShowHintsForComponentPaletteCheckBox';
     Parent:=NoteBook.Page[Page];
     Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+100;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+40;
     Width:=Parent.ClientWidth-Left;
     Height:=20;
     Caption:='Hints for component palette';
@@ -1337,7 +1364,7 @@ begin
     Name:='WindowPositionsGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:='Window Positions';
-    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,290);
+    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,330);
     OnResize:=@WindowPositionsGroupBoxResize;
     Visible:=true;
   end;
@@ -1366,7 +1393,7 @@ begin
     Left:=5;
     Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
     Width:=WindowPositionsListBox.Width;
-    Height:=Parent.ClientHeight-Top-20;
+    Height:=Parent.ClientHeight-Top-2;
     Visible:=true;
   end;
 end;
@@ -2305,7 +2332,7 @@ begin
 
   // Window Positions
   with WindowPositionsGroupBox do begin
-    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,290);
+    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,330);
   end;
 end;
 

@@ -52,7 +52,9 @@ type
     iwpRestoreWindowGeometry,   // save window geometry at end and restore it
                                 //   at start
     iwpDocked,                  // dock into other IDE window
-    iwpCustomPosition           // set window to custom position
+    iwpCustomPosition,          // set window to custom position
+    iwpRestoreWindowSize        // save window size at end and restore it
+                                //   at start
     );
   TIDEWindowPlacements = set of TIDEWindowPlacement;
   TIDEWindowDockMode = (iwdmDefault, iwdmLeft, iwdmRight, iwdmTop, iwdmBottom);
@@ -156,7 +158,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
-
+  
   // ---------------------------------------------------------------------------
   TOnApplyWindowPos = procedure(Layout: TIDEWindowLayout) of object;
   
@@ -213,7 +215,8 @@ const
       'Default',
       'RestoreWindowGeometry',
       'Docked',
-      'CustomPosition'
+      'CustomPosition',
+      'RestoreWindowSize'
     );
   IDEWindowStateNames: array[TIDEWindowState] of string = (
       'Normal', 'Maximized', 'Minimized', 'Hidden'
@@ -222,6 +225,46 @@ const
 function StrToIDEWindowDockMode(const s: string): TIDEWindowDockMode;
 function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 function StrToIDEWindowState(const s: string): TIDEWindowState;
+
+  //----------------------------------------------------------------------------
+type
+  TIDEDialogLayout = class
+  private
+    FHeight: integer;
+    FName: string;
+    FWidth: integer;
+    procedure SetHeight(const AValue: integer);
+    procedure SetName(const AValue: string);
+    procedure SetWidth(const AValue: integer);
+  public
+    function SizeValid: boolean;
+    property Width: integer read FWidth write SetWidth;
+    property Height: integer read FHeight write SetHeight;
+    property Name: string read FName write SetName;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  end;
+  
+  TIDEDialogLayoutList = class
+  private
+    FItems: TList;
+    function GetItems(Index: integer): TIDEDialogLayout;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure ApplyLayout(ADialog: TControl);
+    procedure SaveLayout(ADialog: TControl);
+    procedure Clear;
+    function Count: integer;
+    function Find(const DialogName: string;
+      CreateIfNotExists: boolean): TIDEDialogLayout;
+    function Find(ADialog: TObject;
+      CreateIfNotExists: boolean): TIDEDialogLayout;
+    function IndexOf(const DialogName: string): integer;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    property Items[Index: integer]: TIDEDialogLayout read GetItems;
+  end;
 
 
 implementation
@@ -481,8 +524,14 @@ end;
 
 procedure TIDEWindowLayout.GetCurrentPosition;
 begin
-  if WindowPlacement=iwpRestoreWindowGeometry then
+  case WindowPlacement of
+  iwpRestoreWindowGeometry:
     ReadCurrentCoordinates;
+    
+  iwpRestoreWindowSize:
+    ReadCurrentCoordinates;
+    
+  end;
 end;
 
 { TIDEWindowLayoutList }
@@ -635,7 +684,8 @@ const
       'Default',
       'Restore window geometry',
       'Docked',
-      'Custom position'
+      'Custom position',
+      'Restore window size'
     );
 begin
   if AnLayout=nil then exit;
@@ -812,6 +862,158 @@ end;
 procedure TIDEWindowSetupLayoutComponent.Save;
 begin
   SaveTo(Layout);
+end;
+
+{ TIDEDialogLayout }
+
+procedure TIDEDialogLayout.SetHeight(const AValue: integer);
+begin
+  if FHeight=AValue then exit;
+  FHeight:=AValue;
+end;
+
+procedure TIDEDialogLayout.SetName(const AValue: string);
+begin
+  if FName=AValue then exit;
+  FName:=AValue;
+end;
+
+procedure TIDEDialogLayout.SetWidth(const AValue: integer);
+begin
+  if FWidth=AValue then exit;
+  FWidth:=AValue;
+end;
+
+function TIDEDialogLayout.SizeValid: boolean;
+begin
+  Result:=(Width>0) and (Height>0);
+end;
+
+procedure TIDEDialogLayout.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  FName:=XMLConfig.GetValue(Path+'/Name/Value','');
+  FWidth:=XMLConfig.GetValue(Path+'/Size/Width',0);
+  FHeight:=XMLConfig.GetValue(Path+'/Size/Height',0);
+end;
+
+procedure TIDEDialogLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetValue(Path+'/Name/Value',Name);
+  XMLConfig.SetValue(Path+'/Size/Width',Width);
+  XMLConfig.SetValue(Path+'/Size/Height',Height);
+end;
+
+{ TIDEDialogLayoutList }
+
+function TIDEDialogLayoutList.GetItems(Index: integer): TIDEDialogLayout;
+begin
+  Result:=TIDEDialogLayout(FItems[Index]);
+end;
+
+constructor TIDEDialogLayoutList.Create;
+begin
+  inherited Create;
+  FItems:=TList.Create;
+end;
+
+destructor TIDEDialogLayoutList.Destroy;
+begin
+  Clear;
+  FreeAndNil(FItems);
+  inherited Destroy;
+end;
+
+procedure TIDEDialogLayoutList.ApplyLayout(ADialog: TControl);
+var
+  ALayout: TIDEDialogLayout;
+begin
+  if ADialog=nil then exit;
+  ALayout:=Find(ADialog,true);
+  ADialog.SetBounds(ADialog.Left,ADialog.Top,ALayout.Width,ALayout.Height);
+end;
+
+procedure TIDEDialogLayoutList.SaveLayout(ADialog: TControl);
+var
+  ALayout: TIDEDialogLayout;
+begin
+  if ADialog=nil then exit;
+  ALayout:=Find(ADialog,true);
+  ALayout.Width:=ADialog.Width;
+  ALayout.Height:=ADialog.Height;
+end;
+
+procedure TIDEDialogLayoutList.Clear;
+var i: integer;
+begin
+  for i:=0 to FItems.Count-1 do
+    Items[i].Free;
+  FItems.Clear;
+end;
+
+function TIDEDialogLayoutList.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TIDEDialogLayoutList.Find(const DialogName: string;
+  CreateIfNotExists: boolean): TIDEDialogLayout;
+var i: integer;
+begin
+  i:=IndexOf(DialogName);
+  if (i<0) then begin
+    if CreateIfNotExists then begin
+      Result:=TIDEDialogLayout.Create;
+      FItems.Add(Result);
+      Result.Name:=DialogName;
+    end else begin
+      Result:=nil;
+    end;
+  end else begin
+    Result:=Items[i];
+  end;
+end;
+
+function TIDEDialogLayoutList.Find(ADialog: TObject; CreateIfNotExists: boolean
+  ): TIDEDialogLayout;
+begin
+  if ADialog<>nil then begin
+    Result:=Find(ADialog.ClassName,CreateIfNotExists);
+  end else begin
+    Result:=nil;
+  end;
+end;
+
+function TIDEDialogLayoutList.IndexOf(const DialogName: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(DialogName,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+procedure TIDEDialogLayoutList.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  NewCount, i: integer;
+  NewDialogLayout: TIDEDialogLayout;
+begin
+  Clear;
+  NewCount:=XMLConfig.GetValue(Path+'/Count',0);
+  for i:=0 to NewCount-1 do begin
+    NewDialogLayout:=TIDEDialogLayout.Create;
+    FItems.Add(NewDialogLayout);
+    NewDialogLayout.LoadFromXMLConfig(XMLConfig,Path+'/Dialog'+IntToStr(i+1));
+  end;
+end;
+
+procedure TIDEDialogLayoutList.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var i: integer;
+begin
+  XMLConfig.SetValue(Path+'/Count',Count);
+  for i:=0 to Count-1 do
+    Items[i].SaveToXMLConfig(XMLConfig,Path+'/Dialog'+IntToStr(i+1));
 end;
 
 end.
