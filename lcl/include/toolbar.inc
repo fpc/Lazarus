@@ -972,11 +972,12 @@ begin
     Inc(Result);
   end;
   { Find button on Row closest to ALeft }
-  for TempIndex := Head to Tail do
-    if (TempIndex <> OldIndex) then
-     if FButtons[Result] <> nil then
-      if (ALeft <= TControl(FButtons[Result]).Left) then
-      Break;
+  if Result=FButtons.Count then dec(Result);
+  if FButtons[Result] <> nil then
+    for TempIndex := Head to Tail do
+      if (TempIndex <> OldIndex) then
+        if (ALeft <= TControl(FButtons[Result]).Left) then
+          Break;
   { Return old position if new position is last on the row and old position
     was already the last on the row. }
   if (TempIndex = OldIndex + 1) and (OldIndex in [Head..Tail]) then
@@ -1502,6 +1503,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/12/22 22:55:45  mattias
+  fixed toolbar
+
   Revision 1.8  2002/11/12 10:16:17  lazarus
   MG: fixed TMainMenu creation
 
