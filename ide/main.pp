@@ -325,7 +325,7 @@ type
     procedure OnCodeExplorerGetCodeTree(Sender: TObject;
                                         var ACodeTool: TCodeTool);
     procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
-                                       CleanPos: integer)
+                                       const Caret: TPoint; TopLine: integer);
 
     // view project ToDo list events
     procedure ViewProjectTodosOpenFile(Sender: TObject;
@@ -7465,17 +7465,9 @@ begin
 end;
 
 procedure TMainIDE.OnCodeExplorerJumpToCode(Sender: TObject;
-  const Filename: string; CleanPos: integer)
-var
-  CodeBuffer: TCodeBuffer;
-  ACodeTool: TCodeTool;
+  const Filename: string; const Caret: TPoint; TopLine: integer);
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  CodeBuffer:=CodeToolBoss.FindFile(Filename);
-  if CodeBuffer=nil then exit;
-  ACodeTool:=nil;
-  CodeToolBoss.Explore(CodeBuffer,ACodeTool,false);
-  
+  DoJumpToSourcePos(Filename,Caret.X,Caret.Y,TopLine,true);
 end;
 
 procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
@@ -9278,6 +9270,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.613  2003/06/20 13:24:46  mattias
+  implemented jump to source for code explorer
+
   Revision 1.612  2003/06/20 12:56:53  mattias
   reduced paint messages on destroy
 
