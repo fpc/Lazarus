@@ -9,9 +9,9 @@ LazarusResources.Add('TEncloseSelectionDialog','FORMDATA',[
   +'TButton'#8'OkButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#2'O'
   +'k'#11'ModalResult'#2#1#8'TabOrder'#2#0#4'Left'#2'X'#6'Height'#2#25#3'Top'#3
   +#208#0#5'Width'#2'k'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'akLeft'
-  +#8'akBottom'#0#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#1#4
-  +'Left'#3#224#0#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'h'#0#0#11'TRadioGrou'
-  +'p'#14'TypeRadiogroup'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBotto'
-  +'m'#0#7'Caption'#6#4'Type'#11'ParentColor'#9#4'Left'#2#8#6'Height'#3#189#0#3
-  +'Top'#2#8#5'Width'#3#153#1#0#0#0
+  +#8'akBottom'#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabO'
+  +'rder'#2#1#4'Left'#3#224#0#6'Height'#2#25#3'Top'#3#208#0#5'Width'#2'h'#0#0#11
+  +'TRadioGroup'#14'TypeRadiogroup'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'
+  +#8'akBottom'#0#7'Caption'#6#4'Type'#11'ParentColor'#9#4'Left'#2#8#6'Height'#3
+  +#189#0#3'Top'#2#8#5'Width'#3#153#1#0#0#0
 ]);

@@ -10,13 +10,13 @@ LazarusResources.Add('TExtractProcDialog','FORMDATA',[
   +'Caption'#6#14'TypeRadiogroup'#12'ColumnLayout'#7#24'clVerticalThenHorizonta'
   +'l'#11'ParentColor'#9#4'Left'#2#8#6'Height'#2'x'#3'Top'#2#8#5'Width'#3#174#1
   +#0#0#7'TButton'#8'OkButton'#7'Caption'#6#8'OkButton'#7'OnClick'#7#13'OkButto'
-  +'nCLICK'#8'TabOrder'#2#1#4'Left'#2'X'#6'Height'#2#25#3'Top'#3#192#0#5'Width'
-  +#2'x'#0#0#7'TButton'#12'CancelButton'#7'Caption'#6#12'CancelButton'#11'Modal'
-  +'Result'#2#2#8'TabOrder'#2#2#4'Left'#3#248#0#6'Height'#2#25#3'Top'#3#192#0#5
-  +'Width'#2'x'#0#0#9'TGroupBox'#12'NameGroupbox'#7'Anchors'#11#5'akTop'#6'akLe'
-  +'ft'#7'akRight'#0#7'Caption'#6#12'NameGroupbox'#12'ClientHeight'#2#27#11'Cli'
-  +'entWidth'#3#170#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#4'Lef'
-  +'t'#2#8#6'Height'#2','#3'Top'#3#135#0#5'Width'#3#174#1#0#5'TEdit'#8'NameEdit'
-  +#5'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#8'TabOrde'
-  +'r'#2#0#4'Text'#6#8'NameEdit'#6'Height'#2#23#5'Width'#3#170#1#0#0#0#0
+  +'nCLICK'#8'TabOrder'#2#0#4'Left'#2'X'#6'Height'#2#25#3'Top'#3#192#0#5'Width'
+  +#2'x'#0#0#7'TButton'#12'CancelButton'#6'Cancel'#9#7'Caption'#6#12'CancelButt'
+  +'on'#11'ModalResult'#2#2#8'TabOrder'#2#1#4'Left'#3#248#0#6'Height'#2#25#3'To'
+  +'p'#3#192#0#5'Width'#2'x'#0#0#9'TGroupBox'#12'NameGroupbox'#7'Anchors'#11#5
+  +'akTop'#6'akLeft'#7'akRight'#0#7'Caption'#6#12'NameGroupbox'#12'ClientHeight'
+  +#2#27#11'ClientWidth'#3#170#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'
+  +#2#2#4'Left'#2#8#6'Height'#2','#3'Top'#3#135#0#5'Width'#3#174#1#0#5'TEdit'#8
+  +'NameEdit'#5'Align'#7#5'alTop'#8'TabOrder'#2#0#4'Text'#6#8'NameEdit'#6'Heigh'
+  +'t'#2#23#5'Width'#3#170#1#0#0#0#0
 ]);

@@ -45,12 +45,15 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, StdCtrls, ComCtrls,
-  ExtCtrls, Menus, LResources, LCLProc, Graphics, Dialogs, SynEdit,
+  LCLType, ExtCtrls, Menus, LResources, LCLProc, Graphics, Dialogs, SynEdit,
   LazarusIDEStrConsts, DefineTemplates, CodeToolManager,
   CodeToolsOptions, CodeToolsDefPreview, TransferMacros, InputFileDialog,
   IDEOptionDefs, LazConf, IDEProcs;
 
 type
+
+  { TCodeToolsDefinesEditor }
+
   TCodeToolsDefinesEditor = class(TForm)
     TheImageList: TImageList;
     MainMenu: TMainMenu;
@@ -157,6 +160,8 @@ type
     //DefinePreview: TCodeToolsDefinesPreview;
 
     // misc
+    procedure CodeToolsDefinesEditorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure SelectedItemGroupBoxResize(Sender: TObject);
     procedure ValueNoteBookResize(Sender: TObject);
@@ -346,6 +351,12 @@ begin
     Width:=MaxX-2*Left;
     Height:=MaxY-Top-Left;
   end;
+end;
+
+procedure TCodeToolsDefinesEditor.CodeToolsDefinesEditorKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if (Shift=[]) and (Key=VK_ESCAPE) then ModalResult:=mrCancel;
 end;
 
 procedure TCodeToolsDefinesEditor.DefineTreeViewMouseUp(Sender: TObject;
@@ -1974,6 +1985,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:=lisCodeToolsDefsCodeToolsDefinesEditor;
     OnResize:=@FormResize;
+    OnKeyDown:=@CodeToolsDefinesEditorKeyDown;
     
     CreateComponents;
   end;

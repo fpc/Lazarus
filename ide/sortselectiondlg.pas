@@ -557,6 +557,7 @@ begin
     Top:=OkButton.Top;
     Caption:=lisSortSelCancel;
     ModalResult:=mrCancel;
+    Cancel:=true;
   end;
   
   OnResize:=@SortSelectionDialogResize;

@@ -19,7 +19,6 @@
    
   ToDo:
    - better keyboard navigation
-   - add option: showing buttons for paDialog properties
    - property editor for 'ListObject'
    - persistent selected cell after rebuild
    - moving objects

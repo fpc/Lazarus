@@ -410,7 +410,8 @@ type
     procedure GeneralCheckBoxOnClick(Sender: TObject);
     procedure ComboBoxOnChange(Sender:TObject);
     procedure ComboBoxOnExit(Sender:TObject);
-    procedure ComboBoxOnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ComboBoxOnKeyDown(Sender: TObject;
+                                var Key: Word; Shift: TShiftState);
     procedure ColorButtonColorChanged(Sender:TObject);
 
     // display
@@ -5310,6 +5311,7 @@ begin
     Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
   end;
+  CancelControl:=CancelButton;
 
   OkButton:=TButton.Create(Self);
   with OkButton do begin

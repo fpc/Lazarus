@@ -59,6 +59,8 @@ type
     needs to be changed }
   TNumGlyphs = 1..4;
 
+  { TCustomButton }
+
   TCustomButton = class(TButtonControl)
   private
     FCancel: Boolean;
@@ -67,6 +69,7 @@ type
     FShortCut: TShortcut;
     procedure SetCancel(NewCancel: boolean);
     procedure SetDefault(Value: Boolean);
+    procedure SetModalResult(const AValue: TModalResult);
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
@@ -82,9 +85,9 @@ type
     procedure ExecuteCancelAction; override;
     procedure UpdateRolesForForm; override;
   public
-    property Color: TColor default clBtnFace;
+    property Color default clBtnFace;
     property Default: Boolean read FDefault write SetDefault default false;
-    property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
+    property ModalResult: TModalResult read FModalResult write SetModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;
     property TabStop default true;
   end;
@@ -384,6 +387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2005/01/14 00:27:05  mattias
+  fixed several dialogs to react on esacpe
+
   Revision 1.85  2005/01/04 14:23:37  micha
   implement transparency (actually, non-transparency)
 

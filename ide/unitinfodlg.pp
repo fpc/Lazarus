@@ -27,10 +27,13 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, LazarusIDEStrConsts,
-  CodeToolsDefPreview, CodeToolManager;
+  Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons,
+  LazarusIDEStrConsts, CodeToolsDefPreview, CodeToolManager;
 
 type
+
+  { TUnitInfoDlg }
+
   TUnitInfoDlg = class(TFORM)
     OkButton:TButton;
     uname: TLabel;
@@ -58,6 +61,8 @@ type
     CodeToolsDefsButton: TButton;
     procedure CodeToolsDefsButtonClick(Sender: TObject);
     procedure PathsGroupBoxResize(Sender: TObject);
+    procedure UnitInfoDlgKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure UnitInfoDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender:TObject);
     procedure clearIncludedByClick(Sender: TObject);
@@ -363,7 +368,8 @@ begin
       Default:=true;
       OnClick:=@OkButtonClick;
     end;
-
+    
+    OnKeyDown:=@UnitInfoDlgKeyDown;
   end;
   UnitInfoDlgResize(nil);
 end;
@@ -557,6 +563,12 @@ begin
     Top:=52;
     Width:=Parent.ClientWidth-Left-2;
   end;
+end;
+
+procedure TUnitInfoDlg.UnitInfoDlgKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Shift=[]) and (Key=VK_ESCAPE) then ModalResult:=mrCancel;
 end;
 
 procedure TUnitInfoDlg.CodeToolsDefsButtonClick(Sender: TObject);

@@ -23,6 +23,7 @@ object EncloseSelectionDialog: TEncloseSelectionDialog
   end
   object CancelButton: TButton
     Anchors = [akLeft, akBottom]
+    Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 1

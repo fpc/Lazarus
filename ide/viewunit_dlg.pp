@@ -123,6 +123,7 @@ begin
   btnOk.Left:=ClientWidth-btnOk.Width-5;
   btnCancel.Caption:='Cancel';
   btnCancel.Left:=btnOk.Left;
+  CancelControl:=btnCancel;
   MultiSelectCheckBox.Caption:='Multi Select';
   MultiSelectCheckBox.Left:=btnOk.Left;
 end;
@@ -152,6 +153,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.19  2005/01/14 00:27:05  mattias
+  fixed several dialogs to react on esacpe
+
   Revision 1.18  2004/12/18 10:20:18  mattias
   updatepofiles is now case sensitive,
   replaced many places, where Application was needlessly Owner

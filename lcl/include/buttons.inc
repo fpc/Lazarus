@@ -124,7 +124,7 @@ begin
       Form.CancelControl := nil;
   end;
 end;
- 
+
 {------------------------------------------------------------------------------
   Method:  TCustomButton.SetDefault
   Params:  Value
@@ -145,6 +145,12 @@ begin
       Form.DefaultControl := nil;
   end;
   DoSendBtnDefault;
+end;
+
+procedure TCustomButton.SetModalResult(const AValue: TModalResult);
+begin
+  if AValue=FModalResult then exit;
+  FModalResult:=AValue;
 end;
 
 procedure TCustomButton.ExecuteDefaultAction;
@@ -217,6 +223,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2005/01/14 00:27:05  mattias
+  fixed several dialogs to react on esacpe
+
   Revision 1.37  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

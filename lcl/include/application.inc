@@ -1145,8 +1145,9 @@ begin
     if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
     begin
       Form := GetParentForm(AControl);
-      //debugln('TApplication.ControlKeyDown B ',Acontrol.Name,' ',dbgs(Form<>nil),' ',dbgs(anoEscapeForCancelControl in Navigation));
+      //debugln('TApplication.ControlKeyDown B ',DbgSName(Acontrol),' ',DbgSName(Form),' ',dbgs(anoEscapeForCancelControl in Navigation));
       if Form<>nil then begin
+        //debugln('TApplication.ControlKeyDown C Form.DefaultControl=',dbgs(Form.DefaultControl),' Form.CancelControl=',dbgs(Form.CancelControl));
         case Key of
           VK_RETURN:
             if (anoReturnForDefaultControl in Navigation)
@@ -1340,6 +1341,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2005/01/14 00:27:05  mattias
+  fixed several dialogs to react on esacpe
+
   Revision 1.93  2004/12/22 19:56:44  mattias
   started TFont mirgration to fpCanvas font
 

@@ -760,7 +760,6 @@ begin
         Pages[0]:=lisMenuInsertGeneral
       else
         Pages.Add(lisMenuInsertGeneral);//by VVI - using first phrase, otherwise we''ll encounter a problem with .po
-	
       Pages.Add(dlgCodeCreation);
       Pages.Add(dlgWordsPolicies);
       Pages.Add(dlgLineSplitting);
@@ -786,8 +785,8 @@ begin
       Top:=Self.ClientHeight-Height-15;
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
-      Visible:=true;
     end;
+    CancelControl:=CancelButton;
 
     OkButton:=TButton.Create(Self);
     with OkButton do begin
@@ -799,7 +798,6 @@ begin
       Top:=CancelButton.Top;
       Caption:=lisCodeToolsOptsOk;
       OnClick:=@OkButtonClick;
-      Visible:=true;
     end;
   end;
   BeautifyCodeOptions:=TBeautifyCodeOptions.Create;

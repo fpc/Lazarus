@@ -1518,6 +1518,7 @@ begin
     Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
   end;
+  CancelControl:=CancelButton;
 
   OkButton:=TButton.Create(Self);
   with OkButton do begin
