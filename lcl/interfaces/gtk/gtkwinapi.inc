@@ -5475,9 +5475,8 @@ var
   gdkRect : TGDKRectangle;
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
-  {$IfDef Win32}
   AWindow: PGdkWindow;
-  {$EndIf}
+  Event : TGDKEvent;
 begin
   //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
@@ -5510,7 +5509,9 @@ begin
   if PaintWidget=nil then PaintWidget:=Widget;
 
   {$IfDef GTK2}
-    if (PaintWidget<>nil) and not GtkWidgetIsA(PaintWidget,GTK_TYPE_WINDOW) then begin
+    if (PaintWidget<>nil) and GTK_WIDGET_NO_WINDOW(PaintWidget)
+      and (not GtkWidgetIsA(PGTKWidget(PaintWidget),GTKAPIWidget_GetType))
+    then begin
       Inc(gdkRect.X, PaintWidget^.Allocation.x);
       Inc(gdkRect.Y, PaintWidget^.Allocation.y);
     end;
@@ -5844,7 +5845,7 @@ end;
   Params:  DC, Points, NumPts, Filled, Continous
   Returns: Boolean
 
-  Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  Use Polybezier to draw cubic BÃ©zier curves. The first curve is drawn from the
   first point to the fourth point with the second and third points being the
   control points. If the Continuous flag is TRUE then each subsequent curve
   requires three more points, using the end-point of the previous Curve as its
@@ -5854,7 +5855,7 @@ end;
   excatly as in the first curve. Any additonal points which do not add up to
   a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
   least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
-  then the resulting Poly-Bézier will be drawn as a Polygon.
+  then the resulting Poly-BÃ©zier will be drawn as a Polygon.
 
  ------------------------------------------------------------------------------}
 Function TgtkObject.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
@@ -8763,6 +8764,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.280  2003/09/11 21:33:11  ajgenius
+  partly fixed TWinControl(csFixed)
+
   Revision 1.279  2003/09/10 18:03:46  ajgenius
   more changes for pango -
   partly fixed ref counting,

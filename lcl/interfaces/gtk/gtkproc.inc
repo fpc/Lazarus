@@ -1735,7 +1735,9 @@ begin
   if (DC<>nil) then begin
     Result:=DC.Origin;
     {$Ifdef GTK2}
-      if (DC.Wnd<>0) and not GtkWidgetIsA(PGTKWidget(DC.Wnd),GTK_TYPE_WINDOW) then begin
+      if (DC.Wnd<>0) and GTK_WIDGET_NO_WINDOW(PGTKWidget(DC.Wnd))
+        and (not GtkWidgetIsA(PGTKWidget(DC.Wnd),GTKAPIWidget_GetType))
+      then begin
         Inc(Result.X, PGTKWidget(DC.Wnd)^.Allocation.x);
         Inc(Result.y, PGTKWidget(DC.Wnd)^.Allocation.y);
       end;
@@ -4648,6 +4650,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.204  2003/09/11 21:33:11  ajgenius
+  partly fixed TWinControl(csFixed)
+
   Revision 1.203  2003/09/10 18:03:46  ajgenius
   more changes for pango -
   partly fixed ref counting,

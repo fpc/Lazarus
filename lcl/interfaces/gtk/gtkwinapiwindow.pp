@@ -71,6 +71,8 @@ procedure GTKAPIWidget_SetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
 procedure GTKAPIWidget_GetCaretRespondToFocus(APIWidget: PGTKAPIWidget;
   var ShowHideOnFocus: boolean);
 
+function GTK_APIWIDGETCLIENT_TYPE: Guint;
+
 implementation
 
 //---------------------------------------------------------------------------
@@ -142,7 +144,7 @@ function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
   Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
-  
+
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl; forward;
 function GTKAPIWidgetClient_GetType: Guint; forward;
@@ -163,6 +165,10 @@ procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
 procedure GTKAPIWidgetClient_GetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   var ShowHideOnFocus: boolean); forward;
 
+function GTK_APIWIDGETCLIENT_TYPE: Guint;
+begin
+  GTK_APIWIDGETCLIENT_TYPE := GTKAPIWidgetClient_GetType;
+end;
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
 // returning 0 would stop the timer, 1 will restart it
@@ -196,9 +202,9 @@ begin
     WClass := GDK_INPUT_OUTPUT;
     Visual := gtk_widget_get_visual(Widget);
     Colormap := gtk_widget_get_colormap(Widget);
-    Event_mask := gtk_widget_get_events(Widget) 
-      or GDK_EXPOSURE_MASK or GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK 
-      or GDK_BUTTON_MOTION_MASK or GDK_ENTER_NOTIFY_MASK or GDK_LEAVE_NOTIFY_MASK 
+    Event_mask := gtk_widget_get_events(Widget)
+      or GDK_EXPOSURE_MASK or GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK
+      or GDK_BUTTON_MOTION_MASK or GDK_ENTER_NOTIFY_MASK or GDK_LEAVE_NOTIFY_MASK
       or GDK_KEY_PRESS_MASK or GDK_KEY_RELEASE_MASK;
   end;
   AttributesMask := GDK_WA_X or GDK_WA_Y or GDK_WA_VISUAL or GDK_WA_COLORMAP;
@@ -312,11 +318,11 @@ var
 begin
 {$IFDEF gtk2}
   //GObjectClass := g_object_class(theClass);
-{$ENDIF}  
+{$ENDIF}
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
   ClientClass := PGTKAPIWidgetClientClass(theClass);
-  
+
   {$IFDEF VER1_1}
   AdjustParams.Param1 := gtk_adjustment_get_type;
   AdjustParams.Param2 := AdjustParams.Param1;
@@ -366,8 +372,10 @@ begin
   if theClass=nil then ;
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_FOCUS);
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_DEFAULT);
-
-  with PGTKAPIWidgetClient(Client)^.Caret do 
+  {$IfDef GTK2}
+  gtk_widget_unset_flags(PGTKWidget(Client), GTK_NO_WINDOW);
+  {$EndIf}
+  with PGTKAPIWidgetClient(Client)^.Caret do
   begin
     Visible := False;
     IsDrawn := False;
@@ -926,6 +934,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/09/11 21:33:12  ajgenius
+  partly fixed TWinControl(csFixed)
+
   Revision 1.47  2003/08/30 18:53:08  mattias
   using default colors, when theme does not define them
 

@@ -2932,8 +2932,7 @@ begin
      Event.Width := PgtkWidget((Handle)^.Allocation.Width;
      Event.Height := PgtkWidget(Handle)^.Allocation.Height;
          gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
-     Assert(False, 'Trace:Signal Emitted - invalidate window');
-  }
+     Assert(False, 'Trace:Signal Emitted - invalidate window'); }
         gtk_widget_queue_draw(PGtkWidget(Handle));
       end;
 
@@ -8172,6 +8171,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.414  2003/09/11 21:33:11  ajgenius
+  partly fixed TWinControl(csFixed)
+
   Revision 1.413  2003/09/10 18:03:46  ajgenius
   more changes for pango -
   partly fixed ref counting,
