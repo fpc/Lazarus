@@ -305,7 +305,6 @@ resourcestring
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
     +'text form data of file %s%s%s%s%sinto binary stream. (%s)';
   lisFormLoadError = 'Form load error';
-  lisUnableToBuildFormFromFile = 'Unable to build form from file %s%s%s%s.';
   lisSaveProjectLpi = 'Save Project %s (*.lpi)';
   lisInvalidProjectFilename = 'Invalid project filename';
   lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '

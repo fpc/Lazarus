@@ -1643,6 +1643,10 @@ begin
       For I := 0 to OpenDialog.Files.Count-1 do
         Begin
           AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
+          if i<OpenDialog.Files.Count then
+            Include(OpenFlags,ofMultiOpen)
+          else
+            Exclude(OpenFlags,ofMultiOpen);
           if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
             break;
           end;
@@ -3582,15 +3586,9 @@ begin
 
       // create JIT component
       CInterface := TComponentInterface(
-                          FormEditor1.CreateComponentFromStream(BinLFMStream,
-                                                                AncestorType));
+                      FormEditor1.CreateComponentFromStream(BinLFMStream,
+                                                            AncestorType,true));
       if CInterface=nil then begin
-        ACaption:=lisFormLoadError;
-        AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
-          LFMBuf.Filename, '"']);
-        Result:=MessageDlg(ACaption, AText, mtError, [mbOk, mbCancel], 0);
-        if Result=mrCancel then Result:=mrAbort;
-        if Result<>mrOk then exit;
         NewComponent:=nil;
         AnUnitInfo.Component:=NewComponent;
         // open lfm file in editor
@@ -5149,6 +5147,7 @@ var Ext,AText,ACaption: string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
   LastDesigner: TDesigner;
+  AnUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
@@ -5244,44 +5243,52 @@ begin
     LowestUnitIndex:=-1;
     LowestEditorIndex:=-1;
     for i:=0 to Project1.UnitCount-1 do begin
-      if (Project1.Units[i].Loaded) then begin
-        if (Project1.Units[i].EditorIndex>LastEditorIndex)
-        and ((Project1.Units[i].EditorIndex<LowestEditorIndex)
+      AnUnitInfo:=Project1.Units[i];
+      if (AnUnitInfo.Loaded)
+      and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)=nil)
+      then begin
+        if (AnUnitInfo.EditorIndex>LastEditorIndex)
+        and ((AnUnitInfo.EditorIndex<LowestEditorIndex)
              or (LowestEditorIndex<0)) then
         begin
-          LowestEditorIndex:=Project1.Units[i].EditorIndex;
+          LowestEditorIndex:=AnUnitInfo.EditorIndex;
           LowestUnitIndex:=i;
         end;
       end;
     end;
-    if LowestEditorIndex>=0 then begin
-      // reopen file
-      Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
-                    [ofProjectLoading,ofOnlyIfExists]);
-      if Result=mrAbort then begin
-        // mark all files, that are left to open as unloaded:
-        for i:=0 to Project1.UnitCount-1 do begin
-          if Project1.Units[i].Loaded
-          and (Project1.Units[i].EditorIndex>LastEditorIndex) then begin
-            Project1.Units[i].Loaded:=false;
-            Project1.Units[i].EditorIndex:=-1;
-            Project1.ActiveEditorIndexAtStart:=-1;
-          end;
-        end;
-        exit;
-      end;
-      if Result=mrOk then begin
-        // open successful
-        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
-          Project1.ActiveEditorIndexAtStart:=SourceNoteBook.NoteBook.PageIndex;
-        LastEditorIndex:=LowestEditorIndex;
-      end else begin
-        // open failed -> ignore this unit
-        Project1.Units[LowestUnitIndex].EditorIndex:=-1;
-        Project1.Units[LowestUnitIndex].Loaded:=false;
-        if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+    if LowestEditorIndex<0 then break;
+    
+    // reopen file
+    Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
+                  [ofProjectLoading,ofMultiOpen,ofOnlyIfExists]);
+    if Result=mrAbort then begin
+      // mark all files, that are left to open as unloaded:
+      for i:=0 to Project1.UnitCount-1 do begin
+        AnUnitInfo:=Project1.Units[i];
+        if AnUnitInfo.Loaded
+        and (AnUnitInfo.EditorIndex>LastEditorIndex) then begin
+          AnUnitInfo.Loaded:=false;
+          AnUnitInfo.EditorIndex:=-1;
           Project1.ActiveEditorIndexAtStart:=-1;
+        end;
       end;
+      exit;
+    end;
+    AnUnitInfo:=Project1.Units[LowestUnitIndex];
+    if ((AnUnitInfo.Filename<>'')
+    and (SourceNotebook.FindSourceEditorWithFilename(AnUnitInfo.Filename)<>nil))
+    then begin
+      // open source was successful (at least the source)
+      if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+        Project1.ActiveEditorIndexAtStart:=SourceNoteBook.NoteBook.PageIndex;
+      LastEditorIndex:=LowestEditorIndex;
+    end else begin
+      // failed to open entirely -> mark as unloaded, so that next time
+      // it will not be tried again
+      AnUnitInfo.EditorIndex:=-1;
+      AnUnitInfo.Loaded:=false;
+      if Project1.ActiveEditorIndexAtStart=LowestEditorIndex then
+        Project1.ActiveEditorIndexAtStart:=-1;
     end;
   until LowestEditorIndex<0;
   Result:=mrCancel;
@@ -9928,6 +9935,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.663  2003/11/06 19:13:34  mattias
+  fixed loading forms with errors
+
   Revision 1.662  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 

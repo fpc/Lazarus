@@ -102,8 +102,8 @@ type
     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
     Function CreateComponentFromStream(BinStream: TStream;
-                                     AncestorType: TComponentClass
-                                     ): TIComponentInterface; virtual; abstract;
+                             AncestorType: TComponentClass; Interactive: boolean
+                             ): TIComponentInterface; virtual; abstract;
     Function CreateChildComponentFromStream(BinStream: TStream;
                                      ComponentClass: TComponentClass;
                                      Root: TComponent;

@@ -111,7 +111,8 @@ type
     ofRegularFile,   // open as regular file (e.g. do not open projects)
     ofVirtualFile,   // open the virtual file
     ofConvertMacros, // replace macros in filename
-    ofUseCache       // do not update file from disk
+    ofUseCache,      // do not update file from disk
+    ofMultiOpen      // set during loading multiple files
     );
   TOpenFlags = set of TOpenFlag;
   
@@ -462,7 +463,8 @@ const
      'ofRegularFile',
      'ofVirtualFile',
      'ofConvertMacros',
-     'ofUseCache'
+     'ofUseCache',
+     'ofMultiOpen'
     );
     
   SaveFlagNames: array[TSaveFlag] of string = (

@@ -163,7 +163,8 @@ each control that's dropped onto the form
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateComponentFromStream(BinStream: TStream;
-                       AncestorType: TComponentClass): TIComponentInterface; override;
+                       AncestorType: TComponentClass;
+                       Interactive: boolean): TIComponentInterface; override;
     Function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
                        ParentControl: TWinControl): TIComponentInterface; override;
@@ -1027,7 +1028,8 @@ Begin
 end;
 
 Function TCustomFormEditor.CreateComponentFromStream(
-  BinStream: TStream; AncestorType: TComponentClass): TIComponentInterface;
+  BinStream: TStream; AncestorType: TComponentClass;
+  Interactive: boolean): TIComponentInterface;
 var
   NewJITIndex: integer;
   NewComponent: TComponent;
@@ -1038,7 +1040,7 @@ begin
   if JITList=nil then
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
-  NewJITIndex := JITList.AddJITComponentFromStream(BinStream);
+  NewJITIndex := JITList.AddJITComponentFromStream(BinStream,Interactive);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
@@ -1124,6 +1126,10 @@ begin
     jfeUnknownProperty, jfeReaderError:
       begin
         Buttons:=[mbIgnore,mbCancel];
+      end;
+    jfeUnknownComponentClass:
+      begin
+        aMsg:=aMsg+#13+'Class "'+JITComponentList.CurUnknownClass+'" not found.';
       end;
   end;
   Action:=MessageDlg(aCaption,aMsg,DlgType,Buttons,HelpCtx);

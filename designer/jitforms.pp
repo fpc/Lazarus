@@ -75,6 +75,8 @@ type
   TJITComponentList = class(TPersistentWithTemplates)
   private
     FComponentPrefix: string;
+    FCurUnknownClass: string;
+    FCurUnknownProperty: string;
     procedure SetComponentPrefix(const AValue: string);
   protected
     FCurReadErrorMsg: string;
@@ -134,7 +136,8 @@ type
     property Items[Index:integer]: TComponent read GetItem; default;
     function Count:integer;
     function AddNewJITComponent:integer;
-    function AddJITComponentFromStream(BinStream:TStream):integer;
+    function AddJITComponentFromStream(BinStream:TStream;
+                                       Interactive: Boolean):integer;
     procedure DestroyJITComponent(JITComponent:TComponent);
     procedure DestroyJITComponent(Index:integer);
     function IndexOf(JITComponent:TComponent):integer;
@@ -162,6 +165,8 @@ type
     property CurReadChild: TComponent read FCurReadChild;
     property CurReadChildClass: TComponentClass read FCurReadChildClass;
     property CurReadErrorMsg: string read FCurReadErrorMsg;
+    property CurUnknownProperty: string read FCurUnknownProperty;
+    property CurUnknownClass: string read FCurUnknownClass;
     property ComponentPrefix: string read FComponentPrefix
                                      write SetComponentPrefix;
   end;
@@ -323,7 +328,8 @@ begin
   Result:=DoCreateJITComponent(NewComponentName,NewClassName);
 end;
 
-function TJITComponentList.AddJITComponentFromStream(BinStream:TStream):integer;
+function TJITComponentList.AddJITComponentFromStream(BinStream:TStream;
+  Interactive: Boolean):integer;
 //  returns new index
 // -1 = invalid stream
 var
@@ -334,10 +340,7 @@ begin
   Result:=-1;
   NewClassName:=GetClassNameFromStream(BinStream);
   if NewClassName='' then begin
-
-    // Application.MessageBox('No classname in form stream found.','',mb_OK);
     MessageDlg('No classname in stream found.',mtError,[mbOK],0);
-
     exit;
   end;
   {$IFDEF VerboseJITForms}
@@ -902,6 +905,7 @@ begin
   ErrorType:=jfeReaderError;
   Action:=mrCancel;
   FCurReadErrorMsg:=ErrorMsg;
+  FCurUnknownProperty:=''; // ToDo find name property
   // find out, what error occured
   if RightStr(ErrorMsg,length(SUnknownProperty))=SUnknownProperty then begin
     ErrorType:=jfeUnknownProperty;
@@ -910,20 +914,20 @@ begin
   if Assigned(OnReaderError) then
     OnReaderError(Self,ErrorType,Action);
   Handled:=Action in [mrIgnore];
+  FCurUnknownProperty:='';
   writeln('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   writeln('[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',Handled);
   writeln('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 end;
 
 procedure TJITComponentList.ReaderFindComponentClass(Reader: TReader;
-  const FindClassName: Ansistring;  var ComponentClass: TComponentClass);
+  const FindClassName: Ansistring; var ComponentClass: TComponentClass);
 var
   RegComp: TRegisteredComponent;
-  Action: TModalResult;
-  ErrorType: TJITFormError;
 begin
   fCurReadChild:=nil;
   fCurReadChildClass:=ComponentClass;
+  FCurUnknownClass:=FindClassName;
   if ComponentClass=nil then begin
     {$IFDEF DisablePkgs}
     RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
@@ -937,12 +941,10 @@ begin
     end else begin
       writeln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
          +''' is unregistered');
-      Action:=mrCancel;
-      ErrorType:=jfeUnknownComponentClass;
-      if Assigned(OnReaderError) then
-        OnReaderError(Self,ErrorType,Action);
+      // The reader will create a ReaderError automatically
     end;
   end;
+  FCurUnknownClass:='';
 end;
 
 procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
