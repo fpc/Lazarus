@@ -3796,7 +3796,8 @@ begin
   if ActiveUnitInfo=nil then exit;
 
   // check if file is writable on disk
-  if not ActiveUnitInfo.IsVirtual then
+  if (not ActiveUnitInfo.IsVirtual)
+  and FileExists(ActiveUnitInfo.Filename) then
     ActiveUnitInfo.FileReadOnly:=not FileIsWritable(ActiveUnitInfo.Filename);
   
   // if this file is part of the project and the project is virtual then save
@@ -7833,6 +7834,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.476  2003/03/07 13:32:40  mattias
+  fixed checking readonly for non existing files
+
   Revision 1.475  2003/03/07 11:41:21  mattias
   fixed readonly check and added script to quick create lazarus snapshot
 
