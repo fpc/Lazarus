@@ -7154,10 +7154,11 @@ var ActiveSrcEdit: TSourceEditor;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
-  {$IFDEF IDE_DEBUG}
+  { $IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
-  {$ENDIF}
+  { $ENDIF}
+
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     ActiveUnitInfo.Form.ClassName,AMethodName,
     NewSource,NewX,NewY,NewTopLine) then
@@ -7503,6 +7504,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.436  2002/12/02 10:44:55  mattias
+  fixed SourceChangeCache when nothing has changed
+
   Revision 1.435  2002/11/29 17:51:04  mattias
   star mark for modified editors and OI combo multiselection text
 
