@@ -818,7 +818,6 @@ end;
 function GetCoreChildWidget(const Widget: Pointer): Pointer;
 begin
   Result:= gtk_object_get_data(Widget, 'core_child');
-  if Result = nil then Result := Widget;
 end;
 
 procedure SetCoreChildWidget(const ParentWidget, ChildWidget: Pointer);
@@ -981,6 +980,22 @@ begin
     // mouse capture widget has changed
     MCaptureHandle:=integer(CurMouseCaptureHandle); // ToDo: 64bit faulty
     NotifyCurCaptureControl;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure CheckMouseCaptureHandle(CurrentInputWidget: PGtkWidget);
+
+  Compares CurrentInputWidget with cached capture widget
+  and updates if necessary.
+-------------------------------------------------------------------------------}
+procedure CheckMouseCaptureHandle(CurrentInputWidget: PGtkWidget);
+begin
+  if (MCaptureHandle <> 0)
+  and (Pointer(MCaptureHandle) <> CurrentInputWidget) then begin
+    // capture differs. => gtk forgot to tell, that the capturing has changed
+    // -> update
+    UpdateMouseCaptureControl;
   end;
 end;
 
@@ -2526,6 +2541,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.75  2002/08/24 12:55:00  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.74  2002/08/24 07:09:04  lazarus
   MG: fixed bracket hilighting
 
