@@ -10,5 +10,4 @@ dirs=jitform
 files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))
 
 [rules]
-
 cleanall: clean

@@ -24,7 +24,8 @@ targetdir=.
 
 [clean]
 files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
-      $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT))
+      $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT)) \
+      $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT))
 
 [install]
 basedir=lib/lazarus

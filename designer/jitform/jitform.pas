@@ -60,8 +60,8 @@ type
 
 implementation
 
-// Define a dummy component to set the csDesigning flag which can not set by a
-// TForm, because SetDesigning is protected.
+// Define a dummy component to set the csDesigning flag which can not be set
+// by a TForm, because SetDesigning is protected.
 type
   TSetDesigningComponent = class(TComponent)
   public

@@ -36,3 +36,6 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allcodetoolunits$(PPUEXT)
 
 all: cleartarget allcodetoolunits$(PPUEXT)
+
+# end.
+

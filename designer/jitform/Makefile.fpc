@@ -42,3 +42,6 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/jitform$(PPUEXT)
 
 all: cleartarget jitform$(PPUEXT)
+
+# end.
+
