@@ -73,7 +73,6 @@ const
   LM_GETSELTEXT     = LM_COMUSER+66;
   LM_SETSELTEXT     = LM_COMUSER+67;
   LM_SORT           = LM_COMUSER+74;
-  LM_GETSEL         = LM_COMUSER+76;
   LM_SETSEL         = LM_COMUSER+77;
   LM_SETSELMODE     = LM_COMUSER+78;
   LM_SETBORDER      = LM_COMUSER+79;
@@ -836,7 +835,6 @@ begin
   LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
   LM_SETSELTEXT     :Result:='LM_SETSELTEXT';
   LM_SORT           :Result:='LM_SORT';
-  LM_GETSEL         :Result:='LM_GETSEL';
   LM_SETSEL         :Result:='LM_SETSEL';
   LM_SETSELMODE     :Result:='LM_SETSELMODE';
   LM_SETBORDER      :Result:='LM_SETBORDER';
@@ -949,6 +947,9 @@ end.
 
 {
   $Log$
+  Revision 1.105  2004/09/15 19:38:55  micha
+  convert LM_GETSEL message to interface method
+
   Revision 1.104  2004/09/15 19:04:39  micha
   convert LM_GETSELCOUNT message to interface method
 

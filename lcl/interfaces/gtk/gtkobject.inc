@@ -3062,8 +3062,6 @@ function TGtkWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
 var
   handle      : hwnd;                  // handle of sender
   Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
-  GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
-  ListItem    : PGtkListItem;          // currently only used for listboxes
   Geometry    : TGdkGeometry;
 begin
   Result := 0;   //default value just in case nothing sets it
@@ -3125,43 +3123,6 @@ begin
           RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
-
-      LM_GETSEL :
-      {$IFdef GTK2}
-      begin
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSEL');
-      end;
-      {$Else}
-      begin
-        Result := 0;      { assume: nothing found }
-        if (Sender is TControl)
-        and Assigned (data)
-        then case TControl(Sender).fCompStyle of
-          csListBox, csCheckListBox:
-            begin
-              { Get the child in question of that index }
-              Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-              ListItem:= g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
-              if (ListItem<>nil)
-              and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0)
-              then Result:=1
-            end;
-          csCListBox:
-            begin
-              { Get the selections }
-              Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
-              GList:= PGtkCList(Widget)^.selection;
-              while Assigned(GList) do begin
-                if integer(GList^.data) = integer(Data^) then begin
-                  Result:= 1;
-                  Break;
-                end else
-                  GList := GList^.Next;
-              end;
-            end;
-          end;
-      end;
-      {$EndIf}
 
       LM_SORT:
       begin
@@ -8049,6 +8010,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.573  2004/09/15 19:38:55  micha
+  convert LM_GETSEL message to interface method
+
   Revision 1.572  2004/09/15 19:04:39  micha
   convert LM_GETSELCOUNT message to interface method
 

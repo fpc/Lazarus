@@ -98,6 +98,7 @@ type
   protected
   public
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -268,6 +269,11 @@ begin
     else
       Result := 1;
   end;
+end;
+
+function  TWin32WSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+begin
+  Result := Windows.SendMessage(ACustomListBox.Handle, LB_GETSEL, Windows.WParam(AIndex), 0) > 0;
 end;
 
 function  TWin32WSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;

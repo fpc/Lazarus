@@ -330,11 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_GETSEL:
-      Begin
-        If Sender Is TCustomListBox then
-          Result := Windows.SendMessage(Handle, LB_GETSEL, Windows.WParam(Data^), 0);
-      End;
       LM_SORT:
       Begin
         If  (Sender Is TControl) And Assigned(Data) Then
@@ -2136,6 +2131,9 @@ End;
 
 {
   $Log$
+  Revision 1.266  2004/09/15 19:38:56  micha
+  convert LM_GETSEL message to interface method
+
   Revision 1.265  2004/09/15 19:04:39  micha
   convert LM_GETSELCOUNT message to interface method
 

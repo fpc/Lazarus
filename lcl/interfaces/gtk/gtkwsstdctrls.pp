@@ -98,6 +98,7 @@ type
   protected
   public
     class function  GetSelCount(const ACustomListBox: TCustomListBox): integer; override;
+    class function  GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
@@ -317,6 +318,46 @@ begin
                          True)^.CoreWidget)^.selection);
   end;
   {$EndIf}
+end;
+
+function  TGtkWSCustomListBox.GetSelected(const ACustomListBox: TCustomListBox; const AIndex: integer): boolean;
+var
+  Handle: HWND;
+  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
+  GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
+  ListItem    : PGtkListItem;          // currently only used for listboxes
+begin
+  {$IFdef GTK2}
+  DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_GETSEL');
+  {$Else}
+  Result := false;      { assume: nothing found }
+  Handle := ACustomListBox.Handle;
+  case ACustomListBox.fCompStyle of
+    csListBox, csCheckListBox:
+      begin
+        { Get the child in question of that index }
+        Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+        ListItem:= g_list_nth_data(PGtkList(Widget)^.children, AIndex);
+        if (ListItem<>nil)
+        and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0)
+        then Result:=true
+      end;
+    csCListBox:
+      begin
+        { Get the selections }
+        Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+        GList:= PGtkCList(Widget)^.selection;
+        while Assigned(GList) do begin
+          if integer(GList^.data) = AIndex then begin
+            Result:=true;
+            exit;
+          end else
+            GList := GList^.Next;
+        end;
+      end;
+  end;
+  {$EndIf}
+
 end;
 
 function  TGtkWSCustomListBox.GetStrings(const ACustomListBox: TCustomListBox): TStrings;

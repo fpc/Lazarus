@@ -283,7 +283,7 @@ function TCustomListBox.GetSelected(Index : integer) : boolean;
 begin
   CheckIndex(Index);
   if HandleAllocated then
-    Result:= (CNSendMessage(LM_GETSEL, Self, @Index) > 0)
+    Result:= TWSCustomListBoxClass(WidgetSetClass).GetSelected(Self, Index)
   else
     Result:= PCustomListBoxItemRecord(GetCachedData(Index))^.Selected;
 end;
