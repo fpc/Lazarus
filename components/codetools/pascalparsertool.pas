@@ -32,7 +32,7 @@
 
   ToDo:
     -Parsing of GUID
-    -Parsing of With an Case
+    -Parsing of With and Case
     -Parsing of proc modifier alias [Alias: ''];
 }
 unit PascalParserTool;

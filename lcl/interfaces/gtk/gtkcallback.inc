@@ -677,6 +677,7 @@ var
    fileInfo : PGChar;
    fileList : PGTKCList;
    DirName  : string;
+   FileName : string;
 begin
    Result := True;
    theDialog := TCommonDialog(data);
@@ -689,9 +690,13 @@ begin
          // check extra options
          if ofAllowMultiSelect in TOpenDialog(theDialog).Options then
 	 begin
-           DirName:=ExtractFilePath(gtk_file_selection_get_filename(PGtkFileSelection(FPointer)));
+           FileName:=gtk_file_selection_get_filename(
+                                    PGtkFileSelection(FPointer));
+           DirName:=ExtractFilePath(FileName);
            TFileDialog(data).FileName := '';
            TStringList(TFileDialog(theDialog).Files).Clear;
+           if not FileExists(FileName) then
+             TStringList(TFileDialog(theDialog).Files).Add(FileName);
            fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
            rowNum := 0;
 	   cListRow := fileList^.row_list;
@@ -1580,7 +1585,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2001/12/12 20:45:30  lazarus
+  MG: added non existing filename to multiselection in TOpenDialog
+
   Revision 1.54  2001/12/12 20:19:19  lazarus
+
     Modified the the GTKFileSelection so that it will handle and use
     CTRL and SHIFT keys in a fashion similar to Windows.
 
