@@ -5777,14 +5777,12 @@ begin
   BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,true);
   ActiveForm:=TDesigner(Sender).Form;
   if ActiveForm=nil then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
-    halt;
+    RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
   end;
   // find source for form
   i:=Project1.IndexOfUnitWithForm(ActiveForm,false,nil);
   if i<0 then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
-    halt;
+    RaiseException('[TMainIDE.OnDesignerAddComponent] Error: form without source');
   end;
   ActiveUnitInfo:=Project1.Units[i];
   // remove component definition to form source
@@ -5957,8 +5955,7 @@ begin
   // codetools consistency check
   c:=CodeToolBoss.ConsistencyCheck;
   if c<>0 then begin
-    writeln('CodeToolBoss.ConsistencyCheck=',c);
-    Halt;
+    RaiseException('CodeToolBoss.ConsistencyCheck='+IntToStr(c));
   end;
 end;
 
@@ -7131,6 +7128,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.384  2002/09/16 16:06:19  lazarus
+  MG: replaced halt with raiseexception
+
   Revision 1.383  2002/09/16 06:44:06  lazarus
   MG: added localization from Vasily
 
