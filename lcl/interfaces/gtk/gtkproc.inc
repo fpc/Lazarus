@@ -272,7 +272,10 @@ begin
     If ClipRegion <> 0 then begin
       Region:=PGDIObject(ClipRegion);
       DCOrigin:=GetDCOffset(PDeviceContext(DC));
-      //writeln('SelectGDIRegion DC=',HexStr(Cardinal(DC),8),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
+      //DCOrigin:=PDeviceContext(DC)^.Origin;
+      //writeln('SelectGDIRegion DC=',HexStr(Cardinal(DC),8),
+      //  ' DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' ',
+      //  ' ',PDeviceContext(DC)^.Origin.X,',',PDeviceContext(DC)^.Origin.Y);
       if (DCOrigin.X<>0) or (DCOrigin.X<>0) then
         gdk_region_offset(Region^.GDIRegionObject,DCOrigin.X,DCOrigin.Y);
       gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
@@ -2851,6 +2854,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.97  2002/09/12 15:53:10  lazarus
+  MG: small bugfixes
+
   Revision 1.96  2002/09/12 15:35:57  lazarus
   MG: small bugfixes
 
