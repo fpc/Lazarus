@@ -151,7 +151,7 @@ end;
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
-  Result:=((ClassType=TBitmap) or (ClassType=TPixmap))
+  Result:=((ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon))
      and ((AnsiCompareText(ResourceType,'XPM')=0)
        or (AnsiCompareText(ResourceType,'BMP')=0));
 end;
@@ -300,7 +300,8 @@ end;
 
 procedure TBitmap.GetSupportedSourceMimeTypes(List: TStrings);
 begin
-  if (ClassType=TBitmap) or (ClassType=TPixmap) then begin
+  if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then
+  begin
     List.Clear;
     List.Add(PredefinedClipboardMimeTypes[pcfBitmap]);
     List.Add(PredefinedClipboardMimeTypes[pcfDelphiBitmap]);
@@ -311,7 +312,7 @@ end;
 
 function TBitmap.GetDefaultMimeType: string;
 begin
-  if (ClassType=TBitmap) or (ClassType=TPixmap) then begin
+  if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then begin
     if FImage.SaveStream<>nil then begin
       case FImage.SaveStreamType of
       bnXPixmap: Result:=PredefinedClipboardMimeTypes[pcfPixmap];
@@ -551,7 +552,7 @@ end;
 
 procedure TBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
 begin
-  if (ClassType=TBitmap) or (ClassType=TPixmap) then begin
+  if (ClassType=TBitmap) or (ClassType=TPixmap) or (ClassType=TIcon) then begin
     if (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfBitmap])=0)
     or (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfDelphiBitmap])=0)
     or (AnsiCompareText(MimeType,PredefinedClipboardMimeTypes[pcfPixmap])=0) then
@@ -1012,6 +1013,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2003/11/26 22:05:57  mattias
+  fixed TIcon
+
   Revision 1.52  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 
