@@ -670,6 +670,8 @@ Begin
           if i>AForm.ComponentCount-1 then
             i:=AForm.ComponentCount-1;
         end;
+        if PropertyEditorHook.LookupRoot=AForm then
+          PropertyEditorHook.LookupRoot:=nil;
         if not (AForm is TForm) then
           writeln('WARNING: TCustomFormEditor.DeleteControl ',AForm.ClassName);
         JITFormList.DestroyJITForm(TForm(AForm));

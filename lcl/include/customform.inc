@@ -804,7 +804,6 @@ Begin
   ParentFont := False;
   Ctl3D := True;
 //  FBorderIcons := [biSystemMenu, biMinimize, biMaximize];
-  FBorderStyle := bsSizeable;
   FWindowState := wsNormal;
 //  FDefaultMonitor := dmActiveForm;
   FIcon := TIcon.Create;
@@ -1182,6 +1181,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/12/03 17:40:37  mattias
+  fixed deleting lookup form when form is deleted
+
   Revision 1.74  2002/11/30 11:24:05  mattias
   removed unused TCustomForm.WMDestroy
 
