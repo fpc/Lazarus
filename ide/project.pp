@@ -240,6 +240,7 @@ type
     procedure EndUpdate;
     procedure CompilerFlagsChanged;
     procedure AllChanged;
+    procedure UpdateGlobalValues;
   public
     property Owner: TProject read FProject;
     property Main: TDefineTemplate read FMain;
@@ -2674,7 +2675,21 @@ end;
 procedure TProjectDefineTemplates.AllChanged;
 begin
   CompilerFlagsChanged;
+  UpdateGlobalValues;
   CodeToolBoss.DefineTree.ClearCache;
+end;
+
+procedure TProjectDefineTemplates.UpdateGlobalValues;
+var
+  NewProjectDir: String;
+begin
+  CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',
+    Owner.CompilerOptions.LCLWidgetType);
+  if Owner.IsVirtual then
+    NewProjectDir:=VirtualDirectory
+  else
+    NewProjectDir:=Owner.ProjectDirectory;
+  CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',NewProjectDir);
 end;
 
 end.
@@ -2683,6 +2698,9 @@ end.
 
 {
   $Log$
+  Revision 1.122  2003/05/26 21:03:27  mattias
+  added README, describing how to create a gtk2 lcl application
+
   Revision 1.121  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 

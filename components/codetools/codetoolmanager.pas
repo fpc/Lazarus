@@ -196,6 +196,7 @@ type
           read FOnAfterApplyChanges write FOnAfterApplyChanges;
           
     // defines
+    procedure SetGlobalValue(const VariableName, VariableValue: string);
     function GetUnitPathForDirectory(const Directory: string): string;
     function GetIncludePathForDirectory(const Directory: string): string;
     function GetSrcPathForDirectory(const Directory: string): string;
@@ -597,6 +598,17 @@ end;
 function TCodeToolManager.ApplyChanges: boolean;
 begin
   Result:=SourceChangeCache.Apply;
+end;
+
+procedure TCodeToolManager.SetGlobalValue(const VariableName,
+  VariableValue: string);
+var
+  OldValue: string;
+begin
+  OldValue:=GlobalValues[VariableName];
+  if OldValue=VariableValue then exit;
+  GlobalValues[VariableName]:=VariableValue;
+  DefineTree.ClearCache;
 end;
 
 function TCodeToolManager.GetUnitPathForDirectory(const Directory: string): string;
