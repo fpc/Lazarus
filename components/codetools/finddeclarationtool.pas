@@ -3486,6 +3486,8 @@ end;
 function TFindDeclarationTool.ConsistencyCheck: integer;
 var ANodeCache: TCodeTreeNodeCache;
 begin
+  Result:=inherited ConsistencyCheck;
+  if Result<>0 then exit;
   if FInterfaceIdentifierCache<>nil then begin
 
   end;
