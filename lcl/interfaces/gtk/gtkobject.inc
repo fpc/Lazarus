@@ -5344,7 +5344,6 @@ begin
       // create the menu items in the history menu
       MenuItemWidget:=gtk_menu_item_new_with_label(
                                 PFileSelHistoryEntry(HistoryList[i])^.Filename);
-      SetLCLObject(MenuItemWidget,OpenDialog);
       // connect the new MenuItem to the HistoryList entry
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLIsHistoryMenuItem',
         HistoryList[i]);
@@ -5637,51 +5636,52 @@ procedure TGtkWidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
 var
   FileDetailLabel, HBox, FrameWidget: PGtkWidget;
+  FileSelWidget: PGtkFileSelection;
 begin
+  FileSelWidget:=GTK_FILE_SELECTION(SelWidget);
+
   // Multiselection
   if ofAllowMultiSelect in OpenDialog.Options then
   begin
     LastFileSelectRow := -1;
-    g_signal_connect(gtk_object(PGtkCList(
-      PGtkFileSelection(SelWidget)^.file_list)),
+    g_signal_connect(gtk_object(FileSelWidget^.file_list),
       'select-row',
       gtk_signal_func(@gtkOpenDialogRowSelectCB), OpenDialog);
     gtk_clist_set_selection_mode(
-      PGtkCList(PGtkFileSelection(SelWidget)^.file_list),
-      GTK_SELECTION_MULTIPLE);
+      PGtkCList(FileSelWidget^.file_list),GTK_SELECTION_MULTIPLE);
   end;
 
   // Help button
   if (ofShowHelp in OpenDialog.Options)
-  and (GTK_FILE_SELECTION(SelWidget)^.Help_Button<>nil) then begin
-    gtk_widget_show(GTK_FILE_SELECTION(SelWidget)^.Help_Button);
-    g_signal_connect( gtk_object((PGtkFileSelection(SelWidget))^.help_button),
+  and (FileSelWidget^.Help_Button<>nil) then begin
+    gtk_widget_show(FileSelWidget^.Help_Button);
+    g_signal_connect( gtk_object(FileSelWidget^.help_button),
       'clicked', gtk_signal_func(@gtkDialogHelpclickedCB), OpenDialog);
   end;
 
   // connect selection entry (edit field for filename)
-  if (GTK_FILE_SELECTION(SelWidget)^.selection_entry<>nil) then begin
-    SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.selection_entry,OpenDialog);
+  if (FileSelWidget^.selection_entry<>nil) then begin
+    SetLCLObject(FileSelWidget^.selection_entry,OpenDialog);
     g_signal_connect(
-      gtk_object((PGtkFileSelection(SelWidget))^.selection_entry),
+      gtk_object(FileSelWidget^.selection_entry),
       'key-press-event', gtk_signal_func(@GTKDialogKeyUpDownCB),
       OpenDialog);
     g_signal_connect(
-      gtk_object((PGtkFileSelection(SelWidget))^.selection_entry),
+      gtk_object(FileSelWidget^.selection_entry),
       'focus-in-event', gtk_signal_func(@GTKDialogFocusInCB), OpenDialog);
   end;
 
   // connect dir list (list of directories)
-  if (GTK_FILE_SELECTION(SelWidget)^.dir_list<>nil) then begin
-    SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.dir_list,OpenDialog);
-    g_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.dir_list),
+  if (FileSelWidget^.dir_list<>nil) then begin
+    SetLCLObject(FileSelWidget^.dir_list,OpenDialog);
+    g_signal_connect(gtk_object(FileSelWidget^.dir_list),
       'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
   end;
 
   // connect file list (list of files in current directory)
-  if (GTK_FILE_SELECTION(SelWidget)^.file_list<>nil) then begin
-    SetLCLObject(GTK_FILE_SELECTION(SelWidget)^.file_list,OpenDialog);
-    g_signal_connect(gtk_object((PGtkFileSelection(SelWidget))^.file_list),
+  if (FileSelWidget^.file_list<>nil) then begin
+    SetLCLObject(FileSelWidget^.file_list,OpenDialog);
+    g_signal_connect(gtk_object(FileSelWidget^.file_list),
       'select-row', gtk_signal_func(@GTKDialogSelectRowCB), OpenDialog);
   end;
 
@@ -5695,7 +5695,7 @@ begin
   if (ofViewDetail in OpenDialog.Options) then begin
     // create the frame around the information
     FrameWidget:=gtk_frame_new(PChar(rsFileInformation));
-    gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
+    gtk_box_pack_start(GTK_BOX(FileSelWidget^.main_vbox),
                        FrameWidget,false,false,0);
     gtk_widget_show(FrameWidget);
     // create a HBox, so that the information is left justified
@@ -5716,8 +5716,7 @@ begin
 
   // set initial filename
   if OpenDialog.Filename<>'' then
-    gtk_file_selection_set_filename(GTK_FILE_SELECTION(SelWidget),
-      PChar(OpenDialog.Filename));
+    gtk_file_selection_set_filename(FileSelWidget,PChar(OpenDialog.Filename));
 end;
 
 {------------------------------------------------------------------------------
@@ -9283,6 +9282,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.480  2004/03/18 00:55:56  mattias
+  fixed memleak in gtk opendlg
+
   Revision 1.479  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 

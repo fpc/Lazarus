@@ -2073,13 +2073,13 @@ var
 begin
   Result:=false;
   if (Data=nil) then ;
-  theDialog:=TCommonDialog(GetLCLObject(Widget));
+  theDialog:=TCommonDialog(GetNearestLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
     // check if history activated
     AHistoryEntry:=gtk_object_get_data(PGtkObject(Widget),
                                        'LCLIsHistoryMenuItem');
     if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
-      // use has choosen a history file
+      // user has choosen a history file
       // -> select it in the filedialog
       gtk_file_selection_complete(PGtkFileSelection(theDialog.Handle),
         AHistoryEntry^.Filename);
@@ -3065,6 +3065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.222  2004/03/18 00:55:56  mattias
+  fixed memleak in gtk opendlg
+
   Revision 1.221  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

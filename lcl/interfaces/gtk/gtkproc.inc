@@ -2526,6 +2526,8 @@ var
   AHistoryEntry: PFileSelHistoryEntry;
   AFilterEntry: PFileSelFilterEntry;
   i: integer;
+  FileSelWidget: PGtkFileSelection;
+  LCLFilterMenu, LCLHistoryMenu: PGTKWidget;
 begin
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
@@ -2534,7 +2536,18 @@ begin
   {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
-  
+
+    FileSelWidget:=GTK_FILE_SELECTION(DlgWindow);
+    FreeWinWidgetInfo(FileSelWidget^.selection_entry);
+    FreeWinWidgetInfo(FileSelWidget^.dir_list);
+    FreeWinWidgetInfo(FileSelWidget^.file_list);
+    LCLFilterMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
+                                       'LCLFilterMenu'));
+    if LCLFilterMenu<>nil then FreeWinWidgetInfo(LCLFilterMenu);
+    LCLHistoryMenu:=PGTKWidget(gtk_object_get_data(PGtkObject(FileSelWidget),
+                                       'LCLHistoryMenu'));
+    if LCLHistoryMenu<>nil then FreeWinWidgetInfo(LCLHistoryMenu);
+
     // free history
     HistoryList:=TList(gtk_object_get_data(PGtkObject(DlgWindow),
                                            'LCLHistoryList'));
@@ -2974,7 +2987,8 @@ begin
   end;
 end;
 
-function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWinWidgetInfo;
+function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject;
+  const AParams: TCreateParams): PWinWidgetInfo;
 begin
   Result := CreateWidgetInfo(Pointer(AHandle));
   if Result = nil then Exit;
@@ -6635,6 +6649,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.269  2004/03/18 00:55:56  mattias
+  fixed memleak in gtk opendlg
+
   Revision 1.268  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 
