@@ -477,7 +477,7 @@ Begin
       End;
       GetClientRect(Window, R);
       SendMessage(Window, WM_MOVE, 0, MakeLParam(PWindowPos(LParam)^.x, PWindowPos(LParam)^.y));
-      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
+//      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
       WinProcess:=false;
     End;
   End;
@@ -545,6 +545,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2003/06/27 21:41:14  mattias
+  fixed formresize from Micha
+
   Revision 1.27  2003/06/25 15:27:18  mattias
   fixed timer calling conventions from Micha
 
