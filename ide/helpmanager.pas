@@ -353,7 +353,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     HTMLHelp: TFPDocHTMLHelpDatabase;
     StartNode: THelpNode;
     FPDocNode: THelpNode;
-    DirItem: THelpDBSISourceDirectory;
+    DirItem: THelpDBISourceDirectory;
   begin
     FFCLHelpDB:=HelpDatabases.CreateHelpDatabase('FCL',TFPDocHTMLHelpDatabase,
                                                  true);
@@ -371,12 +371,12 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units',
                    'http://www.freepascal.org/docs-html/fcl/index.html');
-    DirItem:=THelpDBSISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
                    '*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
 
     // FPDoc: some RTL units are documented in the FCL
-    DirItem:=THelpDBSISourceDirectory.Create(
+    DirItem:=THelpDBISourceDirectory.Create(
                    THelpNode.Create(HTMLHelp,FPDocNode),
                    '$(FPCSrcDir)/rtl','classes.pp;',true);
     HTMLHelp.RegisterItem(DirItem);

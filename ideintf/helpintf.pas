@@ -165,7 +165,7 @@ type
     For example: If BasePathObject is a TLazPackage the Filename is relative to
     the directory of the .lpk file }
 
-  THelpDBSISourceFile = class(THelpDBItem)
+  THelpDBISourceFile = class(THelpDBItem)
   private
     FBasePathObject: TObject;
     FFilename: string;
@@ -181,17 +181,17 @@ type
   end;
   
 
-  { THelpDBSISourceDirectory
+  { THelpDBISourceDirectory
     Help registration item for a source directory.
-    As THelpDBSISourceFile, except that Filename is a directory and
+    As THelpDBISourceFile, except that Filename is a directory and
     the item is valid for all source files fitting the FileMask.
     FileMask can be for example '*.pp;*.pas;*.inc'
 
     For example: A package providing help for all its source files registers
-    a THelpDBSISourceDirectory. Node points to the fpdoc main page.
+    a THelpDBISourceDirectory. Node points to the fpdoc main page.
     }
 
-  THelpDBSISourceDirectory = class(THelpDBSISourceFile)
+  THelpDBISourceDirectory = class(THelpDBISourceFile)
   private
     FFileMask: string;
     FWithSubDirectories: boolean;
@@ -206,14 +206,14 @@ type
   end;
   
 
-  { THelpDBSIClass
+  { THelpDBIClass
     Help registration item for a class.
     Used by the IDE to search for help for a class without source.
     For example for a registered component class in the component palette, that
     comes without source. If the component comes with source use the
-    THelpDBSISourceDirectory or THelpDBSISourceFile instead. }
+    THelpDBISourceDirectory or THelpDBISourceFile instead. }
 
-  THelpDBSIClass = class(THelpDBItem)
+  THelpDBIClass = class(THelpDBItem)
   private
     FTheClass: TClass;
   public
@@ -221,6 +221,19 @@ type
   end;
   
   
+  { THelpDBIMessage
+    Help registration item for a class.
+    Used by the IDE to search for help for a class without source.
+    For example for a registered component class in the component palette, that
+    comes without source. If the component comes with source use the
+    THelpDBISourceDirectory or THelpDBISourceFile instead. }
+
+  THelpDBIMessage = class(THelpDBItem)
+  public
+    function MessageMatches(const TheMessage: string): boolean; virtual; abstract;
+  end;
+
+
   { THelpQuery }
   
   THelpQuery = class(TPersistent)
@@ -375,6 +388,12 @@ type
     function GetNodesForPascalContexts(ListOfPascalHelpContextList: TList;
                                        var ListOfNodes: TList;
                                        var ErrMsg: string): TShowHelpResult; virtual;
+    function GetNodesForClass(AClass: TClass;
+                              var ListOfNodes: TList; var ErrMsg: string
+                              ): TShowHelpResult; virtual;
+    function GetNodesForMessage(const AMessage: string;
+                                var ListOfNodes: TList; var ErrMsg: string
+                                ): TShowHelpResult; virtual;
     function FindViewer(const MimeType: string; var ErrMsg: string;
                         var Viewer: THelpViewer): TShowHelpResult; virtual;
   public
@@ -455,6 +474,12 @@ type
     function GetNodesForPascalContexts(ListOfPascalHelpContextList: TList;
                                        var ListOfNodes: TList;
                                        var ErrMsg: string): TShowHelpResult; virtual;
+    function GetNodesForClass(AClass: TClass;
+                              var ListOfNodes: TList; var ErrMsg: string
+                              ): TShowHelpResult; virtual;
+    function GetNodesForMessage(const AMessage: string;
+                                var ListOfNodes: TList; var ErrMsg: string
+                                ): TShowHelpResult; virtual;
     function ShowHelpSelector(Query: THelpQuery; Nodes: TList;
                               var ErrMsg: string;
                               var Selection: THelpNode): TShowHelpResult; virtual;
@@ -948,7 +973,7 @@ var
   j: Integer;
   SearchItem: THelpDBItem;
   PascalContext: TPascalHelpContextList;
-  FileItem: THelpDBSISourceFile;
+  FileItem: THelpDBISourceFile;
   Filename: String;
 begin
   Result:=shrSuccess;
@@ -966,8 +991,8 @@ begin
         // search file item
         for i:=0 to FSearchItems.Count-1 do begin
           SearchItem:=THelpDBItem(FSearchItems[i]);
-          if not (SearchItem is THelpDBSISourceFile) then continue;
-          FileItem:=THelpDBSISourceFile(SearchItem);
+          if not (SearchItem is THelpDBISourceFile) then continue;
+          FileItem:=THelpDBISourceFile(SearchItem);
           Filename:=PascalContext.List[0].Context;
           //debugln('THelpDatabase.GetNodesForPascalContexts B FileItem.ClassName=',FileItem.ClassName,' Filename=',Filename);
           if (FileItem.FileMatches(Filename)) then begin
@@ -976,6 +1001,48 @@ begin
           end;
         end;
       end;
+    end;
+  end;
+end;
+
+function THelpDatabase.GetNodesForClass(AClass: TClass; var ListOfNodes: TList;
+  var ErrMsg: string): TShowHelpResult;
+// if ListOfNodes<>nil new nodes will be appended
+// if ListOfNodes=nil and nodes exists a new list will be created
+var
+  i: Integer;
+  SearchItem: THelpDBItem;
+begin
+  Result:=shrSuccess;
+  ErrMsg:='';
+  // add the registered nodes
+  if FSearchItems<>nil then begin
+    for i:=0 to FSearchItems.Count-1 do begin
+      SearchItem:=THelpDBItem(FSearchItems[i]);
+      if not (SearchItem is THelpDBIClass) then continue;
+      if THelpDBIClass(SearchItem).TheClass<>AClass then continue;
+      CreateListAndAdd(SearchItem.Node,ListOfNodes,true);
+    end;
+  end;
+end;
+
+function THelpDatabase.GetNodesForMessage(const AMessage: string;
+  var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
+// if ListOfNodes<>nil new nodes will be appended
+// if ListOfNodes=nil and nodes exists a new list will be created
+var
+  i: Integer;
+  SearchItem: THelpDBItem;
+begin
+  Result:=shrSuccess;
+  ErrMsg:='';
+  // add the registered nodes
+  if FSearchItems<>nil then begin
+    for i:=0 to FSearchItems.Count-1 do begin
+      SearchItem:=THelpDBItem(FSearchItems[i]);
+      if not (SearchItem is THelpDBIMessage) then continue;
+      if not THelpDBIMessage(SearchItem).MessageMatches(AMessage) then continue;
+      CreateListAndAdd(SearchItem.Node,ListOfNodes,true);
     end;
   end;
 end;
@@ -1022,7 +1089,7 @@ end;
 procedure THelpDatabase.RegisterFileItemWithNode(const Filename: string;
   Node: THelpNode);
 begin
-  RegisterItem(THelpDBSISourceFile.Create(Node,Filename));
+  RegisterItem(THelpDBISourceFile.Create(Node,Filename));
 end;
 
 procedure THelpDatabase.UnregisterItem(AnItem: THelpDBItem);
@@ -1418,6 +1485,36 @@ begin
   end;
 end;
 
+function THelpDatabases.GetNodesForClass(AClass: TClass;
+  var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
+// if ListOfNodes<>nil then new nodes will be appended
+// if ListOfNodes=nil and nodes exists a new list will be created
+var
+  i: Integer;
+begin
+  Result:=shrSuccess;
+  ErrMsg:='';
+  for i:=Count-1 downto 0 do begin
+    Result:=Items[i].GetNodesForClass(AClass,ListOfNodes,ErrMsg);
+    if Result<>shrSuccess then exit;
+  end;
+end;
+
+function THelpDatabases.GetNodesForMessage(const AMessage: string;
+  var ListOfNodes: TList; var ErrMsg: string): TShowHelpResult;
+// if ListOfNodes<>nil then new nodes will be appended
+// if ListOfNodes=nil and nodes exists a new list will be created
+var
+  i: Integer;
+begin
+  Result:=shrSuccess;
+  ErrMsg:='';
+  for i:=Count-1 downto 0 do begin
+    Result:=Items[i].GetNodesForMessage(AMessage,ListOfNodes,ErrMsg);
+    if Result<>shrSuccess then exit;
+  end;
+end;
+
 function THelpDatabases.ShowHelpSelector(Query: THelpQuery; Nodes: TList;
   var ErrMsg: string; var Selection: THelpNode): TShowHelpResult;
 // Nodes is a list of THelpNode
@@ -1796,21 +1893,21 @@ begin
     Result:=1;
 end;
 
-{ THelpDBSISourceFile }
+{ THelpDBISourceFile }
 
-procedure THelpDBSISourceFile.SetFilename(const AValue: string);
+procedure THelpDBISourceFile.SetFilename(const AValue: string);
 begin
   FFilename:=AValue;
 end;
 
-constructor THelpDBSISourceFile.Create(TheNode: THelpNode;
+constructor THelpDBISourceFile.Create(TheNode: THelpNode;
   const TheFilename: string);
 begin
   inherited Create(TheNode);
   FFilename:=TrimFilename(SetDirSeparators(TheFilename));
 end;
 
-function THelpDBSISourceFile.FileMatches(const AFilename: string): boolean;
+function THelpDBISourceFile.FileMatches(const AFilename: string): boolean;
 begin
   if (FFilename<>'') and (AFilename<>'') then
     Result:=CompareFilenames(GetFullFilename,AFilename)=0
@@ -1818,7 +1915,7 @@ begin
     Result:=false;
 end;
 
-function THelpDBSISourceFile.GetFullFilename: string;
+function THelpDBISourceFile.GetFullFilename: string;
 var
   BaseDir: String;
   ExpFilename: String;
@@ -1835,7 +1932,7 @@ begin
   end;
 end;
 
-function THelpDBSISourceFile.GetBasePath: string;
+function THelpDBISourceFile.GetBasePath: string;
 begin
   if BasePathObject=nil then
     Result:=''
@@ -1844,9 +1941,9 @@ begin
                HelpDatabases.GetBaseDirectoryForBasePathObject(BasePathObject));
 end;
 
-{ THelpDBSISourceDirectory }
+{ THelpDBISourceDirectory }
 
-constructor THelpDBSISourceDirectory.Create(TheNode: THelpNode;
+constructor THelpDBISourceDirectory.Create(TheNode: THelpNode;
   const TheFilename, TheFileMask: string; Recursive: boolean);
 begin
   inherited Create(TheNode,TheFilename);
@@ -1854,25 +1951,25 @@ begin
   WithSubDirectories:=Recursive;
 end;
 
-function THelpDBSISourceDirectory.FileMatches(const AFilename: string
+function THelpDBISourceDirectory.FileMatches(const AFilename: string
   ): boolean;
 var
   TheDirectory: String;
 begin
   Result:=false;
-  //debugln('THelpDBSISourceDirectory.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
+  //debugln('THelpDBISourceDirectory.FileMatches AFilename="',AFilename,'" FFilename="',FFilename,'"');
   if (FFilename='') or (AFilename='') then exit;
   TheDirectory:=GetFullFilename;
-  //debugln('THelpDBSISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));
+  //debugln('THelpDBISourceDirectory.FileMatches TheDirectory="',TheDirectory,'" WithSubDirectories=',dbgs(WithSubDirectories));
   if WithSubDirectories then begin
     if not FileIsInPath(AFilename,TheDirectory) then exit;
   end else begin
     if not FileIsInDirectory(AFilename,TheDirectory) then exit;
   end;
-  //debugln('THelpDBSISourceDirectory.FileMatches FileMask="',FileMask,'"');
+  //debugln('THelpDBISourceDirectory.FileMatches FileMask="',FileMask,'"');
   if (FileMask<>'')
   and (not FileInFilenameMasks(ExtractFilename(AFilename),FileMask)) then exit;
-  //debugln('THelpDBSISourceDirectory.FileMatches Success');
+  //debugln('THelpDBISourceDirectory.FileMatches Success');
   Result:=true;
 end;
 
