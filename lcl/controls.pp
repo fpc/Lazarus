@@ -142,18 +142,18 @@ const
 
 
 const
-   mrNone = 0;
-   mrOK = mrNone + 1;
-   mrCancel = mrNone + 2;
-   mrAbort = mrNone + 3;
-   mrRetry = mrNone + 4;
-   mrIgnore = mrNone + 5;
-   mrYes = mrNone + 6;
-   mrNo = mrNone + 7;
-   mrAll = mrNone + 8;
-   mrNoToAll = mrNone + 9;
-   mrYesToAll = mrNone + 10;
-   mrLast = mrYesToAll;
+  mrNone = 0;
+  mrOK = mrNone + 1;
+  mrCancel = mrNone + 2;
+  mrAbort = mrNone + 3;
+  mrRetry = mrNone + 4;
+  mrIgnore = mrNone + 5;
+  mrYes = mrNone + 6;
+  mrNo = mrNone + 7;
+  mrAll = mrNone + 8;
+  mrNoToAll = mrNone + 9;
+  mrYesToAll = mrNone + 10;
+  mrLast = mrYesToAll;
 
 
 type
@@ -164,6 +164,7 @@ type
   TDate = type TDateTime;
   TTime = type TDateTime;
 
+  // ToDo: move this to a message definition unit
   TCMMouseWheel = record
     MSg: Cardinal;
     ShiftState : TShiftState;
@@ -202,6 +203,8 @@ type
                       bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
   TControlBorderStyle = TBorderStyle;
+
+  TBevelCut = TGraphicsBevelCut;
 
   TMouseButton = (mbLeft, mbRight, mbMiddle);
 
@@ -1847,6 +1850,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.158  2003/11/22 17:22:14  mattias
+  moved TBevelCut to controls.pp
+
   Revision 1.157  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x

@@ -157,8 +157,6 @@ type
                           PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
                           const Msg: string; var DoContinue: Boolean) of object;
 
-  TBevelCut = TGraphicsBevelCut;
-
   { For Delphi compatibility }
   TPixelFormat = (
     pfDevice,
@@ -715,7 +713,7 @@ type
     Procedure FillRect(X1,Y1,X2,Y2 : Integer);
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
     procedure Frame3d(var ARect : TRect; const FrameWidth : integer;
-                      const Style: TBevelCut);
+                      const Style: TGraphicsBevelCut);
     procedure Frame(const ARect: TRect);        // border using pen
     procedure Frame(X1,Y1,X2,Y2 : Integer);     // border using pen
     procedure FrameRect(const ARect: TRect);    // border using brush
@@ -1259,6 +1257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2003/11/22 17:22:14  mattias
+  moved TBevelCut to controls.pp
+
   Revision 1.96  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x

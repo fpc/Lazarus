@@ -597,7 +597,7 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.Frame3d(var ARect: TRect; const FrameWidth : integer;
-  const Style : TBevelCut);
+  const Style : TGraphicsBevelCut);
 begin
   Changing;
   RequiredState([csHandleValid]);
@@ -1236,6 +1236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2003/11/22 17:22:15  mattias
+  moved TBevelCut to controls.pp
+
   Revision 1.54  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x
