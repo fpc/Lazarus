@@ -48,7 +48,7 @@ uses
   KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
 const
-  Version_String = '0.8.4 alpha';
+  Version_String = '0.8.5 alpha';
 
 type
   {

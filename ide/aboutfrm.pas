@@ -68,7 +68,7 @@ begin
 
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
-  Label1.Caption := 'Version #: 0.8.4a';
+  Label1.Caption := 'Version #: 0.8.5a';
   
   OnResize:=@AboutFormResize;
 end;

@@ -1,9 +1,11 @@
+{ This is an automatically generated lazarus resource file }
+
 LazarusResources.Add('TAboutForm','FORMDATA',[
-  'TPF0'#10'TAboutForm'#9'AboutForm'#7'CAPTION'#6#13'About Lazarus'#5'COLOR'#4
-  +#15#0#0#128#12'CLIENTHEIGHT'#3#245#0#11'CLIENTWIDTH'#3'A'#2#8'POSITION'#7#14
-  +'poscreencenter'#4'LEFT'#3'_'#1#6'HEIGHT'#3#245#0#3'TOP'#3#133#1#5'WIDTH'#3
-  +'A'#2#0#5'TMEMO'#5'Memo1'#5'COLOR'#4#5#0#0#128#12'FONT.CHARSET'#2#1#10'FONT.'
-  +'COLOR'#4#8#0#0#128#9'FONT.NAME'#6#7'default'#13'LINES.Strings'#1#6#17'Licen'
+  'TPF0'#10'TAboutForm'#9'AboutForm'#7'CAPTION'#6#13'About Lazarus'#12'CLIENTHE'
+  +'IGHT'#3#245#0#11'CLIENTWIDTH'#3'A'#2#8'POSITION'#7#14'poscreencenter'#18'HO'
+  +'RZSCROLLBAR.PAGE'#3'B'#2#18'VERTSCROLLBAR.PAGE'#3#246#0#4'LEFT'#3'_'#1#6'HE'
+  +'IGHT'#3#245#0#3'TOP'#3#133#1#5'WIDTH'#3'A'#2#0#5'TMEMO'#5'Memo1'#7'ANCHORS'
+  +#11#5'aktop'#6'akleft'#0#5'COLOR'#4#5#0#0#128#13'LINES.Strings'#1#6#17'Licen'
   +'se: GPL/LGPL'#6#1' '#6'4Lazarus are the class libraries for Free Pascal tha'
   +'t'#6'8emulate Delphi. Free Pascal is a (L)GPL''ed compiler that'#6'5runs on'
   +' Linux, Win32, OS/2, 68K and more. Free Pascal'#6'7is designed to be able t'
@@ -11,14 +13,11 @@ LazarusResources.Add('TAboutForm','FORMDATA',[
   +' '#6'9Lazarus is the missing part of the puzzle that will allow'#6'7you to '
   +'develop Delphi like programs in all of the above'#6'9platforms. The IDE wil'
   +'l eventually become a RAD tool like'#6#7'Delphi.'#6#1' '#6'.As Lazarus is g'
-  +'rowing we need more developers.'#0#4'LEFT'#3#225#0#6'HEIGHT'#3#219#0#3'TOP'
-  +#2#14#5'WIDTH'#3'S'#1#0#0#7'TBUTTON'#7'Button1'#11'MODALRESULT'#2#1#7'CAPTIO'
-  +'N'#6#5'Close'#12'FONT.CHARSET'#2#1#10'FONT.COLOR'#4#8#0#0#128#9'FONT.NAME'#6
-  +#7'default'#4'LEFT'#2'N'#6'HEIGHT'#2#25#3'TOP'#3#184#0#5'WIDTH'#2'K'#0#0#6'T'
-  +'LABEL'#6'Label1'#9'ALIGNMENT'#7#8'tacenter'#7'CAPTION'#6#10'Version #:'#5'C'
-  +'OLOR'#4#5#0#0#128#12'FONT.CHARSET'#2#1#10'FONT.COLOR'#4#8#0#0#128#9'FONT.NA'
-  +'ME'#6#7'default'#4'LEFT'#2#14#6'HEIGHT'#2#17#3'TOP'#2#6#5'WIDTH'#3#200#0#0#0
-  +#0
+  +'rowing we need more developers.'#0#8'WORDWRAP'#9#4'LEFT'#3#225#0#6'HEIGHT'#3
+  +#219#0#3'TOP'#2#14#5'WIDTH'#3'S'#1#0#0#7'TBUTTON'#7'Button1'#7'ANCHORS'#11#5
+  +'aktop'#6'akleft'#0#11'MODALRESULT'#2#1#7'CAPTION'#6#5'Close'#8'TABORDER'#2#1
+  +#4'LEFT'#2'N'#6'HEIGHT'#2#25#3'TOP'#3#184#0#5'WIDTH'#2'K'#0#0#6'TLABEL'#6'La'
+  +'bel1'#9'ALIGNMENT'#7#8'tacenter'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTI'
+  +'ON'#6#10'Version #:'#5'COLOR'#4#5#0#0#128#6'LAYOUT'#7#5'tltop'#4'LEFT'#2#14
+  +#6'HEIGHT'#2#17#3'TOP'#2#6#5'WIDTH'#3#200#0#0#0#0
 ]);
-
-

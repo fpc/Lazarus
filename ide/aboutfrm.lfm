@@ -1,18 +1,17 @@
 object AboutForm: TAboutForm
   CAPTION = 'About Lazarus'
-  COLOR = -2147483633
   CLIENTHEIGHT = 245
   CLIENTWIDTH = 577
   POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 578
+  VERTSCROLLBAR.PAGE = 246
   LEFT = 351
   HEIGHT = 245
   TOP = 389
   WIDTH = 577
   object Memo1: TMEMO
+    ANCHORS = [aktop, akleft]
     COLOR = -2147483643
-    FONT.CHARSET = 1
-    FONT.COLOR = -2147483640
-    FONT.NAME = 'default'
     LINES.Strings = (
       'License: GPL/LGPL'
       ' '
@@ -29,17 +28,17 @@ object AboutForm: TAboutForm
       ' '
       'As Lazarus is growing we need more developers.'
     )
+    WORDWRAP = True
     LEFT = 225
     HEIGHT = 219
     TOP = 14
     WIDTH = 339
   end
   object Button1: TBUTTON
+    ANCHORS = [aktop, akleft]
     MODALRESULT = 1
     CAPTION = 'Close'
-    FONT.CHARSET = 1
-    FONT.COLOR = -2147483640
-    FONT.NAME = 'default'
+    TABORDER = 1
     LEFT = 78
     HEIGHT = 25
     TOP = 184
@@ -47,11 +46,10 @@ object AboutForm: TAboutForm
   end
   object Label1: TLABEL
     ALIGNMENT = tacenter
+    ANCHORS = [aktop, akleft]
     CAPTION = 'Version #:'
     COLOR = -2147483643
-    FONT.CHARSET = 1
-    FONT.COLOR = -2147483640
-    FONT.NAME = 'default'
+    LAYOUT = tltop
     LEFT = 14
     HEIGHT = 17
     TOP = 6
