@@ -1,7 +1,7 @@
-:: These settings need to change for every build
-SET LAZVERSION=0.9.2.3
+:: This setting need to change for every build
+SET LAZVERSION=0.9.2.4
 
-:: These setting are dependent on the configuration of the build machine
+:: These settings are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
 SET ISCC="C:\Program Files\Inno Setup 4\iscc.exe"
 
