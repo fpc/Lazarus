@@ -18,7 +18,8 @@ uses
   SynEditSearch, SynEditMiscProcs, SynEditmiscClasses, SynEditTextbuffer,
   SynEdit, SynEditHighlighter, SynhighlighterPas, SynCompletion,
   SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
-  SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr;
+  SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
+  SynEditExport, SynExportHTML;
 
 implementation
 
@@ -27,6 +28,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/11/21 20:28:26  mattias
+  added SynEditExport and SynExportHTML
+
   Revision 1.10  2002/11/21 20:04:56  mattias
   added SynRegExpr and SynHighlighterMulti
 
