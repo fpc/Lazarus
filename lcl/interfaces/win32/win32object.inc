@@ -1833,7 +1833,6 @@ Var
   Buddy,Parent, Handle, Window: HWnd;
   Caption : String;
   CompStyle, Left, Top, Height, Width: Integer;
-  DC: HDC;
   Flags,FlagsEx: DWord;
   DoSubClass: Boolean;
   StrTemp: PChar;
@@ -2808,6 +2807,9 @@ End;
 
 {
   $Log$
+  Revision 1.125  2003/10/29 19:47:29  mattias
+  fixed win32 compiling
+
   Revision 1.124  2003/10/29 15:24:28  micha
   fix popupmenu av
 

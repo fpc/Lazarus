@@ -59,6 +59,7 @@ Install the units:
 
 []$ make -C rtl install OS_TARGET=win32
 []$ make -C fcl install OS_TARGET=win32
+[]$ make -C packages install OS_TARGET=win32
 
 This will create the correct directory structure, but probably in the wrong
 directory. Move the /usr/local/lib/fpc/<version>/i386-win32/units directory to
