@@ -247,13 +247,15 @@ begin
   ZeroMemory(@OpenFile, sizeof(OpenFileName));
   with OpenFile Do
   begin
-    LStructSize := sizeof(OpenFileName);
-    HWndOwner := GetOwnerHandle(AOpenDialog);
-    LPStrFilter := PChar(FFilter);
-    LPStrFile := FName;
-    LPStrTitle := PChar(AOpenDialog.Title);
-    LPStrInitialDir := PChar(AOpenDialog.InitialDir);
-    NMaxFile := SizeStr;
+    lStructSize := sizeof(OpenFileName);
+    hWndOwner := GetOwnerHandle(AOpenDialog);
+    hInstance := System.hInstance;
+    lpStrFilter := StrAlloc(Length(FFilter)+1);
+    Move(PChar(FFilter)^, lpStrFilter^, Length(FFilter)+1);
+    lpStrFile := FName;
+    lpStrTitle := PChar(AOpenDialog.Title);
+    lpStrInitialDir := PChar(AOpenDialog.InitialDir);
+    nMaxFile := SizeStr;
     Flags := GetFlagsFromOptions(AOpenDialog.Options);
   end;
 end;
@@ -319,6 +321,7 @@ begin
       FileName := '';
 
     FreeMem(OpenFile.lpStrFile);
+    StrDispose(OpenFile.lpStrFilter);
   end;
 end;
 
