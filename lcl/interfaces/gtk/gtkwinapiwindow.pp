@@ -348,9 +348,9 @@ const
 var
   Widget: PGTKWidget;
   HasFocus: boolean;
-  //OldGdkFunction: TGdkFunction;
   ForeGroundGC: PGdkGC;
-  //ForeGroundGCValues: TGdkGCValues;
+  OldGdkFunction: TGdkFunction;
+  ForeGroundGCValues: TGdkGCValues;
 begin
   if Client = nil then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_DrawCaret] Got nil client');
@@ -374,7 +374,9 @@ begin
       then gdk_draw_pixmap(
         Widget^.Window, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
-        BackPixmap, 0, 0, X, Y, Width, Height
+        BackPixmap, 0, 0,
+        X, Y-1, // Y-1 for Delphi compatibility
+        Width, Height
       );
       IsDrawn := False;
     end
@@ -398,7 +400,10 @@ begin
       then gdk_draw_pixmap(
         BackPixmap, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
-        Widget^.Window, X, Y, 0, 0, Width, Height
+        Widget^.Window,
+          X, Y-1, // Y-1 for Delphi compatibility
+          0, 0,
+          Width, Height
       );
 
       // draw caret
@@ -414,19 +419,21 @@ begin
         // set draw function to xor
         ForeGroundGC:=PGTKStyle(
            PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
-        //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
-        //OldGdkFunction:=ForeGroundGCValues.thefunction;
-        //gdk_gc_set_function(ForeGroundGC,GDK_XOR);
+        gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
+        OldGdkFunction:=ForeGroundGCValues.thefunction;
+        gdk_gc_set_function(ForeGroundGC,GDK_invert);
         
         // draw the caret
 //writeln('DRAWING');
         gdk_draw_rectangle(
           PGTKWidget(Client)^.Window, 
           ForeGroundGC,
-          1, X, Y, Width, Height
+          1,
+          X, Y-1,  // Y-1 for Delphi compatibility
+          Width, Height
         );
         // restore draw function
-        //gdk_gc_set_function(ForeGroundGC,OldGdkFunction);
+        gdk_gc_set_function(ForeGroundGC,OldGdkFunction);
       end else
         writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
       IsDrawn := True;
@@ -723,6 +730,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/06/04 19:28:18  lazarus
+  MG: cursor is now inverted and can be used with twilight color scheme
+
   Revision 1.25  2002/05/10 06:05:58  lazarus
   MG: changed license to LGPL
 
