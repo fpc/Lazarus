@@ -87,6 +87,8 @@ var
     NewLeft, NewTop, NewWidth, NewHeight: Integer;
     ParentBaseClientSize: TPoint;
     CurBaseBounds: TRect;
+    NewRight: Integer;
+    NewBottom: Integer;
   begin
     {$IFDEF CHECK_POSITION}
     with Control do
@@ -231,32 +233,30 @@ var
         is resized, an aligned control also resizes so that it continues to span
         the top, bottom, left, or right edge of the parent.
       }
-
-      // alLeft, alRight do not fill horizontally
-      if (AAlign in [alLeft, alRight]) then begin
-        if NewWidth>ARect.Right-ARect.Left then
-          NewWidth:=ARect.Right-ARect.Left;
-      end else
-        NewWidth := ARect.Right-ARect.Left;
-      if AAlign=alRight then begin
-        NewLeft:=ARect.Right-NewWidth;
-        if NewLeft<ARect.Left then
-          NewLeft:=ARect.Left;
-      end else
+      NewRight:=NewLeft+NewWidth;
+      NewBottom:=NewTop+NewHeight;
+      if akLeft in AnchorAlign[AAlign] then begin
+        if not (akRight in Control.Anchors) then
+          dec(NewRight,NewLeft-ARect.Left);
         NewLeft:=ARect.Left;
-
-      // alTop, alBottom do not fill vertically
-      if (AAlign in [alTop, alBottom]) then begin
-        if NewHeight > ARect.Bottom-ARect.Top then
-          NewHeight := ARect.Bottom-ARect.Top;
-      end else
-        NewHeight := ARect.Bottom-ARect.Top;
-      if AAlign=alBottom then begin
-        NewTop:=ARect.Bottom-NewHeight;
-        if NewTop<ARect.Top then
-          NewTop:=ARect.Top;
-      end else
+      end;
+      if akTop in AnchorAlign[AAlign] then begin
+        if not (akBottom in Control.Anchors) then
+          dec(NewBottom,NewTop-ARect.Top);
         NewTop:=ARect.Top;
+      end;
+      if akRight in AnchorAlign[AAlign] then begin
+        if not (akLeft in Control.Anchors) then
+          inc(NewLeft,ARect.Right-NewRight);
+        NewRight:=ARect.Right;
+      end;
+      if akBottom in AnchorAlign[AAlign] then begin
+        if not (akTop in Control.Anchors) then
+          inc(NewTop,ARect.Bottom-NewBottom);
+        NewBottom:=ARect.Bottom;
+      end;
+      NewWidth:=Max(0,NewRight-NewLeft);
+      NewHeight:=Max(0,NewBottom-NewTop);
     end;
         
     // set the new bounds
@@ -2800,6 +2800,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.139  2003/06/19 16:36:35  mattias
+  started codeexplorer
+
   Revision 1.138  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 

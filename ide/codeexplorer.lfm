@@ -1,0 +1,68 @@
+object CodeExplorerView: TCodeExplorerView
+  CAPTION = 'CodeExplorerView'
+  CLIENTHEIGHT = 505
+  CLIENTWIDTH = 206
+  ONCLOSE = CodeExplorerViewCLOSE
+  ONCREATE = CodeExplorerViewCREATE
+  ONRESIZE = CodeExplorerViewRESIZE
+  HORZSCROLLBAR.PAGE = 207
+  VERTSCROLLBAR.PAGE = 506
+  LEFT = 378
+  HEIGHT = 505
+  TOP = 175
+  WIDTH = 206
+  object RefreshButton: TBUTTON
+    CAPTION = 'Refresh'
+    TABSTOP = True
+    TABORDER = 0
+    ONCLICK = RefreshButtonCLICK
+    HEIGHT = 25
+    WIDTH = 96
+  end
+  object OptionsButton: TBUTTON
+    ENABLED = False
+    CAPTION = 'Options'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 110
+    HEIGHT = 25
+    WIDTH = 96
+  end
+  object CodeTreeview: TTREEVIEW
+    ALIGN = albottom
+    BACKGROUNDCOLOR = 16777215
+    BORDERWIDTH = 2
+    DEFAULTITEMHEIGHT = 17
+    DRAGCURSOR = 0
+    HIDESELECTION = False
+    IMAGES = Imagelist1
+    INDENT = 15
+    PARENTCTL3D = False
+    POPUPMENU = TreePopupmenu
+    RIGHTCLICKSELECT = True
+    SELECTIONCOLOR = -2147483635
+    TABORDER = 2
+    ONDELETION = CodeTreeviewDELETION
+    OPTIONS = [tvoautoitemheight, tvokeepcollapsednodes, tvorightclickselect, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    HEIGHT = 480
+    TOP = 25
+    WIDTH = 206
+  end
+  object Imagelist1: TIMAGELIST
+    left = 64
+    top = 32
+  end
+  object TreePopupmenu: TPOPUPMENU
+    left = 64
+    top = 72
+    object JumpToMenuitem: TMENUITEM
+      CAPTION = 'Jump to source'
+      ENABLED = False
+      ONCLICK = JumpToMenuitemCLICK
+    end
+    object RefreshMenuitem: TMENUITEM
+      CAPTION = 'Refresh'
+      ONCLICK = RefreshMenuitemCLICK
+    end
+  end
+end

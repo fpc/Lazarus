@@ -1,0 +1,26 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TCodeExplorerView','FORMDATA',[
+  'TPF0'#17'TCodeExplorerView'#16'CodeExplorerView'#7'CAPTION'#6#16'CodeExplore'
+  +'rView'#12'CLIENTHEIGHT'#3#249#1#11'CLIENTWIDTH'#3#206#0#7'ONCLOSE'#7#21'Cod'
+  +'eExplorerViewCLOSE'#8'ONCREATE'#7#22'CodeExplorerViewCREATE'#8'ONRESIZE'#7
+  +#22'CodeExplorerViewRESIZE'#18'HORZSCROLLBAR.PAGE'#3#207#0#18'VERTSCROLLBAR.'
+  +'PAGE'#3#250#1#4'LEFT'#3'z'#1#6'HEIGHT'#3#249#1#3'TOP'#3#175#0#5'WIDTH'#3#206
+  +#0#0#7'TBUTTON'#13'RefreshButton'#7'CAPTION'#6#7'Refresh'#7'TABSTOP'#9#8'TAB'
+  +'ORDER'#2#0#7'ONCLICK'#7#18'RefreshButtonCLICK'#6'HEIGHT'#2#25#5'WIDTH'#2'`'
+  +#0#0#7'TBUTTON'#13'OptionsButton'#7'ENABLED'#8#7'CAPTION'#6#7'Options'#7'TAB'
+  +'STOP'#9#8'TABORDER'#2#1#4'LEFT'#2'n'#6'HEIGHT'#2#25#5'WIDTH'#2'`'#0#0#9'TTR'
+  +'EEVIEW'#12'CodeTreeview'#5'ALIGN'#7#8'albottom'#15'BACKGROUNDCOLOR'#4#255
+  +#255#255#0#11'BORDERWIDTH'#2#2#17'DEFAULTITEMHEIGHT'#2#17#10'DRAGCURSOR'#2#0
+  +#13'HIDESELECTION'#8#6'IMAGES'#7#10'Imagelist1'#6'INDENT'#2#15#11'PARENTCTL3'
+  +'D'#8#9'POPUPMENU'#7#13'TreePopupmenu'#16'RIGHTCLICKSELECT'#9#14'SELECTIONCO'
+  +'LOR'#4#13#0#0#128#8'TABORDER'#2#2#10'ONDELETION'#7#20'CodeTreeviewDELETION'
+  +#7'OPTIONS'#11#17'tvoautoitemheight'#21'tvokeepcollapsednodes'#19'tvorightcl'
+  +'ickselect'#14'tvoshowbuttons'#12'tvoshowlines'#11'tvoshowroot'#11'tvotoolti'
+  +'ps'#0#6'HEIGHT'#3#224#1#3'TOP'#2#25#5'WIDTH'#3#206#0#0#0#10'TIMAGELIST'#10
+  +'Imagelist1'#4'left'#2'@'#3'top'#2' '#0#0#10'TPOPUPMENU'#13'TreePopupmenu'#4
+  +'left'#2'@'#3'top'#2'H'#0#9'TMENUITEM'#14'JumpToMenuitem'#7'CAPTION'#6#14'Ju'
+  +'mp to source'#7'ENABLED'#8#7'ONCLICK'#7#19'JumpToMenuitemCLICK'#0#0#9'TMENU'
+  +'ITEM'#15'RefreshMenuitem'#7'CAPTION'#6#7'Refresh'#7'ONCLICK'#7#20'RefreshMe'
+  +'nuitemCLICK'#0#0#0#0
+]);
