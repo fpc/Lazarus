@@ -1170,15 +1170,14 @@ begin
   if (TLMessage(AMessage).Msg=LM_PAINT)
   or (TLMessage(AMessage).Msg=LM_GtkPaint) then
     CurrentSentPaintMessageTarget:=TObject(Target);
-  if TObject(Target) is TControl then
-  begin
-    TControl(Target).WindowProc(TLMessage(AMessage));
-  end
-  else
-  begin
-    TObject(Target).Dispatch(TLMessage(AMessage));
+  try
+    if TObject(Target) is TControl
+    then TControl(Target).WindowProc(TLMessage(AMessage))
+    else TObject(Target).Dispatch(TLMessage(AMessage));
+  except
+    Application.HandleException(nil);
   end;
-  
+
   Result := TLMessage(AMessage).Result;
   CurrentSentPaintMessageTarget:=nil;
 end;
@@ -4152,6 +4151,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.183  2003/06/18 00:10:38  marc
+  + Added exceptionhandler while delivering messages
+
   Revision 1.182  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 
