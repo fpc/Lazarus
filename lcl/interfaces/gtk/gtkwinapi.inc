@@ -6400,7 +6400,7 @@ begin
   // return the old focus handle
   Result := GetFocus;
   NewFocusWidget:=nil;
-  
+
   TopLevel := gtk_widget_get_toplevel(Widget);
   {$IfDef VerboseFocus}
   write('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
@@ -7617,6 +7617,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.201  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.200  2002/12/28 11:29:47  mattias
   xmlcfg deletion, focus fixes
 
