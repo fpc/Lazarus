@@ -22,9 +22,6 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
-const
-  BOOL_RESULT: array[Boolean] of String = ('False', 'True');
-  
 {------------------------------------------------------------------------------
   Method: TGtkObject.Create
   Params:  None
@@ -4444,6 +4441,11 @@ begin
   or ((csDesigning in LCLControl.ComponentState)
     and not (csNoDesignVisible in LCLControl.ControlStyle)) then
   begin
+    if (Sender is TCustomForm) then begin
+      // update shared accelerators
+      ShareWindowAccelGroups(SenderWidget);
+    end;
+
     if gtk_widget_visible(SenderWidget) then
       exit;
       
@@ -4477,7 +4479,7 @@ begin
       UnsetResizeRequest(SenderWidget);
     end;
 
-    if (Sender is TCustomForm) then
+    if (Sender is TCustomForm) then begin
       If (TCustomForm(Sender).BorderStyle <> bsSizeable) or
         (TCustomForm(Sender).FormStyle = fsStayOnTop)
       then begin
@@ -4487,7 +4489,11 @@ begin
         gdk_window_set_decorations(GetControlWindow(SenderWidget), decor);
         gdk_window_set_functions(GetControlWindow(SenderWidget), func);
       end;
+      ShareWindowAccelGroups(SenderWidget);
+    end;
+    
     gtk_widget_show(SenderWidget);
+    
     SetColor(Sender);
     if (Sender is TCustomForm) and (GetControlWindow(SenderWidget)<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
@@ -4499,6 +4505,11 @@ begin
     end;
   end
   else Begin
+  
+    if (Sender is TCustomForm) then begin
+      UnshareWindowAccelGroups(SenderWidget);
+    end;
+  
     gtk_widget_hide(SenderWidget);
   end;
   //if Sender is TForm then
@@ -5612,7 +5623,6 @@ end;
 function TgtkObject.IsValidDC(const DC: HDC): Boolean;
 begin
   Result := FDeviceContexts.Contains(Pointer(DC));
-  Assert(False, Format('Trace:  [TgtkObject.IsValidDC] DC: 0x%x --> %s', [Integer(DC), BOOL_RESULT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -5625,9 +5635,7 @@ end;
 function TgtkObject.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
 begin
   Result := (GDIObject<>0) and (FGDIObjects.Contains(Pointer(GDIObject)));
-//  Result := (GDIObject <> 0);
   if Result then
-//  try
     with PGdiObject(GDIObject)^ do
       case GDIType of
         gdiBitmap : begin
@@ -5646,10 +5654,6 @@ begin
       else
         Result := False; 
       end;
-//  except
-//    on Exception do Result := False;
-//  end;
-  Assert(False, Format('Trace:  [TgtkObject.IsValidGDIObject] GDIObject: 0x%x --> %s', [Integer(GDIObject), BOOL_RESULT[Result]]));
 end;
 
 {------------------------------------------------------------------------------
@@ -6507,6 +6511,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.260  2002/10/22 12:12:08  lazarus
+  MG: accelerators are now shared between non modal forms
+
   Revision 1.259  2002/10/21 22:12:47  lazarus
   MG: fixed frmactivate
 
