@@ -46,6 +46,7 @@ TGetProc = Function : Variant of Object;
       private
         FControl : TComponent;
         FFormEditor : TCustomFormEditor;  //used to call it's functions
+        Function FSetProp(Name : String; PRI : PPropInfo; const Value) : Boolean;
       protected
         Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
         Function GetPPropInfobyName(Name : String) : PPropInfo;
@@ -134,13 +135,52 @@ begin
 inherited;
 end;
 
+Function TComponentInterface.FSetProp(Name : String; PRI : PPropInfo; const Value) : Boolean;
+Begin
+       case PRI^.PropType^.Kind of
+       tkBool: SetOrdProp(FControl,PRI,longint(Value));
+       tkSString,
+       tkLString,
+       tkAString,
+       tkWString : Begin
+                    Writeln('String...');
+                    SetStrProp(FControl,PRI,String(Value));
+                    Result := True;
+                   end;
+       tkInteger,
+       tkInt64   : Begin
+                    Writeln('Int64...');
+                    SetInt64Prop(FControl,PRI,Int64(Value));
+                    Result := True;
+                   end;
+       tkFloat  : Begin
+                    Writeln('Float...');
+                    SetFloatProp(FControl,PRI,Extended(Value));
+                    Result := True;
+                   end;
+       tkVariant  : Begin
+                    Writeln('Variant...');
+                    SetVariantProp(FControl,PRI,Variant(Value));
+                    Result := True;
+                   end;
+       tkMethod  : Begin
+                    Writeln('Method...');
+                    SetMethodProp(FControl,PRI,TMethod(value));
+                    Result := True;
+                   end;
+         else
+          Result := False;
+       end;//case
+end;
+
 Function TComponentInterface.GetPPropInfoByIndex(Index:Integer): PPropInfo;
 var
 PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
 Begin
-  PT:=GetTypeData(FControl.ClassInfo);
+  PI := FControl.ClassInfo;
+  PT:=GetTypeData(PI);
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
   if Index < PT^.PropCount then
@@ -162,7 +202,6 @@ Begin
   Name := Uppercase(name);
   PI := FControl.ClassInfo;
   PT:=GetTypeData(PI);
-  if PT <> nil then Writeln('PT is NOT nil') else Writeln('PT is NIL');
   GetMem (PP,PT^.PropCount*SizeOf(Pointer));
   GetPropInfos(PI,PP);
   I := -1;
@@ -327,8 +366,7 @@ PRI : PPropInfo;
 I,J : Longint;
 Num : Integer;
 Begin
-
-PRI := GetPPropInfoByName(Name);
+PRI := GetPropInfo(FControl.ClassInfo,Name);
 if PRI <> nil then
         with PRI^ do
             Begin
@@ -365,15 +403,9 @@ Begin
   Result := False;
   PRI := GetPPropInfoByIndex(Index);
   if PRI <> nil then
-        with PRI^ do
-            Begin
-             if SetProc <> nil then
-                Begin  //call the procedure passing Value
-                 MySetProc := TSetProc(SetProc^);
-                 MySetProc(Value);
-                 Result := True;
-                end;
-            end;
+      Begin
+        Result := FSetProp(PRI^.Name,PRI,Value);
+      end;
 end;
 
 Function TComponentInterface.SetPropbyName(Name : String; const Value) : Boolean;
@@ -382,46 +414,16 @@ PRI : PPropInfo;
 Begin
 Writeln('*************');
 Writeln('SetPropByName');
-  Result := False;
-{  PRI := GetPPropInfoByName(Uppercase(Name));
-  Writeln('Back from GetPPropInfobyName');
-  if PRI <> nil then
-        with PRI^ do
-            Begin
-              if kind = tkBool then Writeln('111111111111111');
-             if SetProc <> nil then
-                Begin  //call the procedure passing Value
-                 Writeln('Assigning the procedure');
-                 MySetProc := TSetProc(SetProc^);
-                 Writeln('Calling the procedure');
-                 MySetProc(Value);
-                 Result := True;
-                end;
-            end;
- }
+Result := False;
+
 PRI := GetPropInfo(FControl.ClassInfo,Name);
 if PRI <> nil then
    Begin
-       if PRI^.Proptype^.kind = tkBool then Writeln('111111111111111');
-       case PRI^.PropType^.Kind of
-       tkBool: SetOrdProp(FControl,PRI,longint(Value));
-       tkSString,
-       tkLString,
-       tkAString,
-       tkWString : Begin
-                    Writeln('String...');
-                    SetStrProp(FControl,PRI,String(Value));
-                   end;
-       tkInteger,
-       tkInt64   : Begin
-                    Writeln('Int64...');
-                    SetInt64Prop(FControl,PRI,Int64(Value));
-                   end;
-
-       end;//case
+   Result :=FSetProp(Name,PRI,Value);
    end;
-Writeln('SetPropByName Exiting...');
+
 Writeln('*************');
+
 end;
 
 

@@ -1522,10 +1522,10 @@ if (X >= 0) and (X <= TControl(sender).Width) and
 //     CInterface.SetPropbyName('CAPTION','Click me!');
      CInterface.SetPropByName('HINT','Click');
      CInterface.SetPropbyName('TOP',10);
-
+     CInterface.SetPropbyName('ONCLICK',@ClickOnControl);
 
      //set the ONCLICK event so we know when the control is selected;
-     TControl(CInterface.Control).OnClick := @ClickOnControl;
+//     TControl(CInterface.Control).OnClick := @ClickOnControl;
       FormEditor1.ClearSelected;
       FormEditor1.AddSelected(TComponent(Cinterface.Control));
       ObjectInspector1.RootComponent := TForm(sender);
@@ -2147,8 +2147,10 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.14  2000/12/01 15:50:39  lazarus
-  changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
+  Revision 1.15  2000/12/01 19:30:36  lazarus
+  Added a private function
+  FSetProp
+  to the TComponentInterface.  It changes the properties once a PPropInfo is gotten for the property.
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus
