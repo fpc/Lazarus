@@ -3070,7 +3070,8 @@ begin
     rcToken := AClip;
     rcToken.Left := Max(AClip.Left, fGutterWidth);
     rcToken.Right := fGutterWidth + 2;
-    SetBkColor(dc, ColorToRGB(colEditorBG));
+    SetBkColor(dc,
+         {$IFDEF SYN_LAZARUS}colEditorBG{$ELSE}ColorToRGB(colEditorBG){$ENDIF});
     InternalFillRect(dc, rcToken);
     // Adjust the invalid area to not include this area.
     AClip.Left := rcToken.Right;
