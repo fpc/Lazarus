@@ -156,6 +156,7 @@ end;
 procedure TCustomMemo.SetWordWrap(const Value : boolean);
 begin
   if Value <> FWordWrap then begin
+    writeln('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
     FWordWrap := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
@@ -167,6 +168,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/01/27 17:36:01  mattias
+  fixed switching menus in menueditor
+
   Revision 1.17  2003/11/01 18:58:15  mattias
   added clipboard support for TCustomEdit from Colin
 

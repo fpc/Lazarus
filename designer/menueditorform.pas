@@ -50,12 +50,17 @@ type
     List_menus: TListBox;
     Label_menus: TLabel;
     procedure OnComponentDeleting(AComponent: TComponent);
+    procedure OnComponentAdded(AComponent: TComponent; Select: boolean);
+    procedure CreateDesignerMenu;
+    procedure UpdateListOfMenus;
   public
     constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
     destructor Destroy; override;
     procedure Paint; override;
     procedure SelectMenuClick(Sender: TObject);
-    property DesignerMainMenu: TDesignerMainMenu read fDesignerMainMenu write fDesignerMainMenu;
+    procedure SetMenu(NewMenu: TMenu);
+    property DesignerMainMenu: TDesignerMainMenu read fDesignerMainMenu
+                                                 write fDesignerMainMenu;
     property Panel: TPanel read FPanel write FPanel;
   end;
 
@@ -67,7 +72,8 @@ type
     fDesigner: TComponentEditorDesigner;
   protected
   public
-    constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
+    constructor Create(AComponent: TComponent;
+                       ADesigner: TComponentEditorDesigner); override;
     destructor Destroy; override;
     procedure Edit; override;
     property Menu: TMainMenu read fMenu write fMenu;
@@ -103,7 +109,8 @@ begin
   
     MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,AMenu);
   end;
-  MainMenuEditorForm.Show;
+  MainMenuEditorForm.SetMenu(AMenu);
+  MainMenuEditorForm.ShowOnTop;
 end;
 
 { TMainMenuEditorForm }
@@ -117,13 +124,62 @@ begin
   if i>=0 then List_menus.Items.Delete(i);
 end;
 
+procedure TMainMenuEditorForm.OnComponentAdded(AComponent: TComponent;
+  Select: boolean);
+begin
+  if AComponent is TMenu then
+    UpdateListOfMenus;
+end;
+
+procedure TMainMenuEditorForm.CreateDesignerMenu;
+begin
+  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu);
+  with DesignerMainMenu do
+  begin
+    Parent:=Self;
+    ParentCanvas:=Canvas;
+    LoadMainMenu;
+    SetCoordinates(10,10,0,DesignerMainMenu.Root);
+  end;
+
+  PopupMenu:=DesignerMainMenu.MainPopupMenu;
+
+  Invalidate;
+end;
+
+procedure TMainMenuEditorForm.UpdateListOfMenus;
+var
+  i: Integer;
+  CurComponent: TComponent;
+begin
+  List_menus.Items.BeginUpdate;
+  List_menus.Items.Clear;
+  for i:=0 to fDesigner.Form.ComponentCount - 1 do
+  begin
+    CurComponent:=fDesigner.Form.Components[i];
+    if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
+    begin
+      List_menus.Items.Add(CurComponent.Name);
+    end;
+  end;
+  List_menus.Items.EndUpdate;
+
+  if fMenu<>nil then begin
+    for i:=0 to List_menus.Items.Count - 1 do
+      begin
+        if (fMenu.Name = List_menus.Items[i]) then
+        begin
+          List_menus.Selected[i]:=true;
+        end;
+      end;
+  end;
+end;
+
 constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent;
   aMenu: TMenu);
 var
   Cmp: TPanel;
   Cmp2: TScrollBox;
-  i: Integer;
-  CurComponent: TComponent;
 begin
   inherited Create(AOwner);
   
@@ -135,9 +191,6 @@ begin
   fMenu:=aMenu;
   fDesigner:=FindRootDesigner(fMenu) as TComponentEditorDesigner;
 
-  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu);
-  PopupMenu:=DesignerMainMenu.MainPopupMenu;
-  
   Cmp2:=TScrollBox.Create(self);
   with Cmp2 do
   begin
@@ -185,33 +238,13 @@ begin
     Anchors := [akright, aktop, akbottom];
   end;
   
-  for i:=0 to fDesigner.Form.ComponentCount - 1 do
-  begin
-    CurComponent:=fDesigner.Form.Components[i];
-    if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
-    begin
-      List_menus.Items.Add(CurComponent.Name);
-    end;
-  end;
-  for i:=0 to List_menus.Items.Count - 1 do
-    begin
-      if (aMenu.Name = List_menus.Items[i]) then
-      begin
-        List_menus.Selected[i]:=true;
-      end;
-    end;
-  
   Panel:=Cmp;
-  
-  with DesignerMainMenu do
-  begin    
-    Parent:=Self;
-    ParentCanvas:=Canvas;
-    LoadMainMenu;
-    SetCoordinates(10,10,0,DesignerMainMenu.Root);
-  end;
+
+  UpdateListOfMenus;
+  CreateDesignerMenu;
 
   GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
+  GlobalDesignHook.AddHandlerComponentAdded(@OnComponentAdded);
 end;
 
 destructor TMainMenuEditorForm.Destroy;
@@ -224,31 +257,34 @@ end;
 procedure TMainMenuEditorForm.SelectMenuClick(Sender: TObject);
 var
   i,j: Integer;
+  NewMenu: TMenu;
+  CurComponent: TComponent;
 begin
-  DesignerMainMenu.Free;
   for i:=0 to List_menus.Items.Count - 1 do
   begin
     if (List_menus.Selected[i] = true) then
     begin
       for j:=0 to fDesigner.Form.ComponentCount -1 do
       begin
-        if (List_menus.Items[i] = fDesigner.Form.Components[j].Name) then
-        begin
-          writeln(fDesigner.Form.Components[j].Name);
-          fMenu:=TMenu(fDesigner.Form.Components[j]);
+        CurComponent:=fDesigner.Form.Components[j];
+        if (List_menus.Items[i] = CurComponent.Name) and (CurComponent is TMenu)
+        then begin
+          NewMenu:=TMenu(CurComponent);
+          SetMenu(NewMenu);
+          exit;
         end;
-      end;
-      DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu);
-      with DesignerMainMenu do
-      begin
-        Parent:=Self;
-        ParentCanvas:=Canvas;
-        LoadMainMenu;
-        SetCoordinates(10,10,0,DesignerMainMenu.Root);
       end;
     end;
   end;
-  Invalidate;
+end;
+
+procedure TMainMenuEditorForm.SetMenu(NewMenu: TMenu);
+begin
+  if NewMenu=fMenu then exit;
+  DesignerMainMenu.Free;
+  DesignerMainMenu:=nil;
+  fMenu:=NewMenu;
+  CreateDesignerMenu;
 end;
 
 procedure TMainMenuEditorForm.Paint;
@@ -321,14 +357,10 @@ end;
 //=============================================================================
 
 procedure InitMenuEditorGlobals;
-var
-  ItemsPropInfo: PPropInfo;
 begin
-  RegisterComponentEditor(TMainMenu,TMainMenuComponentEditor);
-  RegisterComponentEditor(TPopupMenu,TMainMenuComponentEditor);
+  RegisterComponentEditor(TMenu,TMainMenuComponentEditor);
 
-  ItemsPropInfo:=GetPropInfo(TMenu,'Items');
-  RegisterPropertyEditor(ItemsPropInfo^.PropType,
+  RegisterPropertyEditor(GetPropInfo(TMenu,'Items')^.PropType,
     TMenu,'',TMenuItemsPropertyEditor);
 end;
 
