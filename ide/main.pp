@@ -311,6 +311,7 @@ type
         var ResourceCode: TCodeBuffer): TModalResult;
     function DoSaveFileResources(AnUnitInfo: TUnitInfo;
         ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
+    function DoDeleteAmbigiousSources(const AFilename: string): TModalResult;
         
     // methods for 'open unit' and 'open main unit'
     function DoOpenNotExistingFile(const AFileName:string;
@@ -350,7 +351,7 @@ type
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
-    function DoSaveAll: TModalResult;
+    function DoSaveAll(Flags: TSaveFlags): TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -1502,7 +1503,7 @@ end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
 begin
-  DoSaveAll;
+  DoSaveAll([sfCheckAmbigiousFiles]);
 end;
 
 procedure TMainIDE.mnuCloseClicked(Sender : TObject);
@@ -1577,7 +1578,7 @@ begin
   Handled:=true;
   case Command of
    ecSaveAll:
-     DoSaveAll;
+     DoSaveAll([sfCheckAmbigiousFiles]);
   
    ecBuild,
    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
@@ -2800,6 +2801,40 @@ begin
   {$ENDIF}
 end;
 
+{-------------------------------------------------------------------------------
+  function TMainIDE.DoDeleteAmbigiousSources(const AFilename: string
+    ): TModalResult;
+    
+  Checks if file exists with same name and similar extension. The compiler
+  prefers for example .pp to .pas files. So, if we save a .pas file delete .pp
+  file, so that compiling does what is expected.
+-------------------------------------------------------------------------------}
+function TMainIDE.DoDeleteAmbigiousSources(const AFilename: string
+  ): TModalResult;
+  
+  function DeleteFileIfExists(const DelFilename: string): boolean;
+  begin
+    if FileExists(DelFilename) then
+      Result:=DeleteFile(DelFilename)
+    else
+      Result:=true;
+  end;
+  
+var
+  Ext, LowExt: string;
+begin
+  Result:=mrOk;
+  if not EnvironmentOptions.AutoDeleteAmbigiousSources then exit;
+  if FilenameIsPascalUnit(AFilename) then begin
+    Ext:=ExtractFileExt(AFilename);
+    LowExt:=lowercase(Ext);
+    if LowExt='.pp' then
+      DeleteFileIfExists(ChangeFileExt(AFilename,'.pas'))
+    else if LowExt='.pas' then
+      DeleteFileIfExists(ChangeFileExt(AFilename,'.pp'));
+  end;
+end;
+
 function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
   Flags: TOpenFlags): TModalResult;
 begin
@@ -3420,7 +3455,7 @@ function TMainIDE.DoSaveEditorFile(PageIndex:integer;
   Flags: TSaveFlags):TModalResult;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
-  TestFilename: string;
+  TestFilename, DestFilename: string;
   ResourceCode, LFMCode: TCodeBuffer;
 begin
   {$IFDEF IDE_VERBOSE}
@@ -3448,7 +3483,7 @@ begin
   if not (sfProjectSaving in Flags) then
     SaveSourceEditorChangesToCodeCache(-1);
 
-  // if this is new unit then a simple Save becomes a SaveAs
+  // if this is a new unit then a simple Save becomes a SaveAs
   if (not (sfSaveToTestDir in Flags)) and (ActiveUnitInfo.IsVirtual) then
     Include(Flags,sfSaveAs);
 
@@ -3493,6 +3528,7 @@ begin
       // save source to file
       Result:=ActiveUnitInfo.WriteUnitSource;
       if Result=mrAbort then exit;
+      DestFilename:=ActiveUnitInfo.Filename;
     end;
   end else begin
     // save source to test directory
@@ -3500,10 +3536,12 @@ begin
     if TestFilename<>'' then begin
       Result:=ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
       if Result<>mrOk then exit;
-      Result:=mrCancel;
+      DestFilename:=TestFilename;
     end else
       exit;
   end;
+
+  DoDeleteAmbigiousSources(DestFilename);
 
   {$IFDEF IDE_DEBUG}
   writeln('*** HasResources=',ActiveUnitInfo.HasResources);
@@ -3512,8 +3550,10 @@ begin
   // save resource file and lfm file
   if (ResourceCode<>nil) or (ActiveUnitInfo.Form<>nil) then begin
     Result:=DoSaveFileResources(ActiveUnitInfo,ResourceCode,LFMCode,Flags);
-    if Result in [mrIgnore, mrOk] then Result:=mrCancel
-    else exit;
+    if Result in [mrIgnore, mrOk] then
+      Result:=mrCancel
+    else
+      exit;
   end;
   
   // unset all modified flags
@@ -4080,6 +4120,7 @@ function TMainIDE.DoSaveProject(Flags: TSaveFlags):TModalResult;
 var MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
   i: integer;
+  DestFilename: string;
 begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
@@ -4095,7 +4136,8 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
     if (Project1.Units[i].Loaded) and (Project1.Units[i].IsVirtual)
     and (Project1.MainUnit<>i) then begin
       Result:=DoSaveEditorFile(Project1.Units[i].EditorIndex,
-           [sfSaveAs,sfProjectSaving]+[sfSaveToTestDir]*Flags);
+           [sfSaveAs,sfProjectSaving]
+           +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
@@ -4139,17 +4181,16 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
     if MainUnitInfo.Loaded then begin
       // loaded in source editor
       Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
-                               [sfProjectSaving]+[sfSaveToTestDir]*Flags);
+               [sfProjectSaving]+[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
       if Result=mrAbort then exit;
     end else begin
       // not loaded in source editor (hidden)
-      if not (sfSaveToTestDir in Flags) then begin
-        Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source,
-                                       MainUnitInfo.Filename,true);
-      end else begin
-        Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source,
-                                       GetTestUnitFilename(MainUnitInfo),false);
-      end;
+      if not (sfSaveToTestDir in Flags) then
+        DestFilename:=MainUnitInfo.Filename
+      else
+        DestFilename:=GetTestUnitFilename(MainUnitInfo);
+      Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source, DestFilename,
+                                     not (sfSaveToTestDir in Flags));
       if Result=mrAbort then exit;
     end;
     // clear modified flags
@@ -4167,7 +4208,8 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project1.MainUnit<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
-        Result:=DoSaveEditorFile(i,[sfProjectSaving]+[sfSaveToTestDir]*Flags);
+        Result:=DoSaveEditorFile(i,[sfProjectSaving]
+                        +[sfSaveToTestDir,sfCheckAmbigiousFiles]*Flags);
         if Result=mrAbort then exit;
       end;
     end;
@@ -4531,7 +4573,7 @@ begin
       +'you can create new projects and build them at once.'#13
       +'Save project?',mtInformation,[mbYes,mbNo],0);
     if Result<>mrYes then exit;
-    Result:=DoSaveAll;
+    Result:=DoSaveAll([sfCheckAmbigiousFiles]);
     exit;
   end;
   Result:=DoSaveProject([sfSaveToTestDir]);
@@ -4556,7 +4598,7 @@ begin
     
     // save all files
     if not Project1.IsVirtual then
-      Result:=DoSaveAll
+      Result:=DoSaveAll([sfCheckAmbigiousFiles])
     else
       Result:=DoSaveProjectToTestDirectory;
     if Result<>mrOk then exit;
@@ -4701,10 +4743,10 @@ begin
       and (Project1.SomethingModified or SourceNotebook.SomethingModified);
 end;
 
-function TMainIDE.DoSaveAll: TModalResult;
+function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
 begin
 writeln('TMainIDE.DoSaveAll');
-  Result:=DoSaveProject([]);
+  Result:=DoSaveProject(Flags);
   SaveEnvironment;
   SaveIncludeLinks;
   InputHistories.Save;
@@ -5217,7 +5259,7 @@ begin
     s:='';
   end else if MacroName='saveall' then begin
     Handled:=true;
-    Abort:=(DoSaveAll<>mrOk);
+    Abort:=(DoSaveAll([sfCheckAmbigiousFiles])<>mrOk);
     s:='';
   end else if MacroName='edfile' then begin
     Handled:=true;
@@ -6776,6 +6818,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.362  2002/09/05 15:24:26  lazarus
+  MG: added auto deleting of ambigious source files
+
   Revision 1.361  2002/09/05 12:11:39  lazarus
   MG: TNotebook is now streamable
 
