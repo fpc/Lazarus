@@ -2766,8 +2766,7 @@ begin
       repeat
         try
           BinCompStream.Position:=0;
-           // fix the buffer size, when we got the new compiler out:
-          Driver:=TBinaryObjectWriter.Create(BinCompStream,100000{4096});
+          Driver:=TBinaryObjectWriter.Create(BinCompStream,4096);
           try
             Writer:=TWriter.Create(Driver);
             try
@@ -7198,6 +7197,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.395  2002/09/30 14:01:04  lazarus
+  MG: undid the TBinaryObjectWriter Buffersize
+
   Revision 1.394  2002/09/30 09:26:40  lazarus
   MG: added DoSaveAll before CloseAll
 

@@ -21,18 +21,18 @@ begin
   Changed;
 end;
 
-procedure TgraphicsObject.Changed;
+procedure TGraphicsObject.Changed;
 begin
   Assert(False, Format('Trace:[TgraphicsObject.Changed] %s', [ClassName]));
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TgraphicsObject.Lock;
+procedure TGraphicsObject.Lock;
 begin
 
 end;
 
-procedure TgraphicsObject.UnLock;
+procedure TGraphicsObject.UnLock;
 begin
 
 end;
@@ -40,6 +40,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/09/30 14:01:06  lazarus
+  MG: undid the TBinaryObjectWriter Buffersize
+
   Revision 1.2  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 
