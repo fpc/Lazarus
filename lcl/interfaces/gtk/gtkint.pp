@@ -81,6 +81,8 @@ type
       function SetValue (Sender : TObject; Data : pointer) : integer;
       function SetProperties (Sender: TObject) : integer;
       procedure AttachMenu(Sender: TObject);
+      procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
+        Color: TColor);
       
       function HashPaintMessage(p: pointer): integer;
       function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
@@ -278,6 +280,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/10/08 08:05:08  lazarus
+  MG: fixed TColorDialog set color
+
   Revision 1.20  2001/10/07 07:28:33  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 

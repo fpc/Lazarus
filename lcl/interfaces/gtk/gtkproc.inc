@@ -718,8 +718,9 @@ end;
 
 function TGDKColorToTColor(value : TGDKColor) : TColor;
 begin
-ReportNotObsolete('TgdkColortoTColor');
-   result := ((value.blue div 257) shl 16) + ((value.green div 257) shl 8) + (value.red div 257);
+//ReportNotObsolete('TgdkColortoTColor');
+  Result := ((Value.Blue div 257) shl 16) + ((Value.Green div 257) shl 8) 
+           + (Value.Red div 257);
 end;
 
 function TColortoTGDKColor(value : TColor) : TGDKColor;
@@ -771,6 +772,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.22  2001/10/08 08:05:08  lazarus
+  MG: fixed TColorDialog set color
+
   Revision 1.21  2001/10/07 07:28:34  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 

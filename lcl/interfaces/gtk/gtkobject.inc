@@ -692,6 +692,8 @@ activate_time :	the time at which the activation event occurred.
           end;
         end;
         gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
+        if Sender is TColorDialog then
+          SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
         gtk_widget_show(PGtkWidget(handle));
         gtk_window_set_modal(PGtkWindow(handle), true);
       end;
@@ -1946,12 +1948,12 @@ begin
 
       csColorDialog :
       begin
-         P := gtk_color_selection_dialog_new(StrTemp);
-         // We will only add this line if we see problem in the future with the color dialog  MAH 7-31-99
-         // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(P))^.colorsel), GTK_UPDATE_DISCONTINUOUS);
-         gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
-         gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
-         gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
+        P := gtk_color_selection_dialog_new(StrTemp);
+        // We will only add this line if we see problem in the future with the color dialog  MAH 7-31-99
+        // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(P))^.colorsel), GTK_UPDATE_DISCONTINUOUS);
+        gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button), 'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
+        gtk_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button), 'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), Sender);
+        gtk_signal_connect( gtk_object(P), 'destroy', gtk_Signal_Func(@gtkDialogDestroyCB), Sender);
       end;
 
       csFontDialog :
@@ -2514,6 +2516,35 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TGtkObject.SetColorDialogColor
+  Params:  ColorSelection : a gtk color selection dialog;
+           Color          : the color to select
+  Returns: nothing
+
+  Set the color of the coor selection dialog
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SetColorDialogColor(ColorSelection: PGtkColorSelection;
+  Color: TColor);
+var
+  SelectionColor: PGDouble;       // currently only used by TColorDialog
+  colorSel : GTK_COLOR_SELECTION;
+begin
+  GetMem(SelectionColor,4*SizeOf(GDouble));
+  try
+    Color:=ColorToRGB(Color);
+    SelectionColor[0]:=(Color and $ff)/255;
+    SelectionColor[1]:=((Color shr 8) and $ff)/255;
+    SelectionColor[2]:=((Color shr 16) and $ff)/255;
+    SelectionColor[3]:=0.0;
+    colorSel := GTK_COLOR_SELECTION(
+      (GTK_COLOR_SELECTION_DIALOG(ColorSelection))^.colorsel);
+    gtk_color_selection_set_color(colorSel,SelectionColor);
+  finally
+    FreeMem(SelectionColor);
+  end; 
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.GetValue
   Params:  Sender : the lcl object which called this func via SenMessage
            Data   : pointer to component specific variable
@@ -3050,6 +3081,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.58  2001/10/08 08:05:08  lazarus
+  MG: fixed TColorDialog set color
+
   Revision 1.57  2001/10/07 07:28:34  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 
