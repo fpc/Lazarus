@@ -492,17 +492,17 @@ end;
 
 procedure ShowMessage(const aMsg: string);
 begin
-  NotifyUser(aMsg, idDialogInfo);
+  NotifyUser(aMsg, idDialogBase);
 end;
 
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 begin
-  NotifyUser(Format(aMsg, Params), idDialogInfo);
+  NotifyUser(Format(aMsg, Params), idDialogBase);
 end;
 
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 begin
-  NotifyUserAtXY(aMsg, idDialogInfo, X, Y);
+  NotifyUserAtXY(aMsg, idDialogBase, X, Y);
 end;
 
 //----------------------------------------------------------------------------//
@@ -532,6 +532,12 @@ end;
 
 {
    $Log$
+   Revision 1.18  2002/10/23 20:47:26  lazarus
+   AJ: Started Form Scrolling
+       Started StaticText FocusControl
+       Fixed Misc Dialog Problems
+       Added TApplication.Title
+
    Revision 1.17  2002/10/23 14:36:52  lazarus
    AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
       fixed TGraphicPropertyEditor for when Property is nil.

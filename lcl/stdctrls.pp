@@ -820,21 +820,27 @@ type
   Private
     FAlignment: TAlignment;
     FBorderStyle: TStaticBorderStyle;
+    FFocusControl : TWinControl;
     FShowAccelChar: Boolean;
     Procedure FontChange(Sender : TObject);
   protected
     Procedure DoAutoSize; Override;
     Procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
 
+    procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
+    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
+
     Procedure SetAlignment(Value : TAlignment);
     Function GetAlignment : TAlignment;
     Procedure SetBorderStyle(Value : TStaticBorderStyle);
     Function GetBorderStyle : TStaticBorderStyle;
+    Procedure SetFocusControl(Value : TWinControl);
     Procedure SetShowAccelChar(Value : Boolean);
     Function GetShowAccelChar : Boolean;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property BorderStyle: TStaticBorderStyle read GetBorderStyle write SetBorderStyle;
+    property FocusControl : TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar;
   public
     constructor Create(AOwner: TComponent); override;
@@ -852,6 +858,7 @@ type
     property Color;
     property Constraints;
     property Enabled;
+    property FocusControl;
     property Font;
     property ParentColor;
     property ParentFont;
@@ -859,6 +866,8 @@ type
     property PopupMenu;
     property ShowAccelChar;
     property ShowHint;
+    property TabOrder;
+    property TabStop;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -1396,6 +1405,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/10/23 20:47:26  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.58  2002/10/21 15:51:27  lazarus
   AJ: moved TCustomStaticText code to include/customstatictext.inc
 

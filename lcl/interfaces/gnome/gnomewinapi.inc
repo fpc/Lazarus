@@ -70,7 +70,7 @@ end;
    such as OK/Cancel Yes/No etc.. It can be used to display errors, warnings,
    or other information, or to ask questions.
  ------------------------------------------------------------------------------}
-Function PromptUserWidget(const DialogCaption, DialogMessage : String;
+Function TGnomeObject.PromptUserWidget(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex : Longint) : Pointer;
 var
   BoxType : PChar;
@@ -79,9 +79,8 @@ var
   BTNArray : PPgChar;
   StockName : PgChar;
   I : Longint;
-  TXTList : PGList;
-  TXTLayout : PGnomeIconTextInfo;
-  NewMessage : AnsiString;
+  NewMessage : PgChar;
+  ScreenDC : hDC;
 begin
   If (Application.MainForm <> nil) and
     (Application.MainForm.HandleAllocated)
@@ -128,26 +127,12 @@ begin
     BTNArray[I] := StockName;
   end;
   BTNArray[ButtonCount] := nil;
-
-  TXTLayout := gnome_icon_layout_text(PGDIObject(GetStockObject(SYSTEM_FONT))^.GDIFontObject,
-    PgChar(DialogMessage), ' ', Screen.Width div 3, False);
-
-  TXTList := TXTLayout^.Rows;
-  While TXTList <> nil do begin
-    If TXTList^.Data <> nil then
-      NewMessage := NewMessage + AnsiString(PGnomeIconTextInfoRow(TXTList^.Data)^.thetext);
-    TXTList := TXTList^.Next;
-    If TXTList <> nil then
-      If NewMessage[Length(NewMessage)] <> #10 then
-        NewMessage := NewMessage + #10;
-  end;
-  
-  NewMessage := Copy(NewMessage, 1, Length(NewMessage));
-
-  gnome_icon_text_info_free(TXTLayout);
-
-  Result := gnome_message_box_newv(PgChar(NewMessage), BoxType, BTNArray);
-
+  ScreenDC := GetDC(0);
+  SelectObject(ScreenDC, GetStockObject(SYSTEM_FONT));
+  NewMessage := ForceLineBreaks(ScreenDC, PgChar(DialogMessage), Screen.Width div 3, False);
+  ReleaseDC(0,ScreenDC);
+  Result := gnome_message_box_newv(NewMessage, BoxType, BTNArray);
+  FreeMem(NewMessage);
   If (DefaultIndex >= ButtonCount) or (DefaultIndex < 0)
   then
     DefaultIndex := 0;
@@ -293,6 +278,12 @@ end;
 
 {
   $Log$
+  Revision 1.11  2002/10/23 20:47:27  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.10  2002/10/23 14:36:53  lazarus
   AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
      fixed TGraphicPropertyEditor for when Property is nil.

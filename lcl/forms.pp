@@ -200,12 +200,12 @@ type
   TFormState = set of (fsCreating, fsVisible, fsShowing, fsModal, fsCreatedMDIChild);
   TModalResult = low(Integer)..high(Integer);
 
-  TCustomForm = class(TWinControl)
+  TCustomForm = class(TScrollingWinControl)
   private
     FActive : Boolean;
     FActiveControl : TWinControl;
     FBorderStyle : TFormBorderStyle;
-    FCanvas : TControlCanvas;
+   // FCanvas : TControlCanvas;
     FDesigner : TIDesigner;
     FFormStyle : TFormStyle;
     FFormState: TFormState;
@@ -219,7 +219,7 @@ type
     FOnDestroy: TNotifyEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FOnPaint: TNotifyEvent;
+//    FOnPaint: TNotifyEvent;
     FOnClose: TCloseEvent;
     FOnCloseQuery : TCloseQueryEvent;
     FPosition : TPosition;
@@ -238,7 +238,7 @@ type
     procedure SetPosition(Value : TPosition);
     procedure SetVisible(Value: boolean);
     procedure SetWindowState(Value : TWIndowState);
-    function GetCanvas: TControlCanvas;
+   // function GetCanvas: TControlCanvas;
     function IsForm : Boolean;
     procedure IconChanged(Sender: TObject);
     function IsIconStored: Boolean;
@@ -264,7 +264,6 @@ type
     // Delphi needed GetClientRect for window specific things, LCL not
     // Function GetClientRect : TRect ; Override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
-    procedure Paint; dynamic;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
     procedure UpdateShowing; override;
@@ -285,7 +284,7 @@ type
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
-    property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
+  //  property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property OnResize stored IsForm;
     property Position : TPosition read FPosition write SetPosition default poDesigned;
   public
@@ -304,7 +303,7 @@ type
     property Active : Boolean read FActive;
     property BorderStyle : TFormBorderStyle
       read FBorderStyle write SetBorderStyle default bsSizeable;
-    property Canvas: TControlCanvas read GetCanvas;
+    //property Canvas: TControlCanvas read GetCanvas;
     property Caption stored IsForm;
     property Designer : TIDesigner read FDesigner write SetDesigner;
     property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
@@ -433,6 +432,7 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FTerminate : Boolean;
+    FTitle : String;
   // MWE:Do we need this ??
     // function ProcessMessage(Var Msg : TMsg) : Boolean;
     procedure wndproc(var Message : TLMessage);
@@ -469,6 +469,7 @@ type
     property MainForm: TForm read FMainForm;
     property OnException: TExceptionEvent read FOnException write FOnException;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
+    property Title: String read GetTitle write FTitle;
   end;
 
   TIDesigner = class(TObject)

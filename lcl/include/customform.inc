@@ -326,7 +326,7 @@ begin
     Exclude(FControlState, csCustomPaint);
   end;
 //writeln('[TCustomForm.WMPaint] END ',Name,':',ClassName);
-end;                          
+end;
 
 
 {------------------------------------------------------------------------------
@@ -436,18 +436,6 @@ begin
         then Proc(OwnedComponent);
     end;
 end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomForm.Paint
-  Params:   none
-  Returns:  nothing
-
-  Calls user handler  
- ------------------------------------------------------------------------------}
-Procedure TCustomForm.Paint;                                            
-begin                                                                                             
-  if Assigned (FOnPaint) and not(Isresizing) then FOnPaint(Self);
-end;                                                                                              
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.PaintWindow
@@ -901,14 +889,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm Method GetCanvas  "Returns the drawing surface"            }
-{------------------------------------------------------------------------------}
-function TCustomForm.GetCanvas: TControlCanvas;
-begin
-  result := FCanvas;
-end;
-
-{------------------------------------------------------------------------------}
 {       TCustomForm Method IsForm                                              }
 {------------------------------------------------------------------------------}
 function TCustomForm.IsForm: Boolean;
@@ -1163,6 +1143,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/10/23 20:47:26  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.63  2002/10/22 18:54:56  lazarus
   MG: fixed menu streaming
 

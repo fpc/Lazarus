@@ -19,7 +19,7 @@
 
   TODO:
 
-    - FocusControl
+    - Enable Tabbing/Focusing to focus FocusControl
     - Enable Escaped '&' Shortcut to focus FocusControl
     - Compare/Match AutoSize to Delphi/Kylix's
     - ?? Check For Full Delphi/Kylix Compatibility
@@ -59,6 +59,27 @@ begin
     FAlignment := Value;
     Invalidate;
   end;
+end;
+
+procedure TCustomStaticText.Notification(AComponent : TComponent; Operation : TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent = FFocusControl) and (Operation = opRemove) then
+    FFocusControl:= nil;
+end;
+
+procedure TCustomStaticText.SetFocusControl(Value : TWinControl);
+begin
+  if Value <> FFocusControl then begin
+    FFocusControl:= Value;
+    if Value <> nil then Value.FreeNotification(Self);
+  end;
+end;
+
+procedure TCustomStaticText.WMActivate(var Message: TLMActivate);
+begin
+  if (FFocusControl <> nil) and (FFocusControl.CanFocus) then
+    FFocusControl.SetFocus;
 end;
 
 Function TCustomStaticText.GetAlignment : TAlignment;
@@ -158,6 +179,12 @@ end;
 
 {
   $Log$
+  Revision 1.2  2002/10/23 20:47:26  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.1  2002/10/21 15:51:27  lazarus
   AJ: moved TCustomStaticText code to include/customstatictext.inc
 
