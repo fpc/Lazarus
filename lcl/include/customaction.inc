@@ -39,17 +39,25 @@ begin
   if Dest is TCustomAction then
     with TCustomAction(Dest) do
     begin
+      AutoCheck := Self.AutoCheck;
       Caption := Self.Caption;
+      Category := Self.Category;
       Checked := Self.Checked;
       Enabled := Self.Enabled;
+      GroupIndex := Self.GroupIndex;
       HelpContext := Self.HelpContext;
+      HelpKeyword := Self.HelpKeyword;
+      HelpType := Self.HelpType;
       Hint := Self.Hint;
       ImageIndex := Self.ImageIndex;
+      SecondaryShortCuts := Self.SecondaryShortCuts;
       ShortCut := Self.ShortCut;
+      Tag := Self.Tag;
       Visible := Self.Visible;
       OnExecute := Self.OnExecute;
       OnUpdate := Self.OnUpdate;
       OnChange := Self.OnChange;
+      OnHint := Self.OnHint;
     end else inherited AssignTo(Dest);
 end;
 

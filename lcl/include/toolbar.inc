@@ -443,7 +443,6 @@ end;
   started.
   If Wrapable=false, then the row is wrapped after the first button with
   Wrap=true.
-
 ------------------------------------------------------------------------------}
 function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
 var
@@ -617,6 +616,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2005/03/09 11:44:25  mattias
+  added TSynCustomLineIndenter, implemented eoEnhanceHomeKey for synedit
+
   Revision 1.36  2005/01/03 11:22:18  mattias
   rpm script now uses cvsexportlocal.pas, increased rpm version to 0.9.4.1
 

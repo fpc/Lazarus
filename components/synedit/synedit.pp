@@ -296,6 +296,28 @@ type
     constructor Create(AOwner: TCustomSynEdit);
     destructor Destroy; override;
   end;
+  
+  {$IFDEF SYN_LAZARUS}
+  // aIndex parameters of Line notifications are 0-based.
+  TSynCustomLineIndenter = class(TComponent)
+  private
+    FEditor: TCustomSynEdit;
+    procedure SetEditor(const AValue: TCustomSynEdit);
+  public
+    destructor Destroy; override;
+    // plugin notifications
+    procedure LinesInserted(aIndex: integer; aCount: integer);
+    procedure LinesDeleted(aIndex: integer; aCount: integer);
+    procedure LinesPutted(aIndex: integer; aCount: integer);
+    // pretty clear, heh?
+    procedure Reset;
+    // indentation
+    function GetLineIndentProposal(aIndex: integer;
+                                   IgnoreCurrentLineText: boolean): integer;
+  public
+    property Editor: TCustomSynEdit read FEditor write SetEditor;
+  end;
+  {$ENDIF}
 
   { TCustomSynEdit }
 
@@ -330,6 +352,7 @@ type
     fBracketHighlightPos: TPoint;
     fBracketHighlightAntiPos: TPoint;
     fCtrlMouseActive: boolean;
+    fLineIndenter: TSynCustomLineIndenter;
     {$ENDIF}
     fLastCaretX: integer;  // physical position (screen)                        //mh 2000-10-19
     fCaretY: Integer;
@@ -419,6 +442,7 @@ type
     procedure ComputeCaret(X, Y: Integer);
     procedure DoBlockIndent;
     procedure DoBlockUnindent;
+    procedure DoHomeKey(Selection: boolean);
     procedure DoLinesDeleted(FirstLine, Count: integer);
     procedure DoLinesInserted(FirstLine, Count: integer);
     procedure DoTabKey;
@@ -438,6 +462,7 @@ type
     function AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
     function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
+    procedure SetLineIndenter(const AValue: TSynCustomLineIndenter);
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     {$ENDIF}
     function GetMaxUndo: Integer;
@@ -679,6 +704,8 @@ type
       var Attri: TSynHighlighterAttributes): boolean;
     {$IFDEF SYN_LAZARUS}
     procedure GetWordBoundsAtRowCol(const XY: TPoint; var StartX, EndX: integer);
+    function GetLineIndentProposal(Line: integer;
+                                   IgnoreCurrentLineText: boolean): integer;
     {$ENDIF}
     function GetWordAtRowCol(XY: TPoint): string;
     procedure GotoBookMark(BookMark: Integer);
@@ -748,6 +775,8 @@ type
     {$IFDEF SYN_LAZARUS}
     property CtrlMouseActive: boolean read fCtrlMouseActive;
     property LogicalCaretXY: TPoint read GetLogicalCaretXY write SetLogicalCaretXY;
+    property LineIndenter: TSynCustomLineIndenter read fLineIndenter
+                                                  write SetLineIndenter;
     {$ENDIF}
     property Font: TFont read GetFont write SetFont;
     property Highlighter: TSynCustomHighlighter
@@ -1364,6 +1393,7 @@ var
 begin
   {$IFDEF SYN_LAZARUS}
   if HandleAllocated then LCLIntf.DestroyCaret(Handle);
+  LineIndenter:=nil;
   {$ENDIF}
   Highlighter := nil;
   // free listeners while other fields are still valid
@@ -1508,6 +1538,21 @@ end;
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
 begin
   Result:=PhysicalToLogicalPos(CaretXY);
+end;
+
+procedure TCustomSynEdit.SetLineIndenter(const AValue: TSynCustomLineIndenter);
+var
+  OldLineIndenter: TSynCustomLineIndenter;
+begin
+  if Assigned(fLineIndenter) then begin
+    OldLineIndenter:=fLineIndenter;
+    fLineIndenter:=nil;
+    OldLineIndenter.Editor:=nil;
+  end;
+  fLineIndenter:=AValue;
+  if Assigned(fLineIndenter) then begin
+    fLineIndenter.Editor:=Self;
+  end;
 end;
 
 procedure TCustomSynEdit.SetLogicalCaretXY(const NewLogCaretXY: TPoint);
@@ -6550,7 +6595,6 @@ begin
 end;
 
 {$ifndef SYN_LAZARUS}
-
 procedure TCustomSynEdit.SetBorderStyle(Value: TBorderStyle);
 begin
   if fBorderStyle <> Value then begin
@@ -6558,7 +6602,6 @@ begin
     RecreateWnd;
   end;
 end;
-
 {$endif}
 
 procedure TCustomSynEdit.SetHideSelection(const Value: boolean);
@@ -6875,15 +6918,12 @@ begin
         end;
 {begin}                                                                         //mh 2000-10-19
       ecLineStart, ecSelLineStart:
-        begin
-          {$IFDEF SYN_LAZARUS}
+        DoHomeKey(Command=ecSelLineStart);
+        {begin
           MoveCaretAndSelectionPhysical(CaretXY,Point(1, CaretY),
                                         Command = ecSelLineStart);
-          {$ELSE}
-          MoveCaretAndSelection(CaretXY,Point(1, CaretY), Command = ecSelLineStart);
-          {$ENDIF}
           fLastCaretX := fCaretX;
-        end;
+        end;}
       ecLineEnd, ecSelLineEnd:
         begin
           {$IFDEF SYN_LAZARUS}
@@ -9070,6 +9110,55 @@ begin
   end;
 end;
 
+procedure TCustomSynEdit.DoHomeKey(Selection: boolean);
+// jump to start of line (x=1),
+// or if already there, jump to first non blank char
+// or if blank line, jump to line indent position
+// if eoEnhanceHomeKey and behind alternative point then jump first
+var
+  s: string;
+  FirstNonBlank: Integer;
+  LineStart: LongInt;
+  OldPos: TPoint;
+  NewPos: TPoint;
+begin
+  if not (eoEnhanceHomeKey in fOptions) and (CaretX>1) then begin
+    // not at start of line -> jump to start of line
+    CaretX:=1;
+    exit;
+  end;
+  
+  // calculate line start position
+  FirstNonBlank:=-1;
+  if CaretY<=Lines.Count then begin
+    s:=fLines[CaretXY.Y-1];
+
+    // search first non blank char pos
+    FirstNonBlank:=1;
+    while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [#32, #9]) do
+      inc(FirstNonBlank);
+    if FirstNonBlank>length(s) then
+      FirstNonBlank:=-1;
+  end else
+    s:='';
+  if FirstNonBlank>=1 then begin
+    // this line is not blank
+    LineStart:=FirstNonBlank;
+  end else begin
+    // this line is blank
+    // -> use automatic line indent
+    LineStart:=GetLineIndentProposal(CaretY,true);
+  end;
+
+  OldPos:=LogicalCaretXY;
+  NewPos:=Point(LineStart,OldPos.Y);
+  if (eoEnhanceHomeKey in fOptions) and (OldPos.X<NewPos.X) then begin
+    NewPos.X:=1;
+  end;
+  
+  MoveCaretAndSelection(OldPos, NewPos, Selection);
+end;
+
 {$IFDEF SYN_COMPILER_4_UP}
 function TCustomSynEdit.ExecuteAction(ExeAction: TBasicAction): boolean;
 begin
@@ -9478,6 +9567,34 @@ begin
       StartX := XY.X;
       while (StartX > 1) and (Line[StartX - 1] in IdChars) do
         Dec(StartX);
+    end;
+  end;
+end;
+
+function TCustomSynEdit.GetLineIndentProposal(Line: integer;
+  IgnoreCurrentLineText: boolean): integer;
+// calculate a nice indent for the Line (starting at 1)
+var
+  y: Integer;
+  s: string;
+  FirstNonBlank: Integer;
+begin
+  if fLineIndenter<>nil then
+    Result:=fLineIndenter.GetLineIndentProposal(Line-1,IgnoreCurrentLineText)
+  else begin
+    // default: use last non empty line indent, ignore always current line
+    y:=Line-1;
+    if y>Lines.Count then y:=Lines.Count;
+    while y>=1 do begin
+      s:=fLines[y-1];
+      FirstNonBlank:=1;
+      while (FirstNonBlank<=length(s)) and (s[FirstNonBlank] in [' ',#9]) do
+        inc(FirstNonBlank);
+      if FirstNonBlank<=Length(s) then begin
+        // non empty line found
+        Result:=LogicalToPhysicalCol(s,FirstNonBlank);
+        exit;
+      end;
     end;
   end;
 end;
@@ -10034,6 +10151,52 @@ begin
     fOwner.fPlugins.Remove(Self);
   inherited Destroy;
 end;
+
+{$IFDEF SYN_LAZARUS}
+{ TSynCustomLineIndenter }
+
+procedure TSynCustomLineIndenter.SetEditor(const AValue: TCustomSynEdit);
+begin
+  if FEditor=AValue then exit;
+  FEditor:=AValue;
+  if fEditor<>nil then fEditor.LineIndenter:=Self;
+end;
+
+destructor TSynCustomLineIndenter.Destroy;
+begin
+  Editor:=nil;
+  inherited Destroy;
+end;
+
+procedure TSynCustomLineIndenter.LinesInserted(aIndex: integer;
+  aCount: integer);
+begin
+  // for descendants to override
+end;
+
+procedure TSynCustomLineIndenter.LinesDeleted(aIndex: integer; aCount: integer);
+begin
+  // for descendants to override
+end;
+
+procedure TSynCustomLineIndenter.LinesPutted(aIndex: integer; aCount: integer);
+begin
+  // for descendants to override
+end;
+
+procedure TSynCustomLineIndenter.Reset;
+begin
+  // for descendants to override
+end;
+
+function TSynCustomLineIndenter.GetLineIndentProposal(aIndex: integer;
+  IgnoreCurrentLineText: boolean): integer;
+begin
+  // for descendants to override
+  RaiseGDBException('TSynEditLineIndentPlugin.GetLineIndentProposal '+ClassName);
+  Result:=0;
+end;
+{$ENDIF}
 
 initialization
   {$IFNDEF SYN_LAZARUS}
