@@ -94,7 +94,7 @@ type
         ...
       end;
     }
-    
+
   TOnGetLazIntfImagePixel = procedure(x, y: integer; var Color: TFPColor)
                             of object;
   TOnSetLazIntfImagePixel = procedure(x, y: integer; const Color: TFPColor)

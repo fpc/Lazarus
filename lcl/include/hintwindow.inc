@@ -20,7 +20,7 @@
    HintWindow := THintWindow.Create(nil);
    Rect := HintWindow.CalcHintRect(0,'This is the hint',nil);
    HintWindow.ActivateHint(Rect,'This is the hint');
-   
+
 }
 
 constructor THintWindow.Create(AOwner: TComponent);
@@ -79,16 +79,23 @@ var
   //DefaultDraw: Boolean;
 begin
   Rect := ClientRect;
-  Dec(Rect.Right, 1);
-  Dec(Rect.Bottom, 1);
   Canvas.Brush.Color := Color;
   Canvas.Brush.Style := bsSolid;
-  Canvas.Rectangle(Rect);
-  FillChar(TS, SizeOf(TS),0);
-  With TS do
-    Clipping   := True;
-  InflateRect(Rect, -1, -1);
-  Canvas.TextRect(Rect, 1, 1, Caption, TS);
+  Canvas.Pen.Width := 1;
+  DrawEdge(Canvas.Handle, Rect, BDR_RAISEDOUTER, BF_RECT);
+  with TS do
+  begin
+    Alignment  := taCenter;
+    Layout     := tlCenter;
+    SingleLine := false;
+    Clipping   := true;
+    ExpandTabs := true;
+    ShowPrefix := false;
+    WordBreak  := true;
+    Opaque     := true;
+    SystemFont := false;
+  end;
+  Canvas.TextRect(Rect, 0, 0, Caption, TS);
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);

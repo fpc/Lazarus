@@ -65,8 +65,8 @@ type
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
   TScrollingWinControl = class;
-  
-  
+
+
   { TControlScrollBar }
 
   TScrollBarKind = (sbHorizontal, sbVertical);
@@ -128,8 +128,8 @@ type
     property Range: Integer read GetRange write SetRange default 0;
     property Visible: Boolean read GetVisible write SetVisible stored VisibleIsStored;
   end;
-  
-  
+
+
   { TScrollingWinControl }
 
   TScrollingWinControl = class(TWinControl)
@@ -176,8 +176,8 @@ type
     property VertScrollBar: TControlScrollBar
       read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
-  
-  
+
+
   { TScrollBox }
 
   TScrollBox = class(TScrollingWinControl)
@@ -473,8 +473,8 @@ type
     property WindowState: TWindowState read FWindowState write SetWindowState
                                        default wsNormal;
   end;
-  
-  
+
+
   { TForm }
 
   TForm = class(TCustomForm)
@@ -528,10 +528,10 @@ type
   end;
 
   TFormClass = class of TForm;
-  
+
 
   { THintWindow }
-  
+
   THintWindow = class(TCustomForm)
   private
     FActivating: Boolean;
@@ -565,7 +565,7 @@ type
     Index: Integer;
     Handle: HCURSOR;
   end;
-  
+
   TScreenFormEvent = procedure(Sender: TObject; Form: TCustomForm) of object;
   TScreenActiveFormChangedEvent = procedure(Sender: TObject;
                                             LastForm: TCustomForm) of object;
@@ -590,11 +590,11 @@ type
     FCustomForms: TList;
     FCustomFormsZOrdered: TList;
     FDefaultCursor: HCURSOR;
+    FHintFont: TFont;
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
     FFormList: TList;
     FHandlers: array[TScreenNotification] of TMethodList;
-    FHintFont : TFont;
     FLastActiveControl: TWinControl;
     FLastActiveCustomForm: TCustomForm;
     FOnActiveControlChange: TNotifyEvent;
@@ -625,6 +625,8 @@ type
     function GetHandlerCount(HandlerType: TScreenNotification): integer;
     function GetNextHandlerIndex(HandlerType: TScreenNotification;
                                  var i: integer): boolean;
+  protected
+    function GetHintFont: TFont; virtual;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
@@ -662,7 +664,7 @@ type
     property Forms[Index: Integer]: TForm read GetForms;
     property Fonts : TStrings read GetFonts;
     property Height : Integer read Getheight;
-    property HintFont : TFont read FHintFont;
+    property HintFont : TFont read GetHintFont;
     property Width : Integer read GetWidth;
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange
                                                  write FOnActiveControlChange;
@@ -677,7 +679,7 @@ type
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
   TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
-  
+
   // application hint stuff
   PHintInfo = ^THintInfo;
   THintInfo = record
@@ -845,10 +847,10 @@ type
     property ShowHint: Boolean read FShowHint write SetShowHint;
     property Title: String read GetTitle write SetTitle;
   end;
-  
-  
+
+
   { TApplicationProperties }
-  
+
   TApplicationProperties = class(TComponent)
   private
     FCaptureExceptions: boolean;
@@ -911,8 +913,8 @@ type
     property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write SetOnUserInput;
   end;
-  
-  
+
+
   { TIDesigner }
 
   TIDesigner = class(TObject)
@@ -1120,8 +1122,8 @@ function GetParentForm(Control:TControl): TCustomForm;
 begin
   while Control.Parent <> nil do
     Control := Control.Parent;
-  if Control is TCustomForm 
-  then Result := TCustomForm(Control) 
+  if Control is TCustomForm
+  then Result := TCustomForm(Control)
   else Result := nil;
 end;
 
@@ -1157,7 +1159,7 @@ function InitResourceComponent(Instance: TComponent;
           end;
         end;
     end;}
-  
+
 // InitResourceComponent
 //var LocalizedLoading: Boolean;
 begin
@@ -1644,7 +1646,7 @@ initialization
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
-  
+
   {$IFDEF UseFCLDataModule}
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);
   {$ENDIF}

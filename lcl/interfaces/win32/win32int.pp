@@ -124,6 +124,7 @@ Type
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
+    Function  InitHintFont(HintFont: TObject): Boolean; Override;
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
@@ -191,6 +192,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.58  2003/12/13 19:44:42  micha
   hintwindow, color, rectangle size fixes
 

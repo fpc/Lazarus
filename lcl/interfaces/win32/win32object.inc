@@ -33,6 +33,7 @@ Begin
   Inherited Create;
   FAccelGroup := 0;
   FTimerData  := TList.Create;
+  FMetrics.cbSize := SizeOf(FMetrics);
   FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
     SizeOf(FMetrics), @FMetrics, 0);
   if FMetricsFailed then
@@ -1077,6 +1078,16 @@ Begin
   {$ENDIF}
 End;
 
+function TWin32Object.InitHintFont(HintFont: TObject): Boolean;
+begin
+  TFont(HintFont).Name := FMetrics.lfStatusFont.lfFaceName;
+  TFont(HintFont).Style := [];
+  TFont(HintFont).Height := FMetrics.lfStatusFont.lfHeight;
+  TFont(HintFont).Color := clInfoText;
+  TFont(HintFont).Pitch := fpDefault;
+  Result := true;
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32Object.HandleEvents
   Params:  None
@@ -2009,7 +2020,7 @@ Begin
     Begin
       pClassName := @ClsName;
       WindowTitle := StrCaption;
-      Flags := WS_POPUP or WS_BORDER;
+      Flags := WS_POPUP;
       FlagsEx := WS_EX_TOOLWINDOW;
       Left := LongInt(CW_USEDEFAULT);
       Top := LongInt(CW_USEDEFAULT);
@@ -2242,12 +2253,7 @@ Begin
     begin
       if DoSubClass then
         SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
-      case CompStyle of
-        csHintWindow:
-          SendMessage(Window, WM_SETFONT, FStatusFont, 0);
-      else
-        SendMessage(Window, WM_SETFONT, FMessageFont, 0);
-      end;
+      SendMessage(Window, WM_SETFONT, FMessageFont, 0);
     end;
     If Buddy <> HWND(Nil) Then
       SendMessage(Buddy, WM_SETFONT, FMessageFont, 0);
@@ -2329,7 +2335,13 @@ Begin
   If TControl(Sender).HandleObjectShouldBeVisible Then
   Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
-    ShowWindow(Handle, SW_SHOW);
+    if TControl(Sender).FCompStyle = csHintWindow then
+    begin
+      Windows.SetWindowPos(Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or
+        SWP_SHOWWINDOW or SWP_NOACTIVATE);
+    end else begin
+      Windows.ShowWindow(Handle, SW_SHOW);
+    end;
     If (Sender Is TCustomForm) Then
       SetClassLong(Handle, GCL_HIcon, TCustomForm(Sender).GetIconHandle);
   End
@@ -2807,7 +2819,7 @@ var MenuInfo: MENUITEMINFO;
       Result:=hbmpCheck;
     end;
   end;
-   
+
 Begin
   ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
 
@@ -2883,6 +2895,9 @@ End;
 
 {
   $Log$
+  Revision 1.139  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.138  2003/12/13 19:44:42  micha
   hintwindow, color, rectangle size fixes
 

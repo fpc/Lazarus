@@ -50,7 +50,8 @@ type
     procedure WaitMessage; virtual; abstract;
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
-    function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
+    function  InitHintFont(HintFont: TObject): Boolean; virtual;
+    function  IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: pointer): integer; virtual; abstract;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc): integer; virtual; abstract;
     function DestroyTimer(TimerHandle: integer): boolean; virtual; abstract;
@@ -108,6 +109,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.38  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

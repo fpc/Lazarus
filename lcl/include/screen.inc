@@ -35,11 +35,6 @@ begin
   FFormList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
   FHintFont := TFont.Create;
-//  FHintFont.Name := 'courier';
-  FHintFont.Style := [];
-  FHintFont.Size := 12;
-  FHintFont.Color := clInfoText;
-  FHintFont.Pitch := fpDefault;
   FSaveFocusedList := TList.Create;
 end;
 
@@ -335,6 +330,19 @@ end;
 Function TScreen.GetHeight : Integer;
 begin
   Result := GetSystemMetrics(SM_CYSCREEN);
+end;
+
+Function TScreen.GetHintFont: TFont;
+begin
+  if not InterfaceObject.InitHintFont(FHintFont) then
+  begin
+//    FHintFont.Name := 'courier';
+    FHintFont.Style := [];
+    FHintFont.Size := 12;
+    FHintFont.Color := clInfoText;
+    FHintFont.Pitch := fpDefault;
+  end;
+  Result := FHintFont;
 end;
 
 {------------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 
   !! In this file only winapi related code as defined in winapih.inc
      Most routines implement only the default
-  
+
   !! Keep this alphabetical !!
  ******************************************************************************
 
@@ -935,6 +935,11 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.InitHintFont(HintFont: TObject): Boolean;
+begin
+  Result := false;
+end;
+
 procedure TInterfaceBase.InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
   writeln('TInterfaceBase.InitializeCriticalSection Not implemented yet');
@@ -992,8 +997,8 @@ function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 begin
   Result := False;
 end;
-              
-//todo: remove            
+
+//todo: remove
 function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
 begin
@@ -1392,6 +1397,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.1  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

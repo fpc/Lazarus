@@ -2338,7 +2338,7 @@ end;
 
   Called when enabled is changed. Takes action to enable control
  ------------------------------------------------------------------------------}
-procedure TWinControl.CMEnabledChanged(var Message: TLMEssage);
+procedure TWinControl.CMEnabledChanged(var Message: TLMessage);
 begin
   if not Enabled and (Parent <> nil)
   then RemoveFocus(False);
@@ -2347,6 +2347,20 @@ begin
   and not (csDesigning in ComponentState)
   then EnableWindow(Handle, Enabled);
 end;
+
+{------------------------------------------------------------------------------
+  Method: TWinControl.CMShowHintChanged
+  Params: Message
+  Returns: Nothing
+
+  Called when showhint is changed. Notifies children
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CMShowHintChanged(var Message: TLMessage);
+begin
+  NotifyControls(CM_PARENTSHOWHINTCHANGED);
+end;
+
+
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMSetFocus
@@ -3136,6 +3150,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.181  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.180  2003/12/06 19:20:46  mattias
   codecompletion: forward proc body position now block sensitive
 

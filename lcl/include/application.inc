@@ -463,17 +463,22 @@ var
 begin
   Info:=GetHintInfoAtMouse;
   //writeln('TApplication.DoOnMouseMove Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
-  if Info.ControlHasHint then begin
-    case FHintTimerType of
-    ahtNone,ahtShowHint:
-      StartHintTimer(HintPause,ahtShowHint);
-    ahtHideHint:
-      ShowHintWindow(Info);
-    else
+  if FHintControl <> Info.Control then
+  begin
+    if Info.ControlHasHint then
+    begin
+      FHintControl := Info.Control;
+      case FHintTimerType of
+      ahtNone,ahtShowHint:
+        StartHintTimer(HintPause,ahtShowHint);
+      ahtHideHint:
+        ShowHintWindow(Info);
+      else
+        HideHint;
+      end;
+    end else begin
       HideHint;
     end;
-  end else begin
-    HideHint;
   end;
 end;
 
@@ -495,7 +500,6 @@ var
   CurHeight: Integer;
 begin
   if not FShowHint then exit;
-  FHintControl:=Info.Control;
 
   CurHeight:=GetCursorHeightMargin;
   HintInfo.HintControl := FHintControl;
@@ -803,7 +807,7 @@ begin
   HideHint;
   if FHintControl <> nil then
   begin
-    FHintControl := nil;
+    //FHintControl := nil;
     //FHintActive := False;
     //UnhookHintHooks;
     //StopHintTimer;
@@ -1113,6 +1117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.66  2003/11/17 23:09:39  mattias
   started PixelsPerInch
 

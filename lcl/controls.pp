@@ -23,7 +23,7 @@
  *****************************************************************************
 }
 unit Controls;
-     
+
 {$mode objfpc}{$H+}
 {off $DEFINE BUFFERED_WMPAINT}
 interface
@@ -180,7 +180,7 @@ type
   end;
 
   TCMHitTest = TLMNCHitTest;
-  
+
   TCMControlChange = record
     Msg : Cardinal;
     Control : TControl;
@@ -211,7 +211,7 @@ type
 const
   // Cursor constants
   crHigh        = TCursor(0);
-  
+
   crDefault     = TCursor(0);
   crNone        = TCursor(-1);
   crArrow       = TCursor(-2);
@@ -235,7 +235,7 @@ const
   crHelp        = TCursor(-20);
   crHandPoint   = TCursor(-21);
   crSizeAll     = TCursor(-22);
-  
+
   crLow         = TCursor(-22);
 
 type
@@ -263,7 +263,7 @@ type
     csMenuEvents,
     csNoFocus);
   TControlStyle = set of TControlStyleType;
-  
+
 const
   csMultiClicks = [csDoubleClicks,csTripleClicks,csQuadClicks];
 
@@ -306,7 +306,7 @@ type
 
 
   { TDragImageList }
-  
+
   TDragImageList = class(TCustomImageList)
   end;
 
@@ -314,7 +314,7 @@ type
 
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
   TKeyPressEvent = procedure(Sender: TObject; var Key: Char) of Object;
-  
+
   TMouseEvent = Procedure(Sender : TOBject; Button: TMouseButton;
                           Shift : TShiftState; X, Y: Integer) of object;
   TMouseMoveEvent = Procedure(Sender: TObject; Shift: TShiftState;
@@ -340,7 +340,7 @@ type
   TDragDropEvent = Procedure(Sender, Source: TObject; X,Y: Integer) of Object;
   TStartDragEvent = Procedure(Sender: TObject; DragObject: TDragObject) of Object;
   TEndDragEvent = Procedure(Sender, Target: TObject; X,Y: Integer) of Object;
-  
+
 
   PDragRec = ^TDragRec;
   TDragRec = record
@@ -408,8 +408,8 @@ type
     procedure Assign(Source: TDragObject); override;
     property Control: TControl read FControl write FControl;
   end;
-  
-  
+
+
   { TDragControlObject }
 
   TDragControlObject = class(TBaseDragControlObject)
@@ -420,12 +420,12 @@ type
     procedure HideDragImage; override;
     procedure ShowDragImage; override;
   end;
-  
-  
+
+
   { TDragDockObject }
-  
+
   TDragDockObject = class;
-  
+
   TDockOrientation = (
     doNoOrient,   // zone contains a TControl and no child zones.
     doHorizontal, // zone's children are stacked top-to-bottom.
@@ -492,7 +492,7 @@ type
   { TSizeConstraints }
 
   TConstraintSize = 0..MaxInt;
-  
+
   TSizeConstraints = class(TPersistent)
   private
     FControl: TControl;
@@ -518,7 +518,7 @@ type
     property MinHeight: TConstraintSize read FMinHeight write SetMinHeight default 0;
     property MinWidth: TConstraintSize read FMinWidth write SetMinWidth default 0;
   end;
-									      
+
   TConstrainedResizeEvent = procedure(Sender : TObject;
       var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
 
@@ -553,7 +553,7 @@ type
 
 
   { TControl }
-  
+
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
   TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint; var Handled: Boolean) of object;
 
@@ -732,6 +732,7 @@ type
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
     procedure CMParentColorChanged(var Message : TLMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMParentShowHintChanged(var Message : TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     function  GetPalette: HPalette; virtual;
@@ -1036,7 +1037,8 @@ type
     procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
     procedure CreateBrush; virtual;
-    procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
+    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
@@ -1195,8 +1197,8 @@ type
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
   end;
-  
-  
+
+
   { TGraphicControl }
 
   TGraphicControl = class(TControl)
@@ -1227,10 +1229,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
- 
+
 
   { TImageList }
- 
+
   TImageList = class(TDragImageList)
   published
     Property Height;
@@ -1297,7 +1299,7 @@ type
   TForEachZoneProc = procedure(Zone: TDockZone) of object;
 
   TDockTreeClass = class of TDockTree;
-  
+
   TDockTreeFlag = (
     dtfUpdateAllNeeded
     );
@@ -1430,7 +1432,7 @@ uses
 
 var
   CaptureControl: TControl;
-  
+
   DragCapture: HWND;
   DragControl: TControl;
   DragObjectAutoFree: Boolean;
@@ -1439,7 +1441,7 @@ var
   DragStartPos: TPoint;
   DragThreshold: Integer;
   ActiveDrag: TDragOperation;
-  
+
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TImageList]);
@@ -1459,7 +1461,7 @@ end;
 {------------------------------------------------------------------------------}
 function FindControl(Handle : hwnd) : TWinControl;
 begin
-  if Handle <> 0 
+  if Handle <> 0
   then Result := TWinControl(GetProp(Handle,'WinControl'))
   else Result := nil;
 end;
@@ -1576,7 +1578,7 @@ Begin
   and (Abs(DragStartPos.X - P.X) < DragThreshold)
   and (Abs(DragStartPos.Y - P.Y) > DragThreshold) then
     exit;
-    
+
 
 end;
 
@@ -1642,8 +1644,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: FindLCLWindow
-  Params: 
-  Returns:  
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
@@ -1664,8 +1666,8 @@ end;
 
 {------------------------------------------------------------------------------
   Function: FindDragTarget
-  Params: 
-  Returns:  
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
@@ -1682,25 +1684,25 @@ begin
 
     Control := Window.ControlAtPos(Window.ScreenToClient(pos), AllowDisabled);
 
-    if Control <> nil 
+    if Control <> nil
     then Assert(False, Format('Trace:[FindDragTarget] Control at pos(%d, %d): %s', [Pos.X,Pos.Y, Control.ClassName]));
-    
+
     if Control <> nil then Result := Control;
   end;
 end;
 
 {------------------------------------------------------------------------------
   Function: GetCaptureControl
-  Params: 
-  Returns:  
+  Params:
+  Returns:
 
  ------------------------------------------------------------------------------}
 function GetCaptureControl : TControl;
 begin
   Result := FindControl(GetCapture);
-  if (Result <> nil) 
-  and (CaptureControl <> nil) 
-  and (CaptureControl.Parent = Result) 
+  if (Result <> nil)
+  and (CaptureControl <> nil)
+  and (CaptureControl.Parent = Result)
   then Result := CaptureControl;
 end;
 
@@ -1720,12 +1722,12 @@ begin
   {$ENDIF}
   ReleaseCapture;
   CaptureControl := nil;
-  if Control <> nil 
+  if Control <> nil
   then begin
     if not (Control is TWinControl)
     then begin
       if Control.Parent = nil then Exit;
-      
+
       CaptureControl := Control;
       Control := Control.Parent;
     end;
@@ -1839,17 +1841,20 @@ initialization
   Mouse := TMouse.create;
   DragControl := nil;
   CaptureControl := nil;
-  
+
   RegisterIntegerConsts(TypeInfo(TCursor), @IdentToCursor, @CursorToIdent);
 
 finalization
   Mouse.Free;
-  
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.159  2003/12/14 19:18:03  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.158  2003/11/22 17:22:14  mattias
   moved TBevelCut to controls.pp
 

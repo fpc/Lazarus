@@ -54,7 +54,7 @@ begin
   if (DragControl = nil) or (Pointer(DragControl) = Pointer($FFFFFFFF)) then
   Begin
     DragControl := nil;
-    
+
     // if the last mouse down was not followed by a mouse up, simulate a
     // mouse up. This way applications need only to react to mouse up to
     // clean up.
@@ -63,7 +63,7 @@ begin
       P := ScreenToClient(p);
       Perform(LM_LBUTTONUP,0,Longint(PointToSmallPoint(p)));
     end;
-    
+
     if Threshold < 0 then
       Threshold := Mouse.DragThreshold;
     if Pointer(DragControl) <> Pointer($FFFFFFFF) then
@@ -112,14 +112,14 @@ end;
 function TControl.GetDockEdge(const MousePos: TPoint): TAlign;
 var
   BestDistance: Integer;
-  
+
   procedure FindMinDistance(CurAlign: TAlign; CurDistance: integer);
   begin
     if CurDistance>=BestDistance then exit;
     Result:=CurAlign;
     BestDistance:=CurDistance;
   end;
-  
+
 begin
   // check if MousePos outside the control
   if MousePos.X<=0 then
@@ -152,7 +152,7 @@ end;
 procedure TControl.BoundsChanged;
 begin
   { Notifications can be performed here }
-end; 
+end;
 
 {------------------------------------------------------------------------------}
 {       TControl.Bringtofront
@@ -200,7 +200,7 @@ var
     PosChanged:= (FLeft <> OldLeft) or (FTop <> OldTop);
     Result:=(not SizeChanged) and (not PosChanged);
   end;
-  
+
 begin
   {$IFDEF VerboseSizeMsg}
   writeln('TControl.ChangeBounds A ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' New=',ALeft,',',ATop,',',AWidth,',',AHeight);
@@ -222,7 +222,7 @@ begin
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if (not SizeChanged) and (not PosChanged) then exit;
-  
+
   {If AutoSize and not AutoSizing then begin
     If SizeChanged then begin
       DoAutoSize;
@@ -303,7 +303,7 @@ end;
 {-------------------------------------------------------------------------------
   TControl.DoSetBounds
   Params: ALeft, ATop, AWidth, AHeight : integer
-  
+
   store bounds in private variables
 -------------------------------------------------------------------------------}
 procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
@@ -342,12 +342,12 @@ var
   Handled: Boolean;
 begin
   if csDesigning in ComponentState then Exit;
-  
+
   P2 := SmallPointToPoint(P);
   Handled:=false;
   DoContextPopup(P2,Handled);
   if Handled then exit;
-  
+
   Control := Self;
   while Control <> nil do
   begin
@@ -385,7 +385,7 @@ procedure TControl.SetTabStop(Value : Boolean);
 begin
   If FTabStop = Value then
     exit;
-    
+
   FTabStop := Value;
 end;
 
@@ -601,6 +601,20 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+       TControl.CMShowHintChanged
+
+       assumes: FParent <> nil
+------------------------------------------------------------------------------}
+procedure TControl.CMParentShowHintChanged(var Message: TLMessage);
+begin
+  if FParentShowHint then
+  begin
+    ShowHint := FParent.ShowHint;
+    FParentShowHint := true;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {       TControl.ConstrainedResize                                             }
 {------------------------------------------------------------------------------}
@@ -621,7 +635,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TControl.DoOnResize;
-  
+
   Call events
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnResize;
@@ -682,12 +696,12 @@ begin
   else MaxHeight:= 0;
 
   ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
-  
+
   if (MinWidth > 0) and (NewWidth < MinWidth) then
     NewWidth:= MinWidth
   else if (MaxWidth > 0) and (NewWidth > MaxWidth) then
     NewWidth:= MaxWidth;
-  
+
   if (MinHeight > 0) and (NewHeight < MinHeight) then
     NewHeight:= MinHeight
   else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
@@ -851,7 +865,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
-  
+
 ------------------------------------------------------------------------------}
 Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
 var
@@ -932,7 +946,7 @@ end;
 Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean);
 begin
   Accept := False;
-  if Assigned(FOnDragOver) 
+  if Assigned(FOnDragOver)
   then begin
     Accept := True;
   //Do something else yet....
@@ -1114,7 +1128,7 @@ end;
 
 {------------------------------------------------------------------------------
   function TControl.GetChildsRect(Scrolled: boolean): TRect;
-  
+
   Returns the Client rectangle relative to the controls left, top.
   If Scrolled is true, the rectangle is moved by the current scrolling values
   (for an example see TScrollingWincontrol).
@@ -1202,13 +1216,13 @@ begin
         end;
 
         case TheMessage.Msg of
-        
+
           LM_MOUSEMOVE:
             begin
               Application.HintMouseMessage(Self, TheMessage);
               if Dragging then DragObject.MouseMsg(TheMessage);
             end;
-            
+
           LM_LBUTTONDOWN,
           LM_LBUTTONDBLCLK:
             begin
@@ -1227,7 +1241,7 @@ begin
               end;
               Include(FControlState,csLButtonDown);
             end;
-            
+
           LM_LBUTTONUP:
             begin
               Exclude(FControlState, csLButtonDown);
@@ -1239,7 +1253,7 @@ begin
         if TheMessage.Msg = CM_VISIBLECHANGED
         then begin
           with TheMessage do SendDockNotification(Msg,WParam,LParam);
-	end;    
+	end;
       end;
     end;
   end;
@@ -1604,7 +1618,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
 begin
-  if FCursor <> Value 
+  if FCursor <> Value
   then begin
     FCursor := Value;
     // This should not be called if it is already set to VALUE but if
@@ -1626,7 +1640,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetEnabled(Value: Boolean);
 begin
-  if FEnabled <> Value 
+  if FEnabled <> Value
   then begin
     FEnabled := Value;
     Perform(CM_ENABLEDCHANGED, 0, 0);
@@ -1643,8 +1657,8 @@ begin
     {$IFDEF VerboseMouseCapture}
     writeln('TControl.SetMouseCapture ',Name,':',ClassName,' NewValue=',Value);
     {$ENDIF}
-    if Value 
-    then SetCaptureControl(Self) 
+    if Value
+    then SetCaptureControl(Self)
     else SetCaptureControl(nil);
   end
 end;
@@ -1653,7 +1667,7 @@ end;
    Method:  TControl.SetHint
    Params:  Value: the text of the hint to be set
    Returns: Nothing
- 
+
    Sets the hint text of a control
  ------------------------------------------------------------------------------}
 procedure TControl.SetHint(const Value: String);
@@ -1761,7 +1775,7 @@ begin
   or ([csLoading,csDestroying]*Parent.ComponentState<>[])
   or ([csLoading,csDestroying]*ComponentState<>[])
   then exit;
-  
+
   if (IsVisible or (csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle))
   then begin
@@ -1825,7 +1839,7 @@ end;
 
 {------------------------------------------------------------------------------
   TControl Resize
-  
+
   Calls OnResize
 -------------------------------------------------------------------------------}
 procedure TControl.Resize;
@@ -1856,7 +1870,7 @@ begin
     ' CH=',cfClientHeightLoaded in FControlFlags,'=',FLoadedClientSize.Y,
     '');}
   UpdateBaseBounds(true,true,true);
-  
+
   // align this control and the brothers
   if cfRequestAlignNeeded in FControlFlags then
     RequestAlign;
@@ -1901,7 +1915,7 @@ end;
 
 {------------------------------------------------------------------------------
   TControl RequestAlign
-  
+
   Requests the parent to realign all brothers
 ------------------------------------------------------------------------------}
 procedure TControl.RequestAlign;
@@ -2093,7 +2107,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetParentShowHint(Value : Boolean);
 Begin
-  if FParentShowHint <> Value 
+  if FParentShowHint <> Value
   then begin
     FParentShowHint := Value;
     //Sendmessage to stop/start hints for parent
@@ -2234,7 +2248,7 @@ begin
       	end;
       end;
     end;
-  end;    
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2427,7 +2441,7 @@ begin
                     csOpaque];
   FConstraints:= TSizeConstraints.Create(Self);
   FConstraints.OnChange:= @DoConstraintsChange;
-  
+
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
   FColor := clWindow;
@@ -2465,7 +2479,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TControl.HasParent
-  Params:  
+  Params:
   Returns: True - the item has a parent responsible for streaming
 
   This function will be called during streaming to decide if a component has
@@ -2531,16 +2545,16 @@ end;
   Returns:  nothing
 
   event handler.
-  
+
  ------------------------------------------------------------------------------}
 procedure TControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 begin
   Assert(False, Format('Trace:[TControl.WMWindowPosChanged] %s', [ClassName]));
   // TODO : Docksites and constraints
-  
+
   { Do not handle this message and leave it to WMSize and WMMove }
   Message.Result:= 0;
-  
+
   //if Message.WindowPos <> nil then with Message.WindowPos^ do begin
   //   SetBounds(X, Y, cX, cY);
   //   Message.Result:= 1;
@@ -2571,7 +2585,7 @@ end;
   Returns:  nothing
 
   event handler.
-  
+
   Message.MoveType=0 is the default, all other values will force a RequestAlign.
  ------------------------------------------------------------------------------}
 procedure TControl.WMMove(var Message: TLMMove);
@@ -2593,6 +2607,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.158  2003/12/14 19:18:04  micha
+  hint fixes: parentfont, font itself, showing/hiding + more
+
   Revision 1.157  2003/09/23 17:52:04  mattias
   added SetAnchors
 
