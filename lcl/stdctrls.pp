@@ -418,6 +418,7 @@ type
     property BorderStyle;
     property Constraints;
     property ExtendedSelect;
+    property Font;
     property Items;
     property ItemHeight;
     property MultiSelect;
@@ -438,6 +439,7 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property ParentShowHint;
+    property ParentFont;
     property PopupMenu;
     property ShowHint;
     property Sorted;
@@ -1483,6 +1485,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2004/02/04 12:59:07  mattias
+  added TToolButton.Action and published some props
+
   Revision 1.123  2004/02/04 11:09:40  mattias
   added DefineProperties check for check lfm
 

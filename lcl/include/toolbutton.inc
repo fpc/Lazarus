@@ -15,6 +15,38 @@
 
 }
 
+{ TToolButtonActionLink }
+
+procedure TToolButtonActionLink.AssignClient(AClient: TObject);
+begin
+  inherited AssignClient(AClient);
+  FClient := AClient as TToolButton;
+end;
+
+function TToolButtonActionLink.IsCheckedLinked: Boolean;
+begin
+  Result := inherited IsCheckedLinked
+    and (TToolButton(FClient).Down = (Action as TCustomAction).Checked);
+end;
+
+function TToolButtonActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked
+   and (TToolButton(FClient).ImageIndex = (Action as TCustomAction).ImageIndex);
+end;
+
+procedure TToolButtonActionLink.SetChecked(Value: Boolean);
+begin
+  if IsCheckedLinked then TToolButton(FClient).Down := Value;
+end;
+
+procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
+begin
+  if IsImageIndexLinked then TToolButton(FClient).ImageIndex := Value;
+end;
+
+{ TToolButton }
+
 constructor TToolButton.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -227,6 +259,25 @@ begin
     UpdateControl;
     FToolBar.RepositionButtons(Index);
   end;
+end;
+
+procedure TToolButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+var
+  NewAction: TCustomAction;
+begin
+  inherited ActionChange(Sender, CheckDefaults);
+  if Sender is TCustomAction then begin
+    NewAction:=TCustomAction(Sender);
+    if not CheckDefaults or (not Down) then
+      Down := NewAction.Checked;
+    if not CheckDefaults or (ImageIndex = -1) then
+      ImageIndex := NewAction.ImageIndex;
+  end;
+end;
+
+function TToolButton.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result:=TToolButtonActionLink;
 end;
 
 procedure TToolButton.CMEnabledChanged(var Message: TLMessage);
@@ -454,6 +505,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2004/02/04 12:59:08  mattias
+  added TToolButton.Action and published some props
+
   Revision 1.4  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

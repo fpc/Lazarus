@@ -37,9 +37,9 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LCLType, LCLProc,
-  AvgLvlTree, Controls, Forms, StdCtrls, ExtCtrls, vclGlobals, LMessages, Menus,
-  ImgList, GraphType, Graphics, ToolWin, CommCtrl, Buttons, Math;
+  SysUtils, Classes, Math, FPCAdds, LCLStrConsts, LCLIntf, LCLType, LCLProc,
+  AvgLvlTree, vclGlobals, LMessages, ImgList, ActnList, GraphType, Graphics,
+  Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, CommCtrl, Buttons;
 
 type
   TStatusPanelStyle = (psText, psOwnerDraw);
@@ -761,6 +761,20 @@ type
   TToolButton = class;
 
 
+  { TToolButtonActionLink }
+
+  TToolButtonActionLink = class(TControlActionLink)
+  protected
+    procedure AssignClient(AClient: TObject); override;
+    function IsCheckedLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    procedure SetChecked(Value: Boolean); override;
+    procedure SetImageIndex(Value: Integer); override;
+  end;
+
+  TToolButtonActionLinkClass = class of TToolButtonActionLink;
+  
+  
   TToolButton = class(TButtonControl)
   private
     FAllowAllUp: Boolean;
@@ -795,6 +809,8 @@ type
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
   protected
     FToolBar: TToolBar;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
@@ -813,6 +829,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     property Index: Integer read GetIndex;
   published
+    property Action;
     property AllowAllUp: Boolean read FAllowAllUp write FAllowAllUp default False;
     property AutoSize default False;
     property Caption;
@@ -1955,6 +1972,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2004/02/04 12:59:07  mattias
+  added TToolButton.Action and published some props
+
   Revision 1.105  2004/02/02 20:00:45  mattias
   published TTreeView.Tab
 
