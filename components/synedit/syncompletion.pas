@@ -156,7 +156,7 @@ type
     procedure SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
     {$ENDIF}
   public
-    constructor Create(Aowner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute(s: string; x, y: integer);
     procedure Deactivate;
@@ -286,7 +286,9 @@ begin
   Scroll.Parent := self;
   Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;
   Scroll.Width := 10;
-  Scroll.Visible := TRue;  //shane
+  {$IFDEF SYN_LAZARUS}
+  Scroll.Visible := True;
+  {$ENDIF}
   Visible := false;
   FFontHeight := Canvas.TextHeight('Cyrille de Brebisson');
   Color := clWindow;
@@ -404,13 +406,6 @@ begin
   {$ENDIF}
   Scroll.LargeChange := NbLinesInWindow;
 
-  // draw a rectangle around the window
-  Canvas.Pen.Color := ClBlack;
-  Canvas.Moveto(0, 0);
-  Canvas.LineTo(Width - 1, 0);
-  Canvas.LineTo(Width - 1, Height - 1);
-  Canvas.LineTo(0, Height - 1);
-  Canvas.LineTo(0, 0);
   {$IFNDEF SYN_LAZARUS}
   // canvas.draw is unfinished in lcl
   with bitmap do begin
@@ -443,7 +438,14 @@ begin
   {$IFNDEF SYN_LAZARUS}
   end;
   Canvas.Draw(1, 1, bitmap);
+  // draw a rectangle around the window
   {$ENDIF}
+  Canvas.Pen.Color := ClBlack;
+  Canvas.Moveto(0, 0);
+  Canvas.LineTo(Width - 1, 0);
+  Canvas.LineTo(Width - 1, Height - 1);
+  Canvas.LineTo(0, Height - 1);
+  Canvas.LineTo(0, 0);
 end;
 
 procedure TSynBaseCompletionForm.ScrollChange(Sender: TObject);
