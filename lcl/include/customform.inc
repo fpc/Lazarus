@@ -594,9 +594,21 @@ begin
     FDesigner.ValidateRename(AComponent, CurName, NewName);
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm WndProc                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TCustomForm.SetZOrder(Topmost: Boolean);
+------------------------------------------------------------------------------}
+procedure TCustomForm.SetZOrder(Topmost: Boolean);
+begin
+  if Parent=nil then begin
+    if TopMost and HandleAllocated then BringWindowToTop(Handle);
+    exit;
+  end;
+  inherited SetZOrder(Topmost);
+end;
+
+{------------------------------------------------------------------------------
+       TCustomForm WndProc
+------------------------------------------------------------------------------}
 procedure TCustomForm.WndProc(Var TheMessage : TLMessage);
 var
   FocusHandle : HWND;
@@ -1265,6 +1277,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2003/01/04 12:06:53  mattias
+  fixed TCustomform.BringToFront
+
   Revision 1.82  2002/12/29 11:10:45  mattias
   fixed form FActive, cleanups
 

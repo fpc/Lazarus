@@ -274,6 +274,7 @@ type
     // hints. Note/ToDo: hints should be controlled by the lcl, this is a workaround
     HintTimer1 : TIdleTimer;
     HintWindow1 : THintWindow;
+    
     procedure mnuWindowsItemClick(Sender: TObject);
   protected
     TheCompiler: TCompiler;
@@ -391,8 +392,10 @@ var
 begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
-    if Screen.CustomForms[i].Caption=TMenuItem(Sender).Caption then
+    if Screen.CustomForms[i].Caption=TMenuItem(Sender).Caption then begin
       Screen.CustomForms[i].BringToFront;
+      break;
+    end;
     dec(i);
   end;
 end;

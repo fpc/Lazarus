@@ -310,9 +310,10 @@ type
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent;
                              const CurName, NewName: string);override;
+    Procedure SetZOrder(Topmost: Boolean); override;
     procedure WndProc(var TheMessage : TLMessage); override;
-    property TextHeight : Longint read FDummyTextHeight write FDummyTextHeight stored False;
-    {events}
+  public
+    // properties
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
@@ -326,6 +327,7 @@ type
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnResize stored IsForm;
     property Position : TPosition read FPosition write SetPosition default poDesigned;
+    property TextHeight : Longint read FDummyTextHeight write FDummyTextHeight stored False;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
