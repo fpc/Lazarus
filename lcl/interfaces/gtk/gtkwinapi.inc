@@ -791,7 +791,6 @@ const
   PUSH_EDGE_FLAG: array[Boolean] of Integer = (EDGE_RAISED, EDGE_SUNKEN);
   PUSH_EDGE_FLAG2: array[Boolean] of Integer = (0, BF_FLAT);
 begin
-writeln('IN DrawFrameControl');
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
@@ -3114,6 +3113,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/01/12 18:46:50  lazarus
+  Named the speedbuttons in MAINIDE and took out some writelns.
+  Shane
+
   Revision 1.11  2001/01/04 16:12:54  lazarus
   Removed some writelns and changed the property editor for TStrings a bit.
   Shane

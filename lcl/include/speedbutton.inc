@@ -254,9 +254,7 @@ begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if FState in [bsDown, bsExclusive]
     then DrawFlags := DrawFlags or DFCS_PUSHED;
-    Writeln('calling drawframecontrol');
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
-    Writeln('Exiting drawframecontrol');
   end
   else begin   //flat
     if (FState in [bsDown, bsExclusive])
@@ -526,6 +524,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/01/12 18:46:50  lazarus
+  Named the speedbuttons in MAINIDE and took out some writelns.
+  Shane
+
   Revision 1.3  2001/01/04 16:12:54  lazarus
   Removed some writelns and changed the property editor for TStrings a bit.
   Shane

@@ -547,6 +547,7 @@ begin
        // *** New
         if not InitResourceComponent(Self, TForm) then begin
           writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
+          Writeln('This is for information purposes only.   This is not critical at this time.');
 
         end;
         // ***
@@ -824,6 +825,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/12 18:46:50  lazarus
+  Named the speedbuttons in MAINIDE and took out some writelns.
+  Shane
+
   Revision 1.8  2001/01/03 18:44:54  lazarus
   The Speedbutton now has a numglyphs setting.
   I started the TStringPropertyEditor

@@ -831,9 +831,7 @@ begin
   FSaveDialog := TSaveDialog.Create(Self);
   FOpenDialog := TOpenDialog.Create(Self);
 
-  Writeln('Creating TImageList');
   Bookmarks := TImageList.Create(AOwner);
-  Writeln('1');
 
   //load 10 images
   for I := 0 to 9 do
@@ -845,12 +843,6 @@ begin
            LoadResource('default',Pixmap1);
     Bookmarks.Add(Pixmap1,nil);
   end;
-
-  Writeln('2');
-
-  Writeln('3');
-
-
 end;
 
 destructor TSourceNotebook.Destroy;

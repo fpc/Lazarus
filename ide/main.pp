@@ -320,38 +320,40 @@ begin
   for I := 0 to RegCompList.PageCount-1 do
   begin
     RegCompPage := RegCompList.Pages[i];
-    if I = 0 
-    then Notebook1.Pages.Strings[i] := RegCompPage.Name
-    else Notebook1.Pages.Add(RegCompPage.Name);
-
-    GlobalMouseSpeedButton := TSpeedButton.Create(Self);
-    with GlobalMouseSPeedButton do
+    if RegCompPage.Name <> '' then
     Begin
-      Parent := Notebook1.page[I];
-      Enabled := True;
-      Width := 25;
-      Height := 25;
-      OnClick := @ControlClick;
-      Glyph := Pixmap1;
-      Visible := True;
-      Flat := True;
-      Down := True;
-      Name := 'GlobalMouseSpeedButton'+inttostr(i);
+      if I = 0
+      then Notebook1.Pages.Strings[i] := RegCompPage.Name
+      else Notebook1.Pages.Add(RegCompPage.Name);
+
+      GlobalMouseSpeedButton := TSpeedButton.Create(Self);
+      with GlobalMouseSPeedButton do
+      Begin
+        Parent := Notebook1.page[I];
+        Enabled := True;
+        Width := 25;
+        Height := 25;
+        OnClick := @ControlClick;
+        Glyph := Pixmap1;
+        Visible := True;
+        Flat := True;
+        Down := True;
+        Name := 'GlobalMouseSpeedButton'+inttostr(i);
+      end;
+
+      for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
+      begin
+        RegComp := RegCompPage.Items[x];
+        IDEComponent := TIDEComponent.Create;
+        IdeComponent.RegisteredComponent := RegComp;
+        IDEComponent._SpeedButton(Self,Notebook1.Page[i]);
+        IDEComponent.SpeedButton.OnClick := @ControlClick;
+        IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
+        IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
+        IDEComponent.SpeedButton.ShowHint := True;
+      end;
     end;
-
-    for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
-    begin
-      writeln('X = '+inttostr(x));
-      RegComp := RegCompPage.Items[x];
-      IDEComponent := TIDEComponent.Create;
-      IdeComponent.RegisteredComponent := RegComp;
-      IDEComponent._SpeedButton(Self,Notebook1.Page[i]);
-      IDEComponent.SpeedButton.OnClick := @ControlClick;
-      IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
-      IDEComponent.SpeedButton.ShowHint := True;
-     end;
-  end;
-
+   end;
   Notebook1.PageIndex := 0;   // Set it to the first page
   Notebook1.Show;
   Notebook1.OnPageChanged := @ControlClick;
@@ -1902,6 +1904,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2001/01/12 18:46:49  lazarus
+  Named the speedbuttons in MAINIDE and took out some writelns.
+  Shane
+
   Revision 1.39  2001/01/12 18:10:53  lazarus
   Changes for keyevents in the editor.
   Shane
