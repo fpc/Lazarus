@@ -1068,8 +1068,6 @@ begin
   ReallocMem(Points, Count*SizeOf(TPoint));
   Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
   Points[Count - 1] := Points[0];
-  ReallocMem(Points, Count*SizeOf(TPoint));
-  Points[Count - 1] := Points[0];
   Polygon(DC, Points, Count, True);
   ReallocMem(Points, 0);
   Result := True;
@@ -1452,6 +1450,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/10/31 04:27:59  lazarus
+  AJ: added TShape
+
   Revision 1.63  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 
