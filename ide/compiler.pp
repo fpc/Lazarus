@@ -146,11 +146,8 @@ begin
 
     try
       TheProcess := TProcess.Create(nil);
-      writeln('AAA1');
       TheProcess.CommandLine := CmdLine;
-      writeln('AAA2');
       TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-      writeln('AAA3');
       TheProcess.ShowWindow := swoNone;
       Result:=mrOk;
       try
@@ -160,13 +157,11 @@ begin
           OutputFilter.PrgSourceFilename:=ProjectFilename;
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.Project:=AProject;
-      writeln('AAA4');
           OutputFilter.Execute(TheProcess);
         end else begin
           TheProcess.Execute;
           TheProcess.WaitOnExit;
         end;
-      writeln('AAA5');
       finally
         TheProcess.Free;
       end;
@@ -194,6 +189,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2002/10/21 22:20:00  lazarus
+  MG: reduced output
+
   Revision 1.34  2002/10/21 22:12:46  lazarus
   MG: fixed frmactivate
 
