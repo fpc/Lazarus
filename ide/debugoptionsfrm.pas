@@ -1,3 +1,29 @@
+{
+ /***************************************************************************
+                           DebugOptionsFrm.pas
+                           -------------------
+
+ ***************************************************************************/
+
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+}
 unit DebugOptionsFrm;
 
 {$mode objfpc} {$H+}
@@ -7,8 +33,8 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst,
-  LazarusIDEStrConsts, FileProcs, InputHistory, EnvironmentOpts,
-  BaseDebugManager, Debugger, DBGUtils;
+  ObjectInspector, LazarusIDEStrConsts, FileProcs, InputHistory,
+  EnvironmentOpts, BaseDebugManager, Debugger, DBGUtils;
 
 type
   TDebuggerOptionsForm = class (TForm )
@@ -173,8 +199,8 @@ begin
   if FCurDebuggerClass = nil then Exit;
 
   // create debugger specific options components
-  // tmep hack
-  if FCurDebuggerClass.ClassName = 'TSSHGDBMIDEBUGGER'
+  // temp hack
+  if SameText(FCurDebuggerClass.ClassName, 'TSSHGDBMIDEBUGGER')
   then begin
     AMemo:=TMemo.Create(Self);
     FDebuggerSpecificComponents.Add(AMemo);
@@ -182,7 +208,7 @@ begin
     begin
       Name:='DebOptsSpecMemo1';
       Parent:=gbDebuggerSpecific;
-      SetBounds(5,5,Parent.Width-15,Parent.Height-35);
+      SetBounds(5,5,Parent.Width-15,100);
       WordWrap:=true;
       ReadOnly:=true;
       Caption:='The GNU debugger through ssh allows to remote debug via a ssh'

@@ -276,7 +276,7 @@ Begin
     End;
     WM_CAPTURECHANGED:
     Begin
-      LMessage.Msg := LM_CHANGED;
+      LMessage.Msg := LM_CAPTURECHANGED;
     End;
     CB_DELETESTRING, LB_DELETESTRING:
     Begin
@@ -323,15 +323,18 @@ Begin
         if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
           LMessage.Msg := LM_ACTIVATE;
       end else if OwnerObject is TButton then
-      begin
         case Hi(WParam) of
           BN_CLICKED:   LMessage.Msg := LM_CLICKED;
           BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
-        end;
-      end else if OwnerObject is TEdit then
+        end
+      else if OwnerObject is TEdit then
         case Hi(WParam) of
           EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
-      end;
+        end
+      else if OwnerObject is TCustomCombobox then
+        case Hi(WParam) of
+          CBN_EDITCHANGE, CBN_SELCHANGE: LMessage.Msg := LM_CHANGED;
+        end;
       // no specific message found? try send a general msg
       if LMessage.Msg = LM_NULL then
         if OwnerObject is TControl then
@@ -906,6 +909,9 @@ end;
 
 {
   $Log$
+  Revision 1.80  2003/12/26 15:29:33  mattias
+  various combobox and other fixes from  Vincent
+
   Revision 1.79  2003/12/23 16:49:48  micha
   fix mousewheel message, short signed int params
 

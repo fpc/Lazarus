@@ -1,492 +1,461 @@
 object DebuggerOptionsForm: TDebuggerOptionsForm
-  BORDERSTYLE = bsdialog
-  CAPTION = 'Debugger Options'
-  CLIENTHEIGHT = 442
-  CLIENTWIDTH = 480
-  ONCREATE = DebuggerOptionsFormCREATE
-  ONDESTROY = DebuggerOptionsFormDESTROY
-  POSITION = podefaultposonly
-  HORZSCROLLBAR.PAGE = 481
-  VERTSCROLLBAR.PAGE = 443
-  LEFT = 632
-  HEIGHT = 442
-  TOP = 42
-  WIDTH = 480
-  object nbDebugOptions: TNOTEBOOK
-    ALIGN = altop
-    ANCHORS = [aktop, akleft]
-    PAGEINDEX = 0
-    HEIGHT = 398
-    WIDTH = 480
-    object pgGeneral: TPAGE
-      CAPTION = 'General'
-      CLIENTWIDTH = 476
-      CLIENTHEIGHT = 368
-      LEFT = 2
-      HEIGHT = 368
-      TOP = 28
-      WIDTH = 476
-      object gbDebuggerType: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'Debugger type and path'
-        CLIENTHEIGHT = 69
-        CLIENTWIDTH = 468
-        COLOR = -2147483633
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 0
-        LEFT = 2
-        HEIGHT = 86
-        TOP = 8
-        WIDTH = 472
-        object cmbDebuggerType: TCOMBOBOX
-          ANCHORS = [aktop, akleft]
-          MAXLENGTH = 0
-          ONCHANGE = cmbDebuggerTypeCHANGE
-          PARENTCTL3D = False
-          TABORDER = 0
-          TABSTOP = True
-          LEFT = 6
-          HEIGHT = 25
-          TOP = 5
-          WIDTH = 268
+  BorderStyle = bsdialog
+  Caption = 'Debugger Options'
+  ClientHeight = 442
+  ClientWidth = 480
+  OnCreate = DebuggerOptionsFormCREATE
+  OnDestroy = DebuggerOptionsFormDESTROY
+  Position = poscreencenter
+  HorzScrollBar.Page = 481
+  VertScrollBar.Page = 443
+  Left = 419
+  Height = 442
+  Top = 257
+  Width = 480
+  object nbDebugOptions: TNotebook
+    Align = altop
+    PageIndex = 0
+    Height = 398
+    Width = 480
+    object pgGeneral: TPage
+      Caption = 'General'
+      ClientWidth = 476
+      ClientHeight = 368
+      Left = 2
+      Height = 368
+      Top = 28
+      Width = 476
+      object gbDebuggerType: TGroupBox
+        Caption = 'Debugger type and path'
+        ClientHeight = 69
+        ClientWidth = 468
+        Color = clBtnFace
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 0
+        Left = 2
+        Height = 86
+        Top = 8
+        Width = 472
+        object cmbDebuggerType: TComboBox
+          MaxLength = 0
+          OnChange = cmbDebuggerTypeCHANGE
+          ParentCtl3D = False
+          TabOrder = 0
+          TabStop = True
+          Left = 6
+          Height = 25
+          Top = 5
+          Width = 268
         end
-        object cmbDebuggerPath: TCOMBOBOX
-          ANCHORS = [aktop, akleft]
-          MAXLENGTH = 0
-          PARENTCTL3D = False
-          TABORDER = 1
-          TABSTOP = True
-          LEFT = 6
-          HEIGHT = 25
-          TOP = 37
-          WIDTH = 428
+        object cmbDebuggerPath: TComboBox
+          MaxLength = 0
+          ParentCtl3D = False
+          TabOrder = 1
+          TabStop = True
+          Left = 6
+          Height = 25
+          Top = 37
+          Width = 428
         end
-        object cmdOpenDebuggerPath: TBUTTON
-          ANCHORS = [aktop, akleft]
-          CAPTION = '...'
-          TABSTOP = True
-          TABORDER = 2
-          ONCLICK = cmdOpenDebuggerPathCLICK
-          LEFT = 442
-          HEIGHT = 25
-          TOP = 37
-          WIDTH = 19
+        object cmdOpenDebuggerPath: TButton
+          Caption = '...'
+          TabStop = True
+          TabOrder = 2
+          OnClick = cmdOpenDebuggerPathCLICK
+          Left = 442
+          Height = 25
+          Top = 37
+          Width = 19
         end
       end
-      object gbAdditionalSearchPath: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'Additional search path'
-        CLIENTHEIGHT = 35
-        CLIENTWIDTH = 468
-        COLOR = -2147483633
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 1
-        LEFT = 2
-        HEIGHT = 52
-        TOP = 100
-        WIDTH = 472
-        object txtAdditionalPath: TEDIT
-          ANCHORS = [aktop, akleft]
-          TABSTOP = True
-          TABORDER = 0
-          LEFT = 6
-          HEIGHT = 25
-          TOP = 5
-          WIDTH = 428
+      object gbAdditionalSearchPath: TGroupBox
+        Caption = 'Additional search path'
+        ClientHeight = 35
+        ClientWidth = 468
+        Color = clBtnFace
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 1
+        Left = 2
+        Height = 52
+        Top = 100
+        Width = 472
+        object txtAdditionalPath: TEdit
+          TabStop = True
+          TabOrder = 0
+          Left = 6
+          Height = 25
+          Top = 5
+          Width = 428
         end
-        object cmdOpenAdditionalPath: TBUTTON
-          ANCHORS = [aktop, akleft]
-          CAPTION = '...'
-          TABSTOP = True
-          TABORDER = 1
-          LEFT = 442
-          HEIGHT = 24
-          TOP = 5
-          WIDTH = 19
+        object cmdOpenAdditionalPath: TButton
+          Caption = '...'
+          TabStop = True
+          TabOrder = 1
+          Left = 442
+          Height = 24
+          Top = 5
+          Width = 19
         end
       end
-      object gbDebuggerSpecific: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'Debugger specific options (depends on type of debugger)'
-        CLIENTHEIGHT = 187
-        CLIENTWIDTH = 468
-        COLOR = -2147483633
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 2
-        LEFT = 2
-        HEIGHT = 204
-        TOP = 156
-        WIDTH = 472
+      object gbDebuggerSpecific: TGroupBox
+        Caption = 'Debugger specific options (depends on type of debugger)'
+        ClientHeight = 187
+        ClientWidth = 468
+        Color = clBtnFace
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 2
+        Left = 2
+        Height = 204
+        Top = 156
+        Width = 472
       end
     end
-    object pgEventLog: TPAGE
-      CAPTION = 'Event Log'
-      CLIENTWIDTH = 476
-      CLIENTHEIGHT = 368
-      LEFT = 2
-      HEIGHT = 368
-      TOP = 28
-      WIDTH = 476
-      object gbGeneral: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'General'
-        CLIENTHEIGHT = 115
-        CLIENTWIDTH = 226
-        COLOR = -2147483633
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 0
-        LEFT = 4
-        HEIGHT = 132
-        TOP = 8
-        WIDTH = 230
-        object chkClearLogOnRun: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Clear log on run'
-          DRAGCURSOR = 0
-          TABORDER = 0
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 5
-          WIDTH = 135
+    object pgEventLog: TPage
+      Caption = 'Event Log'
+      ClientWidth = 476
+      ClientHeight = 368
+      Left = 2
+      Height = 368
+      Top = 28
+      Width = 476
+      object gbGeneral: TGroupBox
+        Caption = 'General'
+        ClientHeight = 115
+        ClientWidth = 226
+        Color = clBtnFace
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 0
+        Left = 4
+        Height = 132
+        Top = 8
+        Width = 230
+        object chkClearLogOnRun: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Clear log on run'
+          DragCursor = crDefault
+          TabOrder = 0
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 5
+          Width = 135
         end
-        object chkLimitLinecount: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Limit linecount to'
-          DRAGCURSOR = 0
-          TABORDER = 1
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 29
-          WIDTH = 119
+        object chkLimitLinecount: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Limit linecount to'
+          DragCursor = crDefault
+          TabOrder = 1
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 29
+          Width = 119
         end
-        object seLimitLinecount: TSPINEDIT
-          ENABLED = False
-          CLIMB_RATE = 7.10933840589535E-34
-          MINVALUE = 7.10933840589535E-34
-          MAXVALUE = 7.10933840589535E-34
-          VALUE = 7.10933840589535E-34
-          LEFT = 28
-          HEIGHT = 20
-          TOP = 53
-          WIDTH = 62
+        object seLimitLinecount: TSpinEdit
+          Enabled = False
+          Climb_Rate = 7.10933840589535E-34
+          MinValue = 7.10933840589535E-34
+          MaxValue = 7.10933840589535E-34
+          Value = 7.10933840589535E-34
+          Left = 28
+          Height = 20
+          Top = 53
+          Width = 62
         end
       end
-      object gbMessages: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'Messages'
-        CLIENTHEIGHT = 171
-        CLIENTWIDTH = 228
-        COLOR = -2147483633
-        ENABLED = False
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 1
-        LEFT = 242
-        HEIGHT = 188
-        TOP = 8
-        WIDTH = 232
-        object chkMessagesBreakpoint: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Breakpoint'
-          DRAGCURSOR = 0
-          TABORDER = 0
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 5
-          WIDTH = 161
+      object gbMessages: TGroupBox
+        Caption = 'Messages'
+        ClientHeight = 171
+        ClientWidth = 228
+        Color = clBtnFace
+        Enabled = False
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 1
+        Left = 242
+        Height = 188
+        Top = 8
+        Width = 232
+        object chkMessagesBreakpoint: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Breakpoint'
+          DragCursor = crDefault
+          TabOrder = 0
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 5
+          Width = 161
         end
-        object chkMessagesProcess: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Process'
-          DRAGCURSOR = 0
-          TABORDER = 1
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 29
-          WIDTH = 147
+        object chkMessagesProcess: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Process'
+          DragCursor = crDefault
+          TabOrder = 1
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 29
+          Width = 147
         end
-        object chkMessagesThread: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Thread'
-          DRAGCURSOR = 0
-          TABORDER = 2
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 53
-          WIDTH = 141
+        object chkMessagesThread: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Thread'
+          DragCursor = crDefault
+          TabOrder = 2
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 53
+          Width = 141
         end
-        object chkMessagesModule: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Module'
-          DRAGCURSOR = 0
-          TABORDER = 3
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 77
-          WIDTH = 144
+        object chkMessagesModule: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Module'
+          DragCursor = crDefault
+          TabOrder = 3
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 77
+          Width = 144
         end
-        object chkMessagesOutput: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Output'
-          DRAGCURSOR = 0
-          TABORDER = 4
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 101
-          WIDTH = 139
+        object chkMessagesOutput: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Output'
+          DragCursor = crDefault
+          TabOrder = 4
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 101
+          Width = 139
         end
-        object chkMessagesWindow: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Window'
-          DRAGCURSOR = 0
-          TABORDER = 5
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 125
-          WIDTH = 146
+        object chkMessagesWindow: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Window'
+          DragCursor = crDefault
+          TabOrder = 5
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 125
+          Width = 146
         end
-        object chkMessagesInterface: TCHECKBOX
-          ALLOWGRAYED = True
-          ANCHORS = [aktop, akleft]
-          AUTOSIZE = True
-          CAPTION = 'Interface'
-          DRAGCURSOR = 0
-          TABORDER = 6
-          TABSTOP = True
-          LEFT = 4
-          HEIGHT = 20
-          TOP = 149
-          WIDTH = 150
+        object chkMessagesInterface: TCheckBox
+          AllowGrayed = True
+          AutoSize = True
+          Caption = 'Interface'
+          DragCursor = crDefault
+          TabOrder = 6
+          TabStop = True
+          Left = 4
+          Height = 20
+          Top = 149
+          Width = 150
         end
       end
     end
-    object pgExceptions: TPAGE
-      CAPTION = 'Language Exceptions'
-      CLIENTWIDTH = 476
-      CLIENTHEIGHT = 368
-      LEFT = 2
-      HEIGHT = 368
-      TOP = 28
-      WIDTH = 476
-      object bgIgnoreExceptions: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'Ignore these exceptions'
-        CLIENTHEIGHT = 311
-        CLIENTWIDTH = 464
-        COLOR = -2147483633
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 0
-        LEFT = 4
-        HEIGHT = 328
-        TOP = 8
-        WIDTH = 468
-        object cmdExceptionRemove: TBUTTON
-          ANCHORS = [aktop, akleft]
-          ENABLED = False
-          CAPTION = 'Remove'
-          TABSTOP = True
-          TABORDER = 0
-          ONCLICK = cmdExceptionRemoveCLICK
-          LEFT = 380
-          HEIGHT = 25
-          TOP = 277
-          WIDTH = 75
+    object pgExceptions: TPage
+      Caption = 'Language Exceptions'
+      ClientWidth = 476
+      ClientHeight = 368
+      Left = 2
+      Height = 368
+      Top = 28
+      Width = 476
+      object bgIgnoreExceptions: TGroupBox
+        Caption = 'Ignore these exceptions'
+        ClientHeight = 311
+        ClientWidth = 464
+        Color = clBtnFace
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 0
+        Left = 4
+        Height = 328
+        Top = 8
+        Width = 468
+        object cmdExceptionRemove: TButton
+          Enabled = False
+          Caption = 'Remove'
+          TabStop = True
+          TabOrder = 0
+          OnClick = cmdExceptionRemoveCLICK
+          Left = 380
+          Height = 25
+          Top = 277
+          Width = 75
         end
-        object cmdExceptionAdd: TBUTTON
-          ANCHORS = [aktop, akleft]
-          CAPTION = 'Add'
-          TABSTOP = True
-          TABORDER = 1
-          ONCLICK = cmdExceptionAddCLICK
-          LEFT = 300
-          HEIGHT = 25
-          TOP = 277
-          WIDTH = 75
+        object cmdExceptionAdd: TButton
+          Caption = 'Add'
+          TabStop = True
+          TabOrder = 1
+          OnClick = cmdExceptionAddCLICK
+          Left = 300
+          Height = 25
+          Top = 277
+          Width = 75
         end
-        object clbExceptions: TCHECKLISTBOX
-          ANCHORS = [aktop, akleft]
-          ONCLICK = clbExceptionsCLICK
-          TABORDER = 2
-          TABSTOP = True
-          TOPINDEX = -1
-          LEFT = 8
-          HEIGHT = 264
-          TOP = 5
-          WIDTH = 448
+        object clbExceptions: TCheckListBox
+          OnClick = clbExceptionsCLICK
+          TabOrder = 2
+          TabStop = True
+          TopIndex = -1
+          Left = 8
+          Height = 264
+          Top = 5
+          Width = 448
         end
       end
-      object chkBreakOnException: TCHECKBOX
-        ALLOWGRAYED = True
-        ANCHORS = [aktop, akleft]
-        AUTOSIZE = True
-        CAPTION = 'Break on Lazarus Exceptions'
-        DRAGCURSOR = 0
-        TABORDER = 1
-        TABSTOP = True
-        LEFT = 2
-        HEIGHT = 20
-        TOP = 340
-        WIDTH = 188
+      object chkBreakOnException: TCheckBox
+        AllowGrayed = True
+        AutoSize = True
+        Caption = 'Break on Lazarus Exceptions'
+        DragCursor = crDefault
+        TabOrder = 1
+        TabStop = True
+        Left = 2
+        Height = 20
+        Top = 340
+        Width = 188
       end
     end
-    object pgSignals: TPAGE
-      CAPTION = 'OS Exceptions'
-      CLIENTWIDTH = 476
-      CLIENTHEIGHT = 368
-      LEFT = 2
-      HEIGHT = 368
-      TOP = 28
-      WIDTH = 476
-      object gbSignals: TGROUPBOX
-        ANCHORS = [aktop, akleft]
-        CAPTION = 'Signals'
-        CLIENTHEIGHT = 337
-        CLIENTWIDTH = 464
-        COLOR = -2147483633
-        PARENTCOLOR = True
-        PARENTCTL3D = False
-        TABORDER = 0
-        LEFT = 4
-        HEIGHT = 354
-        TOP = 8
-        WIDTH = 468
-        object cmdSignalRemove: TBUTTON
-          ANCHORS = [aktop, akleft]
-          ENABLED = False
-          CAPTION = 'Remove'
-          TABSTOP = True
-          TABORDER = 0
-          LEFT = 381
-          HEIGHT = 25
-          TOP = 305
-          WIDTH = 75
+    object pgSignals: TPage
+      Caption = 'OS Exceptions'
+      ClientWidth = 476
+      ClientHeight = 368
+      Left = 2
+      Height = 368
+      Top = 28
+      Width = 476
+      object gbSignals: TGroupBox
+        Caption = 'Signals'
+        ClientHeight = 337
+        ClientWidth = 464
+        Color = clBtnFace
+        ParentColor = True
+        ParentCtl3D = False
+        TabOrder = 0
+        Left = 4
+        Height = 354
+        Top = 8
+        Width = 468
+        object cmdSignalRemove: TButton
+          Enabled = False
+          Caption = 'Remove'
+          TabStop = True
+          TabOrder = 0
+          Left = 381
+          Height = 25
+          Top = 305
+          Width = 75
         end
-        object cmdSignalAdd: TBUTTON
-          ANCHORS = [aktop, akleft]
-          CAPTION = 'Add'
-          TABSTOP = True
-          TABORDER = 1
-          LEFT = 296
-          HEIGHT = 25
-          TOP = 305
-          WIDTH = 75
+        object cmdSignalAdd: TButton
+          Caption = 'Add'
+          TabStop = True
+          TabOrder = 1
+          Left = 296
+          Height = 25
+          Top = 305
+          Width = 75
         end
-        object lvSignals: TLISTVIEW
-          ANCHORS = [aktop, akleft]
-          COLOR = -2147483633
-          COLUMNS = <          
+        object lvSignals: TListView
+          Color = clBtnFace
+          Columns = <          
             item
-              CAPTION = 'Name'
-              VISIBLE = True
-              WIDTH = 200
+              Caption = 'Name'
+              Visible = True
+              Width = 200
             end          
             item
-              CAPTION = 'ID'
-              VISIBLE = True
-              WIDTH = 50
+              Caption = 'ID'
+              Visible = True
+              Width = 50
             end          
             item
-              CAPTION = 'Handled by'
-              VISIBLE = True
-              WIDTH = 75
+              Caption = 'Handled by'
+              Visible = True
+              Width = 75
             end          
             item
-              CAPTION = 'Resume'
-              VISIBLE = True
-              WIDTH = 75
+              Caption = 'Resume'
+              Visible = True
+              Width = 75
             end>
-          POPUPMENU = popSignal
-          VIEWSTYLE = vsreport
-          LEFT = 8
-          HEIGHT = 292
-          TOP = 5
-          WIDTH = 448
+          PopupMenu = popSignal
+          ViewStyle = vsreport
+          Left = 8
+          Height = 292
+          Top = 5
+          Width = 448
         end
       end
     end
   end
-  object cmdCancel: TBUTTON
-    ANCHORS = [aktop, akleft]
-    MODALRESULT = 2
-    CANCEL = True
-    CAPTION = 'Cancel'
-    TABSTOP = True
-    TABORDER = 1
-    LEFT = 400
-    HEIGHT = 25
-    TOP = 408
-    WIDTH = 75
+  object cmdCancel: TButton
+    ModalResult = 2
+    Cancel = True
+    Caption = 'Cancel'
+    TabStop = True
+    TabOrder = 1
+    Left = 400
+    Height = 25
+    Top = 408
+    Width = 75
   end
-  object cmdOK: TBUTTON
-    ANCHORS = [aktop, akleft]
-    DEFAULT = True
-    CAPTION = 'OK'
-    TABSTOP = True
-    TABORDER = 2
-    ONCLICK = cmdOKCLICK
-    LEFT = 320
-    HEIGHT = 25
-    TOP = 408
-    WIDTH = 75
+  object cmdOK: TButton
+    Default = True
+    Caption = 'OK'
+    TabStop = True
+    TabOrder = 2
+    OnClick = cmdOKCLICK
+    Left = 320
+    Height = 25
+    Top = 408
+    Width = 75
   end
-  object popSignal: TPOPUPMENU
+  object popSignal: TPopupMenu
     left = 408
     top = 20
-    object mnuHandledByProgram: TMENUITEM
-      AUTOCHECK = True
-      CAPTION = 'Handled by Program'
-      GROUPINDEX = 1
-      RADIOITEM = True
+    object mnuHandledByProgram: TMenuItem
+      AutoCheck = True
+      Caption = 'Handled by Program'
+      GroupIndex = 1
+      RadioItem = True
     end
-    object mnuiHandledByDebugger: TMENUITEM
-      AUTOCHECK = True
-      CAPTION = 'Handled by Debugger'
-      GROUPINDEX = 1
-      RADIOITEM = True
+    object mnuiHandledByDebugger: TMenuItem
+      AutoCheck = True
+      Caption = 'Handled by Debugger'
+      GroupIndex = 1
+      RadioItem = True
     end
-    object N1: TMENUITEM
-      CAPTION = '-'
+    object N1: TMenuItem
+      Caption = '-'
     end
-    object mnuResumeHandled: TMENUITEM
-      AUTOCHECK = True
-      CAPTION = 'Resume Handled'
-      GROUPINDEX = 2
-      RADIOITEM = True
+    object mnuResumeHandled: TMenuItem
+      AutoCheck = True
+      Caption = 'Resume Handled'
+      GroupIndex = 2
+      RadioItem = True
     end
-    object mnuResumeUnhandled: TMENUITEM
-      AUTOCHECK = True
-      CAPTION = 'Resume Unhandled'
-      GROUPINDEX = 2
-      RADIOITEM = True
+    object mnuResumeUnhandled: TMenuItem
+      AutoCheck = True
+      Caption = 'Resume Unhandled'
+      GroupIndex = 2
+      RadioItem = True
     end
   end
 end

@@ -348,13 +348,16 @@ begin
       Top	:= 150;
       Width := 170;
       Height := 20;
+      Style := csDropDownList;
       Items.Add ('wohhh!');
       Items.Add ('22222!');
       ItemIndex := 1;
       Items.Add ('33333!');
       Items.Add ('abcde!');
       Name := 'ComboBox2';	
-      Sorted := true;	
+      OnChange := @ComboOnChange;
+      OnClick  := @ComboOnClick;
+      Sorted := true;
       Show;	
    end;
 
@@ -389,6 +392,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2003/12/26 15:29:33  mattias
+  various combobox and other fixes from  Vincent
+
   Revision 1.8  2002/10/30 13:44:29  lazarus
   MG: fixed examples
 
