@@ -107,7 +107,6 @@ type
 
   { Action Registration }
   
-type
   TRegisteredAction = class
   private
     FActionClass: TBasicActionClass;
@@ -784,6 +783,14 @@ begin
     Result:=FItems.Count;
 end;
 
+procedure RegisterStandardActions;
+begin
+  // TODO
+  //  - db actions
+  //  - edit actions
+  //  - default images for actions
+end;
+
 initialization
   NotifyActionListChange:=nil;
   ActionListEditorForm:=nil;
@@ -793,6 +800,8 @@ initialization
   EnumRegisteredActionsProc := @EnumActions;
   CreateActionProc := @CreateAction;
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
+  RegisterStandardActions;
+  
 finalization
   RegisteredActions.Free;
   RegisteredActions:=nil;

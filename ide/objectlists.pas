@@ -73,7 +73,7 @@ type
     procedure InsertObject(Index: Integer; Item, Associated: Pointer);
     function Last: Pointer;
     procedure Move(CurIndex, NewIndex: Integer);
-    procedure Assign(List: TList);
+    procedure Assign(SrcList: TList);
     function Remove(Item: Pointer): Integer;
     procedure Pack;
     property Capacity: Integer read FCapacity write SetCapacity;
@@ -230,14 +230,14 @@ begin
   FList[NewIndex]:=SwapDummy;
 end;
 
-procedure TObjectList.Assign(List: TList);
+procedure TObjectList.Assign(SrcList: TList);
 var
   i: Integer;
 begin
   Clear;
-  Count:=List.Count;
-  for i:=0 to List.Count-1 do begin
-    FList[i].Item:=List[i];
+  Count:=SrcList.Count;
+  for i:=0 to SrcList.Count-1 do begin
+    FList[i].Item:=SrcList[i];
     FList[i].Associated:=nil;
   end;
 end;

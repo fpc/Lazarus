@@ -176,10 +176,10 @@ type
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
     function GetPasteParent: TComponent;
-    function DoPasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
+    function DoPasteSelectionFromClipboard(PasteFlags: TComponentPasteSelectionFlags
                                            ): boolean;
     function DoInsertFromStream(s: TStream; PasteParent: TComponent;
-                                Flags: TComponentPasteSelectionFlags): Boolean;
+                                PasteFlags: TComponentPasteSelectionFlags): Boolean;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
     procedure GiveComponentsNames;
@@ -223,11 +223,11 @@ type
     function CopySelection: boolean; override;
     function CutSelection: boolean; override;
     function CanPaste: Boolean; override;
-    function PasteSelection(Flags: TComponentPasteSelectionFlags): boolean; override;
+    function PasteSelection(PasteFlags: TComponentPasteSelectionFlags): boolean; override;
     function DeleteSelection: boolean; override;
     function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
     function InsertFromStream(s: TStream; Parent: TComponent;
-                              Flags: TComponentPasteSelectionFlags): Boolean; override;
+                              PasteFlags: TComponentPasteSelectionFlags): Boolean; override;
     function InvokeComponentEditor(AComponent: TComponent;
                                    MenuIndex: integer): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
@@ -520,9 +520,9 @@ begin
 end;
 
 function TDesigner.InsertFromStream(s: TStream; Parent: TComponent;
-  Flags: TComponentPasteSelectionFlags): Boolean;
+  PasteFlags: TComponentPasteSelectionFlags): Boolean;
 begin
-  Result:=DoInsertFromStream(s,Parent,Flags);
+  Result:=DoInsertFromStream(s,Parent,PasteFlags);
 end;
 
 function TDesigner.DoCopySelectionToClipboard: boolean;
@@ -581,7 +581,7 @@ begin
 end;
 
 function TDesigner.DoPasteSelectionFromClipboard(
-  Flags: TComponentPasteSelectionFlags): boolean;
+  PasteFlags: TComponentPasteSelectionFlags): boolean;
 var
   PasteParent: TComponent;
   AllComponentText: string;
@@ -596,7 +596,7 @@ begin
   try
     CurTextCompStream.Write(AllComponentText[1],length(AllComponentText));
     PasteParent:=GetPasteParent;
-    if not DoInsertFromStream(CurTextCompStream,PasteParent,Flags) then
+    if not DoInsertFromStream(CurTextCompStream,PasteParent,PasteFlags) then
       exit;
   finally
     CurTextCompStream.Free;
@@ -605,7 +605,7 @@ begin
 end;
 
 function TDesigner.DoInsertFromStream(s: TStream;
-  PasteParent: TComponent; Flags: TComponentPasteSelectionFlags): Boolean;
+  PasteParent: TComponent; PasteFlags: TComponentPasteSelectionFlags): Boolean;
 var
   AllComponentText: string;
   StartPos: Integer;
@@ -679,7 +679,7 @@ var
       // add new component to new selection
       NewSelection.Add(NewComponent);
       // set new nice bounds
-      if cpsfFindUniquePositions in Flags then
+      if cpsfFindUniquePositions in PasteFlags then
         FindUniquePosition(NewComponent);
       // finish adding component
       NotifyPersistentAdded(NewComponent);
@@ -691,7 +691,7 @@ var
 
 begin
   Result:=false;
-  if (cpsfReplace in Flags) and (not DeleteSelection) then exit;
+  if (cpsfReplace in PasteFlags) and (not DeleteSelection) then exit;
 
   if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
@@ -814,9 +814,9 @@ begin
 end;
 
 function TDesigner.PasteSelection(
-  Flags: TComponentPasteSelectionFlags): boolean;
+  PasteFlags: TComponentPasteSelectionFlags): boolean;
 begin
-  Result:=DoPasteSelectionFromClipboard(Flags);
+  Result:=DoPasteSelectionFromClipboard(PasteFlags);
 end;
 
 function TDesigner.DeleteSelection: boolean;
