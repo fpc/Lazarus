@@ -310,7 +310,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.RealSetText(const Value: TCaption);
 begin
-  if (MaxLength >= 0) and (Length(Value) > MaxLength) then
+  if (MaxLength > 0) and (Length(Value) > MaxLength) then
     inherited RealSetText(Copy(Value, 1, MaxLength))
   else
     inherited RealSetText(Value);
@@ -380,6 +380,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/08/25 20:16:12  marc
+  * fixed infinite for maxlength
+
   Revision 1.30  2004/07/07 22:26:58  mattias
   fixed showing grabers for boundless components
 
