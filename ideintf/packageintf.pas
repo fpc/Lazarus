@@ -45,6 +45,8 @@ type
   public
     function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
                          ComponentClassnames: TStrings): TModalResult; virtual; abstract;
+    function GetOwnersOfUnit(const UnitFilename: string): TList; virtual; abstract;
+    function GetSourceFilesOfOwners(OwnerList: TList): TStrings; virtual; abstract;
   end;
   
 var

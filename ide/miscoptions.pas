@@ -38,7 +38,8 @@ type
 
   TFindRenameScope = (
     frCurrentUnit,
-    frCurrentProjectPackage, // the project/package the current unit beongs to
+    frOwnerProjectPackage, // the project/package the current unit beongs to
+    frProject,
     frAllOpenProjectsAndPackages
     );
 
@@ -97,7 +98,8 @@ const
   ResourcestringInsertPolicyNames: array[TResourcestringInsertPolicy] of string
     = ('None', 'Append', 'Alphabetically', 'Context');
   FindRenameScopeNames: array[TFindRenameScope] of string = (
-    'CurrentUnit', 'CurrentProjectPackage', 'AllOpenProjectsAndPackages'
+    'CurrentUnit', 'Project', 'OwnerProjectPackage',
+    'AllOpenProjectsAndPackages'
     );
 
 var MiscellaneousOptions: TMiscellaneousOptions;

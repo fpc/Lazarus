@@ -37,8 +37,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  PascalParserTool, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree;
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  CustomCodeTool, PascalParserTool, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, AVL_Tree;
 
 type
   TPascalReaderTool = class(TPascalParserTool)
@@ -84,6 +85,8 @@ type
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
     function FindProcNode(StartNode: TCodeTreeNode; const AProcHead: string;
         Attr: TProcHeadAttributes): TCodeTreeNode;
+    function FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): TCodeTreeNode;
     function FindProcBody(ProcNode: TCodeTreeNode): TCodeTreeNode;
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
     function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
@@ -100,16 +103,17 @@ type
     function ExtractClassInheritance(ClassNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function FindClassNode(StartNode: TCodeTreeNode;
-        const UpperClassName: string;
+        const AClassName: string;
         IgnoreForwards, IgnoreNonForwards: boolean): TCodeTreeNode;
     function FindClassSection(ClassNode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function FindLastClassSection(ClassNode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): TCodeTreeNode;
-    function FindClassNodeInInterface(const UpperClassName: string;
+    function FindClassNodeInInterface(const AClassName: string;
         IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
-    function FindClassNodeInUnit(const UpperClassName: string;
-        IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
+    function FindClassNodeInUnit(const AClassName: string;
+        IgnoreForwards, IgnoreNonForwards, IgnoreImplementation,
+        ErrorOnNotFound: boolean): TCodeTreeNode;
     function FindFirstIdentNodeInClass(ClassNode: TCodeTreeNode): TCodeTreeNode;
     function ClassSectionNodeStartsWithWord(ANode: TCodeTreeNode): boolean;
 
@@ -534,6 +538,54 @@ begin
   end;
 end;
 
+function TPascalReaderTool.FindCorrespondingProcNode(ProcNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): TCodeTreeNode;
+var
+  ClassNode: TCodeTreeNode;
+  StartNode: TCodeTreeNode;
+  ProcHead: String;
+begin
+  Result:=nil;
+  // get ctnProcedure
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode A');
+  if (ProcNode=nil) then exit;
+  if ProcNode.Desc=ctnProcedureHead then begin
+    ProcNode:=ProcNode.Parent;
+    if (ProcNode=nil) then exit;
+  end;
+  if ProcNode.Desc<>ctnProcedure then exit;
+  
+  // check proc kind
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode B');
+  ClassNode:=ProcNode.GetNodeOfType(ctnClass);
+  if ClassNode<>nil then begin
+    //debugln('TPascalReaderTool.FindCorrespondingProcNode C');
+    // in a class definition -> search method body
+    StartNode:=ClassNode.GetNodeOfType(ctnTypeSection)
+  end else if NodeIsMethodBody(ProcNode) then begin
+    //debugln('TPascalReaderTool.FindCorrespondingProcNode D');
+    // in a method body -> search class
+    StartNode:=FindClassNodeInUnit(ExtractClassNameOfProcNode(ProcNode),true,
+                                   false,false,true);
+    BuildSubTreeForClass(StartNode);
+    while (StartNode<>nil)
+    and (StartNode.Desc in [ctnClass,ctnClassInterface]+AllClassSections) do
+      StartNode:=StartNode.FirstChild;
+    //debugln('TPascalReaderTool.FindCorrespondingProcNode D2 ',StartNode.DescAsString);
+  end else
+    // else: search on same lvl
+    StartNode:=FindFirstNodeOnSameLvl(ProcNode);
+  if StartNode=nil then exit;
+
+  //debugln('TPascalReaderTool.FindCorrespondingProcNode E');
+  ProcHead:=ExtractProcHead(ProcNode,Attr);
+  Result:=FindProcNode(StartNode,ProcHead,Attr);
+  if Result=ProcNode then begin
+    StartNode:=FindNextNodeOnSameLvl(Result);
+    Result:=FindProcNode(StartNode,ProcHead,Attr);
+  end;
+end;
+
 function TPascalReaderTool.FindProcBody(ProcNode: TCodeTreeNode
   ): TCodeTreeNode;
 begin
@@ -946,18 +998,18 @@ begin
 end;
 
 function TPascalReaderTool.FindClassNode(StartNode: TCodeTreeNode;
-  const UpperClassName: string; IgnoreForwards, IgnoreNonForwards: boolean
+  const AClassName: string; IgnoreForwards, IgnoreNonForwards: boolean
   ): TCodeTreeNode;
 // search for types on same level,
 // with type class and classname = SearchedClassName
-var CurClassName: string;
+var
   ANode, CurClassNode: TCodeTreeNode;
 begin
   ANode:=StartNode;
   Result:=nil;
   while (ANode<>nil) do begin
     if ANode.Desc=ctnTypeSection then begin
-      Result:=FindClassNode(ANode.FirstChild,UpperClassName,IgnoreForwards,
+      Result:=FindClassNode(ANode.FirstChild,AClassName,IgnoreForwards,
                      IgnoreNonForwards);
       if Result<>nil then exit;
     end else if ANode.Desc=ctnTypeDefinition then begin
@@ -968,10 +1020,8 @@ begin
         and (not (IgnoreNonForwards
                  and ((CurClassNode.SubDesc and ctnsForwardDeclaration)=0)))
         then begin
-          MoveCursorToNodeStart(ANode);
-          ReadNextAtom;
-          CurClassName:=GetUpAtom;
-          if UpperClassName=CurClassName then begin
+          if CompareIdentifiers(PChar(AClassName),@Src[ANode.StartPos])=0
+          then begin
             Result:=CurClassNode;
             exit;
           end;
@@ -1005,12 +1055,12 @@ begin
 end;
 
 function TPascalReaderTool.FindClassNodeInInterface(
-  const UpperClassName: string; IgnoreForwards, IgnoreNonForwards,
+  const AClassName: string; IgnoreForwards, IgnoreNonForwards,
   ErrorOnNotFound: boolean): TCodeTreeNode;
   
   procedure RaiseClassNotFound;
   begin
-    RaiseExceptionFmt(ctsClassSNotFound, [UpperClassName]);
+    RaiseExceptionFmt(ctsClassSNotFound, [AClassName]);
   end;
   
 begin
@@ -1019,20 +1069,24 @@ begin
     if Result.Desc=ctnUnit then begin
       Result:=Result.NextBrother;
     end;
-    if Result<>nil then
-      Result:=FindClassNode(Result.FirstChild,UpperClassName,
-                   IgnoreForwards, IgnoreNonForwards);
+    if Result<>nil then begin
+      Result:=FindClassNode(Result.FirstChild,AClassName,
+                            IgnoreForwards, IgnoreNonForwards);
+      if (Result<>nil) and Result.HasParentOfType(ctnImplementation) then
+        Result:=nil;
+    end;
   end;
   if (Result=nil) and ErrorOnNotFound then
     RaiseClassNotFound;
 end;
 
-function TPascalReaderTool.FindClassNodeInUnit(const UpperClassName: string;
-  IgnoreForwards, IgnoreNonForwards, ErrorOnNotFound: boolean): TCodeTreeNode;
+function TPascalReaderTool.FindClassNodeInUnit(const AClassName: string;
+  IgnoreForwards, IgnoreNonForwards, IgnoreImplementation,
+  ErrorOnNotFound: boolean): TCodeTreeNode;
 
   procedure RaiseClassNotFound;
   begin
-    RaiseExceptionFmt(ctsClassSNotFound, [UpperClassName]);
+    RaiseExceptionFmt(ctsClassSNotFound, [AClassName]);
   end;
 
 begin
@@ -1041,9 +1095,13 @@ begin
     if Result.Desc in [ctnUnit,ctnLibrary,ctnPackage] then begin
       Result:=Result.NextBrother;
     end;
-    if Result<>nil then
-      Result:=FindClassNode(Result.FirstChild,UpperClassName,
-                   IgnoreForwards, IgnoreNonForwards);
+    if Result<>nil then begin
+      Result:=FindClassNode(Result.FirstChild,AClassName,
+                            IgnoreForwards, IgnoreNonForwards);
+      if (Result<>nil) and IgnoreImplementation
+      and Result.HasParentOfType(ctnImplementation) then
+        Result:=nil;
+    end;
   end;
   if (Result=nil) and ErrorOnNotFound then
     RaiseClassNotFound;

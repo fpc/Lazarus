@@ -650,8 +650,8 @@ var
       {$ENDIF}
       ProcClassName:=ExtractClassNameOfProcNode(ProcNode);
       if ProcClassName='' then exit;
-      ProcClassNode:=FindClassNodeInUnit(UpperCaseStr(ProcClassName),
-                                         true,false,true);
+      ProcClassNode:=FindClassNodeInUnit(ProcClassName,
+                                         true,false,false,true);
       if ProcClassNode=nil then exit;
       ProcClassName:=ExtractClassName(ProcClassNode,false);
     end;

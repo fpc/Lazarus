@@ -67,6 +67,7 @@ procedure IndentText(const Source: string; Indent, TabWidth: integer;
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
     var IdentStart,IdentEnd:integer);
+function GetIdentStartPosition(const Source:string; Position:integer): integer;
 function GetIdentLen(Identifier: PChar): integer;
 function GetIdentifier(Identifier: PChar): string;
 function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
@@ -1285,6 +1286,16 @@ begin
   while (IdentEnd<=length(Source))
   and (IsIdChar[Source[IdentEnd]]) do
     inc(IdentEnd);
+end;
+
+function GetIdentStartPosition(const Source: string; Position: integer
+  ): integer;
+begin
+  Result:=Position;
+  if (Result<1) or (Result>length(Source)) then exit;
+  while (Result>1)
+  and (IsIdChar[Source[Result-1]]) do
+    dec(Result);
 end;
 
 function GetIdentLen(Identifier: PChar): integer;

@@ -181,8 +181,9 @@ type
     function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
                          var List: TObjectArray): TModalResult;
-    function GetOwnersOfUnit(const UnitFilename: string): TList;
-    
+    function GetOwnersOfUnit(const UnitFilename: string): TList; override;
+    function GetSourceFilesOfOwners(OwnerList: TList): TStrings; override;
+
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
     function DoShowPackageGraph: TModalResult;
@@ -2792,6 +2793,46 @@ begin
     Result.Add(PkgFile.LazPackage);
   if Result.Count=0 then
     FreeThenNil(Result);
+end;
+
+function TPkgManager.GetSourceFilesOfOwners(OwnerList: TList): TStrings;
+
+  procedure AddFile(TheOwner: TObject; const Filename: string);
+  begin
+    if Result=nil then Result:=TStringList.Create;
+    Result.AddObject(Filename,TheOwner);
+  end;
+
+var
+  CurOwner: TObject;
+  CurPackage: TLazPackage;
+  CurPkgFile: TPkgFile;
+  CurProject: TProject;
+  CurUnit: TUnitInfo;
+  i: Integer;
+  j: Integer;
+begin
+  Result:=nil;
+  if OwnerList=nil then exit;
+  for i:=0 to OwnerList.Count-1 do begin
+    CurOwner:=TObject(OwnerList[i]);
+    if CurOwner is TLazPackage then begin
+      CurPackage:=TLazPackage(CurOwner);
+      for j:=0 to CurPackage.FileCount-1 do begin
+        CurPkgFile:=CurPackage.Files[j];
+        if CurPkgFile.FileType in PkgFileUnitTypes then
+          AddFile(CurOwner,CurPkgFile.Filename);
+      end;
+    end else if CurOwner is TProject then begin
+      CurProject:=TProject(CurOwner);
+      CurUnit:=CurProject.FirstPartOfProject;
+      while CurUnit<>nil do begin
+        if FilenameIsPascalSource(CurUnit.Filename) then
+          AddFile(CurOwner,CurUnit.Filename);
+        CurUnit:=CurUnit.NextPartOfProject;
+      end;
+    end;
+  end;
 end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;

@@ -125,7 +125,8 @@ end;
 
 {-------------------------------------------------------------------------------
   Procedure DragInitControl(Control : TControl; Immediate : Boolean;
-  
+                            Threshold: Integer);
+
   Initializes the dragging. If Immediate=True it starts the dragging, otherwise
   it will be started when the user moves the mouse more than DragThreshold
   pixel.
@@ -361,6 +362,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.6  2004/09/20 20:22:12  mattias
+  implemented Refactoring Tool: Find Identfier References
+
   Revision 1.5  2004/06/01 09:58:35  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 

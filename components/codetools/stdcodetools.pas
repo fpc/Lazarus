@@ -3012,8 +3012,10 @@ begin
   NearestPos.Code:=nil;
   // get both codetools
   if not Assigned(OnGetCodeToolForBuffer) then exit;
-  CursorTool:=TStandardCodeTool(OnGetCodeToolForBuffer(Self,CursorPos.Code));
-  SectionTool:=TStandardCodeTool(OnGetCodeToolForBuffer(Self,SectionPos.Code));
+  CursorTool:=
+            TStandardCodeTool(OnGetCodeToolForBuffer(Self,CursorPos.Code,true));
+  SectionTool:=
+           TStandardCodeTool(OnGetCodeToolForBuffer(Self,SectionPos.Code,true));
   if (CursorTool=nil) or (SectionTool=nil) then exit;
   // get all resourcestring identifiers
   IdentTree:=nil;

@@ -63,7 +63,8 @@ uses
   Forms, Buttons, Menus, FileCtrl, Controls, GraphType, Graphics, ExtCtrls,
   Dialogs,
   // codetools
-  Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  AVL_Tree, Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache,
+  DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, IDECommands, SrcEditorIntf,
   // synedit
@@ -9250,54 +9251,79 @@ end;
 -------------------------------------------------------------------------------}
 procedure TMainIDE.DoFindIdentifierReferences;
 var
-  ActiveSrcEdit, DeclarationSrcEdit: TSourceEditor;
-  ActiveUnitInfo, DeclarationUnitInfo: TUnitInfo;
+  TargetSrcEdit, DeclarationSrcEdit: TSourceEditor;
+  TargetUnitInfo, DeclarationUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   LogCaretXY, DeclarationCaretXY: TPoint;
-  ListOfPCodeXYPosition: TList;
+  Options: TFindRenameIdentifierOptions;
+  OwnerList: TList;
+  ExtraFiles: TStrings;
+  Files: TStringList;
 begin
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+  if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
   
   // find the main declaration
-  LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
-  if not CodeToolBoss.FindMainDeclaration(ActiveUnitInfo.Source,
+  LogCaretXY:=TargetSrcEdit.EditorComponent.LogicalCaretXY;
+  if not CodeToolBoss.FindMainDeclaration(TargetUnitInfo.Source,
     LogCaretXY.X,LogCaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
   begin
     DoJumpToCodeToolBossError;
     exit;
   end;
-  DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+  DoJumpToCodePos(TargetSrcEdit, TargetUnitInfo,
     NewSource, NewX, NewY, NewTopLine, true);
   GetCurrentUnit(DeclarationSrcEdit,DeclarationUnitInfo);
   DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;
-  
+  debugln('TMainIDE.DoFindIdentifierReferences A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
+
   // let user choose the search scope
   if ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
-    LogCaretXY,false)<>mrOk
+    DeclarationCaretXY,false,nil)<>mrOk
   then exit;
   
-  ListOfPCodeXYPosition:=nil;
+  Files:=nil;
+  OwnerList:=nil;
   try
-    // search
-    if not CodeToolBoss.FindReferences(
-      DeclarationUnitInfo.Source,DeclarationCaretXY.X,DeclarationCaretXY.Y,
-      ActiveUnitInfo.Source,
-      not MiscellaneousOptions.FindRenameIdentifierOptions.SearchInComments,
-      ListOfPCodeXYPosition) then
-    begin
-      DoJumpToCodeToolBossError;
-      exit;
+    // create the file list
+    Files:=TStringList.Create;
+    Files.Add(TargetUnitInfo.Filename);
+
+    Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
+    case Options.Scope of
+    
+    frProject,frOwnerProjectPackage,frAllOpenProjectsAndPackages:
+      begin
+        if Options.Scope=frProject then begin
+          OwnerList:=TList.Create;
+          OwnerList.Add(Project1);
+        end else begin
+          OwnerList:=PkgBoss.GetOwnersOfUnit(TargetUnitInfo.Filename);
+          if Options.Scope=frAllOpenProjectsAndPackages then begin
+            // TODO
+          end;
+        end;
+        ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
+        try
+          if ExtraFiles<>nil then
+            Files.AddStrings(ExtraFiles);
+        finally
+          ExtraFiles.Free;
+        end;
+      end;
+
     end;
     
-    // show result
     CreateSearchResultWindow;
-    ShowReferences(DeclarationUnitInfo.Source,DeclarationCaretXY,
-                   ActiveUnitInfo.Source,ListOfPCodeXYPosition);
+    GatherIdentifierReferences(Files,DeclarationUnitInfo.Source,
+      DeclarationCaretXY,Options.SearchInComments);
+    if CodeToolBoss.ErrorMessage<>'' then
+      DoJumpToCodeToolBossError;
 
   finally
-    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    Files.Free;
+    OwnerList.Free;
   end;
 end;
 
@@ -10782,6 +10808,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.774  2004/09/20 20:22:11  mattias
+  implemented Refactoring Tool: Find Identfier References
+
   Revision 1.773  2004/09/18 01:02:23  mattias
   started new feature: find identifier references
 

@@ -17,7 +17,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     Caption = 'CurrentGroupBox'
     ClientHeight = 55
     ClientWidth = 432
-    DragCursor = 65524
     ParentColor = True
     TabOrder = 0
     Left = 8
@@ -38,7 +37,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     Caption = 'NewGroupBox'
     ClientHeight = 36
     ClientWidth = 432
-    DragCursor = 65524
     ParentColor = True
     TabOrder = 1
     Left = 8
@@ -60,7 +58,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'RenameCheckBox'
-      DragCursor = 65524
       OnChange = RenameCheckBoxChange
       TabOrder = 1
       UseOnChange = True
@@ -75,7 +72,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
     Caption = 'ScopeGroupBox'
     ClientHeight = 187
     ClientWidth = 433
-    DragCursor = 65524
     ParentColor = True
     TabOrder = 2
     Left = 8
@@ -87,7 +83,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       Caption = 'ScopeCommentsCheckBox'
-      DragCursor = 65524
       TabOrder = 0
       Left = 6
       Height = 23
@@ -99,9 +94,10 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Caption = 'ScopeRadioGroup'
       Enabled = False
       Items.Strings = (
-        'In current Unit'
-        'In current Project/Package'
-        'In all open projects and packages'
+        'in current unit'
+        'in main project'
+        'in project/package owning file'
+        'in all open projects and packages'
       )
       ParentColor = True
       Left = 6
@@ -114,7 +110,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Caption = 'ExtraFilesGroupBox'
       ClientHeight = 27
       ClientWidth = 413
-      DragCursor = 65524
       Enabled = False
       ParentColor = True
       TabOrder = 2

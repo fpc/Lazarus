@@ -121,7 +121,7 @@ type
                    WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
   private
     function PageExists(const APageName: string): boolean;
-    function GetPageIndex(APageName: string): integer;
+    function GetPageIndex(const APageName: string): integer;
     function GetListBox(APageIndex: integer): TLazSearchResultLB;
     procedure ListBoxClicked(Sender: TObject);
     procedure ListBoxDoubleClicked(Sender: TObject);
@@ -277,10 +277,12 @@ begin
   if Assigned(CurrentLB) then
   begin
     CurrentLB.EndUpdate;
-    CurrentLB.ItemIndex:= 0;
-    CurrentLB.TopIndex:= 0;
-  end;//if
-end;//EndUpdate
+    if CurrentLB.Items.Count>0 then begin
+      CurrentLB.ItemIndex:= 0;
+      CurrentLB.TopIndex:= 0;
+    end;
+  end;
+end;
 
 {Brings the results tab named APageName to front.
  If APageName does not exist, does nothing}
@@ -607,7 +609,7 @@ begin
   end;//if
 end;
 
-function TSearchResultsView.GetPageIndex(APageName: string): integer;
+function TSearchResultsView.GetPageIndex(const APageName: string): integer;
 var
   i: integer;
 begin

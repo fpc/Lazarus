@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, Buttons, ExtCtrls,
-  CodeAtom, CodeCache, CodeToolManager,
+  AVL_Tree, CodeAtom, CodeCache, CodeToolManager,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, MiscOptions, DialogProcs,
   InputHistory, SearchResultView;
 
@@ -64,6 +64,8 @@ type
   public
     procedure LoadFromConfig;
     procedure SaveToConfig;
+    procedure LoadFromOptions(Options: TFindRenameIdentifierOptions);
+    procedure SaveToOptions(Options: TFindRenameIdentifierOptions);
     procedure SetIdentifier(const NewIdentifierFilename: string;
                             const NewIdentifierPosition: TPoint);
     property IdentifierFilename: string read FIdentifierFilename;
@@ -73,17 +75,22 @@ type
 
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
-  const Position: TPoint; AllowRename: boolean): TModalResult;
+  const Position: TPoint; AllowRename: boolean;
+  Options: TFindRenameIdentifierOptions): TModalResult;
+function GatherIdentifierReferences(Files: TStringList;
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  SearchInComments: boolean): TModalResult;
 procedure ShowReferences(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint; TargetCode: TCodeBuffer;
-  ListOfPCodeXYPosition: TList);
+  TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean; SearchPageIndex: integer);
   
 
 implementation
 
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
-  const Position: TPoint; AllowRename: boolean): TModalResult;
+  const Position: TPoint; AllowRename: boolean;
+  Options: TFindRenameIdentifierOptions): TModalResult;
 var
   FindRenameIdentifierDialog: TFindRenameIdentifierDialog;
 begin
@@ -93,49 +100,138 @@ begin
     FindRenameIdentifierDialog.SetIdentifier(Filename,Position);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
     Result:=FindRenameIdentifierDialog.ShowModal;
+    if Result=mrOk then
+      if Options<>nil then
+        FindRenameIdentifierDialog.SaveToOptions(Options);
   finally
     FindRenameIdentifierDialog.Free;
   end;
 end;
 
+function GatherIdentifierReferences(Files: TStringList;
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  SearchInComments: boolean): TModalResult;
+var
+  i: Integer;
+  SearchPageIndex: LongInt;
+  LoadResult: TModalResult;
+  Code: TCodeBuffer;
+  ListOfPCodeXYPosition: TList;
+  TreeOfPCodeXYPosition: TAVLTree;
+  Identifier: string;
+  OldSearchPageIndex: LongInt;
+begin
+  Result:=mrCancel;
+  ListOfPCodeXYPosition:=nil;
+  TreeOfPCodeXYPosition:=nil;
+  SearchPageIndex:=-1;
+  try
+    // sort files
+    Files.Sort;
+    // remove doubles
+    i:=0;
+    while i<=Files.Count-2 do begin
+      while (i<=Files.Count-2) and (CompareFilenames(Files[i],Files[i+1])=0) do
+      begin
+        Files.Delete(i+1);
+      end;
+      inc(i);
+    end;
+
+    // create a search result page
+    CodeToolBoss.GetIdentifierAt(DeclarationCode,
+      DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
+
+
+    // search in every file
+    for i:=0 to Files.Count-1 do begin
+      LoadResult:=
+               LoadCodeBuffer(Code,Files[i],[lbfCheckIfText,lbfUpdateFromDisk]);
+      if LoadResult=mrAbort then exit;
+      if LoadResult<>mrOk then continue;
+      
+      // create search page
+      if SearchPageIndex<0 then begin
+        SearchPageIndex:=SearchResultsView.AddResult(
+          'References of '+Identifier,
+          Identifier,
+          ExtractFilePath(Code.Filename),
+          '*.pas;*.pp;*.inc',
+          [fifWholeWord,fifSearchDirectories]);
+        if SearchPageIndex<0 then exit;
+        SearchResultsView.BeginUpdate(SearchPageIndex);
+      end;
+
+      // search references
+      CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      if not CodeToolBoss.FindReferences(
+        DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
+        Code, not SearchInComments, ListOfPCodeXYPosition) then
+      begin
+        Result:=mrAbort;
+        exit;
+      end;
+
+      // add to tree
+      if ListOfPCodeXYPosition<>nil then begin
+        if TreeOfPCodeXYPosition=nil then
+          TreeOfPCodeXYPosition:=CodeToolBoss.CreateTreeOfPCodeXYPosition;
+        CodeToolBoss.AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
+                                              TreeOfPCodeXYPosition,true,false);
+      end;
+    end;
+
+    // show result
+    ShowReferences(DeclarationCode,DeclarationCaretXY,
+                   Code,TreeOfPCodeXYPosition,false,SearchPageIndex);
+    OldSearchPageIndex:=SearchPageIndex;
+    SearchPageIndex:=-1;
+    SearchResultsView.EndUpdate(OldSearchPageIndex);
+    SearchResultsView.ShowOnTop;
+  finally
+    if SearchPageIndex>=0 then
+      SearchResultsView.EndUpdate(SearchPageIndex);
+    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+  end;
+  Result:=mrOk;
+end;
+
 procedure ShowReferences(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint; TargetCode: TCodeBuffer;
-  ListOfPCodeXYPosition: TList);
+  TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean;
+  SearchPageIndex: integer);
 var
   Identifier: string;
-  SearchPageIndex: LongInt;
-  i: Integer;
   CodePos: PCodeXYPosition;
   CurLine: String;
   TrimmedLine: String;
   TrimCnt: Integer;
+  ANode: TAVLTreeNode;
 begin
   CodeToolBoss.GetIdentifierAt(DeclarationCode,
     DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
-  SearchPageIndex:=SearchResultsView.AddResult(
-    'References of '+Identifier,
-    Identifier,
-    ExtractFilePath(TargetCode.Filename),
-    '*.pas;*.pp;*.inc',
-    [fifWholeWord,fifSearchDirectories]);
 
   SearchResultsView.BeginUpdate(SearchPageIndex);
-  SearchResultsView.Items[SearchPageIndex].Clear;
-  if (ListOfPCodeXYPosition<>nil) then
-    for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-      CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+  if ClearItems then
+    SearchResultsView.Items[SearchPageIndex].Clear;
+  if (TreeOfPCodeXYPosition<>nil) then begin
+    ANode:=TreeOfPCodeXYPosition.FindLowest;
+    while ANode<>nil do begin
+      CodePos:=PCodeXYPosition(ANode.Data);
       CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1));
       TrimmedLine:=Trim(CurLine);
       TrimCnt:=length(CurLine)-length(TrimmedLine);
       //debugln('ShowReferences x=',dbgs(CodePos^.x),' y=',dbgs(CodePos^.y),' ',CurLine);
       SearchResultsView.AddMatch(SearchPageIndex,
-                                 TargetCode.Filename,
+                                 CodePos^.Code.Filename,
                                  Point(CodePos^.X,CodePos^.Y),
                                  TrimmedLine,
                                  CodePos^.X-TrimCnt, length(Identifier));
+      ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
     end;
+  end;
   SearchResultsView.EndUpdate(SearchPageIndex);
-  SearchResultsView.ShowOnTop;
 end;
 
 { TFindRenameIdentifierDialog }
@@ -156,7 +252,11 @@ begin
   ScopeCommentsCheckBox.Caption:='Search in comments too';
   ScopeGroupBox.Caption:='Search where';
   ScopeRadioGroup.Caption:='Scope';
-  
+  ScopeRadioGroup.Items[0]:='in current unit';
+  ScopeRadioGroup.Items[1]:='in main project';
+  ScopeRadioGroup.Items[2]:='in project/package owning current unit';
+  ScopeRadioGroup.Items[3]:='in all open packages and projects';
+
   LoadFromConfig;
 end;
 
@@ -203,29 +303,37 @@ begin
 end;
 
 procedure TFindRenameIdentifierDialog.LoadFromConfig;
-var
-  Options: TFindRenameIdentifierOptions;
 begin
-  Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
+  LoadFromOptions(MiscellaneousOptions.FindRenameIdentifierOptions);
+end;
+
+procedure TFindRenameIdentifierDialog.SaveToConfig;
+begin
+  SaveToOptions(MiscellaneousOptions.FindRenameIdentifierOptions);
+end;
+
+procedure TFindRenameIdentifierDialog.LoadFromOptions(
+  Options: TFindRenameIdentifierOptions);
+begin
   RenameCheckBox.Checked:=Options.Rename;
   ExtraFilesEdit.Text:=StringListToText(Options.ExtraFiles,';',true);
   NewEdit.Text:=Options.RenameTo;
   ScopeCommentsCheckBox.Checked:=Options.SearchInComments;
   case Options.Scope of
   frCurrentUnit: ScopeRadioGroup.ItemIndex:=0;
-  frCurrentProjectPackage: ScopeRadioGroup.ItemIndex:=1;
+  frProject: ScopeRadioGroup.ItemIndex:=1;
+  frOwnerProjectPackage: ScopeRadioGroup.ItemIndex:=2;
   else
-    ScopeRadioGroup.ItemIndex:=2;
+    ScopeRadioGroup.ItemIndex:=3;
   end;
   UpdateRename;
 end;
 
-procedure TFindRenameIdentifierDialog.SaveToConfig;
+procedure TFindRenameIdentifierDialog.SaveToOptions(
+  Options: TFindRenameIdentifierOptions);
 var
-  Options: TFindRenameIdentifierOptions;
   ExtraFileList: TStringList;
 begin
-  Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
   Options.Rename:=RenameCheckBox.Checked;
   ExtraFileList:=SplitString(ExtraFilesEdit.Text,';');
   Options.ExtraFiles.Assign(ExtraFileList);
@@ -234,7 +342,8 @@ begin
   Options.SearchInComments:=ScopeCommentsCheckBox.Checked;
   case ScopeRadioGroup.ItemIndex of
   0: Options.Scope:=frCurrentUnit;
-  1: Options.Scope:=frCurrentProjectPackage;
+  1: Options.Scope:=frProject;
+  2: Options.Scope:=frOwnerProjectPackage;
   else Options.Scope:=frAllOpenProjectsAndPackages;
   end;
 end;

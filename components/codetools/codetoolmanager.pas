@@ -112,7 +112,7 @@ type
     function InitResourceTool: boolean;
     procedure ClearPositions;
     function GetCodeToolForSource(Code: TCodeBuffer;
-      ExceptionOnError: boolean): TCustomCodeTool;
+      GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
     procedure SetAbortable(const AValue: boolean);
     procedure SetAddInheritedCodeToOverrideMethod(const AValue: boolean);
     procedure SetCheckFilesOnDisk(NewValue: boolean);
@@ -126,7 +126,7 @@ type
     procedure AfterApplyingChanges;
     function HandleException(AnException: Exception): boolean;
     function OnGetCodeToolForBuffer(Sender: TObject;
-      Code: TCodeBuffer): TFindDeclarationTool;
+      Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     procedure OnToolSetWriteLock(Lock: boolean);
     procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
       var WriteLockStep: integer);
@@ -236,6 +236,10 @@ type
 
     // data function
     procedure FreeListOfPCodeXYPosition(var List: TList);
+    procedure FreeTreeOfPCodeXYPosition(var Tree: TAVLTree);
+    function CreateTreeOfPCodeXYPosition: TAVLTree;
+    procedure AddListToTreeOfPCodeXYPosition(SrcList: TList; DestTree: TAVLTree;
+          ClearList, CreateCopies: boolean);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
@@ -999,6 +1003,55 @@ begin
   end;
 end;
 
+procedure TCodeToolManager.FreeTreeOfPCodeXYPosition(var Tree: TAVLTree);
+var
+  ANode: TAVLTreeNode;
+  CursorPos: PCodeXYPosition;
+begin
+  if Tree=nil then exit;
+  ANode:=Tree.FindLowest;
+  while ANode<>nil do begin
+    CursorPos:=PCodeXYPosition(ANode.Data);
+    if CursorPos<>nil then
+      Dispose(CursorPos);
+    ANode:=Tree.FindSuccessor(ANode);
+  end;
+  Tree.Free;
+end;
+
+function TCodeToolManager.CreateTreeOfPCodeXYPosition: TAVLTree;
+begin
+  Result:=TAVLTree.Create(@CompareCodeXYPositions);
+end;
+
+procedure TCodeToolManager.AddListToTreeOfPCodeXYPosition(SrcList: TList;
+  DestTree: TAVLTree; ClearList, CreateCopies: boolean);
+var
+  i: Integer;
+  CodePos: PCodeXYPosition;
+  NewCodePos: PCodeXYPosition;
+begin
+  if SrcList=nil then exit;
+  for i:=SrcList.Count-1 downto 0 do begin
+    CodePos:=PCodeXYPosition(SrcList[i]);
+    if DestTree.Find(CodePos)=nil then begin
+      // new position -> add
+      if CreateCopies and (not ClearList) then begin
+        // list items should be kept and copies should be added to the tree
+        New(NewCodePos);
+        NewCodePos^:=CodePos^;
+      end else
+        NewCodePos:=CodePos;
+      DestTree.Add(NewCodePos);
+    end else if ClearList then begin
+      // position alread exists and items should be deleted
+      Dispose(NewCodePos);
+    end;
+  end;
+  if ClearList then
+    SrcList.Clear;
+end;
+
 function TCodeToolManager.Explore(Code: TCodeBuffer;
   var ACodeTool: TCodeTool; WithStatements: boolean): boolean;
 begin
@@ -1032,7 +1085,7 @@ begin
     FErrorMsg:=Format(ctsNoScannerFound,[MainCode.Filename]);
     exit;
   end;
-  FCurCodeTool:=TCodeTool(GetCodeToolForSource(MainCode,true));
+  FCurCodeTool:=TCodeTool(GetCodeToolForSource(MainCode,false,true));
   FCurCodeTool.ErrorPosition.Code:=nil;
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',dbgs(Code.SourceLength));
@@ -1392,7 +1445,7 @@ begin
   CursorPos.Y:=NewY;
   CursorPos.Code:=NewCode;
   {$IFDEF CTDEBUG}
-  DebugLn('TCodeToolManager.FindReferences B ',dbgs(FCurCodeTool.Scanner<>nil));
+  DebugLn('TCodeToolManager.FindReferences B ',dbgs(FCurCodeTool.Scanner<>nil),' x=',dbgs(CursorPos.X),' y=',dbgs(CursorPos.Y),' ',CursorPos.Code.Filename);
   {$ENDIF}
   try
     Result:=FCurCodeTool.FindReferences(CursorPos,SkipComments,
@@ -2921,7 +2974,7 @@ begin
 end;
 
 function TCodeToolManager.GetCodeToolForSource(Code: TCodeBuffer;
-  ExceptionOnError: boolean): TCustomCodeTool;
+  GoToMainCode, ExceptionOnError: boolean): TCustomCodeTool;
 // return a codetool for the source
 begin
   Result:=nil;
@@ -2931,6 +2984,8 @@ begin
         +'internal error: Code=nil');
     exit;
   end;
+  if GoToMainCode then
+    Code:=GetMainCode(Code);
   Result:=FindCodeToolForSource(Code);
   if Result=nil then begin
     CreateScanner(Code);
@@ -2977,14 +3032,14 @@ begin
 end;
 
 function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
-  Code: TCodeBuffer): TFindDeclarationTool;
+  Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TCodeToolManager.OnGetCodeToolForBuffer]'
     ,' Sender=',TCustomCodeTool(Sender).MainFilename
     ,' Code=',Code.Filename);
   {$ENDIF}
-  Result:=TFindDeclarationTool(GetCodeToolForSource(Code,true));
+  Result:=TFindDeclarationTool(GetCodeToolForSource(Code,GoToMainCode,true));
 end;
 
 procedure TCodeToolManager.ActivateWriteLock;
