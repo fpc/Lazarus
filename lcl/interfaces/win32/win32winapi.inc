@@ -1314,9 +1314,15 @@ End;
   Retrieves a handle to one of the predefined stock objects.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetStockObject(Value: Integer): LongInt;
+Var 
+  StockObj: Integer;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.GetStockObject] %d ', [Value]));
-  Result := Windows.GetStockObject(Value);
+  If Value = SYSTEM_FONT then
+    StockObj:= DEFAULT_GUI_FONT
+  Else
+    StockObj:= Value;
+  Result := Windows.GetStockObject(StockObj);
   Assert(False, Format('Trace:< [TWin32Object.GetStockObject] %d --> 0x%x', [Value, Result]));
 End;
 
@@ -2425,6 +2431,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2003/08/27 08:14:37  mattias
+  fixed system fonts for win32 intf
+
   Revision 1.57  2003/08/26 16:14:21  mattias
   defaultfont patch from Micha
 

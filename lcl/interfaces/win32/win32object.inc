@@ -1796,7 +1796,7 @@ Var
   Caption : String;
   CompStyle, Left, Top: Integer;
   DC: HDC;
-  Flags: DWord;
+  Flags,FlagsEx: DWord;
   Height, Width: Integer;
   DoSubClass: Boolean;
   Parent: HWND;
@@ -1981,11 +1981,29 @@ Begin
         Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
       SetProp(Window, 'Lazarus', Sender);
     End;
-    csForm, csHintWindow:
+    csForm:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
+      Flags:= WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+      FlagsEx:= 0;
+      Case TCustomForm(Sender).BorderStyle of
+      //bsSizeable:; -> Default
+      bsSingle:
+        Flags:= Flags and (not WS_THICKFRAME);
+      bsDialog:
+        Flags:= Flags and (not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
+      bsNone:;// Need to find how to implement this
+      bsToolWindow:
+      Begin
+        FlagsEx:=WS_EX_TOOLWINDOW;
+        Flags:= Flags and (not WS_THICKFRAME);
+      End;
+      bsSizeToolWin:
+        FlagsEx:=WS_EX_TOOLWINDOW;
+      End;//case
+      
       try
-        Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+        Window := CreateWindowEx(FlagsEx,ClsName, StrTemp,Flags, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       except
         writeln('Exception occured creating window');
       end;
@@ -2001,6 +2019,12 @@ Begin
         MessageBox(0, 'csForm CreateWindow Failed', nil, mb_Ok);
         Exit;
       End;
+    End;
+    csHintWindow:
+    Begin
+      Window := CreateWindow(ClsName, StrTemp,WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+      SetProp(Window, 'Lazarus', Sender);
+      DoSubClass := false;
     End;
     csMainForm:
     Begin
@@ -2846,6 +2870,9 @@ End;
 
 {
   $Log$
+  Revision 1.97  2003/08/27 08:14:37  mattias
+  fixed system fonts for win32 intf
+
   Revision 1.96  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 

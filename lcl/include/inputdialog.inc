@@ -36,7 +36,7 @@ begin
       Caption := InputPrompt;
       Visible := True;
     end;
-    SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+    SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
     GetTextExtentPoint(Canvas.Handle,AVGBuffer,StrLen(AVGBuffer),TSize(AVG));
     AVG.X := AVG.X div 52;
     Position := poScreenCenter;

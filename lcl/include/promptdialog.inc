@@ -242,12 +242,11 @@ begin
   If MSG = '' then
     MSG := '   ';
   TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
-  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+  SelectObject(Canvas.Handle, GetStockObject(DEFAULT_GUI_FONT));
   DrawText(Canvas.Handle, PChar(MSG), Length(MSG),
     TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
 
   // calculate the width we need to display the buttons
-  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
   GetTextExtentPoint(Canvas.Handle,AVGBuffer,StrLen(AVGBuffer),TSize(AVG));
   AVG.X := AVG.X div 52;
   reqBtnWidth := 0;
@@ -376,6 +375,9 @@ end;
 
 {
    $Log$
+   Revision 1.7  2003/08/27 08:14:37  mattias
+   fixed system fonts for win32 intf
+
    Revision 1.6  2003/07/04 10:30:02  mattias
    removed unused label from Micha
 

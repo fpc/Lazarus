@@ -80,6 +80,9 @@ Begin
     DH := Dest.Bottom - Dest.Top;
     DW := Dest.Right - Dest.Left;
     if (Dh=0) and (DW=0) then exit;
+    //writeln('TCanvas.CopyRect ',ClassName,' Canvas=',Canvas.ClassName,' ',
+    //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
+    //  ' Dest=',Dest.Left,',',Dest.Top,',',DW,',',DH);
     StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
       Canvas.FHandle, Source.Left, Source.Top, SW, SH, CopyMode);
   end;
@@ -748,7 +751,7 @@ begin
   If Style.SystemFont then begin
     Options := Options or DT_INTERNAL;
     RequiredState([csHandleValid]);
-    SelectObject(Self.Handle, GetStockObject(SYSTEM_FONT));
+    SelectObject(Self.Handle, GetStockObject(DEFAULT_GUI_FONT));
   end
   else
     RequiredState([csHandleValid, csFontValid]);
@@ -768,13 +771,8 @@ begin
     RequiredState([csHandleValid, csBrushValid]);
     FillRect(fRect);
   end;
-  If Style.SystemFont then begin
-    RequiredState([csHandleValid]);
-    SelectObject(Self.Handle, GetStockObject(SYSTEM_FONT));
+  If Style.SystemFont then
     SetTextColor(Self.Handle, Font.Color);
-  end
-  else
-    RequiredState([csHandleValid, csFontValid]);
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
   Changed;
 end;
@@ -1238,6 +1236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2003/08/27 08:14:37  mattias
+  fixed system fonts for win32 intf
+
   Revision 1.51  2003/08/18 19:24:18  mattias
   fixed TCanvas.Pie
 

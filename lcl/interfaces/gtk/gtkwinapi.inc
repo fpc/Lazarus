@@ -4574,15 +4574,11 @@ begin
     DEVICE_DEFAULT_FONT: // Device-dependent font.
       begin
       end;  *)
-    DEFAULT_GUI_FONT:    // Default font for user interface objects such as menus and dialog boxes.
-      begin
-        Result := GetStockObject(SYSTEM_FONT);
-      end;
 (*    OEM_FIXED_FONT:      // Original equipment manufacturer (OEM) dependent fixed-pitch (monospace) font.
       begin
       end;
 *)
-    SYSTEM_FONT:         // System font. By default, Windows uses the system font to draw menus, dialog box controls, and text. In Windows versions 3.0 and later, the system font is a proportionally spaced font; earlier versions of Windows used a monospace system font.
+    DEFAULT_GUI_FONT, SYSTEM_FONT:         // System font. By default, Windows uses the system font to draw menus, dialog box controls, and text. In Windows versions 3.0 and later, the system font is a proportionally spaced font; earlier versions of Windows used a monospace system font.
       begin
         If FStockSystemFont <> 0 then begin //This is a Temporary Hack!!! This
           DeleteObject(FStockSystemFont);   //should really only be done on
@@ -8709,6 +8705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.271  2003/08/27 08:14:37  mattias
+  fixed system fonts for win32 intf
+
   Revision 1.270  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 
