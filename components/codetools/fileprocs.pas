@@ -43,11 +43,7 @@ uses
 const
   // ToDo: find the constant in the fpc units.
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
-  {$ifdef win32}
-  SpecialChar = '/'; // used to use PathDelim, e.g. /\
-  {$else}
-  SpecialChar = '\';
-  {$endif}
+  SpecialChar = '#'; // used to use PathDelim, e.g. #\
   {$ifdef win32}
   {$define CaseInsensitiveFilenames}
   {$endif}
@@ -670,6 +666,7 @@ begin
         end;
       end;
       if Mask[DirStartMask]=SpecialChar then begin
+        // special char -> next char is normal char
         inc(DirStartMask);
         if (DirStartMask>=DirEndMask) then exit;
       end;

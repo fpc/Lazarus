@@ -1100,9 +1100,10 @@ var
   begin
     Result:=false;
 
-    {$ifdef GTK2}
+
     if (LastMouse.Down) and
-      (not (Event^._Type in [gdk_2button_press,gdk_3button_press]))
+      (not (Event^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF}
+            in [gdk_2button_press,gdk_3button_press]))
     then begin
       {$IFDEF VerboseMouseBugfix}
       writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
@@ -1110,27 +1111,12 @@ var
       {$ENDIF}
       Exit;
     end;
-    {$else}
-    if (LastMouse.Down) and
-      (not (Event^.theType in [gdk_2button_press,gdk_3button_press]))
-    then begin
-      {$IFDEF VerboseMouseBugfix}
-      writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
-              ' Event^.theType=',Event^.theType);
-      {$ENDIF}
-      Exit;
-    end;
-    {$EndIf}
 
     MessI.Keys := MessI.Keys or BtnKey;
 
     IsMultiClick:=TestIfMultiClick;
 
-    {$ifdef GTK2}
-    case Event^._Type of
-    {$else}
-    case Event^.theType of
-    {$EndIf}
+    case Event^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF} of
     gdk_2button_press:
       // the gtk itself has detected a double click
       if (LastMouse.ClickCount>=2)
@@ -1483,7 +1469,7 @@ end;
 function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Result:={$Ifdef GTk1}true{$Else}false{$EndIf};
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnReleaseAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
@@ -2854,6 +2840,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.194  2003/09/23 17:52:04  mattias
+  added SetAnchors
+
   Revision 1.193  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

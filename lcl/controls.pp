@@ -658,7 +658,6 @@ type
     Function GetTabOrder: TTabOrder;
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
-    function IsAnchorsStored: boolean;
     function IsCaptionStored : Boolean;
     function IsHelpContextStored: boolean;
     function IsHelpKeyWordStored: boolean;
@@ -669,6 +668,7 @@ type
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetAlign(Value: TAlign);
+    procedure SetAnchors(const AValue: TAnchors);
     procedure SetBoundsRect(const ARect : TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
@@ -691,7 +691,7 @@ type
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    Procedure UpdateTaborder(value : TTabOrder);
+    Procedure UpdateTabOrder(value : TTabOrder);
   protected
     AutoSizing : Boolean;
     FControlState: TControlState;
@@ -873,7 +873,7 @@ type
                                        AsLast: boolean);
     procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
   public
-    property Anchors: TAnchors read FAnchors write FAnchors stored IsAnchorsStored;
+    property Anchors: TAnchors read FAnchors write SetAnchors default [akLeft,akTop];
     property Align: TAlign read FAlign write SetAlign;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
@@ -1845,6 +1845,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.153  2003/09/23 17:52:04  mattias
+  added SetAnchors
+
   Revision 1.152  2003/09/23 08:00:46  mattias
   improved OnEnter for gtkcombo
 

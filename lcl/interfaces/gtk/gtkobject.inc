@@ -3105,11 +3105,11 @@ begin
           {$IFdef GTK1}
           csListBox, csCheckListBox:
           begin
-            if Integer(Data)>=0 then
+            if Integer(Data)>=0 then begin
               gtk_list_select_item(
                 PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget),
                 Integer(Data))
-            else
+            end else
               gtk_list_unselect_all(
                 PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget));
           end;
@@ -8386,6 +8386,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.426  2003/09/23 17:52:04  mattias
+  added SetAnchors
+
   Revision 1.425  2003/09/23 08:00:46  mattias
   improved OnEnter for gtkcombo
 

@@ -427,11 +427,6 @@ begin
     Result := UndockWidth;
 end;
 
-function TControl.IsAnchorsStored: boolean;
-begin
-  Result:=Anchors<>[akLeft,akTop];
-end;
-
 {------------------------------------------------------------------------------
   function TControl.IsHelpContextStored: boolean;
 ------------------------------------------------------------------------------}
@@ -1273,8 +1268,8 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl DoMouseDown  "Event Handler"                                 }
 {------------------------------------------------------------------------------}
-procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMOuseButton;
-  Shift:TShiftState);
+procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
+  Shift: TShiftState);
 begin
   if not (csNoStdEvents in ControlStyle) then
   Begin
@@ -1350,8 +1345,10 @@ begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
-  if csClickEvents in ControlStyle then DblClick;
+  // first send a mouse down
   DoMouseDown(Message, mbLeft ,[ssDouble]);
+  // then send the double click
+  if csClickEvents in ControlStyle then DblClick;
 end;
 
 {------------------------------------------------------------------------------
@@ -1886,11 +1883,20 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetAlign(Value: TAlign);
 begin
-  if FAlign <> Value then begin
-    //writeln('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
-    FAlign := Value;
-    RequestAlign;
-  end;
+  if FAlign = Value then exit;
+  //writeln('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
+  FAlign := Value;
+  RequestAlign;
+end;
+
+{------------------------------------------------------------------------------
+  TControl SetAnchors
+------------------------------------------------------------------------------}
+procedure TControl.SetAnchors(const AValue: TAnchors);
+begin
+  if Anchors=AValue then exit;
+  FAnchors:=AValue;
+  RequestAlign;
 end;
 
 {------------------------------------------------------------------------------
@@ -2138,7 +2144,7 @@ End;
 }
 {------------------------------------------------------------------------------}
 
-Procedure TControl.MouseDown(Button: TMouseButton; Shift:TShiftState;
+Procedure TControl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
@@ -2587,6 +2593,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.157  2003/09/23 17:52:04  mattias
+  added SetAnchors
+
   Revision 1.156  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

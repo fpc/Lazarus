@@ -220,7 +220,8 @@ begin
 end;
 
 function TTransferMacroList.SubstituteStr(var s:string): boolean;
-var MacroStart,MacroEnd: integer;
+var
+  MacroStart,MacroEnd: integer;
   MacroName, MacroStr, MacroParam: string;
   AMacro: TTransferMacro;
   Handled, Abort: boolean;
