@@ -5,7 +5,8 @@ unit ExampleGrid1;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, RTTIGrids;
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, RTTIGrids,
+  RTTICtrls;
 
 type
 
@@ -25,9 +26,12 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    TICheckBox1: TTICheckBox;
     TIGrid1: TTIGrid;
     procedure Form1Create(Sender: TObject);
     procedure Form1Destroy(Sender: TObject);
+    procedure Form1MouseDown(Sender: TOBject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { private declarations }
   public
@@ -69,6 +73,12 @@ begin
   TIGrid1.ListObject:=nil;
   // free collection
   MyCollection.Free;
+end;
+
+procedure TForm1.Form1MouseDown(Sender: TOBject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  WriteLn('------------------------------');
 end;
 
 initialization

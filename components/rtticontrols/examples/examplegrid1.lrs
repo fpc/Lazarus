@@ -3,12 +3,19 @@
 LazarusResources.Add('TForm1','FORMDATA',[
   'TPF0'#6'TForm1'#5'Form1'#7'Caption'#6#5'Form1'#12'ClientHeight'#3','#1#11'Cl'
   +'ientWidth'#3#144#1#8'OnCreate'#7#11'Form1Create'#9'OnDestroy'#7#12'Form1Des'
-  +'troy'#13'PixelsPerInch'#2'Z'#18'HorzScrollBar.Page'#3#145#1#18'VertScrollBa'
-  +'r.Page'#3'-'#1#4'Left'#3'"'#1#6'Height'#3','#1#3'Top'#3#163#0#5'Width'#3#144
-  +#1#0#7'TTIGrid'#7'TIGrid1'#11'BorderStyle'#7#8'bsSingle'#5'Color'#7#7'clWhit'
-  +'e'#16'DefaultRowHeight'#2#24#10'FixedColor'#7#9'clBtnFace'#7'Options'#11#15
-  +'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRan'
-  +'geSelect'#14'goSmoothScroll'#0#4'Left'#2'('#6'Height'#3#166#0#3'Top'#2'@'#5
-  +'Width'#3'<'#1#9'ColWidths'#1#2'@'#2'@'#2'@'#2'@'#2'@'#0#10'RowHeights'#1#2
-  +#24#2#24#2#24#2#24#2#24#0#0#0#0
+  +'troy'#11'OnMouseDown'#7#14'Form1MouseDown'#13'PixelsPerInch'#2'K'#18'HorzSc'
+  +'rollBar.Page'#3#145#1#18'VertScrollBar.Page'#3'-'#1#4'Left'#3'"'#1#6'Height'
+  +#3','#1#3'Top'#3#163#0#5'Width'#3#144#1#0#7'TTIGrid'#7'TIGrid1'#11'BorderSty'
+  +'le'#7#8'bsSingle'#5'Color'#7#7'clWhite'#16'DefaultRowHeight'#2#24#6'Filter'
+  +#11#9'tkInteger'#6'tkChar'#13'tkEnumeration'#7'tkFloat'#9'tkSString'#9'tkLSt'
+  +'ring'#9'tkAString'#9'tkWString'#9'tkVariant'#7'tkWChar'#6'tkBool'#7'tkInt64'
+  +#7'tkQWord'#0#10'FixedColor'#7#9'clBtnFace'#7'Options'#11#15'goFixedVertLine'
+  +#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#9'goEdi'
+  +'ting'#18'goAlwaysShowEditor'#14'goSmoothScroll'#0#4'Left'#2' '#6'Height'#3
+  +#166#0#3'Top'#2#16#5'Width'#3'<'#1#9'ColWidths'#1#2'@'#2'@'#2'@'#2'@'#2'@'#0
+  +#10'RowHeights'#1#2#24#2#24#2#24#2#24#2#24#0#0#0#11'TTICheckBox'#11'TICheckB'
+  +'ox1'#8'AutoSize'#9#7'Caption'#6#11'goColSizing'#13'Link.TIObject'#7#7'TIGri'
+  +'d1'#19'Link.TIPropertyName'#6#7'Options'#18'Link.TIElementName'#6#11'goColS'
+  +'izing'#7'TabStop'#9#4'Left'#2'"'#6'Height'#2#23#3'Top'#3#216#0#5'Width'#2'Z'
+  +#0#0#0
 ]);

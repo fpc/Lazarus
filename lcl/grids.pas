@@ -441,6 +441,9 @@ type
     end;
 
 type
+
+  { TCustomGrid }
+
   TCustomGrid=class(TCustomControl)
   private
     FAutoAdvance: TAutoAdvance;
@@ -499,6 +502,7 @@ type
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     procedure SetAutoFillColumns(const AValue: boolean);
     procedure SetColumns(const AValue: TGridColumns);
+    procedure SetEditorOptions(const AValue: Integer);
     procedure SetFlat(const AValue: Boolean);
     procedure SetFocusRectVisible(const AValue: Boolean);
     procedure SetTitleFont(const AValue: TFont);
@@ -595,6 +599,8 @@ type
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
+    procedure DoEditorHide; virtual;
+    procedure DoEditorShow; virtual;
     procedure DoExit; override;
     procedure DoEnter; override;
     procedure DoOnChangeBounds; override;
@@ -618,6 +624,7 @@ type
     function  EditorIsReadOnly: boolean; virtual;
     procedure EditorHide; virtual;
     procedure EditorShow(const SelAll: boolean); virtual;
+    procedure EditorWidthChanged(aCol,aWidth: Integer); virtual;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
@@ -701,7 +708,9 @@ type
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
     property EditorKey: boolean read FEditorKey write FEditorKey;
-    property EditorShowing: boolean read FEditorShowing;
+    property EditorHiding: boolean read FEditorHiding write FEditorHiding;
+    property EditorOptions: Integer read FEditorOptions write SetEditorOptions;
+    property EditorShowing: boolean read FEditorShowing write FEditorShowing;
     property ExtendedColSizing: boolean read FExtendedColSizing write FExtendedColSizing;
     property ExtendedRowSizing: boolean read FExtendedRowSizing write FExtendedRowSizing;
     property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
@@ -1209,8 +1218,9 @@ begin
     case Msg of
       CM_BASE..CM_MOUSEWHEEL:
         case Msg of
-          CM_MOUSEENTER:          DebugLn(hex, 'CM_MOUSEENTER');
-          CM_MOUSELEAVE:          DebugLn(hex, 'CM_MOUSELEAVE');
+          CM_MOUSEENTER,CM_MOUSELEAVE:;
+          //CM_MOUSEENTER:          DebugLn(hex, 'CM_MOUSEENTER');
+          //CM_MOUSELEAVE:          DebugLn(hex, 'CM_MOUSELEAVE');
           CM_TEXTCHANGED:           DebugLn(hex, 'CM_TEXTCHANGED');
           CM_PARENTCTL3DCHANGED:    DebugLn(hex, 'CM_PARENTCTL3DCHANGED');
           CM_UIACTIVATE:            DebugLn(hex, 'CM_UIACTIVATE');
@@ -1425,7 +1435,8 @@ begin
   if Avalue<>Integer(FCols[ACol]) then begin
     SetRawColWidths(ACol, Avalue);
     VisualChange;
-    if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then EditorPos;
+    if (FEditor<>nil)and(Feditor.Visible)and(ACol<=FCol) then
+      EditorWidthChanged(aCol, aValue);
     ColWidthsChanged;
   end;
 end;
@@ -1503,33 +1514,8 @@ begin
     Msg.Grid:=Self;
     Msg.Options:=0;
     FEditor.Dispatch(Msg);
-    FEditorOptions:=Msg.Options;
-
-    if Msg.Options and EO_HOOKKEYDOWN = EO_HOOKKEYDOWN then begin
-      FEditor.OnKeyDown:=@EditorKeyDown;
-    end;
-    if Msg.Options and EO_HOOKKEYPRESS = EO_HOOKKEYPRESS then begin
-      FEditor.OnKeyPress := @EditorKeyPress;
-    end;
-    if Msg.Options and EO_HOOKKEYUP = EO_HOOKKEYUP then begin
-      FEditor.OnKeyUp := @EditorKeyUp;
-    end;
-
-    if Msg.Options and EO_HOOKEXIT = EO_HOOKEXIT then begin
-      FEditor.OnExit:=@EditorExit;
-    end;
-
-    {$IfDef EditorDbg}
-    DBGOut('SetEditor-> Editor=',FEditor.Name,' ');
-    if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then DBGOut('EO_AUTOSIZE ');
-    if FEditorOptions and EO_HOOKKEYDOWN = EO_HOOKKEYDOWN then DBGOut('EO_HOOKKEYDOWN ');
-    if FEditorOptions and EO_HOOKKEYPRESS = EO_HOOKKEYPRESS then DBGOut('EO_HOOKKEYPRESS ');
-    if FEditorOptions and EO_HOOKKEYUP = EO_HOOKKEYUP then DBGOut('EO_HOOKKEYUP ');
-    if FEditorOptions and EO_HOOKEXIT = EO_HOOKEXIT then DBGOut('EO_HOOKEXIT ');
-    if FEditorOptions and EO_SELECTALL= EO_SELECTALL then DBGOut('EO_SELECTALL ');
-    if FEditorOptions and EO_WANTCHAR = EO_WANTCHAR then DBGOut('EO_WANTCHAR ');
-    DebugLn;
-    {$Endif}
+    
+    SetEditorOptions(Msg.Options);
   end;
 end;
 
@@ -3023,6 +3009,39 @@ begin
   FColumns.Assign(Avalue);
 end;
 
+procedure TCustomGrid.SetEditorOptions(const AValue: Integer);
+begin
+  if FEditorOptions<>AValue then begin
+    if FEditor=nil then exit;
+    FEditorOptions:=AValue;
+    
+    if FEditorOptions and EO_HOOKKEYDOWN = EO_HOOKKEYDOWN then begin
+      FEditor.OnKeyDown:=@EditorKeyDown;
+    end;
+    if FEditorOptions and EO_HOOKKEYPRESS = EO_HOOKKEYPRESS then begin
+      FEditor.OnKeyPress := @EditorKeyPress;
+    end;
+    if FEditorOptions and EO_HOOKKEYUP = EO_HOOKKEYUP then begin
+      FEditor.OnKeyUp := @EditorKeyUp;
+    end;
+    if FEditorOptions and EO_HOOKEXIT = EO_HOOKEXIT then begin
+      FEditor.OnExit:=@EditorExit;
+    end;
+
+    {$IfDef EditorDbg}
+    DBGOut('SetEditor-> Editor=',FEditor.Name,' ');
+    if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then DBGOut('EO_AUTOSIZE ');
+    if FEditorOptions and EO_HOOKKEYDOWN = EO_HOOKKEYDOWN then DBGOut('EO_HOOKKEYDOWN ');
+    if FEditorOptions and EO_HOOKKEYPRESS = EO_HOOKKEYPRESS then DBGOut('EO_HOOKKEYPRESS ');
+    if FEditorOptions and EO_HOOKKEYUP = EO_HOOKKEYUP then DBGOut('EO_HOOKKEYUP ');
+    if FEditorOptions and EO_HOOKEXIT = EO_HOOKEXIT then DBGOut('EO_HOOKEXIT ');
+    if FEditorOptions and EO_SELECTALL= EO_SELECTALL then DBGOut('EO_SELECTALL ');
+    if FEditorOptions and EO_WANTCHAR = EO_WANTCHAR then DBGOut('EO_WANTCHAR ');
+    DebugLn;
+    {$Endif}
+  end;
+end;
+
 procedure TCustomGrid.SetFlat(const AValue: Boolean);
 begin
   if FFlat=AValue then exit;
@@ -3586,7 +3605,7 @@ begin
       end;
   end;
   fGridState:=gsNormal;
-  {$IfDef dbgFocus}DebugLn('MouseUP  END  RND=',Random);{$Endif}
+  {$IfDef dbgFocus}DebugLn('MouseUP  END  RND=', FloatToStr(Random));{$Endif}
 end;
 
 procedure TCustomGrid.DblClick;
@@ -3674,6 +3693,23 @@ begin
   inherited DestroyHandle;
 end;
 
+procedure TCustomGrid.DoEditorHide;
+begin
+  Editor.Visible:=False;
+  Editor.Parent:=nil;
+  LCLIntf.SetFocus(Self.Handle);
+end;
+
+procedure TCustomGrid.DoEditorShow;
+begin
+  ScrollToCell(FCol,FRow);
+  EditorSetValue;
+  Editor.Parent:=Self;
+  Editor.Visible:=True;
+  LCLIntf.SetFocus(Editor.Handle);
+  InvalidateCell(FCol,FRow,True);
+end;
+
 procedure TCustomGrid.DoOnChangeBounds;
 begin
   inherited DoOnChangeBounds;
@@ -3704,6 +3740,7 @@ begin
     {$IfDef dbgFocus}DebugLn('DoEnter - EditorHiding');{$Endif}
   end else begin
     {$IfDef dbgFocus}DebugLn('DoEnter - Ext');{$Endif}
+    exit;
     if EditorAlwaysShown then begin
       SelectEditor;
       if Feditor=nil then Invalidate
@@ -3916,7 +3953,7 @@ begin
   if (not Result) then Exit;
 
   BeforeMoveSelection(DCol,DRow);
-  {$IfDef dbgFocus}DebugLn(' MoveExtend INIT FCol= ',FCol, ' FRow= ',FRow);{$Endif}
+  {$IfDef dbgFocus}DebugLn(' MoveExtend INIT FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 
   LastEditor:=Editor;
   WasVis:=(LastEditor<>nil)and(LastEditor.Visible);
@@ -3965,8 +4002,8 @@ begin
   SelectEditor;
 
   ProcessEditor(LastEditor,DCol,DRow,WasVis);
-
-  {$IfDef dbgFocus}DebugLn(' MoveExtend FIN FCol= ',FCol, ' FRow= ',FRow);{$Endif}
+  
+  {$IfDef dbgFocus}DebugLn(' MoveExtend FIN FCol= ',IntToStr(FCol), ' FRow= ',IntToStr(FRow));{$Endif}
 end;
 
 function TCustomGrid.MoveNextAuto: boolean;
@@ -4080,38 +4117,20 @@ var
   WillVis: Boolean;
 begin
   WillVis:=(FEditor<>nil)and EditorAlwaysShown;
+  {$ifdef DbgFocus}
+  DebugLn('  ProcessEditor INIT WasVis=', BoolToStr(WasVis),' WillVis=', BoolToStr(WillVis));
+  {$endif}
   if WillVis or WasVis then begin
     if not WillVis then HideLastEditor else
     if not WasVis then EditorShow(EditorAlwaysShown)
     else begin
-      {
-      LastEditor.Visible:=False;
-      lastEditor.Parent:=nil;
-      FEditorMode:=False;
-      EditorShow;
-      }
       HideLastEditor;
       EditorShow(EditorAlwaysShown);
-      {
-      if LastEditor=FEditor then begin
-        // only to swap DCol<->FCol and DRow<->FRow
-        // Hide editor in old position
-        RestoreEditor;
-        EditordoGetValue;
-        RestoreEditor;
-        // Move Editor to new position and set its value
-        EditorPos;
-        EditordoSetValue;
-      end else begin
-        // Hide old editor type a
-        LastEditor.Visible:=False;
-        lastEditor.Parent:=nil;
-        // Show new editor type b
-        EditorShow;
-      end;
-      }
     end;
   end;
+  {$ifdef DbgFocus}
+  DebugLn('  ProcessEditor FIN');
+  {$endif}
 end;
 
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -4246,11 +4265,9 @@ begin
   and Editor.Visible then
   begin
     FEditorMode:=False;
-    {$IfDef dbgFocus} DebugLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorHide [',Editor.ClassName,'] INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$Endif}
     FEditorHiding:=True;
-    Editor.Visible:=False;
-    Editor.Parent:=nil;
-    LCLIntf.SetFocus(Self.Handle);
+    DoEditorHide;
     FEditorHiding:=False;
     {$IfDef dbgFocus} DebugLn('EditorHide FIN'); {$Endif}
   end;
@@ -4265,20 +4282,20 @@ begin
   if (goEditing in Options) and
      not FEditorShowing and (Editor<>nil) and not Editor.Visible then
   begin
-    {$IfDef dbgFocus} DebugLn('EditorShow INIT FCol=',FCol,' FRow=',FRow);{$Endif}
+    {$IfDef dbgFocus} DebugLn('EditorShow [',Editor.ClassName,']INIT FCol=',IntToStr(FCol),' FRow=',IntToStr(FRow));{$Endif}
     FEditorMode:=True;
     FEditorShowing:=True;
-    ScrollToCell(FCol,FRow);
-    EditorSetValue;
-    Editor.Parent:=Self;
-    Editor.Visible:=True;
-    LCLIntf.SetFocus(Editor.Handle);
-    InvalidateCell(FCol,FRow,True);
+    doEditorShow;
     FEditorShowing:=False;
     {$IfDef dbgFocus} DebugLn('EditorShow FIN');{$Endif}
     if SelAll then
       EditorSelectAll;
   end;
+end;
+
+procedure TCustomGrid.EditorWidthChanged(aCol, aWidth: Integer);
+begin
+  EditorPos;
 end;
 
 procedure TCustomGrid.EditorPos;

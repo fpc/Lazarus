@@ -79,8 +79,8 @@ type
     property Visible;
   end;
   
-
   TTICustomGrid =  class;
+
 
   { TTIGridProperty }
 
@@ -88,6 +88,7 @@ type
   private
     FEditor: TPropertyEditor;
     FEditorControl: TWinControl;
+    FButtonEditorControl: TWinControl;
     FGrid: TTICustomGrid;
     FIndex: integer;
     FTitle: string;
@@ -100,6 +101,7 @@ type
     destructor Destroy; override;
     function PropInfo: PPropInfo;
     function GetEditorControl: TWinControl;
+    function GetButtonEditorControl: TWinControl;
     function PropName: string;
   public
     property Editor: TPropertyEditor read FEditor;
@@ -170,6 +172,7 @@ type
     FTIStates: TTIGridStates;
     FTIObjectCount: integer;
     FProperties: TList;
+    FExtraBtnEditor: TWinControl;
     function GetProperties(Index: integer): TTIGridProperty;
     function GetPropertyCount: integer;
     procedure SetAliasPropertyNames(const AValue: TAliasStrings);
@@ -180,12 +183,20 @@ type
     procedure SetPropertyOrder(const AValue: TStrings);
     procedure SetShowOnlyProperties(const AValue: TStrings);
     procedure SetTIOptions(const NewOptions: TTIGridOptions);
+    {$IFDEF DebugEditor}
+    procedure DebugEditor(msg: String; aEditor: TWinControl);
+    {$ENDIF}
   protected
     procedure RebuildGridLayout; virtual;
     procedure AddHeaderPropertyEditor(Prop: TPropertyEditor);
+    procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
+    procedure CalcCellExtent(aCol, aRow: Integer; var aRect: TRect); virtual;
+    procedure DoEditorHide; override;
+    procedure DoEditorShow; override;
     procedure DrawCell(aCol, aRow: Integer; aRect: TRect;
                        aState: TGridDrawState); override;
-    procedure CalcCellExtent(aCol, aRow: Integer; var aRect: TRect); virtual;
+    procedure EditorPosChanged(aEditor: TWinControl);
+    procedure EditorWidthChanged(aCol, aWidth: Integer); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
     procedure GetAutoFillColumnInfo(const Index: Integer;
@@ -193,8 +204,8 @@ type
     procedure SelectEditor; override;
     procedure DoEditorControlKeyUp(Sender: TObject; var Key: Word;
                                    Shift: TShiftState); virtual;
-    procedure EditorHide; override;
     procedure WriteCellText(aRect: TRect; const aText: string);
+    procedure UnlinkPropertyEditor(aEditor: TWinControl);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -471,6 +482,16 @@ begin
   if tgoShowOnlyProperties in ChangedOptions then ReloadTIList;
 end;
 
+{$IFDEF DebugEditor}
+procedure TTICustomGrid.DebugEditor(msg: String; aEditor: TWinControl);
+begin
+  Write(Msg,': Editor=');
+  if aEditor=nil then Write('nil')
+  else Write(AEditor.className);
+  WriteLn;
+end;
+{$ENDIF}
+
 procedure TTICustomGrid.ReloadTIList;
 begin
   if tgsRebuildingTIList in FTIStates then exit;
@@ -565,6 +586,21 @@ begin
   FProperties.Add(NewProperty);
 end;
 
+procedure TTICustomGrid.BeforeMoveSelection(const DCol, DRow: Integer);
+begin
+  inherited BeforeMoveSelection(DCol, DRow);
+  if (FExtraBtnEditor<>nil)and(FExtraBtnEditor.Visible) then begin
+    {$IFDEF DebugEditor}
+    DebugEditor('BeforeMoveSelection: ', FExtraBtnEditor);
+    {$ENDIF}
+    EditorHiding := True;
+    UnlinkPropertyEditor(FExtraBtnEditor);
+    FExtraBtnEditor.Visible := false;
+    FExtraBtnEditor.Parent := nil;
+    EditorHiding := false;
+  end;
+end;
+
 procedure TTICustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
@@ -576,6 +612,27 @@ begin
   end else
     DefaultDrawCell(aCol,aRow,aRect,aState);
   DrawCellGrid(aCol,aRow,aRect,aState);
+end;
+
+procedure TTICustomGrid.EditorPosChanged(aEditor: TWinControl);
+var
+  NewRect, ARect: TRect;
+begin
+  // position
+  NewRect:=CellRect(Col,Row);
+  if FExtraBtnEditor<>nil then begin
+    ARect := NewRect;
+    ARect.Left := ARect.Right-20;
+    Dec(NewRect.Right,20);
+    FExtraBtnEditor.BoundsRect := ARect;
+  end;
+  aEditor.BoundsRect:=NewRect;
+end;
+
+procedure TTICustomGrid.EditorWidthChanged(aCol, aWidth: Integer);
+begin
+  if (aCol=0) and (aWidth=0) then ;
+  EditorPosChanged(Editor);
 end;
 
 procedure TTICustomGrid.CalcCellExtent(aCol, aRow: Integer; var aRect: TRect);
@@ -612,7 +669,6 @@ var
   ObjectIndex: integer;
   PropertyIndex: integer;
   CellType: TTIGridCellType;
-  NewRect: TRect;
   PropLink: TCustomPropertyLink;
   CurObject: TPersistent;
   CurProp: TTIGridProperty;
@@ -623,9 +679,13 @@ begin
   if CellType=tgctValue then begin
     CurProp:=Properties[PropertyIndex];
     NewEditor:=CurProp.GetEditorControl;
-    // position
-    NewRect:=CellRect(Col,Row);
-    NewEditor.BoundsRect:=NewRect;
+    FExtraBtnEditor := CurProp.GetButtonEditorControl;
+    {$IFDEF DebugEditor}
+    DebugEditor('SelectEditor', NewEditor);
+    DebugEditor('SelectEditor extra', FExtraBtnEditor);
+    {$ENDIF}
+    
+    EditorPosChanged(NewEditor);
     // connect to cell property
     PropLink:=GetPropertyLinkOfComponent(NewEditor);
     if PropLink<>nil then begin
@@ -633,10 +693,24 @@ begin
       PropName:=CurProp.PropName;
       PropLink.SetObjectAndProperty(CurObject,PropName);
     end;
+    if FExtraBtnEditor<>nil then begin
+      PropLink:=GetPropertyLinkOfComponent(FExtraBtnEditor);
+      if PropLink<>nil then begin
+        CurObject:=GetTIObject(ObjectIndex);
+        PropName:=CurProp.PropName;
+        PropLink.SetObjectAndProperty(CurObject,PropName);
+      end;
+      if FExtraBtnEditor.Parent = nil then
+        FExtraBtnEditor.Visible := False;
+      FExtraBtnEditor.Parent := Self;
+    end;
     if Assigned(OnSelectEditor) then
       OnSelectEditor(Self,Col,Row,NewEditor);
-  end;
+  end else
+    FExtraBtnEditor := nil;
   Editor:=NewEditor;
+  // options
+  //EditorOptions := EO_HOOKKEYPRESS or EO_HOOKKEYDOWN or EO_HOOKKEYDOWN;
 end;
 
 procedure TTICustomGrid.DoEditorControlKeyUp(Sender: TObject; var Key: Word;
@@ -695,16 +769,28 @@ begin
   end;
 end;
 
-procedure TTICustomGrid.EditorHide;
-var
-  PropLink: TCustomPropertyLink;
+procedure TTICustomGrid.DoEditorHide;
 begin
-  if Editor<>nil then begin
-    PropLink:=GetPropertyLinkOfComponent(Editor);
-    if PropLink<>nil then
-      PropLink.SetObjectAndProperty(nil,'');
+  {$IFDEF DebugEditor}
+  DebugEditor('doEditorHide', Editor);
+  {$ENDIF}
+  UnlinkPropertyEditor(Editor);
+  inherited DoEditorHide;
+end;
+
+procedure TTICustomGrid.DoEditorShow;
+begin
+  {$IFDEF DebugEditor}
+  DebugEditor('doEditorShow', Editor);
+  {$ENDIF}
+  inherited DoEditorShow;
+  if FExtraBtnEditor<>nil then begin
+    {$IFDEF DebugEditor}
+    DebugEditor('doEditorShow Extra', FExtraBtnEditor);
+    {$ENDIF}
+    FExtraBtnEditor.Parent := Self;
+    FExtraBtnEditor.Visible := True;
   end;
-  inherited EditorHide;
 end;
 
 procedure TTICustomGrid.WriteCellText(aRect: TRect; const aText: string);
@@ -716,6 +802,17 @@ begin
   end;
   Inc(aRect.Top, 2);
   Canvas.TextRect(aRect,ARect.Left,ARect.Top,aText);
+end;
+
+procedure TTICustomGrid.UnlinkPropertyEditor(aEditor: TWinControl);
+var
+  PropLink: TCustomPropertyLink;
+begin
+  if not (csDestroying in componentState) then begin
+    PropLink:=GetPropertyLinkOfComponent(aEditor);
+    if PropLink<>nil then
+      PropLink.SetObjectAndProperty(nil,'');
+  end;
 end;
 
 constructor TTICustomGrid.Create(TheOwner: TComponent);
@@ -1096,6 +1193,7 @@ end;
 
 destructor TTIGridProperty.Destroy;
 begin
+  FreeThenNil(FButtonEditorControl);
   FreeThenNil(FEditorControl);
   FreeThenNil(FEditor);
   inherited Destroy;
@@ -1112,6 +1210,7 @@ var
   Attr: TPropertyAttributes;
 begin
   if FEditorControl=nil then begin
+    FButtonEditorControl := nil;
     if Assigned(Grid.OnCreateCellEditor) then
       Grid.OnCreateCellEditor(Self,FEditorControl);
     if FEditorControl=nil then begin
@@ -1120,9 +1219,11 @@ begin
         Attr:=Editor.GetAttributes;
         if (paDialog in Attr) and (paReadOnly in Attr) then
           EditorClass:=TTIButton
-        else if (paValueList in Attr) then
-          EditorClass:=TTIComboBox
-        else
+        else if (paValueList in Attr) then begin
+          EditorClass:=TTIComboBox;
+          if (paDialog in Attr) then
+            FButtonEditorControl := TTIButton.Create(FGrid);
+        end else
           EditorClass:=TTIEdit;
       end;
       FEditorControl:=EditorClass.Create(FGrid);
@@ -1131,8 +1232,15 @@ begin
     FEditorControl.AutoSize:=false;
     if Assigned(Grid.OnInitCellEditor) then
       Grid.OnInitCellEditor(Self,FEditorControl);
+    if Assigned(Grid.OnInitCellEditor) and (FButtonEditorControl<>nil) then
+      Grid.OnInitCellEditor(Self,FButtonEditorControl);
   end;
   Result:=FEditorControl;
+end;
+
+function TTIGridProperty.GetButtonEditorControl: TWinControl;
+begin
+  result := FButtonEditorControl;
 end;
 
 function TTIGridProperty.PropName: string;
