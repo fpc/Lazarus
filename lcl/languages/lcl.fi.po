@@ -1,10 +1,10 @@
 #: lclstrconsts:rsmodified
 msgid "  modified "
-msgstr ""
+msgstr "  muokattu "
 
 #: lclstrconsts:rssize
 msgid "  size "
-msgstr ""
+msgstr "  koko "
 
 #: lclstrconsts:rswarningunreleasedtimerinfos
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
@@ -260,7 +260,7 @@ msgstr ""
 
 #: lclstrconsts:rsgtkfilter
 msgid "Filter:"
-msgstr ""
+msgstr "Suodatus:"
 
 #: lclstrconsts:ifsvk_final
 msgid "Final"
@@ -296,7 +296,7 @@ msgstr ""
 
 #: lclstrconsts:rsgtkhistory
 msgid "History:"
-msgstr ""
+msgstr "Historia:"
 
 #: lclstrconsts:ifsvk_home
 msgid "Home"
