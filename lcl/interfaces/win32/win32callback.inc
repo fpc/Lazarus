@@ -542,6 +542,17 @@ Begin
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
+    WM_NCHITTEST:
+    begin
+      if (OwnerObject is TControl) then
+      begin
+        if TControl(OwnerObject).FCompStyle = csHintWindow then
+        begin
+          Result := HTTRANSPARENT;
+          WinProcess := false;
+        end;
+      end;
+    end;
     WM_NCLBUTTONDOWN:
     Begin
       NotifyUserInput := True;
@@ -887,6 +898,9 @@ end;
 
 {
   $Log$
+  Revision 1.74  2003/12/13 19:44:42  micha
+  hintwindow, color, rectangle size fixes
+
   Revision 1.73  2003/11/28 19:54:42  micha
   fpc 1.0.10 compatibility
 

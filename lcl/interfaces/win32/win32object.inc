@@ -33,7 +33,12 @@ Begin
   Inherited Create;
   FAccelGroup := 0;
   FTimerData  := TList.Create;
-  FWin32MenuHeight:= GetSystemMetrics(SM_CYMENU);
+  FMetricsFailed := not Windows.SystemParametersInfo(SPI_GETNONCLIENTMETRICS,
+    SizeOf(FMetrics), @FMetrics, 0);
+  if FMetricsFailed then
+  begin
+    FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
+  end;
   FNextControlId := 0;
 End;
 
@@ -72,6 +77,12 @@ Begin
     DeleteObject(FStockGrayBrush);
     DeleteObject(FStockDkGrayBrush);
     DeleteObject(FStockWhiteBrush);
+  end;
+
+  if FStatusFont <> 0 then
+  begin
+    Windows.DeleteObject(FStatusFont);
+    Windows.DeleteObject(FMessageFont);
   end;
 
   FTimerData.Free;
@@ -127,10 +138,19 @@ Begin
   LogBrush.lbColor := $FFFFFF;
   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
 
+  if FMetricsFailed then
+  begin
+    FStatusFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
+    FMessageFont := Windows.GetStockObject(DEFAULT_GUI_FONT);
+  end else begin
+    FStatusFont := Windows.CreateFontIndirect(@FMetrics.lfStatusFont);
+    FMessageFont := Windows.CreateFontIndirect(@FMetrics.lfMessageFont);
+  end;
+
   InitCommonControls;
 
   // Create parent of all windows, `button on taskbar'
-   FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
+  FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
     WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX or WS_VISIBLE,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
@@ -1989,7 +2009,8 @@ Begin
     Begin
       pClassName := @ClsName;
       WindowTitle := StrCaption;
-      Flags := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+      Flags := WS_POPUP or WS_BORDER;
+      FlagsEx := WS_EX_TOOLWINDOW;
       Left := LongInt(CW_USEDEFAULT);
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
@@ -2221,10 +2242,15 @@ Begin
     begin
       if DoSubClass then
         SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
-      SendMessage(Window, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
+      case CompStyle of
+        csHintWindow:
+          SendMessage(Window, WM_SETFONT, FStatusFont, 0);
+      else
+        SendMessage(Window, WM_SETFONT, FMessageFont, 0);
+      end;
     end;
     If Buddy <> HWND(Nil) Then
-      SendMessage(Buddy, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
+      SendMessage(Buddy, WM_SETFONT, FMessageFont, 0);
   End
   Else If (Sender Is TMenuItem) Then
     TMenuItem(Sender).Handle := Window
@@ -2857,6 +2883,9 @@ End;
 
 {
   $Log$
+  Revision 1.138  2003/12/13 19:44:42  micha
+  hintwindow, color, rectangle size fixes
+
   Revision 1.137  2003/12/07 22:40:09  mattias
   fixed resizing larger menu icons   from Martin Smat
 

@@ -57,7 +57,8 @@ Type
     FAccelGroup: HACCEL;
     FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
                          // Assoc. windowproc also acts as handler for popup menus
-    FWin32MenuHeight: Integer;
+    FMetrics: TNonClientMetrics;
+    FMetricsFailed: Boolean;
     FNextControlId: Cardinal;
 
     FStockNullBrush: HBRUSH;
@@ -66,6 +67,9 @@ Type
     FStockGrayBrush: HBRUSH;
     FStockDkGrayBrush: HBRUSH;
     FStockWhiteBrush: HBRUSH;
+
+    FStatusFont: HFONT;
+    FMessageFont: HFONT;
 
     Procedure CreateComponent(Sender: TObject);
     Function RecreateWnd(Sender: TWinControl): Integer; virtual;
@@ -187,6 +191,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2003/12/13 19:44:42  micha
+  hintwindow, color, rectangle size fixes
+
   Revision 1.57  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

@@ -1383,20 +1383,11 @@ end;
 procedure TWin32Object.FillRawImageDescriptionColors(Desc: PRawImageDescription);
 begin
   case Desc^.BitsPerPixel of
-    1:
-      begin
-        Desc^.Format := ricfGray;
-        Desc^.RedPrec := 1;
-        Desc^.GreenPrec := 0;
-        Desc^.BluePrec := 0;
-        Desc^.RedShift := 0;
-        Desc^.GreenShift := 0;
-        Desc^.BlueShift := 0;
-      end;
-    4,8:
+    1,4,8:
       begin
         // palette mode, no offsets
-        Desc^.RedPrec := 0;
+        Desc^.Format := ricfGray;
+        Desc^.RedPrec := Desc^.BitsPerPixel;
         Desc^.GreenPrec := 0;
         Desc^.BluePrec := 0;
         Desc^.RedShift := 0;
@@ -1407,9 +1398,9 @@ begin
       begin
         // 5-6-5 mode
         Desc^.RedPrec := 5;
-        Desc^.GreenPrec := 6;
+        Desc^.GreenPrec := 5;
         Desc^.BluePrec := 5;
-        Desc^.RedShift := 11;
+        Desc^.RedShift := 10;
         Desc^.GreenShift := 5;
         Desc^.BlueShift := 0;
       end;
@@ -1480,6 +1471,7 @@ begin
   Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
   // Width and Height not relevant
   Desc^.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
+  Desc^.BitOrder := riboReversedBits;
   Desc^.ByteOrder := riboLSBFirst;
   Desc^.LineOrder := riloTopToBottom;
   Desc^.ColorCount := Desc^.PaletteColorCount;
@@ -1493,8 +1485,10 @@ begin
   Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
   // The next values are only valid, if there is a separate alpha mask
   Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
-  Desc^.AlphaPrec := 1;
+  Desc^.AlphaBitOrder := riboReversedBits;
+  Desc^.AlphaByteOrder := riboLSBFirst;
   Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaPrec := 1;
 end;
 
 function TWin32Object.GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
@@ -1886,7 +1880,7 @@ begin
       Result:=GetClientRect(Handle,R);
       // add menu
       If TCustomForm(OwnerObject).Menu <> nil then
-        Inc(R.Bottom,FWin32MenuHeight);
+        Inc(R.Bottom, FMetrics.iMenuHeight);
     end;
   end;
   with R Do
@@ -2243,7 +2237,7 @@ End;
 Function TWin32Object.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
-  Result := Windows.Rectangle(DC, X1, Y1, X2, Y2);
+  Result := Windows.Rectangle(DC, X1, Y1, X2+1, Y2+1);
   Assert(False, Format('Trace:< [TWin32Object.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
 End;
 
@@ -2847,6 +2841,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/12/13 19:44:42  micha
+  hintwindow, color, rectangle size fixes
+
   Revision 1.80  2003/12/07 22:40:09  mattias
   fixed resizing larger menu icons   from Martin Smat
 
