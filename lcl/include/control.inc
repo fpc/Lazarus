@@ -404,6 +404,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.ColorIsStored: boolean;
+------------------------------------------------------------------------------}
+function TControl.ColorIsStored: boolean;
+begin
+  Result:=(Color=clBtnFace);
+end;
+
+{------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}
 procedure TControl.DoConstrainedResize(var NewWidth, NewHeight : integer);
@@ -694,7 +702,6 @@ begin
   begin
     FColor := Value;
     FParentColor := False;
-    CNSendMessage(LM_SETCOLOR, Self, nil);
   end;
 end;
 
@@ -1904,7 +1911,7 @@ begin
   
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
-  FColor := clWindow;
+  FColor := clBtnFace;
   FVisible := true;
   FParentShowHint := True;
   FWindowProc := @WndProc;
@@ -2048,6 +2055,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.111  2002/12/27 17:46:04  mattias
+  fixed SetColor
+
   Revision 1.110  2002/12/27 17:12:37  mattias
   added more Delphi win32 compatibility functions
 
