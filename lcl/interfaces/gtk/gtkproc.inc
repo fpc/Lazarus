@@ -3863,8 +3863,8 @@ begin
   // Send the unmodified keysym ?
   if (ssShift in Msg.NewModifier)
   and ((Msg.NewKey < VK_F1) or  (Msg.NewKey > VK_F24) )
-  then GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[0]
-  else GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[1];
+  then GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[1]
+  else GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[0];
 
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
@@ -6314,6 +6314,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.255  2004/02/03 23:42:43  marc
+  * Fixed Shift+Fn menu captions
+
   Revision 1.254  2004/02/02 15:46:19  mattias
   implemented basic TSplitter, still many ToDos
 
