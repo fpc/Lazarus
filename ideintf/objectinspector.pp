@@ -1889,7 +1889,8 @@ begin
     FHintWindow.Visible := False;
      
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := not FDragging;
+  if RowCount > 0 then
+    FHintTimer.Enabled := not FDragging;
 end;
 
 procedure TOICustomPropertyGrid.ValueEditMouseDown(Sender : TObject;
