@@ -555,6 +555,7 @@ begin
   // windows
   InitLayoutList;
   FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
+  IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
 
   // form editor
   FShowGrid:=true;
@@ -630,6 +631,7 @@ begin
   FDebuggerFileHistory.Free;
   FTestBuildDirHistory.Free;
   FIDEDialogLayoutList.Free;
+  IDEOptionDefs.IDEDialogLayoutList:=nil;
   fIDEWindowLayoutList.Free;
   inherited Destroy;
 end;
@@ -1119,9 +1121,8 @@ constructor TEnvironmentOptionsDialog.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    Width:=485;
-    Height:=435;
     Position:=poScreenCenter;
+    IDEDialogLayoutList.ApplyLayout(Self,485,435);
     Caption:='Environment Options';
     OnResize:=@EnvironmentOptionsDialogResize;
     
@@ -2814,11 +2815,13 @@ end;
 
 procedure TEnvironmentOptionsDialog.OkButtonClick(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrOk;
 end;
 
 procedure TEnvironmentOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult:=mrCancel;
 end;
 

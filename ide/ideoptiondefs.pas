@@ -252,7 +252,8 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure ApplyLayout(ADialog: TControl);
+    procedure ApplyLayout(ADialog: TControl;
+      DefaultWidth, DefaultHeight: integer);
     procedure SaveLayout(ADialog: TControl);
     procedure Clear;
     function Count: integer;
@@ -265,6 +266,9 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     property Items[Index: integer]: TIDEDialogLayout read GetItems;
   end;
+
+const
+  IDEDialogLayoutList: TIDEDialogLayoutList = nil;
 
 
 implementation
@@ -925,13 +929,22 @@ begin
   inherited Destroy;
 end;
 
-procedure TIDEDialogLayoutList.ApplyLayout(ADialog: TControl);
+procedure TIDEDialogLayoutList.ApplyLayout(ADialog: TControl;
+  DefaultWidth, DefaultHeight: integer);
 var
   ALayout: TIDEDialogLayout;
+  NewWidth, NewHeight: integer;
 begin
   if ADialog=nil then exit;
   ALayout:=Find(ADialog,true);
-  ADialog.SetBounds(ADialog.Left,ADialog.Top,ALayout.Width,ALayout.Height);
+  if ALayout.SizeValid then begin
+    NewWidth:=ALayout.Width;
+    NewHeight:=ALayout.Height;
+  end else begin
+    NewWidth:=DefaultWidth;
+    NewHeight:=DefaultHeight;
+  end;
+  ADialog.SetBounds(ADialog.Left,ADialog.Top,NewWidth,NewHeight);
 end;
 
 procedure TIDEDialogLayoutList.SaveLayout(ADialog: TControl);

@@ -235,6 +235,7 @@ function LoadCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
 
 implementation
 
+
 uses
   Math;
 
