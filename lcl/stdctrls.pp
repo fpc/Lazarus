@@ -584,6 +584,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/01/09 22:49:25  lazarus
+  MWE: Converted to Unix fileformat
+
   Revision 1.18  2002/01/09 22:47:29  lazarus
   MWE: published OnClick for checkbox family
 
