@@ -1,504 +1,505 @@
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
-msgstr "Auswahlwerkzeug"
+msgstr "Êןץזפטמוןז ‏‎קנפג"
 
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
-msgstr "Cursor Spalte im aktuellem Editor"
+msgstr "Ìנםנןלג לטפץנפג ‏ רזנמ פוהגלזנפו"
 
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
-msgstr "Cursor Zeile im aktuellem Editor"
+msgstr "Ôףה לטפץנפג ‏ רזנמ פוהגלזנפו"
 
 #: lazarusidestrconsts:liscompilerfilename
 msgid "Compiler filename"
-msgstr "Dateiname des compilers"
+msgstr "Êמף צגכםג לנמעךםףזנפג"
 
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
-msgstr "Wort an der aktuellen editor position"
+msgstr "Õםנ‏נ ענה לטפץנפנמ ‏ רזנמ פוהגלזנפו"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
-msgstr "Vollstaendiger Dateiname des aktuellen editor"
+msgstr "Òנםןנו ךמף צגכםג ‏ הגןןנמ פוהגלזנפו"
 
 #: lazarusidestrconsts:lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
-msgstr "FreePascal Quellen Verzeichnis"
+msgstr "Ìגזגםנת ךץינהןךלנ‏ FreePascal"
 
 #: lazarusidestrconsts:lislazarusdirectory
 msgid "Lazarus directory"
-msgstr "Lazarus Verzeichnis"
+msgstr "Ìגזגםנת Lazarus"
 
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
-msgstr "LCL Widget Art"
+msgstr "Æךע רםומוןזג טעפג‏םוןךף LCL"
 
 #: lazarusidestrconsts:liscommandlineparamsofprogram
 msgid "Command line parameters of program"
-msgstr "Kommandozeilen Parameter des Programms"
+msgstr "Òגפגמוזפ‎ לנמגןהןנכ ץזפנלך עפנתפגממ‎"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
-msgstr "Benutzer nach Daten fragen"
+msgstr "Òנהץלגÿלג ענ ÿןגאוןךב"
 
 #: lazarusidestrconsts:lisprojectfilename
 msgid "Project filename"
-msgstr "Projektdateiname"
+msgstr "Êמף צגכםג עפנולזג"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
-msgstr "Projektverzeichnis"
+msgstr "Êמף לגזגםנתג עפנולזג"
 
 #: lazarusidestrconsts:lissavecurrenteditorfile
 msgid "save current editor file"
-msgstr "Speichern des aktuellen editors"
+msgstr "Õניפגןךזû זולטüךכ צגכם פוהגלזנפג"
 
 #: lazarusidestrconsts:lissaveallmodified
 msgid "save all modified files"
-msgstr "Alles speichern"
+msgstr "Õניפגןךזû ‏ץו ךÿמוןוןן‎ו צגכם‎"
 
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
-msgstr "Zieldateiname des Projektes"
+msgstr "Êמף צגכםג קךןגפןךלג עפנולזג"
 
 #: lazarusidestrconsts:listargetfilenameplusparams
 msgid "Target filename + params"
-msgstr "Zieldateiname+Parameter des Projektes"
+msgstr "Êמף צגכםג קךןגפןךלג ץ עגפגמוזפגמך"
 
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
-msgstr "Startkommando des Projektes"
+msgstr "Ìנמגןהןגף ץזפנלג הםף ÿגעטץלג"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
-msgstr "&Datei"
+msgstr "&Öגכם"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
-msgstr "&Edit"
+msgstr "&Òפג‏לג"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
-msgstr "&Suche"
+msgstr "&Òנךץל"
 
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
-msgstr "&Anzeige"
+msgstr "&Òפנץמנזפ"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
-msgstr "&Projekt"
+msgstr "Òפנ&ולז"
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
-msgstr "&Starten"
+msgstr "&‗געטץל"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
-msgstr "&Werkzeuge"
+msgstr "&Êןץזפטמוןז‎"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
-msgstr "Ei&nstellungen"
+msgstr "&Ðלפטדוןךו"
 
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
-msgstr "&Hilfe"
+msgstr "&Õעפג‏לג"
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
-msgstr "Neue Unit"
+msgstr "Õנÿהגזû מנהטםû"
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
-msgstr "Neues Formular"
+msgstr "Õנÿהגזû צנפמט"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
-msgstr "Oeffne"
+msgstr "Ðזלפ‎זû"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
-msgstr "Oeffne wieder"
+msgstr "Ðזלפ‎זû ןוהג‏ןוו"
 
 #: lazarusidestrconsts:lismenusave
 msgid "Save"
-msgstr "Speichern"
+msgstr "Õניפגןךזû"
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As"
-msgstr "Speichern als"
+msgstr "Õניפגןךזû לגל"
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
-msgstr "Alles speichern"
+msgstr "Õניפגןךזû ‏ץו"
 
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
-msgstr "Schliessen"
+msgstr "‗גלפ‎זû"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close All"
-msgstr "Alles Schliessen"
+msgstr "‗גלפ‎זû ‏ץו"
 
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
-msgstr "Quit"
+msgstr "Þ‎ינה"
 
 #: lazarusidestrconsts:lismenuundo
 msgid "Undo"
-msgstr "Rueckgaengig"
+msgstr "Ðזמוןךזû"
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
-msgstr "Wiederholen"
+msgstr "Þופןטזû"
 
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
-msgstr "Ausschneiden"
+msgstr "Þ‎פוÿגזû"
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
-msgstr "Kopieren"
+msgstr "Ìנעךפנ‏גזû"
 
 #: lazarusidestrconsts:lismenupaste
 msgid "Paste"
-msgstr "Einfuegen"
+msgstr "Þץזג‏ךזû"
 
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
-msgstr "Block einruecken"
+msgstr "Õה‏ךןטזû קםנל ‏עפג‏נ"
 
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
-msgstr "Block rausruecken"
+msgstr "Õה‏ךןטזû קםנל ‏םו‏נ"
 
 #: lazarusidestrconsts:lismenuuppercaseselection
 msgid "Uppercase selection"
-msgstr "Block gross schreiben"
+msgstr "Þופיןךכ פותךץזפ ‏‎הוםוןךף"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
-msgstr "Block klein schreiben"
+msgstr "Ïךדןךכ פותךץזפ ‏‎הוםוןךף"
 
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
-msgstr "Konvertiere Tabs in Leerzeichen"
+msgstr "ÆÂ× ץהוםגזû עפנקוםגמך ‏ ‏‎הוםוןןנמ"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
-msgstr "Vervollstaendige Code"
+msgstr "‗ג‏ופשךזû לנה"
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
-msgstr "Suche"
+msgstr "Ïגכזך"
 
 #: lazarusidestrconsts:lismenufindnext
 msgid "Find &Next"
-msgstr "Suche weiter"
+msgstr "Ïגכזך ‏עופוהך"
 
 #: lazarusidestrconsts:lismenufindprevious
 msgid "Find &Previous"
-msgstr "Suche rueckwaerts"
+msgstr "Ïגכזך ץÿגהך"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files"
-msgstr "Suche in Dateien"
+msgstr "Òנךץל ‏ צגכםגי"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
-msgstr "Ersetze"
+msgstr "‗גמוןג"
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line"
-msgstr "Gehe zu Zeilennummer"
+msgstr "Òופוינה ל ץזפנלו"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
-msgstr "Spring zurueck"
+msgstr "Òופוינה ןגÿגה"
 
 #: lazarusidestrconsts:lismenujumpforward
 msgid "Jump forward"
-msgstr "Spring vorwaerts"
+msgstr "Òופוינה ‏עופוה"
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
-msgstr "Speicher Cursorposition"
+msgstr "Äנקג‏ךזû זנאלט עופוינהג ‏ ךץזנפךב"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
-msgstr "Zur Sprungliste"
+msgstr "Òפנץמנזפ ךץזנפךך עופוינהנ‏"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
-msgstr "Gehe zu anderem Ende des Codeblocks"
+msgstr "Ïגכזך הפטתנכ לנןוח קםנלג לנהג"
 
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
-msgstr "Gehe zu Codeblockanfang"
+msgstr "Ïגכזך ןגאגםנ קםנלג לנהג"
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
-msgstr "Finde Deklaration unter Cursor"
+msgstr "Ïגכזך נעךץגןךו ענה לטפץנפג"
 
 #: lazarusidestrconsts:lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr "Oeffne Dateiname unter Cursor"
+msgstr "Ðזלפ‎זû ךמף צגכםג ענה לטפץנפנמ"
 
 #: lazarusidestrconsts:lismenugotoincludedirective
 msgid "Goto include directive"
-msgstr "Gehe zur Include Direktiven"
+msgstr "Òופוינה ענ הךפולזך‏ו $I"
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
-msgstr "Object Inspector"
+msgstr "Êןץעולזנפ נקסולזנ‏"
 
 #: lazarusidestrconsts:lismenuviewprojectexplorer
 msgid "Project Explorer"
-msgstr "Project Explorer"
+msgstr "Äךץעוזאופ עפנולזג"
 
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
-msgstr "Code Explorer"
+msgstr "Ðקנÿפו‏גזוםû לנהג"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
-msgstr "Units..."
+msgstr "Îנהטםך..."
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
-msgstr "Forms..."
+msgstr "Öנפמ‎..."
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr "Messages..."
+msgstr "Õננקüוןךף..."
 
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
-msgstr "Debugger Fenster..."
+msgstr "Ðלןנ נזםגהלך..."
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
-msgstr "Watches"
+msgstr "Ðלןנ ןגקםבהוןךכ"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
-msgstr "Haltepunkte"
+msgstr "Æנאלך נץזגןנ‏ג"
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
-msgstr "Lokale Variablen"
+msgstr "Íנלגםûן‎ו עופומוןן‎ו"
 
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
-msgstr "Stack"
+msgstr "Õזול ‏‎ÿנ‏נ‏"
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
-msgstr "Debugger Ausgaben"
+msgstr "Þ‎‏נה נזםגהאךלג"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project"
-msgstr "Neues Projekt"
+msgstr "Õנÿהגזû עפנולז"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
-msgstr "Oeffne Projekt"
+msgstr "Ðזלפ‎זû עפנולז"
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project"
-msgstr "Oeffne bekanntes Projekt"
+msgstr "Ðזלפ‎זû ןוהג‏ןךכ עפנולז"
 
 #: lazarusidestrconsts:lismenusaveproject
 msgid "Save Project"
-msgstr "Projekt speichern"
+msgstr "Õניפגןךזû עפנולז"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As..."
-msgstr "Projekt speichern unter..."
+msgstr "Õניפגןךזû עפנולז לגל..."
 
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
-msgstr "Fuege Unit zum Projekt hinzu"
+msgstr "Äנקג‏ךזû זולטüךכ מנהטםû ל עפנולזט"
 
 #: lazarusidestrconsts:lismenuremoveunitfromproject
 msgid "Remove from Project"
-msgstr "Entferne aus Projekt"
+msgstr "Èקפגזû ךÿ עפנולזג"
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
-msgstr "Zeige Projektcode"
+msgstr "Òפנץמנזפ ךץינהןךלג"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
-msgstr "Projektoptionen..."
+msgstr "Òגפגמוזפ‎ עפנולזג..."
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr "Kompiliere"
+msgstr "Õנקפגזû"
 
 #: lazarusidestrconsts:lismenubuildall
 msgid "Build all"
-msgstr "Kompilere Alles"
+msgstr "Õנקפגזû ‏ץו"
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
-msgstr "Start"
+msgstr "‗געטץל"
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
-msgstr "Stop"
+msgstr "Òגטÿג"
 
 #: lazarusidestrconsts:lismenustepinto
 msgid "Step into"
-msgstr "Einen Schritt hinein"
+msgstr "Ùגת ץנ ‏ינהנמ"
 
 #: lazarusidestrconsts:lismenustepover
 msgid "Step over"
-msgstr "Einen Schritt weiter"
+msgstr "Ùגת ‏ נקינה"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
-msgstr "Start bis cursor"
+msgstr "‗געטץל הנ לטפץנפג"
 
 #: lazarusidestrconsts:lismenustop
 msgid "Stop"
-msgstr "Halt"
+msgstr "Ðץזגןנ‏"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options..."
-msgstr "Compileroptionen..."
+msgstr "Òגפגמוזפ‎ לנמעךםףזנפג..."
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr "Startparameter ..."
+msgstr "Òגפגמוזפ‎ ÿגעטץלג ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Settings ..."
-msgstr "Einstellungen ..."
+msgstr "Èץזגןנ‏לך ..."
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
-msgstr "Schneller Syntaxcheck"
+msgstr "×‎ץזפגף עפנ‏ופלג ץךןזגלץךץג"
 
 #: lazarusidestrconsts:lismenuguessunclosedblock
 msgid "Guess unclosed block"
-msgstr "Errate offene codeblocks"
+msgstr "Êץעפג‏ךזû ןוÿגלנןאוןן‎כ קםנל"
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
-msgstr "Errate offene IFDEF/ENDIF"
+msgstr "Êץעפג‏ךזû ןוץננז‏וזץז‏ךו IFDEF/ENDIF"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
-msgstr "Kompiliere Lazarus"
+msgstr "Õנקפגזû Lazarus"
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
-msgstr "Einstellungen fuer \"Kompiliere Lazarus\""
+msgstr "Ïגץזפנךזû \"Õנקפגזû Lazarus\""
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "General options"
-msgstr "Generelle Einstellungen"
+msgstr "Ðקüךו עגפגמוזפ‎"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options"
-msgstr "Editoreinstellungen"
+msgstr "Ïגץזפנכלך פוהגלזנפג"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
-msgstr "CodeTools Einstellungen"
+msgstr "Ïגץזפנכלך CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor"
-msgstr "CodeTools Defines Editor"
+msgstr "Ïגץזפנכלך פוהגלזנפג CodeTools"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
-msgstr "Ueber Lazarus"
+msgstr "Ð עפנולזו Lazarus"
 
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
-msgstr "Dies ist eine automatisch erzeugtes resource Datei"
+msgstr "Øזנ - צגכם פוץטפץנ‏, ג‏זנמגזךאוץלך ץנÿהגןן‎כ lazarus"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
-msgstr "Oeffne Datei"
+msgstr "Ðזלפ‎זû צגכם"
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
-msgstr "Oeffne Projekt Datei"
+msgstr "Ðזלפ‎זû עפנולז"
 
 #: lazarusidestrconsts:lissavespace
 msgid "Save "
-msgstr "Speichere "
+msgstr "Õניפגןךזû "
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project?"
-msgstr "Sollen die Aenderungen am Projekt gespeichert werden?"
+msgstr "Õניפגןךזû ךÿמוןוןךף ‏ עפנולזו?"
 
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
-msgstr "Projekt veraendert"
+msgstr "Òפנולז ךÿמוןון"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
-msgstr "FPC Source Verzeichnis Fehler"
+msgstr "Ðשךקלג לגזגםנתג ךץינהןךלנ‏ FPC"
 
 #: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
-msgstr "Bitte ueberpruefen Sie das FreePascal Source Verzeichnis"
+msgstr "Òפנ‏ופûזו לגזגםנת ךץינהןךלנ‏ FreePascal"
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
-msgstr "Compiler Fehler"
+msgstr "Ðשךקלג לנמעךםףזנפג"
 
 #: lazarusidestrconsts:lisplzcheckthecmpilername
 msgid "Please check the compiler name"
-msgstr "Bitte ueberpruefen Sie den Compilerdateiname"
+msgstr "Òפנ‏ופûזו ךמף לנמעךםףזנפג"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
-msgstr "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
+msgstr "Íךחוןÿךף: GPL/LGPL\015Lazarus - רזנ קךקםךנזולך לםגץץנ‏ הםף FreePascal, רמטםךפטבüךו Delphi.\015Free Pascal - רזנ (L)GPLûן‎כ לנמעךםףזנפ, ÿגעטץלגומ‎כ ענה Linux,\015Win32, OS/2, 68K ך הפ. Free Pascal פגÿפגקנזגן\015הםף לנמעךםףחךך עפנתפגמ ץ ץךןזגלץךץנמ Delphi, לנזנפ‎כ, וץזוץז‏וןןנ, ÐÐÒ.\015Lazarus - טזפגאוןןו ÿ‏וןנ, לנזנפנו ענÿ‏נםךז Þגמ\015פגÿפגקגז‎‏גזû עפנתפגממ‎ זךעג Delphis ענהנ ‏ץומך ‏‎שוטלגÿגןן‎מך עםגזצנפמגמך.\015IDE לנתהג-ןךקטהû ץזגןוז ךןץזפטמוןזנמ RAD, לגל ך Delphi.\015\015Òנ מופו פנץזג Lazarus, ןגמ ןטדןנ קנםûשו פגÿפגקנזאךלנ‏.\015Ïגעפךמופ, ןגעךץגזû םטאשךכ הךגםנת 'Ð עפנתפגממו' ץ םנתנזךענמ."
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr "Unitname existiert bereits im Projekt"
+msgstr "Îנהטםû ץ זגלךמ ךמוןומ טדו ‏ עפנולזו"
 
 #: lazarusidestrconsts:lisunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
-msgstr "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
+msgstr "Îנהטםû \"%s\" טדו וץזû.\015Ignore עפך‏והוז ל עופוךמוןנ‏גןךב,\015Cancel נזמוןךז ÿגעךץû רזנתנ ךץינהןךלג ך\015Abort עפופ‏וז ‏וץû עפנחוץץ ÿגעךץך."
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
-msgstr "Ungueltiger Pascal Identifier"
+msgstr "Ïולנפפולזן‎כ ךהוןזךצךלגזנפ עגץלגםף"
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr "The name \"%s\" is not a valid pascal identifier."
+msgstr "Õםנ‏נ \"%s\" - ןועפג‏ךםûן‎כ ךהוןזךצךלגזנפ ףÿ‎לג עגץלגםû."
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr "Alles Speichern"
+msgstr "Õניפגןךזû ‏ץו"
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
-msgstr "Wechsle Form/Unit"
+msgstr "Òופולםבאךזû צנפמט/מנהטםû"
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
-msgstr "Zeig Units"
+msgstr "Òנלגÿגזû מנהטםך"
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr "Zieg Forms"
+msgstr "Òנלגÿגזû צנפמ‎"
 
 #: lazarusidestrconsts:lishintstepinto
 msgid "Step Into"
-msgstr "Einen Schritt hinein"
+msgstr "Ùגת ץנ ‏ינהנמ"
 
 #: lazarusidestrconsts:lishintstepover
 msgid "Step Over"
-msgstr "Einen Schritt weiter"
+msgstr "Ùגת ‏ נקינה"
+
 

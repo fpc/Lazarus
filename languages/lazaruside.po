@@ -1,3 +1,19 @@
+#: lazarusidestrconsts:liscmdlinehlpheader
+msgid "lazarus [options] <project-filename>\015\n\015\nIDE Options:\015\n\015\n--help or -?             this help message\015\n\015\n"
+msgstr ""
+
+#: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
+msgid "--primary-config-path <path>\015\n                         primary config directory, where Lazarus\015\n                         stores its config files. Default is \015\n                         %s\015\n\015\n"
+msgstr ""
+
+#: lazarusidestrconsts:liscmdlinesecondaryconfigpathdesc
+msgid "--secondary-config-path <path>\015\n                         secondary config directory, where Lazarus\015\n                         searches for config template files.\015\n                         Default is %s\015\n\015\n"
+msgstr ""
+
+#: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
+msgid "LCL Interface specific options:"
+msgstr ""
+
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
 msgstr ""
@@ -118,6 +134,10 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
+#: lazarusidestrconsts:lismenurevert
+msgid "Revert"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
 msgstr ""
@@ -186,8 +206,68 @@ msgstr ""
 msgid "Tabs to spaces in selection"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucommentselection
+msgid "Comment selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuuncommentselection
+msgid "Uncomment selection"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuselect
+msgid "Select"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuselectall
+msgid "Select all"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuselecttobrace
+msgid "Select to brace"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuselectcodeblock
+msgid "Select code block"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuselectline
+msgid "Select line"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuselectparagraph
+msgid "Select paragraph"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinserttext
+msgid "Insert text"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertcvskeyword
+msgid "CVS keyword"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertgeneral
+msgid "General"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertgplnotice
+msgid "GPL notice"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertusername
+msgid "Current username"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertdatetime
+msgid "Current date and time"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuinsertchangelogentry
+msgid "ChangeLog entry"
 msgstr ""
 
 #: lazarusidestrconsts:lismenufind
@@ -270,6 +350,10 @@ msgstr ""
 msgid "Forms..."
 msgstr ""
 
+#: lazarusidestrconsts:lismenuviewtoggleformunit
+msgid "Toggle form/unit view"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr ""
@@ -300,6 +384,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project"
+msgstr ""
+
+#: lazarusidestrconsts:lismenunewprojectfromfile
+msgid "New Project from file"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
@@ -375,7 +463,7 @@ msgid "Run Parameters ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
-msgid "Settings ..."
+msgid "Configure custom tools ..."
 msgstr ""
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
@@ -388,6 +476,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconvertdfmtolfm
+msgid "Convert DFM file to LFM"
 msgstr ""
 
 #: lazarusidestrconsts:lismenubuildlazarus
@@ -419,7 +511,7 @@ msgid "About Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment
-msgid "{ This is an automatically generated lazarus resource file }"
+msgid "This is an automatically generated lazarus resource file"
 msgstr ""
 
 #: lazarusidestrconsts:lisopenfile
@@ -434,8 +526,12 @@ msgstr ""
 msgid "Save "
 msgstr ""
 
+#: lazarusidestrconsts:lisselectdfmfiles
+msgid "Select Delphi form files (*.dfm)"
+msgstr ""
+
 #: lazarusidestrconsts:lissavechangestoproject
-msgid "Save changes to project?"
+msgid "Save changes to project %s?"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojectchanged
@@ -466,67 +562,71 @@ msgstr ""
 msgid "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
 msgstr ""
 
-#: lazarusidestrconsts:lsiunitnamealreadyexistscap
+#: lazarusidestrconsts:lisunitnamealreadyexistscap
 msgid "Unitname already in project"
 msgstr ""
 
-#: lazarusidestrconsts:lsiunitnamealreadyexiststext
+#: lazarusidestrconsts:lisunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
 msgstr ""
 
-#: lazarusidestrconsts:lsiinvalidpascalidentifiercap
+#: lazarusidestrconsts:lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
 msgstr ""
 
-#: lazarusidestrconsts:lsiinvalidpascalidentifiertext
+#: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr ""
 
-#: lazarusidestrconsts:lsihintnewunit
+#: lazarusidestrconsts:lishintnewunit
 msgid "New Unit"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintopen
+#: lazarusidestrconsts:lishintopen
 msgid "Open"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintsave
+#: lazarusidestrconsts:lishintsave
 msgid "Save"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintsaveall
+#: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintnewform
+#: lazarusidestrconsts:lishintnewform
 msgid "New Form"
 msgstr ""
 
-#: lazarusidestrconsts:lsihinttoggleformunit
+#: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintviewunits
+#: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintviewforms
+#: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintrun
+#: lazarusidestrconsts:lishintrun
 msgid "Run"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintpause
+#: lazarusidestrconsts:lishintpause
 msgid "Pause"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintstepinto
+#: lazarusidestrconsts:lishintstepinto
 msgid "Step Into"
 msgstr ""
 
-#: lazarusidestrconsts:lsihintstepover
+#: lazarusidestrconsts:lishintstepover
 msgid "Step Over"
+msgstr ""
+
+#: lazarusidestrconsts:lisgplnotice
+msgid "This program is free software; you can redistribute it and/or modify\015it under the terms of the GNU General Public License as published by\015the Free Software Foundation; either version 2 of the License, or\015(at your option) any later version.\015\015This program is distributed in the hope that it will be useful,\015but WITHOUT ANY WARRANTY; without even the implied warranty of\015MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\015GNU Library General Public License for more details.\015\015You should have received a copy of the GNU General Public License\015along with this program; if not, write to the Free Software\015Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.\015"
 msgstr ""
 

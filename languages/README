@@ -13,7 +13,8 @@ This will create the file lazaruside.po, which should be translated in all
 required languages to a lazaruside.xx.po file. For the xx see the gettext unit
 in the procedure TranslateResourceStrings.
 
-german: lazaruside.de.po
+german:           lazaruside.de.po
+russian (KOI8-R): lazaruside.ru.po
 
 
 After the translation, the lazaruside.xx.po file is converted to an .mo file

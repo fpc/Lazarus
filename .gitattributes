@@ -523,6 +523,7 @@ images/uparrow.ico -text svneol=unset#image/x-icon
 images/uparrow.xpm -text svneol=native#image/x-xpixmap
 languages/lazaruside.de.po svneol=native#text/plain
 languages/lazaruside.po svneol=native#text/plain
+languages/lazaruside.ru.po svneol=native#text/plain
 lcl/actnlist.pas svneol=native#text/pascal
 lcl/allunits.pp svneol=native#text/pascal
 lcl/arrow.pp svneol=native#text/pascal
