@@ -826,7 +826,9 @@ type
     procedure PolyBezier(const Points: array of TPoint;
                          Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
                          Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+{$ifdef VER1_0}
     procedure PolyBezier(const Points: array of TPoint);
+{$endif}
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
                       StartIndex: Integer{$IFNDEF VER1_0} = 0{$ENDIF};
@@ -1449,6 +1451,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.117  2004/02/21 15:17:43  micha
+  fixed: compiler doesn't know what function to call using ver 1.9.2
+
   Revision 1.116  2004/02/21 01:01:03  mattias
   added uninstall popupmenuitem to package graph explorer
 

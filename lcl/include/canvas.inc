@@ -414,10 +414,12 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
+{$ifdef VER1_0} 
 procedure TCanvas.PolyBezier(const Points: array of TPoint);
 begin
   PolyBezier(Points, False, True);
 end;
+{$endif}
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Polygon
@@ -1259,6 +1261,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2004/02/21 15:17:43  micha
+  fixed: compiler doesn't know what function to call using ver 1.9.2
+
   Revision 1.65  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 
