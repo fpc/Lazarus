@@ -2446,6 +2446,10 @@ msgstr ""
 msgid "Property completion"
 msgstr ""
 
+#: lazarusidestrconsts:lisheadercommentforclass
+msgid "Header comment for class"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcompleteproperties
 msgid "Complete properties"
 msgstr ""

@@ -2644,6 +2644,10 @@ msgstr "Hanja"
 msgid "Has Register procedure"
 msgstr "Possiede una procedura di registrazione"
 
+#: lazarusidestrconsts:lisheadercommentforclass
+msgid "Header comment for class"
+msgstr ""
+
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr "Ampiezza dell'Heap"

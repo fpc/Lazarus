@@ -2645,6 +2645,10 @@ msgstr ""
 msgid "Has Register procedure"
 msgstr ""
 
+#: lazarusidestrconsts:lisheadercommentforclass
+msgid "Header comment for class"
+msgstr ""
+
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr ""
