@@ -656,6 +656,7 @@ begin
   HintTimer1 := TTimer.Create(self);
   with HintTimer1 do
     Begin
+      Name:='HintTimer1';
       Enabled := False;
       Interval := 500;
       OnTimer := @HintTimer1Timer;
@@ -5547,9 +5548,9 @@ var
   cPosition : TPoint;
 //  TextPosition : TPoint;
 //  SE : TSourceEditor;
-  WIndow : TWInControl;
+  Window : TWinControl;
 //  Caret : TPoint;
-  Control : TCOntrol;
+  Control : TControl;
 //  Control2 : TControl;
 //  tempPosition : TPoint;
 begin
@@ -5557,29 +5558,30 @@ begin
 
   cPosition := Mouse.CursorPos;
   Window := FindLCLWindow(cPosition);
-  if not(Assigned(window)) then Exit;
+  if not(Assigned(Window)) then Exit;
 
   //get the parent until parent is nil
   While Window.Parent <> nil do
-  Window := Window.Parent;
+    Window := Window.Parent;
 
-  if (window <> Self) then Exit;
+  if (Window <> Self) then Exit;
 
   Control := nil;
   
   if (FHintSender is TSpeedButton) then begin
     Control := TControl(FHintSender);
-    if Control.Parent<>nil then begin
-      if Control.Parent=Self then begin
+    while (Control<>nil) do begin
+      if (Control=Self) then begin
         // main speed button
         if not EnvironmentOptions.ShowHintsForMainSpeedButtons then exit;
-      end else if (Control.Parent.Parent=ComponentNotebook) then begin
+      end else if (Control=ComponentNotebook) then begin
         // component palette
         if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
       end;
+      Control:=Control.Parent;
     end;
   end;
-    
+
   AHint := '';
 
   if (Control <> nil) and (Control is TSpeedButton) then
@@ -5613,18 +5615,31 @@ Procedure TMainIDE.MainMouseDown(Sender: TObject; Button: TMouseButton; Shift:
 begin
   HintTimer1.Enabled := False;
   if HintWIndow1.Visible then
-      HintWindow1.Visible := False;
-
+    HintWindow1.Visible := False;
 end;
 
 Procedure TMainIDE.MainMouseMoved(Sender: TObject; Shift: TShiftState; X, Y:
   Integer);
+var Control: TControl;
 begin
   if HintWindow1.Visible then
-      HintWindow1.Visible := False;
+    HintWindow1.Visible := False;
   HintTimer1.Enabled := False;
-  HintTimer1.Enabled := not ((ssLeft in Shift) or (ssRight in Shift) or (ssMiddle in Shift));
   FHintSender := Sender;
+  if (FHintSender is TSpeedButton) then begin
+    Control := TControl(FHintSender);
+    while (Control<>nil) do begin
+      if (Control=Self) then begin
+        // main speed button
+        if not EnvironmentOptions.ShowHintsForMainSpeedButtons then exit;
+      end else if (Control=ComponentNotebook) then begin
+        // component palette
+        if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
+      end;
+      Control:=Control.Parent;
+    end;
+    HintTimer1.Enabled := ([ssLeft,ssRight,ssMiddle]*Shift=[]);
+  end;
 end;
 
 Procedure TMainIDE.OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
@@ -5633,8 +5648,8 @@ var
   WatchVar : String;
 begin
   //get the sourceEditor.
-  Se := TSourceNotebook(sender).GetActiveSE;
-  if not Assigned(se) then Exit;
+  SE := TSourceNotebook(sender).GetActiveSE;
+  if not Assigned(SE) then Exit;
   WatchVar := SE.GetWordAtCurrentCaret;
   if WatchVar = ''  then Exit;
 
@@ -5776,6 +5791,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.214  2002/02/07 18:18:59  lazarus
+  MG: fixed deactivating hints
+
   Revision 1.213  2002/02/07 13:48:47  lazarus
   MG: fixed mem leak FBreakPts
 

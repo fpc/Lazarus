@@ -3781,8 +3781,10 @@ writeln('');
 writeln('  i=',i,' Node=',Node.DescAsString,' "',copy(Src,Node.StartPos,10),'"');
 {$ENDIF}
       BaseTypeCache:=CreateNewBaseTypeCache(Node);
-      BaseTypeCache.NewNode:=Result.Node;
-      BaseTypeCache.NewTool:=Result.Tool;
+      if BaseTypeCache<>nil then begin
+        BaseTypeCache.NewNode:=Result.Node;
+        BaseTypeCache.NewTool:=Result.Tool;
+      end;
     end;
   end;
 end;
