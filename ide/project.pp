@@ -90,9 +90,11 @@ type
     fIsPartOfProject: boolean;
     fLoaded: Boolean;  // loaded in the source editor
     fModified: boolean;
+    fNextPartOfProject: TUnitInfo;
     fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     fOnUnitNameChange: TOnUnitNameChange;
+    fPrevPartOfProject: TUnitInfo;
     FProject: TProject;
     fReadOnly:  Boolean;
     FResourceFilename: string;
@@ -123,6 +125,7 @@ type
     procedure UpdateFormList;
     procedure UpdateLoadedList;
     procedure UpdateAutoRevertLockedList;
+    procedure UpdatePartOfProjectList;
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -156,6 +159,8 @@ type
     property PrevLoadedUnit: TUnitInfo read fPrevLoadedUnit;
     property NextAutoRevertLockedUnit: TUnitInfo read fNextAutoRevertLockedUnit;
     property PrevAutoRevertLockedUnit: TUnitInfo read fPrevAutoRevertLockedUnit;
+    property NextPartOfProject: TUnitInfo read fNextPartOfProject;
+    property PrevPartOfProject: TUnitInfo read fPrevPartOfProject;
   public
     property Breakpoints: TProjectBreakPointList
         read fBreakpoints write fBreakpoints;
@@ -198,6 +203,7 @@ type
 
   TProject = class(TObject)
   private
+    fFirstPartOfProject: TUnitInfo;
     FFlags: TProjectFlags;
     xmlconfig: TXMLConfig;
 
@@ -252,6 +258,8 @@ type
     procedure RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+    procedure AddToPartOfProjectList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -283,6 +291,7 @@ type
     procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
 
     procedure Clear;
     function SomethingModified: boolean;
@@ -309,6 +318,7 @@ type
     property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
     property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
     property FirstUnitWithForm: TUnitInfo read fFirstUnitWithForm;
+    property FirstPartOfProject: TUnitInfo read fFirstPartOfProject;
 
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
@@ -666,6 +676,16 @@ begin
   end;
 end;
 
+procedure TUnitInfo.UpdatePartOfProjectList;
+begin
+  if Project<>nil then begin
+    Project.AddToOrRemoveFromPartOfProjectList(Self);
+  end else begin
+    fNextPartOfProject:=nil;
+    fPrevPartOfProject:=nil;
+  end;
+end;
+
 function TUnitInfo.GetFileName: string;
 begin
   if fSource<>nil then Result:=fSource.Filename
@@ -894,12 +914,14 @@ begin
     Project.RemoveFromFormList(Self);
     Project.RemoveFromLoadedList(Self);
     Project.RemoveFromAutoRevertLockedList(Self);
+    Project.RemoveFromPartOfProjectList(Self);
   end;
   FProject:=AValue;
   UpdateEditorIndexList;
   UpdateFormList;
   UpdateLoadedList;
   UpdateAutoRevertLockedList;
+  UpdatePartOfProjectList;
 end;
 
 
@@ -1675,6 +1697,15 @@ begin
   end;
 end;
 
+procedure TProject.AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
+begin
+  if not AnUnitInfo.IsPartOfProject then begin
+    RemoveFromPartOfProjectList(AnUnitInfo);
+  end else begin
+    AddToPartOfProjectList(AnUnitInfo);
+  end;
+end;
+
 function TProject.GetTargetFilename: string;
 begin
   Result:=fCompilerOptions.TargetFilename;
@@ -1975,6 +2006,35 @@ begin
   AnUnitInfo.fPrevAutoRevertLockedUnit:=nil;
 end;
 
+procedure TProject.AddToPartOfProjectList(AnUnitInfo: TUnitInfo);
+begin
+  // add to list if AnUnitInfo is not in list
+  if (fFirstPartOfProject<>AnUnitInfo)
+  and (AnUnitInfo.fNextPartOfProject=nil)
+  and (AnUnitInfo.fPrevPartOfProject=nil) then begin
+    AnUnitInfo.fNextPartOfProject:=fFirstPartOfProject;
+    AnUnitInfo.fPrevPartOfProject:=nil;
+    fFirstPartOfProject:=AnUnitInfo;
+    if AnUnitInfo.fNextPartOfProject<>nil then
+      AnUnitInfo.fNextPartOfProject.fPrevPartOfProject:=AnUnitInfo;
+  end;
+end;
+
+procedure TProject.RemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
+begin
+  // remove from list if AnUnitInfo is in list
+  if fFirstPartOfProject=AnUnitInfo then
+    fFirstPartOfProject:=AnUnitInfo.fNextPartOfProject;
+  if AnUnitInfo.fNextPartOfProject<>nil then
+    AnUnitInfo.fNextPartOfProject.fPrevPartOfProject:=
+      AnUnitInfo.fPrevPartOfProject;
+  if AnUnitInfo.fPrevPartOfProject<>nil then
+    AnUnitInfo.fPrevPartOfProject.fNextPartOfProject:=
+      AnUnitInfo.fNextPartOfProject;
+  AnUnitInfo.fNextPartOfProject:=nil;
+  AnUnitInfo.fPrevPartOfProject:=nil;
+end;
+
 
 end.
 
@@ -1982,6 +2042,9 @@ end.
 
 {
   $Log$
+  Revision 1.79  2002/09/30 23:41:00  lazarus
+  MG: added part of project list to project
+
   Revision 1.78  2002/09/30 11:01:43  lazarus
   MG: accelerated xmlwriter
 
