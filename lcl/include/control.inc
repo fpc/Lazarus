@@ -114,32 +114,40 @@ begin
 //    UpdateAnchorRules;
     BoundsChanged;
     RequestAlign;
-    if not (csLoading in ComponentState) then Resize;
-    Perform(LM_WindowposChanged, 0, 0);
+    if (not (csLoading in ComponentState)) then begin
+      Resize;
+      Perform(LM_WindowposChanged, 0, 0);
 
-    { TODO : Replace this with LCL functions eventually.
-        Right now we have to call these messages as some
-        descendents incorrectly depend on it, so force it
-        down their throat }
-	
-    if SizeChanged then begin
-      with SizeMsg do begin
-        Msg:= LM_SIZE;
-        SizeType:= 6; // force realign
-        Width:= AWidth;
-        Height:= AHeight;
+      { TODO : Replace this with LCL functions eventually.
+          Right now we have to call these messages as some
+          descendents incorrectly depend on it, so force it
+          down their throat }
+
+      if SizeChanged then begin
+        with SizeMsg do begin
+          Msg:= LM_SIZE;
+          SizeType:= 6; // force realign
+          Width:= FWidth;
+          Height:= FHeight;
+{$IFDEF CHECK_POSITION}
+writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
+{$ENDIF}
+        end;
+        WindowProc(TLMessage(SizeMsg));
       end;
-      WindowProc(TLMessage(SizeMsg));
-    end;
-    
-    if PosChanged then begin
-      with MoveMsg do begin
-        Msg:= LM_MOVE;
-        MoveType:= 1;
-        XPos:= ALeft;
-        YPos:= ATop;
+
+      if PosChanged then begin
+        with MoveMsg do begin
+          Msg:= LM_MOVE;
+          MoveType:= 1;
+          XPos:= FLeft;
+          YPos:= FTop;
+{$IFDEF CHECK_POSITION}
+writeln(' [TControl.ChangeBounds] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
+{$ENDIF}
+        end;
+        WindowProc(TLMessage(MoveMsg));
       end;
-      WindowProc(TLMessage(MoveMsg));
     end;
   end;    
 end;
@@ -1471,7 +1479,7 @@ begin
     and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
 
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.WMSize] Name=',Name,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
+writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
 {$ENDIF}
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
@@ -1490,9 +1498,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMove(var Message: TLMMove);
 begin
-  if (Message.MoveType = 0) and (FLeft = Message.XPos) and (FTop = Message.YPos) then Exit;
+  if (Message.MoveType = 0)
+  and (FLeft = Message.XPos) and (FTop = Message.YPos) then
+    Exit;
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.WMMove] Name=',Name,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' Left=',Left,' Top=',Top);
+writeln('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
 {$ENDIF}
   { Just sync the coordinates }
   SetBounds(Message.XPos, Message.YPos, Width, Height);
@@ -1506,6 +1516,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.38  2002/03/16 21:40:54  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.37  2002/03/14 23:25:52  lazarus
   MG: fixed TBevel.Create and TListView.Destroy
 

@@ -410,66 +410,65 @@ const
   BF_MONO = $8000;    { For monochrome borders }
 
 {Dialog codes}
-DLGC_WANTARROWS = 1;
-DLGC_WANTTAB = 2;
-DLGC_WANTALLKEYS = 4;
+  DLGC_WANTARROWS = 1;
+  DLGC_WANTTAB = 2;
+  DLGC_WANTALLKEYS = 4;
 
-DLGC_WANTCHARS = $80;
+  DLGC_WANTCHARS = $80;
 
 {owner drawn constants}
-ODT_MENU = 1;
-ODT_LISTBOX = 2;
-ODT_COMBOBOX = 3;
-ODT_BUTTON = 4;
-ODT_STATIC = 5;
+  ODT_MENU = 1;
+  ODT_LISTBOX = 2;
+  ODT_COMBOBOX = 3;
+  ODT_BUTTON = 4;
+  ODT_STATIC = 5;
 
-GWL_WNDPROC = -4;
-GWL_HINSTANCE = -6;
-GWL_HWNDPARENT = -8;
-GWL_STYLE = -16;
-GWL_EXSTYLE = -20;
-GWL_USERDATA = -21;
-GWL_ID = -12;
+  GWL_WNDPROC = -4;
+  GWL_HINSTANCE = -6;
+  GWL_HWNDPARENT = -8;
+  GWL_STYLE = -16;
+  GWL_EXSTYLE = -20;
+  GWL_USERDATA = -21;
+  GWL_ID = -12;
 
-MB_OK = $00000000;
-MB_OKCANCEL = $00000001;
-MB_ABORTRETRYIGNORE = $00000002;
-MB_YESNOCANCEL = $00000003;
-MB_YESNO = $00000004;
-MB_RETRYCANCEL = $00000005;
-MB_ICONHAND = $00000010;
-MB_ICONQUESTION = $00000020;
-MB_ICONEXCLAMATION = $00000030;
-MB_ICONASTERICK = $00000040;
-MB_ICONWARNING = MB_ICONEXCLAMATION;
-MB_ICONERROR = MB_ICONHAND;
-MB_ICONINFORMATION = MB_ICONASTERICK;
+  MB_OK = $00000000;
+  MB_OKCANCEL = $00000001;
+  MB_ABORTRETRYIGNORE = $00000002;
+  MB_YESNOCANCEL = $00000003;
+  MB_YESNO = $00000004;
+  MB_RETRYCANCEL = $00000005;
+  MB_ICONHAND = $00000010;
+  MB_ICONQUESTION = $00000020;
+  MB_ICONEXCLAMATION = $00000030;
+  MB_ICONASTERICK = $00000040;
+  MB_ICONWARNING = MB_ICONEXCLAMATION;
+  MB_ICONERROR = MB_ICONHAND;
+  MB_ICONINFORMATION = MB_ICONASTERICK;
 
-IDOK = 1; 	ID_OK = IDOK;
-IDCANCEL = 2;	ID_CANCEL = IDCANCEL;
-IDABORT = 3;	ID_ABORT = IDABORT;
-IDRETRY = 4;	ID_RETRY = IDRETRY;
-IDIGNORE = 5;	ID_IGNORE = IDIGNORE;
-IDYES = 6;	ID_YES = IDYES;
-IDNO = 7;	ID_NO = IDNO;
-IDCLOSE = 8;	ID_CLOSE = IDCLOSE;
-IDHELP = 9;	ID_HELP = IDHELP; 
+  IDOK = 1; 	ID_OK = IDOK;
+  IDCANCEL = 2;	ID_CANCEL = IDCANCEL;
+  IDABORT = 3;	ID_ABORT = IDABORT;
+  IDRETRY = 4;	ID_RETRY = IDRETRY;
+  IDIGNORE = 5;	ID_IGNORE = IDIGNORE;
+  IDYES = 6;	ID_YES = IDYES;
+  IDNO = 7;	ID_NO = IDNO;
+  IDCLOSE = 8;	ID_CLOSE = IDCLOSE;
+  IDHELP = 9;	ID_HELP = IDHELP;
 
-MB_DEFBUTTON1 = $00000000;
-MB_DEFBUTTON2 = $00000100;
-MB_DEFBUTTON3 = $00000200;
-MB_DEFBUTTON4 = $00000300;
+  MB_DEFBUTTON1 = $00000000;
+  MB_DEFBUTTON2 = $00000100;
+  MB_DEFBUTTON3 = $00000200;
+  MB_DEFBUTTON4 = $00000300;
 
 {Region Flags}
-Error = 0;
-NullRegion = 1;
-SimpleRegion = 2;
-ComplexRegion = 3;
-Region_Error = Error;
+  Error = 0;
+  NullRegion = 1;
+  SimpleRegion = 2;
+  ComplexRegion = 3;
+  Region_Error = Error;
 
 
 {Scroll bar stuff}
-
   SB_Horz = 0;
   SB_Vert = 1;
   SB_CTL = 2;
@@ -517,18 +516,22 @@ Region_Error = Error;
   SWP_NOREDRAW = 4;
   SWP_NOACTIVATE = 5;
 
-{ WMSIZE MEssage Constants}
+{ WMSIZE Message Constants}
   Size_Restored = 0;
   Size_Minimized = 1;
   Size_Maximized = 2;
   Size_MaxShow = 3;
   Size_MaxHide = 4;
+  Size_SourceIsInterface = 128;
 
   SIZENORMAL = Size_Restored;
   SIZEICONIC = Size_Minimized;
   SIZEFULLSCREEN = Size_Maximized;
   SIZEZOOMSHOW = Size_MaxShow;
   SIZEZOOMHIDE = Size_MaxHide;
+  
+{ WMMove Message Constants }
+  Move_SourceIsInterface = 128;
 
 { Window Styles }
   WS_OVERLAPPED = 0;
@@ -593,10 +596,10 @@ Region_Error = Error;
 
 const
   { SetWindowPos Flags }
-   HWND_TOP = 0;
-   HWND_BOTTOM = 1;
-   HWND_TOPMOST = HWND(-1);
-   HWND_NOTOPMOST = HWND(-2);
+  HWND_TOP = 0;
+  HWND_BOTTOM = 1;
+  HWND_TOPMOST = HWND(-1);
+  HWND_NOTOPMOST = HWND(-2);
 
 type
 
@@ -609,8 +612,8 @@ type
   TNMHdr = tagNMHDR;
   NMHDR = tagNMHDR;
 
-   PDrawItemStruct = ^TDrawItemStruct;
-   tagDrawItemStruct = packed record
+  PDrawItemStruct = ^TDrawItemStruct;
+  tagDrawItemStruct = packed record
     ctlType: UINT;
     ctlID : UINT;
     itemID : UINT;
@@ -620,9 +623,9 @@ type
     _hDc: HDC;
     rcItem: TRect;
     itemData : DWord;
-   end;
-   TDrawItemStruct = tagDrawItemStruct;
-   DrawItemStruct = tagDrawItemStruct;
+  end;
+  TDrawItemStruct = tagDrawItemStruct;
+  DrawItemStruct = tagDrawItemStruct;
 
 {painting stuff}
   PPaintStruct = ^TPaintStruct;
@@ -639,8 +642,8 @@ type
   PAINTSTRUCT = tagPAINTSTRUCT;
 
 
-   PWindowPos = ^TWIndowPos;
-   tagWindowPos = packed record
+  PWindowPos = ^TWIndowPos;
+  tagWindowPos = packed record
     _hwnd : HWND;
     hwndInsertAfter: HWND;
     x : Integer;
@@ -649,8 +652,8 @@ type
     cy : Integer;
     flags: UINT;
     end;
-   TWindowPos = tagWindowPos;
-    WindowPos = tagWindowPos;
+  TWindowPos = tagWindowPos;
+  WindowPos = tagWindowPos;
 
   PPoint = ^TPoint;
 
@@ -672,7 +675,7 @@ type
     cy: Longint;
   end;
   TSize = tagSIZE;
-   SIZE = tagSIZE;
+  SIZE = tagSIZE;
 
 
 { Bitmap Header Definition }
@@ -1396,6 +1399,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2002/03/16 21:40:54  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.1  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
