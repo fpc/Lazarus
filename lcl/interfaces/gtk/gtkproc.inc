@@ -1826,7 +1826,7 @@ end;
   Connects hidden child widgets signals.
   Many gtk widgets create internally child widgets (e.g. scrollbars). In
   Design mode these widgets should not auto react themselves, but instead send
-  messages to the lcl. Therefore these widgets are connected to special
+  messages to the lcl. Therefore these widgets are connected also to our
   signal handlers.
   This procedure is called by the realize-after handler of all LCL widgets
   and each time the design mode of a LCL control changes.
@@ -1880,7 +1880,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   begin
     if TheWidget=nil then exit;
     
-    // check if widget belongs to another LCL object
+    // check if TheWidget belongs to another LCL object
     LCLObject:=GetLCLObject(TheWidget);
     HiddenLCLObject:=GetHiddenLCLObject(TheWidget);
     if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
@@ -3379,7 +3379,8 @@ end;
   retrieved from gdk_image_get_pixel, and uses the passed Visual and Colormap
   to try and look up actual RGB values.
  ------------------------------------------------------------------------------}
-Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual; Colormap : PGDKColormap) : TGDIRGB;
+Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
+  Colormap : PGDKColormap) : TGDIRGB;
 var
   Color : TGDKColor;
   GdkColorContext : PGdkColorContext;
@@ -3405,9 +3406,13 @@ begin
   gdk_error_trap_pop;
 end;
 
-Function GetWindowDecorations(Form : TCustomForm) : Longint;
+{------------------------------------------------------------------------------
+  Function GetWindowDecorations(AForm : TCustomForm) : Longint;
+  
+ ------------------------------------------------------------------------------}
+Function GetWindowDecorations(AForm : TCustomForm) : Longint;
 begin
-  Case Form.BorderStyle of
+  Case AForm.BorderStyle of
     bsNone : Result := 0;
 
     bsSingle : Result := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
@@ -3427,9 +3432,13 @@ begin
   end;
 end;
 
-Function GetWindowFunction(Form : TCustomForm) : Longint;
+{------------------------------------------------------------------------------
+  Function GetWindowFunction(AForm : TCustomForm) : Longint;
+
+ ------------------------------------------------------------------------------}
+Function GetWindowFunction(AForm : TCustomForm) : Longint;
 begin
-  Case Form.BorderStyle of
+  Case AForm.BorderStyle of
     bsNone : Result := GDK_FUNC_MOVE or GDK_FUNC_CLOSE;
 
     bsSingle : Result := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
@@ -3457,6 +3466,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.106  2002/09/30 20:19:13  lazarus
+  MG: fixed flickering of modal forms
+
   Revision 1.105  2002/09/29 15:08:43  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
