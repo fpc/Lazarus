@@ -532,7 +532,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
                  w,80);
-    Caption:='Display (not for win32)';
+    Caption:='Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
     Visible:=true;
   end;
   
