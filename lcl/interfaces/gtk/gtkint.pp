@@ -46,6 +46,7 @@ type
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
       FTimerData : TList;       // keeps track of timer event structures
+      FDefaultFont : PGdkFont;
 
       FStockNullBrush: HBRUSH;
       FStockBlackBrush: HBRUSH;
@@ -325,6 +326,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/02/20 19:11:48  lazarus
+  Minor tweaks, default font caching.
+
   Revision 1.27  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 
