@@ -47,12 +47,12 @@ interface
 
 // activate for debug:
 
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
-{$DEFINE ShowExprEval}
+{ $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
@@ -3033,13 +3033,17 @@ var
         ReadTilBracketClose(true);
         ReadNextAtom;
       end;
-      BehindFuncAtomType:=GetCurrentAtomType;
-      if (BehindFuncAtomType in [vatPoint,vatUP,
-        vatEdgedBracketOpen,vatRoundBracketOpen])
-      then
-        IsIdentEndOfVar:=iieovNo
-      else
+      if CurPos.StartPos<EndPos then begin
+        BehindFuncAtomType:=GetCurrentAtomType;
+        if (BehindFuncAtomType in [vatPoint,vatUP,
+          vatEdgedBracketOpen,vatRoundBracketOpen])
+        then
+          IsIdentEndOfVar:=iieovNo
+        else
+          IsIdentEndOfVar:=iieovYes;
+      end else begin
         IsIdentEndOfVar:=iieovYes;
+      end;
     end;
     Result:=(IsIdentEndOfVar=iieovYes);
   end;
