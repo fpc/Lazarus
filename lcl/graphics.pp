@@ -556,7 +556,6 @@ type
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
     property Font: TFont read FFont write SetFont;
     property Pen: TPen read FPen write SetPen;
-    // Extra
     property Color: TColor read GetColor write SetColor;
   end;
 
@@ -871,6 +870,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/09/19 19:56:13  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.45  2002/09/18 17:07:24  lazarus
   MG: added patch from Andrew
 
