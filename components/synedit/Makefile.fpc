@@ -9,7 +9,7 @@ version=0.8a
 
 [compiler]
 unittargetdir=../units
-unitdir=../../lcl/units
+unitdir=../../lcl/units .
 options=-gl
 
 [target]

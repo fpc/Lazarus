@@ -153,6 +153,7 @@ type
     procedure MarkAllPackagesAsNotVisited;
     procedure MarkNeededPackages;
     function FindBrokenDependencyPath(APackage: TLazPackage): TList;
+    function FindCircleDependencyPath(APackage: TLazPackage): TList;
   public
     // packages handling
     function CreateNewPackage(const Prefix: string): TLazPackage;
@@ -957,7 +958,7 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage
           FindBroken(RequiredPackage,PathList);
           if PathList<>nil then begin
             // broken dependency found
-            // -> add current package to list to
+            // -> add current package to list
             PathList.Insert(0,CurPackage);
             exit;
           end;
@@ -976,9 +977,58 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage
 begin
   Result:=nil;
   if (Count=0) or (APackage=nil) then exit;
-  // mark all packages as not visited
   MarkAllPackagesAsNotVisited;
   FindBroken(APackage,Result);
+end;
+
+function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage
+  ): TList;
+
+  procedure FindCircle(CurPackage: TLazPackage; var PathList: TList);
+  var
+    Dependency: TPkgDependency;
+    RequiredPackage: TLazPackage;
+  begin
+    CurPackage.Flags:=CurPackage.Flags+[lpfVisited,lpfCircle];
+    Dependency:=CurPackage.FirstRequiredDependency;
+    while Dependency<>nil do begin
+      if Dependency.LoadPackageResult=lprSuccess then begin
+        // dependency ok
+        RequiredPackage:=Dependency.RequiredPackage;
+        if lpfCircle in RequiredPackage.Flags then begin
+          // circle detected
+          PathList:=TList.Create;
+          PathList.Add(CurPackage);
+          PathList.Add(RequiredPackage);
+          exit;
+        end;
+        if not (lpfVisited in RequiredPackage.Flags) then begin
+          FindCircle(RequiredPackage,PathList);
+          if PathList<>nil then begin
+            // circle detected
+            // -> add current package to list
+            PathList.Insert(0,CurPackage);
+            exit;
+          end;
+        end;
+      end;
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+    CurPackage.Flags:=CurPackage.Flags-[lpfCircle];
+  end;
+
+var
+  i: Integer;
+  Pkg: TLazPackage;
+begin
+  Result:=nil;
+  if (Count=0) or (APackage=nil) then exit;
+  // mark all packages as not visited and circle free
+  for i:=FItems.Count-1 downto 0 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    Pkg.Flags:=Pkg.Flags-[lpfVisited,lpfCircle];
+  end;
+  FindCircle(APackage,Result);
 end;
 
 procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;

@@ -86,6 +86,8 @@ type
     procedure DoShowPackageGraphPathList(PathList: TList); virtual; abstract;
     function DoCompilePackage(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
+    function DoSavePackageMainSource(APackage: TLazPackage;
+                      Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
   end;
 
 var

@@ -1133,7 +1133,7 @@ begin
   // update Screen object
   Screen.FActiveControl := Control;
   Screen.FActiveCustomForm := Self;
-  Screen.MoveFormToFront(Self);
+  Screen.MoveFormToFocusFront(Self);
   if Self is TForm then
     Screen.FActiveForm := TForm(Self)
   else
@@ -1406,6 +1406,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2003/04/16 22:11:35  mattias
+  fixed codetools Makefile, fixed default prop not found error
+
   Revision 1.95  2003/04/16 17:20:24  mattias
   implemented package check broken dependency on compile
 

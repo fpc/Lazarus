@@ -1666,8 +1666,9 @@ var
       if (Identifier='') and (Params.Identifier<>nil)
       and (Params.Identifier[0]<>#0) then begin
         Identifier:=Params.Identifier[0];
-        if Identifier='[' then
+        if Identifier='[' then begin
           Params.IdentifierTool.RaiseException(ctsDefaultPropertyNotFound);
+        end;
       end;
       Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
                                               [Identifier]);
@@ -3914,7 +3915,7 @@ var
           Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                         +fdfGlobals*Params.Flags;
           // special identifier for default property
-          Params.SetIdentifier(ExprType.Context.Tool,@Src[CurAtom.StartPos],nil);
+          Params.SetIdentifier(Self,@Src[CurAtom.StartPos],nil);
           Params.ContextNode:=ExprType.Context.Node;
           ExprType.Context.Tool.FindIdentifierInContext(Params);
           ExprType.Context:=CreateFindContext(Params);

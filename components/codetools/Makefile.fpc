@@ -12,6 +12,7 @@ packages=fcl
 
 [compiler]
 unittargetdir=../units
+unitdir=.
 options=-gl
 
 [target]

@@ -88,6 +88,23 @@ begin
   while (Result>=0) and (CustomFormsZOrdered[Result]<>AForm) do dec(Result);
 end;
 
+procedure TScreen.MoveFormToFocusFront(ACustomForm: TCustomForm);
+begin
+  FCustomForms.Remove(ACustomForm);
+  FCustomForms.Insert(0, ACustomForm);
+  if ACustomForm is TForm then
+  begin
+    Screen.FFormList.Remove(ACustomForm);
+    Screen.FFormList.Insert(0, ACustomForm);
+  end;
+end;
+
+procedure TScreen.MoveFormToZFront(ACustomForm: TCustomForm);
+begin
+  FCustomFormsZOrdered.Remove(ACustomForm);
+  FCustomFormsZOrdered.Insert(0, ACustomForm);
+end;
+
 {------------------------------------------------------------------------------
   function TScreen.GetFonts : TStrings;
  ------------------------------------------------------------------------------}
@@ -336,19 +353,6 @@ begin
   begin
     FLastActiveControl := FActiveControl;
     if Assigned(FOnActiveControlChange) then FOnActiveControlChange(Self);
-  end;
-end;
-
-procedure TScreen.MoveFormToFront(ACustomForm: TCustomForm);
-begin
-  FCustomForms.Remove(ACustomForm);
-  FCustomForms.Insert(0, ACustomForm);
-  FCustomFormsZOrdered.Remove(ACustomForm);
-  FCustomFormsZOrdered.Insert(0, ACustomForm);
-  if ACustomForm is TForm then
-  begin
-    Screen.FFormList.Remove(ACustomForm);
-    Screen.FFormList.Insert(0, ACustomForm);
   end;
 end;
 

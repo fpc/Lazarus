@@ -337,7 +337,8 @@ type
                        //    package requires this package)
     lpfVisited,        // Used by the PackageGraph to avoid double checking
     lpfDestroying,     // set during destruction
-    lpfSkipSaving
+    lpfSkipSaving,
+    lpfCircle
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
@@ -458,7 +459,7 @@ type
     procedure UpdateEditorRect;
     procedure GetAllRequiredPackages(var List: TList);
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
-    function GetCompileSourceFilenname: string;
+    function GetCompileSourceFilename: string;
   public
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
@@ -521,7 +522,7 @@ const
     'RunTime', 'DesignTime', 'RunAndDesignTime');
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
     'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate',
-    'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfSkipSaving');
+    'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfSkipSaving', 'lpfCircle');
     
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -2046,7 +2047,7 @@ begin
   end;
 end;
 
-function TLazPackage.GetCompileSourceFilenname: string;
+function TLazPackage.GetCompileSourceFilename: string;
 begin
   Result:=ChangeFileExt(ExtractFilename(Filename),'.pas');
 end;
@@ -2281,7 +2282,7 @@ end;
 
 function TPkgCompilerOptions.GetDefaultMainSourceFileName: string;
 begin
-  Result:=LazPackage.GetCompileSourceFilenname;
+  Result:=LazPackage.GetCompileSourceFilename;
   if Result='' then
     Result:=inherited GetDefaultMainSourceFileName;
 end;

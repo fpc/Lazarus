@@ -217,6 +217,7 @@ override TARGET_UNITS+=allcodetoolunits
 override TARGET_IMPLICITUNITS+=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog customcodetool multikeywordlisttool pascalparsertool finddeclarationtool identcompletiontool stdcodetools resourcecodetool methodjumptool eventcodetool codecompletiontool codeatom codetree definetemplates expreval keywordfunclists linkscanner sourcechanger fileprocs codetoolsstructs codetoolmanager memcheck
 override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 override COMPILER_OPTIONS+=-gl
+override COMPILER_UNITDIR+=.
 override COMPILER_UNITTARGETDIR+=../units
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)

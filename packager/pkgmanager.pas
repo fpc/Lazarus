@@ -111,6 +111,8 @@ type
     procedure DoShowPackageGraphPathList(PathList: TList); override;
     function DoCompilePackage(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
+    function DoSavePackageMainSource(APackage: TLazPackage;
+                              Flags: TPkgCompileFlags): TModalResult; override;
   end;
 
 implementation
@@ -831,7 +833,8 @@ begin
   // backup old file
   Result:=MainIDE.DoBackupFile(APackage.Filename,false);
   if Result=mrAbort then exit;
-  
+
+  // delete ambigious files
   Result:=MainIDE.DoDeleteAmbigiousFiles(APackage.Filename);
   if Result=mrAbort then exit;
 
@@ -903,6 +906,7 @@ var
   PathList: TList;
 begin
   Result:=mrCancel;
+  
   if APackage.AutoCreated then exit;
 
   // check for broken dependencies
@@ -916,7 +920,105 @@ begin
   end;
   
   // check for circle dependencies
+  PathList:=PackageGraph.FindCircleDependencyPath(APackage);
+  if PathList<>nil then begin
+    DoShowPackageGraphPathList(PathList);
+    Result:=MessageDlg('Circle in package dependencies',
+      'There is a circle in the required packages. See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
   
+  // save everything
+  Result:=MainIDE.DoSaveForBuild;
+  if Result<>mrOk then exit;
+  
+  // create package main source file
+  Result:=DoSavePackageMainSource(APackage,Flags);
+  if Result<>mrOk then exit;
+
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoSavePackageMainSource(APackage: TLazPackage;
+  Flags: TPkgCompileFlags): TModalResult;
+var
+  SrcFilename: String;
+  UsedUnits: String;
+  Src: String;
+  i: Integer;
+  e: String;
+  CurFile: TPkgFile;
+  CodeBuffer: TCodeBuffer;
+  CurUnitName: String;
+begin
+  // check if package is ready for saving
+  if not APackage.HasDirectory then begin
+    Result:=MessageDlg('Package has no directory',
+      'Package "'+APackage.IDAsString+'" has no valid directory.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
+  SrcFilename:=APackage.Directory+APackage.GetCompileSourceFilename;
+
+  // backup old file
+  Result:=MainIDE.DoBackupFile(SrcFilename,false);
+  if Result=mrAbort then exit;
+
+  // delete ambigious files
+  Result:=MainIDE.DoDeleteAmbigiousFiles(SrcFilename);
+  if Result=mrAbort then exit;
+
+  // collect unitnames
+  UsedUnits:='';
+  for i:=0 to APackage.FileCount-1 do begin
+    CurFile:=APackage.Files[i];
+    // update unitname
+    if FilenameIsPascalUnit(CurFile.Filename)
+    and (CurFile.FileType=pftUnit) then begin
+      CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,true,false);
+      if CodeBuffer<>nil then begin
+        CurUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
+        if AnsiCompareText(CurUnitName,CurFile.UnitName)<>0 then begin
+          CurUnitName:=CodeToolBoss.GetSourceName(CodeBuffer,false);
+        end;
+        if AnsiCompareText(CurUnitName,CurFile.UnitName)=0 then begin
+          CurFile.UnitName:=CurUnitName;
+        end;
+      end;
+      CurUnitName:=CurFile.UnitName;
+      if (CurUnitName<>'') and IsValidIdent(CurUnitName) then begin
+        if UsedUnits<>'' then
+          UsedUnits:=UsedUnits+', ';
+        UsedUnits:=UsedUnits+CurUnitName;
+      end;
+    end;
+  end;
+
+  // create source
+  e:=EndOfLine;
+  Src:='{ This is an automatically created source file. Do not edit!'+e
+      +'  This source is only used to compile the package '+APackage.IDAsString+e
+      +'}'+e
+      +e
+      +'interface'+e
+      +e
+      +'uses'+e
+      +'  '+UsedUnits+', Classes;'+e
+      +e
+      +'procedure Register;'+e
+      +e
+      +'implementation'+e
+      +e
+      +'procedure Register;'+e
+      +'begin'+e
+      +e
+      +'end;'+e
+      +e
+      +'end.'+e;
+  writeln(Src);
+      
 
   Result:=mrOk;
 end;

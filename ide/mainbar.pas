@@ -359,6 +359,8 @@ type
     function DoCheckCreatingFile(const AFilename: string;
         CheckReadable: boolean): TModalResult; virtual;
     
+    function DoSaveForBuild: TModalResult; virtual; abstract;
+    
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
       Compiling: boolean): TModalResult;
