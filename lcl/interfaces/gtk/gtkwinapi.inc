@@ -2167,7 +2167,7 @@ begin
     end
     else begin
       // TODO: implement other parameters.
-      //ADC := SaveDC(DC);
+      ADC := SaveDC(DC);
       //pStr := StrAlloc(Count + 1);
       //StrLCopy(pStr, Str, Count);
       //pStr[Count] := #0;
@@ -2234,7 +2234,7 @@ begin
         //                TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
         //end;
       end;
-      //RestoreDC(DC, ADC);
+      RestoreDC(DC, ADC);
       //StrDispose(pStr);
     end;
   end;
@@ -4299,8 +4299,8 @@ begin
           writeln('TgtkObject.ReleaseDC: ',E.Message);
         end;
       end;
-      FDeviceContexts.Remove(pDC);
-      Dispose(pDC);
+      
+      DisposeDC(pDC);
       Result := 1;
     end;
   end;
@@ -5989,6 +5989,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2002/08/21 14:06:41  lazarus
+  MG: added TDeviceContextMemManager
+
   Revision 1.101  2002/08/21 13:51:31  lazarus
   MG: removed SaveDC and RestoreDC in ExtTextOut
 
