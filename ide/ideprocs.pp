@@ -1083,7 +1083,9 @@ begin
   BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
   while EndPos<=l do begin
     StartPos:=EndPos;
-    while (StartPos<=l) and (SearchPath[StartPos]=';') do inc(StartPos);
+    // skip empty paths and space chars at start
+    while (StartPos<=l) and (SearchPath[StartPos] in [';',#0..#32]) do
+      inc(StartPos);
     if StartPos>l then break;
     EndPos:=StartPos;
     while (EndPos<=l) and (SearchPath[EndPos]<>';') do inc(EndPos);
