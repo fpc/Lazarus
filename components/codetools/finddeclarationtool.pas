@@ -3037,7 +3037,8 @@ begin
   repeat
     ReadPriorUsedUnit(UnitNameAtom, InAtom);
     if (fdfIgnoreUsedUnits in Params.Flags) then begin
-      if CompareSrcIdentifiers(UnitNameAtom.StartPos,Params.Identifier) then
+      if (Params.IdentifierTool=Self)
+      and CompareSrcIdentifiers(UnitNameAtom.StartPos,Params.Identifier) then
       begin
         // the searched identifier was a uses unitname, but because the unit
         // should not be opened, point to identifier in the uses section
