@@ -30,15 +30,17 @@
 
 {------------------------------------------------------------------------------
   Function: LCLCheckMenuItem
-  Params:  AMenuItem
+  Params:  BaseMenuItem
   Returns: Nothing
 
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32Object.LclCheckMenuItem(AMenuItem: TMenuItem): Boolean;
+Function TWin32Object.LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
 var
   CheckFlag: Integer;
+  AMenuItem: TMenuItem;
 Begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
   if AMenuItem.Checked then CheckFlag := MF_CHECKED
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
@@ -47,15 +49,17 @@ End;
 
 {------------------------------------------------------------------------------
   Function: LCLEnableMenuItem
-  Params: AMenuItem: 
+  Params: BaseMenuItem:
   Returns:
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32Object.LclEnableMenuItem(AMenuItem: TMenuItem): Boolean;
+Function TWin32Object.LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
 Var
   EnableFlag: Integer;
+  AMenuItem: TMenuItem;
 Begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
   if AMenuItem.Enabled then EnableFlag := MF_ENABLED
   else EnableFlag := MF_GRAYED;
   EnableFlag := EnableFlag or MF_BYCOMMAND;
@@ -69,6 +73,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/11/26 21:55:15  mattias
+  fixed win32 TBaseMenuitem
+
   Revision 1.1  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

@@ -38,7 +38,8 @@ Interface
 Uses
   Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
+  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus,
+  MenuType;
 
 Type
   { Virtual alignment-control record }
@@ -187,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2003/11/26 21:55:15  mattias
+  fixed win32 TBaseMenuitem
+
   Revision 1.55  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

@@ -28,8 +28,8 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function LclCheckMenuItem(AMenuItem: TMenuItem): Boolean; override;
-function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
+function LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
+function LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -37,6 +37,9 @@ function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/11/26 21:55:15  mattias
+  fixed win32 TBaseMenuitem
+
   Revision 1.1  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32
