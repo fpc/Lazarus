@@ -96,6 +96,7 @@ type
     procedure RebuildItems;
     procedure SaveCacheItem(Item: Pointer; Index: integer);
   public
+    constructor Create;
     constructor Create(InitialMinCapacity: integer);
     destructor Destroy; override;
     procedure Add(Item: Pointer);
@@ -770,6 +771,11 @@ begin
   if Assigned(OnGetKeyForHashItem) then Item:=OnGetKeyForHashItem(Item);
   FHashCacheItem:=Item;
   FHashCacheIndex:=Index;
+end;
+
+constructor TDynHashArray.Create;
+begin
+  Create(10);
 end;
 
 procedure TDynHashArray.SetOnGetKeyForHashItem(

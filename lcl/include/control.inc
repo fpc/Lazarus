@@ -72,34 +72,43 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.BeginDrag(Immediate: Boolean);
+------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean);
 begin
   BeginDrag(Immediate, -1);
 end;
 
-
-{------------------------------------------------------------------------------}
-{       TControl.BeginAutoDrag
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.BeginAutoDrag
+------------------------------------------------------------------------------}
 Procedure TControl.BeginAutoDrag;
 begin
   BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.DoEndDock(Target: TObject; X, Y: Integer);
+------------------------------------------------------------------------------}
 procedure TControl.DoEndDock(Target: TObject; X, Y: Integer);
 begin
   if Assigned(FOnEndDock) then
     FOnEndDock(Self,Target,X,Y);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
+------------------------------------------------------------------------------}
 procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
-  // ToDo: DoDock
   BoundsRect := ARect;
   if (NewDockSite = nil) then Parent := nil;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.DoStartDock(var DragObject: TDragObject);
+------------------------------------------------------------------------------}
 procedure TControl.DoStartDock(var DragObject: TDragObject);
 begin
   if Assigned(FOnStartDock) then
@@ -478,6 +487,53 @@ end;
 function TControl.GetClientWidth: Integer;
 begin
   Result := ClientRect.Right;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.CalculateDockSizes;
+
+  Compute docking width, height based on docking properties.
+------------------------------------------------------------------------------}
+procedure TControl.CalculateDockSizes;
+begin
+  if Floating then begin
+    UndockHeight:=Height;
+    UndockWidth:=Width;
+  end
+  else if HostDockSite<>nil then begin
+    if (DockOrientation=doHorizontal)
+    or (HostDockSite.Align in [alLeft,alRight]) then
+      LRDockWidth:=Width
+    else if (DockOrientation=doVertical)
+    or (HostDockSite.Align in [alTop,alBottom]) then
+      TBDockHeight:=Height;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.CreateFloatingDockSite(const Bounds: TRect): TWinControl;
+------------------------------------------------------------------------------}
+function TControl.CreateFloatingDockSite(const Bounds: TRect): TWinControl;
+var
+  FloatingClass: TWinControlClass;
+  NewWidth: Integer;
+  NewHeight: Integer;
+  NewClientWidth: Integer;
+  NewClientHeight: Integer;
+begin
+  Result := nil;
+  FloatingClass:=FloatingDockSiteClass;
+  if (FloatingClass<>nil) and (FloatingClass<>TWinControlClass(ClassType)) then
+  begin
+    Result := FloatingClass.Create(Application);
+    // resize with minimal resizes
+    NewClientWidth:=Bounds.Right-Bounds.Left;
+    NewClientHeight:=Bounds.Bottom-Bounds.Top;
+    NewWidth:=Result.Width-Result.ClientWidth+NewClientWidth;
+    NewHeight:=Result.Height-Result.ClientHeight+NewClientHeight;
+    Result.SetBounds(Bounds.Top,Bounds.Left,NewWidth,NewHeight);
+    SetClientSize(Point(NewClientWidth,NewClientHeight));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -974,26 +1030,49 @@ end;
 {------------------------------------------------------------------------------
        TControl.ScreenToClient
 ------------------------------------------------------------------------------}
-Function TControl.ScreenToClient(const Point : TPoint) : TPoint;
+Function TControl.ScreenToClient(const APoint: TPoint): TPoint;
 var
   P : TPoint;
 begin
   P := ClientOrigin;
-  Result.X := Point.X - P.X;
-  Result.Y := Point.Y - P.Y;
-  //Assert(False, Format('Trace:[TControl.ScreenToCLient] %s: Point(%d, %d) Org(%d, %d) --> (%d, %d)',  [Classname, Point.x,  point.y, p.x, p.y, result.x, result.y]));
+  Result.X := APoint.X - P.X;
+  Result.Y := APoint.Y - P.Y;
 end;
 
 {------------------------------------------------------------------------------
-  Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
+  Function TControl.ClientToScreen(const APoint: TPoint): TPoint;
 ------------------------------------------------------------------------------}
-Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
+Function TControl.ClientToScreen(const APoint: TPoint): TPoint;
 var
   P : TPoint;
 begin
   P := ClientOrigin;
-  Result.X := Point.X + P.X;
-  Result.Y := Point.Y + P.Y;
+  Result.X := APoint.X + P.X;
+  Result.Y := APoint.Y + P.Y;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.ScreenToControl(const APoint: TPoint): TPoint;
+------------------------------------------------------------------------------}
+function TControl.ScreenToControl(const APoint: TPoint): TPoint;
+var
+  P : TPoint;
+begin
+  P := ControlOrigin;
+  Result.X := APoint.X - P.X;
+  Result.Y := APoint.Y - P.Y;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.ControlToScreen(const APoint: TPoint): TPoint;
+------------------------------------------------------------------------------}
+function TControl.ControlToScreen(const APoint: TPoint): TPoint;
+var
+  P : TPoint;
+begin
+  P := ControlOrigin;
+  Result.X := APoint.X + P.X;
+  Result.Y := APoint.Y + P.Y;
 end;
 
 {------------------------------------------------------------------------------
@@ -1001,10 +1080,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SendDockNotification;
 begin
+  // ToDo dock: do we really need this method?
   if (FHostDockSite<>nil) and (DragObject=nil)
   and (ComponentState*[csLoading,csDestroying] = []) then
   begin
-    // ToDo
+    // ToDo dock
     //FHostDockSite.Perform
   end;
 end;
@@ -1319,6 +1399,23 @@ end;
 function TControl.GetClientScrollOffset: TPoint;
 begin
   Result:=Point(0,0);
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.GetClientScrollOffset: TPoint;
+
+  Returns the screen coordinate of the topleft pixel of the control.
+------------------------------------------------------------------------------}
+function TControl.GetControlOrigin: TPoint;
+var
+  ParentsClientOrigin: TPoint;
+begin
+  Result:=Point(Left,Top);
+  if Parent<>nil then begin
+    ParentsClientOrigin:=Parent.ClientOrigin;
+    inc(Result.X,ParentsClientOrigin.X);
+    inc(Result.Y,ParentsClientOrigin.Y);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2287,7 +2384,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetDragMode(Value: TDragMode);
 begin
+  if FDragMode = Value then exit;
   FDragMode := Value;
+  // for Delphi compatibility send LM_DRAGINFOCHANGED message
   CNSendMessage(LM_DRAGINFOCHANGED,Self,Nil);
 end;
 
@@ -2307,7 +2406,7 @@ end;
 procedure TControl.DefaultDockImage(DragDockObject: TDragDockObject;
   Erase: Boolean);
 begin
-  // ToDo: draw or erase dock image
+  // ToDo Dock: draw or erase dock image
 end;
 
 {------------------------------------------------------------------------------
@@ -2611,16 +2710,27 @@ begin
           and not (csReadingState in ControlState);
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.ParentHandlesAllocated: boolean;
+------------------------------------------------------------------------------}
 function TControl.ParentHandlesAllocated: boolean;
 begin
   Result:=(Parent<>nil) and (Parent.ParentHandlesAllocated);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.InitiateAction;
+------------------------------------------------------------------------------}
 procedure TControl.InitiateAction;
 begin
   if ActionLink <> nil then ActionLink.Update;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
+  
+  
+------------------------------------------------------------------------------}
 procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
 
   procedure RaiseAlreadyDocking;
@@ -2662,25 +2772,26 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
+    ControlSide: TAlign): Boolean;
+
+
+------------------------------------------------------------------------------}
 function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
   ControlSide: TAlign): Boolean;
 var
   NewBounds: TRect;
+  DockObject: TDragDockObject;
+  NewPosition: TPoint;
 begin
   if (NewDockSite=nil) then begin
     // undock / float this control
-    if (HostDockSite<>nil) and HostDockSite.UseDockManager
-    and (HostDockSite.DockManager<>nil) then begin
+    if HostDockSiteManagerAvailable(HostDockSite) then begin
       HostDockSite.DockManager.GetControlBounds(Self,NewBounds);
-      // ToDo
-      RaiseGDBException('MapWindowPoints not yet implemented');
-      //MapWindowPoints(HostDockSite.Handle, 0, NewBounds.TopLeft, 2);
-    end
-    else begin
-      NewBounds.Left:=Left;
-      NewBounds.Top:=Top;
-      if Parent<>nil then
-        NewBounds.TopLeft := Parent.ClientToScreen(NewBounds.TopLeft);
+      NewBounds.TopLeft:=HostDockSite.ControlToScreen(NewBounds.TopLeft);
+    end else begin
+      NewBounds.TopLeft := ControlOrigin;
     end;
     NewBounds := Bounds(NewBounds.Left,NewBounds.Top,UndockWidth,UndockHeight);
     Result := ManualFloat(NewBounds);
@@ -2688,23 +2799,80 @@ begin
   else
   begin
     // dock / unfloat this control
-    // ToDo
-    RaiseGDBException('TControl.ManualDock docking not yet implemented');
+    CalculateDockSizes;
+    Result := (HostDockSite=nil) or HostDockSite.DoUndock(NewDockSite,Self);
+    if Result then begin
+      DockObject := TDragDockObject.Create(Self);
+      try
+        // map from old HostSite to screen coordinates
+        NewPosition:=Point(Left,Top);
+        if HostDockSite<>nil then
+          NewPosition:=HostDockSite.ControlToScreen(NewPosition);
+        // initialize DockObject
+        with DockObject do begin
+          FDragTarget := NewDockSite;
+          FDropAlign := ControlSide;
+          FDropOnControl := DropControl;
+          DockRect := Bounds(NewPosition.X,NewPosition.Y,Width,Height);
+        end;
+        // map from screen to new HostSite coordinates
+        NewPosition:=NewDockSite.ScreenToControl(NewPosition);
+        // DockDrop
+        NewDockSite.DockDrop(DockObject,NewPosition.X,NewPosition.Y);
+      finally
+        DockObject.Free;
+      end;
+    end;
   end;
 end;
 
-function TControl.ManualFloat(ScreenPos: TRect): Boolean;
+{------------------------------------------------------------------------------
+  function TControl.ManualFloat(TheScreenRect: TRect): Boolean;
+
+  Undock and float.
+  Float means here: create the floating dock site and dock this control into it.
+------------------------------------------------------------------------------}
+function TControl.ManualFloat(TheScreenRect: TRect): Boolean;
+var
+  FloatHost: TWinControl;
 begin
-  // ToDo
-  Result:=false;
+  Result := (HostDockSite=nil) or HostDockSite.DoUndock(nil,Self);
+  if Result then begin
+    FloatHost := CreateFloatingDockSite(TheScreenRect);
+    if FloatHost<>nil then
+      Dock(FloatHost,Rect(0,0,FloatHost.ClientWidth,FloatHost.ClientHeight))
+    else
+      Dock(FloatHost,TheScreenRect);
+  end;
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.ReplaceDockedControl(Control: TControl;
+    NewDockSite: TWinControl; DropControl: TControl; ControlSide: TAlign
+    ): Boolean;
+
+------------------------------------------------------------------------------}
 function TControl.ReplaceDockedControl(Control: TControl;
   NewDockSite: TWinControl; DropControl: TControl; ControlSide: TAlign
   ): Boolean;
+var
+  OldDockSite: TWinControl;
 begin
-  // ToDo
-  Result:=false;
+  Result := False;
+
+  OldDockSite := Control.HostDockSite;
+  if (OldDockSite<>nil) and (not HostDockSiteManagerAvailable(OldDockSite)) then
+    exit;
+
+  if OldDockSite <> nil then
+    OldDockSite.DockManager.SetReplacingControl(Control);
+  try
+    ManualDock(OldDockSite,nil,alTop);
+  finally
+    if OldDockSite <> nil then
+      OldDockSite.DockManager.SetReplacingControl(nil);
+  end;
+  Result:=Control.ManualDock(NewDockSite,DropControl,ControlSide);
 end;
 
 procedure TControl.AddHandlerOnResize(OnResizeEvent: TNotifyEvent;
@@ -2996,16 +3164,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMWindowPosChanged(var Message: TLMWindowPosChanged);
 begin
-  //Assert(False, Format('Trace:[TControl.WMWindowPosChanged] %s', [ClassName]));
-  // TODO : Docksites and constraints
-
-  { Do not handle this message and leave it to WMSize and WMMove }
+  // Do not handle this message and leave it to WMSize and WMMove
   Message.Result:= 0;
-
-  //if Message.WindowPos <> nil then with Message.WindowPos^ do begin
-  //   SetBounds(X, Y, cX, cY);
-  //   Message.Result:= 1;
-  //end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3054,6 +3214,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.188  2004/06/01 09:58:35  mattias
+  implemented setting TCustomPage.PageIndex  from Andrew Haines
+
   Revision 1.187  2004/05/30 14:02:30  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 

@@ -534,6 +534,17 @@ begin
   Result := fPageIndex;
 end;
 
+
+{------------------------------------------------------------------------------
+  TCustomNotebook MoveTab
+ ------------------------------------------------------------------------------}
+procedure TCustomNoteBook.MoveTab(Sender: TObject; NewIndex: Integer);
+begin
+  if (Sender <> nil) and (NewIndex < PageCount) then begin
+    TNBPages(fAccess).Move(TCustomPage(Sender).PageIndex,NewIndex);
+  end
+  else ; //raise exception?
+end;
 {------------------------------------------------------------------------------
   function TCustomNotebook.IsStoredActivePage: boolean;
  ------------------------------------------------------------------------------}
@@ -792,6 +803,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.49  2004/06/01 09:58:35  mattias
+  implemented setting TCustomPage.PageIndex  from Andrew Haines
+
   Revision 1.48  2004/05/25 21:50:32  mattias
   TCustomNotebook now allows pageclass descendents
 

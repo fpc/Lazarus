@@ -193,14 +193,16 @@ type
 
   TPageControl = class(TCustomNotebook)
   private
-    FOnChange: TNotifyEvent;
+    //FOnChange: TNotifyEvent;  //changed to use inherited OnPageChanged
     FOnChanging: TTabChangingEvent;
     function GetActivePageIndex: Integer;
     function GetActiveTabSheet: TTabSheet;
+    function GetOnChange: TNotifyEvent;
     function GetTabIndex: Integer;
     function GetTabSheet(Index: Integer): TTabSheet;
     procedure SetActivePageIndex(const AValue: Integer);
     procedure SetActiveTabSheet(const AValue: TTabSheet);
+    procedure SetOnChange(const AValue: TNotifyEvent);
     procedure SetTabIndex(const AValue: Integer);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -242,7 +244,7 @@ type
     property TabStop;
     //property TabWidth;
     property Visible;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChange: TNotifyEvent read GetOnChange write SetOnChange;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnContextPopup;
     //property OnDockDrop;
@@ -2254,6 +2256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2004/06/01 09:58:34  mattias
+  implemented setting TCustomPage.PageIndex  from Andrew Haines
+
   Revision 1.129  2004/05/21 18:34:44  mattias
   readded protected TWinControl.BorderStyle
 

@@ -15,7 +15,6 @@
 }
 
 var
-  //DragCapture: HWND;     // old capture handle at start of dragging
   DragControl: TControl; // control, that started the drag
   DragObject: TDragObject; // the drag information object
   DragObjectAutoFree: Boolean; // True, if DragObject was auto created
@@ -24,6 +23,32 @@ var
   DragThreshold: Integer;// treshold before the drag becomes activated
 
 Procedure DragTo(const Position: TPoint); forward;
+
+{-------------------------------------------------------------------------------
+  function HostDockSiteManagerAvailable(HostDockSite: TWinControl): boolean;
+-------------------------------------------------------------------------------}
+function HostDockSiteManagerAvailable(HostDockSite: TWinControl): boolean;
+begin
+  Result:=(HostDockSite<>nil) and HostDockSite.UseDockManager
+          and (HostDockSite.DockManager<>nil);
+end;
+
+{-------------------------------------------------------------------------------
+  procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean);
+-------------------------------------------------------------------------------}
+procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean);
+begin
+  if (Site <> nil) then begin
+    if DockSiteHash = nil then DockSiteHash := TDynHashArray.Create;
+    if DoRegister then begin
+      if not DockSiteHash.Contains(Site) then
+        DockSiteHash.Add(Site);
+    end else begin
+      if DockSiteHash.Contains(Site) then
+        DockSiteHash.Remove(Site);
+    end;
+  end;
+end;
 
 {-------------------------------------------------------------------------------
   Function SendDragMessage(MsgTarget: TControl; Msg: TDragMessage;
@@ -336,6 +361,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.5  2004/06/01 09:58:35  mattias
+  implemented setting TCustomPage.PageIndex  from Andrew Haines
+
   Revision 1.4  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
@@ -347,6 +375,4 @@ end;
 
   Revision 1.1  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
-
-  
 }

@@ -641,33 +641,13 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.CreateSubClass(var Params: TCreateParams;
   ControlClassName: PChar);
-(*
-const
-  CS_OFF = CS_OWNDC or CS_CLASSDC or CS_PARENTDC or CS_GLOBALCLASS;
-  CS_ON = CS_VREDRAW or CS_HREDRAW;
-var
-  SaveInstance: THandle;
 begin
-  if ControlClassName <> nil then
-    with Params do
-    begin
-      SaveInstance := WindowClass.hInstance;
-      if not GetClassInfo(HInstance, ControlClassName, WindowClass) and
-        not GetClassInfo(0, ControlClassName, WindowClass) and
-        not GetClassInfo(MainInstance, ControlClassName, WindowClass) then
-        GetClassInfo(WindowClass.hInstance, ControlClassName, WindowClass);
-      WindowClass.hInstance := SaveInstance;
-      WindowClass.style := WindowClass.style and not CS_OFF or CS_ON;
-    end;
-*)
-begin
-  // TODO: implement missing funcs
+  // TODO: Check if we need this method
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TWinControl DisableAlign                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl DisableAlign
+------------------------------------------------------------------------------}
 procedure TWinControl.DisableAlign;
 begin
   Inc(FAlignLevel);
@@ -950,6 +930,38 @@ begin
   end else begin
     Result:=Rect(0,0,FClientWidth,FClientHeight);
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  TWinControl GetControlOrigin
+  Result:  TPoint
+
+  Returns the screen coordinate of the topleft coordinate 0,0 of the control
+  area. (The topleft pixel of the control on the screen)
+  Note that this value is the position as stored in the interface and is not
+  always in sync with the LCL. When a control is moved, the LCL sets the bounds
+  to the wanted position and sends a move message to the interface. It is up to
+  the interface to handle moves instantly or queued.
+-------------------------------------------------------------------------------}
+function TWinControl.GetControlOrigin: TPoint;
+var
+  AControl: TWinControl;
+  IntfBounds: TRect;
+Begin
+  if HandleAllocated then begin
+    // get the interface idea where the client area is on the screen
+    LCLIntf.GetWindowRect(Handle,IntfBounds);
+    Result.X := IntfBounds.Left;
+    Result.Y := IntfBounds.Top;
+    // adjust the result by all bounds, that are not yet sent to the interface
+    AControl:=Self;
+    repeat
+      inc(Result.X,AControl.Left-AControl.FBoundsRealized.Left);
+      inc(Result.Y,AControl.Top-AControl.FBoundsRealized.Top);
+      AControl:=AControl.Parent;
+    until AControl=nil;
+  end else
+    Result:=inherited GetControlOrigin;
 end;
 
 {------------------------------------------------------------------------------
@@ -1839,45 +1851,111 @@ Begin
   inherited WndProc(Message);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
+  
+  Default method for addind a dock client. Just become the new parent.
+ ------------------------------------------------------------------------------}
 procedure TWinControl.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
-  // ToDo
+  Client.Parent := Self;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.DockOver(Source: TDragDockObject; X, Y: Integer;
+    State: TDragState; var Accept: Boolean);
+    
+  Called to check whether this control allows docking and where.
+ ------------------------------------------------------------------------------}
 procedure TWinControl.DockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  // ToDo
+  PositionDockRect(Source);
+  DoDockOver(Source,X,Y,State,Accept);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.DoDockOver(Source: TDragDockObject; X, Y: Integer;
+    State: TDragState; var Accept: Boolean);
+ ------------------------------------------------------------------------------}
 procedure TWinControl.DoDockOver(Source: TDragDockObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  // ToDo
+  if Assigned(FOnDockOver) then
+    FOnDockOver(Self,Source,X,Y,State,Accept);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.DoRemoveDockClient(Client: TControl);
+
+  Called to remove client from dock list.
+  This method exists for descendent overrides.
+ ------------------------------------------------------------------------------}
 procedure TWinControl.DoRemoveDockClient(Client: TControl);
 begin
-  // ToDo
+  // empty (this method exists for descendent overrides)
 end;
 
+{------------------------------------------------------------------------------
+  function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl
+    ): Boolean;
+ ------------------------------------------------------------------------------}
 function TWinControl.DoUnDock(NewTarget: TWinControl; Client: TControl
   ): Boolean;
 begin
-  // ToDo
-  Result:=false;
+  if Assigned(FOnUnDock) then begin
+    Result := True;
+    FOnUnDock(Self,Client,NewTarget,Result);
+    if not Result then exit;
+  end;
+  // ToDo Dock
+  //Result := (Perform(CM_UNDOCKCLIENT, Integer(NewTarget), Integer(Client)) = 0);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
+    MousePos: TPoint; var CanDock: Boolean);
+ ------------------------------------------------------------------------------}
 procedure TWinControl.GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
   MousePos: TPoint; var CanDock: Boolean);
 begin
-  // ToDo
+  GetWindowRect(Handle,InfluenceRect);
+  // VCL inflates the docking rectangle. Do we need this too? Why?
+  //InflateRect(InfluenceRect,?,?);
+  if Assigned(FOnGetSiteInfo) then
+    FOnGetSiteInfo(Self,Client,InfluenceRect,MousePos,CanDock);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.ReloadDockedControl(const AControlName: string;
+    var AControl: TControl);
+ ------------------------------------------------------------------------------}
 procedure TWinControl.ReloadDockedControl(const AControlName: string;
   var AControl: TControl);
 begin
-  // ToDo
+  AControl := Owner.FindComponent(AControlName) as TControl;
+end;
+
+{------------------------------------------------------------------------------
+  function TWinControl.CreateDockManager: TDockManager;
+ ------------------------------------------------------------------------------}
+function TWinControl.CreateDockManager: TDockManager;
+begin
+  if (FDockManager = nil) and DockSite and UseDockManager then
+    Result := DefaultDockTreeClass.Create(Self)
+  else
+    Result := FDockManager;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TWinControl.SetUseDockManager(const AValue: Boolean);
+ ------------------------------------------------------------------------------}
+procedure TWinControl.SetUseDockManager(const AValue: Boolean);
+begin
+  if FUseDockManager=AValue then exit;
+  FUseDockManager:=AValue;
+  if FUseDockManager and ([csDesigning,csDestroying]*ComponentState=[]) then
+    FDockManager := CreateDockManager;
 end;
 
 {------------------------------------------------------------------------------
@@ -1892,9 +1970,9 @@ Begin
   Assert(False, Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl SetFocus                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl SetFocus
+------------------------------------------------------------------------------}
 procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
@@ -1909,9 +1987,9 @@ begin
     LCLIntf.SetFocus(Handle);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl SetParentCtl3D                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl SetParentCtl3D
+------------------------------------------------------------------------------}
 Procedure TWinControl.SetParentCtl3D(value : Boolean);
 Begin
   if FParentCtl3D <> Value then
@@ -1922,13 +2000,6 @@ Begin
       //Sendmessage to do something?
     End;
   end;
-end;
-
-procedure TWinControl.SetUseDockManager(const AValue: Boolean);
-begin
-  if FUseDockManager=AValue then exit;
-  FUseDockManager:=AValue;
-  // ToDo
 end;
 
 procedure TWinControl.UpdateTabOrder(NewTabValue: TTabOrder);
@@ -2515,18 +2586,18 @@ begin
   inherited Create(nil);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl CreateParentedControl                                           }
-{------------------------------------------------------------------------------}
-class function TWinControl.CreateParentedControl(ParentWindow : hwnd): TWinControl;
+{------------------------------------------------------------------------------
+  TWinControl CreateParentedControl
+------------------------------------------------------------------------------}
+class function TWinControl.CreateParentedControl(ParentWindow: hwnd): TWinControl;
 begin
   // ToDo
   Result:=nil;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl Hide                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl Hide
+------------------------------------------------------------------------------}
 procedure TWinControl.Hide;
 begin
   Visible := False;
@@ -3332,6 +3403,9 @@ begin
   Result:=BoundsLockCount>0;
 end;
 
+{------------------------------------------------------------------------------
+  function TWinControl.GetTabOrder: TTabOrder;
+ ------------------------------------------------------------------------------}
 function TWinControl.GetTabOrder: TTabOrder;
 begin
   if FParent <> nil then
@@ -3340,6 +3414,9 @@ begin
     Result := -1;
 end;
 
+{------------------------------------------------------------------------------
+  function TWinControl.GetVisibleDockClientCount: Integer;
+ ------------------------------------------------------------------------------}
 function TWinControl.GetVisibleDockClientCount: Integer;
 var
   i: integer;
@@ -3349,20 +3426,24 @@ begin
     if TControl(FDockClients[I]).Visible then inc(Result);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
+ ------------------------------------------------------------------------------}
 procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
 begin
   if FChildSizing=AValue then exit;
   FChildSizing.Assign(AValue);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.SetDockSite(const NewDockSite: Boolean);
+ ------------------------------------------------------------------------------}
 procedure TWinControl.SetDockSite(const NewDockSite: Boolean);
 begin
   if FDockSite=NewDockSite then exit;
   FDockSite := NewDockSite;
   if not (csDesigning in ComponentState) then begin
-    // ToDo
-    RaiseGDBException('RegisterDockSite not yet implemented');
-    //RegisterDockSite(Self,NewDockSite);
+    RegisterDockSite(Self,NewDockSite);
     if not NewDockSite then begin
       FreeThenNil(FDockClients);
       FDockClients := nil;
@@ -3370,9 +3451,7 @@ begin
     end
     else begin
       if FDockClients = nil then FDockClients := TList.Create;
-      // ToDo
-      RaiseGDBException('CreateDockManager not yet implemented');
-      //FDockManager := CreateDockManager;
+      FDockManager := CreateDockManager;
     end;
   end;
 end;
@@ -3580,6 +3659,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.236  2004/06/01 09:58:35  mattias
+  implemented setting TCustomPage.PageIndex  from Andrew Haines
+
   Revision 1.235  2004/05/31 13:06:47  marc
   * Patch from Vincent, moved SetProp(wincontrol)
 

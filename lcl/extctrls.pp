@@ -149,6 +149,7 @@ type
     function GetPageCount : integer;
     function GetPageIndex: Integer;
     function IsStoredActivePage: boolean;
+    procedure MoveTab(Sender: TObject; NewIndex: Integer);
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TImageList);
@@ -928,6 +929,9 @@ end.
 
  {
   $Log$
+  Revision 1.104  2004/06/01 09:58:35  mattias
+  implemented setting TCustomPage.PageIndex  from Andrew Haines
+
   Revision 1.103  2004/05/21 09:03:54  micha
   implement new borderstyle
   - centralize to twincontrol (protected)
