@@ -588,6 +588,7 @@ type
     Procedure SetFocus; virtual;
     Function GetClientOrigin : TPoint; virtual;
     Function GetClientRect: TRect; virtual;
+    function GetChildsRect(Scrolled: boolean): TRect; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
@@ -802,10 +803,11 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
-    Function FindNextControl(CurrentControl : TControl; GoForward,
+    Function  FindNextControl(CurrentControl : TControl; GoForward,
       CheckTabStop, CheckParent : Boolean) : TControl;
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
+    function  GetChildsRect(Scrolled: boolean): TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
     procedure SetZOrderPosition(Position: Integer); override;
@@ -837,7 +839,7 @@ type
     Function ControlAtPos(const Pos : TPoint;
       AllowDisabled, AllowWinControls: Boolean): TControl;
     Function ControlAtPos(const Pos : TPoint;
-      AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl;
+      AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl; virtual;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
@@ -1382,6 +1384,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.84  2002/11/01 14:40:30  lazarus
+  MG: fixed mouse coords on scrolling wincontrols
+
   Revision 1.83  2002/10/30 12:37:25  lazarus
   MG: mouse cursors are now allocated on demand
 

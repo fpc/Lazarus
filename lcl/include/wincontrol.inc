@@ -608,6 +608,21 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  function TWinControl.GetChildsRect(Scrolled: boolean): TRect;
+
+  Returns the Client rectangle relative to the controls left, top.
+  If Scrolled is true, the rectangle is moved by the current scrolling values
+  (for an example see TScrollingWincontrol).
+------------------------------------------------------------------------------}
+function TWinControl.GetChildsRect(Scrolled: boolean): TRect;
+begin
+  if HandleAllocated then
+    LCLLinux.GetClientBounds(Handle,Result)
+  else
+    Result:=inherited GetChildsRect(Scrolled);
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl ReCreateWnd                                                     }
 {------------------------------------------------------------------------------}
@@ -1031,25 +1046,26 @@ var
   I: Integer;
   P: TPoint;
   LControl: TControl;
+  ClientBounds: TRect;
 
   function GetControlAtPos(AControl: TControl): Boolean;
-  var ClientBounds: TRect;
+  var
+    ControlPos: TPoint;
+    ControlClientBounds: TRect;
   begin
     with AControl do
     begin
-      P := Point(Pos.X - Left, Pos.Y - Top);
+      // MG: Delphi checks for PtInRect(ClientRect,P). But the client area is
+      //     not always at 0,0, so I guess this is a bug in the VCL.
 
-      if OnlyClientAreas then begin
-        // MG: Delphi checks for PtInRect(ClientRect,P). But the client area is
-        //     not always at 0,0, so I guess this is a bug in the VCL.
-        if (AControl is TWinControl) and (TWinControl(AControl)).HandleAllocated
-        then
-          LCLLinux.GetClientBounds(TWinControl(AControl).Handle,ClientBounds)
-        else
-          ClientBounds:=ClientRect;
-        Result:=PtInRect(ClientBounds,P)
-      end else
-        Result:=(P.X>=0) and (P.Y>=0) and (P.X<Width) and (P.Y<Height);
+      ControlPos:=Point(P.X-Left,P.Y-Top);
+      Result:=(ControlPos.X>=0) and (ControlPos.Y>=0)
+              and (ControlPos.X<Width) and (ControlPos.Y<Height);
+      if Result and OnlyClientAreas then begin
+        ControlClientBounds:=GetChildsRect(false);
+        Result:=PtInRect(ControlClientBounds,ControlPos);
+      end;
+      
       //MWE: rewrote it a bit to get it more readable
       Result:= Result
               and (
@@ -1064,7 +1080,8 @@ var
                     and
                     (Enabled or AllowDisabled)
                     and
-                    (Perform(CM_HITTEST, 0, LongInt(PointtoSmallPoint(P))) <> 0)
+                    (Perform(CM_HITTEST, 0,
+                             LongInt(PointtoSmallPoint(ControlPos))) <> 0)
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
@@ -1081,6 +1098,17 @@ var
   end;
 
 begin
+  // check if Pos in visible client area
+  ClientBounds:=GetChildsRect(false);
+  if not PtInRect(ClientBounds,Pos) then begin
+    Result:=nil;
+    exit;
+  end;
+
+  // map Pos to logical client area
+  ClientBounds:=GetChildsRect(true);
+  P:=Point(Pos.X-ClientBounds.Left,Pos.Y-ClientBounds.Top);
+
   LControl := nil;
   // check wincontrols
   if AllowWinControls and (FWinControls <> nil) then
@@ -2477,6 +2505,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2002/11/01 14:40:31  lazarus
+  MG: fixed mouse coords on scrolling wincontrols
+
   Revision 1.96  2002/10/31 22:14:16  lazarus
   MG: fixed GetClipBox when clipping region invalid
 
