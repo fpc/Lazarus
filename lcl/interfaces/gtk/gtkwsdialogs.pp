@@ -136,7 +136,7 @@ procedure TGtkWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   GtkWindow: PGtkWindow;
   {$IFDEF Gtk1}
-  {$IFNDEF VER1_0}
+  {$IFDEF UseXinerama}
   Requisition: TGtkRequisition;
   {$ENDIF}
   {$ENDIF}
@@ -148,7 +148,7 @@ begin
     SetColorDialogColor(PGtkColorSelection(GtkWindow),
                         TColorDialog(ACommonDialog).Color);
   {$IFDEF Gtk1}
-  {$IFNDEF VER1_0}
+  {$IFDEF UseXinerama}
   if GetFirstScreen then begin
     { Fix multi screen problems, at least partially by forcing dialog to centre of first screen }
     gtk_widget_size_request(PGtkWidget(GtkWindow), @Requisition);

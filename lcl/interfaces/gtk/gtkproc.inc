@@ -8007,7 +8007,7 @@ end;
 var
   FirstScreenCalled: Boolean = False;
   FirstScreenResult: Boolean = False;
-{$IFNDEF Ver1_0}
+{$IFDEF UseXinerama}
 function GetFirstScreen: Boolean;
 var
   nMonitors: cint;
@@ -8046,7 +8046,7 @@ begin
   end;
   Result := FirstScreenResult;
 end;
-{$ENDIF VER1_0}
+{$ENDIF UseXinerama}
 {$ENDIF Gtk1}
 
 {$IFDEF ASSERT_IS_ON}
@@ -8059,6 +8059,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.339  2005/02/19 20:36:55  mattias
+  xinerama hack is now only enabled when compiled with -dUseXinerama
+
   Revision 1.338  2005/02/19 20:33:09  mattias
   fixed gtk2 key handle result
 

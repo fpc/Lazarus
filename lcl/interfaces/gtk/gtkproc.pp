@@ -44,9 +44,9 @@ uses
       // MWE:
       // TODO: check if the new keyboard routines require X on GTK2
       X, XLib, XUtil, //Font retrieval and Keyboard handling
-      {$IFNDEF VER1_0}
+      {$IFDEF UseXinerama}
         Xinerama,
-      {$ENDIF not  VER1_0}
+      {$ENDIF}
     {$ENDIF not Gtk1}
   {$ENDIF}
   InterfaceBase,
@@ -830,7 +830,7 @@ procedure EndGDKErrorTrap;
                                   x, y, width, height: gint): PGdkImage;
   Function gdk_drawable_get_colormap(Drawable: PGDKDrawable): PGdkColormap;
   
-  {$IFNDEF VER1_0}
+  {$IFDEF UseXinerama}
   // Xinerama
   function GetFirstScreen: Boolean;
   {$ENDIF}

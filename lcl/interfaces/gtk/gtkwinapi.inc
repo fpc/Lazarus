@@ -5270,7 +5270,7 @@ begin
     SM_CXSCREEN:
       begin
         {$IFDEF GTK1} { Partial fix for multi monitor systems - force use of first one }
-        {$IFNDEF VER1_0}
+        {$IFDEF UseXinerama}
         if GetFirstScreen then
           result := FirstScreen.x
         else
@@ -5281,7 +5281,7 @@ begin
     SM_CYSCREEN:
       begin
         {$IFDEF GTK1}
-        {$IFNDEF VER1_0}
+        {$IFDEF UseXinerama}
         if GetFirstScreen then
           result := FirstScreen.y
         else
@@ -8910,6 +8910,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.399  2005/02/19 20:36:56  mattias
+  xinerama hack is now only enabled when compiled with -dUseXinerama
+
   Revision 1.398  2005/02/19 16:30:47  mattias
   fixed 1.0.10 compilation
 
