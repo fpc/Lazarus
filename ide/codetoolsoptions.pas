@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, IDEProcs, LazConf, LResources, Forms, Controls, Buttons,
-  ExtCtrls, StdCtrls, ComCtrls, Dialogs, XMLCfg, CodeToolManager,
+  ExtCtrls, StdCtrls, ComCtrls, Dialogs, Laz_XMLCfg, CodeToolManager,
   DefineTemplates, SourceChanger, EditDefineTree, SynEdit;
 
 type

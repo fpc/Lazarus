@@ -42,7 +42,7 @@ unit Project;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, LCLType, XMLCfg, LazConf, CompilerOptions,
+  Classes, SysUtils, LCLLinux, LCLType, Laz_XMLCfg, LazConf, CompilerOptions,
   FileCtrl, CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs,
   IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates;
 
@@ -1458,6 +1458,9 @@ end.
 
 {
   $Log$
+  Revision 1.67  2002/07/30 06:24:04  lazarus
+  MG: added a faster version of TXMLConfig
+
   Revision 1.66  2002/07/06 06:37:06  lazarus
   MG: added Revert
 

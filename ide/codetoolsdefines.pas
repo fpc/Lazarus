@@ -45,7 +45,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
-  ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, XMLCfg,
+  ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview,
   TransferMacros, InputFileDialog;
 

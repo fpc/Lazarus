@@ -33,7 +33,7 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, XMLCfg, Forms, Controls, StdCtrls, Buttons;
+  Classes, SysUtils, Laz_XMLCfg, Forms, Controls, StdCtrls, Buttons;
 
 const
   DefaultMainIDEName = 'MainIDE';

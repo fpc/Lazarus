@@ -37,7 +37,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, XMLCfg,
+  Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, Laz_XMLCfg,
   ObjectInspector, ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf,
   Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory;
 

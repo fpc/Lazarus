@@ -51,7 +51,7 @@ uses
   MsgView,
   FindReplaceDialog,
   FindInFilesDlg,
-  aboutfrm;
+  IDEProcs;
 
 begin
   Application.Initialize;
@@ -77,12 +77,18 @@ begin
   Application.Run;
   SplashForm.Free;
 
-  writeln('LAZARUS END');
+  writeln('LAZARUS END - cleaning up ...');
+
+  // free the forms, so that they are freed before the finalization sections
+  FreeThenNil(MainIDE);
 end.
 
 
 {
   $Log$
+  Revision 1.36  2002/07/30 06:24:04  lazarus
+  MG: added a faster version of TXMLConfig
+
   Revision 1.35  2002/06/09 07:08:41  lazarus
   MG: fixed window jumping
 

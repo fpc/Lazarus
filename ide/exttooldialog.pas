@@ -40,8 +40,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
-  Dialogs, ExtCtrls, LResources, XMLCfg, ExtToolEditDlg, Process, KeyMapping,
-  TransferMacros, IDEProcs, OutputFilter;
+  Dialogs, ExtCtrls, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
+  KeyMapping, TransferMacros, IDEProcs, OutputFilter;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;

@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, LResources,
-  XMLCfg, ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf;
+  Laz_XMLCfg, ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf;
 
 type
   TMakeMode = (mmNone, mmBuild, mmCleanBuild);

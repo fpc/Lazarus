@@ -48,7 +48,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg,
+  ExtCtrls, LResources, Laz_XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg,
   InputHistory;
 
 { The xml format version:

@@ -41,7 +41,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo,
-  Messages, LResources, XMLCfg, Menus, Dialogs;
+  Messages, LResources, Laz_XMLCfg, Menus, Dialogs;
 
 {$DEFINE ClientRectBugFix}
 

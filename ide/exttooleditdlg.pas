@@ -43,7 +43,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, ExtCtrls, LResources, XMLCfg, KeyMapping, TransferMacros;
+  Dialogs, ExtCtrls, LResources, Laz_XMLCfg, KeyMapping, TransferMacros;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

@@ -30,7 +30,7 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, BuildLazDialog, LazConf, IDEProcs, XMLCfg;
+  Classes, SysUtils, BuildLazDialog, LazConf, IDEProcs, Laz_XMLCfg;
 
 type
   TMiscellaneousOptions = class

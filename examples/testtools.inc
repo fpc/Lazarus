@@ -2011,7 +2011,7 @@ procedure TForm1.SelectFont(Sender : TObject);
 begin
   If FontDialog1.Execute then
   begin
-    lblWhatFont.Caption := 'Font.Name: '+FontDialog1.FontName;
+    lblWhatFont.Caption := 'Font.Name: '+FontDialog1.Font.Name;
   end;
 end;
 //++++++++++++++++++++++++++++++++ TForm ++++++++++++++++++++++++++++++++++++++++++++
@@ -2881,6 +2881,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.8  2002/07/30 06:24:06  lazarus
+  MG: added a faster version of TXMLConfig
+
   Revision 1.7  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

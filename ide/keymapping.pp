@@ -36,7 +36,7 @@ interface
 uses
   LCLLinux, LCLType,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
-  SynEdit, SynEditKeyCmds, XMLCfg, Dialogs;
+  SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs;
 
 const
   { editor commands constants. see syneditkeycmds.pp for more

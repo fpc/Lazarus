@@ -51,7 +51,7 @@ uses
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
-  XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory;
+  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory;
 
 type
 {$ifdef NEW_EDITOR_SYNEDIT}

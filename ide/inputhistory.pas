@@ -31,7 +31,7 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, IDEProcs, XMLCfg, LazConf, Dialogs;
+  Classes, SysUtils, IDEProcs, Laz_XMLCfg, LazConf, Dialogs;
 
 type
   TFileDialogSettings = record

@@ -42,14 +42,14 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs;
+  Laz_XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg, IDEProcs;
 
 type
   { Compiler Options object used to hold the compiler options }
   TCompilerOptions = class(TObject)
   private
     fOptionsString: String;
-    xmlcfg: TXMLConfig;
+    xmlconfig: TXMLConfig;
 
     fProjectFile: String;
     fTargetFilename: string;
@@ -139,7 +139,7 @@ type
 
     property ProjectFile: String read fProjectFile write fProjectFile;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
-    property XMLConfigFile: TXMLConfig read xmlcfg write xmlcfg;
+    property XMLConfigFile: TXMLConfig read xmlconfig write xmlconfig;
     property Loaded: Boolean read fLoaded write fLoaded;
     
     property Style: Integer read fStyle write fStyle;

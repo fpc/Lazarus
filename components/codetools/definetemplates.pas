@@ -51,7 +51,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolsStrConsts, ExprEval
-  {$ifdef FPC}, XMLCfg{$endif}, AVL_Tree, Process,
+  {$ifdef FPC}, Laz_XMLCfg{$endif}, AVL_Tree, Process,
   KeywordFuncLists, FileProcs;
 
 const
