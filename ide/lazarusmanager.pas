@@ -109,7 +109,6 @@ begin
   FLazarusPath := LazarusPath;
   FProcess := TProcess.Create(nil);
   FProcess.Options := [];
-  FProcess.ShowWindow := swoHIDE;
   FProcess.CommandLine := FLazarusPath + ' --no-splash-screen';
 end;
 
