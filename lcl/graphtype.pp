@@ -267,7 +267,7 @@ begin
       if (BitsPerLine and 7)=0 then begin
         // byte boundary
         UsedBytesPerLine:=UsedBitsPerLine shr 3;
-        UnusedBitsAtEnd:=8-(UsedBitsPerLine and 7);
+        UnusedBitsAtEnd:=(8-(UsedBitsPerLine and 7)) and 7;
         UnusedByteMask:=($ff00 shr UnusedBitsAtEnd) and $ff;
         p:=RawImage^.Mask;
         for y:=0 to Height-1 do begin
@@ -775,6 +775,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2005/01/28 20:33:59  peter
+    * correctly calculate UnusedBitsAtEnd if there are no unused bits
+      to prevent overflow
+
   Revision 1.35  2005/01/17 11:53:39  mattias
   added showing all four sides to AnchorEditor
 
