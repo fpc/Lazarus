@@ -113,7 +113,8 @@ var
   WordIsNumberOperator,
   WordIsPredefinedFPCIdentifier,
   WordIsPredefinedDelphiIdentifier,
-  UnexpectedKeyWordInBeginBlock: TKeyWordFunctionList;
+  UnexpectedKeyWordInBeginBlock,
+  UnexpectedKeyWordInAsmBlock: TKeyWordFunctionList;
   UpChars: array[char] of char;
 
 function UpperCaseStr(const s: string): string;
@@ -963,6 +964,29 @@ begin
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
+  UnexpectedKeyWordInAsmBlock:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(UnexpectedKeyWordInAsmBlock);
+  with UnexpectedKeyWordInAsmBlock do begin
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FUNCTION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RESOURCESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
   WordIsLogicalBlockStart:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLogicalBlockStart);
   with WordIsLogicalBlockStart do begin

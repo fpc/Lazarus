@@ -1337,14 +1337,13 @@ begin
           exit;
         end;
       end;
-      if CurPos.Flag<>cafSemicolon then begin
+      // check semicolon
+      if CurPos.Flag=cafSemicolon then begin
+        ReadNextAtom;
+      end else begin
+        // Delphi allows procs without ending semicolon
         if (Scanner.CompilerMode<>cmDelphi) then
           RaiseCharExpectedButAtomFound(';');
-        // Delphi allows procs without ending semicolon
-        UndoReadNextAtom; // unread unknown atom
-        if CurPos.Flag=cafSemicolon then
-          UndoReadNextAtom; // unread semicolon
-        break;
       end;
     end else begin
       // current atom does not belong to procedure/method declaration
@@ -1353,7 +1352,6 @@ begin
         UndoReadNextAtom; // unread semicolon
       break;
     end;
-    ReadNextAtom;
   until false;
 end;
 
@@ -1903,12 +1901,18 @@ begin
       // check for unexpected keywords
       case BlockType of
       
-      ebtBegin,ebtAsm,ebtTry,ebtCase,ebtRepeat:
+      ebtBegin,ebtTry,ebtCase,ebtRepeat:
         if UnexpectedKeyWordInBeginBlock.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
         then
           RaiseUnexpectedKeyWordInBeginEndBlock;
           
+      ebtAsm:
+        if UnexpectedKeyWordInAsmBlock.DoItUppercase(UpperSrc,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+        then
+          RaiseUnexpectedKeyWordInBeginEndBlock;
+
       end;
     end;
   until false;
@@ -3014,7 +3018,7 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close record
   ReadNextAtom;
-  if UpAtomIs('PLATFORM') then ReadNextAtom;
+  if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') then ReadNextAtom;
   Result:=true;
 end;
 
