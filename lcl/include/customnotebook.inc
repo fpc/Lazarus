@@ -658,7 +658,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.Change;
 Begin
-  if Assigned(fOnPageChanged) then fOnPageChanged(self);
+  if ([csLoading,csDestroying]*ComponentState=[])
+  and (not fAddingPages) then begin
+    if Assigned(fOnPageChanged) then fOnPageChanged(Self);
+  end;
 end;
 
 procedure TCustomNotebook.Loaded;
@@ -675,9 +678,9 @@ Begin
   with Message do
     Case NMHdr^.code of
       TCN_SELCHANGE:
-        Begin
+        if FPageIndex<>NMHDR^.idfrom then begin
           //set the page from the NMHDR^.idfrom
-          if (not (csLoading in ComponentState))
+          if ([csLoading,csDestroying]*ComponentState=[])
           and (not fAddingPages) then begin
             FPageIndex := NMHDR^.idfrom;
             if FPageIndex>=PageCount then
@@ -779,6 +782,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/12/23 14:52:11  mattias
+  TNoteBook.PageChanged not during loading
+
   Revision 1.38  2003/11/25 21:48:29  micha
   clearer notebook error message
 
