@@ -85,12 +85,18 @@ Creating the debian fpcsrc package:
   Create the fpcsrc-1.0.7.tgz of 'Creating the fpcsrc tgz' and put it into
   tools/install. If you have no permissions for that, just copy the directory
   somwhere (e.g. cp -R <lazarusdir>/tools/install /tmp/fpcsrc).
-  The cd into the tools/install directory and executed the script
-  create_fpcsrc_deb.sh. It will create /tmp/fpcsrc_temp/ and and will build the
+  Then cd into the tools/install directory and execute the script
+  create_fpcsrc_deb.sh. It will create /tmp/fpcsrc_temp/ and will build the
   deb there.
   
   
 Creating the debian lazarus package:
 
-  ToDo ...
+  You need the X11 package:
+  Create the lazarus-0.8.5.tgz of 'Creating the lazarus tgz' and put it into
+  tools/install. If you have no permissions for that, just copy the directory
+  somwhere (e.g. cp -R <lazarusdir>/tools/install /tmp/lazarus).
+  Then cd into the tools/install directory and execute the script
+  create_lazarus_deb.sh. It will create /tmp/lazarus_temp/ and will build the
+  deb there.
   

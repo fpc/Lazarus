@@ -39,7 +39,7 @@ gzip --best $FPCSrcBuildDir/usr/share/doc/fpcsrc/changelog.Debian
 
 # fixing permissions
 echo "fixing permissions ..."
-find ./debian -type d | xargs chmod 755   # this is necessary on Debian Woody, don't ask me why
+find $FPCSrcBuildDir -type d | xargs chmod 755   # this is necessary on Debian Woody, don't ask me why
 
 # creating deb
 echo "creating deb ..."

@@ -1,0 +1,16 @@
+Package: lazarus
+Version: 0.8.5-1
+Section: devel
+Priority: optional
+Maintainer: Mattias Gaertner <mattias@cvs.freepascal.org>
+Architecture: i386
+Depends: fp-compiler (>=1.0.7), fp-docs (>=1.0.7),
+  fp-units-base (>=1.0.7), fp-units-db (>=1.0.7), 
+  fp-units-fcl (>=1.0.7), fp-units-gfx (>=1.0.7), 
+  fp-units-gtk (>=1.0.7), fp-units-misc (>=1.0.7),
+  fp-units-net (>=1.0.7), fp-units-rtl (>=1.0.7), 
+  fp-utils (>=1.0.7), fpcsrc (>=1.0.7)
+Description: RAD tool for freepascal
+  Lazarus is a free RAD tool for freepascal using the lazarus
+  component library LCL.
+  
