@@ -206,7 +206,6 @@ uses
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc;
 
-
 {$I gtklistsl.inc}
 
 {$I gtkobject.inc}
@@ -309,6 +308,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2002/11/12 10:53:43  lazarus
+  MG: fixed setting gdk pen style
+
   Revision 1.102  2002/11/12 10:16:18  lazarus
   MG: fixed TMainMenu creation
 
