@@ -60,6 +60,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TScreen.CustomFormIndex(AForm: TCustomForm): integer;
+ ------------------------------------------------------------------------------}
+function TScreen.CustomFormIndex(AForm: TCustomForm): integer;
+begin
+  Result:=FCustomForms.Count-1;
+  while (Result>=0) and (CustomForms[Result]<>AForm) do dec(Result);
+end;
+
+{------------------------------------------------------------------------------
+  function TScreen.FormIndex(AForm: TForm): integer;
+ ------------------------------------------------------------------------------}
+function TScreen.FormIndex(AForm: TForm): integer;
+begin
+  Result:=FFormList.Count-1;
+  while (Result>=0) and (Forms[Result]<>AForm) do dec(Result);
+end;
+
+{------------------------------------------------------------------------------
   function TScreen.GetFonts : TStrings;
  ------------------------------------------------------------------------------}
 function TScreen.GetFonts : TStrings;

@@ -497,6 +497,8 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
+    function CustomFormIndex(AForm: TCustomForm): integer;
+    function FormIndex(AForm: TForm): integer;
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;
