@@ -143,6 +143,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure SaveUserLinks;
+    procedure WriteLinkTree(LinkTree: TAVLTree);
     function FindLinkWithPkgName(const PkgName: string): TPackageLink;
     function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
     function FindLinkWithPackageID(APackageID: TLazPackageID): TPackageLink;
@@ -253,6 +254,8 @@ end;
 
 destructor TPackageLink.Destroy;
 begin
+  //debugln('TPackageLink.Destroy ',IDAsString);
+  //if Origin=ploGlobal then RaiseException('');
   inherited Destroy;
 end;
 
@@ -418,13 +421,15 @@ begin
       NewPkgLink.Filename:=TrimFilename(NewFilename);
       //debugln('TPackageLinks.UpdateGlobalLinks PkgName="',NewPkgLink.Name,'" ',
       //  ' PkgVersion=',NewPkgLink.Version.AsString,
-      //  ' Filename="',NewPkgLink.Filename,'"');
+      //  ' Filename="',NewPkgLink.Filename,'"',
+      //  ' MakeSense=',dbgs(NewPkgLink.MakeSense));
       if NewPkgLink.MakeSense then
         FGlobalLinks.Add(NewPkgLink)
       else
         NewPkgLink.Free;
       
     until FindNext(FileInfo)<>0;
+    //WriteLinkTree(FGlobalLinks);
     if PkgVersion<>nil then PkgVersion.Free;
   end;
   FindClose(FileInfo);
@@ -614,6 +619,20 @@ begin
   Modified:=false;
 end;
 
+procedure TPackageLinks.WriteLinkTree(LinkTree: TAVLTree);
+var
+  ANode: TAVLTreeNode;
+  Link: TPackageLink;
+begin
+  if LinkTree=nil then exit;
+  ANode:=LinkTree.FindLowest;
+  while ANode<>nil do begin
+    Link:=TPackageLink(ANode.Data);
+    debugln('  ',Link.IDAsString);
+    ANode:=LinkTree.FindSuccessor(ANode);
+  end;
+end;
+
 function TPackageLinks.FindLinkWithPkgNameInTree(LinkTree: TAVLTree;
   const PkgName: string): TPackageLink;
 // find left most link with PkgName
@@ -698,6 +717,10 @@ begin
   Result:=FindLinkWithDependencyInTree(FUserLinksSortID,Dependency);
   if Result=nil then
     Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
+  //if Result=nil then begin
+  //  debugln('TPackageLinks.FindLinkWithDependency A ',Dependency.AsString);
+  //  WriteLinkTree(FGlobalLinks);
+  //end;
   // finally try the history lists of the Dependency Owner (Project/Package)
   if (Result=nil) and (Dependency.Owner<>nil)
   and DependencyOwnerGetPkgFilename(Self,Dependency) then

@@ -81,7 +81,7 @@ unit FileFind;
 
 interface
 
-uses
+uses LResources,
     SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
 
 type
@@ -137,7 +137,7 @@ implementation
 
 procedure Register;
 begin
-     RegisterComponents('Bulsoft', [TFileSearch]);
+     RegisterComponents('Samples', [TFileSearch]);
 end;
 
 constructor TFileSearch.Create(aOwner:TComponent);
@@ -295,4 +295,7 @@ begin    // ScanDir
      FindClose(fInfo); // barko
 end; // ScanDir
 
+
+initialization
+  {$I filefind.lrs}
 end.

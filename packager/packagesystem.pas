@@ -347,6 +347,7 @@ begin
   try
     AFilename:=PkgLink.Filename;
     if not FileExists(AFilename) then begin
+      DebugLn('invalid Package Link: file "'+AFilename+'" does not exist.');
       PkgLink.FileDateValid:=false;
       exit;
     end;
@@ -364,8 +365,11 @@ begin
         exit;
       end;
     end;
-    if not NewPackage.MakeSense then exit;
-    if PkgLink.Compare(NewPackage)<>0 then exit;
+    if not NewPackage.MakeSense then begin
+      DebugLn('invalid Package file "'+AFilename+'".');
+      exit;
+    end;
+    if CompareText(PkgLink.Name,NewPackage.Name)<>0 then exit;
     // ok
     Result:=true;
     AddPackage(NewPackage);

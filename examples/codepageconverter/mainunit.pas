@@ -27,13 +27,15 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, FileFind;
+  StdCtrls, Buttons, ComCtrls, FileFind, Menus;
 
 type
   TLazConverterForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
     CheckBox1: TCheckBox;
     ComboBox1: TComboBox;
     ComboBox2: TComboBox;
@@ -42,20 +44,30 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    ListView1: TListView;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
     Panel1: TPanel;
+    Panel2: TPanel;
+    PopupMenu1: TPopupMenu;
     ProgressBar1: TProgressBar;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
     procedure CheckBox1Click(Sender: TObject);
     procedure FileSearch1ChangeFolder(fullpath: string; info: TSearchRec);
     procedure FileSearch1FileFind(fullpath: string; info: TSearchRec);
     procedure FileSearch1Finish(Sender: TObject);
     procedure Form1Show(Sender: TObject);
+    procedure LazConverterFormResize(Sender: TObject);
+    procedure ListView1SelectItem(Sender: TObject; Item: TListItem;
+      Selected: Boolean);
   private
     { private declarations }
   public
@@ -65,9 +77,7 @@ type
 var
   LazConverterForm: TLazConverterForm;
 
-implementation
-
-// konvertiramo ¹ð¾æè ©Ð®ÆÈ v ©Ð®ÆÈ ©Ð®ÆÈ
+implementation uses viewunit;
 
 
 function origpath:string;
@@ -99,6 +109,7 @@ end;
 procedure TLazConverterForm.Button2Click(Sender: TObject);
 var tmp:string;
 begin
+  listview1.items.clear;
   tmp:=trim(Edit1.text);
   if tmp='' then
   begin
@@ -253,6 +264,28 @@ begin
   end;
 end;
 
+procedure TLazConverterForm.Button4Click(Sender: TObject);
+begin
+  if listview1.selected<>NIL then
+  begin
+    filesearch1.FilesFound.Delete(filesearch1.filesfound.IndexOf(listview1.selected.caption));
+    listview1.selected.delete;
+    filesearch1finish(sender);
+  end;
+end;
+
+procedure TLazConverterForm.Button5Click(Sender: TObject);
+begin
+  try
+   if listview1.selected<>nil then
+   begin
+     viewform.caption:='VIEW : '+listview1.selected.caption;
+     viewform.SynMemo1.Lines.LoadFromFile(listview1.selected.caption);
+     viewform.showmodal;
+   end;
+  except end;
+end;
+
 procedure TLazConverterForm.CheckBox1Click(Sender: TObject);
 begin
   FileSearch1.RecurseSubFolders:=CheckBox1.Checked;
@@ -265,12 +298,14 @@ end;
 
 procedure TLazConverterForm.FileSearch1FileFind(fullpath: string; info: TSearchRec);
 begin
-  filesearch1.filesfound.add(fullpath+info.name);
+  listview1.items.add;
+  listview1.items[listview1.items.count-1].caption:=fullpath+info.Name;
+  listview1.items[listview1.items.count-1].subitems.add(UpperCase(ExtractFileExt(info.Name)));
 end;
 
 procedure TLazConverterForm.FileSearch1Finish(Sender: TObject);
 begin
-  label6.caption:='Searching done... press CONVERT button! Files: '+inttostr(filesearch1.filesfound.count-1);
+  label6.caption:='Searching done... press CONVERT button! Files: '+inttostr(filesearch1.filesfound.count);
 end;
 
 procedure TLazConverterForm.Form1Show(Sender: TObject);
@@ -286,6 +321,25 @@ begin
   ComboBox2.text:='';
   CheckBox1.Checked:=True;
   Edit1.SetFocus;
+  listview1.Columns[0].Width:=Width-70;
+  button4.enabled:=false;
+  button5.enabled:=false;
+  MenuItem1.Enabled:=false;
+  MenuItem3.Enabled:=false;
+end;
+
+procedure TLazConverterForm.LazConverterFormResize(Sender: TObject);
+begin
+  listview1.Columns[0].Width:=Width-70;
+end;
+
+procedure TLazConverterForm.ListView1SelectItem(Sender: TObject;
+  Item: TListItem; Selected: Boolean);
+begin
+  button4.enabled:=selected;
+  button5.enabled:=selected;
+  MenuItem1.Enabled:=selected;
+  MenuItem3.Enabled:=selected;
 end;
 
 initialization

@@ -2,9 +2,9 @@
 <CONFIG>
   <Package Version="2">
     <Name Value="filefindlaz"/>
-    <Author Value="Barko"/>
+    <Author Value="bulsoft - for lazarus by barko"/>
     <CompilerOptions>
-      <Version Value="2"/>
+      <Version Value="3"/>
       <SearchPaths>
         <OtherUnitFiles Value="$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/;$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/$(LCLWidgetType)/;$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/;$(LazarusDir)/components/custom/;$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)/"/>
         <UnitOutputDirectory Value="lib/"/>
@@ -28,7 +28,7 @@
       </Other>
     </CompilerOptions>
     <License Value="LGPL"/>
-    <Version Major="1" Release="1"/>
+    <Version Major="1" Release="2"/>
     <Files Count="1">
       <Item1>
         <Filename Value="filefind.pas"/>
