@@ -848,6 +848,7 @@ resourcestring
   dlgLinkStatLibs = 'Link With Static Libraries';
   dlgLinkSmart = 'Link Smart';
   dlgPassOptsLinker = 'Pass Options To The Linker (Delimiter is space)';
+  lisCOTargetOSSpecificOptions = 'Target OS specific options';
   dlgVerbosity = 'Verbosity:';
   dlgCOShowErr = 'Show Errors';
   dlgShowWarnings = 'Show Warnings';

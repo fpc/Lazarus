@@ -158,6 +158,7 @@ type
     fOwner: TObject;
     FParsedOpts: TParsedCompilerOptions;
     fTargetFilename: string;
+    FWin32GraphicApp: boolean;
     fXMLFile: String;
     xmlconfig: TXMLConfig;
 
@@ -368,7 +369,8 @@ type
     property LinkStyle: Integer read fLinkStyle write fLinkStyle;
     property PassLinkerOptions: Boolean read fPassLinkerOpt write fPassLinkerOpt;
     property LinkerOptions: String read fLinkerOptions write SetLinkerOptions;
-    
+    property Win32GraphicApp: boolean read FWin32GraphicApp write FWin32GraphicApp;
+
     // messages:
     property ShowErrors: Boolean read fShowErrors write fShowErrors;
     property ShowWarn: Boolean read fShowWarn write fShowWarn;
@@ -567,6 +569,8 @@ type
     grpOptions: TGroupBox;
     chkOptionsLinkOpt: TCheckBox;
     edtOptionsLinkOpt: TEdit;
+    TargetSpecificsGrpBox: TGroupBox;
+    chkWin32GraphicApp: TCheckBox;
 
     { Messages Controls }
     MsgPage: TPage;
@@ -1188,7 +1192,8 @@ begin
   LinkStyle := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1);
   PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
   LinkerOptions := f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', ''));
-    
+  Win32GraphicApp := XMLConfigFile.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
+
   { Messages }
   p:=Path+'Other/';
   ShowErrors := XMLConfigFile.GetValue(p+'Verbosity/ShowErrors/Value', true);
@@ -1321,7 +1326,8 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
-    
+  XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
+
   { Messages }
   p:=Path+'Other/';
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
@@ -1920,6 +1926,9 @@ Processor specific options:
     if InhLinkerOpts<>'' then
       switches := switches + ' ' + ConvertOptionsToCmdLine(' ','-k', InhLinkerOpts);
   end;
+  
+  if Win32GraphicApp then
+    switches := switches + ' -WG';
 
   { ---------------- Other Tab -------------------- }
 
@@ -2164,6 +2173,7 @@ begin
   fLinkStyle := 1;
   fPassLinkerOpt := false;
   LinkerOptions := '';
+  Win32GraphicApp := false;
     
   // messages
   fShowErrors := true;
@@ -2257,6 +2267,7 @@ begin
   fLinkStyle := CompOpts.fLinkStyle;
   fPassLinkerOpt := CompOpts.fPassLinkerOpt;
   LinkerOptions := CompOpts.fLinkerOptions;
+  Win32GraphicApp := CompOpts.Win32GraphicApp;
 
   // Messages
   fShowErrors := CompOpts.fShowErrors;
@@ -2346,6 +2357,7 @@ begin
     and (fLinkStyle = CompOpts.fLinkStyle)
     and (fPassLinkerOpt = CompOpts.fPassLinkerOpt)
     and (fLinkerOptions = CompOpts.fLinkerOptions)
+    and (FWin32GraphicApp = CompOpts.FWin32GraphicApp)
 
     // messages
     and (fShowErrors = CompOpts.fShowErrors)
@@ -2780,6 +2792,7 @@ begin
 
   chkOptionsLinkOpt.Checked := Options.PassLinkerOptions;
   edtOptionsLinkOpt.Text := Options.LinkerOptions;
+  chkWin32GraphicApp.Checked := Options.Win32GraphicApp;
   grpOptions.Enabled:=EnabledLinkerOpts;
 
   // messages
@@ -2939,6 +2952,7 @@ begin
 
   Options.PassLinkerOptions := chkOptionsLinkOpt.Checked;
   Options.LinkerOptions := edtOptionsLinkOpt.Text;
+  Options.Win32GraphicApp := chkWin32GraphicApp.Checked;
 
   if (radLibsLinkDynamic.Checked) then
     Options.LinkStyle := 1
@@ -3710,7 +3724,7 @@ begin
     Top := grpDebugging.Top + grpDebugging.Height + 10;
     Left := 10;
     Height := 91;
-    Width := Self.ClientWidth-28;
+    Width := (Self.ClientWidth-30) div 2;
     Caption := dlgLinkLibraries ;
   end;
 
@@ -3721,8 +3735,8 @@ begin
     Caption := dlgLinkDinLibs;
     Top := 6;
     Left := 8;
-    Height := 16;
-    Width := 360;
+    Height := 22;
+    Width := Parent.Width-10;
   end;
 
   radLibsLinkStatic := TRadioButton.Create(grpLinkLibraries);
@@ -3732,8 +3746,8 @@ begin
     Caption := dlgLinkStatLibs ;
     Top := 27;
     Left := 8;
-    Height := 16;
-    Width := 330;
+    Height := 22;
+    Width := Parent.Width-10;
   end;
 
   radLibsLinkSmart := TRadioButton.Create(grpLinkLibraries);
@@ -3743,8 +3757,31 @@ begin
     Caption := dlgLinkSmart ;
     Top := 48;
     Left := 8;
-    Height := 16;
-    Width := 330;
+    Height := 22;
+    Width := Parent.Width-10;
+  end;
+
+  {------------------------------------------------------------}
+
+  TargetSpecificsGrpBox := TGroupBox.Create(Self);
+  with TargetSpecificsGrpBox do begin
+    Parent := LinkingPage;
+    Top := grpLinkLibraries.Top;
+    Left := grpLinkLibraries.Left+grpLinkLibraries.Width+10;
+    Height := 50;
+    Width := (Self.ClientWidth-30) div 2;
+    Caption := lisCOTargetOSSpecificOptions;
+  end;
+
+  chkWin32GraphicApp := TCheckBox.Create(grpOptions);
+  with chkWin32GraphicApp do
+  begin
+    Parent := TargetSpecificsGrpBox;
+    Caption := 'Win32 gui application (-WG)';
+    Top := 5;
+    Left := 0;
+    Height := 22;
+    Width := Parent.Width-10;
   end;
 
   {------------------------------------------------------------}
@@ -3756,7 +3793,7 @@ begin
     Top := grpLinkLibraries.Top + grpLinkLibraries.Height + 10;
     Left := 10;
     Height := 75;
-    Width := Self.ClientWidth-28;
+    Width := (Self.ClientWidth-20);
     Caption := dlgCOOpts;
   end;
 
