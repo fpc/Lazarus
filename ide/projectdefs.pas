@@ -42,6 +42,9 @@ uses
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
 
+  TProjectWriteFlag = (pwfDontSaveClosedUnits, pwfSaveOnlyProjectUnits);
+  TProjectWriteFlags = set of TProjectWriteFlag;
+
   //---------------------------------------------------------------------------
   TProjectBookmark = class
   private
@@ -266,6 +269,8 @@ type
     procedure LoadDefaults;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string);
+    function FileCanBePublished(const AFilename: string): boolean;
+    function WriteFlags: TProjectWriteFlags;
 
     // destination
     property DestinationDirectory: string
@@ -1051,6 +1056,35 @@ begin
   XMLConfig.SetValue(APath+'SaveEditorInfoOfNonProjectFiles/Value',
                      SaveEditorInfoOfNonProjectFiles);
 end;
+
+function TPublishProjectOptions.FileCanBePublished(
+  const AFilename: string): boolean;
+begin
+  {Result:=false;
+
+  // check include filter
+  if UseIncludeFileFilter
+  and not FilenameIsMatching(IncludeFileFilter,ExtractFilename(AFilename),true)
+  then
+    exit;
+  // check exclude filter
+  if UseExcludeFileFilter
+  and FilenameIsMatching(ExcludeFileFilter,ExtractFilename(AFilename),true)
+  then
+    exit;}
+    
+  Result:=true;
+end;
+
+function TPublishProjectOptions.WriteFlags: TProjectWriteFlags;
+begin
+  Result:=[];
+  if not SaveEditorInfoOfNonProjectFiles then
+    Include(Result,pwfSaveOnlyProjectUnits);
+  if not SaveClosedEditorFilesInfo then
+    Include(Result,pwfDontSaveClosedUnits);
+end;
+
 
 end.
 

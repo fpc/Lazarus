@@ -182,7 +182,7 @@ begin
   // command after
   List:=InputHistories.HistoryLists.GetList(PublishProjectCommandsAfter,true);
   if List.Count=0 then begin
-    List.Add('tar czf $(ProjPublishDir).tgz $(ProjPublishDir)');
+    List.Add('/bin/tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)');
   end;
   CommandAfterCombobox.Items.Assign(List);
 
@@ -235,6 +235,7 @@ begin
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,405);
   LoadHistoryLists;
+  FilesGroupbox.Enabled:=false;
 end;
 
 destructor TPublishProjectDialog.Destroy;

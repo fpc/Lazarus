@@ -11,48 +11,50 @@ LazarusResources.Add('TPublishProjectDialog','FORMDATA',[
   +'n'#7'ANCHORS'#11#5'aktop'#7'akright'#0#11'MODALRESULT'#2#2#7'CAPTION'#6#6'C'
   +'ancel'#7'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#3'w'#1#6'HEIGHT'#2#25#3'TOP'#3
   +'p'#1#5'WIDTH'#2'K'#0#0#9'TGROUPBOX'#15'DestDirGroupBox'#7'ANCHORS'#11#5'akt'
-  +'op'#6'akleft'#0#7'CAPTION'#6#21'Destination directory'#8'ONRESIZE'#7#21'Des'
-  +'tDirGroupBoxRESIZE'#4'LEFT'#2#8#6'HEIGHT'#2'o'#3'TOP'#2#8#5'WIDTH'#3#194#1#0
-  +#9'TCOMBOBOX'#15'DestDirComboBox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'PARE'
-  +'NTCTL3D'#8#7'TABSTOP'#9#4'TEXT'#6#15'DestDirComboBox'#4'LEFT'#2#6#6'HEIGHT'
-  +#2#25#3'TOP'#2#1#5'WIDTH'#3'^'#1#0#0#7'TBITBTN'#19'BrowseDestDirBitBtn'#10'G'
-  +'LYPH.Data'#10'>'#0#0#0':'#0#0#0'BM:'#0#0#0#0#0#0#0'6'#0#0#0'('#0#0#0#1#0#0#0
-  +#1#0#0#0#1#0#16#0#0#0#0#0#4#0#0#0'Z'#0#0#0'`'#0#0#0'@'#0#0#0'@'#0#0#0#0#0#0#0
-  +#7'SPACING'#2#3#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#6'Browse'#7
-  +'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#3'n'#1#6'HEIGHT'#2#25#3'TOP'#2#1#5'WIDTH'
-  +#2'H'#0#0#9'TCOMBOBOX'#20'CommandAfterCombobox'#7'ANCHORS'#11#5'aktop'#6'akl'
-  +'eft'#0#11'PARENTCTL3D'#8#8'TABORDER'#2#2#7'TABSTOP'#9#4'TEXT'#6#20'CommandA'
-  +'fterCombobox'#4'LEFT'#2#6#6'HEIGHT'#2#25#3'TOP'#2':'#5'WIDTH'#3#174#1#0#0#6
-  +'TLABEL'#17'CommandAfterLabel'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'
-  +#6#14'Command after:'#5'COLOR'#4#5#0#0#128#6'LAYOUT'#7#5'tltop'#4'LEFT'#2#6#6
-  +'HEIGHT'#2#17#3'TOP'#2'!'#5'WIDTH'#3#172#1#0#0#0#9'TGROUPBOX'#13'FilesGroupb'
-  +'ox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#5'Files'#8'ONRESIZE'#7
-  +#19'FilesGroupboxRESIZE'#4'LEFT'#2#8#6'HEIGHT'#3#139#0#3'TOP'#3#128#0#5'WIDT'
-  +'H'#3#194#1#0#9'TCHECKBOX'#24'UseIncludeFilterCheckbox'#8'AUTOSIZE'#9#11'ALL'
-  +'OWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#18'Use include '
-  +'filter'#10'DRAGCURSOR'#2#0#7'TABSTOP'#9#7'TABSTOP'#9#4'LEFT'#2#4#6'HEIGHT'#2
-  +#20#5'WIDTH'#3#171#0#0#0#9'TCOMBOBOX'#25'IncludeFileFilterCombobox'#7'ANCHOR'
-  +'S'#11#5'aktop'#6'akleft'#0#11'PARENTCTL3D'#8#8'TABORDER'#2#1#7'TABSTOP'#9#4
-  +'TEXT'#6#25'IncludeFileFilterCombobox'#4'LEFT'#2#4#6'HEIGHT'#2#25#3'TOP'#2#24
-  +#5'WIDTH'#3#176#1#0#0#9'TCHECKBOX'#24'UseExcludeFilterCheckbox'#8'AUTOSIZE'#9
-  +#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#18'Use ex'
-  +'clude filter'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#2#7'TABSTOP'#9#8'TABORDER'#2
-  +#2#7'TABSTOP'#9#4'LEFT'#2#4#6'HEIGHT'#2#20#3'TOP'#2'@'#5'WIDTH'#3#175#0#0#0#9
-  +'TCOMBOBOX'#25'ExcludeFileFilterCombobox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0
-  +#11'PARENTCTL3D'#8#8'TABORDER'#2#3#7'TABSTOP'#9#4'TEXT'#6#25'ExcludeFileFilt'
-  +'erCombobox'#4'LEFT'#2#4#6'HEIGHT'#2#25#3'TOP'#2'X'#5'WIDTH'#3#176#1#0#0#0#9
-  +'TGROUPBOX'#19'ProjectInfoGroupbox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAP'
-  +'TION'#6#19'Project Information'#8'ONRESIZE'#7#25'ProjectInfoGroupboxRESIZE'
-  +#4'LEFT'#2#8#6'HEIGHT'#2'E'#3'TOP'#3#24#1#5'WIDTH'#3#194#1#0#9'TCHECKBOX!Sav'
-  +'eClosedEditorFilesInfoCheckbox'#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'ANCHORS'
-  +#11#5'aktop'#6'akleft'#0#7'CAPTION'#6' Save editor info of closed files'#10
-  +'DRAGCURSOR'#2#0#7'TABSTOP'#9#7'TABSTOP'#9#4'LEFT'#2#4#6'HEIGHT'#2#20#3'TOP'
-  +#2#1#5'WIDTH'#3#176#1#0#0#9'TCHECKBOX''SaveEditorInfoOfNonProjectFilesCheckb'
-  +'ox'#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CA'
-  +'PTION'#6'%Save editor info of non project files'#10'DRAGCURSOR'#2#0#8'TABOR'
-  +'DER'#2#1#7'TABSTOP'#9#8'TABORDER'#2#1#7'TABSTOP'#9#4'LEFT'#2#4#6'HEIGHT'#2
-  +#20#3'TOP'#2#26#5'WIDTH'#3#176#1#0#0#0#7'TBUTTON'#18'SaveSettingsButton'#7'A'
-  +'NCHORS'#11#5'aktop'#7'akright'#0#7'CAPTION'#6#13'Save settings'#7'TABSTOP'#9
-  +#8'TABORDER'#2#5#7'ONCLICK'#7#23'SaveSettingsButtonCLICK'#4'LEFT'#3#202#0#6
-  +'HEIGHT'#2#25#3'TOP'#3'p'#1#5'WIDTH'#2'x'#0#0#0
+  +'op'#6'akleft'#0#7'CAPTION'#6#21'Destination directory'#5'COLOR'#4#5#0#0#128
+  +#11'PARENTCTL3D'#8#8'TABORDER'#2#2#8'ONRESIZE'#7#21'DestDirGroupBoxRESIZE'#4
+  +'LEFT'#2#8#6'HEIGHT'#2'o'#3'TOP'#2#8#5'WIDTH'#3#194#1#0#9'TCOMBOBOX'#15'Dest'
+  +'DirComboBox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'PARENTCTL3D'#8#7'TABSTOP'
+  +#9#4'TEXT'#6#15'DestDirComboBox'#4'LEFT'#2#6#6'HEIGHT'#2#25#3'TOP'#2#1#5'WID'
+  +'TH'#3'^'#1#0#0#7'TBITBTN'#19'BrowseDestDirBitBtn'#10'GLYPH.Data'#10'>'#0#0#0
+  +':'#0#0#0'BM:'#0#0#0#0#0#0#0'6'#0#0#0'('#0#0#0#1#0#0#0#1#0#0#0#1#0#16#0#0#0#0
+  +#0#4#0#0#0'Z'#0#0#0'`'#0#0#0'@'#0#0#0'@'#0#0#0#0#0#0#0#7'SPACING'#2#3#7'ANCH'
+  +'ORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#6'Browse'#7'TABSTOP'#9#8'TABORDER'
+  +#2#1#4'LEFT'#3'n'#1#6'HEIGHT'#2#25#3'TOP'#2#1#5'WIDTH'#2'H'#0#0#9'TCOMBOBOX'
+  +#20'CommandAfterCombobox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'PARENTCTL3D'
+  +#8#8'TABORDER'#2#2#7'TABSTOP'#9#4'TEXT'#6#20'CommandAfterCombobox'#4'LEFT'#2
+  +#6#6'HEIGHT'#2#25#3'TOP'#2':'#5'WIDTH'#3#174#1#0#0#6'TLABEL'#17'CommandAfter'
+  +'Label'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#14'Command after:'#5
+  +'COLOR'#4#5#0#0#128#6'LAYOUT'#7#5'tltop'#4'LEFT'#2#6#6'HEIGHT'#2#17#3'TOP'#2
+  +'!'#5'WIDTH'#3#172#1#0#0#0#9'TGROUPBOX'#13'FilesGroupbox'#7'ANCHORS'#11#5'ak'
+  +'top'#6'akleft'#0#7'CAPTION'#6#5'Files'#5'COLOR'#4#5#0#0#128#11'PARENTCTL3D'
+  +#8#8'TABORDER'#2#3#8'ONRESIZE'#7#19'FilesGroupboxRESIZE'#4'LEFT'#2#8#6'HEIGH'
+  +'T'#3#139#0#3'TOP'#3#128#0#5'WIDTH'#3#194#1#0#9'TCHECKBOX'#24'UseIncludeFilt'
+  +'erCheckbox'#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akleft'
+  +#0#7'CAPTION'#6#18'Use include filter'#10'DRAGCURSOR'#2#0#7'TABSTOP'#9#7'TAB'
+  +'STOP'#9#4'LEFT'#2#4#6'HEIGHT'#2#20#5'WIDTH'#3#171#0#0#0#9'TCOMBOBOX'#25'Inc'
+  +'ludeFileFilterCombobox'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'PARENTCTL3D'#8
+  +#8'TABORDER'#2#1#7'TABSTOP'#9#4'TEXT'#6#25'IncludeFileFilterCombobox'#4'LEFT'
+  +#2#4#6'HEIGHT'#2#25#3'TOP'#2#24#5'WIDTH'#3#176#1#0#0#9'TCHECKBOX'#24'UseExcl'
+  +'udeFilterCheckbox'#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6
+  +'akleft'#0#7'CAPTION'#6#18'Use exclude filter'#10'DRAGCURSOR'#2#0#8'TABORDER'
+  +#2#2#7'TABSTOP'#9#8'TABORDER'#2#2#7'TABSTOP'#9#4'LEFT'#2#4#6'HEIGHT'#2#20#3
+  +'TOP'#2'@'#5'WIDTH'#3#175#0#0#0#9'TCOMBOBOX'#25'ExcludeFileFilterCombobox'#7
+  +'ANCHORS'#11#5'aktop'#6'akleft'#0#11'PARENTCTL3D'#8#8'TABORDER'#2#3#7'TABSTO'
+  +'P'#9#4'TEXT'#6#25'ExcludeFileFilterCombobox'#4'LEFT'#2#4#6'HEIGHT'#2#25#3'T'
+  +'OP'#2'X'#5'WIDTH'#3#176#1#0#0#0#9'TGROUPBOX'#19'ProjectInfoGroupbox'#7'ANCH'
+  +'ORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#19'Project Information'#5'COLOR'#4
+  +#5#0#0#128#11'PARENTCTL3D'#8#8'TABORDER'#2#4#8'ONRESIZE'#7#25'ProjectInfoGro'
+  +'upboxRESIZE'#4'LEFT'#2#8#6'HEIGHT'#2'E'#3'TOP'#3#24#1#5'WIDTH'#3#194#1#0#9
+  +'TCHECKBOX!SaveClosedEditorFilesInfoCheckbox'#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9
+  +#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6' Save editor info of closed'
+  +' files'#10'DRAGCURSOR'#2#0#7'TABSTOP'#9#7'TABSTOP'#9#4'LEFT'#2#4#6'HEIGHT'#2
+  +#20#3'TOP'#2#1#5'WIDTH'#3#176#1#0#0#9'TCHECKBOX''SaveEditorInfoOfNonProjectF'
+  +'ilesCheckbox'#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akle'
+  +'ft'#0#7'CAPTION'#6'%Save editor info of non project files'#10'DRAGCURSOR'#2
+  +#0#8'TABORDER'#2#1#7'TABSTOP'#9#8'TABORDER'#2#1#7'TABSTOP'#9#4'LEFT'#2#4#6'H'
+  +'EIGHT'#2#20#3'TOP'#2#26#5'WIDTH'#3#176#1#0#0#0#7'TBUTTON'#18'SaveSettingsBu'
+  +'tton'#7'ANCHORS'#11#5'aktop'#7'akright'#0#7'CAPTION'#6#13'Save settings'#7
+  +'TABSTOP'#9#8'TABORDER'#2#5#7'ONCLICK'#7#23'SaveSettingsButtonCLICK'#4'LEFT'
+  +#3#202#0#6'HEIGHT'#2#25#3'TOP'#3'p'#1#5'WIDTH'#2'x'#0#0#0
 ]);

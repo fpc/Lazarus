@@ -268,7 +268,8 @@ type
     destructor Destroy; override;
 
     function ReadProject(const LPIFilename: string): TModalResult;
-    function WriteProject: TModalResult;
+    function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
+      const OverrideProjectInfoFile: string): TModalResult;
 
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
     function UnitCount:integer;
@@ -1041,7 +1042,8 @@ end;
 {------------------------------------------------------------------------------
   TProject WriteProject
  ------------------------------------------------------------------------------}
-function TProject.WriteProject: TModalResult;
+function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
+  const OverrideProjectInfoFile: string): TModalResult;
 
   procedure SaveFlags;
   var f: TProjectFlag;
@@ -1055,10 +1057,14 @@ function TProject.WriteProject: TModalResult;
   function UnitMustBeSaved(i: integer): boolean;
   begin
     Result:=false;
-    if (pfSaveOnlyProjectUnits in Flags) and (not Units[i].IsPartOfProject) then
-      exit;
-    if (not (pfSaveClosedUnits in Flags)) and (not Units[i].IsPartOfProject)
-    and (not Units[i].Loaded) then exit;
+    if not Units[i].IsPartOfProject then begin
+      if (pfSaveOnlyProjectUnits in Flags) then exit;
+      if (pwfSaveOnlyProjectUnits in ProjectWriteFlags) then exit;
+      if (not Units[i].Loaded) then begin
+        if (not (pfSaveClosedUnits in Flags)) then exit;
+        if (pwfDontSaveClosedUnits in ProjectWriteFlags) then exit;
+      end;
+    end;
     Result:=true;
   end;
   
@@ -1083,7 +1089,10 @@ var
 begin
   Result := mrCancel;
 
-  confPath := ProjectInfoFile;
+  if OverrideProjectInfoFile<>'' then
+    confPath := OverrideProjectInfoFile
+  else
+    confPath := ProjectInfoFile;
   if Assigned(fOnFileBackup) then begin
     Result:=fOnFileBackup(confPath,true);
     if Result=mrAbort then exit;
@@ -2066,6 +2075,9 @@ end.
 
 {
   $Log$
+  Revision 1.83  2002/10/13 09:35:37  lazarus
+  MG: added publish project
+
   Revision 1.82  2002/10/04 21:31:56  lazarus
   MG: added some component rename checks
 

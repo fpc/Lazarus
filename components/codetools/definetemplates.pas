@@ -56,15 +56,7 @@ uses
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
-  {$ifdef win32}
-  SpecialChar = '/'; // used to use PathDelim, e.g. /\
-  {$else}
-  SpecialChar = '\';
-  {$endif}
-  {$ifdef win32}
-  {$define CaseInsensitiveFilenames}
-  {$endif}
-  
+
   // Standard Template Names (do not translate them)
   StdDefTemplFPC = 'Free Pascal Compiler';
   StdDefTemplFPCSrc = 'Free Pascal Sources';
@@ -333,15 +325,6 @@ begin
   end;
 end;
 
-function CompareFilenames(const FileName1, Filename2: string): integer;
-begin
-  {$ifdef CaseInsensitiveFilenames}
-  Result:=AnsiCompareText(FileName1,Filename2);
-  {$else}
-  Result:=AnsiCompareStr(FileName1,Filename2);
-  {$endif}
-end;
-
 function CompareUnitLinkNodes(NodeData1, NodeData2: pointer): integer;
 var Link1, Link2: TUnitNameLink;
 begin
@@ -356,118 +339,6 @@ begin
   DirDef1:=TDirectoryDefines(NodeData1);
   DirDef2:=TDirectoryDefines(NodeData2);
   Result:=CompareFilenames(DirDef1.Path,DirDef2.Path);
-end;
-
-function FilenameIsMatching(const Mask, Filename: string;
-  MatchExactly: boolean): boolean;
-{
-  check if Filename matches Mask
-  Filename matches exactly or is a file/directory in a subdirectory of mask
-  Mask can contain the wildcards * and ?
-  The wildcards will _not_ match PathDelim
-  If you need the asterisk, the question mark or the PathDelim as character
-  just put the SpecialChar character in front of it.
-
-  Examples:
-    /abc          matches /abc, /abc/p, /abc/xyz/filename
-                  but not /abcd
-    /abc/x?z/www  matches /abc/xyz/www, /abc/xaz/www
-                  but not /abc/x/z/www
-    /abc/x*z/www  matches /abc/xz/www, /abc/xyz/www, /abc/xAAAz/www
-                  but not /abc/x/z/www
-    /abc/x\*z/www matches /abc/x*z/www, /abc/x*z/www/ttt
-}
-var DirStartMask, DirEndMask, DirStartFile, DirEndFile, AsteriskPos: integer;
-begin
-  //writeln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
-  Result:=false;
-  if (Filename='') then exit;
-  if (Mask='') then begin
-    Result:=true;  exit;
-  end;
-  // test every directory
-  DirStartMask:=1;
-  DirStartFile:=1;
-  repeat
-    // find start of directories
-    while (DirStartMask<=length(Mask))
-    and (Mask[DirStartMask]=PathDelim) do
-      inc(DirStartMask);
-    while (DirStartFile<=length(Filename))
-    and (Filename[DirStartFile]=PathDelim) do
-      inc(DirStartFile);
-    // find ends of directories
-    DirEndMask:=DirStartMask;
-    DirEndFile:=DirStartFile;
-    while (DirEndMask<=length(Mask)) do begin
-      if Mask[DirEndMask]=SpecialChar then
-        inc(DirEndMask,2)
-      else if (Mask[DirEndMask]=PathDelim) then
-        break
-      else
-        inc(DirEndMask);
-    end;
-    while (DirEndFile<=length(Filename)) do begin
-      if Filename[DirEndFile]=SpecialChar then
-        inc(DirEndFile,2)
-      else if (Filename[DirEndFile]=PathDelim) then
-        break
-      else
-        inc(DirEndFile);
-    end;
-    // writeln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
-    //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
-    // compare directories
-    AsteriskPos:=0;
-    while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
-      case Mask[DirStartMask] of
-      '?':
-        begin
-          inc(DirStartMask);
-          inc(DirStartFile);
-        end;
-      '*':
-        begin
-          inc(DirStartMask);
-          AsteriskPos:=DirStartMask;
-        end;
-      else
-        begin
-          if Mask[DirStartMask]=SpecialChar then begin
-            inc(DirStartMask);
-            if (DirStartMask>length(Mask)) then exit;
-          end;
-          {$ifdef CaseInsensitiveFilenames}
-          if (UpChars[Mask[DirStartMask]]<>UpChars[Filename[DirStartFile]]) then
-          {$else}
-          if (Mask[DirStartMask]<>Filename[DirStartFile]) then
-          {$endif}
-          begin
-            if AsteriskPos=0 then exit;
-            DirStartMask:=AsteriskPos;
-          end else begin
-            inc(DirStartMask);
-            inc(DirStartFile);
-          end;
-        end;
-      end;
-    end;
-    if (DirStartMask<DirEndmask) or (DirStartFile<DirEndFile) then exit;
-    // find starts of next directorys
-    DirStartMask:=DirEndMask+1;
-    DirStartFile:=DirEndFile+1;
-  until (DirStartFile>length(Filename)) or (DirStartMask>length(Mask));
-  while (DirStartMask<=length(Mask))
-  and (Mask[DirStartMask]=PathDelim) do
-    inc(DirStartMask);
-  Result:=(DirStartMask>length(Mask));
-  if MatchExactly then begin
-    while (DirStartFile<=length(Filename))
-    and (Filename[DirStartFile]=PathDelim) do
-      inc(DirStartFile);
-    Result:=(Result and (DirStartFile>length(Filename)));
-  end;
-  //writeln('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
 end;
 
 

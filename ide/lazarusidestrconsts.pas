@@ -86,8 +86,10 @@ resourcestring
   lisSaveAllModified = 'save all modified files';
   lisTargetFilenameOfProject = 'Target filename of project';
   lisTargetFilenamePlusParams = 'Target filename + params';
+  lisTestDirectory = 'Test directory';
   lisLaunchingCmdLine = 'Launching target command line';
-  
+  lisPublishProjDir = 'Publish project directory';
+
   // main bar menu
   lisMenuFile = '&File';
   lisMenuEdit = '&Edit';

@@ -24,7 +24,7 @@ unit MemCheck;
 
 {$goto on}
 
-{$DEFINE EXTRA}
+{off $DEFINE EXTRA}
 
 interface
 
@@ -433,11 +433,13 @@ begin
         RunError(204);
       end;
      if pp=p then
-      is_in_getmem_list:=true;
+       is_in_getmem_list:=true;
      pp:=pp^.previous;
      inc(i);
-     if i>getmem_cnt-freemem_cnt then
-      writeln(ptext^,'error in linked list of heap_mem_info');
+     if i>getmem_cnt-freemem_cnt then begin
+       writeln(ptext^,'error in linked list of heap_mem_info');
+       RunError(204);
+     end;
    end;
 end;
 
@@ -524,7 +526,7 @@ begin
   pp:=pheap_mem_info(p);
   if not quicktrace and not(is_in_getmem_list(pp)) then
     RunError(204);
-  if (pp^.sig=$AAAAAAAA) and not usecrc then
+  if (pp^.sig=$AAAAAAAA) {MG: fix for codetools :} {and not usecrc} then
     begin
        error_in_heap:=true;
        dump_already_free(pp,ptext^);

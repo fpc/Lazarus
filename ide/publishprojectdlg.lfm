@@ -34,6 +34,9 @@ object PublishProjectDialog: TPublishProjectDialog
   object DestDirGroupBox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Destination directory'
+    COLOR = -2147483643
+    PARENTCTL3D = False
+    TABORDER = 2
     ONRESIZE = DestDirGroupBoxRESIZE
     LEFT = 8
     HEIGHT = 111
@@ -89,6 +92,9 @@ object PublishProjectDialog: TPublishProjectDialog
   object FilesGroupbox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Files'
+    COLOR = -2147483643
+    PARENTCTL3D = False
+    TABORDER = 3
     ONRESIZE = FilesGroupboxRESIZE
     LEFT = 8
     HEIGHT = 139
@@ -147,6 +153,9 @@ object PublishProjectDialog: TPublishProjectDialog
   object ProjectInfoGroupbox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Project Information'
+    COLOR = -2147483643
+    PARENTCTL3D = False
+    TABORDER = 4
     ONRESIZE = ProjectInfoGroupboxRESIZE
     LEFT = 8
     HEIGHT = 69
