@@ -44,7 +44,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, PackageDefs, ComponentReg, Project;
+  Classes, SysUtils, Forms, PackageDefs, ComponentReg, CompilerOptions, Project;
 
 type
   TPkgSaveFlag = (
@@ -115,7 +115,9 @@ type
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; virtual; abstract;
     function DoSaveAutoInstallConfig: TModalResult; virtual; abstract;
-    function DoGetIDEInstallPackageOptions: string; virtual; abstract;
+    function DoGetIDEInstallPackageOptions(
+                           var InheritedOptionStrings: TInheritedCompOptsStrings
+                           ): string; virtual; abstract;
   end;
 
 var

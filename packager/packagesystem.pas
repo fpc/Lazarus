@@ -130,6 +130,9 @@ type
     function FindUnsavedDependencyPath(APackage: TLazPackage;
                                        FirstDependency: TPkgDependency): TList;
     function FindAutoInstallDependencyPath(ChildPackage: TLazPackage): TList;
+    function FindAmbigiousUnits(APackage: TLazPackage;
+                                FirstDependency: TPkgDependency;
+                                var File1, File2: TPkgFile): boolean;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -1325,6 +1328,22 @@ begin
   MarkAllPackagesAsNotVisited;
   ChildPackage.Flags:=ChildPackage.Flags+[lpfVisited];
   FindAutoInstallParent(ChildPackage);
+end;
+
+function TLazPackageGraph.FindAmbigiousUnits(APackage: TLazPackage;
+  FirstDependency: TPkgDependency; var File1, File2: TPkgFile): boolean;
+begin
+  Result:=false;
+  if APackage<>nil then begin
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  File1:=nil;
+  File2:=nil;
+
+  // ToDo: check if two connected packages have units with the same name
+  // Connected means: a Package1 is directly required by a Package2
+  // or: a Package1 and a Package2 are directly required by a Package3
+  
 end;
 
 function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;

@@ -109,7 +109,7 @@ end;
 
   Handles the event when the button is entered
  ------------------------------------------------------------------------------}
-procedure TButton.CMMouseEnter(var Message: TMessage); 
+procedure TButton.CMMouseEnter(var Message: TLMessage);
 begin 
   Assert(False,'Trace:[TButton.CMMouseEnter]');
   inherited CMMouseEnter(Message);
@@ -124,7 +124,7 @@ end;
 
   Handles the event when the mouse leaves the button
  ------------------------------------------------------------------------------}
-procedure TButton.CMMouseLeave(var Message: TMessage); 
+procedure TButton.CMMouseLeave(var Message: TLMessage);
 begin 
   Assert(False,'Trace:[TButton.CMMouseLeave]');
   inherited CMMouseLeave(Message);
@@ -139,7 +139,7 @@ end;
 
   Handles the event when the button Leaves
  ------------------------------------------------------------------------------}
-procedure TButton.WMDefaultClicked(var Message: TMessage);
+procedure TButton.WMDefaultClicked(var Message: TLMessage);
 begin
   Click;
 end;
@@ -165,6 +165,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.14  2003/10/22 18:43:23  mattias
   prepared image sharing
 

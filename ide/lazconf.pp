@@ -79,6 +79,9 @@ uses
   // returns the standard file extension (e.g '.exe')
   function GetDefaultExecutableExt: string;
   
+  // returns the standard file extension for compiled units (e.g '.ppu')
+  function GetDefaultCompiledUnitExt: string;
+
   procedure GetDefaultCompilerFilenames(List: TStrings);
   procedure GetDefaultTestBuildDirs(List: TStrings);
   
@@ -140,6 +143,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.19  2003/09/17 22:06:56  mattias
   implemented default lcl widget type
 

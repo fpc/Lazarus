@@ -15,14 +15,10 @@
  *   (at your option) any later version.                                   * 
  *                                                                         * 
  ***************************************************************************/ 
-} 
- 
-{
-@author(Shane Miller)
-@created()
-@lastmod()
 
-Detailed description of the Unit.
+  This unit defines some of the most common definitions of Delphi's messages.pas
+  to make porting easy.
+  It is not used by the LCL itself.
 }
 
 unit Messages; 

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, FileCtrl, CodeCache,
-  CodeToolManager,
+  CodeToolManager, AVL_Tree,
   IDEProcs, LazarusIDEStrConsts;
 
 type
@@ -59,7 +59,9 @@ function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
 function CreateEmptyFile(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 
+
 implementation
+
 
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
   ExtraButtons: TMsgDlgButtons): TModalResult;

@@ -133,6 +133,7 @@ type
     procedure Assign(Source: TBuildLazarusOptions);
     procedure SetBuildAll;
     function FindName(const Name: string): TBuildLazarusItem;
+    function CompiledUnitExt: string;
   public
     property Count: integer read GetCount;
     property Items[Index: integer]: TBuildLazarusItem read GetItems;
@@ -1001,6 +1002,19 @@ begin
     Result:=Items[i];
     exit;
   end;
+end;
+
+function TBuildLazarusOptions.CompiledUnitExt: string;
+begin
+  Result:=GetDefaultCompiledUnitExt;
+  if AnsiCompareText(TargetOS,'win32')=0 then
+    Result:='.ppw'
+  else if (AnsiCompareText(TargetOS,'linux')=0)
+  or (AnsiCompareText(TargetOS,'freebsd')=0)
+  or (AnsiCompareText(TargetOS,'netbsd')=0)
+  or (AnsiCompareText(TargetOS,'openbsd')=0)
+  then
+    Result:='.ppu';
 end;
 
 procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);

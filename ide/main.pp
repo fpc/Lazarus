@@ -371,7 +371,6 @@ type
     procedure SearchResultsViewSelectionChanged(sender : TObject);
     procedure SearchResultsViewDblClick(Sender : TObject);
 
-
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var Abort: boolean);
@@ -485,6 +484,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure CreateOftenUsedForms; override;
+    procedure CreateSearchResultWindow;
 
     // files/units
     function DoNewEditorFile(NewUnitType: TNewUnitType;
@@ -645,8 +645,7 @@ type
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
       
-    function DoJumpToSearchResult(Index:integer;
-      FocusEditor: boolean): boolean;
+    function DoJumpToSearchResult(FocusEditor: boolean): boolean;
 
       
     procedure DoShowMessagesView;
@@ -918,8 +917,14 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   Application.CreateForm(TMessagesView, MessagesView);
-  Application.CreateForm(TSearchResultsView, SearchResultsView);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
+end;
+
+procedure TMainIDE.CreateSearchResultWindow;
+begin
+  if SearchResultsView<>nil then exit;
+  Application.CreateForm(TSearchResultsView, SearchResultsView);
+  SearchResultsView.OnSelectionChanged:= @SearchresultsViewSelectionChanged;
 end;
 
 procedure TMainIDE.OIOnSelectComponents(Sender: TObject);
@@ -2197,6 +2202,7 @@ End;
 
 Procedure TMainIDE.mnuViewSearchResultsClick(Sender : TObject);
 Begin
+  CreateSearchResultWindow;
   SearchResultsView.ShowOnTop;
 End;
 
@@ -5890,6 +5896,7 @@ function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 var
   PkgOptions: string;
   IDEBuildFlags: TBuildLazarusFlags;
+  InheritedOptionStrings: TInheritedCompOptsStrings;
 begin
   if ToolStatus<>itNone then begin
     MessageDlg(lisNotNow,
@@ -5924,7 +5931,14 @@ begin
       if Result<>mrOk then exit;
 
       // create inherited compiler options
-      PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions;
+      PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
+      
+      // check ambigious units
+      Result:=DoCheckUnitPathForAmbigiousPascalFiles(
+                       EnvironmentOptions.LazarusDirectory,
+                       InheritedOptionStrings[icoUnitPath],
+                       MiscellaneousOptions.BuildLazOpts.CompiledUnitExt,'IDE');
+      if Result<>mrOk then exit;
     end;
 
     // save extra options
@@ -7343,55 +7357,29 @@ begin
   end;
 end;
 
-function TMainIDE.DoJumpToSearchResult(Index:integer;
-  FocusEditor: boolean): boolean;
-var MaxSearchResults: integer;
-  Filename, SearchedFilename: string;
+function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
+var
+  AFileName: string;
+  SearchedFilename: string;
   CaretXY: TPoint;
   TopLine: integer;
-  MsgType: TErrorType;
-  SrcEdit: TSourceEditor;
   OpenFlags: TOpenFlags;
-  CurMsg, CurDir: string;
-  NewFilename: String;
+  SrcEdit: TSourceEditor;
 begin
-  Result:=false;
-  MaxSearchResults:=SearchResultsView.SearchResultView.Items.Count;
-  if Index>=MaxSearchResults then exit;
-  if (Index<0) then begin
-    // search relevant searchresult (first error, first fatal) <- this bit needs changing
-    Index:=0;
-    while (Index<MaxSearchResults) do begin
-      if (TheOutputFilter.GetSourcePosition(
-        SearchResultsView.SearchResultView.Items[Index],
-        Filename,CaretXY,MsgType)) then
-      begin
-        if MsgType in [etError,etFatal,etPanic] then break;
-      end;
-      inc(Index);
-    end;
-    if Index>=MaxSearchResults then exit;
-    SearchResultsView.SelectedSearchResultIndex:=Index;
-  end;
-  SearchResultsView.GetSearchResultAt(Index,CurMsg,CurDir);
-  if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
-  then begin
-    if not FilenameIsAbsolute(Filename) then begin
-      NewFilename:=AppendPathDelim(CurDir)+Filename;
-      if FileExists(NewFilename) then
-        Filename:=NewFilename;
-    end;
-
+  CreateSearchResultWindow;
+  if pos('(',SearchResultsView.GetSelectedText) > 0 then
+  begin
+    AFileName:= SearchResultsView.GetSourceFileName;
+    CaretXY:= SearchResultsView.GetSourcePositon;
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
-    if IsTestUnitFilename(Filename) then begin
-      SearchedFilename := ExtractFileName(Filename);
+    if IsTestUnitFilename(AFilename) then begin
+      SearchedFilename := ExtractFileName(AFilename);
       Include(OpenFlags,ofVirtualFile);
     end else begin
-      SearchedFilename := FindUnitFile(Filename);
+      SearchedFilename := FindUnitFile(AFilename);
     end;
-
     if SearchedFilename<>'' then begin
-      // open the file in the source editor
+    // open the file in the source editor
       Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
       if Result then begin
         // set caret position
@@ -7412,22 +7400,22 @@ begin
         with SrcEdit.EditorComponent do begin
           BlockBegin:=CaretXY;
           BlockEnd:=CaretXY;
-          LeftChar:=Max(CaretXY.X-CharsInWindow,1);
+          LeftChar:= Math.Max(CaretXY.X-CharsInWindow,1);
         end;
         SrcEdit.ErrorLine:=CaretXY.Y;
       end;
     end else begin
-      if FilenameIsAbsolute(Filename) then begin
-        MessageDlg(Format(lisUnableToFindFile, ['"', Filename, '"']),
+      if FilenameIsAbsolute(AFilename) then begin
+        MessageDlg(Format(lisUnableToFindFile, ['"', AFilename, '"']),
            mtInformation,[mbOk],0)
       end else begin
         MessageDlg(Format(
           lisUnableToFindFileCheckSearchPathInRunCompilerOption, ['"',
-          Filename, '"', #13, #13]),
+          AFilename, '"', #13, #13]),
            mtInformation,[mbOk],0);
       end;
     end;
-  end;
+  end;//if
 end;
 
 
@@ -7455,6 +7443,7 @@ var
   WasVisible: boolean;
   ALayout: TIDEWindowLayout;
 begin
+  CreateSearchResultWindow;
   WasVisible := SearchResultsView.Visible;
   SearchResultsView.Visible:=true;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
@@ -9059,9 +9048,8 @@ end;
 
 procedure TMainIDE.SearchResultsViewSelectionChanged(sender : TObject);
 begin
-  DoJumpToSearchREsult(TSearchREsultsView(Sender).SelectedSearchResultIndex,True);
+  DoJumpToSearchResult(True);
 end;
-
 
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 var
@@ -10096,6 +10084,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.667  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.666  2003/11/14 13:13:14  mattias
   fixed checking fpcsrcdir changes
 

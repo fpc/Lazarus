@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
-  GraphType, Graphics, Forms, VCLGlobals, DynamicArray, LMessages, Messages,
+  GraphType, Graphics, Forms, VCLGlobals, DynamicArray, LMessages,
   XMLCfg, StdCtrls, LResources, MaskEdit;
 
 const
@@ -344,7 +344,7 @@ type
     procedure TryScrollTo(aCol,aRow: integer);
     procedure UpdateScrollBarPos(Which: TScrollStyle);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
@@ -1860,7 +1860,7 @@ begin
   end;
 end;
 
-procedure TCustomGrid.WMSize(var Msg: TWMSize);
+procedure TCustomGrid.WMSize(var Msg: TLMSize);
 begin
   Inherited;
   visualChange;

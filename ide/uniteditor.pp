@@ -3408,18 +3408,24 @@ Begin
         end;//if
         try
           SearchForm:= TSearchForm.Create(SearchResultsView);
-          SearchResultsView.Clear;
           SearchResultsView.ShowOnTop;
           with SearchForm do
           begin
             SearchOptions:= FindInFilesDialog.Options;
             SearchText:= LocalFindText;
             SearchFileList:= TheFileList;
-            ResultsList:= SearchResultsView.SearchResultView.Items;
-            SearchMask:= FindInFilesDialog.FileMaskComboBox.Text;
-            SearchDirectory:= FindInFilesDialog.DirectoryComboBox.Text;
+            ResultsList:= SearchResultsView.AddResult('Search For ' +
+                                                       LocalFindText,
+                                                       LocalFindText);
+            if Assigned(ResultsList) then
+            begin
+              ResultsList.Clear;
+              SearchMask:= FindInFilesDialog.FileMaskComboBox.Text;
+              SearchDirectory:= FindInFilesDialog.DirectoryComboBox.Text;
+            end;//if
           end;//with
           try
+            SearchResultsView.BeginUpdate;
             SearchForm.Show;
             SearchForm.DoSearch;
           except
@@ -3429,6 +3435,7 @@ Begin
           end;//try-except
         finally
           FreeAndNil(SearchForm);
+          SearchResultsView.EndUpdate;
         end;//finally
       finally
         FreeAndNil(TheFileList);

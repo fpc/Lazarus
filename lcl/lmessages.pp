@@ -48,7 +48,7 @@ const
   LM_Create         = LM_ComUser+1;
   LM_SetLabel       = LM_ComUser+2;
   LM_SetLeft        = LM_ComUser+3;
-  LM_SetTop         =  LM_ComUser+4;
+  LM_SetTop         = LM_ComUser+4;
   LM_SetWidth       = LM_ComUser+5;
   LM_SetHeight      = LM_ComUser+6;
   LM_AddChild       = LM_ComUser+7;
@@ -1092,6 +1092,9 @@ end.
 
 {
   $Log$
+  Revision 1.56  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.55  2003/10/23 16:15:30  micha
   compatibility with new 1.1
 

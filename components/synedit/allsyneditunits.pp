@@ -1,13 +1,13 @@
 {  $Id$  }
 {
  /***************************************************************************
-                               allunits.pp
+                               allsyneditunits.pp
 
                       dummy unit to compile all units 
 
  /***************************************************************************
 }
-unit AllUnits;
+unit AllSynEditUnits;
 
 {$mode objfpc}{$H+}
 
@@ -31,6 +31,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.1  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.17  2003/06/11 22:56:09  mattias
   added bash scripts highlighter from Tom Lisjac
 

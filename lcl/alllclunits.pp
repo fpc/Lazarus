@@ -1,7 +1,7 @@
 {  $Id$  }
 {
  *****************************************************************************
-                               allunits.pp
+                               alllclunits.pp
 
                       dummy unit to compile all units
 
@@ -18,7 +18,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit AllUnits;
+unit AllLCLUnits;
 
 {$mode objfpc}{$H+}
 
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.1  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.31  2003/09/20 09:16:07  mattias
   added TDBGrid from Jesus
 

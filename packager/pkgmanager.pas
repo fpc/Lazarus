@@ -207,7 +207,9 @@ type
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
-    function DoGetIDEInstallPackageOptions: string; override;
+    function DoGetIDEInstallPackageOptions(
+                           var InheritedOptionStrings: TInheritedCompOptsStrings
+                           ): string; override;
     function DoPublishPackage(APackage: TLazPackage; Flags: TPkgSaveFlags;
                               ShowDialog: boolean): TModalResult;
   end;
@@ -737,53 +739,71 @@ function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage;
 var
   PathList: TList;
   Dependency: TPkgDependency;
+  PkgFile1,PkgFile2: TPkgFile;
 begin
   {$IFDEF VerbosePkgCompile}
   writeln('TPkgManager.CheckPackageGraphForCompilation A');
   {$ENDIF}
-  
-  // check for unsaved packages
-  PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
-  if PathList<>nil then begin
-    DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg(lisPkgMangUnsavedPackage,
-      lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages,
-      mtError,[mbCancel,mbAbort],0);
-    exit;
-  end;
+  PathList:=nil;
+  try
+    // check for unsaved packages
+    PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
+    if PathList<>nil then begin
+      DoShowPackageGraphPathList(PathList);
+      Result:=MessageDlg(lisPkgMangUnsavedPackage,
+        lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages,
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
 
-  // check for broken dependencies
-  PathList:=PackageGraph.FindBrokenDependencyPath(APackage,FirstDependency);
-  if PathList<>nil then begin
-    if (PathList.Count=1) then begin
-      Dependency:=TPkgDependency(PathList[0]);
-      if Dependency is TPkgDependency then begin
-        // check if project
-        if Dependency.Owner is TProject then begin
-          MainIDE.DoShowProjectInspector;
-          Result:=MessageDlg(lisPkgMangBrokenDependency,
-            Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
-              '"', Dependency.AsString, '"', #13]),
-            mtError,[mbCancel,mbAbort],0);
-          exit;
+    // check for broken dependencies
+    PathList:=PackageGraph.FindBrokenDependencyPath(APackage,FirstDependency);
+    if PathList<>nil then begin
+      if (PathList.Count=1) then begin
+        Dependency:=TPkgDependency(PathList[0]);
+        if Dependency is TPkgDependency then begin
+          // check if project
+          if Dependency.Owner is TProject then begin
+            MainIDE.DoShowProjectInspector;
+            Result:=MessageDlg(lisPkgMangBrokenDependency,
+              Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound, [
+                '"', Dependency.AsString, '"', #13]),
+              mtError,[mbCancel,mbAbort],0);
+            exit;
+          end;
         end;
       end;
+      DoShowPackageGraphPathList(PathList);
+      Result:=MessageDlg(lisPkgMangBrokenDependency,
+        lisPkgMangARequiredPackagesWasNotFound,
+        mtError,[mbCancel,mbAbort],0);
+      exit;
     end;
-    DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg(lisPkgMangBrokenDependency,
-      lisPkgMangARequiredPackagesWasNotFound,
-      mtError,[mbCancel,mbAbort],0);
-    exit;
-  end;
 
-  // check for circle dependencies
-  PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
-  if PathList<>nil then begin
-    DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg(lisPkgMangCircleInPackageDependencies,
-      lisPkgMangThereIsACircleInTheRequiredPackages,
-      mtError,[mbCancel,mbAbort],0);
-    exit;
+    // check for circle dependencies
+    PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
+    if PathList<>nil then begin
+      DoShowPackageGraphPathList(PathList);
+      Result:=MessageDlg(lisPkgMangCircleInPackageDependencies,
+        lisPkgMangThereIsACircleInTheRequiredPackages,
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+
+    // check for ambigious units
+    if PackageGraph.FindAmbigiousUnits(APackage,FirstDependency,PkgFile1,PkgFile2)
+    then begin
+      Result:=MessageDlg('Ambigious units found',
+        'There are two units with the same name:'#13
+        +#13
+        +'1. "'+PkgFile1.Filename+'"'#13
+        +'2. "'+PkgFile2.Filename+'"'#13,
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+
+  finally
+    PathList.Free;
   end;
   
   {$IFDEF VerbosePkgCompile}
@@ -2363,11 +2383,14 @@ begin
     APackage.GetAllRequiredPackages(PkgList);
     if PkgList=nil then PkgList:=TList.Create;
     
+    // remove packages already marked for installation
     for i:=PkgList.Count-1 downto 0 do begin
       RequiredPackage:=TLazPackage(PkgList[i]);
       if RequiredPackage.AutoInstall<>pitNope then
         PkgList.Delete(i);
     end;
+    // now PkgList contains only the required packages that are added to the
+    // list of installation packages
     if PkgList.Count>0 then begin
       s:='';
       for i:=0 to PkgList.Count-1 do begin
@@ -2564,7 +2587,8 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoGetIDEInstallPackageOptions: string;
+function TPkgManager.DoGetIDEInstallPackageOptions(
+  var InheritedOptionStrings: TInheritedCompOptsStrings): string;
   
   procedure AddOption(const s: string);
   begin
@@ -2578,7 +2602,6 @@ function TPkgManager.DoGetIDEInstallPackageOptions: string;
 var
   PkgList: TList;
   AddOptionsList: TList;
-  InheritedOptionStrings: TInheritedCompOptsStrings;
   ConfigDir: String;
 begin
   Result:='';

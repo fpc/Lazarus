@@ -774,7 +774,6 @@ const
 
 
 type
-
   PNMHdr = ^TNMHdr;
   tagNMHDR = packed record
     hwndFrom: HWND;
@@ -1875,6 +1874,9 @@ end.
 
 {
   $Log$
+  Revision 1.49  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.48  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x

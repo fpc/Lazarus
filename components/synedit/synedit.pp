@@ -66,8 +66,7 @@ uses
 {$ELSE}
   Windows,
 {$ENDIF}
-  Messages, SysUtils, Classes, Controls, Graphics, Forms, StdCtrls,
-  ExtCtrls,
+  SysUtils, Classes, Messages, Controls, Graphics, Forms, StdCtrls, ExtCtrls,
 {$IFDEF SYN_MBCSSUPPORT}
   Imm,
 {$ENDIF}

@@ -442,6 +442,7 @@ begin
       Filename:=TrimFilename(copy(Msg,1,FilenameEndPos));
       if not FilenameIsAbsolute(Filename) then begin
         // filename is relative
+        i:=-1;
         if (fCompilingHistory<>nil) then begin
           // the compiler writes a line compiling ./subdir/unit.pas
           // and then writes the messages without any path
@@ -654,7 +655,7 @@ begin
     Result:=FullDir+ShortIncFilename;
     if FileExists(Result) then begin
       // file found in search dir
-      Result:=CleanAndExpandFilename(FullDir+ShortIncFilename);
+      Result:=CleanAndExpandFilename(Result);
       exit;
     end;
     AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,FullDir);

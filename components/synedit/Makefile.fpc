@@ -13,7 +13,7 @@ unitdir=../../lcl/units .
 options=-gl
 
 [target]
-units=allunits
+units=allsyneditunits
 implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
   synedit synedithighlighter synhighlightermulti synregexpr synexporthtml \
@@ -35,6 +35,6 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 .PHONY: cleartarget all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditunits$(PPUEXT)
 
-all: cleartarget allunits$(PPUEXT)
+all: cleartarget allsyneditunits$(PPUEXT)

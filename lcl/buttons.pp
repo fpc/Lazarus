@@ -38,7 +38,7 @@ interface
 {$endif}
 
 uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLIntf, LCLStrConsts,
-  GraphType, Graphics, SysUtils, Controls, lMessages, Forms, Messages;
+  GraphType, Graphics, SysUtils, Controls, lMessages, Forms;
 
 type
   { TButton }
@@ -70,9 +70,9 @@ type
     //FOnResize: TNotifyEvent;
     FShortCut : TLMShortcut;
     Procedure SetDefault(Value : Boolean);
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER; 
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure WMDefaultClicked(var Message: TMessage); message LM_CLICKED;
+    procedure CMMouseEnter(var Message: TLMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
+    procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
     //TODO: make this compatible
@@ -306,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.52  2003/10/22 18:43:23  mattias
   prepared image sharing
 

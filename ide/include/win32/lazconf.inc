@@ -136,6 +136,11 @@ begin
   Result:='.exe';
 end;
 
+function GetDefaultCompiledUnitExt: string;
+begin
+  Result:='.ppw';
+end;
+
 function GetDefaultTestBuildDirectory: string;
 begin
   Result:=GetEnv('TEMP');
@@ -174,6 +179,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2003/11/15 13:07:09  mattias
+  added ambigious unit check for IDE
+
   Revision 1.16  2003/09/17 22:06:56  mattias
   implemented default lcl widget type
 

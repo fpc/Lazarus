@@ -154,6 +154,11 @@ begin
   Result:='';
 end;
 
+function GetDefaultCompiledUnitExt: string;
+begin
+  Result:='.ppu';
+end;
+
 function GetDefaultTestBuildDirectory: string;
 begin
   Result:='/tmp/';

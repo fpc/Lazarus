@@ -37,272 +37,400 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEProcs,
-  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts;
+  Classes, SysUtils, Math, LResources, Forms, Controls, Graphics, Dialogs,
+  ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
   TSearchResultsView = class(TForm)
-    SearchResultView : TListBox;
-    procedure SearchResultViewDblClicked(Sender: TObject);
-    Procedure SearchResultViewClicked(sender : TObject);
+    btnSearchAgain: TBUTTON;
+    ResultsNoteBook: TNOTEBOOK;
+    procedure Form1Create(Sender: TObject);
+    procedure ResultsNoteBookChangebounds(Sender: TObject);
+    procedure ResultsNoteBookClosetabclicked(Sender: TObject);
+    procedure SearchResultsViewDestroy(Sender: TObject);
+    procedure btnSearchAgainClick(Sender: TObject);
+    procedure ListboxDrawitem(Control: TWinControl; Index: Integer;
+                              ARect: TRect; State: TOwnerDrawState);
   private
-    FDirectories: TStringList;
-    FLastLineIsProgress: boolean;
-    FOnSelectionChanged: TNotifyEvent;
-    function GetDirectory: string;
-    Function GetSearchResult: String;
-    procedure SetLastLineIsProgress(const AValue: boolean);
-  protected
-    fBlockCount: integer;
-    Function GetSelectedLineIndex: Integer;
-    procedure SetSelectedLineIndex(const AValue: Integer);
-    procedure SetMsgDirectory(Index: integer; const CurDir: string);
+    { private declarations }
+    fUpdating: boolean;
+    fSearchObjectList: TStringList;
+    function PageExists(APageName: string): boolean;
+    function GetPageIndex(APageName: string): integer;
+    function GetListBox(APageIndex: integer): TListBox;
+    procedure ListBoxClicked(Sender: TObject);
+    procedure ListBoxDoubleClicked(Sender: TObject);
+    fOnSelectionChanged: TNotifyEvent;
   public
-    constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure Add(const Msg, CurDir: String; ProgressLine: boolean);
-    procedure AddMsg(const Msg, CurDir: String);
-    procedure AddProgress(const Msg, CurDir: String);
-    procedure AddSeparator;
-    procedure ClearTillLastSeparator;
-    procedure ShowTopSearchResult;
-    function MsgCount: integer;
-    procedure Clear;
-    procedure GetSearchResultAt(Index: integer; var Msg, MsgDirectory: string);
-    procedure BeginBlock;
-    procedure EndBlock;
+    { public declarations }
+    function AddResult(const ResultsName: string; SearchText: string): TStrings;
+    function GetSourcePositon: TPoint;
+    function GetSourceFileName: string;
+    function GetSelectedText: string;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
+                                              write fOnSelectionChanged;
+  end; 
+
+type
+  TLazSearch = Class(TObject)
+  private
+    fSearchString: string;
   public
-    property LastLineIsProgress: boolean read FLastLineIsProgress
-                                         write SetLastLineIsProgress;
-    property SearchResult: String read GetSearchResult;
-    property Directory: string read GetDirectory;
-    property SelectedSearchResultIndex: Integer read GetSelectedLineIndex
-                                           write SetSelectedLineIndex;
-    property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged
-                                              write FOnSelectionChanged;
+    property SearchString: string read fSearchString write fSearchString;
   end;
 
 var
   SearchResultsView: TSearchResultsView;
 
-
 implementation
-
-const SeparatorLine = '---------------------------------------------';
 
 { TSearchResultsView }
 
+const
+  SPACE = ' ';
+  
+procedure TSearchResultsView.Form1Create(Sender: TObject);
+var
+  ALayout: TIDEWindowLayout;
+begin
+  ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
+  ResultsNoteBook.Update;
 
-{------------------------------------------------------------------------------
-  TSearchResultsView.Create
-------------------------------------------------------------------------------}
-constructor TSearchResultsView.Create(TheOwner : TComponent);
-var ALayout: TIDEWindowLayout;
-Begin
-  inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
+  if LazarusResources.Find(ClassName)=nil then
     Caption:=lisMenuViewSearchResults;
-    SearchResultView := TListBox.Create(Self);
-    With SearchResultView do Begin
-      Parent:= Self;
-      Align:= alClient;
-    end;
-  end;
+    
   Name := NonModalIDEWindowNames[nmiwSearchResultsViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                                               ItemByEnum(nmiwSearchResultsViewName);
+                                          ItemByEnum(nmiwSearchResultsViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
-end;
+  fSearchObjectList:= TStringList.Create;
+  fOnSelectionChanged:= nil;
+end;//Create
 
-destructor TSearchResultsView.Destroy;
+procedure TSearchResultsView.ResultsNoteBookChangebounds(Sender: TObject);
 begin
-  FreeAndNil(FDirectories);
-  inherited Destroy;
+
 end;
 
-{------------------------------------------------------------------------------
-  TSearchResultsView.Add
-------------------------------------------------------------------------------}
-Procedure TSearchResultsView.Add(const Msg, CurDir: String; ProgressLine: boolean);
+procedure TSearchResultsView.SearchResultsViewDestroy(Sender: TObject);
 var
-  i: Integer;
-Begin
-  if FLastLineIsProgress then begin
-    SearchResultView.Items[SearchResultView.Items.Count-1]:=Msg;
-  end else begin
-    SearchResultView.Items.Add(Msg);
-  end;
-  FLastLineIsProgress:=ProgressLine;
-  i:=SearchResultView.Items.Count-1;
-  SetMsgDirectory(i,CurDir);
-  SearchResultView.TopIndex:=SearchResultView.Items.Count-1;
-end;
-
-procedure TSearchResultsView.AddMsg(const Msg, CurDir: String);
+  i: integer;
+  TheObject: TObject;
 begin
-  Add(Msg,CurDir,false);
-end;
+  try
+    if not Assigned(fSearchObjectList) then
+      Writeln('fSearchObject is not assigned');
+    for i:= 0 to fSearchObjectList.Count - 1 do
+    begin
+      if Assigned(fSearchObjectList.Objects[i]) then
+      begin
+        TheObject:= fSearchObjectList.Objects[i];
+        FreeAndNil(TheObject);
+      end;//if
+    end;//for
+  except
+    writeln('Exception in form destroy!');
+  end;//except
+  FreeAndNil(fSearchObjectList);
+end;//SearchResulstViewDestroy
 
-procedure TSearchResultsView.AddProgress(const Msg, CurDir: String);
+Procedure TSearchResultsView.BeginUpdate;
 begin
-  Add(Msg,CurDir,true);
-end;
+  fUpDating:= true;
+end;//BeginUpdate
 
-Procedure TSearchResultsView.AddSeparator;
+procedure TSearchResultsView.EndUpdate;
 begin
-  Add(SeparatorLine,'',false);
-end;
+  fUpdating:= false;
+end;//EndUpdate
 
-procedure TSearchResultsView.ClearTillLastSeparator;
-var LastSeparator: integer;
+procedure TSearchResultsView.ResultsNoteBookClosetabclicked(Sender: TObject);
+var
+  TheObject: TObject;
+  i: integer;
 begin
-  with SearchResultView do begin
-    LastSeparator:=Items.Count-1;
-    while (LastSeparator>=0) and (Items[LastSeparator]<>SeparatorLine) do
-      dec(LastSeparator);
-    if LastSeparator>=0 then begin
-      while (Items.Count>LastSeparator) do
-        Items.Delete(Items.Count-1);
-      FLastLineIsProgress:=false;
-    end;
-  end;
-end;
+  if (Sender is TPage) then
+  begin
+    with sender as TPage do
+    begin
+      i:= fSearchObjectList.IndexOf(Caption);
+      TheObject:= fSearchObjectList.Objects[i];
+      FreeAndNil(TheObject);
+      fSearchObjectList.Delete(i);
+      ResultsNoteBook.Pages.Delete(PageIndex);
+    end;//with
+  end;//if
+  if ResultsNoteBook.Pages.Count = 0 then
+    Self.Hide;
+end;//ResultsNoteBookClosetabclicked
 
-procedure TSearchResultsView.ShowTopSearchResult;
+procedure TSearchResultsView.btnSearchAgainClick(Sender: TObject);
 begin
-  if SearchResultView.Items.Count>0 then
-    SearchResultView.TopIndex:=0;
+  MessageDlg('Working On it!', mtInformation,[mbOk],0);
 end;
 
-function TSearchResultsView.MsgCount: integer;
+{Searched the notebook control for a page with APageName name, returns true if
+ found}
+function TSearchResultsView.PageExists(APageName: string): boolean;
+var
+  i: integer;
 begin
-  Result:=SearchResultView.Items.Count;
-end;
+  result:= false;
+  for i:= 0 to ResultsNoteBook.Pages.Count - 1 do
+  begin
+    if (ResultsNoteBook.Pages[i] = APageName + SPACE) then
+    begin
+      result:= true;
+      break;
+    end;//if
+  end;//for
+end;//PageExists
 
-{------------------------------------------------------------------------------
-  TSearchResultsView.Clear
-------------------------------------------------------------------------------}
-Procedure  TSearchResultsView.Clear;
-Begin
-  if fBlockCount>0 then exit;
-  SearchResultView.Clear;
-  FLastLineIsProgress:=false;
-  if not Assigned(SearchResultsView.SearchResultView.OnClick) then
-    SearchResultView.OnClick := @SearchResultViewClicked;
-  if not Assigned(SearchResultsView.SearchResultView.OnDblClick) then
-    SearchResultView.OnDblClick :=@SearchResultViewDblClicked;
-end;
-
-procedure TSearchResultsView.GetSearchResultAt(Index: integer;
-  var Msg, MsgDirectory: string);
+{Add Result will create a tab in the Results view window with an new
+ list box and return the Items from the new listbox to be filled in
+ by the search routine.}
+function TSearchResultsView.AddResult(const ResultsName: string;
+                                      SearchText: string ): TStrings;
+var
+  NewListBox: TListBox;
+  NewPage: LongInt;
+  i: integer;
+  SearchObj: TLazSearch;
 begin
-  // consistency checks
-  if (Index<0) then
-    RaiseException('TSearchResultsView.GetSearchResultAt');
-  if SearchResultView.Items.Count<=Index then
-    RaiseException('TSearchResultsView.GetSearchResultAt');
-  if (FDirectories=nil) then
-    RaiseException('TSearchResultsView.GetSearchResultAt');
-  if (FDirectories.Count<=Index) then
-    RaiseException('TSearchResultsView.GetSearchResultAt');
-  Msg:=SearchResultView.Items[Index];
-  MsgDirectory:=FDirectories[Index];
-end;
+  result:= nil;
+  SearchObj:= TLazSearch.Create;
+  SearchObj.SearchString:= SearchText;
+  if Assigned(ResultsNoteBook) then
+  begin
+    With ResultsNoteBook do
+    begin
+      i:= GetPageIndex(ResultsName);
+      if i > -1 then
+      begin
+        NewListBox:= GetListBox(i);
+      end//if
+      else
+      begin
+        NewPage:= Pages.Add(ResultsName + SPACE);
+        fSearchObjectList.AddObject(ResultsName + SPACE, SearchObj);
+        if NewPage > -1 then
+        begin
+          NewListBox:= TListBox.Create(Page[NewPage]);
+          NewListBox.Parent:= Page[NewPage];
+          NewListBox.Align:= alClient;
+          NewListBox.OnClick:= @ListBoxClicked;
+          NewListBox.OnDblClick:= @ListBoxDoubleClicked;
+          //NewListBox.Style:= lbOwnerDrawFixed;
+          //NewListBox.OnDrawItem:= @ListBoxDrawItem;
+          //NewListBox.Font.Name:= 'courier';
+          //NewListBox.Font.Height:= 12;
+          //NewListBox.ItemHeight:= 2 * NewListBox.Canvas.TextHeight('0');
+        end;//if
+      end;//else
+    end;//
+  end;//if
+  result:= NewListBox.Items;
+end;//AddResult
 
-procedure TSearchResultsView.BeginBlock;
+procedure TSearchResultsView.ListboxDrawitem(Control: TWinControl;
+                                             Index: Integer; ARect: TRect;
+                                             State: TOwnerDrawState);
+var
+  FirstPart: string;
+  BoldPart: string;
+  LastPart: string;
+  i: integer;
+  BoldLen: integer;
+  SearchObj: TLazSearch;
+  TheText: string;
+  SearchText: string;
+  TheTop: integer;
 begin
-  Clear;
-  inc(fBlockCount);
-end;
+  //if not fUpdating then
+  //begin
+    With Control as TListBox do
+    begin
+      Canvas.FillRect(ARect);
+      TheText:= Items[Index];
+      if Items.Count > 0 then
+      begin
+        i:= fSearchObjectList.IndexOf(ResultsNoteBook.ActivePage);
+        SearchObj:= TLazSearch(fSearchObjectList.Objects[i]);
+      end;
+      if Assigned(SearchObj) then
+      begin
+        SearchText:= SearchObj.SearchString;
+        TheText:= Items[Index];
+        i:= pos(SearchText,TheText);
+        if i > 0 then
+        begin
+          TheTop:= ARect.Top + 1;
+          BoldLen:= Length(SearchText);
+          FirstPart:= copy(TheText,1,i-1);
+          BoldPart:= copy(TheText,i,BoldLen + 1);
+          LastPart:= copy(TheText, i + BoldLen +1, Length(TheText) -
+                          (i + BoldLen));
+          Canvas.TextOut(ARect.Left, TheTop, FirstPart);
+          Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
+          Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart),
+                         TheTop, BoldPart);
+          Canvas.Font.Style:= Canvas.Font.Style  - [fsBold];
+          Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart + BoldPart),
+                         TheTop, LastPart);
+        end//if
+        else
+        begin
+          Canvas.TextOut(ARect.Left, ARect.Top + 1, TheText);
+        end;//else
+      end
+      else
+      begin
+        Canvas.TextOut(ARect.Left, ARect.Top + 1, TheText);
+      end;//else
+    end;//with
+  //end;//if
+end;//ListBoxDrawItem
 
-procedure TSearchResultsView.EndBlock;
-begin
-  if fBlockCount<=0 then RaiseException('TSearchResultsView.EndBlock Internal Error');
-  dec(fBlockCount);
-end;
-
-{------------------------------------------------------------------------------
-  TSearchResultsView.GetSearchResult
-------------------------------------------------------------------------------}
-Function TSearchResultsView.GetSearchResult: String;
-Begin
-  Result := '';
-  if (SearchResultView.Items.Count > 0) and (SearchResultView.SelCount > 0) then
-    Result := SearchResultView.Items.Strings[GetSelectedLineIndex];
-end;
-
-procedure TSearchResultsView.SearchResultViewDblClicked(Sender: TObject);
-begin
-  if not EnvironmentOptions.MsgViewDblClickJumps then exit;
-  if (SearchResultView.Items.Count > 0) and (SearchResultView.SelCount > 0) then Begin
-    If Assigned(OnSelectionChanged) then
-      OnSelectionChanged(self);
-  end;
-end;
-
-Procedure TSearchResultsView.SearchResultViewClicked(sender : TObject);
+procedure TSearchResultsView.ListBoxClicked(Sender: TObject);
 begin
   if EnvironmentOptions.MsgViewDblClickJumps then exit;
-  if (SearchResultView.Items.Count > 0) and (SearchResultView.SelCount > 0) then Begin
-    If Assigned(OnSelectionChanged) then
-      OnSelectionChanged(self);
-  end;
-end;
+  if Assigned(fOnSelectionChanged) then
+    fOnSelectionChanged(Self)
+end;//ListBoxClicked
 
-function TSearchResultsView.GetDirectory: string;
+procedure TSearchResultsView.ListBoxDoubleClicked(Sender: TObject);
+begin
+  if not EnvironmentOptions.MsgViewDblClickJumps then exit;
+  if Assigned(fOnSelectionChanged) then
+    fOnSelectionChanged(Self)
+end;//ListBoxDoubleClicked
+
+{Returns the Position within the source file from a properly formated search
+ reslut}
+function TSearchResultsView.GetSourcePositon: TPoint;
 var
-  i: Integer;
+  i: integer;
+  strTemp: string;
+  strResults: string;
 begin
-  Result := '';
-  i:=GetSelectedLineIndex;
-  if (FDirectories<>nil) and (FDirectories.Count>i) then
-    Result := FDirectories[i];
-end;
+  strResults:= GetSelectedText;
+  result.x:= -1;
+  result.y:= -1;
+  i:= pos('(',strResults);
+  if i > 0 then
+  begin
+    inc(i);
+    While (i < length(strResults)) and (strResults[i] <> ',') do
+    begin
+      strTemp:= StrTemp + strResults[i];
+      inc(i);
+    end;//while
+    if (i < Length(StrResults)) and (strResults[i] = ',') then
+    begin
+      result.y:= StrToInt(strTemp);
+      inc(i);
+      strTemp:= '';
+      While (i < length(strResults)) and (strResults[i] <> ')') do
+      begin
+        strTemp:= strResults[i];
+        inc(i);
+      end;//while
+      if (i < Length(strResults)) and (strResults[i] = ')' ) then
+       result.x:= StrToInt(strTemp);
+    end;//if
+  end;//if
+end;//GetSource Positon
 
-Function TSearchResultsView.GetSelectedLineIndex : Integer;
+{Returns The file name portion of a properly formated search result}
+function TSearchResultsView.GetSourceFileName: string;
 var
-  I : Integer;
-Begin
-  Result := -1;
-  if (SearchResultView.Items.Count > 0) and (SearchResultView.SelCount > 0) then Begin
-    for i := 0 to SearchResultView.Items.Count-1 do
-    Begin
-      if SearchResultView.Selected[I] then
-        Begin
-	  Result := I;
-          Break;
-        end;
-    end;
+  strResults: string;
+  i: integer;
+begin
+  strResults:= GetSelectedText;
+  i:= pos('(', strResults);
+  dec(i);
+  if i > 0 then
+  begin
+    result:= copy(strResults, 1, i);
+  end
+  else
+  begin
+    result:= '';
   end;
-end;
+end;//GetSourceFileName
 
-procedure TSearchResultsView.SetLastLineIsProgress(const AValue: boolean);
+{Returns the selected text in the currently active listbox.}
+function TSearchResultsView.GetSelectedText: string;
+var
+  ThePage: TPage;
+  TheListBox: TListBox;
+  i: integer;
 begin
-  if FLastLineIsProgress=AValue then exit;
-  if FLastLineIsProgress then
-    SearchResultView.Items.Delete(SearchResultView.Items.Count-1);
-  FLastLineIsProgress:=AValue;
-end;
+  result:= '';
+  i:= ResultsNoteBook.PageIndex;
+  if i > -1 then
+  begin
+    ThePage:= ResultsNoteBook.Page[i];
+  end;//if
+  if Assigned(ThePage) then
+  begin
+    TheListBox:= GetListBox(ThePage.PageIndex);
+    if Assigned(TheListBox) then
+    begin
+      i:= TheListBox.ItemIndex;
+      if i > -1 then
+        result:= TheListBox.Items[i];
+    end;//if
+  end;//if
+end;//GetSelectedText
 
-procedure TSearchResultsView.SetSelectedLineIndex(const AValue: Integer);
+function TSearchResultsView.GetPageIndex(APageName: string): integer;
+var
+  i: integer;
 begin
-  SearchResultView.ItemIndex:=AValue;
-  SearchResultView.TopIndex:=SearchResultView.ItemIndex;
-end;
+  result:= -1;
+  for i:= 0 to ResultsNoteBook.Pages.Count - 1 do
+  begin
+    if (ResultsNoteBook.Pages[i] = APageName + SPACE) then
+    begin
+      result:= i;
+      break;
+    end;//if
+  end;//for
+end;//GetPageIndex
 
-procedure TSearchResultsView.SetMsgDirectory(Index: integer; const CurDir: string);
+{Returns a the listbox control from a Tab if both the page and the listbox
+ exist else returns nil}
+function TSearchResultsView.GetListBox(APageIndex: integer): TListBox;
+var
+  i: integer;
+  ThePage: TPage;
 begin
-  if FDirectories=nil then FDirectories:=TStringList.Create;
-  while FDirectories.Count<=Index do FDirectories.Add('');
-  FDirectories[Index]:=CurDir;
-end;
+  result:= nil;
+  if (APageIndex > -1) and (APageIndex < ResultsNoteBook.Pages.Count) then
+  begin
+    ThePage:= ResultsNoteBook.Page[APageIndex];
+    if Assigned(ThePage) then
+    begin
+      for i:= 0 to ThePage.ComponentCount - 1 do
+      begin
+        if ThePage.Components[i] is TListBox then
+        begin
+          result:= TListBox(ThePage.Components[i]);
+          break;
+        end;//if
+      end;//for
+    end;//if
+  end;//if
+end;//GetListBox
 
 initialization
-  SearchResultsView:=nil;
-  { $I msgview.lrs}
-
+  { $I searchresultview.lrs}
 
 end.
-
 

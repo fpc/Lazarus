@@ -52,7 +52,7 @@ uses
   Splash, TransferMacros, ObjectInspector, PropEdits,
   OutputFilter, IDEDefs, MsgView, EnvironmentOpts, EditorOptions,
   FormEditor, CompilerOptions, KeyMapping, IDEProcs, UnitEditor, Debugger,
-  IDEOptionDefs, CodeToolsDefines;
+  IDEOptionDefs, CodeToolsDefines, DialogProcs;
 
 type
   // The IDE is at anytime in a specific state:
@@ -430,7 +430,8 @@ type
       IsPartOfProject:boolean): TModalResult; virtual; abstract;
     function DoDeleteAmbigiousFiles(const Filename:string
                                     ): TModalResult; virtual;
-    function DoCheckUnitPathForAmbigiousPascalFiles(const UnitPath:string
+    function DoCheckUnitPathForAmbigiousPascalFiles(const BaseDir, TheUnitPath,
+                                    CompiledExt, ContextDescription: string
                                     ): TModalResult; virtual;
 
     procedure UpdateWindowsMenu; virtual;
@@ -481,6 +482,24 @@ function SaveFlagsToString(Flags: TSaveFlags): string;
 
 implementation
 
+
+type
+  TUnitFile = record
+    UnitName: string;
+    Filename: string;
+  end;
+  PUnitFile = ^TUnitFile;
+
+function CompareUnitFiles(UnitFile1, UnitFile2: PUnitFile): integer;
+begin
+  Result:=AnsiCompareText(UnitFile1^.UnitName,UnitFile2^.UnitName);
+end;
+
+function CompareUnitNameAndUnitFile(UnitName: PChar;
+  UnitFile: PUnitFile): integer;
+begin
+  Result:=CompareStringPointerI(UnitName,PChar(UnitFile^.UnitName));
+end;
 
 function OpenFlagsToString(Flags: TOpenFlags): string;
 var
@@ -1654,58 +1673,116 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  function TMainIDEBar.DoCheckUnitPathForAmbigiousPascalFiles(
+    const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string
+    ): TModalResult;
+
+  Collect all pascal files and all compiled units in the unit path and check
+  for ambigious files. For example: doubles.
+-------------------------------------------------------------------------------}
 function TMainIDEBar.DoCheckUnitPathForAmbigiousPascalFiles(
-  const UnitPath: string): TModalResult;
+  const BaseDir, TheUnitPath, CompiledExt, ContextDescription: string): TModalResult;
+  
+  procedure FreeUnitTree(var Tree: TAVLTree);
+  var
+    ANode: TAVLTreeNode;
+    AnUnitFile: PUnitFile;
+  begin
+    if Tree<>nil then begin
+      ANode:=Tree.FindLowest;
+      while ANode<>nil do begin
+        AnUnitFile:=PUnitFile(ANode.Data);
+        Dispose(AnUnitFile);
+        ANode:=Tree.FindSuccessor(ANode);
+      end;
+      Tree.Free;
+      Tree:=nil;
+    end;
+  end;
+  
 var
   EndPos: Integer;
   StartPos: Integer;
   CurDir: String;
   FileInfo: TSearchRec;
-  UnitTree: TAVLTree;
+  SourceUnitTree, CompiledUnitTree: TAVLTree;
   ANode: TAVLTreeNode;
   CurUnitName: String;
-  //CurFilename: String;
+  CurFilename: String;
+  AnUnitFile: PUnitFile;
+  CurUnitTree: TAVLTree;
+  FileInfoNeedClose: Boolean;
+  UnitPath: String;
 begin
   Result:=mrOk;
-  exit;
-  UnitTree:=nil;
-  
-  EndPos:=1;
-  while EndPos<=length(UnitPath) do begin
-    StartPos:=EndPos;
-    while (StartPos<=length(UnitPath)) and (UnitPath[StartPos]=':') do
-      inc(StartPos);
-    EndPos:=StartPos;
-    while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>':') do
-      inc(EndPos);
-    if EndPos>StartPos then begin
-      CurDir:=AppendPathDelim(TrimFilename(copy(
-                                           UnitPath,StartPos,EndPos-StartPos)));
-      if SysUtils.FindFirst(CurDir+FindMask,faAnyFile,FileInfo)=0 then begin
-        repeat
-          if (FileInfo.Name='.') or (FileInfo.Name='..')
-          or ((FileInfo.Attr and faDirectory)<>0)
-          or (not FilenameIsPascalUnit(FileInfo.Name)) then continue;
-          CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
-          //CurFilename:=CurDir+FileInfo.Name;
-          // check if unit already found
-          if (UnitTree<>nil) then begin
-            ANode:=UnitTree.FindKey(PChar(CurUnitName),@CompareStringPointerI);
+  UnitPath:=TrimSearchPath(TheUnitPath,BaseDir);
+
+  //writeln('TMainIDEBar.DoCheckUnitPathForAmbigiousPascalFiles A UnitPath="',UnitPath,'" Ext=',CompiledExt,' Context=',ContextDescription);
+
+  SourceUnitTree:=TAVLTree.Create(@CompareUnitFiles);
+  CompiledUnitTree:=TAVLTree.Create(@CompareUnitFiles);
+  FileInfoNeedClose:=false;
+  try
+    // collect all units (.pas, .pp, compiled units)
+    EndPos:=1;
+    while EndPos<=length(UnitPath) do begin
+      StartPos:=EndPos;
+      while (StartPos<=length(UnitPath)) and (UnitPath[StartPos]=';') do
+        inc(StartPos);
+      EndPos:=StartPos;
+      while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>';') do
+        inc(EndPos);
+      if EndPos>StartPos then begin
+        CurDir:=AppendPathDelim(TrimFilename(copy(
+                                             UnitPath,StartPos,EndPos-StartPos)));
+        FileInfoNeedClose:=true;
+        if SysUtils.FindFirst(CurDir+FindMask,faAnyFile,FileInfo)=0 then begin
+          repeat
+            if (FileInfo.Name='.') or (FileInfo.Name='..')
+            or ((FileInfo.Attr and faDirectory)<>0) then continue;
+            if FilenameIsPascalUnit(FileInfo.Name) then
+              CurUnitTree:=SourceUnitTree
+            else if (CompareFileExt(FileInfo.Name,CompiledExt,false)=0) then
+              CurUnitTree:=CompiledUnitTree
+            else
+              continue;
+            CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
+            CurFilename:=CurDir+FileInfo.Name;
+            // check if unit already found
+            ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
+                                       @CompareUnitNameAndUnitFile);
             if ANode<>nil then begin
-
+              // pascal unit exists twice
+              Result:=MessageDlg('Ambigious unit found',
+                'The unit '+CurUnitName+' exists twice in the unit path of the '
+                +ContextDescription+':'#13
+                +#13
+                +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'#13
+                +'2. "'+CurFilename+'"'#13
+                +#13
+                +'Hint: Check if two packages contain a unit with the same name.',
+                mtWarning,[mbAbort,mbIgnore],0);
+              if Result<>mrIgnore then exit;
             end;
-          end;
-          // add unit
-          if UnitTree=nil then
-            UnitTree:=TAVLTree.Create(@CompareStringPointerI);
-
-        until SysUtils.FindNext(FileInfo)<>0;
+            // add unit to tree
+            New(AnUnitFile);
+            AnUnitFile^.UnitName:=CurUnitName;
+            AnUnitFile^.Filename:=CurFilename;
+            CurUnitTree.Add(AnUnitFile);
+          until SysUtils.FindNext(FileInfo)<>0;
+        end;
+        FindClose(FileInfo);
+        FileInfoNeedClose:=false;
       end;
-      FindClose(FileInfo);
     end;
+  finally
+    // clean up
+    if FileInfoNeedClose then FindClose(FileInfo);
+    FreeUnitTree(SourceUnitTree);
+    FreeUnitTree(CompiledUnitTree);
   end;
-  // clean up
-  UnitTree.Free;
+  Result:=mrOk;
 end;
 
 {-------------------------------------------------------------------------------

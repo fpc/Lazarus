@@ -175,11 +175,11 @@ procedure TSearchForm.DoSearch;
 begin
   lblSearchText.Caption:= fSearchFor;
   fMatches:= 0;
+  ParseMask;
   if Assigned(fResultsList) then
   begin
     if fSearchFiles then
     begin
-      ParseMask;
       DoFindInFiles(fTheDirectory);
     end;//if
     if fSearchProject or fSearchOpen then
