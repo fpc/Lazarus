@@ -97,6 +97,8 @@ type
   
 function ShowAddToProjectDlg(AProject: TProject;
   var AddResult: TAddToProjectResult): TModalResult;
+function CheckAddingDependency(LazProject: TProject;
+  NewDependency: TPkgDependency): boolean;
 
 
 implementation

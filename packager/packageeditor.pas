@@ -339,7 +339,7 @@ begin
                          AddBitBtn.Enabled);
       end else if (CurNode.Parent=RemovedRequiredNode) then begin
         AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Add dependency',@ReAddMenuItemClick,
+        AddPopupMenuItem('Re-Add dependency',@ReAddMenuItemClick,
                          AddBitBtn.Enabled);
       end;
     end;

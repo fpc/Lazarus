@@ -51,10 +51,12 @@ uses
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates,
+  ProjectInspector,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
+    // events
     function OnPackageEditorCompilePackage(Sender: TObject;
       APackage: TLazPackage; CompileAll: boolean): TModalResult;
     function OnPackageEditorCreateFile(Sender: TObject;
@@ -83,6 +85,7 @@ type
     procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
   private
+    // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
     function CompileRequiredPackages(APackage: TLazPackage): TModalResult;
     function CheckPackageGraphForCompilation(APackage: TLazPackage): TModalResult;
@@ -109,7 +112,11 @@ type
 
     procedure LoadInstalledPackages; override;
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
-    
+    function OpenProjectDependencies(AProject: TProject): TModalResult; override;
+    procedure AddDefaultDependencies(AProject: TProject); override;
+    procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
+    procedure AddProjectLCLDependency(AProject: TProject); override;
+
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
@@ -129,6 +136,8 @@ type
                               Flags: TPkgCompileFlags): TModalResult; override;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; override;
+
+    function OnProjectInspectorOpen(Sender: TObject): boolean; override;
   end;
 
 implementation
@@ -326,6 +335,8 @@ begin
   if GraphChanged then begin
     if PackageEditors<>nil then
       PackageEditors.UpdateAllEditors;
+    if ProjInspector<>nil then
+      ProjInspector.UpdateItems;
   end;
 end;
 
@@ -985,6 +996,57 @@ begin
   Result:=mrOk;
 end;
 
+function TPkgManager.OpenProjectDependencies(AProject: TProject): TModalResult;
+begin
+  PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
+  Result:=mrOk;
+end;
+
+procedure TPkgManager.AddDefaultDependencies(AProject: TProject);
+var
+  ds: char;
+begin
+  case AProject.ProjectType of
+  
+  ptApplication:
+    begin
+      // add lcl pp/pas dirs to source search path
+      ds:=PathDelim;
+      AProject.SrcPath:=
+        '$(LazarusDir)'+ds+'lcl'
+       +';'+
+        '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
+      {$IFDEF EnablePkgs}
+      AddProjectLCLDependency(AProject);
+      {$ELSE}
+      // add lcl ppu dirs to unit search path
+      Project1.CompilerOptions.OtherUnitFiles:=
+        '$(LazarusDir)'+ds+'lcl'+ds+'units'
+       +';'+
+        '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
+      {$ENDIF}
+    end;
+
+  end;
+  OpenProjectDependencies(AProject);
+end;
+
+procedure TPkgManager.AddProjectDependency(AProject: TProject;
+  APackage: TLazPackage);
+begin
+  // check if the dependency is already there
+  if FindDependencyByNameInList(AProject.FirstRequiredDependency,pdlRequires,
+    APackage.Name)<>nil
+  then exit;
+  // add a dependency for the package to the project
+  AProject.AddRequiredDependency(APackage.CreateDependencyForThisPkg);
+end;
+
+procedure TPkgManager.AddProjectLCLDependency(AProject: TProject);
+begin
+  AddProjectDependency(AProject,PackageGraph.LCLPackage);
+end;
+
 function TPkgManager.ShowConfigureCustomComponents: TModalResult;
 begin
   Result:=ShowConfigureCustomComponentDlg(EnvironmentOptions.LazarusDirectory);
@@ -1486,6 +1548,22 @@ begin
   OldPackage.Modified:=true;
 
   Result:=mrOk;
+end;
+
+function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;
+var
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
+begin
+  Result:=false;
+  if (Sender=nil) or (not (Sender is TProjectInspectorForm)) then exit;
+  Dependency:=TProjectInspectorForm(Sender).GetSelectedDependency;
+  if Dependency=nil then exit;
+  // user has selected a dependency -> open package
+  Result:=true;
+  if PackageGraph.OpenDependency(Dependency,RequiredPackage)<>lprSuccess then
+    exit;
+  DoOpenPackage(RequiredPackage);
 end;
 
 function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;

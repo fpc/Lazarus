@@ -468,6 +468,7 @@ var
   ALayout: TIDEWindowLayout;
 begin
   inherited Create(TheOwner);
+  FUpdateLock:=PackageGraph.UpdateLock;
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
   Caption:='Package Graph';

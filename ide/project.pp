@@ -384,6 +384,7 @@ type
     procedure DeleteRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRemovedDependency(Dependency: TPkgDependency);
     procedure RemoveRemovedDependency(Dependency: TPkgDependency);
+    procedure ReaddRemovedDependency(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(Dependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function Requires(APackage: TLazPackage): boolean;
@@ -432,6 +433,7 @@ type
     property UnitOutputDirectory: String
                            read fUnitOutputDirectory write fUnitOutputDirectory;
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
+    property UpdateLock: integer read FUpdateLock;
   end;
 
 const
@@ -1428,7 +1430,7 @@ begin
       
       // load the dependencies
       LoadPkgDependencyList(XMLConfig,'ProjectOptions/RequiredPackages/',
-        FFirstRequiredDependency,pdlRequires,Self);
+        FFirstRequiredDependency,pdlRequires,Self,true);
     finally
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       xmlconfig.Free;
@@ -2156,47 +2158,73 @@ end;
 
 procedure TProject.AddRequiredDependency(Dependency: TPkgDependency);
 begin
+  BeginUpdate(true);
   Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Owner:=Self;
+  Dependency.HoldPackage:=true;
   Modified:=true;
+  EndUpdate;
 end;
 
 procedure TProject.RemoveRequiredDependency(Dependency: TPkgDependency);
 begin
+  BeginUpdate(true);
   Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  Dependency.RequiredPackage:=nil;
   Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=true;
   Modified:=true;
+  EndUpdate;
 end;
 
 procedure TProject.DeleteRequiredDependency(Dependency: TPkgDependency);
 begin
+  BeginUpdate(true);
   Dependency.RequiredPackage:=nil;
   Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
   Dependency.Free;
+  EndUpdate;
 end;
 
 procedure TProject.DeleteRemovedDependency(Dependency: TPkgDependency);
 begin
+  BeginUpdate(true);
   Dependency.RequiredPackage:=nil;
   Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
   Dependency.Free;
+  EndUpdate;
 end;
 
 procedure TProject.RemoveRemovedDependency(Dependency: TPkgDependency);
 begin
+  BeginUpdate(true);
   Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=false;
+  EndUpdate;
+end;
+
+procedure TProject.ReaddRemovedDependency(Dependency: TPkgDependency);
+begin
+  BeginUpdate(true);
+  RemoveRemovedDependency(Dependency);
+  AddRequiredDependency(Dependency);
+  EndUpdate;
 end;
 
 procedure TProject.MoveRequiredDependencyUp(Dependency: TPkgDependency);
 begin
+  if Dependency.PrevRequiresDependency=nil then exit;
+  BeginUpdate(true);
   Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+  EndUpdate;
 end;
 
 procedure TProject.MoveRequiredDependencyDown(Dependency: TPkgDependency);
 begin
+  if Dependency.NextRequiresDependency=nil then exit;
+  BeginUpdate(true);
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+  EndUpdate;
 end;
 
 function TProject.Requires(APackage: TLazPackage): boolean;
@@ -2527,6 +2555,9 @@ end.
 
 {
   $Log$
+  Revision 1.111  2003/04/20 20:32:40  mattias
+  implemented removing, re-adding, updating project dependencies
+
   Revision 1.110  2003/04/20 09:52:07  mattias
   implemented saving loading project dependencies
 

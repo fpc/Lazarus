@@ -44,7 +44,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, PackageDefs;
+  Classes, SysUtils, Forms, PackageDefs, Project;
 
 type
   TPkgSaveFlag = (
@@ -76,7 +76,11 @@ type
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
 
     procedure LoadInstalledPackages; virtual; abstract;
-    
+    function OpenProjectDependencies(AProject: TProject): TModalResult; virtual; abstract;
+    procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
+    procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); virtual; abstract;
+    procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
+
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;
     function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
@@ -95,6 +99,8 @@ type
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; virtual; abstract;
+
+    function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
   end;
 
 var

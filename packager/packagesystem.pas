@@ -114,8 +114,12 @@ type
     function CreateUniquePkgName(const Prefix: string;
                                  IgnorePackage: TLazPackage): string;
     function CreateUniqueUnitName(const Prefix: string): string;
+    function DependencyExists(Dependency: TPkgDependency;
+                              Flags: TFindPackageFlags): boolean;
     function FindAPackageWithName(const PkgName: string;
                                   IgnorePackage: TLazPackage): TLazPackage;
+    function FindBrokenDependencyPath(APackage: TLazPackage): TList;
+    function FindCircleDependencyPath(APackage: TLazPackage): TList;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -131,14 +135,13 @@ type
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
+    function GetAutoCompilationOrder(APackage: TLazPackage): TList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TList;
     function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
     function PackageIsNeeded(APackage: TLazPackage): boolean;
     function PackageNameExists(const PkgName: string;
                                IgnorePackage: TLazPackage): boolean;
-    function DependencyExists(Dependency: TPkgDependency;
-                              Flags: TFindPackageFlags): boolean;
     procedure ConsistencyCheck;
     procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
                                      var List: TList);
@@ -152,9 +155,6 @@ type
                                     Event: TIteratePackagesEvent);
     procedure MarkAllPackagesAsNotVisited;
     procedure MarkNeededPackages;
-    function FindBrokenDependencyPath(APackage: TLazPackage): TList;
-    function FindCircleDependencyPath(APackage: TLazPackage): TList;
-    function GetAutoCompilationOrder(APackage: TLazPackage): TList;
   public
     // packages handling
     function CreateNewPackage(const Prefix: string): TLazPackage;
@@ -183,6 +183,7 @@ type
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency;
                             var APackage: TLazPackage): TLoadPackageResult;
+    procedure OpenRequiredDependencyList(FirstDependency: TPkgDependency);
     procedure MoveRequiredDependencyUp(ADependency: TPkgDependency);
     procedure MoveRequiredDependencyDown(ADependency: TPkgDependency);
   public
@@ -206,6 +207,7 @@ type
     property RegistrationPackage: TLazPackage read FRegistrationPackage
                                               write SetRegistrationPackage;
     property RegistrationUnitName: string read FRegistrationUnitName;
+    property UpdateLock: integer read FUpdateLock;
   end;
   
 var
@@ -1168,13 +1170,15 @@ begin
 end;
 
 function TLazPackageGraph.PackageIsNeeded(APackage: TLazPackage): boolean;
-// check if package is currently in use (installed, autoinstall, editor open)
+// check if package is currently in use (installed, autoinstall, editor open,
+// or used by a needed dependency)
 // !!! it does not check if any needed package needs this package
 begin
   Result:=true;
   // check if package is open, installed or will be installed
   if (APackage.Installed<>pitNope) or (APackage.AutoInstall<>pitNope)
-  or ((APackage.Editor<>nil) and (APackage.Editor.Visible)) then
+  or ((APackage.Editor<>nil) and (APackage.Editor.Visible))
+  or (APackage.HoldPackageCount>0) then
   begin
     exit;
   end;
@@ -1306,6 +1310,19 @@ begin
   end;
   APackage:=Dependency.RequiredPackage;
   Result:=Dependency.LoadPackageResult;
+end;
+
+procedure TLazPackageGraph.OpenRequiredDependencyList(
+  FirstDependency: TPkgDependency);
+var
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
+begin
+  Dependency:=FirstDependency;
+  while Dependency<>nil do begin
+    OpenDependency(Dependency,RequiredPackage);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
 end;
 
 procedure TLazPackageGraph.MoveRequiredDependencyUp(

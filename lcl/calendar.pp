@@ -58,26 +58,30 @@ Type
     FDayChanged: TNotifyEvent;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
+    FPropsChanged: boolean;
+    function ReadOnlyIsStored: boolean;
     procedure SetReadOnly(const AValue: Boolean);
     Procedure GetProps;
     Procedure SetProps;
     function GetDisplaySettings: TDisplaySettings;
     procedure SetDisplaySettings(const AValue: TDisplaySettings);
-
     function GetDate: String;
     procedure SetDate(const AValue: String);
   protected
     procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
-    procedure LMYEARChanged(var Message: TLMessage); message LM_YEARCHANGED;
-    procedure LMDAYChanged(var Message: TLMessage); message LM_DAYCHANGED;
+    procedure LMYearChanged(var Message: TLMessage); message LM_YEARCHANGED;
+    procedure LMDayChanged(var Message: TLMessage); message LM_DAYCHANGED;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Loaded; override;
+    procedure InitializeWnd; override;
+    procedure AddControl; override;
   published
     Property Date : String read GetDate write SetDate;
     property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
 //    Property Date : TDate read GetDate write SetDate;
-    property ReadOnly : Boolean read FReadOnly write SetReadOnly;
+    property ReadOnly : Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
     property Visible;
 //    property OnChange;
     property OnClick;
@@ -99,37 +103,54 @@ end;
 
 { TCalendar }
 
-constructor TCalendar.Create(AOwner: TComponent);
+constructor TCalendar.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   fCompStyle := csCalendar;
   SetBounds(0,0,250,150);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
-  Date := FormatDateTime('dd-mm-yyyy',Now);
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
+  Date := FormatDateTime('dd-mm-yyyy',Now);
 end;
 
 destructor TCalendar.Destroy;
 begin
-  Inherited;
+  Inherited Destroy;
+end;
+
+procedure TCalendar.Loaded;
+begin
+  inherited Loaded;
+  if FPropsChanged then SetProps;
+end;
+
+procedure TCalendar.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  if FPropsChanged then SetProps;
+end;
+
+procedure TCalendar.AddControl;
+begin
+  inherited AddControl;
 end;
 
 function TCalendar.GetDate: String;
 begin
   Result := '';
-  GetPRops;
+  GetProps;
   Result := FDate;
 end;
 
 procedure TCalendar.SetDate(const AValue: String);
 begin
-   try
-     StrtoDate(AValue);  //test to see if valid date....
-     FDate := AValue;
-     SetProps;
-   except
-     raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue]);
-   end;
+  try
+    StrtoDate(AValue);  //test to see if valid date....
+    FDate := AValue;
+  except
+    raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue]);
+  end;
+  SetProps;
 end;
 
 function TCalendar.GetDisplaySettings: TDisplaySettings;
@@ -147,35 +168,42 @@ end;
 procedure TCalendar.SetReadOnly(const AValue: Boolean);
 begin
   if (FReadOnly <> aValue) then
-    Begin
-      FReadOnly := aValue;
-      SetProps;
-    end;
+  Begin
+    FReadOnly := aValue;
+    SetProps;
+  end;
+end;
+
+function TCalendar.ReadOnlyIsStored: boolean;
+begin
+  Result:=FReadOnly;
 end;
 
 Procedure TCalendar.GetProps;
 var
   Temp : TLMCalendar;
 begin
-   if HandleAllocated then
-      begin
-        CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
-        FDate := FormatDateTime('dd-mm-yyyy',Temp.Date);
-      end;
+  if HandleAllocated then
+  begin
+    CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
+    FDate := FormatDateTime('dd-mm-yyyy',Temp.Date);
+  end;
 end;
 
 Procedure TCalendar.SetProps;
 var
   Temp : TLMCalendar;
 begin
-   if HandleAllocated then
-      begin
-        Temp.Date := StrToDate(FDate);
-        Temp.DisplaySettings := FDisplaySettings;
-        Temp.ReadOnly := fReadOnly;
-        CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
-      End;
-
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
+    FPropsChanged:=false;
+    Temp.Date := StrToDate(FDate);
+    Temp.DisplaySettings := FDisplaySettings;
+    Temp.ReadOnly := fReadOnly;
+    CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
+  End else begin
+    FPropsChanged:=true;
+  end;
 end;
 
 procedure TCalendar.LMDAYChanged(var Message: TLMessage);

@@ -66,10 +66,13 @@ type
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
+    procedure MoveDependencyUpClick(Sender: TObject);
+    procedure MoveDependencyDownClick(Sender: TObject);
     procedure OpenBitBtnClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure ProjectInspectorFormResize(Sender: TObject);
     procedure ProjectInspectorFormShow(Sender: TObject);
+    procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
   private
     FOnAddUnitToProject: TOnAddUnitToProject;
@@ -170,6 +173,26 @@ begin
   UpdateButtons;
 end;
 
+procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
+var
+  Dependency: TPkgDependency;
+begin
+  Dependency:=GetSelectedDependency;
+  if (Dependency=nil) or (Dependency.Removed)
+  or (Dependency.PrevRequiresDependency=nil) then exit;
+  LazProject.MoveRequiredDependencyUp(Dependency);
+end;
+
+procedure TProjectInspectorForm.MoveDependencyDownClick(Sender: TObject);
+var
+  Dependency: TPkgDependency;
+begin
+  Dependency:=GetSelectedDependency;
+  if (Dependency=nil) or (Dependency.Removed)
+  or (Dependency.NextRequiresDependency=nil) then exit;
+  LazProject.MoveRequiredDependencyDown(Dependency);
+end;
+
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
 var
   AddResult: TAddToProjectResult;
@@ -209,8 +232,54 @@ begin
 end;
 
 procedure TProjectInspectorForm.ItemsPopupMenuPopup(Sender: TObject);
-begin
+var
+  ItemCnt: integer;
 
+  procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
+    EnabledFlag: boolean);
+  var
+    CurMenuItem: TMenuItem;
+  begin
+    if ItemsPopupMenu.Items.Count<=ItemCnt then begin
+      CurMenuItem:=TMenuItem.Create(Self);
+      ItemsPopupMenu.Items.Add(CurMenuItem);
+    end else
+      CurMenuItem:=ItemsPopupMenu.Items[ItemCnt];
+    CurMenuItem.Caption:=ACaption;
+    CurMenuItem.OnClick:=AnEvent;
+    CurMenuItem.Enabled:=EnabledFlag;
+    inc(ItemCnt);
+  end;
+
+var
+  CurFile: TUnitInfo;
+  CurDependency: TPkgDependency;
+begin
+  ItemCnt:=0;
+  CurFile:=GetSelectedFile;
+  if CurFile<>nil then begin
+    AddPopupMenuItem('Open file',@OpenBitBtnClick,true);
+    AddPopupMenuItem('Remove file',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
+  end;
+  CurDependency:=GetSelectedDependency;
+  if CurDependency<>nil then begin
+    if CurDependency.Removed then begin
+      AddPopupMenuItem('Open package',@OpenBitBtnClick,true);
+      AddPopupMenuItem('Re-Add dependency',@ReAddMenuItemClick,
+                       AddBitBtn.Enabled);
+    end else begin
+      AddPopupMenuItem('Open package',@OpenBitBtnClick,true);
+      AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,
+                       RemoveBitBtn.Enabled);
+      AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
+                       (CurDependency.PrevRequiresDependency<>nil));
+      AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
+                       (CurDependency.NextRequiresDependency<>nil));
+    end;
+  end;
+
+  while ItemsPopupMenu.Items.Count>ItemCnt do
+    ItemsPopupMenu.Items.Delete(ItemsPopupMenu.Items.Count-1);
 end;
 
 procedure TProjectInspectorForm.OpenBitBtnClick(Sender: TObject);
@@ -228,20 +297,45 @@ begin
   UpdateAll;
 end;
 
-procedure TProjectInspectorForm.RemoveBitBtnClick(Sender: TObject);
+procedure TProjectInspectorForm.ReAddMenuItemClick(Sender: TObject);
+var
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
 begin
+  Dependency:=GetSelectedDependency;
+  if (Dependency=nil) or (not Dependency.Removed)
+  or (not CheckAddingDependency(LazProject,Dependency)) then exit;
+  BeginUpdate;
+  LazProject.ReaddRemovedDependency(Dependency);
+  PackageGraph.OpenDependency(Dependency,RequiredPackage);
+  EndUpdate;
+end;
 
+procedure TProjectInspectorForm.RemoveBitBtnClick(Sender: TObject);
+var
+  CurDependency: TPkgDependency;
+begin
+  CurDependency:=GetSelectedDependency;
+  if (CurDependency<>nil) and (not CurDependency.Removed) then begin
+    if MessageDlg('Confirm deleting dependency',
+      'Delete dependency for '+CurDependency.AsString+'?',
+      mtConfirmation,[mbYes,mbNo],0)<>mrYes
+    then exit;
+    LazProject.RemoveRequiredDependency(CurDependency);
+  end;
 end;
 
 procedure TProjectInspectorForm.SetLazProject(const AValue: TProject);
 begin
   if FLazProject=AValue then exit;
   if FLazProject<>nil then begin
+    dec(FUpdateLock,LazProject.UpdateLock);
     FLazProject.OnBeginUpdate:=nil;
     FLazProject.OnEndUpdate:=nil;
   end;
   FLazProject:=AValue;
   if FLazProject<>nil then begin
+    inc(FUpdateLock,LazProject.UpdateLock);
     FLazProject.OnBeginUpdate:=@OnProjectBeginUpdate;
     FLazProject.OnEndUpdate:=@OnProjectEndUpdate;
   end;
@@ -447,7 +541,7 @@ begin
       CurNode.Free;
       CurNode:=NextNode;
     end;
-    DependenciesNode.Expanded:=true;
+    RemovedDependenciesNode.Expanded:=true;
   end else begin
     // delete removed dependency nodes
     if RemovedDependenciesNode<>nil then
