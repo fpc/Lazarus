@@ -2706,21 +2706,25 @@ begin
     begin
       if (sender is TComboBox) then
       begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'motion-notify-event',
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+          'motion-notify-event',
           @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry), 'motion-notify-event',
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
+          'motion-notify-event',
           @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
 
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button), 'motion-notify-event',
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button),
+          'motion-notify-event',
           @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button), 'motion-notify-event',
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button),
+          'motion-notify-event',
           @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end
       else begin
         ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(gFixed, 'motion-notify-event', @GTKMotionNotifyAfter,
-                      GDK_POINTER_MOTION_MASK);
+        ConnectSenderSignalAfter(gFixed, 'motion-notify-event',
+                      @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end;
     end;
 
@@ -2748,8 +2752,8 @@ begin
       else begin
         ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
                       GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(gFixed, 'button-press-event', @gtkMouseBtnPressAfter,
-                      GDK_BUTTON_PRESS_MASK);
+        ConnectSenderSignalAfter(gFixed, 'button-press-event',
+                      @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
       end;
     end;
 
@@ -2785,7 +2789,7 @@ begin
 
     LM_ENTER :
     begin
-      if sender is TButton then
+      if Sender is TButton then
         ConnectSenderSignal(gObject, 'enter', @gtkenterCB)
       else
         ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
@@ -2793,7 +2797,7 @@ begin
 
     LM_EXIT :
     begin
-      if sender is TButton then
+      if Sender is TButton then
         ConnectSenderSignal(gObject, 'leave', @gtkleaveCB)
       else
         ConnectSenderSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
@@ -2850,6 +2854,18 @@ begin
     LM_MOVETOCOLUMN :
     begin
       ConnectSenderSignal(gObject, 'move-to-column', @gtkmovetocolumn);
+    end;
+    
+    LM_MOUSEENTER:
+    begin
+      if gCore<>nil then
+        ConnectSenderSignal(gCore, 'enter', @gtkEnterCB)
+    end;
+
+    LM_MOUSELEAVE:
+    begin
+      if gCore<>nil then
+        ConnectSenderSignal(gCore, 'leave', @gtkLeaveCB)
     end;
 
     LM_KILLCHAR :
@@ -2942,7 +2958,8 @@ begin
     HDN_TRACK:
     begin
       ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
-      ConnectSenderSignal(gObject, 'abort-column-resize', @gtkLVAbortColumnResize);
+      ConnectSenderSignal(gObject, 'abort-column-resize',
+                          @gtkLVAbortColumnResize);
     end;
      
     HDN_ITEMCHANGED,
@@ -3180,7 +3197,7 @@ begin
        SetCallback(LM_MBUTTONDOWN,Sender);
        SetCallback(LM_MBUTTONUP,Sender);
        SetCallback(LM_MOUSEWHEEL,Sender);
-      End;
+     End;
 
   if (Sender is TControl) then
     Begin
@@ -3239,6 +3256,8 @@ begin
           SetCallback(LM_CONFIGUREEVENT,Sender);
           SetCallback(LM_CLOSEQUERY,Sender);
           SetCallBack(LM_Activate,Sender);
+          //SetCallback(LM_MOUSEENTER,Sender);
+          //SetCallback(LM_MOUSELEAVE,Sender);
         end;
         
         csLabel:
@@ -6631,6 +6650,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.291  2002/11/21 18:49:53  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.290  2002/11/18 13:56:33  mattias
   fixed TListView.Items.Add
 
