@@ -227,6 +227,7 @@ begin
     Params:=TFindDeclarationParams.Create;
     try
       Params.ContextNode:=ClassNode.Parent;
+      writeln('BBB1');
       SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
       // create compatibility list
       CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
@@ -416,6 +417,7 @@ begin
 
           // convert the TypeData to an expression type list
           Params.ContextNode:=Params.NewNode;
+          writeln('AAA1');
           SearchedExprList:=CreateExprListFromMethodTypeData(TypeData,Params);
           // create compatibility list
           CompListSize:=SizeOf(TTypeCompatibility)*SearchedExprList.Count;
@@ -663,6 +665,9 @@ begin
 
     end;
   end;
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] END');
+  {$ENDIF}
 end;
 
 function TEventsCodeTool.CollectPublishedMethods(

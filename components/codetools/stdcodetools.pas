@@ -329,17 +329,24 @@ begin
   or (UsesNode.EndPos<1) then exit;
   SourceChangeCache.MainScanner:=Scanner;
   MoveCursorToNodeStart(UsesNode); // for nice error position
-  InsertPos:=UsesNode.EndPos-1; // position of semicolon
+  InsertPos:=UsesNode.EndPos-1; // position of semicolon at end of uses section
+  // build insert text  "unitname in 'file'"
   NewUsesTerm:=NewUnitName;
   if NewUnitInFile<>'' then
     NewUsesTerm:=NewUsesTerm+' in '''+NewUnitInFile+'''';
+  // check if insertion would expand the line over the max LineLength
   GetLineStartEndAtPosition(Src,InsertPos,LineStart,LineEnd);
   if InsertPos-LineStart+length(NewUsesTerm)+2>=
     SourceChangeCache.BeautifyCodeOptions.LineLength then
   begin
     // split line
-    Indent:=GetLineIndent(Src,CurPos.StartPos);
-    if UsesNode.StartPos=LineStart then
+    // calculate the indent
+    Indent:=GetLineIndent(Src,InsertPos);
+    // if the 'uses' keyword is not in the same line of the insertion position,
+    // then indent the new line
+    // else keep the indentation.
+    if (UsesNode.StartPos>=LineStart)
+    and (UsesNode.StartPos<LineEnd) then
       inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
     NewUsesTerm:=','+SourceChangeCache.BeautifyCodeOptions.LineEnd+
       GetIndentStr(Indent)+NewUsesTerm;

@@ -989,13 +989,13 @@ function TCodeToolManager.FindUnitInAllUsesSections(Code: TCodeBuffer;
 var NameAtomPos, InAtomPos: TAtomPosition;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindUnitInAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindUnitInAllUsesSections B ',Code.Filename,' UnitName=',AnUnitName);
+  {$ENDIF}
   try
     Result:=FCurCodeTool.FindUnitInAllUsesSections(UpperCaseStr(AnUnitName),
                 NameAtomPos, InAtomPos);
@@ -1012,9 +1012,9 @@ function TCodeToolManager.RenameUsedUnit(Code: TCodeBuffer;
   const OldUnitName, NewUnitName, NewUnitInFile: string): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RenameUsedUnit A, ',Code.Filename,' Old=',OldUnitName,' New=',NewUnitName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RenameUsedUnit(UpperCaseStr(OldUnitName),NewUnitName,
@@ -1028,9 +1028,9 @@ function TCodeToolManager.AddUnitToMainUsesSection(Code: TCodeBuffer;
   const NewUnitName, NewUnitInFile: string): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.AddUnitToMainUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.AddUnitToMainUsesSection A ',Code.Filename,' NewUnitName=',NewUnitName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.AddUnitToMainUsesSection(NewUnitName, NewUnitInFile,
@@ -1044,9 +1044,9 @@ function TCodeToolManager.RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
   const AnUnitName: string): boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RemoveUnitFromAllUsesSections A ',Code.Filename,' UnitName=',AnUnitName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AnUnitName),
@@ -1062,9 +1062,9 @@ var LinkIndex: integer;
   Ext: string;
 begin
   Result:='';
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindLFMFileName A ',Code.Filename);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindLFMFileName A ',Code.Filename);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     LinkIndex:=-1;
