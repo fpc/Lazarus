@@ -258,14 +258,17 @@ const
 function StrToVKCode(s: string): integer;
 var i: integer;
 begin
+  Result:=VK_UNKNOWN;
   if copy(s,1,6)='Word(''' then
     Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
   else if s<>'none' then begin
-    for i:=1 to 200 do
+    for i:=1 to 300 do
       if KeyAndShiftStateToStr(i,[])=s then
         Result:=i;
-  end else
-    Result:=VK_UNKNOWN;
+    for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
+      if KeyAndShiftStateToStr(i,[])=s then
+        Result:=i;
+  end;
 end;
 
 function ShowKeyMappingEditForm(Index:integer;
@@ -623,7 +626,10 @@ begin
   VK_SLASH      :Result:=Result+'/';
   VK_AT         :Result:=Result+'@';
   else
-    Result:=Result+'Word('''+IntToStr(Key)+''')';
+    if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then
+      Result:=Result+chr(Key-VK_IRREGULAR)
+    else
+      Result:=Result+'Word('''+IntToStr(Key)+''')';
   end;
 end;
 

@@ -89,10 +89,10 @@ var
   NewPageIndex: integer;
 begin
   // Make sure Index is in the range of valid pages to delete 
-{$IFDEF NOTEBOOK_DEBUG}
-//writeln('TNBPages.Delete A Index=',Index);
-writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
-{$ENDIF}
+  {$IFDEF NOTEBOOK_DEBUG}
+  //writeln('TNBPages.Delete A Index=',Index);
+  writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  {$ENDIF}
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
@@ -122,9 +122,9 @@ writeln('TNBPages.Delete B Index=',Index,' fPageList.Count=',fPageList.Count,' f
     if NewPageIndex>=Index then
       fNoteBook.PageIndex:=NewPageIndex-1;
   end;
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('TNBPages.Delete END Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
-{$ENDIF}
+  {$IFDEF NOTEBOOK_DEBUG}
+  writeln('TNBPages.Delete END Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  {$ENDIF}
 end;
 
 
@@ -163,13 +163,7 @@ begin
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Page := Index;
 
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TNBPages.InsertPage] A ',Index);
-{$ENDIF}
     CNSendMessage(LM_ADDPAGE, fNotebook, @Msg);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TNBPages.InsertPage] B ');
-{$ENDIF}
 
     fNoteBook.PageIndex := Index;
   end;
@@ -230,13 +224,7 @@ var
   n: Integer;
   Msg: TLMNotebookEvent;
 begin
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.CreateWnd] A');
-{$ENDIF}
   inherited CreateWnd;
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.CreateWnd] B');
-{$ENDIF}
 
   Assert(False, 'Trace:[TCustomNotebook.CreateWnd] add pages');
   for n := 0 to FPageList.Count -1 do begin
@@ -247,22 +235,12 @@ writeln('[TCustomNotebook.CreateWnd] B');
     Msg.Child := TControl(FPageList[n]);
     Msg.fCompStyle := FCompStyle;
     Msg.Page := n;
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.CreateWnd] C ',n);
-{$ENDIF}
     CNSendMessage(LM_ADDPAGE, Self, @Msg);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.CreateWnd] D');
-{$ENDIF}
   end;
 
   SetShowTabs(FShowTabs);
   SetTabPosition(fTabPosition);
   SetPageIndex(FPageIndex);
-
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.CreateWnd] END');
-{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -409,13 +387,7 @@ begin
     Msg.fCompStyle := fCompStyle;
     Msg.TabPosition := @fTabPosition;
     //InterfaceObject.IntCNSendMessage2(LM_SETTABPOSITION, Self, nil, @fTabPosition);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.SetTabPosition] A');
-{$ENDIF}
     CNSendMessage(LM_SETTABPOSITION, Self, @Msg);
-{$IFDEF NOTEBOOK_DEBUG}
-writeln('[TCustomNotebook.SetTabPosition] B');
-{$ENDIF}
   end;
 end;
 
@@ -534,6 +506,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/03/31 23:20:38  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.14  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

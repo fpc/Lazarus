@@ -342,7 +342,7 @@ PM_Remove = 1;
   VK_POINT      = 190;
   VK_SLASH      = 191;
   VK_AT         = 192;
- 
+
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
   // Used only as parameters to GetAsyncKeyState() and GetKeyState().
@@ -1401,6 +1401,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2002/03/31 23:20:38  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.3  2002/03/31 22:01:37  lazarus
   MG: fixed unreleased/unpressed Ctrl/Alt/Shift
 

@@ -5368,7 +5368,7 @@ begin
   end else begin
     NewSrcEdit:=ActiveSrcEdit;
   end;
-//writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
+  //writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
   with NewSrcEdit.EditorComponent do begin
     CaretXY:=Point(NewX,NewY);
     BlockBegin:=CaretXY;
@@ -6193,6 +6193,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.267  2002/03/31 23:20:35  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.266  2002/03/29 23:22:20  lazarus
   MG: started internationalization of IDE
 

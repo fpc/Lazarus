@@ -16,8 +16,14 @@ constructor TPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   {set the default height and width}
-  Width:=120;
-  Height:=100;
+
+  if (AOwner<>nil) and (AOwner is TControl) then begin
+    Width:=(TControl(AOwner).ClientWidth);
+    Height:=(TControl(AOwner).ClientHeight);
+  end else begin
+    Width:=120;
+    Height:=100;
+  end;
 
   {create the control}
   fCompStyle := csPage;
@@ -84,6 +90,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2002/03/31 23:20:38  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.6  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane
