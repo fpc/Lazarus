@@ -66,6 +66,9 @@ type
     function JumpToCleanPos(NewCleanPos, NewTopLineCleanPos: integer;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         IgnoreJumpCentered: boolean): boolean;
+    function JumpToMethod(const ProcHead: string; Attr: TProcHeadAttributes;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        IgnoreJumpCentered: boolean): boolean;
     function FindNodeInTree(ATree: TAVLTree;
         const UpperCode: string): TCodeTreeNodeExtension;
     property AdjustTopLineDueToComment: boolean
@@ -836,6 +839,34 @@ begin
   Result:=true;
 end;
 
+function TMethodJumpingCodeTool.JumpToMethod(const ProcHead: string;
+  Attr: TProcHeadAttributes;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  IgnoreJumpCentered: boolean): boolean;
+var SectionNode, CurProcNode: TCodeTreeNode;
+  CurProcHead: string;
+begin
+  Result:=false;
+  BuildTree(false);
+  SectionNode:=Tree.Root;
+  while (SectionNode<>nil) do begin
+    if SectionNode.Desc in [ctnProgram,ctnImplementation] then begin
+      CurProcNode:=SectionNode.FirstChild;
+      while CurProcNode<>nil do begin
+        if CurProcNode.Desc=ctnProcedure then begin
+          CurProcHead:=ExtractProcHead(CurProcNode,Attr);
+          if CompareTextIgnoringSpace(ProcHead,CurProcHead,false)=0 then begin
+            Result:=FindJumpPointInProcNode(CurProcNode,
+                       NewPos,NewTopLine);
+            exit;
+          end;
+        end;
+        CurProcNode:=CurProcNode.NextBrother;
+      end;
+    end;
+    SectionNode:=SectionNode.NextBrother;
+  end;
+end;
 
 
 end.

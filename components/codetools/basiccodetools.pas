@@ -1486,6 +1486,7 @@ end;
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
   CaseSensitive: boolean): integer;
 { Txt1  Txt2  Result
+   A     A      0
    A     B      1
    A     AB     1
    A;    A      -1

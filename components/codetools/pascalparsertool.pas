@@ -236,6 +236,7 @@ type
     function GetSourceType: TCodeTreeNodeDesc;
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
+    function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
@@ -2259,7 +2260,7 @@ begin
         if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and (UpAtomIs('END') or AtomIsKeyWord) then
-          SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
+          SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,['constant',GetAtom]);
       until AtomIsChar(';');
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
@@ -3314,6 +3315,26 @@ begin
     until (ANode=nil) or (ANode.Desc=NodeDesc);
   end;
   Result:=(ANode<>nil);
+end;
+
+function TPascalParserTool.NodeIsInAMethod(Node: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  while (Node<>nil) do begin
+    if (Node.Desc=ctnProcedure) then begin
+
+      // ToDo: ppu, ppw, dcu
+
+      MoveCursorToNodeStart(Node.FirstChild); // ctnProcedureHead
+      ReadNextAtom;
+      if not AtomIsIdentifier(false) then continue;
+      ReadNextAtom;
+      if not AtomIsChar('.') then continue;
+      Result:=true;
+      exit;
+    end else
+      Node:=Node.Parent;
+  end;
 end;
 
 function TPascalParserTool.NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode

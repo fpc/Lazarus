@@ -5593,10 +5593,10 @@ begin
   FOpenEditorsOnCodeToolChange:=true;
   try
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
-{$ENDIF}
+    {$IFDEF IDE_DEBUG}
+    writeln('');
+    writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
+    {$ENDIF}
     if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
       ActiveSrcEdit.EditorComponent.CaretY,
@@ -6203,6 +6203,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.276  2002/04/12 10:21:53  lazarus
+  MG: added Event Assignment completion
+
   Revision 1.275  2002/04/11 08:08:47  lazarus
   MG: small fixes, cleanups and started event assignment completion
 

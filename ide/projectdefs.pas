@@ -174,6 +174,7 @@ type
     constructor Create(const AFilename: string; ACaretXY: TPoint; 
       ATopLine: integer);
     function IsEqual(APosition: TProjectJumpHistoryPosition): boolean;
+    function IsSimilar(APosition: TProjectJumpHistoryPosition): boolean;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     property CaretXY: TPoint read FCaretXY write FCaretXY;
@@ -586,6 +587,13 @@ begin
       and (TopLine=APosition.TopLine);
 end;
 
+function TProjectJumpHistoryPosition.IsSimilar(
+  APosition: TProjectJumpHistoryPosition): boolean;
+begin
+  Result:=(Filename=APosition.Filename)
+      and (CaretXY.Y=APosition.CaretXY.Y);
+end;
+
 procedure TProjectJumpHistoryPosition.LoadFromXMLConfig(
   XMLConfig: TXMLConfig; const Path: string);
 var AFilename: string;
@@ -793,8 +801,8 @@ procedure TProjectJumpHistory.InsertSmart(Index: integer;
 begin
   if Index<0 then Index:=Count;
   if (Index<=Count)
-  and ((Index<1) or (not Items[Index-1].IsEqual(APosition)))
-  and ((Index=Count) or (not Items[Index].IsEqual(APosition))) then
+  and ((Index<1) or (not Items[Index-1].IsSimilar(APosition)))
+  and ((Index=Count) or (not Items[Index].IsSimilar(APosition))) then
     Insert(Index,APosition)
   else
     APosition.Free;

@@ -68,12 +68,15 @@ type
     FSetPropertyVariablename: string;
     JumpToProcName: string;
     NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
+    FullTopLvlName: string;
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
         const TheClassName: string);
     procedure CheckForOverrideAndAddInheritedCode(ClassProcs: TAVLTree);
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
+    function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
+      FoundContext: TFindContext): TIdentifierFoundResult;
   protected
     function ProcExistsInCodeCompleteClass(const NameAndParams: string): boolean;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
@@ -151,6 +154,31 @@ procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
 begin
   ASourceChangeCache:=AValue;
   ASourceChangeCache.MainScanner:=Scanner;
+end;
+
+function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
+  Params: TFindDeclarationParams; FoundContext: TFindContext
+  ): TIdentifierFoundResult;
+var TrimmedIdentifier: string;
+begin
+  if not (fdfTopLvlResolving in Params.Flags) then exit;
+  with Params do begin
+    case NewNode.Desc of
+    ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition:
+      TrimmedIdentifier:=NewCodeTool.ExtractIdentifier(NewNode.StartPos);
+    ctnProperty:
+      begin
+        NewCodeTool.MoveCursorToNodeStart(NewNode);
+        NewCodeTool.ReadNextAtom; // 'property'
+        NewCodeTool.ReadNextAtom; // name
+        TrimmedIdentifier:=NewCodeTool.GetAtom;
+      end;
+    else
+      TrimmedIdentifier:=GetIdentifier(Params.Identifier);
+    end;
+  end;
+  FullTopLvlName:=FullTopLvlName+TrimmedIdentifier;
+  Result:=ifrSuccess;
 end;
 
 function TCodeCompletionCodeTool.VarExistsInCodeCompleteClass(
@@ -1392,16 +1420,15 @@ end;
 function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
-var CleanCursorPos, Dummy, Indent, insertPos: integer;
+var CleanCursorPos, Indent, insertPos: integer;
   CursorNode, ProcNode, ImplementationNode, SectionNode, AClassNode,
   ANode: TCodeTreeNode;
   ProcCode: string;
   
   procedure CompleteClass;
   begin
-
     {$IFDEF CTDEBUG}
-    writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(ClassNode.Desc));
+    writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(AClassNode.Desc));
     {$ENDIF}
     // cursor is in class/object definition
     if (CursorNode.SubDesc and ctnsForwardDeclaration)>0 then exit;
@@ -1460,13 +1487,7 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
         // -> find it and jump to
 
         // reparse code
-        BuildTree(false);
-        if not EndOfSourceFound then
-          RaiseException(ctsEndOfSourceNotFound);
-        // find the CursorPos in cleaned source
-        Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-        if (Dummy<>0) and (Dummy<>-1) then
-          RaiseException(ctsCursorPosOutsideOfCode);
+        BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
@@ -1551,6 +1572,7 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
   end;
   
   function IsEventAssignment: boolean;
+  var SearchedClassName: string;
   { examples:
       Button1.OnClick:=|
       OnClick:=@AnEve|nt
@@ -1563,26 +1585,30 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
   }
   
     function CheckEventAssignmentSyntax(var PropertyAtom: TAtomPosition;
-      var AssignmentOperator, AtOperatorPos: integer;
-      var UserEventAtom: TAtomPosition): boolean;
+      var AssignmentOperator, AddrOperatorPos: integer;
+      var UserEventAtom: TAtomPosition;
+      var SemicolonPos: integer): boolean;
     begin
       Result:=false;
 
       // check if in begin..end block
-      if not CursorNode.HasParentOfType(ctnBeginBlock) then exit;
-      BuildSubTreeForBeginBlock(CursorNode);
+      if not ((CursorNode.Desc=ctnBeginBlock)
+              or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
+      if CursorNode.Desc=ctnBeginBlock then
+        BuildSubTreeForBeginBlock(CursorNode);
       CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
       // read event name (optional)
       GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                  UserEventAtom.StartPos,UserEventAtom.EndPos);
       MoveCursorToCleanPos(UserEventAtom.StartPos);
+      if AtomIsKeyWord then exit;
       ReadPriorAtom;
       // check @ operator (optional)
       if AtomIsChar('@') then begin
-        AtOperatorPos:=CurPos.StartPos;
+        AddrOperatorPos:=CurPos.StartPos;
         ReadPriorAtom;
       end else
-        AtOperatorPos:=-1;
+        AddrOperatorPos:=-1;
       // check assignment operator :=
       if not AtomIs(':=') then exit;
       AssignmentOperator:=CurPos.StartPos;
@@ -1590,6 +1616,19 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
       // check event name
       if not AtomIsIdentifier(false) then exit;
       PropertyAtom:=CurPos;
+      
+      // check for semicolon at end of statement
+      MoveCursorToCleanPos(UserEventAtom.EndPos);
+      ReadNextAtom;
+      if AtomIsChar(';') then
+        SemicolonPos:=CurPos.StartPos
+      else
+        SemicolonPos:=-1;
+      
+      {$IFDEF CTDEBUG}
+      writeln('  CheckEventAssignmentSyntax: "',copy(Src,PropertyAtom.StartPos,
+            UserEventAtom.EndPos-PropertyAtom.StartPos),'"');
+      {$ENDIF}
       
       Result:=true;
     end;
@@ -1602,70 +1641,226 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
       // find declaration of property identifier
       Params.ContextNode:=CursorNode;
       Params.SetIdentifier(Self,@Src[PropertyAtom.StartPos],nil);
-      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors]
+      FullTopLvlName:='';
+      Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                     fdfTopLvlResolving]
                     +fdfAllClassVisibilities;
       if (not FindDeclarationOfIdentifier(Params))
       or (Params.NewNode.Desc<>ctnProperty) then exit;
       PropertyContext:=CreateFindContext(Params);
       // identifier is property
       // -> check type of property
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors]
+                    +fdfAllClassVisibilities;
       ProcContext:=PropertyContext.Tool.FindBaseTypeOfNode(
                                                  Params,PropertyContext.Node);
-      if (ProcContext.Node=nil) or (ProcContext.Node.Desc<>ctnProcedure) then
+      if (ProcContext.Node=nil) or (ProcContext.Node.Desc<>ctnProcedureType)
+      then
         exit;
       // identifier is property of type proc => this is an event
       Result:=true;
     end;
     
-    function CreateEventFullName: boolean;
+    function CreateEventFullName(UserEventAtom,
+      PropertyAtom: TAtomPosition): string;
+    var PropertyName, AClassName: string;
+      l: integer;
     begin
-
+      if UserEventAtom.StartPos=UserEventAtom.EndPos then begin
+        Result:=FullTopLvlName;
+        l:=PropertyAtom.EndPos-PropertyAtom.StartPos;
+        PropertyName:=copy(Src,PropertyAtom.StartPos,l);
+        if AnsiCompareText(PropertyName,Result)=0 then begin
+          // this is an event of the class (not event of published objects)
+          // -> add form name
+          MoveCursorToNodeStart(AClassNode.Parent);
+          ReadNextAtom;
+          AClassName:=GetAtom;
+          if (length(AClassName)>1) and (AClassName[1] in ['t','T']) then
+            System.Delete(AClassName,1,1);
+          Result:=AClassName+Result;
+        end;
+        // convert OnClick to Click
+        if (UpperCaseStr(LeftStr(PropertyName,2))='ON')
+        and (AnsiComparetext(RightStr(Result,l),PropertyName)=0)
+        then
+          Result:=LeftStr(Result,length(Result)-l)+RightStr(Result,l-2);
+      end else begin
+        Result:=copy(Src,UserEventAtom.StartPos,
+                            UserEventAtom.EndPos-UserEventAtom.StartPos);
+      end;
+      {$IFDEF CTDEBUG}
+      writeln('CreateEventFullName "',Result,'"');
+      {$ENDIF}
     end;
-  
+    
+    function FindClassAndProcNode: boolean;
+    begin
+      Result:=false;
+      ProcNode:=CursorNode;
+      while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do
+        ProcNode:=ProcNode.Parent;
+      if (ProcNode=nil) then exit;
+      SearchedClassname:=ExtractClassNameOfProcNode(ProcNode);
+      if SearchedClassname='' then exit;
+      ANode:=FindFirstNodeOnSameLvl(ProcNode);
+      if (ANode=nil) then exit;
+      // search class node
+      AClassNode:=FindClassNode(ANode,UpperCaseStr(SearchedClassName),
+                                true,false);
+      if AClassNode=nil then exit;
+      Result:=true;
+    end;
+    
+    function AddEventAndCompleteAssignment(const AnEventName: string;
+      ProcContext: TFindContext;
+      AssignmentOperator, AddrOperatorPos, SemicolonPos: integer;
+      UserEventAtom: TAtomPosition;
+      var MethodDefinition: string; var MethodAttr: TProcHeadAttributes
+      ): boolean;
+    var RValue, CleanMethodDefinition: string;
+      StartInsertPos, EndInsertPos: integer;
+    begin
+      Result:=false;
+      
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: Extract method param list...');
+      {$ENDIF}
+      // extract method param list and result type
+      CleanMethodDefinition:=UpperCaseStr(AnEventName)
+                    +ProcContext.Tool.ExtractProcHead(ProcContext.Node,
+                         [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
+
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: Initializing CodeCompletion...');
+      {$ENDIF}
+      // initialize class for code completion
+      CodeCompleteClassNode:=AClassNode;
+      CodeCompleteSrcChgCache:=SourceChangeCache;
+
+      // insert new published method to class
+      MethodAttr:=[phpWithStart, phpWithoutClassKeyword, phpWithVarModifiers,
+                   phpWithParameterNames,phpWithDefaultValues,phpWithResultType];
+      MethodDefinition:=TrimCodeSpace(ProcContext.Tool.ExtractProcHead(
+                           ProcContext.Node,
+                           MethodAttr+[phpWithoutClassName,phpWithoutName]));
+      MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                     AddClassAndNameToProc(MethodDefinition, '', AnEventName);
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: Add Method To Class...');
+      {$ENDIF}
+      if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
+        // insert method definition into class
+        AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition,
+                          AnEventName, '', ncpPublishedProcs);
+      end;
+      MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                     AddClassAndNameToProc(MethodDefinition,
+                       ExtractClassName(AClassNode,false), AnEventName);
+      if not InsertAllNewClassParts then
+        RaiseException(ctsErrorDuringInsertingNewClassParts);
+
+      // insert all missing proc bodies
+      if not CreateMissingProcBodies then
+        RaiseException(ctsErrorDuringCreationOfNewProcBodies);
+
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: Changing right side of assignment...');
+      {$ENDIF}
+      // add new event name as right value of assignment
+      // add address operator @ if needed or user provided it himself
+      RValue:=AnEventName+';';
+      if (AddrOperatorPos>0)
+      or ((Scanner.PascalCompiler=pcFPC) and (Scanner.CompilerMode<>cmDelphi))
+      then
+        RValue:='@'+RValue;
+      RValue:=':='+RValue;
+      SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(RValue,0);
+      StartInsertPos:=AssignmentOperator;
+      EndInsertPos:=SemicolonPos+1;
+      if EndInsertPos<1 then
+        EndInsertPos:=UserEventAtom.EndPos;
+      if EndInsertPos<1 then
+        EndInsertPos:=AddrOperatorPos;
+      if EndInsertPos<1 then
+        EndInsertPos:=AssignmentOperator+2;
+      SourceChangeCache.Replace(gtNone,gtNewLine,StartInsertPos,EndInsertPos,
+                                RValue);
+        
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: Applying changes...');
+      {$ENDIF}
+      // apply the changes
+      if not SourceChangeCache.Apply then
+        RaiseException(ctsUnableToApplyChanges);
+      Result:=true;
+    end;
+        
+  // function IsEventAssignment: boolean
   var
     UserEventAtom, PropertyAtom: TAtomPosition;
-    AtOperatorPos, AssignmentOperator: integer;
+    AssignmentOperator, AddrOperatorPos, SemicolonPos: integer;
     Params: TFindDeclarationParams;
     PropertyContext, ProcContext: TFindContext;
-    FullEventName: string;
+    FullEventName, AMethodDefinition: string;
+    AMethodAttr: TProcHeadAttributes;
   begin
-    // check assigment syntax
-    Result:=CheckEventAssignmentSyntax(PropertyAtom, AssignmentOperator,
-                          AtOperatorPos, UserEventAtom);
-    if not Result then exit;
+    Result:=false;
     
+    {$IFDEF CTDEBUG}
+    writeln('  IsEventAssignment: CheckEventAssignmentSyntax...');
+    {$ENDIF}
+    // check assigment syntax
+    if not CheckEventAssignmentSyntax(PropertyAtom, AssignmentOperator,
+                          AddrOperatorPos, UserEventAtom, SemicolonPos)
+    then
+      exit;
+
+    {$IFDEF CTDEBUG}
+    writeln('  IsEventAssignment: find class of method...');
+    {$ENDIF}
+    if not FindClassAndProcNode then exit;
+
     ActivateGlobalWriteLock;
     Params:=TFindDeclarationParams.Create;
     try
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: FindEventTypeAtCursor...');
+      {$ENDIF}
       // check if identifier is event property and build
       Result:=FindEventTypeAtCursor(PropertyAtom,PropertyContext,ProcContext,
                                     Params);
       if not Result then exit;
       
+      {$IFDEF CTDEBUG}
+      writeln('  IsEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',UserEventAtom.StartPos);
+      {$ENDIF}
       // create a nice event name
-      if UserEventAtom.StartPos<1 then begin
-
-      end else begin
-        FullEventName:=copy(Src,UserEventAtom.StartPos,
-                            UserEventAtom.EndPos-UserEventAtom.StartPos);
-      end;
-      
-      // extract method param list and result type
-      
+      FullEventName:=CreateEventFullName(UserEventAtom,PropertyAtom);
+      if FullEventName='' then exit;
       
     finally
       Params.Free;
       DeactivateGlobalWriteLock;
     end;
-    
-    // add new event name as right value of assignment
-    
-    
-    // insert new published method to class
-    
-    
-    
-    Result:=true;
+
+    // add published method and method body and right side of assignment
+    if not AddEventAndCompleteAssignment(FullEventName,ProcContext,
+      AssignmentOperator,AddrOperatorPos,SemicolonPos,UserEventAtom,
+      AMethodDefinition, AMethodAttr)
+    then
+      RaiseException('IsEventAssignment Internal Error 1');
+      
+    {$IFDEF CTDEBUG}
+    writeln('  IsEventAssignment: jumping to new method body...');
+    {$ENDIF}
+    // jump to new method body
+    if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
+    then
+      RaiseException('IsEventAssignment Internal Error 2');
+      
+    CompleteCode:=true;
   end;
   
 begin
@@ -1706,9 +1901,7 @@ begin
   end;
   
   // test if Event assignment
-  if IsEventAssignment then begin
-
-  end;
+  if IsEventAssignment then exit;
 
   {$IFDEF CTDEBUG}
   writeln('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
