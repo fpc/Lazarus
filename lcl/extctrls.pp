@@ -274,7 +274,8 @@ type
     function CanModify : boolean; virtual;
     procedure CreateWnd; override;
   private
-    FButtonList : TList;
+    FButtonList : TList; // list of TRadioButton
+    FCreatingWnd: boolean;
     FItems      : TStrings;
     FItemIndex  : integer;
     FColumns    : integer;
@@ -333,6 +334,9 @@ end.
 
  {
   $Log$
+  Revision 1.13  2001/10/19 14:27:43  lazarus
+  MG: fixed customradiogroup OnClick + ItemIndex
+
   Revision 1.12  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

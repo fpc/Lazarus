@@ -6,29 +6,27 @@
   Delphi compatibility:
 
    - the interface is almost like in delphi 5
-   - with the GTK-bindings there must always on button active,
+   - with the GTK-bindings there must always one button active,
      ItemIndex= -1 can't be handled
    - FlipChildren procedure is missing
    
   TODO:
-       - may be neccessary to implement RecreateWnd 
-         (can't be checked now, because the implementation TWinControl
-	  is not yet ready)
-       - 1st button is not placed at right top-position
+    - faster CreateWnd
 
   Possible improvements:
        - The current implementation often recreates the group even
          if it might not be neccessary. This could be solved if with
 	 an approach like Marc Weustink suggested:
 	 
-         "Why not on SetColumn/SetItems/FItems.Onchange create the necesary checkboxes
-         and align them. This way the RadioGroup is just a control with other
-         controls in it. It doesn't matter if the the gtk control is created or not.
-         If not created and you already have added checkboxes, they will be created
-         when the groupbox is created and wil be destroyed when the groupbox is
-         destroyed. This way you internally allways deal with TCheckboxes and you
-         dont have to mess with creating/destroying them. Besides that, you dont have
-         te recreate the control on every change."
+         "Why not on SetColumn/SetItems/FItems.Onchange create the necessary
+         checkboxes and align them. This way the RadioGroup is just a control
+         with other controls in it. It doesn't matter if the the gtk control is
+         created or not.
+         If not created and you already have added checkboxes, they will be 
+         created when the groupbox is created and will be destroyed when the
+         groupbox is destroyed. This way you internally allways deal with
+         TCheckboxes and you dont have to mess with creating/destroying them.
+         Besides that, you dont have to recreate the control on every change."
   
          On the other side this might have the following disadvantages:
            - requires some work to find out which buttons to add/delete
@@ -37,8 +35,6 @@
 	   - works only if the interface library supports reordering of
 	     radiobuttons
 
-  Bugs:
-       - Adding/Deleting Items won't work because of missing RecreatWnd
 }
 
 {------------------------------------------------------------------------------
@@ -50,15 +46,17 @@
  ------------------------------------------------------------------------------}
 constructor TCustomRadioGroup.Create (AOwner : TComponent);
 begin
-   inherited Create (AOwner);
-   ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
-   FItems      := TStringList.Create;
-   TStringList(FItems).OnChanging := @ItemsChanged;
-   FItemIndex  := -1;
-   FButtonList := TList.Create;
-   FColumns    := 1;
-   Width:= 250;
-   Height := 200;
+  inherited Create (AOwner);
+  FCreatingWnd := false;
+  ControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+  FItems      := TStringList.Create;
+  TStringList(FItems).OnChanging := @ItemsChanged;
+  TStringList(FItems).OnChange := @ItemsChanged;
+  FItemIndex  := -1;
+  FButtonList := TList.Create;
+  FColumns  := 1;
+  Width:= 250;
+  Height := 200;
 end;
 
 
@@ -71,9 +69,9 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomRadioGroup.Destroy;
 begin
-   FItems.Free;
-   FButtonList.Free;
-   inherited Destroy;
+  FItems.Free;
+  FButtonList.Free;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -85,48 +83,65 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.CreateWnd;
 var
-   i       : integer;
-   temp    : TRadioButton;
-   nextTop : integer;
-   nextLeft: integer;
-   vertDist: integer;
-   horzDist: integer;
-   rbWidth : integer;
+  i       : integer;
+  temp    : TRadioButton;
+  nextTop : integer;
+  nextLeft: integer;
+  vertDist: integer;
+  horzDist: integer;
+  rbWidth : integer;
 begin
+  if FCreatingWnd then exit;
+  FCreatingWnd := true;
+//writeln('[TCustomRadioGroup.CreateWnd] A ',FItems.Count);
   if FItems.Count>0 then begin
+    if (FItemIndex>=FItems.Count) or (FItemIndex<0) then FItemIndex:=0;
     vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
     horzDist := (Width - 20) DIV FColumns;
     nextTop  := 0;
     nextLeft := 10;
     rbWidth  := horzDist;
+    // destroy if there are too many
+    for i:=0 to FButtonList.Count-1 do
+      TRadioButton(FButtonList[i]).Free;
     FButtonList.Clear;
-    i := 0;
-    while i < FItems.Count do
-    begin
+    {while (FButtonList.Count>FItems.Count) do begin
+      Temp:=TRadioButton(FButtonList[FButtonList.Count-1]);
+      Temp.Free;
+      FButtonList.Delete(FButtonList.Count-1);
+    end;}
+    // create as many TRadioButton as needed
+    while (FButtonList.Count<FItems.Count) do begin
       Temp := TRadioButton.Create (self);
       Temp.Parent := self;
+      Temp.OnClick := @Clicked;
+      FButtonList.Add(Temp);
+    end;
+    // position in rows and columns
+    i := 0;
+    while i < FItems.Count do begin
+      Temp := TRadioButton(FButtonList[i]);
       Temp.Top    := nextTop;
       Temp.Left   := nextLeft;
       Temp.Width  := rbWidth;
       Temp.Height := vertDist;
       Temp.Caption := FItems.Strings[i];
       Temp.Checked := (i = FItemIndex);
-      Temp.OnClick := @Clicked;
-      Temp.Show;
-      FButtonList.Add (Temp);
 
       inc (i);
-      if (i MOD FColumns) = 0 then
-      begin
+      if (i MOD FColumns) = 0 then begin
         inc(nextTop, vertDist);
-	nextLeft := 10;
-      end
-      else begin
+        nextLeft := 10;
+      end else begin
         inc(nextLeft, horzDist);
       end;
+      Temp.Visible:=true;
     end;
   end;
+//writeln('[TCustomRadioGroup.CreateWnd] B ',FItems.Count);
   inherited CreateWnd;
+//writeln('[TCustomRadioGroup.CreateWnd] C ',FItems.Count);
+  FCreatingWnd := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -140,7 +155,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
-//   RecreateWnd;
+  if HandleAllocated then RecreateWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -157,8 +172,8 @@ begin
   if Value <> FColumns then 
   begin
      if (Value < 1) 
-        then raise Exception.Create('TCustomRadioGroup: Columns must be > 1');
-     FColumns := value;
+        then raise Exception.Create('TCustomRadioGroup: Columns must be >= 1');
+     FColumns := Value;
      if HandleAllocated then RecreateWnd;
   end;
 end;
@@ -191,22 +206,23 @@ begin
   if FReading then FItemIndex:=Value
   else begin
     if (Value < -1) or (Value >= FItems.Count) 
-      then raise Exception.Create('TCustomRadioGroup: Out of bounds');
+      then
+        raise Exception.Create(
+          'TCustomRadioGroup.SetItemIndex : Index out of bounds');
 
-    if (HandleAllocated) and (value <> FItemIndex) then
-    begin
+    if (HandleAllocated) and (Value <> FItemIndex) then begin
       if (FItemIndex <> -1)
          then TRadioButton (FButtonList [FItemIndex]).Checked := false;
-      FItemIndex := value;
-      if (value <> -1) 
-         then TRadioButton (FButtonList [value]).Checked := true;
+      FItemIndex := Value;
+      if (Value <> -1) 
+         then TRadioButton (FButtonList [Value]).Checked := true;
     end
-    else FItemIndex := value;
+    else FItemIndex := Value;
   end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomRadioGroup.SetItemIndex
+  Method: TCustomRadioGroup.GetItemIndex
   Params:  value - index of RadioButton to be selected
   Returns: Nothing
 
@@ -222,16 +238,16 @@ begin
       i := 0;
       // This nasty little loop is neccessary because the group is not informed
       // when a button is pressed	
-      while (i < FButtonList.Count) and (result = -1) do
+      while (i < FButtonList.Count) and (Result = -1) do
       begin	// find the actice button
 	 if TRadioButton (FButtonList [i]).Checked 
             then result := i;
          inc (i);
       end;
-      FItemIndex := result;
+      FItemIndex := Result;
    end
    else
-      result := FItemIndex;
+      Result := FItemIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -243,7 +259,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomRadioGroup.CanModify : boolean;
 begin
-   result := true;
+   Result := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -269,11 +285,16 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomRadioGroup.Clicked(Sender : TObject);
 Begin
-   if Assigned (FOnClick) then FOnClick(Self);
+  GetItemIndex;
+  if FCreatingWnd then exit;
+  if Assigned (FOnClick) then FOnClick(Self);
 end;
 
 {
   $Log$
+  Revision 1.7  2001/10/19 14:27:43  lazarus
+  MG: fixed customradiogroup OnClick + ItemIndex
+
   Revision 1.6  2001/04/17 21:33:52  lazarus
   + added working OnClick support for TCustomRadiogroup, stoppok
 

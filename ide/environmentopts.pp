@@ -1638,7 +1638,6 @@ var i: integer;
 begin
   i:=TRadioGroup(Sender).ItemIndex;
   if Sender=BakProjTypeRadioGroup then begin
-writeln('[TEnvironmentOptionsDialog.BakTypeRadioGroupClick] ',i);
     BakProjAddExtComboBox.Enabled:=(i=4);
     BakProjAddExtLabel.Enabled:=BakProjAddExtComboBox.Enabled;
     BakProjMaxCounterComboBox.Enabled:=(i=3);

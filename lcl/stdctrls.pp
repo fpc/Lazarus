@@ -29,9 +29,10 @@ unit stdctrls;
 
 {$mode objfpc}
 {$LONGSTRINGS ON}
+
 interface
 
-uses  vclglobals, classes, sysutils, Graphics, LMessages, Controls, forms;
+uses  VclGlobals, Classes, SysUtils, Graphics, LMessages, Controls, Forms;
 
 
 type
@@ -43,7 +44,6 @@ type
 
   TScrollEvent = procedure(Sender: TObject; ScrollCode: TScrollCode;
     var ScrollPos: Integer) of object;
-
 
   TScrollBar = class(TWinControl)
   private
@@ -368,10 +368,14 @@ type
 
                         {TCHECKBOX}
 
+   // ToDo: delete TLeftRight when in classesh.inc
+   TLeftRight = taLeftJustify..taRightJustify;
+
    TCheckBoxState = (cbUnchecked, cbChecked, cbGrayed);
 
    TCustomCheckBox = class(TButtonControl)
    private
+      // FAlignment: TLeftRight;
       FAllowGrayed: Boolean;
       FState: TCheckBoxState;
       procedure SetState(Value: TCheckBoxState);
@@ -456,44 +460,45 @@ type
       property OnStartDrag;
    end;
 
-               {TRadioButton}
+   {TRadioButton}
+   
    TRadioButton = Class; //Forward Declaration
 
    TRadioButton = class(TCustomCheckBox)
    private
-      fGroup : THandle;                      // handle to the previous button in the group this button belongs to
-      procedure SetGroup (Value : THandle); 
-      function GetGroup : THandle;
+     fGroup : THandle; // handle to the previous button in the group this button belongs to
+     procedure SetGroup (Value : THandle); 
+     function GetGroup : THandle;
    protected
-      procedure CreateWnd; override;
+     procedure CreateWnd; override;
    public
-      constructor Create (AOwner: TComponent); override;
-      property group : THandle read GetGroup write SetGroup;
+     constructor Create (AOwner: TComponent); override;
+     property group : THandle read GetGroup write SetGroup;
    published
-      property AllowGrayed;
-      property Caption;
-      property Checked;
-      property State;
-      property Visible;
-      property Enabled;
-      property OnEnter;
-      property OnExit;
-      property DragCursor;
-      property DragKind;
-      property DragMode;
-      property Hint;
-      property ParentShowHint;
-      property PopupMenu;
-      property ShowHint;
-      property TabOrder;
-      property TabStop;
-      property OnDragDrop;
-      property OnDragOver;
-      property OnEndDrag;
-      property OnMouseDown;
-      property OnMouseMove;
-      property OnMouseUp;
-      property OnStartDrag;
+     property AllowGrayed;
+     property Caption;
+     property Checked;
+     property State;
+     property Visible;
+     property Enabled;
+     property OnEnter;
+     property OnExit;
+     property DragCursor;
+     property DragKind;
+     property DragMode;
+     property Hint;
+     property ParentShowHint;
+     property PopupMenu;
+     property ShowHint;
+     property TabOrder;
+     property TabStop;
+     property OnDragDrop;
+     property OnDragOver;
+     property OnEndDrag;
+     property OnMouseDown;
+     property OnMouseMove;
+     property OnMouseUp;
+     property OnStartDrag;
    end;
 
 
@@ -567,6 +572,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/10/19 14:27:43  lazarus
+  MG: fixed customradiogroup OnClick + ItemIndex
+
   Revision 1.15  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 
