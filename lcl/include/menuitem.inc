@@ -309,14 +309,13 @@ end;
 
  ------------------------------------------------------------------------------}
 Procedure TMenuItem.MenuChanged(Rebuild : Boolean);
-Begin
-  //Use send message to re-create the menu if REBUILD is true.
-//send a message to inform the interface that we need to destroy and recreate this control
-  if not HandleAllocated then Exit;
-  if FHandle <> 0 then
-  Begin
-//     InterfaceObject.IntSendMessage3(LM_RECREATEWND, Self, nil);
-  end;
+var
+  Source: TMenuItem;
+begin
+  if (Parent = nil) and (Owner is TMenu) then
+    Source := nil else
+    Source := Self;
+  if Assigned(FOnChange) then FOnChange(Self, Source, Rebuild);
 end;
 
 {------------------------------------------------------------------------------
@@ -378,15 +377,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetEnabled(Value: Boolean);
 begin
- if FEnabled <> Value 
- then begin
-   FEnabled := Value;
-// TODO, finish with correct params   
-//   if HandleAllocated and (Parent <> nil) 
-//   then EnableMenuItem(Parent.Handle, )
+  if FEnabled <> Value
+  then begin
+    FEnabled := Value;
+    if HandleAllocated and (Parent <> nil) then
+      EnableMenuItem(Handle, FCommand, FEnabled);
+    MenuChanged(False);
   end;
-
-  //TODO: Add runtime code here
 end;
 
 {------------------------------------------------------------------------------
@@ -492,6 +489,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/08/05 08:56:56  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.14  2002/05/30 21:33:10  lazarus
   + added / fixed streaming functions for TMenu & TMenuItem, stoppok
 
@@ -562,6 +562,9 @@ end;
 
 
   $Log$
+  Revision 1.15  2002/08/05 08:56:56  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.14  2002/05/30 21:33:10  lazarus
   + added / fixed streaming functions for TMenu & TMenuItem, stoppok
 

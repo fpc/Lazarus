@@ -53,14 +53,17 @@ type
 
   TMenu = class;
   EMenuError = class(Exception);
-  
-  // fix for compiler problem
+
   TMenuItem = class;
+  
+  TMenuChangeEvent = procedure (Sender: TObject; Source: TMenuItem;
+                                Rebuild: Boolean) of object;
 
   TMenuItem = class(TComponent)//TWinControl)
   private
     FCaption: string;
     FChecked: Boolean;
+    FCommand: integer;
     FDefault: Boolean;
     FEnabled: Boolean;
     FHandle: HMenu;
@@ -71,6 +74,7 @@ type
     FParent: TMenuItem;
     FShortCut: TShortCut;	
     FVisible: Boolean;
+    FOnChange: TMenuChangeEvent;
     FOnClick: TNotifyEvent;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
@@ -178,10 +182,24 @@ type
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
 
+
+
 implementation
 
 uses
-  Interfaces;
+  Interfaces, LCLLinux;
+
+{ Menu command managment }
+
+var
+  CommandPool: TBits;
+
+function UniqueCommand: Word;
+begin
+  Result := CommandPool.OpenBit;
+  CommandPool[Result] := True;
+end;
+
 
 {$I menubar.inc}
 {$I menu.inc}
@@ -215,6 +233,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2002/08/05 08:56:56  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.13  2002/05/30 21:33:10  lazarus
   + added / fixed streaming functions for TMenu & TMenuItem, stoppok
 

@@ -1831,8 +1831,9 @@ end;
 function TGTKObject.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
   bEnable: Boolean): Boolean;
 begin
-  // Your code here
-  Result:=false;
+  if hMenu <> 0
+  then gtk_widget_set_sensitive(pgtkwidget(hMenu), bEnable);
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -1861,7 +1862,7 @@ begin
   Assert(False, Format('Trace:  [TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
   if hWnd <> 0 
   then gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
-  Result:=false;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -4825,6 +4826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2002/08/05 08:56:57  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.84  2002/08/05 07:43:29  lazarus
   MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
 

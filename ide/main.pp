@@ -1267,7 +1267,6 @@ begin
   itmFileQuit.Caption := lisMenuQuit;
   itmFileQuit.OnClick := @mnuQuitClicked;
   mnuFile.Add(itmFileQuit);
-
 end;
 
 procedure TMainIDE.SetupEditMenu;
@@ -1355,19 +1354,16 @@ begin
   itmSearchFindNext := TMenuItem.Create(Self);
   itmSearchFindNext.Name:='itmSearchFindNext';
   itmSearchFindNext.Caption := lisMenuFindNext;
-  itmSearchFindNext.Enabled := False;
   mnuSearch.add(itmSearchFindNext);
 
   itmSearchFindPrevious := TMenuItem.Create(Self);
   itmSearchFindPrevious.Name:='itmSearchFindPrevious';
   itmSearchFindPrevious.Caption := lisMenuFindPrevious;
-  itmSearchFindPrevious.Enabled := False;
   mnuSearch.add(itmSearchFindPrevious);
 
   itmSearchFindInFiles := TMenuItem.Create(Self);
   itmSearchFindInFiles.Name:='itmSearchFindInFiles';
   itmSearchFindInFiles.Caption := lisMenuFindInFiles;
-  itmSearchFindInFiles.Enabled := False;
   mnuSearch.add(itmSearchFindInFiles);
 
   itmSearchReplace := TMenuItem.Create(Self);
@@ -3542,6 +3538,8 @@ begin
       AFilename,-1),AnUnitInfo.Source);
     NewSrcEdit:=SourceNotebook.GetActiveSE;
     NewSrcEditorCreated:=true;
+    itmFileClose.Enabled:=True;
+    itmFileCloseAll.Enabled:=True;
   end else begin
     // revert code in existing source editor
     NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
@@ -3620,6 +3618,8 @@ begin
   SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
                          NewUnitInfo.Filename,-1),
                          NewUnitInfo.Source);
+  itmFileClose.Enabled:=True;
+  itmFileCloseAll.Enabled:=True;
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
@@ -3802,7 +3802,9 @@ begin
 
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
-  
+  itmFileClose.Enabled:=SourceNoteBook.NoteBook<>nil;
+  itmFileCloseAll.Enabled:=itmFileClose.Enabled;
+
   // close file in project
   Project1.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
@@ -6856,6 +6858,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.335  2002/08/05 08:56:54  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.334  2002/08/03 14:30:37  lazarus
   MG: added file access monitoring and diff view
 
