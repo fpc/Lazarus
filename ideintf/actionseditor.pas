@@ -20,10 +20,7 @@
   author:
      Radek Cervinka, radek.cervinka@centrum.cz
      Mattias Gaertner
-  
-  contributors:
-     Mattias Gaertner
-  
+
   version:
     0.1 - 26-27.2.2004 - write all from scratch
     0.2 -  3.3.2004 - speed up filling listboxes
