@@ -2091,12 +2091,12 @@ end;
   Retrieves the text from a gtk control. this is a replacement for
   the LM_GetText message.
  ------------------------------------------------------------------------------}
-function TGtkObject.GetText(Sender: TControl; var Text: String): Boolean;
+function TGtkObject.GetText(Sender: TComponent; var Text: String): Boolean;
 var
   CS: PChar;
 begin
   Result := True;
-  case Sender.fCompStyle of
+  case TControl(Sender).fCompStyle of
    csComboBox:
      begin
        Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
@@ -6481,6 +6481,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.268  2002/10/26 15:15:51  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.267  2002/10/26 12:32:29  lazarus
   AJ:Minor fixes for Win32 GTK compiling
 
