@@ -380,7 +380,7 @@ begin
     else
     if Visible
     and (gtk_widget_has_focus(Widget) or not ShowHideOnFocus)
-    and (not IsDrawn)
+    and (not IsDrawn) and (Widget^.Window<>nil) and (Widget^.theStyle<>nil)
     then begin
       if Pixmap <> nil then
         Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
@@ -392,7 +392,7 @@ begin
         BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
 
       // undraw old caret
-      if (BackPixmap <> nil) and (Widget<>nil) and ((Widget^.theStyle)<>nil)
+      if (BackPixmap <> nil) and (Widget<>nil) and (Widget^.theStyle<>nil)
       and (Width>0) and (Height>0)
       then gdk_draw_pixmap(
         BackPixmap, 
@@ -727,6 +727,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/06/06 14:41:29  lazarus
+  MG: if completion form visible it will now get all synedit keys
+
   Revision 1.28  2002/06/05 17:02:31  lazarus
   MG: fixed finddeclaration Result in with statement
 
