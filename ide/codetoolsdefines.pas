@@ -1538,7 +1538,7 @@ begin
     CreateComponents;
   end;
   FDefineTree:=TDefineTree.Create;
-  Resize;
+  FormResize(Self);
 end;
 
 destructor TCodeToolsDefinesEditor.Destroy;

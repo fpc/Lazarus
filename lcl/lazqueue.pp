@@ -7,7 +7,7 @@
     First and getting Last in O(1).
     Finding can be done in time O(n).
 }
-unit lazqueue;
+unit LazQueue;
 
 {$mode objfpc}{$H+}
 

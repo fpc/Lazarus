@@ -67,7 +67,6 @@ type
       FirstLine, LastLine: integer); override;
     procedure LinesInserted(FirstLine, Count: integer); override;
     procedure LinesDeleted(FirstLine, Count: integer); override;
-  protected
   public
     property OnLinesInserted : TOnLinesInsertedDeleted read FOnLinesinserted write FOnLinesInserted;
     property OnLinesDeleted : TOnLinesInsertedDeleted read FOnLinesDeleted write FOnLinesDeleted;
@@ -3017,8 +3016,7 @@ begin
 
   FHintTimer.Enabled := False;
   FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools
-         and (not ((ssLeft in Shift) or (ssRight in Shift) 
-                                     or (ssMiddle in Shift)));
+                                       and ([ssLeft,ssRight,ssMiddle]*Shift=[]);
 end;
 
 Procedure TSourceNotebook.HintTimer(sender : TObject);
@@ -3074,7 +3072,6 @@ begin
   Rect.Right := Rect.Left + Rect.Right+3;
   Rect.Bottom := Rect.Top + Rect.Bottom+3;
   FHintWindow.ActivateHint(Rect,AHint);
-
 end;
 
 Procedure TSourceNotebook.EditorMouseDown(Sender : TObject; 
@@ -3186,32 +3183,6 @@ begin
   if (Key=VK_ESCAPE) then ModalResult:=mrCancel;
 end;
 
-//-----------------------------------------------------------------------------
-
-procedure InternalInit;
-var h: TLazSyntaxHighlighter;
-begin
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    Highlighters[h]:=nil;
-  aCompletion:=nil;
-  scompl:=nil;
-  GotoDialog:=nil;
-  IdentCompletionTimer:=nil;
-  AWordCompletion:=nil;
-end;
-
-procedure InternalFinal;
-var h: TLazSyntaxHighlighter;
-begin
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
-    Highlighters[h].Free;
-    Highlighters[h]:=nil;
-  end;
-  aWordCompletion.Free;
-  aWordCompletion:=nil;
-end;
-
-
 { TSynEditPlugin1 }
 
 constructor TSynEditPlugin1.Create(AOwner: TCustomSynEdit);
@@ -3238,7 +3209,33 @@ begin
      OnLinesInserted(self,Firstline,Count);
 end;
 
- initialization
+//-----------------------------------------------------------------------------
+
+procedure InternalInit;
+var h: TLazSyntaxHighlighter;
+begin
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
+    Highlighters[h]:=nil;
+  aCompletion:=nil;
+  scompl:=nil;
+  GotoDialog:=nil;
+  IdentCompletionTimer:=nil;
+  AWordCompletion:=nil;
+end;
+
+procedure InternalFinal;
+var h: TLazSyntaxHighlighter;
+begin
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
+    Highlighters[h].Free;
+    Highlighters[h]:=nil;
+  end;
+  aWordCompletion.Free;
+  aWordCompletion:=nil;
+end;
+
+
+initialization
   InternalInit;
 
 {$I images/bookmark.lrs}
@@ -3247,6 +3244,4 @@ finalization
   InternalFinal;
 
 end.
-
-
 

@@ -7,7 +7,7 @@
     It supports Add, Remove, Contains, First, Count and Clear.
     Because of the hashing nature the operations adding, removing and finding is
     done in constant time on average.
-
+    
     Inner structure:
       There are three parts:
         1. The array itself (FItems). Every entry is a pointer to the first
@@ -27,6 +27,9 @@
   Issues:
     The maximum capacity is the PrimeNumber. You can store more items, but the
     performance decreases. The best idea is to provide your own hash function.
+    
+    Important: Items in the TDynHashArray must not change their key.
+      When changing the key of an item, remove it and add it after the change.
 
 }
 unit DynHashArray;
@@ -35,10 +38,15 @@ unit DynHashArray;
 
 interface
 
-uses Classes;
+uses Classes, SysUtils;
 
 type
-  THashFunction = function(Item: Pointer): integer of object;
+  TDynHashArray = class;
+  
+  THashMethod = function(Sender: TDynHashArray; Item: Pointer): integer of object;
+  THashFunction = function(Sender: TDynHashArray; Item: Pointer): integer;
+  TOwnerHashFunction = function(Item: Pointer): integer of object;
+  TOnGetKeyForHashItem = function(Item: pointer): pointer;
 
   PDynHashArrayItem = ^TDynHashArrayItem;
   TDynHashArrayItem = record
@@ -46,6 +54,9 @@ type
     Next, Prior: PDynHashArrayItem;
     IsOverflow: boolean;
   end; 
+  
+  TDynHashArrayOption = (dhaoCachingEnabled);
+  TDynHashArrayOptions = set of TDynHashArrayOption;
 
   TDynHashArray = class
   private
@@ -57,33 +68,60 @@ type
     FFreeCount: integer;
     FFirstItem: PDynHashArrayItem;
     FFirstFreeItem: PDynHashArrayItem;
+    FHashCacheItem: Pointer;
+    FHashCacheIndex: integer;
     FLowWaterMark: integer;
     FHighWaterMark: integer;
-    FOwnerHashFunction: THashFunction;
-    function IndexOf(AnItem: Pointer): integer;
+    FCustomHashFunction: THashFunction;
+    FCustomHashMethod: THashMethod;
+    FOnGetKeyForHashItem: TOnGetKeyForHashItem;
+    FOptions: TDynHashArrayOptions;
+    FOwnerHashFunction: TOwnerHashFunction;
     function NewHashItem: PDynHashArrayItem;
     procedure DisposeHashItem(ADynHashArrayItem: PDynHashArrayItem);
     procedure DisposeFirstFreeItem;
     procedure ComputeWaterMarks;
     procedure SetCapacity(NewCapacity: integer);
+    procedure SetCustomHashFunction(const AValue: THashFunction);
+    procedure SetCustomHashMethod(const AValue: THashMethod);
+    procedure SetOnGetKeyForHashItem(const AValue: TOnGetKeyForHashItem);
+    procedure SetOptions(const AValue: TDynHashArrayOptions);
+    procedure SetOwnerHashFunction(const AValue: TOwnerHashFunction);
+  protected
+    procedure RebuildItems;
+    procedure SaveCacheItem(Item: Pointer; Index: integer);
   public
     procedure Add(Item: Pointer);
     function Contains(Item: Pointer): boolean;
+    function ContainsKey(Key: Pointer): boolean;
     procedure Remove(Item: Pointer);
     procedure Clear;
+    procedure ClearCache;
     function First: Pointer;
     property Count: integer read fCount;
+    function IndexOf(AnItem: Pointer): integer;
+    function IndexOfKey(Key: Pointer): integer;
     function FindHashItem(Item: Pointer): PDynHashArrayItem;
+    function FindHashItemWithKey(Key: Pointer): PDynHashArrayItem;
     property FirstHashItem: PDynHashArrayItem read FFirstItem;
     function GetHashItem(HashIndex: integer): PDynHashArrayItem;
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
     property MinCapacity: integer read FMinCapacity write FMinCapacity;
     property MaxCapacity: integer read FMaxCapacity write FMaxCapacity;
     property Capacity: integer read FCapacity;
-    property OwnerHashFunction: THashFunction
-       read FOwnerHashFunction write FOwnerHashFunction;
+    property CustomHashFunction: THashFunction
+       read FCustomHashFunction write SetCustomHashFunction;
+    property CustomHashMethod: THashMethod
+       read FCustomHashMethod write SetCustomHashMethod;
+    property OwnerHashFunction: TOwnerHashFunction
+       read FOwnerHashFunction write SetOwnerHashFunction;
+    property OnGetKeyForHashItem: TOnGetKeyForHashItem
+       read FOnGetKeyForHashItem write SetOnGetKeyForHashItem;
+    property Options: TDynHashArrayOptions read FOptions write SetOptions;
     constructor Create(InitialMinCapacity: integer);
     destructor Destroy; override;
+    function SlowAlternativeHashMethod(Sender: TDynHashArray;
+       Item: Pointer): integer;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport;
   end;
@@ -97,10 +135,10 @@ const
 { TDynHashArray }
 
 procedure TDynHashArray.WriteDebugReport;
-var i: integer;
+var i, RealHashIndex: integer;
   HashItem: PDynHashArrayItem;
 begin
-  writeln('Report: Consistency=',ConsistencyCheck);
+  writeln('TDynHashArray.WriteDebugReport: Consistency=',ConsistencyCheck);
   writeln('  Count=',FCount,'  FreeCount=',FFreeCount,'  Capacity=',FCapacity);
   for i:=0 to FCapacity-1 do begin
     HashItem:=FItems[i];
@@ -108,6 +146,8 @@ begin
       write('  Index=',i);
       while HashItem<>nil do begin
         write(' ',HexStr(Cardinal(HashItem^.Item),8));
+        RealHashIndex:=IndexOf(HashItem^.Item);
+        if RealHashIndex<>i then write('(H=',RealHashIndex,')');
         HashItem:=HashItem^.Next;
         if (HashItem<>nil) and (HashItem^.IsOverflow=false) then break;
       end;
@@ -140,6 +180,7 @@ begin
   FFirstItem:=nil;
   FFirstFreeItem:=nil;
   ComputeWaterMarks;
+  FHashCacheIndex:=-1;
 end;
 
 destructor TDynHashArray.Destroy;
@@ -152,42 +193,84 @@ end;
 
 function TDynHashArray.ConsistencyCheck: integer;
 var RealCount, RealFreeCount, i: integer;
-  HashItem: PDynHashArrayItem;
+  HashItem, HashItem2: PDynHashArrayItem;
+  OldCacheItem: pointer;
+  OldCacheIndex: integer;
 begin
   RealCount:=0;
+  // check first item
+  if (FFirstItem<>nil) and (FFirstItem^.IsOverflow) then
+    exit(-1);
+  if (FItems=nil) and (FFirstItem<>nil) then
+    exit(-2);
+  // check for doubles and circles
+  HashItem:=FFirstItem;
+  while HashItem<>nil do begin
+    HashItem2:=HashItem^.Prior;
+    while HashItem2<>nil do begin
+      if HashItem=HashItem2 then
+        exit(-3); // circle
+      if HashItem^.Item=HashItem2^.Item then
+        exit(-4); // double item
+      HashItem2:=HashItem2^.Prior;
+    end;
+    HashItem2:=FFirstFreeItem;
+    while HashItem2<>nil do begin
+      if HashItem=HashItem2 then
+        exit(-5); // freed and used at the same time
+      HashItem2:=HashItem2^.Next;
+    end;
+    HashItem:=HashItem^.Next;
+  end;
+  // check chain
   HashItem:=FFirstItem;
   while HashItem<>nil do begin
     inc(RealCount);
     if (HashItem^.Next<>nil) and (HashItem^.Next^.Prior<>HashItem) then
-      exit(-1);
+      exit(-6);
     if (HashItem^.Prior<>nil) and (HashItem^.Prior^.Next<>HashItem) then
-      exit(-2);
-    if (HashItem^.IsOverflow=false) 
+      exit(-7);
+    if (HashItem^.IsOverflow=false)
     and (FItems[IndexOf(HashItem^.Item)]<>HashItem) then
-      exit (-3);
+      exit(-8);
     HashItem:=HashItem^.Next;
   end;
-  if RealCount<>FCount then exit(-4);
+  // check count
+  if RealCount<>FCount then exit(-9);
   RealFreeCount:=0;
+  // check freed items
   HashItem:=FFirstFreeItem;
   while HashItem<>nil do begin
     inc(RealFreeCount);
     if (HashItem^.Next<>nil) and (HashItem^.Next^.Prior<>HashItem) then
-      exit(-5);
+      exit(-10);
     if (HashItem^.Prior<>nil) and (HashItem^.Prior^.Next<>HashItem) then
-      exit(-6);
+      exit(-11);
     HashItem:=HashItem^.Next;
   end;
-  if RealFreeCount<>FFreeCount then exit(-7);
-  if FCount+FFreeCount>FCapacity then exit(-8);
+  if RealFreeCount<>FFreeCount then exit(-12);
+  if FCount+FFreeCount>FCapacity then exit(-13);
+  // check FItems
+  RealCount:=0;
   for i:=0 to FCapacity-1 do begin
     HashItem:=FItems[i];
     while HashItem<>nil do begin
-      if IndexOf(HashItem^.Item)<>i then exit(-9);
+      inc(RealCount);
+      if IndexOf(HashItem^.Item)<>i then exit(-14);
       HashItem:=HashItem^.Next;
       if (HashItem<>nil) and (HashItem^.IsOverflow=false) then break;
     end;
   end;  
+  if RealCount<>FCount then exit(-15);
+  // check cache
+  if FHashCacheIndex>=0 then begin
+    OldCacheItem:=FHashCacheItem;
+    OldCacheIndex:=FHashCacheIndex;
+    ClearCache;
+    FHashCacheIndex:=IndexOfKey(OldCacheItem);
+    if FHashCacheIndex<>OldCacheIndex then exit(-16);
+    FHashCacheItem:=OldCacheItem;
+  end;
   Result:=0;
 end;
 
@@ -199,18 +282,46 @@ end;
 
 function TDynHashArray.IndexOf(AnItem: Pointer): integer;
 begin
-  if AnItem=nil then exit(-1);
-  if Assigned(FOwnerHashFunction) then
-    Result:=FOwnerHashFunction(AnItem)
+  if (AnItem=nil) or (FItems=nil) then exit(-1);
+  if Assigned(OnGetKeyForHashItem) then begin
+    AnItem:=OnGetKeyForHashItem(AnItem);
+  end;
+  Result:=IndexOfKey(AnItem);
+end;
+
+function TDynHashArray.IndexOfKey(Key: Pointer): integer;
+begin
+  if (FItems=nil)
+  or ((not Assigned(OnGetKeyForHashItem)) and (Key=nil)) then exit(-1);
+  if (dhaoCachingEnabled in Options)
+  and (Key=FHashCacheItem) and (FHashCacheIndex>=0) then
+    exit(FHashCacheIndex);
+  if Assigned(FCustomHashFunction) then
+    Result:=FCustomHashFunction(Self,Key)
+  else if Assigned(FCustomHashMethod) then
+    Result:=FCustomHashMethod(Self,Key)
+  else if Assigned(FOwnerHashFunction) then
+    Result:=FOwnerHashFunction(Key)
   else
-    Result:=integer((Cardinal(AnItem) mod Cardinal(PrimeNumber))
-            +(Cardinal(AnItem) mod 17)
+    Result:=integer((Cardinal(Key) mod Cardinal(PrimeNumber))
+            +(Cardinal(Key) mod 17)
              ) mod FCapacity;
+  {if (Key=FHashCacheItem) and (FHashCacheIndex>=0)
+  and (Result<>FHashCacheIndex) then begin
+    writeln(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
+    raise Exception.Create('GROSSER MIST');
+  end;}
 end;
 
 procedure TDynHashArray.Clear;
 begin
+  ClearCache;
   while FFirstItem<>nil do Delete(FFirstItem);
+end;
+
+procedure TDynHashArray.ClearCache;
+begin
+  FHashCacheIndex:=-1;
 end;
 
 procedure TDynHashArray.Add(Item: Pointer);
@@ -240,16 +351,27 @@ begin
     HashItem^.Prior^.Next:=HashItem;
   end;
   inc(FCount);
+  SaveCacheItem(Item,Index);
+end;
+
+function TDynHashArray.SlowAlternativeHashMethod(Sender: TDynHashArray;
+  Item: Pointer): integer;
+begin
+  Result:=integer((Cardinal(Item) mod Cardinal(PrimeNumber))
+          +(Cardinal(Item) mod 17)+(Cardinal(Item) mod 173)
+          +(Cardinal(Item) mod 521)
+           ) mod FCapacity;
 end;
 
 procedure TDynHashArray.Remove(Item: Pointer);
 var Index: integer;
   OldNext, Old: PDynHashArrayItem;
 begin
-  if Item=nil then exit;
+  if (Item=nil) or (FItems=nil) then exit;
   Index:=IndexOf(Item);
-  if (Index<0) or (FItems[Index]=nil) then exit;
+  if (Index<0) then exit;
   Old:=FItems[Index];
+  if Old=nil then exit;
   if Old^.Item=Item then begin
     OldNext:=Old^.Next;
     if (OldNext=nil) or (OldNext^.IsOverflow) then
@@ -269,7 +391,16 @@ end;
 procedure TDynHashArray.Delete(ADynHashArrayItem: PDynHashArrayItem);
 begin
   if ADynHashArrayItem=nil then exit;
-  if (ADynHashArrayItem^.IsOverflow=false) and (ADynHashArrayItem^.Next<>nil) then
+  if (FHashCacheIndex>=0)
+  and ((ADynHashArrayItem^.Item=FHashCacheItem)
+  or (Assigned(OnGetKeyForHashItem)
+    and (OnGetKeyForHashItem(ADynHashArrayItem^.Item)=FHashCacheItem)))
+  then
+    // if the user removes an item, changes the key and readds it, the hash
+    // can change for it, so the cache must be cleared
+    ClearCache;
+  if (ADynHashArrayItem^.IsOverflow=false) and (ADynHashArrayItem^.Next<>nil)
+  then
     ADynHashArrayItem^.Next^.IsOverflow:=false;
   if FFirstItem=ADynHashArrayItem then
     FFirstItem:=FFirstItem^.Next;
@@ -344,18 +475,50 @@ begin
   Result:=FindHashItem(Item)<>nil;
 end;
 
+function TDynHashArray.ContainsKey(Key: Pointer): boolean;
+begin
+  Result:=FindHashItemWithKey(Key)<>nil;
+end;
+
 function TDynHashArray.FindHashItem(Item: Pointer): PDynHashArrayItem;
 var Index: integer;
 begin
-  if Item=nil then exit(nil);
+  if (Item=nil) or (FItems=nil) then exit(nil);
   Index:=IndexOf(Item);
   Result:=FItems[Index];
-  if (Result=nil) or (Result^.Item=Item) then exit;
-  repeat
+  if (Result=nil) then exit;
+  while (Result^.Item<>Item) do begin
     Result:=Result^.Next;
-    if Result=nil then break;
-    if Result^.IsOverflow=false then Result:=nil;
-  until (Result=nil) or (Result^.Item=Item);
+    if Result=nil then exit;
+    if Result^.IsOverflow=false then begin
+      Result:=nil;
+      exit;
+    end;
+  end;
+  SaveCacheItem(Item,Index);
+end;
+
+function TDynHashArray.FindHashItemWithKey(Key: Pointer): PDynHashArrayItem;
+var Index: integer;
+begin
+  if FItems=nil then exit(nil);
+  Index:=IndexOfKey(Key);
+  Result:=FItems[Index];
+  if (Result=nil) then exit;
+  if Assigned(OnGetKeyForHashItem) then begin
+    if OnGetKeyForHashItem(Result^.Item)=Key then exit;
+    // search in overflow hash items
+    Result:=Result^.Next;
+    while (Result<>nil) and (Result^.IsOverflow) do begin
+      if OnGetKeyForHashItem(Result^.Item)=Key then begin
+        FHashCacheIndex:=Index;
+        FHashCacheItem:=Key;
+        exit;
+      end;
+      Result:=Result^.Next;
+    end;
+    Result:=nil;
+  end;
 end;
 
 function TDynHashArray.GetHashItem(HashIndex: integer): PDynHashArrayItem;
@@ -364,8 +527,7 @@ begin
 end;
 
 procedure TDynHashArray.SetCapacity(NewCapacity: integer);
-var Size, Index: integer;
-  CurHashItem, NextHashItem: PDynHashArrayItem;
+var Size: integer;
 begin
   if NewCapacity<FMinCapacity then NewCapacity:=FMinCapacity;
   if NewCapacity>FMaxCapacity then NewCapacity:=FMaxCapacity;
@@ -373,11 +535,37 @@ begin
   // resize FItems
   FreeMem(FItems);
   FCapacity:=NewCapacity;
-  Size:=FCapacity * SizeOf(TDynHashArrayItem);
+  Size:=FCapacity * SizeOf(PDynHashArrayItem);
   GetMem(FItems,Size);
-  FillChar(FItems^,Size,0);
   ComputeWaterMarks;
-  // rebuild hash table (FItems)
+  // rebuild
+  RebuildItems;
+end;
+
+procedure TDynHashArray.SetCustomHashFunction(const AValue: THashFunction);
+begin
+  if FCustomHashFunction=AValue then exit;
+  FCustomHashFunction:=AValue;
+  FCustomHashMethod:=nil;
+  FOwnerHashFunction:=nil;
+  RebuildItems;
+end;
+
+procedure TDynHashArray.SetCustomHashMethod(const AValue: THashMethod);
+begin
+  if FCustomHashMethod=AValue then exit;
+  FCustomHashFunction:=nil;
+  FCustomHashMethod:=AValue;
+  FOwnerHashFunction:=nil;
+  RebuildItems;
+end;
+
+procedure TDynHashArray.RebuildItems;
+var Index: integer;
+  CurHashItem, NextHashItem: PDynHashArrayItem;
+begin
+  FillChar(FItems^,FCapacity * SizeOf(PDynHashArrayItem),0);
+  ClearCache;
   CurHashItem:=FFirstItem;
   FFirstItem:=nil;
   while CurHashItem<>nil do begin
@@ -404,4 +592,37 @@ begin
   end;
 end;
 
+procedure TDynHashArray.SaveCacheItem(Item: Pointer; Index: integer);
+// Important:
+//   !!! Only call this method for items, that exists in the list or for items
+//       that can't change their key
+begin
+  if Assigned(OnGetKeyForHashItem) then Item:=OnGetKeyForHashItem(Item);
+  FHashCacheItem:=Item;
+  FHashCacheIndex:=Index;
+end;
+
+procedure TDynHashArray.SetOnGetKeyForHashItem(
+  const AValue: TOnGetKeyForHashItem);
+begin
+  if FOnGetKeyForHashItem=AValue then exit;
+  FOnGetKeyForHashItem:=AValue;
+  RebuildItems;
+end;
+
+procedure TDynHashArray.SetOptions(const AValue: TDynHashArrayOptions);
+begin
+  FOptions:=AValue;
+end;
+
+procedure TDynHashArray.SetOwnerHashFunction(const AValue: TOwnerHashFunction);
+begin
+  if FOwnerHashFunction=AValue then exit;
+  FCustomHashFunction:=nil;
+  FCustomHashMethod:=nil;
+  FOwnerHashFunction:=AValue;
+  RebuildItems;
+end;
+
 end.
+

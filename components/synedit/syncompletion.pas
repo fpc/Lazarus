@@ -208,7 +208,7 @@ type
     procedure SetShortCut(Value: TShortCut);
   public
     constructor Create(AOwner: TComponent); override;
-    destructor destroy; override;
+    destructor Destroy; override;
     property Editors[i: integer]: TCustomSynEdit read GetEditor;
     procedure AddEditor(aEditor: TCustomSynEdit);
     function RemoveEditor(aEditor: TCustomSynEdit): boolean;
@@ -260,7 +260,9 @@ type
 
 procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
+
 implementation
+
 
 uses
   SynEditStrConst;
@@ -273,7 +275,7 @@ begin
   CreateNew(AOwner, 0);
 {$ELSE}
   {$IFDEF FPC}
-    CreateNew(AOwner,0);
+  CreateNew(AOwner,0);
   {$ELSE}
   CreateNew(AOwner);
   {$ENDIF}
@@ -613,10 +615,15 @@ begin
     OnValidate(Form, []);
     exit;
   end;
+  
+  // ToDo: redirect the Editor input to the form
+  
+  Form.SetBounds(x,y,Form.Width,Form.Height);
+  {$ELSE}
+  Form.Left:=x;
+  Form.Top:=y;
   {$ENDIF}
-  form.top := y;
-  form.left := x;
-  form.Show;
+  Form.Show;
 end;
 
 function TSynBaseCompletion.GetCurrentString: string;
