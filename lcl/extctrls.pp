@@ -285,7 +285,7 @@ type
     FTransparent,
     FStretch : Boolean;
     procedure SetPicture(const AValue: TPicture);
-    procedure SetAutoSize(Value : Boolean);
+    procedure SetAutoSize(const Value : Boolean); override;
     procedure SetCenter(Value : Boolean);
     procedure SetStretch(Value : Boolean);
     procedure SetTransparent(Value : Boolean);
@@ -506,6 +506,9 @@ end.
 
  {
   $Log$
+  Revision 1.36  2002/10/20 21:54:03  lazarus
+  MG: fixes for 1.1
+
   Revision 1.35  2002/10/16 13:06:42  lazarus
   MG: fixed TPage.Visible
 
