@@ -2961,10 +2961,10 @@ begin
     if (Key1=VK_UNKNOWN) and (Key2=VK_UNKNOWN) then
       Result:=Result+'none'
     else if (Key2=VK_UNKNOWN) then
-      Result:=Result+KeyAndShiftStateToStr(Key1,Shift1)
+      Result:=Result+KeyAndShiftStateToEditorKeyString(Key1,Shift1)
     else
-      Result:=Result+KeyAndShiftStateToStr(Key1,Shift1)+'  or  '+
-           KeyAndShiftStateToStr(Key2,Shift2);
+      Result:=Result+KeyAndShiftStateToEditorKeyString(Key1,Shift1)+'  or  '+
+           KeyAndShiftStateToEditorKeyString(Key2,Shift2);
   end;
 end;
 

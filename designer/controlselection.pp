@@ -1972,7 +1972,7 @@ var
       end;
       RestoreBrush:=true;
     end;
-    DC.Canvas.FillRect(Rect(RLeft,RTop,RRIght,RBottom));
+    DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
   end;
   
 begin

@@ -457,8 +457,8 @@ begin
       Items.BeginUpdate;
       Items.Add('none');
       for i:=1 to 145 do begin
-        s:=KeyAndShiftStateToStr(i,[]);
-        if lowercase(copy(s,1,5))<>'word(' then
+        s:=KeyAndShiftStateToEditorKeyString(i,[]);
+        if not EditorKeyStringIsIrregular(s) then
           Items.Add(s);
       end;
       Items.EndUpdate;
@@ -552,7 +552,7 @@ begin
   fOptions.Filename:=FilenameEdit.Text;
   fOptions.CmdLineParams:=ParametersEdit.Text;
   fOptions.WorkingDirectory:=WorkingDirEdit.Text;
-  fOptions.Key:=StrToVKCode(KeyComboBox.Text);
+  fOptions.Key:=EditorKeyStringToVKCode(KeyComboBox.Text);
   fOptions.Shift:=[];
   if fOptions.Key<>VK_UNKNOWN then begin
     if KeyCtrlCheckBox.Checked then include(fOptions.fShift,ssCtrl);
@@ -571,7 +571,7 @@ begin
   FilenameEdit.Text:=fOptions.Filename;
   ParametersEdit.Text:=fOptions.CmdLineParams;
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
-  SetComboBox(KeyComboBox,KeyAndShiftStateToStr(fOptions.Key,[]));
+  SetComboBox(KeyComboBox,KeyAndShiftStateToEditorKeyString(fOptions.Key,[]));
   KeyCtrlCheckBox.Checked:=(ssCtrl in fOptions.Shift);
   KeyShiftCheckBox.Checked:=(ssShift in fOptions.Shift);
   KeyAltCheckBox.Checked:=(ssAlt in fOptions.Shift);
@@ -826,7 +826,7 @@ begin
       KeyCtrlCheckBox.Checked:=(ssCtrl in Shift);
       KeyShiftCheckBox.Checked:=(ssShift in Shift);
       KeyAltCheckBox.Checked:=(ssAlt in Shift);
-      SetComboBox(KeyComboBox,KeyAndShiftStateToStr(Key,[]));
+      SetComboBox(KeyComboBox,KeyAndShiftStateToEditorKeyString(Key,[]));
     end;
     DeactivateGrabbing;
   end;

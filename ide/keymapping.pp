@@ -353,7 +353,8 @@ type
     KeyIndex:integer;
   end;
 
-function KeyAndShiftStateToStr(Key:Word; ShiftState:TShiftState):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key:Word;
+   ShiftState:TShiftState):AnsiString;
 function ShowKeyMappingEditForm(Index:integer;
    AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
@@ -361,7 +362,7 @@ function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
 function EditorCommandToDescriptionString(cmd: word):AnsiString;
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
-function StrToVKCode(const s: string): integer;
+function EditorKeyStringToVKCode(const s: string): integer;
 
 procedure GetDefaultKeyForCommand(Command: word;
   var Key1: word; var Shift1: TShiftState;
@@ -374,19 +375,20 @@ function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 function ShiftStateToStr(Shift:TShiftState):AnsiString;
 function KeyValuesToStr(Key1: word; Shift1: TShiftState;
   Key2: word; Shift2: TShiftState): string;
+function EditorKeyStringIsIrregular(const s: string): boolean;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
 
 const
   KeyCategoryToolMenuName = 'ToolMenu';
+  UnknownVKPrefix = 'Word(''';
+  UnknownVKPostfix = ''')';
 
 implementation
 
 
 const
   KeyMappingFormatVersion = 2;
-  UnknownVKPrefix = 'Word(''';
-  UnknownVKPostfix = ''')';
 
   VirtualKeyStrings: TStringHashList = nil;
   
@@ -398,21 +400,22 @@ begin
     Result:=DefaultName;
 end;
 
-function StrToVKCode(const s: string): integer;
+function EditorKeyStringToVKCode(const s: string): integer;
 var
   i: integer;
   Data: Pointer;
 begin
   Result:=VK_UNKNOWN;
-  if (length(UnknownVKPrefix)<length(s))
-  and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
-  then
-    Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
-  else if s<>'none' then begin
+  if EditorKeyStringIsIrregular(s) then begin
+    Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN);
+    exit;
+  end;
+  if (s<>'none') and (s<>'') then begin
     if VirtualKeyStrings=nil then begin
       VirtualKeyStrings:=TStringHashList.Create(true);
       for i:=1 to 300 do
-        VirtualKeyStrings.Add(KeyAndShiftStateToStr(i,[]),Pointer(i));
+        VirtualKeyStrings.Add(KeyAndShiftStateToEditorKeyString(i,[]),
+                              Pointer(i));
     end;
   end else
     exit;
@@ -919,6 +922,16 @@ begin
         +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
 end;
 
+function EditorKeyStringIsIrregular(const s: string): boolean;
+begin
+  if (length(UnknownVKPrefix)<length(s))
+  and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
+  then
+    Result:=true
+  else
+    Result:=false;
+end;
+
 function ShowKeyMappingEditForm(Index:integer;
   AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
    
@@ -926,11 +939,11 @@ function ShowKeyMappingEditForm(Index:integer;
   var s: string;
     i: integer;
   begin
-    s:=KeyAndShiftStateToStr(AKey,[]);
+    s:=KeyAndShiftStateToEditorKeyString(AKey,[]);
     i:=AComboBox.Items.IndexOf(s);
     if i>=0 then
       AComboBox.ItemIndex:=i
-    else if lowercase(copy(s,1,5))='word(' then begin
+    else if EditorKeyStringIsIrregular(s) then begin
       AComboBox.Items.Add(s);
       AComboBox.ItemIndex:=AComboBox.Items.IndexOf(s);
     end else
@@ -1245,11 +1258,11 @@ begin
           Protocol.Add(srkmConflic+IntToStr(Result));
           Protocol.Add(srkmCommand1
             +EditorCommandToDescriptionString(Key1.Command)+'"'
-            +'->'+KeyAndShiftStateToStr(Key1.Key,Key1.Shift));
+            +'->'+KeyAndShiftStateToEditorKeyString(Key1.Key,Key1.Shift));
           Protocol.Add(srkmConflicW);
           Protocol.Add(srkmCommand2
             +EditorCommandToDescriptionString(Key2.Command)+'"'
-            +'->'+KeyAndShiftStateToStr(Key2.Key,Key2.Shift)
+            +'->'+KeyAndShiftStateToEditorKeyString(Key2.Key,Key2.Shift)
            );
           Protocol.Add('');
         end;
@@ -1258,7 +1271,7 @@ begin
   end;
 end;
 
-function KeyAndShiftStateToStr(Key:Word; ShiftState:TShiftState):AnsiString;
+function KeyAndShiftStateToEditorKeyString(Key:Word; ShiftState:TShiftState):AnsiString;
 var
   p, ResultLen: integer;
 
@@ -1480,8 +1493,8 @@ begin
       Items.BeginUpdate;
       Items.Add('none');
       for a:=1 to 145 do begin
-        s:=KeyAndShiftStateToStr(a,[]);
-        if lowercase(copy(s,1,5))<>'word(' then
+        s:=KeyAndShiftStateToEditorKeyString(a,[]);
+        if not EditorKeyStringIsIrregular(s) then
           Items.Add(s);
       end;
       Items.EndUpdate;
@@ -1554,8 +1567,8 @@ begin
       Items.BeginUpdate;
       Items.Add('none');
       for a:=1 to 145 do begin
-        s:=KeyAndShiftStateToStr(a,[]);
-        if lowercase(copy(s,1,5))<>'word(' then
+        s:=KeyAndShiftStateToEditorKeyString(a,[]);
+        if not EditorKeyStringIsIrregular(s) then
           Items.Add(s);
       end;
       Items.EndUpdate;
@@ -1588,7 +1601,7 @@ begin
   NewShiftState1:=[];
   NewKey2:=VK_UNKNOWN;
   NewShiftState2:=[];
-  NewKey1:=StrToVKCode(Key1KeyComboBox.Text);
+  NewKey1:=EditorKeyStringToVKCode(Key1KeyComboBox.Text);
   if NewKey1<>VK_UNKNOWN then
   begin
     if Key1CtrlCheckBox.Checked then include(NewShiftState1,ssCtrl);
@@ -1602,12 +1615,13 @@ begin
   if (DummyRelation<>nil) 
   and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
   begin
-    AText:=Format(srkmAlreadyConnected,[KeyAndShiftStateToStr(NewKey1,NewShiftState1),DummyRelation.Name]);
+    AText:=Format(srkmAlreadyConnected,
+            [KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),DummyRelation.Name]);
     MessageDlg(AText,mtError,[mbok],0);
     exit;
   end;
 
-  NewKey2:=StrToVKCode(Key2KeyComboBox.Text);
+  NewKey2:=EditorKeyStringToVKCode(Key2KeyComboBox.Text);
   if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
     NewKey2:=VK_UNKNOWN;
   if NewKey2<>VK_UNKNOWN then
@@ -1616,11 +1630,14 @@ begin
     if Key2AltCheckBox.Checked then include(NewShiftState2,ssAlt);
     if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
   end;
-  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,CurRelation.Parent.Areas);
+  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,
+                                             CurRelation.Parent.Areas);
   
-  if (DummyRelation<>nil) and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
+  if (DummyRelation<>nil)
+  and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
   begin
-    AText:=Format(srkmAlreadyConnected,[KeyAndShiftStateToStr(NewKey2,NewShiftState2),DummyRelation.Name]);
+    AText:=Format(srkmAlreadyConnected,
+            [KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2),DummyRelation.Name]);
     MessageDlg(AText,mterror,[mbok],0);
     exit;
   end;
@@ -1713,11 +1730,11 @@ begin
 end;
 
 procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
-  Shift:TShiftState);
+  Shift: TShiftState);
 begin
   {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
      ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
-     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToStr(Key,Shift)
+     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToEditorKeyString(Key,Shift)
      );}
   if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
              VK_LSHIFT, VK_RSHIFT] then exit;
@@ -1728,15 +1745,15 @@ begin
       Key1CtrlCheckBox.Checked:=(ssCtrl in Shift);
       Key1ShiftCheckBox.Checked:=(ssShift in Shift);
       Key1AltCheckBox.Checked:=(ssAlt in Shift);
-      SetComboBox(Key1KeyComboBox,KeyAndShiftStateToStr(Key,[]));
+      SetComboBox(Key1KeyComboBox,KeyAndShiftStateToEditorKeyString(Key,[]));
     end
     else if GrabbingKey=2 then
-         begin
-           Key2CtrlCheckBox.Checked:=(ssCtrl in Shift);
-           Key2ShiftCheckBox.Checked:=(ssShift in Shift);
-           Key2AltCheckBox.Checked:=(ssAlt in Shift);
-           SetComboBox(Key2KeyComboBox,KeyAndShiftStateToStr(Key,[]));
-         end;
+    begin
+      Key2CtrlCheckBox.Checked:=(ssCtrl in Shift);
+      Key2ShiftCheckBox.Checked:=(ssShift in Shift);
+      Key2AltCheckBox.Checked:=(ssAlt in Shift);
+      SetComboBox(Key2KeyComboBox,KeyAndShiftStateToEditorKeyString(Key,[]));
+    end;
     Key:=0;
     DeactivateGrabbing;
   end;

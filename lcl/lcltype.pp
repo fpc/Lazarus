@@ -505,12 +505,6 @@ PM_Remove = 1;
   VK_PA1        = $FD;
   VK_OEM_CLEAR  = $FE;
 
-  // all other keys with no virtual key code are mapped to
-  // VK_IRREGULAR + KeyCode
-  // MWE: Obsolete
-  // VK_IRREGULAR  = 1000;
-
-
 //==============================================
 //
 //==============================================
@@ -1881,6 +1875,9 @@ end.
 
 {
   $Log$
+  Revision 1.47  2003/10/30 18:25:18  mattias
+  fixed keymapping for irregular keys
+
   Revision 1.46  2003/10/23 19:03:13  ajgenius
   re-add TByteArray
 
