@@ -3058,7 +3058,7 @@ begin
       end;
       
       // check pascal identifier
-      if FilenameIsPascalUnit(NewFilename) or (Ext='.dpr') then begin
+      if FilenameIsPascalSource(NewFilename) then begin
         if not IsValidIdent(NewProgramName) then begin
           Result:=MessageDlg('Invalid Pascal Identifier',
             'The name "'+NewProgramName+'" is not a valid pascal identifier.'
@@ -3069,15 +3069,16 @@ begin
       end;
       
       // apply naming conventions
-      NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
+      NewProgramName:=ExtractFileNameOnly(NewFilename);
       if EnvironmentOptions.PascalFileLowerCase then
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
       if Project1.MainUnit>=0 then begin
         // check mainunit filename
-        NewProgramFilename:=ChangeFileExt(
-          NewFilename,ProjectDefaultExt[Project1.ProjectType]);
+        Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
+        if Ext='' then Ext:=ProjectDefaultExt[Project1.ProjectType];
+        NewProgramFilename:=ChangeFileExt(NewFilename,Ext);
         if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
           ACaption:='Choose a different name';
           AText:='The project info file "'+NewFilename+'"'#13
@@ -6193,6 +6194,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.268  2002/04/02 17:18:24  lazarus
+  MG: fixed save project as, renaming source name
+
   Revision 1.267  2002/03/31 23:20:35  lazarus
   MG: fixed initial size of TPage
 

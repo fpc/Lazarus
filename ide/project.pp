@@ -475,18 +475,16 @@ end;
 procedure TUnitInfo.SetUnitName(const NewUnitName:string);
 var Allowed:boolean;
 begin
-  if fUnitName<>NewUnitName then begin
-    if NewUnitName<>'' then begin
-      Allowed:=true;
-      if Assigned(fOnUnitNameChange) then
-        fOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
-      // (ignore Allowed)
-      if fSource<>nil then begin
-        CodeToolBoss.RenameSource(fSource,NewUnitName);
-      end;
-      fUnitName:=NewUnitName;
-      fModified:=true;
+  if (fUnitName<>NewUnitName) and (NewUnitName<>'') then begin
+    Allowed:=true;
+    if Assigned(fOnUnitNameChange) then
+      fOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
+    // (ignore Allowed)
+    if fSource<>nil then begin
+      CodeToolBoss.RenameSource(fSource,NewUnitName);
     end;
+    fUnitName:=NewUnitName;
+    fModified:=true;
   end;
 end;
 
@@ -1355,6 +1353,9 @@ end.
 
 {
   $Log$
+  Revision 1.58  2002/04/02 17:18:25  lazarus
+  MG: fixed save project as, renaming source name
+
   Revision 1.57  2002/03/28 00:11:06  lazarus
   MG: removed unused
 
