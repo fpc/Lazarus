@@ -3023,7 +3023,6 @@ end;
 Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
   X,Y : Integer);
 begin
-//writeln('MOUSEMOVE');
     if FHintWIndow.Visible then
      FHintWindow.Visible := False;
 
@@ -3043,29 +3042,23 @@ var
   WIndow : TWInControl;
   Caret : TPoint;
 begin
-  //leave this in.
-  //I am using this to determine why Lazarus crashes once in a while.
-  //Shane
-  Writeln('HINTTIMER in UNITEDITOR.PP');
-  
   FHintTimer.Enabled := False;
-
   cPosition := Mouse.CursorPos;
   Window := FindLCLWindow(cPosition);
   if not(Assigned(window)) then Exit;
-  
+
   //get the parent until parent is nil
   While Window.Parent <> nil do
   Window := Window.Parent;
-  
+
   if (window <> Self) then Exit;
-  
+
   cPosition := ScreenToClient(cPosition);
 
   //Get the active SourceEditor
   Se := GetActiveSE;
   if Not Assigned(se) then Exit;
-  
+
   //Account for the gutter and tabs
   TextPosition.x := cPosition.X-EditorOPts.GutterWidth;
   TextPosition.Y := cPosition.Y - 28;
@@ -3084,18 +3077,14 @@ begin
 
   Caret := SE.GetCaretPosfromCursorPos(TextPosition);
   AHint := inttostr(Caret.Y)+','+Inttostr(Caret.X)+' : '+aHint;
-//  Writeln('cPosition ius ',cPosition.x,',',cPosition.y);
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-//  Position := ClientToScreen(FLastMouseMovePos);
   Rect.Left := cPosition.X+Left+10;
   Rect.Top := cPosition.Y+Top+10;
   //adding tab height
   Rect.Top := Rect.Top + 25;
   Rect.Right := Rect.Left + Rect.Right+3;
   Rect.Bottom := Rect.Top + Rect.Bottom+3;
-  Writeln('Activating hint');
   FHintWindow.ActivateHint(Rect,AHint);
-  Writeln('DEActivating hint');
 
 end;
 

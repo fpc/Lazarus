@@ -3,6 +3,7 @@
 {------------------------------------------------------------------------------}
 constructor TListItems.Create(AOwner : TCustomListView);
 begin
+  Inherited Create;
   FItems := TList.Create;
   FOwner := AOwner;
 end;

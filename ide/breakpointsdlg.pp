@@ -15,7 +15,9 @@ type
   private
     { private declarations }
     FOnBreakpointAddedEvent : TBreakPointAddedEvent;
+    
   protected
+    Procedure ListView1KeyDown(Sender: TObject; var Key: Word; Shift:TShiftState);
   public
     { public declarations }
     constructor Create(AOwner : TComponent); override;
@@ -64,14 +66,24 @@ Begin
       Visible := True;
       Name := 'ListView1';
       Columns.Clear;
+      Columns.Updating := TRue;
       Columns.Add('Filename/Address');
       Columns.Add('Line/Length');
       Columns.Add('Condition');
       Columns.Add('Action');
       Columns.Add('Pass Count');
       Columns.Add('Group');
+      Columns.Updating := False;
+//Example alignment of columns.
+//      Columns.Item[1].Alignment := caRight;
       ViewStyle := vsReport;
+      Sorted := True;
+      OnKeyDown := @ListView1KeyDown;
     end;
+//ListView does not accpet keys unless the mouse is held down over it
+//so temporarily I do this:
+  OnKeyDown := @ListView1KeyDown;
+
   Caption := 'Breakpoints';
   Name := 'BreakPointsDlg';
   Width := 350;
@@ -117,6 +129,12 @@ Begin
           end;
      
      end;
+end;
+
+Procedure TBreakPointsdlg.ListView1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Writeln('ListView1 KeyDown!');
 end;
 
 end.

@@ -3,6 +3,7 @@
 {------------------------------------------------------------------------------}
 constructor TListItem.Create(AOwner : TListItems);
 begin
+  Inherited Create;
   FOwner := AOwner;
   SubItems := TStringList.Create;
   TStringList(SubItems).OnChange := @ItemChanged;

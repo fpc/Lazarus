@@ -5358,7 +5358,10 @@ end;
 
 procedure TMainIDE.mnuViewBreakPointsClick(Sender : TObject);
 begin
+Writeln('showing breakpoints');
   BreakPoints_dlg.Show;
+Writeln('DONE showing breakpoints');
+
 //  CreateLFM(Watches_Dlg);
 //  CreateLFM(Insertwatch);
 end;
@@ -5452,6 +5455,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.191  2001/12/19 20:28:50  lazarus
+  Enabled Alignment of columns in a TListView.
+  Shane
+
   Revision 1.190  2001/12/18 21:09:58  lazarus
   MOre additions for breakpoints dialog
   Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.

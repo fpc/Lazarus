@@ -10,14 +10,13 @@ begin
  {fix this call it is a hack}
 
  Columns := TViewColumns.Create(self);
+ Columns.OnChange := @ColumnsChanged;
  FListItems := TListITems.Create(self);
  fCompStyle := csListView;
  fViewStyle := vsList;
  fSorted := False;
  fSortColumn := 0;
  Setbounds(2,2,300,300);
-// Columns.Add('Column1');
-// Columns.Add('Column2');
 
 end;
 
@@ -25,7 +24,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView ColumnsChanged                                             }
 {------------------------------------------------------------------------------}
-Procedure TCustomListView.ColumnsChanged;
+Procedure TCustomListView.ColumnsChanged(Sender : TObject);
 Begin
   //notify the interface....
   RecreateWnd;

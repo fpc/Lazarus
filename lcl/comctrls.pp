@@ -419,15 +419,45 @@ type
   end;
 
 
- 
- TViewColumns = class(TStringList)
+ TColumnAlignment = (caLeft,caRight,caCenter);
+ TViewColumn = class(TPersistent)
    private
+     FCaption: String;
+     FAlignment: TColumnAlignment;
+     FOnChange: TNotifyEvent;
+     procedure SetCaption(const AValue: String);
+   
+     procedure SetAlignment(const AValue: TColumnAlignment);
+   public
+     constructor Create;
+     destructor Destroy; override;
+     Property Caption : String read FCaption write SetCaption;
+     property Alignment : TColumnAlignment read FAlignment write SetAlignment;
+     property OnChange : TNotifyEvent read FOnChange write FOnChange;
+
+ end;
+ TViewColumns = class(TPersistent)
+   private
+     FAlignment : TColumnAlignment;
+     FItems : TList;
+     FOnChange : TNotifyEvent;
      Listview : TCustomListView;
+     FUpdating: Boolean;
+     procedure SetUpdating(const AValue: Boolean);
+     function GetCount: Integer;
+     function GetItem(Index : Integer): TViewColumn;
+   protected
+     Procedure ColumnChanged(Sender : TObject);
    public
      constructor Create(Aowner : TCustomListView);
-     Function Add(const S : String): Integer; override;
-     Procedure Assign(source : TPersistent); override;
-     Procedure Delete(Index : Integer); override;
+     Destructor Destroy; override;
+     Function Add(const S : String): Integer;
+     Procedure Delete(Index : Integer);
+     Procedure Clear; //deletes all columns
+     property Count : Integer read GetCount;
+     property Item[Index : Integer]: TViewColumn read GetItem; default;
+     property OnChange : TNotifyEvent read FOnChange write FOnChange;
+     property Updating : Boolean read FUpdating write SetUpdating;
  end;
  
  TViewStyle = (vsList,vsReport);
@@ -450,7 +480,7 @@ type
     Procedure SetSorted(Value : Boolean);
     Procedure ItemChanged(Index : Integer);  //called by TListItems
     Procedure ItemDeleted(Index : Integer);  //called by TListItems
-    Procedure ColumnsChanged; //called by TListItems
+    Procedure ColumnsChanged(Sender : TObject); //called by TViewColumns
     Procedure ItemAdded;  //called by TListItems
   public
     constructor Create(Aowner: TComponent); override;
@@ -973,12 +1003,18 @@ end;
 {$I toolbar.inc}
 {$I trackbar.inc}
 {$I viewcolumns.inc}
+{$I viewcolumn.inc}
+
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/12/19 20:28:51  lazarus
+  Enabled Alignment of columns in a TListView.
+  Shane
+
   Revision 1.8  2001/12/18 21:10:01  lazarus
   MOre additions for breakpoints dialog
   Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.

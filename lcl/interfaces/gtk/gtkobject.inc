@@ -381,6 +381,7 @@ var
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
   Titles    : Array [0..255] of PChar;
+  TempColor : TgdkColor;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -474,7 +475,7 @@ begin
         begin
           writeln('IN LM_LV_DELETEITEM');
           Num := Integer(data^);
-          gtk_clist_remove(PgtkCList(handle),Num);
+          gtk_clist_remove(PgtkCList(Handle),Num);
         end;
       end;
       LM_LV_CHANGEITEM :
@@ -489,13 +490,13 @@ begin
           Writeln('AddItemListItem.Caption = ',AddItemListItem.Caption);
           pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
           StrPCopy(pStr, AddItemListItem.Caption);
-          gtk_clist_set_text(PgtkCList(handle),num,0,pStr);
+          gtk_clist_set_text(PgtkCList(Handle),num,0,pStr);
           StrDispose(pStr);
           for count := 0 to AddItemListItem.SubItems.Count-1 do
              Begin
                pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count]) + 1);
                StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count]);
-               gtk_clist_set_text(PgtkCList(handle),num,count+1,pStr);
+               gtk_clist_set_text(PgtkCList(Handle),num,count+1,pStr);
                StrDispose(pStr);
              end;
         end;
@@ -512,7 +513,7 @@ begin
           Titles[0] := pStr;
           for Count := 1 to 255 do
             Titles[Count] := nil;
-          Num := gtk_clist_append(PgtkCList(handle),@Titles);
+          Num := gtk_clist_append(PgtkCList(Handle),@Titles);
           Writeln('NUm in AddItem is =',num);
           StrDispose(pStr);
           AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count-1];
@@ -2132,7 +2133,11 @@ begin
       
       csListView :
       Begin
-         P := PgtkWidget(gtk_clist_new(TCustomListView(sender).Columns.Count));
+         if TCustomListView(sender).Columns.Count > 0 then
+            P := PgtkWidget(gtk_clist_new(TCustomListView(sender).Columns.Count))
+         else
+            P := PgtkWidget(gtk_clist_new(1));
+            
          gtk_widget_show(P);
       end;
       
@@ -2990,6 +2995,8 @@ end;
   the calling object to the corresponding GTK object.
  ------------------------------------------------------------------------------}
 function TgtkObject.SetProperties (Sender : TObject) : integer;
+const
+  aGTKJustification: array[TColumnAlignment] of TGTKJustification = (GTK_JUSTIFY_LEFT,GTK_JUSTIFY_RIGHT,GTK_JUSTIFY_CENTER);
 var
    Handle    : Pointer;
    Widget    : PGtkWidget;
@@ -2999,6 +3006,7 @@ var
    ColName   : String;
    pColName : PChar;
    pRowText : PChar;
+
 begin
    result := 0;     // default if nobody sets it
 
@@ -3109,23 +3117,29 @@ begin
             Begin
                //set up columns..
                //
-               gtk_clist_freeze(PgtkCList(handle));
+               gtk_clist_freeze(PgtkCList(Handle));
+               Writeln('Column count is ',Columns.Count);
                for I := 0 to Columns.Count-1 do
                  Begin
-                   ColName := Columns.Strings[i];
+                   ColName := Columns.Item[i].Caption;
+                   Writeln('colnmame is ',ColName);
                    GetMem(pColName,Length(colname)+1);
                    pColName := StrPcopy(pColName,ColName);
-                   gtk_clist_set_column_title(Pgtkclist(handle),I,pColName);
+                   gtk_clist_set_column_title(Pgtkclist(Handle),I,pColName);
                    Dispose(pColName);
+                   
+                   //set column alignment
+                   gtk_clist_set_column_justification(PgtkCList(Handle),I,aGTKJUSTIFICATION[Columns.Item[i].Alignment]);
                  end;
 
                  if (TCustomListView(sender).ViewStyle = vsReport) then
-                 gtk_clist_column_titles_show(PgtkCList(handle))
+                 gtk_clist_column_titles_show(PgtkCList(Handle))
                  else
-                 gtk_clist_column_titles_Hide(PgtkCList(handle));
+                 gtk_clist_column_titles_Hide(PgtkCList(Handle));
 
-                 gtk_clist_set_sort_column(PgtkCList(handle),TCustomListView(sender).SortColumn);
-                 gtk_clist_set_auto_sort(PgtkCList(handle),TCustomListView(sender).Sorted);
+                 gtk_clist_set_sort_column(PgtkCList(Handle),TCustomListView(sender).SortColumn);
+//TODO:This doesn't work right now
+//                 gtk_clist_set_auto_sort(PgtkCList(handle),TCustomListView(sender).Sorted);
                //
                //do items...
                //
@@ -3134,7 +3148,7 @@ begin
 
                    GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).Caption)+1);
                    pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).Caption);
-                   gtk_clist_set_text(Pgtkclist(handle),0,I+1,pRowText);
+                   gtk_clist_set_text(Pgtkclist(Handle),0,I+1,pRowText);
                    freemem(pRowText);
 
                    if (TCustomListView(sender).ViewStyle = vsReport) then //columns showing
@@ -3144,7 +3158,7 @@ begin
                         Begin
                           GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).SubItems.Strings[X-1])+1);
                           pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).SubItems.Strings[X-1]);
-                          gtk_clist_set_text(Pgtkclist(handle),X,I+1,pRowText);
+                          gtk_clist_set_text(Pgtkclist(Handle),X,I+1,pRowText);
                           freemem(pRowText);
                         end;
                       end;  //for loop
@@ -3153,7 +3167,9 @@ begin
 
                  end;
                  
-               gtk_clist_thaw(PgtkCList(handle));
+               gtk_clist_thaw(PgtkCList(Handle));
+               Writeln('DONE csListView setPRoperties');
+
             end;
       else
          Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
@@ -3609,6 +3625,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.92  2001/12/19 20:28:51  lazarus
+  Enabled Alignment of columns in a TListView.
+  Shane
+
   Revision 1.91  2001/12/18 21:10:01  lazarus
   MOre additions for breakpoints dialog
   Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
