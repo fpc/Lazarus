@@ -26,9 +26,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.AdjustClientRect(var Rect: TRect);
 Begin
-
-  // ToDo: ask the interface to adjust the client rectangle
-  
+//Not used.  It's a virtual procedure that should be overriden.
 end;
 
 {------------------------------------------------------------------------------}
@@ -409,14 +407,6 @@ Begin
 //writeln('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
   LCLLinux.ClientToScreen(Handle,Result);
   Assert(False, Format('Trace:[TWinControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
-end;
-
-function TWinControl.GetClientRect: TRect;
-begin
-
-  // ToDo: ask the interface for the clientrect
-
-  inherited GetClientRect;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2028,7 +2018,7 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.57  2002/04/18 08:09:03  lazarus
+  Revision 1.58  2002/04/18 08:13:36  lazarus
   MG: added include comments
 
   Revision 1.56  2002/04/04 12:25:01  lazarus
