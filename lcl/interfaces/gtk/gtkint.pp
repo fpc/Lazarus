@@ -107,11 +107,10 @@ type
     
     {$IFDEF ClientRectBugFix}
     procedure SetResizeRequest(Widget: PGtkWidget);
-    procedure SaveSizeNotification(Widget: PGtkWidget);
-    procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
     {$ENDIF}
     
     procedure SendCachedLCLMessages;
+    procedure SendCachedGtkMessages;
     procedure SetCallback(Msg : LongInt; Sender : TObject);
     procedure RemoveCallbacks(Sender : TObject);
   protected
@@ -361,6 +360,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/05/12 04:56:20  lazarus
+  MG: client rect bugs nearly completed
+
   Revision 1.38  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 
