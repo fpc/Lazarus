@@ -308,7 +308,6 @@ var
 PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
-Num : Integer;
 Begin
   PI:=FControl.ClassInfo;
   PT:=GetTypeData(PI);
@@ -327,7 +326,6 @@ var
 PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
-Num : Integer;
 Begin
   PI:=FControl.ClassInfo;
   PT:=GetTypeData(PI);
@@ -347,7 +345,6 @@ var
 PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
-Num : Integer;
 Begin
   PI:=FControl.ClassInfo;
   PT:=GetTypeData(PI);
@@ -367,7 +364,6 @@ var
 PT : PTypeData;
 PP : PPropList;
 PI : PTypeInfo;
-Num : Integer;
 Begin
   PI:=FControl.ClassInfo;
   PT:=GetTypeData(PI);
@@ -462,44 +458,48 @@ end;
 Function TComponentInterface.GetControlCount: Integer;
 Begin
   // XXX Todo:
-
+  Result := -1;
 end;
 
 Function TComponentInterface.GetControl(Index : Integer): TIComponentInterface;
 Begin
   // XXX Todo:
-
+  Result := nil;
 end;
 
 Function TComponentInterface.GetComponentCount: Integer;
 Begin
   // XXX Todo:
-
+   Result := -1;
 end;
 
 Function TComponentInterface.GetComponent(Index : Integer): TIComponentInterface;
 Begin
   // XXX Todo:
-
+  Result := nil;
 end;
 
 Function TComponentInterface.Select : Boolean;
 Begin
   // XXX Todo:
-
+  Result := False;
 end;
 
 Function TComponentInterface.Focus : Boolean;
 Begin
-  // XXX Todo:
+  Result := False;
   if (FCOntrol is TWinControl) and (TWinControl(FControl).CanFocus) then
-  TWinControl(FControl).SetFocus;
+  Begin
+    TWinControl(FControl).SetFocus;
+    Result := True;
+  end;
 end;
 
 Function TComponentInterface.Delete : Boolean;
 Begin
    Control.Destroy;
    Destroy;
+   Result := True;
 end;
 
 
@@ -515,8 +515,6 @@ begin
 end;
 
 destructor TCustomFormEditor.Destroy;
-var
-  I : Integer;
 begin
   JITFormList.Destroy;
   FComponentInterfaceList.Free;
@@ -598,8 +596,6 @@ Function TCustomFormEditor.CreateComponent(ParentCI : TIComponentInterface;
 TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface;
 Var
   Temp : TComponentInterface;
-  TempInterface : TComponentInterface;
-  TempClass    : TPersistentClass;
   TempName    : String;
   Found : Boolean;
   I, Num,NewFormIndex : Integer;
@@ -701,6 +697,7 @@ end;
 Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
 Begin
   //this can only be used IF you have one FormEditor per form.  I currently don't
+result := nil;
 end;
 
 Procedure TCustomFormEditor.ClearSelected;
