@@ -64,7 +64,7 @@ uses
   {$ENDIF}
   AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
-  {off $DEFINE UseNewMenuEditor}
+  {$DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
   {$ELSE}
@@ -9102,6 +9102,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.592  2003/06/01 13:00:34  mattias
+  new menueditor from Martin Patik
+
   Revision 1.591  2003/06/01 11:23:01  mattias
   splittet designer form and lookup root
 
