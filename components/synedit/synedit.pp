@@ -451,8 +451,10 @@ type
     procedure GutterChanged(Sender: TObject);
     procedure InsertBlock(BB, BE: TPoint; ChangeStr: PChar);
     function IsPointInSelection(Value: TPoint): boolean;
-    function LeftSpaces(const Line: string
-      {$IFDEF SYN_LAZARUS}; Physical: boolean = false{$ENDIF}): Integer;
+    function LeftSpaces(const Line: string): Integer;
+    {$IFDEF SYN_LAZARUS}
+    function LeftSpaces(const Line: string; Physical: boolean): Integer;
+    {$ENDIF}
     procedure LinesChanging(Sender: TObject);
     procedure LinesChanged(Sender: TObject);
     procedure LockUndo;
@@ -1979,9 +1981,13 @@ begin
     Exclude(fStateFlags, sfIgnoreNextChar);
 end;
 
+function TCustomSynEdit.LeftSpaces(const Line: string): Integer;
+begin
+  Result:=LeftSpaces(Line,false);
+end;
 
-function TCustomSynEdit.LeftSpaces(const Line: string
-  {$IFDEF SYN_LAZARUS}; Physical: boolean = false{$ENDIF}): Integer;
+function TCustomSynEdit.LeftSpaces(const Line: string;
+  Physical: boolean): Integer;
 var
   p: PChar;
 begin
