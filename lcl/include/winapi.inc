@@ -731,6 +731,11 @@ begin
   Result := InterfaceObject.LoadStockPixmap(StockID);
 end;
 
+function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
+begin
+  Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
+end;
+
 function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
   Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
@@ -1692,6 +1697,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2003/11/14 21:17:59  micha
+  new maskblt method for transparency blitting
+
   Revision 1.102  2003/11/10 16:15:31  micha
   cleanups; win32 fpimage support
 

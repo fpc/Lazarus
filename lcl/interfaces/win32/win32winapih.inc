@@ -126,6 +126,7 @@ function IsWindowVisible(handle: HWND): boolean; override;
 Function LineTo(DC: HDC; X, Y: Integer): Boolean; Override;
 
 Function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; Override;
+Function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean; Override;
 Function MessageBox(HWnd: HWND; LPText, LPCaption: PChar; UType: Cardinal): Integer; Override;
 Function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; Override;
 
@@ -188,6 +189,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/11/14 21:17:59  micha
+  new maskblt method for transparency blitting
+
   Revision 1.38  2003/11/10 16:15:32  micha
   cleanups; win32 fpimage support
 

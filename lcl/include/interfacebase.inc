@@ -1260,6 +1260,12 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
+begin
+  Result := False;
+end;
+
 procedure TInterfaceBase.PassCmdLineOptions;
 begin
 
@@ -1848,6 +1854,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2003/11/14 21:17:59  micha
+  new maskblt method for transparency blitting
+
   Revision 1.110  2003/11/10 16:15:31  micha
   cleanups; win32 fpimage support
 

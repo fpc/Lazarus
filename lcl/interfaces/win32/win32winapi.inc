@@ -1938,6 +1938,26 @@ Begin
   Result := Windows.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
 End;
 
+Function TWin32Object.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
+Var
+  MaskDC: HDC;
+  SaveObj: HGDIOBJ;
+  PrevTextColor, PrevBkColor: COLORREF;
+Begin
+  MaskDC := CreateCompatibleDC(0);
+  SaveObj := SelectObject(MaskDC, Mask);
+  PrevTextColor := Windows.SetTextColor(DestDC, RGB(255,255,255));
+  PrevBkColor := Windows.SetBkColor(DestDC, RGB(0,0,0));
+  Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+  Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
+  Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+  Windows.SetTextColor(DestDC, PrevTextColor);
+  Windows.SetBkColor(DestDC, PrevBkColor);
+  SelectObject(MaskDC, SaveObj);
+  DeleteDC(MaskDC);
+  Result := true;
+End;
+
 {------------------------------------------------------------------------------
   Method:  MessageBox
   Params:  HWnd      - The handle of parent window
@@ -2768,6 +2788,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2003/11/14 21:17:59  micha
+  new maskblt method for transparency blitting
+
   Revision 1.72  2003/11/14 20:23:31  micha
   fpimage fixes
 
