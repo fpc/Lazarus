@@ -2370,6 +2370,7 @@ var
   LCLMenuItem: TMenuItem;
   IconImg, IconMask: PGdkPixmap;
   IconWidth, IconHeight: integer;
+  AWindow: PGdkWindow;
 begin
   if (MenuItem=nil) then exit;
   if not (GTK_WIDGET_DRAWABLE (PGtkWidget(MenuItem))) then exit;
@@ -2385,6 +2386,8 @@ begin
 
   // calculate left and top
   Widget := PGtkWidget (MenuItem);
+  AWindow:=GetControlWindow(Widget);
+  if AWindow=nil then exit;
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
   ALeft := (BorderWidth + PGtkStyle(Widget^.theStyle)^.klass^.xthickness + 2)
@@ -2394,7 +2397,7 @@ begin
   // draw icon
   gdk_gc_set_clip_mask(pGtkStyle(Widget^.theStyle)^.Black_gc, IconMask);
   gdk_gc_set_clip_origin(pGtkStyle(Widget^.theStyle)^.Black_gc,ALeft,ATop);
-  gdk_draw_pixmap(GetControlWindow(Widget),pGtkStyle(Widget^.theStyle)^.Black_gc,
+  gdk_draw_pixmap(AWindow,pGtkStyle(Widget^.theStyle)^.Black_gc,
      IconImg,0,0,ALeft,ATop,-1,-1);
   gdk_gc_set_clip_mask(pGtkStyle(Widget^.theStyle)^.Black_gc, nil);
 end;
@@ -3947,6 +3950,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.149  2002/11/09 18:13:35  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.148  2002/11/05 20:03:42  lazarus
   MG: implemented hints
 
