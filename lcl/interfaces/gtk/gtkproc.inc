@@ -689,13 +689,11 @@ begin
   Extended := False;
   Toggle := False;
   
-  {if Event^.Length>0 then begin
-    writeln('GetGTKKeyInfo Event^.KeyVal=',Event^.KeyVal,
-      ' Event^.Length=',Event^.Length,' ',ord(Event^.theString[0])
-    );
-  end;}
-  
-  //writeln('GetGTKKeyInfo ',Event^.KeyVal);
+  {write('GetGTKKeyInfo Event^.KeyVal=',Event^.KeyVal,' Event^.Length=',Event^.Length,' ');
+  if Event^.Length>0 then write(ord(Event^.theString[0]));
+  writeln('');}
+
+  //writeln('GetGTKKeyInfo ',Event^.KeyVal,' ',HexStr(Cardinal(Event^.KeyVal),8));
 
   case Event^.KeyVal of
     // Normal ASCII chars
@@ -735,19 +733,13 @@ begin
         VirtualKey := VK_SPACE;
       end;
 
-    GDK_KP_Tab:
-      begin
-        KeyCode := VK_TAB;
-        VirtualKey := VK_TAB;
-      end;
-
     GDK_KP_Enter:
       begin
         KeyCode := VK_Return;
         VirtualKey := VK_Return;
       end;
 
-    GDK_Tab:
+    GDK_Tab, GDK_ISO_Left_Tab, GDK_KP_Tab:
       begin
         KeyCode := VK_TAB;
         VirtualKey := VK_TAB;
@@ -3999,6 +3991,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.164  2003/03/25 13:00:39  mattias
+  implemented TMemo.SelLength, improved OI hints
+
   Revision 1.163  2003/03/17 13:00:35  mattias
   improved but not fixed transient windows
 
