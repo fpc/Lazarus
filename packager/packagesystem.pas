@@ -2175,12 +2175,9 @@ end;
 
 procedure TLazPackageGraph.GetAllRequiredPackages(
   FirstDependency: TPkgDependency; var List: TList);
-var
-  Pkg: TLazPackage;
-  PkgStack: PLazPackage;
-  StackPtr: Integer;
+// returns packages in topological order, beginning with the top level package
 
-  procedure PutPackagesFromDependencyListOnStack(CurDependency: TPkgDependency);
+  procedure GetTopologicalOrder(CurDependency: TPkgDependency);
   var
     RequiredPackage: TLazPackage;
   begin
@@ -2189,8 +2186,7 @@ var
         RequiredPackage:=CurDependency.RequiredPackage;
         if (not (lpfVisited in RequiredPackage.Flags)) then begin
           RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
-          PkgStack[StackPtr]:=RequiredPackage;
-          inc(StackPtr);
+          GetTopologicalOrder(RequiredPackage.FirstRequiredDependency);
           // add package to list
           if List=nil then List:=TList.Create;
           List.Add(RequiredPackage);
@@ -2200,24 +2196,24 @@ var
     end;
   end;
 
+var
+  i: Integer;
+  j: Integer;
 begin
-  // initialize
+  List:=nil;
   MarkAllPackagesAsNotVisited;
-  // create stack
-  GetMem(PkgStack,SizeOf(Pointer)*Count);
-  StackPtr:=0;
-  // put dependency list on stack
-  PutPackagesFromDependencyListOnStack(FirstDependency);
-  // mark all required packages
-  while StackPtr>0 do begin
-    // get required package from stack
-    dec(StackPtr);
-    Pkg:=PkgStack[StackPtr];
-    // put all required packages on stack
-    PutPackagesFromDependencyListOnStack(Pkg.FirstRequiredDependency);
+  // create topological list, beginning with the leaves
+  GetTopologicalOrder(FirstDependency);
+  // reverse list order
+  if List<>nil then begin
+    i:=0;
+    j:=List.Count-1;
+    while i<j do begin
+      List.Exchange(i,j);
+      inc(i);
+      dec(j);
+    end;
   end;
-  // clean up
-  FreeMem(PkgStack);
 end;
 
 procedure TLazPackageGraph.GetConnectionsTree(FirstDependency: TPkgDependency;
