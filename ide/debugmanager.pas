@@ -87,6 +87,10 @@ type
     FWatches: TDBGWatches;
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
 
+    // When a source file is not found, the user can choose one
+    // Here are all choises stored
+    FUserSourceFiles: TStringList;
+
     procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
@@ -295,9 +299,10 @@ procedure TDebugManager.OnDebuggerCurrentLine(Sender: TObject;
 // -> show the current execution line in editor
 // if SrcLine = -1 then no source is available
 var
-  SrcFile: String;
+  S, SrcFile: String;
   OpenDialog: TOpenDialog;
   NewSource: TCodeBuffer;
+  n: Integer;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
 
@@ -314,8 +319,29 @@ begin
 
   SrcFile := MainIDE.FindSourceFile(ALocation.SrcFile);
   if SrcFile = '' then SrcFile := ALocation.SrcFile;
+  
+  if not FilenameIsAbsolute(SrcFile)
+  then begin
+    // first attempt to get a longer name
+    // short file, look in the user list
+    for n := 0 to FUserSourceFiles.Count - 1 do
+    begin
+      S := FUserSourceFiles[n];
+      if CompareFileNames(ExtractFilenameOnly(SrcFile), ExtractFilenameOnly(S)) = 0
+      then begin
+        if FileExists(S)
+        then begin
+          FUserSourceFiles.Move(n, 0); // move most recent first
+          SrcFile := S;
+          Break;
+        end;
+      end;
+    end;
+  end;
+    
+  if (not FilenameIsAbsolute(SrcFile)) or (not FileExists(SrcFile))
+  then begin
 
-  if (not FilenameIsAbsolute(SrcFile)) or (not FileExists(SrcFile)) then begin
     if MessageDlg(lisFileNotFound,
       Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, ['"',
         SrcFile, '"', #13, #13, #13])
@@ -328,6 +354,7 @@ begin
         InputHistories.ApplyFileDialogSettings(OpenDialog);
         OpenDialog.Title:=lisOpenFile+' '+SrcFile;
         OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+        OpenDialog.FileName := SrcFile;
         if not OpenDialog.Execute then
           exit;
         SrcFile:=CleanAndExpandFilename(OpenDialog.FileName);
@@ -337,8 +364,9 @@ begin
       end;
     until FilenameIsAbsolute(SrcFile) and FileExists(SrcFile);
 
+    FUserSourceFiles.Insert(0, SrcFile);
   end;
-  
+
   NewSource:=CodeToolBoss.LoadFile(SrcFile,true,false);
   if NewSource=nil then begin
     exit;
@@ -349,6 +377,7 @@ begin
     SourceNotebook.ClearExecutionLines;
     SourceNotebook.ClearErrorLines;
   end;
+  
   // jump editor to execution line
   if MainIDE.DoJumpToCodePos(nil,nil,NewSource,1,ALocation.SrcLine,-1,true)
     <>mrOk then exit;
@@ -412,6 +441,9 @@ begin
   FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
   FBreakPointGroups := TDBGBreakPointGroups.Create;
   FWatches := TDBGWatches.Create(nil, TDBGWatch);
+  
+  FUserSourceFiles := TStringList.Create;
+  
   inherited Create(TheOwner);
 end;
 
@@ -438,6 +470,8 @@ begin
     FreeThenNil(FBreakPointGroups);
     FreeThenNil(FWatches);
   end;
+  
+  FreeAndNil(FUserSourceFiles);
 
   inherited Destroy;
 end;
@@ -901,6 +935,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.23  2003/05/24 17:51:34  marc
+  MWE: Added an usersource history
+
   Revision 1.22  2003/05/24 11:06:43  mattias
   started Hide IDE on run
 
