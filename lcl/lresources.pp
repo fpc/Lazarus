@@ -68,6 +68,7 @@ function LFMtoLRSfile(LFMfilename:ansistring):boolean;
 function LFMtoLRSstream(LFMStream,LFCStream:TStream):boolean;
  // returns true if successful
 function FindLFMClassName(LFMStream:TStream):AnsiString;
+function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 
 type
   TDelphiStreamOriginalFormat = (sofUnknown, sofBinary, sofText);
@@ -177,14 +178,21 @@ begin
 end;
 
 function FindLFMClassName(LFMStream:TStream):ansistring;
-// the classname is the last word of the first line
+{ examples:
+  object Form1: TForm1
+  inherited AboutBox2: TAboutBox2
+
+  -> the classname is the last word of the first line
+}
 var c:char;
   StartPos,EndPos:integer;
 begin
   Result:='';
   StartPos:=-1;
   c:=' ';
+  // read till end of line
   repeat
+    // remember last non identifier char position
     if (not (c in ['a'..'z','A'..'Z','0'..'9','_'])) then
       StartPos:=LFMStream.Position;
     LFMStream.Read(c,1);
@@ -192,10 +200,13 @@ begin
   until c in [#10,#13];
   if StartPos<0 then exit;
   EndPos:=LFMStream.Position-1;
+  if EndPos-StartPos>255 then exit;
   SetLength(Result,EndPos-StartPos);
   LFMStream.Position:=StartPos;
   LFMStream.Read(Result[1],length(Result));
   LFMStream.Position:=0;
+  if (Result='') or (not IsValidIdent(Result)) then
+    Result:='';
 end;
 
 function LFMtoLRSfile(LFMfilename:ansistring):boolean;
@@ -830,6 +841,48 @@ end;
 procedure TDelphiWriter.Write(const Buf; Count: Longint);
 begin
   FStream.Write(Buf,Count);
+end;
+
+function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
+// 0 = ok
+// -1 = error while streaming AForm to binary stream
+// -2 = error while streaming binary stream to text file
+var
+  BinStream: TMemoryStream;
+  Driver: TAbstractObjectWriter;
+  Writer: TWriter;
+begin
+  Result:=0;
+  BinStream:=TMemoryStream.Create;
+  try
+    try
+      // write component to binary stream
+      Driver:=TBinaryObjectWriter.Create(BinStream,4096);
+      try
+        Writer:=TWriter.Create(Driver);
+        try
+          Writer.WriteDescendent(AComponent,nil);
+        finally
+          Writer.Free;
+        end;
+      finally
+        Driver.Free;
+      end;
+    except
+      Result:=-1;
+      exit;
+    end;
+    try
+      // transform binary to text
+      BinStream.Position:=0;
+      ObjectBinaryToText(BinStream,LFMStream);
+    except
+      Result:=-2;
+      exit;
+    end;
+  finally
+    BinStream.Free;
+  end;
 end;
 
 procedure DelphiObjectBinaryToText(Input, Output: TStream);

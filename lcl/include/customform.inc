@@ -625,18 +625,18 @@ Begin
   inherited RequestAlign;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetDesigner                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetDesigner
+------------------------------------------------------------------------------}
 Procedure TCustomForm.SetDesigner(Value : TIDesigner);
 Begin
   FDesigner := Value;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm ValidateRename                                             }
-{  if AComponent is nil, then the name of Self is changed                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm ValidateRename
+  if AComponent is nil, then the name of Self is changed
+------------------------------------------------------------------------------}
 procedure TCustomForm.ValidateRename(AComponent: TComponent;
   const CurName, NewName: String);
 begin
@@ -1426,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2003/06/01 21:09:09  mattias
+  implemented datamodules
+
   Revision 1.99  2003/05/24 08:51:41  mattias
   implemented designer close query
 

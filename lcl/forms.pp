@@ -336,7 +336,7 @@ type
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
     procedure ValidateRename(AComponent: TComponent;
-                             const CurName, NewName: string);override;
+                             const CurName, NewName: string); override;
     procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
   public
@@ -790,7 +790,15 @@ type
 function SaveFocusState: TFocusState;
 procedure RestoreFocusState(FocusState: TFocusState);
 
+type
+  TGetDesignerFormEvent =
+    function(AComponent: TComponent): TCustomForm of object;
+
+var
+  OnGetDesignerForm: TGetDesignerFormEvent;
+
 function GetParentForm(Control:TControl): TCustomForm;
+function GetDesignerForm(AComponent: TComponent): TCustomForm;
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
 function IsAccel(VK : Word; const Str : ShortString): Boolean;
@@ -1002,22 +1010,22 @@ var
   Form: TCustomForm;
 begin
   Result:=nil;
+  Form:=GetDesignerForm(AComponent);
+  if Form<>nil then
+    Result:=Form.Designer;
+end;
+
+function GetDesignerForm(AComponent: TComponent): TCustomForm;
+var
+  Owner: TComponent;
+begin
+  Result:=nil;
   if AComponent=nil then exit;
-  while (AComponent<>nil) do begin
-    if (AComponent is TCustomForm) then begin
-      Form:=TCustomForm(AComponent);
-      if Form.Parent=nil then begin
-        Result:=Form.Designer;
-        exit;
-      end;
-    end;
-    if AComponent is TControl then begin
-      AComponent:=TControl(AComponent).Parent;
-    end else if (AComponent.Owner<>nil) then begin
-      AComponent:=AComponent.Owner;
-    end else begin
-      exit;
-    end;
+  if Assigned(OnGetDesignerForm) then
+    Result:=OnGetDesignerForm(AComponent)
+  else begin
+    Owner:=AComponent.Owner;
+    if Owner is TCustomForm then Result:=TCustomForm(Owner);
   end;
 end;
 

@@ -38,9 +38,10 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
-  Forms, Menus, Dialogs, AVL_Tree, JITForms, NonControlForms, ComponentReg,
-  IDEProcs, ComponentEditors, KeyMapping, EditorOptions, Designerprocs;
+  Classes, SysUtils, AbstractFormeditor, Controls, PropEdits, TypInfo,
+  Forms, Menus, Dialogs, AVL_Tree, ObjectInspector, JITForms, NonControlForms,
+  ComponentReg, IDEProcs, ComponentEditors, KeyMapping, EditorOptions,
+  Designerprocs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -137,10 +138,21 @@ each control that's dropped onto the form
     Procedure DeleteControl(AComponent: TComponent; FreeComponent: boolean);
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
+    
     function IsJITComponent(AComponent: TComponent): boolean;
     function GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
+    function FindJITList(AComponent: TComponent): TJITComponentList;
     function GetDesignerForm(AComponent: TComponent): TCustomForm;
     function FindNonControlForm(LookupRoot: TComponent): TNonControlForm;
+    function CreateNonControlForm(LookupRoot: TComponent): TNonControlForm;
+    procedure RenameJITComponent(AComponent: TComponent;
+                                 const NewName: shortstring);
+    procedure UpdateDesignerFormName(AComponent: TComponent);
+    function CreateNewJITMethod(AComponent: TComponent;
+                                const AMethodName: shortstring): TMethod;
+    procedure RenameJITMethod(AComponent: TComponent;
+                           const OldMethodName, NewMethodName: shortstring);
+    procedure SaveHiddenDesignerFormProperties(AComponent: TComponent);
     
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
     function CreateUniqueComponentName(AComponent: TComponent): string;
@@ -173,7 +185,7 @@ implementation
 
 
 uses
-  SysUtils, Math;
+  Math;
 
 function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
 var
@@ -786,6 +798,17 @@ begin
     Result:=nil;
 end;
 
+function TCustomFormEditor.FindJITList(AComponent: TComponent
+  ): TJITComponentList;
+begin
+  if JITFormList.IndexOf(AComponent)>=0 then
+    Result:=JITFormList
+  else if JITDataModuleList.IndexOf(AComponent)>=0 then
+    Result:=JITDataModuleList
+  else
+    Result:=nil;
+end;
+
 function TCustomFormEditor.GetDesignerForm(AComponent: TComponent
   ): TCustomForm;
 var
@@ -793,6 +816,8 @@ var
 begin
   Result:=nil;
   OwnerComponent:=AComponent.Owner;
+  if OwnerComponent=nil then
+    OwnerComponent:=AComponent;
   if OwnerComponent is TCustomForm then
     Result:=TCustomForm(OwnerComponent)
   else
@@ -809,6 +834,73 @@ begin
     Result:=TNonControlForm(AVLNode.Data)
   else
     Result:=nil;
+end;
+
+function TCustomFormEditor.CreateNonControlForm(LookupRoot: TComponent
+  ): TNonControlForm;
+begin
+  if FindNonControlFormNode(LookupRoot)<>nil then
+    RaiseException('TCustomFormEditor.CreateNonControlForm exists already');
+  if LookupRoot is TDataModule then begin
+    Result:=TDataModuleForm.Create(nil);
+    Result.LookupRoot:=LookupRoot;
+    FNonControlForms.Add(Result);
+  end else
+    RaiseException('TCustomFormEditor.CreateNonControlForm Unknown type '
+      +LookupRoot.ClassName);
+end;
+
+procedure TCustomFormEditor.RenameJITComponent(AComponent: TComponent;
+  const NewName: shortstring);
+var
+  JITComponentList: TJITComponentList;
+begin
+  JITComponentList:=FindJITList(AComponent);
+  if JITComponentList=nil then
+    RaiseException('TCustomFormEditor.RenameJITComponent');
+  JITComponentList.RenameComponentClass(AComponent,NewName);
+end;
+
+procedure TCustomFormEditor.UpdateDesignerFormName(AComponent: TComponent);
+var
+  ANonControlForm: TNonControlForm;
+begin
+  ANonControlForm:=FindNonControlForm(AComponent);
+writeln('TCustomFormEditor.UpdateDesignerFormName ',ANonControlForm<>nil,' ',AComponent.Name);
+  if ANonControlForm<>nil then
+    ANonControlForm.Caption:=AComponent.Name;
+end;
+
+function TCustomFormEditor.CreateNewJITMethod(AComponent: TComponent;
+  const AMethodName: shortstring): TMethod;
+var
+  JITComponentList: TJITComponentList;
+begin
+  JITComponentList:=FindJITList(AComponent);
+  if JITComponentList=nil then
+    RaiseException('TCustomFormEditor.CreateNewJITMethod');
+  Result:=JITComponentList.CreateNewMethod(AComponent,AMethodName);
+end;
+
+procedure TCustomFormEditor.RenameJITMethod(AComponent: TComponent;
+  const OldMethodName, NewMethodName: shortstring);
+var
+  JITComponentList: TJITComponentList;
+begin
+  JITComponentList:=FindJITList(AComponent);
+  if JITComponentList=nil then
+    RaiseException('TCustomFormEditor.RenameJITMethod');
+  JITComponentList.RenameMethod(AComponent,OldMethodName,NewMethodName);
+end;
+
+procedure TCustomFormEditor.SaveHiddenDesignerFormProperties(
+  AComponent: TComponent);
+var
+  NonControlForm: TNonControlForm;
+begin
+  NonControlForm:=FindNonControlForm(AComponent);
+  if NonControlForm<>nil then
+    NonControlForm.DoSaveBounds;
 end;
 
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent

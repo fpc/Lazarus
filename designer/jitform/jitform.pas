@@ -57,6 +57,8 @@ type
   TJITDataModule = class (TDataModule)
   protected
     class function NewInstance : TObject; override;
+    procedure ValidateRename(AComponent: TComponent;
+                             const CurName, NewName: string); override;
   public
   end;
 
@@ -109,6 +111,17 @@ function TJITDataModule.NewInstance: TObject;
 begin
   Result:=inherited NewInstance;
   TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
+end;
+
+procedure TJITDataModule.ValidateRename(AComponent: TComponent; const CurName,
+  NewName: string);
+var
+  Designer: TIDesigner;
+begin
+  inherited ValidateRename(AComponent, CurName, NewName);
+  Designer:=FindRootDesigner(Self);
+  if Designer <> nil then
+    Designer.ValidateRename(AComponent, CurName, NewName);
 end;
 
 end.

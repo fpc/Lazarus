@@ -550,10 +550,8 @@ begin
   Add(NewCategory);
   NewCategory.Add(TNewIDEItemTemplate.Create(niiUnit,'Unit',niifCopy,[]));
   NewCategory.Add(TNewIDEItemTemplate.Create(niiForm,'Form',niifCopy,[]));
-  {$IFDEF EnableDataMods}
   NewCategory.Add(TNewIDEItemTemplate.Create(niiDataModule,'Data Module',
                                              niifCopy,[]));
-  {$ENDIF}
   NewCategory.Add(TNewIDEItemTemplate.Create(niiText,'Text',niifCopy,[]));
   
   // category project

@@ -122,8 +122,7 @@ procedure RaiseCatchableException(const Msg: string);
 // functions / procedures
 
 { These functions are not context sensitive. Especially they ignore compiler
-  settings and compiler directives. They exist only for easy usage, they are not
-  used by the CodeTools
+  settings and compiler directives. They exist only for basic usage.
 }
 
 // source type
@@ -197,14 +196,15 @@ function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
 function RemoveFormComponentFromSource(Source:TSourceLog;
   FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): boolean;
+function FindClassAncestorName(const Source, FormClassName: string): string;
 
 // code search
-function SearchCodeInSource(const Source,Find:string; StartPos:integer;
-   var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
-function ReadNextPascalAtom(const Source:string;
-   var Position,AtomStart:integer):string;
-function ReadRawNextPascalAtom(const Source:string;
-   var Position,AtomStart:integer):string;
+function SearchCodeInSource(const Source, Find: string; StartPos:integer;
+   var EndFoundPosition: integer; CaseSensitive: boolean):integer;
+function ReadNextPascalAtom(const Source: string;
+   var Position, AtomStart: integer): string;
+procedure ReadRawNextPascalAtom(const Source: string;
+   var Position, AtomStart: integer);
 
 
 //-----------------------------------------------------------------------------
@@ -901,67 +901,86 @@ begin
   Result:=true;
 end;
 
-function ReadNextPascalAtomEx(const Source : string;var Position,EndPosition : integer;CaseSensitive : boolean; var Atom : string):boolean;
+function FindClassAncestorName(const Source, FormClassName: string): string;
+var
+  SrcPos, AtomStart: integer;
 begin
-     Atom := ReadNextPascalAtom(Source,Position,EndPosition);
-     if not(CaseSensitive) then Atom := lowerCase(Atom);
-     Result := (Position > length(Source));
+  Result:='';
+  if SearchCodeInSource(Source,FormClassName+'=class(',1,SrcPos,false)<1 then
+    exit;
+  Result:=ReadNextPascalAtom(Source,SrcPos,AtomStart);
+  if (Result<>'') and (not IsValidIdent(Result)) then
+    Result:='';
 end;
 
+function SearchCodeInSource(const Source, Find: string; StartPos: integer;
+  var EndFoundPosition: integer; CaseSensitive: boolean):integer;
 // search pascal atoms of Find in Source
-
-function SearchCodeInSource(const Source,Find:string; StartPos:integer;
-   var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
+// returns the start pos
 var
-	FindAtomStart     : integer;
-	FindPos           : integer;
-	Position          : integer;
-	AtomStart         : integer;
-	FirstSrcAtomStart : integer;
-	CompareSrcPosition: integer;
-	FindAtom          : string ;
-	SrcAtom           : string;
-	HasFound          : boolean;
-	FirstFindAtom     : string;
-	FirstFindPos      : integer;
+  FindLen: Integer;
+  SrcLen: Integer;
+  Position: Integer;
+  FirstFindPos: Integer;
+  FindAtomStart: Integer;
+  AtomStart: Integer;
+  FindAtomLen: Integer;
+  AtomLen: Integer;
+  SrcPos: Integer;
+  FindPos: Integer;
+  SrcAtomStart: Integer;
+  FirstFindAtomStart: Integer;
 begin
   Result:=-1;
   if (Find='') or (StartPos>length(Source)) then exit;
+  
+  FindLen:=length(Find);
+  SrcLen:=length(Source);
 
   Position:=StartPos;
+  AtomStart:=StartPos;
   FirstFindPos:=1;
+  FirstFindAtomStart:=1;
 
-  {search first atom in find}
-
-  if ReadNextPascalAtomEx(Find,FirstFindPos,FindAtomStart,CaseSensitive,FirstFindAtom) then exit;
+  // search first atom in find
+  ReadRawNextPascalAtom(Find,FirstFindPos,FirstFindAtomStart);
+  FindAtomLen:=FirstFindPos-FirstFindAtomStart;
+  if FirstFindAtomStart>FindLen then exit;
 
   repeat
-
-     if ReadNextPascalAtomEx(Source,Position,AtomStart,CaseSensitive,SrcAtom) then break;
-
-     if SrcAtom=FirstFindAtom then begin
-      {first atom found}
-      FirstSrcAtomStart  := AtomStart;
-      CompareSrcPosition := Position;
-      FindPos := FirstFindPos;
-
-      {read next source and find atoms and compare}
-
+    // read next atom
+    ReadRawNextPascalAtom(Source,Position,AtomStart);
+    if AtomStart>SrcLen then exit;
+    AtomLen:=Position-AtomStart;
+    
+    if (AtomLen=FindAtomLen)
+    and (CompareText(@Find[FirstFindAtomStart],FindAtomLen,
+                     @Source[AtomStart],AtomLen,CaseSensitive)=0)
+    then begin
+      // compare all atoms
+      SrcPos:=Position;
+      SrcAtomStart:=SrcPos;
+      FindPos:=FirstFindPos;
+      FindAtomStart:=FindPos;
       repeat
-
-        if ReadNextPascalAtomEx(Find,FindPos,FindAtomStart,CaseSensitive,FindAtom) then break;        
-        if ReadNextPascalAtomEx(Source,CompareSrcPosition,AtomStart,CaseSensitive,SrcAtom) then break;
-
-        HasFound := SrcAtom = FindAtom;
-
-        if HasFound then begin
-           Result := FirstSrcAtomStart;
-           EndFoundPosition := CompareSrcPosition;
-           exit;
+        // read the next atom from the find
+        ReadRawNextPascalAtom(Find,FindPos,FindAtomStart);
+        if FindAtomStart>FindLen then begin
+          // found !
+          EndFoundPosition:=SrcPos;
+          Result:=AtomStart;
+          exit;
         end;
-
-      until not(HasFound);
-     end;
+        // read the next atom from the source
+        ReadRawNextPascalAtom(Source,SrcPos,SrcAtomStart);
+        // compare
+        if (CompareText(@Find[FindAtomStart],FindPos-FindAtomStart,
+                        @Source[SrcAtomStart],SrcPos-SrcAtomStart,
+                        CaseSensitive)<>0)
+        then
+          break;
+      until false;
+    end;
   until false;
 end;
 
@@ -1156,7 +1175,8 @@ var DirectiveName:string;
   DirStart,DirEnd,EndPos:integer;
 begin
   repeat
-    Result:=ReadRawNextPascalAtom(Source,Position,AtomStart);
+    ReadRawNextPascalAtom(Source,Position,AtomStart);
+    Result:=copy(Source,AtomStart,Position-AtomStart);
     if (copy(Result,1,2)='{$') or (copy(Result,1,3)='(*$') then begin
       if copy(Result,1,2)='{$' then begin
         DirStart:=3;
@@ -1181,8 +1201,8 @@ begin
   until false;
 end;
 
-function ReadRawNextPascalAtom(const Source:string; 
-  var Position,AtomStart:integer):string;
+procedure ReadRawNextPascalAtom(const Source:string;
+  var Position,AtomStart:integer);
 var Len:integer;
   c1,c2:char;
 begin
@@ -1328,7 +1348,6 @@ begin
       end;
     end;
   end;
-  Result:=copy(Source,AtomStart,Position-AtomStart);
 end;
 
 function LineEndCount(const Txt: string;

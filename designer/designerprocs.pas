@@ -81,14 +81,6 @@ const
   NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
 
 
-type
-  TGetDesignerFormEvent =
-    function(AComponent: TComponent): TCustomForm of object;
-
-var
-  OnGetDesignerForm: TGetDesignerFormEvent;
-
-function GetDesignerForm(AComponent: TComponent): TCustomForm;
 function GetParentLevel(AControl: TControl): integer;
 function ControlIsInDesignerVisible(AControl: TControl): boolean;
 function ComponentIsInvisible(AComponent: TComponent): boolean;
@@ -275,19 +267,6 @@ end;
 function ComponentIsInvisible(AComponent: TComponent): boolean;
 begin
   Result:=(AComponent is TMenuItem);
-end;
-
-function GetDesignerForm(AComponent: TComponent): TCustomForm;
-var
-  Owner: TComponent;
-begin
-  Result:=nil;
-  if Assigned(OnGetDesignerForm) then
-    Result:=OnGetDesignerForm(AComponent)
-  else begin
-    Owner:=AComponent.Owner;
-    if Owner is TCustomForm then Result:=TCustomForm(Owner);
-  end;
 end;
 
 { TDesignerDeviceContext }

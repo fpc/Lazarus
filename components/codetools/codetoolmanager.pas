@@ -368,6 +368,8 @@ type
     function RenameForm(Code: TCodeBuffer;
       const OldFormName, OldFormClassName: string;
       const NewFormName, NewFormClassName: string): boolean;
+    function FindFormAncestor(Code: TCodeBuffer; const FormClassName: string;
+      var AncestorClassName: string; DirtySearch: boolean): boolean;
 
     // form components
     function PublishedVariableExists(Code: TCodeBuffer;
@@ -1967,6 +1969,28 @@ begin
                                 NewFormName,NewFormClassName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindFormAncestor(Code: TCodeBuffer;
+  const FormClassName: string; var AncestorClassName: string;
+  DirtySearch: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindFormAncestor A ',Code.Filename,' ',FormClassName);
+  {$ENDIF}
+  AncestorClassName:='';
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindFormAncestor(UpperCaseStr(FormClassName),
+                                          AncestorClassName);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  if (not Result) and DirtySearch then begin
+    AncestorClassName:=FindClassAncestorName(Code.Source,FormClassName);
+    Result:=AncestorClassName<>'';
   end;
 end;
 

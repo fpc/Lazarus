@@ -905,6 +905,9 @@ type
   TPropHookGetComponentNames = procedure(TypeData:PTypeData;
                                          Proc:TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
+  TPropHookBeforeAddComponent = function(Sender: TObject;
+                                         AComponentClass: TComponentClass;
+                                         Parent: TComponent): boolean of object;
   TPropHookComponentRenamed = procedure(AComponent: TComponent) of object;
   TPropHookComponentAdded = procedure(AComponent: TComponent; Select: boolean
                                       ) of object;
@@ -940,6 +943,7 @@ type
     htGetComponentNames,
     htGetRootClassName,
     htComponentRenamed,
+    htBeforeAddComponent,
     htComponentAdded,
     htComponentDeleting,
     htDeleteComponent,
@@ -989,6 +993,9 @@ type
     function GetComponentName(AComponent: TComponent):ShortString;
     procedure GetComponentNames(TypeData:PTypeData; const Proc:TGetStringProc);
     function GetRootClassName:ShortString;
+    function BeforeAddComponent(Sender: TObject;
+                                AComponentClass: TComponentClass;
+                                Parent: TComponent): boolean;
     procedure ComponentRenamed(AComponent: TComponent);
     procedure ComponentAdded(AComponent: TComponent; Select: boolean);
     procedure ComponentDeleting(AComponent: TComponent);
@@ -1045,6 +1052,10 @@ type
                                  OnGetRootClassName: TPropHookGetRootClassName);
     procedure RemoveHandlerGetRootClassName(
                                  OnGetRootClassName: TPropHookGetRootClassName);
+    procedure AddHandlerBeforeAddComponent(
+                             OnBeforeAddComponent: TPropHookBeforeAddComponent);
+    procedure RemoveHandlerBeforeAddComponent(
+                             OnBeforeAddComponent: TPropHookBeforeAddComponent);
     procedure AddHandlerComponentRenamed(
                                  OnComponentRenamed: TPropHookComponentRenamed);
     procedure RemoveHandlerComponentRenamed(
@@ -4380,6 +4391,21 @@ begin
     Result:=LookupRoot.ClassName;
 end;
 
+function TPropertyEditorHook.BeforeAddComponent(Sender: TObject;
+  AComponentClass: TComponentClass; Parent: TComponent): boolean;
+var
+  i: Integer;
+  Handler: TPropHookBeforeAddComponent;
+begin
+  i:=GetHandlerCount(htBeforeAddComponent);
+  while GetNextHandlerIndex(htBeforeAddComponent,i) do begin
+    Handler:=TPropHookBeforeAddComponent(FHandlers[htBeforeAddComponent][i]);
+    Result:=Handler(Sender,AComponentClass,Parent);
+    if not Result then exit;
+  end;
+  Result:=true;
+end;
+
 procedure TPropertyEditorHook.ComponentRenamed(AComponent: TComponent);
 var
   i: Integer;
@@ -4667,6 +4693,18 @@ procedure TPropertyEditorHook.RemoveHandlerGetRootClassName(
   OnGetRootClassName: TPropHookGetRootClassName);
 begin
   RemoveHandler(htGetRootClassName,TMethod(OnGetRootClassName));
+end;
+
+procedure TPropertyEditorHook.AddHandlerBeforeAddComponent(
+  OnBeforeAddComponent: TPropHookBeforeAddComponent);
+begin
+  AddHandler(htBeforeAddComponent,TMethod(OnBeforeAddComponent));
+end;
+
+procedure TPropertyEditorHook.RemoveHandlerBeforeAddComponent(
+  OnBeforeAddComponent: TPropHookBeforeAddComponent);
+begin
+  RemoveHandler(htBeforeAddComponent,TMethod(OnBeforeAddComponent));
 end;
 
 procedure TPropertyEditorHook.AddHandlerComponentRenamed(

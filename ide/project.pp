@@ -447,7 +447,7 @@ type
     property FirstRequiredDependency: TPkgDependency
                                                   read FFirstRequiredDependency;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
-    property FirstUnitWithForm: TUnitInfo read GetFirstUnitWithComponent;
+    property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
@@ -2638,6 +2638,9 @@ end.
 
 {
   $Log$
+  Revision 1.126  2003/06/01 21:09:09  mattias
+  implemented datamodules
+
   Revision 1.125  2003/06/01 11:23:01  mattias
   splittet designer form and lookup root
 

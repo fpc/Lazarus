@@ -38,7 +38,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Controls,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -86,6 +86,7 @@ type
     function GetPriority: TComponentPriority; virtual;
     procedure AddToPalette; virtual;
     function CanBeCreatedInDesigner: boolean; virtual;
+    procedure ShowHideControl(Show: boolean);
   public
     property ComponentClass: TComponentClass read FComponentClass;
     property PageName: string read FPageName;
@@ -121,6 +122,7 @@ type
     procedure Remove(AComponent: TRegisteredComponent);
     function FindComponent(const CompClassName: string): TRegisteredComponent;
     function FindButton(Button: TComponent): TRegisteredComponent;
+    procedure ShowHideControls(Show: boolean);
   public
     property Items[Index: integer]: TRegisteredComponent read GetItems; default;
     property PageName: string read FPageName;
@@ -172,6 +174,7 @@ type
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
+    procedure ShowHideControls(Show: boolean);
   public
     property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
     property UpdateLock: integer read FUpdateLock;
@@ -266,6 +269,12 @@ end;
 function TRegisteredComponent.CanBeCreatedInDesigner: boolean;
 begin
   Result:=true;
+end;
+
+procedure TRegisteredComponent.ShowHideControl(Show: boolean);
+begin
+  if ComponentClass.InheritsFrom(TControl) then
+    Visible:=Show;
 end;
 
 { TBaseComponentPage }
@@ -377,6 +386,14 @@ begin
     if Result.Button=Button then exit;
   end;
   Result:=nil;
+end;
+
+procedure TBaseComponentPage.ShowHideControls(Show: boolean);
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].ShowHideControl(Show);
 end;
 
 { TBaseComponentPalette }
@@ -575,6 +592,16 @@ begin
       dec(Result);
   end else
     Result:=-1;
+end;
+
+procedure TBaseComponentPalette.ShowHideControls(Show: boolean);
+var
+  i: Integer;
+begin
+  BeginUpdate(false);
+  for i:=0 to Count-1 do
+    Pages[i].ShowHideControls(Show);
+  EndUpdate;
 end;
 
 

@@ -109,6 +109,10 @@ begin
   if FLookupRoot=AValue then exit;
   DoSaveBounds;
   FLookupRoot:=AValue;
+  if FLookupRoot<>nil then begin
+    Caption:=FLookupRoot.Name;
+    writeln('TNonControlForm.SetLookupRoot ',FLookupRoot.Name,':',FLookupRoot.ClassName);
+  end;
   DoLoadBounds;
 end;
 
@@ -124,10 +128,12 @@ begin
   inherited Create(TheOwner);
   FFrameWidth:=1;
   ControlStyle:=ControlStyle-[csAcceptsControls];
+  writeln('TNonControlForm.Create ');
 end;
 
 destructor TNonControlForm.Destroy;
 begin
+  writeln('TNonControlForm.Destroy ');
   inherited Destroy;
 end;
 
@@ -136,11 +142,13 @@ var
   ARect: TRect;
 begin
   inherited Paint;
-  ARect:=Rect(FrameWidth,FrameWidth,
-                                ClientWidth-FrameWidth,ClientHeight-FrameWidth);
   with Canvas do begin
     Brush.Color:=clWhite;
+    ARect:=Rect(FrameWidth,FrameWidth,
+                                ClientWidth-FrameWidth,ClientHeight-FrameWidth);
     FillRect(ARect);
+    ARect:=Rect(0,0,ClientWidth+1,ClientHeight+1);
+    Pen.Color:=clBlack;
     Frame3d(ARect, FrameWidth, bvLowered);
   end;
 end;
@@ -191,6 +199,7 @@ begin
     NewTop:=CurDataModule.DesignOffset.Y;
     NewWidth:=CurDataModule.DesignSize.X;
     NewHeight:=CurDataModule.DesignSize.Y;
+writeln('TDataModuleForm.DoLoadBounds ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight);
     SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
   end;
 end;
@@ -205,6 +214,7 @@ begin
     CurDataModule.DesignOffset.Y:=Top;
     CurDataModule.DesignSize.X:=Width;
     CurDataModule.DesignSize.Y:=Height;
+writeln('TDataModuleForm.DoSaveBounds ',Left,',',Top,',',Width,',',Height);
   end;
   inherited DoSaveBounds;
 end;

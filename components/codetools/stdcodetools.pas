@@ -128,6 +128,8 @@ type
     function RenameForm(const OldFormName, OldFormClassName: string;
           const NewFormName, NewFormClassName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function FindFormAncestor(const UpperClassName: string;
+          var AncestorClassName: string): boolean;
 
     // form components
     function FindPublishedVariable(const UpperClassName,
@@ -1133,6 +1135,32 @@ begin
   finally
     IdentList.Free;
   end;
+end;
+
+function TStandardCodeTool.FindFormAncestor(const UpperClassName: string;
+  var AncestorClassName: string): boolean;
+var
+  ClassNode: TCodeTreeNode;
+begin
+  Result:=false;
+  AncestorClassName:='';
+  if UpperClassName='' then exit;
+  BuildTree(true);
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  if (ClassNode=nil) then exit;
+  // search the ancestor name
+  MoveCursorToNodeStart(ClassNode);
+  ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
+  if UpAtomIs('PACKED') then ReadNextAtom;
+  ReadNextAtom;
+  if AtomIsChar('(') then begin
+    ReadNextAtom;
+    if AtomIsIdentifier(false) then
+      AncestorClassName:=GetAtom;
+  end;
+  if AncestorClassName='' then
+    AncestorClassName:='TObject';
+  Result:=true;
 end;
 
 {-------------------------------------------------------------------------------
