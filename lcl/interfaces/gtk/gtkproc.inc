@@ -3020,6 +3020,43 @@ begin
   g_list_insert(First,Data,NewPos);
 end;
 
+procedure MoveGListLink(First: PGList; FromIndex, ToIndex: integer);
+var
+  Item: PGList;
+  InsertAfter: PGList;
+  i: Integer;
+begin
+  if (FromIndex=ToIndex) then exit;
+  Item:=First;
+  i:=0;
+  while (i<FromIndex) do begin
+    Item:=Item^.next;
+    inc(i);
+  end;
+  // unbind
+  if Item^.next<>nil then Item^.next^.prev:=Item^.prev;
+  if Item^.prev<>nil then Item^.prev^.next:=Item^.next;
+  Item^.next:=nil;
+  Item^.prev:=nil;
+  // insert
+  if ToIndex=0 then begin
+    Item^.next:=First;
+    First^.prev:=Item;
+  end else begin
+    i:=0;
+    InsertAfter:=First;
+    while (i<ToIndex-1) do begin
+      if InsertAfter^.next=nil then break;
+      InsertAfter:=InsertAfter^.next;
+      inc(i);
+    end;
+    Item^.prev:=InsertAfter;
+    Item^.next:=InsertAfter^.next;
+    InsertAfter^.next:=Item;
+    if Item^.next<>nil then Item^.next^.prev:=Item;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function GetControlWindow(Widget: Pointer) : PGDKWindow;
 
@@ -6805,6 +6842,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.287  2004/07/03 11:11:09  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.286  2004/06/28 15:45:48  mattias
   fixed a mem violation in gtk intf paint msg conversion
 

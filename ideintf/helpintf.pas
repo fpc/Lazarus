@@ -156,13 +156,16 @@ type
 
 
   { THelpDatabase
-    Base class for a collection of help files or entries }
+    Base class for a collection of help files or entries.
+    BasePathObject: THelpDatabase can be created by packages and/or projects.
+                    The IDE will set BasePathObject accordingly. }
 
   THelpDatabaseID = string;
   THelpDatabases = class;
 
   THelpDatabase = class(TPersistent)
   private
+    FBasePathObject: TObject;
     FID: THelpDatabaseID;
     FDatabases: THelpDatabases;
     FRefCount: integer;
@@ -199,6 +202,7 @@ type
     property Databases: THelpDatabases read FDatabases write SetDatabases;
     property ID: THelpDatabaseID read FID write SetID;
     property SupportedMimeTypes: TStrings read FSupportedMimeTypes;
+    property BasePathObject: TObject read FBasePathObject write FBasePathObject;
   end;
 
   THelpDatabaseClass = class of THelpDatabase;

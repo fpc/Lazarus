@@ -841,12 +841,12 @@ end;
 
 function TFontPropertyEditor.GetAttributes: TPropertyAttributes;
 var
-  AComponent: TPersistent;
+  APersistent: TPersistent;
 begin
   Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
-  AComponent:=GetComponent(0);
-  if (AComponent<>nil) and (AComponent is TControl)
-  and (not (AComponent is TStaticText)) then
+  APersistent:=GetPersistent(0);
+  if (APersistent<>nil) and (APersistent is TControl)
+  and (not (APersistent is TStaticText)) then
     Result:=Result+[paDisableSubProperties]-[paDialog];
 end;
 

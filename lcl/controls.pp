@@ -1790,7 +1790,7 @@ uses
   WSControls, // Widgetset uses circle is allowed
 
   Forms, // the circle can't be broken without breaking Delphi compatibility
-  Buttons, // needed for clicking default and cancel buttons
+  //Buttons, // needed for clicking default and cancel buttons
   Math;  // Math is in RTL and only a few functions are used.
 
 var
@@ -2330,6 +2330,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.220  2004/07/03 11:11:08  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.219  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 

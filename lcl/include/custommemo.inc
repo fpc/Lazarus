@@ -138,6 +138,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomMemo.WordWrapIsStored: boolean;
+ ------------------------------------------------------------------------------}
+function TCustomMemo.WordWrapIsStored: boolean;
+begin
+  Result:=not WordWrap;
+end;
+
+procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key=VK_RETURN) or (Key=VK_TAB) then exit;
+  inherited ControlKeyDown(Key, Shift);
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomMemo.SetWordWrap
   Params: 
   Returns: 
@@ -158,6 +172,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/07/03 11:11:08  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.26  2004/05/15 20:17:09  mattias
   replaced WMSize by DoSetBounds
 

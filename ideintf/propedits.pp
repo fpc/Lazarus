@@ -264,10 +264,10 @@ type
     PropInfo:PPropInfo;
   end;
 
-  TInstPropList = array[0..1023] of TInstProp;
+  TInstPropList = array[0..999999] of TInstProp;
   PInstPropList = ^TInstPropList;
 
-  TGetPropEditProc=procedure(Prop:TPropertyEditor) of object;
+  TGetPropEditProc = procedure(Prop: TPropertyEditor) of object;
 
   TPropEditDrawStateType = (pedsSelected, pedsFocused, pedsInEdit,
        pedsInComboList, pedsPainted);
@@ -325,7 +325,7 @@ type
     procedure Edit; virtual;
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
-    function GetComponent(Index: Integer):TPersistent;
+    function GetPersistent(Index: Integer): TPersistent;
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -747,8 +747,6 @@ type
   A property editor with dynamic sub properties representing a list of objects.
   UNDER CONSTRUCTION by Mattias}
 
-// MWE: changed TObject to TPersistent, TObject decendants can't have properties
-
   TListPropertyEditor = class(TPropertyEditor)
   private
     FSaveElementLock: integer;
@@ -882,35 +880,44 @@ type
       The type information pointer returned by the TypeInfo built-in function
       (e.g. TypeInfo(TMyRange) or TypeInfo(TShapes)).
 
-    ComponentClass
-      Type of the component to which to restrict this type editor.  This
+    PersistentClass
+      Type of the persistent object to which to restrict this type editor. This
       parameter can be left nil which will mean this type editor applies to all
       properties of PropertyEditorType.
 
     PropertyEditorName
       The name of the property to which to restrict this type editor.  This
-      parameter is ignored if ComponentClass is nil.  This parameter can be
+      parameter is ignored if PersistentClass is nil.  This parameter can be
       an empty string ('') which will mean that this editor applies to all
-      properties of PropertyEditorType in ComponentClass.
+      properties of PropertyEditorType in PersistentClass.
 
     editorClass
       The class of the editor to be created whenever a property of the type
       passed in PropertyEditorTypeInfo is displayed in the Object Inspector.
       The class will be created by calling EditorClass.Create. }
 
-procedure RegisterPropertyEditor(PropertyType:PTypeInfo;
-  ComponentClass:TClass;  const PropertyName:shortstring;
-  EditorClass:TPropertyEditorClass);
+procedure RegisterPropertyEditor(PropertyType: PTypeInfo;
+  PersistentClass: TClass;  const PropertyName: shortstring;
+  EditorClass: TPropertyEditorClass);
 
 type
   TPropertyEditorMapperFunc=function(Obj:TPersistent;
     PropInfo:PPropInfo):TPropertyEditorClass;
+const
+  AllTypeKinds = [tkInteger..High(TTypeKind)];
 
 procedure RegisterPropertyEditorMapper(Mapper:TPropertyEditorMapperFunc);
 
 type
   TPropertyEditorFilterFunc =
     function(const ATestEditor: TPropertyEditor): Boolean of object;
+  TPropInfoFilterFunc =
+    function(const APropInfo: PPropInfo): Boolean of object;
+
+procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
+  AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
+  APropInfoFilterFunc: TPropInfoFilterFunc;
+  AEditorFilterFunc: TPropertyEditorFilterFunc);
 
 procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
@@ -1319,7 +1326,7 @@ begin
   if ListPropertyEditors=nil then exit;
   for i:=0 to ListPropertyEditors.Count-1 do begin
     Editor:=TListPropertyEditor(ListPropertyEditors[i]);
-    if (Editor.GetComponent(0)=AnObject)
+    if (Editor.GetPersistent(0)=AnObject)
     and (Editor.OnSubPropertiesChanged<>nil) then
       Editor.UpdateSubProperties;
   end;
@@ -1400,7 +1407,7 @@ type
     //Group:Integer;
     PropertyType:PTypeInfo;
     PropertyName:shortstring;
-    ComponentClass:TClass;
+    PersistentClass:TClass;
     EditorClass:TPropertyEditorClass;
   end;
 
@@ -1530,7 +1537,7 @@ end;
 { GetComponentProperties }
 
 procedure RegisterPropertyEditor(PropertyType:PTypeInfo;
-  ComponentClass: TClass;  const PropertyName:shortstring;
+  PersistentClass: TClass;  const PropertyName:shortstring;
   EditorClass:TPropertyEditorClass);
 var
   P:PPropertyClassRec;
@@ -1542,9 +1549,9 @@ begin
   // XXX
   //P^.Group:=CurrentGroup;
   P^.PropertyType:=PropertyType;
-  P^.ComponentClass:=ComponentClass;
+  P^.PersistentClass:=PersistentClass;
   P^.PropertyName:=PropertyName;
-  //if Assigned(ComponentClass) then P^.PropertyName:=PropertyName;
+  //if Assigned(PersistentClass) then P^.PropertyName:=PropertyName;
   P^.EditorClass:=EditorClass;
   PropertyClassList.Insert(0,P);
 end;
@@ -1594,12 +1601,12 @@ begin
            GetTypeData(P^.PropertyType)^.ClassType)
        )
     then
-      if ((P^.ComponentClass=nil) or (Obj.InheritsFrom(P^.ComponentClass))) and
+      if ((P^.PersistentClass=nil) or (Obj.InheritsFrom(P^.PersistentClass))) and
          ((P^.PropertyName='')
          or (CompareText(PropInfo^.Name,P^.PropertyName)=0))
       then
         if (C=nil) or   // see if P is better match than C
-           ((C^.ComponentClass=nil) and (P^.ComponentClass<>nil)) or
+           ((C^.PersistentClass=nil) and (P^.PersistentClass<>nil)) or
            ((C^.PropertyName='') and (P^.PropertyName<>''))
            or  // P's proptype match is exact,but C's does not
            ((C^.PropertyType<>PropType) and (P^.PropertyType=PropType))
@@ -1610,9 +1617,9 @@ begin
             GetTypeData(P^.PropertyType)^.ClassType.InheritsFrom(
               GetTypeData(C^.PropertyType)^.ClassType))
            or // P's component class is more specific than C's component class
-           ((P^.ComponentClass<>nil) and (C^.ComponentClass<>nil) and
-            (P^.ComponentClass<>C^.ComponentClass) and
-            (P^.ComponentClass.InheritsFrom(C^.ComponentClass)))
+           ((P^.PersistentClass<>nil) and (C^.PersistentClass<>nil) and
+            (P^.PersistentClass<>C^.PersistentClass) and
+            (P^.PersistentClass.InheritsFrom(C^.PersistentClass)))
         then
           C:=P;
     Inc(I);
@@ -1630,6 +1637,7 @@ end;
 
 procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
+  APropInfoFilterFunc: TPropInfoFilterFunc;
   AEditorFilterFunc: TPropertyEditorFilterFunc);
 var
   I, J, SelCount: Integer;
@@ -1656,8 +1664,9 @@ begin
       PropInfo := Candidates[I];
       // check if property is readable
       if (PropInfo^.GetProc=nil)
-      or (not GShowReadOnlyProps and ((PropInfo^.PropType^.Kind <> tkClass)
-          and (PropInfo^.SetProc = nil)))
+      or ((not GShowReadOnlyProps) and (PropInfo^.PropType^.Kind <> tkClass)
+          and (PropInfo^.SetProc = nil))
+      or (Assigned(APropInfoFilterFunc) and (not APropInfoFilterFunc(PropInfo)))
       then begin
         Candidates.Delete(I);
         Continue;
@@ -1741,6 +1750,13 @@ begin
   end;
 end;
 
+procedure GetPersistentProperties(ASelection: TPersistentSelectionList;
+  AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
+  AEditorFilterFunc: TPropertyEditorFilterFunc);
+begin
+  GetPersistentProperties(ASelection,AFilter,AHook,AProc,nil,AEditorFilterFunc);
+end;
+
 procedure GetPersistentProperties(AItem: TPersistent;
   AFilter: TTypeKinds; AHook: TPropertyEditorHook; AProc: TGetPropEditProc;
   AEditorFilterFunc: TPropertyEditorFilterFunc);
@@ -1751,7 +1767,7 @@ begin
   Selection := TPersistentSelectionList.Create;
   try
     Selection.Add(AItem);
-    GetPersistentProperties(Selection, AFilter, AHook, AProc, AEditorFilterFunc);
+    GetPersistentProperties(Selection,AFilter,AHook,AProc,AEditorFilterFunc);
   finally
     Selection.Free;
   end;
@@ -1833,7 +1849,7 @@ begin
   Result:=paReadOnly in GetAttributes;
 end;
 
-function TPropertyEditor.GetComponent(Index:Integer):TPersistent;
+function TPropertyEditor.GetPersistent(Index: Integer): TPersistent;
 begin
   Result:=FPropList^[Index].Instance;
 end;
@@ -3032,7 +3048,7 @@ begin
   Result:=true;
   if FSubPropertiesChanged then exit;
   FSubPropertiesChanged:=true;
-  if SavedList<>GetComponent(0) then exit;
+  if SavedList<>GetPersistent(0) then exit;
   if ReadElementCount<>SavedElements.Count then exit;
   for i:=0 to SavedElements.Count-1 do
     if TPersistent(SavedElements[i])<>ReadElement(i) then exit;
@@ -3083,7 +3099,7 @@ procedure TListPropertyEditor.DoSaveElements;
 var
   i, ElementCount: integer;
 begin
-  SavedList:=GetComponent(0);
+  SavedList:=GetPersistent(0);
   ElementCount:=GetElementCount;
   SavedElements.Count:=ElementCount;
   for i:=0 to ElementCount-1 do
@@ -3201,18 +3217,18 @@ Type
   protected
     CollectionList : TLISTBOX;
     ButtonPanel: TPANEL;
-    AddButton: TSPEEDBUTTON;
-    DeleteButton: TSPEEDBUTTON;
+    AddButton: TSpeedButton;
+    DeleteButton: TSpeedButton;
     procedure ListCLICK(Sender: TObject);
     procedure AddCLICK(Sender: TObject);
     procedure DeleteCLICK(Sender: TObject);
     procedure UpdateCaption;
   public
-    Collection : TCollection;
-    ComponentName,
-    PropertyName : String;
+    Collection: TCollection;
+    PersistentName: string;
+    PropertyName: string;
     Procedure PropagateList;
-    Constructor Create(AOwner : TComponent); Override;
+    Constructor Create(AOwner: TComponent); Override;
   end;
 
 const
@@ -3266,7 +3282,7 @@ procedure TCollectionPropertyEditorForm.UpdateCaption;
 begin
   //I think to match Delphi this should be formated like
   //"Editing ComponentName.PropertyName[Index]"
-  Caption:= 'Editing ' + ComponentName + '.' + PropertyName;
+  Caption:= 'Editing ' + PersistentName + '.' + PropertyName;
   If CollectionList.ItemIndex > -1 then
     Caption := Caption + '[' +
       IntToStr(CollectionList.ItemIndex) + ']';
@@ -3396,7 +3412,7 @@ begin
   CollectionForm := TCollectionPropertyEditorForm.Create(Application);
   CollectionForm.Collection := TCollection(GetOrdValue);
   CollectionForm.PropertyName := GetPropInfo^.Name;
-  CollectionForm.ComponentName := '';//What if its in a Persistent child?
+  CollectionForm.PersistentName := '';
   CollectionForm.Caption := 'Editing ' + GetPropInfo^.Name;
   CollectionForm.PropagateList;
   CollectionForm.Show;
@@ -3487,12 +3503,12 @@ var I: Integer;
 begin
   Result:='';
   if PropertyHook.LookupRoot=nil then exit;
-  if GetComponent(0) = PropertyHook.LookupRoot then begin
+  if GetPersistent(0) = PropertyHook.LookupRoot then begin
     Result := PropertyHook.GetRootClassName;
     if (Result <> '') and (Result[1] = 'T') then
       System.Delete(Result, 1, 1);
   end else begin
-    Result := PropertyHook.GetObjectName(GetComponent(0));
+    Result := PropertyHook.GetObjectName(GetPersistent(0));
     for I := Length(Result) downto 1 do
       if Result[I] in ['.','[',']'] then
         System.Delete(Result, I, 1);
@@ -3859,7 +3875,7 @@ begin
   if (not IsValidIdent(NewValue)) or (NewValue='') then
     raise Exception.Create('Component name "'+NewValue+'" is not a valid identifier');
   inherited SetValue(NewValue);
-  PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
+  PropertyHook.ComponentRenamed(TComponent(GetPersistent(0)));
 end;
 
 { TDatePropertyEditor }

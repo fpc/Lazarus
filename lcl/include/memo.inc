@@ -18,16 +18,5 @@
  *****************************************************************************
 }
 
-{ TMemo }
-
-{------------------------------------------------------------------------------
-  function TMemo.WordWrapIsStored: boolean;
- ------------------------------------------------------------------------------}
-function TMemo.WordWrapIsStored: boolean;
-begin
-  Result:=not WordWrap;
-end;
-
-
 // included by stdctrls.pp
 

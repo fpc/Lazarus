@@ -289,6 +289,7 @@ function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
 
 // glib
 procedure MoveGListLinkBehind(First, Item, After: PGList);
+procedure MoveGListLink(First: PGList; FromIndex, ToIndex: integer);
 
 // properties
 function ObjectToGTKObject(const AnObject: TObject): PGtkObject;

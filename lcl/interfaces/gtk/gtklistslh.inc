@@ -36,9 +36,12 @@ type
     FUpdateCount: integer;
     FWithCheckBox: Boolean;
   protected
+    function GetListItem(Index: integer): PGtkListItem;
+    function GetLabel(Index: integer): PGtkLabel;
     function GetCount: integer; override;
     function Get(Index : Integer) : string; override;
     function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
     procedure PutObject(Index: Integer; AnObject: TObject); override;
     procedure SetSorted(Val : boolean); virtual;
     procedure ConnectItemCallbacks(Index: integer);
@@ -47,6 +50,7 @@ type
     procedure RemoveItemCallbacks(Index: integer); virtual;
     procedure RemoveAllCallbacks; virtual;
     procedure UpdateItemCache;
+    function CacheValid: boolean;
   public
     constructor Create(List : PGtkList; TheOwner: TWinControl;
                        const AWithCheckBox: Boolean);
@@ -57,6 +61,8 @@ type
     procedure Delete(Index : integer); override;
     function IndexOf(const S: string): Integer; override;
     procedure Insert(Index : integer; const S: string); override;
+    function GetInsertPosition(const S: string): integer;
+    procedure Move(FromIndex, ToIndex: Integer); override;
     procedure Sort; virtual;
     function IsEqual(List: TStrings; CompareObjects: boolean): boolean;
     procedure BeginUpdate;
@@ -90,6 +96,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/07/03 11:11:08  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.9  2004/06/27 12:37:18  mattias
   fixed gtk lists sorted
 

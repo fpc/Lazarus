@@ -3143,7 +3143,7 @@ var
 begin
   ShiftState := KeyDataToShiftState(Message.KeyData);
 
-  // let controls handle the key
+  // handle LCL special keys
   ControlKeyDown(Message.CharCode, ShiftState);
   if Message.CharCode=VK_UNKNOWN then exit;
 
@@ -3756,6 +3756,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.250  2004/07/03 11:11:08  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.249  2004/07/02 12:23:24  micha
   fix capture return/escape key if no handler
 

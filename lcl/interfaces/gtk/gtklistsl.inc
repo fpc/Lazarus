@@ -18,13 +18,6 @@
  *****************************************************************************
 }
 
-{$IFOPT H+} 
-  {$DEFINE H_PLUS} 
-{$ELSE}
-  {$H+}
-  {$UNDEF H_PLUS}
-{$ENDIF} 
-
 const
   GtkListItemGtkListTag = 'GtkList';
   GtkListItemLCLListTag = 'LCLList';
@@ -56,7 +49,7 @@ end;}
   Handler for draw events of every item in a TGtkListStringList.
 ------------------------------------------------------------------------------}
 function gtkListItemDrawAfterCB(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
+  data: gPointer): GBoolean; cdecl;
 var
   Msg: TLMDrawListItem;
   ItemIndex: integer;
@@ -303,20 +296,19 @@ begin
   Exclude(FStates,glsItemCacheNeedsUpdate);
 end;
 
+function TGtkListStringList.CacheValid: boolean;
+begin
+  Result:=not (glsItemCacheNeedsUpdate in FStates);
+end;
+
 procedure TGtkListStringList.PutObject(Index: Integer; AnObject: TObject);
 var
   ListItem : PGtkListItem;
 begin
-//DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
-  if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStringList.PutObject Out of bounds.')
-  else if FGtkList<>nil then begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    if ListItem <> nil then begin
-      gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
-    end;
-  end;
+  //DebugLn('[TGtkListStringList.PutObject] Index=',Index,' Count=',Count);
+  ListItem:=GetListItem(Index);
+  if ListItem <> nil then
+    gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -480,44 +472,80 @@ function TGtkListStringList.Get(Index : integer) : string;
 var
   Item : PChar;
   ALabel : PGtkLabel;
-  ListItem : PGtkListItem;
 begin
-//DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
-  if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStringList.Get Out of bounds.')
+  //DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+  ALabel:=GetLabel(Index);
+
+  if ALabel = nil then
+    Result:= ''
   else begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-
-    if FWithCheckBox
-    then ALabel := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Next^.Data)^
-    else ALabel := PGTKLabel(PGtkBin(ListItem)^.child);
-
-    if ALabel = nil then
-      Result:= ''
-    else begin
-      Item:=nil;
-      gtk_label_get(ALabel, @Item);
-      Result:= StrPas(Item);
-    end;  
-  end;      
+    Item:=nil;
+    gtk_label_get(ALabel, @Item);
+    Result:= StrPas(Item);
+  end;  
 end;
 
 function TGtkListStringList.GetObject(Index: Integer): TObject;
 var
   ListItem : PGtkListItem;
 begin
-//DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+  //DebugLn('[TGtkListStringList.GetObject] Index=',Index,' Count=',Count);
   Result:=nil;
-  if (Index < 0) or (Index >= Count) then
-    RaiseException('TGtkListStringList.GetObject Out of bounds.')
-  else if FGtkList<>nil then begin
-    UpdateItemCache;
-    ListItem:=FCachedItems[Index];
-    if ListItem<>nil then begin
-      Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
-    end;
+  ListItem:=GetListItem(Index);
+  if ListItem<>nil then
+    Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
+end;
+
+procedure TGtkListStringList.Put(Index: Integer; const S: string);
+var
+  ALabel: PGtkLabel;
+  NewText: PChar;
+  SortedIndex: Integer;
+begin
+  //DebugLn('[TGtkListStringList.Put] Index=',Index,' Count=',Count);
+  if Sorted then begin
+    SortedIndex:=GetInsertPosition(S);
+    // we move instead of insert => adjust position
+    if SortedIndex>Index then dec(SortedIndex);
+  end else
+    SortedIndex:=Index;
+  
+  // change label
+  ALabel:=GetLabel(Index);
+  if ALabel = nil then
+    RaiseException('TGtkListStringList.Put');
+  if S<>'' then
+    NewText:=PChar(S)
+  else
+    NewText:=#0;
+  gtk_label_set_text(ALabel, NewText);
+  
+  // repair sorting
+  if Sorted and (SortedIndex<>Index) then begin
+    Move(Index,SortedIndex);
   end;
+end;
+
+function TGtkListStringList.GetListItem(Index: integer): PGtkListItem;
+begin
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStringList.Get Out of bounds.')
+  else begin
+    UpdateItemCache;
+    Result:=FCachedItems[Index];
+  end;
+end;
+
+function TGtkListStringList.GetLabel(Index: integer): PGtkLabel;
+var
+  ListItem: PGtkListItem;
+begin
+  ListItem:=GetListItem(Index);
+
+  if FWithCheckBox then
+    Result := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Next^.Data)^
+  else
+    Result := PGTKLabel(PGtkBin(ListItem)^.child);
 end;
 
 {------------------------------------------------------------------------------
@@ -626,34 +654,24 @@ end;
 procedure TGtkListStringList.Insert(Index : integer; const S : string);
 var
   li, cb, box: PGtkWidget;
-  l, m, r, cmp: integer;
   item_requisition: TGtkRequisition;
   OldCount: LongInt;
+  
+  procedure RaiseIndexOutOfBounds;
+  begin
+    RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
+      +' out of bounds. Count='+IntToStr(OldCount));
+  end;
+  
 begin
   OldCount:=Count;
   BeginUpdate;
   try
     if FSorted then begin
-      l:=0;
-      r:=OldCount-1;
-      m:=l;
-      while (l<=r) do begin
-        m:=(l+r) shr 1;
-        cmp:=AnsiCompareText(S,Strings[m]);
-        if cmp<0 then
-          r:=m-1
-        else if cmp>0 then
-          l:=m+1
-        else
-          break;
-      end;
-      if (m<OldCount) and (AnsiCompareText(S,Strings[m])>0) then
-        inc(m);
-      Index:=m;
+      Index:=GetInsertPosition(S);
     end;
     if (Index < 0) or (Index > OldCount) then
-      RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
-        +' out of bounds. Count='+IntToStr(OldCount));
+      RaiseIndexOutOfBounds;
     if Owner = nil then RaiseException(
       'TGtkListStringList.Insert Unspecified owner');
 
@@ -675,6 +693,7 @@ begin
     end;
     ConnectItemCallbacks(PGtkListItem(li));
     // grow capacity
+    UpdateItemCache;
     if (FCachedCapacity<=OldCount) then begin
       if FCachedCapacity=0 then FCachedCapacity:=1;
       while (FCachedCapacity<=OldCount) do
@@ -709,7 +728,63 @@ begin
 //DebugLn('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
 end;
 
+function TGtkListStringList.GetInsertPosition(const S: string): integer;
+var
+  l: Integer;
+  Cnt: LongInt;
+  r: Integer;
+  m: LongInt;
+  cmp: LongInt;
+begin
+  Cnt:=Count;
+  if FSorted then begin
+    l:=0;
+    r:=Cnt-1;
+    m:=l;
+    while (l<=r) do begin
+      m:=(l+r) shr 1;
+      cmp:=AnsiCompareText(S,Strings[m]);
+      if cmp<0 then
+        r:=m-1
+      else if cmp>0 then
+        l:=m+1
+      else
+        break;
+    end;
+    if (m<Cnt) and (AnsiCompareText(S,Strings[m])>0) then
+      inc(m);
+    Result:=m;
+  end else begin
+    Result:=Cnt;
+  end;
+end;
 
+procedure TGtkListStringList.Move(FromIndex, ToIndex: Integer);
+var
+  Item: PGtkListItem;
+begin
+  if (FromIndex=ToIndex) then exit;
+  
+  //debugln('TGtkListStringList.Move From=',dbgs(FromIndex),' To=',dbgs(ToIndex));
+  Item:=GetListItem(FromIndex);
+  
+  // move in gtk
+  MoveGListLink(FGtkList^.children,FromIndex,ToIndex);
+  if (GTK_WIDGET_VISIBLE (PGtkWidget(FGtkList))) then
+    gtk_widget_queue_resize (PGtkWidget(FGtkList));
+
+  // move in cache
+  if CacheValid then begin
+    if FromIndex<ToIndex then begin
+      System.Move(FCachedItems[FromIndex+1],FCachedItems[FromIndex],
+                  SizeOf(PGtkListItem)*(ToIndex-FromIndex));
+    end else begin
+      System.Move(FCachedItems[ToIndex],FCachedItems[ToIndex+1],
+                  SizeOf(PGtkListItem)*(FromIndex-ToIndex));
+    end;
+    FCachedItems[ToIndex]:=Item;
+  end;
+end;
 
 {*************************************************************}
 {                      TGtkCListStringList methods            }
@@ -724,7 +799,8 @@ end;
 constructor TGtkCListStringList.Create(List : PGtkCList);
 begin
   inherited Create;
-  if List = nil then RaiseException('TGtkCListStringList.Create: Unspecified list widget');
+  if List = nil then
+    RaiseException('TGtkCListStringList.Create: Unspecified list widget');
   FGtkCList:= List;
 end;
 
@@ -882,15 +958,12 @@ begin
   gtk_clist_set_row_data(FGtkCList, Index, AObject);
 end;
 
-{$IFDEF H_PLUS}
-  {$UNDEF H_PLUS}
-{$ELSE}
-  {$H-}
-{$ENDIF}
-
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/07/03 11:11:08  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.25  2004/06/27 12:37:18  mattias
   fixed gtk lists sorted
 

@@ -385,7 +385,6 @@ type
     procedure SetStyle(Val : TListBoxStyle); virtual;
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
-
     property OnMeasureItem: TMeasureItemEvent
       read FOnMeasureItem write FOnMeasureItem;
   public
@@ -404,12 +403,12 @@ type
     property BorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property Constraints;
-    property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
+    property ExtendedSelect: boolean read FExtendedSelect write SetExtendedSelect;
     property Font;
     property IntegralHeight: boolean read FIntegralHeight write FIntegralHeight; // not implemented
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
-    property ItemIndex : integer read GetItemIndex write SetItemIndex;
-    property Items : TStrings read FItems write SetItems;
+    property ItemIndex: integer read GetItemIndex write SetItemIndex;
+    property Items: TStrings read FItems write SetItems;
     property MultiSelect: boolean read FMultiSelect write SetMultiSelect;
     property OnChangeBounds;
     property OnClick;
@@ -584,6 +583,8 @@ type
     procedure SetScrollBars(const Value : TScrollStyle);
     procedure InitializeWnd; override;
     procedure Loaded; override;
+    function WordWrapIsStored: boolean;
+    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -592,7 +593,7 @@ type
   public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
     //property Font : TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
@@ -643,8 +644,6 @@ type
   { TMemo }
 
   TMemo = class(TCustomMemo)
-  protected
-    function WordWrapIsStored: boolean;
   published
     property Align;
     property Anchors;
@@ -670,7 +669,7 @@ type
     property ScrollBars;
     property Tabstop;
     property Visible;
-    property WordWrap stored WordWrapIsStored;
+    property WordWrap;
   end;
 
 
@@ -1559,6 +1558,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.150  2004/07/03 11:11:08  mattias
+  TGTKListStringList now keeps selection on Put and Move
+
   Revision 1.149  2004/06/27 09:34:23  mattias
   fixed TStringGrid goEditing   from Jesus
 
