@@ -236,7 +236,7 @@ begin
     Clipping   := True;
     Wordbreak  := True;
     SystemFont := True;
-    Opaque     := True;
+    Opaque     := False;
   end;
 
   // calculate the width & height we need to display the Message
@@ -377,6 +377,9 @@ end;
 
 {
    $Log$
+   Revision 1.12  2004/03/06 16:11:27  mattias
+   fixed TextStyle in dialogs
+
    Revision 1.11  2004/02/17 00:32:25  mattias
    fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

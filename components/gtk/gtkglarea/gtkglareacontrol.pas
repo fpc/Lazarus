@@ -187,7 +187,7 @@ begin
   else begin
     NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
     Result:=longint(NewWidget);
-    TGtkObject(InterfaceObject).FinishComponentCreate(Self,NewWidget,true);
+    TGTKWidgetSet(InterfaceObject).FinishComponentCreate(Self,NewWidget,true);
   end;
 end;
 
