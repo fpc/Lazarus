@@ -1249,8 +1249,11 @@ begin
 end;
 
 
-function ToolMenuGetMsgHook(Code: Integer; WParam: Longint; var Msg: TMsg): Longint; stdcall;
+function ToolMenuGetMsgHook(Code: Integer; WParam: Longint; 
+  var Msg: TMsg): Longint; stdcall;
 Begin
+  // ToDo
+  Result:=0;
 end;
 
 procedure InitToolMenuHooks;
@@ -1262,8 +1265,11 @@ begin
 end;
 
 
-function ToolMenuKeyMsgHook(Code: Integer; WParam: Longint; var Msg: TMsg): Longint; stdcall;
+function ToolMenuKeyMsgHook(Code: Integer; WParam: Longint; 
+  var Msg: TMsg): Longint; stdcall;
 begin
+  // ToDo
+  Result:=0;
 end;
 
 procedure InitToolMenuKeyHooks;
@@ -1462,6 +1468,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/03/12 12:17:01  lazarus
+  MG: fixed random function results
+
   Revision 1.1  2000/07/13 10:28:28  michael
   + Initial import
 

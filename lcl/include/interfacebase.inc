@@ -19,9 +19,10 @@ begin
   Result := 0;
 end;
 
-Function TInterfaceBase.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam : WPARAM; lParam : LPARAM) : Integer;
+Function TInterfaceBase.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
+  Msg : UINT; wParam : longint; lParam : longint) : Integer;
 begin
-   Result := 0;
+  Result := 0;
 end;
 
 Function TInterfaceBase.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
@@ -132,7 +133,7 @@ end;
 Function TInterfaceBase.GetActiveWindow : HWND;
 begin
   // Your default here
-  // Result := 
+  Result := 0;
 end;
 
 function TInterfaceBase.GetCapture : HWND;
@@ -244,7 +245,7 @@ end;
 Function TInterfaceBase.InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
 begin
   // Your default here
-  // Result := 
+  Result := false;
 end;
 
 function TInterfaceBase.LineTo(DC: HDC; X, Y: Integer): Boolean;
@@ -310,7 +311,7 @@ end;
 Function TInterfaceBase.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
 begin
   // Your default here
-  // Result := 
+  Result := 0;
 end;
 
 function TInterfaceBase.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
@@ -341,7 +342,7 @@ end;
 Function TInterfaceBase.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
   // Your default here
-  // Result := 
+  Result := 0;
 end;
 
 Function TInterfaceBase.SetCapture(value : Longint) : Longint;
@@ -377,7 +378,7 @@ end;
 Function TInterfaceBase.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
   // Your default here
-  // Result := 
+  Result := 0;
 end;
 
 function TInterfaceBase.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
@@ -418,19 +419,22 @@ end;
 Function TInterfaceBase.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   // Your default here
-  // Result := 
+  Result := false;
 end;
 
 Function TInterfaceBase.WindowFromPoint(Point : TPoint) : HWND;
 begin
   // Your default here
-   Result := 0;
+  Result := 0;
 end;
 
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/03/12 12:17:01  lazarus
+  MG: fixed random function results
+
   Revision 1.11  2001/02/16 19:13:30  lazarus
   Added some functions
   Shane

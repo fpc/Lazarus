@@ -705,7 +705,6 @@ Begin
 }       end;
 
         Inherited WndProc(Message);
-
 end;
 
 {------------------------------------------------------------------------------
@@ -727,7 +726,7 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
- Writeln('[TWINCONTROL.SETFOCUS]');
+ Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
    Form := GetParentForm(self);
    if Assigned(form) then
      Writeln('Form is assigned') else Writeln('Form is NOT assigned');
@@ -801,7 +800,7 @@ var
   ShiftState: TShiftState;
 begin
   Result := True;
-  Writeln('Getting focus...');
+//  Writeln('Getting focus...');
   F := GetParentForm(Self);
   if  (F <> nil) 
   and (F <> Self) 
@@ -1208,6 +1207,8 @@ end;
 {------------------------------------------------------------------------------}
 class function TWinControl.CreateParentedControl(ParentWindow : hwnd): TWinControl;
 begin
+  // ToDo
+  Result:=nil;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1239,6 +1240,7 @@ var
   n: Integer;
   Control: TControl;
 begin
+writeln('[TWinControl.Destroy] ',Name,':',ClassName);
   DestroyHandle; 
 
   n := ControlCount;
@@ -1932,6 +1934,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/03/12 12:17:02  lazarus
+  MG: fixed random function results
+
   Revision 1.20  2001/02/28 13:17:33  lazarus
   Added some debug code for the top,left reporting problem.
   Shane

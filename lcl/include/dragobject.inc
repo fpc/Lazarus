@@ -14,11 +14,13 @@ end;
 
 function TDragObject.Capture: HWND;
 begin
+  // ToDo
+  Result:=0;
 end;
 
 procedure TDragObject.Finished(Target: TObject; X, Y: Integer; Accepted: Boolean);
 begin
-
+  
 end;
 
 function TDragObject.GetName: string;
@@ -93,6 +95,8 @@ end;
 
 function TDragObject.Instance: THandle;
 begin
+  // ToDo
+  Result:=0;
 end;
 
 procedure TDragObject.ShowDragImage;

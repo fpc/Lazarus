@@ -44,41 +44,61 @@ const
   The BitBlt function copies a bitmap from a source context into a destination 
   context using the specified raster operation.
  ------------------------------------------------------------------------------}
-function TgtkObject.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
+function TgtkObject.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
+  SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
 type
   TBltFunction = function: Boolean;
 
   function DrawableToDrawable: Boolean;
   begin
-    gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
-      XSrc, YSrc, X, Y, Width, Height);
+    gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC,
+      PDeviceContext(SrcDC)^.Drawable,  XSrc, YSrc, X, Y, Width, Height);
+    Result:=false
   end;
+
   function PixmapToDrawable: Boolean;
   begin
+    Result:=false;
   end;
+
   function ImageToImage: Boolean;
   begin
+    Result:=false;
   end;
+
   function ImageToDrawable: Boolean;
   begin
+    Result:=false;
   end;
+
   function ImageToBitmap: Boolean;
   begin
+    Result:=false;
   end;
+
   function PixmapToImage: Boolean;
   begin
+    Result:=false;
   end;
+
   function PixmapToBitmap: Boolean;
   begin
+    Result:=false;
   end;
+
   function BitmapToImage: Boolean;
   begin
+    Result:=false;
   end;
+
   function BitmapToPixmap: Boolean;
   begin
+    Result:=false;
   end;
+
   function Unsupported: Boolean;
   begin
+    Result:=false;
   end;
 
   //----------
@@ -1038,6 +1058,7 @@ end;
 Function TGTKObject.EmptyClipBoard : Boolean;
 begin
   // Your code here
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -1047,9 +1068,11 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+function TGTKObject.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+  bEnable: Boolean): Boolean;
 begin
   // Your code here
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -1077,7 +1100,8 @@ function TGTKObject.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Assert(False, Format('Trace:  [TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
   if hWnd <> 0 
-  then gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable)
+  then gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -1128,7 +1152,8 @@ begin
           Y := Rect^.Top;
         end;
         SelectGDKTextProps(DC);
-        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC, X, Y + 10 {TODO: query font height}, pStr, Count);
+        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+            X, Y + 10 {TODO: query font height}, pStr, Count);
       finally
         StrDispose(pStr);
       end;
@@ -1187,7 +1212,9 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetActiveWindow : HWND;
 begin
+  // ToDo
 //  Result := gdk_Window_Get_Toplevel;
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -2203,8 +2230,11 @@ end;
   The MaskBlt function copies a bitmap from a source context into a destination 
   context using the specified mask and raster operation.
  ------------------------------------------------------------------------------}
-function TgtkObject.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+function TgtkObject.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
+  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; 
+  Rop: DWORD): Boolean; 
 begin
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -2219,7 +2249,9 @@ end;
 
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
-  if Integer(data^) = 0 then Integer(data^):= Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  if Integer(data^) = 0 then
+    Integer(data^):= Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
+  Result:=false;
 end;
 
 function MessageBoxClosed(Widget : PGtkWidget; Event : PGdkEvent; data: gPointer) : GBoolean; cdecl;
@@ -2826,6 +2858,7 @@ end;
 Function TGTKObject.SetBkMode(DC: HDC; bkMode : Integer) : Integer;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -2923,21 +2956,28 @@ function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
   TopLevel: PGTKWidget;
 begin
+//writeln('TgtkObject.SetFocus A ',hWnd);
   if hwnd = 0
   then
     Result := 0
   else begin
+//writeln('TgtkObject.SetFocus B');
     Result := GetFocus;
+//writeln('TgtkObject.SetFocus C');
     TopLevel := gtk_widget_get_toplevel(PGTKWidget(hWND));
+//writeln('TgtkObject.SetFocus D');
     if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type)
     then gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND));
   end;
 
+//writeln('TgtkObject.SetFocus End');
 end;
 
 Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
-gtk_object_set_data(pGTKObject(handle),Str,data);
+  gtk_object_set_data(pGTKObject(handle),Str,data);
+  // ToDo
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3068,6 +3108,7 @@ end;
 Function TGTKObject.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
 begin
   // Your code here
+  Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -3120,6 +3161,7 @@ function TgtkObject.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: Longint):
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
+  Result:=0;
 
   case idx of
     GWL_WNDPROC :
@@ -3214,6 +3256,7 @@ const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 begin
   Assert(False, 'trace:[TgtkObject.ShowScrollBar]');
+  Result:=false;
 {  Result := (Handle <> 0);
   if Result
   then begin
@@ -3300,8 +3343,11 @@ end;
   Sizing is done according to the stretching mode currently set in the 
   destination device context.
  ------------------------------------------------------------------------------}
-function TgtkObject.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+function TgtkObject.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP;
+  XMask, YMask: Integer; Rop: DWORD): Boolean; 
 begin
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3317,6 +3363,7 @@ end;
 Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
 begin
   // Your code here
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3358,6 +3405,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2001/03/12 12:17:02  lazarus
+  MG: fixed random function results
+
   Revision 1.21  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

@@ -199,8 +199,10 @@ Begin
   TWincontrol(sender).parent := nil;
   TWincontrol(sender).parent := aParent;
 
-  ResizeChild(Sender,TWinControl(sender).Left,TWinControl(sender).Top,TWinControl(sender).Width,TWinControl(sender).Height);
+  ResizeChild(Sender,TWinControl(sender).Left,TWinControl(sender).Top,
+     TWinControl(sender).Width,TWinControl(sender).Height);
   ShowHide(sender);
+  Result:=0;
 End;
 
 
@@ -2681,6 +2683,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.31  2001/03/12 12:17:02  lazarus
+  MG: fixed random function results
+
   Revision 1.30  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

@@ -967,43 +967,44 @@ end;
 
 Procedure DragDone(Drop : Boolean);
 var
-Accepted : Boolean;
-DragSave : TDragObject;
-DragMsg : TDragMEssage;
-TargetPos : TPoint;
+  Accepted : Boolean;
+  DragSave : TDragObject;
+  DragMsg : TDragMEssage;
+  TargetPos : TPoint;
 Begin
 Assert(False, 'Trace:*************************');
 Assert(False, 'Trace:*********DRAGDONE********');
 
-if (DragObject = nil) or (DragObject.Cancelling) then Exit;
-DragSave := DragObject;
-try
-   DragObject.Cancelling := True;
-   DragObject.ReleaseCapture(DragCapture);
+  Accepted:=false;
+  if (DragObject = nil) or (DragObject.Cancelling) then Exit;
+  DragSave := DragObject;
+  try
+    DragObject.Cancelling := True;
+    DragObject.ReleaseCapture(DragCapture);
 
-if DragObject.DragTarget <> nil then
-   Begin
-   dragMsg := dmDragDrop;
-    if not Accepted then
-       begin
-         DragMsg := dmDragCancel;
-         DragSave.FDragPos.X := 0;
-         DragSave.FDragPos.Y := 0;
-         TargetPos.X := 0;
-         TargetPos.Y := 0;
-       end;
-    DragMessage(DragSave.DragHandle,DragMsg,DragSave,
+    if DragObject.DragTarget <> nil then
+    Begin
+      dragMsg := dmDragDrop;
+      if not Accepted then
+      begin
+        DragMsg := dmDragCancel;
+        DragSave.FDragPos.X := 0;
+        DragSave.FDragPos.Y := 0;
+        TargetPos.X := 0;
+        TargetPos.Y := 0;
+      end;
+      DragMessage(DragSave.DragHandle,DragMsg,DragSave,
                  DragSave.DragTarget,DragSave.DragPos);
-   end;
-   DragSave.Cancelling := False;
-   DragSave.Finished(TObject(DragSave.DragTarget),TargetPos.X,TargetPos.Y,Accepted);
-DragSave := nil;
-finally
-DragControl := nil;
-end;
-DragObject := nil;
-if DragFreeObject then DragSave.Free;
-DragFreeObject := False;
+    end;
+    DragSave.Cancelling := False;
+    DragSave.Finished(TObject(DragSave.DragTarget),TargetPos.X,TargetPos.Y,Accepted);
+    DragSave := nil;
+  finally
+    DragControl := nil;
+  end;
+  DragObject := nil;
+  if DragFreeObject then DragSave.Free;
+  DragFreeObject := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -1127,6 +1128,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/03/12 12:17:01  lazarus
+  MG: fixed random function results
+
   Revision 1.13  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

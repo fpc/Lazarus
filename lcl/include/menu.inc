@@ -55,7 +55,7 @@ end;
 function TMenu.FIndItem(value : Integer; Kind : TFindItemKind): TMenuItem;
 begin
 //TODO: FINISH TMEnu:FINDITEM
-
+  Result:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -111,6 +111,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/03/12 12:17:01  lazarus
+  MG: fixed random function results
+
   Revision 1.2  2000/12/22 19:55:37  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.
