@@ -556,7 +556,7 @@ begin
       FormatAtoms:=PGdkAtom(SelData.Data);
       // add transformable lcl formats
       // for example: the lcl expects text as 'text/plain', but gtk applications
-      // also knows 'TEXT' and 'STRING'. These formats can automagically
+      // also know 'TEXT' and 'STRING'. These formats can automagically
       // transformed into the lcl format, so the lcl format is also supported
       // and will be added to the list
 
@@ -8697,6 +8697,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.352  2004/06/09 20:51:45  vincents
+  implemented basic clipboard support for win32
+
   Revision 1.351  2004/05/22 14:35:33  mattias
   fixed button return key
 

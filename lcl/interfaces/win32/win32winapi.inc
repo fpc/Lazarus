@@ -437,50 +437,92 @@ End;
                            stream
   Returns: true on success
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.ClipboardGetData(ClipboardType: TClipboardType; FormatID: TClipboardFormat; Stream: TStream): Boolean;
+Function TWin32WidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
+  FormatID: TClipboardFormat; Stream: TStream): Boolean;
+var
+  UsedFormatID: TClipboardFormat;
+  DataHandle: HGLOBAL;
+  Data: pointer;
+  TextData: PChar;
 Begin
   Assert(False, 'TWin32WidgetSet.ClipboardGetData - Start');
-  Stream := TStream(Windows.GetClipBoardData(FormatID));
-  Result := HANDLE(Stream) <> 0;
+  Result := false;
+  if (FormatID=0) or (Stream=nil) then exit;
+
+  UsedFormatID := 0;
+  
+  if Windows.IsClipboardFormatAvailable(FormatID) then
+    UsedFormatID := FormatID;
+  
+  if UsedFormatID = 0 then exit;
+  
+  if Windows.OpenClipboard(Windows.HWND(nil)) then
+    try
+      DataHandle := Windows.GetClipboardData(UsedFormatID);
+      if DataHandle<>HWND(0) then begin
+        Data := Windows.GlobalLock(DataHandle);
+        try
+          if (FormatID=Windows.CF_TEXT) then begin
+            TextData := PChar(Data);
+            Stream.Write(TextData^, strlen(TextData));
+          end else begin
+          end;
+        finally
+          Windows.GlobalUnlock(DataHandle);
+        end;
+        Result := true;
+      end;
+    finally
+      Windows.CloseClipboard;
+    end;
   Assert(False, 'TWin32WidgetSet.ClipboardGetData - Exit');
 End;
 
 {------------------------------------------------------------------------------
   Method:  ClipboardGetFormats
-  Params:  ClipboardType - the type of clipboard operation (GTK; ignored here)
+  Params:  ClipboardType - the type of clipboard operation (GTK only; ignored here)
            Count         - the number of clipboard formats
            List          - Pointer to an array of supported formats
                            (you must free it yourself)
   Returns: true on success
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType; Var Count: Integer; Var List: PClipboardFormat): Boolean;
-Type
-  PCBList = ^TCBList;
-  TCBList = Array[0..1] Of TClipboardFormat;
-Var
-  C, LastCount: Cardinal;
-  CBList: PCBList;
+function TWin32WidgetSet.ClipboardGetFormats(ClipboardType: TClipboardType;
+  var Count: Integer; var List: PClipboardFormat): Boolean;
+var
+  FormatID: UINT;
+  LastFormatID: UINT;
+  c: integer;
+  TextPlainFormatID: TClipboardFormat;
+
 Begin
-  Result := True;
+  Result := false;
+  List := nil;
   Count := CountClipboardFormats;
-  C := 0;
-  LastCount := 0;
-  GetMem(CBList, Count * SizeOf(TClipboardFormat));
-  While True Do
-  Begin
-    LastCount := EnumClipboardFormats(LastCount);
-    If LastCount = 0 Then
-      Break;
-    CBList^[C] := LastCount;
-    Inc(C);
-  End;
-  List := PClipboardFormat(CBList);
+  GetMem(List, Count * SizeOf(TClipboardFormat));
+  Windows.OpenClipboard(HWND(AppHandle));
+  try
+    c := 0;
+    FormatID := 0;
+    repeat
+      FormatID := EnumClipboardFormats(FormatID);
+      if (FormatID<>0) then begin
+        List[c] := FormatID;
+        inc(c);
+      end;
+    until (c>=Count) or (FormatID=0);
+    Count := c;
+  finally
+    Windows.CloseClipboard;
+  end;
+
+  Result := true;
 End;
 
 {------------------------------------------------------------------------------
   Method:  ClipboardGetOwnerShip
-  Params:  ClipboardType - Type of clipboard (ignored)
-           OnRequestProc - TClipboardRequestEvent is defined in LCLLinux.pp
+  Params:  ClipboardType - Type of clipboard, the win32 interface only handles
+                           ctClipBoard
+           OnRequestProc - TClipboardRequestEvent is defined in LCLType.pp
                            If OnRequestProc is nil the onwership will end.
            FormatCount - number of formats
            Formats - array of TClipboardFormat. The supported formats the owner
@@ -489,30 +531,83 @@ End;
   Returns: true on success
 
   Sets the supported formats and requests ownership for the clipboard.
-  Each time the clipboard is read the OnRequestProc will be executed.
+  The OnRequestProc is used to get the data from the LCL and to put it on the
+  clipboard.
   If someone else requests the ownership, the OnRequestProc will be executed
   with the invalid FormatID 0 to notify the old owner of the lost of ownership.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType; OnRequestProc: TClipboardRequestEvent; FormatCount: Integer; Formats: PClipboardFormat): Boolean;
+Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
+  OnRequestProc: TClipboardRequestEvent; FormatCount: Integer;
+  Formats: PClipboardFormat): Boolean;
 Var
   I: Integer;
   P: PChar;
+
+  procedure PutTextOnClipBoard;
+  var
+    MemStream : TMemoryStream;
+    TextLength : Integer;
+    DataHandle : Windows.HGLOBAL;
+    TextData : PChar;
+  begin
+    MemStream := TMemoryStream.Create();
+    try
+      OnRequestProc(Windows.CF_TEXT, MemStream);
+      MemStream.Position:=0;
+      TextLength := Integer(MemStream.Size);
+      DataHandle := Windows.GlobalAlloc(Windows.GMEM_MOVEABLE, TextLength+1);
+      if (DataHandle=HWND(0)) then begin
+        Result := false;
+        exit;
+      end;
+      TextData := PChar(GlobalLock(DataHandle));
+      try
+        MemStream.Read(TextData[0], TextLength);
+        TextData[TextLength] := #0;
+      finally
+        GlobalUnlock(DataHandle);
+      end;
+      // Put it on the clipboard as CF_TEXT
+      Windows.SetClipboardData(Windows.CF_TEXT, DataHandle);
+    finally
+      MemStream.Free;
+    end;
+  end;
+
 Begin
-  Result := True;
-  If GetClipboardOwner <> HWND(Nil) Then
-    if Assigned(OnRequestProc) then
-      OnRequestProc(0, Nil);
-  GetMem(Formats, FormatCount * SizeOf(TClipboardFormat));
-  Try
-    For I := 0 To FormatCount Do
-    Begin
-      GetClipboardFormatName(Formats[I], @P, MAX_PATH);
-      RegisterClipboardFormat(@P);
-    End;
-  Except
-    Result := False;
-  End;
-  FreeMem(Formats);
+  Result := false;
+
+  if ClipboardType<>ctClipBoard then begin
+  { the win32 interface does not support this kind of clipboard,
+    so the application can have the ownership at any time.
+    The TClipboard in clipbrd.pp has an internal cache system, so that an
+    application can use all types of clipboards even if the underlying
+    platform does not support it.
+    Of course this will only be a local clipboard, invisible to other
+    applications. }
+    Result := true;
+    exit;
+  end;
+
+  if (FormatCount=0) or (OnRequestProc=nil) then begin
+  { The LCL indicates is doesn't have the clipboard data anymore
+    and the interface can't use the OnRequestProc anymore.
+    We can ignore this, because we don't use delayed rendering}
+    Result := true;
+  end else begin
+    if not Windows.OpenClipboard(FAppHandle) then exit;
+    try
+      if not Windows.EmptyClipboard then exit;
+
+       // if we got here, assume everything goes OK.
+      Result := true;
+      for I := 0 To FormatCount-1 do begin
+        if Formats[i]=Windows.CF_TEXT then PutTextOnClipBoard;
+      end;
+    finally
+      Windows.CloseClipboard;
+    end;
+  end;
 End;
 
 {------------------------------------------------------------------------------
@@ -523,7 +618,10 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.ClipboardRegisterFormat(Const AMimeType: String): TClipboardFormat;
 Begin
-  Result := Windows.RegisterClipboardFormat(PChar(AMimeType));
+  if AMimeType=PredefinedClipboardMimeTypes[pcfText] then
+    Result := Windows.CF_TEXT
+  else
+    Result := Windows.RegisterClipboardFormat(PChar(AMimeType));
 End;
 
 {------------------------------------------------------------------------------
@@ -2969,6 +3067,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2004/06/09 20:51:45  vincents
+  implemented basic clipboard support for win32
+
   Revision 1.115  2004/05/29 11:45:19  micha
   cleanup lcl<->win32 bounds code, remove duplicate code
 

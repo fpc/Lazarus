@@ -86,8 +86,11 @@ Type
   { Win32 interface-object class }
   TWin32WidgetSet = Class(TWidgetSet)
   Private
-    FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
-                         // Assoc. windowproc also acts as handler for popup menus
+    // The parent of all windows, represents the button of the taskbar
+    // This window is also the owner of the clipboard.
+    // Assoc. windowproc also acts as handler for popup menus
+    FAppHandle: HWND;
+
     FMetrics: TNonClientMetrics;
     FMetricsFailed: Boolean;
 
@@ -210,7 +213,7 @@ Uses
 // Win32WSStdCtrls,
 // Win32WSToolwin,
 ////////////////////////////////////////////////////
-  Arrow, Buttons, Calendar, CListBox, Spin, CheckLst, WinExt;
+  Buttons, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -233,7 +236,7 @@ const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
-
+  
 {$I win32proc.inc}
 {$I win32listsl.inc}
 {$I win32callback.inc}
@@ -254,6 +257,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.81  2004/06/09 20:51:45  vincents
+  implemented basic clipboard support for win32
+
   Revision 1.80  2004/05/21 09:03:55  micha
   implement new borderstyle
   - centralize to twincontrol (protected)
