@@ -81,7 +81,8 @@ type
     mnuProject: TMenuItem; 
     mnuRun: TMenuItem; 
     mnuTools: TMenuItem; 
-    mnuEnvironment:TMenuItem;
+    mnuEnvironment: TMenuItem;
+    mnuHelp: TMenuItem;
 
     itmSeperator: TMenuItem;
 
@@ -138,9 +139,12 @@ type
     itmProjectRunParameters: TMenuItem;
     
     itmToolConfigure: TMenuItem;
+    itmToolSyntaxCheck: TMenuItem;
 
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
+    
+    itmHelpAboutLazarus: TMenuItem;
     
     ComponentNotebook : TNotebook;
 
@@ -190,9 +194,12 @@ type
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
 
     procedure mnuToolConfigureClicked(Sender : TObject);
+    procedure mnuToolSyntaxCheckClicked(Sender : TObject);
 
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
+
+    procedure mnuHelpAboutLazarusClicked(Sender : TObject);
 
     Procedure OpenFileDownArrowClicked(Sender : TObject);
     Procedure ControlClick(Sender : TObject);
@@ -905,6 +912,11 @@ begin
   mnuEnvironment.Caption := 'E&nvironment';
   mnuMain.Items.Add(mnuEnvironment);
 
+  mnuHelp := TMenuItem.Create(Self);
+  mnuHelp.Name:='mnuHelp';
+  mnuHelp.Caption := '&Help';
+  mnuMain.Items.Add(mnuHelp);
+
 //--------------
 // File
 //--------------
@@ -1216,10 +1228,16 @@ begin
 //--------------
 
   itmToolConfigure := TMenuItem.Create(Self);
-  itmToolConfigure.Name:='itmToolConfigure ';
+  itmToolConfigure.Name:='itmToolConfigure';
   itmToolConfigure.Caption := 'Settings ...';
   itmToolConfigure.OnClick := @mnuToolConfigureClicked;
   mnuTools.Add(itmToolConfigure);
+
+  itmToolSyntaxCheck := TMenuItem.Create(Self);
+  itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
+  itmToolSyntaxCheck.Caption := 'Quick syntax check';
+  itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
+  mnuTools.Add(itmToolSyntaxCheck);
 
 
 //--------------
@@ -1237,6 +1255,16 @@ begin
   itmEnvEditorOptions.Caption := 'Editor options';
   itmEnvEditorOptions.OnCLick := @mnuEnvEditorOptionsClicked;
   mnuEnvironment.Add(itmEnvEditorOptions);
+
+//--------------
+// Help
+//--------------
+
+  itmHelpAboutLazarus := TMenuItem.Create(nil);
+  itmHelpAboutLazarus.Name:='itmHelpAboutLazarus';
+  itmHelpAboutLazarus.Caption := 'About Lazarus';
+  itmHelpAboutLazarus.OnCLick := @mnuHelpAboutLazarusClicked;
+  mnuHelp.Add(itmHelpAboutLazarus);
 
 end;
 {------------------------------------------------------------------------------}
@@ -1889,6 +1917,11 @@ begin
   end;
 end;
 
+procedure TMainIDE.mnuToolSyntaxCheckClicked(Sender : TObject);
+begin
+  // ToDo
+end;
+
 //------------------------------------------------------------------------------
 
 procedure TMainIDE.SaveDesktopSettings(
@@ -1993,6 +2026,27 @@ begin
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
 end;
+//------------------------------------------------------------------------------
+
+procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
+begin
+  MessageDlg('About Lazarus',
+    'Lazarus '+Version_String+#13
+    +'License: GPL/LGPL'
+    +#13
+    +'Lazarus are the class libraries for Free Pascal that emulate Delphi.'#13
+    +'Free Pascal is a (L)GPL''ed compiler that runs on Linux,'#13
+    +'Win32, OS/2, 68K and more. Free Pascal is designed to be able to'#13
+    +'understand and compile Delphi syntax, which is of course OOP.'#13
+    +'Lazarus is the missing part of the puzzle that will allow you to'#13
+    +'develop Delphi like programs in all of the above platforms.'#13
+    +'The IDE will eventually become a RAD tool like Delphi.'#13
+    +#13
+    +'As Lazarus is growing we need more developers.'#13
+    +'For example: Write a nicer about dialog with a logo.'
+    ,mtInformation, [mbOk], 0);
+end;
+
 //------------------------------------------------------------------------------
 
 Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
@@ -4654,6 +4708,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.147  2001/11/19 12:15:03  lazarus
+  MG: added dirty about lazarus dlg
+
   Revision 1.146  2001/11/17 10:16:23  lazarus
   MG: clear define cache on changing env paths
 
