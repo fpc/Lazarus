@@ -2174,13 +2174,15 @@ begin
     Exit;
   end;
   try
-    case Image^.bpl div Image^.bpp of
+    // the minimum alignment we can detect is bpp
+    // that is no problem since a line consists of n x bpp pixels
+    case Image^.bpl of
       1: Desc^.LineEnd:=rileByteBoundary;
       2: Desc^.LineEnd:=rileWordBoundary;
       4: Desc^.LineEnd:=rileDWordBoundary;
       8: Desc^.LineEnd:=rileQWordBoundary;
     else
-      DebugLn('TGtkWidgetSet.GetWindowRawImageDescription Unknown line end: %d/%d=%d', [Image^.bpl, Image^.bpp, Image^.bpl div Image^.bpp]);
+      DebugLn('TGtkWidgetSet.GetWindowRawImageDescription Unknown line end: %d', [Image^.bpl]);
       Exit;
     end;
   finally
@@ -7012,6 +7014,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.619  2005/01/18 00:59:49  marc
+  * oops, fixed line end calculation
+
   Revision 1.618  2005/01/18 00:09:31  marc
   * Improved line end detection for rawimages
 
