@@ -138,14 +138,29 @@ begin
       gnome_app_enable_layout_config(P, True);
       TMenu(Sender).Items.Handle := HMenu(p);
     end
-  else
+  else begin
     inherited CreateComponent(Sender);
+    If (Sender is TCustomEdit) then
+      With (Sender as TCustomEdit) do
+        If Popupmenu = nil then
+          If Pointer(Handle) <> nil then
+            gnome_widget_add_help(Pointer(Handle), nil)
+  end;
 end;
 
 {$I gnomewinapi.inc}
 
 initialization
-
+  gnome_init('lazarus', '0.8.5', argc, argv);
+  
 finalization
 
 end.
+
+{
+  $Log$
+  Revision 1.3  2002/10/10 13:29:08  lazarus
+  AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
+
+
+}
