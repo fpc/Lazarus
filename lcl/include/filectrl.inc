@@ -380,7 +380,7 @@ begin
   {$ELSE}
   if {$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(AFilename)='' then begin
     AText:='"'+AFilename+'"';
-    case LinuxError of
+    case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
     {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
       AText:='read access denied for '+AText;
     {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
@@ -561,7 +561,7 @@ begin
     LinkFilename:={$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(Result);
     if LinkFilename='' then begin
       AText:='"'+Filename+'"';
-      case LinuxError of
+      case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
       {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
         AText:='read access denied for '+AText;
       {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
@@ -639,7 +639,7 @@ begin
   if not FileIsExecutable(AFilename) then
   begin
     AText:='"'+AFilename+'"';
-    case LinuxError of
+    case {$ifdef ver1_0} LinuxError {$else} fpGetErrno() {$endif} of
     {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
       AText:='read access denied for '+AText;
     {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
@@ -896,6 +896,9 @@ end;
 
 {
   $Log$
+  Revision 1.36  2003/11/13 12:47:20  marco
+   * 3 of the four linuxerror occurances fixed
+
   Revision 1.35  2003/11/05 19:07:45  marco
    * minor corrections on yesterdays patch
 
