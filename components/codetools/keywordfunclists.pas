@@ -60,6 +60,7 @@ type
     function DoIt(Identifier: PChar): boolean;
     function DoItUppercase(const AnUpperSource: string;
        KeyWordStart, KeyWordLen: integer): boolean;
+    function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
     procedure Clear;
     procedure Add(const AKeyWord: shortstring; AFunction: TKeyWordFunction);
     procedure Sort;
@@ -441,6 +442,33 @@ end;
 function TKeyWordFunctionList.AllwaysFalse: boolean;
 begin
   Result:=false;
+end;
+
+function TKeyWordFunctionList.DoItCaseInsensitive(const AKeyWord: shortstring
+  ): boolean;
+var i: integer;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(AKeyWord);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      repeat
+        if AnsiCompareText(TKeyWordFunctionListItem(FItems[i]).KeyWord,
+          AKeyWord)=0
+        then begin
+          if Assigned(TKeyWordFunctionListItem(FItems[i]).DoIt) then
+            Result:=TKeyWordFunctionListItem(FItems[i]).DoIt()
+          else
+            Result:=DefaultKeyWordFunction();
+          exit;
+        end;
+        if (TKeyWordFunctionListItem(FItems[i])).IsLast then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
 end;
 
 //-----------------------------------------------------------------------------

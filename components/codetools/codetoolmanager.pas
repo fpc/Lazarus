@@ -67,6 +67,7 @@ type
     FJumpCentered: boolean;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FSetPropertyVariablename: string;
     FSourceExtensions: string; // default is '.pp;.pas;.lpr;.dpr;.dpk'
     FSourceTools: TAVLTree; // tree of TCustomCodeTool
     FVisibleEditorLines: integer;
@@ -135,12 +136,14 @@ type
         read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
     property CheckFilesOnDisk: boolean
           read FCheckFilesOnDisk write SetCheckFilesOnDisk;
-    property IndentSize: integer read FIndentSize write SetIndentSize;
-    property VisibleEditorLines: integer
-          read FVisibleEditorLines write SetVisibleEditorLines;
-    property JumpCentered: boolean read FJumpCentered write SetJumpCentered;
     property CursorBeyondEOL: boolean
           read FCursorBeyondEOL write SetCursorBeyondEOL;
+    property IndentSize: integer read FIndentSize write SetIndentSize;
+    property JumpCentered: boolean read FJumpCentered write SetJumpCentered;
+    property SetPropertyVariablename: string
+      read FSetPropertyVariablename write FSetPropertyVariablename;
+    property VisibleEditorLines: integer
+          read FVisibleEditorLines write SetVisibleEditorLines;
 
     // events
     property OnBeforeApplyChanges: TOnBeforeApplyChanges

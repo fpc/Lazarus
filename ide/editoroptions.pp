@@ -174,7 +174,7 @@ type
     procedure GetSynEditSettings(ASynEdit:TSynEdit);  // read synedit settings from config file
     procedure SetSynEditSettings(ASynEdit:TSynEdit);  // write synedit settings to file
     procedure GetSynEditSelectedColor(ASynEdit:TSynEdit);
-      // get selection color from highlighter and update synedit
+    Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure AddSpecialHilightAttribsToHighlighter(Syn: TCustomSyn);
 
     function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TCustomSyn;
@@ -1730,6 +1730,30 @@ end;
 procedure TEditorOptions.AddToReplaceHistory(const AReplaceStr: String);
 begin
   AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
+end;
+
+Procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);
+// read synedit setings from config file
+var ASynEdit: TSynEdit;
+begin
+  if not (APreviewEditor is TSynEdit) then exit;
+  ASynEdit:=TSynEdit(APreviewEditor);
+  
+  // general options
+  ASynEdit.Options:=fSynEditOptions-[eoDragDropEditing, eoDropFiles,
+    eoScrollPastEof]+[eoNoCaret, eoNoSelection];
+  ASynEdit.TabWidth:=fBlockIndent;
+
+  // Display options
+  ASynEdit.Gutter.Visible:=false;
+  ASynEdit.RightEdge:=fRightMargin;
+  ASynEdit.RightEdgeColor:=fRightMarginColor;
+  ASynEdit.Font.Name:=fEditorFont;
+  ASynEdit.Font.Height:=fEditorFontHeight;
+  ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
+  ASynEdit.ReadOnly:=true;
+
+  KeyMap.AssignTo(ASynEdit.KeyStrokes);
 end;
 
 

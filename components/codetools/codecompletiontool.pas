@@ -56,6 +56,7 @@ type
     JumpToProc: string;
     ASourceChangeCache: TSourceChangeCache;
     NewPrivatSectionIndent, NewPrivatSectionInsertPos: integer;
+    FSetPropertyVariablename: string;
     function ProcExists(const NameAndParams: string): boolean;
     function VarExists(const UpperName: string): boolean;
     procedure AddInsert(PosNode: TCodeTreeNode;
@@ -69,6 +70,9 @@ type
     function CompleteCode(CursorPos: TCodeXYPosition;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         SourceChangeCache: TSourceChangeCache): boolean;
+    constructor Create;
+    property SetPropertyVariablename: string
+      read FSetPropertyVariablename write FSetPropertyVariablename;
   end;
 
 
@@ -500,22 +504,24 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
           if (Parts[ppIndexWord].StartPos<1) then begin
             // param list, no index
             AccessFunc:='procedure '+AccessParam
-                        +'('+ParamList+';const AValue: '+PropType+');';
+                        +'('+ParamList+';const '+SetPropertyVariablename+': '
+                        +PropType+');';
           end else begin
             // index + param list
             AccessFunc:='procedure '+AccessParam
                         +'(Index:integer;'+ParamList+';'
-                        +'const AValue: '+PropType+');';
+                        +'const '+SetPropertyVariablename+': '+PropType+');';
           end;
         end else begin
           if (Parts[ppIndexWord].StartPos<1) then begin
             // no param list, no index
             AccessFunc:='procedure '+AccessParam
-                        +'(const AValue: '+PropType+');';
+                        +'(const '+SetPropertyVariablename+': '+PropType+');';
           end else begin
             // index, no param list
             AccessFunc:='procedure '+AccessParam
-                        +'(Index:integer; const AValue: '+PropType+');';
+                        +'(Index:integer; const '+SetPropertyVariablename+': '
+                        +PropType+');';
           end;
         end;
         // add new Insert Node
@@ -564,8 +570,9 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
       AccessParam:=copy(Src,Parts[ppStored].StartPos,
             Parts[ppStored].EndPos-Parts[ppStored].StartPos)
     else
-      AccessParam:=
-        ASourceChangeCache.BeautifyCodeOptions.PropertyStoredFunction;
+      AccessParam:=copy(Src,Parts[ppName].StartPos,
+        Parts[ppName].EndPos-Parts[ppName].StartPos)
+        +ASourceChangeCache.BeautifyCodeOptions.PropertyStoredIdentPostfix;
     CleanAccessFunc:=UpperCaseStr(AccessParam);
     // check if procedure exists
     if (not ProcExists(CleanAccessFunc)) and (not VarExists(CleanAccessFunc))
@@ -1141,6 +1148,11 @@ writeln('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
   end;
 end;
 
+constructor TCodeCompletionCodeTool.Create;
+begin
+  inherited Create;
+  FSetPropertyVariablename:='AValue';
+end;
 
 
 end.

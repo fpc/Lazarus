@@ -70,6 +70,7 @@ begin
    Inherited Create(AOwner);
    FState       := cbUnchecked;
    FAllowGrayed := True;
+   Height:=20;
 end;
 
 {------------------------------------------------------------------------------
@@ -152,6 +153,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2002/02/08 16:45:09  lazarus
+  MG: added codetools options
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

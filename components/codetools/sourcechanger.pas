@@ -32,7 +32,6 @@
   ToDo:
     - BeautifyStatement: support for line ends in dirty code
     - Beautify whole unit/ program
-    - save and load TBeautifyCodeOptions from/to XML
 }
 unit SourceChanger;
 
@@ -41,8 +40,8 @@ unit SourceChanger;
 interface
 
 uses
-  Classes, SysUtils, CodeCache, BasicCodeTools, SourceLog, LinkScanner, AVL_Tree, 
-  KeywordFuncLists;
+  Classes, SysUtils, CodeCache, BasicCodeTools, SourceLog, LinkScanner,
+  AVL_Tree, KeywordFuncLists;
   
 type
   // TBeautifyCodeOptions
@@ -69,7 +68,7 @@ type
     Indent: integer;
     ClassPartInsertPolicy: TClassPartInsertPolicy;
     ProcedureInsertPolicy: TProcedureInsertPolicy;
-    KeyWordPolicy : TWordPolicy;
+    KeyWordPolicy: TWordPolicy;
     IdentifierPolicy: TWordPolicy;
     DoNotSplitLineBefore: TAtomTypes;
     DoNotSplitLineAfter: TAtomTypes;
@@ -77,7 +76,7 @@ type
     DoInsertSpaceAfter: TAtomTypes;
     PropertyReadIdentPrefix: string;
     PropertyWriteIdentPrefix: string;
-    PropertyStoredFunction: string;
+    PropertyStoredIdentPostfix: string;
     PrivatVariablePrefix: string;
 
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
@@ -170,13 +169,66 @@ type
 
 const
   AtomTypeNames: array[TAtomType] of shortstring = (
-      'None', 'Keyword', 'Identifier', 'atColon', 'Semicolon', 'Comma', 'Point',
+      'None', 'Keyword', 'Identifier', 'Colon', 'Semicolon', 'Comma', 'Point',
       'At', 'Number', 'StringConstant', 'NewLine', 'Space', 'Symbol'
     );
+
+  WordPolicyNames: array[TWordPolicy] of shortstring = (
+      'None', 'LowerCase', 'UpperCase', 'LowerCaseFirstLetterUp'
+    );
+
+  ClassPartInsertPolicyNames: array[TClassPartInsertPolicy] of shortstring = (
+      'Alphabetically', 'Last'
+    );
+    
+  ProcedureInsertPolicyNames: array[TProcedureInsertPolicy] of shortstring = (
+      'Alphabetically', 'Last', 'ClassOrder'
+    );
+    
+  DefaultDoNotSplitLineBefore: TAtomTypes =
+    [atColon,atComma,atSemicolon,atPoint];
+  DefaultDoNotSplitLineAfter: TAtomTypes = [atColon,atAt,atPoint,atKeyWord];
+  DefaultDoInsertSpaceBefore: TAtomTypes = [];
+  DefaultDoInsertSpaceAfter: TAtomTypes = [atColon,atComma,atSemicolon];
+
+function AtomTypeNameToType(const s: string): TAtomType;
+function WordPolicyNameToPolicy(const s: string): TWordPolicy;
+function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
+function ProcedureInsertPolicyNameToPolicy(
+  const s: string): TProcedureInsertPolicy;
 
 
 implementation
 
+
+function AtomTypeNameToType(const s: string): TAtomType;
+begin
+  for Result:=Low(TAtomType) to High(TAtomType) do
+    if AnsiCompareText(AtomTypeNames[Result],s)=0 then exit;
+  Result:=atNone;
+end;
+
+function WordPolicyNameToPolicy(const s: string): TWordPolicy;
+begin
+  for Result:=Low(TWordPolicy) to High(TWordPolicy) do
+    if AnsiCompareText(WordPolicyNames[Result],s)=0 then exit;
+  Result:=wpNone;
+end;
+
+function ClassPartPolicyNameToPolicy(const s: string): TClassPartInsertPolicy;
+begin
+  for Result:=Low(TClassPartInsertPolicy) to High(TClassPartInsertPolicy) do
+    if AnsiCompareText(ClassPartInsertPolicyNames[Result],s)=0 then exit;
+  Result:=cpipLast;
+end;
+
+function ProcedureInsertPolicyNameToPolicy(
+  const s: string): TProcedureInsertPolicy;
+begin
+  for Result:=Low(TProcedureInsertPolicy) to High(TProcedureInsertPolicy) do
+    if AnsiCompareText(ProcedureInsertPolicyNames[Result],s)=0 then exit;
+  Result:=pipLast;
+end;
 
 function CompareSourceChangeCacheEntry(NodeData1, NodeData2: pointer): integer;
 var Entry1, Entry2: TSourceChangeCacheEntry;
@@ -600,13 +652,13 @@ begin
   ProcedureInsertPolicy:=pipClassOrder;
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
-  DoNotSplitLineBefore:=[atColon,atComma,atSemicolon,atPoint];
-  DoNotSplitLineAfter:=[atColon,atAt,atPoint,atKeyWord];
-  DoInsertSpaceBefore:=[];
-  DoInsertSpaceAfter:=[atColon,atComma,atSemicolon];
+  DoNotSplitLineBefore:=DefaultDoNotSplitLineBefore;
+  DoNotSplitLineAfter:=DefaultDoNotSplitLineAfter;
+  DoInsertSpaceBefore:=DefaultDoInsertSpaceBefore;
+  DoInsertSpaceAfter:=DefaultDoInsertSpaceAfter;
   PropertyReadIdentPrefix:='Get';
   PropertyWriteIdentPrefix:='Set';
-  PropertyStoredFunction:='IsStored';
+  PropertyStoredIdentPostfix:='IsStored';
   PrivatVariablePrefix:='f';
 end;
 
@@ -614,9 +666,9 @@ procedure TBeautifyCodeOptions.AddAtom(var s:string; NewAtom: string);
 var RestLineLen, LastLineEndInAtom: integer;
 begin
   if NewAtom='' then exit;
-//writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom);
+//writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
   if IsIdentStartChar[NewAtom[1]] then begin
-    if WordIsKeyWord.DoIt(NewAtom) then
+    if WordIsKeyWord.DoItCaseInsensitive(NewAtom) then
       NewAtom:=BeautifyWord(NewAtom,KeyWordPolicy)
     else
       NewAtom:=BeautifyWord(NewAtom,IdentifierPolicy);
@@ -625,7 +677,7 @@ begin
   while (LastLineEndInAtom>=1) and (not (NewAtom[LastLineEndInAtom] in [#10,#13]))
   do dec(LastLineEndInAtom);
   if (LastLineEndInAtom<1) and (CurLineLen+length(NewAtom)>LineLength)
-  and (LastSplitPos>0) then begin
+  and (LastSplitPos>1) then begin
 //writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
     RestLineLen:=length(s)-LastSplitPos+1;
     s:=copy(s,1,LastSplitPos-1)+LineEnd+IndentStr
@@ -755,14 +807,14 @@ begin
             or ((c1='(') and (c2='*'))
             or ((c1='*') and (c2=')'))
             then
-              inc(CurPos)
-            else begin
-              if c1='.' then CurAtomType:=atPoint
-              else if c1=',' then CurAtomType:=atComma
-              else if c1=':' then CurAtomType:=atColon
-              else if c1=';' then CurAtomType:=atSemicolon
-              else if c1='@' then CurAtomType:=atAt;
-            end;
+              inc(CurPos);
+          end;
+          if AtomStart+1=CurPos then begin
+            if c1='.' then CurAtomType:=atPoint
+            else if c1=',' then CurAtomType:=atComma
+            else if c1=':' then CurAtomType:=atColon
+            else if c1=';' then CurAtomType:=atSemicolon
+            else if c1='@' then CurAtomType:=atAt;
           end;
         end;
     end;
@@ -793,7 +845,8 @@ function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
   IndentSize: integer): string;
 var CurAtom: string;
 begin
-//writeln('[TBeautifyCodeOptions.BeautifyStatement] ',AStatement);
+//writeln('**********************************************************');
+//writeln('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
   Src:=AStatement;
   UpperSrc:=UpperCaseStr(Src);
   SrcLen:=length(Src);
@@ -827,11 +880,12 @@ begin
 {writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
 '" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
 '  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
-' ..."',copy(Result,length(Result)-10,10),'"'); }
+' ..."',copy(Result,length(Result)-10,10),'"');}
     AddAtom(Result,CurAtom);
     LastAtomType:=CurAtomType;
   end;
 //writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
+//writeln('**********************************************************');
 end;
 
 function TBeautifyCodeOptions.AddClassNameToProc(

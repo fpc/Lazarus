@@ -32,15 +32,16 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
-  Project, SysUtils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, LazConf,
-  CompReg, CodeToolManager, CodeCache, DefineTemplates, MsgView, NewProjectDlg,
-  IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
-  PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
-  EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, DBGBreakpoint, DBGWatch, GDBDebugger, RunParamsOpts, ExtToolDialog, 
-  MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, 
-  OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree;
+  Classes, LCLType, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus,
+  ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls, Graphics, ExtCtrls,
+  Dialogs, LazConf, CompReg, CodeToolManager, CodeCache, DefineTemplates,
+  MsgView, NewProjectDlg, IDEComp, AbstractFormEditor, FormEditor,
+  CustomFormEditor, ObjectInspector, PropEdits, ControlSelection, UnitEditor,
+  CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros, KeyMapping,
+  ProjectOpts, IDEProcs, Process, UnitInfoDlg, Debugger, DBGBreakpoint,
+  DBGWatch, GDBDebugger, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
+  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
+  BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions;
 
 const
   Version_String = '0.8.2 alpha';
@@ -155,7 +156,8 @@ type
 
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
-    
+    itmEnvCodeToolsOptions: TMenuItem;
+
     itmHelpAboutLazarus: TMenuItem;
     
     ComponentNotebook : TNotebook;
@@ -228,6 +230,7 @@ type
     // enironment menu
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
+    procedure mnuEnvCodeToolsOptionsClicked(Sender : TObject);
 
     // help menu
     procedure mnuHelpAboutLazarusClicked(Sender : TObject);
@@ -553,6 +556,12 @@ begin
   
   MiscellaneousOptions:=TMiscellaneousOptions.Create;
   MiscellaneousOptions.Load;
+  
+  CodeToolsOpts:=TCodeToolsOptions.Create;
+  with CodeToolsOpts do begin
+    SetLazarusDefaultFilename;
+    Load;
+  end;
 
   // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
@@ -837,6 +846,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
   TheCompiler.Free;
   TheOutputFilter.Free;
   MacroList.Free;
+  CodeToolsOpts.Free;
+  CodeToolsOpts:=nil;
   MiscellaneousOptions.Free;
   MiscellaneousOptions:=nil;
   EditorOpts.Free;
@@ -1486,6 +1497,12 @@ begin
   itmEnvEditorOptions.Caption := 'Editor options';
   itmEnvEditorOptions.OnCLick := @mnuEnvEditorOptionsClicked;
   mnuEnvironment.Add(itmEnvEditorOptions);
+
+  itmEnvCodeToolsOptions := TMenuItem.Create(nil);
+  itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
+  itmEnvCodeToolsOptions.Caption := 'CodeTools options';
+  itmEnvCodeToolsOptions.OnCLick := @mnuEnvCodeToolsOptionsClicked;
+  mnuEnvironment.Add(itmEnvCodeToolsOptions);
 
 //--------------
 // Help
@@ -2307,6 +2324,11 @@ Begin
     EditorOptionsForm.Free;
   end;
 End;
+
+procedure TMainIDE.mnuEnvCodeToolsOptionsClicked(Sender : TObject);
+begin
+  ShowCodeToolsOptions(CodeToolsOpts,@SourceNoteBook.GetSynEditPreviewSettings);
+end;
 
 procedure TMainIDE.SaveEnvironment;
 begin
@@ -5791,8 +5813,8 @@ end.
 
 { =============================================================================
   $Log$
-  Revision 1.215  2002/02/07 18:32:45  lazarus
-  MG: added TTransferMacroFlags
+  Revision 1.216  2002/02/08 16:45:07  lazarus
+  MG: added codetools options
 
   Revision 1.214  2002/02/07 18:18:59  lazarus
   MG: fixed deactivating hints

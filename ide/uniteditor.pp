@@ -387,6 +387,7 @@ type
     Procedure GotoBookmark(Value: Integer);
 
     Procedure ReloadEditorOptions;
+    Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     Property CodeTemplateModul: TSynEditAutoComplete
        read FCodeTemplateModul write FCodeTemplateModul;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string; 
@@ -945,7 +946,6 @@ Begin
   end; //while
 
 End;
-
 
 
 Function TSourceEditor.ccParse(Texts : String) : TStrings;
@@ -2978,7 +2978,7 @@ var
   I : integer;
   h: TLazSyntaxHighlighter;
 Begin
-  //this reloads the colors for the highlighter and other editor settings.
+  // this reloads the colors for the highlighter and other editor settings.
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     if Highlighters[h]<>nil then
       EditorOpts.GetHighlighterSettings(Highlighters[h]);
@@ -3113,10 +3113,16 @@ Procedure TSourceNotebook.BreakPointDeleted(Sender : TObject; Line : Integer);
 begin
   if Assigned(OnDeleteBreakPoint) then
       OnDeleteBreakPoint(self,Line);
-
 end;
 
-
+Procedure TSourceNotebook.GetSynEditPreviewSettings(APreviewEditor: TObject);
+var ASynEdit: TSynEdit;
+begin
+  if not (APreviewEditor is TSynEdit) then exit;
+  ASynEdit:=TSynEdit(APreviewEditor);
+  EditorOpts.GetSynEditPreviewSettings(ASynEdit);
+  ASynEdit.Highlighter:=Highlighters[lshFreePascal];
+end;
 
 
 {  GOTO DIALOG}
