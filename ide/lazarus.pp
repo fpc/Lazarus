@@ -55,7 +55,7 @@ uses
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
   {$ENDIF}
-  MainBase, compileroptionsdlg;
+  MainBase;
   
 begin
   Application.Initialize;
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.61  2004/09/04 23:50:17  marc
+  * removed compileroptionsdlg from uses claus to get rid of compiler warning
+
   Revision 1.60  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches
