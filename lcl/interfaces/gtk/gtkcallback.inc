@@ -221,28 +221,10 @@ end;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
-  OldText: PChar;
-  NewText: string;
 begin
-  Result := True;
   if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
   EventTrace('changed', data);
   
-  if TObject(Data) is TControl then begin
-    case TControl(Data).fCompStyle of
-      csComboBox:
-        begin
-          OldText:=gtk_object_get_data(PGtkObject(TComboBox(Data).Handle),'LCLOldText');
-          NewText:=TComboBox(Data).Text;
-          if ComparePChar(OldText,PChar(NewText)) then begin
-            exit;
-          end;
-          //writeln('gtkchangedCB: ',NewText);
-          SetComboBoxText(PGtkCombo(TComboBox(Data).Handle),PChar(NewText));
-        end;
-    end;
-  end;
-
   Mess.Msg := LM_CHANGED;
   Result := DeliverMessage(Data, Mess) = 0;
 end;
@@ -2274,6 +2256,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.121  2002/09/05 10:12:07  lazarus
+  New dialog for multiline caption of TCustomLabel.
+  Prettified TStrings property editor.
+  Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
+  Removed saving of old combo text (it broke things and is not needed). Cleanups.
+
   Revision 1.120  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
