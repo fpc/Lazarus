@@ -674,8 +674,6 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
 
-    property TabStop : Boolean read FTabStop write SetTabStop;
-    property TabOrder : TTabOrder read GetTabOrder write SetTaborder;
   public
     FCompStyle : LongInt;
     Function PerformTab : Boolean; Virtual;
@@ -727,6 +725,8 @@ type
     property ShowHint : Boolean read FShowHint write SetShowHint default False;
     property Visible: Boolean read FVisible write SetVisible default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
+    property TabStop : Boolean read FTabStop write SetTabStop;
+    property TabOrder : TTabOrder read GetTabOrder write SetTaborder;
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
@@ -802,7 +802,7 @@ type
     function  GetIsResizing: boolean;
     procedure SetHandle(NewHandle: HWND);
     Procedure SetBorderWidth(Value : TBorderWidth);
-    Procedure SetParentCtl3D(value : Boolean);
+    Procedure SetParentCtl3D(Value : Boolean);
   protected
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
@@ -1446,6 +1446,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.108  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.107  2003/03/11 23:14:19  mattias
   added TControl.HandleObjectShouldBeVisible
 
