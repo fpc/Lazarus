@@ -1204,12 +1204,9 @@ procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
   Instance: TPersistent; var PropName: string; IsPath: Boolean;
   var Handled, Skip: Boolean);
 begin
-  // FCL in VER1_9_4 and below creates this event for DefineProperties too
-  {$IFNDEF VER1_9_4}
   DebugLn('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
   if Assigned(OnPropertyNotFound) then
     OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip);
-  {$ENDIF}
 end;
 
 procedure TJITComponentList.ReaderSetMethodProperty(Reader: TReader;

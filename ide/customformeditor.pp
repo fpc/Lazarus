@@ -39,7 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   // LCL+FCL
-  {$IFNDEF Ver1_0}{$IFNDEF VER1_9_4}Variants,{$ENDIF}{$ENDIF}
+  {$IFNDEF Ver1_0}Variants,{$ENDIF}
   Classes, SysUtils, TypInfo, Math, LCLProc, Graphics, Controls, Forms, Menus,
   Dialogs,
   // components

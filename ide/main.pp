@@ -6483,7 +6483,7 @@ procedure TMainIDE.DoRestart;
         exit;
       end;
       StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
-        [ExeName, {$IFDEF VER1_9_4}ProcessID{$ELSE}GetProcessID{$ENDIF}]);
+        [ExeName, GetProcessID]);
       StartLazProcess.Execute;
     finally
       StartLazProcess.Free;
@@ -11376,6 +11376,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.828  2005/01/12 21:03:48  vincents
+  Removed some fpc 1.9.4 workarounds
+
   Revision 1.827  2005/01/11 19:01:51  mattias
   fixed adding main file in gtk filediaog twice
 
