@@ -272,6 +272,14 @@ type
   TPropEditDrawStateType = (pedsSelected, pedsFocused, pedsInEdit,
        pedsInComboList, pedsPainted);
   TPropEditDrawState = set of TPropEditDrawStateType;
+  
+  TPropEditHint = (
+    pehNone,
+    pehTree,
+    pehName,
+    pehValue,
+    pehEditButton
+    );
 
   TPropertyEditorHook = class;
 
@@ -323,6 +331,7 @@ type
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
     function GetPropType: PTypeInfo;
     function GetValue: ansistring; virtual;
+    function GetHint(HintType: TPropEditHint; x, y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
     function GetVisualValue: ansistring;
     procedure GetValues(Proc: TGetStringProc); virtual;
@@ -2136,6 +2145,38 @@ end;
 function TPropertyEditor.GetValue:ansistring;
 begin
   Result:=oisUnknown;
+end;
+
+function TPropertyEditor.GetHint(HintType: TPropEditHint; x, y: integer
+  ): string;
+var
+  TypeHint: String;
+begin
+  Result:=GetName
+         +#13+oisValue+GetVisualValue;
+  case GetPropType^.Kind of
+   tkInteger : TypeHint:=oisInteger;
+   tkInt64 : TypeHint:=oisInt64;
+   tkBool : TypeHint:=oisBoolean;
+   tkEnumeration : TypeHint:=oisEnumeration;
+   tkChar, tkWChar : TypeHint:=oisChar;
+   tkUnknown : TypeHint:=oisUnknown;
+   tkObject : TypeHint:=oisObject;
+   tkClass : TypeHint:=oisClass;
+   tkQWord : TypeHint:=oisWord;
+   tkString, tkLString, tkAString, tkWString : TypeHint:=oisString;
+   tkFloat : TypeHint:=oisFloat;
+   tkSet : TypeHint:=oisSet;
+   tkMethod : TypeHint:=oisMethod;
+   tkVariant : TypeHint:=oisVariant;
+   tkArray : TypeHint:=oisArray;
+   tkRecord : TypeHint:=oisRecord;
+   tkInterface : TypeHint:=oisInterface;
+  else
+    TypeHint:='';
+  end;
+  if TypeHint<>'' then
+    Result:=Result+#13+TypeHint;
 end;
 
 function TPropertyEditor.GetDefaultValue: ansistring;

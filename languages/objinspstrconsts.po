@@ -26,6 +26,50 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr ""
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr ""
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr ""
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr ""
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr ""
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr ""
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr ""
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr ""
+
 #: objinspstrconsts:oisproperties
 msgid "Properties"
 msgstr ""
@@ -44,6 +88,26 @@ msgstr ""
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
+msgstr ""
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr ""
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr ""
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr ""
+
+#: objinspstrconsts:oischar
+msgid "Char"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtcaption

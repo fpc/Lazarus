@@ -68,9 +68,25 @@ msgstr "Todo"
 msgid "All files (*.*)|*.*"
 msgstr ""
 
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr ""
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
 #: objinspstrconsts:oiscategory
 msgid "Category"
 msgstr "Categoría"
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
@@ -88,6 +104,10 @@ msgstr "Suprimir"
 msgid "Edit action list..."
 msgstr "Editor de lista de acción..."
 
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr ""
+
 #: objinspstrconsts:oiserror
 msgid "Error"
 msgstr "Error"
@@ -95,6 +115,10 @@ msgstr "Error"
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Eventos"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
@@ -104,6 +128,18 @@ msgstr "Indice de imagen"
 msgid "Image list editor"
 msgstr "Editor de lista de imagen"
 
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr ""
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr ""
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Etiqueta"
@@ -112,9 +148,17 @@ msgstr "Etiqueta"
 msgid "ListView editor"
 msgstr "Editor de ListView"
 
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
 msgstr "Nuevo"
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr ""
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -124,8 +168,16 @@ msgstr "Inspector de Objetos"
 msgid "Properties"
 msgstr "Propiedades"
 
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr ""
+
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
+msgstr ""
+
+#: objinspstrconsts:oisset
+msgid "Set"
 msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
@@ -135,6 +187,10 @@ msgstr "Establecer valor por defecto"
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
 msgstr "Establecer por defecto: %s"
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
@@ -155,4 +211,12 @@ msgstr "Desconocido"
 #: objinspstrconsts:oisvalue
 msgid "Value:"
 msgstr "Valor:"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr ""
 

@@ -27,6 +27,17 @@ resourcestring
   oiscAdd = '&Add';
   oiscDelete = '&Delete';
   oisUnknown = 'Unknown';
+  oisObject = 'Object';
+  oisClass = 'Class';
+  oisWord = 'Word';
+  oisString = 'String';
+  oisFloat = 'Float';
+  oisSet = 'Set';
+  oisMethod = 'Method';
+  oisVariant = 'Variant';
+  oisArray = 'Array';
+  oisRecord = 'Record';
+  oisInterface = 'Interface';
 
   oisProperties='Properties';
   oisEvents='Events';
@@ -35,6 +46,11 @@ resourcestring
   
   // typeinfo
   oisValue = 'Value:';
+  oisInteger = 'Integer';
+  oisInt64 = 'Int64';
+  oisBoolean = 'Boolean';
+  oisEnumeration = 'Enumeration';
+  oisChar = 'Char';
   
 
   // ListView items editor

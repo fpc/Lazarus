@@ -182,8 +182,8 @@ type
     FIndent:integer;
     FBackgroundColor:TColor;
     FNameFont,FDefaultValueFont,FValueFont:TFont;
-    FCurrentEdit:TWinControl;  // nil or ValueEdit or ValueComboBox
-    FCurrentButton:TWinControl; // nil or ValueButton
+    FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox
+    FCurrentButton: TWinControl; // nil or ValueButton
     FCurrentEditorLookupRoot: TPersistent;
     FDragging:boolean;
     FOnModified: TNotifyEvent;
@@ -306,6 +306,7 @@ type
     function CanEditRowValue: boolean;
     property CurrentEditValue: string read GetCurrentEditValue
                                       write SetCurrentEditValue;
+    function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
 
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
@@ -1190,6 +1191,28 @@ begin
   end;
 end;
 
+function TOIPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer
+  ): TPropEditHint;
+var
+  IconX: integer;
+begin
+  Result:=pehNone;
+  if (RowIndex<0) or (RowIndex>=RowCount) then exit;
+  if SplitterX>=X then begin
+    if (FCurrentButton<>nil)
+    and (FCurrentButton.Left<=X) then
+      Result:=pehEditButton
+    else
+      Result:=pehValue;
+  end else begin
+    IconX:=GetTreeIconX(RowIndex);
+    if IconX+Indent>X then
+      Result:=pehTree
+    else
+      Result:=pehName;
+  end;
+end;
+
 procedure TOIPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
 begin
@@ -1724,8 +1747,8 @@ var
   Position : TPoint;
   Index: integer;
   PointedRow:TOIpropertyGridRow;
-  TypeKind : TTypeKind;
   Window: TWinControl;
+  HintType: TPropEditHint;
 begin
   // ToDo: use LCL hintsystem
   FHintTimer.Enabled := False;
@@ -1750,29 +1773,9 @@ begin
     PointedRow:=Rows[Index];
     if Assigned(PointedRow) then
     Begin
-      if Assigned(PointedRow.Editor) then
-        AHint := PointedRow.Editor.GetName;
-
-      AHint := AHint + #10+oisValue+PointedRow.LastPaintedValue;
-      TypeKind := PointedRow.Editor.GetPropType^.Kind;
-      case TypeKind of
-       tkInteger : AHint := AHint + #10'Integer';
-       tkInt64 : AHint := AHint + #10'Int64';
-       tkBool : AHint := AHint + #10'Boolean';
-       tkEnumeration : AHint := AHint + #10'Enumeration';
-       tkChar,tkWChar : AHint := AHint + #10'Char';
-       tkUnknown : AHint := AHint + #10'Unknown';
-       tkObject : AHint := AHint + #10'Object';
-       tkClass : AHint := AHint + #10'Class';
-       tkQWord : AHint := AHint + #10'Word';
-       tkString,tkLString,tkAString,tkWString : AHint := AHint + #10'String';
-       tkFloat : AHint := AHint + #10'Float';
-       tkSet : AHint := AHint + #10'Set';
-       tkMethod : AHint := AHint + #10'Method';
-       tkVariant : AHint := AHint + #10'Variant';
-       tkArray : AHint := AHint + #10'Array';
-       tkRecord : AHint := AHint + #10'Record';
-       tkInterface : AHint := AHint + #10'Interface';
+      if Assigned(PointedRow.Editor) then begin
+        HintType := GetHintTypeAt(Index,Position.X);
+        AHint := PointedRow.Editor.GetHint(HintType,Position.X,Position.Y);
       end;
     end;
   end;

@@ -58,8 +58,24 @@ msgstr ""
 msgid "All files (*.*)|*.*"
 msgstr ""
 
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr ""
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
 #: objinspstrconsts:oiscategory
 msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
 msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
@@ -78,6 +94,10 @@ msgstr ""
 msgid "Edit action list..."
 msgstr ""
 
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr ""
+
 #: objinspstrconsts:oiserror
 msgid "Error"
 msgstr ""
@@ -86,12 +106,28 @@ msgstr ""
 msgid "Events"
 msgstr "Events"
 
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
 msgstr ""
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
+msgstr ""
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr ""
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr ""
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
 msgstr ""
 
 #: objinspstrconsts:sccslvedtlabcaption
@@ -102,8 +138,16 @@ msgstr ""
 msgid "ListView editor"
 msgstr ""
 
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
+msgstr ""
+
+#: objinspstrconsts:oisobject
+msgid "Object"
 msgstr ""
 
 #: objinspstrconsts:oisobjectinspector
@@ -114,8 +158,16 @@ msgstr "Object Inspector"
 msgid "Properties"
 msgstr "Properties"
 
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr ""
+
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
+msgstr ""
+
+#: objinspstrconsts:oisset
+msgid "Set"
 msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
@@ -124,6 +176,10 @@ msgstr ""
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
+msgstr ""
+
+#: objinspstrconsts:oisstring
+msgid "String"
 msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor2
@@ -144,5 +200,13 @@ msgstr ""
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
+msgstr ""
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
 msgstr ""
 

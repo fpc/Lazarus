@@ -68,8 +68,24 @@ msgstr ""
 msgid "All files (*.*)|*.*"
 msgstr ""
 
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr ""
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
 #: objinspstrconsts:oiscategory
 msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
 msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
@@ -88,6 +104,10 @@ msgstr "Elimina"
 msgid "Edit action list..."
 msgstr ""
 
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr ""
+
 #: objinspstrconsts:oiserror
 msgid "Error"
 msgstr ""
@@ -95,6 +115,10 @@ msgstr ""
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Eventi"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
@@ -104,6 +128,18 @@ msgstr "Indice immagine"
 msgid "Image list editor"
 msgstr "Editor elenco immagini"
 
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr ""
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr ""
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
 msgstr "Etichetta"
@@ -112,9 +148,17 @@ msgstr "Etichetta"
 msgid "ListView editor"
 msgstr "Editor elenco viste"
 
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
 msgstr "Nuovo"
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr ""
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -124,8 +168,16 @@ msgstr "Ispettore oggetti"
 msgid "Properties"
 msgstr "Proprietà"
 
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr ""
+
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
+msgstr ""
+
+#: objinspstrconsts:oisset
+msgid "Set"
 msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
@@ -134,6 +186,10 @@ msgstr ""
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
+msgstr ""
+
+#: objinspstrconsts:oisstring
+msgid "String"
 msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor2
@@ -154,5 +210,13 @@ msgstr "Sconosciuto"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
+msgstr ""
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
 msgstr ""
 
