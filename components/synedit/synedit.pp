@@ -597,6 +597,7 @@ type
     {$ENDIF}
     function GetWordAtRowCol(XY: TPoint): string;
     procedure GotoBookMark(BookMark: Integer);
+    function IdentChars: TSynIdentChars;
     procedure InvalidateGutter;                                           
     procedure InvalidateLine(Line: integer);
     function IsBookmark(BookMark: integer): boolean;
@@ -5049,6 +5050,14 @@ begin
   end;
 end;
 
+function TCustomSynEdit.IdentChars: TSynIdentChars;
+begin
+  if Highlighter <> nil then
+    Result := Highlighter.IdentChars
+  else
+    Result := [#33..#255];
+end;
+
 procedure TCustomSynEdit.SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
 var
   i: Integer;
@@ -6186,33 +6195,30 @@ function TCustomSynEdit.NextWordPos: TPoint;
 var
   CX, CY, LineLen: integer;
   Line: string;
-  IdentChars, WhiteChars: TSynIdentChars;
+  CurIdentChars, WhiteChars: TSynIdentChars;
 begin
   CX := CaretX;
   CY := CaretY;
   // valid line?
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
-    if Assigned(Highlighter) then
-      IdentChars := Highlighter.IdentChars
-    else
-      IdentChars := [#33..#255];
-    WhiteChars := [#1..#255] - IdentChars;
+    CurIdentChars:=IdentChars;
+    WhiteChars := [#1..#255] - CurIdentChars;
     LineLen := Length(Line);
     if CX >= LineLen then begin
       // find first IdentChar in the next line
       if CY < Lines.Count then begin
         Line := Lines[CY];
         Inc(CY);
-        CX := Max(1, StrScanForCharInSet(Line, 1, IdentChars));
+        CX := Max(1, StrScanForCharInSet(Line, 1, CurIdentChars));
       end;
     end else begin
       // find first "whitespace" if next char is an IdentChar
-      if Line[CX] in IdentChars then
+      if Line[CX] in CurIdentChars then
         CX := StrScanForCharInSet(Line, CX, WhiteChars);
       // if "whitespace" found find the first IdentChar behind
       if CX > 0 then
-        CX := StrScanForCharInSet(Line, CX, IdentChars);
+        CX := StrScanForCharInSet(Line, CX, CurIdentChars);
       // if one of those failed just position at the end of the line
       if CX = 0 then
         CX := LineLen + 1;
@@ -6225,7 +6231,7 @@ function TCustomSynEdit.PrevWordPos: TPoint;
 var
   CX, CY: integer;
   Line: string;
-  IdentChars, WhiteChars: TSynIdentChars;
+  CurIdentChars, WhiteChars: TSynIdentChars;
 begin
   CX := CaretX;
   CY := CaretY;
@@ -6233,11 +6239,8 @@ begin
   if (CY >= 1) and (CY <= Lines.Count) then begin
     Line := Lines[CY - 1];
     CX := Min(CX, Length(Line) + 1);
-    if Assigned(Highlighter) then
-      IdentChars := Highlighter.IdentChars
-    else
-      IdentChars := [#33..#255];
-    WhiteChars := [#1..#255] - IdentChars;
+    CurIdentChars:=IdentChars;
+    WhiteChars := [#1..#255] - CurIdentChars;
     if CX <= 1 then begin
       // find last IdentChar in the previous line
       if CY > 1 then begin
@@ -6248,7 +6251,7 @@ begin
     end else begin
       // if previous char is a "whitespace" search for the last IdentChar
       if Line[CX - 1] in WhiteChars then
-        CX := StrRScanForCharInSet(Line, CX - 1, IdentChars);
+        CX := StrRScanForCharInSet(Line, CX - 1, CurIdentChars);
       if CX > 0 then
         // search for the first IdentChar of this "word"
         CX := StrRScanForCharInSet(Line, CX - 1, WhiteChars) + 1

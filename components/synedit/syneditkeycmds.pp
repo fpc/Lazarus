@@ -179,7 +179,20 @@ const
   ecTab             = 612;  // Tab key
   ecShiftTab        = 613;  // Shift+Tab key
 
+  ecUpperCase       = 620; // apply to the current or previous word
+  ecLowerCase       = 621;
+  ecToggleCase      = 622;
+  ecTitleCase       = 623;
+  ecUpperCaseBlock  = 625; // apply to current selection, or current char if no selection
+  ecLowerCaseBlock  = 626;
+  ecToggleCaseBlock = 627;
+
+  ecString          = 630;  //Insert a whole string
+
   ecAutoCompletion  = 650;
+
+  ecGotFocus        = 700;
+  ecLostFocus       = 701;
 
   ecUserFirst       = 1001; // Start of user-defined commands
 
