@@ -241,6 +241,7 @@ var i, j, FilenameEndPos: integer;
   CurFilenameLen: Integer;
   CurCompHistLen: Integer;
   MainSrcFilename: String;
+  NewFilename: String;
   
   function CheckForCompilingState: boolean;
   var
@@ -489,8 +490,10 @@ begin
       Filename:=copy(Msg,1,FilenameEndPos);
       if (ofoMakeFilenamesAbsolute in Options) then begin
         if not FilenameIsAbsolute(Filename) then begin
-          Filename:=TrimFilename(fCurrentDirectory+Filename);
-          Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
+          NewFilename:=TrimFilename(fCurrentDirectory+Filename);
+          if FileExists(NewFilename) then
+            Msg:=NewFilename
+                 +copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end else begin
         if FileIsInPath(Filename,fCurrentDirectory) then begin
