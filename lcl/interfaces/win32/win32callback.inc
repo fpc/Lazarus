@@ -306,6 +306,9 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
+      If OwnerObject Is TCustomForm then
+        If fsModal in TCustomForm(OwnerObject).FormState then
+          EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window); 
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -754,6 +757,9 @@ end;
 
 {
   $Log$
+  Revision 1.57  2003/09/09 11:11:02  mattias
+  fixed win32 intf showmoadl and lazconf
+
   Revision 1.56  2003/09/08 12:21:48  mattias
   added fpImage reader/writer hooks to TBitmap
 

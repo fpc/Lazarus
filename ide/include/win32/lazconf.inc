@@ -103,7 +103,7 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386.exe','',GetEnv('PATH'),':',
+  Result:=SearchFileInPath('ppc386.exe','',GetEnv('PATH'),';',
                            [sffDontSearchInBasePath]);
   if Result<>'' then exit;
   Result:='c:\pp\bin\win32\ppc386.exe';
@@ -112,7 +112,7 @@ end;
 
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make.exe','',GetEnv('PATH'),':',
+  Result:=SearchFileInPath('make.exe','',GetEnv('PATH'),';',
                            [sffDontSearchInBasePath]);
 end;
 
@@ -142,7 +142,6 @@ begin
   Result:='c:\temp\';
   if DirectoryExists(Result) then exit;
   Result:='c:\windows\temp\';
-  if DirectoryExists(Result) then exit;
 end;
 
 procedure GetDefaultCompilerFilenames(List: TStrings);
@@ -161,14 +160,17 @@ end;
  ---------------------------------------------------------------------------}
 procedure InternalInit;
 begin
-  PrimaryConfigPath:=ExtractFilePath(Paramstr(0));
-  { This need some work. Probably one can use the Windows API to
-    get the system path. }
-  SecondaryConfigPath:='\windows\system';
+  PrimaryConfigPath:=ChompPathDelim(ExtractFilePath(Paramstr(0)));
+  SecondaryConfigPath:=GetEnv('WINDIR');
+  If SecondaryConfigPath = '' Then
+    SecondaryConfigPath:='c:\windows';
 end;
 
 {
   $Log$
+  Revision 1.14  2003/09/09 11:11:02  mattias
+  fixed win32 intf showmoadl and lazconf
+
   Revision 1.13  2003/08/25 12:16:14  marco
    * reverted last patch. CVS dirty.
 
