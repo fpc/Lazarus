@@ -330,11 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETSELMODE:
-      Begin
-      If Sender Is TCustomListBox Then
-        RecreateWnd(TWinControl(Sender));
-      End;
       LM_SETBORDER:
       Begin
         If Sender is TControl Then
@@ -2104,6 +2099,9 @@ End;
 
 {
   $Log$
+  Revision 1.269  2004/09/16 14:32:31  micha
+  convert LM_SETSELMODE message to interface method
+
   Revision 1.268  2004/09/16 13:57:30  micha
   convert LM_SETSEL message to interface method
 

@@ -3124,12 +3124,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_SETSELMODE:
-        if Data<>nil then
-          SetSelectionMode(Sender,PGtkWidget(Handle),
-                           TLMSetSelMode(Data^).MultiSelect,
-                           TLMSetSelMode(Data^).ExtendedSelect);
-
       LM_SETBORDER:
       {$IFdef GTK2}
       begin
@@ -7962,6 +7956,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.576  2004/09/16 14:32:31  micha
+  convert LM_SETSELMODE message to interface method
+
   Revision 1.575  2004/09/16 13:57:30  micha
   convert LM_SETSEL message to interface method
 

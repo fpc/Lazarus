@@ -72,7 +72,6 @@ const
 
   LM_GETSELTEXT     = LM_COMUSER+66;
   LM_SETSELTEXT     = LM_COMUSER+67;
-  LM_SETSELMODE     = LM_COMUSER+78;
   LM_SETBORDER      = LM_COMUSER+79;
 
   // TComboBox
@@ -640,11 +639,6 @@ type
     TabPosition: Pointer;
   end;
 
-  TLMSetSelMode = record
-    MultiSelect : boolean;
-    ExtendedSelect : boolean;
-  end;
-
   TLMSetChecked = record
     Index : integer;
     Checked : boolean;
@@ -821,7 +815,6 @@ begin
 
   LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
   LM_SETSELTEXT     :Result:='LM_SETSELTEXT';
-  LM_SETSELMODE     :Result:='LM_SETSELMODE';
   LM_SETBORDER      :Result:='LM_SETBORDER';
 
   // TComboBox
@@ -932,6 +925,9 @@ end.
 
 {
   $Log$
+  Revision 1.108  2004/09/16 14:32:31  micha
+  convert LM_SETSELMODE message to interface method
+
   Revision 1.107  2004/09/16 13:57:29  micha
   convert LM_SETSEL message to interface method
 

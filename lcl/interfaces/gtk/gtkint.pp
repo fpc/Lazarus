@@ -226,8 +226,6 @@ type
     // listbox
     function GetTopIndex(Sender: TObject): integer;virtual;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;virtual;
-    procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-                               MultiSelect, ExtendedSelect: boolean); virtual;
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
@@ -300,6 +298,9 @@ type
     procedure UpdateTransientWindows; virtual;
     // |-notebook
     procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);virtual;
+    // |-listbox
+    procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+                               MultiSelect, ExtendedSelect: boolean); virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
   
@@ -454,6 +455,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.206  2004/09/16 14:32:31  micha
+  convert LM_SETSELMODE message to interface method
+
   Revision 1.205  2004/09/14 10:06:26  micha
   convert LM_REDRAW message to interface method (in twidgetset)
 

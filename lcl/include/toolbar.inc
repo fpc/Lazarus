@@ -1845,7 +1845,6 @@ Begin
   LM_PAINT : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!LM_PAINT!!!!!!!!!!!!!!');
   LM_CONFIGUREEVENT : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!LM_CONFIGUREEVENT!!!!!!!!!!!!!!');
   LM_KILLWORD : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!LM_KILLWORD!!!!!!!!!!!!!!!!!!!!');
-  LM_SETSELMODE : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!LM_SETSELMODE!!!!!!!!!!!!!!!!');
   end;
 
   case Message.msg of
@@ -2084,6 +2083,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/09/16 14:32:31  micha
+  convert LM_SETSELMODE message to interface method
+
   Revision 1.30  2004/09/14 14:41:17  micha
   convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
 

@@ -34,7 +34,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType,
-  GTKWinApiWindow, gtkglobals, gtkproc;
+  GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 
 type
@@ -103,6 +103,8 @@ type
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
+      AMultiSelect: boolean); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
   end;
 
@@ -454,6 +456,13 @@ begin
     DebugLn('TODO: TGtkWSCustomListBox.SetItemIndex');
     {$EndIf}
   end;
+end;
+
+procedure TGtkWSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
+  const AExtendedSelect, AMultiSelect: boolean);
+begin
+  TGtkWidgetSet(InterfaceObject).SetSelectionMode(ACustomListBox, 
+    PGtkWidget(ACustomListBox.Handle), AMultiSelect, AExtendedSelect);
 end;
 
 procedure TGtkWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);

@@ -126,14 +126,11 @@ end;
 { procedure TCustomListBox.UpdateSelectionMode                                 }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSelectionMode;
-var
-  Msg : TLMSetSelMode;
 begin
   if not HandleAllocated then exit;
-  Msg.ExtendedSelect:= ExtendedSelect;
-  Msg.MultiSelect:= MultiSelect;
   LockSelectionChange;
-  CNSendMessage(LM_SETSELMODE, Self, @Msg);
+  TWSCustomListBoxClass(WidgetSetClass).SetSelectionMode(Self, 
+    ExtendedSelect, MultiSelect);
   UnlockSelectionChange;
 end;
 

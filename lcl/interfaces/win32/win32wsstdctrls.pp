@@ -103,6 +103,8 @@ type
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean); override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetSelectionMode(const ACustomListBox: TCustomListBox; const AExtendedSelect,
+      AMultiSelect: boolean); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
     class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
   end;
@@ -313,6 +315,12 @@ begin
         Windows.SendMessage(Handle, LB_SETCURSEL, Windows.WParam(AIndex), 0);
     end;
   end;
+end;
+
+procedure TWin32WSCustomListBox.SetSelectionMode(const ACustomListBox: TCustomListBox;
+  const AExtendedSelect, AMultiSelect: boolean);
+begin
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomListBox);
 end;
 
 procedure TWin32WSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
