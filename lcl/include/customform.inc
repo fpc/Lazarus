@@ -1718,6 +1718,11 @@ begin
         ActiveWindow := 0;
     finally
       Hide;
+      // free handles to save resources and to reduce overhead in the interfaces
+      // for bookkeeping changing between Show and ShowModal.
+      // (e.g.: the gtk interface creates some specials on ShowModal, so the
+      //  combination ShowModal, Close, Show makes problems.)
+      DestroyHandle;
     end;
   finally
     {if Screen.FCursorCount = SaveCount then
@@ -1822,6 +1827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.169  2004/12/27 00:06:44  mattias
+  added DestroyHandle after ShowModal to save resources
+
   Revision 1.168  2004/12/16 14:29:51  micha
   fix showmodal to remember disabled windows (fixes bug 478, and more)
 
