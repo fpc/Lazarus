@@ -916,45 +916,44 @@ type
     procedure ApplyChanges;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure InitializeWnd; override;
-{ ... what about these?
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure DestroyWnd; override;
-}
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetTick(Value: Integer);
   published
     property Ctl3D;
+    property DragCursor;
+    property Enabled;
+    property Frequency: Integer read FFrequency write SetFrequency;
+    property Hint;
     property LineSize: Integer read FLineSize write SetLineSize default 1;
     property Max: Integer read FMax write SetMax default 10;
     property Min: Integer read FMin write SetMin default 0;
-    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
-    property PageSize: Integer read FPageSize write SetPageSize default 2;
-    property Frequency: Integer read FFrequency write SetFrequency;
-    property Position: Integer read FPosition write SetPosition;
-    property SelEnd: Integer read FSelEnd write SetSelEnd;
-    property SelStart: Integer read FSelStart write SetSelStart;
-    property TickMarks: TTickMark read FTickMarks write SetTickMarks;
-    property TickStyle: TTickStyle read FTickStyle write SetTickStyle;
-    property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyUp;
-    property Enabled;
-    property OnKeyPress;
-    property DragCursor;
-    property ParentCtl3D;
-    property ParentShowHint;
+    property OnChangeBounds;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnResize;
+    property OnStartDrag;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
+    property PageSize: Integer read FPageSize write SetPageSize default 2;
+    property ParentCtl3D;
+    property ParentShowHint;
     property PopupMenu;
+    property Position: Integer read FPosition write SetPosition;
+    property SelEnd: Integer read FSelEnd write SetSelEnd;
+    property SelStart: Integer read FSelStart write SetSelStart;
     property ShowHint;
     property TabOrder;
     property TabStop default True;
-    property OnStartDrag;
+    property TickMarks: TTickMark read FTickMarks write SetTickMarks;
+    property TickStyle: TTickStyle read FTickStyle write SetTickStyle;
+    property Visible;
   published { additional functionality }
     property ShowScale : boolean read FShowScale write SetShowScale;
     property ScalePos : TTrackBarScalePos read FScalePos write SetScalePos;
@@ -1762,6 +1761,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2003/06/13 21:13:20  mattias
+  fixed TTrackBar initial size
+
   Revision 1.76  2003/06/13 12:53:51  mattias
   fixed TUpDown and added handler lists for TControl
 

@@ -61,19 +61,20 @@
  ------------------------------------------------------------------------------}
 constructor TTrackBar.Create (AOwner : TComponent);
 begin
-   inherited Create (aOwner);    
-   fCompStyle := csTrackbar;
-   Caption    := 'TrackBar';
-   FLineSize  := 1;
-   FMax       := 10;
-   FMin       := 0;
-   FPosition  := 0;
-   FLineSize  := 1;
-   FPageSize  := 2;
-   FOrientation := trHorizontal;
-   FShowScale := false;
-   FScalePos  := trTop;
-   FScaleDigits := 0;
+  inherited Create (aOwner);
+  fCompStyle := csTrackbar;
+  Caption    := 'TrackBar';
+  FLineSize  := 1;
+  FMax       := 10;
+  FMin       := 0;
+  FPosition  := 0;
+  FLineSize  := 1;
+  FPageSize  := 2;
+  FOrientation := trHorizontal;
+  FShowScale := false;
+  FScalePos  := trTop;
+  FScaleDigits := 0;
+  SetInitialBounds(0,0,100,20);
 end;
 
 {------------------------------------------------------------------------------
@@ -86,8 +87,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TTrackBar.InitializeWnd;
 begin
-   inherited InitializeWnd;	
-   ApplyChanges;	
+  inherited InitializeWnd;
+  ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
@@ -380,6 +381,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2003/06/13 21:13:20  mattias
+  fixed TTrackBar initial size
+
   Revision 1.5  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 
