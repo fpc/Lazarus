@@ -299,7 +299,6 @@ end;
 procedure TManagedBreakPoint.OnSourceMarkCreatePopupMenu(
   SenderMark: TSourceMark; const AddMenuItem: TAddMenuItemProc);
 begin
-  // add enable/disable toggle menu item
   if Enabled then
     AddMenuItem('Disable Breakpoint',true,@OnToggleEnableMenuItemClick)
   else
@@ -1418,6 +1417,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.48  2003/06/05 15:25:28  mattias
+  deactivated our TDataModule for fpc 1.0.8 and 1.1
+
   Revision 1.47  2003/06/04 16:34:11  mattias
   implemented popupmenu items in source editor for breakpoints
 

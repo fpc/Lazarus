@@ -784,7 +784,7 @@ type
     Procedure SelectOnlyThisComponent(AComponent:TComponent); virtual; abstract;
   end;
 
-{$IFNDEF UseFCLDataModule}
+{$IFDEF VER1_0_7}
 type
 { TDataModule }
 
@@ -818,10 +818,10 @@ type
     procedure BeforeDestruction; override;
     property DesignOffset: TPoint read FDesignOffset write FDesignOffset;
     property DesignSize: TPoint read FDesignSize write FDesignSize;
-    property OldCreateOrder: Boolean read FOldCreateOrder write FOldCreateOrder;
   published
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
+    property OldCreateOrder: Boolean read FOldCreateOrder write FOldCreateOrder;
   end;
 
 const
@@ -887,6 +887,11 @@ uses
 var
   FocusMessages: Boolean;
   FocusCount: Integer;
+
+procedure Register;
+begin
+  RegisterComponents('Additional',[TScrollBox]);
+end;
 
 {------------------------------------------------------------------------------
   procedure NotifyApplicationUserInput;
@@ -971,7 +976,6 @@ function IsAccel(VK : Word; const Str : ShortString): Boolean;
 begin
   Result := true;
 end;
-
 
 //==============================================================================
 
@@ -1126,13 +1130,8 @@ begin
   InterfaceObject:=nil;
 end;
 
-procedure Register;
-begin
-  RegisterComponents('Additional',[TScrollBox]);
-end;
 
-
-{$IFNDEF UseFCLDataModule}
+{$IFDEF VER1_0_7}
 { TDataModule }
 
 constructor TDataModule.Create(TheOwner: TComponent);
@@ -1142,11 +1141,7 @@ begin
     CreateNew(TheOwner,0);
     if (ClassType <> TDataModule) and not (csDesigning in ComponentState) then
     begin
-      {$IFDEF UseFCLInitResourceComponent}
-      if not Inic.InitInheritedComponent(Self, TDataModule) then begin
-      {$ELSE}
       if not InitResourceComponent(Self, TForm) then begin
-      {$ENDIF}
         raise EResNotFound.CreateFmt(lisLCLResourceSNotFound, [ClassName]);
       end;
       if OldCreateOrder then DoCreate;
@@ -1342,13 +1337,6 @@ end;
 {$I hintwindow.inc}
 
 
-{$IFDEF UseFCLInitResourceComponent}
-function LCLInitComponent(Instance: TComponent; RootAncestor: TClass): boolean;
-begin
-  Result:=InitResourceComponent(Instance,RootAncestor);
-end;
-{$ENDIF}
-
 initialization
   FocusCount := 0;
   Focusmessages := True;
@@ -1357,9 +1345,10 @@ initialization
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
   
-{$IFDEF UseFCLInitResourceComponent}
-  RegisterInitComponentHandler(TComponent,@LCLInitComponent);
-{$ENDIF}
+  {$IFNDEF VER1_0_7}
+  RegisterInitComponentHandler(TComponent,@InitResourceComponent);
+  {$ENDIF}
+  // keep this comment, there is parser a bug in fpc 1.0.x
 
 finalization
   //writeln('forms.pp - finalization section');
