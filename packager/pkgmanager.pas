@@ -225,7 +225,6 @@ end;
 
 procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
 begin
-writeln('TPkgManager.PkgManagerAddPackage ',PackageGraphExplorer<>nil);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;

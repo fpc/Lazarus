@@ -236,16 +236,6 @@ type
 
   TActionLink = class(TBasicActionLink)
   protected
-    function IsCaptionLinked: Boolean; virtual;
-    function IsCheckedLinked: Boolean; virtual;
-    function IsEnabledLinked: Boolean; virtual;
-    function IsGroupIndexLinked: Boolean; virtual;
-    function IsHelpContextLinked: Boolean; virtual;
-    function IsHelpLinked: Boolean; virtual;
-    function IsHintLinked: Boolean; virtual;
-    function IsImageIndexLinked: Boolean; virtual;
-    function IsShortCutLinked: Boolean; virtual;
-    function IsVisibleLinked: Boolean; virtual;
     procedure SetAutoCheck(Value: Boolean); virtual;
     procedure SetCaption(const Value: string); virtual;
     procedure SetChecked(Value: Boolean); virtual;
@@ -258,6 +248,17 @@ type
     procedure SetImageIndex(Value: Integer); virtual;
     procedure SetShortCut(Value: TShortCut); virtual;
     procedure SetVisible(Value: Boolean); virtual;
+  public
+    function IsCaptionLinked: Boolean; virtual;
+    function IsCheckedLinked: Boolean; virtual;
+    function IsEnabledLinked: Boolean; virtual;
+    function IsGroupIndexLinked: Boolean; virtual;
+    function IsHelpContextLinked: Boolean; virtual;
+    function IsHelpLinked: Boolean; virtual;
+    function IsHintLinked: Boolean; virtual;
+    function IsImageIndexLinked: Boolean; virtual;
+    function IsShortCutLinked: Boolean; virtual;
+    function IsVisibleLinked: Boolean; virtual;
   end;
 
   TActionLinkClass = class of TActionLink;

@@ -673,7 +673,6 @@ begin
   FTree.Add(APackage);
   FItems.Add(APackage);
   APackage.OnChangeName:=@PackageChangedName;
-writeln('TLazPackageGraph.AddPackage ',Assigned(OnAddPackage));
   if Assigned(OnAddPackage) then OnAddPackage(APackage);
 end;
 

@@ -278,6 +278,48 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TApplication.InvokeHelp(Command: Word; Data: Longint): Boolean;
+ ------------------------------------------------------------------------------}
+function TApplication.InvokeHelp(Command: Word; Data: Longint): Boolean;
+var
+  CallHelp: Boolean;
+  //HelpHandle: HWND;
+  ActiveForm: TCustomForm;
+begin
+  Result := False;
+  CallHelp := True;
+  ActiveForm := Screen.ActiveCustomForm;
+
+  { let existing hooks get called, if any. }
+  if Assigned(ActiveForm) and Assigned(ActiveForm.FOnHelp) then
+    Result := ActiveForm.FOnHelp(Command, Data, CallHelp)
+  else if Assigned(FOnHelp) then
+    Result := FOnHelp(Command, Data, CallHelp);
+
+  if CallHelp then begin
+    if Assigned(ActiveForm) and ActiveForm.HandleAllocated
+    and (ActiveForm.FHelpFile <> '') then
+    begin
+      //HelpHandle := ActiveForm.Handle;
+      //if ValidateHelpSystem then
+      //  Result := HelpSystem.Hook(Longint(HelpHandle), ActiveForm.FHelpFile,
+      //                            Command, Data);
+    end
+    else
+    if FHelpFile <> '' then
+    begin
+      //HelpHandle := Handle;
+      //if FMainForm <> nil then HelpHandle := FMainForm.Handle;
+      //if ValidateHelpSystem then
+      //  Result := HelpSystem.Hook(Longint(HelpHandle),FHelpFile,Command,Data);
+    end else begin
+      //if not FHandleCreated then
+      //  PostMessage(FHandle, CM_INVOKEHELP, Command, Data);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TApplication.SetIcon
   Params: the new icon
  ------------------------------------------------------------------------------}
@@ -314,6 +356,14 @@ begin
   if FHintTimer<>nil then
     FHintTimer.Enabled:=false;
   FHintTimerType:=ahtNone;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.NotifyIdleHandler;
+ ------------------------------------------------------------------------------}
+function TApplication.ValidateHelpSystem: Boolean;
+begin
+  Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -613,6 +663,50 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TApplication.HelpCommand(Command: Integer; Data: Longint): Boolean;
+------------------------------------------------------------------------------}
+function TApplication.HelpCommand(Command: Integer; Data: Longint): Boolean;
+begin
+  Result := InvokeHelp(Command, Data);
+end;
+
+{------------------------------------------------------------------------------
+  function TApplication.HelpContext(Context: THelpContext): Boolean;
+------------------------------------------------------------------------------}
+function TApplication.HelpContext(Context: THelpContext): Boolean;
+begin
+  if ValidateHelpSystem then begin
+    Result := true;
+    //HelpSystem.ShowContextHelp(Context, GetCurrentHelpFile);
+  end else
+    Result := false;
+end;
+
+{------------------------------------------------------------------------------
+  function TApplication.HelpJump(const JumpID: string): Boolean;
+------------------------------------------------------------------------------}
+function TApplication.HelpJump(const JumpID: string): Boolean;
+begin
+  if ValidateHelpSystem then begin
+    Result := true;
+    //HelpSystem.ShowTopicHelp(JumpID, GetCurrentHelpFile);
+  end else
+    Result := false;
+end;
+
+{------------------------------------------------------------------------------
+  function TApplication.HelpKeyword(const Keyword: String): Boolean;
+------------------------------------------------------------------------------}
+function TApplication.HelpKeyword(const Keyword: String): Boolean;
+begin
+  if ValidateHelpSystem then begin
+    Result := true;
+    //HelpSystem.ShowHelp(Keyword, GetCurrentHelpFile);
+  end else
+    Result := false;
+end;
+
+{------------------------------------------------------------------------------
   function TApplication.IsWaiting: boolean;
 ------------------------------------------------------------------------------}
 function TApplication.IsWaiting: boolean;
@@ -705,9 +799,23 @@ begin
   Include(FFlag,AppIdleEndSent);
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication ShowException                                             }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  function TApplication.GetCurrentHelpFile: string;
+------------------------------------------------------------------------------}
+function TApplication.GetCurrentHelpFile: string;
+var
+  ActiveForm: TCustomForm;
+begin
+  ActiveForm := Screen.ActiveCustomForm;
+  if Assigned(ActiveForm) and (ActiveForm.FHelpFile <> '') then
+    Result := ActiveForm.HelpFile
+  else
+    Result := HelpFile;
+end;
+
+{------------------------------------------------------------------------------
+       TApplication ShowException
+------------------------------------------------------------------------------}
 procedure TApplication.ShowException(E: Exception);
 var
   Msg: string;
@@ -855,6 +963,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/04/11 09:32:20  mattias
+  added some help stuff
+
   Revision 1.47  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

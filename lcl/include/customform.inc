@@ -1097,6 +1097,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomForm.IsHelpFileStored: boolean;
+------------------------------------------------------------------------------}
+function TCustomForm.IsHelpFileStored: boolean;
+begin
+  Result:=FHelpFile<>'';
+end;
+
+{------------------------------------------------------------------------------
   TCustomForm Method SetFocusedControl
 ------------------------------------------------------------------------------}
 function TCustomForm.SetFocusedControl(Control : TWinControl): Boolean;
@@ -1391,6 +1399,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2003/04/11 09:32:20  mattias
+  added some help stuff
+
   Revision 1.92  2003/03/25 10:45:40  mattias
   reduced focus handling and improved focus setting
 
