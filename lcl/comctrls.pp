@@ -430,7 +430,7 @@ type
   end;
 
 
- TColumnAlignment = (caLeft,caRight,caCenter);
+(* 
  TViewColumn = class(TPersistent)
    private
      FCaption: String;
@@ -462,6 +462,9 @@ type
      property OnChange : TNotifyEvent read FOnChange write FOnChange;
 
  end;
+*)
+
+(*
  TViewColumns = class(TPersistent)
    private
      FItems : TList;
@@ -472,7 +475,7 @@ type
      function GetCount: Integer;
      function GetItem(Index : Integer): TViewColumn;
    protected
-     Procedure ColumnChanged(Sender : TObject);
+     procedure ColumnChanged(Sender : TObject);
    public
      constructor Create(Aowner : TCustomListView);
      Destructor Destroy; override;
@@ -484,17 +487,72 @@ type
      property OnChange : TNotifyEvent read FOnChange write FOnChange;
      property Updating : Boolean read FUpdating write SetUpdating;
  end;
+*)
  
- TViewStyle = (vsList,vsReport);
+  TWidth = 0..MaxInt;
+
+  TListColumn = class(TCollectionItem)
+  private
+    FAlignment: TAlignment;
+    FAutoSize: Boolean;
+    FCaption: String;
+    FMinWidth: TWidth;
+    FMaxWidth: TWidth;
+    FVisible: Boolean;
+    FWidth: TWidth;
+    FTag: Integer;
+    function GetWidth: TWidth;
+    procedure SetVisible(const AValue: Boolean);
+    procedure SetAutoSize(const AValue: Boolean);
+    procedure SetMinWidth(const AValue: TWidth);
+    procedure SetMaxWidth(const AValue: TWidth);
+    procedure SetWidth(const AValue: TWidth);
+    procedure SetCaption(const AValue: String);
+    procedure SetAlignment(const AValue: TAlignment);
+//    procedure SetImageIndex(const AValue: TImageIndex);
+  protected
+//    procedure SetIndex(const AValue: Integer); override;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure Assign(ASource: TPersistent); override;
+  published
+    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize;
+    property Caption: string read FCaption write SetCaption;
+//    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
+    property MaxWidth: TWidth read FMaxWidth write SetMaxWidth;
+    property MinWidth: TWidth read FMinWidth write SetMinWidth;
+    property Tag: Integer read FTag write FTag;
+    property Visible : Boolean read FVisible write SetVisible;
+    property Width: TWidth read GetWidth write SetWidth;
+  end;
+
+  TListColumns = class(TCollection)
+  private
+    FOwner: TCustomListView;
+    function GetItem(const AIndex: Integer): TListColumn;
+    procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
+  protected
+    procedure Update(AItem: TCollectionItem); override;
+  public
+    constructor Create(AOwner: TCustomListView);
+    function Add: TListColumn;
+    property Owner: TCustomListView read FOwner;
+    property Items[const AIndex: Integer]: TListColumn read GetItem write SetItem; default;
+  end;
  
- TCustomListView = class(TWinControl)
+ 
+  TViewStyle = (vsList,vsReport);
+ 
+  TCustomListView = class(TWinControl)
   private
     //FReadOnly : Boolean;
     FBorderStyle: TBorderStyle;
     FDefItemHeight: integer;
     FSmallImages : TCustomImageList;
     FListItems : TListItems;
-    FColumns : TViewColumns;
+    FColumns : TListColumns;
     FViewStyle : TViewStyle;
     FSorted    : Boolean;
     FSortColumn : Integer;
@@ -505,10 +563,11 @@ type
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
+    procedure SetColumns(Value: TListColumns);
     procedure SetDefaultItemHeight(AValue: integer);
-    procedure SetSmallImages(const AValue: TCustomImageList);
     procedure SetItems(Value : TListItems);
-    procedure SetMultiSElect(const AValue: Boolean);
+    procedure SetMultiSelect(const AValue: Boolean);
+    procedure SetSmallImages(const AValue: TCustomImageList);
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure SetScrolledLeft(AValue: integer);
     procedure SetScrolledTop(AValue: integer);
@@ -517,20 +576,20 @@ type
     ParentWindow : TScrolledWindow;
     procedure Delete(Item : TListItem);
     procedure InsertItem(Item : TListItem);
-    Function GetMaxScrolledLeft : Integer;
-    Function GetMaxScrolledTop : Integer;
-    Procedure SetViewStyle (value : TViewStyle);
-    Procedure SetSortColumn(Value : Integer);
-    Procedure SetSorted(Value : Boolean);
-    Procedure ItemChanged(Index : Integer);  //called by TListItems
-    Procedure ItemDeleted(Index : Integer);  //called by TListItems
-    Procedure ColumnsChanged(Sender : TObject); //called by TViewColumns
-    Procedure ImageChanged(Sender : TObject);
-    Procedure ItemAdded;  //called by TListItems
+    function GetMaxScrolledLeft : Integer;
+    function GetMaxScrolledTop : Integer;
+    procedure SetViewStyle (value : TViewStyle);
+    procedure SetSortColumn(Value : Integer);
+    procedure SetSorted(Value : Boolean);
+    procedure ColumnsChanged; //called by TListColumns
+    procedure ItemChanged(Index : Integer);  //called by TListItems
+    procedure ItemDeleted(Index : Integer);  //called by TListItems
+    procedure ImageChanged(Sender : TObject);
+    procedure ItemAdded;  //called by TListItems
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
 //    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
-    property Columns : TViewColumns read FColumns write FColumns;
+    property Columns: TListColumns read FColumns write SetColumns;
 //    property ColumnClick: Boolean read FColumnClick write SetColumnClick default True;
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight;
 //    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
@@ -1756,6 +1815,8 @@ end;
 {$I statuspanel.inc}
 {$I statuspanels.inc}
 { $I alignment.inc}
+{$I listcolumns.inc}
+{$I listcolumn.inc}
 {$I listitem.inc}
 {$I listitems.inc}
 {$I customlistview.inc}
@@ -1764,8 +1825,6 @@ end;
 {$I toolbar.inc}
 {$I trackbar.inc}
 {$I treeview.inc}
-{$I viewcolumns.inc}
-{$I viewcolumn.inc}
 
 
 end.
@@ -1773,6 +1832,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/03/12 23:55:36  lazarus
+  MWE:
+    * More delphi compatibility added/updated to TListView
+    * Introduced TDebugger.locals
+    * Moved breakpoints dialog to debugger dir
+    * Changed breakpoints dialog to read from resource
+
   Revision 1.26  2002/03/11 23:21:14  lazarus
   *** empty log message ***
 

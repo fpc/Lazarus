@@ -4,14 +4,8 @@
 {------------------------------------------------------------------------------}
 constructor TCustomListView.Create(Aowner: TComponent);
 begin
-  Inherited Create(AOwner);
-
-  //ParentWindow := TScrolledwindow.Create(AOwner);
-  //ParentWindow.Show;
-  //fix this call it is a hack
-
-  Columns := TViewColumns.Create(self);
-  Columns.OnChange := @ColumnsChanged;
+  inherited Create(AOwner);
+  FColumns := TListColumns.Create(self);
   FListItems := TListITems.Create(self);
   FBorderStyle := bsSingle;
   FScrollBars:=ssBoth;
@@ -29,8 +23,10 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView ColumnsChanged                                             }
 {------------------------------------------------------------------------------}
-Procedure TCustomListView.ColumnsChanged(Sender : TObject);
+Procedure TCustomListView.ColumnsChanged;
 Begin
+//TODO: Optimize implementation by invoking individual upadates instead of 
+//      recreating window
   //notify the interface....
   RecreateWnd;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
@@ -85,7 +81,15 @@ end;
 procedure TCustomListView.InsertItem(Item : TListItem);
 begin
 end;
-
+         
+{------------------------------------------------------------------------------}
+{   TCustomListView SetColumns                                                 }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.SetColumns(Value: TListColumns);
+begin
+  FColumns.Assign(Value);
+end;
+         
 {------------------------------------------------------------------------------}
 {   TCustomListView SetViewStyle                                               }
 {------------------------------------------------------------------------------}
@@ -309,5 +313,17 @@ begin
 
 end;
 
+{ =============================================================================
 
+  $Log$
+  Revision 1.13  2002/03/12 23:55:37  lazarus
+  MWE:
+    * More delphi compatibility added/updated to TListView
+    * Introduced TDebugger.locals
+    * Moved breakpoints dialog to debugger dir
+    * Changed breakpoints dialog to read from resource
+
+}
+
+ 
 

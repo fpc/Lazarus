@@ -25,7 +25,8 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Debugger, DbgOutputForm;
+  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg;
+
 
 type
   TDebugTestForm = class(TForm)
@@ -69,6 +70,7 @@ type
   private
     FDebugger: TDebugger;
     FOutputForm: TDBGOutputForm;
+    FBreakpointDlg: TBreakpointsDlg;
     procedure DBGState(Sender: TObject);
     procedure DBGCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DBGOutput(Sender: TObject; const AText: String);
@@ -108,6 +110,8 @@ procedure TDebugTestForm.FormCreate(Sender: TObject);
 begin
   txtLog.Lines.Clear;
   FDebugger := nil;
+  FBreakpointDlg := TBreakpointsDlg.Create(Application);
+  FBreakpointDlg.Show;
 end;
 
 procedure TDebugTestForm.FormDestroy(Sender: TObject);
@@ -242,12 +246,21 @@ begin
 end;
 
 procedure TDebugTestForm.DBGState(Sender: TObject);
+var
+  n: Integer;
 begin
   case FDebugger.State of
     dsNone :lblState.Caption := 'dsNone ';
     dsIdle :lblState.Caption := 'dsIdle ';
     dsStop :lblState.Caption := 'dsStop ';
-    dsPause:lblState.Caption := 'dsPause'; 
+    dsPause: begin
+      lblState.Caption := 'dsPause'; 
+      txtLog.Lines.Add('[locals]');
+      for n := 0 to FDebugger.Locals.Count - 1 do
+      begin
+        txtLog.Lines.Add(FDebugger.Locals.Names[n] + ':'+ FDebugger.Locals.Values[n]);
+      end;
+    end;
     dsRun  :lblState.Caption := 'dsRun  ';
     dsError:lblState.Caption := 'dsError';
   else
@@ -261,6 +274,13 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2002/03/12 23:55:36  lazarus
+  MWE:
+    * More delphi compatibility added/updated to TListView
+    * Introduced TDebugger.locals
+    * Moved breakpoints dialog to debugger dir
+    * Changed breakpoints dialog to read from resource
+
   Revision 1.4  2002/03/09 02:03:59  lazarus
   MWE:
     * Upgraded gdb debugger to gdb/mi debugger

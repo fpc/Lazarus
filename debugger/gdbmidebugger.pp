@@ -43,6 +43,7 @@ type
   private
     FCommandQueue: TStringList; 
     FHasSymbols: Boolean;  
+    FStoppedParams: String;
     FTargetPID: Integer;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     procedure GDBRun; 
@@ -64,6 +65,7 @@ type
   protected
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
+    function  CreateLocals: TDBGLocals; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
@@ -98,6 +100,22 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Hit;
+  end;    
+  
+  TGDBMILocals = class(TDBGLocals)
+  private  
+    FLocals: TStringList;
+    FLocalsValid: Boolean;
+    procedure LocalsNeeded;
+  protected
+    procedure DoStateChange; override; 
+    function GetName(const AnIndex: Integer): String; override;
+    function GetValue(const AnIndex: Integer): String; override;
+  public
+    procedure AddLocals(const AParams:String);
+    function Count: Integer; override;
+    constructor Create(const ADebugger: TDebugger); 
+    destructor Destroy; override;
   end;
   
   TGDBMIWatch = class(TDBGWatch)
@@ -201,12 +219,12 @@ begin
   
   if Result 
   then begin
-    ExecuteCommand('set extention-language .lpr pascal');
-    ExecuteCommand('set extention-language .lrc pascal');
-    ExecuteCommand('set extention-language .dpr pascal');
-    ExecuteCommand('set extention-language .pas pascal');
-    ExecuteCommand('set extention-language .pp pascal');
-    ExecuteCommand('set extention-language .inc pascal');
+    ExecuteCommand('-gdb-set extention-language .lpr pascal');
+    ExecuteCommand('-gdb-set extention-language .lrc pascal');
+    ExecuteCommand('-gdb-set extention-language .dpr pascal');
+    ExecuteCommand('-gdb-set extention-language .pas pascal');
+    ExecuteCommand('-gdb-set extention-language .pp pascal');
+    ExecuteCommand('-gdb-set extention-language .inc pascal');
   end;
 end;
 
@@ -220,6 +238,11 @@ end;
 function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints; 
 begin
   Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
+end;
+
+function TGDBMIDebugger.CreateLocals: TDBGLocals; 
+begin                                                            
+  Result := TGDBMILocals.Create(Self);
 end;
 
 function TGDBMIDebugger.CreateWatches: TDBGWatches; 
@@ -272,6 +295,11 @@ begin
     SendCmdLn(FCommandQueue[0], AValues);
     Result := ProcessResult(AIgnoreError, AResultValues) and ((State <> dsRun) or ProcessRunning);
     FCommandQueue.Delete(0);
+    if FStoppedParams <> ''
+    then begin
+      ProcessStopped(FStoppedParams);
+      FStoppedParams := '';
+    end;
   until not Result or (FCommandQueue.Count = 0);
 end;
 
@@ -492,7 +520,7 @@ begin
           AsyncClass := GetPart('*', ',', S);
           if AsyncClass = 'stopped'
           then begin
-            ProcessStopped(S);
+            FStoppedParams := S;
           end
           // Known, but undocumented classes
           else if AsyncClass = 'started'
@@ -535,7 +563,7 @@ begin
 end;        
 
 function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
-  procedure FrameToLocation(const AFrame: String);
+  procedure ProcessFrame(const AFrame: String);
   var
     Frame: TStringList;  
     Location: TDBGLocationRec;
@@ -547,7 +575,9 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     Location.SrcFile := Frame.Values['file']; 
     Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
     
+    TGDBMILocals(Locals).AddLocals(Frame.Values['args']);
     Frame.Free;
+
     DoCurrent(Location);
   end;
 var
@@ -572,7 +602,7 @@ begin
     SetState(dsStop);
     // TODO: define signal no
     DoException(0, List.Values['signal-name']);
-    FrameToLocation(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);    
   end
   else if Reason = 'signal-received'
   then begin
@@ -582,7 +612,7 @@ begin
     S := List.Values['signal-name'];
     if S <> 'SIGINT'
     then DoException(0, S);
-    FrameToLocation(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);    
   end
   else if Reason = 'breakpoint-hit'
   then begin
@@ -593,7 +623,7 @@ begin
       if (bpaStop in BreakPoint.Actions)
       then begin
         SetState(dsPause);
-        FrameToLocation(List.Values['frame']);    
+        ProcessFrame(List.Values['frame']);    
       end
       else begin
         ExecuteCommand('-exec-continue');
@@ -603,17 +633,17 @@ begin
   else if Reason = 'function-finished'
   then begin
     SetState(dsPause);
-    FrameToLocation(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);    
   end
   else if Reason = 'end-stepping-range'
   then begin
     SetState(dsPause);
-    FrameToLocation(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);    
   end
   else if Reason = 'location-reached'
   then begin
     SetState(dsPause);
-    FrameToLocation(List.Values['frame']);    
+    ProcessFrame(List.Values['frame']);    
   end
   else begin
     Result := False;
@@ -690,11 +720,10 @@ end;
 procedure TGDBMIBreakPoint.Hit;
 begin
   SetHitCount(HitCount + 1);
-
   if bpaEnableGroup in Actions
-  then; //TODO
+  then EnableGroups;
   if bpaDisableGroup in Actions
-  then; //TODO
+  then DisableGroups;
 end;
   
 procedure TGDBMIBreakPoint.SetBreakpoint;
@@ -719,6 +748,98 @@ begin
   inherited;
   if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsIdle]
   then SetBreakpoint;
+end;
+
+{ =========================================================================== }
+{ TGDBMILocals }
+{ =========================================================================== }
+
+procedure TGDBMILocals.AddLocals(const AParams: String);
+var
+  n: Integer;
+  LocList, List: TStrings;     
+  Name: String;
+begin
+  LocList := CreateValueList(AParams);
+  for n := 0 to LocList.Count - 1 do
+  begin
+    List := CreateValueList(LocList[n]);
+    Name := List.Values['name'];
+    if Name = 'this'
+    then Name := 'Self';
+    FLocals.Add(Name + '=' + List.Values['value']);
+    FreeAndNil(List);
+  end;
+  FreeAndNil(LocList);
+end;
+
+function TGDBMILocals.Count: Integer;
+begin                     
+  if Debugger.State = dsPause
+  then begin
+    LocalsNeeded;
+    Result := FLocals.Count;
+  end
+  else Result := 0;
+end;
+
+constructor TGDBMILocals.Create(const ADebugger: TDebugger);
+begin
+  FLocals := TStringList.Create;
+  FLocals.Sorted := True;
+  FLocalsValid := False;
+  inherited;
+end;            
+
+destructor TGDBMILocals.Destroy;
+begin
+  inherited;
+  FreeAndNil(FLocals);
+end;
+
+procedure TGDBMILocals.DoStateChange;  
+begin
+  if Debugger.State <> dsPause 
+  then begin
+    FLocalsValid := False;
+    FLocals.Clear;
+  end;
+end;
+
+function TGDBMILocals.GetName(const AnIndex: Integer): String;
+begin       
+  if Debugger.State = dsPause 
+  then begin
+    LocalsNeeded;
+    Result := FLocals.Names[AnIndex];
+  end
+  else Result := '';
+end;
+
+function TGDBMILocals.GetValue(const AnIndex: Integer): String;
+begin
+  if Debugger.State = dsPause 
+  then begin
+    LocalsNeeded;
+    Result := FLocals[AnIndex];
+    Result := GetPart('=', '', Result);
+  end
+  else Result := '';
+end;
+
+procedure TGDBMILocals.LocalsNeeded;
+var
+  S: String;
+  List: TStrings;
+begin
+  if not FLocalsValid
+  then begin 
+    TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', S);
+    List := CreateValueList(S);
+    AddLocals(List.Values['locals']);
+    FreeAndNil(List);
+    FLocalsValid := True;
+  end;
 end;
 
 { =========================================================================== }
@@ -759,6 +880,13 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2002/03/12 23:55:36  lazarus
+  MWE:
+    * More delphi compatibility added/updated to TListView
+    * Introduced TDebugger.locals
+    * Moved breakpoints dialog to debugger dir
+    * Changed breakpoints dialog to read from resource
+
   Revision 1.1  2002/03/09 02:03:59  lazarus
   MWE:
     * Upgraded gdb debugger to gdb/mi debugger

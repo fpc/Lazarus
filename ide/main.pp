@@ -5871,8 +5871,6 @@ var
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  Breakpoints_Dlg.AddBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
-
   NewBreak := FBreakPoints.Add(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line);
   NewBreak.Enabled := True;
 end;
@@ -5882,7 +5880,6 @@ Procedure TMainIDE.OnSrcNotebookDeleteBreakPoint(Sender : TObject;
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
-  Breakpoints_Dlg.DeleteBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
   FBreakPoints.Find(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line).Free;
 end;
 
@@ -6245,6 +6242,13 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.244  2002/03/12 23:55:34  lazarus
+  MWE:
+    * More delphi compatibility added/updated to TListView
+    * Introduced TDebugger.locals
+    * Moved breakpoints dialog to debugger dir
+    * Changed breakpoints dialog to read from resource
+
   Revision 1.243  2002/03/09 02:03:57  lazarus
   MWE:
     * Upgraded gdb debugger to gdb/mi debugger
