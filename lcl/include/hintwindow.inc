@@ -54,7 +54,7 @@ End;
 procedure THintWindow.Paint;
 var
   Rect: TRect;
-  DefaultDraw: Boolean;
+  //DefaultDraw: Boolean;
 begin
   Rect := ClientRect;
   Canvas.Brush.Color := Color;
@@ -93,7 +93,7 @@ end;
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 var
-  Temp : Integer;
+  //Temp : Integer;
   Num : Integer;
   tempHint : String;
   LongestLine : String;

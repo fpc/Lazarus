@@ -314,7 +314,7 @@ begin
       Top:=WorkingDirLabel.Top+WorkingDirLabel.Height+12;
       Width:=Self.ClientWidth-Left-Left;
       Height:=50;
-      Show;
+      Visible:=true; 
     end;
 
     KeyCtrlCheckBox:=TCheckBox.Create(Self);
@@ -326,7 +326,7 @@ begin
       Top:=2;
       Width:=50;
       Height:=20;
-      Show;
+      Visible:=true; 
     end;
 
     KeyAltCheckBox:=TCheckBox.Create(Self);
@@ -338,7 +338,7 @@ begin
       Top:=KeyCtrlCheckBox.Top;
       Height:=20;
       Width:=KeyCtrlCheckBox.Width;
-      Show;
+      Visible:=true; 
     end;
 
     KeyShiftCheckBox:=TCheckBox.Create(Self);
@@ -350,7 +350,7 @@ begin
       Top:=KeyCtrlCheckBox.Top;
       Height:=20;
       Width:=KeyCtrlCheckBox.Width;
-      Show;
+      Visible:=true; 
     end;
 
     KeyComboBox:=TComboBox.Create(Self);
@@ -369,7 +369,7 @@ begin
       end;
       Items.EndUpdate;
       ItemIndex:=0;
-      Show;
+      Visible:=true; 
     end;
     
     KeyGrabButton:=TButton.Create(Self);
@@ -382,7 +382,7 @@ begin
       Caption:='Grab Key';
       Name:='KeyGrabButton';
       OnClick:=@KeyGrabButtonClick;
-      Show;
+      Visible:=true; 
     end;
 
     MacrosGroupbox:=TGroupbox.Create(Self);

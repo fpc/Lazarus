@@ -370,7 +370,9 @@ TCMDialogKey = TLMKEY;
     FHostDockSite : TWinControl;
     FHint : String;
     FIsControl : Boolean;
-    FLastheight : Integer;
+    FLastHeight : Integer;
+    FLastResizeHeight: integer;
+    FLastResizeWidth: integer;
     FLastWidth : Integer;
     FLeft: Integer;
     FOnActivate : TNotifyEvent;
@@ -1142,6 +1144,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2001/11/10 10:48:00  lazarus
+  MG: fixed set formicon on invisible forms
+
   Revision 1.24  2001/11/09 19:14:23  lazarus
   HintWindow changes
   Shane

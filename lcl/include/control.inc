@@ -850,7 +850,11 @@ end;
 procedure TControl.Resize;
 begin
 //writeln('[TControl.Resize] ',ClassName);
-  if Assigned(FOnResize) then FOnResize(Self);
+  if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height) then begin
+    FLastResizeWidth:=Width;
+    FLastResizeHeight:=Height;
+    if Assigned(FOnResize) then FOnResize(Self);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1065,12 +1069,13 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetVisible(Value : Boolean);
 begin
-if classname='TBEVEL' then writeln('[TControl.SetVisible] ',Value,' ',FVisible);
+//writeln('[TControl.SetVisible] START ',ClassName,' ',Value,' ',FVisible);
   if FVisible <> Value then
   begin
     FVisible := Value;
     Perform(CM_VISIBLECHANGED, Ord(Value), 0);
   end;
+//writeln('[TControl.SetVisible] END ',ClassName,' ',Value,' ',FVisible);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1316,6 +1321,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.29  2001/11/10 10:48:00  lazarus
+  MG: fixed set formicon on invisible forms
+
   Revision 1.28  2001/10/31 16:29:21  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane

@@ -1620,6 +1620,7 @@ var
   Params: TCreateParams;
   n: Integer;
 begin
+//writeln('[TWinControl.CreateWnd] START ',Classname);
   if (FCompstyle = csNone) then 
   begin
     WriteLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
@@ -1647,6 +1648,7 @@ begin
         if Visible then
           HandleNeeded;
   end;
+//writeln('[TWinControl.CreateWnd] END ',Classname);
 end;
 
 {------------------------------------------------------------------------------
@@ -1931,6 +1933,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2001/11/10 10:48:00  lazarus
+  MG: fixed set formicon on invisible forms
+
   Revision 1.41  2001/11/09 19:14:23  lazarus
   HintWindow changes
   Shane

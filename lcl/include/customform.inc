@@ -147,11 +147,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomForm.IsIconStored
+  Method: TCustomForm.GetIconHandle
   Returns: handle of form icon 
  ------------------------------------------------------------------------------}
 function TCustomForm.GetIconHandle: HICON;
 begin
+//writeln('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
   if FIcon<>nil then
     Result := FIcon.Handle
   else
@@ -174,6 +175,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
+//writeln('[TCustomForm.SetVisible] START ',ClassName,' ',Value);
   if fsCreating in FFormState then
     if Value then
       Include(FFormState, fsVisible)
@@ -183,6 +185,7 @@ Begin
   begin
     inherited Visible := Value;
   end;
+//writeln('[TCustomForm.SetVisible] END ',ClassName,' ',Visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -858,12 +861,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.CreateWnd;
 begin
+//writeln('TCustomForm.CreateWnd START ',ClassName);
   inherited CreateWnd;
-  
-  CNSendMEssage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
 
   Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');  
   if FMenu <> nil then FMenu.HandleNeeded;
+//writeln('TCustomForm.CreateWnd END ',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -920,6 +924,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TCustomForm.ShowModal : Integer;
 begin
+//writeln('[TCustomForm.ShowModal] START ',Classname);
   { TODO : This has to be changed by WM_VISIBLECHANGED. Implement appropriate callback !!! }
   //Kill capture when opening another dialog
   if GetCapture <> 0 then SendMessage(GetCapture,LM_CANCELMODE,0,0);
@@ -929,7 +934,7 @@ begin
   ModalResult := 0;
 
   Show;
-  CNSendMEssage(LM_ShowModal, Self, nil);
+  CNSendMessage(LM_ShowModal, Self, nil);
   Repeat
     Application.HandleMessage;
     If ModalResult <> 0 then Close;
@@ -938,12 +943,15 @@ begin
 
   Exclude(FFormState, fsModal);
 
-Result := ModalResult;
+  Result := ModalResult;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.30  2001/11/10 10:48:00  lazarus
+  MG: fixed set formicon on invisible forms
+
   Revision 1.29  2001/10/16 20:01:28  lazarus
   MG: removed splashform fix, because of the unpredictable side effects
 

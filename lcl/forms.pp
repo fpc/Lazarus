@@ -107,7 +107,6 @@ type
     Function IsForm : Boolean;
     procedure IconChanged(Sender: TObject);
     function IsIconStored: Boolean;
-    function GetIconHandle: HICON;
     { events }
     Procedure WMActivate(var Message : TLMActivate); message LM_Activate;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
@@ -154,6 +153,7 @@ type
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
     procedure BeforeDestruction; override;
+    function GetIconHandle: HICON;
     destructor Destroy; override;
     procedure Close;
     procedure Hide;
@@ -172,7 +172,7 @@ type
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write FModalResult;
     property Visible write SetVisible default False;
-    property WindowState: TWindowState read FWindowState write SetWIndowState default wsNormal;
+    property WindowState: TWindowState read FWindowState write SetWindowState default wsNormal;
   end;
 
   TForm = class(TCustomForm)

@@ -699,8 +699,10 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
 //writeln('[IntSendMessage3.lm_setsize] ',PRect(Data)^.Left,',',PRect(Data)^.Top,',',
 //             PRect(Data)^.Right,',',PRect(Data)^.Bottom);
+//writeln('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
          ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
              PRect(Data)^.Right,PRect(Data)^.Bottom);
+//writeln('[LM_SetSize] B ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
       end;
 
       LM_ShowModal :
@@ -850,6 +852,7 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
         if Sender is TCustomForm then begin
           if (Handle<>0) and (Data<>nil) then begin
             FormIconGdiObject:=Data;
+//writeln('LM_SETFORMICON ',FormIconGdiObject<>nil,' ',pgtkWidget(Handle)^.Window<>nil);
             if (FormIconGdiObject<>nil) and (pgtkWidget(Handle)^.Window<>nil)
             then begin
               gdk_window_set_icon(pgtkWidget(Handle)^.Window, nil, 
@@ -2045,10 +2048,10 @@ begin
          SetMainWidget(p, TempWidget);
 
          //drag icons
-         if Drag_Icon = nil
-            then Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil, gtk_widget_get_colormap (p),
-                                                         @Drag_Mask,
-                                                         nil, @IMGDrag_Icon);
+         if Drag_Icon = nil then
+           Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+                               gtk_widget_get_colormap (p), @Drag_Mask,
+                               nil, @IMGDrag_Icon);
       end;
 
       csFrame :
@@ -2417,13 +2420,28 @@ end;
 {       *Note: Show or hide a widget                                           }
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
+var FormIconGdiObject: PGDIObject;
+  FormWidget: PGTKWidget;
 begin
+  FormWidget:=PgtkWidget(TWinControl(Sender).Handle);
+//if Sender is TForm then
+//writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
   if TControl(Sender).Visible then begin
-    gtk_widget_show(PgtkWidget(TWinControl(Sender).Handle))
+    gtk_widget_show(FormWidget);
+    if (Sender is TCustomForm) and (FormWidget^.Window<>nil) then begin
+      FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
+      if (FormIconGdiObject<>nil) then begin
+        gdk_window_set_icon(FormWidget^.Window, nil, 
+                FormIconGdiObject^.GDIBitmapObject,
+                FormIconGdiObject^.GDIBitmapMaskObject);
+      end;
+    end;
   end
   else Begin
-    gtk_widget_hide(PgtkWidget(TWinControl(Sender).Handle));
+    gtk_widget_hide(FormWidget);
   end;
+//if Sender is TForm then
+//writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3136,6 +3154,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.69  2001/11/10 10:48:02  lazarus
+  MG: fixed set formicon on invisible forms
+
   Revision 1.68  2001/11/09 19:14:24  lazarus
   HintWindow changes
   Shane
