@@ -1554,7 +1554,7 @@ var
     LabelWidget:=PGtkAccelLabel(gtk_accel_label_new(''));
     gtk_misc_set_alignment(GTK_MISC (LabelWidget), 0.0, 0.5);
     gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
-    gtk_box_pack_start(GTK_BOX(HBoxWidget),PGtkWidget(LabelWidget),false,false,0);
+    gtk_container_add(GTK_CONTAINER(HBoxWidget),PgtkWidget(LabelWidget));
     SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
     gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget),MenuItemWidget);
     gtk_widget_show(PGtkWidget(LabelWidget));
@@ -2173,6 +2173,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.58  2002/08/15 15:11:01  lazarus
+  MG: fixed showing menu accelarator shortcuts
+
   Revision 1.57  2002/08/15 13:37:58  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
