@@ -724,12 +724,6 @@ end;
  ------------------------------------------------------------------------------}
 function DeleteDirectory(const DirectoryName: string;
   OnlyChilds: boolean): boolean;
-const
-  {$IFDEF Win32}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
 var
   FileInfo: TSearchRec;
   CurSrcDir: String;
@@ -933,6 +927,9 @@ end;
 
 {
   $Log$
+  Revision 1.42  2004/03/11 00:07:26  mattias
+  added TFileListBox  from Luis
+
   Revision 1.41  2004/01/23 19:36:49  mattias
   fixed searching dir in searchpath under win32
 

@@ -901,6 +901,7 @@ begin
     AddFile('dbgrids.pas','DBGrids',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('editbtn.pas','EditBtn',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('actnlist.pas','ActnList',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('filectrl.pas','FileCtrl',pftUnit,[pffHasRegisterProc],cpBase);
     // increase priority by one, so that the LCL components are inserted to the
     // left in the palette
     for i:=0 to FileCount-1 do

@@ -30,7 +30,7 @@
 This unit contains file and directory controls and supporting handling functions. 
 } 
 
-unit FileCtrl;
+unit filectrl;
 
 {$mode objfpc}{$H+}
 
@@ -41,7 +41,94 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, StdCtrls;
+
+Type
+
+  { TCustomFileListBox }
+
+  TFileAttr = (ftReadOnly, ftHidden, ftSystem, ftVolumeID, ftDirectory,
+               ftArchive, ftNormal);
+
+  TFileType = set of TFileAttr;
+
+  TCustomFileListBox = class(TCustomListBox)
+  private
+    FDrive: Char;
+    FDirectory: String;
+    FFileName: String;
+    FFileType: TFileType;
+    FMask: String;
+    FOnChange: TNotifyEvent;
+    function MaskIsStored: boolean;
+    procedure SetDirectory(const AValue: String);
+    procedure SetDrive(const AValue: Char);
+    procedure SetFileName(const AValue: String);
+    procedure SetFileType(const AValue: TFileType);
+    procedure SetMask(const AValue: String);
+    procedure ChangeFileName;
+  protected
+    procedure UpdateFileList; virtual;
+    procedure Click; override;
+    procedure Loaded; override;
+    function IndexOfFile(const Filename: string): integer;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  public
+    property Drive: Char Read FDrive Write SetDrive default ' ';
+    property Directory: String Read FDirectory Write SetDirectory;
+    property FileName: String Read FFileName Write SetFileName;
+    property FileType: TFileType Read FFileType Write SetFileType default [ftNormal];
+    property Mask: String Read FMask Write SetMask stored MaskIsStored;
+    property OnChange: TNotifyEvent Read FOnChange Write FOnChange;
+    property Sorted default true;
+  end;
+  
+  
+  { TFileListBox }
+  
+  TFileListBox = class(TCustomFileListBox)
+  published
+    property Align;
+    property Anchors;
+    property BorderStyle;
+    property Constraints;
+    property ExtendedSelect;
+    property FileType;
+    property Font;
+    property IntegralHeight;
+    property ItemHeight;
+    property Mask;
+    property MultiSelect;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyPress;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnMouseMove;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property ParentShowHint;
+    property ParentFont;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+  end;
+
 
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer;
@@ -96,6 +183,8 @@ function ReadFileToString(const Filename: string): string;
 function CopyFile(const SrcFilename, DestFilename: string): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
 
+procedure Register;
+
 implementation
 
 uses
@@ -104,6 +193,13 @@ uses
 {$ELSE}
   {$IFDEF Ver1_0}Linux{$ELSE}Unix,BaseUnix{$ENDIF};
 {$ENDIF}
+
+const
+  {$IFDEF Win32}
+  FindMask = '*.*';
+  {$ELSE}
+  FindMask = '*';
+  {$ENDIF}
 
 var
   UpChars: array[char] of char;
@@ -120,6 +216,148 @@ begin
   end;
 end;
 
+{ TCustomFileListBox }
+
+procedure TCustomFileListBox.UpdateFileList;
+Var
+  Info: TSearchRec;
+  Added: Boolean;
+  
+  procedure AddFile(FileAttr: TFileAttr; SysAttr: integer);
+  begin
+    if (not Added) and (FileAttr in FileType)
+    and ((Info.Attr and SysAttr)>0) then begin
+      Items.Add(Info.Name);
+      Added:=true;
+    end;
+  end;
+  
+begin
+  if [csloading,csdestroying]*ComponentState<>[] then exit;
+  Clear;
+  If SysUtils.FindFirst(FDirectory+DirectorySeparator+FMask, faAnyFile, Info)=0
+  then
+    Repeat
+      Added:=false;
+      AddFile(ftReadOnly,faReadOnly);
+      AddFile(ftHidden,faHidden);
+      AddFile(ftSystem,faSysFile);
+      AddFile(ftVolumeID,faVolumeId);
+      AddFile(ftDirectory,faDirectory);
+      AddFile(ftArchive,faArchive);
+      AddFile(ftNormal,faArchive);
+    Until SysUtils.FindNext(info) <> 0;
+  SysUtils.FindClose(Info);
+end;
+
+procedure TCustomFileListBox.Click;
+begin
+  ChangeFileName;
+  inherited Click; 
+end;
+
+procedure TCustomFileListBox.Loaded;
+begin
+  inherited Loaded;
+  UpdateFileList;
+end;
+
+function TCustomFileListBox.IndexOfFile(const Filename: string): integer;
+begin
+  Result:=0;
+  while (Result<Items.Count)
+  and (CompareFilenames(Filename,Items[Result])<>0) do
+    inc(Result);
+  Result:=-1;
+end;
+
+procedure TCustomFileListBox.SetFileType(const AValue: TFileType);
+begin
+  if FFileType=AValue then exit;
+  FFileType := AValue;
+  UpdateFileList;
+end;
+
+procedure TCustomFileListBox.SetDirectory(const AValue: String);
+begin
+  if FDirectory=AValue then exit;
+  FDirectory := AValue;
+  UpdateFileList;
+end;
+
+function TCustomFileListBox.MaskIsStored: boolean;
+begin
+  Result:=(FMask<>FindMask);
+end;
+
+procedure TCustomFileListBox.SetDrive(const AValue: Char);
+begin
+  if FDrive=AValue then exit;
+  FDrive := AValue;
+  // ToDo: change to current directory of drive
+  UpdateFileList;
+end;
+
+procedure TCustomFileListBox.SetFileName(const AValue: String);
+var
+  i: Integer;
+begin
+  i:=IndexOfFile(AValue);
+  if i<>ItemIndex then
+    ItemIndex:=i;
+end;
+
+procedure TCustomFileListBox.SetMask(const AValue: String);
+begin
+  if FMask = AValue then exit;
+  FMask := AValue;
+  UpdateFileList;
+end;
+
+procedure TCustomFileListBox.ChangeFileName;
+var
+  i: Integer;
+begin
+  i:=ItemIndex;
+  If (i<0) or (FFileName = FDirectory+DirectorySeparator+Items[i]) then Exit;
+  FFileName := FDirectory+DirectorySeparator+Items[i];
+  If Assigned(FOnChange) then FOnChange(Self);
+end;
+
+constructor TCustomFileListBox.Create(AOwner: TComponent);
+var
+  FileDrive: String;
+begin
+  inherited Create(AOwner);
+  //Initializes DirectorySeparator and the Mask property.
+  FMask := FindMask;
+  //Initializes the FileType property.
+  FFileType := [ftNormal];
+  //Initializes the Directory and Drive properties to the current directory.
+  FDirectory := GetCurrentDir;
+  FileDrive := ExtractFileDrive(FDirectory);
+  if FileDrive<>'' then
+    FDrive:=FileDrive[1]
+  else
+    FDrive:=' ';
+  //Initializes the MultiSelect property.
+  MultiSelect := False;
+  //Fills the list box with all the files in the directory.
+  UpdateFileList;
+  //Initializes the Sorted property.
+  Sorted := True;
+end;
+
+destructor TCustomFileListBox.Destroy;
+begin
+  inherited Destroy; 
+end;
+
+procedure Register;
+begin
+  RegisterComponents('Misc',[TFileListBox]);
+end;
+
 initialization
   InternalInit;
 
@@ -129,6 +367,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2004/03/11 00:07:26  mattias
+  added TFileListBox  from Luis
+
   Revision 1.21  2004/01/23 19:36:49  mattias
   fixed searching dir in searchpath under win32
 
