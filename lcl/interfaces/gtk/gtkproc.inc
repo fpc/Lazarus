@@ -2153,6 +2153,13 @@ begin
     if ClientWindow<>nil then begin
       BeginGDKErrorTrap;
       gdk_window_get_origin(ClientWindow,@Result.X,@Result.Y);
+      {$Ifdef GTK2}
+      if GTK_WIDGET_NO_WINDOW(ClientWidget)
+      then begin
+        Inc(Result.X, ClientWidget^.Allocation.X);
+        Inc(Result.Y, ClientWidget^.Allocation.Y);
+      end;
+      {$EndIf}
       EndGDKErrorTrap;
       exit;
     end;
@@ -4899,6 +4906,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.215  2003/10/06 16:13:52  ajgenius
+  partly fixed gtk2 mouse offsets;
+  added new includes to gtk2 lpk
+
   Revision 1.214  2003/10/03 01:25:01  ajgenius
   add more gtk1i<->gtk2 key & event wrappers,
   move more GTK2 workarounds from gtk to gtk2 interface,

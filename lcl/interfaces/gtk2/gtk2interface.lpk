@@ -13,7 +13,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="20">
+    <Files Count="22">
       <Item1>
         <Filename Value="interfaces.pas"/>
         <UnitName Value="Interfaces"/>
@@ -94,6 +94,14 @@
         <Filename Value="../gtk/keymap.pp"/>
         <UnitName Value="KeyMap"/>
       </Item20>
+      <Item21>
+        <Filename Value="gtk2winapi.inc"/>
+        <Type Value="Include"/>
+      </Item21>
+      <Item22>
+        <Filename Value="gtk2object.inc"/>
+        <Type Value="Include"/>
+      </Item22>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">

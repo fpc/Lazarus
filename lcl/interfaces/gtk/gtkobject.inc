@@ -854,6 +854,15 @@ procedure TGtkObject.SendCachedGtkMessages;
 
     GtkLeft:=MainWidget^.Allocation.X;
     GtkTop:=MainWidget^.Allocation.Y;
+
+    {$Ifdef GTK2}
+    if GTK_WIDGET_NO_WINDOW(MainWidget) and GTK_WIDGET_NO_WINDOW(MainWidget^.Parent)
+  //   and (not GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType))
+    then begin
+      Dec(GtkLeft, MainWidget^.parent^.Allocation.X);
+      Dec(GtkTop, MainWidget^.parent^.Allocation.Y);
+    end;
+    {$EndIf}
     GtkWidth:=MainWidget^.Allocation.Width;
     if GtkWidth<0 then GtkWidth:=0;
     GtkHeight:=MainWidget^.Allocation.Height;
@@ -8445,6 +8454,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.432  2003/10/06 16:13:52  ajgenius
+  partly fixed gtk2 mouse offsets;
+  added new includes to gtk2 lpk
+
   Revision 1.431  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 

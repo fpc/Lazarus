@@ -3609,10 +3609,24 @@ begin
         inc(MainOrigin.X,Widget^.Allocation.X);
         inc(MainOrigin.Y,Widget^.Allocation.Y);
       end;
-      if ClientWindow<>nil then
-        gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y)
-      else begin
+      if ClientWindow<>nil then begin
+        {$Ifdef GTK2}
+        if GTK_WIDGET_NO_WINDOW(ClientWidget)
+        then begin
+          ClientOrigin.X := ClientWidget^.Allocation.X;
+          ClientOrigin.Y := ClientWidget^.Allocation.Y;
+        end else
+       {$EndIf}
+        gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y);
+      end else begin
         // client widget not realized
+        {$Ifdef GTK2}
+        if GTK_WIDGET_NO_WINDOW(ClientWidget)
+        then begin
+          ClientOrigin.X := ClientWidget^.Allocation.X;
+          ClientOrigin.Y := ClientWidget^.Allocation.Y;
+        end else
+       {$EndIf}
         ClientOrigin:=MainOrigin;
       end;
       ARect.Left:=ClientOrigin.X-MainOrigin.X;
@@ -8951,6 +8965,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.290  2003/10/06 16:13:52  ajgenius
+  partly fixed gtk2 mouse offsets;
+  added new includes to gtk2 lpk
+
   Revision 1.289  2003/10/02 18:18:32  ajgenius
   buffer cs_opaque ExtTextOut blocks to help prevent extensive flickering
 
