@@ -4557,6 +4557,8 @@ Begin
       end;
     end;
   finally
+    for i:=0 to UnitList.Count-1 do
+      TViewUnitsEntry(UnitList[i]).Free;
     UnitList.Free;
   end;
   Result:=mrOk;
@@ -9030,6 +9032,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.599  2003/06/06 08:34:18  mattias
+  fixed unhiding components
+
   Revision 1.598  2003/06/04 16:40:57  mattias
   fixed view forms
 
