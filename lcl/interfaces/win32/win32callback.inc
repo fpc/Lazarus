@@ -1168,10 +1168,10 @@ Begin
         WinProcess := true;
     end;
    
-    WM_DESTROY:
+    WM_NCDESTROY:
     begin
       // free our own data associated with window
-      if Windows.RemoveProp(Window, PChar(WindowInfo)) <> 0 then
+      if Windows.RemoveProp(Window, PChar(WindowInfoAtom)) <> 0 then
       begin
         Dispose(WindowInfo);
         WindowInfo := nil;
@@ -1430,6 +1430,10 @@ end;
 
 {
   $Log$
+  Revision 1.150  2004/10/29 11:00:32  micha
+  fix typo: the atom var is WindowInfoAtom
+  use WM_NCDESTROY, it is later than WM_DESTROY
+
   Revision 1.149  2004/10/29 10:38:39  micha
   fix typo, use wparam, not lparam
 
