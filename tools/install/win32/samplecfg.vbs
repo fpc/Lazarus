@@ -13,7 +13,7 @@ Dim NewText
 Set WSHShell = WScript.CreateObject("WScript.Shell")
 
 InFileName = "samplefpc.cfg"
-OutFileName = WSHShell.ExpandEnvironmentStrings("%BuildDir%")& "\pp\bin\win32\fpc.cfg"
+OutFileName = WSHShell.ExpandEnvironmentStrings("%BuildDir%")& "\pp\bin\i386-win32\fpc.cfg"
 PPDir = WSHShell.ExpandEnvironmentStrings("%BuildDir%") & "\pp"
 
 Set fs = CreateObject("Scripting.FileSystemObject")

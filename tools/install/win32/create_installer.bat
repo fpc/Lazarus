@@ -31,7 +31,7 @@ SET EXPORTCVS=%LAZCVSDIR%\tools\install\cvsexportlocal.exe
 :: no change needed after this.
 
 :: Some internal variables
-SET MAKEEXE=%FPCBINDIR%\mingw32-make.exe
+SET MAKEEXE=%FPCBINDIR%\make.exe
 SET LOGFILE=%CD%\installer.log
 SET DATESTAMP=%date:~-4,4%%date:~-7,2%%date:~-10,2%
 SET BUILDDRIVE=%BUILDDIR:~,2%
@@ -52,7 +52,7 @@ SET PATH=%FPCBINDIR%
 %EXPORTCVS% %FPCCVSDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
 
 call build-fpc.bat
-copy %FPCBINDIR%\*.* %BUILDDIR%\pp\bin\win32 >> %LOGFILE% 
+copy %FPCBINDIR%\*.* %BUILDDIR%\pp\bin\i386-win32 >> %LOGFILE% 
 samplecfg.vbs
 
 call build-lazarus.bat

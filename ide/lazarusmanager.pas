@@ -25,7 +25,8 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
-}unit LazarusManager;
+}
+unit LazarusManager;
 
 {$mode objfpc}{$H+}
 
@@ -257,6 +258,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.10  2004/11/06 11:29:24  vincents
+  Changes due to the new fpc unit directory structure.
+
   Revision 1.9  2004/11/05 22:05:41  vincents
   Use symbolic constant for restart exitcode.
 

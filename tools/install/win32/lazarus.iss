@@ -82,7 +82,7 @@ begin
   StringChange(Content, '%Temp%', GetTempDir);
   StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
   StringChange(Content, '%FpcSrcDir%', ExpandConstant('{app}\fpcsrc'));
-  StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\pp\bin\win32'));
+  StringChange(Content, '%FpcBinDir%', ExpandConstant('{app}\pp\bin\i386-win32'));
   SaveStringToFile(FileName, Content, False);
 end;
 
