@@ -2378,6 +2378,7 @@ begin
   if not Assigned(OnGetAllRequiredPackages) then exit;
   
   // get all required packages
+  PkgList:=nil;
   OnGetAllRequiredPackages(FirstAutoInstallDependency,PkgList);
   if PkgList=nil then exit;
   // get all usage options
