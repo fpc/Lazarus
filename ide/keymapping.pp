@@ -1629,31 +1629,33 @@ procedure TKeyCommandRelationList.AssignTo(
   ASynEditKeyStrokes:TSynEditKeyStrokes; Areas: TCommandAreas);
 var
   a,b,MaxKeyCnt,KeyCnt:integer;
-  Key:TSynEditKeyStroke;
+  Key: TSynEditKeyStroke;
+  CurRelation: TKeyCommandRelation;
 begin
   for a:=0 to FRelations.Count-1 do begin
-    if (Relations[a].Key1=VK_UNKNOWN)
-    or ((Relations[a].Parent.Areas*Areas)=[]) then
+    CurRelation:=Relations[a];
+    if (CurRelation.Key1=VK_UNKNOWN)
+    or ((CurRelation.Parent.Areas*Areas)=[]) then
       MaxKeyCnt:=0
-    else if Relations[a].Key2=VK_UNKNOWN then
+    else if CurRelation.Key2=VK_UNKNOWN then
       MaxKeyCnt:=1
     else
       MaxKeyCnt:=2;
     KeyCnt:=1;
     b:=0;
     while b<ASynEditKeyStrokes.Count do begin
-      if ASynEditKeyStrokes[b].Command=Relations[a].Command then begin
+      if ASynEditKeyStrokes[b].Command=CurRelation.Command then begin
         if KeyCnt>MaxKeyCnt then begin
           ASynEditKeyStrokes[b].Free;
         end else if KeyCnt=1 then begin
-          ASynEditKeyStrokes[b].Key:=Relations[a].Key1;
-          ASynEditKeyStrokes[b].Shift:=Relations[a].Shift1;
+          ASynEditKeyStrokes[b].Key:=CurRelation.Key1;
+          ASynEditKeyStrokes[b].Shift:=CurRelation.Shift1;
           ASynEditKeyStrokes[b].Key2:=VK_UNKNOWN;
           ASynEditKeyStrokes[b].Shift2:=[];
           inc(b);
         end else if KeyCnt=2 then begin
-          ASynEditKeyStrokes[b].Key:=Relations[a].Key2;
-          ASynEditKeyStrokes[b].Shift:=Relations[a].Shift2;
+          ASynEditKeyStrokes[b].Key:=CurRelation.Key2;
+          ASynEditKeyStrokes[b].Shift:=CurRelation.Shift2;
           ASynEditKeyStrokes[b].Key2:=VK_UNKNOWN;
           ASynEditKeyStrokes[b].Shift2:=[];
           inc(b);
@@ -1663,13 +1665,13 @@ begin
     end;
     while KeyCnt<=MaxKeyCnt do begin
       Key:=ASynEditKeyStrokes.Add;
-      Key.Command:=Relations[a].Command;
+      Key.Command:=CurRelation.Command;
       if KeyCnt=1 then begin
-        Key.Key:=Relations[a].Key1;
-        Key.Shift:=Relations[a].Shift1;
+        Key.Key:=CurRelation.Key1;
+        Key.Shift:=CurRelation.Shift1;
       end else begin
-        Key.Key:=Relations[a].Key2;
-        Key.Shift:=Relations[a].Shift2;
+        Key.Key:=CurRelation.Key2;
+        Key.Shift:=CurRelation.Shift2;
       end;
       Key.Key2:=VK_UNKNOWN;
       Key.Shift2:=[];

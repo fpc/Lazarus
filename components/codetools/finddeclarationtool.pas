@@ -65,6 +65,9 @@ interface
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
 
+{$IFDEF CTDEBUG}{$DEFINE DebugPrefix}{$ENDIF}
+{$IFDEF ShowTriedIdentifiers}{$DEFINE DebugPrefix}{$ENDIF}
+
 // new features
 { $DEFINE IgnoreErrorAfterCursor}
 
@@ -402,7 +405,7 @@ type
     FDependsOnCodeTools: TAVLTree;// the codetools, that this codetool depends on
     FClearingDependentNodeCaches: boolean;
     FCheckingNodeCacheDependencies: boolean;
-    {$IFDEF CTDEBUG}
+    {$IFDEF DebugPrefix}
     DebugPrefix: string;
     procedure IncPrefix;
     procedure DecPrefix;
@@ -2487,7 +2490,7 @@ begin
   end;
 end;
 
-{$IFDEF CTDEBUG}
+{$IFDEF DebugPrefix}
 procedure TFindDeclarationTool.DecPrefix;
 begin
   DebugPrefix:=copy(DebugPrefix,1,length(DebugPrefix)-2);
@@ -3029,6 +3032,7 @@ begin
           Params.SetIdentifier(Self,PChar(SystemAlias),nil);
           Result:=FindIdentifierInUsedUnit(SystemAlias,Params);
         finally
+          // always reset input, because the string SystemAlias is freed
           Params.Load(OldInput);
         end;
       end;
@@ -3506,7 +3510,8 @@ var
 
     procedure RaiseTypeIdentNotFound;
     begin
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsTypeIdentifier,GetAtom]);
+      CurContext.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                   [ctsTypeIdentifier,CurContext.Tool.GetAtom]);
     end;
     
     procedure RaiseIdentInCurContextNotFound;
@@ -3546,45 +3551,39 @@ var
         if CurContext.Node.Desc=ctnClass then begin
           // search default property in class
           Params.Save(OldInput);
-          try
-            Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                          +fdfGlobals*Params.Flags
-                          +fdfAllClassVisibilities*Params.Flags;
-            // special identifier for default property
-            Params.SetIdentifier(CurContext.Tool,'[',nil);
-            Params.ContextNode:=CurContext.Node;
-            CurContext.Tool.FindIdentifierInContext(Params);
-            CurContext:=CreateFindContext(Params);
-          finally
-            Params.Load(OldInput);
-          end;
+          Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                        +fdfGlobals*Params.Flags
+                        +fdfAllClassVisibilities*Params.Flags;
+          // special identifier for default property
+          Params.SetIdentifier(CurContext.Tool,'[',nil);
+          Params.ContextNode:=CurContext.Node;
+          CurContext.Tool.FindIdentifierInContext(Params);
+          CurContext:=CreateFindContext(Params);
+          Params.Load(OldInput);
         end;
         // find base type of property
         if CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node) then begin
           // property has type
           Params.Save(OldInput);
-          try
-            Params.SetIdentifier(CurContext.Tool,
-                                 @CurContext.Tool.Src[CurPos.StartPos],nil);
-            Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                          +(fdfGlobals*Params.Flags)
-                          -[fdfIgnoreUsedUnits];
-            Params.ContextNode:=CurContext.Node.Parent;
-            if FindIdentifierInContext(Params) then begin
-              if Params.NewNode.Desc in [ctnTypeDefinition] then begin
-                CurContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
-                                                                 Params.NewNode)
-              end else begin
-                // not a type
-                CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node);
-                RaiseTypeIdentNotFound;
-              end;
+          with CurContext.Tool do
+            Params.SetIdentifier(CurContext.Tool,@Src[CurPos.StartPos],nil);
+          Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
+                        +(fdfGlobals*Params.Flags)
+                        -[fdfIgnoreUsedUnits];
+          Params.ContextNode:=CurContext.Node.Parent;
+          if CurContext.Tool.FindIdentifierInContext(Params) then begin
+            if Params.NewNode.Desc in [ctnTypeDefinition] then begin
+              CurContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                                Params.NewNode)
             end else begin
-              // predefined identifier
+              // not a type
+              CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node);
+              RaiseTypeIdentNotFound;
             end;
-          finally
-            Params.Load(OldInput);
+          end else begin
+            // predefined identifier
           end;
+          Params.Load(OldInput);
         end else
           RaiseIdentInCurContextNotFound;
       end;
