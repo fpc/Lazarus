@@ -1119,7 +1119,7 @@ begin
 
       //TBitBtn
       LM_IMAGECHANGED, LM_LAYOUTCHANGED :
-      Begin
+      begin
          box1 := gtk_object_get_data(pgtkObject(handle),'HBox');
          if box1 <> nil then
          begin
@@ -1152,11 +1152,16 @@ begin
          end;
 
          pStr := Ampersands2Underscore(PChar(TBitBtn(Sender).Caption));
-         pLabel := gtk_label_new(pStr);
-         Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
-         gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0,
-           GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
-         StrDispose(pStr);
+         try
+           pLabel := gtk_label_new(pStr);
+           Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
+           if Accel <> GDK_VOIDSYMBOL then begin
+             gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0,
+               GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
+           end;
+         finally
+           StrDispose(pStr);
+         end;  
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
          begin
@@ -2056,27 +2061,28 @@ begin
 
   csLabel       :
     begin
-	    AccelKey:= GetAccelKey(p);
-	    if AccelKey <> 0 then
+      AccelKey:= GetAccelKey(p);
+      if AccelKey <> 0 then
         gtk_widget_remove_accelerators(p, 'grab_focus', false);
 		    
       if TLabel(Sender).ShowAccelChar then begin
-		    aLabel:= Ampersands2Underscore(pLabel);
-		    try
+	aLabel:= Ampersands2Underscore(pLabel);
+	try
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
-			    SetAccelKey(p, AccelKey);
-			    if AccelKey <> 0 then
-			      gtk_widget_add_accelerator(p, 'grab_focus',
-              gtk_accel_group_get_default(),
-			        AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+	  SetAccelKey(p, AccelKey);
+	  if AccelKey <> 0 then
+writeln('Calling Accel group 2');
+	    gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
+	      AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+writeln('Called Accel group 2');
         finally
-		      StrDispose(aLabel);
-		    end;
-		  end else begin
-		    gtk_label_set_text(PGtkLabel(p), pLabel);
-		    gtk_label_set_pattern(PGtkLabel(p), nil);
-		  end;
-		end;
+	  StrDispose(aLabel);
+	end;
+      end else begin
+        gtk_label_set_text(PGtkLabel(p), pLabel);
+        gtk_label_set_pattern(PGtkLabel(p), nil);
+      end;
+    end;
 
   csCheckBox    : gtk_label_set_text(
                     pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
@@ -2692,13 +2698,26 @@ var
   MsgPtr: PMsg;
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
+  Accelerators: PGSlist;
+  AccelEntry : PGtkAccelEntry;
 begin
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
+  Widget:=PGtkWidget(Handle);
+
+  // Remove control accelerators - has to be done due to GTK+ bug?
+  if Sender is TWinControl then begin
+    Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Handle));
+    while Accelerators <> nil do begin
+      AccelEntry:= Accelerators^.data;
+      Accelerators:= Accelerators^.next;
+      with AccelEntry^ do 
+        gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods, PGtkObject(Handle));
+    end;
+  end;  
 
   RemoveCallbacks(Sender);
 
-  Widget:=PGtkWidget(Handle);
   FixWidget:=GetFixedWidget(Widget);
   SetWidgetIsDestroyingHandle(Widget);
 
@@ -5221,10 +5240,11 @@ begin
     // Add accelerators
     AccelGroup := GetAccelGroup(ContainerMenu);
     AccelKey := GetAccelKey(MenuItem);
-    if (AccelGroup <> nil) and (AccelKey <> 0) then
+    if (AccelGroup <> nil) and (AccelKey <> 0) then begin
       gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
                           GTK_ACCEL_LOCKED, PGtkObject(MenuItem),
                           'activate_item');
+    end;
   end;
 end;
 
@@ -5685,6 +5705,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.197  2002/09/04 12:57:31  lazarus
+  Workaround GTK accelerator bug.
+
   Revision 1.196  2002/09/04 09:32:17  lazarus
   MG: improved streaming error handling
 
