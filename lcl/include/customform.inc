@@ -874,6 +874,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomForm.Hide;
 begin
+  If fsModal in FormState then
+    ModalResult := mrCancel;
   Visible := False;
 end;
 
@@ -1133,6 +1135,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/09/29 15:08:38  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.59  2002/09/16 16:18:50  lazarus
   MG: fixed mem leak in TPixmap
 
