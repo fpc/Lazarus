@@ -186,6 +186,10 @@ msgstr ""
 msgid "Define macro gtk2"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefineprozessortype
+msgid "Define processor type"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
 msgstr ""

@@ -1,3 +1,19 @@
+#: lazarusidestrconsts:srkmcommand1
+msgid "    command1 \""
+msgstr ""
+
+#: lazarusidestrconsts:srkmcommand2
+msgid "    command2 \""
+msgstr ""
+
+#: lazarusidestrconsts:srkmconflicw
+msgid " conflicts with "
+msgstr ""
+
+#: lazarusidestrconsts:srkmalreadyconnected
+msgid " The key \"%s\" is already connected to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "&Add Watch At Cursor"
 msgstr "&Добавить наблюдение у курсора"
@@ -74,6 +90,10 @@ msgstr "&Просмотр"
 msgid "&Windows"
 msgstr "&Окна"
 
+#: lazarusidestrconsts:dlgbakdirectory
+msgid "(no subdirectoy)"
+msgstr ""
+
 #: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
 msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
 msgstr "--primary-config-path <путь>\n                         главный каталог настроек, где Lazarus\n                         хранит свои файлы параметров. По умолчанию \n                         %s\n\n"
@@ -94,9 +114,17 @@ msgstr "\" не для записи."
 msgid "About Lazarus"
 msgstr "О проекте Lazarus"
 
+#: lazarusidestrconsts:srvk_accept
+msgid "Accept"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
 msgstr "Добавить текущий модуль к проекту"
+
+#: lazarusidestrconsts:srkmecaddjumppoint
+msgid "Add jump point"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -138,6 +166,10 @@ msgstr "По алфавиту"
 msgid "Alt Sets Column Mode"
 msgstr "Alt для режима колонок"
 
+#: lazarusidestrconsts:srkmalternkey
+msgid "Alternative Key"
+msgstr ""
+
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
 msgstr "Длинные имена файлов:"
@@ -145,6 +177,10 @@ msgstr "Длинные имена файлов:"
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
 msgstr "Приложение"
+
+#: lazarusidestrconsts:srvk_apps
+msgid "application key"
+msgstr ""
 
 #: lazarusidestrconsts:dlgapplicationsettings
 msgid "Application Settings"
@@ -190,6 +226,10 @@ msgstr "Автосохранение"
 msgid "Auto-create forms:"
 msgstr "Автосоздаваемые формы:"
 
+#: lazarusidestrconsts:rslanguageautomatic
+msgid "Automatic (or english)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgavailableforms
 msgid "Available forms:"
 msgstr "Доступные формы:"
@@ -201,6 +241,10 @@ msgstr "Назад"
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background color"
 msgstr "Цвет фона"
+
+#: lazarusidestrconsts:srvk_back
+msgid "Backspace"
+msgstr ""
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
@@ -219,12 +263,20 @@ msgid "Bold"
 msgstr "Жирный"
 
 #: lazarusidestrconsts:uembookmarkn
-msgid "Bookmark "
-msgstr "Закладка "
+msgid "Bookmark"
+msgstr ""
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket Highlight"
 msgstr "Подсветка скобок"
+
+#: lazarusidestrconsts:srkmeclinebreak
+msgid "Break line and move cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertline
+msgid "Break line, leave cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -242,9 +294,17 @@ msgstr "Собрать"
 msgid "Build all"
 msgstr "Собрать все"
 
+#: lazarusidestrconsts:srkmecbuildall
+msgid "build all files of program/project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Собрать Lazarus"
+
+#: lazarusidestrconsts:srkmecbuild
+msgid "build program/project"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -266,6 +326,10 @@ msgstr "Стек вызовов"
 msgid "Cancel"
 msgstr "Отмена"
 
+#: lazarusidestrconsts:srvk_capital
+msgid "Capital"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
 msgstr "С учетом регистра"
@@ -277,6 +341,10 @@ msgstr "Курсор в центре"
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Элемент ChangeLog"
+
+#: lazarusidestrconsts:srkmecchar
+msgid "Char"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
@@ -302,9 +370,17 @@ msgstr "В порядке классов"
 msgid "Class part insert policy"
 msgstr "Политика вставки частей класса"
 
+#: lazarusidestrconsts:srvk_clear
+msgid "Clear"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Закрыть"
+
+#: lazarusidestrconsts:srkmeccloseall
+msgid "Close all"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -330,9 +406,17 @@ msgstr "Создание кода"
 msgid "Code parameters"
 msgstr "Параметры кода"
 
+#: lazarusidestrconsts:srkmecautocompletion
+msgid "Code template completion"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
 msgstr "Шаблоны кода"
+
+#: lazarusidestrconsts:srkmcatcodetools
+msgid "CodeTools commands"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor"
@@ -361,6 +445,18 @@ msgstr "Цветовая схема:"
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
 msgstr "Цвета"
+
+#: lazarusidestrconsts:srkmeccolumnselect
+msgid "Column selection mode"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcommand
+msgid "Command "
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatcmdcmd
+msgid "Command commands"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -414,13 +510,29 @@ msgstr "Настроить \"Собрать Lazarus\""
 msgid "Configure custom tools ..."
 msgstr "Настроить инструменты пользователя"
 
+#: lazarusidestrconsts:srkmconflic
+msgid "Conflict "
+msgstr ""
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Конструктор должен быть 'init' (деструктор - 'done')"
 
+#: lazarusidestrconsts:srvk_control
+msgid "Control"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_convert
+msgid "Convert"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
 msgstr "Преобразовать DFM в LFM"
+
+#: lazarusidestrconsts:srkmecselectiontabs2spaces
+msgid "Convert tabs to spaces in selection"
+msgstr ""
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
@@ -429,6 +541,10 @@ msgstr "Копировать"
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
 msgstr "Ошибка копирования"
+
+#: lazarusidestrconsts:srkmeccopy
+msgid "Copy selection to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -454,13 +570,25 @@ msgstr "Курсор вне конца строки"
 msgid "Cursor column in current editor"
 msgstr "Колонка курсора в этом редакторе"
 
+#: lazarusidestrconsts:srkmcatcursormoving
+msgid "Cursor moving commands"
+msgstr ""
+
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
 msgstr "Ряд курсора в этом редакторе"
 
+#: lazarusidestrconsts:rsiwpcustomposition
+msgid "Custom position"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
 msgstr "Вырезать"
+
+#: lazarusidestrconsts:srkmeccut
+msgid "Cut selection to clipboard"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertcvskeyword
 msgid "CVS keyword"
@@ -490,6 +618,10 @@ msgstr "Тип отладчика и путь"
 msgid "Debugging:"
 msgstr "Отладка:"
 
+#: lazarusidestrconsts:rsiwpdefault
+msgid "Default"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
 msgstr "Стандартное расширение паскаля"
@@ -502,6 +634,18 @@ msgstr "Задержка"
 msgid "Delete"
 msgstr "Удалить"
 
+#: lazarusidestrconsts:srkmecdeletechar
+msgid "Delete char at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecdeleteline
+msgid "Delete current line"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecdeletelastchar
+msgid "Delete Last Char"
+msgstr ""
+
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
 msgstr "Удалить выбранное"
@@ -509,6 +653,26 @@ msgstr "Удалить выбранное"
 #: lazarusidestrconsts:dlgdeltemplate
 msgid "Delete template "
 msgstr "Удалить шаблон "
+
+#: lazarusidestrconsts:srkmecdeletebol
+msgid "Delete to beginning of line"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecdeleteeol
+msgid "Delete to end of line"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecdeleteword
+msgid "Delete to end of word"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecdeletelastword
+msgid "Delete to start of word"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecclearall
+msgid "Delete whole text"
+msgstr ""
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -525,6 +689,10 @@ msgstr "Рабочий стол"
 #: lazarusidestrconsts:dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Файлы рабочего стола"
+
+#: lazarusidestrconsts:rslanguagedeutsch
+msgid "Deutsch"
+msgstr ""
 
 #: lazarusidestrconsts:idedialogs
 msgid "Dialogs"
@@ -566,6 +734,10 @@ msgstr "Не разрывать строку после:"
 msgid "Do not split line In front of:"
 msgstr "Не разрывать строку перед:"
 
+#: lazarusidestrconsts:rsiwpdocked
+msgid "Docked"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
 msgstr "Выделить строку дв. щелчком"
@@ -589,6 +761,14 @@ msgstr "Динамические"
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
 msgstr "&Окружение"
+
+#: lazarusidestrconsts:srkmeditkeys
+msgid "Edit Keys"
+msgstr ""
+
+#: lazarusidestrconsts:srkmeditforcmd
+msgid "Edit keys for command"
+msgstr ""
 
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
@@ -618,6 +798,14 @@ msgstr "Настройки редактора"
 msgid "Element"
 msgstr "Элемент"
 
+#: lazarusidestrconsts:srvk_end
+msgid "End"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguageenglish
+msgid "English"
+msgstr ""
+
 #: lazarusidestrconsts:dlgentirescope
 msgid "Entire Scope"
 msgstr "С начала"
@@ -626,13 +814,37 @@ msgstr "С начала"
 msgid "Environment"
 msgstr "Окружения"
 
+#: lazarusidestrconsts:srkmcatenvmenu
+msgid "Environment menu commands"
+msgstr ""
+
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options"
 msgstr "Параметры окружения"
 
+#: lazarusidestrconsts:srvk_escape
+msgid "Escape"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagespanish
+msgid "Espa\361ol"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_execute
+msgid "Execute"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Полное имя файла в данном редакторе"
+
+#: lazarusidestrconsts:srkmecexttool
+msgid "External tool %d"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecexttoolsettings
+msgid "External tools settings"
+msgstr ""
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -650,9 +862,17 @@ msgstr "Расш-я файлов:"
 msgid "File is readonly"
 msgstr "Файл только для чтения"
 
+#: lazarusidestrconsts:srkmcatfilemenu
+msgid "File menu commands"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Файлы"
+
+#: lazarusidestrconsts:srvk_final
+msgid "Final"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
@@ -670,21 +890,61 @@ msgstr "Найти впереди"
 msgid "Find &Previous"
 msgstr "Найти сзади"
 
+#: lazarusidestrconsts:srkmecfindblockotherend
+msgid "Find block other end"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfindblockstart
+msgid "Find block start"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
 msgstr "Найти начало блока кода"
+
+#: lazarusidestrconsts:srkmecfinddeclaration
+msgid "Find declaration"
+msgstr ""
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Найти описание под курсора"
 
+#: lazarusidestrconsts:srkmecfindinfiles
+msgid "Find in files"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfindnext
+msgid "Find next"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
 msgstr "Найти другой конец блока кода"
 
+#: lazarusidestrconsts:srkmecfindprevious
+msgid "Find previous"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfindproceduredefinition
+msgid "Find procedure definiton"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfindproceduremethod
+msgid "Find procedure method"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecfind
+msgid "Find text"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Найти текст под курсором"
+
+#: lazarusidestrconsts:srkmecjumptoeditor
+msgid "Focus to source editor"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -718,6 +978,10 @@ msgstr "Ошибка каталога исходников FPC"
 msgid "Freepascal source directory"
 msgstr "Каталог исходников FreePascal"
 
+#: lazarusidestrconsts:rslanguagefrench
+msgid "French"
+msgstr ""
+
 #: lazarusidestrconsts:dlgfromcursor
 msgid "From Cursor"
 msgstr "От курсора"
@@ -725,6 +989,10 @@ msgstr "От курсора"
 #: lazarusidestrconsts:lismenuinsertgeneral
 msgid "General"
 msgstr "Общие"
+
+#: lazarusidestrconsts:srkmecenvironmentoptions
+msgid "General environment options"
+msgstr ""
 
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
@@ -742,9 +1010,41 @@ msgstr "Генерировать информацию для GDB (замедляет сборку)"
 msgid "Generate:"
 msgstr "Создать:"
 
+#: lazarusidestrconsts:dlggetposition
+msgid "Get position"
+msgstr ""
+
 #: lazarusidestrconsts:dlgglobal
 msgid "Global"
 msgstr "Везде"
+
+#: lazarusidestrconsts:srkmecgotoeditor
+msgid "Go to editor %d"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecgotolinenumber
+msgid "Go to line number"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecgotomarker
+msgid "Go to Marker %d"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecmatchbracket
+msgid "Go to matching bracket"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecnexteditor
+msgid "Go to next editor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpreveditor
+msgid "Go to prior editor"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecgotoincludedirective
+msgid "Go to to include directive of current include file"
+msgstr ""
 
 #: lazarusidestrconsts:lismenugotoincludedirective
 msgid "Goto include directive"
@@ -754,6 +1054,10 @@ msgstr "Переход по директиве $I"
 msgid "Goto line"
 msgstr "Переход к строке"
 
+#: lazarusidestrconsts:srkmecgotoxy
+msgid "Goto XY"
+msgstr ""
+
 #: lazarusidestrconsts:dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
 msgstr "Совместимость с GPC (GNU Pascal Compiler)"
@@ -761,6 +1065,10 @@ msgstr "Совместимость с GPC (GNU Pascal Compiler)"
 #: lazarusidestrconsts:lismenuinsertgplnotice
 msgid "GPL notice"
 msgstr "Заметка GPL"
+
+#: lazarusidestrconsts:srkmgrabkey
+msgid "Grab Key"
+msgstr ""
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -781,6 +1089,10 @@ msgstr "Размер X сетки"
 #: lazarusidestrconsts:dlggridy
 msgid "Grid size Y"
 msgstr "Размер Y сетки"
+
+#: lazarusidestrconsts:srkmecguessmisplacedifdef
+msgid "Guess misplaced $IFDEF"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
@@ -806,9 +1118,25 @@ msgstr "Ширина поля (лев)"
 msgid "Half Page Scroll"
 msgstr "Половинная прокрутка страницы"
 
+#: lazarusidestrconsts:srvk_hanja
+msgid "Hanja"
+msgstr ""
+
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr "Размер кучи"
+
+#: lazarusidestrconsts:dlgheightpos
+msgid "Height:"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_help
+msgid "Help"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcarhelpmenu
+msgid "Help menu commands"
+msgstr ""
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
@@ -821,6 +1149,10 @@ msgstr "Подсказки палитры компонентов"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Подсказки командных кнопок (открыть, сохранить и т.д.)"
+
+#: lazarusidestrconsts:srvk_home
+msgid "Home"
+msgstr ""
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -846,6 +1178,10 @@ msgstr "Если Вы можете помочь реализовать эту возможность, пишите \015lazarus@mi
 msgid "Ignore"
 msgstr "Пропуск"
 
+#: lazarusidestrconsts:srkmecimestr
+msgid "Ime Str"
+msgstr ""
+
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
 msgstr "Перед методами"
@@ -866,6 +1202,10 @@ msgstr "Включить системные переменные"
 msgid "Incremental Find"
 msgstr "Поиск с нарастанием"
 
+#: lazarusidestrconsts:srkmecblockindent
+msgid "Indent block"
+msgstr ""
+
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
 msgstr "Выровнять код по"
@@ -881,6 +1221,62 @@ msgstr "Информация"
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "ВСТ"
+
+#: lazarusidestrconsts:srvk_insert
+msgid "Insert"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertchangelogentry
+msgid "Insert ChangeLog entry"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertdatetime
+msgid "Insert current date and time"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertusername
+msgid "Insert current username"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvsauthor
+msgid "Insert CVS keyword Author"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvsdate
+msgid "Insert CVS keyword Date"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvsheader
+msgid "Insert CVS keyword Header"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvsid
+msgid "Insert CVS keyword ID"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvslog
+msgid "Insert CVS keyword Log"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvsname
+msgid "Insert CVS keyword Name"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvsrevision
+msgid "Insert CVS keyword Revision"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertcvssource
+msgid "Insert CVS keyword Source"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertgplnotice
+msgid "Insert GPL notice"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecinsertmode
+msgid "Insert Mode"
+msgstr ""
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -918,6 +1314,10 @@ msgstr "Неправильный множественный выбор"
 msgid "Invalid Pascal Identifier"
 msgstr "Некорректный идентификатор паскаля"
 
+#: lazarusidestrconsts:srvk_irregular
+msgid "Irregular "
+msgstr ""
+
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
 msgstr "Курсив"
@@ -938,6 +1338,14 @@ msgstr "Переход вперед"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Переход (например, по методу)"
 
+#: lazarusidestrconsts:srvk_junja
+msgid "Junja"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_kana
+msgid "Kana"
+msgstr ""
+
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
 msgstr "Сохранять курсор по X"
@@ -949,6 +1357,10 @@ msgstr "Хранить нек. переменные в регистрах"
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
 msgstr "Сохранять порядок процедур"
+
+#: lazarusidestrconsts:srkmkey
+msgid "Key"
+msgstr ""
 
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
@@ -1014,6 +1426,18 @@ msgstr "Опции LCL, зависящие от интерфейса:"
 msgid "LCL Widget Type"
 msgstr "Тип элемента управления LCL"
 
+#: lazarusidestrconsts:srvk_left
+msgid "Left"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_lwin
+msgid "left windows key"
+msgstr ""
+
+#: lazarusidestrconsts:dlgleftpos
+msgid "Left:"
+msgstr ""
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Уровень 1 (быстрая)"
@@ -1033,6 +1457,10 @@ msgstr "Библиотека:"
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\n\nLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.\n\nLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr "Лицензия: GPL/LGPL\n\nLazarus - это библиотеки классов для FreePascal, эмулирующие Delphi. Free Pascal - (L)GPL'ьный компилятор под Linux, Win32, OS/2, 68K и др. Free Pascal сделан, чтобы разбирать и компилировать программы с синтаксисом Delphi, который, конечно, ООП.\n\nLazarus - отсутствующее звено цепи, которое позволит Вам создавать программы типа Delphi на всех вышеперечисленных платформах. IDE вдруг станет инструментом RAD, как Delphi.\n\n С ростом Lazarus нам нужно больше разработчиков."
+
+#: lazarusidestrconsts:srkmeclineselect
+msgid "Line selection mode"
+msgstr ""
 
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
@@ -1114,6 +1542,10 @@ msgstr "Предел недавних проектов"
 msgid "Maximum counter"
 msgstr "Максимальный счетчик"
 
+#: lazarusidestrconsts:srvk_menu
+msgid "Menu"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
 msgstr "Сообщения..."
@@ -1146,13 +1578,77 @@ msgstr "Разное"
 msgid "Mix methods and properties"
 msgstr "Смешивать методы и свойства"
 
+#: lazarusidestrconsts:srvk_modechange
+msgid "Mode Change"
+msgstr ""
+
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
 msgstr "Изменён"
 
+#: lazarusidestrconsts:srvk_lbutton
+msgid "Mouse Button Left"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_rbutton
+msgid "Mouse Button Right"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
 msgstr "Ссылки мыши"
+
+#: lazarusidestrconsts:srkmecpagedown
+msgid "Move cursor down one page"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpageleft
+msgid "Move cursor left one page"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpageright
+msgid "Move cursor right one page"
+msgstr ""
+
+#: lazarusidestrconsts:srkmeceditortop
+msgid "Move cursor to absolute beginning"
+msgstr ""
+
+#: lazarusidestrconsts:srkmeceditorbottom
+msgid "Move cursor to absolute end"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpagebottom
+msgid "Move cursor to bottom of page"
+msgstr ""
+
+#: lazarusidestrconsts:srkmeclineend
+msgid "Move cursor to line end"
+msgstr ""
+
+#: lazarusidestrconsts:srkmeclinestart
+msgid "Move cursor to line start"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpagetop
+msgid "Move cursor to top of page"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpageup
+msgid "Move cursor up one page"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecwordleft
+msgid "Move cursor word left"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecwordright
+msgid "Move cursor word right"
+msgstr ""
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
@@ -1178,6 +1674,10 @@ msgstr "Множественный выбор компонентов должен быть на одной форме"
 msgid "Naming"
 msgstr "Названия"
 
+#: lazarusidestrconsts:srkmecnew
+msgid "New"
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
 msgstr ""
@@ -1198,13 +1698,25 @@ msgstr "Создать проект из файла"
 msgid "New Unit"
 msgstr "Создать модуль"
 
+#: lazarusidestrconsts:srvk_next
+msgid "Next"
+msgstr ""
+
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
 msgstr "Не найдено ошибок раскладок."
 
+#: lazarusidestrconsts:srvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
 msgstr "Нет"
+
+#: lazarusidestrconsts:srkmecnormalselect
+msgid "Normal selection mode"
+msgstr ""
 
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
@@ -1213,6 +1725,14 @@ msgstr "Еще не реализовано"
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "Внимание, файлы проекта - все файлы в его каталоге"
+
+#: lazarusidestrconsts:srvk_numlock
+msgid "Numlock"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_numpad
+msgid "Numpad %d"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
@@ -1225,6 +1745,10 @@ msgstr "Открыть"
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
 msgstr "Открыть файл"
+
+#: lazarusidestrconsts:srkmecopenfileatcursor
+msgid "Open file at cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
@@ -1298,6 +1822,10 @@ msgstr "Параметры вывода"
 msgid "Overflow"
 msgstr "Переполнения"
 
+#: lazarusidestrconsts:srkmecoverwritemode
+msgid "Overwrite Mode"
+msgstr ""
+
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
 msgstr "ЗАМ"
@@ -1314,6 +1842,10 @@ msgstr "Передать опции линкеру (отделять пробелами)"
 msgid "Paste"
 msgstr "Вставить"
 
+#: lazarusidestrconsts:srkmecpaste
+msgid "Paste clipboard to current position"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtofpcpath
 msgid "Path To Compiler:"
 msgstr "Путь к компилятору:"
@@ -1321,6 +1853,18 @@ msgstr "Путь к компилятору:"
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
 msgstr "Пауза"
+
+#: lazarusidestrconsts:srvk_pause
+msgid "Pause key"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecpause
+msgid "pause program"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecperiod
+msgid "period"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent Caret"
@@ -1334,6 +1878,10 @@ msgstr "Проверьте имя компилятора"
 msgid "Please check the freepascal source directory"
 msgstr "Проверьте каталог исходников FreePascal"
 
+#: lazarusidestrconsts:srkmpresskey
+msgid "Please press a key ..."
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Предпросмотр"
@@ -1341,6 +1889,14 @@ msgstr "Предпросмотр"
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
 msgstr "Предпросмотр(max длина=1)"
+
+#: lazarusidestrconsts:srvk_print
+msgid "Print"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_prior
+msgid "Prior"
+msgstr ""
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -1369,6 +1925,10 @@ msgstr "Имя файла проекта"
 #: lazarusidestrconsts:dlgprojfiles
 msgid "Project files"
 msgstr "Файлы проекта"
+
+#: lazarusidestrconsts:srkmcatprojectmenu
+msgid "Project menu commands"
+msgstr ""
 
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
@@ -1442,13 +2002,33 @@ msgstr "Замена"
 msgid "Replace All"
 msgstr "Заменить все"
 
+#: lazarusidestrconsts:srkmecreplace
+msgid "Replace text"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Отчет"
 
+#: lazarusidestrconsts:rsiwprestorewindowgeometry
+msgid "Restore window geometry"
+msgstr ""
+
+#: lazarusidestrconsts:rsiwprestorewindowsize
+msgid "Restore window size"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_return
+msgid "Return"
+msgstr ""
+
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Обратный экспорт"
+
+#: lazarusidestrconsts:srvk_right
+msgid "Right"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
@@ -1458,9 +2038,21 @@ msgstr "Правая граница"
 msgid "Right margin color"
 msgstr "Цвет правой границы"
 
+#: lazarusidestrconsts:srvk_rwin
+msgid "right windows key"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrubberbandgroup
+msgid "Rubber band"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
 msgstr "Запуск"
+
+#: lazarusidestrconsts:srkmcatrunmenu
+msgid "Run menu commands"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
@@ -1469,6 +2061,10 @@ msgstr "Параметры запуска"
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
 msgstr "Параметры запуска ..."
+
+#: lazarusidestrconsts:srkmecrun
+msgid "run program"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
@@ -1538,8 +2134,20 @@ msgstr "Масштаб"
 msgid "Scope"
 msgstr "Где"
 
+#: lazarusidestrconsts:srvk_scroll
+msgid "Scroll"
+msgstr ""
+
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll By One Less"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecscrolldown
+msgid "Scroll down one line"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecscrollleft
+msgid "Scroll left one char"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscrollpastendfile
@@ -1549,6 +2157,14 @@ msgstr "Прокрутить до конца файла"
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll Past End of Line"
 msgstr "Прокрутить до конца строки"
+
+#: lazarusidestrconsts:srkmecscrollright
+msgid "Scroll right one char"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecscrollup
+msgid "Scroll up one line"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Search Paths"
@@ -1574,6 +2190,14 @@ msgstr "Выделить блок кода"
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Выберите файлы форм Delphi (*.dfm)"
 
+#: lazarusidestrconsts:srkmecseldown
+msgid "Select Down"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselgotoxy
+msgid "Select Goto XY"
+msgstr ""
+
 #: lazarusidestrconsts:dlgrubberbandselectsgrandchilds
 msgid "Select grand childs"
 msgstr ""
@@ -1582,13 +2206,65 @@ msgstr ""
 msgid "Select line"
 msgstr "Выделить строку"
 
+#: lazarusidestrconsts:srkmecsellineend
+msgid "Select Line End"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecsellinestart
+msgid "Select Line Start"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselpagebottom
+msgid "Select Page Bottom"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselpagedown
+msgid "Select Page Down"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselpageleft
+msgid "Select Page Left"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselpageright
+msgid "Select Page Right"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselpagetop
+msgid "Select Page Top"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselpageup
+msgid "Select Page Up"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Выделить абзац"
 
+#: lazarusidestrconsts:srkmecseleditortop
+msgid "Select to absolute beginning"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecseleditorbottom
+msgid "Select to absolute end"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselecttobrace
 msgid "Select to brace"
 msgstr "Выделить до скобки"
+
+#: lazarusidestrconsts:srkmecselup
+msgid "Select Up"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselwordleft
+msgid "Select Word Left"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselwordright
+msgid "Select Word Right"
+msgstr ""
 
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"
@@ -1602,6 +2278,14 @@ msgstr "Выделение"
 msgid "Selection tool"
 msgstr "Инструмент выбора"
 
+#: lazarusidestrconsts:srkmecselleft
+msgid "SelLeft"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecselright
+msgid "SelRight"
+msgstr ""
+
 #: lazarusidestrconsts:fdmsendtoback
 msgid "Send to back"
 msgstr "Перенести вниз"
@@ -1614,9 +2298,21 @@ msgstr "Установить все элементы по умолчанию"
 msgid "Set element to default"
 msgstr "Установить элемент по умолчанию"
 
+#: lazarusidestrconsts:srkmecsetmarker
+msgid "Set Marker %d"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Переменная свойства"
+
+#: lazarusidestrconsts:srvk_shift
+msgid "Shift"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecshifttab
+msgid "Shift Tab"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
@@ -1734,6 +2430,10 @@ msgstr "Выравнивать по сетке"
 msgid "Snap to Guide Lines"
 msgstr "Выравнивать по линиям помощи"
 
+#: lazarusidestrconsts:srvk_snapshot
+msgid "Snapshot"
+msgstr ""
+
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
 msgstr "Сортировка выбранного"
@@ -1742,9 +2442,17 @@ msgstr "Сортировка выбранного"
 msgid "Source Editor"
 msgstr "Редактор исходников"
 
+#: lazarusidestrconsts:srkmcatsrcnotebook
+msgid "Source Notebook commands"
+msgstr ""
+
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
 msgstr "Пробел"
+
+#: lazarusidestrconsts:srvk_space
+msgid "Space key"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
@@ -1778,6 +2486,10 @@ msgstr "Останов"
 msgid "Stop after number of errors:"
 msgstr "Останов после числа ошибок"
 
+#: lazarusidestrconsts:srkmecstopprogram
+msgid "stop program"
+msgstr ""
+
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
 msgstr "Префикс STORED"
@@ -1794,6 +2506,10 @@ msgstr "Стиль:"
 msgid "Sub directory"
 msgstr "Подкаталог"
 
+#: lazarusidestrconsts:srkmectoggleformunit
+msgid "Switch between form and unit"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsymantecchecking
 msgid "Symantec Checking:"
 msgstr "Проверка семантики:"
@@ -1806,6 +2522,10 @@ msgstr "Символ сзади (.~pp)"
 msgid "Symbol in front (.~pp)"
 msgstr "Символ спереди (.~pp)"
 
+#: lazarusidestrconsts:srkmecsyntaxcheck
+msgid "Syntax check"
+msgstr ""
+
 #: lazarusidestrconsts:idesystem
 msgid "System"
 msgstr "Система"
@@ -1813,6 +2533,10 @@ msgstr "Система"
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
 msgstr "Системные переменные"
+
+#: lazarusidestrconsts:srvk_tab
+msgid "Tab"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtabwidths
 msgid "Tab widths:"
@@ -1861,6 +2585,22 @@ msgstr "Каталог проб \"%s\" не найден."
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
 msgstr "Параметры текста"
+
+#: lazarusidestrconsts:srkmcatediting
+msgid "Text editing commands"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatmarker
+msgid "Text marker commands"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatsearchreplace
+msgid "Text search and replace commands"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatselection
+msgid "Text selection commands"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
@@ -1914,12 +2654,24 @@ msgstr "Переключить форму/модуль"
 msgid "Toggle form/unit view"
 msgstr "Переключить форму/модуль"
 
+#: lazarusidestrconsts:srkmectogglemode
+msgid "Toggle Mode"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcattoolmenu
+msgid "Tools menu commands"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtooltipeval
 msgid "Tooltip expression evaluation"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtooltiptools
 msgid "Tooltip symbol Tools"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtoppos
+msgid "Top:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbp7cptb
@@ -1958,6 +2710,10 @@ msgstr "Откат после сохранения"
 msgid "Undo limit:"
 msgstr "Предел откатов:"
 
+#: lazarusidestrconsts:srkmecblockunindent
+msgid "Unindent block"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Сдвинуть блок влево"
@@ -1981,6 +2737,14 @@ msgstr "Модуль с таким именем уже в проекте"
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
 msgstr "Модули..."
+
+#: lazarusidestrconsts:srvk_unknown
+msgid "Unknown"
+msgstr ""
+
+#: lazarusidestrconsts:srkmecunknown
+msgid "unknown editor command"
+msgstr ""
 
 #: lazarusidestrconsts:dlgupword
 msgid "Up"
@@ -2026,6 +2790,10 @@ msgstr "Использовать приложение для запуска"
 msgid "Use syntax highlight"
 msgstr "Подсветка синтаксиса"
 
+#: lazarusidestrconsts:rsiwpusewindowmanagersetting
+msgid "Use windowmanager setting"
+msgstr ""
+
 #: lazarusidestrconsts:dlgedcustomext
 msgid "User defined extension"
 msgstr "Пользовательское расширение"
@@ -2033,6 +2801,10 @@ msgstr "Пользовательское расширение"
 #: lazarusidestrconsts:dlgcustomext
 msgid "User defined extension (.pp.xxx)"
 msgstr "Расширение пользователя (.pp.xxx)"
+
+#: lazarusidestrconsts:srkmecuserfirst
+msgid "User First"
+msgstr ""
 
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
@@ -2054,6 +2826,22 @@ msgstr "Префикс переменной"
 msgid "Verbosity:"
 msgstr "Подробность:"
 
+#: lazarusidestrconsts:srkmectogglebreakpoints
+msgid "View breakpoints"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglecallstack
+msgid "View call stack"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglecodeexpl
+msgid "View code explorer"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectoggledebuggerout
+msgid "View debugger output"
+msgstr ""
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Показать формы"
@@ -2061,6 +2849,26 @@ msgstr "Показать формы"
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
 msgstr "Просмотр истории переходов"
+
+#: lazarusidestrconsts:srkmectogglelocals
+msgid "View local variables"
+msgstr ""
+
+#: lazarusidestrconsts:srkmcatviewmenu
+msgid "View menu commands"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectogglemessages
+msgid "View messages"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectoggleobjectinsp
+msgid "View Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:srkmectoggleprojectexpl
+msgid "View project explorer"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
@@ -2082,6 +2890,10 @@ msgstr "Показать зависимости модулей"
 msgid "View Units"
 msgstr "Показать модули"
 
+#: lazarusidestrconsts:srkmectogglewatches
+msgid "View watches"
+msgstr ""
+
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"
 msgstr "Видимое поле (лев)"
@@ -2102,6 +2914,10 @@ msgstr "Окно наблюдений"
 msgid "Whole Words Only"
 msgstr "Только целые слова"
 
+#: lazarusidestrconsts:dlgwidthpos
+msgid "Width:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwinpos
 msgid "Window Positions"
 msgstr "Позиции окна"
@@ -2109,6 +2925,10 @@ msgstr "Позиции окна"
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "Слово под курсором в этом редакторе"
+
+#: lazarusidestrconsts:srkmecwordcompletion
+msgid "Word completion"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwordspolicies
 msgid "Words"
