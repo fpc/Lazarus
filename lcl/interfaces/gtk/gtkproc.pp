@@ -30,6 +30,11 @@ interface
 {off $DEFINE VerboseAccelerator}
 
 uses
+  {$IFDEF win32}
+  // use windows unit first,
+  // if not, Rect and Point are taken from the windows unit instead of classes.
+  Windows, // needed for keyboard handling
+  {$endif}
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
 {$ifndef VER1_0}
@@ -44,7 +49,9 @@ uses
   InterfaceBase,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  {$IFNDEF win32}
   X, XLib, XUtil, //Keyboard handling
+  {$ENDIF}
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
@@ -462,9 +469,11 @@ procedure ReleaseMouseCapture;
 procedure UpdateMouseCaptureControl;
 
 {$IFNDEF GTK2_2}
+{$IFNDEF win32}
 // MWE:
 // TODO: check if the new keyboard routines require X on GTK2
 function X11Display: Pointer;
+{$ENDIF}
 {$ENDIF}
 
 // designing

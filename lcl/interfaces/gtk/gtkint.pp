@@ -57,7 +57,12 @@ interface
 {$EndIF}
 
 uses
-  // rtl+ftl
+  {$IFDEF WIN32}
+  // use windows unit first,
+  // if not, Rect and Point are taken from the windows unit instead of classes.
+  Windows,
+  {$ENDIF}
+  // rtl+fcl
   Classes, SysUtils, FPCAdds,
   // interfacebase
   InterfaceBase,
@@ -70,9 +75,6 @@ uses
   // Target OS specific
   {$IFDEF UNIX}
   x, xlib,
-  {$ENDIF}
-  {$IFDEF WIN32}
-  Windows,
   {$ENDIF}
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
@@ -440,6 +442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.220  2005/02/03 21:10:07  vincents
+  fixed compilation of gtk2 interface on windows
+
   Revision 1.219  2005/01/13 22:07:10  mattias
   added mouse cursors for 8 uni directions, imlemented for gtk
 

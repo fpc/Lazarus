@@ -2925,14 +2925,19 @@ end;
 procedure InitKeyboardTables;
 var
   n: Integer;
-  VK: Byte;
+  VKey: Byte;
 begin
   for n := 0 to 255 do
   begin
-    MCharToVK[Chr(n)] := Windows.VkKeyScan(Chr(n));
-    VK := MapVirtualKey(n, 3);
-    MKeyCodeToVK[n] := VK;
-    MVKToKeyCode[VK] := n;
+    MCharToVK[Chr(n)] := TVKeyRecord(Windows.VkKeyScan(Chr(n)));
+    VKey := MapVirtualKey(n, 3);
+    MKeyCodeToVK[n] := VKey;
+    if VKey <> $FF
+      then MVKeyInfo[VKey].KeyCode := Byte(n);
+    //WARNING: the other fields of MVKeyInfo are not set.
+    //At this moment it is not clear, what they should be.
+    //This is code is to be removed when the keyboard handling is updated for
+    //gtk2, (gtk1 won't be supported on windows), so it will be obsolete soon
   end
 end;
 {$ENDIF}
@@ -7924,6 +7929,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.331  2005/02/03 21:10:07  vincents
+  fixed compilation of gtk2 interface on windows
+
   Revision 1.330  2005/01/24 16:06:42  mattias
   implemented DoubleClick for quick selection in new dialog
 
