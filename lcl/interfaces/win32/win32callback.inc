@@ -1002,7 +1002,21 @@ Begin
   {$ENDIF VER1_1_MSG}
 
   case Msg of
-    WM_ERASEBKGND, WM_SETCURSOR:
+    WM_ERASEBKGND:
+    begin
+      // Groupbox (which is a button) doesn't erase it's background properly
+      // it's needed for winxp themes where controls send the WM_ERASEBKGND
+      // message to their parent to clear their background and then draw
+      // transparently
+      if (LMessage.Result = 0) and (TheWinControl <> nil) and 
+        (TheWinControl.FCompStyle = csGroupBox) then
+      begin
+        TheWinControl.EraseBackground(WParam)
+      end else begin
+        WinProcess := true;
+      end;
+    end;
+    WM_SETCURSOR:
     begin
       if LMessage.Result = 0 then
         WinProcess := true;
@@ -1217,6 +1231,9 @@ end;
 
 {
   $Log$
+  Revision 1.114  2004/06/15 15:37:29  micha
+  fix groupbox background erasing
+
   Revision 1.113  2004/06/14 12:54:02  micha
   fix designer cursor to not set Form.Cursor directly
 
