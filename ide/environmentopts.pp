@@ -1436,7 +1436,7 @@ begin
     Top:=2;
     Width:=MaxX-Left*2;
     Height:=23;
-    Caption:=dlgEnvNotes;
+    Caption:=dlgEnvBackupHelpNote;
     Visible:=true;
   end;
 

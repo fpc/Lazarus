@@ -359,7 +359,8 @@ resourcestring
   //It''s OK then
   dlgBackColor = 'Background color';
   dlgEnvColors = 'Colors';
-  dlgEnvNotes = 'Notes: ';
+  dlgEnvBackupHelpNote =
+    'Notes: Project files are all files in the project directory';
   dlgEdOptsCap = 'Editor Options';
   dlgEdDisplay = 'Display';
   dlgKeyMapping = 'Key Mappings';
