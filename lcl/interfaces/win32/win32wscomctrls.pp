@@ -47,6 +47,9 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class procedure Update(const AStatusBar: TStatusBar); override;
+    class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
   end;
 
   { TWin32WSTabSheet }
@@ -188,6 +191,58 @@ type
 
 implementation
 
+{ --- Helper routines for TWin32WSStatusBar --- }
+
+{------------------------------------------------------------------------------
+  Method: UpdateStatusBarPanel
+  Params: StatusPanel - StatusPanel which needs to be update
+  Returns: Nothing
+
+  Called by StatusBarPanelUpdate and StatusBarSetText
+  Everything is updated except the panel width
+ ------------------------------------------------------------------------------}
+procedure UpdateStatusBarPanel(const StatusPanel: TStatusPanel);
+var
+  BevelType: integer;
+  Text: string;
+begin
+  Text := StatusPanel.Text;
+  case StatusPanel.Alignment of
+    taCenter: Text := #9 + Text;
+    taRightJustify: Text := #9#9 + Text;
+  end;
+  case StatusPanel.Bevel of
+    pbNone: BevelType := Windows.SBT_NOBORDERS;
+    pbLowered: BevelType := 0;
+    pbRaised: BevelType := Windows.SBT_POPOUT;
+  end;
+  Windows.SendMessage(StatusPanel.StatusBar.Handle, SB_SETTEXT, StatusPanel.Index or BevelType, LPARAM(PChar(Text)));
+end;
+
+procedure UpdateStatusBarPanelWidths(const StatusBar: TStatusBar);
+var
+  Rights: PInteger;
+  PanelIndex: integer;
+  CurrentRight: integer;
+begin
+  if StatusBar.Panels.Count=0 then begin
+    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, 0, 0);
+    exit;
+  end;
+  Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
+  try
+    CurrentRight := 0;
+    for PanelIndex := 0 to StatusBar.Panels.Count-2 do begin
+      CurrentRight := CurrentRight + StatusBar.Panels[PanelIndex].Width;
+      Rights[PanelIndex] := CurrentRight;
+    end;
+    Rights[StatusBar.Panels.Count-1] := -1; //Last extends to end;
+    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, StatusBar.Panels.Count, LPARAM(Rights));
+  finally
+    Freemem(Rights);
+  end;
+end;
+
 { TWin32WSStatusBar }
 
 function TWin32WSStatusBar.CreateHandle(const AWinControl: TWinControl;
@@ -209,11 +264,39 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
-  TWin32WidgetSet(InterfaceObject).StatusBarUpdate(AWinControl);
+  // need to set handle for Update method
+  AWinControl.Handle := Params.Window;
+  Update(TStatusBar(AWinControl));
   Result := Params.Window;
 end;
 
+procedure TWin32WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+begin
+  UpdateStatusBarPanelWidths(AStatusBar);
+  UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+end;
 
+procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+begin
+  if AStatusBar.SimplePanel then
+    Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(AStatusBar.SimpleText)))
+  else
+    UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+end;
+
+procedure TWin32WSStatusBar.Update(const AStatusBar: TStatusBar);
+var
+  PanelIndex: integer;
+begin
+  Windows.SendMessage(AStatusBar.Handle, SB_SIMPLE, WPARAM(AStatusBar.SimplePanel), 0);
+  if AStatusBar.SimplePanel then
+    SetPanelText(AStatusBar, 0)
+  else begin
+    UpdateStatusBarPanelWidths(AStatusBar);
+    for PanelIndex := 0 to AStatusBar.Panels.Count-1 do
+      UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+  end;
+end;
 
 { TWin32WSCustomListView } 
      

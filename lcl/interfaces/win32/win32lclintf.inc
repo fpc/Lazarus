@@ -165,68 +165,15 @@ Begin
   Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
 End;
 
-{------------------------------------------------------------------------------
-  Procedure: StatusBarPanelUpdate
-  Params: StatusBar:
-          PanelIndex:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
-var
-  TheStatusBar: TStatusBar;
-begin
-  TheStatusBar := (StatusBar as TStatusBar);
-  UpdateStatusBarPanelWidths(TheStatusBar);
-  UpdateStatusBarPanel(TheStatusBar.Panels[PanelIndex]);
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: StatusBarSetText
-  Params: StatusBar:
-          PanelIndex:
-          Text:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
-var
-  TheStatusBar: TStatusBar;
-begin
-  TheStatusBar := StatusBar as TStatusBar;
-  if TheStatusBar.SimplePanel then
-    Windows.SendMessage(TheStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(TheStatusBar.SimpleText)))
-  else
-    UpdateStatusBarPanel(TheStatusBar.Panels[PanelIndex]);
-end;
-
-{------------------------------------------------------------------------------
-  Procedure: StatusBarUpdate
-  Params: StatusBar:
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.StatusBarUpdate(StatusBar: TObject);
-var
-  TheStatusBar: TStatusBar;
-  PanelIndex: integer;
-begin
-  TheStatusBar := StatusBar as TStatusBar;
-  Windows.SendMessage(TheStatusBar.Handle, SB_SIMPLE, WPARAM(TheStatusBar.SimplePanel), 0);
-  if TheStatusBar.SimplePanel then
-    StatusBarSetText(StatusBar, 0)
-  else begin
-    UpdateStatusBarPanelWidths(TheStatusBar);
-    for PanelIndex := 0 to TheStatusBar.Panels.Count-1 do
-      UpdateStatusBarPanel(TheStatusBar.Panels[PanelIndex]);
-  end;
-end;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/10/16 10:15:45  micha
+  cleanup statusbar methods in lcl interfaceobject
+  fix statusbar recursive call issue
+
   Revision 1.18  2004/04/15 08:03:07  micha
   fix radiogroup menuitem, uncheck others in same group (from jreyes)
 

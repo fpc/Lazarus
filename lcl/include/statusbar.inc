@@ -39,7 +39,8 @@ begin
   if FSimpleText <> value then
   begin
     FSimpleText := Value;
-    if HandleAllocated and FSimplePanel then StatusBarSetText(Self,0);
+    if HandleAllocated and FSimplePanel then 
+      TWSStatusBarClass(WidgetSetClass).SetPanelText(Self,0);
   end;
 end;
 
@@ -112,10 +113,10 @@ begin
   //DebugLn('TStatusBar.UpdateHandleObject A FHandlePanelCount=',dbgs(FHandlePanelCount),' PanelIndex=',dbgs(PanelIndex),' Panels.Count=',dbgs(Panels.Count),' SimplePanel=',dbgs(SimplePanel));
   if (FHandlePanelCount>PanelIndex) and (PanelIndex>=0) then begin
     // update one panel
-    StatusBarPanelUpdate(Self,PanelIndex);
+    TWSStatusBarClass(WidgetSetClass).PanelUpdate(Self,PanelIndex);
   end else begin
     // update all panels
-    StatusBarUpdate(Self);
+    TWSStatusBarClass(WidgetSetClass).Update(Self);
     if SimplePanel then
       FHandlePanelCount:=1
     else

@@ -48,12 +48,18 @@ uses
   ComCtrls, Controls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSExtCtrls, WSStdCtrls,
-  WSToolwin;
+  WSToolwin,
+  { TODO: to be removed when statusbar widget methods cleaned }
+  InterfaceBase;
 
 type
   { TWSStatusBar }
 
+  TWSStatusBarClass = class of TWSStatusBar;
   TWSStatusBar = class(TWSWinControl)
+    class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
+    class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); virtual;
+    class procedure Update(const AStatusBar: TStatusBar); virtual;
   end;
 
   { TWSTabSheet }
@@ -157,7 +163,28 @@ type
 
 implementation
 
-  { TWSCustomListView }
+
+{ TWSStatusBar }
+
+procedure TWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
+begin
+  { TODO: remove when gtk interface adapted to use widgetset method }
+  InterfaceObject.StatusBarPanelUpdate(AStatusBar, PanelIndex);
+end;
+
+procedure TWSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
+begin
+  { TODO: remove when gtk interface adapted to use widgetset method }
+  InterfaceObject.StatusBarSetText(AStatusBar, PanelIndex);
+end;
+
+procedure TWSStatusBar.Update(const AStatusBar: TStatusBar);
+begin
+  { TODO: remove when gtk interface adapted to use widgetset method }
+  InterfaceObject.StatusBarUpdate(AStatusBar);
+end;
+    
+{ TWSCustomListView }
 
 procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); 
 begin

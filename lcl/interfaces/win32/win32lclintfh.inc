@@ -37,15 +37,15 @@ function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
-procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); override;
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
-procedure StatusBarUpdate(StatusBar: TObject); override;
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/10/16 10:15:45  micha
+  cleanup statusbar methods in lcl interfaceobject
+  fix statusbar recursive call issue
+
   Revision 1.14  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

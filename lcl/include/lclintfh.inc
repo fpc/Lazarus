@@ -115,9 +115,12 @@ procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function DrawSplitter(DC: HDC; const ARect: TRect; Horizontal: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-procedure StatusBarUpdate(StatusBar: TObject); {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+{$IFDEF IF_BASE_MEMBER}
+{ TODO: remove when gtk widgetset implements the widgetset methods }
+procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); virtual;
+procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); virtual;
+procedure StatusBarUpdate(StatusBar: TObject); virtual;
+{$ENDIF}
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //##apiwiz##eps##    // Do not remove
@@ -154,6 +157,10 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/10/16 10:15:45  micha
+  cleanup statusbar methods in lcl interfaceobject
+  fix statusbar recursive call issue
+
   Revision 1.26  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

@@ -437,21 +437,6 @@ begin
                                    MinItemsWidth, MinItemsHeight, MinItemCount);
 end;
 
-procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
-begin
-  InterfaceObject.StatusBarPanelUpdate(StatusBar, PanelIndex);
-end;
-
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
-begin
-  InterfaceObject.StatusBarSetText(StatusBar, PanelIndex);
-end;
-
-procedure StatusBarUpdate(StatusBar: TObject);
-begin
-  InterfaceObject.StatusBarUpdate(StatusBar);
-end;
-
 function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer;
   Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
@@ -547,6 +532,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/10/16 10:15:45  micha
+  cleanup statusbar methods in lcl interfaceobject
+  fix statusbar recursive call issue
+
   Revision 1.27  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 
