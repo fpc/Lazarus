@@ -44,8 +44,8 @@ end;
 function DefaultCheckCompareFunc(a, b : gpointer) : gint; cdecl;
 var AStr, BStr : PChar;
 begin
-  gtk_label_get(PGtkLabel(PGTKBox(a)^.Children^.Next^.Data), @AStr);
-  gtk_label_get(PGtkLabel(PGTKBox(b)^.Children^.Next^.Data), @BStr);
+  gtk_label_get(PPointer(PGTKBox(PGtkBin(a)^.child)^.Children^.Next^.Data)^, @AStr);
+  gtk_label_get(PPointer(PGTKBox(PGtkBin(b)^.child)^.Children^.Next^.Data)^, @BStr);
   Result:= strcomp(AStr, BStr);
 end;
 
@@ -393,7 +393,7 @@ end;
 function TGtkListStringList.Get(Index : integer) : string;
 var
   Item : PChar;
-  ALabel : PGtkWidget;
+  ALabel : PGtkLabel;
   ListItem : PGtkListItem;
 begin
 //writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
@@ -404,14 +404,14 @@ begin
     ListItem:=FCachedItems[Index];
 
     if FWithCheckBox
-    then ALabel:= PGTKBox(ListItem)^.Children^.Next^.Data
-    else ALabel:= PGtkBin(ListItem)^.child;
+    then ALabel := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Next^.Data)^
+    else ALabel := PGTKLabel(PGtkBin(ListItem)^.child);
 
     if ALabel = nil then
       Result:= ''
     else begin
       Item:=nil;
-      gtk_label_get (PGtkLabel(ALabel), @Item);
+      gtk_label_get(ALabel, @Item);
       Result:= StrPas(Item);
     end;  
   end;      
@@ -550,7 +550,7 @@ begin
     if FWithCheckBox
     then begin
       li := gtk_list_item_new;
-      box := gtk_hbox_new(False, 0);
+      box := gtk_hbox_new(False, 0);              //^Pointer(PGTKBox(box)^.children^.Next^.Data)^
       gtk_container_add(PGTKContainer(li), box);
       cb := gtk_check_button_new;
       gtk_box_pack_start(PGTKBox(box), cb, False, False, 0);
@@ -760,6 +760,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/08/18 08:54:36  marc
+  * Fixed chrash on saving checklistboxitems
+
   Revision 1.18  2003/06/20 01:37:47  marc
   + Added TCheckListBox component
 
