@@ -472,14 +472,15 @@ end;
 Type
   THackBitMap = Class(TBitMap)
   public
-    procedure ReadData(Stream : TStream);
-    procedure WriteData(Stream : TStream);
-
+    procedure ReadData(Stream : TStream); override;
+    procedure WriteData(Stream : TStream); override;
   end;
+  
 procedure THackBitMap.ReadData(Stream : TStream);
 begin
   Inherited ReadData(Stream);
 end;
+
 procedure THackBitMap.WriteData(Stream : TStream);
 begin
   Inherited WriteData(Stream);
@@ -981,6 +982,9 @@ end;
 {
 
   $Log$
+  Revision 1.16  2003/02/27 09:52:00  mattias
+  published TImgList.Width and Height
+
   Revision 1.15  2003/02/26 23:31:53  mattias
   added imagelisteditor from Olivier
 

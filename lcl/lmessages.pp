@@ -739,7 +739,7 @@ type
     Msg : Cardinal;
     case Integer of
       0 : (
-	      WParam: LongInt;
+        WParam: LongInt;
       	LParam : LongInt;
       	Result : LongInt);
       1 : (
@@ -751,6 +751,8 @@ type
       	ResultHi: Word);
     end;
 
+  TLMEnter = TLMNoPara;
+  TLMExit  = TLMNoPara;
 
   TLMScroll = record
     Msg : Cardinal;
@@ -1041,6 +1043,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2003/02/27 09:52:00  mattias
+  published TImgList.Width and Height
+
   Revision 1.45  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
