@@ -22,16 +22,23 @@ properly:
 
 1.1 Installing FreePascal under Linux:
   Lazarus requires a fpc (FreePascal) version not older than 21th september 2002
-  and it requires both - the fpc libs and the fpc sources.
-  At the lazarus downloads section you can get the rpm of the freepascal
-  compiler and its packages without the sources. Or if you don't
-  have a rpm system, you can download and install the tars.
-  
-  ToDo: How to get the FreePascal Sources
+  and it requires both - the compiled fpc libs (binaries) and the fpc sources.
 
-  You can get the freepascal sources via cvs. Create a directory, where you
-  would like to put the sources. You don't need to be root to do this. Any
-  normal user can do:
+  The fpc binaries:
+  At the lazarus downloads section (www.lazarus.freepascal.org) you can get the
+  rpm of the freepascal compiler (compiler / linux) and its packages without the
+  sources. Or if you don't have a rpm system, you can download and install the
+  tars from the same place.
+
+  The fpc sources:
+  The easiest way to get the freepascal sources is via cvs. But cvs requires an
+  internet connection. If you want to download it as whole, see
+  http://www.freepascal.org/develop.html
+  for the daily snapshot of the release tree (1.0.x).
+
+  The fpc sources via cvs:
+  Create a directory, where you would like to put the sources. You don't need
+  to be root to do this. Any normal user can do:
   
   []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
   []$ cvs login
@@ -39,6 +46,8 @@ properly:
   password is 'cvs' without the ''
 
   []$ cvs -z3 co -r FIXES_1_0_0 fpc
+  
+  This will create a directory fpc, which can be later used in the IDE.
 
 
 1.2 Installing FreePascal under Windows:
@@ -50,16 +59,16 @@ properly:
 
 2.1 Installing Lazarus under Linux:
   Currently there are no rpms for lazarus, but hopefully there will be rpms and
-  debs in a few weeks. Because the whole lazarus stuff is installed into one
+  debs in a week. Because the whole lazarus stuff is installed into one
   directory, uninstall is very easy and you don't need to be root to install
   lazarus.
-  You can get tars from the downloads section or you can download it directly
-  via cvs.
+  You can get zip files from the downloads section or you can download it
+  directly via cvs.
   
   ToDo: more details about the tars.
   
   You can download lazarus by cvs. cvs provides an easy way to update your
-  sources by just downloading the changes. This is the recommended way and saves
+  sources by only downloading the changes. This is the recommended way and saves
   you a lot of time. A connection to the internet is needed for this:
   You don't to be root. Lazarus does not need any special permissions, not
   during installation nor at runtime.
@@ -83,13 +92,13 @@ properly:
   []$ make
 
   If fpc is installed correct, the compilation should work without problems. If
-  not see FAQ.
+  not, see FAQ.
   start lazarus
 
   []$ ./lazarus
 
-  The IDE should start. In the terminal you can see some notes about missing
-  settings. This is normal at first start.
+  The IDE should start. If you started lazarus in a terminal, you can see some
+  notes about missing settings. This is normal at first start.
   The IDE automatically tries to find out where the freepascal compiler and its
   sources are installed by searching in the most common directories.
   Check the paths:
@@ -97,8 +106,9 @@ properly:
       Environment -> Environment Options -> Files
 
     The 'FPC Source directory' should point to your fpc source directory. This
-    directory ends with /fpc/ (e.g. /usr/src/fpc) and contains directories
-    like 'compiler', 'docs', 'fcl', 'rtl' and 'packages'.
+    directory normally ends with /fpc/ or /fpcsrc/ (e.g. /usr/src/fpcsrc,
+    /home/username/freepascal/fpc) and
+    contains directories like 'compiler', 'docs', 'fcl', 'rtl' and 'packages'.
 
     ToDo: explain the other paths
 
