@@ -130,8 +130,8 @@ type
     Pitch : TFontPitch;
     Style : TFontStylesBase;
     CharSet : TFontCharSet;
-  	Name : TFontDataName;
-	end;
+    Name : TFontDataName;
+  end;
 
   TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear, psInsideframe);
   TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
@@ -511,6 +511,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/31 21:16:45  lazarus
+  Changed to TCOmboBox focusing.
+  Shane
+
   Revision 1.2  2000/08/10 18:56:23  lazarus
   Added some winapi calls.
   Most don't have code yet.

@@ -255,6 +255,7 @@ var
    Mess : TLMessage;
 begin
    EventTrace('focus', data);
+   Writeln('Getting Focus...');
    //TODO: fill in old focus
    Mess.msg := LM_SETFOCUS;
    Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
@@ -266,6 +267,7 @@ var
    Mess : TLMessage;
 begin
    EventTrace('killfocus', data);
+   Writeln('KIlling Focus...');
    Mess.msg := LM_KILLFOCUS;
    //TODO: fill in new focus
    Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
@@ -1075,6 +1077,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2001/01/31 21:16:45  lazarus
+  Changed to TCOmboBox focusing.
+  Shane
+
   Revision 1.20  2001/01/30 18:15:02  lazarus
   Added code for TStatusBar
   I'm now capturing WMPainT and doing the drawing myself.

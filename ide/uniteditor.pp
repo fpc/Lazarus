@@ -269,6 +269,8 @@ const
   ecOpen    = ecFirstParent+2;
   ecClose    = ecFirstParent+3;
 
+  ecJumpToEditor = ecFirstParent+4;
+
 var
 Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
@@ -831,6 +833,7 @@ if assigned(FEditor) then
     AddKey(ecSave, word('S'), [ssCtrl], 0, []);
     AddKey(ecOpen, word('O'), [ssCtrl], 0, []);
     AddKey(ecClose, VK_F4, [ssCtrl], 0, []);
+
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
     Show;
@@ -1782,6 +1785,10 @@ begin
               writeln('CloseClicked being called');
               CloseClicked(self);
             end;
+
+   ecJumpToEditor : Begin
+                      //This is NOT implemented yet
+                    end;
    end;  //case
 end;
 

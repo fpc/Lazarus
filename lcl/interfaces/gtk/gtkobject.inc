@@ -1243,8 +1243,18 @@ begin
     LM_FOCUS :
     begin
       //ConnectSignal(gObject, 'focus', @gtkfocusCB);
-      ConnectSignal(gObject, 'focus-in-event', @gtkFocusCB);
-      ConnectSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
+      if (sender is TCustomComboBox) then
+         Begin
+          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
+          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-out-event', @gtkKillFocusCB);
+          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-in-event', @gtkFocusCB);
+          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-out-event', @gtkKillFocusCB);
+         end
+         else
+         Begin
+          ConnectSignal(gObject, 'focus-in-event', @gtkFocusCB);
+          ConnectSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
+         end;
     end;
 
     LM_KEYDOWN,
@@ -2596,6 +2606,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.24  2001/01/31 21:16:45  lazarus
+  Changed to TCOmboBox focusing.
+  Shane
+
   Revision 1.23  2001/01/28 21:06:07  lazarus
   Changes for TComboBox events KeyPress Focus.
   Shane
