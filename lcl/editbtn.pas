@@ -28,7 +28,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LCLStrConsts, LCLType, LMessages,
-  Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs;
+  Graphics, Controls, Forms, FileUtil, Dialogs, StdCtrls, Buttons, Calendar,
+  ExtDlgs;
 
 type
   { TCustomEditButton }
@@ -734,8 +735,13 @@ end;
 function TDirectoryEdit.CreateDialog: TCommonDialog;
 begin
   Result:=TSelectDirectoryDialog.Create(Self);
-  TSelectDirectoryDialog(Result).InitialDir:=RootDir;
-  TSelectDirectoryDialog(Result).FileName:=Directory;
+  if DirPathExists(Directory) then begin
+    TSelectDirectoryDialog(Result).InitialDir:=Directory;
+    TSelectDirectoryDialog(Result).FileName:='';
+  end else begin
+    TSelectDirectoryDialog(Result).InitialDir:=RootDir;
+    TSelectDirectoryDialog(Result).FileName:=Directory;
+  end;
 end;
 
 Function TDirectoryEdit.GetDialogResult(D: TCommonDialog) : String;
