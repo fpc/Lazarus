@@ -4402,26 +4402,9 @@ begin
   SetComboBoxText(Widget, PChar(ComboBox.Text));
 end;
 
+
 Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
   Handle : Pointer; SetupProps : Boolean);
-
-  {$IFDEF CustomFonts}
-  procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
-  {$IFDEF Win32}
-  begin
-    // not supported under win32
-  end;
-  {$ELSE not win32}
-  var
-    RCStyle: TGtkRcStyle;
-  begin
-    writeln('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
-    FillChar(RCStyle,SizeOf(TGtkRcStyle),0);
-    //gtk_widget_modify_style(AWidget,@RCStyle);
-  end;
-  {$ENDIF not win32}
-  {$ENDIF CustomFonts}
-  
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
   //Set these for functions like GetWindowLong  Added 01/07/2000
@@ -4451,7 +4434,6 @@ begin
   if (Sender is TCommonDialog) then
     TCommonDialog(Sender).Handle:= THandle(Handle);
 
-
   Set_RC_Name(Sender, Handle);
 
   if SetupProps then SetProperties(Sender);
@@ -4461,10 +4443,6 @@ begin
     if Sender is TCustomForm then
       gtk_widget_set_app_paintable(Handle,true);
     {$EndIf}
-    {$IFDEF CustomFonts}
-    if Sender is TWinControl then
-      ModifyWidgetStyle(TWinControl(Sender),PGtkWidget(Handle));
-    {$ENDIF}
     HookSignals(Sender);
   end;
 end;
@@ -7347,6 +7325,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.372  2003/06/09 14:39:52  mattias
+  implemented setting working directory for debugger
+
   Revision 1.371  2003/06/09 10:07:34  mattias
   updated russian localization from Vasily
 
