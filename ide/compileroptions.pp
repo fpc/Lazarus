@@ -1266,7 +1266,7 @@ begin
   HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 0);
   VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
   ReadGenerate;
-  TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 1);
+  TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 0);
   TargetCPU := XMLConfigFile.GetValue(p+'TargetCPU/Value', '');
   VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := XMLConfigFile.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
@@ -1403,7 +1403,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
   XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
   XMLConfigFile.SetDeleteValue(p+'Generate/Value', CompilationGenerateCodeNames[Generate],CompilationGenerateCodeNames[cgcNormalCode]);
-  XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,1);
+  XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,0);
   XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
@@ -1980,12 +1980,12 @@ Processor specific options:
   if (UncertainOptimizations) then
     switches := switches + 'u';
 
-  { TargetProcessor  p1 = 386/486   p2 = Pentium/Pentium MMX  p3 = PentiumPro/PII/K6 }
+  { TargetProcessor }
   case (TargetProcessor) of
+    0:                             ; // use default
     1:  switches := switches + 'p1';  // 386/486
     2:  switches := switches + 'p2';  // Pentium/Pentium MMX
     3:  switches := switches + 'p3';  // PentiumPro/PII/K6
-    4:  {this is done via the TargetOS};  // PowerPC
   end;
 
   { Target OS
@@ -2287,7 +2287,7 @@ begin
   fStackChecks := false;
   fHeapSize := 0;
   fGenerate := cgcFasterCode;
-  fTargetProc := 1;
+  fTargetProc := 0;
   fTargetCPU := '';
   fVarsInReg := false;
   fUncertainOpt := false;
@@ -2903,7 +2903,7 @@ begin
   end;
 
   case Options.TargetProcessor of
-    1..4: grpTargetProc.ItemIndex:=Options.TargetProcessor-1;
+    1..3: grpTargetProc.ItemIndex:=Options.TargetProcessor;
   else
     grpTargetProc.ItemIndex:=0;
   end;
@@ -2959,7 +2959,7 @@ begin
   chkConditionals.Checked := Options.ShowCond;
   chkNothing.Checked := Options.ShowNothing;
   chkHintsForUnusedUnitsInMainSrc.Checked :=
-    Options.ShowHintsForUnusedUnitsInMainSrc;
+                                       Options.ShowHintsForUnusedUnitsInMainSrc;
 
   chkFPCLogo.Checked := Options.WriteFPCLogo;
 
@@ -3070,7 +3070,7 @@ begin
   else
     Options.Generate := cgcNormalCode;
 
-  Options.TargetProcessor := grpTargetProc.ItemIndex+1;
+  Options.TargetProcessor := grpTargetProc.ItemIndex;
 
   Options.VariablesInRegisters := chkOptVarsInReg.Checked;
   Options.UncertainOptimizations := chkOptUncertain.Checked;
@@ -3657,10 +3657,10 @@ begin
     Width := 270;
     Caption := dlgTargetProc;
     with Items do begin
+      Add('default');
       Add('386/486');
       Add('Pentium/Pentium MMX');
       Add('Pentium Pro/Pentium II/C6x86/K6');
-      Add('PowerPC');
     end;
   end;
 
@@ -4178,7 +4178,7 @@ begin
     Top := 174;
     Left := ChkErrors.Left;
     Height := ChkErrors.Height;
-    Width := 250;
+    Width := chkDebugInfo.Width*2;
   end;
 
   {------------------------------------------------------------}
