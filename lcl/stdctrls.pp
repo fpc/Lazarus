@@ -68,7 +68,7 @@ type
       procedure CreateHandle; override;
       procedure DestroyHandle; override;
       procedure DoChange(var msg); message LM_CHANGED;
-      procedure AttachSignals; override;
+     procedure AttachSignals; override;
 //TODO: Took the virtual; off next line
           function GetSelLength : integer;
 //TODO: Took the virtual; off next line
@@ -148,6 +148,7 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
+    procedure Clear;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
     property MultiSelect : boolean read FMultiSelect write SetMultiSelect;
@@ -456,6 +457,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/16 12:45:01  lazarus
+  Added procedure ListBox.Clear (changes by chris, added by stoppok)
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 
