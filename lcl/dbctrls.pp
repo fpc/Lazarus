@@ -1041,6 +1041,8 @@ end;
    So... just call event if exists? unles Active then we test validity of
    field. does this simply mean not nil? or is more involved?
    call mock routine for now
+   
+   if it becomes inactive then the field is not valid anymore isn't?
 }
 procedure TFieldDataLink.ActiveChanged;
 begin
@@ -1048,6 +1050,9 @@ begin
   then
     exit;
 
+  if not Active then
+    FField := nil;
+    
   if Assigned(FOnActiveChange) then
     FOnActiveChange(Self);
 end;
@@ -1286,6 +1291,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2005/04/01 21:13:09  micha
+  delete reference to field if closing (from jesus) (fixes bug 694)
+
   Revision 1.25  2004/10/01 13:25:51  mattias
   fixed 1.0.10 compilation
 
