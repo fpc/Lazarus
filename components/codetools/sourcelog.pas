@@ -715,34 +715,13 @@ begin
 end;
 
 procedure TSourceLog.Assign(sl: TStrings);
-var y,p,LineLen: integer;
-  s: string;
 begin
   if sl=nil then exit;
   if IsEqual(sl) then exit;
   IncreaseHookLock;
   Clear;
-  sl.Text;
-  fSrcLen:=sl.Count*{$IFDEF win32}2{$ELSE}1{$ENDIF};
-  for y:=0 to sl.Count-1 do inc(fSrcLen,length(sl[y]));
-  fSource:='';
-  SetLength(fSource,fSrcLen);
-  fLineCount:=-1;
-  p:=1;
-  for y:=0 to sl.Count-1 do begin
-    s:=sl[y];
-    LineLen:=length(s);
-    if LineLen>0 then begin
-      System.Move(s[1],fSource[p],LineLen);
-      inc(p,LineLen);
-    end;
-    {$IFDEF win32}
-    fSource[p]:=#13;
-    inc(p);
-    {$ENDIF}
-    fSource[p]:=#10;
-    inc(p);
-  end;
+  fSource := sl.Text;
+  fSrcLen := Length(fSource);
   DecreaseHookLock;
 end;
 
