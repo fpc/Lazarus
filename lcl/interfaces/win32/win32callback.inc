@@ -1184,21 +1184,6 @@ begin
 end;
     
 {------------------------------------------------------------------------------
- Function: ToolBtnWindowProc
- Params: Window_hwnd - The window that receives a message for the window
-         Msg         - The message received
-         WParam      - Word parameter
-         LParam      - Long-integer parameter
-  Returns: non-zero long-integer
-
-  Handles the messages sent to the toolbar button by Windows
- ------------------------------------------------------------------------------}
-Function ToolBtnWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT; stdcall;
-begin
-  Result := Windows.DefWindowProc(window_hwnd, Msg, WParam, LParam);
-end;
-
-{------------------------------------------------------------------------------
  Procedure: TimerCallBackProc
  Params: window_hnd - handle of window for timer message, not set in this implementation
          msg        - WM_TIMER message
@@ -1253,6 +1238,10 @@ end;
 
 {
   $Log$
+  Revision 1.120  2004/06/20 20:36:55  micha
+  remove old obsolete/commented toolbutton code
+  rename lazarusform classname to window, because we use it for panels, notebookpages, etc too
+
   Revision 1.119  2004/06/20 13:58:15  micha
   fix combobox edit being gray
 

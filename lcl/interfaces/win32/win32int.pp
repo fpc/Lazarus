@@ -148,7 +148,6 @@ Type
         Desc: PRawImageDescription);
 
     Function WinRegister: Boolean;
-//    Function ToolBtnWinRegister: Boolean;
     Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
@@ -249,8 +248,7 @@ type
 
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
-  ClsName : array[0..20] of char = 'LazarusForm'#0;
-  ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
+  ClsName : array[0..6] of char = 'Window'#0;
 
 var
   OnClipBoardRequest: TClipboardRequestEvent;
@@ -274,6 +272,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2004/06/20 20:36:55  micha
+  remove old obsolete/commented toolbutton code
+  rename lazarusform classname to window, because we use it for panels, notebookpages, etc too
+
   Revision 1.86  2004/06/18 20:47:34  vincents
   fixed pasting from clipboard
 

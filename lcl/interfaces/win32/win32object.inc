@@ -109,7 +109,6 @@ Begin
     DestroyWindow(FAppHandle);
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
-//  Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
 
   if FThemeLibrary <> 0 then
     FreeLibrary(FThemeLibrary);
@@ -136,13 +135,7 @@ Begin
     writeln('Trace:Win32Object.Init - Register Failed');
     Exit;
   End;
-{  
-  If Not ToolBtnWinRegister then
-  Begin
-    Assert(False, 'Trace:Win32Object.Init - Toolbar button Register Failed');
-    Exit;
-  End;
-}
+
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
@@ -1306,26 +1299,6 @@ Begin
   Assert(False, 'Trace:WinRegister - Exit');
 End;
 
-(*
-Function TWin32WidgetSet.ToolBtnWinRegister: boolean;
-var WinClass: WndClass;
-begin
-  with WinClass do begin
-    Style := 0{CS_HRedraw or CS_VRedraw};
-    lpfnWndProc := @ToolBtnWindowProc;
-    cbClsExtra := 40;
-    cbWndExtra := 40;
-    hInstance := System.HInstance;
-    hIcon := 0{LoadIcon(0, IDI_Application)};
-    hCursor := 0{LoadCursor(0, IDC_Arrow)};
-    hbrBackground := GetStockObject(WHITE_BRUSH);
-    lpszMenuName := nil;
-    lpszClassName := @ToolBtnClsName;
-  end;
-  Result := Windows.RegisterClass(@WinClass) <> 0;
-end;
-*)
-
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.UpdateThemesActive
   Params:  None
@@ -2452,14 +2425,6 @@ Begin
       pClassName := TOOLBARCLASSNAME;
       Flags := Flags OR CCS_ADJUSTABLE;
     End;
-{    
-    csToolButton:
-    Begin
-      pClassName := ToolBtnClsName;
-      Flags := 0;
-      SubClassWndProc := nil;
-    End;
-}    
     // TCustomPage - Notebook page
     csPage:
     Begin
@@ -3281,6 +3246,10 @@ End;
 
 {
   $Log$
+  Revision 1.213  2004/06/20 20:36:55  micha
+  remove old obsolete/commented toolbutton code
+  rename lazarusform classname to window, because we use it for panels, notebookpages, etc too
+
   Revision 1.212  2004/06/20 13:58:15  micha
   fix combobox edit being gray
 
