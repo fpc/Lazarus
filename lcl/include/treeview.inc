@@ -2321,7 +2321,7 @@ begin
   Height := 97;
   TabStop := True;
   ParentColor := False;
-  FBackgroundColor := clWhite; //clBackground;
+  FBackgroundColor := clWhite;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   FDefItemHeight:=20;
@@ -2343,7 +2343,7 @@ begin
   //FEditInstance := MakeObjectInstance(EditWndProc);
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
-  FSelectedColor:=clActiveCaption;
+  FSelectedColor:=clHighlight;
   fSeparatorColor:=clGray;
   FStateChangeLink := TChangeLink.Create;
   FStateChangeLink.OnChange := @ImageListChange;

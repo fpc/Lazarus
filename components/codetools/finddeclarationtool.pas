@@ -1042,7 +1042,7 @@ function TFindDeclarationTool.FindDeclarationOfIdentAtCursor(
     A^.B().C[].Identifier
 }
 var
-  EndPos: integer;
+  StartPos, EndPos: integer;
   ExprType: TExpressionType;
 begin
   {$IFDEF CTDEBUG}
@@ -1053,6 +1053,8 @@ begin
   {$ENDIF}
   Result:=false;
   MoveCursorToCleanPos(Params.Identifier);
+  StartPos:=CurPos.StartPos;
+  if Params.ContextNode.Desc<>ctnIdentifier then StartPos:=-1;
   ReadNextAtom;
   EndPos:=CurPos.EndPos;
   ReadNextAtom;
@@ -1061,7 +1063,7 @@ begin
     EndPos:=CurPos.EndPos;
   end;
   Include(Params.Flags,fdfFindVariable);
-  ExprType:=FindExpressionTypeOfVariable(-1,EndPos,Params);
+  ExprType:=FindExpressionTypeOfVariable(StartPos,EndPos,Params);
   if (ExprType.Desc<>xtContext) then begin
     Params.SetResult(CleanFindContext);
   end;
