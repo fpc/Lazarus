@@ -746,31 +746,18 @@ Begin
   Temp := TComponentInterface.Create;
 
   OwnerComponent:=nil;
-  if Assigned(ParentCI) and (ParentCI.IsTControl) then
+  if Assigned(ParentCI) and ParentCI.IsTControl then
   begin
+    // add as child control
     ParentComponent:=TComponentInterface(ParentCI).Component;
     OwnerComponent:=GetParentForm(TControl(ParentComponent));
     if OwnerComponent=nil then
       OwnerComponent:=ParentComponent;
     Temp.FComponent := TypeClass.Create(OwnerComponent);
-  end else begin
-    //this should be a form
-    ParentComponent:=nil;
-    NewFormIndex := JITFormList.AddNewJITForm;
-    if NewFormIndex >= 0 then
-      Temp.FComponent := JITFormList[NewFormIndex]
-    else begin
-      Result:=nil;
-      exit;
-    end;
-  end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent C ');{$ENDIF}
-
-  if Assigned(ParentCI) and (Temp.Component is TControl) then
-    Begin
+    // set parent
+    if Temp.IsTControl then begin
       if (ParentComponent is TWinControl)
-      and (csAcceptsControls in
-        TWinControl(ParentComponent).ControlStyle) then
+      and (csAcceptsControls in TWinControl(ParentComponent).ControlStyle) then
       begin
         TWinControl(Temp.Component).Parent :=
           TWinControl(ParentComponent);
@@ -782,10 +769,21 @@ Begin
         writeln('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
       end;
     end;
-
+  end else begin
+    // create a toplevel control -> a form
+    ParentComponent:=nil;
+    NewFormIndex := JITFormList.AddNewJITForm;
+    if NewFormIndex >= 0 then
+      Temp.FComponent := JITFormList[NewFormIndex]
+    else begin
+      Result:=nil;
+      exit;
+    end;
+  end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
   Temp.Component.Name := CreateUniqueComponentName(Temp.Component);
 
+  // set bounds
   if (Temp.Component is TControl) then
   Begin
     CompLeft:=X;
@@ -807,6 +805,7 @@ Begin
   end;
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
+  // add to component list
   FComponentInterfaceList.Add(Temp);
 
   Result := Temp;

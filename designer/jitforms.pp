@@ -226,6 +226,7 @@ function TJITForms.DoCreateJITForm(
   NewFormName,NewClassName:shortstring):integer;
 var
   Instance:TComponent;
+  ok: boolean;
 begin
   Result:=-1;
   // create new class and an instance
@@ -235,16 +236,19 @@ begin
   Instance:=TComponent(FCurReadClass.NewInstance);
   //writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
   TComponent(FCurReadForm):=Instance;
+  ok:=false;
   try
     Instance.Create(nil);
     if NewFormName<>'' then
       Instance.Name:=NewFormName;
     DoRenameClass(FCurReadClass,NewClassName);
+    ok:=true;
   //writeln('[TJITForms.DoCreateJITForm] Initialization was successful! FormName="',NewFormName,'"');
-  except
-    TComponent(FCurReadForm):=nil;
-    writeln('[TJITForms.DoCreateJITForm] Error while creating instance');
-    raise;
+  finally
+    if not ok then begin
+      TComponent(FCurReadForm):=nil;
+      writeln('[TJITForms.DoCreateJITForm] Error while creating instance');
+    end;
   end;
   Result:=FForms.Add(FCurReadForm);
 end;
