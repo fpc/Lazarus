@@ -809,7 +809,7 @@ type
     FExceptions: TDBGExceptions;
     FExitCode: Integer;
     FExternalDebugger: String;
-    //FExceptionss: TDBGExceptions;
+    //FExceptions: TDBGExceptions;
     FFileName: String;
     FLocals: TDBGLocals;
     FSignals: TDBGSignals;
@@ -1334,6 +1334,7 @@ end;
 
 class procedure TDebugger.SetProperties(const AProperties: TDebuggerProperties);
 begin
+  if (AProperties=nil) or (AProperties=MDebuggerProperties) then exit;
   if MDebuggerProperties = nil 
   then begin
     GetProperties;
@@ -3129,10 +3130,14 @@ initialization
 
 finalization
   MDebuggerProperties.Free;
+  MDebuggerProperties:=nil;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.54  2003/12/27 11:22:36  mattias
+  minor fixes
+
   Revision 1.53  2003/12/27 01:30:35  mattias
   fixed compilation
 

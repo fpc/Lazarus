@@ -44,7 +44,7 @@ type
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
   private
   protected
-    function  ParseInitialization: Boolean; override;
+    function ParseInitialization: Boolean; override;
   public
     class function Caption: String; override;
     class function ExePaths: String; override;
@@ -52,6 +52,7 @@ type
 
 
 implementation
+
 
 { TSSHGDBMIDebugger }
 
@@ -69,8 +70,8 @@ function TSSHGDBMIDebugger.ParseInitialization: Boolean;
 
   function CheckReadLine(var ALine: String): Boolean;
   // does a checked read
-  // returns True if we shoul process it
-  // returns Flase if it is the gdb prompt
+  // returns True if we should process it
+  // returns False if it is the gdb prompt
   begin
     ALine := ReadLine(True);
     Result := Pos('(gdb)', ALine) = 0;
@@ -152,6 +153,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/12/27 11:22:37  mattias
+  minor fixes
+
   Revision 1.5  2003/10/22 17:50:16  mattias
   updated rpm scripts
 
