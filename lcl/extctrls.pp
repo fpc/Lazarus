@@ -204,6 +204,7 @@ type
   published
     property ActivePage;
     property Align;
+    property Anchors;
     property Images;
     property OnCloseTabClicked;
     //property MultiLine;
@@ -742,6 +743,9 @@ end.
 
  {
   $Log$
+  Revision 1.60  2003/06/12 15:56:42  mattias
+  published TNoteBook.Anchors and started context diff
+
   Revision 1.59  2003/06/10 17:23:34  mattias
   implemented tabstop
 
