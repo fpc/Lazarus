@@ -372,10 +372,11 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl.CMVisibleChanged                                              }
 {------------------------------------------------------------------------------}
-procedure TControl.CMVisibleChanged(var MEssage : TLMessage);
+procedure TControl.CMVisibleChanged(var Message : TLMessage);
 begin
-  if not (csDesigning in ComponentState)
-  or (csNoDesignVisible in ControlStyle) then begin
+  if (not (csDesigning in ComponentState)
+    or (csNoDesignVisible in ControlStyle))
+  and (not (csLoading in ComponentState)) then begin
     InvalidateControl(true, FVisible and (csOpaque in ControlStyle));
   end;
 end;
@@ -1629,8 +1630,8 @@ begin
   if FVisible <> Value then
   begin
     FVisible := Value;
-      Perform(CM_VISIBLECHANGED, Ord(Value), 0);
-      RequestAlign;
+    Perform(CM_VISIBLECHANGED, Ord(Value), 0);
+    RequestAlign;
   end;
   if (csLoading in ComponentState) then
     ControlState:=ControlState+[csVisibleSetInLoading];
@@ -1940,6 +1941,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.94  2002/10/22 12:12:08  lazarus
+  MG: accelerators are now shared between non modal forms
+
   Revision 1.93  2002/10/21 14:40:52  lazarus
   MG: fixes for 1.1
 
