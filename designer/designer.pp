@@ -1335,12 +1335,15 @@ var
   Diff, ItemLeftTop: TPoint;
   IconRect: TRect;
   IconCanvas: TCanvas;
+  AComponent: TComponent;
 begin
   for i:=0 to FCustomForm.ComponentCount-1 do begin
-    if (not (FCustomForm.Components[i] is TControl)) then begin
+    AComponent:=FCustomForm.Components[i];
+    if (not (AComponent is TControl))
+    and (not (AComponent is TMenuItem)) then begin
       Diff:=aDDC.FormOrigin;
       // non-visual component
-      ItemLeftTop:=NonVisualComponentLeftTop(FCustomForm.Components[i]);
+      ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
       ItemLeft:=ItemLeftTop.X-Diff.X;
       ItemTop:=ItemLeftTop.Y-Diff.Y;
       ItemRight:=ItemLeft+NonVisualCompWidth;
@@ -1370,7 +1373,7 @@ begin
       end;
       if Assigned(FOnGetNonVisualCompIconCanvas) then begin
         IconCanvas:=nil;
-        FOnGetNonVisualCompIconCanvas(Self,FCustomForm.Components[i]
+        FOnGetNonVisualCompIconCanvas(Self,AComponent
              ,IconCanvas,IconWidth,IconHeight);
         if IconCanvas<>nil then begin
           inc(IconRect.Left,(NonVisualCompIconWidth-IconWidth) div 2);
@@ -1382,7 +1385,7 @@ begin
         end;
       end;
       if (ControlSelection.Count>1)
-      and (ControlSelection.IsSelected(FCustomForm.Components[i])) then
+      and (ControlSelection.IsSelected(AComponent)) then
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft,ItemTop,NonVisualCompWidth,NonVisualCompWidth);
     end;
@@ -1437,7 +1440,8 @@ var i: integer;
 begin
   for i:=FCustomForm.ComponentCount-1 downto 0 do begin
     Result:=FCustomForm.Components[i];
-    if (not (Result is TControl)) then begin
+    if (not (Result is TControl))
+    and (not (Result is TMenuItem))then begin
       with Result do begin
         LeftTop:=NonVisualComponentLeftTop(Result);
         if (LeftTop.x<=x) and (LeftTop.y<=y)
