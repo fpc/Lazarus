@@ -80,7 +80,7 @@ type
     fStaticKwd: Boolean;
 
     // Code generation:
-    fUnitStyle: Integer;
+    fSmartLinkUnit: Boolean;
     fIOChecks: Boolean;
     fRangeChecks: Boolean;
     fOverflowChecks: Boolean;
@@ -104,7 +104,7 @@ type
     fUseValgrind: Boolean;
     fGenGProfCode: Boolean;
     fStripSymbols: Boolean;
-    fLinkStyle: Integer;
+    fLinkSmart: Boolean;
     fPassLinkerOpt: Boolean;
     fLinkerOptions: String;
     FWin32GraphicApp: boolean;
@@ -184,7 +184,7 @@ type
     property StaticKeyword: Boolean read fStaticKwd write fStaticKwd;
 
     // code generation:
-    property UnitStyle: Integer read fUnitStyle write fUnitStyle;
+    property SmartLinkUnit: Boolean read fSmartLinkUnit write fSmartLinkUnit;
     property IOChecks: Boolean read fIOChecks write fIOChecks;
     property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
     property OverflowChecks: Boolean read fOverflowChecks write fOverflowChecks;
@@ -210,7 +210,7 @@ type
     property UseValgrind: Boolean read fUseValgrind write fUseValgrind;
     property GenGProfCode: Boolean read fGenGProfCode write fGenGProfCode;
     property StripSymbols: Boolean read fStripSymbols write fStripSymbols;
-    property LinkStyle: Integer read fLinkStyle write fLinkStyle;
+    property LinkSmart: Boolean read fLinkSmart write fLinkSmart;
     property PassLinkerOptions: Boolean read fPassLinkerOpt write fPassLinkerOpt;
     property LinkerOptions: String read fLinkerOptions write SetLinkerOptions;
     property Win32GraphicApp: boolean read FWin32GraphicApp write FWin32GraphicApp;

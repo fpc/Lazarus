@@ -97,7 +97,8 @@ type
 
     { Code Generation Controls }
     CodeGenPage: TPage;
-    grpUnitStyle: TRadioGroup;
+    grpSmartLinkUnit: TGroupBox;
+    chkSmartLinkUnit: TCheckBox;
 
     grpChecks: TGroupBox;
     chkChecksIO: TCheckBox;
@@ -138,9 +139,7 @@ type
     chkSymbolsStrip: TCheckBox;
 
     grpLinkLibraries: TGroupBox;
-    radLibsLinkDynamic: TRadioButton;
-    radLibsLinkStatic: TRadioButton;
-    radLibsLinkSmart: TRadioButton;
+    chkLinkSmart: TCheckBox;
 
     grpOptions: TGroupBox;
     chkOptionsLinkOpt: TCheckBox;
@@ -669,7 +668,7 @@ begin
   chkSymGPCCompat.Checked := Options.GPCCompat;
 
   // code generation
-  grpUnitStyle.ItemIndex:=Options.UnitStyle;
+  chkSmartLinkUnit.Checked := Options.SmartLinkUnit;
 
   chkChecksIO.Checked := Options.IOChecks;
   chkChecksRange.Checked := Options.RangeChecks;
@@ -712,11 +711,7 @@ begin
   chkSymbolsStrip.Checked := Options.StripSymbols;
   chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
 
-  case Options.LinkStyle of
-    1: radLibsLinkDynamic.Checked := true;
-    2: radLibsLinkStatic.Checked := true;
-    3: radLibsLinkSmart.Checked := true;
-  end;
+  chkLinkSmart.Checked := Options.LinkSmart;
   grpLinkLibraries.Enabled:=EnabledLinkerOpts;
 
   chkOptionsLinkOpt.Checked := Options.PassLinkerOptions;
@@ -895,7 +890,7 @@ begin
   Options.GPCCompat := chkSymGPCCompat.Checked;
 
   // code generation
-  Options.UnitStyle := grpUnitStyle.ItemIndex;
+  Options.SmartLinkUnit := chkSmartLinkUnit.Checked;
 
   Options.IOChecks := chkChecksIO.Checked;
   Options.RangeChecks := chkChecksRange.Checked;
@@ -941,15 +936,7 @@ begin
   Options.PassLinkerOptions := chkOptionsLinkOpt.Checked;
   Options.LinkerOptions := edtOptionsLinkOpt.Text;
   Options.Win32GraphicApp := chkWin32GraphicApp.Checked;
-
-  if (radLibsLinkDynamic.Checked) then
-    Options.LinkStyle := 1
-  else if (radLibsLinkStatic.Checked) then
-    Options.LinkStyle := 2
-  else if (radLibsLinkSmart.Checked) then
-    Options.LinkStyle := 3
-  else
-    Options.LinkStyle := 1;
+  Options.LinkSmart := chkLinkSmart.Checked;
 
   // messages
   Options.ShowErrors := chkErrors.Checked;
@@ -1341,8 +1328,8 @@ begin
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
 
-  grpUnitStyle := TRadioGroup.Create(Self);
-  with grpUnitStyle do
+  grpSmartLinkUnit := TGroupBox.Create(Self);
+  with grpSmartLinkUnit do
   begin
     Parent := CodeGenPage;
     Top := 5;
@@ -1350,11 +1337,16 @@ begin
     Height := 80;
     Width := 150;
     Caption := dlgCOUnitStyle;
-    with Items do begin
-      Add(dlgStatic+' (none)');
-      Add(dlgDynamic+' (-CD)');
-      Add(dlgCOSmart+' (-CS)');
-    end;
+  end;
+
+  chkSmartLinkUnit := TCheckBox.Create(Self);
+  with chkSmartLinkUnit do
+  begin
+    Parent := grpSmartLinkUnit;
+    Caption := 'Smart Linking (-CX)';
+    Top := 5;
+    Left := 5;
+    Width := Parent.ClientWidth-13;
   end;
 
   {------------------------------------------------------------}
@@ -1363,7 +1355,7 @@ begin
   begin
     Parent := CodeGenPage;
     Top := 5;
-    Left := grpUnitStyle.Left + grpUnitStyle.Width + 10;
+    Left := grpSmartLinkUnit.Left + grpSmartLinkUnit.Width + 10;
     Height := 80;
     Width := 210;
     Caption := dlgCOChecks;
@@ -1440,7 +1432,7 @@ begin
   with grpGenerate do
   begin
     Parent := CodeGenPage;
-    Top := grpUnitStyle.Top + grpUnitStyle.Height + 6;
+    Top := grpSmartLinkUnit.Top + grpSmartLinkUnit.Height + 6;
     Left := 10;
     Height := 90;
     Width := 150;
@@ -1699,42 +1691,20 @@ begin
     Parent := LinkingPage;
     Top := grpDebugging.Top + grpDebugging.Height + 10;
     Left := 10;
-    Height := 91;
+    Height := 50;
     Width := (Self.ClientWidth-30) div 2;
     Caption := dlgLinkLibraries;
   end;
 
-  radLibsLinkDynamic := TRadioButton.Create(Self);
-  with radLibsLinkDynamic do
+  chkLinkSmart := TCheckBox.Create(Self);
+  with chkLinkSmart do
   begin
     Parent := grpLinkLibraries;
-    Caption := dlgLinkDinLibs+' (-XD)';
+    Caption := dlgLinkSmart+' (-XX)';
     Top := 6;
     Left := 8;
     Height := 22;
-    Width := Parent.Width-10;
-  end;
-
-  radLibsLinkStatic := TRadioButton.Create(Self);
-  with radLibsLinkStatic do
-  begin
-    Parent := grpLinkLibraries;
-    Caption := dlgLinkStatLibs+' (-XS)';
-    Top := 27;
-    Left := 8;
-    Height := 22;
-    Width := Parent.Width-10;
-  end;
-
-  radLibsLinkSmart := TRadioButton.Create(Self);
-  with radLibsLinkSmart do
-  begin
-    Parent := grpLinkLibraries;
-    Caption := dlgLinkSmart+' (-XX -CX)';
-    Top := 48;
-    Left := 8;
-    Height := 22;
-    Width := Parent.Width-10;
+    Width := Parent.ClientWidth-13;
   end;
 
   {------------------------------------------------------------}
@@ -1754,10 +1724,10 @@ begin
   begin
     Parent := TargetSpecificsGrpBox;
     Caption := 'Win32 gui application (-WG)';
-    Top := 5;
+    Top := 8;
     Left := 2;
     Height := 22;
-    Width := Parent.Width-10;
+    Width := Parent.Width-13;
   end;
 
   {------------------------------------------------------------}

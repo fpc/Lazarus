@@ -358,7 +358,7 @@ procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
 implementation
 
 const
-  CompilerOptionsVersion = 2;
+  CompilerOptionsVersion = 3;
   Config_Filename = 'compileroptions.xml';
   MaxParseStamp = $7fffffff;
   MinParseStamp = -$7fffffff;
@@ -831,6 +831,22 @@ var
                                   CompilationGenerateCodeNames[cgcNormalCode]));
     end;
   end;
+  
+  procedure ReadSmartLinkUnit;
+  begin
+    if FileVersion<3 then
+      SmartLinkUnit := XMLConfigFile.GetValue(p+'UnitStyle/Value', 1)=2
+    else
+      SmartLinkUnit := XMLConfigFile.GetValue(p+'SmartLinkUnit/Value', false);
+  end;
+  
+  procedure ReadLinkSmart;
+  begin
+    if FileVersion<3 then
+      LinkSmart := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1)=3
+    else
+      LinkSmart := XMLConfigFile.GetValue(p+'LinkSmart/Value', false);
+  end;
 
 begin
   { Load the compiler options from the XML file }
@@ -870,7 +886,7 @@ begin
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
-  UnitStyle := XMLConfigFile.GetValue(p+'UnitStyle/Value', 1);
+  ReadSmartLinkUnit;
   IOChecks := XMLConfigFile.GetValue(p+'Checks/IOChecks/Value', false);
   RangeChecks := XMLConfigFile.GetValue(p+'Checks/RangeChecks/Value', false);
   OverflowChecks := XMLConfigFile.GetValue(p+'Checks/OverflowChecks/Value', false);
@@ -895,7 +911,7 @@ begin
   UseValgrind := XMLConfigFile.GetValue(p+'Debugging/UseValgrind/Value', false);
   GenGProfCode := XMLConfigFile.GetValue(p+'Debugging/GenGProfCode/Value', false);
   StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
-  LinkStyle := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1);
+  ReadLinkSmart;
   PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
   LinkerOptions := f(XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', ''));
   Win32GraphicApp := XMLConfigFile.GetValue(p+'Options/Win32/GraphicApplication/Value', false);
@@ -1007,7 +1023,7 @@ begin
   
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
-  XMLConfigFile.SetDeleteValue(p+'UnitStyle/Value', UnitStyle,1);
+  XMLConfigFile.SetDeleteValue(p+'SmartLinkUnit/Value', SmartLinkUnit,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/IOChecks/Value', IOChecks,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
@@ -1032,7 +1048,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
-  XMLConfigFile.SetDeleteValue(p+'LinkStyle/Value', LinkStyle,1);
+  XMLConfigFile.SetDeleteValue(p+'LinkSmart/Value', LinkSmart,false);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
   XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
   XMLConfigFile.SetDeleteValue(p+'Options/Win32/GraphicApplication/Value', Win32GraphicApp,false);
@@ -1528,12 +1544,9 @@ Processor specific options:
 
   { ----------- Code Generation Tab --------------- }
 
-  { UnitStyle   '' = Static     'D' = Dynamic   'X' = smart linked }
-  case (UnitStyle) of
-    0: ;
-    1: switches := switches + ' -CD';
-    2: switches := switches + ' -CX';
-  end;
+  { UnitStyle   '' = Static     'D' = Dynamic (not implemented)   'X' = smart linked }
+  if SmartLinkUnit then
+    switches := switches + ' -CX';
 
   { Checks }
   tempsw := '';
@@ -1643,16 +1656,13 @@ Processor specific options:
     switches := switches + ' -Xs';
 
   { Link Style
-     -XD = Link with dynamic libraries
-     -XS = Link with static libraries 
+     -XD = Link with dynamic libraries, not implemented by FPC
+     -XS = Link with static libraries, default on non-win32 platforms
      -XX = Link smart
   }
-  if (not (ccloNoLinkerOpts in Flags)) then
-    case (LinkStyle) of
-      1:  switches := switches + ' -XD'; // dynamic
-      2:  switches := switches + ' -XS'; // static
-      3:  switches := switches + ' -XX -CX'; // smart
-    end;
+
+  if (not (ccloNoLinkerOpts in Flags)) and LinkSmart then
+    switches := switches + ' -XX';
 
   // additional Linker options
   if PassLinkerOptions and (not (ccloNoLinkerOpts in Flags)) then begin
@@ -1894,7 +1904,7 @@ begin
   fGPCCompat := false;
     
   // code generation
-  fUnitStyle := 1;
+  fSmartLinkUnit := false;
   fIOChecks := false;
   fRangeChecks := false;
   fOverflowChecks := false;
@@ -1916,7 +1926,7 @@ begin
   fUseValgrind := false;
   fGenGProfCode := false;
   fStripSymbols := false;
-  fLinkStyle := 1;
+  fLinkSmart := false;
   fPassLinkerOpt := false;
   LinkerOptions := '';
   Win32GraphicApp := false;
@@ -1994,7 +2004,7 @@ begin
   fGPCCompat := CompOpts.fGPCCompat;
 
   // Code Generation
-  fUnitStyle := CompOpts.fUnitStyle;
+  fSmartLinkUnit := CompOpts.SmartLinkUnit;
   fIOChecks := CompOpts.fIOChecks;
   fRangeChecks := CompOpts.fRangeChecks;
   fOverflowChecks := CompOpts.fOverflowChecks;
@@ -2018,7 +2028,7 @@ begin
   fUseValgrind := CompOpts.fUseValgrind;
   fGenGProfCode := CompOpts.fGenGProfCode;
   fStripSymbols := CompOpts.fStripSymbols;
-  fLinkStyle := CompOpts.fLinkStyle;
+  fLinkSmart := CompOpts.fLinkSmart;
   fPassLinkerOpt := CompOpts.fPassLinkerOpt;
   LinkerOptions := CompOpts.fLinkerOptions;
   Win32GraphicApp := CompOpts.Win32GraphicApp;
@@ -2085,7 +2095,7 @@ begin
     and (fGPCCompat = CompOpts.fGPCCompat)
 
     // code generation
-    and (fUnitStyle = CompOpts.fUnitStyle)
+    and (fSmartLinkUnit = CompOpts.SmartLinkUnit)
     and (fIOChecks = CompOpts.fIOChecks)
     and (fRangeChecks = CompOpts.fRangeChecks)
     and (fOverflowChecks = CompOpts.fOverflowChecks)
@@ -2109,7 +2119,7 @@ begin
     and (fUseValgrind = CompOpts.fUseValgrind)
     and (fGenGProfCode = CompOpts.fGenGProfCode)
     and (fStripSymbols = CompOpts.fStripSymbols)
-    and (fLinkStyle = CompOpts.fLinkStyle)
+    and (fLinkSmart = CompOpts.fLinkSmart)
     and (fPassLinkerOpt = CompOpts.fPassLinkerOpt)
     and (fLinkerOptions = CompOpts.fLinkerOptions)
     and (FWin32GraphicApp = CompOpts.FWin32GraphicApp)
