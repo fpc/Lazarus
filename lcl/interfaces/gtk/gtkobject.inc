@@ -3978,30 +3978,10 @@ begin
       if ClipboardWidget=nil then
         SetClipboardWidget(p);
 
-      // Create the VBox, we need that to place controls outside
-      // the client area (like menu and the statusbar)
-      Box := gtk_vbox_new(False, 0);
+      Box := CreateFormContents(P);
       gtk_container_add(p, Box);
       gtk_widget_show(Box);
 
-      // Create the form client area
-      TempWidget := gtk_scrolled_window_new(nil,nil);
-      gtk_box_pack_end(Box, TempWidget, True, True, 0);
-      gtk_widget_show(TempWidget);
-
-      gtk_object_set_data(P,'scroll_area', TempWidget);
-
-      TempWidget2 := gtk_layout_new(nil, nil);
-      gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
-      gtk_widget_show(TempWidget2);
-      SetFixedWidget(p, TempWidget2);
-      SetMainWidget(p, TempWidget2);
-
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
-                                     GTK_POLICY_NEVER,
-                                     GTK_POLICY_NEVER);
       //drag icons
       if Drag_Icon = nil then
         Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
@@ -6499,6 +6479,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.266  2002/10/25 15:27:03  lazarus
+  AJ: Moved form contents creation to gtkproc for code
+      reuse between GNOME and GTK, and to make GNOME MDI
+      programming easier later on.
+
   Revision 1.265  2002/10/24 22:10:39  lazarus
   AJ: More changes for better code reuse between gnome & gtk interfaces
 
