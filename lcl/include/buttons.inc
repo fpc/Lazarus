@@ -1,7 +1,7 @@
 {******************************************************************************
                                    TButton
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -32,6 +32,7 @@ begin
   {set the component style to csButton}
   fCompStyle := csButton;
   ControlStyle:=ControlStyle-[csClickEvents];
+  TabStop := true;
   {set default alignment}
   Align := alNone;
   {setup default sizes}
@@ -90,7 +91,7 @@ End;
 
   Handles the event that the button is clicked
  ------------------------------------------------------------------------------}
-procedure TButton.Click;  
+procedure TButton.Click;
 var
   Form : TCustomForm;
 Begin
@@ -110,12 +111,12 @@ end;
   Handles the event when the button is entered
  ------------------------------------------------------------------------------}
 procedure TButton.CMMouseEnter(var Message: TLMessage);
-begin 
+begin
   Assert(False,'Trace:[TButton.CMMouseEnter]');
   inherited CMMouseEnter(Message);
   If assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
-end; 
+end;
 
 {------------------------------------------------------------------------------
   Method:  TButton.CMMouseLeave
@@ -125,12 +126,12 @@ end;
   Handles the event when the mouse leaves the button
  ------------------------------------------------------------------------------}
 procedure TButton.CMMouseLeave(var Message: TLMessage);
-begin 
+begin
   Assert(False,'Trace:[TButton.CMMouseLeave]');
   inherited CMMouseLeave(Message);
   If assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
-end; 
+end;
 
 {------------------------------------------------------------------------------
   Method:  TButton.CMDefaultClicked
@@ -165,6 +166,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.15  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 

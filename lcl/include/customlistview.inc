@@ -31,6 +31,7 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
   FSelected := nil;
+  TabStop := true;
   Setbounds(2,2,100,90);
 end;
 
@@ -43,7 +44,7 @@ Begin
   Include(FStates,lvUpdateNeeded);
   DoUpdate;
 end;
-            
+
 {------------------------------------------------------------------------------}
 {   TCustomListView Change                                                     }
 {------------------------------------------------------------------------------}
@@ -58,15 +59,15 @@ begin
   else
     Exit;
   end;
-  if Assigned(FOnChange) 
+  if Assigned(FOnChange)
   then FOnChange(Self, AItem, ItemChange);
 end;
-            
+
 {------------------------------------------------------------------------------}
 {   TCustomListView ColClick                                                   }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.ColClick(AColumn: TListColumn); 
-begin                                                       
+procedure TCustomListView.ColClick(AColumn: TListColumn);
+begin
   if Assigned(FOnColumnClick) then FOnColumnClick(Self, AColumn)
 end;
 
@@ -79,11 +80,11 @@ var
   Item: TListItem;
 begin
   nm := PNMListView(AMessage.NMHdr);
-  
+
   case AMessage.NMHdr^.code of
 //    HDN_TRACK:
 //    NM_CUSTOMDRAW:
-//    LVN_BEGINDRAG: 
+//    LVN_BEGINDRAG:
     LVN_DELETEITEM: begin
       // don't call delete yet,
       // there is no solution available when we have deleted the item first
@@ -110,7 +111,7 @@ begin
     LVN_ITEMCHANGED: begin
       Item := Items[nm^.iItem];
       Change(Item, nm^.uChanged);
-      if (nm^.uChanged = LVIF_STATE) 
+      if (nm^.uChanged = LVIF_STATE)
       then begin
         if (nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)
         then begin
@@ -129,8 +130,8 @@ begin
       end;
     end;
 //    LVN_GETINFOTIP:
-//    NM_CLICK: 
-//    NM_RCLICK: 
+//    NM_CLICK:
+//    NM_RCLICK:
   end;
 end;
 
@@ -175,8 +176,8 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView DoSelectItem                                               }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean); 
-begin                                   
+procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean);
+begin
   AItem.Selected:=ASelected;
   if Assigned(FOnSelectItem) then FOnSelectItem(Self, AItem, ASelected);
 end;
@@ -248,7 +249,7 @@ end;
 procedure TCustomListView.InsertItem(Item : TListItem);
 begin
 end;
-         
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetColumns                                                 }
 {------------------------------------------------------------------------------}
@@ -259,7 +260,7 @@ begin
   if ([csDesigning,csLoading,csReading]*ComponentState=[csDesigning]) then
     OwnerFormDesignerModified(Self);
 end;
-         
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetViewStyle                                               }
 {------------------------------------------------------------------------------}
@@ -309,7 +310,7 @@ end;
    TCustomListView BeginUpdate
    Params: None
    Result: none
-   
+
    Increases the update count. Use this procedure before any big change, so that
    the interface will not show any single step.
  ------------------------------------------------------------------------------}
@@ -445,7 +446,7 @@ var
 begin
   writeln('TODO: TCustomListView.UpdateScrollbars');
   exit;
-  
+
   if not HandleAllocated then exit
   else
   begin
@@ -557,6 +558,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.26  2003/02/28 15:49:43  mattias
   fixed initial size
 
@@ -608,5 +612,5 @@ end;
 
 }
 
- 
+
 

@@ -16,7 +16,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
- 
+
   current design flaws:
 
   - I decided to support some gtk-specific properties in this class. This
@@ -25,7 +25,7 @@
     BTW: When porting to another widget library you can safely ignore
 
            FScalePosition, FScaleDigits
-	   
+
   Delphi compatibility:
 
    - the interface is almost like in delphi 4
@@ -39,7 +39,7 @@
      nice addons for the GTK interface
       * ShowScale
       * ScalePos (left, top, right, bottom)
-      
+
   TODO:
 
     - implement some more Delphi stuff
@@ -74,6 +74,7 @@ begin
   FShowScale := false;
   FScalePos  := trTop;
   FScaleDigits := 0;
+  TabStop := true;
   SetInitialBounds(0,0,100,20);
 end;
 
@@ -93,7 +94,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TTrackBar.SetTick
-  Params: Value : new tick  
+  Params: Value : new tick
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
@@ -105,7 +106,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TTrackBar.SetOrientation
-  Params: Value : new orientation  
+  Params: Value : new orientation
   Returns: Nothing
 
   Change the orientation of the trackbar.
@@ -132,7 +133,7 @@ end;
   Method: TTrackBar.SetParams
   Params:  APosition : new position
            AMin      : new minimum
-	   AMax	     : new maximum	
+	   AMax	     : new maximum
   Returns: Nothing
 
   Set new parameters for the trackbar.
@@ -312,7 +313,7 @@ var
 begin
    CNSendMessage (LM_GetValue, Self, @tmpPosition);
    Assert(True, 'Trace:Trackbar received a message -CHANGE');
-   FPosition := TmpPosition; 
+   FPosition := TmpPosition;
    if Assigned (FOnChange)
       then FOnChange (Self);
 end;
@@ -354,7 +355,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------
-procedure CreateParams(var Params: TCreateParams); 
+procedure CreateParams(var Params: TCreateParams);
 begin
 end;
 }
@@ -374,13 +375,16 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------
-procedure DestroyWnd; 
+procedure DestroyWnd;
 begin
 end;
 }
 
 {
   $Log$
+  Revision 1.7  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.6  2003/06/13 21:13:20  mattias
   fixed TTrackBar initial size
 

@@ -387,6 +387,7 @@ begin
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ParentColor := false;
+  TabStop := true;
   SetInitialBounds(0, 0, 100, 80);
 end;
 
@@ -437,7 +438,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TCustomListBox.Clear
-  
+
   Delete all items.
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.Clear;
@@ -447,7 +448,7 @@ end;
 
 {------------------------------------------------------------------------------
   function TCustomListBox.GetIndexAtY(Y: integer): integer;
-  
+
   Returns item index at y coordinate (including scrolling)
 ------------------------------------------------------------------------------}
 function TCustomListBox.GetIndexAtY(Y: integer): integer;
@@ -477,7 +478,7 @@ end;
 
 {------------------------------------------------------------------------------
   function TCustomListBox.ItemRect(Index: Integer): TRect;
-  
+
   Returns coordinates of an item (including scrolling)
   Special: If Index=Count the rectangle is guessed (like VCL).
 ------------------------------------------------------------------------------}

@@ -323,7 +323,9 @@ begin
   fAccess := TNBPages.Create(fPageList, Self);
   fPageIndex := -1;
 
+  ControlStyle := [csAcceptsControls];
   TabPosition := tpTop;
+  TabStop := true;
   ShowTabs := True;
   SetInitialBounds(0,0,200,200);
 end;
@@ -785,6 +787,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.41  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.40  2003/12/23 18:15:37  mattias
   fixed TNoteBook.OnPageChanged for user PageIndex
 

@@ -31,7 +31,7 @@ var
   NewStrings: TStrings;
 begin
   inherited CreateWnd;
-  
+
   // get the interface based item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // then delete internal list
@@ -72,7 +72,7 @@ begin
   end;
   // and use the internal list
   FItems:= NewStrings;
-  
+
   inherited DestroyWnd;
 end;
 
@@ -112,7 +112,7 @@ begin
     ASelLength:= FSelLength;
     SelStart:= ASelStart;
     SelLength:= ASelLength;
-  end;    
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -346,7 +346,7 @@ begin
   if (FStyle < csDropDownList) and (Text <> '') then begin
     SetSelStart(0);
     SetSelLength(Length(Text));
-  end;    
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -379,7 +379,7 @@ var
   skip : Boolean;
 begin
   Skip := False;
-  
+
   if AutoDropDown or ((Shift *[ssCtrl] = [ssCtrl]) and (Key = VK_DOWN))
       or FReturnArrowState then
   begin
@@ -555,7 +555,7 @@ end;
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.Create
   Params: AOwner - owner of the object
-  Returns: reference to the newly created object 
+  Returns: reference to the newly created object
 
   Creates the object.
  ------------------------------------------------------------------------------}
@@ -571,6 +571,7 @@ begin
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   ArrowKeysTraverseList := True;
+  TabStop := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -693,7 +694,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.SetItemIndex
-  Params: Val - 
+  Params: Val -
   Returns: nothing
 
   Sets ths index of the currently selected item in the combobox.
@@ -798,6 +799,9 @@ end;
 
 {
   $Log$
+  Revision 1.34  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.33  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

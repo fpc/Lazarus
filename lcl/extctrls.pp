@@ -199,6 +199,8 @@ type
     property OnCloseTabClicked: TNotifyEvent
       read FOnCloseTabClicked write FOnCloseTabClicked;
     property Options: TNoteBookOptions read FOptions write SetOptions;
+  published
+    property TabStop default true;
   end;
 
 
@@ -836,6 +838,9 @@ end.
 
  {
   $Log$
+  Revision 1.90  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.89  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

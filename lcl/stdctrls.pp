@@ -1,12 +1,12 @@
 {
- /*************************************************************************** 
+ /***************************************************************************
                                stdctrls.pp
                                -----------
- 
-                   Initial Revision  : Tue Oct 19 CST 1999 
- 
- ***************************************************************************/ 
- 
+
+                   Initial Revision  : Tue Oct 19 CST 1999
+
+ ***************************************************************************/
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -109,7 +109,7 @@ type
     property ShowHint;
     property SmallChange: TScrollBarInc read FSmallChange write FSmallChange default 1;
     property TabOrder;
-    property TabStop;
+    property TabStop default true;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDragDrop;
@@ -133,10 +133,10 @@ type
     constructor Create(AOwner : TComponent); Override;
     function CanTab: boolean; override;
   end;
-  
-  
+
+
   { TGroupBox }
-                                                                                                   
+
   TGroupBox = class(TCustomGroupBox)
   published
     property Align;
@@ -247,7 +247,7 @@ type
     procedure SetStyle(Val : TComboBoxStyle); virtual;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyPress(var Key : Char); override;
-    
+
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
@@ -285,9 +285,11 @@ type
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
     property Style: TComboBoxStyle read FStyle write SetStyle;
+  published
+    property TabStop default true;
   end;
-  
-  
+
+
   { TComboBox }
 
   TComboBox = class(TCustomComboBox)
@@ -331,12 +333,12 @@ type
     property Text;
     property Visible;
   end;
-    
+
 
   { TCustomListBox }
-    
+
   TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
-  
+
   TCustomListBox = class(TWinControl)
   private
     FBorderStyle: TBorderStyle;
@@ -400,11 +402,13 @@ type
     property Sorted: boolean read FSorted write SetSorted;
     property Style: TListBoxStyle read FStyle write SetStyle;
     property TopIndex: Integer read GetTopIndex write SetTopIndex;
+  published
+    property TabStop default true;
   end;
-  
-  
+
+
   { TListBox }
-    
+
   TListBox = class(TCustomListBox)
   published
     property Align;
@@ -497,13 +501,13 @@ type
     property Text;
   published
     property PopupMenu;
-    property TabStop;
+    property TabStop default true;
     property TabOrder;
   end;
-  
-  
+
+
   { TMemoScrollbar }
-  
+
   TMemoScrollbar = class(TControlScrollBar)
   protected
     function GetHorzScrollBar: TControlScrollBar; override;
@@ -517,8 +521,8 @@ type
     property Size;
     property Visible;
   end;
-  
-  
+
+
   { TCustomMemo }
 
   TCustomMemo = class(TCustomEdit)
@@ -554,8 +558,8 @@ type
     property VertScrollBar: TMemoScrollBar
       read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
-  
-  
+
+
   { TEdit }
 
   TEdit = class(TCustomEdit)
@@ -589,8 +593,8 @@ type
     property Text;
     property Visible;
   end;
-  
-  
+
+
   { TMemo }
 
   TMemo = class(TCustomMemo)
@@ -723,6 +727,8 @@ type
   public
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
     property State: TCheckBoxState read GetState write SetState;
+  published
+    property TabStop default true;
   end;
 
 {$IFNDef NewCheckBox}
@@ -884,7 +890,7 @@ type
 
 
   { TRadioButton }
-   
+
   TRadioButton = class(TCustomCheckBox)
   protected
     procedure DoAutoSize; override;
@@ -923,7 +929,7 @@ type
 
 
   { TStaticText }
-  
+
   TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
 
   TCustomStaticText = class(TCustomControl)
@@ -985,7 +991,7 @@ type
     property OnMouseMove;
     property OnMouseUp;
   end;
-  
+
 var
   DefaultButtonControlUseOnChange: boolean;
 
@@ -1436,14 +1442,14 @@ end;
 {$EndIf NewCheckbox}
 
 {$I customgroupbox.inc}
-{$I customcombobox.inc}                                                                                            
+{$I customcombobox.inc}
 {$I customlistbox.inc}
 {$I custommemo.inc}
 {$I customedit.inc}
 {$I customlabel.inc}
 {$I customcheckbox.inc}
 
-{$I scrollbar.inc} 
+{$I scrollbar.inc}
 {$I memoscrollbar.inc}
 {$I memo.inc}
 {$I memostrings.inc}
@@ -1468,6 +1474,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.117  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.116  2004/01/12 15:04:41  mattias
   implemented TCustomListBox.ItemAtPos
 

@@ -86,7 +86,8 @@ begin
   fCompStyle := csCheckbox;
   FState       := cbUnchecked;
   FAllowGrayed := True;
-  Height:=20;
+  TabStop := true;
+  Height := 20;
 end;
 
 {------------------------------------------------------------------------------
@@ -194,6 +195,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.14  2003/09/16 11:35:14  mattias
   started TDBCheckBox
 

@@ -1128,14 +1128,30 @@ Procedure TWin32Object.HandleEvents;
 var
   AMessage: TMsg;
   AccelTable: HACCEL;
+
+  function HandleDialogMessage: Boolean;
+  var
+    TopParent, TmpParent: HWnd;
+  begin
+    TmpParent := AMessage.HWnd;
+    repeat
+      TopParent := TmpParent;
+      TmpParent := Windows.GetParent(TmpParent);
+    until TmpParent = HWND(nil);
+    Result := Windows.IsDialogMessage(TopParent, @AMessage);
+  end;
+
 Begin
   While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
     AccelTable := HACCEL(Windows.GetProp(AMessage.HWnd, 'Accel'));
     If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
     Begin
-      TranslateMessage(@AMessage);
-      DispatchMessage(@AMessage);
+      if not HandleDialogMessage then
+      Begin
+        TranslateMessage(@AMessage);
+        DispatchMessage(@AMessage);
+      End;
     End;
   End;
 End;
@@ -2969,6 +2985,9 @@ End;
 
 {
   $Log$
+  Revision 1.161  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.160  2004/01/20 22:14:27  micha
   REVERTED: "try register globally unique properties"; implemented new WindowFromPoint not returning window if from different process (tip from vincent)
 

@@ -542,6 +542,8 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     property Selected: TListItem read GetSelection write SetSelection;
+  published
+    property TabStop default true;
   end;
 
 
@@ -1444,7 +1446,7 @@ type
     property TopLvlItems[Index: integer]: TTreeNode
       read GetTopLvlItems write SetTopLvlItems;
   end;
-  
+
 
   { TCustomTreeView }
 
@@ -1785,6 +1787,8 @@ type
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
+  published
+    property TabStop default true;
   end;
 
 
@@ -1966,6 +1970,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.102  2004/01/12 13:43:12  mattias
   improved and activated new statusbar
 

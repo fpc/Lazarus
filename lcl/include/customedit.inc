@@ -59,6 +59,7 @@ begin
   FCompStyle := csEdit;
   FMaxLength:= -1;
   ParentColor := false;
+  TabStop := true;
   SetInitialBounds(0,0,80,23);
 end;
 
@@ -159,7 +160,7 @@ begin
   if Text <> '' then begin
     SetSelStart(0);
     SetSelLength(Length(Text));
-  end;    
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -290,7 +291,7 @@ begin
     FReadOnly := Value;
     if HandleAllocated then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
-  end;  
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -347,7 +348,7 @@ begin
     ASelLength:= FSelLength;
     SelStart:= ASelStart;
     SelLength:= ASelLength;
-  end;    
+  end;
 end;
 
 // included by stdctrls.pp
@@ -355,6 +356,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/01/21 10:19:16  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.19  2003/11/01 18:58:15  mattias
   added clipboard support for TCustomEdit from Colin
 

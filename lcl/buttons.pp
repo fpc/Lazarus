@@ -94,7 +94,7 @@ type
     property Cancel : Boolean read FCancel write FCancel default False;
     property Caption;
     property Font;
-    property TabStop;
+    property TabStop default true;
     property TabOrder;
     property PopupMenu;
     property ShowHint;
@@ -158,7 +158,7 @@ type
     Procedure SetKind(Value : TBitBtnKind);
     Procedure SetLayout(Value : TButtonLayout);
     Procedure SetSpacing(Value : Integer);
-    
+
     //Return the caption associed with the akind value.
     function GetCaptionOfKind(aKind :TBitBtnKind) : String;
   protected
@@ -181,10 +181,10 @@ type
     property ParentShowHint;
     property PopupMenu;
   end;
-   
-   
+
+
   { TSpeedButton }
-  
+
   TSpeedButton = class(TGraphicControl)
   private
     FAllowAllUp : Boolean;
@@ -261,8 +261,8 @@ type
     property ParentShowHint;
     property PopupMenu;
   end;
-  
-  
+
+
 
 procedure Register;
 
@@ -306,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2004/01/21 10:19:15  micha
+  enable tabstops for controls; implement tabstops in win32 intf
+
   Revision 1.53  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 
