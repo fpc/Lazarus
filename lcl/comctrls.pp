@@ -827,6 +827,7 @@ type
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
   protected
     FToolBar: TToolBar;
+    procedure CopyPropertiesFromMenuItem(const Value: TMenuItem);
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure AssignTo(Dest: TPersistent); override;
@@ -839,6 +840,7 @@ type
     procedure MouseLeave; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
+    procedure Loaded; override;
     procedure RefreshControl; virtual;
     procedure SetToolBar(NewToolBar: TToolBar);
     procedure UpdateControl; virtual;
@@ -2254,6 +2256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2004/06/17 10:38:40  mattias
+  fixed TToolButton.SetMenuItem while loading
+
   Revision 1.132  2004/06/15 17:21:01  mattias
   fixed TTreeNode.Delete and deleting in between node
 

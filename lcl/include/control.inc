@@ -235,8 +235,8 @@ end;
 
 procedure TControl.SetAction(Value: TBasicAction);
 begin
-  writeln('TControl.SetAction A ',Name,':',ClassName,' ',HexStr(Cardinal(Value),8),' Old=',HexStr(Cardinal(Action),8));
   if (Value=Action) then exit;
+  //debugln('TControl.SetAction A ',Name,':',ClassName,' Old=',HexStr(Cardinal(Action),8),' New=',HexStr(Cardinal(Value),8));
   if Value = nil then begin
     ActionLink.Free;
     ActionLink:=nil;
@@ -3196,6 +3196,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.192  2004/06/17 10:38:40  mattias
+  fixed TToolButton.SetMenuItem while loading
+
   Revision 1.191  2004/06/15 17:21:01  mattias
   fixed TTreeNode.Delete and deleting in between node
 

@@ -269,6 +269,12 @@ begin
   inherited Paint;
 end;
 
+procedure TToolButton.Loaded;
+begin
+  inherited Loaded;
+  CopyPropertiesFromMenuItem(FMenuItem);
+end;
+
 procedure TToolButton.SetAutoSize(const Value: Boolean);
 begin
   if Value = AutoSize then exit;
@@ -299,6 +305,20 @@ end;
 function TToolButton.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result:=TToolButtonActionLink;
+end;
+
+procedure TToolButton.CopyPropertiesFromMenuItem(const Value: TMenuItem);
+begin
+  if Value=nil then exit;
+  BeginUpdate;
+  Action := Value.Action;
+  Caption := Value.Caption;
+  Down := Value.Checked;
+  Enabled := Value.Enabled;
+  Hint := Value.Hint;
+  ImageIndex := Value.ImageIndex;
+  Visible := Value.Visible;
+  EndUpdate;
 end;
 
 procedure TToolButton.CMHitTest(var Message: TCMHitTest);
@@ -437,18 +457,10 @@ end;
 procedure TToolButton.SetMenuItem(Value: TMenuItem);
 begin
   if Value=FMenuItem then exit;
-  if Value <> nil then begin
-    BeginUpdate;
-    if FMenuItem <> Value then
-      Value.FreeNotification(Self);
-    Action := Value.Action;
-    Caption := Value.Caption;
-    Down := Value.Checked;
-    Enabled := Value.Enabled;
-    Hint := Value.Hint;
-    ImageIndex := Value.ImageIndex;
-    Visible := Value.Visible;
-    EndUpdate;
+  // copy values from menuitem
+  // is menuitem is still loading, skip this
+  if (Value <> nil) and (not (csLoading in Value.ComponentState)) then begin
+    CopyPropertiesFromMenuItem(Value);
   end;
   FMenuItem := Value;
 end;
@@ -1192,6 +1204,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2004/06/17 10:38:40  mattias
+  fixed TToolButton.SetMenuItem while loading
+
   Revision 1.18  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
