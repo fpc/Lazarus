@@ -109,7 +109,7 @@ Type
     { Initialize the API }
     Procedure Init; Override;
     { Get the text from control Sender and store it in variable Data }
-    Function GetText(Sender: TControl; Var Data: String): Boolean;
+    Function  GetText(Sender: TComponent; var Data: String): Boolean; override;
     { Set Label of control Sender to Data }
     Procedure SetLabel(Sender: TObject; Data: Pointer);
     { Process Lazarus message LM_Message and return an integer result }
@@ -192,6 +192,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/11/15 23:43:54  mattias
+  applied patch from Karl Brandt
+
   Revision 1.18  2002/10/27 19:59:03  lazarus
   AJ: fixed compiling
 
