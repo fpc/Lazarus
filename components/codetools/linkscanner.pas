@@ -477,6 +477,7 @@ var
   c1, c2: char;
 begin
   // Skip all spaces and comments
+//writeln(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'" "',copy(UpperSrc,SrcPos,5),'"');
   if (SrcPos>SrcLen) then ReturnFromIncludeFile;
   while SrcPos<=SrcLen do begin
     if IsCommentStartChar[Src[SrcPos]] then begin
@@ -625,10 +626,11 @@ writeln('TLinkScanner.Scan C ',SrcLen);
   LastTokenIsEqual:=false;
   LastTokenIsEnd:=false;
 {$IFDEF CTDEBUG}
-writeln('TLinkScanner.Scan A ',SrcLen);
+writeln('TLinkScanner.Scan D ',SrcLen);
 {$ENDIF}
   repeat
     ReadNextToken;
+//writeln('TLinkScanner.Scan E "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
     UpdateCleanedSource(SrcPos-1);
     if (SrcPos<=SrcLen+1) then begin
       if (not LastTokenIsEqual) and

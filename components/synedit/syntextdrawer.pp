@@ -432,9 +432,17 @@ procedure TheFontsInfoManager.UnlockFontsInfo(
 begin
   with pFontsInfo^ do
   begin
+    {$IFDEF SYN_LAZARUS}
+    if LockCount>0 then begin
+      Dec(LockCount);
+      if 0 = LockCount then
+        DestroyFontHandles(pFontsInfo);
+    end;
+    {$ELSE}
     Dec(LockCount);
     if 0 = LockCount then
       DestroyFontHandles(pFontsInfo);
+    {$ENDIF}
   end;
 end;
 
@@ -531,6 +539,12 @@ begin
       {$ENDIF}
     end;
   end;
+  {$IFDEF SYN_LAZARUS}
+  if SynTextDrawerFinalization and (FFontsInfo.Count=0) then
+    // the program is in the finalization phase
+    // and this object is not used anymore -> destroy it
+    Free;
+  {$ENDIF}
 end;
 
 procedure TheFontsInfoManager.RetrieveLogFontForComparison(ABaseFont: TFont;
@@ -639,7 +653,6 @@ end;
 
 constructor TheFontStock.Create(InitialFont: TFont);
 begin
-  writeln(' AAA TheFontStock.Create Self=',HexStr(Cardinal(Self),8));
   inherited Create;
 
   SetBaseFont(InitialFont);
@@ -647,8 +660,6 @@ end;
 
 destructor TheFontStock.Destroy;
 begin
-  writeln(' AAA TheFontStock.Destroy Self=',HexStr(Cardinal(Self),8));
-  
   ReleaseFontsInfo;
   ASSERT(FDCRefCount = 0);
 
@@ -745,8 +756,6 @@ end;
 
 procedure TheFontStock.ReleaseFontsInfo;
 begin
-  writeln(' AAA TheFontStock.ReleaseFontsInfo Self=',HexStr(Cardinal(Self),8));
-  
   if Assigned(FpInfo) then
     with GetFontsInfoManager do
     begin
@@ -853,14 +862,10 @@ begin
   SetBaseFont(ABaseFont);
   FColor := clWindowText;
   FBkColor := clWindow;
-  
-  writeln(' AAA TheTextDrawer.Create Self=',HexStr(Cardinal(Self),8));
 end;
 
 destructor TheTextDrawer.Destroy;
 begin
-  writeln(' AAA TheTextDrawer.Destroy Self=',HexStr(Cardinal(Self),8));
-  
   FFontStock.Free;
   ReleaseETODist;
 
@@ -1283,7 +1288,6 @@ end;
 {$ENDIF} // HE_LEADBYTES
 
 initialization
-
 {$IFDEF SYN_LAZARUS}
   SynTextDrawerFinalization:=false;
 {$ENDIF}
@@ -1293,11 +1297,15 @@ initialization
 
 finalization
 {$IFDEF SYN_LAZARUS}
+  // MG: We can't free the gFontsInfoManager here, because the synedit
+  //     components need it and will be destroyed with the Application object in
+  //     the lcl after this finalization section.
+  //     So, the flag SynTextDrawerFinalization is set and the gFontsInfoManager
+  //     will destroy itself, as soon, as it is not used anymore.
   SynTextDrawerFinalization:=true;
+{$ELSE}
+  FreeAndNil(gFontsInfoManager);
 {$ENDIF}
-
-  gFontsInfoManager.Free;
-  gFontsInfoManager:=nil;
 
 end.
 

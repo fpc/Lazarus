@@ -108,7 +108,7 @@ function UpperCaseStr(const s: string): string;
 var i, l: integer;
 begin
   l:=length(s);
-  Setlength(Result,l);
+  SetLength(Result,l);
   for i:=1 to l do
     Result[i]:=UpChars[s[i]];
 end;

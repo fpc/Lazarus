@@ -1371,7 +1371,7 @@ function TCodeToolManager.OnGetCodeToolForBuffer(Sender: TObject;
 begin
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.OnGetCodeToolForBuffer]'
-  ,' Sender=',TCustomCodeTool(Sender).Scanner.MainSource.Filename
+  ,' Sender=',TCustomCodeTool(Sender).MainFilename
   ,' Code=',Code.Filename);
 {$ENDIF}
   Result:=TFindDeclarationTool(GetCodeToolForSource(Code,true));
