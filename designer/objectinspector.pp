@@ -815,7 +815,6 @@ begin
   if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
     NewRow:=Rows[NewIndex];
     NewRow.Editor.Activate;
-writeln('  NewRow.Editor.ClassName=',NewRow.Editor.ClassName);
     if paDialog in NewRow.Editor.GetAttributes then begin
       FCurrentButton:=ValueButton;
       FCurrentButton.Visible:=true;
@@ -1150,10 +1149,12 @@ begin
 //writeln('[TOIPropertyGrid.SetBounds] ',Name,' ',aLeft,',',aTop,',',aWidth,',',aHeight,' Visible=',Visible);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
-    if (SplitterX<5) and (aWidth>20) then
-      SplitterX:=100
-    else
-      SplitterX:=FPreferredSplitterX;
+    if not FDragging then begin
+      if (SplitterX<5) and (aWidth>20) then
+        SplitterX:=100
+      else
+        SplitterX:=FPreferredSplitterX;
+    end;
     AlignEditComponents;
   end;
 end;
