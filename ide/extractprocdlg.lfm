@@ -2,6 +2,7 @@ object ExtractProcDialog: TExtractProcDialog
   Caption = 'ExtractProcDialog'
   ClientHeight = 230
   ClientWidth = 446
+  OnClose = ExtractProcDialogClose
   OnCreate = ExtractProcDialogCREATE
   HorzScrollBar.Page = 447
   VertScrollBar.Page = 231
@@ -11,7 +12,8 @@ object ExtractProcDialog: TExtractProcDialog
   Width = 446
   object TypeRadiogroup: TRadioGroup
     Caption = 'TypeRadiogroup'
-    ColumnLayout = clverticalthenhorizontal
+    ColumnLayout = clVerticalThenHorizontal
+    ParentColor = True
     Left = 8
     Height = 120
     Top = 8
@@ -19,18 +21,16 @@ object ExtractProcDialog: TExtractProcDialog
   end
   object OkButton: TButton
     Caption = 'OkButton'
-    TabStop = True
-    TabOrder = 1
     OnClick = OkButtonCLICK
+    TabOrder = 1
     Left = 112
     Height = 25
     Top = 192
     Width = 99
   end
   object CancelButton: TButton
-    ModalResult = 2
     Caption = 'CancelButton'
-    TabStop = True
+    ModalResult = 2
     TabOrder = 2
     Left = 240
     Height = 25
@@ -49,9 +49,9 @@ object ExtractProcDialog: TExtractProcDialog
     Top = 135
     Width = 430
     object NameEdit: TEdit
-      Align = altop
+      Align = alTop
+      TabOrder = 0
       Text = 'NameEdit'
-      TabStop = True
       TabOrder = 0
       Height = 23
       Width = 426

@@ -221,7 +221,7 @@ type
     function CanPaste: Boolean; override;
     procedure PasteSelection; override;
     procedure DeleteSelection; override;
-    function CopySelectionToStream(s: TStream): boolean; override;
+    function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
     function InvokeComponentEditor(AComponent: TComponent;
                                    MenuIndex: integer): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
@@ -401,7 +401,7 @@ begin
     SelectOnlyThisComponent(TControl(ControlSelection[i].Persistent).Parent);
 end;
 
-function TDesigner.CopySelectionToStream(s: TStream): boolean;
+function TDesigner.CopySelectionToStream(AllComponentsStream: TStream): boolean;
 
   function UnselectDistinctControls: boolean;
   var
@@ -504,7 +504,7 @@ begin
       end;
       // add text stream to the all stream
       TxtCompStream.Position:=0;
-      s.CopyFrom(TxtCompStream,TxtCompStream.Size);
+      AllComponentsStream.CopyFrom(TxtCompStream,TxtCompStream.Size);
     finally
       BinCompStream.Free;
       TxtCompStream.Free;

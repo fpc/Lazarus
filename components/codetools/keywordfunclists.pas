@@ -106,6 +106,8 @@ var
   PackedTypesKeyWordFuncList,
   BlockStatementStartKeyWordFuncList,
   WordIsLogicalBlockStart,
+  WordIsLogicalBlockEnd,
+  WordIsLogicalBlockMiddle,
   WordIsBinaryOperator,
   WordIsLvl1Operator, WordIsLvl2Operator, WordIsLvl3Operator, WordIsLvl4Operator,
   WordIsBooleanOperator,
@@ -1022,6 +1024,23 @@ begin
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
+  WordIsLogicalBlockEnd:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLogicalBlockEnd);
+  with WordIsLogicalBlockEnd do begin
+    Add(')',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add(']',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('}',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
+  WordIsLogicalBlockMiddle:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsLogicalBlockMiddle);
+  with WordIsLogicalBlockMiddle do begin
+    Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+
   WordIsBinaryOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsBinaryOperator);
   with WordIsBinaryOperator do begin

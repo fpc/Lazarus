@@ -37,6 +37,7 @@ type
   TMiscellaneousOptions = class
   private
     fBuildLazOpts: TBuildLazarusOptions;
+    FExtractProcName: string;
     fFilename: string;
     FMakeResourceStringInsertPolicy: TResourcestringInsertPolicy;
     FSortSelDirection: TSortDirection;
@@ -51,6 +52,7 @@ type
 
     property BuildLazOpts: TBuildLazarusOptions
                                          read fBuildLazOpts write fBuildLazOpts;
+    property ExtractProcName: string read FExtractProcName write FExtractProcName;
     property SortSelDirection: TSortDirection read FSortSelDirection
                                               write FSortSelDirection;
     property SortSelDomain: TSortDomain read FSortSelDomain write FSortSelDomain;
@@ -110,6 +112,10 @@ constructor TMiscellaneousOptions.Create;
 begin
   inherited Create;
   BuildLazOpts:=TBuildLazarusOptions.Create;
+  FExtractProcName:='NewProc';
+  fSortSelDirection:=sdAscending;
+  fSortSelDomain:=sdLines;
+  fMakeResourceStringInsertPolicy:=rsipAppend;
 end;
 
 destructor TMiscellaneousOptions.Destroy;
@@ -160,6 +166,8 @@ begin
       MakeResourceStringInsertPolicy:=ResourcestringInsertPolicyNameToType(
            XMLConfig.GetValue(Path+'MakeResourcestringInsertPolicy/Value',
                               ResourcestringInsertPolicyNames[rsipAppend]));
+      ExtractProcName:=XMLConfig.GetValue(
+                                        Path+'ExtractProcName/Value','NewProc');
     finally
       XMLConfig.Free;
     end;
@@ -198,6 +206,8 @@ begin
       XMLConfig.SetDeleteValue(Path+'MakeResourcestringInsertPolicy/Value',
            ResourcestringInsertPolicyNames[MakeResourceStringInsertPolicy],
            ResourcestringInsertPolicyNames[rsipAppend]);
+      XMLConfig.SetDeleteValue(Path+'ExtractProcName/Value',ExtractProcName,
+                               'NewProc');
       XMLConfig.Flush;
     finally
       XMLConfig.Free;

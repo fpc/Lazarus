@@ -38,12 +38,14 @@ unit ExtractProcTool;
 
 {$mode objfpc}{$H+}
 
+{ $define CTDEBUG}
+
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
-  CodeCompletionTool, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree,
-  SourceChanger, FindDeclarationTool;
+  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, AVL_Tree, SourceChanger, FindDeclarationTool;
   
 type
   { TExtractProcTool }
@@ -162,7 +164,7 @@ begin
   {$ENDIF}
   // check if Start and End on same block level
   MoveCursorToNodeStart(CursorNode);
-  BlockCleanStart:=CurPos.StartPos;
+  // check every block in selection
   while true do begin
     ReadNextAtom;
     if (CurPos.StartPos>SrcLen) or (CurPos.StartPos>CursorNode.EndPos)
@@ -170,14 +172,23 @@ begin
       break;
     if WordIsLogicalBlockStart.DoItUpperCase(UpperSrc,
       CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
-    then
+    then begin
       BlockCleanStart:=CurPos.StartPos;
+      if not ReadTilBlockEnd(true,false) then exit;
+      BlockCleanEnd:=CurPos.EndPos;
+      if BlockCleanEnd<CleanEndPos then exit;
+    end
+    else if WordIsLogicalBlockEnd.DoItUpperCase(UpperSrc,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    then begin
+      exit;
+    end
+    else if WordIsLogicalBlockMiddle.DoItUpperCase(UpperSrc,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
+    then begin
+      exit;
+    end;
   end;
-  MoveCursorToCleanPos(BlockCleanStart);
-  ReadNextAtom;
-  if not ReadTilBlockEnd(true,false) then exit;
-  BlockCleanEnd:=CurPos.EndPos;
-  if BlockCleanEnd<CleanEndPos then exit;
   // check if start not in a statement
   // ToDo
   // check if end not in a statement
@@ -224,7 +235,7 @@ var
     UsedInNonSelection: Boolean;
   begin
     {$IFDEF CTDebug}
-    DebugLn('AddVariableToTree A IsInSelection=',IsInSelection,' IsParameter=',IsParameter);
+    DebugLn('AddVariableToTree A IsInSelection=',dbgs(IsInSelection),' IsParameter=',dbgs(IsParameter));
     {$ENDIF}
     UsedInNonSelection:=(not IsInSelection) or IsParameter;
     if VarTree=nil then
@@ -373,8 +384,8 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.ReplaceSelectionWithCall B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',ProcVar.UsedInSelection,
-          ' UsedInNonSelection=',ProcVar.UsedInNonSelection);
+          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
         {$ENDIF}
         if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection then begin
           // variables
@@ -390,7 +401,7 @@ var
     CallCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                                                                CallCode,Indent);
     {$IFDEF CTDebug}
-    DebugLn('TExtractProcTool.ReplaceSelectionWithCall C "',CallCode,'" Indent=',Indent);
+    DebugLn('TExtractProcTool.ReplaceSelectionWithCall C "',CallCode,'" Indent=',dbgs(Indent));
     {$ENDIF}
     SourceChangeCache.Replace(gtNewLine,gtNewLine,BlockStartPos,BlockEndPos,
                               CallCode);
@@ -544,8 +555,8 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.DeleteMovedLocalVariables B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',ProcVar.UsedInSelection,
-          ' UsedInNonSelection=',ProcVar.UsedInNonSelection);
+          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
         {$ENDIF}
         if ProcVar.UsedInSelection and (not ProcVar.UsedInNonSelection) then
         begin
@@ -604,8 +615,8 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.CreateProcParamList B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',ProcVar.UsedInSelection,
-          ' UsedInNonSelection=',ProcVar.UsedInNonSelection);
+          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
         {$ENDIF}
         if ProcVar.UsedInSelection and ProcVar.UsedInNonSelection then begin
           // extract identifier and type
@@ -656,8 +667,8 @@ var
         ProcVar:=TExtractedProcVariable(AVLNode.Data);
         {$IFDEF CTDebug}
         DebugLn('TExtractProcTool.CreateProcVarSection B ',GetIdentifier(@Src[ProcVar.Node.StartPos]),
-          ' UsedInSelection=',ProcVar.UsedInSelection,
-          ' UsedInNonSelection=',ProcVar.UsedInNonSelection);
+          ' UsedInSelection=',dbgs(ProcVar.UsedInSelection),
+          ' UsedInNonSelection=',dbgs(ProcVar.UsedInNonSelection));
         {$ENDIF}
         if ProcVar.UsedInSelection and (not ProcVar.UsedInNonSelection) then
         begin
@@ -846,7 +857,7 @@ var
       RaiseException('New procedure "'+ProcName+'" exists already');
     end;
     {$IFDEF CTDebug}
-    DebugLn('NewProcAlreadExists END ProcHead="',ProcHead,'" Found=',Result);
+    DebugLn('NewProcAlreadExists END ProcHead="',ProcHead,'" Found=',dbgs(Result));
     {$ENDIF}
   end;
 
@@ -992,12 +1003,12 @@ var
     BuildTree(false);
     NewProcNode:=FindSubProcPath(SubProcPath,ShortProcFormat,true);
     {$IFDEF CTDebug}
-    DebugLn('FindJumpPointToNewProc A found=',NewProcNode<>nil);
+    DebugLn('FindJumpPointToNewProc A found=',dbgs(NewProcNode<>nil));
     {$ENDIF}
     if NewProcNode=nil then exit;
     Result:=FindJumpPointInProcNode(NewProcNode,NewPos,NewTopLine);
     {$IFDEF CTDebug}
-    DebugLn('FindJumpPointToNewProc END ',NewProcNode.DescAsString,' ',Result,' ',NewPos.X,',',NewPos.Y,' ',NewTopLine);
+    DebugLn('FindJumpPointToNewProc END ',NewProcNode.DescAsString,' ',dbgs(Result),' ',dbgs(NewPos.X),',',dbgs(NewPos.Y),' ',dbgs(NewTopLine));
     {$ENDIF}
   end;
 

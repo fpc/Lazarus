@@ -366,6 +366,8 @@ type
       const Filename: string; const LineNumber: integer);
 
     // CodeToolBoss events
+    procedure OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
+                                             var Abort: boolean);
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
                                     var Abort: boolean);
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
@@ -8414,6 +8416,15 @@ begin
   DoJumpToSourcePos(Filename,1,LineNumber,-1,true);
 end;
 
+procedure TMainIDE.OnCodeToolNeedsExternalChanges(Manager: TCodeToolManager;
+  var Abort: boolean);
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  Abort:=not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]);
+end;
+
 // -----------------------------------------------------------------------------
 
 procedure TMainIDE.InitCodeToolBoss;
@@ -8539,6 +8550,7 @@ begin
   with CodeToolBoss do begin
     WriteExceptions:=true;
     CatchExceptions:=true;
+    OnGatherExternalChanges:=@OnCodeToolNeedsExternalChanges;
     OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
     OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
@@ -8690,7 +8702,17 @@ begin
 end;
 
 procedure TMainIDE.OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
+var
+  i: Integer;
+  SrcBuf: TCodeBuffer;
+  AnUnitInfo: TUnitInfo;
 begin
+  for i:=0 to CodeToolBoss.SourceChangeCache.BuffersToModifyCount-1 do begin
+    SrcBuf:=CodeToolBoss.SourceChangeCache.BuffersToModify[i];
+    AnUnitInfo:=Project1.UnitInfoWithFilename(SrcBuf.Filename);
+    if AnUnitInfo<>nil then
+      AnUnitInfo.Modified:=true;
+  end;
   SourceNoteBook.UnlockAllEditorsInSourceChangeCache;
 end;
 
@@ -10488,6 +10510,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.744  2004/08/07 10:57:08  mattias
+  fixed extract proc selection block level check
+
   Revision 1.743  2004/08/07 07:03:29  mattias
   implemented virtual temporary ct files
 

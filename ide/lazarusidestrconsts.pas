@@ -2400,6 +2400,27 @@ resourcestring
     +'LCL. The normal fix is to remove these properties from the lfm and fix '
     +'the pascal code manually.';
 
+  // extract proc dialog
+  lisNoCodeSelected = 'No code selected';
+  lisPleaseSelectSomeCodeToExtractANewProcedureMethod = 'Please select some '
+    +'code to extract a new procedure/method.';
+  lisInvalidSelection = 'Invalid selection';
+  lisThisStatementCanNotBeExtractedPleaseSelectSomeCode = 'This statement can '
+    +'not be extracted.%sPlease select some code to extract a new procedure/'
+    +'method.';
+  lisExtractProcedure = 'Extract Procedure';
+  lisNameOfNewProcedure = 'Name of new procedure';
+  lisExtract = 'Extract';
+  lisInvalidProcName = 'Invalid proc name';
+  lisPublicMethod = 'Public Method';
+  lisPrivateMethod = 'Private Method';
+  lisProtectedMethod = 'Protected Method';
+  lisPublishedMethod = 'Published Method';
+  lisProcedure = 'Procedure';
+  lisProcedureWithInterface = 'Procedure with interface';
+  lisSubProcedure = 'Sub Procedure';
+  lisSubProcedureOnSameLevel = 'Sub Procedure on same level';
+
 implementation
 end.
 

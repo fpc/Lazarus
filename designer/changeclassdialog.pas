@@ -35,9 +35,12 @@ unit ChangeClassDialog;
 interface
 
 uses
+  // FCL, LCL
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, AVGLvlTree, PropEdits, LazarusIDEStrConsts, ComponentReg,
-  FormEditingIntf, CheckLFMDlg;
+  Buttons, AVGLvlTree,
+  // IDE
+  PropEdits, LazarusIDEStrConsts, ComponentReg, FormEditingIntf, CheckLFMDlg,
+  CodeToolManager;
 
 type
   TChangeClassDlg = class(TForm)
@@ -108,16 +111,38 @@ function ChangePersistentClass(ADesigner: TIDesigner; APersistent: TPersistent;
   NewClass: TClass): TModalResult;
 var
   ComponentStream: TMemoryStream;
+  PersistentName: String;
+
+  procedure ShowAbortMessage(const Msg: string);
+  begin
+    MessageDlg('Error',
+      Msg+#13
+      +'Unable to change class of '+PersistentName+' to '+NewClass.ClassName,
+      mtError,[mbCancel],0);
+  end;
+
 begin
+  Result:=mrCancel;
+  PersistentName:=APersistent.ClassName;
+  if APersistent is TComponent then begin
+    PersistentName:=TComponent(APersistent).Name+':'+PersistentName;
+  end;
   ComponentStream:=nil;
   try
     // select only this persistent
     GlobalDesignHook.SelectOnlyThis(APersistent);
     // stream selection
     ComponentStream:=TMemoryStream.Create;
-    FormEditingHook.SaveSelectionToStream(ComponentStream);
+    if not FormEditingHook.SaveSelectionToStream(ComponentStream) then begin
+      ShowAbortMessage('Unable to stream selected components');
+      exit;
+    end;
     // parse
-
+    if not CodeToolBoss.GatherExternalChanges then begin
+      ShowAbortMessage('Unable to gather editor changes');
+      exit;
+    end;
+    
     // change classname
 
     // check properties

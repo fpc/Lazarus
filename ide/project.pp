@@ -1671,7 +1671,6 @@ begin
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then begin
       CodeToolBoss.AddUnitToMainUsesSection(MainUnitInfo.Source,
         ShortUnitName,'');
-      MainUnitInfo.Modified:=true;
     end;
   end;
   EndUpdate;
@@ -1702,12 +1701,10 @@ begin
       if (OldUnitInfo.UnitName<>'') then begin
         CodeToolBoss.RemoveUnitFromAllUsesSections(MainUnitInfo.Source,
           OldUnitInfo.UnitName);
-        MainUnitInfo.Modified:=true;
       end;
       if (OldUnitInfo.ComponentName<>'') then begin
         CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
           OldUnitInfo.ComponentName);
-        MainUnitInfo.Modified:=true;
       end;
     end;
   end;
@@ -2525,7 +2522,6 @@ begin
       // rename unit in program uses section
       CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
         ,OldUnitName,NewUnitName,'');
-      MainUnitInfo.Modified:=true;
     end;
   end;
 end;
@@ -2860,6 +2856,9 @@ end.
 
 {
   $Log$
+  Revision 1.157  2004/08/07 10:57:08  mattias
+  fixed extract proc selection block level check
+
   Revision 1.156  2004/08/07 07:03:29  mattias
   implemented virtual temporary ct files
 

@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  Buttons, StdCtrls, CodeCache, CodeToolManager, ExtractProcTool, IDEProcs;
+  Buttons, StdCtrls, CodeCache, CodeToolManager, ExtractProcTool,
+  LazarusIDEStrConsts, IDEProcs, MiscOptions;
 
 type
   TExtractProcDialog = class(TForm)
@@ -16,6 +17,8 @@ type
     CancelButton: TBUTTON;
     TypeRadiogroup: TRADIOGROUP;
     procedure ExtractProcDialogCREATE(Sender: TObject);
+    procedure ExtractProcDialogClose(Sender: TObject;
+      var CloseAction: TCloseAction);
     procedure OkButtonCLICK(Sender: TObject);
   private
     FMethodPossible: boolean;
@@ -48,8 +51,8 @@ var
 begin
   Result:=mrCancel;
   if CompareCaret(BlockBegin,BlockEnd)<=0 then begin
-    MessageDlg('No code selected',
-      'Please select some code to extract a new procedure/method.',
+    MessageDlg(lisNoCodeSelected,
+      lisPleaseSelectSomeCodeToExtractANewProcedureMethod,
       mtInformation,[mbCancel],0);
     exit;
   end;
@@ -60,9 +63,8 @@ begin
     SubProcSameLvlPossible)
   then begin
     if CodeToolBoss.ErrorMessage='' then begin
-      MessageDlg('Invalid selection',
-        'This statement can not be extracted.'#13
-        +'Please select some code to extract a new procedure/method.',
+      MessageDlg(lisInvalidSelection,
+        Format(lisThisStatementCanNotBeExtractedPleaseSelectSomeCode, [#13]),
       mtInformation,[mbCancel],0);
     end;
     exit;
@@ -96,12 +98,18 @@ end;
 
 procedure TExtractProcDialog.ExtractProcDialogCREATE(Sender: TObject);
 begin
-  Caption:='Extract Procedure';
-  NameGroupbox.Caption:='Name of new procedure';
-  OkButton.Caption:='Extract';
-  CancelButton.Caption:='Cancel';
-  TypeRadiogroup.Caption:='Type';
-  NameEdit.Text:='NewProc';
+  Caption:=lisExtractProcedure;
+  NameGroupbox.Caption:=lisNameOfNewProcedure;
+  OkButton.Caption:=lisExtract;
+  CancelButton.Caption:=dlgCancel;
+  TypeRadiogroup.Caption:=dlgEnvType;
+  NameEdit.Text:=MiscellaneousOptions.ExtractProcName;
+end;
+
+procedure TExtractProcDialog.ExtractProcDialogClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  MiscellaneousOptions.ExtractProcName:=NameEdit.Text;
 end;
 
 procedure TExtractProcDialog.OkButtonCLICK(Sender: TObject);
@@ -110,8 +118,8 @@ var
 begin
   ProcName:=GetProcName;
   if (ProcName='') or (not IsValidIdent(ProcName)) then begin
-    MessageDlg('Invalid proc name',
-      '"'+ProcName+'" is not a valid identifier.',
+    MessageDlg(lisInvalidProcName,
+      Format(lisSVUOisNotAValidIdentifier, ['"', ProcName, '"']),
       mtError,[mbCancel],0);
     exit;
   end;
@@ -124,37 +132,39 @@ begin
     BeginUpdate;
     Clear;
     if MethodPossible then begin
-      Add('Public Method');
-      Add('Private Method');
-      Add('Protected Method');
-      Add('Published Method');
+      Add(lisPublicMethod);
+      Add(lisPrivateMethod);
+      Add(lisProtectedMethod);
+      Add(lisPublishedMethod);
       TypeRadiogroup.Columns:=2;
     end else begin
       TypeRadiogroup.Columns:=1;
     end;
-    Add('Procedure');
-    Add('Procedure with interface');
-    Add('Sub Procedure');
+    Add(lisProcedure);
+    Add(lisProcedureWithInterface);
+    Add(lisSubProcedure);
     if SubProcSameLvlPossible then
-      Add('Sub Procedure on same level');
+      Add(lisSubProcedureOnSameLevel);
     EndUpdate;
     TypeRadiogroup.ItemIndex:=Count-1;
   end;
 end;
 
 function TExtractProcDialog.GetProcType: TExtractProcType;
+var
+  Item: string;
 begin
-  case TypeRadiogroup.ItemIndex of
-  0: Result:=eptPublicMethod;
-  1: Result:=eptPrivateMethod;
-  2: Result:=eptProtectedMethod;
-  3: Result:=eptPublishedMethod;
-  4: Result:=eptProcedure;
-  5: Result:=eptProcedureWithInterface;
-  6: Result:=eptSubProcedure;
-  7: Result:=eptSubProcedureSameLvl;
-  else
-    Result:=eptSubProcedure;
+  Result:=eptSubProcedure;
+  if TypeRadiogroup.ItemIndex>=0 then begin
+    Item:=TypeRadiogroup.Items[TypeRadiogroup.ItemIndex];
+    if Item=lisPublicMethod then Result:=eptPublicMethod
+    else if Item=lisPrivateMethod then Result:=eptPrivateMethod
+    else if Item=lisProtectedMethod then Result:=eptProtectedMethod
+    else if Item=lisPublishedMethod then Result:=eptPublishedMethod
+    else if Item=lisProcedure then Result:=eptProcedure
+    else if Item=lisProcedureWithInterface then Result:=eptProcedureWithInterface
+    else if Item=lisSubProcedure then Result:=eptSubProcedure
+    else if Item=lisSubProcedureOnSameLevel then Result:=eptSubProcedureSameLvl;
   end;
 end;
 

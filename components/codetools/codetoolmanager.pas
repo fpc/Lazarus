@@ -48,16 +48,17 @@ uses
 
 type
   TCodeToolManager = class;
+  TCodeTool = TEventsCodeTool;
 
   TGetStringProc = procedure(const s: string) of object;
   TOnBeforeApplyChanges = procedure(Manager: TCodeToolManager;
                                     var Abort: boolean) of object;
   TOnAfterApplyChanges = procedure(Manager: TCodeToolManager) of object;
-  
-  TCodeTool = TEventsCodeTool;
-  
+  TOnGatherExternalChanges = procedure(Manager: TCodeToolManager;
+                                       var Abort: boolean) of object;
   TOnSearchUsedUnit = function(const SrcFilename: string;
-    const TheUnitName, TheUnitInFilename: string): TCodeBuffer of object;
+                               const TheUnitName, TheUnitInFilename: string
+                               ): TCodeBuffer of object;
   TOnCodeToolCheckAbort = function: boolean of object;
 
   TCodeToolManager = class
@@ -80,6 +81,7 @@ type
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FOnCheckAbort: TOnCodeToolCheckAbort;
+    FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnSearchUsedUnit: TOnSearchUsedUnit;
     FResourceTool: TResourceCodeTool;
     FSetPropertyVariablename: string;
@@ -147,24 +149,24 @@ type
 
     // file handling
     property SourceExtensions: string
-          read FSourceExtensions write FSourceExtensions;
+                                 read FSourceExtensions write FSourceExtensions;
     function FindFile(const ExpandedFilename: string): TCodeBuffer;
     function LoadFile(const ExpandedFilename: string;
-          UpdateFromDisk, Revert: boolean): TCodeBuffer;
+                      UpdateFromDisk, Revert: boolean): TCodeBuffer;
     function CreateFile(const AFilename: string): TCodeBuffer;
     function CreateTempFile(const AFilename: string): TCodeBuffer;
     procedure ReleaseTempFile(Buffer: TCodeBuffer);
     function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string;
-          var NewBuffer: TCodeBuffer): boolean;
+                          var NewBuffer: TCodeBuffer): boolean;
     function FilenameHasSourceExt(const AFilename: string): boolean;
     property OnSearchUsedUnit: TOnSearchUsedUnit
-          read FOnSearchUsedUnit write FOnSearchUsedUnit;
+                                 read FOnSearchUsedUnit write FOnSearchUsedUnit;
     
     // exception handling
     property CatchExceptions: boolean
-          read FCatchExceptions write FCatchExceptions;
+                                   read FCatchExceptions write FCatchExceptions;
     property WriteExceptions: boolean
-          read FWriteExceptions write FWriteExceptions;
+                                   read FWriteExceptions write FWriteExceptions;
     property ErrorCode: TCodeBuffer read fErrorCode;
     property ErrorColumn: integer read fErrorColumn;
     property ErrorLine: integer read fErrorLine;
@@ -172,35 +174,39 @@ type
     property ErrorTopLine: integer read fErrorTopLine;
     property Abortable: boolean read FAbortable write SetAbortable;
     property OnCheckAbort: TOnCodeToolCheckAbort
-          read FOnCheckAbort write FOnCheckAbort;
+                                         read FOnCheckAbort write FOnCheckAbort;
 
     // tool settings
-    property AdjustTopLineDueToComment: boolean
-        read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
-    property CheckFilesOnDisk: boolean
-          read FCheckFilesOnDisk write SetCheckFilesOnDisk;
-    property CursorBeyondEOL: boolean
-          read FCursorBeyondEOL write SetCursorBeyondEOL;
+    property AdjustTopLineDueToComment: boolean read FAdjustTopLineDueToComment
+                                               write FAdjustTopLineDueToComment;
+    property CheckFilesOnDisk: boolean read FCheckFilesOnDisk
+                                       write SetCheckFilesOnDisk;
+    property CursorBeyondEOL: boolean read FCursorBeyondEOL
+                                      write SetCursorBeyondEOL;
     property IndentSize: integer read FIndentSize write SetIndentSize;
     property JumpCentered: boolean read FJumpCentered write SetJumpCentered;
     property SetPropertyVariablename: string
-      read FSetPropertyVariablename write FSetPropertyVariablename;
+                   read FSetPropertyVariablename write FSetPropertyVariablename;
     property VisibleEditorLines: integer
-          read FVisibleEditorLines write SetVisibleEditorLines;
+                           read FVisibleEditorLines write SetVisibleEditorLines;
     property TabWidth: integer read FTabWidth write SetTabWidth;
     property CompleteProperties: boolean
-      read FCompleteProperties write SetCompleteProperties;
+                           read FCompleteProperties write SetCompleteProperties;
     property AddInheritedCodeToOverrideMethod: boolean
-      read FAddInheritedCodeToOverrideMethod write SetAddInheritedCodeToOverrideMethod;
+                                      read FAddInheritedCodeToOverrideMethod
+                                      write SetAddInheritedCodeToOverrideMethod;
 
     // source changing
     procedure BeginUpdate;
     procedure EndUpdate;
+    function GatherExternalChanges: boolean;
+    property OnGatherExternalChanges: TOnGatherExternalChanges
+                   read FOnGatherExternalChanges write FOnGatherExternalChanges;
     function ApplyChanges: boolean;
     property OnBeforeApplyChanges: TOnBeforeApplyChanges
-          read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
+                         read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
     property OnAfterApplyChanges: TOnAfterApplyChanges
-          read FOnAfterApplyChanges write FOnAfterApplyChanges;
+                           read FOnAfterApplyChanges write FOnAfterApplyChanges;
           
     // defines
     function SetGlobalValue(const VariableName, VariableValue: string): boolean;
@@ -550,6 +556,18 @@ end;
 procedure TCodeToolManager.EndUpdate;
 begin
   SourceChangeCache.EndUpdate;
+end;
+
+function TCodeToolManager.GatherExternalChanges: boolean;
+var
+  Abort: Boolean;
+begin
+  Result:=true;
+  if Assigned(OnGatherExternalChanges) then begin
+    Abort:=false;
+    OnGatherExternalChanges(Self,Abort);
+    Result:=not Abort;
+  end;
 end;
 
 function TCodeToolManager.FindFile(const ExpandedFilename: string): TCodeBuffer;
