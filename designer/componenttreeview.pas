@@ -14,14 +14,18 @@
 
   Abstract:
     TComponentTreeView is a component to show the child components of a
-    TComponent. TControls can be shown in a hierachic view.
+    TComponent. TControls are shown in a hierachic view.
     It supports
       - multi selecting components
       - editing the creation order
       - editing the TControl.Parent hierachy
-    For example of the usage, see the object inspector.
+    For an usage example, see the object inspector.
 
   ToDo:
+    - pass selection to form editor
+    - icons
+    - pass keys to form editor
+    - drag&drop: change parent and position
 }
 unit ComponentTreeView;
 
@@ -37,17 +41,20 @@ type
 
   TComponentTreeView = class(TCustomTreeView)
   private
-    FComponentList: TComponentSelectionList;
+    FComponentList: TBackupComponentList;
     FPropertyEditorHook: TPropertyEditorHook;
+    function GetSelections: TComponentSelectionList;
     procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
     procedure SetSelections(const NewSelections: TComponentSelectionList);
+  protected
+    procedure DoSelectionChanged; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure RebuildComponentNodes; virtual;
     function CreateNodeCaption(AComponent: TComponent): string; virtual;
   public
-    property Selections: TComponentSelectionList read FComponentList
+    property Selections: TComponentSelectionList read GetSelections
                                                  write SetSelections;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
@@ -60,8 +67,49 @@ implementation
 procedure TComponentTreeView.SetSelections(
   const NewSelections: TComponentSelectionList);
 begin
-  FComponentList.Assign(NewSelections);
+  if (PropertyEditorHook=nil) then begin
+    if (FComponentList.LookupRoot=nil) then
+      exit;
+    FComponentList.Clear;
+  end else begin
+    if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelections) then
+      exit;
+  end;
+  FComponentList.LookupRoot:=PropertyEditorHook.LookupRoot;
+  FComponentList.Selection.Assign(NewSelections);
   RebuildComponentNodes;
+end;
+
+procedure TComponentTreeView.DoSelectionChanged;
+var
+  ANode: TTreeNode;
+  AComponent: TComponent;
+  NewSelection: TComponentSelectionList;
+begin
+  NewSelection:=TComponentSelectionList.Create;
+  try
+    if (PropertyEditorHook<>nil)
+    and (PropertyEditorHook.LookupRoot<>nil)
+    and (not (csDestroying in ComponentState)) then begin
+      ANode:=GetFirstMultiSelected;
+      while ANode<>nil do begin
+        AComponent:=TComponent(ANode.Data);
+        if AComponent=nil then
+          RaiseGDBException('TComponentTreeView.DoSelectionChanged ANode.Data=nil');
+        if ((AComponent.Owner=nil)
+        and (AComponent=PropertyEditorHook.LookupRoot))
+        or (AComponent.Owner=PropertyEditorHook.LookupRoot)
+        then
+          NewSelection.Add(AComponent);
+        ANode:=ANode.GetNextMultiSelected;
+      end;
+    end;
+    if NewSelection.IsEqual(FComponentList.Selection) then exit;
+    FComponentList.Selection.Assign(NewSelection);
+  finally
+    NewSelection.Free;
+  end;
+  inherited DoSelectionChanged;
 end;
 
 procedure TComponentTreeView.SetPropertyEditorHook(
@@ -72,10 +120,15 @@ begin
   RebuildComponentNodes;
 end;
 
+function TComponentTreeView.GetSelections: TComponentSelectionList;
+begin
+  Result:=FComponentList.Selection;
+end;
+
 constructor TComponentTreeView.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FComponentList:=TComponentSelectionList.Create;
+  FComponentList:=TBackupComponentList.Create;
   Options:=Options+[tvoAllowMultiselect,tvoAutoItemHeight,tvoKeepCollapsedNodes];
 end;
 
@@ -86,6 +139,26 @@ begin
 end;
 
 procedure TComponentTreeView.RebuildComponentNodes;
+
+  procedure AddChildControls(AControl: TWinControl; ANode: TTreeNode);
+  var
+    i: Integer;
+    CurControl: TControl;
+    NewNode: TTreeNode;
+  begin
+    if AControl=nil then exit;
+    for i:=0 to AControl.ControlCount-1 do begin
+      CurControl:=AControl.Controls[i];
+      if CurControl.Owner<>AControl.Owner then continue;
+      NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurControl));
+      NewNode.Data:=CurControl;
+      NewNode.ImageIndex:=-1;
+      NewNode.MultiSelected:=Selections.IndexOf(CurControl)>=0;
+      if CurControl is TWinControl then
+        AddChildControls(TWinControl(CurControl),NewNode);
+    end;
+  end;
+
 var
   OldExpanded: TTreeNodeExpandedState;
   NewNode: TTreeNode;
@@ -93,6 +166,7 @@ var
   i: Integer;
   AComponent: TComponent;
   RootNode: TTreeNode;
+  AControl: TControl;
 begin
   BeginUpdate;
   // save old expanded state and clear
@@ -103,15 +177,25 @@ begin
   if RootComponent<>nil then begin
     // first add the lookup root
     RootNode:=Items.Add(nil,CreateNodeCaption(RootComponent));
+    RootNode.Data:=RootComponent;
     RootNode.ImageIndex:=-1;
-    RootNode.Selected:=Selections.IndexOf(RootComponent)>=0;
+    RootNode.MultiSelected:=Selections.IndexOf(RootComponent)>=0;
 
-    // add components in creation order
+    // add components in creation order and TControl.Parent relationship
     for i:=0 to RootComponent.ComponentCount-1 do begin
       AComponent:=RootComponent.Components[i];
+      if AComponent is TControl then begin
+        AControl:=TControl(AComponent);
+        if (AControl.Parent<>nil) and (AControl.Parent<>RootComponent) then
+          // child controls will be added recursively, not here
+          continue;
+      end;
       NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
+      NewNode.Data:=AComponent;
       NewNode.ImageIndex:=-1;
-      NewNode.Selected:=Selections.IndexOf(AComponent)>=0;
+      NewNode.MultiSelected:=Selections.IndexOf(AComponent)>=0;
+      if AComponent is TWinControl then
+        AddChildControls(TWinControl(AComponent),NewNode);
     end;
     
     RootNode.Expand(true);

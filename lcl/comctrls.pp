@@ -1519,7 +1519,8 @@ type
     tvsWaitForDragging,
     tvsDblClicked,
     tvsTripleClicked,
-    tvsQuadClicked
+    tvsQuadClicked,
+    tvsSelectionChanged
     );
   TTreeViewStates = set of TTreeViewState;
 
@@ -1602,6 +1603,8 @@ type
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FSelectedColor: TColor;
     FSelectedNode: TTreeNode;
+    fSelectionChangeEventLock: integer;
+    fSeparatorColor: TColor;
     FSortType: TSortType;
     FStateChangeLink: TChangeLink;
     FStateImages: TCustomImageList;
@@ -1610,7 +1613,6 @@ type
     FTreeLineColor: TColor;
     FTreeNodes: TTreeNodes;
     FUpdateCount: integer;
-    fSeparatorColor: TColor;
     //FWideText: WideString;
     procedure CanvasChanged(Sender: TObject);
     //procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
@@ -1688,6 +1690,7 @@ type
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     //procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
     //procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
+    procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
     //procedure Edit(const Item: TTVItem); dynamic;
@@ -1744,6 +1747,7 @@ type
     procedure UpdateDefaultItemHeight; virtual;
     procedure WndProc(var Message: TLMessage); override;
     procedure UpdateInsertMark(X,Y: integer); virtual;
+    procedure DoSelectionChanged; virtual;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle: TBorderStyle
@@ -1814,6 +1818,9 @@ type
     procedure SaveToFile(const FileName: string);
     procedure SaveToStream(Stream: TStream);
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
+    procedure LockSelectionChangeEvent;
+    procedure UnlockSelectionChangeEvent;
+    function GetFirstMultiSelected: TTreeNode;
   public
     property BackgroundColor: TColor
       read FBackgroundColor write SetBackgroundColor;
@@ -2030,6 +2037,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.84  2003/08/22 18:10:39  mattias
+  implemented selections in component tree
+
   Revision 1.83  2003/08/22 07:58:38  mattias
   started componenttree
 

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, LCLLinux, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
-  EnvironmentOpts, DesignerProcs, Menus;
+  Menus, EnvironmentOpts, PropEdits, DesignerProcs;
 
 type
   TControlSelection = class;
@@ -348,11 +348,12 @@ type
     
     function IndexOf(AComponent:TComponent):integer;
     function Add(AComponent: TComponent):integer;
-    function AssignComponent(AComponent:TComponent): boolean;
     procedure Remove(AComponent: TComponent);
     procedure Delete(Index:integer);
     procedure Clear;
-    procedure Assign(AControlSelection:TControlSelection);
+    function AssignComponent(AComponent:TComponent): boolean;
+    procedure Assign(AControlSelection: TControlSelection);
+    procedure AssignSelection(ASelection: TComponentSelectionList);
     function IsSelected(AComponent: TComponent): Boolean;
     function IsOnlySelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
@@ -1810,6 +1811,25 @@ begin
   FControls.Capacity:=AControlSelection.Count;
   for i:=0 to AControlSelection.Count-1 do
     Add(AControlSelection[i].Component);
+  SetCustomForm;
+  UpdateBounds;
+  Exclude(FStates,cssNotSavingBounds);
+  SaveBounds;
+  EndUpdate;
+  DoChange;
+end;
+
+procedure TControlSelection.AssignSelection(ASelection: TComponentSelectionList
+  );
+var i:integer;
+begin
+  if (cssNotSavingBounds in FStates) then exit;
+  Include(FStates,cssNotSavingBounds);
+  BeginUpdate;
+  Clear;
+  FControls.Capacity:=ASelection.Count;
+  for i:=0 to ASelection.Count-1 do
+    Add(ASelection[i]);
   SetCustomForm;
   UpdateBounds;
   Exclude(FStates,cssNotSavingBounds);

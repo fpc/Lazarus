@@ -22,6 +22,11 @@
 
   ToDo:
    - backgroundcolor=clNone
+   - pair splitter
+   - default values for property editors
+   - set to default value
+   - Define Init values
+   - Set to init value
 }
 unit ObjectInspector;
 
@@ -303,8 +308,6 @@ type
   TOnAddAvailableComponent = procedure(AComponent:TComponent;
     var Allowed:boolean) of object;
 
-  TOnSelectComponentInOI = procedure(AComponent:TComponent) of object;
-  
   TOIFlag = (
     oifRebuildPropListsNeeded
     );
@@ -324,6 +327,7 @@ type
     ShowOptionsPopupMenuItem: TMenuItem;
     ComponentTree: TComponentTreeView;
     procedure AvailComboBoxCloseUp(Sender: TObject);
+    procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
@@ -337,7 +341,7 @@ type
     FOnShowOptions: TNotifyEvent;
     FPropertyEditorHook:TPropertyEditorHook;
     FOnAddAvailableComponent:TOnAddAvailableComponent;
-    FOnSelectComponentInOI:TOnSelectComponentInOI;
+    FOnSelectComponentsInOI:TNotifyEvent;
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
     FUpdateLock: integer;
@@ -372,8 +376,8 @@ type
                                         read FComponentList write SetSelections;
     property OnAddAvailComponent: TOnAddAvailableComponent
                    read FOnAddAvailableComponent write FOnAddAvailableComponent;
-    property OnSelectComponentInOI: TOnSelectComponentInOI
-                       read FOnSelectComponentInOI write FOnSelectComponentInOI;
+    property OnSelectComponentsInOI: TNotifyEvent
+                       read FOnSelectComponentsInOI write FOnSelectComponentsInOI;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -2201,13 +2205,14 @@ begin
     Visible:=not FShowComponentTree;
   end;
   
-  // Component Tree
+  // Component Tree at top (filled with available components)
   ComponentTree:=TComponentTreeView.Create(Self);
   with ComponentTree do begin
     Name:='ComponentTree';
     Height:=ComponentTreeHeight;
     Parent:=Self;
     Align:=alTop;
+    OnSelectionChanged:=@ComponentTreeSelectionChanged;
     Visible:=FShowComponentTree;
   end;
 
@@ -2453,8 +2458,8 @@ var NewComponent,Root:TComponent;
     FComponentList.Clear;
     FComponentList.Add(c);
     RefreshSelections;
-    if Assigned(FOnSelectComponentInOI) then
-      FOnSelectComponentInOI(c);
+    if Assigned(FOnSelectComponentsInOI) then
+      FOnSelectComponentsInOI(Self);
   end;
 
 // AvailComboBoxChange
@@ -2475,6 +2480,15 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TObjectInspector.ComponentTreeSelectionChanged(Sender: TObject);
+begin
+  if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then exit;
+  FComponentList.Assign(ComponentTree.Selections);
+  RefreshSelections;
+  if Assigned(FOnSelectComponentsInOI) then
+    FOnSelectComponentsInOI(Self);
 end;
 
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);

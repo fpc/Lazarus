@@ -950,6 +950,7 @@ begin
     Exclude(FStates,nsMultiSelected);
     if TreeNodes<>nil then UnbindFromMultiSelected;
   end;
+  if TreeView<>nil then TreeView.InternalSelectionChanged;
   Update;
 end;
 
@@ -1290,6 +1291,7 @@ var
 begin
   if (TreeView<>nil) and (not (tvoAllowMultiselect in TreeView.Options)) then
     exit;
+  if (TreeView<>nil) then TreeView.LockSelectionChangeEvent;
   FirstNode:=GetPrevSibling;
   while (FirstNode<>nil) and (not FirstNode.MultiSelected) do
     FirstNode:=FirstNode.GetPrevSibling;
@@ -1304,6 +1306,7 @@ begin
     if ANode=LastNode then break;
     ANode:=ANode.GetNextSibling;
   end;
+  if (TreeView<>nil) then TreeView.UnlockSelectionChangeEvent;
 end;
 
 procedure TTreeNode.MakeVisible;
@@ -1742,12 +1745,14 @@ procedure TTreeNodes.ClearMultiSelection;
 var
   ANode, OldNode: TTreeNode;
 begin
+  if Owner<>nil then Owner.LockSelectionChangeEvent;
   ANode:=FFirstMultiSelected;
   while ANode<>nil do begin
     OldNode:=ANode;
     ANode:=ANode.GetNextMultiSelected;
     OldNode.MultiSelected:=false;
   end;
+  if Owner<>nil then Owner.UnlockSelectionChangeEvent;
 end;
 
 function TTreeNodes.IsMultiSelection: boolean;
@@ -2776,13 +2781,13 @@ end;}
 procedure TCustomTreeView.BeginUpdate;
 begin
   inc(FUpdateCount);
+  LockSelectionChangeEvent;
 end;
 
 procedure TCustomTreeView.EndUpdate;
 begin
-//  if FUpdateCount<=0 then
-//    writeln('TCustomTreeView.EndUpdate UpdateCount=',FUpdateCount);
-  if FUpdateCount<=0 then exit;
+  UnlockSelectionChangeEvent;
+  if FUpdateCount<=0 then RaiseGDBException('TCustomTreeView.EndUpdate');
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
     // ToDo: only refresh if something changed
@@ -3618,8 +3623,7 @@ begin
     Value.Selected := True;
     Value.MakeVisible;
   end;
-  if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
-  Invalidate;
+  InternalSelectionChanged;
 end;
 
 function TCustomTreeView.GetShowButtons: boolean;
@@ -4024,6 +4028,11 @@ begin
     SetInsertMarkAt(X,Y)
   else
     SetInsertMark(nil,tvimNone);
+end;
+
+procedure TCustomTreeView.DoSelectionChanged;
+begin
+  if Assigned(OnSelectionChanged) then OnSelectionChanged(Self);
 end;
 
 function TCustomTreeView.IsInsertMarkVisible: boolean;
@@ -4628,8 +4637,10 @@ begin
             CursorNode.MultiSelected:=not CursorNode.MultiSelected;
           end else begin
             if (Selected<>CursorNode) or Items.IsMultiSelection then begin
+              LockSelectionChangeEvent;
               Items.ClearMultiSelection;
               CursorNode.MultiSelected:=true;
+              UnlockSelectionChangeEvent;
             end;
           end;
         end;
@@ -4936,6 +4947,16 @@ begin
   inherited;
 end;
 
+procedure TCustomTreeView.InternalSelectionChanged;
+begin
+  if fSelectionChangeEventLock>0 then begin
+    Include(fStates,tvsSelectionChanged);
+  end else begin
+    Exclude(fStates,tvsSelectionChanged);
+    DoSelectionChanged;
+  end;
+end;
+
 { CustomDraw support }
 
 procedure TCustomTreeView.CanvasChanged(Sender: TObject);
@@ -5052,6 +5073,26 @@ begin
   if AllNodes then begin
     Items.WriteDebugReport(Prefix+'  ',true);
   end;
+end;
+
+procedure TCustomTreeView.LockSelectionChangeEvent;
+begin
+  inc(fSelectionChangeEventLock);
+end;
+
+procedure TCustomTreeView.UnlockSelectionChangeEvent;
+begin
+  dec(fSelectionChangeEventLock);
+  if fSelectionChangeEventLock<0 then
+    RaiseGDBException('TCustomTreeView.UnlockSelectionChangeEvent');
+  if (fSelectionChangeEventLock=0)
+  and (tvsSelectionChanged in fStates) then
+    InternalSelectionChanged;
+end;
+
+function TCustomTreeView.GetFirstMultiSelected: TTreeNode;
+begin
+  Result:=Items.FFirstMultiSelected;
 end;
 
 procedure TCustomTreeView.SetSeparatorColor(const AValue: TColor);

@@ -882,6 +882,30 @@ type
     procedure Assign(SourceSelectionList: TComponentSelectionList);
     property Items[Index: integer]: TComponent read GetItems write SetItems; default;
   end;
+  
+  TBackupComponentList = class
+  private
+    FComponentList: TList;
+    FLookupRoot: TComponent;
+    FSelection: TComponentSelectionList;
+    function GetComponents(Index: integer): TComponent;
+    procedure SetComponents(Index: integer; const AValue: TComponent);
+    procedure SetLookupRoot(const AValue: TComponent);
+    procedure SetSelection(const AValue: TComponentSelectionList);
+  protected
+  public
+    constructor Create;
+    destructor Destroy;  override;
+    function IndexOf(AComponent: TComponent): integer;
+    procedure Clear;
+    function ComponentCount: integer;
+    function IsEqual(ALookupRoot: TComponent;
+                     ASelection: TComponentSelectionList): boolean;
+  public
+    property LookupRoot: TComponent read FLookupRoot write SetLookupRoot;
+    property Components[Index: integer]: TComponent read GetComponents write SetComponents;
+    property Selection: TComponentSelectionList read FSelection write SetSelection;
+  end;
 
 //==============================================================================
 {
@@ -5014,6 +5038,82 @@ begin
   DummyClassForPropTypes.Free;
 end;
 
+
+{ TBackupComponentList }
+
+function TBackupComponentList.GetComponents(Index: integer): TComponent;
+begin
+  Result:=TComponent(FComponentList[Index]);
+end;
+
+procedure TBackupComponentList.SetComponents(Index: integer;
+  const AValue: TComponent);
+begin
+  FComponentList[Index]:=AValue;
+end;
+
+procedure TBackupComponentList.SetLookupRoot(const AValue: TComponent);
+var
+  i: Integer;
+begin
+  FLookupRoot:=AValue;
+  FComponentList.Clear;
+  if FLookupRoot<>nil then
+    for i:=0 to FLookupRoot.ComponentCount-1 do
+      FComponentList.Add(FLookupRoot.Components[i]);
+  FSelection.Clear;
+end;
+
+procedure TBackupComponentList.SetSelection(
+  const AValue: TComponentSelectionList);
+begin
+  if FSelection=AValue then exit;
+  FSelection.Assign(AValue);
+end;
+
+constructor TBackupComponentList.Create;
+begin
+  FSelection:=TComponentSelectionList.Create;
+  FComponentList:=TList.Create;
+end;
+
+destructor TBackupComponentList.Destroy;
+begin
+  FreeAndNil(FSelection);
+  FreeAndNil(FComponentList);
+  inherited Destroy;
+end;
+
+function TBackupComponentList.IndexOf(AComponent: TComponent): integer;
+begin
+  Result:=FComponentList.IndexOf(AComponent);
+end;
+
+procedure TBackupComponentList.Clear;
+begin
+  LookupRoot:=nil;
+end;
+
+function TBackupComponentList.ComponentCount: integer;
+begin
+  Result:=FComponentList.Count;
+end;
+
+function TBackupComponentList.IsEqual(ALookupRoot: TComponent;
+  ASelection: TComponentSelectionList): boolean;
+var
+  i: Integer;
+begin
+  Result:=false;
+  if ALookupRoot<>LookupRoot then exit;
+  if not FSelection.IsEqual(ASelection) then exit;
+  if ALookupRoot<>nil then begin
+    if ComponentCount<>ALookupRoot.ComponentCount then exit;
+    for i:=0 to FComponentList.Count-1 do
+      if TComponent(FComponentList[i])<>ALookupRoot.Components[i] then exit;
+  end;
+  Result:=true;
+end;
 
 initialization
   InitPropEdits;

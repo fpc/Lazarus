@@ -271,7 +271,7 @@ type
     procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
 
     // ObjectInspector + PropertyEditorHook events
-    procedure OIOnSelectComponent(AComponent:TComponent);
+    procedure OIOnSelectComponents(Sender: TObject);
     procedure OIOnShowOptions(AComponent:TComponent);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
@@ -930,11 +930,9 @@ begin
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
 end;
 
-procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
+procedure TMainIDE.OIOnSelectComponents(Sender: TObject);
 begin
-  TheControlSelection.AssignComponent(AComponent);
-  if AComponent.Owner is TControl then
-    TControl(AComponent.Owner).Invalidate;
+  TheControlSelection.AssignSelection(ObjectInspector1.Selections);
 end;
 
 procedure TMainIDE.OIOnShowOptions(AComponent: TComponent);
@@ -1147,7 +1145,7 @@ procedure TMainIDE.SetupObjectInspector;
 
 begin
   ObjectInspector1 := TObjectInspector.Create(Self);
-  ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
+  ObjectInspector1.OnSelectComponentsInOI:=@OIOnSelectComponents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   
   GlobalDesignHook:=TPropertyEditorHook.Create;
@@ -9750,6 +9748,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.643  2003/08/22 18:10:39  mattias
+  implemented selections in component tree
+
   Revision 1.642  2003/08/20 15:06:57  mattias
   implemented Build+Run File
 
