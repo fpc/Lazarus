@@ -98,36 +98,14 @@ end;
 {------------------------------------------------------------------------------
   procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
 
-  Saves the old text. The gtk always sends a onchange event, even we just
-  set the Text of a combobox. To avoid sending no change events, the old text is
-  saved.
+  Sets the text of the combobox entry.
  ------------------------------------------------------------------------------}
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
-var
-  SavedText: PChar;
-  NewTextLen: integer;
 begin
-  //writeln('SetComboBoxText A "',NewText,'"');
-  // check if something changed
-  SavedText:=gtk_object_get_data(PgtkObject(ComboWidget),'LCLOldText');
-  if ComparePChar(SavedText,NewText) then exit;
-  // create save text
-  if SavedText<>nil then
-    FreeMem(SavedText);
-  if Newtext<>nil then begin
-    NewTextLen:=StrLen(NewText)+1;
-    GetMem(SavedText, NewTextLen);
-    Move(NewText^,SavedText^,NewTextLen);
-  end else
-    SavedText:=nil;
-  gtk_object_set_data(PgtkObject(ComboWidget),'LCLOldText',SavedText);
-  // set new text
-  //writeln('SetComboBoxText B "',NewText,'"');
-  if NewText<>nil then
+  if NewText <> nil then
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
   else
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
-  //writeln('SetComboBoxText END ');
 end;
 
 {------------------------------------------------------------------------------
@@ -2752,6 +2730,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.88  2002/09/05 10:12:08  lazarus
+  New dialog for multiline caption of TCustomLabel.
+  Prettified TStrings property editor.
+  Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
+  Removed saving of old combo text (it broke things and is not needed). Cleanups.
+
   Revision 1.87  2002/09/03 20:02:01  lazarus
   Intermediate UI patch to show a bug.
 
