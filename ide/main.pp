@@ -254,6 +254,8 @@ type
     
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
+    function UnitDependenciesViewOnGetProjectMainFilename(
+      Sender: TObject): string;
 
     // CodeToolBoss events
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
@@ -3981,7 +3983,10 @@ var
 begin
   if UnitDependenciesView=nil then begin
     UnitDependenciesView:=TUnitDependenciesView.Create(Self);
-    UnitDependenciesView.OnAccessingSources:=@UnitDependenciesViewAccessingSources;
+    UnitDependenciesView.OnAccessingSources:=
+      @UnitDependenciesViewAccessingSources;
+    UnitDependenciesView.OnGetProjectMainFilename:=
+      @UnitDependenciesViewOnGetProjectMainFilename;
     WasVisible:=false;
   end else
     WasVisible:=UnitDependenciesView.Visible;
@@ -5827,6 +5832,13 @@ begin
   SaveSourceEditorChangesToCodeCache(-1);
 end;
 
+function TMainIDE.UnitDependenciesViewOnGetProjectMainFilename(Sender: TObject
+  ): string;
+begin
+  if Project1.MainUnit>=0 then
+    Result:=Project1.MainUnitInfo.Filename;
+end;
+
 // -----------------------------------------------------------------------------
 
 procedure TMainIDE.InitCodeToolBoss;
@@ -7109,6 +7121,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.381  2002/09/14 17:04:23  lazarus
+  MG: unnit dependencies basically working
+
   Revision 1.380  2002/09/14 16:00:27  lazarus
   MG: added Refresh to Unit Dependencies
 
