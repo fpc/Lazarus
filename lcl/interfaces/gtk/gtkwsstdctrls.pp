@@ -591,7 +591,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TGtkWSCustomListBox);
 //  RegisterWSComponent(TListBox, TGtkWSListBox);
   RegisterWSComponent(TCustomEdit, TGtkWSCustomEdit);
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
