@@ -19,14 +19,14 @@
  } 
 
 
-unit interfaces;
+unit Interfaces;
  
 {$mode objfpc}{$H+} 
 
 interface
 
 uses 
-   InterfaceBase,Clipbrd,SysUtils;
+   InterfaceBase;
 
 var
    InterfaceObject : TInterfaceBase;
@@ -34,7 +34,7 @@ var
 implementation
 
 uses 
-   GTKInt,
+   GTKInt, Clipbrd, SysUtils,
    Forms;  // MG: GTKInt uses forms, so the application object is destroyed
            //   in the forms finalization section AFTER this finalization
            //   section. But the lcl objects need the gtk to close clean.
