@@ -806,13 +806,10 @@ begin
     TWSCustomComboBoxClass(WidgetSetClass).Sort(Self, Items, FSorted)
   else if FItems is TStringList then
   begin
-    if FSorted then
-    begin
-      // remember text
-      lText := Text;
-      TStringList(FItems).Sorted := FSorted;
-      ItemIndex := FItems.IndexOf(lText);
-    end;
+    // remember text
+    lText := Text;
+    TStringList(FItems).Sorted := FSorted;
+    ItemIndex := FItems.IndexOf(lText);
   end;
 end;
 
@@ -820,6 +817,9 @@ end;
 
 {
   $Log$
+  Revision 1.60  2005/03/22 20:55:26  micha
+  setting sorted to false should be propagated to internal stringlist (by jesusrmx)
+
   Revision 1.59  2005/03/19 12:40:42  micha
   sort combobox items in own stringlist when no handle allocated yet
 
