@@ -2640,7 +2640,7 @@ End;
 
   Sets the mouse capture to the specified window.
  ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.SetCapture(Value: LongInt): LongInt;
+Function TWin32WidgetSet.SetCapture(Value: HWND): HWND;
 Begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.SetCapture] 0x%x', [Value]));
   Result := Windows.SetCapture(Value);
@@ -3077,6 +3077,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.135  2005/02/05 20:40:17  vincents
+  SetCapture uses HWND as parameter and result type
+
   Revision 1.134  2005/02/05 09:05:51  micha
   add platform independent winapi function IsWindowEnabled
 

@@ -160,7 +160,7 @@ Function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LPa
 function SetActiveWindow(Window: HWND): HWND; override;
 Function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; Override;
 Function SetBkMode(DC: HDC; BkMode: Integer): Integer; Override;
-Function SetCapture(Value: LongInt): LongInt; Override;
+Function SetCapture(Value: HWND): HWND; Override;
 Function SetCaretPos(X, Y: Integer): Boolean; Override;
 Function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
 Function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
@@ -194,6 +194,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2005/02/05 20:40:17  vincents
+  SetCapture uses HWND as parameter and result type
+
   Revision 1.52  2005/02/05 09:05:51  micha
   add platform independent winapi function IsWindowEnabled
 
