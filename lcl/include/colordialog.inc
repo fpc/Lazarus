@@ -24,7 +24,7 @@
  ------------------------------------------------------------------------------}
 constructor TColorDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   fCompStyle := csColorDialog;
   FTitle:= rsSelectcolorTitle;
 end;
@@ -32,6 +32,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/01/13 18:12:44  mattias
+  fixed typo
+
   Revision 1.4  2004/01/13 16:39:01  mattias
   changed consistency stops during var renaming to errors
 
