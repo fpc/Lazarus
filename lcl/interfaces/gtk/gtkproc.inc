@@ -3981,6 +3981,7 @@ begin
         If ScreenFonts.IndexOf(Tmp) < 0 then
           ScreenFonts.Append(Tmp);
     end;
+   XFreeFontNames(theFonts);
   {$EndIf Win32}
 end;
 
@@ -3992,6 +3993,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.145  2002/10/28 21:04:26  lazarus
+  AJ: fixed mem leek in FillScreenFonts
+
   Revision 1.144  2002/10/28 18:17:04  lazarus
   MG: impoved focussing, unfocussing on destroy and fixed unit search
 
