@@ -45,9 +45,6 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  {$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
-  {$ENDIF}
   LCLIntf, LCLType,
   {$ELSE}
   Windows,
