@@ -566,7 +566,7 @@ begin
             end;
           end;
       end;
-
+{
       LM_GETSELSTART :
       begin
         if (Sender is TControl) then begin
@@ -593,7 +593,7 @@ begin
         else
           Result:= 0;
       end;
-
+}
       LM_GETSELCOUNT :
       begin
         case (Sender as TControl).fCompStyle of
@@ -614,7 +614,7 @@ begin
           end;
         end;
       end;
-
+{
       LM_GETSELLEN :
       begin
         if (Sender is TControl) then begin
@@ -641,7 +641,7 @@ begin
           end;
           end;
       end;
-
+}
       LM_SETBORDER:
       begin
         if (Sender is TWinControl) then
@@ -711,7 +711,7 @@ begin
             end;
         end;
       end;
-
+(*
       LM_SETSELSTART:
       begin
         if (Sender is TControl) then begin
@@ -742,8 +742,8 @@ begin
         else
           Result:= 0;
       end;
-
-      LM_SETSELLEN :
+*)
+(*      LM_SETSELLEN :
       begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
@@ -773,7 +773,7 @@ begin
           end;
         end;
       end;
-
+*)
       LM_SORT:
       begin
         if  (Sender is TControl) and assigned (data) then
@@ -1375,6 +1375,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.16  2004/09/08 16:20:24  mazen
+  * Commenting removed messages
+  * Can someone please verify they can be removed please?
+
   Revision 1.15  2004/09/02 09:17:00  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 
