@@ -111,40 +111,6 @@ Begin
 
 end;
 
-{Function TDesigner.NewModuleSource(nmUnitName, nmForm, nmAncestor: String): Boolean;
-Var
-  I : Integer;
-Begin
-  FSource.Clear;
-  Result := True;
-  with FSource do
-   try
-     Add(Format('unit %s;', [nmUnitname]));
-     Add('');
-     Add('interface');
-     Add('');
-     Add('uses Classes, Graphics, Controls, Forms, Dialogs;');
-     Add('');
-     Add('type');
-     Add(Format('     T%s = class(T%s)', [nmForm,nmAncestor]));
-     Add('     private');
-     Add('     { private declarations}');
-     Add('     public');
-     Add('     { public declarations }');
-     Add('     end;');
-     Add('');
-     Add('var');
-     Add(Format('     %s: T%0:s;', [nmForm]));
-     Add('');
-     Add('implementation');
-     Add('');
-     Add('end.');
-   except
-     Result := False;
-   end;
-
-end;
-}
 
 Procedure TDesigner.AddControlCode(Control : TComponent);
 Begin

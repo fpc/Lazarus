@@ -662,6 +662,7 @@ begin
   itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
   itmFileSaveAll.OnClick := @SourceNotebook.SaveAllClicked;
   itmFileClose.OnClick := @SourceNotebook.CloseClicked;
+  itmFileNew.OnClick := @SourceNotebook.NewClicked;
   itmFileOpen.OnClick := @SourceNotebook.OpenClicked;
   SpeedButton4.OnClick := @SourceNotebook.OpenClicked;
   SpeedButton5.OnClick := @SourceNotebook.SaveClicked;
@@ -1549,6 +1550,22 @@ end;
 
 Procedure TForm1.mnuBuildProjectClicked(Sender : TObject);
 Begin
+//for now just compile the active unit;
+SourceNotebook.SaveClicked(Sender);
+
+if not(MessageDlg.Visible) then
+   Begin  //display the dialog under the TSourceNotebook
+      MessageDlg.Show;
+      MessageDlg.Top := Screen.Height - 150;
+      MessageDlg.Height := 150;
+{      if (SourceNotebook.Top+SourceNotebook.Height) > MEssageDlg.Top then
+          SourceNotebook.Height := SourceNotebook.Height - (ABS(MessageDlg.Top - (SourceNotebook.Top+SourceNotebook.Height)));
+ }
+     MessageDlg.Left := SourceNotebook.Left;
+      MessageDlg.Width := SourceNotebook.Width;
+   end;
+MessageDlg.Clear;
+Compiler1.Compile(SourceNotebook.ActiveUnitName);
 
 end;
 
@@ -1711,9 +1728,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.21  2000/12/20 17:35:58  lazarus
-  Added GetChildren
-  Shane
+  Revision 1.22  2000/12/20 20:04:30  lazarus
+  Made PRoject Build compile the active unit.  This way we can actually play with it by compiling units.
 
   Revision 1.19  2000/12/19 18:43:12  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.

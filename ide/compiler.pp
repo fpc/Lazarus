@@ -44,7 +44,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Compile;
+    procedure Compile(MainUnit : String);
     function GetLineNumber(Value : String) : Integer;
     function GetColumnNumber(Value : String) : Integer;
     function GetMessageType(Value : String) : TErrorType;
@@ -78,7 +78,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TCompiler Compile                                                           }
 {------------------------------------------------------------------------------}
-procedure TCompiler.Compile;
+procedure TCompiler.Compile(MainUnit : String);
 const
   BufSize = 1024;
 var
@@ -91,13 +91,16 @@ var
 
   TheProcess : TProcess;
 begin
+  Writeln('In Compile');
+
   Texts := '';
   FOutputList.Clear;
   TheProgram := CompilerOPts.CompilerPath;
   //TheProgram := TheProgram + ' -Ch'+inttostr(CompilerOpts.HeapSize);
   TheProgram := TheProgram + ' '+ CompilerOpts.MakeOptionsString;
-  TheProgram := TheProgram + ' '+ TUnitInfo(Project1.UnitList[0]).Filename;
-  
+  TheProgram := TheProgram + ' '+ MainUnit;
+  Writeln('TheProgram = '+TheProgram);
+
   Assert(False, 'Trace:' + TheProgram);
 
   TheProcess:=TProcess.Create(TheProgram,[poRunSuspended,poUsePipes,poNoConsole]);
@@ -233,6 +236,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2000/12/20 20:04:30  lazarus
+  Made PRoject Build compile the active unit.  This way we can actually play with it by compiling units.
+
   Revision 1.1  2000/07/13 10:27:46  michael
   + Initial import
 

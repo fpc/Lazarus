@@ -87,6 +87,7 @@ type
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     Procedure KeyPressed(Sender : TObject; var key: char);
     Procedure CreateFormUnit(AForm : TCustomForm);
+    Procedure CreateNewUnit;
     Function Close : Boolean;
     Function Save : Boolean;
     Function Open : Boolean;
@@ -120,17 +121,18 @@ type
   protected
     Function CreateNotebook : Boolean;
     Function GetActiveSE : TSourceEditor;
-    Function ActiveUnitName : String;
-    Function ActiveFileName : String;
     Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    Function ActiveUnitName : String;
+    Function ActiveFileName : String;
     Procedure DisplayFormforActivePage;
     Procedure DisplayCodeforControl(Control : TObject);
     Function CreateUnitFromForm(AForm : TForm) : TSourceEditor;
     procedure CloseClicked(Sender : TObject);
+    Procedure NewClicked(Sender: TObject);
     procedure OpenClicked(Sender : TObject);
     procedure SaveClicked(Sender : TObject);
     procedure SaveAllClicked(Sender : TObject);
@@ -215,6 +217,7 @@ begin
   PI := _Control.ClassInfo;
   nmControlType := PI^.Name;
   Ancestor := GetAncestor;
+
 //find the place in the code to add this now.
 //Anyone have good method sfor parsing the source to find spots like this?
 //here I look for the Name of the customform, the word "Class", and it's ancestor on the same line
@@ -248,7 +251,8 @@ end;
 
 Procedure TSourceEditor.DisplayControl;
 Begin
-Writeln('DisplayCOntrol');
+if FControl = nil then Exit;
+
 if (FControl is TCustomForm) then TCustomForm(FControl).Show
     else
     if (FCOntrol is TControl) then TControl(FCOntrol).Visible := True;
@@ -256,9 +260,9 @@ if (FControl is TCustomForm) then TCustomForm(FControl).Show
 //Bringtofront does not work yet.
 //TControl(FControl).BringToFront;
 //so I hide it and unhide it.
-TCOntrol(FCOntrol).Visible :=False;
-TCOntrol(FCOntrol).Visible := True;
-Writeln('Exit DisplayCOntrol');
+
+TControl(FCOntrol).Visible := False;
+TControl(FCOntrol).Visible := True;
 end;
 
 
@@ -369,6 +373,35 @@ Begin
   Source := TempSource;
 tempSource.Free;
 end;
+
+Procedure TSourceEditor.CreateNewUnit;
+Var
+  I : Integer;
+  TempSource : TStringList;
+Begin
+  TempSource := TStringList.Create;
+
+
+//figure out what the unit name should be...
+  FUnitName:='Unit1';  //just assigning it to this for now
+
+  with TempSource do
+   try
+     Add(Format('unit %s;', [FUnitName]));
+     Add('');
+     Add('interface');
+     Add('');
+     Add('implementation');
+     Add('');
+     Add('end.');
+   except
+   //raise an exception
+   end;
+  Source := TempSource;
+tempSource.Free;
+End;
+
+
 
 Function TSourceEditor.Close : Boolean;
 Begin
@@ -616,21 +649,26 @@ Procedure TSourceNotebook.OpenClicked(Sender: TObject);
 Var
     TempEditor : TSourceEditor;
 Begin
-  Writeln('***********************OPENCLICKED');
    FOpenDialog.Title := 'Open';
-Writeln('1');
    if FOpenDialog.Execute then  Begin
-Writeln('2');
       //create a new page
       TempEditor := NewSE(-1);
-Writeln('3');
       TempEditor.Filename := FOpenDialog.Filename;
       TempEditor.OPen;
       Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
-Writeln('4');
       end;
 
 end;
+
+Procedure TSourceNotebook.NewClicked(Sender: TObject);
+Var
+    TempEditor : TSourceEditor;
+Begin
+      //create a new page
+      TempEditor := NewSE(-1);
+      TempEditor.CreateNewUnit;
+      Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
+End;
 
 Procedure TSourceNotebook.SaveClicked(Sender: TObject);
 Begin
