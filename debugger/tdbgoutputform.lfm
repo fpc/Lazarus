@@ -1,11 +1,11 @@
-object DbgOutputForm: TDbgOutputForm
+object DbgOutputForm1: TDbgOutputForm
   CAPTION = 'Debug output'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LEFT = 239
+  TOP = 10
+  LEFT = 10
   HEIGHT = 150
-  TOP = 161
-  WIDTH = 300
+  WIDTH = 301
   object txtOutput: TMemo
     Left = 8
     Top = 104

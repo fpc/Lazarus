@@ -63,6 +63,7 @@ debugger/tdbgoutputform.lfm svneol=native#text/plain
 debugger/test/debugtest.pp svneol=native#text/pascal
 debugger/test/debugtestform.pp svneol=native#text/pascal
 debugger/test/examples/testcntr.pp svneol=native#text/pascal
+debugger/test/examples/testwait.pp svneol=native#text/pascal
 debugger/test/tdebugtesttorm.lfm svneol=native#text/plain
 designer/abstractcompiler.pp svneol=native#text/pascal
 designer/abstracteditor.pp svneol=native#text/pascal

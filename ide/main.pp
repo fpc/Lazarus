@@ -38,9 +38,9 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, DBGWatch, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
-  BuildLazDialog, MiscOptions;
+  UnitInfoDlg, Debugger, DBGBreakpoint, DBGWatch, GDBDebugger, RunParamsOpts, ExtToolDialog, 
+  MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, 
+  OutputFilter, BuildLazDialog, MiscOptions;
 
 const
   Version_String = '0.8.2 alpha';
@@ -312,7 +312,10 @@ type
     MacroList: TTransferMacroList;
     FMessagesViewBoundsRectValid: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
-    TheDebugger: TDebugger;
+    FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
+                                   // Else to own objet
+    FDebugger: TDebugger;
+    FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
 
@@ -354,6 +357,7 @@ type
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     function DoBuildProject(BuildAll: boolean): TModalResult;
+    function DoInitProjectRun: TModalResult;
     function DoRunProject: TModalResult;
     function DoPauseProject: TModalResult;
     function DoStepIntoProject: TModalResult;
@@ -769,7 +773,9 @@ begin
   //TBreakPointsDlg
   BreakPoints_Dlg := TBreakPointsDlg.Create(Self);
 
-  TheDebugger := TDebugger.Create;
+  FDebugger := nil;
+  FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
+  
   // control selection (selected components on edited form)
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
@@ -808,8 +814,9 @@ writeln('[TMainIDE.Destroy] A');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
-  TheDebugger.Free;
-  TheDebugger:=nil;
+  if FDebugger <> nil
+  then FDebugger.Done;
+  
   if Project<>nil then begin
     Project.Free;
     Project:=nil;
@@ -834,8 +841,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
   HIntTimer1.Free;
   HintWindow1.Free;
   Watches_Dlg.Free;
+  FDebugger.Free;
+  FDebugger := nil;
   
-  TheDebugger.Free;
 writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
@@ -1767,50 +1775,15 @@ Procedure TMainIDE.OnSrcNotebookProcessCommand(Sender: TObject;
 begin
   Handled:=true;
   case Command of
-   ecBuild, ecBuildAll:
-      DoBuildProject(Command=ecBuildAll);
+    ecBuild, 
+    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
     
-   ecRun:
-    begin
-      if DoBuildProject(false)<>mrOk then exit;
-      DoRunProject;
-    end;
-    
-   ecPause:
-      DoPauseProject;
-    
-   ecStepInto:
-    begin
-      if ToolStatus=itNone then
-        if DoBuildProject(false)<>mrOk then begin
-          Handled:=false;
-          exit;
-        end;
-      DoStepIntoProject;
-    end;
-    
-   ecStepOver:
-    begin
-      if ToolStatus=itNone then
-        if DoBuildProject(false)<>mrOk then begin
-          Handled:=false;
-          exit;
-        end;
-      DoStepOverProject;
-    end;
-    
-   ecRunToCursor:
-    begin
-      if ToolStatus=itNone then
-        if DoBuildProject(false)<>mrOk then begin
-          Handled:=false;
-          exit;
-        end;
-      DoRunToCursor;
-    end;
-    
-   ecStopProgram:
-     DoStopProject;
+    ecRun:         DoRunProject;
+    ecPause:       DoPauseProject;
+    ecStepInto:    DoStepIntoProject;
+    ecStepOver:    DoStepOverProject;
+    ecRunToCursor: DoRunToCursor;
+    ecStopProgram: DoStopProject;
     
    ecFindProcedureDefinition,ecFindProcedureMethod:
      DoJumpToProcedureSection;
@@ -2094,7 +2067,6 @@ end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
 begin
-  if DoBuildProject(false)<>mrOk then exit;
   DoRunProject;
 end;
 
@@ -3998,217 +3970,289 @@ begin
   end;
 end;
 
+function TMainIDE.DoInitProjectRun: TModalResult;
+var
+  ProgramFilename: String;
+begin
+  if ToolStatus = itDebugger
+  then begin
+    // already running so no initialization needed
+    Result := mrOk;
+    Exit;
+  end; 
+
+  Result := mrCancel;
+
+  // Check if we can run this project
+  if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
+  or (Project.MainUnit < 0) 
+  or (ToolStatus <> itNone)
+  then Exit;
+
+  // Check project build
+  ProgramFilename := GetProjectTargetFilename;
+  if not FileExists(ProgramFilename) 
+  then begin
+    MessageDlg('File not found', Format('No program file "%s" found!', [ProgramFilename]), mtError, [mbCancel], 0);
+    Exit;
+  end;
+
+  // Build project first
+  if DoBuildProject(false) <> mrOk 
+  then Exit;
+  
+  // Setup debugger
+  case EnvironmentOptions.DebuggerType of
+    dtGnuDebugger: begin
+      if (FDebugger = nil)
+      and (DoInitDebugger <> mrOk)
+      then Exit;
+      FDebugger.FileName := ProgramFilename;
+      FDebugger.Arguments := ''; //TODO: get arguments
+      FDebugger.Run;
+    end;
+  else 
+    // Temp solution, in futer it will be run by dummy debugger
+    try
+      CheckIfFileIsExecutable(ProgramFilename);
+      FRunProcess := TProcess.Create(nil);
+      FRunProcess.CommandLine := ProgramFilename;
+      FRunProcess.Options:= [poUsePipes, poNoConsole];
+      FRunProcess.ShowWindow := swoNone;
+      FRunProcess.Execute;
+    except
+      on e: Exception do 
+        MessageDlg(Format('Error initializing program'#13 + 
+                          '"%s"'#13 + 
+                          'Error: %s', [ProgramFilename, e.Message]), mterror, [mbok], 0);
+    end;
+  end;   
+
+  Result := mrOK;
+  ToolStatus := itDebugger;
+end;
+
 function TMainIDE.DoRunProject: TModalResult;
 // ToDo:
 //  -implement a better messages-form for vast amount of output
 //  -command line parameters
-var
-  TheProcess : TProcess;
-  ProgramFilename, AText : String;
 begin
-  Result:=mrCancel;
-writeln('[TMainIDE.DoRunProject] A');
-  if not (ToolStatus in [itNone,itDebugger]) then begin
-    Result:=mrAbort;
-    exit;
+  Writeln('[TMainIDE.DoRunProject] A');
+  
+  if (DoInitProjectRun <> mrOK)
+  or (ToolStatus <> itDebugger)
+  then begin
+    Result := mrAbort;
+    Exit;
   end;
-  if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
-  or (Project.MainUnit<0) then
-    exit;
 
-  //MainUnitInfo:=Project.Units[Project.MainUnit];
-  ProgramFilename:=GetProjectTargetFilename;
-
-  if not FileExists(ProgramFilename) then begin
-    AText:='No program file "'+ProgramFilename+'" found!';
-    MessageDlg('File not found',AText,mtError,[mbCancel],0);
-    exit;
-  end;
+  Result := mrCancel;
 
   case EnvironmentOptions.DebuggerType of
-    dtGnuDebugger:
-      begin
-        if TheDebugger=nil then begin
-          Result:=DoInitDebugger;
-          if Result<>mrOk then exit;
-          Result:=mrCancel;
-        end;
-        ToolStatus:=itDebugger;
-        TheDebugger.Run;
-      end;
+    dtGnuDebugger: begin
+      if FDebugger = nil then Exit;
+      FDebugger.Run;
+      Result := mrOK;
+    end;
   else
-      begin
-        try
-          writeln('  EXECUTING "',ProgramFilename,'"');
-          CheckIfFileIsExecutable(ProgramFilename);
-          TheProcess := TProcess.Create(nil);
-          TheProcess.CommandLine := ProgramFilename;
-          TheProcess.Options:= [poUsePipes, poNoConsole];
-          TheProcess.ShowWindow := swoNone;
-          TheProcess.Execute;
-        except
-          on e: Exception do begin
-            AText:='Error running program'#13'"'+ProgramFilename+'"'#13
-               +'Error: '+e.Message;
-            MessageDlg(AText,mterror,[mbok], 0);
-          end;
-        end;
-      end;
+    if FRunProcess = nil then Exit;
+    try
+      Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
+      FRunProcess.Execute;
+      Result := mrOk;
+    except
+      on e: Exception do 
+        MessageDlg(Format('Error initializing program'#13 + 
+                          '"%s"'#13 + 
+                          'Error: %s', [FRunProcess.CommandLine, e.Message]), mterror, [mbok], 0);
+    end;
   end;   
-  Result:=mrOk;
-writeln('[TMainIDE.DoRunProject] END');
+  Writeln('[TMainIDE.DoRunProject] END');
 end;
 
 function TMainIDE.DoPauseProject: TModalResult;
 begin
-  Result:=mrCancel;
-  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then exit;
-  TheDebugger.Pause;
-  Result:=mrOk;
+  Result := mrCancel;
+  if (ToolStatus <> itDebugger) 
+  or (FDebugger = nil) 
+  then Exit;
+  FDebugger.Pause;
+  Result := mrOk;
 end;
 
 function TMainIDE.DoStepIntoProject: TModalResult;
 begin
-  Result:=mrCancel;
-  if ToolStatus=itNone then begin
-    Result:=DoInitDebugger;
-    if Result<>mrOk then exit;
-    Result:=mrCancel;
-    ToolStatus:=itDebugger;
+  if (DoInitProjectRun <> mrOK)
+  or (ToolStatus <> itDebugger)
+  or (FDebugger = nil) 
+  then begin
+    Result := mrAbort;
+    Exit;
   end;
-  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then
-    exit
-  else begin
-    TheDebugger.StepInto;
-    Result:=mrOk;
-  end;
+
+  FDebugger.StepInto;
+  Result := mrOk;
 end;
 
 function TMainIDE.DoStepOverProject: TModalResult;
 begin
-  Result:=mrCancel;
-  if ToolStatus=itNone then begin
-    Result:=DoInitDebugger;
-    if Result<>mrOk then exit;
-    Result:=mrCancel;
-    ToolStatus:=itDebugger;
+  if (DoInitProjectRun <> mrOK)
+  or (ToolStatus <> itDebugger)
+  or (FDebugger = nil) 
+  then begin
+    Result := mrAbort;
+    Exit;
   end;
-  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then
-    exit
-  else begin
-    TheDebugger.StepOver;
-    Result:=mrOk;
-  end;
+
+  FDebugger.StepOver;
+  Result := mrOk;
 end;
 
 function TMainIDE.DoStopProject: TModalResult;
 begin
-  Result:=mrCancel;
-  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then exit;
-  TheDebugger.Stop;
-  Result:=mrOk;
+  Result := mrCancel;
+  if (ToolStatus <> itDebugger) 
+  or (FDebugger=nil) 
+  then Exit;
+
+  FDebugger.Stop;
+  Result := mrOk;
 end;
 
 function TMainIDE.DoRunToCursor: TModalResult;
-var ActiveSrcEdit: TSourceEditor;
+var 
+  ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   UnitFilename: string;
 begin
-  Result:=mrCancel;
-  if ToolStatus=itNone then begin
-    Result:=DoInitDebugger;
-    if Result<>mrOk then exit;
-    Result:=mrCancel;
-    ToolStatus:=itDebugger;
+  if (DoInitProjectRun <> mrOK)
+  or (ToolStatus <> itDebugger)
+  or (FDebugger = nil) 
+  then begin
+    Result := mrAbort;
+    Exit;
   end;
-  if ToolStatus<>itDebugger then exit;
-  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then begin
+
+  Result := mrCancel;
+
+  GetCurrentUnit(ActiveSrcEdit, ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) 
+  then begin
     MessageDlg('Run to failed','Please open a unit before run.',mtError,
       [mbCancel],0);
-    exit;
+    Exit;
   end;
-  if not ActiveUnitInfo.Source.IsVirtual then
-    UnitFilename:=ActiveUnitInfo.Filename
-  else
-    UnitFilename:=GetTestUnitFilename(ActiveUnitInfo);
-  TheDebugger.RunTo(UnitFilename,ActiveSrcEdit.EditorComponent.CaretY);
+
+  if not ActiveUnitInfo.Source.IsVirtual 
+  then UnitFilename:=ActiveUnitInfo.Filename
+  else UnitFilename:=GetTestUnitFilename(ActiveUnitInfo);
+
+  FDebugger.RunTo(UnitFilename, ActiveSrcEdit.EditorComponent.CaretY);
+
+  Result := mrOK;
 end;
 
 function TMainIDE.DoInitDebugger: TModalResult;
-var ProgramFilename: string;
-//  MainUnitInfo: TUnitInfo;
+var
+  OldBreakpoints: TDBGBreakpoints;
 begin
-  Result:=mrCancel;
-  if Project.MainUnit<0 then exit;
+  WriteLN('[TMainIDE.DoInitDebugger] A');  
   
+  Result:=mrCancel;
+  if Project.MainUnit < 0 then Exit;
+  
+  OldBreakpoints := nil;  
+
   case EnvironmentOptions.DebuggerType of
-    dtGnuDebugger:
-      begin
-        MessageDlg('Sorry, not implemented yet',
-           'The GNU debugger support is not yet implemented.'#13
-           +'The IDE can already handle the abstract debugger'#13
-           +'(see directory debugger), so that anyone can write a unit for their'#13
-           +'favourite debugger.'#13
-           +'Please set the debugger in the environment options to none to'#13
-           +'just start the program without debugging.',mtInformation,[mbOk],0);
-        exit;
-      { ToDo: GnuDebugger
-        if (TheDebugger<>nil) and (not (TheDebugger is TGnuDebugger)) then begin
-          TheDebugger.Free;
-          TheDebugger:=nil;
-        end;
-        TheDebugger:=TGnuDebugger.Create;}
+    dtGnuDebugger: begin  
+      if (FDebugger <> nil) 
+      and not (FDebugger is TGDBDebugger) 
+      then begin
+        OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
+        OldBreakpoints.Assign(FBreakPoints);
+        FBreakPoints := nil; 
+        
+        FDebugger.Free;
+        FDebugger := nil;
       end;
-  else
-    begin
-      TheDebugger.Free;
-      TheDebugger:=nil;
-      exit;
+      if FDebugger = nil
+      then begin
+        if FBreakPoints <> nil
+        then begin
+          OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
+          OldBreakpoints.Assign(FBreakPoints);
+        end;
+        FDebugger := TGDBDebugger.Create;
+        FBreakPoints := FDebugger.BreakPoints;
+      end;
+      if OldBreakpoints <> nil
+      then FBreakPoints.Assign(OldBreakpoints);
     end;
+  else
+    OldBreakpoints := FBreakPoints;
+    FBreakPoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
+    FBreakPoints.Assign(OldBreakpoints);
+    
+    FDebugger.Free;
+    FDebugger := nil;
+    Exit;
   end;
   //MainUnitInfo:=Project.Units[Project.MainUnit];
-  ProgramFilename:=GetProjectTargetFilename;
-  TheDebugger.Filename:=ProgramFilename;
-  TheDebugger.OnState:=@OnDebuggerChangeState;
-  TheDebugger.OnCurrent:=@OnDebuggerCurrentLine;
+  FDebugger.OnState:=@OnDebuggerChangeState;
+  FDebugger.OnCurrent:=@OnDebuggerCurrentLine;
+  if FDebugger.State = dsNone 
+  then FDebugger.Init;
+  
+  //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands 
     
   // property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups; // list of all breakpoints
   // property Watches: TDBGWatches read FWatches;   // list of all watches localvars etc
   
-  Result:=mrOk;
+  Result := mrOk;
+  WriteLN('[TMainIDE.DoInitDebugger] END');  
 end;
 
 procedure TMainIDE.OnDebuggerChangeState(Sender: TObject);
+const
+  // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
+  TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
+    // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
+    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger
+  );          
+  STATENAME: array[TDBGState] of string = (
+    'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsRun', 'dsError'
+  );
 begin
-  if (Sender<>TheDebugger) or (Sender=nil) then exit;
-  RunSpeedButton.Enabled:=(TheDebugger.State in [dsStop,dsPause,dsError]);
-  PauseSpeedButton.Enabled:=(TheDebugger.State in [dsRun]);
-  itmProjectRun.Enabled:=RunSpeedButton.Enabled;
-  itmProjectPause.Enabled:=PauseSpeedButton.Enabled;
-  case TheDebugger.State of
-  dsStop:
-    begin
-      // program stopped -> end debugging session
-      TheDebugger.Free;
-      TheDebugger:=nil;
-      ToolStatus:=itNone;
-    end;
-  dsPause:
-    begin
-      // program paused
-      ToolStatus:=itDebugger;
-    end;
-  dsRun:
-    begin
-      // program is running
-      ToolStatus:=itDebugger;
-    end;
-  dsError:
-    begin
-      // ???
-      ToolStatus:=itDebugger;
-    end;
+  // Is the next line needed ???
+  if (Sender<>FDebugger) or (Sender=nil) then exit;
+  
+  WriteLN('[TMainIDE.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
+
+  // All conmmands
+  // -------------------
+  // dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch
+  // -------------------
+
+  RunSpeedButton.Enabled := dcRun in FDebugger.Commands;
+  itmProjectRun.Enabled := RunSpeedButton.Enabled;
+  PauseSpeedButton.Enabled := dcPause in FDebugger.Commands;
+  itmProjectPause.Enabled := PauseSpeedButton.Enabled;
+  StepIntoSpeedButton.Enabled := dcStepInto in FDebugger.Commands;
+  itmProjectStepInto.Enabled := StepIntoSpeedButton.Enabled;
+  StepOverSpeedButton.Enabled := dcStepOver in FDebugger.Commands;
+  itmProjectStepOver.Enabled := StepOverSpeedButton.Enabled;
+
+  itmProjectRunToCursor.Enabled := dcRunTo in FDebugger.Commands;
+  itmProjectStop.Enabled := dcStop in FDebugger.Commands;;
+  
+  // TODO: add other debugger menuitems
+  // TODO: implement by actions
+
+  ToolStatus := TOOLSTATEMAP[FDebugger.State];
+  
+  if FDebugger.State = dsError
+  then begin
+    WriteLN('Ooops, the debugger entered the error state');
   end;
 end;
 
@@ -4220,7 +4264,7 @@ procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject;
 var 
   ActiveSrcEdit: TSourceEditor;
 begin
-  if (Sender<>TheDebugger) or (Sender=nil) then exit;
+  if (Sender<>FDebugger) or (Sender=nil) then exit;
   //TODO: Show assembler window if no source can be found.
   if ALocation.SrcLine = -1 then Exit;
   if DoOpenEditorFile(ALocation.SrcFile, false) <> mrOk then exit;
@@ -5600,23 +5644,22 @@ begin
 end;
 
 //This adds the watch to the TWatches TCollection and to the watches dialog
-Procedure TMainIDE.AddWatch(AnExpression : String);
-Var
+procedure TMainIDE.AddWatch(AnExpression : String);
+var
   NewWatch : TdbgWatch;
 begin
+  if FDebugger = nil then Exit;
+  if not Watches_Dlg.Visible then Watches_Dlg.Show;
 
-    if not Watches_Dlg.Visible then Watches_Dlg.Show;
-  NewWatch := TdbgWatch(TheDebugger.watches.Add);
+  NewWatch := TdbgWatch(FDebugger.watches.Add);
   with NewWatch do
-    Begin
-      Expression := AnExpression;
-      OnChange := @OnDebuggerWatchChanged;
-      Enabled := True;
-
-    end;
+  begin
+    Expression := AnExpression;
+    OnChange := @OnDebuggerWatchChanged;
+    Enabled := True;
+  end;
 
   Watches_Dlg.AddWatch(NewWatch.Expression+':'+NewWatch.Value);
-
 end;
 
 
@@ -5630,7 +5673,7 @@ begin
   if Pos(':',AnExpression) > 0 then
      AnExpression := Copy(AnExpression,1,pos(':',AnExpression)-1);
      
-  NewWatch := TdbgWatch(TheDebugger.watches.Add);
+  NewWatch := TdbgWatch(FDebugger.watches.Add);
   with NewWatch do
     Begin
       Expression := AnExpression;
@@ -5657,7 +5700,7 @@ begin
   if SourceNotebook.Notebook = nil then Exit;
 
   Breakpoints_Dlg.AddBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
-
+  FBreakPoints.Add(TSourceNotebook(sender).GetActiveSe.FileName, Line);
 end;
 
 Procedure TMainIDE.OnSrcNotebookDeleteBreakPoint(Sender : TObject;
@@ -5666,6 +5709,7 @@ begin
   if SourceNotebook.Notebook = nil then Exit;
 
   Breakpoints_Dlg.DeleteBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
+  FBreakPoints.Find(TSourceNotebook(sender).GetActiveSe.FileName, Line).Free;
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -5710,10 +5754,11 @@ end.
 
 
 { =============================================================================
-<<<<<<< main.pp
-=======
-
   $Log$
+  Revision 1.209  2002/02/05 23:16:47  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.208  2002/02/03 00:23:54  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
@@ -5773,78 +5818,12 @@ end.
   Revision 1.191  2001/12/19 20:28:50  lazarus
   Enabled Alignment of columns in a TListView.
   Shane
->>>>>>> 1.191
-
-<<<<<<< main.pp
-  $Log$
-  Revision 1.208  2002/02/03 00:23:54  lazarus
-  TPanel implemented.
-  Basic graphic primitives split into GraphType package, so that we can
-  reference it from interface (GTK, Win32) units.
-  New Frame3d canvas method that uses native (themed) drawing (GTK only).
-  New overloaded Canvas.TextRect method.
-  LCLLinux and Graphics was split, so a bunch of files had to be modified.
-
-  Revision 1.207  2002/01/27 19:08:43  lazarus
-  MWE: Removed ^M
-
-  Revision 1.206  2002/01/24 14:12:52  lazarus
-  MG: added build lazarus feature and config dialog
-
-  Revision 1.205  2002/01/23 22:12:54  lazarus
-  MG: external tool output parsing for fpc and make messages
-
-  Revision 1.204  2002/01/23 20:07:20  lazarus
-  MG: added outputfilter
-
-  Revision 1.203  2002/01/21 14:17:44  lazarus
-  MG: added find-block-start and renamed find-block-other-end
-
-  Revision 1.202  2002/01/17 11:00:00  lazarus
-  MG: increased IDE version to 0.8.2 alpha
-
-  Revision 1.201  2002/01/15 20:21:37  lazarus
-  MG: jump history for find declaration
-
-  Revision 1.200  2002/01/13 12:46:17  lazarus
-  MG: fixed linker options, compiler options dialog
-
-  Revision 1.199  2002/01/11 20:41:52  lazarus
-  MG: added  guess unclosed block
-
-  Revision 1.197  2002/01/02 13:32:52  lazarus
-  MG: fixed clean abort of project loading
-
-  Revision 1.196  2001/12/31 22:45:41  lazarus
-  Took out some test code.
-  Shane
-
-  Revision 1.195  2001/12/31 22:42:59  lazarus
-  Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
-  Shane
-
-  Revision 1.194  2001/12/28 11:01:20  lazarus
-  MG: fixed save as with lfm and lrs files
-
-  Revision 1.193  2001/12/20 19:11:22  lazarus
-  Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
-  Shane
-
-  Revision 1.192  2001/12/19 22:09:13  lazarus
-  MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
 
   Revision 1.190  2001/12/18 21:09:58  lazarus
   MOre additions for breakpoints dialog
   Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
   Shane
 
-=======
-  Revision 1.190  2001/12/18 21:09:58  lazarus
-  MOre additions for breakpoints dialog
-  Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
-  Shane
-
->>>>>>> 1.191
   Revision 1.189  2001/12/18 21:00:59  lazarus
   MG: compiler, fpc source and lazarus src can now be changed without restart
 

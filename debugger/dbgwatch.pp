@@ -29,18 +29,25 @@ uses
   Classes;
 
 type
+  TDBGWatchClass = class of TDBGWatch;
   TDBGWatch = class(TCollectionItem)
   private
+    FDebugger: TObject;  // reference to our debugger
     FEnabled: Boolean;
     FExpression: String;
+    FValue: String;
     FOnChange: TNotifyEvent;
-    function  GetValid: Boolean;
-    function  GetValue: String;
     procedure SetEnabled(const AValue: Boolean);
-    procedure SetExpression(const AValue: String);
-    procedure SetValue(const AValue: String);
   protected
+    procedure DoEnableChange; virtual;
+    procedure DoStateChange; virtual; 
+    function  GetValue: String; virtual;
+    function  GetValid: Boolean; virtual;
+    procedure SetExpression(const AValue: String); virtual;
+    procedure SetValue(const AValue: String); virtual;
+    property  Debugger: TObject read FDebugger;
   public
+    constructor Create(ACollection: TCollection); override;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Expression: String read FExpression write SetExpression;
     property Valid: Boolean read GetValid;
@@ -50,17 +57,37 @@ type
 
   TDBGWatches = class(TCollection)
   private
+    FDebugger: TObject;  // reference to our debugger
     function GetItem(const AnIndex: Integer): TDBGWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
   protected
+    procedure DoStateChange;  
   public
-    constructor Create;
+    constructor Create(const ADebugger: TObject; const AWatchClass: TDBGWatchClass); 
     property Items[const AnIndex: Integer]: TDBGWatch read GetItem write SetItem; default;
   end;
+  
+implementation 
 
-implementation
+uses
+  Debugger;      
 
 { TDBGWatch }
+
+constructor TDBGWatch.Create(ACollection: TCollection); 
+begin
+  inherited Create(ACollection);
+  FEnabled := False;
+  FDebugger := TDBGWatches(ACollection).FDebugger;
+end;
+
+procedure TDBGWatch.DoEnableChange; 
+begin
+end;
+
+procedure TDBGWatch.DoStateChange;  
+begin
+end;
 
 function TDBGWatch.GetValid: Boolean;
 begin
@@ -70,19 +97,21 @@ end;
 function TDBGWatch.GetValue: String;
 begin
   if Valid 
-  then begin
-  end
+  then Result := '<unknown>'
   else Result := '<invalid>';
 end;
 
 procedure TDBGWatch.SetEnabled(const AValue: Boolean);
 begin
-  FEnabled := AValue;
+  if FEnabled <> AValue
+  then begin
+    FEnabled := AValue;
+    DoEnableChange;
+ end;
 end;
 
 procedure TDBGWatch.SetExpression(const AValue: String);
 begin
-  FExpression := AValue;
 end;
 
 procedure TDBGWatch.SetValue(const AValue: String);
@@ -91,9 +120,18 @@ end;
 
 { TDBGWatches }
 
-constructor TDBGWatches.Create;
+constructor TDBGWatches.Create(const ADebugger: TObject; const AWatchClass: TDBGWatchClass);
 begin                   
-  inherited Create(TDBGWatch);
+  FDebugger := ADebugger;
+  inherited Create(AWatchClass);
+end;
+
+procedure TDBGWatches.DoStateChange;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    GetItem(n).DoStateChange;
 end;
 
 function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
@@ -109,6 +147,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/02/05 23:16:48  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.5  2001/11/06 23:59:13  lazarus
   MWE: + Initial breakpoint support
        + Added exeption handling on process.free

@@ -37,6 +37,7 @@ type
   TDBGBreakPoint = class(TCollectionItem)
   private
     FDebugger: TObject;  // reference to our debugger
+    FGroup: TDBGBreakPointGroup;
     FValid: Boolean;
     FEnabled: Boolean;
     FHitCount: Integer;
@@ -47,19 +48,26 @@ type
     procedure SetActions(const AValue: TDBGBreakPointActions); 
     procedure SetEnabled(const AValue: Boolean); 
     procedure SetExpression(const AValue: String); 
+    procedure SetGroup(const AValue: TDBGBreakPointGroup);
   protected                                        
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure DoActionChange; virtual;
+    procedure DoEnableChange; virtual;
+    procedure DoExpressionChange; virtual;
+    procedure DoStateChange; virtual;
     procedure SetHitCount(const AValue: Integer); 
     procedure SetLocation(const ASource: String; const ALine: Integer); virtual;
     procedure SetValid(const AValue: Boolean); 
+    property  Debugger: TObject read FDebugger;
   public
     procedure AddDisableGroup(const AGroup: TDBGBreakPointGroup);
     procedure AddEnableGroup(const AGroup: TDBGBreakPointGroup);
     constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
     procedure RemoveDisableGroup(const AGroup: TDBGBreakPointGroup);
     procedure RemoveEnableGroup(const AGroup: TDBGBreakPointGroup);
     property Actions: TDBGBreakPointActions read FActions write SetActions;
     property Enabled: Boolean read FEnabled write SetEnabled;
+    property Group: TDBGBreakPointGroup read FGroup write SetGroup;
     property HitCount: Integer read FHitCount;
     property Expression: String read FExpression write SetExpression;
     property Source: String read FSource; 
@@ -73,36 +81,42 @@ type
     function GetItem(const AnIndex: Integer): TDBGBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
   protected
+    procedure DoStateChange;
   public 
-    constructor Create(const ADebugger: TObject);
+    constructor Create(const ADebugger: TObject; const ABreakPointClass: TDBGBreakPointClass);
     function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+    function Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
     property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
   end;
-
+  
   TDBGBreakPointGroup = class(TCollectionItem)
   private
     FEnabled: Boolean;
     FName: String;
-    FBreakpoints: TDBGBreakPoints;
+    FBreakpoints: TList;
+    function GetBreakpoint(const AIndex: Integer): TDBGBreakPoint;
     procedure SetEnabled(const AValue: Boolean);
     procedure SetName(const AValue: String);
   protected
   public
+    function Add(const ABreakPoint: TDBGBreakPoint): Integer;
+    function Count: Integer;
     constructor Create(ACollection: TCollection); override;
+    procedure Delete(const AIndex: Integer);
     destructor Destroy; override;
-    property Breakpoints: TDBGBreakPoints read FBreakpoints;
+    function Remove(const ABreakPoint: TDBGBreakPoint): Integer;
+    property Breakpoints[const AIndex: Integer]: TDBGBreakPoint read GetBreakpoint;
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Name: String read FName write SetName;
   end;
 
   TDBGBreakPointGroups = class(TCollection)
   private                     
-    FDebugger: TObject;
     function GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPointGroup);
   protected
   public
-    constructor Create(const ADebugger: TObject);
+    constructor Create;
     property Items[const AnIndex: Integer]: TDBGBreakPointGroup read GetItem write SetItem; default;
   end;
 
@@ -122,6 +136,18 @@ procedure TDBGBreakPoint.AddEnableGroup(const AGroup: TDBGBreakPointGroup);
 begin
 end;
 
+procedure TDBGBreakPoint.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TDBGBreakPoint 
+  then begin
+    TDBGBreakPoint(Dest).SetLocation(FSource, FLine);
+    TDBGBreakPoint(Dest).SetExpression(FExpression);
+    TDBGBreakPoint(Dest).SetActions(FActions);
+    TDBGBreakPoint(Dest).SetEnabled(FEnabled);
+  end
+  else inherited; 
+end;
+
 constructor TDBGBreakPoint.Create(ACollection: TCollection); 
 begin
   inherited Create(ACollection);
@@ -131,14 +157,24 @@ begin
   FEnabled := False;
   FHitCount := 0;
   FExpression := '';
-  
+  FGroup := nil;
   FDebugger := TDBGBreakPoints(ACollection).FDebugger;
 end;
 
-destructor TDBGBreakPoint.Destroy; 
+procedure TDBGBreakPoint.DoActionChange; 
 begin
-  TInternalDebugger(FDebugger).BreakRemove(Self);
-  inherited Destroy;
+end;
+
+procedure TDBGBreakPoint.DoEnableChange; 
+begin
+end;
+
+procedure TDBGBreakPoint.DoExpressionChange; 
+begin
+end;
+
+procedure TDBGBreakPoint.DoStateChange; 
+begin
 end;
 
 procedure TDBGBreakPoint.RemoveDisableGroup(const AGroup: TDBGBreakPointGroup);
@@ -154,7 +190,7 @@ begin
   if FActions <> AValue
   then begin
     FActions := AValue;
-    TInternalDebugger(FDebugger).BreakActionChange(Self);
+    DoActionChange;
   end;
 end;
 
@@ -163,7 +199,7 @@ begin
   if FEnabled <> AValue
   then begin
     FEnabled := AValue;
-    TInternalDebugger(FDebugger).BreakEnableChange(Self);
+    DoEnableChange;
   end;
 end;
 
@@ -172,7 +208,28 @@ begin
   if FExpression <> AValue
   then begin
     FExpression := AValue;
-    TInternalDebugger(FDebugger).BreakExpressionChange(Self);
+    DoExpressionChange;
+  end;
+end;
+
+procedure TDBGBreakPoint.SetGroup(const AValue: TDBGBreakPointGroup);
+var
+  Grp: TDBGBreakPointGroup;
+begin
+  if FGroup <> AValue
+  then begin
+    
+    if FGroup <> nil 
+    then begin
+      Grp := FGroup;
+      FGroup := nil;  //  avoid second entrance
+      Grp.Remove(Self);
+    end;
+    FGroup := AValue;
+    if FGroup <> nil 
+    then begin
+      FGroup.Add(Self);
+    end;
   end;
 end;
 
@@ -185,7 +242,6 @@ procedure TDBGBreakPoint.SetLocation(const ASource: String; const ALine: Integer
 begin
   FSource := ASource;
   FLine := ALine;
-  TInternalDebugger(FDebugger).BreakAdd(Self);
 end;
 
 procedure TDBGBreakPoint.SetValid(const AValue: Boolean);
@@ -201,10 +257,32 @@ begin
   Result.SetLocation(ASource, ALine);
 end;
 
-constructor TDBGBreakPoints.Create(const ADebugger: TObject);
+constructor TDBGBreakPoints.Create(const ADebugger: TObject; const ABreakPointClass: TDBGBreakPointClass);
 begin
-  inherited Create(TDBGBreakPoint);
+  inherited Create(ABreakPointClass);
   FDebugger := ADebugger;
+end;
+
+procedure TDBGBreakPoints.DoStateChange;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+    GetItem(n).DoStateChange;
+end;
+
+function TDBGBreakPoints.Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+var
+  n: Integer;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    Result := GetItem(n);
+    if  (Result.Line = ALine)
+    and (Result.Source = ASource)
+    then Exit;
+  end;    
+  Result := nil;
 end;
 
 function TDBGBreakPoints.GetItem(const AnIndex: Integer): TDBGBreakPoint;
@@ -219,10 +297,31 @@ end;
 
 { TDBGBreakPointGroup }
 
+function TDBGBreakPointGroup.Add(const ABreakPoint: TDBGBreakPoint): Integer;
+begin
+  Result := FBreakpoints.IndexOf(ABreakPoint); //avoid dups
+  if Result = -1
+  then begin
+    Result := FBreakpoints.Add(ABreakPoint);
+    ABreakpoint.Group := Self;
+  end;
+end;
+
+function TDBGBreakPointGroup.Count: Integer;
+begin
+  Result := FBreakpoints.Count;
+end;
+
 constructor TDBGBreakPointGroup.Create(ACollection: TCollection); 
 begin
   inherited Create(ACollection);
-  FBreakpoints := TDBGBreakPoints.Create(TDBGBreakPointGroups(ACollection).FDebugger);
+  FBreakpoints := TList.Create;
+  FEnabled := True;
+end;
+
+procedure TDBGBreakPointGroup.Delete(const AIndex: Integer);
+begin
+  Remove(TDBGBreakPoint(FBreakPoints[AIndex]));
 end;
 
 destructor TDBGBreakPointGroup.Destroy; 
@@ -231,9 +330,28 @@ begin
   inherited Destroy;
 end;
 
-procedure TDBGBreakPointGroup.SetEnabled(const AValue: Boolean);
+function TDBGBreakPointGroup.GetBreakpoint(const AIndex: Integer): TDBGBreakPoint;
 begin
-  FEnabled := AValue;
+  Result := TDBGBreakPoint(FBreakPoints[AIndex]);
+end;
+
+function TDBGBreakPointGroup.Remove(const ABreakPoint: TDBGBreakPoint): Integer;
+begin
+  Result := FBreakpoints.Remove(ABreakPoint);
+  if ABreakpoint.Group = Self
+  then ABreakpoint.Group := nil;
+end;
+
+procedure TDBGBreakPointGroup.SetEnabled(const AValue: Boolean);
+var
+  n: Integer;
+begin
+  if FEnabled <> AValue
+  then begin
+    FEnabled := AValue;
+    for n := 0 to FBreakPoints.Count - 1 do
+      TDBGBreakpoint(FBreakPoints[n]).Enabled := FEnabled;
+  end;
 end;
 
 procedure TDBGBreakPointGroup.SetName(const AValue: String);
@@ -243,10 +361,9 @@ end;
 
 { TDBGBreakPointGroups }
 
-constructor TDBGBreakPointGroups.Create(const ADebugger: TObject); 
+constructor TDBGBreakPointGroups.Create; 
 begin
   inherited Create(TDBGBreakPointGroup);
-  FDebugger := ADebugger;
 end;
 
 function TDBGBreakPointGroups.GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
@@ -262,6 +379,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/02/05 23:16:48  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.5  2001/11/06 23:59:12  lazarus
   MWE: + Initial breakpoint support
        + Added exeption handling on process.free

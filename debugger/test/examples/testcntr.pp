@@ -1,11 +1,11 @@
 program testcntr;
 
 uses
+  TestWait,
   SysUtils;
   
 var
   m, n, x : Cardinal;
-  time: TDateTime;
 begin
   m :=0;
   x := 0;
@@ -17,8 +17,7 @@ begin
       for n := 0 to 79 do Write('.');
       WriteLN;
     until m mod 10 = 0;
-    time := now;
-    while (now - time) * SecsPerDay < 10  do;
+    Wait(10);
     inc(x);
   end;
 end.  

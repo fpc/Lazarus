@@ -30,11 +30,12 @@ program edittest;
 {$mode objfpc}
 
 uses
-  buttons, classes, forms, controls, sysutils, Graphics,  SynEdit, SynHighlighterPas;
+  StdCtrls, buttons, classes, forms, controls, sysutils, Graphics,  synedit, synhighlighterpas;
 
 type
   TEditTestForm = class(TForm)
   public
+    FText: TEdit;
     FEdit: TSynEdit;
     FHighlighter: TSynPasSyn;
     constructor Create(AOwner: TComponent); override;
@@ -50,18 +51,15 @@ constructor TEditTestForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Width := 300;
-  Height := 200;
+  Height := 250;
   Left := 200;
   Top := 200;
   Caption := 'Editor tester';
 
-  if FHighlighter = nil
-  then begin
-    FHighlighter := TSynPasSyn.Create(Self);
-    FHighlighter.CommentAttri.Foreground := clNavy;
-    FHighlighter.NumberAttri.Foreground := clRed;
-    FHighlighter.KeyAttri.Foreground := clGreen;
-  end;
+  FHighlighter := TSynPasSyn.Create(Self);
+  FHighlighter.CommentAttri.Foreground := clNavy;
+  FHighlighter.NumberAttri.Foreground := clRed;
+  FHighlighter.KeyAttri.Foreground := clGreen;
 
   FEdit := TSynEdit.Create(Self);
   with FEdit
@@ -77,6 +75,18 @@ begin
     Font.Size := 12;
     HighLighter := Self.FHighLighter;
   end;
+  
+  FText := TEdit.Create(Self);
+  with FText do 
+  begin
+    Parent := Self;
+    Top := 208;
+		Width := 300;
+		Height := 25;
+    Visible := True;
+    Font.Name := 'courier';
+    Font.Size := 12;
+  end;
 end;
 
 begin
@@ -87,6 +97,10 @@ end.
 
 {
   $Log$
+  Revision 1.3  2002/02/05 23:16:48  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.2  2002/02/04 10:54:33  lazarus
   Keith:
     * Fixes for Win32

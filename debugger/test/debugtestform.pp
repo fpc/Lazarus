@@ -36,6 +36,8 @@ type
     cmdStop : TButton;
     cmdStep : TButton;
     cmdStepInto : TButton;
+    cmdSetBreak : TButton;
+    cmdResetBreak : TButton;
     lblFileName: TLabel;
     lblAdress: TLabel;
     lblSource: TLabel;
@@ -47,6 +49,9 @@ type
     cmdClear: TButton;
     txtCommand: TEdit;
     txtFileName: TEdit;
+    txtBreakFile: TEdit;
+    txtBreakLine: TEdit;
+    chkBreakEnable: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure cmdInitClick(Sender: TObject);
@@ -58,6 +63,9 @@ type
     procedure cmdStepIntoClick(Sender: TObject);
     procedure cmdCommandClick(Sender: TObject);
     procedure cmdClearClick(Sender: TObject);
+    procedure cmdSetBreakClick(Sender: TObject);
+    procedure cmdResetBreakClick(Sender: TObject); 
+    procedure chkBreakEnableClick(Sender: TObject);
   private
     FDebugger: TDebugger;
     FOutputForm: TDBGOutputForm;
@@ -79,7 +87,7 @@ implementation
 
 uses
   SysUtils,
-  GDBDebugger;
+  GDBDebugger, DBGBreakPoint;
 
 procedure TDebugTestForm.Loaded;
 begin
@@ -116,16 +124,18 @@ begin
     FDebugger.OnDbgOutput := @DBGOutput;
     FDebugger.OnOutput := @DBGTargetOutput;
     FDebugger.OnCurrent := @DBGCurrent;
-    FDebugger.OnState := @DBGState;
+    FDebugger.OnState := @DBGState;   
+    TDBGBreakPointGroup(FDebugger.BreakPointGroups.Add).Name := 'Default';
                                                
     // Something strange going on here, 
     // sometimes the form crashes during load with Application as owner
     // sometimes the form crashes during load with nil as owner
-    FOutputForm := TDBGOutputForm.Create(Application);
+    FOutputForm := TDBGOutputForm.Create(nil);
     FOutputForm.OnDestroy := @OutputFormDestroy;
     FOutputForm.Show;
   end;
   FDebugger.Init;
+  FDebugger.FileName := txtFileName.Text;
 end;
 
 procedure TDebugTestForm.cmdDoneClick(Sender: TObject);
@@ -189,6 +199,23 @@ begin
   txtLog.Lines.Clear;
 end;
 
+procedure TDebugTestForm.cmdSetBreakClick(Sender: TObject);
+begin
+  FDebugger.Breakpoints.Add(txtBreakFile.Text, StrToIntDef(txtBreakLine.Text, 1));
+end;
+
+procedure TDebugTestForm.cmdResetBreakClick(Sender: TObject);
+begin
+  if FDebugger.Breakpoints.Count > 0
+  then FDebugger.Breakpoints[0].Free;
+end;
+
+procedure TDebugTestForm.chkBreakEnableClick(Sender: TObject);
+begin
+  if FDebugger.Breakpoints.Count > 0
+  then FDebugger.Breakpoints[0].Enabled := chkBreakEnable.Checked;
+end;
+
 procedure TDebugTestForm.OutputFormDestroy(Sender: TObject);
 begin
   FOutputForm := nil;
@@ -233,6 +260,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2002/02/05 23:16:48  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.2  2001/11/06 23:59:13  lazarus
   MWE: + Initial breakpoint support
        + Added exeption handling on process.free

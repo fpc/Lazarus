@@ -1,11 +1,11 @@
-object DebugTestForm: TDebugTestForm
+object DebugTestForm1: TDebugTestForm
   CAPTION = 'DebugTestForm'
+  LEFT = 25
+  HEIGHT = 320
+  TOP = 25
+  WIDTH = 620
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LEFT = 239
-  HEIGHT = 300
-  TOP = 161
-  WIDTH = 620
   object cmdInit: TBUTTON
     CAPTION = 'Init'
     LEFT = 10
@@ -89,7 +89,7 @@ object DebugTestForm: TDebugTestForm
   end
   object txtLog: TMemo
     Left = 8
-    Top = 132
+    Top = 165
     Width = 600
     Height = 150
   end
@@ -116,17 +116,55 @@ object DebugTestForm: TDebugTestForm
     Height = 24
     Text = ''
   end
+  object cmdSetBreak: TButton
+    Left = 252
+    Top = 132
+    Width = 50
+    Height = 25
+    Caption = 'Set B'
+    OnClick = cmdSetBreakClick
+  end
+  object cmdResetBreak: TButton
+    Left = 313
+    Top = 132
+    Width = 50
+    Height = 25
+    Caption = 'Del B'
+    OnClick = cmdResetBreakClick
+  end
+  object chkBreakEnable: TCheckBox
+    Left = 374
+    Top = 132
+    Width = 100
+    Height = 25
+    Caption = 'Enable break'
+    OnClick = chkBreakEnableClick
+  end
+  object txtBreakFile: TEdit
+    Left = 8
+    Top = 132
+    Width = 150
+    Height = 24
+    Text = 'testcntr.pp'
+  end
+  object txtBreakLine: TEdit
+    Left = 165
+    Top = 132
+    Width = 80
+    Height = 24
+    Text = '1'
+  end
   object lblFileName: TLabel
     Left = 8
     Top = 8
     WIDTH = 70
-    Caption = 'Filename:'
+    Caption = 'FileName'
   end
   object txtFileName: TEdit
     Left = 70
     Top = 8
     Width = 293
     Height = 24
-    Text = ''
+    Text = 'examples/testcntr'
   end
 end

@@ -37,9 +37,40 @@ type
     SrcLine: Integer;
   end;
 
-  TDBGCommand = (dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak);
+  TDBGCommand = (dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch);
   TDBGCommands = set of TDBGCommand;
   TDBGState = (dsNone, dsIdle, dsStop, dsPause, dsRun, dsError);
+  
+(*
+  Debugger states
+  --------------------------------------------------------------------------
+  dsNone: 
+    The debug object is created, but no instance of an external debugger 
+    exists.
+    Initial state, leave with Init, enter with Done
+  
+  dsIdle:
+    The external debugger is started, but no filename (or no other params 
+    requred to start) were given.
+    
+  dsStop:
+    (Optional) The execution of the target is stopped
+    The external debugger is loaded and ready to (re)start the execution 
+    of the target.
+    Breakpoints, wathes etc can be defined
+    
+  dsPause:
+    De debugger has paused the target. Targer variables canbe examined
+    
+  dsRun:
+    The target is running.
+    
+  dsError:
+    Something unforseen has happened. A shutdown of the debugger is in
+    most cases needed.
+  --------------------------------------------------------------------------
+  
+*)  
 
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject; const ALocation: TDBGLocationRec) of object;
@@ -47,6 +78,7 @@ type
   TDebugger = class(TObject)
   private
     FArguments: String;
+    FBreakPoints: TDBGBreakPoints;
     FBreakPointGroups: TDBGBreakPointGroups;
     FFileName: String;                              
     FState: TDBGState;
@@ -57,17 +89,20 @@ type
     FOnState: TNotifyEvent;
     function  GetState: TDBGState;              
     function  ReqCmd(const ACommand: TDBGCommand; const AParams: array of const): Boolean; 
-  protected
+  protected  
+    function  CreateBreakPoints: TDBGBreakPoints; virtual;
+    function  CreateWatches: TDBGWatches; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
     procedure DoOutput(const AText: String);
     procedure DoState;
-    function  GetFlags: TDBGCommands; virtual;
+    function  GetCommands: TDBGCommands; 
+    function  GetSupportedCommands: TDBGCommands; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; virtual; abstract; // True if succesful
-    procedure SetFileName(const Value: String); virtual;
-    procedure SetState(const Value: TDBGState); 
+    procedure SetFileName(const AValue: String); virtual;
+    procedure SetState(const AValue: TDBGState); 
   public
-    constructor Create;
+    constructor Create; virtual;
     destructor Destroy; override;
     
     procedure Init; virtual;                         // Initializes the debugger
@@ -79,27 +114,18 @@ type
     procedure StepInto;          
     procedure RunTo(const ASource: String; const ALine: Integer); virtual;     // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer); virtual;    // No execute, only set exec point
+    property SupportedCommands: TDBGCommands read GetSupportedCommands;        // All available commands of the debugger
     property Arguments: String read FArguments write FArguments;               // Arguments feed to the program
-    property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;    // list of all breakpoints
+    property BreakPoints: TDBGBreakPoints read FBreakPoints;                   // list of all breakpoints
+    property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;    // list of all breakpointgroups
+    property Commands: TDBGCommands read GetCommands;                          // All current available commands of the debugger
     property FileName: String read FFileName write SetFileName;                // The name of the exe to be debugged
-    property Flags: TDBGCommands read GetFlags;                                // All available commands of the debugger
     property State: TDBGState read FState;                                     // The current stete of the debugger    
     property Watches: TDBGWatches read FWatches;                               // list of all watches localvars etc
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent; // Passes info about the current line being debugged
     property OnState: TNotifyEvent read FOnState write FOnState;               // Fires when the current state of the debugger changes
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;         // Passes all output of the debugged target
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;// Passes all debuggeroutput        
-  end;
-
-  TInternalDebugger = class(TDebugger)
-  private  
-  protected
-  public
-    procedure BreakActionChange(const ABreakPoint: TDBGBreakpoint); virtual;
-    procedure BreakAdd(const ABreakPoint: TDBGBreakpoint); virtual;
-    procedure BreakEnableChange(const ABreakPoint: TDBGBreakpoint); virtual;
-    procedure BreakExpressionChange(const ABreakPoint: TDBGBreakpoint); virtual;
-    procedure BreakRemove(const ABreakPoint: TDBGBreakpoint); virtual;
   end;
 
 implementation
@@ -109,11 +135,11 @@ uses
   
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
-  {dsNone } [dcBreak], 
-  {dsIdle } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak],
-  {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak],
-  {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak],
-  {dsRun  } [dcPause, dcStop, dcBreak],
+  {dsNone } [], 
+  {dsIdle } [],
+  {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch],
+  {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch],
+  {dsRun  } [dcPause, dcStop, dcBreak, dcWatch],
   {dsError} []
   );
 
@@ -129,8 +155,19 @@ begin
   FState := dsNone;
   FArguments := '';
   FFilename := '';
-  FBreakPointGroups := TDBGBreakPointGroups.Create(Self);
-  FWatches := TDBGWatches.Create;
+  FBreakPoints := CreateBreakPoints;
+  FWatches := CreateWatches;
+  FBreakPointGroups := TDBGBreakPointGroups.Create;
+end;
+
+function TDebugger.CreateBreakPoints: TDBGBreakPoints; 
+begin                                                            
+  Result := TDBGBreakPoints.Create(Self, TDBGBreakPoint);
+end;
+
+function TDebugger.CreateWatches: TDBGWatches; 
+begin         
+  Result := TDBGWatches.Create(Self, TDBGWatch);
 end;
 
 destructor TDebugger.Destroy;
@@ -174,12 +211,17 @@ begin
   if Assigned(FOnState) then FOnState(Self);
 end;
 
+function TDebugger.GetCommands: TDBGCommands; 
+begin
+  Result := COMMANDMAP[State] * GetSupportedCommands;
+end;
+
 function TDebugger.GetState: TDBGState;
 begin
   Result := FState;
 end;
 
-function TDebugger.GetFlags: TDBGCommands;
+function TDebugger.GetSupportedCommands: TDBGCommands; 
 begin
   Result := [];
 end;
@@ -202,7 +244,7 @@ end;
 function TDebugger.ReqCmd(const ACommand: TDBGCommand; const AParams: array of const): Boolean; 
 begin
   if FState = dsNone then Init;
-  if ACommand in (COMMANDMAP[FState] * Flags) 
+  if ACommand in Commands 
   then Result := RequestCommand(ACommand, AParams)
   else Result := False;
 end;
@@ -217,16 +259,24 @@ begin
   ReqCmd(dcRunTo, [ASource, ALine]);
 end;
 
-procedure TDebugger.SetFileName(const Value: String);
+procedure TDebugger.SetFileName(const AValue: String);
 begin
-  FFileName := Value;
+  if FFileName <> AValue
+  then begin 
+    if FState in [dsRun, dsPause]
+    then Stop;
+    FFileName := AValue;
+    if FFilename = ''
+    then SetState(dsIdle)
+    else SetState(dsStop); 
+  end;
 end;
 
-procedure TDebugger.SetState(const Value: TDBGState); 
+procedure TDebugger.SetState(const AValue: TDBGState); 
 begin
-  if Value <> FState 
+  if AValue <> FState 
   then begin
-    FState := Value;
+    FState := AValue;
     DoState;
   end;
 end;
@@ -246,32 +296,13 @@ begin
   ReqCmd(dcStop, []);
 end;
 
-{ TInternalDebugger }
-
-procedure TInternalDebugger.BreakActionChange(const ABreakPoint: TDBGBreakpoint); 
-begin
-end;
-
-procedure TInternalDebugger.BreakAdd(const ABreakPoint: TDBGBreakpoint); 
-begin
-end;
-
-procedure TInternalDebugger.BreakEnableChange(const ABreakPoint: TDBGBreakpoint); 
-begin
-end;
-
-procedure TInternalDebugger.BreakExpressionChange(const ABreakPoint: TDBGBreakpoint); 
-begin
-end;
-
-procedure TInternalDebugger.BreakRemove(const ABreakPoint: TDBGBreakpoint); 
-begin
-end;
-
-
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/02/05 23:16:48  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.5  2001/11/12 19:28:23  lazarus
   MG: fixed create, virtual constructors makes no sense
 

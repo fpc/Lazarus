@@ -32,7 +32,7 @@ uses
   Classes, Process, Debugger{, strmlsnr};
 
 type
-  TCmdLineDebugger = class(TInternalDebugger)
+  TCmdLineDebugger = class(TDebugger)
   private
     FTargetProcess: TProcess;         // The target process to be debugged
     FDbgProcess: TProcess;            // The process used to call the debugger
@@ -58,6 +58,10 @@ type
   end;
 
 procedure SendBreak(const AHandle: Integer);
+
+function GetLine(var ABuffer: String): String;
+function StripLN(const ALine: String): String;
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
 
 implementation
 
@@ -164,12 +168,47 @@ var
 begin
   idx := Pos(#10, ALine);
   if idx = 0
-  then Result := ''
+  then begin
+    idx := Pos(#13, ALine);
+    if idx = 0
+    then begin
+      Result := ALine;
+      Exit;
+    end;
+  end
   else begin
     if (idx > 1)
     and (ALine[idx - 1] = #13)
     then Dec(idx);
-    Result := Copy(ALine, 1, idx - 1);
+  end;
+  Result := Copy(ALine, 1, idx - 1);
+end;           
+
+function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
+var
+  idx: Integer;
+begin                  
+  if ASkipTo <> ''
+  then begin
+    idx := Pos(ASkipTo, ASource);
+    if idx = 0 
+    then begin
+      Result := '';
+      Exit;
+    end;
+    Delete(ASource, 1, idx + Length(ASkipTo) - 1);
+  end;
+  if AnEnd = ''
+  then idx := 0
+  else idx := Pos(AnEnd, ASource);
+  if idx = 0 
+  then begin
+    Result := ASource;
+    ASource := '';
+  end
+  else begin
+    Result := Copy(ASource, 1, idx - 1);
+    Delete(ASource, 1, idx - 1);
   end;
 end;
 
@@ -246,9 +285,9 @@ var
   Line: String;
   OutHandle: Integer;
   WaitSet: Integer;
-  Count: Integer;
+  Idx, Count: Integer;
 begin                
-  WriteLN('[GetOutput] Enter');
+  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
   if (FTargetProcess = nil)
   then OutHandle := 0
@@ -261,7 +300,7 @@ begin
     WaitSet := WaitForHandles([FDbgProcess.Output.Handle, OutHandle]);
     if WaitSet = 0
     then begin
-      WriteLN('[Getoutput] Error waiting ');
+      WriteLN('[TCmdLineDebugger.Getoutput] Error waiting ');
       SetState(dsError);
       Break;
     end;
@@ -273,7 +312,18 @@ begin
       then while True do
       begin
         Line := GetLine(OutputBuf);
-        if Line = '' then Break;
+        if Line = '' 
+        then begin
+          Idx := Pos(WaitPrompt, OutputBuf) - 1;
+          if  (Idx > 0) 
+          and (Idx = Length(OutputBuf) - Length(WaitPrompt))
+          then begin 
+            // Waitpropmt at end of line, no newline found
+            Line := Copy(OutputBuf, 1, idx);
+            Delete(OutputBuf, 1, idx);
+          end
+          else Break;
+        end;
         Line := StripLN(Line);
         if Line <> '' then FOutputLines.Add(Line);
         DoDbgOutput(Line);
@@ -293,7 +343,7 @@ begin
     end;
   until OutputBuf = WaitPrompt; 
   
-  WriteLN('[GetOutput] Leave');
+  WriteLN('[TCmdLineDebugger.GetOutput] Leave');
 end;
 
 procedure TCmdLineDebugger.KillTargetProcess;
@@ -315,7 +365,9 @@ begin
   if FDbgProcess <> nil 
   then begin
     WriteLN(Format('[TCmdLineDebugger.SendCmd] CMD: <%s>', [ACommand]));
-    FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
+    DoDbgOutput('<' + ACommand + '>');
+    if ACommand <> ''
+    then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
     FDbgProcess.Input.Write(LF, 1);
     if AGetOutput
     then GetOutput;
@@ -335,6 +387,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2002/02/05 23:16:48  lazarus
+  MWE: * Updated tebugger
+       + Added debugger to IDE
+
   Revision 1.3  2001/11/07 00:17:33  lazarus
   MWE: Added IFDEFs so non linux targetswill compile
 
