@@ -55,7 +55,7 @@ uses
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory,
-  SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAttribTool,
+  SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
   BaseDebugManager, Debugger, MainIntf;
 
@@ -229,7 +229,7 @@ type
     procedure ConditionalSelection;
     procedure SortSelection;
     procedure BreakLinesInSelection;
-    procedure InvertAttribution;
+    procedure InvertAssignment;
     procedure SelectToBrace;
     procedure SelectCodeBlock;
     procedure SelectLine;
@@ -333,8 +333,7 @@ type
     EditorPropertiesMenuItem: TMenuItem;
     EncloseSelectionMenuItem: TMenuItem;
     ExtractProcMenuItem: TMenuItem;
-    InvertAttributionMenuItem: TMenuItem; //SMACE
-    
+    InvertAssignmentMenuItem: TMenuItem;
     FindDeclarationMenuItem: TMenuItem;
     GotoBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
@@ -357,7 +356,7 @@ type
     Procedure DeleteBreakpointClicked(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
-    procedure InvertAttributionMenuItemClick(Sender: TObject);
+    procedure InvertAssignmentMenuItemClick(Sender: TObject);
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
@@ -1085,8 +1084,8 @@ Begin
   ecSelectionBreakLines:
     BreakLinesInSelection;
 
-  ecInvertAttribution:
-    InvertAttribution;
+  ecInvertAssignment:
+    InvertAssignment;
 
   ecSelectToBrace:
     SelectToBrace;
@@ -1350,7 +1349,7 @@ begin
   FEditor.EndUpdate;
 end;
 
-procedure TSourceEditor.InvertAttribution;
+procedure TSourceEditor.InvertAssignment;
 var
   codelines: TStringList;
 begin
@@ -1362,7 +1361,7 @@ begin
   codelines := TStringList.Create;
   try
     codelines.Text := FEditor.SelText;
-    FEditor.SelText := InvertAttribTool.InvertAttribution( codelines ).Text;
+    FEditor.SelText := InvertAssignTool.InvertAssignment( codelines ).Text;
   finally
     codelines.Free;
   end;
@@ -2892,7 +2891,7 @@ begin
     SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
     EncloseSelectionMenuItem.Enabled := SelAvailAndWritable;
     ExtractProcMenuItem.Enabled := SelAvailAndWritable;
-    InvertAttributionMenuItem.Enabled := SelAvailAndWritable;
+    InvertAssignmentMenuItem.Enabled := SelAvailAndWritable;
     FindIdentifierReferencesMenuItem.Enabled:=
                                    IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
     RenameIdentifierMenuItem.Enabled:=
@@ -3146,16 +3145,13 @@ Begin
       end;
       RefactorMenuItem.Add(ExtractProcMenuItem);
 
-      //SMACE
-      InvertAttributionMenuItem := TMenuItem.Create(Self);
-      with InvertAttributionMenuItem do begin
-        Name := 'InvertAttribution';
-        Caption := uemInvertAttribution;
-        OnClick :=@InvertAttributionMenuItemClick;
+      InvertAssignmentMenuItem := TMenuItem.Create(Self);
+      with InvertAssignmentMenuItem do begin
+        Name := 'InvertAssignment';
+        Caption := uemInvertAssignment;
+        OnClick :=@InvertAssignmentMenuItemClick;
       end;
-      RefactorMenuItem.Add(InvertAttributionMenuItem);
-
-
+      RefactorMenuItem.Add(InvertAssignmentMenuItem);
 
       FindIdentifierReferencesMenuItem := TMenuItem.Create(Self);
       with FindIdentifierReferencesMenuItem do begin
@@ -4008,13 +4004,13 @@ begin
   MainIDEInterface.DoCommand(ecExtractProc);
 end;
 
-procedure TSourceNotebook.InvertAttributionMenuItemClick(Sender: TObject);
+procedure TSourceNotebook.InvertAssignmentMenuItemClick(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
 begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
-  ASrcEdit.InvertAttribution;
+  ASrcEdit.InvertAssignment;
 end;
 
 procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject

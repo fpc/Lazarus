@@ -20,12 +20,20 @@
 
   Author: Sérgio Marcelo S. Gomes <smace at smace.com.br>
 
-  Abstract: Invert Attribution Code. like: AValue := BValue to BValue := AValue;
+  Abstract: Invert Assignment Code.
+
+  Example: AValue := BValue  ->  BValue := AValue;
   
-  To-Do: Redo everything. It was baldy coded.
+  To-Do:
+    - Redo everything. It was baldy coded.
+      I am one of those stupid Drag and Drop programmers ;-)
+    - Add blank spaces at left here and Keep identation..
+    - Add multi-lines support.
+      // like: xx :=
+      //         ola;
 
 }
-unit InvertAttribTool;
+unit InvertAssignTool;
 
 {$mode objfpc}{$H+}
 
@@ -34,17 +42,14 @@ interface
 uses
   Classes, SysUtils;
 
-function InvertAttribution(ALines:TStrings):TStrings;
+function InvertAssignment(ALines:TStrings):TStrings;
 
 implementation
 
-//////////////////////////////////////////////////////////////////////
-// This functiosn inverts all atribution operation.
+// This functiosn inverts all Assignment operation.
 // like valuea := valueb; to valueb := valuea;
-function InvertAttribution(ALines:TStrings):TStrings;
-var iLeft, iSize : integer; //Identation Only
-
-// TO-DO: Ignorar todo o texto depois do //. ie. // like valuea := valueb; to valueb := valuea;
+function InvertAssignment(ALines:TStrings):TStrings;
+var iLeft, iSize : integer; //for identation purpose only
 
     function clearline(s:String):String;
     //Removing all ";" of the line.
@@ -58,10 +63,9 @@ var iLeft, iSize : integer; //Identation Only
       until Result[length(Result)] <> ';';
     end;
 
-  function InvertAttribLine(s:String):String;
-  //Inverting one Single Line
+  function InvertAssignLine(s:String):String;
+  //it Inverts one Single Line
 
-    // I dont remember any default function for it.
     function AddSpaces(iChar:Integer):String;
     var i : integer;
     begin
@@ -105,7 +109,7 @@ var iLeft, iSize : integer; //Identation Only
 
       Result := AddSpaces(iLeft) + s_Right + AddSpaces(iSize-length(s_Right))+' := '+s_Left+';'+s_Comment;
 
-   end else Result := s+s_Comment; //Does not exist attribution
+   end else Result := s+s_Comment; //Does not exist assignment
 
   end; //function end
 
@@ -114,16 +118,8 @@ var
   i, iPos : integer;
 
 begin
-  ////////////////////////
-  // TO-DO: Add blank spaces at left here and Keep identation..
-  // TO-DO: Add multi-lines support.
-  // like: xx :=
-  //             ola;
-  /////////////////////////////////////
-  Result := TStringList.Create;
 
-  // ARGH... Badly coded... but seems to *almost* work.
-  // I am one of those stupid Drag and Drop programmers ;-)
+  Result := TStringList.Create;
 
   // Let's find the Bigest at Right Word for Identation
   iSize := 0;
@@ -140,7 +136,7 @@ begin
   // We must get a valid line to invert and call InvertLine function.
   for i := 0 to ALines.Count-1 do
   begin
-    Result.Add( InvertAttribLine( trim(ALines[i]) ) );
+    Result.Add( InvertAssignLine( trim(ALines[i]) ) );
   end;
 
 end;

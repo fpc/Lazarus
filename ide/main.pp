@@ -11375,6 +11375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.831  2005/01/14 14:29:51  mattias
+  renamed invert attribution to invert assignment tool  from Sergio
+
   Revision 1.830  2005/01/12 23:28:16  mattias
   implemented skipping debugger settings for publishing projects
 
@@ -11394,7 +11397,7 @@ end.
   implemented loading command line filenames at start
 
   Revision 1.824  2005/01/09 15:26:05  mattias
-  added Invert attribution tool  from sergio
+  added Invert assignment tool  from sergio
 
   Revision 1.823  2005/01/07 21:09:18  mattias
   improved placing new forms  by Jan
