@@ -31,8 +31,8 @@ unit compileroptions;
 interface
 
 uses
-  forms, classes, SysUtils, comctrls, buttons, stdctrls, extctrls, lazconf, xmlcfg,
-  filectrl;
+  forms, classes, SysUtils, comctrls, buttons, stdctrls, extctrls, lazconf,
+  xmlcfg, filectrl;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -111,7 +111,7 @@ type
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     function MakeOptionsString: String;
-    function ParseSearchPaths(switch, paths: String): String;
+    function ParseSearchPaths(const switch, paths: String): String;
     function GetXMLConfigPath: String;
     procedure Clear;
 
@@ -325,7 +325,7 @@ var
 implementation
 
 const
-  CONFIG_FILENAME = 'compileroptions.xml';
+  Config_Filename = 'compileroptions.xml';
 
 {------------------------------------------------------------------------------}
 {  TCompilerOptions Constructor                                                }
@@ -397,7 +397,6 @@ begin
   OverflowChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', false);
   StackChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', false);
   HeapSize := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/HeapSize/Value', 8000000);
-
   Generate := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Generate/Value', 1);
   TargetProcessor := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', 1);
   VariablesInRegisters := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', false);
@@ -442,7 +441,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SaveCompilerOptions                                      }
+{  TfrmCompilerOptions SaveCompilerOptions                                     }
 {------------------------------------------------------------------------------}
 procedure TCompilerOptions.SaveCompilerOptions(UseExistingFile: Boolean);
 var
@@ -463,7 +462,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SaveTheCompilerOptions                                     }
+{  TfrmCompilerOptions SaveTheCompilerOptions                                  }
 {------------------------------------------------------------------------------}
 procedure TCompilerOptions.SaveTheCompilerOptions;
 begin
@@ -481,6 +480,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', DelphiCompat);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', GPCCompat);
+  
   { CodeGeneration }
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', UnitStyle);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', IOChecks);
@@ -854,7 +854,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TCompilerOptions ParseSearchPaths                                           }
 {------------------------------------------------------------------------------}
-function TCompilerOptions.ParseSearchPaths(switch, paths: String): String;
+function TCompilerOptions.ParseSearchPaths(const switch, paths: String): String;
 var
   tempsw, SS, Delim: String;
   M: Integer;
@@ -902,40 +902,15 @@ end;
  ------------------------------------------------------------------------------}
 function TCompilerOptions.GetXMLConfigPath: String;
 var
-  confPath: String;
   fn: String;
 begin
-  Result := '';
-
   // Setup the filename to write to
   if (ProjectFile <> '') then
     fn := ProjectFile
   else
-    fn := CONFIG_FILENAME;
-
-  confPath := GetPrimaryConfigPath + '/' + fn;
-
-  // See if config path exists and if not create it
-  if (not DirectoryExists(GetPrimaryConfigPath)) then
-  begin
-     try
-        // Create the directory
-        CreatePrimaryConfigPath;
-
-        { TODO:
-            Try to read the configuration from the secondary path
-            If successful, then read it in and write it to the primary path
-            If unsuccessful, then just use defaults
-        }
-     except
-       Assert(False, 'Trace:There was a problem creating the config directory. Using defaults.');
-       Assert(False, 'Trace:File = ' + confPath);
-       confPath := './' + fn;
-       Result := confPath;
-     end;
-  end;
-
-  Result := confPath;
+    fn := Config_Filename;
+  Result := GetPrimaryConfigPath + '/' + fn;
+  CopySecondaryConfigFile(fn);
 end;
 
 

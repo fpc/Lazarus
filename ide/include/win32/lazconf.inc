@@ -1,28 +1,24 @@
 {***************************************************************************
                                lazconf.inc
  ***************************************************************************}
+var
+  PrimaryConfigPath,
+  SecondaryConfigPath: string;
+
 {---------------------------------------------------------------------------
   getPrimaryConfigPath function
  ---------------------------------------------------------------------------}
-function getPrimaryConfigPath: String;
+function GetPrimaryConfigPath: String;
 begin
-  { Return the primary config directory  }
-  Result := ExtractFilePath(Paramstr(0));
+  Result := PrimaryConfigPath;
 end;
 
 {---------------------------------------------------------------------------
   getSecondaryConfigPath function
  ---------------------------------------------------------------------------}
-function getSecondaryConfigPath: String;
+function GetSecondaryConfigPath: String;
 begin
-  { Return the secondary config directory. This one is checked
-    if the primary does not exist }
-
-  { This function might need some work because on WinNT the
-    the path is called something different on almost every
-    version of Windows. Probably can use the Windows API to
-    get the system path. }
-  Result := '\windows\system';
+  Result := SecondaryConfigPath;
 end;
 
 {---------------------------------------------------------------------------
@@ -30,13 +26,68 @@ end;
  ---------------------------------------------------------------------------}
 procedure createPrimaryConfigPath;
 begin
-  { This function does not need to do anything on Windows
-    because the primary config path already exists. It is
-    the path that Lazarus is installed to. }
+  CreateDir(GetPrimaryConfigPath);
 end;
+
+{---------------------------------------------------------------------------
+  SetPrimaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure SetPrimaryConfigPath(const NewValue: String);
+begin
+  PrimaryConfigPath:=NewValue;
+end;
+
+{---------------------------------------------------------------------------
+  SetSecondaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure SetSecondaryConfigPath(const NewValue: String);
+begin
+  SecondaryConfigPath:=NewValue;
+end;
+
+{---------------------------------------------------------------------------
+  CopySecondaryConfigFile procedure
+ ---------------------------------------------------------------------------}
+procedure CopySecondaryConfigFile(const AFilename: String);
+var
+  PrimaryFilename, SecondaryFilename: string;
+  SrcFS, DestFS: TFileStream;
+begin
+  PrimaryFilename:=GetPrimaryConfigPath+OSDirSeparator+AFilename;
+  SecondaryFilename:=GetSecondaryConfigPath+OSDirSeparator+AFilename;
+  if not FileExists(PrimaryFilename) then begin
+    try
+      SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
+      try
+        DestFS:=TFileStream.Create(PrimaryFilename,fmCreate);
+        try
+          DestFS.CopyFrom(SrcFS,SrcFS.Size);
+        finally
+          DestFS.Free;
+        end;
+      finally
+        SrcFS.Free;
+      end;
+    except
+    end;
+  end;
+end;
+
+
+initialization
+  PrimaryConfigPath:=ExtractFilePath(Paramstr(0));
+  { This might need some work because on WinNT the
+    the path is called something different on almost every
+    version of Windows. Probably can use the Windows API to
+    get the system path. }
+  SecondaryConfigPath:='\windows\system';
+
 
 {
   $Log$
+  Revision 1.2  2001/05/27 11:52:01  lazarus
+  MG: added --primary-config-path=<filename> cmd line option
+
   Revision 1.1  2000/07/13 10:28:22  michael
   + Initial import
 

@@ -1,18 +1,21 @@
+{***************************************************************************
+                               lazconf.inc
+ ***************************************************************************}
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
   linux;
-
-{***************************************************************************
-                               lazconf.inc
- ***************************************************************************}
+  
+var
+  PrimaryConfigPath,
+  SecondaryConfigPath: string;
+  
 {---------------------------------------------------------------------------
   getPrimaryConfigPath function
  ---------------------------------------------------------------------------}
 function GetPrimaryConfigPath: String;
 begin
-  { Return the primary config directory  }
-  Result := FExpand('~/.lazarus');
+  Result := PrimaryConfigPath;
 end;
 
 {---------------------------------------------------------------------------
@@ -20,9 +23,7 @@ end;
  ---------------------------------------------------------------------------}
 function GetSecondaryConfigPath: String;
 begin
-  { Return the secondary config directory. This one is checked
-    if the primary does not exist }
-  Result := '/etc';
+  Result := SecondaryConfigPath;
 end;
 
 {---------------------------------------------------------------------------
@@ -30,13 +31,65 @@ end;
  ---------------------------------------------------------------------------}
 procedure CreatePrimaryConfigPath;
 begin
-  { Create the primary directory }
   CreateDir(GetPrimaryConfigPath);
   //MkDir(GetPrimaryConfigPath);
 end;
 
+{---------------------------------------------------------------------------
+  SetPrimaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure SetPrimaryConfigPath(const NewValue: String);
+begin
+  PrimaryConfigPath:=FExpand(NewValue);
+end;
+
+{---------------------------------------------------------------------------
+  SetSecondaryConfigPath procedure
+ ---------------------------------------------------------------------------}
+procedure SetSecondaryConfigPath(const NewValue: String);
+begin
+  SecondaryConfigPath:=FExpand(NewValue);
+end;
+
+{---------------------------------------------------------------------------
+  CopySecondaryConfigFile procedure
+ ---------------------------------------------------------------------------}
+procedure CopySecondaryConfigFile(const AFilename: String);
+var
+  PrimaryFilename, SecondaryFilename: string;
+  SrcFS, DestFS: TFileStream;
+begin
+  PrimaryFilename:=GetPrimaryConfigPath+OSDirSeparator+AFilename;
+  SecondaryFilename:=GetSecondaryConfigPath+OSDirSeparator+AFilename;
+  if not FileExists(PrimaryFilename) then begin
+    try
+      SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
+      try
+        DestFS:=TFileStream.Create(PrimaryFilename,fmCreate);
+        try
+          DestFS.CopyFrom(SrcFS,SrcFS.Size);
+        finally
+          DestFS.Free;
+        end;
+      finally
+        SrcFS.Free;
+      end;
+    except
+    end;
+  end;
+end;
+
+
+initialization
+  PrimaryConfigPath:=FExpand('~/.lazarus');
+  SecondaryConfigPath:='/etc/lazarus';
+
+
 {
   $Log$
+  Revision 1.2  2001/05/27 11:52:01  lazarus
+  MG: added --primary-config-path=<filename> cmd line option
+
   Revision 1.1  2001/01/14 20:50:23  marco
    * Initial version. Same as Linux, and probably will be that way.
 

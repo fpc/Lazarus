@@ -86,7 +86,7 @@ type
     FBackupInfoProjectFiles: TBackupInfo;
     FBackupInfoOtherFiles: TBackupInfo;
 
-    procedure SetFileName(NewFilename: string);
+    procedure SetFileName(const NewFilename: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -175,7 +175,7 @@ type
     procedure SetupDesktopPage;
     procedure SetupBackupPage;
     procedure SetupFilesPage;
-    procedure SetComboBoxText(AComboBox:TComboBox; AText:AnsiString);
+    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
 
   published
     NoteBook: TNoteBook;
@@ -349,23 +349,17 @@ end;
 
 procedure TEnvironmentOptions.SetLazarusDefaultFilename;
 var
-  ConfFileName,SecConfFileName:string;
+  ConfFileName: string;
 begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EnvOptsConfFileName);
+  CopySecondaryConfigFile(EnvOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    SecConfFileName:=SetDirSeparators(
-      GetSecondaryConfigPath+'/'+EnvOptsConfFileName);
-    if (not FileExists(SecConfFileName)) then begin
-      // XXX
-      writeln('environment config file not found');
-    end else begin
-      ConfFileName:=SecConfFileName;
-    end;
+    writeln('environment config file not found');
   end;
   FFilename:=ConfFilename;
 end;
 
-procedure TEnvironmentOptions.SetFileName(NewFilename: string);
+procedure TEnvironmentOptions.SetFileName(const NewFilename: string);
 begin
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
@@ -1692,7 +1686,7 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.SetComboBoxText(
-  AComboBox:TComboBox;AText:AnsiString);
+  AComboBox:TComboBox; const AText:AnsiString);
 var a:integer;
 begin
   a:=AComboBox.Items.IndexOf(AText);

@@ -393,16 +393,17 @@ const
      'XML'
    );
 
-
 var
   EditorOptionsForm: TEditorOptionsForm;
   EditorOpts: TEditorOptions;
 
 function ShowEditorOptionsDialog:TModalResult;
-function StrToLazSyntaxHighlighter(s: string): TLazSyntaxHighlighter;
+function StrToLazSyntaxHighlighter(const s: string): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
+
 implementation
+
 
 uses math;
 
@@ -419,15 +420,15 @@ begin
   end;
 end;
 
-function StrToLazSyntaxHighlighter(s: string): TLazSyntaxHighlighter;
+function StrToLazSyntaxHighlighter(const s: string): TLazSyntaxHighlighter;
 begin
   for Result:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     if (lowercase(s)=lowercase(LazSyntaxHighlighterNames[Result])) then exit;
   Result:=lshFreePascal;
 end;
 
-function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
-var s,CurExt:string;
+function ExtensionToLazSyntaxHighlighter(Ext: string): TLazSyntaxHighlighter;
+var s,CurExt: string;
   StartPos,EndPos:integer;
 begin
   if (Ext='') then begin
@@ -528,34 +529,14 @@ end;
 { TEditorOptions }
 
 constructor TEditorOptions.Create;
-
-  function CreateConfigPath(Path: string): boolean;
-  begin
-    // ToDo: use ForceDirectory
-    if not DirectoryExists(Path) then
-      Result:=CreateDir(Path)
-    else
-      Result:=true;
-  end;
-
-var ConfFileName,SecConfFileName:string;
+var ConfFileName: string;
 begin
   inherited Create;
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EditOptsConfFileName);
+  CopySecondaryConfigFile(EditOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    SecConfFileName:=SetDirSeparators(
-      GetSecondaryConfigPath+'/'+EditOptsConfFileName);
-    if (not FileExists(SecConfFileName)) then begin
-      // XXX
-      writeln('editor options config file not found');
-    end else begin
-      ConfFileName:=SecConfFileName;
-    end;
+    writeln('editor options config file not found');
   end;
-
-  if not CreateConfigPath(ExtractFilePath(ConfFilename)) then
-    writeln('WARNING: config path "'+ExtractFilePath(ConfFilename)
-             +'" does not exist');
   XMLConfig:=TXMLConfig.Create(ConfFileName);
 
   // set defaults
@@ -585,6 +566,7 @@ begin
 
   // Code Tools options
   fCodeTemplateFileName:=SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci');
+  CopySecondaryConfigFile('lazarus.dci');
 end;
 
 destructor TEditorOptions.Destroy;
@@ -3167,11 +3149,6 @@ begin
   ModalResult:=mrCancel;
 end;
 
-initialization
-  EditorOpts:=TEditorOptions.Create;
-
-finalization
-  EditorOpts.Free;  EditorOpts:=nil;
 
 end.
 

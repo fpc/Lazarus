@@ -28,11 +28,11 @@ interface
 
 uses
   Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
-  Project, Sysutils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, CompReg,
-  CodeTools, MsgView, NewProjectDlg, Process, IDEComp, AbstractFormEditor,
-  FormEditor, CustomFormEditor, ObjectInspector, ControlSelection, PropEdits,
+  Project, Sysutils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, LazConf,
+  CompReg, CodeTools, MsgView, NewProjectDlg, IDEComp, AbstractFormEditor,
+  FormEditor, CustomFormEditor, ObjectInspector, PropEdits, ControlSelection,
   UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
-  KeyMapping, ProjectOpts, IDEProcs;
+  KeyMapping, ProjectOpts, IDEProcs, Process;
 
 const
   Version_String = '0.7 alpha';
@@ -234,19 +234,19 @@ type
     function DoRemoveFromProjectDialog: TModalResult;
     function DoBuildProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
-    function DoCreateProjectForProgram(ProgramFilename
-       ,ProgramSource: string): TModalResult;
+    function DoCreateProjectForProgram(ProgramFilename,
+       ProgramSource: string): TModalResult;
 
     // helpful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
       var ActiveUnitInfo:TUnitInfo);
     procedure GetUnitWithPageIndex(PageIndex:integer; 
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
-    function DoSaveStreamToFile(AStream:TStream; Filename:string; 
+    function DoSaveStreamToFile(AStream:TStream; const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
-      AFilename:string): TModalResult;
-    function DoBackupFile(Filename:string; 
+      const AFilename:string): TModalResult;
+    function DoBackupFile(const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
     procedure UpdateMainUnitSrcEdit;
@@ -297,9 +297,6 @@ var
   PropertyEditorHook1 : TPropertyEditorHook;
   SourceNotebook : TSourceNotebook;
 
-  TagInc : Integer;
-
-
 
 implementation
 
@@ -307,7 +304,7 @@ uses
   ViewUnit_dlg, Math, LResources, Designer;
 
 
-function LoadPixmapRes(ResourceName:string; PixMap:TPixMap):boolean;
+function LoadPixmapRes(const ResourceName:string; PixMap:TPixMap):boolean;
 var
   ms:TMemoryStream;
   res:TLResource;
@@ -327,7 +324,7 @@ begin
   end;
 end;
 
-function LoadSpeedBtnPixMap(ResourceName:string):TPixmap;
+function LoadSpeedBtnPixMap(const ResourceName:string):TPixmap;
 begin
   Result:=TPixmap.Create;
   Result.TransparentColor:=clBtnFace;
@@ -340,34 +337,51 @@ end;
 
 
 constructor TMainIDE.Create(AOwner: TComponent);
+const
+  PrimaryConfPathOpt='--primary-config-path=';
+  SecondaryConfPathOpt='--secondary-config-path=';
 var
   i,x : Integer;
   PageCount : Integer;
   RegComp     : TRegisteredComponent;
   RegCompPage : TRegisteredComponentPage;
-  IDeComponent : TIdeComponent;
+  IDEComponent : TIdeComponent;
   SelectionPointerPixmap: TPixmap;
 begin
   inherited Create(AOwner);
 
+  // parse command line options
+  for i:=1 to ParamCount do begin
+    if copy(ParamStr(i),1,length(PrimaryConfPathOpt))=PrimaryConfPathOpt then
+    begin
+      SetPrimaryConfigPath(copy(ParamStr(i),length(PrimaryConfPathOpt)+1,
+               length(ParamStr(i))));
+    end;
+    if copy(ParamStr(i),1,length(SecondaryConfPathOpt))=SecondaryConfPathOpt
+    then begin
+      SetSecondaryConfigPath(copy(ParamStr(i),length(SecondaryConfPathOpt)+1,
+               length(ParamStr(i))));
+    end;
+  end;
+writeln('PRIMARYCONFIGPATH=',GetPrimaryConfigPath);  
+writeln('SECONDARYCONFIGPATH=',GetSecondaryConfigPath);  
+
+  // load environment and editor options
+  CreatePrimaryConfigPath;
+
   EnvironmentOptions:=TEnvironmentOptions.Create;
-  with EnvironmentOptions do 
-  begin
+  with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
     Load(false);
   end;
   
+  EditorOpts:=TEditorOptions.Create;
   EditorOpts.Load;
 
-  if LazarusResources.Find(ClassName)=nil 
-  then begin
-
-  end;
-
+  // set the IDE mode to none (= editing mode)
   ToolStatus:=itNone;
 
-  Caption := 'Lazarus Editor v'+Version_String;
-
+  // build and position the MainIDE form
   Name := 'MainIDE';
   if (EnvironmentOptions.SaveWindowPositions) 
   and (EnvironmentOptions.WindowPositionsValid) 
@@ -382,12 +396,16 @@ begin
   end;
   Position:= poDesigned;
 
-  LoadMainMenu;
-  LoadSpeedbuttons;
+  if LazarusResources.Find(ClassName)=nil then begin
+    LoadMainMenu;
+    LoadSpeedbuttons;
+  end;
 
+  // Component Notebook
   ComponentNotebook := TNotebook.Create(Self);
   with ComponentNotebook do begin
     Parent := Self;
+    Name := 'ComponentNotebook';
 //    Align := alBottom;
     Left := RunSpeedButton.Left + RunSpeedButton.Width + 4;
 //    Top :=50+ 2;
@@ -399,12 +417,14 @@ begin
   PageCount := 0;
   for I := 0 to RegCompList.PageCount-1 do
   begin
+    // Component Notebook Pages
     RegCompPage := RegCompList.Pages[i];
     if RegCompPage.Name <> '' then
     Begin
       if (PageCount = 0) then
-         ComponentNotebook.Pages.Strings[pagecount] := RegCompPage.Name
-      else ComponentNotebook.Pages.Add(RegCompPage.Name);
+        ComponentNotebook.Pages.Strings[pagecount] := RegCompPage.Name
+      else
+        ComponentNotebook.Pages.Add(RegCompPage.Name);
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
       SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
       with GlobalMouseSpeedButton do
@@ -437,21 +457,21 @@ begin
     end;
    end;
   ComponentNotebook.PageIndex := 0;   // Set it to the first page
-  ComponentNotebook.Show;
   ComponentNotebook.OnPageChanged := @ControlClick;
-  ComponentNotebook.Name := 'ComponentNotebook';
+  ComponentNotebook.Show;
 
+  // MainIDE form events
   OnShow := @FormShow;
   OnClose := @FormClose;
   OnCloseQuery := @FormCloseQuery;
 
-  // create compiler interface
+  // compiler interface
   Compiler1 := TCompiler.Create;
   with Compiler1 do begin
     OnCommandLineCreate:=@OnCmdLineCreate;
   end;
 
-  // create object inspector
+  // object inspector
   ObjectInspector1 := TObjectInspector.Create(Self);
   if (EnvironmentOptions.SaveWindowPositions) 
   and (EnvironmentOptions.WindowPositionsValid) then begin
@@ -471,7 +491,7 @@ begin
   FormEditor1 := TFormEditor.Create;
   FormEditor1.Obj_Inspector := ObjectInspector1;
 
-  // connect events
+  // source editor / notebook
   SourceNotebook := TSourceNotebook.Create(Self);
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
@@ -483,10 +503,12 @@ begin
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
 
+  // find / replace dialog
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
 
+  // message view
   FMessagesViewBoundsRectValid:=false;
 
   // macros
@@ -506,6 +528,7 @@ begin
   MacroList.Add(TTransferMacro.Create('LazarusDir','',nil));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
 
+  // control selection (selected components on edited form)
   TheControlSelection:=TControlSelection.Create;
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
 
@@ -531,6 +554,8 @@ writeln('[TMainIDE.Destroy] 2');
   PropertyEditorHook1.Free;
   Compiler1.Free;
   MacroList.Free;
+  EditorOpts.Free;
+  EditorOpts:=nil;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
 writeln('[TMainIDE.Destroy] 3');
@@ -601,7 +626,9 @@ type
 
 procedure TMainIDE.LoadSpeedbuttons;
   
-  function CreateButton(const AName, APixName: String; ANumGlyphs: Integer; var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags; const AOnClick: TNotifyEvent): TSpeedButton;
+  function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
+    var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
+    const AOnClick: TNotifyEvent): TSpeedButton;
   begin
     Result := TSpeedButton.Create(Self);
     with Result do
@@ -2107,7 +2134,6 @@ var MainUnitInfo: TUnitInfo;
   ProgramNameStart,ProgramNameEnd: integer;
   sl: TStringList;
 begin
-writeln('TMainIDE.DoOpenMainUnit 1');
   Result:=mrCancel;
   if Project.MainUnit<0 then exit;
   MainUnitInfo:=Project.Units[Project.MainUnit];
@@ -2144,7 +2170,6 @@ writeln('TMainIDE.DoOpenMainUnit 1');
   NewSrcEdit.EditorComponent.CaretXY:=MainUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=MainUnitInfo.TopLine;
   Result:=mrOk;
-writeln('TMainIDE.DoOpenMainUnit end');
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -2528,7 +2553,8 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   until LowestEditorIndex<0;
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
-  and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count) then
+  and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count)
+  then
     SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
 
   // set all modified to false
@@ -2611,7 +2637,8 @@ begin
           +'"';
       if (Project.ProjectType in [ptProgram, ptApplication])
       and (ActiveUnitInfo.UnitName<>'')
-      and (Project.IndexOfUnitWithName(ActiveUnitInfo.UnitName,true)>=0) then begin
+      and (Project.IndexOfUnitWithName(ActiveUnitInfo.UnitName,true)>=0) then
+      begin
         MessageDlg('Unable to add '+s+' to project, because there is already a '
            +'unit with the same name in the project.',mtInformation,[mbOk],0);
       end else begin
@@ -2719,7 +2746,8 @@ begin
     Compiler1.OnOutputString:=@MessagesView.Add;
     Result:=Compiler1.Compile(Project);
     if Result=mrOk then begin
-      MessagesView.MessageView.Items.Add('Project "'+Project.Title+'" successfully built. :)');
+      MessagesView.MessageView.Items.Add(
+        'Project "'+Project.Title+'" successfully built. :)');
     end else begin
       DoJumpToCompilerMessage(-1,true);
     end;
@@ -2779,7 +2807,7 @@ begin
 end;
 
 function TMainIDE.DoSaveStreamToFile(AStream:TStream; 
-  Filename:string; IsPartOfProject:boolean):TModalResult;
+  const Filename:string; IsPartOfProject:boolean):TModalResult;
 // save to file with backup and user interaction
 var fs:TFileStream;
   AText,ACaption:string;
@@ -2811,7 +2839,7 @@ begin
 end;
 
 function TMainIDE.DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
-  AFilename:string): TModalResult;
+  const AFilename:string): TModalResult;
 var FileStream: TFileStream;
   ACaption,AText:string;
 begin
@@ -2837,7 +2865,7 @@ begin
   until Result<>mrRetry;
 end;
 
-function TMainIDE.DoBackupFile(Filename:string; 
+function TMainIDE.DoBackupFile(const Filename:string; 
   IsPartOfProject:boolean): TModalResult;
 var BackupFilename, CounterFilename: string;
   AText,ACaption:string;
@@ -2845,7 +2873,6 @@ var BackupFilename, CounterFilename: string;
   FilePath, FileNameOnly, FileExt, SubDir: string;
   i: integer;
 begin
-  // ToDo: implement the other backup methods
   Result:=mrOk;
   if not (FileExists(Filename)) then exit;
   if IsPartOfProject then
@@ -3223,7 +3250,7 @@ begin
       Component.Name, Component.ClassName) then begin
       SrcTxtChanged:=true;
     end else begin
-      Application.MessageBox('No insert point in source for the new component found.'
+      Application.MessageBox('No insert point for the new component in source found.'
            ,'Code tool failure',mb_ok);
     end;
   end else begin
@@ -3327,8 +3354,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.95  2001/05/21 21:49:08  lazarus
-  MG: bugfixes for non existing files during reload
+  Revision 1.96  2001/05/27 11:52:00  lazarus
+  MG: added --primary-config-path=<filename> cmd line option
 
   Revision 1.92  2001/04/21 14:50:21  lazarus
   MG: bugfix for mainunits ext <> .lpr

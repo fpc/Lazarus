@@ -22,12 +22,12 @@
 @created(18-Apr-2000)
 @lastmod(18-Apr-2000)
 
-This unit contains functions to manage OS specific configuration path information 
-from within Lazarus. 
+This unit contains functions to manage OS specific configuration path
+information from within Lazarus.
 }
 unit LazConf;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -46,10 +46,21 @@ uses
     Currently maintained by Curtis White <cwhite@aracnet.com>
   }
 
+  { The primary config path is the local/user specific path.
+    If the primary config path does not exists, it will automatically be
+    created.
+    The secondary config path is for templates. Lazarus will never write to it.
+    If a config file is not found in the primary config file, Lazarus will
+    copy the template file from the secondary config file. If there is no
+    template file, Lazarus will create a default file.
+  }
   function GetPrimaryConfigPath: String;
   function GetSecondaryConfigPath: String;
   procedure CreatePrimaryConfigPath;
-
+  procedure SetPrimaryConfigPath(const NewValue: String);
+  procedure SetSecondaryConfigPath(const NewValue: String);
+  procedure CopySecondaryConfigFile(const AFilename: String);
+  
 
 implementation
 
@@ -60,6 +71,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2001/05/27 11:52:00  lazarus
+  MG: added --primary-config-path=<filename> cmd line option
+
   Revision 1.2  2001/02/06 13:55:23  lazarus
   Changed the files from mode delphi to mode objfpc
   Shane

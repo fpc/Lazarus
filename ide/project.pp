@@ -104,11 +104,11 @@ type
   TUnitInfo = class;
 
 
-  TOnFileBackup = function(FileToBackup:string; 
+  TOnFileBackup = function(const FileToBackup:string; 
                            IsPartOfProject:boolean):TModalResult of object;
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
   TOnUnitNameChange = procedure(AnUnitInfo: TUnitInfo; 
-       OldUnitName, NewUnitName: string;  var Allowed: boolean) of object;
+       const OldUnitName, NewUnitName: string;  var Allowed: boolean) of object;
 
   //---------------------------------------------------------------------------
   TNewUnitType = (
@@ -209,13 +209,13 @@ type
     function GetUnits(Index:integer):TUnitInfo;
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
     procedure SetProjectFile(NewProjectFilename: string);
-    function OnUnitFileBackup(Filename:string;
+    function OnUnitFileBackup(const Filename:string;
                               IsPartOfProject:boolean):TModalResult;
     function GetProjectInfoFile:string;
     procedure SetProjectInfoFile(NewFilename:string);
     procedure OnLoadSaveFilename(var AFilename:string; Load:boolean);
     procedure OnUnitNameChange(AnUnitInfo: TUnitInfo; 
-       OldUnitName, NewUnitName: string;  var Allowed: boolean);
+       const OldUnitName, NewUnitName: string;  var Allowed: boolean);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -1327,7 +1327,7 @@ begin
   Modified:=true;
 end;
 
-function TProject.OnUnitFileBackup(Filename:string;
+function TProject.OnUnitFileBackup(const Filename:string;
   IsPartOfProject:boolean):TModalResult;
 begin
   if Assigned(fOnFileBackup) then
@@ -1369,7 +1369,7 @@ begin
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
-  OldUnitName, NewUnitName: string;  var Allowed: boolean);
+  const OldUnitName, NewUnitName: string;  var Allowed: boolean);
 var i:integer;
 begin
   if AnUnitInfo.IsPartOfProject then begin
@@ -1402,8 +1402,8 @@ end.
 
 {
   $Log$
-  Revision 1.22  2001/05/21 21:49:09  lazarus
-  MG: bugfixes for non existing files during reload
+  Revision 1.23  2001/05/27 11:52:00  lazarus
+  MG: added --primary-config-path=<filename> cmd line option
 
   Revision 1.20  2001/04/04 13:55:35  lazarus
   MG: finished TComponentPropertyEditor, added OnModified to oi, cfe and designer
