@@ -27,6 +27,7 @@
 
   Abstract:
     - TPublishProjectDialog
+    The dialog for TPublishModuleOptions to publish projects and packages.
 
 }
 unit PublishProjectDlg;
@@ -37,8 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, LResources, Buttons, StdCtrls,
-  ProjectDefs, IDEOptionDefs, IDEProcs, InputHistory, Dialogs,
-  LazarusIDEStrConsts;
+  ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, IDEProcs,
+  InputHistory, Dialogs, LazarusIDEStrConsts;
 
 type
   { TPublishProjectDialog }
@@ -80,30 +81,30 @@ type
     procedure PublishProjectDialogResize(Sender: TObject);
     procedure SaveSettingsButtonClick(Sender: TObject);
   private
-    FOptions: TPublishProjectOptions;
+    FOptions: TPublishModuleOptions;
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string;
       MaxItemCount: integer);
     procedure LoadHistoryLists;
     procedure SaveHistoryLists;
-    procedure SetOptions(const AValue: TPublishProjectOptions);
+    procedure SetOptions(const AValue: TPublishModuleOptions);
     function CheckFilter: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure LoadFromOptions(SrcOpts: TPublishProjectOptions);
-    procedure SaveToOptions(DestOpts: TPublishProjectOptions);
-    property Options: TPublishProjectOptions read FOptions write SetOptions;
+    procedure LoadFromOptions(SrcOpts: TPublishModuleOptions);
+    procedure SaveToOptions(DestOpts: TPublishModuleOptions);
+    property Options: TPublishModuleOptions read FOptions write SetOptions;
   end;
 
 function ShowPublishProjectDialog(
-  PublishOptions: TPublishProjectOptions): TModalResult;
+  PublishOptions: TPublishModuleOptions): TModalResult;
 
 
 implementation
 
 
 function ShowPublishProjectDialog(
-  PublishOptions: TPublishProjectOptions): TModalResult;
+  PublishOptions: TPublishModuleOptions): TModalResult;
 var
   PublishProjectDialog: TPublishProjectDialog;
 begin
@@ -217,17 +218,15 @@ var
 begin
   // destination directories
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true);
-  if List.Count=0 then begin
-    List.Add('$(TestDir)/publishedproject/');
-    List.Add('$(ProjectDir)/published/');
-  end;
+  List.AppendEntry('$(TestDir)/publishedproject/');
+  List.AppendEntry('$(TestDir)/publishedpackage/');
+  List.AppendEntry('$(ProjectDir)/published/');
   DestDirComboBox.Items.Assign(List);
   
   // command after
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true);
-  if List.Count=0 then begin
-    List.Add('/bin/tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)');
-  end;
+  List.AppendEntry('/bin/tar czf project.tgz -C $(TestDir) publishedproject');
+  List.AppendEntry('/bin/tar czf package.tgz -C $(TestDir) publishedpackage');
   CommandAfterCombobox.Items.Assign(List);
 
   // file filter
@@ -265,7 +264,7 @@ begin
     ExcludeFilterCombobox.Items);
 end;
 
-procedure TPublishProjectDialog.SetOptions(const AValue: TPublishProjectOptions
+procedure TPublishProjectDialog.SetOptions(const AValue: TPublishModuleOptions
   );
 begin
   if FOptions=AValue then exit;
@@ -307,8 +306,10 @@ begin
   inherited Destroy;
 end;
 
-procedure TPublishProjectDialog.LoadFromOptions(SrcOpts: TPublishProjectOptions
+procedure TPublishProjectDialog.LoadFromOptions(SrcOpts: TPublishModuleOptions
   );
+var
+  ProjSrcOpts: TPublishProjectOptions;
 begin
   // destination
   SetComboBox(DestDirComboBox,SrcOpts.DestinationDirectory,20);
@@ -324,14 +325,22 @@ begin
   SetComboBox(ExcludeFilterCombobox,SrcOpts.ExcludeFileFilter,20);
 
   // project info
-  SaveEditorInfoOfNonProjectFilesCheckbox.Checked:=
-    SrcOpts.SaveEditorInfoOfNonProjectFiles;
-  SaveClosedEditorFilesInfoCheckbox.Checked:=
-    SrcOpts.SaveClosedEditorFilesInfo;
+  if SrcOpts is TPublishProjectOptions then begin
+    ProjSrcOpts:=TPublishProjectOptions(SrcOpts);
+    SaveEditorInfoOfNonProjectFilesCheckbox.Checked:=
+      ProjSrcOpts.SaveEditorInfoOfNonProjectFiles;
+    SaveClosedEditorFilesInfoCheckbox.Checked:=
+      ProjSrcOpts.SaveClosedEditorFilesInfo;
+    ProjectInfoGroupbox.Enabled:=true;
+  end else begin
+    ProjectInfoGroupbox.Enabled:=false;
+  end;
 end;
 
-procedure TPublishProjectDialog.SaveToOptions(DestOpts: TPublishProjectOptions
+procedure TPublishProjectDialog.SaveToOptions(DestOpts: TPublishModuleOptions
   );
+var
+  ProjDestOpts: TPublishProjectOptions;
 begin
   // destination
   DestOpts.DestinationDirectory:=DestDirComboBox.Text;
@@ -347,10 +356,13 @@ begin
   DestOpts.ExcludeFileFilter:=ExcludeFilterCombobox.Text;
   
   // project info
-  DestOpts.SaveEditorInfoOfNonProjectFiles:=
-    SaveEditorInfoOfNonProjectFilesCheckbox.Checked;
-  DestOpts.SaveClosedEditorFilesInfo:=
-    SaveClosedEditorFilesInfoCheckbox.Checked;
+  if DestOpts is TPublishProjectOptions then begin
+    ProjDestOpts:=TPublishProjectOptions(DestOpts);
+    ProjDestOpts.SaveEditorInfoOfNonProjectFiles:=
+      SaveEditorInfoOfNonProjectFilesCheckbox.Checked;
+    ProjDestOpts.SaveClosedEditorFilesInfo:=
+      SaveClosedEditorFilesInfoCheckbox.Checked;
+  end;
 end;
 
 initialization

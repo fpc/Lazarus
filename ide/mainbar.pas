@@ -43,7 +43,7 @@ uses
   Classes, LCLType, LCLLinux, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
   Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds, LazConf, LazarusIDEStrConsts,
-  ProjectDefs, Project, BuildLazDialog, Compiler,
+  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   {$IFDEF EnablePkgs}
   ComponentReg,
   {$ELSE}
@@ -384,6 +384,9 @@ type
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
+    function DoPublishModul(Options: TPublishModuleOptions;
+                            const SrcDirectory, DestDirectory: string
+                            ): TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
                                      Compiling: boolean): TModalResult; virtual;
     function DoCheckCreatingFile(const AFilename: string;

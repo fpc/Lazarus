@@ -68,6 +68,7 @@ type
     function Push(const Entry: string): integer;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure AppendEntry(const Entry: string);
   public
     property Name: string read FName write SetName;
     property MaxCount: integer read FMaxCount write SetMaxCount;
@@ -480,6 +481,12 @@ begin
   XMLConfig.SetDeleteValue(Path+'Name',Name,'');
   XMLConfig.SetDeleteValue(Path+'MaxCount',MaxCount,20);
   SaveRecentList(XMLConfig,Self,Path);
+end;
+
+procedure THistoryList.AppendEntry(const Entry: string);
+begin
+  if (Count<MaxCount) and (IndexOf(Entry)<0) then
+    Add(Entry);
 end;
 
 { THistoryLists }

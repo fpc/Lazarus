@@ -315,6 +315,7 @@ type
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetFlags(const AValue: TProjectFlags);
     procedure SetMainUnitID(const AValue: Integer);
+    procedure SetModified(const AValue: boolean);
     procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
@@ -445,7 +446,7 @@ type
     property MainFilename: String read GetMainFilename;
     property MainUnitID: Integer read fMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
-    property Modified: boolean read fModified write fModified;
+    property Modified: boolean read fModified write SetModified;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdateProjectEvent read FOnEndUpdate write FOnEndUpdate;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -1140,7 +1141,7 @@ begin
   fModified := false;
   fProjectInfoFile := '';
   UpdateProjectDirectory;
-  fPublishOptions:=TPublishProjectOptions.Create;
+  fPublishOptions:=TPublishProjectOptions.Create(Self);
   fRunParameterOptions:=TRunParamsOptions.Create;
   fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
@@ -1624,6 +1625,13 @@ begin
   if (fMainUnitID>=0) and (fMainUnitID<UnitCount) then begin
     MainUnitInfo.IncreaseAutoRevertLock;
   end;
+end;
+
+procedure TProject.SetModified(const AValue: boolean);
+begin
+  if AValue=Modified then exit;
+  fModified:=AValue;
+  if not fModified then PublishOptions.Modified:=false;
 end;
 
 procedure TProject.SetUnits(Index:integer; AUnitInfo: TUnitInfo);
@@ -2653,6 +2661,9 @@ end.
 
 {
   $Log$
+  Revision 1.118  2003/05/12 13:11:34  mattias
+  implemented publish package
+
   Revision 1.117  2003/05/02 10:28:59  mattias
   improved file checking
 

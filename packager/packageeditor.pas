@@ -54,6 +54,8 @@ type
              SaveAs: boolean): TModalResult of object;
   TOnRevertPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
+  TOnPublishPackage =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnCompilePackage =
     function(Sender: TObject; APackage: TLazPackage;
              CompileClean, CompileRequired: boolean): TModalResult of object;
@@ -135,6 +137,7 @@ type
     procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure PackageEditorFormResize(Sender: TObject);
+    procedure PublishClick(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
                                         ARect: TRect; State: TOwnerDrawState);
@@ -173,6 +176,7 @@ type
     procedure DoSave(SaveAs: boolean);
     procedure DoCompile(CompileClean, CompileRequired: boolean);
     procedure DoRevert;
+    procedure DoPublishProject;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -193,6 +197,7 @@ type
     FOnInstallPackage: TOnInstallPackage;
     FOnOpenFile: TOnOpenFile;
     FOnOpenPackage: TOnOpenPackage;
+    FOnPublishPackage: TOnPublishPackage;
     FOnRevertPackage: TOnRevertPackage;
     FOnSavePackage: TOnSavePackage;
     FOnUninstallPackage: TOnUninstallPackage;
@@ -219,6 +224,7 @@ type
                            const Params: TAddToPkgResult): TModalResult;
     function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
     function RevertPackage(APackage: TLazPackage): TModalResult;
+    function PublishPackage(APackage: TLazPackage): TModalResult;
     function CompilePackage(APackage: TLazPackage;
                             CompileClean,CompileRequired: boolean): TModalResult;
     procedure UpdateAllEditors;
@@ -243,6 +249,8 @@ type
                                            write FOnSavePackage;
     property OnRevertPackage: TOnRevertPackage read FOnRevertPackage
                                                write FOnRevertPackage;
+    property OnPublishPackage: TOnPublishPackage read FOnPublishPackage
+                                               write FOnPublishPackage;
     property OnCompilePackage: TOnCompilePackage read FOnCompilePackage
                                                  write FOnCompilePackage;
     property OnInstallPackage: TOnInstallPackage read FOnInstallPackage
@@ -337,6 +345,11 @@ begin
   inc(y,h+3);
   h:=120;
   FilePropsGroupBox.SetBounds(x,y,w,h);
+end;
+
+procedure TPackageEditorForm.PublishClick(Sender: TObject);
+begin
+  DoPublishProject;
 end;
 
 procedure TPackageEditorForm.ReAddMenuItemClick(Sender: TObject);
@@ -459,7 +472,10 @@ begin
 
   AddPopupMenuItem(lisMenuSave, @SaveBitBtnClick, SaveBitBtn.Enabled);
   AddPopupMenuItem(lisMenuSaveAs, @SaveAsClick, not LazPackage.AutoCreated);
-  AddPopupMenuItem(lisMenuRevert, @RevertClick, not LazPackage.AutoCreated);
+  AddPopupMenuItem(lisMenuRevert, @RevertClick, (not LazPackage.AutoCreated) and
+                                                FileExists(LazPackage.Filename));
+  AddPopupMenuItem(lisPkgEditPublishPackage, @PublishClick,
+                   (not LazPackage.AutoCreated) and (LazPackage.HasDirectory));
   AddPopupMenuItem('-',nil,true);
   AddPopupMenuItem(lisPckEditCompile, @CompileBitBtnClick, CompileBitBtn.Enabled
     );
@@ -1637,7 +1653,18 @@ end;
 
 procedure TPackageEditorForm.DoRevert;
 begin
+  if MessageDlg(lisPkgEditRevertPackage,
+    Format(lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd, [
+      LazPackage.IDAsString]),
+    mtConfirmation,[mbYes,mbNo],0)<>mrYes
+  then exit;
   PackageEditors.RevertPackage(LazPackage);
+  UpdateAll;
+end;
+
+procedure TPackageEditorForm.DoPublishProject;
+begin
+  PackageEditors.PublishPackage(LazPackage);
   UpdateAll;
 end;
 
@@ -1934,6 +1961,12 @@ function TPackageEditors.RevertPackage(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnRevertPackage) then
     Result:=OnRevertPackage(Self,APackage);
+end;
+
+function TPackageEditors.PublishPackage(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnPublishPackage) then
+    Result:=OnPublishPackage(Self,APackage);
 end;
 
 { TPackageEditorLayout }

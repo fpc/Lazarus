@@ -107,6 +107,7 @@ resourcestring
   lisMenuNewOther = 'New ...';
   lisMenuOpen = 'Open';
   lisMenuRevert = 'Revert';
+  lisPkgEditPublishPackage = 'Publish Package';
   lisMenuOpenRecent = 'Open Recent';
   lisMenuSave = 'Save';
   lisMenuSaveAs = 'Save As';
@@ -330,7 +331,7 @@ resourcestring
     +'directory';
   lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up %s%s%s.%'
     +'sPlease check permissions.';
-  lisCommandAfterPublishingProject = 'Command after publishing project';
+  lisCommandAfterPublishingModule = 'Command after publishing module';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
     +'to project, because there is already a unit with the same name in the '
     +'Project.';
@@ -2041,6 +2042,9 @@ resourcestring
   lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage = 'The file %s%s%s%'
     +'sis currently not in the unitpath of the package.%s%sAdd %s%s%s to '
     +'UnitPath?';
+  lisPkgEditRevertPackage = 'Revert package?';
+  lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd = 'Do you really '
+    +'want to forget all changes to package %s and reload it from file?';
 
   // package options dialog
   lisPckOptsUsage = 'Usage';

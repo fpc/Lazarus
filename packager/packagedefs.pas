@@ -48,7 +48,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, AVL_Tree,
   DefineTemplates, CodeToolManager, EditDefineTree, CompilerOptions, Forms,
   FileCtrl, LazarusIDEStrConsts, IDEProcs, ComponentReg, TransferMacros,
-  FileReferenceList;
+  FileReferenceList, PublishModule;
 
 type
   TLazPackage = class;
@@ -334,7 +334,20 @@ type
     property Version: TPkgVersion read FVersion;
     property IDAsString: string read FIDAsString;
   end;
-  
+
+
+  { TPublishPackageOptions }
+
+  TPublishPackageOptions = class(TPublishModuleOptions)
+  private
+    FLazPackage: TLazPackage;
+  protected
+    procedure DoOnModifyChange; override;
+  public
+    constructor Create(TheLazPackage: TLazPackage);
+    function GetDefaultDestinationDir: string; override;
+    property LazPackage: TLazPackage read FLazPackage;
+  end;
   
   { TLazPackageDefineTemplates }
   
@@ -459,6 +472,7 @@ type
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
+    fPublishOptions: TPublishPackageOptions;
     FRemovedFiles: TList; // TList of TPkgFile
     FRegistered: boolean;
     FSourceDirectories: TFileReferenceList;
@@ -619,6 +633,8 @@ type
                                           write SetPackageType;
     property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
+    property PublishOptions: TPublishPackageOptions
+                                     read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
@@ -1763,6 +1779,8 @@ begin
   else
     Exclude(FFlags,lpfModified);
   Exclude(FFlags,lpfSkipSaving);
+  if not AValue then
+    PublishOptions.Modified:=false;
 end;
 
 procedure TLazPackage.SetName(const AValue: string);
@@ -1804,6 +1822,7 @@ begin
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
+  fPublishOptions:=TPublishPackageOptions.Create(Self);
   Clear;
 end;
 
@@ -1811,6 +1830,7 @@ destructor TLazPackage.Destroy;
 begin
   Include(FFlags,lpfDestroying);
   Clear;
+  FreeAndNil(fPublishOptions);
   FreeAndNil(FDefineTemplates);
   FreeAndNil(FRemovedFiles);
   FreeAndNil(FFiles);
@@ -1869,6 +1889,7 @@ begin
   FPackageType:=lptRunAndDesignTime;
   FRegistered:=false;
   FUsageOptions.Clear;
+  fPublishOptions.Clear;
   UpdateSourceDirectories;
   // set some nice start values
   if not (lpfDestroying in FFlags) then begin
@@ -1977,6 +1998,7 @@ begin
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,Self,false);
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
+  fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/');
   EndUpdate;
   Modified:=false;
   UnlockModified;
@@ -2023,6 +2045,7 @@ begin
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
+  fPublishOptions.SaveToXMLConfig(XMLConfig,Path+'PublishOptions/');
   Modified:=false;
 end;
 
@@ -2976,6 +2999,24 @@ end;
 function TBasePackageEditor.GetLazPackage: TLazPackage;
 begin
   Result:=nil;
+end;
+
+{ TPublishPackageOptions }
+
+procedure TPublishPackageOptions.DoOnModifyChange;
+begin
+  if Modified then LazPackage.Modified:=true;
+end;
+
+constructor TPublishPackageOptions.Create(TheLazPackage: TLazPackage);
+begin
+  FLazPackage:=TheLazPackage;
+  inherited Create(FLazPackage);
+end;
+
+function TPublishPackageOptions.GetDefaultDestinationDir: string;
+begin
+  Result:='$(TestDir)/publishedpackage/';
 end;
 
 initialization

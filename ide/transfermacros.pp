@@ -407,7 +407,7 @@ end;
 function TTransferMacroList.MF_Path(const Filename:string; 
  var Abort: boolean):string;
 begin
-  Result:=ExtractFilePath(Filename);
+  Result:=TrimFilename(ExtractFilePath(Filename));
 end;
 
 function TTransferMacroList.MF_Name(const Filename:string; 
@@ -431,6 +431,7 @@ begin
   Result:=Filename;
   if (Result<>'') and (Result[length(Result)]<>PathDelim) then
     Result:=Result+PathDelim;
+  Result:=TrimFilename(Result);
 end;
 
 function TTransferMacroList.MF_MakeFile(const Filename: string;
@@ -445,6 +446,9 @@ begin
     inc(ChompLen);
   if ChompLen>0 then
     Result:=LeftStr(Result,length(Filename)-ChompLen);
+writeln('TTransferMacroList.MF_MakeFile A "',Result,'"');
+  Result:=TrimFilename(Result);
+writeln('TTransferMacroList.MF_MakeFile B "',Result,'"');
 end;
 
 function TTransferMacroList.MF_Trim(const Filename: string; var Abort: boolean

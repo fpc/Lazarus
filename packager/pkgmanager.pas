@@ -52,7 +52,7 @@ uses
   PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   CompilerOptions, ExtToolDialog, ExtToolEditDlg, EditDefineTree,
   BuildLazDialog, DefineTemplates, LazConf, ProjectInspector, ComponentPalette,
-  UnitEditor, AddFileToAPackageDlg, LazarusPackageIntf,
+  UnitEditor, AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg,
   BasePkgManager, MainBar;
 
 type
@@ -68,6 +68,8 @@ type
       APackage: TLazPackage; const Filename: string): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
+    function OnPackageEditorPublishPackage(Sender: TObject;
+      APackage: TLazPackage): TModalResult;
     function OnPackageEditorRevertPackage(Sender: TObject; APackage: TLazPackage
       ): TModalResult;
     function OnPackageEditorUninstallPackage(Sender: TObject;
@@ -149,6 +151,7 @@ type
 
     // files
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
+    function GetPublishPackageDir(APackage: TLazPackage): string;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; override;
 
@@ -197,6 +200,8 @@ type
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
     function DoGetIDEInstallPackageOptions: string; override;
+    function DoPublishPackage(APackage: TLazPackage; Flags: TPkgSaveFlags;
+                              ShowDialog: boolean): TModalResult;
   end;
 
 implementation
@@ -350,10 +355,17 @@ begin
   Result:=DoInstallPackage(APackage);
 end;
 
+function TPkgManager.OnPackageEditorPublishPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoPublishPackage(APackage,[],true);
+end;
+
 function TPkgManager.OnPackageEditorRevertPackage(Sender: TObject;
   APackage: TLazPackage): TModalResult;
 begin
-  if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename)) then
+  if APackage.AutoCreated or (not FilenameIsAbsolute(APackage.Filename))
+  or (not FileExists(APackage.Filename)) then
     exit;
   Result:=DoOpenPackageFile(APackage.Filename,[pofRevert]);
 end;
@@ -1249,6 +1261,7 @@ begin
   PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
   PackageEditors.OnRevertPackage:=@OnPackageEditorRevertPackage;
+  PackageEditors.OnPublishPackage:=@OnPackageEditorPublishPackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
   PackageEditors.OnInstallPackage:=@OnPackageEditorInstallPackage;
   PackageEditors.OnUninstallPackage:=@OnPackageEditorUninstallPackage;
@@ -1339,6 +1352,20 @@ begin
   APackage:=PkgFile.LazPackage;
   if APackage.AutoCreated or (not APackage.HasDirectory) then exit;
   Result:=APackage.Directory;
+end;
+
+function TPkgManager.GetPublishPackageDir(APackage: TLazPackage): string;
+begin
+  Result:=APackage.PublishOptions.DestinationDirectory;
+  if MainIDE.MacroList.SubstituteStr(Result) then begin
+    if FilenameIsAbsolute(Result) then begin
+      Result:=AppendPathDelim(TrimFilename(Result));
+    end else begin
+      Result:='';
+    end;
+  end else begin
+    Result:='';
+  end;
 end;
 
 procedure TPkgManager.LoadInstalledPackages;
@@ -2403,6 +2430,24 @@ begin
   // ToDo write a function in lazconf for this
   //if TargetDir<>'' then
     AddOption('-FE'+TargetDir);}
+end;
+
+function TPkgManager.DoPublishPackage(APackage: TLazPackage;
+  Flags: TPkgSaveFlags; ShowDialog: boolean): TModalResult;
+begin
+  // show the publish dialog
+  if ShowDialog then begin
+    Result:=ShowPublishProjectDialog(APackage.PublishOptions);
+    if Result<>mrOk then exit;
+  end;
+
+  // save package
+  Result:=DoSavePackage(APackage,Flags);
+  if Result<>mrOk then exit;
+
+  // publish package
+  Result:=MainIDE.DoPublishModul(APackage.PublishOptions,APackage.Directory,
+                                 GetPublishPackageDir(APackage));
 end;
 
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;

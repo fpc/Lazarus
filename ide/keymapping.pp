@@ -166,29 +166,29 @@ const
   ecBuildLazarus         = ecUserFirst + 408;
 
   // project menu
-  ecNewProject           = ecUserFirst + 700;
-  ecNewProjectFromFile   = ecUserFirst + 701;
-  ecOpenProject          = ecUserFirst + 702;
-  ecSaveProject          = ecUserFirst + 703;
-  ecSaveProjectAs        = ecUserFirst + 704;
-  ecPublishProject       = ecUserFirst + 705;
-  ecProjectInspector     = ecUserFirst + 706;
-  ecAddCurUnitToProj     = ecUserFirst + 707;
-  ecRemoveFromProj       = ecUserFirst + 708;
-  ecViewProjectSource    = ecUserFirst + 709;
-  ecViewProjectTodos     = ecUserFirst + 710;
-  ecProjectOptions       = ecUserFirst + 711;
+  ecNewProject           = ecUserFirst + 500;
+  ecNewProjectFromFile   = ecUserFirst + 501;
+  ecOpenProject          = ecUserFirst + 502;
+  ecSaveProject          = ecUserFirst + 503;
+  ecSaveProjectAs        = ecUserFirst + 504;
+  ecPublishProject       = ecUserFirst + 505;
+  ecProjectInspector     = ecUserFirst + 506;
+  ecAddCurUnitToProj     = ecUserFirst + 507;
+  ecRemoveFromProj       = ecUserFirst + 508;
+  ecViewProjectSource    = ecUserFirst + 509;
+  ecViewProjectTodos     = ecUserFirst + 510;
+  ecProjectOptions       = ecUserFirst + 511;
 
   // components menu
-  ecOpenPackage          = ecUserFirst + 900;
-  ecOpenPackageFile      = ecUserFirst + 901;
-  ecAddCurUnitToPkg      = ecUserFirst + 902;
-  ecPackageGraph         = ecUserFirst + 903;
-  ecConfigCustomComps    = ecUserFirst + 904;
+  ecOpenPackage          = ecUserFirst + 600;
+  ecOpenPackageFile      = ecUserFirst + 601;
+  ecAddCurUnitToPkg      = ecUserFirst + 603;
+  ecPackageGraph         = ecUserFirst + 604;
+  ecConfigCustomComps    = ecUserFirst + 605;
 
   // tools menu
-  ecExtToolFirst         = ecUserFirst + 500;
-  ecExtToolLast          = ecUserFirst + 599;
+  ecExtToolFirst         = ecUserFirst + 700;
+  ecExtToolLast          = ecUserFirst + 799;
 
   // option commmands
   ecRunParameters        = ecUserFirst + 800;

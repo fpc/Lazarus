@@ -42,6 +42,12 @@
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)/publishedpackage/"/>
+      <CommandAfter Value="/bin/tar -cz -C $(TestDir) -f /tmp/gtkopengl.tgz gtkopengl/"/>
+      <UseExcludeFileFilter Value="True"/>
+    </PublishOptions>
   </Package>
   <CompilerOptions>
     <SearchPaths>
