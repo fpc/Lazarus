@@ -2853,7 +2853,7 @@ begin
     Visible := True;
   end;
 
-  edtErrorCnt := TEdit.Create(grpConfigFile);
+  edtErrorCnt := TEdit.Create(grpErrorCnt);
   with edtErrorCnt do
   begin
     Parent := grpErrorCnt;
