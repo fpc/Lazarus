@@ -251,6 +251,10 @@ type
           StartCode: TCodeBuffer; StartX, StartY: integer;
           EndCode: TCodeBuffer;   EndX, EndY: integer;
           var FormatStringConstant, FormatParameters: string): boolean;
+    function AddResourcestring(SectionCode: TCodeBuffer;
+          SectionX, SectionY: integer;
+          const NewIdentifier, NewValue: string;
+          InsertAlphabetically: boolean): boolean;
 
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
@@ -916,6 +920,28 @@ begin
   try
     Result:=FCurCodeTool.StringConstToFormatString(
              StartCursorPos,EndCursorPos,FormatStringConstant,FormatParameters);
+  except
+    on e: Exception do HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.AddResourcestring(SectionCode: TCodeBuffer; SectionX,
+  SectionY: integer; const NewIdentifier, NewValue: string;
+  InsertAlphabetically: boolean): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.AddResourcestring A ',SectionCode.Filename,' x=',Sectionx,' y=',Sectiony);
+  {$ENDIF}
+  if not InitCurCodeTool(SectionCode) then exit;
+  CursorPos.X:=SectionX;
+  CursorPos.Y:=SectionY;
+  CursorPos.Code:=SectionCode;
+  try
+    Result:=FCurCodeTool.AddResourcestring(CursorPos, NewIdentifier, NewValue,
+                                        InsertAlphabetically,SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;

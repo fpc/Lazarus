@@ -81,7 +81,7 @@ type
     CurAtomType, LastAtomType: TAtomType;
     CurPos, AtomStart, AtomEnd, SrcLen, CurIndent: integer;
     Src, UpperSrc: string;
-    procedure AddAtom(var s:string; NewAtom: string);
+    procedure AddAtom(var CurCode: string; NewAtom: string);
     procedure ReadNextAtom;
   public
     LineLength: integer;
@@ -825,38 +825,54 @@ begin
   PrivatVariablePrefix:='f';
 end;
 
-procedure TBeautifyCodeOptions.AddAtom(var s:string; NewAtom: string);
+procedure TBeautifyCodeOptions.AddAtom(var CurCode: string; NewAtom: string);
 var
   RestLineLen, LastLineEndInAtom: integer;
 begin
   if NewAtom='' then exit;
   //writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
+
+  // beautify identifier
   if IsIdentStartChar[NewAtom[1]] then begin
     if WordIsKeyWord.DoItCaseInsensitive(NewAtom) then
       NewAtom:=BeautifyWord(NewAtom,KeyWordPolicy)
     else
       NewAtom:=BeautifyWord(NewAtom,IdentifierPolicy);
   end;
+  
+  // split long string constants
+  if NewAtom[1] in ['''','#'] then
+    NewAtom:=SplitStringConstant(NewAtom,LineLength-CurLineLen,LineLength,
+                                 Indent+GetLineIndent(CurCode,LastSrcLineStart),
+                                 LineEnd);
+  
+  // find last line end in atom
   LastLineEndInAtom:=length(NewAtom);
-  while (LastLineEndInAtom>=1) and (not (NewAtom[LastLineEndInAtom] in [#10,#13]))
-  do dec(LastLineEndInAtom);
+  while (LastLineEndInAtom>=1)
+  and (not (NewAtom[LastLineEndInAtom] in [#10,#13]))
+  do
+    dec(LastLineEndInAtom);
+
+  // start new line if necessary
   if (LastLineEndInAtom<1) and (CurLineLen+length(NewAtom)>LineLength)
   and (LastSplitPos>1) then begin
+    // new atom does not fit into the line and there is a split position
+    // -> split line
     //writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
-    RestLineLen:=length(s)-LastSplitPos+1;
-    s:=copy(s,1,LastSplitPos-1)+LineEnd
-       +GetIndentStr(CurIndent+Indent+GetLineIndent(s,LastSrcLineStart))
-       +copy(s,LastSplitPos,RestLineLen)+NewAtom;
-    CurLineLen:=length(s)-LastSplitPos-length(LineEnd)+1;
+    RestLineLen:=length(CurCode)-LastSplitPos+1;
+    CurCode:=copy(CurCode,1,LastSplitPos-1)+LineEnd
+             +GetIndentStr(Indent+GetLineIndent(CurCode,LastSrcLineStart))
+             +copy(CurCode,LastSplitPos,RestLineLen)+NewAtom;
+    CurLineLen:=length(CurCode)-LastSplitPos-length(LineEnd)+1;
     LastSplitPos:=-1;
   end else begin
-    s:=s+NewAtom;
+    CurCode:=CurCode+NewAtom;
     if LastLineEndInAtom<1 then begin
       inc(CurLineLen,length(NewAtom));
     end else begin
       // there is a line end in the code
       CurLineLen:=length(NewAtom)-LastLineEndInAtom;
-      LastSrcLineStart:=length(s)+1-CurLineLen;
+      LastSrcLineStart:=length(CurCode)+1-CurLineLen;
     end;
   end;
 end;

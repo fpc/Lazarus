@@ -175,6 +175,9 @@ type
     function StringConstToFormatString(
       const StartCursorPos, EndCursorPos: TCodeXYPosition;
       var FormatStringConstant,FormatParameters: string): boolean;
+    function AddResourcestring(SectionPos: TCodeXYPosition;
+      const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
+      SourceChangeCache: TSourceChangeCache): boolean;
   end;
 
 
@@ -1635,6 +1638,75 @@ begin
     end;
   until false;
   Result:=FormatStringConstant<>'';
+end;
+
+function TStandardCodeTool.AddResourcestring(SectionPos: TCodeXYPosition;
+  const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CleanSectionPos: integer;
+  ANode, SectionNode: TCodeTreeNode;
+  Indent: Integer;
+  InsertPos: Integer;
+  InsertSrc: String;
+begin
+  Result:=false;
+  //writeln('TStandardCodeTool.AddResourcestring A ',NewIdentifier,'=',NewValue);
+  if (NewIdentifier='') or (length(NewIdentifier)>255) then exit;
+  if SourceChangeCache=nil then exit;
+  SourceChangeCache.MainScanner:=Scanner;
+  // parse source and find clean positions
+  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanSectionPos,[]);
+  // find resource string section
+  SectionNode:=FindDeepestNodeAtPos(CleanSectionPos,true);
+  if (SectionNode=nil) then exit;
+  SectionNode:=SectionNode.GetNodeOfType(ctnResStrSection);
+  if SectionNode=nil then exit;
+  
+  //writeln('TStandardCodeTool.AddResourcestring B SectionChilds=',SectionNode.FirstChild<>nil,' InsertAlphabetically=',InsertAlphabetically);
+  // find insert position
+  if SectionNode.FirstChild=nil then begin
+    // no resourcestring in this section yet -> append as first child
+    Indent:=GetLineIndent(Src,SectionNode.StartPos)
+            +SourceChangeCache.BeautifyCodeOptions.Indent;
+    InsertPos:=SectionNode.StartPos+length('RESOURCESTRING');
+  end else begin
+    // search insert position
+    if InsertAlphabetically then begin
+      // insert new identifier alphabetically
+      ANode:=SectionNode.FirstChild;
+      while (ANode<>nil) do begin
+        if (ANode.Desc=ctnConstDefinition)
+        and (CompareIdentifiers(@Src[ANode.StartPos],PChar(NewIdentifier))<0)
+        then
+          break;
+        ANode:=ANode.NextBrother;
+      end;
+      if ANode=nil then begin
+        // append new identifier as last
+        Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+        InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
+      end else begin
+        // insert in front of node
+        Indent:=GetLineIndent(Src,ANode.StartPos);
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
+      end;
+    end else begin
+      // append new identifier
+      Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+      InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
+    end;
+  end;
+
+  //writeln('TStandardCodeTool.AddResourcestring C Indent=',Indent,' InsertPos=',InsertPos,' ',copy(Src,InsertPos-9,8),'|',copy(Src,InsertPos,8));
+  // insert
+  InsertSrc:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                     NewIdentifier+' = '+NewValue+';',Indent);
+  //writeln('TStandardCodeTool.AddResourcestring D "',InsertSrc,'"');
+  SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertSrc);
+  SourceChangeCache.Apply;
+  Result:=true;
+  //writeln('TStandardCodeTool.AddResourcestring END ',Result);
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

@@ -110,17 +110,18 @@ type
     procedure SetSource(NewCode: TCodeBuffer;
       const NewStartPos, NewEndPos: TPoint);
     function ResourceStringExists(const Identifier: string): boolean;
-    function GetNewSource: string;
+    procedure GetNewSource(var NewSource, ResourceStringValue: string);
   end;
   
 function ShowMakeResStrDialog(
   const StartPos, EndPos: TPoint; Code: TCodeBuffer;
   Positions: TCodeXYPositions;
-  var NewIdentifier: string;
+  var NewIdentifier, NewIdentifierValue: string;
   var NewSourceLines: string;
-  var ResourcestringSection: integer;
+  var ResStrSectionCode: TCodeBuffer;
+  var ResStrSectionXY: TPoint;
   var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
-  
+
 
 implementation
 
@@ -130,12 +131,15 @@ uses
 function ShowMakeResStrDialog(
   const StartPos, EndPos: TPoint; Code: TCodeBuffer;
   Positions: TCodeXYPositions;
-  var NewIdentifier: string;
+  var NewIdentifier, NewIdentifierValue: string;
   var NewSourceLines: string;
-  var ResourcestringSection: integer;
+  var ResStrSectionCode: TCodeBuffer;
+  var ResStrSectionXY: TPoint;
   var InsertPolicy: TResourcestringInsertPolicy): TModalResult;
 var
   MakeResStrDialog: TMakeResStrDialog;
+  Section: PCodeXYPosition;
+  ResourcestringSectionID: Integer;
 begin
   MakeResStrDialog:=TMakeResStrDialog.Create(Application);
   MakeResStrDialog.SetSource(Code,StartPos,EndPos);
@@ -160,12 +164,15 @@ begin
   if Result=mrOk then begin
     // return results
     NewIdentifier:=MakeResStrDialog.GetIdentifier;
-    ResourcestringSection:=MakeResStrDialog.ResStrSectionComboBox.ItemIndex;
-    NewSourceLines:=MakeResStrDialog.GetNewSource;
+    ResourcestringSectionID:=MakeResStrDialog.ResStrSectionComboBox.ItemIndex;
+    MakeResStrDialog.GetNewSource(NewSourceLines,NewIdentifierValue);
     if MakeResStrDialog.InsertAlphabeticallyResStrRadioButton.Checked then
       InsertPolicy:=rsipAlphabetically
     else
       InsertPolicy:=rsipAppend;
+    Section:=CodeToolBoss.Positions[ResourcestringSectionID];
+    ResStrSectionCode:=Section^.Code;
+    ResStrSectionXY:=Point(Section^.X,Section^.Y);
   end;
 
   // save settings and clean up
@@ -568,8 +575,11 @@ begin
 end;
 
 procedure TMakeResStrDialog.UpdateSourcePreview;
+var
+  NewSource, NewValue: string;
 begin
-  SrcPreviewSynEdit.Text:=GetNewSource;
+  GetNewSource(NewSource,NewValue);
+  SrcPreviewSynEdit.Text:=NewSource;
 end;
 
 function TMakeResStrDialog.GetIdentifier: string;
@@ -616,11 +626,11 @@ begin
                                 CodeXY^.Code,CodeXY^.X,CodeXY^.Y,Identifier);
 end;
 
-function TMakeResStrDialog.GetNewSource: string;
+procedure TMakeResStrDialog.GetNewSource(var NewSource,
+  ResourceStringValue: string);
 var
   FormatStringConstant: string;
   FormatParameters: string;
-  NewSource: String;
   LeftSide: String;
   LastLine: string;
   NewString: String;
@@ -642,9 +652,9 @@ begin
 
   NewSource:=LeftSide+NewString+RightSide;
   with CodeToolBoss.SourceChangeCache.BeautifyCodeOptions do
-    NewSource:=BeautifyStatement(NewSource,Indent);
+    NewSource:=BeautifyStatement(NewSource,0);
 
-  Result:=NewSource;
+  ResourceStringValue:=FormatStringConstant;
 end;
 
 

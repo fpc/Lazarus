@@ -31,9 +31,9 @@ begin
   // this is done in the overriden methods
 end;
 
-constructor TButtonControl.Create(AOwner: TComponent);
+constructor TButtonControl.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   ControlStyle:=ControlStyle-csMultiClicks-[csAcceptsControls];
 end;
 

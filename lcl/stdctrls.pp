@@ -614,7 +614,7 @@ type
     property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
   end;
 
 
@@ -643,7 +643,7 @@ type
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
     property State: TCheckBoxState read GetState write SetState;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
   published
     property TabOrder;
     property TabStop;
@@ -769,7 +769,7 @@ type
   TToggleBox = class(TCustomCheckBox)
   private
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
   published
     property AllowGrayed;
     property Anchors;
@@ -1394,6 +1394,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.77  2003/03/08 21:51:57  mattias
   make resource string dialog nearly complete
 

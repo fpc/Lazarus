@@ -75,14 +75,14 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TCustomCheckBox.Create
-  Params:  AOwner: the owner of the class
+  Params:  TheOwner: the owner of the class
   Returns: Nothing
 
   Constructor for custom checkbox.
  ------------------------------------------------------------------------------}
-constructor TCustomCheckBox.Create(AOwner : TComponent);
+constructor TCustomCheckBox.Create(TheOwner : TComponent);
 begin
-  Inherited Create(AOwner);
+  Inherited Create(TheOwner);
   FState       := cbUnchecked;
   FAllowGrayed := True;
   Height:=20;
@@ -185,6 +185,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.10  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.9  2002/10/09 10:22:54  lazarus
   MG: fixed client origin coordinates
 

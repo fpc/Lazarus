@@ -105,6 +105,11 @@ function TrimCodeSpace(const ACode: string): string;
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
 function StringToPascalConst(const s: string): string;
 
+// string constants
+function SplitStringConstant(const StringConstant: string;
+    FirstLineLength, OtherLineLengths, Indent: integer;
+    const NewLine: string): string;
+
 // other useful stuff
 procedure RaiseCatchableException(const Msg: string);
 
@@ -214,7 +219,9 @@ implementation
 var
   IsIDChar,          // ['a'..'z','A'..'Z','0'..'9','_']
   IsIDStartChar,     // ['a'..'z','A'..'Z','_']
-  IsSpaceChar
+  IsSpaceChar,
+  IsNumberChar,
+  IsHexNumberChar
      : array[char] of boolean;
 
 function Min(i1, i2: integer): integer;
@@ -2096,6 +2103,263 @@ begin
   Convert(Result);
 end;
 
+function SplitStringConstant(const StringConstant: string;
+  FirstLineLength, OtherLineLengths, Indent: integer;
+  const NewLine: string): string;
+{ Split long string constants
+  If possible it tries to split on word boundaries.
+
+  Examples:
+  1.
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ',15,20,6
+    becomes:  |'ABCDEFGHIJKLM'|
+              |      +'NOPQRSTUVWX'|
+              |      +'YZ'|
+    Result:
+      'ABCDEFGHIJKLM'#13#10      +'NOPQRSTUVWX'#13#10      +'YZ'
+      
+  2.
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ',5,20,6
+
+  
+}
+const
+  // string constant character types:
+  stctStart      = 'S'; // ' start char
+  stctEnd        = 'E'; // ' end char
+  stctWordStart  = 'W'; // word char after non word char
+  stctQuotation1 = 'Q'; // first ' of a double ''
+  stctQuotation2 = 'M'; // second ' of a double ''
+  stctChar       = 'C'; // normal character
+  stctHash       = '#'; // hash
+  stctHashNumber = '0'; // hash number
+  stctLineEnd10  = #10; // hash number is 10
+  stctLineEnd13  = #13; // hash number is 13
+  stctJunk       = 'j'; // junk
+
+var
+  SrcLen: Integer;
+  Src: String;
+  CurLineMax: Integer;
+  ParsedSrc: string;
+  ParsedLen: integer;
+  SplitPos: integer;
+
+  procedure ParseSrc;
+  var
+    APos: Integer;
+    NumberStart: Integer;
+    Number: Integer;
+  begin
+    SetLength(ParsedSrc,CurLineMax+1);
+    APos:=1;
+    ParsedLen:=CurLineMax+1;
+    if ParsedLen>SrcLen then ParsedLen:=SrcLen;
+    while APos<=ParsedLen do begin
+      if Src[APos]='''' then begin
+        ParsedSrc[APos]:=stctStart;
+        inc(APos);
+        while APos<=ParsedLen do begin
+          if (Src[APos]='''') then begin
+            inc(APos);
+            if (APos<=ParsedLen) and (Src[APos]='''') then begin
+              // double ''
+              ParsedSrc[APos-1]:=stctQuotation1;
+              ParsedSrc[APos]:=stctQuotation2;
+              inc(APos);
+            end else begin
+              // end of string
+              ParsedSrc[APos-1]:=stctEnd;
+              break;
+            end;
+          end else begin
+            // normal char
+            if (Src[APos] in ['A'..'Z','a'..'z'])
+            and (APos>1)
+            and (ParsedSrc[APos-1]=stctChar)
+            and (not (Src[APos-1] in ['A'..'Z','a'..'z'])) then
+              ParsedSrc[APos]:=stctWordStart
+            else
+              ParsedSrc[APos]:=stctChar;
+            inc(APos);
+          end;
+        end;
+      end else if Src[APos]='#' then begin
+        ParsedSrc[APos]:=stctHash;
+        inc(APos);
+        NumberStart:=APos;
+        if (APos<=ParsedLen) then begin
+          // parse character number
+          if IsNumberChar[Src[APos]] then begin
+            // parse decimal number
+            while (APos<=ParsedLen) and IsNumberChar[Src[APos]] do begin
+              ParsedSrc[APos]:=stctHashNumber;
+              inc(APos);
+            end;
+          end else if Src[APos]='$' then begin
+            // parse hex number
+            while (APos<=ParsedLen) and IsHexNumberChar[Src[APos]] do begin
+              ParsedSrc[APos]:=stctHashNumber;
+              inc(APos);
+            end;
+          end;
+          Number:=StrToIntDef(copy(Src,NumberStart,APos-NumberStart),-1);
+          if (Number=10) or (Number=13) then begin
+            while NumberStart<APos do begin
+              ParsedSrc[NumberStart]:=chr(Number);
+              inc(NumberStart);
+            end;
+          end;
+        end;
+      end else begin
+        // junk
+        ParsedSrc[APos]:=stctJunk;
+        inc(APos);
+      end;
+    end;
+  end;
+  
+  function SearchCharLeftToRight(c: char): integer;
+  begin
+    Result:=1;
+    while (Result<=ParsedLen) and (ParsedSrc[Result]<>c) do
+      inc(Result);
+    if Result>ParsedLen then Result:=-1;
+  end;
+  
+  function SearchDiffCharLeftToRight(StartPos: integer): integer;
+  begin
+    Result:=StartPos+1;
+    while (Result<=ParsedLen) and (ParsedSrc[Result]=ParsedSrc[StartPos]) do
+      inc(Result);
+  end;
+  
+  procedure SplitAtNewLineCharConstant;
+  var
+    HashPos: Integer;
+    NewSplitPos: Integer;
+  begin
+    if SplitPos>0 then exit;
+    // check if there is a newline character constant
+    HashPos:=SearchCharLeftToRight(stctLineEnd10)-1;
+    if (HashPos<1) then begin
+      HashPos:=SearchCharLeftToRight(stctLineEnd13)-1;
+      if HashPos<1 then exit;
+    end;
+    NewSplitPos:=SearchDiffCharLeftToRight(HashPos+1);
+    if NewSplitPos>CurLineMax then exit;
+    // check if this is a double new line char const #13#10
+    if (NewSplitPos<ParsedLen) and (ParsedSrc[NewSplitPos]=stctHash)
+    and (ParsedSrc[NewSplitPos+1] in [stctLineEnd10,stctLineEnd13])
+    and (ParsedSrc[NewSplitPos+1]<>ParsedSrc[NewSplitPos-1])
+    then begin
+      NewSplitPos:=SearchDiffCharLeftToRight(NewSplitPos+1);
+      if NewSplitPos>CurLineMax then exit;
+    end;
+    SplitPos:=NewSplitPos;
+  end;
+  
+  procedure SplitBetweenConstants;
+  var
+    APos: Integer;
+  begin
+    if SplitPos>0 then exit;
+    APos:=CurLineMax;
+    while (APos>=2) do begin
+      if (ParsedSrc[APos] in [stctHash,stctStart]) then begin
+        SplitPos:=APos;
+        exit;
+      end;
+      dec(APos);
+    end;
+  end;
+  
+  procedure SplitAtWordBoundary;
+  var
+    APos: Integer;
+  begin
+    if SplitPos>0 then exit;
+    APos:=CurLineMax-1;
+    while (APos>2) and (APos>(CurLineMax shr 1)) do begin
+      if (ParsedSrc[APos]=stctWordStart) then begin
+        SplitPos:=APos;
+        exit;
+      end;
+      dec(APos);
+    end;
+  end;
+  
+  procedure SplitDefault;
+  begin
+    if SplitPos>0 then exit;
+    SplitPos:=CurLineMax;
+    while (SplitPos>1) do begin
+      if (ParsedSrc[SplitPos]
+      in [stctStart,stctWordStart,stctChar,stctHash,stctJunk])
+      then
+        break;
+      dec(SplitPos);
+    end;
+  end;
+  
+  procedure Split;
+  var
+    CurIndent: Integer;
+  begin
+    // move left split side from Src to Result
+    //writeln('Split: SplitPos=',SplitPos,' ',copy(Src,SplitPos-5,6));
+    Result:=Result+copy(Src,1,SplitPos-1);
+    Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
+    if ParsedSrc[SplitPos] in [stctWordStart,stctChar] then begin
+      // line break in string constant
+      // -> add ' to end of last line and to start of next
+      Result:=Result+'''';
+      Src:=''''+Src;
+    end;
+    SrcLen:=length(Src);
+    // calculate indent size for next line
+    CurLineMax:=OtherLineLengths;
+    CurIndent:=Indent;
+    if CurIndent>(CurLineMax-10) then
+      CurIndent:=CurLineMax-10;
+    if CurIndent<0 then CurIndent:=0;
+    // add indent spaces to Result
+    Result:=Result+NewLine+GetIndentStr(CurIndent)+'+';
+    // calculate next maximum line length
+    CurLineMax:=CurLineMax-CurIndent-1;
+  end;
+
+begin
+  Result:='';
+  if FirstLineLength<5 then FirstLineLength:=5;
+  if OtherLineLengths<5 then OtherLineLengths:=5;
+  Src:=StringConstant;
+  SrcLen:=length(Src);
+  CurLineMax:=FirstLineLength;
+  //writeln('SplitStringConstant FirstLineLength=',FirstLineLength,
+  //' OtherLineLengths=',OtherLineLengths,' Indent=',Indent,' ');
+  repeat
+    //writeln('SrcLen=',SrcLen,' CurMaxLine=',CurLineMax);
+    //writeln('Src="',Src,'"');
+    //writeln('Result="',Result,'"');
+    if SrcLen<=CurLineMax then begin
+      // line fits
+      Result:=Result+Src;
+      break;
+    end;
+    // split line -> search nice split position
+    ParseSrc;
+    SplitPos:=0;
+    SplitAtNewLineCharConstant;
+    SplitBetweenConstants;
+    SplitAtWordBoundary;
+    SplitDefault;
+    Split;
+  until false;
+  //writeln('END Result="',Result,'"');
+  //writeln('SplitStringConstant END---------------------------------');
+end;
+
 procedure RaiseCatchableException(const Msg: string);
 begin
   { Raises an exception.
@@ -2218,6 +2482,8 @@ begin
     IsIDChar[c]:=(c in ['a'..'z','A'..'Z','0'..'9','_']);
     IsIDStartChar[c]:=(c in ['a'..'z','A'..'Z','_']);
     IsSpaceChar[c]:=c in [#0..#32];
+    IsNumberChar[c]:=c in ['0'..'9'];
+    IsHexNumberChar[c]:=c in ['0'..'9','A'..'Z','a'..'z'];
   end;
 end;
 
