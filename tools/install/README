@@ -33,4 +33,5 @@ Installation tools
   create rpms for any system by building it on the destination system.
   The package depends on 'fpc >= 1.0.7' and 'fpcsrc >= 1.0.7'.
 
-
+5. To create other system specific rpms:
+  rpm --rebuild lazarus-0.8.5-1.src.rpm
