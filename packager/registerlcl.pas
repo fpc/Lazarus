@@ -41,7 +41,7 @@ uses
   LazarusPackageIntf,
   Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, Forms, Grids, Controls,
   Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs,
-  DBCtrls;
+  DBCtrls, DBGrids;
   
 procedure Register;
 
@@ -66,6 +66,7 @@ begin
   RegisterUnit('PairSplitter',@PairSplitter.Register);
   RegisterUnit('ExtDlgs',@ExtDlgs.Register);
   RegisterUnit('DBCtrls',@DBCtrls.Register);
+  RegisterUnit('DBGrids',@DBGrids.Register);
 end;
 
 end.

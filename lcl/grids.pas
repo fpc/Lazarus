@@ -1,26 +1,37 @@
+{ $Id$}
+{
+ /***************************************************************************
+                               Grids.pas
+                               ---------
+                     An interface to DB aware Controls
+                     Initial Revision : Sun Sep 14 2003
+
+
+ ***************************************************************************/
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 {
 
 TCustomGrid, TDrawGrid and TStringGrid for Lazarus
 Copyright (C) 2002  Jesus Reyes Aguilar.
 email: jesusrmx@yahoo.com.mx
 
-THIS CONTROL IS FREEWARE - USE AS YOU WILL
-
-if you release sourcecode that uses this control, please credit me
-or leave this header intact.  if you release a compiled application
-that uses this code, please credit me somewhere in a little bitty
-location so I can at least get bragging rights!
-(Extract: from Tony's checkbook tracker, http://tony.maro.net)
-
-This code is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-Cur version: 0.8.4
+Cur version: 0.8.5
 The log was moved to end of file, search for: The_Log
 
 }
-
 unit Grids;
 
 {$mode objfpc}{$H+}
@@ -86,47 +97,38 @@ type
     goDblClickAutoSize,   // dblclicking columns borders (on hdrs) resize col.
     goSmoothScroll        // Switch scrolling mode (pixel scroll is by default)
   );
-  TGridSaveOptions = (
-    soDesign,
-    soAttributes,
-    soContent,
-    soPosition
-  );
-
   TGridOptions = set of TGridOption;
+  
+  TGridSaveOptions = (
+    soDesign,             // Save grid structure (col/row count and Options)
+    soAttributes,         // Save grid attributes (Font,Brush,TextStyle)
+    soContent,            // Save Grid Content (Text in stringgrid)
+    soPosition            // Save Grid cursor and selection position
+  );
+  TSaveOptions = Set of TGridSaveOptions;
+
   TGridDrawState = set of (gdSelected, gdFocused, gdFixed);
   TGridState =
     (gsNormal, gsSelecting, gsRowSizing, gsColSizing,gsRowMoving,gsColMoving);
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells);
-  TSaveOptions = Set of TGridSaveOptions;
   
   TUpdateOption = (uoNone, uoQuick, uoFull);
   TAutoAdvance = (aaDown,aaRight);
   
   TGridStatus = (stNormal, stEditorHiding, stEditorShowing, stFocusing);
+  TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
   
+const
+  soAll: TSaveOptions = [soDesign, soAttributes, soContent, soPosition];
 
 type
-  PCellFontData=^TCellFontData;
-  TCellFontData=record
-    Pitch: TFontPitch;
-    Styles: TFontStyles;
-    Size: Integer;
-    CharSet: TFontCharSet;
-    Face: PChar;
-  end;
 
-  PCellAttr=^TCellAttr;
-  TCellAttr=record
-    Color: TColor;
-    FontColor: TColor;
-    FontData: PCellFontData;
-    TextStyle: TTextStyle;
-  end;
-      
+  TCustomGrid = class;
+  
+
   PCellProps= ^TCellProps;
   TCellProps=record
-    Attr: PCellAttr;
+    Attr: pointer;
     Data: TObject;
     Text: pchar;
   end;
@@ -134,14 +136,10 @@ type
   PColRowProps= ^TColRowProps;
   TColRowProps=record
     Size: Integer;
-    FixedAttr: PCellAttr;
-    NormalAttr: PCellAttr;
+    FixedAttr: pointer;
+    NormalAttr: pointer;
   end;
-  
-  
-type
-  TCustomGrid = class;
-  
+
   PGridMessage=^TGridMessage;
   TGridMessage=record
     MsgID: Cardinal;
@@ -152,6 +150,8 @@ type
     Options: Integer;
   end;
 
+ type
+
   { Default cell editor for TStringGrid }
   TStringCellEditor=class(TCustomEdit)
   private
@@ -159,71 +159,69 @@ type
   protected
     //procedure WndProc(var TheMessage : TLMessage); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    procedure msg_SetValue(var Msg: TGridMessage); Message GM_SETVALUE;
-    procedure msg_GetValue(var Msg: TGridMessage); Message GM_GETVALUE;
-    procedure msg_SetGrid(var Msg: TGridMessage); Message GM_SETGRID;
-    procedure msg_SelectAll(var Msg: TGridMessage); MEssage GM_SELECTALL;
+    procedure msg_SetValue(var Msg: TGridMessage); message GM_SETVALUE;
+    procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
+    procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
+    procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
   end;
   
   TOnDrawCell =
     procedure(Sender: TObject; Col, Row: Integer; aRect: TRect;
-              aState:TGridDrawState) of Object;
+              aState:TGridDrawState) of object;
               
-  TOnCanSelectEvent =
+  TOnSelectCellEvent =
     procedure(Sender: TObject; Col, Row: Integer;
-              var CanSelect: Boolean) of Object;
+              var CanSelect: Boolean) of object;
+              
   TOnSelectEvent =
-    procedure(Sender: TObject; Col,Row: Integer) of Object;
+    procedure(Sender: TObject; Col,Row: Integer) of object;
     
-  TOnCellAttrEvent =
-    procedure(Sender:TObject; const Col, Row:Integer; State: TGridDrawState;
-              var Attr: TCellAttr) of Object;
   TGridOperationEvent =
     procedure (Sender: TObject; IsColumn:Boolean;
                sIndex,tIndex: Integer) of object;
   THdrEvent =
-    procedure(Sender: TObject; IsColumn: Boolean; Index: Integer) of Object;
+    procedure(Sender: TObject; IsColumn: Boolean; index: Integer) of object;
     
   TOnCompareCells =
-    function (Sender: TObject; Acol,ARow,Bcol,BRow: Integer): Integer of Object;
+    function (Sender: TObject; Acol,ARow,Bcol,BRow: Integer): Integer of object;
     
   TSelectEditorEvent =
     procedure(Sender: TObject; Col,Row: Integer;
-              var Editor: TWinControl) of Object;
+              var Editor: TWinControl) of object;
 
   TVirtualGrid=class
     private
       FColCount: Integer;
       FRowCount: Integer;
       FCells, FCols, FRows: TArray;
-      function GetCells(Col, Row: Integer): PCellProps;
-      function Getrows(Row: Integer): PColRowprops;
-      function Getcols(Col: Integer): PColRowprops;
+      function  GetCells(Col, Row: Integer): PCellProps;
+      function  Getrows(Row: Integer): PColRowprops;
+      function  Getcols(Col: Integer): PColRowprops;
       procedure SetCells(Col, Row: Integer; const AValue: PCellProps);
       procedure Setrows(Row: Integer; const Avalue: PColRowprops);
       procedure Setcolcount(const Avalue: Integer);
       procedure Setrowcount(const Avalue: Integer);
       procedure Setcols(Col: Integer; const Avalue: PColRowprops);
     protected
-      function GetDefaultCell: PcellProps;
-      function GetDefaultColRow: PColRowProps;
       procedure doDestroyItem(Sender: TObject; Col,Row:Integer; var Item: Pointer);
       procedure doNewItem(Sender: TObject; Col,Row:Integer; var Item: Pointer);
-      procedure DeleteColRow(IsColumn: Boolean; Index: Integer);
+      procedure DeleteColRow(IsColumn: Boolean; index: Integer);
       procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-      procedure ExchangeColRow(IsColumn:Boolean; Index,WithIndex: Integer);
-      procedure DisposeCell(Var P: PCellProps);
-      procedure DisposeColRow(var p: PColRowProps);
+      procedure ExchangeColRow(IsColumn:Boolean; index,WithIndex: Integer);
+      procedure DisposeCell(var P: PCellProps); virtual;
+      procedure DisposeColRow(var p: PColRowProps); virtual;
     public
       constructor Create;
       destructor Destroy; override;
       procedure Clear;
-      
+      function GetDefaultCell: PcellProps;
+      function GetDefaultColRow: PColRowProps;
+
       property ColCount: Integer read FColCount write SetColCount;
-      Property RowCount: Integer read FRowCount write SetRowCount;
+      property RowCount: Integer read FRowCount write SetRowCount;
       
       property Celda[Col,Row: Integer]: PCellProps read GetCells write SetCells;
-      Property Cols[Col: Integer]: PColRowProps read GetCols write SetCols;
+      property Cols[Col: Integer]: PColRowProps read GetCols write SetCols;
       property Rows[Row: Integer]: PColRowProps read GetRows write SetRows;
   end;
 
@@ -247,16 +245,20 @@ type
       AccumHeight: TList;     // Accumulated Height per row
       HScrDiv,VScrDiv: Double;      // Transform const for ThumbTracking
       TLColOff,TLRowOff: Integer;   // TopLeft Offset in pixels
+      MaxTopLeft: TPoint;     // Max Top left ( cell coorditates)
     end;
 
 type
-  //TCustomGrid=class(TScrollBox)
-  //TCustomGrid=class(TCustomControl)
-  TCustomGrid=class(TScrollingWinControl)
+  TCustomGrid=class(TCustomControl)
   private
     FAutoAdvance: TAutoAdvance;
     FDefaultDrawing: Boolean;
     FEditor: TWinControl;
+    FEditorHiding: Boolean;
+    FEditorMode: Boolean;
+    FEditorShowing: Boolean;
+    FEditorKey: Boolean;
+    FEditorOptions: Integer;
     FOnCompareCells: TOnCompareCells;
     FGridLineStyle: TPenStyle;
     FGridLineWidth: Integer;
@@ -264,10 +266,8 @@ type
     FCol,FRow, FFixedCols, FFixedRows: Integer;
     FOnSelectEditor: TSelectEditorEvent;
     FGridLineColor: TColor;
-    
-    FFocusColor: TColor;
+    FFixedcolor, FFocusColor, FSelectedColor: TColor;
     FCols,FRows: TList;
-    
     FsaveOptions: TSaveOptions;
     FScrollBars: TScrollStyle;
     FSelectActive: Boolean;
@@ -276,113 +276,112 @@ type
     FRange: TRect;
     FDragDx: Integer;
     FMoveLast: TPoint;
-    
     FUpdateCount: Integer;
     FUpdateScrollBarsCount: Integer;
-
-    
-    // Cached Values
     FGCache: TGridDataCache;
-    // Options
     FOptions: TGridOptions;
-
     FOnDrawCell: TOnDrawcell;
-    FOnCanSelect: TOnCanSelectEvent;
     FOnBeforeSelection: TOnSelectEvent;
     FOnSelection: TOnSelectEvent;
-    FOnTopLeftChange: TNotifyEvent;
+    FOnTopLeftChanged: TNotifyEvent;
     FSkipUnselectable: Boolean;
     
     procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
-    procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
     procedure CacheVisibleGrid;
-    function doColSizing(X,Y: Integer): Boolean;
-    function doRowSizing(X,Y: Integer): Boolean;
+    procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
+    function  ColRowToOffset(IsCol,Fisical:Boolean; index: Integer; var Ini,Fin:Integer): Boolean;
+    function  doColSizing(X,Y: Integer): Boolean;
+    function  doRowSizing(X,Y: Integer): Boolean;
     procedure doColMoving(X,Y: Integer);
     procedure doRowMoving(X,Y: Integer);
     procedure doTopleftChange(DimChg: Boolean);
-
-    function OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
-    function ColRowToOffset(IsCol,Fisical:Boolean; Index: Integer; var Ini,Fin:Integer): Boolean;
-
-    function GetLeftCol: Integer;
-    function GetTopRow: Longint;
-    function GetVisibleColCount: Integer;
-    function GetVisibleRowCount: Integer;
-    function GetColCount: Integer;
-    function GetRowCount: Integer;
-    function GetRowHeights(Arow: Integer): Integer;
-    function GetSelection: TGridRect;
-    function GetColWidths(Acol: Integer): Integer;
-    function GetVisibleGrid: TRect;
+    procedure EditorGetValue;
+    procedure EditorHide;
+    procedure EditorPos;
+    procedure EditorReset;
+    procedure EditorSelectAll;
+    procedure EditorShowChar(Ch: Char);
+    procedure EditorSetMode(const AValue: Boolean);
+    procedure EditorSetValue;
+    function  EditorShouldEdit: Boolean;
+    procedure EditorShow;
+    function  GetLeftCol: Integer;
+    function  GetColCount: Integer;
+    function  GetColWidths(Acol: Integer): Integer;
+    function  GetRowCount: Integer;
+    function  GetRowHeights(Arow: Integer): Integer;
+    function  GetSelection: TGridRect;
+    function  GetTopRow: Longint;
+    function  GetVisibleColCount: Integer;
+    function  GetVisibleGrid: TRect;
+    function  GetVisibleRowCount: Integer;
     procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Ts: TTextStyle);
-    function ScrollToCell(const aCol,aRow: Integer): Boolean;
-    function ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
+    function  OffsetToColRow(IsCol,Fisical:Boolean; Offset:Integer; var Rest:Integer): Integer;
+    function  ScrollToCell(const aCol,aRow: Integer): Boolean;
+    function  ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
+    procedure SetCol(Valor: Integer);
+    procedure SetColwidths(Acol: Integer; Avalue: Integer);
+    procedure SetColCount(Valor: Integer);
+    procedure SetDefColWidth(Valor: Integer);
+    procedure SetDefRowHeight(Valor: Integer);
     procedure SetDefaultDrawing(const AValue: Boolean);
     procedure SetEditor(AValue: TWinControl);
-    procedure SetFocusColor(const AValue: TColor);
-    procedure SetGridLineStyle(const AValue: TPenStyle);
-    procedure SetSelectActive(const AValue: Boolean);
-    procedure SetSelection(const AValue: TGridRect);
     procedure SetFixedCols(const AValue: Integer);
     procedure SetFixedRows(const AValue: Integer);
+    procedure SetFocusColor(const AValue: TColor);
     procedure SetGridLineColor(const AValue: TColor);
+    procedure SetGridLineStyle(const AValue: TPenStyle);
     procedure SetGridLineWidth(const AValue: Integer);
     procedure SetLeftCol(const AValue: Integer);
     procedure SetOptions(const AValue: TGridOptions);
-    procedure SetScrollBars(const AValue: TScrollStyle);
-    procedure SetTopRow(const AValue: Integer);
-    procedure Setrowheights(Arow: Integer; Avalue: Integer);
-    procedure Setcolwidths(Acol: Integer; Avalue: Integer);
-    procedure SetColCount(Valor: Integer);
-    procedure SetRowCount(Valor: Integer);
-    procedure SetDefColWidth(Valor: Integer);
-    procedure SetDefRowHeight(Valor: Integer);
-    procedure SetCol(Valor: Integer);
     procedure SetRow(Valor: Integer);
+    procedure SetRowCount(Valor: Integer);
+    procedure SetRowheights(Arow: Integer; Avalue: Integer);
+    procedure SetScrollBars(const AValue: TScrollStyle);
+    procedure SetSelectActive(const AValue: Boolean);
+    procedure SetSelection(const AValue: TGridRect);
+    procedure SetTopRow(const AValue: Integer);
     procedure TryScrollTo(aCol,aRow: integer);
-    procedure UpdateScrollBarPos(Which: TControlScrollbar);
-    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure UpdateScrollBarPos(Which: TScrollStyle);
+    procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    procedure WMChar(var Message: TLMChar); message LM_CHAR;
-    
-    
+    procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
-    
-    procedure WndProc(var TheMessage : TLMessage); override;
-    
     procedure AutoAdjustColumn(aCol: Integer); virtual;
-    function  CellRect(ACol, ARow: Integer): TRect;
-    
-    procedure ColRowDeleted(IsColumn: Boolean; Index: Integer); Dynamic;
-    procedure ColRowExchanged(IsColumn: Boolean; Index,WithIndex: Integer); Dynamic;
-    procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); Dynamic;
-
+    procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
+    procedure ColRowDeleted(IsColumn: Boolean; index: Integer); dynamic;
+    procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); dynamic;
+    procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); dynamic;
     procedure ColWidthsChanged; dynamic;
+    procedure CreateWnd; override;
+    procedure CreateParams(var Params: TCreateParams); override;
     procedure DblClick; override;
     procedure DestroyHandle; override;
     procedure doExit; override;
     procedure doEnter; override;
-
-    procedure DrawEdges;
     procedure DrawBackGround; virtual;
+    procedure DrawByRows; virtual;
+    procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
+    procedure DrawCellGrid(Rect: TRect; aCol,aRow: Integer; astate: TGridDrawState);
+    procedure DrawColRowMoving;
+    procedure DrawEdges;
     //procedure DrawFixedCells; virtual;
-    //procedure DrawInteriorCells; virtual;
     procedure DrawFocused; virtual;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect; aState:TGridDrawstate); virtual;
-    procedure DrawColRowMoving;
-    procedure DrawCell(aCol,aRow:Integer; aRect:TRect; aState:TGridDrawState); virtual;
-    
-    procedure DrawByRows; virtual;
+    //procedure DrawInteriorCells; virtual;
     procedure DrawRow(aRow: Integer); virtual;
-
-    procedure HeaderClick(IsColumn: Boolean; Index: Integer); Dynamic;
-    procedure InvalidateCol(ACol: Integer);
-    procedure InvalidateRow(ARow: Integer);
+    procedure EditorCancel; virtual;
+    procedure EditordoGetValue; virtual;
+    procedure EditordoSetValue; virtual;
+    function  GetFixedcolor: TColor; virtual;
+    function  GetSelectedColor: TColor; virtual;
+    procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
+    procedure InvalidateCol(ACol: Integer);
     procedure InvalidateGrid;
+    procedure InvalidateRow(ARow: Integer);
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); override;
     procedure LoadContent(cfg: TXMLConfig; Version: Integer); virtual;
@@ -392,296 +391,151 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean;
-    function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
-    procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
-
-
-    procedure BeforeMoveSelection(const DCol,DRow: Integer); virtual;
     procedure MoveSelection; virtual;
-    function  CanSelect(const DCol,DRow: Integer): Boolean;
-    procedure DrawCellGrid(Rect: TRect; aCol,aRow: Integer; astate: TGridDrawState);
     procedure Paint; override;
+    procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); virtual;
+    procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
     procedure ResetOffset(chkCol, ChkRow: Boolean);
     procedure RowHeightsChanged; dynamic;
-    function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
-    procedure SizeChanged(OldColCount, OldRowCount: Integer); dynamic;
-    procedure Sort(ColSorting: Boolean; Index,IndxFrom,IndxTo:Integer); virtual;
-    procedure TopLeftChanged; dynamic;
     procedure SaveContent(cfg: TXMLConfig); virtual;
-    procedure VisualChange; virtual;
-
-    procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
-    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
-    
-    // Editor support
-  private
-    FEditorHiding: Boolean;
-    FEditorShowing: Boolean;
-    FEditorKey: Boolean;
-    FEditorOptions: Integer;
-    procedure EditorGetValue;
-    procedure EditorHide;
-    procedure EditorSetValue;
-    procedure EditorShow;
-    procedure EditorPos;
-    procedure EditorReset;
-    procedure EditorSelectAll;
-    procedure EditorShowChar(Ch: Char);
-    function ShouldEdit: Boolean;
-  protected
-    procedure EditorCancel; virtual;
-    procedure doEditorGetValue; virtual;
-    procedure doEditorSetValue; virtual;
+    procedure ScrollBarRange(Which:Integer; IsVisible:boolean; aRange: Integer);
+    procedure ScrollBarPosition(Which, Value: integer);
+    function  ScrollBarIsVisible(Which:Integer): Boolean;
+    procedure ScrollBarPage(Which: Integer; aPage: Integer);
+    procedure ScrollBarShow(Which: Integer; aValue: boolean);
+    function  ScrollBarAutomatic(Which: TScrollStyle): boolean; virtual;
     procedure SelectEditor; virtual;
-  public
-    procedure EditorExit(Sender: TObject);
-    procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
-
-  protected
-    Property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
-    Property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
-    Property ColCount: Integer read GetColCount write SetColCount;
-    Property Col: Integer read FCol write SetCol;
-    Property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth;
-    Property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight;
+    function  SelectCell(ACol, ARow: Integer): Boolean; virtual;
+    procedure SetFixedcolor(const AValue: TColor); virtual;
+    procedure SetSelectedColor(const AValue: TColor); virtual;
+    procedure SizeChanged(OldColCount, OldRowCount: Integer); dynamic;
+    procedure Sort(ColSorting: Boolean; index,IndxFrom,IndxTo:Integer); virtual;
+    procedure TopLeftChanged; dynamic;
+    function  TryMoveSelection(Relative: Boolean; var DCol, DRow: Integer): Boolean;
+    procedure VisualChange; virtual;
+    procedure WMHScroll(var message : TLMHScroll); message LM_HScroll;
+    procedure WMVScroll(var message : TLMVScroll); message LM_VScroll;
+    procedure WndProc(var TheMessage : TLMessage); override;
+    
+    property AutoAdvance: TAutoAdvance read FAutoAdvance write FAutoAdvance default aaRight;
+    property Col: Integer read FCol write SetCol;
+    property ColCount: Integer read GetColCount write SetColCount;
+    property ColWidths[aCol: Integer]: Integer read GetColWidths write SetColWidths;
+    property DefaultColWidth: Integer read FDefColWidth write SetDefColWidth;
+    property DefaultRowHeight: Integer read FDefRowHeight write SetDefRowHeight;
     property DefaultDrawing: Boolean read FDefaultDrawing write SetDefaultDrawing default True;
-    Property DragDx: Integer read FDragDx write FDragDx;
-    Property Editor: TWinControl read FEditor write SetEditor;
-    Property FixedCols: Integer read FFixedCols write SetFixedCols;
-    Property FixedRows: Integer read FFixedRows write SetFixedRows;
-    Property FocusColor: TColor read FFocusColor write SetFocusColor;
-    Property GridLineColor: TColor read FGridLineColor write SetGridLineColor;
-    Property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
-    property GridWidth: Integer read FGCache.GridWidth;
+    property DragDx: Integer read FDragDx write FDragDx;
+    property Editor: TWinControl read FEditor write SetEditor;
+    property EditorMode: Boolean read FEditorMode write EditorSetMode;
+    property FixedCols: Integer read FFixedCols write SetFixedCols;
+    property FixedRows: Integer read FFixedRows write SetFixedRows;
+    property FixedColor: TColor read GetFixedColor write SetFixedcolor;
+    property FocusColor: TColor read FFocusColor write SetFocusColor;
+    property GCache: TGridDataCache read FGCAChe;
     property GridHeight: Integer read FGCache.GridHeight;
+    property GridLineColor: TColor read FGridLineColor write SetGridLineColor;
+    property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
     property GridLineWidth: Integer read FGridLineWidth write SetGridLineWidth default 1;
+    property GridWidth: Integer read FGCache.GridWidth;
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
     property Options: TGridOptions read FOptions write SetOptions;
-    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
-    Property SkipUnselectable: Boolean read FSkipUnselectable write FSkipUnselectable;
-    Property RowCount: Integer read GetRowCount write SetRowCount;
-    Property Row: Integer read FRow write SetRow;
-    Property SaveOptions: TSaveOptions read FsaveOptions write FSaveOptions;
-    Property SelectActive: Boolean read FSelectActive write SetSelectActive;
+    property Row: Integer read FRow write SetRow;
+    property RowCount: Integer read GetRowCount write SetRowCount;
+    property RowHeights[aRow: Integer]: Integer read GetRowHeights write SetRowHeights;
+    property SaveOptions: TSaveOptions read FsaveOptions write FSaveOptions;
+    property SelectActive: Boolean read FSelectActive write SetSelectActive;
+    property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
     property Selection: TGridRect read GetSelection write SetSelection;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    property SkipUnselectable: Boolean read FSkipUnselectable write FSkipUnselectable;
     property TopRow: Integer read GetTopRow write SetTopRow;
-    Property RowHeights[aRow: Integer]: Integer read GetRowHeights write SetRowHeights;
     property VisibleColCount: Integer read GetVisibleColCount;
     property VisibleRowCount: Integer read GetVisibleRowCount;
 
-    Property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
-    Property OnCanSelect: TOnCanSelectEvent read fOnCanSelect write fOnCanSelect;
-    Property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
+    property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
+    property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
+    property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
+    property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
+    property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
+    property OnTopLeftChanged: TNotifyEvent read FOnTopLeftChanged write FOnTopLeftChanged;
     
-    Property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
-    Property OnTopLeftChange: TNotifyEvent read FOnTopLeftChange write FOnTopLeftChange;
-    Property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
-    Property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
-    Property GCache: TGridDataCache read FGCAChe;
   public
-    Constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Invalidate; override;
     
     { Exposed procs }
-    procedure DeleteColRow(IsColumn: Boolean; Index: Integer);
-    procedure ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer);
-    procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-    procedure SortColRow(IsColumn: Boolean; Index:Integer); overload;
-    procedure SortColRow(IsColumn: Boolean; Index,FromIndex,ToIndex: Integer); overload;
-    
-    procedure BeginUpdate;
     procedure AutoAdjustColumns;
+    procedure BeginUpdate;
+    function  CellRect(ACol, ARow: Integer): TRect;
     procedure Clear;
+    procedure DeleteColRow(IsColumn: Boolean; index: Integer);
+    procedure EditorExit(Sender: TObject);
+    procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EndUpdate(UO: TUpdateOption); overload;
     procedure EndUpdate(FullUpdate: Boolean); overload;
+    procedure ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+    function  IscellSelected(aCol,aRow: Integer): Boolean;
+    function  IscellVisible(aCol, aRow: Integer): Boolean;
     procedure LoadFromFile(FileName: string);
+    function  MouseToCell(Mouse: TPoint): TPoint;
+    function  MouseToLogcell(Mouse: TPoint): TPoint;
+    function  MouseToGridZone(X,Y: Integer; CellCoords: Boolean): TGridZone;
+    procedure MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
     procedure SaveToFile(FileName: string);
-
-    function ColRowToClientCellRect(aCol, aRow: Integer): TRect;
-    function MouseToCell(Mouse: TPoint): TPoint;
-    function MouseToLogcell(Mouse: TPoint): TPoint;
-    function MouseToGridZone(X,Y: Integer; CellCoords: Boolean): TGridZone;
-    function IsCellVisible(aCol, aRow: Integer): Boolean;
-    function IscellSelected(aCol,aRow: Integer): Boolean;
+    procedure SortColRow(IsColumn: Boolean; index:Integer); overload;
+    procedure SortColRow(IsColumn: Boolean; index,FromIndex,ToIndex: Integer); overload;
   end;
-      
-  TTextStyleAdapter=class
-  private
-    FTextStyle: TTextStyle;
-  protected
-    property TextStyle: TTextStyle read FTextStyle write FTextStyle;
-  public
-    property Alignment: TAlignment read FTextStyle.Alignment write FTextStyle.Alignment;
-    property Layout: TTextLayout read FTextStyle.Layout write FTextStyle.Layout;
-    property WordBreak: Boolean read FTextStyle.WordBreak write FTextStyle.WordBreak;
-    property Clipping: Boolean read FTextStyle.Clipping write FTextStyle.Clipping;
-    property ExpandTabs: Boolean read FTextStyle.ExpandTabs write FTextStyle.ExpandTabs;
-    property ShowPrefix: Boolean read FTextStyle.ShowPrefix write FTextStyle.ShowPrefix;
-    property Opaque: Boolean read FTextStyle.Opaque write FTextStyle.Opaque;
-    property SystemFont: Boolean read FTextStyle.SystemFont write FTextStyle.SystemFont;
-  end;
-  
-  TGridPropertyAdapter=class
-  private
-    FGrid: TCustomGrid;
-    FFont: TFont;
-    FColor: TColor;
-    FAlign: Integer;
-    FTextStyleAdapter: TTextStyleAdapter;
-
-    procedure setAlign(const AValue: Integer);
-    procedure setColor(const AValue: TColor);
-    procedure setFont(const AValue: TFont);
-    Procedure OnFontChange(Sender: TObject);
-  protected
-    procedure setAttr(Attr: TCellAttr);
-    property Grid: TCustomGrid read FGrid write FGrid;
-  public
-    constructor create;
-    destructor destroy; override;
-    
-    property Color: TColor read FColor write setColor;
-    property Font: TFont read FFont write setFont;
-    property Align: Integer read FAlign write setAlign;
-  end;
-
 
   TDrawGrid=class(TCustomGrid)
   private
-    FCellAttr: TCellAttr; // Attibute used to render Cell
     FOnColRowDeleted: TgridOperationEvent;
     FOnColRowExchanged: TgridOperationEvent;
     FOnColRowMoved: TgridOperationEvent;
     FOnHeaderClick: THdrEvent;
-    FGrid: TVirtualGrid;
-    FDefCellAttr, FdefSelCellAttr, FdefFixedCellAttr: TCellAttr;
-    FOnCellAttr: TOnCellAttrEvent;
-
-
-    function GetCellAlign(ACol, ARow: Integer): Integer;
-    function GetCellAttr(ACol, ARow: Integer): TCellAttr;
-    function GetCellColor(ACol, ARow: Integer): TColor;
-    function GetCellFontCOlor(ACol, ARow: Integer): TColor;
-    function GetColAlign(aCol: Integer): Integer;
-    function GetColAttr(aCol: Integer): TCellAttr;
-    function GetColColor(aCol: Integer): TColor;
-    function GetColFontColor(aCol: Integer): TColor;
-    function GetFixedColor: TColor;
-    function GetRowAlign(aRow: Integer): Integer;
-    function GetRowAttr(aRow: Integer): TCellAttr;
-    function GetRowColor(aRow: Integer): TColor;
-    function GetRowFontColor(aRow: Integer): TColor;
-    function getFixedColAlign(aCol: Integer): Integer;
-    function getFixedColAttr(aCol: Integer): TCellAttr;
-    function getfixedColColor(aCol: Integer): TColor;
-    function getFixedColFontColor(aCol: Integer): TColor;
-    function getFixedRowAlign(aRow: Integer): Integer;
-    function getFixedRowAttr(aRow: Integer): TCellAttr;
-    function getfixedRowColor(aRow: Integer): TColor;
-    function getFixedRowFontColor(aRow: Integer): TColor;
-    procedure SetCellAlign(ACol, ARow: Integer; const AValue: Integer);
-    procedure SetCellAttr(ACol, ARow: Integer; const AValue: TCellAttr);
-    procedure SetCellColor(ACol, ARow: Integer; const AValue: TColor);
-    procedure SetCellFontCOlor(ACol, ARow: Integer; const AValue: TColor);
-    procedure SetColAlign(aCol: Integer; const AValue: Integer);
-    procedure SetColAttr(aCol: Integer; const AValue: TCellAttr);
-    procedure SetColColor(aCol: Integer; const AValue: TColor);
-    procedure SetColFontColor(aCol: Integer; const AValue: TColor);
-    procedure SetDefaultCellAttr(const AValue: TCellAttr);
-    procedure SetFixedColor(const AValue: TColor);
-    procedure SetRowAlign(aRow: Integer; const AValue: Integer);
-    procedure SetRowAttr(aRow: Integer; const AValue: TCellAttr);
-    procedure SetRowColor(aRow: Integer; const AValue: TColor);
-    procedure SetRowFontColor(aRow: Integer; const AValue: TColor);
-    procedure setFixedColAlign(aCol: Integer; const AValue: Integer);
-    procedure setFixedColAttr(aCol: Integer; const AValue: TCellAttr);
-    procedure setfixedColColor(aCol: Integer; const AValue: TColor);
-    procedure setFixedcolFontColor(aCol: Integer; const AValue: TColor);
-    procedure setFixedRowAlign(aRow: Integer; const AValue: Integer);
-    procedure setFixedRowAttr(aRow: Integer; const AValue: TCellAttr);
-    procedure setFixedRowColor(aRow: Integer; const AValue: TColor);
-    procedure setFixedRowFontColor(aRow: Integer; const AValue: TColor);
-    procedure SetDefFixedCellAttr(const AValue: TCellAttr);
-    procedure SetDefSelCellAttr(const AValue: TCellAttr);
-
+    FOnSelectCell: TOnSelectcellEvent;
   protected
+    FGrid: TVirtualGrid;
     procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); virtual;
+    procedure ColRowDeleted(IsColumn: Boolean; index: Integer); override;
+    procedure ColRowExchanged(IsColumn: Boolean; index,WithIndex: Integer); override;
+    procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
+    function  CreateVirtualGrid: TVirtualGrid; virtual;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect; aState: TGridDrawstate); override;
-    procedure ColRowExchanged(IsColumn: Boolean; Index,WithIndex: Integer); override;
-    procedure ColRowDeleted(IsColumn: Boolean; Index: Integer); override;
-    procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
-    procedure HeaderClick(IsColumn: Boolean; Index: Integer); override;
+    procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
+    function  SelectCell(aCol,aRow: Integer): boolean; override;
+    procedure SetColor(Value: TColor); override;
     procedure SizeChanged(OldColCount, OldRowCount: Integer); override;
-    procedure SetColor(Value : TColor); override;
-    procedure SaveContent(cfg: TXMLConfig); override;
-    procedure LoadContent(Cfg: TXMLConfig; Version:Integer); override;
-    
   public
+  
     // to easy user call
-    Constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
-
-    procedure DefaultDrawCell(aCol,aRow: Integer; var aRect: TRect; aState:TGridDrawState);
-    
-    procedure RemoveCellAttr(aCol,aRow: Integer);
-    procedure RemoveColRowAttr(Index: Integer; IsCol,IsFixed: Boolean);
-
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure DefaultDrawCell(aCol,aRow: Integer; var aRect: TRect; aState:TGridDrawState); virtual;
+    // properties
     property Canvas;
-
-
-    property ColAttr[aCol: Integer]: TCellAttr read GetColAttr write SetColAttr;
-    Property ColColor[aCol: Integer]: TColor read GetColColor write SetColColor;
-    Property ColFontColor[aCol: Integer]: TColor read GetColFontColor write SetColFontColor;
-    Property ColAlign[aCol: Integer]: Integer read GetColAlign write SetColAlign;
-
-    property RowAttr[aRow: Integer]: TCellAttr read GetRowAttr write SetRowAttr;
-    property RowColor[aRow: Integer]: TColor read GetRowColor write SetRowColor;
-    property RowFontColor[aRow: Integer]: TColor read GetRowFontColor write SetRowFontColor;
-    property RowAlign[aRow: Integer]: Integer read GetRowAlign write SetRowAlign;
-
-    property CellAttr[ACol,ARow:Integer]: TCellAttr read GetCellAttr write SetCellAttr;
-    property CellColor[ACol, ARow:Integer]: TColor read GetCellColor write SetCellColor;
-    Property CellFontColor[ACol,ARow:Integer]: TColor read GetCellFontColor write SetCellFontCOlor;
-    Property CellAlign[ACol,ARow: Integer]: Integer read GetCellAlign write SetCellAlign;
-    
-    property DefaultCellAttr: TCellAttr read fDefCellAttr write SetDefaultCellAttr;
-    property SelectedcellAttr: TCellAttr read FDefSelCellAttr write SetDefSelCellAttr;
-    property FixedCellAttr: TCellAttr read FDefFixedCellAttr write SetDefFixedCellAttr;
-
-    property FixedColAttr[aCol: Integer]: TCellAttr read getFixedColAttr write setFixedColAttr;
-    property FixedColColor[aCol: Integer]: TColor read getFixedColColor write setFixedColColor;
-    property FixedColFontColor[aCol: Integer]: TColor read getFixedColFontColor write setFixedcolFontColor;
-    property FixedColAlign[aCol: Integer]: Integer read getFixedColAlign write setFixedColAlign;
-    
-    property FixedRowAttr[aRow: Integer]: TCellAttr read getFixedRowAttr write setFixedRowAttr;
-    property FixedRowColor[aRow: Integer]: TColor read getFixedRowColor write setFixedRowColor;
-    property FixedRowFontColor[aRow: Integer]: TColor read getFixedRowFontColor write setFixedRowFontColor;
-    property FixedRowAlign[aRow: Integer]: Integer read getFixedRowAlign write setFixedRowAlign;
-
-    property Editor;
-
     property Col;
     property ColWidths;
-    //property EditorMode;
+    property Editor;
+    property EditorMode;
+    property FocusColor;
     property GridHeight;
+    property GridLineColor;
+    property GridLineStyle;
     property GridWidth;
     property LeftCol;
-    property Selection;
     property Row;
     property RowHeights;
-    Property GridLineColor;
-    Property GridLineStyle;
-    Property FocusColor;
-    Property SaveOptions;
-    Property SkipUnselectable;
+    property SaveOptions;
+    property Selection;
+    property SkipUnselectable;
     //property TabStops;
     property TopRow;
-  Published
+  published
     property Align;
     property Anchors;
-    Property AutoAdvance;
+    property AutoAdvance;
     //property BiDiMode;
     //property BorderStyle;
     property Color default clWindow;
@@ -689,15 +543,14 @@ type
     //property Constraints;
     property Ctl3D;
     property DefaultColWidth;
-    property DefaultRowHeight;
     property DefaultDrawing;
+    property DefaultRowHeight;
     //property DragCursor;
     //property DragKind;
     //property DragMode;
     property Enabled;
-    property FixedColor: TColor read GetFixedColor write SetFixedColor default clBtnFace;
+    property FixedColor;
     property FixedCols;
-    property RowCount;
     property FixedRows;
     property Font;
     property GridLineWidth;
@@ -708,6 +561,7 @@ type
     //property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property RowCount;
     property ScrollBars;
     property ShowHint;
     property TabOrder;
@@ -717,57 +571,79 @@ type
     property VisibleRowCount;
 
 
-    Property OnBeforeSelection;
-    Property OnCanSelect;
-    Property OnCellAttr: TOnCellAttrEvent read fonCellAttr write fOnCellAttr;
-    Property OnCompareCells;
-    Property OnColRowDeleted: TgridOperationEvent read FOnColRowDeleted write FOnColRowDeleted;
-    Property OnColRowExchanged: TgridOperationEvent read FOnColRowExchanged write FOnColRowExchanged;
-    Property OnColRowMoved: TgridOperationEvent read FOnColRowMoved write FOnColRowMoved;
-    Property OnDrawCell;
-    Property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
-    Property OnSelectEditor;
-    Property OnSelection;
-    Property OnTopleftChange;
+    property OnBeforeSelection;
+    property OnClick;
+    property OnColRowDeleted: TgridOperationEvent read FOnColRowDeleted write FOnColRowDeleted;
+    property OnColRowExchanged: TgridOperationEvent read FOnColRowExchanged write FOnColRowExchanged;
+    property OnColRowMoved: TgridOperationEvent read FOnColRowMoved write FOnColRowMoved;
+    property OnCompareCells;
+    property OnDblClick;
+    property OnDrawCell;
+    property OnEnter;
+    property OnExit;
+    property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnSelectEditor;
+    property OnSelection;
+    property OnSelectCell: TOnSelectCellEvent read FOnSelectCell write FOnSelectCell;
+    property OnTopleftChanged;
+{
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnGetEditMask: TGetEditEvent read FOnGetEditMask write FOnGetEditMask;
+    property OnGetEditText: TGetEditEvent read FOnGetEditText write FOnGetEditText;
+    property OnSetEditText: TSetEditEvent read FOnSetEditText write FOnSetEditText;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+}
   end;
-  
+
   TStringGrid = class(TDrawGrid)
     private
       FDefEditor: TStringCellEditor;
-      function GetCells(ACol, ARow: Integer): string;
-      function GetCols(Index: Integer): TStrings;
-      function GetObjects(ACol, ARow: Integer): TObject;
-      function GetRows(Index: Integer): TStrings;
+      function  GetCells(ACol, ARow: Integer): string;
+      function  GetCols(index: Integer): TStrings;
+      function  GetObjects(ACol, ARow: Integer): TObject;
+      function  GetRows(index: Integer): TStrings;
       procedure SetCells(ACol, ARow: Integer; const AValue: string);
-      procedure SetCols(Index: Integer; const AValue: TStrings);
+      procedure SetCols(index: Integer; const AValue: TStrings);
       procedure SetObjects(ACol, ARow: Integer; AValue: TObject);
-      procedure SetRows(Index: Integer; const AValue: TStrings);
+      procedure SetRows(index: Integer; const AValue: TStrings);
     protected
       procedure AutoAdjustColumn(aCol: Integer); override;
       procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
       procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
-      procedure doEditorGetValue; override;
-      procedure doEditorSetValue; override;
-      procedure SaveContent(cfg: TXMLConfig); override;
+      procedure EditordoGetValue; override;
+      procedure EditordoSetValue; override;
       procedure LoadContent(cfg: TXMLConfig; Version: Integer); override;
+      procedure SaveContent(cfg: TXMLConfig); override;
       //procedure DrawInteriorCells; override;
       procedure SelectEditor; override;
     public
-      Constructor Create(AOWner: TComponent); override;
-      Destructor Destroy; override;
+      constructor Create(AOWner: TComponent); override;
+      destructor Destroy; override;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
-      property Cols[Index: Integer]: TStrings read GetCols write SetCols;
+      property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
-      property Rows[Index: Integer]: TStrings read GetRows write SetRows;
+      property Rows[index: Integer]: TStrings read GetRows write SetRows;
   end;
+
   
   procedure DebugRect(S:string; R:TRect);
   procedure DebugPoint(S:string; P:TPoint);
       
-  procedure CellAlignToAttr(Align: Integer; var Attr: TCellAttr);
-  procedure AttrToCellAlign(Attr: TCellAttr; var Align: Integer);
 
-procedure Register;
+procedure register;
 
 implementation
 
@@ -829,109 +705,6 @@ begin
   Tmp:=I1;
   I1:=I2;
   I2:=Tmp;
-end;
-
-function GetDefaultCellAttr: TCellAttr;
-begin
-  with Result do begin
-    FontColor:=clBlack;
-    Color:=clWindow;
-    FontData:=nil;
-    with TextStyle do begin
-      Alignment:=taLeftJustify;
-      Layout:=tlCenter;
-      SingleLine:=False;
-      WordBreak:=False;
-      Opaque:=False;
-      Clipping:=False;
-    end;
-  end;
-end;
-
-{procedure DebugAttr(Msg: string; Attr: TCellAttr);
-begin
-  with Attr do begin
-    WriteLn(Msg);
-    WriteLn('Color=',ColorToString(Attr.Color));
-    WriteLn('FontColor=',ColorToString(Attr.FontColor));
-    with TextStyle do begin
-      WriteLn('Textstyle.Alignment=', Ord(Alignment));
-      WriteLn('TextStyle.Layout=',Ord(Layout));
-      WriteLn('TextStyle.SingleLine=',Singleline);
-      WriteLn('TextStyle.Clipping=',Clipping);
-      WriteLn('TextStyle.Wordbreak=',WordBreak);
-      WriteLn('TextStyle.Opaque=',Opaque);
-      WriteLn('TextStyle.SystemFont',systemFont);
-    end;
-  end;
-end;}
-
-function LoadCellAttrFromXMLPath(Cfg: TXMLConfig; Path: string): TCellAttr;
-begin
-  Result:=GetDefaultCellAttr;
-
-  with Result do begin
-    Color:=StringToColor(Cfg.GetValue(Path+'/color', ColorToString(Color)));
-    FontColor:=
-      StringToColor(Cfg.GetValue(Path+'/fontcolor',ColorToString(FontColor)));
-    with TextStyle do begin
-      Alignment:=
-        TAlignment(cfg.GetValue(Path+'/textstyle/alignment/value',
-          Integer(Alignment)));
-      Layout:=
-        TTextLayout(    cfg.GetValue(Path+'/textstyle/layout/value',
-          Integer(layout)));
-      SingleLine:= cfg.GetValue(Path+'/textstyle/SingleLine/value',SingleLine);
-      Clipping:= cfg.GetValue(Path+'/textstyle/clipping/value',Clipping);
-      WordBreak:= cfg.GetValue(Path+'/textStyle/wordbreak/value',WordBreak);
-      Opaque:= cfg.GetValue(Path+'/textstyle/opaque/value',Opaque);
-      SystemFont:= cfg.GetValue(Path+'/textstyle/systemfont/value',SystemFont);
-    end;
-  end;
-end;
-
-function CellAttrIgual(const Ca1,Ca2: TCellAttr): Boolean;
-begin
-  Result:=CompareMem(@Ca1,@Ca2,SizeOf(Ca1));
-end;
-
-procedure CellAlignToAttr(Align: Integer; var Attr: TCellAttr);
-begin
-  with Attr.TextStyle do begin
-    if Align and CA_LEFT    = CA_LEFT     then Alignment:=taLeftJustify else
-    if Align and CA_CENTER  = CA_CENTER   then Alignment:=taCenter
-    else                                       Alignment:=taRightJustify;
-    if Align and CL_TOP     = CL_TOP      then Layout:=tlTop else
-    if Align AND CL_CENTER  = CL_CENTER   then Layout:=tlCenter
-    else                                       Layout:=tlBottom;
-  end;
-end;
-
-procedure AttrToCellAlign(Attr: TCellAttr; var Align: Integer);
-begin
-  with Attr.TextStyle do begin
-    Align:=0;
-    case Alignment of
-      taCenter: Align:=CA_CENTER;
-      taRightJustify: Align:=CA_RIGHT;
-      else Align:=CA_LEFT;
-    end;
-    case Layout of
-      tlTop: Align:=Align or CL_TOP;
-      tlBottom: Align:=Align or CL_BOTTOM;
-      else Align:=ALign or CL_CENTER;
-    end;
-  end;
-end;
-
-procedure DisposeCellAttr(Attr: PCellAttr);
-begin
-  If Attr^.FontData<>nil Then begin
-    if attr^.Fontdata^.Face<>nil then
-      StrDispose(Attr^.FontData^.Face);
-    Dispose(Attr^.FontData);
-  End;
-  Dispose(Attr);
 end;
 
 { TCustomGrid }
@@ -1199,7 +972,7 @@ begin
   MoveExtend(False, FCol, Valor);
 end;
 
-procedure TCustomGrid.Sort(ColSorting: Boolean; Index, IndxFrom, IndxTo: Integer);
+procedure TCustomGrid.Sort(ColSorting: Boolean; index, IndxFrom, IndxTo: Integer);
   procedure QuickSort(L,R: Integer);
   var
     i,j: Integer;
@@ -1211,11 +984,11 @@ procedure TCustomGrid.Sort(ColSorting: Boolean; Index, IndxFrom, IndxTo: Integer
       P:=(L+R)Div 2;
       repeat
         if ColSorting then begin
-          while OnCompareCells(Self, Index, P, Index, i)>0 do I:=I+1;
-          while OnCompareCells(Self, Index, P, Index, j)<0 do J:=J-1;
+          while OnCompareCells(Self, index, P, index, i)>0 do I:=I+1;
+          while OnCompareCells(Self, index, P, index, j)<0 do J:=J-1;
         end else begin
-          while OnCompareCells(Self, P, Index, i, Index)>0 do I:=I+1;
-          while OnCompareCells(Self, P, Index, j, Index)<0 do J:=J-1;
+          while OnCompareCells(Self, P, index, i, index)>0 do I:=I+1;
+          while OnCompareCells(Self, P, index, j, index)<0 do J:=J-1;
         end;
         if I<=J then begin
           ExchangeColRow(not ColSorting, i,j);
@@ -1242,7 +1015,8 @@ begin
     CacheVisibleGrid;
     Invalidate;
   end;
-  UpdateScrollBarPos(nil);
+  //UpdateScrollBarPos(nil);
+  updateScrollBarPos(ssBoth);
 end;
 
 procedure TCustomGrid.VisualChange;
@@ -1250,7 +1024,7 @@ var
   Tw,Th: Integer;
   Dh,DV: Integer;
   
-  function MaxTopLeft: TPoint;
+  function CalcMaxTopLeft: TPoint;
   var
     i: Integer;
     W,H: Integer;
@@ -1270,8 +1044,10 @@ var
     end;
   end;
 var
-  Mtl: TPoint;
+  //Mtl: TPoint;
   {$Ifdef TestSbars} vs,hs: Boolean; {$Endif}
+  HsbVisible, VsbVisible: boolean;
+  HsbRange, VsbRange: Integer;
 begin
   // Calculate New Cached Values
   FGCache.GridWidth:=0;
@@ -1295,8 +1071,8 @@ begin
     {$Endif}
   end;
   
-  Dh:=18{GetSystemMetrics(SM_CYHSCROLL)};
-  DV:=18{GetSystemMetrics(SM_CXVSCROLL)};
+  Dh:=18; //GetSystemMetrics(SM_CYHSCROLL);
+  DV:=18; //GetSystemMetrics(SM_CXVSCROLL);
   TW:=FGCache.GridWidth;
   TH:=FGCache.GridHeight;
 
@@ -1305,88 +1081,169 @@ begin
     FGCache.TLRowOff:=0;
   end;
 
-  {$Ifdef TestSBars}
-  vs:=VertScrollBar.Visible;
-  hs:=HorzScrollBar.Visible;
-  {$Endif}
 
-  HorzScrollBar.Visible:=
+  HSbVisible:=
      (FScrollbars in [ssHorizontal, ssBoth]) or
-    ((FScrollbars in [ssAutoHorizontal,ssAutoBoth]) and (TW>Width-Dv));
-    
-  VertScrollBar.Visible:=
+     (ScrollBarAutomatic(ssHorizontal) and (TW>Width-Dv));
+
+  VSbVisible:=
      (FScrollbars in [ssVertical, ssBoth]) or
-    ((FScrollbars in [ssAutoVertical, ssAutoBoth]) and (TH>height-Dh));
-  
-  if not HorzScrollBar.Visible then DH:=0;
-  if not VertScrollBar.Visible then DV:=0;
-  
-  {$IfDef TestSBars}
-  if (vs<VertScrollBar.Visible) then
-    WriteLn('Vertical Scrollbar Visible=', VertScrollBar.visible);
-  if (hs<>HorzScrollBar.Visible) then
-    WriteLn('Horizontal Scrollbar Visible=', HorzScrollBar.Visible );
-  {$Endif}
+     (ScrollBarAutomatic(ssVertical) and (TH>height-Dh));
+
+  if not HSBVisible then DH:=0;
+  if not VSbVisible then DV:=0;
 
   FGCache.ClientWidth:=Width - DV;
   FGCache.ClientHeight:=Height - DH;
   FGCache.ScrollWidth:=FGCache.ClientWidth-FGCache.FixedWidth;
   FGCache.ScrollHeight:=FGCache.ClientHeight-FGCache.FixedHeight;
-  
-  Mtl:=MaxTopLeft;
+
+  FGCache.MaxTopLeft:=CalcMaxTopLeft;
   {$Ifdef DbgScroll}
-  DebugPoint('MaxTopLeft',MaxTopLeft);
+  DebugPoint('MaxTopLeft',FGCache.MaxTopLeft);
   {$Endif}
   FGCache.HScrDiv:=0;
   FGCache.VScrDiv:=0;
 
   with FGCache do
-  if FScrollBars in [ssAutoHorizontal, ssAutoBoth] then begin
-    if HorzScrollBar.Visible then begin
-      HorzScrollBar.Range:= GridWidth+2;
+  if ScrollBarAutomatic(ssHorizontal) then begin
+  
+    if HSbVisible then begin
+      HsbRange:=GridWidth + 2 + dv;
       
-      if NOt (goSmoothScroll in Options) then begin
-        TW:= Integer(AccumWidth[Mtl.X])-(HorzScrollBar.Range-ClientWidth);
-        HorzScrollBar.Range:= HorzScrollBar.Range + TW - FixedWidth + 1;
+      if not (goSmoothScroll in Options) then begin
+        TW:= Integer(AccumWidth[MaxTopLeft.X])-(HsbRange-ClientWidth);
+        HsbRange:=HsbRange + TW - FixedWidth + 1;
       end;
       
-      if HorzScrollBar.Range>ClientWidth then
-        HScrDiv:= Double(ColCount-FixedRows-1)/(HorzScrollBar.range-ClientWidth);
+      if HsbRange>ClientWidth then
+        HscrDiv := Double(ColCount-FixedRows-1)/(HsbRange-ClientWidth);
 
       {$Ifdef dbgScroll}
-      Writeln('TotWidth=',GridWidth,'ClientWidth=',ClientWidth,' Horz Range=',HorzScrolLBar.Range);
+      Writeln('TotWidth=',GridWidth,'ClientWidth=',ClientWidth,' Horz Range=',HsbRange);
       {$Endif}
-    end
+    end;
   end else
-  if FScrollBars in [ssHorizontal, ssBoth] then HorzScrolLBar.Range:=0;
+  if FScrollBars in [ssHorizontal, ssBoth] then HsbRange:=0;
+
+  ScrollBarRange(SB_HORZ, HsbVisible, HsbRange );
   
   with FGCache do
-  if FScrollBars in [ssAutoVertical, ssAutoBoth] then begin
-    if VertScrollBar.Visible then begin
-      VertScrollBar.Range:=GridHeight + 2;
+  if ScrollBarAutomatic(ssVertical)  then begin
+    if VSbVisible then begin
+      VSbRange:= GridHeight + 2 + dh;
 
       if not (goSmoothScroll in Options) then begin
-        TH:= Integer(accumHeight[Mtl.Y])-(VertScrollBar.Range-ClientHeight);
-        VertScrollBar.Range:= VertScrollBar.Range + TH - FixedHeight + 1;
+        TH:= Integer(accumHeight[MaxTopLeft.Y])-(VsbRange-ClientHeight);
+        VsbRange:=VsbRange + TH -FixedHeight + 1;
       end;
 
-      if VertScrolLBar.Range>ClientHeight then
-        VScrDiv:= Double(RowCount-FixedRows-1)/(VertScrollBar.Range-ClientHeight);
+      if VSbRange>ClientHeight then
+        VScrDiv:= Double(RowCount-FixedRows-1)/(VsbRange-ClientHeight);
 
       {$Ifdef dbgScroll}
-      Writeln('TotHeight=',GridHeight,'ClientHeight=',ClientHeight,' Vert Range=',VertScrolLBar.Range);
+      Writeln('TotHeight=',GridHeight,'ClientHeight=',ClientHeight,' Vert Range=',VsbRange);
       {$Endif}
     end
   end else
-  if FScrollBars in [ssVertical, ssBoth] then VertScrollbar.Range:=0;
+  if FScrollBars in [ssVertical, ssBoth] then VsbRange:= 0;
+
+  ScrollbarRange(SB_VERT, VsbVisible, VsbRange );
 
   CacheVisibleGrid;
   Invalidate;
 end;
 
+procedure TCustomGrid.CreateParams(var Params: TCreateParams);
+const
+  ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
+begin
+  inherited CreateParams(Params);
+  with Params do begin
+    WindowClass.Style := WindowClass.Style and not ClassStylesOff;
+    Style := Style or WS_VSCROLL or WS_HSCROLL or WS_CLIPCHILDREN;
+  end;
+end;
+
+procedure TCustomGrid.ScrollBarRange(Which: Integer; IsVisible: boolean;
+  aRange: Integer);
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if HandleAllocated then begin
+    if IsVisible then begin
+      ScrollInfo.cbSize := SizeOf(ScrollInfo);
+      ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
+      ScrollInfo.nMin := 0;
+      ScrollInfo.nMax := ARange;
+
+      if Which = SB_VERT then
+        ScrollInfo.nPage := ClientHeight
+      else
+        ScrollInfo.nPage := ClientWidth;
+      if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
+
+      SetScrollInfo(Handle, Which, ScrollInfo, True);
+    end;
+    //ShowScrollBar(Handle,Which,IsVisible);
+  end;
+end;
+
+procedure TCustomGrid.ScrollBarPosition(Which, Value: integer);
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if HandleAllocated then begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_POS;
+    ScrollInfo.nPos:= Value;
+    SetScrollInfo(Handle, Which, ScrollInfo, True);
+  end;
+end;
+
+function TCustomGrid.ScrollBarIsVisible(Which: Integer): Boolean;
+begin
+  Result:=false;
+  if HandleAllocated then begin
+    Result:= getScrollbarVisible(handle, Which);
+  end;
+end;
+
+procedure TCustomGrid.ScrollBarPage(Which: Integer; aPage: Integer);
+var
+  ScrollInfo: TScrollInfo;
+begin
+  if HandleAllocated then begin
+    ScrollInfo.cbSize := SizeOf(ScrollInfo);
+    ScrollInfo.fMask := SIF_PAGE;
+    ScrollInfo.nPage:= aPage;
+    SetScrollInfo(Handle, Which, ScrollInfo, True);
+  end;
+end;
+
+procedure TCustomGrid.ScrollBarShow(Which: Integer; aValue: boolean);
+begin
+  if HandleAllocated then begin
+    ShowScrollBar(Handle,Which,aValue);
+  end;
+end;
+
+function TCustomGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
+begin
+  result:=false;
+  if (Which=ssVertical)or(Which=ssHorizontal) then begin
+    if Which=ssVertical then Which:=ssAutoVertical
+    else Which:=ssAutoHorizontal;
+    Result:= FScrollBars in [Which, ssAutoBoth];
+  end;
+end;
+
+{ Returns a reactagle corresponding to a fisical cell[aCol,aRow] }
 function TCustomGrid.CellRect(ACol, ARow: Integer): TRect;
 begin
-  Result:=ColRowToClientCellRect(aCol,aRow);
+  //Result:=ColRowToClientCellRect(aCol,aRow);
+  ColRowToOffset(True, True, ACol, Result.Left, Result.Right);
+  ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom);
 end;
 
 // The visible grid Depends on  TopLeft and ClientWidht,ClientHeight,
@@ -1429,30 +1286,24 @@ end;
 function TCustomGrid.ScrollToCell(const aCol,aRow: Integer): Boolean;
 var
   RNew: TRect;
-  Fw,Fh,Cw,Ch: Integer;
   OldTopLeft:TPoint;
   Xinc,YInc: Integer;
 begin
-  Cw:=FGCache.ClientWidth; //ClientWidth;
-  Ch:=FGCache.ClientHeight; //ClientHeight;
 
-  Fw:=FGCache.FixedWidth; //GetFixedWidth;
-  Fh:=FGcache.FixedHeight; //GetFixedHeight;
-  
   OldTopLeft:=fTopLeft;
   while (fTopLeft.x>=0) and
         (fTopLeft.x<ColCount)and
         (fTopLeft.y>=0) and
         (fTopLeft.y<RowCount) do begin
 
-    RNew:=ColRowToClientCellRect(aCol,aRow);
+    RNew:=CellRect(aCol,aRow);
     
     Xinc:=0;
-    if Rnew.Left + FGCache.TLColOff < fw then Xinc:=-1
-    else if RNew.Right  + FGCache.TLColOff > Cw then XInc:=1;
+    if Rnew.Left + FGCache.TLColOff < FGCache.FixedWidth then Xinc:=-1
+    else if RNew.Right  + FGCache.TLColOff > FGCache.ClientWidth then XInc:=1;
     Yinc:=0;
-    if RNew.Top  + FGCAche.TLRowOff < fh then Yinc:=-1
-    else if RNew.Bottom + FGCache.TLRowOff >Ch then YInc:=1;
+    if RNew.Top  + FGCAche.TLRowOff < FGcache.FixedHeight then Yinc:=-1
+    else if RNew.Bottom + FGCache.TLRowOff > FGCache.ClientHeight then YInc:=1;
     
     with FTopLeft do
     if ((XInc=0)and(Yinc=0)) or
@@ -1491,17 +1342,17 @@ end;
 
 procedure TCustomGrid.TopLeftChanged;
 begin
-  if Assigned(OnTopLeftChange) and not (csDesigning in ComponentState) then
-    OnTopLeftChange(Self);
+  if Assigned(OnTopLeftChanged) and not (csDesigning in ComponentState) then
+    OnTopLeftChanged(Self);
 end;
 
-procedure TCustomGrid.HeaderClick(IsColumn: Boolean; Index: Integer);
+procedure TCustomGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
 end;
 procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer);
 begin
 end;
-procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; Index, WithIndex: Integer);
+procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
 procedure TCustomGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect;
@@ -1514,7 +1365,7 @@ end;
 procedure TCustomGrid.SizeChanged(OldColCount, OldRowCount: Integer);
 begin
 end;
-procedure TCustomGrid.ColRowDeleted(IsColumn: Boolean; Index: Integer);
+procedure TCustomGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
 end;
 
@@ -1523,7 +1374,7 @@ begin
   Inherited Paint;
   if FUpdateCount=0 then begin
     //WriteLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
-    DebugRect('Paint.ClipRect=',Canvas.ClipRect);
+    //DebugRect('Paint.ClipRect=',Canvas.ClipRect);
     DrawEdges;
     DrawBackGround;
     if FGCache.ValidGrid then begin
@@ -1538,6 +1389,17 @@ begin
   end;
 end;
 
+procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState
+  );
+begin
+  if gdSelected in aState then  Canvas.Brush.color:= SelectedColor else
+  if gdFixed in aState then     Canvas.Brush.color:= FixedColor
+  else                          Canvas.Brush.color:= Color;
+  
+  if gdSelected in aState then  Canvas.Font.Color := clWindow
+  else                          Canvas.Font.Color := Self.Font.Color; //clWindowText;
+end;
+
 procedure TCustomGrid.ResetOffset(chkCol, ChkRow: Boolean);
 begin
   with FGCache do begin
@@ -1548,8 +1410,8 @@ begin
     if ChkRow or ChkCol then begin
       CacheVisibleGrid;
       Invalidate;
-      if ChkCol then UpdateScrollBarPos(HorzScrollBar);
-      if ChkRow then UpdateScrolLBarPos(VertScrollBar);
+      if ChkCol then updateScrollBarPos(ssHorizontal);//UpdateScrollBarPos(HorzScrollBar);
+      if ChkRow then updateScrollBarPos(ssVertical);//UpdateScrolLBarPos(VertScrollBar);
     end;
   end;
 end;
@@ -1557,7 +1419,8 @@ end;
 
 function TCustomGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
-  Result:=MoveExtend(False, aCol, aRow);
+  Result:=true;
+  //Result:=MoveExtend(False, aCol, aRow);
 end;
 
 procedure TCustomGrid.DrawBackGround;
@@ -1579,17 +1442,17 @@ begin
   // Draw fixed fixed Cells
   For i:=0 to FFixedCols-1 do
     For j:=0 to fFixedRows-1 do
-      DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+      DrawCell(i,j, CellRect(i,j), gds);
       
   with FGCache.VisibleGrid do begin
     // Draw fixed column headers
     For i:=left to Right do
       For j:=0 to fFixedRows-1 do
-        DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+        DrawCell(i,j, CellRect(i,j), gds);
     // Draw fixed row headers
     For i:=0 to FFixedCols-1 do
       For j:=Top to Bottom do
-        DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+        DrawCell(i,j, CellRect(i,j), gds);
   end;
 end;
 
@@ -1604,7 +1467,7 @@ begin
         Gds:=[];
         if (i=FCol)and(J=FRow) then Continue;
         if IsCellSelected(i,j) then Include(gds, gdSelected);
-        DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+        DrawCell(i,j, CellRect(i,j), gds);
       end;
   end;
 end;
@@ -1630,8 +1493,7 @@ end;
 procedure TCustomGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
-  if gdFixed in aState then Canvas.Brush.Color:=clBtnFace
-  else                      Canvas.Brush.Color:=Color;
+  PrepareCanvas(aCol, aRow, aState);
   Canvas.FillRect(aRect);
   DrawCellGrid(aRect,aCol,aRow,aState);
 end;
@@ -1655,6 +1517,7 @@ var
   R: TRect;
 begin
 
+  // Upper and Lower bounds for this row
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
   
   // Draw columns in this row
@@ -1663,7 +1526,7 @@ begin
       gds:=[gdFixed];
       For i:=Left to Right do begin
         ColRowToOffset(true, True, i, R.Left, R.Right);
-        DrawCell(i,aRow, R{ColRowToClientCellRect(i,aRow)},gds)
+        DrawCell(i,aRow, R,gds)
       end;
     end else begin
       Rs:=(goRowSelect in Options);
@@ -1678,17 +1541,17 @@ begin
         end else
         if IsCellSelected(i, ARow) then Include(gds, gdSelected);
         ColRowToOffset(True, True, i, R.Left, R.Right);
-        DrawCell(i,aRow, R{ColRowToClientCellRect(i,aRow)}, gds);
+        DrawCell(i,aRow, R, gds);
       end;
       // Draw the focus Rect
       if (ARow=FRow) and
          (IsCellVisible(FCol,ARow) Or (Rs and (ARow>=Top) and (ARow<=Bottom)))
       then begin
-        if ShouldEdit and (FEditor<>nil)and(FEditor.Visible) then begin
+        if EditorShouldEdit and (FEditor<>nil)and(FEditor.Visible) then begin
           //WriteLn('No Draw Focus Rect');
         end else begin
           ColRowToOffset(True, True, FCol, R.Left, R.Right);
-          DrawFocusRect(FCol,FRow, R{ColRowToClienTCellRect(FCol,FRow)}, [gdFocused]);
+          DrawFocusRect(FCol,FRow, R, [gdFocused]);
         end;
       end;
     end; // else begin
@@ -1697,7 +1560,7 @@ begin
   gds:=[gdFixed];
   For i:=0 to FFixedCols-1 do begin
     ColRowToOffset(True, True, i, R.Left, R.Right);
-    DrawCell(i,aRow, R{ColRowToClientCellRect(i,aRow)},gds);
+    DrawCell(i,aRow, R,gds);
   end;
 end;
 
@@ -1732,7 +1595,7 @@ begin
     if goDrawFocusSelected in Options then Include(gds,gdSelected);
     if (goRowSelect in Options) and not (goRelaxedRowSelect in Options) then
       Include(gds, gdSelected);
-    R:=colrowToClientCellRect(fCol,fRow);
+    R:=CellRect(fCol,fRow);
     DrawCell(fCol,fRow,R, gds);
     DrawFocusRect(fCol,fRow, R, gds);
   end else
@@ -1740,7 +1603,7 @@ begin
         (Frow>=FGCache.VisibleGrid.Top) and
         (Frow<=FGCache.VisibleGrid.Bottom))
     then begin
-      R:=colrowToClientCellRect(fCol,fRow);
+      R:=CellRect(fCol,fRow);
       DrawFocusRect(fcol,fRow, R, gds);
     end;
 end;
@@ -1754,7 +1617,7 @@ begin
   WriteLn(S, 'X=',P.X,' Y=',P.Y);
 end;
 
-procedure Register;
+procedure register;
 begin
   RegisterComponents('Additional',[TStringGrid,TDrawGrid]);
 end;
@@ -1842,9 +1705,9 @@ begin
   end;
 end;
 
-procedure TCustomGrid.WMEraseBkgnd(var Message: TLMEraseBkgnd);
+procedure TCustomGrid.WMEraseBkgnd(var message: TLMEraseBkgnd);
 begin
-  Message.Result:=1;
+  message.Result:=1;
   WriteLn('TCustomGrid.WMEraseBkgnd');
 end;
 
@@ -1853,27 +1716,29 @@ end;
 // NOTE: WMHScroll and VMHScroll
 // This methods are used to pre-calculate the scroll position
 //
-procedure TCustomGrid.WMHScroll(var Message: TLMHScroll);
+procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
-  C,Tl: Integer;
+  C,TL,CTL: Integer;
   R: TRect;
 begin
   // Avoid invalidating right know, just let the scrollbar
   // calculate its position
   BeginUpdate;
   Inherited;
-  Message.Result:=1;
+  message.Result:=1;
   EndUpdate(uoNone);
 
   {$IfDef dbgScroll}
-  WriteLn('HSCROLL: Code=',Message.ScrollCode,' Position=', Message.Pos);
+  WriteLn('HSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
   {$Endif}
   
+  
   if FGCache.HScrDiv<=0 then Exit;
-  if FEditor<>nil then EditorGetValue;
+  if FEditor<>nil then
+    EditorGetValue;
 
   if goThumbTracking in Options then begin
-    C:=FFixedCols + Round( Message.Pos * FGCache.HScrDiv );
+    C:=FFixedCols + Round( message.Pos * FGCache.HScrDiv );
     if (FCol<>C) then begin
       Inc(FUpdateScrollBarsCount);
       MoveExtend(False, C, FRow);
@@ -1881,10 +1746,30 @@ begin
     end;
   end else begin
 
-    C:=Message.Pos+FGCache.FixedWidth;
+    TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]);
+    CTL:= Integer(FGCache.AccumWidth[ FtopLeft.X ]);
+    
+    case message.ScrollCode of
+        // Scrolls to start / end of the text
+      SB_TOP:        C := 0;
+      SB_BOTTOM:     C := TL;
+        // Scrolls one line up / down
+      SB_LINEDOWN:   C := CTL + FDefColWidth;
+      SB_LINEUP:     C := CTL - FDefColWidth;
+        // Scrolls one page of lines up / down
+      SB_PAGEDOWN:   C := CTL + FGCache.ClientWidth;
+      SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
+        // Scrolls to the current scroll bar position
+      SB_THUMBPOSITION,
+      SB_THUMBTRACK: C := message.Pos;
+        // Ends scrolling
+      SB_ENDSCROLL: Exit;
+    end;
+    
+    C:= C + FGCache.FixedWidth;
     TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
     {$Ifdef dbgScroll}
-    WriteLn('---- Offset=',C, ' TL=',TL, ' TLColOFf=', FGCache.TLColOff);
+    WriteLn('---- Offset=',C, ' TL=',TL,' TLColOFf=', FGCache.TLColOff);
     {$Endif}
     if not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
 
@@ -1894,50 +1779,64 @@ begin
       Dec(FUpdateScrollBarsCount);
     end else
     if goSmoothScroll in Options then begin
-      //WriteLn('This Way ==');
       CacheVisibleGrid;
-      With FGCache do begin
-        R.Topleft:=Point(FixedWidth, 0);
-        R.Right:=ClientWidth;
-        R.Bottom:=ClientHeight;
-      end;
+      R.Topleft:=Point(FGCache.FixedWidth, 0);
+      R.BottomRight:= FGCache.MaxClientXY;
       InvalidateRect(Handle, @R, false);
       //Invalidate;
     end;
-
   end;
 end;
 
-procedure TCustomGrid.WMVScroll(var Message: TLMVScroll);
+procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
-  C: Integer;
-  TL: Integer;
+  C, TL, CTL: Integer;
   R: TRect;
 begin
   // Avoid invalidating right know, just let the scrollbar
   // calculate its position
   BeginUpdate;
   Inherited;
-  Message.Result:=1;
+  message.Result:=1;
   EndUpdate(uoNone);
 
   {$IfDef dbgScroll}
-  WriteLn('VSCROLL: Code=',Message.ScrollCode,' Position=', Message.Pos);
+  WriteLn('VSCROLL: Code=',message.ScrollCode,' Position=', message.Pos);
   {$Endif}
 
   if FGCache.VScrDiv<=0 then Exit;
   if FEditor<>nil then EditorGetValue;
   if goThumbTracking in Options then begin
-    C:=FFixedRows + Round( Message.Pos * FGCache.VScrDiv );
+    C:=FFixedRows + Round( message.Pos * FGCache.VScrDiv );
     if (C<>FRow) then begin
       Inc(FUpdateScrollBarsCount);
       MoveExtend(False, FCol, C);
       Dec(FUpdateScrollBarsCount);
     end;
   end else begin
-    C:=Message.Pos+FGCache.Fixedheight;
-    TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
+  
+    TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.Y ]);
+    CTL:= Integer(FGCache.AccumWidth[ FtopLeft.Y ]);
 
+    case message.ScrollCode of
+        // Scrolls to start / end of the text
+      SB_TOP:        C := 0;
+      SB_BOTTOM:     C := TL;
+        // Scrolls one line up / down
+      SB_LINEDOWN:   C := CTL + FDefRowHeight;
+      SB_LINEUP:     C := CTL - FDefRowHeight;
+        // Scrolls one page of lines up / down
+      SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
+      SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
+        // Scrolls to the current scroll bar position
+      SB_THUMBPOSITION,
+      SB_THUMBTRACK: C := message.Pos;
+        // Ends scrolling
+      SB_ENDSCROLL: Exit;
+    end;
+
+    C:= C + FGCache.FixedHeight;
+    TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
     {$Ifdef dbgScroll}
     WriteLn('---- Offset=',C, ' TL=',TL, ' TLRowOFf=', FGCache.TLRowOff);
     {$Endif}
@@ -1950,11 +1849,8 @@ begin
     end else
     if goSmoothScroll in Options then begin
       CacheVisibleGrid;
-      With FGCache do begin
-        R.Topleft:=Point(0, FixedHeight);
-        R.Right:=ClientWidth;
-        R.Bottom:=ClientHeight;
-      end;
+      R.TopLeft:=Point(0, FGCache.FixedHeight);
+      R.BottomRight:=FGCache.MaxClientXY;
       InvalidateRect(Handle, @R, false);
       //Invalidate;
     end;
@@ -1967,14 +1863,16 @@ begin
   visualChange;
 end;
 
-procedure TCustomGrid.WMChar(var Message: TLMChar);
+procedure TCustomGrid.WMChar(var message: TLMChar);
 var
   Ch: Char;
 begin
-  Ch:=Char(Message.CharCode);
-  WriteLn(ClassName,'.WMchar CharCode= ',Message.CharCode);
-  if (goEditing in Options) and (Ch in [^H, #32..#255]) then EditorShowChar(Ch)
-  else inherited;
+  Ch:=Char(message.CharCode);
+  //WriteLn(ClassName,'.WMchar CharCode= ',message.CharCode);
+  if (goEditing in Options) and (Ch in [^H, #32..#255]) then
+    EditorShowChar(Ch)
+  else
+    inherited;
 end;
 
 
@@ -2002,6 +1900,12 @@ begin
   inherited WndProc(TheMessage);
 end;
 
+procedure TCustomGrid.CreateWnd;
+begin
+  inherited CreateWnd;
+  VisualChange;
+end;
+
 { Scroll grid to the given Topleft[aCol,aRow] as needed }
 procedure TCustomGrid.TryScrollTo(aCol, aRow: Integer);
 var
@@ -2023,27 +1927,26 @@ begin
 end;
 
 { Reposition the scrollbars according to the current TopLeft }
-procedure TCustomGrid.UpdateScrollbarPos(Which: TControlScrollbar);
+procedure TCustomGrid.UpdateScrollbarPos(Which: TScrollStyle);
 begin
   // Adjust ScrollBar Positions
   // Special condition only When scrolling by draging
   // the scrollbars see: WMHScroll and WVHScroll
   if FUpdateScrollBarsCount=0 then begin
-  
-    if (Which=HorzScrollBar)or(Which=nil) then
-      if (FScrollBars in [ssAutoHorizontal, ssAutoBoth]) and
-          HorzScrolLBar.Visible then begin
+    if Which in [ssHorizontal, ssBoth] then
+      if ScrollBarAutomatic(ssHorizontal) and
+        ScrollBarIsVisible(SB_HORZ) then begin
           with FGCache do
-            HorzScrollBar.Position:=
-              Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth;
+            ScrollBarPosition(SB_HORZ,
+              Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth );
       end;
 
-    if (Which=VertScrollBar)Or(Which=nil) then
-      if (FScrolLBars in [ssAutoVertical, ssAutoBoth]) and
-          VertScrolLBar.Visible then begin
+    if Which in [ssVertical, ssBoth] then
+      if ScrollbarAutomatic(ssVertical) and
+        ScrollbarIsVisible(SB_VERT) then begin
           with FGCache do
-            VertScrollBar.Position:=
-              Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight;
+            ScrollBarPosition(SB_VERT,
+              Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight);
       end;
   end; {if FUpd...}
 end;
@@ -2056,7 +1959,7 @@ begin
     Raise EGridException.Create('FixedCols<0');
     
   if (aCol=0)And(aFCol=0) then // invalid grid, ok
-  else if (aFCol>=aCol) Then
+  else if (aFCol>=aCol) then
     raise EGridException.Create(rsFixedColsTooBig);
   if (aRow=0)and(aFRow=0) then // Invalid grid, ok
   else if (aFRow>=aRow) then
@@ -2074,7 +1977,7 @@ begin
       ValidGrid:=(Left>=0)and(Top>=0)and(Right>=Left)and(Bottom>=Top);
     if not ValidGrid then MaxClientXY:=Point(0,0)
     else begin
-      R:=ColRowToClientCellrect(VisibleGrid.Right, VisibleGrid.Bottom);
+      R:=CellRect(VisibleGrid.Right, VisibleGrid.Bottom);
       MaxClientXY:=R.BottomRight;
     end;
   end;
@@ -2139,7 +2042,7 @@ begin
     FSplitter.X:= OffsetToColRow(True, True, X, Loc);
     FSplitter.Y:=0;
     if FSplitter.X>=0 then begin
-      R:=ColRowToClientCellRect(FSplitter.x, FSplitter.y);
+      R:=CellRect(FSplitter.x, FSplitter.y);
       FSplitter.y:=X;                       // Resizing X reference
       if (R.Right-X)<(X-R.Left) then Loc:=R.Right
       else begin
@@ -2199,7 +2102,7 @@ begin
      (P.x>=FFixedCols) and
      ((P.X<=FSplitter.X)or(P.X>FSplitter.X))and
      (P.X<>FMoveLast.X) then begin
-      R:=ColRowToClientCellRect(P.x, P.y);
+      R:=CellRect(P.x, P.y);
       if P.x<=FSplitter.X then fMoveLast.Y:=R.left
       else                     FMoveLast.Y:=R.Right;
       fMoveLast.X:=P.X;
@@ -2222,7 +2125,7 @@ begin
      (P.y>=FFixedRows) and
      ((P.y<=FSplitter.Y)or(P.Y>FSplitter.Y))and
      (P.y<>FMoveLast.Y) then begin
-      R:=ColRowToClientCellRect(P.x, P.y);
+      R:=CellRect(P.x, P.y);
       if P.y<=FSplitter.y then fMoveLast.X:=R.Top
       else                     FMoveLast.X:=R.Bottom;
       fMoveLast.Y:=P.Y;
@@ -2271,17 +2174,17 @@ begin
   end;
 end;
 
-function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; Index:Integer; var Ini,Fin:Integer): Boolean;
+function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; index:Integer; var Ini,Fin:Integer): Boolean;
 var
   Dim: Integer;
 begin
   with FGCache do begin
     if IsCol then begin
-      Ini:=Integer(AccumWidth[Index]);
-      Dim:=GetColWidths(Index);
+      Ini:=Integer(AccumWidth[index]);
+      Dim:=GetColWidths(index);
     end else begin
-      Ini:=Integer(AccumHeight[Index]);
-      Dim:= GetRowheights(Index);
+      Ini:=Integer(AccumHeight[index]);
+      Dim:= GetRowheights(index);
     end;
     if not Fisical then begin
       Fin:=Ini + Dim;
@@ -2291,7 +2194,7 @@ begin
       if index>=FFixedCols then
         Ini:=Ini-Integer(AccumWidth[FTopLeft.X]) + FixedWidth -  TLColOff;
     end else begin
-      if Index>=FFixedRows then
+      if index>=FFixedRows then
         Ini:=Ini-Integer(AccumHeight[FTopLeft.Y]) + FixedHeight - TLRowOff;
     end;
     Fin:=Ini + Dim;
@@ -2321,12 +2224,12 @@ begin
   end;
 end;
 
-procedure TCustomGrid.ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer
+procedure TCustomGrid.ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer
   );
 begin
-  if IsColumn then FCols.Exchange(Index, WithIndex)
-  else             FRows.Exchange(Index, WithIndex);
-  ColRowExchanged(IsColumn, Index, WithIndex);
+  if IsColumn then FCols.Exchange(index, WithIndex)
+  else             FRows.Exchange(index, WithIndex);
+  ColRowExchanged(IsColumn, index, WithIndex);
   VisualChange;
 end;
 
@@ -2338,27 +2241,27 @@ begin
   VisualChange;
 end;
 
-procedure TCustomGrid.SortColRow(IsColumn: Boolean; Index: Integer);
+procedure TCustomGrid.SortColRow(IsColumn: Boolean; index: Integer);
 begin
-  if IsColumn then SortColRow(IsColumn, Index, FFixedRows, RowCount-1)
-  else             SortColRow(IsColumn, Index, FFixedCols, ColCount-1);
+  if IsColumn then SortColRow(IsColumn, index, FFixedRows, RowCount-1)
+  else             SortColRow(IsColumn, index, FFixedCols, ColCount-1);
 end;
 
-procedure TCustomGrid.SortColRow(IsColumn: Boolean; Index, FromIndex,
+procedure TCustomGrid.SortColRow(IsColumn: Boolean; index, FromIndex,
   ToIndex: Integer);
 begin
   if Assigned(OnCompareCells) then begin
     BeginUpdate;
-    Sort(IsColumn, Index, FromIndex, ToIndex);
+    Sort(IsColumn, index, FromIndex, ToIndex);
     EndUpdate(true);
   end;
 end;
 
-procedure TCustomGrid.DeleteColRow(IsColumn: Boolean; Index: Integer);
+procedure TCustomGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
 begin
-  if IsColumn then FCols.Delete(Index)
-  else             FRows.Delete(Index);
-  ColRowDeleted(IsColumn, Index);
+  if IsColumn then FCols.Delete(index)
+  else             FRows.Delete(index);
+  ColRowDeleted(IsColumn, index);
   VisualChange;
 end;
 
@@ -2383,7 +2286,7 @@ begin
     gzFixedCols:
       begin
         if (goColSizing in Options)and(Cursor=crHSplit) then begin
-          R:=ColRowToClientCellRect(FSplitter.x, FTopLeft.y);
+          R:=CellRect(FSplitter.x, FTopLeft.y);
           FSplitter.y:=R.Left;
           fGridState:= gsColSizing;
         end else begin
@@ -2396,7 +2299,7 @@ begin
       end;
     gzFixedRows:
       if (goRowSizing in Options)and(Cursor=crVSplit) then begin
-        R:=ColRowToClientcellRect(FTopLeft.X, FSplitter.y);
+        R:=CellRect(FTopLeft.X, FSplitter.y);
         FSplitter.x:=R.top;
         fGridState:= gsRowSizing;
       end else begin
@@ -2423,7 +2326,7 @@ begin
         end;
         
         if not MoveExtend(False, FSplitter.X, FSplitter.Y) then begin
-          if ShouldEdit then begin
+          if EditorShouldEdit then begin
             SelectEditor;
             EditorShow;
           end;
@@ -2432,12 +2335,10 @@ begin
           MoveSelection;
           // Click();
         end;
-        
         if (GoEditing in Options)and(FEditor=nil) and not Focused then begin
           {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
           LCLIntf.SetFocus(Self.Handle);
         end;
-        
       end;
   end;
   {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
@@ -2549,7 +2450,7 @@ begin
     {$IfDef dbgFocus}WriteLn('DoEnter - EditorHiding');{$Endif}
   end else begin
     {$IfDef dbgFocus}WriteLn('DoEnter - Ext');{$Endif}
-    if ShouldEdit then begin
+    if EditorShouldEdit then begin
       SelectEditor;
       if Feditor=nil then Invalidate
       else                EditorShow;
@@ -2562,18 +2463,12 @@ var
   Sh: Boolean;
   
   procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
-  //var SmallMove: Boolean;
   begin
     // Always reset Offset in kerboard Events
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
     MoveNextSelectable(Rel, aCol, aRow);
-    {
-    SmallMove:= Rel and (Abs(ACol)<2)and(Abs(Arow)<2);
-    if SmallMove and SkipUnSelectable then MoveNextSelectable(acol,aRow)
-    else                                   MoveExtend(Rel,aCol,aRow);
-    }
     Key:=0;
   end;
 var
@@ -2674,14 +2569,6 @@ begin
   inherited KeyUp(Key, Shift);
 end;
 
-
-{ Returns a reactagle corresponding to a fisical cell[aCol,aRow] }
-function TCustomGrid.ColRowToClientCellRect(aCol, aRow: Integer): TRect;
-begin
-  ColRowToOffset(True, True, ACol, Result.Left, Result.Right);
-  ColRowToOffSet(False,True, ARow, Result.Top, Result.Bottom);
-end;
-
 { Convert a fisical Mouse coordinate into fisical a cell coordinate }
 function TCustomGrid.MouseToCell(Mouse: TPoint): TPoint;
 var
@@ -2722,7 +2609,7 @@ var
   R: TRect;
 begin
   {$ifdef dbg} WriteLn('InvalidateCol  Col=',aCol); {$Endif}
-  R:=ColRowToClientCellRect(aCol, FTopLeft.y);
+  R:=CellRect(aCol, FTopLeft.y);
   R.Top:=0; // Full Column
   R.Bottom:=FGCache.MaxClientXY.Y;
   InvalidateRect(Handle, @R, True);
@@ -2733,7 +2620,7 @@ var
   R: TRect;
 begin
   {$ifdef dbg} WriteLn('InvalidateRow  Row=',aRow); {$Endif}
-  R:=ColRowToClientCellRect(fTopLeft.x, aRow);
+  R:=CellRect(fTopLeft.x, aRow);
   R.Left:=0; // Full row
   R.Right:=FGCache.MaxClientXY.X;
   InvalidateRect(Handle, @R, True);
@@ -2773,10 +2660,6 @@ begin
     if InvalidateAll then begin
       //InvalidateSelection;
       Invalidate
-    end else
-    if goRowSelect in Options then begin
-      InvalidateRow(FRow);
-      InvalidateRow(DRow);
     end else begin
       InvalidateCell(FCol, FRow);
       InvalidateCell(DCol, DRow);
@@ -2819,14 +2702,14 @@ begin
   if DRow>0 then RInc:= 1
   else           RInc:= 0;
   // Calculation
-  SelOk:=CanSelect(NCol,NRow);
+  SelOk:=SelectCell(NCol,NRow);
   Result:=False;
   while not SelOk do begin
     if  (NRow>RowCount-1)or(NRow<FFixedRows) or
         (NCol>ColCount-1)or(NCol<FFixedCols) then Exit;
     Inc(NCol, CInc);
     Inc(NRow, RInc);
-    SelOk:=CanSelect(NCol, NRow);
+    SelOk:=SelectCell(NCol, NRow);
   end;
   Result:=MoveExtend(False, NCol, NRow);
 end;
@@ -2847,7 +2730,7 @@ begin
   // Change on Focused cell?
   if (Dcol=FCol)and(DRow=FRow) then begin
   end else begin
-    Result:=CanSelect(DCol,DRow);
+    Result:=SelectCell(DCol,DRow);
   end;
 end;
 
@@ -2867,7 +2750,7 @@ procedure TCustomGrid.ProcessEditor(LastEditor: TWinControl; DCol, DRow: Integer
 var
   WillVis: Boolean;
 begin
-  WillVis:=(FEditor<>nil)and ShouldEdit;
+  WillVis:=(FEditor<>nil)and EditorShouldEdit;
 
   if WillVis or WasVis then begin
     if not WillVis then HideLastEditor else
@@ -2875,10 +2758,10 @@ begin
     else begin
       if LastEditor=FEditor then begin
         RestoreEditor;
-        doEditorGetValue;
+        EditordoGetValue;
         RestoreEditor;
         EditorPos;
-        doEditorSetValue;
+        EditordoSetValue;
       end else begin
         LastEditor.Visible:=False;
         lastEditor.Parent:=nil;
@@ -2891,12 +2774,6 @@ end;
 procedure TCustomGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if Assigned(OnBeforeSelection) then OnBeforeSelection(Self, DCol, DRow);
-end;
-
-function TCustomGrid.CanSelect(const DCol,DRow: Integer): Boolean;
-begin
-  Result:=true;
-  if Assigned(OnCanSelect) then OnCanSelect(Self, DCol, DRow, Result);
 end;
 
 procedure TCustomGrid.MoveSelection;
@@ -2944,7 +2821,7 @@ begin
   {$IfDef dbgPaint}
     WriteLn('InvalidateCell  Col=',aCol, ' Row=',aRow,' Redraw=',Redraw);
   {$Endif}
-  R:=ColRowToClientCellRect(aCol, aRow);
+  R:=CellRect(aCol, aRow);
   InvalidateRect(Handle, @R, Redraw);
 end;
 
@@ -2962,7 +2839,7 @@ end;
 procedure TCustomGrid.EditorGetValue;
 begin
   if not (csDesigning in ComponentState) then begin
-    doEditorGetValue;
+    EditordoGetValue;
     EditorHide;
   end;
 end;
@@ -2970,7 +2847,7 @@ end;
 procedure TCustomGrid.EditorSetValue;
 begin
   if not (csDesigning in ComponentState) then begin
-    doEditorSetValue;
+    EditordoSetValue;
     EditorPos;
   end;
 end;
@@ -3014,7 +2891,7 @@ var
   msg: TGridMessage;
 begin
   if FEditor<>nil then begin
-    Msg.CellRect:=ColRowToClientCellRect(FCol,FRow);
+    Msg.CellRect:=CellRect(FCol,FRow);
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
       with Msg.CellRect do begin
         Right:=Right-Left;
@@ -3049,12 +2926,12 @@ begin
     end;
 end;
 
-procedure TCustomGrid.doEditorGetValue;
+procedure TCustomGrid.EditordoGetValue;
 begin
   //
 end;
 
-procedure TCustomGrid.doEditorSetValue;
+procedure TCustomGrid.EditordoSetValue;
 begin
   //
 end;
@@ -3117,7 +2994,7 @@ begin
   if aEditor<>Editor then Editor:=aEditor;
 end;
 
-function TCustomGrid.ShouldEdit: Boolean;
+function TCustomGrid.EditorShouldEdit: Boolean;
 begin
   Result:=(goEditing in Options)and(goAlwaysShowEditor in Options);
 end;
@@ -3142,6 +3019,42 @@ begin
     else          Msg.Value:=ch;
     FEditor.Dispatch(Msg);
   end;
+end;
+
+procedure TCustomGrid.EditorSetMode(const AValue: Boolean);
+begin
+  if not AValue then
+    EditorCancel
+  else
+  begin
+    EditorShow;
+  end;
+end;
+
+function TCustomGrid.GetSelectedColor: TColor;
+begin
+  Result:=FSelectedColor;
+end;
+
+procedure TCustomGrid.SetSelectedColor(const AValue: TColor);
+begin
+  if FSelectedColor<>AValue then begin
+    FSelectedColor:=AValue;
+    Invalidate;
+  end;
+end;
+
+procedure TCustomGrid.SetFixedcolor(const AValue: TColor);
+begin
+  if FFixedColor<>AValue then begin
+    FFixedColor:=Avalue;
+    Invalidate;
+  end;
+end;
+
+function TCustomGrid.GetFixedcolor: TColor;
+begin
+  result:=FFixedColor;
 end;
 
 procedure TCustomGrid.EditorCancel;
@@ -3343,7 +3256,7 @@ begin
   FGCache.AccumWidth:=TList.Create;
   FGCache.AccumHeight:=TList.Create;
   inherited Create(AOwner);
-  AutoScroll:=False;
+  //AutoScroll:=False;
   FOptions:=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
      goSmoothScroll ];
@@ -3354,8 +3267,9 @@ begin
   fGridLineColor:=clGray;
   FGridLineStyle:=psSolid;
   fFocusColor:=clRed;
+  FFixedColor:=clBtnFace;
+  FSelectedColor:= clBlack;
   FSkipUnSelectable:=True;
-
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
 
@@ -3365,8 +3279,10 @@ begin
   FixedCols:=1;
   FixedRows:=1;
   Editor:=nil;
-  
+  writeLn('Setting color');
+  Color:=clWhite;
   Color:=clWindow;
+  writeLn('Color'=ColorToString(Color));
 end;
 
 destructor TCustomGrid.Destroy;
@@ -3537,7 +3453,6 @@ procedure Tvirtualgrid.Disposecell(var P: Pcellprops);
 begin
   if P<>nil then begin
     if P^.Text<>nil then StrDispose(P^.Text);
-    if P^.Attr<>nil then DisposeCellAttr(P^.Attr);
     Dispose(P);
     P:=nil;
   end;
@@ -3546,8 +3461,6 @@ end;
 procedure TVirtualGrid.DisposeColRow(var p: PColRowProps);
 begin
   if P<>nil then begin
-    if P^.FixedAttr<>nil then DisposeCellAttr(P^.FixedAttr);
-    if P^.NormalAttr<>nil then DisposeCellAttr(P^.NormalAttr);
     Dispose(P);
     P:=nil;
   end;
@@ -3631,14 +3544,15 @@ begin
   FreeThenNil(FCells);
   inherited Destroy;
 end;
-procedure TVirtualGrid.DeleteColRow(IsColumn: Boolean; Index: Integer);
+
+procedure TVirtualGrid.DeleteColRow(IsColumn: Boolean; index: Integer);
 begin
-  FCells.DeleteColRow(IsColumn, Index);
+  FCells.DeleteColRow(IsColumn, index);
   if IsColumn then begin
-    FCols.DeleteColRow(True, Index);
+    FCols.DeleteColRow(True, index);
     Dec(FColCount);
   end else begin
-    FRows.DeleteColRow(True, Index);
+    FRows.DeleteColRow(True, index);
     Dec(fRowCount);
   end;
 end;
@@ -3651,12 +3565,12 @@ begin
   else             FRows.MoveColRow(True, FromIndex, ToIndex);
 end;
 
-procedure TVirtualGrid.ExchangeColRow(IsColumn: Boolean; Index,
+procedure TVirtualGrid.ExchangeColRow(IsColumn: Boolean; index,
   WithIndex: Integer);
 begin
-  FCells.ExchangeColRow(IsColumn, Index, WithIndex);
-  if IsColumn then FCols.ExchangeColRow(true, Index, WithIndex)
-  else             FRows.ExchangeColRow(True, Index, WithIndex);
+  FCells.ExchangeColRow(IsColumn, index, WithIndex);
+  if IsColumn then FCols.ExchangeColRow(true, index, WithIndex)
+  else             FRows.ExchangeColRow(True, index, WithIndex);
 end;
 
 {
@@ -3751,409 +3665,6 @@ end;
 
 { TDrawGrid }
 
-function TDrawGrid.GetCellAttr(ACol, ARow: Integer): TCellAttr;
-var
-  c: PCellProps;
-begin
-  C:=FGrid.Celda[ACol,ARow];
-  if (C<>nil)and(C^.Attr<>nil) then Result:=C^.Attr^
-  else                              Result:=FDefCellAttr;
-end;
-
-function TDrawGrid.GetCellAlign(ACol, ARow: Integer): Integer;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetCellAttr(Acol,ARow);
-  AttrToCellAlign(Attr, Result);
-end;
-
-function TDrawGrid.GetCellColor(ACol, ARow: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetCellAttr(ACol,ARow);
-  Result:=Attr.Color;
-end;
-
-function TDrawGrid.GetCellFontCOlor(ACol, ARow: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetCellAttr(ACol,ARow);
-  Result:=Attr.FontColor;
-end;
-
-function TDrawGrid.GetColAlign(aCol: Integer): Integer;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetColAttr(aCol);
-  AttrToCellAlign(Attr, Result);
-end;
-
-function TDrawGrid.GetColAttr(aCol: Integer): TCellAttr;
-var
-  c: PColRowProps;
-begin
-  C:=FGrid.Cols[ACol];
-  if (C<>nil)and(C^.NormalAttr<>nil) then Result:=C^.NormalAttr^
-  else                                    Result:=FDefCellAttr;
-end;
-
-function TDrawGrid.GetColColor(aCol: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetColAttr(ACol);
-  Result:=Attr.Color;
-end;
-
-function TDrawGrid.GetColFontColor(aCol: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetColAttr(ACol);
-  Result:=Attr.FontColor;
-end;
-
-function TDrawGrid.GetFixedColor: TColor;
-begin
-  Result:=fDefFixedCellAttr.Color;
-end;
-
-function TDrawGrid.GetRowAlign(aRow: Integer): Integer;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetRowAttr(aRow);
-  AttrToCellAlign(Attr, Result);
-end;
-
-function TDrawGrid.GetRowAttr(aRow: Integer): TCellAttr;
-var
-  c: PColRowProps;
-begin
-  C:=FGrid.Rows[ARow];
-  if (C<>nil)and(C^.NormalAttr<>nil) then Result:=C^.NormalAttr^
-  else                                    Result:=FDefCellAttr;
-end;
-
-function TDrawGrid.GetRowColor(aRow: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetRowAttr(ARow);
-  Result:=Attr.Color;
-end;
-
-function TDrawGrid.GetRowFontColor(aRow: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetRowAttr(ARow);
-  Result:=Attr.FontColor;
-end;
-
-procedure TDrawGrid.SetDefFixedCellAttr(const AValue: TCellAttr);
-begin
-  if CellAttrIgual(FDefFixedCellAttr, AValue) then Exit;
-  FDefFixedCellAttr:=AValue;
-  Invalidate;
-end;
-
-procedure TDrawGrid.SetDefSelCellAttr(const AValue: TCellAttr);
-begin
-  if CellAttrIgual(FDefSelCellAttr, AValue) then Exit;
-  FDefSelCellAttr:=AValue;
-  Invalidate;
-end;
-
-procedure TDrawGrid.SetCellAlign(ACol, ARow: Integer; const AValue: Integer);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetCellAttr(ACol, Arow);
-  CellAlignToAttr(aValue, Attr);
-  SetCellAttr(ACol,ARow,Attr);
-end;
-
-procedure TDrawGrid.SetCellAttr(ACol, ARow: Integer; const AValue: TCellAttr);
-var
-  c: PCellProps;
-  IsNew: Boolean;
-begin
-  C:=FGrid.Celda[ACol,ARow];
-  IsNew:=C=nil;
-  if IsNew then C:=FGrid.GetDefaultCell;
-  if C^.Attr=nil then New(C^.Attr);
-  C^.Attr^:=Avalue;
-  if IsNew then FGrid.Celda[aCol,ARow]:=C; // Celda takes care
-  InvalidateCell(aCol,aRow);
-end;
-
-procedure TDrawGrid.SetCellColor(ACol, ARow: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetCellAttr(ACol, Arow);
-  attr.Color:=AValue;
-  SetCellAttr(ACol,ARow,Attr);
-end;
-
-procedure TDrawGrid.SetCellFontCOlor(ACol, ARow: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetCellAttr(ACol, Arow);
-  Attr.FontColor:=Avalue;
-  SetCellAttr(ACol,ARow,Attr);
-end;
-
-procedure TDrawGrid.SetColAlign(aCol: Integer; const AValue: Integer);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetColAttr(ACol);
-  CellAlignToAttr(aValue, Attr);
-  SetColAttr(aCol, Attr);
-end;
-
-procedure TDrawGrid.SetColAttr(aCol: Integer; const AValue: TCellAttr);
-var
-  c: PColRowProps;
-  IsNew: Boolean;
-begin
-  C:=FGrid.Cols[ACol];
-  IsNew:=C=nil;
-  if IsNew then C:=FGrid.GetDefaultColRow;
-  if C^.NormalAttr=nil then New(C^.NormalAttr);
-  C^.NormalAttr^:=Avalue;
-  if IsNew then FGrid.Cols[aCol]:=C; // Celda takes care
-  InvalidateCol(aCol);
-end;
-
-procedure TDrawGrid.SetColColor(aCol: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetColAttr(ACol);
-  Attr.Color:=AValue;
-  SetColAttr(aCol, Attr);
-end;
-
-procedure TDrawGrid.SetColFontColor(aCol: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetColAttr(ACol);
-  Attr.FontColor:=AValue;
-  SetColAttr(aCol, Attr);
-end;
-
-procedure TDrawGrid.SetDefaultCellAttr(const AValue: TCellAttr);
-begin
-  if CellAttrIgual(FDefCellAttr, AValue) then Exit;
-  FDefCellAttr:=AValue;
-  Invalidate;
-end;
-
-procedure TDrawGrid.SetFixedColor(const AValue: TColor);
-begin
-  if fDefFixedCellAttr.Color=AValue then exit;
-  fDefFixedCellAttr.Color:=aValue;
-  Invalidate;
-end;
-
-procedure TDrawGrid.SetRowAlign(aRow: Integer; const AValue: Integer);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetRowAttr(ARow);
-  CellAlignToAttr(Avalue, Attr);
-  SetRowAttr(aRow, Attr);
-end;
-
-procedure TDrawGrid.SetRowAttr(aRow: Integer; const AValue: TCellAttr);
-var
-  c: PColRowProps;
-  IsNew: Boolean;
-begin
-  C:=FGrid.Rows[aRow];
-  IsNew:=C=nil;
-  if IsNew then C:=FGrid.GetDefaultColRow;
-  if C^.NormalAttr=nil then New(C^.NormalAttr);
-  C^.NormalAttr^:=Avalue;
-  if IsNew then FGrid.Rows[aRow]:=C; // Celda takes care
-  InvalidateRow(aRow);
-end;
-
-procedure TDrawGrid.SetRowColor(aRow: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetRowAttr(ARow);
-  Attr.Color:=AValue;
-  SetRowAttr(aRow, Attr);
-end;
-
-procedure TDrawGrid.SetRowFontColor(aRow: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetRowAttr(ARow);
-  Attr.FontColor:=AValue;
-  SetRowAttr(aRow, Attr);
-end;
-
-function TDrawGrid.getFixedColAlign(aCol: Integer): Integer;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetFixedColAttr(aCol);
-  AttrToCellAlign(Attr, Result);
-end;
-
-function TDrawGrid.getFixedColAttr(aCol: Integer): TCellAttr;
-var
-  c: PColRowProps;
-begin
-  C:=FGrid.Cols[ACol];
-  if (C<>nil)and(C^.FixedAttr<>nil) then Result:=C^.FixedAttr^
-  else                                   Result:=FDefFixedCellAttr;
-end;
-
-function TDrawGrid.getFixedColFontColor(aCol: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedColAttr(ACol);
-  Result:=Attr.FontColor;
-end;
-
-function TDrawGrid.getFixedRowAlign(aRow: Integer): Integer;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedRowAttr(aRow);
-  AttrToCellAlign(Attr, Result);
-end;
-
-function TDrawGrid.getFixedRowAttr(aRow: Integer): TCellAttr;
-var
-  c: PColRowProps;
-begin
-  C:=FGrid.Rows[ARow];
-  if (C<>nil)and(C^.FixedAttr<>nil) then Result:=C^.FixedAttr^
-  else                                   Result:=FDefFixedCellAttr;
-end;
-
-function TDrawGrid.getFixedRowFontColor(aRow: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedRowAttr(ARow);
-  Result:=Attr.FontColor;
-end;
-
-function TDrawGrid.getfixedColColor(aCol: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedColAttr(ACol);
-  Result:=Attr.Color;
-end;
-
-function TDrawGrid.getfixedRowColor(aRow: Integer): TColor;
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedRowAttr(ARow);
-  Result:=Attr.Color;
-end;
-
-procedure TDrawGrid.setFixedColAlign(aCol: Integer; const AValue: Integer);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedColAttr(aCol);
-  CellAlignToAttr(aValue, Attr);
-  setFixedColAttr(aCol, Attr);
-end;
-
-procedure TDrawGrid.setFixedColAttr(aCol: Integer; const AValue: TCellAttr);
-var
-  c: PColRowProps;
-  IsNew: Boolean;
-begin
-  C:=FGrid.Cols[ACol];
-  IsNew:=C=nil;
-  if IsNew then C:=FGrid.GetDefaultColRow;
-  if C^.FixedAttr=nil then New(C^.FixedAttr);
-  C^.FixedAttr^:=Avalue;
-  if IsNew then FGrid.Cols[aCol]:=C; // Celda takes care
-  InvalidateCol(aCol);
-end;
-
-procedure TDrawGrid.setFixedcolFontColor(aCol: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=GetFixedColAttr(ACol);
-  Attr.FontColor:=AValue;
-  SetFixedColAttr(aCol, Attr);
-end;
-
-procedure TDrawGrid.setFixedRowAlign(aRow: Integer; const AValue: Integer);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedRowAttr(ARow);
-  CellAlignToAttr(Avalue, Attr);
-  setFixedRowAttr(aRow, Attr);
-end;
-
-procedure TDrawGrid.setFixedRowAttr(aRow: Integer; const AValue: TCellAttr);
-var
-  c: PColRowProps;
-  IsNew: Boolean;
-begin
-  C:=FGrid.Rows[aRow];
-  IsNew:=C=nil;
-  if IsNew then C:=FGrid.GetDefaultColRow;
-  if C^.FixedAttr=nil then New(C^.FixedAttr);
-  C^.FixedAttr^:=Avalue;
-  if IsNew then FGrid.Rows[aRow]:=C; // Celda takes care
-  InvalidateRow(ARow);
-end;
-
-procedure TDrawGrid.setFixedRowFontColor(aRow: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedRowAttr(ARow);
-  Attr.FontColor:=AValue;
-  setFixedRowAttr(aRow, Attr);
-end;
-
-procedure TDrawGrid.setfixedColColor(aCol: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedColAttr(ACol);
-  Attr.Color:=AValue;
-  setFixedColAttr(aCol, Attr);
-end;
-
-procedure TDrawGrid.setFixedRowColor(aRow: Integer; const AValue: TColor);
-var
-  Attr: TCellAttr;
-begin
-  Attr:=getFixedRowAttr(ARow);
-  Attr.Color:=AValue;
-  setFixedRowAttr(aRow, Attr);
-end;
-
 
 procedure TDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 begin
@@ -4167,14 +3678,14 @@ begin
     OnDrawCell(Self,aCol,aRow,aRect,aState)
   else
     DefaultDrawCell(aCol,aRow,aRect,aState);
-  Inherited DrawCellGrid(aRect,aCol,aRow,aState); // Draw the grid
+  inherited DrawCellGrid(aRect,aCol,aRow,aState);
 end;
 
 procedure TDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect;
   aState: TGridDrawstate);
 begin
   // Draw focused cell if we have the focus
-  if Self.Focused Or (ShouldEdit and ((Feditor=nil)or not Feditor.Focused)) then begin
+  if Self.Focused Or (EditorShouldEdit and ((Feditor=nil)or not Feditor.Focused)) then begin
     if (gdFocused in aState)then begin
       Canvas.Pen.Color:=FFocusColor;
       Canvas.Pen.Style:=psDot;
@@ -4196,18 +3707,18 @@ begin
   end;
 end;
 
-procedure TDrawGrid.ColRowExchanged(IsColumn:Boolean; Index, WithIndex: Integer);
+procedure TDrawGrid.ColRowExchanged(IsColumn:Boolean; index, WithIndex: Integer);
 begin
-  Fgrid.ExchangeColRow(IsColumn, Index, WithIndex);
+  Fgrid.ExchangeColRow(IsColumn, index, WithIndex);
   if Assigned(OnColRowExchanged) then
-    OnColRowExchanged(Self, IsColumn, Index, WithIndex);
+    OnColRowExchanged(Self, IsColumn, index, WithIndex);
 end;
 
-procedure TDrawGrid.ColRowDeleted(IsColumn: Boolean; Index: Integer);
+procedure TDrawGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
-  FGrid.DeleteColRow(IsColumn, Index);
+  FGrid.DeleteColRow(IsColumn, index);
   if Assigned(OnColRowDeleted) then
-    OnColRowDeleted(Self, IsColumn, Index, Index);
+    OnColRowDeleted(Self, IsColumn, index, index);
 end;
 
 procedure TDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
@@ -4217,10 +3728,10 @@ begin
     OnColRowMoved(Self, IsColumn, FromIndex, toIndex);
 end;
 
-procedure TDrawGrid.HeaderClick(IsColumn: Boolean; Index: Integer);
+procedure TDrawGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
-  inherited HeaderClick(IsColumn, Index);
-  if Assigned(OnHeaderClick) then OnHeaderClick(Self, IsColumn, Index);
+  inherited HeaderClick(IsColumn, index);
+  if Assigned(OnHeaderClick) then OnHeaderClick(Self, IsColumn, index);
 end;
 
 procedure TDrawGrid.SizeChanged(OldColCount, OldRowCount: Integer);
@@ -4229,272 +3740,47 @@ begin
   if OldRowCount<>RowCount then fGrid.RowCount:=RowCount;
 end;
 
+function TDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
+begin
+  Result:=true;
+  if Assigned(OnSelectCell) then OnSelectCell(Self, aCol, aRow, Result);
+end;
+
 procedure TDrawGrid.SetColor(Value: TColor);
 begin
-  FDefCellAttr.Color:=Value;
   inherited SetColor(Value);
   Invalidate;
-  WriteLn('TDrawGrid.SetColor Changed');
 end;
 
-procedure TDrawGrid.SaveContent(cfg: TXMLConfig);
-var
-  i,j,k: Integer;
-  c: PCellProps;
-  cr: PColRowProps;
-  path: string;
-
-  procedure SaveAttr(Attr: PCellAttr; FNStr: String);
-  begin
-    with Attr^ do begin
-      Cfg.SetValue(Path+FNStr+'/color', ColorToString(Color));
-      Cfg.SetValue(Path+FNStr+'/fontcolor',ColorToString(FontColor));
-      Cfg.SetValue(Path+FNStr+'/textstyle/alignment/value', Ord(TextStyle.Alignment));
-      cfg.SetValue(Path+FNStr+'/textstyle/layout/value',Ord(TextStyle.Layout));
-      cfg.SetValue(Path+FNStr+'/textstyle/singleLine/value',TextStyle.SingleLine);
-      cfg.SetValue(Path+FNStr+'/textstyle/clipping/value',TextStyle.Clipping);
-      cfg.SetValue(Path+FNStr+'/textstyle/wordbreak/value',TextStyle.WordBreak);
-      cfg.SetValue(Path+FNStr+'/textstyle/opaque/value',TextStyle.Opaque);
-      cfg.SetValue(Path+FNStr+'/textstyle/systemfont/value',TextStyle.SystemFont);
-    end;
-  end;
+function TDrawGrid.CreateVirtualGrid: TVirtualGrid;
 begin
-  Inherited SaveContent(cfg);
-  Cfg.SetValue('grid/saveoptions/attributes', soAttributes in SaveOptions);
-  if not (soAttributes in SaveOptions) then Exit;
-  
-  // Save Columns
-  j:=0;
-  For i:=0 to ColCount-1 do begin
-    cr:=fGrid.Cols[i];
-    if (cr<>nil) then
-      if (cr^.NormalAttr<>nil)or(cr^.FixedAttr<>nil) then begin
-        Inc(j);
-        Cfg.SetValue('grid/attributes/columns/columncount', j);
-        path:='grid/attributes/columns/column'+IntToStr(j);
-        if Cr^.NormalAttr<>nil then begin
-          Cfg.SetValue(Path+'/normal/index', i);
-          SaveAttr(cr^.NormalAttr, '/normal');
-        end;
-        if Cr^.FixedAttr<>nil then begin
-          Cfg.SetValue(Path+'/fixed/index', i);
-          SaveAttr(cr^.FixedAttr, '/fixed');
-        end;
-      end;
-  end;
-  
-  // Save Rows
-  j:=0;
-  For i:=0 to RowCount-1 do begin
-    cr:=fGrid.Rows[i];
-    if (cr<>nil) then
-      if (cr^.NormalAttr<>nil)or(cr^.FixedAttr<>nil) then begin
-        Inc(j);
-        Cfg.SetValue('grid/attributes/rows/rowcount', j);
-        Path:='grid/attributes/rows/row'+IntToStr(j);
-        if cr^.NormalAttr<>nil then begin
-          cfg.SetValue(Path+'/normal/index',i);
-          SaveAttr(cr^.NormalAttr, '/normal');
-        end;
-        if Cr^.FixedAttr<>nil then begin
-          cfg.SetValue(Path+'/fixed/index',i);
-          SaveAttr(cr^.fixedAttr, '/fixed');
-        end;
-      end;
-  end;
-  
-  // Save attributtes of Cells
-  k:=0;
-  For i:=0 to ColCount-1 do
-    For j:=0 to RowCount-1 do begin
-      C:=fGrid.Celda[i,j];
-      if (c<>nil)and(c^.Attr<>nil) then begin
-        Inc(k);
-        Cfg.SetValue('grid/attributes/cells/cellcount',k);
-        Path:='grid/attributes/cells/cell'+IntToStr(k);
-        cfg.SetValue(Path+'/column',i);
-        cfg.SetValue(Path+'/row',j);
-        SaveAttr(C^.Attr, '');
-      end;
-    end;
-end;
-
-procedure TDrawGrid.LoadContent(Cfg: TXMLConfig; Version: Integer);
-
-  Procedure LoadAttr(path:String; IsColumn,IsFixed:Boolean);
-  Var
-    j: Integer;
-  begin
-    j:=cfg.getValue(Path+'/index', -1);
-    if (j>=0)and(j<=Colcount-1) then begin
-      if IsFixed Then begin
-        If IsColumn Then FixedColAttr[j]:=LoadCellAttrFromXMLPath(cfg, Path)
-        Else             FixedRowAttr[j]:=LoadCellAttrFromXMLPath(cfg, Path);
-      End Else begin
-        If IsColumn Then ColAttr[j]:=LoadCellAttrFromXMLPath(cfg, Path)
-        Else             RowAttr[j]:=LoadCellAttrFromXMLPath(cfg, Path);
-      End;
-    End;
-  End;
-var
-  i,j,k: Integer;
-  B: Boolean;
-  path: string;
-begin
-
-  Inherited LoadContent(Cfg, Version);
-
-  if not (soAttributes in SaveOptions) then Exit;
-  B:=Cfg.GetValue('grid/saveoptions/attributes',false);
-  if not B then Exit;
-
-  // Load Columns
-  k:=cfg.getValue('grid/attributes/columns/columncount',0);
-  For i:=1 to k do begin
-    // Normal
-    Path:='grid/attributes/columns/column'+IntToStr(i);
-    if Version<3 then begin
-      LoadAttr(Path, true, false);
-    end else begin
-      LoadAttr(Path+'/normal', true, false);
-      LoadAttr(Path+'/fixed',  true, true);
-    End;
-  end;
-  
-  // Load Rows
-  k:=cfg.getValue('grid/attributes/rows/rowcount',0);
-  For i:=1 to k do begin
-    Path:='grid/attributes/rows/row'+IntToStr(i);
-    if Version<3 then begin
-      LoadAttr(Path, false, false);
-    end else begin
-      LoadAttr(Path+'/normal', false, false);
-      LoadAttr(Path+'/fixed',  false, true);
-    end;
-  end;
-  
-  // Load Cells
-  Path:='grid/attributes/cells/';
-  k:=cfg.getValue(Path+'cellcount',0);
-  while k>0 do begin
-    i:=cfg.getValue(Path+'cell'+inttoStr(k)+'/column', -1);
-    j:=cfg.getValue(Path+'cell'+inttostr(k)+'/row', -1);
-    if (j>=0)and(j<=rowcount-1)and(i>=0)and(i<=Colcount-1) then begin
-      CellAttr[i,j]:=LoadCellAttrFromXMLPath(cfg, Path+'cell'+IntToStr(k));
-    end;
-    dec(k);
-  end;
+  Result:=TVirtualGrid.Create;
 end;
 
 constructor TDrawGrid.Create(AOwner: TComponent);
 begin
-  fGrid:=TVirtualGrid.Create;
-
-  FDefCellAttr:=GetDefaultCellAttr;
-  FDefSelCellAttr:=FDefCellAttr;
-  with FDefSelCellAttr do begin
-    Color:=clBlack;
-    FontColor:=clWhite;
-  end;
-  fdefFixedCellAttr:=FDefCelLAttr;
-  fdefFixedCellAttr.Color:=clBtnFace;
-
+  fGrid:=CreateVirtualGrid; //TVirtualGrid.Create;
   inherited Create(AOwner);
 end;
 
 destructor TDrawGrid.Destroy;
 begin
   {$Ifdef dbg}WriteLn('TDrawGrid.Destroy');{$Endif}
-  
+  //WriteLn('Font.Name',Font.Name);
   FreeThenNil(FGrid);
   inherited Destroy;
 end;
 
 procedure TDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
-var
-   c: PcellProps;
-   cr: PColRowProps;
-   attr: pcellattr;
 begin
-  // Set draw Cell Attributes
-  if gdSelected in aState then FCellAttr:=FDefSelCellAttr
-  else if gdFixed in aState then FCellAttr:=FDefFixedCellAttr
-  else FCellAttr:=FDefcellAttr;
+  PrepareCanvas(aCol, aRow, aState);
   
   if DefaultDrawing or (csDesigning in ComponentState) then
-    FCellAttr.TextStyle.Clipping:=False
-  else
-    if not (gdSelected in aState) then begin
-      C:= FGrid.Celda[aCol,aRow];
-      if C = nil then Attr:=nil
-      else            Attr:=C^.attr;
-      
-      if Attr=nil then
-        if gdFixed in aState then begin
-          case MouseToGridZone(aCol, aRow, true) of
-            gzFixedRows:
-              cr:=FGrid.Rows[aRow];
-            gzFixedCols:
-              cr:=FGrid.Cols[aCol];
-            gzFixedCells:
-              begin
-                cr:=FGrid.Cols[aCol];
-                if (cr=nil)or(cr^.fixedAttr=nil) then cr:=FGrid.Rows[aRow];
-              end;
-            else cr:=nil;
-          end;
-          if Cr<>nil then Attr:=Cr^.FixedAttr;
-        end else begin
-          cr:=FGrid.Cols[aCol];
-          if (Cr=nil)or(Cr^.NormalAttr=nil) then Cr:=FGrid.Rows[aRow];
-          if Cr<>nil then Attr:=Cr^.NormalAttr;
-        end;
-        
-      if Attr<>nil then FCellAttr:=Attr^;
-    end;
-    
-    if Assigned(fonCellAttr) then fonCellAttr(Self, aCol,aRow, aState, FCellAttr);
-    if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
-  
-  Canvas.Brush.Color:=fCellAttr.Color;
-  Canvas.Font.Color:=fCellAttr.FontColor;
+    Canvas.TextStyle.Clipping:=False;
+
+  if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
-end;
-
-procedure TDrawGrid.RemoveCellAttr(aCol, aRow: Integer);
-var
-  c: PCellProps;
-begin
-  c:=FGrid.Celda[aCol,aRow];
-  if c<>nil then begin
-    if c^.Attr<>nil then begin
-      Dispose(c^.Attr);
-      c^.Attr:=nil;
-      InvalidateCell(aCol,aRow);
-    End;
-  End;
-end;
-
-procedure TDrawGrid.RemoveColRowAttr(Index: Integer; IsCol, IsFixed: Boolean);
-  procedure RemoveAttr(Var attr: PCellAttr);
-  begin
-    If Attr<>nil then begin
-      Dispose(Attr);
-      Attr:=nil;
-      If IsCol Then InvalidateCol(Index)
-      Else          InvalidateRow(Index);
-    End;
-  End;
-var
-  Cr: PColRowProps;
-begin
-  If IsCol Then Cr:=FGrid.Cols[Index]
-  Else          Cr:=FGrid.Rows[Index];
-  if Cr<>nil then begin
-    If IsFixed Then RemoveAttr(Cr^.FixedAttr)
-    Else            RemoveAttr(Cr^.NormalAttr);
-  End;
 end;
 
 { TStringGrid }
@@ -4508,16 +3794,16 @@ begin
   if C<>nil then Result:=C^ .Text;
 end;
 
-function TStringGrid.GetCols(Index: Integer): TStrings;
+function TStringGrid.GetCols(index: Integer): TStrings;
 var
   i,j: Integer;
 begin
   Result:=nil;
-  if (ColCount>0)and(index>=0)and(Index<ColCount) then begin
+  if (ColCount>0)and(index>=0)and(index<ColCount) then begin
     Result:=TStringList.Create;
     For i:=0 to RowCount-1 do begin
-      j:=Result.Add( Cells[Index, i] );
-      Result.Objects[j]:=Objects[Index, i];
+      j:=Result.Add( Cells[index, i] );
+      Result.Objects[j]:=Objects[index, i];
     end;
   end;
 end;
@@ -4531,16 +3817,16 @@ begin
   if C<>nil then Result:=C^.Data;
 end;
 
-function TStringGrid.GetRows(Index: Integer): TStrings;
+function TStringGrid.GetRows(index: Integer): TStrings;
 var
   i,j: Integer;
 begin
   Result:=nil;
-  if (RowCount>0)and(index>=0)and(Index<RowCount) then begin
+  if (RowCount>0)and(index>=0)and(index<RowCount) then begin
     Result:=TStringList.Create;
     For i:=0 to ColCount-1 do begin
-      j:=Result.Add( Cells[i, Index] );
-      Result.Objects[j]:=Objects[i, Index];
+      j:=Result.Add( Cells[i, index] );
+      Result.Objects[j]:=Objects[i, index];
     end;
   end;
 end;
@@ -4565,7 +3851,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.SetCols(Index: Integer; const AValue: TStrings);
+procedure TStringGrid.SetCols(index: Integer; const AValue: TStrings);
 begin
 
 end;
@@ -4583,7 +3869,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.SetRows(Index: Integer; const AValue: TStrings);
+procedure TStringGrid.SetRows(index: Integer; const AValue: TStrings);
 begin
 
 end;
@@ -4613,7 +3899,8 @@ var
 begin
   inherited CalcCellExtent(acol,arow, aRect);
   S:=Cells[aCol,aRow];
-  if not FCellAttr.TextStyle.Clipping then begin
+  if not Canvas.TextStyle.Clipping then begin
+  //if not FCellAttr.TextStyle.Clipping then begin
     // Calcular el numero de celdas necesarias para contener todo
     // El Texto
     Ts:=Canvas.TextExtent(S);
@@ -4624,7 +3911,8 @@ begin
       if (nc<>nil)and(Nc^.Text<>'')then Break;
       aRect.Right:=aRect.Right + getColWidths(i);
     end;
-    fcellAttr.TextStyle.Clipping:=i<>aCol;
+    //fcellAttr.TextStyle.Clipping:=i<>aCol;
+    Canvas.TextStyle.clipping:=i<>aCol;
   end;
 end;
 
@@ -4635,12 +3923,11 @@ var
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
   S:=Cells[aCol,aRow];
-  if S<>'' then begin
-    Canvas.TextRect(aRect, 3, 0, S, FCellAttr.TextStyle);
-  end;
+  //if S<>'' then
+  Canvas.TextRect(aRect, 3, 0, S);
 end;
 
-procedure TStringGrid.doEditorGetValue;
+procedure TStringGrid.EditordoGetValue;
 var
   msg: TGridMessage;
 begin
@@ -4657,7 +3944,7 @@ begin
   //inherited EditorGetValue;
 end;
 
-procedure TStringGrid.doEditorSetValue;
+procedure TStringGrid.EditordoSetValue;
 var
   msg: TGridMessage;
 begin
@@ -4716,6 +4003,7 @@ begin
     end;
   end;
 end;
+
 (*
 procedure TStringGrid.DrawInteriorCells;
 var
@@ -4734,7 +4022,7 @@ begin
       For j:=Top to Bottom do begin
         if IsCellSelected(i,j) then Continue;
         C:=Fgrid.Celda[i,j];
-        if (c=nil) then DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+        if (c=nil) then DrawCell(i,j, CellRect(i,j), gds);
       end;
      // Draw Cells Empty Cells (Text='') with Attribute
     For i:=Left to Right do
@@ -4743,7 +4031,7 @@ begin
         if (i=FCol)or(j=FRow) then Continue;
         C:=Fgrid.Celda[i,j];
         if (c<>nil)and(C^.Text='') then
-          DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+          DrawCell(i,j, CellRect(i,j), gds);
       end;
     // Draw Cells not Empty (Text<>'')
     For i:=Left to Right do
@@ -4751,19 +4039,20 @@ begin
         if IsCellSelected(i,j) then Continue;
         C:=Fgrid.Celda[i,j];
         if (C<>nil)and(C^.Text<>'') then
-          DrawCell(i,j, ColRowToClientCellRect(i,j), gds);
+          DrawCell(i,j, CellRect(i,j), gds);
       end;
 
     gds:=[gdSelected];
     For i:=Left To Right do
       For j:=Top to Bottom do
         if IsCellSelected(i,j) then begin
-          DrawCell(i,j, colRowToClientCellRect(i,j), gds);
+          DrawCell(i,j, CellRect(i,j), gds);
         end;
 
   end else inherited DrawInteriorCells;
 end;
 *)
+
 procedure TStringGrid.SelectEditor;
 begin
   if goEditing in Options then Editor:=fDefEditor;
@@ -4794,67 +4083,26 @@ begin
   inherited Destroy;
 end;
 
-{ TGridPropertyAdapter }
-
-{
-procedure TGridPropertyAdapter.setAlign(const AValue: getAlign);
-begin
-
-end;
-}
-procedure TGridPropertyAdapter.setColor(const AValue: TColor);
-begin
-  FColor:=AValue;
-end;
-
-procedure TGridPropertyAdapter.setAlign(const AValue: Integer);
-begin
-  FAlign:=AValue;
-end;
-
-procedure TGridPropertyAdapter.setFont(const AValue: TFont);
-begin
-  FFont.Assign(aValue);
-end;
-
-procedure TGridPropertyAdapter.OnFontChange(Sender: TObject);
-begin
-  //
-end;
-
-procedure TGridPropertyAdapter.setAttr(Attr: TCellAttr);
-begin
-  // load font attributes with Attr data where apply
-  FFont.Color:=Attr.Color;
-  if Attr.FontData <> nil then
-    with Attr.FontData^ do begin
-      FFont.Name:= Face;
-      FFont.Size:= Size;
-      FFont.CharSet:=CharSet;
-      FFont.Style:=Styles;
-      FFont.Pitch:=Pitch;
-    End;
-  FTextStyleAdapter.TextStyle:=Attr.TextStyle;
-end;
-
-constructor TGridPropertyAdapter.create;
-begin
-  inherited create;
-  FFont:=TFont.Create;
-  FFont.OnChange:=@OnFontChange;
-  FTextStyleAdapter:=TTextStyleAdapter.Create;
-end;
-
-destructor TGridPropertyAdapter.destroy;
-begin
-  FTextStyleAdapter.Free;
-  FFont.Free;
-  inherited destroy;
-end;
-
 end.
 
 {  The_Log
+VERSION: 0.8.5:
+----------------
+Date: 15-Sept-2003
+- TCustomGrid is derived from TCustomControl instead of TScrollingWinControl
+  means that:
+  * No more transparent grid at design time
+  * No more HorzScrolLBar and VertScrollbar in Object inspector
+  * HorzScrollbar and VertScrollbar doesn't exists anymore
+  * Scrollbar is handled with setscrollinfo or through the new ScrollbarXXXX
+     protected methods.
+- TDrawGrid attribute support was removed and added to a new TStringGrid derivated
+  component.
+- Removed CanSelect, OnCanSelect, TOnCanSelectEvent now it uses SelectCell
+  OnSelectCell and TOnSelectCell.
+- Implemented Auto edit mode (Typing something will show editor)
+- Implemented EditorMode
+  
 
 VERSION: 0.8.4:
 ---------------
@@ -4958,14 +4206,14 @@ CHANGES Many internal changes (width,height removed from pcellsprop,
         so TStringGrid can implement ordered cell drawin and TCustomGrid
         draw cells is simpler, etc).
 
-ADDED   ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer);
-        DeleteColRow(IsColumn:Boolea; Index:Integer);
+ADDED   ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
+        DeleteColRow(IsColumn:Boolea; index:Integer);
         MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-        SortColRow(IsColumn: Boolean; Index: Integer);
-        SortColRow(IsColumn: Boolean; Index,FromIndex,ToIndex: Integer);
-        Property OnColRowMoved: TgridOperationEvent
-        Property OnColRowDeleted: TgridOperationEvents
-        Property OnColRowExchanged: TgridOperationEvents
+        SortColRow(IsColumn: Boolean; index: Integer);
+        SortColRow(IsColumn: Boolean; index,FromIndex,ToIndex: Integer);
+        property OnColRowMoved: TgridOperationEvent
+        property OnColRowDeleted: TgridOperationEvents
+        property OnColRowExchanged: TgridOperationEvents
 
 ADDED   TcustomGrid derivatives can now replace sort algorithm overriding
         Sort method and using exchangeColRow as needed.

@@ -58,7 +58,10 @@ type
 
   { TPage }
 
-  TPageFlag = (pfAdded,pfRemoving);
+  TPageFlag = (
+    pfAdded,  // page handle added to notebook handle
+    pfRemoving
+    );
   TPageFlags = set of TPageFlag;
 
   TPage = class(TWinControl)
@@ -71,6 +74,7 @@ type
     procedure SetParent(AParent : TWinControl); override;
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
+    procedure DestroyHandle; override;
   public
     constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -160,7 +164,7 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams);override;
     procedure CreateWnd; override;
-    procedure DoCreateWnd;
+    procedure DoCreateWnd; virtual;
     procedure Change; virtual;
     procedure Loaded; override;
     procedure ReadState(Reader: TAbstractReader); override;
@@ -775,6 +779,9 @@ end.
 
  {
   $Log$
+  Revision 1.77  2003/09/20 09:16:07  mattias
+  added TDBGrid from Jesus
+
   Revision 1.76  2003/09/18 21:01:18  mattias
   started TDBImage
 

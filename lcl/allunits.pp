@@ -39,7 +39,7 @@ uses
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs,
-  DBCtrls;
+  DBCtrls, DBGrids;
 
 implementation
 
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/09/20 09:16:07  mattias
+  added TDBGrid from Jesus
+
   Revision 1.30  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

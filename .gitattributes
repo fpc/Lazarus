@@ -754,6 +754,7 @@ lcl/commctrl.pp svneol=native#text/pascal
 lcl/controls.pp svneol=native#text/pascal
 lcl/customtimer.pas svneol=native#text/pascal
 lcl/dbctrls.pp svneol=native#text/pascal
+lcl/dbgrids.pas svneol=native#text/pascal
 lcl/dialogs.pp svneol=native#text/pascal
 lcl/dirsel.lfm svneol=native#text/plain
 lcl/dirsel.lrs svneol=native#text/pascal

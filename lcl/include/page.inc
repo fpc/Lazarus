@@ -124,6 +124,12 @@ begin
     ' Message.Result=',Message.Result);}
 end;
 
+procedure TPage.DestroyHandle;
+begin
+  inherited DestroyHandle;
+  Exclude(FFlags,pfAdded);
+end;
+
 {------------------------------------------------------------------------------
   TPage AdjustClientRect
   Params: Rect
@@ -155,6 +161,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.20  2003/09/20 09:16:07  mattias
+  added TDBGrid from Jesus
+
   Revision 1.19  2003/09/17 15:26:41  mattias
   fixed removing TPage
 

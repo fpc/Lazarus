@@ -90,12 +90,6 @@ Environment -> General Options -> Files -> FPC source path
 
 
 --------------------------------------------------------------------------------
-Does the LCL aims to be a free replacement of the Borland's propietary VCL
-under Win32?
-Yes, LGPL.
-
-
---------------------------------------------------------------------------------
 ================================================================================
 
 
