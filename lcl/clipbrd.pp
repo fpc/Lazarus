@@ -130,13 +130,6 @@ interface
 uses
   Classes, SysUtils, LCLType, LCLLinux, GraphType, Graphics;
 
-type  
-  TClipboardData = record
-    FormatID: TClipboardFormat;
-    Stream: TMemoryStream;
-  end;
-
-
 { for delphi compatibility:
 
   In Delphi there are 4 predefined constants, but the LCL has only dynamic
@@ -157,6 +150,11 @@ function CF_Component: TClipboardFormat;
 
 
 type
+  TClipboardData = record
+    FormatID: TClipboardFormat;
+    Stream: TMemoryStream;
+  end;
+
   TClipboard = Class(TPersistent)
   private
     FAllocated: Boolean;    // = has ownership
@@ -346,6 +344,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2003/09/10 16:29:13  mattias
+  added Kylix 3 specials
+
   Revision 1.11  2003/06/17 15:57:27  mattias
   made compiler options TargetOS more general
 

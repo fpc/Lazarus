@@ -651,6 +651,7 @@ begin
     Add('REGISTER'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STDCALL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // kylix
     Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   

@@ -1699,7 +1699,7 @@ type
       pcfComponent,
       pcfCustomData,
 
-     // Delphi definitions (only for compatibility)
+      // Delphi definitions (only for compatibility)
       pcfDelphiText,
       pcfDelphiBitmap,
       pcfDelphiPicture,
@@ -1707,7 +1707,7 @@ type
       pcfDelphiObject,
       pcfDelphiComponent,
 
-     // Kylix definitions (only for compatibility)
+      // Kylix definitions (only for compatibility)
       pcfKylixPicture,
       pcfKylixBitmap,
       pcfKylixDrawing,
@@ -1813,6 +1813,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2003/09/10 16:29:13  mattias
+  added Kylix 3 specials
+
   Revision 1.40  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 

@@ -126,6 +126,9 @@ type
     InsertDelphi6CompilerDefinesTemplateMenuItem: TMenuItem;
     InsertDelphi6DirectoryTemplateMenuItem: TMenuItem;
     InsertDelphi6ProjectTemplateMenuItem: TMenuItem;
+    InsertKylix3CompilerDefinesTemplateMenuItem: TMenuItem;
+    InsertKylix3DirectoryTemplateMenuItem: TMenuItem;
+    InsertKylix3ProjectTemplateMenuItem: TMenuItem;
 
     // define tree
     DefineTreeView: TTreeView;
@@ -188,6 +191,9 @@ type
     procedure InsertDelphiCompilerDefinesTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphiDirectoryTemplateMenuItemClick(Sender: TObject);
     procedure InsertDelphiProjectTemplateMenuItemClick(Sender: TObject);
+    procedure InsertKylixCompilerDefinesTemplateMenuItemClick(Sender: TObject);
+    procedure InsertKylixDirectoryTemplateMenuItemClick(Sender: TObject);
+    procedure InsertKylixProjectTemplateMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -909,6 +915,99 @@ begin
   end;
 end;
 
+procedure TCodeToolsDefinesEditor.InsertKylixCompilerDefinesTemplateMenuItemClick
+  (Sender: TObject);
+var KylixVersion: integer;
+begin
+  KylixVersion:=3;
+  InsertTemplate(Boss.DefinePool.CreateKylixCompilerDefinesTemplate(
+                                                   KylixVersion,CodeToolsOpts));
+end;
+
+procedure TCodeToolsDefinesEditor.InsertKylixDirectoryTemplateMenuItemClick(
+  Sender: TObject);
+var
+  InputFileDlg: TInputFileDialog;
+  DirTemplate: TDefineTemplate;
+  KylixVersion: integer;
+  KylixName: string;
+  UserName: String;
+begin
+  KylixVersion:=3;
+  KylixName:='Kylix'+IntToStr(KylixVersion);
+
+  UserName:=GetCurrentUserName;
+  if UserName='' then UserName:='user';
+  InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
+  with InputFileDlg do begin
+    BeginUpdate;
+    Caption:=Format(lisCodeToolsDefsCreateDefinesForDirectory, [KylixName]);
+    FileCount:=1;
+
+    FileTitles[0]:=Format(lisCodeToolsDefsdirectory, [KylixName]);
+    FileDescs[0]:=Format(lisCodeToolsDefsKylixMainDirectoryDesc, [KylixName,
+      #13, KylixName, #13, IntToStr(KylixVersion)]);
+    FileNames[0]:=SetDirSeparators(
+                             '/home/'+UserName+'/kylix'+IntToStr(KylixVersion));
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    DirTemplate:=Boss.DefinePool.CreateKylixDirectoryTemplate(FileNames[0],
+                                                    KylixVersion,CodeToolsOpts);
+    if DirTemplate=nil then exit;
+    DirTemplate.Name:=KylixName+' ('+FileNames[0]+')';
+    InsertTemplate(DirTemplate);
+  end;
+end;
+
+procedure TCodeToolsDefinesEditor.InsertKylixProjectTemplateMenuItemClick(
+  Sender: TObject);
+var
+  InputFileDlg: TInputFileDialog;
+  ProjTemplate: TDefineTemplate;
+  KylixVersion: integer;
+  KylixName: string;
+  UserName: String;
+begin
+  KylixVersion:=3;
+  KylixName:='Kylix'+IntToStr(KylixVersion);
+
+  UserName:=GetCurrentUserName;
+  if UserName='' then UserName:='user';
+  InputFileDlg:=GetInputFileDialog;
+  InputFileDlg.Macros:=Macros;
+  with InputFileDlg do begin
+    BeginUpdate;
+    Caption:=Format(lisCodeToolsDefsCreateDefinesForProject, [KylixName]);
+
+    FileCount:=2;
+
+    FileTitles[0]:=Format(lisCodeToolsDefsprojectDirectory2, [KylixName]);
+    FileDescs[0]:=Format(lisCodeToolsDefsTheProjectDirectory, [KylixName, #13]
+      );
+    FileNames[0]:=SetDirSeparators('/home/'+UserName+'/kylix'
+                   +IntToStr(KylixVersion)+'/YourProject');
+    FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
+
+    FileTitles[1]:=Format(lisCodeToolsDefsdirectory, [KylixName]);
+    FileDescs[1]:=Format(lisCodeToolsDefsKylixMainDirectoryForProject, [
+      KylixName, #13, KylixName, #13, KylixName, #13, IntToStr(KylixVersion)
+      ]);
+    FileNames[1]:=SetDirSeparators('/home/'+UserName+'/kylix'+IntToStr(KylixVersion));
+    FileFlags[1]:=[iftDirectory,iftNotEmpty,iftMustExist];
+
+    EndUpdate;
+    if ShowModal=mrCancel then exit;
+    ProjTemplate:=Boss.DefinePool.CreateDelphiProjectTemplate(FileNames[0],
+                                       FileNames[1],KylixVersion,CodeToolsOpts);
+    if ProjTemplate=nil then exit;
+    ProjTemplate.Name:=KylixName+' Project ('+FileNames[0]+')';
+    InsertTemplate(ProjTemplate);
+  end;
+end;
+
 procedure TCodeToolsDefinesEditor.ValueNoteBookResize(Sender: TObject);
 var ValNoteBookMaxX, ValNoteBookMaxY: integer;
 begin
@@ -1225,7 +1324,8 @@ begin
   // templates
   AddMenuItem(InsertTemplateMenuItem,'InsertTemplateMenuItem',
               lisCodeToolsDefsInsertTemplate, nil);
-              
+
+  // FPC templates
   AddMenuItem(InsertFPCProjectDefinesTemplateMenuItem,
               'InsertFPCProjectDefinesTemplateMenuItem',
               lisCodeToolsDefsInsertFreePascalProjectTe,
@@ -1246,7 +1346,8 @@ begin
               InsertTemplateMenuItem);
   InsertFPCSourceDirTemplateMenuItem.OnClick:=
               @InsertFPCSourceDirDefinesTemplateMenuItemClick;
-              
+
+  // lazarus templates
   InsertTemplateMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertLazarusSourceTemplateMenuItem,
               'InsertLazarusSourceTemplateMenuItem',
@@ -1255,6 +1356,7 @@ begin
   InsertLazarusSourceTemplateMenuItem.OnClick:=
               @InsertLazarusSourceDefinesTemplateMenuItemClick;
 
+  // Delphi 5 templates
   InsertTemplateMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertDelphi5CompilerDefinesTemplateMenuItem,
               'InsertDelphi5CompilerDefinesTemplateMenuItem',
@@ -1277,7 +1379,7 @@ begin
   InsertDelphi5ProjectTemplateMenuItem.OnClick:=
               @InsertDelphiProjectTemplateMenuItemClick;
 
-
+  // Delphi 6 templates
   InsertTemplateMenuItem.Add(CreateSeperator);
   AddMenuItem(InsertDelphi6CompilerDefinesTemplateMenuItem,
               'InsertDelphi6CompilerDefinesTemplateMenuItem',
@@ -1299,6 +1401,29 @@ begin
               InsertTemplateMenuItem);
   InsertDelphi6ProjectTemplateMenuItem.OnClick:=
               @InsertDelphiProjectTemplateMenuItemClick;
+
+  // Kylix 3 templates
+  InsertTemplateMenuItem.Add(CreateSeperator);
+  AddMenuItem(InsertKylix3CompilerDefinesTemplateMenuItem,
+              'InsertKylix3CompilerDefinesTemplateMenuItem',
+              lisCodeToolsDefsInsertKylix3CompilerTemp,
+              InsertTemplateMenuItem);
+  InsertKylix3CompilerDefinesTemplateMenuItem.OnClick:=
+              @InsertKylixCompilerDefinesTemplateMenuItemClick;
+
+  AddMenuItem(InsertKylix3DirectoryTemplateMenuItem,
+              'InsertKylix3DirectoryTemplateMenuItem',
+              lisCodeToolsDefsInsertKylix3DirectoryTem,
+              InsertTemplateMenuItem);
+  InsertKylix3DirectoryTemplateMenuItem.OnClick:=
+              @InsertKylixDirectoryTemplateMenuItemClick;
+
+  AddMenuItem(InsertKylix3ProjectTemplateMenuItem,
+              'InsertKylix3ProjectTemplateMenuItem',
+              lisCodeToolsDefsInsertKylix3ProjectTempl,
+              InsertTemplateMenuItem);
+  InsertKylix3ProjectTemplateMenuItem.OnClick:=
+              @InsertKylixProjectTemplateMenuItemClick;
 
   // define tree----------------------------------------------------------------
   CreateWinControl(DefineTreeView,TTreeView,'DefineTreeView',Self);

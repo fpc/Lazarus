@@ -1354,6 +1354,8 @@ resourcestring
   lisCodeToolsDefsDelphiMainDirectoryDesc = 'The %s main directory,%swhere '
     +'Borland has installed all %s sources.%sFor example: C:/Programme/'
     +'Borland/Delphi%s';
+  lisCodeToolsDefsKylixMainDirectoryDesc = 'The %s main directory,%swhere '
+    +'Borland has installed all %s sources.%sFor example: /home/user/kylix%s';
   lisCodeToolsDefsCreateDefinesForProject = 'Create Defines for %s Project';
   lisCodeToolsDefsprojectDirectory2 = '%s project directory';
   lisCodeToolsDefsTheProjectDirectory = 'The %s project directory,%swhich '
@@ -1361,6 +1363,9 @@ resourcestring
   lisCodeToolsDefsDelphiMainDirectoryForProject = 'The %s main directory,%'
     +'swhere Borland has installed all %s sources,%swhich are used by this %s '
     +'project.%sFor example: C:/Programme/Borland/Delphi%s';
+  lisCodeToolsDefsKylixMainDirectoryForProject = 'The %s main directory,%'
+    +'swhere Borland has installed all %s sources,%swhich are used by this %s '
+    +'project.%sFor example: /home/user/kylix%s';
   lisCodeToolsDefsExit = 'Exit';
   lisCodeToolsDefsSaveAndExit = 'Save and Exit';
   lisCodeToolsDefsExitWithoutSave = 'Exit without Save';
@@ -1408,6 +1413,12 @@ resourcestring
     +'Template';
   lisCodeToolsDefsInsertDelphi6ProjectTempl =
     'Insert Delphi 6 Project Template';
+  lisCodeToolsDefsInsertKylix3CompilerTemp = 'Insert Kylix 3 Compiler '
+    +'Template';
+  lisCodeToolsDefsInsertKylix3DirectoryTem = 'Insert Kylix 3 Directory '
+    +'Template';
+  lisCodeToolsDefsInsertKylix3ProjectTempl =
+    'Insert Kylix 3 Project Template';
   lisCodeToolsDefsSelectedNode = 'Selected Node:';
   lisCodeToolsDefsNodeAndItsChildrenAreOnly = 'Node and its children are only '
     +'valid for this project';

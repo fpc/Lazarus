@@ -32,14 +32,14 @@ end;
 
 constructor TClipboard.Create(AClipboardType: TClipboardType);
 begin
-//writeln('[TClipboard.Create] A ',ClipboardTypeName[AClipboardType],' Self=',HexStr(Cardinal(Self),8));
+  //writeln('[TClipboard.Create] A ',ClipboardTypeName[AClipboardType],' Self=',HexStr(Cardinal(Self),8));
   inherited Create;
   FClipboardType:=AClipboardType;
 end;
 
 destructor TClipboard.Destroy;
 begin
-//writeln('[TClipboard.Destroy] A ',ClipboardTypeName[ClipboardType],' Self=',HexStr(Cardinal(Self),8));
+  //writeln('[TClipboard.Destroy] A ',ClipboardTypeName[ClipboardType],' Self=',HexStr(Cardinal(Self),8));
   OnRequest:=nil; // this will notify the owner
   if FAllocated then begin
     ClipboardGetOwnership(ClipboardType,nil,0,nil);
@@ -47,7 +47,7 @@ begin
   end;
   Clear;
   inherited Destroy;
-//writeln('[TClipboard.Destroy] END ',ClipboardTypeName[ClipboardType]);
+  //writeln('[TClipboard.Destroy] END ',ClipboardTypeName[ClipboardType]);
 end;
 
 function TClipboard.IndexOfCachedFormatID(FormatID: TClipboardFormat;
@@ -91,7 +91,7 @@ function TClipboard.AddFormat(FormatID: TClipboardFormat;
 // copy Stream to a MemoryStream, add it to cache and tell the interface object
 var OldPosition, i: integer;
 begin
-//writeln('[TClipboard.AddFormat - Stream] A ',ClipboardTypeName[ClipboardType],' Format=',FormatID);
+  //writeln('[TClipboard.AddFormat - Stream] A ',ClipboardTypeName[ClipboardType],' Format=',FormatID);
   Result:=false;
   i:=IndexOfCachedFormatID(FormatID,true);
   if i<0 then exit;
@@ -110,7 +110,7 @@ function TClipboard.AddFormat(FormatID: TClipboardFormat;
   var Buffer; Size: Integer): Boolean;
 var i: integer;
 begin
-//writeln('[TClipboard.AddFormat - Buffer] A ',ClipboardTypeName[ClipboardType],' Format=',FormatID,' Size=',Size);
+  //writeln('[TClipboard.AddFormat - Buffer] A ',ClipboardTypeName[ClipboardType],' Format=',FormatID,' Size=',Size);
   Result:=false;
   i:=IndexOfCachedFormatID(FormatID,true);
   if i<0 then exit;
@@ -130,7 +130,7 @@ end;
 procedure TClipboard.Clear;
 var i: integer;
 begin
-//writeln('[TClipboard.Clear] A ',ClipboardTypeName[ClipboardType]);
+  //writeln('[TClipboard.Clear] A ',ClipboardTypeName[ClipboardType]);
   for i:=0 to FCount-1 do
     FData[i].Stream.Free;
   if FData<>nil then begin
@@ -138,7 +138,7 @@ begin
     FData:=nil;
   end;
   FCount:=0;
-//writeln('[TClipboard.Clear] END ',ClipboardTypeName[ClipboardType]);
+  //writeln('[TClipboard.Clear] END ',ClipboardTypeName[ClipboardType]);
 end;
 
 {procedure TClipboard.Adding;
@@ -153,33 +153,15 @@ procedure TClipboard.Close;
 begin
   if FOpenRefCount = 0 then Exit;
   Dec(FOpenRefCount);
-  {
-  if FOpenRefCount = 0 then
-  begin
-    CloseClipboard;
-    if FAllocated then DeallocateHWnd(FClipboardWindow);
-    FClipboardWindow := 0;
+  if FOpenRefCount = 0 then begin
   end;
-  }
 end;
 
 procedure TClipboard.Open;
 begin
-  if FOpenRefCount = 0 then
-  begin
+  if FOpenRefCount = 0 then begin
     if not GetOwnerShip then
       raise Exception.Create('unable to open clipboard');
-    {
-    FClipboardWindow := Application.Handle;
-    if FClipboardWindow = 0 then
-    begin
-      FClipboardWindow := AllocateHWnd(WndProc);
-      FAllocated := True;
-    end;
-    if not OpenClipboard(FClipboardWindow) then
-      raise Exception.CreateRes(@SCannotOpenClipboard);
-    FEmptied := False;
-    }
   end;
   Inc(FOpenRefCount);
 end;
@@ -232,7 +214,7 @@ function TClipboard.GetFormat(FormatID: TClipboardFormat;
 // request data from interface object or copy cached data to Stream
 var i: integer;
 begin
-//writeln('[TClipboard.GetFormat] A ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' ',ClipboardFormatToMimeType(FormatID),' Allocated=',fAllocated);
+  //writeln('[TClipboard.GetFormat] A ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' ',ClipboardFormatToMimeType(FormatID),' Allocated=',fAllocated);
   Result:=false;
   if Stream=nil then exit;
   if FormatID=0 then exit;
@@ -255,7 +237,7 @@ begin
     // not the clipboard owner -> request data
     Result:=ClipboardGetData(ClipboardType,FormatID,Stream);
   end;
-//writeln('[TClipboard.GetFormat] END ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' Result=',Result);
+  //writeln('[TClipboard.GetFormat] END ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' Result=',Result);
 end;
 
 procedure TClipboard.SetComponent(Component: TComponent);
@@ -379,6 +361,7 @@ begin
     for i:=0 to FCount-1 do
       List.Add(ClipboardFormatToMimeType(FData[i].FormatID));
   end else begin
+    FormatList:=nil;
     if ClipboardGetFormats(ClipboardType,cnt,FormatList) then begin
       for i:=0 to cnt-1 do
         List.Add(ClipboardFormatToMimeType(FormatList[i]));
@@ -428,27 +411,31 @@ const
       pcfPicture,
       pcfDelphiBitmap,
       pcfDelphiPicture,
-      //pcfDelphiMetaFilePict,  (unsupportted yet)
+      //pcfDelphiMetaFilePict,  (unsupported yet)
       pcfKylixPicture,
       pcfKylixBitmap
-      //pcfKylixDrawing  (unsupportted yet)
+      //pcfKylixDrawing  (unsupported yet)
     ];
-var f: TPredefinedClipboardFormat;
+var
+  f: TPredefinedClipboardFormat;
   List: PClipboardFormat;
   cnt, i: integer;
 begin
-//writeln('[TClipboard.FindPictureFormatID]');
+  //writeln('[TClipboard.FindPictureFormatID]');
+  List:=nil;
   if not FAllocated then
-    ClipboardGetFormats(ClipboardType,cnt,List)
+    if not ClipboardGetFormats(ClipboardType,cnt,List) then begin
+      Result:=0;
+      exit;
+    end;
   else begin
     cnt:=0;
-    List:=nil;
   end;
   try
     for f:=Low(TPredefinedClipboardFormat) to High(TPredefinedClipboardFormat) do
     begin
       Result:=PredefinedClipboardFormat(f);
-      if (f in PicFormats) and (Result<>0) then begin
+      if (Result<>0) and (f in PicFormats) then begin
         if not FAllocated then begin
           for i:=0 to cnt-1 do
             if (List[i]=Result) then exit;
@@ -473,15 +460,18 @@ function TClipboard.HasFormat(FormatID: TClipboardFormat): Boolean;
 var List: PClipboardFormat;
   cnt, i: integer;
 begin
-//writeln('[TClipboard.HasFormat] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
+  //writeln('[TClipboard.HasFormat] A ',ClipboardTypeName[ClipboardType],' Allocated=',FAllocated);
   if FormatID<>0 then begin
     if FAllocated then
       Result := (IndexOfCachedFormatID(FormatID,false)>=0)
     else begin
-      ClipboardGetFormats(ClipboardType,cnt,List);
+      if not ClipboardGetFormats(ClipboardType,cnt,List) then begin
+        Result:=false;
+        exit;
+      end;
       i:=0;
-//for i:=0 to cnt-1 do
-//writeln('[TClipboard.HasFormat] ',FormatID,' ',List[i]);
+      //for i:=0 to cnt-1 do
+      //writeln('[TClipboard.HasFormat] ',FormatID,' ',List[i]);
       while (i<cnt) and (List[i]<>FormatID) do inc(i);
       Result := i<cnt;
       if List<>nil then FreeMem(List);
@@ -494,7 +484,7 @@ begin
     end;
   end else
     Result:=false;
-//writeln('[TClipboard.HasFormat] END ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' Result=',Result);
+  //writeln('[TClipboard.HasFormat] END ',ClipboardTypeName[ClipboardType],' FormatID=',FormatID,' Result=',Result);
 end;
 
 procedure TClipboard.AssignToPicture(Dest: TPicture);
@@ -539,7 +529,8 @@ begin
     AssignPicture(TPicture(Source))
   else if Source is TGraphic then
     AssignGraphic(TGraphic(Source))
-  else inherited Assign(Source);
+  else
+    inherited Assign(Source);
 end;
 
 procedure TClipboard.AssignTo(Dest: TPersistent);
@@ -550,7 +541,8 @@ begin
     AssignToBitmap(TBitmap(Dest))
   else if Dest is TPixmap then
     AssignToPixmap(TPixmap(Dest))
-  else inherited AssignTo(Dest);
+  else
+    inherited AssignTo(Dest);
 end;
 
 {function TClipboard.GetAsHandle(Format: Word): THandle;
@@ -578,38 +570,46 @@ function TClipboard.GetFormatCount: Integer;
 // ask interfaceobject
 var List: PClipboardFormat;
 begin
-//writeln('[TClipboard.GetFormatCount]');
+  //writeln('[TClipboard.GetFormatCount]');
   if FAllocated then
     Result:=FCount
   else begin
-    ClipboardGetFormats(ClipboardType,Result,List);
-    if List<>nil then FreeMem(List);
+    if ClipboardGetFormats(ClipboardType,Result,List) then begin
+      if List<>nil then FreeMem(List);
+    end else
+      Result:=0;
   end;
 end;
 
 function TClipboard.GetFormats(Index: Integer): TClipboardFormat;
-var List: PClipboardFormat;
+var
+  List: PClipboardFormat;
   cnt: integer;
 begin
-//writeln('[TClipboard.GetFormats] Index=',Index);
+  //writeln('[TClipboard.GetFormats] Index=',Index);
   if FAllocated then begin
     if (Index<0) or (Index>=FCount) then
       raise Exception.Create('TClipboard.GetFormats: Index out of bounds: Index='
         +IntToStr(Index)+' Count='+IntToStr(FCount));
     Result:=FData[Index].FormatID;
   end else begin
-    ClipboardGetFormats(ClipboardType,cnt,List);
-    if (Index>=0) and (Index<cnt) then
-      Result:=List[Index]
-    else
+    if ClipboardGetFormats(ClipboardType,cnt,List) then begin
+      if (Index>=0) and (Index<cnt) then
+        Result:=List[Index]
+      else
+        Result:=0;
+      if List<>nil then FreeMem(List);
+    end else
       Result:=0;
-    if List<>nil then FreeMem(List);
   end;
 end;
 
 
 {
   $Log$
+  Revision 1.12  2003/09/10 16:29:13  mattias
+  added Kylix 3 specials
+
   Revision 1.11  2003/01/06 10:51:41  mattias
   freeing stopped external tools
 

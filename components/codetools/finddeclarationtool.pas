@@ -1268,6 +1268,27 @@ var UnitSrcSearchPath: string;
   MainCodeIsVirtual: boolean;
   CompiledResult: TCodeBuffer;
   UnitSearchPath: string;
+  SrcPathInitialized: boolean;
+  
+  procedure InitSrcPath;
+  begin
+    if SrcPathInitialized then exit;
+    SrcPathInitialized:=true;
+    if Assigned(OnGetUnitSourceSearchPath) then begin
+      UnitSearchPath:='';
+      UnitSrcSearchPath:=OnGetUnitSourceSearchPath(Self);
+    end else begin
+      UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
+      UnitSrcSearchPath:=Scanner.Values[ExternalMacroStart+'SrcPath'];
+      if UnitSearchPath<>'' then begin
+        if UnitSrcSearchPath<>'' then
+          UnitSrcSearchPath:=UnitSrcSearchPath+';'+UnitSearchPath
+        else
+          UnitSrcSearchPath:=UnitSearchPath;
+      end;
+    end;
+  end;
+  
 begin
   {$IFDEF ShowTriedFiles}
   writeln('TFindDeclarationTool.FindUnitSource A AnUnitName=',AnUnitName,' AnUnitInFilename=',AnUnitInFilename);
@@ -1277,18 +1298,9 @@ begin
   or (not (TObject(Scanner.MainCode) is TCodeBuffer))
   or (Scanner.OnLoadSource=nil) then
     exit;
-  if Assigned(OnGetUnitSourceSearchPath) then
-    UnitSrcSearchPath:=OnGetUnitSourceSearchPath(Self)
-  else begin
-    UnitSearchPath:=Scanner.Values[ExternalMacroStart+'UnitPath'];
-    UnitSrcSearchPath:=Scanner.Values[ExternalMacroStart+'SrcPath'];
-    if UnitSearchPath<>'' then begin
-      if UnitSrcSearchPath<>'' then
-        UnitSrcSearchPath:=UnitSrcSearchPath+';'+UnitSearchPath
-      else
-        UnitSrcSearchPath:=UnitSearchPath;
-    end;
-  end;
+  SrcPathInitialized:=false;
+  UnitSearchPath:='';
+  UnitSrcSearchPath:='';
   {$IFDEF ShowSearchPaths}
   writeln('TFindDeclarationTool.FindUnitSource ',
   ' Self="',MainFilename,'"',
@@ -1314,6 +1326,7 @@ begin
       CurDir:=AppendPathDelim(CurDir);
       if not LoadFile(CurDir+AnUnitInFilename,Result) then begin
         // search AnUnitInFilename in searchpath
+        InitSrcPath;
         Result:=SearchFileInPath(UnitSrcSearchPath,AnUnitInFilename);
       end;
     end;
@@ -1329,6 +1342,7 @@ begin
       {$IFDEF ShowTriedFiles}
       writeln('TFindDeclarationTool.FindUnitSource Search in search path=',UnitSrcSearchPath);
       {$ENDIF}
+      InitSrcPath;
       Result:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,true);
     end;
     if Result=nil then begin
@@ -1344,6 +1358,7 @@ begin
         {$IFDEF ShowTriedFiles}
         writeln('TFindDeclarationTool.FindUnitSource Search Compiled unit in src path=',UnitSrcSearchPath);
         {$ENDIF}
+        InitSrcPath;
         CompiledResult:=SearchUnitFileInPath(UnitSrcSearchPath,AnUnitName,false);
       end;
       if CompiledResult=nil then begin
@@ -3530,15 +3545,19 @@ begin
     ReadNextAtom;
     ReadNextAtom;
     SystemAlias:='SYSTEM';
-    if (Scanner.PascalCompiler<>pcDelphi)
-    and Scanner.InitialValues.IsDefined('VER1_0')
-    then begin
-      if Scanner.InitialValues.IsDefined('LINUX') then
-        SystemAlias:='SYSLINUX'
-      else if Scanner.InitialValues.IsDefined('BSD') then
-        SystemAlias:='SYSBSD'
-      else if Scanner.InitialValues.IsDefined('WIN32') then
-        SystemAlias:='SYSWIN32';
+    if (Scanner.PascalCompiler=pcDelphi) then begin
+      SystemAlias:='System';
+    end else begin
+      // FPC
+      if Scanner.InitialValues.IsDefined('VER1_0')
+      then begin
+        if Scanner.InitialValues.IsDefined('LINUX') then
+          SystemAlias:='SYSLINUX'
+        else if Scanner.InitialValues.IsDefined('BSD') then
+          SystemAlias:='SYSBSD'
+        else if Scanner.InitialValues.IsDefined('WIN32') then
+          SystemAlias:='SYSWIN32';
+      end;
     end;
     if UpAtomIs(SystemAlias) or UpAtomIs('SYSTEM') then
       CurUnitType:=sutSystem
@@ -3568,7 +3587,7 @@ begin
     if (CurUnitType>sutObjPas)
     and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
     and (Scanner.PascalCompiler=pcFPC) then begin
-      // try hidden used unit 'objpas'
+      // try hidden used fpc unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
       if Result then exit;
     end;

@@ -234,6 +234,8 @@ type
     function IfOptDirective: boolean;
     function EndifDirective: boolean;
     function ElseDirective: boolean;
+    function ElseIfDirective: boolean;
+    function IfEndDirective: boolean;
     function DefineDirective: boolean;
     function UndefDirective: boolean;
     function IncludeDirective: boolean;
@@ -1958,6 +1960,8 @@ begin
     Add('IFOPT',{$ifdef FPC}@{$endif}IfOptDirective);
     Add('ENDIF',{$ifdef FPC}@{$endif}EndIfDirective);
     Add('ELSE',{$ifdef FPC}@{$endif}ElseDirective);
+    Add('ELSEIF',{$ifdef FPC}@{$endif}ElseIfDirective);
+    Add('IFEND',{$ifdef FPC}@{$endif}IfEndDirective);
     Add('DEFINE',{$ifdef FPC}@{$endif}DefineDirective);
     Add('UNDEF',{$ifdef FPC}@{$endif}UndefDirective);
     Add('INCLUDE',{$ifdef FPC}@{$endif}IncludeDirective);
@@ -1972,6 +1976,8 @@ begin
     Add('IFOPT',{$ifdef FPC}@{$endif}SkipIfDirective);
     Add('ENDIF',{$ifdef FPC}@{$endif}EndIfDirective);
     Add('ELSE',{$ifdef FPC}@{$endif}ElseDirective);
+    Add('ELSEIF',{$ifdef FPC}@{$endif}ElseIfDirective);
+    Add('IFEND',{$ifdef FPC}@{$endif}IfEndDirective);
   end;
 end;
 
@@ -1993,6 +1999,8 @@ begin
     // ignore link object directive
   else if (FDirectiveName='RANGECHECKS') then
     // ignore link object directive
+  else if (FDirectiveName='ALIGN') then
+    // set record align size
   else begin
     RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
         [copy(Src,ValStart,SrcPos-ValStart),FDirectiveName]);
@@ -2121,13 +2129,14 @@ function TLinkScanner.EndifDirective: boolean;
   begin
     RaiseExceptionFmt(ctsAwithoutB,['$ENDIF','$IF'])
   end;
-
+  
 begin
   dec(IfLevel);
   if IfLevel<0 then
     RaiseAWithoutB
-  else if IfLevel<FSkipIfLevel then
+  else if IfLevel<FSkipIfLevel then begin
     FSkippingTillEndif:=false;
+  end;
   Result:=true;
 end;
 
@@ -2146,6 +2155,42 @@ begin
     SkipTillEndifElse
   else if IfLevel=FSkipIfLevel then
     FSkippingTillEndif:=false;
+  Result:=true;
+end;
+
+function TLinkScanner.ElseIfDirective: boolean;
+// {$elseif expression}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$ELSEIF','$IF']);
+  end;
+
+begin
+  if IfLevel=0 then
+    RaiseAWithoutB;
+  if not FSkippingTillEndif then begin
+    SkipTillEndifElse;
+    Result:=true;
+  end else if IfLevel=FSkipIfLevel then
+    Result:=IfDirective;
+end;
+
+function TLinkScanner.IfEndDirective: boolean;
+// {$IfEnd comment}
+
+  procedure RaiseAWithoutB;
+  begin
+    RaiseExceptionFmt(ctsAwithoutB,['$IfEnd','$ElseIf'])
+  end;
+
+begin
+  dec(IfLevel);
+  if IfLevel<0 then
+    RaiseAWithoutB
+  else if IfLevel<FSkipIfLevel then begin
+    FSkippingTillEndif:=false;
+  end;
   Result:=true;
 end;
 
@@ -2391,19 +2436,18 @@ begin
 end;
 
 function TLinkScanner.IfDirective: boolean;
-// {$if expression}
+// {$if expression} or indirectly called by {$elseif expression}
 var Expr, ResultStr: string;
 begin
   inc(IfLevel);
   inc(SrcPos);
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
+  Result:=true;
   if Values.ErrorPosition>=0 then
     RaiseException(ctsErrorInDirectiveExpression)
   else if ResultStr='0' then
     SkipTillEndifElse
-  else
-  Result:=true;
 end;
 
 function TLinkScanner.IfOptDirective: boolean;
@@ -2558,7 +2602,7 @@ begin
   OldDirectiveFuncList:=FDirectiveFuncList;
   FDirectiveFuncList:=FSkipDirectiveFuncList;
   try
-    // parse till $else or $endif without adding the code to FCleanedSrc
+    // parse till $else, $elseif or $endif without adding the code to FCleanedSrc
     FSkippingTillEndif:=true;
     FSkipIfLevel:=IfLevel;
     if (SrcPos<=SrcLen) then begin

@@ -354,6 +354,7 @@ type
     procedure Move(SrcIndex, DestIndex: integer);
     property EnglishErrorMsgFilename: string
         read FEnglishErrorMsgFilename write SetEnglishErrorMsgFilename;
+    // FPC templates
     function CreateFPCTemplate(const PPC386Path, PPCOptions,
                                TestPascalFile: string;
                                var UnitSearchPath: string;
@@ -361,23 +362,35 @@ type
     function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath, PPUExt: string;
                           UnitLinkListValid: boolean; var UnitLinkList: string;
                           Owner: TObject): TDefineTemplate;
+    function CreateFPCCommandLineDefines(const Name, CmdLine: string;
+                                         RecursiveDefines: boolean;
+                                         Owner: TObject): TDefineTemplate;
+    // Lazarus templates
     function CreateLazarusSrcTemplate(
                           const LazarusSrcDir, WidgetType, ExtraOptions: string;
                           Owner: TObject): TDefineTemplate;
     function CreateLCLProjectTemplate(const LazarusSrcDir, WidgetType,
                           ProjectDir: string; Owner: TObject): TDefineTemplate;
+    // Delphi templates
     function CreateDelphiSrcPath(DelphiVersion: integer;
                                  const PathPrefix: string): string;
     function CreateDelphiCompilerDefinesTemplate(DelphiVersion: integer;
-                          Owner: TObject): TDefineTemplate;
+                                               Owner: TObject): TDefineTemplate;
     function CreateDelphiDirectoryTemplate(const DelphiDirectory: string;
                        DelphiVersion: integer; Owner: TObject): TDefineTemplate;
     function CreateDelphiProjectTemplate(const ProjectDir,
                                  DelphiDirectory: string; DelphiVersion: integer;
                                  Owner: TObject): TDefineTemplate;
-    function CreateFPCCommandLineDefines(const Name, CmdLine: string;
-                                         RecursiveDefines: boolean;
-                                         Owner: TObject): TDefineTemplate;
+    // Kylix templates
+    function CreateKylixCompilerDefinesTemplate(KylixVersion: integer;
+                                               Owner: TObject): TDefineTemplate;
+    function CreateKylixSrcPath(KylixVersion: integer;
+                                const PathPrefix: string): string;
+    function CreateKylixDirectoryTemplate(const KylixDirectory: string;
+                        KylixVersion: integer; Owner: TObject): TDefineTemplate;
+    function CreateKylixProjectTemplate(const ProjectDir,
+                                 KylixDirectory: string; KylixVersion: integer;
+                                 Owner: TObject): TDefineTemplate;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -3072,16 +3085,17 @@ function TDefinePool.CreateDelphiSrcPath(DelphiVersion: integer;
   const PathPrefix: string): string;
 begin
   case DelphiVersion of
-  6:
+  1..5:
+    Result:=PathPrefix+'Source/Rtl/Win;'
+      +PathPrefix+'Source/Rtl/Sys;'
+      +PathPrefix+'Source/Rtl/Corba;'
+      +PathPrefix+'Source/Vcl;';
+  else
+    // 6 and above
     Result:=PathPrefix+'Source/Rtl/Win;'
       +PathPrefix+'Source/Rtl/Sys;'
       +PathPrefix+'Source/Rtl/Common;'
       +PathPrefix+'Source/Rtl/Corba40;'
-      +PathPrefix+'Source/Vcl;';
-  else
-    Result:=PathPrefix+'Source/Rtl/Win;'
-      +PathPrefix+'Source/Rtl/Sys;'
-      +PathPrefix+'Source/Rtl/Corba;'
       +PathPrefix+'Source/Vcl;';
   end;
 end;
@@ -3458,7 +3472,8 @@ end;
 
 function TDefinePool.CreateDelphiCompilerDefinesTemplate(
   DelphiVersion: integer; Owner: TObject): TDefineTemplate;
-var DefTempl: TDefineTemplate;
+var
+  DefTempl: TDefineTemplate;
 begin
   DefTempl:=TDefineTemplate.Create('Delphi'+IntToStr(DelphiVersion)
       +' Compiler Defines',
@@ -3482,20 +3497,24 @@ begin
   3:
     DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_110',
         Format(ctsDefineMacroName,['VER_110']),
-        'VER_130','',da_DefineRecurse));
+        'VER_110','',da_DefineRecurse));
   4:
     DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_125',
         Format(ctsDefineMacroName,['VER_125']),
-        'VER_130','',da_DefineRecurse));
+        'VER_125','',da_DefineRecurse));
   5:
     DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_130',
         Format(ctsDefineMacroName,['VER_130']),
         'VER_130','',da_DefineRecurse));
-  else
-    // else define Delphi 6
+  6:
     DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_140',
         Format(ctsDefineMacroName,['VER_140']),
         'VER_140','',da_DefineRecurse));
+  else
+    // else define Delphi 7
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_150',
+        Format(ctsDefineMacroName,['VER_150']),
+        'VER_150','',da_DefineRecurse));
   end;
 
   DefTempl.AddChild(TDefineTemplate.Create(
@@ -3546,6 +3565,113 @@ begin
       Format(ctsAddsDirToSourcePath,['Delphi RTL+VCL']),
       ExternalMacroStart+'SrcPath',
       SetDirSeparators(CreateDelphiSrcPath(DelphiVersion,'$(#DelphiDir)/')
+                       +'$(#SrcPath)'),
+      da_DefineRecurse));
+
+  Result:=MainDirTempl;
+  Result.SetDefineOwner(Owner,true);
+end;
+
+function TDefinePool.CreateKylixCompilerDefinesTemplate(KylixVersion: integer;
+  Owner: TObject): TDefineTemplate;
+var
+  DefTempl: TDefineTemplate;
+begin
+  DefTempl:=TDefineTemplate.Create('Kylix'+IntToStr(KylixVersion)
+      +' Compiler Defines',
+      Format(ctsOtherCompilerDefines,['Kylix'+IntToStr(KylixVersion)]),
+      '','',da_Block);
+  DefTempl.AddChild(TDefineTemplate.Create('Reset',
+      ctsResetAllDefines,
+      '','',da_UndefineAll));
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro KYLIX',
+      Format(ctsDefineMacroName,['KYLIX']),
+      'KYLIX','',da_DefineRecurse));
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro FPC_DELPHI',
+      Format(ctsDefineMacroName,['FPC_DELPHI']),
+      'FPC_DELPHI','',da_DefineRecurse));
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro LINUX',
+      Format(ctsDefineMacroName,['LINUX']),
+      'LINUX','',da_DefineRecurse));
+  DefTempl.AddChild(TDefineTemplate.Create('Define macro CPU386',
+      Format(ctsDefineMacroName,['CPU386']),
+      'CPU386','',da_DefineRecurse));
+
+  // version
+  case KylixVersion of
+  1:
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_125',
+        Format(ctsDefineMacroName,['VER_125']),
+        'VER_125','',da_DefineRecurse));
+  2:
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_130',
+        Format(ctsDefineMacroName,['VER_130']),
+        'VER_130','',da_DefineRecurse));
+  else
+    // else define Kylix 3
+    DefTempl.AddChild(TDefineTemplate.Create('Define macro VER_140',
+        Format(ctsDefineMacroName,['VER_140']),
+        'VER_140','',da_DefineRecurse));
+  end;
+
+  DefTempl.AddChild(TDefineTemplate.Create(
+     Format(ctsDefineMacroName,[ExternalMacroStart+'Compiler']),
+     'Define '+ExternalMacroStart+'Compiler variable',
+     ExternalMacroStart+'Compiler','DELPHI',da_DefineRecurse));
+
+  Result:=DefTempl;
+  Result.SetDefineOwner(Owner,true);
+end;
+
+function TDefinePool.CreateKylixSrcPath(KylixVersion: integer;
+  const PathPrefix: string): string;
+begin
+  Result:=PathPrefix+'source/rtl/linux;'
+    +PathPrefix+'source/rtl/sys;'
+    +PathPrefix+'source/rtl/common;'
+    +PathPrefix+'source/rtl/corba40;'
+    +PathPrefix+'source/rtle;'
+    +PathPrefix+'source/rtl/clx';
+end;
+
+function TDefinePool.CreateKylixDirectoryTemplate(const KylixDirectory: string;
+  KylixVersion: integer; Owner: TObject): TDefineTemplate;
+var MainDirTempl: TDefineTemplate;
+begin
+  MainDirTempl:=TDefineTemplate.Create('Kylix'+IntToStr(KylixVersion)
+     +' Directory',
+     Format(ctsNamedDirectory,['Kylix'+IntToStr(KylixVersion)]),
+     '',KylixDirectory,da_Directory);
+  MainDirTempl.AddChild(CreateKylixCompilerDefinesTemplate(KylixVersion,Owner));
+  MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
+      Format(ctsSetsSrcPathTo,['RTL, CLX']),
+      ExternalMacroStart+'SrcPath',
+      SetDirSeparators(CreateKylixSrcPath(KylixVersion,'$(#DefinePath)/')
+                       +'$(#SrcPath)'),
+      da_DefineRecurse));
+
+  Result:=MainDirTempl;
+  Result.SetDefineOwner(Owner,true);
+end;
+
+function TDefinePool.CreateKylixProjectTemplate(const ProjectDir,
+  KylixDirectory: string; KylixVersion: integer; Owner: TObject
+  ): TDefineTemplate;
+var MainDirTempl: TDefineTemplate;
+begin
+  MainDirTempl:=TDefineTemplate.Create('Kylix'+IntToStr(KylixVersion)+' Project',
+     Format(ctsNamedProject,['Kylix'+IntToStr(KylixVersion)]),
+     '',ProjectDir,da_Directory);
+  MainDirTempl.AddChild(
+    CreateDelphiCompilerDefinesTemplate(KylixVersion,Owner));
+  MainDirTempl.AddChild(TDefineTemplate.Create(
+     'Define '+ExternalMacroStart+'KylixDir',
+     Format(ctsDefineMacroName,[ExternalMacroStart+'KylixDir']),
+     ExternalMacroStart+'KylixDir',KylixDirectory,da_DefineRecurse));
+  MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
+      Format(ctsAddsDirToSourcePath,['Kylix RTL+VCL']),
+      ExternalMacroStart+'SrcPath',
+      SetDirSeparators(CreateKylixSrcPath(KylixVersion,'$(#KylixDir)/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
 
