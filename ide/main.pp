@@ -6900,91 +6900,113 @@ var
   ActiveUnitInfo: TUnitInfo;
   StartPos, EndPos: TPoint;
   StartCode, EndCode: TCodeBuffer;
-  NewIdentifier: string;
+  NewIdentifier, NewIdentValue: string;
   NewSourceLines: string;
-  ResourcestringSectionID: integer;
   InsertPolicy: TResourcestringInsertPolicy;
+  SectionCode: TCodeBuffer;
+  SectionCaretXY: TPoint;
+  InsertAlphabetically: boolean;
+  DummyResult: Boolean;
 begin
-  Result:=mrCancel;
-  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  { $IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoMakeResourceString] ************');
-  { $ENDIF}
-  // calculate start and end of expression in source
-  if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
-    ActiveSrcEdit.EditorComponent.CaretY,
-    StartCode,StartPos.X,StartPos.Y,
-    EndCode,EndPos.X,EndPos.Y,
-    true) then
-  begin
-    writeln('[TMainIDE.DoMakeResourceString] B');
-    // the codetools have calculated the maximum bounds
-    if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
-      MessageDlg('No String Constant Found',
-      +'Hint: The Make Resourcestring Function expects a string constant.'#13
-      +'Please select the expression and try again.',
-      mtError,[mbCancel],0);
-      exit;
-    end;
-    writeln('[TMainIDE.DoMakeResourceString] C');
-    // the user can shorten this range by selecting text
-    if (Trim(ActiveSrcEdit.EditorComponent.SelText)='') then begin
-      // the user has not selected text
-      // -> check if the string constant is in single file
-      // (replacing code that contains an $include directive is ambigious)
-      if (StartCode<>ActiveUnitInfo.Source) or (EndCode<>ActiveUnitInfo.Source)
-      then begin
-        MessageDlg('No String Constant Found','Invalid expression.'#13
-        +'Hint: The Make Resourcestring Function expects a string constant'
-        +' in a single file. Please select the expression and try again.',
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    Result:=mrCancel;
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
+    { $IFDEF IDE_DEBUG}
+    writeln('');
+    writeln('[TMainIDE.DoMakeResourceString] ************');
+    { $ENDIF}
+    // calculate start and end of expression in source
+    if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
+      ActiveSrcEdit.EditorComponent.CaretX,
+      ActiveSrcEdit.EditorComponent.CaretY,
+      StartCode,StartPos.X,StartPos.Y,
+      EndCode,EndPos.X,EndPos.Y,
+      true) then
+    begin
+      writeln('[TMainIDE.DoMakeResourceString] B');
+      // the codetools have calculated the maximum bounds
+      if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
+        MessageDlg('No String Constant Found',
+        +'Hint: The Make Resourcestring Function expects a string constant.'#13
+        +'Please select the expression and try again.',
         mtError,[mbCancel],0);
         exit;
+      end;
+      writeln('[TMainIDE.DoMakeResourceString] C');
+      // the user can shorten this range by selecting text
+      if (Trim(ActiveSrcEdit.EditorComponent.SelText)='') then begin
+        // the user has not selected text
+        // -> check if the string constant is in single file
+        // (replacing code that contains an $include directive is ambigious)
+        if (StartCode<>ActiveUnitInfo.Source)
+        or (EndCode<>ActiveUnitInfo.Source)
+        then begin
+          MessageDlg('No String Constant Found','Invalid expression.'#13
+          +'Hint: The Make Resourcestring Function expects a string constant'
+          +' in a single file. Please select the expression and try again.',
+          mtError,[mbCancel],0);
+          exit;
+        end;
+      end else begin
+        // the user has selected text
+        // -> check if the selection is only part of the maximum bounds
+        if (CompareCaret(ActiveSrcEdit.EditorComponent.BlockBegin,StartPos)<0)
+        or (CompareCaret(ActiveSrcEdit.EditorComponent.BlockEnd,EndPos)>0)
+        then begin
+          MessageDlg('Selection exceeds string constant',
+          'Hint: The Make Resourcestring Function expects a string constant.'#13
+          +'Please select only a string expression and try again.',
+          mtError,[mbCancel],0);
+          exit;
+        end;
       end;
     end else begin
-      // the user has selected text
-      // -> check if the selection is only part of the maximum bounds
-      if (CompareCaret(ActiveSrcEdit.EditorComponent.BlockBegin,StartPos)<0)
-      or (CompareCaret(ActiveSrcEdit.EditorComponent.BlockEnd,EndPos)>0)
-      then begin
-        MessageDlg('Selection exceeds string constant',
-        'Hint: The Make Resourcestring Function expects a string constant.'#13
-        +'Please select only a string expression and try again.',
-        mtError,[mbCancel],0);
-        exit;
-      end;
+      DoJumpToCodeToolBossError;
+      exit;
     end;
-  end else begin
-    DoJumpToCodeToolBossError;
-    exit;
-  end;
-  
-  // gather all reachable resourcestring sections
-  if not CodeToolBoss.GatherResourceStringSections(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
-    ActiveSrcEdit.EditorComponent.CaretY)
-  then begin
-    DoJumpToCodeToolBossError;
-    exit;
-  end;
-  if CodeToolBoss.Positions.Count=0 then begin
-    MessageDlg('No ResourceString Section found',
-      'Unable to find a ResourceString section in this or any of the used units.',
-      mtError,[mbCancel],0);
-    exit;
-  end;
-  
-  Result:=ShowMakeResStrDialog(StartPos,EndPos,StartCode,
-               CodeToolBoss.Positions,NewIdentifier,NewSourceLines,
-               ResourcestringSectionID,InsertPolicy);
-  if Result<>mrOk then exit;
 
-  // ToDo:
-  // - write and open wizard
-  MessageDlg('Not implemented yet','Sorry, DoMakeResourceString is not implemented yet.',
-    mtInformation,[mbCancel],0);
-  Result:=mrCancel;
+    // gather all reachable resourcestring sections
+    if not CodeToolBoss.GatherResourceStringSections(ActiveUnitInfo.Source,
+      ActiveSrcEdit.EditorComponent.CaretX,
+      ActiveSrcEdit.EditorComponent.CaretY)
+    then begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+    if CodeToolBoss.Positions.Count=0 then begin
+      MessageDlg('No ResourceString Section found',
+        'Unable to find a ResourceString section in this '
+        +'or any of the used units.',
+        mtError,[mbCancel],0);
+      exit;
+    end;
+
+    // show make resourcestring dialog
+    Result:=ShowMakeResStrDialog(StartPos,EndPos,StartCode,
+                                 CodeToolBoss.Positions,
+                                 NewIdentifier,NewIdentValue,NewSourceLines,
+                                 SectionCode,SectionCaretXY,InsertPolicy);
+    if Result<>mrOk then exit;
+
+    // replace source
+    ActiveSrcEdit.ReplaceLines(StartPos.Y,EndPos.Y,NewSourceLines);
+
+    // add new resourcestring to resourcestring section
+    InsertAlphabetically:=(InsertPolicy=rsipAlphabetically);
+    DummyResult:=CodeToolBoss.AddResourcestring(
+                   SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
+                   NewIdentifier,''''+NewIdentValue+'''',InsertAlphabetically);
+    ApplyCodeToolChanges;
+    if not DummyResult then begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+
+    Result:=mrOk;
+  finally
+    FOpenEditorsOnCodeToolChange:=false;
+  end;
 end;
 
 procedure TMainIDE.DoCompleteCodeAtCursor;
@@ -7841,6 +7863,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.478  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.477  2003/03/08 21:51:56  mattias
   make resource string dialog nearly complete
 
