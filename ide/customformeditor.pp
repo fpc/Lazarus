@@ -1242,9 +1242,7 @@ Begin
       end;
       
       // create component interface
-      Temp := TComponentInterface.Create;
-      Temp.FComponent:=NewComponent;
-      
+      Temp := TComponentInterface.Create(NewComponent);
       // set parent
       if Temp.IsTControl then begin
         if (ParentComponent is TWinControl)
@@ -1268,13 +1266,11 @@ Begin
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
       NewJITIndex := JITList.AddNewJITComponent(DefaultJITUnitName,TypeClass);
-      if NewJITIndex >= 0 then begin
+      if NewJITIndex >= 0 then
         // create component interface
-        Temp := TComponentInterface.Create;
-        Temp.FComponent := JITList[NewJITIndex]
-      end else begin
+        Temp := TComponentInterface.Create(JITList[NewJITIndex])
+      else
         exit;
-      end;
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent D ');{$ENDIF}
     try
