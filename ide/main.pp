@@ -604,6 +604,7 @@ type
 
     // edit menu
     procedure DoCommand(EditorCommand: integer); override;
+    procedure DoSourceEditorCommand(EditorCommand: integer);
 
     // Delphi conversion
     function DoConvertDFMtoLFM: TModalResult;
@@ -11072,132 +11073,132 @@ end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
 begin
-  DoCommand(ecCopy);
+  DoSourceEditorCommand(ecCopy);
 end;
 
 procedure TMainIDE.mnuEditCutClicked(Sender: TObject);
 begin
-  DoCommand(ecCut);
+  DoSourceEditorCommand(ecCut);
 end;
 
 procedure TMainIDE.mnuEditPasteClicked(Sender: TObject);
 begin
-  DoCommand(ecPaste);
+  DoSourceEditorCommand(ecPaste);
 end;
 
 procedure TMainIDE.mnuEditRedoClicked(Sender: TObject);
 begin
-  DoCommand(ecRedo);
+  DoSourceEditorCommand(ecRedo);
 end;
 
 procedure TMainIDE.mnuEditUndoClicked(Sender: TObject);
 begin
-  DoCommand(ecUndo);
+  DoSourceEditorCommand(ecUndo);
 end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecBlockIndent);
+  DoSourceEditorCommand(ecBlockIndent);
 end;
 
 procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecBlockUnindent);
+  DoSourceEditorCommand(ecBlockUnindent);
 end;
 
 procedure TMainIDE.mnuEditEncloseBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionEnclose);
+  DoSourceEditorCommand(ecSelectionEnclose);
 end;
 
 procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionUpperCase);
+  DoSourceEditorCommand(ecSelectionUpperCase);
 end;
 
 procedure TMainIDE.mnuEditLowerCaseBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionLowerCase);
+  DoSourceEditorCommand(ecSelectionLowerCase);
 end;
 
 procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionTabs2Spaces);
+  DoSourceEditorCommand(ecSelectionTabs2Spaces);
 end;
 
 procedure TMainIDE.mnuEditCommentBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionComment);
+  DoSourceEditorCommand(ecSelectionComment);
 end;
 
 procedure TMainIDE.mnuEditUncommentBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionUncomment);
+  DoSourceEditorCommand(ecSelectionUncomment);
 end;
 
 procedure TMainIDE.mnuEditConditionalBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionConditional);
+  DoSourceEditorCommand(ecSelectionConditional);
 end;
 
 procedure TMainIDE.mnuEditSortBlockClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionSort);
+  DoSourceEditorCommand(ecSelectionSort);
 end;
 
 procedure TMainIDE.mnuEditSelectionBreakLinesClicked(Sender: TObject);
 begin
-  DoCommand(ecSelectionBreakLines);
+  DoSourceEditorCommand(ecSelectionBreakLines);
 end;
 
 procedure TMainIDE.mnuEditSelectAllClick(Sender: TObject);
 begin
-  DoCommand(ecSelectAll);
+  DoSourceEditorCommand(ecSelectAll);
 end;
 
 procedure TMainIDE.mnuEditSelectCodeBlockClick(Sender: TObject);
 begin
-  DoCommand(ecSelectCodeBlock);
+  DoSourceEditorCommand(ecSelectCodeBlock);
 end;
 
 procedure TMainIDE.mnuEditSelectToBraceClick(Sender: TObject);
 begin
-  DoCommand(ecSelectToBrace);
+  DoSourceEditorCommand(ecSelectToBrace);
 end;
 
 procedure TMainIDE.mnuEditSelectLineClick(Sender: TObject);
 begin
-  DoCommand(ecSelectLine);
+  DoSourceEditorCommand(ecSelectLine);
 end;
 
 procedure TMainIDE.mnuEditSelectParagraphClick(Sender: TObject);
 begin
-  DoCommand(ecSelectParagraph);
+  DoSourceEditorCommand(ecSelectParagraph);
 end;
 
 procedure TMainIDE.mnuEditInsertGPLNoticeClick(Sender: TObject);
 begin
-  DoCommand(ecInsertGPLNotice);
+  DoSourceEditorCommand(ecInsertGPLNotice);
 end;
 
 procedure TMainIDE.mnuEditInsertLGPLNoticeClick(Sender: TObject);
 begin
-  DoCommand(ecInsertLGPLNotice);
+  DoSourceEditorCommand(ecInsertLGPLNotice);
 end;
 
 procedure TMainIDE.mnuEditInsertUsernameClick(Sender: TObject);
 begin
-  DoCommand(ecInsertUserName);
+  DoSourceEditorCommand(ecInsertUserName);
 end;
 
 procedure TMainIDE.mnuEditInsertDateTimeClick(Sender: TObject);
 begin
-  DoCommand(ecInsertDateTime);
+  DoSourceEditorCommand(ecInsertDateTime);
 end;
 
 procedure TMainIDE.mnuEditInsertChangeLogEntryClick(Sender: TObject);
 begin
-  DoCommand(ecInsertChangeLogEntry);
+  DoSourceEditorCommand(ecInsertChangeLogEntry);
 end;
 
 procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);
@@ -11227,47 +11228,47 @@ end;
 
 procedure TMainIDE.mnuEditInsertCharacterClicked(Sender: TObject);
 begin
-  DoCommand(ecInsertCharacter);
+  DoSourceEditorCommand(ecInsertCharacter);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSAuthorClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSAuthor);
+  DoSourceEditorCommand(ecInsertCVSAuthor);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSDateClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSDate);
+  DoSourceEditorCommand(ecInsertCVSDate);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSHeaderClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSHeader);
+  DoSourceEditorCommand(ecInsertCVSHeader);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSIDClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSID);
+  DoSourceEditorCommand(ecInsertCVSID);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSLogClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSLog);
+  DoSourceEditorCommand(ecInsertCVSLog);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSNameClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSName);
+  DoSourceEditorCommand(ecInsertCVSName);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSRevisionClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSRevision);
+  DoSourceEditorCommand(ecInsertCVSRevision);
 end;
 
 procedure TMainIDE.mnuEditInsertCVSSourceClick(Sender: TObject);
 begin
-  DoCommand(ecInsertCVSSource);
+  DoSourceEditorCommand(ecInsertCVSSource);
 end;
 
 procedure TMainIDE.DoCommand(EditorCommand: integer);
@@ -11287,6 +11288,20 @@ begin
     // ToDo: send command to form editor/designer
 
   end;
+end;
+
+procedure TMainIDE.DoSourceEditorCommand(EditorCommand: integer);
+var
+  CurFocusControl: TWinControl;
+begin
+  // check that the currently focus is on the MainIDEBar or on the SourceEditor
+  CurFocusControl:=FindOwnerControl(GetFocus);
+  if (CurFocusControl<>nil) then begin
+    CurFocusControl:=GetParentForm(CurFocusControl);
+    if (CurFocusControl<>MainIDEBar) and (CurFocusControl<>SourceNotebook) then
+      exit;
+  end;
+  DoCommand(EditorCommand);
 end;
 
 procedure TMainIDE.OnApplyWindowLayout(ALayout: TIDEWindowLayout);
@@ -11382,6 +11397,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.845  2005/02/06 11:28:30  mattias
+  adding focus check for source editor shortcuts in IDE main menu
+
   Revision 1.844  2005/02/05 16:06:57  mattias
   implemented TAnchorsPropertyEditor to show a button to show the anchor editor
 
