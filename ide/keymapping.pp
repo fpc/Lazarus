@@ -196,6 +196,7 @@ const
   // components menu
   ecConfigCustomComps    = ecUserFirst + 900;
   ecOpenInstalledPkg     = ecUserFirst + 901;
+  ecOpenPackageFile      = ecUserFirst + 902;
 
   // help menu
   ecAboutLazarus         = ecUserFirst + 1000;
@@ -628,6 +629,7 @@ begin
     // components menu
     ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
     ecOpenInstalledPkg      : Result:= lisMenuOpenInstalledPkg;
+    ecOpenPackageFile       : Result:= lisMenuOpenPackageFile;
 
     // tools menu
     ecExtToolSettings       : Result:= srkmecExtToolSettings;
@@ -1464,6 +1466,7 @@ begin
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
   Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open installed package',ecOpenInstalledPkg,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open package file',ecOpenPackageFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
   C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];

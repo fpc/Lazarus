@@ -39,8 +39,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, Graphics, LCLType, Menus, LazarusIDEStrConsts, IDEOptionDefs,
-  IDEDefs, ComponentReg, PackageDefs, AddToPackageDlg, PackageSystem;
+  LResources, Graphics, LCLType, Menus, Dialogs, LazarusIDEStrConsts,
+  IDEOptionDefs, IDEDefs, ComponentReg, PackageDefs, AddToPackageDlg,
+  PackageSystem;
   
 type
   TOnOpenFile =
@@ -50,6 +51,7 @@ type
   TOnCreateNewPkgFile =
     function(Sender: TObject;
              const Params: TAddToPkgResult): TModalResult  of object;
+
 
   { TPackageEditorForm }
 
@@ -76,6 +78,7 @@ type
     procedure PackageEditorFormResize(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
+    procedure RemoveBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
   private
     FLazPackage: TLazPackage;
@@ -228,6 +231,7 @@ end;
 procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateSelectedFile;
+  UpdateButtons;
 end;
 
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
@@ -292,6 +296,36 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.RemoveBitBtnClick(Sender: TObject);
+var
+  ANode: TTreeNode;
+  NodeIndex: Integer;
+  CurFile: TPkgFile;
+begin
+  ANode:=FilesTreeView.Selected;
+  if (ANode=nil) or LazPackage.ReadOnly then begin
+    UpdateButtons;
+    exit;
+  end;
+  NodeIndex:=ANode.Index;
+  if ANode.Parent=FilesNode then begin
+    // get current package file
+    CurFile:=LazPackage.Files[NodeIndex];
+    if CurFile=nil then exit;
+    if MessageDlg('Remove file?',
+      'Remove file "'+CurFile.Filename+'"'#13
+      +'from package "'+LazPackage.IDAsString+'"?',
+      mtConfirmation,[mbYes,mbNo],0)=mrNo
+    then
+      exit;
+      
+    // ToDo
+    
+  end else if ANode.Parent=RequiredPackagesNode then begin
+
+  end;
+end;
+
 procedure TPackageEditorForm.SaveBitBtnClick(Sender: TObject);
 begin
   DoSave;
@@ -352,6 +386,9 @@ begin
     end;
     
   end;
+  
+  UpdateSelectedFile;
+  UpdateStatusBar;
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
@@ -435,6 +472,7 @@ begin
     Name:='RemoveBitBtn';
     Parent:=Self;
     Caption:='Remove';
+    OnClick:=@RemoveBitBtnClick;
   end;
 
   InstallBitBtn:=TBitBtn.Create(Self);
@@ -657,6 +695,8 @@ begin
   end;
   if LazPackage.ReadOnly then
     StatusText:='Read Only: '+StatusText;
+  if LazPackage.Modified then
+    StatusText:='Modified: '+StatusText;
   StatusBar.SimpleText:=StatusText;
 end;
 
@@ -664,6 +704,8 @@ procedure TPackageEditorForm.DoSave;
 begin
   PackageEditors.SavePackage(LazPackage);
   UpdateButtons;
+  UpdateTitle;
+  UpdateStatusBar;
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);

@@ -45,7 +45,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
-  CodeToolManager, CodeCache, Laz_XMLCfg,
+  CodeToolManager, CodeCache, Laz_XMLCfg, LazarusIDEStrConsts,
   KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, InputHistory,
   IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
@@ -53,6 +53,7 @@ uses
 
 type
   TPkgManager = class(TBasePkgManager)
+    procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     function OnPackageEditorCreateFile(Sender: TObject;
       const Params: TAddToPkgResult): TModalResult;
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
@@ -92,6 +93,34 @@ type
 implementation
 
 { TPkgManager }
+
+procedure TPkgManager.MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+  I: Integer;
+  OpenFlags: TPkgOpenFlags;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisOpenPackageFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
+    if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+      OpenFlags:=[pofAddToRecent];
+      For I := 0 to OpenDialog.Files.Count-1 do
+        Begin
+          AFilename:=CleanAndExpandFilename(OpenDialog.Files.Strings[i]);
+          if DoOpenPackageFile(AFilename,OpenFlags)=mrAbort then begin
+            break;
+          end;
+        end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
 
 function TPkgManager.OnPackageEditorCreateFile(Sender: TObject;
   const Params: TAddToPkgResult): TModalResult;
@@ -219,6 +248,7 @@ var
   NewPkgName: String;
   ConflictPkg: TLazPackage;
   PkgFile: TPkgFile;
+  LowerFilename: String;
 begin
   OldPkgFilename:=APackage.Filename;
 
@@ -267,19 +297,29 @@ begin
       end;
 
       // apply naming conventions
-      if EnvironmentOptions.PascalFileAutoLowerCase then
-        NewFileName:=ExtractFilePath(NewFilename)
-                    +lowercase(ExtractFileName(NewFilename));
+      if lowercase(NewPkgName)<>NewPkgName then begin
+        LowerFilename:=ExtractFilePath(NewFilename)
+                      +lowercase(ExtractFileName(NewFilename));
+        if EnvironmentOptions.PascalFileAskLowerCase then begin
+          if MessageDlg('Rename File lowercase?',
+            'Should the file renamed lowercase to'#13
+            +'"'+LowerFilename+'"?',
+            mtConfirmation,[mbYes,mbNo],0)=mrYes
+          then
+            NewFileName:=LowerFilename;
+        end else begin
+          if EnvironmentOptions.PascalFileAutoLowerCase then
+            NewFileName:=LowerFilename;
+        end;
+      end;
 
-      // check package name conflicts
+      // check package name conflict
       ConflictPkg:=PackageGraph.FindAPackageWithName(NewPkgName,APackage);
       if ConflictPkg<>nil then begin
         Result:=MessageDlg('Package name already exists',
-          'The package name "'+NewPkgName+'" already exists.'#13
+          'There is already another package with the name "'+NewPkgName+'".'#13
           +'Conflict package: "'+ConflictPkg.IDAsString+'"'#13
-          +'File: "'+ConflictPkg.Filename+'"'#13
-          +#13
-          +'It is strongly recommended to choose another name.',
+          +'File: "'+ConflictPkg.Filename+'"',
           mtInformation,[mbRetry,mbAbort,mbIgnore],0);
         if Result=mrAbort then exit;
         if Result<>mrIgnore then continue; // try again
@@ -326,13 +366,15 @@ begin
   APackage.Filename:=NewFilename;
   
   // rename package
-  if AnsiCompareText(NewPkgName,APackage.Name)=0 then begin
-    // just change in case
-    APackage.Name:=NewPkgName;
-  end else begin
-    // name change -> update package graph
-    APackage.Name:=NewPkgName;
-    // ToDo: update package graph
+  if NewPkgName<>APackage.Name then begin
+    if AnsiCompareText(NewPkgName,APackage.Name)=0 then begin
+      // just change the case
+      APackage.Name:=NewPkgName;
+    end else begin
+      // name change -> update package graph
+      APackage.Name:=NewPkgName;
+      // ToDo: update package graph
+    end;
   end;
   
   // clean up old package file to reduce ambigiousities
@@ -389,7 +431,10 @@ begin
   with MainIDE do begin
     itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
     itmPkgOpenInstalled.OnClick :=@mnuOpenInstalledPckClicked;
+    itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
   end;
+  
+  SetRecentPackagesMenu;
 end;
 
 procedure TPkgManager.ConnectSourceNotebookEvents;
@@ -404,7 +449,6 @@ end;
 
 procedure TPkgManager.SetRecentPackagesMenu;
 begin
-writeln('TPkgManager.SetRecentPackagesMenu ',EnvironmentOptions.RecentPackageFiles.Count);
   MainIDE.SetRecentSubMenu(MainIDE.itmPkgOpenRecent,
             EnvironmentOptions.RecentPackageFiles,@mnuOpenRecentPackageClicked);
 end;
@@ -433,7 +477,7 @@ var
   ConflictPkg: TLazPackage;
 begin
   // check Package Name
-  if not IsValidIdent(APackage.Name) then begin
+  if (APackage.Name='') or (not IsValidIdent(APackage.Name)) then begin
     Result:=MessageDlg('Invalid Package Name',
       'The package name "'+APackage.Name+'" of'#13
       +'the file "'+APackage.Filename+'" is invalid.',
@@ -509,13 +553,22 @@ begin
   APackage:=PackageGraph.FindPackageWithFilename(AFilename,true);
   if APackage=nil then begin
     // package not yet loaded
+    
+    if not FileExists(AFilename) then begin
+      MessageDlg('File not found',
+        'File "'+AFilename+'" not found.',
+        mtError,[mbCancel],0);
+      RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles);
+      SetRecentPackagesMenu;
+      Result:=mrCancel;
+      exit;
+    end;
 
     // create a new package
     Result:=mrCancel;
     APackage:=TLazPackage.Create;
     try
       // load the package file
-      APackage.Filename:=AFilename;
       try
         XMLConfig:=TXMLConfig.Create(AFilename);
         try
@@ -531,6 +584,8 @@ begin
           exit;
         end;
       end;
+      APackage.Filename:=AFilename;
+      APackage.Modified:=false;
 
       Result:=AddPackageToGraph(APackage);
     finally
@@ -569,9 +624,13 @@ begin
     if Result<>mrOk then exit;
   end;
   
+  // backup old file
   Result:=MainIDE.DoBackupFile(APackage.Filename,false);
   if Result=mrAbort then exit;
   
+  Result:=MainIDE.DoDeleteAmbigiousFiles(APackage.Filename);
+  if Result=mrAbort then exit;
+
   // save
   try
     XMLConfig:=TXMLConfig.Create(APackage.Filename);

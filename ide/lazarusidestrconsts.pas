@@ -208,6 +208,7 @@ resourcestring
   lisMenuConfigCustomComps = 'Configure custom components';
   lisMenuOpenInstalledPkg = 'Open installed package';
   lisMenuOpenRecentPkg = 'Open recent package';
+  lisMenuOpenPackageFile = 'Open package file';
 
   lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
@@ -233,6 +234,7 @@ resourcestring
   // file dialogs
   lisOpenFile = 'Open file';
   lisOpenProjectFile = 'Open Project File';
+  lisOpenPackageFile = 'Open Package File';
   lisSaveSpace = 'Save ';
   lisSelectDFMFiles = 'Select Delphi form files (*.dfm)';
   lisChooseDirectory = 'Choose directory';

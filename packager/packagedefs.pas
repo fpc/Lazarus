@@ -719,8 +719,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'PackageName/Value',PackageName,'');
   MaxVersion.SaveToXMLConfig(XMLConfig,Path+'MaxVersion/');
   MinVersion.SaveToXMLConfig(XMLConfig,Path+'MinVersion/');
-  XMLConfig.SetDeleteValue(Path+'MaxVersion/Value',pdfMaxVersion in FFlags,false);
-  XMLConfig.SetDeleteValue(Path+'MinVersion/Value',pdfMinVersion in FFlags,false);
+  XMLConfig.SetDeleteValue(Path+'MaxVersion/Valid',pdfMaxVersion in FFlags,false);
+  XMLConfig.SetDeleteValue(Path+'MinVersion/Valid',pdfMinVersion in FFlags,false);
 end;
 
 function TPkgDependency.MakeSense: boolean;
@@ -1155,7 +1155,7 @@ var
     NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
     for i:=0 to NewCount-1 do begin
       PkgDependency:=TPkgDependency.Create;
-      PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/',
+      PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
                                       FileVersion);
       List.Add(PkgDependency);
     end;
@@ -1219,10 +1219,10 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
     i: Integer;
     PkgDependency: TPkgDependency;
   begin
-    XMLConfig.SetDeleteValue(Path+'Count',List.Count,0);
+    XMLConfig.SetDeleteValue(ThePath+'Count',List.Count,0);
     for i:=0 to List.Count-1 do begin
       PkgDependency:=TPkgDependency(List[i]);
-      PkgDependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/');
+      PkgDependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/');
     end;
   end;
 

@@ -282,6 +282,7 @@ type
     // components menu
     itmCompsConfigCustomComps: TMenuItem;
     itmPkgOpenInstalled: TMenuItem;
+    itmPkgOpenPackageFile: TMenuItem;
     itmPkgOpenRecent: TMenuItem;
 
     // tools menu
@@ -358,6 +359,7 @@ type
       Compiling: boolean): TModalResult;
     function DoBackupFile(const Filename:string;
       IsPartOfProject:boolean): TModalResult; virtual; abstract;
+    function DoDeleteAmbigiousFiles(const Filename:string): TModalResult; virtual; abstract;
 
     procedure UpdateWindowsMenu; virtual;
     procedure SaveEnvironment; virtual; abstract;
@@ -1087,6 +1089,13 @@ begin
   mnuComponents.Add(itmPkgOpenInstalled);
   {$ENDIF}
 
+  itmPkgOpenPackageFile := TMenuItem.Create(Self);
+  itmPkgOpenPackageFile.Name:='itmPkgOpenPackageFile';
+  itmPkgOpenPackageFile.Caption := lisMenuOpenPackageFile;
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(itmPkgOpenPackageFile);
+  {$ENDIF}
+
   itmPkgOpenRecent := TMenuItem.Create(Self);
   itmPkgOpenRecent.Name:='itmPkgOpenRecent';
   itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
@@ -1297,6 +1306,7 @@ begin
     // components menu
     itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
     itmPkgOpenInstalled.ShortCut:=CommandToShortCut(ecOpenInstalledPkg);
+    itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
 
     // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
