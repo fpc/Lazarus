@@ -45,6 +45,8 @@ var
   Msg: TLMNotebookEvent;
 begin
   TPage(fPageList[Index]).Caption := S;
+  TPage(fPageList[Index]).Name := S;
+
 
   if FNoteBook.HandleAllocated 
   then begin
@@ -114,16 +116,28 @@ begin
   tmpPage := TPage.Create(fNotebook);
   with tmpPage do
   begin
+    Name    := S;
     Parent := fNotebook;
     Caption := S;
     Visible := true;
   end;
-  fPageList.Insert(Index, tmpPage);
+
+  InsertPage(Index,tmpPage);
+end;
+
+{------------------------------------------------------------------------------
+  TNBPages InsertPage
+ ------------------------------------------------------------------------------}
+procedure TNBPages.InsertPage(Index:integer; APage: TPage);
+var
+  Msg: TLMNotebookEvent;
+begin
+  fPageList.Insert(Index,APage);
 
   if FNoteBook.HandleAllocated
   then begin
     Msg.Parent := TControl(fNotebook);
-    Msg.Child := tmpPage;
+    Msg.Child := APage;
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Page := Index;
 
@@ -196,6 +210,8 @@ begin
   Assert(False, 'Trace:[TCustomNotebook.CreateWnd] add pages');
   for n := 0 to FPageList.Count -1 do
   begin
+    // this is workaround til visible=true is default in TControl
+    TControl(FPageList[n]).Visible:=true;
     Msg.Parent := Self;
     Msg.Child := TControl(FPageList[n]);
     Msg.fCompStyle := FCompStyle;
@@ -362,9 +378,6 @@ procedure TCustomNotebook.GetChildren(Proc: TGetChildProc; Root: TComponent);
 var
   i: LongInt;
 begin
-  { Need to find out what the purpose of the Root param is in Delphi and add
-    that to the functionality. May either be the parent component to start with
-    or it may be the type of component to return (all TButtons). }
   for i := 0 to fPageList.Count - 1 do
   begin
     Proc(TControl(fPageList[i]));
@@ -376,6 +389,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.ReadState(Reader: TAbstractReader);
 begin
+  fAccess.Clear;
   inherited ReadState(Reader);
 end;
 
@@ -429,6 +443,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/12 18:27:32  lazarus
+  Streaming additions by MAttias
+  Shane
+
   Revision 1.2  2001/01/04 20:33:53  lazarus
   Moved lresources.
   Moved CreateLFM to Main.pp

@@ -50,6 +50,12 @@ end;
 procedure TPage.ReadState(Reader: TAbstractReader);
 begin
    inherited ReadState(Reader);
+
+  if Reader.Parent is TNoteBook then begin
+    with TNBPages(TNoteBook(Reader.Parent).fAccess) do
+      InsertPage(Count,Self);
+  end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -70,6 +76,10 @@ end;
 
 {
   $Log$
+  Revision 1.2  2001/01/12 18:27:32  lazarus
+  Streaming additions by MAttias
+  Shane
+
   Revision 1.1  2000/07/13 10:28:27  michael
   + Initial import
 

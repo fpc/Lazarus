@@ -62,17 +62,17 @@ type
   protected
     procedure AttachSignals; override;
     procedure ReadState(Reader: TAbstractReader); override;
-    procedure Paint;
+    procedure Paint; override;
   public
     procedure AddControl; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+  published
     property Caption;
-    property Height;
+    //property Height;
     // property TabOrder;     This property needs to be created in TWinControl
     property Visible;
-    property Width;
+    //property Width;
   end;
 
   TCustomNotebook = class;
@@ -96,6 +96,8 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
+    procedure InsertPage(Index:integer; APage: TPage);
+
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
@@ -130,9 +132,9 @@ type
     procedure CreateWnd; override;
     procedure Change; virtual;
     function GetChildOwner: TComponent; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); // Add "override;" if implemented in TCustomControl
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure ReadState(Reader: TAbstractReader); override;
-    procedure ShowControl(AControl: TControl); // Add "override;" if implemented in TCustomControl
+    procedure ShowControl(AControl: TControl); override;
 
     property ActivePage: String read GetActivePage write SetActivePage;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default 0;
@@ -160,10 +162,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Page;
+    property Pages;
   published
     property ActivePage;
     property PageIndex;
-    property Pages;
     property PageList;
     property OnPageChanged;
   end;
@@ -324,6 +326,10 @@ end.
 
  {
   $Log$
+  Revision 1.7  2001/01/12 18:27:31  lazarus
+  Streaming additions by MAttias
+  Shane
+
   Revision 1.6  2001/01/09 21:06:06  lazarus
   Started taking KeyDown messages in TDesigner
   Shane
