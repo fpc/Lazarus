@@ -38,7 +38,7 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, LCLProc, FileCtrl, IDEProcs,
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, LCLProc, FileUtil, IDEProcs,
   EnvironmentOpts, PackageDefs, LazConf;
   
 type

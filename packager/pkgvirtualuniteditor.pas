@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, FileCtrl, PackageDefs;
+  StdCtrls, FileUtil, PackageDefs;
 
 type
   TEditVirtualUnitDialog = class(TForm)

@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, FileCtrl, IDEProcs, UFrmAddComponent;
+  Buttons, FileUtil, IDEProcs, UFrmAddComponent;
   
 Type
   TRComponent = class(TObject)

@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   // FCL, LCL
-  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
+  Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
   // IDE

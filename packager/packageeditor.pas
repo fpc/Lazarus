@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
-  Graphics, LCLType, LCLProc, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
+  Graphics, LCLType, LCLProc, Menus, Dialogs, FileUtil, Laz_XMLCfg, AVL_Tree,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
   AddToPackageDlg, PkgVirtualUnitEditor, PackageSystem;

@@ -22,7 +22,7 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileCtrl;
+  Classes, SysUtils, LCLProc, FileUtil;
   
 const
   FileDescNamePascalUnit = 'unit';

@@ -1088,6 +1088,7 @@ lcl/extdlgs.pas svneol=native#text/pascal
 lcl/extendedstrings.pas svneol=native#text/pascal
 lcl/extgraphics.pas svneol=native#text/pascal
 lcl/filectrl.pp svneol=native#text/pascal
+lcl/fileutil.pas svneol=native#text/pascal
 lcl/forms.pp svneol=native#text/pascal
 lcl/fpcadds.pas svneol=native#text/pascal
 lcl/graphics.pp svneol=native#text/pascal

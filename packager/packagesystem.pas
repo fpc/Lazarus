@@ -45,7 +45,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, LCLProc, Forms, Controls,
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileUtil, LCLProc, Forms, Controls,
   Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions,
   PackageLinks, PackageDefs, LazarusPackageIntf, ComponentReg, RegisterFCL,
   RegisterLCL, RegisterSynEdit, RegisterIDEIntf;

@@ -36,6 +36,7 @@ uses
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
   LCLProc, LCLType, LCLResCache, GraphMath, FileCtrl, LMessages, LResources,
+  FileUtil,
   // the interface base
   InterfaceBase,
   {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
@@ -63,6 +64,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/09/27 21:45:44  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.21  2004/09/24 13:45:31  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 

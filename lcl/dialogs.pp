@@ -37,7 +37,7 @@ unit Dialogs;
 interface
 
 uses
-  Classes, SysUtils, LCLIntf, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
+  Classes, SysUtils, LCLIntf, InterfaceBase, FileUtil, LCLStrConsts, LCLType,
   LMessages, LCLProc, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls,
   LCLClasses;
 
@@ -420,6 +420,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2004/09/27 21:45:44  vincents
+  splitted off unit FileUtil, it doesn't depend on other LCL units
+
   Revision 1.53  2004/09/14 21:30:37  vincents
   replaced writeln by DebugLn
 
