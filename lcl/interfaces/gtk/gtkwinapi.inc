@@ -3872,6 +3872,26 @@ begin
   Assert(False, Format('Trace:< [TgtkObject.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
 end;
 
+{------------------------------------------------------------------------------
+  Function: RightJustifyMenuItem
+  Params:  HndMenu: HMenu; bRightJustify: boolean
+  Returns: true on success
+
+  Sets left or justification of a menuitem
+-------------------------------------------------------------------------------}
+function TgtkObject.RightJustifyMenuItem(HndMenu: HMenu;
+  bRightJustify: boolean): Boolean;
+var
+  MenuItemWidget: PGtkMenuItem;
+begin
+  MenuItemWidget:=PGtkMenuItem(HndMenu);
+  if bRightJustify then
+    MenuItemWidget^.flag0:=MenuItemWidget^.flag0 or bm_right_justify
+  else
+    MenuItemWidget^.flag0:=MenuItemWidget^.flag0 and (not bm_right_justify);
+  gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
+  Result:=false;
+end;
 
 {------------------------------------------------------------------------------
   Function: SaveDc
@@ -4867,6 +4887,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2002/08/08 17:26:39  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.88  2002/08/08 09:07:07  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 

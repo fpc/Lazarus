@@ -109,6 +109,7 @@ type
     FMenu: TMenu;
     FParent: TMenuItem;
     FRadioItem: Boolean;
+    FRightJustify: boolean;
     FShortCut: TShortCut;	
     FVisible: Boolean;
     FOnChange: TMenuChangeEvent;
@@ -128,6 +129,7 @@ type
     procedure SetEnabled(AValue: Boolean);
     procedure SetMenuIndex(AValue: Integer);
     procedure SetRadioItem(const AValue: Boolean);
+    procedure SetRightJustify(const AValue: boolean);
     procedure ShortcutChanged(const OldValue, Value : TShortcut);
     procedure SubItemChanged(Sender: TObject; Source: TMenuItem;
                              Rebuild: Boolean);
@@ -176,6 +178,7 @@ type
     property Hint : String read FHint write FHint;
     property ImageIndex : Integer read FImageIndex write SetImageIndex;
     property RadioItem: Boolean read FRadioItem write SetRadioItem default False;
+    property RightJustify: boolean read FRightJustify write SetRightJustify;
     property ShortCut: TShortCut read FShortCut write SetShortCut stored IsShortCutStored default 0;
     property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnclick; 
@@ -425,6 +428,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2002/08/08 17:26:37  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.20  2002/08/08 10:33:49  lazarus
   MG: main bar speedbar open arrow now shows recent projects and files
 

@@ -578,6 +578,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.SetRightJustify(const AValue: boolean);
+
+  Enables a menuItem.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetRightJustify(const AValue: boolean);
+begin
+  if FRightJustify=AValue then exit;
+  FRightJustify:=AValue;
+  if HandleAllocated then
+    RightJustifyMenuItem(Handle,RightJustify);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.SetImageIndex
   Params:  Value:
   Returns: Nothing
@@ -764,6 +777,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/08/08 17:26:37  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.22  2002/08/08 10:33:49  lazarus
   MG: main bar speedbar open arrow now shows recent projects and files
 
@@ -858,6 +874,9 @@ end;
 
 
   $Log$
+  Revision 1.23  2002/08/08 17:26:37  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.22  2002/08/08 10:33:49  lazarus
   MG: main bar speedbar open arrow now shows recent projects and files
 

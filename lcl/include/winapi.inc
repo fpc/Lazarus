@@ -488,7 +488,13 @@ begin
   Result := InterfaceObject.ReleaseDC(hWnd, DC);
 end;
 
-function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; 
+function RightJustifyMenuItem(HndMenu: HMenu;
+  bRightJustify: boolean): boolean;
+begin
+  Result := InterfaceObject.RightJustifyMenuItem(hndMenu, bRightJustify);
+end;
+
+function RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
   Result := InterfaceObject.RestoreDC(DC, SavedDC)  
 end;
@@ -1109,6 +1115,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/08/08 17:26:38  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.36  2002/08/08 09:07:06  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 

@@ -122,6 +122,7 @@ function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override
 Function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
+function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
 Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
@@ -160,6 +161,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/08/08 17:26:40  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.35  2002/08/08 09:07:08  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 

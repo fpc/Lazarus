@@ -150,6 +150,7 @@ function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; {$IFDEF 
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function SaveDC(DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -273,6 +274,9 @@ function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolea
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/08/08 17:26:38  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.31  2002/08/08 09:07:06  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 
