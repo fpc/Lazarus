@@ -148,6 +148,11 @@ type
     NewNode: TCodeTreeNode;
     NewTool: TPascalParserTool;
     Next: TBaseTypeCache; // used for mem manager
+    Owner: TCodeTreeNode;
+    procedure BindToOwner(NewOwner: TCodeTreeNode);
+    procedure UnbindFromOwner;
+    constructor Create(AnOwner: TCodeTreeNode);
+    destructor Destroy; override;
   end;
 
 
@@ -200,7 +205,7 @@ type
     procedure FreeFirstItem; override;
   public
     procedure DisposeBaseTypeCache(BaseTypeCache: TBaseTypeCache);
-    function NewBaseTypeCache: TBaseTypeCache;
+    function NewBaseTypeCache(AnOwner: TCodeTreeNode): TBaseTypeCache;
   end;
 
   //----------------------------------------------------------------------------
@@ -922,6 +927,7 @@ begin
     // add Entry to Free list
     BaseTypeCache.Next:=TBaseTypeCache(FFirstFree);
     TBaseTypeCache(FFirstFree):=BaseTypeCache;
+    BaseTypeCache.UnbindFromOwner;
     inc(FFreeCount);
   end else begin
     // free list full -> free the BaseType
@@ -939,16 +945,18 @@ begin
   BaseTypeCache.Free;
 end;
 
-function TBaseTypeCacheMemManager.NewBaseTypeCache: TBaseTypeCache;
+function TBaseTypeCacheMemManager.NewBaseTypeCache(
+  AnOwner: TCodeTreeNode): TBaseTypeCache;
 begin
   if FFirstFree<>nil then begin
     // take from free list
     Result:=TBaseTypeCache(FFirstFree);
     TBaseTypeCache(FFirstFree):=Result.Next;
+    Result.Owner:=AnOwner;
     dec(FFreeCount);
   end else begin
     // free list empty -> create new BaseType
-    Result:=TBaseTypeCache.Create;
+    Result:=TBaseTypeCache.Create(AnOwner);
     inc(FAllocatedCount);
   end;
   inc(FCount);
@@ -977,6 +985,42 @@ begin
   NodeCacheMemManager:=nil;
   BaseTypeCacheMemManager.Free;
   BaseTypeCacheMemManager:=nil;
+end;
+
+{ TBaseTypeCache }
+
+procedure TBaseTypeCache.BindToOwner(NewOwner: TCodeTreeNode);
+begin
+  if NewOwner<>nil then begin
+    if NewOwner.Cache<>nil then
+      raise Exception.Create('[TBaseTypeCache.BindToOwner] internal error:'
+        +' NewOwner.Cache<>nil');
+    NewOwner.Cache:=Self;
+  end;
+  Owner:=NewOwner;
+end;
+
+constructor TBaseTypeCache.Create(AnOwner: TCodeTreeNode);
+begin
+  inherited Create;
+  if AnOwner<>nil then BindToOwner(AnOwner);
+end;
+
+destructor TBaseTypeCache.Destroy;
+begin
+  UnbindFromOwner;
+  inherited Destroy;
+end;
+
+procedure TBaseTypeCache.UnbindFromOwner;
+begin
+  if Owner<>nil then begin
+    if Owner.Cache<>Self then
+      raise Exception.Create('[TBaseTypeCache.UnbindFromOwner] '
+        +' internal error: Owner.Cache<>Self');
+    Owner.Cache:=nil;
+    Owner:=nil;
+  end;
 end;
 
 initialization

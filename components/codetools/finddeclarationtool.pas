@@ -232,6 +232,7 @@ type
     FFirstNodeCache: TCodeTreeNodeCache;
     FLastNodeCachesGlobalWriteLockStep: integer;
     FRootNodeCache: TCodeTreeNodeCache;
+    FFirstBaseTypeCache: TBaseTypeCache;
     {$IFDEF CTDEBUG}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -280,6 +281,7 @@ type
     procedure DoDeleteNodes; override;
     procedure ClearNodeCaches(Force: boolean);
     function CreateNewNodeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
+    function CreateNewBaseTypeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
     function GetNodeCache(Node: TCodeTreeNode;
       CreateIfNotExists: boolean): TCodeTreeNodeCache;
     procedure AddResultToNodeCaches(Identifier: PChar;
@@ -1622,6 +1624,9 @@ begin
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindBaseTypeOfNode] LOOP Result=',Result.Node.DescAsString,' ',HexStr(Cardinal(Result.Node),8));
 {$ENDIF}
+
+      // ToDo: BaseTypeCache
+
       if (Result.Node.Desc in AllIdentifierDefinitions) then begin
         // instead of variable/const/type definition, return the type
         Result.Node:=FindTypeNodeOfDefinition(Result.Node);
@@ -1635,7 +1640,7 @@ writeln('[TFindDeclarationTool.FindBaseTypeOfNode] Class is forward');
 {$ENDIF}
 
         // ToDo: check for circles in ancestor chain
-
+        
         ClassIdentNode:=Result.Node.Parent;
         if (ClassIdentNode=nil) or (not (ClassIdentNode.Desc=ctnTypeDefinition))
         then begin
@@ -3568,6 +3573,7 @@ var
   NodeCache: TCodeTreeNodeCache;
   GlobalWriteLockIsSet: boolean;
   GlobalWriteLockStep: integer;
+  BaseTypeCache: TBaseTypeCache;
 begin
   if not Force then begin
     // check if node cache must be cleared
@@ -3587,10 +3593,16 @@ begin
       end;
     end;
   end;
+  // clear node caches
   while FFirstNodeCache<>nil do begin
     NodeCache:=FFirstNodeCache;
     FFirstNodeCache:=NodeCache.Next;
     NodeCacheMemManager.DisposeNodeCache(NodeCache);
+  end;
+  while FFirstBaseTypeCache<>nil do begin
+    BaseTypeCache:=FFirstBaseTypeCache;
+    FFirstBaseTypeCache:=BaseTypeCache.Next;
+    BaseTypeCacheMemManager.DisposeBaseTypeCache(BaseTypeCache);
   end;
   if FRootNodeCache<>nil then begin
     NodeCacheMemManager.DisposeNodeCache(FRootNodeCache);
@@ -3717,6 +3729,14 @@ begin
   Result:=NodeCacheMemManager.NewNodeCache(Node);
   Result.Next:=FFirstNodeCache;
   FFirstNodeCache:=Result;
+end;
+
+function TFindDeclarationTool.CreateNewBaseTypeCache(Node: TCodeTreeNode
+  ): TCodeTreeNodeCache;
+begin
+  Result:=BaseTypeCacheMemManager.NewBaseTypeCache(Node);
+  Result.Next:=FFirstBaseTypeCache;
+  FFirstBaseTypeCache:=Result;
 end;
 
 
