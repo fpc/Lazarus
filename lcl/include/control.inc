@@ -247,7 +247,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
 Begin
-  //Writeln('[LMCaptureChanged for '+classname+']');
+  //Writeln('[LMCaptureChanged for '+Name+':'+Classname+']');
 End;
 
 {------------------------------------------------------------------------------}
@@ -255,7 +255,7 @@ End;
 {------------------------------------------------------------------------------}
 procedure TControl.CMEnabledChanged(var Message: TLMEssage);
 begin
-  invalidate;
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1769,6 +1769,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.59  2002/08/05 08:56:56  lazarus
+  MG: TMenuItems can now be enabled and disabled
+
   Revision 1.58  2002/07/23 07:40:51  lazarus
   MG: fixed get widget position for inherited gdkwindows
 
