@@ -50,6 +50,7 @@ type
     class procedure Update(const AStatusBar: TStatusBar); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
   end;
 
   { TWin32WSTabSheet }
@@ -297,6 +298,12 @@ begin
       UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
   end;
 end;
+
+procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl; const AText: string);
+begin
+  // inhibit. StatusBars do not have a caption, simpletext is set by SetPanelText
+end;
+
 
 { TWin32WSCustomListView } 
      
