@@ -130,7 +130,7 @@ Type
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
-    Procedure CreateCommonDialog(Sender: TObject);
+    Procedure CreateCommonDialog(Sender: TCommonDialog);
   Public
     { Constructor of the class }
     Constructor Create;
@@ -332,6 +332,12 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/01/31 09:32:07  lazarus
+  Keith:
+    * Open and save dialogs can now coexist in apps (however, only one of each type of common dialog can be used per app :( )
+    * Fixed make all
+    * Fixed crash in Windows 98/ME
+
   Revision 1.7  2002/01/25 19:42:56  lazarus
   Keith: Improved events and common dialogs on Win32
 

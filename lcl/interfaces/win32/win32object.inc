@@ -527,7 +527,8 @@ activate_time :	the time at which the activation event occurred.
         End; 
         LM_SETFOCUS:
         Begin
-          SetFocus(Handle);
+          If Handle <> 0 Then
+            SetFocus(Handle);
         End;
         LM_SETSIZE:
         Begin
@@ -1240,7 +1241,7 @@ End;
 
   Creates a common dialog
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.CreateCommonDialog(Sender: TObject);
+Procedure TWin32Object.CreateCommonDialog(Sender: TCommonDialog);
 Const
   { 16 basic RGB colors; names listed in comments for debugging }
   CustomColors: Array[1..16] Of DWord = (
@@ -1311,9 +1312,10 @@ Var
   End;
 Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Start');
-  Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
+  Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [TCommonDialog(Sender).ClassName]));
   If Sender Is TColorDialog Then
   Begin
+    CC := LPChooseColor(@Sender)^;
     ZeroMemory(@CC, SizeOf(TChooseColor));
     With CC Do
     Begin
@@ -1328,27 +1330,47 @@ Begin
   End
   Else If Sender Is TFileDialog Then
   Begin
-    FN := (Sender As TFileDialog).FileName;
-    ZeroMemory(@OpenFile, SizeOf(OpenFileName));
-    With OpenFile Do
-    Begin
-      LStructSize := SizeOf(OpenFileName);
-      HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
-      LPStrFilter := PChar((Sender As TFileDialog).Filter);
-      If FN <> '' Then
-        LPStrFile := PChar(FN);
-      LPStrFileTitle := PChar((Sender As TCommonDialog).Title);
-      LPStrInitialDir := PChar((Sender As TFileDialog).InitialDir);
-      If Sender Is TOpenDialog Then
-        Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
-    End;
     If Sender Is TOpenDialog Then
+    Begin
+      OpenFile := LPOpenFileName(@Sender)^;
+      //FN := (Sender As TFileDialog).FileName;
+      ZeroMemory(@OpenFile, SizeOf(OpenFileName));
+      With OpenFile Do
+      Begin
+        LStructSize := SizeOf(OpenFileName);
+        HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
+        //LPStrFilter := PChar((Sender As TFileDialog).Filter);
+        //If FN <> '' Then
+          //LPStrFile := PChar(FN);
+        //LPStrFileTitle := PChar((Sender As TCommonDialog).Title);
+        LPStrInitialDir := PChar((Sender As TFileDialog).InitialDir);
+          Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+      End;
       Ret := GetOpenFileName(@OpenFile)
+    End
     Else If Sender Is TSaveDialog Then
-      Ret := GetSaveFileName(@OpenFile)
+    Begin
+      OpenFile := LPOpenFileName(@Sender)^;
+      FN := (Sender As TFileDialog).FileName;
+      ZeroMemory(@OpenFile, SizeOf(OpenFileName));
+      With OpenFile Do
+      Begin
+        LStructSize := SizeOf(OpenFileName);
+        HWndOwner := ((Sender As TComponent).Owner As TWinControl).Handle;
+        //LPStrFilter := PChar((Sender As TFileDialog).Filter);
+        //If FN <> '' Then
+          //LPStrFile := PChar(FN);
+        //LPStrFileTitle := PChar((Sender As TCommonDialog).Title);
+        LPStrInitialDir := PChar((Sender As TFileDialog).InitialDir);
+        //If Sender Is TOpenDialog Then
+         // Flags := GetFlagsFromOptions((Sender As TOpenDialog).Options);
+      End;
+      Ret := GetSaveFileName(@OpenFile);
+    End;
   End
   Else If Sender Is TFontDialog Then
   Begin
+    CF := LPChooseFont(@Sender)^;
     ZeroMemory(@CF, SizeOf(TChooseFont));
     LF.LFFaceName := (Sender As TFontDialog).FontName;
     With CF Do
@@ -1366,6 +1388,7 @@ Begin
     (Sender As TCommonDialog).UserChoice := mrOK
   Else
     (Sender As TCommonDialog).UserChoice := mrCancel;
+
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Exit');
 End;
 
@@ -1702,7 +1725,7 @@ Begin
     End;
     csColorDialog, csFileDialog, csFontDialog:
     Begin
-      CreateCommonDialog(Sender);
+      CreateCommonDialog(TCommonDialog(Sender));
     End;
     csFixed:
     Begin
@@ -2962,7 +2985,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method: TWin32Object.DrawText
-  Params: Child - Object on which tet will be drawn
+  Params: Child - Object on which text will be drawn
           Data  - Information needed to draw the text
   Returns: Nothing
 
@@ -2997,6 +3020,12 @@ End;
 
 {
   $Log$
+  Revision 1.12  2002/01/31 09:32:07  lazarus
+  Keith:
+    * Open and save dialogs can now coexist in apps (however, only one of each type of common dialog can be used per app :( )
+    * Fixed make all
+    * Fixed crash in Windows 98/ME
+
   Revision 1.11  2002/01/25 19:42:56  lazarus
   Keith: Improved events and common dialogs on Win32
 

@@ -25,4 +25,5 @@ files=$(wildcard ../../units/win32/*$(OEXT)) $(wildcard ../../units/win32/*$(PPU
 cleartarget:
         $(DEL) $(wildcard ../../units/interfaces.*)
 
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget
+        $(MAKE) -W interfaces.pp interfaces$(PPUEXT)

@@ -1270,4 +1270,5 @@ include fpcmake.loc
 endif
 cleartarget:
 	$(DEL) $(wildcard ../../units/interfaces.*)
-all: cleartarget interfaces$(PPUEXT)
+all: cleartarget
+	$(MAKE) -W interfaces.pp interfaces$(PPUEXT)
