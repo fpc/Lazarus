@@ -275,8 +275,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Arc(x,y,width,height,angle1,angle2 : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csPenValid]);
   LCLLinux.Arc(FHandle,x,y,width,height,angle1,angle2);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -291,8 +293,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCanvas.Arc(x,y,width,height,sx,sy,ex,ey : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.RadialArc(FHandle,x,y,width,height,sx,sy,ex,ey);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -309,8 +313,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Pie(x,y,width,height,angle1,angle2 : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.Pie(FHandle,x,y,width,height,angle1,angle2);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -325,8 +331,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCanvas.Pie(x,y,width,height,sx,sy,ex,ey : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.RadialPie(FHandle,x,y,width,height,sx,sy,ex,ey);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -353,6 +361,7 @@ procedure TCanvas.PolyBezier(const Points: array of TPoint;
 var NPoints, i: integer;
   PointArray: ^TPoint;
 begin
+  Changing;
   NPoints:=High(Points)-Low(Points)+1;
   if NPoints<=0 then exit;
   GetMem(PointArray,SizeOf(TPoint)*NPoints);
@@ -360,14 +369,17 @@ begin
     PointArray[i]:=Points[i+Low(Points)];
   PolyBezier(PointArray, NPoints, Filled, Continuous);
   FreeMem(PointArray);
+  Changed;
 end;
 
 procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
   Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
   Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.PolyBezier(FHandle,Points,NumPts,Filled, Continuous);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -421,8 +433,10 @@ procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
   Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
 begin
   if NumPts<=0 then exit;
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.Polygon(FHandle,Points,NumPts,Winding);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -468,8 +482,10 @@ end;
 
 procedure TCanvas.Polyline(Points: PPoint; NumPts: Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csPenValid]);
   LCLLinux.Polyline(FHandle,Points,NumPts);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -493,8 +509,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Ellipse(x1, y1, x2, y2: Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.Ellipse(FHandle,x1,y1,x2,y2);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -518,8 +536,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.FillRect(const ARect : TRect);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid]);
   LCLLinux.FillRect(FHandle, ARect, Brush.Handle);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -539,8 +559,10 @@ end;
 procedure TCanvas.FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle
   );
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid]);
   LCLLinux.FloodFill(FHandle, X, Y, FillColor, FillStyle, Brush.Handle);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -552,8 +574,10 @@ end;
 procedure TCanvas.Frame3d(var ARect: TRect; const FrameWidth : integer;
   const Style : TBevelCut);
 begin
+  Changing;
   RequiredState([csHandleValid]);
   LCLLinux.Frame3d(FHandle, ARect, FrameWidth, Style);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -563,8 +587,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Frame(const ARect: TRect);
 begin
+  Changing;
   RequiredState([csHandleValid, csPenValid]);
   LCLLinux.Frame(FHandle, ARect);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -584,8 +610,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.FrameRect(const ARect: TRect);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid]);
   LCLLinux.FrameRect(FHandle, ARect, Brush.GetHandle);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -606,8 +634,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Rectangle(X1,Y1,X2,Y2 : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.Rectangle(FHandle, X1, Y1, X2, Y2);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -629,8 +659,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.RoundRect(FHandle, X1, Y1, X2, Y2, RX, RY);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -667,6 +699,7 @@ var
   Options : Longint;
   fRect : TRect;
 begin
+  Changing;
   ARect.Left := ARect.Left + X;
   ARect.Top := ARect.Top + Y;
   Options := 0;
@@ -721,6 +754,7 @@ begin
   else
     RequiredState([csHandleValid, csFontValid]);
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
+  Changed;
 end;
 
 
@@ -734,6 +768,7 @@ procedure TCanvas.TextOut(X,Y: Integer; const Text: String);
 var
   Flags : Cardinal;
 begin
+  Changing;
   RequiredState([csHandleValid, csFontValid, csBrushValid]);
   Flags := 0;
   If TextStyle.Opaque then
@@ -741,6 +776,7 @@ begin
   ExtTextOut(FHandle, X, Y, Flags, nil,
              PChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -780,8 +816,10 @@ End;
  ------------------------------------------------------------------------------}
 procedure TCanvas.LineTo(X1, Y1 : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csPenValid]);
   if LCLLinux.LineTo(FHandle, X1, Y1) then FPenPos:= Point(X1, Y1);
+  Changed;
 end;
 
 
@@ -933,8 +971,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCanvas.Chord(x,y,width,height,angle1,angle2 : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.AngleChord(FHandle,x,y,width,height,angle1,angle2);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -949,8 +989,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCanvas.Chord(x,y,width,height,sx,sy,ex,ey : Integer);
 begin
+  Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.RadialChord(FHandle,x,y,width,height,sx,sy,ex,ey);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -1089,6 +1131,16 @@ begin
   end;
 end;
 
+procedure TCanvas.Changed;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TCanvas.Changing;
+begin
+  if Assigned(FOnChanging) then FOnChanging(Self);
+end;
+
 {------------------------------------------------------------------------------
   Function: TCanvas.TextExtent
   Params:   Text: The text to measure
@@ -1101,8 +1153,10 @@ begin
   Result.cX := 0;
   Result.cY := 0;
   if Text='' then exit;
+  Changing;
   RequiredState([csHandleValid, csFontValid]);
   GetTextExtentPoint(FHandle, PChar(Text), Length(Text), Result);
+  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -1162,6 +1216,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/06/25 10:38:28  mattias
+  implemented saving original stream of TBitmap
+
   Revision 1.47  2002/08/18 16:50:09  mattias
   fixes for debugging
 

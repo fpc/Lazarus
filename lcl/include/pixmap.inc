@@ -17,6 +17,79 @@
  *****************************************************************************
 }
 
+function TestStreamIsXPM(Stream: TMemoryStream): boolean;
+type
+  TXPMRange = (xrCode,xrStaticKeyWord, xrCharKeyWord);
+  
+  function Check(const s: string): boolean;
+  var
+    Buf: string;
+  begin
+    Result:=false;
+    SetLength(Buf,length(s));
+    if Stream.Read(Buf[1],length(Buf))<>length(Buf) then exit;
+    if Buf<>s then exit;
+    Result:=true;
+  end;
+  
+var
+  OldPosition: Integer;
+  c: char;
+  Range: TXPMRange;
+  LastChar: Char;
+begin
+  Result:=false;
+  OldPosition:=Stream.Position;
+  // skip comments and search 'static char*'
+  Range:=xrCode;
+  try
+    repeat
+      if Stream.Read(c,1)<>1 then exit;
+      case c of
+      ' ',#9,#10,#13: ;
+      '/':
+        begin
+          // read comment
+          if Stream.Read(c,1)<>1 then exit;
+          if c<>'*' then exit;
+          repeat
+            LastChar:=c;
+            if Stream.Read(c,1)<>1 then exit;
+            if c in [#0..#8,#11,#12,#14..#31] then exit;
+          until (c='/') and (LastChar='*');
+        end;
+      's':
+        begin
+          if Range<>xrCode then exit;
+          // read 'tatic', the rest of 'static'
+          if not Check('tatic') then exit;
+          Range:=xrStaticKeyWord;
+          // read space
+          if (Stream.Read(c,1)<>1) or (not (c in [' ',#9,#10,#13])) then exit;
+        end;
+      'c':
+        begin
+          if Range<>xrStaticKeyWord then exit;
+          // read 'har', the rest of 'char'
+          if not Check('har') then exit;
+          Range:=xrCharKeyWord;
+        end;
+      '*':
+        begin
+          if Range<>xrCharKeyWord then exit;
+          Result:=true;
+          exit;
+        end;
+      else
+        exit;
+      end;
+    until false;
+
+  finally
+    Stream.Position:=OldPosition;
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   function XPMToPPChar
   Params: const XPM: string
@@ -26,7 +99,7 @@
   The memory is allocated as one block, so freeing can simply be done via
   FreeMem(TheResult). The data is just behind the array.
   
-  An XPM file can be included by a C source file, because it has a C syntax.
+  An XPM file can be included in a C source file, because it has a C syntax.
   In the compiled program it is simply an array of PChar.
   This function converts an XPM source file to the same array, by removing the
   comments and the string constant symbols.
@@ -208,52 +281,14 @@ begin
   end;
 end;
 
-procedure TPixmap.LoadFromResourceName(Instance: THandle; const ResName: String);
-begin
-end;
-
-procedure TPixmap.LoadFromResourceID(Instance: THandle; ResID: Integer);
-begin
-end;
-
-procedure TPixmap.ReadStream(Stream: TStream; Size: Longint);
-var
-  XPM: PPChar;
-  NewWidth, NewHeight, NewColorCount: integer;
-begin
-  XPM:=ReadXPMFromStream(Stream,Size);
-  try
-    if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
-      RaiseGDBException('TPixmap.ReadStream: ERROR: reading xpm');
-
-    // free old pixmap
-    // Create the pixmap
-    if FTransparentColor = clNone then
-      // create a transparent pixmap (with mask)
-      Handle := CreatePixmapIndirect(XPM, -1)
-    else
-      // create an opaque pixmap.
-      // Transparent pixels are filled with FTransparentColor
-      Handle := CreatePixmapIndirect(XPM, ColorToRGB(FTransparentColor));
-  finally
-    if XPM<>nil then
-      FreeMem(XPM);
-  end;
-
-  if HandleAllocated then begin
-    FWidth:=NewWidth;
-    FHeight:=NewHeight;
-  end else begin
-    FWidth:=0;
-    FHeight:=0;
-  end;
-end;
-
 // included by graphics.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/06/25 10:38:28  mattias
+  implemented saving original stream of TBitmap
+
   Revision 1.18  2003/04/03 17:42:13  mattias
   added exception handling for createpixmapindirect
 

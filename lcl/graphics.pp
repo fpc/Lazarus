@@ -121,14 +121,16 @@ const  // New TFont instances are initialized with the values in this structure:
     Pitch: fpDefault;
     Style: [];
     Charset : DEFAULT_CHARSET;
-    Name: 'default');
+    Name: 'default'
+    );
 
 
 type
   TBitmap = class;
   TPixmap = class;
   TIcon = class;
-  
+  TCanvas = class;
+
   { TGraphicsObject }
 
   TGraphicsObject = class(TPersistent)
@@ -250,8 +252,6 @@ type
   TBrush = class(TgraphicsObject)
   private
     FBrushData : TBrushData;
-//    Procedure Getdata(var BrushData: TBrushData);
-//    Procedure SetData(const Brushdata: TBrushdata);
     procedure FreeHandle;
   protected
     function GetHandle: HBRUSH;
@@ -269,6 +269,7 @@ type
     property Color : TColor read FBrushData.Color write SetColor default clWhite;
     property Style: TBrushStyle read FBrushData.Style write SetStyle default bsSolid;
   end;
+
 
   { TRegion }
 
@@ -299,7 +300,8 @@ type
     property ClipRect : TRect read GetClipRect write SetClipRect;
   end;
 
-  TCanvas = class;
+
+  { TGraphic }
 
   { The TGraphic class is an abstract base class for dealing with graphic images
     such as bitmaps, pixmaps, icons, and other image formats.
@@ -318,7 +320,8 @@ type
         will generate an exception.
       Height - The native, unstretched, height of the graphic.
       Palette - Color palette of image.  Zero if graphic doesn't need/use palettes.
-      Transparent - Image does not completely cover its rectangular area
+      Transparent - Some parts of the image are not opaque. aka the background
+        can be seen through.
       Width - The native, unstretched, width of the graphic.
       OnChange - Called whenever the graphic changes
       PaletteModified - Indicates in OnChange whether color palette has changed.
@@ -326,6 +329,7 @@ type
         (ex: TImage) sets it to False.
       OnProgress - Generic progress indicator event. Propagates out to TPicture
         and TImage OnProgress events.}
+        
   TGraphic = class(TPersistent)
   private
     FModified: Boolean;
@@ -377,7 +381,9 @@ type
 
   TGraphicClass = class of TGraphic;
 
+
   { TPicture }
+  
   { TPicture is a TGraphic container.  It is used in place of a TGraphic if the
     graphic can be of any TGraphic class.  LoadFromFile and SaveToFile are
     polymorphic. For example, if the TPicture is holding an Icon, you can
@@ -522,7 +528,11 @@ type
     Procedure CreateRegion;
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
+    procedure Changed; virtual;
+    procedure Changing; virtual;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure Lock;
     procedure Unlock;
     procedure Refresh;
@@ -531,8 +541,6 @@ type
     procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
                         TransparentColor :TColor);
-    constructor Create;
-    destructor Destroy; override;
     procedure Chord(x,y,width,height,angle1,angle2 : Integer);
     procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
@@ -606,7 +614,9 @@ type
   end;
 
 
-  { TBITMAP }
+  { TSharedImage }
+
+  {  base class for reference counted images }
 
   TSharedImage = class
   private
@@ -616,7 +626,23 @@ type
     procedure Release;   // decrease reference count
     procedure FreeHandle; virtual; abstract;
     property RefCount: Integer read FRefCount;
+  public
+    function HandleAllocated: boolean; virtual; abstract;
   end;
+
+
+  { TBitmapImage }
+
+  { Descendent of TSharedImage for TBitmap. If a TBitmap is assigned to another
+    TBitmap, only the reference count wl be increased and both will share the
+    same TBitmapImage }
+
+  TBitmapNativeType = (
+    bnNone,
+    bnWinBitmap,
+    bnXPixmap
+    );
+  TBitmapNativeTypes = set of TBitmapNativeType;
 
   TBitmapImage = class(TSharedImage)
   private
@@ -624,19 +650,36 @@ type
     FMaskHandle: HBITMAP;
     FPalette: HPALETTE;
     FDIBHandle: HBITMAP;
+    FSaveStream: TMemoryStream;
+    FSaveStreamType: TBitmapNativeType;
 {    FOS2Format: Boolean;
     FHalftone: Boolean;
 }
   protected
     procedure FreeHandle; override;
   public
-    destructor Destroy; override;
     FDIB: TDIBSection;
+    destructor Destroy; override;
+    function HandleAllocated: boolean; override;
+    property SaveStream: TMemoryStream read FSaveStream write FSaveStream;
+    property SaveStreamType: TBitmapNativeType read FSaveStreamType write FSaveStreamType;
   end;
+
+
+  { TBitmap }
+  
+  { Not completed!
+    TBitmap is the data of an image. The image can be loaded from a file,
+    stream or resource in .bmp (windows bitmap format) or .xpm (XPixMap format)
+    The loading routine automatically recognizes the format, so it can load
+    the streams of Delphi form streams (e.g. .dfm files).
+    When the handle is created, it is up to the interface (gtk, win32, ...)
+    to convert it automatically to the best internal format. That is why the
+    Handle is interface dependent. }
 
   TBitmapHandleType = (bmDIB, bmDDB);
   TTransparentMode = (tmAuto, tmFixed);
-
+  
   TBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
@@ -649,6 +692,7 @@ type
     FTransparentMode: TTransparentMode;
     FWidth: integer;
     Procedure FreeContext;
+    function GetCanvas: TCanvas;
     Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
        const NDIB : TDIBSection; OS2Format : Boolean);
     procedure SetHandle(Value: HBITMAP);
@@ -659,6 +703,8 @@ type
     function GetScanline(Row: Integer): Pointer;
     procedure SetHandleType(Value: TBitmapHandleType); virtual;
   protected
+    procedure Changed(Sender: TObject); override;
+    procedure Changing(Sender: TObject); virtual;
     procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
@@ -690,12 +736,11 @@ type
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); override;
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat); override;
     Procedure LoadFromXPMFile(const Filename : String);
-    procedure LoadFromFile(const Filename: string); Override;
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
     Function ReleaseHandle : HBITMAP;
     function ReleasePalette: HPALETTE;
-    property Canvas : TCanvas read FCanvas write FCanvas;
+    property Canvas: TCanvas read GetCanvas write FCanvas;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property Monochrome: Boolean read FMonochrome write FMonochrome;
     // TODO: reflect real pixelformat of DC
@@ -708,18 +753,15 @@ type
 
 
   { TPixmap }
+  
   {
     @abstract()
     Introduced by Marc Weustink <weus@quicknet.nl>
     Currently maintained by ?
   }
   TPixmap = class(TBitmap)
-  protected
-    procedure ReadStream(Stream: TStream; Size: Longint); override;
   public
     procedure LoadFromLazarusResource(const ResName: String); override;
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
-    procedure LoadFromResourceID(Instance: THandle; ResID: Integer); override;
   end;
   
 
@@ -748,9 +790,10 @@ function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
 
-Function Blue(rgb : longint) : BYTE;
-Function Green(rgb : longint) : BYTE;
-Function Red(rgb : longint) : BYTE;
+Function Blue(rgb: longint) : BYTE;
+Function Green(rgb: longint) : BYTE;
+Function Red(rgb: longint) : BYTE;
+procedure RedGreenBlue(rgb: longint; var Red, Green, Blue: Byte);
 
 procedure GetCharsetValues(Proc: TGetStrProc);
 function CharsetToIdent(Charset: Longint; var Ident: string): Boolean;
@@ -766,6 +809,9 @@ function ClearXLFDHeight(const LongFontName: string): string;
 function ClearXLFDPitch(const LongFontName: string): string;
 function ClearXLFDStyle(const LongFontName: string): string;
 
+function TestStreamBitmapNativeType(Stream: TMemoryStream): TBitmapNativeType;
+function TestStreamIsBMP(Stream: TMemoryStream): boolean;
+function TestStreamIsXPM(Stream: TMemoryStream): boolean;
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
@@ -932,6 +978,14 @@ begin
   Result := rgb and $000000ff;
 end;
 
+procedure RedGreenBlue(rgb: longint; var Red, Green, Blue: Byte);
+begin
+  Red := rgb and $000000ff;
+  Green := (rgb shr 8) and $000000ff;
+  Blue := (rgb shr 16) and $000000ff;
+end;
+
+
 {$I graphicsobject.inc}
 {$I graphic.inc}
 {$I picture.inc}
@@ -962,6 +1016,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2003/06/25 10:38:28  mattias
+  implemented saving original stream of TBitmap
+
   Revision 1.69  2002/08/18 04:57:01  mattias
   fixed csDashDot
 

@@ -16,6 +16,8 @@
 
 destructor TBitmapImage.Destroy;
 begin
+  FreeAndNil(FSaveStream);
+  FSaveStreamType:=bnNone;
   if FDIBHandle <> 0 then
   begin
     //TODO:write this function
@@ -27,6 +29,11 @@ begin
   //TODO Write CLoseHandle
   //if FDIB.dshSection <> 0 then CloseHandle(FDIB.dshSection);
   inherited Destroy;
+end;
+
+function TBitmapImage.HandleAllocated: boolean;
+begin
+  Result:=FHandle<>0;
 end;
 
 procedure TBitmapImage.FreeHandle;

@@ -18,6 +18,29 @@
  *****************************************************************************
 }
 
+function TestStreamBitmapNativeType(Stream: TMemoryStream): TBitmapNativeType;
+begin
+  if TestStreamIsBMP(Stream) then
+    Result:=bnWinBitmap
+  else if TestStreamIsXPM(Stream) then
+    Result:=bnXPixmap
+  else
+    Result:=bnNone;
+end;
+
+function TestStreamIsBMP(Stream: TMemoryStream): boolean;
+var
+  BmpHeadbfType: word;
+  ReadSize: Integer;
+  OldPosition: Integer;
+begin
+  BmpHeadbfType:=0;
+  OldPosition:=Stream.Position;
+  ReadSize:=Stream.Read(BmpHeadbfType,2);
+  Result:=(ReadSize=2) and (BmpHeadbfType=word($4D42));
+  Stream.Position:=OldPosition;
+end;
+
 procedure TBitMap.Assign(Source: TPersistent);
 var
  SrcBitmap: TBitmap;
@@ -65,6 +88,21 @@ begin
   if (FCanvas <> nil) then TBitmapCanvas(FCanvas).FreeDC;
 end;
 
+function TBitmap.GetCanvas: TCanvas;
+begin
+  if FCanvas = nil then
+  begin
+    HandleNeeded;
+    if FCanvas = nil then    // possible recursion
+    begin
+      FCanvas := TBitmapCanvas.Create(Self);
+      FCanvas.OnChange := @Changed;
+      FCanvas.OnChanging := @Changing;
+    end;
+  end;
+  Result := FCanvas;
+end;
+
 procedure TBitMap.FreeImage;
 begin
   Handle := 0;
@@ -109,6 +147,23 @@ begin
 
 end;
 
+procedure TBitmap.Changed(Sender: TObject);
+begin
+  //FMaskBitsValid := False;
+  inherited Changed(Sender);
+end;
+
+procedure TBitmap.Changing(Sender: TObject);
+begin
+  // ToDo: create another TBitmapImage if shared
+  //FreeImage;
+  writeln('TBitmap.Changing A');
+  FImage.FDIB.dsbmih.biClrUsed := 0;
+  FImage.FDIB.dsbmih.biClrImportant := 0;
+  FreeAndNil(FImage.FSaveStream);
+  FImage.SaveStreamType:=bnNone;
+end;
+
 procedure TBitMap.HandleNeeded;
 var
   n : integer;
@@ -147,7 +202,7 @@ var
   res:TLResource;
 begin
   res:=LazarusResources.Find(ResName);
-  if (res<>nil) and (res.Value<>'') and (res.ValueType='BMP') then begin
+  if (res<>nil) and (res.Value<>'') then begin
     ms:=TMemoryStream.Create;
     try
       ms.Write(res.Value[1],length(res.Value));
@@ -195,12 +250,6 @@ Begin
   end;
 end;
 
-Procedure TBitmap.LoadFromFile(Const Filename : String);
-begin
-  //Inherited;
-  LoadFromXPMFile(FileName);
-end;
-
 Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
    const NDIB : TDIBSection; OS2Format : Boolean);
 Begin
@@ -213,51 +262,61 @@ begin
 end;
 
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
-type
-  TBitsObj = array[1..1] of byte;
-  PBitsObj = ^TBitsObj;
-
-const
-  BI_RGB = 0;
-
 var
-  BmpHead: TBitmapFileHeader;
-  DIB: TDIBSection;
-  ReadSize: integer;
-  BmpInfo:PBitmapInfo;
-  ImgSize:longint;
-  Bits:PBitsObj;
-  InfoSize: integer;
-  BitsPerPixel,ColorsUsed:integer;
-begin
-  FreeContext;
-  if Size = 0 then
+  MemStream: TMemoryStream;
+
+  procedure RaiseInvalidBitmapHeader;
+  begin
+    raise EInOutError.Create(
+      'TBitmap.ReadStream: Invalid windows bitmap (header)');
+  end;
+  
+  procedure CreateEmptyBitmap;
+  var
+    DIB: TDIBSection;
   begin
     FillChar(DIB, sizeof(DIB), 0);
     NewImage(0, 0, DIB, False);
-  end
-  else
+  end;
+
+  procedure ReadBMPStream;
+  type
+    TBitsObj = array[1..1] of byte;
+    PBitsObj = ^TBitsObj;
+  const
+    BI_RGB = 0;
+  var
+    BmpHead: TBitmapFileHeader;
+    ReadSize: integer;
+    BmpInfo:PBitmapInfo;
+    ImgSize:longint;
+    Bits:PBitsObj;
+    InfoSize: integer;
+    BitsPerPixel,ColorsUsed:integer;
   begin
-    ReadSize:=Stream.Read(BmpHead, sizeof(BmpHead));
-    if (BmpHead.bfType <> Word($4D42)) or (BmpHead.bfOffBits<DWORD(ReadSize))
+    FillChar(BmpHead,SizeOf(BmpHead),0);
+    ReadSize:=MemStream.Read(BmpHead, SizeOf(BmpHead));
+    if (ReadSize<>SizeOf(BmpHead))
+    or (BmpHead.bfType <> Word($4D42))
+    or (BmpHead.bfOffBits<DWORD(ReadSize))
     then
-      raise EInOutError.Create(
-        'TBitmap.ReadStream: Invalid windows bitmap (header)');
+      RaiseInvalidBitmapHeader;
+
     InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
     GetMem(BmpInfo,InfoSize);
     try
-      ReadSize:=Stream.Read(BmpInfo^,InfoSize);
+      ReadSize:=MemStream.Read(BmpInfo^,InfoSize);
       if ReadSize<>InfoSize then
         raise EInOutError.Create(
-          'TBitmap.ReadStream: Invalid windows bitmap (info)');
+          'TBitmap.ReadBMPStream: Invalid windows bitmap (info)');
       if BmpInfo^.bmiHeader.biSize<>sizeof(BitmapInfoHeader) then
         raise EInOutError.Create(
-          'TBitmap.ReadStream: OS2 bitmaps are not supported yet');
+          'TBitmap.ReadBMPStream: OS2 bitmaps are not supported yet');
       if BmpInfo^.bmiHeader.biCompression<>bi_RGB then
         raise EInOutError.Create(
-          'TBitmap.ReadStream: RLE compression is not supported yet');
+          'TBitmap.ReadBMPStream: RLE compression is not supported yet');
 
-      // Let's now support only 24bit bmps! Then we can use the palette. Not yet.
+      // Let's now support only 24bit bmps! Then we can use the palette.
       BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
       if BitsPerPixel<>24 then begin
         ColorsUsed:=BmpInfo^.bmiHeader.biClrUsed;
@@ -270,9 +329,10 @@ begin
       ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
       GetMem(Bits,ImgSize);
       try
-        ReadSize:=Stream.Read(Bits^,ImgSize);
+        ReadSize:=MemStream.Read(Bits^,ImgSize);
         if ReadSize<>ImgSize then
-          raise EInOutError.Create('Invalid windows bitmap (bits)');
+          raise EInOutError.Create(
+            'TBitmap.ReadBMPStream: Invalid windows bitmap (bits)');
 
         Handle := CreateBitmap(BmpInfo^.bmiHeader.biWidth,
           BmpInfo^.bmiHeader.biHeight, BmpInfo^.bmiHeader.biPlanes,
@@ -284,6 +344,66 @@ begin
     finally
       FreeMem(BmpInfo);
     end;
+  end;
+  
+  procedure ReadXPMStream;
+  var
+    XPM: PPChar;
+    NewWidth, NewHeight, NewColorCount: integer;
+  begin
+    XPM:=ReadXPMFromStream(MemStream,Size);
+    try
+      if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
+        raise EInOutError.Create('TBitmap.ReadXPMStream: ERROR: reading xpm');
+
+      // free old pixmap
+      // Create the pixmap
+      if FTransparentColor = clNone then
+        // create a transparent pixmap (with mask)
+        Handle := CreatePixmapIndirect(XPM, -1)
+      else
+        // create an opaque pixmap.
+        // Transparent pixels are filled with FTransparentColor
+        Handle := CreatePixmapIndirect(XPM, ColorToRGB(FTransparentColor));
+    finally
+      if XPM<>nil then
+        FreeMem(XPM);
+    end;
+
+    if HandleAllocated then begin
+      FWidth:=NewWidth;
+      FHeight:=NewHeight;
+    end else begin
+      FWidth:=0;
+      FHeight:=0;
+    end;
+  end;
+  
+begin
+  FreeContext;
+
+  if Size = 0 then
+  begin
+    CreateEmptyBitmap;
+    exit;
+  end;
+  
+  // store original stream
+  MemStream:=TMemoryStream.Create;
+  MemStream.CopyFrom(Stream,Stream.Size);
+  FreeAndNil(FImage.FSaveStream);
+  FImage.SaveStream:=MemStream;
+  FImage.SaveStreamType:=bnNone;
+  MemStream.Position:=0;
+
+  // determine stream type
+  FImage.SaveStreamType:=TestStreamBitmapNativeType(MemStream);
+  // read stream
+  case FImage.SaveStreamType of
+  bnWinBitmap:  ReadBMPStream;
+  bnXPixmap:    ReadXPMStream;
+  else
+    RaiseInvalidBitmapHeader;
   end;
 end;
 
@@ -332,13 +452,15 @@ Type
     end;
   end;
 
-  Procedure DoWriteSize(Header : TBitmapHeader);
-  var
-    Size : Longint;
+  Procedure DoWriteStreamSize(Size: longint);
   begin
-    Size := Header.FileHeader.bfSize;
     if WriteSize then
       Stream.WriteBuffer(Size, SizeOf(Size));
+  end;
+
+  Procedure DoWriteSize(Header : TBitmapHeader);
+  begin
+    DoWriteStreamSize(Header.FileHeader.bfSize);
   end;
 
   Procedure WriteBitmapHeader(Header : TBitmapHeader);
@@ -387,10 +509,25 @@ Type
     Stream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
   end;
   
+  procedure DoWriteOriginal;
+  begin
+  writeln('DoWriteOriginal A');
+    DoWriteStreamSize(FImage.SaveStream.Size);
+    FImage.SaveStream.Position:=0;
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+  end;
+  
 var
   Bits : PByte;
   Header : TBitmapHeader;
 begin
+  writeln('TBitmap.WriteStream A ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType));
+  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
+  and (FImage.SaveStreamType<>bnNone) then begin
+    DoWriteOriginal;
+    exit;
+  end;
+
   FillBitmapInfo(Handle, Bits, Header);
   DoWriteSize(Header);
   WriteBitmapHeader(Header);
@@ -407,14 +544,17 @@ end;
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
   if FImage.FHandle = Value then exit;
+  if FImage.FHandle<>0 then begin
+    // release old FImage and create a new one
+    with FImage do begin
+      FreeContext;
+      Release;
+    end;
+    FImage := TBitmapImage.Create;
+    FImage.Reference;
+  end;
   // TODO: get the properties from new bitmap
   with FImage do begin
-    FreeContext;
-    Release;
-  end;
-  FImage := TBitmapImage.Create;
-  with FImage do begin
-    Reference;
     FHandle:=Value;
     FillChar(FDIB, sizeof(FDIB), 0);
     if FHandle <> 0 then
@@ -529,6 +669,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/06/25 10:38:28  mattias
+  implemented saving original stream of TBitmap
+
   Revision 1.30  2003/06/07 17:14:11  mattias
   small changes for fpc 1.1
 
