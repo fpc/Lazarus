@@ -1654,7 +1654,8 @@ ifeq ($(OS_TARGET), win32)
 	$(MAKE) lazarus.res
 endif
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
-tools: lcl components tools_all
+tools: lcl components
+	$(MAKE) -C tools
 all: lcl components ide
 cleanide:
 	$(DEL) $(wildcard *$(OEXT))

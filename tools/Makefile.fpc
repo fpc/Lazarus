@@ -9,15 +9,27 @@ version=0.8a
 
 [target]
 dirs=apiwizz
+programs=lazres
 
-[install]
-packagename=tools
+[require]
+packages=rtl fcl
+
+[compiler]
+options=-gl
+unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCLPLATFORM)
+targetdir=.
+
+[prerules]
+LAZDIR=../..
+
 
 [rules]
-.PHONY: makefile makefiles
+.PHONY: all makefile makefiles
+
+all: apiwizz_all
+        $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
 
 makefile: Makefile.fpc
         -$(FPCMAKE) -w
-        
+       
 makefiles: makefile
-        $(MAKE) -C apiwizz makefiles
