@@ -32,8 +32,8 @@ interface
 {$endif}
 
 uses
-  GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLLinux,
-  LResources, GraphicsMath;
+  GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLProc,
+  LCLLinux, LResources, GraphMath;
 
 
 const
@@ -752,14 +752,13 @@ var
  ***************************************************************************)
 implementation
 
-
 uses
-  TypInfo, Interfaces;
+  TypInfo;
 
 function SendIntfMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
 begin
-  result := InterfaceObject.IntSendMessage3(LM_Message, Sender, Data);
+  result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
 
 const
@@ -912,6 +911,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/10/26 15:15:46  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.52  2002/10/25 10:42:08  lazarus
   MG: broke minor circles
 
