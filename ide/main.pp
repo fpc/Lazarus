@@ -1458,6 +1458,14 @@ begin
 
   mnuView.Add(CreateSeperator);
 
+  itmViewToggleFormUnit := TMenuItem.Create(Self);
+  itmViewToggleFormUnit.Name:='itmViewToggleFormUnit';
+  itmViewToggleFormUnit.Caption := lisMenuViewToggleFormUnit;
+  itmViewToggleFormUnit.OnClick := @mnuToggleFormUnitClicked;
+  mnuView.Add(itmViewToggleFormUnit);
+
+  mnuView.Add(CreateSeperator);
+
   itmViewMessage := TMenuItem.Create(Self);
   itmViewMessage.Name:='itmViewMessage';
   itmViewMessage.Caption := lisMenuViewMessages;
@@ -6582,6 +6590,7 @@ begin
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
     itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
+    itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
 
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
@@ -6656,6 +6665,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.326  2002/07/22 18:25:10  lazarus
+  MG: reduced output
+
   Revision 1.325  2002/07/20 13:54:13  lazarus
   MG: fixed show designed form on new project
 

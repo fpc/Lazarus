@@ -156,11 +156,12 @@ type
     itmViewForms : TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewDebugWindows: TMenuItem;
-    itmViewwatches: TMenuItem;
+    itmViewWatches: TMenuItem;
     itmViewBreakpoints: TMenuItem;
     itmViewLocals: TMenuItem;
     itmViewCallStack: TMenuItem;
     itmViewDebugOutput: TMenuItem;
+    itmViewToggleFormUnit: TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;

@@ -610,8 +610,9 @@ begin
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
     Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
-  //writeln('Widget=',HexStr(Cardinal(Widget),8),
-  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
+  //writeln('Widget=',HexStr(Cardinal(Widget),8),' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
+  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
+  //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
 
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -2156,6 +2157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2002/07/22 18:25:12  lazarus
+  MG: reduced output
+
   Revision 1.90  2002/07/20 13:47:03  lazarus
   MG: fixed eventmask for realized windows
 

@@ -137,6 +137,7 @@ ResourceString
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
+  lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
   lisMenuDebugWindows = 'Debug windows';
   lisMenuViewWatches = 'Watches';
