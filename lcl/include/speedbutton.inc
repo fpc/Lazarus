@@ -39,11 +39,9 @@ begin
   FGlyph := TButtonGlyph.Create;
   FGlyph.OnChange := @GlyphChanged;
 
-  SetBounds(0, 0, 23, 22);
+  SetInitialBounds(0, 0, 23, 22);
   ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption]-csMultiClicks;
 
-  {set default alignment}
-  Align := alNone;
   FLayout:= blGlyphLeft;
   FAllowAllUp:= false;
   FMouseInControl := False;
@@ -700,6 +698,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/06/18 11:21:06  mattias
+  fixed taborder=0, implemented TabOrder Editor
+
   Revision 1.38  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 

@@ -765,15 +765,15 @@ type
     property Color: TColor read FColor write SetColor stored ColorIsStored;
     property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
-    property Font : TFont read FFont write SetFont;
-    property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
-    property Parent : TWinControl read FParent write SetParent;
-    property PopupMenu : TPopupmenu read GetPopupmenu write SetPopupMenu;
-    property ShowHint : Boolean read FShowHint write SetShowHint default False;
+    property Font: TFont read FFont write SetFont;
+    property HostDockSite: TWincontrol read FHostDockSite write FHostDockSite;
+    property Parent: TWinControl read FParent write SetParent;
+    property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
+    property ShowHint: Boolean read FShowHint write SetShowHint default False;
     property Visible: Boolean read FVisible write SetVisible default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
-    property TabStop : Boolean read FTabStop write SetTabStop;
-    property TabOrder : TTabOrder read GetTabOrder write SetTaborder;
+    property TabStop: Boolean read FTabStop write SetTabStop;
+    property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
   public
     property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
@@ -1535,6 +1535,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2003/06/18 11:21:06  mattias
+  fixed taborder=0, implemented TabOrder Editor
+
   Revision 1.128  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 

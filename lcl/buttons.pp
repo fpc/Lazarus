@@ -205,13 +205,13 @@ type
     function GetGlyph : TBitmap;
     procedure UpdateExclusive;
     procedure UpdateTracking;
-    procedure SetAllowAllUp(Value : Boolean);
-    procedure SetGlyph(value : TBitmap);
-    procedure SetLayout(const Value : TButtonLayout);
-    procedure SetTransparent(const Value : boolean);
-    procedure CMButtonPressed(var Message : TLMessage); message CM_BUTTONPRESSED;
-    procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
-    procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
+    procedure SetAllowAllUp(Value: Boolean);
+    procedure SetGlyph(Value: TBitmap);
+    procedure SetLayout(const Value: TButtonLayout);
+    procedure SetTransparent(const Value: boolean);
+    procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
+    procedure CMMouseEnter(var Message: TLMessage); message CM_MouseEnter;
+    procedure CMMouseLeave(var Message: TLMessage); message CM_MouseLeave;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   protected
     function GetNumGlyphs : Integer;
@@ -237,6 +237,8 @@ type
     destructor Destroy; override;
     procedure Click; override;
   published
+    property Align;
+    property Anchors;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Caption;
     property Down: Boolean read FDown write SetDown default false;
@@ -304,6 +306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/06/18 11:21:06  mattias
+  fixed taborder=0, implemented TabOrder Editor
+
   Revision 1.44  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 
