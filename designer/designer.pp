@@ -264,6 +264,8 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.RemoveControl] C ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
+  if not (AComponent is TControl) then
+    Form.Invalidate;
   FFormEditor.DeleteControl(AComponent);
 end;
 
@@ -505,7 +507,7 @@ Begin
     MouseDownSender:=nil;
     exit;
   end;
-
+  
   ControlSelection.ActiveGrabber:=nil;
   RubberBandWasActive:=ControlSelection.RubberBandActive;
 
@@ -544,17 +546,17 @@ Begin
            and (ControlSelection[0].Component is TCustomForm)) then
             ControlSelection.Clear;
           ControlSelection.SelectWithRubberBand(
-            SenderParentForm,ssShift in Shift);
+            Form,ssShift in Shift);
           if ControlSelection.Count=0 then
-            ControlSelection.Add(SenderParentForm);
+            ControlSelection.Add(Form);
           ControlSelection.RubberbandActive:=false;
         end else begin
           if (not (ssShift in Shift)) then begin
             ControlSelection.Clear;
-            ControlSelection.Add(Sender);
+            ControlSelection.Add(MouseDownComponent);
           end;
         end;
-        SenderParentForm.Invalidate;
+        Form.Invalidate;
       end;
       ControlSelection.EndUpdate;
     end else begin
@@ -563,7 +565,7 @@ Begin
       ControlSelection.BeginUpdate;
 
       // find a parent for the new component
-      NewParent:=TWinControl(Sender);
+      NewParent:=TWinControl(MouseDownComponent);
       while (NewParent<>nil)
       and ((not (csAcceptsControls in NewParent.ControlStyle))
         or ((NewParent.Owner<>Form) and (NewParent<>Form)))
