@@ -1700,20 +1700,6 @@ begin
 
   Case TControl(Sender).FCompStyle Of
 
-  csScrollBar:
-    With (TScrollBar(Sender)) Do
-    Begin
-      SendMessage(Handle, SBM_SETRANGE, Min, Max);
-      SendMessage(Handle, SBM_SETPOS, Position, LPARAM(True));
-      Case Kind Of
-        sbHorizontal:
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_HORZ);
-        sbVertical:
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or SBS_VERT);
-      End;
-      Assert(False, 'Trace:TODO: [TWin32WidgetSet.SetProperties] Set up step and page increments for csScrollBar');
-    End;
-
   csSpinEdit:
     Begin
       SendMessage(Handle, UDM_SETRANGE, 0, MakeLong(Trunc(TSpinEdit(Sender).MaxValue), Trunc(TSpinEdit(Sender).MinValue)));
@@ -1774,6 +1760,9 @@ End;
 
 {
   $Log$
+  Revision 1.283  2004/09/23 20:36:30  micha
+  convert LM_SETPROPERTIES message to interface method for TScrollBar
+
   Revision 1.282  2004/09/23 14:50:47  micha
   convert LM_SETPROPERTIES message to interface method for TProgressBar
 

@@ -52,6 +52,7 @@ type
   { TWSScrollBar }
 
   TWSScrollBar = class(TWSWinControl)
+    class procedure SetParams(const AScrollBar: TScrollBar); virtual;
   end;
 
   { TWSCustomGroupBox }
@@ -203,6 +204,12 @@ type
 
 
 implementation
+
+{ TWSScrollBar }
+
+procedure TWSScrollBar.SetParams(const AScrollBar: TScrollBar);
+begin
+end;
 
 { TWSCustomListBox }
 

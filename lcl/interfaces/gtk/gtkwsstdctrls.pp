@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure SetParams(const AScrollBar: TScrollBar); override;
   end;
 
   { TGtkWSCustomGroupBox }
@@ -277,6 +278,24 @@ begin
     gtk_editable_select_region(PGtkOldEditable(Widget),
       gtk_editable_get_position(PGtkOldEditable(Widget)),
       gtk_editable_get_position(PGtkOldEditable(Widget)) + NewLength);
+  end;
+end;
+
+{ TGtkWSScrollBar }
+
+procedure TGtkWSScrollBar.SetParams(const AScrollBar: TScrollBar);
+var
+  Widget   : PGtkWidget;
+begin
+  with AScrollBar do
+  begin
+    //set properties for the range
+    Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(Handle)));
+    GTK_ADJUSTMENT(Widget)^.lower := Min;
+    GTK_ADJUSTMENT(Widget)^.Upper := Max;
+    GTK_ADJUSTMENT(Widget)^.Value := Position;
+    GTK_ADJUSTMENT(Widget)^.step_increment := SmallChange;
+    GTK_ADJUSTMENT(Widget)^.page_increment := LargeChange;
   end;
 end;
 
@@ -869,7 +888,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollBar, TGtkWSScrollBar);
+  RegisterWSComponent(TScrollBar, TGtkWSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TGtkWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);

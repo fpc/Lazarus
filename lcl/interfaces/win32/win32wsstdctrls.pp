@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Classes, StdCtrls, Controls, Graphics,
+  Classes, StdCtrls, Controls, Graphics, Forms,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses, Windows, Win32Int, Win32Proc, InterfaceBase, LCLType;
 
@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure SetParams(const AScrollBar: TScrollBar); override;
   end;
 
   { TWin32WSCustomGroupBox }
@@ -254,6 +255,24 @@ procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
 procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
 implementation
+
+{ TWin32WSScrollBar }
+
+procedure TWin32WSScrollBar.SetParams(const AScrollBar: TScrollBar);
+begin
+  with AScrollBar do
+  begin
+    SendMessage(Handle, SBM_SETRANGE, Min, Max);
+    SendMessage(Handle, SBM_SETPOS, Position, LPARAM(true));
+    case Kind of
+      sbHorizontal:
+        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_HORZ);
+      sbVertical:
+        SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_VERT);
+    end;
+    Assert(False, 'Trace:TODO: [TWin32WSScrollBar.SetParams] Set up step and page increments for csScrollBar');
+  end;
+end;
 
 { TWin32WSCustomListBox }
 
@@ -650,7 +669,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollBar, TWin32WSScrollBar);
+  RegisterWSComponent(TScrollBar, TWin32WSScrollBar);
 //  RegisterWSComponent(TCustomGroupBox, TWin32WSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TWin32WSGroupBox);
   RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);

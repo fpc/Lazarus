@@ -6258,17 +6258,6 @@ begin
   Widget:= GTK_WIDGET(wHandle);
 
   case TControl(Sender).fCompStyle of
-  csScrollBar:
-     with (TScrollBar (Sender)) do
-         begin
-           //set properties for the range
-           Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
-           GTK_ADJUSTMENT(Widget)^.lower := Min;
-           GTK_ADJUSTMENT(Widget)^.Upper := Max;
-           GTK_ADJUSTMENT(Widget)^.Value := Position;
-           GTK_ADJUSTMENT(Widget)^.step_increment := SmallChange;
-           GTK_ADJUSTMENT(Widget)^.page_increment := LargeChange;
-         end;
 
   csTrackbar   :
      with (TCustomTrackBar (Sender)) do
@@ -7461,6 +7450,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.595  2004/09/23 20:36:30  micha
+  convert LM_SETPROPERTIES message to interface method for TScrollBar
+
   Revision 1.594  2004/09/23 14:50:47  micha
   convert LM_SETPROPERTIES message to interface method for TProgressBar
 
