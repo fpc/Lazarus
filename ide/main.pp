@@ -2064,6 +2064,9 @@ begin
 
   ecJumpToNextError:
     DoJumpToNextError(false);
+    
+  ecFindInFiles:
+    DoFindInFiles;
 
   ecFindProcedureDefinition,
   ecFindProcedureMethod:
@@ -2092,6 +2095,9 @@ begin
 
   ecExtractProc:
     DoExtractProcFromSelection;
+    
+  ecToggleMessages:
+    DoShowMessagesView;
 
   ecConfigCustomComps:
     PkgBoss.ShowConfigureCustomComponents;
@@ -7990,13 +7996,15 @@ var
   WasVisible: boolean;
   ALayout: TIDEWindowLayout;
 begin
+  //debugln('TMainIDE.DoShowMessagesView');
   WasVisible:=MessagesView.Visible;
   MessagesView.Visible:=true;
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByEnum(nmiwMessagesViewName);
+                                               ItemByEnum(nmiwMessagesViewName);
   ALayout.Apply;
   if not WasVisible then
     // the sourcenotebook is more interesting than the messages
+    // TODO: don't do this when messages content intersect the editor content
     SourceNotebook.ShowOnTop;
 
   //set the event here for the selectionchanged event
@@ -10962,6 +10970,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.806  2004/12/10 11:07:52  mattias
+  added FindInFiles and ToggleMessages shortcuts
+
   Revision 1.805  2004/12/09 19:29:42  mattias
   fixed compilation for lazconf  linux, bsd, macosx
 
