@@ -1389,9 +1389,8 @@ var
   ARect: TRect;
 begin
   if DC=0 then exit;
-  CreateBrush;
   ARect:=Rect(0,0,Width,Height);
-  FillRect(DC,ARect,FBrush.Handle)
+  FillRect(DC,ARect,Brush.Handle)
 end;
 
 {------------------------------------------------------------------------------
@@ -2146,6 +2145,15 @@ begin
   end;
 End;
 
+{------------------------------------------------------------------------------
+  TWinControl GetBrush
+------------------------------------------------------------------------------}
+function TWinControl.GetBrush: TBrush;
+begin
+  if FBrush=nil then CreateBrush;
+  Result:=FBrush;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl GetControl                                                      }
 {------------------------------------------------------------------------------}
@@ -2832,6 +2840,11 @@ begin
   end;
 end;
 
+function TWinControl.BrushCreated: Boolean;
+begin
+  Result:=FBrush<>nil;
+end;
+
 function TWinControl.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
 begin
   Result:=inherited GetTextBuf(Buffer, BufSize);
@@ -3096,6 +3109,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.174  2003/09/26 06:59:59  mattias
+  implemented GetBrush
+
   Revision 1.173  2003/09/25 09:01:54  mattias
   increased rpm version
 

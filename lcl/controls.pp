@@ -996,12 +996,13 @@ type
     FUseDockManager: Boolean;
     FWinControls: TList;
     procedure AlignControl(AControl : TControl);
-    function  GetControl(const Index: Integer): TControl;
-    function  GetControlCount: Integer;
+    function GetBrush: TBrush;
+    function GetControl(const Index: Integer): TControl;
+    function GetControlCount: Integer;
     function GetDockClientCount: Integer;
     function GetDockClients(Index: Integer): TControl;
-    function  GetHandle : HWND;
-    function  GetIsResizing: boolean;
+    function GetHandle : HWND;
+    function GetIsResizing: boolean;
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
     procedure SetDockSite(const AValue: Boolean);
@@ -1166,14 +1167,15 @@ type
     Procedure SetFocus; override;
     Function FindChildControl(ControlName : String) : TControl;
     Procedure GetTabOrderList(List : TList);
-    function HandleAllocated : Boolean;
+    function HandleAllocated: Boolean;
     procedure HandleNeeded;
+    function BrushCreated: Boolean;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; override;
     Procedure SetTextBuf(Buffer : PChar); override;
     procedure EraseBackground(DC: HDC); virtual;
   public
     property BoundsLockCount: integer read FBoundsLockCount;
-    property Brush: TBrush read FBrush;
+    property Brush: TBrush read GetBrush;
     property Controls[Index: Integer]: TControl read GetControl;
     property ControlCount: Integer read GetControlCount;
     property Handle: HWND read GetHandle write SetHandle;
@@ -1845,6 +1847,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.154  2003/09/26 06:59:59  mattias
+  implemented GetBrush
+
   Revision 1.153  2003/09/23 17:52:04  mattias
   added SetAnchors
 
