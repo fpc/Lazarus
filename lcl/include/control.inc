@@ -387,6 +387,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.GetPalette: HPalette;
+------------------------------------------------------------------------------}
+function TControl.GetPalette: HPalette;
+begin
+  Result:=0;
+end;
+
+{------------------------------------------------------------------------------
   procedure TControl.DoBeforeMouseMessage;
 ------------------------------------------------------------------------------}
 procedure TControl.DoBeforeMouseMessage;
@@ -2057,6 +2065,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.109  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.108  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
