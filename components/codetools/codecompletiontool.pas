@@ -405,7 +405,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
       Parts[ppNoDefaultWord]:=CurPos;
       ReadNextAtom;
     end else
-      RaiseExceptionFmt(ctsCharExpectedButAtomFound,[';',GetAtom]);
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
   end;
   if (CurPos.StartPos>PropNode.EndPos) then
     RaiseException('Reparsing error (Complete Property)');

@@ -48,9 +48,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, CustomCodeTool, SourceLog,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
-  SourceChanger;
+  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
+  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
+  TypInfo, SourceChanger;
 
 type
   TMultiKeyWordListCodeTool = class(TCustomCodeTool)
@@ -448,21 +448,20 @@ end;
 function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
-  RaiseException('unexpected keyword "'+GetAtom+'"');
+  RaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom]);
 end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
-{$IFDEF MEM_CHECK}
-CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));
-{$ENDIF}
-{$IFDEF CTDEBUG}
-writeln('TPascalParserTool.BuildTree A');
-{$ENDIF}
+  {$IFDEF MEM_CHECK}
+  CheckHeap('TBasicCodeTool.BuildTree A '+IntToStr(GetMem_Cnt));
+  {$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TPascalParserTool.BuildTree A');
+  {$ENDIF}
   if not UpdateNeeded(OnlyInterfaceNeeded) then exit;
-writeln('TPascalParserTool.BuildTree B OnlyInterfaceNeeded=',OnlyInterfaceNeeded,
-  '  ',TCodeBuffer(Scanner.MainCode).Filename);
-//CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(GetMem_Cnt));
+  writeln('TPascalParserTool.BuildTree B OnlyInterfaceNeeded=',OnlyInterfaceNeeded,'  ',TCodeBuffer(Scanner.MainCode).Filename);
+  //CheckHeap('TBasicCodeTool.BuildTree B '+IntToStr(GetMem_Cnt));
   BeginParsing(true,OnlyInterfaceNeeded);
   InterfaceSectionFound:=false;
   ImplementationSectionFound:=false;
@@ -477,22 +476,20 @@ writeln('TPascalParserTool.BuildTree B OnlyInterfaceNeeded=',OnlyInterfaceNeeded
   else if UpAtomIs('LIBRARY') then
     CurSection:=ctnLibrary
   else
-    RaiseException(
-      'no pascal code found (first token is '+GetAtom+')');
+    RaiseExceptionFmt(ctsNoPascalCodeFound,[GetAtom]);
   CreateChildNode;
   CurNode.Desc:=CurSection;
   ReadNextAtom; // read source name
   AtomIsIdentifier(true);
   ReadNextAtom; // read ';'
   if not AtomIsChar(';') then
-    RaiseException('; expected, but '+GetAtom+' found');
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
   if CurSection=ctnUnit then begin
     ReadNextAtom;
     CurNode.EndPos:=CurPos.StartPos;
     EndChildNode;
     if not UpAtomIs('INTERFACE') then
-      RaiseException(
-        '''interface'' expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"interface"',GetAtom]);
     CreateChildNode;
     CurSection:=ctnInterface;
     CurNode.Desc:=CurSection;
@@ -502,7 +499,7 @@ writeln('TPascalParserTool.BuildTree B OnlyInterfaceNeeded=',OnlyInterfaceNeeded
   if UpAtomIs('USES') then
     ReadUsesSection(true);
   repeat
-//writeln('[TPascalParserTool.BuildTree] ALL '+GetAtom);
+    //writeln('[TPascalParserTool.BuildTree] ALL '+GetAtom);
     if not DoAtom then break;
     if CurSection=ctnNone then begin
       EndOfSourceFound:=true;
@@ -511,12 +508,12 @@ writeln('TPascalParserTool.BuildTree B OnlyInterfaceNeeded=',OnlyInterfaceNeeded
     ReadNextAtom;
   until (CurPos.StartPos>SrcLen);
   FForceUpdateNeeded:=false;
-{$IFDEF CTDEBUG}
-writeln('[TPascalParserTool.BuildTree] END');
-{$ENDIF}
-{$IFDEF MEM_CHECK}
-CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(GetMem_Cnt));
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TPascalParserTool.BuildTree] END');
+  {$ENDIF}
+  {$IFDEF MEM_CHECK}
+  CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(GetMem_Cnt));
+  {$ENDIF}
 end;
 
 procedure TPascalParserTool.BuildSubTreeForClass(ClassNode: TCodeTreeNode);
@@ -566,12 +563,12 @@ begin
     // read GUID
     ReadNextAtom;
     if not AtomIsStringConstant then
-      RaiseException('string constant expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
     if not ReadNextAtomIsChar(']') then
-      RaiseException('] expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[']',GetAtom]);
     ReadNextAtom;
     if (not (AtomIsChar(';') or UpAtomIs('END'))) then
-      RaiseException('; expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end else
@@ -1224,7 +1221,7 @@ begin
           ReadConstant(true,false,[]);
         end;
         if not AtomIsChar(']') then
-          RaiseException('] expected, but '+GetAtom+' found');
+          RaiseExceptionFmt(ctsStrExpectedButAtomFound,[']',GetAtom]);
         ReadNextAtom;
         if UpAtomIs('END') then begin
           UndoReadNextAtom;
@@ -1241,7 +1238,7 @@ begin
       end;
       if not AtomIsChar(';') then begin
         if (Scanner.CompilerMode<>cmDelphi) then
-          RaiseException('; expected, but '+GetAtom+' found');
+          RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
         // Delphi allows procs without ending semicolon
         UndoReadNextAtom; // unread unknown atom
         if AtomIsChar(';') then
@@ -1413,7 +1410,7 @@ begin
     or AtomIsChar(':') then break;
     if AtomIs('..') then begin
       if RangeOpFound then
-        RaiseException('; expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
       RangeOpFound:=true;
     end else if AtomIsChar('(') or AtomIsChar('[') then
       ReadTilBracketClose(ExceptionOnError);
@@ -2008,17 +2005,17 @@ begin
       if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
       and (UpAtomIs('END') or AtomIsKeyWord) then
-        RaiseException('; expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     until AtomIsChar(';');
   end;
   // read ;
   if not AtomIsChar(';') then
-    RaiseException('; expected, but '+GetAtom+' found');
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
   ReadNextAtom;
   if UpAtomIs('CVAR') then begin
     // for example: 'var a: char; cvar;'
     if not ReadNextAtomIsChar(';') then
-      RaiseException('; expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
   end else if UpAtomIs('PUBLIC') or UpAtomIs('EXTERNAL') then begin
     if NodeHasParentOfType(CurNode,ctnClass) then
       // class visibility keyword 'public'
@@ -2042,7 +2039,7 @@ begin
         UndoReadNextAtom;
       end;
       if not ReadNextAtomIsChar(';') then
-        RaiseException('; expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;
   end else
     UndoReadNextAtom;
@@ -2143,7 +2140,7 @@ begin
         CurPos.EndPos-CurPos.StartPos);
       // read ;
       if not AtomIsChar(';') then
-        RaiseException('; expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -2247,7 +2244,7 @@ begin
         if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
         and (UpAtomIs('END') or AtomIsKeyWord) then
-          RaiseException('; expected, but '+GetAtom+' found');
+          RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
       until AtomIsChar(';');
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
@@ -2293,7 +2290,7 @@ begin
           'string constant expected, but '+GetAtom+' found');
       // read ;
       if not ReadNextAtomIsChar(';') then
-        RaiseException('; expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
       CurNode.EndPos:=CurPos.EndPos;
       EndChildNode;
     end else begin
@@ -2330,7 +2327,7 @@ begin
     if AtomIsChar(';') then begin
       break;
     end else if not AtomIsChar(',') then begin
-      RaiseException('; expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     end;
   until false;
   CurNode.EndPos:=CurPos.EndPos;
@@ -2382,7 +2379,7 @@ begin
     ReadNextAtom;
     AtomIsIdentifier(true);
     if not ReadNextAtomIsChar(';') then
-      RaiseException('; expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     if ChildCreated then CurNode.Desc:=ctnClassOfType;
   end else if AtomIsChar('(') then begin
     // read inheritage brackets
@@ -2436,7 +2433,7 @@ begin
       EndChildNode;
       if AtomIsChar(']') then break;
       if not AtomIsChar(',') then
-        RaiseException('] expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[']',GetAtom]);
     until false;
     ReadNextAtom;
   end;
@@ -2503,7 +2500,7 @@ begin
         begin
           UndoReadNextAtom;
           if (not AtomIsChar(';')) and (Scanner.CompilerMode<>cmDelphi) then
-            RaiseException('; expected, but '+GetAtom+' found');
+            RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
           break;
         end else begin
           if not ReadNextAtomIsChar(';') then begin
@@ -2511,13 +2508,13 @@ begin
               break;
             end;
             if Scanner.CompilerMode<>cmDelphi then begin
-              RaiseException('; expected, but '+GetAtom+' found');
+              RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
             end else begin
               // delphi allows proc modifiers without semicolons
               if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
                 CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
               begin
-                RaiseException('; expected, but '+GetAtom+' found');
+                RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
               end;
               UndoReadNextAtom;
             end;
@@ -2836,7 +2833,7 @@ begin
       end;
       if AtomIsChar(')') then break;
       if not AtomIsChar(';') then
-        RaiseException('; expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
       ReadNextAtom;
     until false;
     if not AtomIsChar(')') then
@@ -2848,7 +2845,7 @@ begin
       break;
     end;
     if not AtomIsChar(';') then
-      RaiseException('; expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode; // close variant
     // read next variant

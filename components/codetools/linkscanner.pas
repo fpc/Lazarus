@@ -43,8 +43,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolMemManager, FileProcs, ExprEval, SourceLog,
-  KeywordFuncLists;
+  Classes, SysUtils, CodeToolsStrConsts, CodeToolMemManager, FileProcs,
+  ExprEval, SourceLog, KeywordFuncLists;
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
@@ -180,6 +180,7 @@ type
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
   protected
+    procedure RaiseExceptionFmt(const AMessage: string; args: array of const);
     procedure RaiseException(const AMessage: string);
   public
     // current values, positions, source, flags
@@ -603,7 +604,7 @@ var
   c1, c2: char;
 begin
   // Skip all spaces and comments
-//writeln(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'" "',copy(UpperSrc,SrcPos,5),'"');
+  //writeln(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'" "',copy(UpperSrc,SrcPos,5),'"');
   if (SrcPos>SrcLen) then ReturnFromIncludeFile;
   while SrcPos<=SrcLen do begin
     if IsCommentStartChar[Src[SrcPos]] then begin
@@ -721,21 +722,21 @@ var LastTokenIsEqual, LastTokenIsEnd: boolean;
   s: string;
 begin
   if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then exit;
-{$IFDEF CTDEBUG}
-writeln('TLinkScanner.Scan A -------- TillInterfaceEnd=',TillInterfaceEnd);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TLinkScanner.Scan A -------- TillInterfaceEnd=',TillInterfaceEnd);
+  {$ENDIF}
   ScanTillInterfaceEnd:=TillInterfaceEnd;
   Clear;
   IncreaseChangeStep;
-{$IFDEF CTDEBUG}
-writeln('TLinkScanner.Scan B ');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TLinkScanner.Scan B ');
+  {$ENDIF}
   SetSource(FMainCode);
   SetLength(FCleanedSrc,length(Src));
   CleanedLen:=0;
-{$IFDEF CTDEBUG}
-writeln('TLinkScanner.Scan C ',SrcLen);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TLinkScanner.Scan C ',SrcLen);
+  {$ENDIF}
   EndOfInterfaceFound:=false;
   EndOfSourceFound:=false;
   CommentStyle:=CommentNone;
@@ -746,7 +747,7 @@ writeln('TLinkScanner.Scan C ',SrcLen);
   FSkippingTillEndif:=false;
   if Assigned(FOnGetInitValues) then
     FInitValues.Assign(FOnGetInitValues(FMainCode));
-//writeln('TLinkScanner.Scan C --------');
+  //writeln('TLinkScanner.Scan C --------');
   Values.Assign(FInitValues);
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
     if FInitValues.IsDefined(CompilerModeVars[cm]) then begin
@@ -757,20 +758,20 @@ writeln('TLinkScanner.Scan C ',SrcLen);
     if (s=PascalCompilerNames[pc]) then begin
       PascalCompiler:=pc;
     end;
-//writeln(Values.AsString);
-//writeln('TLinkScanner.Scan D --------');
+  //writeln(Values.AsString);
+  //writeln('TLinkScanner.Scan D --------');
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
   // beging scanning
   AddLink(1,SrcPos,Code);
   LastTokenIsEqual:=false;
   LastTokenIsEnd:=false;
-{$IFDEF CTDEBUG}
-writeln('TLinkScanner.Scan D ',SrcLen);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TLinkScanner.Scan D ',SrcLen);
+  {$ENDIF}
   repeat
     ReadNextToken;
-//writeln('TLinkScanner.Scan E "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
+    //writeln('TLinkScanner.Scan E "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
     UpdateCleanedSource(SrcPos-1);
     if (SrcPos<=SrcLen+1) then begin
       if (not LastTokenIsEqual) and
@@ -790,9 +791,9 @@ writeln('TLinkScanner.Scan D ',SrcLen);
   or ((ScanTillInterfaceEnd) and (EndOfInterfaceFound));
   IncreaseChangeStep;
   FForceUpdateNeeded:=false;
-{$IFDEF CTDEBUG}
-writeln('TLinkScanner.Scan END ',CleanedLen);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TLinkScanner.Scan END ',CleanedLen);
+  {$ENDIF}
 end;
 
 procedure TLinkScanner.SetLinks(Index: integer; const Value: TSourceLink);
@@ -887,7 +888,7 @@ var l,r,m: integer;
   NewSrcChangeStep: PSourceChangeStep;
   c: pointer;
 begin
-//writeln('[TLinkScanner.AddSourceChangeStep] ',HexStr(Cardinal(ACode),8));
+  //writeln('[TLinkScanner.AddSourceChangeStep] ',HexStr(Cardinal(ACode),8));
   if ACode=nil then
     RaiseException('TLinkScanner.AddSourceChangeStep ACode=nil');
   l:=0;
@@ -906,7 +907,7 @@ begin
   NewSrcChangeStep^.ChangeStep:=AChangeStep;
   if (FSourceChangeSteps.Count>0) and (c<ACode) then inc(m);
   FSourceChangeSteps.Insert(m,NewSrcChangeStep);
-//writeln('   ADDING ',HexStr(Cardinal(ACode),8),',',FSourceChangeSteps.Count);  
+  //writeln('   ADDING ',HexStr(Cardinal(ACode),8),',',FSourceChangeSteps.Count);
 end;
 
 function TLinkScanner.TokenIs(const AToken: shortstring): boolean;
@@ -1035,7 +1036,7 @@ begin
     end;
   end;
   FForceUpdateNeeded:=true;
-//writeln('TLinkScanner.UpdateNeeded A OnlyInterface=',OnlyInterfaceNeeded,' EndOfSourceFound=',EndOfSourceFound);
+  //writeln('TLinkScanner.UpdateNeeded A OnlyInterface=',OnlyInterfaceNeeded,' EndOfSourceFound=',EndOfSourceFound);
   if LinkCount=0 then exit;
   // check if ScanRange has increased
   if (OnlyInterfaceNeeded=false) and (not EndOfSourceFound) then exit;
@@ -1051,7 +1052,7 @@ begin
     end;
     for i:=0 to FSourceChangeSteps.Count-1 do begin
       SrcLog:=FOnGetSource(Self,PSourceChangeStep(FSourceChangeSteps[i])^.Code);
-//writeln('TLinkScanner.UpdateNeeded D ',i,',',PSourceChangeStep(FSourceChangeSteps[i])^.Code<>nil,' ',PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep,'<>',SrcLog.ChangeStep,'  ',HexStr(Cardinal(SrcLog),8));
+      //writeln('TLinkScanner.UpdateNeeded D ',i,',',PSourceChangeStep(FSourceChangeSteps[i])^.Code<>nil,' ',PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep,'<>',SrcLog.ChangeStep,'  ',HexStr(Cardinal(SrcLog),8));
       if PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep<>SrcLog.ChangeStep
       then exit;
     end;
@@ -1065,7 +1066,7 @@ begin
   end;
   // no update needed :)
   FForceUpdateNeeded:=false;
-//writeln('TLinkScanner.UpdateNeeded END');
+  //writeln('TLinkScanner.UpdateNeeded END');
   Result:=false;
 end;
 
@@ -1157,9 +1158,8 @@ begin
   else if (FDirectiveName='RANGECHECKS') then
     // ignore link object directive
   else begin
-    RaiseException(
-      'invalid flag value "'+copy(UpperSrc,ValStart,SrcPos-ValStart)+'"'
-        +' for directive '+FDirectiveName);
+    RaiseExceptionFmt(ctsInvalidFlagValueForDirective,
+        [copy(UpperSrc,ValStart,SrcPos-ValStart),FDirectiveName]);
   end;
   Result:=ReadNextSwitchDirective;
 end;
@@ -1196,8 +1196,7 @@ begin
         break;
       end;
     if not ModeValid then
-      RaiseException(
-        'invalid mode "'+copy(UpperSrc,ValStart,SrcPos-ValStart)+'"');
+      RaiseExceptionFmt(ctsInvalidMode,[copy(UpperSrc,ValStart,SrcPos-ValStart)]);
   end;
   Result:=true;
 end;
@@ -1284,7 +1283,7 @@ function TLinkScanner.EndifDirective: boolean;
 begin
   dec(IfLevel);
   if IfLevel<0 then
-    RaiseException('$ENDIF without $IF')
+    RaiseExceptionFmt(ctsAwithoutB,['$ENDIF','$IF'])
   else if IfLevel<FSkipIfLevel then
     FSkippingTillEndif:=false;
   Result:=true;
@@ -1294,7 +1293,7 @@ function TLinkScanner.ElseDirective: boolean;
 // {$else comment}
 begin
   if IfLevel=0 then
-    RaiseException('$ELSE without $IF');
+    RaiseExceptionFmt(ctsAwithoutB,['$ELSE','$IF']);
   if not FSkippingTillEndif then
     SkipTillEndifElse
   else if IfLevel=FSkipIfLevel then
@@ -1363,7 +1362,7 @@ begin
   end else begin
     PopIncludeLink;
   end;
-//writeln('[TLinkScanner.IncludeDirective] END ',CommentEndPos,',',SrcPos,',',SrcLen);
+  //writeln('[TLinkScanner.IncludeDirective] END ',CommentEndPos,',',SrcPos,',',SrcLen);
 end;
 
 function TLinkScanner.IncludePathDirective: boolean;
@@ -1447,9 +1446,9 @@ var
       PathDivider:=':;';
     PathStart:=1;
     PathEnd:=PathStart;
-//writeln('[TLinkScanner.IncludePathDirective] IncludePath=',IncludePath);
-//Values.WriteDebugReport;
-//writeln('');
+    //writeln('[TLinkScanner.IncludePathDirective] IncludePath=',IncludePath);
+    //Values.WriteDebugReport;
+    //writeln('');
     while PathEnd<=length(IncludePath) do begin
       if ((Pos(IncludePath[PathEnd],PathDivider))>0) 
       {$IFDEF win32}
@@ -1489,7 +1488,7 @@ begin
     AddLink(CleanedLen+1,SrcPos,Code);
   end else begin
     if (not IgnoreMissingIncludeFiles) then begin
-      RaiseException('include file not found "'+AFilename+'"')
+      RaiseExceptionFmt(ctsIncludeFileNotFound,[AFilename])
     end else begin
       // add a dummy link
       AddLink(CleanedLen+1,SrcPos,MissingIncludeFileCode);
@@ -1508,7 +1507,7 @@ begin
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
   if Values.ErrorPosition>=0 then
-    RaiseException('in directive expression')
+    RaiseException(ctsErrorInDirectiveExpression)
   else if ResultStr='0' then
     SkipTillEndifElse
   else
@@ -1548,7 +1547,7 @@ var NewLink: PSourceLink;
 begin
   for i:=0 to FIncludeStack.Count-1 do
     if PSourceLink(FIncludeStack[i])^.Code=ACode then
-      RaiseException('Include circle detected');
+      RaiseException(ctsIncludeCircleDetected);
   NewLink:=PSourceLinkMemManager.NewPSourceLink;
   with NewLink^ do begin
     CleanedPos:=ACleanedPos;
@@ -1565,6 +1564,12 @@ begin
   Result:=PLink^;
   PSourceLinkMemManager.DisposePSourceLink(PLink);
   FIncludeStack.Delete(FIncludeStack.Count-1);
+end;
+
+procedure TLinkScanner.RaiseExceptionFmt(const AMessage: string;
+  args: array of const);
+begin
+  RaiseException(Format(AMessage,args));
 end;
 
 function TLinkScanner.ReturnFromIncludeFile: boolean;
@@ -1639,19 +1644,19 @@ begin
   SkippedPos:=false;
   SkippedCleanPos:=-1;
   while i<LinkCount do begin
-//writeln('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
+    //writeln('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
     if (Links[i].Code=ACode) and (Links[i].SrcPos<=ACursorPos) then begin
       ACleanPos:=ACursorPos-Links[i].SrcPos+Links[i].CleanedPos;
-//writeln('[TLinkScanner.CursorToCleanPos] B ACleanPos=',ACleanPos);
+      //writeln('[TLinkScanner.CursorToCleanPos] B ACleanPos=',ACleanPos);
       if i+1<LinkCount then begin
-//writeln('[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos);
+        //writeln('[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos);
         if ACleanPos<Links[i+1].CleanedPos then begin
           Result:=0;  // valid position
           exit;
         end;
         j:=i+1;
         while (j<LinkCount) and (Links[j].Code<>ACode) do inc(j);
-//writeln('[TLinkScanner.CursorToCleanPos] D j=',j);
+        //writeln('[TLinkScanner.CursorToCleanPos] D j=',j);
         if (j<LinkCount) and (Links[j].SrcPos>ACursorPos) then begin
           if not SkippedPos then begin
             // CursorPos was skipped, CleanPos is between two links
@@ -1665,7 +1670,7 @@ begin
         i:=j-1;
       end else begin
         // in last link
-//writeln('[TLinkScanner.CursorToCleanPos] E length(FCleanedSrc)=',length(FCleanedSrc));
+        //writeln('[TLinkScanner.CursorToCleanPos] E length(FCleanedSrc)=',length(FCleanedSrc));
         if ACleanPos<=length(FCleanedSrc) then
           Result:=0  // valid position
         else begin

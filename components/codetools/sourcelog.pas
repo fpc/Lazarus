@@ -359,7 +359,7 @@ end;
 
 procedure TSourceLog.SetSource(const NewSrc: string);
 begin
-//writeln('TSourceLog.SetSource A ',length(NewSrc),' LineCount=',fLineCount,' SrcLen=',fSrcLen);
+  //writeln('TSourceLog.SetSource A ',length(NewSrc),' LineCount=',fLineCount,' SrcLen=',fSrcLen);
   if NewSrc<>FSource then begin
     Clear;
     FSource:=NewSrc;
@@ -527,7 +527,7 @@ end;
 procedure TSourceLog.BuildLineRanges;
 var p,line:integer;
 begin
-//writeln('[TSourceLog.BuildLineRanges] A Self=',HexStr(Cardinal(Self),8),',LineCount=',FLineCount,' Len=',SourceLength);
+  //writeln('[TSourceLog.BuildLineRanges] A Self=',HexStr(Cardinal(Self),8),',LineCount=',FLineCount,' Len=',SourceLength);
   if FLineCount>=0 then exit;
   if FLineRanges<>nil then begin
     FreeMem(FLineRanges);
@@ -573,7 +573,7 @@ begin
       end;
     end;
   end;
-//writeln('[TSourceLog.BuildLineRanges] END ',FLineCount);
+  //writeln('[TSourceLog.BuildLineRanges] END ',FLineCount);
 end;
 
 procedure TSourceLog.LineColToPosition(Line, Column: integer;
@@ -663,14 +663,14 @@ begin
     inc(FChangeStep)
   else
     FChangeStep:=-$7fffffff;
-//writeln('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',HexStr(Cardinal(Self),8));
+  //writeln('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',HexStr(Cardinal(Self),8));
 end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
   fs: TFileStream;
 begin
-//writeln('TSourceLog.SaveToFile Self=',HexStr(Cardinal(Self),8));
+  //writeln('TSourceLog.SaveToFile Self=',HexStr(Cardinal(Self),8));
   Result:=true;
   try
     fs:=TFileStream.Create(Filename, fmCreate);

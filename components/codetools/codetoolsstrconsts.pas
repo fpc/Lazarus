@@ -39,16 +39,29 @@ ResourceString
   ctsForward = 'Forward';
   ctsUnparsed = 'Unparsed';
   
+  // linkscanner
+  ctsInvalidFlagValueForDirective = 'invalid flag value "%s" for directive %s';
+  ctsInvalidMode = 'invalid mode "%s"';
+  ctsAwithoutB = '%s without %s';
+  ctsIncludeFileNotFound = 'include file not found "%s"';
+  ctsErrorInDirectiveExpression = 'error in directive expression';
+  ctsIncludeCircleDetected = 'Include circle detected';
+
   // customcodetool
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
-  ctsCharExpectedButAtomFound = '%s expected, but %s found';
+  ctsStrExpectedButAtomFound = '%s expected, but %s found';
   ctsIdentExpectedButEOFFound = 'unexpected end of file (identifier expected)';
   ctsBracketOpenExpectedButAtomFound = 'bracket open expected, but %s found';
   ctsBracketCloseExpectedButAtomFound = 'bracket close expected, but %s found';
   ctsBracketNotFound = 'bracket %s not found';
   ctsNoNodeFoundAtCursor = 'no node found at cursor';
   ctsUnknownMainFilename = '(unknown mainfilename)';
+  
+  // pascal parser
+  ctsUnexpectedKeyword = 'unexpected keyword "%s"';
+  ctsNoPascalCodeFound = 'no pascal code found (first token is %s)';
+  ctsStringConstant = 'string constant';
   
   // codecompletion
   ctsPropertySpecifierAlreadyDefined = 'property specifier already defined: %s';
@@ -96,7 +109,8 @@ ResourceString
   ctsPackageDirectories = 'Package directories';
   ctsDefsForLazarusSources = 'Definitions for the Lazarus Sources';
   ctsAddsDirToSourcePath = 'adds %s to SrcPath';
-  ctsLazMainDirIncludePath = 'sets IncPath to %s';
+  ctsSetsIncPathTo = 'sets IncPath to %s';
+  ctsSetsSrcPathTo = 'sets SrcPath to %s';
   ctsNamedDirectory = '%s Directory';
   ctsAbstractWidgetPath = 'abstract widget path';
   ctsWidgetDirectory = 'Widget Directory';
@@ -105,6 +119,27 @@ ResourceString
   ctsDesignerDirectory = 'Designer Directory';
   ctsLazarusMainDirectory = 'lazarus main directory';
   ctsDebuggerDirectory = 'Debugger Directory';
+  ctsLazarusSources = 'Lazarus Sources';
+  ctsAnLCLProject = 'an LCL project';
+  ctsOtherCompilerDefines = '%s Compiler Defines';
+  ctsResetAllDefines = 'Reset all defines';
+  ctsDefineMakroName = 'Define Makro %s';
+  ctsNamedProject = '%s Project';
+  
+  // eventcodetool
+  ctsMethodTypeDefinitionNotFound = 'method type definition not found';
+  ctsOldMethodNotFound = 'old method not found: %s';
+  
+  // fileprocs
+  ctsFileDoesNotExists = 'file "%s" does not exist';
+  ctsExecuteAccessDeniedForFile = 'execute access denied for %s';
+  ctsDirComponentDoesNotExistsOrIsDanglingSymLink =
+    'a directory component in %s does not exist or is a dangling symlink';
+  ctsDirComponentIsNotDir = 'a directory component in %s is not a directory';
+  ctsInsufficientMemory = 'insufficient memory';
+  ctsFileHasCircularSymLink = '%s has a circular symbolic link';
+  ctsFileIsNotExecutable = '%s is not executable';
+
 
 implementation
 

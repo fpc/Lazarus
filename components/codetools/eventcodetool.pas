@@ -40,9 +40,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, CodeCompletionTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, SourceChanger, FindDeclarationTool;
+  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
+  CodeCompletionTool, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  CodeCache, AVL_Tree, TypInfo, SourceChanger, FindDeclarationTool;
 
 type
   TGetStringProc = procedure(const s: string) of object;
@@ -125,7 +125,7 @@ begin
   if TypeData=nil then exit;
   // transform TypeData into a ProcHead String
   ParamCount:=TypeData^.ParamCount;
-//writeln('TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount);
+  //writeln('TEventsCodeTool.MethodTypeDataToStr A ParamCount=',ParamCount);
   if ParamCount>0 then begin
     Result:=Result+'(';
     ParamString:='';
@@ -189,15 +189,15 @@ begin
   Result:=false;
   ActivateGlobalWriteLock;
   try
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] A UpperClassName=',UpperClassName);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] A UpperClassName=',UpperClassName);
+    {$ENDIF}
     BuildTree(true);
     if not InterfaceSectionFound then exit;
     ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] B ',ClassNode<>nil);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] B ',ClassNode<>nil);
+    {$ENDIF}
     Result:=GetCompatiblePublishedMethods(ClassNode,TypeData,Proc);
   finally
     DeactivateGlobalWriteLock;
@@ -211,17 +211,17 @@ var
   CompListSize: integer;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] C ',ClassNode<>nil);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.GetCompatiblePublishedMethods] C ',ClassNode<>nil);
+  {$ENDIF}
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (TypeData=nil)
   or (Proc=nil) then exit;
   ActivateGlobalWriteLock;
   try
     BuildSubTreeForClass(ClassNode);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.GetCompatiblePublishedMethods]');
+    {$ENDIF}
     // 1. convert the TypeData to an expression type list
     Params:=TFindDeclarationParams.Create;
     try
@@ -295,9 +295,9 @@ begin
   SectionNode:=FindImplementationNode;
   if SectionNode=nil then exit;
   ANode:=SectionNode.FirstChild;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.FindMethodNodeInImplementation] A MethodName=',UpperClassName,'.',UpperMethodName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.FindMethodNodeInImplementation] A MethodName=',UpperClassName,'.',UpperMethodName);
+  {$ENDIF}
   while (ANode<>nil) do begin
     if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)
     and CompareSrcIdentifiers(ANode.FirstChild.StartPos,@UpperClassName[1])
@@ -309,9 +309,9 @@ writeln('[TEventsCodeTool.FindMethodNodeInImplementation] A MethodName=',UpperCl
         ReadNextAtom;
         if CompareSrcIdentifiers(CurPos.StartPos,@UpperMethodName[1]) then
         begin
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.FindMethodNodeInImplementation] B  body found');
-{$ENDIF}
+          {$IFDEF CTDEBUG}
+          writeln('[TEventsCodeTool.FindMethodNodeInImplementation] B  body found');
+          {$ENDIF}
           Result:=ANode;
           exit;
         end;
@@ -341,12 +341,12 @@ begin
       // find proc node
       if Params.NewNode.Desc<>ctnTypeDefinition then begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-        Params.NewCodeTool.RaiseException('method type definition not found');
+        Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
       end;
       Params.NewNode:=FindTypeNodeOfDefinition(Params.NewNode);
       if Params.NewNode.Desc<>ctnProcedureType then begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-        Params.NewCodeTool.RaiseException('method type definition not found');
+        Params.NewCodeTool.RaiseException(ctsMethodTypeDefinitionNotFound);
       end;
       Result:=CreateFindContext(Params);
     finally
@@ -364,15 +364,15 @@ var ClassNode: TCodeTreeNode;
 begin
   ActivateGlobalWriteLock;
   try
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.PublishedMethodExists] A UpperClassName=',UpperClassName);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.PublishedMethodExists] A UpperClassName=',UpperClassName);
+    {$ENDIF}
     BuildTree(true);
     if not InterfaceSectionFound then exit;
     ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.PublishedMethodExists] B ',ClassNode<>nil);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.PublishedMethodExists] B ',ClassNode<>nil);
+    {$ENDIF}
     Result:=PublishedMethodExists(ClassNode,UpperMethodName,TypeData,
                MethodIsCompatible,MethodIsPublished,IdentIsMethod);
   finally
@@ -489,11 +489,11 @@ begin
   ANode:=FindIdentifierNodeInClass(ClassNode,@UpperOldMethodName[1]);
   if (ANode=nil) then begin
     MoveCursorToNodeStart(ClassNode);
-    RaiseException('old method not found: '+UpperOldMethodName);
+    RaiseExceptionFmt(ctsOldMethodNotFound,[UpperOldMethodName]);
   end;
   if (ANode.Desc<>ctnProcedure) then begin
     MoveCursorToNodeStart(ANode);
-    RaiseException('old method not found: '+UpperOldMethodName);
+    RaiseExceptionFmt(ctsOldMethodNotFound,[UpperOldMethodName]);
   end;
   ProcHeadNode:=ANode.FirstChild;
   if ProcHeadNode=nil then exit;
@@ -539,28 +539,28 @@ begin
   Result:=false;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
   or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'"');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'"');
+  {$ENDIF}
   // search typeinfo in source
   FindContext:=FindMethodTypeInfo(ATypeInfo);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] B');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreatePublishedMethod] B');
+  {$ENDIF}
   // initialize class for code completion
   CodeCompleteClassNode:=ClassNode;
   CodeCompleteSrcChgCache:=SourceChangeCache;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] C');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreatePublishedMethod] C');
+  {$ENDIF}
   // check if method definition already exists in class
   CleanMethodDefinition:=UpperCaseStr(AMethodName)
          +FindContext.Tool.ExtractProcHead(FindContext.Node,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
   if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
+    {$ENDIF}
     // insert method definition into class
     MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
                  FindContext.Node,
@@ -569,28 +569,28 @@ writeln('[TEventsCodeTool.CreatePublishedMethod] insert method definition to cla
                  phpWithDefaultValues, phpWithResultType]));
     MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
                        AddClassAndNameToProc(MethodDefinition, '', AMethodName);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] MethodDefinition="',MethodDefinition,'"');
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CreatePublishedMethod] MethodDefinition="',MethodDefinition,'"');
+    {$ENDIF}
     AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition, AMethodName,
                       '', ncpPublishedProcs);
   end;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] invoke class completion');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreatePublishedMethod] invoke class completion');
+  {$ENDIF}
   if not InsertAllNewClassParts then
-    RaiseException('error during inserting new class parts');
+    RaiseException(ctsErrorDuringInsertingNewClassParts);
 
   // insert all missing proc bodies
   if not CreateMissingProcBodies then
-    RaiseException('error during creation of new proc bodies');
+    RaiseException(ctsErrorDuringCreationOfNewProcBodies);
 
   // apply the changes
   if not SourceChangeCache.Apply then
-    RaiseException('unable to apply changes');
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreatePublishedMethod] END');
-{$ENDIF}
+    RaiseException(ctsUnableToApplyChanges);
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreatePublishedMethod] END');
+  {$ENDIF}
   Result:=true;
 end;
 
@@ -601,9 +601,9 @@ var i, ParamCount, Len, Offset: integer;
   OldInput: TFindDeclarationInput;
   CurExprType: TExpressionType;
 begin
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
+  {$ENDIF}
   Result:=TExprTypeList.Create;
   if TypeData=nil then exit;
   ParamCount:=TypeData^.ParamCount;
@@ -632,12 +632,12 @@ writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] START');
         Move(TypeData^.ParamList[Offset],CurTypeIdentifier[1],Len);
       inc(Offset,Len);
       
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
-' i=',i,'/',ParamCount,
-' Ident=',CurTypeIdentifier
-);
-{$ENDIF}
+      {$IFDEF CTDEBUG}
+      writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
+      ' i=',i,'/',ParamCount,
+      ' Ident=',CurTypeIdentifier
+      );
+      {$ENDIF}
 
       // convert ParamType to TExpressionType
       Params.Save(OldInput);
@@ -648,13 +648,13 @@ writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
                      -[fdfSearchInAncestors,
                        fdfClassPublic,fdfClassProtected,fdfClassPrivate];
       CurExprType:=GetExpressionTypeOfTypeIdentifier(Params);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
-' i=',i,'/',ParamCount,
-' Ident=',CurTypeIdentifier,
-' CurExprType=',ExprTypeToString(CurExprType)
-);
-{$ENDIF}
+      {$IFDEF CTDEBUG}
+      writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
+      ' i=',i,'/',ParamCount,
+      ' Ident=',CurTypeIdentifier,
+      ' CurExprType=',ExprTypeToString(CurExprType)
+      );
+      {$ENDIF}
 
       Result.AddFirst(CurExprType);
       Params.Load(OldInput);
@@ -692,12 +692,12 @@ var
   FirstParameterNode: TCodeTreeNode;
 begin
   if (FoundContext.Node.Desc=ctnProcedure) then begin
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.CollectPublishedMethods] ',
-' Node=',FoundContext.Node.DescAsString,
-' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
-' Tool=',FoundContext.Tool.MainFilename);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TEventsCodeTool.CollectPublishedMethods] ',
+    ' Node=',FoundContext.Node.DescAsString,
+    ' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
+    ' Tool=',FoundContext.Tool.MainFilename);
+    {$ENDIF}
     FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(
       FoundContext.Node);
     ParamCompatibility:=FoundContext.Tool.IsParamListCompatible(
@@ -705,9 +705,9 @@ writeln('[TEventsCodeTool.CollectPublishedMethods] ',
       SearchedExprList,false,
       Params,SearchedCompatibilityList);
     if ParamCompatibility=tcExact then begin
-{$IFDEF CTDEBUG}
-writeln('ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('ParamCompatibility=',TypeCompatibilityNames[ParamCompatibility]);
+    {$ENDIF}
 
       // ToDo: ppu, ppw, dcu
 

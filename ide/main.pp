@@ -608,7 +608,7 @@ end;
 
 destructor TMainIDE.Destroy;
 begin
-writeln('[TMainIDE.Destroy] A');
+  writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   DebugBoss.EndDebugging;
 
@@ -6219,6 +6219,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.265  2002/03/29 14:32:46  lazarus
+  MG: further internationalization
+
   Revision 1.264  2002/03/28 16:39:04  lazarus
   MG: added find replace history
 

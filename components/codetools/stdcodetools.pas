@@ -1000,9 +1000,6 @@ var Dummy, CleanCursorPos: integer;
 begin
   Result:=false;
   // scan code
-{$IFDEF CTDEBUG}
-writeln('TStandardCodeTool.FindBlockCounterPart A CursorPos=',CursorPos.X,',',CursorPos.Y);
-{$ENDIF}
   if UpdateNeeded(false) then BeginParsing(true,false);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
@@ -1026,9 +1023,6 @@ writeln('TStandardCodeTool.FindBlockCounterPart A CursorPos=',CursorPos.X,',',Cu
     while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
       inc(CurPos.EndPos);
     if CurPos.EndPos=CurPos.StartPos then exit;
-{$IFDEF CTDEBUG}
-writeln('TStandardCodeTool.FindBlockCounterPart C  Word=',GetAtom);
-{$ENDIF}
     // read till block keyword counterpart
     if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
     or UpAtomIs('RECORD') or UpAtomIs('TRY') or UpAtomIs('REPEAT') then begin
@@ -1054,9 +1048,6 @@ var Dummy, CleanCursorPos: integer;
 begin
   Result:=false;
   // scan code
-{$IFDEF CTDEBUG}
-writeln('TStandardCodeTool.FindBlockStart A CursorPos=',CursorPos.X,',',CursorPos.Y);
-{$ENDIF}
   if UpdateNeeded(false) then BeginParsing(true,false);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
@@ -1142,9 +1133,6 @@ var Dummy, CleanCursorPos: integer;
 begin
   Result:=false;
   // scan code
-{$IFDEF CTDEBUG}
-writeln('TStandardCodeTool.GuessUnclosedBlock A CursorPos=',CursorPos.X,',',CursorPos.Y);
-{$ENDIF}
   if UpdateNeeded(false) then BeginParsing(true,false);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);

@@ -342,12 +342,12 @@ var ANode: TAVLTreeNode;
   NewEntry: TSourceChangeCacheEntry;
   p: pointer;
 begin
-{$IFDEF CTDEBUG}
-writeln('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
-' AfterGap=',ord(AfterGap),' FromPos=',FromPos,' ToPos=',ToPos,
-' Text="',Text,'"');
-if FromCode<>nil then writeln('FromCode=',FromCode.Filename,' FromDirectPos=',FromDirectPos);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
+  ' AfterGap=',ord(AfterGap),' FromPos=',FromPos,' ToPos=',ToPos,
+  ' Text="',Text,'"');
+  if FromCode<>nil then writeln('FromCode=',FromCode.Filename,' FromDirectPos=',FromDirectPos);
+  {$ENDIF}
   Result:=false;
   if (MainScanner=nil) or (FromPos>ToPos) or (FromPos<1)
   or (ToPos>MainScanner.CleanedLen+1) then
@@ -374,9 +374,9 @@ if FromCode<>nil then writeln('FromCode=',FromCode.Filename,' FromDirectPos=',Fr
     FEntries.MoveDataRightMost(ANode);
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
-{$IFDEF CTDEBUG}
-writeln('TSourceChangeCache.ReplaceEx SUCCESS');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TSourceChangeCache.ReplaceEx SUCCESS');
+  {$ENDIF}
 end;
 
 function TSourceChangeCache.Replace(FrontGap, AfterGap: TGapTyp;
@@ -422,9 +422,9 @@ var CurNode, PrecNode: TAVLTreeNode;
   BetweenGap: TGapTyp;
   Abort: boolean;
 begin
-{$IFDEF CTDEBUG}
-writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
+  {$ENDIF}
   Result:=false;
   if MainScanner=nil then exit;
   if FUpdateLock>0 then begin
@@ -446,10 +446,10 @@ writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
     CurNode:=FEntries.FindHighest;
     while CurNode<>nil do begin
       FirstEntry:=TSourceChangeCacheEntry(CurNode.Data);
-{$IFDEF CTDEBUG}
-writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
-' Text="',FirstEntry.Text,'"');
-{$ENDIF}
+      {$IFDEF CTDEBUG}
+      writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
+      ' Text="',FirstEntry.Text,'"');
+      {$ENDIF}
       InsertText:=FirstEntry.Text;
       // add after gap
       case FirstEntry.AfterGap of
@@ -602,19 +602,19 @@ end;
 
 procedure TSourceChangeCache.DeleteOldText(CleanFromPos,CleanToPos: integer);
 begin
-{$IFDEF CTDEBUG}
-writeln('[TSourceChangeCache.DeleteOldText] Pos=',CleanFromPos,'-',CleanToPos);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TSourceChangeCache.DeleteOldText] Pos=',CleanFromPos,'-',CleanToPos);
+  {$ENDIF}
   MainScanner.DeleteRange(CleanFromPos,CleanToPos);
 end;
 
 procedure TSourceChangeCache.InsertNewText(ACode: TCodeBuffer;
   DirectPos: integer; const InsertText: string);
 begin
-{$IFDEF CTDEBUG}
-writeln('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
-' Pos=',DirectPos,' Text="',InsertText,'"');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
+  ' Pos=',DirectPos,' Text="',InsertText,'"');
+  {$ENDIF}
   ACode.Insert(DirectPos,InsertText);
 end;
 
@@ -663,7 +663,7 @@ var ANode: TAVLTreeNode;
   AnEntry: TSourceChangeCacheEntry;
 begin
   if not FBuffersToModifyNeedsUpdate then exit;
-//writeln('[TSourceChangeCache.UpdateBuffersToModify]');
+  //writeln('[TSourceChangeCache.UpdateBuffersToModify]');
   FBuffersToModify.Clear;
   ANode:=FEntries.FindLowest;
   while ANode<>nil do begin
@@ -701,7 +701,7 @@ var
   RestLineLen, LastLineEndInAtom: integer;
 begin
   if NewAtom='' then exit;
-//writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
+  //writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');
   if IsIdentStartChar[NewAtom[1]] then begin
     if WordIsKeyWord.DoItCaseInsensitive(NewAtom) then
       NewAtom:=BeautifyWord(NewAtom,KeyWordPolicy)
@@ -713,7 +713,7 @@ begin
   do dec(LastLineEndInAtom);
   if (LastLineEndInAtom<1) and (CurLineLen+length(NewAtom)>LineLength)
   and (LastSplitPos>1) then begin
-//writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
+    //writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
     RestLineLen:=length(s)-LastSplitPos+1;
     s:=copy(s,1,LastSplitPos-1)+LineEnd
        +GetIndentStr(CurIndent+Indent+GetLineIndent(s,LastSrcLineStart))
@@ -872,17 +872,17 @@ begin
     AddAtom(Result,LineEnd+LineEnd+GetIndentStr(IndentSize));
     AddAtom(Result,'end;');
   end;
-{$IFDEF CTDEBUG}
-writeln('[TBeautifyCodeOptions.BeautifyProc] Result="',Result,'"');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TBeautifyCodeOptions.BeautifyProc] Result="',Result,'"');
+  {$ENDIF}
 end;
 
 function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
   IndentSize: integer): string;
 var CurAtom: string;
 begin
-//writeln('**********************************************************');
-//writeln('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
+  //writeln('**********************************************************');
+  //writeln('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
   Src:=AStatement;
   UpperSrc:=UpperCaseStr(Src);
   SrcLen:=length(Src);
@@ -910,15 +910,15 @@ begin
     if (not (CurAtomType in DoNotSplitLineInFront))
     and (not (LastAtomType in DoNotSplitLineAfter)) then
       LastSplitPos:=length(Result)+1;
-{writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
-'" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
-'  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
-' ..."',copy(Result,length(Result)-10,10),'"');}
+    {writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
+    '" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
+    '  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
+    ' ..."',copy(Result,length(Result)-10,10),'"');}
     AddAtom(Result,CurAtom);
     LastAtomType:=CurAtomType;
   end;
-//writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
-//writeln('**********************************************************');
+  //writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
+  //writeln('**********************************************************');
 end;
 
 function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,
