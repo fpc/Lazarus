@@ -29,11 +29,32 @@
 
 {------------------------------------------------------------------------------
   TWinControl AdjustSize
+  
+  Calls DoAutoSize smart.
+  During loading and handle creation the calls are delayed.
+  
+  This method do the same as TWinControl.DoAutoSize at the beginning.
+  But since DoAutoSize is commonly overriden by existing Delphi components,
+  they do not all tests, which can result in too much overhead. To reduce this
+  the LCL calls AdjustSize instead.
 ------------------------------------------------------------------------------}
 procedure TWinControl.AdjustSize;
 begin
-  inherited AdjustSize;
-  // Unneeded: RequestAlign;
+  If not AutoSizeCanStart then exit;
+  if AutoSizeDelayed then begin
+    Include(FWinControlFlags,wcfAutoSizeNeeded);
+    exit;
+  end;
+  DoAutoSize;
+end;
+
+{------------------------------------------------------------------------------
+  function TWinControl.AutoSizeDelayed: boolean;
+------------------------------------------------------------------------------}
+function TWinControl.AutoSizeDelayed: boolean;
+begin
+  Result:=(wcfCreatingChildHandles in FWinControlFlags)
+          or (inherited AutoSizeDelayed);
 end;
 
 {------------------------------------------------------------------------------
@@ -571,66 +592,47 @@ end;
 Procedure TWinControl.DoAutoSize;
 var
   I : Integer;
-  NewBounds : TRect;
-  NewClientWidth: Integer;
-  NewClientHeight: Integer;
   AControl: TControl;
   PreferredWidth: LongInt;
   PreferredHeight: LongInt;
+  ChildBounds: TRect;
 begin
   //debugln('TWinControl.DoAutoSize ',DbgSName(Self));
-  If (not AutoSize) or AutoSizing or (csDestroying in ComponentState) then exit;
-  if csLoading in ComponentState then begin
+  If not AutoSizeCanStart then exit;
+  if AutoSizeDelayed then begin
     Include(FWinControlFlags,wcfAutoSizeNeeded);
     exit;
   end;
 
   AutoSizing := True;
   try
+    // autosize control to preferred size
+    GetPreferredSize(PreferredWidth,PreferredHeight,false);
+
+    // move childs tight to left and top
     If ControlCount > 0 then begin
-      // calculate preferred client Size
-      // TODO: move this to GetPreferredSize
-      NewBounds := Rect(High(Integer),High(Integer),0,0);
-      For I := 0 to ControlCount - 1 do begin
-        AControl:=Controls[I];
-        If AControl.Visible then begin
-        
-          With NewBounds do begin
-            Left := Min(AControl.Left, Left);
-            Top := Min(AControl.Top, Top);
-            Right := Max(AControl.Left + AControl.Width, Right);
-            Bottom := Max(AControl.Top + AControl.Height, Bottom);
-          end;
-        end;
-      end;
-      For I := 0 to ControlCount - 1 do begin
-        AControl:=Controls[I];
-        If AControl <> nil then begin
+      GetChildBounds(ChildBounds,true);
+      if (ChildBounds.Left<>0) or (ChildBounds.Top<>0) then begin
+        For I := 0 to ControlCount - 1 do begin
+          AControl:=Controls[I];
           If AControl.Visible then begin
-            AControl.Left := AControl.Left - NewBounds.Left;
-            AControl.Top := AControl.Top - NewBounds.Top;
+            AControl.SetBoundsKeepBase(AControl.Left - ChildBounds.Left,
+                                       AControl.Top - ChildBounds.Top,
+                                       AControl.Width,AControl.Height,true);
           end;
         end;
       end;
-      NewClientWidth := NewBounds.Right - NewBounds.Left;
-      NewClientHeight := NewBounds.Bottom - NewBounds.Top;
-      
-      // set new client size
-      SetClientSize(Point(NewClientWidth, NewClientHeight));
-    end else begin
-      // autosize control to preferred size
-      GetPreferredSize(PreferredWidth,PreferredHeight);
-      if PreferredWidth<=0 then PreferredWidth:=Width;
-      if PreferredHeight<=0 then PreferredHeight:=Height;
-      PreferredWidth:=Constraints.MinMaxWidth(PreferredWidth);
-      PreferredHeight:=Constraints.MinMaxWidth(PreferredHeight);
-      //debugln('DoAutoSize A ',DbgSName(Self),' Cur=',dbgs(Width),'x',dbgs(Height),' Prefer=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight),' WidgetClass=',WidgetSetClass.ClassName);
-      if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
-        //debugln('DoAutoSize Resize ',DbgSName(Self),' W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight));
-        {$IFDEF EnablePreferredSize}
-        SetBoundsKeepBase(Left,Top,PreferredWidth,PreferredHeight,true);
-        {$ENDIF}
-      end;
+    end;
+
+    // set new size
+    {$IFDEF VerboseAutoSize}
+    debugln('DoAutoSize A ',DbgSName(Self),' Cur=',dbgs(Width),'x',dbgs(Height),' Prefer=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight),' WidgetClass=',WidgetSetClass.ClassName);
+    {$ENDIF}
+    if (PreferredWidth<>Width) or (PreferredHeight<>Height) then begin
+      //debugln('DoAutoSize Resize ',DbgSName(Self),' W=',dbgs(PreferredWidth),' H=',dbgs(PreferredHeight));
+      {$IFDEF EnablePreferredSize}
+      SetBoundsKeepBase(Left,Top,PreferredWidth,PreferredHeight,true);
+      {$ENDIF}
     end;
   finally
     AutoSizing := False;
@@ -1893,8 +1895,6 @@ end;
 Procedure TWinControl.WndProc(Var Message: TLMessage);
 Var
   Form: TCustomForm;
-//  KeyState: TKeyboardState;
-//  WheelMsg : TCMMouseWheel;
 Begin
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
@@ -2073,15 +2073,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TWinControl.MainWndProc
-  Params:  Message:
-  Returns: Nothing
+  Procedure TWinControl.MainWndProc(Var Message : TLMessage);
 
-  Description of the procedure for the class.
+  The message handler of this wincontrol.
+  Only needed by controls, which needs features not yet supported by the LCL.
  ------------------------------------------------------------------------------}
-Procedure TWinControl.MainWndProc(Var Message : TLMessage);
+Procedure TWinControl.MainWndProc(Var Msg: TLMessage);
 Begin
-  Assert(False, Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
+  Assert(False, Format('Trace:[TWinControl.MainWndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Msg.Msg]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2805,8 +2804,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TWinControl.Create(TheOwner : TComponent);
 begin
-  FCreatingHandle := False;
-  // do not set borderstyle, as tcustomform needs to set it before calling 
+  // do not set borderstyle, as tcustomform needs to set it before calling
   // inherited, to have it set before handle is created via streaming
   // use property that bsNone is zero
   //FBorderStyle := bsNone;
@@ -3381,7 +3379,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Creates the handle ( = object).
+  Creates the handle ( = object) if not already done.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CreateHandle;
 begin
@@ -3412,50 +3410,55 @@ begin
   //DebugLn('[TWinControl.CreateWnd] START ',Name,':',Classname);
   if (csDestroying in ComponentState) then exit;
 
-  if FCreatingHandle
-  then begin
-    DebugLn('[WARNING] Recursive call to CreateWnd for ', ClassName, ' (', Name, ')');
+  if wcfCreatingChildHandles in FWinControlFlags then begin
+    DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self));
     Exit;
   end;
 
-  FCreatingHandle := True;
   try
+    Include(FWinControlFlags,wcfCreatingChildHandles);
+    Include(FWinControlFlags,wcfCreatingHandle);
+    try
+      CreateParams(Params);
+      with Params do begin
+        if (WndParent = 0) and (Style and WS_CHILD <> 0) then
+          RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
+        Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
+      end;
 
-    CreateParams(Params);
-    with Params do begin
-      if (WndParent = 0) and (Style and WS_CHILD <> 0) then
-        RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
-      Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
+      FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
+      if not HandleAllocated then
+        RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
+      Constraints.UpdateInterfaceConstraints;
+      InvalidatePreferredSize;
+      FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
+    finally
+      Exclude(FWinControlFlags,wcfCreatingHandle);
     end;
 
-    FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
-    if not HandleAllocated then
-      RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
-    Constraints.UpdateInterfaceConstraints;
-    InvalidatePreferredSize;
-    FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
+    //WriteClientRect('A');
+    if Parent <> nil then AddControl;
+
+    //WriteClientRect('B');
+    InitializeWnd;
+
+    //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+    //WriteClientRect('C');
+
+    if FWinControls <> nil then begin
+      for n := 0 to FWinControls.Count - 1 do
+        with TWinControl(FWinControls.Items[n]) do
+          if Visible then HandleNeeded;
+    end;
+
+    ChildHandlesCreated;
   finally
-    FCreatingHandle := False;
+    Exclude(FWinControlFlags,wcfCreatingChildHandles);
   end;
 
-  //WriteClientRect('A');
-  if Parent <> nil then AddControl;
-
-  //WriteClientRect('B');
-  InitializeWnd;
-
-  //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-  //WriteClientRect('C');
-
-  if FWinControls <> nil then begin
-    for n := 0 to FWinControls.Count - 1 do
-      with TWinControl(FWinControls.Items[n]) do
-        if Visible then HandleNeeded;
-  end;
-
-  // size this
+  // size this control
   {$IFDEF EnablePreferredSize}
-  DoAutoSize;
+  AdjustSize;
   {$ENDIF}
   // realign childs
   ReAlign;
@@ -3538,16 +3541,38 @@ begin
   Resize;
 end;
 
-procedure TWinControl.ParentFormInitializeWnd;
+{------------------------------------------------------------------------------
+  procedure TWinControl.ParentFormHandleInitialized;
+
+  Called after all childs handles of the ParentForm are created.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.ParentFormHandleInitialized;
 var
   i: Integer;
 begin
+  inherited ParentFormHandleInitialized;
   if FWinControls <> nil then begin
     for i := 0 to FWinControls.Count - 1 do
-      TWinControl(FWinControls.Items[i]).ParentFormInitializeWnd;
+      TWinControl(FWinControls.Items[i]).ParentFormHandleInitialized;
   end;
+  if wcfAutoSizeNeeded in FWinControlFlags then AdjustSize;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TWinControl.ChildHandlesCreated;
+  
+  Called after all childs handles are created.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.ChildHandlesCreated;
+begin
+
+end;
+
+{------------------------------------------------------------------------------
+  function TWinControl.ParentHandlesAllocated: boolean;
+  
+  Checks if all Handles of all Parents are created.
+ ------------------------------------------------------------------------------}
 function TWinControl.ParentHandlesAllocated: boolean;
 var
   CurControl: TWinControl;
@@ -3585,7 +3610,7 @@ begin
 
   // autosize this control
   if wcfAutoSizeNeeded in FWinControlFlags then
-    DoAutoSize;
+    AdjustSize;
   RealizeBounds;
 
   // align the childs
@@ -3844,16 +3869,93 @@ end;
   parent clientrect), then the interface is asked for the preferred size.
   For example the preferred size of a TButton is the size, where the label fits
   exactly. This depends heavily on the current theme and widgetset.
+  
+  This value is independent of constraints and siblings, only the inner parts
+  are relevant.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer);
+var
+  ChildBounds: TRect;
+  NewClientWidth: Integer;
+  NewClientHeight: Integer;
+  OldClientRect: TRect;
 begin
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
-  // TODO: calculate childs total preferred size (i.e. move code form DoAutoSize)
-  //debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),' HandleAllocated=',dbgs(HandleAllocated));
   if HandleAllocated then
     TWSWinControlClass(WidgetSetClass).GetPreferredSize(Self,
                                                PreferredWidth, PreferredHeight);
+  if ControlCount>0 then begin
+    GetChildBounds(ChildBounds,true);
+    NewClientWidth := ChildBounds.Right - ChildBounds.Left;
+    NewClientHeight := ChildBounds.Bottom - ChildBounds.Top;
+    OldClientRect := GetClientRect;
+    {$IFDEF VerboseAutoSize}
+    debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
+      ' HandleAllocated=',dbgs(HandleAllocated)+' ChildBounds='+dbgs(ChildBounds),
+      ' Cur='+dbgs(Width)+'x'+dbgs(Height)+
+      ' Client='+dbgs(OldClientRect.Right)+'x'+dbgs(OldClientRect.Bottom));
+    {$ENDIF}
+    PreferredWidth:=
+                   Max(PreferredWidth,Width-OldClientRect.Right+NewClientWidth);
+    PreferredHeight:=
+               Max(PreferredHeight,Height-OldClientRect.Bottom+NewClientHeight);
+  end;
+  {$IFDEF VerboseAutoSize}
+  debugln('TWinControl.CalculatePreferredSize ',DbgSName(Self),
+    ' HandleAllocated=',dbgs(HandleAllocated),
+    ' Preferred=',dbgs(PreferredWidth),'x',dbgs(PreferredHeight));
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TWinControl.GetChildBounds(var ChildBounds: TRect;
+    WithBorderSpace: boolean);
+    
+  Calculates the bounds of all visible childs in client coordinates.
+ ------------------------------------------------------------------------------}
+procedure TWinControl.GetChildBounds(var ChildBounds: TRect;
+  WithBorderSpace: boolean);
+var
+  SpaceAround: TRect;
+  I: Integer;
+  AControl: TControl;
+  ChildWidth,ChildHeight: integer;
+begin
+  ChildBounds := Rect(High(Integer),High(Integer),0,0);
+  SpaceAround:=Rect(0,0,0,0);
+  For I := 0 to ControlCount - 1 do begin
+    AControl:=Controls[I];
+    If AControl.Visible then begin
+      AControl.GetPreferredSize(ChildWidth,ChildHeight,false);
+      // TODO: aligned controls
+      if WithBorderSpace then begin
+        AControl.BorderSpacing.GetSpaceAround(SpaceAround);
+        if SpaceAround.Left<ChildSizing.LeftRightSpacing then
+          SpaceAround.Left:=ChildSizing.LeftRightSpacing;
+        if SpaceAround.Right<ChildSizing.LeftRightSpacing then
+          SpaceAround.Right:=ChildSizing.LeftRightSpacing;
+        if SpaceAround.Top<ChildSizing.TopBottomSpacing then
+          SpaceAround.Top:=ChildSizing.TopBottomSpacing;
+        if SpaceAround.Bottom<ChildSizing.TopBottomSpacing then
+          SpaceAround.Bottom:=ChildSizing.TopBottomSpacing;
+      end;
+      With ChildBounds do begin
+        Left := Min(AControl.Left-SpaceAround.Left, Left);
+        Top := Min(AControl.Top-SpaceAround.Top, Top);
+        Right := Max(AControl.Left+ChildWidth+SpaceAround.Right,Right);
+        Bottom := Max(AControl.Top+ChildHeight+SpaceAround.Bottom,Bottom);
+      end;
+    end;
+  end;
+  if ChildBounds.Left>ChildBounds.Right then begin
+    ChildBounds.Left:=0;
+    ChildBounds.Right:=0;
+  end;
+  if ChildBounds.Top>ChildBounds.Bottom then begin
+    ChildBounds.Top:=0;
+    ChildBounds.Bottom:=0;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4014,6 +4116,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.287  2004/11/05 22:08:53  mattias
+  implemented auto sizing: child to parent sizing
+
   Revision 1.286  2004/11/03 14:18:36  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

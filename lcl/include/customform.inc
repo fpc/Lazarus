@@ -1553,11 +1553,16 @@ begin
     Visible:=true;
 end;
 
-procedure TCustomForm.InitializeWnd;
+{------------------------------------------------------------------------------
+  procedure TCustomForm.BeginFormUpdate;
+  
+  Called after all childs handles are created.
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.ChildHandlesCreated;
 begin
-  inherited InitializeWnd;
+  inherited ChildHandlesCreated;
   if Parent<>nil then
-    ParentFormInitializeWnd;
+    ParentFormHandleInitialized;
 end;
 
 {------------------------------------------------------------------------------
@@ -1819,6 +1824,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.162  2004/11/05 22:08:53  mattias
+  implemented auto sizing: child to parent sizing
+
   Revision 1.161  2004/10/25 14:35:13  micha
   fix bordericons initialization
   fix setting tab page caption (win32)

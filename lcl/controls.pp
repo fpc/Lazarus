@@ -843,8 +843,10 @@ type
   protected
     // sizing/aligning
     AutoSizing: Boolean;
-    procedure AdjustSize; dynamic;
-    procedure DoAutoSize; Virtual;
+    procedure AdjustSize; virtual;
+    procedure DoAutoSize; virtual;
+    function AutoSizeCanStart: boolean; virtual;
+    function AutoSizeDelayed: boolean; virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(const Value: Boolean); virtual;
@@ -963,6 +965,7 @@ type
     procedure SetParent(NewParent: TWinControl); virtual;
     Procedure SetParentComponent(NewParentComponent: TComponent); override;
     procedure WndProc(var TheMessage: TLMessage); virtual;
+    procedure ParentFormHandleInitialized; virtual; // called by ChildHandlesCreated of parent form
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanTab: Boolean; virtual;
@@ -1056,7 +1059,8 @@ type
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
                                 Lock: boolean); virtual;
-    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer); virtual;
+    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
+                               Raw: boolean); virtual;
     procedure InvalidatePreferredSize; virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
@@ -1297,7 +1301,9 @@ type
     wcfReAlignNeeded,
     wcfAligningControls,
     wcfEraseBackground,
-    wcfAutoSizeNeeded
+    wcfAutoSizeNeeded,
+    wcfCreatingHandle, // Set while constructing the handle of this control
+    wcfCreatingChildHandles // Set while constructing the handles of the childs
     );
   TWinControlFlags = set of TWinControlFlag;
 
@@ -1343,8 +1349,6 @@ type
     FTabList: TList;
     FUseDockManager: Boolean;
     FWinControls: TList;
-    FCreatingHandle: Boolean; // Set when constructing the handle
-                              // Only used for checking
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
@@ -1368,6 +1372,7 @@ type
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustSize; override;
+    function AutoSizeDelayed: boolean; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
     procedure AlignControls(AControl: TControl;
                             var RemainingClientRect: TRect); virtual;
@@ -1388,7 +1393,9 @@ type
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; Override;
-    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+                                     PreferredHeight: integer); override;
+    procedure GetChildBounds(var ChildBounds: TRect; WithBorderSpace: boolean); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
@@ -1473,10 +1480,11 @@ type
     procedure DoFlipChildren; dynamic;
     procedure FixupTabList;
     procedure FontChanged(Sender: TObject); override;
-    procedure InitializeWnd; virtual; //gets called after the window is created
+    procedure InitializeWnd; virtual; // gets called after the Handle is created and before the child handles are created
     procedure Loaded; override;
-    procedure MainWndProc(var Message: TLMessage);
-    procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
+    procedure MainWndProc(var Msg: TLMessage);
+    procedure ParentFormHandleInitialized; override;
+    procedure ChildHandlesCreated; virtual;// called after childs handles are created
     procedure ReAlign; // realign all childs
     procedure RealSetText(const AValue: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
@@ -2488,6 +2496,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.256  2004/11/05 22:08:53  mattias
+  implemented auto sizing: child to parent sizing
+
   Revision 1.255  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

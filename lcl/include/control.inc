@@ -27,14 +27,14 @@
 { $DEFINE CHECK_POSITION}
 
 {------------------------------------------------------------------------------
-       TControl.AdjustSize
+  TControl.AdjustSize
 
+  Calls DoAutoSize. This method tries to reduce this calls during loading and
+  handle creation.
 ------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
-  if not (csLoading in ComponentState) then begin
-    SetBoundsKeepBase(Left,Top,Width,Height,Parent<>nil);
-  end;
+  if not (csLoading in ComponentState) then DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -350,7 +350,7 @@ begin
     try
       // resize parents client area
       If Parent <> nil then
-        Parent.DoAutoSize;
+        Parent.AdjustSize;
       if UpdatePosSizeChanged then exit;
       // notify before autosizing
       BoundsChanged;
@@ -1560,6 +1560,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TControl.ParentFormHandleInitialized;
+  
+  called by ChildHandlesCreated of parent form
+------------------------------------------------------------------------------}
+procedure TControl.ParentFormHandleInitialized;
+begin
+
+end;
+
+{------------------------------------------------------------------------------
        TControl Invalidate
 ------------------------------------------------------------------------------}
 procedure TControl.Invalidate;
@@ -1567,9 +1577,9 @@ Begin
   InvalidateControl(Visible, csOpaque in ControlStyle);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl DoMouseDown  "Event Handler"                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl DoMouseDown  "Event Handler"
+------------------------------------------------------------------------------}
 procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
   Shift: TShiftState);
 begin
@@ -1580,9 +1590,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl DoMouseUp  "Event Handler"                                     }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl DoMouseUp  "Event Handler"
+------------------------------------------------------------------------------}
 procedure TControl.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
 begin
   if not (csNoStdEvents in ControlStyle)
@@ -1923,6 +1933,39 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.AutoSizeCanStart: boolean;
+  
+  Returns true if DoAutoSize can start.
+  It returns false if
+  - AutoSize=false
+  - or the control is currently autosizing
+  - or the control is not visible
+  - or the control is destroying
+------------------------------------------------------------------------------}
+function TControl.AutoSizeCanStart: boolean;
+begin
+  Result:=false;
+  if not AutoSize then exit;
+  if AutoSizing then exit;
+  if (csDestroying in ComponentState) then exit;
+  if (not (Visible or ((csDesigning in ComponentState)
+                       and (csNoDesignVisible in ControlStyle)))) then exit;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.AutoSizeDelayed: boolean;
+  
+  Returns true, if the DoAutoSize should skip now, because not all parameters
+  needed to calculate the AutoSize bounds are loaded or initialized.
+------------------------------------------------------------------------------}
+function TControl.AutoSizeDelayed: boolean;
+begin
+  Result:=(csLoading in ComponentState)
+          or ((Parent<>nil) and Parent.AutoSizeDelayed);
+end;
+
+{------------------------------------------------------------------------------
        TControl SetBoundsRect
 ------------------------------------------------------------------------------}
 Procedure TControl.SetBoundsRect(const ARect : TRect);
@@ -2215,8 +2258,8 @@ begin
   or ([csLoading,csDestroying]*ComponentState<>[])
   then exit;
 
-  if (CtrlIsVisible or (csDesigning in ComponentState)
-  and not (csNoDesignVisible in ControlStyle))
+  if (CtrlIsVisible or ((csDesigning in ComponentState)
+  and not (csNoDesignVisible in ControlStyle)))
   then begin
     Rect := BoundsRect;
     InvalidateRect(Parent.Handle, @Rect, not (CtrlIsOpaque or
@@ -3252,17 +3295,19 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TControl.GetPreferredSize(
-    var PreferredWidth, PreferredHeight: integer);
+    var PreferredWidth, PreferredHeight: integer; Raw: boolean);
     
   Returns the default/preferred width and height for a control, which is used
   by the LCL autosizing algorithms as default size. Only positive values are
   valid. Negative or 0 are treated as undefined and the LCL uses other sizes
   instead.
+  If not Raw then then values be be adjusted by the constraints and undefined
+  values will be replaced by the current width and height.
   TWinControl overrides this and asks the interface for theme dependent values.
   See TWinControl.GetPreferredSize for more information.
  ------------------------------------------------------------------------------}
-procedure TControl.GetPreferredSize(var PreferredWidth, PreferredHeight: integer
-  );
+procedure TControl.GetPreferredSize(var PreferredWidth,
+  PreferredHeight: integer; Raw: boolean);
 begin
   if not (cfPreferredSizeValid in FControlFlags) then begin
     CalculatePreferredSize(FPreferredWidth,FPreferredHeight);
@@ -3270,6 +3315,32 @@ begin
   end;
   PreferredWidth:=FPreferredWidth;
   PreferredHeight:=FPreferredHeight;
+
+  if not Raw then begin
+    // use Width and Height for undefined preferred size
+    if PreferredWidth<=0 then PreferredWidth:=Width;
+    if PreferredHeight<=0 then PreferredHeight:=Height;
+    
+    // if this control is aligned adjust PreferredWidth and or PreferredHeight
+    if Parent<>nil then begin
+      if AnchorAlign[Align]*[akLeft,akRight]=[akLeft,akRight] then begin
+        // the control will be expanded to maximum width
+        // -> use the current width, which is or will be eventually set by the
+        //    aligning code
+        PreferredWidth:=Width;
+      end;
+      if AnchorAlign[Align]*[akTop,akBottom]=[akTop,akBottom] then begin
+        // the control will be expanded to maximum height
+        // -> use the current height, which is or will be eventually set by the
+        //    aligning code
+        PreferredHeight:=Height;
+      end;
+    end;
+    
+    // apply constraints
+    PreferredWidth:=Constraints.MinMaxWidth(PreferredWidth);
+    PreferredHeight:=Constraints.MinMaxHeight(PreferredHeight);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3348,6 +3419,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.221  2004/11/05 22:08:53  mattias
+  implemented auto sizing: child to parent sizing
+
   Revision 1.220  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

@@ -420,7 +420,7 @@ type
     procedure EndFormUpdate;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure Loaded; override;
-    procedure InitializeWnd; override;
+    procedure ChildHandlesCreated; override;
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;

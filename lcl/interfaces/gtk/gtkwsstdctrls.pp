@@ -27,13 +27,13 @@ unit GtkWSStdCtrls;
 interface
 
 uses
-  StdCtrls, SysUtils, Controls, Graphics,
+  Classes, SysUtils, Math, Controls, Graphics, StdCtrls,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, GtkInt, Classes, LCLType, GtkDef, LCLProc,
+  WSStdCtrls, WSLCLClasses, GtkInt, LCLType, GtkDef, LCLProc,
   GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 
@@ -54,6 +54,8 @@ type
   private
   protected
   public
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TGtkWSGroupBox }
@@ -958,6 +960,27 @@ begin
   //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
+{ TGtkWSCustomGroupBox }
+
+procedure TGtkWSCustomGroupBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+var
+  Widget: PGtkWidget;
+  border_width: Integer;
+begin
+  Widget:=PGtkWidget(AWinControl.Handle);
+
+  border_width:=(PGtkContainer(Widget)^.flag0 and bm_TGtkContainer_border_width)
+                 shr bp_TGtkContainer_border_width;
+  PreferredWidth := (border_width + gtk_widget_get_xthickness(Widget)) * 2
+                    +PGtkFrame(Widget)^.label_width;
+  PreferredHeight := Max(PGtkFrame(Widget)^.label_height,
+                         gtk_widget_get_ythickness(Widget))
+                     + gtk_widget_get_ythickness(Widget)
+                     + 2*border_width;
+  //debugln('TGtkWSCustomGroupBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -967,7 +990,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
   RegisterWSComponent(TScrollBar, TGtkWSScrollBar);
-//  RegisterWSComponent(TCustomGroupBox, TGtkWSCustomGroupBox);
+  RegisterWSComponent(TCustomGroupBox, TGtkWSCustomGroupBox);
 //  RegisterWSComponent(TGroupBox, TGtkWSGroupBox);
   RegisterWSComponent(TCustomComboBox, TGtkWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TGtkWSComboBox);
