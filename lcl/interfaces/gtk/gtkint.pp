@@ -219,8 +219,8 @@ type
     procedure InitializeFontDialog(FontDialog: TFontDialog;
       var SelWidget: PGtkWidget; Title: PChar);
     procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
-    procedure CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget);
+    function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+      SelWidget: PGtkWidget): string;
     procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
       SelWidget: PGtkWidget);
     procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
@@ -442,6 +442,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.222  2005/02/28 18:21:43  mattias
+  fixed gtk file dialog with empty filter  from Collin
+
   Revision 1.221  2005/02/05 09:09:52  mattias
   implemented TListView for gtk2   From Andrew Haines
 

@@ -3208,8 +3208,10 @@ begin
         Add(Dirs, AppendPathDelim(Info.Name));
     until FindNext(Info) <> 0;
   FindClose(Info);
-  // add all files
-  if FindFirst(AppendPathDelim(Dir)+Mask, faAnyFile, Info) = 0 then
+  // add required files
+  Dir := AppendPathDelim(Dir)+Mask;
+  if Mask = '' then Dir := Dir + GetAllFilesMask;
+  if FindFirst(Dir, faAnyFile, Info) = 0 then
     repeat
       if (Info.Attr and faDirectory) <> faDirectory then
         Add(Files, Info.Name);
@@ -8081,6 +8083,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.345  2005/02/28 18:21:43  mattias
+  fixed gtk file dialog with empty filter  from Collin
+
   Revision 1.344  2005/02/26 18:39:56  mattias
   fixed gtk open dialog go up
 

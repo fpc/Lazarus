@@ -4154,10 +4154,11 @@ end;
   Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
   Returns: -
 
-  Adds a Filter pulldown to a gtk file selection dialog.
+  Adds a Filter pulldown to a gtk file selection dialog. Returns the
+  inital filter mask.
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-  SelWidget: PGtkWidget);
+function TGtkWidgetSet.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+  SelWidget: PGtkWidget): string;
 var
   FilterList: TList;
   HBox, LabelWidget, FilterPullDownWidget,
@@ -4215,6 +4216,7 @@ begin
   gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
 
   // set the initial filter
+  Result := 'none'; { Don't use '' as null return as this is used for *.* }
   if FilterList.Count>0 then begin
     i:=0;
     CurMask:=0;
@@ -4226,8 +4228,7 @@ begin
       end;
       inc(i);
     end;
-    PopulateFileAndDirectoryLists(GTK_FILE_SELECTION(SelWidget),
-         PFileSelFilterEntry(FilterList[CurMask])^.Mask);
+    Result := PFileSelFilterEntry(FilterList[CurMask])^.Mask;
   end;
 end;
 
@@ -4291,6 +4292,7 @@ procedure TGtkWidgetSet.InitializeOpenDialog(OpenDialog: TOpenDialog;
 var
   FileDetailLabel, HBox, FrameWidget: PGtkWidget;
   FileSelWidget: PGtkFileSelection;
+  InitialFilter: string;
 begin
   FileSelWidget:=GTK_FILE_SELECTION(SelWidget);
 
@@ -4336,7 +4338,7 @@ begin
   CreateOpenDialogHistory(OpenDialog,SelWidget);
 
   // Filter - a frame with an option menu
-  CreateOpenDialogFilter(OpenDialog,SelWidget);
+  InitialFilter := CreateOpenDialogFilter(OpenDialog,SelWidget);
 
   // Details - a frame with a label
   if (ofViewDetail in OpenDialog.Options) then begin
@@ -4364,6 +4366,9 @@ begin
   // set initial filename
   if OpenDialog.Filename<>'' then
     gtk_file_selection_set_filename(FileSelWidget,PChar(OpenDialog.Filename));
+    
+  if InitialFilter <> 'none' then
+    PopulateFileAndDirectoryLists(FileSelWidget, InitialFilter);
 end;
 
 {------------------------------------------------------------------------------
@@ -6992,6 +6997,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.633  2005/02/28 18:21:43  mattias
+  fixed gtk file dialog with empty filter  from Collin
+
   Revision 1.632  2005/02/26 18:39:56  mattias
   fixed gtk open dialog go up
 
