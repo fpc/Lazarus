@@ -33,7 +33,6 @@
                    wanted: integer+integer=integer)
     - caching for procs
     - variants
-    - 'class of'
     - multi pass find declaration
     - Get and Set property access parameter lists
     - make @Proc context sensitive (started, but not complete)
@@ -111,7 +110,7 @@ type
     );
     
 const
-  // for nicer output
+  // for nicer debugging output
   VariableAtomTypeNames: array[TVariableAtomType] of string =
     ('<None>',
      'Space',
@@ -250,7 +249,7 @@ type
     xtPointer,     // pointer
     xtFile,        // file
     xtText,        // text
-    xtConstOrdInteger,// enums, number, integer
+    xtConstOrdInteger,// enum, number, integer
     xtConstString, // string, string constant, char constant
     xtConstReal,   // real number
     xtConstSet,    // [] set
@@ -1819,7 +1818,7 @@ var
     if (ContextNode.LastChild<>nil) then begin
       if not (fdfSearchForward in Params.Flags) then begin
         RaiseLastErrorIfInFrontOfCleanedPos(ContextNode.EndPos);
-        ContextNode:=ContextNode.LastChild
+        ContextNode:=ContextNode.LastChild;
       end else
         ContextNode:=ContextNode.FirstChild;
     end;
@@ -2012,6 +2011,7 @@ var
           );
         {$ENDIF}
         ContextNode:=ContextNode.Parent;
+
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
@@ -2026,13 +2026,10 @@ var
           // of the prior node
           ;
 
-        ctnClass, ctnClassInterface, ctnRecordType:
+        ctnClass, ctnClassInterface, ctnRecordType, ctnRecordCase:
           // do not search again in this node, go on ...
           ;
           
-        ctnRecordCase:
-          break;
-
         ctnVarDefinition, ctnConstDefinition:
           if (ContextNode.Parent<>nil)
           and (ContextNode.Parent.Desc=ctnParameterList) then begin
@@ -2118,7 +2115,7 @@ begin
         end;
         if FirstSearchedNode=nil then FirstSearchedNode:=ContextNode;
         LastSearchedNode:=ContextNode;
-
+        
         case ContextNode.Desc of
 
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
@@ -2187,6 +2184,8 @@ begin
             if FindIdentifierInRecordCase(ContextNode,Params)
             and CheckResult(true,false) then
               exit;
+            // search in variants
+            MoveContextNodeToChilds;
           end;
           
         end;
