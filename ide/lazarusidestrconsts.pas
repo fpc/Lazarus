@@ -838,12 +838,14 @@ resourcestring
   dlgCOStack = 'Stack';
   dlgHeapSize = 'Heap Size';
   dlgCOGenerate = 'Generate:';
+  dlgCONormal = 'Normal Code';
   dlgCOFast = 'Faster Code';
   dlgCOSmaller = 'Smaller Code';
   dlgTargetProc = 'Target Processor:';
   dlgOptimiz = 'Optimizations:';
   dlgCOKeepVarsReg = 'Keep certain variables in registers';
   dlgUncertOpt = 'Uncertain Optimizations';
+  dlgLevelNoneOpt = 'Level 0 (no extra Optimizations)';
   dlgLevel1Opt = 'Level 1 (Quick Optimizations)';
   dlgLevel2Opt = 'Level 2 (Level 1 + Slower Optimizations)';
   dlgLevel3Opt = 'Level 3 (Level 2 + Uncertain)';

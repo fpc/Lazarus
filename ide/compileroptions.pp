@@ -159,6 +159,12 @@ type
                                 DoSwitchPathDelims: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
+  
+  TCompilationGenerateCode = (
+    cgcNormalCode,
+    cgcFasterCode,
+    cgcSmallerCode
+    );
 
   TBaseCompilerOptions = class
   private
@@ -214,7 +220,7 @@ type
     FEmulatedFloatOpcodes: boolean;
     fHeapSize: LongInt;
     fVerifyObjMethodCall: boolean;
-    fGenerate: Integer;
+    fGenerate: TCompilationGenerateCode;
     fTargetProc: Integer;
     fTargetCPU: string;
     fVarsInReg: Boolean;
@@ -375,7 +381,7 @@ type
     property HeapSize: Integer read fHeapSize write fHeapSize;
     property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes
                                           write FEmulatedFloatOpcodes;
-    property Generate: Integer read fGenerate write fGenerate;
+    property Generate: TCompilationGenerateCode read fGenerate write fGenerate;
     property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
     property TargetProcessor: Integer read fTargetProc write SetTargetProc; // specific
     property TargetOS: string read fTargetOS write SetTargetOS;
@@ -557,6 +563,7 @@ type
     edtHeapSize: TEdit;
 
     grpGenerate: TGroupBox;
+    radGenNormal: TRadioButton;
     radGenFaster: TRadioButton;
     radGenSmaller: TRadioButton;
 
@@ -568,6 +575,7 @@ type
     grpOptimizations: TGroupBox;
     chkOptVarsInReg: TCheckBox;
     chkOptUncertain: TCheckBox;
+    radOptLevelNone: TRadioButton;
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
@@ -718,6 +726,11 @@ type
                read FOnImExportCompilerOptions write FOnImExportCompilerOptions;
   end;
 
+
+const
+  CompilationGenerateCodeNames: array [TCompilationGenerateCode] of string = (
+    'Normal', 'Faster', 'Smaller');
+
 type
   TCompilerGraphStampIncreasedEvent = procedure of object;
 
@@ -742,10 +755,13 @@ function MergeCustomOptions(const OldOptions, AddOptions: string): string;
 function ConvertSearchPathToCmdLine(const switch, paths: String): String;
 function ConvertOptionsToCmdLine(const Delim, Switch, OptionStr: string): string;
 
+function CompilationGenerateCodeNameToType(
+  const Name: string): TCompilationGenerateCode;
 
 implementation
 
 const
+  CompilerOptionsVersion = 2;
   Config_Filename = 'compileroptions.xml';
   MaxParseStamp = $7fffffff;
   MinParseStamp = -$7fffffff;
@@ -956,6 +972,14 @@ begin
     end;
     StartPos:=EndPos+1;
   end;
+end;
+
+function CompilationGenerateCodeNameToType(
+  const Name: string): TCompilationGenerateCode;
+begin
+  for Result:=Low(TCompilationGenerateCode) to High(TCompilationGenerateCode) do
+    if AnsiCompareText(Name,CompilationGenerateCodeNames[Result])=0 then exit;
+  Result:=cgcNormalCode;
 end;
 
 
@@ -1170,16 +1194,35 @@ procedure TBaseCompilerOptions.LoadTheCompilerOptions(const Path: string);
 var
   p: String;
   PathDelimChanged: boolean;
+  FileVersion: Integer;
   
   function f(const Filename: string): string;
   begin
     Result:=SwitchPathDelims(Filename,PathDelimChanged);
   end;
   
+  procedure ReadGenerate;
+  var
+    i: Integer;
+  begin
+    if FileVersion<2 then begin
+      i:=XMLConfigFile.GetValue(p+'Generate/Value', 1);
+      if i=1 then
+        Generate:=cgcFasterCode
+      else
+        Generate:=cgcSmallerCode
+    end else begin
+      Generate:=CompilationGenerateCodeNameToType(
+                  XMLConfigFile.GetValue(p+'Generate/Value',
+                                  CompilationGenerateCodeNames[cgcNormalCode]));
+    end;
+  end;
+  
 begin
   { Load the compiler options from the XML file }
   p:=Path;
   PathDelimChanged:=XMLConfigFile.GetValue(p+'PathDelim/Value', '/')<>PathDelim;
+  FileVersion:=XMLConfigFile.GetValue(p+'Version/Value', 0);
 
   { Target }
   p:=Path+'Target/';
@@ -1219,9 +1262,9 @@ begin
   OverflowChecks := XMLConfigFile.GetValue(p+'Checks/OverflowChecks/Value', false);
   StackChecks := XMLConfigFile.GetValue(p+'Checks/StackChecks/Value', false);
   EmulatedFloatOpcodes := XMLConfigFile.GetValue(p+'EmulateFloatingPointOpCodes/Value', false);
-  HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 8000000);
+  HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 0);
   VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
-  Generate := XMLConfigFile.GetValue(p+'Generate/Value', 1);
+  ReadGenerate;
   TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 1);
   TargetCPU := XMLConfigFile.GetValue(p+'TargetCPU/Value', '');
   VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
@@ -1314,6 +1357,7 @@ var
 begin
   { Save the compiler options to the XML file }
   p:=Path;
+  XMLConfigFile.SetValue(p+'Version/Value', CompilerOptionsVersion);
   XMLConfigFile.SetDeleteValue(p+'PathDelim/Value', PathDelim, '/');
 
   { Target }
@@ -1354,9 +1398,9 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/StackChecks/Value', StackChecks,false);
   XMLConfigFile.SetDeleteValue(p+'EmulateFloatingPointOpCodes/Value', EmulatedFloatOpcodes,false);
-  XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,8000000);
+  XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,0);
   XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
-  XMLConfigFile.SetDeleteValue(p+'Generate/Value', Generate,1);
+  XMLConfigFile.SetDeleteValue(p+'Generate/Value', CompilationGenerateCodeNames[Generate],CompilationGenerateCodeNames[cgcNormalCode]);
   XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,1);
   XMLConfigFile.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
@@ -1894,7 +1938,7 @@ Processor specific options:
   end;
 
   { Heap Size }
-  if (HeapSize >= 0) then
+  if (HeapSize > 0) then
     switches := switches + ' ' + '-Ch' + IntToStr(HeapSize);
 
 
@@ -1909,8 +1953,9 @@ Processor specific options:
 
   { Generate    G = faster g = smaller  }
   case (Generate) of
-    1:  switches := switches + 'G';
-    2:  switches := switches + 'g';
+    cgcNormalCode:  ;
+    cgcFasterCode:  switches := switches + 'G';
+    cgcSmallerCode:  switches := switches + 'g';
   end;
 
   { OptimizationLevel     1 = Level 1    2 = Level 2    3 = Level 3 }
@@ -2225,8 +2270,8 @@ begin
   fRangeChecks := false;
   fOverflowChecks := false;
   fStackChecks := false;
-  fHeapSize := 8000000;
-  fGenerate := 1;
+  fHeapSize := 0;
+  fGenerate := cgcFasterCode;
   fTargetProc := 1;
   fTargetCPU := '';
   fVarsInReg := false;
@@ -2834,8 +2879,9 @@ begin
   edtHeapSize.Text := IntToStr(Options.HeapSize);
 
   case Options.Generate of
-      1: radGenFaster.Checked := true;
-      2: radGenSmaller.Checked := true;
+    cgcNormalCode:  radGenNormal.Checked := true;
+    cgcFasterCode:  radGenFaster.Checked := true;
+    cgcSmallerCode: radGenSmaller.Checked := true;
   end;
 
   case Options.TargetProcessor of
@@ -2851,6 +2897,8 @@ begin
     1: radOptLevel1.Checked := true;
     2: radOptLevel2.Checked := true;
     3: radOptLevel3.Checked := true;
+  else
+    radOptLevelNone.Checked := true;
   end;
 
   // linking
@@ -2991,16 +3039,16 @@ begin
 
   Val(edtHeapSize.Text, hs, code);
   if (code <> 0) then
-    Options.HeapSize := 8000000
+    Options.HeapSize := 0
   else
     Options.HeapSize := hs;
 
   if (radGenFaster.Checked) then
-    Options.Generate := 1
+    Options.Generate := cgcFasterCode
   else if (radGenSmaller.Checked) then
-    Options.Generate := 2
+    Options.Generate := cgcSmallerCode
   else
-    Options.Generate := 1;
+    Options.Generate := cgcNormalCode;
 
   if (radTarget386.Checked) then
     Options.TargetProcessor := 1
@@ -3021,7 +3069,7 @@ begin
   else if (radOptLevel3.Checked) then
     Options.OptimizationLevel := 3
   else
-    Options.OptimizationLevel := 1;
+    Options.OptimizationLevel := 0;
 
   // linking
   Options.GenerateDebugInfo := chkDebugGDB.Checked;
@@ -3432,6 +3480,8 @@ end;
 {  TfrmCompilerOptions SetupCodeGenerationTab                                  }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
+var
+  w: Integer;
 begin
   // Setup the Code Generation Tab
   CodeGenPage:=nbMain.Page[Page];
@@ -3542,16 +3592,27 @@ begin
     Parent := CodeGenPage;
     Top := grpUnitStyle.Top + grpUnitStyle.Height + 6;
     Left := 10;
-    Height := 70;
+    Height := 90;
     Width := 115;
     Caption := dlgCOGenerate ;
+  end;
+
+  radGenNormal := TRadioButton.Create(grpGenerate);
+  with radGenNormal do
+  begin
+    Parent := grpGenerate;
+    Top := 5;
+    Left := 5;
+    Height := 16;
+    Width := 100;
+    Caption := dlgCONormal;
   end;
 
   radGenFaster := TRadioButton.Create(grpGenerate);
   with radGenFaster do
   begin
     Parent := grpGenerate;
-    Top := 8;
+    Top := 28;
     Left := 5;
     Height := 16;
     Width := 100;
@@ -3562,7 +3623,7 @@ begin
   with radGenSmaller do
   begin
     Parent := grpGenerate;
-    Top := 29;
+    Top := 51;
     Left := 5;
     Height := 16;
     Width := 100;
@@ -3625,9 +3686,54 @@ begin
     Parent := CodeGenPage;
     Top := grpTargetProc.Top + grpTargetProc.Height + 6;
     Left := 10;
-    Height := 132;
-    Width := 395;
-    Caption :=   dlgOptimiz ;
+    Height := 112;
+    Width := 535;
+    Caption := dlgOptimiz;
+  end;
+
+  w:=(grpOptimizations.Width-10) div 2;
+  radOptLevelNone := TRadioButton.Create(grpOptimizations);
+  with radOptLevelNone do
+  begin
+    Parent := grpOptimizations;
+    Caption :=  dlgLevelNoneOpt;
+    Top := 5;
+    Left := 5;
+    Height := 16;
+    Width := w;
+  end;
+
+  radOptLevel1 := TRadioButton.Create(grpOptimizations);
+  with radOptLevel1 do
+  begin
+    Parent := grpOptimizations;
+    Caption :=  dlgLevel1Opt ;
+    Top := 26;
+    Left := 5;
+    Height := 16;
+    Width := w;
+  end;
+
+  radOptLevel2 := TRadioButton.Create(grpOptimizations);
+  with radOptLevel2 do
+  begin
+    Parent := grpOptimizations;
+    Caption := dlgLevel2Opt;
+    Top := 47;
+    Left := 5;
+    Height := 16;
+    Width := w;
+  end;
+
+  radOptLevel3 := TRadioButton.Create(grpOptimizations);
+  with radOptLevel3 do
+  begin
+    Parent := grpOptimizations;
+    Caption := dlgLevel3Opt ;
+    Top := 68;
+    Left := 5;
+    Height := 16;
+    Width := w;
   end;
 
   chkOptVarsInReg := TCheckBox.Create(Self);
@@ -3636,9 +3742,9 @@ begin
     Parent := grpOptimizations;
     Caption := dlgCOKeepVarsReg ;
     Top := 5;
-    Left := 5;
+    Left := Left+w;
     Height := 16;
-    Width := 330;
+    Width := w;
   end;
 
   chkOptUncertain := TCheckBox.Create(Self);
@@ -3647,42 +3753,9 @@ begin
     Parent := grpOptimizations;
     Caption := dlgUncertOpt ;
     Top := 26;
-    Left := 5;
+    Left := Left+w;
     Height := 16;
-    Width := 330;
-  end;
-
-  radOptLevel1 := TRadioButton.Create(grpOptimizations);
-  with radOptLevel1 do
-  begin
-    Parent := grpOptimizations;
-    Caption :=  dlgLevel1Opt ;
-    Top := 52;
-    Left := 5;
-    Height := 16;
-    Width := 330;
-  end;
-
-  radOptLevel2 := TRadioButton.Create(grpOptimizations);
-  with radOptLevel2 do
-  begin
-    Parent := grpOptimizations;
-    Caption := dlgLevel2Opt;
-    Top := 73;
-    Left := 5;
-    Height := 16;
-    Width := 330;
-  end;
-
-  radOptLevel3 := TRadioButton.Create(grpOptimizations);
-  with radOptLevel3 do
-  begin
-    Parent := grpOptimizations;
-    Caption := dlgLevel3Opt ;
-    Top := 94;
-    Left := 5;
-    Height := 16;
-    Width := 330;
+    Width := w;
   end;
 
   TargetOSGroupBox:=TGroupBox.Create(Self);
