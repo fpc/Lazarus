@@ -668,7 +668,6 @@ type
     }
 
 const
-
   SScrollBarRange = 'ScrollBar property out of range';
 
 Function DeleteAmpersands(var Str : String) : Longint;
@@ -727,6 +726,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/09/09 07:26:42  lazarus
+  MG: started TCollectionPropertyEditor
+
   Revision 1.43  2002/09/08 19:09:55  lazarus
   Fixed and simplified TRadioButton
 
