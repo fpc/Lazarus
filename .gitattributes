@@ -1579,6 +1579,7 @@ tools/install/create_lazarus_deb.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_export_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_rpm.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_tgz_from_local_dir.sh -text svneol=native#application/x-sh
+tools/install/cvsexportlocal.pas svneol=native#text/pascal
 tools/install/do_nothing.sh -text svneol=native#application/x-sh
 tools/install/download_and_build_fpc_rpm.sh -text svneol=native#application/x-sh
 tools/install/file_filter.sh -text svneol=native#application/x-sh
