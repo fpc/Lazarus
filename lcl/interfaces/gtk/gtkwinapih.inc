@@ -155,6 +155,7 @@ function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: Lo
 function SetActiveWindow(Handle: HWND): HWND; override;
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; override;
 Function SetBkMode(DC: HDC; bkMode : Integer) : Integer; override;
+Function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; override;
 Function SetCapture(Value : Longint): Longint; override;
 function SetCaretPos(X, Y: Integer): Boolean; override;
 function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
@@ -190,6 +191,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/10/03 14:47:34  lazarus
+  MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
+
   Revision 1.50  2002/09/27 20:52:26  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
