@@ -73,6 +73,7 @@ type
     
     Procedure HookSignals(Sender : TObject);  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);
+    procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
     procedure DestroyLCLControl(Sender : TObject);
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
@@ -161,7 +162,7 @@ implementation
 
 uses 
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs;
+  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl;
 
 {$I gtklistsl.inc}
 
@@ -376,6 +377,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.43  2002/05/28 19:39:45  lazarus
   MG: added gtk rc file support and started stule dependent syscolors
 
