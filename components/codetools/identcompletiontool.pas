@@ -356,9 +356,11 @@ end;
 procedure TIdentifierList.Clear;
 var
   i: Integer;
+  p: Pointer;
 begin
   for i:=0 to FCreatedIdentifiers.Count-1 do begin
-    FreeMem(FCreatedIdentifiers[i]);
+    p:=FCreatedIdentifiers[i];
+    FreeMem(p);
   end;
   FCreatedIdentifiers.Clear;
   FItems.FreeAndClear;
