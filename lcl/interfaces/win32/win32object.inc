@@ -1645,9 +1645,18 @@ var
   bi : TBrowseInfo;
   Buffer : PChar;
   iidl : PItemIDList;
+  InitialDir: string;
 Begin
   Buffer := CoTaskMemAlloc(MAX_PATH);
-
+  InitialDir := Sender.InitialDir;
+  if length(InitialDir)>0 then begin
+    // remove the \ at the end.
+    if Copy(InitialDir,length(InitialDir),1)=PathDelim then
+      InitialDir := copy(InitialDir,1, length(InitialDir)-1);
+    // if it is a rootdirectory, then the InitialDir must have a \ at the end.
+    if Copy(InitialDir,length(InitialDir),1)=DriveDelim then
+      InitialDir := InitialDir + PathDelim;
+  end;
   With bi do
   Begin
     hwndOwner := GetOwnerHandle(Sender);
@@ -1657,7 +1666,7 @@ Begin
     ulFlags := BIF_RETURNONLYFSDIRS;
     lpfn := @BrowseForFolderCallback;
     // this value will be passed to callback proc as lpData
-    lParam := LclType.LParam(PChar(Sender.InitialDir));
+    lParam := LclType.LParam(PChar(InitialDir));
   End;
 
   iidl := SHBrowseForFolder(@bi);
@@ -2985,6 +2994,9 @@ End;
 
 {
   $Log$
+  Revision 1.162  2004/01/22 18:22:37  mattias
+  applied patch for dir dlgs from Vincent
+
   Revision 1.161  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

@@ -3064,7 +3064,7 @@ begin
       exit;
 
     if OpenDialog.Execute then begin
-      ADirectoryName:=CleanAndExpandFilename(OpenDialog.Filename);
+      ADirectoryName:=CleanAndExpandDirectory(OpenDialog.Filename);
 
       if Sender=LazarusDirButton then begin
         // check lazarus directory

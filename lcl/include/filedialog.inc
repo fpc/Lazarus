@@ -128,7 +128,7 @@ begin
     if not Result then exit;
   end;
   if (ofPathMustExist in Options)
-  and (not FileExists(ExtractFileDir(AFilename))) then begin
+  and (not DirPathExists(ExtractFileDir(AFilename))) then begin
     Result:=false;
     MessageDlg(rsfdPathMustExist,
                Format(rsfdPathNoExist,[ExtractFileDir(AFilename)]),
@@ -265,6 +265,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/01/22 18:22:37  mattias
+  applied patch for dir dlgs from Vincent
+
   Revision 1.13  2003/12/21 16:01:58  mattias
   workaround for inherited bug in fpc 1.9
 
