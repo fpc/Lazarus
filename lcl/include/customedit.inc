@@ -34,6 +34,105 @@ begin
   Height:=23;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.GetSelText
+  Params: ---
+  Returns: selected text
+
+  Returns the selected part of text-field.
+ ------------------------------------------------------------------------------}
+function TCustomEdit.GetSelText : string;
+begin
+  Result:= Copy(Text, SelStart, SelLength)
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.SetSelText
+  Params: val - new string for text-field
+  Returns: nothings
+
+  Replace the selected part of text-field with "val".
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetSelText(const Val : string);
+var
+  OldText, NewText: string;
+begin
+  OldText:=Text;
+  NewText:=LeftStr(OldText,SelStart-1)+Val
+             +RightStr(OldText,length(OldText)-SelStart-SelLength+1);
+  Text:=NewText;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.GetSelStart
+  Params: ---
+  Returns: starting index of selected text
+
+  Returns starting index of selected text
+ ------------------------------------------------------------------------------}
+function TCustomEdit.GetSelStart : integer;
+begin
+  if HandleAllocated then
+    FSelStart:= CNSendMessage(LM_GETSELSTART, Self, nil);
+  Result:= FSelStart;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.SetSelStart
+  Params: val -
+  Returns: nothing
+
+  Sets starting index for selected text.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetSelStart(Val : integer);
+begin
+  FSelStart:= Val;
+  if HandleAllocated then
+    CNSendMessage(LM_SETSELSTART, Self, Pointer(Val));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.GetSelLength
+  Params: ---
+  Returns: length of selected text
+
+  Returns length of selected text
+ ------------------------------------------------------------------------------}
+function TCustomEdit.GetSelLength : integer;
+begin
+  if HandleAllocated then
+    FSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
+  Result:= FSelLength;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.SetSelLength
+  Params: val -
+  Returns: nothing
+
+  Sets length of selected text.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SetSelLength(Val : integer);
+begin
+  FSelLength:= Val;
+  if HandleAllocated then
+    CNSendMessage(LM_SETSELLEN, Self, Pointer(Val));
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.SelectAll
+  Params: -
+  Returns: nothing
+
+  Select entire text.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.SelectAll;
+begin
+  if Text <> '' then begin
+    SetSelStart(0);
+    SetSelLength(Length(Text));
+  end;    
+end;
 
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.GetModified
@@ -126,11 +225,30 @@ Begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
+procedure TCustomEdit.InitializeWnd;
+var ASelStart, ASelLength : integer;
+begin
+  inherited InitializeWnd;
+  if FSelStart <> FSelLength then begin
+    ASelStart:= FSelStart;
+    ASelLength:= FSelLength;
+    SelStart:= ASelStart;
+    SelLength:= ASelLength;
+  end;    
+end;
+
 // included by stdctrls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.8  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

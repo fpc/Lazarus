@@ -22,12 +22,21 @@ begin
   inherited Create (AOwner);
   fCompStyle := csGroupBox;
   ControlStyle := ControlStyle + [csAcceptsControls];
+  Width:= 185;
+  Height:= 105;
 end;
  
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.8  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.7  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 

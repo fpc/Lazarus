@@ -38,8 +38,6 @@ unit FindReplaceDialog;
 
 {$mode objfpc}{$H+}
 
-{$Define DeleteMeWhenComboBoxFocusIsFixed}
-
 interface
 
 uses
@@ -65,16 +63,11 @@ type
     function GetReplaceText:AnsiString;
     procedure SetReplaceText(NewReplaceText:AnsiString);
     procedure SetComboBoxText(AComboBox:TComboBox;const AText:AnsiString);
-  published
+  public
     TextToFindLabel:TLabel;
     ReplaceWithLabel:TLabel;
-    {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
-    TextToFindComboBox:TEdit;
-    ReplaceTextComboBox:TEdit;
-    {$ELSE}
     TextToFindComboBox:TComboBox;
     ReplaceTextComboBox:TComboBox;
-    {$ENDIF}
     OptionsGroupBox:TGroupBox;
     CaseSensitiveCheckBox:TCheckBox;
     WholeWordsOnlyCheckBox:TCheckBox;
@@ -86,20 +79,19 @@ type
     OkButton:TButton;
     ReplaceAllButton:TButton;
     CancelButton:TButton;
+    
+    constructor Create(TheOwner:TComponent); override;
     procedure TextToFindComboboxKeyDown(Sender: TObject; var Key:Word;
-       Shift:TShiftState);
+       Shift:TShiftState);  
     procedure OkButtonClick(Sender:TObject);
     procedure ReplaceAllButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
-    procedure FormResize(Sender: TObject);
     property Options:TSynSearchOptions read GetOptions write SetOptions;
     property FindText:AnsiString read GetFindText write SetFindText;
     property ReplaceText:AnsiString read GetReplaceText write SetReplaceText;
     property OnKey: TOnFindDlgKey read FOnKey write SetOnKey;
-  public
     property ComponentText[c: TFindDlgComponent]: string
       read GetComponentText write SetComponentText;
-    constructor Create(TheOwner:TComponent); override;
   end;
 
 var FindReplaceDlg:TLazFindReplaceDialog;
@@ -116,21 +108,18 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:='';
     Width:=400;
-    Height:=285;
+    Height:=266;
+    BorderStyle:= bsDialog;
     Position:=poDesigned;
 
-    {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
-    TextToFindComboBox:=TEdit.Create(Self);
-    {$ELSE}
     TextToFindComboBox:=TComboBox.Create(Self);
-    {$ENDIF}
     with TextToFindComboBox do begin
       Name:='TextToFindComboBox';
       Parent:=Self;
       Left:=90;
       Top:=4;
-      Width:=220;
-      Height:=21;
+      Width:= 306;
+      Anchors:= [akLeft, akTop, akRight];
       Text:='';
       OnKeyDown:=@TextToFindComboBoxKeyDown;
       Visible:=true;
@@ -142,24 +131,19 @@ begin
       Parent:=Self;
       Left:=8;
       Top:=8;
-      Width:=80;
-      Height:=15;
+      Width:= 100;
       Caption:='Text to Find';
       Visible:=true;
     end;
 
-    {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
-    ReplaceTextComboBox:=TEdit.Create(Self);
-    {$ELSE}
     ReplaceTextComboBox:=TComboBox.Create(Self);
-    {$ENDIF}
     with ReplaceTextComboBox do begin
       Name:='ReplaceTextComboBox';
       Parent:=Self;
       Left:=90;
       Top:=28;
-      Width:=220;
-      Height:=21;
+      Width:= 306;
+      Anchors:= [akLeft, akTop, akRight];
       Text:='';
       OnKeyDown:=@TextToFindComboBoxKeyDown;
       Visible:=true;
@@ -171,8 +155,7 @@ begin
       Parent:=Self;	
       Left:=8;
       Top:=32;
-      Width:=80;
-      Height:=15;
+      Width:= 100;
       Caption:='Replace With';
       Visible:=true;
     end;
@@ -183,7 +166,7 @@ begin
       Parent:=Self;
       Left:=4;
       Top:=58;
-      Width:=150;
+      Width:=194;
       Height:=105;
       Caption:='Options';
       Visible:=true;
@@ -241,12 +224,12 @@ begin
     OriginRadioGroup:=TRadioGroup.Create(Self);
     with OriginRadioGroup do begin
       Name:='OriginRadioGroup';
-      Parent:=Self;
-      Left:=161;
-      Top:=58;
-      Width:=150;
+      Parent:= Self;
+      Left:= 202;
+      Top:= 58;
+      Width:= 194;
       Height:=105;
-      Caption:='Origin';
+      Caption:= 'Origin';
       with Items do begin
         BeginUpdate;
         Clear;
@@ -264,7 +247,7 @@ begin
       Parent:=Self;
       Left:=4;
       Top:=168;
-      Width:=150;
+      Width:=194;
       Height:=65;
       Caption:='Scope';
       with Items do begin
@@ -282,9 +265,9 @@ begin
     with DirectionRadioGroup do begin
       Name:='DirectionRadioGroup';
       Parent:=Self;
-      Left:=161;
+      Left:=202;
       Top:=168;
-      Width:=150;
+      Width:=194;
       Height:=65;
       Caption:='Direction';
       with Items do begin
@@ -301,11 +284,9 @@ begin
     OkButton:=TButton.Create(Self);
     with OkButton do begin
       Name:='OkButton';
-      Parent:=Self;
-      Left:=33;
-      Top:=245;
-      Width:=75;
-      Height:=25;
+      Parent:= Self;
+      Left:= 163;
+      Top:= 237;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
       Visible:=true;
@@ -314,11 +295,9 @@ begin
     ReplaceAllButton:=TButton.Create(Self);
     with ReplaceAllButton do begin
       Name:='ReplaceAllButton';
-      Parent:=Self;
-      Left:=121;
-      Top:=245;
-      Width:=75;
-      Height:=25;
+      Parent:= Self;
+      Left:= 242;
+      Top:= 237;
       Caption:='Replace All';
       OnClick:=@ReplaceAllButtonClick;
       Visible:=true;
@@ -327,20 +306,16 @@ begin
     CancelButton:=TButton.Create(Self);
     with CancelButton do begin
       Name:='CancelButton';
-      Parent:=Self;
-      Left:=209;
-      Top:=245;
-      Width:=75;
-      Height:=25;
+      Parent:= Self;
+      Left:= 321;
+      Top:= 237;
       Caption:='Cancel';
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
     
-    OnResize:=@FormResize;
   end;
   fReplaceAllClickedLast:=false;
-  FormResize(Self);
   TextToFindComboBox.SetFocus;
 end;
 
@@ -384,109 +359,6 @@ procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
   TextToFindComboBox.SetFocus;
   ModalResult:=mrCancel;
-end;
-
-procedure TLazFindReplaceDialog.FormResize(Sender: TObject);
-var MaxX, TxtLabelWidth, OptionsWidth, ButtonWidth: integer;
-begin
-  TxtLabelWidth:=100;
-  MaxX:=ClientWidth;
-  OptionsWidth:=(MaxX-3*4) div 2;
-  ButtonWidth:=90;
-
-  with TextToFindLabel do begin
-    Left:=8;
-    Top:=8;
-    Width:=TxtLabelWidth;
-  end;
-
-  with TextToFindComboBox do begin
-    Left:=TextToFindLabel.Left+TextToFindLabel.Width+2;
-    Top:=TextToFindLabel.Top-4;
-    Width:=MaxX-Left-4;
-  end;
-
-  with ReplaceWithLabel do begin
-    Left:=TextToFindLabel.Left;
-    Top:=TextToFindLabel.Top+TextToFindLabel.Height+8;
-    Width:=TextToFindLabel.Width;
-  end;
-
-  with ReplaceTextComboBox do begin
-    Left:=TextToFindComboBox.Left;
-    Top:=ReplaceWithLabel.Top-4;
-    Width:=MaxX-Left-4;
-  end;
-
-  with OptionsGroupBox do begin
-    Left:=4;
-    Top:=ReplaceWithLabel.Top+ReplaceWithLabel.Height+3;
-    Width:=OptionsWidth;
-    Height:=110;
-  end;
-
-  with CaseSensitiveCheckBox do begin
-    Left:=8;
-    Top:=3;
-    Width:=Parent.ClientWidth-Left;
-  end;
-
-  with WholeWordsOnlyCheckBox do begin
-    Left:=8;
-    Top:=CaseSensitiveCheckBox.Top+CaseSensitiveCheckBox.Height+5;
-    Width:=Parent.ClientWidth-Left;
-  end;
-
-  with RegularExpressionsCheckBox do begin
-    Left:=8;
-    Top:=WholeWordsOnlyCheckBox.Top+WholeWordsOnlyCheckBox.Height+5;
-    Width:=Parent.ClientWidth-Left;
-  end;
-
-  with PromptOnReplaceCheckBox do begin
-    Left:=8;
-    Top:=RegularExpressionsCheckBox.Top+RegularExpressionsCheckBox.Height+5;
-    Width:=Parent.ClientWidth-Left;
-  end;
-
-  with OriginRadioGroup do begin
-    Left:=OptionsGroupBox.Left+OptionsGroupBox.Width+4;
-    Top:=OptionsGroupBox.Top;
-    Width:=OptionsWidth;
-    Height:=OptionsGroupBox.Height;
-  end;
-
-  with ScopeRadioGroup do begin
-    Left:=OptionsGroupBox.Left;
-    Top:=OptionsGroupBox.Top+OptionsGroupBox.Height+5;
-    Width:=OptionsWidth;
-    Height:=65;
-  end;
-
-  with DirectionRadioGroup do begin
-    Left:=OriginRadioGroup.Left;
-    Top:=OriginRadioGroup.Top+OriginRadioGroup.Height+5;
-    Width:=OptionsWidth;
-    Height:=65;
-  end;
-
-  with OkButton do begin
-    Left:=MaxX-10-3*(ButtonWidth+7);
-    Top:=245;
-    Width:=75;
-  end;
-
-  with ReplaceAllButton do begin
-    Left:=MaxX-10-2*(ButtonWidth+7);
-    Top:=245;
-    Width:=75;
-  end;
-
-  with CancelButton do begin
-    Left:=MaxX-10-1*(ButtonWidth+7);
-    Top:=245;
-    Width:=75;
-  end;
 end;
 
 function TLazFindReplaceDialog.GetComponentText(c: TFindDlgComponent): string;
@@ -562,11 +434,9 @@ end;
 
 procedure TLazFindReplaceDialog.SetFindText(NewFindText:AnsiString);
 begin
-  {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
-  TextToFindComboBox.Text:=NewFindText;
-  {$ELSE}
-  SetComboBoxText(TextToFindComboBox,NewFindText);
-  {$ENDIF}
+//  SetComboBoxText(TextToFindComboBox,NewFindText);
+  TextToFindComboBox.Text:= NewFindText;
+  TextToFindComboBox.SelectAll;
 end;
 
 function TLazFindReplaceDialog.GetReplaceText:AnsiString;
@@ -576,11 +446,7 @@ end;
 
 procedure TLazFindReplaceDialog.SetReplaceText(NewReplaceText:AnsiString);
 begin
-  {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
-  ReplaceTextComboBox.Text:=NewReplaceText;
-  {$ELSE}
   SetComboBoxText(ReplaceTextComboBox,NewReplaceText);
-  {$ENDIF}
 end;
 
 procedure TLazFindReplaceDialog.SetComboBoxText(AComboBox:TComboBox;

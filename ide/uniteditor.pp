@@ -645,7 +645,7 @@ end;
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 var ALeft,ATop:integer;
-Begin
+begin
   if Owner is TSourceNotebook then
     TSourceNotebook(Owner).InitFindDialog;
   if Replace then
@@ -654,6 +654,10 @@ Begin
   else
     FindReplaceDlg.Options :=
       FindReplaceDlg.Options - [ssoReplace, ssoReplaceAll, ssoPrompt];
+
+  // Fill in history items
+  FindReplaceDlg.TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
+  if Replace then FindReplaceDlg.ReplaceTextComboBox.Items.Assign(InputHistories.ReplaceHistory);
 
   with EditorComponent do begin
     if EditorOpts.FindTextAtCursor then begin

@@ -45,6 +45,7 @@ type
 	  Button4: TButton;
 	  Button5: TButton;
 	  Button6: TButton;
+	  Button7: TButton;
 	  Edit1 : TEdit;
 	  mnuMain: TMainMenu;
     	  itmFileQuit: TMenuItem;
@@ -63,6 +64,7 @@ type
 	  procedure Button4CLick(Sender : TObject);
 	  procedure Button5CLick(Sender : TObject);
 	  procedure Button6CLick(Sender : TObject);
+	  procedure Button7CLick(Sender : TObject);
 	  procedure ComboOnChange (Sender:TObject);
 	  procedure ComboOnClick (Sender:TObject);
 	end;
@@ -130,6 +132,13 @@ Begin
          then Memo1.Lines.Add (s);
    end;
 End;
+
+procedure TForm1.Button7Click(Sender : TObject);
+begin
+  Edit1.SelectAll;
+  ComboBox1.SelectAll;
+end;
+
 
 procedure TForm1.ComboOnChange (Sender:TObject);
 var
@@ -232,6 +241,16 @@ begin
    Button6.Show;
    Button6.Caption := 'Index ?';
    Button6.OnClick := @Button6Click;
+
+   Button7 := TButton.Create(Self);
+   Button7.Parent := Self;
+   Button7.Left := 50;
+   Button7.Top := 280;
+   Button7.Width := 120;
+   Button7.Height := 30;
+   Button7.Show;
+   Button7.Caption := 'Select All';
+   Button7.OnClick := @Button7Click;
 
 
    { Create a label for the edit field }
@@ -367,6 +386,13 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.4  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 
