@@ -43,7 +43,12 @@ end;
 
 procedure TBitMap.Assign(Source: TPersistent);
 var
- SrcBitmap: TBitmap;
+  SrcBitmap: TBitmap;
+  {$IFDEF UseFPImage}
+  SrcFPImage: TFPCustomImage;
+  IntfImage: TLazIntfImage;
+  ImgHandle,ImgMaskHandle: HBitmap;
+  {$ENDIF}
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
@@ -61,12 +66,20 @@ begin
     // share FImage with assign graphic
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
-    {Old way:
-    UnshareImage;
-    SetWidthHeight(SrcBitmap.Width,SrcBitmap.Height);
-    Canvas.Brush.Color:=clWhite;
-    Canvas.FillRect(Rect(0,0,Width,Height));
-    SrcBitmap.Draw(Canvas,Rect(0,0,Width,Height));}
+  {$IFDEF UseFPImage}
+  end else if Source is TFPCustomImage then begin
+    SrcFPImage:=TFPCustomImage(Source);
+    IntfImage:=TLazIntfImage.Create(0,0);
+    try
+      IntfImage.GetDescriptionFromBitmap(Handle);
+      IntfImage.Assign(SrcFPImage);
+      IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle);
+      Handle:=ImgHandle;
+      MaskHandle:=ImgMaskHandle;
+    finally
+      IntfImage.Free;
+    end;
+  {$ENDIF}
   end else
     inherited;
 end;
@@ -841,6 +854,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/09/05 22:13:40  mattias
+  implemented TBitmap.Assign(TFPCustomImage)
+
   Revision 1.42  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

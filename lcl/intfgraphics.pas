@@ -131,6 +131,7 @@ type
     function CheckDescription(const ADescription: TRawImageDescription;
                               ExceptionOnError: boolean): boolean; virtual;
     procedure GetDescriptionFromDevice(DC: HDC); virtual;
+    procedure GetDescriptionFromBitmap(Bitmap: HBitmap); virtual;
     procedure LoadFromDevice(DC: HDC); virtual;
     procedure LoadFromBitmap(Bitmap, MaskBitmap: HBitmap); virtual;
     procedure CreateBitmap(var Bitmap, MaskBitmap: HBitmap); virtual;
@@ -882,6 +883,15 @@ begin
     if not GetDeviceRawImageDescription(DC,@NewDataDescription) then
       raise FPImageException.Create('Failed to get raw image description from device');
   end;
+  DataDescription:=NewDataDescription;
+end;
+
+procedure TLazIntfImage.GetDescriptionFromBitmap(Bitmap: HBitmap);
+var
+  NewDataDescription: TRawImageDescription;
+begin
+  if not GetBitmapRawImageDescription(Bitmap,@NewDataDescription) then
+    raise FPImageException.Create('Failed to get raw image description from bitmap');
   DataDescription:=NewDataDescription;
 end;
 

@@ -495,6 +495,10 @@ begin
     SetGraphic(TPicture(Source).Graphic)
   else if Source is TGraphic then
     SetGraphic(TGraphic(Source))
+  {$IFDEF UseFPImage}
+  else if Source is TFPCustomImage then
+    Bitmap.Assign(Source)
+  {$ENDIF}
   else
     inherited Assign(Source);
 end;
