@@ -217,6 +217,7 @@ begin
       FormEditingHook.CreateComponent(ParentCI,TypeClass,X,Y,0,0);
     end;
   end;
+  Selected:=nil;
 end;
 
 procedure TComponentPalette.SetSelected(const AValue: TRegisteredComponent);
@@ -482,7 +483,6 @@ begin
             Flat := true;
             OnClick := @ComponentBtnClick;
             OnDblClick := @ComponentBtnDblClick;
-            ControlStyle:=ControlStyle+[csDoubleClicks];
             Hint := CurComponent.ComponentClass.ClassName;
             CurBtn.PopupMenu:=Self.PopupMenu;
             Visible:=true;

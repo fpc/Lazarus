@@ -329,6 +329,7 @@ type
     property Transparent;
     property Visible;
     property OnClick;
+    property OnDblClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -378,6 +379,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2004/12/12 23:40:55  mattias
+  published TSpeedButton.OnDoubleClick
+
   Revision 1.81  2004/10/15 13:28:22  mattias
   codeexplorer: using lower recursive depth
 

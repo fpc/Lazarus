@@ -1093,7 +1093,6 @@ procedure TCustomGrid.AdjustCount(IsColumn: Boolean; OldValue, newValue: Integer
   procedure FixTopLeft;
   var
     oldTL: TPoint;
-    Diff: Integer;
   begin
     OldTL:=FTopLeft;
     if IsColumn then begin

@@ -40,7 +40,7 @@ begin
   FGlyph.OnChange := @GlyphChanged;
 
   SetInitialBounds(0, 0, 23, 22);
-  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption]-csMultiClicks;
+  ControlStyle := ControlStyle + [csCaptureMouse]-[csSetCaption];
 
   FLayout:= blGlyphLeft;
   FAllowAllUp:= false;
@@ -761,6 +761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/12/12 23:40:55  mattias
+  published TSpeedButton.OnDoubleClick
+
   Revision 1.60  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 
