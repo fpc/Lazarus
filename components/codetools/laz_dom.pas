@@ -43,7 +43,11 @@ unit Laz_DOM;
 
 interface
 
-uses SysUtils, Classes, AVL_Tree;
+{off $DEFINE MEM_CHECK}
+
+uses
+  {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
+  SysUtils, Classes, AVL_Tree;
 
 
 type
@@ -212,7 +216,7 @@ type
     FOwnerDocument: TDOMDocument;
 
     function  GetNodeValue: DOMString; virtual;
-    procedure SetNodeValue(AValue: DOMString); virtual;
+    procedure SetNodeValue(const AValue: DOMString); virtual;
     function  GetFirstChild: TDOMNode; virtual;
     function  GetLastChild: TDOMNode; virtual;
     function  GetAttributes: TDOMNamedNodeMap; virtual;
@@ -284,7 +288,7 @@ type
     function GetCount: LongInt;
     function GetItem(index: LongWord): TDOMNode;
   public
-    constructor Create(ANode: TDOMNode; AFilter: DOMString);
+    constructor Create(ANode: TDOMNode; const AFilter: DOMString);
     property Item[index: LongWord]: TDOMNode read GetItem;
     property Count: LongInt read GetCount;
   end;
@@ -410,7 +414,7 @@ type
     FSpecified: Boolean;
     AttrOwner: TDOMNamedNodeMap;
     function  GetNodeValue: DOMString; override;
-    procedure SetNodeValue(AValue: DOMString); override;
+    procedure SetNodeValue(const AValue: DOMString); override;
   public
     constructor Create(AOwner: TDOMDocument);
 
@@ -426,8 +430,9 @@ type
 // -------------------------------------------------------
 
   TDOMElement = class(TDOMNode_WithChildren)
-  protected
+  private
     FAttributes: TDOMNamedNodeMap;
+  protected
     function GetAttributes: TDOMNamedNodeMap; override;
   public
     constructor Create(AOwner: TDOMDocument);
@@ -660,7 +665,7 @@ begin
   Result := FNodeValue;
 end;
 
-procedure TDOMNode.SetNodeValue(AValue: DOMString);
+procedure TDOMNode.SetNodeValue(const AValue: DOMString);
 begin
   FNodeValue := AValue;
 end;
@@ -957,7 +962,7 @@ end;
 //   NodeList
 // -------------------------------------------------------
 
-constructor TDOMNodeList.Create(ANode: TDOMNode; AFilter: DOMString);
+constructor TDOMNodeList.Create(ANode: TDOMNode; const AFilter: DOMString);
 begin
   inherited Create;
   node := ANode;
@@ -1320,7 +1325,7 @@ begin
   end;
 end;
 
-procedure TDOMAttr.SetNodeValue(AValue: DOMString);
+procedure TDOMAttr.SetNodeValue(const AValue: DOMString);
 var
   tn: TDOMText;
 begin
@@ -1342,7 +1347,6 @@ constructor TDOMElement.Create(AOwner: TDOMDocument);
 begin
   FNodeType := ELEMENT_NODE;
   inherited Create(AOwner);
-  FAttributes := TDOMNamedNodeMap.Create(AOwner);
 end;
 
 destructor TDOMElement.Destroy;
@@ -1351,9 +1355,12 @@ var
 begin
   {As the attributes are _not_ childs of the element node, we have to free
    them manually here:}
-  for i := 0 to FAttributes.Count - 1 do
-    FAttributes[i].Free;
-  FAttributes.Free;
+  if FAttributes<>nil then begin
+    for i := 0 to FAttributes.Count - 1 do
+      FAttributes[i].Free;
+    FAttributes.Free;
+    FAttributes:=nil;
+  end;
   inherited Destroy;
 end;
 
@@ -1363,14 +1370,19 @@ var
 begin
   Result := TDOMElement.Create(ACloneOwner);
   Result.FNodeName := FNodeName;
-  for i := 0 to FAttributes.Count - 1 do
-    TDOMElement(Result).FAttributes.Add(FAttributes[i].CloneNode(True, ACloneOwner));
+  if FAttributes<>nil then begin
+    TDOMElement(Result).GetAttributes;
+    for i := 0 to FAttributes.Count - 1 do
+      TDOMElement(Result).FAttributes.Add(FAttributes[i].CloneNode(True, ACloneOwner));
+  end;
   if deep then
     CloneChildren(Result, ACloneOwner);
 end;
 
 function TDOMElement.GetAttributes: TDOMNamedNodeMap;
 begin
+  if FAttributes=nil then
+    FAttributes := TDOMNamedNodeMap.Create(FOwnerDocument);
   Result := FAttributes;
 end;
 
@@ -1378,12 +1390,14 @@ function TDOMElement.GetAttribute(const name: DOMString): DOMString;
 var
   i: Integer;
 begin
-  for i := 0 to FAttributes.Count - 1 do
-    if FAttributes[i].NodeName = name then
-    begin
-      Result := FAttributes[i].NodeValue;
-      exit;
-    end;
+  if FAttributes<>nil then begin
+    for i := 0 to FAttributes.Count - 1 do
+      if FAttributes[i].NodeName = name then
+      begin
+        Result := FAttributes[i].NodeValue;
+        exit;
+      end;
+  end;
   SetLength(Result, 0);
 end;
 
@@ -1392,6 +1406,7 @@ var
   i: Integer;
   attr: TDOMAttr;
 begin
+  GetAttributes;
   for i := 0 to FAttributes.Count - 1 do
     if FAttributes[i].NodeName = name then
     begin
@@ -1408,6 +1423,7 @@ procedure TDOMElement.RemoveAttribute(const name: DOMString);
 var
   i: Integer;
 begin
+  if FAttributes=nil then exit;
   for i := 0 to FAttributes.Count - 1 do
     if FAttributes[i].NodeName = name then
     begin
@@ -1421,12 +1437,14 @@ function TDOMElement.GetAttributeNode(const name: DOMString): TDOMAttr;
 var
   i: Integer;
 begin
-  for i := 0 to FAttributes.Count - 1 do
-    if FAttributes[i].NodeName = name then
-    begin
-      Result := TDOMAttr(FAttributes[i]);
-      exit;
-    end;
+  if FAttributes<>nil then begin
+    for i := 0 to FAttributes.Count - 1 do
+      if FAttributes[i].NodeName = name then
+      begin
+        Result := TDOMAttr(FAttributes[i]);
+        exit;
+      end;
+  end;
   Result := nil;
 end;
 
@@ -1434,6 +1452,7 @@ procedure TDOMElement.SetAttributeNode(NewAttr: TDOMAttr);
 var
   i: Integer;
 begin
+  if FAttributes=nil then exit;
   for i := 0 to FAttributes.Count - 1 do
     if FAttributes[i].NodeName = NewAttr.NodeName then
     begin
@@ -1448,6 +1467,8 @@ var
   i: Integer;
   node: TDOMNode;
 begin
+  Result:=nil;
+  if FAttributes=nil then exit;
   for i := 0 to FAttributes.Count - 1 do
   begin
     node := FAttributes[i];
@@ -1613,6 +1634,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2002/09/13 16:58:27  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.3  2002/08/01 08:06:27  lazarus
   MG: reduced output
 
