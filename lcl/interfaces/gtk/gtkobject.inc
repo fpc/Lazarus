@@ -3227,16 +3227,6 @@ begin
                             GDK_KEY_PRESS_MASK);
         ConnectSenderSignal(gObject, 'key-release-event', @GTKKeyUpDown,
                             GDK_KEY_RELEASE_MASK);
-      end
-      else
-      if (Sender is TCustomListBox) then Begin
-      
-        //TODO:listbox is STILL not sendig keypress events even with these lines.
-
-        ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown,
-                            GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
-                            GDK_KEY_RELEASE_MASK);
       end;
       ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown,
                           GDK_KEY_PRESS_MASK);
@@ -7324,6 +7314,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.374  2003/06/10 17:23:35  mattias
+  implemented tabstop
+
   Revision 1.373  2003/06/10 12:28:23  mattias
   fixed anchoring controls
 
