@@ -2245,7 +2245,7 @@ begin
   EndPos:=StartPos;
   while (EndPos<=MaxPos) and (ASource[EndPos]<>'}') do inc(EndPos);
   if (EndPos=StartPos) or (EndPos>MaxPos) then exit;
-  Filename:=copy(ASource,StartPos,EndPos-StartPos);
+  Filename:=SetDirSeparators(copy(ASource,StartPos,EndPos-StartPos));
   Result:=true;
 end;
 

@@ -4871,6 +4871,7 @@ begin
   if FilenameIsPascalUnit(AFilename) then begin
     // this could be a unit with a form
     if (not Project1.AutoOpenDesignerFormsDisabled)
+    and (not (ofDoNotLoadResource in Flags))
     and (EnvironmentOptions.AutoCreateFormsOnOpen
          or (NewUnitInfo.Component<>nil))
     then begin
@@ -6701,6 +6702,7 @@ var
   UnitCode, LFMCode: TCodeBuffer;
   HasDFMFile: boolean;
   LFMFilename: String;
+  OldOpenEditorsOnCodeToolChange: Boolean;
 begin
   // check file and directory
   writeln('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
@@ -6752,6 +6754,7 @@ begin
   // add {$i unit.lrs} directive
   // comment all missing units in uses sections
   writeln('TMainIDE.DoConvertDelphiUnit Convert delphi source');
+  OldOpenEditorsOnCodeToolChange:=FOpenEditorsOnCodeToolChange;
   FOpenEditorsOnCodeToolChange:=true;
   try
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then begin
@@ -6796,7 +6799,7 @@ begin
     Result:=ConvertLFMtoLRSfile(LFMCode.Filename);
     if Result<>mrOk then exit;
   finally
-    FOpenEditorsOnCodeToolChange:=false;
+    FOpenEditorsOnCodeToolChange:=OldOpenEditorsOnCodeToolChange;
   end;
 
   Result:=mrOk;
@@ -8861,7 +8864,7 @@ begin
     // open all sources in editor
     for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
       if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
-        -1,[ofOnlyIfExists])<>mrOk then
+        -1,[ofOnlyIfExists,ofDoNotLoadResource])<>mrOk then
       begin
         Abort:=true;
         exit;
@@ -10697,6 +10700,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.769  2004/09/12 22:57:29  mattias
+  implemented autofixing MainUnit IDE directive PathDelim by Vincent
+
   Revision 1.768  2004/09/11 01:23:10  mattias
   implemented commenting missing units for Delphi unit conversion
 

@@ -131,7 +131,8 @@ type
     ofVirtualFile,   // open the virtual file
     ofConvertMacros, // replace macros in filename
     ofUseCache,      // do not update file from disk
-    ofMultiOpen      // set during loading multiple files
+    ofMultiOpen,     // set during loading multiple files
+    ofDoNotLoadResource// do not open form, datamodule, ...
     );
   TOpenFlags = set of TOpenFlag;
 
@@ -279,7 +280,8 @@ const
      'ofVirtualFile',
      'ofConvertMacros',
      'ofUseCache',
-     'ofMultiOpen'
+     'ofMultiOpen',
+     'ofDoNotLoadResource'
     );
 
   SaveFlagNames: array[TSaveFlag] of string = (

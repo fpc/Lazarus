@@ -177,30 +177,6 @@ var
   SourceNotebook : TSourceNotebook;
   Project1: TProject;
 
-const
-  OpenFlagNames: array[TOpenFlag] of string = (
-     'ofProjectLoading',
-     'ofOnlyIfExists',
-     'ofRevert',
-     'ofQuiet',
-     'ofAddToRecent',
-     'ofRegularFile',
-     'ofVirtualFile',
-     'ofConvertMacros',
-     'ofUseCache',
-     'ofMultiOpen'
-    );
-
-  SaveFlagNames: array[TSaveFlag] of string = (
-     'sfSaveAs',
-     'sfSaveToTestDir',
-     'sfProjectSaving',
-     'sfCheckAmbigiousFiles'
-    );
-
-function OpenFlagsToString(Flags: TOpenFlags): string;
-function SaveFlagsToString(Flags: TSaveFlags): string;
-
 implementation
 
 
@@ -220,36 +196,6 @@ function CompareUnitNameAndUnitFile(UnitName: PChar;
   UnitFile: PUnitFile): integer;
 begin
   Result:=CompareStringPointerI(UnitName,PChar(UnitFile^.UnitName));
-end;
-
-function OpenFlagsToString(Flags: TOpenFlags): string;
-var
-  Flag: TOpenFlag;
-begin
-  Result:='';
-  for Flag:=Low(TOpenFlag) to High(TOpenFlag) do begin
-    if Flag in Flags then begin
-      if Result<>'' then
-        Result:=Result+',';
-      Result:=Result+OpenFlagNames[Flag];
-    end;
-  end;
-  Result:='['+Result+']';
-end;
-
-function SaveFlagsToString(Flags: TSaveFlags): string;
-var
-  Flag: TSaveFlag;
-begin
-  Result:='';
-  for Flag:=Low(TSaveFlag) to High(TSaveFlag) do begin
-    if Flag in Flags then begin
-      if Result<>'' then
-        Result:=Result+',';
-      Result:=Result+SaveFlagNames[Flag];
-    end;
-  end;
-  Result:='['+Result+']';
 end;
 
 { TMainIDEBase }
