@@ -130,16 +130,17 @@ type
   TCustomNotebook = class(TWinControl)
   private
     fAccess: TStrings; // TNBPages
+    fAddingPages: boolean;
     FImages: TImageList;
+    FLoadedPageIndex: integer;
     FOnCloseTabClicked: TNotifyEvent;
+    fOnPageChanged: TNotifyEvent;
     FOptions: TNoteBookOptions;
     fPageIndex: Integer;
     fPageIndexOnLastChange: integer;
     fPageList: TList;  // List of TCustomPage
-    fOnPageChanged: TNotifyEvent;
     fShowTabs: Boolean;
     fTabPosition: TTabPosition;
-    fAddingPages: boolean;
     Procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
@@ -865,6 +866,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     procedure Paint; override;
     function ParentColorIsStored: boolean;
+    Function CanTab: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
@@ -965,6 +967,9 @@ end.
 
  {
   $Log$
+  Revision 1.112  2004/07/17 15:08:35  mattias
+  fixed tab for TPanel and TPage
+
   Revision 1.111  2004/07/12 21:32:07  mattias
   added TCheckGroup.ColumnLayout
 

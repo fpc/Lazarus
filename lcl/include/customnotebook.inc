@@ -322,6 +322,7 @@ begin
 
   fAccess := TNBPages.Create(fPageList, Self);
   fPageIndex := -1;
+  FLoadedPageIndex:=-1;
 
   ControlStyle := [csAcceptsControls];
   TabPosition := tpTop;
@@ -520,6 +521,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetPageIndex(AValue: Integer);
 begin
+  if (csLoading in ComponentState) then FLoadedPageIndex:=AValue;
+  //debugln('TCustomNotebook.SetPageIndex A AValue=',dbgs(AValue),' fPageIndex=',dbgs(fPageIndex),' PageCount=',dbgs(PageCount),' HandleAllocated=',dbgs(HandleAllocated));
   if (AValue < 0) or (AValue >= PageCount) then exit;
   if fPageIndex = AValue then exit;
   fPageIndex := AValue;
@@ -534,7 +537,6 @@ function TCustomNotebook.GetPageIndex: Integer;
 begin
   Result := fPageIndex;
 end;
-
 
 {------------------------------------------------------------------------------
   TCustomNotebook MoveTab
@@ -687,6 +689,8 @@ end;
 procedure TCustomNotebook.Loaded;
 begin
   inherited Loaded;
+  if FLoadedPageIndex>=0 then PageIndex:=FLoadedPageIndex;
+  FLoadedPageIndex:=-1;
   fPageIndexOnLastChange:=PageIndex;
   if HandleAllocated then DoCreateWnd;
 end;
@@ -701,16 +705,18 @@ Begin
       TCN_SELCHANGE:
         begin
           // set the page from the NMHDR^.idfrom
-          if ([csLoading,csDestroying]*ComponentState=[])
-          and (not fAddingPages) then begin
+          if (not fAddingPages) then begin
             FPageIndex := NMHDR^.idfrom;
             if FPageIndex>=PageCount then
               FPageIndex:=-1;
+            //debugln('TCustomNotebook.CNNotify A fPageIndex=',fPageIndex,' FLoadedPageIndex=',FLoadedPageIndex);
             UpdateAllDesignerFlags;
-            if fPageIndexOnLastChange<>fPageIndex then
-              Change;
-            if csDesigning in ComponentState then
-              OwnerFormDesignerModified(Self);
+            if ([csLoading,csDestroying]*ComponentState=[]) then begin
+              if fPageIndexOnLastChange<>fPageIndex then
+                Change;
+              if csDesigning in ComponentState then
+                OwnerFormDesignerModified(Self);
+            end;
           end;
         end;
     else
@@ -729,12 +735,13 @@ procedure TCustomNotebook.DoSendPageIndex;
 var
   Msg: TLMNotebookEvent;
 begin
+  //DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex),' ',dbgs(csLoading in ComponentState),' ',dbgs(HandleAllocated));
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
   Msg.Page := fPageIndex;
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
+  DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
   CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
@@ -804,6 +811,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.53  2004/07/17 15:08:36  mattias
+  fixed tab for TPanel and TPage
+
   Revision 1.52  2004/06/29 08:03:08  micha
   fix showtabs for win32 interface
 

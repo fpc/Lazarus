@@ -1009,7 +1009,7 @@ begin
   //if NewFocus<>nil then
   //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
   //else
-  //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=nil');
+  //  DebugLn('TControl.PerformTab B ',Name,':',ClassName,' NewFocus=nil');
 
   If (NewFocus = nil) then NewFocus:=FirstFocus;
   If NewFocus = OldFocus then begin
@@ -3219,6 +3219,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.205  2004/07/17 15:08:36  mattias
+  fixed tab for TPanel and TPage
+
   Revision 1.204  2004/07/11 13:03:54  mattias
   extended RolesForForm to manage multiple roles for on control
 

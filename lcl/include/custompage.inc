@@ -169,7 +169,7 @@ begin
     TCustomNotebook(Parent).MoveTab(Self,AValue);
   end;
   // ToDo
-  DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
+  //DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 
 function TCustomPage.IsVisible: Boolean;
@@ -177,8 +177,9 @@ begin
   if Parent is TCustomNotebook then
   begin
     Result := PageIndex = TCustomNotebook(Parent).PageIndex;
+  //DebugLn('TCustomPage.IsVisible PageIndex=',dbgs(PageIndex),' Parent.PageIndex=',dbgs(TCustomNotebook(Parent).PageIndex));
   end else begin
-    Result := inherited;
+    Result := inherited IsVisible;
   end;
 end;
 

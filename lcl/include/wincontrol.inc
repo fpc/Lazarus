@@ -1264,7 +1264,8 @@ begin
     If List.Count > 0 then begin
       J := List.IndexOf(CurrentControl);
       if J<0 then exit;
-      //DebugLn('TWinControl.FindNextControl A ',CurrentControl.Name,' ',J,' ',GoForward,',',CheckTabStop,',',CheckParent,',',OnlyWinControls);
+      ///DebugLn('TWinControl.FindNextControl A ',CurrentControl.Name,' ',dbgs(J),
+      //  ' '+dbgs(GoForward)+','+dbgs(CheckTabStop)+','+dbgs(CheckParent)+','+dbgs(OnlyWinControls));
       I := J;
       Repeat
         If GoForward then begin
@@ -1279,14 +1280,22 @@ begin
         if I=J then exit;
 
         Next := TControl(List[I]);
-        //DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',I);
+        {DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
+          +' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
+          +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
+          +' Enabled='+dbgs(Next.Enabled)+' OnlyWinC='+dbgs(OnlyWinControls)
+          +' TestTab='+dbgs(((Not CheckTabStop) or Next.TabStop))
+          +' TestPar='+dbgs(((not CheckParent) or (Next.Parent = Self)))
+          +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)
+          +' TestWinC='+dbgs((not OnlyWinControls) or (Next is TWinControl))
+          );}
         If (((Not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
         and (Next.Enabled and Next.IsVisible)
         and ((not OnlyWinControls) or (Next is TWinControl)) then
           Result := Next;
       until (Result <> nil);
-      //DebugLn('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',I);
+      //DebugLn('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',dbgs(I));
     end;
   finally
     List.Free;
@@ -3769,6 +3778,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.257  2004/07/17 15:08:36  mattias
+  fixed tab for TPanel and TPage
+
   Revision 1.256  2004/07/16 21:49:00  mattias
   added RTTI controls
 
