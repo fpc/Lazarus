@@ -1847,11 +1847,22 @@ function GTKDialogSelectRowCB(widget: PGtkWidget; Row, Column: gInt;
   bevent: pgdkEventButton; data: gPointer): GBoolean; cdecl;
 var
   theDialog: TCommonDialog;
+  MenuWidget: PGtkWidget;
+  AFilterEntry: PFileSelFilterEntry;
 begin
   Result:=false;
   if (Data=nil) or (BEvent=nil) or (Column=0) or (Row=0) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
+    if (bevent <> nil) and (bevent^.thetype = GDK_2BUTTON_PRESS) and (PGtkFileSelection(theDialog.Handle)^.dir_list = widget) then begin
+      MenuWidget := gtk_object_get_data(PGtkObject(theDialog.Handle), 'LCLFilterMenu');
+      if MenuWidget <> nil then begin
+        AFilterEntry := gtk_object_get_data(PGtkObject(gtk_menu_get_active(PGtkMenu(MenuWidget))), 'LCLIsFilterMenuItem');
+        if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then
+          PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
+                                        AFilterEntry^.Mask);
+      end;
+    end;
     UpdateDetailView(TOpenDialog(theDialog));
   end;
 end;
@@ -1875,7 +1886,7 @@ var
     AFilterEntry:=gtk_object_get_data(PGtkObject(FilterWidget),
                                       'LCLIsFilterMenuItem');
     if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then begin
-      gtk_file_selection_complete(PGtkFileSelection(theDialog.Handle),
+      PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
         AFilterEntry^.Mask);
       UpdateDetailView(TOpenDialog(theDialog));
     end;
@@ -2991,6 +3002,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.263  2005/02/16 22:55:59  mattias
+  improved gtk intf file dialog filter  from C Western
+
   Revision 1.262  2005/02/15 10:33:31  mattias
   fix gtk2 scrollbars  from Jesus
 

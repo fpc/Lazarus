@@ -1824,7 +1824,65 @@ type
   end;
 
 
-  { TDockTree - a tree of TDockZones }
+  { TDockTree - a tree of TDockZones - Every docked window has one tree
+
+    Docking means here: Combining several windows to one. A window can here be
+    a TCustomForm or a floating control (undocked) or a TDockForm.
+    A window can be docked to another to the left, right, top, bottom or "into".
+    The docking source window will be resized, to fit to the docking target
+    window.
+
+    Example1: Docking "A" left to "B"
+    
+       +---+    +----+
+       | A | -> | B  |
+       +---+    |    |
+                +----+
+      Result: A new docktree will be created. Height of "A" will be resized to
+              the height of "B".
+              A splitter will be inserted between "A" and "B".
+              And all three are childs of the newly created TDockForm of the
+              newly created TDockTree.
+      
+       +------------+
+       |+---+|+----+|
+       || A ||| B  ||
+       ||   |||    ||
+       |+---+|+----+|
+       +------------+
+
+      If "A" or "B" were floating controls, the floating dock sites are kept ???.
+      If "A" or "B" were forms, they loose there decorations (title bars and
+      borders) ???.
+      If "A" had a TDockTree, it is freed and its child dockzones are merged to
+      the docktree of "B".
+      
+      
+    Example2: Docking A into B
+                +-----+
+       +---+    |     |
+       | A | ---+-> B |
+       +---+    |     |
+                +-----+
+
+      Result: A new docktree will be created. "A" will be resized to the size
+              of "B". Both will be put into a TDockPages control which is the
+              child of the newly created TDockTree.
+              
+       +-------+
+       |[B][A] |
+       |+-----+|
+       ||     ||
+       || A   ||
+       ||     ||
+       |+-----+|
+       +-------+
+
+    Every DockZone has siblings and childs. Siblings can either be
+    horizontally (left to right, splitter),
+    vertically (top to bottom, splitter)
+    or upon each other (as pages, left to right).
+  }
 
   TForEachZoneProc = procedure(Zone: TDockZone) of object;
 
@@ -1842,20 +1900,9 @@ type
     FGrabberSize: Integer;
     FGrabbersOnTop: Boolean;
     FFlags: TDockTreeFlags;
-    //FOldRect: TRect;
-    //FOldWndProc: TWndMethod;
-    //FReplacementZone: TDockZone;
-    //FScaleBy: Double;
-    //FShiftScaleOrient: TDockOrientation;
-    //FShiftBy: Integer;
-    //FSizePos: TPoint;
-    //FSizingDC: HDC;
-    //FSizingWnd: HWND;
-    //FSizingZone: TDockZone;
     FTopZone: TDockZone;
     FTopXYLimit: Integer;
     FUpdateCount: Integer;
-    //FVersion: Integer;
     procedure DeleteZone(Zone: TDockZone);
   protected
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
@@ -2899,6 +2946,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.282  2005/02/16 22:55:59  mattias
+  improved gtk intf file dialog filter  from C Western
+
   Revision 1.281  2005/02/08 21:46:22  vincents
   fixed fpc 1.0.x compilation
 

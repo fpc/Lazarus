@@ -450,6 +450,8 @@ function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
 // common dialogs
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
+procedure PopulateFileAndDirectoryLists(FileSelection: PGtkFileSelection;
+                                        const Mask: string);
 
 // notebook
 function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;

@@ -3156,6 +3156,65 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: PopulateFileAndDirectoryLists
+  Params:    FileSelection: PGtkFileSelection;
+              Mask: string (File mask, such as *.txt)
+  Returns:   none
+
+  Populate the directory and file lists according to the given mask
+ ------------------------------------------------------------------------------}
+procedure PopulateFileAndDirectoryLists(FileSelection: PGtkFileSelection;
+  const Mask: string);
+var
+  Dirs, Files: PGtkCList;
+  Text: array [0..1] of Pgchar;
+  Info: TSearchRec;
+  DirName: PChar;
+  Dir: string;
+  
+  procedure Add(List: PGtkCList; const s: string);
+  begin
+    Text[0] := PChar(s);
+    gtk_clist_append(List, Text);
+  end;
+  
+begin
+  dirs := PGtkCList(FileSelection^.dir_list);
+  files := PGtkCList(FileSelection^.file_list);
+  DirName := gtk_file_selection_get_filename(FileSelection);
+  if DirName <> nil then begin
+    SetString(Dir, DirName, strlen(DirName));
+    SetLength(Dir, LastDelimiter(PathDelim,Dir));
+  end else
+    Dir := '';
+  Text[1] := nil;
+  gtk_clist_freeze(Dirs);
+  gtk_clist_clear(Dirs);
+  gtk_clist_freeze(Files);
+  gtk_clist_clear(Files);
+  { Add all directories }
+  Add(dirs, '..');
+  if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile and faDirectory,
+    Info) = 0
+  then
+    repeat
+      if ((Info.Attr and faDirectory) = faDirectory) and (Info.Name <> '.')
+      and (Info.Name <> '..') then
+        Add(Dirs, AppendPathDelim(Info.Name));
+    until FindNext(Info) <> 0;
+  FindClose(Info);
+  // add all files
+  if FindFirst(AppendPathDelim(Dir)+Mask, faAnyFile, Info) = 0 then
+    repeat
+      if (Info.Attr and faDirectory) <> faDirectory then
+        Add(Files, Info.Name);
+    until FindNext(Info) <> 0;
+  FindClose(Info);
+  gtk_clist_thaw(Dirs);
+  gtk_clist_thaw(Files);
+end;
+
+{------------------------------------------------------------------------------
   Procedure: DeliverMessage
   Params:    Message: the message to process
   Returns:   True if handled
@@ -7933,6 +7992,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.333  2005/02/16 22:55:59  mattias
+  improved gtk intf file dialog filter  from C Western
+
   Revision 1.332  2005/02/05 16:09:52  marc
   * first 64bit changes
 

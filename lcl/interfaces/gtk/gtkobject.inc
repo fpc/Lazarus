@@ -4239,7 +4239,7 @@ begin
       end;
       inc(i);
     end;
-    gtk_file_selection_complete(GTK_FILE_SELECTION(SelWidget),
+    PopulateFileAndDirectoryLists(GTK_FILE_SELECTION(SelWidget),
          PFileSelFilterEntry(FilterList[CurMask])^.Mask);
   end;
 end;
@@ -7008,6 +7008,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.626  2005/02/16 22:55:59  mattias
+  improved gtk intf file dialog filter  from C Western
+
   Revision 1.625  2005/02/15 10:33:31  mattias
   fix gtk2 scrollbars  from Jesus
 
