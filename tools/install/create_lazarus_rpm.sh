@@ -16,7 +16,7 @@ if [ "x$FPCRPM" = "x" ]; then
 fi
 
 Date=$Year$Month$Day
-LazVersion=0.9.0.9
+LazVersion=0.9.0.10
 LazRelease=`echo $FPCRPM | sed -e 's/-/_/g'`
 SrcTGZ=lazarus-$Date.tgz
 TmpDir=/tmp/lazarus$LazVersion

@@ -104,7 +104,8 @@ begin
   LCLPath:=TrimFilename(LazarusSrcDir+SetDirSeparators('/lcl/units/'));
   NextStartPos:=1;
   writeln('CheckFilenameForLCLPaths UnitPath="',UnitPath,'" LCLPath="',LCLPath,'"');
-  if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then begin
+  if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then
+  begin
     LCLPath:=LCLPath+'$(TargetCPU)'+PathDelim+'$(TargetOS)';
     Result:=MessageDlg('LCL unit path missing',
       'The current unit path for the file'#13

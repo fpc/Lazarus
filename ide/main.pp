@@ -6496,7 +6496,7 @@ begin
   Result:=CheckFilenameForLCLPaths(DelphiFilename);
   if Result<>mrOk then exit;
   // close Delphi files in editor
-  writeln('TMainIDE.DoConvertDelphiUnit Close files in editor');
+  writeln('TMainIDE.DoConvertDelphiUnit Close files in editor .pas/.dfm');
   Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
   if Result<>mrOk then exit;
   DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
@@ -10301,6 +10301,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.704  2004/01/27 13:00:16  mattias
+  increased realease number to 0.9.0.10
+
   Revision 1.703  2004/01/24 16:09:10  mattias
   IDE build configs are now saved on every install/uninstall
 
