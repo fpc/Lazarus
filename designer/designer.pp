@@ -79,7 +79,7 @@ begin
   ControlSelection := TControlSelection.Create(CustomForm);
 
   //the source is created when the form is created.
-  //the TDesigner is created is MAin.pp and then TDesigner.SourceEditor := SourceNotebook.CreateFormFromUnit(CustomForm);
+  //the TDesigner is created in Main.pp and then TDesigner.SourceEditor := SourceNotebook.CreateFormFromUnit(CustomForm);
 
 
 end;

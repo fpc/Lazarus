@@ -602,7 +602,6 @@ Begin
               end;
         End;
 
-Writeln('X = '+inttostr(x));
 
     if SE.Editor = TempEditor then
        Begin
@@ -657,7 +656,7 @@ end;
 
 Function TSourceNotebook.GetEmpty : Boolean;
 Begin
-Result := Notebook1.Pages.Count = 0;
+Result := (not assigned(Notebook1)) or (Notebook1.Pages.Count = 0);
 end;
 
 Procedure TSourceNotebook.OpenClicked(Sender: TObject);

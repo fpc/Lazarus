@@ -1550,6 +1550,11 @@ end;
 
 Procedure TForm1.mnuBuildProjectClicked(Sender : TObject);
 Begin
+if SourceNotebook.Empty then Begin
+   Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
+   Exit;
+   end;
+
 //for now just compile the active unit;
 SourceNotebook.SaveClicked(Sender);
 
@@ -1572,8 +1577,31 @@ end;
 
 Procedure TForm1.mnuRunProjectClicked(Sender : TObject);
 var
-Filename : String;
-Begin
+  Filename : String;
+  TheProcess : TProcess;
+  TheProgram : String;
+begin
+if SourceNotebook.Empty then Begin
+   Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
+   Exit;
+   end;
+
+  TheProgram := ExtractFileName(SourceNotebook.ActiveUnitName);
+  //remove the extension
+  if pos('.',TheProgram) <> 0 then
+     delete(ThePRogram,pos('.',TheProgram),length(TheProgram));
+
+
+  if not FileExists(ExtractFilePath(SOurceNotebook.ActiveUnitName)+TheProgram) then Begin
+     TheProgram := 'No program called "'+TheProgram+'" found!';
+     Application.MessageBox(@TheProgram,'Error',MB_OK);
+     exit;
+     end;
+
+  TheProcess:=TProcess.Create(TheProgram,[poRunSuspended,poUsePipes,poNoConsole]);
+
+  TheProcess.Execute;
+
 end;
 
 
@@ -1728,6 +1756,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2000/12/21 20:28:33  lazarus
+  Project - RUN will run the program IF the program is the active unit in the Editor.
+  Shane
+
   Revision 1.22  2000/12/20 20:04:30  lazarus
   Made PRoject Build compile the active unit.  This way we can actually play with it by compiling units.
 
