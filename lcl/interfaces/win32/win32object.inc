@@ -18,6 +18,7 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
+
 {------------------------------------------------------------------------------
   Method: TWin32Object.Create
   Params:  None
@@ -228,14 +229,17 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
       {In Win32 Menu items that are created without a initial caption default to disabled,
        the next three lines are to counter that.}
       fMask:=MIIM_STATE or MIIM_TYPE or MIIM_ID;
-      GetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle) and $FFFF, false, @MenuInfo);
-      if (Sender as TMenuItem).Enabled then fState := fState and (not (MFS_DISABLED or MFS_GRAYED));
+      GetMenuItemInfo((Sender as TMenuItem).Parent.Handle,
+                      (Sender as TMenuItem).Command, false, @MenuInfo);
+      if (Sender as TMenuItem).Enabled then
+        fState := fState and (not (MFS_DISABLED or MFS_GRAYED));
 
       fMask:=MIIM_TYPE or MIIM_STATE;
       fType:=Style;
       dwTypeData:=Data;
     end;
-    SetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle) and $FFFF, false, @MenuInfo);
+    SetMenuItemInfo((Sender as TMenuItem).Parent.Handle,
+                    (Sender as TMenuItem).Command, false, @MenuInfo);
     DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
   End;
 
@@ -532,6 +536,7 @@ Begin
           Else If Sender Is TMenuItem Then
           Begin
             DeleteMenu((Sender as TMenuItem).Parent.Handle, Handle, MF_BYCOMMAND);
+            { release menu item id }
             DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
           End
           Else
@@ -2591,11 +2596,13 @@ Begin
       cbSize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, (ParentMenuHandle) and $FFFF, false, @MenuInfo);
+    GetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Command,
+                    false, @MenuInfo);
     if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
     begin
       MenuInfo.hSubmenu:=ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, Integer(ParentMenuHandle) and $FFFF, false, MenuInfo);
+      SetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Command,
+                      false, MenuInfo);
     end;
   end;
 
@@ -2607,7 +2614,6 @@ Begin
     fMask:=Mask;
     fType:=Style;
     {fState:=MFS_ENABLED;} {not needed}
-    wID:=integer(MenuHandle) and $FFFF; {value is only 16 bit wide!}
     hSubmenu:=MenuHandle;
     {hbmpChecked:=0;
     hbmpUnchecked:=0;} {not needed}
@@ -2659,6 +2665,9 @@ End;
 
 {
   $Log$
+  Revision 1.53  2003/06/24 15:57:55  mattias
+  applied win32 menu patch from Micha Nelissen
+
   Revision 1.52  2003/06/24 08:32:03  mattias
   applied menu fix from Micha Nelissen
 

@@ -106,10 +106,30 @@ end;
 
   
  ------------------------------------------------------------------------------}
-function TMenu.FindItem(Value: Integer; Kind: TFindItemKind): TMenuItem;
+function TMenu.FindItem(AValue: Integer; Kind: TFindItemKind): TMenuItem;
+
+  function Find(Item: TMenuItem): TMenuItem;
+  var
+    I: Integer;
+  begin
+    Result := nil;
+    if Item=nil then exit;
+    if ((Kind = fkCommand) and (AValue = Item.Command))
+    or ((Kind = fkHandle) and (AValue = Integer(Item.FHandle)))
+    or ((Kind = fkShortCut) and (AValue = Item.ShortCut)) then
+    begin
+      Result := Item;
+    end
+    else
+      for I := 0 to Item.GetCount - 1 do begin
+        Result:=Find(Item[I]);
+        if Result<>nil then
+          Exit;
+      end;
+  end;
+
 begin
-  //TODO: FINISH TMenu:FINDITEM
-  Result:=nil;
+  Result:=Find(Items);
 end;
 
 {------------------------------------------------------------------------------
@@ -186,6 +206,19 @@ begin
   if not HandleAllocated then CreateHandle;
 end;
 
+function TMenu.DispatchCommand(ACommand: Word): Boolean;
+var
+  Item: TMenuItem;
+begin
+  Result := False;
+  Item := FindItem(ACommand, fkCommand);
+  if Item <> nil then
+  begin
+    Item.Click;
+    Result := True;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenu.IsRightToLeft
   Params:   
@@ -204,6 +237,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/06/24 15:57:55  mattias
+  applied win32 menu patch from Micha Nelissen
+
   Revision 1.17  2003/06/13 06:05:49  mattias
   started context diff
 

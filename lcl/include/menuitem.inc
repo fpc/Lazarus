@@ -89,6 +89,7 @@ begin
   FChecked := False;
   FVisible := True;
   FEnabled := True;
+  FCommand := UniqueCommand;
   //writeln('TMenuItem.Create END TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
 end;
 
@@ -169,6 +170,7 @@ begin
   FItems:=nil;
   if FParent<>nil then
     FParent.FItems.Remove(Self);
+  if FCommand <> 0 then CommandPool[FCommand] := False;
   inherited Destroy;
 end;
 
@@ -953,6 +955,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/06/24 15:57:55  mattias
+  applied win32 menu patch from Micha Nelissen
+
   Revision 1.34  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 
@@ -1083,6 +1088,9 @@ end;
 
 
   $Log$
+  Revision 1.35  2003/06/24 15:57:55  mattias
+  applied win32 menu patch from Micha Nelissen
+
   Revision 1.34  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 

@@ -184,6 +184,7 @@ type
     property Items[Index: Integer]: TMenuItem read GetItem; default;
     property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
     property Parent: TMenuItem read GetParent;
+    property Command: integer read FCommand;
   published
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
     property Caption: String read FCaption write SetCaption
@@ -240,10 +241,12 @@ type
     FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function FindItem(Value: Integer; Kind: TFindItemKind) : TMenuItem;
+    function FindItem(AValue: Integer; Kind: TFindItemKind) : TMenuItem;
     function HandleAllocated: Boolean;
     Function IsRightToLeft: Boolean;
     procedure HandleNeeded;
+    function DispatchCommand(ACommand: Word): Boolean;
+  public
     property Handle: HMenu read GetHandle;
     property Parent: TComponent read FParent write SetParent;
   published
@@ -309,6 +312,19 @@ procedure Register;
 implementation
 
 
+{ Menu command managment }
+
+var
+  CommandPool: TBits;
+
+function UniqueCommand: Word;
+begin
+  if CommandPool=nil then
+    CommandPool:=TBits.Create(32);
+  Result := CommandPool.OpenBit;
+  CommandPool[Result] := True;
+end;
+
 function ShortCutToText(ShortCut: TShortCut): string;
 begin
   Result:=ShortCutToShortCutText(ShortCut);
@@ -358,11 +374,18 @@ end;
 initialization
   DesignerMenuItemClick:=nil;
   ActivePopupMenu:=nil;
+  CommandPool := nil;
+  
+finalization
+  FreeThenNil(CommandPool);
 
 end.
 
 {
   $Log$
+  Revision 1.48  2003/06/24 15:57:55  mattias
+  applied win32 menu patch from Micha Nelissen
+
   Revision 1.47  2003/06/24 15:23:10  mattias
   deleted unused code
 

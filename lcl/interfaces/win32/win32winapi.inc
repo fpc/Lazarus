@@ -162,7 +162,7 @@ Begin
   if BChecked then CheckFlag := MF_CHECKED 
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
-  PrevState := Windows.CheckMenuItem(FMenu, HndMenu, CheckFlag);
+  PrevState := Windows.CheckMenuItem(FMenu, UIDEnableItem, CheckFlag);
   Result := PrevState = MF_ENABLED;
 End;
 
@@ -822,7 +822,7 @@ Begin
   if BEnable then EnableFlag := MF_ENABLED 
   else EnableFlag := MF_GRAYED;
   EnableFlag := EnableFlag or MF_BYCOMMAND;
-  Result := Windows.EnableMenuItem(FMenu, HndMenu, EnableFlag);
+  Result := Windows.EnableMenuItem(FMenu, UIDEnableItem, EnableFlag);
 End;
 
 {------------------------------------------------------------------------------
@@ -2322,6 +2322,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/06/24 15:57:55  mattias
+  applied win32 menu patch from Micha Nelissen
+
   Revision 1.33  2003/03/25 08:12:39  mattias
   patch from Martin Smat for menu items and default messages
 
