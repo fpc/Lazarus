@@ -521,6 +521,104 @@ type
   end;
 
 
+  { TBoundLabel }
+
+  TBoundLabel = class(TCustomLabel)
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property FocusControl;
+  published
+    property Caption;
+    property Color;
+    property Height;
+    property Left;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowAccelChar;
+    property ShowHint;
+    property Top;
+    property Layout;
+    property WordWrap;
+    property Width;
+    property OnClick;
+    property OnDblClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+  end;
+
+
+  { TCustomLabeledEdit }
+
+  TLabelPosition = (lpAbove, lpBelow, lpLeft, lpRight);
+
+  TCustomLabeledEdit = class(TCustomEdit)
+  private
+    FEditLabel: TBoundLabel;
+    FLabelPosition: TLabelPosition;
+    FLabelSpacing: Integer;
+    procedure SetLabelPosition(const Value: TLabelPosition);
+    procedure SetLabelSpacing(const Value: Integer);
+  protected
+    procedure SetParent(AParent: TWinControl); override;
+    procedure SetName(const Value: TComponentName); override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    procedure DoPositionLabel; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure CMVisibleChanged(var Msg: TLMessage); message CM_VISIBLECHANGED;
+    procedure CMEnabledChanged(var Msg: TLMessage); message CM_ENABLEDCHANGED;
+    procedure CreateInternalLabel; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property EditLabel: TBoundLabel read FEditLabel stored false;
+    property LabelPosition: TLabelPosition read FLabelPosition
+                                         write SetLabelPosition default lpAbove;
+    property LabelSpacing: Integer read FLabelSpacing write SetLabelSpacing
+                                                                      default 3;
+  end;
+  
+
+  { TLabeledEdit }
+
+  TLabeledEdit = class(TCustomLabeledEdit)
+  published
+    property Anchors;
+    property AutoSize;
+    property CharCase;
+    property Color;
+    property Constraints;
+    //property EditLabel; sub components no implemented in FCL
+    property Enabled;
+    property LabelPosition;
+    property LabelSpacing;
+    property MaxLength;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnDblClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+  end;
+  
+
   { TCustomPanel }
 
   TPanelBevel = TBevelCut;
@@ -616,7 +714,8 @@ uses Math;
 procedure Register;
 begin
   RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
-  RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook]);
+  RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook,
+                                   TLabeledEdit]);
   RegisterComponents('System',[TTimer,TIdleTimer]);
   RegisterNoIcon([TPage]);
 end;
@@ -630,6 +729,8 @@ end;
 {$I paintbox.inc}
 {$I customcheckgroup.inc}
 {$I customradiogroup.inc}
+{$I boundlabel.inc}
+{$I customlabelededit.inc}
 {$I custompanel.inc}
 {$I radiogroup.inc}
 {$I bevel.inc}
@@ -639,6 +740,9 @@ end.
 
  {
   $Log$
+  Revision 1.58  2003/06/10 15:58:39  mattias
+  started TLabeledEdit
+
   Revision 1.57  2003/04/22 13:27:10  mattias
   implemented installing components in component palette
 
