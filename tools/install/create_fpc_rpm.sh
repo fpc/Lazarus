@@ -60,6 +60,14 @@ cat $SpecFile | \
       -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version\//' \
   > $SpecFile
 
+# change Makefile for new rpmbuild
+cd $TmpDir/fpc
+cat Makefile | \
+  sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
+  > New.Makefile
+mv New.Makefile Makefile
+cd -
+
 # compile
 cd $TmpDir/fpc
 make rtl
@@ -80,7 +88,7 @@ cat fpcsrc.spec | \
   > $SpecFile
 
 # build rpm
-rpm -ba $SpecFile
+rpmbuild -ba $SpecFile || rpm -ba $SpecFile
 
 # end.
 
