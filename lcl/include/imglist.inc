@@ -210,6 +210,7 @@ begin
   inherited Create(nil);
   FHeight := AHeight;
   FWidth := AWidth;
+  FImageList := TList.Create;  //shane
   Initialize;
 end;
 
@@ -810,6 +811,9 @@ end;
 {
 
   $Log$
+  Revision 1.7  2002/01/03 15:07:08  lazarus
+  MG: fixed TCustomImageList.CreateSize
+
   Revision 1.6  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 
