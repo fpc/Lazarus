@@ -820,6 +820,8 @@ begin
   itmProjectNewFromFile.Caption := lisMenuNewProjectFromFile;
   mnuProject.Add(itmProjectNewFromFile);
 
+  mnuProject.Add(CreateMenuSeparator);
+
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := lisMenuOpenProject;
@@ -829,6 +831,8 @@ begin
   itmProjectRecentOpen.Name:='itmProjectRecentOpen';
   itmProjectRecentOpen.Caption := lisMenuOpenRecentProject;
   mnuProject.Add(itmProjectRecentOpen);
+
+  mnuProject.Add(CreateMenuSeparator);
 
   itmProjectSave := TMenuItem.Create(Self);
   itmProjectSave.Name:='itmProjectSave';

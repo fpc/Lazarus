@@ -896,7 +896,7 @@ begin
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Insert(Index,APosition);
-      if (Index=Count-1) and (HistoryIndex=Count-2) then
+      if (HistoryIndex>=0) and (HistoryIndex=Index-1) then
         inc(FHistoryIndex);
     end;
     //writeln('  HistoryIndex=',HistoryIndex);
@@ -996,7 +996,7 @@ end;
 
 procedure TPublishProjectOptions.LoadDefaults;
 begin
-  FDestinationDirectory:='$(TempDir)/publishedproject/';
+  FDestinationDirectory:='$(TestDir)/publishedproject/';
   FCommandAfter:='';
   FUseIncludeFileFilter:=true;
   FIncludeFileFilter:='*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}';

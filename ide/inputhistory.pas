@@ -40,7 +40,9 @@ uses
 const
   // these are the names of the various history lists in the IDE:
   PublishProjectDestDirs = 'PublishProjectDestinationDirectories';
-  
+  PublishProjectCommandsAfter = 'PublishProjectCommmandsAfter';
+  PublishProjectIncludeFileFilter = 'PublishProjectIncludeFileFilter';
+  PublishProjectExcludeFileFilter = 'PublishProjectExcludeFileFilter';
 
 type
   TFileDialogSettings = record

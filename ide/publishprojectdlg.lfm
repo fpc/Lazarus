@@ -34,6 +34,7 @@ object PublishProjectDialog: TPublishProjectDialog
   object DestDirGroupBox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Destination directory'
+    ONRESIZE = DestDirGroupBoxRESIZE
     LEFT = 8
     HEIGHT = 111
     TOP = 8

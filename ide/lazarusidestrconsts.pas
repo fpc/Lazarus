@@ -169,6 +169,7 @@ resourcestring
   lisMenuViewLocalVariables = 'Local Variables';
   lisMenuViewCallStack = 'Call Stack';
   lisMenuViewDebugOutput = 'Debug output';
+  
   lisMenuNewProject = 'New Project';
   lisMenuNewProjectFromFile = 'New Project from file';
   lisMenuOpenProject = 'Open Project';
@@ -224,7 +225,7 @@ resourcestring
   lisFPCSourceDirectoryError = 'FPC Source Directory error';
   lisPLzCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
   lisCompilerError = 'Compiler error';
-  lisPlzCheckTheCmpilerName = 'Please check the compiler name';
+  lisPlzCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
   lisAboutLazarusMsg =
      'License: GPL/LGPL'
@@ -237,8 +238,7 @@ resourcestring
     +'develop Delphi like programs in all of the above platforms.' + LineEnding
     +'The IDE will eventually become a RAD tool like Delphi.' + LineEnding
     + LineEnding
-    +'As Lazarus is growing we need more developers.' + LineEnding
-    +'For example: Write a nicer about dialog with a logo.';
+    +'As Lazarus is growing we need more developers.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
   lisUnitNameAlreadyExistsText = 'The unit "%s" already exists.' + LineEnding
        +'Ignore will force the renaming,' + LineEnding
@@ -247,6 +247,7 @@ resourcestring
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
   lisInvalidPascalIdentifierText =
     'The name "%s" is not a valid pascal identifier.';
+  lisCopyError = 'Copy Error';
 
   // hints
   lisHintNewUnit = 'New Unit';

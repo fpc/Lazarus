@@ -46,10 +46,10 @@ type
     DestDirGroupBox: TGROUPBOX;
     DestDirComboBox: TCOMBOBOX;
     BrowseDestDirBitBtn: TBITBTN;
+    CommandAfterLabel: TLABEL;
     CommandAfterCombobox: TCOMBOBOX;
 
     FilesGroupbox: TGROUPBOX;
-    CommandAfterLabel: TLABEL;
     UseIncludeFilterCheckbox: TCHECKBOX;
     IncludeFileFilterCombobox: TCOMBOBOX;
     UseExcludeFilterCheckbox: TCHECKBOX;
@@ -73,6 +73,7 @@ type
     procedure SetComboBox(AComboBox: TComboBox; const NewText: string;
       MaxItemCount: integer);
     procedure LoadHistoryLists;
+    procedure SaveHistoryLists;
     procedure SetOptions(const AValue: TPublishProjectOptions);
   public
     constructor Create(TheOwner: TComponent); override;
@@ -106,30 +107,29 @@ end;
 
 procedure TPublishProjectDialog.DestDirGroupBoxRESIZE(Sender: TObject);
 begin
-  with DestDirGroupBox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
   with DestDirComboBox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,
+              Parent.ClientWidth-2*Left-BrowseDestDirBitBtn.Width-5,Height);
   with BrowseDestDirBitBtn do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    Left:=DestDirComboBox.Left+DestDirComboBox.Width+5;
   with CommandAfterCombobox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
 end;
 
 procedure TPublishProjectDialog.FilesGroupboxRESIZE(Sender: TObject);
 begin
   with FilesGroupbox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with CommandAfterLabel do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with UseIncludeFilterCheckbox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with IncludeFileFilterCombobox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with UseExcludeFilterCheckbox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with ExcludeFileFilterCombobox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
 end;
 
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);
@@ -148,11 +148,11 @@ end;
 procedure TPublishProjectDialog.PublishProjectDialogResize(Sender: TObject);
 begin
   with DestDirGroupBox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with FilesGroupbox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with ProjectInfoGroupbox do
-    SetBounds(Left,Top,Parent.ClientHeight-2*Left,Height);
+    SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
 end;
 
 procedure TPublishProjectDialog.SaveSettingsButtonClick(Sender: TObject);
@@ -174,11 +174,51 @@ begin
   // destination directories
   List:=InputHistories.HistoryLists.GetList(PublishProjectDestDirs,true);
   if List.Count=0 then begin
-    List.Add('$(TempDir)/publishedproject/');
+    List.Add('$(TestDir)/publishedproject/');
     List.Add('$(ProjectDir)/published/');
   end;
   DestDirComboBox.Items.Assign(List);
   
+  // command after
+  List:=InputHistories.HistoryLists.GetList(PublishProjectCommandsAfter,true);
+  if List.Count=0 then begin
+    List.Add('tar czf $(ProjPublishDir).tgz $(ProjPublishDir)');
+  end;
+  CommandAfterCombobox.Items.Assign(List);
+
+  // file filter
+  List:=InputHistories.HistoryLists.GetList(PublishProjectIncludeFileFilter,true);
+  if List.Count=0 then begin
+    List.Add('*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}');
+  end;
+  IncludeFileFilterCombobox.Items.Assign(List);
+
+  List:=InputHistories.HistoryLists.GetList(PublishProjectExcludeFileFilter,true);
+  if List.Count=0 then begin
+    List.Add('*.{bak,ppu,ppw,o,so};*~;backup');
+  end;
+  ExcludeFileFilterCombobox.Items.Assign(List);
+end;
+
+procedure TPublishProjectDialog.SaveHistoryLists;
+begin
+  // destination directories
+  SetComboBox(DestDirComboBox,DestDirComboBox.Text,20);
+  InputHistories.HistoryLists.GetList(PublishProjectDestDirs,true).Assign(
+    DestDirComboBox.Items);
+    
+  // command after
+  SetComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
+  InputHistories.HistoryLists.GetList(PublishProjectCommandsAfter,true).Assign(
+    CommandAfterCombobox.Items);
+
+  // file filter
+  SetComboBox(IncludeFileFilterCombobox,IncludeFileFilterCombobox.Text,20);
+  InputHistories.HistoryLists.GetList(PublishProjectIncludeFileFilter,true).Assign(
+    IncludeFileFilterCombobox.Items);
+  SetComboBox(ExcludeFileFilterCombobox,ExcludeFileFilterCombobox.Text,20);
+  InputHistories.HistoryLists.GetList(PublishProjectExcludeFileFilter,true).Assign(
+    ExcludeFileFilterCombobox.Items);
 end;
 
 procedure TPublishProjectDialog.SetOptions(const AValue: TPublishProjectOptions
@@ -193,11 +233,13 @@ constructor TPublishProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,460);
+  IDEDialogLayoutList.ApplyLayout(Self,500,405);
+  LoadHistoryLists;
 end;
 
 destructor TPublishProjectDialog.Destroy;
 begin
+  SaveHistoryLists;
   inherited Destroy;
 end;
 
