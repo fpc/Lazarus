@@ -51,13 +51,13 @@ interface
 { $DEFINE MEM_CHECK}
 
 // verbosity
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedParentContexts}
 { $DEFINE ShowTriedIdentifiers}
-{ $DEFINE ShowExprEval}
+{$DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
@@ -4203,16 +4203,23 @@ begin
     MoveCursorToCleanPos(CurPos.EndPos);
   end
   else if AtomIsChar('@') then begin
-    // a simple pointer or an event
+    // a simple pointer or an PChar or an event
     Params.Flags:=Params.Flags-[fdfFunctionResult]+[fdfIgnoreOverloadedProcs];
     MoveCursorToCleanPos(CurPos.EndPos);
     Result:=ReadOperandTypeAtCursor(Params);
-    if (Result.Desc=xtContext) or (Result.Context.Node.Desc=ctnProcedure)
-    then
-      Result.SubDesc:=Result.Desc
-    else
+    if (Result.Desc=xtContext)
+    or ((Result.Context.Node<>nil) and (Result.Context.Node.Desc=ctnProcedure))
+    then begin
+      Result.SubDesc:=Result.Desc;
+      Result.Desc:=xtPointer;
+    end else if (Result.Desc=xtChar) then begin
+      Result.SubDesc:=xtNone;
+      Result.Desc:=xtPChar
+    end else begin
+      Result.SubDesc:=xtNone;
       Result.Context:=CleanFindContext;
-    Result.Desc:=xtPointer;
+      Result.Desc:=xtPointer;
+    end;
   end
   else
     RaiseIdentExpected;
@@ -4235,6 +4242,7 @@ var
   ParamList: TExprTypeList;
 begin
   Result:=CleanExpressionType;
+  //Result.Desc:=PredefinedIdentToExprTypeDesc(@Src[StartPos]);
   IdentPos:=@Src[StartPos];
   Result.Desc:=PredefinedIdentToExprTypeDesc(IdentPos);
   case Result.Desc of
