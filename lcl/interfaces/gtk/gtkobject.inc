@@ -75,10 +75,11 @@ begin
   QueueItem:=FMessageQueue.First;
   while (QueueItem<>nil) do begin
     p := PMsg(QueueItem^.Data);
-    if p^.Message=LM_PAINT then begin
+    if (p^.Message=LM_PAINT) or (p^.Message=LM_GtkPAINT) then begin
       //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
       FPaintMessages.Remove(QueueItem);
-      ReleaseDC(0,P^.WParam);
+      if p^.Message=LM_PAINT then
+        ReleaseDC(0,P^.WParam);
       Dispose(P);
       OldQueueItem:=QueueItem;
       QueueItem:=QueueItem^.Next;
@@ -89,7 +90,7 @@ begin
   
   if FPaintMessages.Count>0 then begin
     WriteLn('[TgtkObject.Destroy] WARNING: There are ',FPaintMessages.Count
-       ,' unremoved LM_PAINT message links left.');
+       ,' unremoved LM_PAINT/LM_GtkPAINT message links left.');
   end;
 
   if (FDeviceContexts.Count > 0)
@@ -503,9 +504,16 @@ end;
   Handle all pending messages of the GTK engine and of this interface
  ------------------------------------------------------------------------------}
 procedure TgtkObject.HandleEvents;
+
+  function PendingGtkMessagesExists: boolean;
+  begin
+    Result:=(gtk_events_pending<>0) or LCLtoGtkMessagePending;
+  end;
+
 var
   Msg: TMsg; 
   p: pMsg;
+  IsPaintMessage: boolean;
 begin
   repeat
     // send cached LCL messages to the gtk
@@ -522,23 +530,37 @@ begin
     with FMessageQueue do begin
       while First<>nil do
       begin
+        // fetch first message
         p := PMsg(First^.Data);
         Msg := p^;
-        if Msg.Message=LM_PAINT then
+        IsPaintMessage:=(Msg.Message=LM_PAINT) or (Msg.Message=LM_GtkPaint);
+
+        // remove message from queue
+        if IsPaintMessage then begin
+          // paint messages are the most expensive messages in the LCL,
+          // therefore they are sent always after all other
+          if Count>FPaintMessages.Count then begin
+            // there are non paint messages -> keep paint message back
+            MoveToLast(First);
+            continue;
+          end else begin
+            // there are only paint messages left in the queue
+            // -> check other queues
+            if PendingGtkMessagesExists then break;
+          end;
           FPaintMessages.Remove(First);
+        end;
         Delete(First);
+        
+        // Send message
         with Msg do
           SendMessage(hWND, Message, WParam, LParam);
-        case Msg.Message of
-         LM_PAINT:
-           ReleaseDC(0,Msg.WParam);
-        end;
         Dispose(p);
       end;
     end;
     
     // proceed until all messages are handled
-  until (gtk_events_pending=0) and (not LCLtoGtkMessagePending);
+  until not PendingGtkMessagesExists;
 end;
 
 {------------------------------------------------------------------------------
@@ -1237,6 +1259,7 @@ begin
             if Sender is TControl then
               ReDraw(PgtkWidget(Handle))
           end else begin
+            // ToDo: always invalidate instead of perform
             If TSpeedbutton(Sender).Visible then
               TSpeedButton(Sender).Perform(LM_PAINT,0,0)
             else
@@ -2148,8 +2171,8 @@ begin
 
     LM_PAINT :
     begin
-      ConnectSenderSignal(gFixed, 'expose-event', @GTKExposeEvent);
-      ConnectSenderSignal(gFixed, 'draw', @GTKDraw);
+      ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
+      ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
@@ -2595,17 +2618,18 @@ begin
 
   // destroy the widget
   DestroyWidget(Widget);
-  //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
 
+  //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // remove all remaining messages to this component
   QueueItem:=FMessageQueue.First;
   while (QueueItem<>nil) do begin
     MsgPtr := PMsg(QueueItem^.Data);
-    if MsgPtr^.HWnd=Handle then begin
+    if (MsgPtr^.HWnd=Handle) then begin
       // remove message
-      if MsgPtr^.Message=LM_PAINT then begin
+      if (MsgPtr^.Message=LM_PAINT) or (MsgPtr^.Message=LM_GtkPAINT) then begin
         FPaintMessages.Remove(QueueItem);
-        ReleaseDC(0,MsgPtr^.WParam);
+        if MsgPtr^.Message=LM_PAINT then
+          ReleaseDC(0,MsgPtr^.WParam);
       end;
       Dispose(MsgPtr);
       OldQueueItem:=QueueItem;
@@ -5413,6 +5437,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.183  2002/08/28 09:40:49  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.182  2002/08/27 18:45:13  lazarus
   MG: propedits text improvements from Andrew, uncapturing, improved comobobox
 
