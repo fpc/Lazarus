@@ -32,12 +32,12 @@ interface
 {$endif}
 
 uses
-  GraphType, SysUtils, Classes, LCLStrConsts, vclGlobals, LMessages, LCLType,
-  LCLProc, LCLLinux, LResources,
+  SysUtils, Classes,
   {$IFDEF UseFPImage}
   FPImage,
   {$ENDIF}
-  GraphMath;
+  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
+  GraphType, GraphMath;
 
 
 const
@@ -1031,6 +1031,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.74  2003/06/30 17:25:26  mattias
   fixed parsing of with do try finally end
 

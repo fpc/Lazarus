@@ -1324,14 +1324,16 @@ const
   BI_BITFIELDS  = 3;
   
   
-  HORZSIZE      = 4;
-  VERTSIZE      = 6;
-  HORZRES       = 8;
-  VERTRES       = 10;
-  BITSPIXEL     = 12;
-  PLANES        = 14;
-  LOGPIXELSX    = 88;
-  LOGPIXELSY    = 90;
+  HORZSIZE      = 4;   { Horizontal size in millimeters           }
+  VERTSIZE      = 6;   { Vertical size in millimeters             }
+  HORZRES       = 8;   { Horizontal width in pixels               }
+  VERTRES       = 10;  { Vertical height in pixels                }
+  BITSPIXEL     = 12;  { Number of bits per pixel                 }
+  PLANES        = 14;  { Number of planes                         }
+  LOGPIXELSX    = 88;  { Logical pixelsinch in X                  }
+  LOGPIXELSY    = 90;  { Logical pixelsinch in Y                  }
+  SIZEPALETTE   = 104; { Number of entries in physical palette    }
+  NUMRESERVED   = 106; { Number of reserved entries in palette    }
 
 
   { Text Alignment Options }
@@ -1343,7 +1345,7 @@ const
   TA_CENTER     = 6;
   TA_TOP        = 0;
   TA_BOTTOM     = 8;
-  TA_BASELINE   = 24;
+  TA_BASELINE   = $18;
   TA_RTLREADING = $100;
   TA_MASK       = (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
   
@@ -1669,7 +1671,6 @@ type
 type
   TFNTimerProc = procedure of object;
 
-
 //------------------------------------------------------------------------------
 // clipboard
 type
@@ -1811,6 +1812,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.37  2003/05/19 08:16:33  mattias
   fixed allocation of dc backcolor
 

@@ -105,16 +105,19 @@ var i: Integer;
 begin
   //writeln('TMenuItem.CreateHandle START ',Name,':',ClassName);
   SendMsgToInterface(LM_CREATE, Self, nil);
-  if FItems<>nil then begin
-    for i := 0 to Count - 1 do begin
-      Items[i].HandleNeeded;
-    end;
-  end;
   if Parent <> nil then
   begin
     Parent.HandleNeeded;
     if Parent.HandleAllocated then
       SendMsgToInterface(LM_ATTACHMENU, Self, nil);
+  end;
+  if FItems<>nil then begin
+    for i := 0 to Count - 1 do begin
+      Items[i].HandleNeeded;
+    end;
+  end;
+  if (Parent<>nil) then
+  begin
     if HandleAllocated then begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;  
@@ -955,6 +958,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.36  2003/06/26 17:00:00  mattias
   fixed result on searching proc in interface
 
@@ -1091,6 +1097,9 @@ end;
 
 
   $Log$
+  Revision 1.37  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.36  2003/06/26 17:00:00  mattias
   fixed result on searching proc in interface
 

@@ -395,14 +395,22 @@ begin
   Result := InterfaceObject.GetDC(hWnd);
 end;
 
-function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+  Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
-  Result := InterfaceObject.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, BitInfo, Usage);
+  Result := InterfaceObject.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits,
+                                      BitInfo, Usage);
 end;
 
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
   Result := InterfaceObject.GetDeviceCaps(DC, Index);
+end;
+
+function GetDeviceRawImageDescription(DC: HDC;
+  Desc: PRawImageDescription): boolean;
+begin
+  Result := InterfaceObject.GetDeviceRawImageDescription(DC,Desc);
 end;
 
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean;
@@ -1615,6 +1623,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.83  2002/08/19 15:15:23  mattias
   implemented TPairSplitter
 

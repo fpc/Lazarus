@@ -173,6 +173,63 @@ type
     tmFixed
     );
 
+//------------------------------------------------------------------------------
+// raw image data
+type
+  TRawImageColorFormat = (
+    ricfRGBA,   // one pixel contains red, green, blue and alpha
+                // If AlphaPrec=0 then there is no alpha.
+                // Same for RedPrec, GreenPrec and BluePrec.
+    ricfRGB,    // like ricfRGBA, but alpha is stored separate in a mask.
+                // If AlphaPrec=0 then there is no alpha.
+    ricfGray,   // R=G=B. The Red stores the Gray.
+    ricfPalette // The Red is color index and ColorCount is set
+    );
+
+  TRawImageByteOrder = (
+    riboLSBFirst, // least significant byte first
+    riboMSBFirst  // most significant byte first
+    );
+    
+  TRawImageLineEnd = (
+    rileTight,         // no gap at end of lines
+    rileByteBoundary,  // each line starts at byte boundary. For example:
+                       // If BitsPerPixel=3 and Width=1, each line has a gap
+                       // of 5 unused bits at the end.
+    rileWordBoundary,  // each line starts at word (16bit) boundary
+    rileDWordBoundary, // each line starts at double word (32bit) boundary
+    rileQWordBoundary  // each line starts at quad word (64bit) boundary
+    );
+
+  TRawImageLineOrder = (
+    rivoTopToBottom, // The line 0 is the top line
+    rivoBottomToTop  // The line 0 is the bottom line
+    );
+
+  TRawImageDescription = record
+    Format: TRawImageColorFormat;
+    Depth: cardinal; // used bits per pixel (= RedPrec + GreenPrec + BluePrec)
+    Width: cardinal;
+    Height: cardinal;
+    ByteOrder: TRawImageByteOrder;
+    LineOrder: TRawImageLineOrder;
+    ColorCount: cardinal; // entries in color palette. Ignore when no palette.
+    BitsPerPixel: cardinal; // bits per pixel. can be greater than Depth.
+    LineEnd: TRawImageLineEnd;
+    RedPrec: cardinal; // red precision. bits for red
+    RedShift: cardinal;
+    GreenPrec: cardinal;
+    GreenShift: cardinal;
+    BluePrec: cardinal;
+    BlueShift: cardinal;
+    AlphaPrec: cardinal;
+    AlphaShift: cardinal;
+    // The next values are only valid if there is a separate alpha mask
+    AlphaBitsPerPixel: cardinal; // bits per alpha mask pixel.
+    AlphaLineEnd: TRawImageLineEnd;
+  end;
+  PRawImageDescription = ^TRawImageDescription;
+
 implementation
 
 end.
@@ -180,6 +237,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.11  2003/06/30 14:58:29  mattias
   implemented multi file add to package editor
 

@@ -93,6 +93,7 @@ Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetCmdLineParamDescForInterface: string; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
+function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetFocus: HWND; override;
@@ -205,6 +206,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2003/07/01 09:29:52  mattias
+  attaching menuitems topdown
+
   Revision 1.69  2002/08/19 15:15:24  mattias
   implemented TPairSplitter
 

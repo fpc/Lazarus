@@ -118,7 +118,7 @@ end;
 
 function TBitmap.HandleAllocated: boolean;
 begin
-  Result:=FImage.FHandle<>0;
+  Result:=(FImage<>nil) and (FImage.FHandle<>0);
 end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
@@ -357,16 +357,16 @@ var
       if ReadSize<>InfoSize then
         raise EInOutError.Create(
           'TBitmap.ReadBMPStream: Invalid windows bitmap (info)');
-      if BmpInfo^.bmiHeader.biSize<>sizeof(BitmapInfoHeader) then
+      if BmpInfo^.bmiHeader.biSize<>SizeOf(BitmapInfoHeader) then
         raise EInOutError.Create(
           'TBitmap.ReadBMPStream: OS2 bitmaps are not supported yet');
       if BmpInfo^.bmiHeader.biCompression<>bi_RGB then
         raise EInOutError.Create(
           'TBitmap.ReadBMPStream: RLE compression is not supported yet');
 
-      // Let's now support only 24bit bmps! Then we can use the palette.
+      // Let's now support only 16/24bit bmps! Then we don't need a palette.
       BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
-      if BitsPerPixel<>24 then begin
+      if BitsPerPixel<16 then begin
         ColorsUsed:=BmpInfo^.bmiHeader.biClrUsed;
         if ColorsUsed=0 then ColorsUsed:=1 shl ColorsUsed;
         // s:=SizeOf(TLogPalette)+(ColorsUsed-1)*SizeOf(TPaletteEntry);
@@ -716,6 +716,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.36  2003/06/30 17:25:26  mattias
   fixed parsing of with do try finally end
 

@@ -3825,6 +3825,21 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  Visual: PGdkVisual;
+
+  function GetVisual: boolean;
+  begin
+    Visual:=nil;
+    with TDeviceContext(DC) do begin
+      If Drawable <> nil then
+        Visual:=gdk_window_get_visual(PGdkWindow(Drawable));
+      if Visual = nil then
+        Visual := GDK_Visual_Get_System;
+    end;
+    Result:=Visual<>nil;
+  end;
+
 begin
   Result := -1;
   If DC = 0 then begin
@@ -3834,50 +3849,139 @@ begin
     Result := GetDeviceCaps(DC, Index);
     ReleaseDC(0, DC);
   end;
-  if IsValidDC(DC)
-  then with TDeviceContext(DC) do
-  begin
-    Case Index of
-      //The important ones I know how to do
-      HORZRES : { Horizontal width in pixels }
-        If Drawable = nil then
-          Result := GetSystemMetrics(SM_CXSCREEN)
-        else
-          gdk_window_get_geometry(Drawable, nil, nil, @Result, nil, nil);
+  if not IsValidDC(DC) then exit;
+  with TDeviceContext(DC) do
+  Case Index of
+  HORZRES : { Horizontal width in pixels }
+    If Drawable = nil then
+      Result := GetSystemMetrics(SM_CXSCREEN)
+    else
+      gdk_window_get_geometry(Drawable, nil, nil, @Result, nil, nil);
 
-      VERTRES : { Vertical height in pixels }
-        If Drawable = nil then
-          Result := GetSystemMetrics(SM_CYSCREEN)
-        else
-          gdk_window_get_geometry(Drawable, nil, nil, nil, @Result, nil);
+  VERTRES : { Vertical height in pixels }
+    If Drawable = nil then
+      Result := GetSystemMetrics(SM_CYSCREEN)
+    else
+      gdk_window_get_geometry(Drawable, nil, nil, nil, @Result, nil);
 
-      BITSPIXEL : { Number of bits per pixel }
-        If Drawable = nil then
-          Result := GDK_Visual_Get_System^.Depth
-        else
-          gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @Result);
+  BITSPIXEL : { Number of used bits per pixel = depth }
+    If Drawable = nil then
+      Result := GDK_Visual_Get_System^.Depth
+    else
+      gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @Result);
 
-      //For Size in MM, MM = (Pixels*100)/(PPI*25.4)
+  PLANES : { Number of planes }
+    // ToDo
+    Result := 1;
+
+  //For Size in MM, MM = (Pixels*100)/(PPI*25.4)
+  
+  HORZSIZE : { Horizontal size in millimeters }
+    Result := Round((GetDeviceCaps(DC, HORZRES) * 100) /
+                    (GetDeviceCaps(DC, LOGPIXELSX) * 25.4));
+
+  VERTSIZE : { Vertical size in millimeters }
+    Result := Round((GetDeviceCaps(DC, VERTRES) * 100) /
+                    (GetDeviceCaps(DC, LOGPIXELSY) * 25.4));
+
+  //So long as gdk_screen_width_mm is acurate, these should be
+  //acurate for Screen GDKDrawables. Once we get Metafiles
+  //we will also have to add internal support for Papersizes etc..
+  
+  LOGPIXELSX : { Logical pixels per inch in X }
+    Result := Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+
+  LOGPIXELSY : { Logical pixels per inch in Y }
+    Result := Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+
+  SIZEPALETTE: { number of entries in color palette }
+    if GetVisual then
+      Result:=Visual^.colormap_size
+    else
+      Result:=0;
       
-      HORZSIZE : { Horizontal size in millimeters }
-        Result := Round((GetDeviceCaps(DC, HORZRES) * 100) /
-                        (GetDeviceCaps(DC, LOGPIXELSX) * 25.4));
+  NUMRESERVED: { number of reserverd colors in color palette }
+    Result:=0;
 
-      VERTSIZE : { Vertical size in millimeters }
-        Result := Round((GetDeviceCaps(DC, VERTRES) * 100) /
-                        (GetDeviceCaps(DC, LOGPIXELSY) * 25.4));
-
-      //So long as gdk_screen_width_mm is acurate, these should be
-      //acurate for Screen GDKDrawables. Once we get Metafiles
-      //we will also have to add internal support for Papersizes etc..
-      
-      LOGPIXELSX : { Logical pixels per inch in X }
-        Result := Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
-
-      LOGPIXELSY : { Logical pixels per inch in Y }
-        Result := Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
-    end;
+  else
+    writeln('TgtkObject.GetDeviceCaps not supported: Type=',Index);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  function GetDeviceRawImageDescription(DC: HDC;
+                                        Desc: PRawImageDescription): boolean;
+
+  Retrieves the information about the structure of the supported image data.
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetDeviceRawImageDescription(DC: HDC;
+  Desc: PRawImageDescription): boolean;
+var
+  Visual: PGdkVisual;
+  Width, Height: integer;
+begin
+  Result := false;
+  Visual:=nil;
+  If IsValidDC(DC) then
+    with TDeviceContext(DC) do begin
+      If Drawable <> nil then
+        Visual:=gdk_window_get_visual(PGdkWindow(Drawable));
+      GDK_Window_Get_Size(PGdkWindow(Drawable),@Width,@Height);
+    end;
+  if Visual = nil then begin
+    Visual := GDK_Visual_Get_System;
+    if Visual=nil then exit;
+  end;
+    
+
+  FillChar(Desc,SizeOf(TRawImageDescription),0);
+  
+  // Format
+  case Visual^.thetype of
+
+  GDK_VISUAL_STATIC_GRAY:  Desc^.Format:=ricfGray;
+  GDK_VISUAL_GRAYSCALE:    Desc^.Format:=ricfPalette;
+  GDK_VISUAL_STATIC_COLOR: Desc^.Format:=ricfPalette;
+  GDK_VISUAL_PSEUDO_COLOR: Desc^.Format:=ricfPalette;
+  GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGB;
+  GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGB;
+  else
+    writeln('TgtkObject.GetDeviceRawImageDescription unknown Visual type ',Visual^.thetype);
+    exit;
+  end;
+  
+  // Depth
+  Desc^.Depth:=Visual^.Depth;
+  // Width + Height
+  Desc^.Width:=cardinal(Width);
+  Desc^.Height:=cardinal(Height);
+  // ByteOrder
+  if Visual^.byte_order=GDK_MSB_FIRST then
+    Desc^.ByteOrder:=riboMSBFirst
+  else
+    Desc^.ByteOrder:=riboLSBFirst;
+  // LineOrder
+  Desc^.LineOrder:=rivoTopToBottom;
+  // ColorCount
+  Desc^.ColorCount:=0;
+  // BitsPerPixel
+  Desc^.BitsPerPixel:=Visual^.bits_per_rgb;
+  // LineEnd
+  Desc^.LineEnd:=rileByteBoundary;
+  // Precisions and Shifts
+  Desc^.RedPrec:=Visual^.red_prec;
+  Desc^.RedShift:=Visual^.red_shift;
+  Desc^.GreenPrec:=Visual^.green_prec;
+  Desc^.GreenShift:=Visual^.green_shift;
+  Desc^.BluePrec:=Visual^.blue_prec;
+  Desc^.BlueShift:=Visual^.blue_shift;
+  Desc^.AlphaPrec:=1;
+  Desc^.AlphaShift:=0;
+  // AlphaBitsPerPixel and AlphaLineEnd
+  Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
+  Desc^.AlphaLineEnd:=rileByteBoundary;
+  
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -4124,7 +4228,7 @@ begin
               end else
                 biBitCount := Visual^.Depth;
 
-              If biBitCount < 24 then
+              If biBitCount < 16 then
                 NumColors := Colormap^.Size;
 
               biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
@@ -4148,7 +4252,7 @@ begin
               bmBitsPixel := biBitCount;
               
               //Need to retrieve actual Number of Colors if Indexed Image
-              if (bmBitsPixel < 24) then begin
+              if (bmBitsPixel < 16) then begin
                 biClrUsed   := NumColors;
                 biClrImportant := biClrUsed;
               end;
@@ -4164,6 +4268,7 @@ begin
             end;
           end;
         end;
+        
       gdiBrush:
         begin
           Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiBrush');
@@ -8484,6 +8589,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.253  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.252  2003/06/30 10:09:46  mattias
   fixed Get/SetPixel for DC without widget
 

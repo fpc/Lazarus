@@ -866,6 +866,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetDeviceRawImageDescription(DC: HDC;
+  Desc: PRawImageDescription): boolean;
+begin
+  Result := false;
+end;
+
 function TInterfaceBase.GetDeviceSize(DC: HDC; var p: TPoint): boolean;
 begin
   p.X := 0;
@@ -1733,6 +1739,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/07/01 09:29:51  mattias
+  attaching menuitems topdown
+
   Revision 1.90  2002/08/19 15:15:23  mattias
   implemented TPairSplitter
 

@@ -66,7 +66,6 @@ begin
   IsEmpty:=Empty;
   Result:=(IsEmpty=Graphic.Empty);
   if (not Result) or IsEmpty or (Self=Graphic) then exit;
-  // ToDo: check for same resource
   SelfImage := TMemoryStream.Create;
   try
     WriteData(SelfImage);
@@ -74,7 +73,7 @@ begin
     try
       Graphic.WriteData(GraphicsImage);
       Result := (SelfImage.Size = GraphicsImage.Size) and
-        CompareMem(SelfImage.Memory, GraphicsImage.Memory, SelfImage.Size);
+             CompareMem(SelfImage.Memory, GraphicsImage.Memory, SelfImage.Size);
     finally
       GraphicsImage.Free;
     end;
