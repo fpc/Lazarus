@@ -1177,12 +1177,12 @@ Begin
             ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
             ' NewClientSize=',R.Right,',',R.Bottom);
           {$ENDIF}
-          if (lWinControl.Width=Width)
-          and (lWinControl.Height=Height)
-          and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
-            exit;
-          lWinControl.InvalidateClientRectCache(true);
-          lWinControl.DoAdjustClientRectChange;
+          if (lWinControl.Width<>Width) or (lWinControl.Height<>Height)
+              or lWinControl.ClientRectNeedsInterfaceUpdate then
+          begin
+            lWinControl.InvalidateClientRectCache(true);
+            lWinControl.DoAdjustClientRectChange;
+          end;
         end;
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
@@ -1499,6 +1499,9 @@ end;
 
 {
   $Log$
+  Revision 1.180  2005/01/03 15:50:35  micha
+  WM_SIZE can also mean windowstate change, always send message
+
   Revision 1.179  2005/01/03 12:15:54  micha
   keep the mainform (ie. lazarus main ide bar) active
 
