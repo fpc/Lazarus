@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Controls, Forms, Buttons, SysUtils, StdCtrls, ExtCtrls,
-  LCLLinux{must be defined before graphics}, Graphics;
+  LCLLinux{must be used before graphics}, Graphics;
 
 type
   TSplashForm = class(TForm)
@@ -328,6 +328,7 @@ begin
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
+  Paint;
 end;
 
 destructor TSplashForm.Destroy;
@@ -376,6 +377,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/03/18 11:44:41  lazarus
+  MG: TForm.Position will now considered before creating form on 0,0
+
   Revision 1.7  2001/11/19 21:48:53  lazarus
   MG: fixed splash timer AV, incomplete project loading, application save as
 

@@ -887,7 +887,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Here the initial form width and height are determined. 
+  Here the initial form left and top are determined.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.UpdateShowing;
 var 
@@ -896,13 +896,8 @@ begin
 {$IFDEF CHECK_POSITION}
 writeln('[TCustomForm.UpdateShowing] A Class=',Classname);
 {$ENDIF}
-  inherited UpdateShowing;
-{$IFDEF CHECK_POSITION}
-writeln('[TCustomForm.UpdateShowing] B Class=',Classname);
-{$ENDIF}
   { If the the form is about to show, calculate its metrics }
-  if Showing then 
-  begin
+  if Visible then begin
     // first make sure X and Y are assigned
     X := Left;
     Y := Top;
@@ -933,11 +928,12 @@ writeln('[TCustomForm.UpdateShowing] B Class=',Classname);
     end;  
     if X < 0 then X := 0;
     if Y < 0 then Y := 0;
-{$IFDEF CHECK_POSITION}
-writeln('[TCustomForm.UpdateShowing] C Class=',Classname);
-{$ENDIF}
     SetBounds(X, Y, Width, Height);
   end;
+{$IFDEF CHECK_POSITION}
+writeln('[TCustomForm.UpdateShowing] B Class=',Classname);
+{$ENDIF}
+  inherited UpdateShowing;
 {$IFDEF CHECK_POSITION}
 writeln('[TCustomForm.UpdateShowing] END Class=',Classname);
 {$ENDIF}
@@ -973,6 +969,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/03/18 11:44:41  lazarus
+  MG: TForm.Position will now considered before creating form on 0,0
+
   Revision 1.36  2002/03/16 21:40:55  lazarus
   MG: reduced size+move messages between lcl and interface
 

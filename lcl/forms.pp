@@ -127,10 +127,11 @@ type
     Procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure Paint; dynamic;
     Procedure PaintWindow(dc : Hdc); override;
-    Procedure RequestAlign; Override;
+    Procedure RequestAlign; override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
-    procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string);override;
+    procedure ValidateRename(AComponent: TComponent;
+                             const CurName, NewName: string);override;
     procedure WndProc(var Message : TLMessage); override;
     {events}
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
@@ -138,7 +139,8 @@ type
     property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
-    property OnCloseQuery : TCloseQueryEvent read FOnCloseQuery write FOnCloseQuery stored IsForm;
+    property OnCloseQuery : TCloseQueryEvent
+                     read FOnCloseQuery write FOnCloseQuery stored IsForm;
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
     property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
