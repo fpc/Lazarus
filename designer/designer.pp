@@ -72,6 +72,7 @@ type
   TDesignerFlags = set of TDesignerFlag;
 
   TDesigner = class(TComponentEditorDesigner)
+    procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
   private
     FCustomForm: TCustomForm;
     FTheFormEditor: TCustomFormEditor;
@@ -100,6 +101,8 @@ type
     FBringToFrontMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
     FDeleteSelectionMenuItem: TMenuItem;
+    FSnapToGridOptionMenuItem: TMenuItem;
+    FSnapToGuideLinesOptionMenuItem: TMenuItem;
 
     //hint stuff
     FHintTimer : TTimer;
@@ -164,11 +167,12 @@ type
     procedure OnBringToFrontMenuClick(Sender: TObject);
     procedure OnSendToBackMenuClick(Sender: TObject);
     procedure OnDeleteSelectionMenuClick(Sender: TObject);
-    Procedure OnFormActivated;
+    procedure OnSnapToGridOptionMenuClick(Sender: TObject);
     procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
+    Procedure OnFormActivated;
   public
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
@@ -1358,6 +1362,16 @@ begin
   DoDeleteSelectedComponents;
 end;
 
+procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
+begin
+  EnvironmentOptions.SnapToGrid:=not EnvironmentOptions.SnapToGrid;
+end;
+
+procedure TDesigner.OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
+begin
+  EnvironmentOptions.SnapToGuideLines:=not EnvironmentOptions.SnapToGuideLines;
+end;
+
 function TDesigner.GetGridColor: TColor;
 begin
   Result:=EnvironmentOptions.GridColor;
@@ -1607,6 +1621,7 @@ begin
 
   AddComponentEditorMenuItems(PopupMenuComponentEditor,FPopupMenu.Items);
 
+  // menuitem: align, mirror horizontal, mirror vertical, scale, size
   FAlignMenuItem := TMenuItem.Create(FPopupMenu);
   with FAlignMenuItem do begin
     Caption := fdmAlignWord;
@@ -1649,6 +1664,7 @@ begin
   
   AddSeparator;
   
+  // menuitem: BringToFront, SendToBack
   FBringToFrontMenuItem := TMenuItem.Create(FPopupMenu);
   with FBringToFrontMenuItem do begin
     Caption:= fdmBringTofront;
@@ -1667,6 +1683,7 @@ begin
   
   AddSeparator;
   
+  // menuitem: delete selection
   FDeleteSelectionMenuItem:=TMenuItem.Create(FPopupMenu);
   with FDeleteSelectionMenuItem do begin
     Caption:= fdmDeleteSelection;
@@ -1674,6 +1691,26 @@ begin
     Enabled:= ControlSelIsNotEmpty and (not FormIsSelected);
   end;
   FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
+
+  AddSeparator;
+
+  FSnapToGridOptionMenuItem:=TMenuItem.Create(FPopupMenu);
+  with FSnapToGridOptionMenuItem do begin
+    Caption:= fdmSnapToGridOption;
+    OnClick:=@OnSnapToGridOptionMenuClick;
+    Checked:=EnvironmentOptions.SnapToGrid;
+  end;
+  FPopupMenu.Items.Add(FSnapToGridOptionMenuItem);
+
+  //: TMenuItem;
+  FSnapToGuideLinesOptionMenuItem:=TMenuItem.Create(FPopupMenu);
+  with FSnapToGuideLinesOptionMenuItem do begin
+    Caption:= fdmSnapToGuideLinesOption;
+    OnClick:=@OnSnapToGuideLinesOptionMenuClick;
+    Checked:=EnvironmentOptions.SnapToGuideLines;
+  end;
+  FPopupMenu.Items.Add(FSnapToGuideLinesOptionMenuItem);
+
 end;
 
 procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
