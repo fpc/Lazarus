@@ -50,7 +50,7 @@ Type
   
   EInvalidDate = class(Exception);
   
-  TCalendar = class(TCustomControl)
+  TCalendar = class(TWinControl)
   private
     FDate : String;
     FDisplaySettings : TDisplaySettings;
@@ -78,7 +78,7 @@ Type
     procedure InitializeWnd; override;
     procedure AddControl; override;
   published
-    Property Date : String read GetDate write SetDate;
+    Property Date: String read GetDate write SetDate;
     property DisplaySettings : TDisplaySettings read GetDisplaySettings write SetDisplaySettings;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly stored ReadOnlyIsStored;
     property Visible;
@@ -143,8 +143,12 @@ end;
 
 procedure TCalendar.SetDate(const AValue: String);
 begin
+  if FDate=AValue then exit;
   try
-    StrtoDate(AValue);  //test to see if valid date....
+    {$IFDEF VerboseCalenderSetDate}
+    writeln('TCalendar.SetDate AValue=',AValue,' ShortDateFormat=',ShortDateFormat);
+    {$ENDIF}
+    StrToDate(AValue);  //test to see if date valid ....
     FDate := AValue;
   except
     raise EInvalidDate.CreateFmt(rsInvalidDate, [AValue]);
@@ -182,7 +186,7 @@ Procedure TCalendar.GetProps;
 var
   Temp : TLMCalendar;
 begin
-  if HandleAllocated then
+  if HandleAllocated and (not (csLoading in ComponentState)) then
   begin
     CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
     FDate := FormatDateTime(ShortDateFormat,Temp.Date);

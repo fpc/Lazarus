@@ -7895,6 +7895,7 @@ var
   Adjustment: PGtkAdjustment;
   Scroll : PGTKWidget;
   NewPolicy: Integer;
+  i: Integer;
 begin
   Result := 0;
   if (Handle = 0) then exit;
@@ -7940,7 +7941,18 @@ begin
 
   with ScrollInfo, Adjustment^ do begin
     //writeln('SetScrollInfo Value=',Value);
-    Result := RoundToInt(Value);
+    // workaround for strange floating point bug
+    for i:=0 to 2 do begin
+      try
+        Result := RoundToInt(Value);
+        break;
+      except
+        on e: Exception do begin
+          writeln('TgtkObject.SetScrollInfo Workaround for ',E.Message,' try: ',i);
+          Result:=0;
+        end;
+      end;
+    end;
     //writeln('SetScrollInfo Result=',Result);
     if (fMask and SIF_POS) <> 0
     then Value := nPos;
@@ -9214,6 +9226,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.317  2004/01/15 22:36:24  mattias
+  workaround for fpc fpu bug and added calendar debugging msg
+
   Revision 1.316  2004/01/13 10:41:40  mattias
   fixed statusbar updating all panels
 
