@@ -3422,14 +3422,20 @@ Begin
   if TempEditor <> nil then
   begin
     {$IFDEF VerboseFocus}
-    writeln('TSourceNotebook.NotebookPageChanged ',
+    writeln('TSourceNotebook.NotebookPageChanged BEFORE SetFocus ',
+      TempEditor.EditorComponent.Name,' ',
       NoteBook.Pages[FindPageWithEditor(TempEditor)]);
     {$ENDIF}
     TempEditor.FocusEditor;
+    {$IFDEF VerboseFocus}
+    writeln('TSourceNotebook.NotebookPageChanged AFTER SetFocus ',
+      TempEditor.EditorComponent.Name,' ',
+      NoteBook.Pages[FindPageWithEditor(TempEditor)]);
+    {$ENDIF}
     UpdateStatusBar;
     UpdateActiveEditColors;
     if Assigned(FOnEditorVisibleChanged) then
-       FOnEditorVisibleChanged(sender);
+      FOnEditorVisibleChanged(sender);
   end;
 end;
 
