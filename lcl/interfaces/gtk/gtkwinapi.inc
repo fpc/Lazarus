@@ -265,7 +265,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+function TgtkObject.CreateBitmap(Width, Height: Integer;
+  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
   GdiObject: PGdiObject;
   RawImage: PGDIRawImage;
@@ -279,6 +280,7 @@ begin
     Exit;
   end;
   
+//write('TgtkObject.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
   
   // if the bitcount is the system depth create a Pixmap
@@ -331,6 +333,8 @@ begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBrushIndirect]  Style: %d, Color: %8x', [LogBrush.lbStyle, LogBrush.lbColor]));
 
   sError := '';
+
+//write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
 
   with LogBrush do
@@ -625,6 +629,7 @@ begin
     CharSetCoding := '*';
   end;
 
+//write('CreateFontIndirect->');
   GDIObject := NewGDIObject(gdiFont);
   LoadFont;
   if GdiObject^.GDIFontObject = nil
@@ -675,8 +680,7 @@ begin
 
   if GdiObject^.GDIFontObject = nil
   then begin
-writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8)
-,'  ',FGDIObjects.Count);
+//writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
     FGDIObjects.Remove(GdiObject);
     Dispose(GdiObject);
     Result := 0;
@@ -703,6 +707,7 @@ var
   GObject: PGdiObject;
 begin
   Assert(False, 'trace:[TgtkObject.CreatePenIndirect]');
+//write('CreatePenIndirect->');
   GObject := NewGDIObject(gdiPen);
 
   with LogPen do
@@ -736,6 +741,7 @@ var
   GDKColor: TGDKCOlor;
   P: Pointer;
 begin
+//write('TgtkObject.CreatePixmapIndirect->');
   GdiObject := NewGDIObject(gdiBitmap); 
   if TransColor >= 0 
   then begin
@@ -1366,6 +1372,7 @@ begin
   then begin
     if Values.Font <> nil
     then begin
+//write('GetDC->');
       GdiObject:=NewGDIObject(gdiFont);
       GdiObject^.GDIFontObject := Values.Font;
       gdk_font_ref(Values.Font);
@@ -1523,7 +1530,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TgtkObject.GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
-result := gtk_object_get_data(pgtkobject(Handle),Str);
+  result := gtk_object_get_data(pgtkobject(Handle),Str);
 end;
 
 
@@ -2077,7 +2084,7 @@ var
   Widget: PGTKWidget;
   Sender : TObject;
 begin
-Writeln('GetWindowRect');
+//Writeln('GetWindowRect');
   result := 0; //default
   if Handle <> 0 then
   begin
@@ -2096,7 +2103,7 @@ Writeln('GetWindowRect');
           sender := TObject(Gtk_Object_Get_Data(pGTKObject(widget),'Sender'));
           if (sender is TControl) then
                begin
-                 writeln('****************SENDCER IS TCONTROL********************');
+                 writeln('****************SENDER IS TCONTROL********************');
                  X := TControl(sender).Left;
                  Y := TControl(sender).Top;
                  W := TControl(sender).Width;
@@ -2569,11 +2576,10 @@ begin
     end;
 
     // TODO copy bitmap also 
-
+      
+    Result := CopyDCData(pDC, pSavedDC);
     pDC^.SavedContext := pSavedDC^.SavedContext;
     pSavedDC^.SavedContext := nil;
-      
-    Result := CopyDCData(pSavedDC, pDC);
 
     //prevent deleting of copied objects;
     if pSavedDC^.CurrentBitmap = pDC^.CurrentBitmap 
@@ -3387,6 +3393,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2001/03/20 16:59:15  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.26  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion
 

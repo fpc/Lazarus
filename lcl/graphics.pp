@@ -413,8 +413,11 @@ type
     FAutoReDraw : Boolean;
     FState: TCanvasState;
     FFont : TFont;
+    FSavedFontHandle: HFont;
     FPen: TPen;
+    FSavedPenHandle: HPen;
     FBrush: TBrush;
+    FSavedBrushHandle: HBrush;
     FPenPos : TPoint;
     FCopyMode : TCopyMode;
     FHandle : HDC;
@@ -425,6 +428,7 @@ type
     procedure CreateBrush;
     procedure CreateFont;
     Procedure CreatePen;
+    procedure DeselectHandles;
     function GetCanvasClipRect: TRect;
     Function GetColor: TColor;
     function GetHandle : HDC;
@@ -435,6 +439,7 @@ type
     Procedure SetColor(c: TColor);
     Procedure SetBrush(value : TBrush);
     Procedure SetFont(value : TFont);
+    procedure SetHandle(NewHandle: HDC);
     Procedure SetPen(value : TPen);
     Procedure SetPenPos(Value : TPoint);
     Procedure SetPixel(X,Y : Integer; Value : TColor);
@@ -464,7 +469,7 @@ type
     property OnChange : TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property Pixels[X, Y: Integer]: TCOlor read GetPixel write SetPixel;
-    property Handle: HDC read GetHandle write FHandle;
+    property Handle: HDC read GetHandle write SetHandle;
   published
     property AutoRedraw : Boolean read FAutoReDraw write SetAutoReDraw;
     property Brush: TBrush read FBrush write SetBrush;
@@ -645,6 +650,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/03/20 16:59:15  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.7  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

@@ -66,9 +66,15 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomForm.Destroy;
 begin
+//writeln('[TCustomForm.Destroy] A ',Name,':',ClassName);
   Assert(False, Format('Trace: [TCustomForm.Destroy] %s', [ClassName]));
   FMenu.Free;
+  FMenu:=nil;
+  FCanvas.Free;
+  FCanvas:=nil;
+//writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
+//writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -164,7 +170,7 @@ end;
   Params:   Msg: When the form is Activated
   Returns:  nothing
 
-  Paint event handler.
+  Activate event handler.
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.WMActivate(var Message : TLMActivate);
 Begin
@@ -181,7 +187,8 @@ end;
   Paint event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
-begin            
+begin
+//writeln('[TCustomForm.WMPaint] ',Name,':',ClassName);
   Assert(False, Format('Trace: [TCustomForm.LMPaint] %s', [ClassName]));
   
   Include(FControlState, csCustomPaint);
@@ -191,6 +198,7 @@ begin
   finally
     Exclude(FControlState, csCustomPaint);
   end;
+//writeln('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;                          
 
 
@@ -199,7 +207,7 @@ end;
   Params:   Msg: The Size message
   Returns:  nothing
 
-  Paint event handler.
+  Resize event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var Message: TLMSize);
 Begin
@@ -284,9 +292,11 @@ end;
  ------------------------------------------------------------------------------}
 Function TCustomForm.GetClientRect :TRect;
 Begin
-SetRect(Result,0,0,0,0);
-AdjustWindowRectEx(Result,GetWindowLong(Handle,GWL_STYLE),Menu <> nil,GetWIndowLong(Handle,GWL_EXSTYLE));
-SetRect(Result,0,0, Width - Result.Right + Result.Left, Height - Result.Bottom + Result.Top);
+  SetRect(Result,0,0,0,0);
+  AdjustWindowRectEx(Result,GetWindowLong(Handle,GWL_STYLE),Menu <> nil
+      ,GetWIndowLong(Handle,GWL_EXSTYLE));
+  SetRect(Result,0,0, Width - Result.Right + Result.Left
+      , Height - Result.Bottom + Result.Top);
 end;
 
 
@@ -312,18 +322,17 @@ end;
 Procedure TCustomForm.PaintWindow(DC : Hdc);
 begin
 //  FCanvas.Lock;
-   try
+  try
     FCanvas.Handle := DC;
-      try
-       if FDesigner <> nil then FDesigner.PaintGrid else Paint;
-      finally
-      FCanvas.Handle := 0;
-      end;
-
+//writeln('[TCustomForm.PaintWindow] ',ClassName,' DC=',HexStr(DC,8),'  ',HexStr(FCanvas.Handle,8));
+    try
+      if FDesigner <> nil then FDesigner.PaintGrid else Paint;
     finally
+      FCanvas.Handle := 0;
+    end;
+  finally
 //    FCanvas.Unlock;
-   end;
-
+  end;
 end;
 
 
@@ -470,7 +479,6 @@ riteln('[TCustomForm.WndPRoc] 1');
                     Integer(itemWidth), Integer(itemHeight));
                 finally
                   Handle := 0;
-writeln('[TCustomForm.WndPRoc] 2');
                   RestoreDC(DC, SaveIndex);
                 end;
               finally
@@ -573,13 +581,11 @@ begin
     begin
       Include(FFormState, fsCreating);
       try
-       // *** New
         if not InitResourceComponent(Self, TForm) then begin
           writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
           Writeln('This is for information purposes only.   This is not critical at this time.');
 
         end;
-        // ***
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -592,7 +598,7 @@ constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
   FBorderStyle:= bsSizeable;
   inherited Create(AOwner);
-fCompStyle:= csForm;
+  fCompStyle:= csForm;
 
   FFormState := [];
   FMenu	:= nil;	
@@ -623,7 +629,6 @@ fCompStyle:= csForm;
 //  FPrintScale := poProportional;
 //  FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
-
 End;
 
 {------------------------------------------------------------------------------}
@@ -728,7 +733,7 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomForm.GetCanvas: TControlCanvas;
 begin
-   result := FCanvas;
+  result := FCanvas;
 end;
 
 {------------------------------------------------------------------------------}
@@ -854,6 +859,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/03/20 16:59:15  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.15  2001/03/19 14:41:56  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

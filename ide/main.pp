@@ -634,6 +634,7 @@ begin
     Project:=nil;
   end;
   TheControlSelection.Free;
+  FormEditor1.Free;
   MacroList.Free;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
@@ -2889,6 +2890,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2001/03/20 16:59:14  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.75  2001/03/19 14:00:46  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

@@ -25,7 +25,7 @@ unit ControlSelection;
 interface
 
 uses
-  Classes, Controls, LCLLinux, Forms, Graphics;
+  Classes, LCLLinux, Controls, Forms, Graphics;
 
 type
   TGrabberMoveEvent = procedure(Sender: TObject; dx, dy: Integer) of object;
@@ -101,6 +101,7 @@ type
     FOldHeight: integer;
 
     FCustomForm: TCustomForm;
+    FCanvas: TCanvas;
     FGrabbers: array[TGrabIndex] of TGrabber;
     FGrabberSize: integer;
     FGrabberColor: TColor;
@@ -260,6 +261,7 @@ begin
     FGrabbers[g].Cursor:=GRAB_CURSOR[g];
   end;
   FCustomForm:=nil;
+  FCanvas:=TCanvas.Create;
   FActiveGrabber:=nil;
   FUpdateLock:=0;
   FChangedDuringLock:=false;
@@ -273,6 +275,7 @@ begin
   Clear;
   FControls.Free;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].Free;
+  FCanvas.Free;
   inherited Destroy;
 end;
 
@@ -430,11 +433,13 @@ end;
 function TControlSelection.Add(AControl: TControl):integer;
 var NewSelectedControl:TSelectedControl;
 begin
+  BeginUpdate;
   NewSelectedControl:=TSelectedControl.Create(AControl);
   if GetParentForm(AControl)<>FCustomForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
   if Count=1 then SetCustomForm;
   AdjustSize;
+  EndUpdate;
   DoChange;  
 end;
 
@@ -576,7 +581,8 @@ procedure TControlSelection.DrawGrabbers(DC: HDC);
 var OldBrushColor:TColor;
   g:TGrabIndex;
   FormOrigin, DCOrigin, Diff: TPoint;
-  OldFormHandle: HDC;
+  SaveIndex: integer;
+//  OldFormHandle: HDC;
 begin
   if (Count=0) or (FCustomForm=nil)
   or (Items[0].Control is TCustomForm) then exit;
@@ -590,9 +596,10 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
    ,' Grabber1=',FGrabbers[0].Left,',',FGrabbers[0].Top
    ,' Selection=',FLeft,',',FTop);
 }
-  OldFormHandle:=FCustomForm.Canvas.Handle;
-  FCustomForm.Canvas.Handle:=DC;
-  with FCustomForm.Canvas do begin
+//  OldFormHandle:=FCustomForm.Canvas.Handle;
+  SaveIndex:=SaveDC(DC);
+  FCanvas.Handle:=DC;
+  with FCanvas do begin
     OldBrushColor:=Brush.Color;
     Brush.Color:=FGrabberColor;
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
@@ -604,7 +611,9 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
       ));
     Brush.Color:=OldbrushColor;
   end;
-  FCustomForm.Canvas.Handle:=OldFormHandle;
+  FCanvas.Handle:=0;
+  RestoreDC(DC,SaveIndex);
+//  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
 procedure TControlSelection.DrawMarker(AControl:TControl; DC:HDC);
@@ -612,7 +621,7 @@ var OldBrushColor:TColor;
   ALeft,ATop:integer;
   AControlOrigin,DCOrigin:TPoint;
   SaveIndex:HDC;
-  OldFormHandle:HDC;
+//  OldFormHandle:HDC;
 begin
   if (Count<2) or (FCustomForm=nil) or (AControl is TCustomForm)
   or (not IsSelected(AControl)) then exit;
@@ -625,8 +634,8 @@ begin
   ALeft:=AControlOrigin.X-DCOrigin.X;
   ATop:=AControlOrigin.Y-DCOrigin.Y;
   SaveIndex := SaveDC(DC);
-  OldFormHandle:=FCustomForm.Canvas.Handle;
-  FCustomForm.Canvas.Handle:=DC;
+//  OldFormHandle:=FCustomForm.Canvas.Handle;
+  FCanvas.Handle:=DC;
 {
 writeln('DrawMarker A ',FCustomForm.Name
     ,' Control=',AControl.Name,',',AControlOrigin.X,',',AControlOrigin.Y
@@ -634,7 +643,7 @@ writeln('DrawMarker A ',FCustomForm.Name
     ,' DC=',Hexstr(FCustomForm.Canvas.Handle,8),' ',HexStr(Cardinal(Pointer(FCustomForm)),8)
     );
 }
-  with FCustomForm.Canvas do begin
+  with FCanvas do begin
     OldBrushColor:=Brush.Color;
     Brush.Color:=FMarkerColor;
     FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
@@ -647,13 +656,14 @@ writeln('DrawMarker A ',FCustomForm.Name
                  ,ALeft+AControl.Width,ATop+AControl.Height));
     Brush.Color:=OldbrushColor;
   end;
-  FCustomForm.Canvas.Handle:=OldFormHandle;
+  FCanvas.Handle:=0;
+//  FCustomForm.Canvas.Handle:=OldFormHandle;
   RestoreDC(DC, SaveIndex);
 end;
 
 procedure TControlSelection.DrawRubberband(DC: HDC);
-var OldFormHandle: HDC;
-  FormOrigin, DCOrigin, Diff: TPoint;
+var FormOrigin, DCOrigin, Diff: TPoint;
+  SaveIndex: HDC;
 
   procedure DrawInvertFrameRect(x1,y1,x2,y2:integer);
   var i:integer;
@@ -661,19 +671,19 @@ var OldFormHandle: HDC;
     procedure InvertPixel(x,y:integer);
     //var c:TColor;
     begin
-      //c:=FCustomForm.Canvas.Pixels[x,y];
+      //c:=FCanvas.Pixels[x,y];
       //c:=c xor $ffffff;
-      //FCustomForm.Canvas.Pixels[x,y]:=c;
-      FCustomForm.Canvas.MoveTo(Diff.X+x,Diff.Y+y);
-      FCustomForm.Canvas.LineTo(Diff.X+x+1,Diff.Y+y);
+      //FCanvas.Pixels[x,y]:=c;
+      FCanvas.MoveTo(Diff.X+x,Diff.Y+y);
+      FCanvas.LineTo(Diff.X+x+1,Diff.Y+y);
     end;
 
   var OldPenColor: TColor;
   begin
-    if FCustomForm=nil then exit;
+    if FCanvas=nil then exit;
     if x1>x2 then begin i:=x1; x1:=x2; x2:=i; end;
     if y1>y2 then begin i:=y1; y1:=y2; y2:=i; end;
-    with FCustomForm.Canvas do begin
+    with FCanvas do begin
       OldPenColor:=Brush.Color;
       Pen.Color:=clBlack;
       i:=x1+1;
@@ -699,11 +709,14 @@ begin
   FormOrigin:=FCustomForm.ClientOrigin;
   Diff.X:=FormOrigin.X-DCOrigin.X;
   Diff.Y:=FormOrigin.Y-DCOrigin.Y;
-  OldFormHandle:=FCustomForm.Canvas.Handle;
-  FCustomForm.Canvas.Handle:=DC;
+//  OldFormHandle:=FCustomForm.Canvas.Handle;
+  SaveIndex:=SaveDC(DC);
+  FCanvas.Handle:=DC;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left,Top,Right,Bottom);
-  FCustomForm.Canvas.Handle:=OldFormHandle;
+  FCanvas.Handle:=0;
+  RestoreDC(DC,SaveIndex);
+//  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 

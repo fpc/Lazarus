@@ -24,7 +24,8 @@ unit CustomFormEditor;
 interface
 
 uses
-  classes, abstractformeditor, controls,propedits,Typinfo,ObjectInspector,forms,IDEComp;
+  Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector ,
+  Forms, IDEComp, JITForms;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -94,6 +95,7 @@ TCustomFormEditor
     FComponentInterfaceList : TList; //used to track and find controls
     FSelectedComponents : TComponentSelectionList;
     FObj_Inspector : TObjectInspector;
+    JITFormList : TJITForms;
   protected
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
@@ -123,10 +125,7 @@ TCustomFormEditor
 implementation
 
 uses
-  SysUtils, JITForms;
-
-var
-  JITFormList : TJITForms;
+  SysUtils;
 
 {TComponentInterface}
 

@@ -329,7 +329,9 @@ end;
 destructor TSplashForm.Destroy;
 begin
   FBitmap.Free;
+  FBitmap:=nil;
   FTimer.Free;
+  FTimer:=nil;
   inherited Destroy;
 end;
 
@@ -353,7 +355,8 @@ procedure TSplashForm.Paint;
 begin
   inherited Paint;
   if FBitmap <>nil 
-  then Canvas.Copyrect(Bounds(0, 0, Width, Height), FBitmap.Canvas, Rect(0,0, Width, Height));
+  then Canvas.Copyrect(Bounds(0, 0, Width, Height)
+     ,FBitmap.Canvas, Rect(0,0, Width, Height));
 end;
 
 procedure TSplashForm.StartTimer;
@@ -366,6 +369,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/03/20 16:59:15  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.3  2001/03/19 14:00:47  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

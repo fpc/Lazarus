@@ -124,10 +124,8 @@ begin
 end;
 
 destructor TJITForms.Destroy;
-var a:integer;
 begin
-  for a:=0 to FForms.Count-1 do
-    DestroyJITForm(a);
+  while FForms.Count>0 do DestroyJITForm(FForms.Count-1);
   FForms.Free;
   inherited Destroy;
 end;
@@ -161,6 +159,7 @@ begin
   OldClass:=Items[Index].ClassType;
   Items[Index].Free;
   FreevmtCopy(OldClass);
+  FForms.Delete(Index);
 end;
 
 function TJITForms.FindFormByClassName(AClassName:shortstring):integer;
@@ -197,22 +196,18 @@ var
 begin
   Result:=-1;
   // create new class and an instance
-writeln('[TJITForms.DoCreateJITForm] Creating new JIT class '''+NewClassName+''' ...');
+//writeln('[TJITForms.DoCreateJITForm] Creating new JIT class '''+NewClassName+''' ...');
   Pointer(FCurReadClass):=CreatevmtCopy(TJITForm,'TJITForm');
-writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewClassName+''' ...');
+//writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewClassName+''' ...');
   Instance:=TComponent(FCurReadClass.NewInstance);
-writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
+//writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
   TComponent(FCurReadForm):=Instance;
   try
     Instance.Create(nil);
-    Writeln('----------------------------------');
-    Writeln('New form name is '+NewFormName);
-    Writeln('----------------------------------');
-    Writeln('----------------------------------');
     if NewFormName<>'' then
       Instance.Name:=NewFormName;
     DoRenameClass(FCurReadClass,NewClassName);
-writeln('[TJITForms.DoCreateJITForm] Initialization was successful!');
+//writeln('[TJITForms.DoCreateJITForm] Initialization was successful!');
   except
     TComponent(FCurReadForm):=nil;
     writeln('[TJITForms.DoCreateJITForm] Error while creating instance');

@@ -4,7 +4,6 @@
 destructor TForm.destroy;
 begin
   Assert(False, 'Trace:Destroying signals for TForm');
-  FCanvas.Free;
   inherited Destroy;
 end;
 

@@ -489,7 +489,7 @@ var
   DC: HDC;
   PS: TPaintStruct; //defined in LCLLinux.pp
 begin
-
+//writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, Message.DC]));
   DC := Message.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
@@ -515,8 +515,8 @@ begin
     if Message.DC = 0 then EndPaint(Handle, PS);
   end;
   Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
+//writeln('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
 end;
-
 
 procedure TWinControl.PaintControls(DC: HDC; First: TControl);
 var
@@ -524,6 +524,7 @@ var
   FrameBrush: HBRUSH;
   TempControl : TCOntrol;
 begin
+//writeln('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
   if FControls <> nil then
   begin
     I := 0;
@@ -571,12 +572,14 @@ begin
           DeleteObject(FrameBrush);
           }
         end;
+//writeln('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',HexStr(DC,8));
 end;
 
 procedure TWinControl.PaintWindow(DC: HDC);
 var
   Message: TLMessage;
 begin
+//writeln('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',HexStr(DC,8));
   Message.Msg := LM_PAINT;
   Message.WParam := DC;
   Message.LParam := 0;
@@ -1241,7 +1244,7 @@ var
   n: Integer;
   Control: TControl;
 begin
-//writeln('[TWinControl.Destroy] 1  ',Name,':',ClassName);
+//writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
   DestroyHandle; 
 
   n := ControlCount;
@@ -1938,6 +1941,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2001/03/20 16:59:15  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.24  2001/03/19 14:38:39  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

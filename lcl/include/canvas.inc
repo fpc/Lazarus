@@ -99,8 +99,11 @@ end;
 procedure TCanvas.CreateBrush;
 var OldHandle: HBRUSH;
 begin
+//writeln('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
+// ,'  Brush=',HexStr(Cardinal(Pointer(Brush)),8));
   OldHandle:=SelectObject(FHandle, Brush.Handle);
-  if OldHandle<>Brush.Handle then LCLLinux.DeleteObject(OldHandle);
+  if OldHandle<>Brush.Handle then FSavedBrushHandle:=OldHandle;
+  Include(FState, csBrushValid);
 //  SetBkColor(FHandle, not ColorToRGB(Brush.Color));
 //  SetBkMode(FHandle, TRANSPARENT);
 end;
@@ -115,7 +118,8 @@ procedure TCanvas.CreatePen;
 var OldHandle: HPEN;
 begin
   OldHandle:=SelectObject(FHandle, Pen.Handle);
-  if OldHandle<>Pen.Handle then LCLLinux.DeleteObject(OldHandle);
+  if OldHandle<>Pen.Handle then FSavedPenHandle:=OldHandle;
+  Include(FState, csPenValid);
 //  SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
 
@@ -129,7 +133,8 @@ procedure TCanvas.CreateFont;
 var OldHandle: HPEN;
 begin
   OldHandle:=SelectObject(FHandle, Font.Handle);
-  if OldHandle<>Font.Handle then LCLLinux.DeleteObject(OldHandle);
+  if OldHandle<>Font.Handle then FSavedFontHandle:=OldHandle;
+  Include(FState, csFontValid);
   SetTextColor(FHandle, ColorToRGB(Font.Color));
 end;
 
@@ -280,7 +285,7 @@ end;
 Procedure TCanvas.MoveTo(X1, Y1 : Integer);
 begin
   RequiredState([csHandleValid]);
-  if LCLLinux.MoveToEx(Handle, X1, Y1, nil) then FPenPos:= Point(X1, Y1);
+  if LCLLinux.MoveToEx(FHandle, X1, Y1, nil) then FPenPos:= Point(X1, Y1);
 End;
 
 {------------------------------------------------------------------------------
@@ -292,7 +297,7 @@ End;
 procedure TCanvas.LineTo(X1, Y1 : Integer);
 begin
   RequiredState([csHandleValid, csPenValid]);
-  if LCLLinux.LineTo(Handle, X1, Y1) then FPenPos:= Point(X1, Y1);
+  if LCLLinux.LineTo(FHandle, X1, Y1) then FPenPos:= Point(X1, Y1);
 end;
 
 
@@ -394,10 +399,13 @@ begin
   inherited Create;
   FFont := TFont.Create;
   FFont.OnChange := @FontChanged;
+  FSavedFontHandle := 0;
   FPen := TPen.Create;
   FPen.OnChange := @PenChanged;
+  FSavedPenHandle := 0;
   FBrush := TBrush.Create;
   FBrush.OnChange := @BrushChanged;
+  FSavedBrushHandle := 0;
   FCopyMode := cmSrcCopy;
   FPenPos := Point(0, 0);
 end;
@@ -411,6 +419,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCanvas.Destroy;
 begin
+//writeln('[TCanvas.Destroy] ',ClassName,'  Self=',HexStr(Cardinal(Pointer(Self)),8));
   Handle := 0;
   FFont.Free;
   FPen.Free;
@@ -429,6 +438,62 @@ function TCanvas.GetHandle : HDC;
 begin
   RequiredState(csAllValid);
   Result := FHandle;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCanvas.SetHandle
+  Params:  NewHandle - the new device context
+  Returns: nothing
+
+  Deselect sub handles and sets the Handle
+ ------------------------------------------------------------------------------}
+procedure TCanvas.SetHandle(NewHandle: HDC);
+begin
+  if FHandle<>NewHandle then begin
+//writeln('[TCanvas.SetHandle] Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
+    if FHandle <> 0 then
+    begin
+      DeselectHandles;
+      FPenPos := GetPenPos;
+      FHandle := 0;
+      Exclude(FState, csHandleValid);
+    end;
+    if NewHandle <> 0 then
+    begin
+      Include(FState, csHandleValid);
+      FHandle := NewHandle;
+      SetPenPos(FPenPos);
+    end;
+//writeln('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCanvas.DeselectHandles
+  Params:  none
+  Returns: nothing
+
+  Deselect all subhandles in the current device context
+ ------------------------------------------------------------------------------}
+procedure TCanvas.DeselectHandles;
+begin
+  if (FHandle<>0) 
+  and (FState - [csPenValid, csBrushValid, csFontValid] <> FState) then begin
+    // select default sub handles in the device context without deleting owns
+    if FSavedBrushHandle<>0 then begin
+      SelectObject(FHandle,FSavedBrushHandle);
+      FSavedBrushHandle:=0;
+    end;
+    if FSavedPenHandle<>0 then begin
+      SelectObject(FHandle,FSavedPenHandle);
+      FSavedPenHandle:=0;
+    end;
+    if FSavedFontHandle<>0 then begin
+      SelectObject(FHandle,FSavedFontHandle);
+      FSavedFontHandle:=0;
+    end;
+    FState := FState - [csPenValid, csBrushValid, csFontValid];
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -462,6 +527,7 @@ begin
       CreateHandle;
       if FHandle = 0
       then raise EInvalidOperation.Create('Canvas does not allow drawing');
+      Include(FState, csHandleValid);
     end;
     if csFontValid in Needed then CreateFont;
     if csPenValid in Needed then
@@ -471,7 +537,6 @@ begin
       then Include(Needed, csBrushValid);
     end;
     if csBrushValid in Needed then CreateBrush;
-    FState := FState + Needed;
   end;
 end;
 
@@ -526,6 +591,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/03/20 16:59:15  lazarus
+  MG: fixed many bugs (mem leaks, canvas)
+
   Revision 1.4  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

@@ -53,6 +53,7 @@ type
     FOnPropertiesChanged: TNotifyEvent;
     FOnAddComponent: TOnAddComponent;
     FHasSized: boolean;
+    FGridColor: TColor;
 
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
@@ -127,6 +128,7 @@ begin
   FCustomForm := CustomForm;
   ControlSelection:=AControlSelection;
   FHasSized:=false;
+  FGridColor:=clGray;
 end;
 
 destructor TDesigner.Destroy;
@@ -169,7 +171,9 @@ end;
 function TDesigner.PaintControl(Sender: TControl; Message: TLMPaint):boolean;
 begin
   Result:=true;
+//writeln('***  LM_PAINT A ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   Sender.Dispatch(Message);
+//writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
   if (ControlSelection.IsSelected(Sender)) then begin
     // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
     ControlSelection.DrawMarker(Sender,Message.DC);
@@ -349,7 +353,9 @@ Begin
       // selection mode
       if not FHasSized then begin
         ControlSelection.BeginUpdate;
-        if not (ssShift in Shift) then
+        if (not (ssShift in Shift)) 
+        or ((ControlSelection.Count=1) 
+         and (ControlSelection[0].Control is TCustomForm)) then
           ControlSelection.Clear;
         if RubberBandWasActive then begin
           ControlSelection.SelectWithRubberBand(SenderParentForm,ssShift in Shift);
@@ -617,7 +623,7 @@ var
   x,y : integer;
 begin
   with FCustomForm.Canvas do begin
-    Pen.Color := clGray;
+    Pen.Color := FGridColor;
     x := 0;
     while x <= FCustomForm.Width do begin
       y := 0;
