@@ -126,13 +126,13 @@ function GetStockObject(Value: Integer): LongInt; {$IFDEF IF_BASE_MEMBER}virtual
 function GetSysColor(nIndex: Integer): DWORD; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSystemMetrics(nIndex: Integer): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextColor(DC: HDC) : TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, p4: Integer; p5, p6: PInteger; var Size: TSize): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowLong(Handle : hwnd; int : Integer): Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
   Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -204,6 +204,7 @@ function SetScrollInfo(Handle: HWND; SBStyle : Integer; ScrollInfo: TScrollInfo;
 //function SetScrollPos --> independent
 //function SetScrollRange --> independent
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetTextAlign(DC: HDC; Flags: UINT): UINT; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -336,6 +337,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.57  2002/12/05 22:16:30  mattias
   double byte char font started
 

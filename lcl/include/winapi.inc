@@ -446,6 +446,12 @@ begin
   Result := InterfaceObject.GetTextColor(DC);
 end;
 
+function GetTextExtentExPoint(DC: HDC; Str: PChar; Count, p4: Integer;
+  p5, p6: PInteger; var Size: TSize): BOOL;
+begin
+  Result := InterfaceObject.GetTextExtentExPoint(DC,Str,Count,p4,p5,p6,Size);
+end;
+
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
 begin
   Result := InterfaceObject.GetTextExtentPoint(DC, Str, Count, Size);
@@ -837,6 +843,11 @@ end;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; 
 begin
   Result := InterfaceObject.SetSysColors(cElements, lpaElements, lpaRgbValues);
+end;
+
+function SetTextAlign(DC: HDC; Flags: UINT): UINT;
+begin
+  Result := InterfaceObject.SetTextAlign(DC,Flags);
 end;
 
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
@@ -1397,6 +1408,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.64  2002/12/05 22:16:29  mattias
   double byte char font started
 
