@@ -131,7 +131,6 @@ const
   ecJumpToEditor         = ecUserFirst + 300;
   ecToggleFormUnit       = ecUserFirst + 301;
   ecToggleObjectInsp     = ecUserFirst + 302;
-  ecToggleProjectExpl    = ecUserFirst + 303;
   ecToggleCodeExpl       = ecUserFirst + 304;
   ecToggleMessages       = ecUserFirst + 305;
   ecToggleWatches        = ecUserFirst + 306;
@@ -580,7 +579,6 @@ begin
     // view menu
     ecToggleFormUnit        : Result:= srkmecToggleFormUnit;
     ecToggleObjectInsp      : Result:= srkmecToggleObjectInsp;
-    ecToggleProjectExpl     : Result:= srkmecToggleProjectExpl;
     ecToggleCodeExpl        : Result:= srkmecToggleCodeExpl;
     ecToggleMessages        : Result:= srkmecToggleMessages;
     ecToggleWatches         : Result:= srkmecToggleWatches;
@@ -1427,7 +1425,6 @@ begin
   // view menu
   C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,caAll)];
   Add(C,'Toggle view Object Inspector',ecToggleObjectInsp,VK_F11,[],VK_UNKNOWN,[]);
-  Add(C,'Toggle view Project Explorer',ecToggleProjectExpl,VK_F11,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   Add(C,'Toggle view Code Explorer',ecToggleCodeExpl,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Toggle view Messages',ecToggleMessages,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Toggle view Watches',ecToggleWatches,VK_W,[ssCtrl,ssAlt],VK_UNKNOWN,[]);

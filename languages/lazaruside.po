@@ -394,10 +394,6 @@ msgstr ""
 msgid "Object Inspector"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuviewprojectexplorer
-msgid "Project Explorer"
-msgstr ""
-
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
 msgstr ""

@@ -256,7 +256,6 @@ type
 
     // view menu
     itmViewInspector: TMenuItem;
-    itmViewProjectExplorer: TMenuItem;
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
@@ -895,12 +894,6 @@ begin
   itmViewInspector.Caption := lisMenuViewObjectInspector;
   mnuView.Add(itmViewInspector);
 
-  itmViewProjectExplorer  := TMenuItem.Create(Self);
-  itmViewProjectExplorer.Name:='itmViewProject';
-  itmViewProjectExplorer.Caption := lisMenuViewProjectExplorer;
-  itmViewProjectExplorer.Enabled := false;
-  mnuView.Add(itmViewProjectExplorer);
-
   mnuView.Add(CreateMenuSeparator);
 
   itmViewCodeExplorer := TMenuItem.Create(Self);
@@ -1350,7 +1343,6 @@ begin
 
     // view menu
     itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
-    itmViewProjectExplorer.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
     itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);

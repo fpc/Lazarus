@@ -3730,10 +3730,6 @@ msgstr "Проект изменен"
 msgid "Project directory"
 msgstr "Имя каталога проекта"
 
-#: lazarusidestrconsts:lismenuviewprojectexplorer
-msgid "Project Explorer"
-msgstr "Диспетчер проекта"
-
 #: lazarusidestrconsts:lisprojectfilename
 msgid "Project filename"
 msgstr "Имя файла проекта"

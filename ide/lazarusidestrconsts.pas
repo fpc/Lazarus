@@ -175,7 +175,6 @@ resourcestring
   lisMenuGotoIncludeDirective = 'Goto include directive';
   
   lisMenuViewObjectInspector = 'Object Inspector';
-  lisMenuViewProjectExplorer = 'Project Explorer';
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
