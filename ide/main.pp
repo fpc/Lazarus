@@ -3946,9 +3946,9 @@ Begin
       end;
     end;
     if OnlyForms then
-      DlgCaption:='View project forms'
+      DlgCaption:=dlgMainViewForms 
     else
-      DlgCaption:='View project units';
+      DlgCaption:=dlgMainViewUnits ;
     if ShowViewUnitsDlg(UnitList,true,DlgCaption)=mrOk then begin
       AnUnitInfo:=nil;
       for i:=0 to UnitList.Count-1 do begin
@@ -7183,6 +7183,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.390  2002/09/20 07:26:34  lazarus
+  MG: applied localization from Vasily
+
   Revision 1.389  2002/09/19 14:54:53  lazarus
   MG: history jumps now works without double jumps
 

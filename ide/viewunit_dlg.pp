@@ -37,7 +37,8 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls;
+  SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
+  LazarusIdeStrConsts;
 
 type
   TViewUnitsEntry = class
@@ -147,7 +148,7 @@ begin
       Top := btnOK.Top + btnOK.Height + pad;
       Width := 75;
       Height := 25;
-      Caption := 'Cancel';
+      Caption := dlgCancel;
       Visible := True;
       Name := 'btnCancel';
       OnClick := @btnCancelClick;
@@ -173,7 +174,7 @@ begin
       Top:=btnCancel.Top+btnCancel.Height+2*pad;
       Width:=btnOk.Width;
       Height:=25;
-      Caption:='Multi';
+      Caption:=dlgMulti;
       Checked:=false;
       OnClick:=@MultiselectCheckBoxClick;
       Visible:=true;
@@ -240,6 +241,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.12  2002/09/20 07:26:37  lazarus
+  MG: applied localization from Vasily
+
   Revision 1.11  2002/05/10 06:57:47  lazarus
   MG: updated licenses
 
