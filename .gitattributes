@@ -173,6 +173,7 @@ designer/abstractformeditor.pp svneol=native#text/pascal
 designer/aligncompsdlg.pp svneol=native#text/pascal
 designer/columndlg.pp svneol=native#text/pascal
 designer/componenteditors.pas svneol=native#text/pascal
+designer/componenttreeview.pas svneol=native#text/pascal
 designer/controlselection.pp svneol=native#text/pascal
 designer/customeditor.pp svneol=native#text/pascal
 designer/designer.pp svneol=native#text/pascal

@@ -656,8 +656,8 @@ activate_time :	the time at which the activation event occurred.
             {Get the width and height for the form}
             If TheWinControl.FCompStyle = csForm Then
             begin
-              // the LCL defines the size of a form without border, win32 with
-              // adjust size
+              // the LCL defines the size of a form without border, win32 with.
+              // -> adjust size
               //writeln('win32 LM_SETSIZE before adjusting form: ',
               //  ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);
               R:=NewRect;
@@ -2811,6 +2811,9 @@ End;
 
 {
   $Log$
+  Revision 1.92  2003/08/22 07:58:38  mattias
+  started componenttree
+
   Revision 1.91  2003/08/21 06:52:47  mattias
   size fixes from Karl
 

@@ -1147,7 +1147,7 @@ begin
               then begin
                 Assert(False, 'Trace:Begin AutoDrag called');
                 BeginAutoDrag;
-                Exit;
+                exit;
               end;
               Include(FControlState,csLButtonDown);
             end;
@@ -2468,6 +2468,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.148  2003/08/22 07:58:38  mattias
+  started componenttree
+
   Revision 1.147  2003/08/21 13:04:10  mattias
   implemented insert marks for TTreeView
 

@@ -19,7 +19,7 @@
     For more information see the big comment part below.
 
   ToDo:
-    -digits for floattypes -> I hope, I have guessed right
+    -digits for floattypes -> I hope, I guessed right
     -TIntegerSet missing -> taking my own
     -Save ColorDialog settings
     -System.TypeInfo(Type) missing -> exists already in the fpc 1.1 version
@@ -57,14 +57,14 @@ type
   Object Inspector.  The property editor is created based on the type of the
   property being edited as determined by the types registered by
   RegisterPropertyEditor.  The Object Inspector uses a TPropertyEditor
-  for all modification to a property. GetName and GetValue are called to display
-  the name and value of the property. SetValue is called whenever the user
-  requests to change the value.  Edit is called when the user double-clicks the
-  property in the Object Inspector. GetValues is called when the drop-down
-  list of a property is displayed. GetProperties is called when the property
-  is expanded to show sub-properties. AllEqual is called to decide whether or
-  not to display the value of the property when more than one component is
-  selected.
+  for all modification to a property. GetName and GetValue are called to
+  display the name and value of the property. SetValue is called whenever the
+  user requests to change the value.  Edit is called when the user
+  double-clicks the property in the Object Inspector. GetValues is called when
+  the drop-down list of a property is displayed. GetProperties is called when
+  the property is expanded to show sub-properties. AllEqual is called to decide
+  whether or not to display the value of the property when more than one
+  component is selected.
 
   The following are methods that can be overridden to change the behavior of
   the property editor:

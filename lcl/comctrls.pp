@@ -1472,6 +1472,7 @@ type
     procedure BeginUpdate;
     procedure Clear;
     procedure ClearMultiSelection;
+    function IsMultiSelection: boolean;
     procedure Delete(Node: TTreeNode);
     procedure EndUpdate;
     function GetFirstNode: TTreeNode;
@@ -1525,6 +1526,7 @@ type
   TTreeViewOption = (
     tvoAllowMultiselect,
     tvoAutoExpand,
+    tvoAutoInsertMark,
     tvoAutoItemHeight,
     tvoHideSelection,
     tvoHotTrack,
@@ -1601,7 +1603,6 @@ type
     FSelectedColor: TColor;
     FSelectedNode: TTreeNode;
     FSortType: TSortType;
-    FStartDragNode: TTreeNode;
     FStateChangeLink: TChangeLink;
     FStateImages: TCustomImageList;
     FStates: TTreeViewStates;
@@ -1742,6 +1743,7 @@ type
     procedure SetOptions(NewOptions: TTreeViewOptions);
     procedure UpdateDefaultItemHeight; virtual;
     procedure WndProc(var Message: TLMessage); override;
+    procedure UpdateInsertMark(X,Y: integer); virtual;
   protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle: TBorderStyle
@@ -1799,8 +1801,9 @@ type
     function GetNodeAt(X, Y: Integer): TTreeNode;
     procedure GetInsertMarkAt(X, Y: Integer; var AnInsertMarkNode: TTreeNode;
                               var AnInsertMarkType: TTreeViewInsertMarkType);
-    procedure SetInsertMark(var AnInsertMarkNode: TTreeNode;
-                            var AnInsertMarkType: TTreeViewInsertMarkType);
+    procedure SetInsertMark(AnInsertMarkNode: TTreeNode;
+                            AnInsertMarkType: TTreeViewInsertMarkType);
+    procedure SetInsertMarkAt(X,Y: integer); virtual;
     function IsEditing: Boolean;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -2027,6 +2030,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2003/08/22 07:58:38  mattias
+  started componenttree
+
   Revision 1.82  2003/08/21 13:04:10  mattias
   implemented insert marks for TTreeView
 

@@ -1750,6 +1750,12 @@ begin
   end;
 end;
 
+function TTreeNodes.IsMultiSelection: boolean;
+begin
+  Result:=(FFirstMultiSelected<>nil)
+          and (FFirstMultiSelected.GetNextMultiSelected<>nil);
+end;
+
 function TTreeNodes.AddChildFirst(ParentNode: TTreeNode; const S: string): TTreeNode;
 begin
   Result := AddChildObjectFirst(ParentNode, S, nil);
@@ -3272,6 +3278,8 @@ var
   NodeRect: TRect;
   NodeMidY: integer;
 begin
+  if Y<0 then Y:=0;
+  if Y>=ClientHeight then Y:=ClientHeight-1;
   ANode:=GetNodeAtY(Y);
   if ANode<>nil then begin
     AnInsertMarkNode:=ANode;
@@ -3311,7 +3319,7 @@ begin
     end;
   end;
   
-  // normalize
+  // normalize (try to replace tvimAsPrevSibling)
   if (AnInsertMarkType=tvimAsPrevSibling) and (AnInsertMarkNode<>nil) then begin
     if (AnInsertMarkNode.GetPrevSibling<>nil) then begin
       if (AnInsertMarkNode.GetPrevSibling.Expanded=false)
@@ -3327,11 +3335,20 @@ begin
   end;
 end;
 
-procedure TCustomTreeView.SetInsertMark(var AnInsertMarkNode: TTreeNode;
-  var AnInsertMarkType: TTreeViewInsertMarkType);
+procedure TCustomTreeView.SetInsertMark(AnInsertMarkNode: TTreeNode;
+  AnInsertMarkType: TTreeViewInsertMarkType);
 begin
   InsertMarkNode:=AnInsertMarkNode;
   InsertMarkType:=AnInsertMarkType;
+end;
+
+procedure TCustomTreeView.SetInsertMarkAt(X, Y: integer);
+var
+  AnInsertMarkNode: TTreeNode;
+  AnInsertMarkType: TTreeViewInsertMarkType;
+begin
+  GetInsertMarkAt(X,Y,AnInsertMarkNode,AnInsertMarkType);
+  SetInsertMark(AnInsertMarkNode,AnInsertMarkType);
 end;
 
 function TCustomTreeView.GetHitTestInfoAt(X, Y: Integer): THitTests;
@@ -3983,7 +4000,7 @@ end;
 
 procedure TCustomTreeView.WndProc(var Message: TLMessage);
 begin
-  if not (csDesigning in ComponentState)
+  {if not (csDesigning in ComponentState)
   and ((Message.Msg = LM_LBUTTONDOWN)
     or (Message.Msg = LM_LBUTTONDBLCLK))
   and not Dragging and
@@ -3994,11 +4011,19 @@ begin
       Dispatch(Message);
     end;
   end
-  {else if Message.Msg = CN_BASE+LM_CONTEXTMENU then
+  else if Message.Msg = CN_BASE+LM_CONTEXTMENU then
     Message.Result := Perform(LM_CONTEXTMENU, Message.WParam, Message.LParam)
-  }
-  else
+  else}
     inherited WndProc(Message);
+end;
+
+procedure TCustomTreeView.UpdateInsertMark(X,Y: integer);
+begin
+  if (tvoAutoInsertMark in Options) and (not (csDesigning in ComponentState))
+  then
+    SetInsertMarkAt(X,Y)
+  else
+    SetInsertMark(nil,tvimNone);
 end;
 
 function TCustomTreeView.IsInsertMarkVisible: boolean;
@@ -4562,6 +4587,9 @@ var
   CursorNode: TTreeNode;
   bStartDrag: boolean;
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
+  {$ENDIF}
   fMouseDownX := X;
   fMouseDownY := Y;
   if Button=mbMiddle then begin
@@ -4599,15 +4627,20 @@ begin
           end else if (ssCtrl in Shift) then begin
             CursorNode.MultiSelected:=not CursorNode.MultiSelected;
           end else begin
-            Items.ClearMultiSelection;
-            CursorNode.MultiSelected:=true;
+            if (Selected<>CursorNode) or Items.IsMultiSelection then begin
+              Items.ClearMultiSelection;
+              CursorNode.MultiSelected:=true;
+            end;
           end;
         end;
         bStartDrag := true;
       end;
     end;
     if (bStartDrag) then begin
-      FStartDragNode:=CursorNode;
+      {$IFDEF VerboseDrag}
+      writeln('TCustomTreeView.MouseDown A bStartDrag ',Name,':',ClassName,' ');
+      {$ENDIF}
+      FDragNode:=CursorNode;
       Include(fStates, tvsWaitForDragging);
     end;
     if Button=mbMiddle then begin
@@ -4632,6 +4665,8 @@ begin
       BeginDrag(false);
     end;
   end;
+  if (tvoAutoInsertMark in FOptions) then
+    UpdateInsertMark(X,Y);
 end;
 
 procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -4818,12 +4853,20 @@ begin
 end;
 
 procedure TCustomTreeView.WMLButtonDown(var AMessage: TLMLButtonDown);
-var
+{var
   Node: TTreeNode;
   MousePos: TPoint;
-  P: TSmallPoint;
+  P: TSmallPoint;}
 begin
+  {$IFDEF VerboseDrag}
+  writeln('TCustomTreeView.WMLButtonDown A ',Name,':',ClassName,' ');
+  {$ENDIF}
   Exclude(FStates,tvsDragged);
+  inherited;
+  {$IFDEF VerboseDrag}
+  writeln('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
+  {$ENDIF}
+  {
   FDragNode := nil;
   try
     inherited;
@@ -4847,7 +4890,7 @@ begin
     end;
   finally
     FDragNode := nil;
-  end;
+  end;}
 end;
 
 procedure TCustomTreeView.WMNotify(var AMessage: TLMNotify);

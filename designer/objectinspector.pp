@@ -22,8 +22,6 @@
 
   ToDo:
    - backgroundcolor=clNone
-
-   - a lot more ...  see XXX
 }
 unit ObjectInspector;
 
@@ -37,7 +35,8 @@ uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
   LResources, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
-  PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor;
+  PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
+  ComponentTreeView;
 
 
 type
@@ -50,10 +49,12 @@ type
 
   TOIOptions = class
   private
+    FComponentTreeHeight: integer;
     FCustomXMLCfg: TXMLConfig;
     FDefaultItemHeight: integer;
     FFilename:string;
     FFileAge: longint;
+    FShowComponentTree: boolean;
     FXMLCfg: TXMLConfig;
     FFileHasChangedOnDisk: boolean;
 
@@ -78,6 +79,7 @@ type
     function Save: boolean;
     procedure Assign(AnObjInspector: TObjectInspector);
     procedure AssignTo(AnObjInspector: TObjectInspector);
+  public
     property Filename:string read FFilename write SetFilename;
     property CustomXMLCfg: TXMLConfig read FCustomXMLCfg write FCustomXMLCfg;
 
@@ -86,17 +88,21 @@ type
     property Top:integer read FTop write FTop;
     property Width:integer read FWidth write FWidth;
     property Height:integer read FHeight write FHeight;
-    property PropertyGridSplitterX:integer
-      read FPropertyGridSplitterX write FPropertyGridSplitterX;
-    property EventGridSplitterX:integer
-      read FEventGridSplitterX write FEventGridSplitterX;
-    property DefaultItemHeight: integer
-      read FDefaultItemHeight write FDefaultItemHeight;
+    property PropertyGridSplitterX:integer read FPropertyGridSplitterX
+                                           write FPropertyGridSplitterX;
+    property EventGridSplitterX:integer read FEventGridSplitterX
+                                        write FEventGridSplitterX;
+    property DefaultItemHeight: integer read FDefaultItemHeight
+                                        write FDefaultItemHeight;
+    property ShowComponentTree: boolean read FShowComponentTree
+                                        write FShowComponentTree;
+    property ComponentTreeHeight: integer read FComponentTreeHeight
+                                          write FComponentTreeHeight;
 
-    property GridBackgroundColor: TColor 
-      read FGridBackgroundColor write FGridBackgroundColor;
-    property ShowHints: boolean
-      read FShowHints write FShowHints;
+    property GridBackgroundColor: TColor read FGridBackgroundColor
+                                         write FGridBackgroundColor;
+    property ShowHints: boolean read FShowHints
+                                write FShowHints;
   end;
 
   TOIPropertyGrid = class;
@@ -239,17 +245,18 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
 
-    procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
+    procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
-    procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
+    procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;
     ValueButton:TButton;
 
-    property Selections:TComponentSelectionList read FComponentList write SetSelections;
-    property PropertyEditorHook:TPropertyEditorHook
-       read FPropertyEditorHook write SetPropertyEditorHook;
+    property Selections: TComponentSelectionList read FComponentList
+                                                 write SetSelections;
+    property PropertyEditorHook: TPropertyEditorHook
+                           read FPropertyEditorHook write SetPropertyEditorHook;
     procedure BuildPropertyList;
     procedure RefreshPropertyValues;
     
@@ -261,9 +268,11 @@ type
     property TopY:integer read FTopY write SetTopY;
     function GridHeight:integer;
     function TopMax:integer;
-    property DefaultItemHeight:integer read FDefaultItemHeight write FDefaultItemHeight;
+    property DefaultItemHeight:integer read FDefaultItemHeight
+                                       write FDefaultItemHeight;
     property SplitterX:integer read FSplitterX write SetSplitterX;
-    property PrefferedSplitterX:integer read FPreferredSplitterX write FPreferredSplitterX;
+    property PrefferedSplitterX: integer read FPreferredSplitterX
+                                         write FPreferredSplitterX;
     property Indent:integer read FIndent write FIndent;
     property BackgroundColor:TColor
        read FBackgroundColor write SetBackgroundColor default clBtnFace;
@@ -311,14 +320,18 @@ type
     ColorsPopupMenuItem: TMenuItem;
     BackgroundColPopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
+    ShowComponentTreePopupMenuItem: TMenuItem;
     ShowOptionsPopupMenuItem: TMenuItem;
+    ComponentTree: TComponentTreeView;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
+    procedure OnShowComponentTreePopupMenuItemClick(Sender :TObject);
     procedure HookRefreshPropertyValues;
   private
     FComponentList: TComponentSelectionList;
+    FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
     FFlags: TOIFlags;
     FOnShowOptions: TNotifyEvent;
@@ -326,9 +339,12 @@ type
     FOnAddAvailableComponent:TOnAddAvailableComponent;
     FOnSelectComponentInOI:TOnSelectComponentInOI;
     FOnModified: TNotifyEvent;
+    FShowComponentTree: boolean;
     FUpdateLock: integer;
     FUpdatingAvailComboBox:boolean;
+    FUsePairSplitter: boolean;
     function ComponentToString(c:TComponent):string;
+    procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
     procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
@@ -338,6 +354,8 @@ type
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
     procedure HookGetSelectedComponents(Selection: TComponentSelectionList);
+    procedure SetShowComponentTree(const AValue: boolean);
+    procedure SetUsePairSplitter(const AValue: boolean);
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
@@ -360,6 +378,9 @@ type
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write SetOnShowOptions;
+    property ShowComponentTree: boolean read FShowComponentTree write SetShowComponentTree;
+    property ComponentTreeHeight: integer read FComponentTreeHeight write SetComponentTreeHeight;
+    property UsePairSplitter: boolean read FUsePairSplitter write SetUsePairSplitter;
   end;
 
 const
@@ -1960,6 +1981,8 @@ begin
   FPropertyGridSplitterX:=110;
   FEventGridSplitterX:=110;
   FDefaultItemHeight:=0;
+  FShowComponentTree:=true;
+  FComponentTreeHeight:=100;
 
   FGridBackgroundColor:=clBtnFace;
 end;
@@ -1995,6 +2018,10 @@ begin
     FDefaultItemHeight:=XMLConfig.GetValue(
        'ObjectInspectorOptions/Bounds/DefaultItemHeight',0);
     if FDefaultItemHeight<0 then FDefaultItemHeight:=0;
+    FShowComponentTree:=XMLConfig.GetValue(
+       'ObjectInspectorOptions/ComponentTree/Show/Value',true);
+    FComponentTreeHeight:=XMLConfig.GetValue(
+       'ObjectInspectorOptions/ComponentTree/Height/Value',100);
 
     FGridBackgroundColor:=XMLConfig.GetValue(
          'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
@@ -2023,17 +2050,21 @@ begin
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
       XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
     end;
-    XMLConfig.SetValue(
-       'ObjectInspectorOptions/Bounds/PropertyGridSplitterX'
-       ,FPropertyGridSplitterX);
-    XMLConfig.SetValue(
-       'ObjectInspectorOptions/Bounds/EventGridSplitterX'
-       ,FEventGridSplitterX);
-    XMLConfig.SetDeleteValue(
-       'ObjectInspectorOptions/Bounds/DefaultItemHeight',FDefaultItemHeight,20);
+    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/PropertyGridSplitterX',
+                       FPropertyGridSplitterX);
+    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/EventGridSplitterX',
+                       FEventGridSplitterX);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
+                             FDefaultItemHeight,20);
+    {$IFNDEF CompTree}
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
+                             FShowComponentTree,true);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Height/Value',
+                             FComponentTreeHeight,100);
+    {$ENDIF}
 
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor'
-       ,FGridBackgroundColor,clBackground);
+    XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
+                             FGridBackgroundColor,clBackground);
     XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,true);
 
     if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
@@ -2055,6 +2086,8 @@ begin
   FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.PrefferedSplitterX;
   FEventGridSplitterX:=AnObjInspector.EventGrid.PrefferedSplitterX;
   FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
+  FShowComponentTree:=AnObjInspector.ShowComponentTree;
+  FComponentTreeHeight:=AnObjInspector.ComponentTreeHeight;
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
   FShowHints:=AnObjInspector.PropertyGrid.ShowHint;
 end;
@@ -2069,6 +2102,8 @@ begin
   AnObjInspector.EventGrid.PrefferedSplitterX:=FEventGridSplitterX;
   AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
   AnObjInspector.DefaultItemHeight:=FDefaultItemHeight;
+  AnObjInspector.ShowComponentTree:=FShowComponentTree;
+  AnObjInspector.ComponentTreeHeight:=FComponentTreeHeight;
   AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
   AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
   AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;
@@ -2083,22 +2118,22 @@ end;
 
 constructor TObjectInspector.Create(AnOwner: TComponent);
 
-  procedure AddPopupMenuItem(var NewMenuItem:TmenuItem;
-     ParentMenuItem:TMenuItem; AName,ACaption,AHint:string;
-     AOnClick: TNotifyEvent; CheckedFlag,EnabledFlag,VisibleFlag:boolean);
+  procedure AddPopupMenuItem(var NewMenuItem: TmenuItem;
+    ParentMenuItem: TMenuItem; const AName, ACaption, AHint: string;
+    AnOnClick: TNotifyEvent; CheckedFlag, EnabledFlag, VisibleFlag: boolean);
   begin
     NewMenuItem:=TMenuItem.Create(Self);
     with NewMenuItem do begin
       Name:=AName;
       Caption:=ACaption;
       Hint:=AHint;
-      OnClick:=AOnClick;
+      OnClick:=AnOnClick;
       Checked:=CheckedFlag;
       Enabled:=EnabledFlag;
       Visible:=VisibleFlag;
     end;
     if ParentMenuItem<>nil then
-      ParentMenuItem.Add(NewmenuItem)
+      ParentMenuItem.Add(NewMenuItem)
     else
       MainPopupMenu.Items.Add(NewMenuItem);
   end;
@@ -2111,6 +2146,10 @@ begin
   FUpdatingAvailComboBox:=false;
   Name := DefaultObjectInspectorName;
   FDefaultItemHeight := 22;
+  FComponentTreeHeight:=100;
+  {$IFDEF CompTree}
+  FShowComponentTree:=true;
+  {$ENDIF}
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);
@@ -2119,7 +2158,6 @@ begin
     Parent:=Self;
     SimpleText:='All';
     Align:= alBottom;
-    Visible:=true;
   end;
 
   // PopupMenu
@@ -2136,6 +2174,14 @@ begin
   AddPopupMenuItem(ShowHintsPopupMenuItem,nil
      ,'ShowHintPopupMenuItem','Show Hints','Grid hints'
      ,@OnShowHintPopupMenuItemClick,false,true,true);
+  ShowHintsPopupMenuItem.ShowAlwaysCheckable:=true;
+  AddPopupMenuItem(ShowComponentTreePopupMenuItem,nil
+     ,'ShowComponentTreePopupMenuItem','Show Component Tree',''
+     ,@OnShowComponentTreePopupMenuItemClick,FShowComponentTree,true,true);
+  ShowComponentTreePopupMenuItem.ShowAlwaysCheckable:=true;
+  {$IFNDEF CompTree}
+  ShowComponentTreePopupMenuItem.Enabled:=false;
+  {$ENDIF}
   AddPopupMenuItem(ShowOptionsPopupMenuItem,nil
      ,'ShowOptionsPopupMenuItem','Options',''
      ,@OnShowOptionsPopupMenuItemClick,false,true,FOnShowOptions<>nil);
@@ -2152,7 +2198,17 @@ begin
     OnCloseUp:=@AvailComboBoxCloseUp;
     //Sorted:=true;
     Align:= alTop;
-    Visible:=true;
+    Visible:=not FShowComponentTree;
+  end;
+  
+  // Component Tree
+  ComponentTree:=TComponentTreeView.Create(Self);
+  with ComponentTree do begin
+    Name:='ComponentTree';
+    Height:=ComponentTreeHeight;
+    Parent:=Self;
+    Align:=alTop;
+    Visible:=FShowComponentTree;
   end;
 
   // NoteBook
@@ -2203,7 +2259,6 @@ begin
     PopupMenu:=MainPopupMenu;
     OnModified:=@OnGridModified;
   end;
-
 end;
 
 destructor TObjectInspector.Destroy;
@@ -2239,6 +2294,12 @@ end;
 function TObjectInspector.ComponentToString(c: TComponent): string;
 begin
   Result:=c.GetNamePath+': '+c.ClassName;
+end;
+
+procedure TObjectInspector.SetComponentTreeHeight(const AValue: integer);
+begin
+  if FComponentTreeHeight=AValue then exit;
+  FComponentTreeHeight:=AValue;
 end;
 
 procedure TObjectInspector.SetDefaultItemHeight(const AValue: integer);
@@ -2455,6 +2516,24 @@ begin
   Selection.Assign(FComponentList);
 end;
 
+procedure TObjectInspector.SetShowComponentTree(const AValue: boolean);
+begin
+  {$IFNDEF CompTree}
+  exit;
+  {$ENDIF}
+  if FShowComponentTree=AValue then exit;
+  FShowComponentTree:=AValue;
+  ShowComponentTreePopupMenuItem.Checked:=FShowComponentTree;
+  ComponentTree.Visible:=FShowComponentTree;
+  AvailCompsComboBox.Visible:=not FShowComponentTree;
+end;
+
+procedure TObjectInspector.SetUsePairSplitter(const AValue: boolean);
+begin
+  if FUsePairSplitter=AValue then exit;
+  FUsePairSplitter:=AValue;
+end;
+
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
 begin
   PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
@@ -2464,6 +2543,12 @@ end;
 procedure TObjectInspector.OnShowOptionsPopupMenuItemClick(Sender: TObject);
 begin
   if Assigned(FOnShowOptions) then FOnShowOptions(Sender);
+end;
+
+procedure TObjectInspector.OnShowComponentTreePopupMenuItemClick(Sender: TObject
+  );
+begin
+  ShowComponentTree:=not ShowComponentTree;
 end;
 
 procedure TObjectInspector.HookRefreshPropertyValues;
