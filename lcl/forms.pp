@@ -245,6 +245,7 @@ type
     FDesigner : TIDesigner;
     FFormStyle : TFormStyle;
     FFormState: TFormState;
+    FFormUpdateCount: integer;
     FIcon: TIcon;
     FKeyPreview: Boolean;
     FMenu : TMainMenu;
@@ -290,10 +291,13 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Loaded; override;
+    procedure BeginFormUpdate;
     procedure Deactivate;dynamic;
     procedure DoClose(var Action: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
+    procedure EndFormUpdate;
+    function FormUpdating: boolean;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     // Delphi needed GetClientRect for win32 specific things, LCL not
     // Function GetClientRect : TRect ; Override;

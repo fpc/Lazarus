@@ -232,17 +232,17 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
-//writeln('[TCustomForm.SetVisible] START ',ClassName,' ',Value);
-  if fsCreating in FFormState then
-    if Value then
-      Include(FFormState, fsVisible)
-    else
-      Exclude(FFormState, fsVisible)
+//writeln('[TCustomForm.SetVisible] START ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+  if Value then
+    Include(FFormState, fsVisible)
+  else
+    Exclude(FFormState, fsVisible);
+  if (fsCreating in FFormState) or FormUpdating then
   else
   begin
     inherited Visible := Value;
   end;
-//writeln('[TCustomForm.SetVisible] END ',ClassName,' ',Visible);
+//writeln('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
 end;
 
 {------------------------------------------------------------------------------
@@ -439,6 +439,25 @@ end;
 procedure TCustomForm.DoShow;
 begin
   if Assigned(FOnShow) then FOnShow(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomForm.EndFormUpdate;
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.EndFormUpdate;
+begin
+  dec(FFormUpdateCount);
+  if FFormUpdateCount=0 then begin
+    Visible:=(fsVisible in FFormState);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TCustomForm.FormUpdating: boolean;
+ ------------------------------------------------------------------------------}
+function TCustomForm.FormUpdating: boolean;
+begin
+  Result:=FFormUpdateCount>0;
 end;
 
 {------------------------------------------------------------------------------
@@ -754,6 +773,7 @@ constructor TCustomForm.Create(AOwner : TComponent);
 begin
 //writeln('[TCustomForm.Create] A Class=',Classname);
   try
+    BeginFormUpdate;
     CreateNew(AOwner, 1);
 //writeln('[TCustomForm.Create] B Class=',Classname);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
@@ -773,6 +793,7 @@ begin
         Exclude(FFormState, fsCreating);
       end;
     end;
+    EndFormUpdate;
   finally
   end;
 //writeln('[TCustomForm.Create] END Class=',Classname);
@@ -781,6 +802,7 @@ end;
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
 //writeln('[TCustomForm.CreateNew] Class=',Classname);
+  BeginFormUpdate;
   FBorderStyle:= bsSizeable;
   inherited Create(AOwner);
   fCompStyle:= csForm;
@@ -811,6 +833,7 @@ Begin
 //  FPrintScale := poProportional;
 //  FloatingDockSiteClass := TWinControlClass(ClassType);
   Screen.AddForm(Self);
+  EndFormUpdate;
 End;
 
 {------------------------------------------------------------------------------}
@@ -1035,6 +1058,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomForm.BeginFormUpdate;
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.BeginFormUpdate;
+begin
+  inc(FFormUpdateCount);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TCustomForm.UpdateShowing
   Params:  None
   Returns: Nothing
@@ -1168,6 +1199,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/11/06 17:46:36  lazarus
+  MG: reduced showing forms during creation
+
   Revision 1.68  2002/10/28 18:17:02  lazarus
   MG: impoved focussing, unfocussing on destroy and fixed unit search
 
