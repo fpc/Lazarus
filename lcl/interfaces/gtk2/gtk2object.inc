@@ -119,7 +119,7 @@ var
   aTreeIter : TGtkTreeIter;
   value : pgValue;
 begin
-  aWidget := GetWidgetInfo(Pointer(WinControl.Handle), True)^.ImplementationWidget;
+  aWidget := GetWidgetInfo(Pointer(WinControl.Handle), True)^.CoreWidget;
   aTreeModel := gtk_tree_view_get_model (GTK_TREE_VIEW(aWidget));
   if (gtk_tree_model_get_iter_from_string (aTreeModel, @aTreeIter, arg1)) then begin
     aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
@@ -190,7 +190,7 @@ begin
     case TWinControl(Sender).fCompStyle of
       csMemo:
       begin
-      	Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget;
+      	Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
         aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
         gtk_text_buffer_begin_user_action(aTextBuffer);
         gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
@@ -286,7 +286,7 @@ begin
       gtk_widget_show(TempWidget);
 
       SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
       if Sender is TCustomListBox then
         SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
                          TCustomListBox(Sender).ExtendedSelect);
@@ -305,7 +305,7 @@ begin
                                      GTK_POLICY_AUTOMATIC);
       gtk_scrolled_window_set_shadow_type(PGtkScrolledWindow(p),GTK_SHADOW_IN);
       SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      GetWidgetInfo(p, True)^.CoreWidget := TempWidget;
 
       gtk_text_view_set_editable (PGtkTextView(TempWidget), not TCustomMemo(Sender).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
@@ -346,7 +346,7 @@ begin
            end;
 
    csMemo    : begin
-      	          Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget;
+      	          Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
                   aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                   gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                   CS := gtk_text_buffer_get_text(aTextBuffer, @aTextIter1, @aTextIter2, True);
@@ -451,7 +451,7 @@ begin
         and (TControl(Sender).fCompStyle = csCheckListBox)
         then begin
           { Get the child in question of that index }
-          Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+          Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
           aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
 
           if (aTreeModel <> nil) and
@@ -471,7 +471,7 @@ begin
         and (TControl(Sender).fCompStyle = csCheckListBox)
         then begin
           { Get the child in question of that index }
-          Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+          Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
           aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
 
           if (aTreeModel <> nil) and
@@ -488,7 +488,7 @@ begin
              begin
                if Handle<>0 then begin
                  Result:= -1;
-                 Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+                 Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
                  aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
                  
                  {$IfNDef GTK2_2}
@@ -533,7 +533,7 @@ begin
                 TempInt := 1
               else
                 TempInt := 0;
-              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
               aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
               Data:= TGtkListStoreStringList.Create(GTK_LIST_STORE(aTreeModel),
                      TempInt, TWinControl(Sender));
@@ -555,7 +555,7 @@ begin
           csListBox, csCheckListBox:
             begin
               { Get the child in question of that index }
-              Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
               aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
               aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
 
@@ -578,7 +578,7 @@ begin
           case TControl(Sender).fCompStyle of
             csMemo:
               begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
                 result := gtk_text_iter_get_offset(@aTextIter1);
@@ -604,7 +604,7 @@ begin
         case (Sender as TControl).fCompStyle of
           csListBox, csCheckListBox :
             begin
-              Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              Widget := GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
               aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
               {$IfNDef GTK2_2}
               Result := 0;
@@ -626,7 +626,7 @@ begin
           case TControl(Sender).fCompStyle of
             csMemo:
     	      begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                 result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));
@@ -669,7 +669,7 @@ begin
 
             csListBox, csCheckListBox:
             begin
-              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
               aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
               aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
 
@@ -697,7 +697,7 @@ begin
         then case TControl(Sender).fCompStyle of
           csListBox, csCheckListBox:
             begin
-              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
               aTreeModel := gtk_tree_view_get_model(GTK_TREE_VIEW(Widget));
               aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
 
@@ -723,7 +723,7 @@ begin
           case TControl(Sender).fCompStyle of
             csMemo:
               begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 Writeln('TODO(GTK2): IntSendMessage3, LM_SETSELSTART, csMemo');
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
@@ -754,7 +754,7 @@ begin
           case TControl(Sender).fCompStyle of
             csMemo:
     	      begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 Writeln('TODO(GTK2): IntSendMessage3, LM_SETSELLEN, csMemo');
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
@@ -861,7 +861,7 @@ begin
   if gFixed = nil then gFixed := gObject;
 
   // gCore is the main widget (e.g. TListView has this)
-  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.ImplementationWidget);
+  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.CoreWidget);
 
   case AMsg of
     LM_FOCUS :
@@ -1047,7 +1047,7 @@ begin
     end;
 
   csMemo        : begin
-                    Widget:= PGtkWidget(GetWidgetInfo(Widget, True)^.ImplementationWidget);
+                    Widget:= PGtkWidget(GetWidgetInfo(Widget, True)^.CoreWidget);
                     aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                     gtk_text_buffer_begin_user_action(aTextBuffer);
                     gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
@@ -1120,7 +1120,7 @@ begin
 
   csMemo:
     begin
-      ImplWidget:= GetWidgetInfo(wHandle, true)^.ImplementationWidget;
+      ImplWidget:= GetWidgetInfo(wHandle, true)^.CoreWidget;
 
       gtk_text_view_set_editable (PGtkTextView(ImplWidget), not TCustomMemo(Sender).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
@@ -1193,7 +1193,7 @@ begin
     csListBox, csCheckListBox:
       begin
         Selection := gtk_tree_view_get_selection(GTK_TREE_VIEW(
-           GetWidgetInfo(Widget, True)^.ImplementationWidget));
+           GetWidgetInfo(Widget, True)^.CoreWidget));
         gtk_tree_selection_set_mode(Selection, SelectionMode);
       end;
      else
@@ -1222,7 +1222,7 @@ begin
 
   csListBox, csCheckListBox:
     begin
-      aTreeView := GTK_TREE_VIEW(GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget);
+      aTreeView := GTK_TREE_VIEW(GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget);
       aTreeModel := gtk_tree_view_get_model(aTreeView);
 
       If NewTopIndex < 0 then
@@ -1377,6 +1377,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.10  2004/04/13 14:03:29  marc
+  Patch from Ladislav Michl
+
   Revision 1.9  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 
