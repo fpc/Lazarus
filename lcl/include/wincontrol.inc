@@ -2246,6 +2246,7 @@ begin
   end;
   
   CreateComponent(nil);
+
   //WriteClientRect('A');
   if Parent <> nil then AddControl;
   
@@ -2592,6 +2593,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.126  2003/04/10 09:22:42  mattias
+  implemented changing dependency version
+
   Revision 1.125  2003/04/04 09:19:22  mattias
   activated TDataSource
 
