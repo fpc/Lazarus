@@ -505,7 +505,7 @@ type
   end;
 
 const
-  LazSyntaxHighlighterNames : array[TLazSyntaxHighlighter] of string = (
+  LazSyntaxHighlighterNames: array[TLazSyntaxHighlighter] of string = (
      'None',
      'Text',
      'FreePascal',
@@ -1621,6 +1621,75 @@ begin
     end else if AttriName=AdditionalHighlightAttributes[ahaErrorLine] then begin
       DefBGCol:=$50a0ff;
       DefFGCol:=clBlack;
+    end;
+  end
+  else if lowercase(SynColorScheme) = 'delphi' then 
+  begin
+    // default for delphi color scheme
+    if AttriName = 'Assembler' then 
+    begin
+      DefFGCol := clBlack;
+    end 
+    else if AttriName = 'Comment' then 
+    begin
+      DefFGCol := clNavy;
+      DefFontStyles := [fsItalic];
+    end 
+    else if AttriName = 'Directive' then 
+    begin
+      DefFGCol := clGreen;
+    end 
+    else if AttriName = 'Reserved word' then 
+    begin
+      DefFGCol := clBlack;
+      DefFontStyles := [fsBold];
+    end 
+    else if AttriName = 'Number' then 
+    begin
+      DefFGCol := clNavy;
+    end 
+    else if AttriName = 'String' then 
+    begin
+      DefFGCol := clNavy;
+    end 
+    else if AttriName = 'Symbol' then 
+    begin
+      DefFGCol := clBlack;
+    end 
+    else if AttriName = AdditionalHighlightAttributes[ahaTextBlock] then 
+    begin
+      DefBGCol := clHighlight;
+      DefFGCol := clHighlightText;
+    end 
+    else if AttriName = AdditionalHighlightAttributes[ahaExecutionPoint] then 
+    begin
+      DefBGCol := clNavy;
+      DefFGCol := clWhite;
+    end 
+    else if AttriName = AdditionalHighlightAttributes[ahaEnabledBreakpoint] then 
+    begin
+      DefBGCol := clRed;
+      DefFGCol := clWhite;
+    end 
+    else if AttriName = AdditionalHighlightAttributes[ahaDisabledBreakpoint] then 
+    begin
+      DefBGCol := clLime;
+      DefFGCol := clRed;
+    end 
+    else if AttriName=AdditionalHighlightAttributes[ahaInvalidBreakpoint] then
+    begin
+      DefBGCol := clOlive;
+      DefFGCol := clLime;
+    end
+    else if AttriName=AdditionalHighlightAttributes[ahaUnknownBreakpoint] then
+    begin
+      DefBGCol := clRed;
+      DefFGCol := clBlack;
+    end
+    else if AttriName = AdditionalHighlightAttributes[ahaErrorLine] then
+    begin
+      DefBGCol := clMaroon;
+      DefFGCol := clWhite;
     end;
   end
   else begin
@@ -4443,6 +4512,7 @@ begin
       BeginUpdate;
       // ToDo: fill also with custom color schemes
       Add(DefaultColorScheme);
+      Add('Delphi');
       Add('Pascal Classic');
       Add('Twilight');
       Add('Ocean');
