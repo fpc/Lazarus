@@ -486,7 +486,6 @@ end;
 function TGDBMIDebugger.GDBGetText(const AExpression: String ): String;
 var
   S: String;
-  ResultList: TStringList;
 begin
   if not ExecuteCommand('x/s %s', [AExpression], S, True)
   then begin
@@ -1727,6 +1726,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.15  2003/05/28 08:46:24  mattias
+  break;points dialog now gets the items without debugger
+
   Revision 1.14  2003/05/28 00:58:50  marc
   MWE: * Reworked breakpoint handling
 
