@@ -1534,7 +1534,6 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 {$I png.inc}
-{$I jpg.inc}
 
 
 { TFPImageBitmap }
@@ -1745,6 +1744,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.144  2004/08/18 13:12:05  mattias
+  synedit UTF8 support started   by Mazen
+
   Revision 1.143  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

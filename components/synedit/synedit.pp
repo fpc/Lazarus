@@ -857,6 +857,9 @@ implementation
 // { $R SynEdit.res}
 
 uses
+{$IFDEF USE_UTF8BIDI_LCL}
+  utf8bidi,
+{$ENDIF USE_UTF8BIDI_LCL}
 {$IFDEF SYN_COMPILER_4_UP}
   StdActns,
 {$ENDIF}
@@ -5807,35 +5810,6 @@ begin
   DoOnCommandProcessed(Command, AChar, Data);
 end;
 
-{$IFDEF USE_WCHAR_LCL}
-function UnicodeToUtf8(aWideChar:WideChar):String[3];
-var
-  w:Word;
-begin
-  w:= Word(aWideChar);
-  case w of
-    0..$7f:
-      begin
-        Result[1]:=char(w);
-        SetLength(Result,1);
-      end;
-    $80..$7ff:
-      begin
-        Result[1]:=char($c0 or (w shr 6));
-        Result[2]:=char($80 or (w and $3f));
-        SetLength(Result,2);
-      end;
-    else
-      begin
-        Result[1]:=char($e0 or (w shr 12));
-        Result[2]:=char($80 or ((w shr 6)and $3f));
-        Result[3]:=char($80 or (w and $3f));
-        SetLength(Result,3);
-      end;
-  end;
-end;
-{$ENDIF USE_WCHAR_LCL}
-
 procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand; AChar: TCharacter;
   Data: pointer);
 const
@@ -6298,10 +6272,6 @@ begin
 {end}                                                                           //mh 2000-11-20
           end else begin
             Temp := LineText;
-            Len := Length(Temp);
-            if Len < CaretX then
-//              Temp := Temp + StringOfChar(' ', CaretX - Len);
-              Temp := Temp + StringOfChar(' ', CaretX - Len - Ord(fInserting)); //JGF 2000-09-23
 // Added the check for whether or not we're in insert mode.
 // If we are, we append one less space than we would in overwrite mode.
 // This is because in overwrite mode we have to put in a final space
@@ -6313,13 +6283,18 @@ begin
               if bChangeScroll then Include(fOptions, eoScrollPastEol);
               StartOfBlock := CaretXY;
               if fInserting then begin
-{$IFDEF USE_WCHAR_LCL}
-                System.Insert(UnicodeToUtf8(AChar), Temp, CaretX);
-                CaretX := CaretX + length(UnicodeToUtf8(AChar));
-{$ELSE USE_WCHAR_LCL}
+{$IFDEF USE_UTF8BIDI_LCL}
+                Len := CaretX;
+                utf8bidi.insert(AChar, Temp, Len);
+                CaretX := Len;
+{$ELSE USE_UTF8BIDI_LCL}
+                Len := Length(Temp);
+                if Len < CaretX then
+//              Temp := Temp + StringOfChar(' ', CaretX - Len);
+                  Temp := Temp + StringOfChar(' ', CaretX - Len - Ord(fInserting)); //JGF 2000-09-23
                 System.Insert(AChar, Temp, CaretX);
                 CaretX := CaretX + 1;
-{$ENDIF USE_WCHAR_LCL}
+{$ENDIF USE_UTF8BIDI_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);                               //JGF 2000-09-23
                 fUndoList.AddChange(crInsert, StartOfBlock, CaretXY, '',
                   smNormal);
