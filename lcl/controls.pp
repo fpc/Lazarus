@@ -803,6 +803,10 @@ type
     procedure EndUpdateBounds;
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
+    Function ControlAtPos(const Pos : TPoint;
+      AllowDisabled, AllowWinControls: Boolean): TControl;
+    Function ControlAtPos(const Pos : TPoint;
+      AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl;
     procedure DoAdjustClientRectChange;
     {$IFDEF ClientRectBugFix}
     procedure InvalidateClientRectCache;
@@ -1230,6 +1234,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/05/24 07:16:31  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.48  2002/05/20 14:19:03  lazarus
   MG: activated the clientrect bugfixes
 
