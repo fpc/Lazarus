@@ -924,7 +924,7 @@ begin
         FParent.FWinControls.Insert(Position, Self);
       end;
     end;
-    if FHandle <> 0 then
+    if HandleAllocated then
     begin
       if Position = 0 then Pos := HWND_BOTTOM
       else if Position = FParent.FWinControls.Count - 1 then Pos := HWND_TOP
@@ -933,7 +933,7 @@ begin
       else if Position < I then
         Pos := TWinControl(FParent.FWinControls[Position]).Handle
       else Exit;
-      SetWindowPos(FHandle, Pos, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE);
+      SetWindowPos(Handle, Pos, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE);
     end;
   end;
 end;
@@ -2800,6 +2800,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.138  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.137  2003/06/18 11:21:06  mattias
   fixed taborder=0, implemented TabOrder Editor
 

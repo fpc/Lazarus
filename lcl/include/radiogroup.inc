@@ -15,11 +15,14 @@
 }
 constructor TRadioGroup.Create (AOwner : TComponent);
 begin
-   inherited Create (AOwner);
+  inherited Create (AOwner);
 end;
 
 {
   $Log$
+  Revision 1.3  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.2  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 
