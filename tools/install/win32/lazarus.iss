@@ -22,6 +22,8 @@ SolidCompression=true
 VersionInfoVersion={#AppVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
+WizardImageFile=lazarus_install_cheetah.bmp
+WizardImageStretch=false
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
