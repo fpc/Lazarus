@@ -467,8 +467,8 @@ type
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     function GetDiffFiles: TDiffFiles;
-    procedure GetText(PageIndex: integer; OnlySelection: boolean;
-                      var Source: string);
+    procedure GetSourceText(PageIndex: integer; OnlySelection: boolean;
+                            var Source: string);
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -3001,8 +3001,8 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.GetText(PageIndex: integer; OnlySelection: boolean;
-  var Source: string);
+procedure TSourceNotebook.GetSourceText(PageIndex: integer;
+  OnlySelection: boolean; var Source: string);
 var
   SrcEdit: TSourceEditor;
 begin
