@@ -660,9 +660,14 @@ type
                ppNoDefaultWord// 'nodefault'
                );
 
-var Parts: array[TPropPart] of TAtomPosition;
+var
+  Parts: array[TPropPart] of TAtomPosition;
+  PartIsAtom: array[TPropPart] of boolean;
 
   procedure ReadSimpleSpec(SpecWord, SpecParam: TPropPart);
+  // allowed after simple specifier like 'read':
+  //   one semicolon or an <identifier> or an <identifier>.<identifier>
+  //   or a specifier
   begin
     if Parts[SpecWord].StartPos>=1 then
       RaiseExceptionFmt(ctsPropertySpecifierAlreadyDefined,[GetAtom]);
@@ -674,6 +679,13 @@ var Parts: array[TPropPart] of TAtomPosition;
         CurPos.EndPos-CurPos.StartPos) then exit;
     Parts[SpecParam]:=CurPos;
     ReadNextAtom;
+    if CurPos.Flag=cafPoint then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+      PartIsAtom[SpecParam]:=false;
+      Parts[SpecParam].EndPos:=CurPos.EndPos;
+    end;
   end;
 
 var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
@@ -684,8 +696,10 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   procedure InitCompleteProperty;
   var APart: TPropPart;
   begin
-    for APart:=Low(TPropPart) to High(TPropPart) do
+    for APart:=Low(TPropPart) to High(TPropPart) do begin
       Parts[APart].StartPos:=-1;
+      PartIsAtom[APart]:=true;
+    end;
   end;
   
   procedure ReadPropertyKeywordAndName;
@@ -742,6 +756,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
       Parts[ppIndex].StartPos:=CurPos.StartPos;
       ReadConstant(true,false,[]);
       Parts[ppIndex].EndPos:=LastAtoms.GetValueAt(0).EndPos;
+      PartIsAtom[ppIndex]:=false;
     end;
   end;
   
@@ -772,6 +787,7 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
         Parts[ppDefault].StartPos:=CurPos.StartPos;
         ReadConstant(true,false,[]);
         Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
+        PartIsAtom[ppDefault]:=false;
       end else if UpAtomIs('NODEFAULT') then begin
         if Parts[ppNoDefaultWord].StartPos>=1 then
           RaiseException(ctsNodefaultSpecifierDefinedTwice);
@@ -798,121 +814,121 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   begin
     // check read specifier
     VariableName:='';
-    if (Parts[ppReadWord].StartPos>0) or (Parts[ppWriteWord].StartPos<1) then
+    if not PartIsAtom[ppRead] then exit;
+    if (Parts[ppReadWord].StartPos<=0) and (Parts[ppWriteWord].StartPos>0) then
+      exit;
+    {$IFDEF CTDEBUG}
+    writeln('[TCodeCompletionCodeTool.CompleteProperty] read specifier needed');
+    {$ENDIF}
+    AccessParamPrefix:=BeautifyCodeOpts.PropertyReadIdentPrefix;
+    if Parts[ppRead].StartPos>0 then
+      AccessParam:=copy(Src,Parts[ppRead].StartPos,
+          Parts[ppRead].EndPos-Parts[ppRead].StartPos)
+    else
+      AccessParam:='';
+    if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
+    or (AnsiCompareText(AccessParamPrefix,
+            LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
     begin
-      {$IFDEF CTDEBUG}
-      writeln('[TCodeCompletionCodeTool.CompleteProperty] read specifier needed');
-      {$ENDIF}
-      AccessParamPrefix:=BeautifyCodeOpts.PropertyReadIdentPrefix;
-      if Parts[ppRead].StartPos>0 then
-        AccessParam:=copy(Src,Parts[ppRead].StartPos,
-            Parts[ppRead].EndPos-Parts[ppRead].StartPos)
-      else
-        AccessParam:='';
-      if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
-      or (AnsiCompareText(AccessParamPrefix,
-              LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
-      begin
-        // the read identifier is a function
-        if Parts[ppRead].StartPos<1 then
-          AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
-              Parts[ppName].EndPos-Parts[ppName].StartPos);
+      // the read identifier is a function
+      if Parts[ppRead].StartPos<1 then
+        AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
+            Parts[ppName].EndPos-Parts[ppName].StartPos);
+      if (Parts[ppParamList].StartPos>0) then begin
+        if (Parts[ppIndexWord].StartPos<1) then begin
+          // param list, no index
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+');';
+        end else begin
+          // index + param list
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
+                          +CleanParamList+');';
+        end;
+      end else begin
+        if (Parts[ppIndexWord].StartPos<1) then begin
+          // no param list, no index
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
+        end else begin
+          // index, no param list
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER);';
+        end;
+      end;
+      // check if function exists
+      if not ProcExistsInCodeCompleteClass(CleanAccessFunc) then begin
+        {$IFDEF CTDEBUG}
+        writeln('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAccessFunc,' does not exist');
+        {$ENDIF}
+        // add insert demand for function
+        // build function code
         if (Parts[ppParamList].StartPos>0) then begin
+          MoveCursorToCleanPos(Parts[ppParamList].StartPos);
+          ReadNextAtom;
+          InitExtraction;
+          if not ReadParamList(true,true,[phpWithParameterNames,
+                               phpWithoutBrackets,phpWithVarModifiers,
+                               phpWithComments])
+          then begin
+            {$IFDEF CTDEBUG}
+            writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
+            {$ENDIF}
+            RaiseException(ctsErrorInParamList);
+          end;
+          ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
             // param list, no index
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+');';
+            AccessFunc:='function '+AccessParam
+                        +'('+ParamList+'):'+PropType+';';
           end else begin
             // index + param list
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
-                            +CleanParamList+');';
+            AccessFunc:='function '+AccessParam
+                        +'(Index:integer;'+ParamList+'):'+PropType+';';
           end;
         end else begin
           if (Parts[ppIndexWord].StartPos<1) then begin
             // no param list, no index
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+';';
+            AccessFunc:='function '+AccessParam+':'+PropType+';';
           end else begin
             // index, no param list
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER);';
+            AccessFunc:='function '+AccessParam
+                        +'(Index:integer):'+PropType+';';
           end;
         end;
-        // check if function exists
-        if not ProcExistsInCodeCompleteClass(CleanAccessFunc) then begin
-          {$IFDEF CTDEBUG}
-          writeln('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAccessFunc,' does not exist');
-          {$ENDIF}
-          // add insert demand for function
-          // build function code
-          if (Parts[ppParamList].StartPos>0) then begin
-            MoveCursorToCleanPos(Parts[ppParamList].StartPos);
-            ReadNextAtom;
-            InitExtraction;
-            if not ReadParamList(true,true,[phpWithParameterNames,
-                                 phpWithoutBrackets,phpWithVarModifiers,
-                                 phpWithComments])
-            then begin
-              {$IFDEF CTDEBUG}
-              writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
-              {$ENDIF}
-              RaiseException(ctsErrorInParamList);
-            end;
-            ParamList:=GetExtraction;
-            if (Parts[ppIndexWord].StartPos<1) then begin
-              // param list, no index
-              AccessFunc:='function '+AccessParam
-                          +'('+ParamList+'):'+PropType+';';
-            end else begin
-              // index + param list
-              AccessFunc:='function '+AccessParam
-                          +'(Index:integer;'+ParamList+'):'+PropType+';';
-            end;
-          end else begin
-            if (Parts[ppIndexWord].StartPos<1) then begin
-              // no param list, no index
-              AccessFunc:='function '+AccessParam+':'+PropType+';';
-            end else begin
-              // index, no param list
-              AccessFunc:='function '+AccessParam
-                          +'(Index:integer):'+PropType+';';
-            end;
-          end;
-          // add new Insert Node
-          if CompleteProperties then
-            AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
-                              '',ncpPrivateProcs);
-        end;
-      end else begin
-        // the read identifier is a variable
-        if Parts[ppRead].StartPos<1 then
-          AccessParam:=BeautifyCodeOpts.PrivatVariablePrefix
-               +copy(Src,Parts[ppName].StartPos,
-                 Parts[ppName].EndPos-Parts[ppName].StartPos);
-        VariableName:=AccessParam;
-        if not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then
-        begin
-          // variable does not exist yet -> add insert demand for variable
-          if CompleteProperties then
-            AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
-                    AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
-        end;
+        // add new Insert Node
+        if CompleteProperties then
+          AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
+                            '',ncpPrivateProcs);
       end;
-      if (Parts[ppRead].StartPos<0) and CompleteProperties then begin
-        // insert read specifier
-        if Parts[ppReadWord].StartPos>0 then begin
-          // 'read' keyword exists -> insert read identifier behind
-          InsertPos:=Parts[ppReadWord].EndPos;
-          ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-             AccessParam);
-        end else begin
-          // 'read' keyword does not exist -> insert behind index and type
-          if Parts[ppIndexWord].StartPos>0 then
-            InsertPos:=Parts[ppIndexWord].EndPos
-          else if Parts[ppIndex].StartPos>0 then
-            InsertPos:=Parts[ppIndex].EndPos
-          else
-            InsertPos:=Parts[ppType].EndPos;
-          ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-             BeautifyCodeOpts.BeautifyKeyWord('read')+' '+AccessParam);
-        end;
+    end else begin
+      // the read identifier is a variable
+      if Parts[ppRead].StartPos<1 then
+        AccessParam:=BeautifyCodeOpts.PrivatVariablePrefix
+             +copy(Src,Parts[ppName].StartPos,
+               Parts[ppName].EndPos-Parts[ppName].StartPos);
+      VariableName:=AccessParam;
+      if not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then
+      begin
+        // variable does not exist yet -> add insert demand for variable
+        if CompleteProperties then
+          AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
+                  AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
+      end;
+    end;
+    if (Parts[ppRead].StartPos<0) and CompleteProperties then begin
+      // insert read specifier
+      if Parts[ppReadWord].StartPos>0 then begin
+        // 'read' keyword exists -> insert read identifier behind
+        InsertPos:=Parts[ppReadWord].EndPos;
+        ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
+           AccessParam);
+      end else begin
+        // 'read' keyword does not exist -> insert behind index and type
+        if Parts[ppIndexWord].StartPos>0 then
+          InsertPos:=Parts[ppIndexWord].EndPos
+        else if Parts[ppIndex].StartPos>0 then
+          InsertPos:=Parts[ppIndex].EndPos
+        else
+          InsertPos:=Parts[ppType].EndPos;
+        ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
+           BeautifyCodeOpts.BeautifyKeyWord('read')+' '+AccessParam);
       end;
     end;
   end;
@@ -920,146 +936,146 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   procedure CompleteWriteSpecifier;
   begin
     // check write specifier
-    if (Parts[ppWriteWord].StartPos>0) or (Parts[ppReadWord].StartPos<1) then
+    if not PartIsAtom[ppWrite] then exit;
+    if (Parts[ppWriteWord].StartPos<1) and (Parts[ppReadWord].StartPos>0) then
+      exit;
+    {$IFDEF CTDEBUG}
+    writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
+    {$ENDIF}
+    AccessParamPrefix:=BeautifyCodeOpts.PropertyWriteIdentPrefix;
+    if Parts[ppWrite].StartPos>0 then
+      AccessParam:=copy(Src,Parts[ppWrite].StartPos,
+            Parts[ppWrite].EndPos-Parts[ppWrite].StartPos)
+    else
+      AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
+            Parts[ppName].EndPos-Parts[ppName].StartPos);
+    if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
+    or (AnsiCompareText(AccessParamPrefix,
+            LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
     begin
-      {$IFDEF CTDEBUG}
-      writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
-      {$ENDIF}
-      AccessParamPrefix:=BeautifyCodeOpts.PropertyWriteIdentPrefix;
-      if Parts[ppWrite].StartPos>0 then
-        AccessParam:=copy(Src,Parts[ppWrite].StartPos,
-              Parts[ppWrite].EndPos-Parts[ppWrite].StartPos)
-      else
-        AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
-              Parts[ppName].EndPos-Parts[ppName].StartPos);
-      if (Parts[ppParamList].StartPos>0) or (Parts[ppIndexWord].StartPos>0)
-      or (AnsiCompareText(AccessParamPrefix,
-              LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
-      begin
-        // the write identifier is a procedure
+      // the write identifier is a procedure
+      if (Parts[ppParamList].StartPos>0) then begin
+        if (Parts[ppIndexWord].StartPos<1) then begin
+          // param list, no index
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+';'
+                             +' :'+UpperCaseStr(PropType)+');';
+        end else begin
+          // index + param list
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
+                    +CleanParamList+'; :'+UpperCaseStr(PropType)+');';
+        end;
+      end else begin
+        if (Parts[ppIndexWord].StartPos<1) then begin
+          // no param list, no index
+          CleanAccessFunc:=UpperCaseStr(AccessParam)
+                              +'( :'+UpperCaseStr(PropType)+');';
+        end else begin
+          // index, no param list
+          CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
+                              +' :'+UpperCaseStr(PropType)+');';
+        end;
+      end;
+      // check if procedure exists
+      if not ProcExistsInCodeCompleteClass(CleanAccessFunc) then begin
+        // add insert demand for function
+        // build function code
+        ProcBody:='';
         if (Parts[ppParamList].StartPos>0) then begin
+          MoveCursorToCleanPos(Parts[ppParamList].StartPos);
+          ReadNextAtom;
+          InitExtraction;
+          if not ReadParamList(true,true,[phpWithParameterNames,
+                               phpWithoutBrackets,phpWithVarModifiers,
+                               phpWithComments])
+          then
+            RaiseException(ctsErrorInParamList);
+          ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
             // param list, no index
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+'('+CleanParamList+';'
-                               +' :'+UpperCaseStr(PropType)+');';
+            AccessFunc:='procedure '+AccessParam
+                        +'('+ParamList+';const '+SetPropertyVariablename+': '
+                        +PropType+');';
           end else begin
             // index + param list
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
-                      +CleanParamList+'; :'+UpperCaseStr(PropType)+');';
+            AccessFunc:='procedure '+AccessParam
+                        +'(Index:integer;'+ParamList+';'
+                        +'const '+SetPropertyVariablename+': '+PropType+');';
           end;
         end else begin
           if (Parts[ppIndexWord].StartPos<1) then begin
             // no param list, no index
-            CleanAccessFunc:=UpperCaseStr(AccessParam)
-                                +'( :'+UpperCaseStr(PropType)+');';
+            AccessFunc:=
+              'procedure '+AccessParam
+              +'(const '+SetPropertyVariablename+': '+PropType+');';
+            if VariableName<>'' then begin
+              { read spec is a variable -> add simple assign code to body
+                For example:
+                
+                procedure SetMyInt(AValue: integer);
+                begin
+                  if FMyInt=AValue then exit;
+                  FMyInt:=AValue;
+                end;
+              
+              }
+              ProcBody:=
+                'procedure '
+                +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
+                +'(const '+SetPropertyVariablename+': '+PropType+');'
+                +BeautifyCodeOpts.LineEnd
+                +'begin'+BeautifyCodeOpts.LineEnd
+                +GetIndentStr(BeautifyCodeOpts.Indent)+
+                  +'if '+VariableName+'='+SetPropertyVariablename+' then exit;'
+                  +BeautifyCodeOpts.LineEnd
+                +GetIndentStr(BeautifyCodeOpts.Indent)+
+                  +VariableName+':='+SetPropertyVariablename+';'
+                  +BeautifyCodeOpts.LineEnd
+                +'end;';
+            end;
           end else begin
             // index, no param list
-            CleanAccessFunc:=UpperCaseStr(AccessParam)+'(:INTEGER;'
-                                +' :'+UpperCaseStr(PropType)+');';
+            AccessFunc:='procedure '+AccessParam
+                        +'(Index:integer; const '+SetPropertyVariablename+': '
+                        +PropType+');';
           end;
         end;
-        // check if procedure exists
-        if not ProcExistsInCodeCompleteClass(CleanAccessFunc) then begin
-          // add insert demand for function
-          // build function code
-          ProcBody:='';
-          if (Parts[ppParamList].StartPos>0) then begin
-            MoveCursorToCleanPos(Parts[ppParamList].StartPos);
-            ReadNextAtom;
-            InitExtraction;
-            if not ReadParamList(true,true,[phpWithParameterNames,
-                                 phpWithoutBrackets,phpWithVarModifiers,
-                                 phpWithComments])
-            then
-              RaiseException(ctsErrorInParamList);
-            ParamList:=GetExtraction;
-            if (Parts[ppIndexWord].StartPos<1) then begin
-              // param list, no index
-              AccessFunc:='procedure '+AccessParam
-                          +'('+ParamList+';const '+SetPropertyVariablename+': '
-                          +PropType+');';
-            end else begin
-              // index + param list
-              AccessFunc:='procedure '+AccessParam
-                          +'(Index:integer;'+ParamList+';'
-                          +'const '+SetPropertyVariablename+': '+PropType+');';
-            end;
-          end else begin
-            if (Parts[ppIndexWord].StartPos<1) then begin
-              // no param list, no index
-              AccessFunc:=
-                'procedure '+AccessParam
-                +'(const '+SetPropertyVariablename+': '+PropType+');';
-              if VariableName<>'' then begin
-                { read spec is a variable -> add simple assign code to body
-                  For example:
-                  
-                  procedure SetMyInt(AValue: integer);
-                  begin
-                    if FMyInt=AValue then exit;
-                    FMyInt:=AValue;
-                  end;
-                
-                }
-                ProcBody:=
-                  'procedure '
-                  +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
-                  +'(const '+SetPropertyVariablename+': '+PropType+');'
-                  +BeautifyCodeOpts.LineEnd
-                  +'begin'+BeautifyCodeOpts.LineEnd
-                  +GetIndentStr(BeautifyCodeOpts.Indent)+
-                    +'if '+VariableName+'='+SetPropertyVariablename+' then exit;'
-                    +BeautifyCodeOpts.LineEnd
-                  +GetIndentStr(BeautifyCodeOpts.Indent)+
-                    +VariableName+':='+SetPropertyVariablename+';'
-                    +BeautifyCodeOpts.LineEnd
-                  +'end;';
-              end;
-            end else begin
-              // index, no param list
-              AccessFunc:='procedure '+AccessParam
-                          +'(Index:integer; const '+SetPropertyVariablename+': '
-                          +PropType+');';
-            end;
-          end;
-          // add new Insert Node
-          if CompleteProperties then
-            AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
-                              ProcBody,ncpPrivateProcs);
-        end;
-      end else begin
-        // the write identifier is a variable
-        if not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then
-        begin
-          // variable does not exist yet -> add insert demand for variable
-          if CompleteProperties then
-            AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
-                    AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
-        end;
+        // add new Insert Node
+        if CompleteProperties then
+          AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,
+                            ProcBody,ncpPrivateProcs);
       end;
-      if (Parts[ppWrite].StartPos<0) and CompleteProperties then begin
-        // insert write specifier
-        if Parts[ppWriteWord].StartPos>0 then begin
-          // 'write' keyword exists -> insert write identifier behind
-          InsertPos:=Parts[ppWriteWord].EndPos;
-          ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-             AccessParam);
-        end else begin
-          // 'write' keyword does not exist
-          //  -> insert behind type, index and write specifier
-          if Parts[ppRead].StartPos>0 then
-            InsertPos:=Parts[ppRead].EndPos
-          else if Parts[ppReadWord].StartPos>0 then
-            InsertPos:=Parts[ppReadWord].EndPos
-          else if Parts[ppIndexWord].StartPos>0 then
-            InsertPos:=Parts[ppIndexWord].EndPos
-          else if Parts[ppIndex].StartPos>0 then
-            InsertPos:=Parts[ppIndex].EndPos
-          else
-            InsertPos:=Parts[ppType].EndPos;
-          ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-             BeautifyCodeOpts.BeautifyKeyWord('write')+' '+AccessParam);
-        end;
+    end else begin
+      // the write identifier is a variable
+      if not VarExistsInCodeCompleteClass(UpperCaseStr(AccessParam)) then
+      begin
+        // variable does not exist yet -> add insert demand for variable
+        if CompleteProperties then
+          AddClassInsertion(PropNode,UpperCaseStr(AccessParam),
+                  AccessParam+':'+PropType+';',AccessParam,'',ncpPrivateVars);
+      end;
+    end;
+    if (Parts[ppWrite].StartPos<0) and CompleteProperties then begin
+      // insert write specifier
+      if Parts[ppWriteWord].StartPos>0 then begin
+        // 'write' keyword exists -> insert write identifier behind
+        InsertPos:=Parts[ppWriteWord].EndPos;
+        ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
+           AccessParam);
+      end else begin
+        // 'write' keyword does not exist
+        //  -> insert behind type, index and write specifier
+        if Parts[ppRead].StartPos>0 then
+          InsertPos:=Parts[ppRead].EndPos
+        else if Parts[ppReadWord].StartPos>0 then
+          InsertPos:=Parts[ppReadWord].EndPos
+        else if Parts[ppIndexWord].StartPos>0 then
+          InsertPos:=Parts[ppIndexWord].EndPos
+        else if Parts[ppIndex].StartPos>0 then
+          InsertPos:=Parts[ppIndex].EndPos
+        else
+          InsertPos:=Parts[ppType].EndPos;
+        ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
+           BeautifyCodeOpts.BeautifyKeyWord('write')+' '+AccessParam);
       end;
     end;
   end;
@@ -1067,41 +1083,41 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
   procedure CompleteStoredSpecifier;
   begin
     // check stored specifier
-    if (Parts[ppStoredWord].StartPos>0) then begin
-      {$IFDEF CTDEBUG}
-      writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
-      {$ENDIF}
-      if Parts[ppStored].StartPos>0 then begin
-        if (CompareIdentifiers(@Src[Parts[ppStored].StartPos],'False')=0)
-        or (CompareIdentifiers(@Src[Parts[ppStored].StartPos],'True')=0) then
-          exit;
-        AccessParam:=copy(Src,Parts[ppStored].StartPos,
-              Parts[ppStored].EndPos-Parts[ppStored].StartPos);
-      end else
-        AccessParam:=copy(Src,Parts[ppName].StartPos,
-          Parts[ppName].EndPos-Parts[ppName].StartPos)
-          +BeautifyCodeOpts.PropertyStoredIdentPostfix;
-      CleanAccessFunc:=UpperCaseStr(AccessParam);
-      // check if procedure exists
-      if (not ProcExistsInCodeCompleteClass(CleanAccessFunc+';'))
-      and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
-      then begin
-        // add insert demand for function
-        // build function code
-        AccessFunc:='function '+AccessParam+':boolean;';
-        CleanAccessFunc:=CleanAccessFunc+';';
-        // add new Insert Node
-        if CompleteProperties then
-          AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'',
-                            ncpPrivateProcs);
-      end;
-      if Parts[ppStored].StartPos<0 then begin
-        // insert stored specifier
-        InsertPos:=Parts[ppStoredWord].EndPos;
-        if CompleteProperties then
-          ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
-                                     AccessParam);
-      end;
+    if not PartIsAtom[ppStored] then exit;
+    if (Parts[ppStoredWord].StartPos<1) then exit;
+    {$IFDEF CTDEBUG}
+    writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
+    {$ENDIF}
+    if Parts[ppStored].StartPos>0 then begin
+      if (CompareIdentifiers(@Src[Parts[ppStored].StartPos],'False')=0)
+      or (CompareIdentifiers(@Src[Parts[ppStored].StartPos],'True')=0) then
+        exit;
+      AccessParam:=copy(Src,Parts[ppStored].StartPos,
+            Parts[ppStored].EndPos-Parts[ppStored].StartPos);
+    end else
+      AccessParam:=copy(Src,Parts[ppName].StartPos,
+        Parts[ppName].EndPos-Parts[ppName].StartPos)
+        +BeautifyCodeOpts.PropertyStoredIdentPostfix;
+    CleanAccessFunc:=UpperCaseStr(AccessParam);
+    // check if procedure exists
+    if (not ProcExistsInCodeCompleteClass(CleanAccessFunc+';'))
+    and (not VarExistsInCodeCompleteClass(CleanAccessFunc))
+    then begin
+      // add insert demand for function
+      // build function code
+      AccessFunc:='function '+AccessParam+':boolean;';
+      CleanAccessFunc:=CleanAccessFunc+';';
+      // add new Insert Node
+      if CompleteProperties then
+        AddClassInsertion(PropNode,CleanAccessFunc,AccessFunc,AccessParam,'',
+                          ncpPrivateProcs);
+    end;
+    if Parts[ppStored].StartPos<0 then begin
+      // insert stored specifier
+      InsertPos:=Parts[ppStoredWord].EndPos;
+      if CompleteProperties then
+        ASourceChangeCache.Replace(gtSpace,gtNone,InsertPos,InsertPos,
+                                   AccessParam);
     end;
   end;
 
