@@ -52,7 +52,9 @@ end;
 
 function TClipboard.IndexOfCachedFormatID(FormatID: TClipboardFormat;
   CreateIfNotExists: boolean): integer;
-var NewSize: integer;
+var
+  NewSize: integer;
+  FormatAdded: Boolean;
 begin
   //DebugLn('[TClipboard.IndexOfCachedFormatID] A ',ClipboardTypeName[ClipboardType]
   //,' Format=',FormatID,' CreateIfNotExists=',CreateIfNotExists);
@@ -65,23 +67,33 @@ begin
   end;
   Result:=FCount-1;
   while (Result>=0) and (FData[Result].FormatID<>FormatID) do dec(Result);
+  FormatAdded:=false;
   if (Result<0) and CreateIfNotExists then begin
-    if not GetOwnerShip then begin
-      Result:=-1;
-      raise Exception.Create('Unable to get clipboard ownership for '+
-        ClipboardTypeName[ClipboardType]);
-    end else begin
-      inc(FCount);
+    // add format
+    inc(FCount);
+    NewSize:=SizeOf(TClipboardData)*FCount;
+    ReallocMem(FData,NewSize);
+    Result:=FCount-1;
+    FData[Result].FormatID:=FormatID;
+    FData[Result].Stream:=TMemoryStream.Create;
+    FSupportedFormatsChanged:=true;
+    FormatAdded:=true;
+  end;
+  // CreateIfNotExists = true means changing the clipboard
+  // => we need OwnerShip for that
+  if CreateIfNotExists and (not GetOwnerShip) then begin
+    // getting ownership failed
+    if FormatAdded then begin
+      // undo: remove added format
+      // Note: This creates a little overhead in case of an error, but reduces
+      // overhead in case of everything works
+      FData[Result].Stream.Free;
       NewSize:=SizeOf(TClipboardData)*FCount;
-      if FData<>nil then
-        ReallocMem(FData,NewSize)
-      else
-        GetMem(FData,NewSize);
-      Result:=FCount-1;
-      FData[Result].FormatID:=FormatID;
-      FData[Result].Stream:=TMemoryStream.Create;
-      FSupportedFormatsChanged:=true;
+      ReallocMem(FData,NewSize);
     end;
+    Result:=-1;
+    raise Exception.Create('Unable to get clipboard ownership for '+
+      ClipboardTypeName[ClipboardType]);
   end;
   //DebugLn('[TClipboard.IndexOfCachedFormatID] END ',ClipboardTypeName[ClipboardType]
   //,' Format=',FormatID,' CreateIfNotExists=',CreateIfNotExists,' Result=',Result);
@@ -692,6 +704,9 @@ end;
 
 {
   $Log$
+  Revision 1.20  2005/01/03 22:44:31  mattias
+  implemented TControl.AnchorSide
+
   Revision 1.19  2005/01/03 16:32:13  micha
   always request ownership when about to modify buffer
 

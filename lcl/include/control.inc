@@ -1943,7 +1943,7 @@ end;
 
 procedure TControl.AnchorSideChanged(TheAnchorSide: TAnchorSide);
 begin
-
+  RequestAlign;
 end;
 
 {------------------------------------------------------------------------------
@@ -3459,6 +3459,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.230  2005/01/03 22:44:31  mattias
+  implemented TControl.AnchorSide
+
   Revision 1.229  2005/01/03 01:07:08  mattias
   fixed registering TProgressBar, disabled docking in TToolBar, return key for codeexplorer, updated finnish translation
 

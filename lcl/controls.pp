@@ -608,6 +608,8 @@ type
   
   TSpacingSize = 0..MaxInt;
 
+  { TControlBorderSpacing }
+
   TControlBorderSpacing = class(TPersistent)
   private
     FAround: TSpacingSize;
@@ -630,6 +632,7 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Spacing: TControlBorderSpacing): boolean;
     procedure GetSpaceAround(var SpaceAround: TRect);
+    function GetSpace(Kind: TAnchorKind): Integer;
   public
     property Control: TControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -692,15 +695,19 @@ type
     FKind: TAnchorKind;
     FOwner: TControl;
     FSide: TAnchorSideReference;
+    function IsSideStored: boolean;
     procedure SetControl(const AValue: TControl);
     procedure SetSide(const AValue: TAnchorSideReference);
   public
     constructor Create(TheOwner: TControl; TheKind: TAnchorKind);
+    procedure GetSidePosition(var ReferenceControl: TControl;
+                var ReferenceSide: TAnchorSideReference; var Position: Integer);
+  public
     property Owner: TControl read FOwner;
     property Kind: TAnchorKind read FKind;
   published
     property Control: TControl read FControl write SetControl;
-    property Side: TAnchorSideReference read FSide write SetSide;
+    property Side: TAnchorSideReference read FSide write SetSide stored IsSideStored;
   end;
 
 
@@ -1887,6 +1894,26 @@ const
     { alCustom }
     [akLeft, akTop]
     );
+  DefaultSideForAnchorKind: array[TAnchorKind] of TAnchorSideReference = (
+    // akTop
+    asrBottom,
+    // akLeft
+    asrBottom,
+    // akRight
+    asrTop,
+    // akBottom
+    asrTop
+    );
+  AnchorReferenceSide: array[TAnchorKind,TAnchorSideReference] of TAnchorKind =(
+    // akTop -> asrTop, asrBottom, asrCenter
+    (akTop,akBottom,akTop),
+    // akLeft -> asrTop, asrBottom, asrCenter
+    (akLeft,akRight,akLeft),
+    // akRight -> asrTop, asrBottom, asrCenter
+    (akTop,akBottom,akTop),
+    // akBottom -> asrTop, asrBottom, asrCenter
+    (akLeft,akRight,akLeft)
+    );
   AlignNames: array[TAlign] of string = (
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
 
@@ -2393,6 +2420,17 @@ begin
   SpaceAround.Bottom:=Bottom+Around;
 end;
 
+function TControlBorderSpacing.GetSpace(Kind: TAnchorKind): Integer;
+begin
+  Result:=Around;
+  case Kind of
+  akLeft: inc(Result,Left);
+  akTop: inc(Result,Top);
+  akRight: inc(Result,Right);
+  akBottom: inc(Result,Bottom);
+  end;
+end;
+
 procedure TControlBorderSpacing.Change;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
@@ -2517,15 +2555,45 @@ end;
 { TAnchorSide }
 
 procedure TAnchorSide.SetControl(const AValue: TControl);
+
+  procedure RaiseOwnerCircle;
+  begin
+    raise Exception.Create('TAnchorSide.SetControl AValue=FOwner');
+  end;
+
 begin
+  if (AValue=FOwner) then RaiseOwnerCircle;
   if FControl=AValue then exit;
   FControl:=AValue;
+  //debugln('TAnchorSide.SetControl A ',DbgSName(FOwner));
   FOwner.AnchorSideChanged(Self);
 end;
 
+function TAnchorSide.IsSideStored: boolean;
+begin
+  Result:=(Control<>nil) and (FSide<>DefaultSideForAnchorKind[FKind]);
+end;
+
 procedure TAnchorSide.SetSide(const AValue: TAnchorSideReference);
+var
+  OldSide: TAnchorSideReference;
 begin
   if FSide=AValue then exit;
+  if AValue=asrCenter then begin
+    // in case asrCenter, both sides are controlled by one anchor
+    // -> disable opposite anchor and aligning
+    OldSide:=FSide;
+    if FOwner.Align in [alLeft,alTop,alRight,alBottom,alClient] then begin
+      FOwner.Align:=alNone;
+    end;
+    case Kind of
+    akLeft: FOwner.Anchors:=FOwner.Anchors-[akRight];
+    akTop: FOwner.Anchors:=FOwner.Anchors-[akBottom];
+    akRight: FOwner.Anchors:=FOwner.Anchors-[akLeft];
+    akBottom: FOwner.Anchors:=FOwner.Anchors-[akTop];
+    end;
+    if OldSide<>FSide then exit;
+  end;
   FSide:=AValue;
   FOwner.AnchorSideChanged(Self);
 end;
@@ -2535,6 +2603,148 @@ begin
   inherited Create;
   FOwner:=TheOwner;
   FKind:=TheKind;
+  FSide:=DefaultSideForAnchorKind[FKind];
+end;
+
+procedure TAnchorSide.GetSidePosition(var ReferenceControl: TControl;
+  var ReferenceSide: TAnchorSideReference; var Position: Integer);
+  
+  procedure RaiseInvalidSide;
+  begin
+    raise Exception.Create('TAnchorSide.GetSidePosition invalid Side');
+  end;
+  
+var
+  NextReferenceSide: TAnchorSide;
+  ChainLength: Integer;
+  MaxChainLength: LongInt;
+  OwnerBorderSpacing: LongInt;
+  OwnerParent: TWinControl;
+begin
+  ReferenceControl:=Control;
+  ReferenceSide:=Side;
+  Position:=0;
+  OwnerParent:=FOwner.Parent;
+  if OwnerParent=nil then begin
+    // AnchorSide is only between siblings allowed
+    ReferenceControl:=nil;
+    exit;
+  end;
+  ChainLength:=0;
+  MaxChainLength:=OwnerParent.ControlCount;
+  while ReferenceControl<>nil do begin
+  
+    // check for circles
+    inc(ChainLength);
+    if ChainLength>MaxChainLength then begin
+      // the chain has more elements than there are siblings -> circle
+      ReferenceControl:=nil;
+      exit;
+    end;
+
+    // check sibling
+    if (ReferenceControl.Parent<>OwnerParent) then begin
+      // not a sibling -> invalid AnchorSide
+      ReferenceControl:=nil;
+      exit;
+    end;
+    
+    if ReferenceControl.Visible
+    or ([csDesigning,csNoDesignVisible]*ReferenceControl.ComponentState
+        =[csDesigning])
+    then begin
+      // ReferenceControl is visible
+      // -> calculate Position
+      OwnerBorderSpacing:=FOwner.BorderSpacing.GetSpace(Kind);
+      case ReferenceSide of
+      
+      asrTop:
+        if Kind in [akLeft,akRight] then begin
+          // anchor to left side of ReferenceControl
+          Position:=ReferenceControl.Left;
+          if Kind=akLeft then begin
+            // anchor left of ReferenceControl and left of Owner
+            inc(Position,OwnerBorderSpacing);
+          end else begin
+            // anchor left of ReferenceControl and right of Owner
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                               ReferenceControl.BorderSpacing.GetSpace(akLeft));
+            dec(Position,OwnerBorderSpacing);
+          end;
+        end else begin
+          // anchor to top side of ReferenceControl
+          Position:=ReferenceControl.Top;
+          if Kind=akTop then begin
+            // anchor top of ReferenceControl and top of Owner
+            inc(Position,OwnerBorderSpacing);
+          end else begin
+            // anchor top of ReferenceControl and bottom of Owner
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                                ReferenceControl.BorderSpacing.GetSpace(akTop));
+            dec(Position,OwnerBorderSpacing);
+          end;
+        end;
+
+      asrBottom:
+        if Kind in [akLeft,akRight] then begin
+          // anchor to right side of ReferenceControl
+          Position:=ReferenceControl.Left+ReferenceControl.Width;
+          if Kind=akLeft then begin
+            // anchor right of ReferenceControl and left of Owner
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                              ReferenceControl.BorderSpacing.GetSpace(akRight));
+            inc(Position,OwnerBorderSpacing);
+          end else begin
+            // anchor right of ReferenceControl and right of Owner
+            dec(Position,OwnerBorderSpacing);
+          end;
+        end else begin
+          // anchor to bottom side of ReferenceControl
+          Position:=ReferenceControl.Top+ReferenceControl.Height;
+          if Kind=akTop then begin
+            // anchor bottom of ReferenceControl and top of Owner
+            OwnerBorderSpacing:=Max(OwnerBorderSpacing,
+                             ReferenceControl.BorderSpacing.GetSpace(akBottom));
+            inc(Position,OwnerBorderSpacing);
+          end else begin
+            // anchor bottom of ReferenceControl and bottom of Owner
+            dec(Position,OwnerBorderSpacing);
+          end;
+        end;
+
+      asrCenter:
+        if Kind in [akLeft,akRight] then begin
+          // center horizontally
+          Position:=ReferenceControl.Left+(ReferenceControl.Width div 2);
+          if Kind=akLeft then
+            dec(Position,FOwner.Width div 2)
+          else
+            inc(Position,FOwner.Width div 2);
+        end else begin
+          // center vertically
+          Position:=ReferenceControl.Top+(ReferenceControl.Height div 2);
+          if Kind=akTop then
+            dec(Position,FOwner.Height div 2)
+          else
+            inc(Position,FOwner.Height div 2);
+        end;
+
+      else
+        RaiseInvalidSide;
+      end;
+      // side found
+      exit;
+    end;
+    // ReferenceControl is not visible -> try next
+    NextReferenceSide:=ReferenceControl.AnchorSide[
+                                       AnchorReferenceSide[Kind,ReferenceSide]];
+    if (NextReferenceSide=nil) then begin
+      ReferenceControl:=nil;
+      exit;
+    end;
+    ReferenceControl:=NextReferenceSide.Control;
+    ReferenceSide:=NextReferenceSide.Side;
+  end;
 end;
 
 {$IFNDEF VER1_0}
@@ -2599,6 +2809,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.263  2005/01/03 22:44:31  mattias
+  implemented TControl.AnchorSide
+
   Revision 1.262  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 

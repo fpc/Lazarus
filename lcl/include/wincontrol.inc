@@ -83,13 +83,17 @@ var
   function AlignWork: Boolean;
   var
     I: Integer;
+    CurControl: TControl;
   begin
     Result := True;
 
     for I := ControlCount - 1 downto 0 do
     begin
-      if (Controls[I].Align <> alNone)
-      or (Controls[I].Anchors <> [akLeft, akTop])
+      CurControl:=Controls[I];
+      if (CurControl.Align <> alNone)
+      or (CurControl.Anchors <> [akLeft, akTop])
+      or (CurControl.AnchorSide[akLeft].Control<>nil)
+      or (CurControl.AnchorSide[akTop].Control<>nil)
       then Exit;
     end;
     Result := False;
@@ -123,6 +127,8 @@ var
     CurRemainingClientRect: TRect;
     CurRemainingBorderSpace: TRect;
     ChildAroundSpace: TRect;
+    AnchorSideCacheValid: array[TAnchorKind] of boolean;
+    AnchorSideCache: array[TAnchorKind] of integer;
 
     function ConstraintWidth(NewWidth: integer): integer;
     begin
@@ -139,12 +145,42 @@ var
         Result:=MaxHeight;
       if Result<MinHeight then Result:=MinHeight;
     end;
+    
+    procedure InitAnchorSideCache;
+    var
+      a: TAnchorKind;
+    begin
+      for a:=Low(TAnchorKind) to High(TAnchorKind) do
+        AnchorSideCacheValid[a]:=false;
+    end;
+    
+    function GetAnchorSidePosition(Kind: TAnchorKind;
+      DefaultPosition: Integer): integer;
+    var
+      CurAnchorSide: TAnchorSide;
+      ReferenceControl: TControl;
+      ReferenceSide: TAnchorSideReference;
+      Position: Integer;
+    begin
+      if AnchorSideCacheValid[Kind] then begin
+        Result:=AnchorSideCache[Kind];
+        exit;
+      end;
+      Result:=DefaultPosition;
+      CurAnchorSide:=Control.AnchorSide[Kind];
+      //debugln('GetAnchorSidePosition Self=',DbgSName(Self),' Control=',DbgSName(Control),' ',dbgs(CurAnchorSide.Control<>nil));
+      CurAnchorSide.GetSidePosition(ReferenceControl,ReferenceSide,Position);
+      if ReferenceControl<>nil then
+        Result:=Position;
+      AnchorSideCacheValid[Kind]:=true;
+      AnchorSideCache[Kind]:=Result;
+    end;
 
   begin
     {$IFDEF CHECK_POSITION}
     if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
-      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
+      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height),' recalculate the anchors=',dbgs(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
 
 
@@ -164,11 +200,17 @@ var
       NewHeight:=ConstraintHeight(Height);
     end;
     
+    InitAnchorSideCache;
+    
     { Recalculate the anchors
 
       Use Anchors to ensure that a control maintains its current position
-      relative to an edge of its parent, even if the parent is resized. When
-      its parent is resized, the control holds its position relative to the
+      relative to an edge of its parent or another sibling.
+      This is controlled with the AnchorSide properties.
+
+      1. If AnchorSide[].Control is not set, the distance is kept relative to
+      the edges of the client are of its parent.
+      When its parent is resized, the control holds its position relative to the
       edges to which it is anchored.
       If a control is anchored to opposite edges of its parent, the control
       stretches when its parent is resized. For example, if a control has its
@@ -178,6 +220,9 @@ var
       if a control is anchored to opposite edges of a form at design time and
       the form is created in a maximized state, the control is not stretched
       because the form is not resized after the control is created.
+      
+      2. If AnchorSide[].Control is set, the BorderSpace properties defines the
+      distance to another sibling (i.e. AnchorSide[].Control).
     }
     if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
     begin
@@ -202,23 +247,23 @@ var
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' ',Name,':',ClassName,
-        ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
-        ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
-        ' ParClient=',Control.Parent.ClientWidth,',',Control.Parent.ClientHeight,
-        ' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
+        ' CurBaseBounds='+dbgs(CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Top)+','+dbgs(CurBaseBounds.Right-CurBaseBounds.Left)+','+dbgs(CurBaseBounds.Bottom-CurBaseBounds.Top),
+        ' ParBaseClient='+dbgs(ParentBaseClientSize.X)+','+dbgs(ParentBaseClientSize.Y),
+        ' ParClient='+dbgs(Control.Parent.ClientWidth)+','+dbgs(Control.Parent.ClientHeight),
+        ' NewBounds='+dbgs(NewLeft)+','+dbgs(NewTop)+','+dbgs(NewWidth)+','+dbgs(NewHeight),
         '');
       {$ENDIF}
 
       if akLeft in Control.Anchors then begin
-        // keep distance to left side of parent
-        NewLeft:=CurBaseBounds.Left;
+        // keep distance to left side of parent or another sibling
+        NewLeft:=GetAnchorSidePosition(akLeft,CurBaseBounds.Left);
         if akRight in Control.Anchors then begin
-          // keep distance to right side of parent
+          // keep distance to right side of parent or another sibling
           // -> change the width
-          NewWidth:=Control.Parent.ClientWidth
-                    -(ParentBaseClientSize.X-CurBaseBounds.Right)
-                    -NewLeft;
-          NewWidth:=ConstraintWidth(NewWidth);
+          NewRight:=Control.Parent.ClientWidth
+                    -(ParentBaseClientSize.X-CurBaseBounds.Right);
+          NewRight:=GetAnchorSidePosition(akRight,NewRight);
+          NewWidth:=ConstraintWidth(NewRight-NewLeft);
         end else begin
           // do not anchor to the right
           // -> keep new width
@@ -228,9 +273,10 @@ var
         if akRight in Control.Anchors then begin
           // keep distance to right side of parent
           // and keep new width
-          NewLeft:=Control.Parent.ClientWidth
-                    -(ParentBaseClientSize.X-CurBaseBounds.Right)
-                    -NewWidth;
+          NewRight:=Control.Parent.ClientWidth
+                    -(ParentBaseClientSize.X-CurBaseBounds.Right);
+          NewRight:=GetAnchorSidePosition(akRight,NewRight);
+          NewLeft:=NewRight-NewWidth;
         end else begin
           // do not anchor to the right
           // -> keep new width and center horizontally
@@ -240,14 +286,14 @@ var
 
       if akTop in Control.Anchors then begin
         // keep distance to top side of parent
-        NewTop:=CurBaseBounds.Top;
+        NewTop:=GetAnchorSidePosition(akTop,CurBaseBounds.Top);
         if akBottom in Control.Anchors then begin
           // keep distance to bottom side of parent
           // -> change the height
-          NewHeight:=Control.Parent.ClientHeight
-                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom)
-                    -NewTop;
-          NewHeight:=ConstraintHeight(NewHeight);
+          NewBottom:=Control.Parent.ClientHeight
+                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
+          NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
+          NewHeight:=ConstraintHeight(NewBottom-NewTop);
         end else begin
           // do not anchor to the bottom
           // -> keep new height
@@ -257,9 +303,10 @@ var
         if akBottom in Control.Anchors then begin
           // keep distance to bottom side of parent
           // and keep new height
-          NewTop:=Control.Parent.ClientHeight
-                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom)
-                    -NewHeight;
+          NewBottom:=Control.Parent.ClientHeight
+                    -(ParentBaseClientSize.Y-CurBaseBounds.Bottom);
+          NewBottom:=GetAnchorSidePosition(akBottom,NewBottom);
+          NewTop:=NewBottom-NewHeight;
         end else begin
           // do not anchor to the bottom
           // -> keep new height and center vertically
@@ -294,7 +341,8 @@ var
         form or panel and have it remain there even if the size of the form,
         panel, or component that contains the control changes. When the parent
         is resized, an aligned control also resizes so that it continues to span
-        the top, bottom, left, or right edge of the parent.
+        the top, bottom, left, or right edge of the parent (more exact:
+        span the remaining client area of its parent).
       }
       NewRight:=NewLeft+NewWidth;
       NewBottom:=NewTop+NewHeight;
@@ -452,11 +500,11 @@ var
         begin
           // VCL is tricking here.
           // For alClients with Constraints do the same as for alLeft
-        //debugln('TWinControl.AlignControls.DoPosition A Self=',Name,' Control=',DbgSName(Control),' ',dbgs(NewLeft),' ',dbgs(NewWidth));
-        //  RemainingClientRect.Left:=NewLeft+NewWidth;
-        //  RemainingBorderSpace.Left:=0;
-        //  AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
-        //    Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
+          {debugln('TWinControl.AlignControls.DoPosition A Self=',Name,' Control=',DbgSName(Control),' ',dbgs(NewLeft),' ',dbgs(NewWidth));
+            RemainingClientRect.Left:=NewLeft+NewWidth;
+            RemainingBorderSpace.Left:=0;
+            AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+              Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);}
         end;
     end;
 
@@ -4184,6 +4232,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.294  2005/01/03 22:44:31  mattias
+  implemented TControl.AnchorSide
+
   Revision 1.293  2005/01/01 18:56:47  mattias
   implemented TTIProgressBar
 
