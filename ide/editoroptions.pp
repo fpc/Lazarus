@@ -416,6 +416,7 @@ begin
       ConfFileName:=SecConfFileName;
     end;
   end;
+writeln('EditorOptionsFile=',ConfFilename);
   XMLConfig:=TXMLConfig.Create(ConfFileName);
 
   // set defaults
@@ -462,6 +463,7 @@ procedure TEditorOptions.Load;
 var SynEditOpt:TSynEditorOption;
   SynEditOptName:ansistring;
 begin
+writeln('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   // general options
   for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
     case SynEditOpt of
@@ -494,6 +496,7 @@ begin
 
   fUndoAfterSave:=
     XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
+writeln('UndoAfterSave',fUndoAfterSave);
   fDoubleClickLine:=
     XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickLine',false);
   fFindTextAtCursor:=
@@ -865,6 +868,7 @@ var a:integer;
 begin
   inherited Create(AOwner);
 
+  EditorOpts.Load;
   if LazarusResources.Find(ClassName)=nil then begin  
     Height:=455;
     Width:=459;
@@ -897,7 +901,7 @@ begin
     SetupButtonBar;
   end;
 
-  EditorOpts.Load;
+
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
     PreviewEdits[a]:=nil;
   EditorOpts.GetHighlighterSettings(PreviewPasSyn);
@@ -1211,7 +1215,11 @@ begin
 end;
 
 procedure TEditorOptionsForm.ComboBoxOnChange(Sender:TObject);
+var ComboBox:TComboBox;
 begin
+  ComboBox:=TComboBox(Sender);
+  if ComboBox.Items.IndexOf(ComboBox.Text)>=0 then
+    ComboBoxOnExit(Sender);
 end;
 
 procedure TEditorOptionsForm.FindCurHighlightElement;
@@ -2092,6 +2100,14 @@ begin
     Top:=EditorFontComboBox.Top+EditorFontComboBox.Height+23;
     Left:=EditorFontComboBox.Left;
     Width:=60;
+    Items.BeginUpdate;
+    Items.Add('10');
+    Items.Add('11');
+    Items.Add('12');
+    Items.Add('13');
+    Items.Add('14');
+    Items.Add('15');
+    Items.EndUpdate;
     SetComboBoxText(EditorFontHeightComboBox
        ,IntToStr(EditorOpts.EditorFontHeight));
     OnChange:=@ComboBoxOnChange;
@@ -2118,6 +2134,11 @@ begin
     Top:=EditorFontHeightComboBox.Top;
     Left:=EditorFontHeightComboBox.Left+EditorFontHeightComboBox.Width+100;
     Width:=60;
+    Items.BeginUpdate;
+    Items.Add('0');
+    Items.Add('1');
+    Items.Add('2');
+    Items.EndUpdate;
     SetComboBoxText(ExtraLineSpacingComboBox
       ,IntToStr(EditorOpts.ExtraLineSpacing));
     OnChange:=@ComboBoxOnChange;

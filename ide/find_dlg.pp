@@ -59,6 +59,9 @@ public
     property FIndText : String read FFindText write FFindText;
 end;
 
+
+var
+  FindDialog1 : TFindDialog;
 implementation
 
 constructor TFindDialog.Create(AOwner: TComponent);

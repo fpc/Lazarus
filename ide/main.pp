@@ -45,7 +45,6 @@ type
   TMainIDE = class(TFORM)
     FontDialog1  : TFontDialog;
     ColorDialog1 : TColorDialog;
-    FindDialog1  : TFindDialog;
     ToolBar1     : TToolBar;
     Toolbutton1  : TToolButton;
     Toolbutton2  : TToolButton;
@@ -144,8 +143,6 @@ type
     procedure mnuProjectOptionsClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
-    procedure mnuSearchFindClicked(Sender : TObject);
-    procedure mnuSearchFindAgainClicked(Sender : TObject);
 
     procedure mnuEnvironmentOptionsClicked(Sender : TObject);
 
@@ -690,9 +687,13 @@ begin
   itmFileClose.OnClick := @SourceNotebook.CloseClicked;
   itmFileNew.OnClick := @SourceNotebook.NewClicked;
   itmFileOpen.OnClick := @SourceNotebook.OpenClicked;
+  itmSearchFind.onClick := @SourceNotebook.FindClicked;
+  itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
   SpeedButton4.OnClick := @SourceNotebook.OpenClicked;
   SpeedButton5.OnClick := @SourceNotebook.SaveClicked;
   SpeedButton6.OnClick := @SourceNotebook.SaveAllClicked;
+
+
 
 end;
 
@@ -868,12 +869,10 @@ begin
 
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.caption := 'Find';
-  itmSearchFind.OnClick := @mnuSearchFindClicked;
   mnuSearch.add(itmSearchFind);
 
   itmSearchFindAgain := TMenuItem.Create(nil);
   itmSearchFindAgain.caption := 'Find &Again';
-  itmSearchFindAgain.OnClick := @mnuSearchFindAgainClicked;
   itmSearchFindAgain.Enabled := False;
   mnuSearch.add(itmSearchFindAgain);
 
@@ -1455,16 +1454,6 @@ Begin
 
 end;
 
-Procedure TMainIDE.mnuSearchFindClicked(Sender : TObject);
-Begin
-  itmSearchFindAgain.Enabled := True;
-  FindDialog1.ShowModal;
-End;
-
-Procedure TMainIDE.mnuSearchFindAgainClicked(Sender : TObject);
-Begin
-  DoFind(itmSearchFindAgain);
-End;
 
 {------------------------------------------------------------}
 
@@ -1654,6 +1643,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2001/01/31 18:57:29  lazarus
+  Added the ability to use the FIND feature in the editor.
+  Shane
+
   Revision 1.52  2001/01/31 13:03:33  lazarus
   Commitng source with new editor.
   Shane

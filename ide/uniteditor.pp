@@ -31,7 +31,7 @@ unit UnitEditor;
 interface
 
 uses
-  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,
+  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds,
@@ -118,6 +118,7 @@ type
     Function GotoMethod(Value : String) : Integer;
     Function GotoMethodDeclaration(Value : String) : Integer;
 
+
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
     Procedure CreateFormFromUnit;
   protected
@@ -136,15 +137,18 @@ type
     Procedure BookMarkGoto(Value : Integer);
 
 
-    Procedure EditorKeyDown(Sender : TObject; var Key: Word; Shift : TShiftState);
-    Procedure EditorKeyUp(Sender : TObject; var Key: Word; Shift : TShiftState);
+    Procedure ProcessUserCommand(Sender: TObject; var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 
     Procedure FocusEditor;  //called by TSourceNotebook whne the Notebook page changes so the editor is focused
 
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
 
+    Function StartFind : Boolean;
+    Function FindAgain(StartX,StartLine : Integer) : Boolean;
+
     property Editor : TmwCustomEdit read FEditor;
     property Visible : Boolean read FVisible write FVisible default False;
+    FindText : String;
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
@@ -224,6 +228,9 @@ type
     procedure SaveAllClicked(Sender : TObject);
     procedure SaveAsClicked(Sender : TObject);
 
+    procedure FindClicked(Sender : TObject);
+    procedure FindAgainClicked(Sender : TObject);
+
     Procedure NewFile(UnitName: String; Source : TStrings; aVisible : Boolean);
     Procedure OpenFile(FileName: String; aVisible : Boolean);
 
@@ -243,6 +250,12 @@ type
 implementation
 uses
   LCLLinux,TypInfo,LResources,Main,LazConf;
+
+const
+  ecFind = ecUserFirst+1;
+  ecFindAgain = ecUserFirst+2;
+  ecFindProcedureDefinition = ecUserFirst+3;
+  ecFindProcedureMethod = ecUserFirst+4;
 
 var
 Editor_Num : Integer;
@@ -574,6 +587,76 @@ Begin
 
 end;
 
+{--------------------------S T A R T  F I N D-----------------------}
+Function TSourceEditor.StartFind : Boolean;
+Begin
+  Result := False;
+  if not Assigned(FindDialog1) then
+         FindDialog1 := TFindDialog.Create(nil);
+
+  if (FindDialog1.ShowModal = mrOK) then
+     Begin
+        if not FindDialog1.cbCaseSensitive.Checked then
+        FindText := uppercase(FindDialog1.edtTextToFind.Text);
+        Result := FindAgain(1,0);
+
+     end;
+
+End;
+
+{--------------------------F I N D  A G A I N -----------------------}
+Function TSourceEditor.FindAgain(StartX,StartLine : Integer) : Boolean;
+var
+  I,X     : Integer;
+  Texts   : String;
+  TempLine : String;
+  P        : TPoint;
+Begin
+Result := False;
+
+if FindText = '' then Exit;
+
+if (StartX < 0) or (StartLine < 0) then
+    Begin
+        StartX := CurrentCursorXLine-1;
+        StartLine := CurrentCursorYLine-1;
+    end;
+
+  for I := StartLine to Source.Count-1 do
+      begin
+        TempLine := Copy(Source.Strings[i],StartX,Length(Source.Strings[i]));
+        if not FindDialog1.cbCaseSensitive.Checked then
+               TempLine := uppercase(TempLine);
+
+
+        X := pos(FindText,Templine);
+        if (X > 0) and (FindDialog1.cbWholeWords.Checked) then
+           begin
+              //check the character prior to X
+              if X > 1 then
+                 if  (TempLine[X-1] in ['a'..'z', 'A'..'Z', '0'..'9']) then
+                     X := 0;
+              if (X < Length(TempLine)) and (X > 0) then
+                 if  (TempLine[X+1] in ['a'..'z', 'A'..'Z', '0'..'9']) then
+                     X := 0;
+            end;
+         if (X > 0) then
+             Begin
+                 //re-position cursor and break;
+                 P.X := X+Startx-1;
+                 P.Y := I+1;
+                 FEditor.BlockBegin:= P;
+                 P.X := P.X+Length(FindText);
+                 FEditor.BlockEND :=P;
+                 FEditor.CaretXY := p;
+                 Result := True;
+                 Exit;
+             end;
+          StartX := 1;
+
+           end;
+End;
+
 
 
 Procedure TSourceEditor.ToggleLineNumbersClicked(Sender : TObject);
@@ -611,26 +694,34 @@ Begin
 
 end;
 
-
-Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key: Word; Shift : TShiftState);
+Procedure TSourceEditor.ProcessUserCommand(Sender: TObject; var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 var
-  Texts,nmForm : String;
-  Texts2 : String;
-  I,Y : Integer;
-  TheName : String;
+  Y,I : Integer;
+  Texts,Texts2,TheName : String;
 Begin
-  if (Key = 40) and ( ssCTRL in Shift) then
-     Begin
-     //jump down to the procedure definition
-     Texts := TextUnderCursor;  //this should be a procedure name.
-     GotoMethod(Texts);
+Writeln('[ProcessUserCommand]  --------------');
+  case Command of
+    ecFind : Begin
+               FindText := '';
+               StartFind;
+             end;
 
-     end
-  else
-  if (Key = 38) and (ssCTRL in Shift) and (ssShift in Shift)then
-     Begin
-     //jump up to the procedure definition
-    //move up until you find the work PROCEDURE or FUNCTION
+    ecFindAgain : Begin
+                   if FindText = '' then
+                      StartFind
+                   else
+                      if not(FindAgain(CurrentCursorXLine-1,CurrentCursorYLine-1)) then
+                         if Application.MessageBox('Search String not found.  Start from the beginning?','Not Found',mb_YesNo) = mrYEs then
+                            FindAgain(1,0);
+                  end;
+
+    ecFindProcedureMethod :  Begin
+                                    //jump down to the procedure definition
+                                    Texts := TextUnderCursor;  //this should be a procedure name.
+                                    GotoMethod(Texts);
+                                 end;
+
+    ecFindProcedureDefinition :   Begin
     Y := CurrentCursorYLine;
     Texts2 := Lowercase(Source.Strings[Y-1]);
     Writeln('The source line = '+Texts2);
@@ -661,13 +752,10 @@ Begin
           GotoMethodDeclaration(TheName);
        end;
 
-    end;
 
+                              end;
 
-end;
-
-Procedure TSourceEditor.EditorKeyUp(Sender : TObject; var Key: Word; Shift : TShiftState);
-Begin
+   end;  //case
 
 end;
 
@@ -708,9 +796,13 @@ if assigned(FEditor) then
     Highlighter:=aHighlighter;
     Gutter.Color:=clBlue;
     AddKey(ecAutoCompletion, word('J'), [ssCtrl], 0, []);
-    OnKeyDown := @EditorKeyDown;
-    OnKeyUp := @EditorKeyUp;
+    AddKey(ecFind, word('F'), [ssCtrl], 0, []);
+    AddKey(ecFindAgain, VK_F3, [], 0, []);
+    AddKey(ecFindProcedureDefinition, VK_UP, [ssShift,ssCtrl], 0, []);
+    AddKey(ecFindProcedureMethod, VK_Down, [ssShift,ssCtrl], 0, []);
+
     OnStatusChange := @EditorStatusChanged;
+    OnProcessUserCommand := @ProcessUserCommand;
     Show;
     end;
     FSynAutoComplete.AddEditor(FEditor);
@@ -962,7 +1054,7 @@ Begin
 
 
 //figure out what the unit name should be...
-  FUnitName:='Unit1';  //just assigning it to this for now
+//  FUnitName:='Unit1';  //just assigning it to this for now
 
   with TempSource do
    try
@@ -1216,10 +1308,10 @@ var
   UnitIndex,I:integer;
 
 Begin
+UnitIndex := 0;
  if CreateNotebook then Pagenum := 0;
 
   if Pagenum = -1 then begin //add a new page
-    UnitIndex:=0;
     repeat
       inc(UnitIndex);
       I:=FSourceEditorList.Count-1;
@@ -1227,11 +1319,9 @@ Begin
       and (lowercase(TSourceEditor(FSourceEditorList[I]).UnitName)
           <>'unit'+IntToStr(UnitIndex)) do dec(I);
     until I<0;
+    Pagenum := Notebook1.Pages.Add('Unit'+IntToStr(UnitIndex));
 
-    Pagenum := Notebook1.Pages.Add('unit'+IntToStr(UnitIndex));
   end;
-
-
   Result := TSourceEditor.Create(Self,Notebook1.Page[PageNum]);
   Result.FUnitName:=Notebook1.Pages[PageNum];
   Notebook1.Pageindex := Pagenum;
@@ -1391,6 +1481,19 @@ Begin
   TempEditor.Visible := True;
 UpdateStatusBar;
 end;
+
+Procedure TSourceNotebook.FindClicked(Sender : TObject);
+Begin
+  if GetActiveSe <> nil then
+     GetActiveSE.StartFind;
+End;
+
+Procedure TSourceNotebook.FindAgainClicked(Sender : TObject);
+Begin
+  if GetActiveSe <> nil then
+     GetActiveSE.FindAgain(-1,-1);  //-1 uses the currect x and y coords of the cursor in the window
+End;
+
 
 
 
@@ -1613,13 +1716,16 @@ End;
 
 Procedure TSourceNotebook.NoteBookPageChanged(Sender : TObject);
 Begin
-  GetActiveSE.FocusEditor;
-
-  UpdateStatusBar;
+  if GetActiveSE <> nil then
+  begin
+    GetActiveSE.FocusEditor;
+    UpdateStatusBar;
+  end;
 end;
 
 initialization
 Editor_Num := 0;
+
 
 {$I designer/bookmark.lrs}
 
