@@ -5325,8 +5325,8 @@ begin
   if Handle <> nil then
   Begin
     SetLCLObject(Handle, Sender);
-    gtk_object_set_data(pgtkObject(Handle),'Style',0);
-    gtk_object_set_data(pgtkObject(Handle),'ExStyle',0);
+    gtk_object_set_data(pgtkObject(Handle),'Style',GtkNil);
+    gtk_object_set_data(pgtkObject(Handle),'ExStyle',GtkNil);
   end;
   //--------------------------
 
@@ -8176,7 +8176,7 @@ const
       CurSelList := CurSelList^.Next;
     end;
     g_list_free(SelectionLists);
-    gtk_object_set_data (PGtkObject(Widget),gtk_selection_handler_key,0);
+    gtk_object_set_data (PGtkObject(Widget),gtk_selection_handler_key,GtkNil);
     {$IFDEF DEBUG_CLIPBOARD}
     writeln('  ClearTargetLists WWW END');
     {$ENDIF}
@@ -8202,11 +8202,11 @@ begin
   if ClipboardWidget<>nil then begin
     // connect widget to all clipboard signals
     g_signal_connect(PGtkObject(ClipboardWidget),'selection_received',
-      TGTKSignalFunc(@ClipboardSelectionReceivedHandler),0);
+      TGTKSignalFunc(@ClipboardSelectionReceivedHandler),GtkNil);
     g_signal_connect(PGtkObject(ClipboardWidget),'selection_get',
-      TGTKSignalFunc(@ClipboardSelectionRequestHandler),0);
+      TGTKSignalFunc(@ClipboardSelectionRequestHandler),GtkNil);
     g_signal_connect(PGtkObject(ClipboardWidget),'selection_clear_event',
-      TGTKSignalFunc(@ClipboardSelectionLostOwnershipHandler),0);
+      TGTKSignalFunc(@ClipboardSelectionLostOwnershipHandler),GtkNil);
     // add all supported targets for all clipboard types
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
       if (ClipboardTargetEntries[c]<>nil) then begin
@@ -8465,6 +8465,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.441  2003/12/16 14:01:27  mattias
+  fixed compilation gtk and fpc 1.9
+
   Revision 1.440  2003/11/30 18:35:19  mattias
   fixed fpc 1.9.1 warns
 

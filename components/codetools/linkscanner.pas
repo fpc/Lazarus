@@ -54,7 +54,7 @@ const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
   NestedCompilerDefine = ExternalMacroStart+'NestedComments';
 
-  MissingIncludeFileCode = 1;
+  MissingIncludeFileCode = Pointer(1);
 
 type
   TLinkScanner = class;

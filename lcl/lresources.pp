@@ -68,7 +68,7 @@ procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
   const ResourceName, ResourceType: String);
 function LFMtoLRSfile(const LFMfilename: string): boolean;
  // returns true if successful
-function LFMtoLRSstream(LFMStream, LFCStream: TStream): boolean;
+function LFMtoLRSstream(LFMStream, LRSStream: TStream): boolean;
  // returns true if successful
 function FindLFMClassName(LFMStream: TStream):AnsiString;
 function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
@@ -252,7 +252,7 @@ begin
   end;
 end;
 
-function LFMtoLRSstream(LFMStream,LRSStream:TStream):boolean;
+function LFMtoLRSstream(LFMStream, LRSStream: TStream):boolean;
 // returns true if successful
 var FormClassName:ansistring;
   BinStream:TMemoryStream;

@@ -307,6 +307,9 @@ uses
   Buttons, StdCtrls, PairSplitter, Math,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
+  
+const
+  GtkNil = nil;
 
 {$I gtklistsl.inc}
 {$I gtkobject.inc}
@@ -401,6 +404,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.161  2003/12/16 14:01:27  mattias
+  fixed compilation gtk and fpc 1.9
+
   Revision 1.160  2003/11/27 23:02:30  mattias
   removed menutype.pas
 

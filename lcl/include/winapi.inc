@@ -1193,7 +1193,7 @@ end;
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer;
   Rect, ClipRect: PRect): Boolean;
 begin
-  Result := ScrollWindowEx(hWnd, XAmount, YAmount, Rect, ClipRect, 0, 0, 0);
+  Result := ScrollWindowEx(hWnd, XAmount, YAmount, Rect, ClipRect, 0, nil, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -1297,6 +1297,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2003/12/16 14:01:27  mattias
+  fixed compilation gtk and fpc 1.9
+
   Revision 1.104  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 
