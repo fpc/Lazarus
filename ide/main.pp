@@ -5689,7 +5689,7 @@ begin
     // add success message
     if Result=mrOk then begin
       MessagesView.AddMsg(
-        Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
+            Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
     end;
 
     // check sources
@@ -7145,6 +7145,7 @@ var MaxMessages: integer;
   SrcEdit: TSourceEditor;
   OpenFlags: TOpenFlags;
   CurMsg, CurDir: string;
+  NewFilename: String;
 begin
   Result:=false;
   MaxMessages:=MessagesView.MessageView.Items.Count;
@@ -7168,7 +7169,9 @@ begin
   if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
   then begin
     if not FilenameIsAbsolute(Filename) then begin
-      Filename:=AppendPathDelim(CurDir)+Filename;
+      NewFilename:=AppendPathDelim(CurDir)+Filename;
+      if FileExists(NewFilename) then
+        Filename:=NewFilename;
     end;
 
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
@@ -9793,6 +9796,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.651  2003/09/26 17:10:44  mattias
+  expand file in msg view only if exists
+
   Revision 1.650  2003/09/26 06:23:36  mattias
   fixed switching fpc src dir after failure
 
@@ -11392,7 +11398,7 @@ end.
   Shane
 
   Revision 1.128  2001/10/26 20:36:48  lazarus
-  Added an OnSelectionChanged event in Main.pp fired by MSgView dialog.  This fires when the ListBox gets clicked on.
+  Added an OnSelectionChanged event in Main.pp fired by MsgView dialog.  This fires when the ListBox gets clicked on.
   This allows the editor to highlight different lines when you click on different error messages.
   Shane
 
