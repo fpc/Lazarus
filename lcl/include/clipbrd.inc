@@ -257,6 +257,7 @@ function TClipboard.GetComponent(Owner, Parent: TComponent): TComponent;
 var
   MemStream: TMemoryStream;
   Reader: TReader;
+  ok: boolean;
 begin
   Result := nil;
   MemStream:=TMemoryStream.Create;
@@ -267,11 +268,12 @@ begin
       try
         Reader.Parent := Parent;
         Result := Reader.ReadRootComponent(nil);
+        ok:=false;
         try
           Owner.InsertComponent(Result);
-        except
-          Result.Free;
-          raise;
+          ok:=true;
+        finally
+          if not ok then Result.Free;
         end;
       finally
         Reader.Free;
@@ -594,6 +596,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2002/04/04 12:25:01  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.7  2002/03/11 23:22:46  lazarus
   MG: added TPicture clipboard support
 

@@ -220,13 +220,15 @@ end;
 Function TGTKObject.BringWindowToTop(hWnd : HWND): Boolean;
 begin
   //hwnd should be a PgtkWidget.
-  result := True;
+  Result := True;
   try
     gdk_window_raise(PgtkWidget(hwnd)^.window);
   except
-    Result := False;
+    on E: Exception do begin
+      writeln('TGTKObject.BringWindowToTop: ',E.Message);
+      Result := False;
+    end;
   end;
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -1925,14 +1927,17 @@ begin
   if Handle = 0 then Exit;
   Result := False;
   Try
-   Rect.Left := 0;
-   Rect.Top := 0;
-   gtk_Widget_size_request(PgtkWidget(handle),@requisition);
-   Rect.Right := requisition.width;
-   Rect.Bottom := requisition.Height;
+    Rect.Left := 0;
+    Rect.Top := 0;
+    gtk_Widget_size_request(PgtkWidget(handle),@requisition);
+    Rect.Right := requisition.width;
+    Rect.Bottom := requisition.Height;
 //   Writeln('Width / Height = '+Inttostr(REct.Right)+'/'+Inttostr(Rect.Bottom));
   except
-   Result := False;
+    on E: Exception do begin
+      writeln('TGTKObject.GetClientRect: ',E.Message);
+      Result := False;
+    end;
   end;
 
 end;
@@ -2814,7 +2819,10 @@ begin
     
     gtk_widget_draw(PgtkWidget(aHandle), @gdkRect);
   except
-    Result := False;
+    on E: Exception do begin
+      writeln('TGTKObject.InvalidateRect: ',E.Message);
+      Result := False;
+    end;
   end;
 
 end;
@@ -3352,8 +3360,11 @@ begin
         if pDC^.GC <> nil then
           gdk_gc_unref(pDC^.GC);
       except
-        on Exception do; //Nothing, just try to unref it
-                         //(it segfaults if the window doesnt exist anymore :-)
+        on E:Exception do begin
+          //Nothing, just try to unref it
+          //(it segfaults if the window doesnt exist anymore :-)
+          writeln('TgtkObject.ReleaseDC: ',E.Message);
+        end;
       end;
       FDeviceContexts.Remove(pDC);
       Dispose(pDC);
@@ -4383,6 +4394,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/04/04 12:25:02  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.63  2002/03/31 22:01:38  lazarus
   MG: fixed unreleased/unpressed Ctrl/Alt/Shift
 

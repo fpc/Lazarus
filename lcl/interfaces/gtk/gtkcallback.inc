@@ -185,10 +185,8 @@ var
   KeyCode: Word;
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
-  ShiftState: TShiftState;
 begin
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
-  ShiftState := GTKEventState2ShiftState(Event^.State);
   // Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
 
   Flags := 0;
@@ -1613,6 +1611,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/04/04 12:25:02  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.67  2002/03/31 22:01:37  lazarus
   MG: fixed unreleased/unpressed Ctrl/Alt/Shift
 

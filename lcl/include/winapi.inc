@@ -545,7 +545,10 @@ begin
     if MenuExist 
     then Rect.Top := Rect.Top + 25;
   except
-    Result := False;
+    on E: Exception do begin
+      writeln('AdjustWindowRectEx: ',E.Message);
+      Result := False;
+    end;
   end;
 end;
 
@@ -967,15 +970,18 @@ Function SetRect(var Rect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolea
 Begin
   Result := True;
   try
-   with Rect do
-   begin
-     Left := xLeft;
-     Top := yTop;
-     Right := xRight;
-     Bottom := yBottom;
-   end;
+    with Rect do
+    begin
+      Left := xLeft;
+      Top := yTop;
+      Right := xRight;
+      Bottom := yBottom;
+    end;
   except
-   Result := False;
+    on E: Exception do begin
+      writeln('AdjustWindowRectEx: ',E.Message);
+      Result := False;
+    end;
   End;
 End;
 
@@ -1050,20 +1056,25 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 begin
   Result := True;
   try
-   lprcDst.Left := Min(lprcSrc1.Left, lprcSrc2.Left);
-   lprcDst.Top := Min(lprcSrc1.Top, lprcSrc2.Top);
-   lprcDst.Right := Max(lprcSrc1.Right, lprcSrc2.Right);
-   lprcDst.Bottom := Max(lprcSrc1.Bottom, lprcSrc2.Bottom);
+    lprcDst.Left := Min(lprcSrc1.Left, lprcSrc2.Left);
+    lprcDst.Top := Min(lprcSrc1.Top, lprcSrc2.Top);
+    lprcDst.Right := Max(lprcSrc1.Right, lprcSrc2.Right);
+    lprcDst.Bottom := Max(lprcSrc1.Bottom, lprcSrc2.Bottom);
   except
-   Result := False;
+    on E: Exception do begin
+      writeln('AdjustWindowRectEx: ',E.Message);
+      Result := False;
+    end;
   end;
-
 end;
 
 //##apiwiz##epi##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/04/04 12:25:01  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.26  2002/03/11 23:22:46  lazarus
   MG: added TPicture clipboard support
 

@@ -6341,7 +6341,7 @@ begin
         {$IFDEF SYN_LAZARUS} - ScrollBarWidth{$ENDIF})
                             div fCharWidth);
     fLinesInWindow := (ClientHeight {$IFDEF SYN_LAZARUS}-13{$ENDIF})
-                       div fTextHeight;
+                        div fTextHeight;
     if bFont then begin
       if Gutter.ShowLineNumbers then
         GutterChanged(Self)

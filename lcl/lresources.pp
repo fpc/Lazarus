@@ -187,7 +187,10 @@ begin
       LFMFileStream.Free;
     end;
   except
-    Result:=false;
+    on E: Exception do begin
+      writeln('LFMtoLFCfile ',E.Message);
+      Result:=false;
+    end;
   end;
 end;
 
@@ -209,7 +212,10 @@ begin
       BinStream.Free;
     end;
   except
-    Result:=false;
+    on E: Exception do begin
+      writeln('LFMtoLFCstream ',E.Message);
+      Result:=false;
+    end;
   end;
 end;
 

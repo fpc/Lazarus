@@ -799,13 +799,13 @@ var
   hOldFont: HFONT;
   p: PheFontData;
 begin
-{$IFDEF HE_ASSERT}
+  {$IFDEF HE_ASSERT}
   ASSERT(SizeOf(TFontStyles) = 1,
     'TheTextDrawer.SetStyle: There''s more than four font styles but the current '+
     'code expects only four styles.');
-{$ELSE}
+  {$ELSE}
   ASSERT(SizeOf(TFontStyles) = 1);
-{$ENDIF}
+  {$ENDIF}
   idx := PByte(@Value)^;
   ASSERT(idx <= High(TheStockFontPatterns));
 

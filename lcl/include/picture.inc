@@ -388,6 +388,7 @@ procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
 var
   NewGraphic: TGraphic;
   GraphicClass: TGraphicClass;
+  ok: boolean;
 begin
   GraphicClass := PicClipboardFormats.FindFormat(FormatID);
   if GraphicClass = nil then
@@ -395,12 +396,13 @@ begin
       +ClipboardFormatToMimeType(FormatID));
 
   NewGraphic := GraphicClass.Create;
+  ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
     NewGraphic.LoadFromClipboardFormat(FormatID);
-  except
-    NewGraphic.Free;
-    raise;
+    ok:=true;
+  finally
+    if not ok then NewGraphic.Free;
   end;
   FGraphic.Free;
   FGraphic := NewGraphic;

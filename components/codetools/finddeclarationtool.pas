@@ -184,7 +184,9 @@ type
     
 const
   TypeCompatibilityNames: array[TTypeCompatibility] of string = (
-      'Exact', 'Compatible', 'Incompatible'
+       'Exact',
+       'Compatible', // convertable, but not usable for var params
+       'Incompatible'
      );
 
 type
