@@ -1,3 +1,5 @@
+// included by forms.pp
+
 { THintWindow }
 {
 
@@ -9,6 +11,7 @@
 }
 
 constructor THintWindow.Create(AOwner: TComponent);
+var TheTimer: TTimer;
 begin
   inherited Create(AOwner);
   fCompStyle := csHintWindow;
@@ -18,10 +21,11 @@ begin
   Caption := 'THintWIndow';
   SetBounds(1,1,25,25);
   FHideInterval := 3000;
-  FAutoHideTimer := TTimer.Create(self);
-  TTimer(FAutoHideTImer).Interval := HideInterval;
-  TTimer(FAutoHideTimer).Enabled := False;
-  TTimer(FAutoHideTimer).OnTimer := @AutoHideHint;
+  TheTimer := TTimer.Create(self);
+  FAutoHideTimer := TheTimer;
+  TheTimer.Interval := HideInterval;
+  TheTimer.Enabled := False;
+  TheTimer.OnTimer := @AutoHideHint;
 end;
 
 destructor THintWIndow.Destroy;

@@ -454,7 +454,7 @@ end;
 {       TCustomForm ValidateRename                                          }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.ValidateRename(AComponent: TComponent;
-  const CurName, NewName: ShortString);
+  const CurName, NewName: String);
 begin
   inherited ValidateRename(AComponent, CurName, NewName);
   if FDesigner <> nil then
@@ -949,6 +949,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2001/12/19 10:59:12  lazarus
+  MG: changes for fpc 1.1
+
   Revision 1.30  2001/11/10 10:48:00  lazarus
   MG: fixed set formicon on invisible forms
 

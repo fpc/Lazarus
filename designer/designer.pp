@@ -112,7 +112,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure PaintGrid; override;
     procedure ValidateRename(AComponent: TComponent;
-       const CurName, NewName: shortstring); override;
+       const CurName, NewName: string); override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
 
     property IsControl: Boolean read GetIsControl write SetIsControl;
@@ -799,9 +799,9 @@ begin
 end;
 
 procedure TDesigner.ValidateRename(AComponent: TComponent;
-  const CurName, NewName: shortstring);
+  const CurName, NewName: string);
 Begin
-
+  writeln('ToDo: TDesigner.ValidateRename ',CurName,', ',NewName);
 end;
 
 function TDesigner.GetIsControl: Boolean;

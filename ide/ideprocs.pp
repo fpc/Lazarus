@@ -44,15 +44,16 @@ procedure AddToRecentList(const s: string; RecentList: TStringList;
 implementation
 
 // to get more detailed error messages consider the os
- {$IFDEF Linux}
+{$IFDEF Win32}
+{$ELSE}
 uses
  {$IFDEF Ver1_0}
   Linux
  {$ELSE}
   Unix
  {$ENDIF}
- ;
- {$ENDIF}
+  ;
+{$ENDIF}
 
 procedure AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer);
@@ -134,7 +135,7 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
-  {$IFDEF linux}
+  {$IFNDEF win32}
   if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
   begin
@@ -151,7 +152,7 @@ begin
     end;
     raise Exception.Create(AText);
   end;
-  {$ENDIF linux}
+  {$ENDIF}
   
   // ToDo: windows and xxxbsd
 end;

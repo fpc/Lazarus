@@ -132,7 +132,7 @@ type
     Procedure RequestAlign; Override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
-    procedure ValidateRename(AComponent: TComponent; const CurName, NewName: shortstring);
+    procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string);override;
     procedure WndProc(var Message : TLMessage); override;
     {events}
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
@@ -320,7 +320,7 @@ type
       Operation: TOperation); virtual; abstract;
     procedure PaintGrid; virtual; abstract;
     procedure ValidateRename(AComponent: TComponent;
-      const CurName, NewName: shortstring); virtual; abstract;
+      const CurName, NewName: string); virtual; abstract;
     end;
 
 
