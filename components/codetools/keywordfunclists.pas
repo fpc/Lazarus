@@ -85,6 +85,7 @@ var
   IsKeyWordSection,
   IsKeyWordInConstAllowed,
   WordIsKeyWord,
+  WordIsDelphiKeyWord,
   IsKeyWordBuiltInFunc,
   WordIsTermOperator,
   WordIsPropertySpecifier,
@@ -654,7 +655,74 @@ begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
+    //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
+    Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PROPERTY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RAISE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RESOURCESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('THEN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TYPE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('UNTIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('USES',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WHILE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WITH',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsDelphiKeyWord:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsDelphiKeyWord);
+  with WordIsDelphiKeyWord do begin
+    Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DOWNTO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ELSE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('END',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXPORTS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FUNCTION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('GOTO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IF',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IMPLEMENTATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INHERITED',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INLINE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LABEL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LIBRARY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NIL',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OBJECT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OF',{$ifdef FPC}@{$endif}AllwaysTrue);
+    //Add('OPERATOR',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     //Add('ON',{$ifdef FPC}@{$endif}AllwaysTrue); // not for Delphi
     Add('OR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PACKED',{$ifdef FPC}@{$endif}AllwaysTrue);

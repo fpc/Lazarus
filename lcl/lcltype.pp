@@ -107,7 +107,7 @@ type
 
   TKeyBoardState = array[0..255] of byte;
   
-   PABC = ^TABC;
+  PABC = ^TABC;
 
   _ABC = packed record
     abcA: Integer;
@@ -1299,6 +1299,19 @@ const
   LOGPIXELSY    = 90;
 
 
+  { Text Alignment Options }
+
+  TA_NOUPDATECP = 0;
+  TA_UPDATECP = 1;
+  TA_LEFT = 0;
+  TA_RIGHT = 2;
+  TA_CENTER = 6;
+  TA_TOP = 0;
+  TA_BOTTOM = 8;
+  TA_BASELINE = 24;
+  TA_RTLREADING = $100;
+  TA_MASK =  (TA_BASELINE+TA_CENTER+TA_UPDATECP+TA_RTLREADING);
+
 
 type
   TFarProc = Pointer;
@@ -1741,6 +1754,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.28  2002/12/12 17:47:45  mattias
   new constants for compatibility
 

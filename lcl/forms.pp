@@ -330,6 +330,7 @@ type
     function GetIconHandle: HICON;
     destructor Destroy; override;
     procedure Close;
+    procedure Release;
     procedure Hide;
     function WantChildKey(Child : TControl; var MEssage : TLMessage): Boolean; virtual;
     procedure SetFocus; override;

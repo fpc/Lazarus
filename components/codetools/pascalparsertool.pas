@@ -482,6 +482,10 @@ begin
   
   // parse code and build codetree
   CurrentPhase:=CodeToolPhaseParse;
+  if Scanner.CompilerMode=cmDELPHI then
+    WordIsKeyWordFuncList:=WordIsDelphiKeyWord
+  else
+    WordIsKeyWordFuncList:=WordIsKeyWord;
   
   InterfaceSectionFound:=false;
   ImplementationSectionFound:=false;
@@ -2393,8 +2397,9 @@ begin
         CurNode.EndPos:=CurPos.EndPos;
         ReadNextAtom;
       end;
-      if (CurPos.Flag<>cafColon) then
+      if (CurPos.Flag<>cafColon) then begin
         RaiseCharExpectedButAtomFound(':');
+      end;
       // read type
       ReadVariableType;
     end else begin

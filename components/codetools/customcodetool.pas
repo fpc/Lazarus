@@ -82,6 +82,7 @@ type
   protected
     FIgnoreErrorAfter: TCodePosition;
     KeyWordFuncList: TKeyWordFunctionList;
+    WordIsKeyWordFuncList: TKeyWordFunctionList;
     FForceUpdateNeeded: boolean;
     function DefaultKeyWordFunc: boolean;
     procedure BuildDefaultKeyWordFunctions; virtual;
@@ -246,6 +247,7 @@ begin
   Tree:=TCodeTree.Create;
   KeyWordFuncList:=TKeyWordFunctionList.Create;
   BuildDefaultKeyWordFunctions;
+  WordIsKeyWordFuncList:=WordIsKeyWord;
   LastAtoms:=TAtomRing.Create;
   IndentSize:=2;
   VisibleEditorLines:=20;
@@ -488,7 +490,7 @@ function TCustomCodeTool.AtomIsKeyWord: boolean;
 begin
   Result:=(CurPos.StartPos<=SrcLen)
       and (IsIdentStartChar[UpperSrc[CurPos.StartPos]])
-      and (WordIsKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      and (WordIsKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos));
 end;
 
@@ -502,7 +504,7 @@ function TCustomCodeTool.AtomIsIdentifier(ExceptionOnNotFound: boolean):boolean;
 begin
   if CurPos.StartPos<=SrcLen then begin
     if IsIdentStartChar[UpperSrc[CurPos.StartPos]] then begin
-      if not WordIsKeyWord.DoItUpperCase(UpperSrc,CurPos.StartPos,
+      if not WordIsKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
              CurPos.EndPos-CurPos.StartPos) then
         Result:=true
       else begin
@@ -1521,7 +1523,7 @@ end;
 function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
 begin
   Result:=(Word<>'') and IsIdentStartChar[Word[1]]
-                           and WordIsKeyWord.DoItUpperCase(Word,1,length(Word));
+                   and WordIsKeyWordFuncList.DoItUpperCase(Word,1,length(Word));
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);

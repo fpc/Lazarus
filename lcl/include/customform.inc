@@ -843,42 +843,40 @@ Procedure TCustomForm.Close;
 var
   CloseAction: TCloseAction;
 begin
-  Assert(False, Format('Trace:[TCustomForm.Close] %s', [ClassName]));
-  CloseAction := caHide;
-  DoClose(CloseAction);
-  if CloseAction <> caNone 
-  then begin
-    if Application.MainForm = Self 
-    then Application.Terminate
-    else begin
-      case CloseAction of
-        caHide : 
-          begin
-        	  if Visible 
-        	  then Assert(False, 'Trace:Performing Hide')
-        	  else Assert(False, 'Trace:They say it is not visible !!!');
-        	end;  
-      	caMinimize : 
-      	  begin
-      	    Assert(False, 'Trace:Performing minimize');
-      	  end;
-      else 
-        Assert(False, 'Trace:Performing free');
-      end;	
-      case CloseAction of
-        caHide: Hide;
-        caMinimize: WindowState := wsMinimized;
-      else 
-        {Release =}Free;
+  if fsModal in FFormState then
+    ModalResult := mrCancel
+  else begin
+    if CloseQuery then
+    begin
+      if FormStyle = fsMDIChild then begin
+        //if biMinimize in BorderIcons then
+        //  CloseAction := caMinimize
+        //else
+          CloseAction := caNone;
+      end else begin
+        CloseAction := caHide;
       end;
-    end;  
+      DoClose(CloseAction);
+      if CloseAction <> caNone then
+        if Application.MainForm = Self then Application.Terminate
+        else if CloseAction = caHide then Hide
+        else if CloseAction = caMinimize then WindowState := wsMinimized
+        else Release;
+    end;
   end;
-
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm Method CloseQuery                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TCustomForm.Release;
+------------------------------------------------------------------------------}
+procedure TCustomForm.Release;
+begin
+  Free;
+end;
+
+{------------------------------------------------------------------------------
+       TCustomForm Method CloseQuery
+------------------------------------------------------------------------------}
 function TCustomForm.CloseQuery : boolean;
 //var i : integer;
 begin
@@ -893,8 +891,6 @@ begin
   end;    
   Result:= true;
   if Assigned(FOnCloseQuery) then FOnCloseQuery(Self, Result);
-  if Result then Assert(False, 'Trace:CloseQuery returns true')
-  else Assert(False, 'Trace:CloseQuery returns false');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1181,6 +1177,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2002/12/25 10:21:05  mattias
+  made Form.Close more Delphish, added some windows compatibility functions
+
   Revision 1.75  2002/12/03 17:40:37  mattias
   fixed deleting lookup form when form is deleted
 
