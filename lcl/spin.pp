@@ -55,6 +55,7 @@ type
     procedure SetValue(Num : Single);
     procedure SetClimbRate(num : Single);
     procedure InitializeWnd; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;

@@ -102,44 +102,28 @@ type
 
   TStatusBar = Class(TWinControl)
   private
-    {$IFDEF OldStatusBar}
-    FCanvas : TCanvas;
-    {$ELSE}
     FHandlePanelCount: integer; // realized panels in the Handle object
     FHandleObjectNeedsUpdate: boolean;
     FHandleUpdatePanelIndex: integer; // which panel in the handle object needs update
     FUpdateLock: integer; // set by BeginUpdate/EndUpdate
-    {$ENDIF}
     FPanels : TStatusPanels;
     FSimpleText : String;
     FSimplePanel : Boolean;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
     procedure SetSimplePanel(Value : Boolean);
-    {$IFDEF OldStatusBar}
-    Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
-    Procedure DrawDivider(X : Integer);
-    Procedure DrawBevel(xLeft, PanelNum : Integer);
-    {$ELSE}
   protected
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
     procedure Loaded; override;
     procedure UpdateHandleObject(PanelIndex: integer); virtual;
-    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
-    {$IFNDEF OldStatusBar}
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdatingStatusBar: boolean;
-    {$ELSE}
-    procedure GetPanelRect(PanelIndex: integer; var ARect: TRect);
-  public
-    property Canvas: TCanvas read FCanvas;
-    {$ENDIF}
   published
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
@@ -1970,6 +1954,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2004/02/02 19:48:01  mattias
+  fixed removing TStatusBar panels in gtk
+
   Revision 1.103  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

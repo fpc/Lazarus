@@ -6105,17 +6105,19 @@ begin
                        ExpandItem,ExpandItem,0);
     inc(CurPanelCount);
   end;
-  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
-  //writeln('TgtkObject.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
-  if CurPanelCount<>NewPanelCount then
-    RaiseGDBException('');
 
   // remove unneeded panels
   while CurPanelCount>NewPanelCount do begin
     CurStatusPanelWidget:=PGtkBoxChild(
               g_list_nth_data(PGtkBox(HBox)^.children,CurPanelCount-1))^.Widget;
     DestroyConnectedWidget(CurStatusPanelWidget,true);
+    dec(CurPanelCount);
   end;
+
+  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+  //writeln('TgtkObject.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
+  if CurPanelCount<>NewPanelCount then
+    RaiseGDBException('');
 
   // set panel properties
   ListItem:=PGTKBox(HBox)^.children;
@@ -7994,10 +7996,12 @@ begin
   csSpinEdit:
     Begin
       AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
+writeln('SetProperties ',AnAdjustment^.lower,' ',TSpinEdit(Sender).MinValue);
       if (AnAdjustment^.lower<>TSpinEdit(Sender).MinValue)
       or (AnAdjustment^.upper<>TSpinEdit(Sender).MaxValue) then
       begin
         AnAdjustment^.lower:=TSpinEdit(Sender).MinValue;
+writeln('SetProperties ',AnAdjustment^.lower,' ',TSpinEdit(Sender).MinValue);
         AnAdjustment^.upper:=TSpinEdit(Sender).MaxValue;
         gtk_adjustment_changed(AnAdjustment);
       end;
@@ -9184,6 +9188,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.460  2004/02/02 19:48:01  mattias
+  fixed removing TStatusBar panels in gtk
+
   Revision 1.459  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

@@ -4040,9 +4040,7 @@ begin
   or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
     TempEditor.ErrorLine:=-1;
 
-  {$IFNDEF OldStatusBar}
   Statusbar.BeginUpdate;
-  {$ENDIF}
   if snIncrementalFind in States then begin
     Statusbar.SimplePanel:=true;
     Statusbar.SimpleText:=Format(lisUESearching, [IncrementalSearchStr]);
@@ -4076,9 +4074,7 @@ begin
     Statusbar.Panels[2].Text := PanelCharMode;
     Statusbar.Panels[3].Text := PanelFilename;
   end;
-  {$IFNDEF OldStatusBar}
   Statusbar.EndUpdate;
-  {$ENDIF}
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;

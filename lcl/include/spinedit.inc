@@ -19,17 +19,21 @@
 {-----------------------------------------------------------------------------}
 procedure TSpinEdit.UpdateControl;
 begin
-  if not HandleAllocated then exit;
   if MaxValue<MinValue then fMaxValue:=MinValue;
   if Value<fMinValue then Value:=fMinValue;
   if Value>fMaxValue then Value:=fMaxValue;
+  if (not HandleAllocated) then exit;
+  if ([csLoading,csDestroying]*ComponentState<>[]) then begin
+    fValueNeedsUpdate:=true;
+    exit;
+  end;
   CNSendMessage(LM_SetProperties,Self,nil);
   fValueNeedsUpdate:=false;
 end;
 
 function TSpinEdit.ValueIsStored: boolean;
 begin
-  Result:=Value<>1;
+  Result:=true; // fpc bug, default value is always 0
 end;
 
 procedure TSpinEdit.SetMaxValue(const AValue: single);
@@ -46,12 +50,12 @@ end;
 
 function TSpinEdit.MaxValueIsStored: boolean;
 begin
-  Result:=fMaxValue<>100;
+  Result:=true; // fpc bug, default value is always 0
 end;
 
 function TSpinEdit.MinValueIsStored: boolean;
 begin
-  Result:=fMinValue<>1;
+  Result:=true; // fpc bug, default value is always 0
 end;
 
 
@@ -75,6 +79,12 @@ procedure TSpinEdit.InitializeWnd;
 begin
   inherited InitializeWnd;
   UpdateControl;
+end;
+
+procedure TSpinEdit.Loaded;
+begin
+  inherited Loaded;
+  if fValueNeedsUpdate then UpdateControl;
 end;
 
 {-----------------------------------------------------------------------------}
@@ -114,9 +124,9 @@ begin
 
   fClimbRate := 1;
   fDecimals := 2;
-  fValue := 1;
+  fValue := 0;
   fValueNeedsUpdate := true;
-  fMinValue := 1;
+  fMinValue := 0;
   fMaxValue := 100;
 
   SetBounds(1,1,50,20);
