@@ -67,7 +67,7 @@ begin
 
   Application.CreateForm(TMainIDE, MainIDE);
   {$IFDEF IDE_MEM_CHECK}
-  CheckHeap('TMainIDE created');
+  CheckHeapWrtMemCnt('lazarus.pp: TMainIDE created');
   {$ENDIF}
   Application.CreateForm(TMessagesView, MessagesView);
 
@@ -86,6 +86,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2002/09/13 08:11:45  lazarus
+  MG: fixed memcheck output
+
   Revision 1.36  2002/07/30 06:24:04  lazarus
   MG: added a faster version of TXMLConfig
 

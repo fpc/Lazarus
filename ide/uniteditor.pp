@@ -1182,7 +1182,7 @@ procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
 var
   Txt: string;
 begin
-  Txt:=CommentText(lisGPLNotice,CommentType);
+  Txt:=CommentText(Format(lisGPLNotice,[#13#13,#13#13]),CommentType);
   FEditor.SelText:=Txt;
 end;
 
