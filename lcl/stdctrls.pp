@@ -209,8 +209,8 @@ type
     procedure CNCommand(var TheMessage : TLMCommand); message CN_Command;
     procedure UpdateSorted;
   protected
-    procedure CreateHandle; override;
-    procedure DestroyHandle; override;
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
     procedure DoChange(var msg); message LM_CHANGED;
@@ -256,7 +256,6 @@ type
       read FOnMeasureItem write FOnMeasureItem;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
     property Sorted: boolean read FSorted write SetSorted;
-    property Style: TComboBoxStyle read FStyle write SetStyle;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -277,6 +276,7 @@ type
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
+    property Style: TComboBoxStyle read FStyle write SetStyle;
   end;
   
   
@@ -1450,6 +1450,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/06/07 09:34:21  mattias
+  added ambigius compiled unit test for packages
+
   Revision 1.91  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 

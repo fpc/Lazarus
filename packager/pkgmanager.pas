@@ -128,6 +128,7 @@ type
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
                             const CompilerFilename, CompilerParams,
                             SrcFilename: string): TModalResult;
+    function CheckAmbigiousPackageUnits(APackage: TLazPackage): TModalResult;
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionPkgIncPath(Data: Pointer): boolean;
@@ -1024,6 +1025,69 @@ begin
   Result:=mrNo;
 end;
 
+function TPkgManager.CheckAmbigiousPackageUnits(APackage: TLazPackage
+  ): TModalResult;
+var
+  i: Integer;
+  CurFile: TPkgFile;
+  CurUnitName: String;
+  SrcDirs: String;
+
+  function CheckFile(const ShortFilename: string): TModalResult;
+  var
+    AmbigiousFilename: String;
+  begin
+    Result:=mrOk;
+    AmbigiousFilename:=SearchFileInPath(ShortFilename,APackage.Directory,
+                                        SrcDirs,';',[]);
+    if AmbigiousFilename<>'' then begin
+      Result:=MessageDlg('Ambigious Unit found',
+        'The file "'+AmbigiousFilename+'"'#13
+        +'was found in one of the source directories of the package '
+          +APackage.IDAsString+' and looks like a compiled unit.'
+        +'Compiled units must be in the output directory of the package, '
+        +'otherwise other packages can get problems using this package.'#13
+        +#13
+        +'Delete ambigious file?',
+        mtWarning,[mbYes,mbNo,mbAbort],0);
+      if Result=mrNo then
+        Result:=mrOk;
+      if Result=mrYes then begin
+        if (not DeleteFile(AmbigiousFilename))
+        and (MessageDlg(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
+          ['"', AmbigiousFilename, '"']), mtError, [mbIgnore, mbCancel], 0)
+          <>mrIgnore) then
+        begin
+          Result:=mrCancel;
+          exit;
+        end;
+        Result:=mrOk;
+      end;
+    end;
+  end;
+  
+begin
+  Result:=mrCancel;
+  // search in every source directory for compiled versions of the units
+  // A source directory is a directory with a used unit and it is not the output
+  // directory
+  SrcDirs:=APackage.GetSourceDirs(true,true);
+  if SrcDirs='' then exit;
+  for i:=0 to APackage.FileCount-1 do begin
+    CurFile:=APackage.Files[i];
+    if CurFile.FileType<>pftUnit then continue;
+    CurUnitName:=lowercase(CurFile.UnitName);
+    if CurUnitName='' then continue;
+    Result:=CheckFile(CurUnitName+'.ppu');
+    if Result<>mrOk then exit;
+    Result:=CheckFile(CurUnitName+'.ppw');
+    if Result<>mrOk then exit;
+    Result:=CheckFile(CurUnitName+'.ppl');
+    if Result<>mrOk then exit;
+  end;
+  Result:=mrOk;
+end;
+
 function TPkgManager.MacroFunctionPkgSrcPath(Data: Pointer): boolean;
 var
   FuncData: PReadFunctionData;
@@ -1893,8 +1957,7 @@ begin
     if Result<>mrOk then exit;
     
     // check ambigious units
-    Result:=MainIDE.DoCheckUnitPathForAmbigiousPascalFiles(
-                                                   APackage.GetUnitPath(false));
+    Result:=CheckAmbigiousPackageUnits(APackage);
     if Result<>mrOk then exit;
     
     // run compilation tool 'Before'

@@ -52,6 +52,11 @@ type
     tdfIgnoreTrailingSpaces   // ignore spaces at end of line
   );
   TTextDiffFlags = set of TTextDiffFlag;
+  
+  TTextDiffOutputType = (
+    tdoContext,
+    tdoRCS
+    );
 
 function CreateTextDiff(const Text1, Text2: string; Flags: TTextDiffFlags
   ): string;
@@ -102,7 +107,8 @@ begin
   end;
 end;
   
-function LineExtendsToStr(LineExtends: TLineExtends; const s: string): string;
+function LineExtendsToStr(const LineExtends: TLineExtends;
+  const s: string): string;
 begin
   with LineExtends do
     Result:='(Start='+IntToStr(LineStart)+' End='+IntToStr(LineEnd)
@@ -326,8 +332,8 @@ begin
 end;
 
 function LinesAreEqual(
-  const Text1: string; Line1Extends: TLineExtends;
-  const Text2: string; Line2Extends: TLineExtends;
+  const Text1: string; const Line1Extends: TLineExtends;
+  const Text2: string; const Line2Extends: TLineExtends;
   Flags: TTextDiffFlags): boolean;
 begin
   Result:=LinesAreEqual(Text1,Line1Extends.LineStart,Line1Extends.LineEnd,
@@ -369,8 +375,8 @@ begin
 end;
 
 procedure AddDiff(DiffStream: TStream;
-  const Text1: string; Start1, End1: TLineExtends;
-  const Text2: string; Start2, End2: TLineExtends);
+  const Text1: string; const Start1, End1: TLineExtends;
+  const Text2: string; const Start2, End2: TLineExtends);
 { Start1/2 is the first line that is different
   End1/2 is the first line that is equal
   
@@ -434,7 +440,7 @@ var
   end;
   
   procedure WriteLinesOfText(const s, Prefix: string;
-    StartLine, EndLine: TLineExtends);
+    const StartLine, EndLine: TLineExtends);
   var
     Line: TLineExtends;
   begin
@@ -478,8 +484,8 @@ begin
 end;
 
 procedure AddRestDiff(DiffStream: TStream;
-  const Text1: string; Start1: TLineExtends;
-  const Text2: string; Start2: TLineExtends);
+  const Text1: string; const Start1: TLineExtends;
+  const Text2: string; const Start2: TLineExtends);
 var
   End1, End2: TLineExtends;
 begin
@@ -495,21 +501,28 @@ begin
 end;
 
 procedure FindNextEqualLine(
-  const Text1: string; Start1: TLineExtends;
-  const Text2: string; Start2: TLineExtends;
+  const Text1: string; const Start1: TLineExtends;
+  const Text2: string; const Start2: TLineExtends;
   Flags: TTextDiffFlags;
   var EqualLine1, EqualLine2: TLineExtends
   );
 var
   Max1, Max2, Cur1, Cur2: TLineExtends;
 begin
+  writeln('FindNextEqualLine A ');
   Max1:=Start1;
   Max2:=Start2;
 
   Cur1:=Start1;
   Cur2:=Start2;
   try
-    if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags) then exit;
+    if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags)
+    and (not IsEmptyLine(Text1,Cur1.LineStart,Cur1.LineEnd,Flags)) then begin
+      writeln('FindNextEqualLine B :');
+      writeln('  1 ',LineExtendsToStr(Cur1,Text1));
+      writeln('  2 ',LineExtendsToStr(Cur2,Text2));
+      exit;
+    end;
     repeat
       // increase Max1
       if GotoNextLine(Max1) then begin
@@ -519,7 +532,9 @@ begin
           Cur1:=Max1;
           Cur2:=Start2;
           repeat
-            if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags) then exit;
+            if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags)
+            and (not IsEmptyLine(Text1,Cur1.LineStart,Cur1.LineEnd,Flags)) then
+              exit;
             if Cur2.LineStart>=Max2.LineStart then break;
             Cur2.LineStart:=Cur2.NextLineStart;
             inc(Cur2.LineNumber);
@@ -535,7 +550,9 @@ begin
           Cur1:=Start1;
           Cur2:=Max2;
           repeat
-            if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags) then exit;
+            if LinesAreEqual(Text1,Cur1,Text2,Cur2,Flags)
+            and (not IsEmptyLine(Text1,Cur1.LineStart,Cur1.LineEnd,Flags)) then
+              exit;
             if Cur1.LineStart>=Max1.LineStart then break;
             Cur1.LineStart:=Cur1.NextLineStart;
             inc(Cur1.LineNumber);
@@ -570,7 +587,7 @@ begin
     Line2.LineStart:=1;
     Line2.LineNumber:=1;
     repeat
-      // search for a differing line ...
+      // search for a difference line ...
       repeat
         // skip empty lines in Text1 and get line1 extends ...
         GetNextLineExtends(Text1,Line1,Flags);
@@ -595,7 +612,7 @@ begin
           exit;
         end;
       until false;
-      // differing line found -> search next equal line
+      // difference line found -> search next equal line
       FindNextEqualLine(Text1,Line1, Text2,Line2, Flags, EqualLine1,EqualLine2);
       AddDiff(DiffStream,
               Text1,Line1,EqualLine1,

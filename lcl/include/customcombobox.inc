@@ -20,17 +20,17 @@
 }
 
 {------------------------------------------------------------------------------
-  Method: TCustomComboBox.CreateHandle
+  Method: TCustomComboBox.CreateWnd
   Params: ---
   Returns: Nothing
 
   Create the underlying interface-object.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.CreateHandle;
+procedure TCustomComboBox.CreateWnd;
 var
   NewStrings: TStrings;
 begin
-  inherited CreateHandle;
+  inherited CreateWnd;
   
   // get the interface based item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
@@ -44,17 +44,18 @@ begin
 
   UpdateSorted;
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+  CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 
 {------------------------------------------------------------------------------
-  Method: TCustomComboBox.DestroyHandle
+  Method: TCustomComboBox.DestroyWnd
   Params: ---
   Returns: Nothing
 
   Destroy the underlying interface-object.
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.DestroyHandle;
+procedure TCustomComboBox.DestroyWnd;
 var NewStrings : TStrings;
 begin
   if not HandleAllocated then begin
@@ -71,7 +72,7 @@ begin
   // and use the internal list
   FItems:= NewStrings;
   
-  inherited DestroyHandle;
+  inherited DestroyWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -358,7 +359,8 @@ procedure TCustomComboBox.SetStyle(Val : TComboBoxStyle);
 begin
   if Val <> FStyle then begin
     FStyle:= Val;
-    // ToDo
+    if HandleAllocated and (not (csLoading in ComponentState)) then
+      CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -734,6 +736,9 @@ end;
 
 {
   $Log$
+  Revision 1.26  2003/06/07 09:34:21  mattias
+  added ambigius compiled unit test for packages
+
   Revision 1.25  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 

@@ -535,6 +535,7 @@ type
     function IsVirtual: boolean;
     function HasDirectory: boolean;
     function GetResolvedFilename: string;
+    function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
     function GetCompileSourceFilename: string;
     function GetOutputDirectory: string;
@@ -2100,6 +2101,16 @@ function TLazPackage.GetResolvedFilename: string;
 begin
   Result:=ReadAllLinks(FFilename,false);
   if Result='' then Result:=FFilename;
+end;
+
+function TLazPackage.GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean
+  ): string;
+begin
+  Result:=SourceDirectories.CreateSearchPathFromAllFiles;
+  if WithPkgDir then
+    Result:=MergeSearchPaths(Result,Directory);
+  if WithoutOutputDir then
+    Result:=RemoveSearchPaths(Result,GetOutputDirectory);
 end;
 
 procedure TLazPackage.IterateComponentClasses(
