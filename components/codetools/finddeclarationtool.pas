@@ -882,9 +882,10 @@ begin
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
     {$ENDIF}
     // find CodeTreeNode at cursor
-    if (Tree.Root<>nil) and (Tree.Root.StartPos<CleanCursorPos) then
-      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true)
-    else begin
+    if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
+      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+      CleanPosInFront:=CursorNode.StartPos;
+    end else begin
       CleanPosInFront:=1;
       CursorNode:=nil;
     end;

@@ -302,6 +302,9 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TApplication.StopHintTimer;
+ ------------------------------------------------------------------------------}
 procedure TApplication.StopHintTimer;
 begin
   if FHintTimer<>nil then
@@ -311,7 +314,6 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TApplication.NotifyIdleHandler;
-
  ------------------------------------------------------------------------------}
 procedure TApplication.NotifyIdleHandler;
 var
@@ -834,6 +836,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/12/17 11:56:09  mattias
+  fixed find declaration of non comment pos
+
   Revision 1.41  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
