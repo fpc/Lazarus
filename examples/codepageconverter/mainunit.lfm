@@ -1,0 +1,153 @@
+object Form1: TForm1
+  BorderStyle = bsDialog
+  Caption = 'LazConverter for PAS, LFM & LRS files v0.0.2'
+  ClientHeight = 176
+  ClientWidth = 587
+  OnShow = Form1Show
+  PixelsPerInch = 94
+  Position = poScreenCenter
+  HorzScrollBar.Page = 588
+  VertScrollBar.Page = 177
+  Left = 298
+  Height = 176
+  Top = 212
+  Width = 587
+  object Panel1: TPanel
+    Align = alClient
+    ClientHeight = 176
+    ClientWidth = 587
+    FullRepaint = False
+    TabOrder = 0
+    Height = 176
+    Width = 587
+    object Label1: TLabel
+      AutoSize = True
+      Caption = 'Path to your project:'
+      Left = 8
+      Height = 15
+      Top = 8
+      Width = 124
+    end
+    object Edit1: TEdit
+      TabOrder = 1
+      Left = 8
+      Height = 23
+      Top = 24
+      Width = 488
+    end
+    object Button1: TButton
+      Caption = 'Path'
+      OnClick = Button1Click
+      TabOrder = 2
+      Left = 504
+      Height = 23
+      Top = 24
+      Width = 75
+    end
+    object Label2: TLabel
+      AutoSize = True
+      Caption = 'Convert From:'
+      Left = 8
+      Height = 15
+      Top = 56
+      Width = 90
+    end
+    object ComboBox1: TComboBox
+      MaxLength = 0
+      TabOrder = 4
+      Left = 8
+      Height = 25
+      Top = 72
+      Width = 200
+    end
+    object Label3: TLabel
+      AutoSize = True
+      Caption = 'Convert To:'
+      Left = 216
+      Height = 15
+      Top = 56
+      Width = 76
+    end
+    object ComboBox2: TComboBox
+      MaxLength = 0
+      TabOrder = 6
+      Left = 216
+      Height = 25
+      Top = 72
+      Width = 200
+    end
+    object CheckBox1: TCheckBox
+      AllowGrayed = True
+      AutoSize = True
+      Caption = 'Include subdirectories'
+      OnChange = CheckBox1Change
+      TabOrder = 7
+      Left = 424
+      Height = 23
+      Top = 72
+      Width = 151
+    end
+    object Button2: TButton
+      Caption = 'Search'
+      OnClick = Button2Click
+      TabOrder = 8
+      Left = 8
+      Height = 25
+      Top = 112
+      Width = 75
+    end
+    object Button3: TButton
+      Caption = 'Convert'
+      OnClick = Button3Click
+      TabOrder = 9
+      Left = 88
+      Height = 25
+      Top = 112
+      Width = 75
+    end
+    object Label4: TLabel
+      AutoSize = True
+      Caption = 'Converting process:'
+      Left = 168
+      Height = 15
+      Top = 104
+      Width = 123
+    end
+    object ProgressBar1: TProgressBar
+      Max = 100
+      TabOrder = 11
+      TabStop = True
+      Left = 168
+      Height = 17
+      Top = 120
+      Width = 411
+    end
+    object Label5: TLabel
+      Caption = 'Directory:'
+      Left = 8
+      Height = 17
+      Top = 149
+      Width = 65
+    end
+    object Label6: TLabel
+      Caption = 'Ready...'
+      Left = 80
+      Height = 17
+      Top = 149
+      Width = 496
+    end
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Title = 'Select Directory'
+    FilterIndex = 0
+    left = 8
+    top = 480
+  end
+  object FileSearch1: TFileSearch
+    OnFileFind = FileSearch1FileFind
+    OnChangeFolder = FileSearch1ChangeFolder
+    OnFinish = FileSearch1Finish
+    left = 8
+    top = 448
+  end
+end
