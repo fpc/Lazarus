@@ -1473,7 +1473,7 @@ function TLazPackageGraph.FindFPCConflictUnit(APackage: TLazPackage;
   begin
     Result:=false;
     if (Pkg1=nil) or (lpfVisited in Pkg1.Flags)
-    or (Pkg1=FFCLPackage) then exit;
+    or (Pkg1=FFCLPackage) or (Pkg1=FLCLPackage) then exit;
     Pkg1.Flags:=Pkg1.Flags+[lpfVisited];
     Result:=CheckUnitName(Pkg1.Name);
     if Result then begin

@@ -1836,7 +1836,7 @@ resourcestring
     +'packages are connected. This means, either one package uses the other, '
     +'or they are both used by a third package.';
   lisPkgMangThereIsAFPCUnitWithTheSameNameFrom = 'There is a FPC unit with '
-    +'the same name:%s%s%s%s%s from %s%s%s';
+    +'the same name as:%s%s%s%s%s from %s%s%s';
   lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage = 'There is a FPC unit '
     +'with the same name as a package:%s%s%s%s%s%s';
   lisPkgMangErrorWritingFile = 'Error writing file';

@@ -35,7 +35,7 @@ uses
   // the interface base
   InterfaceBase, {$IFDEF UseFPImage}IntfGraphics,{$ENDIF}
   // components and functions
-  Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLIntf, Spin,
+  Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs,
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/12/07 09:07:22  mattias
+  fixed ambigious units registry and forms
+
   Revision 1.3  2003/11/27 23:02:30  mattias
   removed menutype.pas
 
