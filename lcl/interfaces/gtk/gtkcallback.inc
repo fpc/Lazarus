@@ -357,6 +357,7 @@ function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 var
   Msg: TLMKey;
+  Code,
   KeyCode: Word;
   Flags: Integer;
   Toggle, Extended, SysKey: Boolean;
@@ -412,7 +413,23 @@ begin
         // Flags := Flags or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
-        Result := DeliverPostMessage(Data, Msg);
+        Code := Msg.CharCode;
+        TObject(Data).Dispatch(Msg);//DeliverPostMessage(Data, Msg);
+
+        If Msg.CharCode <> Code then begin
+          If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
+            {$IfNDef Win32}
+            Event^.theString[0] := Char(Msg.CharCode);
+            {$EndIf}
+            Event^.KeyVal := Msg.CharCode;
+            If Msg.CharCode <> 0 then
+              KeyCode := Msg.CharCode
+            else
+              KeyCode := $FFFF;
+          end else begin
+            Event^.KeyVal := 0;
+          end;
+        end;
 
         if KeyCode <> $FFFF
         then begin
@@ -423,7 +440,15 @@ begin
           // send the message directly to the LCL
           // (Posting the message via queue
           //  has the risk of getting out of sync with the gtk)
-          Result := DeliverPostMessage(Data, Msg);
+          TObject(Data).Dispatch(Msg);//DeliverPostMessage(Data, Msg);
+          Result := LongBool(Msg.Result);
+          If Msg.CharCode <> KeyCode then
+            If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
+              {$IfNDef Win32}
+              Event^.theString[0] := Char(Msg.CharCode);
+              {$EndIf}
+              Event^.KeyVal := Msg.CharCode;
+            end;
         end;
       end;
   end;
@@ -2318,30 +2343,6 @@ end;
 Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: Pointer); cdecl;
 begin
   EventTrace('style-set', nil);
-{  if Data<>nil then begin
-    if TObject(Data) is TButton then
-      ReleaseStyle('button')
-    else
-      if TObject(Data) is TRadioButton then
-        ReleaseStyle('radiobutton')
-    else
-      if TObject(Data) is TCheckBox then
-        ReleaseStyle('checkbox')
-    else
-      if TObject(Data) is TMenu then begin
-        ReleaseStyle('menu');
-        ReleaseStyle('menuitem');
-      end
-    else
-      if TObject(Data) is TMenuItem then begin
-        ReleaseStyle('menuitem');
-        ReleaseStyle('menu')
-      end
-   else begin
-      ReleaseStyle('default');
-   end;
-  end
-    else begin }
       ReleaseStyle('button');
       ReleaseStyle('radiobutton');
       ReleaseStyle('checkbox');
@@ -2350,7 +2351,7 @@ begin
       ReleaseStyle('scrollbar');
       ReleaseStyle('tooltip');
       ReleaseStyle('default');
-    //end;
+      ReleaseStyle('window');
 end;
 
 {$I gtkDragCallback.inc}
@@ -2365,6 +2366,69 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.132  2002/09/27 20:52:23  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.131  2002/09/18 17:07:27  lazarus
   MG: added patch from Andrew
 
