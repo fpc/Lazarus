@@ -707,6 +707,7 @@ begin
     FileExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
     SampleSource:=
       '{ Comment }'#13+
+      '{$R- compiler directive}'#13+
       'procedure TForm1.Button1Click(Sender: TObject);'#13+
       'var'#13+
       '  Number, I, X: Integer;'#13+
@@ -728,11 +729,11 @@ begin
       '  end;'#13+
       'end;'#13+
       #13;
-    AddAttrSampleLines[ahaDisabledBreakpoint]:=17;
-    AddAttrSampleLines[ahaEnabledBreakpoint]:=16;
-    AddAttrSampleLines[ahaErrorLine]:=18;
-    AddAttrSampleLines[ahaExecutionPoint]:=14;
-    AddAttrSampleLines[ahaTextBlock]:=13;
+    AddAttrSampleLines[ahaDisabledBreakpoint]:=18;
+    AddAttrSampleLines[ahaEnabledBreakpoint]:=17;
+    AddAttrSampleLines[ahaErrorLine]:=19;
+    AddAttrSampleLines[ahaExecutionPoint]:=15;
+    AddAttrSampleLines[ahaTextBlock]:=14;
   end;
   Add(NewInfo);
   
@@ -1304,6 +1305,8 @@ begin
       DefFGCol:=clLime;
     end else if AttriName='Comment' then begin
       DefFGCol:=clGray;
+    end else if AttriName='Directive' then begin
+      DefFGCol:=clRed;
     end else if AttriName='Reserved word' then begin
       DefFGCol:=clAqua;
       DefFontStyles:=[fsBold];
@@ -1338,6 +1341,9 @@ begin
       DefFGCol:=clGreen;
     end else if AttriName='Comment' then begin
       DefFGCol:=clBlue;
+      DefFontStyles:=[fsBold];
+    end else if AttriName='Directive' then begin
+      DefFGCol:=clRed;
       DefFontStyles:=[fsBold];
     end else if AttriName='Reserved word' then begin
       DefFontStyles:=[fsBold];

@@ -63,10 +63,12 @@ uses
 
 type
   TtkTokenKind = (tkAsm, tkComment, tkIdentifier, tkKey, tkNull, tkNumber,
-    tkSpace, tkString, tkSymbol, tkUnknown);
+    tkSpace, tkString, tkSymbol, {$IFDEF SYN_LAZARUS}tkDirective, {$ENDIF}
+    tkUnknown);
 
-  TRangeState = (rsANil, rsAnsi, rsAnsiAsm, rsAsm, rsBor, rsBorAsm, rsProperty,
-    rsUnKnown);
+  TRangeState = (rsANil, rsAnsi, rsAnsiAsm, rsAsm, rsBor, rsBorAsm,
+    {$IFDEF SYN_LAZARUS}rsDirective, rsDirectiveAsm,{$ENDIF}
+    rsProperty, rsUnKnown);
 
   TProcTableProc = procedure of object;
 
@@ -103,6 +105,9 @@ type
     fCommentAttri: TSynHighlighterAttributes;
     fIdentifierAttri: TSynHighlighterAttributes;
     fSpaceAttri: TSynHighlighterAttributes;
+    {$IFDEF SYN_LAZARUS}
+    fDirectiveAttri: TSynHighlighterAttributes;
+    {$ENDIF}
     fD4syntax: boolean;
     {$IFDEF SYN_LAZARUS}
     function KeyHash: Integer;
@@ -199,6 +204,9 @@ type
     procedure BraceOpenProc;
     procedure ColonOrGreaterProc;
     procedure CRProc;
+    {$IFDEF SYN_LAZARUS}
+    procedure DirectiveProc;
+    {$ENDIF}
     procedure IdentProc;
     procedure IntegerProc;
     procedure LFProc;
@@ -259,6 +267,8 @@ type
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
+    property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
+      write fDirectiveAttri;
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
   end;
 
@@ -1068,6 +1078,10 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(SYNS_AttrSymbol);
   AddAttribute(fSymbolAttri);
+  {$IFDEF SYN_LAZARUS}
+  fDirectiveAttri := TSynHighlighterAttributes.Create(SYNS_AttrDirective);
+  AddAttribute(fDirectiveAttri);
+  {$ENDIF}
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
 
   InitIdent;
@@ -1140,13 +1154,51 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TSynPasSyn.DirectiveProc;
+begin
+  case fLine[Run] of
+     #0: NullProc;
+    #10: LFProc;
+    #13: CRProc;
+    else begin
+      fTokenID := tkDirective;
+      repeat
+        if fLine[Run] = '}' then begin
+          Inc(Run);
+          if fRange = rsDirectiveAsm then
+            fRange := rsAsm
+          else
+            fRange := rsUnKnown;
+          break;
+        end;
+        Inc(Run);
+      until (Run>fLineLen) or (fLine[Run] in [#0, #10, #13]);
+    end;
+  end;
+end;
+{$ENDIF}
+
 procedure TSynPasSyn.BraceOpenProc;
 begin
-  if fRange = rsAsm then
-    fRange := rsBorAsm
-  else
-    fRange := rsBor;
-  BorProc;
+  {$IFDEF SYN_LAZARUS}
+  if (Run=fLineLen) or (fLine[Run+1]<>'$') then begin
+  {$ENDIF}
+    if fRange = rsAsm then
+      fRange := rsBorAsm
+    else
+      fRange := rsBor;
+    BorProc;
+  {$IFDEF SYN_LAZARUS}
+  end else begin
+    inc(Run);
+    if fRange = rsAsm then
+      fRange := rsDirectiveAsm
+    else
+      fRange := rsDirective;
+    DirectiveProc;
+  end;
+  {$ENDIF}
 end;
 
 procedure TSynPasSyn.ColonOrGreaterProc;
@@ -1405,6 +1457,10 @@ begin
       AnsiProc;
     rsBor, rsBorAsm:
       BorProc;
+    {$IFDEF SYN_LAZARUS}
+    rsDirective, rsDirectiveAsm:
+      DirectiveProc;
+    {$ENDIF}
   else
     fProcTable[fLine[Run]];
   end;
@@ -1471,6 +1527,9 @@ begin
     tkSpace: Result := fSpaceAttri;
     tkString: Result := fStringAttri;
     tkSymbol: Result := fSymbolAttri;
+    {$IFDEF SYN_LAZARUS}
+    tkDirective: Result := fDirectiveAttri;
+    {$ENDIF}
     tkUnknown: Result := fSymbolAttri;
   else
     Result := nil;
@@ -1573,6 +1632,9 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
     tmpSymbolAttri    : TSynHighlighterAttributes;
     tmpAsmAttri       : TSynHighlighterAttributes;
     tmpCommentAttri   : TSynHighlighterAttributes;
+    {$IFDEF SYN_LAZARUS}
+    tmpDirectiveAttri : TSynHighlighterAttributes;
+    {$ENDIF}
     tmpIdentifierAttri: TSynHighlighterAttributes;
     tmpSpaceAttri     : TSynHighlighterAttributes;
     s                 : TStringList;
@@ -1589,6 +1651,9 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
         tmpSymbolAttri    := TSynHighlighterAttributes.Create('');
         tmpAsmAttri       := TSynHighlighterAttributes.Create('');
         tmpCommentAttri   := TSynHighlighterAttributes.Create('');
+        {$IFDEF SYN_LAZARUS}
+        tmpDirectiveAttri := TSynHighlighterAttributes.Create('');
+        {$ENDIF}
         tmpIdentifierAttri:= TSynHighlighterAttributes.Create('');
         tmpSpaceAttri     := TSynHighlighterAttributes.Create('');
         tmpStringAttri    .Assign(fStringAttri);
@@ -1597,10 +1662,16 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
         tmpSymbolAttri    .Assign(fSymbolAttri);
         tmpAsmAttri       .Assign(fAsmAttri);
         tmpCommentAttri   .Assign(fCommentAttri);
+        {$IFDEF SYN_LAZARUS}
+        tmpDirectiveAttri .Assign(fDirectiveAttri);
+        {$ENDIF}
         tmpIdentifierAttri.Assign(fIdentifierAttri);
         tmpSpaceAttri     .Assign(fSpaceAttri);
         Result := ReadDelphiSetting(s[settingIndex],fAsmAttri,'Assembler')
               and ReadDelphiSetting(s[settingIndex],fCommentAttri,'Comment')
+              {$IFDEF SYN_LAZARUS}
+              and ReadDelphiSetting(s[settingIndex],fDirectiveAttri,'Directive')
+              {$ENDIF}
               and ReadDelphiSetting(s[settingIndex],fIdentifierAttri,'Identifier')
               and ReadDelphiSetting(s[settingIndex],fKeyAttri,'Reserved word')
               and ReadDelphiSetting(s[settingIndex],fNumberAttri,'Number')
@@ -1614,6 +1685,9 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
           fSymbolAttri    .Assign(tmpSymbolAttri);
           fAsmAttri       .Assign(tmpAsmAttri);
           fCommentAttri   .Assign(tmpCommentAttri);
+          {$IFDEF SYN_LAZARUS}
+          fDirectiveAttri .Assign(tmpDirectiveAttri);
+          {$ENDIF}
           fIdentifierAttri.Assign(tmpIdentifierAttri);
           fSpaceAttri     .Assign(tmpSpaceAttri);
         end;
@@ -1623,6 +1697,9 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
         tmpSymbolAttri    .Free;
         tmpAsmAttri       .Free;
         tmpCommentAttri   .Free;
+        {$IFDEF SYN_LAZARUS}
+        tmpDirectiveAttri .Free;
+        {$ENDIF}
         tmpIdentifierAttri.Free;
         tmpSpaceAttri     .Free;
       end;
