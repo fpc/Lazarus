@@ -3455,9 +3455,9 @@ begin
           EndUpdate;
           {$ENDIF}
         end;
-  writeln('  TCustomSynEdit.SetFont D AveCW=',AveCW,' MaxCW=',MaxCW,
-  ' Value="',Value.Name,'" Value.Size=',Value.Size,' Value.Height=',Value.Height,
-  ' DummyHeight=',fFontDummy.Height,' fFontDummy="',fFontDummy.Name,'"');
+        writeln('  TCustomSynEdit.SetFont D AveCW=',AveCW,' MaxCW=',MaxCW,
+        ' Value="',Value.Name,'" Value.Size=',Value.Size,' Value.Height=',Value.Height,
+        ' DummyHeight=',fFontDummy.Height,' fFontDummy="',fFontDummy.Name,'"');
         inherited Font := fFontDummy;
       end;
   end;

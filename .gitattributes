@@ -215,6 +215,7 @@ ide/projectopts.lrs svneol=native#text/pascal
 ide/projectopts.pp svneol=native#text/pascal
 ide/runparamsopts.pas svneol=native#text/pascal
 ide/sourceeditprocs.pas svneol=native#text/pascal
+ide/sourcemarks.pas svneol=native#text/pascal
 ide/splash.lrs svneol=native#text/pascal
 ide/splash.pp svneol=native#text/pascal
 ide/sysvaruseroverridedlg.pas svneol=native#text/pascal
