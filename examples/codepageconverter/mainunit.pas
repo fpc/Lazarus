@@ -1,3 +1,24 @@
+{
+      Author: BARKO, OPINFOS d.o.o., SLOVENIA http://www.opinfos.com
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+}
 unit mainunit;
 
 {$mode objfpc}{$H+}
@@ -9,7 +30,7 @@ uses
   StdCtrls, Buttons, ComCtrls, FileFind;
 
 type
-  TForm1 = class(TForm)
+  TLazConverterForm = class(TForm)
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -30,7 +51,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
-    procedure CheckBox1Change(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
     procedure FileSearch1ChangeFolder(fullpath: string; info: TSearchRec);
     procedure FileSearch1FileFind(fullpath: string; info: TSearchRec);
     procedure FileSearch1Finish(Sender: TObject);
@@ -42,7 +63,7 @@ type
   end; 
 
 var
-  Form1: TForm1; 
+  LazConverterForm: TLazConverterForm;
 
 implementation
 
@@ -65,9 +86,9 @@ begin
 end;
 
 
-{ TForm1 }
+{ TLazConverterForm }
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TLazConverterForm.Button1Click(Sender: TObject);
 begin
   if SelectDirectoryDialog1.Execute then
   begin
@@ -75,21 +96,24 @@ begin
   end;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TLazConverterForm.Button2Click(Sender: TObject);
 var tmp:string;
 begin
   tmp:=trim(Edit1.text);
-  if tmp='' then abort;
+  if tmp='' then
+  begin
+    button1click(sender);abort;
+  end;
   edit1.text:=IncludeTrailingPathDelimiter(tmp);
   if DirectoryExists(tmp) then
   begin
-    tmp:=tmp+'*.pas;*.lfm;*.lrs';
+    tmp:=tmp+'*.pas;*.lfm;*.lrs;*.inc';
     FileSearch1.SearchFile:=tmp;
     FileSearch1.Start;
   end;
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TLazConverterForm.Button3Click(Sender: TObject);
 var tmp:tstringlist;
     i:integer;
     ok:boolean;
@@ -229,27 +253,27 @@ begin
   end;
 end;
 
-procedure TForm1.CheckBox1Change(Sender: TObject);
+procedure TLazConverterForm.CheckBox1Click(Sender: TObject);
 begin
   FileSearch1.RecurseSubFolders:=CheckBox1.Checked;
 end;
 
-procedure TForm1.FileSearch1ChangeFolder(fullpath: string; info: TSearchRec);
+procedure TLazConverterForm.FileSearch1ChangeFolder(fullpath: string; info: TSearchRec);
 begin
   label6.caption:=fullpath;
 end;
 
-procedure TForm1.FileSearch1FileFind(fullpath: string; info: TSearchRec);
+procedure TLazConverterForm.FileSearch1FileFind(fullpath: string; info: TSearchRec);
 begin
   filesearch1.filesfound.add(fullpath+info.name);
 end;
 
-procedure TForm1.FileSearch1Finish(Sender: TObject);
+procedure TLazConverterForm.FileSearch1Finish(Sender: TObject);
 begin
   label6.caption:='Searching done... press CONVERT button! Files: '+inttostr(filesearch1.filesfound.count-1);
 end;
 
-procedure TForm1.Form1Show(Sender: TObject);
+procedure TLazConverterForm.Form1Show(Sender: TObject);
 begin
   if paramcount<>0 then edit1.text:=paramstr(1) else edit1.text:='';
   try

@@ -1,6 +1,6 @@
-object Form1: TForm1
+object LazConverterForm: TLazConverterForm
   BorderStyle = bsDialog
-  Caption = 'LazConverter for PAS, LFM & LRS files v0.0.2'
+  Caption = 'Codepage LazConverter for PAS, LFM, LRS & INC files v0.0.3'
   ClientHeight = 176
   ClientWidth = 587
   OnShow = Form1Show
@@ -80,7 +80,7 @@ object Form1: TForm1
       AllowGrayed = True
       AutoSize = True
       Caption = 'Include subdirectories'
-      OnChange = CheckBox1Change
+      OnClick = CheckBox1Click
       TabOrder = 7
       Left = 424
       Height = 23
