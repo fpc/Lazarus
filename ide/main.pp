@@ -74,6 +74,7 @@ type
     procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
     //procedure FormPaint(Sender : TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
+    procedure OnApplicationIdle(Sender: TObject);
 
     // file menu
     procedure mnuNewUnitClicked(Sender : TObject);
@@ -181,6 +182,8 @@ type
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
     procedure mnuEnvCodeToolsOptionsClicked(Sender : TObject);
     procedure mnuEnvCodeToolsDefinesEditorClicked(Sender : TObject);
+
+    // windows menu
 
     // help menu
     procedure mnuHelpAboutLazarusClicked(Sender : TObject);
@@ -323,6 +326,7 @@ type
     procedure SetupRunMenu; override;
     procedure SetupToolsMenu; override;
     procedure SetupEnvironmentMenu; override;
+    procedure SetupWindowsMenu; override;
     procedure SetupHelpMenu; override;
     procedure LoadMenuShortCuts; override;
     procedure ConnectMainBarEvents;
@@ -757,9 +761,11 @@ begin
   SetupTransferMacros;
   SetupControlSelection;
 
+  UpdateWindowsMenu;
   SetupStartProject;
   
   Application.AddOnUserInputHandler(@OnApplicationUserInput);
+  Application.AddOnIdleHandler(@OnApplicationIdle);
   SetupHints;
 end;
 
@@ -1203,6 +1209,7 @@ begin
     // create new project
     DoNewProject(ptApplication);
 
+  UpdateWindowsMenu;
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.Create B');
   {$ENDIF}
@@ -1257,6 +1264,11 @@ begin
   mnuEnvironment.Caption := lisMenuEnvironent;
   mnuMain.Items.Add(mnuEnvironment);
 
+  mnuWindows := TMenuItem.Create(Self);
+  mnuWindows.Name:='mnuWindows';
+  mnuWindows.Caption := lisMenuWindows;
+  mnuMain.Items.Add(mnuWindows);
+
   mnuHelp := TMenuItem.Create(Self);
   mnuHelp.Name:='mnuHelp';
   mnuHelp.Caption := lisMenuHelp;
@@ -1270,6 +1282,7 @@ begin
   SetupRunMenu;
   SetupToolsMenu;
   SetupEnvironmentMenu;
+  SetupWindowsMenu;
   SetupHelpMenu;
 end;
 
@@ -1437,6 +1450,11 @@ begin
   itmEnvEditorOptions.OnClick := @mnuEnvEditorOptionsClicked;
   itmEnvCodeToolsOptions.OnClick := @mnuEnvCodeToolsOptionsClicked;
   itmEnvCodeToolsDefinesEditor.OnClick := @mnuEnvCodeToolsDefinesEditorClicked;
+end;
+
+procedure TMainIDE.SetupWindowsMenu;
+begin
+  inherited SetupWindowsMenu;
 end;
 
 procedure TMainIDE.SetupHelpMenu;
@@ -2488,6 +2506,9 @@ begin
   SaveDesktopSettings(EnvironmentOptions);
   EnvironmentOptions.Save(false);
 end;
+
+//------------------------------------------------------------------------------
+
 //------------------------------------------------------------------------------
 
 procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
@@ -7086,6 +7107,11 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnApplicationIdle(Sender: TObject);
+begin
+  UpdateWindowsMenu;
+end;
+
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
   var Abort: boolean);
 begin
@@ -7563,6 +7589,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.449  2003/01/04 11:58:32  mattias
+  added Windows menu to IDE
+
   Revision 1.448  2003/01/03 12:27:48  mattias
   added sort selection
 
