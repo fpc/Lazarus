@@ -3013,12 +3013,15 @@ begin
       If (Style^.RC_Style <> nil) and (Style^.RC_Style^.font_name <> nil)
       then
         Result := gdk_font_load(Style^.RC_Style^.font_name);
-    If Result <> nil then
-      Result := gdk_font_ref(Result);
   end;
 
   If Result = nil then
     Result := gdk_fontset_load('-*-fixed-*-*-*-*-*-120-*-*-*-*-*-*');
+  if Result = nil then
+    Result := gdk_fontset_load('-*-*-*-*-*-*-*-*-*-*-*-*-*-*');
+
+  If Result <> nil then
+    Result := gdk_font_ref(Result);
 end;
 
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
@@ -3457,6 +3460,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.124  2002/10/10 19:59:41  lazarus
+  MG: get always a default font
+
   Revision 1.123  2002/10/10 19:43:17  lazarus
   MG: accelerated GetTextMetrics
 
