@@ -44,7 +44,7 @@ uses
   Buttons, Menus, ComCtrls, Spin, ProjectDefs, Project, SysUtils, FileCtrl,
   Controls, Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
   Splash, ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter, IDEDefs,
-  MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor,
+  MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor, CompilerOptions,
   KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
 type
@@ -335,6 +335,8 @@ type
     procedure LoadMenuShortCuts; virtual;
   public
     ToolStatus: TIDEToolStatus;
+    CurrentParsedCompilerOption: TParsedCompilerOptions;
+    
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo); virtual; abstract;

@@ -200,6 +200,23 @@ type
 
 
   //---------------------------------------------------------------------------
+
+  { TProjectCompilerOptions }
+
+  TProjectCompilerOptions = class(TCompilerOptions)
+  private
+    FOwnerProject: TProject;
+  public
+    constructor Create(TheProject: TProject);
+    function GetOwnerName: string; override;
+    function GetBaseDirectory: string; override;
+  public
+    property OwnerProject: TProject read FOwnerProject;
+  end;
+  
+  
+  { TProject }
+  
   TProjectType =   // for a description see ProjectTypeDescriptions below
      (ptApplication, ptProgram, ptCustomProgram); 
   TProjectFlag = (pfSaveClosedUnits, pfSaveOnlyProjectUnits);
@@ -227,7 +244,7 @@ type
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
     fBookmarks: TProjectBookmarkList;
-    fCompilerOptions: TCompilerOptions;
+    fCompilerOptions: TProjectCompilerOptions;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
     fLastReadLPIFilename: string;
@@ -347,7 +364,7 @@ type
     property AutoCreateForms: boolean
                                    read FAutoCreateForms write FAutoCreateForms;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
-    property CompilerOptions: TCompilerOptions 
+    property CompilerOptions: TProjectCompilerOptions
                                    read fCompilerOptions write fCompilerOptions;
     property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
@@ -1039,7 +1056,7 @@ begin
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
   fBookmarks := TProjectBookmarkList.Create;
-  fCompilerOptions := TCompilerOptions.Create(Self);
+  fCompilerOptions := TProjectCompilerOptions.Create(Self);
   FFlags:=DefaultProjectFlags;
   fIconPath := '';
   fJumpHistory:=TProjectJumpHistory.Create;
@@ -2290,12 +2307,34 @@ begin
 end;
 
 
+{ TProjectCompilerOptions }
+
+constructor TProjectCompilerOptions.Create(TheProject: TProject);
+begin
+  inherited Create(TheProject);
+  fOwnerProject:=TheProject;
+end;
+
+function TProjectCompilerOptions.GetOwnerName: string;
+begin
+  Result:=OwnerProject.Title;
+  if Result='' then Result:=ExtractFilename(OwnerProject.ProjectInfoFile);
+end;
+
+function TProjectCompilerOptions.GetBaseDirectory: string;
+begin
+  Result:=OwnerProject.ProjectDirectory;
+end;
+
 end.
 
 
 
 {
   $Log$
+  Revision 1.105  2003/04/15 08:54:27  mattias
+  fixed TMemo.WordWrap
+
   Revision 1.104  2003/04/14 18:03:47  mattias
   implemented inherited compiler options
 

@@ -76,7 +76,7 @@ const
 
 implementation
 
-const SeparatorLine = '----------------------------';
+const SeparatorLine = '---------------------------------------------';
 
 { TMessagesView }
 
@@ -94,12 +94,11 @@ Begin
     With MessageView do Begin
       Parent:= Self;
       Align:= alClient;
-      Visible:= true;
     end;
   end;
   Name := NonModalIDEWindowNames[nmiwMessagesViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-                             ItemByEnum(nmiwMessagesViewName);
+                                               ItemByEnum(nmiwMessagesViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
 end;

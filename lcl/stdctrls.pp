@@ -513,6 +513,8 @@ type
     procedure SetLines(const Value : TStrings);
     procedure SetWordWrap(const Value : boolean);
     procedure SetScrollBars(const Value : TScrollStyle);
+    procedure InitializeWnd; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -521,7 +523,7 @@ type
   public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default true;
     property Font : TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
@@ -561,6 +563,8 @@ type
   { TMemo }
 
   TMemo = class(TCustomMemo)
+  protected
+    function WordWrapIsStored: boolean;
   published
     property Align;
     property Anchors;
@@ -573,7 +577,7 @@ type
     property ScrollBars;
     property Tabstop;
     property Visible;
-    property WordWrap;
+    property WordWrap stored WordWrapIsStored;
     property OnChange;
     property OnEnter;
     property OnExit;
@@ -955,22 +959,22 @@ implementation
 
 
 type
-   TSelection = record
-      Startpos, EndPos: Integer;
-   end;
+  TSelection = record
+    Startpos, EndPos: Integer;
+  end;
 
-   TMemoStrings = class(TStrings)
-   private
-      FMemo: TCustomMemo;
-   protected
-      function Get(Index : Integer): String; override;
-      function GetCount: Integer; override;
-   public
-      constructor Create(AMemo: TCustomMemo);
-      procedure Clear; override;
-      procedure Delete(index : Integer); override;
-      procedure Insert(index: Integer; const S: String); override;
-   end;
+  TMemoStrings = class(TStrings)
+  private
+    FMemo: TCustomMemo;
+  protected
+    function Get(Index : Integer): String; override;
+    function GetCount: Integer; override;
+  public
+    constructor Create(AMemo: TCustomMemo);
+    procedure Clear; override;
+    procedure Delete(index : Integer); override;
+    procedure Insert(index: Integer; const S: String); override;
+  end;
 
 procedure Register;
 begin
@@ -1452,6 +1456,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2003/04/15 08:54:27  mattias
+  fixed TMemo.WordWrap
+
   Revision 1.88  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 

@@ -79,8 +79,11 @@ ResourceString
   ctsUnknownSectionKeyword = 'unknown section keyword %s found';
   ctsIllegalQualifier = 'illegal qualifier %s found';
   ctsUnexpectedEndOfSource = 'unexpected end of source';
+  ctsEndofSourceExpectedButAtomFound = 'expected end., but %s found';
   ctsPointStartAt = '. start at ';
   ctsUnexpectedKeywordInAsmBlock = 'unexpected keyword "%s" in asm block found';
+  ctsUnexpectedKeywordInBeginEndBlock =
+    'unexpected keyword "%s" in begin..end found';
   ctsUnexpectedKeywordWhileReadingBackwards =
     'unexpected keyword "%s" found while reading blocks backwards';
   ctsWordNotFound = '"%s" not found';

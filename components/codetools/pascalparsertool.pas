@@ -120,6 +120,7 @@ type
     procedure RaiseStringExpectedButAtomFound(const s: string);
     procedure RaiseUnexpectedKeyWord;
     procedure RaiseIllegalQualifier;
+    procedure RaiseEndOfSourceExpected;
   protected
     procedure InitExtraction;
     function GetExtraction: string;
@@ -171,6 +172,7 @@ type
     procedure BuildClassVarTypeKeyWordFunctions; virtual;
     procedure BuildClassInterfaceKeyWordFunctions; virtual;
     function UnexpectedKeyWord: boolean;
+    function EndOfSourceExpected: boolean;
     // read functions
     function ReadTilProcedureHeadEnd(ParseAttr: TParseProcHeadAttributes;
         var HasForwardModifier: boolean): boolean;
@@ -409,7 +411,7 @@ begin
     Add('BEGIN',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
     Add('ASM',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
     
-    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}UnexpectedKeyWord;
+    DefaultKeyWordFunction:={$ifdef FPC}@{$endif}EndOfSourceExpected;
   end;
 end;
 
@@ -494,6 +496,12 @@ function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
   SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[GetAtom]);
+end;
+
+function TPascalParserTool.EndOfSourceExpected: boolean;
+begin
+  Result:=false;
+  RaiseEndOfSourceExpected;
 end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
@@ -1941,6 +1949,12 @@ var BlockType: TEndBlockType;
     SaveRaiseExceptionFmt(ctsUnexpectedKeywordInAsmBlock,[GetAtom]);
   end;
   
+  procedure RaiseUnexpectedKeyWordInBeginEndBlock;
+  begin
+    SaveRaiseExceptionWithBlockStartHint(
+      Format(ctsUnexpectedKeywordInBeginEndBlock,[GetAtom]));
+  end;
+  
 begin
   Result:=true;
   TryType:=ttNone;
@@ -2012,7 +2026,7 @@ begin
         if UnexpectedKeyWordInBeginBlock.DoItUppercase(UpperSrc,
           CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
         then
-          RaiseUnexpectedKeyWord;
+          RaiseUnexpectedKeyWordInBeginEndBlock;
           
       end;
     end;
@@ -3344,6 +3358,11 @@ end;
 procedure TPascalParserTool.RaiseIllegalQualifier;
 begin
   SaveRaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+end;
+
+procedure TPascalParserTool.RaiseEndOfSourceExpected;
+begin
+  SaveRaiseExceptionFmt(ctsEndofSourceExpectedButAtomFound,[GetAtom]);
 end;
 
 procedure TPascalParserTool.InitExtraction;

@@ -270,6 +270,7 @@ type
   public
     constructor Create(ThePackage: TLazPackage);
     function GetOwnerName: string; override;
+    function GetBaseDirectory: string; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -1399,10 +1400,8 @@ begin
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
-  FInstalled:=pitNope;
-  FAutoInstall:=pitNope;
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
-  FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
+  Clear;
 end;
 
 destructor TLazPackage.Destroy;
@@ -1420,17 +1419,25 @@ procedure TLazPackage.Clear;
 var
   i: Integer;
 begin
+  // break used-by dependencies
   while FFirstUsedByDependency<>nil do
-    FFirstUsedByDependency.RemoveFromList(FFirstUsedByDependency,pdlUsedBy);
-  while FFirstRemovedDependency<>nil do
+    FFirstUsedByDependency.RequiredPackage:=nil;
+  // break and free removed dependencies
+  while FFirstRemovedDependency<>nil do begin
+    FFirstRemovedDependency.RequiredPackage:=nil;
     FFirstRemovedDependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
-  while FFirstRequiredDependency<>nil do
+  end;
+  // break and free required dependencies
+  while FFirstRequiredDependency<>nil do begin
+    FFirstRequiredDependency.RequiredPackage:=nil;
     FFirstRequiredDependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
+  end;
   FAuthor:='';
   FAutoInstall:=pitNope;
   for i:=FComponents.Count-1 downto 0 do Components[i].Free;
   FComponents.Clear;
   FCompilerOptions.Clear;
+  fCompilerOptions.UnitOutputDirectory:='lib'+PathDelim;
   FDescription:='';
   FDirectory:='';
   FVersion.Clear;
@@ -2101,7 +2108,6 @@ end;
 
 function TPkgCompilerOptions.GetOwnerName: string;
 begin
-writeln('TPkgCompilerOptions.GetOwnerName ',HexStr(Cardinal(Self),8),' ',HexStr(Cardinal(fLazPackage),8));
   Result:=LazPackage.IDAsString;
 end;
 
@@ -2123,6 +2129,11 @@ end;
 function TPkgAdditionalCompilerOptions.GetOwnerName: string;
 begin
   Result:=LazPackage.IDAsString;
+end;
+
+function TPkgAdditionalCompilerOptions.GetBaseDirectory: string;
+begin
+  Result:=LazPackage.Directory;
 end;
 
 initialization

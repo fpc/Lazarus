@@ -757,6 +757,7 @@ begin
     Description:='The FCL - FreePascal Component Library provides the base classes for object pascal.';
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
 
     // add files
     AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],cpBase);
@@ -780,6 +781,7 @@ begin
     Description:='The LCL - Lazarus Component Library contains all base components for form editing.';
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
+    CompilerOptions.UnitOutputDirectory:='';
 
     // add files
     AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpLCL);
@@ -794,11 +796,11 @@ begin
     AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpLCL);
-    
+
     // add unit paths
     UsageOptions.UnitPath:=
       '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
-    
+
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
     

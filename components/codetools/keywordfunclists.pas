@@ -841,6 +841,7 @@ begin
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RESOURCESTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FUNCTION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TYPE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('UNIT',{$ifdef FPC}@{$endif}AllwaysTrue);

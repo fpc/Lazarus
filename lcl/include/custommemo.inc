@@ -72,18 +72,27 @@ begin
   Lines.Clear;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
+ ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
 begin
   if FHorzScrollBar=AValue then exit;
   FHorzScrollBar:=AValue;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
+ ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetVertScrollBar(const AValue: TMemoScrollBar);
 begin
   if FVertScrollBar=AValue then exit;
   FVertScrollBar:=AValue;
 end;
 
+{------------------------------------------------------------------------------
+  function TCustomMemo.StoreScrollBars: boolean;
+ ------------------------------------------------------------------------------}
 function TCustomMemo.StoreScrollBars: boolean;
 begin
   Result:=true;
@@ -102,10 +111,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomMemo.SetWordWrap
-  Params: 
-  Returns: 
-
+  procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
 begin
@@ -114,6 +120,23 @@ begin
     if HandleAllocated then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomMemo.InitializeWnd;
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.InitializeWnd;
+begin
+  inherited InitializeWnd;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomMemo.Loaded;
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.Loaded;
+begin
+  inherited Loaded;
+  CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -126,7 +149,7 @@ procedure TCustomMemo.SetWordWrap(const Value : boolean);
 begin
   if Value <> FWordWrap then begin
     FWordWrap := Value;
-    if HandleAllocated then
+    if HandleAllocated and (not (csLoading in ComponentState)) then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;    
 end;
@@ -136,6 +159,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/04/15 08:54:27  mattias
+  fixed TMemo.WordWrap
+
   Revision 1.14  2003/03/31 10:57:40  mattias
   fixes for current fpc 1.1
 
