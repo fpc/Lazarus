@@ -1497,6 +1497,7 @@ var CleanCursorPos, Indent, insertPos: integer;
   CursorNode, ProcNode, ImplementationNode, SectionNode, AClassNode,
   ANode: TCodeTreeNode;
   ProcCode: string;
+  RevertableJump: boolean;
   
   procedure CompleteClass;
   begin
@@ -1640,7 +1641,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       RaiseException('unable to apply changes');
 
     // reparse code and find jump point into new proc
-    Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine);
+    Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
   end;
   
   function IsEventAssignment: boolean;
