@@ -153,7 +153,7 @@ begin
       end;
 
       if TheWinControl<>nil then begin
-        SetCursor(TheWinControl);
+        SetCursor(TheWinControl, nil);
         ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
       end;
     end;
@@ -2346,6 +2346,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.130  2002/09/16 15:56:01  lazarus
+  Resize cursors in designer.
+
   Revision 1.129  2002/09/16 14:46:08  lazarus
   MG: renamed designerstr.pas to objinspstrconsts.pas
 
