@@ -289,6 +289,7 @@ type
     procedure AvailComboBoxChange(Sender:TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
+    procedure PropEditRefreshPropertyValues;
   private
     FComponentList: TComponentSelectionList;
     FPropertyEditorHook:TPropertyEditorHook;
@@ -1940,6 +1941,7 @@ begin
   if FPropertyEditorHook<>NewValue then begin
     FPropertyEditorHook:=NewValue;
     FPropertyEditorHook.OnChangeLookupRoot:=@PropEditLookupRootChange;
+    FPropertyEditorHook.OnRefreshPropertyValues:=@PropEditRefreshPropertyValues;
     // select root component
     FComponentList.Clear;
     if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil) then
@@ -2094,6 +2096,11 @@ procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
 begin
   PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
   EventGrid.ShowHint:=not EventGrid.ShowHint;
+end;
+
+procedure TObjectInspector.PropEditRefreshPropertyValues;
+begin
+  RefreshPropertyValues;
 end;
 
 end.
