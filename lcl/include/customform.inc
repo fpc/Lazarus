@@ -267,19 +267,19 @@ end;
 ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
-//writeln('[TCustomForm.SetVisible] START2 ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+  //writeln('[TCustomForm.SetVisible] START ',Name,':',ClassName,' Old=',Visible,' New=',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
   if Value then
     Include(FFormState, fsVisible)
   else
     Exclude(FFormState, fsVisible);
-//writeln('TCustomForm.SetVisible ',Name,':',ClassName,' ',FormUpdating);
+  //writeln('TCustomForm.SetVisible ',Name,':',ClassName,' ',FormUpdating);
   if (fsCreating in FFormState) {or FormUpdating} then
     // will be done when finished loading
   else
   begin
-    inherited Visible := Value;
+    inherited Visible:=Value;
   end;
-//writeln('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+  //writeln('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
 end;
 
 {------------------------------------------------------------------------------
@@ -1061,26 +1061,26 @@ end;
 {------------------------------------------------------------------------------
        TCustomForm Method CloseQuery
 ------------------------------------------------------------------------------}
-function TCustomForm.CloseQuery : boolean;
+function TCustomForm.CloseQuery: boolean;
 //var i : integer;
 begin
   { Query children forms whether we can close }
   if FormStyle = fsMDIForm then begin
-{    for i:= 0 to MDIChildCount - 1 do begin
+  {  for i:= 0 to MDIChildCount - 1 do begin
       if not MDIChildren[i].CloseQuery then begin
         Result:= false;
 	Exit;
        end;
     end;}
   end;    
-  Result:= true;
+  Result := true;
   if Assigned(FOnCloseQuery) then FOnCloseQuery(Self, Result);
 end;
 
 {------------------------------------------------------------------------------}
 {       TCustomForm Method WMCloseQuery                                        }
 {------------------------------------------------------------------------------}
-procedure TCustomForm.WMCloseQuery(var Message : TLMessage);
+procedure TCustomForm.WMCloseQuery(var Message: TLMessage);
 begin
   Close;
   { Always return 0, because we destroy the window ourselves }
@@ -1098,12 +1098,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomForm.Show;
+------------------------------------------------------------------------------}
+procedure TCustomForm.Show;
+begin
+  Visible:=true;
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomForm.ShowOnTop;
 ------------------------------------------------------------------------------}
 procedure TCustomForm.ShowOnTop;
 begin
   Show;
   BringToFront;
+  //writeln('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
   LCLLinux.ShowWindow(Handle,SW_SHOWNORMAL);
 end;
 
@@ -1417,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2003/05/24 08:51:41  mattias
+  implemented designer close query
+
   Revision 1.98  2003/05/12 13:40:50  mattias
   fixed clsing popupmenu on showmodal
 

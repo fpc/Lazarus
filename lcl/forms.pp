@@ -341,24 +341,6 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
   public
     // properties
-    property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
-    property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
-    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
-    property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
-    property OnCloseQuery : TCloseQueryEvent
-                     read FOnCloseQuery write FOnCloseQuery stored IsForm;
-    property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
-    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
-    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
-    property OnHelp: THelpEvent read FOnHelp write FOnHelp;
-    property OnHide: TNotifyEvent read FOnHide write FOnHide;
-    property OnShow: TNotifyEvent read FOnShow write FOnShow;
-    property OnResize stored IsForm;
-    property OnWindowStateChanged: TNotifyEvent
-      read fOnWindowStateChanged write fOnWindowStateChanged;
-    property Position : TPosition read FPosition write SetPosition default poDesigned;
-    property TextHeight : Longint read FDummyTextHeight write FDummyTextHeight
-      stored False;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
@@ -368,27 +350,50 @@ type
     procedure Close;
     procedure Release;
     procedure Hide;
+    procedure Show;
     procedure ShowOnTop;
     function WantChildKey(Child : TControl;
-      var Message : TLMessage): Boolean; virtual;
+                          var Message : TLMessage): Boolean; virtual;
     procedure SetFocus; override;
     function SetFocusedControl(Control: TWinControl): Boolean ; Virtual;
     procedure FocusControl(WinControl: TWinControl);
     function ShowModal : Integer;
+  public
     property Active: Boolean read FActive;
-    property BorderStyle : TFormBorderStyle
-      read FBorderStyle write SetBorderStyle default bsSizeable;
+    property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
+    property BorderStyle: TFormBorderStyle
+                      read FBorderStyle write SetBorderStyle default bsSizeable;
     property Caption stored IsForm;
-    property Designer : TIDesigner read FDesigner write SetDesigner;
-    property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
-    property FormState : TFormState read FFormState;
-    property HelpFile: string read FHelpFile write FHelpFile stored IsHelpFileStored;
-    property KeyPreview: Boolean read FKeyPreview write FKeyPreview stored IsKeyPreviewStored;
+    property Designer: TIDesigner read FDesigner write SetDesigner;
+    property FormState: TFormState read FFormState;
+    property FormStyle: TFormStyle read FFormStyle write SetFormStyle
+                                   default fsNormal;
+    property HelpFile: string read FHelpFile write FHelpFile
+                              stored IsHelpFileStored;
+    property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
+    property KeyPreview: Boolean read FKeyPreview write FKeyPreview
+                                 stored IsKeyPreviewStored;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write SetModalResult;
+    property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
+    property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
+    property OnCloseQuery : TCloseQueryEvent
+                     read FOnCloseQuery write FOnCloseQuery stored IsForm;
+    property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
+    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
+    property OnHelp: THelpEvent read FOnHelp write FOnHelp;
+    property OnHide: TNotifyEvent read FOnHide write FOnHide;
+    property OnResize stored IsForm;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnWindowStateChanged: TNotifyEvent
+                         read fOnWindowStateChanged write fOnWindowStateChanged;
+    property Position: TPosition read FPosition write SetPosition default poDesigned;
+    property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
+                                 stored False;
     property Visible write SetVisible default False;
     property WindowState: TWindowState read FWindowState write SetWindowState
-      default wsNormal;
+                                       default wsNormal;
   end;
   
   
