@@ -5707,6 +5707,9 @@ end.
 =======
 
   $Log$
+  Revision 1.207  2002/01/27 19:08:43  lazarus
+  MWE: Removed ^M
+
   Revision 1.206  2002/01/24 14:12:52  lazarus
   MG: added build lazarus feature and config dialog
 
@@ -5759,6 +5762,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.207  2002/01/27 19:08:43  lazarus
+  MWE: Removed ^M
+
   Revision 1.206  2002/01/24 14:12:52  lazarus
   MG: added build lazarus feature and config dialog
 
