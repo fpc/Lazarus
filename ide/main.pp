@@ -2892,6 +2892,7 @@ var
   AmbigiousFilename: String;
   PkgDefaultDirectory: String;
   OldFilename: String;
+  OldSource: String;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   OldFilePath:=ExtractFilePath(AnUnitInfo.Filename);
@@ -3064,10 +3065,14 @@ begin
     end;
   end;
   
-  // save source in the new position
-  if not CodeToolBoss.SaveBufferAs(AnUnitInfo.Source,NewFilename,NewSource)
-  then begin
-    Result:=mrCancel;
+  // create new source in the new position
+  OldSource:=AnUnitInfo.Source.Source;
+  NewSource:=CodeToolBoss.CreateFile(NewFilename);
+  NewSource.Source:=OldSource;
+  if NewSource=nil then begin
+    Result:=MessageDlg(lisUnableToCreateFile,
+      Format(lisCanNotCreateFile, ['"', NewFilename, '"']),
+      mtError,[mbCancel,mbAbort],0);
     exit;
   end;
   // get final filename
@@ -3127,7 +3132,7 @@ begin
     CodeToolBoss.RenameMainInclude(AnUnitInfo.Source,
       ExtractRelativePath(NewFilePath,NewResFilename),false);
   end;
-
+  
   // change unitname on SourceNotebook
   UpdateSourceNames;
 
@@ -3140,8 +3145,13 @@ begin
       SrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
     end;
   end;
+  
+  // save file
+  Result:=DoSaveCodeBufferToFile(NewSource,NewSource.Filename,
+                                 AnUnitInfo.IsPartOfProject);
+  if Result<>mrOk then exit;
 
-  // change packages containing files
+  // change packages containing the file
   Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename);
 
   Result:=mrOk;
@@ -8665,6 +8675,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.561  2003/05/09 13:24:32  mattias
+  fixed renaming unit
+
   Revision 1.560  2003/05/08 21:29:34  mattias
   autoedit for grids
 
