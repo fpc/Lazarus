@@ -135,7 +135,8 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
+  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':',
+                           [sffSearchNotInBasePath]);
 end;
 
 {---------------------------------------------------------------------------
@@ -143,7 +144,8 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make','',GetEnv('PATH'),':');
+  Result:=SearchFileInPath('make','',GetEnv('PATH'),':',
+                           [sffSearchNotInBasePath]);
 end;
 
 {---------------------------------------------------------------------------
@@ -159,6 +161,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2003/02/07 19:13:57  mattias
+  fixed searching lazarus in current dir
+
   Revision 1.11  2003/02/07 17:49:21  mattias
   added ReadAllLinks
 
