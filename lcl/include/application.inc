@@ -375,11 +375,14 @@ end;
 {       variable and loads the form into the application forms list            }
 {------------------------------------------------------------------------------}
 procedure TApplication.CreateForm(NewForm : TFormClass; var ref);
+var ok: boolean;
 begin
+  ok:=false;
   try
     TForm(ref) := NewForm.Create(Self);
-  except
-    raise;
+    ok:=true;
+  finally
+    if not ok then TObject(ref):=nil;
   end;
 
   if FMainForm = nil then begin
@@ -394,6 +397,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/04/04 12:25:01  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.20  2002/03/16 21:40:54  lazarus
   MG: reduced size+move messages between lcl and interface
 
