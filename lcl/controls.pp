@@ -234,41 +234,47 @@ const
 type
   TWndMethod = procedure(var Message : TLMessage) of Object;
 
-  TControlStyle = set of (csAcceptsControls,
-                          csCaptureMouse,
-                          csDesignInteractive,
-                          csClickEvents,
-                          csFramed,
-                          csSetCaption,
-                          csOpaque,
-                          csDoubleClicks,// control understands mouse double clicks
-                          csTripleClicks,// control understands mouse triple clicks
-                          csQuadClicks,  // control understands mouse quad clicks
-                          csFixedWidth,
-                          csFixedHeight,
-                          csNoDesignVisible,
-                          csReplicatable,
-                          csNoStdEvents,
-                          csDisplayDragImage,
-                          csReflector,
-                          csActionClient,
-                          csMenuEvents,
-                          csNoFocus);
+  TControlStyleType = (
+    csAcceptsControls,
+    csCaptureMouse,
+    csDesignInteractive,
+    csClickEvents,
+    csFramed,
+    csSetCaption,
+    csOpaque,
+    csDoubleClicks,// control understands mouse double clicks
+    csTripleClicks,// control understands mouse triple clicks
+    csQuadClicks,  // control understands mouse quad clicks
+    csFixedWidth,
+    csFixedHeight,
+    csNoDesignVisible,
+    csReplicatable,
+    csNoStdEvents,
+    csDisplayDragImage,
+    csReflector,
+    csActionClient,
+    csMenuEvents,
+    csNoFocus);
+  TControlStyle = set of TControlStyleType;
+  
 const
   csMultiClicks = [csDoubleClicks,csTripleClicks,csQuadClicks];
 
+
 type
-  TControlState = set of (csLButtonDown,
-                          csClicked,
-                          csPalette,
-                          csReadingState,
-                          csAlignmentNeeded,
-                          csFocusing,
-                          csCreating,
-                          csPaintCopy,
-                          csCustomPaint,
-                          csDestroyingHandle,
-                          csDocking);
+  TControlStateType = (
+    csLButtonDown,
+    csClicked,
+    csPalette,
+    csReadingState,
+    csAlignmentNeeded,
+    csFocusing,
+    csCreating,
+    csPaintCopy,
+    csCustomPaint,
+    csDestroyingHandle,
+    csDocking);
+  TControlState = set of TControlStateType;
 
 
 
@@ -1328,6 +1334,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.64  2002/09/01 16:11:21  lazarus
   MG: double, triple and quad clicks now works
 
