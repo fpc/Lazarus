@@ -97,18 +97,21 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.SetDown(Value : Boolean);
+var
+  OldState: TButtonState;
 begin
   if FGroupIndex = 0 then Value:= false;
   if FDown <> Value then begin
     if FDown and not FAllowAllUp then Exit;
     FDown := Value;
+    OldState := fState;
     if FDown then begin
-      if FState = bsUp then Invalidate;
       fState := bsExclusive;
     end else begin
       FState := bsUp;
-      Repaint;
     end;
+    if OldState<>FState then
+      Invalidate;
     if Value then UpdateExclusive;
   end;
 end;
@@ -538,7 +541,8 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
   DoClick: Boolean;
 begin
@@ -692,6 +696,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/08/24 13:41:29  lazarus
+  MG: fixed TSpeedButton.SetDown and Invalidate
+
   Revision 1.17  2002/08/22 16:43:35  lazarus
   MG: improved theme support from Andrew
 
