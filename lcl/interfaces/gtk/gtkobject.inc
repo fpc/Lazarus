@@ -4559,6 +4559,84 @@ begin
   end;
 end;
 
+function TgtkObject.CreateListView(ListViewObject: TObject): PGtkWidget;
+var
+  MainWidget: PGtkWidget;
+  i: Integer;
+  CListWidget: PGtkCList;
+  ImpWidget: PGtkWidget;
+  RealColumnCnt: Integer;
+  Titles: PPGChar;
+begin
+  MainWidget:= gtk_scrolled_window_new(nil, nil);
+
+  with TListView(ListViewObject)
+  do begin
+    RealColumnCnt:=Columns.Count;
+    if RealColumnCnt<1 then RealColumnCnt:=1;
+    CListWidget:=PGtkCList(gtk_clist_new(RealColumnCnt));
+    gtk_clist_set_shadow_type(CListWidget,GTK_SHADOW_IN);
+    gtk_clist_column_titles_passive (CListWidget);
+
+    // add items (the item properties are set via LM_SETPROPERTIES)
+    GetMem(Titles,SizeOf(PGChar)*CListWidget^.columns);
+    for i:=0 to CListWidget^.columns-1 do
+      Titles[i]:=nil;
+    for i:=0 to Items.Count-1 do begin
+      if Items[i].Caption<>'' then
+        Titles[0] := PChar(Items[i].Caption)
+      else
+        Titles[0] := #0;
+      gtk_clist_append(CListWidget,Titles);
+    end;
+    FreeMem(Titles);
+
+    // set columns properties
+    for i := 0 to Columns.Count - 1 do begin
+      with Columns[i] do begin
+        // set title
+        gtk_clist_set_column_title(CListWidget,i, PChar(Caption));
+        //set column alignment
+        gtk_clist_set_column_justification(CListWidget,i,
+                 aGTKJUSTIFICATION[Alignment]);
+        //set width
+        gtk_clist_set_column_width(CListWidget,i,Width);
+        //set auto sizing
+        gtk_clist_set_column_auto_resize(CListWidget,i, AutoSize);
+        //set Visible
+        gtk_clist_set_column_visibility(CListWidget,i, Visible);
+        // set MinWidth
+        if MinWidth>0 then
+          gtk_clist_set_column_min_width(CListWidget, i, MinWidth);
+        // set MaxWidth
+        if (MaxWidth>=MinWidth) and (MaxWidth>0) then
+          gtk_clist_set_column_max_width(CListWidget, i, MaxWidth);
+      end;
+    end;
+
+  end;
+  gtk_clist_column_titles_passive (CListWidget);
+
+  ImpWidget:=PGtkWidget(CListWidget);
+  gtk_container_add(GTK_CONTAINER(MainWidget),ImpWidget);
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(MainWidget)^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(MainWidget)^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(PGtkScrolledWindow(MainWidget),
+                                 GTK_POLICY_AUTOMATIC,
+                                 GTK_POLICY_AUTOMATIC);
+  gtk_container_set_focus_vadjustment(PGtkContainer(CListWidget),
+           gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(MainWidget)));
+  gtk_container_set_focus_hadjustment(PGtkContainer(CListWidget),
+           gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(MainWidget)));
+  gtk_widget_show_all(ImpWidget);
+  gtk_widget_show(MainWidget);
+
+  SetMainWidget(MainWidget, ImpWidget);
+  GetWidgetInfo(MainWidget, True)^.ImplementationWidget := ImpWidget;
+  
+  Result:=MainWidget;
+end;
+
 {------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
@@ -4576,14 +4654,13 @@ var
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
   // - for csBitBtn
-  Box       : Pointer;           // currently only used for TBitBtn and TListView
+  Box       : Pointer;           // currently only used for TBitBtn
   pixmapwid : pGtkWidget;        // currently only used for TBitBtn
   label1    : pgtkwidget;        // currently only used for TBitBtn
   ParentForm: TCustomForm;
   AccelText : PChar;
   AccelKey  : guint;
   SetupProps : boolean;
-  Titles: PPGChar;
   AWindow: PGdkWindow;
 begin
   p := nil;
@@ -4790,75 +4867,7 @@ begin
 
   csListView :
     Begin
-      p:= gtk_scrolled_window_new(nil, nil);
-
-      with TListView(Sender)
-      do begin
-        TempInt:=Columns.Count;
-        if TempInt<1 then TempInt:=1;
-        TempWidget:= gtk_clist_new(TempInt);
-        gtk_clist_set_shadow_type(PGtkCList(TempWidget),GTK_SHADOW_IN);
-        gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
-
-        // add items (the item properties are set via LM_SETPROPERTIES)
-        GetMem(Titles,SizeOf(PGChar)*GTK_CLIST (TempWidget)^.columns);
-        for TempInt:=0 to GTK_CLIST (TempWidget)^.columns-1 do
-          Titles[TempInt]:=nil;
-        for TempInt:=0 to Items.Count-1 do begin
-          if Items[TempInt].Caption<>'' then
-            Titles[0] := PChar(Items[TempInt].Caption)
-          else
-            Titles[0] := #0;
-          gtk_clist_append(PgtkCList(TempWidget),Titles);
-        end;
-        FreeMem(Titles);
-
-        // set columns properties
-        for TempInt := 0 to Columns.Count - 1 do begin
-          with Columns[TempInt] do begin
-            // set title
-            gtk_clist_set_column_title(PgtkCList(TempWidget),TempInt,
-              PChar(Caption));
-            //set column alignment
-            gtk_clist_set_column_justification(PgtkCList(TempWidget),TempInt,
-                     aGTKJUSTIFICATION[Alignment]);
-            //set width
-            gtk_clist_set_column_width(PgtkCList(TempWidget),TempInt,Width);
-            //set auto sizing
-            gtk_clist_set_column_auto_resize(PgtkCList(TempWidget),TempInt,
-                     AutoSize);
-            //set Visible
-            gtk_clist_set_column_visibility(PgtkCList(TempWidget),TempInt,
-                     Visible);
-            // set MinWidth
-            if MinWidth>0 then
-              gtk_clist_set_column_min_width(PGtkCList(TempWidget), TempInt,
-                                             MinWidth);
-            // set MaxWidth
-            if (MaxWidth>=MinWidth) and (MaxWidth>0) then
-              gtk_clist_set_column_max_width(PGtkCList(TempWidget), TempInt,
-                                             MaxWidth);
-          end;
-        end;
-
-      end;
-      gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
-
-      gtk_container_add(GTK_CONTAINER(p),TempWidget);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
-      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
-      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                     GTK_POLICY_AUTOMATIC,
-                                     GTK_POLICY_AUTOMATIC);
-      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
-                    gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
-      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
-                    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
-      gtk_widget_show_all(TempWidget);
-      gtk_widget_show(p);
-
-      SetMainWidget(p, TempWidget);
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      p:=CreateListView(Sender);
     end;
 
 
@@ -7301,6 +7310,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.367  2003/06/03 10:29:22  mattias
+  implemented updates between source marks and breakpoints
+
   Revision 1.366  2003/05/30 16:25:47  mattias
   started datamodule
 
