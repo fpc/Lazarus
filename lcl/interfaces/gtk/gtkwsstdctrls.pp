@@ -308,33 +308,25 @@ end;
 
 function  TGtkWSCustomEdit.GetSelStart(const ACustomEdit: TCustomEdit): integer;
 begin
-  {$IfDef GTK1}
   Result := WidgetGetSelStart(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget);
-  {$EndIf}
 end;
 
 function  TGtkWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
-  {$IfDef GTK1}
   with PGtkOldEditable(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget)^ do begin
     Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
   end;
-  {$EndIf}
 end;
 
 procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 begin
-  {$IfDef GTK1}
   gtk_editable_set_position(PGtkOldEditable(GetWidgetInfo(
     Pointer(ACustomEdit.Handle), true)^.CoreWidget), NewStart);
-  {$EndIf}
 end;
 
 procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
-  {$IfDef GTK1}
   WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget, NewLength);
-  {$EndIf}
 end;
 
 { TGtkWSCustomMemo }
@@ -347,13 +339,11 @@ begin
   if Length(AText) = 0 then
     exit;
 
-  {$IfDef GTK1}
   Widget:=GetWidgetInfo(Pointer(ACustomMemo.Handle), true)^.CoreWidget;
   gtk_text_freeze(PGtkText(Widget));
   CurMemoLen := gtk_text_get_length(PGtkText(Widget));
   gtk_editable_insert_text(PGtkOldEditable(Widget), PChar(AText), Length(AText), @CurMemoLen);
   gtk_text_thaw(PGtkText(Widget));
-  {$EndIf}
 end;
 
 initialization

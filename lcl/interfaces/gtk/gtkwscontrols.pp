@@ -151,7 +151,6 @@ begin
        AText := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(Handle)^.entry)));
      end;
 
-   {$IfDef GTK1}
    csEdit, csSpinEdit:
        AText:= StrPas(gtk_entry_get_text(PgtkEntry(Handle)));
 
@@ -161,7 +160,6 @@ begin
                   AText := StrPas(CS);
                   g_free(CS);
                end;
-  {$EndIf}
   else
     Result := false;
   end;
@@ -391,7 +389,6 @@ begin
 
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
-  {$IfDef GTK1}
   csEdit        : begin
                     LockOnChange(PGtkObject(p),+1);
                     gtk_entry_set_text(pGtkEntry(P), pLabel);
@@ -408,7 +405,6 @@ begin
                     gtk_text_thaw(PGtkText(P));
                   end;
 
-   {$EndIf}
   csPage:
     SetNotebookPageTabLabel;
 
