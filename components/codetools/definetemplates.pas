@@ -2826,7 +2826,7 @@ var
       i: integer;
       DefaultMacroCount: integer;
     begin
-      writeln('Browse ',ADirPath);
+      //writeln('Browse ',ADirPath);
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
@@ -2965,7 +2965,7 @@ var
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
-            writeln('FindStandardPPUSources B ',UnitName);
+            //writeln('FindStandardPPUSources B ',UnitName);
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;
@@ -3046,11 +3046,13 @@ begin
   s:=IncPathMacro
     +';'+Dir+'rtl'+DS+'objpas'+DS
     +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
-    +';'+Dir+'rtl'+DS+'inc'+DS
-    +';'+Dir+'rtl'+DS+TargetProcessor+DS
-    +';'+Dir+'rtl'+DS+SrcOS+DS;
+    +';'+Dir+'rtl'+DS+'inc'+DS;
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
+  s:=s+
+    +';'+Dir+'rtl'+DS+SrcOS+DS
+    +';'+Dir+'rtl'+DS+TargetProcessor+DS
+    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
   RTLDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
