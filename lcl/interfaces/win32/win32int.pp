@@ -131,7 +131,6 @@ Type
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
-    Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
 
@@ -187,6 +186,9 @@ Type
     Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
     procedure UpdateThemesActive;
 
+    // procedures needed by interface methods
+    procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
+    
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
@@ -280,6 +282,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.107  2004/09/12 19:50:36  micha
+  convert LM_SETSIZE message to new interface method
+
   Revision 1.106  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 

@@ -3162,18 +3162,6 @@ begin
       LM_DESTROY :
         DestroyLCLComponent(Sender);
 
-      LM_SetSize:
-      begin
-        Assert(False, Format('Trace:  [TGtkWidgetSet.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
-        //DebugLn('[IntSendMessage3.lm_setsize] Left=',PRect(Data)^.Left,' Top=',PRect(Data)^.Top,
-        //  ' Right=',PRect(Data)^.Right,' Bottom=',PRect(Data)^.Bottom);
-        //DebugLn('[LM_SetSize] A ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
-        ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
-             PRect(Data)^.Right-PRect(Data)^.Left,
-             PRect(Data)^.Bottom-PRect(Data)^.Top);
-        //DebugLn('[LM_SetSize] B ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
-      end;
-
       LM_ShowModal: ShowModal(Sender);
 
       LM_TB_BUTTONCOUNT:
@@ -8514,6 +8502,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.559  2004/09/12 19:50:35  micha
+  convert LM_SETSIZE message to new interface method
+
   Revision 1.558  2004/09/12 18:56:36  mazen
   * Fix compilation problem with GTK2
 

@@ -50,7 +50,6 @@ const
   LM_SetTop         = LM_ComUser+4;
   LM_SetWidth       = LM_ComUser+5;
   LM_SetHeight      = LM_ComUser+6;
-  LM_Setsize        = LM_ComUser+8;
   LM_AssignEvent    = LM_ComUser+10;
   LM_AssignSelf     = LM_ComUser+11;
   LM_SetName        = LM_ComUser+12;
@@ -832,7 +831,6 @@ begin
   LM_SetTop         :Result:='LM_SetTop';
   LM_SetWidth       :Result:='LM_SetWidth';
   LM_SetHeight      :Result:='LM_SetHeight';
-  LM_Setsize        :Result:='LM_Setsize';
   LM_AssignEvent    :Result:='LM_AssignEvent';
   LM_AssignSelf     :Result:='LM_AssignSelf';
   LM_SetName        :Result:='LM_SetName';
@@ -986,6 +984,9 @@ end.
 
 {
   $Log$
+  Revision 1.91  2004/09/12 19:50:35  micha
+  convert LM_SETSIZE message to new interface method
+
   Revision 1.90  2004/09/12 13:21:37  micha
   remove obsolete message LM_DRAGINFOCHANGED
 

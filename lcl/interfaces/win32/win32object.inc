@@ -260,7 +260,6 @@ Var
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   AMenu: TMenu;
   AccelTable: HACCEL;
-  TheWinControl: TWinControl;
 
 Begin
   Result := 0;   //default value just in case nothing sets it
@@ -336,26 +335,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETSIZE:
-      Begin
-        If (Sender Is TWinControl) Then // Handle is already tested --> see above
-        With PRect(Data)^ do
-        begin
-          TheWinControl:=TWinControl(Sender);
-          SizeRect := PRect(Data)^;
-          case TheWinControl.FCompStyle of
-            csForm:
-            begin
-              // the LCL defines the size of a form without border, win32 with.
-              // -> adjust size according to BorderStyle
-              Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle), false,
-                  BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle));
-            end;
-          end;
-          ResizeChild(TheWinControl, Left, Top,
-             SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
-        end; //with
-      end; //LM_SETSIZE
       LM_SHOWMODAL:
       Begin
         If Sender Is TCommonDialog Then
@@ -2093,7 +2072,7 @@ Begin
     Windows.SendMessage(Handle, TCM_INSERTITEM, Index, LPARAM(@TCI));
     // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
     Self.GetClientRect(Handle, R);
-    IntSendMessage3(LM_SETSIZE, NewPage, @R);
+    TWin32WSWinControl.SetBounds(NewPage, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
     // Do the page switch. The are no tabcontrol notifications so we have to
     // do the hiding and showing ourselves.
     OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
@@ -2493,6 +2472,9 @@ End;
 
 {
   $Log$
+  Revision 1.251  2004/09/12 19:50:36  micha
+  convert LM_SETSIZE message to new interface method
+
   Revision 1.250  2004/09/12 13:52:26  micha
   convert LM_SETFONT to interface method
 

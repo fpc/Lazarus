@@ -166,14 +166,8 @@ end;
 
 procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl;
   const ALeft, ATop, AWidth, AHeight: Integer);
-var
-  Allocation: TGTKAllocation;
 begin                
-  Allocation.X := gint16(ALeft);
-  Allocation.Y := gint16(ATop);
-  Allocation.Width := guint16(AWidth);
-  Allocation.Height := guint16(AHeight);
-  gtk_widget_size_allocate(PGtkWidget(AWinControl.Handle), @Allocation);
+  TGtkWidgetSet(InterfaceObject).SetResizeRequest(PGtkWidget(AWinControl.Handle));
 end;
 
 procedure TGtkWSWinControl.SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);

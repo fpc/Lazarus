@@ -267,7 +267,6 @@ type
                                    StatusPanelWidget: PGtkWidget); virtual;
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
-    procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
   public
@@ -304,6 +303,7 @@ type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
         
     // helper routines needed by interface methods
+    procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
   
@@ -458,6 +458,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.202  2004/09/12 19:50:35  micha
+  convert LM_SETSIZE message to new interface method
+
   Revision 1.201  2004/09/12 13:11:50  micha
   convert LM_GETPIXEL and LM_SETPIXEL to interface methods (of twidgetset, DCGetPixel and DCSetPixel)
 

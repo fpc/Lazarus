@@ -3848,7 +3848,7 @@ begin
   //DebugLn('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
   //' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
   FBoundsRealized:=NewBounds;
-  CNSendMessage(LM_SetSize, Self, @NewBounds);
+  TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
 end;
 
 procedure TWinControl.RealizeBounds;
@@ -3912,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.277  2004/09/12 19:50:35  micha
+  convert LM_SETSIZE message to new interface method
+
   Revision 1.276  2004/09/12 13:52:26  micha
   convert LM_SETFONT to interface method
 
