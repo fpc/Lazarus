@@ -1934,11 +1934,11 @@ end;
 function GetKeyShiftState: TShiftState;
 begin
   Result:=[];
-  if GetKeyState(VK_CONTROL)<>0 then
+  if (GetKeyState(VK_CONTROL) and $8000)<>0 then
     Include(Result,ssCtrl);
-  if GetKeyState(VK_SHIFT)<>0 then
+  if (GetKeyState(VK_SHIFT) and $8000)<>0 then
     Include(Result,ssShift);
-  if GetKeyState(VK_MENU)<>0 then
+  if (GetKeyState(VK_MENU) and $8000)<>0 then
     Include(Result,ssAlt);
 end;
 
@@ -2240,6 +2240,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.192  2004/03/25 14:07:24  vincents
+  use only key down (not toggle) state in GetKeyState
+
   Revision 1.191  2004/03/19 00:03:14  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class
