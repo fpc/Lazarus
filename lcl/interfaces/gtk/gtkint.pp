@@ -55,7 +55,7 @@ uses
   {$ENDIF}
   xlib,
   SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts,
-  VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
+  VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
   GraphType, GraphMath;
 
 
@@ -65,8 +65,7 @@ type
     FKeyStateList: TList; // Keeps track of which keys are pressed
     FDeviceContexts: TDynHashArray;// hasharray of HDC
     FGDIObjects: TDynHashArray;    // hasharray of PGdiObject
-    FMessageQueue: TLazQueue;      // queue of PMsg
-    FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem
+    FMessageQueue: TGtkMessageQueue;      // queue of PMsg
     WaitingForMessages: boolean;
 
     FRCFilename: string;
@@ -216,8 +215,6 @@ type
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
-    function HashPaintMessage(p: pointer): integer;virtual;
-    function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;virtual;
     procedure RemoveCallbacks(Sender : TObject); virtual;
   public
     // for gtk specific components:
@@ -351,6 +348,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.138  2003/08/18 13:21:23  mattias
+  renamed lazqueue to lazlinkedlist, patch from Jeroen
+
   Revision 1.137  2003/08/13 16:18:58  mattias
   started check compiler options
 

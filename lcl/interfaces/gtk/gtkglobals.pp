@@ -26,7 +26,7 @@ uses
   glib, gdk, gtk,
   {$ENDIF}
   LMessages, Controls, Forms,
-  VclGlobals, LCLLinux, LCLType, GTKDef, DynHashArray, LazQueue;
+  VclGlobals, LCLLinux, LCLType, GTKDef, DynHashArray, LazLinkedList;
 
 {$I dragicons.inc}
 

@@ -5789,27 +5789,17 @@ end;
 function TgtkObject.PeekMessage(var lpMsg: TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax, wRemoveMsg: UINT): Boolean;
 var
-  AMessage: PMsg;
+  vlItem : TGtkMessageQueueItem;
 begin 
   //TODO Filtering
-  
-  Result := FMessageQueue.Count > 0;
-  if Result 
-  then begin
-    AMessage := FMessageQueue.First^.Data;
-    lpMsg := AMessage^;
-    if (wRemoveMsg and PM_REMOVE) = PM_REMOVE 
-    then begin
-      if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then
-      begin
-        FPaintMessages.Remove(FMessageQueue.First);
-        // don't free the DC, this is work for the caller.
-        // Free the data of our internal gtk messages
-        if AMessage^.Message=LM_GtkPAINT then
-          FinalizePaintTagMsg(AMessage);
-      end;
-      FMessageQueue.Delete(FMessageQueue.First);
-    end;
+  writeln('Peek !!!' );
+  vlItem := fMessageQueue.FirstMessageItem;
+  Result := vlItem <> nil;
+
+  if Result  then begin
+    lpMsg := vlItem.Msg^;
+    if (wRemoveMsg and PM_REMOVE) = PM_REMOVE then
+      fMessageQueue.RemoveMessage(vlItem,FPMF_Internal,true);
   end;
 end;
 
@@ -6043,7 +6033,7 @@ function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
       Parent:=Target.Parent;
       while Parent<>nil do begin
         ParentHandle:=Parent.Handle;
-        if FindPaintMessage(ParentHandle)<>nil then begin
+        if fMessageQueue.FindPaintMessage(ParentHandle)<>nil then begin
           Result:=true;
         end;
         Parent:=Parent.Parent;
@@ -6051,27 +6041,17 @@ function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
     end;
   end;
   
-  function ExtractPaintMessageForHandle(hnd: HWnd): PMsg;
-  var
-    OldPaintMessage: PLazQueueItem;
-  begin
-    Result:=nil;
-    if (hnd=0) then exit;
-    OldPaintMessage:=FindPaintMessage(hnd);
-    if OldPaintMessage<>nil then begin
-      // delete paint message from queue
-      Result:=PMsg(OldPaintMessage^.Data);
-      FPaintMessages.Remove(OldPaintMessage);
-      FMessageQueue.Delete(OldPaintMessage);
-    end;
-  end;
-
-  procedure CombinePaintMessages(NewMsg, OldMsg: PMsg);
+  procedure CombinePaintMessages(NewMsg:PMsg);
   // combine NewMsg and OldMsg paint message into NewMsg and free OldMsg
   var
+    vlItem : TGtkMessageQueueItem;
     NewData: TLMGtkPaintData;
     OldData: TLMGtkPaintData;
+    OldMsg : PMsg;
   begin
+    vlItem := fMessageQueue.FindPaintMessage(NewMsg^.Hwnd);
+    if vlItem = nil then exit;
+    OldMsg := vlItem.Msg;
     if OldMsg=nil then exit;
     if (NewMsg^.Message=LM_PAINT) or (OldMsg^.Message=LM_PAINT) then begin
       // LM_PAINT means: repaint all
@@ -6096,13 +6076,11 @@ function TGTKObject.PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt;
         NewData.Rect.Bottom:=Max(NewData.Rect.Bottom,OldData.Rect.Bottom);
       end;
     end;
-    FinalizePaintTagMsg(OldMsg);
-    Dispose(OldMsg);
+    fMessageQueue.RemoveMessage(vlItem,FPMF_All,true);
   end;
   
 var
   AMessage: PMsg;
-  OldPaintMsg: PMsg;
 begin
   Result := True;
 
@@ -6114,25 +6092,24 @@ begin
 //  Message^.Time := 
 
   if (AMessage^.Message=LM_PAINT) or (AMessage^.Message=LM_GtkPAINT) then begin
+    { Obsolete, because InvalidateRectangle now works.
+    
     // paint messages are the most expensive messages in the LCL
     // A paint message to a control will also repaint all child controls.
     // -> check if there is already a paint message for one of its parents
     // if yes, then skip this message
-    {if ParentPaintMessageInQueue then begin
+    if ParentPaintMessageInQueue then begin
       FinalizePaintTagMsg(AMessage^);
       exit;
     end;}
   
     // delete old paint message to this widget,
     // so that the widget repaints only once
-    OldPaintMsg:=ExtractPaintMessageForHandle(Handle);
-    CombinePaintMessages(AMessage,OldPaintMsg);
 
-    FMessageQueue.AddLast(AMessage);
-    FPaintMessages.Add(FMessageQueue.Last);
-  end else begin
-    FMessageQueue.AddLast(AMessage);
-  end;
+    CombinePaintMessages(AMessage);
+  end ;
+
+  FMessageQueue.AddMessage(AMessage);
 end;
 
 {------------------------------------------------------------------------------
@@ -8753,6 +8730,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.268  2003/08/18 13:21:23  mattias
+  renamed lazqueue to lazlinkedlist, patch from Jeroen
+
   Revision 1.267  2003/08/16 15:29:56  mattias
   fixed TBitmap.GetHandle
 

@@ -145,9 +145,7 @@ begin
   FDefaultFont:= nil;
 
   // messages
-  FMessageQueue := TLazQueue.Create;
-  FPaintMessages := TDynHashArray.Create(-1);
-  FPaintMessages.OwnerHashFunction := @HashPaintMessage;
+  FMessageQueue := TGtkMessageQueue.Create;
   WaitingForMessages := false;
   FWidgetsWithResizeRequest := TDynHashArray.Create(-1);
   FWidgetsWithResizeRequest.Options:=
@@ -268,12 +266,12 @@ const
      'gdiBitmap', 'gdiBrush', 'gdiFont', 'gdiPen', 'gdiRegion', 'gdiPalette');
 var
   n: Integer;
-  p: PMsg;
   pTimerInfo  : PGtkITimerinfo;
   GDITypeCount: array[TGDIType] of Integer;
   GDIType: TGDIType;
   HashItem: PDynHashArrayItem;
-  QueueItem, OldQueueItem: PLazQueueItem;
+  QueueItem  : TGtkMessageQueueItem;
+  NextQueueItem : TGtkMessageQueueItem;
 begin
   FreeAllStyles;
   FreeGDKCursors;
@@ -284,25 +282,18 @@ begin
     FGTKToolTips := nil;
   end;
 
-  // tidy up the messages
-  QueueItem:=FMessageQueue.First;
+  // tidy up the paint messages
+  QueueItem:=FMessageQueue.FirstMessageItem;
   while (QueueItem<>nil) do begin
-    p := PMsg(QueueItem^.Data);
-    if (p^.Message=LM_PAINT) or (p^.Message=LM_GtkPAINT) then begin
-      //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
-      FPaintMessages.Remove(QueueItem);
-      FinalizePaintTagMsg(p);
-      Dispose(P);
-      OldQueueItem:=QueueItem;
-      QueueItem:=QueueItem^.Next;
-      FMessageQueue.Delete(OldQueueItem);
-    end else
-      QueueItem:=QueueItem^.Next;
+    NextQueueItem := TGtkMessageQueueItem(QueueItem.Next);
+    if QueueItem.IsPaintMessage then
+      fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
+    QueueItem := NextQueueItem;
   end;
   
-  if FPaintMessages.Count>0 then begin
+  if fMessageQueue.HasPaintMessages then begin
     WriteLn(ProcName, Format(rsWarningUnremovedPaintMessages,
-      [IntToStr(FPaintMessages.Count)]));
+      [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
   end;
 
   if (FDeviceContexts.Count > 0)
@@ -348,15 +339,12 @@ begin
         WriteLN(ProcName,Format('   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
   end;
 
-  if FMessageQueue.Count > 0 
-  then begin
-    WriteLN(ProcName, Format(rsWarningUnreleasedMessagesInQueue,[
-      FMessageQueue.Count]));
-    while FMessageQueue.First<>nil do begin
-      p := PMsg(FMessageQueue.First^.Data);
-      Dispose(P);
-      FMessageQueue.Delete(FMessageQueue.First);
-    end;
+
+  // tidy up messages
+  if FMessageQueue.Count > 0   then begin
+    WriteLN(ProcName, Format(rsWarningUnreleasedMessagesInQueue,[FMessageQueue.Count]));
+    while FMessageQueue.First<>nil do
+      fMessageQueue.RemoveMessage(fMessageQueue.FirstMessageItem,FPMF_All,true);
   end;
 
   n := FTimerData.Count;
@@ -376,7 +364,6 @@ begin
   FreeAndNil(FWidgetsResized);
   FreeAndNil(FFixWidgetsResized);
   FMessageQueue.Free;
-  FPaintMessages.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
@@ -1269,9 +1256,10 @@ procedure TgtkObject.HandleEvents;
   end;
 
 var
-  Msg: TMsg; 
-  p: pMsg;
-  IsPaintMessage: boolean;
+
+  vlItem : TGtkMessageQueueItem;
+  vlMsg  : PMSg;
+
 begin
   repeat
     // send cached LCL messages to the gtk
@@ -1283,38 +1271,33 @@ begin
 
     // send cached gtk messages to the lcl
     SendCachedGtkMessages;
-
+	
     // then handle our own messages
-    with FMessageQueue do begin
-      while First<>nil do
-      begin
-        // fetch first message
-        p := PMsg(First^.Data);
-        Msg := p^;
-        IsPaintMessage:=(Msg.Message=LM_PAINT) or (Msg.Message=LM_GtkPaint);
+    while true do  begin
+      // fetch first message
+      vlItem := fMessageQueue.FirstMessageItem;
+      if vlItem = nil then break;
 
-        // remove message from queue
-        if IsPaintMessage then begin
-          // paint messages are the most expensive messages in the LCL,
-          // therefore they are sent always after all other
-          if Count>FPaintMessages.Count then begin
-            // there are non paint messages -> keep paint message back
-            MoveToLast(First);
-            continue;
-          end else begin
-            // there are only paint messages left in the queue
-            // -> check other queues
-            if PendingGtkMessagesExists then break;
-          end;
-          FPaintMessages.Remove(First);
+      // remove message from queue
+      if vlItem.IsPaintMessage then begin
+        // paint messages are the most expensive messages in the LCL,
+        // therefore they are sent always after all other
+        if fMessageQueue.HasNonPaintMessages then begin
+          // there are non paint messages -> keep paint message back
+          fMessageQueue.MoveToLast(FMessageQueue.First);
+          continue;
+        end else begin
+          // there are only paint messages left in the queue
+          // -> check other queues
+          if PendingGtkMessagesExists then break;
         end;
-        Delete(First);
-        
-        // Send message
-        with Msg do
-          SendMessage(hWND, Message, WParam, LParam);
-        Dispose(p);
       end;
+
+      vlMsg:=fMessageQueue.PopFirstMessage;
+
+      // Send message
+      with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);
+      Dispose(vlMsg);
     end;
     
     // proceed until all messages are handled
@@ -4274,7 +4257,8 @@ end;
 procedure TGTKObject.DestroyLCLComponent(Sender : TObject);
 var
   handle: hwnd; // handle of sender
-  QueueItem, OldQueueItem: PLazQueueItem;
+  QueueItem : TGtkMessageQueueItem;
+  NextItem  : TGtkMessageQueueItem;
   MsgPtr: PMsg;
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
@@ -4376,22 +4360,13 @@ begin
 
   //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // remove all remaining messages to this component
-  QueueItem:=FMessageQueue.First;
+  QueueItem:=FMessageQueue.FirstMessageItem;
   while (QueueItem<>nil) do begin
-    MsgPtr := PMsg(QueueItem^.Data);
-    if (MsgPtr^.hWnd=Handle) then begin
-      // remove message
-      if (MsgPtr^.Message=LM_PAINT) or (MsgPtr^.Message=LM_GtkPAINT) then begin
-        FPaintMessages.Remove(QueueItem);
-        FinalizePaintTagMsg(MsgPtr);
-      end;
-      Dispose(MsgPtr);
-      OldQueueItem:=QueueItem;
-      QueueItem:=QueueItem^.Next;
-      FMessageQueue.Delete(OldQueueItem);
-    end else begin
-      QueueItem:=QueueItem^.Next;
-    end;
+    MsgPtr := QueueItem.Msg;
+    NextItem := TGtkMessagequeueItem(QueueItem.Next);
+    if (MsgPtr^.hWnd=Handle) then
+      fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
+    QueueItem := NextItem;
   end;
 
   // mouse click messages
@@ -7584,51 +7559,8 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-  Function: HashPaintMessage
-  Params: a PaintMessage in the Message queue (= PLazQueueItem)
-  Returns: a hash index
 
-  Calculates a hash of the handle in the PaintMessage which is used by the
-  FPaintMessages (which is a TDynHashArray).
- ------------------------------------------------------------------------------}
-function TgtkObject.HashPaintMessage(p: pointer): integer;
-var h: integer;
-begin
-  h:=PMsg(PLazQueueItem(p)^.Data)^.hWnd;
-  if h<0 then h:=-h;
-  Result:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
-end;
 
-{------------------------------------------------------------------------------
-  Function: FindPaintMessage
-  Params: a window handle
-  Returns: nil or a Paint Message to the widget
-
-  Searches in FPaintMessages for a LM_PAINT message with HandleWnd.
- ------------------------------------------------------------------------------}
-function TgtkObject.FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
-var h: integer;
-  HashItem: PDynHashArrayItem;
-begin
-  h:=HandleWnd;
-  if h<0 then h:=-h;
-  h:=((h mod 5364329)+(h mod 17)) mod FPaintMessages.Capacity;
-  HashItem:=FPaintMessages.GetHashItem(h);
-  if HashItem<>nil then begin
-    Result:=PLazQueueItem(HashItem^.Item);
-    if PMsg(Result^.Data)^.hWnd=HandleWnd then
-      exit;
-    HashItem:=HashItem^.Next;
-    while (HashItem<>nil) and (HashItem^.IsOverflow) do begin
-      Result:=PLazQueueItem(HashItem^.Item);
-      if PMsg(Result^.Data)^.hWnd=HandleWnd then
-        exit;
-      HashItem:=HashItem^.Next;
-    end;
-  end;
-  Result:=nil;
-end;
 
 {------------------------------------------------------------------------------
   TgtkObject SetResizeRequest
@@ -8038,6 +7970,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.399  2003/08/18 13:21:23  mattias
+  renamed lazqueue to lazlinkedlist, patch from Jeroen
+
   Revision 1.398  2003/08/15 14:01:20  mattias
   combined lazconf things for unix
 

@@ -28,7 +28,7 @@ uses
   // resource strings
   LCLStrConsts,
   // base classes
-  LazQueue, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
+  LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
   ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
   LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
@@ -47,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2003/08/18 13:21:23  mattias
+  renamed lazqueue to lazlinkedlist, patch from Jeroen
+
   Revision 1.26  2003/08/01 09:44:52  mattias
   added SelectDirectory dialog
 
