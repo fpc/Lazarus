@@ -214,7 +214,7 @@ begin
   if ADebugger <> Debugger
   then begin
     if Debugger <> nil
-    then begin
+    then begin                    
       Debugger.Breakpoints.RemoveNotification(FBreakpointsNotification);
     end;
     inherited;
@@ -272,6 +272,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.10  2003/05/22 23:08:19  marc
+  MWE: = Moved and renamed debuggerforms so that they can be
+         modified by the ide
+       + Added some parsing to evaluate complex expressions
+         not understood by the debugger
+
   Revision 1.9  2003/05/18 10:42:57  mattias
   implemented deleting empty submenus
 

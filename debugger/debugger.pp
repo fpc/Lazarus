@@ -522,6 +522,7 @@ type
     constructor Create(const AExternalDebugger: String); {virtual; Virtual constructor makes no sense}
                         //MWE: there will be a day that they do make sense :-)
                         // MG: there will be a day that they do make troubles :)
+                        //MWE: do they ?
     destructor Destroy; override;
 
     procedure Init; virtual;                         // Initializes the debugger
@@ -2032,6 +2033,12 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.22  2003/05/22 23:08:19  marc
+  MWE: = Moved and renamed debuggerforms so that they can be
+         modified by the ide
+       + Added some parsing to evaluate complex expressions
+         not understood by the debugger
+
   Revision 1.21  2003/05/22 17:06:49  mattias
   implemented InitialEnabled for breakpoints and watches
 
