@@ -4277,6 +4277,7 @@ begin
     // some action has changed the cursor during incremental search
     // -> end incremental search
     EndIncrementalFind;
+    // this called UpdateStatusBar -> exit
     exit;
   end;
 

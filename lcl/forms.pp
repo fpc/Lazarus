@@ -942,6 +942,7 @@ type
     procedure DoIdleActions;
     procedure MenuPopupHandler(Sender: TObject);
     procedure DoFreeReleaseComponents;
+    procedure DoBeforeFinalization;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1284,7 +1285,7 @@ end;
 procedure BeforeFinalization;
 // This is our ExitProc handler.
 begin
-  FreeInterfaceObject;
+  Application.DoBeforeFinalization;
 end;
 
 //------------------------------------------------------------------------------

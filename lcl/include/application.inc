@@ -96,6 +96,7 @@ begin
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
+  
   FOldExitProc:=ExitProc;
   ExitProc:=@BeforeFinalization;
 end;
@@ -185,6 +186,12 @@ begin
     if AComponent = MainForm then begin
       FMainForm:= nil;
       Terminate;
+    end;
+    if AComponent=FHintWindow then begin
+      FHintWindow:=nil;
+    end;
+    if AComponent=FHintTimer then begin
+      FHintTimer:=nil;
     end;
   end;
 end;
@@ -741,6 +748,17 @@ begin
     AComponent.Free;
   end;
   FreeThenNil(FReleaseComponents);
+end;
+
+procedure TApplication.DoBeforeFinalization;
+var
+  i: Integer;
+begin
+  if Self=nil then exit;
+  for i:=ComponentCount-1 downto 0 do begin
+    //debugln('TApplication.DoBeforeFinalization ',DbgSName(Components[i]));
+    if i<ComponentCount then Components[i].Free;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1418,6 +1436,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2005/02/28 16:52:24  mattias
+  TApplication now frees only its components before finalization, not itself
+
   Revision 1.104  2005/02/26 20:43:54  mattias
   TApplication now uses ExitProc to free itself before all finaizations
 

@@ -446,6 +446,8 @@ type
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     function DoResetToolStatus(Interactive: boolean): boolean;
+    procedure Notification(AComponent: TComponent;
+                           Operation: TOperation); override;
 
     procedure ToolButtonClick(Sender: TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
@@ -1051,6 +1053,8 @@ begin
 
   // free IDE parts
   FreeFormEditor;
+  FreeAndNil(FindReplaceDlg);
+  FreeAndNil(MessagesView);
   FreeThenNil(AnchorDesigner);
   FreeThenNil(ObjectInspector1);
   FreeThenNil(GlobalDesignHook);
@@ -1082,8 +1086,8 @@ end;
 
 procedure TMainIDE.CreateOftenUsedForms;
 begin
-  Application.CreateForm(TMessagesView, MessagesView);
-  Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
+  MessagesView:=TMessagesView.Create(nil);
+  FindReplaceDlg:=TLazFindReplaceDialog.Create(nil);
 end;
 
 procedure TMainIDE.CreateSearchResultWindow;
@@ -2484,6 +2488,11 @@ begin
 
   end;
   Result:=true;
+end;
+
+procedure TMainIDE.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
 end;
 
 
@@ -11409,6 +11418,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.849  2005/02/28 16:52:24  mattias
+  TApplication now frees only its components before finalization, not itself
+
   Revision 1.848  2005/02/25 21:55:44  mattias
   added filter for open package/project/file
 
