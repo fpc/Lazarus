@@ -805,7 +805,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TWinControl.CanTab: Boolean;
 begin
-  Result := True;
+  Result := CanFocus;
 end;
 
 procedure TWinControl.DoDragMsg(var DragMsg: TCMDrag);
@@ -1250,7 +1250,7 @@ begin
         and ((not OnlyWinControls) or (Next is TWinControl)) then
           Result := Next;
       until (Result <> nil);
-      //writeln('TWinControl.FindNextControl END ',Result.Name,' ',I);
+      //writeln('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',I);
     end;
   finally
     List.Free;
@@ -1300,7 +1300,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl GetTabOrderList
 ------------------------------------------------------------------------------}
-Procedure TWinControl.GetTabOrderList(List : TList);
+Procedure TWinControl.GetTabOrderList(List: TList);
 var
   I : Integer;
   Control : TControl;
@@ -3446,6 +3446,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.215  2004/04/04 12:32:21  mattias
+  TWinControl.CanTab now checks for CanFocus
+
   Revision 1.214  2004/03/30 20:38:14  mattias
   fixed interface constraints, fixed syncompletion colors
 

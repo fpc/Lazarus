@@ -898,7 +898,7 @@ type
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanTab: Boolean; virtual;
-    Function Focused : Boolean; dynamic;
+    Function Focused: Boolean; dynamic;
     Procedure SetFocus; virtual;
     Function GetClientOrigin : TPoint; virtual;
     Function GetClientRect: TRect; virtual;
@@ -2240,6 +2240,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.193  2004/04/04 12:32:21  mattias
+  TWinControl.CanTab now checks for CanFocus
+
   Revision 1.192  2004/03/25 14:07:24  vincents
   use only key down (not toggle) state in GetKeyState
 
