@@ -110,6 +110,9 @@ function TabsToSpaces(const s: string; TabWidth: integer): string;
 function CommentLines(const s: string): string;
 function CommentText(const s: string; CommentType: TCommentType): string;
 function UncommentLines(const s: string): string;
+function CrossReplaceChars(const Src: string; PrefixChar: char;
+  const SpecialChars: string): string;
+function SimpleSyntaxToRegExpr(const Src: string): string;
 
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 
@@ -1216,6 +1219,159 @@ begin
   Result:=true;
 end;
 
+{------------------------------------------------------------------------------
+  function CrossReplaceChars(const Src: string; PrefixChar: char;
+    const SpecialChars: string): string;
+
+------------------------------------------------------------------------------}
+function CrossReplaceChars(const Src: string; PrefixChar: char;
+  const SpecialChars: string): string;
+var
+  SrcLen, SrcPos: Integer;
+  DestLen: Integer;
+  c: Char;
+  NeedsChange: boolean;
+  DestPos: Integer;
+begin
+  Result:=Src;
+  SrcLen:=length(Src);
+  SrcPos:=1;
+  DestLen:=SrcLen;
+  NeedsChange:=false;
+  while (SrcPos<=SrcLen) do begin
+    c:=Src[SrcPos];
+    if (c<>PrefixChar) then begin
+      if System.Pos(c,SpecialChars)>=1 then begin
+        // in front of each SpecialChars will be PrefixChar inserted
+        inc(DestLen);
+        NeedsChange:=true;
+      end;
+      inc(SrcPos);
+    end else begin
+      inc(SrcPos);
+      if (SrcPos<=SrcLen) and (System.Pos(Src[SrcPos],SpecialChars)>=1) then
+      begin
+        // each prefixed SpecialChars will be reduced
+        dec(DestLen);
+        NeedsChange:=true;
+      end;
+      inc(SrcPos);
+    end;
+  end;
+  if not NeedsChange then exit;
+  SetLength(Result,DestLen);
+  SrcPos:=1;
+  DestPos:=1;
+  while (SrcPos<=SrcLen) do begin
+    c:=Src[SrcPos];
+    if (c<>PrefixChar) then begin
+      if System.Pos(c,SpecialChars)>=1 then begin
+        // in front of each SpecialChars will be PrefixChar inserted
+        Result[DestPos]:=PrefixChar;
+        inc(DestPos);
+      end;
+      Result[DestPos]:=c;
+      inc(SrcPos);
+      inc(DestPos);
+    end else begin
+      inc(SrcPos);
+      if SrcPos<=SrcLen then begin
+        if (System.Pos(Src[SrcPos],SpecialChars)<1) then begin
+          Result[DestPos]:=c;
+          inc(DestPos);
+        end;
+        Result[DestPos]:=Src[SrcPos];
+        inc(DestPos);
+        inc(SrcPos);
+      end else begin
+        Result[DestPos]:=c;
+        inc(DestPos);
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function SimpleSyntaxToRegExpr(const Src: string): string;
+
+  . -> \.
+  * -> .*
+  ? -> .
+  , -> |
+  ; -> |
+  
+  Finally enclose by ^( )$
+------------------------------------------------------------------------------}
+function SimpleSyntaxToRegExpr(const Src: string): string;
+var
+  SrcLen, SrcPos: Integer;
+  DestLen: Integer;
+  c: Char;
+  DestPos: Integer;
+begin
+  Result:=Src;
+  SrcLen:=length(Src);
+  SrcPos:=1;
+  DestLen:=SrcLen+4;
+  while (SrcPos<=SrcLen) do begin
+    c:=Src[SrcPos];
+    case c of
+    '\': inc(SrcPos);
+    '*','.':
+      inc(DestLen);
+    end;
+    inc(SrcPos);
+  end;
+  SetLength(Result,DestLen);
+  SrcPos:=1;
+  Result[1]:='^';
+  Result[2]:='(';
+  DestPos:=3;
+  while (SrcPos<=SrcLen) do begin
+    c:=Src[SrcPos];
+    case c of
+    '\':
+      begin
+        Result[DestPos]:=c;
+        inc(DestPos);
+        inc(SrcPos);
+        Result[DestPos]:=Src[SrcPos];
+        inc(DestPos);
+      end;
+    '.':
+      begin
+        Result[DestPos]:='\';
+        inc(DestPos);
+        Result[DestPos]:='.';
+        inc(DestPos);
+      end;
+    '*':
+      begin
+        Result[DestPos]:='.';
+        inc(DestPos);
+        Result[DestPos]:='*';
+        inc(DestPos);
+      end;
+    '?':
+      begin
+        Result[DestPos]:='.';
+        inc(DestPos);
+      end;
+    ',',';':
+      begin
+        Result[DestPos]:='|';
+        inc(DestPos);
+      end;
+    else
+      Result[DestPos]:=Src[SrcPos];
+      inc(DestPos);
+    end;
+    inc(SrcPos);
+  end;
+  Result[DestPos]:=')';
+  inc(DestPos);
+  Result[DestPos]:='$';
+end;
 
 end.
 
