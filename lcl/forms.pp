@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, Controls, VCLGlobals, SysUtils, GraphType, Graphics, Menus,
-  LCLLinux, LCLType, LMessages, CustomTimer. SdtCtrls;
+  LCLLinux, LCLType, LMessages, CustomTimer, StdCtrls;
 
 type
   TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly,
