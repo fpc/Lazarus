@@ -663,7 +663,9 @@ function FindCompatibleDependencyInList(First: TPkgDependency;
   ListType: TPkgDependencyList; ComparePackage: TLazPackageID): TPkgDependency;
 function GetDependencyWithIndex(First: TPkgDependency;
   ListType: TPkgDependencyList; Index: integer): TPkgDependency;
-  
+function IndexOfDependencyInList(First: TPkgDependency;
+  ListType: TPkgDependencyList; FindDependency: TPkgDependency): integer;
+
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
 function FindLowestPkgDependencyNodeWithName(const PkgName: string): TAVLTreeNode;
 function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
@@ -924,6 +926,21 @@ begin
   PkgName:=ExtractFileNameOnly(AFilename);
   if (PkgName='') or (not IsValidIdent(PkgName)) then exit;
   Result:=true;
+end;
+
+function IndexOfDependencyInList(First: TPkgDependency;
+  ListType: TPkgDependencyList; FindDependency: TPkgDependency): integer;
+var
+  Dependency: TPkgDependency;
+begin
+  Result:=-1;
+  Dependency:=First;
+  while Dependency<>nil do begin
+    inc(Result);
+    if Dependency=FindDependency then exit;
+    Dependency:=Dependency.NextDependency[ListType];
+  end;
+  Result:=-1;
 end;
 
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;

@@ -38,8 +38,8 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Graphics, ExtCtrls, Buttons, LResources, AVL_Tree,
-  ComponentReg, PackageDefs, LazarusIDEStrConsts;
+  Classes, SysUtils, Dialogs, Graphics, ExtCtrls, Buttons, Menus, LResources,
+  AVL_Tree, ComponentReg, PackageDefs, LazarusIDEStrConsts;
 
 const
   ComponentPaletteBtnWidth  = 25;
@@ -47,18 +47,24 @@ const
 
 type
   TComponentPalette = class(TBaseComponentPalette)
+    PopupMenu: TPopupMenu;
+    OpenPackageMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
+    procedure OpenPackageClicked(Sender: TObject);
+    procedure PopupMenuPopup(Sender: TObject);
   private
+    fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
     FNoteBook: TNotebook;
     fNoteBookNeedsUpdate: boolean;
+    FOnOpenPackage: TNotifyEvent;
     FSelected: TRegisteredComponent;
-    fUpdatingNotebook: boolean;
-    fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
     fUnregisteredIcon: TBitmap;
+    fUpdatingNotebook: boolean;
     procedure SetNoteBook(const AValue: TNotebook);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnClick(Sender: TObject);
     procedure SetSelected(const AValue: TRegisteredComponent);
+    procedure CreatePopupMenu;
   protected
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
@@ -78,6 +84,7 @@ type
     function FindComponent(const CompClassName: string): TRegisteredComponent; override;
     property NoteBook: TNotebook read FNoteBook write SetNoteBook;
     property Selected: TRegisteredComponent read FSelected write SetSelected;
+    property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
   end;
 
 implementation
@@ -114,13 +121,42 @@ begin
   Selected:=nil;
 end;
 
+procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
+var
+  PkgComponent: TPkgComponent;
+begin
+  PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
+  if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
+  or (PkgComponent.PkgFile.LazPackage=nil) then exit;
+  if Assigned(OnOpenPackage) then
+    OnOpenPackage(PkgComponent.PkgFile.LazPackage);
+end;
+
+procedure TComponentPalette.PopupMenuPopup(Sender: TObject);
+var
+  PkgComponent: TPkgComponent;
+  APackage: TLazPackage;
+begin
+  PkgComponent:=TPkgComponent(FindButton(PopupMenu.PopupComponent));
+  APackage:=nil;
+  if (PkgComponent<>nil) and (PkgComponent.PkgFile<>nil) then
+    APackage:=PkgComponent.PkgFile.LazPackage;
+  if APackage=nil then begin
+    OpenPackageMenuItem.Visible:=false;
+  end else begin
+    OpenPackageMenuItem.Caption:='Open Package '+APackage.IDAsString;
+    OpenPackageMenuItem.Visible:=true;
+  end;
+end;
+
 procedure TComponentPalette.SetNoteBook(const AValue: TNotebook);
 begin
   if FNoteBook=AValue then exit;
   ClearButtons;
   FNoteBook:=AValue;
-  if FNoteBook<>nil then
+  if FNoteBook<>nil then begin
     FNoteBook.OnPageChanged:=@ActivePageChanged;
+  end;
   UpdateNoteBookButtons;
 end;
 
@@ -162,6 +198,22 @@ begin
     TSpeedButton(FSelected.Button).Down:=true;
     FNoteBook.ActivePageComponent:=TPage(FSelected.Page.PageComponent);
   end;
+end;
+
+procedure TComponentPalette.CreatePopupMenu;
+begin
+  if PopupMenu<>nil then exit;
+  PopupMenu:=TPopupMenu.Create(nil);
+  PopupMenu.OnPopup:=@PopupMenuPopup;
+  PopupMenu.Name:='ComponentPalettePopupMenu';
+  
+  OpenPackageMenuItem:=TMenuItem.Create(PopupMenu);
+  with OpenPackageMenuItem do begin
+    Name:='OpenPackageMenuItem';
+    Caption:='Open package';
+    OnClick:=@OpenPackageClicked;
+  end;
+  PopupMenu.Items.Add(OpenPackageMenuItem);
 end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
@@ -231,6 +283,11 @@ end;
 procedure TComponentPalette.ClearButtons;
 begin
   Selected:=nil;
+  if PopupMenu<>nil then begin
+    PopupMenu.Free;
+    PopupMenu:=nil;
+    OpenPackageMenuItem:=nil;
+  end;
   inherited ClearButtons;
 end;
 
@@ -318,6 +375,7 @@ begin
         if CurComponent.Button=nil then begin
           CurBtn:=TSpeedButton.Create(nil);
           CurComponent.Button:=CurBtn;
+          CreatePopupMenu;
           with CurBtn do begin
             Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                   +'_'+CurComponent.ComponentClass.ClassName;
@@ -331,6 +389,7 @@ begin
             Hint := CurComponent.ComponentClass.ClassName;
             SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
             inc(ButtonX,ComponentPaletteBtnWidth+2);
+            PopupMenu:=Self.PopupMenu;
           end;
         end;
       end else if CurComponent.Button<>nil then begin

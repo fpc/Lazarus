@@ -886,7 +886,7 @@ begin
     AutoCreated:=true;
     Name:='SynEdit';
     Filename:='$(LazarusDir)/components/synedit/';
-    Version.SetValues(1,0,1,1);
+    Version.SetValues(1,0,0,0);
     Author:='SynEdit - http://sourceforge.net/projects/synedit/';
     License:='LGPL-2';
     AutoInstall:=pitStatic;

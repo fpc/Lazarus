@@ -389,6 +389,8 @@ type
     function DoSaveStringToFile(const Filename, Src,
                       FileDescription: string): TModalResult; virtual; abstract;
 
+    function DoShowProjectInspector: TModalResult; virtual; abstract;
+
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoSaveForBuild: TModalResult; virtual; abstract;
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;

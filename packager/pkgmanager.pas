@@ -90,6 +90,7 @@ type
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
       PaletteChanged: boolean);
+    procedure IDEComponentPaletteOpenPackage(Sender: TObject);
   private
     FirstInstalledDependency: TPkgDependency;
     FirstAutoInstallDependency: TPkgDependency;
@@ -215,6 +216,12 @@ procedure TPkgManager.IDEComponentPaletteEndUpdate(Sender: TObject;
   PaletteChanged: boolean);
 begin
   UpdateVisibleComponentPalette;
+end;
+
+procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
+begin
+  if (Sender=nil) or (not (Sender is TLazPackage)) then exit;
+  DoOpenPackage(TLazPackage(Sender));
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -622,8 +629,10 @@ function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage;
   FirstDependency: TPkgDependency): TModalResult;
 var
   PathList: TList;
+  Dependency: TPkgDependency;
 begin
   writeln('TPkgManager.CheckPackageGraphForCompilation A');
+  
   // check for unsaved packages
   PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
   if PathList<>nil then begin
@@ -637,6 +646,20 @@ begin
   // check for broken dependencies
   PathList:=PackageGraph.FindBrokenDependencyPath(APackage,FirstDependency);
   if PathList<>nil then begin
+    if (PathList.Count=1) then begin
+      Dependency:=TPkgDependency(PathList[0]);
+      if Dependency is TPkgDependency then begin
+        // check if project
+        if Dependency.Owner is TProject then begin
+          MainIDE.DoShowProjectInspector;
+          Result:=MessageDlg('Broken dependency',
+            'The project requires the package "'+Dependency.AsString+'".'#13
+            +'But it was not found. See Project -> Project Inspector.',
+            mtError,[mbCancel,mbAbort],0);
+          exit;
+        end;
+      end;
+    end;
     DoShowPackageGraphPathList(PathList);
     Result:=MessageDlg('Broken dependency',
       'A required packages was not found. See package graph.',
@@ -1120,6 +1143,7 @@ begin
   inherited Create(TheOwner);
   IDEComponentPalette:=TComponentPalette.Create;
   IDEComponentPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
+  TComponentPalette(IDEComponentPalette).OnOpenPackage:=@IDEComponentPaletteOpenPackage;
   
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
@@ -1963,6 +1987,15 @@ var
 begin
   PackageGraph.BeginUpdate(false);
   try
+    // check if package is designtime package
+    if APackage.PackageType=lptRunTime then begin
+      Result:=MessageDlg('Package is no designtime package',
+        'The package '+APackage.IDAsString+' is a runtime only package.'#13
+        +'Runtime only packages can not be installed in the IDE.',
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+  
     // save package
     if APackage.IsVirtual or APackage.Modified then begin
       Result:=DoSavePackage(APackage,[]);
@@ -2006,9 +2039,29 @@ end;
 
 function TPkgManager.DoCompileAutoInstallPackages(
   Flags: TPkgCompileFlags): TModalResult;
+var
+  Dependency: TPkgDependency;
+  OldDependency: TPkgDependency;
 begin
   PackageGraph.BeginUpdate(false);
   try
+    Dependency:=FirstAutoInstallDependency;
+    while Dependency<>nil do begin
+      OldDependency:=Dependency;
+      Dependency:=Dependency.NextRequiresDependency;
+      if OldDependency.LoadPackageResult<>lprSuccess then begin
+        Result:=MessageDlg('Package not found',
+          'The package "'+OldDependency.AsString+'" is marked for installation,'
+          +' but can not be found.'#13
+          +'Remove dependency from the installation list of packages?',
+          mtError,[mbYes,mbNo,mbAbort],0);
+        if Result=mrNo then Result:=mrCancel;
+        if Result<>mrYes then exit;
+        OldDependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
+        OldDependency.Free;
+      end;
+    end;
+    
     // check consistency
     Result:=CheckPackageGraphForCompilation(nil,FirstAutoInstallDependency);
     if Result<>mrOk then exit;
