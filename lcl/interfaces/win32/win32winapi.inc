@@ -54,8 +54,11 @@ Const
   Zero degrees is at the 3'o clock position. 
  ------------------------------------------------------------------------------}
 Function TWin32Object.Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
+var
+  SX, SY, EX, EY : Longint;
 Begin
-  Result := AngleArc(DC, X, Y, (Width + Height) Div 4, Angle1, Angle2);
+  Angles2Coords(X,Y,Width,Height,Angle1,Angle2, SX, SY, EX, EY);
+  Result := Windows.Arc(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
 End;
 
 {------------------------------------------------------------------------------
@@ -1232,7 +1235,7 @@ End;
   The angles angle1 and angle2 are 1/16th of a degree. For example, a full
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position. 
+  Zero degrees is at the 3'o clock position.
 
   NOTE: This just calls Arc
  ------------------------------------------------------------------------------}
@@ -1247,37 +1250,80 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  PolyBezier
+  Params:  DC, Points, NumPts, Filled, Continous
+  Returns: Boolean
+
+  Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  first point to the fourth point with the second and third points being the
+  control points. If the Continuous flag is TRUE then each subsequent curve
+  requires three more points, using the end-point of the previous Curve as its
+  starting point, the first and second points being used as its control points,
+  and the third point its end-point. If the continous flag is set to FALSE,
+  then each subsequent Curve requires 4 additional points, which are used
+  excatly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
+  least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
+  then the resulting Poly-Bézier will be drawn as a Polygon.
+
+ ------------------------------------------------------------------------------}
+Function TWin32Object.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+  Filled, Continuous: Boolean): Boolean;
+var
+  APoints : PPoint;
+  ACount : Longint;
+Begin
+  If Filled or (not Continuous) then begin
+    APoints := nil;
+    PolyBezier2Polyline(Points,NumPts,APoints,ACount,Continuous);
+    If Filled then
+      Result := Polygon(DC,APoints,ACount, False)
+    else
+      Result := Polyline(DC,APoints,ACount);
+    ReallocMem(APoints,0);
+  end
+  else
+    Result := Windows.PolyBezier(DC, LPPOINT(Points)^, NumPts);
+End;
+
+{------------------------------------------------------------------------------
   Method:  Polygon
   Params:  DC - handle to device context
            Points - pointer to polygon's vertices
            NumPts - count of polygon's vertices
            Winding
   Returns: If the function succeeds
-  
-  Use Polygon to draw a closed, many-sided shape on the canvas, using the value 
-  of Pen. After drawing the complete shape, Polygon fills the shape using the 
+
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value
+  of Pen. After drawing the complete shape, Polygon fills the shape using the
   value of Brush.
   The Points parameter is an array of points that give the vertices of the
   polygon.
-  Winding (ignored on Windows) determines how the polygon is filled.
-  When Winding is True, Polygon 
-  fills the shape using the Winding fill algorithm. When Winding is False, 
+  Winding determines how the polygon is filled.
+  When Winding is True, Polygon
+  fills the shape using the Winding fill algorithm. When Winding is False,
   Polygon uses the even-odd (alternative) fill algorithm.
   NumPts indicates the number of points to use.
-  The first point is always connected to the last point. 
-  To draw a polygon on the canvas, without filling it, use the Polyline method, 
+  The first point is always connected to the last point.
+  To draw a polygon on the canvas, without filling it, use the Polyline method,
   specifying the first point a second time at the end.
  ------------------------------------------------------------------------------}
 Function TWin32Object.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean;
+var
+  PFMode : Longint;
 Begin
   Assert(False, Format('Trace:TWin32Object.Polygon --> DC: 0x%X, Number of points: %D, Use winding fill: %S', [DC, NumPts, BOOL_RESULT[Winding]]));
-  Assert(False, 'Trace:TODO: TWin32Object.Polygon - Implement differentiation between winding and non-winding fills');
+  If not Winding then
+    PFMode := SetPolyFillMode(DC, Windows.WINDING)
+  else
+    PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
   Result := Windows.Polygon(DC, LPPOINT(Points)^, NumPts);
+  SetPolyFillMode(DC, PFMode);
 End;
 
 {------------------------------------------------------------------------------
   Method:  Polyline
-  Params:  DC - handle of device context 
+  Params:  DC - handle of device context
            Points - address of array containing endpoints
            NumPts - number of points in the array
   Returns: If the function succeeds
@@ -1298,12 +1344,57 @@ End;
           LParam - second message parameter
   Returns: True if succesful
 
-  The PostMessage Function places (posts) a message in the message queue and 
+  The PostMessage Function places (posts) a message in the message queue and
   then returns without waiting.
  ------------------------------------------------------------------------------}
 Function TWin32Object.PostMessage(HWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean;
 Begin
   Result := Windows.PostMessage(hWnd, Msg, wParam, lParam);  
+End;
+
+{------------------------------------------------------------------------------
+  Method:   RadialArc
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use RadialArc to draw an elliptically curved line with the current Pen. The 
+  values sx,sy, and ex,ey represent the starting and ending radial-points 
+  between which the Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TWin32Object.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+Begin
+  Result := Windows.Arc(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+End;
+
+{------------------------------------------------------------------------------
+  Method:   RadialChord
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
+  and ex,ey represent the starting and ending radial-points between which
+  the bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TWin32Object.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+Begin
+  Result := Windows.Chord(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
+End;
+
+{------------------------------------------------------------------------------
+  Method:   RadialPie
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values 
+  sx,sy, and ex,ey represent the starting and ending radial-points between which
+  the bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TWin32Object.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+Begin
+  Result := Windows.Pie(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
 End;
 
 {------------------------------------------------------------------------------
@@ -1877,6 +1968,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/08/13 07:08:25  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.11  2002/08/08 18:05:48  lazarus
   MG: added graphics extensions from Andrew Johnson
 

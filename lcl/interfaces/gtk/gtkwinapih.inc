@@ -111,10 +111,14 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
+function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: boolean): boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean; override;
 
+function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
+function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
+function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean; override;
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
@@ -162,6 +166,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/08/13 07:08:25  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.37  2002/08/08 18:05:48  lazarus
   MG: added graphics extensions from Andrew Johnson
 

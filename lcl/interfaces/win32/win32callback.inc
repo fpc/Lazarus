@@ -449,6 +449,8 @@ Begin
       DeliverMessage(OwnerObject, LMessage);
   {$ENDIF VER1_1}
 
+  Writeln();
+  
   If WinProcess Then
     Result := DefWindowProc(Window, Msg, WParam, LParam);
 
@@ -462,6 +464,9 @@ End;
 
 {
   $Log$
+  Revision 1.14  2002/08/13 07:08:25  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.13  2002/06/08 19:18:34  lazarus
   Keith: Fixed some bugs that were brought to my attention; fixed compilation problem.
 

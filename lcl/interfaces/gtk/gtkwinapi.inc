@@ -134,134 +134,9 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
-type
-  TBltFunction = function: Boolean;
-
-  function DrawableToDrawable: Boolean;
-  begin
-    gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable, PDeviceContext(DestDC)^.GC,
-      PDeviceContext(SrcDC)^.Drawable,  XSrc, YSrc, X, Y, Width, Height);
-    Result:=false
-  end;
-
-  function PixmapToDrawable: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function ImageToImage: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function ImageToDrawable: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function ImageToBitmap: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function PixmapToImage: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function PixmapToBitmap: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function BitmapToImage: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function BitmapToPixmap: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  function Unsupported: Boolean;
-  begin
-    Result:=false;
-  end;
-
-  //----------
-  function NoDrawableToNoDrawable: Boolean;
-  const //            FROM            TO             
-    BLT_MATRIX: array[TGDIBitmapType, TGDIBitmapType] of TBltFunction = (
-      (@DrawableToDrawable, @BitmapToPixmap, @BitmapToImage),
-      (@PixmapToBitmap, @DrawableToDrawable, @PixmapToImage),
-      (@ImageToBitmap, @ImageToDrawable, @ImageToImage)
-    );
-  begin
-    Result := BLT_MATRIX[
-      PDeviceContext(SrcDC)^.CurrentBitmap^.GDIBitmapType,
-      PDeviceContext(DestDC)^.CurrentBitmap^.GDIBitmapType
-    ]();
-  end;
-   
-  function NoDrawableToDrawable: Boolean;
-  const
-    BLT_FUNCTION: array[TGDIBitmapType] of TBltFunction = (
-      @PixmapToDrawable, @PixmapToDrawable, @ImageToDrawable
-    );
-  begin
-    Result := BLT_FUNCTION[PDeviceContext(SrcDC)^.CurrentBitmap^.GDIBitmapType]();
-  end;
-
-  function DrawableToNoDrawable: Boolean;
-  const
-    BLT_FUNCTION: array[TGDIBitmapType] of TBltFunction = (
-      @Unsupported, @Unsupported, @Unsupported
-    );
-  begin
-    Result := BLT_FUNCTION[PDeviceContext(DestDC)^.CurrentBitmap^.GDIBitmapType]();
-  end;
-  
-const //                 FROM     TO             
-  DRAWABLE_MATRIX: array[Boolean, Boolean] of TBltFunction = (
-    (@NoDrawableToNoDrawable, @NoDrawableToDrawable),
-    (@DrawableToNoDrawable, @DrawableToDrawable)
-  );
 begin
-  Assert(False, Format('trace:  [TgtkObject.BitBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop]));
-  Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
-  if Result
-  then begin
-    gdk_gc_set_function(PDeviceContext(DestDC)^.GC, GDK_COPY);
-    // TODO: Add ROP
-    
-    
-    // ----------------------------------
-    // MWE: Temporary commented out due to compiler problems
-    // The called functions can't access local vars outside 
-    // themselves when they are called through a const or a var. 
-    // Since only DrawableToDrawable is implemented, 
-    // it is for the time beeing handled by an if statement
-    // ----------------------------------
-    (*
-    
-    Result := DRAWABLE_MATRIX[
-      PDeviceContext(SrcDC)^.Drawable <> nil,
-      PDeviceContext(DestDC)^.Drawable <> nil
-    ](); 
-    
-    *)
-    // ----------------------------------
-    // MWE: Begin of temporary part
-    // ----------------------------------
-    if  (PDeviceContext(SrcDC)^.Drawable <> nil)
-    and (PDeviceContext(DestDC)^.Drawable <> nil) 
-    then Result := DrawableToDrawable
-    else Result := False;
-    // ----------------------------------
-    // MWE: End of temporary part
-    // ----------------------------------
-  end;
+  Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
+                       Height, ROP);
 end;
 
 {------------------------------------------------------------------------------
@@ -1974,6 +1849,16 @@ begin
   Result:=SimpleRegion;
 end;
 
+Function TextPoint(X, Y : Integer; Font : PGDKFont) : TPoint;
+const
+  Buffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+begin
+  //This is not entirely accurate, nor the proper way to do things, 
+  //but it should help take care of many issues anyway
+  Result.Y := Y + GDK_String_Height(Font,Buffer) - 3 + Font^.descent div 2;
+  Result.X := X;
+end;
+
 {------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
@@ -1987,8 +1872,9 @@ var
   pStr: PChar;
   Width, Height: Integer;
   NewText,oldText : String;
-  NUm : Integer;
+  AY, NUm : Integer;
   Line : Integer;
+  TXTPt : TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
@@ -2029,25 +1915,34 @@ begin
         Line := 1;
         OldText := StrPas(pStr);
         Num := pos(#10,OldText);
-        if Num = 0 then
-          gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                        X, Y + 10 {TODO: query font height}, pStr, Count)
-        else
+        AY := Y;
+        TxtPt := TextPoint(X, AY, CurrentFont^.GDIFontObject);
+	if Num = 0 then begin
+	  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                        TxtPt.X, TxtPt.Y, pStr, Count);
+        end else
         Begin  //write multiple lines
           while Num > 0 do begin
             NewText := Copy(OldText,1,Num);
-            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                          X, Y + (Line*10) {TODO: query font height},
-                          pchar(NewText), Length(NewText));
-
+	    Case OldText[Num] of
+	      #13,#10 : Delete(NewText,Num,1);
+	    end;  
+	    If Num -1 > 0 then
+	      Case OldText[Num-1] of
+	        #13,#10 : Delete(NewText,Num-1,1);
+	      end;  
+	    gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                          TxtPt.X, TxtPt.Y, pchar(NewText), Length(NewText));
+            AY := TxtPt.Y;
+            TxtPt := TextPoint(X, AY, CurrentFont^.GDIFontObject);
             Delete(OldText,1,Num);
             Num := pos(#10,OldText);
             inc(line);
           end;
-          if OldText <> '' then
+          if OldText <> '' then begin
             gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                          X, Y + (Line*10) {TODO: query font height},
-                          pchar(OldText), length(OldText));
+                          TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
+          end; 			  
         end;
       finally
         StrDispose(pStr);
@@ -3588,6 +3483,39 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  PolyBezier
+  Params:  DC, Points, NumPts, Filled, Continous
+  Returns: Boolean
+
+  Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  first point to the fourth point with the second and third points being the
+  control points. If the Continuous flag is TRUE then each subsequent curve
+  requires three more points, using the end-point of the previous Curve as its
+  starting point, the first and second points being used as its control points,
+  and the third point its end-point. If the continous flag is set to FALSE,
+  then each subsequent Curve requires 4 additional points, which are used
+  excatly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
+  least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
+  then the resulting Poly-Bézier will be drawn as a Polygon.
+
+ ------------------------------------------------------------------------------}
+Function TgtkObject.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+  Filled, Continuous: Boolean): Boolean;
+var
+  APoints : PPoint;
+  ACount : Longint;
+Begin
+  APoints := nil;
+  PolyBezier2Polyline(Points,NumPts,APoints,ACount,Continuous);
+  If Filled then 
+    Result := Polygon(DC,APoints,ACount, False)
+  else
+    Result := Polyline(DC,APoints,ACount);  
+  ReallocMem(APoints,0);
+End;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Polygon
   Params:   DC: HDC; Points: ^TPoint; NumPts: integer; Winding: Boolean;
   Returns:  Nothing
@@ -3601,7 +3529,7 @@ end;
   fills the shape using the Winding fill algorithm. When Winding is False, 
   Polygon uses the even-odd (alternative) fill algorithm.
   NumPts indicates the number of points to use.
-  The first point is always connected to the last point. 
+  The first point is always connected to the last point.
   To draw a polygon on the canvas, without filling it, use the Polyline method, 
   specifying the first point a second time at the end.
 }
@@ -3718,6 +3646,60 @@ begin
   end;
   Result := True;  
 end;
+
+{------------------------------------------------------------------------------
+  Method:   RadialArc
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use RadialArc to draw an elliptically curved line with the current Pen. The 
+  values sx,sy, and ex,ey represent the starting and ending radial-points 
+  between which the Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TgtkObject.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+var
+  A1, A2 : Extended;
+Begin
+  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
+  Result := Arc(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
+
+{------------------------------------------------------------------------------
+  Method:   RadialChord
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
+  and ex,ey represent the starting and ending radial-points between which
+  the bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TgtkObject.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+var
+  A1, A2 : Extended;
+Begin
+  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
+  Result := AngleChord(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
+
+{------------------------------------------------------------------------------
+  Method:   RadialPie
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values 
+  sx,sy, and ex,ey represent the starting and ending radial-points between which
+  the bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+function TgtkObject.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+var
+  A1, A2 : Extended;
+Begin
+  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
+  Result := Pie(DC, X, Y, Width, Height, Round(A1), Round(A2));
+End;
 
 {------------------------------------------------------------------------------
   Function: RadioMenuItemGroup
@@ -4820,41 +4802,406 @@ end;
   destination device context.
   If SrcDC contains a mask the pixmap will be copied with this transparency.
   
-  ToDo: Scaling and ROP
+  ToDo: Mirroring, extended NonDrawable support (Image, Bitmap, etc)
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
+type
+  TBltFunction = function: Boolean;
 var
   SrcDevContext, DestDevContext: PDeviceContext;
   SrcGDIBitmap: PGdiObject;
-  
-begin
-  Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
-  Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
-//writeln('[TgtkObject.StretchBlt] ',Result);
-  if Result then begin
+  ScaleBMP : hBITMAP;
+  Scale : PGdiObject;
+
+  Procedure SetClipping(DestGC : PGDKGC; GDIBitmap : PGdiObject);
+  begin
+    if (GDIBitmap <> NIL) AND (GDIBitmap^.GDIBitmapMaskObject <> nil) then
+      begin
+        gdk_gc_set_clip_mask(DestGC, GDIBitmap^.GDIBitmapMaskObject);
+        gdk_gc_set_clip_origin(DestGC, X, Y);
+      end;
+  end;
+
+  Procedure ResetClipping(DestGC : PGDKGC);
+  begin
+    gdk_gc_set_clip_mask (DestGC, nil);
+    gdk_gc_set_clip_origin (DestGC, 0,0);
+  end;
+
+  Procedure SetRasterOperation(ScaleROPGC : PGDKGC);
+  begin
+    Case ROP of
+      WHITENESS,
+      BLACKNESS, 
+      SRCCOPY :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
+      SRCPAINT :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_NOOP);
+      SRCAND :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_Clear);
+      SRCINVERT :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_XOR);
+      SRCERASE :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_AND);
+      NOTSRCCOPY :
+	GDK_GC_Set_Function(ScaleROPGC, GDK_OR_REVERSE);
+      NOTSRCERASE :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_AND);
+      MERGEPAINT :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_Copy_Invert);
+      DSTINVERT :
+        GDK_GC_Set_Function(ScaleROPGC, GDK_INVERT);
+      else begin
+        gdk_gc_set_function(ScaleROPGC, GDK_COPY);
+        WriteLn('WARNING: [TgtkObject.StretchBlt] Got unknown/unsupported CopyMode!!');
+      end;
+    end;
+  end;
+
+  function ScaleBuffer(ScaleGC:PGDKGC) : Boolean;
+  {$Ifdef enable_gdkpixbuf}
+  var
+    ScaleSrc, ScaleDest : PGDKPixbuf;
+    ShrinkWidth,
+    ShrinkHeight : Boolean;
+    ScaleMethod : TGDKINTERPTYPE;
+  begin
+    Result := False;
+    ScaleSRC := nil;
+    ScaleDest := nil;  
+    ShrinkWidth := Width < SrcWidth;
+    ShrinkHeight := Height < SrcHeight;
+    //GDKPixbuf Scaling is not done in the same way as Windows
+    //but by rights ScaleMethod should really be chosen based
+    //on the destination device's internal flag
+    {GDK_INTERP_NEAREST,GDK_INTERP_TILES,
+    GDK_INTERP_BILINEAR,GDK_INTERP_HYPER);}
+    If ShrinkWidth and ShrinkHeight then
+      ScaleMethod := GDK_INTERP_TILES
+    else  
+      If ShrinkWidth or ShrinkHeight then
+        ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
+      else  
+        ScaleMethod := GDK_INTERP_BILINEAR;
+    ScaleSRC := gdk_pixbuf_get_from_drawable(nil,Scale^.GDIPixmapObject,
+      GDK_ColorMap_Get_System,0,0,0,0,SrcWidth,SrcHeight);
+    If ScaleSRC = nil then
+      exit;
+    ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,Width,Height,ScaleMethod);
+    GDK_Pixbuf_Unref(ScaleSRC);
+    If ScaleDest = nil then
+      exit;
+    DeleteObject(ScaleBMP);
+    ScaleBMP := CreateCompatibleBitmap(-1, Width, Height);
+    Scale := PGdiObject(ScaleBMP);
+    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,@Scale^.GDIPixmapObject, nil,0);
+    GDK_Pixbuf_Unref(ScaleDest);
+    Result := True;
+  {$Else}
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] GDKPixbuf support has been disabled, no stretching is available!');
+    Result := True;
+  {$EndIf}
+  end;
+
+  Function ScaleAndROP(ScaleROPGC : PGDKGC; SRC : PGDKDrawable) : Boolean;
+  begin
+    Result := False;
+    if ScaleROPGC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.StretchBlt] Uninitialized GC');
+      exit;
+    end;
+
+    // create a buffer for raster operations and scaling
+    Case ROP of
+      WHITENESS,
+      BLACKNESS,
+      DSTINVERT :
+        begin
+          ScaleBMP := CreateCompatibleBitmap(-1, Width, Height);
+          Scale := PGdiObject(ScaleBMP);
+          SetRasterOperation(ScaleROPGC);
+          Result := True;
+          exit; //skip scaling
+        end;
+    else begin
+           ScaleBMP := CreateCompatibleBitmap(-1, SRCWidth, SRCHeight);
+           Scale := PGdiObject(ScaleBMP);
+        end;
+    end;
+
+    // set raster operation to SRCCOPY, or NOTSRCCOPY
+    If ROP = NOTSRCERASE then
+      GDK_GC_Set_Function(ScaleROPGC, GDK_OR_REVERSE)
+    else
+      GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
+
+    //copy source into scale buffer
+    gdk_window_copy_area(Scale^.GDIPixmapObject, ScaleROPGC,0, 0,
+       SRC, XSRC, YSRC, SRCWidth, SRCHeight);
+
+    // Set raster operation to SRCCOPY
+    GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
+
+    // Scale Buffer if needed
+    If (Width <> SrcWidth) or (Height <> SrcHeight) then
+      Result := ScaleBuffer(ScaleROPGC)
+    else
+      Result := True;  
+
+    //set raster operation
+    If Result then
+      SetRasterOperation(ScaleROPGC);
+  end;
+
+  Procedure ROPFILLBUFFER(DC : hDC);
+  var
+    OldCurrentBrush: PGdiObject;
+    Brush : hBrush;
+  begin
+    with PDeviceContext(DC)^ do
+    begin
+      // Temporarily hold the old brush to
+      // replace it with the given brush
+      OldCurrentBrush := CurrentBrush;
+      If ROP = WHITENESS then
+        Brush := GetStockObject(WHITE_BRUSH)
+      else
+        Brush := GetStockObject(BLACK_BRUSH);
+      CurrentBrush := PGdiObject(Brush);
+      SelectGDKBrushProps(DC);
+      gdk_draw_rectangle(Scale^.GDIPixmapObject, GC, 1, 0, 0, Width, Height);
+      // Restore current brush
+      CurrentBrush := OldCurrentBrush;
+    end;
+  end;
+
+  function DrawableToDrawable: Boolean;
+  begin
     SrcDevContext:=PDeviceContext(SrcDC);
     DestDevContext:=PDeviceContext(DestDC);
     SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
-    gdk_gc_set_function(DestDevContext^.GC, GDK_COPY);
-    // TODO: Add scaling and ROP
-    if SrcGDIBitmap^.GDIBitmapMaskObject <> nil then
-    begin
-      // set clipping mask for transparency
-      gdk_gc_set_clip_mask(DestDevContext^.GC,
-                           SrcGDIBitmap^.GDIBitmapMaskObject);
-      gdk_gc_set_clip_origin(DestDevContext^.GC, X, Y);
+
+    // perform raster operation and scaling in a buffer
+    If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable) then
+      exit;
+
+    Case ROP of
+      WHITENESS, BLACKNESS :
+        ROPFILLBUFFER(DestDC);
     end;
+    
+    // set clipping mask for transparency
+    SetClipping(DestDevContext^.GC, SrcGDIBitmap);
+
     // draw image
-    gdk_draw_pixmap(DestDevContext^.Drawable,
-                    DestDevContext^.GC, SrcDevContext^.Drawable,
-                    XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
-    if SrcGDIBitmap^.GDIBitmapMaskObject <> nil then begin
-      // unset clipping mask for transparency
-      gdk_gc_set_clip_mask (DestDevContext^.GC,nil);
-      gdk_gc_set_clip_origin (DestDevContext^.GC, 0,0);
+    gdk_window_copy_area(DestDevContext^.Drawable,
+      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject, 
+      0, 0, Width, Height);
+
+    // unset clipping mask for transparency
+    ResetClipping(DestDevContext^.GC);
+
+    // restore raster operation to SRCCOPY
+    GDK_GC_Set_Function(DestDevContext^.GC, GDK_Copy);
+
+    // Delete buffer
+    DeleteObject(ScaleBMP);
+
+    Result:=True;
+  end;
+
+  function PixmapToDrawable: Boolean;
+  begin
+    SrcDevContext:=PDeviceContext(SrcDC);
+    DestDevContext:=PDeviceContext(DestDC);
+    SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
+
+    // perform raster operation and scaling in a buffer
+    If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable) then
+      exit;
+
+
+    Case ROP of
+      WHITENESS, BLACKNESS :
+        ROPFILLBUFFER(DestDC);
     end;
-//writeln('[TgtkObject.StretchBlt] C ');
+    
+    // set clipping mask for transparency
+    SetClipping(DestDevContext^.GC, SrcGDIBitmap);
+
+    // draw image
+    gdk_window_copy_area(DestDevContext^.Drawable,
+      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject, 
+      0, 0, Width, Height);
+
+    // unset clipping mask for transparency
+    ResetClipping(DestDevContext^.GC);
+
+    // restore raster operation to SRCCOPY
+    GDK_GC_Set_Function(DestDevContext^.GC, GDK_Copy);
+
+    // Delete buffer
+    DeleteObject(ScaleBMP);
+
+    Result := True;
+  end;
+
+  function ImageToImage: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] ImageToImage unimplimented!');
+    Result:=false;
+  end;
+
+  function ImageToDrawable: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] ImageToDrawable unimplimented!');
+    Result:=false;
+  end;
+
+  function ImageToBitmap: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] ImageToBitmap unimplimented!');
+    Result:=false;
+  end;
+
+  function PixmapToImage: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] PixmapToImage unimplimented!');
+    Result:=false;
+  end;
+
+  function PixmapToBitmap: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] PixmapToBitmap unimplimented!');
+    Result:=false;
+  end;
+
+  function BitmapToImage: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] BitmapToImage unimplimented!');
+    Result:=false;
+  end;
+
+  function BitmapToPixmap: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] BitmapToPixmap unimplimented!');
+    Result:=false;
+  end;
+
+  function Unsupported: Boolean;
+  begin
+    WriteLn('WARNING: [TgtkObject.StretchBlt] Destination and/or Source '
+      + 'unsupported!!');
+    Result:=false;
+  end;
+
+  //----------
+  function NoDrawableToNoDrawable: Boolean;
+  const //            FROM            TO
+    BLT_MATRIX: array[TGDIBitmapType, TGDIBitmapType] of TBltFunction = (
+      (@DrawableToDrawable, @BitmapToPixmap, @BitmapToImage),
+      (@PixmapToBitmap, @DrawableToDrawable, @PixmapToImage),
+      (@ImageToBitmap, @ImageToDrawable, @ImageToImage)
+    );
+  begin
+    If (PDeviceContext(SrcDC)^.CurrentBitmap <> nil) and
+      (PDeviceContext(DestDC)^.CurrentBitmap <> nil)
+    then
+      Result := BLT_MATRIX[
+        PDeviceContext(SrcDC)^.CurrentBitmap^.GDIBitmapType,
+        PDeviceContext(DestDC)^.CurrentBitmap^.GDIBitmapType
+      ]()
+    else
+      Result := Unsupported;
+  end;
+
+  function NoDrawableToDrawable: Boolean;
+  const
+    BLT_FUNCTION: array[TGDIBitmapType] of TBltFunction = (
+      @PixmapToDrawable, @PixmapToDrawable, @ImageToDrawable
+    );
+  begin
+    If PDeviceContext(SrcDC)^.CurrentBitmap <> nil then
+      Result := BLT_FUNCTION[
+        PDeviceContext(SrcDC)^.CurrentBitmap^.GDIBitmapType
+      ]()
+    else
+      Result := Unsupported;
+  end;
+
+  function DrawableToNoDrawable: Boolean;
+  const
+    BLT_FUNCTION: array[TGDIBitmapType] of TBltFunction = (
+      @Unsupported, @Unsupported, @Unsupported
+    );
+  begin
+    If PDeviceContext(DestDC)^.CurrentBitmap <> nil then
+      Result := BLT_FUNCTION[
+        PDeviceContext(DestDC)^.CurrentBitmap^.GDIBitmapType
+      ]()
+    else
+      Result := Unsupported;
+  end;
+
+const //                 FROM     TO
+  DRAWABLE_MATRIX: array[Boolean, Boolean] of TBltFunction = (
+    (@NoDrawableToNoDrawable, @NoDrawableToDrawable),
+    (@DrawableToNoDrawable, @DrawableToDrawable)
+  );
+
+begin
+  Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
+  Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
+  if Result
+  then begin
+    (*
+
+    Result := DRAWABLE_MATRIX[
+      PDeviceContext(SrcDC)^.Drawable <> nil,
+      PDeviceContext(DestDC)^.Drawable <> nil
+    ]();
+
+    *)
+
+    // To Supress GDK Errors/Warnings
+    If (XSrc < 0 ) then begin
+      SrcWidth := SrcWidth + XSrc;
+      XSrc := 0; 
+    end;
+
+    // To Supress GDK Errors/Warnings
+    If (YSrc < 0 ) then begin
+      SrcHeight := SrcHeight + YSrc;
+      YSrc := 0; 
+    end;
+
+    // To Supress GDK Errors/Warnings
+    If (X < 0 ) then begin
+      Width := Width + X;
+      X := 0; 
+    end;
+
+    // To Supress GDK Errors/Warnings
+    If (Y < 0 ) then begin
+      Height := Height + Y;
+      Y := 0; 
+    end;
+
+    If PDeviceContext(SrcDC)^.Drawable = nil then begin
+      If PDeviceContext(DestDC)^.Drawable = nil then
+        Result := NoDrawableToNoDrawable
+      else
+        Result := NoDrawableToDrawable;
+    end
+    else begin
+      If PDeviceContext(DestDC)^.Drawable = nil then
+        Result := DrawableToNoDrawable
+      else
+        Result := DrawableToDrawable;
+    end;
   end;
   Assert(True, Format('trace:< [TgtkObject.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 end;
@@ -4896,9 +5243,36 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean;
+var
+  aRect : TRect;
+  txtpt : TPoint;
 begin
-  // Your code here
-  Result:=false;
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.TextOut] Uninitialized GC');
+      Result := False;
+    end
+    else 
+    if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+    then begin
+      WriteLn('WARNING: [TgtkObject.TextOut] Missing font');
+      Result := False;
+    end
+    else begin
+      SelectGDKTextProps(DC);
+      TxtPt := TextPoint(X, Y, CurrentFont^.GDIFontObject);
+      aRect := Rect(X,Y,X + GDK_String_Width(CurrentFont^.GDIFontObject,str), TxtPt.Y);
+      FillRect(DC,aRect,hBrush(CurrentBrush));
+      SelectGDKTextProps(DC);
+      gdk_draw_text(Drawable,CurrentFont^.GDIFontObject,
+        GC, X, aRect.Bottom, Str, Count);      
+      Result := True;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4940,6 +5314,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2002/08/13 07:08:24  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.90  2002/08/08 18:05:47  lazarus
   MG: added graphics extensions from Andrew Johnson
 

@@ -442,6 +442,12 @@ begin
   Result := InterfaceObject.Pie(DC,x,y,width,height,angle1,angle2);
 end;
 
+function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; 
+  Filled, Continuous: boolean): boolean; 
+begin
+  Result := InterfaceObject.PolyBezier(DC,Points,NumPts,Filled,Continuous);
+end;
+
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
   Winding: boolean): boolean; 
 begin
@@ -456,6 +462,21 @@ end;
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
 begin
   Result := InterfaceObject.PostMessage(hWnd, Msg, wParam, lParam);
+end;
+
+function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := InterfaceObject.RadialChord(DC, x,y,width,height,sx,sy,ex,ey);
+end;
+
+function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := InterfaceObject.RadialArc(DC, x,y,width,height,sx,sy,ex,ey);
+end;
+
+function RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := InterfaceObject.RadialPie(DC, x,y,width,height,sx,sy,ex,ey);
 end;
 
 function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
@@ -1120,6 +1141,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/08/13 07:08:24  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.38  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 

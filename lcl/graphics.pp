@@ -471,31 +471,43 @@ type
     procedure RequiredState(ReqState: TCanvasState);
   public
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
+    procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
                         TransparentColor :TColor);
     constructor Create;
     procedure Chord(x,y,width,height,angle1,angle2 : Integer);
+    procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
-    procedure Ellipse(x1, y1, x2, y2: Integer); 
-    procedure Ellipse(const Rect: TRect); 
+    procedure Ellipse(x1, y1, x2, y2: Integer);
+    procedure Ellipse(const Rect: TRect);
     procedure Pie(x,y,width,height,angle1,angle2 : Integer);
-    procedure Polygon(const Points: array of TPoint; 
+    procedure Pie(x,y,width,height,SX,SY,EX,EY : Integer);
+    procedure PolyBezier(Points: PPoint; NumPts: Integer;
+                         Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
+                         Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+    procedure PolyBezier(const Points: array of TPoint;
+                         Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
+                         Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+    procedure PolyBezier(const Points: array of TPoint);
+    procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean{$IFDEF VER1_1} = False{$ENDIF};
                       StartIndex: Integer{$IFDEF VER1_1} = 0{$ENDIF};
                       NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
-    procedure Polygon(Points: PPoint; NumPts: Integer; 
+    procedure Polygon(Points: PPoint; NumPts: Integer;
                       Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
+    Procedure Polygon(const Points: array of TPoint);
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer {$IFDEF VER1_1} = 0{$ENDIF};
                        NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
+    procedure Polyline(const Points: array of TPoint);
     Procedure FillRect(const Rect : TRect);
     procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
     procedure Frame3d(var Rect : TRect; const FrameWidth : integer;
                       const Style : TBevelCut);
-    Procedure Rectangle(X1,Y1,X2,Y2 : Integer); 
+    Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
     Procedure Rectangle(const Rect: TRect); 
     Procedure Line(X1,Y1,X2,Y2 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
@@ -507,7 +519,6 @@ type
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
-    Procedure Polygon(const Points: array of TPoint);
     function HandleAllocated: boolean;
     property ClipRect: TRect read GetCanvasClipRect;
     property PenPos: TPoint read GetPenPos write SetPenPos;
@@ -823,6 +834,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2002/08/13 07:08:24  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.36  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 

@@ -245,6 +245,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Arc
+  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Returns:  Nothing
+
+  Use Arc to draw an elliptically curved line with the current Pen. The 
+  values sx,sy, and ex,ey represent the starting and ending radial-points 
+  between which the Arc is drawn.
+
+------------------------------------------------------------------------------}
+procedure TCanvas.Arc(x,y,width,height,sx,sy,ex,ey : Integer);
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.RadialArc(FHandle,x,y,width,height,sx,sy,ex,ey);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Pie
   Params:   x,y,width,height,angle1,angle2
   Returns:  Nothing
@@ -263,6 +279,74 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Pie
+  Params:   x,y,width,height,sx,sy,ex,ey
+  Returns:  Nothing
+
+  Use Pie to draw a filled Pie-shaped wedge on the canvas. The values sx,sy,
+  and ex,ey represent the starting and ending radial-points between which
+  the Bounding-Arc is drawn.
+
+------------------------------------------------------------------------------}
+procedure TCanvas.Pie(x,y,width,height,sx,sy,ex,ey : Integer);
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.RadialPie(FHandle,x,y,width,height,sx,sy,ex,ey);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCanvas.PolyBezier
+  Params:  Points, Filled, Continous
+  Returns: Boolean
+
+  Use Polybezier to draw cubic Bézier curves. The first curve is drawn from the
+  first point to the fourth point with the second and third points being the
+  control points. If the Continuous flag is TRUE then each subsequent curve
+  requires three more points, using the end-point of the previous Curve as its
+  starting point, the first and second points being used as its control points,
+  and the third point its end-point. If the continous flag is set to FALSE,
+  then each subsequent Curve requires 4 additional points, which are used
+  excatly as in the first curve. Any additonal points which do not add up to
+  a full bezier(4 for Continuous, 3 otherwise) are ingored. There must be at
+  least 4 points for an drawing to occur. If the Filled Flag is set to TRUE
+  then the resulting Poly-Bézier will be drawn as a Polygon.
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.PolyBezier(const Points: array of TPoint;
+  Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
+  Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+var NPoints, i: integer;
+  PointArray: ^TPoint;
+begin
+  NPoints:=High(Points)-Low(Points)+1;
+  if NPoints<=0 then exit;
+  GetMem(PointArray,SizeOf(TPoint)*NPoints);
+  for i:=0 to NPoints-1 do
+    PointArray[i]:=Points[i+Low(Points)];
+  PolyBezier(PointArray, NPoints, Filled, Continuous);
+  FreeMem(PointArray);
+end;
+
+procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
+  Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
+  Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.PolyBezier(FHandle,Points,NumPts,Filled, Continuous);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.PolyBezier
+  Params:   Points
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.PolyBezier(const Points: array of TPoint);
+begin
+  PolyBezier(Points, False, True);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Polygon
   Params:   Points: array of TPoint; Winding: Boolean = False;
             StartIndex: Integer = 0; NumPts: Integer = -1
@@ -278,7 +362,7 @@ end;
   Polygon uses the even-odd (alternative) fill algorithm.
   StartIndex gives the index of the first point in the array to use. All points 
   before this are ignored.
-  NumPts indicates the number of points to use, starting at StartIndex. 
+  NumPts indicates the number of points to use, starting at StartIndex.
   If NumPts is -1 (the default), Polygon uses all points from StartIndex to the 
   end of the array.
   The first point is always connected to the last point. 
@@ -310,13 +394,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Polygon
+  Params:   Points
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Polygon(const Points: array of TPoint);
+begin
+  Polygon(Points, True, Low(Points), High(Points) - Low(Points));
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Polyline
   Params:   Points: array of TPoint; 
             StartIndex: Integer = 0; NumPts: Integer = -1
   Returns:  Nothing
-  
+
   Use Polyline to connect a set of points on the canvas. If you specify only two 
-  points, Polyline draws a single line. 
+  points, Polyline draws a single line.
   The Points parameter is an array of points to be connected.
   StartIndex identifies the first point in the array to use.
   NumPts indicates the number of points to use. If NumPts is -1 (the default), 
@@ -350,14 +445,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Polyline
+  Params:   Points
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Polyline(const Points: array of TPoint);
+begin
+  Polyline(Points, Low(Points), High(Points) - Low(Points));
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Ellipse
   Params:   X1, Y1, X2, Y2
   Returns:  Nothing
-  
+
   Use Ellipse to draw a filled circle or ellipse on the canvas.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Ellipse(x1, y1, x2, y2: Integer); 
+procedure TCanvas.Ellipse(x1, y1, x2, y2: Integer);
 begin
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.Ellipse(FHandle,x1,y1,x2,y2);
@@ -367,11 +473,11 @@ end;
   Method:   TCanvas.Ellipse
   Params:   X1, Y1, X2, Y2
   Returns:  Nothing
-  
+
   Use Ellipse to draw a filled circle or ellipse on the canvas.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Ellipse(const Rect: TRect); 
+procedure TCanvas.Ellipse(const Rect: TRect);
 begin
   Ellipse(Rect.Left,Rect.Top,Rect.Right,Rect.Bottom);
 end;
@@ -498,18 +604,6 @@ begin
   ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, nil,
              PChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);
-end;
-
-
-{------------------------------------------------------------------------------
-  Method:   TCanvas.Polygon
-  Params:   Points
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCanvas.Polygon(const Points: array of TPoint);
-begin
-
 end;
 
 function TCanvas.HandleAllocated: boolean;
@@ -667,6 +761,23 @@ begin
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.AngleChord(FHandle,x,y,width,height,angle1,angle2);
 end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Chord
+  Params:   x,y,width,height,sx,sy,ex,ey
+  Returns:  Nothing
+
+  Use Chord to draw a filled Chord-shape on the canvas. The values sx,sy,
+  and ex,ey represent a starting and ending radial-points between which
+  the Arc is draw.
+
+------------------------------------------------------------------------------}
+procedure TCanvas.Chord(x,y,width,height,sx,sy,ex,ey : Integer);
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.RadialChord(FHandle,x,y,width,height,sx,sy,ex,ey);
+end;
+
 {------------------------------------------------------------------------------
   Method: TCanvas.Destroy
   Params:  None
@@ -850,6 +961,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/08/13 07:08:24  lazarus
+  MG: added gdkpixbuf.pp and changes from Andrew Johnson
+
   Revision 1.20  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 

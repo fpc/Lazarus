@@ -80,9 +80,15 @@ begin
   Result := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
   DestRect:=Client;
   inc(DestRect.Left,Offset.X);
-  inc(DestRect.Right,Offset.X);
   inc(DestRect.Top,Offset.Y);
-  inc(DestRect.Bottom,Offset.Y);
+  If DestRect.Right > DestRect.Left + Result.Right - Result.Left then
+    DestRect.Right := DestRect.Left + Result.Right - Result.Left;
+  If DestRect.Bottom > DestRect.Top + gHeight then
+    DestRect.Bottom := DestRect.Top + gHeight;
+  If (Result.Right - Result.Left) <> (DestRect.Right - DestRect.Left) then
+    Result.Right := Result.Left + DestRect.Right - DestRect.Left;
+  If (Result.Bottom - Result.Top) <> (DestRect.Bottom - DestRect.Top) then
+    Result.Bottom := Result.Top + DestRect.Bottom - DestRect.Top;
   Canvas.Copyrect(DestRect, TPixmap(FOriginal).Canvas, Result)
 end;
 

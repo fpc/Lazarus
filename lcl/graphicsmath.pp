@@ -83,9 +83,12 @@ TPoint;
 
 Procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint); Overload;
-Procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : 
-PPoint;
-  var Count : Longint; Continuous : Boolean); Overload;
+Procedure PolyBezier2Polyline(Beziers : Array of TPoint; 
+  var Points : PPoint; var Count : Longint; 
+  Continuous : Boolean); Overload;
+Procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
+  var Points : PPoint; var Count : Longint; 
+  Continuous : Boolean); Overload;
 
 Procedure PolyBezierArcPoints(X, Y, Width, Height : Longint; Angle1,
   Angle2, Rotation : Extended; var Points : PPoint; var Count : Longint);
@@ -726,14 +729,20 @@ end;
   by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-Procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : 
-PPoint;
+Procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : PPoint;
   var Count : Longint; Continuous : Boolean);
+begin  
+  PolyBezier2Polyline(@Beziers[0],High(Beziers) + 1, Points, Count, 
+    	              Continuous);
+end;
+
+Procedure PolyBezier2Polyline(Beziers : PPoint; BCount : Longint;
+  var Points : PPoint; var Count : Longint; Continuous : Boolean);
 var
   I : Integer;
   NB : Longint;
 begin
-  If High(Beziers) < 3 then
+  If BCount < 4 then
     exit;
   Count := 0;
   If Assigned(Points) then
@@ -743,21 +752,21 @@ begin
       Points := nil;
     end;
   If Not Continuous then begin
-    NB := High(Beziers) + 1;
+    NB := BCount;
     NB := Floor(NB div 4);
     For I := 0 to NB - 1 do
       Bezier2PolyLine(Bezier(Beziers[I*4],Beziers[I*4+1],
         Beziers[I*4+2],Beziers[I*4+3]), Points, Count);
   end
   else begin
-    NB := High(Beziers);
+    NB := BCount - 1;
     NB := Floor(NB div 3);
-    For I := 0 to NB - 1 do
+    For I := 0 to NB do
       Bezier2PolyLine(Bezier(Beziers[(I - 1)*3 + 3],Beziers[I*3 + 1],
         Beziers[I*3+2],Beziers[I*3+3]), Points, Count);
   end;
 end;
-
+  
 {------------------------------------------------------------------------------
   Method:   PolyBezierArcPoints
   Params:   X, Y, Width, Height, Angle1, Angle2, Rotation, Points, Count
