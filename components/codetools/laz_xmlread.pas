@@ -1276,14 +1276,22 @@ end;
 
 procedure ReadXMLFile(var ADoc: TXMLDocument; const AFilename: String);
 var
-  stream: TFileStream;
+  FileStream: TFileStream;
+  MemStream: TMemoryStream;
 begin
   ADoc := nil;
-  stream := TFileStream.Create(AFilename, fmOpenRead);
+  FileStream := TFileStream.Create(AFilename, fmOpenRead);
+  MemStream := TMemoryStream.Create;
   try
-    ReadXMLFile(ADoc, stream, AFilename);
+    try
+      MemStream.LoadFromStream(FileStream);
+    except
+      exit;
+    end;
+    ReadXMLFile(ADoc, MemStream, AFilename);
   finally
-    stream.Free;
+    FileStream.Free;
+    MemStream.Free;
   end;
 end;
 
@@ -1351,6 +1359,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/10/22 08:48:04  lazarus
+  MG: fixed segfault on loading xmlfile
+
   Revision 1.6  2002/10/05 14:03:58  lazarus
   MG: accelerated calculating guidelines
 

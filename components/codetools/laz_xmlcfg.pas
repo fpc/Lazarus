@@ -260,8 +260,6 @@ end;
 
 procedure TXMLConfig.SetFilename(const AFilename: String);
 var
-  MemStream: TMemoryStream;
-  ok: boolean;
   cfg: TDOMElement;
 begin
   {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename A '+AFilename);{$ENDIF}
@@ -278,21 +276,8 @@ begin
   end;
 
   doc:=nil;
-  if FileExists(AFilename) then begin
-    MemStream:=TMemoryStream.Create;
-    try
-      try
-        ok:=false;
-        MemStream.LoadFromFile(AFilename);
-        ok:=true;
-      except
-      end;
-      if ok then
-        ReadXMLFile(doc,MemStream);
-    finally
-      MemStream.Free;
-    end;
-  end;
+  if FileExists(AFilename) then
+    ReadXMLFile(doc,AFilename);
 
   if not Assigned(doc) then
     doc := TXMLDocument.Create;
@@ -309,6 +294,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.7  2002/10/22 08:48:04  lazarus
+  MG: fixed segfault on loading xmlfile
+
   Revision 1.6  2002/10/09 12:40:25  lazarus
   MG: reduced exceptions on file not found
 
