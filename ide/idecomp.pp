@@ -307,7 +307,7 @@ procedure RegisterStandardComponents(
 begin
 
   RegisterComponentsProc:=@RegisterComponents;
-  RegisterComponents('Standard','Menus',[TMenu,TPopupMenu]);
+  RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
           ,TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
@@ -339,6 +339,7 @@ begin
   // components that are streamed but not selectable in the IDE
   RegisterComponents('','ExtCtrls',[TPage]);
   RegisterComponents('','ComCtrls',[TToolbutton]);
+  RegisterComponents('','menus', [TMenuItem]);
 
   RegisterComponentsProc:=nil;
 

@@ -5844,7 +5844,9 @@ begin
                'Form renaming in source is not implemented yet.',
                mtInformation,[mbOk],0);
   end else begin
-    raise Exception.Create('TMainIDE.OnDesignerRenameComponent internal error');
+    if (aComponent is TMenuItem) or (aComponent is TMenu)
+       then writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
+       else raise Exception.Create('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name);
   end;
 end;
 
@@ -6402,6 +6404,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.303  2002/05/30 21:40:08  lazarus
+  * component-palette: TMainMenu replaces TMenu
+  + TMenuItem registered as unvisible component
+  + TMainMenu registered as visible component
+  stoppok
+
   Revision 1.302  2002/05/30 14:18:46  lazarus
   MG: filedialogs now saves size and history
 
