@@ -102,6 +102,8 @@ const
   ctnPointerType     = 82;
   ctnClassOfType     = 83;
   
+  ctnWithVariable    = 90;
+  ctnWithStatement   = 91;
 
 
   // combined values
@@ -277,6 +279,9 @@ begin
   ctnFileType: Result:='File Type';
   ctnPointerType: Result:='Pointer ''^'' Type';
   ctnClassOfType: Result:='Class Of Type';
+
+  ctnWithVariable: Result:='With Variable';
+  ctnWithStatement: Result:='With Statement'
 
   else
     Result:='invalid descriptor';

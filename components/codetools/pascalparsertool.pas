@@ -33,6 +33,7 @@
   ToDo:
     - ReadBackTilBlockEnd: case could also be in a record, then it should not
         close the block
+    - BuildSubTreeForBeginBlock: building case statement nodes
 
 }
 unit PascalParserTool;
@@ -88,6 +89,7 @@ type
     PackedTypesKeyWordFuncList: TKeyWordFunctionList;
     InnerClassKeyWordFuncList: TKeyWordFunctionList;
     ClassVarTypeKeyWordFuncList: TKeyWordFunctionList;
+    BlockStatementStartKeyWordFuncList: TKeyWordFunctionList;
     ExtractMemStream: TMemoryStream;
     ExtractSearchPos: integer;
     ExtractFoundPos: integer;
@@ -138,6 +140,7 @@ type
     procedure BuildPackedTypesKeyWordFunctions; virtual;
     procedure BuildInnerClassKeyWordFunctions; virtual;
     procedure BuildClassVarTypeKeyWordFunctions; virtual;
+    procedure BuildBlockStatementStartKeyWordFuncList; virtual;
     function UnexpectedKeyWord: boolean;
     // read functions
     function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType: boolean;
@@ -150,8 +153,14 @@ type
         Attr: TProcHeadAttributes): boolean;
     function ReadUsesSection(ExceptionOnError: boolean): boolean;
     function ReadSubRange(ExceptionOnError: boolean): boolean;
-    function ReadTilBlockEnd(StopOnBlockMiddlePart: boolean): boolean;
+    function ReadTilBlockEnd(StopOnBlockMiddlePart,
+        CreateNodes: boolean): boolean;
     function ReadBackTilBlockEnd(StopOnBlockMiddlePart: boolean): boolean;
+    function ReadTilVariableEnd(ExceptionOnError: boolean): boolean;
+    function ReadTilStatementEnd(ExceptionOnError,
+        CreateNodes: boolean): boolean;
+    function ReadWithStatement(ExceptionOnError,
+        CreateNodes: boolean): boolean;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -162,9 +171,10 @@ type
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
         var CommentStart, CommentEnd: integer): boolean;
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
-    procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildTreeAndGetCleanPos(OnlyInterfaceNeeded: boolean;
         CursorPos: TCodeXYPosition; var CleanCursorPos: integer);
+    procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
+    procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     function DoAtom: boolean; override;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
@@ -293,6 +303,10 @@ begin
   ClassVarTypeKeyWordFuncList:=TKeyWordFunctionList.Create;
   BuildClassVarTypeKeyWordFunctions;
   AddKeyWordFuncList(ClassVarTypeKeyWordFuncList);
+  // keywords for statements
+  BlockStatementStartKeyWordFuncList:=TKeyWordFunctionList.Create;
+  BuildBlockStatementStartKeyWordFuncList;
+  AddKeyWordFuncList(BlockStatementStartKeyWordFuncList);
 end;
 
 destructor TPascalParserTool.Destroy;
@@ -422,6 +436,17 @@ begin
     Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeProc);
 
     DefaultKeyWordFunction:={$ifdef FPC}@{$endif}KeyWordFuncClassVarTypeIdent;
+  end;
+end;
+
+procedure TPascalParserTool.BuildBlockStatementStartKeyWordFuncList;
+begin
+  with BlockStatementStartKeyWordFuncList do begin
+    Add('BEGIN' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REPEAT',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CASE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -568,6 +593,38 @@ begin
   finally
     CurKeyWordFuncList:=DefaultKeyWordFuncList;
   end;
+end;
+
+procedure TPascalParserTool.BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode);
+// reparse a quick parsed begin..end block and build the child nodes
+//   create nodes for 'with' and 'case' statements
+var MaxPos: integer;
+begin
+  if BeginNode=nil then
+    RaiseException(
+       'TPascalParserTool.BuildSubTreeForBeginBlock: BeginNode=nil');
+  if BeginNode.FirstChild<>nil then
+    // block already parsed
+    exit;
+  // set CursorPos on 'begin'
+  MoveCursorToNodeStart(BeginNode);
+  ReadNextAtom;
+  if not UpAtomIs('BEGIN') then
+    RaiseException(
+       'TPascalParserTool.BuildSubTreeForBeginBlock: begin expected, but '
+       +GetAtom+' found');
+  if BeginNode.EndPos<SrcLen then
+    Maxpos:=BeginNode.EndPos
+  else
+    MaxPos:=SrcLen;
+  repeat
+    ReadNextAtom;
+    if UpAtomIs('WITH') then
+      ReadWithStatement(true,true);
+    if UpAtomIs('CASE') then begin
+      // ToDo
+    end;
+  until (CurPos.StartPos>=MaxPos);
 end;
 
 function TPascalParserTool.GetSourceType: TCodeTreeNodeDesc;
@@ -1485,7 +1542,8 @@ begin
 end;
 
 function TPascalParserTool.ReadTilBlockEnd(
-  StopOnBlockMiddlePart: boolean): boolean;
+  StopOnBlockMiddlePart, CreateNodes: boolean): boolean;
+// after reading cursor will be on the keyword ending the block (e.g. 'end')
 var BlockType: TEndBlockType;
   TryType: TTryType;
 begin
@@ -1525,7 +1583,7 @@ begin
       if BlockType=ebtAsm then
         RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
       if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
-        ReadTilBlockEnd(false);
+        ReadTilBlockEnd(false,CreateNodes);
     end else if UpAtomIs('UNTIL') then begin
       if BlockType=ebtRepeat then
         break;
@@ -1545,6 +1603,8 @@ begin
       end else
         RaiseException(
           'syntax error: "end" expected, but "'+GetAtom+'" found');
+    end else if CreateNodes and UpAtomIs('WITH') then begin
+      ReadWithStatement(true,CreateNodes);
     end;
   until false;
 end;
@@ -1617,6 +1677,105 @@ begin
   until false;
 end;
 
+function TPascalParserTool.ReadTilVariableEnd(
+  ExceptionOnError: boolean): boolean;
+{ Examples:
+    A
+    A.B^.C[...].D(...).E
+    (...).A
+    @B
+    
+}
+begin
+  while AtomIsChar('@') do
+    ReadNextAtom;
+  while UpAtomIs('INHERITED') do
+    ReadNextAtom;
+  Result:=(AtomIsIdentifier(false) or AtomIsChar('(') or AtomIsChar('['));
+  if not Result then exit;
+  repeat
+    if AtomIsIdentifier(false) then
+      ReadNextAtom;
+    if AtomIsChar('(') or AtomIsChar('[') then begin
+      Result:=ReadTilBracketClose(ExceptionOnError);
+      if not Result then exit;
+    end;
+    if AtomIsChar('.') then
+      ReadNextAtom
+    else
+      break;
+  until false;
+end;
+
+function TPascalParserTool.ReadTilStatementEnd(ExceptionOnError,
+  CreateNodes: boolean): boolean;
+// after reading the current atom will be on the last atom of the statement
+begin
+  Result:=false;
+  if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+        CurPos.EndPos-CurPos.StartPos) then
+  begin
+    if not ReadTilBlockEnd(ExceptionOnError,CreateNodes) then exit;
+    ReadNextAtom;
+    if not AtomIsChar(';') then UndoReadNextAtom;
+  end else if UpAtomIs('WITH') then begin
+    if not ReadWithStatement(ExceptionOnError,CreateNodes) then exit;
+  end else begin
+    // read till semicolon or 'end'
+    while (not AtomIsChar(';')) do begin
+      ReadNextAtom;
+      if UpAtomIs('END') then begin
+        UndoReadNextAtom;
+        break;
+      end;
+    end;
+  end;
+  Result:=true;
+end;
+
+function TPascalParserTool.ReadWithStatement(ExceptionOnError,
+  CreateNodes: boolean): boolean;
+begin
+  ReadNextAtom;
+  if CreateNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnWithVariable
+  end;
+  ReadTilVariableEnd(true);
+  while AtomIsChar(',') do begin
+    CurNode.EndPos:=LastAtoms.GetValueAt(0).EndPos;
+    if CreateNodes then
+      EndChildNode;
+    ReadNextAtom;
+    if CreateNodes then begin
+      CreateChildNode;
+      CurNode.Desc:=ctnWithVariable
+    end;
+    ReadTilVariableEnd(true);
+  end;
+  if not UpAtomIs('DO') then begin
+    if ExceptionOnError then
+      RaiseException('syntax error: do expected, but '+GetAtom+' found')
+    else begin
+      Result:=false;
+      exit;
+    end;
+  end;
+  ReadNextAtom;
+  if CreateNodes then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnWithStatement;
+  end;
+  ReadTilStatementEnd(true,CreateNodes);
+  if CreateNodes then begin
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode; // ctnWithStatement
+    CurNode.EndPos:=CurPos.StartPos;
+    EndChildNode; // ctnWithVariable
+  end;
+  Result:=true;
+end;
+
 function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 // Keyword: begin, asm
 var BeginKeyWord: shortstring;
@@ -1632,7 +1791,7 @@ begin
       CurNode.Desc:=ctnAsmBlock;
   end;
   // search "end"
-  ReadTilBlockEnd(false);
+  ReadTilBlockEnd(false,false);
   // close node
   if ChildNodeCreated then begin
     CurNode.EndPos:=CurPos.EndPos;

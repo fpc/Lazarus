@@ -55,6 +55,13 @@ type
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function IsIncludeDirectiveAtPos(CleanPos, CleanCodePosInFront: integer;
       var IncludeCode: TCodeBuffer): boolean;
+    function FindDeclarationOfIdentifier(DeepestNode: TCodeTreeNode;
+      IdentifierStartPos, IdentifierEndPos: integer;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindIdentifierInContext(IdentifierStartPos,
+      IdentifierEndPos: integer;  ContextNode: TCodeTreeNode;
+      SearchInParentNodes: boolean;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
   public
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -97,16 +104,27 @@ writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos)
     exit;
   end;
   if CursorNode.Desc=ctnUsesSection then begin
+    // find used unit
     Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                          NewPos,NewTopLine);
   end else begin
-    { ToDo:
-      1. if in begin..end block then parse for with and case statements
-      2. search recursively and create/fill caches
-      3. if possible use ppu files
-      4. save visible identifiers for identifier completion
-      ...
-    }
+    if CursorNode.Desc=ctnBeginBlock then
+      BuildSubTreeForBeginBlock(CursorNode);
+    MoveCursorToCleanPos(CleanCursorPos);
+    while (CurPos.StartPos>=1) and (IsIdentChar[Src[CurPos.StartPos]]) do
+      dec(CurPos.StartPos);
+    if (CurPos.StartPos>=1) and (IsIdentStartChar[Src[CurPos.StartPos]]) then
+    begin
+      CurPos.EndPos:=CurPos.StartPos;
+      while (CurPos.EndPos<=SrcLen) and IsIdentChar[Src[CurPos.EndPos]] do
+        inc(CurPos.EndPos);
+      // find declaration of identifier
+      Result:=FindDeclarationOfIdentifier(CursorNode,
+                 CurPos.StartPos,CurPos.EndPos,NewPos,NewTopLine);
+    end else begin
+      // find declaration of not identifier
+      
+    end;
   end;
 end;
 
@@ -359,6 +377,88 @@ begin
     IncludeCode:=TCodeBuffer(SrcLink.Code);
     Result:=true;
     exit;
+  end;
+end;
+
+function TFindDeclarationTool.FindDeclarationOfIdentifier(
+  DeepestNode: TCodeTreeNode; IdentifierStartPos, IdentifierEndPos: integer;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+{ searches an identifier in clean code, parses code in front of identifier
+  For example:
+    A^.B().C[].Identifier
+}
+begin
+  Result:=false;
+  MoveCursorToCleanPos(IdentifierStartPos);
+  ReadPriorAtom;
+  if AtomIsChar('.') then begin
+    // first search context, then search in context
+    
+    // ToDo
+    
+  end else if UpAtomIs('INHERITED') then begin
+    // first search ancestor, then search in ancestor
+
+    // ToDo
+
+  end else begin
+    // context is DeepestNode
+    Result:=FindIdentifierInContext(IdentifierStartPos,IdentifierEndPos,
+              DeepestNode,true,NewPos,NewTopLine);
+  end;
+  { ToDo:
+
+  - Difficulties:
+     1. Searching recursively
+          - ParentNodes
+          - Ancestor Classes/Objects/Interfaces
+          - with statements
+          - operators: '.', '()', 'A()', '^', 'inherited'
+     2. Searching enums must be searched in sub nodes
+          -> all classes node trees must be built
+     3. Searching in used units (interface USES and implementation USES)
+     4. Searching forward for pointer types e.g. ^Tralala
+     5. Mass Search: searching a compatible proc will result
+        in searching every parameter type of every reachable proc
+          (implementation section + interface section
+  	    + used interface sections + class and ancestor methods)
+        How can this be achieved in good time?
+          -> Caching
+  - Caching:
+     Where:
+       For each section node (Interface, Implementation, ...)
+       For each BeginBlock
+     Entries: (What, Declaration Pos)
+       What: Identifier -> Ansistring (to reduce memory usage,
+         maintain a list of all identifier ansistrings)
+       Pos: Code+SrcPos
+         1. Source: TCodeTreeNode
+         2. PPU, PPW, DFU, ...:
+  }
+
+end;
+
+function TFindDeclarationTool.FindIdentifierInContext(IdentifierStartPos,
+  IdentifierEndPos: integer; ContextNode: TCodeTreeNode;
+  SearchInParentNodes: boolean; var NewPos: TCodeXYPosition;
+  var NewTopLine: integer): boolean;
+{ searches an identifier in context node
+  It does not care about code in front
+}
+begin
+  Result:=false;
+  if ContextNode<>nil then begin
+    case ContextNode.Desc of
+    ctnBeginBlock:
+      begin
+        if not SearchInParentNodes then exit;
+        
+        // ToDo
+        
+      end;
+    end;
+  end else begin
+    // DeepestNode=nil
   end;
 end;
 

@@ -1008,7 +1008,7 @@ writeln('TStandardCodeTool.FindBlockCounterPart C  Word=',GetAtom);
     if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
     or UpAtomIs('RECORD') or UpAtomIs('TRY') or UpAtomIs('REPEAT') then begin
       // read forward till END, FINALLY, EXCEPT
-      ReadTilBlockEnd(true);
+      ReadTilBlockEnd(true,false);
     end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
     or UpAtomIs('UNTIL') then
     begin

@@ -91,14 +91,14 @@ type
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
-    procedure MoveCursorToNodeStart(ANode: TCodeTreeNode); virtual;
-    procedure MoveCursorToCleanPos(ACleanPos: integer); virtual;
+    procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
+    procedure MoveCursorToCleanPos(ACleanPos: integer);
     function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function DoAtom: boolean; virtual;
-    procedure ReadNextAtom; virtual;
-    procedure UndoReadNextAtom; virtual;
+    procedure ReadNextAtom;
+    procedure UndoReadNextAtom;
     function AtomIs(const AnAtom: shortstring): boolean;
     function UpAtomIs(const AnAtom: shortstring): boolean;
     function ReadNextAtomIs(const AnAtom: shortstring): boolean;
@@ -120,10 +120,10 @@ type
         const ASource: string): integer;
     function CompareNodeUpSrc(ANode: TCodeTreeNode;
         const ASource: string): integer;
-    procedure ReadPriorAtom; virtual;
+    procedure ReadPriorAtom;
 
-    procedure CreateChildNode; virtual;
-    procedure EndChildNode; virtual;
+    procedure CreateChildNode;
+    procedure EndChildNode;
     
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
