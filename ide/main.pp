@@ -833,6 +833,8 @@ end;
 
 destructor TMainIDE.Destroy;
 begin
+  ToolStatus:=itExiting;
+  
   writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   FreeThenNil(ProjInspector);
@@ -9026,6 +9028,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.597  2003/06/04 16:34:11  mattias
+  implemented popupmenu items in source editor for breakpoints
+
   Revision 1.596  2003/06/03 23:45:26  marc
   MWE: Fixed close confirmation on changed designer form
        ([Yes][No][Cancel] instead of [Yes][Cancel][Abort])
