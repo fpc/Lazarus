@@ -798,6 +798,19 @@ end;
 
 { TDelphiWriter }
 
+{ MultiByte Character Set (MBCS) byte type }
+type
+  TMbcsByteType = (mbSingleByte, mbLeadByte, mbTrailByte);
+
+function ByteType(const S: string; Index: Integer): TMbcsByteType;
+begin
+  Result := mbSingleByte;
+  { ToDo:
+    if SysLocale.FarEast then
+      Result := ByteTypeTest(PChar(S), Index-1);
+  }
+end;
+
 constructor TDelphiWriter.Create(Stream: TStream);
 begin
   FStream:=Stream;
