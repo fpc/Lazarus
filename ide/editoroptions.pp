@@ -28,32 +28,89 @@ uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
   FileCtrl, Graphics, Controls, Dialogs, LResources,
 {$ifdef NEW_EDITOR_SYNEDIT}
-  SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,
+  SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
+  SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP,
 {$else}
-  mwcustomedit, mwPasSyn, mwHighlighter,
+  mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
   XMLCfg, CodeTemplateDialog, KeyMapping;
-
-const
-  AdditionalHiglightAttributes : array[0..4] of string = (
-    'Text block',
-    'Execution point',
-    'Enabled breakpoint','Disabled breakpoint',
-    'Error line'
-  );
-
 
 type
 {$ifdef NEW_EDITOR_SYNEDIT}
   TPreviewEditor = TSynEdit;
   TPreviewPasSyn = TSynPasSyn;
+  TCustomSyn = TSynCustomHighlighter;
   TSynHighlightElement = TSynHighlighterAttributes;
 {$else}
   TPreviewEditor = TmwCustomEdit;
   TPreviewPasSyn = TmwPasSyn;
+  TCustomSyn = TmwCustomHighlighter;
   TSynHighlightElement = TmwHighlightAttributes;
 {$endif}
+  TCustomSynClass = class of TCustomSyn;
+
+  TLazSyntaxHighlighter =
+    (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML, lshHTML,
+     lshCPP);
+
+  TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
+    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaErrorLine);
+
+const
+  EditorOptsFormatVersion = 2;
+  
+  AdditionalHighlightAttributes : array[TAdditionalHilightAttribute] of string =
+  (
+    '',
+    'Text block',
+    'Execution point',
+    'Enabled breakpoint','Disabled breakpoint',
+    'Error line'
+  );
+  
+  LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of TCustomSynClass =
+    ( nil, nil, TSynPasSyn, TSynPasSyn, nil, nil, TSynHTMLSyn, TSynCPPSyn);
+
+type
+  { TEditOptLanguageInfo stores lazarus IDE additional information
+    of a highlighter, such as samplesource, which sample lines are special
+    lines, file extensions
+    MappedAttributes is a list of the format "AttributName=PascalAttributName"
+      This mapping attributes are used for default values. For example:
+      The comment attribute of HTML is mapped to the comment attribute of
+      pascal "Comment=Comment". If there is no mapping attribute for an
+      attribute the default values are taken from an untouched highlighter.
+      For example Symbol in HTML is not mapped and therefore has as default
+      value fo style [fsBold] as defined in synhighlighterhtml.pp.
+    }
+  TEditOptLanguageInfo = class
+  public
+    SynClass: TCustomSynClass;
+    TheType: TLazSyntaxHighlighter;
+    FileExtensions: string; // divided by semicolon, e.g. 'pas;pp;inc'
+    ColorScheme: string;
+    SampleSource: string;
+    AddAttrSampleLines: array[TAdditionalHilightAttribute] of integer; // first line = 1
+    MappedAttributes: TStringList; // map attributes to pascal
+    constructor Create;
+    destructor Destroy; override;
+    function SampleLineToAddAttr(Line: integer): TAdditionalHilightAttribute;
+  end;
+
+  { list of TEditOptLanguageInfo }
+  TEditOptLangList = class(TList)
+  private
+    function GetInfos(Index: integer): TEditOptLanguageInfo;
+  public
+    constructor Create;
+    procedure Clear; override;
+    destructor Destroy; override;
+    function FindByName(const Name: string): integer;
+    function FindByClass(CustomSynClass: TCustomSynClass): integer;
+    function FindByType(AType: TLazSyntaxHighlighter): integer;
+    property Items[Index: integer]: TEditOptLanguageInfo read GetInfos; default;
+  end;
+
 
   { Editor Options object used to hold the editor options }
   TEditorOptions = class(TPersistent)
@@ -69,7 +126,6 @@ type
     fBlockIndent:integer;
     fUndoLimit:integer;
     fTabWidths:integer;
-    fSyntaxExtensions:Ansistring;
 
     // Display options
     fVisibleRightMargin:boolean;
@@ -88,12 +144,7 @@ type
     fKeyMap:TKeyCommandRelationList;
 
     // Color options
-    fColorScheme:Ansistring;
-    fTextBlockElement:TSynHighlightElement;
-    fExecutionPointElement:TSynHighlightElement;
-    fEnabledBreakPointElement:TSynHighlightElement;
-    fDisabledBreakPointElement:TSynHighlightElement;
-    fErrorLineElement:TSynHighlightElement;
+    fHighlighterList: TEditOptLangList;
 
     // Code tools options
     fAutoCodeCompletion:boolean;
@@ -102,23 +153,33 @@ type
     fAutoToolTipSymbTools:boolean;
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
-
+  private
   public
     constructor Create;
     destructor Destroy;  override;
     procedure Load;
     procedure Save;
-    procedure ReadAttribute(Attri:TSynHighlightElement);
-    procedure WriteAttribute(Attri:TSynHighlightElement);
-    procedure GetHighlighterSettings(PasSyn:TPreviewPasSyn);
-      // read highlight settings from config file
-    procedure SetHighlighterSettings(PasSyn:TPreviewPasSyn);
-      // write highlight settings to config file
-    procedure GetSynEditSettings(ASynEdit:TSynEdit);
-      // read synedit settings from config file
-    procedure SetSynEditSettings(ASynEdit:TSynEdit);
-      // write synedit settings to file
+    procedure GetHighlighterSettings(Syn: TCustomSyn);// read highlight settings from config file
+    procedure SetHighlighterSettings(Syn: TCustomSyn);// write highlight settings to config file
+    procedure GetSynEditSettings(ASynEdit:TSynEdit);  // read synedit settings from config file
+    procedure SetSynEditSettings(ASynEdit:TSynEdit);  // write synedit settings to file
+    procedure GetSynEditSelectedColor(ASynEdit:TSynEdit);
+      // get selection color from highlighter and update synedit
+    procedure AddSpecialHilightAttribsToHighlighter(Syn: TCustomSyn);
 
+    function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TCustomSyn;
+    function ReadColorScheme(const LanguageName: string): string;
+    function ReadPascalColorScheme: string;
+    procedure WriteColorScheme(const LanguageName, SynColorScheme: string);
+    procedure GetDefaultsForPascalAttribute(Attr: TSynHighlightElement;
+      const SynColorScheme: string);
+    procedure ReadHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string); 
+    procedure ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
+      SynColorScheme: string; DefaultPascalSyn: TPreviewPasSyn);
+    procedure WriteHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string);
+    procedure GetSpecialLineColors(Syn: TCustomSyn; 
+      AddHilightAttr: TAdditionalHilightAttribute; var FG, BG: TColor);
+    
   published
     // general options
     property SynEditOptions:TSynEditorOptions
@@ -135,8 +196,6 @@ type
     property BlockIndent:integer read fBlockIndent write fBlockIndent default 2;
     property UndoLimit:integer read fUndoLimit write fUndoLimit default 32767;
     property TabWidths:integer read fTabWidths write fTabWidths default 8;
-    property SyntaxExtensions:Ansistring
-        read fSyntaxExtensions write fSyntaxExtensions;
 
     // Display options
     property VisibleRightMargin:boolean
@@ -161,17 +220,8 @@ type
     property KeyMap:TKeyCommandRelationList read fKeyMap;
 
     // Color options
-    property ColorScheme:Ansistring read fColorScheme write fColorScheme;
-    property TextBlockElement:TSynHighlightElement
-       read fTextBlockElement write fTextBlockElement;
-    property ExecutionPointElement:TSynHighlightElement
-       read fExecutionPointElement write fExecutionPointElement;
-    property EnabledBreakPointElement:TSynHighlightElement
-       read fEnabledBreakPointElement write fEnabledBreakPointElement;
-    property DisabledBreakPointElement:TSynHighlightElement
-       read fDisabledBreakPointElement write fDisabledBreakPointElement;
-    property ErrorLineElement:TSynHighlightElement
-       read fErrorLineElement write fErrorLineElement;
+    property HighlighterList: TEditOptLangList
+       read fHighlighterList write fHighlighterList;
 
     // Code Tools options
     property AutoCodeCompletion:boolean
@@ -198,22 +248,22 @@ type
   protected
     procedure Paint; override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-       X, Y: Integer); override;
+      X, Y: Integer); override;
     procedure SetButtonColor(Value:TColor);
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AnOwner : TComponent); override;
     destructor Destroy; Override;
   published
     property BorderWidth:integer read FBorderWidth write FBorderWidth;
     property ButtonColor:TColor read FButtonColor write SetButtonColor;
-    property OnColorChanged:TNotifyEvent read FOnColorChanged write FOnColorChanged;
+    property OnColorChanged:TNotifyEvent 
+      read FOnColorChanged write FOnColorChanged;
   end;
 
   { Editor Options form }
   TEditorOptionsForm = class(TForm)
   published
     MainNoteBook:TNoteBook;
-    PreviewPasSyn:TPreviewPasSyn;
 
     // general options
     EditorOptionsGroupBox:TGroupBox;
@@ -243,8 +293,6 @@ type
     UndoLimitLabel:TLabel;
     TabWidthsComboBox:TComboBox;
     TabWidthsLabel:TLabel;
-    SyntaxExtensionsComboBox:TComboBox;
-    SyntaxExtensionsLabel:TLabel;
 
     // Display options
     MarginAndGutterGroupBox:TGroupBox;
@@ -277,6 +325,10 @@ type
     KeyMappingConsistencyCheckButton:TButton;
 
     // Color options
+    LanguageComboBox:TComboBox;
+    LanguageLabel:TLabel;
+    FileExtensionsComboBox:TComboBox;
+    FileExtensionsLabel:TLabel;
     ColorSchemeComboBox:TComboBox;
     ColorSchemeLabel:TLabel;
     ColorElementLabel:TLabel;
@@ -291,6 +343,8 @@ type
     BackGroundGroupBox:TGroupBox;
     BackGroundColorButton:TColorButton;
     BackGroundUseDefaultCheckBox:TCheckBox;
+    SetAttributeToDefaultButton:TButton;
+    SetAllAttributesToDefaultButton:TButton;
     ColorPreview:TPreviewEditor;
 
     // Code Tools options
@@ -342,6 +396,8 @@ type
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: integer;
        var Special: boolean; var FG, BG: TColor);
+    procedure SetAttributeToDefaultButtonClick(Sender: TObject);
+    procedure SetAllAttributesToDefaultButtonClick(Sender: TObject);
 
     // code Tools
     procedure CodeTemplateListBoxMouseUp(Sender:TObject;
@@ -353,37 +409,60 @@ type
     procedure OkButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
   private
+    FormCreating: boolean;
+    PreviewSyn: TCustomSyn;
     PreviewEdits:array[1..3] of TPreviewEditor;
-    AddHighlightElements:array [Low(AdditionalHiglightAttributes)..
-            High(AdditionalHiglightAttributes)] of TSynHighlightElement;
-    CurHighlightElement:TSynHighlightElement;
+    CurLanguageID: integer; // current index in EditorOpts.EditOptHighlighterList
+    CurHighlightElement: TSynHighlightElement;
     CurCodeTemplate: integer;
     UpdatingColor: boolean;
+    fHighlighterList: TStringList; // list of "ColorScheme" Data=TCustomSyn
+    fColorSchemes: TStringList; // list of LanguageName=ColorScheme
+    fFileExtensions: TStringList; // list of LanguageName=FileExtensions
 
-    procedure SetupButtonBar;
-    procedure SetupGeneralPage;
-    procedure SetupDisplayPage;
-    procedure SetupKeyMappingsPage;
-    procedure SetupColorPage;
-    procedure SetupCodeToolsPage;
     procedure SetComboBoxText(AComboBox:TComboBox;AText:AnsiString);
-    procedure FillCodeTemplateListBox;
+    procedure FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
+    procedure InvalidatePreviews;
+    procedure SetPreviewSynInAllPreviews;
+    procedure SetupButtonBar;
+    
+    // general
+    procedure SetupGeneralPage;
+
+    // display
+    procedure SetupDisplayPage;    
+
+    // keymapping
+    procedure SetupKeyMappingsPage;
     function KeyMappingRelationToString(Index:integer):AnsiString;
     procedure FillKeyMappingListBox;
 
+    // color
+    procedure SetupColorPage;
     procedure ShowCurAttribute;
     procedure FindCurHighlightElement;
-    procedure FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
-    procedure InvalidatePreviews;
+    function GetHighlighter(SynClass: TCustomSynClass;
+      const ColorScheme: string; CreateIfNotExists: boolean): TCustomSyn;
+    procedure ClearHighlighters;
+    procedure SaveAllHighlighters;
+    procedure FillColorElementListBox;
+    function GetCurColorScheme(const LanguageName: string): string;
+    procedure SetCurColorScheme(const LanguageName, ColorScheme: string);
+    procedure SaveAllColorSchemes;
+    function GetCurFileExtension(const LanguageName: string): string;
+    procedure SetCurFileExtension(const LanguageName, FileExtensions: string);
+    procedure SaveAllFileExtensions;
+    procedure SetColorElementsToDefaults(OnlySelected: boolean);
+
+    // code tools
+    procedure SetupCodeToolsPage;
+    procedure FillCodeTemplateListBox;
     procedure ShowCurCodeTemplate;
     procedure SaveCurCodeTemplate;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; override;
   end;
-
-
-  TLazSyntaxHighlighter =
-    (lshNone, lshText, lshFreePascal, lshDelphi, lshLFM, lshXML);
 
 const
   LazSyntaxHighlighterNames : array[TLazSyntaxHighlighter] of string = (
@@ -392,7 +471,9 @@ const
      'FreePascal',
      'Delphi',
      'LFM',
-     'XML'
+     'XML',
+     'HTML',
+     'C++'
    );
 
 var
@@ -406,8 +487,22 @@ function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
 implementation
 
+uses Math;
 
-uses math;
+const
+  ValidAttribChars = ['a'..'z','A'..'Z','_','0'..'9'];
+
+  // several language types can be redirected. For example there are FreePascal
+  // and Delphi, but currently both are hilighted with the FreePascal
+  // highlighter
+  CompatibleLazSyntaxHilighter:
+    array[TLazSyntaxHighlighter] of TLazSyntaxHighlighter= (
+        lshNone, lshText, lshFreePascal, lshFreePascal, lshLFM, lshXML, lshHTML,
+        lshCPP
+      );
+      
+  DefaultColorScheme = 'Default';
+
 
 function ShowEditorOptionsDialog:TModalResult;
 var
@@ -430,63 +525,36 @@ begin
 end;
 
 function ExtensionToLazSyntaxHighlighter(Ext: string): TLazSyntaxHighlighter;
-var s,CurExt: string;
-  StartPos,EndPos:integer;
+var s, CurExt: string;
+  LangID, StartPos, EndPos: integer;
 begin
-  if (Ext='') then begin
-    Result:=lshNone;
-    exit;
-  end;
+  Result:=lshNone;
+  if (Ext='') or (Ext='.') or (EditorOpts.HighlighterList=nil) then exit;
   Ext:=lowercase(Ext);
   if (Ext[1]='.') then Ext:=copy(Ext,2,length(Ext)-1);
-  s:=EditorOpts.SyntaxExtensions;
-  StartPos:=1;
-  while StartPos<=length(s) do begin
-    Endpos:=StartPos;
-    while (EndPos<=length(s)) and (s[EndPos]<>';') do inc(EndPos);
-    CurExt:=copy(s,Startpos,EndPos-StartPos);
-    if (CurExt<>'') and (CurExt[1]='.') then begin
-      CurExt:=copy(CurExt,2,length(CurExt)-1);
+  LangID:=0;
+  while LangID<EditorOpts.HighlighterList.Count do begin
+    s:=EditorOpts.HighlighterList[LangID].FileExtensions;
+    StartPos:=1;
+    while StartPos<=length(s) do begin
+      Endpos:=StartPos;
+      while (EndPos<=length(s)) and (s[EndPos]<>';') do inc(EndPos);
+      CurExt:=copy(s,Startpos,EndPos-StartPos);
+      if (CurExt<>'') and (CurExt[1]='.') then begin
+        CurExt:=copy(CurExt,2,length(CurExt)-1);
+      end;
+      if lowercase(CurExt)=Ext then begin
+        Result:=EditorOpts.HighlighterList[LangID].TheType;
+        exit;
+      end;
+      Startpos:=EndPos+1;
     end;
-    if lowercase(CurExt)=Ext then begin
-      Result:=lshFreePascal;
-      if (Ext='.dpr') or (Ext='.dpk') or (Ext='.dfm') then Result:=lshDelphi;
-      exit;
-    end;
-    Startpos:=EndPos+1;
+    inc(LangID);
   end;
-  if Ext='.xml' then Result:=lshXML
-  else if Ext='.lfm' then Result:=lshLFM
-  else if Ext='.txt' then Result:=lshText
-  else Result:=lshNone;
 end;
 
 const
   EditOptsConfFileName = 'editoroptions.xml';
-
-  ExampleSource : array[1..21] of string = (
-    'procedure TForm1.Button1Click(Sender: TObject);',
-    'var',
-    '  Number, I, X: Integer;',
-    'begin',
-    '  Number := 12345;',
-    '  Caption := ''The number is '' + IntToStr(Number);',
-    '  asm',
-    '    MOV AX,1234h',
-    '    MOV Number,AX',
-    '  end;',
-    '  X := 10;',
-    '  { Search Match, Text Block }',
-    '  for I := 0 to Number do { execution point }',
-    '  begin',
-    '    Inc(X); { Enabled breakpoint }',
-    '    Dec(X); { Disabled breakpoint }',
-    '    X := X + 1.0; { Error line }',
-    '    ListBox1.Items.Add(IntToStr(X));',
-    '  end;',
-    'end;',
-    ''
-  );
 
 
 function BuildBorlandDCIFile(
@@ -527,6 +595,214 @@ begin
   end;
 end;
 
+function StrToValidXMLName(const s: string): string;
+var i: integer;
+begin
+  Result:=s;
+  // replace invalid characters
+  for i:=1 to length(Result) do
+    if (not (Result[i] in ValidAttribChars)) then
+      Result[i]:='_';
+end;
+
+procedure CopyHiLightAttributeValues(Src, Dest: TSynHighlightElement);
+begin
+  Dest.Background:=Src.Background;
+  Dest.Foreground:=Src.Foreground;
+  Dest.Style:=Src.Style;
+end;
+
+{ TEditOptLanguageInfo }
+
+constructor TEditOptLanguageInfo.Create;
+begin
+  inherited Create;
+  
+end;
+
+destructor TEditOptLanguageInfo.Destroy;
+begin
+
+  inherited Destroy;
+end;
+
+function TEditOptLanguageInfo.SampleLineToAddAttr(
+  Line: integer): TAdditionalHilightAttribute;
+begin
+  if Line<1 then begin
+    Result:=ahaNone;
+    exit;
+  end;
+  for Result:=Low(TAdditionalHilightAttribute) 
+  to High(TAdditionalHilightAttribute) do
+    if (Result<>ahaNone) and (AddAttrSampleLines[Result]=Line) then exit;
+  Result:=ahaNone;
+end;
+
+{ TEditOptLangList }
+
+function TEditOptLangList.GetInfos(
+  Index: integer): TEditOptLanguageInfo;
+begin
+  if (Index<0) or (Index>=Count) then
+    raise Exception.Create('TEditOptLangList.GetInfos Index '
+      +IntToStr(Index)+' out of bounds. Count='+IntToStr(Count));
+  Result:=TEditOptLanguageInfo(inherited Items[Index]);
+end;
+
+procedure TEditOptLangList.Clear;
+var i: integer;
+begin
+  for i:=0 to Count-1 do Items[i].Free;
+  inherited Clear;
+end;
+
+constructor TEditOptLangList.Create;
+var NewInfo: TEditOptLanguageInfo;
+begin
+  inherited Create;
+  
+  { create the meta information for each available highlighter.
+    Plz keep the pascal highlighter at the top. The rest can be ordered as you
+    like.
+  }
+  
+  // create info for pascal
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshFreePascal];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
+    SampleSource:=
+      '{ Comment }'#13+
+      'procedure TForm1.Button1Click(Sender: TObject);'#13+
+      'var'#13+
+      '  Number, I, X: Integer;'#13+
+      'begin'#13+
+      '  Number := 12345;'#13+
+      '  Caption := ''The number is '' + IntToStr(Number);'#13+
+      '  asm'#13+
+      '    MOV AX,1234h'#13+
+      '    MOV Number,AX'#13+
+      '  end;'#13+
+      '  X := 10;'#13+
+      '  { Search Match, Text Block }'#13+
+      '  for I := 0 to Number do { execution point }'#13+
+      '  begin'#13+
+      '    Inc(X); { Enabled breakpoint }'#13+
+      '    Dec(X); { Disabled breakpoint }'#13+
+      '    X := X + 1.0; { Error line }'#13+
+      '    ListBox1.Items.Add(IntToStr(X));'#13+
+      '  end;'#13+
+      'end;'#13+
+      #13;
+    AddAttrSampleLines[ahaDisabledBreakpoint]:=17;
+    AddAttrSampleLines[ahaEnabledBreakpoint]:=16;
+    AddAttrSampleLines[ahaErrorLine]:=18;
+    AddAttrSampleLines[ahaExecutionPoint]:=14;
+    AddAttrSampleLines[ahaTextBlock]:=13;
+  end;
+  Add(NewInfo);
+  
+  // create info for html
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshHTML];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='htm;html';
+    SampleSource:=
+      '<html>'#13+
+      '<title>Lazarus Sample source for html</title>'#13+
+      '<body bgcolor=#ffffff background="bg.jpg">'#13+
+      '<!-- Comment -->'#13+
+      '<img src="lazarus.jpg">'#13+
+      '<p>'#13+
+      '  Some Text'#13+
+      '  Ampersands: &nbsp;F&nbsp;P&nbsp;C'#13+
+      '</p>'#13+
+      '<invalid_tag>'#13+
+      '<!-- Text Block -->'#13+
+      '</body>'#13+
+      '</html>'#13+
+      #13;
+    AddAttrSampleLines[ahaTextBlock]:=11;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Comment=Comment');
+      Add('Space=Space');
+    end;
+  end;
+  Add(NewInfo);
+  
+  // create info for cpp
+  NewInfo:=TEditOptLanguageInfo.Create;
+  with NewInfo do begin
+    TheType:=CompatibleLazSyntaxHilighter[lshCPP];
+    SynClass:=LazSyntaxHighlighterClasses[TheType];
+    FileExtensions:='c;cc;cpp;h';
+    SampleSource:=
+      '/* Comment */'#13+
+      '#include <stdio.h>'#13+
+      '#include <stdlib.h>'#13+
+      #13+
+      'static char line_buf[LINE_BUF];'#13+
+      #13+
+      'int main(int argc,char **argv){'#13+
+      '  FILE *file;'#13+
+      '  line_buf[0]=0;'#13+
+      '  printf("\n");'#13+
+      '  return 0;'#13+
+      '}'#13+
+      ''#13+
+      #13;
+    AddAttrSampleLines[ahaTextBlock]:=11;
+    MappedAttributes:=TStringList.Create;
+    with MappedAttributes do begin
+      Add('Assembler=Assembler');
+      Add('Comment=Comment');
+      Add('Preprocessor=Comment');
+      Add('Identifier=Identifier');
+      Add('Reserved_word=Reserved_word');
+      Add('Number=Number');
+      Add('Space=Space');
+      Add('String=String');
+      Add('Symbol=Symbol');
+    end;
+  end;
+  Add(NewInfo);
+end;
+
+destructor TEditOptLangList.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TEditOptLangList.FindByName(const Name: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) 
+  and (AnsiCompareText(Items[Result].SynClass.GetLanguageName,Name)<>0) do
+    dec(Result);
+end;
+
+function TEditOptLangList.FindByClass(
+  CustomSynClass: TCustomSynClass): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) 
+  and (Items[Result].SynClass<>CustomSynClass) do
+    dec(Result);
+end;
+
+function TEditOptLangList.FindByType(
+  AType: TLazSyntaxHighlighter): integer;
+begin
+  AType:=CompatibleLazSyntaxHilighter[AType];
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result].TheType<>AType) do
+    dec(Result);
+end;
 
 { TEditorOptions }
 
@@ -539,14 +815,16 @@ begin
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EditOptsConfFileName);
   CopySecondaryConfigFile(EditOptsConfFileName);
   if (not FileExists(ConfFileName)) then begin
-    writeln('editor options config file not found');
+    writeln('WARNING: editor options config file not found');
   end;
   XMLConfig:=TXMLConfig.Create(ConfFileName);
-
+  
   // set defaults
 
   // General options
-  fSyntaxExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
+  fBlockIndent:=2;
+  fUndoLimit:=32767;
+  fTabWidths:=8;
 
   // Display options
   fEditorFont:='courier';
@@ -556,47 +834,33 @@ begin
   fKeyMap:=TKeyCommandRelationList.Create;
 
   // Color options
-  fColorScheme:='Default';
-  fTextBlockElement:=
-     TSynHighlightElement.Create(AdditionalHiglightAttributes[0]);
-  fExecutionPointElement:=
-     TSynHighlightElement.Create(AdditionalHiglightAttributes[1]);
-  fEnabledBreakPointElement:=
-     TSynHighlightElement.Create(AdditionalHiglightAttributes[2]);
-  fDisabledBreakPointElement:=
-     TSynHighlightElement.Create(AdditionalHiglightAttributes[3]);
-  fErrorLineElement:=
-     TSynHighlightElement.Create(AdditionalHiglightAttributes[4]);
+  fHighlighterList:=TEditOptLangList.Create;
 
   // Code Tools options
   fCodeTemplateFileName:=SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci');
   CopySecondaryConfigFile('lazarus.dci');
   if not FileExists(fCodeTemplateFileName) then begin
     res:=LazarusResources.Find('lazarus_dci_file');
-  if (res<>nil) and (res.Value<>'') and (res.ValueType='DCI') then begin
-    try
-      fs:=TFileStream.Create(fCodeTemplateFileName,fmCreate);
+    if (res<>nil) and (res.Value<>'') and (res.ValueType='DCI') then begin
       try
-        fs.Write(res.Value[1],length(res.Value));
-      finally
-        fs.Free;
+        fs:=TFileStream.Create(fCodeTemplateFileName,fmCreate);
+        try
+          fs.Write(res.Value[1],length(res.Value));
+        finally
+          fs.Free;
+        end;
+      except
+        writeln('WARNING: unable to write code template file "',
+          fCodeTemplateFileName,'"');
       end;
-    except
     end;
-  end;
   end;
 end;
 
 destructor TEditorOptions.Destroy;
 begin
-  fTextBlockElement.Free;
-  fExecutionPointElement.Free;
-  fEnabledBreakPointElement.Free;
-  fDisabledBreakPointElement.Free;
-  fErrorLineElement.Free;
-
+  fHighlighterList.Free;
   fKeyMap.Free;
-
   XMLConfig.Free;
   inherited Destroy;
 end;
@@ -605,6 +869,7 @@ procedure TEditorOptions.Load;
 // load options from XML file
 var SynEditOpt:TSynEditorOption;
   SynEditOptName:ansistring;
+  i: integer;
 begin
   try
     // general options
@@ -647,14 +912,11 @@ begin
     fUseSyntaxHighlight:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UseSyntaxHighlight',true);
     fBlockIndent:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',2);
+      XMLConfig.GetValue('EditorOptions/General/Editor/BlockIndent',fBlockIndent);
     fUndoLimit:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',32767);
+      XMLConfig.GetValue('EditorOptions/General/Editor/UndoLimit',fUndoLimit);
     fTabWidths:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidths',8);
-    fSyntaxExtensions:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/SyntaxExtensions'
-        ,'pp;inc;lfc;pas;dpr;dpk');
+      XMLConfig.GetValue('EditorOptions/General/Editor/TabWidths',fTabWidths);
 
     // Display options
     fVisibleRightMargin:=
@@ -681,18 +943,19 @@ begin
 
     // Key Mappings options
     fKeyMappingScheme:=
-      XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',fKeyMappingScheme);
+      XMLConfig.GetValue('EditorOptions/KeyMapping/Scheme',
+        StrToValidXMLName(fKeyMappingScheme));
     fKeyMap.LoadFromXMLConfig(XMLConfig
       ,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
 
     // Color options
-    fColorScheme:=
-      XMLConfig.GetValue('EditorOptions/Color/ColorScheme','Default');
-    ReadAttribute(fTextBlockElement);
-    ReadAttribute(fExecutionPointElement);
-    ReadAttribute(fEnabledBreakPointElement);
-    ReadAttribute(fDisabledBreakPointElement);
-    ReadAttribute(fErrorLineElement);
+    for i:=0 to fHighlighterList.Count-1 do begin
+      fHighlighterList[i].FileExtensions:=
+        XMLConfig.GetValue('EditorOptions/Color/Lang'
+          +StrToValidXMLName(fHighlighterList[i].SynClass.GetLanguageName)
+          +'/FileExtensions/Value',fHighlighterList[i].FileExtensions);
+      // color attributes are stored in the highlighters
+    end;
 
     // Code Tools options
     fAutoCodeCompletion:=
@@ -709,7 +972,8 @@ begin
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
         ,SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'));
   except
-    writeln('[TEditorOptions.Load] ERROR');
+    on E: Exception do
+      writeln('[TEditorOptions.Load] ERROR: ',e.Message);
   end;
 end;
 
@@ -717,8 +981,11 @@ procedure TEditorOptions.Save;
 // save options to XML file
 var SynEditOpt:TSynEditorOption;
   SynEditOptName:ansistring;
+  i: integer;
 begin
   try
+    XMLConfig.SetValue('EditorOptions/Version',EditorOptsFormatVersion);
+  
     // general options
     for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
       case SynEditOpt of
@@ -761,8 +1028,6 @@ begin
       ,fUndoLimit);
     XMLConfig.SetValue('EditorOptions/General/Editor/TabWidths'
       ,fTabWidths);
-    XMLConfig.SetValue('EditorOptions/General/Editor/SyntaxExtensions'
-      ,fSyntaxExtensions);
 
     // Display options
     XMLConfig.SetValue('EditorOptions/Display/VisibleRightMargin'
@@ -785,12 +1050,12 @@ begin
        XMLConfig,'EditorOptions/KeyMapping/'+fKeyMappingScheme+'/');
 
     // Color options
-    XMLConfig.SetValue('EditorOptions/Color/ColorScheme',fColorScheme);
-    WriteAttribute(fTextBlockElement);
-    WriteAttribute(fExecutionPointElement);
-    WriteAttribute(fEnabledBreakPointElement);
-    WriteAttribute(fDisabledBreakPointElement);
-    WriteAttribute(fErrorLineElement);
+    for i:=0 to fHighlighterList.Count-1 do begin
+      XMLConfig.SetValue('EditorOptions/Color/Lang'
+        +StrToValidXMLName(fHighlighterList[i].SynClass.GetLanguageName)
+        +'/FileExtensions/Value',fHighlighterList[i].FileExtensions);
+      // color attributes are stored in the highlighters
+    end;
 
     // Code Tools options
     XMLConfig.SetValue('EditorOptions/CodeTools/AutoCodeCompletion'
@@ -808,23 +1073,74 @@ begin
 
     XMLConfig.Flush;
   except
-    writeln('[TEditorOptions.Save] ERROR: unable to write xml file');
+    on E: Exception do
+      writeln('[TEditorOptions.Save] ERROR: ',e.Message);
   end;
 end;
 
-procedure TEditorOptions.ReadAttribute(Attri:TSynHighlightElement);
-var b:boolean;
-  fs:TFontStyles;
+function TEditorOptions.CreateSyn(
+  LazSynHilighter: TLazSyntaxHighlighter): TCustomSyn;
+begin
+  if LazSyntaxHighlighterClasses[LazSynHilighter]<>nil then begin
+    Result:=LazSyntaxHighlighterClasses[LazSynHilighter].Create(nil);
+    AddSpecialHilightAttribsToHighlighter(Result);
+    GetHighlighterSettings(Result);
+  end else
+    Result:=nil;
+end;
+
+function TEditorOptions.ReadColorScheme(const LanguageName: string): string;
+begin
+  if LanguageName='' then begin
+    Result:=DefaultColorScheme;
+    exit;
+  end;
+  if LanguageName<>TPreviewPasSyn.GetLanguageName then
+    Result:=XMLConfig.GetValue(
+      'EditorOptions/Color/Lang'+StrToValidXMLName(LanguageName)
+        +'/ColorScheme/Value','')
+  else
+    Result:='';
+  if Result='' then Result:=ReadPascalColorScheme;
+end;
+
+function TEditorOptions.ReadPascalColorScheme: string;
+var FormatVersion: integer;
+begin
+  FormatVersion:=XMLConfig.GetValue('EditorOptions/Color/Version',0);
+  if FormatVersion>1 then begin
+    Result:=XMLConfig.GetValue(
+      'EditorOptions/Color/Lang'
+      +StrToValidXMLName(TPreviewPasSyn.GetLanguageName)
+      +'/ColorScheme/Value','');
+  end else
+    Result:=XMLConfig.GetValue('EditorOptions/Color/ColorScheme','');
+  if Result='' then Result:=DefaultColorScheme;
+end;
+
+procedure TEditorOptions.WriteColorScheme(const LanguageName,
+  SynColorScheme: string);
+begin
+  if (LanguageName='') or (SynColorScheme='') then exit;
+  XMLConfig.SetValue('EditorOptions/Color/Lang'+StrToValidXMLName(LanguageName)
+    +'/ColorScheme/Value',SynColorScheme);
+  XMLConfig.SetValue('EditorOptions/Color/Version',EditorOptsFormatVersion);
+end;
+
+procedure TEditorOptions.GetDefaultsForPascalAttribute(
+  Attr: TSynHighlightElement; const SynColorScheme: string);
+var
   AttriName:string;
-  a:integer;
   DefBGCol,DefFGCol:TColor;
   DefFontStyles:TFontStyles;
 begin
-  AttriName:=Attri.Name;
+  AttriName:=Attr.Name;
+  if AttriName='' then exit;
+  
   DefFGCol:=clNone;
   DefBGCol:=clNone;
   DefFontStyles:=[];
-  if ColorScheme ='Twilight'  then begin
+  if lowercase(SynColorScheme)='twilight'  then begin
     // default for twilight color scheme
     DefBGCol:=clBlack;
     DefFGCol:=clWhite;
@@ -841,19 +1157,22 @@ begin
       DefFGCol:=clYellow;
     end else if AttriName='Symbol' then begin
       DefFGCol:=clAqua;
-    end else if AttriName=AdditionalHiglightAttributes[0] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaTextBlock] then begin
       DefBGCol:=clWhite;
       DefFGCol:=clBlack
-    end else if AttriName=AdditionalHiglightAttributes[1] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaExecutionPoint] 
+    then begin
       DefBGCol:=clBlue;
       DefFGCol:=clWhite;
-    end else if AttriName=AdditionalHiglightAttributes[2] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaEnabledBreakpoint]
+    then begin
       DefBGCol:=clRed;
       DefFGCol:=clWhite;
-    end else if AttriName=AdditionalHiglightAttributes[3] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaDisabledBreakpoint]
+    then begin
       DefBGCol:=clLime;
       DefFGCol:=clRed;
-    end else if AttriName=AdditionalHiglightAttributes[4] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaErrorLine] then begin
       DefBGCol:=$50a0ff;
       DefFGCol:=clBlack;
     end;
@@ -872,93 +1191,292 @@ begin
       DefFGCol:=clBlue;
     end else if AttriName='Symbol' then begin
       DefFGCol:=clRed;
-    end else if AttriName=AdditionalHiglightAttributes[0] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaTextBlock] then begin
       DefBGCol:=clNavy;
       DefFGCol:=clWhite;
-    end else if AttriName=AdditionalHiglightAttributes[1] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaExecutionPoint] 
+    then begin
       DefBGCol:=clDKGray;
       DefFGCol:=clWhite;
-    end else if AttriName=AdditionalHiglightAttributes[2] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaEnabledBreakpoint]
+    then begin
       DefBGCol:=clRed;
       DefFGCol:=clBlack;
-    end else if AttriName=AdditionalHiglightAttributes[3] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaDisabledBreakpoint]
+    then begin
       DefBGCol:=clGreen;
       DefFGCol:=clBlack;
-    end else if AttriName=AdditionalHiglightAttributes[4] then begin
+    end else if AttriName=AdditionalHighlightAttributes[ahaErrorLine] then begin
       DefBGCol:=$50a0ff;
       DefFGCol:=clBlack;
     end;
   end;
-  for a:=1 to length(AttriName) do
-    if (not (AttriName[a] in ['a'..'z','A'..'Z'])) then
-      AttriName[a]:='_';
-  Attri.BackGround:=XMLConfig.GetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/BackgroundColor',DefBGCol);
-  Attri.ForeGround:=XMLConfig.GetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/ForegroundColor',DefFGCol);
-  fs:=[];
-  b:=XMLConfig.GetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/Bold'
-    ,fsBold in DefFontStyles);
-  if b then fs:=fs+[fsBold];
-  b:=XMLConfig.GetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/Italic'
-    ,fsItalic in DefFontStyles);
-  if b then fs:=fs+[fsItalic];
-  b:=XMLConfig.GetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/Underline'
-    ,fsUnderLine in DefFontStyles);
-  if b then fs:=fs+[fsUnderline];
-  Attri.Style:=fs;
+  
+  Attr.Foreground:=DefFGCol;
+  Attr.Background:=DefBGCol;
+  Attr.Style:=DefFontStyles;
 end;
 
-procedure TEditorOptions.GetHighlighterSettings(PasSyn:TPreviewPasSyn);
+procedure TEditorOptions.ReadDefaultsForHighlighterSettings(Syn: TCustomSyn;
+  SynColorScheme: string; DefaultPascalSyn: TPreviewPasSyn);
+// if SynColorScheme='' then default ColorScheme will be used
+var VirginSyn, DefaultSyn: TCustomSyn;
+  i, j: integer;
+  MappedAttriName, AttriName: string;
+  HilightInfo: TEditOptLanguageInfo;
+  aha: TAdditionalHilightAttribute;
+  CustomPascalSyn: boolean;
 begin
-  ReadAttribute(PasSyn.AsmAttri);
-  ReadAttribute(PasSyn.CommentAttri);
-  ReadAttribute(PasSyn.IdentifierAttri);
-  ReadAttribute(PasSyn.KeyAttri);
-  ReadAttribute(PasSyn.NumberAttri);
-  ReadAttribute(PasSyn.SpaceAttri);
-  ReadAttribute(PasSyn.StringAttri);
-  ReadAttribute(PasSyn.SymbolAttri);
+  if SynColorScheme='' then SynColorScheme:=ReadColorScheme(Syn.LanguageName);
+  if SynColorScheme='' then exit;
+  CustomPascalSyn:=(DefaultPascalSyn<>nil);
+  if (Syn is TPreviewPasSyn) then begin
+    // the defaults for pascal are fix programmed
+    for i:=0 to Syn.AttrCount-1 do
+      GetDefaultsForPascalAttribute(Syn.Attribute[i],SynColorScheme);
+  end else begin
+    // the defaults of all non pascal languages are the mapped current values of
+    // pascal or the non mapped values of an untouched highlighter of the same
+    // type
+    i:=HighlighterList.FindByClass(TCustomSynClass(Syn.ClassType));
+    if i<0 then exit;
+    HilightInfo:=HighlighterList[i];
+    if not CustomPascalSyn then
+      DefaultPascalSyn:=TPreviewPasSyn.Create(nil);
+    VirginSyn:=TCustomSynClass(Syn.ClassType).Create(nil);
+    try
+      if not CustomPascalSyn then begin
+        AddSpecialHilightAttribsToHighlighter(DefaultPascalSyn);
+        ReadHighlighterSettings(DefaultPascalSyn,SynColorScheme);
+      end;
+      // map attributes
+      for i:=0 to Syn.AttrCount-1 do begin
+        AttriName:=StrToValidXMLName(Syn.Attribute[i].Name);
+        if AttriName='' then continue;
+        // check, if there is a known mapping for this attribute
+        if HilightInfo.MappedAttributes<>nil then
+          MappedAttriName:=
+            HilightInfo.MappedAttributes.Values[AttriName]
+        else
+          MappedAttriName:='';
+        if MappedAttriName='' then begin
+          // all special line color attributes can be mapped 1:1
+          for aha:=Low(TAdditionalHilightAttribute) 
+          to High(TAdditionalHilightAttribute) do
+            if AnsiCompareText(
+              StrToValidXMLName(AdditionalHighlightAttributes[aha]),AttriName)=0
+            then
+              MappedAttriName:=AttriName;
+        end;
+        if MappedAttriName<>'' then
+          DefaultSyn:=DefaultPascalSyn
+        else
+          DefaultSyn:=VirginSyn;
+        // read defaults
+        j:=DefaultSyn.AttrCount-1;
+        while (j>=0) do begin
+          if AnsiCompareText(StrToValidXMLName(DefaultSyn.Attribute[j].Name),
+            MappedAttriName)=0
+          then begin
+            CopyHiLightAttributeValues(DefaultSyn.Attribute[j],Syn.Attribute[i]);
+            break;
+          end;
+          dec(j);
+        end;
+      end;
+    finally
+      VirginSyn.Free;
+      if not CustomPascalSyn then
+        DefaultPascalSyn.Free;
+    end;
+  end;
 end;
 
-procedure TEditorOptions.WriteAttribute(Attri:TSynHighlightElement);
-var AttriName:string;
-  a:integer;
+procedure TEditorOptions.ReadHighlighterSettings(Syn: TCustomSyn;
+  SynColorScheme: string); 
+// if SynColorScheme='' then default ColorScheme will be used
+var FormatVersion: integer;
+  i: integer;
+  AttriName: string;
+  Attri: TSynHighlightElement;
+  b: boolean;
+  fs: TFontStyles;
+  Path: string;
 begin
-  AttriName:=Attri.Name;
-  for a:=1 to length(AttriName) do
-    if (not (AttriName[a] in ['a'..'z','A'..'Z'])) then
-      AttriName[a]:='_';
-  XMLConfig.SetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/BackgroundColor'
-    ,Attri.BackGround);
-  XMLConfig.SetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/ForegroundColor'
-    ,Attri.ForeGround);
-  XMLConfig.SetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/Bold'
-    ,fsBold in Attri.Style);
-  XMLConfig.SetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/Italic'
-    ,fsItalic in Attri.Style);
-  XMLConfig.SetValue(
-    'EditorOptions/Color/'+ColorScheme+'/'+AttriName+'/Underline'
-    ,fsUnderline in Attri.Style);
+  // initialize with defaults
+  if SynColorScheme='' then SynColorScheme:=ReadColorScheme(Syn.LanguageName);
+  if (SynColorScheme='') or (Syn.LanguageName='') then exit;
+  ReadDefaultsForHighlighterSettings(Syn,SynColorScheme,nil);
+  // read settings, that are different from the defaults
+  FormatVersion:=XMLConfig.GetValue(
+    'EditorOptions/Color/Lang'+StrToValidXMLName(Syn.LanguageName)+'/Version',0);
+  if FormatVersion>1 then begin
+    // read all attributes
+    for i:=0 to Syn.AttrCount-1 do begin
+      Attri:=Syn.Attribute[i];
+      AttriName:=StrToValidXMLName(Attri.Name);
+      if AttriName='' then continue;
+      Path:='EditorOptions/Color/Lang'+StrToValidXMLName(Syn.LanguageName)
+            +'/Scheme'+StrToValidXMLName(SynColorScheme)
+            +'/'+StrToValidXMLName(AttriName)+'/';
+      Attri.BackGround:=XMLConfig.GetValue(Path+'BackgroundColor/Value',
+                                           Attri.Background);
+      Attri.ForeGround:=XMLConfig.GetValue(Path+'ForegroundColor/Value',
+                                           Attri.Foreground);
+      fs:=[];
+      b:=XMLConfig.GetValue(Path+'Style/Bold',fsBold in Attri.Style);
+      if b then Include(fs,fsBold);
+      b:=XMLConfig.GetValue(Path+'Style/Italic',fsItalic in Attri.Style);
+      if b then Include(fs,fsItalic);
+      b:=XMLConfig.GetValue(Path+'Style/Underline',fsUnderline in Attri.Style);
+      if b then Include(fs,fsUnderline);
+      Attri.Style:=fs;
+    end;
+  end else begin
+    // FormatVersion < 2
+    // the oldest format only supports pascal
+    if Syn is TPreviewPasSyn then begin
+      for i:=0 to Syn.AttrCount-1 do begin
+        Attri:=Syn.Attribute[i];
+        AttriName:=StrToValidXMLName(Attri.Name);
+        if AttriName='' then continue;
+        Path:='EditorOptions/Color/'+StrToValidXMLName(SynColorScheme)+'/'
+          +StrToValidXMLName(AttriName)+'/';
+        Attri.BackGround:=XMLConfig.GetValue(Path+'BackgroundColor',
+                                             Attri.Background);
+        Attri.ForeGround:=XMLConfig.GetValue(Path+'ForegroundColor',
+                                             Attri.Foreground);
+        fs:=[];
+        b:=XMLConfig.GetValue(Path+'Bold',fsBold in Attri.Style);
+        if b then Include(fs,fsBold);
+        b:=XMLConfig.GetValue(Path+'Italic',fsItalic in Attri.Style);
+        if b then Include(fs,fsItalic);
+        b:=XMLConfig.GetValue(Path+'Underline',fsUnderline in Attri.Style);
+        if b then Include(fs,fsUnderline);
+        Attri.Style:=fs;
+      end;
+    end;
+  end;
 end;
 
-procedure TEditorOptions.SetHighlighterSettings(PasSyn:TPreviewPasSyn);
+procedure TEditorOptions.WriteHighlighterSettings(Syn: TCustomSyn;
+  SynColorScheme: string); 
+var OldSyn: TCustomSyn;
+  i: integer;
+  AttriName: string;
+  Attri, OldAttri: TSynHighlightElement;
+  Path: string;
 begin
-  WriteAttribute(PasSyn.AsmAttri);
-  WriteAttribute(PasSyn.CommentAttri);
-  WriteAttribute(PasSyn.IdentifierAttri);
-  WriteAttribute(PasSyn.KeyAttri);
-  WriteAttribute(PasSyn.NumberAttri);
-  WriteAttribute(PasSyn.SpaceAttri);
-  WriteAttribute(PasSyn.StringAttri);
-  WriteAttribute(PasSyn.SymbolAttri);
+  // read the old settings, compare and write only the differences
+  if SynColorScheme='' then SynColorScheme:=ReadColorScheme(Syn.LanguageName);
+  OldSyn:=TCustomSynClass(Syn.ClassType).Create(nil);
+  AddSpecialHilightAttribsToHighlighter(OldSyn);
+  ReadHighlighterSettings(OldSyn,SynColorScheme);
+  // write colorscheme
+  XMLConfig.SetValue('EditorOptions/Color/Lang'
+    +StrToValidXMLName(Syn.LanguageName)+'/Version',
+    EditorOptsFormatVersion);
+  // write all attributes
+  for i:=0 to Syn.AttrCount-1 do begin
+    Attri:=Syn.Attribute[i];
+    OldAttri:=OldSyn.Attribute[i];
+    AttriName:=StrToValidXMLName(Attri.Name);
+    if AttriName='' then continue;
+    Path:='EditorOptions/Color/Lang'+StrToValidXMLName(Syn.LanguageName)
+          +'/Scheme'+StrToValidXMLName(SynColorScheme)
+          +'/'+StrToValidXMLName(AttriName)+'/';
+    if Attri.Background<>OldAttri.Background then
+      XMLConfig.SetValue(Path+'BackgroundColor/Value',Attri.Background);
+    if Attri.Foreground<>OldAttri.Foreground then
+      XMLConfig.SetValue(Path+'ForegroundColor/Value',Attri.Foreground);
+    if Attri.Style<>OldAttri.Style then begin
+      XMLConfig.SetValue(Path+'Style/Bold',fsBold in Attri.Style);
+      XMLConfig.SetValue(Path+'Style/Italic',fsItalic in Attri.Style);
+      XMLConfig.SetValue(Path+'Style/Underline',fsUnderline in Attri.Style);
+    end;
+  end;
+end;
+
+procedure TEditorOptions.GetHighlighterSettings(Syn: TCustomSyn);
+// read highlight settings from config file
+begin
+  ReadHighlighterSettings(Syn,'');
+end;
+
+procedure TEditorOptions.SetHighlighterSettings(Syn: TCustomSyn);
+// write highlight settings to config file
+begin
+  WriteHighlighterSettings(Syn,'');
+end;
+
+procedure TEditorOptions.GetSpecialLineColors(Syn: TCustomSyn; 
+  AddHilightAttr: TAdditionalHilightAttribute; var FG, BG: TColor);
+var i: integer;
+begin
+  if Syn<>nil then begin
+    for i:=0 to Syn.AttrCount-1 do begin
+      if Syn.Attribute[i].Name='' then continue;
+      if Syn.Attribute[i].Name=AdditionalHighlightAttributes[AddHilightAttr]
+      then begin
+        FG:=Syn.Attribute[i].Foreground;
+        BG:=Syn.Attribute[i].Background;
+        exit;
+      end;
+    end;
+  end;
+  // set default
+  case AddHilightAttr of
+  ahaTextBlock:
+    begin
+      BG:=clNavy;
+      FG:=clWhite;
+    end;
+  ahaExecutionPoint:
+    begin
+      BG:=clDKGray;
+      FG:=clWhite;
+    end;
+  ahaEnabledBreakpoint:
+    begin
+      BG:=clRed;
+      FG:=clBlack;
+    end;
+  ahaDisabledBreakpoint:
+    begin
+      BG:=clGreen;
+      FG:=clBlack;
+    end;
+  ahaErrorLine:
+    begin
+      BG:=$50a0ff;
+      FG:=clBlack;
+    end;
+  else
+    begin
+      BG:=clWhite;
+      FG:=clBlack;
+    end;
+  end;
+end;
+
+procedure TEditorOptions.GetSynEditSelectedColor(ASynEdit:TSynEdit);
+var i: integer;
+begin
+  if ASynEdit.Highlighter<>nil then begin
+    for i:=0 to ASynEdit.Highlighter.AttrCount-1 do begin
+      with ASynEdit.Highlighter.Attribute[i] do begin
+        if Name='' then continue;
+        if Name=AdditionalHighlightAttributes[ahaTextBlock] then begin
+          ASynEdit.SelectedColor.Background:=Background;
+          ASynEdit.SelectedColor.Foreground:=Foreground;
+          exit;
+        end;
+      end;
+    end;
+  end;
+  // set defaults
+  ASynEdit.SelectedColor.Background:=clBlue;
+  ASynEdit.SelectedColor.Foreground:=clWhite;
 end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit:TSynEdit);
@@ -979,8 +1497,8 @@ begin
   ASynEdit.Font.Height:=fEditorFontHeight;
   ASynEdit.ExtraLineSpacing:=fExtraLineSpacing;
   ASynEdit.MaxUndo:=fUndoLimit;
-  ASynEdit.SelectedColor.ForeGround:=fTextBlockElement.ForeGround;
-  ASynEdit.SelectedColor.BackGround:=fTextBlockElement.BackGround;
+  GetSynEditSelectedColor(ASynEdit);
+  
   KeyMap.AssignTo(ASynEdit.KeyStrokes);
 end;
 
@@ -1001,20 +1519,46 @@ begin
   fEditorFontHeight:=ASynEdit.Font.Height;
   fExtraLineSpacing:=ASynEdit.ExtraLineSpacing;
   fUndoLimit:=ASynEdit.MaxUndo;
-  fTextBlockElement.ForeGround:=ASynEdit.SelectedColor.ForeGround;
-  fTextBlockElement.BackGround:=ASynEdit.SelectedColor.BackGround;
 
   // XXX: KeyMap
 
   // XXX:  update all checkboxes, comboboxes...
 end;
 
+procedure TEditorOptions.AddSpecialHilightAttribsToHighlighter(Syn: TCustomSyn);
+type
+  THasSpecialAttribute = array[TAdditionalHilightAttribute] of boolean;
+var
+  HasSpecialAttribute: THasSpecialAttribute;
+  a: TAdditionalHilightAttribute;
+  i: integer;
+begin
+  for a:=Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute)
+  do
+    HasSpecialAttribute[a]:=false;
+  for i:=0 to Syn.AttrCount-1 do begin
+    with Syn.Attribute[i] do begin
+      if Name='' then continue;
+      for a:=Low(TAdditionalHilightAttribute) 
+      to High(TAdditionalHilightAttribute)
+      do begin
+        if AdditionalHighlightAttributes[a]=Name then
+          HasSpecialAttribute[a]:=true;
+      end;
+    end;
+  end;
+  for a:=Low(TAdditionalHilightAttribute) to High(TAdditionalHilightAttribute)
+  do
+    if not HasSpecialAttribute[a] then begin
+      Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a]);
+    end;    
+end;
 
 { TColorButton }
 
-constructor TColorButton.Create(AOwner: TComponent);
+constructor TColorButton.Create(AnOwner: TComponent);
 begin
-  Inherited Create(AOwner);
+  Inherited Create(AnOwner);
   Align := alNone;
   FBorderWidth:=2;
   Setbounds(1,1,75,25);
@@ -1080,16 +1624,16 @@ end;
 
 { TEditorOptionsForm }
 
-constructor TEditorOptionsForm.Create(AOwner:TComponent);
+constructor TEditorOptionsForm.Create(AnOwner:TComponent);
 var a:integer;
   s:Ansistring;
 begin
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
+  FormCreating:=true;
 
   if LazarusResources.Find(ClassName)=nil then begin  
     SetBounds((Screen.Width-470) div 2,(Screen.Height-480) div 2, 455,459);
     Caption:='Editor Options';
-    PreviewPasSyn:=TPreviewPasSyn.Create(Self);
     SynAutoComplete:=TSynEditAutoComplete.Create(Self);
 
     MainNoteBook:=TNoteBook.Create(Self);
@@ -1118,56 +1662,73 @@ begin
   end;
 
   UpdatingColor:=false;
-
-  for a:=Low(PreviewEdits) to High(PreviewEdits) do
-    PreviewEdits[a]:=nil;
-  EditorOpts.GetHighlighterSettings(PreviewPasSyn);
-
-  AddHighlightElements[0]:=EditorOpts.TextBlockElement;
-  AddHighlightElements[1]:=EditorOpts.ExecutionPointElement;
-  AddHighlightElements[2]:=EditorOpts.EnabledBreakPointElement;
-  AddHighlightElements[3]:=EditorOpts.DisabledBreakPointElement;
-  AddHighlightElements[4]:=EditorOpts.ErrorLineElement;
   CurHighlightElement:=nil;
 
-  with SynAutoComplete do begin
-    s:=EditorOpts.CodeTemplateFileName;
-    if FileExists(s) then
-      try
-        AutoCompleteList.LoadFromFile(s);
-      except
-        writeln('ERROR unable to read code template file ''',s,'''');
-        Halt;
-      end;
-  end;
+  // initialize previews
+  for a:=Low(PreviewEdits) to High(PreviewEdits) do
+    PreviewEdits[a]:=nil;
+  PreviewSyn:=GetHighlighter(TPreviewPasSyn,
+              GetCurColorScheme(TPreviewPasSyn.GetLanguageName),true);
+  CurLanguageID:=EditorOpts.HighlighterList.FindByClass(
+    TCustomSynClass(PreviewSyn.ClassType));
 
   PreviewEdits[1]:=DisplayPreview;
   PreviewEdits[2]:=ColorPreview;
   PreviewEdits[3]:=CodeTemplateCodePreview;
   for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
     if PreviewEdits[a]<>nil then with PreviewEdits[a] do begin
-      EditorOpts.GetSynEditSettings(PreviewEdits[a]);
       if EditorOpts.UseSyntaxHighlight then
-        Highlighter:=PreviewPasSyn;
+        Highlighter:=PreviewSyn;
+      EditorOpts.GetSynEditSettings(PreviewEdits[a]);
       EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
+      if a<>3 then
+        Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
     end;
   end;
   CodeTemplateCodePreview.Gutter.Visible:=false;
 
   // general options
+  
   // display options
+  
   // key mappings
-  // color options
-  // code Tools options
-
-  FindCurHighlightElement;
-  FillCodeTemplateListBox;
   FillKeyMappingListBox;
-//  with CodeTemplateListBox do
-//    if Items.Count>0 then Selected[0]:=true;
-//  ShowCurCodeTemplate;
-
+  
+  // color options
+  LanguageComboBox.Text:=PreviewSyn.LanguageName;
+  SetComboBoxText(LanguageComboBox,LanguageComboBox.Text);
+  ColorSchemeComboBox.Text:=GetCurColorScheme(PreviewSyn.LanguageName);
+  SetComboBoxText(ColorSchemeComboBox,ColorSchemeComboBox.Text);
+  FillColorElementListBox;
+  FindCurHighlightElement;
+  
+  // code Tools options
+  with SynAutoComplete do begin
+    s:=EditorOpts.CodeTemplateFileName;
+    if FileExists(s) then
+      try
+        AutoCompleteList.LoadFromFile(s);
+      except
+        writeln('WARNING: unable to read code template file ''',s,'''');
+      end;
+  end;
+  FillCodeTemplateListBox;
+  with CodeTemplateListBox do
+    if Items.Count>0 then begin
+      Selected[0]:=true;
+      ShowCurCodeTemplate;
+    end;
+  FormCreating:=false;
 end;
+
+destructor TEditorOptionsForm.Destroy;
+begin
+  ClearHighlighters;
+  fColorSchemes.Free;
+  fFileExtensions.Free;
+  inherited Destroy;
+end;
+
 
 // general
 
@@ -1189,6 +1750,7 @@ var a:integer;
 
 // GeneralCheckBoxOnClick
 begin
+  if FormCreating then exit;
   {$IFDEF NEW_EDITOR_SYNEDIT}
   // general
   SetOption(AltSetsColumnModeCheckBox,eoAltSetsColumnMode);
@@ -1217,7 +1779,7 @@ begin
       // general
       if Sender=UseSyntaxHighlightCheckBox then
         if UseSyntaxHighlightCheckBox.Checked then
-          PreviewEdits[a].Highlighter:=PreviewPasSyn
+          PreviewEdits[a].Highlighter:=PreviewSyn
         else
           PreviewEdits[a].Highlighter:=nil;
       // display
@@ -1232,22 +1794,26 @@ begin
   if CurHighlightElement<>nil then begin
     if Sender=ForeGroundUseDefaultCheckBox then begin
       if UpdatingColor=false then begin
+        UpdatingColor:=true;
         if not ForeGroundUseDefaultCheckBox.Checked then
-          NewColor:=ForeGroundColorButton.Color
+          NewColor:=ForeGroundColorButton.ButtonColor
         else
           NewColor:=clNone;
+        ForeGroundColorButton.Visible:=not ForeGroundUseDefaultCheckBox.Checked;
         if NewColor<>CurHighlightElement.Foreground then begin
           CurHighlightElement.Foreground:=NewColor;
           InvalidatePreviews;
         end;
+        UpdatingColor:=false;
       end;
     end;
     if Sender=BackGroundUseDefaultCheckBox then begin
       if UpdatingColor=false then begin
         if not BackGroundUseDefaultCheckBox.Checked then
-          NewColor:=BackGroundColorButton.Color
+          NewColor:=BackGroundColorButton.ButtonColor
         else
           NewColor:=clNone;
+        BackGroundColorButton.Visible:=not BackGroundUseDefaultCheckBox.Checked;
         if NewColor<>CurHighlightElement.Background then begin
           CurHighlightElement.Background:=NewColor;
           InvalidatePreviews;
@@ -1299,6 +1865,7 @@ end;
 procedure TEditorOptionsForm.ColorButtonColorChanged(Sender:TObject);
 var a:integer;
 begin
+  if FormCreating then exit;
   if Sender=ForeGroundColorButton then begin
     if (CurHighlightElement=nil) or UpdatingColor then exit;
     if not ForeGroundUseDefaultCheckBox.Checked then begin
@@ -1339,7 +1906,8 @@ begin
   end;
 end;
 
-procedure TEditorOptionsForm.FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
+procedure TEditorOptionsForm.FontDialogNameToFont(FontDialogName:Ansistring;
+  AFont:TFont);
 var TmpFont:TFont;
   p,p2,index:integer;
   s:shortstring;
@@ -1393,6 +1961,7 @@ procedure TEditorOptionsForm.ComboBoxOnExit(Sender:TObject);
 var NewVal,a:integer;
   Box: TComboBox;
 begin
+  if FormCreating then exit;
   Box:=TComboBox(Sender);
   if PreviewEdits[1]<>nil then begin
     // general
@@ -1450,18 +2019,53 @@ begin
     // color
     else if Sender=ColorSchemeComboBox then begin
       if Box.Items.IndexOf(Box.Text)<0 then begin
-        SetComboBoxText(Box,EditorOpts.ColorScheme);
+        // unknown color scheme -> switch back
+        SetComboBoxText(Box,GetCurColorScheme(PreviewSyn.LanguageName));
       end else begin
-        if Box.Text<>EditorOpts.ColorScheme then begin
-          EditorOpts.ColorScheme:=Box.Text;
-          SetComboBoxText(Box,EditorOpts.ColorScheme);
-          EditorOpts.ReadAttribute(EditorOpts.TextBlockElement);
-          EditorOpts.ReadAttribute(EditorOpts.ExecutionPointElement);
-          EditorOpts.ReadAttribute(EditorOpts.EnabledBreakPointElement);
-          EditorOpts.ReadAttribute(EditorOpts.DisabledBreakPointElement);
-          EditorOpts.ReadAttribute(EditorOpts.ErrorLineElement);
-          EditorOpts.GetHighlighterSettings(PreviewPasSyn);
-          ShowCurAttribute;
+        // change the colorscheme
+        if Box.Text<>GetCurColorScheme(PreviewSyn.LanguageName) then begin
+          SetCurColorScheme(PreviewSyn.LanguageName,Box.Text);
+          SetComboBoxText(Box,Box.Text);
+          PreviewSyn:=GetHighlighter(TCustomSynClass(PreviewSyn.ClassType),
+                                     Box.Text,true);
+          SetPreviewSynInAllPreviews;
+          FillColorElementListBox;
+          FindCurHighlightElement;
+        end;
+      end;
+    end else if Sender=FileExtensionsComboBox then begin
+      if Box.Text<>GetCurFileExtension(PreviewSyn.LanguageName) then begin
+        SetCurFileExtension(PreviewSyn.LanguageName,Box.Text);
+        SetComboBoxText(Box,Box.Text);
+      end;
+    end else if Sender=LanguageComboBox then begin
+      if Box.Items.IndexOf(Box.Text)<0 then begin
+        // unknown language -> switch back
+        SetComboBoxText(Box,PreviewSyn.LanguageName);
+      end else begin
+        // change language
+        if Box.Text<>PreviewSyn.LanguageName then begin
+          NewVal:=EditorOpts.HighlighterList.FindByName(Box.Text);
+          if NewVal>=0 then begin
+            SetComboBoxText(Box,Box.Text);
+            CurLanguageID:=NewVal;
+            PreviewSyn:=GetHighlighter(
+              EditorOpts.HighlighterList[CurLanguageID].SynClass,
+              GetCurColorScheme(
+              EditorOpts.HighlighterList[CurLanguageID].SynClass.GetLanguageName)
+              ,true);
+            SetComboBoxText(ColorSchemeComboBox,
+                            GetCurColorScheme(PreviewSyn.LanguageName));
+            SetComboBoxText(FileExtensionsComboBox,
+                            GetCurFileExtension(PreviewSyn.LanguageName));
+            for a:=Low(PreviewEdits) to High(PreviewEdits) do
+              if a<>3 then
+                PreviewEdits[a].Lines.Text:=
+                  EditorOpts.HighlighterList[CurLanguageID].SampleSource;
+            SetPreviewSynInAllPreviews;
+            FillColorElementListBox;
+            FindCurHighlightElement;
+          end;
         end;
       end;
     end;
@@ -1485,7 +2089,7 @@ begin
 end;
 
 procedure TEditorOptionsForm.FindCurHighlightElement;
-var a:integer;
+var a, i:integer;
   Old:TSynHighlightElement;
 begin
   Old:=CurHighlightElement;
@@ -1493,28 +2097,29 @@ begin
   a:=0;
   while a<ColorElementListBox.Items.Count do begin
     if ColorElementListBox.Selected[a] then begin
-      case a of
-        0:CurHighlightElement:=PreviewPasSyn.AsmAttri;
-        1:CurHighlightElement:=PreviewPasSyn.CommentAttri;
-        2:CurHighlightElement:=PreviewPasSyn.IdentifierAttri;
-        3:CurHighlightElement:=PreviewPasSyn.KeyAttri;
-        4:CurHighlightElement:=PreviewPasSyn.NumberAttri;
-        5:CurHighlightElement:=PreviewPasSyn.SpaceAttri;
-        6:CurHighlightElement:=PreviewPasSyn.StringAttri;
-        7:CurHighlightElement:=PreviewPasSyn.SymbolAttri;
-      else
-        dec(a,8-Low(AdditionalHiglightAttributes));
-        if a<=High(AdditionalHiglightAttributes) then
-          CurHighlightElement:=AddHighlightElements[a];
+      i:=PreviewSyn.AttrCount-1;
+      while (i>=0) do begin
+        if ColorElementListBox.Items[a]=PreviewSyn.Attribute[i].Name then
+          break;
+        dec(i);
       end;
-      break;
+      if i>=0 then begin
+        CurHighlightElement:=PreviewSyn.Attribute[i];
+        break;
+      end;
     end;
     inc(a);
   end;
-  if CurHighlightElement=nil then begin
+  if (CurHighlightElement=nil) and (ColorElementListBox.Items.Count>0) then 
+  begin
     // none selected -> select one
     ColorElementListBox.Selected[0]:=true;
-    CurHighlightElement:=PreviewPasSyn.AsmAttri;
+    i:=PreviewSyn.AttrCount-1;
+    while (i>=0) do begin
+      if ColorElementListBox.Items[0]=PreviewSyn.Attribute[i].Name then
+        break;
+      dec(i);
+    end;
   end;
   if Old<>CurHighlightElement then
     ShowCurAttribute;
@@ -1526,6 +2131,15 @@ begin
   for a:=Low(PreviewEdits) to High(PreviewEdits) do
     if PreviewEdits[a]<>nil then
       PreviewEdits[a].Invalidate;
+end;
+
+procedure TEditorOptionsForm.SetPreviewSynInAllPreviews;
+var a:integer;
+begin
+  if EditorOpts.UseSyntaxHighlight then
+    for a:=Low(PreviewEdits) to High(PreviewEdits) do
+      if PreviewEdits[a]<>nil then
+        PreviewEdits[a].Highlighter:=PreviewSyn;
 end;
 
 procedure TEditorOptionsForm.ShowCurAttribute;
@@ -1541,12 +2155,15 @@ begin
     ForeGroundUseDefaultCheckBox.Checked:=false;
     ForeGroundColorButton.ButtonColor:=CurHighlightElement.Foreground;
   end;
+  ForeGroundColorButton.Visible:=not ForeGroundUseDefaultCheckBox.Checked;
   if CurHighlightElement.Background=clNone then begin
     BackGroundUseDefaultCheckBox.Checked:=true;
   end else begin
     BackGroundUseDefaultCheckBox.Checked:=false;
     BackGroundColorButton.ButtonColor:=CurHighlightElement.Background;
   end;
+  BackGroundColorButton.Visible:=
+    not BackGroundUseDefaultCheckBox.Checked;
   UpdatingColor:=false;
 end;
 
@@ -1578,12 +2195,12 @@ type
     BackButton: TButton;
     procedure BackButtonClick(Sender: TObject);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
   end;
 
-constructor TKeyMapErrorsForm.Create(AOwner: TComponent);
+constructor TKeyMapErrorsForm.Create(AnOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-410) div 2,(Screen.Height-260) div 2, 400,250);
     Caption:='Key mapping errors';
@@ -1641,10 +2258,7 @@ begin
     end else begin
       ACaption:='Report';
       AText:='No errors in key mapping found.';
-
-//      Application.MessageBox(PChar(AText),PChar(ACaption),mb_ok);
-      MessageDlg(ACaption,AText,mtinformation,[mbok],0);
-
+      MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
     end;
   finally
     Protocol.Free;
@@ -1657,37 +2271,49 @@ begin
   FindCurHighlightElement;
 end;
 
+procedure TEditorOptionsForm.FillColorElementListBox;
+var i: integer;
+begin
+  with ColorElementListBox.Items do begin
+    BeginUpdate;
+    Clear;
+    for i:=0 to PreviewSyn.AttrCount-1 do
+      if PreviewSyn.Attribute[i].Name<>'' then
+        Add(PreviewSyn.Attribute[i].Name);
+    EndUpdate;
+  end;
+  if ColorElementListBox.Items.Count>0 then begin
+    ColorElementListBox.Selected[0]:=true;
+    CurHighlightElement:=PreviewSyn.Attribute[0];
+  end else
+    CurHighlightElement:=nil;
+end;
+
 procedure TEditorOptionsForm.ColorPreviewMouseUp(Sender:TObject;
   Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
-var NewIndex:integer;
-  AName,Token:ansistring;
-  Attri:TSynHighlightElement;
-  MouseXY,XY:TPoint;
+var NewIndex: integer;
+  Token: ansistring;
+  Attri: TSynHighlightElement;
+  MouseXY, XY: TPoint;
+  AddAttr: TAdditionalHilightAttribute;
 begin
   MouseXY:=Point(X,Y);
   XY:=ColorPreview.PixelsToRowColumn(MouseXY);
-  NewIndex:=ColorElementListBox.ItemIndex;
-  case XY.Y of
-    13:NewIndex:=8;
-    14:NewIndex:=9;
-    16:NewIndex:=10;
-    17:NewIndex:=11;
-    18:NewIndex:=12;
-  else
-    ColorPreview.GetHighlighterAttriAtRowCol(XY,Token,Attri);
-    if Attri<>nil then begin
-      AName:=uppercase(Attri.Name);
-      if AName='ASSEMBLER' then NewIndex:=0
-      else if AName='COMMENT' then NewIndex:=1
-      else if AName='IDENTIFIER' then NewIndex:=2
-      else if AName='RESERVED WORD' then NewIndex:=3
-      else if AName='NUMBER' then NewIndex:=4
-      else if AName='SPACE' then NewIndex:=5
-      else if AName='STRING' then NewIndex:=6
-      else if AName='SYMBOL' then NewIndex:=7;
-    end;
+  NewIndex:=-1;
+  if CurLanguageID>=0 then begin
+    AddAttr:=EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(XY.Y);
+    if AddAttr<>ahaNone then 
+      NewIndex:=ColorElementListBox.Items.IndexOf(
+                           AdditionalHighlightAttributes[AddAttr]);
   end;
-  if NewIndex<>ColorElementListBox.ItemIndex then begin
+  if NewIndex<0 then begin
+    ColorPreview.GetHighlighterAttriAtRowCol(XY,Token,Attri);
+    if Attri=nil then
+      Attri:=PreviewSyn.WhitespaceAttribute;
+    if Attri<>nil then
+      NewIndex:=ColorElementListBox.Items.IndexOf(Attri.Name);
+  end;
+  if NewIndex>=0 then begin
     ColorElementListBox.ItemIndex:=NewIndex;
     FindCurHighlightElement;
     ShowCurAttribute;
@@ -1697,21 +2323,179 @@ end;
 procedure TEditorOptionsForm.OnSpecialLineColors(Sender: TObject;
   Line: integer;  var Special: boolean; var FG, BG: TColor);
 var e:TSynHighlightElement;
+  AddAttr: TAdditionalHilightAttribute;
+  i: integer;
 begin
-  case Line of
-    13:e:=EditorOpts.TextBlockElement;
-    14:e:=EditorOpts.ExecutionPointElement;
-    16:e:=EditorOpts.EnabledBreakPointElement;
-    17:e:=EditorOpts.DisabledBreakPointElement;
-    18:e:=EditorOpts.ErrorLineElement;
-  else e:=nil;
-  end;
-  if e<>nil then begin
-    Special:=true;
-    FG:=e.ForeGround;
-    BG:=e.BackGround;
+  if CurLanguageID>=0 then begin
+    AddAttr:=EditorOpts.HighlighterList[CurLanguageID].SampleLineToAddAttr(Line);
+    if AddAttr<>ahaNone then begin
+      i:=PreviewSyn.AttrCount-1;
+      while (i>=0) do begin
+        e:=PreviewSyn.Attribute[i];
+        if e.Name='' then continue;
+        if e.Name=AdditionalHighlightAttributes[AddAttr] then begin
+          Special:=true;
+          FG:=e.ForeGround;
+          BG:=e.BackGround;
+          exit;
+        end;
+        dec(i);
+      end;
+    end;
   end;
 end;
+
+procedure TEditorOptionsForm.SetAttributeToDefaultButtonClick(Sender: TObject);
+begin
+  SetColorElementsToDefaults(true);  
+end;
+
+procedure TEditorOptionsForm.SetAllAttributesToDefaultButtonClick(
+  Sender: TObject);
+begin
+  SetColorElementsToDefaults(false);  
+end;
+
+procedure TEditorOptionsForm.SetColorElementsToDefaults(OnlySelected: boolean);
+var DefaultSyn: TCustomSyn;
+  PascalSyn: TPreviewPasSyn;
+  i, j: integer;
+  CurSynClass: TCustomSynClass;
+begin
+  PascalSyn:=TPreviewPasSyn(GetHighlighter(TPreviewPasSyn,
+                            ColorSchemeComboBox.Text,true));
+  CurSynClass:=TCustomSynClass(PreviewSyn.ClassType);
+  DefaultSyn:=CurSynClass.Create(nil);
+  try
+    EditorOpts.AddSpecialHilightAttribsToHighlighter(DefaultSyn);
+    EditorOpts.ReadDefaultsForHighlighterSettings(DefaultSyn,
+      ColorSchemeComboBox.Text,PascalSyn);
+    for i:=0 to DefaultSyn.AttrCount-1 do begin
+      if DefaultSyn.Attribute[i].Name='' then continue;
+      if OnlySelected then begin
+        if (DefaultSyn.Attribute[i].Name=CurHighlightElement.Name) then begin
+          CopyHiLightAttributeValues(DefaultSyn.Attribute[i],
+                                     CurHighlightElement);
+        end;
+      end else begin
+        for j:=0 to PreviewSyn.AttrCount-1 do
+          if PreviewSyn.Attribute[j].Name=DefaultSyn.Attribute[i].Name then 
+          begin
+            CopyHiLightAttributeValues(DefaultSyn.Attribute[i],
+                                       PreviewSyn.Attribute[j]);
+          end;
+      end;
+    end;
+  finally
+    DefaultSyn.Free;
+  end;
+  ShowCurAttribute;
+end;
+
+function TEditorOptionsForm.GetCurColorScheme(
+  const LanguageName: string): string;
+begin
+  if fColorSchemes=nil then
+    Result:=''
+  else
+    Result:=fColorSchemes.Values[LanguageName];
+  if Result='' then
+    Result:=EditorOpts.ReadColorScheme(LanguageName);
+end;
+
+procedure TEditorOptionsForm.SetCurColorScheme(
+  const LanguageName, ColorScheme: string);
+begin
+  if fColorSchemes=nil then fColorSchemes:=TStringList.Create;
+  fColorSchemes.Values[LanguageName]:=ColorScheme;
+end;
+
+procedure TEditorOptionsForm.SaveAllColorSchemes;
+var i: integer;
+begin
+  if fColorSchemes=nil then exit;
+  for i:=0 to fColorSchemes.Count-1 do
+    EditorOpts.WriteColorScheme(fColorSchemes.Names[i],
+      fColorSchemes.Values[fColorSchemes.Names[i]]);
+end;
+
+function TEditorOptionsForm.GetCurFileExtension(
+  const LanguageName: string): string;
+var i: integer;
+begin
+  if fFileExtensions=nil then
+    Result:=''
+  else
+    Result:=fFileExtensions.Values[LanguageName];
+  if Result='' then begin
+    i:=EditorOpts.HighlighterList.FindByName(LanguageName);
+    if i>=0 then
+      Result:=EditorOpts.HighlighterList[i].FileExtensions;
+  end;
+end;
+
+procedure TEditorOptionsForm.SetCurFileExtension(
+  const LanguageName, FileExtensions: string);
+begin
+  if fFileExtensions=nil then fFileExtensions:=TStringList.Create;
+  fFileExtensions.Values[LanguageName]:=FileExtensions;
+end;
+
+procedure TEditorOptionsForm.SaveAllFileExtensions;
+var i, j: integer;
+begin
+  if fFileExtensions=nil then exit;
+  for i:=0 to fFileExtensions.Count-1 do begin
+    j:=EditorOpts.HighlighterList.FindByName(fFileExtensions.Names[i]);
+    if j>=0 then
+      EditorOpts.HighlighterList[i].FileExtensions:=
+        fFileExtensions.Values[fFileExtensions.Names[i]];
+  end;
+end;
+
+function TEditorOptionsForm.GetHighlighter(SynClass: TCustomSynClass;
+  const ColorScheme: string; CreateIfNotExists: boolean): TCustomSyn;
+var i: integer;
+begin
+  if fHighlighterList=nil then fHighlighterList:=TStringList.Create;
+  for i:=0 to fHighlighterList.Count-1 do begin
+    if (fHighlighterList[i]=ColorScheme) 
+    and (TCustomSynClass(TCustomSyn(fHighlighterList.Objects[i]).ClassType)
+      =SynClass)
+    then begin
+      Result:=TCustomSyn(fHighlighterList.Objects[i]);
+      exit;
+    end;
+  end;
+  if CreateIfNotExists then begin
+    Result:=SynClass.Create(nil);
+    EditorOpts.AddSpecialHilightAttribsToHighlighter(Result);
+    fHighlighterList.AddObject(ColorScheme,Result);
+    EditorOpts.ReadHighlighterSettings(Result,ColorScheme);
+  end;
+end;
+
+procedure TEditorOptionsForm.ClearHighlighters;
+var i: integer;
+begin
+  if fHighlighterList=nil then exit;
+  for i:=0 to fHighlighterList.Count-1 do
+    TCustomSyn(fHighlighterList.Objects[i]).Free;
+  fHighlighterList.Free;
+end;
+
+procedure TEditorOptionsForm.SaveAllHighlighters;
+var i: integer;
+  Syn: TCustomSyn;
+begin
+  if fHighlighterList=nil then exit;
+  for i:=0 to fHighlighterList.Count-1 do begin
+    Syn:=TCustomSyn(fHighlighterList.Objects[i]);
+    EditorOpts.WriteHighlighterSettings(Syn,fHighlighterList[i]);
+  end;
+end;
+
+// keymapping
 
 function TEditorOptionsForm.KeyMappingRelationToString(
   Index:integer):AnsiString;
@@ -1743,6 +2527,8 @@ begin
     EndUpdate;
   end;
 end;
+
+// code tools
 
 procedure TEditorOptionsForm.ShowCurCodeTemplate;
 var i,sp,ep:integer;
@@ -1825,7 +2611,7 @@ begin
       SynAutoComplete.AddCompletion(Token, '', Comment);
       FillCodeTemplateListBox;
       Index:=SynAutoComplete.Completions.IndexOf(Token);
-      if Index>=0 then begin
+      if (Index>=0) and (Index<CodeTemplateListBox.Items.Count) then begin
         CodeTemplateListBox.Selected[Index]:=true;
         CodeTemplateListBox.ItemIndex:=Index;
       end;
@@ -1850,7 +2636,8 @@ begin
         SynAutoComplete.DeleteCompletion(CurCodeTemplate);
         dec(CurCodeTemplate);
         FillCodeTemplateListBox;
-        if CurCodeTemplate>=0 then begin
+        if (CurCodeTemplate>=0) 
+        and (CurCodeTemplate<CodeTemplateListBox.Items.Count) then begin
           CodeTemplateListBox.Selected[CurCodeTemplate]:=true;
           CodeTemplateListBox.ItemIndex:=CurCodeTemplate;
         end;
@@ -1874,6 +2661,8 @@ begin
     OpenDialog.Free;
   end;
 end;
+
+// useful functions
 
 procedure TEditorOptionsForm.SetComboBoxText(AComboBox:TComboBox;
   AText:AnsiString);
@@ -1961,7 +2750,6 @@ begin
     Caption:='Drag Drop Editing';
     Checked:=eoDragDropEditing in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
-    Enabled:=false;
     Show;
   end;
 
@@ -1976,6 +2764,7 @@ begin
     Caption:='Drop Files';
     Checked:=eoDropFiles in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
+    Enabled:=false;
     Show;
   end;
 
@@ -2283,41 +3072,10 @@ begin
     Caption:='Tab widths:';
     Show;
   end;
-
-  SyntaxExtensionsComboBox:=TComboBox.Create(Self);
-  with SyntaxExtensionsComboBox do begin
-    Name:='SyntaxExtensionsComboBox';
-    Parent:=MainNoteBook.Page[0];
-    Top:=TabWidthsComboBox.Top+TabWidthsComboBox.Height+5;
-    Left:=TabWidthsComboBox.Left;
-    Width:=300;
-    Items.BeginUpdate;
-    Items.Add('pp;pas;inc;lpr;lfm;lrs;dpr;dfm;dpk');
-    Items.Add('pp;pas;inc;lpr;lrs;dpr;dpk');
-    Items.Add('pp;pas;inc;lpr;lrs');
-    Items.Add('pp;pas;inc');
-    Items.EndUpdate;
-    SetComboBoxText(SyntaxExtensionsComboBox,EditorOpts.SyntaxExtensions);
-    OnChange:=@ComboBoxOnChange;
-    OnKeyDown:=@ComboBoxOnKeyDown;
-    OnExit:=@ComboBoxOnExit;
-    Show;
-  end;
-
-  SyntaxExtensionsLabel:=TLabel.Create(Self);
-  with SyntaxExtensionsLabel do begin
-    Name:='SyntaxExtensionsLabel';
-    Parent:=MainNoteBook.Page[0];
-    Top:=SyntaxExtensionsComboBox.Top+2;
-    Left:=EditorOptionsGroupBox.Left+2;
-    Width:=SyntaxExtensionsComboBox.Left-Left-2;
-    Caption:='Syntax extensions:';
-    Show;
-  end;
 end;
 
 procedure TEditorOptionsForm.SetupDisplayPage;
-var MaxX,MaxY,ChkBoxW,a:integer;
+var MaxX,MaxY,ChkBoxW:integer;
 begin
   MaxX:=Width-9;
   MaxY:=375;
@@ -2614,10 +3372,6 @@ begin
     Left:=EditorFontGroupBox.Left+2;
     Width:=EditorFontGroupBox.Width-2;
     Height:=MaxY-Top-2;
-    Lines.Clear;
-    Lines.Add('{ Preview }');
-    for a:=Low(ExampleSource) to High(ExampleSource) do
-      Lines.Add(ExampleSource[a]);
     OnSpecialLineColors:=@Self.OnSpecialLineColors;
     ReadOnly:=true;
     Show;
@@ -2700,50 +3454,116 @@ begin
   MaxX:=Width-9;
   MaxY:=375;
 
+  LanguageComboBox:=TComboBox.Create(Self);
+  with LanguageComboBox do begin
+    Name:='LanguageComboBox';
+    Parent:=MainNoteBook.Page[3];
+    Top:=5;
+    Left:=80;
+    Width:=130;
+    Height:=20;
+    with Items do begin
+      BeginUpdate;
+      for a:=0 to EditorOpts.HighlighterList.Count-1 do
+        Add(TCustomSynClass(
+          EditorOpts.HighlighterList[a].SynClass).GetLanguageName);
+      EndUpdate;
+    end;
+    OnChange:=@ComboBoxOnChange;
+    OnKeyDown:=@ComboBoxOnKeyDown;
+    OnExit:=@ComboBoxOnExit;
+    Visible:=true;
+  end;
+  
+  LanguageLabel:=TLabel.Create(Self);
+  with LanguageLabel do begin
+    Name:='LanguageLabel';
+    Parent:=MainNoteBook.Page[3];
+    Top:=7;
+    Left:=5;
+    Width:=LanguageComboBox.Left-Left;
+    Height:=16;
+    Caption:='Language:';
+    Visible:=true;
+  end;
+
   ColorSchemeComboBox:=TComboBox.Create(Self);
   with ColorSchemeComboBox do begin
     Name:='ColorSchemeComboBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=5;
-    Left:=100;
+    Top:=LanguageComboBox.Top;
+    Left:=LanguageComboBox.Left+LanguageComboBox.Width+120;
     Width:=100;
-    Height:=16;
-    Text:=EditorOpts.ColorScheme;
+    Height:=20;
     with Items do begin
       BeginUpdate;
-      Add('Default');
+      // ToDo: fill also with custom color schemes
+      Add(DefaultColorScheme);
       Add('Twilight');
       EndUpdate;
     end;
-    SetComboBoxText(ColorSchemeComboBox,EditorOpts.ColorScheme);
+    Text:=DefaultColorScheme;
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Show;
+    Visible:=true;
   end;
 
   ColorSchemeLabel:=TLabel.Create(Self);
   with ColorSchemeLabel do begin
     Name:='ColorSchemeLabel';
     Parent:=MainNoteBook.Page[3];
-    Top:=5;
-    Left:=5;
+    Top:=ColorSchemeComboBox.Top+2;
+    Left:=ColorSchemeComboBox.Left-90;
     Width:=ColorSchemeComboBox.Left-Left;
     Height:=16;
-    Caption:='Color Scheme';
-    Show;
+    Caption:='Color Scheme:';
+    Visible:=true;
+  end;
+
+  FileExtensionsComboBox:=TComboBox.Create(Self);
+  with FileExtensionsComboBox do begin
+    Name:='FileExtensionsComboBox';
+    Parent:=MainNoteBook.Page[3];
+    Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+4;
+    Left:=110;
+    Width:=310;
+    Height:=20;
+    Items.BeginUpdate;
+    Items.Add('pp;pas;inc;lpr;lrs;dpr;dpk');
+    Items.Add('pp;pas;inc;lpr;lrs');
+    Items.Add('pp;pas;inc');
+    Items.EndUpdate;
+    if CurLanguageID>=0 then
+      SetComboBoxText(FileExtensionsComboBox,
+        EditorOpts.HighlighterList[CurLanguageID].FileExtensions);
+    OnChange:=@ComboBoxOnChange;
+    OnKeyDown:=@ComboBoxOnKeyDown;
+    OnExit:=@ComboBoxOnExit;
+    Visible:=true;
+  end;
+
+  FileExtensionsLabel:=TLabel.Create(Self);
+  with FileExtensionsLabel do begin
+    Name:='FileExtensionsLabel';
+    Parent:=MainNoteBook.Page[3];
+    Top:=FileExtensionsComboBox.Top+2;
+    Left:=5;
+    Width:=FileExtensionsComboBox.Left-Left-2;
+    Caption:='File extensions:';
+    Visible:=true;
   end;
 
   ColorElementLabel:=TLabel.Create(Self);
   with ColorElementLabel do begin
     Name:='ColorElementLabel';
     Parent:=MainNoteBook.Page[3];
-    Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+12;
+    Top:=FileExtensionsComboBox.Top+FileExtensionsComboBox.Height+12;
     Left:=5;
     Width:=150;
     Height:=16;
     Caption:='Element';
-    Show;
+    Visible:=true;
   end;
 
   ColorElementListBox:=TListBox.Create(Self);
@@ -2753,36 +3573,49 @@ begin
     Top:=ColorElementLabel.Top+ColorElementLabel.Height+2;
     Left:=ColorElementLabel.Left;
     Width:=ColorElementLabel.Width;
-    Height:=160;
+    Height:=170;
     MultiSelect:=false;
-    Items.BeginUpdate;
-    Items.Add(PreviewPasSyn.AsmAttri.Name);
-    Items.Add(PreviewPasSyn.CommentAttri.Name);
-    Items.Add(PreviewPasSyn.IdentifierAttri.Name);
-    Items.Add(PreviewPasSyn.KeyAttri.Name);
-    Items.Add(PreviewPasSyn.NumberAttri.Name);
-    Items.Add(PreviewPasSyn.SpaceAttri.Name);
-    Items.Add(PreviewPasSyn.StringAttri.Name);
-    Items.Add(PreviewPasSyn.SymbolAttri.Name);
-    for a:=Low(AdditionalHiglightAttributes)
-        to High(AdditionalHiglightAttributes) do
-      Items.Add(AdditionalHiglightAttributes[a]);
-    Items.EndUpdate;
     OnMouseUp:=@ColorElementListBoxMouseUp;
-    Selected[0]:=true;
-    Show;
+    Visible:=true;
+  end;
+
+  SetAttributeToDefaultButton:=TButton.Create(Self);
+  with SetAttributeToDefaultButton do begin
+    Name:='SetAttributeToDefaultButton';
+    Parent:=MainNoteBook.Page[3];
+    Top:=ColorElementLabel.Top;
+    Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
+    Width:=MaxX-5-Left;
+    Height:=23;
+    Caption:='Set element to default';
+    OnClick:=@SetAttributeToDefaultButtonClick;
+    Visible:=true;
+  end;
+  
+  SetAllAttributesToDefaultButton:=TButton.Create(Self);
+  with SetAllAttributesToDefaultButton do begin
+    Name:='SetAllAttributesToDefaultButton';
+    Parent:=MainNoteBook.Page[3];
+    Top:=SetAttributeToDefaultButton.Top+SetAttributeToDefaultButton.Height+2;
+    Left:=SetAttributeToDefaultButton.Left;
+    Width:=SetAttributeToDefaultButton.Width;
+    Height:=SetAttributeToDefaultButton.Height;
+    Caption:='Set all elements to default';
+    OnClick:=@SetAllAttributesToDefaultButtonClick;
+    Visible:=true;
   end;
 
   ForeGroundGroupBox:=TGroupBox.Create(Self);
   with ForeGroundGroupBox do begin
     Name:='ForeGroundGroupBox';
     Parent:=MainNoteBook.Page[3];
-    Top:=ColorSchemeComboBox.Top+ColorSchemeComboBox.Height+12;
+    Top:=SetAllAttributesToDefaultButton.Top
+        +SetAllAttributesToDefaultButton.Height+4;
     Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
     Width:=MaxX-5-Left;
-    Height:=60;
+    Height:=43;
     Caption:='Foreground color';
-    Show;
+    Visible:=true;
   end;
 
   ForeGroundColorButton:=TColorButton.Create(Self);
@@ -2796,20 +3629,20 @@ begin
     Height:=20;
     Color:=clRed;
     OnColorChanged:=@ColorButtonColorChanged;
-    Show;
+    Visible:=true;
   end;
 
   ForeGroundUseDefaultCheckBox:=TCheckBox.Create(Self);
   with ForeGroundUseDefaultCheckBox do begin
     Name:='ForeGroundUseDefaultCheckBox';
     Parent:=ForeGroundGroupBox;
-    Top:=ForeGroundColorButton.Top+ForeGroundColorButton.Height+2;
-    Left:=5;
+    Top:=ForeGroundColorButton.Top;
+    Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
     Width:=ForeGroundGroupBox.Width-Left-Left;
     Height:=16;
-    Caption:='Use default for foreground color';
+    Caption:='Use default color';
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
+    Visible:=true;
   end;
 
   BackGroundGroupBox:=TGroupBox.Create(Self);
@@ -2821,7 +3654,7 @@ begin
     Width:=ForeGroundGroupBox.Width;
     Height:=ForeGroundGroupBox.Height;
     Caption:='Background color';
-    Show;
+    Visible:=true;
   end;
 
   BackGroundColorButton:=TColorButton.Create(Self);
@@ -2835,20 +3668,20 @@ begin
     Height:=20;
     Color:=clBlue;
     OnColorChanged:=@ColorButtonColorChanged;
-    Show;
+    Visible:=true;
   end;
 
   BackGroundUseDefaultCheckBox:=TCheckBox.Create(Self);
   with BackGroundUseDefaultCheckBox do begin
     Name:='BackGroundUseDefaultCheckBox';
     Parent:=BackGroundGroupBox;
-    Top:=BackGroundColorButton.Top+BackGroundColorButton.Height+2;
-    Left:=5;
+    Top:=BackGroundColorButton.Top;
+    Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
     Width:=ForeGroundGroupBox.Width-Left-Left;
     Height:=16;
-    Caption:='Use default for background color';
+    Caption:='Use default color';
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
+    Visible:=true;
   end;
 
   TextAttributesGroupBox:=TGroupBox.Create(Self);
@@ -2858,9 +3691,9 @@ begin
     Top:=BackGroundGroupBox.Top+BackGroundGroupBox.Height+5;
     Left:=ForeGroundGroupBox.Left;
     Width:=ForeGroundGroupBox.Width;
-    Height:=48;
+    Height:=43;
     Caption:='Text attributes';
-    Show;
+    Visible:=true;
   end;
 
   TextBoldCheckBox:=TCheckBox.Create(Self);
@@ -2873,7 +3706,7 @@ begin
     Height:=16;
     Caption:='Bold';
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
+    Visible:=true;
   end;
 
   TextItalicCheckBox:=TCheckBox.Create(Self);
@@ -2886,7 +3719,7 @@ begin
     Height:=TextBoldCheckBox.Height;
     Caption:='Italic';
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
+    Visible:=true;
   end;
 
   TextUnderlineCheckBox:=TCheckBox.Create(Self);
@@ -2899,7 +3732,7 @@ begin
     Height:=TextItalicCheckBox.Height;
     Caption:='Underline';
     OnClick:=@GeneralCheckBoxOnClick;
-    Show;
+    Visible:=true;
   end;
 
   ColorPreview:=TPreviewEditor.Create(Self);
@@ -2910,14 +3743,10 @@ begin
     Top:=TextAttributesGroupBox.Top+TextAttributesGroupBox.Height+7;
     Width:=MaxX-Left-Left;
     Height:=MaxY-Top-Left;
-    Lines.Clear;
-    Lines.Add('{ Syntax Highlighting }');
-    for a:=Low(ExampleSource) to High(ExampleSource) do
-      Lines.Add(ExampleSource[a]);
     OnSpecialLineColors:=@Self.OnSpecialLineColors;
     OnMouseDown:=@ColorPreviewMouseUp;
     ReadOnly:=true;
-    Show;
+    Visible:=true;
   end; 
 end;
 
@@ -3189,7 +4018,7 @@ begin
     Parent:=Self;
     Width:=70;
     Height:=23;
-    Top:=Self.height-Height-15;
+    Top:=Self.Height-Height-15;
     Left:=Self.Width-Width-10;
     Caption:='Cancel';
     OnClick:=@CancelButtonClick;
@@ -3202,7 +4031,7 @@ begin
     Parent:=Self;
     Width:=70;
     Height:=23;
-    Top:=Self.height-Height-15;
+    Top:=Self.Height-Height-15;
     Left:=CancelButton.Left-10-Width;
     Caption:='Ok';
     OnClick:=@OkButtonClick;
@@ -3213,10 +4042,9 @@ end;
 procedure TEditorOptionsForm.OkButtonClick(Sender:TObject);
 var res: TModalResult;
 begin
-  // save all values
   SaveCurCodeTemplate;
-
-  EditorOpts.SetHighlighterSettings(PreviewPasSyn);
+  
+  // save all values
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
 
   // general
@@ -3224,7 +4052,11 @@ begin
   EditorOpts.DoubleClickLine:=DoubleClickLineCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
-  EditorOpts.SyntaxExtensions:=SyntaxExtensionsComboBox.Text;
+  
+  // color
+  SaveAllFileExtensions;
+  SaveAllColorSchemes;
+  SaveAllHighlighters;
 
   // code Tools
   EditorOpts.AutoCodeCompletion:=AutoCodeCompletionCheckBox.Checked;

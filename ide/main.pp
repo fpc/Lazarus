@@ -672,9 +672,11 @@ CheckHeap(IntToStr(GetMem_Cnt));
     Project.Free;
     Project:=nil;
   end;
-  TheControlSelection.OnChange:=nil;
-  TheControlSelection.Free;
-  TheControlSelection:=nil;
+  if TheControlSelection<>nil then begin
+    TheControlSelection.OnChange:=nil;
+    TheControlSelection.Free;
+    TheControlSelection:=nil;
+  end;
   FormEditor1.Free;
   FormEditor1:=nil;
   PropertyEditorHook1.Free;
@@ -2631,7 +2633,9 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
       NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
     if NewpageName='' then NewPageName:='file';
   end;
+writeln('[TMainIDE.DoOpenEditorFile] B2');
   SourceNotebook.NewFile(NewPageName,NewUnitInfo.Source);
+writeln('[TMainIDE.DoOpenEditorFile] B3');
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   if not ProjectLoading then
     Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex)
@@ -2649,9 +2653,13 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
       end;
     end;
   end;
+writeln('[TMainIDE.DoOpenEditorFile] B4');
   NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+writeln('[TMainIDE.DoOpenEditorFile] B5');
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
+writeln('[TMainIDE.DoOpenEditorFile] B6');
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
+writeln('[TMainIDE.DoOpenEditorFile] B7');
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
   
@@ -4759,6 +4767,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.159  2001/11/27 15:06:11  lazarus
+  MG: added multi language syntax hilighting
+
   Revision 1.158  2001/11/22 14:28:30  lazarus
   MG: cropped all component icons
 

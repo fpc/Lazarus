@@ -95,10 +95,13 @@ var Message : TLMSetSel;
 begin
   if (Index < 0) or (Index >= Items.Count) then
     raise Exception.Create('List index out of bounds');
+//writeln('TCustomListBox.SetSelected A ',Items.Count);
   HandleNeeded;
+//writeln('TCustomListBox.SetSelected B ',Items.Count);
   Message.Index:= Index;
   Message.Selected:= Val;
   CNSendMessage(LM_SETSEL, Self, @Message);
+//writeln('TCustomListBox.SetSelected END ',Items.Count);
 end;
 
 {------------------------------------------------------------------------------}
@@ -107,7 +110,8 @@ end;
 function TCustomListBox.GetSelected(Index : integer) : boolean;
 begin
   if (Index < 0) or (Index >= Items.Count) then
-    raise Exception.Create('List index out of bound.');
+    raise Exception.Create('TCustomListBox.GetSelected: index '+IntToStr(Index)
+      +' out of bound. Count='+IntToStr(Items.Count));
   Result:= (CNSendMessage(LM_GETSEL, Self, @Index) >= 0);
 end;
 
@@ -162,12 +166,12 @@ end;
 {------------------------------------------------------------------------------}
 constructor TCustomListBox.Create(AOwner : TComponent);
 begin
-   inherited Create(AOwner);
-   fCompStyle := csListBox;
+  inherited Create(AOwner);
+  fCompStyle := csListBox;
 
-   FBorderStyle:= bsSingle;
-   SetBounds(1, 1, 100, 25);
-   FItems := TStringList.Create;
+  FBorderStyle:= bsSingle;
+  FItems := TStringList.Create;
+  SetBounds(1, 1, 100, 25);
 end;
 
 {------------------------------------------------------------------------------}

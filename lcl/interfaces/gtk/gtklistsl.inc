@@ -37,7 +37,8 @@ end;
 constructor TGtkListStringList.Create(List : PGtkList);
 begin
   inherited Create;
-  if List = nil then raise Exception.Create('Unspecified list widget');
+  if List = nil then raise Exception.Create(
+    'TGtkListStringList.Create Unspecified list widget');
   FGtkList:= List;
 end;
 
@@ -84,13 +85,16 @@ end;
 procedure TGtkListStringList.Assign(Source : TPersistent);
 var Counter : integer;
 begin
-  if (Source=Self) or (Source=nil) then exit;
-//writeln('[TGtkListStringList.Assign] A ',Source.Classname);
+  if (Source=Self) or (Source=nil) 
+  or ((Source is TGtkListStringList) 
+  and (TGtkListStringList(Source).FGtkList=FGtkList)) then exit;
+//writeln('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',HexStr(Cardinal(Self),8),' Source=',HexStr(Cardinal(Source),8));
   { Do not call inherited Assign as it does things we do not want to happen }
   if Source is TStrings then begin
     Clear;
-    for Counter:= TStrings(Source).Count - 1 downto 0 do 
+    for Counter:= TStrings(Source).Count - 1 downto 0 do begin
       Insert(0, TStrings(Source)[Counter]);
+    end;
   end else inherited Assign(Source);
 //writeln('[TGtkListStringList.Assign] END ',Source.Classname);
 end;
@@ -133,8 +137,10 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkListStringList.GetCount: integer;
 begin
-  if FGtkList^.children = nil then Result:= 0
-  else Result:= g_list_length(FGtkList^.children);
+  if FGtkList^.children = nil then
+    Result:= 0
+  else
+    Result:= g_list_length(FGtkList^.children);
 end;
 
 {------------------------------------------------------------------------------
@@ -188,10 +194,13 @@ begin
       inc(m);
     Index:=m;
   end;
-  if (Index < 0) or (Index > Count) then raise Exception.Create('Out of bounds.');
-  li:= gtk_list_item_new_with_label(PChar(S));
+  if (Index < 0) or (Index > Count) then 
+    raise Exception.Create('TGtkListStringList.Insert: Index '+IntToStr(Index)
+      +' out of bounds. Count='+IntToStr(Count));
+  li:=gtk_list_item_new_with_label(PChar(S));
   gtk_widget_show(li);
   gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
+//writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
 end;
 
 
@@ -376,6 +385,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/11/27 15:06:13  lazarus
+  MG: added multi language syntax hilighting
+
   Revision 1.3  2001/10/31 10:38:26  lazarus
   MG: fixed sorted customlistbox
 

@@ -1073,6 +1073,8 @@ begin
   fRange := rsUnknown;
   fAsmStart := False;
   fDefaultFilter := SYNS_FilterPascal;
+  
+  
 end; { Create }
 
 procedure TSynPasSyn.SetLine(const NewValue: string; LineNumber:Integer);

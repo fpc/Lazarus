@@ -2035,7 +2035,6 @@ begin
     fTokenID := tkComment;
     Inc(Run, 3);
   end else begin
-
     if fLine[Run]= '%' then begin
       fRange := rsASP;
       fTokenID := tkASP;
@@ -2044,9 +2043,7 @@ begin
       fRange := rsKey;
       fTokenID := tkSymbol;
     end;
-
   end;
-
 end;
 
 procedure TSynHTMLSyn.CRProc;

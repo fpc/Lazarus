@@ -137,6 +137,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    {$IFDEF SYN_LAZARUS}
+    procedure AddSpecialAttribute(const AttribName: string);
+    {$ENDIF}
     procedure Assign(Source: TPersistent); override;
     function GetEol: Boolean; virtual; abstract;
     function GetRange: Pointer; virtual;
@@ -725,6 +728,13 @@ procedure TSynCustomHighlighter.AddAttribute(AAttrib: TSynHighlighterAttributes)
 begin
   fAttributes.AddObject(AAttrib.Name, AAttrib);
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynCustomHighlighter.AddSpecialAttribute(const AttribName: string);
+begin
+  AddAttribute(TSynHighlighterAttributes.Create(AttribName));
+end;
+{$ENDIF}
 
 procedure TSynCustomHighlighter.DefHighlightChange(Sender: TObject);
 begin

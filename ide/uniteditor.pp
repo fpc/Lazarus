@@ -377,7 +377,7 @@ const
     );
 
 var
-  aHighlighter: TSynPasSyn;
+  Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
   aCompletion : TSynCompletion;
   scompl : TSynBaseCompletion;  //used in ccexecute and cccomplete
   CurrentCompletionType: TCompletionType;
@@ -904,12 +904,12 @@ var i:integer;
   AllMarks: TSynEditMarks;
 begin
   if ErrorLine=Line then begin
-    FG:=EditorOpts.ErrorLineElement.Foreground;
-    BG:=EditorOpts.ErrorLineElement.Background;
+    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
+      ahaErrorLine,FG,BG);
     Special:=true;
   end else if ExecutionLine=Line then begin
-    FG:=EditorOpts.ExecutionPointElement.Foreground;
-    BG:=EditorOpts.ExecutionPointElement.Background;
+    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
+      ahaExecutionPoint,FG,BG);
     Special:=true;
   end else begin
     fEditor.Marks.GetMarksForLine(Line, AllMarks);
@@ -917,15 +917,15 @@ begin
       if (AllMarks[i]<>nil) then begin
         if (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semActiveBreakPoint])
         then begin
-          FG:=EditorOpts.EnabledBreakPointElement.Foreground;
-          BG:=EditorOpts.EnabledBreakPointElement.Background;
+          EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
+            ahaEnabledBreakpoint,FG,BG);
           Special:=true;
           exit;
         end else if 
           (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semInactiveBreakPoint])
         then begin
-          FG:=EditorOpts.DisabledBreakPointElement.Foreground;
-          BG:=EditorOpts.DisabledBreakPointElement.Background;
+          EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter,
+            ahaDisabledBreakpoint,FG,BG);
           Special:=true;
           exit;
         end;
@@ -937,14 +937,16 @@ end;
 procedure TSourceEditor.SetSyntaxHighlighterType(
   ASyntaxHighlighterType: TLazSyntaxHighlighter);
 begin
+  if (ASyntaxHighlighterType=fSyntaxHighlighterType)
+  and ((FEditor.Highlighter=nil) xor EditorOpts.UseSyntaxHighlight) then exit;
   if EditorOpts.UseSyntaxHighlight then begin
-    case ASyntaxHighlighterType of
-      lshFreePascal,lshDelphi:
-        FEditor.Highlighter:=aHighlighter;
-    else  
-      FEditor.Highlighter:=nil;
+    if Highlighters[ASyntaxHighlighterType]=nil then begin
+      Highlighters[ASyntaxHighlighterType]:=
+        EditorOpts.CreateSyn(ASyntaxHighlighterType);
     end;
-  end else FEditor.Highlighter:=nil;
+    FEditor.Highlighter:=Highlighters[ASyntaxHighlighterType];
+  end else
+    FEditor.Highlighter:=nil;
   if ASyntaxHighlighterType<>fSyntaxHighlighterType then begin
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
@@ -968,12 +970,13 @@ end;
 
 Function TSourceEditor.RefreshEditorSettings : Boolean;
 Begin
-  Result := False;
-
-  EditorOpts.GetHighlighterSettings(aHighlighter);
-  SetSyntaxHighlighterType(fSyntaxHighlighterType);
-
-  EditorOpts.GetSynEditSettings(FEditor);
+  Result:=true;
+  try
+    SetSyntaxHighlighterType(fSyntaxHighlighterType);
+    EditorOpts.GetSynEditSettings(FEditor);
+  except
+    Result:=false;
+  end;
 end;
 
 Function TSourceEditor.FindFile(const Value : String) : String;
@@ -1518,11 +1521,6 @@ begin
 
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
   EditorOpts.KeyMap.AssignTo(FKeyStrokes);
-
-  aHighlighter:=TSynPasSyn.Create(AOwner);
-    with aHighlighter do begin
-    end;
-
 
   aCompletion := TSynCompletion.Create(AOwner);
     with aCompletion do
@@ -2785,8 +2783,12 @@ end;
 Procedure TSourceNotebook.ReloadEditorOptions;
 var
   I : integer;
+  h: TLazSyntaxHighlighter;
 Begin
   //this reloads the colors for the highlighter and other editor settings.
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
+    if Highlighters[h]<>nil then
+      EditorOpts.GetHighlighterSettings(Highlighters[h]);
   for I := 0 to FSourceEditorList.Count-1 do
     TSourceEditor(FSourceEditorList.Items[i]).RefreshEditorSettings;
 
@@ -2886,21 +2888,39 @@ begin
   if (Key=VK_ESCAPE) then ModalResult:=mrCancel;
 end;
 
+//-----------------------------------------------------------------------------
 
-initialization
-  aHighlighter:=nil;
+procedure InternalInit;
+var h: TLazSyntaxHighlighter;
+begin
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
+    Highlighters[h]:=nil;
   aCompletion:=nil;
   scompl:=nil;
   GotoDialog:=nil;
   IdentCompletionTimer:=nil;
   AWordCompletion:=nil;
+end;
+
+procedure InternalFinal;
+var h: TLazSyntaxHighlighter;
+begin
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
+    Highlighters[h].Free;
+    Highlighters[h]:=nil;
+  end;
+  aWordCompletion.Free;
+  aWordCompletion:=nil;
+end;
+
+
+initialization
+  InternalInit;
 
 {$I images/bookmark.lrs}
 
 finalization
-  aWordCompletion.Free;
-  aWordCompletion:=nil;
-
+  InternalFinal;
 
 end.
 
