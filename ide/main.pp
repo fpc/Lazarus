@@ -66,6 +66,7 @@ type
 
     mnuFile: TMenuItem;
     mnuEdit: TMenuItem; 
+    mnuSearch: TMenuItem;
     mnuView: TMenuItem; 
     mnuProject: TMenuItem; 
     mnuEnvironment:TMenuItem;
@@ -92,6 +93,7 @@ type
     itmEditCut: TMenuItem; 
     itmEditCopy: TMenuItem; 
     itmEditPaste: TMenuItem; 
+    itmSearchfind: TMenuItem;
     itmViewInspector: TMenuItem; 
     itmViewProject: TMenuItem; 
     itmViewProjectOptions: TMenuItem;
@@ -682,6 +684,9 @@ begin
   mnuEdit.Caption := '&Edit';
   mnuMain.Items.Add(mnuEdit);
 
+  mnuSearch := TMenuItem.Create(Self);
+  mnuSearch.Caption := '&Search';
+  mnuMain.Items.Add(mnuSearch);
 
   mnuView := TMenuItem.Create(Self);
   mnuView.Caption := '&View';
@@ -772,6 +777,13 @@ itmFileNew := TMenuItem.Create(Self);
   itmEditPaste.Caption := 'Paste';
   mnuEdit.Add(itmEditPaste);
 
+
+//--------------
+// Search
+//--------------
+  itmSearchFind := TMenuItem.Create(nil);
+  itmSearchFind.caption := 'Find';
+  mnuSearch.add(itmSearchFind);
 
 //--------------
 // View
@@ -2168,6 +2180,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/08/07 19:15:05  lazarus
+  Added the Search menu to the IDE.
+  Shane
+
   Revision 1.1  2000/07/13 10:27:47  michael
   + Initial import
 
