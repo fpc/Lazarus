@@ -27,6 +27,21 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
+  function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
+
+  The GTK_IS_XXX macro functions in the fpc gtk1.x bindings are not correct.
+  They just test the highest level.
+  This function checks just like the real C macros.
+ ------------------------------------------------------------------------------}
+function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
+begin
+  Result:=(Widget<>nil)
+    and (PGtkTypeObject(Widget)^.klass<>nil)
+    and gtk_type_is_a(PGtkTypeClass(PGtkTypeObject(Widget)^.klass)^.thetype,
+                      AType);
+end;
+
+{------------------------------------------------------------------------------
   Function: NewGDIRawImage
   Params:  Width, Height: Size of the image
            Depth:         Depth of the image
@@ -1342,7 +1357,9 @@ begin
     and (ParentMenuItem[i].GroupIndex=LCLMenuItem.GroupIndex)
     and (ParentMenuItem[i]<>LCLMenuItem)
     and ParentMenuItem[i].HandleAllocated
-    and (GTK_IS_RADIO_MENU_ITEM(Pointer(ParentMenuItem[i].Handle))) then begin
+    and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
+                      GTK_RADIO_MENU_ITEM_TYPE) then
+    begin
       Result:=gtk_radio_menu_item_group(
                                  GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
       exit;
@@ -1435,7 +1452,8 @@ begin
   Widget := PGtkWidget (MenuItem);
   Container := GTK_CONTAINER (MenuItem);
   BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
-  ALeft := (BorderWidth + PGtkStyle(Widget^.theStyle)^.klass^.xthickness + 2);
+  ALeft := (BorderWidth + PGtkStyle(Widget^.theStyle)^.klass^.xthickness + 2)
+           +((PGtkMenuItem(MenuItem)^.toggle_size-IconWidth) div 2);
   ATop := (Widget^.Allocation.Height - IconHeight) div 2;
 
   // draw icon
@@ -1443,6 +1461,7 @@ begin
   gdk_gc_set_clip_origin(pGtkStyle(Widget^.theStyle)^.Black_gc,ALeft,ATop);
   gdk_draw_pixmap(Widget^.Window,pGtkStyle(Widget^.theStyle)^.Black_gc,
      IconImg,0,0,ALeft,ATop,-1,-1);
+  gdk_gc_set_clip_mask(pGtkStyle(Widget^.theStyle)^.Black_gc, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -1467,7 +1486,7 @@ begin
   CheckMenuItem:=nil;
   while ListItem<>nil do begin
     MenuItem:=PGtkMenuItem(ListItem^.Data);
-    if GTK_IS_CHECK_MENU_ITEM(MenuItem) then begin
+    if GTK_IS_CHECK_MENU_ITEM(PGtkWidget(MenuItem)) then begin
       CheckMenuItem:=MenuItem;
       CurToggleSize:=OldCheckMenuItemToggleSize;
       LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
@@ -1543,7 +1562,8 @@ var
       // set the toggle width
       GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=IconWidth;
       GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
-        PGtkMenuItem(MenuItemWidget)^.flag0 or bm_show_toggle_indicator;
+        PGtkMenuItem(MenuItemWidget)^.flag0
+          or bm_show_toggle_indicator;
 
       // set our own draw handler
       if OldCheckMenuItemDrawProc=nil then
@@ -1620,7 +1640,7 @@ begin
     MenuItemWidget:=gtk_check_menu_item_new;
   end else
     MenuItemWidget:=gtk_menu_item_new;
-  if GTK_IS_CHECK_MENU_ITEM(MenuItemWidget) then begin
+  if GtkWidgetIsA(MenuItemWidget,GTK_CHECK_MENU_ITEM_TYPE) then begin
     // set 'ShowAlwaysCheckable'
     gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(MenuItemWidget),
       LCLMenuItem.ShowAlwaysCheckable);
@@ -2187,6 +2207,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.60  2002/08/16 17:47:39  lazarus
+  MG: added some IDE menuicons, fixed submenu indicator bug
+
   Revision 1.59  2002/08/15 15:46:49  lazarus
   MG: added changes from Andrew (Clipping)
 
