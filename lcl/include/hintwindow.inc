@@ -30,8 +30,8 @@ begin
   inherited Create(AOwner);
   fCompStyle := csHintWindow;
   parent := nil;
-  Canvas.Font := Screen.HintFont;
   color := clInfoBk;
+  Canvas.Font := Screen.HintFont;
   Caption := 'THintWindow';
   SetBounds(1,1,25,25);
   FHideInterval := 3000;
@@ -68,17 +68,23 @@ Begin
   if Visible then Visible := False;//Hide;
 End;
 
-
 procedure THintWindow.Paint;
 var
   Rect: TRect;
+  TS : TTextStyle;
   //DefaultDraw: Boolean;
 begin
   Rect := ClientRect;
+  Dec(Rect.Right, 1);
+  Dec(Rect.Bottom, 1);
   Canvas.Brush.Color := Color;
   Canvas.Brush.Style := bsSolid;
   Canvas.Rectangle(Rect);
-  Canvas.TextRect(Rect, 3, 3, Caption);
+  FillChar(TS, SizeOf(TS),0);
+  With TS do
+    Clipping   := True;
+  InflateRect(Rect, -1, -1);
+  Canvas.TextRect(Rect, 1, 1, Caption, TS);
 end;
 
 procedure THintWindow.ActivateHint(Rect: TRect; const AHint: String);
@@ -110,45 +116,13 @@ end;
 
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
-var
-  //Temp : Integer;
-  Num : Integer;
-  tempHint : String;
-  LongestLine : String;
-  Lines    : Integer;
 begin
-  Result.Left := 0;
-  Result.Top := 0;
-
-  TempHint := AHint;
-  LongestLine := '';
-  num := pos(#10,TempHint);
-  Lines := 1;
-  if Num > 0 then
-     Begin
-       //set TempHint to the longest line.
-       //set Lines to the number of lines.
-       while num > 0 do
-          Begin
-             inc(Lines);
-             if Canvas.TextWidth(copy(TempHint,1,num-1)) > Canvas.TextWidth(LongestLine) then
-                LongestLine := Copy(TempHint,1,num-1);
-             delete(TempHint,1,num);
-             Num := pos(#10,TempHint);
-          end;
-     end;
-  if Canvas.TextWidth(copy(TempHint,1,Length(TempHint))) > Canvas.TextWidth(LongestLine) then
-     LongestLine := Copy(TempHint,1,Length(TempHint));
-     
-  TempHint := LongestLine;
-  if ((MaxWidth > 0) and (Canvas.TextWidth(TempHint) > MaxWidth)) then
-      Result.Right := Result.Left + MaxWidth
-      else
-      Result.Right := Result.Left + Canvas.TextWidth(TempHint);
-  Result.Bottom := result.Top + (Lines * (Canvas.TextHeight(AHint)));
-  Inc(Result.Bottom, 4);
-  Dec(Result.Top, 2);
-  Inc(Result.Right, 8);
+  Result := Rect(0,0, MaxWidth, Screen.Height - 8);
+  SelectObject(Canvas.Handle, Canvas.Font.Handle);
+  DrawText(Canvas.Handle, PChar(AHint), Length(AHint), Result, DT_CalcRect or
+    DT_NOPREFIX);
+  InflateRect(Result, 2, 2);
+  Inc(Result.Right, 3);
 end;
 
 
