@@ -471,6 +471,7 @@ resourcestring
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
   lisChooseCompilerPath = 'Choose compiler filename (ppc386)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';
+  lisChooseMakePath = 'Choose make path';
   lisChooseDebuggerPath = 'Choose debugger filename';
   lisChooseTestBuildDir = 'Choose the directory for tests';
 
@@ -624,6 +625,7 @@ resourcestring
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcPath = 'Compiler path (ppc386)';
   dlgFpcSrcPath = 'FPC source directory';
+  dlgMakePath = 'Make path';
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
   dlgQShowGrid = 'Show grid';
@@ -668,6 +670,9 @@ resourcestring
   lisEnvOptDlgInvalidCompilerFilename = 'Invalid compiler filename';
   lisEnvOptDlgInvalidCompilerFilenameMsg =
     'The compiler file "%s" is not an executable.';
+  lisEnvOptDlgInvalidMakeFilename = 'Invalid make filename';
+  lisEnvOptDlgInvalidMakeFilenameMsg =
+    'The make file "%s" is not an executable.';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
   lisEnvOptDlgInvalidDebuggerFilenameMsg =
     'The debugger file "%s" is not an executable.';

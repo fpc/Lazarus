@@ -5979,7 +5979,7 @@ begin
         FRunProcess.Options:= [poNewConsole]
       else
         FRunProcess.Options:= [poNoConsole];
-      FRunProcess.ShowWindow := swoNone;
+      FRunProcess.ShowWindow := swoShowNormal;
     except
       on e: Exception do
         MessageDlg(Format(lisErrorInitializingProgramSErrorS,
@@ -6113,6 +6113,7 @@ begin
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
                          '',EnvironmentOptions.CompilerFilename,
+                         EnvironmentOptions.MakeFilename,
                          Flags+[blfWithoutLinkingIDE]);
     if Result<>mrOk then exit;
 
@@ -6159,6 +6160,7 @@ begin
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
                          PkgOptions,EnvironmentOptions.CompilerFilename,
+                         EnvironmentOptions.MakeFilename,
                          IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
     if Result<>mrOk then exit;
   finally
@@ -10486,6 +10488,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.740  2004/07/30 15:38:16  vincents
+  make executable location is a environment option now.
+
   Revision 1.739  2004/07/25 22:43:18  mattias
   added IDE cmd line option --skip-last-project
 

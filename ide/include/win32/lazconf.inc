@@ -163,6 +163,11 @@ begin
   List.Add('c:\pp\bin\win32\ppc386.exe');
 end;
 
+procedure GetDefaultMakeFilenames(List: TStrings);
+begin
+  List.Add('c:\pp\bin\win32\make.exe');
+end;
+
 procedure GetDefaultTestBuildDirs(List: TStrings);
 begin
   List.Add('c:\tmp\');
@@ -187,6 +192,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2004/07/30 15:34:09  vincents
+  make executable location is a environment option now.
+
   Revision 1.20  2003/12/21 13:58:06  mattias
   renamed DirectoryExists to DirPathExists to reduce ambigiousity
 

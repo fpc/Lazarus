@@ -112,7 +112,6 @@ type
     FItemLCL: TBuildLazarusItem;
     FItemPkgReg: TBuildLazarusItem;
     FItemSynEdit: TBuildLazarusItem;
-    fMakeFilename: string;
     fExtraOptions: string;
     FTargetDirectory: string;
     fTargetOS: string;
@@ -149,7 +148,7 @@ type
     property ItemIDE: TBuildLazarusItem read FItemIDE;
     property ItemExamples: TBuildLazarusItem read FItemExamples;
     property CleanAll: boolean read fCleanAll write fCleanAll;
-    property MakeFilename: string read fMakeFilename write fMakeFilename;
+    //property MakeFilename: string read fMakeFilename write fMakeFilename;
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
     property TargetOS: string read fTargetOS write SetTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
@@ -212,7 +211,7 @@ function ShowConfigureBuildLazarusDlg(
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
-  const PackageOptions, CompilerPath: string;
+  const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags): TModalResult;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
@@ -283,7 +282,7 @@ end;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
-  const PackageOptions, CompilerPath: string;
+  const PackageOptions, CompilerPath, MakePath: string;
   Flags: TBuildLazarusFlags): TModalResult;
 var
   Tool: TExternalToolOptions;
@@ -296,7 +295,7 @@ begin
   Tool:=TExternalToolOptions.Create;
   try
     // setup external tool
-    Tool.Filename:=Options.MakeFilename;
+    Tool.Filename:=MakePath;
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformNames[Options.LCLPlatform];
     Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
@@ -955,10 +954,9 @@ begin
   XMLConfig.SetDeleteValue(Path+'CleanAll/Value',fCleanAll,true);
   XMLConfig.SetDeleteValue(Path+'ExtraOptions/Value',fExtraOptions,'');
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
-  XMLConfig.SetDeleteValue(Path+'MakeFilename/Value',fMakeFilename,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformNames[fLCLPlatform],
-                           LCLPlatformNames[lpGtk]);
+                           GetDefaultLCLWidgetType);
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
   XMLConfig.SetDeleteValue(Path+'WithStaticPackages/Value',FWithStaticPackages,
@@ -980,7 +978,6 @@ begin
   CleanAll:=Source.CleanAll;
   ExtraOptions:=Source.ExtraOptions;
   TargetOS:=Source.TargetOS;
-  MakeFilename:=Source.MakeFilename;
   LCLPlatform:=Source.LCLPlatform;
   TargetDirectory:=Source.TargetDirectory;
   WithStaticPackages:=Source.WithStaticPackages;
@@ -1045,9 +1042,8 @@ begin
   fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',true);
   fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
-  fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value','');
   fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
-                                 LCLPlatformNames[lpGtk]));
+                                 GetDefaultLCLWidgetType));
   FTargetDirectory:=AppendPathDelim(SetDirSeparators(
                   XMLConfig.GetValue(Path+'TargetDirectory/Value',
                                      DefaultTargetDirectory)));
@@ -1111,11 +1107,10 @@ var
   i: Integer;
 begin
   fCleanAll:=true;
-  fMakeFilename:='';
   fExtraOptions:='';
   FTargetDirectory:=DefaultTargetDirectory;
   TargetOS:='';
-  fLCLPlatform:=lpGtk;
+  fLCLPlatform:=StrToLCLPlatform(GetDefaultLCLWidgetType);
 
   // auto install packages
   fStaticAutoInstallPackages.Clear;

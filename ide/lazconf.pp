@@ -83,6 +83,7 @@ uses
   function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 
   procedure GetDefaultCompilerFilenames(List: TStrings);
+  procedure GetDefaultMakeFilenames(List: TStrings);
   procedure GetDefaultTestBuildDirs(List: TStrings);
   
   function GetDefaultLCLWidgetType: string;
@@ -156,6 +157,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2004/07/30 15:38:16  vincents
+  make executable location is a environment option now.
+
   Revision 1.25  2004/07/25 12:59:49  mattias
   added codetools defines and lazconf support for powerpc
 

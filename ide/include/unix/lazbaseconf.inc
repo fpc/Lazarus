@@ -174,6 +174,11 @@ begin
   List.Add('/opt/fpc/ppc386');
 end;
 
+procedure GetDefaultMakeFilenames(List: TStrings);
+begin
+  List.Add('/usr/bin/make');
+end;
+
 procedure GetDefaultTestBuildDirs(List: TStrings);
 begin
   List.Add('/tmp/');

@@ -215,7 +215,9 @@ type
     FCompilerFileHistory: TStringList;
     FFPCSourceDirectory: string;
     FFPCSourceDirHistory: TStringList;
-    // TODO: store per debuggerclass options
+    FMakeFileName: string;
+    FMakeFileHistory: TStringList;
+   // TODO: store per debuggerclass options
     // Maybe these should go to a new TDebuggerOptions class
     FDebuggerClass: string;
     FDebuggerFilename: string;         // per debugger class
@@ -249,6 +251,7 @@ type
     fLanguage: TLazarusLanguage;
     
     procedure SetCompilerFilename(const AValue: string);
+    procedure SetMakeFilename(const AValue: string);
     procedure SetDebuggerFilename(const AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
@@ -347,6 +350,10 @@ type
                                         write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
                                               write FFPCSourceDirHistory;
+    property MakeFilename: string read FMakeFilename
+                                      write SetMakeFilename;
+    property MakeFileHistory: TStringList read FMakeFileHistory
+                                              write FMakeFileHistory;
     property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DebuggerFilename: string read FDebuggerFilename
                                       write SetDebuggerFilename;
@@ -509,6 +516,9 @@ type
     FPCSourceDirGroupBox: TGroupBox;
     FPCSourceDirComboBox: TComboBox;
     FPCSourceDirButton: TButton;
+    MakePathGroupBox: TGroupBox;
+    MakePathComboBox: TComboBox;
+    MakePathButton: TButton;
     TestBuildDirGroupBox: TGroupBox;
     TestBuildDirComboBox: TComboBox;
     TestBuildDirButton: TButton;
@@ -547,6 +557,7 @@ type
     procedure BakTypeRadioGroupClick(Sender: TObject);
     procedure CompilerPathGroupBoxResize(Sender: TObject);
     procedure FPCSourceDirGroupBoxResize(Sender: TObject);
+    procedure MakePathGroupBoxResize(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure FormEditMiscGroupBoxResize(Sender: TObject);
@@ -579,6 +590,7 @@ type
     FOldLazarusDir: string;
     FOldCompilerFilename: string;
     FOldFPCSourceDir: string;
+    FOldMakeFilename: string;
     FOldTestDir: string;
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
@@ -844,6 +856,8 @@ begin
   FCompilerFileHistory:=TStringList.Create;
   FPCSourceDirectory:='';
   FFPCSourceDirHistory:=TStringList.Create;
+  MakeFilename:='';
+  FMakeFileHistory:=TStringList.Create;
   DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
   TestBuildDirectory:=GetDefaultTestBuildDirectory;
@@ -891,6 +905,7 @@ begin
   FLazarusDirsHistory.Free;
   FCompilerFileHistory.Free;
   FFPCSourceDirHistory.Free;
+  FMakeFileHistory.Free;
   FDebuggerFileHistory.Free;
   FTestBuildDirHistory.Free;
   if IDEOptionDefs.IDEDialogLayoutList=FIDEDialogLayoutList then
@@ -1079,7 +1094,13 @@ begin
       if FFPCSourceDirHistory.Count=0 then begin
       
       end;
-      
+      MakeFilename:=TrimFilename(XMLConfig.GetValue(
+         Path+'MakeFilename/Value',FMakeFilename));
+      LoadRecentList(XMLConfig,FMakeFileHistory,
+         Path+'MakeFilename/History/');
+      if FMakeFileHistory.Count=0 then
+        GetDefaultMakeFilenames(FMakeFileHistory);
+
       TestBuildDirectory:=XMLConfig.GetValue(
          Path+'TestBuildDirectory/Value',FTestBuildDirectory);
       LoadRecentList(XMLConfig,FTestBuildDirHistory,
@@ -1284,6 +1305,10 @@ begin
          Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
       SaveRecentList(XMLConfig,FFPCSourceDirHistory,
          Path+'FPCSourceDirectory/History/');
+      XMLConfig.SetDeleteValue(
+         Path+'MakeFilename/Value',FMakeFilename,'');
+      SaveRecentList(XMLConfig,FMakeFileHistory,
+         Path+'MakeFilename/History/');
       XMLConfig.SetValue(
          Path+'TestBuildDirectory/Value',FTestBuildDirectory);
       SaveRecentList(XMLConfig,FTestBuildDirHistory,
@@ -1479,6 +1504,12 @@ procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
 begin
   if FCompilerFilename=AValue then exit;
   FCompilerFilename:=TrimFilename(AValue);
+end;
+
+procedure TEnvironmentOptions.SetMakeFilename(const AValue: string);
+begin
+  if FMakeFilename=AValue then exit;
+  FMakeFilename:=TrimFilename(AValue);
 end;
 
 procedure TEnvironmentOptions.SetDebuggerFilename(const AValue: string);
@@ -2205,6 +2236,33 @@ begin
     OnClick:=@DirectoriesButtonClick;
   end;
 
+  MakePathGroupBox:=TGroupBox.Create(Self);
+  with MakePathGroupBox do begin
+    Name:='MakePathGroupBox';
+    Parent:=NoteBook.Page[Page];
+    Caption:=dlgMakePath;
+    OnResize:=@MakePathGroupBoxResize;
+  end;
+
+  MakePathComboBox:=TComboBox.Create(Self);
+  with MakePathComboBox do begin
+    Name:='MakePathComboBox';
+    Parent:=MakePathGroupBox;
+    with Items do begin
+      BeginUpdate;
+      Add('/usr/bin/make');
+      EndUpdate;
+    end;
+  end;
+
+  MakePathButton:=TButton.Create(Self);
+  with MakePathButton do begin
+    Name:='MakePathButton';
+    Parent:=MakePathGroupBox;
+    Caption:='...';
+    OnClick:=@FilesButtonClick;
+  end;
+
   TestBuildDirGroupBox:=TGroupBox.Create(Self);
   with TestBuildDirGroupBox do begin
     Name:='TestBuildDirGroupBox';
@@ -2929,6 +2987,10 @@ begin
     SetBounds(x,y,w,h);
   inc(y,h+SpaceH);
 
+  with MakePathGroupBox do
+    SetBounds(x,y,w,h);
+  inc(y,h+SpaceH);
+
   with TestBuildDirGroupBox do
     SetBounds(x,y,w,h);
   inc(y,h+SpaceH);
@@ -3070,6 +3132,18 @@ begin
     SetBounds(x+1,0,w-2-x-1,FPCSourceDirComboBox.Height);
 end;
 
+procedure TEnvironmentOptionsDialog.MakePathGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  w: Integer;
+begin
+  w:=MakePathGroupBox.ClientWidth;
+  x:=w-25;
+  with MakePathComboBox do
+    SetBounds(2,0,x-1-2,Height);
+  with MakePathButton do
+    SetBounds(x+1,0,w-2-x-1,MakePathComboBox.Height);end;
+
 procedure TEnvironmentOptionsDialog.FilesButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
@@ -3080,16 +3154,29 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     // set title
-    OpenDialog.Title:=lisChooseCompilerPath;
+    if Sender=CompilerPathButton then
+      OpenDialog.Title:=lisChooseCompilerPath
+    else if Sender=MakePathButton then
+      OpenDialog.Title:=lisChooseMakePath
+    else
+      exit;
 
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
 
-      // check compiler filename
-      SetComboBoxText(CompilerPathComboBox,AFilename);
-      CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
-        lisEnvOptDlgInvalidCompilerFilename,
-        lisEnvOptDlgInvalidCompilerFilenameMsg);
+      if Sender=CompilerPathButton then begin
+        // check compiler filename
+        SetComboBoxText(CompilerPathComboBox,AFilename);
+        CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
+          lisEnvOptDlgInvalidCompilerFilename,
+          lisEnvOptDlgInvalidCompilerFilenameMsg);
+      end else if Sender=MakePathButton then begin
+        //check make filename
+        SetComboBoxText(MakePathComboBox,AFilename);
+        CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
+          lisEnvOptDlgInvalidMakeFilename,
+          lisEnvOptDlgInvalidMakeFilenameMsg);
+      end;
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -3607,6 +3694,9 @@ begin
     FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
     FOldFPCSourceDir:=FPCSourceDirectory;
     SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,MaxComboBoxCount);
+    MakePathComboBox.Items.Assign(MakeFileHistory);
+    FOldMakeFilename:=MakeFilename;
+    SetComboBoxText(MakePathComboBox,MakeFilename,MaxComboBoxCount);
     TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
     FOldTestDir:=TestBuildDirectory;
     SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
@@ -3732,6 +3822,8 @@ begin
     CompilerFileHistory.Assign(CompilerPathComboBox.Items);
     FPCSourceDirectory:=FPCSourceDirComboBox.Text;
     FPCSourceDirHistory.Assign(FPCSourceDirComboBox.Items);
+    MakeFilename:=MakePathComboBox.Text;
+    MakeFileHistory.Assign(MakePathComboBox.Items);
     TestBuildDirHistory.Assign(TestBuildDirComboBox.Items);
     TestBuildDirectory:=TestBuildDirComboBox.Text;
 
@@ -3947,14 +4039,18 @@ end;
 function TEnvironmentOptionsDialog.CheckValues: boolean;
 begin
   Result:=false;
+  // check lazarus directory
+  if not CheckLazarusDir then exit;
   // check compiler filename
   if not CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
     lisEnvOptDlgInvalidCompilerFilename,lisEnvOptDlgInvalidCompilerFilenameMsg)
   then exit;
-  // check lazarus directory
-  if not CheckLazarusDir then exit;
   // check fpc source directory
   if not IsFPCSourceDir then exit;
+  // check make filename
+  if not CheckExecutable(FOldMakeFilename,MakePathComboBox.Text,
+    lisEnvOptDlgInvalidMakeFilename,lisEnvOptDlgInvalidMakeFilenameMsg)
+  then exit;
   // check test directory
   if not CheckTestDir then exit;
   
