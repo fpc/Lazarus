@@ -73,6 +73,12 @@ export LAZARUS_CONFIG_DIR
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 
+#
+# apptype gui
+ifeq ($(OS_TARGET),win32)
+LAZARUS_OPT+= -WG
+endif
+
 #-----------------------------------------------------------------------------
 [rules]
 .PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
