@@ -830,7 +830,6 @@ ide/unitdependencies.lrs svneol=native#text/pascal
 ide/unitdependencies.pas svneol=native#text/pascal
 ide/uniteditor.pp svneol=native#text/pascal
 ide/unitinfodlg.pp svneol=native#text/pascal
-ide/viewforms1.lrs svneol=native#text/pascal
 ide/viewunit_dlg.lfm svneol=native#text/plain
 ide/viewunit_dlg.pp svneol=native#text/pascal
 ide/viewunits1.lrs svneol=native#text/pascal
