@@ -2,8 +2,7 @@
  /***************************************************************************
                          project.pp  -  project utility class file
                              -------------------
-                   TCompiler is responsible for configuration and running
-                   the PPC386 compiler.
+                   TProject is responsible for managing a complete project.
 
 
                    Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -20,279 +19,400 @@
  *                                                                         *
  ***************************************************************************/
 }
+{$H+}
 unit project;
 
 {$mode objfpc}
 
+{$ifdef Trace}
+  {$ASSERTIONS ON}
+{$endif}
+
 interface
 
 uses
-  Classes, Global, SysUtils, IniFiles,mwCustomEdit, FORMS,dlgMessage;
+  Classes, Global, SysUtils, xmlcfg, lazconf, compileroptions, filectrl;
 
 type
+  TProjectUnitInfo = class(TObject)
+  private
+    { Variables }
+    fAutoCreate: Boolean;
+    fBookmarks: TList;
+    fBreakpoints: TList;
+    fCursorPos: LongInt;
+    fFilename: String;
+    fUnitName: String;
+    fReadOnly:  Boolean;
+    fSyntaxHighlighter: String;
+  public
+    constructor Create;
+
+    { Properties }
+    property AutoCreate: Boolean read fAutoCreate write fAutoCreate;
+    property Bookmarks: TList read fBookmarks write fBookmarks;
+    property Breakpoints: TList read fBreakpoints write fBreakpoints;
+    property CursorPos: LongInt read fCursorPos write fCursorPos;
+    property Filename: String read fFilename write fFilename;
+    property UnitName: String read fUnitName write fUnitName;
+    property ReadOnly: Boolean read fReadOnly write fReadOnly;
+    property SyntaxHighlighter: String read fSyntaxHighlighter write fSyntaxHighlighter;
+  end;
 
   TProject = class(TObject)
   private
-    FUnits: TList;
-    FLibrary: TStrings;
-    FName: String;
+    xmlcfg: TXMLConfig;
+
+    { Variables }
+    fAliases: String;
+    fCompilerOptions: TCompilerOptions;
+    fIconPath: String;
+    fMainUnit: String;
+    fOutputDirectory: String;
+    fProjectFile: String;
+    fProjectInfoFile: String;
+    fTargetFileExt: String;
+    fTitle: String;
+    fUnitList: TList;
+    fUnitNameList: String;
+    fUnitOutputDirectory: String;
+
+    { Functions }
+    function GetUnitList: TList;
+    function GetXMLConfigPath: String;
+
+    { Procedures }
+    procedure SetUnitList(AList: TList);
   public
     constructor Create;
-    function SaveProject(const SaveName: string) : Boolean;
-    function OpenProject(const OpenName: string) : Boolean;
-    procedure AddUnit(AUnit: TUnitInfo);
-    procedure AddLibraryPath(const LibPath: String);
-    function GetLibraryPaths: TStrings;
-    function GetUnits: TList;
-    property UnitList: TList read FUnits write FUnits;
-    property Name: String read FName write FName;
+    destructor Destroy;
+
+    { Functions }
+    function ReadProject: Boolean;
+    function WriteProject: Boolean;
+
+    { Procedures }
+    procedure AddUnit(AUnit: TProjectUnitInfo);
+    procedure RemoveUnit(AUnitName: String);
+
+    { Properties }
+    property Aliases: String read fAliases write fAliases;
+    property CompilerOptions: TCompilerOptions read fCompilerOptions write fCompilerOptions;
+    property IconPath: String read fIconPath write fIconPath;
+    property MainUnit: String read fMainUnit write fMainUnit;
+    property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
+    property ProjectFile: String read fProjectFile write fProjectFile;
+    property ProjectInfoFile: String read fProjectInfoFile write fProjectInfoFile;
+    property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
+    property Title: String read fTitle write fTitle;
+    property UnitList: TList read GetUnitList write SetUnitList;
+    property UnitNameList: String read fUnitNameList write fUnitNameList;
+    property UnitOutputDirectory: String read fUnitOutputDirectory write fUnitOutputDirectory;
   end;
 
 var
   Project1 : TProject;
   
 implementation
+
 uses
   Main;
 
+{------------------------------------------------------------------------------
+                              TProjectUnitInfo Class
+ ------------------------------------------------------------------------------}
 
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TProjectUnitInfo Constructor
+ ------------------------------------------------------------------------------}
+constructor TProjectUnitInfo.Create;
+begin
+  inherited Create;
+  Assert(False, 'Project Unit Info Class Created');
+
+  fAutoCreate := true;
+  fBookmarks := TList.Create;
+  fBreakpoints := TList.Create;
+  fCursorPos := 0;
+  fFilename := '';
+  fUnitName := '';
+  fReadOnly :=  false;
+  fSyntaxHighlighter := 'freepascal';
+end;
+
+
+{------------------------------------------------------------------------------
+                              TProject Class
+ ------------------------------------------------------------------------------}
+
+{------------------------------------------------------------------------------
+  TProject Constructor
+ ------------------------------------------------------------------------------}
 constructor TProject.Create;
 begin
   inherited Create;
-  FUnits := TList.Create;
-  FLibrary := TStringList.Create;
+  Assert(False, 'Trace:Project Class Created');
+
+  xmlcfg := nil;
+
+  fAliases := '';
+  fCompilerOptions := TCompilerOptions.Create;
+  fIconPath := '';
+  fMainUnit := '';
+  fOutputDirectory := '';
+  fProjectFile := '';
+  fProjectInfoFile := '';
+  fTargetFileExt := '';
+  fTitle := '';
+  fUnitList := TList.Create;
+  fUnitNameList := '';
+  fUnitOutputDirectory := '';
 end;
 
-{------------------------------------------------------------------------------}
-function TProject.SaveProject(const SaveName: String) : Boolean;
-var
-  iniFile : TIniFile;
-  Texts : String;
-  TempName : String;
-  I,X : Integer;
-  TempEditor : TmwCustomEdit;
+{------------------------------------------------------------------------------
+  TProject Destructor
+ ------------------------------------------------------------------------------}
+destructor TProject.Destroy;
 begin
-  Result := True;
-  if SaveName = '' then Exit;
+  if (xmlcfg <> nil) then xmlcfg.Free;
+  fUnitList.Free;
+  fCompilerOptions.Free;
 
-  //create the .dsk file based on the project name
-  Assert(False, 'Trace:INIFILE CREATE');
-  if FileExists(SaveName + '.dsk') then
-  begin
-    TempName := SaveName + '.~dsk';
-    RenameFile(SaveName + '.dsk', TempName);
-  end;
-
-  INiFile := TiniFile.Create(Savename+'.dsk');
-  Assert(False, 'Trace:INIFILE CREATE');
-
-  for i := 0 to FUnits.Count -1 do
-  begin
-    INIFIle.WriteString('Modules','Module'+inttostr(I),TUnitInfo(FUnits.items[i]).Filename);
-    INIFile.WriteString(TUnitInfo(FUnits.items[i]).Filename,'ModuleType','SourceModule');
-    INIFile.WriteString(TUnitInfo(FUnits.items[i]).Filename,'FormState','0');
-    INIFile.WriteString(TUnitInfo(FUnits.items[i]).Filename,'FormOnTop','0');
-  end;
-
-  INIFIle.WriteInteger('Modules','Count',FUnits.Count);
-  
-  //have to check this later
-  INIFIle.WriteString('Modules','EditWindowCount','1');
-
-//  INIFile.WriteInteger('EditWindow0','ViewCount',IdeEditor1.Notebook1.Pages.Count);
-//  INIFile.WriteInteger('EditWindow0','CurrentView',IdeEditor1.Notebook1.PageIndex);
-{  for I := 0 to ideEditor1.Notebook1.Pages.Count-1 do
-  begin
-  
-    //Determine what entry each notebook is displaying.
-    Assert(False, 'Trace:*******************');
-    Assert(False, 'Trace:*******************');
-    Assert(False, 'Trace:***I := '+Inttostr(i));
-    Assert(False, 'Trace:*******************');
-    Assert(False, 'Trace:*******************');
-    for X := 0 to FUnits.Count-1 do
-  	begin
-      Assert(False, 'Trace:X = '+Inttostr(x));
-      Assert(False, 'Trace:Page = '+inttostr(TUnitInfo(FUnits.Items[x]).Page));
-      if TUnitInfo(FUnits.Items[x]).Page = I 
-      then begin
-        INIFile.WriteInteger('EditWindow0','View'+Inttostr(I),X);
-        //write out the View section while here.
-        IniFile.WriteString('View'+Inttostr(I),'Module',TUnitInfo(FUnits.Items[x]).Filename);
-        TempEditor := ideEditor1.GetEditorfromPage(i);
-        if TempEditor = nil then Break;
-        IniFile.WriteInteger('View'+Inttostr(I),'CursorX',TempEditor.CaretX);
-        IniFile.WriteInteger('View'+Inttostr(I),'CursorY',TempEditor.CaretY);
-        IniFile.WriteInteger('View'+Inttostr(I),'TopLine',TempEditor.TopLine);
-        IniFile.WriteInteger('View'+Inttostr(I),'LeftCol',tempEditor.LeftChar);
-        Break;
-       end;
-    end;
-  end;
-  if IdeEditor1.Visible
-  then INIFile.WriteInteger('EditWindow0','Visible',1)
-  else INIFile.WriteInteger('EditWindow0','Visible',0);
-}
-//Write out screen coords
-{  INIFile.WriteInteger('EditWindow0','Left',ideEditor1.Left);
-  INIFile.WriteInteger('EditWindow0','Top',ideEditor1.Top);
-  INIFile.WriteInteger('EditWindow0','Height',ideEditor1.Height);
-  INIFile.WriteInteger('EditWindow0','Width',ideEditor1.Width);
-  INIFile.WriteInteger('EditWindow0','CurrentView',ideEditor1.Notebook1.Pageindex);
- }
-  INIFile.WriteInteger('Main Window','Create',1);
-  INIFile.WriteInteger('Main Window','Visible',1);
-  INIFile.WriteInteger('Main Window','State',0);  //0 = normal?
-  INIFile.WriteInteger('Main Window','Left',MainIDE.Left);
-  INIFile.WriteInteger('Main Window','Top',MainIDE.Top);
-  INIFile.WriteInteger('Main Window','Width',MainIDE.Width);
-  INIFile.WriteInteger('Main Window','Height',MainIDE.Height);
-
-  INIFile.WriteInteger('Message Window','Create',1);
-  if Messagedlg.Visible 
-  then INIFile.WriteInteger('Message WIndow','Visible',1)
-  else INIFile.WriteInteger('Message WIndow','Visible',0);
-
-  INIFile.WriteInteger('Message Window','State',0);  //0 = normal?
-  INIFile.WriteInteger('Message Window','Left',MainIDE.Left);
-  INIFile.WriteInteger('Message Window','Top',MainIDE.Top);
-  INIFile.WriteInteger('Message Window','Width',MainIDE.Width);
-  INIFile.WriteInteger('Message Window','Height',MainIDE.Height);
-
-
-  IniFile.Free;
+  inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------}
-function TProject.OpenProject(const OpenName: String) : Boolean;
+{------------------------------------------------------------------------------
+  TProject WriteProject
+ ------------------------------------------------------------------------------}
+function TProject.WriteProject: Boolean;
 var
-  tempInt: Integer;
-  tempStr: String;
-  Count : Integer;
-  EditCount : Integer;
-  ViewCount : Integer;
-  tempEditor : TmwCustomEdit;
-  SList : TUnitInfo;
-  INIFile : TIniFile;
-  I,X : Integer;
+  confPath: String;
+  i: Integer;
 begin
-  Result := True;
-  //open the .dsk file based on the project name
-  Assert(False, 'Trace:INIFILE CREATE '+Openname+'.dsk');
-  INiFile := TiniFile.Create(OpenName+'.dsk');
-  Assert(False, 'Trace:INIFILE CREATE');
-  
-  Assert(False, 'Trace:Read count');
-  count := INIFIle.ReadInteger('Modules','Count',0);
-  Assert(False, 'Trace:Count = '+Inttostr(count));
-  
-  for i := 0 to Count - 1 do
-  begin
-    tempStr := INIFIle.ReadString('Modules','Module'+inttostr(I),'');
-    if TempStr <> '' 
-    then Begin  //a name exists
-      Assert(False, 'Trace:TempStr = '+TempStr);
-      SList := TUnitInfo.Create;
-      SList.Source := TStringList.Create;
-      SList.Filename := TempStr;
-      SList.Source.LoadFromFile(SList.Filename);
-      SList.Page := -1;
-      MainIDE.SetFlags(SList);
-      MainIDE.SetName_Form(SList);
-      FUnits.Add(SList);
-    end;
-  end;
+  Result := false;
 
-  Assert(False, 'Trace:Read EditCount');
-  EditCount := INIFile.ReadInteger('Modules','EditWindowCount',0);
+  confPath := GetXMLConfigPath;
+  if (confPath = '') then exit;
 
-  for I := 0 to EditCount -1 do
-  begin
-    Assert(False, 'Trace:Read ViewCount');
-   
-    ViewCount := INIFIle.ReadInteger('EditWindow'+inttostr(i),'ViewCount',0);
-    if ViewCount > 0 
-    then begin
-      for x := 0 to ViewCount-1 do
+  xmlcfg := TXMLConfig.Create(SetDirSeparators(confPath));
+
+  try
+    xmlcfg.SetValue('ProjectOptions/General/ProjectFile/Value', ProjectFile);
+    xmlcfg.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
+    xmlcfg.SetValue('ProjectOptions/General/Aliases/Value', Aliases);
+    xmlcfg.SetValue('ProjectOptions/General/IconPath/Value', IconPath);
+    xmlcfg.SetValue('ProjectOptions/General/TargetFileExt/Value', TargetFileExt);
+    xmlcfg.SetValue('ProjectOptions/General/Title/Value', Title);
+    xmlcfg.SetValue('ProjectOptions/General/OutputDirectory/Value', OutputDirectory);
+    xmlcfg.SetValue('ProjectOptions/General/UnitOutputDirectory/Value', UnitOutputDirectory);
+
+    // Set options for each Unit
+    if (UnitList <> nil) then
+    begin
+      for i := 0 to UnitList.Count - 1 do
       begin
-        Assert(False, 'Trace:Read View'+inttostr(x));
-        TempInt := INIFIle.ReadInteger('EditWindow'+inttostr(i),'View'+InttoStr(x),0);
-        TUnitInfo(FUnits.Items[TempInt]).Page := x;
-        //add the page here
-        {debug}
-        Assert(False, 'Trace:NAME = '+TUnitInfo(FUnits.Items[TempInt]).Name);
-        
-//        ideEditor1.AddPage(TUnitInfo(FUnits.Items[TempInt]).Name,TUnitInfo(FUnits.Items[TempInt]).Source);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/UnitName/Value', TProjectUnitInfo(UnitList.Items[i]).UnitName);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/Filename/Value', TProjectUnitInfo(UnitList.Items[i]).Filename);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/CursorPos/Value', TProjectUnitInfo(UnitList.Items[i]).CursorPos);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/AutoCreate/Value', TProjectUnitInfo(UnitList.Items[i]).AutoCreate);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/ReadOnly/Value', TProjectUnitInfo(UnitList.Items[i]).ReadOnly);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/SyntaxHighlighter/Value', TProjectUnitInfo(UnitList.Items[i]).SyntaxHighlighter);
+
+        { TODO:
+            Depending on how Bookmarks and Breakpoints work, save them out. They are setup as a TList.
+            This may change if they are done in some other manner. Need to uncomment them and implement
+            them once this it is known how they are going to work (depends on editor being used).
+        }
+        // xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/Bookmarks/Value', TProjectUnitInfo(UnitList.Items[i]).Bookmarks);
+        // xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/Breakpoints/Value', TProjectUnitInfo(UnitList.Items[i]).Breakpoints);
       end;
-      TempInt := INIFIle.ReadInteger('EditWindow'+inttostr(i),'CurrentView',0);
-//      ideEditor1.Notebook1.Pageindex := tempint;
     end;
-    
-    Assert(False, 'Trace:Read Visible');
-    Assert(False, 'Trace:I = '+Inttostr(i));
 
-{    ideEditor1.Visible := (INIFile.ReadInteger('EditWindow'+inttostr(i),'Visible',0) = 1);
-    ideEditor1.Left := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Left',0);
-    ideEditor1.Top := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Top',0);
-    ideEditor1.Width := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Width',300);
-    ideEditor1.Height := INIFIle.ReadInteger('EditWindow'+inttostr(i),'Height',400);
- }
+    // Save the compiler options
+    CompilerOptions.XMLConfigFile := xmlcfg;
+    CompilerOptions.ProjectFile := confPath;
+    CompilerOptions.SaveCompilerOptions(true);
+
+    xmlcfg.Flush;
+  finally
+    xmlcfg.Free;
+  end;
+  Result := true;
+end;
+
+{------------------------------------------------------------------------------
+  TProject ReadProject
+ ------------------------------------------------------------------------------}
+function TProject.ReadProject: Boolean;
+var
+  confPath: String;
+  curUnitName: String;
+  workUnitList: String;
+  pui: TProjectUnitInfo;
+begin
+  Result := false;
+
+  confPath := GetXMLConfigPath;
+  if (confPath = '') then exit;
+
+  xmlcfg := TXMLConfig.Create(SetDirSeparators(confPath));
+
+  try
+    ProjectFile := xmlcfg.GetValue('ProjectOptions/General/ProjectFile/Value', '');
+    MainUnit := xmlcfg.GetValue('ProjectOptions/General/MainUnit/Value', '');
+    UnitNameList := xmlcfg.GetValue('ProjectOptions/General/UnitNameList/Value', '');
+    Aliases := xmlcfg.GetValue('ProjectOptions/General/Aliases/Value', '');
+    IconPath := xmlcfg.GetValue('ProjectOptions/General/IconPath/Value', './');
+    TargetFileExt := xmlcfg.GetValue('ProjectOptions/General/TargetFileExt/Value', '');
+    Title := xmlcfg.GetValue('ProjectOptions/General/Title/Value', '');
+    OutputDirectory := xmlcfg.GetValue('ProjectOptions/General/OutputDirectory/Value', './');
+    UnitOutputDirectory := xmlcfg.GetValue('ProjectOptions/General/UnitOutputDirectory/Value', './');
+
+    pui := TProjectUnitInfo.Create;
+    try
+      // Get first name
+      curUnitName := Copy(UnitNameList, 0, Pos(UnitNameList, '|') - 1);
+      workUnitList := Copy(UnitNameList, Pos(UnitNameList, '|') - 1, Length(UnitNameList));
+
+      // Make sure we have a starting unit
+      if (curUnitName <> '') then
+      begin
+        // Get all the info for each unit
+        while (curUnitName <> '') do
+        begin
+          pui.UnitName := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/UnitName/Value', '');
+          pui.Filename := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/Filename/Value', '');
+          pui.CursorPos := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/CursorPos/Value', 0);
+          pui.AutoCreate := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/AutoCreate/Value', true);
+          pui.ReadOnly := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/ReadOnly/Value', false);
+          pui.SyntaxHighlighter := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/SyntaxHighlighter/Value', 'freepascal');
+
+          { TODO:
+              Depending on how Bookmarks and Breakpoints work, save them out. They are setup as a TList.
+              This may change if they are done in some other manner. Need to uncomment them and implement
+              them once this it is known how they are going to work (depends on editor being used).
+          }
+          // pui.Bookmarks := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/Bookmarks/Value', '');
+          // pui.Breakpoints := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/Breakpoints/Value', '');
+
+          // Add the unit to the project
+          AddUnit(pui);
+
+          // Get the next unit name
+          curUnitName := Copy(workUnitList, 0, Pos(workUnitList, '|') - 1);
+          workUnitList := Copy(workUnitList, Pos(workUnitList, '|') - 1, Length(workUnitList));
+        end;
+      end;
+    finally
+      pui.free;
+    end;
+
+    // Load the compiler options
+    CompilerOptions.XMLConfigFile := xmlcfg;
+    CompilerOptions.ProjectFile := confPath;
+    CompilerOptions.LoadCompilerOptions(true);
+  finally
+    xmlcfg.Free;
   end;
 
-  Assert(False, 'Trace:For loop : ViewCount = '+Inttostr(ViewCount));
+  Result := true;
+end;
 
-  for i := 0 to ViewCount - 1 do
+{------------------------------------------------------------------------------
+  TProject AddUnit
+ ------------------------------------------------------------------------------}
+procedure TProject.AddUnit(AUnit: TProjectUnitInfo);
+begin
+  if (AUnit <> nil) then UnitList.Add(AUnit);
+  { TODO:
+      Add the unit to the .lpr file.
+      Add an AutoCreate method call to the .lpr file for the unit.
+  }
+end;
+
+{------------------------------------------------------------------------------
+  TProject RemoveUnit
+ ------------------------------------------------------------------------------}
+procedure TProject.RemoveUnit(AUnitName: String);
+var
+  i: Integer;
+begin
+  if (AUnitName <> '') then 
   begin
-//    TempEditor := ideEditor1.GetEditorfromPage(i);
-    tempEditor.CaretX := INIFIle.ReadInteger('View'+inttostr(i),'CursorX',0);
-    tempEditor.CaretY := INIFIle.ReadInteger('View'+inttostr(i),'CursorY',0);
-    tempEditor.TopLine := INIFIle.ReadInteger('View'+inttostr(i),'TopLine',0);
-    tempEditor.LeftChar := INIFIle.ReadInteger('View'+inttostr(i),'LeftCol',0);
+    for i := 0 to fUnitList.Count - 1 do
+    begin
+      if (TProjectUnitInfo(UnitList.Items[i]).UnitName = AUnitName) then
+        UnitList.Remove(UnitList.Items[i]);
+    end;
   end;
 
-  MainIDE.Visible := (INIFile.ReadInteger('Main Window','Visible',1) = 1);
-  MainIDE.Left := INIFile.ReadInteger('Main Window','Left',0);
-  MainIDE.Top := INIFile.ReadInteger('Main Window','Top',0);
-  MainIDE.Height := INIFile.ReadInteger('Main Window','Height',100);
-  MainIDE.Width := INIFile.ReadInteger('Main Window','Width',800);
-
-  Messagedlg.Visible := (INIFile.ReadInteger('Message WIndow','Visible',1) = 1);
-  Messagedlg.Left := INIFile.ReadInteger('Message Window','Left',0);
-  Messagedlg.Top := INIFile.ReadInteger('Message Window','Top',0);
-  Messagedlg.Width := InIfile.ReadInteger('Message Window','Width',(Screen.Width div 2));
-  Messagedlg.Height := INIFile.ReadInteger('Message Window','Height',100);
-
-  INiFile.Free;
+  { TODO:
+      Remove the unit from the .lpr file.
+      Remove the AutoCreate method call from the .lpr file for the unit.
+  }
 end;
 
-{------------------------------------------------------------------------------}
-procedure TProject.AddUnit(AUnit: TUnitInfo);
+{------------------------------------------------------------------------------
+  TProject GetUnitList
+ ------------------------------------------------------------------------------}
+function TProject.GetUnitList: TList;
 begin
-  if (AUnit <> nil) then FUnits.Add(AUnit);
+  Result := fUnitList;
 end;
 
-{------------------------------------------------------------------------------}
-function TProject.GetUnits: TList;
+{------------------------------------------------------------------------------
+  TProject SetUnitList
+ ------------------------------------------------------------------------------}
+procedure TProject.SetUnitList(AList: TList);
 begin
-  Result := FUnits;
+  fUnitList := AList;
 end;
 
-{------------------------------------------------------------------------------}
-procedure TProject.AddLibraryPath(const LibPath: String);
+{------------------------------------------------------------------------------
+  TProject GetXMLConfigPath
+ ------------------------------------------------------------------------------}
+function TProject.GetXMLConfigPath: String;
+var
+  confPath: String;
 begin
-  FLibrary.Add(LibPath);
+  Result := '';
+
+  if (ProjectInfoFile = '') then exit;
+
+  confPath := GetPrimaryConfigPath + '/' + ProjectInfoFile;
+
+  // See if config path exists and if not create it
+  if (not DirectoryExists(GetPrimaryConfigPath)) then
+  begin
+     try
+        // Create the directory
+        CreatePrimaryConfigPath;
+
+        { TODO:
+            Try to read the configuration from the current path
+            If successful, then read it in and write it to the primary path
+            If unsuccessful, then just use defaults
+        }
+     except
+       Assert(False, 'Trace:There was a problem creating the config directory. Using defaults.');
+       Assert(False, 'Trace:File = ' + GetPrimaryConfigPath);
+       confPath := './' + ProjectInfoFile;
+       Result := confPath;
+     end;
+  end;
+
+  Result := confPath;
 end;
 
-{------------------------------------------------------------------------------}
-function TProject.GetLibraryPaths: TStrings;
-begin
-  GetLibraryPaths := FLibrary;
-end;
 
 end.
 {
   $Log$
+  Revision 1.4  2001/01/29 05:42:41  lazarus
+  Created new TProjectUnitInfo class.
+  Created new TProject class. Saves to XML config file.
+  Moved compiler options to write to the project file.            CAW
+
   Revision 1.3  2001/01/04 20:33:53  lazarus
   Moved lresources.
   Moved CreateLFM to Main.pp
