@@ -344,7 +344,10 @@ end;
 function TControl.GetClientOrigin: TPoint;
 Begin
   Assert(False, Format('Trace:[TControl.GetClientOrigin] %s',  [Classname]));
-  if Parent = nil then Exit;
+  if Parent = nil then
+    raise Exception.Create('TControl.GetClientOrigin: Parent=nil for '
+                           +Name+':'+ClassName);
+    //raise EInvalidOperation.CreateFmt(SParentRequired, [Name]);
   Result := Parent.ClientOrigin;
   Inc(Result.X, FLeft);
   Inc(Result.Y, FTop);
@@ -1630,6 +1633,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.43  2002/04/21 06:53:55  lazarus
+  MG: fixed save lrs to test dir
+
   Revision 1.42  2002/04/03 11:26:34  lazarus
   MG: fixed mem leaks
 
