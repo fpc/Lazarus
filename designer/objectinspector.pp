@@ -172,12 +172,13 @@ type
     FBorderStyle:TBorderStyle;
     FStates: TOIPropertyGridStates;
 
-    //hint stuff
+    // hint stuff
     FHintTimer : TTimer;
     FHintWindow : THintWindow;
-    FLastMouseMovePos : TPoint;
-    Procedure HintTimer(sender: TObject);
-    Procedure ResetHintTimer(Sender: TObject; Shift: TShiftstate; X,Y: Integer);
+    Procedure HintTimer(Sender: TObject);
+    Procedure ResetHintTimer;
+    procedure OnUserInput(Sender: TObject; Msg: Cardinal);
+    procedure OnIdle(Sender: TObject);
 
     procedure IncreaseChangeStep;
 
@@ -225,7 +226,6 @@ type
           ARect: TRect; State: TOwnerDrawState);
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
-    procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetBackgroundColor(const AValue: TColor);
@@ -416,7 +416,6 @@ begin
     Parent:=Self;
     Visible:=false;
     Enabled:=false;
-    OnMouseMove := @ResetHintTimer;
     OnMouseDown := @ValueEditMouseDown;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueEditExit;
@@ -430,7 +429,6 @@ begin
     Visible:=false;
     Enabled:=false;
     Parent:=Self;
-    OnMouseMove := @ResetHintTimer;
     OnMouseDown := @ValueEditMouseDown;
     OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueComboBoxExit;
@@ -470,6 +468,9 @@ begin
   FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
+  
+  Application.AddOnUserInputHandler(@OnUserInput);
+  Application.AddOnIdleHandler(@OnIdle);
 end;
 
 procedure TOIPropertyGrid.UpdateScrollBar;
@@ -546,6 +547,8 @@ end;
 destructor TOIPropertyGrid.Destroy;
 var a:integer;
 begin
+  Application.RemoveOnUserInputHandler(@OnUserInput);
+  Application.RemoveOnIdleHandler(@OnIdle);
   FItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FreeAndNil(FRows);
@@ -1169,6 +1172,16 @@ begin
   end;
 end;
 
+procedure TOIPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
+begin
+  ResetHintTimer;
+end;
+
+procedure TOIPropertyGrid.OnIdle(Sender: TObject);
+begin
+
+end;
+
 procedure TOIPropertyGrid.EndDragSplitter;
 begin
   if FDragging then begin
@@ -1560,9 +1573,9 @@ begin
 
   Position := Mouse.CursorPos;
   Window := FindLCLWindow(Position);
-  if not(Assigned(window)) then Exit;
+  if not(Assigned(Window)) then Exit;
 
-  //get the parent until parent is nil
+  // get the parent until parent is nil
   While Window.Parent <> nil do
     Window := Window.Parent;
 
@@ -1572,10 +1585,6 @@ begin
      
   if (window <> Window2) then Exit;
 
-  if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0)
-  or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then
-    Exit;
-
   Position := ScreenToClient(Position);
   if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
   or (Position.Y >= Height)) then
@@ -1583,37 +1592,37 @@ begin
   AHint := '';
   Index:=MouseToIndex(Position.Y,false);
   if (Index>=0) and (Index<FRows.Count) then
-     begin
-        //IconX:=GetTreeIconX(Index);
-        PointedRow:=Rows[Index];
-        if Assigned(PointedRow) then
-        Begin
-          if Assigned(PointedRow.Editor) then
-            AHint := PointedRow.Editor.GetName;
+  begin
+    //IconX:=GetTreeIconX(Index);
+    PointedRow:=Rows[Index];
+    if Assigned(PointedRow) then
+    Begin
+      if Assigned(PointedRow.Editor) then
+        AHint := PointedRow.Editor.GetName;
 
-          AHint := AHint + #10'Value:'+PointedRow.LastPaintedValue;
-          TypeKind := PointedRow.Editor.GetPropType^.Kind;
-          case TypeKind of
-                 tkInteger : AHint := AHInt + #10'Integer';
-                 tkInt64 : AHint := AHInt + #10'Int64';
-                 tkBool : AHint := AHInt + #10'Boolean';
-                 tkEnumeration : AHint := AHInt + #10'Enumeration';
-                 tkChar,tkWChar : AHint := AHInt + #10'Char';
-                 tkUnknown : AHint := AHInt + #10'Unknown';
-                 tkObject : AHint := AHInt + #10'Object';
-                 tkClass : AHint := AHInt + #10'Class';
-                 tkQWord : AHint := AHInt + #10'Word';
-                 tkString,tkLString,tkAString,tkWString : AHint := AHInt + #10'String';
-                 tkFloat : AHint := AHInt + #10'Float';
-                 tkSet : AHint := AHInt + #10'Set';
-                 tkMethod : AHint := AHInt + #10'Method';
-                 tkVariant : AHint := AHInt + #10'Variant';
-                 tkArray : AHint := AHInt + #10'Array';
-                 tkRecord : AHint := AHInt + #10'Record';
-                 tkInterface : AHint := AHInt + #10'Interface';
-           end;
-         end;
-     end;
+      AHint := AHint + #10'Value:'+PointedRow.LastPaintedValue;
+      TypeKind := PointedRow.Editor.GetPropType^.Kind;
+      case TypeKind of
+       tkInteger : AHint := AHInt + #10'Integer';
+       tkInt64 : AHint := AHInt + #10'Int64';
+       tkBool : AHint := AHInt + #10'Boolean';
+       tkEnumeration : AHint := AHInt + #10'Enumeration';
+       tkChar,tkWChar : AHint := AHInt + #10'Char';
+       tkUnknown : AHint := AHInt + #10'Unknown';
+       tkObject : AHint := AHInt + #10'Object';
+       tkClass : AHint := AHInt + #10'Class';
+       tkQWord : AHint := AHInt + #10'Word';
+       tkString,tkLString,tkAString,tkWString : AHint := AHInt + #10'String';
+       tkFloat : AHint := AHInt + #10'Float';
+       tkSet : AHint := AHInt + #10'Set';
+       tkMethod : AHint := AHInt + #10'Method';
+       tkVariant : AHint := AHInt + #10'Variant';
+       tkArray : AHint := AHInt + #10'Array';
+       tkRecord : AHint := AHInt + #10'Record';
+       tkInterface : AHint := AHInt + #10'Interface';
+      end;
+    end;
+  end;
   if AHint = '' then Exit;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
   Position := Mouse.CursorPos;
@@ -1625,34 +1634,13 @@ begin
   FHintWindow.ActivateHint(Rect,AHint);
 end;
 
-Procedure TOIPropertyGrid.ResetHintTimer(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+Procedure TOIPropertyGrid.ResetHintTimer;
 begin
   if FHintWIndow.Visible then
-     FHintWindow.Visible := False;
+    FHintWindow.Visible := False;
      
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := not ((ssLeft in Shift) or (ssRight in Shift) or (ssMiddle in Shift));
-
-  if (Sender is TOIPropertyGrid) then
-    Begin
-       FLastMouseMovePos.X := X;
-       FLastMouseMovePos.Y := Y;
-    end
-    else
-    begin  //account for the controls position.  THis is used for the FCurrentEdit control
-       FLastMouseMovePos.X := TWinControl(sender).Left+X;
-       FLastMouseMovePos.Y := TWinControl(Sender).Top+Y;
-    end;
-end;
-
-procedure TOIPropertyGrid.WMMouseMove(var Msg: TWMMouseMove);
-var
-  Shift : TShiftState;
-begin
-  inherited;
-  Shift := KeystoShiftState(Msg.Keys);  //KeystoShiftState found in Forms.pp
-  
-  ResetHintTimer(self,Shift,Msg.pos.x,Msg.Pos.Y);
+  FHintTimer.Enabled := not FDragging;
 end;
 
 procedure TOIPropertyGrid.ValueEditMouseDown(Sender : TObject;
