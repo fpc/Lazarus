@@ -979,7 +979,7 @@ begin
     AddFile('synexporthtml.pas','SynExportHTML',pftUnit,[],cpBase);
     AddFile('synmacrorecorder.pas','SynMacroRecorder',pftUnit,[],cpBase);
     AddFile('synmemo.pas','SynMemo',pftUnit,[],cpBase);
-    AddFile('synhighlighterpas.pas','SynHighlighterPas',pftUnit,[],cpBase);
+    AddFile('synhighlighterpas.pp','SynHighlighterPas',pftUnit,[],cpBase);
     AddFile('synhighlightercpp.pp','SynHighlighterCPP',pftUnit,[],cpBase);
     AddFile('synhighlighterjava.pas','SynHighlighterJava',pftUnit,[],cpBase);
     AddFile('synhighlighterperl.pas','SynHighlighterPerl',pftUnit,[],cpBase);
