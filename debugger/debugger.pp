@@ -1206,7 +1206,10 @@ begin
     // Set the remaining
     for n := 0 to Env.Count - 1 do
     begin
-      ReqCmd(dcEnvironment, [Env[n], True]);
+      S := Env[n];
+      //Skip functions etc.
+      if Pos('=()', S) <> 0 then Continue;
+      ReqCmd(dcEnvironment, [S, True]);
     end;
   finally
     Env.Free;
@@ -3171,6 +3174,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.59  2004/06/16 21:36:27  marc
+  * Fixed function in debugger environment
+
   Revision 1.58  2004/01/09 00:10:51  marc
   * More debugger properties
   * Fixed debugger for regcall callingconvention in RTL
