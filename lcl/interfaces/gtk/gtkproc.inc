@@ -27,36 +27,18 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
-  function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
+  procedure RaiseException(const Msg: string);
 
-  Tests if Destruction Mark is set.
+  Raises an exception.
+  gdb does not catch fpc Exception objects, therefore this procedure raises
+  a standard AV which is catched by gdb.
  ------------------------------------------------------------------------------}
-function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
+procedure RaiseException(const Msg: string);
 begin
-  Result:=gtk_object_get_data(PGtkObject(Widget),'LCLDestroyingHandle')<>nil;
-end;
-
-{------------------------------------------------------------------------------
-  procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
-
-  Marks widget for destruction.
- ------------------------------------------------------------------------------}
-procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
-begin
-  gtk_object_set_data(PGtkObject(Widget),'LCLDestroyingHandle',Widget);
-end;
-
-{------------------------------------------------------------------------------
-  function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
-
-  Tets if Destruction Mark is set.
- ------------------------------------------------------------------------------}
-function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
-begin
-  Result:=
-    (AWinControl<>nil) and (AWinControl is TWinControl)
-    and (AWinControl.HandleAllocated)
-    and WidgetIsDestroyingHandle(PGtkWidget(AWinControl.Handle));
+  writeln('ERROR in gtk-interface: ',Msg);
+  // creates an exception, that gdb catches:
+  writeln('Creating gdb catchable error:');
+  if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
 {------------------------------------------------------------------------------
@@ -96,32 +78,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
-
-  Sets the text of the combobox entry.
- ------------------------------------------------------------------------------}
-procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
-begin
-  if NewText <> nil then
-    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
-  else
-    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
-end;
-
-{------------------------------------------------------------------------------
-  function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
-
-  Converts a LM_GtkPaint message to a LM_PAINT message
- ------------------------------------------------------------------------------}
-function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
-begin
-  Result.Msg:=LM_PAINT;
-  Result.DC:=GetDC(THandle(GtkPaintMsg.Widget));
-  Result.Unused:=0;
-  Result.Result:=0;
-end;
-
-{------------------------------------------------------------------------------
   Function: FindChar
   Params:  Width, Height: Size of the image
            Depth:         Depth of the image
@@ -157,31 +113,62 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GetDCOffset(DC: PDeviceContext): TPoint;
+  function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 
-  Returns the DC offset for the DC Origin.
+  Tests if Destruction Mark is set.
  ------------------------------------------------------------------------------}
-function GetDCOffset(DC: PDeviceContext): TPoint;
-var
-  Adjustment: PGtkAdjustment;
+function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 begin
-  if (DC<>nil) then begin
-    Result:=DC^.Origin;
-    if (DC^.SpecialOrigin) and (DC^.hWnd<>0) then begin
-      if GtkWidgetIsA(PGtkWidget(DC^.hWnd),GTK_LAYOUT_GET_TYPE) then begin
-        // ToDo: add comment
-        Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(DC^.hWnd));
-        if Adjustment<>nil then
-          dec(Result.X,Trunc(Adjustment^.Value));
-        Adjustment:=gtk_layout_get_vadjustment(PGtkLayout(DC^.hWnd));
-        if Adjustment<>nil then
-          dec(Result.Y,Trunc(Adjustment^.Value));
-      end;
-    end;
-  end else begin
-    Result.X:=0;
-    Result.Y:=0;
-  end;
+  Result:=gtk_object_get_data(PGtkObject(Widget),'LCLDestroyingHandle')<>nil;
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
+
+  Marks widget for destruction.
+ ------------------------------------------------------------------------------}
+procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
+begin
+  gtk_object_set_data(PGtkObject(Widget),'LCLDestroyingHandle',Widget);
+end;
+
+{------------------------------------------------------------------------------
+  function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
+
+  Tets if Destruction Mark is set.
+ ------------------------------------------------------------------------------}
+function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
+begin
+  Result:=
+    (AWinControl<>nil) and (AWinControl is TWinControl)
+    and (AWinControl.HandleAllocated)
+    and WidgetIsDestroyingHandle(PGtkWidget(AWinControl.Handle));
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
+
+  Sets the text of the combobox entry.
+ ------------------------------------------------------------------------------}
+procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
+begin
+  if NewText <> nil then
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
+  else
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
+end;
+
+{------------------------------------------------------------------------------
+  function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+
+  Converts a LM_GtkPaint message to a LM_PAINT message
+ ------------------------------------------------------------------------------}
+function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+begin
+  Result.Msg:=LM_PAINT;
+  Result.DC:=GetDC(THandle(GtkPaintMsg.Widget));
+  Result.Unused:=0;
+  Result.Result:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -858,18 +845,22 @@ end;
 // ----------------------------------------------------------------------
 function GetMainWidget(const Widget: Pointer): Pointer;
 begin
-  Result := gtk_object_get_data(Widget, 'Main');
-  if Result = nil then Result := Widget; // the widget is the main widget itself.
+  if Widget<>nil then begin
+    Result := gtk_object_get_data(Widget, 'Main');
+    if Result = nil then Result := Widget; // the widget is the main widget itself.
+  end else
+    RaiseException('GetMainWidget Widget=nil');
 end;
 
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 begin
-  if (ChildWidget=nil) then
-    raise Exception.Create('SetMainWidget ChildWidget=nil');
-  if (ParentWidget=ChildWidget) then
-    raise Exception.Create('SetMainWidget ChildWidget=ParentWidget');
-  if (ParentWidget <> nil) and (ChildWidget <> nil) then
-    gtk_object_set_data(ChildWidget, 'Main', ParentWidget);
+  if ChildWidget<>nil then begin
+    if (ParentWidget<>ChildWidget) then
+      gtk_object_set_data(ChildWidget, 'Main', ParentWidget)
+    else
+      raise Exception.Create('SetMainWidget ChildWidget=ParentWidget');
+  end else
+    RaiseException('SetMainWidget ChildWidget=nil');
 end;
 
 { ------------------------------------------------------------------------------
@@ -880,8 +871,12 @@ end;
 ------------------------------------------------------------------------------ }
 function GetFixedWidget(const Widget: Pointer): Pointer;
 begin
-  Result := gtk_object_get_data(Widget, 'Fixed');
-  if Result = nil then Result:= Widget;
+  if Widget<>nil then begin
+    Result := gtk_object_get_data(Widget, 'Fixed');
+    if Result = nil then Result:= Widget;
+  end else begin
+    RaiseException('GetFixedWidget Widget=nil');
+  end;
 end;
 
 { ------------------------------------------------------------------------------
@@ -891,9 +886,87 @@ end;
 ------------------------------------------------------------------------------ }
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 begin
-  if (ParentWidget=nil) then
-    raise Exception.Create('SetFixedWidget ParentWidget=nil');
-  gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
+  if (ParentWidget<>nil) then
+    gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget)
+  else
+    RaiseException('SetFixedWidget ParentWidget=nil');
+end;
+
+{------------------------------------------------------------------------------
+  Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+  
+  Move a childwidget on a client area (fixed or layout widget).
+------------------------------------------------------------------------------}
+Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+begin
+  If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
+    gtk_Layout_move(PGtkLayout(Parent), Child, Left, Top)
+  else
+    If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
+      gtk_fixed_move(PGtkFixed(Parent), Child, Left, Top)
+  else
+    WriteLn('[FixedMoveControl] WARNING: Invalid Fixed Widget');
+end;
+
+{------------------------------------------------------------------------------
+  Procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+
+  Add a childwidget onto a client area (fixed or layout widget).
+------------------------------------------------------------------------------}
+Procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+begin
+  If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
+    gtk_fixed_put(PGtkFixed(Parent), Child, Left, Top)
+  else If GTKWidgetIsA(Parent, GTK_Layout_Get_Type) then
+    gtk_Layout_Put(PGtkLayout(Parent), Child, Left, Top)
+  else
+    WriteLn('[FixedPutControl] WARNING: Invalid Fixed Widget');
+end;
+
+{------------------------------------------------------------------------------
+  Function GetControlWindow(Control: Pointer) : PGDKWindow;
+
+  Get the gdkwindow of a widget.
+------------------------------------------------------------------------------}
+Function GetControlWindow(Control: Pointer) : PGDKWindow;
+begin
+  If Control <> nil then begin
+    If not GTKWidgetIsA(PGTKWidget(Control), GTK_Layout_Get_Type) then
+      Result := PGTKWidget(Control)^.Window
+    else
+      Result := PGtkLayout(Control)^.bin_window;
+  end else
+    RaiseException('GetControlWindow Control=nil');
+end;
+
+{------------------------------------------------------------------------------
+  function GetDCOffset(DC: PDeviceContext): TPoint;
+
+  Returns the DC offset for the DC Origin.
+ ------------------------------------------------------------------------------}
+function GetDCOffset(DC: PDeviceContext): TPoint;
+var
+  Fixed : PGTKWIdget;
+  Adjustment: PGtkAdjustment;
+begin
+  if (DC<>nil) then begin
+    Result:=DC^.Origin;
+    if (DC^.SpecialOrigin) and (DC^.hWnd<>0) then begin
+      Fixed := GetFixedWidget(PGTKWidget(DC^.hWnd));
+      if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
+        // ToDo: add comment
+        Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
+        if Adjustment<>nil then
+          dec(Result.X,Trunc(Adjustment^.Value-Adjustment^.Lower));
+        Adjustment:=gtk_layout_get_vadjustment(PGtkLayout(Fixed));
+        if Adjustment<>nil then
+          dec(Result.Y,Trunc(Adjustment^.Value-Adjustment^.Lower));
+      end;
+    end;
+  end else begin
+    Result.X:=0;
+    Result.Y:=0;
+  end;
 end;
 
 // ----------------------------------------------------------------------
@@ -1038,7 +1111,7 @@ function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 var
   TheWindow: PGdkWindow;
 begin
-  TheWindow:=TheWidget^.Window;
+  TheWindow:=GetControlWindow(TheWidget);
   gdk_window_get_origin(TheWindow,@Result.X,@Result.Y);
   // check if the gdkwindow is the clientwindow of the parent
   if gtk_widget_get_parent_window(TheWidget)=TheWindow then begin
@@ -1061,7 +1134,7 @@ var
 begin
   ClientWidget:=GetFixedWidget(TheWidget);
   if ClientWidget<>nil then begin
-    gdk_window_get_origin(ClientWidget^.Window,@Result.X,@Result.Y);
+    gdk_window_get_origin(GetControlWindow(ClientWidget),@Result.X,@Result.Y);
   end else begin
     Result:=GetWidgetOrigin(TheWidget);
   end;
@@ -1191,7 +1264,7 @@ begin
   AWidget:= PGtkWidget(AWinControl.Handle);
 
   if csDesigning in AWinControl.ComponentState then begin
-    AWindow:=AWidget^.Window;
+    AWindow:=GetControlWindow(AWidget);
     if AWindow=nil then exit;
     SetDesigningCursor(AWindow);
   end else begin
@@ -1202,7 +1275,7 @@ begin
 //      AWindow:=AWidget^.Window;
 //    FixWidget:= GetWidgetInfo(AWidget, true)^.ImplementationWidget;
     FixWidget:= GetMainWidget(AWidget);
-    AWindow:= FixWidget^.Window;
+    AWindow:= GetControlWindow(FixWidget);
     
     if AWindow=nil then exit;
 
@@ -1771,7 +1844,7 @@ begin
   // draw icon
   gdk_gc_set_clip_mask(pGtkStyle(Widget^.theStyle)^.Black_gc, IconMask);
   gdk_gc_set_clip_origin(pGtkStyle(Widget^.theStyle)^.Black_gc,ALeft,ATop);
-  gdk_draw_pixmap(Widget^.Window,pGtkStyle(Widget^.theStyle)^.Black_gc,
+  gdk_draw_pixmap(GetControlWindow(Widget),pGtkStyle(Widget^.theStyle)^.Black_gc,
      IconImg,0,0,ALeft,ATop,-1,-1);
   gdk_gc_set_clip_mask(pGtkStyle(Widget^.theStyle)^.Black_gc, nil);
 end;
@@ -2093,7 +2166,7 @@ begin
     //writeln(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
     LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
     if (LCLControl=nil) or (not (LCLControl is TControl)) then
-      raise Exception.Create('CreateTopologicalSortedWidgets: '
+      RaiseException('CreateTopologicalSortedWidgets: '
                              +'Widget without LCL control');
     Lvl:=GetParentLevel(LCLControl);
     TopologicalList[i].ParentLevel:=Lvl;
@@ -2730,6 +2803,45 @@ begin
   end;
   Result[NewLength]:=#0;
 end;
+
+{------------------------------------------------------------------------------
+  Method:   GDKPixel2GDIRGB
+  Params:
+            Pixel - a GDK Pixel, refers to Index in Colormap/Visual
+            Visual - a GDK Visual, if nil, the System Default is used
+            Colormap - a GDK Colormap, if nil, the System Default is used
+  Returns:  TGDIRGB
+
+  A convenience function for use with GDK Image's. It takes a pixel value
+  retrieved from gdk_image_get_pixel, and uses the passed Visual and Colormap
+  to try and look up actual RGB values.
+ ------------------------------------------------------------------------------}
+Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual; Colormap : PGDKColormap) : TGDIRGB;
+var
+  Color : TGDKColor;
+  GdkColorContext : PGdkColorContext;
+begin
+  FillChar(Result, SizeOf(TGDIRGB),0);
+
+  If (Visual = nil) or (Colormap = nil) then begin
+    Visual := GDK_Visual_Get_System;
+    Colormap := GDK_Colormap_Get_System;
+  end;
+    
+  gdk_error_trap_push;
+
+  Color.Pixel := Pixel;
+  GdkColorContext := gdk_color_context_new(Visual,Colormap);
+  gdk_color_context_query_color(GdkColorContext,@Color);
+  gdk_color_context_free(GdkColorContext);
+
+  Result.Red := Color.Red shr 8;
+  Result.Green := Color.Green shr 8;
+  Result.Blue := Color.Blue shr 8;
+
+  gdk_error_trap_pop;
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -2738,6 +2850,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.95  2002/09/10 06:49:21  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.94  2002/09/08 10:02:00  lazarus
   MG: fixed streaming visible=false
 
