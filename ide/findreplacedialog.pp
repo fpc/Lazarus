@@ -552,8 +552,8 @@ begin
     then ScopeRadioGroup.ItemIndex:=1
     else ScopeRadioGroup.ItemIndex:=0;
   if ssoBackwards in NewOptions
-    then DirectionRadioGroup.ItemIndex:=0
-    else DirectionRadioGroup.ItemIndex:=1;
+    then DirectionRadioGroup.ItemIndex:=1
+    else DirectionRadioGroup.ItemIndex:=0;
   ReplaceAllButton.Enabled:=ssoReplace in NewOptions;
   ReplaceTextComboBox.Enabled:=ReplaceAllButton.Enabled;
   ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
@@ -577,7 +577,7 @@ begin
   if PromptOnReplaceCheckBox.Checked then Include(Result,ssoPrompt);
   if OriginRadioGroup.ItemIndex=1 then Include(Result,ssoEntireScope);
   if ScopeRadioGroup.ItemIndex=1 then include(Result,ssoSelectedOnly);
-  if DirectionRadioGroup.ItemIndex=0 then include(Result,ssoBackwards);
+  if DirectionRadioGroup.ItemIndex=1 then include(Result,ssoBackwards);
   if ReplaceAllButton.Enabled then include(Result,ssoReplace);
   if fReplaceAllClickedLast then include(Result,ssoReplaceAll);
 end;
