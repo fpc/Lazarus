@@ -104,7 +104,7 @@ var
       CurToken:=copy(AKey,TokenStart,TokenEnd-TokenStart);
       ACanvas.TextOut(x+1, y, CurToken);
       x := x + ACanvas.TextWidth(CurToken);
-      //debugln('Paint A Text="',CurToken,'" x=',dbgs(x),' y=',dbgs(y),' "',ACanvas.Font.Name,'" ',dbgs(ACanvas.Font.Height));
+      //debugln('Paint A Text="',CurToken,'" x=',dbgs(x),' y=',dbgs(y),' "',ACanvas.Font.Name,'" ',dbgs(ACanvas.Font.Height),' ',dbgs(ACanvas.TextWidth(CurToken)));
       TokenStart:=0;
     end;
   end;

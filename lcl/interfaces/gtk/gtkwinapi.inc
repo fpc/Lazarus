@@ -5409,6 +5409,8 @@ var
   lbearing, rbearing, width, ascent,descent: LongInt;
   UseFont : PGDKFont;
   UnRef : Boolean;
+  IsDBCSFont: Boolean;
+  NewCount: Integer;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -5427,10 +5429,23 @@ begin
       DebugLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
     else begin
       descent:=0;
-      gdk_text_extents(UseFont, Str, Count,
-                       @lbearing, @rBearing, @width, @ascent, @descent);
+      UpdateDCTextMetric(TDeviceContext(DC));
+      IsDBCSFont:=TDeviceContext(DC).DCTextMetric.IsDoubleByteChar;
+      if IsDBCSFont then begin
+        NewCount:=Count*2;
+        if FExtUTF8OutCacheSize<NewCount then begin
+          ReAllocMem(FExtUTF8OutCache,NewCount);
+          FExtUTF8OutCacheSize:=NewCount;
+        end;
+        NewCount:=UTF8ToDoubleByte(Str,Count,FExtUTF8OutCache)*2;
+        gdk_text_extents(UseFont, FExtUTF8OutCache, NewCount,
+                         @lbearing, @rBearing, @width, @ascent, @descent);
+      end else begin
+        gdk_text_extents(UseFont, Str, Count,
+                         @lbearing, @rBearing, @width, @ascent, @descent);
+      end;
       Size.cX := Width;
-      //I THINK this is accurate...
+      // I THINK this is accurate...
       Size.cY := GDK_String_Height(UseFont, Str)
         {$IfNDef Win32} + descent div 2{$EndIf};
       If UnRef then
@@ -8811,6 +8826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.382  2005/01/01 20:17:32  mattias
+  implemented gtk GetTextExtentPoint for UTF8
+
   Revision 1.381  2005/01/01 16:04:13  mattias
   implemented CodeExplorer auto update on switching source editor page
 
