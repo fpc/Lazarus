@@ -452,7 +452,16 @@ begin
 //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
           if Handle<>0 then begin
             if MCaptureHandle=Handle then MCaptureHandle:=0;
+//writeln('>>> LM_DESTROY A ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
+{
+  Important (Mattias):
+
+  If Sender is TForm and one of its components was focused by SetFocus then
+    the next line will produce a gtk warning. The PGtkWidget(Handle) is also
+    a dirty cast. If Sender is TForm, Handle is a PGtkWindow !
+}
             gtk_widget_destroy(PGtkWidget(Handle));
+//writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
           end;
           // remove all remaining messages to this component
           QueueItem:=FMessageQueue.First;
@@ -3092,6 +3101,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.63  2001/10/16 20:01:28  lazarus
+  MG: removed splashform fix, because of the unpredictable side effects
+
   Revision 1.62  2001/10/16 10:51:10  lazarus
   MG: added clicked event to TButton, MessageDialog reacts to return key
 

@@ -1272,7 +1272,6 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.DestroyComponent;
 begin
-  //TODO: Does this procedure belong here
   CNSendMessage(LM_DESTROY, Self, nil);
 end;
 
@@ -1326,6 +1325,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.27  2001/10/16 20:01:28  lazarus
+  MG: removed splashform fix, because of the unpredictable side effects
+
   Revision 1.26  2001/10/16 14:19:13  lazarus
   MG: added nvidia opengl support and a new opengl example from satan
 

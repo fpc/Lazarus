@@ -2451,11 +2451,11 @@ writeln('[TSourceNotebook.NewFile] D ');
 {$ENDIF}
   Notebook.Pages[Notebook.PageIndex] :=
     FindUniquePageName(NewShortName,Notebook.PageIndex);
-  if (SplashForm.Visible) and (Notebook.Pages.Count=1) then begin
+{  if (SplashForm.Visible) and (Notebook.Pages.Count=1) then begin
     SplashForm.Hide;
     SplashForm.Show;
     Application.ProcessMessages;
-  end;
+  end;}
 {$IFDEF IDE_DEBUG}
 writeln('[TSourceNotebook.NewFile] end');
 {$ENDIF}

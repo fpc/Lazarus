@@ -99,7 +99,8 @@ Procedure TCustomForm.FocusControl(Control : TWinControl);
 Begin
 //Writeln('[TCustomForm.FocusControl] A ',ClassName,' ',Control.ClassName);
   FActiveControl := Control;
-  LCLLinux.SetFocus(Control.Handle);
+  if HandleAllocated and Visible then
+    LCLLinux.SetFocus(Control.Handle);
 //Writeln('[TCustomForm.FocusControl] END ',ClassName,' ',Control.ClassName);
 End;
 
@@ -943,6 +944,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2001/10/16 20:01:28  lazarus
+  MG: removed splashform fix, because of the unpredictable side effects
+
   Revision 1.28  2001/10/10 17:55:04  lazarus
   MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
 
