@@ -6092,7 +6092,7 @@ begin
       crSilentDelete, crSilentDeleteAfterCursor:                                //mh 2000-10-30
         begin
           // If there's no selection, we have to set
-          // the Caret's position manualy.
+          // the Caret's position manually.
           if Item.fChangeSelMode = smColumn then
             TmpPos := Point(Min(Item.fChangeStartPos.X, Item.fChangeEndPos.X),
               Min(Item.fChangeStartPos.Y, Item.fChangeEndPos.Y))
@@ -6112,6 +6112,7 @@ begin
             TmpPos,
             {$ENDIF}
             TmpPos, TmpPos);
+          //debugln('AAA1 Item.fChangeStr="',DbgStr(Item.fChangeStr),'"');
           SetSelTextPrimitive(Item.fChangeSelMode, PChar(Item.fChangeStr), nil);
 {begin}                                                                         //mh 2000-10-30
           if Item.fChangeReason in [crDeleteAfterCursor,
@@ -7071,11 +7072,12 @@ begin
                 {$IFDEF SYN_LAZARUS}
                 // remove visible spaces
                 LogSpacePos:=PhysicalToLogicalCol(Temp,SpaceCount2+1);
+                Helper:=copy(Temp,LogSpacePos,LogCaretXY.X-LogSpacePos);
                 //debugln('ecDeleteLastChar LogSpacePos=',dbgs(LogSpacePos),
                 //   ' SpaceCount1=',dbgs(SpaceCount1),
                 //   ' SpaceCount2=',dbgs(SpaceCount2),
                 //   ' LogCaretXY.X=',dbgs(LogCaretXY.X),
-                //   ' Temp="',DbgStr(Temp),'"');
+                //   ' Temp="',DbgStr(Temp),'" Helper="',DbgStr(Helper),'"');
                 Temp:=copy(Temp,1,LogSpacePos-1)+copy(Temp,LogCaretXY.X,MaxInt);
                 TrimmedSetLine(CaretY - 1, Temp);
                 fCaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
@@ -7116,6 +7118,8 @@ begin
               end;
             end;
             if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
+              //debugln('ecDeleteLastChar AddChange CaretXY=',dbgs(CaretXY),
+              //  ' LogCaret=',dbgs(LogCaret),' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
               fUndoList.AddChange(crSilentDelete,
                 {$IFDEF SYN_LAZARUS}
                 PhysicalToLogicalPos(CaretXY), LogCaret,
@@ -8778,10 +8782,12 @@ begin
   end;
   {$IFDEF SYN_LAZARUS}
   // i now contains the needed spaces
-  Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,eoSpacesToTabs in Options);
+  Spaces := CreateTabsAndSpaces(CaretX,i,TabWidth,
+                                not (eoTabsToSpaces in Options));
   {$ELSE}
   Spaces := StringOfChar(' ', i);
   {$ENDIF}
+  //debugln('TCustomSynEdit.DoTabKey Spaces="',DbgStr(Spaces),'" TabChar=',DbgStr(TabChar));
   if SelAvail then begin
     fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
       SelectionMode);
