@@ -2126,6 +2126,7 @@ Begin
       SetProp(Window, 'Sender', @Sender);
       if DoSubClass then
         SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
+      SendMessage(Window, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
     end;
   End
   Else If (Sender Is TMenuItem) Then
@@ -2743,6 +2744,9 @@ End;
 
 {
   $Log$
+  Revision 1.76  2003/07/26 10:30:44  mattias
+  rewritten WM_COMMAND by Micha
+
   Revision 1.75  2003/07/25 09:28:03  mattias
   fixed notebook page resize from Micha
 

@@ -2024,6 +2024,16 @@ Begin
     Result := HideCaret(Handle)
 End;
 
+Function TWin32Object.SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+var
+  ComboBox: TCustomComboBox;
+Begin
+  ComboBox := TObject(GetProp(Handle, 'Lazarus')) as TCustomComboBox;
+  if ComboBox = nil then exit;
+  Windows.MoveWindow(Handle, ComboBox.Left, ComboBox.Top, ComboBox.Width, ComboBox.Height + 15 * MinItemCount + 2, TRUE);
+  Result := true;
+End;
+
 {------------------------------------------------------------------------------
   Method:  SetFocus
   Params:  HWnd - Handle of new focus window
@@ -2363,6 +2373,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2003/07/26 10:30:44  mattias
+  rewritten WM_COMMAND by Micha
+
   Revision 1.45  2003/07/20 06:27:19  mattias
   fixed GetWindowRelativePosition
 

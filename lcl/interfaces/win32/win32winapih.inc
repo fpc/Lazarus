@@ -149,6 +149,7 @@ Function SetCapture(Value: LongInt): LongInt; Override;
 Function SetCaretPos(X, Y: Integer): Boolean; Override;
 Function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; Override;
 Function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
+Function SetComboMinDropDownSize(Handle: HWND; MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean; Override;
 Function SetFocus(HWnd: HWND): HWND; Override;
 Function SetProp(Handle: hwnd; Str: PChar; Data: Pointer): Boolean; Override;
 Function SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer; Override;
@@ -178,6 +179,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2003/07/26 10:30:44  mattias
+  rewritten WM_COMMAND by Micha
+
   Revision 1.27  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 

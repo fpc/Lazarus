@@ -145,9 +145,11 @@ Begin
       Begin
         Msg := LM_INSERTTEXT;
         Position := WParam;
-        NewText := String(LParam);
+        // need to init to nil because typecasting LMessage struct
+        Integer(NewText) := 0;
+        NewText := PChar(LParam);
         Length := System.Length(NewText);
-        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+//        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
     End;
     WM_CLOSE:
@@ -156,27 +158,31 @@ Begin
     End;
     WM_COMMAND:
     Begin
-      OwnerObject := TObject(GetProp(LParam, 'Lazarus')); 
-      Case Hi(WParam) Of
-        0,1: {mouse click or a menuitem command or a shortcut pressed}
-        Begin
-          if LParam=0 then OwnerObject := GetMenuItemObject; {menuitem or shortcut}
-          If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
-            CallEvent(OwnerObject, TControl(OwnerObject).OnClick, Nil, etNotify)
-          Else If OwnerObject Is TMenuItem Then
-            LMessage.Msg := LM_ACTIVATE
-          Else
-            LMessage.Msg := LM_CLICKED;
-        End;
-        BN_KILLFOCUS, EN_KILLFOCUS:
-        Begin
-          LMessage.Msg := LM_EXIT;
-        End;
-        EN_CHANGE:
-        Begin
-          LMessage.Msg := CM_TEXTCHANGED;
-        End;
-      End;
+      OwnerObject := TObject(GetProp(LParam, 'Lazarus'));
+      if LParam=0 then OwnerObject := GetMenuItemObject; {menuitem or shortcut}
+
+// is this for speedbuttons?
+//      If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
+//        CallEvent(OwnerObject, TControl(OwnerObject).OnClick, Nil, etNotify)
+
+      if OwnerObject is TMenuItem then
+      begin
+        if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
+          LMessage.Msg := LM_ACTIVATE;
+      end else if OwnerObject is TButton then
+      begin
+        case Hi(WParam) of
+          BN_CLICKED:   LMessage.Msg := LM_CLICKED;
+          BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
+        end;
+      end else if OwnerObject is TEdit then
+        case Hi(WParam) of
+          EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
+      end;
+      // no specific message found? try send a general msg
+      if LMessage.Msg = -1 then
+        if OwnerObject is TControl then
+          TControl(OwnerObject).Perform(CN_COMMAND, WParam, LParam);
     End;
     WM_CREATE:
     Begin
@@ -448,6 +454,11 @@ Begin
           TWinControl(OwnerObject).InvalidateClientRectCache;
         Width := LoWord(LParam);
         Height := HiWord(LParam);
+        // adjust size for scrollbars
+        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0 then
+          Width := Width - GetSystemMetrics(SM_CXVSCROLL);
+        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0 then
+          Height := Height - GetSystemMetrics(SM_CYHSCROLL);
       End;
     End;
     WM_SYSKEYDOWN:
@@ -568,6 +579,9 @@ end;
 
 {
   $Log$
+  Revision 1.42  2003/07/26 10:30:44  mattias
+  rewritten WM_COMMAND by Micha
+
   Revision 1.41  2003/07/20 06:27:19  mattias
   fixed GetWindowRelativePosition
 
