@@ -92,8 +92,8 @@ begin
   
   Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding])
     +LineEnding+LineEnding
-    +'http://sourceforge.net/projects/lazarus/'+LineEnding
-    +'http://sourceforge.net/projects/lazarus-ccr/'+LineEnding
+    +'Official: http://sourceforge.net/projects/lazarus/'+LineEnding
+    +'Tutorials: http://lazarus-ccr.sourceforge.net'+LineEnding
     ;
   Button1.Caption:=lisClose;
 
