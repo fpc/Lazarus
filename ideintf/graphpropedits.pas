@@ -156,6 +156,7 @@ var
 {Form For Picture/Graphic Property Editor}
 type
   TGraphicPropertyEditorForm = class(TForm)
+    procedure GraphicPropertyEditorFormResize(Sender: TObject);
   private
     FModified: boolean;
     procedure SetModified(const AValue: boolean);
@@ -196,13 +197,6 @@ begin
   HEIGHT := 419;
   WIDTH  := 403;
 
-  With CONSTRAINTS do begin
-    MAXHEIGHT := Height;
-    MAXWIDTH  := Width;
-    MINHEIGHT := Height;
-    MINWIDTH  := Width;
-  end;
-
   Opendlg := TOPENDIALOG.Create(Self);
   With Opendlg do begin
     OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
@@ -224,42 +218,23 @@ begin
     SPACING := 3;
     MODALRESULT := mrOK;
     CAPTION := '&OK';
-    LEFT := 325;
-    HEIGHT := 29;
-    TOP := 8;
-    WIDTH := 72;
-    Show;
   end;
 
   ScrollBox := TScrollBox.Create(Self);
   With ScrollBox do begin
     Parent := Self;
-    LEFT := 8;
-    HEIGHT := 365;
-    TOP := 8;
-    WIDTH := 310;
     AutoSize := False;
     Color := clWhite;
     AutoScroll := True;
-    Show;
   end;
 
   Preview := TIMAGE.Create(ScrollBox);
   With Preview do begin
     Parent := ScrollBox;
-    LEFT := 0;
-    HEIGHT := 356;
-    TOP := 0;
-    WIDTH := 302;
-    With CONSTRAINTS do begin
-      MINHEIGHT := Height;
-      MINWIDTH  := Width;
-    end;
-    AutoSize := True;
+    AutoSize:=true;
     Transparent := True;
     Center := True;
     Stretch := False;
-    Show;
   end;
 
   CANCELBTN := TBITBTN.Create(Self);
@@ -269,11 +244,6 @@ begin
     SPACING := 3;
     MODALRESULT := mrCancel;
     CAPTION := '&Cancel';
-    LEFT := 325;
-    HEIGHT := 30;
-    TOP := 48;
-    WIDTH := 72;
-    Show;
   end;
 
   LoadBTN := TBUTTON.Create(Self);
@@ -281,11 +251,6 @@ begin
     Parent := Self;
     CAPTION := '&Load';
     ONCLICK := @LoadBTNCLICK;
-    LEFT := 8;
-    HEIGHT := 29;
-    TOP := 384;
-    WIDTH := 82;
-    Show;
   end;
 
   SaveBTN := TBUTTON.Create(Self);
@@ -294,11 +259,6 @@ begin
     ENABLED := False;
     CAPTION := '&Save';
     ONCLICK := @SaveBTNCLICK;
-    LEFT := 123;
-    HEIGHT := 29;
-    TOP := 384;
-    WIDTH := 76;
-    Show;
   end;
 
   ClearBTN := TBUTTON.Create(Self);
@@ -306,11 +266,44 @@ begin
     Parent := Self;
     CAPTION := 'C&lear';
     ONCLICK := @ClearBTNCLICK;
-    LEFT := 236;
-    HEIGHT := 29;
-    TOP := 384;
-    WIDTH := 82;
-    Show;
+  end;
+  
+  OnResize:=@GraphicPropertyEditorFormResize;
+  OnResize(Self);
+end;
+
+procedure TGraphicPropertyEditorForm.GraphicPropertyEditorFormResize(
+  Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+begin
+  with ScrollBox do begin
+    SetBounds(8,8,Parent.ClientWidth-108,Parent.ClientHeight-43);
+  end;
+
+  with OKBTN do begin
+    SetBounds(Parent.ClientWidth-95,10,90,Height);
+  end;
+  with CANCELBTN do begin
+    SetBounds(OKBTN.Left,OKBTN.Top+OKBTN.Height+10,OKBTN.Width,Height);
+  end;
+
+  x:=5;
+  y:=ClientHeight-30;
+  w:=(ClientWidth-20) div 3;
+  with LoadBTN do begin
+    SetBounds(x,y,w,Height);
+    inc(x,w+5);
+  end;
+  with SaveBTN do begin
+    SetBounds(x,y,w,Height);
+    inc(x,w+5);
+  end;
+  with ClearBTN do begin
+    SetBounds(x,y,w,Height);
+    inc(x,w+5);
   end;
 end;
 
