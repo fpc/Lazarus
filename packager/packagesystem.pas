@@ -142,6 +142,7 @@ type
     procedure AddStaticBasePackages;
     procedure ClosePackage(APackage: TLazPackage);
     procedure MarkNeededPackages;
+    procedure MarkAllPackagesAsNotVisited;
     procedure CloseUnneededPackages;
     procedure ChangePackageID(APackage: TLazPackage;
                               const NewName: string; NewVersion: TPkgVersion;
@@ -165,6 +166,8 @@ type
                               Event: TIteratePackagesEvent);
     procedure IteratePackagesSorted(Flags: TFindPackageFlags;
                                     Event: TIteratePackagesEvent);
+    procedure GetAllRequiredPackages(FirstDependency: TPkgDependency;
+                                     var List: TList);
   public
     property AbortRegistration: boolean read FAbortRegistration
                                         write SetAbortRegistration;
@@ -287,6 +290,7 @@ end;
 
 constructor TLazPackageGraph.Create;
 begin
+  OnGetAllRequiredPackages:=@GetAllRequiredPackages;
   FTree:=TAVLTree.Create(@CompareLazPackageID);
   FItems:=TList.Create;
 end;
@@ -299,6 +303,8 @@ begin
     RegisterComponentsProc:=nil;
   if RegisterNoIconProc=@RegisterNoIconGlobalHandler then
     RegisterNoIconProc:=nil;
+  if OnGetAllRequiredPackages=@GetAllRequiredPackages then
+    OnGetAllRequiredPackages:=nil;
   Clear;
   FItems.Free;
   FTree.Free;
@@ -790,7 +796,7 @@ begin
     AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpLCL);
     
     // add unit paths
-    AddDependCompilerOptions.UnitPath:=
+    UsageOptions.UnitPath:=
       '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
     
     // add requirements
@@ -857,7 +863,7 @@ var
   Dependency: TPkgDependency;
 begin
   if Count=0 then exit;
-  // mark all packages as unneeded and not visited
+  // mark all packages as unneeded
   for i:=0 to FItems.Count-1 do begin
     Pkg:=TLazPackage(FItems[i]);
     Pkg.Flags:=Pkg.Flags-[lpfNeeded];
@@ -896,6 +902,18 @@ begin
   end;
   // clean up
   FreeMem(PkgStack);
+end;
+
+procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;
+var
+  i: Integer;
+  Pkg: TLazPackage;
+begin
+  // mark all packages as not visited
+  for i:=FItems.Count-1 downto 0 do begin
+    Pkg:=TLazPackage(FItems[i]);
+    Pkg.Flags:=Pkg.Flags-[lpfVisited];
+  end;
 end;
 
 procedure TLazPackageGraph.CloseUnneededPackages;
@@ -1188,6 +1206,53 @@ begin
       Event(CurPkg);
     ANode:=FTree.FindSuccessor(ANode);
   end;
+end;
+
+procedure TLazPackageGraph.GetAllRequiredPackages(
+  FirstDependency: TPkgDependency; var List: TList);
+var
+  Pkg: TLazPackage;
+  PkgStack: PLazPackage;
+  StackPtr: Integer;
+
+  procedure PutPackagesFromDependencyListOnStack(CurDependency: TPkgDependency);
+  var
+    RequiredPackage: TLazPackage;
+  begin
+    while CurDependency<>nil do begin
+      if CurDependency.LoadPackageResult=lprSuccess then begin
+        RequiredPackage:=CurDependency.RequiredPackage;
+        if (not (lpfVisited in RequiredPackage.Flags)) then begin
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          PkgStack[StackPtr]:=RequiredPackage;
+          inc(StackPtr);
+        end;
+      end;
+      CurDependency:=CurDependency.NextRequiresDependency;
+    end;
+  end;
+
+begin
+  // initialize
+  MarkAllPackagesAsNotVisited;
+  // create stack
+  GetMem(PkgStack,SizeOf(Pointer)*Count);
+  StackPtr:=0;
+  // put dependency list on stack
+  PutPackagesFromDependencyListOnStack(FirstDependency);
+  // mark all required packages
+  while StackPtr>0 do begin
+    // get required package from stack
+    dec(StackPtr);
+    Pkg:=PkgStack[StackPtr];
+    // add package to list
+    if List=nil then List:=TList.Create;
+    List.Add(Pkg);
+    // put all required packages on stack
+    PutPackagesFromDependencyListOnStack(Pkg.FirstRequiredDependency);
+  end;
+  // clean up
+  FreeMem(PkgStack);
 end;
 
 initialization

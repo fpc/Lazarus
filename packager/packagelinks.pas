@@ -42,9 +42,6 @@ uses
   PackageDefs, LazConf;
   
 type
-  TIteratePackagesEvent =
-    procedure(APackage: TLazPackageID) of object;
-
 
   { TPackageLink }
 

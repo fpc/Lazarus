@@ -563,6 +563,7 @@ resourcestring
   dlgCOLinking = 'Linking';
   dlgCOMessages = 'Messages';
   dlgCOOther = 'Other';
+  dlgCOInherited = 'Inherited';
   dlgShowCompilerOptions = 'Show compiler options';
   dlgCOOpts = 'Options: ';
   dlgCOStyle = 'Style:';

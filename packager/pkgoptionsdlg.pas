@@ -378,7 +378,7 @@ begin
   // Usage page
   LazPackage.PackageType:=NewPackageType;
   LazPackage.AutoUpdate:=(UpdateRadioGroup.ItemIndex=0);
-  with LazPackage.AddDependCompilerOptions do begin
+  with LazPackage.UsageOptions do begin
     UnitPath:=UnitPathEdit.Text;
     IncludePath:=IncludePathEdit.Text;
     ObjectPath:=ObjectPathEdit.Text;
@@ -817,12 +817,14 @@ begin
   else
     UpdateRadioGroup.ItemIndex:=1;
     
-  UnitPathEdit.Text:=LazPackage.AddDependCompilerOptions.UnitPath;
-  IncludePathEdit.Text:=LazPackage.AddDependCompilerOptions.IncludePath;
-  ObjectPathEdit.Text:=LazPackage.AddDependCompilerOptions.ObjectPath;
-  LibraryPathEdit.Text:=LazPackage.AddDependCompilerOptions.LibraryPath;
-  LinkerOptionsMemo.Text:=LazPackage.AddDependCompilerOptions.LinkerOptions;
-  CustomOptionsMemo.Text:=LazPackage.AddDependCompilerOptions.CustomOptions;
+  with LazPackage.UsageOptions do begin
+    UnitPathEdit.Text:=UnitPath;
+    IncludePathEdit.Text:=IncludePath;
+    ObjectPathEdit.Text:=ObjectPath;
+    LibraryPathEdit.Text:=LibraryPath;
+    LinkerOptionsMemo.Text:=LinkerOptions;
+    CustomOptionsMemo.Text:=CustomOptions;
+  end;
 end;
 
 procedure TPackageOptionsDialog.ReadPkgTypeFromPackage;

@@ -1039,7 +1039,7 @@ begin
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
   fBookmarks := TProjectBookmarkList.Create;
-  fCompilerOptions := TCompilerOptions.Create;
+  fCompilerOptions := TCompilerOptions.Create(Self);
   FFlags:=DefaultProjectFlags;
   fIconPath := '';
   fJumpHistory:=TProjectJumpHistory.Create;
@@ -2296,6 +2296,9 @@ end.
 
 {
   $Log$
+  Revision 1.104  2003/04/14 18:03:47  mattias
+  implemented inherited compiler options
+
   Revision 1.103  2003/04/13 13:45:04  mattias
   implemented broken dependencies dialog
 

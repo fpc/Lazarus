@@ -49,11 +49,16 @@ uses
   CompilerOptions, Forms, FileCtrl, IDEProcs, ComponentReg;
 
 type
-  TLazPackageID = class;
   TLazPackage = class;
+  TLazPackageID = class;
   TPkgFile = class;
   TBasePackageEditor = class;
   TPkgDependency = class;
+
+  TIteratePackagesEvent =
+    procedure(APackage: TLazPackageID) of object;
+  TGetAllRequiredPackagesEvent =
+    procedure(FirstDependency: TPkgDependency; var List: TList) of object;
 
 
   { TPkgComponent }
@@ -247,7 +252,24 @@ type
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetModified(const NewValue: boolean); override;
   public
+    constructor Create(ThePackage: TLazPackage);
     procedure Clear; override;
+    procedure GetInheritedCompilerOptions(var OptionsList: TList); override;
+    function GetOwnerName: string; override;
+  public
+    property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
+  end;
+  
+  
+  { TPkgAdditinoalCompilerOptions }
+  
+  TPkgAdditionalCompilerOptions = class(TAdditionalCompilerOptions)
+  private
+    FLazPackage: TLazPackage;
+    procedure SetLazPackage(const AValue: TLazPackage);
+  public
+    constructor Create(ThePackage: TLazPackage);
+    function GetOwnerName: string; override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -311,7 +333,6 @@ type
     
   TLazPackage = class(TLazPackageID)
   private
-    FAddDependCompilerOptions: TAdditionalCompilerOptions;
     FAuthor: string;
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
@@ -334,7 +355,7 @@ type
     FReadOnly: boolean;
     FRemovedFiles: TList; // TList of TPkgFile
     FRegistered: boolean;
-    FUsageOptions: TAdditionalCompilerOptions;
+    FUsageOptions: TPkgAdditionalCompilerOptions;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetAutoUpdate: boolean;
     function GetComponentCount: integer;
@@ -407,9 +428,9 @@ type
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
     procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
     procedure UpdateEditorRect;
+    procedure GetAllRequiredPackages(var List: TList);
+    procedure GetInheritedCompilerOptions(var OptionsList: TList);
   public
-    property AddDependCompilerOptions: TAdditionalCompilerOptions
-                                                 read FAddDependCompilerOptions;
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
     property AutoIncrementVersionOnBuild: boolean
@@ -439,7 +460,7 @@ type
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
-    property UsageOptions: TAdditionalCompilerOptions
+    property UsageOptions: TPkgAdditionalCompilerOptions
       read FUsageOptions;
   end;
   
@@ -475,6 +496,8 @@ const
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
   PackageDependencies: TAVLTree; // tree of TPkgDependency
+
+  OnGetAllRequiredPackages: TGetAllRequiredPackagesEvent;
 
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
@@ -1372,15 +1395,13 @@ end;
 constructor TLazPackage.Create;
 begin
   inherited Create;
-  FAddDependCompilerOptions:=TAdditionalCompilerOptions.Create;
   FComponents:=TList.Create;
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
-  FCompilerOptions:=TPkgCompilerOptions.Create;
-  FCompilerOptions.LazPackage:=Self;
-  FUsageOptions:=TAdditionalCompilerOptions.Create;
+  FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FInstalled:=pitNope;
   FAutoInstall:=pitNope;
+  FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
 end;
 
@@ -1392,7 +1413,6 @@ begin
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FUsageOptions);
-  FreeAndNil(FAddDependCompilerOptions);
   inherited Destroy;
 end;
 
@@ -1426,7 +1446,6 @@ begin
   FPackageType:=lptRunAndDesignTime;
   FRegistered:=false;
   FUsageOptions.Clear;
-  FAddDependCompilerOptions.Clear;
 end;
 
 procedure TLazPackage.LockModified;
@@ -1522,8 +1541,6 @@ begin
   LoadPkgDependencyList(Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
-  FAddDependCompilerOptions.LoadFromXMLConfig(
-                                    XMLConfig,Path+'AddDependCompilerOptions/');
   LoadRect(XMLConfig,Path+'EditorRect/',fEditorRect);
   Modified:=false;
   UnlockModified;
@@ -1583,8 +1600,6 @@ begin
   SavePkgDependencyList(Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
-  FAddDependCompilerOptions.SaveToXMLConfig(
-                                    XMLConfig,Path+'AddDependCompilerOptions/');
   SaveRect(XMLConfig,Path+'EditorRect/',fEditorRect);
   Modified:=false;
 end;
@@ -1889,6 +1904,32 @@ begin
                    Editor.Left+Editor.Width,Editor.Top+Editor.Height);
 end;
 
+procedure TLazPackage.GetAllRequiredPackages(var List: TList);
+begin
+  if Assigned(OnGetAllRequiredPackages) then
+    OnGetAllRequiredPackages(FirstRequiredDependency,List);
+end;
+
+procedure TLazPackage.GetInheritedCompilerOptions(var OptionsList: TList);
+var
+  PkgList: TList; // list of TLazPackage
+  Cnt: Integer;
+  i: Integer;
+begin
+  PkgList:=nil;
+  GetAllRequiredPackages(PkgList);
+  if PkgList<>nil then begin
+    OptionsList:=TList.Create;
+    Cnt:=PkgList.Count;
+    for i:=0 to Cnt-1 do begin
+writeln('TLazPackage.GetInheritedCompilerOptions A ');
+      OptionsList.Add(TLazPackage(PkgList[i]).UsageOptions);
+    end;
+  end else begin
+    OptionsList:=nil;
+  end;
+end;
+
 { TPkgComponent }
 
 procedure TPkgComponent.SetPkgFile(const AValue: TPkgFile);
@@ -2041,9 +2082,47 @@ begin
   if Modified and (LazPackage<>nil) then LazPackage.Modified:=true;
 end;
 
+constructor TPkgCompilerOptions.Create(ThePackage: TLazPackage);
+begin
+  inherited Create(ThePackage);
+  fLazPackage:=ThePackage;
+end;
+
 procedure TPkgCompilerOptions.Clear;
 begin
   inherited Clear;
+end;
+
+procedure TPkgCompilerOptions.GetInheritedCompilerOptions(var OptionsList: TList
+  );
+begin
+  LazPackage.GetInheritedCompilerOptions(OptionsList);
+end;
+
+function TPkgCompilerOptions.GetOwnerName: string;
+begin
+writeln('TPkgCompilerOptions.GetOwnerName ',HexStr(Cardinal(Self),8),' ',HexStr(Cardinal(fLazPackage),8));
+  Result:=LazPackage.IDAsString;
+end;
+
+{ TPkgAdditionalCompilerOptions }
+
+procedure TPkgAdditionalCompilerOptions.SetLazPackage(const AValue: TLazPackage
+  );
+begin
+  if FLazPackage=AValue then exit;
+  FLazPackage:=AValue;
+end;
+
+constructor TPkgAdditionalCompilerOptions.Create(ThePackage: TLazPackage);
+begin
+  inherited Create(ThePackage);
+  FLazPackage:=ThePackage;
+end;
+
+function TPkgAdditionalCompilerOptions.GetOwnerName: string;
+begin
+  Result:=LazPackage.IDAsString;
 end;
 
 initialization

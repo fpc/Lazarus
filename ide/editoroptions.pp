@@ -4260,7 +4260,7 @@ begin
     Left:=5;
     Width:=MaxX-Left-Left;
     Height:=16;
-    Caption:=dlgEdHintCommand ;
+    Caption:=dlgEdHintCommand;
     Visible:=true;
   end;
 
@@ -4272,7 +4272,7 @@ begin
     Left:=0;
     Width:=MaxX-Left-Left;
     Height:=MaxY-Top;
-    Options:=[tvoReadOnly, tvoShowButtons, tvoShowRoot,
+    Options:=Options+[tvoReadOnly, tvoShowButtons, tvoShowRoot,
       tvoShowLines, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators];
     OnMouseUp:=@KeyMappingTreeViewMouseUp;
     Images:=Self.ImageList;

@@ -33,6 +33,7 @@
 
 const
   TTreeNodeStreamVersion : word = 1;
+  TVAutoHeightString = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^';
   
   // maximum scroll range
   //MAX_SCROLL = 32767;
@@ -2556,7 +2557,6 @@ procedure TCustomTreeView.CreateWnd;
 begin
   Exclude(FStates,tvsStateChanging);
   inherited CreateWnd;
-  UpdateDefaultItemHeight;
 
   //TreeView_SetBkColor(Handle, ColorToRGB(Color));
   //TreeView_SetTextColor(Handle, ColorToRGB(Font.Color));
@@ -2574,6 +2574,18 @@ begin
   //  SetImageList(Images.Handle, TVSIL_NORMAL);
   //if (StateImages <> nil) and StateImages.HandleAllocated then
   //  SetImageList(StateImages.Handle, TVSIL_STATE);
+end;
+
+procedure TCustomTreeView.InitializeWnd;
+begin
+  inherited InitializeWnd;
+  UpdateDefaultItemHeight;
+end;
+
+procedure TCustomTreeView.Invalidate;
+begin
+  if tvsPainting in FStates then exit;
+  inherited Invalidate;
 end;
 
 procedure TCustomTreeView.DestroyWnd;
@@ -2858,7 +2870,7 @@ begin
     end;
   end;
   if tvoAutoItemHeight in ChangedOptions then
-   UpdateDefaultItemHeight;
+    UpdateDefaultItemHeight;
   if ([tvoHideSelection,tvoReadOnly,tvoShowButtons,tvoShowRoot,tvoShowLines]
     * ChangedOptions)<>[]
   then
@@ -2866,16 +2878,22 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateDefaultItemHeight;
+var
+  NewDefItemHeight: Integer;
 begin
-  if HandleAllocated and (tvoAutoItemHeight in FOptions) then begin
-    FDefItemHeight:=
-      Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^')
-      +2 // border
-      ;
-    if (Images<>nil) and (Images.Height>FDefItemHeight) then
-      FDefItemHeight:=Images.Height;
-    if (StateImages<>nil) and (StateImages.Height>FDefItemHeight) then
-      FDefItemHeight:=StateImages.Height;
+  if (tvoAutoItemHeight in FOptions)
+  and HandleAllocated and Canvas.HandleAllocated then begin
+    NewDefItemHeight:=Canvas.TextHeight(TVAutoHeightString)+2; // +2 for border
+    if NewDefItemHeight<2 then NewDefItemHeight:=2;
+    if (Images<>nil) and (Images.Height>NewDefItemHeight) then
+      NewDefItemHeight:=Images.Height;
+    if (StateImages<>nil) and (StateImages.Height>NewDefItemHeight) then
+      NewDefItemHeight:=StateImages.Height;
+    if NewDefItemHeight<>FDefItemHeight then begin
+      FDefItemHeight:=NewDefItemHeight;
+      Include(FStates,tvsTopsNeedsUpdate);
+      Invalidate;
+    end;
   end;
 end;
 
@@ -3884,7 +3902,10 @@ var
   SpaceRect, DrawRect: TRect;
   Node: TTreeNode;
 begin
-  if tvsUpdating in FStates then exit;
+  if [tvsUpdating,tvsPainting]*FStates<>[] then exit;
+  Include(FStates,tvsPainting);
+  if (tvoAutoItemHeight in fOptions) then
+    UpdateDefaultItemHeight;
   UpdateScrollbars;
   with Canvas do begin
     if Assigned(FOnCustomDraw) or Assigned(FOnAdvancedCustomDraw) then begin
@@ -3939,6 +3960,7 @@ begin
       if not CustomDraw(DrawRect,cdPostPaint) then exit;
     end;
   end;
+  Exclude(FStates,tvsPainting);
 end;
 
 procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);

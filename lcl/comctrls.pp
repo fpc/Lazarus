@@ -1299,6 +1299,7 @@ type
     tvsStateChanging,
     tvsManualNotify,
     tvsUpdating,
+    tvsPainting,
     tvsMouseCapture,
     tvsWaitForDragging,
     tvsDblClicked,
@@ -1500,6 +1501,8 @@ type
     procedure Expand(Node: TTreeNode); dynamic;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
+    procedure InitializeWnd; override;
+    procedure Invalidate; override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
@@ -1754,6 +1757,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2003/04/14 18:03:48  mattias
+  implemented inherited compiler options
+
   Revision 1.71  2003/04/13 13:45:04  mattias
   implemented broken dependencies dialog
 
