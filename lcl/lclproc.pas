@@ -87,6 +87,8 @@ procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
 
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
+function ComparePointers(p1, p2: Pointer): integer;
+
 
 implementation
 
@@ -523,6 +525,16 @@ begin
     // cut string
     Src:=copy(Src,SplitPos,length(Src)-SplitPos+1);
   until false;
+end;
+
+function ComparePointers(p1, p2: Pointer): integer;
+begin
+  if p1>p2 then
+    Result:=1
+  else if p1<p2 then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 initialization
