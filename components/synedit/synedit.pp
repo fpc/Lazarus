@@ -2480,6 +2480,85 @@ var
       TokenAccu.Style := Style;
     end;
   end;
+  
+  {$IFDEF SYN_LAZARUS}
+  procedure DrawHilightBracketToken(attr: TSynHighlighterAttributes;
+    sToken: PChar; nLine, nTokenPos, nTokenLen: integer);
+  // Bracket Highlighting
+  var
+    BracketFGCol, BracketBGCol: TColor;
+    BracketStyle, TokenStyle: TFontStyles;
+    
+    procedure PaintSubToken(SubTokenLen: integer; Hilight: boolean);
+    begin
+      if SubTokenLen=0 then exit;
+      if Hilight then
+        AddHighlightToken(sToken, nTokenPos, SubTokenLen,
+          BracketFGCol, BracketBGCol, BracketStyle)
+      else
+        AddHighlightToken(sToken, nTokenPos, SubTokenLen,
+          BracketFGCol, BracketBGCol, TokenStyle);
+      inc(sToken,SubTokenLen);
+      dec(nTokenLen,SubTokenLen);
+      inc(nTokenPos,SubTokenLen);
+    end;
+    
+  var
+    LeftBracketX, RightBracketX, Dummy: integer;
+  begin
+    // get bracket positions
+    if (nLine=nBracketY)
+    and (nBracketX>=nTokenPos) and (nBracketX<nTokenPos+nTokenLen) then
+      LeftBracketX:=nBracketX
+    else
+      LeftBracketX:=-1;
+    if (nLine=nAntiBracketY)
+    and (nAntiBracketX>=nTokenPos) and (nAntiBracketX<nTokenPos+nTokenLen) then
+      RightBracketX:=nAntiBracketX
+    else
+      RightBracketX:=-1;
+    if (LeftBracketX<0) and (RightBracketX>=0) then begin
+      LeftBracketX:=RightBracketX;
+      RightBracketX:=-1;
+    end;
+    if (RightBracketX>=0) and (RightBracketX<LeftBracketX) then begin
+      Dummy:=LeftBracketX;
+      LeftBracketX:=RightBracketX;
+      RightBracketX:=Dummy;
+    end;
+    if LeftBracketX<0 then exit;
+
+    // get style
+    if Assigned(attr) then begin
+      BracketFGCol:=attr.Foreground;
+      BracketBGCol:=attr.Background;
+      TokenStyle:=attr.Style;
+      BracketStyle:=TokenStyle;
+    end else begin
+      BracketFGCol:=colFG;
+      BracketBGCol:=colBG;
+      TokenStyle:=Font.Style;
+      BracketStyle:=TokenStyle;
+    end;
+    if fsBold in BracketStyle then
+      Exclude(BracketStyle,fsBold)
+    else
+      Include(BracketStyle,fsBold);
+
+    // draw non hilight left of token
+    PaintSubToken(LeftBracketX-nTokenPos,false);
+    // draw left hilight bracket
+    PaintSubToken(1,true);
+    if RightBracketX>=0 then begin
+      // draw middle
+      PaintSubToken(RightBracketX-nTokenPos,false);
+      // draw right hilight bracket
+      PaintSubToken(1,true);
+    end;
+    // draw rest
+    PaintSubToken(nTokenLen,false);
+  end;
+  {$ENDIF}
 
   procedure PaintLines;
   var
@@ -2493,10 +2572,6 @@ var
     {$ENDIF}
     nTokenPos, nTokenLen: integer;
     attr: TSynHighlighterAttributes;
-    {$IFDEF SYN_LAZARUS}
-    BracketFGCol, BracketBGCol: TColor;
-    BracketStyle: TFontStyles;
-    {$ENDIF}
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
     // inside the loop. Get only the starting point for this.
@@ -2635,46 +2710,8 @@ var
                 AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
                   Font.Style);
             end else begin
-              // Bracket Highlighting
-              if Assigned(attr) then begin
-                BracketFGCol:=attr.Foreground;
-                BracketBGCol:=attr.Background;
-                BracketStyle:=attr.Style;
-              end else begin
-                BracketFGCol:=colFG;
-                BracketBGCol:=colBG;
-                BracketStyle:=Font.Style;
-              end;
-              if ((nTokenPos=nBracketX) and (nLine=nBracketY))
-              or ((nTokenPos=nAntiBracketX) and (nLine=nAntiBracketY)) then
-              begin
-                // bracket at start
-                // draw the bracket bold
-                AddHighlightToken(sToken, nTokenPos, 1,
-                  BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
-                inc(sToken);
-                dec(nTokenLen);
-                inc(nTokenPos);
-              end;
-              if (nTokenLen>0) then begin
-                // draw the rest
-                if ((nTokenPos+nTokenLen-1=nBracketX) and (nLine=nBracketY))
-                or ((nTokenPos+nTokenLen-1=nAntiBracketX)
-                     and (nLine=nAntiBracketY)) then
-                begin
-                  // bracket at end
-                  dec(nTokenLen);
-                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
-                    BracketFGCol, BracketBGCol, BracketStyle);
-                  inc(nTokenPos,nTokenLen);
-                  AddHighlightToken(@sToken[nTokenLen], nTokenPos, 1,
-                    BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
-                end else begin
-                  // draw rest
-                  AddHighlightToken(sToken,nTokenPos,nTokenLen,BracketFGCol,
-                    BracketBGCol, BracketStyle)
-                end;
-              end;
+              // token with bracket hilighting
+              DrawHilightBracketToken(attr,sToken,nLine,nTokenPos,nTokenLen);
             end;
             {$ELSE}
             if Assigned(attr) then
