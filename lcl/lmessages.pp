@@ -224,6 +224,7 @@ const
   LM_DRAWLISTITEM   = LM_User+80;
 
   LM_INTERNALPAINT  = LM_User + 90;
+  LM_APPENDTEXT     = LM_User + 91;
 
   // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_User+99;
@@ -1043,6 +1044,9 @@ end.
 
 {
   $Log$
+  Revision 1.47  2003/04/08 00:09:03  mattias
+  added LM_APPENDTEXT from hernan
+
   Revision 1.46  2003/02/27 09:52:00  mattias
   published TImgList.Width and Height
 
