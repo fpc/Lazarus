@@ -83,6 +83,9 @@ const
      IDC_UPARROW, IDC_SIZEWE, IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE,
      IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
+  { month picker, date picker, time picker, updown }
+  ICC_DATE_CLASSES       = $00000100;
+  
 Type
   { Virtual alignment-control record }
   TAlignment = Record
@@ -94,6 +97,12 @@ Type
     YScale: Real;     // Vertical scaling
   End;
 
+  PInitCommonControlsEx = ^TInitCommonControlsEx;
+  TInitCommonControlsEx = packed record
+    dwSize: dword;
+    dwICC: dword;
+  end;
+  
   { Win32 interface-object class }
   TWin32WidgetSet = Class(TWidgetSet)
   Private
@@ -117,8 +126,9 @@ Type
 
     FThemesActive: boolean;
     FThemeLibrary: HMODULE;
-    IsThemeActive: function: BOOL; stdcall;
-    IsAppThemed: function: BOOL; stdcall;
+    IsThemeActive: function: LongBool; stdcall;
+    IsAppThemed: function: LongBool; stdcall;
+    InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
@@ -275,6 +285,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2004/06/30 20:59:11  micha
+  initialize common controls: date picker
+
   Revision 1.88  2004/06/29 08:03:08  micha
   fix showtabs for win32 interface
 

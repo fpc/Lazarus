@@ -55,6 +55,7 @@ Begin
       IsAppThemed := nil;
     end;
   end;
+  Pointer(InitCommonControlsEx) := GetProcAddress(GetModuleHandle('comctl32.dll'), 'InitCommonControlsEx');
 
   // init
   UpdateThemesActive;
@@ -127,6 +128,7 @@ Procedure TWin32WidgetSet.AppInit;
 Var
   LogBrush: TLOGBRUSH;
   SysMenu: HMENU;
+  ICC: TINITCOMMONCONTROLSEX;
 Begin
   Assert(False, 'Trace:Win32Object.Init - Start');
   If Not WinRegister then
@@ -164,6 +166,10 @@ Begin
   //      Common controls only need to be initialized when used
   //      So they are initialized in the CreateHandle for common controls
   InitCommonControls;
+  ICC.dwSize := SizeOf(TINITCOMMONCONTROLSEX);
+  ICC.dwICC := ICC_DATE_CLASSES;
+  if InitCommonControlsEx <> nil then
+    InitCommonControlsEx(@ICC);
 
   // Create parent of all windows, `button on taskbar'
   FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
@@ -3315,6 +3321,9 @@ End;
 
 {
   $Log$
+  Revision 1.218  2004/06/30 20:59:11  micha
+  initialize common controls: date picker
+
   Revision 1.217  2004/06/29 21:38:43  vincents
   fix fpc 1.0.x compilation
 
