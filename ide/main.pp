@@ -5074,6 +5074,8 @@ end;
 procedure TMainIDE.mnuViewWatchesClick(Sender : TObject);
 begin
   Watches_dlg.Show;
+//  CreateLFM(Watches_Dlg);
+  CreateLFM(Insertwatch);
 end;
 
 //-----------------------------------------------------------------------------
@@ -5090,6 +5092,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.167  2001/12/10 14:32:57  lazarus
+  MOdified the Watches dialog and added the lfm and lrs files for it and the insert watch dialog.
+
+  Shane
+
   Revision 1.166  2001/12/10 08:44:23  lazarus
   MG: added search for compiler, if not set
 

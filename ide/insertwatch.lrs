@@ -1,0 +1,28 @@
+  LazarusResources.Add('TINSERTWATCH','FORMDATA',
+    'TPF0'#12'TINSERTWATCH'#0#7'CAPTION'#6#16'Watch Properties'#5'COLOR'#4#15#0
+    +#0#128#12'CLIENTHEIGHT'#3#200#0#11'CLIENTWIDTH'#3#164#1#8'POSITION'#7#14
+    +'poscreencenter'#6'HEIGHT'#3#200#0#5'WIDTH'#3#164#1#0#6'TLABEL'#13'lblExp'
+    +'ression'#7'CAPTION'#6#11'Expression:'#10'FONT.COLOR'#4#8#0#0#128#4'LEFT'
+    +#2#15#6'HEIGHT'#2#17#3'TOP'#2#20#5'WIDTH'#2'A'#0#0#5'TEDIT'#13'edtExpress'
+    +'ion'#4'LEFT'#2'i'#3'TOP'#2#17#5'WIDTH'#3','#1#0#0#6'TLABEL'#11'lblRepCou'
+    +'nt'#7'CAPTION'#6#13'Repeat Count:'#10'FONT.COLOR'#4#8#0#0#128#4'LEFT'#2
+    +#15#6'HEIGHT'#2#17#3'TOP'#2'-'#5'WIDTH'#2'P'#0#0#5'TEDIT'#11'edtRepCount'
+    +#4'TEXT'#6#1'0'#4'LEFT'#2'i'#3'TOP'#2'*'#5'WIDTH'#2'<'#0#0#6'TLABEL'#9'lb'
+    +'lDigits'#7'CAPTION'#6#7'Digits:'#10'FONT.COLOR'#4#8#0#0#128#4'LEFT'#3#175
+    +#0#6'HEIGHT'#2#17#3'TOP'#2'-'#5'WIDTH'#2'('#0#0#5'TEDIT'#9'edtDigits'#4'T'
+    +'EXT'#6#1'0'#4'LEFT'#3#225#0#3'TOP'#2'-'#5'WIDTH'#3#180#0#0#0#9'TCHECKBOX'
+    +#9'cbEnabled'#7'CAPTION'#6#7'Enabled'#5'STATE'#7#9'cbchecked'#10'DRAGCURS'
+    +'OR'#2#0#8'TABORDER'#2#0#4'LEFT'#2#15#3'TOP'#2'A'#5'WIDTH'#2'<'#0#0#9'TCH'
+    +'ECKBOX'#11'cbAllowFunc'#7'CAPTION'#6#20'Allow Function Calls'#10'DRAGCUR'
+    +'SOR'#2#0#8'TABORDER'#2#0#4'LEFT'#2'i'#3'TOP'#2'A'#0#0#11'TRADIOGROUP'#5
+    +'Style'#7'CAPTION'#6#5'Style'#9'ITEMINDEX'#2#7#13'ITEMS.Strings'#1#6#9'Ch'
+    +'aracter'#6#6'String'#6#7'Decimal'#6#11'Hexadecimal'#6#14'Floating Point'
+    +#6#7'Pointer'#6#16'Record/Structure'#6#7'Default'#6#11'Memory Dump'#0#7'C'
+    +'OLUMNS'#2#3#4'LEFT'#2#15#6'HEIGHT'#2'F'#3'TOP'#2'Z'#5'WIDTH'#3#134#1#0#0
+    +#7'TBUTTON'#0#11'MODALRESULT'#2#1#7'CAPTION'#6#2'OK'#10'FONT.COLOR'#4#8#0
+    +#0#128#4'LEFT'#3#170#0#6'HEIGHT'#2#25#3'TOP'#3#170#0#5'WIDTH'#2'K'#0#0#7
+    +'TBUTTON'#0#11'MODALRESULT'#2#2#7'CAPTION'#6#6'Cancel'#10'FONT.COLOR'#4#8
+    +#0#0#128#4'LEFT'#3#250#0#6'HEIGHT'#2#25#3'TOP'#3#170#0#5'WIDTH'#2'K'#0#0#7
+    +'TBUTTON'#0#7'CAPTION'#6#4'Help'#10'FONT.COLOR'#4#8#0#0#128#4'LEFT'#3'J'#1
+    +#6'HEIGHT'#2#25#3'TOP'#3#170#0#5'WIDTH'#2'K'#0#0#0
+  );

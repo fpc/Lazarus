@@ -51,6 +51,8 @@ implementation
 constructor TWatchesdlg.Create(AOwner : TComponent);
 Begin
   inherited;
+  if LazarusResources.Find(Classname)=nil then
+  begin
   Listbox1 := TListbox.Create(self);
   with Listbox1 do
     Begin
@@ -70,7 +72,14 @@ Begin
   //TListBox currently does NOT fire keypress, keyDown, KeyUp events.  This is a fix for now.
   OnKeyDown := @ListBox1KeyDown;
   Position := poScreenCenter;
-      
+  end;
+  
+  //unitl events are saved in the lfm
+  Listbox1.OnKeyPress := @Listbox1KeyPress;
+  Listbox1.OnKeyDown := @Listbox1KeyDown;
+  //until the listbox events actually fire...
+  OnKeyDown := @ListBox1KeyDown;
+
   InsertWatch := TInsertWatch.Create(nil);
 End;
 
@@ -122,6 +131,8 @@ end;
 constructor TInsertWatch.Create(AOwner : TComponent);
 Begin
   inherited;
+  if LazarusResources.Find(Classname)=nil then
+  begin
   Width := 420;
   Height := 200;
   Position := poScreenCenter;
@@ -254,7 +265,7 @@ Begin
       Begin
         Parent := self;
         caption := 'OK';
-        Left := (self.width div 2) -25;
+        Left := (self.width div 2) -25 -15;
         Top := Self.Height-30;
         ModalResult := mrOK;
         Visible := TRue;
@@ -265,7 +276,7 @@ Begin
       Begin
         Parent := self;
         caption := 'Cancel';
-        Left := (self.width div 2) -25+Width+5;
+        Left := (self.width div 2) -25+Width+5 -15;
         Top := Self.Height-30;
         ModalResult := mrCancel;
         Visible := TRue;
@@ -276,13 +287,14 @@ Begin
       Begin
         Parent := self;
         caption := 'Help';
-        Left := (self.width div 2) -25+(2*width)+10;
+        Left := (self.width div 2) -25+(2*width)+10 -15;
         Top := Self.Height-30;
 //        ModalResult := mrHelp;
         Enabled := FAlse;
         Visible := TRue;
       end;
-
+   end;
+   
   
 end;
 
@@ -290,6 +302,11 @@ destructor TInsertWatch.destroy;
 begin
   inherited;
 end;
+
+initialization
+{$I watches_dlg.lrs}
+{$I insertwatch.lrs}
+
 
 
 end.

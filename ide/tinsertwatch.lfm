@@ -1,0 +1,112 @@
+object TINSERTWATCH
+  CAPTION = 'Watch Properties'
+  COLOR = -2147483633
+  CLIENTHEIGHT = 200
+  CLIENTWIDTH = 420
+  POSITION = poscreencenter
+  HEIGHT = 200
+  WIDTH = 420
+  object lblExpression: TLABEL
+    CAPTION = 'Expression:'
+    FONT.COLOR = -2147483640
+    LEFT = 15
+    HEIGHT = 17
+    TOP = 20
+    WIDTH = 65
+  end
+  object edtExpression: TEDIT
+    LEFT = 105
+    TOP = 17
+    WIDTH = 300
+  end
+  object lblRepCount: TLABEL
+    CAPTION = 'Repeat Count:'
+    FONT.COLOR = -2147483640
+    LEFT = 15
+    HEIGHT = 17
+    TOP = 45
+    WIDTH = 80
+  end
+  object edtRepCount: TEDIT
+    TEXT = '0'
+    LEFT = 105
+    TOP = 42
+    WIDTH = 60
+  end
+  object lblDigits: TLABEL
+    CAPTION = 'Digits:'
+    FONT.COLOR = -2147483640
+    LEFT = 175
+    HEIGHT = 17
+    TOP = 45
+    WIDTH = 40
+  end
+  object edtDigits: TEDIT
+    TEXT = '0'
+    LEFT = 225
+    TOP = 45
+    WIDTH = 180
+  end
+  object cbEnabled: TCHECKBOX
+    CAPTION = 'Enabled'
+    STATE = cbchecked
+    DRAGCURSOR = 0
+    TABORDER = 0
+    LEFT = 15
+    TOP = 65
+    WIDTH = 60
+  end
+  object cbAllowFunc: TCHECKBOX
+    CAPTION = 'Allow Function Calls'
+    DRAGCURSOR = 0
+    TABORDER = 0
+    LEFT = 105
+    TOP = 65
+  end
+  object Style: TRADIOGROUP
+    CAPTION = 'Style'
+    ITEMINDEX = 7
+    ITEMS.Strings = (
+      'Character'
+      'String'
+      'Decimal'
+      'Hexadecimal'
+      'Floating Point'
+      'Pointer'
+      'Record/Structure'
+      'Default'
+      'Memory Dump'
+    )
+    COLUMNS = 3
+    LEFT = 15
+    HEIGHT = 70
+    TOP = 90
+    WIDTH = 390
+  end
+  object TBUTTON
+    MODALRESULT = 1
+    CAPTION = 'OK'
+    FONT.COLOR = -2147483640
+    LEFT = 170
+    HEIGHT = 25
+    TOP = 170
+    WIDTH = 75
+  end
+  object TBUTTON
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    FONT.COLOR = -2147483640
+    LEFT = 250
+    HEIGHT = 25
+    TOP = 170
+    WIDTH = 75
+  end
+  object TBUTTON
+    CAPTION = 'Help'
+    FONT.COLOR = -2147483640
+    LEFT = 330
+    HEIGHT = 25
+    TOP = 170
+    WIDTH = 75
+  end
+end
