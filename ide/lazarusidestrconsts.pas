@@ -1740,6 +1740,10 @@ resourcestring
   lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
     +'not found.%sDo you want to locate it yourself ?%s';
   lisRunToFailed = 'Run-to failed';
+  lisDebuggerInvalid = 'Debugger invalid';
+  lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger %s%s%'
+    +'s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger '
+    +'Options';
   lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
   
   // disk diff dialog

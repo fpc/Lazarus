@@ -1372,6 +1372,14 @@ begin
   LaunchingCmdLine:=MainIDE.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
   if (not FileExists(LaunchingApplication)) then exit;
+
+  if not FileIsExecutable(EnvironmentOptions.DebuggerFilename) then begin
+    MessageDlg(lisDebuggerInvalid,
+      Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
+        EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+      mtError,[mbCancel],0);
+    exit;
+  end;
   
   OldWatches := nil;
 
@@ -1668,6 +1676,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.67  2004/02/24 15:30:13  mattias
+  added test if debugger filename exists
+
   Revision 1.66  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 
