@@ -510,7 +510,9 @@ begin
     end;
     
     if NewTargetDirectory<>'' then
-      AppendExtraOption('-FE'+NewTargetDirectory);
+      // FPC interpretes '\ ' as an escape for a space in a path,
+      // so make sure the directory doesn't end with the path delimeter.
+      AppendExtraOption('-FE'+ChompPathDelim(NewTargetDirectory));
 
     if NewTargetFilename<>'' then begin
       // FPC automatically changes the last extension (append or replace)
