@@ -140,6 +140,7 @@ begin
         Pages.Add(dlgPOApplication);
       Pages.Add(dlgPOFroms);
       Pages.Add(dlgPOInfo);
+      PageIndex:=0;
     end;
 
     SetupFormsPage;

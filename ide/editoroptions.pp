@@ -1917,6 +1917,7 @@ begin
       Pages.Add(dlgKeyMapping);
       Pages.Add(dlgEdColor);
       Pages.Add('Code Tools'); //by VVI - it seems to be a proper name
+      PageIndex:=0;
     end;
     
     ImageList:=TImageList.Create(Self);

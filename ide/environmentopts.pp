@@ -93,7 +93,7 @@ type
   
 const
   LazarusLanguageNames: array[TLazarusLanguage] of string = (
-    'Automatic (default is english)', 'English', 'Deutsch', 'Espan~ol'
+    'Automatic (default is english)', 'English', 'Deutsch', 'Espanol'
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
@@ -1225,6 +1225,7 @@ begin
       Pages.Add(dlgEnvFiles);
       Pages.Add(dlgEnvBckup);
       Pages.Add(dlgNaming);
+      PageIndex:=0;
     end;
 
     SetupDesktopPage(0);

@@ -1533,6 +1533,7 @@ begin
   nbMain.Pages.Add(dlgCOLinking);
   nbMain.Pages.Add(dlgCOMessages);
   nbMain.Pages.Add(dlgCOOther);
+  nbMain.PageIndex:=0;
 
 {
   bvlButtonBar := TBevel.Create(Self);
