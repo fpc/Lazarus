@@ -21,7 +21,7 @@ var
   p: Pointer;
 begin
   Result := inherited Add(S);
-  ShortCut:=TextToShortCut(S);
+  ShortCut:=ShortCutTextToShortCut(S);
   p:=Pointer(Cardinal(ShortCut));
   Objects[Result] := TObject(p);
 end;

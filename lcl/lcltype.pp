@@ -1637,6 +1637,10 @@ const
 
 
 // key mapping
+
+type
+  TShortCut = Low(Word)..High(Word);   {should be moved to classes}
+
 Function Char2VK(C : Char) : Word;
 function MapIrregularVirtualKey(vk: word): word;
 
@@ -1679,6 +1683,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2002/10/26 10:21:01  lazarus
+  MG: broke actnlist <-> menus circle
+
   Revision 1.23  2002/10/24 10:05:51  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 

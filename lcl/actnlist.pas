@@ -26,7 +26,7 @@ unit ActnList;
 interface
 
 uses
-  Classes, SysUtils, ImgList;
+  Classes, SysUtils, LCLProc, ImgList;
   
 type
 
@@ -290,7 +290,7 @@ implementation
 
 
 uses
-  Forms, Menus;
+  Forms;
 
 const
   SInvalidActionRegistration = 'Invalid action registration';
