@@ -26,6 +26,7 @@ begin
   Inherited Create(AOwner);
   {set the component style to csButton}
   fCompStyle := csButton;
+  ControlStyle:=ControlStyle-[csClickEvents];
   {set default alignment}
   Align := alNone;
   {setup default sizes}
@@ -124,8 +125,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.4  2001/10/16 10:51:10  lazarus
-  MG: added clicked event to TButton, MessageDialog reacts to return key
+  Revision 1.5  2001/10/16 14:19:13  lazarus
+  MG: added nvidia opengl support and a new opengl example from satan
 
   Revision 1.3  2001/06/06 12:30:41  lazarus
   MG: bugfixes

@@ -9,7 +9,7 @@ name=lazarus
 version=0.7a
 
 [target]
-units=gtkglarea_int gtkglarea exampleform gtkglarea_demo
+units=gtkglarea_int nvgl gtkglarea exampleform gtkglarea_demo
    
 
 [default]
@@ -36,7 +36,6 @@ cleartarget:
         -$(DEL) gtkglarea_demo
 
 all: cleartarget gtkglarea_demo$(PPUEXT)
-        -$(DEL) *$(PPUEXT)
 
 makefile: Makefile.fpc
         -$(FPCMAKE) -w

@@ -111,7 +111,7 @@ UNITSDIR:=$(wildcard $(FPCDIR)/units/$(OS_TARGET))
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.7a
-override TARGET_UNITS+=gtkglarea_int gtkglarea exampleform gtkglarea_demo
+override TARGET_UNITS+=gtkglarea_int nvgl gtkglarea exampleform gtkglarea_demo
 override CLEAN_FILES+=gtkglarea_demo
 override DIST_ZIPNAME=lazarus.gtkglarea.$(ZIPSUFFIX)
 override COMPILER_OPTIONS+=-gl -k-lGL
@@ -1205,7 +1205,6 @@ endif
 cleartarget:
 	-$(DEL) gtkglarea_demo
 all: cleartarget gtkglarea_demo$(PPUEXT)
-	-$(DEL) *$(PPUEXT)
 makefile: Makefile.fpc
 	-$(FPCMAKE) -w
 makefiles: makefile

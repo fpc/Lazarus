@@ -266,7 +266,6 @@ type
     function DoBackupFile(const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
-    procedure UpdateMainUnitSrcEdit;
     procedure DoBringToFrontFormOrUnit;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
@@ -1625,7 +1624,7 @@ end;
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
 begin
   if ShowProjectOptionsDialog(Project)=mrOk then begin
-    UpdateMainUnitSrcEdit;
+    // UpdateMainUnitSrcEdit;
   end;
 end;
 
@@ -1812,7 +1811,7 @@ CheckHeap('TMainIDE.DoNewEditorUnit L '+IntToStr(GetMem_Cnt));
     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
     TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
   end;
-  UpdateMainUnitSrcEdit;
+  //UpdateMainUnitSrcEdit;
 
   FCodeLastActivated:=not (NewUnitType in [nuForm]);
 writeln('TMainIDE.DoNewUnit end');
@@ -2155,7 +2154,7 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
   i:=Project.IndexOf(ActiveUnitInfo);
   if (i<>Project.MainUnit) and (ActiveUnitInfo.Source.IsVirtual) then begin
     Project.RemoveUnit(i);
-    UpdateMainUnitSrcEdit;
+    //UpdateMainUnitSrcEdit;
   end;
 writeln('TMainIDE.DoCloseEditorUnit end');
   Result:=mrOk;
@@ -2737,7 +2736,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
       if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
       if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
     end;
-    UpdateMainUnitSrcEdit;
+    //UpdateMainUnitSrcEdit;
     UpdateCaption;
   end;
 
@@ -3028,7 +3027,7 @@ Begin
             if (AnUnitInfo.FormName<>'') then
               Project.RemoveCreateFormFromProjectFile(
                   'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
-            UpdateMainUnitSrcEdit;
+            //UpdateMainUnitSrcEdit;
           end;
         end;
       end;
@@ -3417,23 +3416,6 @@ begin
       NewCaption:=NewCaption+' - (new project)'
   end;
   Caption:=NewCaption;
-end;
-
-procedure TMainIDE.UpdateMainUnitSrcEdit;
-var MainUnitSrcEdit: TSourceEditor;
-  MainUnitInfo: TUnitInfo;
-  CurText: string;
-begin
-  if Project.MainUnit>=0 then begin
-    MainUnitInfo:=Project.Units[Project.MainUnit];
-    if MainUnitInfo.Loaded then begin
-      MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-        MainUnitInfo.EditorIndex);
-      CurText:=MainUnitSrcEdit.Source.Text;
-      if CurText<>MainUnitInfo.Source.Source then
-        MainUnitSrcEdit.Source.Text:=MainUnitInfo.Source.Source;
-    end;
-  end;
 end;
 
 procedure TMainIDE.DoBringToFrontFormOrUnit;
@@ -4022,6 +4004,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.122  2001/10/16 14:19:10  lazarus
+  MG: added nvidia opengl support and a new opengl example from satan
+
   Revision 1.121  2001/10/15 17:41:30  lazarus
   MG: fixed splashform showing
 

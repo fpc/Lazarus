@@ -465,7 +465,7 @@ function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
-writeln('[gtkclickedCB] ',TObject(Data).ClassName);
+//writeln('[gtkclickedCB] ',TObject(Data).ClassName);
   EventTrace('clicked', data);
   Assert(False, Format('Trace:OBSOLETE: [gtkclickedCB] ', []));
   Mess.Msg := LM_CLICKED;
@@ -1156,8 +1156,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.37  2001/10/16 10:51:10  lazarus
-  MG: added clicked event to TButton, MessageDialog reacts to return key
+  Revision 1.38  2001/10/16 14:19:13  lazarus
+  MG: added nvidia opengl support and a new opengl example from satan
 
   Revision 1.35  2001/10/09 09:46:58  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle

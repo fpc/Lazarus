@@ -128,7 +128,7 @@ end;
 
 Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
 Begin
-Writeln('[LMCaptureChanged for '+classname+']');
+  //Writeln('[LMCaptureChanged for '+classname+']');
 End;
 
 
@@ -1326,6 +1326,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.26  2001/10/16 14:19:13  lazarus
+  MG: added nvidia opengl support and a new opengl example from satan
+
   Revision 1.25  2001/10/07 07:28:33  lazarus
   MG: fixed setpixel and TCustomForm.OnResize event
 

@@ -2991,9 +2991,9 @@ begin
 
   if MCaptureHandle <> 0
   then begin
-    WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
+    //WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
     gtk_grab_add(Pointer(MCaptureHandle));
-    WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
+    //WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
 
 
 //    gtk_grab_add(pGTKWidget(FCaptureHandle));
@@ -3604,8 +3604,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.43  2001/10/16 10:51:10  lazarus
-  MG: added clicked event to TButton, MessageDialog reacts to return key
+  Revision 1.44  2001/10/16 14:19:13  lazarus
+  MG: added nvidia opengl support and a new opengl example from satan
 
   Revision 1.41  2001/09/30 08:34:52  lazarus
   MG: fixed mem leaks and fixed range check errors
