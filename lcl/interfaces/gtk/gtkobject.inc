@@ -3174,27 +3174,6 @@ begin
         end;
       end;
 
-      LM_LV_DELETEITEM:
-       {$IfDef GTK2}
-          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_DELETEITEM');
-       {$Else}
-          DebugLn('[WARNING] Obsolete messagecall to LM_LV_DELETEITEM for ', Sender.ClassName); 
-       {$EndIf}
-
-      LM_LV_CHANGEITEM:
-       {$IfDef GTK2}
-          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_CHANGEITEM');
-       {$Else}
-          DebugLn('[WARNING] Obsolete messagecall to LM_LV_CHANGEITEM for ', Sender.ClassName); 
-       {$EndIf}
-
-      LM_LV_ADDITEM:
-       {$IfDef GTK2}
-          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_ADDITEM');
-       {$Else}
-          DebugLn('[WARNING] Obsolete messagecall to LM_LV_ADDITEM for ', Sender.ClassName); 
-       {$EndIf}
-
       LM_BRINGTOFRONT:
       begin
   {       Assert(False, 'Trace:TODO:bringtofront');
@@ -9262,6 +9241,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.533  2004/08/25 18:30:05  micha
+  remove obsolete message handlers
+
   Revision 1.532  2004/08/25 16:11:06  micha
   remove obsolete message handlers
 
