@@ -981,9 +981,12 @@ end;
 
 function TDesigner.HandleSetCursor(var TheMessage: TLMessage): boolean;
 begin
-  Form.SetTempCursor(LastFormCursor);
-  TheMessage.Result := 1;
-  Result := true;
+  Result := Lo(TheMessage.LParam) = HTCLIENT;
+  if Result then
+  begin
+    Form.SetTempCursor(LastFormCursor);
+    TheMessage.Result := 1;
+  end;
 end;
 
 function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
