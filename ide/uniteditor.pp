@@ -62,9 +62,9 @@ type
   TOnCreateDeleteBreakPoint = procedure(Sender: TObject; line:integer) of object;
 
   TOnProcessUserCommand = procedure(Sender: TObject;
-            Command: integer; var Handled: boolean) of object;
+            Command: word; var Handled: boolean) of object;
   TOnUserCommandProcessed = procedure(Sender: TObject;
-            Command: integer; var Handled: boolean) of object;
+            Command: word; var Handled: boolean) of object;
             
   TOnLinesInsertedDeleted = procedure(Sender : TObject;
              FirstLine,Count : Integer) of Object;
@@ -1741,7 +1741,7 @@ begin
   MarksImgList.Add(Pixmap1,nil);
 
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes);
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes,[caSourceEditor]);
 
   aCompletion := TSynCompletion.Create(AOwner);
     with aCompletion do
@@ -3154,12 +3154,6 @@ begin
   ecPrevEditor :
     PrevEditor;
 
-  ecSave :
-    SaveClicked(self);
-
-  ecOpen :
-    OpenClicked(self);
-    
   ecOpenFileAtCursor:
     OpenAtCursorClicked(self);
 
@@ -3238,7 +3232,7 @@ Begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
   
-  EditorOpts.KeyMap.AssignTo(FKeyStrokes);
+  EditorOpts.KeyMap.AssignTo(FKeyStrokes,[caSourceEditor]);
   if NoteBook<>nil then begin
     if EditorOpts.ShowTabCloseButtons then
       NoteBook.Options:=NoteBook.Options+[nboShowCloseButtons]
