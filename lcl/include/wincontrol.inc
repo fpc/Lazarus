@@ -661,7 +661,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TWinControl.Focused : Boolean;
 Begin
-Result := (FHandle <> 0) and (GetFocus = FHandle);
+  Result := (FHandle <> 0) and (GetFocus = FHandle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1058,12 +1058,11 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
-//if ClassName='TSYNEDIT' then writeln('[TWinControl.SetFocus] ',Name,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
+  //if ClassName='TSYNEDIT' then writeln('[TWinControl.SetFocus] ',Name,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
   Form := GetParentForm(self);
   if Form <> nil then
     Form.FocusControl(self)
-  else
-  if Visible and HandleAllocated then
+  else if Visible and HandleAllocated then
     LCLLinux.SetFocus(Handle);
 end;
 
@@ -1072,7 +1071,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.SetTabOrder(Value : TTabOrder);
 Begin
-FTabOrder := Value;
+  FTabOrder := Value;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1080,14 +1079,14 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.SetParentCtl3D(value : Boolean);
 Begin
-if FParentCtl3D <> Value then
-   Begin
-        FParentCtl3D := Value;
-        if FParent <> nil then
-                Begin
-                //Sendmessage to do something?
-                End;
-   end;
+  if FParentCtl3D <> Value then
+  Begin
+    FParentCtl3D := Value;
+    if FParent <> nil then
+    Begin
+      //Sendmessage to do something?
+    End;
+  end;
 end;
 
 
@@ -1333,8 +1332,12 @@ End;
 {  TWinControl RemoveFocus                                                      }
 {------------------------------------------------------------------------------}
 Procedure TWinControl.RemoveFocus(Removing : Boolean);
-Begin
-//TODO: FINISH TWINCONTROL.REMOVEFOCUS
+  //TODO: FINISH TWINCONTROL.REMOVEFOCUS
+var
+  Form: TCustomForm;
+begin
+  Form := GetParentForm(Self);
+  if Form <> nil then ;//Form.DefocusControl(Self, Removing);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2281,6 +2284,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2002/08/24 12:54:59  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.77  2002/08/24 06:51:22  lazarus
   MG: from Andrew: style list fixes, autosize for radio/checkbtns
 
