@@ -200,13 +200,16 @@ uses
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc;
 
+
 {$I gtklistsl.inc}
 
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
 
 procedure InternalInit;
-var c: TClipboardType;
+var
+  c: TClipboardType;
+  cr: TCursor;
 begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 
@@ -228,6 +231,35 @@ begin
     ClipboardTargetEntryCnt[c]:=0;
   end;
   
+  // mouse cursors
+  for cr:=Low(GDKMouseCursors) to High(GDKMouseCursors) do begin
+    GDKMouseCursors[cr]:=nil;
+    CursorToGDKCursor[cr]:=GDK_LEFT_PTR;
+  end;
+  CursorToGDKCursor[crDefault]  := GDK_LEFT_PTR;
+  CursorToGDKCursor[crNone]     := GDK_LEFT_PTR;
+  CursorToGDKCursor[crArrow]    := GDK_Arrow;
+  CursorToGDKCursor[crCross]    := GDK_Cross;
+  CursorToGDKCursor[crIBeam]    := GDK_XTerm;
+  CursorToGDKCursor[crSize]     := GDK_FLEUR;
+  CursorToGDKCursor[crSizeNESW] := GDK_BOTTOM_LEFT_CORNER;
+  CursorToGDKCursor[crSizeNS]   := GDK_SB_V_DOUBLE_ARROW;
+  CursorToGDKCursor[crSizeNWSE] := GDK_TOP_LEFT_CORNER;
+  CursorToGDKCursor[crSizeWE]   := GDK_SB_H_DOUBLE_ARROW;
+  CursorToGDKCursor[crUpArrow]  := GDK_LEFT_PTR;
+  CursorToGDKCursor[crHourGlass]:= GDK_CLOCK;
+  CursorToGDKCursor[crDrag]     := GDK_SAILBOAT;
+  CursorToGDKCursor[crNoDrop]   := GDK_IRON_CROSS;
+  CursorToGDKCursor[crHSplit]   := GDK_SB_H_DOUBLE_ARROW;
+  CursorToGDKCursor[crVSplit]   := GDK_SB_V_DOUBLE_ARROW;
+  CursorToGDKCursor[crMultiDrag]:= GDK_SAILBOAT;
+  CursorToGDKCursor[crSQLWait]  := GDK_LEFT_PTR;
+  CursorToGDKCursor[crNo]       := GDK_LEFT_PTR;
+  CursorToGDKCursor[crAppStart] := GDK_LEFT_PTR;
+  CursorToGDKCursor[crHelp]     := GDK_QUESTION_ARROW;
+  CursorToGDKCursor[crHandPoint]:= GDK_Hand1;
+  CursorToGDKCursor[crSizeAll]  := GDK_FLEUR;
+
   InitDesignSignalMasks;
 end;
 
@@ -271,6 +303,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2002/10/30 12:37:25  lazarus
+  MG: mouse cursors are now allocated on demand
+
   Revision 1.97  2002/10/30 00:08:09  lazarus
   MG: finished ParseRCFile
 
