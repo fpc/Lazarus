@@ -709,7 +709,12 @@ begin
   //if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
   //  Text:=FItems[FItemIndex];
   if HandleAllocated then
+  begin
     TWSCustomComboBoxClass(WidgetSetClass).SetItemIndex(Self, FItemIndex);
+  end else begin
+    // remember text, in case one reads text without creating handle
+    Text := FItems.Strings[FItemIndex];
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -773,6 +778,9 @@ end;
 
 {
   $Log$
+  Revision 1.53  2005/02/06 20:43:57  micha
+  remember text of combobox in case one sets itemindex (fixes bug 536)
+
   Revision 1.52  2005/02/04 15:36:50  mattias
   published TComboBox.ItemIndex  from Sergios
 
