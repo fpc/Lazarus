@@ -246,14 +246,19 @@ end;
  ------------------------------------------------------------------------------}
 function TSpeedButton.GetDrawFlags: integer;
 begin
-  Result:=DFCS_BUTTONPUSH;
-  if FState in [bsDown, bsExclusive] then inc(Result,DFCS_PUSHED);
-  if not Enabled then inc(Result,DFCS_INACTIVE);
-
-  if Flat and (not (csDesigning in ComponentState)) and
-    not FMouseInControl and not (FState in [bsDown, bsExclusive])
-  then
-    inc(Result,DFCS_FLAT);
+  // if flat and not mouse in control and not down, don't draw anything
+  if FFlat and not FMouseInControl and not (FState in [bsDown, bsExclusive]) then
+  begin
+    Result := 0;
+  end else begin
+    Result:=DFCS_BUTTONPUSH;
+    if FState in [bsDown, bsExclusive] then 
+      inc(Result,DFCS_PUSHED);
+    if not Enabled then 
+      inc(Result,DFCS_INACTIVE);
+    if FFlat then
+      inc(Result,DFCS_FLAT);
+  end;
 end;
 
 procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
@@ -372,8 +377,10 @@ begin
 
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
-  DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
-    PaintRect, DFC_BUTTON, FLastDrawFlags);
+  // do not draw anything if flat and mouse not in control (simplified)
+  if FLastDrawFlags <> 0 then
+    DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
+      PaintRect, DFC_BUTTON, FLastDrawFlags);
 
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -772,6 +779,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/06/20 12:29:26  micha
+  make flat speedbuttons nicer
+
   Revision 1.54  2004/06/19 15:36:29  micha
   fix speedbutton group in design mode
 

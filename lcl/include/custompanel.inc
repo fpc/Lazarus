@@ -91,17 +91,17 @@ var
   TS : TTextStyle;
 begin
   ARect := GetClientRect;
-  if BorderStyle = bsSingle then begin
-    Canvas.Rectangle(ARect);
+  if BevelOuter <> bvNone then
+  begin
+    Canvas.Frame3d(ARect, BevelWidth, BevelOuter);
     InflateRect(ARect, -1, -1);
   end;
 
-  if BevelOuter <> bvNone then
-    Canvas.Frame3d(ARect, BevelWidth, BevelOuter);
-
-  if BevelInner <> bvNone then begin
+  if BevelInner <> bvNone then 
+  begin
     if BorderWidth > 0 then InflateRect(ARect, -BorderWidth, -BorderWidth);
     Canvas.Frame3d(ARect, BevelWidth, BevelInner);
+    InflateRect(ARect, -1, -1);
   end;
 
   if Caption <> '' then begin

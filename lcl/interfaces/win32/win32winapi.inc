@@ -1008,10 +1008,20 @@ End;
   Draws a frame control of the specified type and style.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.DrawFrameControl(DC: HDC; Var Rect: TRect; UType, UState: Cardinal): Boolean;
+var
+  Flags: dword;
 Begin
-  // flat button border: ignore
-  if (UType <> DFC_BUTTON) or ((UState and DFCS_FLAT) = 0) then
+  // flat button border cannot be drawn by DrawFrameControl, draw ourselves
+  if (UType = DFC_BUTTON) or ((UState and DFCS_FLAT) <> 0) then
+  begin
+    if (UState and DFCS_PUSHED) <> 0 then
+      Flags := BDR_SUNKENOUTER
+    else
+      Flags := BDR_RAISEDOUTER;
+    Result := Boolean(Windows.DrawEdge(DC, @Rect, Flags, BF_RECT));
+  end else begin
     Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
+  end;
 End;
 
 {------------------------------------------------------------------------------
@@ -1238,7 +1248,7 @@ End;
 Function TWin32WidgetSet.Frame3D(DC: HDC; var Rect: TRect;
   Const FrameWidth: Integer; Const Style: TBevelCut): Boolean;
 Const
-  Edge: Array[TBevelCut] Of Integer = (0, EDGE_ETCHED, EDGE_RAISED);
+  Edge: Array[TBevelCut] Of Integer = (0, BDR_SUNKENOUTER, BDR_RAISEDOUTER);
 Begin
   Result := Boolean(DrawEdge(DC, Rect, Edge[Style], BF_RECT));
 End;
@@ -2987,6 +2997,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.121  2004/06/20 12:29:26  micha
+  make flat speedbuttons nicer
+
   Revision 1.120  2004/06/18 20:47:34  vincents
   fixed pasting from clipboard
 
