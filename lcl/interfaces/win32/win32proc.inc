@@ -578,13 +578,13 @@ end;
 Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
 Begin
   Assert(False, 'Trace:TODO: Code SetAccelGroup');
-  Windows.SetProp(Control, 'AccelGroup', AnAccelGroup);
+  InterfaceObject.SetProp(Control, 'AccelGroup', Pointer(AnAccelGroup));
 End;
 
 Function GetAccelGroup(Const Control: HWND): HACCEL;
 Begin
   Assert(False, 'Trace:TODO: Code GetAccelGroup');
-  Result := HACCEL(Windows.GetProp(Control, 'AccelGroup'));
+  Result := HACCEL(InterfaceObject.GetProp(Control, 'AccelGroup'));
 End;
 
 Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
@@ -620,7 +620,7 @@ var AccelCount: integer; {number of accelerators in table}
   end;
 
 Begin
-  OldAccel := Windows.GetProp(Window, 'Accel');
+  OldAccel := LongWord(InterfaceObject.GetProp(Window, 'Accel'));
   NullAccel := nil;
   AccelCount := CopyAcceleratorTable(OldAccel, NullAccel, 0);
   Assert(False,Format('Trace: AccelCount=%d',[AccelCount]));
@@ -639,7 +639,7 @@ Begin
   NewAccel[ControlIndex].fVirt := GetVirtFromState(AModifier);
   NewAccel[ControlIndex].key := AKey;
   DestroyAcceleratorTable(OldAccel);
-  Windows.SetProp(Window, 'Accel', CreateAcceleratorTable(NewAccel, NewCount));
+  InterfaceObject.SetProp(Window, 'Accel', Pointer(CreateAcceleratorTable(NewAccel, NewCount)));
 End;
 
 Function GetAccelKey(Const Control: HWND): LPACCEL;
@@ -736,6 +736,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.36  2004/01/20 10:26:41  micha
+  try register globally unique properties
+
   Revision 1.35  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

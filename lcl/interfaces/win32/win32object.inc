@@ -605,7 +605,7 @@ Begin
         Begin
           If Handle <> 0 Then
           begin
-            DestroyAcceleratorTable(Windows.GetProp(Handle, 'Accel'));
+            DestroyAcceleratorTable(LongWord(GetProp(Handle, 'Accel')));
             DestroyWindow(Handle);
           end;
         End
@@ -1131,7 +1131,7 @@ var
 Begin
   While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
-    AccelTable := HACCEL(Windows.GetProp(AMessage.HWnd, 'Accel'));
+    AccelTable := HACCEL(GetProp(AMessage.HWnd, 'Accel'));
     If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
     Begin
       TranslateMessage(@AMessage);
@@ -2963,6 +2963,9 @@ End;
 
 {
   $Log$
+  Revision 1.159  2004/01/20 10:26:41  micha
+  try register globally unique properties
+
   Revision 1.158  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

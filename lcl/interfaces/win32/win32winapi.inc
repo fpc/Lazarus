@@ -160,7 +160,7 @@ var
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call win32 paint handler
-      PrevWndProc := Pointer(Windows.GetProp(Handle, 'DefWndProc'));
+      PrevWndProc := Pointer(GetProp(Handle, 'DefWndProc'));
       if PrevWndProc = nil then
         Windows.DefWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0)
       else
@@ -1251,7 +1251,7 @@ var
 Begin
   Result := Boolean(Windows.GetClientRect(Handle, @Rect));
   if not Result then exit;
-  OwnerObject := TObject(Windows.GetProp(Handle, 'Wincontrol'));
+  OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
   if OwnerObject is TWinControl then begin
     TheWinControl:=TWinControl(OwnerObject);
     if TheWinControl is TCustomGroupBox then begin
@@ -1368,7 +1368,7 @@ var
   OverlayWindow: HWND;
   ARect: Windows.RECT;
 begin
-  OverlayWindow := HWND(Windows.GetProp(WindowHandle, 'Overlay'));
+  OverlayWindow := HWND(GetProp(WindowHandle, 'Overlay'));
   if OverlayWindow = HWND(nil) then
   begin
     // create 'overlay' window
@@ -1376,10 +1376,10 @@ begin
     OverlayWindow := Windows.CreateWindowEx(WS_EX_TRANSPARENT,
         'STATIC', '', WS_CHILD or WS_VISIBLE,
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
-        WindowHandle, HMENU(nil), HInstance, nil);
-    Windows.SetProp(OverlayWindow, 'DefWndProc', Windows.SetWindowLong(
-        OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc)));
-    Windows.SetProp(WindowHandle, 'Overlay', OverlayWindow);
+        WindowHandle, HMENU(nil), System.HInstance, nil);
+    SetProp(OverlayWindow, 'DefWndProc', Pointer(Windows.SetWindowLong(
+        OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc))));
+    SetProp(WindowHandle, 'Overlay', Pointer(OverlayWindow));
   end;
   Result := Windows.GetDC(OverlayWindow);
 end;
@@ -1735,8 +1735,11 @@ End;
   Retrieves a pointer to data from the property list of the given window.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetProp(Handle: HWND; Str: PChar): Pointer;
+Var
+  TempStr: string;
 Begin
-  Result := Pointer(Windows.GetProp(Handle, Str));
+  TempStr := Format('%s%.8x', [Str, Windows.GetCurrentThreadId]);
+  Result := Pointer(Windows.GetProp(Handle, PChar(TempStr)));
 End;
 
 
@@ -2590,9 +2593,12 @@ End;
   for a properties-enumeration function that's called when the program is quit.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetProp(Handle: HWND; Str: PChar; Data: Pointer): Boolean;
+Var
+  TempStr: string;
 Begin
   Assert(False, 'Trace:TWin32Object.SetProp - Start');
-  Result := Boolean(Windows.SetProp(Handle, Str, Windows.HANDLE(Data)));
+  TempStr := Format('%s%.8x', [Str, Windows.GetCurrentThreadId]);
+  Result := Boolean(Windows.SetProp(Handle, PChar(TempStr), Windows.HANDLE(Data)));
   Assert(False, Format('Trace:TWin32Object.SetProp --> Window handle: 0x%X, Propery to set: %S, Data to set: 0x%P, Property was successfully set: %S', [Handle, String(Str), Data, BOOL_RESULT[Result]]));
 End;
 
@@ -2904,6 +2910,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2004/01/20 10:26:41  micha
+  try register globally unique properties
+
   Revision 1.93  2004/01/17 11:11:42  micha
   scrollbar fix (from martin smat)
 

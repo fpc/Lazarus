@@ -194,7 +194,7 @@ Var
 
   procedure GetChildOwnerObject(ChildId: Integer);
   begin
-    OwnerObject := TObject(Windows.GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
+    OwnerObject := TObject(GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
   end;
 
   procedure SendPaintMessage;
@@ -465,7 +465,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
+          OwnerObject := TObject(GetProp(ScrollBar, 'Wincontrol'));
         end;
       End;
     End;
@@ -760,7 +760,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
+          OwnerObject := TObject(GetProp(ScrollBar, 'Wincontrol'));
         end;
       End;
     End;
@@ -976,6 +976,9 @@ end;
 
 {
   $Log$
+  Revision 1.89  2004/01/20 10:26:41  micha
+  try register globally unique properties
+
   Revision 1.88  2004/01/19 21:51:50  micha
   prevent premature window destroy by default wm_close
 
