@@ -266,8 +266,10 @@ type
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
+    {$IFDEF SYN_LAZARUS}
     property DirectiveAttri: TSynHighlighterAttributes read fDirectiveAttri
       write fDirectiveAttri;
+    {$ENDIF}
     property D4syntax: boolean read FD4syntax write SetD4syntax default true;
   end;
 

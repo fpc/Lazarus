@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 $Id$
 
-This is a basic synedit highlighter that does not pasre text to create the
+This is a basic synedit highlighter that does not parse text to create the
 attributes, but stores a list of ranges.
 
 -------------------------------------------------------------------------------}
@@ -24,8 +24,9 @@ uses
   Classes, SysUtils, SynEditStrConst, SynEditTypes, SynEditHighlighter;
 
 const
-  tkNone = 0;
-  tkText = 1;
+  tkNone   = 0;
+  tkText   = 1;
+  tkCustom = 2;
   
   MaxColumns = 100000;
 
@@ -46,10 +47,11 @@ type
 
   TSynPositionHighlighter = class(TSynCustomHighlighter)
   private
+    fCopiedAttributes: TList;
     fLine: string;
     fLineLen: integer;
     fLineNumber: Integer;
-    Run: LongInt; // end of current token
+    fTokenEnd: LongInt; // end of current token
     fTextAttri: TSynHighlighterAttributes;
     fTokenPos: Integer;
     FTokenID: integer;
@@ -60,6 +62,8 @@ type
     function GetIdentChars: TSynIdentChars; override;
     function IsFilterStored: boolean; override;                                 //mh 2000-10-08
     function GetPositionTokensSize(ItemCount: integer): integer;
+    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+      override;
   public
     {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetLanguageName: string; override;
@@ -86,7 +90,12 @@ type
   public
     procedure AddToken(Line, Col: integer; TokenKind: TtkTokenKind);
     procedure ClearTokens(Line: integer);
+    procedure ClearAllCopiedAttributes;
     procedure ClearAllTokens;
+    procedure InsertTokens(Lines: TStringList;
+      Highlighter: TSynCustomHighlighter; Line, Col: integer);
+    function GetCopiedTokenID(Attr: TSynHighlighterAttributes): TtkTokenKind;
+    function GetCopiedAttribute(TokenID: TtkTokenKind): TSynHighlighterAttributes;
     property Tokens[TheLineNumber: integer]: PPositionTokens read GetTokens;
   published
     property TextAttri: TSynHighlighterAttributes read fTextAttri write fTextAttri;
@@ -99,8 +108,8 @@ implementation
 function TSynPositionHighlighter.GetTokens(TheLineNumber: integer
   ): PPositionTokens;
 begin
-  if (TheLineNumber>=1) and (TheLineNumber<=fTokens.Count) then
-    Result:=PPositionTokens(fTokens[TheLineNumber-1])
+  if (TheLineNumber>=0) and (TheLineNumber<fTokens.Count) then
+    Result:=PPositionTokens(fTokens[TheLineNumber])
   else
     Result:=nil;
 end;
@@ -121,6 +130,12 @@ begin
   Result:=SizeOf(integer)+SizeOf(TPositionToken)*ItemCount;
 end;
 
+function TSynPositionHighlighter.GetDefaultAttribute(Index: integer
+  ): TSynHighlighterAttributes;
+begin
+  Result:=nil;
+end;
+
 function TSynPositionHighlighter.GetLanguageName: string;
 begin
   Result:='Position based highlighter';
@@ -130,6 +145,7 @@ constructor TSynPositionHighlighter.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fTokens:=TList.Create;
+  fCopiedAttributes:=TList.Create;
   fTextAttri := TSynHighlighterAttributes.Create(SYNS_AttrText);
   AddAttribute(fTextAttri);
   SetAttributesOnChange({$IFDEF FPC}@{$ENDIF}DefHighlightChange);
@@ -141,6 +157,8 @@ destructor TSynPositionHighlighter.Destroy;
 begin
   ClearAllTokens;
   fTokens.Free;
+  ClearAllCopiedAttributes;
+  fCopiedAttributes.Free;
   inherited Destroy;
 end;
 
@@ -158,7 +176,7 @@ function TSynPositionHighlighter.GetToken: string;
 var
   Len: LongInt;
 begin
-  Len := Run - fTokenPos;
+  Len := fTokenEnd - fTokenPos;
   SetLength(Result,Len);
   System.Move(fLine[fTokenPos],Result[1],Len);
 end;
@@ -167,7 +185,7 @@ end;
 procedure TSynPositionHighlighter.GetTokenEx(var TokenStart: PChar;
   var TokenLength: integer);
 begin
-  TokenLength:=Run-fTokenPos;
+  TokenLength:=fTokenEnd-fTokenPos;
   if TokenLength>0 then begin
     TokenStart:=@fLine[fTokenPos];
   end else begin
@@ -177,9 +195,15 @@ end;
 {$ENDIF}
 
 function TSynPositionHighlighter.GetTokenAttribute: TSynHighlighterAttributes;
+var
+  t: TtkTokenKind;
 begin
-  if GetTokenKind=tkText then
+  t:=GetTokenKind;
+  if t=tkText then
     Result:=fTextAttri
+  else if (t<0) then
+    // this is a copied attribute
+    Result:=GetCopiedAttribute(t)
   else
     Result:=nil;
 end;
@@ -198,23 +222,22 @@ procedure TSynPositionHighlighter.Next;
 var
   p: PPositionTokens;
 begin
-  fTokenPos := Run;
-  if Run>fLineLen then begin
+  fTokenPos := fTokenEnd;
+  if fTokenEnd>fLineLen then begin
     fTokenKind := tkNone;
     exit;
   end;
   inc(fTokenID);
   p:=Tokens[fLineNumber];
   if (p<>nil) and (p^.Count>fTokenID) then begin
-    Run := p^.Tokens[fTokenID].Column;
-    if Run>fLineLen+1 then
-      Run := fLineLen+1;
-    if Run>fTokenPos then
-      fTokenKind := p^.Tokens[fTokenID].Kind
-    else
-      fTokenKind := tkText;
+    fTokenEnd := p^.Tokens[fTokenID].Column+1;
+    if fTokenEnd>fLineLen+1 then
+      fTokenEnd := fLineLen+1;
+    fTokenKind := p^.Tokens[fTokenID].Kind;
+    if fTokenEnd=fTokenPos then
+      Next;
   end else begin
-    Run := fLineLen+1;
+    fTokenEnd := fLineLen+1;
     fTokenKind := tkText;
   end;
 end;
@@ -236,10 +259,13 @@ begin
   fTokenPos := 1;
   p:=Tokens[fLineNumber];
   if p<>nil then begin
-    Run := p^.Tokens[0].Column;
+    fTokenEnd := p^.Tokens[0].Column+1;
+    if fTokenEnd>fLineLen+1 then
+      fTokenEnd:=fLineLen+1;
     FTokenKind := p^.Tokens[0].Kind;
+    if fTokenEnd=fTokenPos then Next;
   end else begin
-    Run := fLineLen+1;
+    fTokenEnd := fLineLen+1;
     FTokenKind := tkText;
   end;
 end;
@@ -267,7 +293,7 @@ var
   TokenIndex, TokenCount: integer;
 begin
   // fill up lines
-  while (Line>fTokens.Count) do fTokens.Add(nil);
+  while (Line>=fTokens.Count) do fTokens.Add(nil);
   // resize Token array
   p:=Tokens[Line];
   TokenIndex:=0;
@@ -276,12 +302,12 @@ begin
   else
     TokenCount:=1;
   ReAllocMem(p,GetPositionTokensSize(TokenCount));
-  fTokens[Line-1]:=p;
+  fTokens[Line]:=p;
   p^.Count:=TokenCount;
   // insert Token
   TokenIndex:=TokenCount-1;
   while (TokenIndex>0)
-  and (p^.Tokens[TokenIndex].Column>Col) do
+  and (p^.Tokens[TokenIndex-1].Column>Col) do
     dec(TokenIndex);
   if TokenIndex<TokenCount-1 then begin
     System.Move(p^.Tokens[TokenIndex],p^.Tokens[TokenIndex+1],
@@ -291,17 +317,29 @@ begin
     Kind:=TokenKind;
     Column:=Col;
   end;
+  DefHighlightChange(Self);
 end;
 
 procedure TSynPositionHighlighter.ClearTokens(Line: integer);
 var
   p: pointer;
 begin
-  if (Line>=1) and (Line<=fTokens.Count) then begin
-    p:=fTokens[Line-1];
-    FreeMem(p);
-    fTokens[Line-1]:=nil;
+  if (Line>=0) and (Line<fTokens.Count) then begin
+    p:=fTokens[Line];
+    if p<>nil then begin
+      FreeMem(p);
+      fTokens[Line]:=nil;
+    end;
   end;
+end;
+
+procedure TSynPositionHighlighter.ClearAllCopiedAttributes;
+var
+  i: Integer;
+begin
+  for i:=0 to fCopiedAttributes.Count-1 do
+    TObject(fCopiedAttributes[i]).Free;
+  fCopiedAttributes.Clear;
 end;
 
 procedure TSynPositionHighlighter.ClearAllTokens;
@@ -311,6 +349,69 @@ begin
   for i:=0 to fTokens.Count-1 do
     ClearTokens(i);
   fTokens.Clear;
+end;
+
+procedure TSynPositionHighlighter.InsertTokens(Lines: TStringList;
+  Highlighter: TSynCustomHighlighter; Line, Col: integer);
+var
+  RelLine: integer;
+  nTokenLen: integer;
+  sToken: PChar;
+  Attr: TSynHighlighterAttributes;
+  TokenID: integer;
+begin
+  if (Lines=nil) or (Lines.Count=0) or (Highlighter=nil) then exit;
+  RelLine:=0;
+  while RelLine<Lines.Count do begin
+    HighLighter.SetLine(Lines[RelLine], RelLine);
+    while not Highlighter.GetEol do begin
+      Attr:=Highlighter.GetTokenAttribute;
+      TokenID:=GetCopiedTokenID(Attr);
+      Highlighter.GetTokenEx(sToken,nTokenLen);
+      inc(Col,nTokenLen);
+      AddToken(Line,Col-1,TokenID);
+      // next Token
+      Highlighter.Next;
+    end;
+    // next line
+    inc(Line);
+    inc(RelLine);
+    Col:=1;
+  end;
+end;
+
+function TSynPositionHighlighter.GetCopiedTokenID(
+  Attr: TSynHighlighterAttributes): TtkTokenKind;
+var
+  i: Integer;
+  CurAttr: TSynHighlighterAttributes;
+begin
+  i:=fCopiedAttributes.Count-1;
+  while i>=0 do begin
+    CurAttr:=TSynHighlighterAttributes(fCopiedAttributes[i]);
+    if (Attr.ForeGround=CurAttr.ForeGround)
+    and (Attr.BackGround=CurAttr.BackGround)
+    and (Attr.Style=CurAttr.Style) then begin
+      // attribute already exists
+      Result:=(-i-1);
+      exit;
+    end;
+    dec(i);
+  end;
+  // create new attribute
+  CurAttr:=TSynHighlighterAttributes.Create('');
+  CurAttr.Assign(Attr);
+  fCopiedAttributes.Add(CurAttr);
+  Result:= -fCopiedAttributes.Count;
+end;
+
+function TSynPositionHighlighter.GetCopiedAttribute(TokenID: TtkTokenKind
+  ): TSynHighlighterAttributes;
+begin
+  if (TokenID<0) and (fCopiedAttributes.Count>=-TokenID) then
+    Result:=TSynHighlighterAttributes(fCopiedAttributes[-TokenID-1])
+  else
+    Result:=nil;
 end;
 
 end.
