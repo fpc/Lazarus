@@ -772,6 +772,10 @@ msgstr "INLINE Style C++"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Appel de la procédure %sRegister%s de l'unité sélectionnée"
 
+#: lazarusidestrconsts:liscocallon
+msgid "Call on:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
 msgstr "Pile d'appel"
@@ -1084,7 +1088,7 @@ msgstr "Commentaire:"
 msgid "Compilation"
 msgstr "Compilation"
 
-#: lazarusidestrconsts:lispckeditcompile
+#: lazarusidestrconsts:liscocalloncompile
 msgid "Compile"
 msgstr "Compiler"
 
@@ -1103,6 +1107,10 @@ msgstr "Compiler le paquet"
 #: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "Chemin de source complémentaire"
+
+#: lazarusidestrconsts:liscompiler
+msgid "Compiler"
+msgstr ""
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1987,6 +1995,14 @@ msgstr "Exécuter après"
 #: lazarusidestrconsts:liscoexecutebefore
 msgid "Execute before"
 msgstr "Exécuter avant"
+
+#: lazarusidestrconsts:lisexecutingcommandafter
+msgid "Executing command after"
+msgstr ""
+
+#: lazarusidestrconsts:lisexecutingcommandbefore
+msgid "Executing command befor"
+msgstr ""
 
 #: lazarusidestrconsts:lisexecutionpaused
 msgid "Execution paused"
@@ -3224,6 +3240,10 @@ msgstr "à la fin"
 msgid "Last (i.e. at end of source)"
 msgstr "à la fin du source"
 
+#: lazarusidestrconsts:lislaunchingapplicationinvalid
+msgid "Launching application invalid"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
 msgstr "Lancer la cible avec la ligne de commande"
@@ -4232,9 +4252,9 @@ msgstr "Coller les composants sélectionnés depuis le presse papier"
 msgid "Path templates"
 msgstr "Chemin de modèles"
 
-#: lazarusidestrconsts:dlgtofpcpath
-msgid "Path To Compiler:"
-msgstr "Chemins à compiler"
+#: lazarusidestrconsts:listofpcpath
+msgid "Path:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Paths"
@@ -5886,6 +5906,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
+msgstr ""
+
+#: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
+msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir

@@ -762,6 +762,10 @@ msgstr "INLINE стиля C++"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Вызвать процедуру %sRegister%s выбранного модуля"
 
+#: lazarusidestrconsts:liscocallon
+msgid "Call on:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
 msgstr "Стек вызовов"
@@ -1074,7 +1078,7 @@ msgstr "Комментарий:"
 msgid "Compilation"
 msgstr "Компиляция"
 
-#: lazarusidestrconsts:lispckeditcompile
+#: lazarusidestrconsts:liscocalloncompile
 msgid "Compile"
 msgstr "Компилировать"
 
@@ -1093,6 +1097,10 @@ msgstr "Собрать пакет"
 #: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "добавление CompiledSrcPath"
+
+#: lazarusidestrconsts:liscompiler
+msgid "Compiler"
+msgstr ""
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1977,6 +1985,14 @@ msgstr "Выполнить после"
 #: lazarusidestrconsts:liscoexecutebefore
 msgid "Execute before"
 msgstr "Выполнить перед"
+
+#: lazarusidestrconsts:lisexecutingcommandafter
+msgid "Executing command after"
+msgstr ""
+
+#: lazarusidestrconsts:lisexecutingcommandbefore
+msgid "Executing command befor"
+msgstr ""
 
 #: lazarusidestrconsts:lisexecutionpaused
 msgid "Execution paused"
@@ -3214,6 +3230,10 @@ msgstr "Последним"
 msgid "Last (i.e. at end of source)"
 msgstr "Последний (т.е. в конце исходника)"
 
+#: lazarusidestrconsts:lislaunchingapplicationinvalid
+msgid "Launching application invalid"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
 msgstr "Командная строка для запуска"
@@ -4222,9 +4242,9 @@ msgstr "Вставить выбранные компоненты из буфера"
 msgid "Path templates"
 msgstr "Шаблоны пути"
 
-#: lazarusidestrconsts:dlgtofpcpath
-msgid "Path To Compiler:"
-msgstr "Путь к компилятору:"
+#: lazarusidestrconsts:listofpcpath
+msgid "Path:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Paths"
@@ -5877,6 +5897,10 @@ msgstr ""
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Главное приложение %s%s%s - не исполняемый файл."
+
+#: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
+msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."

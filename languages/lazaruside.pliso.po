@@ -773,6 +773,10 @@ msgstr "INLINE w stylu C++"
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr "Wywo³aj procedurê %sRegister%s bie¿±cego modu³u"
 
+#: lazarusidestrconsts:liscocallon
+msgid "Call on:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
 msgstr "Stos wywo³añ"
@@ -1085,7 +1089,7 @@ msgstr "Komentarz:"
 msgid "Compilation"
 msgstr "Kompilacja"
 
-#: lazarusidestrconsts:lispckeditcompile
+#: lazarusidestrconsts:liscocalloncompile
 msgid "Compile"
 msgstr "Kompiluj"
 
@@ -1104,6 +1108,10 @@ msgstr "Kompiluj pakiet"
 #: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
 msgstr "dodatek ¦cie¿ka¬ród³owaKompilatora"
+
+#: lazarusidestrconsts:liscompiler
+msgid "Compiler"
+msgstr ""
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
@@ -1988,6 +1996,14 @@ msgstr "Wykonaj po"
 #: lazarusidestrconsts:liscoexecutebefore
 msgid "Execute before"
 msgstr "Wykonaj przed"
+
+#: lazarusidestrconsts:lisexecutingcommandafter
+msgid "Executing command after"
+msgstr ""
+
+#: lazarusidestrconsts:lisexecutingcommandbefore
+msgid "Executing command befor"
+msgstr ""
 
 #: lazarusidestrconsts:lisexecutionpaused
 msgid "Execution paused"
@@ -3225,6 +3241,10 @@ msgstr "Na koñcu"
 msgid "Last (i.e. at end of source)"
 msgstr "Na koñcu (np. na koñcu ¼ród³a)"
 
+#: lazarusidestrconsts:lislaunchingapplicationinvalid
+msgid "Launching application invalid"
+msgstr ""
+
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
 msgstr "Linia poleceñ uruchamianego programu"
@@ -4233,9 +4253,9 @@ msgstr "Wklej wybrane komponenty ze schowka"
 msgid "Path templates"
 msgstr "Szablony ¶cie¿ek"
 
-#: lazarusidestrconsts:dlgtofpcpath
-msgid "Path To Compiler:"
-msgstr "¦cie¿ka do kompilatora"
+#: lazarusidestrconsts:listofpcpath
+msgid "Path:"
+msgstr ""
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Paths"
@@ -5888,6 +5908,10 @@ msgstr ""
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
 msgstr "Aplikacja hosta %s%s%s nie jest wykonywalna."
+
+#: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
+msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
 msgid "The lazarus directory \"%s\" does not look correct. Normally it contains directories like lcl, debugger, designer, components, ... ."

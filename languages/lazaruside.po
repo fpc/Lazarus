@@ -1098,6 +1098,14 @@ msgstr ""
 msgid "Project %s%s%s successfully built. :)"
 msgstr ""
 
+#: lazarusidestrconsts:lisexecutingcommandbefore
+msgid "Executing command befor"
+msgstr ""
+
+#: lazarusidestrconsts:lisexecutingcommandafter
+msgid "Executing command after"
+msgstr ""
+
 #: lazarusidestrconsts:lisnoprogramfilesfound
 msgid "No program file %s%s%s found."
 msgstr ""
@@ -2806,12 +2814,32 @@ msgstr ""
 msgid "Debugger path addition (none):"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtofpcpath
-msgid "Path To Compiler:"
+#: lazarusidestrconsts:liscompiler
+msgid "Compiler"
+msgstr ""
+
+#: lazarusidestrconsts:listofpcpath
+msgid "Path:"
 msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
+msgstr ""
+
+#: lazarusidestrconsts:liscocallon
+msgid "Call on:"
+msgstr ""
+
+#: lazarusidestrconsts:liscocalloncompile
+msgid "Compile"
+msgstr ""
+
+#: lazarusidestrconsts:liscocallonbuild
+msgid "Build"
+msgstr ""
+
+#: lazarusidestrconsts:liscocallonrun
+msgid "Run"
 msgstr ""
 
 #: lazarusidestrconsts:liscoexecuteafter
@@ -5588,6 +5616,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisruntofailed
 msgid "Run-to failed"
+msgstr ""
+
+#: lazarusidestrconsts:lislaunchingapplicationinvalid
+msgid "Launching application invalid"
+msgstr ""
+
+#: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
+msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
 
 #: lazarusidestrconsts:lisdebuggerinvalid

@@ -762,6 +762,10 @@ msgstr ""
 msgid "Call %sRegister%s procedure of selected unit"
 msgstr ""
 
+#: lazarusidestrconsts:liscocallon
+msgid "Call on:"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
 msgstr ""
@@ -888,7 +892,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lischoosestructuretoencloseselection
 msgid "Choose structure to enclose selection"
-msgstr ""
+msgstr "Lisää, alla olevasta listasta valitun, rakenteen valitun lohkon ympärille"
 
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
@@ -1074,7 +1078,7 @@ msgstr ""
 msgid "Compilation"
 msgstr ""
 
-#: lazarusidestrconsts:lispckeditcompile
+#: lazarusidestrconsts:liscocalloncompile
 msgid "Compile"
 msgstr ""
 
@@ -1092,6 +1096,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgdefscompiledsrcpathaddition
 msgid "CompiledSrcPath addition"
+msgstr ""
+
+#: lazarusidestrconsts:liscompiler
+msgid "Compiler"
 msgstr ""
 
 #: lazarusidestrconsts:liscompilererror
@@ -1748,7 +1756,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
-msgstr ""
+msgstr "Lajittelu peruste"
 
 #: lazarusidestrconsts:dlgdoubleclickline
 msgid "Double click line"
@@ -1848,7 +1856,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
-msgstr ""
+msgstr "Tietorakenteen lisäys"
 
 #: lazarusidestrconsts:srvk_end
 msgid "End"
@@ -1976,6 +1984,14 @@ msgstr ""
 
 #: lazarusidestrconsts:liscoexecutebefore
 msgid "Execute before"
+msgstr ""
+
+#: lazarusidestrconsts:lisexecutingcommandafter
+msgid "Executing command after"
+msgstr ""
+
+#: lazarusidestrconsts:lisexecutingcommandbefore
+msgid "Executing command befor"
 msgstr ""
 
 #: lazarusidestrconsts:lisexecutionpaused
@@ -2504,7 +2520,7 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagehebrew
 msgid "Hebrew"
-msgstr "hebrea"
+msgstr "heprea"
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
@@ -3116,7 +3132,7 @@ msgstr "italia"
 
 #: lazarusidestrconsts:rslanguageitalianiso
 msgid "Italian(ISO 8859-1)"
-msgstr ""
+msgstr "italia (ISO 8859-1)"
 
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
@@ -3212,6 +3228,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlglast
 msgid "Last (i.e. at end of source)"
+msgstr ""
+
+#: lazarusidestrconsts:lislaunchingapplicationinvalid
+msgid "Launching application invalid"
 msgstr ""
 
 #: lazarusidestrconsts:lislaunchingcmdline
@@ -4222,8 +4242,8 @@ msgstr ""
 msgid "Path templates"
 msgstr ""
 
-#: lazarusidestrconsts:dlgtofpcpath
-msgid "Path To Compiler:"
+#: lazarusidestrconsts:listofpcpath
+msgid "Path:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsearchpaths
@@ -5236,7 +5256,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show compiling line numbers"
-msgstr ""
+msgstr "Näytä rivinumerot"
 
 #: lazarusidestrconsts:dlgshowcaps
 msgid "Show component captions"
@@ -5304,7 +5324,7 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
-msgstr ""
+msgstr "Näytä lomake editorin asetukset"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
@@ -5876,6 +5896,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisrunparamsthehostapplicationisnotexecutable
 msgid "The host application %s%s%s is not executable."
+msgstr ""
+
+#: lazarusidestrconsts:listhelaunchingapplicationdoesnotexistsorisnotexecuta
+msgid "The launching application %s%s%s%sdoes not exists or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidlazarusdir
@@ -6828,7 +6852,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
-msgstr ""
+msgstr "Näytä pääohjelma"
 
 #: lazarusidestrconsts:srkmectogglesourceeditor
 msgid "View Source Editor"
@@ -6928,7 +6952,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgwordspolicies
 msgid "Words"
-msgstr ""
+msgstr "Sanat"
 
 #: lazarusidestrconsts:dlgroworkingdirectory
 msgid "Working directory"
