@@ -2862,7 +2862,11 @@ begin
   if Sender is TControl then begin
     case TControl(Sender).fCompStyle of
     csComboBox:
-      SetComboBoxText(PGtkCombo(Handle),nil);
+      begin
+        SetComboBoxText(PGtkCombo(Handle),nil);
+        FreeWinWidgetInfo(PGtkCombo(Handle)^.Entry);
+        FreeWinWidgetInfo(PGtkCombo(Handle)^.Button);
+      end;
       
     end;
   end
@@ -5833,6 +5837,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.217  2002/09/16 17:34:37  lazarus
+  MG: fixed mem leak in TComboBox
+
   Revision 1.216  2002/09/16 16:06:21  lazarus
   MG: replaced halt with raiseexception
 
