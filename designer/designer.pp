@@ -787,7 +787,7 @@ begin
 
 //         MoveTo(x,y);
 //         LineTo(x+1,y);
-         SetPixel(X,Y,FGridColor);
+         Pixels[X,Y]:=FGridColor;
 
          Inc(y, GridSizeY);
       end;

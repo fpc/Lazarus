@@ -1222,35 +1222,37 @@ Procedure TOIPropertyGrid.HintTimer(sender : TObject);
 var
   Rect : TRect;
   AHint : String;
-  Control : TControl;
   Position : TPoint;
-  BW       : Integer;
-  IconX,Index:integer;
+  Index: integer;
   PointedRow:TOIpropertyGridRow;
   TypeKind : TTypeKind;
 begin
-  BW := 0;
   FHintTimer.Enabled := False;
   Position := Mouse.CursorPos;
-  if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0) or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then Exit;
+  if ( (FLastMouseMovePos.X <= 0) or (FLastMouseMOvePos.Y <= 0) 
+  or (FLastMouseMovePos.X >= Width) or (FLastMouseMovePos.Y >= Height)) then
+    Exit;
 
   Position := ScreenToClient(Position);
-  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0) or (Position.Y >= Height)) then Exit;
+  if ((Position.X <=0) or (Position.X >= Width) or (Position.Y <= 0)
+  or (Position.Y >= Height)) then
+    Exit;
   AHint := '';
   Index:=MouseToIndex(Position.Y,false);
   if (Index>=0) and (Index<FRows.Count) then
      begin
-        IconX:=GetTreeIconX(Index);
-            PointedRow:=Rows[Index];
-            if Assigned(PointedRow) then
-              Begin
-               if Assigned(PointedRow.Editor) then
-                  AHint := PointedRow.Editor.GetName;
+        //IconX:=GetTreeIconX(Index);
+        PointedRow:=Rows[Index];
+        if Assigned(PointedRow) then
+        Begin
+          if Assigned(PointedRow.Editor) then
+            AHint := PointedRow.Editor.GetName;
 
-               AHint := AHint + #10'Value:'+PointedRow.LastPaintedValue;
-               TypeKind := PointedRow.Editor.GetPropType^.kind;
-               case TypeKind of
-                 tkInteger,tkInt64 : AHint := AHInt + #10'Integer';
+          AHint := AHint + #10'Value:'+PointedRow.LastPaintedValue;
+          TypeKind := PointedRow.Editor.GetPropType^.Kind;
+          case TypeKind of
+                 tkInteger : AHint := AHInt + #10'Integer';
+                 tkInt64 : AHint := AHInt + #10'Int64';
                  tkBool : AHint := AHInt + #10'Boolean';
                  tkEnumeration : AHint := AHInt + #10'Enumeration';
                  tkChar,tkWChar : AHint := AHInt + #10'Char';
@@ -1266,9 +1268,8 @@ begin
                  tkArray : AHint := AHInt + #10'Array';
                  tkRecord : AHint := AHInt + #10'Record';
                  tkInterface : AHint := AHInt + #10'Interface';
-                 end;
-
-              end;
+           end;
+         end;
      end;
   if AHint = '' then Exit;
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
