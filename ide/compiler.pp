@@ -163,6 +163,7 @@ begin
           TheProcess.WaitOnExit;
         end;
       finally
+        TheProcess.WaitOnExit;
         TheProcess.Free;
       end;
     except
@@ -189,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2002/12/27 21:36:30  mattias
+  fixed zombies on compile error
+
   Revision 1.36  2002/12/09 16:48:34  mattias
   added basic file handling functions to filectrl
 
