@@ -3085,15 +3085,6 @@ begin
 
   LM_SETPROPERTIES: Result := SetProperties(Sender);
 
-  LM_SETDESIGNING :
-    // Used by the form editor to set anything specifically needed
-    // when setting controls to Designing.
-    begin
-      // change cursor
-      if Sender is TWinControl then
-        gtkproc.SetCursor(TWinControl(Sender), TCursor(cardinal(Data)));
-    end;
-
   LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
 
   LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
@@ -7704,6 +7695,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.586  2004/09/19 19:22:54  micha
+  remove LM_SETDESIGNING message, as it is not used by LCL
+
   Revision 1.585  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 

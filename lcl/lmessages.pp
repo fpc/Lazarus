@@ -60,8 +60,6 @@ const
 
   LM_MINIMIZE       = LM_COMUSER+59;
 
-  LM_SETDESIGNING   = LM_COMUSER+60;
-
   LM_SETGEOMETRY    = LM_COMUSER+62;
 
   LM_GETSELTEXT     = LM_COMUSER+66;
@@ -779,8 +777,6 @@ begin
 
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
-  LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
-
   LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
 
   LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
@@ -893,6 +889,9 @@ end.
 
 {
   $Log$
+  Revision 1.115  2004/09/19 19:22:54  micha
+  remove LM_SETDESIGNING message, as it is not used by LCL
+
   Revision 1.114  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 
