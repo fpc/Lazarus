@@ -3842,7 +3842,8 @@ begin
   StrDispose(StrTemp);
   if P <> nil then begin
     {$IFNDEF win32}
-    //gtk_widget_set_app_paintable(p,true);
+    if Sender is TCustomForm then
+      gtk_widget_set_app_paintable(p,true);
     {$ENDIF}
     HookSignals(Sender);
   end;
@@ -5335,6 +5336,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.160  2002/08/09 18:04:18  lazarus
+  MG: activated App_Paintable for TCustomForms
+
   Revision 1.159  2002/08/08 18:05:46  lazarus
   MG: added graphics extensions from Andrew Johnson
 
