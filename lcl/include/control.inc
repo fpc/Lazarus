@@ -1139,17 +1139,43 @@ end;
 {  TControl InvalidateControl                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
-//var
-//  Rect : TRect;
-begin
-  if (IsVisible or (csDesigning in ComponentState)
-  and not (csNoDesignVisible in ControlStyle))
-  and (Parent <> nil) and (Parent.HandleAllocated) then
-    Begin
-     CNSendMessage(LM_REDRAW,Self,Nil);
-//    Rect := BoundsRect;
-//    InvalidateRect(parent.handle,@Rect, True);
+var
+  Rect: TRect;
+
+  function BackgroundClipped: Boolean;
+  {var
+    R: TRect;
+    List: TList;
+    I: Integer;
+    C: TControl;}
+  begin
+    Result := True;
+    {List := FParent.FControls;
+    I := List.IndexOf(Self);
+    while I > 0 do
+    begin
+      Dec(I);
+      C := List[I];
+      with C do
+        if C.Visible and (csOpaque in ControlStyle) then
+        begin
+          IntersectRect(R, Rect, BoundsRect);
+          if EqualRect(R, Rect) then Exit;
+        end;
     end;
+    Result := False;}
+  end;
+
+begin
+  if (IsVisible or (csDesigning in ComponentState) and
+    not (csNoDesignVisible in ControlStyle)) and (Parent <> nil) and
+    Parent.HandleAllocated then
+  begin
+    Rect := BoundsRect;
+    InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
+      (csOpaque in Parent.ControlStyle) or BackgroundClipped));
+    //CNSendMessage(LM_REDRAW,Self,Nil);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1750,6 +1776,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.67  2002/08/28 11:41:53  lazarus
+  MG: activated environment opts in debugger
+
   Revision 1.66  2002/08/26 17:28:20  lazarus
   MG: fixed speedbutton in designmode
 
