@@ -1459,8 +1459,8 @@ var
   UnitOutDir: String;
   OutFilename: String;
 begin
-  if (TargetFilename <> '') and FilenameIsAbsolute(TargetFilename) then begin
-    // fully specific target filename
+  if (TargetFilename<>'') and FilenameIsAbsolute(TargetFilename) then begin
+    // fully specified target filename
     Result:=TargetFilename;
   end else begin
     // calculate output directory
@@ -1468,7 +1468,10 @@ begin
     if UnitOutDir='' then
       UnitOutDir:=ExtractFilePath(MainSourceFileName);
     // fpc creates lowercase executables as default
-    OutFilename:=lowercase(ExtractFileNameOnly(MainSourceFileName));
+    if TargetFilename<>'' then
+      OutFilename:=TargetFilename
+    else
+      OutFilename:=lowercase(ExtractFileNameOnly(MainSourceFileName));
     Result:=AppendPathDelim(UnitOutDir)+OutFilename;
   end;
   Result:=TrimFilename(Result);
