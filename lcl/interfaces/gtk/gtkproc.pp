@@ -395,6 +395,9 @@ Function GetWindowFunction(AForm : TCustomForm) : Longint;
 
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 
+Procedure LoadGDKCursors;
+Procedure FreeGDKCursors;
+
 var
   X11Display : Pointer;
   
