@@ -168,7 +168,6 @@ function SetCaretPosEx(Handle: HWnd; X, Y: Integer): Boolean; override;
 function SetCaretRespondToFocus(handle: HWND; ShowHideOnFocus: boolean): Boolean; override;
 function SetFocus(hWnd: HWND): HWND; override;
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; override;
-function SetRadioButtonGroupMode(Handle: hWnd; AutoGroup: boolean): Boolean; override;
 function SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer; override;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; override;
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
@@ -201,6 +200,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2003/03/17 20:53:16  mattias
+  removed SetRadioButtonGroupMode
+
   Revision 1.64  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
