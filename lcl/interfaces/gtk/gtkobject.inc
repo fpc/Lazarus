@@ -841,7 +841,7 @@ begin
       Begin
         // prevent a combobox from showing its subwindow
         if (Sender is TCustomComboBox) then
-          gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
+          gtk_combo_disable_activate(PGTKCombo(TWinControl(Sender).handle));
         // change cursor
         if Sender is TWinControl then
           SetCursor(TWinControl(Sender));
@@ -1370,14 +1370,14 @@ begin
 
       LM_GETITEMS :
       begin
-        if (Sender as TControl).fCompStyle = csCListBox
+        if TControl(Sender).fCompStyle = csCListBox
         then begin
           Widget:= GetCoreChildWidget(PGtkWidget(Handle));
           Data := TGtkCListStringList.Create(PGtkCList(Widget));
           Result := integer(Data);
         end 
         else begin
-          case (Sender as TControl).fCompStyle of
+          case TControl(Sender).fCompStyle of
             csComboBox : Widget:= PGtkCombo(Handle)^.list;
             csListBox : Widget:= GetCoreChildWidget(PGtkWidget(Handle));
           else 
@@ -1436,11 +1436,12 @@ begin
           
       LM_SETITEMINDEX :
         if Handle<>0 then begin
-          case (Sender as TControl).fCompStyle of
+          case TControl(Sender).fCompStyle of
         
           csComboBox:
             gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list),
                                  Integer(Data));
+                                 
           csListBox :
             begin
               gtk_list_select_item(
@@ -1464,45 +1465,53 @@ begin
           
       LM_GETSELSTART :
       begin
-         if (Sender as TControl).fCompStyle = csComboBox then
-         begin
-            Result:= gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry));           
-         end;
+        if (Sender is TControl)
+         and (TControl(Sender).fCompStyle = csComboBox) then
+        begin
+          Result:= gtk_editable_get_position(PGtkEditable(
+                                                 PGtkCombo(Handle)^.entry))+1;
+        end;
       end;
           
       LM_GETSELLEN :
       begin
-         if (Sender as TControl).fCompStyle = csComboBox then
-         begin
-            Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos -
-                       PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
-         end;
+        if (Sender is TControl)
+         and (TControl(Sender).fCompStyle = csComboBox) then
+        begin
+          Result:= PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
+                   - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos;
+        end;
       end;
   
       LM_GETLIMITTEXT :
       begin
-         if (Sender as TControl).fCompStyle = csComboBox then
-         begin
-            Result:= PGtkEntry(PGtkCombo(Handle)^.entry)^.text_max_length;
-         end;
+        if (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csComboBox) then
+        begin
+          Result:= PGtkEntry(PGtkCombo(Handle)^.entry)^.text_max_length;
+        end;
       end;
   
       LM_SETSELSTART : 
       begin
-         if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) then
-         begin
-            gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry), Integer(Data));
-         end;
+        if (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csComboBox) then
+        begin
+          gtk_editable_set_position(PGtkEditable(
+                                      PGtkCombo(Handle)^.entry), Integer(Data));
+        end;
       end;
           
       LM_SETSELLEN :
       begin
-         if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) then
-         begin
-            gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
-            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
-            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)) + Integer(Data));
-         end;
+        if (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csComboBox) then
+        begin
+          gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
+          gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
+          gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry))
+                                    + Integer(Data));
+        end;
       end;  
  
       LM_GetLineCount :
@@ -1512,12 +1521,12 @@ begin
 
       LM_GETSELCOUNT :
       begin
-         case (Sender as TControl).fCompStyle of
-            csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(
-                                               PGtkWidget(Handle)))^.selection);
-            csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(
-                                               PGtkWidget(Handle)))^.selection);
-         end;
+        case (Sender as TControl).fCompStyle of
+          csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(
+                                             PGtkWidget(Handle)))^.selection);
+          csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(
+                                             PGtkWidget(Handle)))^.selection);
+        end;
       end;
   
       LM_GETSEL :
@@ -1722,21 +1731,20 @@ var
 begin
   Result := True;
   case Sender.fCompStyle of
-     csComboBox:
-       Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
-                                      (Sender as TWinControl).Handle)^.entry)));
-       
-     csEdit    :
-       Text := StrPas(gtk_entry_get_text(
-                                    PgtkEntry((Sender as TWinControl).Handle)));
+   csComboBox:
+     Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
+                                    TWinControl(Sender).Handle)^.entry)));
+     
+   csEdit    :
+     Text := StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
 
-     csMemo    : begin
-                    CS := gtk_editable_get_chars(PGtkEditable(
-                                GetCoreChildWidget(PGtkWidget(
-                                  (Sender as TWinControl).Handle))), 0, -1);
-                    Text := StrPas(CS);
-                    g_free(CS);
-                 end;
+   csMemo    : begin
+                  CS := gtk_editable_get_chars(PGtkEditable(
+                              GetCoreChildWidget(PGtkWidget(
+                                TWinControl(Sender).Handle))), 0, -1);
+                  Text := StrPas(CS);
+                  g_free(CS);
+               end;
   else
     Result := False;
   end;
@@ -1961,6 +1969,7 @@ begin
     SetNotebookPageTabLabel;
     
   csComboBox    : gtk_entry_set_text(PGtkEntry(PGtkCombo(P)^.entry), PLabel);
+  
   else
     Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
   end;
@@ -2101,17 +2110,17 @@ begin
     end;
 
     LM_CHANGED :
-       if sender is TTrackBar then
+       if Sender is TTrackBar then
        begin
          ConnectSenderSignal(gtk_Object(
                    gtk_range_get_adjustment(GTK_RANGE(gObject))) ,
                       'value_changed', @gtkvaluechanged);
        end
        else
-       if sender is TNotebook then
+       if Sender is TNotebook then
          ConnectSenderSignal(gObject, 'switch-page', @gtkswitchpage)
        else
-       if sender is TCustomCombobox then
+       if Sender is TCustomCombobox then
          ConnectSenderSignal (PGtkObject(
                    PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
@@ -2148,10 +2157,14 @@ begin
     begin
       if (sender is TCustomComboBox) then
          Begin
-          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
-          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-out-event', @gtkKillFocusCB);
-          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-in-event', @gtkFocusCB);
-          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-out-event', @gtkKillFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(
+            TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(
+            TCustomComboBox(sender).handle)^.entry), 'focus-out-event', @gtkKillFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(
+            TCustomComboBox(sender).handle)^.list), 'focus-in-event', @gtkFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(
+            TCustomComboBox(sender).handle)^.list), 'focus-out-event', @gtkKillFocusCB);
          end
          else
          Begin
@@ -2554,7 +2567,7 @@ begin
 
   //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // update mouse caturing
-  if MCaptureHandle=Handle then MCaptureHandle:=0;
+  if MCaptureHandle=Handle then Uncapturehandle;
   
   // update clipboard widget
   if ClipboardWidget=Widget then
@@ -5400,6 +5413,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.182  2002/08/27 18:45:13  lazarus
+  MG: propedits text improvements from Andrew, uncapturing, improved comobobox
+
   Revision 1.181  2002/08/27 14:33:37  lazarus
   MG: fixed designer component deletion
 
