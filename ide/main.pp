@@ -386,6 +386,7 @@ type
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
         var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
+    procedure SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
     procedure SaveSourceEditorProjectSpecificSettings;
     function DoShowSaveProjectAsDialog: TModalResult;
     
@@ -3215,18 +3216,16 @@ end;
 
 procedure TMainIDE.DoRestoreBookMarks(AnUnitInfo: TUnitInfo;
   ASrcEdit: TSourceEditor);
-var BookmarkID, i: integer;
+var
+  BookmarkID, i: integer;
 begin
+  Project1.MergeBookmarks(AnUnitInfo);
   for BookmarkID:=0 to 9 do begin
     i:=Project1.Bookmarks.IndexOfID(BookmarkID);
-    if (i>=0) and (Project1.Bookmarks[i].EditorIndex=AnUnitInfo.EditorIndex)
-    then begin
+    if i<0 then continue;
+    if (Project1.Bookmarks[i].EditorIndex=AnUnitInfo.EditorIndex) then begin
       ASrcEdit.EditorComponent.SetBookmark(BookmarkID,
          Project1.Bookmarks[i].CursorPos.X,Project1.Bookmarks[i].CursorPos.Y);
-      while i>=0 do begin
-        Project1.Bookmarks.Delete(i);
-        i:=Project1.Bookmarks.IndexOfID(BookmarkID);
-      end;
     end;
   end;
 end;
@@ -3379,31 +3378,37 @@ begin
     MainUnitInfo:=nil;
 end;
 
-procedure TMainIDE.SaveSourceEditorProjectSpecificSettings;
-var i, BookmarkID, BookmarkX, BookmarkY: integer;
-  AnUnitInfo: TUnitInfo;
+procedure TMainIDE.SaveSrcEditorProjectSpecificSettings(AnUnitInfo: TUnitInfo);
+var
+  BookmarkID, BookmarkX, BookmarkY: integer;
   ASrcEdit: TSourceEditor;
 begin
-  Project1.Bookmarks.Clear;
-  for i:=0 to Project1.UnitCount-1 do begin
-    AnUnitInfo:=Project1.Units[i];
-    if (not AnUnitInfo.Loaded) or (AnUnitInfo.EditorIndex<0) then continue;
-    {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',AnUnitInfo.Filename);
-    {$ENDIF}
-    ASrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-       AnUnitInfo.EditorIndex);
-    if ASrcEdit=nil then continue;
-    AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
-    AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
-    for BookmarkID:=0 to 9 do begin
-      if (ASrcEdit.EditorComponent.GetBookMark(
-           BookmarkID,BookmarkX,BookmarkY))
-      and (Project1.Bookmarks.IndexOfID(BookmarkID)<0) then begin
-        Project1.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkY,
-            AnUnitInfo.EditorIndex,BookmarkID));
-      end;
+  Project1.Bookmarks.DeleteAllWithEditorIndex(AnUnitInfo.EditorIndex);
+  ASrcEdit:=
+    SourceNoteBook.FindSourceEditorWithPageIndex(AnUnitInfo.EditorIndex);
+  if ASrcEdit=nil then exit;
+  AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
+  AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
+  // bookmarks
+  AnUnitInfo.Bookmarks.Clear;
+  for BookmarkID:=0 to 9 do begin
+    if (ASrcEdit.EditorComponent.GetBookMark(BookmarkID,BookmarkX,BookmarkY))
+    then begin
+      Project1.SetBookmark(AnUnitInfo,BookmarkX,BookmarkY,BookmarkID);
     end;
+  end;
+end;
+
+procedure TMainIDE.SaveSourceEditorProjectSpecificSettings;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  Project1.Bookmarks.Clear;
+  AnUnitInfo:=Project1.FirstUnitWithEditorIndex;
+  while AnUnitInfo<>nil do begin
+    if (not AnUnitInfo.Loaded) then continue;
+    SaveSrcEditorProjectSpecificSettings(AnUnitInfo);
+    AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
   end;
 end;
 
@@ -3639,6 +3644,10 @@ begin
       
   if (not (ofRevert in Flags)) or (PageIndex<0) then begin
     // create a new source editor
+
+    // update marks and cursor positions in Project1, so that merging the old
+    // settings during restoration will work
+    SaveSourceEditorProjectSpecificSettings;
     SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
       AFilename,-1),AnUnitInfo.Source);
     NewSrcEdit:=SourceNotebook.GetActiveSE;
@@ -3654,17 +3663,13 @@ begin
     NewSrcEditorCreated:=false;
   end;
 
-  if ofProjectLoading in Flags then begin
-    // reloading the project -> restore marks
-    DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
-  end;
-
   // update editor indices in project
   if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
     Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
   AnUnitInfo.EditorIndex:=SourceNotebook.FindPageWithEditor(NewSrcEdit);
 
   // restore source editor settings
+  DoRestoreBookMarks(AnUnitInfo,NewSrcEdit);
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=AnUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=AnUnitInfo.TopLine;
@@ -3893,9 +3898,8 @@ begin
     FLastFormActivated:=nil;
 
   // save some meta data of the source
-  ActiveUnitInfo.TopLine:=ActiveSrcEdit.EditorComponent.TopLine;
-  ActiveUnitInfo.CursorPos:=ActiveSrcEdit.EditorComponent.CaretXY;
-  
+  SaveSrcEditorProjectSpecificSettings(ActiveUnitInfo);
+
   // if SaveFirst then save the source
   if (cfSaveFirst in Flags) and (not ActiveUnitInfo.ReadOnly)
   and ((ActiveSrcEdit.Modified) or (ActiveUnitInfo.Modified)) then begin
@@ -4452,7 +4456,7 @@ begin
     exit;
   end;
   SaveSourceEditorChangesToCodeCache(-1);
-writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
+  writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
 
   // check that all new units are saved first to get valid filenames
   // (this can alter the mainunit: e.g. used unit names)
@@ -4624,8 +4628,8 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=TProject.Create(ptProgram);
   Project1.OnFileBackup:=@DoBackupFile;
+  
   // read project info file
-
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
   Project1.ReadProject(AFilename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B4');{$ENDIF}
@@ -4669,7 +4673,7 @@ begin
       Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
                     [ofProjectLoading,ofOnlyIfExists]);
       if Result=mrAbort then begin
-        // mark all files, that are left to load as unloaded:
+        // mark all files, that are left to open as unloaded:
         for i:=0 to Project1.UnitCount-1 do begin
           if Project1.Units[i].Loaded
           and (Project1.Units[i].EditorIndex>LastEditorIndex) then begin
@@ -7783,6 +7787,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.471  2003/02/28 15:38:00  mattias
+  bookmarks are now saved also for closed files and merged when possible
+
   Revision 1.470  2003/02/28 10:14:28  mattias
   started package system (packager)
 
