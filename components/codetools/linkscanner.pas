@@ -256,6 +256,7 @@ type
     function ReadNextSwitchDirective: boolean;
     function LongSwitchDirective: boolean;
     function ModeDirective: boolean;
+    function ThreadingDirective: boolean;
     procedure BuildDirectiveFuncList;
     procedure PushIncludeLink(ACleanedPos, ASrcPos: integer; ACode: Pointer);
     function PopIncludeLink: TSourceLink;
@@ -1977,6 +1978,7 @@ begin
     Add('INCLUDE',{$ifdef FPC}@{$endif}IncludeDirective);
     Add('INCLUDEPATH',{$ifdef FPC}@{$endif}IncludePathDirective);
     Add('MODE',{$ifdef FPC}@{$endif}ModeDirective);
+    Add('THREADING',{$ifdef FPC}@{$endif}ThreadingDirective);
   end;
   FSkipDirectiveFuncList:=TKeyWordFunctionList.Create;
   with FSkipDirectiveFuncList do begin
@@ -2051,6 +2053,24 @@ begin
       end;
     if not ModeValid then
       RaiseExceptionFmt(ctsInvalidMode,[copy(Src,ValStart,SrcPos-ValStart)]);
+  end;
+  Result:=true;
+end;
+
+function TLinkScanner.ThreadingDirective: boolean;
+var
+  ValStart: integer;
+begin
+  SkipSpace;
+  ValStart:=SrcPos;
+  while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
+    inc(SrcPos);
+  if CompareUpToken('ON',Src,ValStart,SrcPos) then begin
+    // define THREADING
+    Values.Variables[ExternalMacroStart+'UseSysThrds']:='1';
+  end else begin
+    // undefine THREADING
+    Values.Undefine(ExternalMacroStart+'UseSysThrds');
   end;
   Result:=true;
 end;

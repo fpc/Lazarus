@@ -154,33 +154,52 @@ end;
 
 procedure TDragDockObject.SetBrush(Value: TBrush);
 begin
-
+  if FBrush=nil then FBrush:=TBrush.Create;
+  FBrush.Assign(Value);
 end;
 
 procedure TDragDockObject.AdjustDockRect(ARect: TRect);
-begin
 
+  function AbsMin(Value1, Value2: Integer): Integer;
+  begin
+    if Abs(Value1) < Abs(Value2) then Result := Value1
+    else Result := Value2;
+  end;
+
+var
+  DeltaX, DeltaY: Integer;
+begin
+  if (FDragPos.x<ARect.Left) or (FDragPos.x>ARect.Right) then
+    DeltaX := AbsMin(ARect.Left-FDragPos.x,ARect.Right-FDragPos.x)
+  else
+    DeltaX := 0;
+  if (FDragPos.y<ARect.Top) or (FDragPos.y>ARect.Bottom) then
+    DeltaY := AbsMin(ARect.Top-FDragPos.y,ARect.Bottom-FDragPos.y)
+  else
+    DeltaY := 0;
+  if (DeltaX<>0) or (DeltaY<>0) then
+    OffsetRect(FDockRect, -DeltaX, -DeltaY);
 end;
 
 procedure TDragDockObject.DrawDragDockImage;
 begin
-
+  FControl.DrawDragDockImage(Self);
 end;
 
 procedure TDragDockObject.EndDrag(Target: TObject; X, Y: Integer);
 begin
-  inherited EndDrag(Target, X, Y);
+  FControl.DoEndDock(Target, X, Y);
 end;
 
 procedure TDragDockObject.EraseDragDockImage;
 begin
-
+  FControl.EraseDragDockImage(Self);
 end;
 
 function TDragDockObject.GetDragCursor(Accepted: Boolean; X, Y: Integer
   ): TCursor;
 begin
-  Result:=inherited GetDragCursor(Accepted, X, Y);
+  Result := crDefault;
 end;
 
 function TDragDockObject.GetFrameWidth: Integer;
@@ -195,6 +214,7 @@ end;
 
 destructor TDragDockObject.Destroy;
 begin
+  FreeThenNil(FBrush);
   inherited Destroy;
 end;
 

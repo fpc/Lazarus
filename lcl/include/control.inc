@@ -95,7 +95,9 @@ end;
 
 procedure TControl.DoDock(NewDockSite: TWinControl; var ARect: TRect);
 begin
-
+  // ToDo: DoDock
+  BoundsRect := ARect;
+  if (NewDockSite = nil) then Parent := nil;
 end;
 
 procedure TControl.DoStartDock(var DragObject: TDragObject);
@@ -108,7 +110,8 @@ end;
   function TControl.GetDockEdge(const MousePos: TPoint): TAlign;
 
   Calculate the dock side depending on current MousePos.
-  MousePos is relative to control's Left, top.
+  
+  Important: MousePos is relative to this control's Left, Top.
 ------------------------------------------------------------------------------}
 function TControl.GetDockEdge(const MousePos: TPoint): TAlign;
 var
@@ -141,9 +144,43 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TControl.PositionDockRect(DragDockObject: TDragDockObject);
+  
+  
+------------------------------------------------------------------------------}
 procedure TControl.PositionDockRect(DragDockObject: TDragDockObject);
+var
+  NewWidth: LongInt;
+  NewHeight: LongInt;
+  NewLeft: LongInt;
+  NewTop: LongInt;
+  WinDragTarget: TWinControl;
 begin
-  // ToDo
+  with DragDockObject do begin
+    if (DragTarget is TWinControl) and TWinControl(DragTarget).UseDockManager
+    then begin
+      WinDragTarget:=TWinControl(DragTarget);
+      GetWindowRect(WinDragTarget.Handle, FDockRect);
+      if (WinDragTarget.DockManager<>nil) then
+        WinDragTarget.DockManager.PositionDockRect(Control,DropOnControl,
+                                                   DropAlign,FDockRect);
+    end else begin
+      NewWidth := Control.UndockWidth;
+      NewHeight := Control.UndockHeight;
+      NewLeft := DragPos.X;
+      NewTop := DragPos.Y;
+      with FDockRect do
+      begin
+        Left := NewLeft;
+        Top := NewTop;
+        Right := Left + NewWidth;
+        Bottom := Top + NewHeight;
+      end;
+      // let user adjust dock rect
+      AdjustDockRect(FDockRect);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -443,6 +480,9 @@ begin
   Result := ClientRect.Right;
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.GetFloating: Boolean;
+------------------------------------------------------------------------------}
 function TControl.GetFloating: Boolean;
 var
   CurHostDockSite: TWinControl;
@@ -452,11 +492,17 @@ begin
             and (CurHostDockSite is FloatingDockSiteClass);
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.GetFloatingDockSiteClass: TWinControlClass;
+------------------------------------------------------------------------------}
 function TControl.GetFloatingDockSiteClass: TWinControlClass;
 begin
   Result := FFloatingDockSiteClass;
 end;
 
+{------------------------------------------------------------------------------
+  function TControl.GetLRDockWidth: Integer;
+------------------------------------------------------------------------------}
 function TControl.GetLRDockWidth: Integer;
 begin
   if FLRDockWidth>0 then
@@ -905,7 +951,6 @@ end;
 
 {------------------------------------------------------------------------------
        TControl.GetClientOrigin
-
 ------------------------------------------------------------------------------}
 function TControl.GetClientOrigin: TPoint;
 
@@ -926,10 +971,9 @@ Begin
   //Assert(False, Format('Trace:[TControl.GetClientOrigin] %s --> (%d, %d)',  [Classname, Result.X, Result.Y]));
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.ScreenToClient
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.ScreenToClient
+------------------------------------------------------------------------------}
 Function TControl.ScreenToClient(const Point : TPoint) : TPoint;
 var
   P : TPoint;
@@ -942,7 +986,6 @@ end;
 
 {------------------------------------------------------------------------------
   Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
-
 ------------------------------------------------------------------------------}
 Function TControl.ClientToScreen(const Point : TPoint) : TPoint;
 var
@@ -953,47 +996,46 @@ begin
   Result.Y := Point.Y + P.Y;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.SendDockNotification
-}
-{------------------------------------------------------------------------------}
-Procedure TControl.SendDockNotification(Msg: Cardinal; WParam: WParam; LParam: LParam);
+{------------------------------------------------------------------------------
+       TControl.SendDockNotification
+------------------------------------------------------------------------------}
+procedure TControl.SendDockNotification;
 begin
-
+  if (FHostDockSite<>nil) and (DragObject=nil)
+  and (ComponentState*[csLoading,csDestroying] = []) then
+  begin
+    // ToDo
+    //FHostDockSite.Perform
+  end;
 end;
 
-
-{------------------------------------------------------------------------------}
-{       TControl.DblClick
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.DblClick
+------------------------------------------------------------------------------}
 procedure TControl.DblClick;
 begin
   If Assigned(FOnDblClick) then FOnDblClick(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.TripleClick
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.TripleClick
+------------------------------------------------------------------------------}
 procedure TControl.TripleClick;
 begin
   If Assigned(FOnTripleClick) then FOnTripleClick(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.QuadClick
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.QuadClick
+------------------------------------------------------------------------------}
 procedure TControl.QuadClick;
 begin
   If Assigned(FOnQuadClick) then FOnQuadClick(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.DoDragMsg
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.DoDragMsg
+------------------------------------------------------------------------------}
 Procedure TControl.DoDragMsg(var DragMsg: TCMDrag);
 var
   Accepts: Boolean;
@@ -1372,7 +1414,8 @@ begin
       else begin
         if TheMessage.Msg = CM_VISIBLECHANGED
         then begin
-          with TheMessage do SendDockNotification(Msg,WParam,LParam);
+          // ToDo: call a real method, do not create a win32 message
+          //with TheMessage do SendDockNotification(Msg,WParam,LParam);
         end;
       end;
     end;
@@ -2248,9 +2291,36 @@ begin
   CNSendMessage(LM_DRAGINFOCHANGED,Self,Nil);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetLeft                                                            }
-{------------------------------------------------------------------------------}
+procedure TControl.DrawDragDockImage(DragDockObject: TDragDockObject);
+begin
+  DefaultDockImage(DragDockObject, False);
+end;
+
+procedure TControl.EraseDragDockImage(DragDockObject: TDragDockObject);
+begin
+  DefaultDockImage(DragDockObject, True);
+end;
+
+{------------------------------------------------------------------------------
+  TControl DefaultDockImage
+------------------------------------------------------------------------------}
+procedure TControl.DefaultDockImage(DragDockObject: TDragDockObject;
+  Erase: Boolean);
+begin
+  // ToDo: draw or erase dock image
+end;
+
+{------------------------------------------------------------------------------
+  TControl DockTrackNoTarget
+------------------------------------------------------------------------------}
+procedure TControl.DockTrackNoTarget(Source: TDragDockObject; X, Y: Integer);
+begin
+  PositionDockRect(Source);
+end;
+
+{------------------------------------------------------------------------------
+  TControl SetLeft
+------------------------------------------------------------------------------}
 procedure TControl.SetLeft(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
@@ -2259,9 +2329,9 @@ begin
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetTop                                                             }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetTop
+------------------------------------------------------------------------------}
 procedure TControl.SetTop(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
@@ -2270,9 +2340,9 @@ begin
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetWidth                                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetWidth
+------------------------------------------------------------------------------}
 procedure TControl.SetWidth(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
@@ -2552,15 +2622,75 @@ begin
 end;
 
 procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
+
+  procedure RaiseAlreadyDocking;
+  begin
+    RaiseGDBException('TControl.Dock '+Name+':'+ClassName+' csDocking in FControlState');
+  end;
+
+var
+  OldHostDockSite: TWinControl;
 begin
-  // ToDo
+  if (csDocking in FControlState) then
+    RaiseAlreadyDocking;
+    
+  // dock
+  Include(FControlState, csDocking);
+  try
+    OldHostDockSite:=HostDockSite;
+
+    if OldHostDockSite<>NewDockSite then begin
+      // HostDockSite will change -> prepare
+      if (OldHostDockSite<>nil) and (OldHostDockSite.FDockClients<>nil) then
+        OldHostDockSite.FDockClients.Remove(Self);
+      if (NewDockSite<>nil) and (NewDockSite.FDockClients<>nil) then
+        NewDockSite.FDockClients.Add(Self);
+    end;
+
+    DoDock(NewDockSite,ARect);
+    
+    if FHostDockSite<>NewDockSite then
+    begin
+      // HostDockSite has changed -> commit
+      OldHostDockSite := FHostDockSite;
+      FHostDockSite := NewDockSite;
+      if NewDockSite<>nil then NewDockSite.DoAddDockClient(Self,ARect);
+      if OldHostDockSite<>nil then OldHostDockSite.DoRemoveDockClient(Self);
+    end;
+  finally
+    Exclude(FControlState, csDocking);
+  end;
 end;
 
 function TControl.ManualDock(NewDockSite: TWinControl; DropControl: TControl;
   ControlSide: TAlign): Boolean;
+var
+  NewBounds: TRect;
 begin
-  // ToDo
-  Result:=false;
+  if (NewDockSite=nil) then begin
+    // undock / float this control
+    if (HostDockSite<>nil) and HostDockSite.UseDockManager
+    and (HostDockSite.DockManager<>nil) then begin
+      HostDockSite.DockManager.GetControlBounds(Self,NewBounds);
+      // ToDo
+      RaiseGDBException('MapWindowPoints not yet implemented');
+      //MapWindowPoints(HostDockSite.Handle, 0, NewBounds.TopLeft, 2);
+    end
+    else begin
+      NewBounds.Left:=Left;
+      NewBounds.Top:=Top;
+      if Parent<>nil then
+        NewBounds.TopLeft := Parent.ClientToScreen(NewBounds.TopLeft);
+    end;
+    NewBounds := Bounds(NewBounds.Left,NewBounds.Top,UndockWidth,UndockHeight);
+    Result := ManualFloat(NewBounds);
+  end
+  else
+  begin
+    // dock / unfloat this control
+    // ToDo
+    RaiseGDBException('TControl.ManualDock docking not yet implemented');
+  end;
 end;
 
 function TControl.ManualFloat(ScreenPos: TRect): Boolean;
@@ -2924,6 +3054,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.187  2004/05/30 14:02:30  mattias
+  implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
+
   Revision 1.186  2004/05/15 20:17:09  mattias
   replaced WMSize by DoSetBounds
 

@@ -4489,6 +4489,8 @@ begin
        else 
        if ALCLObject is TCustomMemo then
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
+       else if ALCLObject is TCustomCheckbox then
+         ConnectSenderSignal(gObject, 'toggled', @gtktoggledCB)
        else
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
     end;
@@ -5111,6 +5113,11 @@ begin
       Begin
         SetCallback(LM_CLICKED, AGTKObject, ALCLObject);
       End;
+      
+      csRadioButton, csCheckBox, csToggleBox:
+      begin
+        SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
+      end;
 
       csCalendar:
       Begin
@@ -9204,6 +9211,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.506  2004/05/30 14:02:31  mattias
+  implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
+
   Revision 1.505  2004/05/22 14:59:23  mattias
   fixed multi update of TStatusBar
 

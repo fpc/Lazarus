@@ -3607,7 +3607,8 @@ const
   sutObjPas   = 2;
   sutLineInfo = 3;
   sutHeapTrc  = 4;
-  sutNone     = 5;
+  sutSysThrds = 5;
+  sutNone     = 6;
 var
   OldInput: TFindDeclarationInput;
   SystemAlias: string;
@@ -3646,9 +3647,18 @@ begin
       CurUnitType:=sutLineInfo
     else if UpAtomIs('HEAPTRC') then
       CurUnitType:=sutHeapTrc
+    else if UpAtomIs('SYSTHRDS') then
+      CurUnitType:=sutSysThrds
     else
       CurUnitType:=sutNone;
     // try hidden units
+    if (CurUnitType>sutSysThrds)
+    and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseSysThrds')
+    then begin
+      // try hidden used unit 'systhrds'
+      Result:=FindIdentifierInUsedUnit('SysThrds',Params);
+      if Result then exit;
+    end;
     if (CurUnitType>sutHeapTrc)
     and Scanner.InitialValues.IsDefined(ExternalMacroStart+'UseHeapTrcUnit')
     then begin

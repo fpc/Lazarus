@@ -773,8 +773,10 @@ type
     FState: TCheckBoxState;
     FShortCut : TLMShortcut;
     procedure SetState(Value: TCheckBoxState);
-    function GetState : TCheckBoxState;
+    function GetState: TCheckBoxState;
+    procedure DoChange(var Msg); message LM_CHANGED;
   protected
+    function RetrieveState: TCheckBoxState;
     procedure InitializeWnd; override;
     procedure Toggle; virtual;
     function GetChecked: Boolean; override;
@@ -786,8 +788,9 @@ type
   public
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
     property State: TCheckBoxState read GetState write SetState;
-  published
     property TabStop default true;
+    property UseOnChange;
+    property OnChange;
   end;
 
 {$IFNDef NewCheckBox}
@@ -800,19 +803,20 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Action;
-    property AllowGrayed;
     property Align;
+    property AllowGrayed;
     property Anchors;
     property AutoSize;
     property Caption;
-    property Constraints;
     property Checked;
+    property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
     property Hint;
     property OnChange;
+    property OnChangeBounds;
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
@@ -822,7 +826,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnChangeBounds;
     property OnResize;
     property OnStartDrag;
     property ParentShowHint;
@@ -928,18 +931,12 @@ type
     property Anchors;
     property Caption;
     property Checked;
-    property State;
-    property Visible;
-    property Enabled;
     property DragCursor;
     property DragKind;
     property DragMode;
+    property Enabled;
     property Hint;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
+    property OnChange;
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
@@ -950,6 +947,14 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property State;
+    property TabOrder;
+    property TabStop;
+    property UseOnChange;
+    property Visible;
   end;
 
 
@@ -963,24 +968,19 @@ type
     constructor Create(TheOwner: TComponent); override;
   published
     property Align;
+    property AllowGrayed;
     property Anchors;
     property AutoSize;
-    property AllowGrayed;
     property Caption;
     property Checked;
     property Constraints;
-    property State;
-    property Visible;
-    property Enabled;
     property DragCursor;
     property DragKind;
     property DragMode;
+    property Enabled;
     property Hint;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
+    property OnChange;
+    property OnChangeBounds;
     property OnClick;
     property OnDragDrop;
     property OnDragOver;
@@ -988,13 +988,20 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
-    property OnChangeBounds;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property State;
+    property TabOrder;
+    property TabStop;
+    property UseOnChange;
+    property Visible;
   end;
 
 
@@ -1549,6 +1556,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.146  2004/05/30 14:02:30  mattias
+  implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
+
   Revision 1.145  2004/05/21 18:34:44  mattias
   readded protected TWinControl.BorderStyle
 

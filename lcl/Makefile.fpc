@@ -85,7 +85,7 @@ unitdir=. $(NONWIN32) widgetset
 includedir=include
 
 [install]
-buildunit=alllclunits
+#buildunit=alllclunits
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \

@@ -30,16 +30,10 @@
    - lots of unknown issues
 
   TODO:
-
     - check for Delphi compatibility
     - test if fState / Checked is always set right
 
   Bugs:
-
-    - Seems as if you can't (yet) use the State/Checked properties in
-      the OnClick handler. Not sure if there some bug inside this class
-      or if the Callback is called before the state of the component has
-      been updated.
 }
 
 {------------------------------------------------------------------------------
@@ -49,7 +43,7 @@
 
   Set new state of the checkbox.
  ------------------------------------------------------------------------------}
-procedure TCustomCheckBox.SetState(Value : TCheckBoxState);
+procedure TCustomCheckBox.SetState(Value: TCheckBoxState);
 begin
   if FState <> Value then
   begin
@@ -66,11 +60,27 @@ end;
   Get current state of the checkbox. To get the real state a call to the
   interface is made here.
  ------------------------------------------------------------------------------}
-function TCustomCheckBox.GetState : TCheckBoxState;
+function TCustomCheckBox.GetState: TCheckBoxState;
 begin
+  fState:=RetrieveState;
+  Result := fState;
+end;
+
+procedure TCustomCheckBox.DoChange(var Msg);
+var
+  NewState: TCheckBoxState;
+begin
+  NewState:=RetrieveState;
+  if FState=NewState then exit;
+  FState:=RetrieveState;
+  DoOnChange;
+end;
+
+function TCustomCheckBox.RetrieveState: TCheckBoxState;
+begin
+  Result:=FState;
   if HandleAllocated
-  then CNSendMessage (LM_GETVALUE, Self, @fState);	// get the actual state of the component
-  GetState := fState;
+  then CNSendMessage (LM_GETVALUE, Self, @Result);	// get the actual state of the component
 end;
 
 {------------------------------------------------------------------------------
@@ -198,6 +208,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2004/05/30 14:02:30  mattias
+  implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
+
   Revision 1.20  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

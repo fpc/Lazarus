@@ -95,6 +95,7 @@ function gtkactivateCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 {$IfNdef GTK2}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer): GBoolean; cdecl;

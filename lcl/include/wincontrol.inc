@@ -2447,15 +2447,18 @@ end;
 
 function TWinControl.GetDockClientCount: Integer;
 begin
-  // ToDo
-  Result:=0;
+  if FDockClients<>nil then
+    Result := FDockClients.Count
+  else
+    Result := 0;
 end;
 
 function TWinControl.GetDockClients(Index: Integer): TControl;
 begin
-  // ToDo
-  RaiseGDBException('not implemented');
-  Result:=nil;
+  if FDockClients<>nil then
+    Result := TControl(FDockClients[Index])
+  else
+    Result := nil;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2568,6 +2571,7 @@ begin
 
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
+  FreeThenNil(FDockClients);
   //DebugLn('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
   //DebugLn('[TWinControl.Destroy] END  ',Name,':',ClassName);
@@ -3334,9 +3338,12 @@ begin
 end;
 
 function TWinControl.GetVisibleDockClientCount: Integer;
+var
+  i: integer;
 begin
-  // ToDo
-  Result:=0;
+  Result := 0;
+  for i:=FDockClients.Count-1 downto 0 do
+    if TControl(FDockClients[I]).Visible then inc(Result);
 end;
 
 procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
@@ -3345,10 +3352,26 @@ begin
   FChildSizing.Assign(AValue);
 end;
 
-procedure TWinControl.SetDockSite(const AValue: Boolean);
+procedure TWinControl.SetDockSite(const NewDockSite: Boolean);
 begin
-  if FDockSite=AValue then exit;
-  FDockSite:=AValue;
+  if FDockSite=NewDockSite then exit;
+  FDockSite := NewDockSite;
+  if not (csDesigning in ComponentState) then begin
+    // ToDo
+    RaiseGDBException('RegisterDockSite not yet implemented');
+    //RegisterDockSite(Self,NewDockSite);
+    if not NewDockSite then begin
+      FreeThenNil(FDockClients);
+      FDockClients := nil;
+      FDockManager := nil;
+    end
+    else begin
+      if FDockClients = nil then FDockClients := TList.Create;
+      // ToDo
+      RaiseGDBException('CreateDockManager not yet implemented');
+      //FDockManager := CreateDockManager;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3554,6 +3577,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.234  2004/05/30 14:02:30  mattias
+  implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
+
   Revision 1.233  2004/05/22 14:35:32  mattias
   fixed button return key
 

@@ -301,7 +301,7 @@ begin
   Mess.Msg := LM_ACTIVATE;
   Mess.Result := 0;
   DeliverMessage(Data, Mess);
-//DebugLn('gtkactivateCB ',Result);
+  //DebugLn('gtkactivateCB ',TWinControl(Data).Name,':',TWinControl(Data).ClassName);
 
   Result := CallBackDefaultReturn;
 end;
@@ -386,6 +386,24 @@ end;
 
 
 {$Ifdef GTK1}
+
+function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+var
+  Mess : TLMessage;
+begin
+  Result:= True;
+  EventTrace('toggled', data);
+
+  if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
+
+  Mess.Msg := LM_CHANGED;
+  Mess.Result := 0;
+  DeliverMessage(Data, Mess);
+  //DebugLn('gtktoggledCB ',TWinControl(Data).Name,':',TWinControl(Data).ClassName);
+
+  Result := CallBackDefaultReturn;
+end;
+
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
@@ -3087,6 +3105,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.233  2004/05/30 14:02:30  mattias
+  implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
+
   Revision 1.232  2004/05/22 14:35:32  mattias
   fixed button return key
 

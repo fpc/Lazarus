@@ -34,6 +34,7 @@ files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
       $(wildcard ./doceditor/*$(OEXT)) $(wildcard ./doceditor/*$(PPUEXT))
 
 [install]
+fpcpackage=n
 basedir=share/lazarus
 
 [dist]
