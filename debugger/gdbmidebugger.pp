@@ -37,8 +37,19 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, Process, SysUtils, LCLProc, Dialogs, LazConf, DBGUtils, Debugger,
-  CmdLineDebugger, GDBTypeInfo, BaseDebugManager;
+  Classes, SysUtils, LCLProc, Dialogs, LazConf, DBGUtils, Debugger,
+  CmdLineDebugger, GDBTypeInfo, 
+{$IFDEF WIN32}
+  Windows,
+{$ENDIF}
+{$IFDEF UNIX}
+ {$IFDEF Ver1_0}
+   Linux,
+ {$ELSE}
+   Unix,BaseUnix,
+ {$ENDIF}     
+{$ENDIF}
+  BaseDebugManager;
 
 type
   TGDBMIProgramInfo = record
@@ -116,14 +127,14 @@ type
     function  ProcessRunning(var AStoppedParams: String): Boolean;
     function  ProcessStopped(const AParams: String; const AIgnoreSigIntState: Boolean): Boolean;
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
     function  StartDebugging(const AContinueCommand: String): Boolean;
   protected
     function  ChangeFileName: Boolean; override;
@@ -132,9 +143,14 @@ type
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
     function  GetSupportedCommands: TDBGCommands; override;
+    procedure InterruptTarget; virtual;
+    {$IFDEF WIN32}
+    procedure InterruptTargetCallback(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer); virtual;
+    {$ENDIF}
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
     procedure ClearCommandQueue;
+    property  TargetPID: Integer read FTargetPID;
   public
     class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
     class function Caption: String; override;
@@ -231,7 +247,38 @@ type
   TGDBMICmdInfo = record
     Flags: TGDBMICmdFlags;
     CallBack: TGDBMICallback;
+    Tag: Integer;
   end;
+  
+{ =========================================================================== }
+{ Some win32 stuff }
+{ =========================================================================== }
+{$IFDEF WIN32}
+var
+  DebugBreakAddr: Pointer = nil;
+  // use our own version. Win9x doesn't support this, so it is a nice check
+  _CreateRemoteThread: function(hProcess: THandle; lpThreadAttributes: Pointer; dwStackSize: DWORD; lpStartAddress: TFNThreadStartRoutine; lpParameter: Pointer; dwCreationFlags: DWORD; var lpThreadId: DWORD): THandle; stdcall = nil;
+
+procedure InitWin32;
+var
+  hMod: THandle;
+begin           
+  // Check if we already are initialized
+  if DebugBreakAddr <> nil then Exit;
+   
+  // normally you would load a lib, but since kernel32 is 
+  // always loaded we can use this (and we don't have to free it
+  hMod := GetModuleHandle(kernel32);
+  if hMod = 0 then Exit; //????
+
+  DebugBreakAddr := GetProcAddress(hMod, 'DebugBreak');
+  Pointer(_CreateRemoteThread) := GetProcAddress(hMod, 'CreateRemoteThread');
+end;
+{$ENDIF}  
+
+{ =========================================================================== }
+{ Helpers }
+{ =========================================================================== }
 
 function CreateMIValueList(AResultValues: String): TStringList;
 var
@@ -423,6 +470,10 @@ begin
   FTargetFlags := [];
   FDebuggerFlags := [];
 
+{$IFDEF Win32}
+  InitWin32;
+{$ENDIF}  
+
   inherited;
 end;
 
@@ -471,21 +522,16 @@ var
   S: String;
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], ResultState, S, AFlags, nil);
+  Result := ExecuteCommand(ACommand, [], ResultState, S, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback): Boolean;
+  const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
 var
   S: String;
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], ResultState, S, AFlags, ACallback);
-end;
-
-function TGDBMIDebugger.ExePaths: String;
-begin
-  Result := '/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
+  Result := ExecuteCommand(ACommand, [], ResultState, S, AFlags, ACallback, ATag);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -493,7 +539,7 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
 var
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], ResultState, AResultValues, AFlags, nil);
+  Result := ExecuteCommand(ACommand, [], ResultState, AResultValues, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -502,17 +548,17 @@ var
   S: String;
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, ResultState, S, AFlags, nil);
+  Result := ExecuteCommand(ACommand, AValues, ResultState, S, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   AValues: array of const; const AFlags: TGDBMICmdFlags;
-  const ACallback: TGDBMICallback): Boolean;
+  const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
 var
   S: String;
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, ResultState, S, AFlags, ACallback);
+  Result := ExecuteCommand(ACommand, AValues, ResultState, S, AFlags, ACallback, ATag);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -521,7 +567,7 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
 var
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, ResultState, AResultValues, AFlags, nil);
+  Result := ExecuteCommand(ACommand, AValues, ResultState, AResultValues, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String; 
@@ -530,20 +576,20 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
 var
   S: String;
 begin
-  Result := ExecuteCommand(ACommand, AValues, AResultState, S, AFlags, nil);
+  Result := ExecuteCommand(ACommand, AValues, AResultState, S, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   AValues: array of const; var AResultState: TDBGState;
   var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean;
 begin
-  Result := ExecuteCommand(ACommand, AValues, AResultState, AResultValues, AFlags, nil);
+  Result := ExecuteCommand(ACommand, AValues, AResultState, AResultValues, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   AValues: array of const; var AResultState: TDBGState;
   var AResultValues: String; const AFlags: TGDBMICmdFlags;
-  const ACallback: TGDBMICallback): Boolean;
+  const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
 var
   Cmd: String;
   CmdInfo: PGDBMICmdInfo;
@@ -559,6 +605,7 @@ begin
   New(CmdInfo);
   CmdInfo^.Flags := AFlags;
   CmdInfo^.Callback := ACallBack;
+  CmdInfo^.Tag := ATag;
   FCommandQueue.AddObject(Format(ACommand, AValues), TObject(CmdInfo));
 
   if FCommandQueue.Count > 1
@@ -604,7 +651,7 @@ begin
         then ProcessStopped(StoppedParams, FPauseWaitState = pwsInternal);
 
         if Assigned(CmdInfo^.Callback)
-        then CmdInfo^.Callback(ResultState, ResultValues, 0);
+        then CmdInfo^.Callback(ResultState, ResultValues, CmdInfo^.Tag);
       finally
         Dispose(CmdInfo);
       end;
@@ -636,6 +683,11 @@ begin
       else Break;
     end;
   until not R;
+end;
+
+function TGDBMIDebugger.ExePaths: String;
+begin
+  Result := '/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
 end;
 
 function TGDBMIDebugger.FindBreakpoint(
@@ -735,7 +787,7 @@ function TGDBMIDebugger.GDBPause(const AInternal: Boolean): Boolean;
 begin
   // Check if we already issued a break
   if FPauseWaitState = pwsNone
-  then SendBreak(FTargetPID);
+  then InterruptTarget;
 
   if AInternal
   then begin
@@ -832,7 +884,7 @@ begin
 
   // not supported yet
   // ExecuteCommand('-exec-abort');
-  ExecuteCommand('kill', [cfNoMiCommand], @GDBStopCallback);
+  ExecuteCommand('kill', [cfNoMiCommand], @GDBStopCallback, 0);
 end;
 
 procedure TGDBMIDebugger.GDBStopCallback(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer );
@@ -978,6 +1030,104 @@ begin
     SetState(dsError);
   end;
 end;
+
+procedure TGDBMIDebugger.InterruptTarget;
+{$IFDEF WIN32}
+  function TryNT: Boolean;
+  var
+    hProcess: THandle;
+    hThread: THandle;
+    ThreadID: Cardinal;
+    E: Integer;
+    Emsg: PChar;
+  begin                  
+    Result := False;
+    
+    hProcess := OpenProcess(PROCESS_CREATE_THREAD or PROCESS_QUERY_INFORMATION or PROCESS_VM_OPERATION or PROCESS_VM_WRITE or PROCESS_VM_READ, False, TargetPID);
+    if hProcess = 0 then Exit;
+  
+    try
+      hThread := _CreateRemoteThread(hProcess, nil, 0, DebugBreakAddr, nil, 0, ThreadID);
+      if hThread = 0
+      then begin
+        E := GetLastError;
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ALLOCATE_BUFFER, nil, E, 0, @Emsg, 0, nil);
+        DebugLN('Error creating remote thread: ' + String(EMsg));
+        // Yuck !
+        // mixing handles and pointers, but it is how MS documented it
+        LocalFree(HLOCAL(Emsg));
+        Exit;
+      end;
+      Result := True;
+      CloseHandle(hThread);
+
+      // queue an info to find out if we are stopped in our interrupt thread
+      ExecuteCommand('info program', [cfNoMICommand], @InterruptTargetCallback, ThreadID);
+    finally
+      CloseHandle(hProcess);
+    end;
+  end;
+{$ENDIF}
+begin
+  if TargetPID = 0 then Exit;
+{$IFDEF UNIX}
+  {$IFDEF Ver1_0}Kill{$ELSE}FpKill{$ENDIF}(TargetPID, SIGINT);
+{$ENDIF}
+
+{$IFDEF WIN32}
+  // GenerateConsoleCtrlEvent is nice, but only works if both gdb and
+  // our target have a console. On win95 and family this is our only
+  // option, on NT4+ we have a choice. Since this is not likely that
+  // we have a console, we do it the hard way. On XP there exists 
+  // DebugBreakProcess, but it does efectively the same.
+  
+  if (DebugBreakAddr = nil)
+  or not Assigned(_CreateRemoteThread)
+  or not TryNT
+  then begin
+    // We have no other choice than trying this
+    GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, TargetPID);
+    Exit;
+  end;   
+{$ENDIF}
+end;
+
+{$IFDEF WIN32}
+procedure TGDBMIDebugger.InterruptTargetCallback(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer);
+var
+  S: String;
+  List: TStringList;
+  n: Integer;
+  ID1, ID2: Integer;
+begin
+  // check if we need to get out of the interrupt thread
+  S := AResultValues;
+  S := GetPart(['.0x'], ['.'], S, True, False);
+  if StrToIntDef('$'+S, 0) <> ATag then Exit;
+
+  // we're stopped in our thread
+  if FPauseWaitState = pwsInternal then Exit; // internal, dont care
+  
+  S := '';
+  if not ExecuteCommand('-thread-list-ids', S, [cfIgnoreError]) then Exit;
+  List := CreateMIValueList(S);
+  try
+    n := StrToIntDef(List.Values['number-of-threads'], 0);
+    if n < 2 then Exit; //nothing to switch
+    S := List.Values['thread-ids'];
+  finally
+    List.Free;
+  end;
+  List := CreateMIValueList(S);
+  ID1 := StrToIntDef(List.Values['thread-id'], 0);
+  List.Delete(0);
+  ID2 := StrToIntDef(List.Values['thread-id'], 0);
+  List.Free;
+  if ID1 = ID2 then Exit;
+  
+  if not ExecuteCommand('-thread-select %d', [ID2], S, [cfIgnoreError]) then Exit;
+end;
+{$ENDIF}
 
 function TGDBMIDebugger.ParseInitialization: Boolean;
 var
@@ -1308,7 +1458,11 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     // TODO: check to run (un)handled
 
     S := AList.Values['signal-name'];
+    {$IFDEF WIN32}
+    SigInt := S = 'SIGTRAP';
+    {$ELSE}
     SigInt := S = 'SIGINT';
+    {$ENDIF}
     if not AIgnoreSigIntState
     or not SigInt
     then SetState(dsPause);
@@ -1687,7 +1841,7 @@ begin
   if Debugger.State = dsRun
   then TGDBMIDebugger(Debugger).GDBPause(True);
   TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d',
-    [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback);
+    [ExtractFileName(Source), Line], [cfIgnoreError], @SetBreakPointCallback, 0);
   
 end;
 
@@ -2293,6 +2447,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.52  2004/11/02 23:25:02  marc
+  * Introduced another method of interrupting gdb on win32
+
   Revision 1.51  2004/10/11 23:28:13  marc
   * Fixed interrupting GDB on win32
   * Reset exename after run so that the exe is not locked on win32

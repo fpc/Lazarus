@@ -53,8 +53,7 @@ type
     function GetDebugProcessRunning: Boolean;
   protected
     function  CreateDebugProcess(const AOptions: String): Boolean;
-    procedure Flush;         // Flushes output buffer
-    // procedure KillTargetProcess;
+    procedure Flush;                                   // Flushes output buffer
     function  ReadLine: String; overload;
     function  ReadLine(const APeek: Boolean): String; overload;
     procedure SendCmdLn(const ACommand: String); overload;
@@ -69,7 +68,6 @@ type
     property LineEnds: TStringList read FLineEnds;
   end;
 
-procedure SendBreak(const APID: Integer);
 
 implementation
 
@@ -91,22 +89,6 @@ uses
 {$ENDIF}
   SysUtils;
   
-{------------------------------------------------------------------------------
-  Procedure: SendBreak
-  Params:   APID                  The proces ID to send break to
-  Returns:  
- ------------------------------------------------------------------------------}
-procedure SendBreak(const APID: Integer);
-begin
-  if APID = 0 then Exit;
-{$IFDEF UNIX}
-  {$IFDEF Ver1_0}Kill{$ELSE}FpKill{$ENDIF}(APID, SIGINT);
-{$ENDIF}
-{$IFDEF WIN32}
-   GenerateConsoleCtrlEvent(CTRL_BREAK_EVENT, APID);
-{$ENDIF}
-end;
-
 {------------------------------------------------------------------------------
   Function: WaitForHandles
   Params:  AHandles:              A set of handles to wait for (max 32)
@@ -285,22 +267,6 @@ begin
   Result := (FDbgProcess <> nil) and FDbgProcess.Running;
 end;
 
-(*
-procedure TCmdLineDebugger.KillTargetProcess;
-begin           
-  if FTargetProcess = nil then Exit;
-  
-  FTargetProcess.Terminate(0);
-  FTargetProcess.WaitOnExit;
-  try
-    FTargetProcess.Free;
-  except
-    on E: Exception do WriteLN('Exception while freeing target: ', E.Message);
-  end;
-  FTargetProcess:= nil;
-end;
-*)
-  
 function TCmdLineDebugger.ReadLine: String;
 begin
   Result := ReadLine(False);
@@ -435,6 +401,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.37  2004/11/02 23:25:02  marc
+  * Introduced another method of interrupting gdb on win32
+
   Revision 1.36  2004/10/25 17:59:29  vincents
   fpc 1.9.5 has no saveregisters calling convention anymore.
 
