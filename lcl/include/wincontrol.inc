@@ -27,21 +27,21 @@
 { $DEFINE CHECK_POSITION}
 { $DEFINE VerboseMouseBugfix}
 
-{------------------------------------------------------------------------------}
-{  TWinControl AdjustSize                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl AdjustSize
+------------------------------------------------------------------------------}
 procedure TWinControl.AdjustSize;
 begin
   inherited AdjustSize;
-  RequestAlign;
+  // Unneeded: RequestAlign;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl AdjustClientRect                                                }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl AdjustClientRect
+------------------------------------------------------------------------------}
 Procedure TWinControl.AdjustClientRect(var Rect: TRect);
 Begin
-//Not used.  It's a virtual procedure that should be overriden.
+  //Not used.  It's a virtual procedure that should be overriden.
 end;
 
 {------------------------------------------------------------------------------
@@ -136,7 +136,9 @@ var
         and (CurBaseBounds.Bottom=CurBaseBounds.Top) then
           CurBaseBounds:=BoundsRect;
           
-        {writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
+        {if csDesigning in ComponentState then
+        writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
+          ' ',Name,':',ClassName,
           ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
           ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
           ' ParClient=',Parent.ClientWidth,',',Parent.ClientHeight,
@@ -204,45 +206,16 @@ var
           end;
         end;
 
-        {if FLastWidth = 0 then
-	    Width2 := Parent.FLastResize.X + Width
-	  else
-	    Width2 := Parent.FLastResize.X + FLastWidth;
-	  if FLastHeight = 0 then
-	    Height2 := Parent.FLastResize.Y + Height
-	  else
-          Height2 := Parent.FLastResize.Y + FLastHeight;
-	    
-        //writeln('  FLastWidth=',FLastWidth,' akLeft=',akLeft in Anchors,' akRight=',akRight in Anchors,' akTop=',akTop in Anchors);
-        R := BoundsRect;
-        if not (akLeft in Anchors) then
-          if not (akRight in Anchors) then
-            OffsetRect(R, Parent.FLastResize.X div 2, 0)
-          else
-            OffsetRect(R, Parent.FLastResize.X, 0)
-        else if akRight in Anchors then
-          R.Right := R.Left + Width2;
-        if not (akTop in Anchors) then
-          if not (akBottom in Anchors) then
-            OffsetRect(R, 0, Parent.FLastResize.Y div 2)
-          else
-            OffsetRect(R, 0, Parent.FLastResize.Y)
-        else if akBottom in Anchors then
-          R.Bottom := R.Top + Height2;
-        //with R do writeln(' R=',Left,',',Top,',',Right,',',Bottom);
-        BoundsRect := R;
-        FLastWidth := Width2;
-        FLastHeight := Height2;
-        if AAlign = alNone then Exit;
-        }
       end;
-      {with Control do
+      {if csDesigning in ComponentState then
+      with Control do
         writeln('[TWinControl.AlignControls.DoPosition] After Anchoring',
-         ' Align=',AlignNames[AAlign],
-         ' Control=',Name,':',ClassName,
-         ' Old=',Left,',',Top,',',Width,',',Height,
-         ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
-         '');}
+          ' ',Name,':',ClassName,
+          ' Align=',AlignNames[AAlign],
+          ' Control=',Name,':',ClassName,
+          ' Old=',Left,',',Top,',',Width,',',Height,
+          ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
+          '');}
     end;
     
     // set min size
@@ -290,7 +263,7 @@ var
     if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
-      //if csDesigning in Control.ComponentState then
+      if csDesigning in Control.ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
       {$ENDIF}
@@ -307,7 +280,7 @@ var
         NewHeight:=Height;
       end;
       {$IFDEF CHECK_POSITION}
-      //if csDesigning in Control.ComponentState then
+      if csDesigning in Control.ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
       {$ENDIF}
@@ -333,21 +306,6 @@ var
       end;
     end;
 
-    {Sometimes the control doesn't resize.  This will verifiy that it is the
-      size it is assigned to be}
-    {if (Control.Width <> Width2) or (Control.Height <> Height2) then
-      with Rect do
-        case AAlign of
-          alTop: Dec(Top, Height2 - Control.Height);
-          alBottom: Inc(Bottom, Height2 - Control.Height);
-          alLeft: Dec(Left, Width2 - Control.Width);
-          alRight: Inc(Right, Width2 - Control.Width);
-          alClient:
-            begin
-              Inc(Right, Width2 - Control.Width);
-              Inc(Bottom, Height2 - Control.Height);
-            end;
-        end;}
     {$IFDEF CHECK_POSITION}
     with Control do
       writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' Align=',AlignNames[AAlign]);
@@ -408,12 +366,25 @@ var
       DoPosition(TControl(AlignList[I]), AAlign);
   end;
 
+var
+  i: Integer;
+  ChildControl: TControl;
 begin
   if wcfAligningControls in FFlags then exit;
   Include(FFlags,wcfAligningControls);
+  
+  // unset all align needed flags
+  Exclude(FFlags,wcfReAlignNeeded);
+  for i:=ControlCount-1 downto 0 do begin
+    ChildControl:=Controls[i];
+    Exclude(ChildControl.FControlFlags,cfRequestAlignNeeded);
+  end;
+  
   try
-    //if csDesigning in ComponentState then
-    //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
+    {if csDesigning in ComponentState then begin
+      writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
+      if AControl<>nil then writeln('  AControl=',AControl.Name,':',AControl.ClassName);
+    end;}
     if AlignWork then
     begin
       AdjustClientRect(ARect);
@@ -446,41 +417,39 @@ Procedure TWinControl.DoAutoSize;
 var
   I : Integer;
   NewBounds : TRect;
+  NewClientWidth: Integer;
+  NewClientHeight: Integer;
+  AControl: TControl;
 begin
   If AutoSize and not AutoSizing then
     If csAcceptsControls in ControlStyle then
       If ControlCount > 0 then begin
         AutoSizing := True;
         NewBounds := Rect(High(Integer),High(Integer),0,0);
-        For I := 0 to ControlCount - 1 do
-          If Controls[I].Visible then
+        For I := 0 to ControlCount - 1 do begin
+          AControl:=Controls[I];
+          If AControl.Visible then
             With NewBounds do begin
-              Left := Min(Controls[I].Left, Left);
-              Top := Min(Controls[I].Top, Top);
-              Right := Max(Controls[I].Left + Controls[I].Width, Right);
-              Bottom := Max(Controls[I].Top + Controls[I].Height, Bottom);
+              Left := Min(AControl.Left, Left);
+              Top := Min(AControl.Top, Top);
+              Right := Max(AControl.Left + AControl.Width, Right);
+              Bottom := Max(AControl.Top + AControl.Height, Bottom);
             end;
-        For I := 0 to ControlCount - 1 do
-          If Controls[I] <> nil then begin
-            If Controls[I].Visible then begin
-              Controls[I].Left := Controls[I].Left - NewBounds.Left;
-              Controls[I].Top := Controls[I].Top - NewBounds.Top;
+        end;
+        For I := 0 to ControlCount - 1 do begin
+          AControl:=Controls[I];
+          If AControl <> nil then begin
+            If AControl.Visible then begin
+              AControl.Left := AControl.Left - NewBounds.Left;
+              AControl.Top := AControl.Top - NewBounds.Top;
             end;
           end;
-        ClientWidth := NewBounds.Right - NewBounds.Left;
-        ClientHeight := NewBounds.Bottom - NewBounds.Top;
+        end;
+        NewClientWidth := NewBounds.Right - NewBounds.Left;
+        NewClientHeight := NewBounds.Bottom - NewBounds.Top;
+        SetClientSize(Point(NewClientWidth, NewClientHeight));
         AutoSizing := False;
       end;
-end;
-
-{------------------------------------------------------------------------------}
-{  TWinControl BroadCast                                                       }
-{------------------------------------------------------------------------------}
-procedure TWinControl.BoundsChanged;
-begin
-  inherited BoundsChanged;
-  //writeln('TWinControl.BoundsChanged ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-  ReAlign;
 end;
 
 {------------------------------------------------------------------------------}
@@ -602,7 +571,7 @@ begin
       ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
       ' New=',r.RIght,'x',r.Bottom);
     {$ENDIF}
-    AlignControl(nil);
+    ReAlign;
     Resize;
   end;
 end;
@@ -1805,28 +1774,20 @@ begin
   end;
 End;
 
-{------------------------------------------------------------------------------}
-{  TWinControl ReAlign                                                          }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl ReAlign
+
+  Realign all childs
+------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
   if (csLoading in ComponentState) or (not HandleAllocated) then begin
     Include(FFlags,wcfReAlignNeeded);
     exit;
   end;
-  Exclude(FFlags,wcfReAlignNeeded);
   //writeln('TWinControl.ReAlign ',Name,':',ClassName);
   AlignControl(nil);
-end;
-
-procedure TWinControl.RequestAlign;
-begin
-  if (csLoading in ComponentState) or (not HandleAllocated) then begin
-    Include(FFlags,wcfRequestAlignNeeded);
-    exit;
-  end;
-  Exclude(FFlags,wcfRequestAlignNeeded);
-  inherited RequestAlign;
+  Exclude(FFlags,wcfReAlignNeeded);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1930,7 +1891,9 @@ End;
 {------------------------------------------------------------------------------}
 procedure TWinControl.AlignControl(AControl: TControl);
 var
-  Rect: TRect;
+  ARect: TRect;
+  i: Integer;
+  ChildControl: TControl;
 begin
   //if csDesigning in ComponentState then begin
   //  write('TWinControl.AlignControl ',Name,':',ClassName);
@@ -1938,17 +1901,30 @@ begin
   //end;
   if csDestroying in ComponentState then exit;
 
-  if FAlignLevel <> 0 then
-    Include(FControlState, csAlignmentNeeded)
-  else begin
-    DisableAlign;
-    try
-      Rect:= GetClientRect;
-      AlignControls(AControl, Rect);
-    finally
-      Exclude(FControlState, csAlignmentNeeded);
-      EnableAlign;
+  if FAlignLevel <> 0 then begin
+    Include(FControlState, csAlignmentNeeded);
+    exit;
+  end;
+  
+  // check if all childs have finished loading
+  for i:=0 to ControlCount-1 do begin
+    ChildControl:=Controls[i];
+    if csLoading in ChildControl.ComponentState then begin
+      // child is loading
+      // -> mark the child, that itself and its brothers needs realigning
+      // (it will do this, when it has finished loading)
+      Include(ChildControl.FControlFlags,cfRequestAlignNeeded);
+      exit;
     end;
+  end;
+  
+  DisableAlign;
+  try
+    ARect:= GetClientRect;
+    AlignControls(AControl, ARect);
+  finally
+    Exclude(FControlState, csAlignmentNeeded);
+    EnableAlign;
   end;
 End;
 
@@ -2415,9 +2391,9 @@ var
 {  procedure WriteClientRect(const Prefix: string);
   var r: TRect;
   begin
-    if (ClassName<>'TGROUPBOX') or (not HandleAllocated) then exit;
     LCLLinux.GetClientRect(Handle,r);
-    writeln('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
+    if csDesigning in ComponentState then
+      writeln('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
   end;}
   
 begin
@@ -2445,13 +2421,16 @@ begin
 
   //writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   //WriteClientRect('C');
-  RequestAlign;
-  
+
+  // realign childs
+  ReAlign;
+
   if FWinControls <> nil then begin
     for n := 0 to FWinControls.Count - 1 do
       with TWinControl(FWinControls.Items[n]) do
         if Visible then HandleNeeded;
   end;
+  
   //writeln('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
 end;
@@ -2517,16 +2496,15 @@ end;
 procedure TWinControl.Loaded;
 begin
   inherited Loaded;
+  RealizeBounds;
   FixupTabList;
   if wcfColorChanged in FFlags then begin
     CNSendMessage(LM_SETCOLOR, Self, nil);
     Exclude(FFlags,wcfColorChanged);
   end;
-  UpdateBaseBounds;
+  // align the childs
   if wcfReAlignNeeded in FFlags then
     ReAlign;
-  if wcfRequestAlignNeeded in FFlags then
-    RequestAlign;
 end;
 
 {------------------------------------------------------------------------------
@@ -2601,33 +2579,12 @@ begin
 end;
 
 procedure TWinControl.UnlockRealizeBounds;
-var
-  NewBounds: TRect;
 begin
-  if FRealizeBoundsLockCount<=0 then exit;
+  if FRealizeBoundsLockCount<=0 then
+    RaiseGDBException('UnlockRealizeBounds');
   dec(FRealizeBoundsLockCount);
-  if FRealizeBoundsLockCount=0 then begin
-    NewBounds:=Bounds(Left, Top, Width, Height);
-    if HandleAllocated
-    and (not (csLoading in ComponentState))
-    and (not CompareRect(@NewBounds,@FBoundsRealized)) then
-    begin
-      // the bounds were not yet send to the InterfaceObject -> send them
-      {$IFDEF CHECK_POSITION}
-      //if csDesigning in ComponentState then
-      writeln('[TWinControl.UnlockRealizeBounds] RealizeBounds B ',Name,':',ClassName,
-      ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-      ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
-      {$ENDIF}
-      BeginUpdateBounds;
-      try
-        FBoundsRealized:=NewBounds;
-        CNSendMessage(LM_SetSize, Self, @NewBounds);
-      finally
-        EndUpdateBounds;
-      end;
-    end;
-  end;
+  if FRealizeBoundsLockCount=0 then
+    RealizeBounds;
 end;
 
 {------------------------------------------------------------------------------
@@ -2763,6 +2720,32 @@ begin
 
 end;
 
+procedure TWinControl.RealizeBounds;
+var
+  NewBounds: TRect;
+begin
+  NewBounds:=Bounds(Left, Top, Width, Height);
+  if HandleAllocated
+  and (not (csLoading in ComponentState))
+  and (not CompareRect(@NewBounds,@FBoundsRealized)) then
+  begin
+    // the new bounds were not yet send to the InterfaceObject -> send them
+    {$IFDEF CHECK_POSITION}
+    if csDesigning in ComponentState then
+    writeln('[TWinControl.RealizeBounds] A ',Name,':',ClassName,
+    ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+    ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+    {$ENDIF}
+    BeginUpdateBounds;
+    try
+      FBoundsRealized:=NewBounds;
+      CNSendMessage(LM_SetSize, Self, @NewBounds);
+    finally
+      EndUpdateBounds;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TWinControl.CMShowingChanged
   Params:  Message : not used
@@ -2796,6 +2779,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.135  2003/06/11 22:29:42  mattias
+  fixed realizing bounds after loading form
+
   Revision 1.134  2003/06/10 17:23:35  mattias
   implemented tabstop
 
