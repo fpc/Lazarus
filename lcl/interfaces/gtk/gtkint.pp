@@ -182,6 +182,8 @@ uses
 
 
 procedure RaiseException(const Msg: string); forward;
+function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean; forward;
+function DeliverMessage(const Target: Pointer; var AMessage): Integer; forward;
 
 {$I gtklistsl.inc}
 
@@ -496,6 +498,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.80  2002/10/03 18:04:46  lazarus
+  MG: started customdrawitem
+
   Revision 1.79  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
