@@ -7199,30 +7199,24 @@ end;
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
 function TgtkObject.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
-{$IFNDEF Gtk1}
 var
   GtkWindow: PGtkWindow;
-{$ENDIF}
 begin
   Result:=false;
-  {$IFDEF Gtk1}
-  if nCmdShow<>SW_SHOWNORMAL then
-    writeln('TgtkObject.ShowWindow  not implemented yet');
-  exit;
-  {$ELSE}
-
   GtkWindow:=PGtkWindow(hWnd);
   if GtkWindow=nil then
     RaiseException('TgtkObject.ShowWindow  hWnd is nil');
-  
+
+  {$IFDEF Gtk2}
+
   case nCmdShow of
-  
+
   SW_SHOWNORMAL:
     begin
       gtk_window_deiconify(GtkWindow);
       gtk_window_unmaximize(GtkWindow);
     end;
-    
+
   SW_MINIMIZE:
     gtk_window_iconify(GtkWindow);
 
@@ -7230,6 +7224,21 @@ begin
     gtk_window_maximize(GtkWindow);
 
   end;
+
+  {$ELSE}
+
+  case nCmdShow of
+
+  SW_SHOWNORMAL:
+    begin
+      gdk_window_show(PgtkWidget(GtkWindow)^.Window);
+    end;
+
+  SW_MINIMIZE, SW_SHOWMAXIMIZED:
+    writeln('TgtkObject.ShowWindow:  not implemented yet');
+
+  end;
+
   Result:=true;
   {$ENDIF}
 end;
@@ -8065,6 +8074,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.233  2003/04/11 21:21:34  mattias
+  implemented closing unneeded package
+
   Revision 1.232  2003/04/11 17:10:20  mattias
   added but not implemented ComboBoxDropDown
 
