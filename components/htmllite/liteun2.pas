@@ -363,6 +363,7 @@ function HTMLToDos(FName: string): string;
 var
   I: integer;
 
+{$IFDEF HL_LAZARUS}
   procedure Replace(Old, New: char);
   var
     I: integer;
@@ -374,7 +375,19 @@ var
     I := Pos(Old, FName);
     end;
   end;
-
+{$ELSE}
+  procedure Replace(Oldchar, Newchar: char);
+  var
+    I: integer;
+  begin
+  I := Pos(Oldchar, FName);
+  while I > 0 do
+    begin
+    FName[I] := Newchar;
+    I := Pos(Oldchar, FName);
+    end;
+  end;
+{$ENDIF}
   procedure ReplaceEscapeChars;  
   var
     S: string[3];
@@ -393,6 +406,7 @@ var
     I := Pos('%', FName);
     end;
   end;
+
 
 begin
 ReplaceEscapeChars;

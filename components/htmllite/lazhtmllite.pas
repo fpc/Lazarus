@@ -8,8 +8,8 @@ unit LazHTMLLite;
 interface
 
 uses
-  HTMLLite, LiteDith, LitePars, LiteReadThd, LiteSbs1, LiteSubs, LiteUn2, 
-    LiteGIF2, LazarusPackageIntf; 
+  
+    HTMLLite, LiteDith, LitePars, LiteReadThd, LiteSbs1, LiteSubs, LiteUn2, LiteGIF2, LazarusPackageIntf; 
 
 implementation
 

@@ -11,6 +11,7 @@
 unit HTMLLite;
 
 interface
+{$DEFINE HL_LAZARUS}
 
 {$IFDEF HL_LAZARUS}
 uses
@@ -225,7 +226,11 @@ type
     procedure WMGetDlgCode(var Message: TMessage); message WM_GETDLGCODE;
     procedure BackgroundChange(Sender: TObject);
     procedure SubmitForm(Sender: TObject;
-      const Action, TheTarget, EncType, Method: string; Results: TStringList);
+{$IFDEF HL_LAZARUS}
+    const TheAction, TheTarget, EncType, Method: string; Results: TStringList);
+{$ELSE}
+    const Action, TheTarget, EncType, Method: string; Results: TStringList);
+{$ENDIF}
     procedure SetImageCacheCount(Value: integer);
     procedure WMFormSubmit(var Message: TMessage); message WM_FormSubmit;
     procedure WMMouseScroll(var Message: TMessage); message WM_MouseScroll;
@@ -2216,11 +2221,20 @@ else FSectionList.SubmitForm := Nil;
 end;
 
 procedure ThtmlLite.SubmitForm(Sender: TObject;
+{$IFDEF HL_LAZARUS}
+  const TheAction, TheTarget, EncType, Method: string; Results: TStringList);
+{$ELSE}
   const Action, TheTarget, EncType, Method: string; Results: TStringList);
+{$ENDIF}
+
 begin
 if Assigned(FOnFormSubmit) then
   begin
+{$IFDEF HL_LAZARUS}
+  FAction := TheAction;
+{$ELSE}
   FAction := Action;
+{$ENDIF}
   FMethod := Method;
   FFormTarget := TheTarget;
   FEncType:= EncType;

@@ -614,31 +614,36 @@ try
     while I <=5 do
       begin
       if not (Ch in ['0'..'9']) then
-        begin
+      begin
         if Ch = ';' then NextCh;
         if S <> '' then
           begin
-          N := StrToInt(S);
-          if (N > 255) then    
-            begin     
-            W := WideChar(N);
-            S := WideCharLenToString(@W, 1);
-            LCToken.AddChar(S[1], SaveIndex);
-            GoTo 2;
-            end
-          else if (byte(N) in [9, 10, 32..255]) then
+            N := StrToInt(S);
+            if (N > 255) then
             begin
-            if N = 9 then LCToken.AddChar(' ', SaveIndex)
-            else LCToken.AddChar(chr(N), SaveIndex);
-            GoTo 2;
+            //don't know what to do about widechar , comment out for now
+          {$IFNDEF HL_LAZARUS}
+              W := WideChar(N);
+              S := WideCharLenToString(@W, 1);
+              LCToken.AddChar(S[1], SaveIndex);
+          {$ELSE}
+              LCToken.AddChar({S[1]}' ', SaveIndex);
+          {$ENDIF}
+              GoTo 2;
+            end
+            else if (byte(N) in [9, 10, 32..255]) then
+            begin
+              if N = 9 then LCToken.AddChar(' ', SaveIndex)
+              else LCToken.AddChar(chr(N), SaveIndex);
+              GoTo 2;
             end;
           end;
-        LCToken.Concat(Collect);
-        GoTo 2;
+          LCToken.Concat(Collect);
+          GoTo 2;
         end;
-      S := S+LCh;
-      Inc(I);
-      NextCh;
+        S := S+LCh;
+        Inc(I);
+        NextCh;
       end;
     LCToken.Concat(Collect);
     GoTo 2;
@@ -1271,14 +1276,22 @@ procedure ThlParser.GetOptions(Select: TListBoxFormControlObj);
  {get the <option>s for Select form control}
 var
   Selected, InOption: boolean;
+{$IFDEF HL_LAZARUS}
+  Answer, S: string[255];
+{$ELSE}
   Value, S: string[255];
+{$ENDIF}
   T: TAttribute;
   SaveNoBreak: boolean;
 begin
 SaveNoBreak := NoBreak;
 NoBreak := False;
 Next;
+{$IFDEF HL_LAZARUS}
+S := '';  Answer := '';
+{$ELSE}
 S := '';  Value := '';
+{$ENDIF}
 Selected := False;  InOption := False;
 while not (Sy in[SelectEndSy, EofSy]) do
   begin
@@ -1289,9 +1302,17 @@ while not (Sy in[SelectEndSy, EofSy]) do
       if S <> '' then
         begin
         if InOption then
+{$IFDEF HL_LAZARUS}
+          Select.AddStr(S, Answer, Selected);
+{$ELSE}
           Select.AddStr(S, Value, Selected);
+{$ENDIF}
         S := '';
+{$IFDEF HL_LAZARUS}
+        Answer := '';
+{$ELSE}
         Value := '';
+{$ENDIF}
         Selected := False;
         end;
       InOption := Sy = OptionSy;
@@ -1299,7 +1320,11 @@ while not (Sy in[SelectEndSy, EofSy]) do
         begin
         Selected := Attributes.Find(SelectedSy, T);
         if Attributes.Find(ValueSy, T) then
+{$IFDEF HL_LAZARUS}
+          Answer := T.Name;
+{$ELSE}
           Value := T.Name;
+{$ENDIF}
         end;
       end;
     TextSy: if InOption then
@@ -1311,7 +1336,11 @@ if InOption then
   begin
   S := Trim(S);
   if S <> '' then
+{$IFDEF HL_LAZARUS}
+    Select.AddStr(S, Answer, Selected);
+{$ELSE}
     Select.AddStr(S, Value, Selected);
+{$ENDIF}
   end;
 NoBreak := SaveNoBreak;
 end;
@@ -1392,17 +1421,30 @@ const
 var
   Lang, AName: string; 
   T: TAttribute;
+{$IFDEF HL_LAZARUS}
+  TempStore: PChar;
+{$ELSE}
   Buffer: PChar;
+{$ENDIF}
   Pos, Size: integer;
 
   procedure AddText(const S: string);
   begin
   if Pos + Length(S) >= Size then
-    begin   {Delphi 2,3, add to buffer}
+{$IFDEF HL_LAZARUS}
+    begin   {Delphi 2,3, add to TempStore}
+    ReAllocMem(TempStore, Size+10000);
+{$ELSE}
+    begin   {Delphi 2,3, add to Buffer}
     ReAllocMem(Buffer, Size+10000);
+{$ENDIF}
     Inc(Size, 10000);
     end;
+{$IFDEF HL_LAZARUS}
+  Move(S[1], TempStore[Pos], Length(S));
+{$ELSE}
   Move(S[1], Buffer[Pos], Length(S));
+{$ENDIF}
   Inc(Pos, Length(S));
   end;
 
@@ -1464,7 +1506,11 @@ try
       AName := T.Name
     else AName := '';                  
 
+{$IFDEF HL_LAZARUS}
+    GetMem(TempStore, Block);
+{$ELSE}
     GetMem(Buffer, Block);
+{$ENDIF}
     Pos := 0;
     Size := Block;
     try
@@ -1477,10 +1523,15 @@ try
         Next1;
         end;
       AddText(#0);
+{$IFDEF HL_LAZARUS}
+      ReAllocMem(TempStore, Size);
+      AScript(CallingObject, AName, Lang, TempStore);
+{$ELSE}
       ReAllocMem(Buffer, Size);
       AScript(CallingObject, AName, Lang, Buffer);
+{$ENDIF}
     except
-      FreeMem(Buffer);
+      FreeMem(TempStore);
       Raise;
       end;
     end
