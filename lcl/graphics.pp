@@ -342,6 +342,7 @@ type
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); virtual; abstract;
     function GetEmpty: Boolean; virtual; abstract;
     function GetHeight: Integer; virtual; abstract;
+    function GetPalette: HPALETTE; virtual;
     function GetTransparent: Boolean; virtual;
     function GetWidth: Integer; virtual; abstract;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
@@ -349,6 +350,7 @@ type
       const Msg: string); dynamic;
     procedure ReadData(Stream: TStream); virtual;
     procedure SetHeight(Value: Integer); virtual; abstract;
+    procedure SetPalette(Value: HPALETTE); virtual;
     procedure SetTransparent(Value: Boolean); virtual;
     procedure SetWidth(Value: Integer); virtual; abstract;
     procedure WriteData(Stream: TStream); virtual;
@@ -366,9 +368,10 @@ type
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
-    property PaletteModified: Boolean read FPaletteModified write FPaletteModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
+    property Palette: HPALETTE read GetPalette write SetPalette;
+    property PaletteModified: Boolean read FPaletteModified write FPaletteModified;
     property Transparent: Boolean read GetTransparent write SetTransparent;
     property Width: Integer read GetWidth write SetWidth;
   end;
@@ -469,6 +472,7 @@ type
 
 
   EInvalidGraphic = class(Exception);
+  EInvalidGraphicOperation = class(Exception);
 
 
   { TCanvas }
@@ -597,7 +601,7 @@ type
 
   { TBITMAP }
 
- TSharedImage = class
+  TSharedImage = class
   private
     FRefCount: Integer;
   protected
@@ -607,7 +611,7 @@ type
     property RefCount: Integer read FRefCount;
   end;
 
- TBitmapImage = class(TSharedImage)
+  TBitmapImage = class(TSharedImage)
   private
     FHandle: HBITMAP;
     FMaskHandle: HBITMAP;
@@ -623,6 +627,9 @@ type
     FDIB: TDIBSection;
   end;
 
+  TBitmapHandleType = (bmDIB, bmDDB);
+  TTransparentMode = (tmAuto, tmFixed);
+
   TBitmap = class(TGraphic)
   private
     FCanvas: TCanvas;
@@ -632,6 +639,7 @@ type
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
     FHeight: integer;
+    FTransparentMode: TTransparentMode;
     FWidth: integer;
     Procedure FreeContext;
     Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
@@ -639,11 +647,15 @@ type
     procedure SetHandle(Value: HBITMAP);
     procedure SetMaskHandle(Value: HBITMAP);
     function GetHandle: HBITMAP; virtual;
+    function GetHandleType: TBitmapHandleType;
     function GetMaskHandle: HBITMAP; virtual;
+    function GetScanline(Row: Integer): Pointer;
+    procedure SetHandleType(Value: TBitmapHandleType); virtual;
   protected
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
+    function GetPalette: HPALETTE; override;
     function GetWidth: Integer; override;
     procedure HandleNeeded;
     procedure MaskHandleNeeded;
@@ -651,6 +663,8 @@ type
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; Size: Longint); virtual;
     procedure SetHeight(Value: Integer); override;
+    procedure SetPalette(Value: HPALETTE); override;
+    procedure SetTransparentMode(Value: TTransparentMode);
     procedure SetWidth(Value: Integer); override;
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
@@ -661,6 +675,7 @@ type
     procedure FreeImage;
     function HandleAllocated: boolean;
     property Handle: HBITMAP read GetHandle write SetHandle;
+    property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
@@ -670,12 +685,16 @@ type
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
     Function ReleaseHandle : HBITMAP;
+    function ReleasePalette: HPALETTE;
     property Canvas : TCanvas read FCanvas write FCanvas;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property Monochrome: Boolean read FMonochrome write FMonochrome;
     // TODO: reflect real pixelformat of DC
     property PixelFormat: TPixelFormat read FPixelFormat write FPixelFormat;
+    property ScanLine[Row: Integer]: Pointer read GetScanLine;
     property TransparentColor: TColor read FTransparentColor write FTransparentColor;
+    property TransparentMode: TTransparentMode read FTransparentMode
+      write SetTransparentMode default tmAuto;
   end;
 
 
@@ -747,6 +766,28 @@ function ReadXPMSize(XPM: PPChar; var Width, Height, ColorCount: integer
 var
   { Stores information about the current screen }
   ScreenInfo : TLMScreenInit;
+
+const
+  FontCharsets: array[0..18] of TIdentMapEntry = (
+    (Value: ANSI_CHARSET;        Name: 'ANSI_CHARSET'),
+    (Value: DEFAULT_CHARSET;     Name: 'DEFAULT_CHARSET'),
+    (Value: SYMBOL_CHARSET;      Name: 'SYMBOL_CHARSET'),
+    (Value: MAC_CHARSET;         Name: 'MAC_CHARSET'),
+    (Value: SHIFTJIS_CHARSET;    Name: 'SHIFTJIS_CHARSET'),
+    (Value: HANGEUL_CHARSET;     Name: 'HANGEUL_CHARSET'),
+    (Value: JOHAB_CHARSET;       Name: 'JOHAB_CHARSET'),
+    (Value: GB2312_CHARSET;      Name: 'GB2312_CHARSET'),
+    (Value: CHINESEBIG5_CHARSET; Name: 'CHINESEBIG5_CHARSET'),
+    (Value: GREEK_CHARSET;       Name: 'GREEK_CHARSET'),
+    (Value: TURKISH_CHARSET;     Name: 'TURKISH_CHARSET'),
+    (Value: VIETNAMESE_CHARSET;  Name: 'VIETNAMESE_CHARSET'),
+    (Value: HEBREW_CHARSET;      Name: 'HEBREW_CHARSET'),
+    (Value: ARABIC_CHARSET;      Name: 'ARABIC_CHARSET'),
+    (Value: BALTIC_CHARSET;      Name: 'BALTIC_CHARSET'),
+    (Value: RUSSIAN_CHARSET;     Name: 'RUSSIAN_CHARSET'),
+    (Value: THAI_CHARSET;        Name: 'THAI_CHARSET'),
+    (Value: EASTEUROPE_CHARSET;  Name: 'EASTEUROPE_CHARSET'),
+    (Value: OEM_CHARSET;         Name: 'OEM_CHARSET'));
 
 
 (***************************************************************************
@@ -912,6 +953,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/12/12 17:47:44  mattias
+  new constants for compatibility
+
   Revision 1.55  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
