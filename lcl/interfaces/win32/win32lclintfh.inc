@@ -6,7 +6,7 @@
 
   !! Keep alphabetical !!
 
-  Support routines go to gtkproc.pp
+  Support routines go to win32proc.inc
 
  ******************************************************************************
  Interface
@@ -28,6 +28,7 @@
 
 //##apiwiz##sps##   // Do not remove
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
+function GetControlConstraints(Constraints: TObject): boolean;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
@@ -41,6 +42,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/02/02 16:56:44  micha
+  implement GetControlConstraints for combobox
+
   Revision 1.7  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

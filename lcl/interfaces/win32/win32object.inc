@@ -690,27 +690,20 @@ activate_time :	the time at which the activation event occurred.
         begin
           TheWinControl:=TWinControl(Sender);
           SizeRect := PRect(Data)^;
-          Case TheWinControl.FCompStyle of
-          csForm:
-          begin
-            // the LCL defines the size of a form without border, win32 with.
-            // -> adjust size according to BorderStyle
-            Case TCustomForm(Sender).BorderStyle of
-            bsSizeable,bsSingle,bsDialog:
-              Windows.AdjustWindowRect(@SizeRect,WS_OVERLAPPEDWINDOW,false);
-            bsToolWindow,bsSizeToolWin:
-              Windows.AdjustWindowRectEx(@SizeRect,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
-            //bsNone: -> Do Nothing
-            End;
-          end;
-          csComboBox:
+          case TheWinControl.FCompStyle of
+            csForm:
             begin
-              // the height of a combobox is fixed
-              Windows.GetWindowRect(Handle,@SizeRect);
-              SizeRect.Right:=Right;
-              SizeRect.Left:=Left;
+              // the LCL defines the size of a form without border, win32 with.
+              // -> adjust size according to BorderStyle
+              case TCustomForm(Sender).BorderStyle of
+                bsSizeable,bsSingle,bsDialog:
+                  Windows.AdjustWindowRect(@SizeRect,WS_OVERLAPPEDWINDOW,false);
+                bsToolWindow,bsSizeToolWin:
+                  Windows.AdjustWindowRectEx(@SizeRect,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
+                //bsNone: -> Do Nothing
+              end;
             end;
-          end; //case
+          end;
           ResizeChild(TheWinControl, Left, Top,
              SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
         end; //with
@@ -2996,6 +2989,9 @@ End;
 
 {
   $Log$
+  Revision 1.164  2004/02/02 16:56:44  micha
+  implement GetControlConstraints for combobox
+
   Revision 1.163  2004/02/01 09:58:21  mattias
   fixed showing statusbar at designtime  from vincent
 

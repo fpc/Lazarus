@@ -35,9 +35,40 @@
   Returns:
 
  ------------------------------------------------------------------------------}
-function TWIN32Object.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+function TWin32Object.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
 begin
   // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetControlConstraints
+  Params: Constraints: TObject
+  Returns: true on success
+
+  Updates the constraints object (e.g. TSizeConstraints) with interface specific
+  bounds.
+ ------------------------------------------------------------------------------}
+function TWin32Object.GetControlConstraints(Constraints: TObject): boolean;
+var
+  SizeConstraints: TSizeConstraints;
+  SizeRect: TRect;
+  Height: Integer;
+begin
+  Result:=true;
+  if Constraints is TSizeConstraints then begin
+    SizeConstraints:=TSizeConstraints(Constraints);
+
+    if (SizeConstraints.Control=nil) then exit;
+
+    if SizeConstraints.Control is TComboBox then
+    begin
+      // the height of a combobox is fixed
+      Windows.GetWindowRect(TWinControl(SizeConstraints.Control).Handle, @SizeRect);
+      Height := SizeRect.Bottom - SizeRect.Top;
+      SizeConstraints.SetInterfaceConstraints(0, Height, 0, Height);
+    end;
+
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -158,6 +189,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/02/02 16:56:43  micha
+  implement GetControlConstraints for combobox
+
   Revision 1.8  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 
