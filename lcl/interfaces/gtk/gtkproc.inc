@@ -98,10 +98,23 @@ begin
       CurrentBrush := SourceDC^.CurrentBrush;
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
+      DeleteObject(ClipRegion);
+      ClipRegion := SourceDC^.ClipRegion;
       SavedContext := nil;
     end;
   end;
   Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
+end;
+
+Procedure SelectGDIRegion(const DC: HDC);
+begin
+  with PDeviceContext(DC)^ do
+  begin
+    gdk_gc_set_clip_region(gc,  nil);
+    gdk_gc_set_clip_rectangle (gc,  nil);
+    If ClipRegion <> 0 then
+      gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -165,6 +178,7 @@ procedure SelectGDKTextProps(const DC: HDC);
 begin
   with PDeviceContext(DC)^ do
   begin
+    gdk_gc_set_fill(GC, GDK_SOLID);
     gdk_gc_set_foreground(GC, @CurrentTextColor);
     gdk_gc_set_background(GC, @CurrentBackColor);
     Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Pixel, CurrentTextColor.Red, CurrentTextColor.Green, CurrentTextColor.Blue]));
@@ -2173,6 +2187,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.59  2002/08/15 15:46:49  lazarus
+  MG: added changes from Andrew (Clipping)
+
   Revision 1.58  2002/08/15 15:11:01  lazarus
   MG: fixed showing menu accelarator shortcuts
 
