@@ -1609,14 +1609,14 @@ end;
  ------------------------------------------------------------------------------}
 destructor TControl.Destroy;
 begin
-//writeln('[TControl.Destroy] A ',Name,':',ClassName);
+  //writeln('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
   SetParent(nil);
   FConstraints.Free;
   FFont.Free;
-//writeln('[TControl.Destroy] B ',Name,':',ClassName);
+  //writeln('[TControl.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
-//writeln('[TControl.Destroy] END ',Name,':',ClassName);
+  //writeln('[TControl.Destroy] END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1782,6 +1782,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.71  2002/08/31 11:37:09  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.70  2002/08/30 12:32:20  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
