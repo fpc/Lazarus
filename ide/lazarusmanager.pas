@@ -168,7 +168,7 @@ procedure TLazarusManager.WaitForLazarus;
   begin
     ProcessHandle := OpenProcess(SYNCHRONIZE, false, PID);
     if ProcessHandle<>HWND(nil) then begin
-      WaitForSingleObject(ProcessHandle, INFINITE) of
+      WaitForSingleObject(ProcessHandle, INFINITE);
       CloseHandle(ProcessHandle);
     end;
   end;
@@ -261,6 +261,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.12  2004/11/20 13:14:28  vincents
+  fixed typo.
+
   Revision 1.11  2004/11/19 12:23:43  vincents
   fixed WaitForLazarus: close process handle after use.
 
