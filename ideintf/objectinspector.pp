@@ -554,8 +554,8 @@ begin
     ScrollInfo.nPage := ClientHeight;
     if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
     ScrollInfo.nPos := TopY;
+    ShowScrollBar(Handle, SB_VERT, True);
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-    ShowScrollBar(Handle,SB_VERT,True);
   end;
 end;
 
