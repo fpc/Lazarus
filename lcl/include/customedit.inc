@@ -38,6 +38,12 @@ begin
   end;
 end;
 
+procedure TCustomEdit.CreateWnd;
+begin
+  inherited CreateWnd;
+  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.Create
   Params:  none
@@ -222,6 +228,7 @@ procedure TCustomEdit.SetEchoMode(Val : TEchoMode);
 begin
   if (Val <> FEchoMode) then begin
     FEchoMode:= Val;
+writeln('TCustomEdit.SetEchoMode ',FEchoMode=emPassword,' ',HandleAllocated);
     if HandleAllocated then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
@@ -303,6 +310,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/12/22 23:25:34  mattias
+  fixed setting TEdit properties after creating handle
+
   Revision 1.14  2002/12/12 17:47:46  mattias
   new constants for compatibility
 

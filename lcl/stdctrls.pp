@@ -437,6 +437,7 @@ type
     procedure SetReadOnly(Value : Boolean);
   Protected
     Procedure DoAutoSize; Override;
+    procedure CreateWnd; override;
 
     procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
     procedure Change; dynamic;
@@ -1386,6 +1387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/12/22 23:25:34  mattias
+  fixed setting TEdit properties after creating handle
+
   Revision 1.69  2002/12/12 17:47:45  mattias
   new constants for compatibility
 
