@@ -105,6 +105,56 @@ type
   
 
   { Action Registration }
+  
+type
+  TRegisteredAction = class
+  private
+    FActionClass: TBasicActionClass;
+    FGroupId: Integer;
+  public
+    constructor Create(TheActionClass: TBasicActionClass; TheGroupID: integer);
+    property ActionClass: TBasicActionClass read FActionClass;
+    property GroupId: Integer read FGroupId;
+  end;
+  PRegisteredAction = ^TRegisteredAction;
+
+  TRegisteredActionCategory = class
+  private
+    FCount: integer;
+    FName: string;
+    FItems: PRegisteredAction;
+    FResource: TComponentClass;
+    function GetItems(Index: integer): TRegisteredAction;
+  public
+    constructor Create(const CategoryName: string; AResource: TComponentClass);
+    procedure Add(const AClasses: array of TBasicActionClass);
+    destructor Destroy; override;
+    function IndexOfClass(AClass: TBasicActionClass): integer;
+    procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
+    property Count: integer read FCount;
+    property Name: string read FName;
+    property Items[Index: integer]: TRegisteredAction read GetItems;
+    property Resource: TComponentClass read FResource;
+  end;
+  
+  TRegisteredActionCategories = class
+  private
+    FItems: TList;
+    function GetItems(Index: integer): TRegisteredActionCategory;
+  public
+    procedure Add(const CategoryName: string;
+                  const AClasses: array of TBasicActionClass;
+                  AResource: TComponentClass);
+    destructor Destroy; override;
+    function IndexOfCategory(const CategoryName: string): integer;
+    procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
+    function FindResource(AClass: TBasicActionClass): TComponentClass;
+    function Count: integer;
+    property Items[Index: integer]: TRegisteredActionCategory read GetItems;
+  end;
+
+var
+  RegisteredActions: TRegisteredActionCategories = nil;
 
 type
   TNotifyActionListChange = procedure;
@@ -112,13 +162,13 @@ type
 var
   NotifyActionListChange: TNotifyActionListChange = nil;
 
-procedure RegActions(const ACategory: string;
-                     const AClasses: array of TBasicActionClass;
-                     AResource: TComponentClass);
-procedure UnRegActions(const Classes: array of TBasicActionClass);
+procedure RegisterActions(const ACategory: string;
+                          const AClasses: array of TBasicActionClass;
+                          AResource: TComponentClass);
+procedure UnRegisterActions(const Classes: array of TBasicActionClass);
 procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
-function CreateAction(TheOwner: TComponent; ActionClass:
-                      TBasicActionClass): TBasicAction;
+function CreateAction(TheOwner: TComponent;
+                      ActionClass: TBasicActionClass): TBasicAction;
 
 
   { ActionListEditorForm }
@@ -133,26 +183,70 @@ procedure ShowActionListEditor(AActionList: TActionList;
 implementation
 
 
-procedure RegActions(const ACategory: string;
+procedure RegisterActions(const ACategory: string;
   const AClasses: array of TBasicActionClass; AResource: TComponentClass);
 begin
-
+  RegisteredActions.Add(ACategory,AClasses,AResource);
 end;
 
-procedure UnRegActions(const Classes: array of TBasicActionClass);
+procedure UnRegisterActions(const Classes: array of TBasicActionClass);
 begin
 
 end;
 
 procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
 begin
-
+  RegisteredActions.EnumActions(Proc,Info);
 end;
 
-function CreateAction(TheOwner: TComponent; ActionClass:
-  TBasicActionClass): TBasicAction;
+function CreateAction(TheOwner: TComponent;
+  ActionClass: TBasicActionClass): TBasicAction;
+var
+  ResourceClass: TComponentClass;
+  ResInstance: TComponent;
+  i: Integer;
+  Component: TComponent;
+  Action: TBasicAction;
+  Src: TCustomAction;
+  Dest: TCustomAction;
 begin
-
+  Result := ActionClass.Create(TheOwner);
+  // find a Resource component registered for this ActionClass
+  ResourceClass:=RegisteredActions.FindResource(ActionClass);
+  if ResourceClass=nil then exit;
+  ResInstance:=ResourceClass.Create(nil);
+  try
+    // find an action owned by the Resource component
+    Action:=nil;
+    for i:=0 to ResInstance.ComponentCount-1 do begin
+      Component:=ResInstance.Components[i];
+      if (CompareText(Component.ClassName,ActionClass.ClassName)=0)
+      and (Component is TBasicAction) then begin
+        Action:=TBasicAction(Component);
+        break;
+      end;
+    end;
+    if Action=nil then exit;
+    
+    // copy TCustomAction properties
+    if (Action is TCustomAction) and (Result is TCustomAction) then begin
+      Src:=TCustomAction(Action);
+      Dest:=TCustomAction(Result);
+      Dest.Caption:=Src.Caption;
+      Dest.Checked:=Src.Checked;
+      Dest.Enabled:=Src.Enabled;
+      Dest.HelpContext:=Src.HelpContext;
+      Dest.Hint:=Src.Hint;
+      Dest.ImageIndex:=Src.ImageIndex;
+      Dest.ShortCut:=Src.ShortCut;
+      Dest.Visible:=Src.Visible;
+      if (Dest.ImageIndex>=0) then begin
+        // TODO: action image list
+      end;
+    end;
+  finally
+    ResInstance.Free;
+  end;
 end;
 
 procedure ShowActionListEditor(AActionList: TActionList;
@@ -520,17 +614,180 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure RegisterActions (const CategoryName: string; const AClasses: array of TBasicActionClass; Resource: TComponentClass);
+{ TRegisteredActionCategory }
+
+function TRegisteredActionCategory.GetItems(Index: integer): TRegisteredAction;
+begin
+  Result:=FItems[Index];
+end;
+
+constructor TRegisteredActionCategory.Create(const CategoryName: string;
+  AResource: TComponentClass);
+begin
+  FName:=CategoryName;
+  FResource:=AResource;
+end;
+
+procedure TRegisteredActionCategory.Add(
+  const AClasses: array of TBasicActionClass);
+var
+  i: integer;
+  CurCount: Integer;
+  IsDouble: Boolean;
+  j: Integer;
+  AClass: TBasicActionClass;
+begin
+  if length(AClasses)=0 then exit;
+  CurCount:=FCount;
+  inc(FCount,length(AClasses));
+  // add all classes (ignoring doubles)
+  ReAllocMem(FItems,SizeOf(TBasicActionClass)*FCount);
+  for i:=Low(AClasses) to High(AClasses) do begin
+    AClass:=AClasses[i];
+    // check if already exists
+    IsDouble:=false;
+    for j:=0 to CurCount-1 do begin
+      if FItems[j].ActionClass=AClass then begin
+        IsDouble:=true;
+        break;
+      end;
+    end;
+    // add
+    if not IsDouble then begin
+      // TODO use current designer group instead of -1
+      FItems[CurCount]:=TRegisteredAction.Create(AClass,-1);
+      inc(CurCount);
+      RegisterNoIcon([AClass]);
+      Classes.RegisterClass(AClass);
+    end;
+  end;
+  // resize FItems
+  if CurCount<FCount then begin
+    FCount:=CurCount;
+    ReAllocMem(FItems,SizeOf(TBasicActionClass)*FCount);
+  end;
+end;
+
+destructor TRegisteredActionCategory.Destroy;
 var
   i: Integer;
 begin
-  for i := 0 to High(AClasses) do
-    RegisterClass(AClasses[i]);
+  for i:=Count-1 downto 0 do Items[i].Free;
+  ReAllocMem(FItems,0);
+  inherited Destroy;
+end;
+
+function TRegisteredActionCategory.IndexOfClass(AClass: TBasicActionClass
+  ): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (FItems[Result].ActionClass<>AClass) do dec(Result);
+end;
+
+procedure TRegisteredActionCategory.EnumActions(Proc: TEnumActionProc;
+  Info: Pointer);
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Proc(Name,FItems[i].ActionClass,Info);
+end;
+
+{ TRegisteredAction }
+
+constructor TRegisteredAction.Create(TheActionClass: TBasicActionClass;
+  TheGroupID: integer);
+begin
+  FActionClass:=TheActionClass;
+  FGroupId:=TheGroupID;
+end;
+
+{ TRegisteredActionCategories }
+
+function TRegisteredActionCategories.GetItems(Index: integer
+  ): TRegisteredActionCategory;
+begin
+  Result:=TRegisteredActionCategory(FItems[Index]);
+end;
+
+procedure TRegisteredActionCategories.Add(const CategoryName: string;
+  const AClasses: array of TBasicActionClass; AResource: TComponentClass);
+var
+  i: LongInt;
+  Category: TRegisteredActionCategory;
+begin
+  i:=IndexOfCategory(CategoryName);
+  if i>=0 then begin
+    Category:=Items[i];
+    if Category.Resource<>AResource then
+      raise Exception.Create('TRegisteredActionCategories.Add Resource<>OldResource');
+  end else begin
+    Category:=TRegisteredActionCategory.Create(CategoryName,AResource);
+    if FItems=nil then FItems:=TList.Create;
+    FItems.Add(Category);
+  end;
+  Category.Add(AClasses);
+  if Assigned(NotifyActionListChange) then
+    NotifyActionListChange;
+end;
+
+destructor TRegisteredActionCategories.Destroy;
+var
+  i: Integer;
+begin
+  for i:=Count-1 downto 0 do Items[i].Free;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+function TRegisteredActionCategories.IndexOfCategory(const CategoryName: string
+  ): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (CompareText(Items[Result].Name,CategoryName)<>0) do
+    dec(Result);
+end;
+
+procedure TRegisteredActionCategories.EnumActions(Proc: TEnumActionProc;
+  Info: Pointer);
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].EnumActions(Proc,Info);
+end;
+
+function TRegisteredActionCategories.FindResource(AClass: TBasicActionClass
+  ): TComponentClass;
+var
+  Category: TRegisteredActionCategory;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    Category:=Items[i];
+    if Category.IndexOfClass(AClass)>=0 then begin
+      Result:=Category.Resource;
+      exit;
+    end;
+  end;
+  Result:=nil;
+end;
+
+function TRegisteredActionCategories.Count: integer;
+begin
+  if FItems=nil then
+    Result:=0
+  else
+    Result:=FItems.Count;
 end;
 
 initialization
+  RegisteredActions:=TRegisteredActionCategories.Create;
   RegisterActionsProc := @RegisterActions;
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
+finalization
+  RegisteredActions.Free;
+  RegisteredActions:=nil;
 end.
 
 
