@@ -230,6 +230,7 @@ function StrToIDEWindowPlacement(const s: string): TIDEWindowPlacement;
 function StrToIDEWindowState(const s: string): TIDEWindowState;
 
   //----------------------------------------------------------------------------
+  // for modal forms (dialogs) in the IDE
 type
   TIDEDialogLayout = class
   private

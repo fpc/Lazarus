@@ -1,4 +1,4 @@
-object ViewUnits1: TVIEWUNITS1
+object VIEWUNITS1: TVIEWUNITS1
   CAPTION = 'View Project Units'
   COLOR = -2147483633
   CLIENTHEIGHT = 200
@@ -9,8 +9,8 @@ object ViewUnits1: TVIEWUNITS1
   TOP = 412
   WIDTH = 325
   object btnOK: TBUTTON
+    ANCHORS = [aktop, akleft]
     CAPTION = 'OK'
-    FONT.COLOR = -2147483640
     ONCLICK = BTNOKCLICK
     LEFT = 235
     HEIGHT = 25
@@ -18,8 +18,9 @@ object ViewUnits1: TVIEWUNITS1
     WIDTH = 75
   end
   object btnCancel: TBUTTON
+    ANCHORS = [aktop, akleft]
     CAPTION = 'Cancel'
-    FONT.COLOR = -2147483640
+    TABORDER = 1
     ONCLICK = BTNCANCELCLICK
     LEFT = 235
     HEIGHT = 25
@@ -27,14 +28,18 @@ object ViewUnits1: TVIEWUNITS1
     WIDTH = 75
   end
   object Edit1: TEDIT
+    ANCHORS = [aktop, akleft]
     TEXT = 'Edit1'
+    TABORDER = 2
     LEFT = 10
     HEIGHT = 25
     TOP = 10
     WIDTH = 215
   end
   object Listbox1: TLISTBOX
+    ANCHORS = [aktop, akleft]
     BORDERSTYLE = bssingle
+    TABORDER = 3
     ONCLICK = LISTBOX1CLICK
     LEFT = 10
     HEIGHT = 145

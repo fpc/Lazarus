@@ -38,7 +38,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, Forms, Dialogs, LResources, Buttons, StdCtrls,
-  LazarusIdeStrConsts;
+  LazarusIdeStrConsts, IDEOptionDefs;
 
 type
   TViewUnitsEntry = class
@@ -180,6 +180,9 @@ begin
       Visible:=true;
     end;
   end;
+  
+  IDEDialogLayoutList.ApplyLayout(Self,325,300);
+
   ViewUnitsResize(nil);
 end;
 
@@ -219,12 +222,14 @@ end;
 
 Procedure TViewUnits.btnOKClick(Sender : TOBject);
 Begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrOK;
 End;
 
 
 Procedure TViewUnits.btnCancelClick(Sender : TOBject);
 Begin
+  IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
 end;
 
@@ -241,6 +246,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.13  2002/10/14 08:27:37  lazarus
+  MG: view units/forms dialog size is now saved
+
   Revision 1.12  2002/09/20 07:26:37  lazarus
   MG: applied localization from Vasily
 
