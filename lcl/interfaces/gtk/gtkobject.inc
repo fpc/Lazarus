@@ -3113,12 +3113,12 @@ begin
   	    Widget:= nil;
           end;
   	  if Widget <> nil then begin
-            if PGtkEditable(Widget)^.selection_start_pos
-               < PGtkEditable(Widget)^.selection_end_pos
+            if PGtkOldEditable(Widget)^.selection_start_pos
+               < PGtkOldEditable(Widget)^.selection_end_pos
             then
-              Result:= PGtkEditable(Widget)^.selection_start_pos
+              Result:= PGtkOldEditable(Widget)^.selection_start_pos
   	    else
-  	      Result:= PGtkEditable(Widget)^.current_pos;// selection_end_pos
+  	      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
           end else Result:= 0;
         end;
       end;
@@ -3128,12 +3128,12 @@ begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
           csComboBox:
-            Result:= Abs(PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
-                     - PGtkEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos);
+            Result:= Abs(PGtkOldEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
+                     - PGtkOldEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos);
           csEdit, csMemo:
   	    begin
   	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
-              Result:= Abs(PGtkEditable(Widget)^.selection_end_pos - PGtkEditable(Widget)^.selection_start_pos);
+              Result:= Abs(PGtkOldEditable(Widget)^.selection_end_pos - PGtkOldEditable(Widget)^.selection_start_pos);
   	    end;
           end;
         end;
@@ -3163,7 +3163,7 @@ begin
       	  end;
 
           if Widget<>nil then begin
-            gtk_editable_set_position(PGtkEditable(Widget), Integer(Data));
+            gtk_editable_set_position(PGtkOldEditable(Widget), Integer(Data));
           end;
         end;
       end;
@@ -3183,9 +3183,9 @@ begin
       	  end;
 
           if Widget<>nil then begin
-            gtk_editable_select_region(PGtkEditable(Widget),
-              gtk_editable_get_position(PGtkEditable(Widget)),
-              gtk_editable_get_position(PGtkEditable(Widget)) + Integer(Data));
+            gtk_editable_select_region(PGtkOldEditable(Widget),
+              gtk_editable_get_position(PGtkOldEditable(Widget)),
+              gtk_editable_get_position(PGtkOldEditable(Widget)) + Integer(Data));
       	  end;
       	end;
       end;
@@ -3442,7 +3442,7 @@ begin
    csEdit: Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
 
    csMemo    : begin
-                  CS := gtk_editable_get_chars(PGtkEditable(
+                  CS := gtk_editable_get_chars(PGtkOldEditable(
                     GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget), 0, -1);
                   Text := StrPas(CS);
                   g_free(CS);
@@ -3551,7 +3551,7 @@ begin
                               true)^.ImplementationWidget;
         gtk_text_freeze(PGtkText(Widget));
         CurMemoLen := gtk_text_get_length(PGtkText(Widget));
-        gtk_editable_insert_text(PGtkEditable(Widget),Str,StrLen(Str),@CurMemoLen);
+        gtk_editable_insert_text(PGtkOldEditable(Widget),Str,StrLen(Str),@CurMemoLen);
         gtk_text_thaw(PGtkText(Widget));
       end;
     end;
@@ -3651,17 +3651,17 @@ begin
       Try
         //StrPCopy(aLabel, AnsiString(PLabel));
         //Accel := Ampersands2Underscore(aLabel);
-        if Child = nil then
+        if gtk_bin_get_child(P) = nil then
         begin
           Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has no child label', [Sender.ClassName]));
-          child := gtk_label_new(aLabel)
+           gtk_container_add(P, gtk_label_new(aLabel));
         end
         else begin
           Assert(False, Format('trace:  [TgtkObject.SetLabel] %s has child label', [Sender.ClassName]));
-          gtk_label_set_text(pgtkLabel(Child), aLabel);
+          gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
         end;
         //If Accel <> -1 then
-        AccelKey:=gtk_label_parse_uline(PGtkLabel(Child), aLabel);
+        AccelKey:=gtk_label_parse_uline(PGtkLabel( gtk_bin_get_child(P)), aLabel);
         Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       Finally
         StrDispose(aLabel);
@@ -3710,9 +3710,9 @@ begin
       aLabel := Ampersands2Underscore(PLabel);
       Try
         gtk_label_set_text(
-                    pGtkLabel(PGTKToggleButton(p)^.Button.Child),
+                    pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(p)^.Button)),
                     aLabel);
-        gtk_label_parse_uline(pGtkLabel(PGTKToggleButton(p)^.Button.Child),
+        gtk_label_parse_uline(pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(p)^.Button)),
           aLabel);
       Finally
         StrDispose(aLabel);
@@ -3776,7 +3776,7 @@ begin
 
       // set default background
       if (Color=clNone) and (FixWidget^.Window<>nil) then
-        gdk_window_set_back_pixmap(FixWidget^.Window,nil,0)
+        gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse)
       else
       if ColorIsStored
       and ((Color and SYS_COLOR_BASE)=0) then begin
@@ -3810,26 +3810,26 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SetCallback(Msg : LongInt; Sender: TObject);
 
-  procedure ConnectSenderSignal(const AnObject:gtk_Object; const ASignal: PChar;
+  procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
   begin
     ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender));
   end;
 
-  procedure ConnectSenderSignalAfter(const AnObject:gtk_Object;
+  procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
     const ASignal: PChar; const ACallBackProc: Pointer);
   begin
     ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender));
   end;
 
-  procedure ConnectSenderSignal(const AnObject:gtk_Object; const ASignal: PChar;
+  procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
   begin
     ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender),
                   ReqSignalMask);
   end;
 
-  procedure ConnectSenderSignalAfter(const AnObject:gtk_Object;
+  procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
     const ASignal: PChar; const ACallBackProc: Pointer;
     const ReqSignalMask: TGdkEventMask);
   begin
@@ -4359,8 +4359,10 @@ var
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
   GtkWindow: PGtkWidget;
+  {$IFNDef GTK2}
   Accelerators: PGSlist;
   AccelEntry : PGtkAccelEntry;
+  {$Endif}
 begin
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
@@ -4371,13 +4373,14 @@ begin
 
   // if one of its widgets has the focus then unfocus
   GtkWindow:=gtk_widget_get_toplevel(Widget);
-  if GtkWidgetIsA(GtkWindow,gtk_window_type)
+  if GtkWidgetIsA(GtkWindow,GTK_TYPE_WINDOW)
   and (GetParentLCLObject(PGtkWindow(GtkWindow)^.Focus_Widget)=Sender)
   then begin
     gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
   end;
 
   // Remove control accelerators - has to be done due to GTK+ bug?
+  {$IFNDef GTK2}
   if Sender is TWinControl then begin
     Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Handle));
     while Accelerators <> nil do begin
@@ -4388,9 +4391,10 @@ begin
                                PGtkObject(Handle));
     end;
   end;
+  {$EndIf}
   ClearAccelKey(Widget);
 
-  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
     //writeln('tgtkObject.DestroyLCLControl Untransient ',Sender.ClassName);
     {$IFDEF VerboseTransient}
     writeln('TgtkObject.DestroyLCLComponent ',Sender.ClassName);
@@ -4696,7 +4700,7 @@ begin
       gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
                          gtk_signal_func(@GTKDialogMenuActivateCB),
                          OpenDialog);
-      gtk_menu_append(GTK_MENU(MenuWidget), MenuItemWidget);
+      gtk_menu_append({$IfNdef GTK2}PGTKMenu{$EndIf}(MenuWidget), MenuItemWidget);
       gtk_widget_show(MenuItemWidget);
     end;
     gtk_widget_show(MenuWidget);
@@ -4893,7 +4897,7 @@ begin
       gtk_signal_connect(GTK_OBJECT(MenuItemWidget), 'activate',
                          gtk_signal_func(@GTKDialogMenuActivateCB),
                          OpenDialog);
-      gtk_menu_append(GTK_MENU(MenuWidget), MenuItemWidget);
+      gtk_menu_append({$IfNdef GTK2}PGTKMenu{$EndIf}(MenuWidget), MenuItemWidget);
       gtk_widget_show(MenuItemWidget);
     end;
     gtk_widget_show(MenuWidget);
@@ -4943,13 +4947,13 @@ begin
   // find the hbox widget of the file and directory dialog
   DirListWidget:=PGtkFileSelection(SelWidget)^.dir_list;
   ScrolledWin:=DirListWidget^.parent;
-  if not GtkWidgetIsA(ScrolledWin,GTK_SCROLLED_WINDOW_TYPE) then begin
+  if not GtkWidgetIsA(ScrolledWin,GTK_TYPE_SCROLLED_WINDOW) then begin
     writeln('NOTE: CreatePreviewDialogControl ',
       'parent widget of dir_list widget is not a scrolled window');
     exit;
   end;
   list_hbox:=ScrolledWin^.parent;
-  if not GtkWidgetIsA(list_hbox,GTK_HBOX_TYPE) then begin
+  if not GtkWidgetIsA(list_hbox,GTK_TYPE_HBOX) then begin
     writeln('NOTE: CreatePreviewDialogControl ',
       'parent widget of scrolled window is not a hbox');
     exit;
@@ -5151,7 +5155,7 @@ begin
   SetMainWidget(Result, Widget^.entry);
   
   gtk_combo_disable_activate(Widget);
-  gtk_combo_set_case_sensitive(Widget, 1);
+  gtk_combo_set_case_sensitive(Widget, GdkTrue);
   
   // Items
   ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox,False);
@@ -5316,7 +5320,7 @@ begin
   //drag icons
   if Drag_Icon = nil then
     Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
-                         gtk_widget_get_colormap (Result), @Drag_Mask,
+                         gtk_widget_get_colormap (Result), {$IfDef GTK1}@{$EndIf}Drag_Mask,
                          nil, @IMGDrag_Icon);
 
   // main menu
@@ -5520,7 +5524,7 @@ begin
     begin
       AccelText := Ampersands2Underscore(StrTemp);
       p := gtk_button_new_with_label(AccelText);
-      AccelKey:=gtk_label_parse_uline(PGtkLabel(PGTKButton(P)^.Child), AccelText);
+      AccelKey:=gtk_label_parse_uline(PGtkLabel(gtk_bin_get_child(P)), AccelText);
       Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'clicked');
       StrDispose(AccelText);
     end;
@@ -5647,7 +5651,7 @@ begin
 
   csImage :
     Begin
-      p := gtk_image_new(nil,nil);
+      p := gtk_image_new({$IfDef GTK1}nil,nil{$EndIf});
     end;
 
 
@@ -5722,10 +5726,10 @@ begin
 
       gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(Sender).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
-        gtk_text_set_line_wrap(PGtkText(TempWidget), 1)
+        gtk_text_set_line_wrap(PGtkText(TempWidget), GdkTrue)
       else
-        gtk_text_set_line_wrap(PGtkText(TempWidget), 0);
-      gtk_text_set_word_wrap(PGtkText(TempWidget), 1);
+        gtk_text_set_line_wrap(PGtkText(TempWidget), GdkFalse);
+      gtk_text_set_word_wrap(PGtkText(TempWidget), GdkTrue);
 
       gtk_widget_show_all(P);
 
@@ -5813,7 +5817,7 @@ begin
       else  
         P:= gtk_radio_button_new_with_label(nil, AccelText);
       AccelKey:=gtk_label_parse_uline(
-                                   pGtkLabel(PGTKToggleButton(P)^.Button.Child),
+                                   pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(P)^.Button)),
                                    AccelText);
       Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       StrDispose(AccelText);
@@ -5867,7 +5871,7 @@ begin
 
   csToolbar:
     begin
-       p := gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
+       p := gtk_toolbar_new({$IfDef GTK1}GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH{$EndIf});
        gtk_widget_show (P);
     end;
 
@@ -5879,7 +5883,7 @@ begin
       if TToolButton(Sender).Style = tbsButton then
       Begin
         //If Accel <> -1 then
-        AccelKey:=gtk_label_parse_uline(PGtkLabel(PGTKButton(P)^.Child),
+        AccelKey:=gtk_label_parse_uline(PGtkLabel(gtk_bin_get_child(P)),
                                         AccelText);
         Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
       end;
@@ -5953,9 +5957,9 @@ begin
   ParentLCLMenuItem:=TMenuItem(LCLMenuItem.Parent);
   if not ParentLCLMenuItem.HandleAllocated then exit;
   ParentMenuWidget:=PGtkWidget(ParentLCLMenuItem.Handle);
-  if not GtkWidgetIsA(ParentMenuWidget,GTK_MENU_ITEM_TYPE) then exit;
+  if not GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_ITEM) then exit;
   ParentSubMenuWidget:=PGTKMenuItem(ParentMenuWidget)^.submenu;
-  if not GtkWidgetIsA(ParentSubMenuWidget,GTK_MENU_TYPE) then exit;
+  if not GtkWidgetIsA(ParentSubMenuWidget,GTK_TYPE_MENU) then exit;
   SubMenuWidget:=PGTKMenu(ParentSubMenuWidget);
   if SubMenuWidget^.menu_shell.children=nil then begin
     gtk_widget_destroy(PgtkWidget(SubMenuWidget));
@@ -6082,7 +6086,7 @@ begin
       
     gtk_widget_hide(SenderWidget);
 
-    if GtkWidgetIsA(SenderWidget,GTK_WINDOW_TYPE) then begin
+    if GtkWidgetIsA(SenderWidget,GTK_TYPE_WINDOW) then begin
       {$IFDEF VerboseTransient}
       writeln('TgtkObject.ShowHide HIDE ',Sender.ClassName);
       {$ENDIF}
@@ -6115,7 +6119,7 @@ begin
     on e: Exception do
       writeln('WARNING: TGtkObject.LoadXPMFromLazResource: '+e.Message);
   end;
-  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,@PixmapMask,nil,ImgData);
+  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,{$IfDef GTK1}@{$EndIf}PixmapMask,nil,ImgData);
   FreeMem(ImgData);
 end;
 
@@ -6501,7 +6505,11 @@ begin
 
   if fWindow<>nil then begin
     gdk_draw_pixmap(fwindow,
+      {$IfDef GTK2}
+      PGtkStyle(widget^.Style)^.fg_gc[GTK_WIDGET_STATE (widget)],
+      {$Else}
       PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)],
+      {$EndIf}
       pixmap,
       0,0,
       0,0,
@@ -6519,6 +6527,7 @@ end;
   Set the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
+{$IfDef GTK1}
 var
   aDC     : TDeviceContext;
   X: Integer;
@@ -6539,6 +6548,9 @@ begin
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
   gdk_gc_set_foreground(aDC.GC, @GDKColor);
   gdk_draw_point(aDC.Drawable, aDC.GC, X,Y);
+{$Else}
+begin
+{$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -6550,6 +6562,7 @@ end;
   Get the color of the specified pixel on the window?screen?object?
  ------------------------------------------------------------------------------}
 procedure TgtkObject.GetPixel(Sender : TObject; Data : Pointer);
+{$IfDef GTK1}
 var
   aDC    : TDeviceContext;
   Image  : pGDKImage;
@@ -6586,6 +6599,9 @@ begin
   gdk_color_context_free(GdkColorContext);
     
   TLMSetGetPixel(data^).PixColor := TGDKColorToTColor(GDKColor);
+{$Else}
+begin
+{$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -6600,7 +6616,7 @@ procedure TgtkObject.SetColorDialogColor(ColorSelection: PGtkColorSelection;
   Color: TColor);
 var
   SelectionColor: PGDouble;       // currently only used by TColorDialog
-  colorSel : GTK_COLOR_SELECTION;
+  colorSel : PGTKCOLORSELECTION;
 begin
   GetMem(SelectionColor,4*SizeOf(GDouble));
   try
@@ -6609,8 +6625,8 @@ begin
     SelectionColor[1]:=GDouble((Color shr 8) and $ff)/255;
     SelectionColor[2]:=GDouble((Color shr 16) and $ff)/255;
     SelectionColor[3]:=0.0;
-    colorSel := GTK_COLOR_SELECTION(
-      (GTK_COLOR_SELECTION_DIALOG(ColorSelection))^.colorsel);
+    colorSel := PGTKCOLORSELECTION(
+      (PGTKCOLORSELECTIONDIALOG(ColorSelection))^.colorsel);
     gtk_color_selection_set_color(colorSel,SelectionColor);
   finally
     FreeMem(SelectionColor);
@@ -6818,7 +6834,7 @@ const
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
   cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 var
-  Handle    : Pointer;
+  wHandle    : Pointer;
   Widget, ImplWidget   : PGtkWidget;
   I,X         : Integer;
   pRowText : PChar;
@@ -6834,8 +6850,8 @@ begin
     RaiseException('TgtkObject.SetProperties: '
                    +' Sender.ClassName='+Sender.ClassName);
 
-  Handle:= Pointer(TWinControl(Sender).Handle);
-  Widget:= PGtkWidget(Handle);
+  wHandle:= Pointer(TWinControl(Sender).Handle);
+  Widget:= GTK_WIDGET(wHandle);
    
   case TControl(Sender).fCompStyle of
   csComboBox:
@@ -6843,23 +6859,23 @@ begin
       case TCustomComboBox(Sender).Style of
         csDropDownList :
           begin
-            gtk_combo_set_value_in_list(PgtkCombo(Handle),-1, 0);
-            gtk_combo_set_use_arrows_always(PgtkCombo(Handle),-1);
-            gtk_combo_set_case_sensitive(PGtkCombo(Handle),0);
+            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkTrue, GdkFalse);
+            gtk_combo_set_use_arrows_always(GTK_COMBO(wHandle),GdkTrue);
+            gtk_combo_set_case_sensitive(GTK_COMBO(wHandle),GdkFalse);
           end;
         else
           begin
-            gtk_combo_set_value_in_list(PgtkCombo(Handle),0,0);
-            gtk_combo_set_use_arrows_always(PgtkCombo(Handle),0);
+            gtk_combo_set_value_in_list(GTK_COMBO(wHandle),GdkFalse,GdkFalse);
+            gtk_combo_set_use_arrows_always(GTK_COMBO(wHandle),GdkFalse);
           end;
       end;
 
       if TCustomComboBox(Sender).ArrowKeysTraverseList = True then
       begin
-        gtk_combo_set_use_arrows(PgtkCombo(Handle),-1);
+        gtk_combo_set_use_arrows(GTK_COMBO(wHandle),GdkTrue);
       end else
       begin
-        gtk_combo_set_use_arrows(PgtkCombo(Handle),0);
+        gtk_combo_set_use_arrows(GTK_COMBO(wHandle),GdkFalse);
       end;
     end;
 
@@ -6869,9 +6885,9 @@ begin
         // XXX TODO: GTK 1.x does not support EchoMode emNone.
         // This will have to be coded around, but not a priority
       
-        gtk_entry_set_editable(PgtkEntry(Handle), not (TCustomEdit(Sender).ReadOnly));
-        gtk_entry_set_max_length(PgtkEntry(Handle), TCustomEdit(Sender).MaxLength);
-        gtk_entry_set_visibility(PGtkEntry(Handle),
+        gtk_entry_set_editable(GTK_ENTRY(wHandle), not (TCustomEdit(Sender).ReadOnly));
+        gtk_entry_set_max_length(GTK_ENTRY(wHandle), TCustomEdit(Sender).MaxLength);
+        gtk_entry_set_visibility(GTK_ENTRY(wHandle),
           (TCustomEdit(Sender).EchoMode = emNormal)
           and (TCustomEdit(Sender).PassWordChar=#0));
       end;
@@ -6880,35 +6896,35 @@ begin
     with TProgressBar(Sender) do
     begin
       if Smooth
-      then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (handle),
+      then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
                                            GTK_PROGRESS_CONTINUOUS)
-      else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (handle),
+      else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
                                            GTK_PROGRESS_DISCRETE);
       case Orientation of
       pbVertical   : gtk_progress_bar_set_orientation(
-                                    GTK_PROGRESS_BAR (handle),
+                                    GTK_PROGRESS_BAR(whandle),
                                     GTK_PROGRESS_BOTTOM_TO_TOP);
       pbRightToLeft: gtk_progress_bar_set_orientation(
-                                    GTK_PROGRESS_BAR (handle),
+                                    GTK_PROGRESS_BAR(whandle),
                                     GTK_PROGRESS_RIGHT_TO_LEFT);
       pbTopDown    : gtk_progress_bar_set_orientation(
-                                    GTK_PROGRESS_BAR (handle),
+                                    GTK_PROGRESS_BAR(whandle),
                                     GTK_PROGRESS_TOP_TO_BOTTOM);
       else { pbHorizontal is default }
-        gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (Handle),
+        gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle),
                                           GTK_PROGRESS_LEFT_TO_RIGHT);
       end;
       if BarShowText then 
       begin
-         gtk_progress_set_format_string (GTK_PROGRESS (Handle),
+         gtk_progress_set_format_string (GTK_PROGRESS(wHandle),
                                          '%v from [%l-%u] (=%p%%)');
-         gtk_progress_set_show_text (GTK_PROGRESS (Handle), 1);
+         gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GdkTrue);
       end
       else
-         gtk_progress_set_show_text (GTK_PROGRESS (Handle), 0);
-      Widget := PGtkWidget( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
-      gtk_progress_set_adjustment (GTK_PROGRESS (Handle), PGtkAdjustment (Widget));
-      gtk_progress_set_value (GTK_PROGRESS (Handle), Position);
+         gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GDKFalse);
+      Widget := GTK_WIDGET( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
+      gtk_progress_set_adjustment (GTK_PROGRESS(wHandle), PGtkAdjustment (Widget));
+      gtk_progress_set_value (GTK_PROGRESS(wHandle), Position);
     end;
 
 
@@ -6916,36 +6932,36 @@ begin
      with (TScrollBar (Sender)) do
          begin
            //set properties for the range
-           Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
-           PGtkAdjustment(Widget)^.lower := Min;
-           PGtkAdjustment(Widget)^.Upper := Max;
-           PGtkAdjustment(Widget)^.Value := Position;
-           PGtkAdjustment(Widget)^.step_increment := SmallChange;
-           PGtkAdjustment(Widget)^.page_increment := LargeChange;
+           Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
+           GTK_ADJUSTMENT(Widget)^.lower := Min;
+           GTK_ADJUSTMENT(Widget)^.Upper := Max;
+           GTK_ADJUSTMENT(Widget)^.Value := Position;
+           GTK_ADJUSTMENT(Widget)^.step_increment := SmallChange;
+           GTK_ADJUSTMENT(Widget)^.page_increment := LargeChange;
          end;
 
   csTrackbar   : 
      with (TTrackBar (Sender)) do
      begin
-        Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
-        PGtkAdjustment(Widget)^.lower := Min;
-        PGtkAdjustment(Widget)^.Upper := Max;
-        PGtkAdjustment(Widget)^.Value := Position;
-        PGtkAdjustment(Widget)^.step_increment := LineSize; 
-        PGtkAdjustment(Widget)^.page_increment := PageSize;
+        Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
+        GTK_ADJUSTMENT(Widget)^.lower := Min;
+        GTK_ADJUSTMENT(Widget)^.Upper := Max;
+        GTK_ADJUSTMENT(Widget)^.Value := Position;
+        GTK_ADJUSTMENT(Widget)^.step_increment := LineSize;
+        GTK_ADJUSTMENT(Widget)^.page_increment := PageSize;
         { now do some of the more sophisticated features }
         { Hint: For some unknown reason we have to disable the draw_value first,
           otherwise it's set always to true }
-        gtk_scale_set_draw_value (PGTKSCALE (handle), false);
+        gtk_scale_set_draw_value (GTK_SCALE (wHandle), false);
 
         if ShowScale then
         begin
-           gtk_scale_set_draw_value (PGTKSCALE (handle), ShowScale);
+           gtk_scale_set_draw_value (GTK_SCALE (wHandle), ShowScale);
            case ScalePos of
-              trLeft  : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_LEFT);
-              trRight : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_RIGHT);
-              trTop   : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_TOP);
-              trBottom: gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_BOTTOM);
+              trLeft  : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_LEFT);
+              trRight : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_RIGHT);
+              trTop   : gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_TOP);
+              trBottom: gtk_scale_set_value_pos (GTK_SCALE (wHandle), GTK_POS_BOTTOM);
            end;
         end;
         //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
@@ -6954,60 +6970,60 @@ begin
   csLabel :
      with TLabel(Sender) do
      begin
-       gtk_label_set_justify(PGtkLabel(Handle), cLabelAlign[Alignment]);
-       gtk_misc_set_alignment(PGtkMisc(Handle), cLabelAlignX[Alignment],
+       gtk_label_set_justify(GTK_LABEL(wHandle), cLabelAlign[Alignment]);
+       gtk_misc_set_alignment(GTK_MISC(wHandle), cLabelAlignX[Alignment],
                               cLabelAlignY[Layout]);
-       gtk_label_set_line_wrap(PGtkLabel(Handle), WordWrap);
+       gtk_label_set_line_wrap(GTK_LABEL(wHandle), WordWrap);
      end;
      
   csListView :
     begin
       // set up columns..
 
-      Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+      Widget:= GetWidgetInfo(wHandle, True)^.ImplementationWidget;
       
-      gtk_clist_freeze(PgtkCList(Widget));
+      gtk_clist_freeze(GTK_CLIST(Widget));
       
       
       for I := 0 to TListview(sender).Columns.Count-1 do
       begin
-        gtk_clist_set_column_title(Pgtkclist(Widget),I,
+        gtk_clist_set_column_title(GTK_CLIST(Widget),I,
                                PChar(TListview(sender).Columns[i].Caption));
 
         // set column alignment
-        gtk_clist_set_column_justification(PgtkCList(Widget),I,
+        gtk_clist_set_column_justification(GTK_CLIST(Widget),I,
                  aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
         // set auto sizing
-        gtk_clist_set_column_auto_resize(PgtkCList(Widget),I,
+        gtk_clist_set_column_auto_resize(GTK_CLIST(Widget),I,
                  TListview(sender).Columns[i].AutoSize);
         // set width
-        gtk_clist_set_column_width(PgtkCList(Widget),I,
+        gtk_clist_set_column_width(GTK_CLIST(Widget),I,
                  TListview(sender).Columns[i].Width);
         // set Visible
-        gtk_clist_set_column_visibility(PgtkCList(Widget),I,
+        gtk_clist_set_column_visibility(GTK_CLIST(Widget),I,
                  TListview(sender).Columns[i].Visible);
         // set MinWidth
         if TListview(sender).Columns[i].MinWidth>0 then
-          gtk_clist_set_column_min_width(PGtkCList(Widget), I,
+          gtk_clist_set_column_min_width(GTK_CLIST(Widget), I,
                                      TListview(sender).Columns[i].MinWidth);
         // set MaxWidth
         if (TListview(sender).Columns[i].MaxWidth>=
           TListview(sender).Columns[i].MinWidth)
         and (TListview(sender).Columns[i].MaxWidth>0) then
-          gtk_clist_set_column_max_width(PGtkCList(Widget), I,
+          gtk_clist_set_column_max_width(GTK_CLIST(Widget), I,
                                      TListview(sender).Columns[i].MaxWidth);
       end;
 
       //sorting
       if (TListview(sender).ViewStyle = vsReport)
-      then gtk_clist_column_titles_show(PgtkCList(Widget))
-      else gtk_clist_column_titles_Hide(PgtkCList(Widget));
+      then gtk_clist_column_titles_show(GTK_CLIST(Widget))
+      else gtk_clist_column_titles_Hide(GTK_CLIST(Widget));
 
-      gtk_clist_set_sort_column(PgtkCList(Widget),
+      gtk_clist_set_sort_column(GTK_CLIST(Widget),
         TListview(sender).SortColumn);
             
       //multiselect
-      gtk_clist_set_selection_mode(PgtkCList(Widget),
+      gtk_clist_set_selection_mode(GTK_CLIST(Widget),
         aGTkSelectionMode[TListview(sender).MultiSelect]);
 
 //TODO:This doesn't work right now
@@ -7018,7 +7034,7 @@ begin
       for I := 0 to TListview(sender).Items.Count-1 do
       begin
         pRowText:=PChar(TListItem(TListview(sender).Items[i]).Caption);
-        gtk_clist_set_text(Pgtkclist(Widget),I,0,pRowText);
+        gtk_clist_set_text(GTK_CLIST(Widget),I,0,pRowText);
 
         //do image if one is assigned....
         // TODO: Largeimage support
@@ -7037,10 +7053,10 @@ begin
             TListview(sender).SmallImages.GetBitmap(
                TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
             
-            gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
+            gtk_clist_set_pixmap(GTK_CLIST(Widget),I,0,
               pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
               nil);
-            gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
+            gtk_clist_set_pixtext(GTK_CLIST(Widget),I,0,pRowText,3,
               pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
               nil);
 //                      bitimage.Free;
@@ -7055,60 +7071,60 @@ begin
             then begin
               pRowText:=PChar(TListItem(
                 TListview(sender).Items[i]).SubItems.Strings[X-1]);
-              gtk_clist_set_text(Pgtkclist(Widget),I,X,pRowText);
+              gtk_clist_set_text(GTK_CLIST(Widget),I,X,pRowText);
             end;
           end;  //for loop
         end;
       end;
-      gtk_clist_thaw(PgtkCList(Widget));
+      gtk_clist_thaw(GTK_CLIST(Widget));
     end;
 
   csMemo:
     begin
-      ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
+      ImplWidget:= GetWidgetInfo(wHandle, true)^.ImplementationWidget;
     
-      gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
+      gtk_text_set_editable (GTK_TEXT(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
-        gtk_text_set_line_wrap(PGtkText(ImplWidget), 1)
+        gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkTrue)
       else
-        gtk_text_set_line_wrap(PGtkText(ImplWidget), 0);
-      gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
+        gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkFalse);
+      gtk_text_set_word_wrap(GTK_TEXT(ImplWidget), GdkTrue);
 
       case (Sender as TCustomMemo).Scrollbars of
         ssHorizontal:     gtk_scrolled_window_set_policy(
-                            PGtkScrolledWindow(Widget),
+                            GTK_SCROLLED_WINDOW(wHandle),
                             GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
         ssVertical:       gtk_scrolled_window_set_policy(
-                            PGtkScrolledWindow(Widget),
+                            GTK_SCROLLED_WINDOW(wHandle),
                             GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
         ssBoth:           gtk_scrolled_window_set_policy(
-                            PGtkScrolledWindow(Widget),
+                            GTK_SCROLLED_WINDOW(wHandle),
                             GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
         ssAutoHorizontal: gtk_scrolled_window_set_policy(
-                            PGtkScrolledWindow(Widget),
+                            GTK_SCROLLED_WINDOW(wHandle),
                             GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
         ssAutoVertical:   gtk_scrolled_window_set_policy(
-                            PGtkScrolledWindow(Widget),
+                            GTK_SCROLLED_WINDOW(wHandle),
                             GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
         ssAutoBoth:       gtk_scrolled_window_set_policy(
-                            PGtkScrolledWindow(Widget),
+                            GTK_SCROLLED_WINDOW(wHandle),
                             GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
       else
-        gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget),
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wHandle),
                                        GTK_POLICY_NEVER, GTK_POLICY_NEVER);
       end;
 
 	if (TCustomMemo(Sender).MaxLength >= 0) then begin
-	  i:= gtk_text_get_length(PGtkText(ImplWidget));
+	  i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
 	  if i > TCustomMemo(Sender).MaxLength then begin
-          gtk_editable_delete_text(PGtkEditable(ImplWidget), TCustomMemo(Sender).MaxLength, i);
+          gtk_editable_delete_text(PGtkOldEditable(ImplWidget), TCustomMemo(Sender).MaxLength, i);
 	  end;
 	end;  
     end;
          
   csSpinEdit:
     Begin
-      AnAdjustment:=gtk_spin_button_get_adjustment(PgtkSpinButton(Handle));
+      AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
       if (AnAdjustment^.lower<>TSpinEdit(Sender).MinValue)
       or (AnAdjustment^.upper<>TSpinEdit(Sender).MaxValue) then
       begin
@@ -7116,11 +7132,11 @@ begin
         AnAdjustment^.upper:=TSpinEdit(Sender).MaxValue;
         gtk_adjustment_changed(AnAdjustment);
       end;
-      gtk_spin_button_set_digits(PgtkSpinButton(Handle),
+      gtk_spin_button_set_digits(GTK_SPIN_BUTTON(wHandle),
                                  TSpinEdit(Sender).Decimal_Places);
-      gtk_spin_button_set_value(PgtkSpinButton(Handle),
+      gtk_spin_button_set_value(GTK_SPIN_BUTTON(wHandle),
                                 TSpinEdit(Sender).Value);
-      PgtkSpinButton(Handle)^.climb_rate:=TSpinEdit(Sender).Climb_Rate;
+      GTK_SPIN_BUTTON(wHandle)^.climb_rate:=TSpinEdit(Sender).Climb_Rate;
     End;
 
   else
@@ -7145,8 +7161,8 @@ var
   procedure SetContainerMenuToggleSize;
   var MenuClass: PGtkWidgetClass;
   begin
-    if GtkWidgetIsA(ContainerMenu,GTK_MENU_TYPE) then begin
-      MenuClass:=GTK_WIDGET_CLASS(PGtkObject(ContainerMenu)^.klass);
+    if GtkWidgetIsA(ContainerMenu,GTK_TYPE_MENU) then begin
+      MenuClass:=GTK_WIDGET_CLASS(PGtkTypeObject(ContainerMenu)^.{$IfDef GTK2}g_Class{$Else}klass{$EndIf});
       if OldMenuSizeRequestProc=nil then begin
         OldMenuSizeRequestProc:=MenuClass^.size_request;
       end;
@@ -7166,10 +7182,10 @@ begin
     if ParentMenuWidget=nil then
       RaiseException('TGtkObject.AttachMenu ParentMenuWidget=nil');
 
-    if GtkWidgetIsA(ParentMenuWidget,GTK_MENU_BAR_TYPE) then begin
+    if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
       // mainmenu (= a menu bar)
       ContainerMenu:=ParentMenuWidget;
-      gtk_menu_bar_insert(PGtkMenuBar(ParentMenuWidget),MenuItem,
+      gtk_menu_bar_insert({$IFNDef GTK2}PGtkMenuBar{$EndIf}(ParentMenuWidget),MenuItem,
                           LCLMenuItem.MenuIndex);
     end
     else begin
@@ -7191,12 +7207,12 @@ begin
           gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
         end;
       end;
-      gtk_menu_insert(PGtkMenu(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
+      gtk_menu_insert({$IFNDef GTK2}PGtkMenu{$EndIf}(ContainerMenu), MenuItem, LCLMenuItem.MenuIndex);
     end;
     
     SetContainerMenuToggleSize;
     
-    if GtkWidgetIsA(MenuItem,GTK_RADIO_MENU_ITEM_TYPE) then
+    if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
       RegroupMenuItem(HMENU(MenuItem),GroupIndex);
   end;
   //writeln('TGtkObject.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
@@ -7340,15 +7356,22 @@ begin
         IsNullPen := GDIPenStyle = PS_NULL;
         if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
         then begin
-          gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, 0, 0)
+          gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER)
         end
         else begin
-          gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,0,0);
+          gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,GDK_CAP_NOT_LAST,GDK_JOIN_MITER);
           case GDIPenStyle of
+            {$IfDef GTK2}
+            PS_DASH:       SetDashes([#4,#4]);
+            PS_DOT:        SetDashes([#2,#2]);
+            PS_DASHDOT:    SetDashes([#4,#2,#2,#2]);
+            PS_DASHDOTDOT: SetDashes([#4,#2,#2,#2,#2,#2]);
+            {$Else}
             PS_DASH:       SetDashes([4,4]);
             PS_DOT:        SetDashes([2,2]);
             PS_DASHDOT:    SetDashes([4,2,2,2]);
             PS_DASHDOTDOT: SetDashes([4,2,2,2,2,2]);
+            {$EndIf}
             //This is DEADLY!!!
             //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
@@ -8122,6 +8145,15 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.406  2003/09/05 18:19:54  ajgenius
+  Make GTK2 "compile". linking fails still
+  (Makefile.fpc needs pkgconfig libs/GTK2 linking rules,
+  but not sure how not sure how) and when linked via a make script
+  (like gtk2 examples do) apps still won't work(yet).  I think we
+  need to do a lot of work to make sure incompatible(also to get rid
+  of deprecated) things are done in GTK2 interface itself, and just
+  use more {$Ifdef GTK1} in the gtk interface itself.
+
   Revision 1.405  2003/09/04 11:10:18  mattias
   added csClickEvents to TImage
 

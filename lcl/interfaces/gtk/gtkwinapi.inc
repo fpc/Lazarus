@@ -151,7 +151,7 @@ begin
   else
     writeln(' LCLObject=nil');
   {$ENDIF}
-  Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_WINDOW_TYPE);
+  Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_TYPE_WINDOW);
   if Result then begin
     GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
     if GdkWindow<>nil then begin
@@ -329,7 +329,7 @@ var FormatAtom, FormatTry: Cardinal;
     end;
     if SupportedCnt<0 then begin
       Result:=false;
-      AllID:=gdk_atom_intern('TARGETS',0);
+      AllID:=gdk_atom_intern('TARGETS',GdkFalse);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
       {writeln('IsFormatSupported A ',HexStr(Cardinal(SelData.Selection),8),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
@@ -340,7 +340,7 @@ var FormatAtom, FormatTry: Cardinal;
       );}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>AllID)
-      or (SelData.TheType<>gdk_atom_intern('ATOM',0)) then begin
+      or (SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf}<>gdk_atom_intern('ATOM',GdkFalse)) then begin
         SupportedCnt:=0;
         exit;
       end;
@@ -366,36 +366,36 @@ begin
   try
 
     FormatAtom:=FormatID;
-    if (FormatAtom=gdk_atom_intern('text/plain',1)) then begin
+    if (FormatAtom=gdk_atom_intern('text/plain',GdkTrue)) then begin
       // text/plain is supported in various formats in gtk
       // The COMPOUND_TEXT format supports internationalization and is therefore
       // preferred even before 'text/plain'
       FormatAtom:=0;
-      FormatTry:=gdk_atom_intern('COMPOUND_TEXT',1);
+      FormatTry:=gdk_atom_intern('COMPOUND_TEXT',GdkTrue);
       if IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       if (SupportedCnt=0) then
-        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',1);
+        FormatAtom:=gdk_atom_intern('COMPOUND_TEXT',GdkTrue);
       // then check for simple text format 'text/plain'
-      FormatTry:=gdk_atom_intern('text/plain',1);
+      FormatTry:=gdk_atom_intern('text/plain',GdkTrue);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       // then check for simple text format STRING
-      FormatTry:=gdk_atom_intern('STRING',1);
+      FormatTry:=gdk_atom_intern('STRING',GdkTrue);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       // check for some other formats that can be interpreted as text
-      FormatTry:=gdk_atom_intern('FILE_NAME',1);
+      FormatTry:=gdk_atom_intern('FILE_NAME',GdkTrue);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
-      FormatTry:=gdk_atom_intern('HOST_NAME',1);
+      FormatTry:=gdk_atom_intern('HOST_NAME',GdkTrue);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
-      FormatTry:=gdk_atom_intern('USER',1);
+      FormatTry:=gdk_atom_intern('USER',GdkTrue);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
       // the TEXT format is not reliable, but it should be supported
-      FormatTry:=gdk_atom_intern('TEXT',1);
+      FormatTry:=gdk_atom_intern('TEXT',GdkTrue);
       if (FormatAtom=0) and IsFormatSupported(FormatTry) then
         FormatAtom:=FormatTry;
     end;
@@ -417,12 +417,12 @@ begin
     
       // write data to stream
       if (SelData.Data<>nil) and (SelData.Length>0) then begin
-        if (FormatID=gdk_atom_intern('text/plain',1)) then begin
+        if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
           // the lcl expects the return format as simple text
           // transform if necessary
-          if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',1) then begin
-            CompoundTextCount:=gdk_text_property_to_text_list(SelData.theType,
-              SelData.Format,SelData.Data,SelData.Length,@CompoundTextList);
+          if FormatAtom=gdk_atom_intern('COMPOUND_TEXT',GdkTrue) then begin
+            CompoundTextCount:=gdk_text_property_to_text_list(SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf},
+              SelData.Format,SelData.Data,SelData.Length,{$IfDef GTK1}@{$EndIf}CompoundTextList);
             {$IfDef DEBUG_CLIPBOARD}
             writeln('[TgtkObject.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount,' Now=',Now);
             {$EndIf}
@@ -491,7 +491,7 @@ var AllID: cardinal;
     for Format:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       if (Format in Formats) 
       and (IsFormatSupported(
-                gdk_atom_intern(PGChar(GtkClipboardFormatName[Format]),1)))
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[Format]),GdkTrue)))
       then begin
         Result:=true;
         exit;
@@ -510,7 +510,7 @@ begin
   if not (ClipboardType in [ctPrimarySelection,ctSecondarySelection,ctClipboard])
   then exit;
   // request the list of supported formats from the selection owner
-  AllID:=gdk_atom_intern('TARGETS',0);
+  AllID:=gdk_atom_intern('TARGETS',GdkFalse);
   SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
   
   try
@@ -520,7 +520,7 @@ begin
                 ' "',gdk_atom_name(SelData.Selection),'"',
       ' target: ',SelData.Target,'=',AllID,
                 ' "',gdk_atom_name(SelData.Target),'"',
-      ' theType: ',SelData.TheType,'=',gdk_atom_intern('ATOM',0),
+      ' theType: ',SelData.TheType,'=',gdk_atom_intern('ATOM',GdkFalse),
                 ' "',gdk_atom_name(SelData.theType),'"',
       ' Length=',SelData.Length,
       ' Format=',SelData.Format,
@@ -531,8 +531,8 @@ begin
     if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
     or (SelData.Target<>AllID)
     or (SelData.Format<=0)
-    or ((SelData.TheType<>gdk_atom_intern('ATOM',0))
-         and (SelData.TheType<>AllID))
+    or ((SelData.{$IfDef GTK2}_Type{$Else}TheType{$EndIf}<>gdk_atom_intern('ATOM',GdkFalse))
+         and (SelData.{$IfDef GTK2}_Type{$Else}TheType{$EndIf}<>AllID))
     then
       exit;
   
@@ -547,7 +547,7 @@ begin
       // and will be added to the list
     
       AddTextPlain:=false;
-      if (not IsFormatSupported(gdk_atom_intern('text/plain',1)))
+      if (not IsFormatSupported(gdk_atom_intern('text/plain',GdkTrue)))
       and (IsFormatSupported([gfCOMPOUND_TEXT,gfTEXT,gfSTRING,gfFILE_NAME,
         gfHOST_NAME,gfUSER]))
       then begin
@@ -571,7 +571,7 @@ begin
       // add all lcl formats that the gtk-interface can transform from the
       // supported formats
       if AddTextPlain then begin
-        List[i]:=gdk_atom_intern('text/plain',0);
+        List[i]:=gdk_atom_intern('text/plain',GdkFalse);
         inc(i);
       end;
     end;
@@ -667,17 +667,17 @@ begin
     {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetOwnerShip] B');
     {$EndIf}
-    if IsFormatSupported(gdk_atom_intern('text/plain',1)) then
+    if IsFormatSupported(gdk_atom_intern('text/plain',GdkTrue)) then
     begin
       // lcl provides 'text/plain' and the gtk-interface will automatically
       // provide some more text formats
       ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]:=
           not IsFormatSupported(
-                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfCOMPOUND_TEXT]),0));
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfCOMPOUND_TEXT]),GdkFalse));
       ClipboardExtraGtkFormats[ClipboardType][gfSTRING]:=not IsFormatSupported(
-                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfSTRING]),0));
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfSTRING]),GdkFalse));
       ClipboardExtraGtkFormats[ClipboardType][gfTEXT]:=not IsFormatSupported(
-                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfTEXT]),0));
+                gdk_atom_intern(PGChar(GtkClipboardFormatName[gfTEXT]),GdkFalse));
     end;
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       if ClipboardExtraGtkFormats[ClipboardType][gtkFormat] then
@@ -707,8 +707,7 @@ begin
     {$IfDef DEBUG_CLIPBOARD}
     writeln('[TgtkObject.ClipboardGetOwnerShip] C');
     {$EndIf}
-    if gtk_selection_owner_set(ClipboardWidget,
-      ClipboardTypeAtoms[ClipboardType],0)=0
+    if gtk_selection_owner_set(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],0)=GdkFalse
     then begin
       {$IfDef DEBUG_CLIPBOARD}
       writeln('[TgtkObject.ClipboardGetOwnerShip] D FAILED');
@@ -743,7 +742,7 @@ var AtomName: PChar;
 begin
   if Assigned(Application) then begin
     AtomName:=PChar(AMimeType);
-    Result:=gdk_atom_intern(AtomName,0);
+    Result:=gdk_atom_intern(AtomName,GdkFalse);
   end else
     RaiseException(
       'ERROR: TgtkObject.ClipboardRegisterFormat gdk not initialized');
@@ -807,7 +806,7 @@ begin
       end;
     end;
 
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
     If BitmapBits <> nil then
       LoadFromPixbufData(hBitmap(GdiObject), BitmapBits);
@@ -1158,7 +1157,7 @@ begin
     else
       gdk_visual_ref(GdiObject^.Visual);
 
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
     Result := HBITMAP(GdiObject);
 
@@ -1622,7 +1621,7 @@ begin
       PaletteVisual := GDK_Visual_Get_System;
       GDK_Visual_Ref(PaletteVisual);
     end;
-    PaletteColormap := GDK_Colormap_new(PaletteVisual, 1);
+    PaletteColormap := GDK_Colormap_new(PaletteVisual, GdkTrue);
     RGBTable := TDynHashArray.Create(-1);
     RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
     IndexTable := TDynHashArray.Create(-1);
@@ -1694,7 +1693,7 @@ begin
   try
     GdiObject^.GDIPixmapObject :=
       gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
-             @(GdiObject^.GDIBitmapMaskObject), p, Data);
+             {$IfDef GTK1}@{$EndIf}(GdiObject^.GDIBitmapMaskObject), p, Data);
 
     gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
 
@@ -1711,7 +1710,7 @@ begin
     If GdiObject^.Colormap <> nil then
       GDK_Colormap_UnRef(GdiObject^.Colormap);
 
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkFalse);
 
     GdiObject^.GDIBitmapType:=gbPixmap;
     ok:=true;
@@ -1787,7 +1786,7 @@ begin
   R.Width := X2 - X1;
   R.Height := Y2 - Y1;
   RRGN := gdk_region_new;
-  RegionObj:=gdk_region_union_with_rect(RRGN,@R);
+  RegionObj:=PGdkRegion(gdk_region_union_with_rect(RRGN,@R));
   GObject^.GDIRegionObject := RegionObj;
   gdk_region_destroy(RRGN);
   Result := HRGN(GObject);
@@ -1851,15 +1850,15 @@ begin
     //writeln('TgtkObject.CombineRgn A fnCombineMode=',fnCombineMode);
     Case fnCombineMode of
       RGN_AND :
-        D := gdk_regions_intersect(S1, S2);
+        D := PGDKRegion(gdk_region_intersect(S1, S2));
       RGN_COPY :
         D := CopyGDKRegion(S1);
       RGN_DIFF :
-        D := gdk_regions_subtract(S1, S2);
+        D := PGDKRegion(gdk_region_subtract(S1, S2));
       RGN_OR :
-        D := gdk_regions_union(S1, S2);
+        D := PGDKRegion(gdk_region_union(S1, S2));
       RGN_XOR :
-        D := gdk_regions_xor(S1, S2);
+        D := PGDKRegion(gdk_region_xor(S1, S2));
       else begin
         Result:= ERROR;
         D := nil;
@@ -1917,17 +1916,17 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
       list_requisition^.height := list_requisition^.height + EMPTY_LIST_HEIGHT;
 
     alloc_width := (widget^.allocation.width -
-      2 * cardinal(PGtkStyle(popwin^.child^.thestyle)^.klass^.xthickness) -
-      2 * border_width(GTK_CONTAINER (popwin^.child)^) -
+      2 * cardinal(gtk_widget_get_xthickness(gtk_bin_get_child(popwin))) -
+      2 * border_width(GTK_CONTAINER (gtk_bin_get_child(popwin))^) -
       2 * border_width(GTK_CONTAINER (combo^.popup)^) -
-      2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) -
-      2 * cardinal(PGtkStyle(GTK_BIN(popup)^.child^.thestyle)^.klass^.xthickness));
+      2 * border_width(GTK_CONTAINER (gtk_bin_get_child(PGTKBin(popup)))^) -
+      2 * cardinal(gtk_widget_get_xthickness(gtk_bin_get_child(PGTKBin(popup)))));
 
-    work_height := (2 * cardinal(PGtkStyle(popwin^.child^.thestyle)^.klass^.ythickness) +
-      2 * border_width(GTK_CONTAINER (popwin^.child)^) +
+    work_height := (2 * cardinal(gtk_widget_get_ythickness(gtk_bin_get_child(popwin))) +
+      2 * border_width(GTK_CONTAINER (gtk_bin_get_child(popwin))^) +
       2 * border_width(GTK_CONTAINER (combo^.popup)^) +
-      2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) +
-      2 * cardinal(PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness));
+      2 * border_width(GTK_CONTAINER (gtk_bin_get_child(PGTKBin(popup)))^) +
+      2 * cardinal(gtk_widget_get_xthickness(gtk_bin_get_child(PGTKBin(popup)))));
 
     repeat
       okay_to_exit := True;
@@ -1937,7 +1936,7 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
       if ((not show_hscroll) and (alloc_width < list_requisition^.width)) then
       begin
            work_height := work_height +  popup^.hscrollbar^.requisition.height +
-          GTK_SCROLLED_WINDOW_CLASS(GTK_OBJECT (combo^.popup)^.klass)^.scrollbar_spacing;
+          GTK_SCROLLED_WINDOW_CLASS(PGtkTypeObject(combo^.popup)^.{$IfDef GTK2}g_Class{$Else}klass{$EndIf})^.scrollbar_spacing;
         show_hscroll := TRUE;
         okay_to_exit := False;
       end;
@@ -1950,7 +1949,7 @@ function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
         end;
         alloc_width := alloc_width -
           popup^.vscrollbar^.requisition.width +
-          GTK_SCROLLED_WINDOW_CLASS(GTK_OBJECT (combo^.popup)^.klass)^.scrollbar_spacing;
+          GTK_SCROLLED_WINDOW_CLASS(PGtkTypeObject(combo^.popup)^.{$IfDef GTK2}g_Class{$Else}klass{$EndIf})^.scrollbar_spacing;
         show_vscroll := TRUE;
         okay_to_exit := False;
       end;
@@ -2260,7 +2259,7 @@ var
 
     aStyle := GetStyle('button');
     If aStyle = nil then
-      aStyle := Widget^.theStyle
+      aStyle := gtk_widget_get_style(Widget)
     else begin
       If State = GTK_STATE_SELECTED then
         State := GTK_STATE_ACTIVE;
@@ -3359,9 +3358,9 @@ begin
   Widget:=gtk_grab_get_current;
   // for the LCL a modal window is not capturing
   if Widget<>nil then begin
-    if GtkWidgetIsA(Widget,GTk_WINDOW_TYPE) then begin
+    if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
       AWindow:=PGtkWindow(Widget);
-      IsModal:=(AWindow^.flag0 and bm_modal)<>0;
+      IsModal:=gtk_window_get_modal(AWindow);
       if IsModal then
         Widget:=nil;
     end;
@@ -3751,6 +3750,7 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCursorPos(var lpPoint: TPoint ): Boolean;
+{$IfDef GTK1}
 var
   root, child: pointer;
   winx, winy: Integer;
@@ -3780,6 +3780,10 @@ begin
 
   if TopList <> nil
   then g_list_free(TopList);
+{$Else}
+begin
+  result := False;
+{$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -4043,7 +4047,7 @@ begin
   while PageListItem<>nil do begin
     PageWidget:=PGtkWidget(PageListItem^.Data);
     if PageWidget<>nil then begin
-      TabWidget:=PGtkNotebookPage(PageWidget)^.Tab_Label;
+      TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
       if TabWidget<>nil then begin
         // test if position is in tabwidget
         if (TabWidget^.Allocation.X<=NoteBookPos.X)
@@ -4145,7 +4149,7 @@ begin
                 end;
                 If Colormap <> nil then
                   gdk_colormap_unref(Colormap);
-                ColorMap := gdk_colormap_new(Visual, 1);
+                ColorMap := gdk_colormap_new(Visual, GdkTrue);
               end else
                 biBitCount := Visual^.Depth;
 
@@ -4383,7 +4387,7 @@ var
 begin
   Result:=0;
   Widget:=PGtkWidget(Handle);
-  if GtkWidgetIsA(Widget,GTK_SCROLLED_WINDOW_TYPE) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then begin
     ScrollWidget:=Widget;
   end else begin
     ScrollWidget:=PGtkWidget(gtk_object_get_data(
@@ -4412,7 +4416,7 @@ begin
   Result:=false;
   if Handle=0 then exit;
   Widget:=PGtkWidget(Handle);
-  if GtkWidgetIsA(Widget,GTK_SCROLLED_WINDOW_TYPE) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLED_WINDOW) then begin
     ScrollWidget:=Widget;
   end else begin
     ScrollWidget:=PGtkWidget(gtk_object_get_data(
@@ -5166,7 +5170,7 @@ end;
 function TgtkObject.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 begin
-  if GtkWidgetIsA(PGtkWidget(Handle),GTk_WIDGET_TYPE) then begin
+  if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
     Result:=true;
     Left:=PGtkWidget(Handle)^.Allocation.X;
     Top:=PGtkWidget(Handle)^.Allocation.Y;
@@ -5184,7 +5188,7 @@ end;
 Function TgtkObject.GetWindowSize(Handle : hwnd;
   var Width, Height: integer): boolean;
 begin
-  if GtkWidgetIsA(PGtkWidget(Handle),GTk_WIDGET_TYPE) then begin
+  if GtkWidgetIsA(PGtkWidget(Handle),GTK_TYPE_WIDGET) then begin
     Result:=true;
     Width:=PGtkWidget(Handle)^.Allocation.Width;
     Height:=PGtkWidget(Handle)^.Allocation.Height;
@@ -6277,6 +6281,7 @@ const
   GROUPIDX_DATANAME = 'GroupIndex';
 
   function GetGroup: PGSList;
+  {$IfDef GTK1}
   var
     Item: PGList;
     Arg: TGTKArg;
@@ -6299,6 +6304,10 @@ const
       end;
       Item := Item^.Next;
     end;
+  {$Else}
+  begin
+    result := nil;
+  {$EndIf}
   end;
 
 var
@@ -6618,10 +6627,7 @@ var
   MenuItemWidget: PGtkMenuItem;
 begin
   MenuItemWidget:=PGtkMenuItem(HndMenu);
-  if bRightJustify then
-    MenuItemWidget^.flag0:=MenuItemWidget^.flag0 or bm_right_justify
-  else
-    MenuItemWidget^.flag0:=MenuItemWidget^.flag0 and (not bm_right_justify);
+  gtk_menu_item_set_right_justified(MenuItemWidget, bRightJustify);
   gtk_widget_queue_resize(GTK_WIDGET(MenuItemWidget));
   Result:=false;
 end;
@@ -7104,7 +7110,7 @@ var
   item_requisition: TGtkRequisition;
 begin
   Result:=true;
-  if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_COMBO_TYPE)) then
+  if not (GtkWidgetIsA(PgtkWidget(Handle),GTK_TYPE_COMBO)) then
     RaiseException('TGTKObject.SetComboMinDropDownSize invalid handle');
 
   // get current items width and height
@@ -7710,7 +7716,7 @@ var Widget: PGTKWidget;
 begin
   writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP);
   Widget:=PGtkWidget(hWnd);
-  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then begin
+  if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
     { case hWndInsertAfter of
         HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
         HWND_TOP:    gtk_window_set_position(PGtkWindow(hWnd),GTK_WIN_POS_CENTER);
@@ -8041,8 +8047,8 @@ var
     DeleteObject(ScaleBMP);
     ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
     Scale := PGdiObject(ScaleBMP);
-    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,@Scale^.GDIPixmapObject,
-      @Scale^.GDIBitmapMaskObject,0);
+    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,{$IfDef GTK1}@{$EndIf}Scale^.GDIPixmapObject,
+      {$IfDef GTK1}@{$EndIf}Scale^.GDIBitmapMaskObject,0);
     GDK_Pixbuf_Unref(ScaleDest);
     Result := True;
   {$Else not NoGdkPixbufLib}
@@ -8705,6 +8711,15 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.272  2003/09/05 18:19:54  ajgenius
+  Make GTK2 "compile". linking fails still
+  (Makefile.fpc needs pkgconfig libs/GTK2 linking rules,
+  but not sure how not sure how) and when linked via a make script
+  (like gtk2 examples do) apps still won't work(yet).  I think we
+  need to do a lot of work to make sure incompatible(also to get rid
+  of deprecated) things are done in GTK2 interface itself, and just
+  use more {$Ifdef GTK1} in the gtk interface itself.
+
   Revision 1.271  2003/08/27 08:14:37  mattias
   fixed system fonts for win32 intf
 

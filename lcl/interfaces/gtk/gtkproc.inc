@@ -30,13 +30,125 @@
 
 function gtk_widget_get_xthickness(Style : PGTKStyle) : gint;
 begin  
-  result := Style^.{$IfNDef GTK2}klass^.{$EndIF}xthickness;
+  If (Style <> nil) then begin
+    {$IfNDef GTK2}
+      If (Style^.klass = nil) then
+        result := 0
+      else
+    {$EndIf}
+        result := Style^.{$IfNDef GTK2}klass^.{$EndIF}xthickness
+  end else
+    result := 0;
 end;
 
 function gtk_widget_get_ythickness(Style : PGTKStyle) : gint;
 begin  
-  result := Style^.{$IfNDef GTK2}klass^.{$EndIF}ythickness;
+  If (Style <> nil) then begin
+    {$IfNDef GTK2}
+      If (Style^.klass = nil) then
+        result := 0
+      else
+    {$EndIf}
+        result := Style^.{$IfNDef GTK2}klass^.{$EndIF}ythickness
+  end else
+    result := 0;
 end;
+
+function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
+begin
+  result := gtk_widget_get_xthickness(gtk_widget_get_style(Style));
+end;
+
+function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
+begin
+  result := gtk_widget_get_ythickness(gtk_widget_get_style(Style));
+end;
+
+{$Ifdef GTK1}
+
+function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
+begin
+  if (bin <> nil) then
+    result := bin^.Child
+  else
+    result := nil;
+end;
+
+Function gtk_notebook_get_tab_label(Notebook : PGtkNotebook; Child : PGTKWidget) : PGTKWidget;
+begin
+  result := PGtkNotebookPage(Child)^.Tab_Label;
+end;
+
+function gtk_window_get_modal(window:PGtkWindow):gboolean;
+begin
+  result := (Window^.flag0 and bm_modal)<>0;
+end;
+
+Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
+begin
+  if right_justified then
+    menu_item^.flag0:=menu_item^.flag0 or bm_right_justify
+  else
+    menu_item^.flag0:=menu_item^.flag0 and (not bm_right_justify);
+end;
+
+Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_regions_intersect(source1, source2);
+end;
+
+Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_regions_union(source1, source2);
+end;
+
+Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_regions_subtract(source1, source2);
+end;
+
+Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_regions_xor(source1, source2);
+end;
+{$EndIf}
+
+{$Ifdef GTK2}
+Procedure gtk_signal_handlers_destroy(anObject : PGtkObject);
+begin
+  g_signal_handlers_destroy(PGObject(anObject));
+end;
+
+Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
+begin
+  result := gdk_region_copy(region);
+  GDK2.gdk_region_union_with_rect(result, rect);
+end;
+
+Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_region_copy(source1);
+  GDK2.gdk_region_intersect(result, source2);
+end;
+
+Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_region_copy(source1);
+  GDK2.gdk_region_union(result, source2);
+end;
+
+Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_region_copy(source1);
+  GDK2.gdk_region_subtract(result, source2);
+end;
+
+Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+begin
+  result := gdk_region_copy(source1);
+  GDK2.gdk_region_xor(result, source2);
+end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   procedure RaiseException(const Msg: string);
@@ -4411,6 +4523,15 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.194  2003/09/05 18:19:54  ajgenius
+  Make GTK2 "compile". linking fails still
+  (Makefile.fpc needs pkgconfig libs/GTK2 linking rules,
+  but not sure how not sure how) and when linked via a make script
+  (like gtk2 examples do) apps still won't work(yet).  I think we
+  need to do a lot of work to make sure incompatible(also to get rid
+  of deprecated) things are done in GTK2 interface itself, and just
+  use more {$Ifdef GTK1} in the gtk interface itself.
+
   Revision 1.193  2003/09/04 10:51:30  mattias
   fixed default size of preview widget
 

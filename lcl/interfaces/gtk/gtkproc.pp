@@ -49,8 +49,10 @@ uses
   
 
 {$IFNDEF GTK2}
+  function  GTK_TYPE_WIDGET  : TGTKType; cdecl; external gtkdll name 'gtk_widget_get_type';
   function  GTK_TYPE_CONTAINER : TGTKType; cdecl; external gtkdll name 'gtk_container_get_type';
   function  GTK_TYPE_BIN  : TGTKType; cdecl; external gtkdll name 'gtk_bin_get_type';
+  function  GTK_TYPE_HBOX  : TGTKType; cdecl; external gtkdll name 'gtk_hbox_get_type';
   function  GTK_TYPE_SCROLLED_WINDOW : TGTKType; cdecl; external gtkdll name 'gtk_scrolled_window_get_type';
   function  GTK_TYPE_COMBO  : TGTKType; cdecl; external gtkdll name 'gtk_combo_get_type';
   function  GTK_TYPE_WINDOW  : TGTKType; cdecl; external gtkdll name 'gtk_window_get_type';
@@ -475,9 +477,39 @@ Procedure FillScreenFonts(ScreenFonts : TStrings);
 function GetGDKMouseCursor(Cursor: TCursor): PGdkCursor;
 Procedure FreeGDKCursors;
 
-function gtk_widget_get_xthickness(Style : PGTKStyle) : gint;
-function gtk_widget_get_ythickness(Style : PGTKStyle) : gint;
+function gtk_widget_get_xthickness(Style : PGTKStyle) : gint; overload;
+function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 
+function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
+function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
+
+{$Ifdef GTK1}
+  type
+     PGtkOldEditable = PGtkEditable;
+
+  Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
+
+  Function gtk_notebook_get_tab_label(Notebook : PGtkNotebook; Child : PGTKWidget) : PGTKWidget;
+
+  Function gtk_window_get_modal(window:PGtkWindow):gboolean;
+
+  Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
+
+  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+{$EndIF}
+
+{$Ifdef GTK2}
+  Procedure gtk_signal_handlers_destroy(anObject : PGtkObject);
+
+  Function gdk_region_union_with_rect(region:PGdkRegion; rect:PGdkRectangle) : PGdkRegion;
+  Function gdk_region_intersect(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+  Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+{$EndIf}
 
 implementation
 
