@@ -84,6 +84,7 @@ uses
   MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
+  FindReplaceDialog, FindInFilesDlg,
   // main ide
   MainBar;
 
@@ -448,6 +449,7 @@ type
     
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure CreateOftenUsedForms; override;
 
     // files/units
     function DoNewEditorFile(NewUnitType: TNewUnitType;
@@ -798,12 +800,6 @@ end;
 
 constructor TMainIDE.Create(TheOwner: TComponent);
 begin
-  // The MainIDE variable is assigned via
-  // Application.CreateForm(TMainIDE,MainIDE) _after_ the creation of the form.
-  // But some IDE parts needs the variable already during creation, so it is set
-  // here.
-  MainIDE:=Self;
-  
   inherited Create(TheOwner);
 
   // load options
@@ -850,7 +846,7 @@ begin
 
   // Main IDE bar created and setup completed -> Show it
   Show;
-
+  
   // load installed packages
   PkgBoss.LoadInstalledPackages;
 
@@ -898,6 +894,13 @@ begin
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
   writeln('[TMainIDE.Destroy] END');
+end;
+
+procedure TMainIDE.CreateOftenUsedForms;
+begin
+  Application.CreateForm(TMessagesView, MessagesView);
+  Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
+  Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
 end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
@@ -1965,9 +1968,9 @@ begin
     Project1.RemoveProjectPathFromFilename(AFilename),
     Project1.RemoveProjectPathFromFilename(ActiveUnitInfo.Source.LastIncludedByFile),
     ClearIncludedByFile,
-    CodeToolBoss.GetUnitPathForDirectory(FileDir),
-    CodeToolBoss.GetIncludePathForDirectory(FileDir),
-    CodeToolBoss.GetSrcPathForDirectory(FileDir)
+    TrimSearchPath(CodeToolBoss.GetUnitPathForDirectory(FileDir),FileDir),
+    TrimSearchPath(CodeToolBoss.GetIncludePathForDirectory(FileDir),FileDir),
+    TrimSearchPath(CodeToolBoss.GetSrcPathForDirectory(FileDir),FileDir)
     );
   if ClearIncludedByFile then
     ActiveUnitInfo.Source.LastIncludedByFile:='';
@@ -4709,7 +4712,9 @@ begin
       SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(
                             ExtractFilePath(ActiveUnitInfo.Filename))
     else
-      SPath:='.;'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(
+      SPath:='.;'+CodeToolBoss.DefineTree.GetUnitPathForDirectory(
+                            ExtractFilePath(ActiveUnitInfo.Filename))
+             +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(
                             ExtractFilePath(ActiveUnitInfo.Filename));
   end;
   
@@ -6621,7 +6626,8 @@ var
   SearchPath, ProjectDir: string;
 begin
   ProjectDir:=Project1.ProjectDirectory;
-  SearchPath:=CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
+  SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
+            +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
   Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
 end;
 
@@ -8548,6 +8554,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.538  2003/04/26 07:34:54  mattias
+  implemented custom package initialization
+
   Revision 1.537  2003/04/25 14:40:49  mattias
   implemented add file to a package dialog
 
