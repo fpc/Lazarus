@@ -204,7 +204,7 @@ type
     procedure SetNumGlyphs(Value : integer);
     procedure SetSpacing(const Value : integer);
     property MouseInControl : Boolean read FMouseInControl;
-   public
+  public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
@@ -261,7 +261,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/09/01 16:11:21  lazarus
+  MG: double, triple and quad clicks now works
+
   Revision 1.20  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
