@@ -423,6 +423,7 @@ type
     procedure SetupTransferMacros;
     procedure SetupControlSelection;
     procedure SetupStartProject;
+    procedure ReOpenIDEWindows;
     
     // methods for 'new unit'
     function CreateNewCodeBuffer(NewUnitType:TNewUnitType;
@@ -896,6 +897,9 @@ begin
 
   // Now load a project
   SetupStartProject;
+  
+  // reopen extra windows
+  ReOpenIDEWindows;
   
   // set OnIdle handlers
   Application.AddOnUserInputHandler(@OnApplicationUserInput);
@@ -1388,6 +1392,36 @@ begin
   writeln('TMainIDE.Create B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
+end;
+
+procedure TMainIDE.ReOpenIDEWindows;
+var
+  i: Integer;
+  ALayout: TIDEWindowLayout;
+  FormEnum: TNonModalIDEWindow;
+begin
+  for i:=0 to EnvironmentOptions.IDEWindowLayoutList.Count-1 do begin
+    ALayout:=EnvironmentOptions.IDEWindowLayoutList[i];
+    if not ALayout.Visible then continue;
+    FormEnum:=NonModalIDEFormIDToEnum(ALayout.FormID);
+    if FormEnum in NonModalIDEWindowManualOpen then continue;
+    case FormEnum of
+    nmiwUnitDependenciesName:
+      DoViewUnitDependencies;
+    nmiwProjectInspector:
+      DoShowProjectInspector;
+    nmiwCodeExplorerName:
+      DoShowCodeExplorer;
+    nmiwBreakPoints:
+      ;//itmViewBreakPoints.OnClick(Self);
+    nmiwWatches:
+      ;//itmViewWatches.OnClick(Self);
+    nmiwLocals:
+      ;//itmViewLocals.OnClick(Self);
+    nmiwCallStack:
+      ;//itmViewCallStack.OnClick(Self);
+    end;
+  end;
 end;
 
 
@@ -10172,6 +10206,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.676  2003/11/27 23:05:39  mattias
+  implemented reopen IDE windows
+
   Revision 1.675  2003/11/26 21:41:18  mattias
   added Rescan FPC source directory menu item
 

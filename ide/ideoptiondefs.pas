@@ -55,11 +55,21 @@ type
     nmiwLocals,
     nmiwCallStack,
     nmiwSearchResultsViewName
-
     );
 
-  // form names for non modal IDE windows:
 const
+  // This is the list of IDE windows, that will not be automatically restored
+  // on startup.
+  NonModalIDEWindowManualOpen = [
+    nmiwNone,
+    nmiwMainIDEName,
+    nmiwSourceNoteBookName,
+    nmiwMessagesViewName,
+    nmiwDbgOutput,
+    nmiwSearchResultsViewName
+    ];
+
+  // form names for non modal IDE windows:
   NonModalIDEWindowNames: array[TNonModalIDEWindow] of string = (
     '?',
     'MainIDE',
@@ -77,9 +87,10 @@ const
     'Watches',
     'Locals',
     'CallStack',
+    // extra
     'SearchResults'
    );
-
+   
 type
   { TIDEWindowLayout stores information about the position, min/maximized state
     and similar things for an IDE window or dialog, like the source editor,
@@ -109,6 +120,7 @@ type
                                         
   TIDEWindowLayout = class
   private
+    FVisible: boolean;
     fWindowPlacement: TIDEWindowPlacement;
     fWindowPlacementsAllowed: TIDEWindowPlacements;
     fLeft: integer;
@@ -131,6 +143,7 @@ type
     procedure SetFormID(const AValue: string);
     procedure SetOnGetDefaultIDEWindowPos(const AValue: TOnGetDefaultIDEWindowPos);
     procedure SetDockModesAllowed(const AValue: TIDEWindowDockModes);
+    procedure SetVisible(const AValue: boolean);
     procedure SetWindowPlacementsAllowed(const AValue: TIDEWindowPlacements);
     procedure SetWindowStatesAllowed(const AValue: TIDEWindowStates);
     procedure SetDockMode(const AValue: TIDEWindowDockMode);
@@ -150,9 +163,11 @@ type
     procedure GetCurrentPosition;
     procedure Assign(Layout: TIDEWindowLayout);
     procedure ReadCurrentCoordinates;
+    procedure ReadCurrentState;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function CustomCoordinatesAreValid: boolean;
+  public
     property FormID: string read GetFormID write SetFormID;
     property WindowPlacement: TIDEWindowPlacement
       read fWindowPlacement write SetWindowPlacement;
@@ -175,6 +190,7 @@ type
     property DockModesAllowed: TIDEWindowDockModes
       read fDockModesAllowed write SetDockModesAllowed;
     property DockChilds: TStringList read fDockChilds; // list of FormIDs
+    property Visible: boolean read FVisible write SetVisible;
     property OnGetDefaultIDEWindowPos: TOnGetDefaultIDEWindowPos
       read fOnGetDefaultIDEWindowPos write SetOnGetDefaultIDEWindowPos;
     property OnApply: TOnApplyIDEWindowLayout read fOnApply write fOnApply;
@@ -448,6 +464,7 @@ begin
   end;
   fDockMode:=StrToIDEWindowDockMode(XMLConfig.GetValue(
     P+'DockMode/Value',IDEWindowDockModeNames[fDockMode]));
+  FVisible:=XMLConfig.GetValue(P+'Visible/Value',false);
 end;
 
 procedure TIDEWindowLayout.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -478,6 +495,7 @@ begin
     XMLConfig.SetDeleteValue(P+'Docking/Child'+IntToStr(i),fDockChilds[i],'');
   end;
   XMLConfig.SetValue(P+'DockMode/Value',IDEWindowDockModeNames[fDockMode]);
+  XMLConfig.SetDeleteValue(P+'Visible/Value',FVisible,false);
 end;
 
 procedure TIDEWindowLayout.SetWindowPlacement(
@@ -574,6 +592,12 @@ begin
   fDockModesAllowed:=AValue;
 end;
 
+procedure TIDEWindowLayout.SetVisible(const AValue: boolean);
+begin
+  if FVisible=AValue then exit;
+  FVisible:=AValue;
+end;
+
 procedure TIDEWindowLayout.SetOnGetDefaultIDEWindowPos(
   const AValue: TOnGetDefaultIDEWindowPos);
 begin
@@ -619,6 +643,11 @@ begin
   end;
 end;
 
+procedure TIDEWindowLayout.ReadCurrentState;
+begin
+  Visible:=(Form<>nil) and Form.Visible;
+end;
+
 procedure TIDEWindowLayout.Assign(Layout: TIDEWindowLayout);
 begin
   Clear;
@@ -644,13 +673,11 @@ end;
 procedure TIDEWindowLayout.GetCurrentPosition;
 begin
   case WindowPlacement of
-  iwpRestoreWindowGeometry:
+  iwpRestoreWindowGeometry, iwpRestoreWindowSize:
     ReadCurrentCoordinates;
-    
-  iwpRestoreWindowSize:
-    ReadCurrentCoordinates;
-    
+
   end;
+  ReadCurrentState;
 end;
 
 { TIDEWindowLayoutList }
