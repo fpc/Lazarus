@@ -2145,7 +2145,7 @@ var
   Width, Height: Integer;
   //NewText,oldText : String;
   AY, Num : Integer;
-  Line : Integer;
+  //Line : Integer;
   TXTPt : TPoint;
   TM  : TTextMetric;
   ADC : hDC;
@@ -2167,7 +2167,7 @@ begin
     end
     else begin
       // TODO: implement other parameters.
-      ADC := SaveDC(DC);
+      //ADC := SaveDC(DC);
       //pStr := StrAlloc(Count + 1);
       //StrLCopy(pStr, Str, Count);
       //pStr[Count] := #0;
@@ -2188,7 +2188,7 @@ begin
         IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
           Rect^.Bottom);
       end;
-      Line := 1;
+      //Line := 1;
       //OldText := StrPas(pStr);
       Num := FindChar(#10,Str,Count);
       AY := Y;
@@ -2234,7 +2234,7 @@ begin
         //                TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
         //end;
       end;
-      RestoreDC(DC, ADC);
+      //RestoreDC(DC, ADC);
       //StrDispose(pStr);
     end;
   end;
@@ -5989,6 +5989,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2002/08/21 14:44:18  lazarus
+  MG: accelerated synedit
+
   Revision 1.102  2002/08/21 14:06:41  lazarus
   MG: added TDeviceContextMemManager
 
