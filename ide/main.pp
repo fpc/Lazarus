@@ -6245,7 +6245,7 @@ procedure TMainIDE.DoRestart;
         exit;
       end;
       StartLazProcess.CommandLine := format('%s --lazarus-pid=%d',
-        [ExeName, ProcessID]);
+        [ExeName, {$IFDEF VER1_9_4}ProcessID{$ELSE}GetProcessID{$ENDIF}]);
       StartLazProcess.Execute;
     finally
       StartLazProcess.Free;
@@ -10962,6 +10962,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.804  2004/12/06 23:10:04  vincents
+  replaced processid by getprocessid for fpc version > 1.9.4
+
   Revision 1.803  2004/12/06 18:27:16  mattias
   available translations are now searched automatically
 
