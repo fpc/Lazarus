@@ -13,13 +13,15 @@
   mainbase.pas - TMainIDEBase = class(TMainIDEInterface)
                    The ancestor class used by (and only by) the other
                    bosses/managers like debugmanager, pkgmanager.
-  mainintf.pas - TMainIDEInterface = class(TComponent)
+  mainintf.pas - TMainIDEInterface = class(TLazIDEInterface)
                    The interface class of the top level functions of the IDE.
                    TMainIDEInterface is used by functions/units, that uses
                    several different parts of the IDE (designer, source editor,
-                   codetools), so they can't be assigned to a specific boss and
+                   codetools), so they can't be added to a specific boss and
                    which are yet too small to become a boss of their own.
-
+  lazideintf.pas - TLazIDEInterface = class(TComponent)
+                   For designtime packages, this is the interface class of the
+                   top level functions of the IDE.
 
  ***************************************************************************/
 
@@ -59,7 +61,7 @@ uses
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
   LazConf, LazarusIDEStrConsts, SrcEditorIntf,
-  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
+  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler, LazIDEIntf,
   {$IFDEF DisablePkgs}
   CompReg, IDEComp,
   {$ELSE}

@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, LResources, Project, Buttons,
-  StdCtrls;
+  StdCtrls, ProjectIntf;
 
 type
   TNewProjectDialog = class(TForm)
@@ -50,28 +50,23 @@ type
     procedure SetupComponents;
   public
     constructor Create(AOwner: TComponent); override;
+    function GetProjectDescriptor: TProjectDescriptor;
   end;
 
-function ChooseNewProject(var ProjectType: TProjectType):TModalResult;
+function ChooseNewProject(var ProjectDesc: TProjectDescriptor): TModalResult;
 
 implementation
 
-function ChooseNewProject(var ProjectType: TProjectType):TModalResult;
-var NewProjectDialog: TNewProjectDialog;
-  i:integer;
-  pt:TProjectType;
+function ChooseNewProject(var ProjectDesc: TProjectDescriptor):TModalResult;
+var
+  NewProjectDialog: TNewProjectDialog;
 begin
+  ProjectDesc:=nil;
   NewProjectDialog:=TNewProjectDialog.Create(Application);
   try
     Result:=NewProjectDialog.ShowModal;
-    if Result=mrOk then begin
-      i:=0;
-      for pt:=Low(TProjectType) to High(TProjectType) do begin
-        if i=NewProjectDialog.ListBox.ItemIndex then
-          ProjectType:=pt;
-        inc(i);
-      end;
-    end;
+    if Result=mrOk then
+      ProjectDesc:=NewProjectDialog.GetProjectDescriptor;
   finally
     NewProjectDialog.Free;
   end;
@@ -94,23 +89,26 @@ begin
   FillHelpLabel;
 end;
 
-procedure TNewProjectDialog.FillHelpLabel;
-var i:integer;
-  pt:TProjectType;
+function TNewProjectDialog.GetProjectDescriptor: TProjectDescriptor;
+var
+  i: LongInt;
 begin
-  i:=0;
-  for pt:=Low(TProjectType) to High(TProjectType) do begin
-    if i=ListBox.ItemIndex then begin
-      HelpLabel.Caption:=ProjectTypeDescriptions[pt];
-      HelpLabel.Width:=ClientWidth-HelpLabel.Left-10;
-    end;
-    inc(i);
-  end;
+  i:=ListBox.ItemIndex;
+  if (i>=0) and (i<ProjectDescriptors.Count) then
+    Result:=ProjectDescriptors[i]
+  else
+    Result:=ProjectDescriptorApplication;
+end;
+
+procedure TNewProjectDialog.FillHelpLabel;
+begin
+  HelpLabel.Caption:=GetProjectDescriptor.GetLocalizedDescription;
+  HelpLabel.Width:=ClientWidth-HelpLabel.Left-10;
 end;
 
 procedure TNewProjectDialog.SetupComponents;
 var
-  pt: TProjectType;
+  i: integer;
   MaxX, MaxY: integer;
 begin
   MaxX:=386;
@@ -126,8 +124,8 @@ begin
     Height:=MaxY-50;
     with Items do begin
       BeginUpdate;
-      for pt:=Low(TProjectType) to High(TProjectType) do
-        Add(ProjectTypeNames[pt]);
+      for i:=0 to ProjectDescriptors.Count-1 do
+        Add(ProjectDescriptors[i].GetLocalizedName);
       EndUpdate;
     end;
     ItemIndex:=0;
@@ -182,7 +180,7 @@ begin
 end;
 
 procedure TNewProjectDialog.ListBoxMouseUp(Sender:TObject;
-  Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+  Button: TMouseButton; Shift: TShiftState; X,Y:integer);
 begin
   FillHelpLabel;
 end;

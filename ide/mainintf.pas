@@ -16,12 +16,15 @@
   mainbase.pas - TMainIDEBase = class(TMainIDEInterface)
                    The ancestor class used by (and only by) the other
                    bosses/managers like debugmanager, pkgmanager.
-  mainintf.pas - TMainIDEInterface = class
+  mainintf.pas - TMainIDEInterface = class(TLazIDEInterface)
                    The interface class of the top level functions of the IDE.
                    TMainIDEInterface is used by functions/units, that uses
                    several different parts of the IDE (designer, source editor,
-                   codetools), so they can't be assigned to a specific boss and
+                   codetools), so they can't be added to a specific boss and
                    which are yet too small to become a boss of their own.
+  lazideintf.pas - TLazIDEInterface = class(TComponent)
+                   For designtime packages, this is the interface class of the
+                   top level functions of the IDE.
 
 
  ***************************************************************************/
@@ -64,6 +67,7 @@ uses
   ObjectInspector,
   LazConf, LazarusIDEStrConsts,
   ProjectIntf, ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
+  LazIDEIntf,
   {$IFDEF DisablePkgs}
   CompReg, IDEComp,
   {$ELSE}
@@ -71,7 +75,7 @@ uses
   {$ENDIF}
   TransferMacros, PropEdits, OutputFilter, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
-  Debugger, IDEOptionDefs, CodeToolsDefines, SrcEditorIntf;
+  IDEOptionDefs, CodeToolsDefines, SrcEditorIntf;
 
 type
   // The IDE is at anytime in a specific state:
@@ -96,21 +100,6 @@ type
     dsInspector2  // focussing object inspector after form
     );
 
-  // new file flags
-  TNewFlag = (
-    nfIsPartOfProject, // force IsPartOfProject,
-                       //   default is to use a heuristic
-    nfIsNotPartOfProject,// forbid IsPartOfProject
-    nfOpenInEditor,    // open in editor
-    nfSave,            // save file instantly
-    nfAddToRecent,     // add file to recent files
-    nfQuiet,           // less messages
-    nfConvertMacros,   // replace macros in filename
-    nfBeautifySrc,     // beautify custom source
-    nfCreateDefaultSrc // create initial source based on the type
-    );
-  TNewFlags = set of TNewFlag;
-
   // save file flags
   TSaveFlag = (
     sfSaveAs,
@@ -119,22 +108,6 @@ type
     sfCheckAmbigiousFiles
     );
   TSaveFlags = set of TSaveFlag;
-
-  // open file flags
-  TOpenFlag = (
-    ofProjectLoading,// this open is part of opening a whole project
-    ofOnlyIfExists,  // do not auto create non existing files
-    ofRevert,        // reload file if already open
-    ofQuiet,         // less messages
-    ofAddToRecent,   // add file to recent files
-    ofRegularFile,   // open as regular file (e.g. do not open projects)
-    ofVirtualFile,   // open the virtual file
-    ofConvertMacros, // replace macros in filename
-    ofUseCache,      // do not update file from disk
-    ofMultiOpen,     // set during loading multiple files
-    ofDoNotLoadResource// do not open form, datamodule, ...
-    );
-  TOpenFlags = set of TOpenFlag;
 
   // revert file flags
   TRevertFlag = (
@@ -167,7 +140,7 @@ type
 
   { TMainIDEInterface }
 
-  TMainIDEInterface = class(TComponent)
+  TMainIDEInterface = class(TLazIDEInterface)
   protected
     function GetToolStatus: TIDEToolStatus; virtual; abstract;
   public
@@ -202,14 +175,6 @@ type
     procedure GetIDEFileState(Sender: TObject; const AFilename: string;
                         NeededFlags: TIDEFileStateFlags;
                         var ResultFlags: TIDEFileStateFlags); virtual; abstract;
-
-    function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
-        NewFilename: string; const NewSource: string;
-        NewFlags: TNewFlags): TModalResult; virtual; abstract;
-    function DoOpenEditorFile(AFileName:string; PageIndex: integer;
-        Flags: TOpenFlags): TModalResult; virtual; abstract;
-    function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
-        PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
 
     function DoInitProjectRun: TModalResult; virtual; abstract;
     function DoOpenMacroFile(Sender: TObject;

@@ -48,15 +48,19 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileUtil, Dialogs, Menus,
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
+  // IDE Interface
+  ProjectIntf, LazIDEIntf,
   // IDE
-  DialogProcs, LazarusIDEStrConsts, IDEProcs, KeyMapping, ObjectLists,
-  EnvironmentOpts, MiscOptions, ProjectIntf, ProjectDefs, Project, InputHistory,
+  LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, KeyMapping,
+  EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
-  MsgView, BuildLazDialog, DefineTemplates, LazConf,
+  MsgView, BuildLazDialog, DefineTemplates,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
-  LazarusPackageIntf, PublishProjectDlg, BasePkgManager,
+  LazarusPackageIntf, PublishProjectDlg,
+  // bosses
+  BasePkgManager,
   MainBar, MainIntf, MainBase;
 
 type
@@ -1763,31 +1767,7 @@ begin
 end;
 
 procedure TPkgManager.AddDefaultDependencies(AProject: TProject);
-var
-  ds: char;
 begin
-  case AProject.ProjectType of
-  
-  ptApplication:
-    begin
-      // add lcl pp/pas dirs to source search path
-      ds:=PathDelim;
-      AProject.CompilerOptions.SrcPath:=
-        '$(LazarusDir)'+ds+'lcl'
-       +';'+
-        '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
-      {$IFDEF DisablePkgs}
-      // add lcl ppu dirs to unit search path
-      Project1.CompilerOptions.OtherUnitFiles:=
-        '$(LazarusDir)'+ds+'lcl'+ds+'units'
-       +';'+
-        '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
-      {$ELSE}
-      AddProjectLCLDependency(AProject);
-      {$ENDIF}
-    end;
-
-  end;
   OpenProjectDependencies(AProject,true);
 end;
 

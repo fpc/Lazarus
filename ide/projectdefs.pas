@@ -86,9 +86,29 @@ type
     property DefaultPascalFileExt: string read FDefaultPascalFileExt write SetDefaultPascalFileExt;
   end;
   
+  { TLazProjectDescriptors }
+
+  TLazProjectDescriptors = class(TProjectDescriptors)
+  private
+    fDestroying: boolean;
+    fItems: TList; // list of TProjectDescriptor
+  protected
+    function GetItems(Index: integer): TProjectDescriptor; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Count: integer; override;
+    function GetUniqueName(const Name: string): string; override;
+    function IndexOf(const Name: string): integer; override;
+    function FindByName(const Name: string): TProjectDescriptor; override;
+    procedure RegisterDescriptor(Descriptor: TProjectDescriptor); override;
+    procedure UnregisterDescriptor(Descriptor: TProjectDescriptor); override;
+  end;
+
 var
   LazProjectFileDescriptors: TLazProjectFileDescriptors;
-  
+  LazProjectDescriptors: TLazProjectDescriptors;
+
 type
   //---------------------------------------------------------------------------
   // bookmarks of a single file
@@ -1027,6 +1047,90 @@ begin
   DefPasExt:=DefaultPascalFileExt;
   if DefPasExt='' then exit;
   for i:=0 to Count-1 do Items[i].UpdateDefaultPascalFileExtension(DefPasExt);
+end;
+
+{ TLazProjectDescriptors }
+
+function TLazProjectDescriptors.GetItems(Index: integer): TProjectDescriptor;
+begin
+  Result:=TProjectDescriptor(FItems[Index]);
+end;
+
+constructor TLazProjectDescriptors.Create;
+begin
+  ProjectDescriptors:=Self;
+  FItems:=TList.Create;
+end;
+
+destructor TLazProjectDescriptors.Destroy;
+var
+  i: Integer;
+begin
+  fDestroying:=true;
+  for i:=Count-1 downto 0 do Items[i].Release;
+  FItems.Free;
+  FItems:=nil;
+  ProjectDescriptors:=nil;
+  inherited Destroy;
+end;
+
+function TLazProjectDescriptors.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TLazProjectDescriptors.GetUniqueName(const Name: string): string;
+var
+  i: Integer;
+begin
+  Result:=Name;
+  if IndexOf(Result)<0 then exit;
+  i:=0;
+  repeat
+    inc(i);
+    Result:=Name+IntToStr(i);
+  until IndexOf(Result)<0;
+end;
+
+function TLazProjectDescriptors.IndexOf(const Name: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Name,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TLazProjectDescriptors.FindByName(const Name: string
+  ): TProjectDescriptor;
+var
+  i: LongInt;
+begin
+  i:=IndexOf(Name);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+procedure TLazProjectDescriptors.RegisterDescriptor(
+  Descriptor: TProjectDescriptor);
+begin
+  if Descriptor.Name='' then
+    raise Exception.Create('TLazProjectDescriptors.RegisterDescriptor Descriptor.Name empty');
+  Descriptor.Name:=GetUniqueName(Descriptor.Name);
+  FItems.Add(Descriptor);
+end;
+
+procedure TLazProjectDescriptors.UnregisterDescriptor(
+  Descriptor: TProjectDescriptor);
+var
+  i: LongInt;
+begin
+  if fDestroying then exit;
+  i:=FItems.IndexOf(Descriptor);
+  if i<0 then
+    raise Exception.Create('TLazProjectDescriptors.UnregisterDescriptor');
+  FItems.Delete(i);
+  Descriptor.Release;
 end;
 
 initialization

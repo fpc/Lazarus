@@ -12,12 +12,15 @@
   mainbase.pas - TMainIDEBase = class(TMainIDEInterface)
                    The ancestor class used by (and only by) the other
                    bosses/managers like debugmanager, pkgmanager.
-  mainintf.pas - TMainIDEInterface = class(TComponent)
+  mainintf.pas - TMainIDEInterface = class(TLazIDEInterface)
                    The interface class of the top level functions of the IDE.
                    TMainIDEInterface is used by functions/units, that uses
                    several different parts of the IDE (designer, source editor,
-                   codetools), so they can't be assigned to a specific boss and
+                   codetools), so they can't be added to a specific boss and
                    which are yet too small to become a boss of their own.
+  lazideintf.pas - TLazIDEInterface = class(TComponent)
+                   For designtime packages, this is the interface class of the
+                   top level functions of the IDE.
 
 
                  Initial Revision  : Sun Mar 28 23:15:32 CST 1999
@@ -67,6 +70,7 @@ uses
   DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, IDECommands, SrcEditorIntf,
+  LazIDEIntf,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -493,7 +497,7 @@ type
     function DoOpenUnknownFile(const AFileName:string; Flags: TOpenFlags;
         var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
     procedure DoRestoreBookMarks(AnUnitInfo: TUnitInfo; ASrcEdit:TSourceEditor);
-    function DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
+    function DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
         PageIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
 
@@ -501,7 +505,7 @@ type
     function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
 
     // methods for creating a project
-    function CreateProjectObject(NewProjectType: TProjectType): TProject;
+    function CreateProjectObject(ProjectDesc: TProjectDescriptor): TProject;
     procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
                                              XMLConfig: TXMLConfig);
     procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
@@ -560,7 +564,7 @@ type
     procedure DoShowCodeExplorer;
 
     // project(s)
-    function DoNewProject(NewProjectType: TProjectType): TModalResult;
+    function DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
     function DoSaveProject(Flags: TSaveFlags): TModalResult;
     function DoCloseProject: TModalResult;
     function DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
@@ -1472,7 +1476,7 @@ begin
 
   if not ProjectLoaded then
     // create new project
-    DoNewProject(ptApplication);
+    DoNewProject(ProjectDescriptorApplication);
 
   UpdateWindowsMenu;
   {$IFDEF IDE_DEBUG}
@@ -1535,7 +1539,11 @@ var
   FileDescPascalUnitWithDataModule: TFileDescPascalUnitWithDataModule;
   FileDescText: TFileDescText;
   FileDescSimplePascalProgram: TFileDescSimplePascalProgram;
+  ProjDescApplication: TProjectApplicationDescriptor;
+  ProjDescProgram: TProjectProgramDescriptor;
+  ProjDescCustomProgram: TProjectManualProgramDescriptor;
 begin
+  // file descriptors ----------------------------------------------------------
   LazProjectFileDescriptors:=TLazProjectFileDescriptors.Create;
   // basic pascal unit
   FileDescPascalUnit:=TFileDescPascalUnit.Create;
@@ -1552,6 +1560,18 @@ begin
   // empty text file
   FileDescText:=TFileDescText.Create;
   LazProjectFileDescriptors.RegisterFileDescriptor(FileDescText);
+  
+  // project descriptors -------------------------------------------------------
+  LazProjectDescriptors:=TLazProjectDescriptors.Create;
+  // application
+  ProjDescApplication:=TProjectApplicationDescriptor.Create;
+  LazProjectDescriptors.RegisterDescriptor(ProjDescApplication);
+  // program
+  ProjDescProgram:=TProjectProgramDescriptor.Create;
+  LazProjectDescriptors.RegisterDescriptor(ProjDescProgram);
+  // custom program
+  ProjDescCustomProgram:=TProjectManualProgramDescriptor.Create;
+  LazProjectDescriptors.RegisterDescriptor(ProjDescCustomProgram);
 end;
 
 procedure TMainIDE.SetRecentFilesMenu;
@@ -2443,10 +2463,11 @@ End;
 
 Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
 var
-  NewProjectType: TProjectType;
+  NewProjectDesc: TProjectDescriptor;
 Begin
-  if ChooseNewProject(NewProjectType)=mrCancel then exit;
-  DoNewProject(NewProjectType);
+  NewProjectDesc:=nil;
+  if ChooseNewProject(NewProjectDesc)<>mrOk then exit;
+  DoNewProject(NewProjectDesc);
 end;
 
 procedure TMainIDE.mnuNewProjectFromFileClicked(Sender: TObject);
@@ -2842,16 +2863,12 @@ end;
 
 procedure TMainIDE.UpdateDefaultPascalFileExtensions;
 var
-  npt: TProjectType;
   DefPasExt: string;
 begin
   // change default pascal file extensions
   DefPasExt:=PascalExtension[EnvironmentOptions.PascalFileExtension];
   if LazProjectFileDescriptors<>nil then
     LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
-  for npt:=Low(TProjectType) to High(TProjectType) do
-    if (ProjectDefaultExt[npt]='.pas') or (ProjectDefaultExt[npt]='.pp')
-    then ProjectDefaultExt[npt]:=DefPasExt;
 end;
 
 function TMainIDE.CreateSrcEditPageName(const AnUnitName, AFilename: string;
@@ -3793,7 +3810,7 @@ begin
   NewUnitInfo:=TUnitInfo.Create(PreReadBuf);
   if FilenameIsPascalSource(NewUnitInfo.Filename) then
     NewUnitInfo.ReadUnitNameFromSource(true);
-  Project1.AddUnit(NewUnitInfo,false);
+  Project1.AddFile(NewUnitInfo,false);
   Result:=mrOk;
 end;
 
@@ -3982,9 +3999,9 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.CreateProjectObject(NewProjectType: TProjectType): TProject;
+function TMainIDE.CreateProjectObject(ProjectDesc: TProjectDescriptor): TProject;
 begin
-  Result:=TProject.Create(NewProjectType);
+  Result:=TProject.Create(ProjectDesc);
   Result.OnFileBackup:=@DoBackupFile;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
   Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
@@ -4141,7 +4158,7 @@ begin
       if Project1.MainUnitID>=0 then begin
         // check mainunit filename
         Ext:=ExtractFileExt(Project1.MainUnitInfo.Filename);
-        if Ext='' then Ext:=ProjectDefaultExt[Project1.ProjectType];
+        if Ext='' then Ext:='.pas';
         NewProgramFilename:=ChangeFileExt(NewFilename,Ext);
         if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
           ACaption:=lisChooseADifferentName;
@@ -4283,7 +4300,7 @@ begin
   end;
 end;
 
-function TMainIDE.DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
+function TMainIDE.DoOpenFileInSourceEditor(AnUnitInfo: TUnitInfo;
   PageIndex: integer; Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
   AFilename: string;
@@ -4421,7 +4438,7 @@ begin
                          and (not (nfIsNotPartOfProject in NewFlags)));
   end;
   if OldUnitIndex<0 then begin
-    Project1.AddUnit(NewUnitInfo,
+    Project1.AddFile(NewUnitInfo,
                      NewFileDescriptor.AddToProject
                      and NewUnitInfo.IsPartOfProject);
   end;
@@ -4493,9 +4510,9 @@ begin
     niiDataModule: Result:=DoNewEditorFile(FileDescriptorDatamodule,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
     // projects
-    niiApplication: DoNewProject(ptApplication);
-    niiFPCProject: DoNewProject(ptProgram);
-    niiCustomProject: DoNewProject(ptCustomProgram);
+    niiApplication: DoNewProject(ProjectDescriptorApplication);
+    niiFPCProject: DoNewProject(ProjectDescriptorProgram);
+    niiCustomProject: DoNewProject(ProjectDescriptorCustomProgram);
     // packages
     niiPackage: PkgBoss.DoNewPackage;
     else
@@ -4874,7 +4891,7 @@ begin
   writeln('[TMainIDE.DoOpenEditorFile] B');
   {$ENDIF}
   // open file in source notebook
-  Result:=DoOpenFileInSourceNoteBook(NewUnitInfo,PageIndex,Flags);
+  Result:=DoOpenFileInSourceEditor(NewUnitInfo,PageIndex,Flags);
   if Result<>mrOk then exit;
 
   {$IFDEF IDE_DEBUG}
@@ -4927,7 +4944,7 @@ begin
   // open file in source notebook
   OpenFlags:=[];
   if ProjectLoading then Include(OpenFlags,ofProjectLoading);
-  Result:=DoOpenFileInSourceNoteBook(MainUnitInfo,-1,OpenFlags);
+  Result:=DoOpenFileInSourceEditor(MainUnitInfo,-1,OpenFlags);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -5296,7 +5313,7 @@ begin
     DoJumpToCodeToolBossError;
 end;
 
-function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
+function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor):TModalResult;
 var i:integer;
 Begin
   DebugLn('TMainIDE.DoNewProject A');
@@ -5329,10 +5346,9 @@ Begin
 
   // create new project (TProject will automatically create the mainunit)
 
-  Project1:=CreateProjectObject(NewProjectType);
+  Project1:=CreateProjectObject(ProjectDesc);
   Project1.BeginUpdate(true);
   try
-    Project1.Title := 'project1';
     Project1.CompilerOptions.CompilerPath:='$(CompPath)';
     UpdateCaption;
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -5340,19 +5356,7 @@ Begin
     // add and load default required packages
     PkgBoss.AddDefaultDependencies(Project1);
 
-    // set the project type specific things
-    case NewProjectType of
-
-    ptApplication:
-      // create a first form unit
-      DoNewEditorFile(FileDescriptorForm,'','',
-                      [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
-
-    ptProgram,ptCustomProgram:
-      // show program unit
-      DoOpenMainUnit(false);
-
-    end;
+    ProjectDesc.CreateStartFiles(Project1);
 
     // rebuild codetools defines
     // (i.e. remove old project specific things and create new)
@@ -5569,7 +5573,7 @@ begin
   writeln('TMainIDE.DoOpenProjectFile B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
-  Project1:=CreateProjectObject(ptProgram);
+  Project1:=CreateProjectObject(ProjectDescriptorProgram);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -5744,7 +5748,8 @@ end;
 
 function TMainIDE.DoCreateProjectForProgram(
   ProgramBuf: TCodeBuffer): TModalResult;
-var NewProjectType:TProjectType;
+var
+  NewProjectDesc: TProjectDescriptor;
   MainUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
@@ -5765,7 +5770,8 @@ begin
   end;
 
   // let user choose the program type
-  if ChooseNewProject(NewProjectType)=mrCancel then exit;
+  NewProjectDesc:=nil;
+  if ChooseNewProject(NewProjectDesc)<>mrOk then exit;
 
   // close old project
   If Project1<>nil then begin
@@ -5780,7 +5786,7 @@ begin
     ExpandFilename(ExtractFilePath(ProgramBuf.Filename));
 
   // create a new project
-  Project1:=CreateProjectObject(NewProjectType);
+  Project1:=CreateProjectObject(NewProjectDesc);
   Project1.BeginUpdate(true);
   try
     if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
@@ -5798,7 +5804,8 @@ begin
   end;
 
   // show program unit
-  Result:=DoOpenEditorFile(ProgramBuf.Filename,-1,[ofAddToRecent,ofRegularFile]);
+  Result:=DoOpenEditorFile(ProgramBuf.Filename,-1,
+                           [ofAddToRecent,ofRegularFile]);
   if Result=mrAbort then exit;
 
   {$IFDEF IDE_VERBOSE}
@@ -6105,10 +6112,12 @@ begin
   Result := mrCancel;
 
   // Check if we can run this project
+  debugln('TMainIDE.DoInitProjectRun A ',dbgs(pfRunnable in Project1.Flags),' ',dbgs(Project1.MainUnitID));
   if (not (pfRunnable in Project1.Flags))
   or (Project1.MainUnitID < 0)
   then Exit;
 
+  debugln('TMainIDE.DoInitProjectRun B');
   // Build project first
   if DoBuildProject(crRun) <> mrOk
   then Exit;
@@ -6172,7 +6181,7 @@ begin
     Result := mrAbort;
     Exit;
   end;
-  //Writeln('[TMainIDE.DoRunProject] B ',EnvironmentOptions.DebuggerClass);
+  debugln('[TMainIDE.DoRunProject] B ',EnvironmentOptions.DebuggerClass);
 
   Result := mrCancel;
 
@@ -10897,6 +10906,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.781  2004/10/01 11:23:07  mattias
+  implemented custom project types
+
   Revision 1.780  2004/09/27 22:05:40  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 

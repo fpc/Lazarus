@@ -50,7 +50,7 @@ uses
   Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
   CompilerOptions, FileUtil, CodeToolManager, CodeCache, Forms, Controls,
   EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
-  EditDefineTree, DefineTemplates, PackageDefs;
+  EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
 
 type
   TUnitInfo = class;
@@ -76,7 +76,7 @@ type
     );
 
   //---------------------------------------------------------------------------
-  TUnitInfo = class(TObject)
+  TUnitInfo = class(TLazProjectFile)
   private
     fAutoRevertLockCount: integer;
     fBookmarks: TFileBookmarks;
@@ -99,7 +99,6 @@ type
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
-    fIsPartOfProject: boolean;
     fLoaded: Boolean;  // loaded in the source editor
     fModified: boolean;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
@@ -116,7 +115,6 @@ type
     fUsageCount: extended;
     fUserReadOnly:  Boolean;
 
-    function GetFileName: string;
     function GetHasResources:boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
     function GetNextLoadedUnit: TUnitInfo;
@@ -132,7 +130,6 @@ type
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
-    procedure SetIsPartOfProject(const AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
@@ -140,6 +137,8 @@ type
     procedure SetUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
   protected
+    function GetFileName: string; override;
+    procedure SetIsPartOfProject(const AValue: boolean); override;
     procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
@@ -169,8 +168,10 @@ type
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
 
-    { Properties }
+    procedure SetSourceText(const SourceText: string); override;
+    function GetSourceText: string; override;
   public
+    { Properties }
     // Unit lists
     property NextUnitWithEditorIndex: TUnitInfo read GetNextUnitWithEditorIndex;
     property PrevUnitWithEditorIndex: TUnitInfo read GetPrevUnitWithEditorIndex;
@@ -200,11 +201,8 @@ type
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
-    property Filename: String read GetFilename;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property HasResources: boolean read GetHasResources write fHasResources;
-    property IsPartOfProject: boolean
-                                 read fIsPartOfProject write SetIsPartOfProject;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -299,19 +297,42 @@ type
   end;
 
 
-  { TProject }
+  //----------------------------------------------------------------------------
   
-  TProjectType =   // for a description see ProjectTypeDescriptions below
-    (ptApplication, ptProgram, ptCustomProgram);
-     
-  TProjectFlag = (
-    pfSaveClosedUnits,     // save info about closed files (not part of project)
-    pfSaveOnlyProjectUnits, // save no info about foreign files
-    pfMainUnitIsPascalSource,// main unit is pascal, even it does not end in .pas/.pp
-    pfMainUnitHasUsesSectionForAllUnits,// add/remove pascal units to main uses section
-    pfRunnable // project can be run
-    );
-  TProjectFlags = set of TProjectFlag;
+  { TProjectApplicationDescriptor }
+
+  TProjectApplicationDescriptor = class(TProjectDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    procedure InitProject(AProject: TLazProject); override;
+    procedure CreateStartFiles(AProject: TLazProject); override;
+  end;
+
+  { TProjectProgramDescriptor }
+
+  TProjectProgramDescriptor = class(TProjectDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    procedure InitProject(AProject: TLazProject); override;
+    procedure CreateStartFiles(AProject: TLazProject); override;
+  end;
+
+  { TProjectManualProgramDescriptor }
+
+  TProjectManualProgramDescriptor = class(TProjectDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    procedure InitProject(AProject: TLazProject); override;
+    procedure CreateStartFiles(AProject: TLazProject); override;
+  end;
+
+  { TProject }
   
   TProjectFileSearchFlag = (
     pfsfResolveFileLinks,
@@ -324,7 +345,7 @@ type
   TEndUpdateProjectEvent =
     procedure(Sender: TObject; ProjectChanged: boolean) of object;
     
-  TProject = class(TObject)
+  TProject = class(TLazProject)
   private
     fActiveEditorIndexAtStart: integer;
     FAutoCreateForms: boolean;
@@ -354,11 +375,10 @@ type
     fPathDelimChanged: boolean;
     fProjectDirectory: string;
     fProjectInfoFile: String;  // the lpi filename
-    fProjectType: TProjectType;
+    //fProjectType: TProjectType;
     fPublishOptions: TPublishProjectOptions;
     fRunParameterOptions: TRunParamsOptions;
     fTargetFileExt: String;
-    fTitle: String;
     fUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     xmlconfig: TXMLConfig;
@@ -381,13 +401,19 @@ type
                                const OldUnitName, NewUnitName: string;
                                CheckIfAllowed: boolean; var Allowed: boolean);
     procedure SetAutoOpenDesignerFormsDisabled(const AValue: boolean);
-    procedure SetFlags(const AValue: TProjectFlags);
-    procedure SetMainUnitID(const AValue: Integer);
     procedure SetModified(const AValue: boolean);
     procedure SetProjectInfoFile(const NewFilename: string);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SetUnits(Index:integer; AUnitInfo: TUnitInfo);
+    procedure SetMainUnitID(const AValue: Integer);
     procedure UpdateProjectDirectory;
+  protected
+    function GetMainFile: TLazProjectFile; override;
+    function GetMainFileID: Integer; override;
+    procedure SetMainFileID(const AValue: Integer); override;
+    function GetFiles(Index: integer): TLazProjectFile; override;
+    procedure SetFiles(Index: integer; const AValue: TLazProjectFile); override;
+    procedure SetFlags(const AValue: TProjectFlags); override;
   protected
     // special unit lists
     procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -399,7 +425,7 @@ type
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
-    constructor Create(TheProjectType: TProjectType);
+    constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
     procedure Clear;
     procedure BeginUpdate(Change: boolean);
@@ -420,12 +446,18 @@ type
 
     // units
     function UnitCount:integer;
+    function GetFileCount: integer; override;
     function NewUniqueUnitName(const AnUnitName: string): string;
     function NewUniqueComponentName(const AComponentPrefix: string): string;
     function NewUniqueFilename(const Filename: string): string;
-    procedure AddUnit(AnUnit: TUnitInfo; AddToProjectFile: boolean);
-    procedure RemoveUnit(Index: integer);
-    
+    procedure AddFile(ProjectFile: TLazProjectFile;
+                      AddToProjectUsesClause: boolean); override;
+    procedure RemoveUnit(Index: integer); override;
+    function CreateProjectFile(const Filename: string): TLazProjectFile; override;
+    function AddNewFile(NewFileDescriptor: TProjectFileDescriptor;
+                        const NewFilename, NewSource: string;
+                        NewFlags: TNewFlags): TModalResult; override;
+
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
@@ -491,12 +523,18 @@ type
     procedure MoveRequiredDependencyDown(Dependency: TPkgDependency);
     function Requires(APackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(var List: TList);
+    procedure AddPackageDependency(const PackageName: string); override;
+
+    // paths
+    procedure AddSrcPath(const SrcPathAddition: string); override;
   public
     property ActiveEditorIndexAtStart: integer read fActiveEditorIndexAtStart
                                                write fActiveEditorIndexAtStart;
     property AutoCreateForms: boolean
                                    read FAutoCreateForms write FAutoCreateForms;
-    property AutoOpenDesignerFormsDisabled: boolean read FAutoOpenDesignerFormsDisabled write SetAutoOpenDesignerFormsDisabled;
+    property AutoOpenDesignerFormsDisabled: boolean
+                                         read FAutoOpenDesignerFormsDisabled
+                                         write SetAutoOpenDesignerFormsDisabled;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TProjectCompilerOptions
                                    read fCompilerOptions write fCompilerOptions;
@@ -511,12 +549,11 @@ type
                                                   read FFirstRequiredDependency;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
-    property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
                                            read fJumpHistory write fJumpHistory;
     property MainFilename: String read GetMainFilename;
-    property MainUnitID: Integer read fMainUnitID write SetMainUnitID;
+    property MainUnitID: Integer read FMainUnitID write SetMainUnitID;
     property MainUnitInfo: TUnitInfo read GetMainUnitInfo;
     property Modified: boolean read fModified write SetModified;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
@@ -529,84 +566,26 @@ type
     property ProjectDirectory: string read fProjectDirectory;
     property ProjectInfoFile: string
                                read GetProjectInfoFile write SetProjectInfoFile;
-    property ProjectType: TProjectType read fProjectType write fProjectType;
     property PublishOptions: TPublishProjectOptions
                                      read fPublishOptions write fPublishOptions;
     property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property TargetFilename: string
                                  read GetTargetFilename write SetTargetFilename;
-    property Title: String read fTitle write fTitle;
-    property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
+    property Units[Index: integer]: TUnitInfo read GetUnits write SetUnits;
     property UpdateLock: integer read FUpdateLock;
   end;
 
 const
   ResourceFileExt = '.lrs';
 
-  ProjectTypeNames : array[TProjectType] of string = (
-      'Application', 'Program', 'Custom program'
-    );
-
-  ProjectTypeDescriptions : array[TProjectType] of string = (
-      // ptApplication
-      'Application'#13
-      +'A graphical lcl/freepascal program. The program file is '
-      +'automatically maintained by lazarus.'#13
-
-      // ptProgram
-      ,'Program:'#13
-      +'A freepascal program. The program file is automatically '
-      +'maintained by lazarus.'
-
-      // ptCustomProgram
-      ,'Custom program:'#13
-      +'A freepascal program.'
-    );
-
-  ProjectDefaultExt : array[TProjectType] of string = (
-      '.lpr','.pas','.pas'
-    );
-    
-  DefaultProjectFlags = [pfSaveClosedUnits,pfMainUnitIsPascalSource,
-                         pfMainUnitHasUsesSectionForAllUnits,pfRunnable];
-  ProjectFlagNames : array[TProjectFlag] of string = (
-      'SaveClosedFiles', 'SaveOnlyProjectUnits',
-      'MainUnitIsPascalSource', 'MainUnitHasUsesSectionForAllUnits',
-      'Runnable'
-    );
-
-function ProjectTypeNameToType(const s:string): TProjectType;
-function ProjectFlagsToStr(Flags: TProjectFlags): string;
-
 
 implementation
 
+
 const
-  ProjectInfoFileVersion = 4;
+  ProjectInfoFileVersion = 5;
 
-function ProjectFlagsToStr(Flags: TProjectFlags): string;
-var f: TProjectFlag;
-begin
-  Result:='';
-  for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-    if f in Flags then begin
-      if Result='' then Result:=Result+',';
-      Result:=Result+ProjectFlagNames[f];
-    end;
-  end;
-end;
-
-function ProjectTypeNameToType(const s:string): TProjectType;
-begin
-  for Result:=Low(TProjectType) to High(TProjectType) do
-    if (lowercase(ProjectTypeNames[Result])=lowercase(s)) then exit;
-  Result:=ptCustomProgram;
-end;
-
-{------------------------------------------------------------------------------
-                              TUnitInfo Class
- ------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------
   TUnitInfo Constructor
@@ -766,7 +745,7 @@ begin
   fFileReadOnly := false;
   fHasResources := false;
   FIgnoreFileDateOnDiskValid:=false;
-  fIsPartOfProject := false;
+  inherited SetIsPartOfProject(false);
   fModified := false;
   FRunFileIfActive:=false;
   fSyntaxHighlighter := lshText;
@@ -798,7 +777,7 @@ begin
                            FRunFileIfActive,false);
   XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
   XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
-  XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',fIsPartOfProject,false);
+  XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',IsPartOfProject,false);
   XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
   XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
   AFilename:=FResourceFilename;
@@ -988,6 +967,16 @@ begin
   end;
 end;
 
+procedure TUnitInfo.SetSourceText(const SourceText: string);
+begin
+  Source.Source:=SourceText;
+end;
+
+function TUnitInfo.GetSourceText: string;
+begin
+  Result:=Source.Source;
+end;
+
 function TUnitInfo.ReadOnly: boolean;
 begin
   Result:=UserReadOnly or FileReadOnly;
@@ -1121,11 +1110,11 @@ end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
 begin
-  if fIsPartOfProject=AValue then exit;
+  if IsPartOfProject=AValue then exit;
   if Project<>nil then Project.BeginUpdate(true);
-  fIsPartOfProject:=AValue;
-  UpdateList(uilPartOfProject,fIsPartOfProject);
-  if fIsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
+  inherited SetIsPartOfProject(AValue);
+  UpdateList(uilPartOfProject,IsPartOfProject);
+  if IsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
   if Project<>nil then Project.EndUpdate;
 end;
 
@@ -1182,17 +1171,14 @@ end;
 {------------------------------------------------------------------------------
   TProject Constructor
  ------------------------------------------------------------------------------}
-constructor TProject.Create(TheProjectType: TProjectType);
-var PrgUnitInfo: TUnitInfo;
-  NewSource: TStringList;
-  NewPrgBuf: TCodeBuffer;
+constructor TProject.Create(ProjectDescription: TProjectDescriptor);
 begin
-  inherited Create;
+  inherited Create(ProjectDescription);
 
   Assert(False, 'Trace:Project Class Created');
   xmlconfig := nil;
 
-  fProjectType:=TheProjectType;
+  //fProjectType:=TheProjectType;
 
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
@@ -1211,55 +1197,11 @@ begin
   fPublishOptions:=TPublishProjectOptions.Create(Self);
   fRunParameterOptions:=TRunParamsOptions.Create;
   fTargetFileExt := GetDefaultExecutableExt;
-  fTitle := '';
+  Title := '';
   fUnitList := TList.Create;  // list of TUnitInfo
-
-  // create program source
-  NewSource:=TStringList.Create;
-  case ProjectType of
-   ptProgram, ptApplication, ptCustomProgram:
-    begin
-      NewPrgBuf:=CodeToolBoss.CreateFile(
-        'project1'+ProjectDefaultExt[ProjectType]);
-      PrgUnitInfo:=TUnitInfo.Create(NewPrgBuf);
-      PrgUnitInfo.IsPartOfProject:=true;
-      PrgUnitInfo.SyntaxHighlighter:=
-        ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[ProjectType]);
-      AddUnit(PrgUnitInfo,false);
-      MainUnitID:=0;
-      with NewSource do begin
-        Add('program Project1;');
-        Add('');
-        Add('{$mode objfpc}{$H+}');
-        Add('');
-        Add('uses');
-        case ProjectType of
-          ptProgram, ptCustomProgram:
-            Add('  Classes;');
-          ptApplication:
-            begin
-              Add('  Interfaces,');
-              Add('  Forms;');
-            end;
-        else
-          Add('  { add your units here };');
-        end;
-        Add('');
-        Add('begin');
-        case ProjectType of
-         ptApplication:
-          begin
-            Add('  Application.Initialize;');
-            Add('  Application.Run;');
-         end;
-        end;
-        Add('end.');
-        Add('');
-      end;
-      MainUnitInfo.Source.Assign(NewSource);
-    end;
-  end;
-  NewSource.Free;
+  
+  // custom initialization
+  ProjectDescription.InitProject(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1387,8 +1329,6 @@ begin
     try
       Path:='ProjectOptions/';
       xmlconfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-      xmlconfig.SetDeleteValue(Path+'General/ProjectType/Value',
-          ProjectTypeNames[ProjectType],'');
       SaveFlags;
       xmlconfig.SetDeleteValue(Path+'General/MainUnit/Value', MainUnitID,-1);
       xmlconfig.SetDeleteValue(Path+'General/ActiveEditorIndexAtStart/Value'
@@ -1450,13 +1390,19 @@ end;
   TProject ReadProject
  ------------------------------------------------------------------------------}
 function TProject.ReadProject(const LPIFilename: string): TModalResult;
-
+type
+  TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
+const
+  OldProjectTypeNames : array[TOldProjectType] of string = (
+      'Application', 'Program', 'Custom program'
+    );
 var
   NewUnitInfo: TUnitInfo;
   NewUnitCount,i: integer;
   FileVersion: Integer;
   OldSrcPath: String;
   Path: String;
+  OldProjectType: TOldProjectType;
 
   procedure LoadCompilerOptions;
   var
@@ -1487,21 +1433,39 @@ var
   begin
     FFlags:=[];
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-      if xmlconfig.GetValue(Path+'General/Flags/'
-            +ProjectFlagNames[f]+'/Value', f in DefaultProjectFlags)
-      then
-        Include(FFlags,f)
-      else
-        Exclude(FFlags,f);
+      SetFlag(f,xmlconfig.GetValue(
+                             Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',
+                             f in DefaultProjectFlags));
     end;
     if FileVersion<=3 then begin
       // set new flags
       SetFlag(pfMainUnitIsPascalSource,
-                                      ProjectType in [ptProgram,ptApplication]);
+                                   OldProjectType in [ptProgram,ptApplication]);
       SetFlag(pfMainUnitHasUsesSectionForAllUnits,
-                                      ProjectType in [ptProgram,ptApplication]);
-      SetFlag(pfRunnable,ProjectType in [ptProgram,ptApplication,ptCustomProgram]);
+                                   OldProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfMainUnitHasCreateFormStatements,
+                                             OldProjectType in [ptApplication]);
+      SetFlag(pfMainUnitHasTitleStatement,OldProjectType in [ptApplication]);
+      SetFlag(pfRunnable,
+                   OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
     end;
+  end;
+  
+  procedure ReadOldProjectType;
+  
+    function OldProjectTypeNameToType(const s: string): TOldProjectType;
+    begin
+      for Result:=Low(TOldProjectType) to High(TOldProjectType) do
+        if (AnsiCompareText(OldProjectTypeNames[Result],s)=0) then exit;
+      Result:=ptApplication;
+    end;
+
+  begin
+    if FileVersion<=4 then
+      OldProjectType := OldProjectTypeNameToType(xmlconfig.GetValue(
+          Path+'General/ProjectType/Value', ''))
+    else
+      OldProjectType := ptCustomProgram;
   end;
 
 begin
@@ -1531,8 +1495,7 @@ begin
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
       FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
-      ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
-         Path+'General/ProjectType/Value', ''));
+      ReadOldProjectType;
       LoadFlags;
       MainUnitID := xmlconfig.GetValue(Path+'General/MainUnit/Value', -1);
       ActiveEditorIndexAtStart := xmlconfig.GetValue(
@@ -1551,7 +1514,7 @@ begin
       NewUnitCount:=xmlconfig.GetValue(Path+'Units/Count',0);
       for i := 0 to NewUnitCount - 1 do begin
         NewUnitInfo:=TUnitInfo.Create(nil);
-        AddUnit(NewUnitInfo,false);
+        AddFile(NewUnitInfo,false);
         NewUnitInfo.LoadFromXMLConfig(
            xmlconfig,Path+'Units/Unit'+IntToStr(i)+'/');
       end;
@@ -1593,14 +1556,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TProject AddUnit
+  TProject AddFile
  ------------------------------------------------------------------------------}
-procedure TProject.AddUnit(AnUnit: TUnitInfo; AddToProjectFile:boolean);
+procedure TProject.AddFile(ProjectFile: TLazProjectFile;
+  AddToProjectUsesClause: boolean);
 var
   ShortUnitName:string;
   NewIndex: integer;
+  AnUnit: TUnitInfo;
 begin
-  if (AnUnit = nil) then exit;
+  AnUnit:=ProjectFile as TUnitInfo;
   //debugln('TProject.AddUnit A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
   BeginUpdate(true);
   NewIndex:=UnitCount;
@@ -1614,7 +1579,8 @@ begin
   if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
 
-  if AddToProjectFile and (MainUnitID>=0) and (MainUnitID<>NewIndex) then begin
+  if AddToProjectUsesClause and (MainUnitID>=0) and (MainUnitID<>NewIndex) then
+  begin
     // add unit to uses section
     ShortUnitName:=AnUnit.UnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then begin
@@ -1671,6 +1637,25 @@ begin
   EndUpdate;
 end;
 
+function TProject.CreateProjectFile(const Filename: string): TLazProjectFile;
+var
+  NewBuf: TCodeBuffer;
+  AnUnitInfo: TUnitInfo;
+begin
+  NewBuf:=CodeToolBoss.CreateFile(Filename);
+  AnUnitInfo:=TUnitInfo.Create(NewBuf);
+  AnUnitInfo.SyntaxHighlighter:=
+               ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewBuf.Filename));
+  Result:=AnUnitInfo;
+end;
+
+function TProject.AddNewFile(NewFileDescriptor: TProjectFileDescriptor;
+  const NewFilename, NewSource: string; NewFlags: TNewFlags): TModalResult;
+begin
+  Result:=LazarusIDE.DoNewEditorFile(NewFileDescriptor, NewFilename, NewSource,
+                                     NewFlags);
+end;
+
 {------------------------------------------------------------------------------
   TProject Clear
  ------------------------------------------------------------------------------}
@@ -1707,7 +1692,7 @@ begin
   UpdateProjectDirectory;
   fPublishOptions.Clear;
   fTargetFileExt := GetDefaultExecutableExt;
-  fTitle := '';
+  Title := '';
   EndUpdate;
 end;
 
@@ -1739,19 +1724,27 @@ end;
 
 procedure TProject.SetFlags(const AValue: TProjectFlags);
 begin
-  FFlags:=AValue;
+  inherited SetFlags(AValue);
 end;
 
 procedure TProject.SetMainUnitID(const AValue: Integer);
 begin
-  if fMainUnitID=AValue then exit;
-  if (fMainUnitID>=0) and (fMainUnitID<UnitCount) then begin
+  if MainUnitID=AValue then exit;
+  if (MainUnitID>=0) and (MainUnitID<UnitCount) then
     MainUnitInfo.DecreaseAutoRevertLock;
-  end;
   fMainUnitID:=AValue;
-  if (fMainUnitID>=0) and (fMainUnitID<UnitCount) then begin
+  if (MainUnitID>=0) and (MainUnitID<UnitCount) then
     MainUnitInfo.IncreaseAutoRevertLock;
-  end;
+end;
+
+function TProject.GetFiles(Index: integer): TLazProjectFile;
+begin
+  Result:=Units[Index];
+end;
+
+procedure TProject.SetFiles(Index: integer; const AValue: TLazProjectFile);
+begin
+  Units[Index]:=AValue as TUnitInfo;
 end;
 
 procedure TProject.SetModified(const AValue: boolean);
@@ -1773,6 +1766,11 @@ end;
 function TProject.UnitCount:integer;
 begin
   Result:=fUnitList.Count;
+end;
+
+function TProject.GetFileCount: integer;
+begin
+  Result:=UnitCount;
 end;
 
 function TProject.NewUniqueUnitName(const AnUnitName: string):string;
@@ -1893,7 +1891,8 @@ function TProject.FormIsCreatedInProjectFile(
 var p: integer;
 begin
   Result:=(CodeToolBoss.FindCreateFormStatement(MainUnitInfo.Source,
-               1,AClassName,AName,p)=0);
+                                                1,AClassName,AName,p)
+           =0);
 end;
 
 function TProject.IndexOfUnitWithName(const AnUnitName:string; 
@@ -2230,15 +2229,18 @@ end;
 procedure TProject.SetProjectInfoFile(const NewFilename:string);
 var
   NewProjectInfoFile: String;
+  OldProjectInfoFile: String;
 begin
   NewProjectInfoFile:=TrimFilename(NewFilename);
   if NewProjectInfoFile='' then exit;
   DoDirSeparators(NewProjectInfoFile);
-  if (AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectInfoFile))=0)
-  or (fProjectInfoFile='') or (fTitle='') then begin
-    fTitle:=ExtractFileNameOnly(NewProjectInfoFile);
-  end;
+  if fProjectInfoFile=NewProjectInfoFile then exit;
+  OldProjectInfoFile:=fProjectInfoFile;
   fProjectInfoFile:=NewProjectInfoFile;
+  if (AnsiCompareText(Title,ExtractFileNameOnly(OldProjectInfoFile))=0)
+  or (OldProjectInfoFile='') or (Title='') then begin
+    Title:=ExtractFileNameOnly(NewProjectInfoFile);
+  end;
   UpdateProjectDirectory;
   Modified:=true;
 end;
@@ -2461,13 +2463,30 @@ end;
 function TProject.Requires(APackage: TLazPackage): boolean;
 begin
   Result:=FindCompatibleDependencyInList(FFirstRequiredDependency,pdlRequires,
-                  APackage)<>nil;
+                                         APackage)<>nil;
 end;
 
 procedure TProject.GetAllRequiredPackages(var List: TList);
 begin
   if Assigned(OnGetAllRequiredPackages) then
     OnGetAllRequiredPackages(FirstRequiredDependency,List);
+end;
+
+procedure TProject.AddPackageDependency(const PackageName: string);
+var
+  PkgDependency: TPkgDependency;
+begin
+  if FindDependencyByNameInList(FirstRequiredDependency,pdlRequires,PackageName)
+  <>nil then exit;
+  PkgDependency:=TPkgDependency.Create;
+  PkgDependency.PackageName:=PackageName;
+  AddRequiredDependency(PkgDependency);
+end;
+
+procedure TProject.AddSrcPath(const SrcPathAddition: string);
+begin
+  CompilerOptions.SrcPath:=MergeSearchPaths(CompilerOptions.SrcPath,
+                                            SetDirSeparators(SrcPathAddition));
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
@@ -2640,6 +2659,21 @@ procedure TProject.UpdateProjectDirectory;
 begin
   fProjectDirectory:=ExtractFilePath(fProjectInfoFile);
   CompilerOptions.BaseDirectory:=fProjectDirectory;
+end;
+
+function TProject.GetMainFile: TLazProjectFile;
+begin
+  Result:=MainUnitInfo;
+end;
+
+function TProject.GetMainFileID: Integer;
+begin
+  Result:=MainUnitID;
+end;
+
+procedure TProject.SetMainFileID(const AValue: Integer);
+begin
+  MainUnitID:=AValue;
 end;
 
 procedure TProject.AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
@@ -2916,10 +2950,190 @@ begin
     IncreaseCompilerParseStamp;
 end;
 
+{ TProjectProgramDescriptor }
+
+constructor TProjectProgramDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameProgram;
+end;
+
+function TProjectProgramDescriptor.GetLocalizedName: string;
+begin
+  Result:='Program';
+end;
+
+function TProjectProgramDescriptor.GetLocalizedDescription: string;
+begin
+  Result:='Program'#13
+         +'A freepascal program. The program file is automatically '
+         +'maintained by lazarus.';
+end;
+
+procedure TProjectProgramDescriptor.InitProject(AProject: TLazProject);
+var
+  le: String;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+
+  // create program source
+  le:=LineEnding;
+  NewSource:='program Project1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le
+    +'  Classes'+le
+    +'  { add your units here };'+le
+    +le
+    +'begin'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+end;
+
+procedure TProjectProgramDescriptor.CreateStartFiles(AProject: TLazProject);
+begin
+  LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                              [ofProjectLoading,ofRegularFile]);
+end;
+
+{ TProjectApplicationDescriptor }
+
+constructor TProjectApplicationDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameApplication;
+end;
+
+function TProjectApplicationDescriptor.GetLocalizedName: string;
+begin
+  Result:='Application';
+end;
+
+function TProjectApplicationDescriptor.GetLocalizedDescription: string;
+begin
+  Result:='Application'#13
+         +'A graphical lcl/freepascal program. The program file is '
+         +'automatically maintained by lazarus.';
+end;
+
+procedure TProjectApplicationDescriptor.InitProject(AProject: TLazProject);
+var
+  le: string;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  
+  // create program source
+  le:=LineEnding;
+  NewSource:='program Project1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le
+    +'  Interfaces, // this includes the LCL widgetset'+le
+    +'  Forms'+le
+    +'  { add your units here };'+le
+    +le
+    +'begin'+le
+    +'  Application.Initialize;'+le
+    +'  Application.Run;'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+  
+  // add lcl pp/pas dirs to source search path
+  AProject.AddSrcPath('$(LazarusDir)/lcl;'
+               +'$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
+  AProject.AddPackageDependency('LCL');
+end;
+
+procedure TProjectApplicationDescriptor.CreateStartFiles(AProject: TLazProject
+  );
+begin
+  LazarusIDE.DoNewEditorFile(FileDescriptorForm,'','',
+                         [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+end;
+
+{ TProjectManualProgramDescriptor }
+
+constructor TProjectManualProgramDescriptor.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNameCustomProgram;
+  Flags:=Flags-[pfMainUnitHasUsesSectionForAllUnits,
+                pfMainUnitHasCreateFormStatements,
+                pfMainUnitHasTitleStatement];
+end;
+
+function TProjectManualProgramDescriptor.GetLocalizedName: string;
+begin
+  Result:='Custom Program';
+end;
+
+function TProjectManualProgramDescriptor.GetLocalizedDescription: string;
+begin
+  Result:='Custom Program'#13
+         +'A freepascal program.'
+end;
+
+procedure TProjectManualProgramDescriptor.InitProject(AProject: TLazProject);
+var
+  le: string;
+  NewSource: String;
+  MainFile: TLazProjectFile;
+begin
+  inherited InitProject(AProject);
+
+  MainFile:=AProject.CreateProjectFile('project1.pas');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+
+  // create program source
+  le:=LineEnding;
+  NewSource:='program Project1;'+le
+    +le
+    +'{$mode objfpc}{$H+}'+le
+    +le
+    +'uses'+le
+    +'  Classes, SysUtils'+le
+    +'  { add your units here };'+le
+    +le
+    +'begin'+le
+    +'end.'+le
+    +le;
+  AProject.MainFile.SetSourceText(NewSource);
+end;
+
+procedure TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
+  );
+begin
+  LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,
+                              [ofProjectLoading,ofRegularFile]);
+end;
+
 end.
 
 {
   $Log$
+  Revision 1.166  2004/10/01 11:23:07  mattias
+  implemented custom project types
+
   Revision 1.165  2004/09/27 22:05:40  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 

@@ -37,8 +37,8 @@ interface
 
 uses
   Classes, LCLIntf, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  Project, LResources, Buttons, Dialogs, CodeToolManager,
-  LazarusIDEStrConsts, IDEOptionDefs;
+  LResources, Buttons, Dialogs, CodeToolManager,
+  LazarusIDEStrConsts, IDEOptionDefs, ProjectIntf, Project;
 
 type
   TProjectOptionsDialog = class(TForm)
@@ -71,6 +71,7 @@ type
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     
+    procedure OnFormsPageResize(Sender: TObject);
     procedure ProjectOptionsClose(Sender: TObject;
                                   var CloseAction: TCloseAction);
     procedure ProjectOptionsResize(Sender: TObject);
@@ -84,7 +85,6 @@ type
     procedure SetupApplicationPage;
     procedure SetupFormsPage;
     procedure SetupInfoPage;
-    procedure ResizeFormsPage;
     procedure FillAutoCreateFormsListbox;
     procedure FillAvailFormsListBox;
     function IndexOfAutoCreateForm(FormName: string): integer;
@@ -122,49 +122,47 @@ end;
 constructor TProjectOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
-    Width:=430;
-    Height:=375;
-    Position:= poScreenCenter;
-    OnResize:= @ProjectOptionsResize;
-    OnClose:= @ProjectOptionsClose;
-    Caption:=dlgProjectOptions;
+  Width:=430;
+  Height:=375;
+  Position:= poScreenCenter;
+  OnResize:= @ProjectOptionsResize;
+  OnClose:= @ProjectOptionsClose;
+  Caption:=dlgProjectOptions;
 
-    NoteBook:=TNoteBook.Create(Self);
-    with NoteBook do begin
-      Parent:=Self;
-      SetBounds(0, 0, Self.ClientWidth, Self.ClientHeight - 33);
-      Anchors:= [akTop, akLeft, akRight, akBottom];
-      if PageCount > 0 then
-        Pages[0]:=dlgPOApplication
-      else
-        Pages.Add(dlgPOApplication);
-      Pages.Add(dlgPOFroms);
-      Pages.Add(dlgPOInfo);
-      PageIndex:=0;
-    end;
+  NoteBook:=TNoteBook.Create(Self);
+  with NoteBook do begin
+    Parent:=Self;
+    SetBounds(0, 0, Self.ClientWidth, Self.ClientHeight - 33);
+    Anchors:= [akTop, akLeft, akRight, akBottom];
+    if PageCount > 0 then
+      Pages[0]:=dlgPOApplication
+    else
+      Pages.Add(dlgPOApplication);
+    Pages.Add(dlgPOFroms);
+    Pages.Add(dlgPOInfo);
+    PageIndex:=0;
+  end;
 
-    SetupFormsPage;
-    SetupApplicationPage;
-    SetupInfoPage;
+  SetupFormsPage;
+  SetupApplicationPage;
+  SetupInfoPage;
 
-    CancelButton:=TBitBtn.Create(Self);
-    with CancelButton do begin
-      Parent:= Self;
-      Left:= Self.ClientWidth - Width - 4;
-      Top:= Self.ClientHeight - Height - 4;
-      Kind:= bkCancel;
-      Anchors:= [akBottom, akRight];
-    end;
+  CancelButton:=TBitBtn.Create(Self);
+  with CancelButton do begin
+    Parent:= Self;
+    Left:= Self.ClientWidth - Width - 4;
+    Top:= Self.ClientHeight - Height - 4;
+    Kind:= bkCancel;
+    Anchors:= [akBottom, akRight];
+  end;
 
-    OkButton:=TBitBtn.Create(Self);
-    with OkButton do begin
-      Parent:= Self;
-      Left:= CancelButton.Left - Width - 4;
-      Top:= CancelButton.Top;
-      Kind:= bkOk;
-      Anchors:= [akBottom, akRight];
-    end;
+  OkButton:=TBitBtn.Create(Self);
+  with OkButton do begin
+    Parent:= Self;
+    Left:= CancelButton.Left - Width - 4;
+    Top:= CancelButton.Top;
+    Kind:= bkOk;
+    Anchors:= [akBottom, akRight];
   end;
 
   IDEDialogLayoutList.ApplyLayout(Self, 430, 375);
@@ -241,6 +239,8 @@ end;
 
 procedure TProjectOptionsDialog.SetupFormsPage;
 begin
+  NoteBook.Page[1].OnResize:=@OnFormsPageResize;
+
   FormsAutoCreatedLabel:=TLabel.Create(Self);
   with FormsAutoCreatedLabel do begin
     Parent:=NoteBook.Page[1];
@@ -359,7 +359,57 @@ begin
   end;
 end;
 
-procedure TProjectOptionsDialog.ResizeFormsPage;
+procedure TProjectOptionsDialog.SetProject(AProject: TProject);
+begin
+  FProject:=AProject;
+  if AProject=nil then exit;
+  
+  with AProject do begin
+    TitleEdit.Text:=Title;
+    TargetFileEdit.Text:=TargetFilename;
+  end;
+  FillAutoCreateFormsListbox;
+  FillAvailFormsListBox;
+  
+  SaveClosedUnitInfoCheckBox.Checked:=(pfSaveClosedUnits in AProject.Flags);
+  SaveOnlyProjectUnitInfoCheckBox.Checked:=
+    (pfSaveOnlyProjectUnits in AProject.Flags);
+  FormsAutoCreateNewFormsCheckBox.Checked:=Project.AutoCreateForms;
+end;
+
+procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+var NewFlags: TProjectFlags;
+begin
+  if ModalResult = mrOk then begin  
+
+    with Project do begin
+      Title:=TitleEdit.Text;
+      TargetFilename:=TargetFileEdit.Text;
+    end;
+  
+    // flags
+    NewFlags:=Project.Flags;
+    if SaveClosedUnitInfoCheckBox.Checked then
+      Include(NewFlags,pfSaveClosedUnits)
+    else
+      Exclude(NewFlags,pfSaveClosedUnits);
+    if SaveOnlyProjectUnitInfoCheckBox.Checked then
+      Include(NewFlags,pfSaveOnlyProjectUnits)
+    else
+      Exclude(NewFlags,pfSaveOnlyProjectUnits);
+    Project.Flags:=NewFlags;
+    
+    Project.AutoCreateForms:=FormsAutoCreateNewFormsCheckBox.Checked;
+    
+    SetAutoCreateForms;
+    SetProjectTitle;
+  end;
+    
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TProjectOptionsDialog.OnFormsPageResize(Sender: TObject);
 var MaxX, MaxY, ListBoxWidth, ListBoxHeight: integer;
 begin
   MaxX:=ClientWidth-8;
@@ -424,56 +474,6 @@ begin
     Width:=Parent.ClientWidth-Left;
     Height:=25;
   end;
-end;
-
-procedure TProjectOptionsDialog.SetProject(AProject: TProject);
-begin
-  FProject:=AProject;
-  if AProject=nil then exit;
-  
-  with AProject do begin
-    TitleEdit.Text:=Title;
-    TargetFileEdit.Text:=TargetFilename;
-  end;
-  FillAutoCreateFormsListbox;
-  FillAvailFormsListBox;
-  
-  SaveClosedUnitInfoCheckBox.Checked:=(pfSaveClosedUnits in AProject.Flags);
-  SaveOnlyProjectUnitInfoCheckBox.Checked:=
-    (pfSaveOnlyProjectUnits in AProject.Flags);
-  FormsAutoCreateNewFormsCheckBox.Checked:=Project.AutoCreateForms;
-end;
-
-procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-var NewFlags: TProjectFlags;
-begin
-  if ModalResult = mrOk then begin  
-
-    with Project do begin
-      Title:=TitleEdit.Text;
-      TargetFilename:=TargetFileEdit.Text;
-    end;
-  
-    // flags
-    NewFlags:=Project.Flags;
-    if SaveClosedUnitInfoCheckBox.Checked then
-      Include(NewFlags,pfSaveClosedUnits)
-    else
-      Exclude(NewFlags,pfSaveClosedUnits);
-    if SaveOnlyProjectUnitInfoCheckBox.Checked then
-      Include(NewFlags,pfSaveOnlyProjectUnits)
-    else
-      Exclude(NewFlags,pfSaveOnlyProjectUnits);
-    Project.Flags:=NewFlags;
-    
-    Project.AutoCreateForms:=FormsAutoCreateNewFormsCheckBox.Checked;
-    
-    SetAutoCreateForms;
-    SetProjectTitle;
-  end;
-    
-  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 function TProjectOptionsDialog.GetAutoCreatedFormsList: TStrings;
@@ -668,7 +668,6 @@ end;
 
 procedure TProjectOptionsDialog.ProjectOptionsResize(Sender: TObject);
 begin
-  ResizeFormsPage;
 end;
 
 procedure TProjectOptionsDialog.SelectOnlyThisAutoCreateForm(
@@ -686,7 +685,8 @@ var i: integer;
     OldList: TStrings;
 begin
   Result:=true;
-  if (Project.MainUnitID < 0) or (Project.ProjectType in [ptCustomProgram]) then
+  if (Project.MainUnitID < 0)
+  or (not (pfMainUnitHasUsesSectionForAllUnits in Project.Flags)) then
     exit;
   OldList:= GetAutoCreatedFormsList;
   if (OldList = nil) then exit;
@@ -720,7 +720,8 @@ var
   OldTitle: String;
 begin
   Result:=true;
-  if (Project.MainUnitID < 0) or (Project.ProjectType in [ptCustomProgram]) then
+  if (Project.MainUnitID < 0)
+  or (not (pfMainUnitHasTitleStatement in Project.Flags)) then
     exit;
   OldTitle:=GetProjectTitle;
   if (OldTitle='') and Project.TitleIsDefault then exit;
