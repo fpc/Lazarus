@@ -385,7 +385,7 @@ Begin
     End;
     WM_SIZE:
     Begin
-      Windows.GetWindowRect(Window, @R);
+      Windows.GetClientRect(Window, @R);
       With TLMSize(LMessage) Do
       Begin
         Msg := LM_SIZE;
@@ -468,6 +468,9 @@ End;
 
 {
   $Log$
+  Revision 1.16  2002/11/15 23:43:54  mattias
+  applied patch from Karl Brandt
+
   Revision 1.15  2002/08/28 17:28:11  lazarus
   Keith: Win32 fixes.  Much appreciation to Markus Lüdin.
 

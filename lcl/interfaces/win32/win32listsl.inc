@@ -57,6 +57,29 @@ Begin
   FWin32List := List;
   FSender := TControl(GetProp(FWin32List, 'Lazarus'));
   FOrigHeight := FSender.Height;
+ 
+  //Set proper win32 flags for ComboBox/ListBox
+  case FSender.FCompStyle of
+    csComboBox:begin
+    	       FFlagSort:=CBS_SORT;
+               FFlagGetText:=CB_GETLBTEXT;
+               FFlagGetTextLen:=CB_GETLBTEXTLEN;
+               FFlagGetCount:=CB_GETCOUNT;
+               FFlagResetContent:=CB_RESETCONTENT;
+               FFlagDeleteString:=CB_DELETESTRING;
+               FFlagInsertString:=CB_INSERTSTRING;
+    	       end;
+    csListBox:begin
+    	      FFlagSort:=LBS_SORT;
+              FFlagGetText:=LB_GETTEXT;
+              FFlagGetTextLen:=LB_GETTEXTLEN;
+              FFlagGetCount:=LB_GETCOUNT;
+              FFlagResetContent:=LB_RESETCONTENT;
+              FFlagDeleteString:=LB_DELETESTRING;
+              FFlagInsertString:=LB_INSERTSTRING;
+              end;
+  else Raise Exception.Create('Win32ListStringList: Component type not detected');
+  end;
 End;
 
 {------------------------------------------------------------------------------
@@ -82,7 +105,7 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Sort;
 Begin
-  SetWindowLong(FWin32List, GWL_STYLE, GetWindowLong(FWin32List, GWL_STYLE) Or CBS_SORT);
+  SetWindowLong(FWin32List, GWL_STYLE, GetWindowLong(FWin32List, GWL_STYLE) Or FFlagSort);
 End;
 
 {------------------------------------------------------------------------------
@@ -120,9 +143,11 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-    SendMessage(FWin32List, CB_GETLBTEXT, Index, LPARAM(Item));  
+  	Getmem(Item,SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
+    SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));  
   End;      
   Result := StrPas(Item);
+  Dispose(Item);
 End;
 
 {------------------------------------------------------------------------------
@@ -133,7 +158,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32ListStringList.GetCount: Integer;
 Begin
-  Result := SendMessage(FWin32List, CB_GETCOUNT, 0, 0);
+  Result := SendMessage(FWin32List, FFlagGetCount, 0, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -145,7 +170,7 @@ End;
 Procedure TWin32ListStringList.Clear;
 Begin
   FSender.Height := FOrigHeight;
-  SendMessage(FWin32List, CB_RESETCONTENT, 0, 0);
+  SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
 {------------------------------------------------------------------------------
@@ -158,7 +183,7 @@ Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
   If GetCount <> 0 Then
     FSender.Height := (FSender.Height - (FSender.Height Div GetCount));
-  SendMessage(FWin32List, CB_DELETESTRING, Index, 0);
+  SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
 
 {------------------------------------------------------------------------------
@@ -169,9 +194,10 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
-  If GetCount <> 0 Then
+  If (GetCount <> 0) 
+  and (FSender.FCompStyle = csComboBox) Then
     FSender.Height := (FSender.Height + (FSender.Height Div GetCount));
-  SendMessage(FWin32List, CB_INSERTSTRING, Index, LPARAM(PChar(S)));
+  SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S)));
   If FSorted Then
     Sort;
 End;
@@ -280,8 +306,10 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
+  	Getmem(Item,SendMessage(FWin32CList,LB_GETTEXTLEN,Index,0)+1);
     SendMessage(FWin32CList, LB_GETTEXT, Index, LPARAM(Item));
     Result := StrPas(Item);
+    Dispose(Item);
   End;
 End;
 
@@ -338,6 +366,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/11/15 23:43:54  mattias
+  applied patch from Karl Brandt
+
   Revision 1.6  2002/05/10 07:43:48  lazarus
   MG: updated licenses
 

@@ -31,6 +31,14 @@ Type
     FSorted: Boolean;
     FSender: TControl;
     FOrigHeight: Integer;
+    //Win32 Flags
+    FFlagSort: Cardinal;
+    FFlagGetText:Cardinal;
+    FFlagGetTextLen:Cardinal;
+    FFlagGetCount:Cardinal;
+    FFlagResetContent:Cardinal;
+    FFlagDeleteString:Cardinal;
+    FFlagInsertString:Cardinal;
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
@@ -74,6 +82,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/11/15 23:43:54  mattias
+  applied patch from Karl Brandt
+
   Revision 1.3  2002/05/10 07:43:48  lazarus
   MG: updated licenses
 
