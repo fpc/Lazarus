@@ -587,24 +587,9 @@ procedure GTKAPIWidget_Init(waw, theClass: Pointer); cdecl;
 // theClass: PGTKAPIWidgetClass
 var
   Widget: PGTKWidget;
-  APIWidget: PGTKAPIWidget;
 begin
   Widget := PGTKWidget(waw);
-  APIWidget := PGTKAPIWidget(waw);
-  
   gtk_widget_set_flags(Widget, GTK_CAN_FOCUS);
-
-  APIWidget^.Client := GTKAPIWidgetClient_New;
-  gtk_object_set_data(PGTKObject(Widget), 'Fixed', APIWidget^.Client);
-  gtk_object_set_data(PGTKObject(APIWidget^.Client), 'Main', Widget);
-  gtk_widget_show(APIWidget^.Client);
-  
-writeln('(gtkwinapiwindow.pp) GTKAPIWidget_Init B  check this:');
-// MG: range check GTK-Critical warnings results possibly from
-// function GTKAPIwidget_new.
-// ToDo: check nil parameters
-  gtk_container_add(PGTKContainer(Widget), APIWidget^.Client);
-writeln('GTKAPIWidget_Init END');
 end;
 
 function GTKAPIWidget_GetType: Guint;
@@ -627,16 +612,24 @@ begin
 end;
 
 function GTKAPIWidget_new: PGTKWidget;
+var
+  APIWidget: PGTKAPIWidget;
 begin
-writeln('(gtkwinapiwindow.pp) GTKAPIWidget_new, ToDo: check parameters, gtk-Critical');
-  // ToDo: check these nil parameters
   Result := gtk_widget_new(
     GTKAPIWidget_GetType,
     'hadjustment', [nil,
     'vadjustment', nil,
     nil]
   );
-writeln('GTKAPIWidget_new END');
+  
+  // create client widget
+  APIWidget := PGTKAPIWidget(Result);
+  APIWidget^.Client := GTKAPIWidgetClient_New;
+  gtk_object_set_data(PGTKObject(Result), 'Fixed', APIWidget^.Client);
+  gtk_object_set_data(PGTKObject(APIWidget^.Client), 'Main', Result);
+  gtk_widget_show(APIWidget^.Client);
+  
+  gtk_container_add(PGTKContainer(Result), APIWidget^.Client);
 end;
 
 procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
@@ -719,6 +712,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/06/12 12:35:45  lazarus
+  MG: fixed apiwidget warnings/criticals
+
   Revision 1.31  2002/06/11 13:41:11  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 
