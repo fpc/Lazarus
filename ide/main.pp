@@ -333,7 +333,6 @@ type
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
     FSelectedComponent : TRegisteredComponent;
-    MacroList: TTransferMacroList;
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
@@ -8328,6 +8327,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.525  2003/04/17 11:40:40  mattias
+  implemented compilation of simple packages
+
   Revision 1.524  2003/04/16 22:11:35  mattias
   fixed codetools Makefile, fixed default prop not found error
 
