@@ -321,7 +321,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl CMDrag                                                          }
 {------------------------------------------------------------------------------}
-Procedure TWinControl.CMDrag(var MEssage: TCMDrag);
+Procedure TWinControl.CMDrag(var Message: TCMDrag);
 Begin
   with Message, DragRec^ do
   Begin
@@ -2288,6 +2288,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/05/27 14:38:34  lazarus
+  MG; fixed find declaration of overloaded procs and expression input types
+
   Revision 1.68  2002/05/24 07:16:32  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 
