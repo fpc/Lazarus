@@ -90,6 +90,7 @@ type
     procedure mnuEditUnindentBlockClicked(Sender: TObject);
     procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
     procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
+    procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
     procedure mnuEditCompleteCodeClicked(Sender: TObject);
 
     // search menu
@@ -1303,6 +1304,12 @@ begin
   itmEditLowerCaseBlock.Caption := lisMenuLowerCaseSelection;
   itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
   mnuEdit.Add(itmEditLowerCaseBlock);
+
+  itmEditTabsToSpacesBlock := TMenuItem.Create(Self);
+  itmEditTabsToSpacesBlock.Name:='itmEditTabsToSpacesBlock';
+  itmEditTabsToSpacesBlock.Caption := lisMenuTabsToSpacesSelection;
+  itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
+  mnuEdit.Add(itmEditTabsToSpacesBlock);
 
   mnuEdit.Add(CreateSeperator);
 
@@ -6371,6 +6378,11 @@ begin
   DoEditMenuCommand(ecSelectionLowerCase);
 end;
 
+procedure TMainIDE.mnuEditTabsToSpacesBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionTabs2Spaces);
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -6449,6 +6461,7 @@ begin
     itmEditUnindentBlock.ShortCut:=CommandToShortCut(ecBlockUnindent);
     itmEditUpperCaseBlock.ShortCut:=CommandToShortCut(ecSelectionUpperCase);
     itmEditLowerCaseBlock.ShortCut:=CommandToShortCut(ecSelectionLowerCase);
+    itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
@@ -6546,6 +6559,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.317  2002/06/28 06:34:54  lazarus
+  MG: added Tabs To Spaces in Selection
+
   Revision 1.316  2002/06/26 15:11:07  lazarus
   MG: added new tool: Guess misplaced $IFDEF/$ENDIF
 

@@ -212,6 +212,8 @@ type
     procedure RemoveBreakPoint(const ALine: Integer); overload;
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
+    procedure TabsToSpacesInSelection;
+
 
     // editor commands
     procedure DoEditorExecuteCommand(EditorCommand: integer);
@@ -857,6 +859,9 @@ Begin
   ecSelectionLowerCase:
     LowerCaseSelection;
     
+  ecSelectionTabs2Spaces:
+    TabsToSpacesInSelection;
+
   else
     begin
       Handled:=false;
@@ -983,6 +988,26 @@ begin
   FEditor.BeginUpdate;
   FEditor.BeginUndoBlock;
   FEditor.SelText:=LowerCase(EditorComponent.SelText);
+  FEditor.BlockBegin:=OldBlockBegin;
+  FEditor.BlockEnd:=OldBlockEnd;
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
+{-------------------------------------------------------------------------------
+  method TSourceEditor.TabsToSpacesInSelection
+
+  Convert all tabs into spaces in current text selection.
+-------------------------------------------------------------------------------}
+procedure TSourceEditor.TabsToSpacesInSelection;
+var OldBlockBegin, OldBlockEnd: TPoint;
+begin
+  if not EditorComponent.SelAvail then exit;
+  OldBlockBegin:=FEditor.BlockBegin;
+  OldBlockEnd:=FEditor.BlockEnd;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  FEditor.SelText:=TabsToSpaces(EditorComponent.SelText,EditorComponent.TabWidth);
   FEditor.BlockBegin:=OldBlockBegin;
   FEditor.BlockEnd:=OldBlockEnd;
   FEditor.EndUndoBlock;

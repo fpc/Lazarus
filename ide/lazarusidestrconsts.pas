@@ -90,6 +90,7 @@ ResourceString
   lisMenuUnindentSelection = 'Unindent selection';
   lisMenuUpperCaseSelection = 'Uppercase selection';
   lisMenuLowerCaseSelection = 'Lowercase selection';
+  lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
   lisMenuCompleteCode = 'Complete Code';
   
   lisMenuFind = 'Find';

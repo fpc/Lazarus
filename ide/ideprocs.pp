@@ -68,6 +68,7 @@ procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
+function TabsToSpaces(const s: string; TabWidth: integer): string;
 
 
 implementation
@@ -530,6 +531,40 @@ begin
   {$ENDIF}
 
   Result:=true;
+end;
+
+{-------------------------------------------------------------------------------
+  TabsToSpaces
+
+  Params: const s: string; TabWidth: integer
+  Result: string
+
+  Convert all tabs to TabWidth number of spaces.
+-------------------------------------------------------------------------------}
+function TabsToSpaces(const s: string; TabWidth: integer): string;
+var i, SrcLen, TabCount, SrcPos, DestPos: integer;
+begin
+  SrcLen:=length(s);
+  TabCount:=0;
+  for SrcPos:=1 to SrcLen do
+    if s[SrcPos]=#9 then inc(TabCount);
+  if TabCount=0 then begin
+    Result:=s;
+    exit;
+  end;
+  SetLength(Result,SrcLen+TabCount*(TabWidth-1));
+  DestPos:=1;
+  for SrcPos:=1 to SrcLen do begin
+    if s[SrcPos]<>#9 then begin
+      Result[DestPos]:=s[SrcPos];
+      inc(DestPos);
+    end else begin
+      for i:=1 to TabWidth do begin
+        Result[DestPos]:=' ';
+        inc(DestPos);
+      end;
+    end;
+  end;
 end;
 
 end.

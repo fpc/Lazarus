@@ -127,6 +127,7 @@ type
     itmEditUnindentBlock: TMenuItem;
     itmEditUpperCaseBlock: TMenuItem;
     itmEditLowerCaseBlock: TMenuItem;
+    itmEditTabsToSpacesBlock: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;

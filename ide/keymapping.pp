@@ -72,6 +72,7 @@ const
 
   ecSelectionUpperCase   = ecUserFirst + 50;
   ecSelectionLowerCase   = ecUserFirst + 51;
+  ecSelectionTabs2Spaces = ecUserFirst + 52;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -460,6 +461,7 @@ begin
     // edit menu
     ecSelectionUpperCase: Result:='Selection uppercase';
     ecSelectionLowerCase: Result:='Selection lowercase';
+    ecSelectionTabs2Spaces: Result:='Selection tabs to spaces';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1108,6 +1110,7 @@ begin
   Add(C,'Select to absolute end',ecSelEditorBottom,VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // editing
   C:=Categories[AddCategory('editing commands','Text editing commands')];
