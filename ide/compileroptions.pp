@@ -1385,9 +1385,19 @@ function TBaseCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
   
   procedure AppendDefaultExt;
+  var
+    Ext: String;
   begin
-    if CompareText(fTargetOS, 'win32') = 0 then
+    if ExtractFileExt(fTargetOS)<>'' then exit;
+    if CompareText(fTargetOS, 'win32') = 0 then begin
       Result:=Result+'.exe';
+      exit;
+    end;
+    Ext:=GetDefaultExecutableExt;
+    if Ext<>'' then begin
+      Result:=Result+Ext;
+      exit;
+    end;
   end;
   
 begin
@@ -1855,7 +1865,7 @@ Processor specific options:
        OS2 = OS/2 (2.x) using the EMX extender.
        WIN32 = Windows 32 bit.
        ... }
-  { Only linux and win32 are in the dialog at this moment}
+  { Target OS }
   if TargetOS<>'' then
     switches := switches + ' -T' + TargetOS;
   { --------------- Linking Tab ------------------- }
