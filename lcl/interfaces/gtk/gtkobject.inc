@@ -3849,7 +3849,7 @@ begin
       if (Sender is TCustomForm) then begin
         ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
         ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
-      end else if Sender is TMemo then
+      end else if Sender is TCustomMemo then
         ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
       else
         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
@@ -3936,7 +3936,7 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
-      if (Sender is TComboBox) then begin
+      if (Sender is TCustomComboBox) then begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
@@ -3980,7 +3980,7 @@ begin
 
     LM_MOUSEMOVE:
     begin
-      if (sender is TComboBox) then
+      if (Sender is TCustomComboBox) then
       begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'motion-notify-event',
@@ -4271,7 +4271,7 @@ begin
     
     LM_COMMAND:
     begin
-      if Sender is TComboBox then begin
+      if Sender is TCustomComboBox then begin
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
           'show', @gtkComboBoxShowCB);
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
@@ -8172,6 +8172,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.418  2003/09/18 12:15:01  mattias
+  fixed is checks for TCustomXXX controls
+
   Revision 1.417  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 

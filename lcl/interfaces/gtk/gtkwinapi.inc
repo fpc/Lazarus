@@ -7089,14 +7089,16 @@ begin
       if Msg=LM_GtkPAINT then begin
         GtkPaintData:=TLMGtkPaintData(AMessage.wParam);
         // convert LM_GtkPAINT to LM_PAINT
-         AMessage := TLMessage(GtkPaintMessageToPaintMessage(TLMGtkPaint(AMessage), True));
-        {$IfDef GTK1}
-         if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
-           DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
-            with GtkPaintData.Rect do
-              IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
-                                Right-DCOrigin.X,Bottom-DCOrigin.Y);
-          end;
+        AMessage := TLMessage(GtkPaintMessageToPaintMessage(
+                                                  TLMGtkPaint(AMessage), True));
+        {$IfNDef GTK2}
+        if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
+          PaintDC:=TLMPaint(AMessage).DC;
+          DCOrigin:=GetDCOffset(TDeviceContext(PaintDC));
+          with GtkPaintData.Rect do
+            IntersectClipRect(PaintDC,Left-DCOrigin.X,Top-DCOrigin.Y,
+                              Right-DCOrigin.X,Bottom-DCOrigin.Y);
+        end;
         {$EndIf}
       end;
     end;
@@ -8794,6 +8796,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.285  2003/09/18 12:15:01  mattias
+  fixed is checks for TCustomXXX controls
+
   Revision 1.284  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

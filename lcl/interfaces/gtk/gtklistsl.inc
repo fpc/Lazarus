@@ -563,7 +563,7 @@ begin
     Include(FStates,glsItemCacheNeedsUpdate);
     gtk_widget_show_all(li);
     gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
-    if (Owner is TListBox)
+    if (Owner is TCustomListBox)
     and (TListBox(Owner).ItemHeight>1) then begin
       if li^.Allocation.Width>1 then
         item_requisition.Width:=li^.Allocation.Width
@@ -760,6 +760,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/09/18 12:15:01  mattias
+  fixed is checks for TCustomXXX controls
+
   Revision 1.20  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

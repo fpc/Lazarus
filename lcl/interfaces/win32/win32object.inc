@@ -921,7 +921,7 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_GETLINECOUNT:
         Begin
-          If Sender Is TMemo Then
+          If Sender Is TCustomMemo Then
             Result := SendMessage(Handle, EM_GETLINECOUNT, 0, 0);
         End;
         LM_GETSELCOUNT:
@@ -2792,6 +2792,9 @@ End;
 
 {
   $Log$
+  Revision 1.109  2003/09/18 12:15:01  mattias
+  fixed is checks for TCustomXXX controls
+
   Revision 1.108  2003/09/14 09:43:45  mattias
   fixed common dialogs from Karl
 

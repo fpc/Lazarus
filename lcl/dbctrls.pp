@@ -85,7 +85,7 @@ Type
     procedure Modified;
     procedure Reset;
 
-    // Attatched control
+    // Attached control
     property Control: TComponent read FControl write FControl;
 
 
@@ -93,7 +93,7 @@ Type
     property Field: TField read FField;
     property FieldName: string read FFieldName write SetFieldName;
 
-    // Curent State of DB
+    // Current State of DB
     property CanModify: Boolean read GetCanModify;
     property Editing: Boolean read FEditing;
 
@@ -795,6 +795,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/09/18 12:15:01  mattias
+  fixed is checks for TCustomXXX controls
+
   Revision 1.6  2003/09/18 11:24:29  mattias
   started TDBMemo
 
