@@ -721,6 +721,7 @@ type
   TPropHookGetComponentNames = procedure(TypeData:PTypeData;
     Proc:TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
+  TPropHookComponentRenamed = procedure(AComponent:TComponent) of object;
   // persistent objects
   TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
   TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
@@ -748,6 +749,7 @@ type
     FOnGetComponentName: TPropHookGetComponentName;
     FOnGetComponentNames: TPropHookGetComponentNames;
     FOnGetRootClassName: TPropHookGetRootClassName;
+    FOnComponentRenamed: TPropHookComponentRenamed;
     // persistent objects
     FOnGetObject: TPropHookGetObject;
     FOnGetObjectName: TPropHookGetObjectName;
@@ -777,6 +779,7 @@ type
     function GetComponentName(AComponent:TComponent):ShortString;
     procedure GetComponentNames(TypeData:PTypeData; Proc:TGetStringProc);
     function GetRootClassName:ShortString;
+    procedure ComponentRenamed(AComponent:TComponent);
     // persistent objects
     function GetObject(const Name:ShortString):TPersistent;
     function GetObjectName(Instance:TPersistent):ShortString;
@@ -802,6 +805,7 @@ type
     property OnGetComponentName:TPropHookGetComponentName read FOnGetComponentName write FOnGetComponentName;
     property OnGetComponentNames:TPropHookGetComponentNames read FOnGetComponentNames write FOnGetComponentNames;
     property OnGetRootClassName:TPropHookGetRootClassName read FOnGetRootClassName write FOnGetRootClassName;
+    property OnComponentRenamed:TPropHookComponentRenamed read FOnComponentRenamed write FOnComponentRenamed;
     // persistent object events
     property OnGetObject:TPropHookGetObject read FOnGetObject write FOnGetObject;
     property OnGetObjectName:TPropHookGetObjectName read FOnGetObjectName write FOnGetObjectName;
@@ -1231,8 +1235,8 @@ end;
 { TPropertyEditor }
 
 constructor TPropertyEditor.Create(
-PropertyEditorFilter:TPropertyEditorHook;
-ComponentList:TComponentSelectionList;  APropCount:Integer);
+  PropertyEditorFilter:TPropertyEditorHook;
+  ComponentList:TComponentSelectionList;  APropCount:Integer);
 begin
   FPropertyHook:=PropertyEditorFilter;
   FComponents:=ComponentList;
@@ -2248,6 +2252,7 @@ end;
 procedure TComponentNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
   inherited SetValue(NewValue);
+  PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;
 
 { TModalResultPropertyEditor }
@@ -2951,6 +2956,12 @@ begin
     else
       Result:='';
   end;
+end;
+
+procedure TPropertyEditorHook.ComponentRenamed(AComponent: TComponent);
+begin
+  if Assigned(OnComponentRenamed) then
+    OnComponentRenamed(AComponent);
 end;
 
 function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
