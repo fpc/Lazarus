@@ -482,7 +482,6 @@ begin
                        (FileIndex>0) and Writable);
       AddPopupMenuItem('Move file down', @MoveFileDownMenuItemClick,
                        (FileIndex<LazPackage.FileCount-1) and Writable);
-      AddPopupMenuItem('Sort files', @SortFilesMenuItemClick, Writable);
       AddFileTypeMenuItem;
     end else begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
@@ -490,6 +489,8 @@ begin
                        AddBitBtn.Enabled);
     end;
   end;
+  if LazPackage.FileCount>1 then
+    AddPopupMenuItem('Sort files', @SortFilesMenuItemClick, Writable);
 
   if CurDependency<>nil then begin
     if (not Removed) then begin

@@ -990,7 +990,18 @@ end;
 
 function ComparePkgFilesAlphabetically(PkgFile1, PkgFile2: TPkgFile): integer;
 begin
-  Result:=AnsiCompareText(PkgFile1.UnitName,PkgFile2.UnitName);
+  Result:=CompareFilenames(ExtractFileNameOnly(PkgFile1.FileName),
+                           ExtractFileNameOnly(PkgFile2.FileName));
+  if Result<>0 then exit;
+  if (PkgFile1.UnitName<>'') and (PkgFile2.UnitName='') then begin
+    Result:=-1;
+    exit;
+  end else if (PkgFile1.UnitName='') and (PkgFile2.UnitName<>'') then begin
+    Result:=1;
+    exit;
+  end;
+  Result:=CompareFilenames(ExtractFileName(PkgFile1.FileName),
+                           ExtractFileName(PkgFile2.FileName));
   if Result<>0 then exit;
   Result:=CompareFilenames(PkgFile1.FileName,PkgFile2.FileName);
 end;
