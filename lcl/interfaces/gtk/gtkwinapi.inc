@@ -1617,12 +1617,14 @@ var
     end;
   end;
   
+var ClientWidget: PGtkWidget;
 begin
-  if IsValidDC(DC) then
-    //Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd)
-    Widget:=@PGtkFixed(GetFixedWidget(PGtkWidget(
-                              PDeviceContext(DC)^.hWnd)))^.Container.Widget
-  else
+  if IsValidDC(DC) then begin
+    Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd);
+    ClientWidget:=GetFixedWidget(Widget);
+    if ClientWidget<>nil then
+      Widget:=ClientWidget;
+  end else
     Widget:=nil;
   case uType of
     DFC_CAPTION:
@@ -2055,7 +2057,7 @@ function TGtkObject.Frame3d(DC : HDC; var Rect : TRect;
 const GTKShadowType: array[TBevelCut] of integer =
   (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
   
-var Widget : TGtkWidget;
+var Widget, ClientWidget: PGtkWidget;
     i : integer;
 begin
   Result := IsValidDC(DC);
@@ -2066,10 +2068,13 @@ begin
         Result:= False;
       end
       else begin
-        Widget:=PGtkFixed(GetFixedWidget(PGtkWidget(
-                                  PDeviceContext(DC)^.hWnd)))^.Container.Widget;
+        Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd);
+        ClientWidget:=GetFixedWidget(Widget);
+        if ClientWidget=nil then
+          ClientWidget:=Widget;
         for i:= 1 to FrameWidth do begin
-          gtk_draw_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL,
+          gtk_draw_shadow(ClientWidget^.thestyle,
+                          ClientWidget^.window, GTK_STATE_NORMAL,
                           GtkShadowType[Style],
                           Rect.left, Rect.top,
                           Rect.Right - Rect.Left-1, Rect.Bottom - Rect.Top-1);
@@ -4820,6 +4825,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2002/08/05 07:43:29  lazarus
+  MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
+
   Revision 1.83  2002/07/23 07:40:52  lazarus
   MG: fixed get widget position for inherited gdkwindows
 
