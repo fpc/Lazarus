@@ -512,7 +512,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptsauthor
 msgid "Author:"
-msgstr ""
+msgstr "Tekijä:"
 
 #: lazarusidestrconsts:dlgautoident
 msgid "Auto Indent"
@@ -548,7 +548,7 @@ msgstr "Automaattinen tallennus"
 
 #: lazarusidestrconsts:dlgautocreateforms
 msgid "Auto-create forms:"
-msgstr ""
+msgstr "Automaattisesti luotavat lomakkeet:"
 
 #: lazarusidestrconsts:lispckexplautocreated
 msgid "AutoCreated"
@@ -572,7 +572,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgavailableforms
 msgid "Available forms:"
-msgstr ""
+msgstr "Käytettävissä olevat lomakkeet:"
 
 #: lazarusidestrconsts:dlgedback
 msgid "Back"
@@ -664,7 +664,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr "Käännä"
+msgstr "Käännä¤"
 
 #: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
@@ -820,7 +820,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffchangedfiles
 msgid "Changed files:"
-msgstr ""
+msgstr "Muuttuneet tiedostot:"
 
 #: lazarusidestrconsts:lisbddchangingthepackagenameorversionbreaksdependencies
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
@@ -956,7 +956,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffclickononeoftheaboveitemstoseethediff
 msgid "Click on one of the above items to see the diff"
-msgstr ""
+msgstr "Klikkaa jotain ylläolevaa kohtaa nähdäksesi muuttuneet kohdat"
 
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
@@ -1368,7 +1368,7 @@ msgstr "Tee uusi pascal käännösyksikkö (unit)"
 
 #: lazarusidestrconsts:lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
-msgstr ""
+msgstr "Tee uusi ohjelma"
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
@@ -1872,7 +1872,7 @@ msgstr "Lisää lauserakenne"
 
 #: lazarusidestrconsts:uemencloseselection
 msgid "Enclose Selection"
-msgstr ""
+msgstr "Lauserakenteen lisäys"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
@@ -2076,7 +2076,7 @@ msgstr "Tee aliohjelma"
 
 #: lazarusidestrconsts:uemextractproc
 msgid "Extract Procedure"
-msgstr ""
+msgstr "Tee valitusta lohkosta aliohjelma"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
@@ -2304,7 +2304,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
-msgstr "Etsi tai vaihda tunnisteiden nimiä"
+msgstr "Etsi tai vaihda tunnisteiden nimiä¤"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
@@ -2360,7 +2360,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpofroms
 msgid "Forms"
-msgstr ""
+msgstr "Lomakkeet"
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
@@ -3436,7 +3436,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptslicense
 msgid "License:"
-msgstr ""
+msgstr "Lisenssi:"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL%sLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.%sLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.%sAs Lazarus is growing we need more developers."
@@ -3868,7 +3868,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
-msgstr "Uusi Unit"
+msgstr "Uusi käännösyksikkö (Unit)"
 
 #: lazarusidestrconsts:lisa2pnewclassname
 msgid "New class name:"
@@ -4016,7 +4016,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
-msgstr ""
+msgstr "Avustusta ei ole vielä tehty"
 
 #: lazarusidestrconsts:lisonlysearchforwholewords
 msgid "Only search for whole words"
@@ -4092,7 +4092,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
-msgstr ""
+msgstr "Avaa paketti"
 
 #: lazarusidestrconsts:lismenuopenpackagefile
 msgid "Open package file (.lpk)"
@@ -4116,7 +4116,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscomppalopenunit
 msgid "Open unit"
-msgstr ""
+msgstr "Avaa käännösyksikkö (unit)"
 
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
@@ -4848,7 +4848,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
-msgstr ""
+msgstr "Käynnistä Lazarus uudelleen"
 
 #: lazarusidestrconsts:lislazbuildrestartafterbuild
 msgid "Restart After Successfull Build"
@@ -4992,7 +4992,7 @@ msgstr "Tallenna Projekti nimellä ..."
 
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr ""
+msgstr "Tallenna kaikki"
 
 #: lazarusidestrconsts:liscodetoolsdefssaveandexit
 msgid "Save and Exit"
@@ -5472,7 +5472,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
-msgstr ""
+msgstr "Seuraava tiedosto on muuttunut (seuraavat tiedostot ovat muuttuneet):"
 
 #: lazarusidestrconsts:lissorrynotimplementedyet
 msgid "Sorry, not implemented yet"
@@ -6092,7 +6092,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
 msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
-msgstr ""
+msgstr "Paketti  %s%s%s  on merkitty asennettavaksi.%sNykyinen lazarus tukee ainoastaan staattisesti linkattuja paketteja. Asennus vaatii Lazaruksen uudelleen rakentamisen ja uudelleen käynnistämisen.%s%sHaluako tehdä sen nyt?"
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
 msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
@@ -6320,7 +6320,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishinttoggleformunit
 msgid "Toggle Form/Unit"
-msgstr ""
+msgstr "Siirry lomakkeen ja käännösyksikön välillä"
 
 #: lazarusidestrconsts:srkmectogglemode
 msgid "Toggle Mode"
@@ -6328,7 +6328,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewtoggleformunit
 msgid "Toggle form/unit view"
-msgstr ""
+msgstr "Siirry lomakkeen ja käännösyksikön välillä"
 
 #: lazarusidestrconsts:liscodetempltoken
 msgid "Token:"
@@ -6732,7 +6732,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemunitinfo
 msgid "Unit Info"
-msgstr ""
+msgstr "Käännösyksikön tiedot"
 
 #: lazarusidestrconsts:lisa2punitnameinvalid
 msgid "Unit Name Invalid"
@@ -6920,7 +6920,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisversion
 msgid "Version"
-msgstr ""
+msgstr "Versio"
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
@@ -6980,7 +6980,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
-msgstr "Näytä Unitit"
+msgstr "Näytä käännösyksiköt (Unit)"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"
@@ -7016,7 +7016,7 @@ msgstr "Näytä projektin lomakkeet(forms)"
 
 #: lazarusidestrconsts:dlgmainviewunits
 msgid "View project units"
-msgstr "Näytä projektin unitit"
+msgstr "Näytä projektin käännösyksiköt (units)"
 
 #: lazarusidestrconsts:srkmecviewunitdependencies
 msgid "View unit dependencies"
@@ -7072,7 +7072,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
-msgstr ""
+msgstr "Kun tehdään uusi lomake niin se laitetaan automaattisesti luotaviin lomakkeisiin"
 
 #: lazarusidestrconsts:lisfindfilewhere
 msgid "Where"
