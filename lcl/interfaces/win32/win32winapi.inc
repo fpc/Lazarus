@@ -1028,7 +1028,7 @@ Begin
     if (UState and DFCS_PUSHED) <> 0 then
       Flags := BDR_SUNKENOUTER
     else
-      Flags := BDR_RAISEDOUTER;
+      Flags := BDR_RAISEDINNER;
     Result := Boolean(Windows.DrawEdge(DC, @Rect, Flags, BF_RECT));
   end else begin
     Result := Boolean(Windows.DrawFrameControl(DC, @Rect, UType, UState));
@@ -3008,6 +3008,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.124  2004/07/02 20:28:18  micha
+  draw 1-pixel border using inner flag, outer seems to not draw top-left
+
   Revision 1.123  2004/06/30 15:41:56  micha
   cursor above horizontal scrollbar, then scroll horizontally
 
