@@ -1,0 +1,193 @@
+object MultiReplaceDialog: TMultiReplaceDialog
+  CAPTION = 'Multiple Replace'
+  CLIENTHEIGHT = 419
+  CLIENTWIDTH = 609
+  HORZSCROLLBAR.PAGE = 610
+  VERTSCROLLBAR.PAGE = 420
+  LEFT = 362
+  HEIGHT = 419
+  TOP = 230
+  WIDTH = 609
+  object ReplaceButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Replace'
+    TABSTOP = True
+    TABORDER = 0
+    LEFT = 144
+    HEIGHT = 25
+    TOP = 384
+    WIDTH = 107
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 280
+    HEIGHT = 25
+    TOP = 384
+    WIDTH = 96
+  end
+  object OptionsGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Options'
+    CLIENTHEIGHT = 66
+    CLIENTWIDTH = 500
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 2
+    LEFT = 8
+    HEIGHT = 83
+    TOP = 8
+    WIDTH = 504
+    object ScopeRadiogroup: TRADIOGROUP
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Scope'
+      ITEMINDEX = 0
+      ITEMS.Strings = (
+        'Entire Text'
+        'Selected Text'
+      )
+      LEFT = 7
+      HEIGHT = 63
+      WIDTH = 152
+    end
+    object OriginRadiogroup: TRADIOGROUP
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Origin'
+      ITEMINDEX = 0
+      ITEMS.Strings = (
+        'Entire Scope'
+        'From Cursor'
+      )
+      LEFT = 175
+      HEIGHT = 63
+      WIDTH = 162
+    end
+    object DirectionRadiogroup: TRADIOGROUP
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Direction'
+      ITEMINDEX = 1
+      ITEMS.Strings = (
+        'Up'
+        'Down'
+      )
+      LEFT = 351
+      HEIGHT = 63
+      WIDTH = 138
+    end
+  end
+  object ItemsGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft, akright, akbottom]
+    CAPTION = 'Items'
+    CLIENTHEIGHT = 260
+    CLIENTWIDTH = 593
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 3
+    LEFT = 8
+    HEIGHT = 277
+    TOP = 99
+    WIDTH = 597
+    object PropertiesGroupbox: TGROUPBOX
+      ALIGN = albottom
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Properties'
+      CLIENTHEIGHT = 133
+      CLIENTWIDTH = 589
+      COLOR = -2147483633
+      PARENTCOLOR = True
+      PARENTCTL3D = False
+      TABORDER = 0
+      HEIGHT = 150
+      TOP = 110
+      WIDTH = 593
+      object Edit1: TEDIT
+        ANCHORS = [aktop, akleft, akright]
+        TEXT = 'FindTextEdit'
+        TABSTOP = True
+        TABORDER = 0
+        LEFT = 108
+        HEIGHT = 23
+        TOP = 1
+        WIDTH = 474
+      end
+      object FindTextLabel: TLABEL
+        ANCHORS = [aktop, akleft]
+        CAPTION = 'Find Text'
+        COLOR = -2147483633
+        LAYOUT = tltop
+        LEFT = 8
+        HEIGHT = 17
+        TOP = 4
+        WIDTH = 100
+      end
+      object ReplaceWithLabel: TLABEL
+        ANCHORS = [aktop, akleft]
+        CAPTION = 'Replace With'
+        COLOR = -2147483633
+        LAYOUT = tltop
+        LEFT = 8
+        HEIGHT = 17
+        TOP = 34
+        WIDTH = 100
+      end
+      object Edit2: TEDIT
+        ANCHORS = [aktop, akleft, akright]
+        TEXT = 'ReplaceWithEdit'
+        TABSTOP = True
+        TABORDER = 3
+        LEFT = 108
+        HEIGHT = 23
+        TOP = 33
+        WIDTH = 474
+      end
+      object ItemOptionsCheckgroup: TCHECKGROUP
+        ALIGN = albottom
+        CAPTION = 'Options for this item'
+        ITEMS.Strings = (
+          'Case Sensitive'
+          'Whole Words Only'
+          'Regular Expressions'
+          'Multi Line'
+          'Prompt On Replace'
+          'Active'
+        )
+        COLUMNS = 3
+        HEIGHT = 70
+        TOP = 63
+        WIDTH = 589
+        Data = {
+          06000000020202020202
+        }
+      end
+    end
+    object ItemsListview: TLISTVIEW
+      ALIGN = alclient
+      ANCHORS = [aktop, akleft]
+      COLOR = -2147483633
+      COLUMNS = <      
+        item
+          CAPTION = 'Find Text'
+          VISIBLE = True
+          WIDTH = 250
+        end      
+        item
+          CAPTION = 'Replace With'
+          VISIBLE = True
+          WIDTH = 150
+        end      
+        item
+          CAPTION = 'Options'
+          VISIBLE = True
+          WIDTH = 50
+        end>
+      VIEWSTYLE = vsreport
+      HEIGHT = 110
+      WIDTH = 593
+    end
+  end
+end

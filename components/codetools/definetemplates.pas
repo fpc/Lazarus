@@ -2080,11 +2080,10 @@ var
       // execute childs
       CalculateTemplate(DefTempl.FirstChild,CurPath);
       // jump to end of else templates
-      DefTempl:=DefTempl.Next;
-      while (DefTempl<>nil) and (DefTempl.Action in [da_Else,da_ElseIf])
+      while (DefTempl.Next<>nil)
+      and (DefTempl.Next.Action in [da_Else,da_ElseIf])
       do
         DefTempl:=DefTempl.Next;
-      if DefTempl=nil then exit;
     end;
 
   // procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
@@ -3174,11 +3173,6 @@ begin
   MainDir:=TDefineTemplate.Create(
     StdDefTemplLazarusSrcDir, ctsDefsForLazarusSources,'',LazarusSrcDir,
     da_Directory);
-  MainDir.AddChild(TDefineTemplate.Create(
-    'LCL path addition',
-    Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
-    'lcl;lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
-    ,da_Define));
   // clear src path
   MainDir.AddChild(TDefineTemplate.Create('Clear SrcPath','Clear SrcPath',
     ExternalMacroStart+'SrcPath','',da_DefineRecurse));
@@ -3191,10 +3185,15 @@ begin
       ExternalMacroStart+'SrcPath',
       LazarusSrcDir+ds+'lcl'+ds+'nonwin32;'+SrcPath,da_DefineRecurse));
   MainDir.AddChild(IfTemplate);
+  MainDir.AddChild(TDefineTemplate.Create(
+    'LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
+    'lcl;lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
+    ,da_Define));
   // set SrcPath for IDE
   MainDir.AddChild(TDefineTemplate.Create(
     'Component path addition',
-    Format(ctsAddsDirToSourcePath,['designer, debugger, components']),
+    Format(ctsAddsDirToSourcePath,['designer, debugger, components, ..']),
     ExternalMacroStart+'SrcPath',
        'designer;'
       +'designer'+ds+'jitform;'
