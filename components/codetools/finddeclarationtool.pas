@@ -72,7 +72,7 @@ implementation
 
 function TFindDeclarationTool.FindDeclaration(CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-var r, CleanCursorPos: integer;
+var CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
 begin
   Result:=false;
@@ -80,16 +80,7 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
 {$ENDIF}
-  BuildTree(false);
-  if not EndOfSourceFound then
-    RaiseException('End Of Source not found');
-{$IFDEF CTDEBUG}
-writeln('TFindDeclarationTool.FindDeclaration B');
-{$ENDIF}
-  // find the CursorPos in cleaned source
-  r:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (r<>0) and (r<>-1) then
-    RaiseException('Cursor outside of code');
+  BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
 {$IFDEF CTDEBUG}
 writeln('TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
 {$ENDIF}

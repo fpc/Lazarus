@@ -115,6 +115,11 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemovePublishedVariable(const UpperClassName, UpperVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
+          
+    // blocks (e.g. begin..end)
+    function FindBlockCounterPart(CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    //function GuessBrokenBlock(StartPos: integer): boolean;
   end;
 
 
@@ -940,6 +945,48 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   if not SourceChangeCache.Replace(gtNone,gtNone,FromPos,ToPos,'') then exit;
   Result:=SourceChangeCache.Apply;
+end;
+
+function TStandardCodeTool.FindBlockCounterPart(CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+var Dummy, CleanCursorPos: integer;
+begin
+  Result:=false;
+  // scan code
+{$IFDEF CTDEBUG}
+writeln('TStandardCodeTool.FindBlockCounterPart A CursorPos=',CursorPos.X,',',CursorPos.Y);
+{$ENDIF}
+  BeginParsing(true,false);
+  // find the CursorPos in cleaned source
+  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
+  if (Dummy<>0) and (Dummy<>-1) then
+    RaiseException('cursor pos outside of code');
+  // read word at cursor
+  MoveCursorToCleanPos(CleanCursorPos);
+  if Src[CurPos.StartPos] in [';','.'] then dec(CurPos.StartPos);
+  CurPos.EndPos:=CurPos.StartPos;
+  while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
+    dec(CurPos.StartPos);
+  while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
+    inc(CurPos.EndPos);
+  if CurPos.EndPos=CurPos.StartPos then exit;
+{$IFDEF CTDEBUG}
+writeln('TStandardCodeTool.FindBlockCounterPart C  Word=',GetAtom);
+{$ENDIF}
+  // read till block keyword counterpart
+  if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
+  or UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('OBJECT')
+  or UpAtomIs('TRY') then begin
+    // read forward till END, FINALLY, EXCEPT
+    ReadTilBlockEnd(true);
+  end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT') then
+  begin
+    // read backward till BEGIN, CASE, ASM, RECORD, CLASS, OBJECT
+    ReadBackTilBlockEnd(true);
+  end else
+    exit;
+  // CursorPos now contains the counter block keyword
+  Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
 end;
 
 

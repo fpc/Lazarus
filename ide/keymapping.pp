@@ -51,11 +51,13 @@ const
   ecViewJumpHistory     = ecUserFirst + 15;
 
   ecFindDeclaration     = ecUserFirst + 20;
+  ecFindBlockEnd        = ecUserFirst + 21;
 
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
   ecIdentCompletion    = ecUserFirst + 102;
   ecSyntaxCheck        = ecUserFirst + 103;
+  ecGuessUnclosedBlock = ecUserFirst + 104;
 
   ecSave               = ecUserFirst + 200;
   ecOpen               = ecSave      + 1;
@@ -344,6 +346,7 @@ begin
     ecAddJumpPoint: Result:='add jump point';
     ecViewJumpHistory: Result:='view jump history';
     ecFindDeclaration: Result:='find declaration';
+    ecFindBlockEnd: Result:='find block end';
     ecNextEditor: Result:= 'next editor';
     ecPrevEditor: Result:= 'previous editor';
     ecPeriod: Result:= 'period';
@@ -351,6 +354,7 @@ begin
     ecCompleteCode: Result:= 'complete code';
     ecIdentCompletion: Result:= 'identifier completion';
     ecSyntaxCheck: Result:='syntax check';
+    ecGuessUnclosedBlock: Result:='guess unclosed block';
     ecSave: Result:= 'save';
     ecOpen: Result:= 'open';
     ecClose: Result:= 'close';
@@ -921,6 +925,7 @@ begin
   Add('Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Add('Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
   Add('Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Guess unclosed block',ecGuessUnclosedBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   Add('Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
   Add('Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
@@ -932,6 +937,7 @@ begin
   Add('Find procedure method',ecFindProcedureMethod,
                                  VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   Add('Find declaration',ecFindDeclaration,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Find block end',ecFindBlockEnd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
   Add('Jump back',ecJumpBack,VK_H,[ssCtrl],VK_UNKNOWN,[]);
   Add('Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);

@@ -263,8 +263,9 @@ const
      );
 
 var
-  IsSpaceChar, IsLineEndChar, IsIdentStartChar, IsIdentChar, IsNumberChar,
-  IsCommentStartChar, IsHexNumberChar, IsEqualOperatorStartChar:
+  IsSpaceChar, IsLineEndChar, IsWordChar, IsIdentStartChar, IsIdentChar,
+  IsNumberChar, IsCommentStartChar, IsCommentEndChar, IsHexNumberChar,
+  IsEqualOperatorStartChar:
     array[char] of boolean;
 
 
@@ -1632,8 +1633,10 @@ begin
     IsIdentChar[c]:=c in ['a'..'z','A'..'Z','_','0'..'9'];
     IsNumberChar[c]:=c in ['0'..'9'];
     IsCommentStartChar[c]:=c in ['/','{','('];
+    IsCommentEndChar[c]:=c in ['}',')',#13,#10];
     IsHexNumberChar[c]:=c in ['0'..'9','a'..'f','A'..'F'];
     IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
+    IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
   end;
 end;
 

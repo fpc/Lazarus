@@ -84,6 +84,8 @@ type
               //-2=X,Y beyond source
     function CleanPosToCaret(CleanPos: integer;
         var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
+    function CleanPosToCaretAndTopLine(CleanPos: integer;
+        var Caret:TCodeXYPosition; var NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
     procedure GetLineInfo(ACleanPos: integer;
         var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
 
@@ -117,6 +119,7 @@ type
         const ASource: string): integer;
     function CompareNodeUpSrc(ANode: TCodeTreeNode;
         const ASource: string): integer;
+    procedure ReadPriorAtom; virtual;
 
     procedure CreateChildNode; virtual;
     procedure EndChildNode; virtual;
@@ -637,6 +640,229 @@ begin
   end;
 end;
 
+procedure TCustomCodeTool.ReadPriorAtom;
+
+  procedure ReadStringConstantBackward;
+  var PrePos: integer;
+  begin
+    while (CurPos.StartPos>1) do begin
+      case Src[CurPos.StartPos-1] of
+      '''':
+        begin
+          dec(CurPos.StartPos);
+          repeat
+            dec(CurPos.StartPos);
+          until (CurPos.StartPos<1) or (Src[CurPos.StartPos]='''');
+        end;
+      '0'..'9':
+        begin
+          // test if char constant
+          PrePos:=CurPos.StartPos-1;
+          while (PrePos>1) and (IsNumberChar[Src[PrePos]]) do
+            dec(PrePos);
+          if (PrePos<1) then break;
+          if Src[PrePos]='#' then
+            CurPos.StartPos:=PrePos
+          else
+            break;
+        end;
+      else
+        break;
+      end;
+    end;
+  end;
+
+type
+  TNumberType = (ntDecimal, ntHexadecimal, ntBinary, ntIdentifier,
+    ntCharConstant, ntFloat, ntFloatWithExponent);
+  TNumberTypes = set of TNumberType;
+
+const
+  AllNumberTypes: TNumberTypes = [ntDecimal, ntHexadecimal, ntBinary,
+    ntIdentifier, ntCharConstant, ntFloat, ntFloatWithExponent];
+
+var c1, c2: char;
+  CommentLvl, PrePos: integer;
+  ForbiddenNumberTypes: TNumberTypes;
+begin
+  if LastAtoms.Count>0 then begin
+    UndoReadNextAtom;
+    exit;
+  end;
+  // Skip all spaces and comments
+  CommentLvl:=0;
+  dec(CurPos.StartPos);
+  while CurPos.StartPos>=1 do begin
+    if IsCommentEndChar[Src[CurPos.StartPos]] then begin
+      case Src[CurPos.StartPos] of
+      '}': // pascal comment
+        begin
+          CommentLvl:=1;
+          dec(CurPos.StartPos);
+          while (CurPos.StartPos>=1) and (CommentLvl>0) do begin
+            case Src[CurPos.StartPos] of
+            '}': if Scanner.NestedComments then inc(CommentLvl);
+            '{': dec(CommentLvl);
+            end;
+            dec(CurPos.StartPos);
+          end;
+        end;
+      #10,#13: // possible Delphi comment
+        begin
+          // read backwards till line start or comment start
+          dec(CurPos.StartPos);
+          if (CurPos.StartPos>=1) and (Src[CurPos.StartPos] in [#10,#13])
+          and (Src[CurPos.StartPos+1]<>Src[CurPos.StartPos]) then
+            dec(CurPos.StartPos);
+          PrePos:=CurPos.StartPos;
+          while (PrePos>1) do begin
+            case Src[PrePos] of
+            '/':
+              if Src[PrePos-1]='/' then begin
+                // this was a delphi comment -> skip comment
+                CurPos.StartPos:=PrePos-2;
+                break;
+              end;
+            #10,#13:
+              // it was just a line break
+              break;
+            end;
+            dec(PrePos);
+          end;
+        end;
+      ')': // old turbo pascal comment
+        if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='*') then begin
+          dec(CurPos.StartPos,3);
+          while (CurPos.StartPos>=1)
+          and ((Src[CurPos.StartPos]<>'(') or (Src[CurPos.StartPos+1]<>'*')) do
+            dec(CurPos.StartPos);
+          dec(CurPos.StartPos);
+        end else
+          break;
+      end;
+    end else if IsSpaceChar[Src[CurPos.StartPos]] then begin
+      repeat
+        dec(CurPos.StartPos);
+      until (CurPos.StartPos<1) or (Src[CurPos.StartPos] in [#10,#13])
+      or (not (IsSpaceChar[Src[CurPos.StartPos]]));
+    end else begin
+      break;
+    end;
+  end;
+  // CurPos.StartPos now points to the last char of the prior atom
+  CurPos.EndPos:=CurPos.StartPos+1;
+  if CurPos.StartPos<1 then
+    exit;
+  // read atom
+  c2:=UpperSrc[CurPos.StartPos];
+  case c2 of
+    '_','A'..'Z':
+      begin
+        // definitely an identifier or a keyword
+        while (CurPos.StartPos>1)
+        and (IsIdentChar[UpperSrc[CurPos.StartPos-1]]) do
+          dec(CurPos.StartPos);
+      end;
+    '''':
+      begin
+        inc(CurPos.StartPos);
+        ReadStringConstantBackward;
+      end;
+    '0'..'9':
+      begin
+        // could be a decimal number, an identifier, a hex number,
+        // a binary number, a char constant, a float, a float with exponent
+        ForbiddenNumberTypes:=[];
+        while true do begin
+          case UpperSrc[CurPos.StartPos] of
+          '0'..'1':
+            ;
+          '2'..'9':
+            ForbiddenNumberTypes:=ForbiddenNumberTypes+[ntBinary];
+          'A'..'D','F':
+            ForbiddenNumberTypes:=ForbiddenNumberTypes
+               +[ntBinary,ntDecimal,ntCharConstant,ntFloat,ntFloatWithExponent];
+          'E':
+            ForbiddenNumberTypes:=ForbiddenNumberTypes
+               +[ntBinary,ntDecimal,ntCharConstant,ntFloat];
+          'G'..'Z','_':
+            ForbiddenNumberTypes:=AllNumberTypes-[ntIdentifier];
+          '.':
+            begin
+              // could be the point of a float
+              if (ntFloat in ForbiddenNumberTypes)
+              or (CurPos.StartPos<=1) or (Src[CurPos.StartPos-1]='.') then begin
+                inc(CurPos.StartPos);
+                break;
+              end;
+              dec(CurPos.StartPos);
+              // this was the part of a float after the point
+              //  -> read decimal in front
+              ForbiddenNumberTypes:=AllNumberTypes-[ntDecimal];
+            end;
+          '+','-':
+            begin
+              // could be part of an exponent
+              if (ntFloatWithExponent in ForbiddenNumberTypes)
+              or (CurPos.StartPos<=1) or (UpperSrc[CurPos.StartPos-1]<>'E') then
+              begin
+                inc(CurPos.StartPos);
+                break;
+              end;
+              dec(CurPos.StartPos);
+              // this was the exponent of a float -> read the float
+              ForbiddenNumberTypes:=AllNumberTypes-[ntFloat];
+            end;
+          '#': // char constant found
+            begin
+              if (ntCharConstant in ForbiddenNumberTypes) then
+                inc(CurPos.StartPos);
+              ReadStringConstantBackward;
+              break;
+            end;
+          '$':
+            begin
+              // hexadecimal number found
+              if (ntHexadecimal in ForbiddenNumberTypes) then
+                inc(CurPos.StartPos);
+              break;
+            end;
+          '%':
+            begin
+              // binary number found
+              if (ntBinary in ForbiddenNumberTypes) then
+                inc(CurPos.StartPos);
+              break;
+            end;
+          else
+            begin
+              inc(CurPos.StartPos);
+              break;
+            end;
+          end;
+          if ForbiddenNumberTypes=AllNumberTypes then begin
+            inc(CurPos.StartPos);
+            break;
+          end;
+          if CurPos.StartPos<=1 then exit;
+          dec(CurPos.StartPos);
+        end;
+      end;
+    else
+      if CurPos.StartPos>1 then begin
+        c1:=Src[CurPos.StartPos-1];
+        // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+        if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+        or ((c1='<') and (c2='>'))
+        or ((c1='>') and (c2='<'))
+        or ((c1='.') and (c2='.'))
+        or ((c1='*') and (c2='*'))
+        or ((c1='@') and (c2='@'))
+        then dec(CurPos.StartPos);
+      end;
+  end;
+end;
+
 procedure TCustomCodeTool.UndoReadNextAtom;
 begin
   if LastAtoms.Count>0 then begin
@@ -900,6 +1126,20 @@ begin
   end;
 end;
 
+function TCustomCodeTool.CleanPosToCaretAndTopLine(CleanPos: integer;
+  var Caret:TCodeXYPosition; var NewTopLine: integer): boolean;
+// true=ok, false=invalid CleanPos
+begin
+  Result:=CleanPosToCaret(CleanPos,Caret);
+  if Result then begin
+    if JumpCentered then begin
+      NewTopLine:=Caret.Y-(VisibleEditorLines shr 1);
+      if NewTopLine<1 then NewTopLine:=1;
+    end else
+      NewTopLine:=Caret.Y;
+  end;
+end;
+
 procedure TCustomCodeTool.GetLineInfo(ACleanPos: integer;
   var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
 begin
@@ -954,7 +1194,6 @@ writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil);
 writeln('TCustomCodeTool.UpdateNeeded END');
 {$ENDIF}
 end;
-
 
 
 end.

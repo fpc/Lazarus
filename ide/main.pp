@@ -163,12 +163,12 @@ type
     procedure FormClose(Sender : TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
     procedure FormPaint(Sender : TObject);
-    Procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
-    Procedure MainMouseDown(Sender: TObject; Button: TMouseButton; 
+    procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
+    procedure MainMouseDown(Sender: TObject; Button: TMouseButton; 
         Shift: TShiftState; X,Y: Integer);
-    Procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
-    procedure mnuFindDeclarationClicked(Sender : TObject);
+    // file menu
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
@@ -179,9 +179,10 @@ type
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
 
+    // view menu
     procedure mnuViewInspectorClicked(Sender : TObject);
-    Procedure mnuViewUnitsClicked(Sender : TObject);
-    Procedure mnuViewFormsClicked(Sender : TObject);
+    procedure mnuViewUnitsClicked(Sender : TObject);
+    procedure mnuViewFormsClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuViewWatchesClick(Sender : TObject);
@@ -189,7 +190,8 @@ type
     procedure MessageViewDblClick(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
-    
+
+    // project menu
     procedure mnuNewProjectClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
@@ -199,6 +201,7 @@ type
     procedure mnuViewProjectSourceClicked(Sender : TObject);
     procedure mnuProjectOptionsClicked(Sender : TObject);
     
+    // run menu
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuBuildAllProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
@@ -210,16 +213,21 @@ type
     procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
 
+    // tools menu
     procedure mnuToolConfigureClicked(Sender : TObject);
     procedure mnuToolSyntaxCheckClicked(Sender : TObject);
 
+    // enironment menu
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
 
+    // help menu
     procedure mnuHelpAboutLazarusClicked(Sender : TObject);
 
-    Procedure OpenFileDownArrowClicked(Sender : TObject);
-    Procedure ControlClick(Sender : TObject);
+    procedure OpenFileDownArrowClicked(Sender : TObject);
+    procedure ControlClick(Sender : TObject);
+    procedure mnuFindDeclarationClicked(Sender : TObject);
+    
 
     // SourceNotebook events
     Procedure OnSrcNoteBookActivated(Sender : TObject);
@@ -303,8 +311,9 @@ type
  
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure LoadMainMenu;
+    procedure LoadSpeedbuttons;
 
-    Function SearchPaths : String;
 
     // files/units
     function DoNewEditorUnit(NewUnitType:TNewUnitType;
@@ -359,31 +368,38 @@ type
     function DoBackupFile(const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
-    procedure DoBringToFrontFormOrUnit;
-    procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
-      var Handled, Abort: boolean);
-    function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
-    procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
-    procedure DoShowMessagesView;
-    procedure DoArrangeSourceEditorAndMessageView;
-    function GetProjectTargetFilename: string;
-    function GetTestProjectFilename: string;
-    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
+    procedure UpdateDefaultPascalFileExtensions;
+    
+    // methods for codetools
+    procedure InitCodeToolBoss;
+    function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
+      var ActiveUnitInfo: TUnitInfo): boolean;
+    function DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
+      ActiveUnitInfo: TUnitInfo;
+      NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer): TModalResult;
     procedure SaveSourceEditorChangesToCodeCache;
     procedure ApplyCodeToolChanges;
-    function DoJumpToCompilerMessage(Index:integer;
-      FocusEditor: boolean): boolean;
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
     procedure DoCompleteCodeAtCursor;
     procedure DoJumpToCodeToolBossError;
     function DoCheckSyntax: TModalResult;
+    procedure DoGoToPascalBlockEnd;
+    
+    // methods for debugging, compiling and external tools
+    function DoJumpToCompilerMessage(Index:integer;
+      FocusEditor: boolean): boolean;
     function DoInitDebugger: TModalResult;
-    procedure UpdateDefaultPascalFileExtensions;
-
-    procedure LoadMainMenu;
-    procedure LoadSpeedbuttons;
-    Procedure SetDesigning(Control : TComponent; Value : Boolean);
+    procedure DoShowMessagesView;
+    procedure DoArrangeSourceEditorAndMessageView;
+    function GetProjectTargetFilename: string;
+    function GetTestProjectFilename: string;
+    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
+    procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
+      var Handled, Abort: boolean);
+    function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
+    procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
+    Function SearchPaths : String;
 
     // form editor and designer
     property SelectedComponent : TRegisteredComponent 
@@ -401,11 +417,13 @@ type
     procedure OnDesignerModified(Sender: TObject);
     Procedure OnDesignerActivated(Sender : TObject);
     procedure OnControlSelectionChanged(Sender: TObject);
+    procedure DoBringToFrontFormOrUnit;
+    procedure SetDesigning(Control : TComponent; Value : Boolean);
 
+    // editor and environment options
     procedure SaveEnvironment;
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
-    procedure InitCodeToolBoss;
   end;
 
 
@@ -1738,22 +1756,25 @@ begin
     end;
     
    ecStopProgram:
-      DoStopProject;
+     DoStopProject;
     
    ecFindProcedureDefinition,ecFindProcedureMethod:
-      DoJumpToProcedureSection;
+     DoJumpToProcedureSection;
       
    ecFindDeclaration:
      DoFindDeclarationAtCursor;
+     
+   ecFindBlockEnd:
+     DoGoToPascalBlockEnd;
     
    ecCompleteCode:
-      DoCompleteCodeAtCursor;
+     DoCompleteCodeAtCursor;
       
    ecExtToolFirst..ecExtToolLast:
-      DoRunExternalTool(Command-ecExtToolFirst);
+     DoRunExternalTool(Command-ecExtToolFirst);
     
    ecSyntaxCheck:
-      DoCheckSyntax;
+     DoCheckSyntax;
     
   else
     Handled:=false;
@@ -5007,6 +5028,45 @@ begin
   end;
 end;
 
+function TMainIDE.BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
+  var ActiveUnitInfo: TUnitInfo): boolean;
+begin
+  Result:=false;
+  if SourceNoteBook.NoteBook=nil then exit;
+  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
+    ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  SaveSourceEditorChangesToCodeCache;
+  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  Result:=true;
+end;
+
+function TMainIDE.DoJumpToCodePos(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer): TModalResult;
+var NewSrcEdit: TSourceEditor;
+  NewUnitInfo: TUnitInfo;
+begin
+  Result:=mrCancel;
+  if NewSource<>ActiveUnitInfo.Source then begin
+    // jump to other file -> open it
+    Result:=DoOpenEditorFile(NewSource.Filename,false);
+    if Result<>mrOk then exit;
+    GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
+      NewUnitInfo);
+  end else begin
+    NewSrcEdit:=ActiveSrcEdit;
+  end;
+//writeln('[TMainIDE.DoJumpToCodePos] ',NewX,',',NewY,',',NewTopLine);
+  with NewSrcEdit.EditorComponent do begin
+    CaretXY:=Point(NewX,NewY);
+    BlockBegin:=CaretXY;
+    BlockEnd:=CaretXY;
+    TopLine:=NewTopLine;
+  end;
+  Result:=mrOk;
+end;
+
 procedure TMainIDE.ApplyCodeToolChanges;
 begin
   // all changes were handled automatically by events
@@ -5015,17 +5075,12 @@ begin
 end;
 
 procedure TMainIDE.DoJumpToProcedureSection;
-var ActiveSrcEdit, NewSrcEdit: TSourceEditor;
-  ActiveUnitInfo, NewUnitInfo: TUnitInfo;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
-    ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  SaveSourceEditorChangesToCodeCache;
-  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoJumpToProcedureSection] ************');
@@ -5035,25 +5090,10 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
     ActiveSrcEdit.EditorComponent.CaretY,
     NewSource,NewX,NewY,NewTopLine) then
   begin
-    if NewSource<>ActiveUnitInfo.Source then begin
-      // jump to other file -> open it
-      if DoOpenEditorFile(NewSource.Filename,false)<>mrOk then exit;
-      GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
-        NewUnitInfo);
-    end else begin
-      NewSrcEdit:=ActiveSrcEdit;
-    end;
-//writeln('[TMainIDE.DoJumpToProcedureSection] ',NewX,',',NewY,',',NewTopLine);
-    with NewSrcEdit.EditorComponent do begin
-      CaretXY:=Point(NewX,NewY);
-      BlockBegin:=CaretXY;
-      BlockEnd:=CaretXY;
-      TopLine:=NewTopLine;
-    end;
-  end else begin
-    if CodeToolBoss.ErrorMessage<>'' then
-      DoJumpToCodeToolBossError;
-  end;
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+      NewSource, NewX, NewY, NewTopLine);
+  end else
+    DoJumpToCodeToolBossError;
 end;
 
 procedure TMainIDE.DoJumpToCodeToolBossError;
@@ -5093,17 +5133,12 @@ begin
 end;
 
 procedure TMainIDE.DoFindDeclarationAtCursor;
-var ActiveSrcEdit, NewSrcEdit: TSourceEditor;
-  ActiveUnitInfo, NewUnitInfo: TUnitInfo;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
-    ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  SaveSourceEditorChangesToCodeCache;
-  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
@@ -5113,74 +5148,68 @@ writeln('[TMainIDE.DoFindDeclarationAtCursor] ************');
     ActiveSrcEdit.EditorComponent.CaretY,
     NewSource,NewX,NewY,NewTopLine) then
   begin
-    if NewSource<>ActiveUnitInfo.Source then begin
-      // jump to other file -> open it
-      if DoOpenEditorFile(NewSource.Filename,false)<>mrOk then exit;
-      GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
-        NewUnitInfo);
-    end else begin
-      NewSrcEdit:=ActiveSrcEdit;
-    end;
-//writeln('[TMainIDE.DoFindDeclarationAtCursor] ',NewX,',',NewY,',',NewTopLine);
-    with NewSrcEdit.EditorComponent do begin
-      CaretXY:=Point(NewX,NewY);
-      BlockBegin:=CaretXY;
-      BlockEnd:=CaretXY;
-      TopLine:=NewTopLine;
-    end;
-  end else begin
-    // probably a syntax error or just not in a procedure head/body -> ignore
-  end;
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+      NewSource, NewX, NewY, NewTopLine);
+  end else 
+    DoJumpToCodeToolBossError;
 end;
 
-procedure TMainIDE.DoCompleteCodeAtCursor;
-var ActiveSrcEdit, NewSrcEdit: TSourceEditor;
-  ActiveUnitInfo, NewUnitInfo: TUnitInfo;
+procedure TMainIDE.DoGoToPascalBlockEnd;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
-  if SourceNoteBook.NoteBook=nil then exit;
-  GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
-    ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  FOpenEditorsOnCodeToolChange:=true;
-  SaveSourceEditorChangesToCodeCache;
-  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
-writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
+writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
 {$ENDIF}
-  if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
+  if CodeToolBoss.FindBlockCounterPart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
     NewSource,NewX,NewY,NewTopLine) then
   begin
-    ApplyCodeToolChanges;
-    if NewSource<>ActiveUnitInfo.Source then begin
-      // jump to other file -> open it
-      if DoOpenEditorFile(NewSource.Filename,false)<>mrOk then exit;
-      GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
-        NewUnitInfo);
-    end else begin
-      NewSrcEdit:=ActiveSrcEdit;
-    end;
-//writeln('[TMainIDE.DoJumpToProcedureSection] ',NewX,',',NewY,',',NewTopLine);
-    with NewSrcEdit.EditorComponent do begin
-      CaretXY:=Point(NewX,NewY);
-      BlockBegin:=CaretXY;
-      BlockEnd:=CaretXY;
-      TopLine:=NewTopLine;
-    end;
-  end else begin
-    // error: probably a syntax error or just not in a procedure head/body
-    // or not in a class
-    // -> there are enough events to handle everything, so it can be ignored here
-    ApplyCodeToolChanges;
-    if CodeToolBoss.ErrorMessage<>'' then
-      DoJumpToCodeToolBossError;
-  end;
-  FOpenEditorsOnCodeToolChange:=false;
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+      NewSource, NewX, NewY, NewTopLine);
+  end else 
+    DoJumpToCodeToolBossError;
 end;
+
+procedure TMainIDE.DoCompleteCodeAtCursor;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
+{$ENDIF}
+    if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
+      ActiveSrcEdit.EditorComponent.CaretX,
+      ActiveSrcEdit.EditorComponent.CaretY,
+      NewSource,NewX,NewY,NewTopLine) then
+    begin
+      ApplyCodeToolChanges;
+      DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+        NewSource, NewX, NewY, NewTopLine);
+    end else begin
+      // error: probably a syntax error or just not in a procedure head/body
+      // or not in a class
+      // -> there are enough events to handle everything, so it can be ignored here
+      ApplyCodeToolChanges;
+      DoJumpToCodeToolBossError;
+    end;
+  finally  
+    FOpenEditorsOnCodeToolChange:=false;
+  end;
+end;
+
+//-----------------------------------------------------------------------------
 
 procedure TMainIDE.MessagesViewSelectionChanged(sender : TObject);
 begin
@@ -5505,6 +5534,9 @@ end.
 =======
 
   $Log$
+  Revision 1.198  2002/01/11 15:57:49  lazarus
+  MG: added  find block end
+
   Revision 1.197  2002/01/02 13:32:52  lazarus
   MG: fixed clean abort of project loading
 
@@ -5533,6 +5565,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.198  2002/01/11 15:57:49  lazarus
+  MG: added  find block end
+
   Revision 1.197  2002/01/02 13:32:52  lazarus
   MG: fixed clean abort of project loading
 

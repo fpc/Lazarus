@@ -139,6 +139,11 @@ type
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
+          
+    // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
+    function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
+          var NewCode: TCodeBuffer;
+          var NewX, NewY, NewTopLine: integer): boolean;
 
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
@@ -552,6 +557,39 @@ writeln('TCodeToolManager.FindDeclaration B ',FCodeTool.Scanner<>nil);
   end;
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.FindDeclaration END ');
+{$ENDIF}
+end;
+
+function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer;
+  X, Y: integer; var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+  NewPos: TCodeXYPosition;
+begin
+  Result:=false;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindBlockCounterPart A ',Code.Filename,' x=',x,' y=',y);
+{$ENDIF}
+  if not InitCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindBlockCounterPart B ',FCodeTool.Scanner<>nil);
+{$ENDIF}
+  try
+    Result:=FCodeTool.FindBlockCounterPart(CursorPos,NewPos,NewTopLine);
+    if Result then begin
+      NewX:=NewPos.X;
+      NewY:=NewPos.Y;
+      NewCode:=NewPos.Code;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+{$IFDEF CTDEBUG}
+writeln('TCodeToolManager.FindBlockCounterPart END ');
 {$ENDIF}
 end;
 

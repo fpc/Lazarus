@@ -148,6 +148,8 @@ type
         Attr: TProcHeadAttributes): boolean;
     function ReadUsesSection(ExceptionOnError: boolean): boolean;
     function ReadSubRange(ExceptionOnError: boolean): boolean;
+    function ReadTilBlockEnd(StopOnBlockMiddlePart: boolean): boolean;
+    function ReadBackTilBlockEnd(StopOnBlockMiddlePart: boolean): boolean;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -159,6 +161,8 @@ type
         var CommentStart, CommentEnd: integer): boolean;
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
+    procedure BuildTreeAndGetCleanPos(OnlyInterfaceNeeded: boolean;
+        CursorPos: TCodeXYPosition; var CleanCursorPos: integer);
     function DoAtom: boolean; override;
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
@@ -195,6 +199,11 @@ type
   
 
 implementation
+
+
+type
+  TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat, ebtRecord);
+  TTryType = (ttNone, ttFinally, ttExcept);
 
 
 { TMultiKeyWordListCodeTool }
@@ -330,6 +339,7 @@ begin
     Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 end;
 
@@ -1469,70 +1479,139 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
-// Keyword: begin, asm
-
-  procedure ReadTilBlockEnd;
-  type
-    TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat);
-    TTryType = (ttNone, ttFinally, ttExcept);
-  var BlockType: TEndBlockType;
-    TryType: TTryType;
-  begin
-    TryType:=ttNone;
-    if UpAtomIs('BEGIN') then
-      BlockType:=ebtBegin
-    else if UpAtomIs('REPEAT') then
-      BlockType:=ebtRepeat
-    else if UpAtomIs('TRY') then
-      BlockType:=ebtTry
-    else if UpAtomIs('CASE') then
-      BlockType:=ebtCase
-    else if UpAtomIs('ASM') then
-      BlockType:=ebtAsm
-    else
-      RaiseException('internal codetool error in '
-        +'TPascalParserTool.KeyWordFuncBeginEnd: unkown block type');
-    repeat
-      ReadNextAtom;
-      if (CurPos.StartPos>SrcLen) then begin
-        RaiseException('syntax error: "end" not found.')
-      end else if (UpAtomIs('END')) then begin
-        if BlockType=ebtRepeat then
-          RaiseException(
-            'syntax error: ''until'' expected, but "'+GetAtom+'" found');
-        if (BlockType=ebtTry) and (TryType=ttNone) then
-          RaiseException(
-            'syntax error: ''finally'' expected, but "'+GetAtom+'" found');
-        break;
-      end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos)
-        or UpAtomIs('REPEAT') then
-      begin
-        if BlockType=ebtAsm then
-          RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
-        ReadTilBlockEnd;
-      end else if UpAtomIs('UNTIL') then begin
-        if BlockType=ebtRepeat then
-          break;
+function TPascalParserTool.ReadTilBlockEnd(
+  StopOnBlockMiddlePart: boolean): boolean;
+var BlockType: TEndBlockType;
+  TryType: TTryType;
+begin
+  Result:=true;
+  TryType:=ttNone;
+  if UpAtomIs('BEGIN') then
+    BlockType:=ebtBegin
+  else if UpAtomIs('REPEAT') then
+    BlockType:=ebtRepeat
+  else if UpAtomIs('TRY') then
+    BlockType:=ebtTry
+  else if UpAtomIs('CASE') then
+    BlockType:=ebtCase
+  else if UpAtomIs('ASM') then
+    BlockType:=ebtAsm
+  else if UpAtomIs('RECORD') then
+    BlockType:=ebtRecord
+  else
+    RaiseException('internal codetool error in '
+      +'TPascalParserTool.ReadTilBlockEnd: unkown block type');
+  repeat
+    ReadNextAtom;
+    if (CurPos.StartPos>SrcLen) then begin
+      RaiseException('syntax error: "end" not found.')
+    end else if (UpAtomIs('END')) then begin
+      if BlockType=ebtRepeat then
         RaiseException(
-          'syntax error: ''end'' expected, but "'+GetAtom+'" found');
-      end else if UpAtomIs('FINALLY') then begin
-        if (BlockType=ebtTry) and (TryType=ttNone) then
-          TryType:=ttFinally
-        else
-          RaiseException(
-            'syntax error: "end" expected, but "'+GetAtom+'" found');
-      end else if UpAtomIs('EXCEPT') then begin
-        if (BlockType=ebtTry) and (TryType=ttNone) then
-          TryType:=ttExcept
-        else
-          RaiseException(
-            'syntax error: "end" expected, but "'+GetAtom+'" found');
-      end;
-    until false;
+          'syntax error: "until" expected, but "'+GetAtom+'" found');
+      if (BlockType=ebtTry) and (TryType=ttNone) then
+        RaiseException(
+          'syntax error: "finally" expected, but "'+GetAtom+'" found');
+      break;
+    end else if EndKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
+        CurPos.EndPos-CurPos.StartPos)
+      or UpAtomIs('REPEAT') then
+    begin
+      if BlockType=ebtAsm then
+        RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
+      ReadTilBlockEnd(false);
+    end else if UpAtomIs('UNTIL') then begin
+      if BlockType=ebtRepeat then
+        break;
+      RaiseException(
+        'syntax error: "end" expected, but "'+GetAtom+'" found');
+    end else if UpAtomIs('FINALLY') then begin
+      if (BlockType=ebtTry) and (TryType=ttNone) then begin
+        if StopOnBlockMiddlePart then break;
+        TryType:=ttFinally;
+      end else
+        RaiseException(
+          'syntax error: "end" expected, but "'+GetAtom+'" found');
+    end else if UpAtomIs('EXCEPT') then begin
+      if (BlockType=ebtTry) and (TryType=ttNone) then begin
+        if StopOnBlockMiddlePart then break;
+        TryType:=ttExcept;
+      end else
+        RaiseException(
+          'syntax error: "end" expected, but "'+GetAtom+'" found');
+    end;
+  until false;
+end;
+
+function TPascalParserTool.ReadBackTilBlockEnd(
+  StopOnBlockMiddlePart: boolean): boolean;
+// read begin..end, try..finally, case..end, repeat..until, asm..end blocks
+// backwards
+var BlockType: TEndBlockType;
+
+  procedure RaiseBlockError;
+  begin
+    case BlockType of
+      ebtBegin:
+        RaiseException('syntax error: "begin" expected, but "'
+                       +GetAtom+'" found');
+      ebtTry:
+        RaiseException('syntax error: "try" expected, but "'
+                       +GetAtom+'" found');
+      ebtRepeat:
+        RaiseException('syntax error: "repeat" expected, but "'
+                       +GetAtom+'" found');
+    else
+      RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
+    end;
   end;
 
+begin
+  Result:=true;
+  if UpAtomIs('END') then
+    BlockType:=ebtBegin
+  else if UpAtomIs('UNTIL') then
+    BlockType:=ebtRepeat
+  else if UpAtomIs('FINALLY') or UpAtomIs('EXCEPT') then
+    BlockType:=ebtTry
+  else
+    RaiseException('internal codetool error in '
+      +'TPascalParserTool.ReadBackTilBlockEnd: unkown block type');
+  repeat
+    ReadPriorAtom;
+    if (CurPos.StartPos<1) then begin
+      RaiseException('syntax error: "begin" not found.')
+    end else if UpAtomIs('END') or (UpAtomIs('UNTIL')) then begin
+      ReadBackTilBlockEnd(false);
+    end else if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
+      or UpAtomIs('RECORD') then
+    begin
+      if BlockType=ebtBegin then
+        break
+      else
+        RaiseBlockError;
+    end else if UpAtomIs('REPEAT') then begin
+      if BlockType=ebtRepeat then
+        break
+      else
+        RaiseBlockError;
+    end else if UpAtomIs('FINALLY') or UpAtomIs('EXCEPT') then begin
+      if BlockType=ebtBegin then begin
+        if StopOnBlockMiddlePart then break;
+        BlockType:=ebtTry;
+      end else
+        RaiseBlockError;
+    end else if UpAtomIs('TRY') then begin
+      if BlockType=ebtTry then
+        break
+      else
+        RaiseBlockError;
+    end;
+  until false;
+end;
+
+function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
+// Keyword: begin, asm
 var BeginKeyWord: shortstring;
   ChildNodeCreated: boolean;
 begin
@@ -1546,7 +1625,7 @@ begin
       CurNode.Desc:=ctnAsmBlock;
   end;
   // search "end"
-  ReadTilBlockEnd;
+  ReadTilBlockEnd(false);
   // close node
   if ChildNodeCreated then begin
     CurNode.EndPos:=CurPos.EndPos;
@@ -2765,4 +2844,22 @@ begin
   until CurPos.StartPos>=SrcLen;
 end;
 
+procedure TPascalParserTool.BuildTreeAndGetCleanPos(
+  OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
+  var CleanCursorPos: integer);
+var Dummy: integer;
+begin
+  BuildTree(OnlyInterfaceNeeded);
+  if not EndOfSourceFound then
+    RaiseException('End of Source not found');
+  // find the CursorPos in cleaned source
+  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
+  if (Dummy<>0) and (Dummy<>-1) then
+    RaiseException('cursor pos outside of code');
+end;
+
+
+
 end.
+
+

@@ -938,19 +938,13 @@ begin
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
   // in a class or in a forward proc?
-  BuildTree(false);
-  if not EndOfSourceFound then 
-    RaiseException('End of Source not found');
-  ASourceChangeCache:=SourceChangeCache;
-  SourceChangeCache.MainScanner:=Scanner;
-  // find the CursorPos in cleaned source
-  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy<>0) and (Dummy<>-1) then 
-    RaiseException('cursor pos outside of code');
+  BuildTreeAndGetCleanPos(false,CursorPos, CleanCursorPos);
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
   if CursorNode=nil then
     RaiseException('no valid node found at cursor');
+  ASourceChangeCache:=SourceChangeCache;
+  SourceChangeCache.MainScanner:=Scanner;
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',CleanCursorPos,' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
