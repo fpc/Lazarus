@@ -593,12 +593,12 @@ begin
       except
         on E: Exception do begin
           MessageDlg('Error',E.Message,mtError,[mbOk],0);
-          if FCurrentEdit=ValueEdit then
-            ValueEdit.Text:=CurRow.Editor.GetVisualValue
-          else
-            ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
         end;
       end;
+      if FCurrentEdit=ValueEdit then
+        ValueEdit.Text:=CurRow.Editor.GetVisualValue
+      else
+        ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
       Exclude(FStates,pgsApplyingValue);
       DoPaint(true);
       if Assigned(FOnModified) then FOnModified(Self);

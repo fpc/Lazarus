@@ -198,6 +198,7 @@ type
       ATypeInfo:PTypeInfo): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
+    procedure OnPropHookComponentRenamed(AComponent: TComponent);
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
@@ -983,6 +984,7 @@ begin
   PropertyEditorHook1.OnCreateMethod:=@OnPropHookCreateMethod;
   PropertyEditorHook1.OnShowMethod:=@OnPropHookShowMethod;
   PropertyEditorHook1.OnRenameMethod:=@OnPropHookRenameMethod;
+  PropertyEditorHook1.OnComponentRenamed:=@OnPropHookComponentRenamed;
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
                                                DefaultObjectInspectorName);
@@ -6081,6 +6083,17 @@ var
   ActiveUnitInfo: TUnitInfo;
   i: integer;
   NewClassName: string;
+  BossResult: boolean;
+  
+  procedure ApplyBossResult(const Msg: string);
+  begin
+    ApplyCodeToolChanges;
+    if not BossResult then begin
+      DoJumpToCodeToolBossError;
+      raise Exception.Create(Msg);
+    end;
+  end;
+  
 begin
   BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false);
   ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
@@ -6088,17 +6101,11 @@ begin
     raise Exception.Create('Component name "'+Newname+'" is keyword');
   if AComponent.Owner<>nil then begin
     // rename published variable in form source
-    if CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
+    BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
       ADesigner.Form.ClassName,
-      AComponent.Name,NewName,AComponent.ClassName) then
-    begin
-      ApplyCodeToolChanges;
-    end else begin
-      ApplyCodeToolChanges;
-      DoJumpToCodeToolBossError;
-      raise Exception.Create('Unable to rename variable in source.'#13
-                            +'See messages.');
-    end;
+      AComponent.Name,NewName,AComponent.ClassName);
+    ApplyBossResult('Unable to rename variable in source.'#13
+                    +'See messages.');
   end else if AComponent=ADesigner.Form then begin
     // rename form
     // ToDo:
@@ -6114,26 +6121,30 @@ begin
     NewClassName:='T'+NewName;
 
     // rename form in source
-    if CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
+    BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
       AComponent.Name,AComponent.ClassName,
-      NewName,NewClassName) then
-    begin
-      ApplyCodeToolChanges;
-    end else begin
-      ApplyCodeToolChanges;
-      DoJumpToCodeToolBossError;
-      raise Exception.Create('Unable to rename form in source.'#13
-                            +'See messages.');
-    end;
+      NewName,NewClassName);
+    ApplyBossResult('Unable to rename form in source.'#13
+                    +'See messages.');
 
+    // change createform statement
+    if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnit>=0)
+    then begin
+      BossResult:=CodeToolBoss.ChangeCreateFormStatement(
+        Project1.MainUnitInfo.Source,
+        AComponent.ClassName,AComponent.Name,
+        NewClassName,NewName,true);
+      ApplyBossResult('Unable to change CreateForm statement.'#13
+                      +'See messages.');
+    end;
     
-    MessageDlg('Not implemented yet.',
-               'Form renaming in source is not implemented yet.',
-               mtInformation,[mbOk],0);
+    // rename form class
+    FormEditor1.JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
+
   end else begin
     if (aComponent is TMenuItem) or (aComponent is TMenu)
-       then writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
-       else raise Exception.Create('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name);
+    then writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
+    else raise Exception.Create('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name);
   end;
 end;
 
@@ -6386,10 +6397,10 @@ var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
+  {$ENDIF}
   Result:=CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Form.ClassName,AMethodName,TypeData,
                             MethodIsCompatible,MethodIsPublished,IdentIsMethod);
@@ -6407,19 +6418,19 @@ begin
   Result.Code:=nil;
   Result.Data:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
+  {$ENDIF}
   FOpenEditorsOnCodeToolChange:=true;
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
                 ActiveUnitInfo.Form.ClassName,AMethodName,ATypeInfo);
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
-{$ENDIF}
+    {$IFDEF IDE_DEBUG}
+    writeln('');
+    writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
+    {$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
       Result:=FormEditor1.JITFormList.CreateNewMethod(TForm(ActiveUnitInfo.Form)
@@ -6439,10 +6450,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{$IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookShowMethod] ************');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnPropHookShowMethod] ************');
+  {$ENDIF}
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     ActiveUnitInfo.Form.ClassName,AMethodName,
     NewSource,NewX,NewY,NewTopLine) then
@@ -6459,19 +6470,19 @@ var ActiveSrcEdit: TSourceEditor;
   r: boolean;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{ $IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookRenameMethod] ************');
-{ $ENDIF}
+  { $IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.OnPropHookRenameMethod] ************');
+  { $ENDIF}
   FOpenEditorsOnCodeToolChange:=true;
   try
     // create published method
     r:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                 ActiveUnitInfo.Form.ClassName,CurName,NewName);
-{ $IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
-{ $ENDIF}
+    { $IFDEF IDE_DEBUG}
+    writeln('');
+    writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
+    { $ENDIF}
     ApplyCodeToolChanges;
     if r then begin
       FormEditor1.JITFormList.RenameMethod(TForm(ActiveUnitInfo.Form),
@@ -6482,6 +6493,11 @@ writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
   finally
     FOpenEditorsOnCodeToolChange:=false;
   end;
+end;
+
+procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
+begin
+  ObjectInspector1.FillComponentComboBox;
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
@@ -6629,6 +6645,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.347  2002/08/23 11:24:41  lazarus
+  MG: implemented form renaming
+
   Revision 1.346  2002/08/23 07:05:14  lazarus
   MG: started form renaming
 
@@ -7439,7 +7458,7 @@ end.
   Shane
 
   Revision 1.56  2001/02/04 04:18:11  lazarus
-  Code cleanup and JITFOrms bug fix.
+  Code cleanup and JITForms bug fix.
   Shane
 
   Revision 1.55  2001/02/02 14:23:37  lazarus
