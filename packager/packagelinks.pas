@@ -250,8 +250,8 @@ procedure TPackageLinks.UpdateGlobalLinks;
                         'lpl')<>0) then exit;
     PkgVersion.Major:=ints[1];
     PkgVersion.Minor:=ints[2];
-    PkgVersion.Build:=ints[3];
-    PkgVersion.Release:=ints[4];
+    PkgVersion.Release:=ints[3];
+    PkgVersion.Build:=ints[4];
     Result:=true;
   end;
 

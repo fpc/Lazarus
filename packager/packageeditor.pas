@@ -387,7 +387,7 @@ end;
 
 procedure TPackageEditorForm.OptionsBitBtnClick(Sender: TObject);
 begin
-
+  ShowPackageOptionsDlg(LazPackage);
 end;
 
 procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;

@@ -694,7 +694,7 @@ begin
       begin
         MessageDlg('Invalid version',
           'The Minimum Version "'+DependMinVersionEdit.Text+'" is invalid.'#13
-          +'Please use the format major.minor.build.release'#13
+          +'Please use the format major.minor.release.build'#13
           +'For exmaple: 1.0.20.10',
           mtError,[mbCancel],0);
         exit;
@@ -707,7 +707,7 @@ begin
       begin
         MessageDlg('Invalid version',
           'The Maximum Version "'+DependMaxVersionEdit.Text+'" is invalid.'#13
-          +'Please use the format major.minor.build.release'#13
+          +'Please use the format major.minor.release.build'#13
           +'For exmaple: 1.0.20.10',
           mtError,[mbCancel],0);
         exit;

@@ -85,8 +85,8 @@ type
   public
     Major: integer;
     Minor: integer;
-    Build: integer;
     Release: integer;
+    Build: integer;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
       FileVersion: integer);
@@ -95,7 +95,8 @@ type
     procedure Assign(Source: TPkgVersion);
     function AsString: string;
     function ReadString(const s: string): boolean;
-    procedure SetValues(NewMajor, NewMinor, NewBuild, NewRelease: integer);
+    procedure SetValues(NewMajor, NewMinor, NewRelease, NewBuild: integer);
+    function VersionBound(v: integer): integer;
   end;
   
   
@@ -307,6 +308,7 @@ type
     
   TLazPackage = class(TLazPackageID)
   private
+    FAddDependCompilerOptions: TAdditionalCompilerOptions;
     FAuthor: string;
     FAutoCreated: boolean;
     FAutoInstall: TPackageInstallType;
@@ -401,6 +403,8 @@ type
     procedure AddUsedByDependency(Dependency: TPkgDependency);
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
   public
+    property AddDependCompilerOptions: TAdditionalCompilerOptions
+                                                 read FAddDependCompilerOptions;
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
     property AutoIncrementVersionOnBuild: boolean
@@ -1055,8 +1059,8 @@ procedure TPkgVersion.Clear;
 begin
   Major:=0;
   Minor:=0;
-  Build:=0;
   Release:=0;
+  Build:=0;
 end;
 
 procedure TPkgVersion.LoadFromXMLConfig(XMLConfig: TXMLConfig;
@@ -1064,10 +1068,10 @@ procedure TPkgVersion.LoadFromXMLConfig(XMLConfig: TXMLConfig;
 begin
   if FileVersion=1 then ;
   Clear;
-  Major:=XMLConfig.GetValue(Path+'Major',0);
-  Minor:=XMLConfig.GetValue(Path+'Minor',0);
-  Build:=XMLConfig.GetValue(Path+'Build',0);
-  Release:=XMLConfig.GetValue(Path+'Release',0);
+  Major:=VersionBound(XMLConfig.GetValue(Path+'Major',0));
+  Minor:=VersionBound(XMLConfig.GetValue(Path+'Minor',0));
+  Release:=VersionBound(XMLConfig.GetValue(Path+'Release',0));
+  Build:=VersionBound(XMLConfig.GetValue(Path+'Build',0));
 end;
 
 procedure TPkgVersion.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
@@ -1075,30 +1079,30 @@ procedure TPkgVersion.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
 begin
   XMLConfig.SetDeleteValue(Path+'Major',Major,0);
   XMLConfig.SetDeleteValue(Path+'Minor',Minor,0);
-  XMLConfig.SetDeleteValue(Path+'Build',Build,0);
   XMLConfig.SetDeleteValue(Path+'Release',Release,0);
+  XMLConfig.SetDeleteValue(Path+'Build',Build,0);
 end;
 
 function TPkgVersion.Compare(Version2: TPkgVersion): integer;
 begin
   Result:=Major-Version2.Major;
   if Result=0 then Result:=Minor-Version2.Minor;
-  if Result=0 then Result:=Build-Version2.Build;
   if Result=0 then Result:=Release-Version2.Release;
+  if Result=0 then Result:=Build-Version2.Build;
 end;
 
 procedure TPkgVersion.Assign(Source: TPkgVersion);
 begin
   Major:=Source.Major;
   Minor:=Source.Minor;
-  Build:=Source.Build;
   Release:=Source.Release;
+  Build:=Source.Build;
 end;
 
 function TPkgVersion.AsString: string;
 begin
-  Result:=IntToStr(Major)+'.'+IntToStr(Minor)+'.'+IntToStr(Build)+'.'
-          +IntToStr(Release);
+  Result:=IntToStr(Major)+'.'+IntToStr(Minor)+'.'+IntToStr(Release)
+          +'.'+IntToStr(Build);
 end;
 
 function TPkgVersion.ReadString(const s: string): boolean;
@@ -1129,19 +1133,29 @@ begin
   end;
   Major:=ints[1];
   Minor:=ints[2];
-  Build:=ints[3];
-  Release:=ints[4];
-  
+  Release:=ints[3];
+  Build:=ints[4];
+
   Result:=true;
 end;
 
-procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewBuild,
-  NewRelease: integer);
+procedure TPkgVersion.SetValues(NewMajor, NewMinor, NewRelease,
+  NewBuild: integer);
 begin
-  Major:=NewMajor;
-  Minor:=NewMinor;
-  Build:=NewBuild;
-  Release:=NewRelease;
+  Major:=VersionBound(NewMajor);
+  Minor:=VersionBound(NewMinor);
+  Release:=VersionBound(NewRelease);
+  Build:=VersionBound(NewBuild);
+end;
+
+function TPkgVersion.VersionBound(v: integer): integer;
+begin
+  if v>9999 then
+    Result:=9999
+  else if v<0 then
+    Result:=0
+  else
+    Result:=v;
 end;
 
 { TLazPackage }
@@ -1330,6 +1344,7 @@ end;
 constructor TLazPackage.Create;
 begin
   inherited Create;
+  FAddDependCompilerOptions:=TAdditionalCompilerOptions.Create;
   FComponents:=TList.Create;
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
@@ -1349,6 +1364,7 @@ begin
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FUsageOptions);
+  FreeAndNil(FAddDependCompilerOptions);
   inherited Destroy;
 end;
 
@@ -1379,9 +1395,10 @@ begin
   FIconFile:='';
   FInstalled:=pitNope;
   FName:='';
-  FPackageType:=lptRunTime;
+  FPackageType:=lptRunAndDesignTime;
   FRegistered:=false;
   FUsageOptions.Clear;
+  FAddDependCompilerOptions.Clear;
 end;
 
 procedure TLazPackage.LockModified;
@@ -1416,7 +1433,10 @@ var
       PkgDependency:=TPkgDependency.Create;
       PkgDependency.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
                                       FileVersion);
-      List.Add(PkgDependency);
+      if PkgDependency.MakeSense then
+        List.Add(PkgDependency)
+      else
+        PkgDependency.Free;
     end;
     SortDependencyList(List);
     for i:=0 to List.Count-1 do begin
@@ -1474,6 +1494,8 @@ begin
   LoadPkgDependencyList(Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
+  FAddDependCompilerOptions.LoadFromXMLConfig(
+                                    XMLConfig,Path+'AddDependCompilerOptions/');
   UnlockModified;
 end;
 
@@ -1490,7 +1512,7 @@ procedure TLazPackage.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
     Dependency:=First;
     while Dependency<>nil do begin
       inc(i);
-      Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/');
+      Dependency.SaveToXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/');
       Dependency:=Dependency.NextDependency[ListType];
     end;
     XMLConfig.SetDeleteValue(ThePath+'Count',i,0);
@@ -1530,6 +1552,8 @@ begin
   SavePkgDependencyList(Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
+  FAddDependCompilerOptions.SaveToXMLConfig(
+                                    XMLConfig,Path+'AddDependCompilerOptions/');
   Modified:=false;
 end;
 
