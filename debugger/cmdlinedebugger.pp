@@ -92,7 +92,7 @@ uses
   SysUtils;
   
 {------------------------------------------------------------------------------
-  Function: SendBreak
+  Procedure: SendBreak
   Params:   APID                  The proces ID to send break to
   Returns:  
  ------------------------------------------------------------------------------}
@@ -435,6 +435,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.36  2004/10/25 17:59:29  vincents
+  fpc 1.9.5 has no saveregisters calling convention anymore.
+
   Revision 1.35  2004/09/14 21:30:36  vincents
   replaced writeln by DebugLn
 

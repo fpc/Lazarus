@@ -760,7 +760,7 @@ var
    data_end : longword;external name '__data_end__';
 {$endif}
 
-procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOINTER'];
+procedure CheckPointer(p : pointer);[{$IFNDEF NOSAVEREGISTERS}saveregisters,{$ENDIF}public, alias : 'FPC_CHECKPOINTER'];
 var
   i  : ptrint;
   pp : pheap_mem_info;
@@ -2318,6 +2318,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2004/10/25 17:59:29  vincents
+  fpc 1.9.5 has no saveregisters calling convention anymore.
+
   Revision 1.33  2004/07/15 17:29:59  vincents
   fix compilation for win32
 
