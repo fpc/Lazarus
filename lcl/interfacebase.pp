@@ -41,8 +41,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLLinux, LCLType, LCLProc, VCLGlobals,
-  LMessages, Controls, GraphType, GraphicsMath;
+  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
+  GraphType, GraphMath;
 
 type
 
@@ -60,13 +60,15 @@ type
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
     procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure AppTerminate; virtual; abstract;
     procedure DoEvents; virtual; abstract;
     procedure HandleEvents; virtual; abstract;
     procedure WaitMessage; virtual; abstract;
     procedure Init; virtual; abstract;
-    function GetText(Sender: TControl; var Text: String): Boolean; virtual; abstract;
-    function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
+    function GetText(Sender: TComponent; var Text: String): Boolean; virtual; abstract;
+    function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; virtual; abstract;
     function UpdateHint(Sender: TObject): Integer; virtual; abstract;
     function RecreateWnd(Sender: TObject): Integer; virtual; abstract;
 
@@ -94,15 +96,17 @@ type
 var
   PromptDialogFunction: TPromptDialogFunction;
   
+var
+  InterfaceObject: TInterfaceBase;
 
 implementation
 
 
 {$I interfacebase.inc}
 
-
 initialization
   InputDialogFunction:=nil;
+  InterfaceObject:=nil;
 
 finalization
   InputDialogFunction:=nil;
@@ -111,6 +115,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2002/10/26 15:15:46  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.23  2002/10/26 10:21:01  lazarus
   MG: broke actnlist <-> menus circle
 
