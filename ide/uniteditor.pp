@@ -175,9 +175,6 @@ type
 
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
     procedure SetVisible(Value: boolean);
-    function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
-    function  IsBreakPointMark(const ABreakPointMark: TSynEditMark): Boolean;
-    procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
   protected
     FindText : String;
     ErrorMsgs : TStrings;
@@ -234,7 +231,10 @@ type
     // gutter
     procedure SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
     procedure RemoveBreakPoint(const ALine: Integer); overload;
-    
+    function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
+    function  IsBreakPointMark(const ABreakPointMark: TSynEditMark): Boolean;
+    procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
+
     // selections
     function SelectionAvailable: boolean;
     function GetText(OnlySelection: boolean): string;
@@ -1163,9 +1163,9 @@ function TSourceEditor.IsBreakPointMark(
 begin
   Result := (ABreakPointMark <> nil)
         and (ABreakPointMark.ImageIndex in [
-               SRCEDITMARKERIMGINDEX[semActiveBreakPoint], 
-               SRCEDITMARKERIMGINDEX[semInactiveBreakPoint],
-               SRCEDITMARKERIMGINDEX[semInvalidBreakPoint]
+               SrcEditMarkerImgIndex[semActiveBreakPoint],
+               SrcEditMarkerImgIndex[semInactiveBreakPoint],
+               SrcEditMarkerImgIndex[semInvalidBreakPoint]
              ]);
 end;
 
@@ -1198,7 +1198,7 @@ begin
     if Assigned(FOnCreateBreakPoint) then FOnCreateBreakPoint(Self, ALine);
   end;
   BreakPtMark.Visible := True;
-  BreakPtMark.ImageIndex := SRCEDITMARKERIMGINDEX[AType];
+  BreakPtMark.ImageIndex := SrcEditMarkerImgIndex[AType];
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ALine: Integer);
@@ -1451,11 +1451,11 @@ begin
     begin
       if (AllMarks[i] <> nil) 
       then begin
-        if AllMarks[i].ImageIndex = SRCEDITMARKERIMGINDEX[semActiveBreakPoint] 
+        if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semActiveBreakPoint]
         then aha := ahaEnabledBreakpoint
-        else if AllMarks[i].ImageIndex = SRCEDITMARKERIMGINDEX[semInactiveBreakPoint]
+        else if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semInactiveBreakPoint]
         then aha := ahaDisabledBreakpoint
-        else if AllMarks[i].ImageIndex = SRCEDITMARKERIMGINDEX[semInvalidBreakPoint] 
+        else if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semInvalidBreakPoint]
         then aha := ahaInvalidBreakpoint
         else Continue;
         Break;
@@ -1464,8 +1464,8 @@ begin
   end;
   if aha <> ahaNone 
   then begin
-    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter, aha, FG, BG);
-    Special := True;
+    EditorOpts.GetSpecialLineColors(TCustomSynEdit(Sender).Highlighter, aha,
+                                    Special, FG, BG);
   end;
 end;
 
@@ -1541,6 +1541,7 @@ Begin
       NewName:='SynEdit'+IntToStr(i);
     until (AOwner.FindComponent(NewName)=nil);
     FEditor:=TSynEdit.Create(AOwner);
+    FEditor.BeginUpdate;
     with FEditor do begin
       Name:=NewName;
       Parent := AParent;
@@ -1557,12 +1558,12 @@ Begin
       OnMouseDown := @EditorMouseDown;
       OnMouseUp := @EditorMouseUp;
       OnKeyDown := @EditorKeyDown;
-      Visible:=true;
     end;
     if FCodeTemplates<>nil then
       FCodeTemplates.AddEditor(FEditor);
     aCompletion.AddEditor(FEditor);
     RefreshEditorSettings;
+    FEditor.EndUpdate;
   end else begin
     FEditor.Parent:=AParent;
   end;
@@ -2922,6 +2923,7 @@ Begin
   writeln('TSourceNotebook.NewSE B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
   {$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
+  Result.EditorComponent.BeginUpdate;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE C ');
   {$ENDIF}
@@ -2937,6 +2939,7 @@ Begin
   Result.OnMouseUp := @EditorMouseUp;
   Result.OnCreateBreakPoint := @BreakPointCreated;
   Result.OnDeleteBreakPoint := @BreakPointDeleted;
+  Result.EditorComponent.EndUpdate;
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE end ');
   {$ENDIF}
