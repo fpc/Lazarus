@@ -28,7 +28,7 @@ msgstr " ADVERTENCIA: Hay %d GDIObjects sin liberar, sigue un volcado detallado:
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " ADVERTENCIA: Hay %s mensajes de enlaces LM_PAINT/LM_GtkPAINT sin eliminar"
 
-#: lclstrconsts:rssindexoutofbounds
+#: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
 msgstr "%s Índice %d fuera de límites 0-%d"
 

@@ -18,7 +18,7 @@ msgstr " ВНИМАНИЕ: Найдено %d неосвобождённых GDIObject, список см. ниже:"
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " ВНИМАНИЕ: Найдено %s неудалённых LM_PAINT/LM_GtkPAINT ссылок на сообщение."
 
-#: lclstrconsts:rssindexoutofbounds
+#: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
 msgstr "%s Индекс %d вне диапазона 0-%d"
 

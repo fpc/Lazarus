@@ -29,7 +29,7 @@ msgstr " UWAGA: Pozostało %d niezwolnionych GDIObject, szczegółowy zrzut poni
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr " UWAGA: Pozostały %s nieusunięte dowiązania do LM_PAINT/LM_GtkPAINT."
 
-#: lclstrconsts:rssindexoutofbounds
+#: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
 msgstr "%s Indeks %d przekracza zakres 0-%d"
 

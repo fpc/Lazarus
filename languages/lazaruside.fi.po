@@ -268,11 +268,11 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
-msgstr ""
+msgstr "Lisää"
 
 #: lazarusidestrconsts:lisaddtoproject
 msgid "Add %s to project?"
-msgstr ""
+msgstr "Lisätäänkö tiedosto %s projektiin?"
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "Add &Watch At Cursor"
@@ -576,7 +576,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedbold
 msgid "Bold"
-msgstr ""
+msgstr "Lihavoitu"
 
 #: lazarusidestrconsts:uembookmarkn
 msgid "Bookmark"
@@ -1920,7 +1920,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfilehaschangedsave
 msgid "File %s%s%s has changed. Save?"
-msgstr ""
+msgstr "Tiedosto %s%s%s on muuttunut. Tallennetaanko se?"
 
 #: lazarusidestrconsts:lisfileisvirtual
 msgid "File %s%s%s is virtual."
@@ -2140,7 +2140,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
-msgstr ""
+msgstr "Lomakkeet..."
 
 #: lazarusidestrconsts:liscodetoolsdefsfpccvssourcedirectory
 msgid "FPC CVS source directory"
@@ -2268,11 +2268,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line"
-msgstr ""
+msgstr "Hyppää riville"
 
 #: lazarusidestrconsts:lisuegotoline
 msgid "Goto line :"
-msgstr ""
+msgstr "Hyppää riville :"
 
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
@@ -2300,7 +2300,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
-msgstr ""
+msgstr "Apupisteet"
 
 #: lazarusidestrconsts:dlggridcolor
 msgid "Grid color"
@@ -2328,7 +2328,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvlguidelines
 msgid "Guide lines"
-msgstr ""
+msgstr "Kohdistusviivat"
 
 #: lazarusidestrconsts:dlgguttercolor
 msgid "Gutter color"
@@ -2404,7 +2404,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlggridxhint
 msgid "Horizontal grid step size"
-msgstr ""
+msgstr "Apupisteiden välinen etäisyys vaakasuunnassa"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -2564,7 +2564,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uepins
 msgid "INS"
-msgstr ""
+msgstr "Lisää"
 
 #: lazarusidestrconsts:srvk_insert
 msgid "Insert"
@@ -2936,7 +2936,7 @@ msgstr "italia"
 
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
-msgstr ""
+msgstr "Kursivoitu"
 
 #: lazarusidestrconsts:dlgoiitemheight
 msgid "Item height"
@@ -3824,7 +3824,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
-msgstr ""
+msgstr "Korvaa"
 
 #: lazarusidestrconsts:lispckeditpackage
 msgid "Package %s"
@@ -4364,7 +4364,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
-msgstr "Korvaa"
+msgstr "Etsi ja korvaa"
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace All"
@@ -4384,7 +4384,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
 msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
-msgstr ""
+msgstr "Korvataanko tässä esiintyvä %s%s%s%s tekstillä %s%s%s?"
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -4964,7 +4964,7 @@ msgstr "Näytä apupisteet"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
-msgstr "Näytä sijoitusviivat"
+msgstr "Näytä kohdistusviivat"
 
 #: lazarusidestrconsts:dlgshowgutterhints
 msgid "Show Gutter Hints"
@@ -4980,7 +4980,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowlinenumbers
 msgid "Show line numbers"
-msgstr ""
+msgstr "Näytä rivinumerot"
 
 #: lazarusidestrconsts:dlgshownotes
 msgid "Show Notes"
@@ -5044,7 +5044,7 @@ msgstr "Sijoitu apupisteiden avulla"
 
 #: lazarusidestrconsts:dlgsnapguidelines
 msgid "Snap to Guide Lines"
-msgstr "Kiinnity sijoitusviivojen avulla"
+msgstr "Kiinnity kohdistusviivojen avulla"
 
 #: lazarusidestrconsts:srvk_snapshot
 msgid "Snapshot"
@@ -5080,7 +5080,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissourcemodified
 msgid "Source modified"
-msgstr ""
+msgstr "Lähdekoodi muuttunut"
 
 #: lazarusidestrconsts:srkmcatsrcnotebook
 msgid "Source Notebook commands"
@@ -6344,7 +6344,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlggridyhint
 msgid "Vertical grid step size"
-msgstr ""
+msgstr "Apupisteiden välinen etäisyys pystysuunnassa"
 
 #: lazarusidestrconsts:srkmectogglebreakpoints
 msgid "View breakpoints"

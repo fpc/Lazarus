@@ -354,7 +354,7 @@ msgstr ""
 msgid "Error creating device context for %s.%s"
 msgstr ""
 
-#: lclstrconsts:rssindexoutofbounds
+#: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
 msgstr ""
 

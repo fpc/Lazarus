@@ -18,7 +18,7 @@ msgstr ""
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr ""
 
-#: lclstrconsts:rssindexoutofbounds
+#: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr ""
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
-msgstr ""
+msgstr "Vahvistus"
 
 #: lclstrconsts:rscreatinggdbcatchableerror
 msgid "Creating gdb catchable error:"

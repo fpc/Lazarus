@@ -18,7 +18,7 @@ msgstr " Avís: hi ha %d GDIObjects no llençats, informació detallada segueix:"
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr "Avís: S'han deixat %s enllaços a missatge LM_PAINT/LM_GtkPAINT, sense esborrar"
 
-#: lclstrconsts:rssindexoutofbounds
+#: lclstrconsts:rsindexoutofbounds
 msgid "%s Index %d out of bounds 0-%d"
 msgstr "%s Índex %d fora de límits 0-%d"
 
