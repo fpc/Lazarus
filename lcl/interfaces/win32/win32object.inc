@@ -1239,8 +1239,8 @@ end;
 
 procedure TWin32Object.AttachMenuToWindow(AMenuObject: TComponent);
 begin
-  Windows.SetMenu(TWinControl((AMenu as TMenu).Owner).Handle,
-                  TMenu(AMenu).Handle);
+  Windows.SetMenu(TWinControl(AMenuObject.Owner).Handle,
+                  (AMenuObject as TMenu).Handle);
 end;
 
 { Private methods (in no significant order) }
@@ -2804,6 +2804,9 @@ End;
 
 {
   $Log$
+  Revision 1.123  2003/10/29 14:24:21  micha
+  amenuobject compilation fix
+
   Revision 1.122  2003/10/28 14:25:37  mattias
   fixed unit circle
 
