@@ -3305,6 +3305,7 @@ var
   DCOrigin: TPoint;
   BrushChanged: Boolean;
 begin
+  BrushChanged :=false;
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
   if not Result then exit;
   with TDeviceContext(DC) do
@@ -8708,6 +8709,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.357  2004/07/01 10:23:27  mattias
+  fixed uninitialsed vars   from Jeroen
+
   Revision 1.356  2004/06/28 23:16:24  mattias
   added TListView.AddItems  from Andrew Haines
 

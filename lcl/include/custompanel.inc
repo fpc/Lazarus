@@ -105,6 +105,7 @@ begin
   end;
 
   if Caption <> '' then begin
+    TS := Canvas.TextStyle;
     TS.Alignment:= Alignment;
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
