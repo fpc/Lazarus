@@ -67,7 +67,6 @@ const
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
   LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
 
-  LM_TB_BUTTONCOUNT = LM_ComUser+45;
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
   LM_DELETETOOLBUTTON = LM_ComUser+47;
 
@@ -847,7 +846,6 @@ begin
   LM_SETVALUE       :Result:='LM_SETVALUE';
   LM_GETVALUE       :Result:='LM_GETVALUE';
 
-  LM_TB_BUTTONCOUNT :Result:='LM_TB_BUTTONCOUNT';
   LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
   LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
 
@@ -982,6 +980,9 @@ end.
 
 {
   $Log$
+  Revision 1.93  2004/09/13 14:34:53  micha
+  convert LM_TB_BUTTONCOUNT to interface method
+
   Revision 1.92  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

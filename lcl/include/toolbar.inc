@@ -1534,7 +1534,7 @@ function TToolBar.InternalButtonCount: Integer;
 begin
 //  Result := Perform(TB_BUTTONCOUNT, 0, 0);
   if HandleAllocated then
-    Result := CNSendMessage(LM_TB_BUTTONCOUNT,Self,Nil)
+    TWSToolbarClass(WidgetSetClass).GetButtonCount(Self)
   else Result := 0;
 end;
 
@@ -1676,20 +1676,9 @@ begin
 end;
 
 
-procedure TToolBar.WMGetText(var Message: TLMGetText);
-begin
-//This should NOT be needed in LCL
-end;
-
 procedure TToolBar.WMGetTextLength(var Message: TLMGetTextLength);
 begin
   Message.Result := Length(FCaption);
-end;
-
-procedure TToolBar.WMSetText(var Message: TLMSetText);
-begin
-  with Message do
-    SetString(FCaption, Text, StrLen(pchar(Text)));
 end;
 
 procedure TToolBar.WMNotifyFormat(var Message: TLMessage);
@@ -1857,7 +1846,6 @@ Begin
   LM_CONFIGUREEVENT : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!LM_CONFIGUREEVENT!!!!!!!!!!!!!!');
   LM_KILLWORD : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!LM_KILLWORD!!!!!!!!!!!!!!!!!!!!');
   LM_SETSELMODE : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!LM_SETSELMODE!!!!!!!!!!!!!!!!');
-  LM_SHOWMODAL : Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!LM_SHOWMODAL!!!!!!!!!!!!!!!!!!!');
   end;
 
   case Message.msg of
@@ -2097,6 +2085,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/09/13 14:34:53  micha
+  convert LM_TB_BUTTONCOUNT to interface method
+
   Revision 1.28  2004/07/23 16:44:27  mattias
   activated new TToolbar, old can be activated with -dOldToolBar
 

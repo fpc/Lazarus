@@ -1496,11 +1496,9 @@ type
     function ReorderButton(OldIndex, ALeft, ATop: Integer): Integer;
     procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Message: TLMessage); message LM_GETDLGCODE;
-    procedure WMGetText(var Message: TLMGetText); message LM_GETTEXT;
     procedure WMGetTextLength(var Message: TLMGetTextLength); message LM_GETTEXTLENGTH;
     procedure WMKeyDown(var Message: TLMKeyDown); message LM_KEYDOWN;
     procedure WMNotifyFormat(var Message: TLMessage); message LM_NOTIFYFORMAT;
-    procedure WMSetText(var Message: TLMSetText); message LM_SETTEXT;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMSysChar(var Message: TLMSysChar); message LM_SYSCHAR;
     procedure WMSysCommand(var Message: TLMSysCommand); message LM_SYSCOMMAND;
@@ -2551,6 +2549,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.151  2004/09/13 14:34:53  micha
+  convert LM_TB_BUTTONCOUNT to interface method
+
   Revision 1.150  2004/09/12 20:59:05  vincents
   fix fpc 1.0.x compilation
 

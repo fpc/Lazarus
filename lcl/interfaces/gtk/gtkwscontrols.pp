@@ -29,7 +29,7 @@ interface
 uses
   {$IFDEF GTK2} Gtk2, Glib2, {$ELSE} Gtk, Glib, {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
-  WSControls, WSLCLClasses, Graphics;
+  WSControls, WSLCLClasses, Graphics, ComCtrls;
 
 type
 

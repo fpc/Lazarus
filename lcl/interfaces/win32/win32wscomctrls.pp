@@ -135,6 +135,9 @@ type
   private
   protected
   public
+{$ifdef OldToolbar}  
+    class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
+{$endif}    
   end;
 
   { TWin32WSTrackBar }
@@ -448,7 +451,16 @@ begin
   ListView_EnsureVisible(ALV.Handle, AIndex, Ord(PartialOK));
 end;
 
+{ TWin32WSToolbar}
 
+{$ifdef OldToolbar}
+
+function  TWin32WSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
+begin
+  Result := SendMessage(AToolbar.Handle, TB_BUTTONCOUNT, 0, 0)
+end;
+
+{$endif}
 
 initialization
 
@@ -467,9 +479,7 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TWin32WSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TWin32WSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TWin32WSToolBar);
+  RegisterWSComponent(TToolBar, TWin32WSToolBar);
 //  RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSTreeView);

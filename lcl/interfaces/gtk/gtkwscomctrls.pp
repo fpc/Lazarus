@@ -144,6 +144,9 @@ type
   private
   protected
   public
+{$ifdef OldToolbar}
+    class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
+{$endif}    
   end;
 
   { TGtkWSTrackBar }
@@ -764,6 +767,17 @@ begin
 end;
 {$ENDIF}
 
+{ TGtkWSToolbar }
+
+{$ifdef OldToolbar}
+
+function  TGtkWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
+begin
+  Result := PGtkToolbar(AToolbar.Handle)^.num_Children;
+end;
+
+{$endif}
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -781,9 +795,7 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TGtkWSToolBar);
-//  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);
-//  RegisterWSComponent(TCustomToolBar, TGtkWSToolBar);
+  RegisterWSComponent(TToolBar, TGtkWSToolBar);
 //  RegisterWSComponent(TCustomTrackBar, TGtkWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSTreeView);

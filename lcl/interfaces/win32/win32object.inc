@@ -335,13 +335,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_TB_BUTTONCOUNT:
-      Begin
-        If Sender Is TToolbar Then
-          Result := SendMessage(Handle, TB_BUTTONCOUNT, 0, 0)
-        Else
-          Result := -1;
-      End;
       //SH: think of TCanvas.handle!!!!
       LM_REDRAW:
       Begin
@@ -2463,6 +2456,9 @@ End;
 
 {
   $Log$
+  Revision 1.253  2004/09/13 14:34:53  micha
+  convert LM_TB_BUTTONCOUNT to interface method
+
   Revision 1.252  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

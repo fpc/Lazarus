@@ -121,7 +121,12 @@ type
 
   { TWSToolBar }
 
+  TWSToolbarClass = class of TWSToolbar;
   TWSToolBar = class(TWSToolWindow)
+  public
+{$ifdef OldToolbar}  
+    class function  GetButtonCount(const AToolBar: TToolBar): integer; virtual;
+{$endif}    
   end;
 
   { TWSTrackBar }
@@ -223,6 +228,16 @@ procedure TWSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: I
 begin
 end;
 
+{ TWSToolbar }
+
+{$ifdef OldToolbar}
+
+function TWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
+begin
+  Result := 0;
+end;
+
+{$endif}
 
 initialization
 

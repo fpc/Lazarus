@@ -1103,10 +1103,12 @@ procedure TGtkWidgetSet.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 var
   Requisition: TGtkRequisition;
-  FixedWidget: Pointer;
   {$IFDEF VerboseSizeMsg}
   LCLObject: TObject;
   {$ENDIF}
+{$ifndef OldToolbar}
+  FixedWidget: PGtkWidget;
+{$endif}
 begin
   if NewWidth<=0 then NewWidth:=1;
   if NewHeight<=0 then NewHeight:=1;
@@ -3068,6 +3070,7 @@ var
   AWindow     : PGdkWindow;
   {$IFDEF OldToolBar}
   Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
+  pStr        : PChar;
   pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
   {$ENDIF}
 begin
@@ -3114,18 +3117,6 @@ begin
 
       LM_DESTROY :
         DestroyLCLComponent(Sender);
-
-      LM_TB_BUTTONCOUNT:
-      begin
-        {$IFNDEF OldToolBar}
-        DebugLn('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_TB_BUTTONCOUNT');
-        exit;
-        {$ELSE OldToolBar}
-        if (Sender is TToolbar)
-        then Result := pgtkToolbar(Handle)^.num_Children
-        else Result := -1;
-        {$ENDIF OldToolBar}
-      end;
 
   //SH: think of TCanvas.handle!!!!
       LM_REDRAW:
@@ -5553,8 +5544,10 @@ end;
   child and get all LCL TControl abilities.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
+{$ifndef OldToolbar}
 var
   ClientWidget: PGtkWidget;
+{$endif}  
 begin
   Result := gtk_toolbar_new();
   {$IFNDEF OldToolBar}
@@ -8424,6 +8417,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.561  2004/09/13 14:34:53  micha
+  convert LM_TB_BUTTONCOUNT to interface method
+
   Revision 1.560  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

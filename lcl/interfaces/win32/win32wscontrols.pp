@@ -37,7 +37,7 @@ uses
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils, Win32Proc,
   { TODO: needs to move }
-  Forms, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType;
+  Forms, ComCtrls, Buttons, StdCtrls, ExtCtrls, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType;
 
 type
 
@@ -114,7 +114,7 @@ var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;
 begin
   {$ifdef OldToolbar}
-  if (TWinControl(Sender).Parent is TToolbar) then
+  if (AControl.Parent is TToolbar) then
     exit;
   {$endif}
 
