@@ -343,7 +343,7 @@ begin
             Result:=mrOk;
         except
           on e: EOutputFilterError do begin
-            writeln('TExternalToolList.Run ',E.Message);
+            writeln('TExternalToolList.Run Exception: ',E.Message);
             ErrorOccurred:=true;
           end
           else

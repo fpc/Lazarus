@@ -277,6 +277,7 @@ var i, j, FilenameEndPos: integer;
   var
     NewLine: String;
     LastFile: string;
+    FullFilename: String;
   begin
     Result:=false;
     if ('Fatal: '=copy(s,1,length('Fatal: ')))
@@ -296,15 +297,21 @@ var i, j, FilenameEndPos: integer;
       end;
       NewLine:=s;
       if fLastErrorType in [etPanic,etFatal] then begin
-        // fatal an panic errors are not very informative
+        // fatal and panic errors are not very informative
         // -> prepend current file
         if (fCompilingHistory<>nil) and (fCompilingHistory.Count>0) then begin
           LastFile:=fCompilingHistory[fCompilingHistory.Count-1];
-          if ofoMakeFilenamesAbsolute in Options then begin
-            if not FilenameIsAbsolute(LastFile) then
-              LastFile:=TrimFilename(fCurrentDirectory+LastFile);
+          if not FilenameIsAbsolute(LastFile) then
+            FullFilename:=TrimFilename(fCurrentDirectory+LastFile)
+          else
+            FullFilename:=LastFile;
+          if (ofoMakeFilenamesAbsolute in Options)
+          and (not FilenameIsAbsolute(LastFile)) then begin
+            if FileExists(FullFilename) then
+              LastFile:=FullFilename;
           end;
-          NewLine:=LastFile+'(1,1) '+NewLine;
+          if FileExists(FullFilename) then
+            NewLine:=LastFile+'(1,1) '+NewLine;
         end;
       end;
       DoAddFilteredLine(NewLine);
