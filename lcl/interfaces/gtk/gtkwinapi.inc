@@ -2896,7 +2896,10 @@ var
         end;
       end;
       if UnderLine then begin
-        UnderLineLen := Rect^.Right-Rect^.Left;
+        if Rect<>nil then
+          UnderLineLen := Rect^.Right-Rect^.Left
+        else
+          UnderLineLen := gdk_text_width(UseFont,LineStart, LineLen);
         Y := TxtPt.Y + 1;
         gdk_draw_line(Drawable, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
       end;
@@ -8031,6 +8034,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.228  2003/03/31 20:25:19  mattias
+  fixed scrollbars of TIpHtmlPanel
+
   Revision 1.227  2003/03/29 23:52:25  mattias
   IpHtmlPanel can show simple HTML pages, but there are mem bugs
 
