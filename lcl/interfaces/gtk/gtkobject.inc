@@ -4752,16 +4752,16 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetPixel(Sender : TObject; Data : Pointer);
 var
-  PDC     : PDeviceContext;
+  aDC     : TDeviceContext;
   Image   : pGDKImage;
   Widget  : PgtkWidget;
   GDKColor: TGDKColor;
   pFixed  : PGTKFixed;
   fWindow : pGdkWindow;
 begin
-  PDC := PDeviceContext(TCanvas(Sender).Handle);
-  if PDC = nil then exit;
-  Widget := PgtkWidget(PDC^.HWnd);
+  aDC := TDeviceContext(TCanvas(Sender).Handle);
+  if aDC = nil then exit;
+  Widget := PgtkWidget(aDC.HWnd);
 
   Image := gtk_Object_get_data(pgtkobject(widget),'Image');
   if Image = nil then begin
@@ -4799,15 +4799,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.GetPixel(Sender : TObject; Data : Pointer);
 var
-  PDC    : PDeviceContext;
+  aDC    : TDeviceContext;
   Image  : pGDKImage;
   Widget : PgtkWidget;
   GDKColor: TGDKColor;
   GdkColorContext: PGdkColorContext;
 begin
-  PDC := PDeviceContext(TCanvas(Sender).Handle);
-  if PDC = nil then exit;
-  Widget := PgtkWidget(PDC^.HWnd);
+  aDC := TDeviceContext(TCanvas(Sender).Handle);
+  if aDC = nil then exit;
+  Widget := PgtkWidget(aDC.HWnd);
 
   Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
   if Image = nil then begin
@@ -5046,7 +5046,7 @@ end;
   Depending on the compStyle, this function will apply all properties of
   the calling object to the corresponding GTK object.
  ------------------------------------------------------------------------------}
-function TgtkObject.SetProperties (Sender : TObject) : integer;
+function TgtkObject.SetProperties(Sender : TObject) : integer;
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
@@ -5056,17 +5056,18 @@ var
    Widget, ImplWidget   : PGtkWidget;
    I,X         : Integer;
    pRowText : PChar;
-   Image : PgdkImage;
    BitImage : TBitMap;
 begin
   Result := 0;     // default if nobody sets it
 
   if Sender is TWinControl
-  then Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
-  else Assert(False, Format('Trace:WARNING: [TgtkObject.SetProperties] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+  then
+    Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
+  else
+    RaiseException('TgtkObject.SetProperties: '
+                   +' Sender.ClassName='+Sender.ClassName);
 
   Handle:= Pointer(TWinControl(Sender).Handle);
-  Assert(Handle = nil, 'WARNING: [TgtkObject.SetProperties] --> got nil pointer');
   Widget:= PGtkWidget(Handle);
    
   case TControl(Sender).fCompStyle of
@@ -5278,15 +5279,16 @@ begin
         end;
       end;
            
-    csImage: 
+    {csImage:  MG: TImage is not a TWinControl. This code makes no sense. ToDo.
       begin
         //Image changed.
-        Widget := PgtkWidget(PdeviceContext(TBitmap(Sender).Handle));
-        Image := gdk_image_get(GetControlWindow(widget),0,0,widget^.allocation.width,widget^.allocation.height);
+        Widget := PgtkWidget(TBitmap(Sender).Handle);
+        Image := gdk_image_get(GetControlWindow(widget),0,0,
+                            widget^.allocation.width,widget^.allocation.height);
         if Handle = nil 
         then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
         else gtk_image_set(PgtkImage(handle),Image,nil);
-      end;
+      end;}
       
     csSpinEdit:
       Begin
@@ -5483,12 +5485,11 @@ end;
 
   Creates an initial DC
  ------------------------------------------------------------------------------}
-function TgtkObject.NewDC: PDeviceContext;
+function TgtkObject.NewDC: TDeviceContext;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewDC]', []));
-  Result:=GtkDef.NewPDeviceContext;
-  FillChar(Result^,SizeOf(TDeviceContext),0);
-  with Result^ do
+  Result:=GtkDef.NewDeviceContext;
+  with Result do
   begin
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor);
@@ -5503,11 +5504,11 @@ end;
 
   Disposes a DC
  ------------------------------------------------------------------------------}
-procedure TgtkObject.DisposeDC(pDC: PDeviceContext);
+procedure TgtkObject.DisposeDC(aDC: TDeviceContext);
 begin
-  if FDeviceContexts.Contains(pDC) then begin
-    FDeviceContexts.Remove(pDC);
-    GtkDef.DisposePDeviceContext(pDC);
+  if FDeviceContexts.Contains(aDC) then begin
+    FDeviceContexts.Remove(aDC);
+    GtkDef.DisposeDeviceContext(aDC);
   end;
 end;
 
@@ -5560,7 +5561,8 @@ begin
   Result^.GDIBrushColor.Colormap := gdk_colormap_get_system;
   gdk_color_white(Result^.GDIBrushColor.Colormap, @Result^.GDIBrushColor.Color);
   With Result^.GDIBrushColor.Color do
-    Result^.GDIBrushColor.ColorRef := RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
+    Result^.GDIBrushColor.ColorRef :=
+      RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
 end;
 
 {------------------------------------------------------------------------------
@@ -5602,7 +5604,8 @@ begin
   Result^.GDIPenColor.Colormap := gdk_colormap_get_system;
   gdk_color_black(Result^.GDIPenColor.Colormap, @Result^.GDIPenColor.Color);
   With Result^.GDIPenColor.Color do
-    Result^.GDIPenColor.ColorRef := RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
+    Result^.GDIPenColor.ColorRef :=
+      RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
 end;
 
 {------------------------------------------------------------------------------
@@ -5876,6 +5879,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.225  2002/10/01 10:05:48  lazarus
+  MG: changed PDeviceContext into class TDeviceContext
+
   Revision 1.224  2002/09/30 20:37:09  lazarus
   MG: fixed transient of modal forms
 
