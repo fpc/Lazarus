@@ -1810,7 +1810,7 @@ begin
                  +' '+CreateRelativePath(SrcFilename,APackage.Directory);
 
     // check if compilation is neccessary
-    if ([pcfOnlyIfNeeded,pcfCleanCompile]*Flags<>[]) then begin
+    if (pcfOnlyIfNeeded in Flags) then begin
       Result:=CheckIfPackageNeedsCompilation(APackage,
                                              CompilerFilename,CompilerParams,
                                              SrcFilename);
@@ -2215,6 +2215,12 @@ begin
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
+
+  // confirm uninstall package
+  Result:=MessageDlg('Uninstall package?',
+    'Uninstall package '+APackage.IDAsString+'?',
+    mtConfirmation,[mbYes,mbCancel,mbAbort],0);
+  if Result<>mrYes then exit;
   
   PackageGraph.BeginUpdate(true);
   try

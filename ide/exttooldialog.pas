@@ -306,15 +306,20 @@ begin
             TheOutputFilter.Options:=TheOutputFilter.Options
                                      +[ofoSearchForMakeMessages];
           try
+            Result:=mrCancel;
             try
-              TheOutputFilter.Execute(TheProcess);
-              TheOutputFilter.ReadLine('"'+Title+'" completed',
-                                       true);
+              if TheOutputFilter.Execute(TheProcess) then begin
+                TheOutputFilter.ReadLine('"'+Title+'" completed',true);
+              end;
+              if TheOutputFilter.ErrorExists then begin
+                ErrorOccurred:=true;
+              end;
             finally
               TheProcess.WaitOnExit;
               TheProcess.Free;
             end;
-            Result:=mrOk;
+            if not ErrorOccurred then
+              Result:=mrOk;
           except
             on e: EOutputFilterError do begin
               writeln('TExternalToolList.Run ',E.Message);

@@ -69,7 +69,8 @@ type
     procedure SetStopExecute(const AValue: boolean);
     procedure InternalSetCurrentDirectory(const Dir: string);
   public
-    procedure Execute(TheProcess: TProcess);
+    ErrorExists: boolean;
+    function Execute(TheProcess: TProcess): boolean;
     function GetSourcePosition(const Line: string; var Filename:string;
       var CaretXY: TPoint; var MsgType: TErrorType): boolean;
     procedure Clear;
@@ -139,14 +140,14 @@ begin
   FStopExecute:=false;
 end;
 
-procedure TOutputFilter.Execute(TheProcess: TProcess);
+function TOutputFilter.Execute(TheProcess: TProcess): boolean;
 const
   BufSize = 1024;
 var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
-  ErrorExists: boolean;
 begin
+  Result:=true;
   Clear;
   TheProcess.Execute;
   fCurrentDirectory:=TrimFilename(TheProcess.CurrentDirectory);
@@ -170,8 +171,10 @@ begin
       if Buf[i] in [#10,#13] then begin
         OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
         ReadLine(OutputLine,false);
-        if fLastErrorType in [etFatal, etPanic, etError] then
+        if fLastErrorType in [etFatal, etPanic, etError] then begin
           ErrorExists:=true;
+          Result:=false;
+        end;
         OutputLine:='';
         if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
         then

@@ -374,6 +374,8 @@ var
     EnabledFlag: boolean): TMenuItem;
   begin
     if FilesPopupMenu.Items.Count<=ItemCnt then begin
+    end;
+    if FilesPopupMenu.Items.Count<=ItemCnt then begin
       Result:=TMenuItem.Create(Self);
       FilesPopupMenu.Items.Add(Result);
     end else begin
