@@ -469,7 +469,8 @@ type
   // than declarations:
   TFindSmartFlag = (
     fsfIncludeDirective, // search for include file
-    fsfFindMainDeclaration // stop if already on a declaration
+    fsfFindMainDeclaration, // stop if already on a declaration
+    fsfSearchSourceName // if searching for a unit name, return the source name node
     );
   TFindSmartFlags = set of TFindSmartFlag;
   
@@ -994,6 +995,25 @@ var CleanCursorPos: integer;
     end;
   end;
   
+  function FindSourceName(ACode: TCodeBuffer): boolean;
+  var
+    NamePos: TAtomPosition;
+  begin
+    Result:=false;
+    NewTool:=nil;
+    NewNode:=nil;
+    if Assigned(FOnGetCodeToolForBuffer) then
+      NewTool:=FOnGetCodeToolForBuffer(Self,ACode,false);
+    if NewTool=nil then exit;
+    NewTool.BuildTree(true);
+    if not NewTool.GetSourceNamePos(NamePos) then exit;
+    NewNode:=NewTool.Tree.Root;
+    if not NewTool.JumpToCleanPos(NamePos.StartPos,NamePos.StartPos,
+                                  NamePos.StartPos,NewPos,NewTopLine,false)
+    then exit;
+    Result:=true;
+  end;
+
 var
   CleanPosInFront: integer;
   CursorAtIdentifier: boolean;
@@ -1058,6 +1078,8 @@ begin
                                            NewPos,NewTopLine);
       NewNode:=nil;
       NewTool:=nil;
+      if fsfSearchSourceName in SearchSmartFlags then
+        Result:=FindSourceName(NewPos.Code);
       exit;
     end;
     DirectSearch:=false;
@@ -2860,13 +2882,23 @@ begin
     CurCursorPos:=CursorPos;
     CurTool:=Self;
     try
-      while CurTool.FindDeclaration(CurCursorPos,AllFindSmartFlags,
+      while CurTool.FindDeclaration(CurCursorPos,AllFindSmartFlags
+        +[fsfSearchSourceName],
         NewTool,NewNode,NewPos,NewTopLine) do
       begin
         if IndexOfCodePosition(@NewPos)>=0 then break;
         AddCodePosition(NewPos);
         CurCursorPos:=NewPos;
         CurTool:=NewTool;
+        {$IFDEF VerboseFindWithAncestors}
+        debugln('TFindDeclarationTool.FindDeclarationsAndAncestors ',
+          ' Self="',MainFilename,'" ');
+        if CurCursorPos.Code<>nil then
+          debugln('  CurCursorPos=',CurCursorPos.Code.Filename,' ',dbgs(CurCursorPos.X),',',dbgs(CurCursorPos.Y));
+        if CurTool<>nil then
+          debugln('  CurTool=',CurTool.MainFilename);
+        {$ENDIF}
+        if (CurTool=nil) then exit;
       end;
     except
       // just stop on errors
