@@ -67,8 +67,13 @@ type
     dgMultiselect
   );
   TDbGridOptions = set of TDbGridOption;
+  TDbGridStatusItem = (gsVisibleMove,gsUpdatedData);
+  TDbGridStatus = set of TDbGridStatusItem;
 
 type
+
+  { TComponentDataLink }
+
   TComponentDataLink=class(TDatalink)
   private
     FDataSet: TDataSet;
@@ -101,8 +106,8 @@ type
     procedure EditingChanged; override;
     procedure UpdateData; override;
     function  MoveBy(Distance: Integer): Integer; override;
+    property  Modified: Boolean read FModified write FModified;
   public
-    procedure Modified;
     Property OnRecordChanged: TFieldNotifyEvent read FOnRecordChanged write FOnRecordChanged;
     Property OnDataSetChanged: TDatasetNotifyEvent read FOnDatasetChanged write FOnDataSetChanged;
     property OnNewDataSet: TDataSetNotifyEvent read fOnNewDataSet write fOnNewDataSet;
@@ -177,6 +182,7 @@ type
     FEditingColumn: Integer;
     FOldPosition: Integer;
     FDefaultColWidths: boolean;
+    FGridStatus: TDbGridStatus;
     procedure EmptyGrid;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
@@ -220,6 +226,8 @@ type
     
     procedure RestoreEditor;
     function  ISEOF: boolean;
+    function  ValidDataSet: boolean;
+    function  InsertCancelable: boolean;
   protected
   {$ifdef ver1_0}
     property FixedColor;
@@ -234,6 +242,8 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure DefaultDrawCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DoExit; override;
+    function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
+    function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DoOnChangeBounds; override;
     procedure DrawByRows; override;
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
@@ -473,9 +483,13 @@ begin
   if aDataSet=nil then DebugLn('nil)')
   else DebugLn(aDataSet.Name,')');
   {$endif}
-  LayoutChanged;
+  if not (gsVisibleMove in FGridStatus) then
+    LayoutChanged
+  else
+    UpdateScrollBarRange;
+
   UpdateActive;
-  RestoreEditor;
+  //RestoreEditor;
 end;
 
 procedure TCustomDbGrid.OnDataSetOpen(aDataSet: TDataSet);
@@ -503,6 +517,8 @@ begin
   DebugLn('Editing=', BoolToStr(dsEdit = aDataSet.State));
   DebugLn('Inserting=',BoolToStr(dsInsert = aDataSet.State));
   {$endif}
+  FDataLink.Modified := False;
+  Exclude(FGridStatus, gsUpdatedData);
   UpdateActive;
 end;
 
@@ -547,8 +563,13 @@ begin
   Debugln('Dataset.RecordCount=',IntToStr(aDataSet.RecordCount));
   {$endif}
   UpdateScrollBarRange;
+  // todo: Use a fast interface method to scroll a rectangular section of window
+  //       if distance=+, Row[Distance] to Row[RowCount-2] UP
+  //       if distance=-, Row[FixedRows+1] to Row[RowCount+Distance] DOWN
+  if Distance<>0 then
+    Invalidate
+  else
   UpdateActive;
-  if Distance<>0 then Invalidate;
 end;
 
 procedure TCustomDbGrid.OnUpdateData(aDataSet: TDataSet);
@@ -643,10 +664,12 @@ end;
 
 procedure TCustomDbGrid.SetThumbTracking(const AValue: boolean);
 begin
+  BeginUpdate;
   if Avalue then
     inherited Options := Inherited Options + [goThumbTracking]
   else
     inherited Options := Inherited Options - [goThumbTracking];
+  EndUpdate(uoNone);
 end;
 
 procedure TCustomDbGrid.UpdateBufferCount;
@@ -668,12 +691,21 @@ var
   selField,edField: TField;
 begin
   // get Editor text and update field content
-  if FDatalink.Editing then begin
+  if (FEditingColumn>-1) and FDatalink.Editing then begin
     SelField := SelectedField;
     edField := GetFieldFromGridColumn(FEditingColumn);
-    if (edField<>nil) and (edField = SelField) then
+    if (edField<>nil) and (edField = SelField) then begin
     //if (edField<>nil) and (FEditingField=SelField) then
+    {$ifdef dbgdbgrid}
+    DebugLn('UpdateData: Field[', edField.Fieldname, ']=', FTempText,' INIT');
+    {$endif}
       edField.AsString := FTempText;
+    {$ifdef dbgdbgrid}
+    DebugLn('UpdateData: Chk: Field:=',edField.ASString,' END');
+    {$endif}
+    Include(FGridStatus, gsUpdatedData);
+    EditingColumn(FEditingColumn, False);
+    end;
   end;
 end;
 
@@ -908,7 +940,9 @@ begin
       if aPage<1 then aPage := 1;
       if FDatalink.BOF then aPos := 0 else
       if FDatalink.EOF then aPos := aRange
-      else aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
+      else
+        aPos := FDataLink.DataSet.RecNo - 1; // RecNo is 1 based
+      if aPos<0 then aPos:=0;
     end else begin
       aRange := 6;
       aPage := 2;
@@ -959,9 +993,11 @@ procedure TCustomDbGrid.doLayoutChanged;
 begin
   if csDestroying in ComponentState then
     exit;
+  {$ifdef dbgdbgrid} DebugLn('doLayoutChanged INIT'); {$endif}
   if UpdateGridCounts=0 then
     EmptyGrid;
   UpdateScrollBarRange;
+  {$ifdef dbgdbgrid} DebugLn('doLayoutChanged FIN'); {$endif}
 end;
 {
 procedure TCustomDbGrid.WriteColumns(Writer: TWriter);
@@ -985,6 +1021,17 @@ begin
   with FDatalink do
     result :=
       Active and DataSet.EOF;
+end;
+
+function TCustomDbGrid.ValidDataSet: boolean;
+begin
+  result := FDatalink.Active And (FDatalink.DataSet<>nil)
+end;
+
+function TCustomDbGrid.InsertCancelable: boolean;
+begin
+  with FDatalink.DataSet do
+  Result := (State=dsInsert) and not (Modified or FDataLink.FModified);
 end;
 
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
@@ -1126,9 +1173,12 @@ var
   F: TField;
 begin
   if gdFixed in aState then begin
-    if (ACol=0) and FDrawingActiveRecord then
-      DrawArrow(Canvas, aRect, GetDataSetState)
-    else
+    if (ACol=0) and FDrawingActiveRecord then begin
+      DrawArrow(Canvas, aRect, GetDataSetState);
+      {$ifdef dbgGridPaint}
+      dbgOut('>');
+      {$endif}
+    end else
     if (aRow=0)and(ACol>=FixedCols) then begin
       FixRectangle;
       Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetColumnTitle(aCol));
@@ -1161,22 +1211,14 @@ procedure TCustomDbGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
   if FSelectionLock then
     exit;
+  {$ifdef dbgdbgrid}DebugLn('dbgrid.BefMovSel INIT');{$endif}
   inherited BeforeMoveSelection(DCol, DRow);
-  if FDataLink.Active then begin
-    if FDataLink.Editing then
-      FDataLink.UpdateData;
-    {
-    if dgCancelOnExit in Options then
-      FDataLink.DataSet.Cancel
-    else
-      FDatalink.UpdateData;
-    }
-  end;
   if DCol<>Col then begin
     if assigned(OnColExit) then
       OnColExit(Self);
     FColEnterPending:=True;
   end;
+{$ifdef dbgdbgrid}DebugLn('dbgrid.BefMovSel END');{$endif}
 end;
 
 procedure TCustomDbGrid.HeaderClick(IsColumn: Boolean; index: Integer);
@@ -1191,65 +1233,110 @@ procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
     if Assigned(OnKeyDown) then
       OnKeyDown(Self, Key, Shift);
   end;
+  procedure DoMoveBy(amount: Integer);
 begin
+    {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy(',IntToStr(Amount),')');{$Endif}
+    FDatalink.MoveBy(Amount);
+    {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBy FIN');{$Endif}
+  end;
+  procedure DoMoveBySmall(amount: Integer);
+  begin
+    {$IfDef dbgGrid}DebugLn('KeyDown.DoMoveBySmall(',IntToStr(Amount),')');{$Endif}
+    Include(FGridStatus, gsVisibleMove);
+    FDatalink.MoveBy(Amount);
+    Exclude(FGridStatus, gsVisibleMove);
+    {$IfDef dbgGrid}DebugLn('KeyDown.doMoveBySmall FIN');{$Endif}
+  end;
+  procedure DoCancel;
+  begin
+    {$IfDef dbgGrid}DebugLn('KeyDown.doCancel INIT');{$Endif}
+    if EditorMode then
+      EditorCancelEditing;
+    FDatalink.Dataset.cancel;
+    {$IfDef dbgGrid}DebugLn('KeyDown.doCancel FIN');{$Endif}
+  end;
+  procedure DoDelete;
+  begin
+    {$IfDef dbgGrid}DebugLn('KeyDown.doDelete INIT');{$Endif}
+    FDatalink.Dataset.Delete;
+    {$IfDef dbgGrid}DebugLn('KeyDown.doDelete FIN');{$Endif}
+  end;
+  procedure DoAppend;
+  begin
+    {$IfDef dbgGrid}DebugLn('KeyDown.doAppend INIT');{$Endif}
+    FDatalink.Dataset.Append;
+    {$IfDef dbgGrid}DebugLn('KeyDown.doAppend FIN');{$Endif}
+  end;
+  procedure DoInsert;
+begin
+    {$IfDef dbgGrid}DebugLn('KeyDown.doInsert INIT');{$Endif}
+    FDatalink.Dataset.Insert;
+    {$IfDef dbgGrid}DebugLn('KeyDown.doInsert FIN');{$Endif}
+  end;
+
+begin
+  {$IfDef dbgGrid}DebugLn('DbGrid.KeyDown INIT Key= ',IntToStr(Key));{$Endif}
   case Key of
     VK_DELETE:
       if (ssCtrl in Shift) and GridCanModify then begin
         if not (dgConfirmDelete in Options) or
           (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
         then
-          FDatalink.Dataset.Delete;
+          doDelete;
       end;
     VK_DOWN:
-      if FDatalink.DataSet <> nil then
+      if ValidDataSet then
       with FDatalink.Dataset do begin
         DoOnKeyDown;
         Key := 0;
-        if (State=dsInsert)and not (Modified or FDataLink.FModified) then begin
+        if InsertCancelable then
+        begin
           if IsEOF then
-            exit
+            //exit
           else
-            cancel;
+            doCancel;
         end else begin
-          FDatalink.MoveBy(1);
+          doMoveBySmall(1);
           if GridCanModify and FDataLink.EOF then
-            Append;
+            doAppend;
         end;
       end;
       
     VK_UP:
-      if FDataLink.DataSet <> nil then
+      if ValidDataSet then
       with FDataLink.DataSet do begin
         doOnKeyDown;
-        if (State=dsInsert) and IsEOF and not (Modified or FDataLink.FModified) then
-          cancel
+        if InsertCancelable and IsEOF then
+          doCancel
         else
-          FDatalink.MoveBy(-1);
+          doMoveBySmall(-1);
         key := 0;
       end;
       
     VK_NEXT:
       begin
         doOnKeyDown;
-        FDatalink.MoveBy( VisibleRowCount );
+        doMoveBy( VisibleRowCount );
         Key := 0;
       end;
       
     VK_PRIOR:
       begin
         doOnKeyDown;
-        FDatalink.MoveBy( -VisibleRowCount );
+        doMoveBy( -VisibleRowCount );
         key := 0;
       end;
       
     VK_ESCAPE:
       begin
         doOnKeyDown;
-        if EditorMode then
-          EditorCancelEditing
-        else
+        if EditorMode then begin
+          EditorCancelEditing;
+          if FDatalink.Active and not FDatalink.Dataset.Modified then
+            FDatalink.Modified := False;
+        end else
           if FDataLink.Active then
-            FDataLink.DataSet.Cancel;
+            doCancel;
         Key:=0;
       end;
       
@@ -1257,7 +1344,7 @@ begin
       begin
         doOnKeyDown;
         if GridCanModify then
-          FDataLink.DataSet.Insert;
+          doInsert;
         Key:=0;
       end;
       
@@ -1288,6 +1375,7 @@ begin
     else
       inherited KeyDown(Key, Shift);
   end;
+  {$IfDef dbgGrid}DebugLn('DbGrid.KeyDown END Key= ',IntToStr(Key));{$Endif}
 end;
 
 procedure TCustomDbGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -1295,26 +1383,73 @@ procedure TCustomDbGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
 var
   Gz: TGridZone;
   P: TPoint;
+  procedure doMouseDown;
+  begin
+    if assigned(OnMouseDown) then
+      OnMouseDown(Self, Button, Shift, X, Y);
+  end;
+  procedure doInherited;
+  begin
+    inherited MouseDown(Button, Shift, X, Y);
+  end;
+  procedure doMoveBy;
+  begin
+    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveBy INIT'); {$Endif}
+    Include(FGridStatus, gsVisibleMove);
+    FDatalink.MoveBy(P.Y - Row);
+    Exclude(FGridStatus, gsVisibleMove);
+    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveBy END'); {$Endif}
+  end;
+  procedure doMoveToColumn;
+  begin
+    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveToCol INIT Col=', IntToStr(P.X)); {$Endif}
+    Col := P.X;
+    {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown MoveToCol END'); {$Endif}
+  end;
+  procedure DoCancel;
+  begin
+    {$IfDef dbgGrid}DebugLn('DbGrid.MouseDown Dataset.CANCEL INIT');{$Endif}
+    if EditorMode then
+      EditorCancelEditing;
+    FDatalink.Dataset.cancel;
+    {$IfDef dbgGrid}DebugLn('DbGrid.MouseDown Dataset.CANCEL FIN');{$Endif}
+  end;
+  procedure DoAcceptValue;
+  begin
+    if EditorMode and FDatalink.FModified then
+      EditorMode := False;
+  end;
 begin
   if csDesigning in componentState then Exit;
   if not GCache.ValidGrid then Exit;
+  if button<>mbLeft then begin
+    doInherited;
+    exit;
+  end;
   
+  {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown INIT'); {$Endif}
   Gz:=MouseToGridZone(X,Y);
   case Gz of
-    gzFixedRows, gzFixedCols: inherited MouseDown(Button, Shift, X, Y);
+    gzFixedRows, gzFixedCols:
+      doInherited;
     else
       begin
         P:=MouseToCell(Point(X,Y));
-        if P.Y=Row then inherited MouseDown(Button, Shift, X, Y)
-        else begin
-          if assigned(OnMouseDown) then OnMouseDown(Self, Button, Shift, X,Y);
-          BeginUpdate;
-          FDatalink.MoveBy(P.Y - Row);
-          Col:=P.X;
-          EndUpdate(uoQuick);
+        if P.Y=Row then begin
+          //doAcceptValue;
+          doInherited
+        end else begin
+          doMouseDown;
+          if ValidDataSet then begin
+            if InsertCancelable and IsEOF then
+              doCancel;
+            doMoveBy;
         end;
+          doMoveToColumn;
       end;
   end;
+end;
+  {$IfDef dbgGrid} DebugLn('DbGrid.MouseDown END'); {$Endif}
 end;
 
 procedure TCustomDbGrid.PrepareCanvas(aCol, aRow: Integer;
@@ -1352,15 +1487,17 @@ end;
 
 procedure TCustomDbGrid.EditingColumn(aCol: Integer; Ok: Boolean);
 begin
-  if Ok then
-    FEditingColumn := aCol
+  if Ok then begin
+    FEditingColumn := aCol;
+    FDatalink.Modified := True;
+  end
   else
     FEditingColumn := -1;
 end;
 
 procedure TCustomDbGrid.EditorCancelEditing;
 begin
-  EditingColumn(FEditingColumn, False);
+  EditingColumn(FEditingColumn, False); // prevents updating the value
   if EditorMode then begin
     EditorMode := False;
     if dgAlwaysShowEditor in Options then
@@ -1370,9 +1507,10 @@ end;
 
 procedure TCustomDbGrid.EditorDoGetValue;
 begin
+  {$ifdef dbgdbgrid}DebugLn('dbgrid.EditorDoGetValue INIT');{$endif}
   inherited EditordoGetValue;
   UpdateData;
-  EditingColumn(FEditingColumn, False);
+  {$ifdef dbgdbgrid}DebugLn('dbgrid.EditorDoGetValue FIN');{$endif}
 end;
 
 procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
@@ -1433,16 +1571,45 @@ end;
 
 procedure TCustomDbGrid.DoExit;
 begin
+  {$ifdef dbgdbgrid}DebugLn('DbGrid.DoExit INIT');{$Endif}
   if not EditorShowing then begin
-    if FDataLink.Active then begin
-      if (FDataLink.DataSet.State=dsInsert) and (dgCancelOnExit in Options)
-      then begin
+    if ValidDataSet and (dgCancelOnExit in Options) and
+      InsertCancelable then
+    begin
         FDataLink.DataSet.Cancel;
         EditorCancelEditing;
       end;
     end;
-  end;
   inherited DoExit;
+  {$ifdef dbgdbgrid}DebugLn('DbGrid.DoExit FIN');{$Endif}
+end;
+
+function TCustomDbGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
+  ): Boolean;
+begin
+  Result := False;
+  if Assigned(OnMouseWheelDown) then
+    OnMouseWheelDown(Self, Shift, MousePos, Result);
+  if not Result and FDatalink.Active then begin
+    Include(FGridStatus, gsVisibleMove);
+    FDatalink.MoveBy(1);
+    Exclude(FGridStatus, gsVisibleMove);
+    Result := True;
+  end;
+end;
+
+function TCustomDbGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint
+  ): Boolean;
+begin
+  Result := False;
+  if Assigned(OnMouseWheelUp) then
+    OnMouseWheelUp(Self, Shift, MousePos, Result);
+  if not Result and FDatalink.Active then begin
+    Include(FGridStatus, gsVisibleMove);
+    FDatalink.MoveBy(-1);
+    Exclude(FGridStatus, gsVisibleMove);
+    Result := True;
+  end;
 end;
 
 function TCustomDbGrid.GetEditMask(aCol, aRow: Longint): string;
@@ -1475,11 +1642,6 @@ end;
 
 function TCustomDbGrid.GridCanModify: boolean;
 begin
-  {$ifdef dbgdbgrid}
-    DebugLn(' ReadOnly=', BoolToStr(ReadOnly), ' dgEditing=', BoolToStr(dgEditing in Options));
-    DebugLn(' FDatalink.ReadOnly=', BoolToStr(FDatalink.ReadOnly), ' FDatalink.ACtive=', BooltoStr(FDatalink.ACtive));
-    DebugLn(' ds.CanModify=',BoolToStr(Fdatalink.Dataset.CanModify));
-  {$endif}
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
     and FDataLink.Active and FDatalink.DataSet.CanModify;
 end;
@@ -1488,29 +1650,27 @@ procedure TCustomDbGrid.MoveSelection;
 begin
   if FSelectionLock then
     exit;
+  {$ifdef dbgdbgrid}DebugLn('DbGrid.MoveSelection INIT');{$Endif}
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
     OnColEnter(Self);
   end;
   FColEnterPending:=False;
   UpdateActive;
+  {$ifdef dbgdbgrid}DebugLn('DbGrid.MoveSelection FIN');{$Endif}
 end;
 
 procedure TCustomDbGrid.DrawByRows;
 var
   CurActiveRecord: Integer;
 begin
-  //CheckBrowse;
   if FDataLink.Active then begin
-  //if FCanBrowse then begin
     CurActiveRecord:=FDataLink.ActiveRecord;
-    //PrimerRecord:=FDataLink.FirstRecord;
   end;
   try
     inherited DrawByRows;
   finally
     if FDataLink.Active then
-    //if FCanBrowse then
       FDataLink.ActiveRecord:=CurActiveRecord;
   end;
 end;
@@ -1535,13 +1695,25 @@ begin
     FDrawingActiveRecord := ARow = Row;
   end else
     FDrawingActiveRecord := False;
+  {$ifdef dbgGridPaint}
+  DbgOut('DrawRow Row=', IntToStr(ARow), ' Act=', Copy(BoolToStr(FDrawingActiveRecord),1,1));
+  {$endif}
   inherited DrawRow(ARow);
+  {$ifdef dbgGridPaint}
+  DebugLn('End Row')
+  {$endif}
 end;
 
 procedure TCustomDbGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
+  {$ifdef dbgGridPaint}
+  DbgOut(' ',IntToStr(aCol));
+  if gdSelected in aState then DbgOut('S');
+  if gdFocused in aState then DbgOut('*');
+  if gdFixed in aState then DbgOut('F');
+  {$endif dbgGridPaint}
   if Assigned(OnDrawColumnCell) and not(CsDesigning in ComponentState) then
     OnDrawColumnCell(Self, aRect, aCol, TColumn(ColumnFromGridColumn(aCol)), aState)
   else
@@ -1556,7 +1728,8 @@ begin
   if FDataLink.Active then begin
     aField := SelectedField;
     if aField<>nil then begin
-      Result := aField.IsValidChar(Ch);
+      Result := aField.IsValidChar(Ch) and not aField.Calculated and
+        (aField.DataType<>ftAutoInc);
     end;
   end;
 end;
@@ -1585,20 +1758,19 @@ begin
 end;
 
 procedure TCustomDbGrid.UpdateActive;
+var
+  PrevRow: Integer;
 begin
-  with FDataLink do begin
-    if not Active then exit;
+  if not FDatalink.Active then
+    exit;
     {$IfDef dbgdbgrid}
-    DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(ActiveRecord),
+  DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(FDataLink.ActiveRecord),
             ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     {$endif}
-    if FixedRows + ActiveRecord <> Row then begin
-      InvalidateRow(Row);
-      EditingColumn(Col, false);
-    end;
-    Row:= FixedRows + ActiveRecord;
-  end;
-  //Invalidate;
+  PrevRow := Row;
+  Row:= FixedRows + FDataLink.ActiveRecord;
+  if PrevRow<>Row then
+    InvalidateCell(0, PrevRow);//(InvalidateRow(PrevRow);
   InvalidateRow(Row);
 end;
 
@@ -1889,14 +2061,6 @@ begin
   *)
 end;
 
-procedure TComponentDataLink.Modified;
-begin
-  {$ifdef dbgdbgrid}
-  DebugLn(ClassName,'.Modified');
-  {$Endif}
-  FModified:=True;
-end;
-
 { TDbGridColumns }
 
 function TDbGridColumns.GetColumn(Index: Integer): TColumn;
@@ -2051,6 +2215,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2005/03/29 21:56:02  marc
+  * patch from Jesus Reyes
+
   Revision 1.37  2005/03/24 09:50:03  mattias
   checking HandleAllocated for dbgrid   from Jesus
 
