@@ -893,15 +893,23 @@ end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
+  DirtyPos: Integer;
 begin
   fErrorMsg:=AnException.Message;
   fErrorTopLine:=0;
   if (AnException is ELinkScannerError) then begin
-    // linker error
-    fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
-    if fErrorCode<>nil then begin
-      fErrorCode.AbsoluteToLineCol(
-        ELinkScannerError(AnException).Sender.SrcPos,fErrorLine,fErrorColumn);
+    // link scanner error
+    DirtyPos:=0;
+    if AnException is ELinkScannerEditError then begin
+      fErrorCode:=TCodeBuffer(ELinkScannerEditError(AnException).Buffer);
+      if fErrorCode<>nil then
+        DirtyPos:=ELinkScannerEditError(AnException).BufferPos;
+    end else begin
+      fErrorCode:=TCodeBuffer(ELinkScannerError(AnException).Sender.Code);
+      DirtyPos:=ELinkScannerError(AnException).Sender.SrcPos;
+    end;
+    if (fErrorCode<>nil) and (DirtyPos>0) then begin
+      fErrorCode.AbsoluteToLineCol(DirtyPos,fErrorLine,fErrorColumn);
     end;
   end else if (AnException is ECodeToolError) then begin
     // codetool error
@@ -909,6 +917,9 @@ begin
     fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
     fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
     fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
+  end else if (AnException is ESourceChangeCacheError) then begin
+    // SourceChangeCache error
+    fErrorCode:=nil;
   end else begin
     // unknown exception
     FErrorMsg:=AnException.ClassName+': '+FErrorMsg;

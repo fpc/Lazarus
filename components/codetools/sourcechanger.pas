@@ -42,8 +42,8 @@ interface
 { $DEFINE CTDEBUG}
 
 uses
-  Classes, SysUtils, CodeCache, BasicCodeTools, SourceLog, LinkScanner,
-  AVL_Tree, KeywordFuncLists;
+  Classes, SysUtils, CodeToolsStrConsts, CodeCache, BasicCodeTools, SourceLog,
+  LinkScanner, AVL_Tree, KeywordFuncLists;
   
 type
   { TBeautifyCodeOptions }
@@ -130,6 +130,9 @@ type
     constructor Create;
   end;
 
+
+  { TSourceChangeCache }
+
   //----------------------------------------------------------------------------
   // in front of and after a text change can be set a gap.
   // A Gap is for example a space char or a newline. TSourceChangeLog will add
@@ -139,7 +142,6 @@ type
              gtNewLine,  // at least a newline
              gtEmptyLine // at least two newlines
              );
-  
 
   TSourceChangeCacheEntry = class
   public
@@ -180,6 +182,8 @@ type
     procedure SetMainScanner(NewScanner: TLinkScanner);
     function GetBuffersToModify(Index: integer): TCodeBuffer;
     procedure UpdateBuffersToModify;
+  protected
+    procedure RaiseException(const AMessage: string);
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
     procedure BeginUpdate;
@@ -207,6 +211,15 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+  
+  { ESourceChangeCacheError }
+  
+  ESourceChangeCacheError = class(Exception)
+  public
+    Sender: TSourceChangeCache;
+    constructor Create(ASender: TSourceChangeCache; const AMessage: string);
+  end;
+
 
 const
   AtomTypeNames: array[TAtomType] of shortstring = (
@@ -412,6 +425,35 @@ function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
   FromPos, ToPos: integer;
   DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
   const Text: string): boolean;
+  
+  procedure RaiseDataInvalid;
+  begin
+    if MainScanner=nil then
+      RaiseException('TSourceChangeCache.ReplaceEx MainScanner=nil');
+    if FromPos>ToPos then
+      RaiseException('TSourceChangeCache.ReplaceEx FromPos>ToPos');
+    if FromPos<1 then
+      RaiseException('TSourceChangeCache.ReplaceEx FromPos<1');
+    if ToPos>MainScanner.CleanedLen+1 then
+      RaiseException('TSourceChangeCache.ReplaceEx ToPos>MainScanner.CleanedLen+1');
+  end;
+  
+  procedure RaiseIntersectionFound;
+  begin
+    RaiseException('TSourceChangeCache.ReplaceEx '
+      +'IGNORED, because intersection found');
+  end;
+  
+  procedure RaiseCodeReadOnly(Buffer: TCodeBuffer);
+  begin
+    RaiseException(ctsfileIsReadOnly+' '+Buffer.Filename);
+  end;
+  
+  procedure RaiseNotInCleanCode;
+  begin
+    RaiseException('TSourceChangeCache.ReplaceEx not in clean code');
+  end;
+  
 var
   NewEntry: TSourceChangeCacheEntry;
   p: pointer;
@@ -441,6 +483,7 @@ begin
       {$IFDEF CTDEBUG}
       writeln('TSourceChangeCache.ReplaceEx IGNORED, because data invalid');
       {$ENDIF}
+      RaiseDataInvalid;
       exit;
     end;
   end else begin
@@ -457,21 +500,24 @@ begin
       IntersectionEntry.FromPos,'-',IntersectionEntry.ToPos,
       ' IsDelete=',IntersectionEntry.IsDeleteOperation);
     {$ENDIF}
+    RaiseIntersectionFound;
     exit;
   end;
 
   if ToPos>FromPos then begin
     // this is a delete operation -> check the whole range for writable buffers
-    if not MainScanner.WholeRangeIsWritable(FromPos,ToPos) then exit;
+    if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
   end else if (DirectCode<>nil) and (FromDirectPos<ToDirectPos) then begin
     // this is a direct delete operation -> check if the DirectCode is writable
-    if DirectCode.ReadOnly then exit;
+    if DirectCode.ReadOnly then
+      RaiseCodeReadOnly(DirectCode);
   end;
   if DirectCode=nil then begin
     if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then begin
       {$IFDEF CTDEBUG}
       writeln('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');
       {$ENDIF}
+      RaiseNotInCleanCode;
       exit;
     end;
     DirectCode:=TCodeBuffer(p);
@@ -829,6 +875,11 @@ begin
     ANode:=FEntries.FindSuccessor(ANode);
   end;
   FBuffersToModifyNeedsUpdate:=false;
+end;
+
+procedure TSourceChangeCache.RaiseException(const AMessage: string);
+begin
+  raise ESourceChangeCacheError.Create(Self,AMessage);
 end;
 
 { TBeautifyCodeOptions }
@@ -1237,6 +1288,14 @@ begin
     
 end;
 
+{ ESourceChangeCacheError }
+
+constructor ESourceChangeCacheError.Create(ASender: TSourceChangeCache;
+  const AMessage: string);
+begin
+  inherited Create(AMessage);
+  Sender:=ASender;
+end;
 
 end.
 

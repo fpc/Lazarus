@@ -138,6 +138,13 @@ type
   
   ELinkScannerAbort = class(ELinkScannerError)
   end;
+  
+  ELinkScannerEditError = class(ELinkScannerError)
+    Buffer: Pointer;
+    BufferPos: integer;
+    constructor Create(ASender: TLinkScanner; const AMessage: string;
+      ABuffer: Pointer; ABufferPos: integer);
+  end;
 
 
   { TLinkScanner }
@@ -264,10 +271,12 @@ type
     LastErrorBehindIgnorePosition: boolean;
     LastErrorCheckedForIgnored: boolean;
     CleanedIgnoreErrorAfterPosition: integer;
-    procedure RaiseExceptionFmt(const AMessage: string; args: array of const);
+    procedure RaiseExceptionFmt(const AMessage: string; Args: array of const);
     procedure RaiseException(const AMessage: string);
     procedure RaiseExceptionClass(const AMessage: string;
       ExceptionClass: ELinkScannerErrors);
+    procedure RaiseEditException(const AMessage: string; ABuffer: Pointer;
+      ABufferPos: integer);
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoCheckAbort;
@@ -311,7 +320,8 @@ type
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 
     // ranges
-    function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer): boolean;
+    function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer;
+                                  ErrorOnFail: boolean): boolean;
     procedure FindCodeInRange(CleanStartPos, CleanEndPos: integer;
                               UniqueSortedCodeList: TList);
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
@@ -2780,20 +2790,37 @@ begin
   end;
 end;
 
-function TLinkScanner.WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer
-  ): boolean;
-var ACode: Pointer;
+function TLinkScanner.WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer;
+  ErrorOnFail: boolean): boolean;
+  
+  procedure EditError(const AMessage: string; ACode: Pointer);
+  begin
+    if ErrorOnFail then
+      RaiseEditException(AMessage,ACode,0);
+  end;
+  
+var
+  ACode: Pointer;
   LinkIndex: integer;
   CodeIsReadOnly: boolean;
 begin
   Result:=false;
   if (CleanStartPos<1) or (CleanStartPos>=CleanEndPos)
-  or (CleanEndPos>CleanedLen+1) or (not Assigned(FOnGetSourceStatus)) then exit;
+  or (CleanEndPos>CleanedLen+1) or (not Assigned(FOnGetSourceStatus)) then begin
+    EditError('TLinkScanner.WholeRangeIsWritable: Invalid range',nil);
+    exit;
+  end;
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
-  if LinkIndex<0 then exit;
+  if LinkIndex<0 then begin
+    EditError('TLinkScanner.WholeRangeIsWritable: position out of scan range',nil);
+    exit;
+  end;
   ACode:=FLinks[LinkIndex].Code;
   FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
-  if CodeIsReadOnly then exit;
+  if CodeIsReadOnly then begin
+    EditError(ctsfileIsReadOnly, ACode);
+    exit;
+  end;
   repeat
     inc(LinkIndex);
     if (LinkIndex>=LinkCount) or (FLinks[LinkIndex].CleanedPos>CleanEndPos) then
@@ -2804,7 +2831,10 @@ begin
     if ACode<>FLinks[LinkIndex].Code then begin
       ACode:=FLinks[LinkIndex].Code;
       FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
-      if CodeIsReadOnly then exit;
+      if CodeIsReadOnly then begin
+        EditError(ctsfileIsReadOnly, ACode);
+        exit;
+      end;
     end;
   until false;
 end;
@@ -2890,6 +2920,12 @@ begin
   LastErrorCode:=Code;
   LastErrorCheckedForIgnored:=false;
   raise ExceptionClass.Create(Self,AMessage);
+end;
+
+procedure TLinkScanner.RaiseEditException(const AMessage: string;
+  ABuffer: Pointer; ABufferPos: integer);
+begin
+  raise ELinkScannerEditError.Create(Self,AMessage,ABuffer,ABufferPos);
 end;
 
 procedure TLinkScanner.ClearLastError;
@@ -3092,6 +3128,16 @@ procedure InternalFinal;
 begin
   PSourceChangeStepMemManager.Free;
   PSourceLinkMemManager.Free;
+end;
+
+{ ELinkScannerEditError }
+
+constructor ELinkScannerEditError.Create(ASender: TLinkScanner;
+  const AMessage: string; ABuffer: Pointer; ABufferPos: integer);
+begin
+  inherited Create(ASender,AMessage);
+  Buffer:=ABuffer;
+  BufferPos:=ABufferPos;
 end;
 
 initialization

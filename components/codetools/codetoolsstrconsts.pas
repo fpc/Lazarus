@@ -46,6 +46,7 @@ ResourceString
   ctsIncludeFileNotFound = 'include file not found "%s"';
   ctsErrorInDirectiveExpression = 'error in directive expression';
   ctsIncludeCircleDetected = 'Include circle detected';
+  ctsfileIsReadOnly = 'file is read only';
   ctsCommentEndNotFound = 'Comment end not found';
 
   // customcodetool

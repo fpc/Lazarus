@@ -2688,7 +2688,8 @@ function TStandardCodeTool.RenamePublishedVariable(const UpperClassName,
   UpperOldVarName: string; const NewVarName, VarType: shortstring;
   ExceptionOnClassNotFound: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
-var TypeNode, VarNode: TCodeTreeNode;
+var
+  TypeNode, VarNode: TCodeTreeNode;
 begin
   Result:=false;
   VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName,
