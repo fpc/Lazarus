@@ -33,6 +33,10 @@ type
   TStreamSeekType = int64;
   TMemStreamSeekType = integer;
   TCompareMemSize = integer;
+  
+  {$IFDEF VER1_0}
+  PCardinal = ^Cardinal;
+  {$ENDIF}
 
 function RoundToInt(const e: Extended): integer;
 function RoundToCardinal(const e: Extended): cardinal;
