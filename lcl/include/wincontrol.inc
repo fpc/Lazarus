@@ -1473,9 +1473,9 @@ end;
 {------------------------------------------------------------------------------}
 function TWinControl.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
-   Result := False;
-   if Assigned(FOnMouseWheelDown) then
-     FOnMouseWheelDown(Self, Shift, MousePos, Result);
+  Result := False;
+  if Assigned(FOnMouseWheelDown) then
+    FOnMouseWheelDown(Self, Shift, MousePos, Result);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1483,9 +1483,9 @@ end;
 {------------------------------------------------------------------------------}
 function TWinControl.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
 begin
-   Result := False;
-   if Assigned(FOnMouseWheelUp) then
-     FOnMouseWheelUp(Self, Shift, MousePos, Result);
+  Result := False;
+  if Assigned(FOnMouseWheelUp) then
+    FOnMouseWheelUp(Self, Shift, MousePos, Result);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2512,6 +2512,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.101  2002/11/21 18:49:53  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.100  2002/11/10 21:49:28  lazarus
   MG: added smart hints in edit mode
 
