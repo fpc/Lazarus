@@ -6508,6 +6508,8 @@ var
   end;
   
 begin
+  if (not IsValidIdent(NewName)) or (NewName='') then
+    raise Exception.Create('Component name "'+Newname+'" is not a valid identifier');
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,true);
   ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
@@ -7264,6 +7266,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.402  2002/10/04 21:31:54  lazarus
+  MG: added some component rename checks
+
   Revision 1.401  2002/10/03 14:48:14  lazarus
   MG: fixed jump history
 
