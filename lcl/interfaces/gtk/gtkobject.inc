@@ -1453,49 +1453,9 @@ begin
           //only work if WM supports motif flags
           //properly, which very few actually do.
           
-          Case TCustomForm(Sender).BorderStyle of
-            bsNone :
-              begin
-                Decor := 0;
-                Func := 0;
-              end;
-            bsSingle :
-              begin
-                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                         GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
-                         GDK_DECOR_MAXIMIZE;
-                Func := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                        GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
-              end;
-            bsSizeable :
-              begin
-                Decor := GDK_DECOR_ALL;
-                Func := GDK_FUNC_ALL;
-              end;
-            bsDialog :
-              begin
-                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                         GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+          Decor := GetWindowDecorations(TCustomForm(Sender));
+          Func := GetWindowFunction(TCustomForm(Sender));
 
-                Func := GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE or
-                        GDK_FUNC_MOVE;
-              end;
-            bsToolWindow :
-              begin
-                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                       GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
-                Func := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                        GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
-              end;
-            bsSizeToolWin :
-              begin
-                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
-                       GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
-                Func := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
-                        GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
-                        GDK_FUNC_RESIZE;
-              end;
-          end;
           If Sender <> Application.MainForm then begin
             gtk_window_set_transient_for(PGtkWindow(handle),
               PGtkWindow(Application.MainForm.handle));
@@ -1505,6 +1465,7 @@ begin
           gdk_window_hide(PGtkWidget(handle)^.Window);
           gdk_window_set_decorations(PGtkWidget(handle)^.window, decor);
           gdk_window_set_functions(PGtkWidget(handle)^.window, func);
+          gdk_window_set_events(PGtkWidget(handle)^.window, GDK_ALL_EVENTS_MASK);
           gdk_window_show(PGtkWidget(handle)^.Window);
         end else begin
           //If not a form, call to GDK to set flag,
@@ -3621,7 +3582,7 @@ end;
 procedure TgtkObject.CreateComponent(Sender : TObject);
 const 
   FormStyleMap : array[TFormBorderStyle] of integer = (
-    GTK_WINDOW_POPUP,  // bsNone
+    GTK_WINDOW_DIALOG,  // bsNone
     GTK_WINDOW_TOPLEVEL,// bsSingle
     GTK_WINDOW_TOPLEVEL,// bsSizeable
     GTK_WINDOW_DIALOG,  // bsDialog
@@ -3916,7 +3877,7 @@ begin
 
   csHintWindow :
     Begin
-       p := gtk_window_new(FormStyleMap[bsNone]{gtk_window_Popup});
+       p := gtk_window_new(gtk_window_Popup);
        gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
 
        // Create the form client area
@@ -4314,6 +4275,7 @@ procedure TgtkObject.ShowHide(Sender : TObject);
 var FormIconGdiObject: PGDIObject;
   SenderWidget, ParentFixed, ParentWidget: PGTKWidget;
   LCLControl: TWinControl;
+  Decor, Func : Longint;
 begin
   LCLControl:=TWinControl(Sender);
   SenderWidget:=PgtkWidget(LCLControl.Handle);
@@ -4364,6 +4326,14 @@ begin
         gdk_window_set_icon(GetControlWindow(SenderWidget), nil,
                 FormIconGdiObject^.GDIBitmapObject,
                 FormIconGdiObject^.GDIBitmapMaskObject);
+      end;
+      If TCustomForm(Sender).BorderStyle <> bsSizeable then begin
+        Decor := GetWindowDecorations(TCustomForm(Sender));
+        Func := GetWindowFunction(TCustomForm(Sender));
+        gdk_window_hide(GetControlWindow(SenderWidget));
+        gdk_window_set_decorations(GetControlWindow(SenderWidget), decor);
+        gdk_window_set_functions(GetControlWindow(SenderWidget), func);
+        gdk_window_show(GetControlWindow(SenderWidget));
       end;
     end;
   end
@@ -5926,6 +5896,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.222  2002/09/29 15:08:39  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.221  2002/09/27 20:52:24  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
