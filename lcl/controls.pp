@@ -1978,7 +1978,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
+function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
 var
   Handle : HWND;
 begin
@@ -1994,20 +1994,18 @@ end;
  ------------------------------------------------------------------------------}
 function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
 var
-  Window : TWinControl;
-  Control : TControl;
+  WinControl: TWinControl;
+  Control: TControl;
 begin
   Result := nil;
-  Window := FindLCLWindow(Pos);
-  if Window <> nil
+  WinControl := FindLCLWindow(Pos);
+  if WinControl <> nil
   then begin
-    Result := Window;
-    Assert(False, Format('Trace:[FindDragTarget] Found VCL window: %s Handle: 0x%x', [Window.ClassName, Window.Handle]));
+    Result := WinControl;
 
-    Control := Window.ControlAtPos(Window.ScreenToClient(pos), AllowDisabled);
-
-    if Control <> nil
-    then Assert(False, Format('Trace:[FindDragTarget] Control at pos(%d, %d): %s', [Pos.X,Pos.Y, Control.ClassName]));
+    Control := WinControl.ControlAtPos(WinControl.ScreenToClient(pos),
+                                       AllowDisabled,
+                                       true);
 
     if Control <> nil then Result := Control;
   end;
@@ -2391,6 +2389,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.183  2004/02/23 23:15:12  mattias
+  improved FindDragTarget
+
   Revision 1.182  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

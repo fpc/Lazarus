@@ -8518,18 +8518,16 @@ begin
   Result := 0;
 
   // !!!gdk_window_at_pointer changes the coordinates!!!
+  // -> using local variable p
   p:=Point;
   Window := gdk_window_at_pointer(@p.x,@p.Y);
   if window <> nil then
-  Begin
+  begin
+    FillChar(ev,SizeOf(ev),0);
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
-    if (Widget <> nil) then
-      Result := Longint(widget);
-    Assert(False, format('Trace:Result = [%d]',[Result]));
-  end
-  else
-    Assert(False, 'Trace:Result = nil');
+    Result := Longint(widget);
+  end;
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -8689,6 +8687,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.334  2004/02/23 23:15:14  mattias
+  improved FindDragTarget
+
   Revision 1.333  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

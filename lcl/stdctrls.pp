@@ -677,25 +677,27 @@ type
   published
     property Align;
     property Alignment;
-    property AutoSize;
     property Anchors;
+    property AutoSize;
     property Caption;
     property Color;
     property Constraints;
     property FocusControl;
     property Font;
-    property Visible;
     property Layout;
-    property ParentFont;
-    property ShowAccelChar;
-    property WordWrap;
     property OnChangeBounds;
-    property OnResize;
+    property OnClick;
+    property OnDblClick;
     property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentFont;
+    property ShowAccelChar;
+    property Visible;
+    property WordWrap;
   end;
 
 
@@ -1508,6 +1510,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2004/02/23 23:15:12  mattias
+  improved FindDragTarget
+
   Revision 1.133  2004/02/23 20:06:05  mattias
   published TLabel.OnMouseXXX
 

@@ -1774,7 +1774,13 @@ Begin
       Exit;
     end;
 
-  LM_MOUSEFIRST..LM_MOUSELAST,LM_MOUSEFIRST2..LM_MOUSELAST2:
+  LM_MOUSEFIRST..LM_MOUSELAST,
+  LM_LBUTTONTRIPLECLK,
+  LM_LBUTTONQUADCLK,
+  LM_MBUTTONTRIPLECLK,
+  LM_MBUTTONQUADCLK,
+  LM_RBUTTONTRIPLECLK,
+  LM_RBUTTONQUADCLK:
      begin
        {$IFDEF VerboseMouseBugfix}
        writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
@@ -3386,6 +3392,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.208  2004/02/23 23:15:13  mattias
+  improved FindDragTarget
+
   Revision 1.207  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

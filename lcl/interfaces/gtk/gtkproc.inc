@@ -3077,9 +3077,7 @@ begin
     {$ENDIF}
     writeln('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
   end;
-  BeginGDKErrorTrap;
   gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
-  EndGDKErrorTrap;
 
   ClientAreaWindowOrigin:=GetWidgetClientOrigin(DestinationWidget);
   Src2ClientAreaVector.X:=ClientAreaWindowOrigin.X-SrcWindowOrigin.X;
@@ -6404,6 +6402,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.261  2004/02/23 23:15:14  mattias
+  improved FindDragTarget
+
   Revision 1.260  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

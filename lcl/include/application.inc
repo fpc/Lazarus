@@ -353,11 +353,24 @@ end;
 procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
 begin
   if FMouseControl=NewMouseControl then exit;
-  if (FMouseControl<>nil) then
+  {write('TApplication.UpdateMouseControl A ');
+  if FMouseControl<>nil then
+    write(' Old=',FMouseControl.Name,':',FMouseControl.ClassName)
+  else
+    write(' Old=nil');
+  if NewMouseControl<>nil then
+    writeln(' New=',NewMouseControl.Name,':',NewMouseControl.ClassName)
+  else
+    writeln(' New=nil');}
+  if (FMouseControl<>nil) then begin
+    //writeln(' MOUSELEAVE=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
+  end;
   FMouseControl := NewMouseControl;
-  if (FMouseControl<>nil) then
+  if (FMouseControl<>nil) then begin
+    //writeln(' MOUSEENTER=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1163,6 +1176,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2004/02/23 23:15:13  mattias
+  improved FindDragTarget
+
   Revision 1.74  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

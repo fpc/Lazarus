@@ -65,7 +65,6 @@ procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   //writeln('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
-  SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
   if (Button=mbLeft) and (not (tbfPressed in FToolButtonFlags)) then begin
     Include(FToolButtonFlags,tbfPressed);
     Invalidate;
@@ -85,7 +84,6 @@ end;
 procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   //writeln('TToolButton.MouseMove ',Name,':',ClassName,' ',X,',',Y);
-  SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
   inherited MouseMove(Shift, X, Y);
 end;
 
@@ -97,8 +95,7 @@ begin
     Exclude(FToolButtonFlags,tbfPressed);
     Invalidate;
   end;
-  SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
-  
+
   inherited MouseUp(Button, Shift, X, Y);
   
   if (Button=mbLeft) then begin
@@ -325,6 +322,7 @@ begin
   inherited MouseLeave;
   SetMouseInControl(false);
   if (not MouseCapture) and (tbfPressed in FToolButtonFlags) then begin
+    Invalidate;
     Exclude(FToolButtonFlags,tbfPressed);
   end;
 end;
@@ -473,10 +471,12 @@ end;
 
 procedure TToolButton.SetMouseInControl(NewMouseInControl: Boolean);
 begin
+  //writeln('TToolButton.SetMouseInControl A ',Name,' Old=',FMouseInControl,' New=',NewMouseInControl);
   if FMouseInControl=NewMouseInControl then exit;
   FMouseInControl:=NewMouseInControl;
   if (Style in [tbsDropDown,tbsButton]) and (not FMouseInControl) then
     Down:=false;
+  //writeln('TToolButton.SetMouseInControl B ',Name,' Now=',FMouseInControl,' Down=',Down);
   Invalidate;
 end;
 
@@ -1192,6 +1192,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2004/02/23 23:15:13  mattias
+  improved FindDragTarget
+
   Revision 1.14  2004/02/23 18:24:38  mattias
   completed new TToolBar
 
