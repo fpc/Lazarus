@@ -281,6 +281,7 @@ begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
   try
+    // setup external tool
     Tool.Filename:=Options.MakeFilename;
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformNames[Options.LCLPlatform];
@@ -290,6 +291,8 @@ begin
     end;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
+    
+    // clean up
     if Options.CleanAll
     and ([blfQuick,blfOnlyIDE]*Flags=[]) then begin
       // clean lazarus source directories
@@ -299,6 +302,8 @@ begin
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
+    
+    // build every item
     for i:=0 to Options.Count-1 do begin
       // build item
       CurItem:=Options.Items[i];
@@ -1052,7 +1057,7 @@ begin
   // IDE
   FItemIDE:=TBuildLazarusItem.Create('IDE',lisBuildIDE,'',mmBuild);
   FItemIDE.Commands[mmBuild]:='ide';
-  FItemIDE.Commands[mmCleanBuild]:='cleanide';
+  FItemIDE.Commands[mmCleanBuild]:='cleanide ide';
   fItems.Add(FItemIDE);
 
   // Examples

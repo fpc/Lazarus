@@ -34,7 +34,6 @@ type
     FCurrentFrameTime: integer; // in msec
     FLastFrameTime: integer; // in msec
     FFrameDiffTime: integer; // in msec
-    FPaintOnIdle: boolean;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
@@ -138,7 +137,9 @@ end;
 
 procedure TCustomGTKGLAreaControl.DoOnResize;
 begin
-  if HandleAllocated and (gint(True) = gtk_gl_area_make_current(Widget)) then
+  if (not (csDesigning in ComponentState))
+  and Enabled and Visible and HandleAllocated
+  and (gint(True) = gtk_gl_area_make_current(Widget)) then
     glViewport (0, 0, Width, Height);
   inherited DoOnResize;
 end;
