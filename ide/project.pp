@@ -107,6 +107,7 @@ type
     function GetHasResources:boolean;
     procedure SetEditorIndex(const AValue: integer);
     procedure SetForm(const AValue: TComponent);
+    procedure SetIsPartOfProject(const AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetReadOnly(const NewValue: boolean);
@@ -175,7 +176,7 @@ type
           read fFormResourceName write fFormResourceName;
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
-          read fIsPartOfProject write fIsPartOfProject;
+          read fIsPartOfProject write SetIsPartOfProject;
     property Loaded: Boolean read fLoaded write SetLoaded;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -887,6 +888,13 @@ begin
   if fForm=AValue then exit;
   fForm:=AValue;
   UpdateFormList;
+end;
+
+procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
+begin
+  if fIsPartOfProject=AValue then exit;
+  fIsPartOfProject:=AValue;
+  UpdatePartOfProjectList;
 end;
 
 {-------------------------------------------------------------------------------
@@ -2042,6 +2050,9 @@ end.
 
 {
   $Log$
+  Revision 1.80  2002/09/30 23:45:58  lazarus
+  MG: added part of project list to project
+
   Revision 1.79  2002/09/30 23:41:00  lazarus
   MG: added part of project list to project
 
