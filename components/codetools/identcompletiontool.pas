@@ -159,6 +159,7 @@ type
     function CreateIdentifier(const Ident: string): PChar;
     function StartUpAtomInFrontIs(const s: string): boolean;
     function StartUpAtomBehindIs(const s: string): boolean;
+    function CompletePrefix(const OldPrefix: string): string;
   public
     property Context: TFindContext read FContext write FContext;
     property ContextFlags: TIdentifierListContextFlags
@@ -575,6 +576,41 @@ end;
 function TIdentifierList.StartUpAtomBehindIs(const s: string): boolean;
 begin
   Result:=StartContext.Tool.FreeUpAtomIs(StartAtomBehind,s);
+end;
+
+function TIdentifierList.CompletePrefix(const OldPrefix: string): string;
+// search all identifiers beginning with Prefix
+// and return the biggest prefix of all of them
+var
+  AnAVLNode: TAVLTreeNode;
+  CurItem: TIdentifierListItem;
+  FoundFirst: Boolean;
+  SamePos: Integer;
+begin
+  Result:=Prefix;
+  FoundFirst:=false;
+  AnAVLNode:=FItems.FindLowest;
+  while AnAVLNode<>nil do begin
+    CurItem:=TIdentifierListItem(AnAVLNode.Data);
+    if (CurItem.Identifier<>nil)
+    and ComparePrefixIdent(PChar(Prefix),CurItem.Identifier) then begin
+      if not FoundFirst then begin
+        Result:=GetIdentifier(CurItem.Identifier);
+        FoundFirst:=true;
+      end else begin
+        SamePos:=length(Prefix);
+        while (SamePos<length(Result))
+        and (UpChars[CurItem.Identifier[SamePos]]=UpChars[Result[SamePos+1]])
+        do
+          inc(SamePos);
+        if SamePos<length(Result) then begin
+          Result:=copy(Result,1,SamePos);
+          if length(Result)=length(Prefix) then exit;
+        end;
+      end;
+    end;
+    AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
+  end;
 end;
 
 { TIdentCompletionTool }

@@ -79,6 +79,7 @@ type
     FAnsi: boolean;
     {$IFDEF SYN_LAZARUS}
     FOnSearchPosition:TSynBaseCompletionSearchPosition;
+    FOnKeyCompletePrefix: TNotifyEvent;
     FTextColor: TColor;
     FTextSelectedColor: TColor;
     {$ENDIF}
@@ -125,6 +126,7 @@ type
     property FontHeight:integer read FFontHeight write SetFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
+    property OnKeyCompletePrefix: TNotifyEvent read FOnKeyCompletePrefix write FOnKeyCompletePrefix;
     property TextColor: TColor read FTextColor write FTextColor;
     property TextSelectedColor: TColor
       read FTextSelectedColor write FTextSelectedColor;
@@ -165,6 +167,8 @@ type
     procedure SetFontHeight(NewFontHeight :integer);
     function GetOnSearchPosition:TSynBaseCompletionSearchPosition;
     procedure SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
+    function GetOnKeyCompletePrefix: TNotifyEvent;
+    procedure SetOnKeyCompletePrefix(const AValue: TNotifyEvent);
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
@@ -192,6 +196,8 @@ type
     property FontHeight: integer read GetFontHeight write SetFontHeight;
     property OnSearchPosition: TSynBaseCompletionSearchPosition
       read GetOnSearchPosition write SetOnSearchPosition;
+    property OnKeyCompletePrefix: TNotifyEvent read GetOnKeyCompletePrefix
+                                               write SetOnKeyCompletePrefix;
     {$ENDIF}
     property ClSelect: TColor read GetClSelect write SetClSelect;
     property AnsiStrings: boolean read SFAnsi write RFAnsi;
@@ -372,6 +378,13 @@ begin
         if Assigned(OnKeyDelete) then OnKeyDelete(Self);
         CurrentString := Copy(CurrentString, 1, Length(CurrentString) - 1);
       end;
+    {$IFDEF SYN_LAZARUS}
+    VK_TAB:
+      begin
+        if Assigned(OnKeyCompletePrefix) then OnKeyCompletePrefix(Self);
+        Key:=VK_UNKNOWN;
+      end;
+    {$ENDIF}
   end;
   {$ifdef SYN_LAZARUS}
   Invalidate;
@@ -385,7 +398,7 @@ begin
         if Assigned(OnKeyPress) then
           OnKeyPress(self, Key);
         {$ifdef SYN_LAZARUS}
-        if Key in [#33..'z'] then
+        if Key in [#33..#255] then
           CurrentString := CurrentString + key;
         {$else}
         CurrentString := CurrentString + key;
@@ -660,6 +673,16 @@ procedure TSynBaseCompletion.SetOnSearchPosition(
   NewValue :TSynBaseCompletionSearchPosition);
 begin
   Form.OnSearchPosition:=NewValue;
+end;
+
+function TSynBaseCompletion.GetOnKeyCompletePrefix: TNotifyEvent;
+begin
+  Result:=Form.OnKeyCompletePrefix;
+end;
+
+procedure TSynBaseCompletion.SetOnKeyCompletePrefix(const AValue: TNotifyEvent);
+begin
+  Form.OnKeyCompletePrefix:=AValue;
 end;
 {$ENDIF}
 

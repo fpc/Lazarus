@@ -432,7 +432,8 @@ type
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
     function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
        X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
-    procedure OnSynCompletionSearchPosition(var APosition:integer);
+    procedure OnSynCompletionSearchPosition(var APosition: integer);
+    procedure OnSynCompletionCompletePrefix(Sender : TObject);
     procedure DeactivateCompletionForm;
     procedure InitIdentCompletion(S: TStrings);
 
@@ -554,7 +555,7 @@ type
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                 AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnWordCompletionGetSource(
-       var Source:TStrings; SourceIndex:integer);
+       var Source: TStrings; SourceIndex: integer);
 
     function Empty: boolean;
     property FormEditor : TFormEditor read FFormEditor write FFormEditor;
@@ -654,13 +655,13 @@ var
   // aCompletion:
   //   The component controlling the completion form. It is created on demand
   //   and killed when the IDE ends.
-  aCompletion : TSynCompletion;
+  aCompletion: TSynCompletion;
   // CurCompletionControl contains aCompletion whenever the completion form is
   // active
-  CurCompletionControl : TSynBaseCompletion;
+  CurCompletionControl : TSynCompletion;
   CurrentCompletionType: TCompletionType;
   IdentCompletionTimer : TTimer;
-  AWordCompletion : TWordCompletion;
+  AWordCompletion: TWordCompletion;
 
   GotoDialog : TfrmGoto;
 
@@ -2114,6 +2115,7 @@ begin
         OnCodeCompletion := @ccComplete;
         OnPaintItem:=@OnSynCompletionPaintItem;
         OnSearchPosition:=@OnSynCompletionSearchPosition;
+        OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
@@ -2215,8 +2217,8 @@ begin
   Result:=true;
 end;
 
-procedure TSourceNotebook.OnWordCompletionGetSource(var Source:TStrings;
-  SourceIndex:integer);
+procedure TSourceNotebook.OnWordCompletionGetSource(var Source: TStrings;
+  SourceIndex: integer);
 var TempEditor: TSourceEditor;
   i:integer;
 begin
@@ -2272,7 +2274,7 @@ begin
         SL:=TStringList.Create;
         try
           for i:=0 to ItemCnt-1 do
-            SL.Add('Dummy');
+            SL.Add('Dummy'); // these entries are not shown
           CurCompletionControl.ItemList:=SL;
         finally
           SL.Free;
@@ -2306,13 +2308,54 @@ begin
         CurStr:=CurCompletionControl.CurrentString;
         SL:=TStringList.Create;
         try
-          aWordCompletion.GetWordList(SL, CurStr, false, 30);
+          aWordCompletion.GetWordList(SL, CurStr, false, 100);
           CurCompletionControl.ItemList:=SL;
         finally
           SL.Free;
         end;
       end;
 
+  end;
+end;
+
+procedure TSourceNotebook.OnSynCompletionCompletePrefix(Sender: TObject);
+var
+  OldPrefix: String;
+  NewPrefix: String;
+  SL: TStringList;
+  AddPrefix: String;
+begin
+  if CurCompletionControl=nil then exit;
+  OldPrefix:=CurCompletionControl.CurrentString;
+  NewPrefix:=OldPrefix;
+  
+  case CurrentCompletionType of
+  
+  ctIdentCompletion:
+    begin
+      NewPrefix:=CodeToolBoss.IdentifierList.CompletePrefix(OldPrefix);
+    end;
+  
+  ctWordCompletion:
+    begin
+      aWordCompletion.CompletePrefix(OldPrefix,NewPrefix,false);
+    end;
+  
+  end;
+
+  if NewPrefix<>OldPrefix then begin
+    AddPrefix:=copy(NewPrefix,length(OldPrefix)+1,length(NewPrefix));
+    CurCompletionControl.Editor.SelText:=AddPrefix;
+    CurCompletionControl.Editor.CaretXY:=
+      CurCompletionControl.Editor.BlockBegin;
+    SL:=TStringList.Create;
+    try
+      aWordCompletion.GetWordList(SL, NewPrefix, false, 100);
+      CurCompletionControl.ItemList:=SL;
+    finally
+      SL.Free;
+    end;
+    CurCompletionControl.CurrentString:=NewPrefix;
   end;
 end;
 
@@ -2587,7 +2630,7 @@ var
   NewStr: String;
   ActiveEditor: TSynEdit;
 Begin
-  CurCompletionControl := TSynBaseCompletion(Sender);
+  CurCompletionControl := Sender as TSynCompletion;
   S := TStringList.Create;
   Prefix := CurCompletionControl.CurrentString;
   ActiveEditor:=GetActiveSE.EditorComponent;

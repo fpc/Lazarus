@@ -2253,7 +2253,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Parent:=GridGroupBox;
       Left:=GridColorButton.Left+GridColorButton.Width+5;
       Top:=GridColorButton.Top+2;
-      Width:=80;
+      Width:=100;
       Caption:=dlgGridColor;
     end;
 
@@ -2274,7 +2274,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Parent:=GridGroupBox;
       Left:=ShowGridCheckBox.Left;
       Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
-      Width:=80;
+      Width:=100;
       Caption:=dlgGridX;
     end;
 

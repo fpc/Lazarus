@@ -37,17 +37,21 @@ type
     FOnGetSource:TWordCompletionGetSource;
     function GetWordBufferCapacity:integer;
     procedure SetWordBufferCapacity(NewCapacity: integer);
-    function CaseInsensitiveIndexOf(const AWord:string):integer;
+    function CaseInsensitiveIndexOf(const AWord: string):integer;
+    function CaseSensitiveIndexOf(const AWord: string):integer;
   public
+    constructor Create;
+    destructor Destroy; override;
     procedure AddWord(const AWord:string);
     property WordBufferCapacity:integer
        read GetWordBufferCapacity write SetWordBufferCapacity;
     procedure GetWordList(AWordList:TStrings; const Prefix:String;
        CaseSensitive:boolean; MaxResults:integer);
+    procedure CompletePrefix(const Prefix: string; var CompletedPrefix: string;
+       CaseSensitive:boolean);
+  public
     property OnGetSource:TWordCompletionGetSource
        read FOnGetSource write FOnGetSource;
-    constructor Create;
-    destructor Destroy; override;
   end;
 
 implementation
@@ -90,7 +94,7 @@ var i, j, Line, x, PrefixLen, MaxHash, LineLen: integer;
     Hash:=0;
     a:=1;
     while (a<=length(ALowWord)) and (a<20) do begin
-      inc(Hash,ord(ALowWord[a]) and $3f);
+      inc(Hash,ord(ALowWord[a]) and $7f);
       inc(a);
     end;
     Hash:=(Hash*137) mod MaxHash;
@@ -128,7 +132,7 @@ begin
       if CaseSensitive then begin
         if copy(NewWord,1,PrefixLen)=Prefix then
           Add(NewWord);
-      end else if uppercase(copy(NewWord,1,PrefixLen))=UpPrefix then begin
+      end else if CompareText(copy(NewWord,1,PrefixLen),UpPrefix)=0 then begin
         if NewWord<>Prefix then
           Add(NewWord)
       end;
@@ -193,6 +197,51 @@ begin
   end;
 end;
 
+procedure TWordCompletion.CompletePrefix(const Prefix: string;
+  var CompletedPrefix: string; CaseSensitive: boolean);
+var
+  WordList: TStringList;
+  s: string;
+  SamePos: Integer;
+  MaxPos: Integer;
+  i: Integer;
+begin
+  CompletedPrefix:=Prefix;
+  WordList:=TStringList.Create;
+  try
+    // fetch all words with Prefix
+    GetWordList(WordList,Prefix,CaseSensitive,10000);
+    if WordList.Count=0 then exit;
+    // find the biggest prefix of all available words
+    CompletedPrefix:=WordList[0];
+    for i:=1 to WordList.Count-1 do begin
+      // stop, when it can't get shorter
+      if CompletedPrefix=Prefix then exit;
+      s:=WordList[i];
+      if length(s)<length(Prefix) then continue;
+      // count same
+      SamePos:=0;
+      MaxPos:=length(s);
+      if MaxPos>length(CompletedPrefix) then MaxPos:=length(CompletedPrefix);
+      while (SamePos<MaxPos) do begin
+        if CaseSensitive then begin
+          if s[SamePos+1]<>CompletedPrefix[SamePos+1] then
+            break;
+        end else begin
+          if upcase(s[SamePos+1])<>upcase(CompletedPrefix[SamePos+1]) then
+            break;
+        end;
+        inc(SamePos);
+      end;
+      if SamePos<length(Prefix) then continue;
+      if SamePos<length(CompletedPrefix) then
+        CompletedPrefix:=copy(CompletedPrefix,1,SamePos);
+    end;
+  finally
+    WordList.Free;
+  end;
+end;
+
 constructor TWordCompletion.Create;
 begin
   inherited Create;
@@ -235,7 +284,7 @@ end;
 procedure TWordCompletion.AddWord(const AWord:string);
 var OldIndex:integer;
 begin
-  OldIndex:=FWordBuffer.IndexOf(AWord);
+  OldIndex:=CaseSensitiveIndexOf(AWord);
   if OldIndex>=0 then begin
     // move word to the top
     FWordBuffer.Move(OldIndex,FWordBuffer.Count-1);
@@ -248,11 +297,16 @@ begin
 end;
 
 function TWordCompletion.CaseInsensitiveIndexOf(const AWord:string):integer;
-var LowWord: string;
 begin
-  LowWord:=lowercase(AWord);
   Result:=FWordBuffer.Count-1;
-  while (Result>=0) and (lowercase(FWordBuffer[Result])<>LowWord) do
+  while (Result>=0) and (CompareText(FWordBuffer[Result],AWord)<>0) do
+    dec(Result);
+end;
+
+function TWordCompletion.CaseSensitiveIndexOf(const AWord: string): integer;
+begin
+  Result:=FWordBuffer.Count-1;
+  while (Result>=0) and (FWordBuffer[Result]<>AWord) do
     dec(Result);
 end;
 
