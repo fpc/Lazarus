@@ -249,12 +249,17 @@ begin
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
-    sys_eacces: AText:='execute access denied for '+AText;
-    sys_enoent: AText:='a directory component in '+AText
+    {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+      AText:='read access denied for '+AText;
+    {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+      AText:='a directory component in '+AText
                           +' does not exist or is a dangling symlink';
-    sys_enotdir: AText:='a directory component in '+Atext+' is not a directory';
-    sys_enomem: AText:='insufficient memory';
-    sys_eloop: AText:=AText+' has a circular symbolic link';
+    {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+      AText:='a directory component in '+Atext+' is not a directory';
+    {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+      AText:='insufficient memory';
+    {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+      AText:=AText+' has a circular symbolic link';
     else
       AText:=AText+' is not executable';
     end;
