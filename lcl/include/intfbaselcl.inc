@@ -552,6 +552,17 @@ begin
   Result := ReleaseDC(hWnd, DC);
 end;
 
+function TWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
+  NewMask: HBitmap): boolean;
+// the default behaviour is to free 'Mask' and replace it with 'NewMask'.
+// Some interfaces like the gtk will free 'Mask' and replace the internal mask
+// of 'Handle' with 'NewMask'.
+begin
+  Result:=true;
+  if Mask<>0 then DeleteObject(Mask);
+  Mask:=NewMask;
+end;
+
 function TWidgetSet.RequestInput(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
 begin
@@ -618,6 +629,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.26  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

@@ -190,7 +190,7 @@ end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
-
+  writeln('TBitMap.Mask not implemented');
 end;
 
 function TBitmap.GetHandle: HBITMAP;
@@ -211,21 +211,28 @@ begin
   Result := FImage.FMaskHandle;
 end;
 
-function TBitmap.GetScanline(Row: Integer): Pointer;
-begin
-  // ToDo:
-  Result:=nil;
-end;
-
 procedure TBitmap.SetHandleType(Value: TBitmapHandleType);
 begin
+  if HandleType=Value then exit;
+  writeln('TBitmap.SetHandleType TBitmap.SetHandleType not implemented');
+end;
 
+procedure TBitmap.SetMonochrome(const AValue: Boolean);
+begin
+  if Monochrome=AValue then exit;
+  if AValue then begin
+    FreeImage;
+    FImage.FDIB.dsbm.bmPlanes := 1;
+    FImage.FDIB.dsbm.bmBitsPixel := 1;
+    fPixelFormat:=pf1bit;
+  end;
 end;
 
 procedure TBitmap.SetPixelFormat(const AValue: TPixelFormat);
 begin
   if AValue=PixelFormat then exit;
-  writeln('Note: TBitmap.SetPixelFormat not implemented');
+  FreeImage;
+  FPixelFormat:=AValue;
 end;
 
 procedure TBitmap.UpdatePixelFormat;
@@ -365,21 +372,15 @@ begin
   Result:='bmp;xpm';
 end;
 
-Procedure TBitmap.LoadFromXPMFile(const Filename : String);
-var
-  pstr : PChar;
+Procedure TBitmap.LoadFromXPMFile(const Filename: String);
 Begin
-  HandleNeeded;
-  if (Filename<>'') and HandleAllocated then begin
-    pStr:=PChar(Filename);
-    SendIntfMessage(LM_LOADXPM,Self,pstr);
-  end;
+  LoadFromFile(Filename);
 end;
 
-Procedure TBitmap.CreateNewImage(NHandle: HBITMAP; NPallette: HPALETTE;
-   const NDIB : TDIBSection; OS2Format : Boolean);
-Begin
-
+function TBitmap.GetMonochrome: Boolean;
+begin
+  with FImage.FDIB.dsbm do
+    Result := (bmPlanes = 1) and (bmBitsPixel = 1);
 end;
 
 procedure TBitMap.PaletteNeeded;
@@ -1007,20 +1008,31 @@ begin
   Changed(Self);
 end;
 
-procedure TBitmap.SetMaskHandle(Value: HBITMAP);
+procedure TBitmap.SetMaskHandle(NewMaskHandle: HBITMAP);
+// WARNING: Contrary to Delphi, this can change Handle as well. It depends on
+// the widgetset.
 begin
-  with FImage do
-  begin
-    if FMaskHandle <> Value then
-    begin
-      FMaskHandle := Value;
-      //FMaskBitsValid := True;
-      //FMaskValid := True;
-    end;
-  end;
+  if FImage.FMaskHandle = NewMaskHandle then exit;
+  // unshare image and free canvas handle
+  UnshareImage(true);
+  FreeCanvasContext;
+  // create handle
+  HandleNeeded;
+  // free old mask handle
+  FImage.FreeMaskHandle;
+  // combine (depending on the interface we will end with one or two handles)
+  //writeln('TBitmap.SetMaskHandle A FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+  //  ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
+  //  ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
+  //writeln('TBitmap.SetMaskHandle END FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+  //  ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
+  //  ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
+  Changed(Self);
 end;
 
 // release handles without freeing them
+// useful for creating a HBitmap
 Function TBitmap.ReleaseHandle: HBITMAP;
 Begin
   //HandleNeeded; Delphi creates a handle. Why?
@@ -1142,6 +1154,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.78  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

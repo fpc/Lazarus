@@ -777,6 +777,7 @@ function TGtkWidgetSet.CreateBitmap(Width, Height: Integer;
 var
   GdiObject: PGdiObject;
   DefGdkWindow: PGdkWindow;
+  BitmapData: Pointer;
 begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
 
@@ -803,8 +804,12 @@ begin
     DefGdkWindow := nil;
     If BitCount = 1 then begin
       GdiObject^.GDIBitmapType := gbBitmap;
+      // I didn't found a simple gdk_bitmap_new function. So, I create some
+      // dummy data and use gdk_bitmap_create_from_data
+      GetMem(BitmapData,((Width*Height) shr 3)+1);
       GdiObject^.GDIBitmapObject :=
-        gdk_bitmap_create_from_data(DefGdkWindow, nil, Width, Height);
+        gdk_bitmap_create_from_data(DefGdkWindow, BitmapData, Width, Height);
+      FreeMem(BitmapData);
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
     end
     else begin
@@ -814,7 +819,8 @@ begin
       GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     end;
 
-    If GdiObject^.Visual <> nil then
+    // the visual is created only when needed
+    {If GdiObject^.Visual <> nil then
       gdk_visual_ref(GdiObject^.Visual)
     else begin
       GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
@@ -823,9 +829,10 @@ begin
                 BitCount,'. Using default.');
         GdiObject^.Visual := gdk_visual_get_system;
       end;
-    end;
+    end;}
 
-    GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
+    // the colormap is only created if needed
+    //GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
     {$IFDEF DebugGDKTraps}
     EndGDKErrorTrap;
     {$ENDIF}
@@ -8726,6 +8733,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.340  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.339  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 

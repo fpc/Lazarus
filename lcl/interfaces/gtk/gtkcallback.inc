@@ -3055,6 +3055,7 @@ end;
 {$I gtkDragCallback.inc}
 {$I gtkListViewCallback.inc}
 {$I gtkComboBoxCallback.inc}
+{$I gtkPageCallback.inc}
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -3065,6 +3066,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.223  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.222  2004/03/18 00:55:56  mattias
   fixed memleak in gtk opendlg
 

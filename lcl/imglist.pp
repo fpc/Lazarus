@@ -161,7 +161,8 @@ type
     destructor Destroy; override;
     procedure Draw(Canvas: TCanvas; X, Y, Index: Integer; Enabled: Boolean{$IFNDEF VER1_0}=True{$ENDIF});
     procedure GetBitmap(Index: Integer; Image: TBitmap);
-    procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap);
+    procedure GetInternalImage(Index: integer; var Image, Mask: TBitmap;
+                               var ImageRect: TRect);
     function GetHotSpot: TPoint; virtual;
     procedure GetIcon(Index: Integer; Image: TIcon);
     function HandleAllocated: Boolean;
@@ -210,6 +211,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.18  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

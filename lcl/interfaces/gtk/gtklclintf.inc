@@ -348,6 +348,52 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Procedure: ReplaceBitmapMask
+  Params: Image    The HBitmap of the image
+          Mask     The HBitmap of the mask (will be freed)
+          NewMask  The HBitmap of the new mask. Will be merged into Image.
+                   if NewMask is 0 the mask of Image is deleted.
+  Returns: True on success
+ ------------------------------------------------------------------------------}
+function TGtkWidgetSet.ReplaceBitmapMask(var Image, Mask: HBitmap;
+  NewMask: HBitmap): boolean;
+var
+  ImageGDIObject: PGDIObject;
+  NewMaskGDIObject: PGDIObject;
+begin
+  Result:=IsValidGDIObject(Image) and
+          ((NewMask=0) or IsValidGDIObject(NewMask));
+  //writeln('TGtkWidgetSet.ReplaceBitmapMask A ',Result);
+  if not Result then exit;
+  
+  // free 'Mask'
+  if Mask<>0 then begin
+    DeleteObject(Mask);
+    Mask:=0;
+  end;
+  
+  // free old mask in 'Image'
+  ImageGDIObject:=PGdiObject(Image);
+  if ImageGDIObject^.GDIBitmapMaskObject<>nil then begin
+    gdk_pixmap_unref(ImageGDIObject^.GDIBitmapMaskObject);
+    ImageGDIObject^.GDIBitmapMaskObject:=nil;
+    //writeln('TGtkWidgetSet.ReplaceBitmapMask B old Mask deleted');
+  end;
+
+  // move image data from 'NewMask' to mask data of 'Image'
+  if NewMask=0 then exit;
+  NewMaskGDIObject:=PGDIObject(NewMask);
+  if NewMaskGDIObject^.GDIBitmapObject<>nil then begin
+    ImageGDIObject^.GDIBitmapMaskObject:=NewMaskGDIObject^.GDIBitmapObject;
+    NewMaskGDIObject^.GDIBitmapObject:=nil;
+    //writeln('TGtkWidgetSet.ReplaceBitmapMask C Mask replaced');
+  end;
+  
+  // delete GDIObject 'NewMask'
+  DeleteObject(NewMask);
+end;
+
+{------------------------------------------------------------------------------
   Procedure: StatusBarPanelUpdate
   Params: StatusBar:
           index:
@@ -407,6 +453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.21  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

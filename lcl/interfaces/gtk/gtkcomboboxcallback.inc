@@ -1,4 +1,4 @@
-// included by gtkcallback.inc
+// included by gtkcallback.pp
 
 {
  *****************************************************************************
@@ -44,5 +44,5 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-// included by gtkcallback.inc
+// included by gtkcallback.pp
 

@@ -78,6 +78,7 @@ type
     case GDIType: TGDIType of
       gdiBitmap: (
         GDIBitmapMaskObject: PGdkPixmap;
+        Depth: integer;
         Visual : PGDKVisual;
         Colormap : PGDKColormap;
         case GDIBitmapType: TGDIBitmapType of
@@ -560,6 +561,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.55  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

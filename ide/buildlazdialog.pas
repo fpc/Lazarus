@@ -635,6 +635,8 @@ var
   mm: TMakeMode;
   IconWidth: Integer;
   IconHeight: Integer;
+  IconRect: TRect;
+  DestRect: TRect;
 begin
   if (Index<0) or (Index>=Options.Count) then exit;
   CurItem:=Options.Items[Index];
@@ -662,13 +664,15 @@ begin
     mmCleanBuild: ImgIndex:=ImageIndexCleanBuild;
     else ImgIndex:=ImageIndexNone;
     end;
-    ImageList.GetInternalImage(ImgIndex,CurIcon,Mask);
+    ImageList.GetInternalImage(ImgIndex,CurIcon,Mask,IconRect);
     if CurIcon<>nil then begin
-      IconWidth:=CurIcon.Width;
-      IconHeight:=CurIcon.Height;
-      ItemsListBox.Canvas.Draw(x+((ButtonWidth-IconWidth) div 2),
-           ARect.Top+((ARect.Bottom-ARect.Top-IconHeight) div 2),
-           CurIcon);
+      IconWidth:=IconRect.Right-IconRect.Left;
+      IconHeight:=IconRect.Bottom-IconRect.Top;
+      DestRect.Left:=ARect.Left+x+((ButtonWidth-IconWidth) div 2);
+      DestRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-IconHeight) div 2);
+      DestRect.Right:=DestRect.Left+IconWidth;
+      DestRect.Bottom:=DestRect.Top+IconHeight;
+      ItemsListBox.Canvas.CopyRect(DestRect,CurIcon.Canvas,IconRect);
     end;
     inc(x,ButtonWidth);
   end;

@@ -49,7 +49,7 @@ uses
   Controls, Forms, DynHashArray, LazLinkedList, GraphType, GraphMath, Graphics,
   Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox, Calendar,
   Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, ExtDlgs, FileCtrl, LResources,
-  GTKGlobals, gtkDef;
+  ImgList, GTKGlobals, gtkDef;
 
 
   {$IFDEF gtk2}
@@ -226,7 +226,7 @@ Function Edit_source_drag_data_delete (widget : pGtkWidget;
 			                context : pGdkDragContext;
 			                data : gpointer): gBoolean ; cdecl;
 
-// gtkListViewCallback.inc headers
+// gtklistviewcallbacks.inc headers
 
 function gtkLVHScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVVScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
@@ -241,9 +241,17 @@ function gtkLVSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 
-// gtkComboBoxCallback.inc headers
+// gtkcomboboxcallbacks.inc headers
 function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
+
+// gtkpagecallbacks.inc headers
+function PageIconWidgetExposeAfter(Widget: PGtkWidget; Event: PGDKEventExpose;
+  Data: gPointer): GBoolean; cdecl;
+{$IfNdef GTK2}
+function PageIconWidgetDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer) : GBoolean; cdecl;
+{$EndIf}
 
 //==============================================================================
 // functions
@@ -540,7 +548,6 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 // pixmaps
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
-{obsolete: function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;}
 Procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 Procedure MergeClipping(DestinationDC: TDeviceContext; DestinationGC: PGDKGC;
   X,Y,Width,Height: integer; ClipMergeMask: PGdkPixmap;
@@ -552,9 +559,11 @@ function ScalePixmap(ScaleGC: PGDKGC;
   SrcColorMap: PGdkColormap;
   NewWidth, NewHeight: integer;
   var NewPixmap: PGdkPixmap) : Boolean;
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+  Index: integer; DestWidget: PGTKWidget);
 {$IfDef Win32}
-Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
-  Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC;
+  DestX, DestY : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
 {$EndIf}
 
 // menus

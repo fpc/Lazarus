@@ -477,14 +477,16 @@ end;
   procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
     Mask: TBitmap);
 
-  Fetches the index'th image. This is only available if there is one image
-  per index.
+  Returns the bitmaps of the n-th image. The Imagelist can combine several
+  images into one bitmap (plus one mask), therefore ImageRect contains the
+  bounds of the n-th image on the bitmap.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
-  Mask: TBitmap);
+  Mask: TBitmap; var ImageRect: TRect);
 begin
   Image:=TBitmap(FImageList[Index]);
   Mask:=TBitmap(FMaskList[Index]);
+  ImageRect:=Rect(0,0,Image.Width,Image.Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -807,6 +809,7 @@ var
   Row, Col, Size, NewCount: Integer;
   SrcRect: TRect;
   HasMask: Boolean;
+  MskHandle: LongWord;
 begin
   Clear;
   StreamPos := AStream.Position;                // check stream signature
@@ -889,13 +892,21 @@ begin
 
           if Mask<>nil then begin
             Msk := TBitmap.Create;
-            Msk.Monochrome := True;
-            Msk.Width := Width;
-            Msk.Height := Height;
-            Msk.Canvas.CopyRect(SrcRect, Mask.Canvas,
-              Bounds(Col * Width, Row * Height, Width, Height));
-            //Msk.SaveToFile('debug_imglist_m'+IntToStr(Count)+'.bmp');
-            // ToDo: combine image and mask
+            try
+              Msk.Monochrome := True;
+              Msk.Width := Width;
+              Msk.Height := Height;
+              Msk.Canvas.CopyRect(SrcRect, Mask.Canvas,
+                Bounds(Col * Width, Row * Height, Width, Height));
+              //Msk.SaveToFile('debug_imglist_m'+IntToStr(Count)+'.bmp');
+              // combine image and mask
+              MskHandle:=Msk.Handle;
+              Msk.ReleaseHandle;
+              Img.MaskHandle:=MskHandle;
+            finally
+              Msk.Free;
+              Msk:=nil;
+            end;
           end else
             Msk:=nil;
 
@@ -1118,7 +1129,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.WriteData(AStream: TStream);
 var
-  CurImage, CurMask: TBitMap;
+  CurImage: TBitMap;
   i: Integer;
 begin
   //Write signature
@@ -1129,7 +1140,7 @@ begin
 
   for i:=0 to Count-1 do
   begin
-    GetInternalImage(i,CurImage,CurMask);
+    CurImage:=TBitmap(FImageList[i]);
     CurImage.WriteStream(AStream,true);
   end;
 end;
@@ -1169,6 +1180,9 @@ end;
 {
 
   $Log$
+  Revision 1.31  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.30  2004/03/06 15:37:43  mattias
   fixed FreeDC
 

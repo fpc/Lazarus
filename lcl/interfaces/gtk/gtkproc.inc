@@ -665,6 +665,7 @@ begin
   end;
   Result:=Result+' Type='+TypeAsStr;
   
+  writeln(Result);
   // user data
   if WindowType in [GDK_WINDOW_ROOT,GDK_WINDOW_TOPLEVEL,GDK_WINDOW_CHILD,
     GDK_WINDOW_DIALOG]
@@ -886,27 +887,6 @@ begin
     FreeThenNil(TObject(Msg^.WParam));
   end;
 end;
-
-{------------------------------------------------------------------------------
-  Function: NewGDI_RGBImage
-  Params:  Width, Height: Size of the image
-           Depth:         Depth of the image
-  Returns: a GDI_RGBImage
-
-  Creates a RawImage
- ------------------------------------------------------------------------------}
-{obsolete:
- function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
-begin
-  Result := AllocMem(SizeOf(TGDI_RGBImage) + ((AWidth * AHeight) - 1) * SizeOf(TGDIRGB));
-//  FillChar(Result^, SizeOf(TGDI_RGBImage), 0);
-  with Result^ do
-  begin
-    Height := AHeight;
-    Width := AWidth;
-    Depth := ADepth;
-  end;
-end;}
 
 procedure SetGCRasterOperation(TheGC: PGDKGC; Rop: Cardinal);
 begin
@@ -1149,11 +1129,49 @@ begin
 {$EndIf}
 end;
 
-{$IfDef Win32}
-Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; X,
-  Y : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
+  Index: integer; DestWidget: PGTKWidget);
+// draw icon of imagelist centered on gdkwindow
+var
+  Bitmap, MaskBitmap: TBitmap;
+  ImageRect: TRect;
+  ImageWidth: Integer;
+  ImageHeight: Integer;
+  WindowWidth, WindowHeight: integer;
+  DestLeft, DestTop: integer;
+  DestDC: HDC;
 begin
-  gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, X, Y, Width, Height);
+  //writeln('DrawImageListIconOnWidget A ',ImgList.Name,':',ImgList.ClassName,
+  //  ' Index=',Index,
+  //  ' DestWindow=[',GetWidgetDebugReport(DestWidget),']');
+  if ImgList=nil then exit;
+  if (Index<0) or (Index>=ImgList.Count) then exit;
+  if (DestWidget=nil) then exit;
+  ImgList.GetInternalImage(Index,Bitmap,MaskBitmap,ImageRect);
+  ImageWidth:=ImageRect.Right-ImageRect.Left;
+  ImageHeight:=ImageRect.Bottom-ImageRect.Top;
+  if (ImageWidth<1) or (ImageHeight<1) then exit;
+  
+  WindowWidth:=DestWidget^.allocation.width;
+  WindowHeight:=DestWidget^.allocation.height;
+  DestLeft:=DestWidget^.allocation.x+((WindowWidth-ImageWidth) div 2);
+  DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
+  DestDC:=GetDC(HDC(DestWidget));
+
+  //writeln('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
+  //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
+  //  ' SrcRect=',ImageRect.Left,',',ImageRect.Top,',',ImageWidth,'x',ImageHeight);
+  StretchBlt(DestDC, DestLeft,DestTop, ImageWidth, ImageHeight,
+    Bitmap.Canvas.Handle,ImageRect.Left,ImageRect.Top,ImageWidth,ImageHeight,
+    SRCCOPY);
+  ReleaseDC(HDC(DestWidget),DestDC);
+end;
+
+{$IfDef Win32}
+Procedure gdk_window_copy_area(Dest : PGDKWindow; GC : PGDKGC; DestX,
+  DestY : Longint; SRC : PGDKWindow; XSRC, YSRC, Width, Height : Longint);
+begin
+  gdk_draw_pixmap(Dest, GC, Src, XSrc, YSrc, DestX, DestY, Width, Height);
 End;
 {$EndIf}
 
@@ -4089,7 +4107,6 @@ end;
   procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
     var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 
-  Extracts some information from the Handle of a TGraphic
  ------------------------------------------------------------------------------}
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
@@ -4108,18 +4125,14 @@ begin
   if GDIObject<>nil then begin
     IconImg:=GDIObject^.GDIBitmapObject;
     IconMask:=GDIObject^.GDIBitmapMaskObject;
-    BeginGDKErrorTrap;
     if IconImg<>nil then
-      gdk_window_get_size (IconImg, @Width, @Height);
-    EndGDKErrorTrap;
+      gdk_window_get_size(IconImg, @Width, @Height);
   end;
 end;
 
 {------------------------------------------------------------------------------
-  procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
+  procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
     var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
-
-  Extracts some information from the Handle of the icon of a TMenuItem
  ------------------------------------------------------------------------------}
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
@@ -6649,6 +6662,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.270  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.269  2004/03/18 00:55:56  mattias
   fixed memleak in gtk opendlg
 

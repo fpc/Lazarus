@@ -1738,7 +1738,6 @@ Type
     Loader : PGdkPixbufLoader;
     Src : PGDKPixbuf;
     BMPInfo : TBitmapHeader;
-    Depth : Longint;
   begin
     Result := False;
 
@@ -2790,6 +2789,7 @@ var
   Pixmap: PGdkPixmap;
   Mask: PGdkBitmap;
   ImageBitmap, MaskBitmap: TBitmap;
+  ImageRect: TRect;
 begin
   ListView:=TListView(TheListView);
   LVWidget:= PgtkCList(
@@ -2806,7 +2806,9 @@ begin
   then begin
     //draw image
     ListView.SmallImages.GetInternalImage(ListItem.ImageIndex,
-      ImageBitmap, MaskBitmap);
+      ImageBitmap, MaskBitmap, ImageRect);
+    if (ImageRect.Left<>0) or (ImageRect.Top<>0) then
+      writeln('WARNING: TGtkWidgetSet.ListViewChangeItem does not support combined imagelists');
     Pixmap:=PgdiObject(ImageBitmap.Handle)^.GDIPixmapObject;
     Mask:=pgdkBitmap(PgdiObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
     gtk_clist_set_pixtext(LVWidget,Index,0,pStr,3,Pixmap,Mask);
@@ -7175,76 +7177,67 @@ var
   PageWidget: PGtkWidget;      // the page (content widget)
   TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
                                //          and a close button)
-  TabImageWidget: PGtkWidget; // the pixmap in the tab
+  TabImageWidget: PGtkWidget; // the icon widget in the tab (a fixed widget)
   TabLabelWidget: PGtkWidget;  // the label in the tab
   TabCloseBtnWidget: PGtkWidget;// the close button in the tab
   TabCloseBtnImageWidget: PGtkWidget; // the pixmap in the close button
   MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
                                // a label)
-  MenuImageWidget: PGtkWidget;// the pixmap in the popup menu item
+  MenuImageWidget: PGtkWidget;// the icon widget in the popup menu item (a fixed widget)
   MenuLabelWidget: PGtkWidget; // the label in the popup menu item
 
   procedure UpdateTabImage;
   var
-    {$IfDef GTK1}
-    Img: PGdkPixmap;
-    Mask: PGdkBitmap;
-    {$Else}
-    Img: PGdkPixbuf;
-    {$EndIf}
+    HasIcon: Boolean;
+    IconSize: TPoint;
   begin
-    Img:=nil;
-    {$IfDef GTK1}
-    Mask:=nil;
-    {$EndIf}
+    HasIcon:=false;
+    IconSize:=Point(0,0);
     if (TheNoteBook.Images<>nil)
     and (ThePage.ImageIndex>=0)
     and (ThePage.ImageIndex<TheNoteBook.Images.Count) then begin
       // page has valid image
-
-      // ToDo: get Img and Mask
-
+      IconSize:=Point(TheNoteBook.Images.Width,TheNoteBook.Images.Height);
+      HasIcon:=(IconSize.X>0) and (IconSize.Y>0);
     end;
 
-    if Img<>nil then begin
+    if HasIcon then begin
       // page has an image
       if TabImageWidget<>nil then begin
-        // there is already a pixmap for the image in the tab
-        // -> replace the image
-       {$IfDef GTK1}
-        gtk_pixmap_set(PGtkPixmap(TabImageWidget),Img,Mask);
-       {$Else}
-        gtk_image_set_from_pixbuf(GTK_IMAGE(TabImageWidget), Img);
-       {$EndIf}
+        // there is already an icon widget for the image in the tab
+        // -> resize the icon widget
+        gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
       end else begin
         // there is no pixmap for the image in the tab
         // -> insert one ot the left side of the label
-       {$IfDef GTK1}
-        TabImageWidget:=gtk_pixmap_new(Img,Mask);
-       {$Else}
-        TabImageWidget:=gtk_image_new_from_pixbuf(Img);
-       {$EndIf}
+        TabImageWidget:= gtk_label_new(#0);
+        g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
+                           TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
+        {$IFNDEF GTK2}
+        g_signal_connect(PgtkObject(TabImageWidget), 'draw',
+                             TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
+        {$ENDIF}
         gtk_object_set_data(PGtkObject(TabWidget),'TabImage',TabImageWidget);
+        gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
         gtk_widget_show(TabImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabImageWidget);
         gtk_box_reorder_child(PGtkBox(TabWidget),TabImageWidget,0);
       end;
       if MenuImageWidget<>nil then begin
-        // there is already a pixmap for the image in the menu
-        // -> replace the image
-       {$IfDef GTK1}
-        gtk_pixmap_set(PGtkPixmap(MenuImageWidget),Img,Mask);
-       {$Else}
-        gtk_image_set_from_pixbuf(GTK_IMAGE(MenuImageWidget), Img);
-       {$EndIf}
+        // there is already an icon widget for the image in the menu
+        // -> resize the icon widget
+        gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
       end else begin
-        // there is no pixmap for the image in the menu
+        // there is no icon widget for the image in the menu
         // -> insert one at the left side of the label
-       {$IfDef GTK1}
-        MenuImageWidget:=gtk_pixmap_new(Img,Mask);
-       {$Else}
-        MenuImageWidget:=gtk_image_new_from_pixbuf(Img);
-       {$EndIf}
+        MenuImageWidget:=gtk_label_new(#0);
+        g_signal_connect_after(PgtkObject(MenuImageWidget), 'expose_event',
+                          TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
+        {$IFNDEF GTK2}
+        g_signal_connect_after(PgtkObject(MenuImageWidget), 'draw',
+                             TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
+        {$ENDIF}
+        gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
         gtk_object_set_data(PGtkObject(MenuWidget),'TabImage',MenuImageWidget);
         gtk_widget_show(MenuImageWidget);
         gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuImageWidget);
@@ -7254,14 +7247,14 @@ var
       // page does not have an image
       if TabImageWidget<>nil then begin
         // there is a pixmap for an old image in the tab
-        // -> remove the pixmap widget
+        // -> remove the icon widget
         DestroyWidget(TabImageWidget);
         gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
         TabImageWidget:=nil;
       end;
       if MenuImageWidget<>nil then begin
         // there is a pixmap for an old image in the menu
-        // -> remove the pixmap widget
+        // -> remove the icon widget
         DestroyWidget(MenuImageWidget);
         gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
         MenuImageWidget:=nil;
@@ -7298,7 +7291,7 @@ var
       // close buttons enabled
       if TabCloseBtnWidget=nil then begin
         // there is no close button yet
-        // -> add on to the right side of the label in the tab
+        // -> add one to the right side of the label in the tab
         TabCloseBtnWidget:=gtk_button_new;
         gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
                             TabCloseBtnWidget);
@@ -7416,7 +7409,7 @@ begin
   // create popup menu
   MenuWidget:=gtk_hbox_new(false,2);
   begin
-    // put a pixmap into the menu
+    // set icon widget to nil
     gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
     // put a label into the menu
     MenuLabelWidget:=gtk_label_new('');
@@ -9301,6 +9294,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.483  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.482  2004/03/19 00:03:15  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

@@ -919,6 +919,7 @@ type
     FSaveStreamType: TBitmapNativeType;
   protected
     procedure FreeHandle; override;
+    procedure FreeMaskHandle;
     function ReleaseHandle: HBITMAP;
     function IsEmpty: boolean;
     function GetPixelFormat: TPixelFormat;
@@ -952,7 +953,6 @@ type
   private
     FCanvas: TCanvas;
     FImage : TBitmapImage;
-    FMonochrome: Boolean;
     FPalette: HPALETTE;
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
@@ -965,13 +965,12 @@ type
     Procedure FreeCanvasContext;
     function GetCanvas: TCanvas;
     procedure CreateCanvas;
-    Procedure CreateNewImage(NHandle: HBITMAP; NPallette: HPALETTE;
-                             const NDIB : TDIBSection; OS2Format : Boolean);
+    function GetMonochrome: Boolean;
     procedure SetHandle(Value: HBITMAP);
-    procedure SetMaskHandle(Value: HBITMAP);
+    procedure SetMaskHandle(NewMaskHandle: HBITMAP);
     function GetHandleType: TBitmapHandleType;
-    function GetScanline(Row: Integer): Pointer;
     procedure SetHandleType(Value: TBitmapHandleType); virtual;
+    procedure SetMonochrome(const AValue: Boolean);
     procedure SetPixelFormat(const AValue: TPixelFormat);
     procedure UpdatePixelFormat;
   protected
@@ -1025,7 +1024,7 @@ type
     procedure GetSupportedSourceMimeTypes(List: TStrings); override;
     function GetDefaultMimeType: string; override;
     class function GetFileExtensions: string; override;
-    Procedure LoadFromXPMFile(const Filename : String);
+    Procedure LoadFromXPMFile(const Filename: String);
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; UseSize: boolean; Size: Longint); virtual;
@@ -1045,9 +1044,9 @@ type
     property Handle: HBITMAP read GetHandle write SetHandle;
     property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
-    property Monochrome: Boolean read FMonochrome write FMonochrome;
+    property Monochrome: Boolean read GetMonochrome write SetMonochrome;
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
-    property ScanLine[Row: Integer]: Pointer read GetScanLine; // only for Delphi compatibility
+    // property ScanLine[Row: Integer]: Pointer; // Use TLazIntfImage for such things
     property TransparentColor: TColor read FTransparentColor
                                       write FTransparentColor default clNone;
     property TransparentMode: TTransparentMode read FTransparentMode
@@ -1601,6 +1600,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.128  2004/03/06 17:12:18  mattias
   fixed CreateBrushIndirect
 

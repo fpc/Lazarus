@@ -41,6 +41,8 @@ function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRec
 function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
 function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
+function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean; override;
+
 procedure StatusBarPanelUpdate(StatusBar: TObject; Index: integer); override;
 procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
 procedure StatusBarUpdate(StatusBar: TObject); override;
@@ -50,6 +52,9 @@ procedure StatusBarUpdate(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.16  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

@@ -374,6 +374,15 @@ begin
   Result := InterfaceObject.ReleaseDesignerDC(hWnd, DC);
 end;
 
+function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
+// for Delphi compatibility a TBitmap has a Handle and a MaskHandle.
+// Some interfaces have only a combined Handle. To replace the mask use this
+// function. Under win32 it will simply replace Mask with NewMask.
+// Under gtk Mask will be freed and NewMask will be combined into Handle.
+begin
+  Result := InterfaceObject.ReplaceBitmapMask(Image,Mask,NewMask);
+end;
+
 function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
 begin
   Result := InterfaceObject.RequestInput(InputCaption, InputPrompt, MaskInput, Value);
@@ -517,6 +526,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/03/22 19:10:04  mattias
+  implemented icons for TPage in gtk, mask for TCustomImageList
+
   Revision 1.22  2004/03/19 00:53:34  marc
   * Removed all ComponentCreateHandle routines
 

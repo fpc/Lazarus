@@ -50,17 +50,22 @@ end;
 
 procedure TBitmapImage.FreeHandle;
 begin
-  if FMaskHandle <> 0 then
-  begin
-    DeleteObject(FMaskHandle);
-    FMaskHandle := 0;
-  end;
+  FreeMaskHandle;
   if (FHandle <> 0) and (FHandle <> FDIBHandle) then
   begin
     DeleteObject(FHandle);
   end;
   FHandle := 0;
   FPalette := 0;
+end;
+
+procedure TBitmapImage.FreeMaskHandle;
+begin
+  if FMaskHandle <> 0 then
+  begin
+    DeleteObject(FMaskHandle);
+    FMaskHandle := 0;
+  end;
 end;
 
 function TBitmapImage.ReleaseHandle: HBITMAP;
