@@ -92,6 +92,8 @@ Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; overri
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean; override;
+function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+      X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
 function ShowCaret(hWnd: HWND): Boolean; override;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; override;
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; override;
@@ -106,6 +108,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/03/26 14:58:32  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.12  2001/03/13 15:02:14  lazarus
   MG: activated GetWindowOrgEx
 

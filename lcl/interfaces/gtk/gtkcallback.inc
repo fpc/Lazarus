@@ -588,7 +588,8 @@ begin
           //       ,TControl(Data).Left,',',TControl(Data).Top,'  ',Size^.X,',',Size^.Y);
           Dummy.X:=TControl(Data).Left;
           Dummy.Y:=TControl(Data).Top;
-          gdk_window_get_root_origin(widget^.window, @Dummy.X, @Dummy.Y);
+          if widget^.window<>nil then
+            gdk_window_get_root_origin(widget^.window, @Dummy.X, @Dummy.Y);
           Size^.X:=Dummy.X;
           Size^.Y:=Dummy.Y;
         end;
@@ -1104,8 +1105,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.27  2001/03/21 23:48:29  lazarus
-  MG: fixed window positions
+  Revision 1.28  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
 
   Revision 1.26  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

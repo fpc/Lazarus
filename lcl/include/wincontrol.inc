@@ -116,11 +116,13 @@ var
           end;
       end;
     end;
-    if (Control.Left <> Left2) or (Control.Top <> Top2) or (Control.Width <> Width2) or (Control.Height <> Height2) then begin
+    if (Control.Left <> Left2) or (Control.Top <> Top2)
+    or (Control.Width <> Width2) or (Control.Height <> Height2) then begin
       Control.SetBounds(Left2, Top2, Width2, Height2);
     end;  
 
-    {Sometimes the control doesn't resize.  This will verifiy that it is the size it is assigned to be}
+    {Sometimes the control doesn't resize.  This will verifiy that it is the
+      size it is assigned to be}
     if (Control.Width <> Width2) or (Control.Height <> Height2) then
       with Rect do
         case AAlign of
@@ -355,8 +357,26 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.SetBorderWidth(value : TBorderWidth);
 Begin
-//TODO: SETBORDERWIDTH - Not sure if anything more is needed here
-FBorderWidth := Value;
+  //TODO: SETBORDERWIDTH - Not sure if anything more is needed here
+  FBorderWidth := Value;
+end;
+
+Procedure TWinControl.SetZOrder(Topmost: Boolean);
+const
+  WindowPos: array[Boolean] of Word = (HWND_BOTTOM, HWND_TOP);
+var i: integer;
+begin
+  if FParent <> nil then
+  begin
+    if TopMost then i := FParent.FWinControls.Count - 1
+    else i := 0;
+    if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
+    SetZOrderPosition(i);
+  end
+  else if FHandle <> 0 then begin
+    InterfaceObject.SetWindowPos(FHandle, WindowPos[TopMost], 0, 0, 0, 0,
+      SWP_NOMOVE + SWP_NOSIZE);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1802,7 +1822,8 @@ procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
 var
   R : TRect;
 begin
-  if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height) then Exit;
+  if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
+  then Exit;
   FLeft := aLeft;
   FTop := aTop;
   FWidth := aWidth;
@@ -1811,6 +1832,7 @@ begin
   if HandleAllocated
   then begin
     R:= Rect(ALeft, ATop, AWidth, AHeight);
+//writeln('[TWinControl.SetBounds] ',name,':',Classname,' ',Height);
     CNSendMessage(LM_SetSize, Self, @R);
   end
   else inherited SetBounds(aLeft, aTop, aWidth, aHeight);
@@ -1917,7 +1939,7 @@ end;
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
 {  if (TWinControl(Self).HandleAllocated) or (Self is TCustomForm) then}
-     CNSendMessage(LM_ShowHide, Self, nil);
+  CNSendMessage(LM_ShowHide, Self, nil);
   
 //  SetWindowPos(FHandle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
@@ -1941,8 +1963,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.25  2001/03/20 16:59:15  lazarus
-  MG: fixed many bugs (mem leaks, canvas)
+  Revision 1.26  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
 
   Revision 1.24  2001/03/19 14:38:39  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

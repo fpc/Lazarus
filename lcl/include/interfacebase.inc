@@ -396,6 +396,12 @@ Begin
   Result := False;
 end;
 
+function TInterfaceBase.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
+begin
+  Result:=false;
+end;
+
 function TInterfaceBase.ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := False;
@@ -432,6 +438,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.12  2001/03/12 12:17:01  lazarus
   MG: fixed random function results
 

@@ -88,6 +88,9 @@ type
     destructor Destroy; override;
 
     procedure AddCompletion(AToken, AValue, AComment: string);
+   {$IFDEF SYN_LAZARUS}
+    procedure DeleteCompletion(Index: integer);
+   {$ENDIF}
     function AddEditor(AEditor: TCustomSynEdit): boolean;
     procedure Execute(AEditor: TCustomSynEdit); virtual;
     procedure ExecuteCompletion(AToken: string; AEditor: TCustomSynEdit);
@@ -174,6 +177,15 @@ begin
   fEditors := TList.Create;
   fEOTokenChars := '()[]{}.';
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynAutoComplete.DeleteCompletion(Index: integer);
+begin
+  fCompletions.Delete(Index);
+  fCompletionComments.Delete(Index);
+  fCompletionValues.Delete(Index);
+end;
+{$ENDIF}
 
 destructor TCustomSynAutoComplete.Destroy;
 begin

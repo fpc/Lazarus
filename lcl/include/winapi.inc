@@ -396,6 +396,12 @@ begin
   Result := InterfaceObject.SetWindowOrgEx(dc,NewX,NewY,lpPoint);
 end;
 
+function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
+begin
+  Result:=false;
+end;
+
 function ShowCaret(hWnd: HWND): Boolean;
 begin
   Result := InterfaceObject.ShowCaret(hWnd)
@@ -965,6 +971,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.11  2001/02/16 19:13:30  lazarus
   Added some functions
   Shane

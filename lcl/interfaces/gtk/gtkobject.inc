@@ -254,7 +254,8 @@ Begin
   //could we just call IntSendMessage??
 
   //destroy old widget
-  gtk_widget_destroy(PgtkWidget(TWinControl(sender).HANDLE));
+  if TWinControl(sender).HANDLE<>0 then
+    gtk_widget_destroy(PgtkWidget(TWinControl(sender).HANDLE));
 
   aParent := TWinControl(sender).Parent;
   aParent.RemoveControl(TControl(sender));
@@ -364,6 +365,7 @@ begin
       begin
          Assert(False, 'Trace:TODO:bringtofront');
          //For now just hide and show again.
+
       end;
 
       LM_BTNDEFAULT_CHANGED :
@@ -375,15 +377,16 @@ begin
 
       LM_DESTROY :
       begin
-         if (Sender is TTimer) then
-         begin
-            Assert(False, 'Trace:removing timer!!!');
-            gtk_timeout_remove((Sender as TTimer).TimerID);
+         if (Sender is TTimer) then begin
+           Assert(False, 'Trace:removing timer!!!');
+           gtk_timeout_remove((Sender as TTimer).TimerID);
          end
-         else if (Sender is TWinControl) or (Sender is TCommonDialog)
-            then gtk_widget_destroy( PGtkWidget(Handle))
+         else if (Sender is TWinControl) or (Sender is TCommonDialog) then begin
+           if Handle<>0 then
+             gtk_widget_destroy(PGtkWidget(Handle));
+         end
          else
-            Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
+           Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
       end;
 
       LM_DRAGINFOCHANGED :
@@ -557,6 +560,8 @@ activate_time :	the time at which the activation event occurred.
       LM_SetSize :
       begin
          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> LM_SetSize(%d, %d, %d, %d)', [Sender.ClassNAme, PRect(Data)^.Left,PRect(Data)^.Top,PRect(Data)^.Right,PRect(Data)^.Bottom]));
+//writeln('[IntSendMessage3.lm_setsize] ',PRect(Data)^.Left,',',PRect(Data)^.Top,',',
+//             PRect(Data)^.Right,',',PRect(Data)^.Bottom);
          ResizeChild(Sender,PRect(Data)^.Left,PRect(Data)^.Top,
              PRect(Data)^.Right,PRect(Data)^.Bottom);
       end;
@@ -998,22 +1003,25 @@ begin
 
   if not (Sender is TSpeedButton) then
   begin
-     pWidget := pgtkWidget(TWinControl(Sender).Handle);
-     gtk_widget_set_usize(pWidget, Width, Height);
+    pWidget := pgtkWidget(TWinControl(Sender).Handle);
+//writeln('[TgtkObject.ResizeChild] ',Sender.ClassName,' ',Width,',',Height);
+    if Sender is TCustomForm then
+      //gdk_window_resize(pWidget^.Window, Width,Height);
+      gtk_widget_set_usize(pWidget, -1, -1);
+    gtk_widget_set_usize(pWidget, Width, Height);
 
-     if not ((Parent = nil) or (Sender is TCustomForm)) then 
-     begin
-        pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
-        if pFixed <> nil 
-           then begin
-             gtk_fixed_move(pFixed, pWidget, Left, Top);
-           end
-           else Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
-     end 
-     else begin
-        gtk_widget_set_uposition(pWidget, Left, Top);
+    if not ((Parent = nil) or (Sender is TCustomForm)) then 
+    begin
+      pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
+      if pFixed <> nil then begin
+        gtk_fixed_move(pFixed, pWidget, Left, Top);
+      end
+      else Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
+    end
+    else begin
+      gtk_widget_set_uposition(pWidget, Left, Top);
     end;
-  end
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1317,8 +1325,10 @@ begin
     end;
 
     LM_CHANGED :
-       if sender is TTrackBar
-          then ConnectSignal(gtk_Object(gtk_range_get_adjustment(GTK_RANGE(gObject))) , 'value_changed', @gtkvaluechanged)
+       if sender is TTrackBar then begin
+         ConnectSignal(gtk_Object(gtk_range_get_adjustment(
+           GTK_RANGE(gObject))) , 'value_changed', @gtkvaluechanged);
+       end
        else if sender is TNotebook
           then ConnectSignal(gObject, 'switch-page', @gtkswitchpage)
        else if sender is TCustomCombobox
@@ -1942,14 +1952,12 @@ begin
       begin
             if (TScrollBar(sender).kind = sbHorizontal) then
                begin
-                Writeln('[Creating TScrollbar]  Horiz');
                  P := gtk_hscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
                                                                      TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
                                                                      TScrollBar(sender).Pagesize)));
                end
               else
                Begin
-                Writeln('[Creating TScrollbar]  Vertical');
                  P := gtk_vscrollbar_new(PgtkAdjustment(gtk_adjustment_new(1,TScrollBar(sender).min, TScrollBar(sender).max,
                                                                      TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
                                                                      TScrollBar(sender).Pagesize)));
@@ -2299,8 +2307,12 @@ begin
    Assert (Handle = nil, 'WARNING: [TgtkObject.GetValue] --> got nil pointer (no gtkobject)');
    
    case TControl(Sender).fCompStyle of
-      csTrackbar   : if handle <> nil then integer(data^) := round(gtk_range_get_adjustment (GTK_RANGE (handle))^.value) else
-                                     integer(data^) := 0;
+      csTrackbar   :
+          if (handle <> nil) then begin
+            integer(data^) := round(gtk_range_get_adjustment(
+                    GTK_RANGE (handle))^.value);
+          end else
+            integer(data^) := 0;
 
 
       csRadiobutton,
@@ -2344,7 +2356,9 @@ begin
       csTrackbar   : begin
                         if Handle = nil then Exit;
                         gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
-                        gtk_signal_emit_by_name (PGtkObject (gtk_range_get_adjustment (GTK_RANGE (handle))), 'value_changed');
+                        gtk_signal_emit_by_name (PGtkObject
+                           (gtk_range_get_adjustment (
+                               GTK_RANGE (handle))), 'value_changed');
                      end;
 
       csRadiobutton,
@@ -2758,8 +2772,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.39  2001/03/21 23:48:29  lazarus
-  MG: fixed window positions
+  Revision 1.40  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
 
   Revision 1.36  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

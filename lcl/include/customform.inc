@@ -113,7 +113,6 @@ Begin
   if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
 End;
 
-
 {------------------------------------------------------------------------------
   Method: TCustomForm.SetFocus
  ------------------------------------------------------------------------------}
@@ -122,7 +121,23 @@ Begin
 Assert(False, 'Trace:SETFOCUS');
 //if not(Visible and Enabled) then Exit;
 Assert(False, 'Trace:SETFOCUS2');
-CNSendMessage(LM_SETFOCUS,Self,nil);
+  CNSendMessage(LM_SETFOCUS,Self,nil);
+end;
+
+{------------------------------------------------------------------------------}
+{       TCustomForm SetVisible                                                 }
+{------------------------------------------------------------------------------}
+Procedure TCustomForm.SetVisible(Value : boolean);
+Begin
+  if fsCreating in FFormState then
+    if Value then
+      Include(FFormState, fsVisible)
+    else
+      Exclude(FFormState, fsVisible)
+  else
+  begin
+    inherited Visible := Value;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -859,8 +874,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.16  2001/03/20 16:59:15  lazarus
-  MG: fixed many bugs (mem leaks, canvas)
+  Revision 1.17  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
 
   Revision 1.15  2001/03/19 14:41:56  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

@@ -337,6 +337,7 @@ begin
 
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
+//writeln('[TgtkObject.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
 
   with LogBrush do
   begin
@@ -3040,7 +3041,9 @@ begin
            Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment;
       SB_CTL:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_range_get_type)
-        then Adjustment := gtk_range_get_adjustment(PGTKRange(Handle));
+        then begin
+          Adjustment := gtk_range_get_adjustment(PGTKRange(Handle));
+        end;
       else
         Adjustment := nil;
     end;
@@ -3225,10 +3228,28 @@ end;
 Function TgtkObject.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var lpPoint : TPoint) : Boolean;
 begin
 //writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
-//  gdk_window_move(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window,Newx,Newy);
+// ToDo: move origin
+
   lpPoint.X := NewX;
   lpPoint.Y := NewY;
   Result := True;
+end;
+
+function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+      X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
+//var Widget: PGTKWidget;
+begin
+//writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP);
+{  Widget := GetFixedWidget(pgtkwidget(hWnd));
+  if Widget = nil then Widget := pgtkwidget(hWnd); 
+  case hWndInsertAfter of
+    HWND_BOTTOM: ;  {gdk_window_lower(Widget^.Window);}
+    HWND_TOP:    gtk_window_set_position(PGtkWindow(hWnd),GTK_WIN_POS_CENTER);
+                {gdk_window_raise(Widget^.Window);}
+  end;
+}
+
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -3425,8 +3446,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.30  2001/03/21 23:48:29  lazarus
-  MG: fixed window positions
+  Revision 1.31  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
 
   Revision 1.26  2001/03/19 18:51:57  lazarus
   MG: added dynhasharray and renamed tsynautocompletion

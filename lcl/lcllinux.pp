@@ -552,6 +552,13 @@ Region_Error = Error;
   WS_EX_OVERLAPPEDWINDOW = (WS_EX_WINDOWEDGE or WS_EX_CLIENTEDGE);
   WS_EX_PALETTEWINDOW = (WS_EX_WINDOWEDGE or WS_EX_TOOLWINDOW or WS_EX_TOPMOST);
 
+const
+  { SetWindowPos Flags }
+   HWND_TOP = 0;
+   HWND_BOTTOM = 1;
+   HWND_TOPMOST = HWND(-1);
+   HWND_NOTOPMOST = HWND(-2);
+
 type
 
 
@@ -1371,6 +1378,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.5  2001/02/01 16:45:19  lazarus
   Started the code completion.
   Shane

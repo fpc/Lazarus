@@ -99,7 +99,8 @@ type
     Procedure SetDesigner(Value : TIDesigner);
     Procedure SetMenu(value : TMainMenu);
     Procedure SetFormStyle(Value : TFormStyle);
-    Procedure SetPosition(value : TPosition); 
+    Procedure SetPosition(Value : TPosition);
+    Procedure SetVisible(Value: boolean);
     Procedure SetWindowState(Value : TWIndowState);
     Function GetCanvas: TControlCanvas;
     Function IsForm : Boolean;
@@ -163,6 +164,7 @@ type
     property KeyPreview: Boolean read FKeyPreview write FKeyPreview;
     property Menu : TMainMenu read FMenu write SetMenu;
     property ModalResult : TModalResult read FModalResult write FModalResult;
+    property Visible write SetVisible default False;
     property WindowState: TWindowState read FWindowState write SetWIndowState default wsNormal;
   end;
 
@@ -407,6 +409,7 @@ initialization
   Focusmessages := True;
 
 finalization
+  writeln('forms.pp - finalization section');
   Application.Free;
   Application:= nil;
   Screen.Free;

@@ -664,6 +664,7 @@ TCMDialogKey = TLMKEY;
     procedure DetachSignals; virtual;
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
+    Procedure SetZOrder(Topmost: Boolean); override;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
     function  DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; dynamic;
@@ -1129,6 +1130,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.16  2001/03/19 14:00:50  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

@@ -266,7 +266,7 @@ end;
 
 procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient); 
 begin
-  if Client = nil 
+  if Client = nil
   then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
     Exit;
@@ -296,7 +296,7 @@ begin
          Timer := 0;
       end;
       IsDrawn := False;
-      if BackPixmap <> nil 
+      if (BackPixmap <> nil) and (Widget^.theStyle<>nil)
       then gdk_draw_pixmap(
         Widget^.Window, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
@@ -545,6 +545,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/03/26 14:58:32  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.4  2001/03/13 15:02:14  lazarus
   MG: activated GetWindowOrgEx
 

@@ -125,6 +125,8 @@ Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDE
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; Var Point : TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -221,6 +223,9 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/03/26 14:58:31  lazarus
+  MG: setwindowpos + bugfixes
+
   Revision 1.8  2001/02/16 19:13:31  lazarus
   Added some functions
   Shane
