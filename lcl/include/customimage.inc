@@ -171,23 +171,19 @@ Procedure TCustomImage.Paint;
         Pen.Color := clBlack;
         Pen.Style := psDash;
         MoveTo(0, 0);
-        LineTo(Width, 0);
-        LineTo(Width, Height);
-        LineTo(0, Height);
+        LineTo(Width-1, 0);
+        LineTo(Width-1, Height-1);
+        LineTo(0, Height-1);
         LineTo(0, 0);
       end;
     end;
   end;
 
 var
-  RGN : longint;
   iRect : TRect;
   BackgroundColor: Integer;
 begin
   With Canvas do begin
-    RGN := CreateRectRGN(0, 0, Width + 1, Height + 1);
-    SelectClipRGN(Handle, RGN);
-    DeleteObject(RGN);
     DrawFrame;
     If Picture.Graphic = nil then
       exit;
