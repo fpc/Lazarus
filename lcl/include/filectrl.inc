@@ -647,7 +647,7 @@ end;
 function FileIsExecutable(const AFilename: string): boolean;
 begin
   {$IFDEF win32}
-  Result:=true;
+  Result:=FileExists(AFilename);
   {$ELSE}
   {$IFDEF Ver1_0}
   Result:= Linux.Access(AFilename,Linux.X_OK);
@@ -928,6 +928,9 @@ end;
 
 {
   $Log$
+  Revision 1.46  2004/08/04 23:47:32  mattias
+  implemented FileExecutable for win32
+
   Revision 1.45  2004/05/22 14:35:32  mattias
   fixed button return key
 

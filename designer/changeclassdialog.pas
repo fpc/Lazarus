@@ -73,7 +73,9 @@ type
 
 function ShowChangeClassDialog(APersistent: TPersistent): TModalResult;
 
+
 implementation
+
 
 function ShowChangeClassDialog(APersistent: TPersistent): TModalResult;
 var
