@@ -1660,24 +1660,22 @@ var
       end;
 
       Result:= Result
-              and (
-                   (
-                    (csDesigning in ComponentState)
-                    and
-                    (Visible or not (csNoDesignVisible in ControlStyle))
-                   )
-                   or
-                   (
-                    (not (csDesigning in ComponentState))
-                    and
-                    (Visible)
-                    and
-                    (Enabled or AllowDisabled)
-                    and
-                    (Perform(CM_HITTEST, 0,
-                             LParam(PointToSmallPoint(ControlPos))) <> 0)
-                   )
-                  );
+        and (
+             (
+              (csDesigning in ComponentState)
+              and
+              (Visible or not (csNoDesignVisible in ControlStyle))
+             )
+             or
+             (
+              (Visible)
+              and
+              (Enabled or AllowDisabled)
+              and
+              (Perform(CM_HITTEST, 0,
+                       LParam(PointToSmallPoint(ControlPos))) <> 0)
+             )
+            );
       {$IFDEF VerboseMouseBugfix}
       DebugLn('GetControlAtPos ',Name,':',ClassName,
       ' Pos=',Pos.X,',',Pos.Y,
@@ -3659,6 +3657,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.240  2004/06/28 17:41:26  mattias
+  fixed GetControlAtPos
+
   Revision 1.239  2004/06/28 17:03:37  mattias
   clean up
 
