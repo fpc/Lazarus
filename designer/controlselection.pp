@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, LCLLinux, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
-  EnvironmentOpts, DesignerProcs;
+  EnvironmentOpts, DesignerProcs, Menus;
 
 type
   EGenException = class(Exception);
@@ -787,6 +787,7 @@ begin
       if CurParentLevel<>ParentLevel then exit;
     end;
   end else begin
+    if AComponent is TMenuItem then exit;
     if Count>0 then begin
       if OnlyVisualComponentsSelected then exit;
     end;
@@ -1024,7 +1025,7 @@ begin
     Result:=false;
     if FCustomForm=nil then exit;
     for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if IsSelected(FCustomForm.Components[i]) then continue;
+      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
       CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
       if CRect.Left=FRealLeft then begin
         ALine.Left:=FRealLeft;
@@ -1066,7 +1067,7 @@ begin
     Result:=false;
     if FCustomForm=nil then exit;
     for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if IsSelected(FCustomForm.Components[i]) then continue;
+      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
       CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
       if (CRect.Right=FRealLeft+FRealWidth) then begin
         ALine.Left:=CRect.Right;
@@ -1108,7 +1109,7 @@ begin
     Result:=false;
     if FCustomForm=nil then exit;
     for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if IsSelected(FCustomForm.Components[i]) then continue;
+      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
       CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
       if CRect.Top=FRealTop then begin
         ALine.Top:=FRealTop;
@@ -1150,7 +1151,7 @@ begin
     Result:=false;
     if FCustomForm=nil then exit;
     for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if IsSelected(FCustomForm.Components[i]) then continue;
+      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
       CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
       if CRect.Bottom=FRealTop+FRealHeight then begin
         ALine.Top:=CRect.Bottom;
@@ -1656,8 +1657,10 @@ var i:integer;
   var ALeft,ATop,ARight,ABottom:integer;
     Origin:TPoint;
   begin
-    if (AComponent is TControl)
-    and (csNoDesignVisible in TControl(AComponent).ControlStyle) then begin
+    if (AComponent is TMenuItem)
+    or ((AComponent is TControl)
+      and (csNoDesignVisible in TControl(AComponent).ControlStyle))
+    then begin
       Result:=false;
       exit;
     end;
