@@ -881,6 +881,7 @@ activate_time :	the time at which the activation event occurred.
               And ((Parent As TCustomNotebook).CustomPage(Page).HandleAllocated)
                 then ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
               if (OldPageIndex>=0) and (OldPageIndex<>Page)
+              and (OldPageIndex < TCustomNotebook(Parent).PageList.Count)
               and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
                 then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
             end;
@@ -2887,6 +2888,9 @@ End;
 
 {
   $Log$
+  Revision 1.146  2003/12/18 10:59:51  micha
+  fix notebook page out of bounds while destroying
+
   Revision 1.145  2003/12/18 10:27:26  micha
   fix fpc 1.9.x compile, limittext, mem free
 
