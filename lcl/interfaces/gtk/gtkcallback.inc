@@ -2249,6 +2249,12 @@ begin
     if TObject(Data) is TButton then
       ReleaseStyle('button')
     else
+      if TObject(Data) is TRadioButton then
+        ReleaseStyle('radiobutton')
+    else
+      if TObject(Data) is TCheckBox then
+        ReleaseStyle('checkbox')
+    else
       ReleaseStyle('default');
   end
     else
@@ -2268,6 +2274,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2002/09/03 08:07:20  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.119  2002/09/01 16:11:22  lazarus
   MG: double, triple and quad clicks now works
 
