@@ -6789,19 +6789,20 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+
 procedure TCustomSynEdit.WMMouseWheel(var Msg: TLMMouseEvent);
-{var
+var
   nDelta: integer;
   nWheelClicks: integer;
 const
-  LinesToScroll = 3;
+  LinesToScroll = 6;
   WHEEL_DELTA = 120;
-  WHEEL_PAGESCROLL = MAXDWORD;}
+  WHEEL_PAGESCROLL = MAXDWORD;
 begin
   if csDesigning in ComponentState then
     exit;
 
-  {if GetKeyState(VK_CONTROL) >= 0 then
+  if GetKeyState(VK_CONTROL) >= 0 then
     nDelta := LinesToScroll
   else begin
     nDelta := LinesInWindow;
@@ -6818,7 +6819,7 @@ begin
     nDelta := LinesInWindow;
   writeln('TCustomSynEdit.WMMouseWheel B TopLine=',TopLine,' nDelta=',nDelta,' nWheelClicks=',nWheelClicks);
   TopLine := TopLine - (nDelta * nWheelClicks);
-  Update;}
+  Update;
 end;
 
 {$ELSE}
