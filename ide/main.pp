@@ -38,7 +38,7 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg;
+  UnitInfoDlg, Debugger;
 
 const
   Version_String = '0.8 alpha';
@@ -57,6 +57,9 @@ type
     ToggleFormSpeedBtn : TSpeedButton;
     NewFormSpeedBtn    : TSpeedButton;
     RunSpeedButton     : TSpeedButton;
+    PauseSpeedButton     : TSpeedButton;
+    StepIntoSpeedButton     : TSpeedButton;
+    StepOverSpeedButton     : TSpeedButton;
     OpenFilePopUpMenu : TPopupMenu;
     Toolbutton1  : TToolButton;
     Toolbutton2  : TToolButton;
@@ -99,6 +102,11 @@ type
     itmProjectViewSource: TMenuItem;
     itmProjectBuild: TMenuItem;
     itmProjectRun: TMenuItem;
+    itmProjectPause: TMenuItem;
+    itmProjectStepInto: TMenuItem;
+    itmProjectStepOver: TMenuItem;
+    itmProjectRunToCursor: TMenuItem;
+    itmProjectStop: TMenuItem;
     itmProjectOptions: TMenuItem;
     itmProjectCompilerSettings: TMenuItem;
 
@@ -162,6 +170,11 @@ type
     procedure mnuViewProjectSourceClicked(Sender : TObject);
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
+    procedure mnuPauseProjectClicked(Sender : TObject);
+    procedure mnuStepIntoProjectClicked(Sender : TObject);
+    procedure mnuStepOverProjectClicked(Sender : TObject);
+    procedure mnuRunToCursorProjectClicked(Sender : TObject);
+    procedure mnuStopProjectClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
     procedure mnuProjectOptionsClicked(Sender : TObject);
 
@@ -203,6 +216,11 @@ type
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
                                     var Abort: boolean);
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
+    
+    // Debugger Events
+    procedure OnDebuggerChangeState(Sender: TObject);
+    procedure OnDebuggerCurrentLine(Sender: TObject; const AFilename: String;
+                               const ALine: Integer);
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FSelectedComponent : TRegisteredComponent;
@@ -210,6 +228,7 @@ type
     MacroList: TTransferMacroList;
     FMessagesViewBoundsRectValid: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
+    TheDebugger: TDebugger;
 
     Function CreateSeperator : TMenuItem;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
@@ -248,6 +267,11 @@ type
     function DoRemoveFromProjectDialog: TModalResult;
     function DoBuildProject: TModalResult;
     function DoRunProject: TModalResult;
+    function DoPauseProject: TModalResult;
+    function DoStepIntoProject: TModalResult;
+    function DoStepOverProject: TModalResult;
+    function DoRunToCursor: TModalResult;
+    function DoStopProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
@@ -276,10 +300,12 @@ type
       FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
     function GetTestProjectFilename: string;
+    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
     procedure SaveSourceEditorChangesToCodeCache;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToProcedureSection;
     procedure DoCompleteCodeAtCursor;
+    function DoInitDebugger: TModalResult;
 
     procedure LoadMainMenu;
     procedure LoadSpeedbuttons;
@@ -432,7 +458,7 @@ begin
     Parent := Self;
     Name := 'ComponentNotebook';
 //    Align := alBottom;
-    Left := RunSpeedButton.Left + RunSpeedButton.Width + 4;
+    Left := ToggleFormSpeedBtn.Left + ToggleFormSpeedBtn.Width + 4;
 //    Top :=50+ 2;
     Top := 0;
     Width := Self.ClientWidth - Left;
@@ -736,14 +762,20 @@ begin
   ButtonLeft := n+12+1;
   
   SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
-  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuSaveAllClicked);
-  // new row
+  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked);
+  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked);
+  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked);
+
+// new row
   ButtonLeft := 1;
   ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked);
   ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked);   
-  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuToggleFormUnitCLicked);
-  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuRunProjectClicked);
+  inc(ButtonLeft,12);
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked);
+  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked);
+  PauseSpeedButton.Enabled:=false;
+  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked);
+  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked);
   
 //  pnlSpeedButtons.Width := ButtonLeft;
 //  pnlSpeedButtons.Height := ButtonTop;
@@ -1067,6 +1099,37 @@ begin
   itmProjectRun.Caption := 'Run';
   itmProjectRun.OnClick := @mnuRunProjectClicked;
   mnuProject.Add(itmProjectRun);
+
+  itmProjectPause := TMenuItem.Create(Self);
+  itmProjectPause.Name:='itmProjectPause';
+  itmProjectPause.Caption := 'Pause';
+  itmProjectPause.OnClick := @mnuPauseProjectClicked;
+  itmProjectPause.Enabled := false;
+  mnuProject.Add(itmProjectPause);
+
+  itmProjectStepInto := TMenuItem.Create(Self);
+  itmProjectStepInto.Name:='itmProjectStepInto';
+  itmProjectStepInto.Caption := 'Step into';
+  itmProjectStepInto.OnClick := @mnuStepIntoProjectClicked;
+  mnuProject.Add(itmProjectStepInto);
+
+  itmProjectStepOver := TMenuItem.Create(Self);
+  itmProjectStepOver.Name:='itmProjectStepOver';
+  itmProjectStepOver.Caption := 'Step over';
+  itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
+  mnuProject.Add(itmProjectStepOver);
+
+  itmProjectRunToCursor := TMenuItem.Create(Self);
+  itmProjectRunToCursor.Name:='itmProjectRunToCursor';
+  itmProjectRunToCursor.Caption := 'Run to cursor';
+  itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
+  mnuProject.Add(itmProjectRunToCursor);
+
+  itmProjectStop := TMenuItem.Create(Self);
+  itmProjectStop.Name:='itmProjectStop';
+  itmProjectStop.Caption := 'Stop';
+  itmProjectStop.OnClick := @mnuStopProjectClicked;
+  mnuProject.Add(itmProjectStop);
 
   mnuProject.Add(CreateSeperator);
 
@@ -1622,6 +1685,31 @@ begin
   DoRunProject;
 end;
 
+Procedure TMainIDE.mnuPauseProjectClicked(Sender : TObject);
+begin
+  DoPauseProject;
+end;
+
+Procedure TMainIDE.mnuStepIntoProjectClicked(Sender : TObject);
+begin
+  DoStepIntoProject;
+end;
+
+Procedure TMainIDE.mnuStepOverProjectClicked(Sender : TObject);
+begin
+  DoStepOverProject;
+end;
+
+Procedure TMainIDE.mnuRunToCursorProjectClicked(Sender : TObject);
+begin
+  DoRunToCursor;
+end;
+
+Procedure TMainIDE.mnuStopProjectClicked(Sender : TObject);
+begin
+  DoStopProject;
+end;
+
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
 var frmCompilerOptions:TfrmCompilerOptions;
 begin
@@ -1640,7 +1728,7 @@ end;
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
 begin
   if ShowProjectOptionsDialog(Project)=mrOk then begin
-    // UpdateMainUnitSrcEdit;
+    
   end;
 end;
 
@@ -1664,6 +1752,7 @@ procedure TMainIDE.LoadDesktopSettings(
 begin
   with TheEnvironmentOptions do begin
     if WindowPositionsValid then begin
+      // set window positions
       BoundsRect:=MainWindowBounds;
       SourceNoteBook.BoundsRect:=SourceEditorBounds;
       if MessagesViewBoundsValid then begin
@@ -1672,6 +1761,13 @@ begin
       end;
       ObjectInspectorOptions.AssignTo(ObjectInspector1);
     end;
+  end;
+  // set global variables
+  with CodeToolBoss.GlobalValues do begin
+    Variables[ExternalMacroStart+'LazarusSrcDir']:=
+      TheEnvironmentOptions.LazarusDirectory;
+    Variables[ExternalMacroStart+'FPCSrcDir']:=
+      TheEnvironmentOptions.FPCSourceDirectory;
   end;
 end;
 
@@ -1827,7 +1923,6 @@ CheckHeap('TMainIDE.DoNewEditorUnit L '+IntToStr(GetMem_Cnt));
     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
     TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
   end;
-  //UpdateMainUnitSrcEdit;
 
   FCodeLastActivated:=not (NewUnitType in [nuForm]);
 writeln('TMainIDE.DoNewUnit end');
@@ -1842,7 +1937,7 @@ var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   SaveDialog:TSaveDialog;
   NewUnitName,NewFilename,NewPageName:string;
-  AText,ACaption,CompResourceCode,s,TestFilename: string;
+  AText,ACaption,CompResourceCode,TestFilename: string;
   MemStream,BinCompStream,TxtCompStream:TMemoryStream;
   Driver: TAbstractObjectWriter;
   Writer:TWriter;
@@ -1975,20 +2070,13 @@ writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
     end;
   end else begin
     // save source to test directory
-    s:=EnvironmentOptions.TestBuildDirectory;
-    if s='' then exit;
-    if s[length(s)]<>OSDirSeparator then s:=s+OSDirSeparator;
-    if ActiveUnitInfo.UnitName<>'' then begin
-      TestFilename:=s+lowercase(ActiveUnitInfo.UnitName)+'.pas';
-    end else if (Project.MainUnit>=0)
-    and (Project.Units[Project.MainUnit]=ActiveUnitInfo) then begin
-      TestFilename:=GetTestProjectFilename;
-    end;
+    TestFilename:=GetTestUnitFilename(ActiveUnitInfo);
     if TestFilename<>'' then begin
       Result:=ActiveUnitInfo.WriteUnitSourceToFile(TestFilename);
       if Result<>mrOk then exit;
       Result:=mrCancel;
-    end;
+    end else
+      exit;
   end;
 
 {$IFDEF IDE_DEBUG}
@@ -2170,7 +2258,6 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
   i:=Project.IndexOf(ActiveUnitInfo);
   if (i<>Project.MainUnit) and (ActiveUnitInfo.Source.IsVirtual) then begin
     Project.RemoveUnit(i);
-    //UpdateMainUnitSrcEdit;
   end;
 writeln('TMainIDE.DoCloseEditorUnit end');
   Result:=mrOk;
@@ -2752,7 +2839,6 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
       if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
       if MainUnitSrcEdit<>nil then MainUnitSrcEdit.Modified:=false;
     end;
-    //UpdateMainUnitSrcEdit;
     UpdateCaption;
   end;
 
@@ -3043,7 +3129,6 @@ Begin
             if (AnUnitInfo.FormName<>'') then
               Project.RemoveCreateFormFromProjectFile(
                   'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
-            //UpdateMainUnitSrcEdit;
           end;
         end;
       end;
@@ -3125,44 +3210,220 @@ function TMainIDE.DoRunProject: TModalResult;
 //  -connect program to debugger
 var
   TheProcess : TProcess;
-  ProgramFilename, Ext, AText : String;
+  ProgramFilename, AText : String;
+  MainUnitInfo: TUnitInfo;
 begin
   Result:=mrCancel;
 writeln('[TMainIDE.DoRunProject] A');
-  if ToolStatus<>itNone then begin
+  if not (ToolStatus in [itNone,itDebugger]) then begin
     Result:=mrAbort;
     exit;
   end;
   if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
-  then exit;
+  or (Project.MainUnit<0) then
+    exit;
 
-  ProgramFilename:=Project.ProjectFile;
-  if ProgramFilename='' then ProgramFilename:=GetTestProjectFilename;
-  Ext:=ExtractFileExt(ProgramFilename);
-  ProgramFilename:=LowerCase(copy(ProgramFilename,1,
-                          length(ProgramFilename)-length(Ext)));
-  {$ifdef win32}
-  ProgramFilename:=ProgramFilename+'.exe';
-  {$endif}
+  MainUnitInfo:=Project.Units[Project.MainUnit];
+  ProgramFilename:=ChangeFileExt(MainUnitInfo.Filename,Project.TargetFileExt);
+  if MainUnitInfo.IsVirtual then ProgramFilename:=GetTestProjectFilename;
 
   if not FileExists(ProgramFilename) then begin
     AText:='No program file "'+ProgramFilename+'" found!';
-    MessageDlg('File not found',AText,mterror,[mbok],0);
+    MessageDlg('File not found',AText,mtError,[mbCancel],0);
     exit;
   end;
 
-  try
-    TheProcess:=TProcess.Create(ProgramFilename,
-       [poRunSuspended,poUsePipes,poNoConsole]);
-    TheProcess.Execute;
-  except
-    on e: Exception do begin
-      AText:='Error running program "'+ProgramFilename+'": '+e.Message;
-      MessageDlg(AText,mterror,[mbok], 0);
-    end;
-  end;
+  case EnvironmentOptions.DebuggerType of
+    dtGnuDebugger:
+      begin
+        if TheDebugger=nil then begin
+          Result:=DoInitDebugger;
+          if Result<>mrOk then exit;
+          Result:=mrCancel;
+        end;
+        ToolStatus:=itDebugger;
+        TheDebugger.Run;
+      end;
+  else
+      begin
+        try
+          TheProcess:=TProcess.Create(ProgramFilename,
+             [poRunSuspended,poUsePipes,poNoConsole]);
+          TheProcess.Execute;
+        except
+          on e: Exception do begin
+            AText:='Error running program "'+ProgramFilename+'": '+e.Message;
+            MessageDlg(AText,mterror,[mbok], 0);
+          end;
+        end;
+      end;
+  end;   
   Result:=mrOk;
 writeln('[TMainIDE.DoRunProject] END');
+end;
+
+function TMainIDE.DoPauseProject: TModalResult;
+begin
+  Result:=mrCancel;
+  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then exit;
+  TheDebugger.Pause;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoStepIntoProject: TModalResult;
+begin
+  Result:=mrCancel;
+  if ToolStatus=itNone then begin
+    Result:=DoInitDebugger;
+    if Result<>mrOk then exit;
+    Result:=mrCancel;
+    ToolStatus:=itDebugger;
+  end;
+  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then
+    exit
+  else begin
+    TheDebugger.StepInto;
+    Result:=mrOk;
+  end;
+end;
+
+function TMainIDE.DoStepOverProject: TModalResult;
+begin
+  Result:=mrCancel;
+  if ToolStatus=itNone then begin
+    Result:=DoInitDebugger;
+    if Result<>mrOk then exit;
+    Result:=mrCancel;
+    ToolStatus:=itDebugger;
+  end;
+  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then
+    exit
+  else begin
+    TheDebugger.StepOver;
+    Result:=mrOk;
+  end;
+end;
+
+function TMainIDE.DoStopProject: TModalResult;
+begin
+  Result:=mrCancel;
+  if (ToolStatus<>itDebugger) or (TheDebugger=nil) then exit;
+  TheDebugger.Stop;
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoRunToCursor: TModalResult;
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  UnitFilename: string;
+begin
+  Result:=mrCancel;
+  if ToolStatus=itNone then begin
+    Result:=DoInitDebugger;
+    if Result<>mrOk then exit;
+    Result:=mrCancel;
+    ToolStatus:=itDebugger;
+  end;
+  if ToolStatus<>itDebugger then exit;
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then begin
+    MessageDlg('Run to failed','Please open a unit before run.',mtError,
+      [mbCancel],0);
+    exit;
+  end;
+  if not ActiveUnitInfo.Source.IsVirtual then
+    UnitFilename:=ActiveUnitInfo.Filename
+  else
+    UnitFilename:=GetTestUnitFilename(ActiveUnitInfo);
+  TheDebugger.RunTo(UnitFilename,ActiveSrcEdit.EditorComponent.CaretY);
+end;
+
+function TMainIDE.DoInitDebugger: TModalResult;
+var ProgramFilename: string;
+  MainUnitInfo: TUnitInfo;
+begin
+  Result:=mrCancel;
+  if Project.MainUnit<0 then exit;
+  
+  case EnvironmentOptions.DebuggerType of
+    dtGnuDebugger:
+      begin
+      { ToDo: GnuDebugger
+        if (TheDebugger<>nil) and (not (TheDebugger is TGnuDebugger)) then begin
+          TheDebugger.Free;
+          TheDebugger:=nil;
+        end;
+        TheDebugger:=TGnuDebugger.Create;}
+      end;
+  else
+    begin
+      TheDebugger.Free;
+      TheDebugger:=nil;
+      exit;
+    end;
+  end;
+  MainUnitInfo:=Project.Units[Project.MainUnit];
+  if MainUnitInfo.IsVirtual then
+    ProgramFilename:=GetTestProjectFilename
+  else
+    ProgramFilename:=ChangeFileExt(MainUnitInfo.Filename,Project.TargetFileExt);
+  TheDebugger.Filename:=ProgramFilename;
+  TheDebugger.OnState:=@OnDebuggerChangeState;
+  TheDebugger.OnCurrent:=@OnDebuggerCurrentLine;
+    
+  // property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups; // list of all breakpoints
+  // property Watches: TDBGWatches read FWatches;   // list of all watches localvars etc
+  
+  Result:=mrOk;
+end;
+
+procedure TMainIDE.OnDebuggerChangeState(Sender: TObject);
+begin
+  if (Sender<>TheDebugger) or (Sender=nil) then exit;
+  RunSpeedButton.Enabled:=(TheDebugger.State in [dsStop,dsPause,dsError]);
+  PauseSpeedButton.Enabled:=(TheDebugger.State in [dsRun]);
+  itmProjectRun.Enabled:=RunSpeedButton.Enabled;
+  itmProjectPause.Enabled:=PauseSpeedButton.Enabled;
+  case TheDebugger.State of
+  dsStop:
+    begin
+      // program stopped -> end debugging session
+      TheDebugger.Free;
+      TheDebugger:=nil;
+      ToolStatus:=itNone;
+    end;
+  dsPause:
+    begin
+      // program paused
+      ToolStatus:=itDebugger;
+    end;
+  dsRun:
+    begin
+      // program is running
+      ToolStatus:=itDebugger;
+    end;
+  dsError:
+    begin
+      // ???
+      ToolStatus:=itDebugger;
+    end;
+  end;
+end;
+
+procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject; 
+  const AFilename: String;  const ALine: Integer);
+// debugger paused program due to pause or error
+// -> show the current execution line in editor
+var ActiveSrcEdit: TSourceEditor;
+begin
+  if (Sender<>TheDebugger) or (Sender=nil) then exit;
+  if DoOpenEditorFile(AFilename,false)<>mrOk then exit;
+  ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
+  if ActiveSrcEdit=nil then exit;
+  ActiveSrcEdit.EditorComponent.CaretXY:=Point(1,ALine);
+  ActiveSrcEdit.EditorComponent.TopLine:=
+    ALine-(ActiveSrcEdit.EditorComponent.LinesInWindow div 2);
+  ActiveSrcEdit.ErrorLine:=ALine;
 end;
 
 function TMainIDE.SomethingOfProjectIsModified: boolean;
@@ -3649,13 +3910,27 @@ var TestDir: string;
 begin
   Result:='';
   if (Project.MainUnit<0) then exit;
+  Result:=ExtractFilename(Project.Units[Project.MainUnit].Source.Filename);
+  if (Result='') then exit;
   TestDir:=EnvironmentOptions.TestBuildDirectory;
   if (TestDir='') then exit;
   if TestDir[length(TestDir)]<>OSDirSeparator then
     TestDir:=TestDir+OSDirSeparator;
-  Result:=CodeToolBoss.GetSourceType(Project.Units[Project.MainUnit].Source);
-  if (Result='') then exit;
-  Result:=TestDir+Result+'.lpr';
+  Result:=TestDir+Result;
+end;
+
+function TMainIDE.GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
+var TestDir: string;
+begin
+  Result:='';
+  if AnUnitInfo=nil then exit;
+  TestDir:=EnvironmentOptions.TestBuildDirectory;
+  if (TestDir='') then exit;
+  if TestDir[length(TestDir)]<>OSDirSeparator then
+    TestDir:=TestDir+OSDirSeparator;
+  Result:=ExtractFilename(AnUnitInfo.Filename);
+  if Result='' then exit;
+  Result:=TestDir+Result;
 end;
 
 //------------------------------------------------------------------------------
@@ -4020,6 +4295,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2001/10/18 13:01:30  lazarus
+  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+
   Revision 1.123  2001/10/17 13:43:15  lazarus
   MG: added find previous to source editor
 

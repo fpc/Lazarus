@@ -21,7 +21,7 @@
 } 
 unit DBGWatch;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -49,7 +49,8 @@ type
     procedure SetItem(const AnIndex: Integer; const Value: TDBGWatch);
   protected
   public
-    property Items[const AnIndex: Integer]: TDBGWatch read GetItem write SetItem; default;
+    property Items[const AnIndex: Integer]: TDBGWatch 
+                 read GetItem write SetItem; default;
   end;
 
 implementation
@@ -70,6 +71,7 @@ end;
 
 function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
 begin
+  Result:=nil
 end;
 
 procedure TDBGWatches.SetItem(const AnIndex: Integer; const Value: TDBGWatch);
@@ -79,6 +81,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2001/10/18 13:01:31  lazarus
+  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+
   Revision 1.2  2001/02/25 16:44:57  lazarus
   MWE:
     + Added header and footer

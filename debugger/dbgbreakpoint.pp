@@ -21,7 +21,7 @@
 } 
 unit DBGBreakpoint;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -69,7 +69,8 @@ type
   protected
   public
     property Enabled: Boolean read FEnabled write SetEnabled;
-    property Items[const AnIndex: Integer]: TDBGBreakPoint read GetItem write SetItem; default;
+    property Items[const AnIndex: Integer]: TDBGBreakPoint 
+                   read GetItem write SetItem; default;
     property Name: String read FName write SetName;
   end;
 
@@ -79,7 +80,8 @@ type
     procedure SetItem(const AnIndex: Integer; const Value: TDBGBreakPointGroup);
   protected
   public
-    property Items[const AnIndex: Integer]: TDBGBreakPointGroup read GetItem write SetItem; default;
+    property Items[const AnIndex: Integer]: TDBGBreakPointGroup 
+                  read GetItem write SetItem; default;
   end;
 
 
@@ -132,6 +134,7 @@ end;
 
 function TDBGBreakPointGroup.GetItem(const AnIndex: Integer): TDBGBreakPoint;
 begin
+  Result:=nil;
 end;
 
 procedure TDBGBreakPointGroup.SetEnabled(const AValue: Boolean);
@@ -139,7 +142,8 @@ begin
   FEnabled := AValue;
 end;
 
-procedure TDBGBreakPointGroup.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
+procedure TDBGBreakPointGroup.SetItem(const AnIndex: Integer;
+  const AValue: TDBGBreakPoint);
 begin
 end;
 
@@ -150,17 +154,23 @@ end;
 
 { TDBGBreakPointGroups }
 
-function TDBGBreakPointGroups.GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
+function TDBGBreakPointGroups.GetItem(
+  const AnIndex: Integer): TDBGBreakPointGroup;
 begin
+  Result:=nil;
 end;
 
-procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer; const Value: TDBGBreakPointGroup);
+procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer; 
+  const Value: TDBGBreakPointGroup);
 begin
 end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2001/10/18 13:01:31  lazarus
+  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+
   Revision 1.2  2001/02/25 16:44:57  lazarus
   MWE:
     + Added header and footer

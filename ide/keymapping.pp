@@ -46,6 +46,9 @@ const
   ecClose              = ecOpen      + 1;
   ecBuild              = ecClose     + 1;
   ecRun                = ecBuild     + 1;
+  ecPause              = ecRun       + 1;
+  ecStepInto          = ecPause     + 1;
+  ecStepOver          = ecStepInto  + 1;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
@@ -309,6 +312,9 @@ begin
     ecClose: Result:= 'close';
     ecBuild: Result:= 'build program/project';
     ecRun: Result:= 'run program';
+    ecPause: Result:= 'pause program';
+    ecStepInto: Result:= 'step into';
+    ecStepOver: Result:= 'step over';
     ecJumpToEditor: Result:='jump to editor';
     ecToggleFormUnit: Result:='toggle between form and unit';
     ecGotoEditor1: Result:= 'goto editor 1';
@@ -898,6 +904,9 @@ begin
   Add('Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
   Add('Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
   Add('Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
+  Add('Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add('Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
+  Add('Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
 
   Add('Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);

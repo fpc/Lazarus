@@ -22,7 +22,7 @@
 } 
 unit Debugger;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,10 +30,12 @@ uses
   Classes, DBGWatch, DBGBreakpoint;
 
 type
-  TDBGCommandFlags = set of (dcfRun, dcfPause, dcfStop, dcfStepOver, dcfStepInto, dcfRunTo, dcfJumpto, dcfBreak);
+  TDBGCommandFlags = set of (dcfRun, dcfPause, dcfStop, dcfStepOver, dcfStepInto,
+    dcfRunTo, dcfJumpto, dcfBreak);
   TDBGState = (dsStop, dsPause, dsRun, dsError);
 
-  TDBGCurrentLineEvent = procedure(Sender: TObject; const ASource: String; const ALine: Integer) of object;
+  TDBGCurrentLineEvent = procedure(Sender: TObject; const AFilename: String;
+    const ALine: Integer) of object;
 
   TDebugger = class
   private
@@ -54,8 +56,8 @@ type
     procedure Stop; virtual;                         // quit debugging
     procedure StepOver; virtual;
     procedure StepInto; virtual;
-    procedure RunTo(const ASource: String; const ALine: Integer); virtual;        // Executes til a certain point
-    procedure JumpTo(const ASource: String; const ALine: Integer); virtual;       // No execute, only set exec point
+    procedure RunTo(const AFilename: String; const ALine: Integer); virtual;        // Executes til a certain point
+    procedure JumpTo(const AFilename: String; const ALine: Integer); virtual;       // No execute, only set exec point
     property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups; // list of all breakpoints
     property FileName: String read FFileName write SetFileName;             // The name of the exe to be debugged
     property Flags: TDBGCommandFlags read GetFlags;                            // All available commands of the debugger
@@ -77,17 +79,19 @@ end;
 
 function TDebugger.GetDBGState: TDBGState;
 begin
+  Result:=dsStop;
 end;
 
 function TDebugger.GetFlags: TDBGCommandFlags;
 begin
+  Result:=[dcfStop];
 end;
 
 procedure TDebugger.Init;
 begin
 end;
 
-procedure TDebugger.JumpTo(const ASource: String; const ALine: Integer);
+procedure TDebugger.JumpTo(const AFilename: String; const ALine: Integer);
 begin
 end;
 
@@ -99,7 +103,7 @@ procedure TDebugger.Run;
 begin
 end;
 
-procedure TDebugger.RunTo(const ASource: String; const ALine: Integer);
+procedure TDebugger.RunTo(const AFilename: String; const ALine: Integer);
 begin
 end;
 
@@ -122,6 +126,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.2  2001/10/18 13:01:31  lazarus
+  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+
   Revision 1.1  2001/02/28 22:09:15  lazarus
   MWE:
     * Renamed DBGDebugger to Debugger

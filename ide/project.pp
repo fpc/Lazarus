@@ -309,6 +309,7 @@ const
       '.pas', '.pas', '.pas', '.pas'
     );
 
+  DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
 
 function ProjectTypeNameToType(const s:string): TProjectType;
 
@@ -869,7 +870,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectFile := '';
-  fTargetFileExt := '';
+  fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
   fUnitList := TList.Create;  // list of TUnitInfo
   fUnitOutputDirectory := '.';
@@ -1024,7 +1025,7 @@ begin
        'ProjectOptions/General/ActiveEditorIndexAtStart/Value', -1);
     IconPath := xmlcfg.GetValue('ProjectOptions/General/IconPath/Value', './');
     TargetFileExt := xmlcfg.GetValue(
-       'ProjectOptions/General/TargetFileExt/Value', '');
+       'ProjectOptions/General/TargetFileExt/Value', DefaultTargetFileExt);
     Title := xmlcfg.GetValue('ProjectOptions/General/Title/Value', '');
     OutputDirectory := xmlcfg.GetValue(
        'ProjectOptions/General/OutputDirectory/Value', '.');
@@ -1132,7 +1133,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectFile := '';
-  fTargetFileExt := '';
+  fTargetFileExt := {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
   fTitle := '';
   fUnitOutputDirectory := '.';
 end;
@@ -1469,6 +1470,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2001/10/18 13:01:31  lazarus
+  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+
   Revision 1.30  2001/10/15 13:11:27  lazarus
   MG: added complete code
 

@@ -38,6 +38,15 @@ type
     MaxCounter: integer;         // for bakCounter
     SubDirectory: string;
   end;
+  
+  TDebuggerType = (dtNone, dtGnuDebugger);
+  
+const
+  DebuggerName : array[TDebuggerType] of string = (
+    '(None)','GNU debugger (gdb)'
+  );
+
+type
 
   { class for storing environment options }
   TEnvironmentOptions = class
@@ -70,10 +79,12 @@ type
     // object inspector
     FObjectInspectorOptions: TOIOptions;
     
-    // compiler + lazarus files
+    // compiler + debugger + lazarus files
     FLazarusDirectory: string;
     FCompilerFilename: string;
     FFPCSourceDirectory: string;
+    FDebuggerFilename: string;
+    FDebuggerType: TDebuggerType;
     FTestBuildDirectory: string;
 
     // recent files and directories
@@ -142,6 +153,10 @@ type
        read FCompilerFilename write FCompilerFilename;
     property FPCSourceDirectory: string
        read FFPCSourceDirectory write FFPCSourceDirectory;
+    property DebuggerFilename: string
+       read FDebuggerFilename write FDebuggerFilename;
+    property DebuggerType: TDebuggerType
+       read FDebuggerType write FDebuggerType;
     property TestBuildDirectory: string
        read FTestBuildDirectory write FTestBuildDirectory;
 
@@ -254,6 +269,9 @@ type
     CompilerPathComboBox: TComboBox;
     FPCSourceDirLabel: TLabel;
     FPCSourceDirComboBox: TComboBox;
+    DebuggerPathLabel: TLabel;
+    DebuggerPathComboBox: TComboBox;
+    DebuggerTypeComboBox: TComboBox;
     TestBuildDirLabel: TLabel;
     TestBuildDirComboBox: TComboBox;
 
@@ -282,8 +300,17 @@ type
 var
   EnvironmentOptions: TEnvironmentOptions;
 
+function DebuggerNameToType(const s: string): TDebuggerType;
+
 
 implementation
+
+function DebuggerNameToType(const s: string): TDebuggerType;
+begin
+  for Result:=Low(TDebuggerType) to High(TDebuggerType) do
+    if UpperCase(DebuggerName[Result])=uppercase(s) then exit;
+  Result:=dtNone;
+end;
 
 
 { TEnvironmentOptions }
@@ -329,6 +356,8 @@ begin
   FLazarusDirectory:=ExtractFilePath(ParamStr(0));
   FCompilerFilename:='';
   FFPCSourceDirectory:='';
+  FDebuggerFilename:='';
+  FDebuggerType:=dtNone;
   FTestBuildDirectory:={$ifdef win32}'c:/temp'{$else}'/tmp'{$endif};
 
   // recent files and directories
@@ -426,6 +455,17 @@ var XMLConfig: TXMLConfig;
       if s<>'' then List.Add(s);
     end;
   end;
+  
+  procedure LoadDebuggerType(var ADebuggerType: TDebuggerType; Path: string);
+  var i:integer;
+  begin
+    i:=XMLConfig.GetValue(Path+'DebuggerType/Value',5);
+    case i of
+    1:ADebuggerType:=dtGnuDebugger;
+    else
+      ADebuggerType:=dtNone;
+    end;
+  end;
 
 begin
   try
@@ -487,6 +527,9 @@ begin
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
       FFPCSourceDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+      FDebuggerFilename:=XMLConfig.GetValue(
+         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      LoadDebuggerType(FDebuggerType,'EnvironmentOptions/');
       FTestBuildDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
 
@@ -556,6 +599,17 @@ var XMLConfig: TXMLConfig;
     for i:=0 to List.Count-1 do
       XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
   end;
+  
+  procedure SaveDebuggerType(ADebuggerType: TDebuggerType; Path:string);
+  var i:integer;
+  begin
+    case ADebuggerType of
+     dtNone: i:=0;
+     dtGnuDebugger: i:=1;
+    end;
+    XMLConfig.SetValue(Path+'DebuggerType/Value',i);
+  end;
+  
 
 begin
   try
@@ -610,6 +664,9 @@ begin
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
       XMLConfig.SetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+      XMLConfig.SetValue(
+         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      SaveDebuggerType(DebuggerType,'EnvironmentOptions/');
       XMLConfig.SetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
 
@@ -677,7 +734,7 @@ constructor TEnvironmentOptionsDialog.Create(AOwner:TComponent);
 begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    SetBounds((Screen.Width-480) div 2,(Screen.Height-400) div 2, 485, 405);
+    SetBounds((Screen.Width-480) div 2,(Screen.Height-430) div 2, 485, 435);
     Caption:='Environment Options';
     
     NoteBook:=TNoteBook.Create(Self);
@@ -1329,6 +1386,7 @@ end;
 
 procedure TEnvironmentOptionsDialog.SetupFilesPage;
 var MaxX:integer;
+  ADebuggerType: TDebuggerType;
 begin
   MaxX:=ClientWidth-5;
 
@@ -1496,12 +1554,59 @@ begin
     Show;
   end;
   
+  DebuggerPathLabel:=TLabel.Create(Self);
+  with DebuggerPathLabel do begin
+    Name:='DebuggerPathLabel';
+    Parent:=NoteBook.Page[1];
+    Left:=LazarusDirLabel.Left;
+    Top:=FPCSourceDirComboBox.Top+FPCSourceDirComboBox.Height;
+    Width:=FPCSourceDirLabel.Width;
+    Height:=25;
+    Caption:='Debugger type and path';
+    Show;
+  end;
+
+  DebuggerTypeComboBox:=TComboBox.Create(Self);
+  with DebuggerTypeComboBox do begin
+    Name:='DebuggerTypeComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=FPCSourceDirLabel.Left;
+    Top:=DebuggerPathLabel.Top+DebuggerPathLabel.Height+2;
+    Width:=LazarusDirLabel.Width div 2;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      for ADebuggerType:=Low(TDebuggerType) to High(TDebuggerType) do
+        Add(DebuggerName[ADebuggerType]);
+      EndUpdate;
+    end;
+    Show;
+  end;
+
+  DebuggerPathComboBox:=TComboBox.Create(Self);
+  with DebuggerPathComboBox do begin
+    Name:='DebuggerPathComboBox';
+    Parent:=NoteBook.Page[1];
+    Left:=DebuggerTypeComboBox.Left+DebuggerTypeComboBox.Width+10;
+    Top:=DebuggerTypeComboBox.Top;
+    Width:=LazarusDirLabel.Width-DebuggerTypeComboBox.Width-10;
+    Height:=25;
+    with Items do begin
+      BeginUpdate;
+      
+      Add(DebuggerName[dtNone]);
+      Add('/opt/fpc/gdb');
+      EndUpdate;
+    end;
+    Show;
+  end;
+
   TestBuildDirLabel:=TLabel.Create(Self);
   with TestBuildDirLabel do begin
     Name:='TestBuildDirLabel';
     Parent:=NoteBook.Page[1];
     Left:=LazarusDirLabel.Left;
-    Top:=FPCSourceDirComboBox.Top+FPCSourceDirComboBox.Height;
+    Top:=DebuggerTypeComboBox.Top+DebuggerTypeComboBox.Height;
     Width:=LazarusDirLabel.Width;
     Height:=23;
     Caption:='Directory for building test projects';
@@ -1650,6 +1755,8 @@ begin
     SetComboBoxText(LazarusDirComboBox,LazarusDirectory);
     SetComboBoxText(CompilerPathComboBox,CompilerFilename);
     SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory);
+    SetComboBoxText(DebuggerPathComboBox,DebuggerFilename);
+    SetComboBoxText(DebuggerTypeComboBox,DebuggerName[DebuggerType]);
     SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory);
 
     // recent files and directories
@@ -1731,6 +1838,8 @@ begin
     LazarusDirectory:=LazarusDirComboBox.Text;
     CompilerFilename:=CompilerPathComboBox.Text;
     FPCSourceDirectory:=FPCSourceDirComboBox.Text;
+    DebuggerFilename:=DebuggerPathComboBox.Text;
+    DebuggerType:=DebuggerNameToType(DebuggerTypeComboBox.Text);
     TestBuildDirectory:=TestBuildDirComboBox.Text;
 
     // recent files and directories

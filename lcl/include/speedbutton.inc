@@ -224,7 +224,7 @@ const
   FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
-  DrawFlags: Integer;
+  DrawFlags, GlyphWidth, GlyphHeight: Integer;
   //R : TRect;
   Offset: TPoint;
 begin
@@ -273,8 +273,7 @@ begin
     InflateRect(PaintRect, -1, -1);
   end;
 
-  if FState in [bsDown, bsExclusive]
-  then begin
+  if FState in [bsDown, bsExclusive] then begin
     if (FState = bsExclusive)
     and (not FFlat or not FMouseInControl) 
     then begin
@@ -290,10 +289,15 @@ begin
     Offset.X := 0;
     Offset.Y := 0;
   end;
-  inc(Offset.X,(PaintRect.Right-PaintRect.Left
-                -TButtonGlyph(FGlyph).Glyph.Width) div 2);
-  inc(Offset.Y,(PaintRect.Bottom-PaintRect.Top
-                -TButtonGlyph(FGlyph).Glyph.Height) div 2);
+  
+  
+  GlyphWidth:=TButtonGlyph(FGlyph).Glyph.Width;
+  if TButtonGlyph(FGlyph).NumGlyphs>1 then
+    GlyphWidth:=GlyphWidth div NumGlyphs;
+  GlyphHeight:=TButtonGlyph(FGlyph).Glyph.Height;
+  
+  inc(Offset.X,(PaintRect.Right-PaintRect.Left-GlyphWidth) div 2);
+  inc(Offset.Y,(PaintRect.Bottom-PaintRect.Top-GlyphHeight) div 2);
 
   //this needs to be done yet.
   Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
@@ -526,6 +530,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/10/18 13:01:33  lazarus
+  MG: fixed speedbuttons numglyphs>1 and started IDE debugging
+
   Revision 1.9  2001/07/03 10:30:32  lazarus
   MG: speedbuttonglyph centered, buttonglyph border fixed
 

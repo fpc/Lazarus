@@ -39,28 +39,20 @@ var
   gWidth : integer;
   gHeight : integer;
   DestRect: TRect;
+  ImgID: integer;
 begin
-  // for default assume only 1 glyph
-
   gWidth := TPixMap(FOriginal).Width;
   gHeight := TPixMap(FOriginal).Height;
-  Result := Rect(0, 0, gWidth, gHeight);
-
   if NumGlyphs > 1 then
-  begin
-      gWidth := TPixMap(FOriginal).Width div NumGlyphs;
-
-      if (State = bsDown) and (NumGlyphs < 3) then
-        State := bsUp;
-
-      if State = bsDisabled then
-        Result := Rect(gWidth, 0, (2 * gWidth) - 1, gHeight - 1)
-      else if State = bsDown then
-        Result := Rect(2 * gWidth, 0, (3 * gWidth) - 1, gHeight - 1)
-      else
-        Result := Rect(0, 0, gWidth - 1, gHeight - 1);
+    gWidth := gWidth div NumGlyphs;
+    
+  ImgID:=0;
+  case State of
+    bsDisabled: if NumGlyphs>1 then ImgID:=1;
+    bsDown:  if NumGlyphs>2 then ImgID:=2;
   end;
 
+  Result := Rect((ImgID*gWidth), 0, ((ImgID+1)*gWidth), gHeight);
   DestRect:=Client;
   inc(DestRect.Left,Offset.X);
   inc(DestRect.Right,Offset.X);
