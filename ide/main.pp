@@ -508,6 +508,9 @@ type
     // external tools
     function DoRunExternalTool(Index: integer): TModalResult;
     function DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult; override;
+    function DoExecuteCompilationTool(Tool: TCompilationTool;
+                                      const WorkingDir, ToolTitle: string
+                                      ): TModalResult; override;
 
     // useful information methods
     procedure GetCurrentUnit(var ActiveSourceEditor: TSourceEditor;
@@ -5508,31 +5511,51 @@ begin
   // clear old error lines
   SourceNotebook.ClearErrorLines;
 
-  try
-    // change tool status
-    ToolStatus:=itBuilder;
-    
-    // show messages
-    MessagesView.Clear;
-    DoArrangeSourceEditorAndMessageView(false);
-    TheOutputFilter.OnOutputString:=@MessagesView.Add;
-    TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
+  // show messages
+  MessagesView.Clear;
+  DoArrangeSourceEditorAndMessageView(false);
 
-    // warn ambigious files
-    DoWarnAmbigiousFiles;
+  // warn ambigious files
+  DoWarnAmbigiousFiles;
 
-    // compile
-    Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
-    if Result=mrOk then begin
-      MessagesView.Add(
-        Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']));
-    end else begin
-      DoJumpToCompilerMessage(-1,true);
+  // execute compilation tool 'Before'
+  Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
+                                   Project1.ProjectDirectory,
+                                   'Executing command before');
+
+  if (Result=mrOk)
+  and (not Project1.CompilerOptions.SkipCompiler) then begin
+    try
+      // change tool status
+      ToolStatus:=itBuilder;
+
+      TheOutputFilter.OnOutputString:=@MessagesView.Add;
+      TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
+
+      // compile
+      Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
+      if Result<>mrOk then
+        DoJumpToCompilerMessage(-1,true);
+    finally
+      ToolStatus:=itNone;
     end;
-    DoCheckFilesOnDisk;
-  finally
-    ToolStatus:=itNone;
   end;
+
+  // execute compilation tool 'After'
+  if Result=mrOk then begin
+    Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
+                                     Project1.ProjectDirectory,
+                                     'Executing command after');
+  end;
+  
+  // add success message
+  if Result=mrOk then begin
+    MessagesView.Add(
+      Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']));
+  end;
+
+  // check sources
+  DoCheckFilesOnDisk;
 end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;
@@ -5716,6 +5739,37 @@ begin
   finally
     DoCheckFilesOnDisk;
   end;
+end;
+
+function TMainIDE.DoExecuteCompilationTool(Tool: TCompilationTool;
+  const WorkingDir, ToolTitle: string): TModalResult;
+var
+  ProgramFilename, Params: string;
+  ExtTool: TExternalToolOptions;
+begin
+  if Tool.Command='' then begin
+    Result:=mrOk;
+    exit;
+  end;
+
+  SourceNotebook.ClearErrorLines;
+  
+  SplitCmdLine(Tool.Command,ProgramFilename,Params);
+
+  ExtTool:=TExternalToolOptions.Create;
+  ExtTool.Filename:=ProgramFilename;
+  ExtTool.ScanOutputForFPCMessages:=Tool.ScanForFPCMessages;
+  ExtTool.ScanOutputForMakeMessages:=Tool.ScanForMakeMessages;
+  ExtTool.ScanOutput:=true;
+  ExtTool.Title:=ToolTitle;
+  ExtTool.WorkingDirectory:=WorkingDir;
+  ExtTool.CmdLineParams:=Params;
+  
+  // run
+  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+
+  // clean up
+  ExtTool.Free;
 end;
 
 function TMainIDE.DoConvertDFMtoLFM: TModalResult;
@@ -8946,6 +9000,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.582  2003/05/25 22:16:07  mattias
+  implemented compilation tools Before and After
+
   Revision 1.581  2003/05/25 15:31:11  mattias
   implemented searching for indirect include files
 
