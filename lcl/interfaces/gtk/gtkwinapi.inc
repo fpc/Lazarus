@@ -92,9 +92,6 @@ end;
 ------------------------------------------------------------------------------}
 function TgtkObject.AngleChord(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
-var
-  Points : PPoint;
-  Count : Longint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -105,17 +102,8 @@ begin
       WriteLn('WARNING: [TgtkObject.AngleChord] Uninitialized GC');
       Result := False;
     end
-    else begin
-      Points := nil;
-      Count := 0;
-      PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
-      Inc(Count);
-      ReallocMem(Points, Count*SizeOf(TPoint));
-      Points[Count - 1] := Points[0];
-      Self.Polygon(DC, Points, Count, True);
-      ReallocMem(Points, 0);
-      Result := True;
-    end;
+    else
+      Result := Inherited AngleChord(DC, x, y, width, height, angle1, angle2);
   end;
 end;
 
@@ -1492,53 +1480,36 @@ begin
   DObj := PGdiObject(Dest);
   S1Obj := PGdiObject(Src1);
   S2Obj := PGdiObject(Src2);
-  Continue :=  IsValidGDIObject(Dest) and IsValidGDIObject(Src1);
-  Continue := Continue and (IsValidGDIObject(Src2) or (fnCombineMode = RGN_COPY));
+  Continue :=  IsValidGDIObject(Dest) and IsValidGDIObject(Src1)and IsValidGDIObject(Src2);
   If Not Continue then begin
     WriteLn('WARNING: [TgtkObject.CombineRgn] Invalid HRGN');
     Result := Error;
   end
   else begin
-    Continue :=  (DObj^.GDIType = gdiRegion);
-    If fnCombineMode <> RGN_COPY then
-      Continue := Continue and (S2Obj^.GDIType = gdiRegion);
-    If Not Continue then begin
-      WriteLn('WARNING: [TgtkObject.CombineRgn] NOT AN HRGN!!');
-      Result := ERROR;
-    end
-    else
-      If (S1Obj^.GDIRegionObject = nil) or ((S2Obj^.GDIRegionObject = nil) and
-         (fnCombineMode <> RGN_COPY))
-      then begin
-        WriteLn('WARNING: [TgtkObject.CombineRgn] Uninitialized HRGN');
-        Result := ERROR;
-      end
-    else begin
-      If DObj^.GDIRegionObject <> nil then
-        GDK_Region_Destroy(DObj^.GDIRegionObject);
-      S1 := S1Obj^.GDIRegionObject;
-      S2 := S2Obj^.GDIRegionObject;
-      Case fnCombineMode of 
-        RGN_AND :
-          D := gdk_regions_intersect(S1, S2);
-        RGN_COPY :
-          begin
-            Tmp1 := gdk_region_new;
-            D := gdk_regions_union(S1, Tmp1);
-            gdk_region_destroy(Tmp1);
-          end;
-        RGN_DIFF :
-          D := gdk_regions_subtract(S1, S2);
-        RGN_OR :
-          D := gdk_regions_union(S1, S2);
-        RGN_XOR :
-          D := gdk_regions_xor(S1, S2);
-        else
-          Result:= ERROR;
-      end;
-      DObj^.GDIRegionObject := D;
-      Result := RegionType(D);
+    If DObj^.GDIRegionObject <> nil then
+      GDK_Region_Destroy(DObj^.GDIRegionObject);
+    S1 := S1Obj^.GDIRegionObject;
+    S2 := S2Obj^.GDIRegionObject;
+    Case fnCombineMode of
+      RGN_AND :
+        D := gdk_regions_intersect(S1, S2);
+      RGN_COPY :
+        begin
+          Tmp1 := gdk_region_new;
+          D := gdk_regions_union(S1, Tmp1);
+          gdk_region_destroy(Tmp1);
+        end;
+      RGN_DIFF :
+        D := gdk_regions_subtract(S1, S2);
+      RGN_OR :
+        D := gdk_regions_union(S1, S2);
+      RGN_XOR :
+        D := gdk_regions_xor(S1, S2);
+      else
+        Result:= ERROR;
     end;
+    DObj^.GDIRegionObject := D;
+    Result := RegionType(D);
   end;
 end;
 
@@ -1574,21 +1545,52 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
 var
-  OldC,
-  Clip : hRGN;
+  OldC, Clip,
+  Tmp : hRGN;
+  X, Y : Longint;
 begin
-  OldC := CreateRectRGN(0,0,1,1);
-  Clip := CreateRectRGN(0,0,1,1);
-  If GetClipRGN(DC, OldC) < 0 then
-    Result := ERROR
-  else begin
-    Result := CombineRGN(Clip, OldC, RGN, Mode);
-    If Result <> ERROR then begin
-      Result := SelectClipRGN(DC, Clip);
+  If not IsValidDC(DC) then
+    Result := ERROR;
+  if Result <> ERROR
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.ExtSelectClipRGN] Uninitialized GC');
+      Result := ERROR;
     end
+    else begin
+      OldC := CreateRectRGN(0,0,1,1);
+      If GetClipRGN(DC, OldC) <= 0 then begin
+        Case Mode of
+          RGN_COPY:
+            begin
+              Clip := CreateRectRGN(0,0,1,1);
+              Result := CombineRGN(Clip, RGN, RGN, Mode);
+              If Result <> ERROR then
+                Result := SelectClipRGN(DC, Clip);
+              DeleteObject(Clip);
+            end;
+          RGN_OR,
+          RGN_XOR,
+          RGN_AND,
+          RGN_DIFF:
+            begin
+              GDK_Window_Get_Size(Drawable, @X, @Y);
+              Clip := CreateRectRGN(0,0,X,Y);
+              Tmp := CreateRectRGN(0,0,1,1);
+              Result := CombineRGN(Tmp, Clip, RGN, mode);
+              DeleteObject(Clip);
+              SelectClipRGN(DC, TMP);
+              DeleteObject(Tmp);
+            end;
+          end;
+        end
+        else
+          Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
+      DeleteObject(OldC);
+    end;
   end;
-  DeleteObject(Clip);
-  DeleteObject(OldC);
 end;
 
 {------------------------------------------------------------------------------
@@ -1976,6 +1978,42 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  DrawText
+  Params:  DC, Str, Count, Rect, Flags
+  Returns: If the string was drawn, or CalcRect run
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.DrawText(DC : hDC; Str: PChar; Count : Integer; var Rect: TRect; Flags : Cardinal): Integer;
+begin
+  Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+  Result := Longint(IsValidDC(DC));
+  if Boolean(Result)
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized GC');
+      Result := 0;
+    end
+    else
+      If not IsValidGDIObject(hFont(CurrentFont)) then begin
+        WriteLn('WARNING: [TgtkObject.DrawText] Invalid Font');
+        Result := 0;
+      end
+    else
+      If CurrentFont^.GDIFontObject = nil then begin
+        WriteLn('WARNING: [TgtkObject.DrawText] Uninitialized Font');
+        Result := 0;
+      end
+    else
+      Result := Inherited DrawText(DC, Str, Count, Rect, Flags);
+  end;
+  Assert(False, Format('trace:> [TgtkObject.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+end;
+
+{------------------------------------------------------------------------------
   Function: EnableMenuItem
   Params: hndMenu:
           uIDEnableItem:
@@ -2079,9 +2117,6 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
-var
-  CRGN, RRGN : hRGN;
-  X, Y : Longint;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
@@ -2093,29 +2128,9 @@ begin
       WriteLn('WARNING: [TgtkObject.ExcludeClipRect] Uninitialized GC');
       Result := ERROR;
     end
-    else begin
-      If Not IsValidGDIObject(ClipRegion) then begin
-        gdk_window_get_size(Drawable, @X, @Y);
-        ClipRegion := CreateRectRgn(0, 0, X, Y);
-      end;
-      RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-      CRGN := CreateRectRgn(0,0,0,0);
-      Result := CombineRGN(CRGN, ClipRegion, RRGN, RGN_DIFF);
-      DeleteObject(RRGN);
-      DeleteObject(ClipRegion);
-      ClipRegion := CRGN;
-      SelectGDIRegion(DC);
-    end;
+    else
+      Result := Inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
   end;
-end;
-
-Function TextPoint(X, Y : Integer; Font : PGDKFont) : TPoint;
-const
-  Buffer : PChar = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 ';
-begin
-  //I THINK this is accurate now...
-  Result.Y := Y + GDK_String_Height(Font,Buffer) - Font^.descent div 2;
-  Result.X := X;
 end;
 
 {------------------------------------------------------------------------------
@@ -2134,6 +2149,8 @@ var
   AY, NUm : Integer;
   Line : Integer;
   TXTPt : TPoint;
+  TM  : TTextMetric;
+  ADC : hDC;
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
@@ -2152,6 +2169,7 @@ begin
     end
     else begin
       // TODO: implement other parameters.
+      ADC := SaveDC(DC);
       pStr := StrAlloc(Count + 1);
       try
         StrLCopy(pStr, Str, Count);
@@ -2160,40 +2178,43 @@ begin
         begin
           Width := Rect^.Right - Rect^.Left;
           Height := Rect^.Bottom - Rect^.Top;
-         // SelectGDKBrushProps(DC);
           gdk_gc_set_fill(GC, GDK_SOLID);
           gdk_gc_set_foreground(GC, @CurrentBackColor);
           gdk_draw_rectangle(Drawable, GC, 1, Rect^.Left, Rect^.Top, Width, Height);
         end;
+        SelectGDKTextProps(DC);
         if (Options and ETO_CLIPPED) <> 0 then
         begin
           X := Rect^.Left;
           Y := Rect^.Top;
+          IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
+            Rect^.Bottom);
         end;
-        SelectGDKTextProps(DC);
         Line := 1;
         OldText := StrPas(pStr);
         Num := pos(#10,OldText);
         AY := Y;
-        TxtPt := TextPoint(X, AY, CurrentFont^.GDIFontObject);
-	if Num = 0 then begin
-	  gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+        GetTextMetrics(DC, TM);
+	      TxtPt.X := X;
+	      TxtPt.Y := AY + TM.tmAscent;
+	      if Num = 0 then begin
+	        gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
                         TxtPt.X, TxtPt.Y, pStr, Count);
         end else
         Begin  //write multiple lines
           while Num > 0 do begin
             NewText := Copy(OldText,1,Num);
-	    Case OldText[Num] of
-	      #13,#10 : Delete(NewText,Num,1);
-	    end;  
-	    If Num -1 > 0 then
-	      Case OldText[Num-1] of
-	        #13,#10 : Delete(NewText,Num-1,1);
-	      end;  
-	    gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
-                          TxtPt.X, TxtPt.Y, pchar(NewText), Length(NewText));
+            Case OldText[Num] of
+              #13,#10 : Delete(NewText,Num,1);
+            end;
+            If Num -1 > 0 then
+              Case OldText[Num-1] of
+                #13,#10 : Delete(NewText,Num-1,1);
+              end;
+            gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
+                           TxtPt.X, TxtPt.Y, pchar(NewText), Length(NewText));
             AY := TxtPt.Y;
-            TxtPt := TextPoint(X, AY, CurrentFont^.GDIFontObject);
+            TxtPt.Y := AY + TM.tmAscent;
             Delete(OldText,1,Num);
             Num := pos(#10,OldText);
             inc(line);
@@ -2201,9 +2222,10 @@ begin
           if OldText <> '' then begin
             gdk_draw_text(Drawable, CurrentFont^.GDIFontObject, GC,
                           TxtPt.X, TxtPt.Y, pchar(OldText), length(OldText));
-          end; 			  
+          end;
         end;
       finally
+        RestoreDC(DC, ADC);
         StrDispose(pStr);
       end;
     end;
@@ -2494,10 +2516,10 @@ begin
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
       With lpRect^,CRect do begin
-	Left   := X;
-	Top    := Y;
-	Right  := X + Width;
-	Bottom := Y + Height;
+        Left   := X;
+        Top    := Y;
+        Right  := X + Width;
+        Bottom := Y + Height;
       end;  
     end;
   end;  
@@ -3214,6 +3236,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetTextColor
+  Params:  DC
+  Returns: TColorRef
+
+  Gets the Font Color currently assigned to the Device Context
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetTextColor(DC: HDC) : TColorRef;
+begin
+  Result := 0;
+  if IsValidDC(DC) then
+    with PDeviceContext(DC)^ do
+    begin
+      Result := TGDKColorToTColor(CurrentTextColor);
+    end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetTextExtentPoint
   Params:  none
   Returns: Nothing
@@ -3253,11 +3292,12 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 const
-  TestString = '{m|g_}';
-  AvrWidthStr = 'abcxyz012789 ';
+  TestString = '{Am|g_}';
+  AVGBuffer : Pchar =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
 var
+  XT : TSize;
   lbearing, rbearing, dummy: LongInt;
-  AvrWidthStrLen: integer;
 begin
   Assert(False, Format('Trace:> TODO FINISH[TgtkObject.GetTextMetrics] DC: 0x%x', [DC]));
 
@@ -3271,14 +3311,14 @@ begin
       end
       else with TM do begin
         FillChar(TM, SizeOf(TM), 0);
-
         gdk_text_extents(CurrentFont^.GDIFontObject, TestString,
           length(TestString), @lbearing, @rBearing, @dummy,
           @tmAscent, @tmDescent);
-        tmHeight := tmAscent + tmDescent + 2; //todo EXACT MEASUREMENT
-        AvrWidthStrLen := length(AvrWidthStr);
-        tmAveCharWidth := gdk_text_width(CurrentFont^.GDIFontObject,
-          AvrWidthStr,AvrWidthStrLen) div AvrWidthStrLen;
+        GetTextExtentPoint(DC, AVGBuffer, StrLen(AVGBuffer), XT);
+        XT.cX := XT.cX div StrLen(AVGBuffer);
+        tmHeight := XT.cY;
+        tmAscent := tmHeight - tmDescent;
+        tmAveCharWidth :=  XT.cX;
         if tmAveCharWidth<2 then tmAveCharWidth:=2;
         tmMaxCharWidth := gdk_char_width(CurrentFont^.GDIFontObject, 'W'); // temp hack
         if tmMaxCharWidth<2 then tmMaxCharWidth:=2;
@@ -3478,8 +3518,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGTKObject.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
-var
-  CRGN, RRGN : hRGN;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
@@ -3492,19 +3530,7 @@ begin
       Result := ERROR;
     end
     else begin
-      RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-      If IsValidGDIObject(ClipRegion) then begin
-	CRGN := CreateRectRgn(0,0,1,1);
-	Result := CombineRGN(CRGN, ClipRegion, RRGN, RGN_AND);
-        DeleteObject(RRGN);
-        DeleteObject(ClipRegion);
-	ClipRegion := CRGN;
-      end
-      else begin
-        ClipRegion := RRGN;
-        Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
-      end;
-      SelectGDIRegion(DC);
+      Result := Inherited IntersectClipRect(DC, Left, Top, Right, Bottom);
     end;
   end;
 end;
@@ -3806,9 +3832,6 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.Pie(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
-var
-  Points : PPoint;
-  Count : Longint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -3819,28 +3842,8 @@ begin
       WriteLn('WARNING: [TgtkObject.Pie] Uninitialized GC');
       Result := False;
     end
-    else begin
-      Points := nil;
-      Count := 0;
-      PolyBezierArcPoints(X,Y,Width,Height,Angle1, Angle2, 0, Points, Count);
-      Inc(Count,2);
-      ReallocMem(Points, Count*SizeOf(TPoint));
-      Points[Count - 2] := CenterPoint(Rect(X,Y,X+Width,Y+Height));
-      Points[Count - 1] := Points[0];
-      Self.Polygon(DC, Points, Count, True);
-      ReallocMem(Points, 0);
-      { Old:
-      // first draw interior in brush color
-      SelectGDKBrushProps(DC);
-      gdk_draw_arc(Drawable, GC, 1, X, Y, Width, Height,
-                   Angle1 shl 2, Angle2 shl 2);
-      // Draw outline
-      SelectGDKPenProps(DC);
-      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
-                   Angle1 shl 2, Angle2 shl 2);
-      }
-      Result := True;
-    end;
+    else
+      Result := Inherited Pie(DC, x, y, width, height, angle1, angle2);
   end;
 end;
 
@@ -3864,43 +3867,45 @@ end;
  ------------------------------------------------------------------------------}
 Function TgtkObject.PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
   Filled, Continuous: Boolean): Boolean;
-var
-  APoints : PPoint;
-  ACount : Longint;
 Begin
-  APoints := nil;
-  PolyBezier2Polyline(Points,NumPts,APoints,ACount,Continuous);
-  If Filled then 
-    Result := Polygon(DC,APoints,ACount, False)
-  else
-    Result := Polyline(DC,APoints,ACount);  
-  ReallocMem(APoints,0);
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
+      Result := False;
+    end
+    else
+      Result := Inherited PolyBezier(DC, Points, NumPts, Filled, Continuous);
+  end;
 End;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Polygon
   Params:   DC: HDC; Points: ^TPoint; NumPts: integer; Winding: Boolean;
   Returns:  Nothing
-  
-  Use Polygon to draw a closed, many-sided shape on the canvas, using the value 
-  of Pen. After drawing the complete shape, Polygon fills the shape using the 
+
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value
+  of Pen. After drawing the complete shape, Polygon fills the shape using the
   value of Brush.
   The Points parameter is an array of points that give the vertices of the
   polygon.
-  Winding determines how the polygon is filled. When Winding is True, Polygon 
-  fills the shape using the Winding fill algorithm. When Winding is False, 
+  Winding determines how the polygon is filled. When Winding is True, Polygon
+  fills the shape using the Winding fill algorithm. When Winding is False,
   Polygon uses the even-odd (alternative) fill algorithm.
   NumPts indicates the number of points to use.
   The first point is always connected to the last point.
-  To draw a polygon on the canvas, without filling it, use the Polyline method, 
+  To draw a polygon on the canvas, without filling it, use the Polyline method,
   specifying the first point a second time at the end.
 }
 function TgtkObject.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
-  Winding: Boolean): boolean; 
-var 
+  Winding: Boolean): boolean;
+var
   i: integer;
   PointArray: PGDKPoint;
-  CLIP, RGN : hRGN;
+  Tmp, RGN : hRGN;
   ClipRect : TRect;
 begin
   Result := IsValidDC(DC);
@@ -3920,45 +3925,38 @@ begin
         PointArray[i].y:=Points[i].y;
       end;
 
-      If (Points[NumPts-1].X <> Points[0].X) or 
-        (Points[NumPts-1].Y <> Points[0].Y) 
+      If (Points[NumPts-1].X <> Points[0].X) or
+        (Points[NumPts-1].Y <> Points[0].Y)
       then begin
         Inc(NumPts);
         ReallocMem(PointArray,SizeOf(TGdkPoint)*NumPts);
         PointArray[NumPts - 1].x:=Points[0].x;
         PointArray[NumPts - 1].y:=Points[0].y;
       end;
-        
+
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
 
       if Winding then begin
-        Clip := ClipRegion;
+        Tmp := CreateRectRGN(0,0,0,0);
+        GetClipRGN(DC, Tmp);
         RGN := CreatePolygonRgn(Points, NumPts, True);
-        If IsValidGDIObject(Clip) then begin
-	  ClipRegion := CreateRectRGN(0,0,0,0);
-	  CombineRGN(ClipRegion, RGN, Clip, RGN_AND);
-	  DeleteObject(RGN);
-	end
-	else
-	  ClipRegion := RGN;
-
-        SelectGDIRegion(DC);
+        ExtSelectClipRGN(DC, RGN, RGN_AND);
+        DeleteObject(RGN);
         GetClipBox(DC, @ClipRect);
-	FillRect(DC, ClipRect, HBrush(CurrentBrush));
-        DeleteObject(ClipRegion);
-        ClipRegion := Clip;
-        SelectGDIRegion(DC);
+	      FillRect(DC, ClipRect, HBrush(CurrentBrush));
+  	    SelectClipRGN(DC, Tmp);
+        DeleteObject(Tmp);
       end else
         gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
- 
-      
+
+
       // draw outline
       SelectGDKPenProps(DC);
       gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
-      
+
       FreeMem(PointArray);
-      
+
       Result := True;
     end;
   end;
@@ -4048,17 +4046,25 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
-var
-  A1, A2 : Extended;
+function TgtkObject.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
-  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := Arc(DC, X, Y, Width, Height, Round(A1), Round(A2));
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.RadialArc] Uninitialized GC');
+      Result := False;
+    end
+    else
+      Result := Inherited RadialArc(DC, x, y, width, height, sx,sy,ex,ey);
+  end;
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialChord
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
   Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
@@ -4066,31 +4072,47 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
-var
-  A1, A2 : Extended;
-Begin
-  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := AngleChord(DC, X, Y, Width, Height, Round(A1), Round(A2));
+function TgtkObject.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.RadialChord] Uninitialized GC');
+      Result := False;
+    end
+    else
+      Result := Inherited RadialChord(DC, x, y, width, height, sx,sy,ex,ey);
+  end;
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialPie
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
-  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values 
+  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values
   sx,sy, and ex,ey represent the starting and ending radial-points between which
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TgtkObject.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
-var
-  A1, A2 : Extended;
-Begin
-  Coords2Angles(x,y,width,height,sx,sy,ex,ey,A1,A2);
-  Result := Pie(DC, X, Y, Width, Height, Round(A1), Round(A2));
-End;
+function TgtkObject.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.RadialPie] Uninitialized GC');
+      Result := False;
+    end
+    else
+      Result := Inherited RadialPie(DC, x, y, width, height, sx,sy,ex,ey);
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: RadioMenuItemGroup
@@ -4241,8 +4263,6 @@ begin
         then pDC^.CurrentPen := nil;     
         if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
         then pDC^.CurrentBrush := nil;   
-        if pSavedDC^.ClipRegion = pDC^.ClipRegion 
-        then pDC^.ClipRegion := 0;   
         ReleaseDC(0,HDC(pSavedDC));
         pDC^.SavedContext:=nil;
       end;
@@ -4251,11 +4271,12 @@ begin
       DeleteObject(HGDIObj(pDC^.CurrentPen));
       DeleteObject(HGDIObj(pDC^.CurrentFont));
       DeleteObject(HGDIObj(pDC^.CurrentBitmap));
-      DeleteObject(pDC^.ClipRegion);
       try
         { On root window, we don't allocate a graphics context }
-        if pDC^.GC <> nil then
+        if pDC^.GC <> nil then begin
+          SelectClipRGN(DC, 0);
           gdk_gc_unref(pDC^.GC);
+        end;
       except
         on E:Exception do begin
           //Nothing, just try to unref it
@@ -4310,9 +4331,7 @@ begin
     then pSavedDC^.CurrentPen := nil;     
     if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
     then pSavedDC^.CurrentBrush := nil;   
-    if pSavedDC^.ClipRegion = pDC^.ClipRegion
-    then pSavedDC^.ClipRegion := 0;   
-      
+
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
   Assert(False, Format('Trace:< [TgtkObject.RestoreDC] DC:0x%x, Saved: %d --> %s', [Integer(DC), SavedDC, BOOL_TEXT[Result]]));
@@ -4457,20 +4476,20 @@ begin
     else begin
       If RGN = 0 then begin
         DeleteObject(ClipRegion);
-	ClipRegion := 0;
-	Result := SIMPLEREGION;
+        ClipRegion := 0;
+        SelectGDIRegion(DC);
       end
       else
         If IsValidGDIObject(RGN) then begin
           DeleteObject(ClipRegion);
-	  ClipRegion := CreateRectRGN(0,0,0,0);
-	  Result := CombineRGN(ClipRegion, RGN, RGN, RGN_COPY);
+          ClipRegion := CreateRectRGN(0,0,0,0);
+          Result := CombineRGN(ClipRegion, RGN, RGN, RGN_COPY);
+          SelectGDIRegion(DC);
         end
         else begin
           Result := ERROR;
-          WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');	  
+          WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');
         end;
-      SelectGDIRegion(DC);
     end;
   end;
 end;
@@ -4550,10 +4569,11 @@ begin
       begin
         with PDeviceContext(DC)^ do
         begin
-          Result := ClipRegion;
-          ClipRegion := GDIObj;
-          if GC <> nil then 
-	    SelectGDIRegion(DC);
+          Result := CreateRectRGN(0,0,1,1);
+          GetClipRGN(DC, Result);
+writeln('EEE1');
+          SelectClipRGN(DC, GDIObj);
+writeln('EEE2');
         end;
       end;
     end;
@@ -5274,6 +5294,7 @@ function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 type
   TBltFunction = function: Boolean;
 var
+  fGC : PGDKGC;
   SrcDevContext, DestDevContext: PDeviceContext;
   SrcGDIBitmap: PGdiObject;
   ScaleBMP : hBITMAP;
@@ -5389,9 +5410,9 @@ var
           Scale := PGdiObject(ScaleBMP);
           SetRasterOperation(ScaleROPGC);
           Result := True;
-	  exit; //skip scaling
+          exit; //skip scaling
         end;
-	else begin
+        else begin
            ScaleBMP := CreateCompatibleBitmap(-1, SRCWidth, SRCHeight);
            Scale := PGdiObject(ScaleBMP);
         end;
@@ -5403,8 +5424,12 @@ var
     else
       GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
 
+    GDK_GC_COPY(fGC, ScaleROPGC);
+    gdk_gc_set_clip_region(fgc,  nil);
+    gdk_gc_set_clip_rectangle (fgc,  nil);
+
     //copy source into scale buffer
-    gdk_window_copy_area(Scale^.GDIPixmapObject, ScaleROPGC,0, 0,
+    gdk_window_copy_area(Scale^.GDIPixmapObject, fGC,0, 0,
        SRC, XSRC, YSRC, SRCWidth, SRCHeight);
 
     // Set raster operation to SRCCOPY
@@ -5449,9 +5474,13 @@ var
     DestDevContext:=PDeviceContext(DestDC);
     SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
 
+    fGC := GDK_GC_New(DestDevContext^.Drawable);
+
     // perform raster operation and scaling in a buffer
     If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable) then
       exit;
+
+    GDK_GC_Unref(fGC);
 
     Case ROP of
       WHITENESS, BLACKNESS :
@@ -5484,10 +5513,13 @@ var
     DestDevContext:=PDeviceContext(DestDC);
     SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
 
+    fGC := GDK_GC_New(SrcDevContext^.Drawable);
+
     // perform raster operation and scaling in a buffer
     If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable) then
       exit;
 
+    GDK_GC_Unref(fGC);
 
     Case ROP of
       WHITENESS, BLACKNESS :
@@ -5712,6 +5744,7 @@ var
   aRect : TRect;
   txtpt : TPoint;
   sz : TSize;
+  TM : TTextMetric;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -5722,7 +5755,7 @@ begin
       WriteLn('WARNING: [TgtkObject.TextOut] Uninitialized GC');
       Result := False;
     end
-    else 
+    else
     if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
     then begin
       WriteLn('WARNING: [TgtkObject.TextOut] Missing font');
@@ -5731,11 +5764,13 @@ begin
     else begin
       GetTextExtentPoint(DC, Str, Count, Sz);
       aRect := Rect(X,Y,X + Sz.CX, Sz.CY);
-      FillRect(DC,aRect,hBrush(CurrentBrush));	
+      FillRect(DC,aRect,hBrush(CurrentBrush));
       SelectGDKTextProps(DC);
-      TxtPt := TextPoint(X, Y, CurrentFont^.GDIFontObject);
+      GetTextMetrics(DC, TM);
+      TxtPt.X := X;
+      TxtPt.Y := Y + TM.tmAscent;
       gdk_draw_text(Drawable,CurrentFont^.GDIFontObject,
-        GC, TxtPt.X, TxtPt.Y, Str, Count);      
+        GC, TxtPt.X, TxtPt.Y, Str, Count);
       Result := True;
     end;
   end;
@@ -5770,6 +5805,150 @@ begin
 
 end;
 
+{$IfDef Critical_Sections_Support}
+
+  {$IfNDef Win32}
+
+    {$Define pthread}
+
+    Type
+      _pthread_fastlock = packed record
+        __status: Longint;
+        __spinlock: Integer;
+      end;
+
+      pthread_mutex_t = packed record
+        __m_reserved: Integer;
+        __m_count: Integer;
+        __m_owner: Pointer;
+        __m_kind: Integer;
+        __m_lock: _pthread_fastlock;
+      end;
+      ppthread_mutex_t = ^pthread_mutex_t;
+
+      pthread_mutexattr_t = packed record
+        __mutexkind: Integer;
+      end;
+
+    {$linklib pthread}
+
+    function pthread_mutex_init(var Mutex: pthread_mutex_t;
+      var Attr: pthread_mutexattr_t): Integer; cdecl;external;
+    function pthread_mutexattr_settype(var Attr: pthread_mutexattr_t;
+      Kind: Integer): Integer; cdecl;external;
+    function pthread_mutex_lock(var Mutex: pthread_mutex_t):
+      Integer; cdecl; external;
+    function pthread_mutex_unlock(var Mutex: pthread_mutex_t):
+      Integer; cdecl; external;
+    function pthread_mutex_destroy(var Mutex: pthread_mutex_t):
+      Integer; cdecl; external;
+  {$EndIf}
+
+{$EndIf}
+
+Procedure TGTKObject.InitializeCriticalSection(var CritSection: TCriticalSection);
+{$IfDef pthread}
+var
+  Crit : ppthread_mutex_t;
+  Attribute: pthread_mutexattr_t;
+begin
+  if pthread_mutexattr_settype(Attribute, 1) <> 0 then
+    Exit;
+  If CritSection <> 0 then
+    Try
+      Crit := ppthread_mutex_t(CritSection);
+      Dispose(Crit);
+    except
+      CritSection := 0;
+    end;
+  New(Crit);
+  pthread_mutex_init(Crit^, Attribute);
+  CritSection := Longint(Crit);
+end;
+{$Else}
+begin
+end;
+{$EndIf}
+
+Procedure TGTKObject.EnterCriticalSection(var CritSection: TCriticalSection);
+{$IfDef pthread}
+var
+  Crit,
+  tmp : ppthread_mutex_t;
+begin
+  New(Crit);
+  If CritSection <> 0 then
+    Try
+      Crit^ := ppthread_mutex_t(CritSection)^;
+    except
+      begin
+        CritSection := Longint(Crit);
+        exit;
+      end;
+    end;
+  pthread_mutex_lock(Crit^);
+  tmp := ppthread_mutex_t(CritSection);
+  CritSection := Longint(Crit);
+  Dispose(Tmp);
+end;
+{$Else}
+begin
+end;
+{$EndIf}
+
+Procedure TGTKObject.LeaveCriticalSection(var CritSection: TCriticalSection);
+{$IfDef pthread}
+var
+  Crit,
+  tmp : ppthread_mutex_t;
+begin
+  New(Crit);
+  If CritSection <> 0 then
+    Try
+      Crit^ := ppthread_mutex_t(CritSection)^;
+    except
+      begin
+        CritSection := Longint(Crit);
+        exit;
+      end;
+    end;
+  pthread_mutex_unlock(Crit^);
+  tmp := ppthread_mutex_t(CritSection);
+  CritSection := Longint(Crit);
+  Dispose(Tmp);
+end;
+{$Else}
+begin
+end;
+{$EndIf}
+
+Procedure TGTKObject.DeleteCriticalSection(var CritSection: TCriticalSection);
+{$IfDef pthread}
+var
+  Crit,
+  tmp : ppthread_mutex_t;
+begin
+  New(Crit);
+  If CritSection <> 0 then
+    Try
+      Crit^ := ppthread_mutex_t(CritSection)^;
+    except
+      begin
+        CritSection := Longint(Crit);
+        exit;
+      end;
+    end;
+  pthread_mutex_destroy(Crit^);
+  Dispose(Crit);
+  tmp := ppthread_mutex_t(CritSection);
+  CritSection := 0;
+  Dispose(Tmp);
+end;
+{$Else}
+begin
+end;
+{$EndIf}
+
 //##apiwiz##eps##   // Do not remove
 
 {$IFDEF ASSERT_IS_ON}
@@ -5780,6 +5959,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2002/08/19 20:34:48  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.94  2002/08/17 15:45:34  lazarus
   MG: removed ClientRectBugfix defines
 
