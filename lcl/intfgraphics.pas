@@ -417,7 +417,11 @@ begin
   1,2,4:
       begin
         OneByte:=P^;
+{$ifdef WIN32}
+        Bits:=Word(cardinal(OneByte shr (Shift+7-Position.Bit)) and PrecMask);
+{$else}
         Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask);
+{$endif}
       end;
   8:  begin
         OneByte:=P^;
@@ -464,7 +468,11 @@ begin
   1,2,4:
       begin
         OneByte:=P^;
+{$ifdef WIN32}
+        ShiftLeft:=Shift+7-Position.Bit;
+{$else}
         ShiftLeft:=Shift+Position.Bit;
+{$endif}
         PrecMask:=not (PrecMask shl ShiftLeft);
         OneByte:=OneByte and PrecMask; // clear old
         OneByte:=OneByte or (Bits shl ShiftLeft); // set new
@@ -789,7 +797,6 @@ begin
   Position:=FLineStarts[y];
   BitOffset:=FDataDescription.BitsPerPixel*cardinal(x)+Position.Bit;
   Position.Bit:=(BitOffset and 7);
-  //Position.Bit:=7 - (BitOffset and 7);
   inc(Position.Byte,BitOffset shr 3);
 end;
 
@@ -803,7 +810,6 @@ begin
   Position:=FMaskLineStarts[y];
   BitOffset:=FDataDescription.AlphaBitsPerPixel*cardinal(x)+Position.Bit;
   Position.Bit:=(BitOffset and 7);
-  //Position.Bit:=7 - (BitOffset and 7);
   inc(Position.Byte,BitOffset shr 3);
 end;
 
