@@ -3471,7 +3471,7 @@ begin
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMin := 0;
     ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
-    ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage));
+    ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nPos := Max(FScrolledLeft,0);
     if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
     then begin
@@ -3503,7 +3503,7 @@ begin
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMin := 0;
     ScrollInfo.nPage := Max(1,(ClientHeight-ScrollBarWidth)-FDefItemHeight);
-    ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage));
+    ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage)-1);
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nPos := Max(0,FScrolledTop);
     if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
