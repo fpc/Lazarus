@@ -854,7 +854,7 @@ begin
   CurMouseCaptureHandle:=gtk_grab_get_current;
   if OldMouseCaptureHandle<>CurMouseCaptureHandle then begin
     // mouse capture widget has changed
-    MCaptureHandle:=longint(CurMouseCaptureHandle); // ToDo: 64bit faulty
+    MCaptureHandle:=integer(CurMouseCaptureHandle); // ToDo: 64bit faulty
     NotifyCurCaptureControl;
   end;
 end;
@@ -1637,6 +1637,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.53  2002/07/20 13:47:04  lazarus
+  MG: fixed eventmask for realized windows
+
   Revision 1.52  2002/07/09 17:18:23  lazarus
   MG: fixed parser for external vars
 
