@@ -2057,6 +2057,7 @@ begin
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
   Caption := locWndSrcEditor;
+  KeyPreview:=true;
   FProcessingCommand := false;
 
   FMainIDE := AOwner;

@@ -1922,111 +1922,111 @@ begin
   Handled:=true;
 
   case Command of
-   ecSave:
-     if Sender is TDesigner then begin
-       GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
-       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
-         DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
-     end else if Sender is TSourceNotebook then
-       mnuSaveClicked(Self);
+  ecSave:
+    if Sender is TDesigner then begin
+      GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
+      if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
+        DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    end else if Sender is TSourceNotebook then
+      mnuSaveClicked(Self);
 
-   ecOpen:
-     mnuOpenClicked(Self);
+  ecOpen:
+    mnuOpenClicked(Self);
 
-   ecSaveAll:
-     DoSaveAll([sfCheckAmbigiousFiles]);
+  ecSaveAll:
+    DoSaveAll([sfCheckAmbigiousFiles]);
 
-   ecBuild:
-     begin
-       GetCurrentUnit(ASrcEdit,AnUnitInfo);
-       if (AnUnitInfo<>nil)
-       and AnUnitInfo.BuildFileIfActive then
-         DoBuildFile
-       else
-         DoBuildProject(Command=ecBuildAll);
-     end;
+  ecBuild:
+    begin
+      GetCurrentUnit(ASrcEdit,AnUnitInfo);
+      if (AnUnitInfo<>nil)
+      and AnUnitInfo.BuildFileIfActive then
+        DoBuildFile
+      else
+        DoBuildProject(Command=ecBuildAll);
+    end;
 
-   ecBuildAll:    DoBuildProject(Command=ecBuildAll);
-   ecAbortBuild:  DoAbortBuild;
+  ecBuildAll:    DoBuildProject(Command=ecBuildAll);
+  ecAbortBuild:  DoAbortBuild;
 
-   ecRun:
-     begin
-       GetCurrentUnit(ASrcEdit,AnUnitInfo);
-       if (AnUnitInfo<>nil)
-       and AnUnitInfo.RunFileIfActive then
-         DoRunFile
-       else
-         DoRunProject;
-     end;
+  ecRun:
+    begin
+      GetCurrentUnit(ASrcEdit,AnUnitInfo);
+      if (AnUnitInfo<>nil)
+      and AnUnitInfo.RunFileIfActive then
+        DoRunFile
+      else
+        DoRunProject;
+    end;
 
-   ecPause:       DebugBoss.DoPauseProject;
-   ecStepInto:    DebugBoss.DoStepIntoProject;
-   ecStepOver:    DebugBoss.DoStepOverProject;
-   ecRunToCursor: DebugBoss.DoRunToCursor;
-   ecStopProgram: DebugBoss.DoStopProject;
-   ecToggleCallStack: DebugBoss.DoToggleCallStack;
+  ecPause:       DebugBoss.DoPauseProject;
+  ecStepInto:    DebugBoss.DoStepIntoProject;
+  ecStepOver:    DebugBoss.DoStepOverProject;
+  ecRunToCursor: DebugBoss.DoRunToCursor;
+  ecStopProgram: DebugBoss.DoStopProject;
+  ecToggleCallStack: DebugBoss.DoToggleCallStack;
 
 
-   ecFindProcedureDefinition,
-   ecFindProcedureMethod:
-     DoJumpToProcedureSection;
+  ecFindProcedureDefinition,
+  ecFindProcedureMethod:
+    DoJumpToProcedureSection;
 
-   ecFindDeclaration:
-     DoFindDeclarationAtCursor;
+  ecFindDeclaration:
+    DoFindDeclarationAtCursor;
 
-   ecFindBlockOtherEnd:
-     DoGoToPascalBlockOtherEnd;
+  ecFindBlockOtherEnd:
+    DoGoToPascalBlockOtherEnd;
 
-   ecFindBlockStart:
-     DoGoToPascalBlockStart;
+  ecFindBlockStart:
+    DoGoToPascalBlockStart;
 
-   ecGotoIncludeDirective:
-     DoGotoIncludeDirective;
+  ecGotoIncludeDirective:
+    DoGotoIncludeDirective;
 
-   ecCompleteCode:
-     DoCompleteCodeAtCursor;
+  ecCompleteCode:
+    DoCompleteCodeAtCursor;
 
-   ecExtractProc:
-     DoExtractProcFromSelection;
+  ecExtractProc:
+    DoExtractProcFromSelection;
 
-   ecConfigCustomComps:
-     PkgBoss.ShowConfigureCustomComponents;
+  ecConfigCustomComps:
+    PkgBoss.ShowConfigureCustomComponents;
 
-   ecExtToolFirst..ecExtToolLast:
-     DoRunExternalTool(Command-ecExtToolFirst);
+  ecExtToolFirst..ecExtToolLast:
+    DoRunExternalTool(Command-ecExtToolFirst);
 
-   ecSyntaxCheck:
-     DoCheckSyntax;
+  ecSyntaxCheck:
+    DoCheckSyntax;
 
-   ecGuessUnclosedBlock:
-     DoJumpToGuessedUnclosedBlock(true);
+  ecGuessUnclosedBlock:
+    DoJumpToGuessedUnclosedBlock(true);
 
-   ecGuessMisplacedIFDEF:
-     DoJumpToGuessedMisplacedIFDEF(true);
+  ecGuessMisplacedIFDEF:
+    DoJumpToGuessedMisplacedIFDEF(true);
 
-   ecMakeResourceString:
-     DoMakeResourceString;
+  ecMakeResourceString:
+    DoMakeResourceString;
 
-   ecDiff:
-     DoDiff;
+  ecDiff:
+    DoDiff;
 
-   ecConvertDFM2LFM:
-     DoConvertDFMtoLFM;
+  ecConvertDFM2LFM:
+    DoConvertDFMtoLFM;
 
-   ecBuildLazarus:
-     DoBuildLazarus([]);
+  ecBuildLazarus:
+    DoBuildLazarus([]);
 
-   ecConfigBuildLazarus:
-     mnuToolConfigBuildLazClicked(Self);
+  ecConfigBuildLazarus:
+    mnuToolConfigBuildLazClicked(Self);
 
-   ecToggleFormUnit:
-     mnuToggleFormUnitClicked(Self);
+  ecToggleFormUnit:
+    mnuToggleFormUnitClicked(Self);
 
-   ecToggleObjectInsp:
-     mnuViewInspectorClicked(Self);
+  ecToggleObjectInsp:
+    mnuViewInspectorClicked(Self);
 
-   ecAboutLazarus:
-     mnuHelpAboutLazarusClicked(Self);
+  ecAboutLazarus:
+    mnuHelpAboutLazarusClicked(Self);
 
   else
     Handled:=false;
@@ -10267,6 +10267,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.697  2004/01/09 15:20:38  mattias
+  fixed close editor shortcut
+
   Revision 1.696  2004/01/08 16:13:47  mattias
   implemented class to Pointer assignment compatibility check
 
