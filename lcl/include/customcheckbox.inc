@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 {******************************************************************************
                                TCustomCheckbox
  ******************************************************************************}
@@ -153,6 +155,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2002/04/02 16:44:41  lazarus
+  MG: bugfixes, finddeclaration cache dependencies
+
   Revision 1.2  2002/02/08 16:45:09  lazarus
   MG: added codetools options
 
@@ -190,4 +195,5 @@ end;
            stoppok
 
 }
+// included by stdctrls.pp
 

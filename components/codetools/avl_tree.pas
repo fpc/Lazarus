@@ -45,6 +45,7 @@ type
     procedure Add(ANode: TAVLTreeNode);
     function Add(Data: Pointer): TAVLTreeNode;
     procedure Delete(ANode: TAVLTreeNode);
+    procedure Remove(Data: Pointer);
     procedure MoveDataLeftMost(var ANode: TAVLTreeNode);
     procedure MoveDataRightMost(var ANode: TAVLTreeNode);
     property OnCompare: TListSortCompare read FOnCompare write SetOnCompare;
@@ -56,6 +57,7 @@ type
     procedure WriteReportToStream(s: TStream; var StreamSize: integer);
     function ReportAsString: string;
     constructor Create(OnCompareMethod: TListSortCompare);
+    constructor Create;
     destructor Destroy; override;
   end;
 
@@ -81,10 +83,19 @@ type
     destructor Destroy; override;
   end;
 
+
 implementation
 
 
 var NodeMemManager: TAVLTreeNodeMemManager;
+
+
+function ComparePointer(Data1, Data2: Pointer): integer;
+begin
+  if Data1>Data2 then Result:=-1
+  else if Data1<Data2 then Result:=1
+  else Result:=0;
+end;
 
 { TAVLTree }
 
@@ -446,6 +457,11 @@ begin
   FCount:=0;
 end;
 
+constructor TAVLTree.Create;
+begin
+  Create(@ComparePointer);
+end;
+
 procedure TAVLTree.Delete(ANode: TAVLTreeNode);
 var OldParent, OldLeft, OldRight, Successor, OldSuccParent, OldSuccLeft,
   OldSuccRight: TAVLTreeNode;
@@ -566,6 +582,14 @@ begin
     Root:=Successor;
   // delete Node as usual
   Delete(ANode);
+end;
+
+procedure TAVLTree.Remove(Data: Pointer);
+var ANode: TAVLTreeNode;
+begin
+  ANode:=Find(Data);
+  if ANode<>nil then
+    Delete(ANode);
 end;
 
 destructor TAVLTree.Destroy;
@@ -709,6 +733,7 @@ var RealCount: integer;
         Result:=-2;  exit;
       end;
       if OnCompare(ANode.Left.Data,ANode.Data)>0 then begin
+        writeln('CCC-3 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Left.Data),8));
         Result:=-3;  exit;
       end;
       Result:=CheckNode(ANode.Left);
@@ -720,6 +745,7 @@ var RealCount: integer;
         Result:=-4;  exit;
       end;
       if OnCompare(ANode.Data,ANode.Right.Data)>0 then begin
+        writeln('CCC-5 ',HexStr(Cardinal(ANode.Data),8),' ',HexStr(Cardinal(ANode.Right.Data),8));
         Result:=-5;  exit;
       end;
       Result:=CheckNode(ANode.Right);

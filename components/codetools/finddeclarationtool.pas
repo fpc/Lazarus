@@ -258,6 +258,9 @@ type
     FLastNodeCachesGlobalWriteLockStep: integer;
     FRootNodeCache: TCodeTreeNodeCache;
     FFirstBaseTypeCache: TBaseTypeCache;
+    FDependentCodeTools: TAVLTree;// the codetools, that depend on this codetool
+    FDependsOnCodeTools: TAVLTree;// the codetools, that this codetool depends on
+    FClearingDependentNodeCaches: boolean;
     {$IFDEF CTDEBUG}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -295,6 +298,9 @@ type
   protected
     procedure DoDeleteNodes; override;
     procedure ClearNodeCaches(Force: boolean);
+    procedure ClearDependentNodeCaches;
+    procedure ClearDependsOnToolRelationships;
+    procedure AddToolDependency(DependOnTool: TFindDeclarationTool);
     function CreateNewNodeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
     function CreateNewBaseTypeCache(Node: TCodeTreeNode): TBaseTypeCache;
     procedure CreateBaseTypeCaches(NodeStack: PCodeTreeNodeStack;
@@ -370,7 +376,6 @@ type
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
-    procedure ActivateGlobalWriteLock; override;
     function ConsistencyCheck: integer; override;
   end;
 
@@ -2875,9 +2880,8 @@ begin
   // ToDo: build codetree for ppu, ppw, dcu files
   
   // build tree for pascal source
-  ClearNodeCaches(false);
   BuildTree(true);
-  
+
   // search identifier in cache
   if FInterfaceIdentifierCache<>nil then begin
     CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
@@ -2936,7 +2940,7 @@ begin
       FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
         Params.NewCleanPos);
     end else begin
-      // do not save proc identifiers.
+      // do not save proc identifiers
     end;
   end else
     // identifier does not exist in interface
@@ -3017,6 +3021,7 @@ begin
     Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
                  -[fdfExceptionOnNotFound];
     Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
+    AddToolDependency(NewCodeTool);
     if Result then
       // do not reload param input, so that find next is possible
       exit
@@ -3990,6 +3995,10 @@ destructor TFindDeclarationTool.Destroy;
 begin
   FInterfaceIdentifierCache.Free;
   FInterfaceIdentifierCache:=nil;
+  FDependsOnCodeTools.Free;
+  FDependsOnCodeTools:=nil;
+  FDependentCodeTools.Free;
+  FDependentCodeTools:=nil;
   inherited Destroy;
 end;
 
@@ -4000,21 +4009,26 @@ var
   GlobalWriteLockStep: integer;
   BaseTypeCache: TBaseTypeCache;
 begin
-  if not Force then begin
-    // check if node cache must be cleared
-    if Assigned(OnGetGlobalWriteLockInfo) then begin
-      OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
-      if GlobalWriteLockIsSet then begin
-        // The global write lock is set. That means, input variables and code
-        // are frozen
-        if (FLastNodeCachesGlobalWriteLockStep=GlobalWriteLockStep) then begin
-          // source and values did not change since last UpdateNeeded check
-          exit;
-        end else begin
-          // this is the first check in this GlobalWriteLockStep
-          FLastNodeCachesGlobalWriteLockStep:=GlobalWriteLockStep;
-          // proceed normally ...
-        end;
+  // clear dependent codetools
+  ClearDependentNodeCaches;
+  ClearDependsOnToolRelationships;
+  // check if there is something cached
+  if (FFirstNodeCache=nil) and (FFirstBaseTypeCache=nil)
+  and (FRootNodeCache=nil) then
+    exit;
+  // quick check: check if in the same GlobalWriteLockStep
+  if (not Force) and Assigned(OnGetGlobalWriteLockInfo) then begin
+    OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
+    if GlobalWriteLockIsSet then begin
+      // The global write lock is set. That means, input variables and code
+      // are frozen
+      if (FLastNodeCachesGlobalWriteLockStep=GlobalWriteLockStep) then begin
+        // source and values did not change since last UpdateNeeded check
+        exit;
+      end else begin
+        // this is the first check in this GlobalWriteLockStep
+        FLastNodeCachesGlobalWriteLockStep:=GlobalWriteLockStep;
+        // proceed normally ...
       end;
     end;
   end;
@@ -4035,6 +4049,57 @@ begin
   end;
 end;
 
+procedure TFindDeclarationTool.ClearDependentNodeCaches;
+var
+  ANode: TAVLTreeNode;
+  ATool: TFindDeclarationTool;
+begin
+  if (FDependentCodeTools=nil) or FClearingDependentNodeCaches then exit;
+  FClearingDependentNodeCaches:=true;
+  try
+    ANode:=FDependentCodeTools.FindLowest;
+    while ANode<>nil do begin
+      ATool:=TFindDeclarationTool(ANode.Data);
+      ATool.ClearNodeCaches(true);
+      ANode:=FDependentCodeTools.FindSuccessor(ANode);
+    end;
+    FDependentCodeTools.Clear;
+  finally
+    FClearingDependentNodeCaches:=false;
+  end;
+end;
+
+procedure TFindDeclarationTool.ClearDependsOnToolRelationships;
+var
+  ANode: TAVLTreeNode;
+  ATool: TFindDeclarationTool;
+begin
+  if FDependsOnCodeTools=nil then exit;
+  ANode:=FDependsOnCodeTools.FindLowest;
+  while ANode<>nil do begin
+    ATool:=TFindDeclarationTool(ANode.Data);
+    if not ATool.FClearingDependentNodeCaches then
+      ATool.FDependentCodeTools.Remove(Self);
+    ANode:=FDependsOnCodeTools.FindSuccessor(ANode);
+  end;
+  FDependsOnCodeTools.Clear;
+end;
+
+procedure TFindDeclarationTool.AddToolDependency(
+  DependOnTool: TFindDeclarationTool);
+// this tool depends on DependOnTool
+begin
+  if DependOnTool.FDependentCodeTools=nil then
+    DependOnTool.FDependentCodeTools:=TAVLTree.Create;
+  if DependOnTool.FDependentCodeTools.Find(Self)=nil then
+    DependOnTool.FDependentCodeTools.Add(Self);
+  if FDependsOnCodeTools=nil then
+    FDependsOnCodeTools:=TAVLTree.Create;
+  if FDependsOnCodeTools.Find(DependOnTool)=nil then begin
+    FDependsOnCodeTools.Add(DependOnTool);
+  end;
+end;
+
 function TFindDeclarationTool.ConsistencyCheck: integer;
 var ANodeCache: TCodeTreeNodeCache;
 begin
@@ -4052,12 +4117,20 @@ begin
     end;
     ANodeCache:=ANodeCache.Next;
   end;
-end;
-
-procedure TFindDeclarationTool.ActivateGlobalWriteLock;
-begin
-  inherited;
-  ClearNodeCaches(false);
+  if FDependentCodeTools<>nil then begin
+    Result:=FDependentCodeTools.ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,200);
+      exit;
+    end;
+  end;
+  if FDependsOnCodeTools<>nil then begin
+    Result:=FDependsOnCodeTools.ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,300);
+      exit;
+    end;
+  end;
 end;
 
 function TFindDeclarationTool.GetNodeCache(Node: TCodeTreeNode;

@@ -1,9 +1,9 @@
-
+// included by stdctrls.pp
 
 
 function TButtonControl.GetChecked: Boolean;
 begin
-   GetChecked := False;
+  GetChecked := False;
 end;
 
 procedure TButtonControl.SetChecked(Value: Boolean);
@@ -14,8 +14,9 @@ end;
 
 constructor TButtonControl.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
+  inherited Create(AOwner);
 
 end;
 
-{------------------------------------------------------------------------------}
+// included by stdctrls.pp
+
