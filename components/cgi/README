@@ -1,0 +1,6 @@
+cgi
+
+With the cgimodules.pas unit you can easily create cgi applications with
+datamodules and edit them in the IDE.
+
+
