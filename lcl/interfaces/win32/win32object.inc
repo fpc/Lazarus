@@ -51,9 +51,6 @@ Var
   LogBrush: TLOGBRUSH;
 Begin
   Assert(False, 'Trace:Win32Object.Init - Start');
-  AppName := ArgV[0];
-  FormClassName := StrAlloc(Length('TForm') + 1);
-  StrPCopy(FormClassName, 'TForm');
   If Not WinRegister then
   Begin
     Assert(False, 'Trace:Win32Object.Init - Register Failed');
@@ -578,7 +575,7 @@ activate_time :	the time at which the activation event occurred.
           Begin
             iBitmap := Num;
             idCommand := Num;
-            fsState := TBSTATE_ELLIPSES Or TBSTATE_ENABLED;
+            fsState := TBSTATE_ENABLED;
             iString := Integer(PStr);
           End;
 
@@ -935,7 +932,6 @@ Var
   Handle: HWND;
 Begin
   Assert(False, 'Trace:TWin32Object.AppTerminate - Start');
-  StrDispose(FormClassName);
   If Application.MainForm <> Nil Then
     Handle := Application.MainForm.Handle
   Else
@@ -1650,7 +1646,7 @@ Begin
       Assert(False, 'Trace:CreateComponent - Creating a MainForm for Win32 --------------------------------------');
       PStr := StrAlloc(Length('TForm') + 1);
       StrPCopy(PStr, 'TForm');
-      Window := CreateWindow(pStr, AppName, WS_OverlappedWindow, CW_UseDefault, CW_UseDefault, CW_UseDefault, CW_UseDefault, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(pStr, ClsName, WS_OverlappedWindow, CW_UseDefault, CW_UseDefault, CW_UseDefault, CW_UseDefault, Parent, HMENU(Nil), HInstance, Nil);
       FParentWindow := Window;
       StrDispose(PStr);
       Assert(False, 'Trace:CreateComponent - MainForm Window Handle Value = $' + IntToHex(Window, 8));
@@ -1805,7 +1801,7 @@ Begin
     csScrolledWindow:
     Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
-      Window := CreateWindow(AppName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND(Nil), HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, strTemp);
     End;
@@ -2485,6 +2481,11 @@ End;
 
 {
   $Log$
+  Revision 1.19  2002/04/03 03:41:29  lazarus
+  Keith:
+    * Removed more obsolete code
+    * Compiles again!
+
   Revision 1.18  2002/04/03 01:52:42  lazarus
   Keith: Removed obsolete code, in preperation of a pending TWin32Object cleanup
 
