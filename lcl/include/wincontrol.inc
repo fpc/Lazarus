@@ -1155,6 +1155,8 @@ var
   ControlsNeedsClipping: boolean;
 begin
 //writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
+  if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
+
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
   DC := TheMessage.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
@@ -1200,6 +1202,10 @@ var
   TempControl : TCOntrol;
 begin
 //writeln('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
+  if (csDestroying in ComponentState)
+  or ((DC=0) and (not HandleAllocated)) then
+    exit;
+
   // Controls that are not TWinControl, have no handle of their own, and so
   // they are repainted as part of the parent:
   if FControls <> nil then
@@ -1258,6 +1264,10 @@ var
   Message: TLMessage;
 begin
 //writeln('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',HexStr(DC,8));
+  if (csDestroying in ComponentState)
+  or ((DC=0) and (not HandleAllocated)) then
+    exit;
+
   Message.Msg := LM_PAINT;
   Message.WParam := DC;
   Message.LParam := 0;
@@ -1727,7 +1737,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.Invalidate;
 Begin
-  if HandleAllocated
+  if HandleAllocated and (not (csDestroying in ComponentState))
   then CNSendMessage(LM_Invalidate,Self,Nil);
 end;
 
@@ -1736,12 +1746,11 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.Repaint;
 Begin
-  if HandleAllocated
+  if HandleAllocated and (not (csDestroying in ComponentState))
   then begin
     CNSendMessage(LM_PAINT, Self, nil);
   end;
 end;
-
 
 {------------------------------------------------------------------------------}
 {  TWinControl DoMouseWheel  "Event Handler"                                     }
@@ -2161,6 +2170,8 @@ var
   PS : TPaintStruct;
 begin
 //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
+  if (csDestroying in ComponentState) then exit;
+
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
   if (Msg.DC <> 0) then
   begin
@@ -2816,6 +2827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.141  2003/06/20 12:56:53  mattias
+  reduced paint messages on destroy
+
   Revision 1.140  2003/06/19 22:38:21  mattias
   fixed update on changing package usage options
 

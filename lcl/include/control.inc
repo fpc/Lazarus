@@ -1618,11 +1618,14 @@ var
   end;
 
 begin
+  if (Parent=nil) or (not Parent.HandleAllocated)
+  or ([csLoading,csDestroying]*Parent.ComponentState<>[])
+  or ([csLoading,csDestroying]*ComponentState<>[])
+  then exit;
+  
   if (IsVisible or (csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle))
-  and (Parent <> nil) and Parent.HandleAllocated
-  and (not (csLoading in Parent.ComponentState)) then
-  begin
+  then begin
     Rect := BoundsRect;
     InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
       (csOpaque in Parent.ControlStyle) or BackgroundClipped));
@@ -1655,10 +1658,11 @@ procedure TControl.Repaint;
 var
   DC: HDC;
 begin
+  if (Parent=nil) or (not Parent.HandleAllocated)
+  or (csDestroying in ComponentState) then exit;
+
   if (Visible or (csDesigning in ComponentState)
   and not (csNoDesignVisible in ControlStyle))
-  and (Parent <> nil)
-  and Parent.HandleAllocated
   then
     if csOpaque in ControlStyle then
     begin
@@ -2414,6 +2418,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.135  2003/06/20 12:56:53  mattias
+  reduced paint messages on destroy
+
   Revision 1.134  2003/06/13 14:38:01  mattias
   fixed using streamed clientwith/height for child anchors
 

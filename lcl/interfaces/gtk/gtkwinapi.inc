@@ -2279,59 +2279,60 @@ var
   begin
     //if Widget<>nil then begin
 
-      // use the gtk paint functions to draw a widget style dependent button
-      
-      // set State (the interior filling style)
-      if (DFCS_INACTIVE and uState)<>0 then begin
-        // button disabled
-        State:=GTK_STATE_INSENSITIVE;
-      end else begin
-        if (DFCS_PUSHED and uState)<>0 then begin
-          // button enabled, down
-          if (DFCS_CHECKED and uState)<>0 then begin
-            // button enabled, down, special (e.g. mouse over)
-            State:=GTK_STATE_ACTIVE;
-          end else begin
-            // button enabled, down, normal
-            State:=GTK_STATE_SELECTED;
-          end;
-        end else begin
-          // button enabled, up
-          if (DFCS_CHECKED and uState)<>0 then begin
-            // button enabled, up, special (e.g. mouse over)
-            State:=GTK_STATE_PRELIGHT;
-          end else begin
-            // button enabled, up, normal
-            State:=GTK_STATE_NORMAL;
-          end;
-        end;
-      end;
-      // set Shadow (the border style)
+    // use the gtk paint functions to draw a widget style dependent button
+    
+    // set State (the interior filling style)
+    if (DFCS_INACTIVE and uState)<>0 then begin
+      // button disabled
+      State:=GTK_STATE_INSENSITIVE;
+    end else begin
       if (DFCS_PUSHED and uState)<>0 then begin
-        // button down
-        Shadow:=GTK_SHADOW_IN;
-      end else begin
-        if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
-          // button up, flat, no special
-          Shadow:=GTK_SHADOW_NONE;
+        // button enabled, down
+        if (DFCS_CHECKED and uState)<>0 then begin
+          // button enabled, down, special (e.g. mouse over)
+          State:=GTK_STATE_ACTIVE;
         end else begin
-          // button up
-          Shadow:=GTK_SHADOW_OUT;
+          // button enabled, down, normal
+          State:=GTK_STATE_SELECTED;
+        end;
+      end else begin
+        // button enabled, up
+        if (DFCS_CHECKED and uState)<>0 then begin
+          // button enabled, up, special (e.g. mouse over)
+          State:=GTK_STATE_PRELIGHT;
+        end else begin
+          // button enabled, up, normal
+          State:=GTK_STATE_NORMAL;
         end;
       end;
-
-      aDC:=TDeviceContext(DC);
-      DCOrigin:=GetDCOffset(aDC);
-
-      aStyle := GetStyle('button');
-      If aStyle = nil then
-        aStyle := Widget^.theStyle
-      else begin
-        If State = GTK_STATE_SELECTED then
-          State := GTK_STATE_ACTIVE;
-        aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
+    end;
+    // set Shadow (the border style)
+    if (DFCS_PUSHED and uState)<>0 then begin
+      // button down
+      Shadow:=GTK_SHADOW_IN;
+    end else begin
+      if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
+        // button up, flat, no special
+        Shadow:=GTK_SHADOW_NONE;
+      end else begin
+        // button up
+        Shadow:=GTK_SHADOW_OUT;
       end;
-          
+    end;
+
+    aDC:=TDeviceContext(DC);
+    DCOrigin:=GetDCOffset(aDC);
+
+    aStyle := GetStyle('button');
+    If aStyle = nil then
+      aStyle := Widget^.theStyle
+    else begin
+      If State = GTK_STATE_SELECTED then
+        State := GTK_STATE_ACTIVE;
+      aStyle := gtk_style_attach(gtk_style_ref(aStyle),aDC.Drawable);
+    end;
+        
+    if aStyle<>nil then begin
       If (DFCS_FLAT and uState)<>0 then
         gtk_paint_flat_box(aStyle,aDC.Drawable,
            State,
@@ -2350,6 +2351,7 @@ var
            'button',
            Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
            Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+    end;
     Result := True;
   end;
   
@@ -2398,17 +2400,19 @@ var
       Widget := GetStyleWidget('default');
     If (Widget <> nil) and (Style <> nil) then begin
       Widget^.Window := aDC.Drawable;
-      gtk_paint_check(Style,aDC.Drawable, State,
-        Shadow, nil, Widget, 'checkbutton',
-        Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-        Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+      if Style<>nil then
+        gtk_paint_check(Style,aDC.Drawable, State,
+          Shadow, nil, Widget, 'checkbutton',
+          Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+          Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
       Result := True;
     end
     else begin
       {$IfNDef Win32}
-      gtk_draw_check(Style,aDC.Drawable, State,
-        Shadow, Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-        Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+      if Style<>nil then
+        gtk_draw_check(Style,aDC.Drawable, State,
+          Shadow, Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+          Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
       {$EndIf}	
       Result := True;
     end;
@@ -3260,80 +3264,81 @@ var
   //RightBottomGC: PGdkGC;
 begin
   Result := IsValidDC(DC);
-  if Result then
-    if FrameWidth=0 then exit;
-    with TDeviceContext(DC) do
-    begin
-      if GC = nil then begin
-        Result:= False;
-      end
-      else begin
-        Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
-        ClientWidget:=GetFixedWidget(Widget);
-        if ClientWidget=nil then
-          ClientWidget:=Widget;
-        AWindow:=GetControlWindow(ClientWidget);
-        if AWindow<>nil then begin
-          DCOrigin:=GetDCOffset(TDeviceContext(DC));
-          TheStyle:=GetStyle('button');
-          Area.X:=ARect.Left+DCOrigin.X;
-          Area.Y:=ARect.Top+DCOrigin.Y;
-          Area.Width:=ARect.Right-ARect.Left;
-          Area.Height:=ARect.Bottom-ARect.Top;
-          {case Style of
-          bvLowered:
-            begin
-              LeftTopGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
-              RightBottomGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
-            end;
-          bvRaised:
-            begin
-              LeftTopGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
-              RightBottomGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
-            end;
-          else
-            begin
-              LeftTopGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
-              RightBottomGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
-            end;
-          end;
-          gdk_gc_set_clip_rectangle (LeftTopGC, @Area);
-          gdk_gc_set_clip_rectangle (RightBottomGC, @Area);}
-          if FrameWidth=1 then
-            ShadowType:=GTKThinShadowType[Style]
-          else
-            ShadowType:=GTKStrongShadowType[Style];
-
-          for i:= 1 to FrameWidth do begin
-           { // left edge
-            gdk_draw_line(Drawable, LeftTopGC,
-                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                       ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
-            // top edge
-            gdk_draw_line(Drawable, LeftTopGC,
-                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                       ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y);
-            // right edge
-            gdk_draw_line(Drawable, RightBottomGC,
-                       ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                       ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
-            // bottom edge
-            gdk_draw_line(Drawable, RightBottomGC,
-                       ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
-                       ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
-            gtk_paint_shadow(TheStyle,
-                            AWindow, GTK_STATE_NORMAL,
-                            ShadowType,
-                            @Area,
-                            ClientWidget,
-                            'button',
-                            ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                            ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
-            InflateRect(ARect, -1, -1);
-          end;
-        end;
+  if not Result then exit;
+  if FrameWidth=0 then exit;
+  with TDeviceContext(DC) do
+  begin
+    if GC = nil then begin
+      Result:= False;
+      exit;
+    end;
+    Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
+    ClientWidget:=GetFixedWidget(Widget);
+    if ClientWidget=nil then
+      ClientWidget:=Widget;
+    AWindow:=GetControlWindow(ClientWidget);
+    if AWindow=nil then begin
+      exit;
+    end;
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    TheStyle:=GetStyle('button');
+    Area.X:=ARect.Left+DCOrigin.X;
+    Area.Y:=ARect.Top+DCOrigin.Y;
+    Area.Width:=ARect.Right-ARect.Left;
+    Area.Height:=ARect.Bottom-ARect.Top;
+    {case Style of
+    bvLowered:
+      begin
+        LeftTopGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
+        RightBottomGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
+      end;
+    bvRaised:
+      begin
+        LeftTopGC:=TheStyle^.dark_gc[GTK_STATE_NORMAL];
+        RightBottomGC:=TheStyle^.light_gc[GTK_STATE_NORMAL];
+      end;
+    else
+      begin
+        LeftTopGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
+        RightBottomGC:=TheStyle^.mid_gc[GTK_STATE_NORMAL];
       end;
     end;
+    gdk_gc_set_clip_rectangle (LeftTopGC, @Area);
+    gdk_gc_set_clip_rectangle (RightBottomGC, @Area);}
+    if FrameWidth=1 then
+      ShadowType:=GTKThinShadowType[Style]
+    else
+      ShadowType:=GTKStrongShadowType[Style];
+
+    for i:= 1 to FrameWidth do begin
+     { // left edge
+      gdk_draw_line(Drawable, LeftTopGC,
+                 ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                 ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
+      // top edge
+      gdk_draw_line(Drawable, LeftTopGC,
+                 ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                 ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y);
+      // right edge
+      gdk_draw_line(Drawable, RightBottomGC,
+                 ARect.Right+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                 ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);
+      // bottom edge
+      gdk_draw_line(Drawable, RightBottomGC,
+                 ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
+                 ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
+      if TheStyle<>nil then
+        gtk_paint_shadow(TheStyle,
+                         AWindow, GTK_STATE_NORMAL,
+                         ShadowType,
+                         @Area,
+                         ClientWidget,
+                         'button',
+                         ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                         ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+      InflateRect(ARect, -1, -1);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8291,6 +8296,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.246  2003/06/20 12:56:53  mattias
+  reduced paint messages on destroy
+
   Revision 1.245  2003/06/19 09:26:58  mattias
   fixed changing unitname during update
 
