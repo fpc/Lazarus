@@ -40,7 +40,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, BasicCodeTools, AVL_Tree;
+  Classes, SysUtils, BasicCodeTools, AVL_Tree, CodeToolMemManager;
 
 //-----------------------------------------------------------------------------
 
@@ -184,53 +184,22 @@ type
   end;
 
   // memory system for TCodeTreeNode(s)
-  TCodeTreeNodeMemManager = class
-  private
-    FFirstFree: TCodeTreeNode;
-    FFreeCount: integer;
-    FCount: integer;
-    FMinFree: integer;
-    FMaxFreeRatio: integer;
-    FAllocatedNodes: integer;
-    FFreedNodes: integer;
-    procedure SetMaxFreeRatio(NewValue: integer);
-    procedure SetMinFree(NewValue: integer);
+  TCodeTreeNodeMemManager = class(TCodeToolMemManager)
+  protected
+    procedure FreeFirstItem; override;
   public
     procedure DisposeNode(ANode: TCodeTreeNode);
     function NewNode: TCodeTreeNode;
-    property MinimumFreeNode: integer read FMinFree write SetMinFree;
-    property MaximumFreeNodeRatio: integer
-        read FMaxFreeRatio write SetMaxFreeRatio; // in one eighth steps
-    property Count: integer read FCount;
-    property FreeCount: integer read FFreeCount;
-    property AllocatedNodes: integer read FAllocatedNodes;
-    property FreedNodes: integer read FFreedNodes;
-    procedure Clear;
-    constructor Create;
-    destructor Destroy; override;
   end;
 
   // memory system for TCodeTreeNodeExtension(s)
-  TCodeTreeNodeExtMemManager = class
-  private
-    FFirstFree: TCodeTreeNodeExtension;
-    FFreeCount: integer;
-    FCount: integer;
-    FMinFree: integer;
-    FMaxFreeRatio: integer;
-    procedure SetMaxFreeRatio(NewValue: integer);
-    procedure SetMinFree(NewValue: integer);
+  TCodeTreeNodeExtMemManager = class(TCodeToolMemManager)
+  protected
+    procedure FreeFirstItem; override;
   public
     procedure DisposeNode(ANode: TCodeTreeNodeExtension);
     procedure DisposeAVLTree(TheTree: TAVLTree);
     function NewNode: TCodeTreeNodeExtension;
-    property MinimumFreeNode: integer read FMinFree write SetMinFree;
-    property MaximumFreeNodeRatio: integer
-        read FMaxFreeRatio write SetMaxFreeRatio; // in one eighth steps
-    property Count: integer read FCount;
-    procedure Clear;
-    constructor Create;
-    destructor Destroy; override;
   end;
 
 
@@ -338,8 +307,6 @@ begin
   LastChild:=nil;
   StartPos:=-1;
   EndPos:=-1;
-  Cache.Free;
-  Cache:=nil;
 end;
 
 function TCodeTreeNode.Next: TCodeTreeNode;
@@ -556,36 +523,18 @@ end;
 
 { TCodeTreeNodeMemManager }
 
-constructor TCodeTreeNodeMemManager.Create;
-begin
-  inherited Create;
-  FFirstFree:=nil;
-  FFreeCount:=0;
-  FCount:=0;
-  FAllocatedNodes:=0;
-  FFreedNodes:=0;
-  FMinFree:=100000;
-  FMaxFreeRatio:=8; // 1:1
-end;
-
-destructor TCodeTreeNodeMemManager.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
-
 function TCodeTreeNodeMemManager.NewNode: TCodeTreeNode;
 begin
   if FFirstFree<>nil then begin
     // take from free list
-    Result:=FFirstFree;
-    FFirstFree:=FFirstFree.NextBrother;
+    Result:=TCodeTreeNode(FFirstFree);
+    TCodeTreeNode(FFirstFree):=Result.NextBrother;
     Result.NextBrother:=nil;
     dec(FFreeCount);
   end else begin
     // free list empty -> create new node
     Result:=TCodeTreeNode.Create;
-    inc(FAllocatedNodes);
+    inc(FAllocatedCount);
   end;
   inc(FCount);
 end;
@@ -596,68 +545,33 @@ begin
   begin
     // add ANode to Free list
     ANode.Clear;
-    ANode.NextBrother:=FFirstFree;
-    FFirstFree:=ANode;
+    ANode.NextBrother:=TCodeTreeNode(FFirstFree);
+    TCodeTreeNode(FFirstFree):=ANode;
     inc(FFreeCount);
   end else begin
     // free list full -> free the ANode
     ANode.Free;
-    inc(FFreedNodes);
+    inc(FFreedCount);
   end;
   dec(FCount);
 end;
 
-procedure TCodeTreeNodeMemManager.Clear;
+procedure TCodeTreeNodeMemManager.FreeFirstItem;
 var ANode: TCodeTreeNode;
 begin
-  while FFirstFree<>nil do begin
-    ANode:=FFirstFree;
-    FFirstFree:=FFirstFree.NextBrother;
-    ANode.NextBrother:=nil;
-    ANode.Free;
-    inc(FFreedNodes);
-  end;
-  FFreeCount:=0;
-end;
-
-procedure TCodeTreeNodeMemManager.SetMaxFreeRatio(NewValue: integer);
-begin
-  if NewValue<0 then NewValue:=0;
-  if NewValue=FMaxFreeRatio then exit;
-  FMaxFreeRatio:=NewValue;
-end;
-
-procedure TCodeTreeNodeMemManager.SetMinFree(NewValue: integer);
-begin
-  if NewValue<0 then NewValue:=0;
-  if NewValue=FMinFree then exit;
-  FMinFree:=NewValue;
+  ANode:=TCodeTreeNode(FFirstFree);
+  TCodeTreeNode(FFirstFree):=ANode.NextBrother;
+  ANode.Free;
 end;
 
 { TCodeTreeNodeExtMemManager }
-
-constructor TCodeTreeNodeExtMemManager.Create;
-begin
-  inherited Create;
-  FFirstFree:=nil;
-  FFreeCount:=0;
-  FCount:=0;
-  FMinFree:=20000;
-  FMaxFreeRatio:=8; // 1:1
-end;
-
-destructor TCodeTreeNodeExtMemManager.Destroy;
-begin
-  Clear;
-  inherited Destroy;
-end;
 
 function TCodeTreeNodeExtMemManager.NewNode: TCodeTreeNodeExtension;
 begin
   if FFirstFree<>nil then begin
     // take from free list
-    Result:=FFirstFree;
-    FFirstFree:=FFirstFree.Next;
+    Result:=TCodeTreeNodeExtension(FFirstFree);
+    TCodeTreeNodeExtension(FFirstFree):=Result.Next;
     Result.Next:=nil;
   end else begin
     // free list empty -> create new node
@@ -672,8 +586,8 @@ begin
   begin
     // add ANode to Free list
     ANode.Clear;
-    ANode.Next:=FFirstFree;
-    FFirstFree:=ANode;
+    ANode.Next:=TCodeTreeNodeExtension(FFirstFree);
+    TCodeTreeNodeExtension(FFirstFree):=ANode;
     inc(FFreeCount);
   end else begin
     // free list full -> free the ANode
@@ -694,30 +608,12 @@ begin
   TheTree.Free;
 end;
 
-procedure TCodeTreeNodeExtMemManager.Clear;
+procedure TCodeTreeNodeExtMemManager.FreeFirstItem;
 var ANode: TCodeTreeNodeExtension;
 begin
-  while FFirstFree<>nil do begin
-    ANode:=FFirstFree;
-    FFirstFree:=FFirstFree.Next;
-    ANode.Next:=nil;
-    ANode.Free;
-  end;
-  FFreeCount:=0;
-end;
-
-procedure TCodeTreeNodeExtMemManager.SetMaxFreeRatio(NewValue: integer);
-begin
-  if NewValue<0 then NewValue:=0;
-  if NewValue=FMaxFreeRatio then exit;
-  FMaxFreeRatio:=NewValue;
-end;
-
-procedure TCodeTreeNodeExtMemManager.SetMinFree(NewValue: integer);
-begin
-  if NewValue<0 then NewValue:=0;
-  if NewValue=FMinFree then exit;
-  FMinFree:=NewValue;
+  ANode:=TCodeTreeNodeExtension(FFirstFree);
+  TCodeTreeNodeExtension(FFirstFree):=ANode.Next;
+  ANode.Free;
 end;
 
 //-----------------------------------------------------------------------------

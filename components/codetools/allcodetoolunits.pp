@@ -17,8 +17,9 @@ uses
   MemCheck,
   CodeToolManager, CustomCodeTool, PascalParserTool, FindDeclarationTool,
   StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
-  BasicCodeTools, CodeTree, CodeAtom, SourceChanger, CodeCache,
-  KeywordFuncLists, SourceLog, ExprEval, DefineTemplates, FileProcs, AVL_Tree;
+  FindDeclarationCache, BasicCodeTools, CodeTree, CodeAtom, SourceChanger,
+  CodeToolMemManager, CodeCache, KeywordFuncLists, SourceLog, ExprEval,
+  DefineTemplates, FileProcs, AVL_Tree;
 
 
 implementation
@@ -28,6 +29,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/01/31 16:52:24  lazarus
+  MG: added base class for mem managers and started node cache
+
   Revision 1.7  2002/01/28 12:14:56  lazarus
   MG: fixed Makefile
 
