@@ -51,9 +51,11 @@ end;
 destructor TApplication.Destroy;
 begin
   ApplicationActionComponent:=nil;
-  FIcon.Free;
-  FIcon:=nil;
+  FreeThenNil(FIcon);
   FList.Free;
+  FreeThenNil(FOnIdleHandler);
+  FreeThenNil(FOnIdleEndHandler);
+  FreeThenNil(FOnUserInputHandler);
   inherited Destroy;
   LCLProc.SendApplicationMessageFunction:=nil;
 end;
@@ -224,9 +226,15 @@ begin
   
   Done := True;
   if Assigned(FOnIdle) then FOnIdle(Self, Done);
-  if Done then
+  NotifyIdleHandler;
+  if Done then begin
     // wait till something happens
+    Include(FState,AppWaiting);
+    Exclude(FState,AppIdleEndSent);
     InterfaceObject.WaitMessage;
+    DoOnIdleEnd;
+    Exclude(FState,AppWaiting);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -240,6 +248,32 @@ begin
     FIcon.OnChange := @IconChanged;
   end;
   FIcon.Assign(AValue);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.NotifyIdleHandler;
+
+ ------------------------------------------------------------------------------}
+procedure TApplication.NotifyIdleHandler;
+var
+  i: integer;
+begin
+  if FOnIdleHandler=nil then exit;
+  for i:=0 to FOnIdleHandler.Count-1 do
+    TNotifyEvent(FOnIdleHandler[i])(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.NotifyIdleEndHandler;
+
+ ------------------------------------------------------------------------------}
+procedure TApplication.NotifyIdleEndHandler;
+var
+  i: integer;
+begin
+  if FOnIdleEndHandler=nil then exit;
+  for i:=0 to FOnIdleEndHandler.Count-1 do
+    TNotifyEvent(FOnIdleEndHandler[i])(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -314,6 +348,11 @@ begin
   Idle;
 end;
 
+function TApplication.IsWaiting: boolean;
+begin
+  Result:=AppWaiting in FState;
+end;
+
 {------------------------------------------------------------------------------}
 {       TApplication Run                                                       }
 {       MainForm is loaded and control is passed to event processor.           }
@@ -338,6 +377,14 @@ procedure TApplication.wndproc(var Message : TLMessage);
 begin
 end;
 
+procedure TApplication.DoOnIdleEnd;
+begin
+  if (AppIdleEndSent in FState) then exit;
+  if Assigned(OnIdleEnd) then OnIdleEnd(Self);
+  NotifyIdleEndHandler;
+  Include(FState,AppIdleEndSent);
+end;
+
 {------------------------------------------------------------------------------}
 {       TApplication ShowException                                             }
 {------------------------------------------------------------------------------}
@@ -358,6 +405,60 @@ procedure TApplication.Terminate;
 begin
   FTerminate := True;
   InterfaceObject.AppTerminate;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.NotifyUserInputHandler;
+
+ ------------------------------------------------------------------------------}
+procedure TApplication.NotifyUserInputHandler;
+var
+  i: integer;
+begin
+  if FOnUserInputHandler=nil then exit;
+  for i:=0 to FOnUserInputHandler.Count-1 do
+    TNotifyEvent(FOnUserInputHandler[i])(Self);
+end;
+
+procedure TApplication.AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
+begin
+  if FOnIdleHandler=nil then
+    FOnIdleHandler:=TMethodList.Create;
+  FOnIdleHandler.Add(TMethod(AnOnIdleHandler));
+end;
+
+procedure TApplication.RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
+begin
+  if FOnIdleHandler<>nil then
+    FOnIdleHandler.Remove(TMethod(AnOnIdleHandler));
+end;
+
+procedure TApplication.AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
+begin
+  if FOnIdleEndHandler=nil then
+    FOnIdleEndHandler:=TMethodList.Create;
+  FOnIdleEndHandler.Add(TMethod(AnOnIdleEndHandler));
+end;
+
+procedure TApplication.RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
+begin
+  if FOnIdleEndHandler<>nil then
+    FOnIdleEndHandler.Remove(TMethod(AnOnIdleEndHandler));
+end;
+
+procedure TApplication.AddOnUserInputHandler(
+  AnOnUserInputHandler: TNotifyEvent);
+begin
+  if FOnUserInputHandler=nil then
+    FOnUserInputHandler:=TMethodList.Create;
+  FOnUserInputHandler.Add(TMethod(AnOnUserInputHandler));
+end;
+
+procedure TApplication.RemoveOnUserInputHandler(
+  AnOnUserInputHandler: TNotifyEvent);
+begin
+  if FOnUserInputHandler<>nil then
+    FOnUserInputHandler.Remove(TMethod(AnOnUserInputHandler));
 end;
 
 {------------------------------------------------------------------------------}
@@ -398,6 +499,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/11/02 22:25:36  lazarus
+  MG: implemented TMethodList and Application Idle handlers
+
   Revision 1.30  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 
