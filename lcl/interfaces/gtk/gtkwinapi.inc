@@ -891,8 +891,7 @@ begin
                         , [lbStyle]);
     end;
 
-    GObject^.GDIBrushColor.ColorRef := lbColor;
-    GObject^.GDIBrushColor.Color.Pixel := -1;
+    SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
   end;
   if sError = '' then
     Result := HBRUSH(GObject)
@@ -1594,7 +1593,7 @@ begin
   begin
     GObject^.GDIPenStyle := lopnStyle;
     GObject^.GDIPenWidth := lopnWidth.X;
-    GObject^.GDIPenColor.ColorRef := lopnColor;
+    SetGDIColorRef(GObject^.GDIPenColor,lopnColor);
   end;
 
   Result := HPEN(GObject);
@@ -5791,7 +5790,7 @@ begin
     with TDeviceContext(DC) do
     begin
       Result := CurrentBackColor.ColorRef;
-      CurrentBackColor.ColorRef := Color;
+      SetGDIColorRef(CurrentBackColor,Color);
     end;
 
   end;
@@ -6315,7 +6314,7 @@ begin
     with TDeviceContext(DC) do
     begin
       Result := CurrentTextColor.ColorRef;
-      CurrentTextColor.ColorRef := Color;
+      SetGDIColorRef(CurrentTextColor,Color);
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
@@ -7210,6 +7209,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.146  2002/10/08 10:08:47  lazarus
+  MG: accelerated GDIColor allocating
+
   Revision 1.145  2002/10/07 20:50:59  lazarus
   MG: accelerated SelectGDKPenProps
 
