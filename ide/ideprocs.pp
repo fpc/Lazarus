@@ -79,6 +79,8 @@ implementation
 
 // to get more detailed error messages consider the os
 {$IFDEF Win32}
+uses
+  Dos;
 {$ELSE}
 uses
  {$IFDEF Ver1_0}
