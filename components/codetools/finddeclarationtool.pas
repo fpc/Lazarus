@@ -105,7 +105,7 @@ type
     fdfClassPrivate,
     fdfIgnoreMissingParams, // found proc fits, even if parameters are missing
     fdfFirstIdentFound,     // a first identifier was found, now searching for
-                            // the a better one (used for proc overloading)
+                            // a better one (used for proc overloading)
     fdfOnlyCompatibleProc,  // incompatible procs are ignored
     fdfFunctionResult,      // if function is found, return result type
     fdfIgnoreOverloadedProcs,// ignore param lists and take the first proc found
@@ -140,8 +140,8 @@ type
     xtNone, xtContext, xtChar, xtReal, xtSingle, xtDouble,
     xtExtended, xtCurrency, xtComp, xtInt64, xtCardinal, xtQWord, xtBoolean,
     xtByteBool, xtLongBool, xtString, xtAnsiString, xtShortString, xtWideString,
-    xtPChar, xtPointer, xtConstOrdInteger, xtConstString, xtConstReal,
-    xtConstSet, xtConstBoolean, xtAddress, xtLongInt, xtWord, xtNil);
+    xtPChar, xtPointer, xtFile, xtText, xtConstOrdInteger, xtConstString,
+    xtConstReal, xtConstSet, xtConstBoolean, xtLongInt, xtWord, xtNil);
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
@@ -149,11 +149,11 @@ const
     'None', 'Context', 'Char', 'Real', 'Single', 'Double',
     'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
     'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
-    'PChar', 'Pointer', 'ConstOrdInt', 'ConstString', 'ConstReal',
-    'ConstSet', 'ConstBoolean', '@-Operator', 'LongInt', 'Word', 'Nil'
+    'PChar', 'Pointer', 'File', 'TextFile', 'ConstOrdInt', 'ConstString',
+    'ConstReal', 'ConstSet', 'ConstBoolean', 'LongInt', 'Word', 'Nil'
   );
 
-  xtAllTypes = [xtContext..High(TExpressionTypeDesc)];
+  xtAllTypes = [Low(TExpressionTypeDesc)..High(TExpressionTypeDesc)]-[xtNone];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
   xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongInt, xtWord];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtLongBool];
@@ -165,7 +165,7 @@ const
   xtAllRealConvertibles = xtAllRealTypes+xtAllIntegerTypes;
   xtAllStringConvertibles = xtAllStringTypes+[xtChar,xtPChar];
   xtAllBooleanConvertibles = xtAllBooleanTypes+[xtConstBoolean];
-  xtAllPointerConvertibles = xtAllPointerTypes+[xtPChar,xtAddress];
+  xtAllPointerConvertibles = xtAllPointerTypes+[xtPChar];
 
 type
   { TExpressionType is used for compatibility check
@@ -348,7 +348,6 @@ type
       Params: TFindDeclarationParams): TExpressionType;
     function GetParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
-    function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
     function GetExpressionTypeOfTypeIdentifier(
       Params: TFindDeclarationParams): TExpressionType;
   protected
@@ -512,6 +511,10 @@ begin
     Result:=xtExtended
   else if CompareIdentifiers(Identifier,'COMP'#0)=0 then
     Result:=xtComp
+  else if CompareIdentifiers(Identifier,'FILE'#0)=0 then
+    Result:=xtFile
+  else if CompareIdentifiers(Identifier,'TEXT'#0)=0 then
+    Result:=xtText
   // the delphi compiler special types
   else if CompareIdentifiers(Identifier,'CURRENCY'#0)=0 then
     Result:=xtCurrency
@@ -1108,8 +1111,8 @@ var
     if (fdfFirstIdentFound in Params.Flags)
     and (not (fdfSearchInParentNodes in Params.Flags)) then begin
       // this is a find next call
-      // -> adjust StartContextNode, so that siblings, that are not yet searched
-      //    are searched
+      // -> adjust StartContextNode, so that siblings, that were not yet
+      //    searched, will be searched
       while (StartContextNode.Parent<>nil)
       and (StartContextNode.Parent.Desc in (AllClassSections+[ctnClass])) do
         StartContextNode:=StartContextNode.Parent;
@@ -3945,7 +3948,8 @@ begin
   {$IFDEF ShowFoundIdentifier}
   writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
   ' Indent=',GetIdentifier(Params.Identifier),
-  ' FoundContext=',FoundContext.Node.DescAsString
+  ' FoundContext=',FoundContext.Node.DescAsString,
+  ' Flags=[',FindDeclarationFlagsAsString(Params.Flags),']'
   );
   {$ENDIF}
   if FoundContext.Node.Desc=ctnProcedure then begin
@@ -4011,8 +4015,9 @@ begin
             ' Params.ContextNode="',Params.ContextNode.DescAsString,'"'
             );
             {$ENDIF}
-            Include(Params.Flags,fdfIgnoreCurContextNode);
-            Exclude(Params.Flags,fdfExceptionOnNotFound);
+            Params.Flags:=Params.Flags
+                               +[fdfIgnoreCurContextNode,fdfSearchInParentNodes]
+                               -[fdfExceptionOnNotFound,fdfIgnoreUsedUnits];
             if Params.NewCodeTool.FindIdentifierInContext(Params) then begin
               {$IFDEF ShowFoundIdentifier}
               writeln('[TFindDeclarationTool.CheckSrcIdentifier] next overloaded ident found',
@@ -4286,54 +4291,6 @@ begin
   'ParamCount=',Result.Count,' "',copy(Src,StartPos,40),'"');
   writeln('  ExprList=[',Result.AsString,']');
   {$ENDIF}
-end;
-
-function TFindDeclarationTool.PredefinedIdentToTypeDesc(Identifier: PChar
-  ): TExpressionTypeDesc;
-begin
-  if CompareSrcIdentifiers(Identifier,'INT64') then
-    Result:=xtInt64
-  else if CompareSrcIdentifiers(Identifier,'CARDINAL') then
-    Result:=xtCardinal
-  else if CompareSrcIdentifiers(Identifier,'QWORD') then
-    Result:=xtQWord
-  else if CompareSrcIdentifiers(Identifier,'BOOLEAN') then
-    Result:=xtBoolean
-  else if CompareSrcIdentifiers(Identifier,'BYTEBOOL') then
-    Result:=xtByteBool
-  else if CompareSrcIdentifiers(Identifier,'LONGBOOL') then
-    Result:=xtLongBool
-  else if CompareSrcIdentifiers(Identifier,'CHAR') then
-    Result:=xtChar
-  else if CompareSrcIdentifiers(Identifier,'REAL') then
-    Result:=xtReal
-  else if CompareSrcIdentifiers(Identifier,'SINGLE') then
-    Result:=xtSingle
-  else if CompareSrcIdentifiers(Identifier,'DOUBLE') then
-    Result:=xtDouble
-  else if CompareSrcIdentifiers(Identifier,'EXTENDED') then
-    Result:=xtExtended
-  else if CompareSrcIdentifiers(Identifier,'COMP') then
-    Result:=xtComp
-  else if CompareSrcIdentifiers(Identifier,'CURRENCY') then
-    Result:=xtCurrency
-  else if CompareSrcIdentifiers(Identifier,'STRING') then
-
-    // ToDo: ask scanner, if AnsiString or ShortString
-
-    Result:=xtString
-  else if CompareSrcIdentifiers(Identifier,'SHORTSTRING') then
-    Result:=xtShortString
-  else if CompareSrcIdentifiers(Identifier,'ANSISTRING') then
-    Result:=xtAnsiString
-  else if CompareSrcIdentifiers(Identifier,'WIDESTRING') then
-    Result:=xtWideString
-  else if CompareSrcIdentifiers(Identifier,'TRUE')
-    or CompareSrcIdentifiers(Identifier,'FALSE') then
-    Result:=xtConstBoolean
-  else
-    RaiseException('[TFindDeclarationTool.PredefinedIdentToTypeDesc] '
-      +'internal error: not predefined identifier '+GetIdentifier(Identifier));
 end;
 
 function TFindDeclarationTool.CompatibilityList1IsBetter( List1,

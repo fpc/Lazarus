@@ -912,6 +912,8 @@ begin
     Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FILE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -938,6 +940,8 @@ begin
     Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CURRENCY'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FILE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TEXT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
