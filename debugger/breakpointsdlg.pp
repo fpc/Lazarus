@@ -44,33 +44,38 @@ uses
 type
   TBreakPointsDlg = class(TDebuggerDlg)
     lvBreakPoints: TListView;
-    procedure lvBreakPointsClick(Sender: TObject);
-    procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
     popAddSourceBP: TMenuItem;
-    procedure popAddSourceBPClick(Sender: TObject);
     N1: TMenuItem; //--------------
     popProperties: TMenuItem;
-    procedure popPropertiesClick(Sender: TObject);
     popEnabled: TMenuItem;
-    procedure popEnabledClick(Sender: TObject);
     popDelete: TMenuItem;
-    procedure popDeleteClick(Sender: TObject);
     N2: TMenuItem; //--------------
     popDisableAll: TMenuItem;
-    procedure popDisableAllClick(Sender: TObject);
     popEnableAll: TMenuItem;
-    procedure popEnableAllClick(Sender: TObject);
     popDeleteAll: TMenuItem;
+    procedure lvBreakPointsClick(Sender: TObject);
+    procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem;
+      Selected: Boolean);
+    procedure popAddSourceBPClick(Sender: TObject);
+    procedure popPropertiesClick(Sender: TObject);
+    procedure popEnabledClick(Sender: TObject);
+    procedure popDeleteClick(Sender: TObject);
+    procedure popDisableAllClick(Sender: TObject);
+    procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
   private 
     FBreakpointsNotification: TDBGBreakPointsNotification;
-    procedure BreakPointAdd(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
-    procedure BreakPointUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
-    procedure BreakPointRemove(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+    procedure BreakPointAdd(const ASender: TDBGBreakPoints;
+                            const ABreakpoint: TDBGBreakPoint);
+    procedure BreakPointUpdate(const ASender: TDBGBreakPoints;
+                               const ABreakpoint: TDBGBreakPoint);
+    procedure BreakPointRemove(const ASender: TDBGBreakPoints;
+                               const ABreakpoint: TDBGBreakPoint);
 
-    procedure UpdateItem(const AItem: TListItem; const ABreakpoint: TDBGBreakPoint);
+    procedure UpdateItem(const AItem: TListItem;
+      const ABreakpoint: TDBGBreakPoint);
   protected
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
@@ -81,7 +86,8 @@ type
 
 implementation
 
-procedure TBreakPointsDlg.BreakPointAdd(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.BreakPointAdd(const ASender: TDBGBreakPoints;
+  const ABreakpoint: TDBGBreakPoint);
 var
   Item: TListItem;
   n: Integer;
@@ -98,7 +104,8 @@ begin
   UpdateItem(Item, ABreakPoint);
 end;
 
-procedure TBreakPointsDlg.BreakPointUpdate(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.BreakPointUpdate(const ASender: TDBGBreakPoints;
+  const ABreakpoint: TDBGBreakPoint);
 var
   Item: TListItem;
 begin
@@ -110,7 +117,8 @@ begin
   else UpdateItem(Item, ABreakPoint);
 end;
 
-procedure TBreakPointsDlg.BreakPointRemove(const ASender: TDBGBreakPoints; const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.BreakPointRemove(const ASender: TDBGBreakPoints;
+  const ABreakpoint: TDBGBreakPoint);
 begin
   lvBreakPoints.Items.FindData(ABreakpoint).Free;
 end;
@@ -139,7 +147,8 @@ procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
 begin
 end;
 
-procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
+procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject;
+  AItem: TListItem; Selected: Boolean);
 var
   Enable: Boolean;
 begin
@@ -216,9 +225,11 @@ begin
   else inherited;
 end;
 
-procedure TBreakPointsDlg.UpdateItem(const AItem: TListItem; const ABreakpoint: TDBGBreakPoint);
+procedure TBreakPointsDlg.UpdateItem(const AItem: TListItem;
+  const ABreakpoint: TDBGBreakPoint);
 const
-  DEBUG_ACTION: array[TDBGBreakPointAction] of string = ('Break', 'Enable Group', 'Disable Group');
+  DEBUG_ACTION: array[TDBGBreakPointAction] of string =
+    ('Break', 'Enable Group', 'Disable Group');
   //                 enabled  valid
   DEBUG_STATE: array[Boolean, Boolean] of String = (('?', ''), ('!', '*'));
 var
@@ -260,6 +271,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.8  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.7  2002/05/30 22:45:57  lazarus
   MWE:
     - Removed menucreation from loaded since streaming works

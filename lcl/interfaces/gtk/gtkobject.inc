@@ -2587,7 +2587,7 @@ begin
   csLabel:
     begin
       if TLabel(Sender).ShowAccelChar then begin
-        If TLabel(sender).WordWrap then begin
+        If TLabel(sender).WordWrap and (TLabel(Sender).Caption<>'') then begin
           DC := GetDC(TLabel(Sender).Handle);
           aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, True);
           DeleteDC(DC);
@@ -6847,7 +6847,9 @@ begin
   end;
   ReallocMem(Lines, 0);
   If TmpStr <> nil then
-    Result := StrNew(TmpStr^.str);
+    Result := StrNew(TmpStr^.str)
+  else
+    Result:=nil;
 end;
 
 {$IFDEF ASSERT_IS_ON}
@@ -6858,6 +6860,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.326  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.325  2003/02/24 22:47:28  mattias
   fixed setting TTreeView.ScrollBars
 
