@@ -426,7 +426,7 @@ type
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
     function DoCloseProject:TModalResult;
-    function DoOpenProjectFile(AFileName:string):TModalResult;
+    function DoOpenProjectFile(AFileName:string; Flags: TOpenFlags):TModalResult;
     function DoPublishProject(Flags: TSaveFlags;
       ShowDialog: boolean):TModalResult;
     function DoAddActiveUnitToProject: TModalResult;
@@ -1224,11 +1224,11 @@ begin
   // load command line project or last project or create a new project
   if (ParamCount>0) and (ParamStr(ParamCount)[1]<>'-')
   and (ExtractFileExt(ParamStr(ParamCount))='.lpi')
-  and (DoOpenProjectFile(ParamStr(ParamCount))=mrOk) then
+  and (DoOpenProjectFile(ParamStr(ParamCount),[])=mrOk) then
     // command line project loaded
   else if (EnvironmentOptions.OpenLastprojectAtStart)
   and (FileExists(EnvironmentOptions.LastSavedProjectFile))
-  and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)=mrOk) then
+  and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk) then
   begin
     // last project loaded
   {$IFDEF IDE_DEBUG}
@@ -1939,11 +1939,7 @@ begin
   if Index<SeparatorIndex then begin
     // open recent project
     AFilename:=EnvironmentOptions.RecentProjectFiles[Index];
-    if DoOpenProjectFile(AFileName)=mrOk then begin
-      EnvironmentOptions.AddToRecentProjectFiles(AFileName);
-      SetRecentProjectFilesMenu;
-      SaveEnvironment;
-    end;
+    DoOpenProjectFile(AFileName,[ofAddToRecent]);
   end else begin
     // open recent file
     dec(Index, SeparatorIndex+1);
@@ -2114,9 +2110,7 @@ begin
       OpenDialog.Filter := 'Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*';
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
-        if DoOpenProjectFile(AFilename)=mrOk then begin
-          AddRecentFileToEnvironment(AFilename);
-        end;
+        DoOpenProjectFile(AFilename,[ofAddToRecent]);
       end;
       InputHistories.StoreFileDialogSettings(OpenDialog);
     finally
@@ -2124,7 +2118,7 @@ begin
     end;
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
-    if DoOpenProjectFile(AFilename)=mrOk then begin
+    if DoOpenProjectFile(AFilename,[ofAddToRecent])=mrOk then begin
       AddRecentFileToEnvironment(AFilename);
     end else begin
       // open failed
@@ -3158,7 +3152,7 @@ begin
   if ([ofProjectLoading,ofRegularFile]*Flags<>[]) and (ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
-    Result:=DoOpenProjectFile(AFilename);
+    Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
     Handled:=true;
     exit;
   end;
@@ -3188,7 +3182,7 @@ begin
         if MessageDlg(ACaption, AText, mtconfirmation,
              [mbok, mbcancel], 0)=mrOk then
         begin
-          Result:=DoOpenProjectFile(LPIFilename);
+          Result:=DoOpenProjectFile(LPIFilename,[]);
           Handled:=true;
           exit;
         end;
@@ -3800,6 +3794,10 @@ begin
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
+
+  // check if file is writable on disk
+  if not ActiveUnitInfo.IsVirtual then
+    ActiveUnitInfo.FileReadOnly:=not FileIsWritable(ActiveUnitInfo.Filename);
   
   // if this file is part of the project and the project is virtual then save
   // project first
@@ -3999,7 +3997,7 @@ begin
         +'Answer No to load is as xml file.',
         mtConfirmation,[mbYes,mbNo],0)=mrYes
       then begin
-        Result:=DoOpenProjectFile(AFilename);
+        Result:=DoOpenProjectFile(AFilename,[ofAddToRecent]);
         exit;
       end;
     end;
@@ -4601,7 +4599,8 @@ begin
   {$ENDIF}
 end;
 
-function TMainIDE.DoOpenProjectFile(AFileName:string):TModalResult;
+function TMainIDE.DoOpenProjectFile(AFileName:string;
+  Flags: TOpenFlags):TModalResult;
 var Ext,AText,ACaption: string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
@@ -4638,6 +4637,12 @@ begin
           +'Open it anyway?';
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbYes, mbAbort], 0);
     if Result=mrAbort then exit;
+  end;
+  
+  if ofAddToRecent in Flags then begin
+    EnvironmentOptions.AddToRecentProjectFiles(AFileName);
+    SetRecentProjectFilesMenu;
+    SaveEnvironment;
   end;
   
   // close the old project
@@ -7828,6 +7833,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.475  2003/03/07 11:41:21  mattias
+  fixed readonly check and added script to quick create lazarus snapshot
+
   Revision 1.474  2003/03/06 22:41:33  mattias
   open file now asks on .lpi files
 
