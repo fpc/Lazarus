@@ -78,12 +78,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: FindChar
-  Params:  Width, Height: Size of the image
-           Depth:         Depth of the image
-  Returns: a GDIRawImage
-
-  Creates a RawImage
+  function FindChar(c: char; p:PChar; Max: integer): integer;
  ------------------------------------------------------------------------------}
 function FindChar(c: char; p:PChar; Max: integer): integer;
 begin
@@ -3386,7 +3381,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: GetDefaultFont
+  Function: LoadDefaultFont
   Params: none
   Returns: Returns the default Font
 
@@ -3399,7 +3394,7 @@ end;
   a generic fixed font, if THAT fails, it gets whatever font is available.
   If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
-function GetDefaultFont: PGDKFont;
+function LoadDefaultFont: PGDKFont;
 var
   Style : PGTKStyle;
 begin
@@ -4015,6 +4010,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.167  2003/04/03 17:42:13  mattias
+  added exception handling for createpixmapindirect
+
   Revision 1.166  2003/04/02 13:23:24  mattias
   fixed default font
 
