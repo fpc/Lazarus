@@ -34,6 +34,7 @@ interface
 {$endif}
  
 { $DEFINE VerboseMouseBugfix}
+{ $DEFINE RaiseExceptionOnNilPointers}
 
 {$IFDEF win32}
 {$DEFINE NoGdkPixbufLib}
@@ -492,6 +493,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2002/09/19 16:45:54  lazarus
+  MG: fixed Menu.Free and gdkwindow=nil bug
+
   Revision 1.75  2002/09/18 17:07:28  lazarus
   MG: added patch from Andrew
 
