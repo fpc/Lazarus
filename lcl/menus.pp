@@ -158,6 +158,7 @@ type
     procedure HandleNeeded;
     function HasParent : Boolean; override;
     function IndexOf(Item: TMenuItem): Integer;
+    function IndexOfCaption(const ACaption: string): Integer;
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure Remove(Item: TMenuItem);
     property Count: Integer read GetCount;
@@ -424,6 +425,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2002/08/08 10:33:49  lazarus
+  MG: main bar speedbar open arrow now shows recent projects and files
+
   Revision 1.19  2002/08/08 09:07:06  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 

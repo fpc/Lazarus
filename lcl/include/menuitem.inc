@@ -405,6 +405,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TMenuItem.IndexOfCaption(const ACaption: string): Integer;
+
+  Resturns the index of the menuitem with the given caption or -1
+ ------------------------------------------------------------------------------}
+function TMenuItem.IndexOfCaption(const ACaption: string): Integer;
+begin
+  for Result:=0 to Count-1 do
+    if Items[Result].Caption=ACaption then exit;
+  Result:=-1;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.MenuChanged
   Params:  Rebuild : Boolean
   Returns: Nothing
@@ -752,6 +764,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/08/08 10:33:49  lazarus
+  MG: main bar speedbar open arrow now shows recent projects and files
+
   Revision 1.21  2002/08/08 09:38:36  lazarus
   MG: recent file menus are now updated instantly
 
@@ -843,6 +858,9 @@ end;
 
 
   $Log$
+  Revision 1.22  2002/08/08 10:33:49  lazarus
+  MG: main bar speedbar open arrow now shows recent projects and files
+
   Revision 1.21  2002/08/08 09:38:36  lazarus
   MG: recent file menus are now updated instantly
 

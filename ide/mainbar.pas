@@ -68,7 +68,8 @@ type
 
   TSaveFlag = (sfSaveAs, sfSaveToTestDir, sfProjectSaving);
   TSaveFlags = set of TSaveFlag;
-  TOpenFlag = (ofProjectLoading, ofOnlyIfExists, ofRevert, ofQuiet);
+  TOpenFlag = (ofProjectLoading, ofOnlyIfExists, ofRevert, ofQuiet,
+               ofAddToRecent);
   TOpenFlags = set of TOpenFlag;
   TRevertFlag = (rfQuiet);
   TRevertFlags = set of TRevertFlag;

@@ -153,6 +153,7 @@ type
     procedure mnuHelpAboutLazarusClicked(Sender : TObject);
 
     procedure OpenFileDownArrowClicked(Sender : TObject);
+    procedure mnuOpenFilePopupClick(Sender : TObject);
     procedure ControlClick(Sender : TObject);
 
     // SourceNotebook events
@@ -1847,8 +1848,8 @@ begin
         For I := 0 to OpenDialog.Files.Count-1 do
           Begin
             AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-            if DoOpenEditorFile(AFilename,-1,[])=mrOk then begin
-              EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+            if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
+            
             end;
           end;
         UpdateEnvironment;
@@ -1859,8 +1860,7 @@ begin
     end;
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
-    if DoOpenEditorFile(AFilename,-1,[])=mrOk then begin
-      EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+    if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
       UpdateEnvironment;
     end;
   end;
@@ -2043,10 +2043,85 @@ end;
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.OpenFileDownArrowClicked(Sender : TObject);
+var
+  CurIndex: integer;
+  
+  procedure AddFile(const Filename: string);
+  var
+    AMenuItem: TMenuItem;
+  begin
+    if OpenFilePopupMenu.Items.Count>CurIndex then
+      AMenuItem:=OpenFilePopupMenu.Items[CurIndex]
+    else begin
+      AMenuItem:=TMenuItem.Create(Self);
+      AMenuItem.Name:=OpenFilePopupMenu.Name+'Recent'+IntToStr(CurIndex);
+      AMenuItem.OnClick:=@mnuOpenFilePopupClick;
+      OpenFilePopupMenu.Items.Add(AMenuItem);
+    end;
+    AMenuItem.Caption:=Filename;
+    inc(CurIndex);
+  end;
+
+  procedure AddFiles(List: TStringList; MaxCount: integer);
+  var i: integer;
+  begin
+    i:=0;
+    while (i<List.Count) and (i<MaxCount) do begin
+      AddFile(List[i]);
+      inc(i);
+    end;
+  end;
+
 Begin
-  //display the PopupMenu
+  // fill the PopupMenu:
+  CurIndex:=0;
+  // first add 8 recent projects
+  AddFiles(EnvironmentOptions.RecentProjectFiles,8);
+  // add a separator
+  AddFile('-');
+  // add 12 recent files
+  AddFiles(EnvironmentOptions.RecentOpenFiles,12);
+  // remove unused menuitems
+  while OpenFilePopupMenu.Items.Count>CurIndex do
+    OpenFilePopupMenu.Items[OpenFilePopupMenu.Items.Count-1].Free;
+  // display the PopupMenu
   if OpenFilePopupMenu.Items.Count > 0 then
     OpenFilePopupMenu.Popup(0,0);
+end;
+
+procedure TMainIDE.mnuOpenFilePopupClick(Sender: TObject);
+var
+  TheMenuItem: TMenuItem;
+  Index, SeparatorIndex: integer;
+  AFilename: string;
+begin
+  TheMenuItem:=TMenuItem(Sender);
+  if TheMenuItem.Caption='-' then exit;
+  Index:=TheMenuItem.MenuIndex;
+  SeparatorIndex:=0;
+  while SeparatorIndex<OpenFilePopupMenu.Items.Count do begin
+    if OpenFilePopupMenu.Items[SeparatorIndex].Caption='-' then break;
+    inc(SeparatorIndex);
+  end;
+  if Index=SeparatorIndex then exit;
+  if Index<SeparatorIndex then begin
+    // open recent project
+    AFilename:=EnvironmentOptions.RecentProjectFiles[Index];
+    if DoOpenProjectFile(AFileName)=mrOk then begin
+      EnvironmentOptions.AddToRecentProjectFiles(AFileName);
+      SetRecentProjectFilesMenu;
+      SaveEnvironment;
+    end;
+  end else begin
+    // open recent file
+    dec(Index, SeparatorIndex+1);
+    if DoOpenEditorFile(EnvironmentOptions.RecentOpenFiles[Index],-1,
+      [ofAddToRecent])=mrOk then
+    begin
+      SetRecentFilesMenu;
+      SaveEnvironment;
+    end;
+  end;
 end;
 
 Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
@@ -3872,6 +3947,9 @@ begin
   and (ExtractFilenameOnly(AFilename)='') then
     exit;
 
+  if (ofAddToRecent in Flags) and (AFilename<>'') then
+    EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+
   // check if this is a hidden unit:
   // if this is a virtual (new, unsaved) project, the main unit is already
   // loaded and needs only to be shown in the sourceeditor/formeditor
@@ -4448,7 +4526,7 @@ begin
     exit;
   end;
 
-  // if there is project info file, load that instead
+  // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
     // load instead of lazarus program file the project info file
     AFileName:=ChangeFileExt(AFileName,'.lpi');
@@ -6898,6 +6976,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.338  2002/08/08 10:33:48  lazarus
+  MG: main bar speedbar open arrow now shows recent projects and files
+
   Revision 1.337  2002/08/08 09:38:34  lazarus
   MG: recent file menus are now updated instantly
 
