@@ -52,6 +52,11 @@ ResourceString
   ctsIdentExpectedButAtomFound = 'identifier expected, but %s found';
   ctsIdentExpectedButKeyWordFound = 'identifier expected, but keyword %s found';
   ctsStrExpectedButAtomFound = '%s expected, but %s found';
+  ctsinvalidClassName = 'invalid class name=%s%s%s';
+  ctsclassNotFound = 'class %s%s%s not found';
+  ctsinvalidClassName2 = 'invalid class name %s%s%s';
+  ctsinvalidVariableName = 'invalid variable name %s%s%s';
+  ctsinvalidVariableType = 'invalid variable type %s%s%s';
   ctsClassSNotFound = 'Class %s not found';
   ctsIdentExpectedButEOFFound = 'unexpected end of file (identifier expected)';
   ctsBracketOpenExpectedButAtomFound = 'bracket open expected, but %s found';

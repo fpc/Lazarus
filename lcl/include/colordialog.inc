@@ -22,16 +22,19 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TColorDialog.Create (AOwner : TComponent);
+constructor TColorDialog.Create(TheOwner: TComponent);
 begin
-   inherited Create(AOwner);
-   fCompStyle := csColorDialog;
-   FTitle:= rsSelectcolorTitle;
+  inherited Create(AOwner);
+  fCompStyle := csColorDialog;
+  FTitle:= rsSelectcolorTitle;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/01/13 16:39:01  mattias
+  changed consistency stops during var renaming to errors
+
   Revision 1.3  2003/02/28 10:21:16  mattias
   lcl localization from Olivier
 

@@ -2629,8 +2629,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
-  if {not FDoubleBuffered or} (Message.DC<>0) and (wcfEraseBackground in FFlags)
-  then
+  if (Message.DC<>0) and (wcfEraseBackground in FFlags) then
     EraseBackground(Message.DC);
 end;
 
@@ -3180,6 +3179,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.191  2004/01/13 16:39:01  mattias
+  changed consistency stops during var renaming to errors
+
   Revision 1.190  2004/01/12 08:36:34  micha
   statusbar interface dependent reimplementation (from vincent)
 

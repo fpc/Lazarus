@@ -8137,7 +8137,7 @@ begin
   // remove component definition from owner source
   OwnerClassName:=CurDesigner.LookupRoot.ClassName;
   CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
-                                       AComponent.Name);
+                                       AComponent.Name,false);
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
@@ -9360,12 +9360,16 @@ var
   NewClassName: string;
   BossResult: boolean;
 
-  procedure ApplyBossResult(const Msg: string);
+  procedure ApplyBossResult(const ErrorMsg: string);
+  var
+    CodeToolBossErrMsg: String;
   begin
     ApplyCodeToolChanges;
     if not BossResult then begin
+      CodeToolBossErrMsg:=CodeToolBoss.ErrorMessage;
       DoJumpToCodeToolBossError;
-      raise Exception.Create(Msg);
+      raise Exception.Create(ErrorMsg+#13#13+lisError+CodeToolBossErrMsg
+                             +#13#13+lisSeeMessages);
     end;
   end;
 
@@ -9399,7 +9403,7 @@ begin
     BossResult:=CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
       AComponent.Name,AComponent.ClassName,
       NewName,NewClassName);
-    ApplyBossResult(Format(lisUnableToRenameFormInSourceSeeMessages, [#13]));
+    ApplyBossResult(Format(lisUnableToRenameFormInSource, [#13]));
     ActiveUnitInfo.ComponentName:=NewName;
 
     // rename form component class
@@ -9413,17 +9417,14 @@ begin
         AComponent.ClassName,AComponent.Name,
         NewClassName,NewName,true);
       Project1.MainUnitInfo.Modified:=true;
-      ApplyCodeToolChanges;
-      if not BossResult then begin
-        DoJumpToCodeToolBossError;
-      end;
+      ApplyBossResult(lisUnableToUpdateCreateFormStatementInProjectSource);
     end;
   end else if ADesigner.LookupRoot<>nil then begin
     // rename published variable in form source
     BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
       ADesigner.LookupRoot.ClassName,
-      AComponent.Name,NewName,AComponent.ClassName);
-    ApplyBossResult(Format(lisUnableToRenameVariableInSourceSeeMessages, [#13])
+      AComponent.Name,NewName,AComponent.ClassName,true);
+    ApplyBossResult(Format(lisUnableToRenameVariableInSource, [#13])
       );
   end else begin
     RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
@@ -10268,6 +10269,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.700  2004/01/13 16:39:01  mattias
+  changed consistency stops during var renaming to errors
+
   Revision 1.699  2004/01/13 13:16:37  mattias
   extended GridXY labels
 

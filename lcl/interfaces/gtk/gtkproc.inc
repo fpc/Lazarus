@@ -196,7 +196,8 @@ begin
   Color^.blue := gushort(Trunc(colorArray[2] * $FFFF));
 end;
 
-Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
+Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection;
+  Color : PGDKColor);
 var
   SelectionColor: PGDouble;
 begin
@@ -5730,6 +5731,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.244  2004/01/13 16:39:02  mattias
+  changed consistency stops during var renaming to errors
+
   Revision 1.243  2004/01/12 23:56:10  mattias
   improved double buffering, only one issue left: parent gdkwindow paint messages
 

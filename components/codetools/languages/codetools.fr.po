@@ -120,6 +120,10 @@ msgstr "définitions circulaire"
 msgid "Class %s not found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "identificateur de classe attendu"
@@ -412,6 +416,14 @@ msgstr ""
 msgid "interface section not found"
 msgstr "section interface non trouvée"
 
+#: codetoolsstrconsts:ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "Valeur bascule invalide \"%s\" pour la directive %s"
@@ -427,6 +439,14 @@ msgstr "plage non valide"
 #: codetoolsstrconsts:ctsinvalidtype
 msgid "invalid type"
 msgstr "type non valide"
+
+#: codetoolsstrconsts:ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr ""
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"

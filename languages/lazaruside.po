@@ -1190,16 +1190,28 @@ msgstr ""
 msgid "Component name %s%s%s is keyword"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletorenamevariableinsourceseemessages
-msgid "Unable to rename variable in source.%sSee messages."
+#: lazarusidestrconsts:lisunabletorenamevariableinsource
+msgid "Unable to rename variable in source."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
+msgid "Unable to update CreateForm statement in project source"
 msgstr ""
 
 #: lazarusidestrconsts:listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletorenameforminsourceseemessages
-msgid "Unable to rename form in source.%sSee messages."
+#: lazarusidestrconsts:lisseemessages
+msgid "See messages."
+msgstr ""
+
+#: lazarusidestrconsts:liserror
+msgid "Error: "
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletorenameforminsource
+msgid "Unable to rename form in source."
 msgstr ""
 
 #: lazarusidestrconsts:lissorrynotimplementedyet

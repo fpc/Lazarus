@@ -194,13 +194,13 @@ type
     function FindEntryInRange(FromPos, ToPos: integer): TSourceChangeCacheEntry;
     function FindEntryAtPos(APos: integer): TSourceChangeCacheEntry;
     property BuffersToModify[Index: integer]: TCodeBuffer
-        read GetBuffersToModify;
+                                                        read GetBuffersToModify;
     function BuffersToModifyCount: integer;
     function BufferIsModified(ACode: TCodeBuffer): boolean;
     property OnBeforeApplyChanges: TOnBeforeApplyChanges
-        read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
+                         read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
     property OnAfterApplyChanges: TOnAfterApplyChanges
-        read FOnAfterApplyChanges write FOnAfterApplyChanges;
+                           read FOnAfterApplyChanges write FOnAfterApplyChanges;
     procedure Clear;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport;
@@ -657,7 +657,8 @@ begin
   writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
   {$ENDIF}
   Result:=false;
-  if MainScanner=nil then exit;
+  if MainScanner=nil then
+    RaiseCatchableException('TSourceChangeCache.Apply');
   if FUpdateLock>0 then begin
     Result:=true;
     exit;

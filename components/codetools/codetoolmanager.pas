@@ -392,14 +392,16 @@ type
     function CompleteComponent(Code: TCodeBuffer; AComponent: TComponent
           ): boolean;
     function PublishedVariableExists(Code: TCodeBuffer;
-          const AClassName, AVarName: string): boolean;
+          const AClassName, AVarName: string;
+          ErrorOnClassNotFound: boolean): boolean;
     function AddPublishedVariable(Code: TCodeBuffer;
           const AClassName,VarName, VarType: string): boolean;
     function RemovePublishedVariable(Code: TCodeBuffer;
-          const AClassName, AVarName: string): boolean;
+          const AClassName, AVarName: string;
+          ErrorOnClassNotFound: boolean): boolean;
     function RenamePublishedVariable(Code: TCodeBuffer;
           const AClassName, OldVariableName, NewVarName,
-          VarType: shortstring): boolean;
+          VarType: shortstring; ErrorOnClassNotFound: boolean): boolean;
           
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -2242,7 +2244,7 @@ begin
 end;
 
 function TCodeToolManager.PublishedVariableExists(Code: TCodeBuffer;
-  const AClassName, AVarName: string): boolean;
+  const AClassName, AVarName: string; ErrorOnClassNotFound: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -2251,7 +2253,7 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindPublishedVariable(UpperCaseStr(AClassName),
-                 UpperCaseStr(AVarName))<>nil;
+                 UpperCaseStr(AVarName),ErrorOnClassNotFound)<>nil;
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -2274,7 +2276,7 @@ begin
 end;
 
 function TCodeToolManager.RemovePublishedVariable(Code: TCodeBuffer;
-  const AClassName, AVarName: string): boolean;
+  const AClassName, AVarName: string; ErrorOnClassNotFound: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -2283,14 +2285,15 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.RemovePublishedVariable(UpperCaseStr(AClassName),
-               UpperCaseStr(AVarName),SourceChangeCache);
+               UpperCaseStr(AVarName),ErrorOnClassNotFound,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
 end;
 
 function TCodeToolManager.RenamePublishedVariable(Code: TCodeBuffer;
-  const AClassName, OldVariableName, NewVarName, VarType: shortstring): boolean;
+  const AClassName, OldVariableName, NewVarName, VarType: shortstring;
+  ErrorOnClassNotFound: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -2300,7 +2303,7 @@ begin
   try
     Result:=FCurCodeTool.RenamePublishedVariable(UpperCaseStr(AClassName),
                UpperCaseStr(OldVariableName),NewVarName,VarType,
-               SourceChangeCache);
+               ErrorOnClassNotFound,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

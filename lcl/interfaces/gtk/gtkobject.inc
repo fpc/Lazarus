@@ -440,7 +440,6 @@ var
 begin
   if Sender is TCommonDialog then
   begin
-    // Should be done elsewhere (eg via SetLabel) not here!
     GtkWindow:=PGtkWindow(TCommonDialog(Sender).Handle);
     gtk_window_set_title(GtkWindow,PChar(TCommonDialog(Sender).Title));
     if Sender is TColorDialog then
@@ -5877,10 +5876,6 @@ begin
   csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(StrTemp);
-      // We will only add this line if we see problem in the future with the
-      // color dialog
-      // gtk_color_selection_set_update_policy(GTK_COLOR_SELECTION(
-      //   GTK_COLOR_SELECTION_DIALOG(P)^.colorsel), GTK_UPDATE_DISCONTINUOUS);
       g_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.ok_button),
         'clicked', gtk_signal_func(@gtkDialogOKclickedCB), Sender);
       g_signal_connect( gtk_object((GTK_COLOR_SELECTION_DIALOG(P))^.cancel_button),
@@ -6984,12 +6979,12 @@ end;
            Color          : the color to select
   Returns: nothing
 
-  Set the color of the coor selection dialog
+  Set the color of the color selection dialog
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetColorDialogColor(ColorSelection: PGtkColorSelection;
   Color: TColor);
 var
-  SelectionColor: TGDKColor;       // currently only used by TColorDialog
+  SelectionColor: TGDKColor;
   colorSel : PGTKCOLORSELECTION;
 begin
   Color:=ColorToRGB(Color);
@@ -8690,6 +8685,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.452  2004/01/13 16:39:02  mattias
+  changed consistency stops during var renaming to errors
+
   Revision 1.451  2004/01/12 23:56:10  mattias
   improved double buffering, only one issue left: parent gdkwindow paint messages
 

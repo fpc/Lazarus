@@ -50,6 +50,26 @@ msgstr ""
 msgid "%s expected, but %s found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclasssnotfound
 msgid "Class %s not found"
 msgstr ""

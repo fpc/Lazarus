@@ -428,12 +428,14 @@ resourcestring
   lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
     +'valid identifier';
   lisComponentNameIsKeyword = 'Component name %s%s%s is keyword';
-  lisUnableToRenameVariableInSourceSeeMessages = 'Unable to rename variable '
-    +'in source.%sSee messages.';
+  lisUnableToRenameVariableInSource = 'Unable to rename variable in source.';
+  lisUnableToUpdateCreateFormStatementInProjectSource = 'Unable to update '
+    +'CreateForm statement in project source';
   lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name %'
     +'s%s%s';
-  lisUnableToRenameFormInSourceSeeMessages = 'Unable to rename form in '
-    +'source.%sSee messages.';
+  lisSeeMessages = 'See messages.';
+  lisError = 'Error: ';
+  lisUnableToRenameFormInSource = 'Unable to rename form in source.';
   lisSorryNotImplementedYet = 'Sorry, not implemented yet';
   lisUnableToFindMethodPlzFixTheErrorShownInTheMessage = 'Unable to find '
     +'method. Plz fix the error shown in the message window.';

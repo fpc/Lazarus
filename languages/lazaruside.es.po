@@ -1833,6 +1833,10 @@ msgstr "Error escribiendo fichero"
 msgid "Error Writing Package"
 msgstr "Error Escribiendo Paquete"
 
+#: lazarusidestrconsts:liserror
+msgid "Error: "
+msgstr ""
+
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
 msgstr "Error: compilador invÃ¡lido: %s"
@@ -4669,6 +4673,10 @@ msgstr "Buscando: %s"
 msgid "sec"
 msgstr "seg"
 
+#: lazarusidestrconsts:lisseemessages
+msgid "See messages."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
 msgstr "Seleccionar"
@@ -5977,17 +5985,17 @@ msgstr "No se ha podido renombrar el archivo ambiguo %s%s%s%sa %s%s%s"
 msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgstr "¡No se ha podido renombrar el archivo %s%s%s a %s%s%s!"
 
-#: lazarusidestrconsts:lisunabletorenameforminsourceseemessages
-msgid "Unable to rename form in source.%sSee messages."
-msgstr "No se ha podido renombrar el formulario en el código fuente.%sObserve los mensajes."
+#: lazarusidestrconsts:lisunabletorenameforminsource
+msgid "Unable to rename form in source."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
 msgstr "No se ha podido renombrar método. Por favor corrija el error mostrado en la ventana de mensaje."
 
-#: lazarusidestrconsts:lisunabletorenamevariableinsourceseemessages
-msgid "Unable to rename variable in source.%sSee messages."
-msgstr "No se ha podido renombrar la variable en el código fuente.%sObserve los mensajes."
+#: lazarusidestrconsts:lisunabletorenamevariableinsource
+msgid "Unable to rename variable in source."
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -6008,6 +6016,10 @@ msgstr "No se ha podido establecer flujo%s:T%s."
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."
 msgstr "No se ha podido transformar un flujo de componente binario de %s:T%s en texto."
+
+#: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
+msgid "Unable to update CreateForm statement in project source"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."

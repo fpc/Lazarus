@@ -213,11 +213,11 @@ type
   
   TColorDialog = class(TCommonDialog)
   private
-    FColor : TColor;
+    FColor: TColor;
   public
-    constructor Create (AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
   published
-    property Color : TColor read FColor write FColor;
+    property Color: TColor read FColor write FColor;
   end;
 
 
@@ -423,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2004/01/13 16:39:01  mattias
+  changed consistency stops during var renaming to errors
+
   Revision 1.39  2003/12/23 20:40:43  mattias
   added TEditButton, TFileNameEdit, TDirectoryEdit, TDateEdit, TCalcEdit from Michael V.C.
 

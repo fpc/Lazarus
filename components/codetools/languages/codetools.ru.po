@@ -110,6 +110,10 @@ msgstr "цикл в определениях"
 msgid "Class %s not found"
 msgstr "Класс %s не найден"
 
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "ожидается идентификатор класса"
@@ -402,6 +406,14 @@ msgstr "каталог интерфейса"
 msgid "interface section not found"
 msgstr "раздел описаний (interface) не найден"
 
+#: codetoolsstrconsts:ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "неверное значение флага \"%s\" для директивы %s"
@@ -417,6 +429,14 @@ msgstr "неверный поддиапазон"
 #: codetoolsstrconsts:ctsinvalidtype
 msgid "invalid type"
 msgstr "неверный тип"
+
+#: codetoolsstrconsts:ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr ""
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"

@@ -1832,6 +1832,10 @@ msgstr ""
 msgid "Error Writing Package"
 msgstr ""
 
+#: lazarusidestrconsts:liserror
+msgid "Error: "
+msgstr ""
+
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
 msgstr ""
@@ -4668,6 +4672,10 @@ msgstr ""
 msgid "sec"
 msgstr ""
 
+#: lazarusidestrconsts:lisseemessages
+msgid "See messages."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
 msgstr ""
@@ -5976,16 +5984,16 @@ msgstr ""
 msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletorenameforminsourceseemessages
-msgid "Unable to rename form in source.%sSee messages."
+#: lazarusidestrconsts:lisunabletorenameforminsource
+msgid "Unable to rename form in source."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
 msgstr ""
 
-#: lazarusidestrconsts:lisunabletorenamevariableinsourceseemessages
-msgid "Unable to rename variable in source.%sSee messages."
+#: lazarusidestrconsts:lisunabletorenamevariableinsource
+msgid "Unable to rename variable in source."
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
@@ -6006,6 +6014,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
+msgid "Unable to update CreateForm statement in project source"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletowrite

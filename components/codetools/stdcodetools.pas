@@ -137,14 +137,16 @@ type
           var AncestorClassName: string): boolean;
 
     // form components
-    function FindPublishedVariable(const UpperClassName,
-          UpperVarName: string): TCodeTreeNode;
+    function FindPublishedVariable(const UpperClassName, UpperVarName: string;
+          ExceptionOnClassNotFound: boolean): TCodeTreeNode;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
           SourceChangeCache: TSourceChangeCache): boolean; virtual;
     function RemovePublishedVariable(const UpperClassName, UpperVarName: string;
+          ExceptionOnClassNotFound: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function RenamePublishedVariable(const UpperClassName,
           UpperOldVarName: string; const NewVarName, VarType: shortstring;
+          ExceptionOnClassNotFound: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
 
     // blocks (e.g. begin..end)
@@ -2567,14 +2569,20 @@ begin
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,
-  UpperVarName: string): TCodeTreeNode;
+  UpperVarName: string; ExceptionOnClassNotFound: boolean): TCodeTreeNode;
 var ClassNode, SectionNode: TCodeTreeNode;
 begin
   Result:=nil;
-  if (UpperClassName='') or (length(UpperClassName)>255) then exit;
+  if (UpperClassName='') or (length(UpperClassName)>255) then
+    RaiseException(Format(ctsinvalidClassName, ['"', UpperClassName, '"']));
   BuildTree(true);
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,false);
-  if ClassNode=nil then exit;
+  if ClassNode=nil then begin
+    if ExceptionOnClassNotFound then
+      RaiseException(Format(ctsclassNotFound, ['"', UpperClassName, '"']))
+    else
+      exit;
+  end;
   BuildSubTreeForClass(ClassNode);
   SectionNode:=ClassNode.FirstChild;
   while (SectionNode<>nil) do begin
@@ -2599,15 +2607,22 @@ var ClassNode, SectionNode: TCodeTreeNode;
   Indent, InsertPos: integer;
 begin
   Result:=false;
-  if (UpperClassName='') or (length(UpperClassName)>255)
-  or (VarName='') or (length(VarName)>255) or (VarType='')
-  or (length(VarType)>255) or (SourceChangeCache=nil) then exit;
-  if FindPublishedVariable(UpperClassName,UpperCaseStr(VarName))<>nil then begin
+  if (UpperClassName='') or (length(UpperClassName)>255) then
+    RaiseException(Format(ctsinvalidClassName2, ['"', UpperClassName, '"']));
+  if (VarName='') or (length(VarName)>255) then
+    RaiseException(Format(ctsinvalidVariableName, ['"', VarName, '"']));
+  if (VarType='') or (length(VarType)>255) then
+    RaiseException(Format(ctsinvalidVariableType, ['"', VarType, '"']));
+  if (SourceChangeCache=nil) then
+    RaiseException('missing SourceChangeCache');
+  if FindPublishedVariable(UpperClassName,UpperCaseStr(VarName),true)<>nil then
+  begin
     Result:=true;
     exit;
   end;
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
-  if ClassNode=nil then exit;
+  if ClassNode=nil then
+    RaiseException(Format(ctsclassNotFound, ['"', UpperClassName, '"']));
   BuildSubTreeForClass(ClassNode);
   SectionNode:=ClassNode.FirstChild;
   if (SectionNode.NextBrother<>nil)
@@ -2629,12 +2644,14 @@ begin
 end;
 
 function TStandardCodeTool.RemovePublishedVariable(const UpperClassName,
-  UpperVarName: string; SourceChangeCache: TSourceChangeCache): boolean;
+  UpperVarName: string; ExceptionOnClassNotFound: boolean;
+  SourceChangeCache: TSourceChangeCache): boolean;
 var VarNode: TCodeTreeNode;
   FromPos, ToPos: integer;
 begin
   Result:=false;
-  VarNode:=FindPublishedVariable(UpperClassName,UpperVarName);
+  VarNode:=FindPublishedVariable(UpperClassName,UpperVarName,
+                                 ExceptionOnClassNotFound);
   if VarNode=nil then exit;
   if (VarNode.PriorBrother<>nil)
   and (VarNode.PriorBrother.Desc=ctnVarDefinition)
@@ -2669,11 +2686,13 @@ end;
 
 function TStandardCodeTool.RenamePublishedVariable(const UpperClassName,
   UpperOldVarName: string; const NewVarName, VarType: shortstring;
+  ExceptionOnClassNotFound: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
 var TypeNode, VarNode: TCodeTreeNode;
 begin
   Result:=false;
-  VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName);
+  VarNode:=FindPublishedVariable(UpperClassName,UpperOldVarName,
+                                 ExceptionOnClassNotFound);
   if VarNode<>nil then begin
     // old variable found
     // check type
@@ -2687,8 +2706,9 @@ begin
       SourceChangeCache.MainScanner:=Scanner;
       if not SourceChangeCache.Replace(gtNone,gtNone,
         CurPos.StartPos,CurPos.EndPos,NewVarName)
-      then
-        exit;
+      then begin
+        RaiseException('Unable to replace name');
+      end;
     end else begin
       // auto correct type
 

@@ -119,6 +119,10 @@ msgstr "definizione circolare"
 msgid "Class %s not found"
 msgstr "Classe %s non trovata"
 
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "era previsto un identificatore di classe"
@@ -411,6 +415,14 @@ msgstr ""
 msgid "interface section not found"
 msgstr "sezione interfaccia non trovata"
 
+#: codetoolsstrconsts:ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "valore flag non valido \"%s\" per la direttiva %s"
@@ -426,6 +438,14 @@ msgstr "subrange non valido"
 #: codetoolsstrconsts:ctsinvalidtype
 msgid "invalid type"
 msgstr "tipo non valido"
+
+#: codetoolsstrconsts:ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr ""
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"

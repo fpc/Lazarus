@@ -120,6 +120,10 @@ msgstr "znalaz³em zapêtlone definicje"
 msgid "Class %s not found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsclassnotfound
+msgid "class %s%s%s not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
 msgstr "nie znalaz³em oczekiwanego identyfikatora klasy"
@@ -412,6 +416,14 @@ msgstr ""
 msgid "interface section not found"
 msgstr "brakuje sekcji interfejsu"
 
+#: codetoolsstrconsts:ctsinvalidclassname2
+msgid "invalid class name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidclassname
+msgid "invalid class name=%s%s%s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
 msgstr "b³êdna warto¶æ flagi \"%s\" dla dyrektywy %s"
@@ -427,6 +439,14 @@ msgstr "b³êdny podzakres"
 #: codetoolsstrconsts:ctsinvalidtype
 msgid "invalid type"
 msgstr "b³êdny typ"
+
+#: codetoolsstrconsts:ctsinvalidvariablename
+msgid "invalid variable name %s%s%s"
+msgstr ""
+
+#: codetoolsstrconsts:ctsinvalidvariabletype
+msgid "invalid variable type %s%s%s"
+msgstr ""
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"

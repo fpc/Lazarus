@@ -1822,6 +1822,10 @@ msgstr "Ошибка записи файла"
 msgid "Error Writing Package"
 msgstr "Ошибка записи пакета"
 
+#: lazarusidestrconsts:liserror
+msgid "Error: "
+msgstr ""
+
 #: lazarusidestrconsts:liscompilererrorinvalidcompiler
 msgid "Error: invalid compiler: %s"
 msgstr "Ошибка: неправильный компилятор:%s"
@@ -4658,6 +4662,10 @@ msgstr "Ищу: %s"
 msgid "sec"
 msgstr "сек"
 
+#: lazarusidestrconsts:lisseemessages
+msgid "See messages."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
 msgstr "Выделить"
@@ -5966,17 +5974,17 @@ msgstr "Не могу переименовать двусмысленный файо %s%s%s%sв %s%s%s"
 msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgstr "Не могу переименовать файл %s%s%s в %s%s%s!"
 
-#: lazarusidestrconsts:lisunabletorenameforminsourceseemessages
-msgid "Unable to rename form in source.%sSee messages."
-msgstr "Не могу переименовать форму в исходнике.%sСм. сообщения."
+#: lazarusidestrconsts:lisunabletorenameforminsource
+msgid "Unable to rename form in source."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletorenamemethodplzfixtheerrorshowninthemessag
 msgid "Unable to rename method. Plz fix the error shown in the message window."
 msgstr "Не могу переименовать метод. Исправьте ошибку, см. окно сообщений."
 
-#: lazarusidestrconsts:lisunabletorenamevariableinsourceseemessages
-msgid "Unable to rename variable in source.%sSee messages."
-msgstr "Не могу переименовать переменную в исходнике.%sСм. сообщения."
+#: lazarusidestrconsts:lisunabletorenamevariableinsource
+msgid "Unable to rename variable in source."
+msgstr ""
 
 #: lazarusidestrconsts:lisexttoolunabletorunthetool
 msgid "Unable to run the tool %s%s%s:%s%s"
@@ -5997,6 +6005,10 @@ msgstr "Не могу сделать поток %s:T%s."
 #: lazarusidestrconsts:lisunabletotransformbinarycomponentstreamoftintotext
 msgid "Unable to transform binary component stream of %s:T%s into text."
 msgstr "Не могу перевести двоичный компонент потока %s:T%s в текст."
+
+#: lazarusidestrconsts:lisunabletoupdatecreateformstatementinprojectsource
+msgid "Unable to update CreateForm statement in project source"
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletowrite
 msgid "Unable to write %s%s%s%s%s."
