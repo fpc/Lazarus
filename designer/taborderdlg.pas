@@ -20,7 +20,8 @@ type
     procedure DownSpeedbuttonCLICK(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure ShowOldValuesCheckboxCLICK(Sender: TObject);
-    procedure TabOrderDialogCLOSE(Sender: TObject; var Action: TCloseAction);
+    procedure TabOrderDialogCLOSE(Sender: TObject;
+                                  var CloseAction: TCloseAction);
     procedure TabOrderDialogCREATE(Sender: TObject);
     procedure UpSpeedbuttonCLICK(Sender: TObject);
   private
@@ -73,7 +74,7 @@ begin
 end;
 
 procedure TTabOrderDialog.TabOrderDialogCLOSE(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   FLookupRoot:=nil;
 end;

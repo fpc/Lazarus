@@ -665,6 +665,7 @@ type
     FVisible: Boolean;
     FWidth: Integer;
     FWindowProc: TWndMethod;
+    procedure DoActionChange(Sender: TObject);
     function GetBoundsRect : TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
@@ -783,6 +784,10 @@ type
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam: WParam; LParam: LParam); virtual;
     procedure FontChanged(Sender: TObject); virtual;
+    function GetText: TCaption; virtual;
+    function GetAction: TBasicAction; virtual;
+    function GetActionLinkClass: TControlActionLinkClass; dynamic;
+    procedure SetAction(Value: TBasicAction); virtual;
     procedure SetColor(Value : TColor); virtual;
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
@@ -790,7 +795,6 @@ type
     procedure SetName(const Value: TComponentName); override;
     procedure SetParent(AParent: TWinControl); virtual;
     Procedure SetParentComponent(Value: TComponent); override;
-    function GetText: TCaption; virtual;
     procedure SetText(const Value: TCaption); virtual;
     procedure WndProc(var TheMessage: TLMessage); virtual;
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
@@ -817,6 +821,7 @@ type
     procedure RemoveControlHandler(HandlerType: TControlHandlerType;
                                    AMethod: TMethod);
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
   protected
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
@@ -885,6 +890,7 @@ type
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
+    procedure InitiateAction; virtual;
   public
     // Event lists
     procedure RemoveAllControlHandlersOfObject(AnObject: TObject);
@@ -895,6 +901,7 @@ type
     procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
   public
     property Anchors: TAnchors read FAnchors write SetAnchors default [akLeft,akTop];
+    property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
@@ -964,6 +971,10 @@ type
   { TWinControlActionLink }
 
   TWinControlActionLink = class(TControlActionLink)
+  protected
+    procedure AssignClient(AClient: TObject); override;
+    function IsHelpContextLinked: Boolean; override;
+    procedure SetHelpContext(Value: THelpContext); override;
   end;
 
   TWinControlActionLinkClass = class of TWinControlActionLink;
@@ -1035,6 +1046,8 @@ type
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
   protected
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var ARect: TRect); virtual;
@@ -1260,8 +1273,11 @@ type
 
   TImageList = class(TDragImageList)
   published
+    property BkColor: TColor;
     Property Height;
+    property Masked;
     Property Width;
+    Property OnChange;
   end;
 
 
@@ -1877,6 +1893,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.172  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.171  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

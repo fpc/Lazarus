@@ -139,7 +139,7 @@ type
     procedure MoveFileDownMenuItemClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
-    procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
+    procedure PackageEditorFormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure PackageEditorFormResize(Sender: TObject);
     procedure PublishClick(Sender: TObject);
@@ -658,7 +658,7 @@ begin
 end;
 
 procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   if LazPackage=nil then exit;
   PackageEditors.SaveLayout(Self);

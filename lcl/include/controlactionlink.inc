@@ -27,8 +27,9 @@ begin
   Result := True;
   if Action is TCustomAction then
   begin
-    if TCustomAction(Action).DoHint(HintStr) and Application.HintShortCuts and
-      (TCustomAction(Action).ShortCut <> scNone) then
+    if TCustomAction(Action).DoHint(HintStr)
+    and Application.HintShortCuts
+    and (TCustomAction(Action).ShortCut <> scNone) then
     begin
       if HintStr <> '' then
         HintStr := Format('%s (%s)', [HintStr,
@@ -39,32 +40,32 @@ end;
 
 function TControlActionLink.IsCaptionLinked: Boolean;
 begin
-  Result := inherited IsCaptionLinked and
-    (FClient.Caption = (Action as TCustomAction).Caption);
+  Result := inherited IsCaptionLinked
+            and (FClient.Caption = (Action as TCustomAction).Caption);
 end;
 
 function TControlActionLink.IsEnabledLinked: Boolean;
 begin
-  Result := inherited IsEnabledLinked and
-    (FClient.Enabled = (Action as TCustomAction).Enabled);
+  Result := inherited IsEnabledLinked
+            and (FClient.Enabled = (Action as TCustomAction).Enabled);
 end;
 
 function TControlActionLink.IsHintLinked: Boolean;
 begin
-  Result := inherited IsHintLinked and
-    (FClient.Hint = (Action as TCustomAction).Hint);
+  Result := inherited IsHintLinked
+            and (FClient.Hint = (Action as TCustomAction).Hint);
 end;
 
 function TControlActionLink.IsVisibleLinked: Boolean;
 begin
-  Result := inherited IsVisibleLinked and
-    (FClient.Visible = (Action as TCustomAction).Visible);
+  Result := inherited IsVisibleLinked
+            and (FClient.Visible = (Action as TCustomAction).Visible);
 end;
 
 function TControlActionLink.IsOnExecuteLinked: Boolean;
 begin
-  Result := inherited IsOnExecuteLinked and
-    (@FClient.OnClick = @Action.OnExecute);
+  Result := inherited IsOnExecuteLinked
+            and (FClient.OnClick = Action.OnExecute);
 end;
 
 procedure TControlActionLink.SetCaption(const Value: string);
@@ -94,10 +95,9 @@ end;
 
 function TControlActionLink.IsHelpLinked: Boolean;
 begin
-  Result :=
-    (FClient.HelpContext = (Action as TCustomAction).HelpContext) and
-    (FClient.HelpKeyword = (Action as TCustomAction).HelpKeyword) and
-    (FClient.HelpType = (Action as TCustomAction).HelpType);
+  Result := (FClient.HelpContext = (Action as TCustomAction).HelpContext)
+        and (FClient.HelpKeyword = (Action as TCustomAction).HelpKeyword)
+        and (FClient.HelpType = (Action as TCustomAction).HelpType);
 end;
 
 procedure TControlActionLink.SetHelpKeyword(const Value: String);
@@ -113,6 +113,25 @@ end;
 procedure TControlActionLink.SetHelpType(Value: THelpType);
 begin
   if IsHelpLinked then FClient.HelpType := Value;
+end;
+
+{ TWinControlActionLink }
+
+procedure TWinControlActionLink.AssignClient(AClient: TObject);
+begin
+  inherited AssignClient(AClient);
+  FClient := AClient as TWinControl;
+end;
+
+function TWinControlActionLink.IsHelpContextLinked: Boolean;
+begin
+  // only for Delphi compatibility
+  Result := IsHelpLinked;
+end;
+
+procedure TWinControlActionLink.SetHelpContext(Value: THelpContext);
+begin
+  inherited SetHelpContext(Value);
 end;
 
 // included by controls.pp

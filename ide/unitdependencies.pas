@@ -169,7 +169,7 @@ type
     procedure SelectUnitButtonClick(Sender: TObject);
     procedure ShowProjectButtonClick(Sender: TObject);
     procedure UnitDependenciesViewClose(Sender: TObject;
-      var Action: TCloseAction);
+      var CloseAction: TCloseAction);
     procedure UnitDependenciesViewResize(Sender: TObject);
     procedure UnitHistoryListChange(Sender: TObject);
     procedure UnitHistoryListKeyUp(Sender: TObject; var Key: Word;
@@ -258,7 +258,7 @@ begin
 end;
 
 procedure TUnitDependenciesView.UnitDependenciesViewClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;

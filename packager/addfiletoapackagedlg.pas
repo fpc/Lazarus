@@ -56,7 +56,7 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     procedure AddFileToAPackageDlgClose(Sender: TObject;
-      var Action: TCloseAction);
+      var CloseAction: TCloseAction);
     procedure AddFileToAPackageDlgResize(Sender: TObject);
     procedure FileGroupBoxResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -105,7 +105,7 @@ end;
 { TAddFileToAPackageDlg }
 
 procedure TAddFileToAPackageDlg.AddFileToAPackageDlgClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

@@ -881,6 +881,12 @@ begin
   end;
 end;
 
+procedure TCustomImageList.SetMasked(const AValue: boolean);
+begin
+  if FMasked=AValue then exit;
+  FMasked:=AValue;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.SetWidth
   Params:  Value: the width of an image
@@ -985,6 +991,9 @@ end;
 {
 
   $Log$
+  Revision 1.20  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.19  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -97,7 +97,7 @@ type
     procedure IDEPageResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackageOptionsDialogClose(Sender: TObject;
-      var Action: TCloseAction);
+      var CloseAction: TCloseAction);
     procedure PackageOptionsDialogResize(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -407,7 +407,7 @@ begin
 end;
 
 procedure TPackageOptionsDialog.PackageOptionsDialogClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

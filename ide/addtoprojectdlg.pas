@@ -75,8 +75,8 @@ type
     CancelDependButton: TButton;
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddFilePageResize(Sender: TObject);
-    procedure AddToProjectDialogClose(Sender: TObject; var Action: TCloseAction
-      );
+    procedure AddToProjectDialogClose(Sender: TObject;
+                                      var CloseAction: TCloseAction);
     procedure NewDependButtonClick(Sender: TObject);
     procedure NewDependPageResize(Sender: TObject);
   private
@@ -197,7 +197,7 @@ begin
 end;
 
 procedure TAddToProjectDialog.AddToProjectDialogClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

@@ -48,7 +48,7 @@ type
     NoteLabel: TLabel;
     DependencyListView: TListView;
     procedure BrokenDependenciesDialogClose(Sender: TObject;
-      var Action: TCloseAction);
+      var CloseAction: TCloseAction);
     procedure BrokenDependenciesDialogResize(Sender: TObject);
   private
     fButtons: TList; // list of TBitBtn
@@ -133,7 +133,7 @@ begin
 end;
 
 procedure TBrokenDependenciesDialog.BrokenDependenciesDialogClose(
-  Sender: TObject; var Action: TCloseAction);
+  Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

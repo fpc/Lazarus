@@ -186,6 +186,25 @@ begin
   Invalidate;
 end;
 
+procedure TControl.SetAction(Value: TBasicAction);
+begin
+  if Value = nil then begin
+    ActionLink.Free;
+    ActionLink:=nil;
+    Exclude(FControlStyle, csActionClient);
+  end
+  else
+  begin
+    Include(FControlStyle, csActionClient);
+    if ActionLink = nil then
+      ActionLink := GetActionLinkClass.Create(Self);
+    ActionLink.Action := Value;
+    ActionLink.OnChange := @DoActionChange;
+    ActionChange(Value, csLoading in Value.ComponentState);
+    Value.FreeNotification(Self);
+  end;
+end;
+
 {------------------------------------------------------------------------------
        TControl.ChangeBounds
 ------------------------------------------------------------------------------}
@@ -1106,6 +1125,30 @@ begin
     FOnContextPopup(Self, MousePos, Handled);
 end;
 
+procedure TControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+begin
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    begin
+      if (not CheckDefaults)
+      or (Self.Caption = '') or (Self.Caption = Self.Name) then
+        Self.Caption := Caption;
+      if not CheckDefaults or (Self.Enabled = True) then
+        Self.Enabled := Enabled;
+      if not CheckDefaults or (Self.Hint = '') then
+        Self.Hint := Hint;
+      if not CheckDefaults or (Self.Visible = True) then
+        Self.Visible := Visible;
+      if not CheckDefaults or not Assigned(Self.OnClick) then
+        Self.OnClick := OnExecute;
+    end;
+end;
+
+procedure TControl.DoActionChange(Sender: TObject);
+begin
+  if Sender = Action then ActionChange(Sender, False);
+end;
+
 {------------------------------------------------------------------------------
        TControl GetClientRect
 ------------------------------------------------------------------------------}
@@ -1742,6 +1785,19 @@ begin
   Assert(False, 'Trace:<TControl.GetText> End');
 end;
 
+function TControl.GetAction: TBasicAction;
+begin
+  if ActionLink <> nil then
+    Result := ActionLink.Action
+  else
+    Result := nil;
+end;
+
+function TControl.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TControlActionLink;
+end;
+
 {------------------------------------------------------------------------------
   TControl IsCaptionStored
 ------------------------------------------------------------------------------}
@@ -2275,6 +2331,11 @@ begin
           and not (csReadingState in ControlState);
 end;
 
+procedure TControl.InitiateAction;
+begin
+  if ActionLink <> nil then ActionLink.Update;
+end;
+
 procedure TControl.Dock(NewDockSite: TWinControl; ARect: TRect);
 begin
   // ToDo
@@ -2618,6 +2679,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.166  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.165  2004/01/27 21:32:11  mattias
   improved changing style of controls
 

@@ -90,7 +90,7 @@ type
       should be reduced and if so do it like Delphi.
       
       The current TCustomImageList is simply a list of bitmaps. The masks are
-      not saved at all.
+      not saved at all yet.
       
       So a lot ToDo.
   }
@@ -100,6 +100,7 @@ type
     FBitmap: TBitmap;
     FMaskBitmap: TBitmap;
     FHeight: Integer;
+    FMasked: boolean;
     FWidth: Integer;
     FAllocBy: Integer;
     FCount: Integer;
@@ -113,6 +114,7 @@ type
     procedure NotifyChangeLink;
     procedure SetBkColor(const Value: TColor);
     procedure SetHeight(const Value: Integer);
+    procedure SetMasked(const AValue: boolean);
     procedure SetWidth(const Value: Integer);
 
     Function GetCount: Integer;
@@ -123,9 +125,11 @@ type
     procedure Initialize; virtual;
     procedure DefineProperties(Filer: TFiler); override;
   public
+    constructor Create(AOwner: TComponent); override;
+
     procedure Assign(Source: TPersistent); override;
     procedure WriteData(Stream: TStream); virtual;
-    procedure ReadData(Stream : TStream); virtual;
+    procedure ReadData(Stream: TStream); virtual;
 
     function Add(Image, Mask: TBitmap): Integer;
     function AddIcon(Image: TIcon): Integer;
@@ -133,7 +137,6 @@ type
     function AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
     procedure Change;
     procedure Clear;
-    constructor Create(AOwner : TComponent); override;
     constructor CreateSize(AWidth, AHeight: Integer);
     procedure Delete(Index: Integer);
     destructor Destroy; override;
@@ -147,12 +150,12 @@ type
     procedure InsertIcon(Index: Integer; Image: TIcon);
     procedure InsertMasked(Index: Integer; Image: TBitmap; MaskColor: TColor);
     procedure Move(CurIndex, NewIndex: Integer);
-    procedure RegisterChanges(Value: TChangeLink);
     procedure Replace(Index: Integer; Image, Mask: TBitmap);
     procedure ReplaceIcon(Index: Integer; Image: TIcon);
     procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
+    procedure RegisterChanges(Value: TChangeLink);
     procedure UnRegisterChanges(Value: TChangeLink);
-    
+  public
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
@@ -161,13 +164,9 @@ type
     property Height: Integer read FHeight write SetHeight default 16;
     property Width: Integer read FWidth write SetWidth default 16;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-// ----------------------
-// for debugging purposes only
+    property Masked: boolean read FMasked write SetMasked;
     property Bitmap: TBitmap read FBitmap;
     property MaskBitmap: TBitmap read FMaskBitmap;
-// ----------------------
-  published
-    { no published parts }
   end;
 
 
@@ -189,6 +188,9 @@ end.
 
 {
   $Log$
+  Revision 1.13  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.12  2003/04/04 16:35:24  mattias
   started package registration
 

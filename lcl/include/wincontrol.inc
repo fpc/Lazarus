@@ -1875,6 +1875,20 @@ begin
   end;
 end;
 
+procedure TWinControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+begin
+  inherited ActionChange(Sender,CheckDefaults);
+  if Sender is TCustomAction then
+    with TCustomAction(Sender) do
+    if (not CheckDefaults) or (Self.HelpContext = 0) then
+      Self.HelpContext := HelpContext;
+end;
+
+function TWinControl.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TWinControlActionLink;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl KeyDown
 ------------------------------------------------------------------------------}
@@ -3269,6 +3283,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.196  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.195  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

@@ -677,8 +677,8 @@ type
     procedure chkAdditionalConfigFileClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
-    procedure frmCompilerOptionsClose(Sender: TObject; var Action: TCloseAction
-      );
+    procedure frmCompilerOptionsClose(Sender: TObject;
+                                       var CloseAction: TCloseAction);
     procedure frmCompilerOptionsResize(Sender: TObject);
   private
     procedure SetupSearchPathsTab(Page: integer);
@@ -4778,7 +4778,7 @@ begin
 end;
 
 procedure TfrmCompilerOptions.frmCompilerOptionsClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

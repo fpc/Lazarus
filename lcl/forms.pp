@@ -314,7 +314,7 @@ type
 
   TIDesigner = class;
 
-  TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
+  TCloseEvent = procedure(Sender: TObject; var CloseAction: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject;
                                var CanClose : boolean) of object;
   THelpEvent = function(Command: Word; Data: Longint;
@@ -398,7 +398,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure Deactivate;dynamic;
-    procedure DoClose(var Action: TCloseAction); dynamic;
+    procedure DoClose(var CloseAction: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
     procedure EndFormUpdate;

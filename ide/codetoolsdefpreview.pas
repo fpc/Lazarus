@@ -19,7 +19,7 @@ type
     ValueGroupbox: TGROUPBOX;
     ValuesListview: TLISTVIEW;
     procedure CodeToolsDefinesDialogCLOSE(Sender: TObject;
-      var Action: TCloseAction);
+      var CloseAction: TCloseAction);
     procedure CodeToolsDefinesDialogCREATE(Sender: TObject);
     procedure DirectoryBrowseButtonCLICK(Sender: TObject);
     procedure DirectoryComboboxCHANGE(Sender: TObject);
@@ -180,7 +180,7 @@ begin
 end;
 
 procedure TCodeToolsDefinesDialog.CodeToolsDefinesDialogCLOSE(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   InputHistories.HistoryLists.GetList(hlCodeToolsDirectories,true).Assign(
     DirectoryCombobox.Items);

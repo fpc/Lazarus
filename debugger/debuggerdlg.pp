@@ -58,7 +58,7 @@ type
     FUpdateCount: integer;
   protected                                              
     procedure SetDebugger(const ADebugger: TDebugger); virtual;
-    procedure DoClose(var Action: TCloseAction); override;
+    procedure DoClose(var CloseAction: TCloseAction); override;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate; virtual;
   public
@@ -127,10 +127,10 @@ begin
   FDebugger := ADebugger; 
 end;
 
-procedure TDebuggerDlg.DoClose(var Action: TCloseAction);
+procedure TDebuggerDlg.DoClose(var CloseAction: TCloseAction);
 begin
-  Action := caFree; // we default to free
-  inherited DoClose(Action);
+  CloseAction := caFree; // we default to free
+  inherited DoClose(CloseAction);
   EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name).GetCurrentPosition;
 end;
 
@@ -146,6 +146,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.9  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.8  2004/01/05 15:22:42  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 

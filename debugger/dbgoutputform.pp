@@ -42,7 +42,7 @@ type
     txtOutput: TMemo;
     mnuPopup: TPopupMenu;
     popClear: TMenuItem;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure popClearClick(Sender: TObject);
   private
@@ -77,9 +77,10 @@ begin
   Lines.Assign(txtOutput.Lines);
 end;
 
-procedure TDbgOutputForm.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TDbgOutputForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
 begin
-  Action := caFree;
+  CloseAction := caFree;
 end;
 
 procedure TDbgOutputForm.FormCreate(Sender: TObject);
@@ -106,6 +107,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.10  2004/02/02 16:59:27  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.9  2004/01/05 15:22:42  mattias
   improved debugger: saved log, error handling in initialization, better reinitialize
 

@@ -71,7 +71,8 @@ type
     OkButton: TBitBtn;
     CancelButton: TBitBtn;
     
-    procedure ProjectOptionsClose(Sender: TObject; var Action: TCloseAction);
+    procedure ProjectOptionsClose(Sender: TObject;
+                                  var CloseAction: TCloseAction);
     procedure ProjectOptionsResize(Sender: TObject);
     procedure FormsAddToAutoCreatedFormsBtnClick(Sender: TObject);
     procedure FormsRemoveFromAutoCreatedFormsBtnClick(Sender: TObject);
@@ -444,7 +445,7 @@ begin
 end;
 
 procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 var NewFlags: TProjectFlags;
 begin
   if ModalResult = mrOk then begin  

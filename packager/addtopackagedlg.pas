@@ -139,7 +139,8 @@ type
     procedure AddFilePageResize(Sender: TObject);
     procedure AddFileShortenButtonClick(Sender: TObject);
     procedure AddFilesPageResize(Sender: TObject);
-    procedure AddToPackageDlgClose(Sender: TObject; var Action: TCloseAction);
+    procedure AddToPackageDlgClose(Sender: TObject;
+                                   var CloseAction: TCloseAction);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
     procedure AddUnitFileShortenButtonClick(Sender: TObject);
@@ -451,7 +452,7 @@ begin
 end;
 
 procedure TAddToPackageDlg.AddToPackageDlgClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;

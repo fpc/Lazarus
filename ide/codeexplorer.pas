@@ -60,7 +60,7 @@ type
     RefreshButton: TBUTTON;
     OptionsButton: TBUTTON;
     CodeTreeview: TTREEVIEW;
-    procedure CodeExplorerViewCLOSE(Sender: TObject; var Action: TCloseAction);
+    procedure CodeExplorerViewCLOSE(Sender: TObject; var CloseAction: TCloseAction);
     procedure CodeExplorerViewCREATE(Sender: TObject);
     procedure CodeExplorerViewRESIZE(Sender: TObject);
     procedure CodeTreeviewDBLCLICK(Sender: TObject);
@@ -213,7 +213,7 @@ begin
 end;
 
 procedure TCodeExplorerView.CodeExplorerViewCLOSE(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;

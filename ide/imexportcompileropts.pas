@@ -51,8 +51,8 @@ type
     OpenButton: TBUTTON;
     CancelButton: TBUTTON;
     OpenRecentGroupbox: TGROUPBOX;
-    procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var Action: TCloseAction
-      );
+    procedure ImExportCompOptsDlgCLOSE(Sender: TObject;
+                                       var CloseAction: TCloseAction);
     procedure ImExportCompOptsDlgCREATE(Sender: TObject);
     procedure OpenButtonCLICK(Sender: TObject);
     procedure OpenRecentButtonCLICK(Sender: TObject);
@@ -302,7 +302,7 @@ begin
 end;
 
 procedure TImExportCompOptsDlg.ImExportCompOptsDlgCLOSE(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   SaveRecentList;
 end;

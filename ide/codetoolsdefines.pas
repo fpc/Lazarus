@@ -214,7 +214,7 @@ type
     procedure ShowSelectedValues;
     procedure SetTypeLabel;
     function ValueToFilePathText(const AValue: string): string;
-    procedure InsertNewNode(Behind: boolean; Action: TDefineAction);
+    procedure InsertNewNode(Behind: boolean; DefAction: TDefineAction);
     procedure InsertTemplate(NewTemplate: TDefineTemplate);
     function FindUniqueName: string;
     function ConsistencyCheck: integer;
@@ -400,34 +400,34 @@ end;
 
 procedure TCodeToolsDefinesEditor.InsertNodeMenuItemClick(Sender: TObject);
 var Behind: boolean;
-  Action: TDefineAction;
+  DefAction: TDefineAction;
 begin
   Behind:=(TMenuItem(Sender).Parent=InsertBehindMenuItem);
-  if Sender=InsertBehindDefineMenuItem then Action:=da_Define
-  else if Sender=InsertBehindDefineRecurseMenuItem then Action:=da_DefineRecurse
-  else if Sender=InsertBehindUndefineMenuItem then Action:=da_Undefine
-  else if Sender=InsertBehindUndefineRecurseMenuItem then Action:=da_UndefineRecurse
-  else if Sender=InsertBehindUndefineAllMenuItem then Action:=da_UndefineAll
-  else if Sender=InsertBehindBlockMenuItem then Action:=da_Block
-  else if Sender=InsertBehindDirectoryMenuItem then Action:=da_Directory
-  else if Sender=InsertBehindIfMenuItem then Action:=da_If
-  else if Sender=InsertBehindIfDefMenuItem then Action:=da_IfDef
-  else if Sender=InsertBehindIfNotDefMenuItem then Action:=da_IfNDef
-  else if Sender=InsertBehindElseIfMenuItem then Action:=da_ElseIf
-  else if Sender=InsertBehindElseMenuItem then Action:=da_Else
-  else if Sender=InsertAsChildDefineMenuItem then Action:=da_Define
-  else if Sender=InsertAsChildDefineRecurseMenuItem then Action:=da_DefineRecurse
-  else if Sender=InsertAsChildUndefineMenuItem then Action:=da_Undefine
-  else if Sender=InsertAsChildUndefineRecurseMenuItem then Action:=da_UndefineRecurse
-  else if Sender=InsertAsChildUndefineAllMenuItem then Action:=da_UndefineAll
-  else if Sender=InsertAsChildBlockMenuItem then Action:=da_Block
-  else if Sender=InsertAsChildDirectoryMenuItem then Action:=da_Directory
-  else if Sender=InsertAsChildIfMenuItem then Action:=da_If
-  else if Sender=InsertAsChildIfDefMenuItem then Action:=da_IfDef
-  else if Sender=InsertAsChildIfNotDefMenuItem then Action:=da_IfNDef
-  else if Sender=InsertAsChildElseIfMenuItem then Action:=da_ElseIf
-  else if Sender=InsertAsChildElseMenuItem then Action:=da_Else;
-  InsertNewNode(Behind,Action);
+  if Sender=InsertBehindDefineMenuItem then DefAction:=da_Define
+  else if Sender=InsertBehindDefineRecurseMenuItem then DefAction:=da_DefineRecurse
+  else if Sender=InsertBehindUndefineMenuItem then DefAction:=da_Undefine
+  else if Sender=InsertBehindUndefineRecurseMenuItem then DefAction:=da_UndefineRecurse
+  else if Sender=InsertBehindUndefineAllMenuItem then DefAction:=da_UndefineAll
+  else if Sender=InsertBehindBlockMenuItem then DefAction:=da_Block
+  else if Sender=InsertBehindDirectoryMenuItem then DefAction:=da_Directory
+  else if Sender=InsertBehindIfMenuItem then DefAction:=da_If
+  else if Sender=InsertBehindIfDefMenuItem then DefAction:=da_IfDef
+  else if Sender=InsertBehindIfNotDefMenuItem then DefAction:=da_IfNDef
+  else if Sender=InsertBehindElseIfMenuItem then DefAction:=da_ElseIf
+  else if Sender=InsertBehindElseMenuItem then DefAction:=da_Else
+  else if Sender=InsertAsChildDefineMenuItem then DefAction:=da_Define
+  else if Sender=InsertAsChildDefineRecurseMenuItem then DefAction:=da_DefineRecurse
+  else if Sender=InsertAsChildUndefineMenuItem then DefAction:=da_Undefine
+  else if Sender=InsertAsChildUndefineRecurseMenuItem then DefAction:=da_UndefineRecurse
+  else if Sender=InsertAsChildUndefineAllMenuItem then DefAction:=da_UndefineAll
+  else if Sender=InsertAsChildBlockMenuItem then DefAction:=da_Block
+  else if Sender=InsertAsChildDirectoryMenuItem then DefAction:=da_Directory
+  else if Sender=InsertAsChildIfMenuItem then DefAction:=da_If
+  else if Sender=InsertAsChildIfDefMenuItem then DefAction:=da_IfDef
+  else if Sender=InsertAsChildIfNotDefMenuItem then DefAction:=da_IfNDef
+  else if Sender=InsertAsChildElseIfMenuItem then DefAction:=da_ElseIf
+  else if Sender=InsertAsChildElseMenuItem then DefAction:=da_Else;
+  InsertNewNode(Behind,DefAction);
 end;
 
 procedure TCodeToolsDefinesEditor.MoveNodeUpMenuItemClick(Sender: TObject);
@@ -1748,7 +1748,7 @@ begin
 end;
 
 procedure TCodeToolsDefinesEditor.InsertNewNode(Behind: boolean;
-  Action: TDefineAction);
+  DefAction: TDefineAction);
 var SelTreeNode, NodeInFront, ParentNode,
   NewTreeNode: TTreeNode;
   NewDefNode: TDefineTemplate;
@@ -1797,7 +1797,7 @@ begin
   NewVariable:='';
   NewValue:='';
   NewDefNode:=TDefineTemplate.Create(NewName,NewDescription,NewVariable,
-                                     NewValue,Action);
+                                     NewValue,DefAction);
   NewDefNode.Owner:=CodeToolsOpts;
   // add node to treeview
   if (NodeInFront<>nil) then

@@ -90,7 +90,7 @@ type
     // event handlers
 
     //procedure FormShow(Sender : TObject);
-    procedure MainIDEFormClose(Sender : TObject; var Action: TCloseAction);
+    procedure MainIDEFormClose(Sender : TObject; var CloseAction: TCloseAction);
     procedure MainIDEFormCloseQuery(Sender : TObject; var CanClose: boolean);
     procedure MainIDEResize(Sender: TObject);
     //procedure FormPaint(Sender : TObject);
@@ -267,7 +267,7 @@ type
     procedure OnSrcNotebookInitIdentCompletion(Sender: TObject;
       var Handled, Abort: boolean);
     procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-      var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
+      var NewTopLine, NewPageIndex: integer; JumpAction: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
       OldPageIndex, NewPageIndex: integer);
     procedure OnSrcNotebookReadOnlyChanged(Sender : TObject);
@@ -1009,7 +1009,8 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
-procedure TMainIDE.MainIDEFormClose(Sender : TObject; var Action: TCloseAction);
+procedure TMainIDE.MainIDEFormClose(Sender : TObject;
+  var CloseAction: TCloseAction);
 begin
   SaveEnvironment;
   SaveIncludeLinks;
@@ -9508,7 +9509,7 @@ begin
 end;
 
 Procedure TMainIDE.OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
-  var NewTopLine, NewPageIndex: integer;  Action: TJumpHistoryAction);
+  var NewTopLine, NewPageIndex: integer;  JumpAction: TJumpHistoryAction);
 { How the HistoryIndex works:
 
   When the user jumps around each time an item is added to the history list
@@ -9536,7 +9537,7 @@ begin
 
   {$IFDEF VerboseJumpHistory}
   writeln('');
-  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
+  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',JumpAction=jhaBack);
   Project1.JumpHistory.WriteDebugReport;
   {$ENDIF}
 
@@ -9545,7 +9546,7 @@ begin
 
   // get destination jump point
   DestIndex:=Project1.JumpHistory.HistoryIndex;
-  if Action=jhaForward then
+  if JumpAction=jhaForward then
     inc(DestIndex);
   if (DestIndex<0) or (DestIndex>=Project1.JumpHistory.Count) then exit;
 
@@ -9563,7 +9564,7 @@ begin
     end;
   end;
 
-  if (Action=jhaBack) and (Project1.JumpHistory.Count=DestIndex+1)
+  if (JumpAction=jhaBack) and (Project1.JumpHistory.Count=DestIndex+1)
   and (CursorPoint<>nil) then begin
     // this is the first back jump
     // -> insert current source position into history
@@ -9577,7 +9578,7 @@ begin
 
   // find the next jump point that is not where the cursor is
   DestIndex:=Project1.JumpHistory.HistoryIndex;
-  if Action=jhaForward then
+  if JumpAction=jhaForward then
     inc(DestIndex);
   while (DestIndex>=0) and (DestIndex<Project1.JumpHistory.Count) do begin
     DestJumpPoint:=Project1.JumpHistory[DestIndex];
@@ -9588,7 +9589,7 @@ begin
     if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0)
     and ((CursorPoint=nil) or not DestJumpPoint.IsSimilar(CursorPoint)) then
     begin
-      if Action=jhaBack then
+      if JumpAction=jhaBack then
         dec(DestIndex);
       Project1.JumpHistory.HistoryIndex:=DestIndex;
       NewCaretXY:=DestJumpPoint.CaretXY;
@@ -9599,7 +9600,7 @@ begin
       {$ENDIF}
       break;
     end;
-    if Action=jhaBack then
+    if JumpAction=jhaBack then
       dec(DestIndex)
     else
       inc(DestIndex);
@@ -10312,6 +10313,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.706  2004/02/02 16:59:27  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.705  2004/02/01 09:19:08  mattias
   fixed delphi2lazarus unit  R directive
 

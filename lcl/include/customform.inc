@@ -492,9 +492,9 @@ end;
 
   Calls user handler
  ------------------------------------------------------------------------------}
-procedure TCustomForm.DoClose(var Action: TCloseAction);
+procedure TCustomForm.DoClose(var CloseAction: TCloseAction);
 begin
-  if Assigned(FOnClose) then FOnClose(Self, Action);
+  if Assigned(FOnClose) then FOnClose(Self, CloseAction);
 end;
 
 {------------------------------------------------------------------------------
@@ -1467,6 +1467,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.124  2004/02/02 16:59:28  mattias
+  more Actions  TAction, TBasicAction, ...
+
   Revision 1.123  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

@@ -528,7 +528,7 @@ type
 
     procedure GotoLineClicked(Sender: TObject);
 
-    procedure HistoryJump(Sender: TObject; Action: TJumpHistoryAction);
+    procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
     procedure JumpBackClicked(Sender: TObject);
     procedure JumpForwardClicked(Sender: TObject);
     procedure AddJumpPointClicked(Sender: TObject);
@@ -3585,7 +3585,7 @@ begin
 end;
 
 procedure TSourceNotebook.HistoryJump(Sender: TObject;
-  Action: TJumpHistoryAction);
+  CloseAction: TJumpHistoryAction);
 var NewCaretXY: TPoint;
   NewTopLine: integer;
   NewPageIndex: integer;
@@ -3594,7 +3594,7 @@ begin
   if (NoteBook<>nil) and Assigned(OnJumpToHistoryPoint) then begin
     NewCaretXY.X:=-1;
     NewPageIndex:=-1;
-    OnJumpToHistoryPoint(NewCaretXY,NewTopLine,NewPageIndex,Action);
+    OnJumpToHistoryPoint(NewCaretXY,NewTopLine,NewPageIndex,CloseAction);
     SrcEdit:=FindSourceEditorWithPageIndex(NewPageIndex);
     if SrcEdit<>nil then begin
       NoteBook.PageIndex:=NewPageIndex;

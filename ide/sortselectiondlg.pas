@@ -61,8 +61,8 @@ type
     procedure DirectionRadioGroupClick(Sender: TObject);
     procedure DomainRadioGroupClick(Sender: TObject);
     procedure IgnoreSpaceCheckBoxClick(Sender: TObject);
-    procedure SortSelectionDialogClose(Sender: TObject; var Action: TCloseAction
-      );
+    procedure SortSelectionDialogClose(Sender: TObject;
+                                       var CloseAction: TCloseAction);
     procedure SortSelectionDialogResize(Sender: TObject);
   private
     FCaseSensitive: boolean;
@@ -376,7 +376,7 @@ begin
 end;
 
 procedure TSortSelectionDialog.SortSelectionDialogClose(Sender: TObject;
-  var Action: TCloseAction);
+  var CloseAction: TCloseAction);
 begin
   MiscellaneousOptions.SortSelDirection:=Direction;
   MiscellaneousOptions.SortSelDomain:=Domain;

@@ -56,7 +56,7 @@ type
     subitem_level: Integer;
     fAction: Integer;
   public
-    constructor CreateWithAction(AOwner: TComponent; aAction: Integer);
+    constructor CreateWithAction(AOwner: TComponent; TheAction: Integer);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonCLick(Sender: TObject);
     function GetSelectedMenuTemplate: Integer;
@@ -150,7 +150,8 @@ type
     procedure InsertFromTemplate(Item,Ident: string);
     procedure SaveAsTemplate(Item,Ident: string);
     procedure ReplaceInTemplate(old_Item, new_Item: string);
-    function ChangeMenuItem(MenuItem: PDesignerMenuItem; Action: Integer; Ident: string): Boolean;
+    function ChangeMenuItem(MenuItem: PDesignerMenuItem; TheAction: Integer;
+                           Ident: string): Boolean;
     
     //  Function for updating the real menu (which is the edited one) and supplementary functions for
     //  building a search index which is needed to locate an MenuItem in real menu which has to be
@@ -158,7 +159,7 @@ type
     procedure InitIndexSequence;
     function CreateIndexSequence(MenuItem: PDesignerMenuItem; Ident: string; Ind: Integer): Boolean;
     function UpdateMenu(MenuItem: TMenuItem;
-           DesignerMenuItem: PDesignerMenuItem; Ind,Action: Integer): TMenuItem;
+           DesignerMenuItem: PDesignerMenuItem; Ind,TheAction: Integer): TMenuItem;
     
     procedure HideDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem);
     function GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; const Ident: string): PDesignerMenuItem;
@@ -657,12 +658,13 @@ end;
 // --------------------------------------------------------
 // Function that changes MenuItem (Remove, Add SubMenu ...)
 // --------------------------------------------------------
-function TDesignerMainMenu.ChangeMenuItem(MenuItem: PDesignerMenuItem; Action: Integer; Ident: string): Boolean;
+function TDesignerMainMenu.ChangeMenuItem(MenuItem: PDesignerMenuItem;
+  TheAction: Integer; Ident: string): Boolean;
 var
   completed: boolean;
 begin
   completed:=false;
-  case Action of
+  case TheAction of
   // Test if this MenuItem has been selected
   1: begin
        if (MenuItem^.ID = Ident) then
@@ -674,7 +676,7 @@ begin
          MenuItem^.Selected:=false;
        if (MenuItem^.SubMenu <> nil) then
        begin
-         if (ChangeMenuItem(MenuItem^.SubMenu,Action,Ident) = true) then
+         if (ChangeMenuItem(MenuItem^.SubMenu,TheAction,Ident) = true) then
          begin
            MenuItem^.Active:=true;
            completed:=true;
@@ -682,7 +684,7 @@ begin
        end;
        if (MenuItem^.NextItem <> nil) then
        begin
-         if (ChangeMenuItem(MenuItem^.NextItem,Action,Ident) = true) then
+         if (ChangeMenuItem(MenuItem^.NextItem,TheAction,Ident) = true) then
            completed:=true;
        end;
      end;
@@ -691,13 +693,13 @@ begin
        if (((MenuItem^.Selected) and (MenuItem^.SubMenu <> nil)) or (MenuItem^.Active)) then
        begin
          if (MenuItem^.SubMenu <> nil) and (MenuItem^.Active) then
-           ChangeMenuItem(MenuItem^.SubMenu,Action,MenuItem^.SubMenu^.ID)
+           ChangeMenuItem(MenuItem^.SubMenu,TheAction,MenuItem^.SubMenu^.ID)
          else
            MenuItem^.Selected:=true;
          MenuItem^.SubMenuPanel.visible:=false;
        end;
        if (MenuItem^.NextItem <> nil) then
-         ChangeMenuItem(MenuItem^.NextItem,Action,MenuItem^.NextItem^.ID);
+         ChangeMenuItem(MenuItem^.NextItem,TheAction,MenuItem^.NextItem^.ID);
          MenuItem^.SelfPanel.visible:=false;
        ChangeMenuItem:=true;
      end;
@@ -1690,12 +1692,12 @@ end;}
 // UPDATE Menu (type of update is specified via the Action parameter)
 // ------------------------------------------------------------------
 function TDesignerMainMenu.UpdateMenu(MenuItem: TMenuItem;
-  DesignerMenuItem: PDesignerMenuItem; Ind, Action: Integer): TMenuItem;
+  DesignerMenuItem: PDesignerMenuItem; Ind, TheAction: Integer): TMenuItem;
 var
   i: Integer;
   temp_menuitem: TMenuItem;
 begin
-  case Action of
+  case TheAction of
    // Insert new MenuItem after selected MenuItem
   1: begin
        if (index_sequence[Ind + 1] = -1) then
@@ -1711,7 +1713,7 @@ begin
          
        end else
        begin
-         UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
+         UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);
        end;
      end;
    // Insert new MenuItem before selected MenuItem
@@ -1728,7 +1730,7 @@ begin
          GetDesigner.Modified;
        end else
        begin
-         UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
+         UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);
        end;
       end;
     // Creates SubMenu to an existing MenuItem
@@ -1744,7 +1746,7 @@ begin
            GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
            GetDesigner.Modified;
          end else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);
        end;
     // Moves Up(left) an MenuItem (changes positions of this MenuItem and its predecesor)
     4: begin
@@ -1754,7 +1756,7 @@ begin
            MenuItem.Delete(index_sequence[Ind] + 1);
            MenuItem.Insert(index_sequence[Ind], temp_menuitem);
          end else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action)
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
        end;
     // Moves Down(right) an MenuItem (changes positions of this MenuItem and its ancestor)
     5: begin
@@ -1764,7 +1766,7 @@ begin
            MenuItem.Delete(index_sequence[Ind]);
            MenuItem.Insert(index_sequence[Ind] - 1, temp_menuitem);
          end else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action)
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
        end;
     // Changes a caption of MenuItem
     6: begin
@@ -1773,7 +1775,7 @@ begin
            //writeln(MenuItem[index_sequence[Ind]].Caption);
            MenuItem[index_sequence[Ind]].Caption:=DesignerMenuItem^.Caption;
          end else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action)
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
        end;
     // Deletes an MenuItem
     7: begin
@@ -1782,7 +1784,7 @@ begin
            //MenuItem.Remove(MenuItem[index_sequence[Ind]]);
            MenuItem[index_sequence[Ind]].Free
          end else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action)
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction)
        end;
     // Deletes a SubMenu of MenuItem
     8: begin
@@ -1792,21 +1794,21 @@ begin
              MenuItem[index_sequence[Ind]].Delete(0);
              //MenuItem[index_sequence[Ind]].Items.Free
          end else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);
        end;
     // Selectes a MenuItem in the OI
     9: begin
          if (index_sequence[Ind + 1] = -1) then
            GetDesigner.SelectOnlyThisComponent(MenuItem[index_sequence[Ind]])
          else
-           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
+           UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);
        end;
    // Return an MenuItem
    10: begin
          if (index_sequence[Ind + 1] = -1) then
            Result:=MenuItem[index_sequence[Ind]]
          else
-           Result:=UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
+           Result:=UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);
        end;
   // Sonething else
   end;
@@ -1817,14 +1819,14 @@ end;
 // ---------------------/
  
 constructor TTemplateMenuForm.CreateWithAction(AOwner: TComponent;
-  aAction: Integer);
+  TheAction: Integer);
 var
   i: Integer;
   templatemenuitem, str_i: string;
 begin
   inherited Create(AOwner);
 
-  fAction:=aAction;
+  fAction:=TheAction;
   
   case fAction of
   1: begin
