@@ -284,9 +284,21 @@ type
   
   
 var
-  //Event : TGDKEVENTCONFIGURE;
   gtk_handler_quark: TGQuark;
   FOldTimerData: TList; // list of PGtkITimerinfo
+
+
+// Internal Paint message:
+const
+  LM_GTKPaint = LM_INTERFACEFIRST;
+  
+type
+  TLMGtkPaint = packed record
+    Msg: Cardinal;
+    Widget: PGtkWidget;
+    Unused1: integer;
+    Unused2: integer;
+  end;
 
 
 const
@@ -358,14 +370,18 @@ const
 
 
 // some callbacks
-function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl; forward;
-function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl; forward;
+function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl; forward;
+function gtkRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl; forward;
 function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; forward; cdecl;
-function GTKMotionNotify(Widget:PGTKWidget; event: PGDKEventMotion;
+function gtkMotionNotify(Widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; forward; cdecl;
 function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; forward; cdecl;
+function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
+  data: gPointer) : GBoolean; forward; cdecl;
+function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
+  Data: gPointer): GBoolean; forward; cdecl;
 
 
 {$I dragicons.inc}
@@ -394,6 +410,8 @@ begin
     ClipboardTargetEntries[c]:=nil;
     ClipboardTargetEntryCnt[c]:=0;
   end;
+  
+  InitDesignSignalMasks;
 end;
 
 procedure InternalFinal;
@@ -436,6 +454,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/08/28 09:40:49  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.65  2002/08/27 06:40:50  lazarus
   MG: ShortCut support for buttons from Andrew
 
