@@ -28,7 +28,7 @@ interface
 
 uses        
   // FCL
-  Classes, Windows,
+  Classes, Windows, SysUtils,
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
   LCLProc,
@@ -137,6 +137,8 @@ type
   public
 {$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
+    class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
+    class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
 {$endif}    
   end;
 
@@ -458,6 +460,56 @@ end;
 function  TWin32WSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
 begin
   Result := SendMessage(AToolbar.Handle, TB_BUTTONCOUNT, 0, 0)
+end;
+
+procedure TWin32WSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
+var
+  PStr, PStr2: PChar;
+  Num: Integer;
+  TBB: TBBUTTON;
+begin
+  // TODO: check correctness / clean up
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+  Assert(False, 'Trace:Toolbutton being inserted');
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+  If (AControl is TWinControl) Then
+  Begin
+    PStr := StrAlloc(Length(TToolButton(AControl).Caption) + 1);
+    StrPCopy(PStr, TToolButton(AControl).Caption);
+    PStr2 := StrAlloc(Length(TControl(AControl).Hint) + 1);
+    StrPCopy(PStr2, TControl(AControl).Hint);
+  End
+  Else
+  Begin
+    Raise Exception.Create('Can not assign this control to the toolbar');
+    Exit;
+  End;
+
+  Num := TToolbar(TWinControl(AControl).Parent).Buttonlist.IndexOf(TControl(AControl));
+  If Num < 0 Then
+    Num := TToolbar(TWinControl(AControl).Parent).Buttonlist.Count + 1;
+  Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
+
+  With tbb Do
+  Begin
+    iBitmap := Num;
+    idCommand := Num;
+    fsState := TBSTATE_ENABLED;
+    fsStyle := TBSTYLE_BUTTON;
+    iString := Integer(PStr);
+  End;
+
+  SendMessage(TWinControl(AControl).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
+  SendMessage(TWinControl(AControl).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
+  StrDispose(pStr);
+  StrDispose(pStr2);
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+end;
+
+procedure TWin32WSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
+begin
+  // TODO: code buggy, Index of button to delete ?!
+  SendMessage(AToolBar.Handle, TB_DELETEBUTTON, 0, 0);
 end;
 
 {$endif}

@@ -146,6 +146,8 @@ type
   public
 {$ifdef OldToolbar}
     class function  GetButtonCount(const AToolBar: TToolBar): integer; override;
+    class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
+    class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); override;
 {$endif}    
   end;
 
@@ -774,6 +776,49 @@ end;
 function  TGtkWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
 begin
   Result := PGtkToolbar(AToolbar.Handle)^.num_Children;
+end;
+
+procedure TGtkWSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
+var
+  Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
+  pStr        : PChar;
+  pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
+  handle: HWND;
+begin
+  if (AControl is TToolbutton) then
+  begin
+    pStr := StrAlloc(Length(TToolbutton(AControl).Caption)+1);
+    handle := TToolButton(AControl).Handle;
+    try
+      StrPCopy(pStr,TToolbutton(AControl).Caption);
+      pStr2 := StrAlloc(Length(TControl(AControl).Hint)+1);
+    finally
+      StrPCopy(pStr2,TControl(AControl).Hint);
+    end;
+  end
+  else Begin
+     RaiseException('Can not assign this control to the toolbar');
+     exit;
+  end;
+
+  num := TToolbar(TWinControl(AControl).parent).Buttonlist.IndexOf(TControl(AControl));
+  if num < 0 then Num := TToolbar(TWinControl(AControl).parent).Buttonlist.Count+1;
+  Assert(False, Format('Trace:NUM = %d in INSERTBUTTON',[num]));
+
+  gtk_toolbar_insert_widget(pGTKToolbar(TWinControl(AControl).parent.Handle),
+       pgtkwidget(handle),pstr,pStr2,Num);
+  StrDispose(pStr);
+  StrDispose(pStr2);
+end;
+
+procedure TGtkWSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
+begin
+  with pgtkToolbar(TToolbar(TWinControl(AControl).parent).handle)^ do
+    children := g_list_remove(pgList(children), AControl);
+  // Next 3 lines: should be same as above, remove when above lines are proofed
+  //         pgtkToolbar(TToolbar(TWinControl(AControl).parent).handle)^.children :=
+  //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(AControl).parent).handle)^.children),
+  //               AControl);
 end;
 
 {$endif}

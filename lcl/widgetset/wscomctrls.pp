@@ -45,7 +45,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  ComCtrls,
+  ComCtrls, Controls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSExtCtrls, WSStdCtrls,
   WSToolwin;
@@ -126,6 +126,8 @@ type
   public
 {$ifdef OldToolbar}  
     class function  GetButtonCount(const AToolBar: TToolBar): integer; virtual;
+    class procedure InsertToolButton(const AToolBar: TToolbar; const AControl: TControl); virtual;
+    class procedure DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl); virtual;
 {$endif}    
   end;
 
@@ -235,6 +237,14 @@ end;
 function TWSToolbar.GetButtonCount(const AToolBar: TToolBar): integer;
 begin
   Result := 0;
+end;
+
+procedure TWSToolbar.InsertToolButton(const AToolBar: TToolbar; const AControl: TControl);
+begin
+end;
+
+procedure TWSToolbar.DeleteToolButton(const AToolBar: TToolbar; const AControl: TControl);
+begin
 end;
 
 {$endif}

@@ -253,10 +253,7 @@ Var
   //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
-  Num: Integer;
-  PStr, PStr2: PChar;
   SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
-  TBB: TBBUTTON;
   AMenu: TMenu;
   AccelTable: HACCEL;
 
@@ -333,55 +330,6 @@ Begin
         End
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
-      End;
-      LM_INSERTTOOLBUTTON:
-      Begin
-        if Sender is TToolButton then
-        begin
-          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-          Assert(False, 'Trace:Toolbutton being inserted');
-          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-          If (Sender is TWinControl) Then
-          Begin
-            PStr := StrAlloc(Length(TToolButton(Sender).Caption) + 1);
-            StrPCopy(PStr, TToolButton(Sender).Caption);
-            PStr2 := StrAlloc(Length(TControl(Sender).Hint) + 1);
-            StrPCopy(PStr2, TControl(Sender).Hint);
-          End
-          Else
-          Begin
-            Raise Exception.Create('Can not assign this control to the toolbar');
-            Exit;
-          End;
-
-          Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.IndexOf(TControl(Sender));
-          If Num < 0 Then
-            Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.Count + 1;
-          Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
-
-          {Make sure it's created!!}
-          If Handle = 0 Then
-            IntSendMessage3(LM_CREATE, Sender, Nil);
-
-          With tbb Do
-          Begin
-            iBitmap := Num;
-            idCommand := Num;
-            fsState := TBSTATE_ENABLED;
-            fsStyle := TBSTYLE_BUTTON;
-            iString := Integer(PStr);
-          End;
-
-          SendMessage(TWinControl(Sender).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
-          SendMessage(TWinControl(Sender).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
-          StrDispose(pStr);
-          StrDispose(pStr2);
-          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-        end;
-      End;
-      LM_DELETETOOLBUTTON:
-      Begin
-        SendMessage((Sender As TWinControl).Parent.Handle, TB_DELETEBUTTON, 0, 0);
       End;
       LM_INVALIDATE:
       Begin
@@ -2298,6 +2246,9 @@ End;
 
 {
   $Log$
+  Revision 1.258  2004/09/14 14:41:17  micha
+  convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
+
   Revision 1.257  2004/09/14 12:45:29  micha
   convert LM_SETTABPOSITION message to interface method
 

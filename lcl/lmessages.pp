@@ -62,9 +62,6 @@ const
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
   LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
 
-  LM_INSERTTOOLBUTTON = LM_ComUser+46;
-  LM_DELETETOOLBUTTON = LM_ComUser+47;
-
   LM_RECREATEWND    = LM_COMUSER+57;
   LM_SETFORMICON    = LM_COMUSER+58;
 
@@ -835,9 +832,6 @@ begin
   LM_SETVALUE       :Result:='LM_SETVALUE';
   LM_GETVALUE       :Result:='LM_GETVALUE';
 
-  LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
-  LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
-
   LM_RECREATEWND    :Result:='LM_RECREATEWND';
   LM_SETFORMICON    :Result:='LM_SETFORMICON';
 
@@ -969,6 +963,9 @@ end.
 
 {
   $Log$
+  Revision 1.98  2004/09/14 14:41:17  micha
+  convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
+
   Revision 1.97  2004/09/14 12:45:29  micha
   convert LM_SETTABPOSITION message to interface method
 

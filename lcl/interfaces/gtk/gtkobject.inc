@@ -3067,11 +3067,6 @@ var
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
   Geometry    : TGdkGeometry;
   AWindow     : PGdkWindow;
-  {$IFDEF OldToolBar}
-  Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
-  pStr        : PChar;
-  pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
-  {$ENDIF}
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -3122,53 +3117,6 @@ begin
           MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
             TLMNotebookEvent(Data^).Page);
         end;
-
-      LM_INSERTTOOLBUTTON:
-      begin
-        {$IFNDEF OldToolBar}
-        DebugLn('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_INSERTTOOLBUTTON');
-        exit;
-        {$ELSE OldToolBar}
-         If (SENDER is TToolbutton) Then
-         Begin
-            pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
-            try
-              StrPCopy(pStr,TToolbutton(SENDER).Caption);
-              pStr2 := StrAlloc(Length(TControl(Sender).Hint)+1);
-            finally
-              StrPCopy(pStr2,TControl(Sender).Hint);
-            end;
-         end
-         else Begin
-           RaiseException('Can not assign this control to the toolbar');
-           exit;
-         end;
-
-         num := TToolbar(TWinControl(Sender).parent).Buttonlist.IndexOf(TControl(Sender));
-         if num < 0 then Num := TToolbar(TWinControl(Sender).parent).Buttonlist.Count+1;
-         Assert(False, Format('Trace:NUM = %d in INSERTBUTTON',[num]));
-
-         gtk_toolbar_insert_widget(pGTKToolbar(TWinControl(sender).parent.Handle),
-              pgtkwidget(handle),pstr,pStr2,Num);
-         StrDispose(pStr);
-         StrDispose(pStr2);
-        {$ENDIF OldToolBar}
-      end;
-
-      LM_DELETETOOLBUTTON:
-      Begin
-        {$IFNDEF OldToolBar}
-        DebugLn('Obsolete: TGtkWidgetSet.IntSendMessage3 LM_DELETETOOLBUTTON');
-        exit;
-        {$ELSE OldToolBar}
-         with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
-            children := g_list_remove(pgList(children), sender);
-  // Next 3 lines: should be same as above, remove when above lines are proofed
-  //         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children :=
-  //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
-  //               sender);
-        {$ENDIF OldToolBar}
-      end;
 
       LM_Invalidate :
       begin
@@ -8280,6 +8228,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.566  2004/09/14 14:41:17  micha
+  convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
+
   Revision 1.565  2004/09/14 12:45:29  micha
   convert LM_SETTABPOSITION message to interface method
 

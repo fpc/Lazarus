@@ -1851,14 +1851,13 @@ Begin
   case Message.msg of
     TB_INSERTBUTTON :
       if HandleAllocated then
-        CNSendMessage(LM_INSERTTOOLBUTTON,
-                      TControl(TTBButton(Pointer(Message.lParam)^).dwData),
-                      nil);
+        TWSToolBarClass(WidgetSetClass).InsertToolButton(Self, 
+                      TControl(TTBButton(Pointer(Message.lParam)^).dwData));
 
     TB_DELETEBUTTON :
       if HandleAllocated then
-        CNSendMessage(LM_DELETETOOLBUTTON,
-                      TControl(FButtons[Message.wparam]),nil);
+        TWSToolBarClass(WidgetSetClass).InsertToolButton(Self, 
+                      TControl(FButtons[Message.wparam]));
     end;
 
 
@@ -2085,6 +2084,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/09/14 14:41:17  micha
+  convert LM_INSERTTOOLBUTTON and LM_DELETETOOLBUTTON messages to interface methods; warning: still very ugly code, as if it is "OldToolbar" so probably, obsolete
+
   Revision 1.29  2004/09/13 14:34:53  micha
   convert LM_TB_BUTTONCOUNT to interface method
 
