@@ -6258,40 +6258,6 @@ begin
   Widget:= GTK_WIDGET(wHandle);
 
   case TControl(Sender).fCompStyle of
-  csProgressBar :
-    with TProgressBar(Sender) do
-    begin
-      if Smooth
-      then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
-                                           GTK_PROGRESS_CONTINUOUS)
-      else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
-                                           GTK_PROGRESS_DISCRETE);
-      case Orientation of
-      pbVertical   : gtk_progress_bar_set_orientation(
-                                    GTK_PROGRESS_BAR(whandle),
-                                    GTK_PROGRESS_BOTTOM_TO_TOP);
-      pbRightToLeft: gtk_progress_bar_set_orientation(
-                                    GTK_PROGRESS_BAR(whandle),
-                                    GTK_PROGRESS_RIGHT_TO_LEFT);
-      pbTopDown    : gtk_progress_bar_set_orientation(
-                                    GTK_PROGRESS_BAR(whandle),
-                                    GTK_PROGRESS_TOP_TO_BOTTOM);
-      else { pbHorizontal is default }
-        gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle),
-                                          GTK_PROGRESS_LEFT_TO_RIGHT);
-      end;
-      if BarShowText then
-      begin
-         gtk_progress_set_format_string (GTK_PROGRESS(wHandle),
-                                         '%v from [%l-%u] (=%p%%)');
-         gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GdkTrue);
-      end
-      else
-         gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GDKFalse);
-      gtk_progress_configure(GTK_PROGRESS(wHandle),Position,Min,Max);
-    end;
-
-
   csScrollBar:
      with (TScrollBar (Sender)) do
          begin
@@ -7495,6 +7461,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.594  2004/09/23 14:50:47  micha
+  convert LM_SETPROPERTIES message to interface method for TProgressBar
+
   Revision 1.593  2004/09/22 18:06:32  micha
   convert LM_SETPROPERTIES message to interface methods for TCustomListView
 

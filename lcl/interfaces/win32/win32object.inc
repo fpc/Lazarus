@@ -1700,29 +1700,6 @@ begin
 
   Case TControl(Sender).FCompStyle Of
 
-  csProgressBar:
-    With TProgressBar(Sender) Do
-    Begin
-      { smooth and vertical need window recreation }
-      if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
-           Integer(Smooth) * PBS_SMOOTH) or
-         ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
-           Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
-        Self.RecreateWnd(TWinControl(Sender));
-
-      SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
-      SendMessage(Handle, PBM_SETPOS, Position, 0);
-
-{ TODO: Implementable?
-      If BarShowText Then
-      Begin
-        SetWindowText(Handle, StrToPChar((Sender As TControl).Caption));
-      End
-      Else
-        SetWindowText(Handle, Nil);
-}
-    End;
-
   csScrollBar:
     With (TScrollBar(Sender)) Do
     Begin
@@ -1797,6 +1774,9 @@ End;
 
 {
   $Log$
+  Revision 1.282  2004/09/23 14:50:47  micha
+  convert LM_SETPROPERTIES message to interface method for TProgressBar
+
   Revision 1.281  2004/09/22 18:06:32  micha
   convert LM_SETPROPERTIES message to interface methods for TCustomListView
 

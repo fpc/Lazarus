@@ -255,7 +255,7 @@ begin
     if Position<Min then FPosition:=Min;
     if Position>Max then FPosition:=Max;
     if HandleAllocated then begin
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSProgressBarClass(WidgetSetClass).ApplyChanges(Self);
     end;
   end;
 end;
@@ -302,6 +302,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2004/09/23 14:50:47  micha
+  convert LM_SETPROPERTIES message to interface method for TProgressBar
+
   Revision 1.9  2004/09/21 10:05:26  mattias
   fixed disable at designtime and bounding TProgressBar position
 

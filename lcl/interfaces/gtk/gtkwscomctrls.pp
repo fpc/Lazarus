@@ -114,6 +114,7 @@ type
   private
   protected
   public
+    class procedure ApplyChanges(const AProgressBar: TProgressBar); override;
     class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
   end;
 
@@ -882,6 +883,44 @@ end;
 {$ENDIF}
 
 { TGtkWSProgressBar }
+
+procedure TGtkWSProgressBar.ApplyChanges(const AProgressBar: TProgressBar);
+var
+  wHandle: HWND;
+begin
+  wHandle := AProgressBar.Handle;
+  with AProgressBar do
+  begin
+    if Smooth
+    then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
+                                         GTK_PROGRESS_CONTINUOUS)
+    else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR(whandle),
+                                         GTK_PROGRESS_DISCRETE);
+    case Orientation of
+    pbVertical   : gtk_progress_bar_set_orientation(
+                                  GTK_PROGRESS_BAR(whandle),
+                                  GTK_PROGRESS_BOTTOM_TO_TOP);
+    pbRightToLeft: gtk_progress_bar_set_orientation(
+                                  GTK_PROGRESS_BAR(whandle),
+                                  GTK_PROGRESS_RIGHT_TO_LEFT);
+    pbTopDown    : gtk_progress_bar_set_orientation(
+                                  GTK_PROGRESS_BAR(whandle),
+                                  GTK_PROGRESS_TOP_TO_BOTTOM);
+    else { pbHorizontal is default }
+      gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle),
+                                        GTK_PROGRESS_LEFT_TO_RIGHT);
+    end;
+    if BarShowText then
+    begin
+       gtk_progress_set_format_string (GTK_PROGRESS(wHandle),
+                                       '%v from [%l-%u] (=%p%%)');
+       gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GdkTrue);
+    end
+    else
+       gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GDKFalse);
+    gtk_progress_configure(GTK_PROGRESS(wHandle),Position,Min,Max);
+  end;
+end;
 
 procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
 begin

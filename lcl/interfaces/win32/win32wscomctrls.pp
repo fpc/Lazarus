@@ -28,10 +28,10 @@ interface
 
 uses        
   // FCL
-  Classes, Windows, SysUtils,
+  Classes, Windows, SysUtils, WinExt,
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
-  LCLProc,
+  LCLProc, InterfaceBase, Win32Int,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc;
 
@@ -105,6 +105,7 @@ type
   private
   protected
   public
+    class procedure ApplyChanges(const AProgressBar: TProgressBar); override;
     class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
   end;
 
@@ -511,6 +512,31 @@ begin
 end;
 
 { TWin32WSProgressBar }
+
+procedure TWin32WSProgressBar.ApplyChanges(const AProgressBar: TProgressBar);
+begin
+  with AProgressBar do
+  begin
+    { smooth and vertical need window recreation }
+    if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
+         Integer(Smooth) * PBS_SMOOTH) or
+       ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
+         Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
+      TWin32WidgetSet(InterfaceObject).RecreateWnd(AProgressBar);
+
+    SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
+    SendMessage(Handle, PBM_SETPOS, Position, 0);
+
+{ TODO: Implementable?
+    If BarShowText Then
+    Begin
+      SetWindowText(Handle, StrToPChar((Sender As TControl).Caption));
+    End
+    Else
+      SetWindowText(Handle, Nil);
+}
+  end;
+end;
 
 procedure TWin32WSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
 begin
