@@ -26,7 +26,7 @@
 @author(Shane Miller)
 @created(05 Dev 2001)
 }
-unit calendar;
+unit Calendar;
 
 {$mode objfpc}{$H+}
 
@@ -38,7 +38,8 @@ uses
   
 Type
 
-  TDisplaySetting = (dsShowHeadings, dsShowDayNames, dsNoMonthChange, dsShowWeekNumbers,dsStartMonday);
+  TDisplaySetting = (dsShowHeadings, dsShowDayNames, dsNoMonthChange,
+                     dsShowWeekNumbers,dsStartMonday);
   TDisplaySettings = set of TDisplaySetting;
   
   TLMCalendar = record
@@ -94,12 +95,12 @@ implementation
 
 constructor TCalendar.Create(AOwner: TComponent);
 begin
-    inherited Create(AOwner);
-  {create the control}
+  inherited Create(AOwner);
   fCompStyle := csCalendar;
-  setbounds(0,0,250,150);
+  SetBounds(0,0,250,150);
   fDisplaySettings := [dsShowHeadings, dsShowDayNames];
   Date := FormatDateTime('dd-mm-yyyy',Now);
+  ControlStyle:=ControlStyle-[csDoubleClicks]
 end;
 
 destructor TCalendar.Destroy;

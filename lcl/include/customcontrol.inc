@@ -25,7 +25,7 @@
  ------------------------------------------------------------------------------}
 constructor TCustomControl.Create(AOwner: TComponent);                                            
 begin                                                                                             
-  inherited create (AOwner);       
+  inherited Create(AOwner);
   
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -75,6 +75,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/08/25 14:32:10  lazarus
+  MG: calendar now ignores double clicks
+
   Revision 1.4  2002/05/17 10:45:23  lazarus
   MG: finddeclaration for stupid things like var a:a;
 
