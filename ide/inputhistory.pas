@@ -35,7 +35,8 @@ unit InputHistory;
 interface
 
 uses
-  Classes, SysUtils, DiffPatch, IDEProcs, Laz_XMLCfg, LazConf, Dialogs;
+  Classes, SysUtils, FileCtrl, DiffPatch, IDEProcs, Laz_XMLCfg, LazConf,
+  Dialogs;
 
 const
   // these are the names of the various history lists in the IDE:
@@ -622,12 +623,15 @@ begin
 end;
 
 procedure TFPCConfigCache.SetCompilerPath(const AValue: string);
+var
+  ResolvedFilename: String;
 begin
   if FCompilerPath=AValue then exit;
   Clear;
   FCompilerPath:=AValue;
-  if FileExists(FCompilerPath) then
-    FCompilerAge:=FileAge(FCompilerPath)
+  ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
+  if FileExists(ResolvedFilename) then
+    FCompilerAge:=FileAge(ResolvedFilename)
   else
     FCompilerAge:=-1;
 end;
@@ -714,10 +718,14 @@ begin
 end;
 
 function TFPCConfigCache.Valid(CheckCompiler: boolean): boolean;
+var
+  ResolvedFilename: String;
 begin
   Result:=(FCompilerPath<>'') and (FCompilerAge>=0);
   if Result and CheckCompiler then begin
-    if FileExists(FCompilerPath) and (FileAge(FCompilerPath)=FCompilerAge) then
+    ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
+    if FileExists(ResolvedFilename)
+    and (FileAge(ResolvedFilename)=FCompilerAge) then
       exit;
     FCompilerAge:=-1;
     Result:=false;
