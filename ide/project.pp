@@ -31,10 +31,10 @@ unit project;
 interface
 
 uses
-  Classes, Global, SysUtils, xmlcfg, lazconf, compileroptions, filectrl;
+  Classes, SysUtils, xmlcfg, lazconf, compileroptions, filectrl;
 
 type
-  TProjectUnitInfo = class(TObject)
+  TUnitInfo = class(TObject)
   private
     { Variables }
     fAutoCreate: Boolean;
@@ -42,11 +42,16 @@ type
     fBreakpoints: TList;
     fCursorPos: LongInt;
     fFilename: String;
-    fUnitName: String;
     fReadOnly:  Boolean;
+    fSource: TStrings;
     fSyntaxHighlighter: String;
+    fUnitName: String;
   public
     constructor Create;
+    destructor Destroy; override;
+
+    function ReadUnit: Boolean;
+    function WriteUnit: Boolean;
 
     { Properties }
     property AutoCreate: Boolean read fAutoCreate write fAutoCreate;
@@ -54,9 +59,10 @@ type
     property Breakpoints: TList read fBreakpoints write fBreakpoints;
     property CursorPos: LongInt read fCursorPos write fCursorPos;
     property Filename: String read fFilename write fFilename;
-    property UnitName: String read fUnitName write fUnitName;
     property ReadOnly: Boolean read fReadOnly write fReadOnly;
+    property Source: TStrings read fSource write fSource;
     property SyntaxHighlighter: String read fSyntaxHighlighter write fSyntaxHighlighter;
+    property UnitName: String read fUnitName write fUnitName;
   end;
 
   TProject = class(TObject)
@@ -72,6 +78,7 @@ type
     fProjectFile: String;
     fProjectInfoFile: String;
     fTargetFileExt: String;
+    fSource: TStrings;
     fTitle: String;
     fUnitList: TList;
     fUnitNameList: String;
@@ -85,14 +92,14 @@ type
     procedure SetUnitList(AList: TList);
   public
     constructor Create;
-    destructor Destroy;
+    destructor Destroy; override;
 
     { Functions }
     function ReadProject: Boolean;
     function WriteProject: Boolean;
 
     { Procedures }
-    procedure AddUnit(AUnit: TProjectUnitInfo);
+    procedure AddUnit(AUnit: TUnitInfo);
     procedure RemoveUnit(AUnitName: String);
 
     { Properties }
@@ -103,6 +110,7 @@ type
     property OutputDirectory: String read fOutputDirectory write fOutputDirectory;
     property ProjectFile: String read fProjectFile write fProjectFile;
     property ProjectInfoFile: String read fProjectInfoFile write fProjectInfoFile;
+    property Source: TStrings read fSource write fSource;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property Title: String read fTitle write fTitle;
     property UnitList: TList read GetUnitList write SetUnitList;
@@ -111,7 +119,7 @@ type
   end;
 
 var
-  Project1 : TProject;
+  Project1: TProject;
   
 implementation
 
@@ -119,13 +127,13 @@ uses
   Main;
 
 {------------------------------------------------------------------------------
-                              TProjectUnitInfo Class
+                              TUnitInfo Class
  ------------------------------------------------------------------------------}
 
 {------------------------------------------------------------------------------
-  TProjectUnitInfo Constructor
+  TUnitInfo Constructor
  ------------------------------------------------------------------------------}
-constructor TProjectUnitInfo.Create;
+constructor TUnitInfo.Create;
 begin
   inherited Create;
   Assert(False, 'Project Unit Info Class Created');
@@ -135,9 +143,52 @@ begin
   fBreakpoints := TList.Create;
   fCursorPos := 0;
   fFilename := '';
-  fUnitName := '';
   fReadOnly :=  false;
+  fSource := TStringList.Create;
   fSyntaxHighlighter := 'freepascal';
+  fUnitName := '';
+end;
+
+{------------------------------------------------------------------------------
+  TUnitInfo Destructor
+ ------------------------------------------------------------------------------}
+destructor TUnitInfo.Destroy;
+begin
+  fBookmarks.Free;
+  fBreakpoints.Free;
+  fSource.Free;
+
+  inherited Destroy;
+end;
+
+{------------------------------------------------------------------------------
+  TUnitInfo WriteUnit
+ ------------------------------------------------------------------------------}
+function TUnitInfo.WriteUnit: Boolean;
+begin
+  Result := true;
+
+  try
+    // Save unit source code
+    Source.SaveToFile(Filename);
+  except
+    Result := false;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  TUnitInfo ReadUnit
+ ------------------------------------------------------------------------------}
+function TUnitInfo.ReadUnit: Boolean;
+begin
+  Result := true;
+
+  try
+    // Load unit source code
+    Source.LoadFromFile(Filename);
+  except
+    Result := false;
+  end;
 end;
 
 
@@ -162,6 +213,7 @@ begin
   fOutputDirectory := '';
   fProjectFile := '';
   fProjectInfoFile := '';
+  fSource := TStringList.Create;
   fTargetFileExt := '';
   fTitle := '';
   fUnitList := TList.Create;
@@ -175,6 +227,7 @@ end;
 destructor TProject.Destroy;
 begin
   if (xmlcfg <> nil) then xmlcfg.Free;
+  fSource.Free;
   fUnitList.Free;
   fCompilerOptions.Free;
 
@@ -206,25 +259,32 @@ begin
     xmlcfg.SetValue('ProjectOptions/General/OutputDirectory/Value', OutputDirectory);
     xmlcfg.SetValue('ProjectOptions/General/UnitOutputDirectory/Value', UnitOutputDirectory);
 
+    // Save project source code
+    Source.SaveToFile(ProjectFile);
+
     // Set options for each Unit
     if (UnitList <> nil) then
     begin
       for i := 0 to UnitList.Count - 1 do
       begin
-        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/UnitName/Value', TProjectUnitInfo(UnitList.Items[i]).UnitName);
-        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/Filename/Value', TProjectUnitInfo(UnitList.Items[i]).Filename);
-        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/CursorPos/Value', TProjectUnitInfo(UnitList.Items[i]).CursorPos);
-        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/AutoCreate/Value', TProjectUnitInfo(UnitList.Items[i]).AutoCreate);
-        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/ReadOnly/Value', TProjectUnitInfo(UnitList.Items[i]).ReadOnly);
-        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/SyntaxHighlighter/Value', TProjectUnitInfo(UnitList.Items[i]).SyntaxHighlighter);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/UnitName/Value', TUnitInfo(UnitList.Items[i]).UnitName);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/Filename/Value', TUnitInfo(UnitList.Items[i]).Filename);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/CursorPos/Value', TUnitInfo(UnitList.Items[i]).CursorPos);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/AutoCreate/Value', TUnitInfo(UnitList.Items[i]).AutoCreate);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/ReadOnly/Value', TUnitInfo(UnitList.Items[i]).ReadOnly);
+        xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/SyntaxHighlighter/Value', TUnitInfo(UnitList.Items[i]).SyntaxHighlighter);
 
         { TODO:
             Depending on how Bookmarks and Breakpoints work, save them out. They are setup as a TList.
             This may change if they are done in some other manner. Need to uncomment them and implement
             them once this it is known how they are going to work (depends on editor being used).
         }
-        // xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/Bookmarks/Value', TProjectUnitInfo(UnitList.Items[i]).Bookmarks);
-        // xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TProjectUnitInfo(UnitList.Items[i]).UnitName + '/Breakpoints/Value', TProjectUnitInfo(UnitList.Items[i]).Breakpoints);
+        // xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/Bookmarks/Value', TUnitInfo(UnitList.Items[i]).Bookmarks);
+        // xmlcfg.SetValue('ProjectOptions/UnitInfo/' + TUnitInfo(UnitList.Items[i]).UnitName + '/Breakpoints/Value', TUnitInfo(UnitList.Items[i]).Breakpoints);
+
+
+          // Save the source code
+          TUnitInfo(UnitList.Items[i]).Source.SaveToFile(TUnitInfo(UnitList.Items[i]).Filename);
       end;
     end;
 
@@ -248,7 +308,7 @@ var
   confPath: String;
   curUnitName: String;
   workUnitList: String;
-  pui: TProjectUnitInfo;
+  pui: TUnitInfo;
 begin
   Result := false;
 
@@ -268,7 +328,10 @@ begin
     OutputDirectory := xmlcfg.GetValue('ProjectOptions/General/OutputDirectory/Value', './');
     UnitOutputDirectory := xmlcfg.GetValue('ProjectOptions/General/UnitOutputDirectory/Value', './');
 
-    pui := TProjectUnitInfo.Create;
+    // Save project source code
+    Source.LoadFromFile(ProjectFile);
+
+    pui := TUnitInfo.Create;
     try
       // Get first name
       curUnitName := Copy(UnitNameList, 0, Pos(UnitNameList, '|') - 1);
@@ -294,6 +357,9 @@ begin
           }
           // pui.Bookmarks := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/Bookmarks/Value', '');
           // pui.Breakpoints := xmlcfg.GetValue('ProjectOptions/UnitInfo/' + curUnitName + '/Breakpoints/Value', '');
+
+          // Load the source code
+          pui.Source.LoadFromFile(pui.Filename);
 
           // Add the unit to the project
           AddUnit(pui);
@@ -321,7 +387,7 @@ end;
 {------------------------------------------------------------------------------
   TProject AddUnit
  ------------------------------------------------------------------------------}
-procedure TProject.AddUnit(AUnit: TProjectUnitInfo);
+procedure TProject.AddUnit(AUnit: TUnitInfo);
 begin
   if (AUnit <> nil) then UnitList.Add(AUnit);
   { TODO:
@@ -341,7 +407,7 @@ begin
   begin
     for i := 0 to fUnitList.Count - 1 do
     begin
-      if (TProjectUnitInfo(UnitList.Items[i]).UnitName = AUnitName) then
+      if (TUnitInfo(UnitList.Items[i]).UnitName = AUnitName) then
         UnitList.Remove(UnitList.Items[i]);
     end;
   end;
@@ -408,6 +474,14 @@ end;
 end.
 {
   $Log$
+  Revision 1.5  2001/01/31 06:28:41  lazarus
+  Removed global unit.
+  Renamed TProjectUnitInfo to TUnitInfo.
+  Added Source property to both TUnitInfo and TProject to hold source code
+    for units and project.
+  Added functions to load and save units to TUnitInfo.
+  Added code to save and load units when a project is saved and loaded.  CAW
+
   Revision 1.4  2001/01/29 05:42:41  lazarus
   Created new TProjectUnitInfo class.
   Created new TProject class. Saves to XML config file.
