@@ -2797,7 +2797,7 @@ begin
   with AnEnvironmentOptions do begin
     // language
     LanguageComboBox.ItemIndex:=ord(Language);
-  
+
     // auto save
     AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
     AutoSaveProjectCheckBox.Checked:=AutoSaveProject;

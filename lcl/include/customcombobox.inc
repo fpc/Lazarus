@@ -31,11 +31,9 @@ var NewStrings : TStrings;
 begin
   inherited CreateHandle;
   
-  // create an interface based item list
+  // get the interface based item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
-  // copy the values
-  NewStrings.Assign(FItems);
-  // delete internal list
+  // then delete internal list
   FItems.Free;
   // and use the interface based list
   FItems:= NewStrings;
@@ -170,8 +168,6 @@ end;
 procedure TCustomComboBox.Loaded;
 begin
   inherited Loaded;
-  if FItemIndex>=0 then
-    SetItemIndex(FItemIndex);
 end;
 
 {------------------------------------------------------------------------------
@@ -407,6 +403,8 @@ begin
   fCompStyle := csComboBox;
   SetBounds(1,1,100,25);
   FItems := TStringlist.Create;
+  FItemIndex:=-1;
+  FDropDownCount:=8;
 //   FItems:= TComboBoxStrings.Create;
 //   TComboBoxStrings(FItems).ComboBox := Self;
 end;
@@ -474,16 +472,11 @@ end;
   if no item is currently selected.
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetItemIndex : integer;
-var
-  CacheText : string;
 begin
-  // ToDo: ask the interface
-  
-  { I am not sure whether the item remains selected after the user pressed the item }
-  {  Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);}
-  CacheText := Text;
-  Result:= Items.Count-1;
-  while (Result>=0) and (Items[Result]<>CacheText) do dec(Result);
+  if HandleAllocated then
+    Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil)
+  else
+    Result:=FItemIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -497,6 +490,8 @@ procedure TCustomComboBox.SetItemIndex(Val : integer);
 begin
   if FItemIndex=Val then exit;
   FItemIndex:=Val;
+  if (FItemIndex>=0) and (not (csLoading in ComponentState)) then
+    Text:=FItems[FItemIndex];
   if HandleAllocated then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 end;
@@ -515,6 +510,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2002/08/29 00:07:01  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.9  2002/08/27 18:45:13  lazarus
   MG: propedits text improvements from Andrew, uncapturing, improved comobobox
 
