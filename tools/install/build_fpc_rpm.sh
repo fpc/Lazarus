@@ -59,6 +59,7 @@ VersionFile="$TmpDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
+CompilerVersionStr="$CompilerVersion.$CompilerRelease.$CompilerPatch"
 LazVersion="$CompilerVersion.$CompilerRelease"
 if [ "$CompilerPatch" != "0" ]; then
   LazVersion="$LazVersion.$CompilerPatch"
@@ -71,6 +72,11 @@ fi
 
 FPCMakefile=$TmpDir/Makefile
 SmartStripScript=smart_strip.sh
+ReplaceScript=replace_in_files.pl
+
+
+# set version numbers in all Makefiles
+perl replace_in_files.pl -nsR -f '=\d.\d.\d' -r =1.9.5 -m 'Makefile.*' $TmpDir/*
 
 # update smart_strip.sh
 #cp $SmartStripScript $TmpDir/install/
@@ -124,7 +130,6 @@ else
 
   SpecFile=$TmpDir/install/fpc.spec
   SrcPatch=fpcsrc-patch
-  SmartSripScript=smart_strip.sh
 
   # update smart_strip.sh
   # ATM not needed: cp $SmartSripScript $TmpDir/install/

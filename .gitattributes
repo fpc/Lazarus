@@ -1392,6 +1392,7 @@ tools/install/create_lazarus_rpm.sh -text svneol=native#application/x-sh
 tools/install/create_lazarus_tgz_from_local_dir.sh -text svneol=native#application/x-sh
 tools/install/do_nothing.sh -text svneol=native#application/x-sh
 tools/install/file_filter.sh -text svneol=native#application/x-sh
+tools/install/replace_in_files.pl -text svneol=native#application/x-perl
 tools/install/smart_strip.sh -text svneol=native#application/x-sh
 tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.lpi svneol=native#text/plain
