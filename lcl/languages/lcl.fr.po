@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: Olivier GUILBAUD (golivier@free.fr)\n"
+"PO-Revision-Date: 2003-01-09 01:15+0100\n"
+"Language-Team:  <fr@li.org>\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: lclstrconsts:rsmbyes
+msgid "Yes"
+msgstr "Oui"
+
+#: lclstrconsts:rsmbno
+msgid "No"
+msgstr "Non"
+
+#: lclstrconsts:rsmbok
+msgid "OK"
+msgstr "Ok"
+
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr "Annuler"
+
+#: lclstrconsts:rsmbabort
+msgid "Abort"
+msgstr "Abandonner"
+
+#: lclstrconsts:rsmbretry
+msgid "Retry"
+msgstr "Réessayer"
+
+#: lclstrconsts:rsmbignore
+msgid "Ignore"
+msgstr "Ignorer"
+
+#: lclstrconsts:rsmball
+msgid "All?"
+msgstr "Tout"
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr "Non pour tout"
+
+#: lclstrconsts:rsmbyestoall
+msgid "Yes to all"
+msgstr "Oui pour tout"
+
+#: lclstrconsts:rsmbhelp
+msgid "Help"
+msgstr "Aide"
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr "Avertissement"
+
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr "Erreur"
+
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr "Information"
+
+#: lclstrconsts:rsmtconfirmation
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: lclstrconsts:rsmtcustom
+msgid "Custom"
+msgstr "Personalisé"
+
