@@ -73,6 +73,7 @@ type
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -314,6 +315,11 @@ Begin
   End;
   Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> END', [AWinControl.ClassName]));
 End;
+
+procedure TWin32WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+begin
+  // TODO: implement me!
+end;
 
 procedure TWin32WSWinControl.DestroyHandle(const AWinControl: TWinControl);
 var

@@ -3014,9 +3014,6 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
-var
-  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
-  Geometry    : TGdkGeometry;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -3043,33 +3040,6 @@ begin
           MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
             TLMNotebookEvent(Data^).Page);
         end;
-
-      LM_SETGEOMETRY :
-      begin
-        if Sender is TWinControl then begin
-          Widget:= PGtkWidget(TWinControl(Sender).Handle);
-          if Widget <> nil then begin
-            with Geometry, TControl(Sender) do begin
-              if Constraints.MinWidth > 0 then
-                min_width:= Constraints.MinWidth else min_width:= 1;
-              if Constraints.MaxWidth > 0 then
-                max_width:= Constraints.MaxWidth else max_width:= 32767;
-              if Constraints.MinHeight > 0 then
-                min_height:= Constraints.MinHeight else min_height:= 1;
-              if Constraints.MaxHeight > 0 then
-                max_height:= Constraints.MaxHeight else max_height:= 32767;
-              base_width:= Width;
-              base_height:= Height;
-              width_inc:= 1;
-              height_inc:= 1;
-              min_aspect:= 0;
-              max_aspect:= 1;
-            end;
-            gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
-                                        GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
-          end;
-        end;
-      end;
 
       else
         if Sender<>nil then
@@ -7297,6 +7267,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.600  2004/09/24 17:20:43  micha
+  convert LM_SETGEOMETRY message to interface method
+
   Revision 1.599  2004/09/24 15:31:01  micha
   convert LM_LB_GETTOPINDEX and LM_LB_SETTOPINDEX message to interface methods
 

@@ -27,7 +27,7 @@ unit GtkWSControls;
 interface
 
 uses
-  {$IFDEF GTK2} Gtk2, Glib2, {$ELSE} Gtk, Glib, {$ENDIF}
+  {$IFDEF GTK2} Gtk2, Glib2, Gdk2, {$ELSE} Gtk, Glib, Gdk, {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
   WSControls, WSLCLClasses, Graphics, ComCtrls;
 
@@ -70,6 +70,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
+    class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -420,6 +421,34 @@ begin
     // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
+end;
+
+procedure TGtkWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+var
+  Widget: PGtkWidget;
+  Geometry: TGdkGeometry;
+begin
+  Widget := PGtkWidget(AWinControl.Handle);
+  if Widget <> nil then begin
+    with Geometry, AWinControl do begin
+      if Constraints.MinWidth > 0 then
+        min_width:= Constraints.MinWidth else min_width:= 1;
+      if Constraints.MaxWidth > 0 then
+        max_width:= Constraints.MaxWidth else max_width:= 32767;
+      if Constraints.MinHeight > 0 then
+        min_height:= Constraints.MinHeight else min_height:= 1;
+      if Constraints.MaxHeight > 0 then
+        max_height:= Constraints.MaxHeight else max_height:= 32767;
+      base_width:= Width;
+      base_height:= Height;
+      width_inc:= 1;
+      height_inc:= 1;
+      min_aspect:= 0;
+      max_aspect:= 1;
+    end;
+    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
+                                GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+  end;
 end;
 
 procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);

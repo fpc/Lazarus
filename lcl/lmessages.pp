@@ -47,8 +47,6 @@ const
   LM_ComUser        = $1000;
   LM_Create         = LM_ComUser+1;
   
-  LM_SETGEOMETRY    = LM_COMUSER+62;
-
   // TNoteBook
   LM_NB_First       = LM_COMUSER+100;
   LM_NB_UpdateTab   = LM_NB_First+0;
@@ -735,8 +733,6 @@ begin
   LM_ComUser        :Result:='LM_ComUser';
   LM_Create         :Result:='LM_Create';
 
-  LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
-
   // TNoteBook
   //LM_NB_First       :Result:='LM_NB_First';
   LM_NB_UpdateTab   :Result:='LM_NB_UpdateTab';
@@ -831,6 +827,9 @@ end.
 
 {
   $Log$
+  Revision 1.121  2004/09/24 17:20:43  micha
+  convert LM_SETGEOMETRY message to interface method
+
   Revision 1.120  2004/09/24 15:31:01  micha
   convert LM_LB_GETTOPINDEX and LM_LB_SETTOPINDEX message to interface methods
 

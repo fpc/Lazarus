@@ -686,7 +686,7 @@ end;
 procedure TWinControl.DoConstraintsChange(Sender : TObject);
 begin
   inherited DoConstraintsChange(Sender);
-  SendMsgToInterface(LM_SETGEOMETRY, Self, nil);
+  TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
 end;
 
 {-------------------------------------------------------------------------------
@@ -3912,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.281  2004/09/24 17:20:43  micha
+  convert LM_SETGEOMETRY message to interface method
+
   Revision 1.280  2004/09/21 10:05:26  mattias
   fixed disable at designtime and bounding TProgressBar position
 
