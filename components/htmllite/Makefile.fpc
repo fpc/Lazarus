@@ -5,7 +5,7 @@
 
 [package]
 name=htmllite
-version=0.8a
+version=0.2a
 
 [compiler]
 options=-gl -dHL_LAZARUS

@@ -316,6 +316,10 @@ msgstr ""
 msgid "Property %s does not exist"
 msgstr ""
 
+#: lclstrconsts:lislclresourcesnotfound
+msgid "Resource %s not found"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr ""

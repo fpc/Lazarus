@@ -5,7 +5,6 @@
 
 [package]
 main=lcl
-version=0.8a
 
 [require]
 packages=rtl fcl gtk

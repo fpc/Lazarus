@@ -127,9 +127,9 @@ msgstr "%s Ce paquet est installé, mais le fichier lpk est introuvable"
 msgid "%sThis package was automatically created"
 msgstr "%sCe paquet a ètè créé automatiquement"
 
-#: lazarusidestrconsts:uemaddwatchatcursor
-msgid "&Add Watch At Cursor"
-msgstr "&Ajouter un suivi sous le curseur"
+#: lazarusidestrconsts:uemaddbreakpoint
+msgid "&Add Breakpoint"
+msgstr ""
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -191,10 +191,6 @@ msgstr "&Basculer un signet"
 msgid "&Text to Find"
 msgstr "&Texte à trouver"
 
-#: lazarusidestrconsts:uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
-msgstr "&Basculer le point d'arrêt"
-
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
 msgstr "&Outils"
@@ -216,8 +212,8 @@ msgid "(unknown macro: %s)"
 msgstr "(macro inconnue: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.8.5 alpha"
-msgstr "0.8.5 alpha"
+msgid "0.9.0 beta"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -274,6 +270,10 @@ msgstr "Ajouter"
 #: lazarusidestrconsts:lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Ajouter %s au projet ?"
+
+#: lazarusidestrconsts:uemaddwatchatcursor
+msgid "Add &Watch At Cursor"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
 msgid "Add active unit to a package"
@@ -931,10 +931,6 @@ msgstr "Mise en commentaire de la sélection"
 msgid "Comment:"
 msgstr "Commentaire:"
 
-#: lazarusidestrconsts:lispckeditcompopts
-msgid "Comp. Opts."
-msgstr "Comp. Options"
-
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
 msgstr ""
@@ -1111,7 +1107,7 @@ msgstr "Créer un nouveau fichier.%sChoisir un type."
 msgid "Create a new empty text file."
 msgstr "Créer un nouveau fichier texte vide"
 
-#: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplicationtheprogramfileismain
+#: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplication
 msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
 msgstr "Créer une appication graphique.%sLe programme est maintenu par Lazarus."
 
@@ -1119,11 +1115,11 @@ msgstr "Créer une appication graphique.%sLe programme est maintenu par Lazarus."
 msgid "Create a new pascal unit."
 msgstr "Créer une nouvelle unité pascal."
 
-#: lazarusidestrconsts:lisnewdlgcreateanewprogram
+#: lazarusidestrconsts:lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
 msgstr "Créer un nouveau programme."
 
-#: lazarusidestrconsts:lisnewdlgcreateanewprogramtheprogramfileismaintainedbylazar
+#: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
 msgstr "Créer un nouveau programme.%sLe fichier programme est maintenu par Lazarus."
 
@@ -1134,6 +1130,10 @@ msgstr "Créer un nouveau projet.%Choisir un type."
 #: lazarusidestrconsts:lisnewdlgcreateanewstandardpackageapackageisacollectionofun
 msgid "Create a new standard package.%sA package is a collection of units and components."
 msgstr "Créer un nouveau paquet standard.%sUn paquet est une collection d'unités et de composants."
+
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
+msgid "Create a new unit with a datamodule."
+msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithalclform
 msgid "Create a new unit with a LCL form."
@@ -1257,6 +1257,10 @@ msgstr "Erreur débugueur"
 
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodebugpath
+msgid "Debugger path addition:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdebugtype
@@ -3123,6 +3127,10 @@ msgstr "Modifié"
 msgid "Modified: %s"
 msgstr "Modifié : %s"
 
+#: lazarusidestrconsts:lispckeditmore
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts:srvk_lbutton
 msgid "Mouse Button Left"
 msgstr "Bouton gauche"
@@ -3391,6 +3399,10 @@ msgstr "Non trouvé"
 msgid "Not implemented yet"
 msgstr "Non implémenté à ce jour"
 
+#: lazarusidestrconsts:lisnotnow
+msgid "Not now"
+msgstr ""
+
 #: lazarusidestrconsts:liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
 msgstr "NOTE : fichier de configuration codetools non trouvé. Utilisations des valeurs par defaut."
@@ -3434,6 +3446,10 @@ msgstr "Inspecteur d'objet"
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
 msgstr "Ok"
+
+#: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
+msgid "Online Help not yet implemented"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"
@@ -3510,6 +3526,10 @@ msgstr "Ouvrir le paquet %s ?%sRépondre Non pour l'ouvrir comme un fichier xml."
 #: lazarusidestrconsts:lisopentheprojectanswernotoloaditasxmlfile
 msgid "Open the project %s?%sAnswer No to load it as xml file."
 msgstr "Ouvrir le projet %s ?%sRépondre Non pour l'ouvrir comme un fichier xml."
+
+#: lazarusidestrconsts:liscomppalopenunit
+msgid "Open unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgoptimiz
 msgid "Optimizations:"
@@ -4175,6 +4195,10 @@ msgstr ""
 msgid "Right"
 msgstr "Droite"
 
+#: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
+msgid "Right click on the items tree to get the popupmenu with all available package functions."
+msgstr ""
+
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
 msgstr "Marge droite"
@@ -4642,6 +4666,10 @@ msgstr "Voir la grille"
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
 msgstr "Afficher les lignes de guide"
+
+#: lazarusidestrconsts:dlgshowgutterhints
+msgid "Show Gutter Hints"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
@@ -5307,6 +5335,10 @@ msgstr ""
 msgid "The unitname %s%s%s already exists in this package."
 msgstr ""
 
+#: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
+msgid "There are more functions in the popupmenu"
+msgstr ""
+
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr ""
@@ -5549,6 +5581,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugunabletoloadfile
+msgid "Unable to load file"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugunabletoloadfile2
+msgid "Unable to load file %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
@@ -6081,6 +6121,10 @@ msgstr "Préfixe \"Write\""
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"
+msgstr ""
+
+#: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
+msgid "You can not build lazarus while debugging or compiling."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit

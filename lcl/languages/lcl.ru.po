@@ -310,6 +310,10 @@ msgstr "разрешения пользователь группа дата время"
 msgid "Property %s does not exist"
 msgstr "Свойство %s не существует"
 
+#: lclstrconsts:lislclresourcesnotfound
+msgid "Resource %s not found"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Сохранить файл как"

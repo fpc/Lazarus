@@ -1,5 +1,5 @@
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.8.5 alpha"
+msgid "0.9.0 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisnostringconstantfound
@@ -966,6 +966,14 @@ msgstr ""
 msgid "Error initializing program%s%s%s%s%sError: %s"
 msgstr ""
 
+#: lazarusidestrconsts:lisnotnow
+msgid "Not now"
+msgstr ""
+
+#: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
+msgid "You can not build lazarus while debugging or compiling."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletosavefile
 msgid "Unable to save file %s%s%s"
 msgstr ""
@@ -1124,6 +1132,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugunabletoloadfile
+msgid "Unable to load file"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugunabletoloadfile2
+msgid "Unable to load file %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisopenprojectfile
@@ -1766,6 +1782,10 @@ msgstr ""
 msgid "Mouse links"
 msgstr ""
 
+#: lazarusidestrconsts:dlgshowgutterhints
+msgid "Show Gutter Hints"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsmarttabs
 msgid "Smart Tabs"
 msgstr ""
@@ -2138,6 +2158,14 @@ msgstr ""
 msgid "Compiler Options"
 msgstr ""
 
+#: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
+msgid "Online Help not yet implemented"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
+msgid "Right click on the items tree to get the popupmenu with all available package functions."
+msgstr ""
+
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Paths"
 msgstr ""
@@ -2464,6 +2492,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcolibraries
 msgid "Libraries:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodebugpath
+msgid "Debugger path addition:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtofpcpath
@@ -2806,12 +2838,12 @@ msgstr ""
 msgid "Debug"
 msgstr ""
 
-#: lazarusidestrconsts:uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
+#: lazarusidestrconsts:uemaddbreakpoint
+msgid "&Add Breakpoint"
 msgstr ""
 
 #: lazarusidestrconsts:uemaddwatchatcursor
-msgid "&Add Watch At Cursor"
+msgid "Add &Watch At Cursor"
 msgstr ""
 
 #: lazarusidestrconsts:uemruntocursor
@@ -4750,19 +4782,23 @@ msgstr ""
 msgid "Create a new unit with a LCL form."
 msgstr ""
 
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
+msgid "Create a new unit with a datamodule."
+msgstr ""
+
 #: lazarusidestrconsts:lisnewdlgcreateanewemptytextfile
 msgid "Create a new empty text file."
 msgstr ""
 
-#: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplicationtheprogramfileismain
+#: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplication
 msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
 msgstr ""
 
-#: lazarusidestrconsts:lisnewdlgcreateanewprogramtheprogramfileismaintainedbylazar
+#: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
 msgstr ""
 
-#: lazarusidestrconsts:lisnewdlgcreateanewprogram
+#: lazarusidestrconsts:lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
 msgstr ""
 
@@ -4912,6 +4948,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscomppalopenpackage
 msgid "Open package"
+msgstr ""
+
+#: lazarusidestrconsts:liscomppalopenunit
+msgid "Open unit"
 msgstr ""
 
 #: lazarusidestrconsts:lismacropromptenterdata
@@ -6107,7 +6147,19 @@ msgid "Edit General Options"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditcompopts
-msgid "Comp. Opts."
+msgid "Compiler Options"
+msgstr ""
+
+#: lazarusidestrconsts:lispckedithelp
+msgid "Help"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
+msgid "There are more functions in the popupmenu"
+msgstr ""
+
+#: lazarusidestrconsts:lispckeditmore
+msgid "More ..."
 msgstr ""
 
 #: lazarusidestrconsts:lispckediteditoptionstocompilepackage

@@ -5,7 +5,7 @@
 
 [package]
 name=jitform
-version=0.8a
+version=0.9b
 
 [compiler]
 unitdir=../../lcl/units .

@@ -320,6 +320,10 @@ msgstr "permission utilisateur groupe taille date heure"
 msgid "Property %s does not exist"
 msgstr "La propriété %s n'existe pas"
 
+#: lclstrconsts:lislclresourcesnotfound
+msgid "Resource %s not found"
+msgstr ""
+
 #: lclstrconsts:rsfdfilesaveas
 msgid "Save file as"
 msgstr "Enregistrer le fichier sous"

@@ -118,9 +118,9 @@ msgstr ""
 msgid "%sThis package was automatically created"
 msgstr ""
 
-#: lazarusidestrconsts:uemaddwatchatcursor
-msgid "&Add Watch At Cursor"
-msgstr "&Добавить наблюдение у курсора"
+#: lazarusidestrconsts:uemaddbreakpoint
+msgid "&Add Breakpoint"
+msgstr ""
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
@@ -182,10 +182,6 @@ msgstr "&Установить закладку"
 msgid "&Text to Find"
 msgstr "&Найти текст"
 
-#: lazarusidestrconsts:uemtogglebreakpoint
-msgid "&Toggle Breakpoint"
-msgstr "&Вкл/выкл точку останова"
-
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
 msgstr "&Инструменты"
@@ -207,8 +203,8 @@ msgid "(unknown macro: %s)"
 msgstr ""
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.8.5 alpha"
-msgstr "0.8.5 альфа"
+msgid "0.9.0 beta"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
 msgid "<choose an existing file>"
@@ -264,6 +260,10 @@ msgstr "Добавить"
 
 #: lazarusidestrconsts:lisaddtoproject
 msgid "Add %s to project?"
+msgstr ""
+
+#: lazarusidestrconsts:uemaddwatchatcursor
+msgid "Add &Watch At Cursor"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuaddcurunittopkg
@@ -922,10 +922,6 @@ msgstr "Закомментировать"
 msgid "Comment:"
 msgstr "Комментарий:"
 
-#: lazarusidestrconsts:lispckeditcompopts
-msgid "Comp. Opts."
-msgstr ""
-
 #: lazarusidestrconsts:dlgcocompilation
 msgid "Compilation"
 msgstr ""
@@ -1102,7 +1098,7 @@ msgstr ""
 msgid "Create a new empty text file."
 msgstr ""
 
-#: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplicationtheprogramfileismain
+#: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplication
 msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
 msgstr ""
 
@@ -1110,11 +1106,11 @@ msgstr ""
 msgid "Create a new pascal unit."
 msgstr ""
 
-#: lazarusidestrconsts:lisnewdlgcreateanewprogram
+#: lazarusidestrconsts:lisnewdlgcreateanewcustomprogram
 msgid "Create a new program."
 msgstr ""
 
-#: lazarusidestrconsts:lisnewdlgcreateanewprogramtheprogramfileismaintainedbylazar
+#: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
 msgstr ""
 
@@ -1124,6 +1120,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewstandardpackageapackageisacollectionofun
 msgid "Create a new standard package.%sA package is a collection of units and components."
+msgstr ""
+
+#: lazarusidestrconsts:lisnewdlgcreateanewunitwithadatamodule
+msgid "Create a new unit with a datamodule."
 msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewunitwithalclform
@@ -1248,6 +1248,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+msgstr ""
+
+#: lazarusidestrconsts:dlgcodebugpath
+msgid "Debugger path addition:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdebugtype
@@ -3114,6 +3118,10 @@ msgstr "Изменён"
 msgid "Modified: %s"
 msgstr ""
 
+#: lazarusidestrconsts:lispckeditmore
+msgid "More ..."
+msgstr ""
+
 #: lazarusidestrconsts:srvk_lbutton
 msgid "Mouse Button Left"
 msgstr "Левая кнопка мыши"
@@ -3382,6 +3390,10 @@ msgstr ""
 msgid "Not implemented yet"
 msgstr "Еще не реализовано"
 
+#: lazarusidestrconsts:lisnotnow
+msgid "Not now"
+msgstr ""
+
 #: lazarusidestrconsts:liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
 msgstr "ЗАМЕТКА: файл настроек CodeTools не найден - используем умолчания"
@@ -3425,6 +3437,10 @@ msgstr "Инспектор объектов"
 #: lazarusidestrconsts:lislazbuildok
 msgid "Ok"
 msgstr "ОК"
+
+#: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
+msgid "Online Help not yet implemented"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"
@@ -3500,6 +3516,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisopentheprojectanswernotoloaditasxmlfile
 msgid "Open the project %s?%sAnswer No to load it as xml file."
+msgstr ""
+
+#: lazarusidestrconsts:liscomppalopenunit
+msgid "Open unit"
 msgstr ""
 
 #: lazarusidestrconsts:dlgoptimiz
@@ -4166,6 +4186,10 @@ msgstr ""
 msgid "Right"
 msgstr "Справа"
 
+#: lazarusidestrconsts:lispkgedrightclickontheitemstreetogetthepopupmenuwithallav
+msgid "Right click on the items tree to get the popupmenu with all available package functions."
+msgstr ""
+
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
 msgstr "Правая граница"
@@ -4633,6 +4657,10 @@ msgstr "Показать сетку"
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
 msgstr "Показать линии помощи"
+
+#: lazarusidestrconsts:dlgshowgutterhints
+msgid "Show Gutter Hints"
+msgstr ""
 
 #: lazarusidestrconsts:dlgshowhint
 msgid "Show Hints"
@@ -5298,6 +5326,10 @@ msgstr ""
 msgid "The unitname %s%s%s already exists in this package."
 msgstr ""
 
+#: lazarusidestrconsts:lispkgedtherearemorefunctionsinthepopupmenu
+msgid "There are more functions in the popupmenu"
+msgstr ""
+
 #: lazarusidestrconsts:listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr ""
@@ -5540,6 +5572,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletofindmethodplzfixtheerrorshowninthemessage
 msgid "Unable to find method. Plz fix the error shown in the message window."
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugunabletoloadfile
+msgid "Unable to load file"
+msgstr ""
+
+#: lazarusidestrconsts:lisdebugunabletoloadfile2
+msgid "Unable to load file %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
@@ -6072,6 +6112,10 @@ msgstr "Префикс WRITE"
 
 #: lazarusidestrconsts:lisuidyes
 msgid "yes"
+msgstr ""
+
+#: lazarusidestrconsts:lisyoucannotbuildlazaruswhiledebuggingorcompiling
+msgid "You can not build lazarus while debugging or compiling."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthisfilewasautomaticallycreatedbylazarusdonotedit

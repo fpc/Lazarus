@@ -42,7 +42,7 @@ uses
   
 resourcestring
   // version
-  lisLazarusVersionString = '0.8.5 alpha';
+  lisLazarusVersionString = '0.9.0 beta';
   lisNoStringConstantFound = 'No String Constant Found';
   lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The Make '
     +'Resourcestring Function expects a string constant.%sPlease select the '

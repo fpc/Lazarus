@@ -334,6 +334,10 @@ msgstr ""
 msgid "A control can't have itself as parent"
 msgstr ""
 
+#: lclstrconsts:lislclresourcesnotfound
+msgid "Resource %s not found"
+msgstr ""
+
 #: lclstrconsts:rserrorcreatingdevicecontext
 msgid "Error creating device context for %s.%s"
 msgstr ""

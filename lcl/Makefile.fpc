@@ -5,7 +5,7 @@
 
 [package]
 name=lcl
-version=0.8a
+version=0.9b
 
 [target]
 dirs=interfaces

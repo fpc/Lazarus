@@ -85,7 +85,7 @@ uses
 procedure TGnomeObject.PassCmdLineOptions;
 begin
   // call init and pass cmd line args
-  gnome_init(PChar(Application.Title), '0.8.5a', argc, argv);
+  gnome_init(PChar(Application.Title), 'Lazarus', argc, argv);
 end;
 
 Procedure TGnomeObject.InitStockItems;
@@ -246,6 +246,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2003/06/05 15:53:30  mattias
+  increased version to 0.9.0 beta
+
   Revision 1.16  2003/03/11 07:46:44  mattias
   more localization for gtk- and win32-interface and lcl
 

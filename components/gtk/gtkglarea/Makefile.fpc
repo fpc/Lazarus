@@ -5,7 +5,7 @@
 
 [package]
 name=gtkopengl
-version=0.8a
+version=1.0
 
 [compiler]
 options=-gl -k-lGL
