@@ -44,7 +44,7 @@ uses
 
 
 const
-  CM_BASE                 = $B000;                                                      l
+  CM_BASE                 = $B000;
   CM_ACTIVATE             = CM_BASE + 0;
   CM_DEACTIVATE           = CM_BASE + 1;
   CM_GOTFOCUS             = CM_BASE + 2;
@@ -1374,6 +1374,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2002/10/14 15:55:47  lazarus
+  MG: reduced output
+
   Revision 1.77  2002/10/14 15:22:57  lazarus
   MG: default all hints to off
 
