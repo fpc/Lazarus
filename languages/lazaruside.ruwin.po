@@ -2,6 +2,10 @@
 msgid "                      Do not show splash screen"
 msgstr "                      Не показывать заставки"
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr "                     главный каталог настроек, где Lazarus хранит свои файлы настроек. По умолчанию "
@@ -1049,6 +1053,10 @@ msgstr "Запятая"
 #: lazarusidestrconsts:srkmcommand
 msgid "Command "
 msgstr "Команда"
+
+#: lazarusidestrconsts:liscommandafterinvalid
+msgid "Command after invalid"
+msgstr ""
 
 #: lazarusidestrconsts:liscommandafterpublishingmodule
 msgid "Command after publishing module"
@@ -5821,6 +5829,10 @@ msgstr "Имя класса %s%s%s - недопустимый идентификатор паскаля"
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "Команда после %s%s%s"
+
+#: lazarusidestrconsts:listhecommandafterpublishingisinvalid
+msgid "The command after publishing is invalid:%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."

@@ -2,6 +2,10 @@
 msgid "                      Do not show splash screen"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr ""
@@ -72,7 +76,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissvuoisnotavalididentifier
 msgid "%s%s%s is not a valid identifier."
-msgstr ""
+msgstr "%s%s%s ei ole laillinen tunniste"
 
 #: lazarusidestrconsts:lisa2pisnotavalidunitname
 msgid "%s%s%s is not a valid unit name."
@@ -472,7 +476,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
-msgstr ""
+msgstr "Sovellus"
 
 #: lazarusidestrconsts:srvk_apps
 msgid "application key"
@@ -500,7 +504,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissortselascending
 msgid "Ascending"
-msgstr ""
+msgstr "Normaali (aakkostus)"
 
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
@@ -1050,6 +1054,10 @@ msgstr ""
 msgid "Command "
 msgstr ""
 
+#: lazarusidestrconsts:liscommandafterinvalid
+msgid "Command after invalid"
+msgstr ""
+
 #: lazarusidestrconsts:liscommandafterpublishingmodule
 msgid "Command after publishing module"
 msgstr ""
@@ -1312,7 +1320,7 @@ msgstr "Tee uusi tyhjä tekstitiedosto (*.txt)."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewgraphicalapplication
 msgid "Create a new graphical application.%sThe program file is maintained by Lazarus."
-msgstr ""
+msgstr "Luo uusi graafinen sovellus.%sOhjelma tehdään ja ylläpidetään Lazaruksella."
 
 #: lazarusidestrconsts:lisnewdlgcreateanewpascalunit
 msgid "Create a new pascal unit."
@@ -1644,7 +1652,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissortseldescending
 msgid "Descending"
-msgstr ""
+msgstr "Käänteinen (aakkostus)"
 
 #: lazarusidestrconsts:listodoldescription
 msgid "Description"
@@ -1728,7 +1736,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
-msgstr ""
+msgstr "Näkymä"
 
 #: lazarusidestrconsts:dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -1860,7 +1868,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenclose
 msgid "Enclose"
-msgstr ""
+msgstr "Lisää lauserakenne"
 
 #: lazarusidestrconsts:lismenuencloseselection
 msgid "Enclose selection"
@@ -2048,11 +2056,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisextract
 msgid "Extract"
-msgstr ""
+msgstr "Tee aliohjelma"
 
 #: lazarusidestrconsts:lismenuextractproc
 msgid "Extract procedure"
-msgstr ""
+msgstr "Tee valitusta lohkosta aliohjelma"
 
 #: lazarusidestrconsts:lisexttoolfailedtoruntool
 msgid "Failed to run tool"
@@ -2512,11 +2520,11 @@ msgstr "Kohdistusviivat"
 
 #: lazarusidestrconsts:dlgguttercolor
 msgid "Gutter color"
-msgstr ""
+msgstr "Reunuksen väri"
 
 #: lazarusidestrconsts:dlggutterwidth
 msgid "Gutter width"
-msgstr ""
+msgstr "Reunuksen leveys"
 
 #: lazarusidestrconsts:dlghalfpagescroll
 msgid "Half Page Scroll"
@@ -3136,7 +3144,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinvalidprocname
 msgid "Invalid proc name"
-msgstr ""
+msgstr "Vääränlainen aliohjelman nimi"
 
 #: lazarusidestrconsts:lisinvalidprojectfilename
 msgid "Invalid project filename"
@@ -3148,7 +3156,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisinvalidselection
 msgid "Invalid selection"
-msgstr ""
+msgstr "Vääränlainen valinta"
 
 #: lazarusidestrconsts:lisa2pinvalidunitname
 msgid "Invalid Unit Name"
@@ -3528,7 +3536,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
-msgstr ""
+msgstr "Oikea marginaali ja vasen reunus"
 
 #: lazarusidestrconsts:dlgmarkercolor
 msgid "Marker color"
@@ -3768,7 +3776,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnameofnewprocedure
 msgid "Name of new procedure"
-msgstr ""
+msgstr "Uuden aliohjelman nimi"
 
 #: lazarusidestrconsts:liscodetoolsdefsname
 msgid "Name:"
@@ -3844,7 +3852,7 @@ msgstr "ei"
 
 #: lazarusidestrconsts:lisnocodeselected
 msgid "No code selected"
-msgstr ""
+msgstr "Ei valittua koodia"
 
 #: lazarusidestrconsts:lisnocompileroptionsinherited
 msgid "No compiler options inherited."
@@ -4364,7 +4372,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispleaseselectsomecodetoextractanewproceduremethod
 msgid "Please select some code to extract a new procedure/method."
-msgstr ""
+msgstr "Ole hyvä ja valitse ensin jokin koodin osa josta tehdään uusi aliohjelma tai metodi"
 
 #: lazarusidestrconsts:liscodetoolsoptspoint
 msgid "Point"
@@ -4408,7 +4416,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprivatemethod
 msgid "Private Method"
-msgstr ""
+msgstr "Private - metodi"
 
 #: lazarusidestrconsts:lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages for before continuing.%s%sWarning:%sThe project depends on some packages, which contain units with the Register procedure. The Register procedure is normally used  to install components in the IDE. But the following units belong  to packages which are not yet installed in the IDE. If you try to open a form in the IDE, that uses such components, you will get errors about missing components and the form loading will probably create very unpleasant results.%s%sThis has no impact on opening the project or any of its sources.%s%sIt only means: It is a bad idea to open the forms for designing, before installing the missing packages.%s%s"
@@ -4416,7 +4424,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprocedure
 msgid "Procedure"
-msgstr ""
+msgstr "Aliohjelma"
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -4424,7 +4432,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprocedurewithinterface
 msgid "Procedure with interface"
-msgstr ""
+msgstr "Aliohjelma ja interface osaan sen esittely"
 
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
@@ -4532,11 +4540,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
-msgstr ""
+msgstr "Protected - metodi"
 
 #: lazarusidestrconsts:lispublicmethod
 msgid "Public Method"
-msgstr ""
+msgstr "Public - metodi"
 
 #: lazarusidestrconsts:lispkgeditpublishpackage
 msgid "Publish Package"
@@ -4552,7 +4560,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispublishedmethod
 msgid "Published Method"
-msgstr ""
+msgstr "Published - metodi"
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
@@ -4828,7 +4836,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
-msgstr ""
+msgstr "Palauta"
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
@@ -4852,11 +4860,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
-msgstr ""
+msgstr "Oikea marginaaliviiva"
 
 #: lazarusidestrconsts:dlgrightmargincolor
 msgid "Right margin color"
-msgstr ""
+msgstr "Oikean marginaaliviivan väri"
 
 #: lazarusidestrconsts:srvk_rwin
 msgid "right windows key"
@@ -5616,7 +5624,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissubprocedure
 msgid "Sub Procedure"
-msgstr ""
+msgstr "Aliohjelman sisäinen aliohjelma"
 
 #: lazarusidestrconsts:lissubprocedureonsamelevel
 msgid "Sub Procedure on same level"
@@ -5740,7 +5748,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
-msgstr ""
+msgstr "Kirjaimien määritteet"
 
 #: lazarusidestrconsts:srkmcatediting
 msgid "Text editing commands"
@@ -5820,6 +5828,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
+msgstr ""
+
+#: lazarusidestrconsts:listhecommandafterpublishingisinvalid
+msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
@@ -6288,7 +6300,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listhisstatementcannotbeextractedpleaseselectsomecode
 msgid "This statement can not be extracted.%sPlease select some code to extract a new procedure/method."
-msgstr ""
+msgstr "Tästä ei voi tehdä omaa aliohjelmaa.%sOle hyvä ja valitse ensin jokin muu koodin osa josta voi tehdä uusi aliohjelma tai metodi"
 
 #: lazarusidestrconsts:lisedtexttooltitleandfilenamerequired
 msgid "Title and Filename required"
@@ -6356,7 +6368,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvtype
 msgid "Type"
-msgstr ""
+msgstr "Tyyppi"
 
 #: lazarusidestrconsts:lisuidtype
 msgid "Type:"
@@ -6812,7 +6824,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedusedefcolor
 msgid "Use default color"
-msgstr ""
+msgstr "Käytä oletusväriä"
 
 #: lazarusidestrconsts:dlgrunousedisplay
 msgid "Use display"
@@ -6996,11 +7008,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"
-msgstr ""
+msgstr "Näytä vasen reunus"
 
 #: lazarusidestrconsts:dlgvisiblerightmargin
 msgid "Visible right margin"
-msgstr ""
+msgstr "Näytä oikea marginaaliviiva"
 
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"

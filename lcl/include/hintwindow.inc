@@ -76,7 +76,6 @@ procedure THintWindow.Paint;
 var
   Rect: TRect;
   TS : TTextStyle;
-  //DefaultDraw: Boolean;
 begin
   Rect := ClientRect;
   Canvas.Brush.Color := Color;

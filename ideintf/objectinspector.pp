@@ -3025,6 +3025,7 @@ begin
     UndoPropertyPopupMenuItem.Enabled:=true
   else
     UndoPropertyPopupMenuItem.Enabled:=false;
+  ShowHintsPopupMenuItem.Checked:=PropertyGrid.ShowHint;
 end;
 
 procedure TObjectInspector.HookRefreshPropertyValues;

@@ -2,6 +2,10 @@
 msgid "                      Do not show splash screen"
 msgstr ""
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr ""
@@ -1049,6 +1053,10 @@ msgstr "Coma"
 #: lazarusidestrconsts:srkmcommand
 msgid "Command "
 msgstr "Comandament"
+
+#: lazarusidestrconsts:liscommandafterinvalid
+msgid "Command after invalid"
+msgstr ""
 
 #: lazarusidestrconsts:liscommandafterpublishingmodule
 msgid "Command after publishing module"
@@ -5820,6 +5828,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
+msgstr ""
+
+#: lazarusidestrconsts:listhecommandafterpublishingisinvalid
+msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg

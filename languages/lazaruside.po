@@ -34,6 +34,10 @@ msgstr ""
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr ""
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
 msgstr ""
@@ -1072,6 +1076,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisunabletocleanupdestinationdirectory
 msgid "Unable to clean up destination directory"
+msgstr ""
+
+#: lazarusidestrconsts:liscommandafterinvalid
+msgid "Command after invalid"
+msgstr ""
+
+#: lazarusidestrconsts:listhecommandafterpublishingisinvalid
+msgid "The command after publishing is invalid:%s%s%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletocleanuppleasecheckpermissions

@@ -13,6 +13,10 @@ msgstr ""
 msgid "                      Do not show splash screen"
 msgstr "                      Nie pokazuj ekranu startowego"
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr " g³ówny katalog konfiguracji, gdzie Lazarus przechowuje pliki konfiguracyjne. Domyœlnie jest to "
@@ -1060,6 +1064,10 @@ msgstr "Kropka"
 #: lazarusidestrconsts:srkmcommand
 msgid "Command "
 msgstr "Polecenie "
+
+#: lazarusidestrconsts:liscommandafterinvalid
+msgid "Command after invalid"
+msgstr ""
 
 #: lazarusidestrconsts:liscommandafterpublishingmodule
 msgid "Command after publishing module"
@@ -5832,6 +5840,10 @@ msgstr "Nazwa klasy %s%s%s nie jest prawid³owym identyfikatorem pascala."
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "Polecenie po %s%s%s nie jest wykonywalne."
+
+#: lazarusidestrconsts:listhecommandafterpublishingisinvalid
+msgid "The command after publishing is invalid:%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."

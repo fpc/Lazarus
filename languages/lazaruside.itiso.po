@@ -12,6 +12,10 @@ msgstr ""
 msgid "                      Do not show splash screen"
 msgstr "                      Non mostrare la schermata iniziale"
 
+#: lazarusidestrconsts:lisfilewheredebugoutputiswritten
+msgid "                      file, where debug output is written to. If it is not specified, debug output is written to the console."
+msgstr ""
+
 #: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
 msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr "                      directory di configurazione primaria, dove Lazarus memorizza i file di configurazione. Il valore predefinito è"
@@ -1059,6 +1063,10 @@ msgstr "Virgola"
 #: lazarusidestrconsts:srkmcommand
 msgid "Command "
 msgstr "Comando"
+
+#: lazarusidestrconsts:liscommandafterinvalid
+msgid "Command after invalid"
+msgstr ""
 
 #: lazarusidestrconsts:liscommandafterpublishingmodule
 msgid "Command after publishing module"
@@ -5831,6 +5839,10 @@ msgstr "Il nome classe %s%s%s non è un identificatore pascal valido."
 #: lazarusidestrconsts:listhecommandafterisnotexecutable
 msgid "The command after %s%s%s is not executable."
 msgstr "Il comando dopo %s%s%s non è eseguibile."
+
+#: lazarusidestrconsts:listhecommandafterpublishingisinvalid
+msgid "The command after publishing is invalid:%s%s%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
