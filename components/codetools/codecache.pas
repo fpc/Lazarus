@@ -79,6 +79,7 @@ type
     function FileNeedsUpdate: boolean;
     function FileOnDiskNeedsUpdate: boolean;
     function FileOnDiskHasChanged: boolean;
+    function FileOnDiskIsEqual: boolean;
     function AutoRevertFromDisk: boolean;
     procedure LockAutoDiskRevert;
     procedure UnlockAutoDiskRevert;
@@ -832,7 +833,7 @@ begin
 end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
-// file needs update, if file is not modified and file on disk is changed
+// file needs update, if file is not modified and file on disk has changed
 begin
   if LoadDateValid then
     Result:=(not Modified) and (FFileChangeStep=ChangeStep) 
@@ -842,10 +843,11 @@ begin
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
-// file on disk needs update, if file is modified
+// file on disk needs update, if file is modified or does not exists
 begin
   if LoadDateValid then
-    Result:=Modified or (FFileChangeStep<>ChangeStep) 
+    Result:=Modified or (FFileChangeStep<>ChangeStep)
+            or (not FileExists(Filename))
   else
     Result:=false;
 end;
@@ -856,6 +858,11 @@ begin
     Result:=(FileDateOnDisk<>LoadDate)
   else
     Result:=false;
+end;
+
+function TCodeBuffer.FileOnDiskIsEqual: boolean;
+begin
+  Result:=(not FileOnDiskNeedsUpdate) and (not FileOnDiskHasChanged);
 end;
 
 function TCodeBuffer.AutoRevertFromDisk: boolean;

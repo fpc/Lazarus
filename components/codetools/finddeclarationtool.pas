@@ -3000,7 +3000,7 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindExpressionResultType] ',
+  writeln('[TFindDeclarationTool.FindExpressionResultType] Start ',
   '"',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=CleanExpressionType;
@@ -3012,9 +3012,16 @@ begin
   repeat
     // read operand
     CurExprType:=ReadOperandTypeAtCursor(Params);
+    {$IFDEF ShowExprEval}
+    writeln('[TFindDeclarationTool.FindExpressionResultType] Operand: ',
+      ExprTypeToString(CurExprType));
+    {$ENDIF}
     if CurExprType.Desc=xtNone then exit;
     // read operator
     ReadNextAtom;
+    {$IFDEF ShowExprEval}
+    writeln('[TFindDeclarationTool.FindExpressionResultType] Operator: ',GetAtom,' CurPos.EndPos=',CurPos.EndPos,' EndPos=',EndPos);
+    {$ENDIF}
     // put operand on stack
     inc(StackPtr);
     if StackPtr>High(ExprStack) then
@@ -3586,6 +3593,7 @@ type
 var
   CurAtomType, NextAtomType: TVariableAtomType;
   CurAtom, NextAtom: TAtomPosition;
+  CurAtomBracketEndPos: integer;
   StartContext: TFindContext;
   OldInput: TFindDeclarationInput;
   StartFlags: TFindDeclarationFlags;
@@ -3636,6 +3644,7 @@ var
     CurAtomType:=GetCurrentAtomType;
     if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
       ReadTilBracketClose(true);
+    CurAtomBracketEndPos:=CurPos.EndPos;
     ReadNextAtom;
     NextAtom:=CurPos;
     if NextAtom.EndPos<=EndPos then
@@ -3654,6 +3663,7 @@ var
     ReadNextAtom;
     if CurAtomType in [vatRoundBracketOpen,vatEdgedBracketOpen] then
       ReadTilBracketClose(true);
+    CurAtomBracketEndPos:=CurPos.EndPos;
     ReadNextAtom;
     NextAtom:=CurPos;
     if NextAtom.EndPos<=EndPos then
@@ -4048,7 +4058,7 @@ var
     end else begin
       // expression
       ExprType:=FindExpressionResultType(Params,CurAtom.StartPos+1,
-                                         CurAtom.EndPos-1);
+                                         CurAtomBracketEndPos-1);
     end;
   end;
 
@@ -4128,8 +4138,7 @@ begin
   repeat
     {$IFDEF ShowExprEval}
     writeln('  FindExpressionTypeOfVariable CurAtomType=',
-      VariableAtomTypeNames[CurAtomType],
-      ' CurAtom="',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"');
+      VariableAtomTypeNames[CurAtomType],' CurAtom="',GetAtom(CurAtom),'"');
     {$ENDIF}
     case CurAtomType of
     vatIdentifier, vatPreDefIdentifier: ResolveIdentifier;
@@ -4441,8 +4450,7 @@ begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.CalculateBinaryOperator] A',
   ' LeftOperand=',ExpressionTypeDescNames[LeftOperand.Desc],
-  ' Operator=',copy(Src,BinaryOperator.StartPos,
-                    BinaryOperator.EndPos-BinaryOperator.StartPos),
+  ' Operator=',GetAtom(BinaryOperator),
   ' RightOperand=',ExpressionTypeDescNames[RightOperand.Desc]
   );
   {$ENDIF}

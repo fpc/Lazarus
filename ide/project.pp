@@ -134,7 +134,7 @@ type
     function IsVirtual: boolean;
     function NeedsSaveToDisk: boolean;
     function ReadOnly: boolean;
-    function ReadUnitSource(ReadUnitName:boolean): TModalResult;
+    function ReadUnitSource(ReadUnitName,Revert:boolean): TModalResult;
     function ShortFilename: string;
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
@@ -623,14 +623,14 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo ReadUnitSource
  ------------------------------------------------------------------------------}
-function TUnitInfo.ReadUnitSource(ReadUnitName:boolean): TModalResult;
+function TUnitInfo.ReadUnitSource(ReadUnitName,Revert:boolean): TModalResult;
 var 
   ACaption:string;
   AText:string;
   NewSource: TCodeBuffer;
 begin
   repeat
-    NewSource:=CodeToolBoss.LoadFile(fFilename,true,false);
+    NewSource:=CodeToolBoss.LoadFile(fFilename,true,Revert);
     if NewSource=nil then begin
       ACaption:='Read error';
       AText:='Unable to read file "'+fFilename+'"!';
@@ -767,7 +767,7 @@ begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
     end;
     fUnitName:=NewUnitName;
-    fModified:=true;
+    if Project<>nil then Project.Modified:=true;
   end;
 end;
 
@@ -2653,6 +2653,9 @@ end.
 
 {
   $Log$
+  Revision 1.117  2003/05/02 10:28:59  mattias
+  improved file checking
+
   Revision 1.116  2003/04/29 19:00:41  mattias
   added package gtkopengl
 

@@ -440,6 +440,7 @@ type
     FDescription: string;
     FDirectory: string;
     FFilename: string;
+    FFileReadOnly: boolean;
     FFiles: TList; // TList of TPkgFile
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
@@ -458,13 +459,13 @@ type
     FOutputStateFile: string;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
-    FReadOnly: boolean;
     FRemovedFiles: TList; // TList of TPkgFile
     FRegistered: boolean;
     FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FUpdateLock: integer;
     FUsageOptions: TPkgAdditionalCompilerOptions;
+    FUserReadOnly: boolean;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
@@ -479,6 +480,7 @@ type
     procedure SetAutoInstall(const AValue: TPackageInstallType);
     procedure SetAutoUpdate(const AValue: TPackageUpdatePolicy);
     procedure SetDescription(const AValue: string);
+    procedure SetFileReadOnly(const AValue: boolean);
     procedure SetFilename(const AValue: string);
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetIconFile(const AValue: string);
@@ -490,9 +492,9 @@ type
     procedure SetName(const AValue: string); override;
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
-    procedure SetReadOnly(const AValue: boolean);
     procedure OnMacroListSubstitution(TheMacro: TTransferMacro; var s: string;
       var Handled, Abort: boolean);
+    procedure SetUserReadOnly(const AValue: boolean);
     function SubstitutePkgMacro(const s: string): string;
     procedure Clear;
     procedure UpdateSourceDirectories;
@@ -501,20 +503,23 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    // modified
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure LockModified;
     procedure UnlockModified;
+    function ReadOnly: boolean;
+    // streaming
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    function IsVirtual: boolean;
-    function HasDirectory: boolean;
+    // consistency
     procedure CheckInnerDependencies;
     function MakeSense: boolean;
-    procedure ShortenFilename(var ExpandedFilename: string);
-    procedure LongenFilename(var AFilename: string);
-    function GetResolvedFilename: string;
     procedure ConsistencyCheck;
+    // paths, define templates
+    function IsVirtual: boolean;
+    function HasDirectory: boolean;
+    function GetResolvedFilename: string;
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
     function GetCompileSourceFilename: string;
     function GetOutputDirectory: string;
@@ -525,6 +530,8 @@ type
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
     // files
+    procedure ShortenFilename(var ExpandedFilename: string);
+    procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
                          ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
@@ -610,7 +617,8 @@ type
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
     property PackageType: TLazPackageType read FPackageType
                                           write SetPackageType;
-    property ReadOnly: boolean read FReadOnly write SetReadOnly;
+    property UserReadOnly: boolean read FUserReadOnly write SetUserReadOnly;
+    property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
@@ -1582,6 +1590,12 @@ begin
   end;
 end;
 
+procedure TLazPackage.SetUserReadOnly(const AValue: boolean);
+begin
+  if FUserReadOnly=AValue then exit;
+  FUserReadOnly:=AValue;
+end;
+
 function TLazPackage.SubstitutePkgMacro(const s: string): string;
 begin
   Result:=s;
@@ -1639,7 +1653,7 @@ procedure TLazPackage.SetAutoCreated(const AValue: boolean);
 begin
   if FAutoCreated=AValue then exit;
   FAutoCreated:=AValue;
-  if AutoCreated then ReadOnly:=true;
+  if AutoCreated then UserReadOnly:=true;
 end;
 
 procedure TLazPackage.SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -1670,6 +1684,12 @@ begin
   if FDescription=AValue then exit;
   FDescription:=AValue;
   Modified:=true;
+end;
+
+procedure TLazPackage.SetFileReadOnly(const AValue: boolean);
+begin
+  if FFileReadOnly=AValue then exit;
+  FFileReadOnly:=AValue;
 end;
 
 procedure TLazPackage.SetFilename(const AValue: string);
@@ -1764,12 +1784,6 @@ begin
   if FPackageType=AValue then exit;
   FPackageType:=AValue;
   Modified:=true;
-end;
-
-procedure TLazPackage.SetReadOnly(const AValue: boolean);
-begin
-  if FReadOnly=AValue then exit;
-  FReadOnly:=AValue;
 end;
 
 constructor TLazPackage.Create;
@@ -1900,6 +1914,11 @@ begin
   if FModifiedLock<=0 then
     RaiseException('TLazPackage.UnlockModified');
   dec(FModifiedLock);
+end;
+
+function TLazPackage.ReadOnly: boolean;
+begin
+  Result:=UserReadOnly or FileReadOnly;
 end;
 
 procedure TLazPackage.LoadFromXMLConfig(XMLConfig: TXMLConfig;

@@ -636,6 +636,7 @@ begin
     Name:='AutoIncrementOnBuildCheckBox';
     Parent:=VersionGroupBox;
     Caption:='Automatically increment version on build';
+    Enabled:=false;
   end;
 end;
 
