@@ -417,7 +417,9 @@ function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
 
   function InitComponent(ClassType: TClass): Boolean;
-  var CompResource:TLResource;
+  var
+    CompResource:TLResource;
+    MemStream: TMemoryStream;
     a:integer;
   begin
 //writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
@@ -425,33 +427,34 @@ function InitResourceComponent(Instance: TComponent;
     if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
     if Assigned(ClassType.ClassParent) then
       Result:=InitComponent(ClassType.ClassParent);
-    CompResource:=LazarusResources.Find(Instance.ClassName);
+    CompResource:=LazarusResources.Find(ClassType.ClassName);
     if (CompResource = nil) or (CompResource.Value='') then exit;
-//    Writeln('Compresource.value is '+CompResource.Value);
+//writeln('[InitComponent] CompResource found for ',ClassType.Classname);
     if (ClassType.InheritsFrom(TForm))
     and (CompResource.ValueType<>'FORMDATA') then exit;
-    with TMemoryStream.Create do
+    MemStream:=TMemoryStream.Create;
+    try
+      MemStream.Write(CompResource.Value[1],length(CompResource.Value));
+      MemStream.Position:=0;
+      writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       try
-        Write(CompResource.Value[1],length(CompResource.Value));
-        Position:=0;
-        writeln('Form Stream Signature=',copy(CompResource.Value,1,4));
-        try
-          Instance:=ReadComponent(Instance);
-          // MG: workaround til Visible=true is default
-          if Instance is TControl then
-            for a:=0 to Instance.ComponentCount-1 do
-              if Instance.Components[a] is TControl then
-                TControl(Instance.Components[a]).Visible:=true;
-          // MG end of workaround
-        except
-          on E: Exception do begin
-            writeln('Form streaming: ',E.Message);
-            exit;
-          end;
+        Instance:=MemStream.ReadComponent(Instance);
+      except
+        on E: Exception do begin
+          writeln('Form streaming "',ClassType.ClassName,'" error: ',E.Message);
+          exit;
         end;
-      finally
-        Free;
       end;
+    finally
+      // MG: workaround til Visible=true is default
+      if Instance is TControl then
+        for a:=0 to Instance.ComponentCount-1 do
+          if Instance.Components[a] is TControl then begin
+            TControl(Instance.Components[a]).Visible:=true;
+          end;
+      // MG end of workaround
+      MemStream.Free;
+    end;
     Result:=true;
   end;
 

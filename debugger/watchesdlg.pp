@@ -44,24 +44,24 @@ uses
 type
   TWatchesDlg = class(TDebuggerDlg)
     lvWatches: TListView;
-    procedure lvWatchesClick(Sender: TObject);
-    procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
     mnuPopup: TPopupMenu;
     popAdd: TMenuItem;
-    procedure popAddClick(Sender: TObject);
     N1: TMenuItem; //--------------
     popProperties: TMenuItem;
-    procedure popPropertiesClick(Sender: TObject);
     popEnabled: TMenuItem;
-    procedure popEnabledClick(Sender: TObject);
     popDelete: TMenuItem;
-    procedure popDeleteClick(Sender: TObject);
     N2: TMenuItem; //--------------
     popDisableAll: TMenuItem;
-    procedure popDisableAllClick(Sender: TObject);
     popEnableAll: TMenuItem;
-    procedure popEnableAllClick(Sender: TObject);
     popDeleteAll: TMenuItem;
+    procedure lvWatchesClick(Sender: TObject);
+    procedure lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
+    procedure popAddClick(Sender: TObject);
+    procedure popPropertiesClick(Sender: TObject);
+    procedure popEnabledClick(Sender: TObject);
+    procedure popDeleteClick(Sender: TObject);
+    procedure popDisableAllClick(Sender: TObject);
+    procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
   private 
     FWatchesNotification: TDBGWatchesNotification;
@@ -96,7 +96,7 @@ uses
 
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FWatchesNotification := TDBGWatchesNotification.Create;
   FWatchesNotification.AddReference;
   FWatchesNotification.OnAdd := @WatchAdd;
@@ -289,6 +289,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.3  2002/05/30 21:53:56  lazarus
+  MG: fixed form streaming of not direct TForm descendents
+
   Revision 1.2  2002/05/10 06:57:48  lazarus
   MG: updated licenses
 

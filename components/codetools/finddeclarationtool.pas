@@ -1948,7 +1948,6 @@ var
   ClassNameAtom: TAtomPosition;
   OldInput: TFindDeclarationInput;
   ClassContext: TFindContext;
-  IdentifierFoundResult: TIdentifierFoundResult;
 begin
   Result:=false;
   // if proc is a method, search in class
