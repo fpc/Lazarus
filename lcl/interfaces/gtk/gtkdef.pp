@@ -33,8 +33,13 @@ unit GTKDef;
 interface
 
 uses
-  gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager,
-  DynHashArray, GraphType;
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  {$ENDIF}
+  LCLLinux, LCLType, VclGlobals, Classes, LCLMemManager, DynHashArray,
+  GraphType;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
@@ -429,6 +434,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/12/15 11:52:28  mattias
+  started gtk2 interface
+
   Revision 1.30  2002/12/05 22:16:30  mattias
   double byte char font started
 
