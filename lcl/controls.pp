@@ -1030,7 +1030,7 @@ type
     procedure RealizeBounds; virtual;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure CreateComponent(TheOwner: TComponent); virtual;
-    procedure DestroyComponent;
+    procedure DestroyComponent; virtual;
     procedure DoConstraintsChange(Sender : TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
     procedure DoAutoSize; Override;
@@ -1229,7 +1229,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+    procedure DestroyComponent; override;
     procedure Paint; virtual;
 
     property Canvas: TCanvas read FCanvas write FCanvas;
@@ -1857,6 +1857,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.166  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.165  2004/01/03 21:06:05  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos

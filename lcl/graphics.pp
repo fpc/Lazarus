@@ -692,9 +692,9 @@ type
     Procedure SetRegion(value : TRegion);
   protected
     procedure CreateFont; virtual;
-    procedure CreateBrush;
-    Procedure CreatePen;
-    Procedure CreateRegion;
+    procedure CreateBrush; virtual;
+    Procedure CreatePen; virtual;
+    Procedure CreateRegion; virtual;
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
     procedure Changed; virtual;
@@ -1261,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.103  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.102  2003/12/26 09:55:08  mattias
   fixed range check type conversion
 

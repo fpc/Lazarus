@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {******************************************************************************
                                      TCustomControl
  ******************************************************************************
@@ -41,7 +43,15 @@ end;
 Destructor TCustomControl.Destroy;
 begin
   FCanvas.Free;
+  FCanvas:=nil;
   inherited Destroy;
+end;
+
+procedure TCustomControl.DestroyComponent;
+begin
+  if FCanvas<>nil then
+    TControlCanvas(FCanvas).FreeHandle;
+  inherited DestroyComponent;
 end;
 
 {------------------------------------------------------------------------------
@@ -79,20 +89,27 @@ end;
   call the paint method for descendents to do the actual painting
  ------------------------------------------------------------------------------}
 procedure TCustomControl.PaintWindow(DC: HDC);
+var
+  DCChanged: boolean;
 begin
-  FCanvas.Handle := DC;
+  DCChanged:=(FCanvas.Handle<>DC);
+  if DCChanged then
+    FCanvas.Handle := DC;
   try
     Paint;
   finally
-    FCanvas.Handle := 0;
+    if DCChanged then FCanvas.Handle := 0;
   end;
 end;
 
-
+// included by controls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.7  2004/01/03 21:06:05  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos

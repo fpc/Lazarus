@@ -1077,7 +1077,7 @@ end;
 procedure TCanvas.SetHandle(NewHandle: HDC);
 begin
   if FHandle<>NewHandle then begin
-//writeln('[TCanvas.SetHandle] Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
+    //writeln('[TCanvas.SetHandle] Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
     if FHandle <> 0 then
     begin
       DeselectHandles;
@@ -1091,7 +1091,7 @@ begin
       FHandle := NewHandle;
       SetPenPos(FPenPos);
     end;
-//writeln('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
+    //writeln('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
   end;
 end;
 
@@ -1254,6 +1254,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.59  2003/12/30 22:24:47  micha
   fix number of points in polygon (form vincent)
 

@@ -122,7 +122,8 @@ constructor TCustomStaticText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Font.OnChange := @FontChange;
-  ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks, csReplicatable];
+  ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks,
+                   csReplicatable];
   Width := 65;
   Height := 17;
 end;
@@ -133,9 +134,9 @@ var
   R : TRect;
 begin
   R := Rect(0,0,Width,Height);
-  Canvas.Color := Self.Color;
-  Canvas.Font := Self.Font;
   With Canvas do begin
+    Color := Self.Color;
+    Font := Self.Font;
     FillRect(R);
     If BorderStyle <> sbsNone then begin
       InflateRect(R,-2,-2);
@@ -163,6 +164,7 @@ begin
       WordBreak := True;
       Clipping := True;
       ShowPrefix := ShowAccelChar;
+      SystemFont:=false;
     end;
     TextRect(R, 0, 0, Caption, TR);
   end;
@@ -170,7 +172,7 @@ end;
 
 Procedure TCustomStaticText.FontChange(Sender : TObject);
 begin
-  If Caption > '' then
+  If Caption <> '' then
     Invalidate;
 end;
 
@@ -179,6 +181,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.2  2002/10/23 20:47:26  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl

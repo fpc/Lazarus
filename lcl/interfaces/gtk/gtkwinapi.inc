@@ -72,10 +72,14 @@ begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         inc(X,DCOrigin.X);
         inc(Y,DCOrigin.Y);
+        {$IFNDEF DisableDoubleBuf}
         BeginGDKErrorTrap;
+        {$ENDIF}
         gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                      Angle1 shl 2, Angle2 shl 2);
+        {$IFNDEF DisableDoubleBuf}
         EndGDKErrorTrap;
+        {$ENDIF}
       end else
         Result:=false;
     end;
@@ -751,7 +755,9 @@ begin
 //write('TgtkObject.CreateBitmap->');
   GdiObject := NewGDIObject(gdiBitmap);
 
+  {$IFNDEF DisableDoubleBuf}
   BeginGDKErrorTrap;
+  {$ENDIF}
 
   // if the bitcount is the system depth create a Pixmap
   // if depth is 1 then a Bitmap
@@ -786,7 +792,9 @@ begin
     end;
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
+    {$IFNDEF DisableDoubleBuf}
     EndGDKErrorTrap;
+    {$ENDIF}
 
     If BitmapBits <> nil then
       LoadFromPixbufData(hBitmap(GdiObject), BitmapBits);
@@ -869,8 +877,6 @@ begin
     GdiObject := NewGDIObject(gdiBitmap);
     GdiObject^.GDIBitmapType := gbPixmap;
 
-    BeginGDKErrorTrap;
-
     ImgWidth:=RawImage.Description.Width;
     ImgHeight:=RawImage.Description.Height;
     if RawImage.Data<>nil then begin
@@ -932,7 +938,6 @@ begin
 
     Result:=true;
   finally
-    EndGDKErrorTrap;
     if not Result then begin
       if Bitmap<>0 then DeleteObject(Bitmap);
       Bitmap:=0;
@@ -967,7 +972,9 @@ begin
 
   sError := '';
 
+  {$IFNDEF DisableDoubleBuf}
   BeginGDKErrorTrap;
+  {$ENDIF}
 
 //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
@@ -1041,7 +1048,9 @@ begin
                         , [lbStyle]);
     end;
 
+    {$IFNDEF DisableDoubleBuf}
     EndGDKErrorTrap;
+    {$ENDIF}
 
     If (sError = '') and not GObject^.IsNullBrush then
       SetGDIColorRef(GObject^.GDIBrushColor,lbColor);
@@ -1111,7 +1120,9 @@ begin
 
   Depth := -1;
 
+  {$IFNDEF DisableDoubleBuf}
   BeginGDKErrorTrap;
+  {$ENDIF}
   if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil)) then begin
     DefGdkWindow := TDeviceContext(DC).Drawable;
     Depth := gdk_drawable_get_depth(TDeviceContext(DC).Drawable);
@@ -1125,7 +1136,9 @@ begin
     then begin
       Result := 0;
       WriteLn(Format('ERROR: [TgtkObject.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
+      {$IFNDEF DisableDoubleBuf}
       EndGDKErrorTrap;
+      {$ENDIF}
       Exit;
     end;
 
@@ -1151,7 +1164,9 @@ begin
 
     GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
+    {$IFNDEF DisableDoubleBuf}
     EndGDKErrorTrap;
+    {$ENDIF}
 
     Result := HBITMAP(GdiObject);
 
@@ -1246,13 +1261,24 @@ var
       ]);
 
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
-    //writeln('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
+    {$IFDEF VerboseFonts}
+    writeln('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
+    {$ENDIF}
   end;
 
   procedure LoadDefaultFont;
   begin
     DisposeGDIObject(GdiObject);
     GdiObject:=CreateDefaultFont;
+    {$IFDEF VerboseFonts}
+    writeln('TgtkObject.CreateFontIndirectEx.LoadDefaultFont');
+    {$ENDIF}
+  end;
+  
+  function GetDefaultFontFamilyName: string;
+  begin
+    Result:=GetDefaultFontName;
+    if Result='' then Result:='*';
   end;
 
 begin
@@ -1260,7 +1286,9 @@ begin
   //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
   // Lets fill in all the xlfd parts. Assume we have scalable fonts
 
-  //writeln('TgtkObject.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
+  {$IFDEF VerboseFonts}
+  writeln('TgtkObject.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
+  {$ENDIF}
 
   Result := 0;
   GDIObject := NewGDIObject(gdiFont);
@@ -1288,9 +1316,11 @@ begin
     // check if LongFontName is in XLFD format and get nicer defaults
     // This way, the user can set X fonts that are not supported by TFont.
 
-    //writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
-    //' Long="',LongFontName,'" ',IsFontNameXLogicalFontDesc(LongFontName)
-    //,' ',ord(LogFont.lfFaceName[0]));
+    {$IFDEF VerboseFonts}
+    writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
+    ' Long="',LongFontName,'" IsXLFD=',IsFontNameXLogicalFontDesc(LongFontName)
+    ,' ',ord(LogFont.lfFaceName[0]));
+    {$ENDIF}
     S:=LongFontName;
     if IsFontNameXLogicalFontDesc(LongFontName) then begin
       FontNameRegistry := ExtractXLFDItem(LongFontName,0);
@@ -1321,8 +1351,15 @@ begin
 
       FamilyName := StrPas(lfFaceName); //StringReplace(FaceName, ' ', '*');
       if AnsiCompareText(FamilyName,'default')=0 then begin
-        LoadDefaultFont;
-        exit;
+        {$IFDEF VerboseFonts}
+        writeln('TgtkObject.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
+        {$ENDIF}
+        if (LogFont.lfHeight=0) then begin
+          LoadDefaultFont;
+          exit;
+        end else begin
+          FamilyName:=GetDefaultFontFamilyName;
+        end;
       end;
 
       Assert(False, Format('trace:  [TgtkObject.CreateFontIndirectEx] Name: %s, Height: %d', [FamilyName, lfHeight]));
@@ -1416,7 +1453,9 @@ begin
       // CharSetCoding := '*';
     end;
 
-  //write('CreateFontIndirect->');
+    {$IFDEF VerboseFonts}
+    write('CreateFontIndirect->');
+    {$ENDIF}
     LoadFont;
 
     if GdiObject^.GDIFontObject = nil
@@ -1512,7 +1551,9 @@ begin
   finally
     if GdiObject^.GDIFontObject = nil
     then begin
-  //writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
+      {$IFDEF VerboseFonts}
+      writeln('[TgtkObject.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
+      {$ENDIF}
       DisposeGDIObject(GdiObject);
       Result := 0;
     end
@@ -1551,7 +1592,9 @@ begin
 
     PaletteVisual := nil;
 
+    {$IFNDEF DisableDoubleBuf}
     BeginGDKErrorTrap;
+    {$ENDIF}
 
     PaletteVisual := gdk_visual_get_best_with_type(VisualType);
     If PaletteVisual = nil then begin
@@ -1560,7 +1603,9 @@ begin
     end;
     PaletteColormap := GDK_Colormap_new(PaletteVisual, GdkTrue);
 
+    {$IFNDEF DisableDoubleBuf}
     EndGDKErrorTrap;
+    {$ENDIF}
 
     RGBTable := TDynHashArray.Create(-1);
     RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
@@ -1626,7 +1671,9 @@ begin
     p:=nil; // automatically create transparency mask
   Window:=nil; // use the X root window for colormap
 
+  {$IFNDEF DisableDoubleBuf}
   BeginGDKErrorTrap;
+  {$ENDIF}
 
   if Window<>nil then
     ColorMap:=gdk_window_get_colormap(Window)
@@ -1660,9 +1707,10 @@ begin
     if not ok then begin
       DisposeGDIObject(GdiObject);
       GdiObject:=nil;
-      EndGDKErrorTrap;
-    end else
-      EndGDKErrorTrap;
+    end;
+    {$IFNDEF DisableDoubleBuf}
+    EndGDKErrorTrap;
+    {$ENDIF}
   end;
   Result := HBITMAP(GdiObject);
 end;
@@ -3256,12 +3304,13 @@ var
   TheStyle: PGtkStyle;
   Area: TGdkRectangle;
   ShadowType: Integer;
-  //LeftTopGC: PGdkGC;
-  //RightBottomGC: PGdkGC;
 begin
   Result := IsValidDC(DC);
   if not Result then exit;
   if FrameWidth=0 then exit;
+  TheStyle:=GetStyle('button');
+  if TheStyle=nil then exit;
+  
   with TDeviceContext(DC) do
   begin
     if GC = nil then begin
@@ -3277,7 +3326,6 @@ begin
       exit;
     end;
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
-    TheStyle:=GetStyle('button');
     Area.X:=ARect.Left+DCOrigin.X;
     Area.Y:=ARect.Top+DCOrigin.Y;
     Area.Width:=ARect.Right-ARect.Left;
@@ -3323,15 +3371,14 @@ begin
       gdk_draw_line(Drawable, RightBottomGC,
                  ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
                  ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
-      if TheStyle<>nil then
-        gtk_paint_shadow(TheStyle,
-                         AWindow, GTK_STATE_NORMAL,
-                         ShadowType,
-                         @Area,
-                         ClientWidget,
-                         'button',
-                         ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                         ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+      gtk_paint_shadow(TheStyle,
+                       AWindow, GTK_STATE_NORMAL,
+                       ShadowType,
+                       @Area,
+                       ClientWidget,
+                       'button',
+                       ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                       ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
       InflateRect(ARect, -1, -1);
     end;
   end;
@@ -7148,8 +7195,7 @@ begin
           Result := HFONT(CurrentFont);
           CurrentFont := PGDIObject(GDIObj);
           {$IfDef GTK1}
-          if GC <> nil
-          then begin
+          if GC <> nil then begin
             gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
           end;
           {$ENDIF}
@@ -7995,7 +8041,7 @@ var Widget: PGTKWidget;
   AfterWidget: PGtkWidget;
   AfterListItem: PGList;}
 begin
-  writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP);
+  //writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP,' ');
   Widget:=PGtkWidget(hWnd);
   if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
     { case hWndInsertAfter of
@@ -9046,6 +9092,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.309  2004/01/03 23:15:00  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.308  2004/01/03 20:31:02  mattias
   fixed CreateRectRgn for negative widths/heights
 

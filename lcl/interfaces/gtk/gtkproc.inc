@@ -2184,42 +2184,42 @@ end;
 
 {------------------------------------------------------------------------------
   Function: ObjectToGTKObject
-  Params: AObject: A LCL Object
+  Params: AnObject: A LCL Object
   Returns:  The GTKObject of the given object
 
   Returns the GTKObject of the given object, nil if no object available
  ------------------------------------------------------------------------------}
-function ObjectToGTKObject(const AObject: TObject): PGtkObject;
+function ObjectToGTKObject(const AnObject: TObject): PGtkObject;
 var
   handle : HWND;
 begin
   Handle := 0;
-  if not assigned(AObject) then
+  if not assigned(AnObject) then
   begin
     assert (false, 'TRACE:  [ObjectToGtkObject] Object not assigned');
   end
-  else if (AObject is TWinControl) then
+  else if (AnObject is TWinControl) then
   begin
-    if TWinControl(AObject).HandleAllocated then
-      handle := TWinControl(AObject).Handle;
+    if TWinControl(AnObject).HandleAllocated then
+      handle := TWinControl(AnObject).Handle;
   end
-  else if (AObject is TMenuItem) then
+  else if (AnObject is TMenuItem) then
   begin 
-    if TMenuItem(AObject).HandleAllocated then
-      handle := TMenuItem(AObject).Handle;
+    if TMenuItem(AnObject).HandleAllocated then
+      handle := TMenuItem(AnObject).Handle;
   end
-  else if (AObject is TMenu) then
+  else if (AnObject is TMenu) then
   begin 
-    if TMenu(AObject).HandleAllocated then
-      handle := TMenu(AObject).Items.Handle;
+    if TMenu(AnObject).HandleAllocated then
+      handle := TMenu(AnObject).Items.Handle;
   end
-  else if (AObject is TCommonDialog) then
+  else if (AnObject is TCommonDialog) then
   begin
     {if TCommonDialog(AObject).HandleAllocated then }
-    handle := TCommonDialog(AObject).Handle;
+    handle := TCommonDialog(AnObject).Handle;
   end
   else begin
-    Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AObject.ClassName])); 
+    Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AnObject.ClassName]));
   end;
   Result := PGTKObject(handle);
   if handle = 0 then
@@ -4773,6 +4773,26 @@ begin
   If Result <> nil then
     Result := gdk_font_ref(Result);
 end;
+
+function GetDefaultFontName: string;
+var
+  Style: PGtkStyle;
+begin
+  Result:='';
+  Style := GetStyle('default');
+  if Style = nil then
+    Style := GetStyle('gtk_default');
+
+  If Style <> nil then begin
+    {$IFNDEF NoStyle}
+    If (Style^.RC_Style <> nil) then begin
+      if (Style^.RC_Style^.font_name <> nil) then
+        Result := Style^.RC_Style^.font_name;
+    end;
+    {$ENDIF}
+  end;
+end;
+
 {$EndIf}
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
@@ -5622,6 +5642,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.237  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.236  2003/12/26 15:23:30  mattias
   started message editor and fixed some range checks
 

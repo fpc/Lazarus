@@ -1005,7 +1005,6 @@ type
   end;
 
 
-
   { TTrackBar }
 
   TTrackBarOrientation = (trHorizontal, trVertical);
@@ -1424,6 +1423,7 @@ type
     property TopLvlItems[Index: integer]: TTreeNode
       read GetTopLvlItems write SetTopLvlItems;
   end;
+  
 
   { TCustomTreeView }
 
@@ -1944,6 +1944,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.98  2004/01/03 21:06:05  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos

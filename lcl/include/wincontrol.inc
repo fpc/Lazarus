@@ -910,30 +910,60 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
+  
+  Send Move and Size messages through the LCL message paths. This simulates the
+  VCL behaviour and has no real effect.
+-------------------------------------------------------------------------------}
 procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
 var
   SizeMsg : TLMSize;
   MoveMsg : TLMMove;
-  Flags: UINT;
+  //Flags: UINT;
 begin
   if (not HandleAllocated)
   or ((not SizeChanged) and (not PosChanged)) then exit;
 
-  { TODO : Replace this with LCL functions eventually.
-      Right now we have to call these messages as some
-      descendents incorrectly depend on it, so force it
-      down their throat }
+  Perform(LM_WindowposChanged, 0, 0);
 
-//  Flags := SWP_NOZORDER or SWP_NOACTIVATE;
+  if SizeChanged then begin
+    with SizeMsg do begin
+      Msg:= LM_SIZE;
+      SizeType:= 6; // force realign
+      Width:= FWidth;
+      Height:= FHeight;
+      {$IFDEF CHECK_POSITION}
+      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
+      {$ENDIF}
+    end;
+    WindowProc(TLMessage(SizeMsg));
+  end;
+  
+  if PosChanged then begin
+    with MoveMsg do begin
+      Msg:= LM_MOVE;
+      MoveType:= 1;
+      XPos:= FLeft;
+      YPos:= FTop;
+      {$IFDEF CHECK_POSITION}
+      if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
+      writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
+      {$ENDIF}
+    end;
+    WindowProc(TLMessage(MoveMsg));
+  end;
+{//  Flags := SWP_NOZORDER or SWP_NOACTIVATE;
   Flags := $14;
   if not SizeChanged then
 //    Flags := Flags or SWP_NOSIZE
     Flags := Flags or $1
   else
-  { if not PosChanged then }
+  // if not PosChanged then
 //    Flags := Flags or SWP_NOMOVE;
     Flags := Flags or $2;
-  SetWindowPos(Handle, 0, FLeft, FTop, FWidth, FHeight, Flags);
+  SetWindowPos(Handle, 0, FLeft, FTop, FWidth, FHeight, Flags);}
 end;
 
 {------------------------------------------------------------------------------}
@@ -3148,6 +3178,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.186  2004/01/03 23:14:59  mattias
+  default font can now change height and fixed gtk crash
+
   Revision 1.185  2004/01/03 21:06:06  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos

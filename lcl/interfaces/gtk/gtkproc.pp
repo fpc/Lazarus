@@ -261,7 +261,7 @@ function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
-function ObjectToGTKObject(const AObject: TObject): PGtkObject;
+function ObjectToGTKObject(const AnObject: TObject): PGtkObject;
 function GetMainWidget(const Widget: Pointer): Pointer;
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
@@ -515,6 +515,7 @@ function LoadDefaultFontDesc: PPangoFontDescription;
 {$Else}
 function LoadDefaultFont: PGDKFont;
 {$EndIf}
+function GetDefaultFontName: string;
 
 procedure RealizeGDKColor(ColorMap: PGdkColormap; Color: PGDKColor);
 procedure RealizeGtkStyleColor(Style: PGTKStyle; Color: PGDKColor);
