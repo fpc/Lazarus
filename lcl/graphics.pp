@@ -446,6 +446,9 @@ type
     FHandle : HDC;
     FOnChange: TNotifyEvent;
     FOnChanging: TNotifyEvent;
+    FTextStyle : TTextStyle;
+    FLock  :TCriticalSection;
+    FLockCount: Integer;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
     procedure CreateBrush;
@@ -470,6 +473,9 @@ type
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
   public
+    procedure Lock;
+    procedure Unlock;
+
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
     procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
@@ -526,6 +532,8 @@ type
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
     property Pixels[X, Y: Integer]: TCOlor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
+    property TextStyle : TTextStyle read FTextStyle write FTextStyle;
+    property LockCount:Integer read FLockCount;
   published
     property AutoRedraw : Boolean read FAutoReDraw write SetAutoReDraw;
     property Brush: TBrush read FBrush write SetBrush;
@@ -835,6 +843,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.38  2002/08/15 13:37:56  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 
