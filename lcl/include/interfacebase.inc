@@ -1586,6 +1586,11 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+begin
+  Result:=false;
+end;
+
 procedure TInterfaceBase.Sleep(dwMilliseconds: DWORD);
 begin
 
@@ -1650,6 +1655,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2003/02/28 19:54:05  mattias
+  added ShowWindow
+
   Revision 1.81  2003/02/28 10:14:29  mattias
   started package system (packager)
 
