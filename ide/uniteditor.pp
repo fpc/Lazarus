@@ -747,13 +747,11 @@ begin
     P := ClientToScreen(Point(CaretXPix, CaretYPix));
   Left:=EditorComponent.ClientOrigin.X+(EditorComponent.Width - Width) div 2;
   Top:=P.Y-Height-2*EditorComponent.LineHeight;
-  if Top<10 then begin
+  if Top<10 then
     Top:=P.y+2*EditorComponent.LineHeight;
-    if Top+Height>SCreen.Height then begin
-      Top:=(Screen.Height-Height) div 2;
-      if Top<0 then Top:=0;
-    end;
-  end;
+  if Top+Height>Screen.Height then
+    Top:=(Screen.Height-Height) div 2;
+  if Top<0 then Top:=0;
 end;
 
 procedure TSourceEditor.ActivateHint(ClientPos: TPoint; const TheHint: string);
