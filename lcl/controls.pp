@@ -1007,7 +1007,7 @@ type
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
     Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
-    procedure DoneEditing; virtual;
+    procedure EditingDone; virtual;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer);
@@ -2337,6 +2337,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.224  2004/07/07 22:26:57  mattias
+  fixed showing grabers for boundless components
+
   Revision 1.223  2004/07/04 20:07:08  micha
   form notifies control of new role
 

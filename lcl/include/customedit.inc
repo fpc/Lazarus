@@ -325,6 +325,12 @@ begin
   Result:=false;
 end;
 
+procedure TCustomEdit.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+  if Key=VK_RETURN then EditingDone;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.SetModified
   Params:  Value to set FModified to
@@ -374,6 +380,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/07/07 22:26:58  mattias
+  fixed showing grabers for boundless components
+
   Revision 1.29  2004/05/31 19:32:34  vincents
   fixed using ecUpperCase in win32
 

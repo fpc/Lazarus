@@ -228,7 +228,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  TControl.DoneEditing
+  TControl.EditingDone
   
   Called when user has finished editing. This procedure can be used by data
   links to commit the changes.
@@ -237,7 +237,7 @@ End;
   - When user selected another item
   It's totally up to the control, what events will commit.
 ------------------------------------------------------------------------------}
-procedure TControl.DoneEditing;
+procedure TControl.EditingDone;
 begin
 
 end;
@@ -3217,6 +3217,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.203  2004/07/07 22:26:58  mattias
+  fixed showing grabers for boundless components
+
   Revision 1.202  2004/07/04 20:07:08  micha
   form notifies control of new role
 

@@ -296,14 +296,14 @@ type
     procedure DoChange;
     procedure DoChangeProperties;
     procedure GrabberMove(Grabber: TGrabber; const OldRect, NewRect: TRect);
-    procedure SetActiveGrabber(AGrabber:TGrabber);
+    procedure SetActiveGrabber(AGrabber: TGrabber);
     procedure SetCacheGuideLines(const AValue: boolean);
     procedure SetCustomForm;
-    procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
+    procedure SetGrabbers(AGrabIndex: TGrabIndex; const AGrabber: TGrabber);
     procedure SetGrabberSize(const NewSize: integer);
     procedure SetItems(Index:integer; ASelectedControl:TSelectedControl);
     procedure SetRubberbandActive(const AValue: boolean);
-    procedure SetRubberBandBounds(ARect:TRect);
+    procedure SetRubberBandBounds(ARect: TRect);
     procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
     procedure SetVisible(const AValue: Boolean);
@@ -2014,9 +2014,7 @@ var
   end;
 
 begin
-  if (Count=0) or (FForm=nil)
-  or LookupRootSelected
-  or OnlyBoundLessComponentsSelected then exit;
+  if (Count=0) or (FForm=nil) or LookupRootSelected then exit;
 
   Diff:=DC.FormOrigin;
 

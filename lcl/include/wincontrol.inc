@@ -2830,7 +2830,7 @@ procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
   //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
-  DoneEditing;
+  EditingDone;
   DoExit;
 end;
 
@@ -3755,6 +3755,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.253  2004/07/07 22:26:58  mattias
+  fixed showing grabers for boundless components
+
   Revision 1.252  2004/07/04 11:09:43  mattias
   fixed IFDEF tool for blocks  from Colin
 

@@ -522,6 +522,7 @@ type
     procedure SetSelText(const Val : string); virtual;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SelectAll;
@@ -1558,6 +1559,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.151  2004/07/07 22:26:58  mattias
+  fixed showing grabers for boundless components
+
   Revision 1.150  2004/07/03 11:11:08  mattias
   TGTKListStringList now keeps selection on Put and Move
 
