@@ -61,6 +61,7 @@ begin
   ParentColor := false;
   TabStop := true;
   SetInitialBounds(0,0,80,23);
+  FEchoMode := emNormal;
 end;
 
 {------------------------------------------------------------------------------
@@ -185,7 +186,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomEdit.CopyToClipboard;
 begin
-  if (EchoMode <> emNormal) and (SelLength > 0) then
+  if (EchoMode = emNormal) and (SelLength > 0) then
     Clipboard.AsText := SelText;
 end;
 
@@ -356,6 +357,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/01/23 20:31:43  mattias
+  fixed TCustomEdit copying to clipboard
+
   Revision 1.20  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 
