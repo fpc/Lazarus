@@ -1224,8 +1224,8 @@ var
     begin
       Result:=false;
       if APath='' then exit;
-      if APath[length(APath)]<>OSDirSeparator then
-        ExpFilename:=APath+OSDirSeparator+AFilename
+      if APath[length(APath)]<>PathDelim then
+        ExpFilename:=APath+PathDelim+AFilename
       else
         ExpFilename:=APath+AFilename;
       if not FilenameIsAbsolute(ExpFilename) then

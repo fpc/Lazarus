@@ -626,9 +626,9 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   if KeepPath then begin
     FileNameStart:=FileEnd;
-    while (FileNameStart>FileStart) and (Src[FileNameStart]<>OSDirSeparator) do
+    while (FileNameStart>FileStart) and (Src[FileNameStart]<>PathDelim) do
       dec(FileNameStart);
-    if Src[FileNameStart]=OSDirSeparator then
+    if Src[FileNameStart]=PathDelim then
       FileStart:=FileNameStart+1;
   end;
   if not SourceChangeCache.Replace(gtNone,GtNone,FileStart,FileEnd,

@@ -246,8 +246,8 @@ function FilenameIsMatching(const Mask, Filename: string;
   check if Filename matches Mask
   Filename matches exactly or is a file/directory in a subdirectory of mask
   Mask can contain the wildcards * and ?
-  The wildcards will _not_ match OSDirSeparator
-  If you need the asterisk, the question mark or the OSDirSeparator as character
+  The wildcards will _not_ match PathDelim
+  If you need the asterisk, the question mark or the PathDelim as character
   just put the SpecialChar character in front of it.
 
   Examples:
@@ -273,10 +273,10 @@ begin
   repeat
     // find start of directories
     while (DirStartMask<=length(Mask))
-    and (Mask[DirStartMask]=OSDirSeparator) do
+    and (Mask[DirStartMask]=PathDelim) do
       inc(DirStartMask);
     while (DirStartFile<=length(Filename))
-    and (Filename[DirStartFile]=OSDirSeparator) do
+    and (Filename[DirStartFile]=PathDelim) do
       inc(DirStartFile);
     // find ends of directories
     DirEndMask:=DirStartMask;
@@ -284,7 +284,7 @@ begin
     while (DirEndMask<=length(Mask)) do begin
       if Mask[DirEndMask]=SpecialChar then
         inc(DirEndMask,2)
-      else if (Mask[DirEndMask]=OSDirSeparator) then
+      else if (Mask[DirEndMask]=PathDelim) then
         break
       else
         inc(DirEndMask);
@@ -292,7 +292,7 @@ begin
     while (DirEndFile<=length(Filename)) do begin
       if Filename[DirEndFile]=SpecialChar then
         inc(DirEndFile,2)
-      else if (Filename[DirEndFile]=OSDirSeparator) then
+      else if (Filename[DirEndFile]=PathDelim) then
         break
       else
         inc(DirEndFile);
@@ -340,12 +340,12 @@ begin
     DirStartFile:=DirEndFile+1;
   until (DirStartFile>length(Filename)) or (DirStartMask>length(Mask));
   while (DirStartMask<=length(Mask))
-  and (Mask[DirStartMask]=OSDirSeparator) do
+  and (Mask[DirStartMask]=PathDelim) do
     inc(DirStartMask);
   Result:=(DirStartMask>length(Mask));
   if MatchExactly then begin
     while (DirStartFile<=length(Filename))
-    and (Filename[DirStartFile]=OSDirSeparator) do
+    and (Filename[DirStartFile]=PathDelim) do
       inc(DirStartFile);
     Result:=(Result and (DirStartFile>length(Filename)));
   end;
@@ -700,8 +700,8 @@ var ExpPath: string;
 begin
 //writeln('[TDefineTree.GetDefinesForDirectory] "',Path,'"');
   ExpPath:=Path;
-  if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>OSDirSeparator) then
-    ExpPath:=ExpPath+OSDirSeparator;
+  if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
+    ExpPath:=ExpPath+PathDelim;
   DirDef:=FindDirectoryInCache(ExpPath);
   if DirDef<>nil then begin
     Result:=DirDef.Values;
@@ -922,9 +922,9 @@ var
           if CurPath='' then
             SubPath:=ReadValue(DefTempl.Value)
           else
-            SubPath:=CurPath+OSDirSeparator+ReadValue(DefTempl.Value);
+            SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value);
           {$else}
-          SubPath:=CurPath+OSDirSeparator+ReadValue(DefTempl.Value);
+          SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value);
           {$endif}
           // test if ExpandedDirectory is part of SubPath
           if FilenameIsMatching(SubPath,ExpandedDirectory,false) then
@@ -1127,13 +1127,10 @@ begin
     while FileExists(BogusFilename+IntToStr(i)) do inc(i);
     CmdLine:=CmdLine+BogusFilename;
     
-    TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
-         ,poStdErrToOutput]);
-    
-    {TheProcess := TProcess.Create(nil);
+    TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;}
+    TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
       OutputLine:='';
@@ -1165,13 +1162,10 @@ begin
     // ask for target operating system -> ask compiler with switch -iTO
     CmdLine:=PPC386Path+' -iTO';
     
-    TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
-         ,poStdErrToOutput]);
-    
-    {TheProcess := TProcess.Create(nil);
+    TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;}
+    TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
       if TheProcess.Output<>nil then
@@ -1207,14 +1201,10 @@ begin
     end;
     
     // ask for target processor -> ask compiler with switch -iTP
-    
-    TheProcess:=TProcess.Create(PPC386Path+' -iTP',[poUsePipes,poNoConsole
-         ,poStdErrToOutput]);
-    
-    {TheProcess := TProcess.Create(nil);
+    TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := PPC386Path+' -iTP';
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-    TheProcess.ShowWindow := swoNone;}
+    TheProcess.ShowWindow := swoNone;
     try
       TheProcess.Execute;
       if TheProcess.Output<>nil then
@@ -1313,11 +1303,11 @@ var DefTempl, MainDir,
                    length(AFilename)-length(FPCSrcDir));
       DirStart:=1;
       while (DirStart<=length(Result)) do begin
-        while (DirStart<=length(Result)) and (Result[DirStart]=OSDirSeparator)
+        while (DirStart<=length(Result)) and (Result[DirStart]=PathDelim)
         do
           inc(DirStart);
         DirEnd:=DirStart;
-        while (DirEnd<=length(Result)) and (Result[DirEnd]<>OSDirSeparator) do
+        while (DirEnd<=length(Result)) and (Result[DirEnd]<>PathDelim) do
           inc(DirEnd);
         if DirEnd>length(Result) then break;
         if DirEnd>DirStart then begin
@@ -1375,8 +1365,8 @@ var DefTempl, MainDir,
     begin
 //  writeln('%%%Browse ',ADirPath);
       if ADirPath='' then exit;
-      if not (ADirPath[length(ADirPath)]=OSDirSeparator) then
-        ADirPath:=ADirPath+OSDirSeparator;
+      if not (ADirPath[length(ADirPath)]=PathDelim) then
+        ADirPath:=ADirPath+PathDelim;
       if FindFirst(ADirPath+'*.*',faAnyFile,FileInfo)=0 then begin
         repeat
           AFilename:=FileInfo.Name;
@@ -1503,7 +1493,7 @@ var DefTempl, MainDir,
 begin
   Result:=nil;
   if FPCSrcDir='' then exit;
-  DS:=OSDirSeparator;
+  DS:=PathDelim;
   Dir:=FPCSrcDir;
   if Dir[length(Dir)]<>DS then Dir:=Dir+DS;
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
@@ -1575,7 +1565,7 @@ end;
 
 function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType: string): TDefineTemplate;
-const ds: char = OSDirSeparator;
+const ds: char = PathDelim;
 var MainDir, DirTempl, SubDirTempl: TDefineTemplate;
   TargetOS, SrcPath: string;
 begin
@@ -1693,9 +1683,9 @@ begin
     '',ProjectDir,da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL','adds lcl to SrcPath',
     ExternalMacroStart+'SrcPath',
-    LazarusSrcDir+OSDirSeparator+'lcl;'
-     +LazarusSrcDir+OSDirSeparator+'lcl'+OSDirSeparator+'interfaces'
-     +OSDirSeparator+WidgetType
+    LazarusSrcDir+PathDelim+'lcl;'
+     +LazarusSrcDir+PathDelim+'lcl'+PathDelim+'interfaces'
+     +PathDelim+WidgetType
      +';$('+ExternalMacroStart+'SrcPath)'
     ,da_DefineAll));
   Result:=TDefineTemplate.Create(StdDefTemplLCLProject,

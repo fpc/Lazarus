@@ -380,8 +380,6 @@ var
   QueueItem, OldQueueItem: PLazQueueItem; // currently only used by LM_DESTROY
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
-  titles    : PPgchar;
-  Title1     : Pchar;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -3616,6 +3614,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.90  2001/12/16 22:24:55  lazarus
+  MG: changes for new compiler 20011216
+
   Revision 1.89  2001/12/14 19:51:48  lazarus
   More changes to TListView
   Shane

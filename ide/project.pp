@@ -1072,8 +1072,8 @@ begin
         inc(EndPos);
       CurPath:=copy(SearchPaths,Startpos,EndPos-StartPos);
       if CurPath<>'' then begin
-        if CurPath[length(CurPath)]<>OSDirSeparator then
-          CurPath:=CurPath+OSDirSeparator;
+        if CurPath[length(CurPath)]<>PathDelim then
+          CurPath:=CurPath+PathDelim;
         Result:=CurPath+Filename;
         if FileExists(Result) then exit;
       end;
@@ -1269,6 +1269,9 @@ end.
 
 {
   $Log$
+  Revision 1.46  2001/12/16 22:24:54  lazarus
+  MG: changes for new compiler 20011216
+
   Revision 1.45  2001/12/13 23:09:58  lazarus
   MG: enhanced code caching, fixed CursorToCleanPos and beautify statement
 

@@ -206,13 +206,10 @@ begin
 
     try
       
-      TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
-           ,poStdErrToOutput]);
-      
-      {TheProcess := TProcess.Create(nil);
+      TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := CmdLine;
       TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
-      TheProcess.ShowWindow := swoNone;}
+      TheProcess.ShowWindow := swoNone;
       Result:=mrOk;
       try
         TheProcess.CurrentDirectory:=ProjectDir;
@@ -329,6 +326,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2001/12/16 22:24:54  lazarus
+  MG: changes for new compiler 20011216
+
   Revision 1.24  2001/12/10 08:19:52  lazarus
   MG: added hint for unset compiler path
 

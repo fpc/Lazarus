@@ -50,8 +50,6 @@ var
 implementation
 
 constructor TBreakPointsdlg.Create(AOwner : TComponent);
-var
-LI : TListItem;
 Begin
   inherited;
   if LazarusResources.Find(Classname)=nil then

@@ -133,7 +133,7 @@ function DirectoryExists(DirectoryName: string): boolean;
 var sr: TSearchRec;
 begin
   if (DirectoryName<>'')
-  and (DirectoryName[length(DirectoryName)]=OSDirSeparator) then
+  and (DirectoryName[length(DirectoryName)]=PathDelim) then
     DirectoryName:=copy(DirectoryName,1,length(DirectoryName)-1);
   if FindFirst(DirectoryName,faAnyFile,sr)=0 then
     Result:=((sr.Attr and faDirectory)>0)
@@ -149,7 +149,7 @@ begin
   DoDirSeparators(DirectoryName);
   i:=1;
   while i<=length(DirectoryName) do begin
-    if DirectoryName[i]=OSDirSeparator then begin
+    if DirectoryName[i]=PathDelim then begin
       Dir:=copy(DirectoryName,1,i-1);
       if not DirectoryExists(Dir) then begin
         Result:=CreateDir(Dir);

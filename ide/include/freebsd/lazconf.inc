@@ -59,8 +59,8 @@ var
   PrimaryFilename, SecondaryFilename: string;
   SrcFS, DestFS: TFileStream;
 begin
-  PrimaryFilename:=GetPrimaryConfigPath+OSDirSeparator+AFilename;
-  SecondaryFilename:=GetSecondaryConfigPath+OSDirSeparator+AFilename;
+  PrimaryFilename:=GetPrimaryConfigPath+PathDelim+AFilename;
+  SecondaryFilename:=GetSecondaryConfigPath+PathDelim+AFilename;
   if not FileExists(PrimaryFilename) then begin
     try
       SrcFS:=TFileStream.Create(SecondaryFilename,fmOpenRead);
@@ -97,6 +97,9 @@ initialization
 
 {
   $Log$
+  Revision 1.4  2001/12/16 22:24:55  lazarus
+  MG: changes for new compiler 20011216
+
   Revision 1.3  2001/12/10 08:44:23  lazarus
   MG: added search for compiler, if not set
 

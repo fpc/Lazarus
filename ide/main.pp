@@ -3097,8 +3097,8 @@ var ActiveSrcEdit: TSourceEditor;
         CurPath:=copy(TempPath,1,p-1);
         Delete(TempPath,1,p);
         if CurPath='' then continue;
-        if CurPath[length(CurPath)]<>OSDirSeparator then
-          CurPath:=CurPath+OSDirSeparator;
+        if CurPath[length(CurPath)]<>PathDelim then
+          CurPath:=CurPath+PathDelim;
         for c:=0 to 2 do begin
           case c of
             0: TempFile:=FName;
@@ -3157,8 +3157,8 @@ begin
     SPath:=SPath+';'+ExtractFilePath(Project.ProjectFile);
   if EnvironmentOptions.LazarusDirectory<>'' then
     SPath:=SPath
-             +';'+EnvironmentOptions.LazarusDirectory+OSDirSeparator+'lcl'
-             +';'+EnvironmentOptions.LazarusDirectory+OSDirSeparator+'designer';
+             +';'+EnvironmentOptions.LazarusDirectory+PathDelim+'lcl'
+             +';'+EnvironmentOptions.LazarusDirectory+PathDelim+'designer';
   if FindPasFile(FName,SPath) then begin
     result:=mrOk;
     EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(FName);
@@ -3205,10 +3205,10 @@ writeln('TMainIDE.DoNewProject A');
     begin
       // create a first form unit
       Project.CompilerOptions.OtherUnitFiles:=
-         '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
+         '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
         +';'+
-         '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
-         +OSDirSeparator
+         '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
+         +PathDelim
          +CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
       DoNewEditorUnit(nuForm,'');
     end;
@@ -3640,10 +3640,10 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   Project.CompilerOptions.CompilerPath:='$(CompPath)';
   if NewProjectType=ptApplication then begin
     Project.CompilerOptions.OtherUnitFiles:=
-       '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
+       '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
       +';'+
-       '$(LazarusDir)'+OSDirSeparator+'lcl'+OSDirSeparator+'units'
-       +OSDirSeparator
+       '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
+       +PathDelim
        +CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
   end;
 
@@ -3864,13 +3864,10 @@ writeln('[TMainIDE.DoRunProject] A');
         try
           writeln('  EXECUTING "',ProgramFilename,'"');
           CheckIfFileIsExecutable(ProgramFilename);
-          TheProcess:=TProcess.Create(ProgramFilename,
-             [poRunSuspended,poUsePipes,poNoConsole]);
-        
-          {TheProcess := TProcess.Create(nil);
+          TheProcess := TProcess.Create(nil);
           TheProcess.CommandLine := ProgramFilename;
-          TheProcess.Options:= [poRunSuspended, poUsePipes, poNoConsole];
-          TheProcess.ShowWindow := swoNone;}
+          TheProcess.Options:= [poUsePipes, poNoConsole];
+          TheProcess.ShowWindow := swoNone;
           TheProcess.Execute;
         except
           on e: Exception do begin
@@ -4284,7 +4281,7 @@ begin
         BackupFilename:=FileNameOnly+FileExt;
     end;
     if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+OSDirSeparator+BackupFilename
+      BackupFilename:=SubDir+PathDelim+BackupFilename
     else
       BackupFilename:=FilePath+BackupFilename;
     // remove old backup file
@@ -4305,7 +4302,7 @@ begin
   end else begin
     // backup with counter
     if BackupInfo.SubDirectory<>'' then
-      BackupFilename:=SubDir+OSDirSeparator+FileNameOnly+FileExt+';'
+      BackupFilename:=SubDir+PathDelim+FileNameOnly+FileExt+';'
     else
       BackupFilename:=Filename+';';
     if BackupInfo.MaxCounter<=0 then begin
@@ -4532,8 +4529,8 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
         if PathEnd>PathStart then begin
           Result:=ExpandFileName(copy(SearchPath,PathStart,PathEnd-PathStart));
           if Result<>'' then begin
-            if Result[length(Result)]<>OSDirSeparator then
-              Result:=Result+OSDirSeparator;
+            if Result[length(Result)]<>PathDelim then
+              Result:=Result+PathDelim;
             Result:=Result+AFileName;
             if FileExists(Result) then exit;
           end;
@@ -4668,8 +4665,8 @@ begin
   if AnUnitInfo=nil then exit;
   TestDir:=EnvironmentOptions.TestBuildDirectory;
   if (TestDir='') then exit;
-  if TestDir[length(TestDir)]<>OSDirSeparator then
-    TestDir:=TestDir+OSDirSeparator;
+  if TestDir[length(TestDir)]<>PathDelim then
+    TestDir:=TestDir+PathDelim;
   Result:=ExtractFilename(AnUnitInfo.Filename);
   if Result='' then exit;
   Result:=TestDir+Result;
@@ -5381,8 +5378,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.184  2001/12/16 12:55:57  lazarus
-  MG: fixed project codetool variable
+  Revision 1.185  2001/12/16 22:24:54  lazarus
+  MG: changes for new compiler 20011216
 
   Revision 1.183  2001/12/16 11:20:26  lazarus
   MG: find declaration for uses sections

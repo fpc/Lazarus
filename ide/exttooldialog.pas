@@ -238,14 +238,11 @@ begin
 writeln('[TExternalToolList.Run] ',CmdLine);
     try
       CheckIfFileIsExecutable(Filename);
-      TheProcess:=TProcess.Create(CmdLine,[poRunSuspended,
-        poUsePipes, poNoConsole]);
-      TheProcess.CurrentDirectory:=WorkingDir;
-      {TheProcess := TProcess.Create(nil);
+      TheProcess := TProcess.Create(nil);
       TheProcess.CommandLine := Filename+' '+Params;
-      TheProcess.Options:= [poRunSuspended, poUsePipes, poNoConsole];
+      TheProcess.Options:= [poUsePipes, poNoConsole];
       TheProcess.ShowWindow := swoNone;
-      TheProcess.CurrentDirectory := WorkingDir;}
+      TheProcess.CurrentDirectory := WorkingDir;
       TheProcess.Execute;
     except
       on e: Exception do

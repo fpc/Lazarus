@@ -340,7 +340,7 @@ var i, CurExtStart, CurExtEnd, ExtStart, ExtLen: integer;
 begin
   ExtStart:=length(ExpandedFilename);
   while (ExtStart>0) and (ExpandedFilename[ExtStart]<>'.')
-  and (ExpandedFilename[ExtStart]<>OSDirSeparator) do
+  and (ExpandedFilename[ExtStart]<>PathDelim) do
     dec(ExtStart);
   if (ExtStart<1) or (ExpandedFilename[ExtStart]<>'.') then begin
     Result:=false;

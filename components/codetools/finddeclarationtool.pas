@@ -179,8 +179,8 @@ writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',ExpandedFilename);
   var APath: string;
   begin
     APath:=ADir;
-    if (APath<>'') and (APath[length(APath)]<>OSDirSeparator) then
-      APath:=APath+OSDirSeparator;
+    if (APath<>'') and (APath[length(APath)]<>PathDelim) then
+      APath:=APath+PathDelim;
     {$IFNDEF win32}
     if LoadFile(ADir+lowercase(AnUnitName)+'.pp',Result) then exit;
     if LoadFile(ADir+lowercase(AnUnitName)+'.pas',Result) then exit;
@@ -194,18 +194,14 @@ writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',ExpandedFilename);
   var PathStart, PathEnd: integer;
     ADir: string;
   begin
-writeln('--------------------------------------');
-writeln(APath,'   ',TheUnitName);
-writeln('--------------------------------------');
     PathStart:=1;
     while PathStart<=length(APath) do begin
       PathEnd:=PathStart;
       while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
       if PathEnd>PathStart then begin
         ADir:=copy(APath,PathStart,PathEnd-PathStart);
-        if (ADir<>'') and (ADir[length(ADir)]<>OSDirSeparator) then
-          ADir:=ADir+OSDirSeparator;
-writeln('B ',ADir);
+        if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
+          ADir:=ADir+PathDelim;
         Result:=SearchUnitFileInDir(ADir,TheUnitName);
         if Result<>nil then exit;
       end;
@@ -224,8 +220,8 @@ writeln('B ',ADir);
       while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
       if PathEnd>PathStart then begin
         ADir:=copy(APath,PathStart,PathEnd-PathStart);
-        if (ADir<>'') and (ADir[length(ADir)]<>OSDirSeparator) then
-          ADir:=ADir+OSDirSeparator;
+        if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
+          ADir:=ADir+PathDelim;
         if LoadFile(ADir+RelativeFilename,Result) then exit;
       end;
       PathStart:=PathEnd+1;
