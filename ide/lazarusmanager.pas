@@ -37,7 +37,7 @@ type
     procedure RenameLazarusExecutables;
     procedure LazarusProcessStart(Sender: TObject);
   public
-    constructor Create;
+    constructor Create; reintroduce;
     destructor Destroy; override;
     procedure Run;
     procedure ShowSplash;
@@ -152,6 +152,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.4  2004/09/04 23:02:56  mattias
+  added reintroduce to get rid of the warning
+
   Revision 1.3  2004/09/03 21:14:50  vincents
   fix showing splash screen on restart
 
