@@ -98,6 +98,9 @@ type
     property OnMouseUp;
   end;
 
+
+  { TButtonGlyph }
+
   TButtonGlyph = class
   private
     FOriginal : TBitmap;
@@ -120,10 +123,13 @@ type
   end;
 
 
-  TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp,bkYes, bkNo, bkClose, bkAbort, bkRetry, bkIgnore, bkAll);
+  { TBitBtn }
+
+  TBitBtnKind = (bkCustom, bkOK, bkCancel, bkHelp,bkYes, bkNo,
+                 bkClose, bkAbort, bkRetry, bkIgnore, bkAll);
 
   TBitBtn = Class(TButton)
-   private
+  private
     FCanvas : TCanvas;
     FGlyph  : TButtonGlyph;
     FKind   : TBitBtnKind;
@@ -135,13 +141,13 @@ type
     Procedure SetKind(Value : TBitBtnKind);
     Procedure SetLayout(Value : TButtonLayout);
     Procedure SetSpacing(Value : Integer);
-   protected
-   Procedure Click; override;
-   public
+  protected
+    Procedure Click; override;
+  public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
     property Glyph : TBitmap read GetGlyph write SetGlyph;
-   published
+  published
     property Default stored IsCustom;
     property Kind : TBitBtnKind read FKind write SetKind;
     property Layout: TButtonLayout read FLayout write SetLayout;
@@ -150,70 +156,73 @@ type
     property Visible;
     property OnEnter;
     property OnExit;
-   end;
+  end;
+   
+   
+  { TSpeedButton }
 
   TSpeedButton = class(TGraphicControl)
-     private
-      FAllowAllUp : Boolean;
-      FDown : Boolean;
-      FDragging : Boolean;
-      FFlat : Boolean;
-      FGlyph:   TButtonGlyph;
-      FGroupIndex : Integer;
-      FLayout: TButtonLayout;
-      FMargin : integer;
-      FMouseInControl : Boolean;
-      FSpacing : integer;
-      FState : TButtonState;
-      FTransparent : Boolean;
-      FShortcut : Longint;
-      function GetGlyph : TBitmap;
-      procedure UpdateExclusive;
-      procedure UpdateTracking;
-      procedure SetAllowAllUp(Value : Boolean);
-      procedure SetGlyph(value : TBitmap);
-      procedure SetLayout(const Value : TButtonLayout);
-      procedure SetTransparent(const Value : boolean);
-      procedure CMButtonPressed(var MEssage : TLMessage); message CM_BUTTONPRESSED;
-      procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
-      procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
-      procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
-     protected
-      function GetNumGlyphs : Integer;
-      procedure GlyphChanged(Sender : TObject);
-      procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-        X, Y: Integer); override;
-      procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-      procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-        X, Y: Integer); override;
-      procedure Paint; override;
-      procedure SetDown(Value : Boolean);
-      procedure SetGroupIndex(const Value : Integer);
-      procedure SetFlat(const Value : Boolean);
-      procedure SetMargin(const Value : integer);
-      procedure SetNumGlyphs(Value : integer);
-      procedure SetSpacing(const Value : integer);
-      property MouseInControl : Boolean read FMouseInControl;
-     public
-      constructor Create(AOwner : TComponent); override;
-      destructor Destroy; override;
-      procedure Click; override;
-    published
-      property AllowAllUp : Boolean read FAllowAllUp write SetAllowAllUp default false;
-      property Caption;
-      property Down : Boolean read FDown write SetDown default false;
-      property Enabled;
-      property Flat : Boolean read FFlat write SetFlat default false;
-      property Glyph : TBitmap read GetGlyph write SetGlyph;
-      property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
-      property Layout : TButtonLayout read FLayout write SetLayout default blGlyphLeft;
-      property Margin : integer read FMargin write SetMargin default -1;
-      property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
-      property Spacing : integer read FSpacing write SetSpacing default 4;
-      property Transparent : Boolean read FTransparent write SetTransparent default false;
-      property Visible;
-      property OnClick;
-    end;
+  private
+    FAllowAllUp : Boolean;
+    FDown : Boolean;
+    FDragging : Boolean;
+    FFlat : Boolean;
+    FGlyph:   TButtonGlyph;
+    FGroupIndex : Integer;
+    FLayout: TButtonLayout;
+    FMargin : integer;
+    FMouseInControl : Boolean;
+    FSpacing : integer;
+    FState : TButtonState;
+    FTransparent : Boolean;
+    FShortcut : Longint;
+    function GetGlyph : TBitmap;
+    procedure UpdateExclusive;
+    procedure UpdateTracking;
+    procedure SetAllowAllUp(Value : Boolean);
+    procedure SetGlyph(value : TBitmap);
+    procedure SetLayout(const Value : TButtonLayout);
+    procedure SetTransparent(const Value : boolean);
+    procedure CMButtonPressed(var MEssage : TLMessage); message CM_BUTTONPRESSED;
+    procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
+    procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
+    procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
+   protected
+    function GetNumGlyphs : Integer;
+    procedure GlyphChanged(Sender : TObject);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
+    procedure Paint; override;
+    procedure SetDown(Value : Boolean);
+    procedure SetGroupIndex(const Value : Integer);
+    procedure SetFlat(const Value : Boolean);
+    procedure SetMargin(const Value : integer);
+    procedure SetNumGlyphs(Value : integer);
+    procedure SetSpacing(const Value : integer);
+    property MouseInControl : Boolean read FMouseInControl;
+   public
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
+    procedure Click; override;
+  published
+    property AllowAllUp : Boolean read FAllowAllUp write SetAllowAllUp default false;
+    property Caption;
+    property Down : Boolean read FDown write SetDown default false;
+    property Enabled;
+    property Flat : Boolean read FFlat write SetFlat default false;
+    property Glyph : TBitmap read GetGlyph write SetGlyph;
+    property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
+    property Layout : TButtonLayout read FLayout write SetLayout default blGlyphLeft;
+    property Margin : integer read FMargin write SetMargin default -1;
+    property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
+    property Spacing : integer read FSpacing write SetSpacing default 4;
+    property Transparent : Boolean read FTransparent write SetTransparent default false;
+    property Visible;
+    property OnClick;
+  end;
 
 
 {$I defaultbitbtnimages.inc}
@@ -251,6 +260,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/08/28 11:41:53  lazarus
+  MG: activated environment opts in debugger
+
   Revision 1.18  2002/08/27 06:40:50  lazarus
   MG: ShortCut support for buttons from Andrew
 
