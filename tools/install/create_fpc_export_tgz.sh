@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 set -e
 
 Usage="$0 "'outputfilename devel or stable [cvs date mm/dd/yy]'
