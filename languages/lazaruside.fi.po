@@ -2440,7 +2440,7 @@ msgstr "suomi"
 
 #: lazarusidestrconsts:rslanguagefinnishwin
 msgid "Finnish for MS Windows"
-msgstr ""
+msgstr "suomi MS Windows-merkistölle"
 
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
