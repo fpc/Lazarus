@@ -20,11 +20,6 @@
       - ToDo: editing the creation order
       - ToDo: editing the TControl.Parent hierachy
     For an usage example, see the object inspector.
-
-  ToDo:
-    - icons
-    - drag&drop: change parent and position
-    - TComponent childs (e.g. TMenu and TMenuItems)
 }
 unit ComponentTreeView;
 
@@ -33,7 +28,7 @@ unit ComponentTreeView;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits, Menus;
+  Classes, SysUtils, LCLProc, AvgLvlTree, Controls, ComCtrls, PropEdits, Menus, LResources;
   
 type
   { TComponentTreeView }
@@ -42,11 +37,15 @@ type
   private
     FComponentList: TBackupComponentList;
     FPropertyEditorHook: TPropertyEditorHook;
+    FImageList :TImageList;
     function GetSelection: TPersistentSelectionList;
     procedure SetPropertyEditorHook(const AValue: TPropertyEditorHook);
     procedure SetSelection(const NewSelection: TPersistentSelectionList);
   protected
     procedure DoSelectionChanged; override;
+    function GetImageFor(AComponent:TComponent):integer;
+    procedure DropObject(Sender, Source: TObject; X, Y: Integer);
+    procedure AcceptDrop(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -62,6 +61,9 @@ type
   end;
 
 implementation
+
+uses
+  Dialogs;
 
 type
   TComponentCandidate = class
@@ -136,6 +138,58 @@ begin
   end;
 end;
 
+procedure TComponentTreeView.DropObject(Sender, Source: TObject; X, Y: Integer);
+var
+  Node, SelNode:TTreeNode;
+  AContainer,AControl:TControl;
+begin
+  Node:=GetNodeAt(X, Y);
+  if Assigned(Node) then begin
+    AContainer:=TControl(Node.Data);
+    SelNode := GetFirstMultiSelected;
+    while Assigned(SelNode) do begin
+      AControl:=TControl(SelNode.Data);
+      AControl.Parent := AContainer as TWinControl;
+      SelNode := SelNode.GetNextMultiSelected;
+    end;
+    RebuildComponentNodes;
+  end;
+end;
+
+procedure TComponentTreeView.AcceptDrop(Sender, Source: TObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  Node:TTreeNode;
+  AnObject:TObject;
+  AcceptControl, AcceptContainer:Boolean;
+begin
+  AcceptControl := True;
+  Node := GetFirstMultiSelected;
+  while Assigned(Node) do begin
+    AnObject:=TObject(Node.Data);
+    AcceptControl := AcceptControl and (AnObject is TControl);
+    Node := Node.GetNextMultiSelected;
+  end;
+
+  AcceptContainer := False;
+  Node:=GetNodeAt(X, Y);
+  if Assigned(Node) and Assigned(Node.Data) then begin
+    AnObject:=TObject(Node.Data);
+    if AnObject is TWinControl and (csAcceptsControls in TWinControl(AnObject).ControlStyle) then
+      AcceptContainer := True;
+  end;
+  Accept := AcceptContainer and AcceptControl;
+end;
+
+function TComponentTreeView.GetImageFor(AComponent: TComponent): integer;
+begin
+  if Assigned(AComponent) then begin
+    if (AComponent is TControl) and (csAcceptsControls in TControl(AComponent).ControlStyle) then Result := 3
+    else if (AComponent is TControl) then Result := 2
+    else Result := 1;
+  end else 
+    Result := -1;
+end;
+
 procedure TComponentTreeView.SetPropertyEditorHook(
   const AValue: TPropertyEditorHook);
 begin
@@ -152,13 +206,23 @@ end;
 constructor TComponentTreeView.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  DragMode := dmAutomatic;
+  OnDragOver := @AcceptDrop;
+  OnDragDrop := @DropObject;
   FComponentList:=TBackupComponentList.Create;
   Options:=Options+[tvoAllowMultiselect,tvoAutoItemHeight,tvoKeepCollapsedNodes];
+  FImageList := TImageList.Create(nil);
+  FImageList.AddFromLazarusResource('oi_form');
+  FImageList.AddFromLazarusResource('oi_comp');
+  FImageList.AddFromLazarusResource('oi_control');
+  FImageList.AddFromLazarusResource('oi_box');
+  Images := FImageList;
 end;
 
 destructor TComponentTreeView.Destroy;
 begin
   FreeThenNil(FComponentList);
+  FImageList.Free;
   inherited Destroy;
 end;
 
@@ -186,7 +250,7 @@ var
       Candidate.Added:=true;
       NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurControl));
       NewNode.Data:=CurControl;
-      NewNode.ImageIndex:=-1;
+      NewNode.ImageIndex:=GetImageFor(CurControl);
       NewNode.MultiSelected:=Selection.IndexOf(CurControl)>=0;
       if CurControl is TWinControl then
         AddChildControls(TWinControl(CurControl),NewNode);
@@ -213,7 +277,7 @@ var
       Candidate.Added:=true;
       NewNode:=Items.AddChild(ANode,CreateNodeCaption(CurMenuItem));
       NewNode.Data:=CurMenuItem;
-      NewNode.ImageIndex:=-1;
+      NewNode.ImageIndex:=1;
       NewNode.MultiSelected:=Selection.IndexOf(CurMenuItem)>=0;
       AddMenuItemChilds(CurMenuItem,NewNode);
     end;
@@ -244,7 +308,7 @@ begin
       // first add the lookup root
       RootNode:=Items.Add(nil,CreateNodeCaption(RootObject));
       RootNode.Data:=RootObject;
-      RootNode.ImageIndex:=-1;
+      RootNode.ImageIndex:=0;
       RootNode.MultiSelected:=Selection.IndexOf(RootObject)>=0;
     
       // create candidate nodes for every child
@@ -292,7 +356,7 @@ begin
           Candidate.Added:=true;
           NewNode:=Items.AddChild(RootNode,CreateNodeCaption(AComponent));
           NewNode.Data:=AComponent;
-          NewNode.ImageIndex:=-1;
+          NewNode.ImageIndex:=GetImageFor(AComponent);
           NewNode.MultiSelected:=Selection.IndexOf(AComponent)>=0;
           if AComponent is TWinControl then
             AddChildControls(TWinControl(AComponent),NewNode)
@@ -339,6 +403,9 @@ begin
   if APersistent is TComponent then
     Result:=TComponent(APersistent).Name+': '+Result;
 end;
+
+initialization
+  {$I componenttreeview.lrs}
 
 end.
 
