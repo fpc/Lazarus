@@ -16,13 +16,12 @@ Contents:
 
   Graphics
     State: loading bmp and xpm works for 16/24 depth
-           saving is not implemented, so streaming does not work
            Palettes basically implemented in gtk-interface
     Skills: knowledge of LCL, VCL, deep knowledge of interfaces
     Difficulty: high
 
   Docking (= the combination of forms)
-    State: not implemented
+    State: started. The DockManager/DockTree is missing
     Skills: deep knowledge of LCL, VCL and probably also the interfaces
     Difficulty: high
   
@@ -35,6 +34,7 @@ Contents:
     State: not implemented. In contrary to the VCL the LCL should use the
            current Theme of the user. So, the Font property should only work,
            if explicitly set
+           Works in winapi, and a few places in gtk
     Skills: knowledge of LCL, gtk, win32
     Difficulty: medium
 
@@ -52,7 +52,7 @@ Contents:
     State: working
     
   TBitmap:
-    State: see LCL - Graphics
+    State: working, see LCL - Graphics
 
   TButton
     State: working
@@ -94,22 +94,22 @@ Contents:
     State: working
 
   TGraphic:
-    State: see LCL - Graphics
+    State: working, see LCL - Graphics
 
   TGroupBox
     State: working
     
   TIcon:
-    State: not implemented
+    State: started, not complete
 
   TIdleTimer
     State: working
 
   TImage
-    State: see LCL - Graphics
+    State: working, see LCL - Graphics
 
   TImageList
-    State: see LCL - Graphics
+    State: working, see LCL - Graphics
 
   TLabel
     State: working
@@ -136,7 +136,7 @@ Contents:
     State: working
 
   TOpenDialog
-    State: almost working, Filter does not work in gtk-interface, see there
+    State: working, Filter does not work in gtk-interface, see there
 
   TPage
     State: working
@@ -154,7 +154,7 @@ Contents:
     State: working
     
   TPixmap:
-    State: see LCL - Graphics
+    State: working, see LCL - Graphics
 
   TPopupMenu
     State: working
@@ -204,20 +204,16 @@ Contents:
     State: working
 
   TToolBar
-    State: needs redesign. The current design is too win32 specific.
-           It should delegate at least half the work to the interfaces, which
-           should create the interface specific toolbar and buttons.
-    Skills: LCL, gtk, little win32
-    Difficulty: medium
+    State: working, needs improvements to use more interface specific things
 
   TToolbutton
-    State: see TToolBar
+    State: working, see TToolBar
 
   TTrackbar
     State: working
 
   TTreeView
-    State: working, Bug: Property 'Scrollbars' does not work properly
+    State: working
 
   TUpDown
     State: working
@@ -246,7 +242,7 @@ Contents:
     Difficulty: medium
 
   Graphics
-    see LCL - Graphics
+    working, see LCL - Graphics
     
   Focus
     State: switching focus between windows. Might be impossible due to
@@ -318,7 +314,7 @@ Contents:
 
 3. Docs
 
-  State: basic structure is under construction by Mattias
+  State: basic structure is under construction
 
 
 

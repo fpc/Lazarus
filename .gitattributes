@@ -397,6 +397,7 @@ doceditor/doceditor.lrs svneol=native#text/pascal
 doceditor/doceditor.pas svneol=native#text/pascal
 docs/Contributors.txt svneol=native#text/plain
 docs/CrossCompile.txt svneol=native#text/plain
+docs/DesignGuidelines.txt svneol=native#text/plain
 docs/ExtendingTheIDE.txt svneol=native#text/plain
 docs/ForDelphians.txt svneol=native#text/plain
 docs/LCLMessages.txt svneol=native#text/plain

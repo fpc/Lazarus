@@ -1,0 +1,30 @@
+This is for lazarus developers:
+
+Coding style:
+- Since one style is easier to read, Lazarus follows the Borland Coding style
+  guide lines. Of course, almost anyone will find some points there, that are
+  arguable less readable than other styles. That's ok, just try to follow at
+  least 90%.
+- Try to avoid unit circles. This makes it easier to navigate and when unit is
+  growing allows to split it.
+
+New files:
+- Every file should start with a header containing the license and a few lines
+  describing the content.
+
+Include files:
+- should start with the {%MainUnit } directive
+
+Packages:
+- should have an .lpl entry in packager/globallinks/
+
+Dialogs (modal forms):
+- Close on Escape (if key not used otherwise)
+- Define default button and Return activates it (if key not used)
+- Medium to complex dialogs should be resizable and size is stored
+
+Main Menu Items:
+- Should have a key in keymapping.pp
+
+
+
