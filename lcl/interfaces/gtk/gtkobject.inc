@@ -31,6 +31,7 @@ begin
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
+  FDefaultFont:= nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -3563,9 +3564,16 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
-//write('  TgtkObject.CreateDefaultFont ->');
   Result := NewGDIObject(gdiFont);
-  Result^.GDIFontObject := gdk_font_load('-*-helvetica-bold-r-normal--*-120-*-*-*-*-iso8859-1');
+  if FDefaultFont = nil then begin
+    FDefaultFont:= gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
+    if FDefaultFont = nil then begin
+      FDefaultFont:= gdk_font_load ('fixed');
+      if FDefaultFont = nil then raise EOutOfResources.Create('Unable to load default font');
+    end;
+  end;    
+  Result^.GDIFontObject:= FDefaultFont;
+  gdk_font_ref(Result^.GDIFontObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -3769,6 +3777,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.105  2002/02/20 19:11:48  lazarus
+  Minor tweaks, default font caching.
+
   Revision 1.104  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 
