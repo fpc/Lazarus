@@ -1,0 +1,31 @@
+object Form1: TForm1
+  ActiveControl = Button1
+  Caption = 'Form1'
+  ClientHeight = 97
+  ClientWidth = 400
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 401
+  VertScrollBar.Page = 98
+  Left = 310
+  Height = 97
+  Top = 163
+  Width = 400
+  object Button1: TButton
+    Caption = 'Generate a PostScript file'
+    OnClick = Button1Click
+    TabOrder = 0
+    Left = 24
+    Height = 25
+    Top = 23
+    Width = 352
+  end
+  object Button2: TButton
+    Caption = 'Show this file (kghostview)'
+    OnClick = Button2Click
+    TabOrder = 1
+    Left = 24
+    Height = 25
+    Top = 56
+    Width = 352
+  end
+end

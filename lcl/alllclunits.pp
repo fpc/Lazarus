@@ -44,8 +44,8 @@ uses
   StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
-  Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
-  DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics,
+  Printers, PostScriptPrinter, PostScriptCanvas, CheckLst, PairSplitter,
+  ExtDlgs, DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics,
   PropertyStorage, IniPropStorage, XMLPropStorage, Chart,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
@@ -64,6 +64,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/10/04 09:05:23  mattias
+  added postscript canvas example  from Olivier
+
   Revision 1.22  2004/09/27 21:45:44  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 
