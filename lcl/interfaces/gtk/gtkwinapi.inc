@@ -281,18 +281,17 @@ var
 begin
   Result := -1;
   if Handle = 0 then Exit;
-        Result := -1;
-        P := nil;
-        P := gtk_object_get_data(pgtkobject(Handle),'WNDPROC');
-        if P <> nil then Proc := TWndMethod(P^)
-           else
-            Exit;
-        Mess.msg := msg;
-        Mess.LParam := LParam;
-        Mess.WParam := WParam;
-        Proc(Mess);
-        Result := Mess.Result;
-
+  Result := -1;
+  P := nil;
+  P := gtk_object_get_data(pgtkobject(Handle),'WNDPROC');
+  if P <> nil then Proc := TWndMethod(P^)
+     else
+      Exit;
+  Mess.msg := msg;
+  Mess.LParam := LParam;
+  Mess.WParam := WParam;
+  Proc(Mess);
+  Result := Mess.Result;
 end;
 
 {------------------------------------------------------------------------------
@@ -4720,6 +4719,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/06/04 19:28:17  lazarus
+  MG: cursor is now inverted and can be used with twilight color scheme
+
   Revision 1.74  2002/06/04 15:17:24  lazarus
   MG: improved TFont for XLFD font names
 

@@ -1272,7 +1272,7 @@ end;
 
 function TCustomSynEdit.CaretYPix: Integer;
 begin
-  Result := RowColumnToPixels(Point(1, fCaretY)).Y;      
+  Result := RowColumnToPixels(Point(1, fCaretY)).Y;
 end;
 
 procedure TCustomSynEdit.FontChanged(Sender: TObject);
@@ -3625,7 +3625,7 @@ begin
       and (CY < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
     then begin
       {$IFDEF SYN_LAZARUS}
-      SetCaretPosEx(Handle,CX, CY);
+      SetCaretPosEx(Handle,CX,CY);
       {$ELSE}
       SetCaretPos(CX, CY);
       {$ENDIF}
