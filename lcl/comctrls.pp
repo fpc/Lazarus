@@ -161,6 +161,8 @@ type
     procedure SetCaption(const AValue : String);
 //    Procedure SetSubItems(Value : TStrings);
     function GetIndex : Integer;
+    function GetSubItemImages(aIndex: Integer): Integer;
+    procedure SetSubItemImages(aIndex: Integer; const AValue: Integer);
   protected
     Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
     function IsEqual(Item : TListItem) : Boolean;
@@ -168,16 +170,19 @@ type
     constructor Create(AOwner : TListItems);
     destructor Destroy; override;
     procedure Delete;
+  public
     property Caption : String read FCaption write SetCaption;
     property Cut: Boolean index 0 read GetState write SetState;
     property Data: Pointer read FData write SetData;
     property DropTarget: Boolean index 1 read GetState write SetState;
     property Focused: Boolean index 2 read GetState write SetState;
     property Index : Integer read GetIndex;
+    property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
     property Owner : TListItems read FOwner;
     property Selected: Boolean index 3 read GetState write SetState;
     property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
-    property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
+    property SubItemImages[Index: Integer]: Integer
+      read GetSubItemImages write SetSubItemImages;
   end;
   
   
@@ -1719,6 +1724,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2003/02/24 19:00:42  mattias
+  added TlistView.SubItem improvements from Olivier Guilbaud
+
   Revision 1.63  2003/02/18 23:22:56  mattias
   added listview items property editor
 

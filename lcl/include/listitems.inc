@@ -187,7 +187,8 @@ type
   end;
   ShortStr = string[255];
   PShortStr = ^ShortStr;
-
+  PInteger  = ^Integer;
+  
 procedure TListItems.ReadData(Stream: TStream);
 var
   I, J, Size, L, Len: Integer;
@@ -195,6 +196,7 @@ var
   ItemInfo          : PItemInfo;
   PStr              : PShortStr;
   Flag              : Boolean;
+  PInt              : PInteger;
 begin
   Clear;
   Flag:=False;
@@ -226,6 +228,20 @@ begin
       end;
       Inc(Integer(ItemInfo), SizeOf(TItemInfo)-255+Length(ItemInfo^.Caption)+Len);
     end;
+    
+    //read subitem images
+    if PChar(PStr) - PChar(ItemHeader) < Size then
+    begin
+      PInt := Pointer(PStr);
+      for I := 0 to Count - 1 do
+      begin
+        for J := 0 to Item[I].SubItems.Count - 1 do
+        begin
+          Item[I].SubItemImages[J] := PInt^;
+          Inc(PInt);
+        end;
+      end;
+    end;
   finally
     FreeMem(ItemHeader, Size);
     Owner.EndUpdate;
@@ -237,11 +253,12 @@ end;
 
 procedure TListItems.WriteData(Stream: TStream);
 var
-  I, J, Size, L, Len: Integer;
-  ItemHeader: PItemHeader;
-  ItemInfo: PItemInfo;
-  PStr: PShortStr;
-
+  I, J, Size, L, Len : Integer;
+  ItemHeader         : PItemHeader;
+  ItemInfo           : PItemInfo;
+  PStr               : PShortStr;
+  PInt               : PInteger;
+  
   function GetLength(const S: string): Integer;
   begin
     Result := Length(S);
@@ -290,6 +307,18 @@ begin
       Inc(Integer(ItemInfo), SizeOf(TItemInfo) - 255 +
         Length(ItemInfo^.Caption) + Len);
     end;
+    
+    //write SubItem images.
+    PInt := Pointer(PStr);
+    for I := 0 to Count - 1 do
+    begin
+      for J := 0 to  Item[I].SubItems.Count - 1 do
+      begin
+         PInt^ :=  Item[I].SubItemImages[J];
+         Inc(PInt);
+      end;
+    end;
+
     Stream.WriteBuffer(ItemHeader^, Size);
   finally
     FreeMem(ItemHeader, Size);
@@ -299,6 +328,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/02/24 19:00:42  mattias
+  added TlistView.SubItem improvements from Olivier Guilbaud
+
   Revision 1.16  2003/02/18 23:22:56  mattias
   added listview items property editor
 

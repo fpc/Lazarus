@@ -28,6 +28,11 @@
    01/28/2003 OG - Create
    18/02/2003 OG - First release
    19/02/2003 OG - Add ObjInspStrConsts unit
+   24/02/2003 OG - Replace TListBox with TTreeView
+                   Include suItems property
+                   
+   ToDo :
+     Select the first item on show editor ... dont work :o(
 }
 unit ListViewPropEdit;
 
@@ -49,19 +54,22 @@ Type
   private
     edtLabel : TEdit;
     edtIndex : TEdit;
-    LB       : TListBox;
-    LstIndex : TStringList;
-    
+    TV       : TTreeView;
+    btnSub   : TButton;
     fBuild   : Boolean;
     
     Procedure btnAddOnClick(Sender : TObject);
     Procedure btnDelOnClick(Sender : TObject);
+    procedure btnAddSubOnClick(Sender : TObject);
     Procedure LBOnClick(Sender: TObject);
     procedure EdtLabelOnChange(Sender: TObject);
     procedure EdtIndexOnChange(Sender: TObject);
+    
+    procedure OnDlgShow(Sender: TObject);
+    procedure RefreshEdts;
+
   public
     constructor Create(aOwner : TComponent); override;
-    destructor Destroy; override;
   end;
 
   TListViewComponentEditor = class(TDefaultComponentEditor)
@@ -134,12 +142,13 @@ end;
 { TListViewComponentEditor }
 
 procedure TListViewComponentEditor.DoShowEditor;
-Var Dlg : TListViewItemsPropertyEditorDlg;
-    LV  : TListView;
-    C   : TPersistent;
-    i   : Integer;
-    Li  : TListItem;
-    Hook: TPropertyEditorHook;
+Var Dlg     : TListViewItemsPropertyEditorDlg;
+    LV      : TListView;
+    C       : TPersistent;
+    i,j     : Integer;
+    Li      : TListItem;
+    Hook    : TPropertyEditorHook;
+    TN,TN2  : TTreeNode;
 begin
   Dlg:=TListViewItemsPropertyEditorDlg.Create(Application);
   try
@@ -147,21 +156,24 @@ begin
     if C is TListView then LV:=TListView(C);
     if C is TListItems then LV:=TListView(TListItems(C).Owner);
     GetHook(Hook);
+
     if Assigned(LV) then
     begin
       //Initialize the listbox items with ListView items
       for i:=0 to LV.Items.Count-1 do
       begin
         Dlg.fBuild:=True;
-        Dlg.LB.Items.Add(LV.Items.Item[i].Caption);
-        Dlg.LstIndex.Add(IntToStr(LV.Items[i].ImageIndex));
-      end;
-      if LV.Items.Count>0 then
-      begin
-        Dlg.LB.ItemIndex:=0;
-        Dlg.LB.OnClick(nil);
-      end;
+        TN:=Dlg.TV.Items.add(nil,LV.Items.Item[i].Caption);
+        TN.ImageIndex:=LV.Items[i].ImageIndex;
 
+        //sub items
+        for j:=0 to LV.Items.Item[i].SubItems.Count-1 do
+        begin
+          TN2:=Dlg.TV.Items.AddChild(TN,LV.Items.Item[i].SubItems.Strings[j]);
+          TN2.ImageIndex:=LV.Items.Item[i].SubItemImages[j];
+        end;
+      end;
+      
       //ShowEditor
       if (Dlg.ShowModal=mrOk) then
       begin
@@ -171,11 +183,23 @@ begin
           LV.Items.Clear;
       
           //Recreate new items or modify
-          for i:=0 to Dlg.LB.Items.Count-1 do
+          for i:=0 to Dlg.TV.Items.Count-1 do
           begin
-            Li:=LV.Items.Add;
-            Li.Caption:=Dlg.LB.Items.Strings[i];
-            Li.ImageIndex:=StrToInt(Dlg.LstIndex.Strings[i]);
+            TN:=Dlg.TV.Items.Items[i];
+            If not Assigned(TN.Parent) then
+            begin
+              Li:=LV.Items.Add;
+              Li.Caption:=TN.Text;;
+              Li.ImageIndex:=TN.ImageIndex;
+              
+              //Sub items if exists
+              for j:=0 to TN.Count-1 do
+              begin
+                TN2:=TN.Items[j];
+                Li.SubItems.Add(TN2.Text);
+                Li.SubItemImages[j]:=TN.ImageIndex;
+              end;
+            end;
           end;
         finally
           LV.EndUpdate;
@@ -212,8 +236,8 @@ constructor TListViewItemsPropertyEditorDlg.Create(aOwner: TComponent);
 Var Cmp : TWinControl;
 begin
   inherited Create(aOwner);
+  OnShow:=@OnDlgShow;
   
-  LstIndex:=TStringList.Create;
   fBuild:=False;
   
   //Sise of window
@@ -268,9 +292,21 @@ begin
     Parent :=Cmp;
     Left   :=192;
     Width  :=121;
-    Top    :=32;
+    Top    :=22;
     Caption:=sccsLvEdtBtnAdd;
     OnClick:=@btnAddOnClick;
+  end;
+
+  btnSub:=TButton.Create(self);
+  With btnSub do
+  begin
+    Parent :=Cmp;
+    Enabled:=False;
+    Left   :=192;
+    Width  :=121;
+    Top    :=52;
+    Caption:=sccsLvEdtBtnAddSub;
+    OnClick:=@btnAddSubOnClick;
   end;
 
   With TButton.Create(self) do
@@ -278,23 +314,30 @@ begin
     Parent :=Cmp;
     Left   :=192;
     Width  :=121;
-    Top    :=72;
+    Top    :=82;
     Caption:=sccsLvEdtBtnDel;
     OnClick:=@btnDelOnClick;
   end;
 
-  LB:=TListBox.Create(self);
-  With LB do
+  TV:=TTreeView.Create(self);
+  With TV do
   begin
     Parent  :=Cmp;
     Top     :=3;
     Width   :=164;
     Left    :=5;
     Height  :=190;
-    ExtendedSelect:=True;
+    
+    //Options of TV
+    RightClickSelect:=True;
+    ReadOnly:=True;
+    ShowButtons:=False;
+    AutoExpand:=True;
+    HideSelection:=False;
+    
     OnClick :=@LBOnClick;
   end;
-  
+
   //Right group box
   Cmp:=TGroupBox.Create(self);
   With TgroupBox(Cmp) do
@@ -349,23 +392,45 @@ begin
   end;
 end;
 
-destructor TListViewItemsPropertyEditorDlg.Destroy;
+//Initialze the TEdit with selected node
+procedure TListViewItemsPropertyEditorDlg.RefreshEdts;
+Var TN : TTreeNode;
 begin
-  LstIndex.Free;
-  inherited Destroy;
+  TN:=TV.Selected;
+  fbuild:=True;
+  try
+    if Assigned(TN) then
+    begin
+      edtLabel.Text:=TN.Text;
+      edtIndex.Text:=IntToStr(TN.ImageIndex);
+      edtLabel.Enabled:=True;
+      edtIndex.Enabled:=True;
+      btnSub.Enabled  :=True;
+    end
+    else
+    begin
+      EdtLabel.Text:='';
+      EdtIndex.Text:='';
+      btnSub.Enabled:=False;
+      edtLabel.Enabled:=False;
+      edtIndex.Enabled:=False;
+    end;
+  finally
+    fbuild:=false;
+  end;
 end;
 
 //Créate new item
 procedure TListViewItemsPropertyEditorDlg.btnAddOnClick(Sender: TObject);
+Var TN : TTreeNode;
 begin
   fBuild:=True;
   try
-    LB.Items.Add(sccsLvEdtBtnAdd);
-    LstIndex.Add('-1');
-    LB.ItemIndex:=LB.Items.Count-1;
+    TN:=TV.Items.Add(nil,sccsLvEdtBtnAdd);
+    TN.ImageIndex:=-1;
+    TV.Selected:=TN;
     
-    edtLabel.Text:=LB.Items.Strings[LB.ItemIndex];
-    edtIndex.Text:=LstIndex.Strings[LB.ItemIndex];
+    RefreshEdts;
   finally
     fbuild:=False;
   end;
@@ -380,32 +445,41 @@ end;
 
 //Delete the selected item
 procedure TListViewItemsPropertyEditorDlg.btnDelOnClick(Sender: TObject);
-Var i : Integer;
+Var TN,TN2 : TTreeNode;
 begin
-  If LB.ItemIndex<>-1 then
+  TN:=TV.Selected;
+  If Assigned(TN) then
   begin
-    i:=LB.ItemIndex;
-    LB.Items.Delete(i);
-    LstIndex.Delete(i);
-    if LB.Items.Count=0 then
-      i:=-1
-    else
-    begin
-      If i>LB.Items.Count-1 then
-        i:=LB.Items.Count-1;
-    end;
+    TN2:=TN.GetPrev;
+    TN.Delete;
+    TV.Selected:=TN2;
     
-    try
-      if i=-1 then
-      begin
-        EdtLabel.Text:='';
-        EdtIndex.Text:='';
-      end;
-      
-      LB.ItemIndex:=i;
-    except
-    end;
-    LBOnClick(nil);
+    RefreshEdts;
+  end;
+end;
+
+//Add an sub item
+procedure TListViewItemsPropertyEditorDlg.btnAddSubOnClick(Sender: TObject);
+Var TN,TN2 : TTreeNode;
+begin
+  TN:=TV.Selected;
+  If Assigned(TN) then
+  begin
+    If Assigned(TN.Parent) then
+        TN:=TN.Parent;
+
+    TN2:=TV.Items.AddChild(TN,sccsLvEdtBtnAdd);
+    TN2.ImageIndex:=-1;
+    TV.Selected:=TN2;
+
+    RefreshEdts;
+  end;
+
+  //Select the label editor
+  if EdtLabel.CanFocus then
+  begin
+    EdtLabel.SetFocus;
+    EdtLabel.SelectAll;
   end;
 end;
 
@@ -413,39 +487,43 @@ end;
 //Modify the TEdit for the Label and Image index
 procedure TListViewItemsPropertyEditorDlg.LBOnClick(Sender: TObject);
 begin
-  If LB.ItemIndex<>-1 then
-  begin
-    fBuild:=True;
-    try
-      edtLabel.Text:=LB.Items.Strings[LB.ItemIndex];
-      edtIndex.Text:=LstIndex.Strings[LB.ItemIndex];
-    finally
-      fBuild:=False;
-    end;
-  end;
+  RefreshEdts;
 end;
 
 //Refrsh the label list
 procedure TListViewItemsPropertyEditorDlg.EdtLabelOnChange(Sender: TObject);
-Var i : Integer;
+Var TN : TTreeNode;
 begin
-  If (LB.ItemIndex<>-1) and not fBuild then
-  begin
-    i:=LB.ItemIndex;
-    LB.Items.Strings[LB.ItemIndex]:=edtLabel.Text;
-    LB.ItemIndex:=i;
-  end;
+  if fBuild then Exit;
+  TN:=TV.Selected;
+  if Assigned(TN) then
+    TN.Text:=edtLabel.Text;
 end;
 
 //Refresh the index list
 procedure TListViewItemsPropertyEditorDlg.EdtIndexOnChange(Sender: TObject);
 Var i,E : Integer;
+    TN  : TTreeNode;
 begin
-  If (LB.ItemIndex<>-1) and not fBuild then
+  if fBuild then Exit;
+  TN:=TV.Selected;
+  if Assigned(TN) then
   begin
     Val(edtIndex.Text,i,E);
     if E<>0 then i:=-1;
-    LstIndex.Strings[LB.ItemIndex]:=IntToStr(i);
+    TN.ImageIndex:=i;
+  end;
+end;
+
+//Initialize the dialog
+procedure TListViewItemsPropertyEditorDlg.OnDlgShow(Sender: TObject);
+Var TN : TTReeNode;
+begin
+  TN:=TV.TopItem;
+  If Assigned(TN) then
+  begin
+    TV.Selected:=TN;
+    RefreshEdts;
   end;
 end;
 

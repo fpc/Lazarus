@@ -57,6 +57,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem SetSubItemImages                                                 }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetSubItemImages(aIndex: Integer; const AValue: Integer);
+begin
+  if (aIndex >= 0) and (aIndex < SubItems.Count) then
+    SubItems.Objects[aIndex] := TObject(Pointer(aValue));
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem Delete                                                           }
 {------------------------------------------------------------------------------}
 procedure TListItem.Delete;
@@ -72,6 +81,9 @@ begin
   FOwner.ItemChanged(self);
 end;
 
+{------------------------------------------------------------------------------}
+{   TListItem IsEqual                                                          }
+{------------------------------------------------------------------------------}
 function TListItem.IsEqual(Item: TListItem): Boolean;
 begin
   Result:=(Caption = Item.Caption) and (Data = Item.Data);
@@ -90,6 +102,9 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------}
+{   TListItem SetImageIndex                                                    }
+{------------------------------------------------------------------------------}
 procedure TListItem.SetImageIndex(const AValue: Integer);
 begin
   if AValue <> FImageIndex then
@@ -108,6 +123,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem GetSubItemImages                                                 }
+{------------------------------------------------------------------------------}
+function TListItem.GetSubItemImages(aIndex: Integer): Integer;
+begin
+ if (aIndex >= 0) and (aIndex < SubItems.Count) then
+    Result := Integer(SubItems.Objects[aIndex])
+  else
+    Result := -1;
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem SetState                                                         }
 {------------------------------------------------------------------------------}
 procedure TListItem.SetState(const AnIndex: Integer; const AState: Boolean);
@@ -121,6 +147,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/02/24 19:00:42  mattias
+  added TlistView.SubItem improvements from Olivier Guilbaud
+
   Revision 1.13  2003/02/18 23:22:56  mattias
   added listview items property editor
 

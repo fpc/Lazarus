@@ -36,7 +36,8 @@ resourcestring
   sccsLvEdtImgIndexCaption= 'Image index';
   sccsLvEdtBtnAdd         = 'New';
   sccsLvEdtBtnDel         = 'Delete';
-
+  sccsLvEdtBtnAddSub      = 'Sub item';
+  
 implementation
 
 end.
