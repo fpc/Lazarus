@@ -120,8 +120,6 @@ type
     fPascalFileExtension: TPascalExtType;
 
     procedure SetFileName(const NewFilename: string);
-    procedure AddToRecentList(const AFilename: string; RecentList: TStringList;
-        Max: integer);
   public
     constructor Create;
     destructor Destroy; override;
@@ -457,14 +455,6 @@ procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
 var XMLConfig: TXMLConfig;
   FileVersion: integer;
 
-  procedure LoadRect(AKey:string; var ARect:TRect);
-  begin
-    ARect.Left:=XMLConfig.GetValue(AKey+'/Left',ARect.Left);
-    ARect.Top:=XMLConfig.GetValue(AKey+'/Top',ARect.Top);
-    ARect.Right:=XMLConfig.GetValue(AKey+'/Right',ARect.Right);
-    ARect.Bottom:=XMLConfig.GetValue(AKey+'/Bottom',ARect.Bottom);
-  end;
-
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
   begin
@@ -488,18 +478,6 @@ var XMLConfig: TXMLConfig;
     end;
   end;
 
-  procedure LoadRecentList(List: TStringList; const Path: string);
-  var i,Count: integer;
-    s: string;
-  begin
-    Count:=XMLConfig.GetValue(Path+'Count',0);
-    List.Clear;
-    for i:=1 to Count do begin
-      s:=XMLConfig.GetValue(Path+'Item'+IntToStr(i)+'/Value','');
-      if s<>'' then List.Add(s);
-    end;
-  end;
-  
   procedure LoadDebuggerType(var ADebuggerType: TDebuggerType; 
     const Path: string);
   var i:integer;
@@ -544,15 +522,16 @@ begin
     FWindowPositionsValid:=XMLConfig.GetValue(
        'EnvironmentOptions/Desktop/WindowPositionsValid',false);
     if FWindowPositionsValid then begin
-      LoadRect('EnvironmentOptions/Desktop/MainWindowBounds',FMainWindowBounds);
-      LoadRect('EnvironmentOptions/Desktop/SourceEditorBounds'
+      LoadRect(XMLConfig,'EnvironmentOptions/Desktop/MainWindowBounds/',
+        FMainWindowBounds);
+      LoadRect(XMLConfig,'EnvironmentOptions/Desktop/SourceEditorBounds/'
         ,FSourceEditorBounds);
     end;
     if FileVersion>=100 then begin
       FMessagesViewBoundsValid:=XMLConfig.GetValue(
         'EnvironmentOptions/Desktop/MessagesViewBoundsValid',false);
       if FMessagesViewBoundsValid then
-        LoadRect('EnvironmentOptions/Desktop/MessagesViewBounds'
+        LoadRect(XMLConfig,'EnvironmentOptions/Desktop/MessagesViewBounds/'
            ,FMessagesViewBounds);
     end;
 
@@ -595,11 +574,13 @@ begin
 
     // recent files and directories
     FMaxRecentOpenFiles:=XMLConfig.GetValue(
-       'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
-    LoadRecentList(FRecentOpenFiles,'EnvironmentOptions/Recent/OpenFiles/');
+      'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+    LoadRecentList(XMLConfig,FRecentOpenFiles,
+      'EnvironmentOptions/Recent/OpenFiles/');
     FMaxRecentProjectFiles:=XMLConfig.GetValue(
-       'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
-    LoadRecentList(FRecentProjectFiles,'EnvironmentOptions/Recent/ProjectFiles/');
+      'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+    LoadRecentList(XMLConfig,FRecentProjectFiles,
+      'EnvironmentOptions/Recent/ProjectFiles/');
     FLastOpenDialogDir:=XMLConfig.GetValue(
        'EnvironmentOptions/Recent/LastOpenDialogDir/Value',FLastOpenDialogDir);
        
@@ -623,14 +604,6 @@ end;
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
 var XMLConfig: TXMLConfig;
 
-  procedure SaveRect(AKey:string; var ARect:TRect);
-  begin
-    XMLConfig.SetValue(AKey+'/Left',ARect.Left);
-    XMLConfig.SetValue(AKey+'/Top',ARect.Top);
-    XMLConfig.SetValue(AKey+'/Right',ARect.Right);
-    XMLConfig.SetValue(AKey+'/Bottom',ARect.Bottom);
-  end;
-
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
   begin
@@ -651,14 +624,6 @@ var XMLConfig: TXMLConfig;
     end;
   end;
 
-  procedure SaveRecentList(List: TStringList; Path: string);
-  var i: integer;
-  begin
-    XMLConfig.SetValue(Path+'Count',List.Count);
-    for i:=0 to List.Count-1 do
-      XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
-  end;
-  
   procedure SaveDebuggerType(ADebuggerType: TDebuggerType; Path:string);
   var i:integer;
   begin
@@ -693,14 +658,15 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/Desktop/WindowPositionsValid'
        ,FWindowPositionsValid);
     if FWindowPositionsValid then begin
-      SaveRect('EnvironmentOptions/Desktop/MainWindowBounds',FMainWindowBounds);
-      SaveRect('EnvironmentOptions/Desktop/SourceEditorBounds'
+      SaveRect(XMLConfig,'EnvironmentOptions/Desktop/MainWindowBounds/',
+        FMainWindowBounds);
+      SaveRect(XMLConfig,'EnvironmentOptions/Desktop/SourceEditorBounds/'
         ,FSourceEditorBounds);
     end;
     XMLConfig.SetValue('EnvironmentOptions/Desktop/MessagesViewBoundsValid'
        ,FMessagesViewBoundsValid);
     if FMessagesViewBoundsValid then
-      SaveRect('EnvironmentOptions/Desktop/MessagesViewBounds'
+      SaveRect(XMLConfig,'EnvironmentOptions/Desktop/MessagesViewBounds/'
         ,FMessagesViewBounds);
 
     // form editor
@@ -738,11 +704,13 @@ begin
 
     // recent files and directories
     XMLConfig.SetValue(
-       'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
-    SaveRecentList(FRecentOpenFiles,'EnvironmentOptions/Recent/OpenFiles/');
+      'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+    SaveRecentList(XMLConfig,FRecentOpenFiles,
+      'EnvironmentOptions/Recent/OpenFiles/');
     XMLConfig.SetValue(
-       'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
-    SaveRecentList(FRecentProjectFiles,'EnvironmentOptions/Recent/ProjectFiles/');
+      'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+    SaveRecentList(XMLConfig,FRecentProjectFiles,
+      'EnvironmentOptions/Recent/ProjectFiles/');
     XMLConfig.SetValue('EnvironmentOptions/Recent/LastOpenDialogDir/Value'
         ,FLastOpenDialogDir);
 
@@ -766,21 +734,6 @@ begin
     // ToDo
     writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'"');
   end;
-end;
-
-procedure TEnvironmentOptions.AddToRecentList(const AFilename: string;
-  RecentList: TStringList;  Max: integer);
-var i: integer;
-begin
-  i:=RecentList.Count-1;
-  while i>=0 do begin
-    if RecentList[i]=AFilename then RecentList.Delete(i);
-    dec(i);
-  end;
-  RecentList.Insert(0,AFilename);
-  if Max>0 then
-    while RecentList.Count>Max do
-      RecentList.Delete(RecentList.Count-1);
 end;
 
 procedure TEnvironmentOptions.AddToRecentOpenFiles(const AFilename: string);

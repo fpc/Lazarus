@@ -8,12 +8,14 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, XMLCfg;
 
+//
 const
   // ToDo: find the constant in the fpc units.
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
 
+// files
 function FilenameIsAbsolute(TheFilename: string):boolean;
 function DirectoryExists(DirectoryName: string): boolean;
 function ForceDirectory(DirectoryName: string): boolean;
@@ -21,6 +23,19 @@ function ExtractFileNameOnly(const AFilename: string): string;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 function FileIsExecutable(const AFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
+
+// XMLConfig
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+  const Path: string);
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+  const Path: string);
+procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+
+// various
+procedure AddToRecentList(const s: string; RecentList: TStringList;
+  Max: integer);
+
 
 implementation
 
@@ -34,6 +49,59 @@ uses
  {$ENDIF}
  ;
  {$ENDIF}
+
+procedure AddToRecentList(const s: string; RecentList: TStringList;
+  Max: integer);
+var i: integer;
+begin
+  i:=RecentList.Count-1;
+  while i>=0 do begin
+    if RecentList[i]=s then RecentList.Delete(i);
+    dec(i);
+  end;
+  RecentList.Insert(0,s);
+  if Max>0 then
+    while RecentList.Count>Max do
+      RecentList.Delete(RecentList.Count-1);
+end;
+
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+  const Path: string);
+var i: integer;
+begin
+  XMLConfig.SetValue(Path+'Count',List.Count);
+  for i:=0 to List.Count-1 do
+    XMLConfig.SetValue(Path+'Item'+IntToStr(i+1)+'/Value',List[i]);
+end;
+
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
+  const Path: string);
+var i,Count: integer;
+  s: string;
+begin
+  Count:=XMLConfig.GetValue(Path+'Count',0);
+  List.Clear;
+  for i:=1 to Count do begin
+    s:=XMLConfig.GetValue(Path+'Item'+IntToStr(i)+'/Value','');
+    if s<>'' then List.Add(s);
+  end;
+end;
+
+procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+begin
+  ARect.Left:=XMLConfig.GetValue(Path+'Left',ARect.Left);
+  ARect.Top:=XMLConfig.GetValue(Path+'Top',ARect.Top);
+  ARect.Right:=XMLConfig.GetValue(Path+'Right',ARect.Right);
+  ARect.Bottom:=XMLConfig.GetValue(Path+'Bottom',ARect.Bottom);
+end;
+
+procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
+begin
+  XMLConfig.SetValue(Path+'Left',ARect.Left);
+  XMLConfig.SetValue(Path+'Top',ARect.Top);
+  XMLConfig.SetValue(Path+'Right',ARect.Right);
+  XMLConfig.SetValue(Path+'Bottom',ARect.Bottom);
+end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin

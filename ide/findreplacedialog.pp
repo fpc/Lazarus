@@ -20,11 +20,13 @@ unit FindReplaceDialog;
 
 {$mode objfpc}{$H+}
 
+{$Define DeleteMeWhenComboBoxFocusIsFixed}
+
 interface
 
 uses
   Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, SynEdit;
+  LResources, SynEdit, IDEProcs;
 
 type
   TLazFindReplaceDialog = class(TFORM)
@@ -36,11 +38,17 @@ type
     procedure SetFindText(NewFindText:AnsiString);
     function GetReplaceText:AnsiString;
     procedure SetReplaceText(NewReplaceText:AnsiString);
+    procedure SetComboBoxText(AComboBox:TComboBox;const AText:AnsiString);
   published
     TextToFindLabel:TLabel;
     ReplaceWithLabel:TLabel;
-    TextToFindEdit:TEdit;
-    ReplaceTextEdit:TEdit;
+    {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
+    TextToFindComboBox:TEdit;
+    ReplaceTextComboBox:TEdit;
+    {$ELSE}
+    TextToFindComboBox:TComboBox;
+    ReplaceTextComboBox:TComboBox;
+    {$ENDIF}
     OptionsGroupBox:TGroupBox;
     CaseSensitiveCheckBox:TCheckBox;
     WholeWordsOnlyCheckBox:TCheckBox;
@@ -52,7 +60,7 @@ type
     OkButton:TButton;
     ReplaceAllButton:TButton;
     CancelButton:TButton;
-    procedure TextToFindEditKeyDown(Sender: TObject; var Key:Word;
+    procedure TextToFindComboboxKeyDown(Sender: TObject; var Key:Word;
        Shift:TShiftState);
     procedure OkButtonClick(Sender:TObject);
     procedure ReplaceAllButtonClick(Sender:TObject);
@@ -80,6 +88,23 @@ begin
     Width:=317;
     Height:=285;
     
+    {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
+    TextToFindComboBox:=TEdit.Create(Self);
+    {$ELSE}
+    TextToFindComboBox:=TComboBox.Create(Self);
+    {$ENDIF}
+    with TextToFindComboBox do begin
+      Name:='TextToFindComboBox';
+      Parent:=Self;
+      Left:=90;
+      Top:=4;
+      Width:=220;
+      Height:=21;
+      Text:='';
+      OnKeyDown:=@TextToFindComboBoxKeyDown;
+      Visible:=true;
+    end;
+
     TextToFindLabel:=TLabel.Create(Self);
     with TextToFindLabel do begin
       Name:='TextToFindLabel';
@@ -89,9 +114,26 @@ begin
       Width:=80;
       Height:=15;
       Caption:='Text to Find';
-      Show;
+      Visible:=true;
     end;
 
+    {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
+    ReplaceTextComboBox:=TEdit.Create(Self);
+    {$ELSE}
+    ReplaceTextComboBox:=TComboBox.Create(Self);
+    {$ENDIF}
+    with ReplaceTextComboBox do begin
+      Name:='ReplaceTextComboBox';
+      Parent:=Self;
+      Left:=90;
+      Top:=28;
+      Width:=220;
+      Height:=21;
+      Text:='';
+      OnKeyDown:=@TextToFindComboBoxKeyDown;
+      Visible:=true;
+    end;
+    
     ReplaceWithLabel:=TLabel.Create(Self);
     with ReplaceWithLabel do begin
       Name:='ReplaceWithLabel';
@@ -101,35 +143,9 @@ begin
       Width:=80;
       Height:=15;
       Caption:='Replace With';
-      Show;
+      Visible:=true;
     end;
 
-    TextToFindEdit:=TEdit.Create(Self);
-    with TextToFindEdit do begin
-      Name:='TextToFindEdit';
-      Parent:=Self;
-      Left:=90;
-      Top:=4;
-      Width:=220;
-      Height:=21;
-      Text:='';
-      OnKeyDown:=@TextToFindEditKeyDown;
-      Show;
-    end;
-
-    ReplaceTextEdit:=Tedit.Create(Self);
-    with ReplaceTextEdit do begin
-      Name:='ReplaceTextEdit';
-      Parent:=Self;
-      Left:=90;
-      Top:=28;
-      Width:=220;
-      Height:=21;
-      Text:='';
-      OnKeyDown:=@TextToFindeditKeyDown;
-      Show;
-    end;
-    
     OptionsGroupBox:=TGroupBox.Create(Self);
     with OptionsGroupBox do begin
       Name:='OptionsGroupBox';
@@ -139,7 +155,7 @@ begin
       Width:=150;
       Height:=105;
       Caption:='Options';
-      Show;
+      Visible:=true;
     end;
 
     CaseSensitiveCheckBox:=TCheckBox.Create(Self);
@@ -151,7 +167,7 @@ begin
       Width:=135;
       Height:=17;
       Caption:='Case Sensitive';
-      Show;
+      Visible:=true;
     end;
 
     WholeWordsOnlyCheckBox:=TCheckBox.Create(Self);
@@ -163,7 +179,7 @@ begin
       Width:=135;
       Height:=17;
       Caption:='Whole Words Only';
-      Show;
+      Visible:=true;
     end;
 
     RegularExpressionsCheckBox:=TCheckBox.Create(Self);
@@ -175,7 +191,7 @@ begin
       Width:=135;
       Height:=17;
       Caption:='Regular Expressions';
-      Show;
+      Visible:=true;
     end;
 
     PromptOnReplaceCheckBox:=TCheckBox.Create(Self);
@@ -188,7 +204,7 @@ begin
       Height:=17;
       Caption:='Prompt On Replace';
       Checked:=true;
-      Show;
+      Visible:=true;
     end;
 
     OriginRadioGroup:=TRadioGroup.Create(Self);
@@ -208,7 +224,7 @@ begin
         EndUpdate;
       end;
       ItemIndex:=0;
-      Show;
+      Visible:=true;
     end;
 
     ScopeRadioGroup:=TRadioGroup.Create(Self);
@@ -228,7 +244,7 @@ begin
         EndUpdate;
       end;
       ItemIndex:=0;
-      Show;
+      Visible:=true;
     end;
 
     DirectionRadioGroup:=TRadioGroup.Create(Self);
@@ -248,7 +264,7 @@ begin
         EndUpdate;
       end;
       ItemIndex:=1;
-      Show;
+      Visible:=true;
     end;
 
     OkButton:=TButton.Create(Self);
@@ -261,7 +277,7 @@ begin
       Height:=25;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
-      Show;
+      Visible:=true;
     end;
 
     ReplaceAllButton:=TButton.Create(Self);
@@ -274,7 +290,7 @@ begin
       Height:=25;
       Caption:='Replace All';
       OnClick:=@ReplaceAllButtonClick;
-      Show;
+      Visible:=true;
     end;
 
     CancelButton:=TButton.Create(Self);
@@ -287,43 +303,43 @@ begin
       Height:=25;
       Caption:='Cancel';
       OnClick:=@CancelButtonClick;
-      Show;
+      Visible:=true;
     end;
   end;
   fReplaceAllClickedLast:=false;
-  TextToFindedit.SetFocus;
+  TextToFindComboBox.SetFocus;
 end;
 
-procedure TLazFindReplaceDialog.TextToFindeditKeyDown(
+procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
 begin
   if (Key=VK_RETURN) then OkButtonClick(Sender);
   if (Key=VK_ESCAPE) then CancelButtonClick(Sender);
   if Key=VK_TAB then begin
-    if Sender=TextToFindEdit then
-      ReplaceTextEdit.SetFocus;
-    if Sender=ReplaceTextEdit then
-      TextToFindEdit.SetFocus;
+    if (Sender=TextToFindComboBox) and (ReplaceTextComboBox.Enabled) then
+      ReplaceTextComboBox.SetFocus;
+    if Sender=ReplaceTextComboBox then
+      TextToFindComboBox.SetFocus;
   end;
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
 begin
   fReplaceAllClickedLast:=false;
-  TextToFindedit.SetFocus;
+  TextToFindComboBox.SetFocus;
   ModalResult:=mrOk;
 end;
 
 procedure TLazFindReplaceDialog.ReplaceAllButtonClick(Sender:TObject);
 begin
   fReplaceAllClickedLast:=true;
-  TextToFindedit.SetFocus;
+  TextToFindComboBox.SetFocus;
   ModalResult:=mrAll;
 end;
 
 procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
-  TextToFindedit.SetFocus;
+  TextToFindComboBox.SetFocus;
   ModalResult:=mrCancel;
 end;
 
@@ -343,7 +359,7 @@ begin
     then DirectionRadioGroup.ItemIndex:=0
     else DirectionRadioGroup.ItemIndex:=1;
   ReplaceAllButton.Enabled:=ssoReplace in NewOptions;
-  ReplaceTextEdit.Enabled:=ReplaceAllButton.Enabled;
+  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Enabled;
   ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Enabled;
   if ssoReplace in NewOptions then begin
@@ -371,22 +387,43 @@ end;
 
 function TLazFindReplaceDialog.GetFindText:AnsiString;
 begin
-  Result:=TextToFindedit.Text;
+  Result:=TextToFindComboBox.Text;
 end;
 
 procedure TLazFindReplaceDialog.SetFindText(NewFindText:AnsiString);
 begin
-  TextToFindedit.Text:=NewFindText;
+  {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
+  TextToFindComboBox.Text:=NewFindText;
+  {$ELSE}
+  SetComboBoxText(TextToFindComboBox,NewFindText);
+  {$ENDIF}
 end;
 
 function TLazFindReplaceDialog.GetReplaceText:AnsiString;
 begin
-  Result:=ReplaceTextEdit.Text;
+  Result:=ReplaceTextComboBox.Text;
 end;
 
 procedure TLazFindReplaceDialog.SetReplaceText(NewReplaceText:AnsiString);
 begin
-  ReplaceTextEdit.Text:=NewReplaceText;
+  {$IFDEF DeleteMeWhenComboBoxFocusIsFixed}
+  ReplaceTextComboBox.Text:=NewReplaceText;
+  {$ELSE}
+  SetComboBoxText(ReplaceTextComboBox,NewReplaceText);
+  {$ENDIF}
+end;
+
+procedure TLazFindReplaceDialog.SetComboBoxText(AComboBox:TComboBox;
+  const AText:AnsiString);
+var a:integer;
+begin
+  a:=AComboBox.Items.IndexOf(AText);
+  if a>=0 then
+    AComboBox.ItemIndex:=a
+  else begin
+    AComboBox.Items.Add(AText);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+  end;
 end;
 
 end.

@@ -46,6 +46,7 @@ uses
 type
   TFindDeclarationTool = class(TPascalParserTool)
   public
+
   end;
 
 implementation

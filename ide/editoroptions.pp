@@ -26,7 +26,7 @@ interface
 uses
   LCLLinux,
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  FileCtrl, Graphics, Controls, Dialogs, LResources,
+  FileCtrl, Graphics, Controls, Dialogs, LResources, IDEProcs,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,
@@ -150,19 +150,24 @@ type
     // Color options
     fHighlighterList: TEditOptLangList;
 
-    // Code tools options
+    // Code tools options (MG: these will move to an unit of their own)
     fAutoCodeCompletion:boolean;
     fAutoCodeParameters:boolean;
     fAutoToolTipExprEval:boolean;
     fAutoToolTipSymbTools:boolean;
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
-  private
+    
+    // Find- and replace-history
+    FFindHistory: TStringList;
+    FReplaceHistory: TStringList;
+    FMaxFindHistory: Integer;
   public
     constructor Create;
     destructor Destroy;  override;
     procedure Load;
     procedure Save;
+    
     procedure GetHighlighterSettings(Syn: TCustomSyn);// read highlight settings from config file
     procedure SetHighlighterSettings(Syn: TCustomSyn);// write highlight settings to config file
     procedure GetSynEditSettings(ASynEdit:TSynEdit);  // read synedit settings from config file
@@ -183,6 +188,9 @@ type
     procedure WriteHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string);
     procedure GetSpecialLineColors(Syn: TCustomSyn; 
       AddHilightAttr: TAdditionalHilightAttribute; var FG, BG: TColor);
+      
+    procedure AddToFindHistory(const AFindStr: string);
+    procedure AddToReplaceHistory(const AReplaceStr: String);
     
   published
     // general options
@@ -240,6 +248,11 @@ type
        read fAutoDelayInMSec write fAutoDelayInMSec default 1000;
     property CodeTemplateFileName:Ansistring
        read fCodeTemplateFileName write fCodeTemplateFileName;
+
+    // Find- and replace-history
+    property FindHistory: TStringList read FFindHistory write FFindHistory;
+    property ReplaceHistory: TStringList read FReplaceHistory write FReplaceHistory;
+    property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
   end;
 
   { color button }
@@ -975,10 +988,17 @@ begin
       end;
     end;
   end;
+  
+  // Find- and replace-history
+  FFindHistory:=TStringList.Create;
+  FReplaceHistory:=TStringList.Create;
+  FMaxFindHistory:=20;
 end;
 
 destructor TEditorOptions.Destroy;
 begin
+  FFindHistory.Free;
+  FReplaceHistory.Free;
   fHighlighterList.Free;
   fKeyMap.Free;
   XMLConfig.Free;
@@ -1091,6 +1111,14 @@ begin
     fCodeTemplateFileName:=
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateFileName'
         ,SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'));
+        
+    // Find- and replace-history
+    fMaxFindHistory:=XMLConfig.GetValue(
+        'EditorOptions/Find/History/Max',FMaxFindHistory);
+    LoadRecentList(XMLConfig,FFindHistory,'EditorOptions/Find/History/Find/');
+    LoadRecentList(XMLConfig,FReplaceHistory,
+        'EditorOptions/Find/History/Replace/');
+
   except
     on E: Exception do
       writeln('[TEditorOptions.Load] ERROR: ',e.Message);
@@ -1191,6 +1219,13 @@ begin
     XMLConfig.SetValue('EditorOptions/CodeTools/CodeTemplateFileName'
       ,fCodeTemplateFileName);
 
+    // Find- and replace-history
+    XMLConfig.SetValue('EditorOptions/Find/History/Max',FMaxFindHistory);
+    SaveRecentList(XMLConfig,FFindHistory,'EditorOptions/Find/History/Find/');
+    SaveRecentList(XMLConfig,FReplaceHistory,
+        'EditorOptions/Find/History/Replace/');
+        
+        
     XMLConfig.Flush;
   except
     on E: Exception do
@@ -1675,6 +1710,17 @@ begin
       Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a]);
     end;    
 end;
+
+procedure TEditorOptions.AddToFindHistory(const AFindStr: string);
+begin
+  AddToRecentList(AFindStr,FFindHistory,FMaxFindHistory);
+end;
+
+procedure TEditorOptions.AddToReplaceHistory(const AReplaceStr: String);
+begin
+  AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
+end;
+
 
 { TColorButton }
 

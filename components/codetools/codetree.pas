@@ -101,6 +101,7 @@ const
   ctnFileType        = 81;
   ctnPointerType     = 82;
   ctnClassOfType     = 83;
+  
 
 
   // combined values
@@ -123,6 +124,7 @@ type
     SubDesc: TCodeTreeNodeSubDesc;
     Parent, NextBrother, PriorBrother, FirstChild, LastChild: TCodeTreeNode;
     StartPos, EndPos: integer;
+    Cache: TObject;
     function Next: TCodeTreeNode;
     function Prior: TCodeTreeNode;
     procedure Clear;
@@ -307,6 +309,8 @@ begin
   LastChild:=nil;
   StartPos:=-1;
   EndPos:=-1;
+  Cache.Free;
+  Cache:=nil;
 end;
 
 function TCodeTreeNode.Next: TCodeTreeNode;
