@@ -646,6 +646,7 @@ type
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
+    procedure VisibleChanging; dynamic;
   protected
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
@@ -1444,6 +1445,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2003/03/11 22:56:41  mattias
+  added visiblechanging
+
   Revision 1.105  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
