@@ -374,7 +374,7 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Clear;
-    property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle;
+    property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
@@ -1393,6 +1393,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2003/01/24 13:07:33  mattias
+  fixed TListBox.BorderStyle=bsNone
+
   Revision 1.74  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 
