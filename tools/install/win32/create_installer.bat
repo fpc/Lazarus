@@ -57,6 +57,10 @@ SET PATH=%FPCBINDIR%
 %EXPORTCVS% %FPCCVSDIR%\packages %BUILDDIR%\fpcsrc\packages >> %LOGFILE%
 
 call build-fpc.bat
+
+:: exit if no compiler has been made
+if not exist %BUILDDIR%\pp\bin\i386-win32\ppc386.exe goto END
+
 %CP% %FPCBINDIR%\*.* %BUILDDIR%\pp\bin\i386-win32 >> %LOGFILE% 
 samplecfg.vbs
 
