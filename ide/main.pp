@@ -3624,7 +3624,18 @@ CheckHeap(IntToStr(GetMem_Cnt));
 //writeln('TMainIDE.DoOpenProjectFile C2 ',Project.Units[LowestUnitIndex].Filename);
       Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,true);
 //writeln('TMainIDE.DoOpenProjectFile C3 ',Result=mrOk);
-      if Result=mrAbort then exit;
+      if Result=mrAbort then begin
+        // mark all files, that are left to load as unloaded:
+        for i:=0 to Project.UnitCount-1 do begin
+          if Project.Units[i].Loaded 
+          and (Project.Units[i].EditorIndex>LastEditorIndex) then begin
+            Project.Units[i].Loaded:=false;
+            Project.Units[i].EditorIndex:=-1;
+            Project.ActiveEditorIndexAtStart:=-1;
+          end;
+        end;
+        exit;
+      end;
       if Result=mrOk then begin
         // open successful
         if Project.ActiveEditorIndexAtStart=LowestEditorIndex then
@@ -5494,6 +5505,9 @@ end.
 =======
 
   $Log$
+  Revision 1.197  2002/01/02 13:32:52  lazarus
+  MG: fixed clean abort of project loading
+
   Revision 1.196  2001/12/31 22:45:41  lazarus
   Took out some test code.
   Shane
@@ -5519,6 +5533,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.197  2002/01/02 13:32:52  lazarus
+  MG: fixed clean abort of project loading
+
   Revision 1.196  2001/12/31 22:45:41  lazarus
   Took out some test code.
   Shane
