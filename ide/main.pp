@@ -2661,7 +2661,6 @@ begin
 
   NewUnitInfo.FormName:=NewForm.Name;
   NewUnitInfo.FormResourceName:=NewUnitInfo.FormName;
-writeln('TMainIDE.CreateNewForm A ',NewUnitInfo.IsPartOfProject,' ',Project1.AutoCreateForms);
   if NewUnitInfo.IsPartOfProject and Project1.AutoCreateForms then
     Project1.AddCreateFormToProjectFile(NewForm.ClassName,NewForm.Name);
     
@@ -8006,6 +8005,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.496  2003/03/25 17:13:23  mattias
+  reduced output
+
   Revision 1.495  2003/03/25 17:11:16  mattias
   set Project.AutoCreateForms default to true
 
