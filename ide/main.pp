@@ -530,6 +530,11 @@ end;
 
 { TMainIDE }
 
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.ParseCmdLineOptions;
+
+  Parses the command line for the IDE.
+-------------------------------------------------------------------------------}
 procedure TMainIDE.ParseCmdLineOptions;
 const
   PrimaryConfPathOpt='--primary-config-path=';
@@ -541,26 +546,14 @@ begin
     or (AnsiCompareText(ParamStr(1),'-help')=0)
     or (AnsiCompareText(ParamStr(1),'-?')=0)) then
   begin
-    writeln('lazarus [options] <project-filename>');
+    writeln(lisCmdLineHlpHeader);
+    writeln(Format(lisCmdLinePrimaryConfigPathDesc,[GetPrimaryConfigPath]));
+    writeln(Format(lisCmdLineSecondaryConfigPathDesc,[GetSecondaryConfigPath]));
     writeln('');
-    writeln('IDE Options:');
-    writeln('');
-    writeln('--help or -?             this help message');
-    writeln('');
-    writeln('--primary-config-path <path>');
-    writeln('                         primary config directory, where Lazarus');
-    writeln('                         stores its config files. Default is ');
-    writeln('                         ',GetPrimaryConfigPath);
-    writeln('');
-    writeln('--secondary-config-path <path>');
-    writeln('                         secondary config directory, where Lazarus');
-    writeln('                         searches for config template files.');
-    writeln('                         Default is ',GetSecondaryConfigPath);
-    writeln('');
-    writeln('');
-    writeln('LCL Interface specific options:');
+    writeln(lisCmdLineLCLInterfaceSpecificOptions);
     writeln('');
     writeln(GetCmdLineParamDescForInterface);
+    Application.Terminate;
     Halt;
   end;
   for i:=1 to ParamCount do begin
@@ -6569,6 +6562,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.321  2002/07/05 09:36:45  lazarus
+  MG: fixed unreleased gdiobjects on printing cmd line help
+
   Revision 1.320  2002/07/04 14:48:22  lazarus
   MG: added internationalization, started with german
 

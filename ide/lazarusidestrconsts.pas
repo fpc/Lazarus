@@ -37,6 +37,28 @@ uses
   Classes, SysUtils; 
   
 ResourceString
+  // command line help
+  lisCmdLineHlpHeader = 'lazarus [options] <project-filename>'#13#10
+              +#13#10
+              +'IDE Options:'#13#10
+              +#13#10
+              +'--help or -?             this help message'#13#10
+              +#13#10;
+  lisCmdLinePrimaryConfigPathDesc =
+     '--primary-config-path <path>'#13#10
+    +'                         primary config directory, where Lazarus'#13#10
+    +'                         stores its config files. Default is '#13#10
+    +'                         %s'#13#10
+    +#13#10;
+  lisCmdLineSecondaryConfigPathDesc =
+     '--secondary-config-path <path>'#13#10
+    +'                         secondary config directory, where Lazarus'#13#10
+    +'                         searches for config template files.'#13#10
+    +'                         Default is %s'#13#10
+    +#13#10;
+  lisCmdLineLCLInterfaceSpecificOptions =
+    'LCL Interface specific options:';
+
   // component palette
   lisSelectionTool = 'Selection tool';
   
