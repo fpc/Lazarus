@@ -183,6 +183,7 @@ function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; 
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+procedure SendCachedLCLMessages; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetActiveWindow(Handle: HWND): HWND;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF} //pbd
@@ -327,6 +328,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/10/16 16:58:22  lazarus
+  MG: moved SendCachedLCLMessages
+
   Revision 1.50  2002/10/14 18:36:57  lazarus
   AJ: Improvements/Fixes to new PromptUser API
 
