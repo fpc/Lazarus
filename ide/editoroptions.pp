@@ -3820,6 +3820,8 @@ begin
     Width:=RightMarginComboBox.Width;
     Height:=RightMarginComboBox.Height;
     Items.BeginUpdate;
+    Items.Add('40');
+    Items.Add('35');
     Items.Add('30');
     Items.Add('25');
     Items.Add('20');

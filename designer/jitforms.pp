@@ -135,18 +135,6 @@ type
 
 implementation
 
-type
-  //----------------------------------------------------------------------------
-  // TJITForm is a template TForm descendent class that can be altered at
-  // runtime
-  TJITForm = class (TForm)
-  public
-    constructor Create(AOwner: TComponent); override;
-  end;
-
-  TJITFormClass = class of TJITForm;
-  //----------------------------------------------------------------------------
-
 var
   MyFindGlobalComponentProc:function(const AName:AnsiString):TComponent of object;
 
@@ -155,12 +143,45 @@ begin
   Result:=MyFindGlobalComponentProc(AName);
 end;
 
+type
+  //----------------------------------------------------------------------------
+  // TJITForm is a template TForm descendent class that can be altered at
+  // runtime
+  TJITForm = class (TForm)
+  protected
+    class function NewInstance : TObject; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+  end;
+
+  TJITFormClass = class of TJITForm;
+  //----------------------------------------------------------------------------
+
+// Define a dummy component to set the csDesigning flag which can not set by a
+// TForm, because SetDesigning is protected.
+type
+  TSetDesigningComponent = class(TComponent)
+  public
+    class procedure SetDesigningOfControl(AComponent: TComponent; Value: Boolean);
+  end;
+
+procedure TSetDesigningComponent.SetDesigningOfControl(
+  AComponent: TComponent; Value: Boolean);
+begin
+  AComponent.SetDesigning(Value);
+end;
+
 { TJITForm }
 
-constructor TJITForm.Create(AOwner: TComponent);
+function TJITForm.NewInstance: TObject;
 begin
-  SetDesigning(true);
-  inherited Create(AOwner);
+  Result:=inherited NewInstance;
+  TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
+end;
+
+constructor TJITForm.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
 end;
 
 { TJITForms }
@@ -369,6 +390,7 @@ begin
       writeln('[TJITForms.AddJITFormFromStream] 4');
       {$ENDIF}
       InitReading;
+
       Reader.ReadRootComponent(FCurReadForm);
       if FCurReadForm.Name='' then begin
         NewName:=FCurReadForm.ClassName;

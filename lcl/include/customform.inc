@@ -676,8 +676,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetWindowState(Value : TWindowState);
 Begin
-//TODO: Finish SETWINDOWSTATE
-FWindowState := Value;
+  //TODO: Finish SETWINDOWSTATE
+  FWindowState := Value;
   Assert(False, 'Trace:TODO: [TCustomForm.SetWindowState]');
 end;
 
@@ -1135,6 +1135,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/10/06 17:55:45  lazarus
+  MG: JITForms now sets csDesigning before creation
+
   Revision 1.60  2002/09/29 15:08:38  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
