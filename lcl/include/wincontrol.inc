@@ -236,7 +236,9 @@ begin
   begin
     AdjustClientRect(Rect);
     FAdjustClientRectRealized:=Rect;
-    //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
+    {$IFDEF ClientRectBugFix}
+    writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
+    {$ENDIF}
     AlignList := TList.Create;
     try
       DoAlign(alTop);
@@ -310,7 +312,7 @@ Begin
   with Message, DragRec^ do
   Begin
   case DragMessage of
-    dmDragEnter, dmDragLEave,dmDragMOve, dmDragDrop :
+    dmDragEnter, dmDragLeave,dmDragMove, dmDragDrop :
       if target <> nil then TControl(target).DoDragMsg(Message);
     dmFindTarget:
       begin
@@ -359,12 +361,19 @@ begin
   Inc(FAlignLevel);
 End;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoAdjustClientRectChange                                      }
-{------------------------------------------------------------------------------}
+{-------------------------------------------------------------------------------
+  TWinControl DoAdjustClientRectChange
+  
+  Asks the interface if clientrect has changed since last AlignControl
+  and calls AlignControl(nil) on change.
+-------------------------------------------------------------------------------}
 procedure TWinControl.DoAdjustClientRectChange;
 var r: TRect;
+  {$IFDEF ClientRectBugFix}
+  //SizeMsg: TLMSize;
+  {$ENDIF}
 begin
+  if (csLoading in ComponentState) then exit;
   r:=GetClientRect;
   AdjustClientRect(r);
 //writeln(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',r.Right,',',r.Bottom);
@@ -373,19 +382,82 @@ begin
   or (r.Right<>FAdjustClientRectRealized.Right)
   or (r.Bottom<>FAdjustClientRectRealized.Bottom)
   then begin
+    // client rect changed since last AlignControl
+    {$IFDEF ClientRectBugFix}
+    writeln('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
+      ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
+      ' New=',r.RIght,'x',r.Bottom);
+    {// delphi components expect to get a size message, everytime the clientrect
+    // is resized
+    with SizeMsg do begin
+      Msg := LM_SIZE;
+      SizeType := Size_Restored;
+      Width := Self.Width;
+      Height := Self.Height;
+    end;
+    WindowProc(TLMessage(SizeMsg));}
+    {$ENDIF}
     AlignControl(nil);
+    {$IFDEF ClientRectBugFix}
+    Resize;
+    {$ENDIF}
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoConstraintsChange                                             }
-{------------------------------------------------------------------------------}
+{-------------------------------------------------------------------------------
+  TWinControl DoConstraintsChange
+  Params: Sender : TObject
+  
+  Call inherited, then send the constraints to the interface
+-------------------------------------------------------------------------------}
 procedure TWinControl.DoConstraintsChange(Sender : TObject);
 begin
   inherited DoConstraintsChange(Sender);
   InterfaceObject.IntSendMessage3(LM_SETGEOMETRY, Self, nil);
-End;
+end;
 
+{$IFDEF ClientRectBugFix}
+{-------------------------------------------------------------------------------
+  TWinControl InvalidateClientRectCache
+
+  The clientrect is cached. Call this procedure to invalidate the cache, so that
+  next time the clientrect is fetched from the interface.
+-------------------------------------------------------------------------------}
+procedure TWinControl.InvalidateClientRectCache;
+begin
+  writeln('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
+  Include(FFlags,wcfClientRectNeedsUpdate);
+end;
+
+{-------------------------------------------------------------------------------
+  TWinControl DoSetBounds
+  Params: ALeft, ATop, AWidth, AHeight : integer
+  
+  Anticipate the new clientwidth/height and call inherited
+  
+  Normally the clientwidth/clientheight is adjusted automatically by the
+  interface. But it is up to interface when this will be done. The gtk for
+  example just puts resize requests into a queue. The LCL resizes the childs
+  just after this procedure due to the clientrect. On complex forms with lots
+  of nested controls, this results in thousands of resizes.
+  Changing the clientrect in the LCL to the most probable size reduce
+  unneccessary resizes.
+-------------------------------------------------------------------------------}
+procedure TWinControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
+begin
+  if wcfClientRectNeedsUpdate in FFlags then begin
+    GetClientRect;
+  end;
+  write('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight);
+  inc(FClientWidth,AWidth-FWidth);
+  if (FClientWidth<0) then FClientWidth:=0;
+  inc(FClientHeight,AHeight-FHeight);
+  if (FClientHeight<0) then FClientHeight:=0;
+  writeln(' NewClient=',FClientWidth,',',FClientHeight);
+
+  inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {  TWinControl EnableAlign                                                     }
@@ -415,9 +487,16 @@ Begin
   end;
 End;
 
-{------------------------------------------------------------------------------}
-{  TWinControl GetClientOrigin                                                 }
-{------------------------------------------------------------------------------}
+{-------------------------------------------------------------------------------
+  TWinControl GetClientOrigin
+  Result:  TPoint
+  
+  returns the screen coordinate of the topleft coordinate 0,0 of the client area
+  Note that this value is the position as stored in the interface and is not
+  always consistent with the LCL. When a control is moved, the LCL sets the
+  bounds to the wanted position and sends a move message to the interface. It is
+  up to the interface to handle moves instantly or queued.
+-------------------------------------------------------------------------------}
 Function TWinControl.GetClientOrigin: TPoint;
 Begin
   Result.X := 0;
@@ -429,20 +508,41 @@ end;
 
 function TWinControl.GetClientRect: TRect;
 {$IFDEF ClientRectBugFix}
+
+  procedure StoreClientRect(NewClientRect: TRect);
+  begin
+    if wcfClientRectNeedsUpdate in FFlags then begin
+      FClientWidth:=NewClientRect.Right;
+      FClientHeight:=NewClientRect.Bottom;
+      writeln('StoreClientRect ',name,':',ClassName,' ',FClientWidth,',',FClientHeight);
+      Exclude(FFlags,wcfClientRectNeedsUpdate);
+    end;
+  end;
+
 var r: TRect;
 begin
-  Result:=inherited GetClientRect;
-  if not HandleAllocated then exit;
-  LCLLinux.GetClientRect(Handle, r);
-  if (r.Left<>Result.Left)
-  or (r.Top<>Result.Top)
-  or (r.Right<>Result.Right)
-  or (r.Bottom<>Result.Bottom) then begin
-    writeln(' TWinControl.GetClientRect ',Name,':',ClassName,
-      ' Old=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom,
-      ' New=',r.Left,',',r.Top,',',r.Right,',',r.Bottom);
+  if not HandleAllocated then begin
+    Result:=inherited GetClientRect;
+    StoreClientRect(Result);
+  end else if wcfClientRectNeedsUpdate in FFlags then begin
+    // update clientrect from interface
+    LCLLinux.GetClientRect(Handle, Result);
+    StoreClientRect(Result);
+
+    r:=inherited GetClientRect;
+    if (r.Left<>Result.Left)
+    or (r.Top<>Result.Top)
+    or (r.Right<>Result.Right)
+    or (r.Bottom<>Result.Bottom) then begin
+      //writeln(' TWinControl.GetClientRect ',Name,':',ClassName,
+      //  ' Old=',r.Left,',',r.Top,',',r.Right,',',r.Bottom,
+      //  ' New=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom
+      //  );
+    end;
+    
+  end else begin
+    Result:=Rect(0,0,FClientWidth,FClientHeight);
   end;
-  Result:=r;
 end;
 {$ELSE}
 begin
@@ -814,21 +914,22 @@ Begin
 //TODO:Implement TMOUSE
  {    with Mouse do
      if WheelPresent and (RegWheelMessage <> 0) and (Message.Msg = RegWheelMessage) then
+      Begin
+        GetKeyboardState(KeyState);
+        with WheelMsg do
         Begin
-          GetKeyboardState(KeyState);
-          with WheelMsg do
-          Begin
-            Msg := Message.Msg;
-            ShiftState := KeyboardStateToShiftState(KeyState);
-            WheelData :=Message.WParam;
-            Pos := TSmallPoint(Message.LPaream);
-          end;
-          MouseWheelHandler(TMessage(WheelMsg));
-          Exit;
+          Msg := Message.Msg;
+          ShiftState := KeyboardStateToShiftState(KeyState);
+          WheelData :=Message.WParam;
+          Pos := TSmallPoint(Message.LPaream);
         end;
-}       end;
+        MouseWheelHandler(TMessage(WheelMsg));
+        Exit;
+      end;
+}
+  end;
 
-        Inherited WndProc(Message);
+  inherited WndProc(Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -1515,10 +1616,13 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMSize
-  Params:   Msg: The message
+  Params:   Message: TLMSize
   Returns:  nothing
 
-  event handler.
+  Event handler for size messages. This is called, whenever width, height,
+  clientwidth or clientheight have changed.
+  If the source of the message is the interface, the new size is stored
+  in FBoundsRealized to avoid sending a size message back to the interface.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSize(var Message: TLMSize);
 begin
@@ -1539,7 +1643,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWInControl.WMNotify(var Message: TLMNotify);
 Begin
-if not DoControlMsg(Message.NMHdr^.hwndfrom,Message) then exit;
+  if not DoControlMsg(Message.NMHdr^.hwndfrom,Message) then exit;
 
 //Inherited ;
 end;
@@ -1870,7 +1974,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
 var
-  NewBounds, OldBounds, R : TRect;
+  NewBounds, OldBounds, R: TRect;
   
   function CompareRect(R1, R2: PRect): Boolean;
   begin
@@ -1887,17 +1991,17 @@ begin
   writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
   ' Old=',Left,',',Top,',',Width,',',Height,
   ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
-  ' BLC=',BoundsLockCount,
+  ' Lock=',BoundsLockCount,
   ' Realized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
   ',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top
   );
   {$ENDIF}
+  if BoundsLockCount<>0 then exit;
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
   if CompareRect(@NewBounds,@OldBounds) then begin
     // LCL bounds are already up2date -> check realized bounds
     if HandleAllocated
-    and (BoundsLockCount=0)
     and (not CompareRect(@NewBounds,@FBoundsRealized)) then begin
       // the bounds were not yet send to the InterfaceObject -> send them
       BeginUpdateBounds;
@@ -1915,34 +2019,32 @@ begin
       end;
     end;
   end else begin
-    if BoundsLockCount=0 then begin
-      // LCL bounds are not up2date -> process new bounds
-      BeginUpdateBounds;
-      try
-        {$IFDEF CHECK_POSITION}
-        writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
-        ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
-        ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
-        {$ENDIF}
-        inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-        NewBounds:=Bounds(Left, Top, Width, Height);
+    // LCL bounds are not up2date -> process new bounds
+    BeginUpdateBounds;
+    try
+      {$IFDEF CHECK_POSITION}
+      writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
+      ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
+      ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
+      {$ENDIF}
+      inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+      NewBounds:=Bounds(Left, Top, Width, Height);
 
-        if HandleAllocated
-        and (not CompareRect(@NewBounds,@FBoundsRealized)) then
-        begin
-          // the bounds were not yet send to the InterfaceObject -> send them
-          {$IFDEF CHECK_POSITION}
-          writeln('[TWinControl.SetBounds] RealizeBounds B ',Name,':',ClassName,
-          ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-          ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
-          {$ENDIF}
-          FBoundsRealized:=NewBounds;
-          R:=Rect(Left,Top,Width,Height);
-          CNSendMessage(LM_SetSize, Self, @R);
-        end;
-      finally
-        EndUpdateBounds;
+      if HandleAllocated
+      and (not CompareRect(@NewBounds,@FBoundsRealized)) then
+      begin
+        // the bounds were not yet send to the InterfaceObject -> send them
+        {$IFDEF CHECK_POSITION}
+        writeln('[TWinControl.SetBounds] RealizeBounds B ',Name,':',ClassName,
+        ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+        ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+        {$ENDIF}
+        FBoundsRealized:=NewBounds;
+        R:=Rect(Left,Top,Width,Height);
+        CNSendMessage(LM_SetSize, Self, @R);
       end;
+    finally
+      EndUpdateBounds;
     end;
   end;
 end;
@@ -2072,6 +2174,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.63  2002/05/06 08:50:36  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 
