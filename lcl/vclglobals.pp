@@ -119,9 +119,6 @@ const
   MK_MBUTTON = $10;
 
 
-{ Generic Key names }
-{$I hkeys.inc}
-
 Function CS_To_String(CompStyle: Integer): String;
 
 
