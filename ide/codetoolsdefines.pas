@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, Laz_XMLCfg,
   DefineTemplates, CodeToolManager, CodeToolsOptions, CodeToolsDefPreview,
-  TransferMacros, InputFileDialog, IDEOptionDefs, LazConf;
+  TransferMacros, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -915,7 +915,7 @@ begin
 
     FileTitles[0]:='Lazarus Directory';
     FileDescs[0]:='The Lazarus main directory.';
-    FileNames[0]:=ExpandFilename(ExtractFilePath(ParamStr(0)));
+    FileNames[0]:=IDEProcs.ProgramDirectory;
     FileFlags[0]:=[iftDirectory,iftNotEmpty,iftMustExist];
 
     EndUpdate;

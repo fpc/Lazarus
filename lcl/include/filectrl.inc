@@ -305,7 +305,6 @@ end;
 {------------------------------------------------------------------------------
   procedure CheckIfFileIsSymlink(const AFilename: string);
  ------------------------------------------------------------------------------}
-
 procedure CheckIfFileIsSymlink(const AFilename: string);
 {$IFNDEF win32}
 var
@@ -467,6 +466,51 @@ begin
   // date + time
   Result:=Result+'  modified '+FormatDateTime('DD/MM/YYYY hh:mm',
                          FileDateToDateTime(FileAge(AFilename)));
+end;
+
+{------------------------------------------------------------------------------
+  function ReadAllLinks(const Filename: string;
+    ExceptionOnError: boolean): string;
+ ------------------------------------------------------------------------------}
+function ReadAllLinks(const Filename: string;
+  ExceptionOnError: boolean): string;
+var
+  LinkFilename: string;
+  AText: string;
+begin
+  Result:=Filename;
+  repeat
+    LinkFilename:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(Result);
+    if LinkFilename='' then begin
+      AText:='"'+Filename+'"';
+      case LinuxError of
+      {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+        AText:='read access denied for '+AText;
+      {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+        AText:='a directory component in '+AText
+                            +' does not exist or is a dangling symlink';
+      {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+        AText:='a directory component in '+Atext+' is not a directory';
+      {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+        AText:='insufficient memory';
+      {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+        AText:=AText+' has a circular symbolic link';
+      else
+        // not a symbolic link, just a regular file
+        exit;
+      end;
+      if not ExceptionOnError then begin
+        Result:='';
+        exit;
+      end else
+        raise Exception.Create(AText);
+    end else begin
+      if not FilenameIsAbsolute(LinkFilename) then
+        Result:=ExpandFilename(ExtractFilePath(Result)+LinkFilename)
+      else
+        Result:=LinkFilename;
+    end;
+  until false;
 end;
 
 {------------------------------------------------------------------------------
@@ -722,6 +766,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2003/02/07 17:49:21  mattias
+  added ReadAllLinks
+
   Revision 1.10  2003/01/17 16:28:42  mattias
   updated translation files
 

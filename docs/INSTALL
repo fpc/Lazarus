@@ -96,7 +96,7 @@ properly:
       Environment -> Environment Options -> Files
 
     The 'FPC Source directory' should point to your fpc source directory. This
-    directory ends with /fpc/ (e.g. /usr/include/fpc) and contains directories
+    directory ends with /fpc/ (e.g. /usr/src/fpc) and contains directories
     like 'compiler', 'docs', 'fcl', 'rtl' and 'packages'.
 
     ToDo: explain the other paths

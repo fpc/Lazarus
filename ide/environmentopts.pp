@@ -636,7 +636,7 @@ begin
   FShowHintsForMainSpeedButtons:=false;
 
   // files
-  FLazarusDirectory:=ExpandFilename(ExtractFilePath(ParamStr(0)));
+  FLazarusDirectory:=IDEProcs.ProgramDirectory;
   FLazarusDirsHistory:=TStringList.Create;
   FCompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;
@@ -855,7 +855,7 @@ begin
       LoadRecentList(XMLConfig,FLazarusDirsHistory,
          'EnvironmentOptions/LazarusDirectory/History/');
       if FLazarusDirsHistory.Count=0 then begin
-        FLazarusDirsHistory.Add(ExtractFilePath(ExpandFilename(ParamStr(0))));
+        FLazarusDirsHistory.Add(ProgramDirectory);
       end;
       FCompilerFilename:=XMLConfig.GetValue(
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
@@ -1892,7 +1892,7 @@ begin
     Height:=25;
     with Items do begin
       BeginUpdate;
-      Add(ExtractFilePath(ParamStr(0)));
+      Add(ProgramDirectory);
       EndUpdate;
     end;
     Visible:=true;

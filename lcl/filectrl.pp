@@ -54,6 +54,8 @@ function FileIsText(const AFilename: string): boolean;
 function FileIsExecutable(const AFilename: string): boolean;
 function FileIsSymlink(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;
+function ReadAllLinks(const Filename: string;
+  ExceptionOnError: boolean): string;
 
 // directories
 function DirectoryExists(const FileName: String): Boolean;
@@ -110,6 +112,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2003/02/07 17:49:21  mattias
+  added ReadAllLinks
+
   Revision 1.10  2003/01/17 16:28:42  mattias
   updated translation files
 

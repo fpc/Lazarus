@@ -31,11 +31,16 @@ uses
   {$ENDIF}
 
 const
-  DefaultFPCSrcDirs: array[1..4] of string = (
-    '/usr/lib/fpc',
-    '/usr/local/lib/fpc',
-    '/vol/fpc',
-    '/vol/lib/fpc'
+  DefaultFPCSrcDirs: array[1..9] of string = (
+    '/usr/share/fpcsrc',
+    '/usr/fpcsrc',
+    '/usr/share/fpc/src',
+    '/usr/fpc/src',
+    '/usr/local/fpc/src',
+    '/usr/lib/fpc/src',
+    '/usr/local/lib/fpc/src',
+    '/vol/fpc/src',
+    '/vol/lib/fpc/src'
     );
 
 var
@@ -154,6 +159,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2003/02/07 17:49:21  mattias
+  added ReadAllLinks
+
   Revision 1.10  2003/02/06 20:46:51  mattias
   default fpc src dirs and clean ups
 
