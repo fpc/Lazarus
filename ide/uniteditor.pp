@@ -3526,8 +3526,6 @@ begin
     [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '=', '.']
   );
   
-  SE.GetWordAtPosition(TextPosition);
-
   //If no hint, then Exit
   if AHint = '' then Exit;
 
