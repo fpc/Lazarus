@@ -1237,13 +1237,13 @@ end;
 
 procedure TMainIDE.SetupEditMenu;
 begin
-  itmEditUndo := TMenuItem.Create(nil);
+  itmEditUndo := TMenuItem.Create(Self);
   itmEditUndo.Name:='itmEditUndo';
   itmEditUndo.Caption := lisMenuUndo;
   itmEditUndo.OnClick:=@mnuEditUndoClicked;
   mnuEdit.Add(itmEditUndo);
 
-  itmEditRedo := TMenuItem.Create(nil);
+  itmEditRedo := TMenuItem.Create(Self);
   itmEditRedo.Name:='itmEditRedo';
   itmEditRedo.Caption := lisMenuRedo;
   itmEditRedo.OnClick:=@mnuEditRedoClicked;
@@ -1251,19 +1251,19 @@ begin
 
   mnuEdit.Add(CreateSeperator);
 
-  itmEditCut  := TMenuItem.Create(nil);
+  itmEditCut  := TMenuItem.Create(Self);
   itmEditCut.Name:='itmEditCut';
   itmEditCut.Caption := lisMenuCut;
   itmEditCut.OnClick:=@mnuEditCutClicked;
   mnuEdit.Add(itmEditCut);
 
-  itmEditCopy := TMenuItem.Create(nil);
+  itmEditCopy := TMenuItem.Create(Self);
   itmEditCopy.Name:='itmEditCopy';
   itmEditCopy.Caption := lisMenuCopy;
   itmEditCopy.OnClick:=@mnuEditCopyClicked;
   mnuEdit.Add(itmEditCopy);
 
-  itmEditPaste := TMenuItem.Create(nil);
+  itmEditPaste := TMenuItem.Create(Self);
   itmEditPaste.Name:='itmEditPaste';
   itmEditPaste.Caption := lisMenuPaste;
   itmEditPaste.OnClick:=@mnuEditPasteClicked;
@@ -1271,13 +1271,13 @@ begin
 
   mnuEdit.Add(CreateSeperator);
 
-  itmEditIndentBlock := TMenuItem.Create(nil);
+  itmEditIndentBlock := TMenuItem.Create(Self);
   itmEditIndentBlock.Name:='itmEditIndentBlock';
   itmEditIndentBlock.Caption := lisMenuIndentSelection;
   itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
   mnuEdit.Add(itmEditIndentBlock);
 
-  itmEditUnindentBlock := TMenuItem.Create(nil);
+  itmEditUnindentBlock := TMenuItem.Create(Self);
   itmEditUnindentBlock.Name:='itmEditUnindentBlock';
   itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
   itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
@@ -1285,7 +1285,7 @@ begin
 
   mnuEdit.Add(CreateSeperator);
 
-  itmEditCompleteCode := TMenuItem.Create(nil);
+  itmEditCompleteCode := TMenuItem.Create(Self);
   itmEditCompleteCode.Name:='itmEditCompleteCode';
   itmEditCompleteCode.Caption := lisMenuCompleteCode;
   itmEditCompleteCode.OnClick:=@mnuEditCompleteCodeClicked;
@@ -1294,86 +1294,86 @@ end;
 
 procedure TMainIDE.SetupSearchMenu;
 begin
-  itmSearchFind := TMenuItem.Create(nil);
+  itmSearchFind := TMenuItem.Create(Self);
   itmSearchFind.Name:='itmSearchFind';
   itmSearchFind.Caption := lisMenuFind;
   mnuSearch.add(itmSearchFind);
 
-  itmSearchFindNext := TMenuItem.Create(nil);
+  itmSearchFindNext := TMenuItem.Create(Self);
   itmSearchFindNext.Name:='itmSearchFindNext';
   itmSearchFindNext.Caption := lisMenuFindNext;
   itmSearchFindNext.Enabled := False;
   mnuSearch.add(itmSearchFindNext);
 
-  itmSearchFindPrevious := TMenuItem.Create(nil);
+  itmSearchFindPrevious := TMenuItem.Create(Self);
   itmSearchFindPrevious.Name:='itmSearchFindPrevious';
   itmSearchFindPrevious.Caption := lisMenuFindPrevious;
   itmSearchFindPrevious.Enabled := False;
   mnuSearch.add(itmSearchFindPrevious);
 
-  itmSearchFindInFiles := TMenuItem.Create(nil);
+  itmSearchFindInFiles := TMenuItem.Create(Self);
   itmSearchFindInFiles.Name:='itmSearchFindInFiles';
   itmSearchFindInFiles.Caption := lisMenuFindInFiles;
   itmSearchFindInFiles.Enabled := False;
   mnuSearch.add(itmSearchFindInFiles);
 
-  itmSearchReplace := TMenuItem.Create(nil);
+  itmSearchReplace := TMenuItem.Create(Self);
   itmSearchReplace.Name:='itmSearchReplace';
   itmSearchReplace.Caption := lisMenuReplace;
   mnuSearch.add(itmSearchReplace);
 
   mnuSearch.Add(CreateSeperator);
 
-  itmGotoLine := TMenuItem.Create(nil);
+  itmGotoLine := TMenuItem.Create(Self);
   itmGotoLine.Name:='itmGotoLine';
   itmGotoLine.Caption := lisMenuGotoLine;
   mnuSearch.add(itmGotoLine);
 
   mnuSearch.Add(CreateSeperator);
 
-  itmJumpBack := TMenuItem.Create(nil);
+  itmJumpBack := TMenuItem.Create(Self);
   itmJumpBack.Name:='itmJumpBack';
   itmJumpBack.Caption := lisMenuJumpBack;
   mnuSearch.add(itmJumpBack);
 
-  itmJumpForward := TMenuItem.Create(nil);
+  itmJumpForward := TMenuItem.Create(Self);
   itmJumpForward.Name:='itmJumpForward';
   itmJumpForward.Caption := lisMenuJumpForward;
   mnuSearch.add(itmJumpForward);
 
-  itmAddJumpPoint := TMenuItem.Create(nil);
+  itmAddJumpPoint := TMenuItem.Create(Self);
   itmAddJumpPoint.Name:='itmAddJumpPoint';
   itmAddJumpPoint.Caption := lisMenuAddJumpPointToHistory;
   mnuSearch.add(itmAddJumpPoint);
 
-  itmJumpHistory := TMenuItem.Create(nil);
+  itmJumpHistory := TMenuItem.Create(Self);
   itmJumpHistory.Name:='itmJumpHistory';
   itmJumpHistory.Caption := lisMenuViewJumpHistory;
   mnuSearch.add(itmJumpHistory);
 
   mnuSearch.Add(CreateSeperator);
 
-  itmFindBlockOtherEnd := TMenuItem.Create(nil);
+  itmFindBlockOtherEnd := TMenuItem.Create(Self);
   itmFindBlockOtherEnd.Name:='itmFindBlockOtherEnd';
   itmFindBlockOtherEnd.Caption := lisMenuFindBlockOtherEndOfCodeBlock;
   mnuSearch.add(itmFindBlockOtherEnd);
 
-  itmFindBlockStart := TMenuItem.Create(nil);
+  itmFindBlockStart := TMenuItem.Create(Self);
   itmFindBlockStart.Name:='itmFindBlockStart';
   itmFindBlockStart.Caption := lisMenuFindCodeBlockStart;
   mnuSearch.add(itmFindBlockStart);
 
-  itmFindDeclaration := TMenuItem.Create(nil);
+  itmFindDeclaration := TMenuItem.Create(Self);
   itmFindDeclaration.Name:='itmFindDeclaration';
   itmFindDeclaration.Caption := lisMenuFindDeclarationAtCursor;
   mnuSearch.add(itmFindDeclaration);
 
-  itmOpenFileAtCursor := TMenuItem.Create(nil);
+  itmOpenFileAtCursor := TMenuItem.Create(Self);
   itmOpenFileAtCursor.Name:='itmOpenFileAtCursor';
   itmOpenFileAtCursor.Caption := lisMenuOpenFilenameAtCursor;
   mnuSearch.add(itmOpenFileAtCursor);
   
-  itmGotoIncludeDirective := TMenuItem.Create(nil);
+  itmGotoIncludeDirective := TMenuItem.Create(Self);
   itmGotoIncludeDirective.Name:='itmGotoIncludeDirective';
   itmGotoIncludeDirective.Caption := lisMenuGotoIncludeDirective;
   itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
@@ -1622,25 +1622,25 @@ end;
 
 procedure TMainIDE.SetupEnvironmentMenu;
 begin
-  itmEnvGeneralOptions := TMenuItem.Create(nil);
+  itmEnvGeneralOptions := TMenuItem.Create(Self);
   itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
   itmEnvGeneralOptions.Caption := lisMenuGeneralOptions;
   itmEnvGeneralOptions.OnCLick := @mnuEnvGeneralOptionsClicked;
   mnuEnvironment.Add(itmEnvGeneralOptions);
 
-  itmEnvEditorOptions := TMenuItem.Create(nil);
+  itmEnvEditorOptions := TMenuItem.Create(Self);
   itmEnvEditorOptions.Name:='itmEnvEditorOptions';
   itmEnvEditorOptions.Caption := lisMenuEditorOptions;
   itmEnvEditorOptions.OnCLick := @mnuEnvEditorOptionsClicked;
   mnuEnvironment.Add(itmEnvEditorOptions);
 
-  itmEnvCodeToolsOptions := TMenuItem.Create(nil);
+  itmEnvCodeToolsOptions := TMenuItem.Create(Self);
   itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
   itmEnvCodeToolsOptions.Caption := lisMenuCodeToolsOptions;
   itmEnvCodeToolsOptions.OnCLick := @mnuEnvCodeToolsOptionsClicked;
   mnuEnvironment.Add(itmEnvCodeToolsOptions);
 
-  itmEnvCodeToolsDefinesEditor := TMenuItem.Create(nil);
+  itmEnvCodeToolsDefinesEditor := TMenuItem.Create(Self);
   itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
   itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
   itmEnvCodeToolsDefinesEditor.OnCLick := @mnuEnvCodeToolsDefinesEditorClicked;
@@ -1649,7 +1649,7 @@ end;
 
 procedure TMainIDE.SetupHelpMenu;
 begin
-  itmHelpAboutLazarus := TMenuItem.Create(nil);
+  itmHelpAboutLazarus := TMenuItem.Create(Self);
   itmHelpAboutLazarus.Name:='itmHelpAboutLazarus';
   itmHelpAboutLazarus.Caption := lisMenuAboutLazarus;
   itmHelpAboutLazarus.OnCLick := @mnuHelpAboutLazarusClicked;
@@ -6404,6 +6404,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.304  2002/05/30 22:08:09  lazarus
+  MG: TMenuItems now all owned by mainbar
+
   Revision 1.303  2002/05/30 21:40:08  lazarus
   * component-palette: TMainMenu replaces TMenu
   + TMenuItem registered as unvisible component
