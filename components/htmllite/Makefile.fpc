@@ -4,11 +4,10 @@
 #
 
 [package]
-name=lazarus/htmllite
+name=htmllite
 version=0.8a
 
 [compiler]
-unitdir=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
 options=-gl -dHL_LAZARUS
 
 [target]
@@ -20,21 +19,10 @@ implicitunits=htmllite litepars litesubs litedith litegif2 litereadthd liteun2 \
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
 [require]
-packages=fcl
+packages=lcl
 
 [default]
 lcldir=../../lcl
-
-[prerules]
-# LCL Platform
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-LCL_PLATFORM=gtk
-endif
-endif
-export LCL_PLATFORM
 
 [rules]
 .PHONY: cleartarget all

@@ -4,8 +4,7 @@
 #
 
 [package]
-main=lazarus/lcl
-version=0.8a
+main=lcl
 
 [require]
 packages=rtl fcl gtk

@@ -4,11 +4,13 @@
 #
 
 [package]
-name=lazarus/codetools
+name=codetools
 version=0.8a
 
+[require]
+packages=fcl
+
 [compiler]
-unitdir=.
 unittargetdir=../units
 options=-gl
 
@@ -23,11 +25,6 @@ implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
-[require]
-packages=fcl
-
-[default]
 
 [rules]
 .PHONY: cleartarget all

@@ -8,6 +8,7 @@ version=0.8a
 
 [require]
 packages=fcl regexpr
+# Adding lcl codetools synedit, adds the source paths.
 
 [target]
 programs=lazarus
@@ -16,9 +17,9 @@ exampledirs=examples
 
 [compiler]
 options=-gl
-unitdir=components/custom \
-        lcl/units lcl/units/$(LCL_PLATFORM) designer designer/units debugger \
-        packager components/units components/mpaslex .
+unitdir=lcl/units lcl/units/$(LCL_PLATFORM) \
+        components/units components/custom components/mpaslex \
+        designer designer/units debugger packager .
 includedir=include include/$(OS_TARGET)
 targetdir=.
 
@@ -28,22 +29,22 @@ files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
       $(wildcard ./packager/*$(OEXT)) $(wildcard ./packager/*$(PPUEXT))
 
 [install]
-basedir=lib/lazarus
+basedir=share/lazarus
 
 [dist]
 destdir=$(BASEDIR)/dist
 
 [prerules]
+RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
+# LCL Platform
 ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET), win32)
+ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
 else
 LCL_PLATFORM=gtk
 endif
-export LCL_PLATFORM
 endif
-
-RCPP?=$(strip $(firstword $(wildcard $(addsuffix /cpp$(SRCEXEEXT), $(SEARCHPATH)))))
+export LCL_PLATFORM
 
 [rules]
 .PHONY: lcl components ide tools all clean

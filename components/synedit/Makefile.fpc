@@ -4,12 +4,12 @@
 #
 
 [package]
-name=lazarus/synedit
+name=synedit
 version=0.8a
 
 [compiler]
-unitdir=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
 unittargetdir=../units
+unitdir=../../lcl/units
 options=-gl
 
 [target]
@@ -21,24 +21,15 @@ implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   synhighlighterposition synhighlighterjava
 
 [require]
+# Adding lcl, adds the source path.
+#packages=lcl
 packages=fcl regexpr
 
 [default]
-lcldir=../../lcl
+#lcldir=../../lcl
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-
-[prerules]
-# LCL Platform
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-LCL_PLATFORM=gtk
-endif
-endif
-export LCL_PLATFORM
 
 [rules]
 .PHONY: cleartarget all

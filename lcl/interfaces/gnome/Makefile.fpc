@@ -4,11 +4,11 @@
 #
 
 [package]
-main=lazarus/lcl
+main=lcl
 version=0.8a
 
 [require]
-packages=rtl fcl gtk gnome
+packages=rtl fcl gtk
 
 [target]
 units=interfaces

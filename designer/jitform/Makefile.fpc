@@ -4,11 +4,11 @@
 #
 
 [package]
-name=lazarus/jitform
+name=jitform
 version=0.8a
 
 [compiler]
-unitdir=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
+unitdir=../../lcl/units .
 unittargetdir=../units
 options=-gl
 
@@ -23,17 +23,6 @@ packages=fcl
 
 [default]
 lcldir=../../lcl
-
-[prerules]
-# LCL Platform
-ifndef LCL_PLATFORM
-ifeq ($(OS_TARGET),win32)
-LCL_PLATFORM=win32
-else
-LCL_PLATFORM=gtk
-endif
-endif
-export LCL_PLATFORM
 
 [rules]
 .PHONY: cleartarget all
