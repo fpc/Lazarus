@@ -1,1 +1,2 @@
-100 ICON "images/mainicon.ico"
+MAINICON ICON "images/mainicon.ico"
+1 24 lazarus.manifest
