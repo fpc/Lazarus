@@ -37,11 +37,12 @@ uses
 type
   { Compiler Options object used to hold the compiler options }
   TCompilerOptions = class(TObject)
-  private
+ private
     fOptionsString: String;
     xmlcfg: TXMLConfig;
 
     fProjectFile: String;
+    fLoaded: Boolean;
 
     fStyle: Integer;
     fD2Ext: Boolean;
@@ -111,9 +112,11 @@ type
     function MakeOptionsString: String;
     function ParseSearchPaths(switch, paths: String): String;
     function GetXMLConfigPath: String;
+    procedure Clear;
 
     property ProjectFile: String read fProjectFile write fProjectFile;
     property XMLConfigFile: TXMLConfig read xmlcfg write xmlcfg;
+    property Loaded: Boolean read fLoaded write fLoaded;
     
     property Style: Integer read fStyle write fStyle;
     property D2Extensions: Boolean read fD2Ext write fD2Ext;
@@ -331,65 +334,7 @@ begin
   inherited Create;
   Assert(False, 'Trace:Compiler Options Class Created');
 
-  fOptionsString := '';
-
-  { Set Defaults }
-{ fStyle := 1;
-  fD2Ext := true;
-  fCStyleOp := true;
-  fAllowLabel := true;
-  fCPPInline := true;
-  fCMacros := false;
-  fTPCompat := false;
-  fInitConst := false;
-  fStaticKwd := false;
-  fDelphiCompat := false;
-  fUseAnsiStr := false;
-  fGPCCompat := false;
-    
-  fUnitStyle := 1;
-  fIOChecks := false;
-  fRangeChecks := false;
-  fOverflowChecks := false;
-  fStackChecks := false;
-  fHeapSize := 8000000;
-  fGenerate := 1;
-  fTargetProc := 1;
-  fVarsInReg := false;
-  fUncertainOpt := false;
-  fOptLevel := 1;
-    
-  fGenDebugInfo := false;
-  fGenDebugDBX := false;
-  fUseHeaptrc := false;
-  fStripSymbols := false;
-  fLinkStyle := 1;
-  fPassLinkerOpt := false;
-  fLinkerOptions := '';
-    
-  fShowErrors := false;
-  fShowWarn := true;
-  fShowNotes := true;
-  fShowHints := true;
-  fShowGenInfo := true;
-  fShowLineNum := false;
-  fShowAll := false;
-  fShowDebugInfo := false;
-  fShowUsedFiles := false;
-  fShowTriedFiles := false;
-  fShowDefMacros := false;
-  fShowCompProc := false;
-  fShowCond := false;
-  fShowNothing := false;
-  fWriteFPCLogo := true;
-  fUseConfigFile := false;
-  fAdditionalConfigFile := false;
-  fConfigFilePath := './ppc386.cfg';
-    
-  fIncludeFiles := '';
-  fLibraries := '';
-  fOtherUnitFiles := '';
-  fCompilerPath := '/opt/fpc/ppc386';}
+  Clear;
 end;
 
 {------------------------------------------------------------------------------}
@@ -417,7 +362,9 @@ begin
     XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
     LoadTheCompilerOptions;
     XMLConfigFile.Free;
+    XMLConfigFile := nil;
   end;
+  fLoaded := true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -509,6 +456,7 @@ begin
     XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
     SaveTheCompilerOptions;
     XMLConfigFile.Free;
+    XMLConfigFile := nil;
   end;
 end;
 
@@ -518,11 +466,8 @@ end;
 procedure TCompilerOptions.SaveTheCompilerOptions;
 begin
   { Save the compiler options to the XML file }
-  Writeln('SaveTHECompilerOptions');
   { Parsing }
-  Writeln('First one');
   XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
-  Writeln('After FIRST one');
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', CStyleOperators);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', AllowLabel);
@@ -534,7 +479,6 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', DelphiCompat);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings);
   XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', GPCCompat);
-Writeln('1');
   { CodeGeneration }
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', UnitStyle);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', IOChecks);
@@ -548,7 +492,6 @@ Writeln('1');
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', UncertainOptimizations);
   XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', OptimizationLevel);
 
-Writeln('2');
   { Linking }
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', GenerateDebugDBX);
@@ -558,7 +501,6 @@ Writeln('2');
   XMLConfigFile.SetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', PassLinkerOptions);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', LinkerOptions);
     
-Writeln('3');
   { Other }
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', ShowErrors);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', ShowWarn);
@@ -579,15 +521,13 @@ Writeln('3');
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
 
-Writeln('4');
   { SearchPaths }
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
-  Writeln('5');
   XMLConfigFile.Flush;
-  Writeln('6');
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -830,18 +770,14 @@ begin
     switches := switches + ' ' + '@' + ConfigFilePath;
 
   { ------------- Search Paths Tab ---------------- }
-  Writeln('Switchs = '+Switches);
   if (IncludeFiles <> '') then
     switches := switches + ' ' + ParseSearchPaths('-Fi', IncludeFiles);
-  Writeln('Switchs = '+Switches);
 
   if (Libraries <> '') then
     switches := switches + ' ' + ParseSearchPaths('-Fl', Libraries);
-  Writeln('Switchs = '+Switches);
 
   if (OtherUnitFiles <> '') then
     switches := switches + ' ' + ParseSearchPaths('-Fu', OtherUnitFiles);
-  Writeln('Switchs = '+Switches);
 
   { CompilerPath - Nothing needs to be done with this one }
 
@@ -905,8 +841,6 @@ begin
   //Result := '-viwnh -n -Sgic -Fu' + OtherUnitFiles + ' -Fl' + Libraries;
 
   fOptionsString := switches;
-  Writeln('Still in CompilerOptions');
-  Writeln('fOptionsString = '+fOptionsString);
   Result := fOptionsString;
 end;
 
@@ -999,6 +933,73 @@ end;
 
 
 {------------------------------------------------------------------------------}
+{  TCompilerOptions Clear                                                      }
+{------------------------------------------------------------------------------}
+procedure TCompilerOptions.Clear;
+begin
+  fOptionsString := '';
+  fLoaded := false;
+
+  { Set Defaults }
+  fStyle := 1;
+  fD2Ext := true;
+  fCStyleOp := true;
+  fAllowLabel := true;
+  fCPPInline := true;
+  fCMacros := false;
+  fTPCompat := false;
+  fInitConst := false;
+  fStaticKwd := false;
+  fDelphiCompat := false;
+  fUseAnsiStr := false;
+  fGPCCompat := false;
+    
+  fUnitStyle := 1;
+  fIOChecks := false;
+  fRangeChecks := false;
+  fOverflowChecks := false;
+  fStackChecks := false;
+  fHeapSize := 8000000;
+  fGenerate := 1;
+  fTargetProc := 1;
+  fVarsInReg := false;
+  fUncertainOpt := false;
+  fOptLevel := 1;
+    
+  fGenDebugInfo := false;
+  fGenDebugDBX := false;
+  fUseHeaptrc := false;
+  fStripSymbols := false;
+  fLinkStyle := 1;
+  fPassLinkerOpt := false;
+  fLinkerOptions := '';
+    
+  fShowErrors := false;
+  fShowWarn := true;
+  fShowNotes := true;
+  fShowHints := true;
+  fShowGenInfo := true;
+  fShowLineNum := false;
+  fShowAll := false;
+  fShowDebugInfo := false;
+  fShowUsedFiles := false;
+  fShowTriedFiles := false;
+  fShowDefMacros := false;
+  fShowCompProc := false;
+  fShowCond := false;
+  fShowNothing := false;
+  fWriteFPCLogo := true;
+  fUseConfigFile := false;
+  fAdditionalConfigFile := false;
+  fConfigFilePath := './ppc386.cfg';
+    
+  fIncludeFiles := '';
+  fLibraries := '';
+  fOtherUnitFiles := '';
+  fCompilerPath := '/opt/fpc/ppc386';
+end;
+
+{------------------------------------------------------------------------------}
 {  TfrmCompilerOptions Constructor                                              }
 {------------------------------------------------------------------------------}
 constructor TfrmCompilerOptions.Create(AOwner: TComponent);
@@ -1084,10 +1085,8 @@ begin
 
   { Save the options and hide the dialog }
   PutCompilerOptions;
-  Writeln('Calling Mainide.project.compiler...');
 //  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
   CompilerOpts.SaveCompilerOptions(true);
-  Writeln('Called');
   Hide;
 end;
 
