@@ -34,94 +34,6 @@ interface
 uses
   Classes, SysUtils, CodeToolsStrConsts, SourceLog, KeywordFuncLists;
 
-//-----------------------------------------------------------------------------
-// functions / procedures
-
-{ These functions are not context sensitive. Especially they ignore compiler
-  settings and compiler directives. They exist only for easy usage, they are not
-  used by the CodeTools
-}
-
-// source type
-function FindSourceType(const Source: string;
-  var SrcNameStart, SrcNameEnd: integer): string;
-
-// program name
-function RenameProgramInSource(Source:TSourceLog;
-   const NewProgramName:string):boolean;
-function FindProgramNameInSource(const Source:string;
-   var ProgramNameStart,ProgramNameEnd:integer):string;
-
-// unit name
-function RenameUnitInSource(Source:TSourceLog;const NewUnitName:string):boolean;
-function FindUnitNameInSource(const Source:string;
-   var UnitNameStart,UnitNameEnd:integer):string;
-
-// uses sections
-function UnitIsUsedInSource(const Source,UnitName:string):boolean;
-function RenameUnitInProgramUsesSection(Source:TSourceLog; 
-   const OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddToProgramUsesSection(Source:TSourceLog; 
-   const AUnitName,InFileName:string):boolean;
-function RemoveFromProgramUsesSection(Source:TSourceLog; 
-   const AUnitName:string):boolean;
-function RenameUnitInInterfaceUsesSection(Source:TSourceLog; 
-   const OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddToInterfaceUsesSection(Source:TSourceLog; 
-   const AUnitName,InFileName:string):boolean;
-function RemoveFromInterfaceUsesSection(Source:TSourceLog; 
-   const AUnitName:string):boolean;
-
-// single uses section
-function IsUnitUsedInUsesSection(const Source,UnitName:string; 
-   UsesStart:integer):boolean;
-function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
-   const OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddUnitToUsesSection(Source:TSourceLog;
-   const UnitName,InFilename:string; UsesStart:integer):boolean;
-function RemoveUnitFromUsesSection(Source:TSourceLog;
-   const UnitName:string; UsesStart:integer):boolean;
-
-// compiler directives
-function FindIncludeDirective(const Source,Section:string; Index:integer;
-   var IncludeStart,IncludeEnd:integer):boolean;
-function SplitCompilerDirective(const Directive:string; 
-   var DirectiveName,Parameters:string):boolean;
-
-// createform
-function AddCreateFormToProgram(Source:TSourceLog;
-   const AClassName,AName:string):boolean;
-function RemoveCreateFormFromProgram(Source:TSourceLog;
-   const AClassName,AName:string):boolean;
-function CreateFormExistsInProgram(const Source,
-   AClassName,AName:string):boolean;
-function ListAllCreateFormsInProgram(const Source:string):TStrings;
-
-// resource code
-function FindResourceInCode(const Source, AddCode:string;
-   var Position,EndPosition:integer):boolean;
-function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
-
-// form components
-function FindFormClassDefinitionInSource(const Source, FormClassName:string;
-   var FormClassNameStartPos, FormBodyStartPos: integer):boolean;
-function FindFormComponentInSource(const Source: string;
-  FormBodyStartPos: integer;
-  const ComponentName, ComponentClassName: string): integer;
-function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
-  const ComponentName, ComponentClassName: string): boolean;
-function RemoveFormComponentFromSource(Source:TSourceLog;
-  FormBodyStartPos: integer;
-  ComponentName, ComponentClassName: string): boolean;
-
-// code search
-function SearchCodeInSource(const Source,Find:string; StartPos:integer;
-   var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
-function ReadNextPascalAtom(const Source:string; 
-   var Position,AtomStart:integer):string;
-function ReadRawNextPascalAtom(const Source:string;
-   var Position,AtomStart:integer):string;
-
 //----------------------------------------------------------------------------
 { These functions are used by the codetools
 }
@@ -142,6 +54,8 @@ procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
 function GetLineIndent(const Source: string; Position: integer): integer;
 function GetIndentStr(Indent: integer): string;
 function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
+function PositionsInSameLine(const Source: string;
+    Pos1, Pos2: integer): boolean;
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -194,6 +108,94 @@ function StringToPascalConst(const s: string): string;
 // other useful stuff
 procedure RaiseCatchableException(const Msg: string);
 
+
+//-----------------------------------------------------------------------------
+// functions / procedures
+
+{ These functions are not context sensitive. Especially they ignore compiler
+  settings and compiler directives. They exist only for easy usage, they are not
+  used by the CodeTools
+}
+
+// source type
+function FindSourceType(const Source: string;
+  var SrcNameStart, SrcNameEnd: integer): string;
+
+// program name
+function RenameProgramInSource(Source:TSourceLog;
+   const NewProgramName:string):boolean;
+function FindProgramNameInSource(const Source:string;
+   var ProgramNameStart,ProgramNameEnd:integer):string;
+
+// unit name
+function RenameUnitInSource(Source:TSourceLog;const NewUnitName:string):boolean;
+function FindUnitNameInSource(const Source:string;
+   var UnitNameStart,UnitNameEnd:integer):string;
+
+// uses sections
+function UnitIsUsedInSource(const Source,UnitName:string):boolean;
+function RenameUnitInProgramUsesSection(Source:TSourceLog;
+   const OldUnitName, NewUnitName, NewInFile:string): boolean;
+function AddToProgramUsesSection(Source:TSourceLog;
+   const AUnitName,InFileName:string):boolean;
+function RemoveFromProgramUsesSection(Source:TSourceLog;
+   const AUnitName:string):boolean;
+function RenameUnitInInterfaceUsesSection(Source:TSourceLog;
+   const OldUnitName, NewUnitName, NewInFile:string): boolean;
+function AddToInterfaceUsesSection(Source:TSourceLog;
+   const AUnitName,InFileName:string):boolean;
+function RemoveFromInterfaceUsesSection(Source:TSourceLog;
+   const AUnitName:string):boolean;
+
+// single uses section
+function IsUnitUsedInUsesSection(const Source,UnitName:string;
+   UsesStart:integer):boolean;
+function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
+   const OldUnitName, NewUnitName, NewInFile:string): boolean;
+function AddUnitToUsesSection(Source:TSourceLog;
+   const UnitName,InFilename:string; UsesStart:integer):boolean;
+function RemoveUnitFromUsesSection(Source:TSourceLog;
+   const UnitName:string; UsesStart:integer):boolean;
+
+// compiler directives
+function FindIncludeDirective(const Source,Section:string; Index:integer;
+   var IncludeStart,IncludeEnd:integer):boolean;
+function SplitCompilerDirective(const Directive:string;
+   var DirectiveName,Parameters:string):boolean;
+
+// createform
+function AddCreateFormToProgram(Source:TSourceLog;
+   const AClassName,AName:string):boolean;
+function RemoveCreateFormFromProgram(Source:TSourceLog;
+   const AClassName,AName:string):boolean;
+function CreateFormExistsInProgram(const Source,
+   AClassName,AName:string):boolean;
+function ListAllCreateFormsInProgram(const Source:string):TStrings;
+
+// resource code
+function FindResourceInCode(const Source, AddCode:string;
+   var Position,EndPosition:integer):boolean;
+function AddResourceCode(Source:TSourceLog; const AddCode:string):boolean;
+
+// form components
+function FindFormClassDefinitionInSource(const Source, FormClassName:string;
+   var FormClassNameStartPos, FormBodyStartPos: integer):boolean;
+function FindFormComponentInSource(const Source: string;
+  FormBodyStartPos: integer;
+  const ComponentName, ComponentClassName: string): integer;
+function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
+  const ComponentName, ComponentClassName: string): boolean;
+function RemoveFormComponentFromSource(Source:TSourceLog;
+  FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): boolean;
+
+// code search
+function SearchCodeInSource(const Source,Find:string; StartPos:integer;
+   var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
+function ReadNextPascalAtom(const Source:string;
+   var Position,AtomStart:integer):string;
+function ReadRawNextPascalAtom(const Source:string;
+   var Position,AtomStart:integer):string;
 
 
 //-----------------------------------------------------------------------------
@@ -1090,6 +1092,30 @@ begin
   LineEnd:=Position;
   while (LineEnd<=length(Source)) and (not (Source[LineEnd] in [#10,#13])) do
     inc(LineEnd);
+end;
+
+function PositionsInSameLine(const Source: string;
+    Pos1, Pos2: integer): boolean;
+var
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  if Pos1<Pos2 then begin
+    StartPos:=Pos1;
+    EndPos:=Pos2;
+  end else begin
+    StartPos:=Pos2;
+    EndPos:=Pos1;
+  end;
+  if EndPos>length(Source) then EndPos:=length(Source);
+  while StartPos<=EndPos do begin
+    if Source[StartPos] in [#10,#13] then begin
+      Result:=false;
+      exit;
+    end else
+      inc(StartPos);
+  end;
+  Result:=true;
 end;
 
 procedure GetIdentStartEndAtPosition(const Source: string; Position: integer;
