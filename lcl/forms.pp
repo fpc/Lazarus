@@ -260,51 +260,56 @@ type
     property Width : Integer read GetWidth;
   end;
 
+  TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
 
   TApplication = class(TComponent)
-   private
-      FHandle : THandle;
-      FIcon: TIcon;
-      FList: TList;
-      FMainForm : TForm;
-      FMouseControl: TControl;
-      FOnIdle: TIdleEvent;
-      FTerminate : Boolean;
-    // MWE:Do we need this ??
-      // function ProcessMessage(Var Msg : TMsg) : Boolean;
-      procedure wndproc(var Message : TLMessage);
- //the following is used for Messagebox button clicks.  Temporary until I figure out a better way.
-      procedure DefaultOnClick(Sender : TObject);
- //----      
-      function GetExename: String;
-      function GetIconHandle: HICON;
-      procedure IconChanged(Sender: TObject);
-      procedure Idle;
-      procedure MouseIdle(const CurrentControl: TControl);
-      procedure SetIcon(AValue: TIcon);
-
-   public
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-      procedure ControlDestroyed(AControl: TControl);
-      Procedure BringToFront;
-      procedure CreateForm(NewForm : TFormClass; var ref);
-      procedure HandleMessage;
-      procedure HintMouseMEssage(Control : TControl; var Message: TLMessage);
-      property Icon: TIcon read FIcon write SetIcon;
-      procedure Initialize;
-      function MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
-      procedure Notification(AComponent : TComponent; Operation : TOperation); override;
-      Procedure ProcessMessages;
-      procedure Run;
-      procedure Terminate;
-      property Exename: String read GetExeName;
-      property Handle: THandle read FHandle;
-      property Terminated: Boolean read FTerminate;
-      property MainForm: TForm read FMainForm;
-      property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
-   end;
+  private
+    FHandle : THandle;
+    FIcon: TIcon;
+    FList: TList;
+    FMainForm : TForm;
+    FMouseControl: TControl;
+    FOnException: TExceptionEvent;
+    FOnIdle: TIdleEvent;
+    FTerminate : Boolean;
+  // MWE:Do we need this ??
+    // function ProcessMessage(Var Msg : TMsg) : Boolean;
+    procedure wndproc(var Message : TLMessage);
+// Shane: the following is used for Messagebox button clicks.  Temporary until I figure out a better way.
+    procedure DefaultOnClick(Sender : TObject);
+//----      
+    function GetExename: String;
+    function GetIconHandle: HICON;
+    function GetTitle: string;
+    procedure IconChanged(Sender: TObject);
+    procedure Idle;
+    procedure MouseIdle(const CurrentControl: TControl);
+    procedure SetIcon(AValue: TIcon);
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure ControlDestroyed(AControl: TControl);
+    Procedure BringToFront;
+    procedure CreateForm(NewForm : TFormClass; var ref);
+    procedure HandleException(Sender: TObject);
+    procedure HandleMessage;
+    procedure HintMouseMEssage(Control : TControl; var Message: TLMessage);
+    property Icon: TIcon read FIcon write SetIcon;
+    procedure Initialize;
+    function MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
+    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
+    Procedure ProcessMessages;
+    procedure Run;
+    procedure ShowException(E: Exception);
+    procedure Terminate;
+    property Exename: String read GetExeName;
+    property Handle: THandle read FHandle;
+    property Terminated: Boolean read FTerminate;
+    property MainForm: TForm read FMainForm;
+    property OnException: TExceptionEvent read FOnException write FOnException;
+    property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
+  end;
 
   TIDesigner = class(TObject)
   public

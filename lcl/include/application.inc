@@ -262,8 +262,8 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomForm.IsIconStored
-  Returns: handle of form icon 
+  Method: TApplication.GetIconHandle
+  Returns: handle of default form icon
  ------------------------------------------------------------------------------}
 function TApplication.GetIconHandle: HICON;
 begin
@@ -271,6 +271,38 @@ begin
     Result := FIcon.Handle
   else
     Result:=0;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TApplication.GetTitle
+  Returns: title of application
+ ------------------------------------------------------------------------------}
+function TApplication.GetTitle: string;
+begin
+  if FMainForm<>nil then
+    Result:=FMainForm.Caption
+  else
+    Result:='';
+end;
+
+{------------------------------------------------------------------------------
+  Method: TApplication.HandleException
+  Params: Sender
+  Returns:  Nothing
+
+  Handles all messages first then the Idle
+ ------------------------------------------------------------------------------}
+procedure TApplication.HandleException(Sender: TObject);
+begin
+  if GetCapture <> 0 then SendMessage(GetCapture, LM_CANCELMODE, 0, 0);
+  if ExceptObject is Exception then begin
+    if not (ExceptObject is EAbort) then
+      if Assigned(FOnException) then
+        FOnException(Sender, Exception(ExceptObject))
+      else
+        ShowException(Exception(ExceptObject));
+  end else
+    SysUtils.ShowException(ExceptObject, ExceptAddr);
 end;
 
 {------------------------------------------------------------------------------
@@ -311,6 +343,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{       TApplication ShowException                                             }
+{------------------------------------------------------------------------------}
+procedure TApplication.ShowException(E: Exception);
+var
+  Msg: string;
+begin
+  Msg := E.Message;
+  if (Msg <> '') and (Msg[length(Msg)] > '.') then Msg := Msg + '.';
+  MessageBox(PChar(Msg), PChar(GetTitle), MB_OK + MB_ICONERROR);
+end;
+
+{------------------------------------------------------------------------------}
 {       TApplication Terminate                                                 }
 {       Class is terminated and the component engine is shutdown               }
 {------------------------------------------------------------------------------}
@@ -345,6 +389,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/12/08 12:35:12  lazarus
+  MG: added TApplication.ShowException
+
   Revision 1.14  2001/11/14 17:46:58  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop
