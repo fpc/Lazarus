@@ -72,15 +72,6 @@ type
       AState: TPropEditDrawState); override;
   end;
 
-{ TFontNamePropertyEditor
-  PropertyEditor editor for TFont.Name. Simply provides listing font names. }
-
-  TFontNamePropertyEditor = class(TStringPropertyEditor)
-  public
-    function GetAttributes: TPropertyAttributes; override;
-    procedure GetValues(Proc: TGetStringProc); override;
-  end;
-
 { TBrushStylePropertyEditor
   PropertyEditor editor for TBrush's Style. Provides custom render. }
 
@@ -118,6 +109,15 @@ type
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
+  end;
+
+{ TFontNamePropertyEditor
+  PropertyEditor editor for TFont.Name. Simply provides listing font names. }
+
+  TFontNamePropertyEditor = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStringProc); override;
   end;
 
 

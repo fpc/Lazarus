@@ -24,8 +24,8 @@ unit RTTIGrids;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ObjectInspector, PropEdits, TypInfo, RTTICtrls,
-  Grids;
+  Classes, SysUtils, Controls, LCLProc, LCLType, ObjectInspector, PropEdits,
+  GraphPropEdits, TypInfo, RTTICtrls, Grids;
 
 type
   { TTICustomPropertyGrid }
@@ -98,14 +98,18 @@ type
   TTIGridProperty = class
   private
     FEditor: TPropertyEditor;
+    FEditorControl: TWinControl;
     FGrid: TTICustomGrid;
     FIndex: integer;
     FTitle: string;
     procedure SetTitle(const AValue: string);
+    procedure EditorControlKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   public
     constructor Create(TheGrid: TTICustomGrid; TheEditor: TPropertyEditor;
-      TheIndex: integer);
+                       TheIndex: integer);
     function PropInfo: PPropInfo;
+    function GetEditorControl: TWinControl;
   public
     property Editor: TPropertyEditor read FEditor;
     property Grid: TTICustomGrid read FGrid;
@@ -145,6 +149,9 @@ type
     procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
     procedure GetAutoFillColumnInfo(const Index: Integer;
                                     var aMin,aMax,aPriority: Integer); override;
+    procedure SelectEditor; override;
+    procedure DoEditorControlKeyUp(Sender: TObject; var Key: Word;
+      Shift: TShiftState); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -227,12 +234,85 @@ type
     property Visible;
   end;
   
+  
+  { TRegisteredTIGridControl }
+
+  TRegisteredTIGridControl = class
+  private
+    FPropEditorClass: TPropertyEditorClass;
+    FWinControlClass: TWinControlClass;
+  public
+    property PropEditorClass: TPropertyEditorClass read FPropEditorClass
+                                                   write FPropEditorClass;
+    property WinControlClass: TWinControlClass read FWinControlClass
+                                               write FWinControlClass;
+  end;
+
+
+procedure RegisterTIGridControl(PropEditorClass: TPropertyEditorClass;
+  WinControlClass: TWinControlClass);
+function FindTIGridControl(PropEditorClass: TPropertyEditorClass
+  ): TWinControlClass;
 
 procedure Register;
 
 
 implementation
 
+var
+  RegisteredTIGridControls: TList;
+
+procedure RegisterTIGridControl(PropEditorClass: TPropertyEditorClass;
+  WinControlClass: TWinControlClass);
+var
+  NewItem: TRegisteredTIGridControl;
+begin
+  if (PropEditorClass=nil) or (WinControlClass=nil) then exit;
+  if RegisteredTIGridControls=nil then RegisteredTIGridControls:=TList.Create;
+  NewItem:=TRegisteredTIGridControl.Create;
+  if NewItem=nil then ;
+  NewItem.PropEditorClass:=PropEditorClass;
+  NewItem.WinControlClass:=WinControlClass;
+  RegisteredTIGridControls.Add(NewItem);
+end;
+
+function FindTIGridControl(PropEditorClass: TPropertyEditorClass
+  ): TWinControlClass;
+var
+  BestItem: TRegisteredTIGridControl;
+  i: Integer;
+  CurItem: TRegisteredTIGridControl;
+begin
+  Result:=nil;
+  if RegisteredTIGridControls=nil then exit;
+  BestItem:=nil;
+  for i:=0 to RegisteredTIGridControls.Count-1 do begin
+    CurItem:=TRegisteredTIGridControl(RegisteredTIGridControls[i]);
+    debugln('FindTIGridControl PropEditorClass=',PropEditorClass.ClassName,
+      ' CurItem.PropEditorClass=',CurItem.PropEditorClass.ClassName,
+      ' CurItem.WinControlClass=',CurItem.WinControlClass.ClassName,
+      ' Candidate=',dbgs(PropEditorClass.InheritsFrom(CurItem.PropEditorClass))
+      );
+    if PropEditorClass.InheritsFrom(CurItem.PropEditorClass)
+    and ((BestItem=nil)
+         or (CurItem.PropEditorClass.InheritsFrom(BestItem.PropEditorClass)))
+    then begin
+      BestItem:=CurItem;
+    end;
+  end;
+  if BestItem<>nil then
+    Result:=BestItem.WinControlClass;
+end;
+
+procedure FinalizeTIGrids;
+var
+  i: Integer;
+begin
+  if RegisteredTIGridControls=nil then exit;
+  for i:=0 to RegisteredTIGridControls.Count-1 do
+    TObject(RegisteredTIGridControls[i]).Free;
+  RegisteredTIGridControls.Free;
+end;
 
 procedure Register;
 begin
@@ -396,6 +476,82 @@ begin
     aPriority := 0
   else
     aPriority := 1;
+end;
+
+procedure TTICustomGrid.SelectEditor;
+var
+  NewEditor: TWinControl;
+  ObjectIndex: integer;
+  PropertyIndex: integer;
+  CellType: TTIGridCellType;
+  NewRect: TRect;
+  PropLink: TCustomPropertyLink;
+  CurObject: TPersistent;
+  CurProp: TTIGridProperty;
+  PropName: String;
+begin
+  NewEditor:=nil;
+  MapCell(Col,Row,ObjectIndex,PropertyIndex,CellType);
+  if CellType=tgctValue then begin
+    CurProp:=Properties[PropertyIndex];
+    NewEditor:=CurProp.GetEditorControl;
+    // position
+    NewRect:=CellRect(Col,Row);
+    NewEditor.BoundsRect:=NewRect;
+    // connect to cell property
+    PropLink:=GetPropertyLinkOfComponent(NewEditor);
+    if PropLink<>nil then begin
+      CurObject:=GetTIObject(ObjectIndex);
+      PropName:=CurProp.Editor.GetPropInfo^.Name;
+      PropLink.SetObjectAndProperty(CurObject,PropName);
+    end;
+    if (goEditing in Options) and Assigned(OnSelectEditor) then
+      OnSelectEditor(Self,Col,Row,NewEditor);
+  end;
+  Editor:=NewEditor;
+end;
+
+procedure TTICustomGrid.DoEditorControlKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+
+  procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
+  begin
+    SelectActive:=false;
+    MoveNextSelectable(Rel, aCol, aRow);
+    Key:=0;
+  end;
+
+var
+  Relaxed: Boolean;
+begin
+  if Sender=nil then ;
+  if (Shift=[ssCtrl]) then begin
+    Relaxed:=not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
+    case Key of
+    VK_UP:
+      begin
+        MoveSel(True, 0, -1);
+      end;
+    VK_DOWN:
+      begin
+        MoveSel(True, 0, 1);
+      end;
+    VK_HOME:
+      begin
+        if ssCtrl in Shift then MoveSel(False, Col, FixedRows)
+        else
+          if Relaxed then MoveSel(False, FixedCols, Row)
+          else            MoveSel(False, Col, FixedRows);
+      end;
+    VK_END:
+      begin
+        if ssCtrl in Shift then MoveSel(False, Col, RowCount-1)
+        else
+          if Relaxed then MoveSel(False, ColCount-1, Row)
+          else            MoveSel(False, Col, RowCount-1);
+      end;
+    end;
+  end;
 end;
 
 constructor TTICustomGrid.Create(TheOwner: TComponent);
@@ -688,6 +844,12 @@ end;
 
 { TTIGridProperty }
 
+procedure TTIGridProperty.EditorControlKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Grid.DoEditorControlKeyUp(Sender,Key,Shift);
+end;
+
 procedure TTIGridProperty.SetTitle(const AValue: string);
 begin
   if FTitle=AValue then exit;
@@ -708,10 +870,37 @@ begin
   Result:=Editor.GetPropInfo;
 end;
 
+function TTIGridProperty.GetEditorControl: TWinControl;
+var
+  EditorClass: TWinControlClass;
+  Attr: TPropertyAttributes;
+begin
+  if FEditorControl=nil then begin
+    EditorClass:=FindTIGridControl(TPropertyEditorClass(Editor.ClassType));
+    if EditorClass=nil then begin
+      Attr:=Editor.GetAttributes;
+      if paValueList in Attr then
+        EditorClass:=TTIComboBox
+      else if (paDialog in Attr) and (paReadOnly in Attr) then
+        EditorClass:=TTIButton
+      else
+        EditorClass:=TTIEdit;
+    end;
+    FEditorControl:=EditorClass.Create(FGrid);
+    FEditorControl.OnKeyUp:=@EditorControlKeyUp;
+    FEditorControl.AutoSize:=false;
+  end;
+  Result:=FEditorControl;
+end;
+
 initialization
+  RegisteredTIGridControls:=nil;
   // property editor for TTICustomPropertyGrid.TIObject
   RegisterPropertyEditor(ClassTypeInfo(TPersistent),
     TTICustomPropertyGrid, 'TIObject', TTIObjectPropertyEditor);
+
+finalization
+  FinalizeTIGrids;
 
 end.
 

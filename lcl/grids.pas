@@ -516,7 +516,6 @@ type
     procedure EditorSetMode(const AValue: Boolean);
     procedure EditorSetValue;
     function  EditorAlwaysShown: Boolean;
-    procedure EditorShow(const SelAll: boolean);
     function  GetLeftCol: Integer;
     function  GetColCount: Integer;
     function  GetColWidths(Acol: Integer): Integer;
@@ -618,6 +617,7 @@ type
     procedure EditordoSetValue; virtual;
     function  EditorCanAcceptKey(const ch: Char): boolean; virtual;
     function  EditorIsReadOnly: boolean; virtual;
+    procedure EditorShow(const SelAll: boolean); virtual;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
     function  GetFixedcolor: TColor; virtual;
     function  GetSelectedColor: TColor; virtual;
@@ -3720,7 +3720,7 @@ var
 
   procedure MoveSel(Rel: Boolean; aCol,aRow: Integer);
   begin
-    // Always reset Offset in kerboard Events
+    // Always reset Offset in keyboard Events
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
@@ -4250,7 +4250,7 @@ begin
     Editor.Visible:=False;
     Editor.Parent:=nil;
     LCLIntf.SetFocus(Self.Handle);
-    FEDitorHiding:=False;
+    FEditorHiding:=False;
     {$IfDef dbgFocus} DebugLn('EditorHide FIN'); {$Endif}
   end;
 end;
