@@ -2052,10 +2052,12 @@ begin
 	    Widget:= nil;  
           end;
 	  if Widget <> nil then begin
-            if PGtkEditable(Widget)^.selection_start_pos < PGtkEditable(Widget)^.selection_end_pos then
+            if PGtkEditable(Widget)^.selection_start_pos
+               < PGtkEditable(Widget)^.selection_end_pos
+            then
               Result:= PGtkEditable(Widget)^.selection_start_pos
 	    else
-	      Result:= PGtkEditable(Widget)^.selection_end_pos
+	      Result:= PGtkEditable(Widget)^.current_pos;// selection_end_pos
           end else Result:= 0;
         end;
       end;
@@ -6839,6 +6841,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.322  2003/02/05 13:46:57  mattias
+  fixed TCustomEdit.SelStart when nothing selected
+
   Revision 1.321  2003/01/18 21:31:43  mattias
   fixed scrolling offset of TScrollingWinControl
 
