@@ -18,6 +18,12 @@ unit GTKProc;
 
 interface
 
+{$IFDEF win32}
+{$DEFINE NoGdkPixbufLib}
+{$ELSE}
+{off $DEFINE NoGdkPixbufLib}
+{$ENDIF}
+
 uses
   {$Ifndef Win32}
   X, XLib,//Font retrieval
