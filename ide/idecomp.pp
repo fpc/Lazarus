@@ -317,17 +317,18 @@ begin
   RegisterComponentsProc:=@RegisterComponents;
   
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
+  RegisterComponents('Standard','StdCtrls',[TLabel,TEdit,TMemo]);
   RegisterComponents('Standard','Buttons',[TButton]);
-  RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox,
-          TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox,
-          TStaticText]);
+  RegisterComponents('Standard','StdCtrls',[TCheckBox,
+          TRadioButton,TToggleBox, TListBox,TComboBox,TScrollBar,TGroupBox]);
   RegisterComponents('Standard', 'ExtCtrls',[TRadioGroup,TPanel]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
-  RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox,
-          TBevel,TImage]);
-  RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView,
-          TProgressBar,TToolBar,TTrackbar,TScrollBox,TUpDown]);
-  RegisterComponents('Additional','ImgList',[TImageList]);
+  RegisterComponents('Additional','ExtCtrls',[TImage, TShape, TBevel, TPaintBox]);
+  RegisterComponents('Additional','ComCtrls',[TStaticText, TScrollBox]);
+  RegisterComponents('Additional','ExtCtrls',[TNoteBook]);
+  RegisterComponents('Common Controls','ImgList',[TImageList]);
+  RegisterComponents('Common Controls','ComCtrls',[TTrackbar, TProgressBar,
+    TTreeView, TListView, TStatusBar, TToolBar, TUpDown]);
 
   RegisterComponents('Misc','Calendar',[TCalendar]);
   RegisterComponents('Misc','Arrow',[TArrow]);
