@@ -129,20 +129,20 @@ Mac OS X:
 Creating the DMG packages for FPC and Lazarus:
 
 1. create a temp directory with a usr/local hierarchy under it, owned
-   by root (e.g. sudo mkdir -p ~/pascal/fpcinst/usr/local)
+   by root (e.g. sudo mkdir -p ~/fpcinst/usr/local)
 2. cd fpc   (your fpc source directory)
 3. make all
-4. sudo make install INSTALL_PREFIX=~/pascal/fpcinst/usr/local
+4. sudo make install INSTALL_PREFIX=~/fpcinst/usr/local
    (it's very important that you use sudo, because the ownership info will be
    the same when it's installed on the user's computer and you don't want
    those files to belong to the user that happens to have the same uid as
    you have)
 5. cd compiler
-   sudo make installsymlink INSTALL_PREFIX=~/pascal/fpcinst/usr/local
+   sudo make installsymlink INSTALL_PREFIX=~/fpcinst/usr/local
 6. unzip the <lazarus>/tools/install/macosx/fpc_installer_info.zip somewhere,
    open "fpc 1.9.5.pmsp" (it will open in PackageMaker) change the "resources"
    path so it points to the unzipped fpc_resources directory and the "files"
-   path so it points to ~/pascal/fpcinst and then choose File->Create Package
+   path so it points to ~/fpcinst and then choose File->Create Package
 7. Put the package in a directory called "Free Pascal Compiler 1.9.5",
    add in the "Introduction.txt" and "ReadMe.txt" files from the dmg you
    already downloaded and create a (compressed or not doesn't really

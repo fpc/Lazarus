@@ -1473,6 +1473,7 @@ tools/getallmofiles.sh -text svneol=native#application/x-sh
 tools/getallpofiles.sh -text svneol=native#application/x-sh
 tools/install/build_fpc_rpm.sh -text svneol=native#application/x-sh
 tools/install/build_fpcsrc_rpm.sh -text svneol=native#application/x-sh
+tools/install/create_clean_lazarus_directory.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_deb.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_export_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_tgz_from_local_dir.sh -text svneol=native#application/x-sh

@@ -15,13 +15,11 @@ if [ ! -d $LazSrcDir/designer ]; then
   exit
 fi
 
-echo "copy $LazSrcDir to /tmp/lazarus ..."
+echo "remove /tmp/lazarus ..."
 cd /tmp
 rm -rf /tmp/lazarus
 cd -
-cp -a $LazSrcDir /tmp/lazarus
-
-sh clean_lazaru_directory.sh $LazSrcDir
+sh create_clean_lazarus_directory.sh $LazSrcDir /tmp/lazarus
 
 # pack
 echo "packing ..."
