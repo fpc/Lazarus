@@ -52,11 +52,11 @@ type
 
   TFontPitch = (fpDefault, fpVariable, fpFixed);
   TFontName = string;
-  TFontCharSet = 0..255;
   TFontDataName = string[LF_FACESIZE -1];
   TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
   TFontStyles = set of TFontStyle;
   TFontStylesbase = set of TFontStyle;
+  TFontCharSet = 0..255;
 
   TFontData = record
     Handle: HFont;
@@ -67,6 +67,21 @@ type
     Name: TFontDataName;
   end;
 
+const
+  // New TFont instances are initialized with the values in this structure.
+  // About font default values: The default font is chosen by the interfaces
+  // depending on the context. For example, there can be a different default
+  // font for a button and a groupbox.
+  DefFontData: TFontData = (
+    Handle: 0;
+    Height: 0;
+    Pitch: fpDefault;
+    Style: [];
+    Charset: DEFAULT_CHARSET;
+    Name: 'default'
+    );
+
+type
   { Reflects text style when drawn in a rectangle }
 
   TTextLayout = (tlTop, tlCenter, tlBottom);
@@ -340,21 +355,6 @@ const
   cmWhiteness = WHITENESS;
 
 
-const
-  // New TFont instances are initialized with the values in this structure.
-  // About font default values: The default font is chosen by the interfaces
-  // depending on the context. For example, there can be a different default
-  // font for a button and a groupbox.
-  DefFontData: TFontData = (
-    Handle: 0;
-    Height: 0;
-    Pitch: fpDefault;
-    Style: [];
-    Charset: DEFAULT_CHARSET;
-    Name: 'default'
-    );
-
-
 type
   TCanvas = class;
 
@@ -376,7 +376,7 @@ type
   private
     FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
-    Procedure DoChange(var msg); message LM_CHANGED;
+    Procedure DoChange(var Msg); message LM_CHANGED;
   protected
     procedure Changing; dynamic;
     procedure Changed; dynamic;
@@ -1784,6 +1784,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.161  2004/11/20 11:20:06  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.160  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 

@@ -440,7 +440,9 @@ end;
 
 function TFileDescSimplePascalProgram.GetLocalizedDescription: string;
 begin
-  Result:='Custom Program';
+  Result:='A simple Pascal Program file.'#13
+    +'This can be used for quick and dirty testing.'#13
+    +'Better create a new project.';
 end;
 
 function TFileDescSimplePascalProgram.CreateSource(const Filename, SourceName,

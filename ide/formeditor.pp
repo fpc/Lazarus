@@ -82,8 +82,8 @@ begin
       ADesigner.DrawDesignerItems(true);
     end;
   end;
-  for i:=0 to JITDataModuleList.Count-1 do begin
-    AForm:=GetDesignerForm(JITDataModuleList[i]);
+  for i:=0 to JITNonFormList.Count-1 do begin
+    AForm:=GetDesignerForm(JITNonFormList[i]);
     if AForm=nil then continue;
     ADesigner:=TDesigner(AForm.Designer);
     if ADesigner<>nil then begin

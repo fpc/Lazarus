@@ -15,8 +15,12 @@ BuildRoot: %{_tmppath}/fpcsrc-build%{version}
 # The normal redhat rpm scripts tests every installed file for requirements.
 # We install only sources, so we don't need the requirements.
 # But it seems, RPM ignores these macros:
+
+# %define _use_internal_dependency_generator 0
 %define __find_provides /tmp/do_nothing.sh
 %define __find_requires /tmp/do_nothing.sh
+# %define __find_requires %{nil}
+# AutoReq: 0
 
 # The normal redhat rpm scripts do not recognize properly, what files to strip
 # Hook our own strip command

@@ -1082,9 +1082,9 @@ begin
 
   gtk_label_set_text(ALabel, PChar(Caption));
   
-{$ifdef gtk1}
+  {$ifdef gtk1}
   gtk_label_set_pattern(ALabel, PChar(Pattern));
-{$endif gtk1}
+  {$endif gtk1}
   
   if AComponent = nil then Exit;
   if ASignalWidget = nil then Exit;
@@ -6324,9 +6324,33 @@ const
 var
   UseFont : PGDKFont;
   UnRef : Boolean;
+  Width: LongInt;
+
+  {procedure UseWidthHeuristic;
+  var
+    i: Integer;
+    l: Integer;
+    lBearing: LongInt;
+    rBearing: LongInt;
+    tmAscent: Longint;
+    tmDescent: Longint;
+    CurWidth: integer;
+    PC: PGdkWChar;
+  begin
+    l:=length(TestString[false]);
+    for i:=1 to l do begin
+      PC:=PGdkWChar(@TestString[true][i*2-1]);
+      gdk_text_extents_wc(UseFont, PC,
+        2, @lBearing, @rBearing, @CurWidth,
+        @tmAscent, @tmDescent);
+      debugln('UseWidthHeuristic i=',dbgs(i),' lBearing=',dbgs(lBearing),
+        ' rBearing=',dbgs(rBearing),' CurWidth=',dbgs(CurWidth),' ',HexStr(ord(PC^),8));
+    end;
+  end;}
+
+var
   AvgTxtLen: Integer;
   CachedFont: TGdkFontCacheItem;
-  width: LongInt;
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
@@ -6358,6 +6382,7 @@ begin
             gdk_text_extents_wc(UseFont, PGdkWChar(TestString[IsDoubleByteChar]),
               AvgTxtLen*2, @lBearing, @rBearing, @Width,
               @TextMetric.tmAscent, @TextMetric.tmDescent);
+            //debugln('TGtkWidgetSet.UpdateDCTextMetric A IsDoubleByteChar=',dbgs(IsDoubleByteChar),' Width=',dbgs(Width),' AvgTxtLen=',dbgs(AvgTxtLen));
             TextMetric.tmHeight := gdk_text_height(UseFont,
                                      PChar(TestString[IsDoubleByteChar]),
                                      AvgTxtLen*2)
@@ -6371,6 +6396,7 @@ begin
                                      AvgTxtLen)
                            {$IfNDef Win32} + TextMetric.tmdescent div 2{$EndIf};
           end;
+          //if Width<AvgTxtLen then UseWidthHeuristic;
           //TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
           TextMetric.tmAveCharWidth := Width div AvgTxtLen;
           if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
@@ -6942,6 +6968,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.609  2004/11/20 11:20:06  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.608  2004/11/08 19:11:55  mattias
   disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
 

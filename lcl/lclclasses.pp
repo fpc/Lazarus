@@ -19,6 +19,8 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+  Defines the base class for all LCL TComponents including controls.
 }
 unit LCLClasses;
 

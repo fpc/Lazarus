@@ -83,6 +83,7 @@ type
     procedure RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
     procedure UnregisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
     procedure UpdateDefaultPascalFileExtensions;
+  public
     property DefaultPascalFileExt: string read FDefaultPascalFileExt write SetDefaultPascalFileExt;
   end;
   

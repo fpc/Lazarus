@@ -32,13 +32,14 @@ unit NonControlForms;
 interface
 
 uses
-  Classes, SysUtils, Graphics, GraphType, Forms, Controls, IDEProcs;
+  Classes, SysUtils, Math, LCLProc, Graphics, GraphType, Forms, Controls,
+  IDEProcs;
   
 type
 
-  { TNonControlForm }
+  { TNonFormDesignerForm }
 
-  TNonControlForm = class(TForm)
+  TNonFormDesignerForm = class(TForm)
   private
     FFrameWidth: integer;
     FLookupRoot: TComponent;
@@ -61,21 +62,6 @@ type
   end;
   
   
-  { TDataModuleForm }
-  
-  TDataModuleForm = class(TNonControlForm)
-  private
-    function GetDataModule: TDataModule;
-    procedure SetDataModule(const AValue: TDataModule);
-  protected
-    procedure SetLookupRoot(const AValue: TComponent); override;
-  public
-    procedure DoLoadBounds; override;
-    procedure DoSaveBounds; override;
-  public
-    property DataModule: TDataModule read GetDataModule write SetDataModule;
-  end;
-  
 function CompareNonControlForms(Data1, Data2: Pointer): integer;
 function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
 
@@ -84,27 +70,27 @@ implementation
 
 function CompareNonControlForms(Data1, Data2: Pointer): integer;
 var
-  Form1: TNonControlForm;
-  Form2: TNonControlForm;
+  Form1: TNonFormDesignerForm;
+  Form2: TNonFormDesignerForm;
 begin
-  Form1:=TNonControlForm(Data1);
-  Form2:=TNonControlForm(Data2);
+  Form1:=TNonFormDesignerForm(Data1);
+  Form2:=TNonFormDesignerForm(Data2);
   Result:=integer(Form1.LookupRoot)-integer(Form2.LookupRoot);
 end;
 
 function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
 var
   LookupRoot: TComponent;
-  Form: TNonControlForm;
+  Form: TNonFormDesignerForm;
 begin
   LookupRoot:=TComponent(Key);
-  Form:=TNonControlForm(Data);
+  Form:=TNonFormDesignerForm(Data);
   Result:=integer(LookupRoot)-integer(Form.LookupRoot);
 end;
 
-{ TNonControlForm }
+{ TNonFormDesignerForm }
 
-procedure TNonControlForm.SetLookupRoot(const AValue: TComponent);
+procedure TNonFormDesignerForm.SetLookupRoot(const AValue: TComponent);
 begin
   if FLookupRoot=AValue then exit;
   DoSaveBounds;
@@ -115,26 +101,26 @@ begin
   DoLoadBounds;
 end;
 
-procedure TNonControlForm.SetFrameWidth(const AValue: integer);
+procedure TNonFormDesignerForm.SetFrameWidth(const AValue: integer);
 begin
   if FFrameWidth=AValue then exit;
   FFrameWidth:=AValue;
   Invalidate;
 end;
 
-constructor TNonControlForm.Create(TheOwner: TComponent);
+constructor TNonFormDesignerForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FFrameWidth:=1;
   ControlStyle:=ControlStyle-[csAcceptsControls];
 end;
 
-destructor TNonControlForm.Destroy;
+destructor TNonFormDesignerForm.Destroy;
 begin
   inherited Destroy;
 end;
 
-procedure TNonControlForm.Paint;
+procedure TNonFormDesignerForm.Paint;
 var
   ARect: TRect;
 begin
@@ -150,38 +136,22 @@ begin
   end;
 end;
 
-procedure TNonControlForm.DoLoadBounds;
-begin
-  if Assigned(OnLoadBounds) then OnLoadBounds(Self);
-end;
+procedure TNonFormDesignerForm.DoLoadBounds;
 
-procedure TNonControlForm.DoSaveBounds;
-begin
-  if Assigned(OnSaveBounds) then OnSaveBounds(Self);
-end;
+  procedure SetNewBounds(NewLeft, NewTop, NewWidth, NewHeight: integer);
+  begin
+    if NewWidth<=0 then NewWidth:=Width;
+    if NewHeight<=0 then NewHeight:=Height;
 
-{ TDataModuleForm }
+    NewWidth:=Max(20,Min(NewWidth,Screen.Width-50));
+    NewHeight:=Max(20,Min(NewHeight,Screen.Height-50));
+    NewLeft:=Max(0,Min(NewLeft,Screen.Width-NewWidth-50));
+    NewTop:=Max(0,Min(NewTop,Screen.Height-NewHeight-50));
 
-procedure TDataModuleForm.SetDataModule(const AValue: TDataModule);
-begin
-  LookupRoot:=AValue;
-end;
+    //debugln('TNonFormDesignerForm.DoLoadBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(NewLeft),',',dbgs(NewTop),',',dbgs(NewWidth),',',dbgs(NewHeight));
+    SetBounds(NewLeft,NewTop,Max(20,NewWidth),Max(NewHeight,20));
+  end;
 
-function TDataModuleForm.GetDataModule: TDataModule;
-begin
-  Result:=TDataModule(LookupRoot);
-end;
-
-procedure TDataModuleForm.SetLookupRoot(const AValue: TComponent);
-begin
-  if AValue=LookupRoot then exit;
-  if (AValue<>nil) and (not (AValue is TDataModule)) then
-    RaiseException('TDataModuleForm.SetLookupRoot AValue.ClassName='
-                   +AValue.ClassName);
-  inherited SetLookupRoot(AValue);
-end;
-
-procedure TDataModuleForm.DoLoadBounds;
 var
   CurDataModule: TDataModule;
   NewLeft: Integer;
@@ -189,29 +159,36 @@ var
   NewWidth: Integer;
   NewHeight: Integer;
 begin
-  inherited DoLoadBounds;
-  CurDataModule:=DataModule;
-  if CurDataModule<>nil then begin
+  if Assigned(OnLoadBounds) then OnLoadBounds(Self);
+  if LookupRoot is TDataModule then begin
+    CurDataModule:=TDataModule(LookupRoot);
     NewLeft:=CurDataModule.DesignOffset.X;
     NewTop:=CurDataModule.DesignOffset.Y;
     NewWidth:=CurDataModule.DesignSize.X;
     NewHeight:=CurDataModule.DesignSize.Y;
-    SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
+    
+    SetNewBounds(NewLeft,NewTop,NewWidth,NewHeight);
+  end else if LookupRoot<>nil then begin
+    NewLeft:=LongRec(LookupRoot.DesignInfo).Lo;
+    NewTop:=LongRec(LookupRoot.DesignInfo).Hi;
+    SetNewBounds(NewLeft,NewTop,Width,Height);
   end;
 end;
 
-procedure TDataModuleForm.DoSaveBounds;
-var
-  CurDataModule: TDataModule;
+procedure TNonFormDesignerForm.DoSaveBounds;
 begin
-  CurDataModule:=DataModule;
-  if CurDataModule<>nil then begin
-    CurDataModule.DesignOffset.X:=Left;
-    CurDataModule.DesignOffset.Y:=Top;
-    CurDataModule.DesignSize.X:=Width;
-    CurDataModule.DesignSize.Y:=Height;
+  if LookupRoot is TDataModule then begin
+    with TDataModule(LookupRoot) do begin
+      DesignOffset:=Point(Left,Top);
+      DesignSize:=Point(Width,Height);
+      //debugln('TNonFormDesignerForm.DoSaveBounds (TDataModule) ',dbgsName(LookupRoot),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y));
+    end;
+  end else if LookupRoot<>nil then begin
+    //debugln('TNonFormDesignerForm.DoSaveBounds ',dbgsName(LookupRoot),' ',dbgs(Left),',',dbgs(Top));
+    LongRec(LookupRoot.DesignInfo).Lo:=Left;
+    LongRec(LookupRoot.DesignInfo).Hi:=Top;
   end;
-  inherited DoSaveBounds;
+  if Assigned(OnSaveBounds) then OnSaveBounds(Self);
 end;
 
 end.

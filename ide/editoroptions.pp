@@ -100,7 +100,8 @@ const
     );
     
 const
-  SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint];
+  SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint]
+                                                  + [eoHalfPageScroll];
 
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information

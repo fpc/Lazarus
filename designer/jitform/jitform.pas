@@ -43,9 +43,8 @@ uses
 type
   // TJITForm is a template TForm descendent class that can be altered at
   // runtime
-  TJITForm = class(TForm)
-  protected
-    class function NewInstance: TObject; override;
+  // OBSOLETE:
+  {TJITForm = class(TForm)
   public
   end;
 
@@ -54,15 +53,12 @@ type
 
   // TJITDataModule is a template TDataModule descendent class that can be
   // altered at runtime
+  // OBSOLETE:
   TJITDataModule = class(TDataModule)
-  protected
-    class function NewInstance: TObject; override;
-    procedure ValidateRename(AComponent: TComponent;
-                             const CurName, NewName: string); override;
   public
   end;
 
-  TJITDataModuleClass = class of TJITDataModule;
+  TJITDataModuleClass = class of TJITDataModule;}
 
 
   // TPersistentWithTemplates
@@ -73,6 +69,8 @@ type
   end;
   
   TJITClass = class of TPersistent;
+
+procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
   
 implementation
 
@@ -81,10 +79,15 @@ implementation
 type
   TSetDesigningComponent = class(TComponent)
   public
-    class procedure SetDesigningOfControl(AComponent: TComponent; Value: Boolean);
+    class procedure SetDesigningOfComponent(AComponent: TComponent; Value: Boolean);
   end;
 
-procedure TSetDesigningComponent.SetDesigningOfControl(
+procedure SetComponentDesignMode(AComponent: TComponent; Value: Boolean);
+begin
+  TSetDesigningComponent.SetDesigningOfComponent(AComponent,true);
+end;
+
+procedure TSetDesigningComponent.SetDesigningOfComponent(
   AComponent: TComponent; Value: Boolean);
 begin
   AComponent.SetDesigning(Value);
@@ -99,33 +102,6 @@ begin
   // !!! do not write any code in here !!!
 end;
 {$IFDEF StackCheckOn}{$S+}{$ENDIF}
-
-{ TJITForm }
-
-function TJITForm.NewInstance: TObject;
-begin
-  Result:=inherited NewInstance;
-  TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
-end;
-
-{ TJITDataModule }
-
-function TJITDataModule.NewInstance: TObject;
-begin
-  Result:=inherited NewInstance;
-  TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
-end;
-
-procedure TJITDataModule.ValidateRename(AComponent: TComponent; const CurName,
-  NewName: string);
-var
-  Designer: TIDesigner;
-begin
-  inherited ValidateRename(AComponent, CurName, NewName);
-  Designer:=FindRootDesigner(Self);
-  if Designer <> nil then
-    Designer.ValidateRename(AComponent, CurName, NewName);
-end;
 
 end.
 

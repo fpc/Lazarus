@@ -1574,11 +1574,14 @@ begin
         else AverageWidth := InttoStr(lfWidth * 10);
       end;
 
-      // CharSetRegistry := '*';
-
-      // TODO: Match charset.
-      // CharSetCoding := '*';
+      if CharSetCoding =  '*' then begin
+        {if lfCharset=fcsISO_8859_2 then begin
+          CharSetRegistry:='iso8859';
+          CharSetCoding:='2';
+        end;}
+      end; 
     end;
+     
 
     {$IFDEF VerboseFonts}
     write('CreateFontIndirect->');
@@ -1632,8 +1635,16 @@ begin
     if LoadFont then exit;
 
     // try all spacings
-    Spacing := '*';
-    if LoadFont then exit;
+    if spacing<>'*' then begin 
+      Spacing := '*';
+      if LoadFont then exit;
+    end; 
+
+    if charSetCoding<>'*' then begin 
+      charsetCoding := '*';
+      charSetRegistry:= '*'; 
+      if LoadFont then exit;
+    end; 
 
     if (Foundry<>'*') then begin
       // try all Families
@@ -8729,6 +8740,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.373  2004/11/20 11:20:06  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.372  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 

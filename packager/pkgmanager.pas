@@ -49,14 +49,14 @@ uses
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, OldAvLTree,
   // IDE Interface
-  ProjectIntf, LazIDEIntf,
+  ProjectIntf, PackageIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, KeyMapping,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
-  MsgView, BuildLazDialog, DefineTemplates,
+  MsgView, BuildLazDialog, DefineTemplates, NewDialog,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg,
   // bosses
@@ -249,6 +249,42 @@ type
     function DoPublishPackage(APackage: TLazPackage; Flags: TPkgSaveFlags;
                               ShowDialog: boolean): TModalResult;
   end;
+
+
+  { TLazPackageDescriptors }
+
+  TLazPackageDescriptors = class(TPackageDescriptors)
+  private
+    fDestroying: boolean;
+    fItems: TList; // list of TProjectDescriptor
+  protected
+    function GetItems(Index: integer): TPackageDescriptor; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Count: integer; override;
+    function GetUniqueName(const Name: string): string; override;
+    function IndexOf(const Name: string): integer; override;
+    function FindByName(const Name: string): TPackageDescriptor; override;
+    procedure RegisterDescriptor(Descriptor: TPackageDescriptor); override;
+    procedure UnregisterDescriptor(Descriptor: TPackageDescriptor); override;
+    procedure AddDefaultPackageDescriptors;
+  public
+    property Items[Index: integer]: TPackageDescriptor read GetItems; default;
+  end;
+  
+  
+  { TPackageDescriptorStd }
+  
+  TPackageDescriptorStd = class(TPackageDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+var
+  LazPackageDescriptors: TLazPackageDescriptors;
 
 implementation
 
@@ -1568,6 +1604,9 @@ begin
     'PKGUNITPATH',nil,@MacroFunctionPkgUnitPath);
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
     'PKGINCPATH',nil,@MacroFunctionPkgIncPath);
+    
+  LazPackageDescriptors:=TLazPackageDescriptors.Create;
+  LazPackageDescriptors.AddDefaultPackageDescriptors;
 
   // idle handler
   Application.AddOnIdleHandler(@OnApplicationIdle,true);
@@ -1577,6 +1616,7 @@ destructor TPkgManager.Destroy;
 var
   Dependency: TPkgDependency;
 begin
+  FreeThenNil(LazPackageDescriptors);
   while FirstAutoInstallDependency<>nil do begin
     Dependency:=FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
@@ -3369,6 +3409,130 @@ begin
     end;
   end;
   Result:=mrOk;
+end;
+
+{ TLazPackageDescriptors }
+
+function TLazPackageDescriptors.GetItems(Index: integer): TPackageDescriptor;
+begin
+  Result:=TPackageDescriptor(FItems[Index]);
+end;
+
+constructor TLazPackageDescriptors.Create;
+begin
+  PackageDescriptors:=Self;
+  FItems:=TList.Create;
+end;
+
+destructor TLazPackageDescriptors.Destroy;
+var
+  i: Integer;
+begin
+  fDestroying:=true;
+  for i:=Count-1 downto 0 do Items[i].Release;
+  FItems.Free;
+  FItems:=nil;
+  PackageDescriptors:=nil;
+  inherited Destroy;
+end;
+
+function TLazPackageDescriptors.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TLazPackageDescriptors.GetUniqueName(const Name: string): string;
+var
+  i: Integer;
+begin
+  Result:=Name;
+  if IndexOf(Result)<0 then exit;
+  i:=0;
+  repeat
+    inc(i);
+    Result:=Name+IntToStr(i);
+  until IndexOf(Result)<0;
+end;
+
+function TLazPackageDescriptors.IndexOf(const Name: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Name,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TLazPackageDescriptors.FindByName(const Name: string
+  ): TPackageDescriptor;
+var
+  i: LongInt;
+begin
+  i:=IndexOf(Name);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+procedure TLazPackageDescriptors.RegisterDescriptor(
+  Descriptor: TPackageDescriptor);
+begin
+  if Descriptor.Name='' then
+    raise Exception.Create('TLazPackageDescriptors.RegisterDescriptor Descriptor.Name empty');
+  Descriptor.Name:=GetUniqueName(Descriptor.Name);
+  FItems.Add(Descriptor);
+end;
+
+procedure TLazPackageDescriptors.UnregisterDescriptor(
+  Descriptor: TPackageDescriptor);
+var
+  i: LongInt;
+begin
+  if fDestroying then exit;
+  i:=FItems.IndexOf(Descriptor);
+  if i<0 then
+    raise Exception.Create('TLazPackageDescriptors.UnregisterDescriptor');
+  FItems.Delete(i);
+  Descriptor.Release;
+end;
+
+procedure TLazPackageDescriptors.AddDefaultPackageDescriptors;
+var
+  i: Integer;
+  NewItem: TNewItemPackage;
+  PkgItem: TPackageDescriptor;
+begin
+  // standard package
+  RegisterDescriptor(TPackageDescriptorStd.Create);
+  
+  // register in new dialog: package category
+  NewIDEItems.Add(TNewIDEItemCategoryPackage.Create('Package'));
+  // register in new dialog: all package templates
+  for i:=0 to Count-1 do begin
+    PkgItem:=Items[i];
+    if not PkgItem.VisibleInNewDialog then continue;
+    NewItem:=TNewItemPackage.Create(PkgItem.Name,niifCopy,[niifCopy]);
+    NewItem.Descriptor:=PkgItem;
+    RegisterNewDialogItem('Package',NewItem);
+  end;
+end;
+
+{ TPackageDescriptorStd }
+
+constructor TPackageDescriptorStd.Create;
+begin
+  inherited Create;
+  Name:=PkgDescNameStandard;
+end;
+
+function TPackageDescriptorStd.GetLocalizedName: string;
+begin
+  Result:='Package';
+end;
+
+function TPackageDescriptorStd.GetLocalizedDescription: string;
+begin
+  Result:=Format(lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn,
+                 [#13]);
 end;
 
 end.

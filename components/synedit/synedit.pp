@@ -1944,11 +1944,14 @@ begin
   if not (sfIgnoreNextChar in fStateFlags) then begin
     {$IFDEF SYN_LAZARUS}
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
+    {$IFDEF VerboseKeyboard}
+    DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
+    {$ENDIF}
     {$ELSE}
     if Assigned(OnKeyPress) then OnKeyPress(Self, Key);
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
-    //Key was handled, any way, so eat it!
+    // Key was handled anyway, so eat it!
     Key:='';
   end else
     // don't ignore further keys

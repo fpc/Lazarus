@@ -209,16 +209,16 @@ end;
  The interiour of TBitBtn is created with a 4X4 table
  Depending in how the image and label are aligned, only a 
  columns or rows are used (like a 4x1 or 1x4 table). 
- This wat the table doesn't have to be recreated on changes.
+ This way the table doesn't have to be recreated on changes.
  So there are 4 positions 0, 1, 2, 3.
  Positions 1 and 2 are used for the label and image.
- Since this is always the case, spacing can be implenented
+ Since this is always the case, spacing can be implemented
  by setting the spacing of row/col 1
  To get a margin, a gtkInvisible is needed for bottom and 
  right, so the invisible is always in position 3. 
-} 
-
-function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): THandle; 
+}
+function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): THandle;
 var
   BitBtn: TCustomBitBtn;
   WidgetInfo: PWidgetInfo;
@@ -245,7 +245,8 @@ begin
   gtk_container_add(BitBtnInfo^.AlignWidget, BitBtnInfo^.TableWidget);
   
   BitBtnInfo^.LabelWidget := gtk_label_new('bitbtn');
-  gtk_table_attach(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget, 2, 3, 0, 4, 0, 0, 0, 0);
+  gtk_table_attach(BitBtnInfo^.TableWidget, BitBtnInfo^.LabelWidget,
+                   2, 3, 0, 4, 0, 0, 0, 0);
 
   BitBtnInfo^.SpaceWidget := nil;
   BitBtnInfo^.ImageWidget := nil;
@@ -293,12 +294,14 @@ begin
   // check for image
   if BitBtnInfo^.ImageWidget = nil
   then begin
-    BitBtnInfo^.ImageWidget := gtk_pixmap_new(GDIObject^.GDIPixmapObject, GDIObject^.GDIBitmapMaskObject);
+    BitBtnInfo^.ImageWidget :=
+     gtk_pixmap_new(GDIObject^.GDIPixmapObject, GDIObject^.GDIBitmapMaskObject);
     gtk_widget_show(BitBtnInfo^.ImageWidget);
     UpdateLayout(BitBtnInfo, ABitBtn.Layout, ABitBtn.Margin);
   end
   else begin
-    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject, GDIObject^.GDIBitmapMaskObject);
+    gtk_pixmap_set(BitBtnInfo^.ImageWidget, GDIObject^.GDIPixmapObject,
+                   GDIObject^.GDIBitmapMaskObject);
   end;
 end;
 
@@ -345,7 +348,8 @@ begin
   gtk_table_set_row_spacing(BitBtnInfo^.TableWidget, 1, AValue);
 end;
 
-procedure TGtkWSBitBtn.SetText(const AWinControl: TWinControl; const AText: String); 
+procedure TGtkWSBitBtn.SetText(const AWinControl: TWinControl;
+  const AText: String);
 var
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
@@ -357,10 +361,13 @@ begin
   BitBtnInfo := WidgetInfo^.UserData;                       
   if BitBtnInfo^.LabelWidget = nil then Exit;  
 
-  GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText, AWinControl, WidgetInfo^.CoreWidget, 'clicked');   
+  //debugln('TGtkWSBitBtn.SetText ',DbgStr(AText));
+  GtkWidgetSet.SetLabelCaption(BitBtnInfo^.LabelWidget, AText, AWinControl,
+                               WidgetInfo^.CoreWidget, 'clicked');
 end;
 
-procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
+procedure TGtkWSBitBtn.UpdateLayout(const AInfo: PBitBtnWidgetInfo;
+  const ALayout: TButtonLayout; const AMargin: Integer);
 begin
   if (AInfo^.ImageWidget = nil)
   and (AMargin < 0) 
@@ -385,27 +392,37 @@ begin
   case ALayout of 
     blGlyphLeft: begin
       if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget, 1, 2, 1, 3, 0, 0, 0, 0);
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget, 2, 3, 1, 3, 0, 0, 0, 0);
+      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                            1, 2, 1, 3, 0, 0, 0, 0);
+      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
+                       2, 3, 1, 3, 0, 0, 0, 0);
     end;
     blGlyphRight: begin
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget, 1, 2, 1, 3, 0, 0, 0, 0);
+      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
+                       1, 2, 1, 3, 0, 0, 0, 0);
       if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget, 2, 3, 1, 3, 0, 0, 0, 0);
+      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                            2, 3, 1, 3, 0, 0, 0, 0);
       if AInfo^.SpaceWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget, 3, 4, 1, 3, 0, 0, 0, 0);
+      then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
+                            3, 4, 1, 3, 0, 0, 0, 0);
     end;
     blGlyphTop: begin
       if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget, 1, 3, 1, 2, 0, 0, 0, 0);
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget, 1, 3, 2, 3, 0, 0, 0, 0);
+      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                            1, 3, 1, 2, 0, 0, 0, 0);
+      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
+                       1, 3, 2, 3, 0, 0, 0, 0);
     end; 
     blGlyphBottom: begin
-      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget, 1, 3, 1, 2, 0, 0, 0, 0);
+      gtk_table_attach(AInfo^.TableWidget, AInfo^.LabelWidget,
+                       1, 3, 1, 2, 0, 0, 0, 0);
       if AInfo^.ImageWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget, 1, 3, 2, 3, 0, 0, 0, 0);
+      then gtk_table_attach(AInfo^.TableWidget, AInfo^.ImageWidget,
+                            1, 3, 2, 3, 0, 0, 0, 0);
       if AInfo^.SpaceWidget <> nil
-      then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget, 1, 3, 3, 4, 0, 0, 0, 0);
+      then gtk_table_attach(AInfo^.TableWidget, AInfo^.SpaceWidget,
+                            1, 3, 3, 4, 0, 0, 0, 0);
     end;
   end;
   
@@ -420,7 +437,8 @@ begin
   then UpdateMargin(AInfo, ALayout, AMargin)
 end;
 
-procedure TGtkWSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
+procedure TGtkWSBitBtn.UpdateMargin(const AInfo: PBitBtnWidgetInfo;
+  const ALayout: TButtonLayout; const AMargin: Integer);
 begin
   if AMargin < 0 
   then begin

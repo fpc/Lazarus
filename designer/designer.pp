@@ -326,8 +326,8 @@ constructor TDesigner.Create(TheDesignerForm: TCustomForm;
 begin
   inherited Create;
   FForm := TheDesignerForm;
-  if FForm is TNonControlForm then
-    FLookupRoot:=TNonControlForm(FForm).LookupRoot
+  if FForm is TNonFormDesignerForm then
+    FLookupRoot:=TNonFormDesignerForm(FForm).LookupRoot
   else
     FLookupRoot:=FForm;
 

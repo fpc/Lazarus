@@ -1170,7 +1170,6 @@ const
   EASTEUROPE_CHARSET  = 238;
   OEM_CHARSET         = 255;
 
-
 //-----------
 // Font Sets
 //-----------
@@ -2248,6 +2247,9 @@ end.
 
 {
   $Log$
+  Revision 1.68  2004/11/20 11:20:06  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.67  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

@@ -244,6 +244,7 @@ type
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
     property CustomOptions: string read fCustomOptions write SetCustomOptions;
   end;
+  
 
   { TLazProjectFile }
 
@@ -261,6 +262,7 @@ type
                                       write SetIsPartOfProject;
     property Filename: string read GetFilename;
   end;
+  
 
   { TProjectFileDescriptor }
 
@@ -370,7 +372,7 @@ function FileDescriptorText: TProjectFileDescriptor;
 type
   TLazProject = class;
 
-  { TProjectDescriptor }
+  { TProjectDescriptor - Template for initializing new projects }
   
   TProjectFlag = (
     pfSaveClosedUnits,     // save info about closed files (not part of project)
@@ -409,7 +411,7 @@ type
   end;
 
 
-  { TLazProject }
+  { TLazProject - interface class to a Lazarus project }
 
   TLazProject = class(TPersistent)
   private
@@ -491,6 +493,7 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 
 
 implementation
+
 
 function FileDescriptorUnit: TProjectFileDescriptor;
 begin
@@ -600,6 +603,7 @@ begin
   FReferenceCount:=1;
   DefaultResFileExt:='.lrs';
   AddToProject:=true;
+  VisibleInNewDialog:=true;
 end;
 
 function TProjectFileDescriptor.GetLocalizedName: string;

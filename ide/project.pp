@@ -86,7 +86,7 @@ type
          this attribute contains the component name,
          even if the unit is not loaded,
          or the designer form is not created.
-         A component can be a TForm or a TDataModule }
+         A component can be for example a TForm or a TDataModule }
     fComponentResourceName: string;
     FComponentLastBinStreamSize: TStreamSeekType;
     FComponentLastLFMStreamSize: TStreamSeekType;
@@ -3130,6 +3130,9 @@ end.
 
 {
   $Log$
+  Revision 1.170  2004/11/20 11:20:05  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.169  2004/10/12 08:23:20  mattias
   fixed compiler options interface double variables
 

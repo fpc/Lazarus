@@ -442,7 +442,7 @@ type
     // methods for start
     procedure LoadGlobalOptions;
     procedure SetupMainMenu; override;
-    procedure SetuptStandardProjectTypes;
+    procedure SetupStandardProjectTypes;
     procedure SetRecentFilesMenu;
     procedure SetRecentProjectFilesMenu;
     procedure SetupFileMenu; override;
@@ -959,7 +959,8 @@ begin
   ConnectMainBarEvents;
   
   // create main IDE register items
-  SetuptStandardProjectTypes;
+  NewIDEItems:=TNewIDEItemCategories.Create;
+  SetupStandardProjectTypes;
 
   // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(nil);
@@ -1042,6 +1043,7 @@ begin
   FreeThenNil(MacroList);
   FreeThenNil(LazProjectFileDescriptors);
   FreeThenNil(LazProjectDescriptors);
+  FreeThenNil(NewIDEItems);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
@@ -1545,7 +1547,7 @@ begin
   SetupHelpMenu;
 end;
 
-procedure TMainIDE.SetuptStandardProjectTypes;
+procedure TMainIDE.SetupStandardProjectTypes;
 var
   FileDescPascalUnit: TFileDescPascalUnit;
   FileDescPascalUnitWithForm: TFileDescPascalUnitWithForm;
@@ -1555,6 +1557,11 @@ var
   ProjDescApplication: TProjectApplicationDescriptor;
   ProjDescProgram: TProjectProgramDescriptor;
   ProjDescCustomProgram: TProjectManualProgramDescriptor;
+  i: Integer;
+  NewItemFile: TNewItemProjectFile;
+  NewItemProject: TNewItemProject;
+  FileItem: TProjectFileDescriptor;
+  ProjectItem: TProjectDescriptor;
 begin
   // file descriptors ----------------------------------------------------------
   LazProjectFileDescriptors:=TLazProjectFileDescriptors.Create;
@@ -1585,6 +1592,25 @@ begin
   // custom program
   ProjDescCustomProgram:=TProjectManualProgramDescriptor.Create;
   LazProjectDescriptors.RegisterDescriptor(ProjDescCustomProgram);
+
+  NewIDEItems.Add(TNewIDEItemCategoryFile.Create('File'));
+  NewIDEItems.Add(TNewIDEItemCategoryProject.Create('Project'));
+
+  // TODO: move this mechanism to LazProjectFileDescriptors.RegisterFileDescriptor
+  for i:=0 to LazProjectFileDescriptors.Count-1 do begin
+    FileItem:=LazProjectFileDescriptors[i];
+    if not FileItem.VisibleInNewDialog then continue;
+    NewItemFile:=TNewItemProjectFile.Create(FileItem.Name,niifCopy,[niifCopy]);
+    NewItemFile.Descriptor:=FileItem;
+    RegisterNewDialogItem('File',NewItemFile);
+  end;
+  for i:=0 to LazProjectDescriptors.Count-1 do begin
+    ProjectItem:=LazProjectDescriptors[i];
+    if not ProjectItem.VisibleInNewDialog then continue;
+    NewItemProject:=TNewItemProject.Create(ProjectItem.Name,niifCopy,[niifCopy]);
+    NewItemProject.Descriptor:=ProjectItem;
+    RegisterNewDialogItem('Project',NewItemProject);
+  end;
 end;
 
 procedure TMainIDE.SetRecentFilesMenu;
@@ -3858,6 +3884,7 @@ var
   DesignerForm: TCustomForm;
   NewClassName: String;
   NewAncestorName: String;
+  APersistentClass: TPersistentClass;
 begin
   CloseDesignerForm(AnUnitInfo);
 
@@ -3894,12 +3921,23 @@ begin
 
       // find the ancestor type in the source
       NewAncestorName:='';
+      AncestorType:=TForm;
       CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,NewClassName,
                                     NewAncestorName,true);
-      if AnsiCompareText(NewAncestorName,'TDataModule')=0 then
-        AncestorType:=TDataModule
-      else
-        AncestorType:=TForm;
+      if NewAncestorName<>'' then begin
+        if AnsiCompareText(NewAncestorName,'TDataModule')=0 then begin
+          // use our TDataModule
+          // (some fpc versions have non designable TDataModule)
+          AncestorType:=TDataModule;
+        end else begin
+          APersistentClass:=Classes.GetClass(NewAncestorName);
+          if (APersistentClass<>nil)
+          and (APersistentClass.InheritsFrom(TComponent)) then begin
+            // ancestor type is a registered component class
+            AncestorType:=TComponentClass(APersistentClass);
+          end;
+        end;
+      end;
       DebugLn('TMainIDE.DoLoadLFM AncestorClassName=',NewAncestorName,' AncestorType=',AncestorType.ClassName);
 
       // convert text to binary format
@@ -3932,7 +3970,7 @@ begin
       // create JIT component
       CInterface := TComponentInterface(
                       FormEditor1.CreateComponentFromStream(BinLFMStream,
-                                                            AncestorType,true));
+                            AncestorType,copy(AnUnitInfo.UnitName,1,255),true));
       if CInterface=nil then begin
         // error streaming component -> examine lfm file
         DebugLn('ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
@@ -4505,28 +4543,22 @@ end;
 
 function TMainIDE.DoNewOther: TModalResult;
 var
-  NewIDEItem: TNewIDEItem;
+  NewIDEItem: TNewIDEItemTemplate;
 begin
   Result:=ShowNewIDEItemDialog(NewIDEItem);
   try
     if Result<>mrOk then exit;
-    case NewIDEItem.TheType of
-    // files
-    niiText: Result:=DoNewEditorFile(FileDescriptorText,'','',
-                                     [nfOpenInEditor,nfCreateDefaultSrc]);
-    niiUnit: Result:=DoNewEditorFile(FileDescriptorUnit,'','',
-                                     [nfOpenInEditor,nfCreateDefaultSrc]);
-    niiForm: Result:=DoNewEditorFile(FileDescriptorForm,'','',
-                                     [nfOpenInEditor,nfCreateDefaultSrc]);
-    niiDataModule: Result:=DoNewEditorFile(FileDescriptorDatamodule,'','',
-                                     [nfOpenInEditor,nfCreateDefaultSrc]);
-    // projects
-    niiApplication: DoNewProject(ProjectDescriptorApplication);
-    niiFPCProject: DoNewProject(ProjectDescriptorProgram);
-    niiCustomProject: DoNewProject(ProjectDescriptorCustomProgram);
-    // packages
-    niiPackage: PkgBoss.DoNewPackage;
-    else
+    if NewIDEItem is TNewItemProjectFile then begin
+      // file
+      Result:=DoNewEditorFile(TNewItemProjectFile(NewIDEItem).Descriptor,
+                                     '','',[nfOpenInEditor,nfCreateDefaultSrc]);
+    end else if NewIDEItem is TNewItemProject then begin
+      // project
+      Result:=DoNewProject(TNewItemProject(NewIDEItem).Descriptor);
+    end else if NewIDEItem is TNewItemPackage then begin
+      // packages
+      PkgBoss.DoNewPackage;
+    end else begin
       MessageDlg(ueNotImplCap,
                  lisSorryThisTypeIsNotYetImplemented,
         mtInformation,[mbOk],0);
@@ -10974,6 +11006,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.794  2004/11/20 11:20:05  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.793  2004/11/19 12:23:43  vincents
   fixed WaitForLazarus: close process handle after use.
 

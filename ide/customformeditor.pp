@@ -123,7 +123,7 @@ each control that's dropped onto the form
     FDefineProperties: TAVLTree;
     function GetPropertyEditorHook: TPropertyEditorHook;
   protected
-    FNonControlForms: TAVLTree; // tree of TNonControlForm sorted for LookupRoot
+    FNonControlForms: TAVLTree; // tree of TNonFormDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
@@ -137,7 +137,7 @@ each control that's dropped onto the form
     function FindNonControlFormNode(LookupRoot: TComponent): TAVLTreeNode;
   public
     JITFormList: TJITForms;// designed forms
-    JITDataModuleList: TJITDataModules;// designed data modules
+    JITNonFormList: TJITNonFormComponents;// designed data modules
 
     constructor Create;
     destructor Destroy; override;
@@ -165,8 +165,8 @@ each control that's dropped onto the form
     function FindJITListByClassName(const AComponentClassName: string
                                     ): TJITComponentList;
     function GetDesignerForm(AComponent: TComponent): TCustomForm; override;
-    function FindNonControlForm(LookupRoot: TComponent): TNonControlForm;
-    function CreateNonControlForm(LookupRoot: TComponent): TNonControlForm;
+    function FindNonControlForm(LookupRoot: TComponent): TNonFormDesignerForm;
+    function CreateNonControlForm(LookupRoot: TComponent): TNonFormDesignerForm;
     procedure RenameJITComponent(AComponent: TComponent;
                                  const NewName: shortstring);
     procedure UpdateDesignerFormName(AComponent: TComponent);
@@ -198,6 +198,7 @@ each control that's dropped onto the form
                              X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateComponentFromStream(BinStream: TStream;
                        AncestorType: TComponentClass;
+                       const NewUnitName: ShortString;
                        Interactive: boolean): TIComponentInterface; override;
     Function CreateChildComponentFromStream(BinStream: TStream;
                        ComponentClass: TComponentClass; Root: TComponent;
@@ -747,9 +748,9 @@ begin
   JITFormList.OnReaderError:=@JITListReaderError;
   JITFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
 
-  JITDataModuleList := TJITDataModules.Create;
-  JITDataModuleList.OnReaderError:=@JITListReaderError;
-  JITDataModuleList.OnPropertyNotFound:=@JITListPropertyNotFound;
+  JITNonFormList := TJITNonFormComponents.Create;
+  JITNonFormList.OnReaderError:=@JITListReaderError;
+  JITNonFormList.OnPropertyNotFound:=@JITListPropertyNotFound;
 
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
@@ -765,7 +766,7 @@ begin
     FreeAndNil(FDefineProperties);
   end;
   FreeAndNil(JITFormList);
-  FreeAndNil(JITDataModuleList);
+  FreeAndNil(JITNonFormList);
   FreeAndNil(FComponentInterfaces);
   FreeAndNil(FSelection);
   FreeAndNil(FNonControlForms);
@@ -818,15 +819,15 @@ Begin
         if JITFormList.IsJITForm(AComponent) then
           // free a form component
           JITFormList.DestroyJITComponent(AComponent)
-        else if JITDataModuleList.IsJITDataModule(AComponent) then begin
-          // free a datamodule and its designer form
+        else if JITNonFormList.IsJITNonForm(AComponent) then begin
+          // free a non form component and its designer form
           AForm:=GetDesignerForm(AComponent);
-          if not (AForm is TNonControlForm) then
-            RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonControlForm? '+AComponent.ClassName);
+          if not (AForm is TNonFormDesignerForm) then
+            RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonFormDesignerForm? '+AComponent.ClassName);
           FNonControlForms.Remove(AForm);
-          TNonControlForm(AForm).LookupRoot:=nil;
+          TNonFormDesignerForm(AForm).LookupRoot:=nil;
           AForm.Free;
-          JITDataModuleList.DestroyJITComponent(AComponent);
+          JITNonFormList.DestroyJITComponent(AComponent);
         end else
           RaiseException('TCustomFormEditor.DeleteControl '+AComponent.ClassName);
       end;
@@ -993,7 +994,7 @@ end;
 function TCustomFormEditor.IsJITComponent(AComponent: TComponent): boolean;
 begin
   Result:=JITFormList.IsJITForm(AComponent)
-          or JITDataModuleList.IsJITDataModule(AComponent);
+          or JITNonFormList.IsJITNonForm(AComponent);
 end;
 
 function TCustomFormEditor.GetJITListOfType(AncestorType: TComponentClass
@@ -1001,8 +1002,8 @@ function TCustomFormEditor.GetJITListOfType(AncestorType: TComponentClass
 begin
   if AncestorType.InheritsFrom(TForm) then
     Result:=JITFormList
-  else if AncestorType.InheritsFrom(TDataModule) then
-    Result:=JITDataModuleList
+  else if AncestorType.InheritsFrom(TComponent) then
+    Result:=JITNonFormList
   else
     Result:=nil;
 end;
@@ -1012,8 +1013,8 @@ function TCustomFormEditor.FindJITList(AComponent: TComponent
 begin
   if JITFormList.IndexOf(AComponent)>=0 then
     Result:=JITFormList
-  else if JITDataModuleList.IndexOf(AComponent)>=0 then
-    Result:=JITDataModuleList
+  else if JITNonFormList.IndexOf(AComponent)>=0 then
+    Result:=JITNonFormList
   else
     Result:=nil;
 end;
@@ -1023,8 +1024,8 @@ function TCustomFormEditor.FindJITListByClassName(
 begin
   if JITFormList.FindComponentByClassName(AComponentClassName)>=0 then
     Result:=JITFormList
-  else if JITDataModuleList.FindComponentByClassName(AComponentClassName)>=0 then
-    Result:=JITDataModuleList
+  else if JITNonFormList.FindComponentByClassName(AComponentClassName)>=0 then
+    Result:=JITNonFormList
   else
     Result:=nil;
 end;
@@ -1045,24 +1046,24 @@ begin
 end;
 
 function TCustomFormEditor.FindNonControlForm(LookupRoot: TComponent
-  ): TNonControlForm;
+  ): TNonFormDesignerForm;
 var
   AVLNode: TAVLTreeNode;
 begin
   AVLNode:=FindNonControlFormNode(LookupRoot);
   if AVLNode<>nil then
-    Result:=TNonControlForm(AVLNode.Data)
+    Result:=TNonFormDesignerForm(AVLNode.Data)
   else
     Result:=nil;
 end;
 
 function TCustomFormEditor.CreateNonControlForm(LookupRoot: TComponent
-  ): TNonControlForm;
+  ): TNonFormDesignerForm;
 begin
   if FindNonControlFormNode(LookupRoot)<>nil then
     RaiseException('TCustomFormEditor.CreateNonControlForm exists already');
-  if LookupRoot is TDataModule then begin
-    Result:=TDataModuleForm.Create(nil);
+  if LookupRoot is TComponent then begin
+    Result:=TNonFormDesignerForm.Create(nil);
     Result.LookupRoot:=LookupRoot;
     FNonControlForms.Add(Result);
   end else
@@ -1083,7 +1084,7 @@ end;
 
 procedure TCustomFormEditor.UpdateDesignerFormName(AComponent: TComponent);
 var
-  ANonControlForm: TNonControlForm;
+  ANonControlForm: TNonFormDesignerForm;
 begin
   ANonControlForm:=FindNonControlForm(AComponent);
   DebugLn('TCustomFormEditor.UpdateDesignerFormName ',
@@ -1117,7 +1118,7 @@ end;
 procedure TCustomFormEditor.SaveHiddenDesignerFormProperties(
   AComponent: TComponent);
 var
-  NonControlForm: TNonControlForm;
+  NonControlForm: TNonFormDesignerForm;
 begin
   NonControlForm:=FindNonControlForm(AComponent);
   if NonControlForm<>nil then
@@ -1140,7 +1141,7 @@ end;
 
 function TCustomFormEditor.DesignerCount: integer;
 begin
-  Result:=JITFormList.Count+JITDataModuleList.Count;
+  Result:=JITFormList.Count+JITNonFormList.Count;
 end;
 
 function TCustomFormEditor.GetDesigner(Index: integer): TIDesigner;
@@ -1150,7 +1151,7 @@ begin
   if Index<JITFormList.Count then
     Result:=JITFormList[Index].Designer
   else begin
-    AForm:=GetDesignerForm(JITDataModuleList[Index-JITFormList.Count]);
+    AForm:=GetDesignerForm(JITNonFormList[Index-JITFormList.Count]);
     Result:=TIDesigner(AForm.Designer);
   end;
 end;
@@ -1254,12 +1255,13 @@ Begin
         end;
       end;
     end else begin
-      // create a toplevel control -> a form or a datamodule
+      // create a toplevel component
+      // -> a form or a datamodule or a custom component
       ParentComponent:=nil;
       JITList:=GetJITListOfType(TypeClass);
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
-      NewJITIndex := JITList.AddNewJITComponent;
+      NewJITIndex := JITList.AddNewJITComponent(DefaultJITUnitName,TypeClass);
       if NewJITIndex >= 0 then begin
         // create component interface
         Temp := TComponentInterface.Create;
@@ -1321,10 +1323,9 @@ Begin
             CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
           if CompTop<0 then
             CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
-          DesignOffset.X:=CompLeft;
-          DesignOffset.Y:=CompTop;
-          DesignSize.X:=CompWidth;
-          DesignSize.Y:=CompHeight;
+          DesignOffset:=Point(CompLeft,CompTop);
+          DesignSize:=Point(CompWidth,CompHeight);
+          //debugln('TCustomFormEditor.CreateComponent TDataModule Bounds ',dbgsName(Temp.Component),' ',dbgs(DesignOffset.X),',',dbgs(DesignOffset.Y),' ',HexStr(Cardinal(Temp.Component),8),' ',HexStr(Cardinal(@DesignOffset),8));
         end;
       end
       else begin
@@ -1377,7 +1378,7 @@ end;
 
 Function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream; AncestorType: TComponentClass;
-  Interactive: boolean): TIComponentInterface;
+  const NewUnitName: ShortString; Interactive: boolean): TIComponentInterface;
 var
   NewJITIndex: integer;
   NewComponent: TComponent;
@@ -1388,7 +1389,8 @@ begin
   if JITList=nil then
     RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                    AncestorType.ClassName);
-  NewJITIndex := JITList.AddJITComponentFromStream(BinStream,Interactive);
+  NewJITIndex := JITList.AddJITComponentFromStream(BinStream,AncestorType,
+                                                   NewUnitName,Interactive);
   if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
@@ -1479,12 +1481,13 @@ var
     APersistentClass: TPersistentClass;
   begin
     Result:=false;
+    
     // try to find the AClassName in the registered components
     if APersistent=nil then begin
       CacheItem.RegisteredComponent:=IDEComponentPalette.FindComponent(AClassname);
       if (CacheItem.RegisteredComponent<>nil)
       and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
-        debugln('TCustomFormEditor.GetDefineProperties Component is registered');
+        debugln('TCustomFormEditor.GetDefineProperties ComponentClass ',AClassName,' is registered');
         if not CreateTempPersistent(CacheItem.RegisteredComponent.ComponentClass)
         then exit;
       end;
@@ -1494,7 +1497,7 @@ var
     if APersistent=nil then begin
       APersistentClass:=Classes.GetClass(AClassName);
       if APersistentClass<>nil then begin
-        debugln('TCustomFormEditor.GetDefineProperties Persistent is registered');
+        debugln('TCustomFormEditor.GetDefineProperties PersistentClass ',AClassName,' is registered');
         if not CreateTempPersistent(APersistentClass) then exit;
       end;
     end;
@@ -1503,7 +1506,9 @@ var
       // try to find the AClassName in the open forms/datamodules
       APersistent:=FindJITComponentByClassName(AClassName);
       if APersistent<>nil then
-        debugln('TCustomFormEditor.GetDefineProperties Component is a resource');
+        debugln('TCustomFormEditor.GetDefineProperties ComponentClass ',
+          AClassName,' is a resource,'
+          +' but inheriting design is not yet implemented');
     end;
 
     // try default classes

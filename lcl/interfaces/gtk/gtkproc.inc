@@ -7183,7 +7183,6 @@ var
   NewColor: TGdkColor;
   MainWidget: PGtkWidget;
   FontHandle: HFONT;
-  i: Integer;
   FreeFontName: boolean;
   FreeFontSetName: boolean;
 
@@ -7879,6 +7878,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.321  2004/11/20 11:20:06  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.320  2004/11/17 07:46:32  mattias
   fixed postcript printer TextOut/TextEntend  from Olivier
 

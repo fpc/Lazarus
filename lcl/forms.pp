@@ -430,8 +430,6 @@ type
     procedure UpdateShowing; override;
     procedure DoFirstShow; virtual;
     procedure UpdateWindowState;
-    procedure ValidateRename(AComponent: TComponent;
-                             const CurName, NewName: string); override;
     procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;

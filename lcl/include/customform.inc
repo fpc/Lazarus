@@ -749,19 +749,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  TCustomForm ValidateRename
-  
-  if AComponent is nil, then the name of Self is changed
-------------------------------------------------------------------------------}
-procedure TCustomForm.ValidateRename(AComponent: TComponent;
-  const CurName, NewName: String);
-begin
-  inherited ValidateRename(AComponent, CurName, NewName);
-  if FDesigner <> nil then
-    FDesigner.ValidateRename(AComponent, CurName, NewName);
-end;
-
-{------------------------------------------------------------------------------
   procedure TCustomForm.SetZOrder(Topmost: Boolean);
 ------------------------------------------------------------------------------}
 procedure TCustomForm.SetZOrder(Topmost: Boolean);
@@ -1833,6 +1820,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.165  2004/11/20 11:20:06  mattias
+  implemented creating classes at run time from any TComponent descendant
+
   Revision 1.164  2004/11/10 20:53:18  vincents
   Destroy menu handle, when destroying form handle.
 
