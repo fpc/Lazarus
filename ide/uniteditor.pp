@@ -71,7 +71,9 @@ type
 
   TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
 
-  TOnCreateDeleteBreakPoint = procedure(Sender: TObject; line:integer) of object;
+  TOnAddWatch = function(Sender: TObject): boolean of object;
+  TOnCreateDeleteBreakPoint = function(Sender: TObject;
+                                       Line:integer): boolean of object;
 
   TOnProcessUserCommand = procedure(Sender: TObject;
             Command: word; var Handled: boolean) of object;
@@ -365,7 +367,7 @@ type
     FProcessingCommand: boolean;
     FSourceEditorList : TList; // list of TSourceEditor
     FOnAddJumpPoint: TOnAddJumpPoint;
-    FOnAddWatchAtCursor: TNotifyEvent;
+    FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TNotifyEvent;
     FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
     FOnCtrlMouseUp: TMouseEvent;
@@ -409,8 +411,8 @@ type
     // PopupMenu
     Procedure BuildPopupMenu;
 
-    Procedure BreakPointCreated(Sender : TObject; Line : Integer);
-    Procedure BreakPointDeleted(Sender : TObject; Line : Integer);
+    function BreakPointCreated(Sender : TObject; Line : Integer): boolean;
+    function BreakPointDeleted(Sender : TObject; Line : Integer): boolean;
 
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
@@ -607,7 +609,7 @@ type
                      read FOnUserCommandProcessed write FOnUserCommandProcessed;
     property OnViewJumpHistory: TNotifyEvent
                                read FOnViewJumpHistory write FOnViewJumpHistory;
-    property OnAddWatchAtCursor: TNotifyEvent
+    property OnAddWatchAtCursor: TOnAddWatch
                              read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
     property OnCreateBreakPoint: TOnCreateDeleteBreakPoint
                              read FOnCreateBreakPoint write FOnCreateBreakPoint;
@@ -1189,13 +1191,14 @@ procedure TSourceEditor.SetBreakPoint(const ALine: Integer;
 var
   BreakPtMark: TSynEditMark;
 begin
+  if Assigned(FOnCreateBreakPoint) then
+    if not FOnCreateBreakPoint(Self, ALine) then exit;
   BreakPtMark := GetBreakPointMark(ALine);
   if BreakPtMark = nil
   then begin
     BreakPtMark := TSynEditMark.Create(FEditor);
     BreakPtMark.Line := ALine;
     FEditor.Marks.Place(BreakPtMark);
-    if Assigned(FOnCreateBreakPoint) then FOnCreateBreakPoint(Self, ALine);
   end;
   BreakPtMark.Visible := True;
   BreakPtMark.ImageIndex := SrcEditMarkerImgIndex[AType];
@@ -1409,7 +1412,7 @@ procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
 begin
   if not IsBreakPointMark(ABreakPointMark) then Exit;
   if Assigned(FOnDeleteBreakPoint) then
-    FOnDeleteBreakPoint(Self, ABreakPointMark.Line);
+    if not FOnDeleteBreakPoint(Self, ABreakPointMark.Line) then exit;
   FEditor.Marks.Remove(ABreakPointMark);
   ABreakPointMark.Free;
   FModified:=true;
@@ -3992,16 +3995,20 @@ begin
     OnAddWatchAtCursor(Self);
 end;
 
-Procedure TSourceNotebook.BreakPointCreated(Sender : TObject; Line : Integer);
+function TSourceNotebook.BreakPointCreated(Sender : TObject;
+  Line : Integer): boolean;
 begin
+  Result:=true;
   if Assigned(OnCreateBreakPoint) then
-    OnCreateBreakPoint(self,Line);
+    Result:=OnCreateBreakPoint(Self,Line);
 end;
 
-Procedure TSourceNotebook.BreakPointDeleted(Sender : TObject; Line : Integer);
+function TSourceNotebook.BreakPointDeleted(Sender : TObject;
+  Line: Integer): boolean;
 begin
+  Result:=true;
   if Assigned(OnDeleteBreakPoint) then
-    OnDeleteBreakPoint(self,Line);
+    Result:=OnDeleteBreakPoint(Self,Line);
 end;
 
 procedure TSourceNotebook.SetIncrementalSearchStr(const AValue: string);
