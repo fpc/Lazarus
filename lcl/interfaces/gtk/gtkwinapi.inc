@@ -746,7 +746,6 @@ function TgtkObject.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
   GdiObject: PGdiObject;
-  //RawImage: PGDI_RGBImage;
   DefGdkWindow: PGdkWindow;
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
@@ -855,6 +854,7 @@ begin
     exit;
     
   try
+    {$IFDEF VerboseRawImage}
     writeln('TgtkObject.CreateBitmapFromRawImage A ',
       ' Depth=',RawImage.Description.Depth,
       ' Width=',RawImage.Description.Width,
@@ -867,6 +867,7 @@ begin
       ' PaletteSize=',RawImage.PaletteSize,
       ' BitsPerPixel=',RawImage.Description.BitsPerPixel,
       '');
+    {$ENDIF}
 
     // ToDo: check description
 
@@ -891,11 +892,13 @@ begin
 
       Visual:=gdk_visual_get_best_with_depth(ImgDepth);
       GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
+      {$IFDEF VerboseRawImage}
       writeln('TgtkObject.CreateBitmapFromRawImage GdkImage: ',
         ' BytesPerLine=',GdkImage^.bpl,
         ' BytesPerPixel=',GdkImage^.bpp,
         ' ByteOrder=',GdkImage^.byte_order,
         '');
+      {$ENDIF}
       if (RawImage.Description.BitsPerPixel<>(GdkImage^.bpp shl 3)) then
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible BitsPerPixel');
       if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then
@@ -4204,7 +4207,9 @@ begin
   end;
 
   DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
+  {$IFDEF VerboseRawImage}
   writeln('TgtkObject.GetRawImageFromDevice A DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+  {$ENDIF}
   ARect:=SrcRect;
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
 
@@ -4248,7 +4253,9 @@ begin
       writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] GDI_RGBImage not implemented');
       exit;
     end;
+    {$IFDEF VerboseRawImage}
     writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8));
+    {$ENDIF}
     if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),SrcRect,NewRawImage)
     then exit;
 
@@ -8564,6 +8571,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.259  2003/07/04 22:06:49  mattias
+  implemented interface graphics
+
   Revision 1.258  2003/07/04 08:54:53  mattias
   implemented 16bit rawimages for gtk
 

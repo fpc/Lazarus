@@ -152,7 +152,7 @@ type
   TProgressStage = (psStarting, psRunning, psEnding);
   TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
                           PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-                          const Msg: string) of object;
+                          const Msg: string; var Continue : Boolean) of object;
   
   TBevelCut = (bvNone, bvLowered, bvRaised);
 
@@ -210,7 +210,7 @@ type
     Depth: cardinal; // used bits per pixel
     Width: cardinal;
     Height: cardinal;
-    PaletteEntries: integer;
+    PaletteColorCount: integer;
     ByteOrder: TRawImageByteOrder;
     LineOrder: TRawImageLineOrder;
     ColorCount: cardinal; // entries in color palette. Ignore when no palette.
@@ -228,6 +228,7 @@ type
     // The next values are only valid, if there is a separate alpha mask
     AlphaBitsPerPixel: cardinal; // bits per alpha mask pixel.
     AlphaLineEnd: TRawImageLineEnd;
+    // ToDo: add attributes for palette
   end;
   PRawImageDescription = ^TRawImageDescription;
   
@@ -244,6 +245,12 @@ type
   end;
   PRawImage = ^TRawImage;
 
+  TRawImagePosition = record
+    Byte: cardinal;
+    Bit: cardinal;
+  end;
+  PRawImagePosition = ^TRawImagePosition;
+
 implementation
 
 end.
@@ -251,6 +258,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/07/04 22:06:49  mattias
+  implemented interface graphics
+
   Revision 1.16  2003/07/03 18:10:55  mattias
   added fontdialog options to win32 intf from Wojciech Malinowski
 

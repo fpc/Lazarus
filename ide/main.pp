@@ -7527,6 +7527,7 @@ begin
             CodeToolBoss.GetCompiledSrcExtForDirectory(''),
             not UnitLinksChanged,CompilerUnitLinks,
             CodeToolsOpts);
+
     // save unitlinks
     if UnitLinksChanged
     or (CompilerUnitLinks<>InputHistories.FPCConfigCache.GetUnitLinks(''))
@@ -9330,6 +9331,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.618  2003/07/04 22:06:49  mattias
+  implemented interface graphics
+
   Revision 1.617  2003/06/28 19:31:57  mattias
   implemented cross find declaration
 

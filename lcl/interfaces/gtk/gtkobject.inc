@@ -1871,9 +1871,9 @@ begin
   // PaletteEntries
   if Desc^.HasPalette then begin
     // ToDo
-    Desc^.PaletteEntries:=0;
+    Desc^.PaletteColorCount:=0;
   end else
-    Desc^.PaletteEntries:=0;
+    Desc^.PaletteColorCount:=0;
   // ByteOrder
   if Visual^.byte_order=GDK_MSB_FIRST then
     Desc^.ByteOrder:=riboMSBFirst
@@ -1910,6 +1910,7 @@ begin
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
   Desc^.AlphaLineEnd:=rileByteBoundary;
 
+  {$IFDEF VerboseRawImage}
   with Desc^ do begin
     writeln('TgtkObject.GetDeviceRawImageDescription A ',
       ' Format=',ord(Format),
@@ -1936,6 +1937,7 @@ begin
       ' AlphaLineEnd=',ord(AlphaLineEnd),
     '');
   end;
+  {$ENDIF}
 
   Result:=true;
 end;
@@ -1958,22 +1960,29 @@ begin
     RaiseGDBException('TgtkObject.GetRawImageFromGdkWindow');
 
   // get raw image description
+  {$IFDEF VerboseRawImage}
   writeln('TgtkObject.GetRawImageFromGdkWindow A GdkWindow=',HexStr(Cardinal(GdkWindow),8));
+  {$ENDIF}
   if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
     exit;
 
-  writeln('TgtkObject.GetRawImageFromGdkWindow B ');
   // get intersection
   ARect:=SrcRect;
+  {$IFDEF VerboseRawImage}
   writeln('TgtkObject.GetRawImageFromGdkWindow D ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
+  {$ENDIF}
   MaxRect:=Rect(0,0,NewRawImage.Description.Width,
                     NewRawImage.Description.Height);
   SourceRect:=ARect;
   IntersectRect(SourceRect,ARect,MaxRect);
+  {$IFDEF VerboseRawImage}
   writeln('TgtkObject.GetRawImageFromGdkWindow E SourceRect=',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
+  {$ENDIF}
   NewRawImage.Description.Width:=SourceRect.Right-SourceRect.Left;
   NewRawImage.Description.Height:=SourceRect.Bottom-SourceRect.Top;
+  {$IFDEF VerboseRawImage}
   writeln('TgtkObject.GetRawImageFromGdkWindow F ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+  {$ENDIF}
   if (NewRawImage.Description.Width=0) or (NewRawImage.Description.Height=0)
   then exit;
 
@@ -1994,7 +2003,9 @@ begin
 
     NewRawImage.DataSize:=(NewRawImage.Description.BitsPerPixel shr 3)
                           *AnImage^.Width*AnImage^.Height;
+    {$IFDEF VerboseRawImage}
     writeln('TgtkObject.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
+    {$ENDIF}
     if NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height then
       RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
 
@@ -2019,11 +2030,13 @@ begin
     if NewRawImage.DataSize>0 then
       System.Move(AnImage^.Mem^,NewRawImage.Data^,NewRawImage.DataSize);
 
+    {$IFDEF VerboseRawImage}
     writeln('TgtkObject.GetRawImageFromGdkWindow H ',
       ' Width=',NewRawImage.Description.Width,
       ' Height=',NewRawImage.Description.Height,
       ' Depth=',NewRawImage.Description.Depth,
       ' DataSize=',NewRawImage.DataSize);
+    {$ENDIF}
   finally
     gdk_image_destroy(AnImage);
   end;
@@ -7881,6 +7894,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.391  2003/07/04 22:06:49  mattias
+  implemented interface graphics
+
   Revision 1.390  2003/07/04 08:54:53  mattias
   implemented 16bit rawimages for gtk
 

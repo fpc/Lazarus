@@ -30,10 +30,10 @@ uses
   // base classes
   LazQueue, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
   ExtendedStrings, DynamicArray, UTrace,
-  // the interface base
-  InterfaceBase,
   // base types and base functions
   LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
+  // the interface base
+  InterfaceBase, {$IFDEF UseFPImage}IntfGraphics,{$ENDIF}
   // components and functions
   Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
@@ -47,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2003/07/04 22:06:49  mattias
+  implemented interface graphics
+
   Revision 1.23  2002/08/19 15:15:23  mattias
   implemented TPairSplitter
 

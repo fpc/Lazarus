@@ -484,10 +484,12 @@ begin
 end;
 
 procedure TPicture.Progress(Sender: TObject; Stage: TProgressStage;
-  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
+  PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string;
+  var Continue: boolean);
 begin
+  Continue:=true;
   if Assigned(FOnProgress) then
-    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg);
+    FOnProgress(Sender, Stage, PercentDone, RedrawNow, R, Msg, Continue);
 end;
 
 procedure TPicture.ReadData(Stream: TStream);

@@ -346,7 +346,7 @@ type
     function GetWidth: Integer; virtual; abstract;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
-      const Msg: string); dynamic;
+      const Msg: string; var Continue: boolean); dynamic;
     procedure ReadData(Stream: TStream); virtual;
     procedure SetHeight(Value: Integer); virtual; abstract;
     procedure SetPalette(Value: HPALETTE); virtual;
@@ -354,6 +354,8 @@ type
     procedure SetWidth(Value: Integer); virtual; abstract;
     procedure WriteData(Stream: TStream); virtual;
   public
+    constructor Create;
+    constructor VirtualCreate; virtual;
     procedure LoadFromFile(const Filename: string); virtual;
     procedure SaveToFile(const Filename: string); virtual;
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
@@ -361,8 +363,6 @@ type
     procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
-    constructor Create;
-    constructor VirtualCreate; virtual;
   public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -444,8 +444,8 @@ type
     procedure Changed(Sender: TObject); dynamic;
     procedure DefineProperties(Filer: TFiler); override;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
-                       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
-                       const Msg: string); dynamic;
+                       PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
+                       const Msg: string; var Continue: boolean); dynamic;
   public
     constructor Create;
     destructor Destroy; override;
@@ -754,7 +754,6 @@ type
     property HandleType: TBitmapHandleType read GetHandleType write SetHandleType;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
     property Monochrome: Boolean read FMonochrome write FMonochrome;
-    // TODO: reflect real pixelformat of DC
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat;
     property ScanLine[Row: Integer]: Pointer read GetScanLine;
     property TransparentColor: TColor read FTransparentColor
@@ -1028,6 +1027,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/07/04 22:06:49  mattias
+  implemented interface graphics
+
   Revision 1.77  2003/07/04 08:54:53  mattias
   implemented 16bit rawimages for gtk
 
