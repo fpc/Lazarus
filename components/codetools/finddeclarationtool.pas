@@ -3211,8 +3211,18 @@ var
         CurContext.Node:=CurContext.Tool.GetInterfaceNode;
       end;
     end;
-    // there is no special left to do, since Result already points to
-    // the type context node.
+    // point changes the context to the base type
+    // this is already done, so there is not much left to do.
+    // Delphi knows . as shortcut for ^.
+    // -> check for pointer type
+    if (Scanner.CompilerMode=cmDELPHI) and (CurExprDesc=xtContext)
+    and (CurContext.Node.Desc=ctnPointerType)
+    and (CurContext.Node<>StartContext.Node) then begin
+      // left side of expression has defined a special context
+      // => this '.' is a dereference
+      CurContext:=CurContext.Tool.FindBaseTypeOfNode(Params,
+                                                    CurContext.Node.FirstChild);
+    end;
   end;
 
   procedure ResolveAs;
