@@ -2274,7 +2274,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Parent:=GridGroupBox;
       Left:=ShowGridCheckBox.Left;
       Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
-      Width:=100;
+      Width:=120;
       Caption:=dlgGridX;
     end;
 
@@ -3225,7 +3225,7 @@ begin
 
   with GridSizeXLabel do begin
     SetBounds(ShowGridCheckBox.Left,
-              SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,80,Height);
+              SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5,120,Height);
   end;
 
   with GridSizeXComboBox do begin
