@@ -71,6 +71,21 @@ begin
   DoPositionButtons;
 end;
 
+function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;
+begin
+  if (Index < -1) or (Index >= FItems.Count) then
+    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,FItems.Count]);
+  Result:=TCheckBox(FButtonList[Index]).Enabled;
+end;
+
+procedure TCustomCheckGroup.SetCheckEnabled(Index: integer;
+  const AValue: boolean);
+begin
+  if (Index < -1) or (Index >= FItems.Count) then
+    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,FItems.Count]);
+  TCheckBox(FButtonList[Index]).Enabled:=AValue;
+end;
+
 function TCustomCheckGroup.GetChecked(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
@@ -160,13 +175,17 @@ var
   ChecksCount: integer;
   Checks: string;
   i: Integer;
+  v: Integer;
 begin
   Stream.ReadBuffer(ChecksCount, SizeOf(Integer));
   if ChecksCount>0 then begin
     SetLength(Checks,ChecksCount);
     Stream.ReadBuffer(Checks[1], ChecksCount);
-    for i:=0 to ChecksCount-1 do
-      Checked[i]:=(Checks[i+1]='1');
+    for i:=0 to ChecksCount-1 do begin
+      v:=ord(Checks[i+1]);
+      Checked[i]:=((v and 1)>0);
+      CheckEnabled[i]:=((v and 2)>0);
+    end;
   end;
 end;
 
@@ -175,16 +194,18 @@ var
   ChecksCount: integer;
   Checks: string;
   i: Integer;
+  v: Integer;
 begin
   ChecksCount:=FItems.Count;
   Stream.WriteBuffer(ChecksCount, SizeOf(Integer));
   if ChecksCount>0 then begin
     SetLength(Checks,ChecksCount);
-    for i:=0 to ChecksCount-1 do
-      if Checked[i] then
-        Checks[i+1]:='1'
-      else
-        Checks[i+1]:='0';
+    for i:=0 to ChecksCount-1 do begin
+      v:=0;
+      if Checked[i] then inc(v,1);
+      if CheckEnabled[i] then inc(v,2);
+      Checks[i+1]:=chr(v);
+    end;
     Stream.WriteBuffer(Checks[1], ChecksCount);
   end;
 end;
@@ -235,6 +256,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2003/03/18 00:00:05  mattias
+  added TCheckGroup.CheckEnabled
+
   Revision 1.1  2003/03/17 23:39:30  mattias
   added TCheckGroup
 
