@@ -6850,7 +6850,12 @@ begin
         end;
       ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown:
         begin
+          {$IFDEF SYN_LAZARUS}
+          counter := fLinesInWindow;
+          if (eoHalfPageScroll in fOptions) then counter:=counter shr 1;
+          {$ELSE}
           counter := fLinesInWindow shr Ord(eoHalfPageScroll in fOptions);
+          {$ENDIF}
           if eoScrollByOneLess in fOptions then
             Dec(counter);
           if (Command in [ecPageUp, ecSelPageUp]) then
@@ -7989,8 +7994,14 @@ begin
 {$ELSE}
     nDelta := LinesToScroll
 {$ENDIF}
-  else
-    nDelta := LinesInWindow shr Ord(eoHalfPageScroll in fOptions);
+  else begin
+    {$IFDEF SYN_LAZARUS}
+    nDelta := fLinesInWindow;
+    if (eoHalfPageScroll in fOptions) then counter:=counter shr 1;
+    {$ELSE}
+    nDelta := fLinesInWindow shr Ord(eoHalfPageScroll in fOptions);
+    {$ENDIF}
+  end;
 
   Inc(fMouseWheelAccumulator, SmallInt(Msg.wParamHi));
   nWheelClicks := fMouseWheelAccumulator div WHEEL_DELTA;
