@@ -2822,7 +2822,7 @@ begin
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
                          SrcEdit.SyntaxHighlighterType);
   end;
-  AnUnitInfo.ReadUnitNameFromSource;
+  AnUnitInfo.ReadUnitNameFromSource(true);
   SaveAsFilename:=AnUnitInfo.UnitName;
   if SaveAsFilename='' then
     SaveAsFilename:=ExtractFileNameOnly(AnUnitInfo.Filename);
@@ -3438,7 +3438,7 @@ begin
   end;
   NewUnitInfo:=TUnitInfo.Create(PreReadBuf);
   if FilenameIsPascalSource(NewUnitInfo.Filename) then
-    NewUnitInfo.ReadUnitNameFromSource;
+    NewUnitInfo.ReadUnitNameFromSource(true);
   Project1.AddUnit(NewUnitInfo,false);
   Result:=mrOk;
 end;
@@ -4470,7 +4470,7 @@ begin
     NewUnitInfo.Source:=NewBuf;
     NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
     if FilenameIsPascalUnit(NewUnitInfo.Filename) then
-      NewUnitInfo.ReadUnitNameFromSource;
+      NewUnitInfo.ReadUnitNameFromSource(false);
   end else begin
     // open unknown file
     Handled:=false;
@@ -5360,7 +5360,7 @@ begin
           ActiveUnitInfo.IsPartOfProject:=true;
           if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
           and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
-            ActiveUnitInfo.ReadUnitNameFromSource;
+            ActiveUnitInfo.ReadUnitNameFromSource(false);
             ShortUnitName:=ActiveUnitInfo.CreateUnitName;
             if (ShortUnitName<>'') then begin
               if CodeToolBoss.AddUnitToMainUsesSection(
@@ -6282,7 +6282,7 @@ begin
   end;
   NewUnitName:=AnUnitInfo.UnitName;
   if NewUnitName='' then begin
-    AnUnitInfo.ReadUnitNameFromSource;
+    AnUnitInfo.ReadUnitNameFromSource(false);
     NewUnitName:=AnUnitInfo.CreateUnitName;
   end;
   ResourceCode:=nil;
@@ -7806,7 +7806,7 @@ begin
     if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
       SourceName:=CodeToolBoss.GetCachedSourceName(AnUnitInfo.Source);
       if SourceName<>'' then
-        AnUnitInfo.UnitName:=SourceName;
+        AnUnitInfo.ReadUnitNameFromSource(true);
     end else
       SourceName:='';
     PageName:=CreateSrcEditPageName(SourceName,AnUnitInfo.Filename,PageIndex);
@@ -8644,7 +8644,7 @@ begin
   AnUnitInfo.IsPartOfProject:=true;
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
   and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
-    AnUnitInfo.ReadUnitNameFromSource;
+    AnUnitInfo.ReadUnitNameFromSource(false);
     ShortUnitName:=AnUnitInfo.UnitName;
     if (ShortUnitName<>'') then begin
       Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
@@ -9233,6 +9233,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.609  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.608  2003/06/18 11:50:53  mattias
   implemented Paste components in source
 
