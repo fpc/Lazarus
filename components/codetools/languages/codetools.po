@@ -570,6 +570,10 @@ msgstr ""
 msgid "Debugger Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdoceditordirectory
+msgid "Doc Editor Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctslazarussources
 msgid "Lazarus Sources"
 msgstr ""

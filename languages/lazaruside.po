@@ -2626,12 +2626,20 @@ msgstr ""
 msgid "LCL Widget Type"
 msgstr ""
 
+#: lazarusidestrconsts:liscodefault
+msgid "default (%s)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoloadsave
+msgid "Load/Save"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewforms
@@ -3950,6 +3958,10 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
+#: lazarusidestrconsts:lisdocumentationeditor
+msgid "Documentation Editor"
+msgstr ""
+
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr ""
@@ -4250,6 +4262,10 @@ msgstr ""
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetoolsdefskylixmaindirectorydesc
+msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesforproject
 msgid "Create Defines for %s Project"
 msgstr ""
@@ -4264,6 +4280,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefskylixmaindirectoryforproject
+msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsexit
@@ -4412,6 +4432,30 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertdelphi6projecttempl
 msgid "Insert Delphi 6 Project Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7compilertemp
+msgid "Insert Delphi 7 Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7directorytem
+msgid "Insert Delphi 7 Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7projecttempl
+msgid "Insert Delphi 7 Project Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertkylix3compilertemp
+msgid "Insert Kylix 3 Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertkylix3directorytem
+msgid "Insert Kylix 3 Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertkylix3projecttempl
+msgid "Insert Kylix 3 Project Template"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsselectednode

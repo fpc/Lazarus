@@ -1335,6 +1335,10 @@ msgstr "Débugueur"
 msgid "Default"
 msgstr "Défaut"
 
+#: lazarusidestrconsts:liscodefault
+msgid "default (%s)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdefaulteditorfont
 msgid "Default editor font"
 msgstr "Police par défaut"
@@ -1582,6 +1586,10 @@ msgstr ""
 #: lazarusidestrconsts:rsiwpdocked
 msgid "Docked"
 msgstr "Attaché"
+
+#: lazarusidestrconsts:lisdocumentationeditor
+msgid "Documentation Editor"
+msgstr ""
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
@@ -2579,6 +2587,18 @@ msgstr ""
 msgid "Insert Delphi 6 Project Template"
 msgstr ""
 
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7compilertemp
+msgid "Insert Delphi 7 Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7directorytem
+msgid "Insert Delphi 7 Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7projecttempl
+msgid "Insert Delphi 7 Project Template"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
 msgstr ""
@@ -2606,6 +2626,18 @@ msgstr ""
 #: lazarusidestrconsts:srkmecinsertgplnotice
 msgid "Insert GPL notice"
 msgstr "Insert la licence GPL"
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertkylix3compilertemp
+msgid "Insert Kylix 3 Compiler Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertkylix3directorytem
+msgid "Insert Kylix 3 Directory Template"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefsinsertkylix3projecttempl
+msgid "Insert Kylix 3 Project Template"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertlazarusdirectorytem
 msgid "Insert Lazarus Directory Template"
@@ -3062,6 +3094,10 @@ msgstr "Assemblage"
 #: lazarusidestrconsts:dlgloaddfile
 msgid "Load desktop settings from file"
 msgstr "Charger les paramètres du bureau"
+
+#: lazarusidestrconsts:dlgcoloadsave
+msgid "Load/Save"
+msgstr ""
 
 #: lazarusidestrconsts:lispckexplloadedpackages
 msgid "Loaded Packages:"
@@ -5159,8 +5195,16 @@ msgstr "Texte1"
 msgid "Text2"
 msgstr "Texte2"
 
+#: lazarusidestrconsts:liscodetoolsdefskylixmaindirectoryforproject
+msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
+msgstr ""
+
+#: lazarusidestrconsts:liscodetoolsdefskylixmaindirectorydesc
+msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectorydesc

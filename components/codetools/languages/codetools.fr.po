@@ -236,6 +236,10 @@ msgstr "Répertoire concepteur"
 msgid "Designer Units"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdoceditordirectory
+msgid "Doc Editor Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsduplicateidentifier
 msgid "duplicate identifier: %s"
 msgstr "identificateur %s dupliqué"
