@@ -129,7 +129,7 @@ begin
       MyFile.Clear;
       MyFile.LoadFromFile(DlgLoad.Filename);
     except
-      MessageDlg('Error loading unit!',mtError,[mbCancel],0);
+      MessageDlg('Error loading unit: '+DlgLoad.Filename,mtError,[mbCancel],0);
       exit;
     end;
     
@@ -139,7 +139,9 @@ begin
       MessageDlg('More than 30 components is not supported.', mtError, [mbCancel],0);
       exit;
     end;
-    
+
+    if FrmAddComponent=nil then
+      FrmAddComponent := TFrmAddComponent.Create(Self);
     FrmAddComponent.ListCompAdd.Clear;
     for I := 1 to CountComponents do begin
       //MessageDlg(GetComponent(I),mtInformation,[mbOk],0);
@@ -200,15 +202,11 @@ end;
 procedure TFrmComponentMan.FrmMainCREATE(Sender: TObject);
 begin
   MyFile := TStringList.Create;
-  FrmAddComponent := TFrmAddComponent.Create(Self);
 end;
 
 procedure TFrmComponentMan.FrmMainDESTROY(Sender: TObject);
 begin
-
   MyFile.Free;
-  FrmAddComponent.Free;
-
 end;
 
 procedure TFrmComponentMan.FrmMainSHOW(Sender: TObject);
@@ -337,9 +335,13 @@ begin
     Add('  Component Manager written by Anthony Maro');
     Add('  http://tony.maro.net/       tony@maro.net');
     Add('}');
+    Add('');
     Add('unit CustomIDEComps;');
+    Add('');
     Add('{$mode objfpc}{$H+}');
+    Add('');
     Add('interface');
+    Add('');
   end;
 
 end;
@@ -351,10 +353,10 @@ var
   Found: Boolean;
 begin
   with MyFile do begin
+    Add('//USES SECTION');
     Add('uses');
-    add('//USES SECTION');
     if ListComps.Items.Count > 0 then begin
-      Add('Classes,');
+      Add('  Classes,');
       for I := 0 to ListComps.Items.Count-1 do begin
         MyObj := ListComps.Items.Objects[I] as TRComponent;
         if assigned(MyObj) then begin
@@ -365,17 +367,17 @@ begin
               MyObj2 := ListComps.Items.Objects[J] as TRComponent;
               //messagedlg('Comparing object '+MyObj.Name+' at '+inttostr(I)+' with '+MyObj2.Name, mtInformation,[mbOk],0);
               if assigned(MyOBj2) then begin
-                if MyObj2.UnitName = Myobj.UnitName then Found := True;
+                Found := AnsiCompareText(MyObj2.UnitName,Myobj.UnitName)=0;
               end; // if assigned
             end; // for J
           end; // For I
-          if not(Found) then add(MyObj.UnitName+',');
+          if not(Found) then add('  '+MyObj.UnitName+',');
         end;
       end; // for I
       // remove last comma
       MyFile[MyFile.Count-1] := copy(MyFile[MyFile.Count-1],1,length(MyFile[MyFile.Count-1])-1);
-    end else add('Classes');
-    Add(';');
+    end else add('  Classes');
+    Add('  ;');
     Add('');
     Add('type');
     Add('  TRegisterComponentProc = procedure(const Page, UnitName:ShortString;');
@@ -402,13 +404,14 @@ begin
     for I := 0 to ListComps.Items.Count - 1 do begin
       MyObj := ListComps.Items.Objects[I] as TRComponent;
       if assigned(MyObj) then begin
-        MyFile.Add('RegisterComponent('''+MyObj.Page+''','''+MyObj.unitname+''','+MyObj.Name+');');
+        MyFile.Add('  RegisterComponent('''+MyObj.Page+''','''+MyObj.unitname+''','+MyObj.Name+');');
       end;
     end;
   end;
   MyFile.Add('//ENDREGISTER');
   MyFile.Add('');
   MyFile.Add('end;');
+  MyFile.Add('');
   MyFile.Add('end.');
 end;
 

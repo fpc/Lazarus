@@ -47,6 +47,7 @@ var
 implementation
 
 initialization
+  FrmAddComponent:=nil;
   {$I ufrmaddcomponent.lrs}
 
 end.
