@@ -1210,10 +1210,11 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
       NestedComments: boolean;
     end;
     
-    TDirectiveType = (dtUnknown, dtIf, dtIfDef, dtElse, dtEndif);
+    TDirectiveType = (dtUnknown, dtIf, dtIfDef, dtIfNDef, dtIfOpt,
+                      dtElse, dtEndif);
     
   const
-    DirectiveTypeLen: array[TDirectiveType] of integer = (0,2,5,4,5);
+    DirectiveTypeLen: array[TDirectiveType] of integer = (0,2,5,6,5,4,5);
     
     
   function FindNextToken(const ASrc: string; var AToken: TToken): boolean;
@@ -1413,8 +1414,12 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
       inc(p);
       if CompareIdentifiers(@ASrc[p],'IFDEF')=0 then
         Result:=dtIfDef
+      else if CompareIdentifiers(@ASrc[p],'IFNDEF')=0 then
+        Result:=dtIfNDef
       else if CompareIdentifiers(@ASrc[p],'IF')=0 then
         Result:=dtIf
+      else if CompareIdentifiers(@ASrc[p],'IFOPT')=0 then
+        Result:=dtIfOpt
       else if CompareIdentifiers(@ASrc[p],'ELSE')=0 then
         Result:=dtElse
       else if CompareIdentifiers(@ASrc[p],'ENDIF')=0 then
@@ -1422,8 +1427,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     end;
   end;
   
-  procedure PushIfOnStack(const ASrc: string; AToken: TToken;
-    DirectiveType: TDirectiveType; IfStack: TList);
+  procedure PushIfOnStack(const ASrc: string; AToken: TToken; IfStack: TList);
   var
     NewIf: PIf;
   begin
@@ -1462,14 +1466,16 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
     IfStack:=TList.Create;
     try
       repeat
-        FindNextToken(ASrc,CurToken);
+        if (not FindNextToken(ASrc,CurToken)) then begin
+          exit;
+        end;
         if CurToken.Range in [trComment] then begin
           DirectiveType:=ReadDirectiveType(ASrc,CurToken);
 
           case DirectiveType of
 
-          dtIf, dtIfDef:
-            PushIfOnStack(ASrc,CurToken,DirectiveType,IfStack);
+          dtIf, dtIfDef, dtIfNDef, dtIfOpt:
+            PushIfOnStack(ASrc,CurToken,IfStack);
 
           dtElse:
             begin
@@ -1479,6 +1485,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
                 // -> misplaced directive found
                 EndCursorPos:=CurToken.EndPos;
                 EndCode:=ACode;
+                writeln('GuessMisplacedIfdefEndif  $ELSE has no $IF');
                 Result:=true;
                 exit;
               end;
@@ -1492,6 +1499,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
                 // -> misplaced directive found
                 EndCursorPos:=CurToken.EndPos;
                 EndCode:=ACode;
+                writeln('GuessMisplacedIfdefEndif  $ENDIF has no $IF');
                 Result:=true;
                 exit;
               end;
@@ -1506,6 +1514,7 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
         // -> misplaced directive found
         EndCursorPos:=PIf(IfStack[IfStack.Count-1])^.StartPos+1;
         EndCode:=ACode;
+        writeln('GuessMisplacedIfdefEndif  $IF without $ENDIF');
         Result:=true;
         exit;
       end;
