@@ -39,12 +39,19 @@ unit PropEdits;
 
 interface
 
+{$IFNDEF VER1_0}
+  {$DEFINE EnableSessionProps}
+{$ENDIF}
 {$DEFINE NewListPropEdit}
 
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
-  Grids, EditBtn, TextTools, ColumnDlg, ObjInspStrConsts;
+  Grids, EditBtn,
+  {$IFDEF EnableSessionProps}
+  PropertyStorage,
+  {$ENDIF}
+  TextTools, ColumnDlg, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -6175,6 +6182,10 @@ begin
     TFileDialog, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TFileNameEdit, 'Filter', TFileDlgFilterProperty);
+  {$IFDEF EnableSessionProps}
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
+  {$ENDIF}
 end;
 
 procedure FinalPropEdits;

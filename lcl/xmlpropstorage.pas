@@ -90,11 +90,13 @@ begin
   If (FXML=Nil) then
     FXML:=TPropStorageXMLConfig.Create(GetXMLFileName);
   Inc(FCount);
+  //debugln('TCustomXMLPropStorage.StorageNeeded ',dbgsname(FXML),' ',dbgs(FXML),' FCount=',dbgs(FCount));
 end;
 
 procedure TCustomXMLPropStorage.FreeStorage;
 begin
   Dec(FCount);
+  //debugln('TCustomXMLPropStorage.FreeStorage ',dbgsname(FXML),' ',dbgs(FXML),' FCount=',dbgs(FCount));
   If (FCount<=0) then
     begin
     FCount:=0;
