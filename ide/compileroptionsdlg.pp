@@ -231,7 +231,7 @@ type
     btnLoadSave: TButton;
 
     procedure ButtonOKClicked(Sender: TObject);
-    procedure ButtonCheckClicked(Sender: TObject);
+    procedure btnTestClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
     procedure ExecuteAfterGroupBoxResize(Sender: TObject);
@@ -435,7 +435,7 @@ end;
 {------------------------------------------------------------------------------
   TfrmCompilerOptions ButtonCheckClicked
 ------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.ButtonCheckClicked(Sender: TObject);
+procedure TfrmCompilerOptions.btnTestClicked(Sender: TObject);
 begin
   // Apply any changes and test
   PutCompilerOptions(true);
@@ -2646,7 +2646,7 @@ begin
   begin
     Parent := Self;
     Caption := lisCompTest;
-    OnClick := @ButtonCheckClicked;
+    OnClick := @btnTestClicked;
   end;
 
   btnLoadSave := TButton.Create(Self);

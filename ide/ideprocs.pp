@@ -906,6 +906,9 @@ procedure SplitCmdLine(const CmdLine: string;
 var p, s, l: integer;
   quote: char;
 begin
+  ProgramFilename:='';
+  Params:='';
+  if CmdLine='' then exit;
   p:=1;
   s:=1;
   if (CmdLine[p] in ['"','''']) then
