@@ -2098,16 +2098,21 @@ begin
       VK_RETURN:
       begin
         if Form.DefaultControl <> nil then 
+        begin
           Form.DefaultControl.ExecuteDefaultAction;
+          Key := VK_UNKNOWN;
+        end;
       end;
       
       VK_ESCAPE:
       begin
         if Form.CancelControl <> nil then 
+        begin
           Form.CancelControl.ExecuteCancelAction;
+          Key := VK_UNKNOWN;
+        end;
       end;
     end;
-    Key := VK_UNKNOWN;
   end;
 end;
 
@@ -3751,6 +3756,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.249  2004/07/02 12:23:24  micha
+  fix capture return/escape key if no handler
+
   Revision 1.248  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 
