@@ -85,7 +85,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFileDialog.SetFilter(const value : string);
 begin
-  FFilter := value;  // make sure this is defined first before the CNSendMessage
+  FFilter := Value;  // make sure this is defined first before the CNSendMessage
 end;
 
 {------------------------------------------------------------------------------}
@@ -265,6 +265,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.11  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

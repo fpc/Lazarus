@@ -679,8 +679,10 @@ begin
     IntfImg:=TLazIntfImage.Create(0,0);
     IntfImg.GetDescriptionFromDevice(0);
     ImgReader:=ReaderClass.Create;
+    InitFPImageReader(ImgReader);
     FImage.SaveStream.Position:=0;
     IntfImg.LoadFromStream(FImage.SaveStream,ImgReader);
+    FinalizeFPImageReader(ImgReader);
     IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle);
     Handle:=ImgHandle;
     MaskHandle:=ImgMaskHandle;
@@ -724,7 +726,9 @@ begin
     IntfImg:=TLazIntfImage.Create(0,0);
     IntfImg.LoadFromBitmap(Handle,0);
     ImgWriter:=WriterClass.Create;
+    InitFPImageWriter(ImgWriter);
     IntfImg.SaveToStream(MemStream,ImgWriter);
+    FinalizeFPImageWriter(ImgWriter);
     FreeAndNil(ImgWriter);
     FreeAndNil(IntfImg);
     // save stream, so that further saves will be fast
@@ -740,6 +744,27 @@ begin
     ImgWriter.Free;
   end;
 end;
+
+procedure TBitmap.InitFPImageReader(ImgReader: TFPCustomImageReader);
+begin
+
+end;
+
+procedure TBitmap.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+begin
+
+end;
+
+procedure TBitmap.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
+begin
+
+end;
+
+procedure TBitmap.FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter);
+begin
+
+end;
+
 {$ENDIF}
 
 procedure TBitMap.SaveToStream(Stream: TStream);
@@ -854,6 +879,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.43  2003/09/05 22:13:40  mattias
   implemented TBitmap.Assign(TFPCustomImage)
 

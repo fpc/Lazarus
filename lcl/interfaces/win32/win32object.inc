@@ -37,7 +37,6 @@ Begin
   FMessageQueue := TList.Create;
   FAccelGroup := 0;
   FTimerData  := TList.Create;
-  FTimerWindow := 0;
   // Retrieves the height of a win32 menu
   With R1 do
   begin
@@ -73,17 +72,10 @@ Begin
     while (n > 0) do
     begin
       dec(n);
-      TimerInfo := PWin32Timerinfo (FTimerData.Items[n]);
-      Dispose (TimerInfo);
+      TimerInfo := PWin32Timerinfo(FTimerData[n]);
+      Dispose(TimerInfo);
       FTimerData.Delete(n);
     end;
-  end;
-  Assert(False,'Trace:FTimerWindow: ' +  IntToStr(FTimerWindow));
-
-  if FTimerWindow<>0 then
-  begin
-    DestroyWindow(FTimerWindow);
-    FTimerWindow := 0;
   end;
 
   if FToolTipWindow <> 0 then
@@ -112,7 +104,6 @@ Begin
     DestroyAcceleratorTable(FAccelGroup);
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
-  Windows.UnregisterClass(@TimerClsName, System.HInstance);
   Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
 
   Inherited Destroy;
@@ -136,11 +127,6 @@ Begin
     writeln('Trace:Win32Object.Init - Register Failed');
     Exit;
   End;
-  If Not TimerWinRegister then
-  Begin
-    Assert(False, 'Trace:Win32Object.Init - LCLTimerWindow Register Failed');
-    Exit;
-  End;
   If Not ToolBtnWinRegister then
   Begin
     Assert(False, 'Trace:Win32Object.Init - Toolbar button Register Failed');
@@ -149,9 +135,6 @@ Begin
 
   FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, nil, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(nil), HInstance, nil);
   Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
-
-  FTimerWindow :=CreateWindowEx(0, @TimerClsName, nil, WS_POPUPWINDOW, 0, 0, 640, 480, 0, 0, System.HInstance, nil);
-  Assert(False,'Trace:FTimerWindow: ' + IntToStr(FTimerWindow));
 
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL;
@@ -1167,9 +1150,8 @@ End;
           TimerFunc: Callback
   Returns: a Timer id (use this ID to destroy timer)
 
-  Design: A timer which sends a wm_timr is created,
-    the wm_timer is received by a hidden window,
-    which calls the TimerFunc in its window proc.
+  Design: A timer which calls TimerCallBackProc, is created.
+    The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
 function TWin32Object.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
 var
@@ -1177,16 +1159,15 @@ var
 begin
   Assert(False,'Trace:Create Timer: ' + IntToStr(Interval));
   Result := 0;
-  if (FTimerWindow<>0) and (Interval >= 1) and (TimerFunc <> nil)
-  then begin
+  if (Interval > 0) and (TimerFunc <> nil) then begin
     New(TimerInfo);
     TimerInfo^.TimerFunc := TimerFunc;
-    Result:= Windows.SetTimer(FTimerWindow,integer(TimerInfo),Interval,nil);
-    if Result = 0 then
-      Dispose(TimerInfo)
+    TimerInfo^.TimerID := Windows.SetTimer(0, 0, Interval, @TimerCallBackProc);
+    if TimerInfo^.TimerID=0 then
+      dispose(TimerInfo)
     else begin
-      TimerInfo^.TimerHandle:= Result;
       FTimerData.Add(TimerInfo);
+      Result := TimerInfo^.TimerID;
     end;
   end;
   Assert(False,'Trace:Result: ' + IntToStr(result));
@@ -1205,12 +1186,12 @@ begin
   Result:= false;
   Assert(False,'Trace:removing timer: '+ IntToStr(TimerHandle));
   n := FTimerData.Count;
-  while (n > 0) do begin
-    dec (n);
-    TimerInfo := PWin32Timerinfo(FTimerData.Items[n]);
-    if (TimerInfo^.TimerHandle=TimerHandle) then
+  while (n>0) do begin
+    dec(n);
+    TimerInfo := FTimerData[n];
+    if (TimerInfo^.TimerID=TimerHandle) then
     begin
-      result := Windows.KillTimer(FTimerWindow, integer(TimerInfo));
+      Result := Windows.KillTimer(0, TimerHandle);
       FTimerData.Delete(n);
       Dispose(TimerInfo);
     end;
@@ -1248,27 +1229,6 @@ Begin
   Result := Windows.RegisterClass(@WindowClass) <> 0;
   Assert(False, 'Trace:WinRegister - Exit');
 End;
-
-Function TWin32Object.TimerWinRegister: boolean;
-var
-  WinClass: WndClassEx;
-begin
-  with WinClass do begin
-    cbSize := Sizeof(WndClassEx);
-    Style := 0{CS_HRedraw or CS_VRedraw};
-    lpfnWndProc := @TimerWindowProc;
-    cbClsExtra := 0;
-    cbWndExtra := 0;
-    hInstance := System.HInstance;
-    _hIcon := LoadIcon(0, IDI_Application);
-    hCursor := LoadCursor(0, IDC_Arrow);
-    hbrBackground := GetStockObject(LTGRAY_BRUSH);
-    lpszMenuName := nil;
-    lpszClassName := @TimerClsName;
-    hIconSm := LoadIcon(0, IDI_APPLICATION);
-  end;
-  result := RegisterClassEx(@WinClass) <> 0;
-end;
 
 Function TWin32Object.ToolBtnWinRegister: boolean;
 var WinClass: WndClass;
@@ -2793,6 +2753,9 @@ End;
 
 {
   $Log$
+  Revision 1.106  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.105  2003/09/06 18:37:18  mattias
   fixed checkbox state and typecast bugs
 

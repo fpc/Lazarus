@@ -116,8 +116,8 @@ type
   { lazarus win32 Interface definition for additional timer data needed to find the callback}
   PWin32TimerInfo = ^TWin32Timerinfo;
   TWin32TimerInfo = record
-    TimerHandle: uint;         // the windows timer ID for this timer
-    TimerFunc  : TFNTimerProc; // owner function to handle timer
+    TimerID: UINT;         // the windows timer ID for this timer
+    TimerFunc: TFNTimerProc; // owner function to handle timer
   end;
 
 var
@@ -131,6 +131,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.6  2003/08/17 12:26:00  mattias
   fixed parts of the win32 intf size system
 

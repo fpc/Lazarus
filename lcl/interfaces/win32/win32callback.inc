@@ -685,27 +685,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
- Function: TimerWindowProc
- Params: Window - The window that receives a message for the timer window
-         Msg    - The message received
-         WParam - Word parameter
-         LParam - Long-integer parameter
-  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
-
-  Handles the messages sent to the timer window by Windows
- ------------------------------------------------------------------------------}
-FUNCTION TimerWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT; stdcall;
-Var
-  TimerInfo: PWin32TimerInfo;
-begin
-  if (msg = WM_TIMER) and (WParam<>0) then begin
-    TimerInfo := PWin32TimerInfo(WParam);
-    TimerInfo^.TimerFunc;
-    Result := 0;
-  end else Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
-end;
-
-{------------------------------------------------------------------------------
  Function: ToolBtnWindowProc
  Params: Window_hwnd - The window that receives a message for the window
          Msg         - The message received
@@ -718,6 +697,29 @@ end;
 Function ToolBtnWindowProc(window_hwnd : hwnd; msg : DWORD; wParam : WPARAM; lParam : LPARAM) : LRESULT; stdcall;
 begin
   Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
+end;
+
+{------------------------------------------------------------------------------
+ Procedure: TimerCallBackProc
+ Params: window_hnd - handle of window for timer message, not set in this implementation
+         msg        - WM_TIMER message
+         idEvent    - timer identifier
+         dwTime     - current system time
+
+ Calls the timerfunction in the Timer Object in the LCL
+ ------------------------------------------------------------------------------}
+Procedure TimerCallBackProc(window_hwnd : hwnd; msg : DWORD; idEvent: UINT; dwTime: DWORD); stdcall;
+Var
+  TimerInfo: PWin32TimerInfo;
+  n: Integer;
+begin
+  n := FTimerData.Count;
+  while (n>0) do begin
+    dec(n);
+    TimerInfo := FTimerData[n];
+    if TimerInfo^.TimerID=idEvent
+      then TimerInfo^.TimerFunc;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -752,6 +754,9 @@ end;
 
 {
   $Log$
+  Revision 1.56  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.55  2003/08/25 16:18:15  mattias
   fixed background color of TPanel and clicks of TSpeedButton from Micha
 

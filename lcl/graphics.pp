@@ -886,6 +886,10 @@ type
                                ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
                                WriterClass: TFPCustomImageWriterClass); virtual;
+    procedure InitFPImageReader(ImgReader: TFPCustomImageReader); virtual;
+    procedure InitFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
+    procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); virtual;
+    procedure FinalizeFPImageWriter(ImgWriter: TFPCustomImageWriter); virtual;
     {$ENDIF}
   public
     constructor VirtualCreate; override;
@@ -1194,6 +1198,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.87  2003/09/05 21:27:28  mattias
   fixed types
 

@@ -59,7 +59,6 @@ Type
     FGDIObjects: TDynHashArray;
     FMessageQueue: TList;
     FToolTipWindow: HWND;
-    FTimerWindow: HWND;
     FAccelGroup: HACCEL;
     FControlIndex: Cardinal; // Win32-API control index
     FMainForm: TForm;
@@ -99,7 +98,6 @@ Type
     Procedure AttachMenu(Sender: TObject);
 
     Function WinRegister: Boolean;
-    Function TimerWinRegister: Boolean;
     Function ToolBtnWinRegister: Boolean;
     Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
@@ -116,6 +114,7 @@ Type
 
     { Constructor of the class }
     Constructor Create;
+    class function CreateVirtual: TInterfaceBase; override;
     { Destructor of the class }
     Destructor Destroy; Override;
     { Initialize the API }
@@ -161,7 +160,6 @@ Type
 Const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..20] of char = 'LazarusForm'#0;
-  TimerClsName : array[0..20] of char = 'LCLTimerWindow'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
   
 Var
@@ -189,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/09/08 12:21:48  mattias
+  added fpImage reader/writer hooks to TBitmap
+
   Revision 1.37  2003/08/28 09:10:01  mattias
   listbox and comboboxes now set sort and selection at handle creation
 
