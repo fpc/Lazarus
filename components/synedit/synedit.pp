@@ -297,6 +297,8 @@ type
     destructor Destroy; override;
   end;
 
+  { TCustomSynEdit }
+
   TCustomSynEdit = class(TCustomControl)
   private
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
@@ -434,6 +436,7 @@ type
     {$IFDEF SYN_LAZARUS}
     function GetCharLen(const Line: string; CharStartPos: integer): integer;
     function AdjustBytePosToCharacterStart(Line: integer; BytePos: integer): integer;
+    function AdjustPhysPosToCharacterStart(Line: integer; PhysPos: integer): integer;
     function GetLogicalCaretXY: TPoint;
     procedure SetLogicalCaretXY(const NewLogCaretXY: TPoint);
     {$ENDIF}
@@ -1262,7 +1265,7 @@ begin
   fLastCtrlMouseLinkY := -1;
   fLastControlIsPressed := false;
   fBlockIndent := 2;
-  FTabChar := ' ';
+  FTabChar := {$IFDEF DebugShowTabs}'%'{$ELSE}' '{$ENDIF};
 {$ELSE}
   Color := clWindow;
   fFontDummy.Name := 'Courier New';
@@ -1481,8 +1484,23 @@ begin
     s:=Lines[Line-1];
     if (Result<=length(s)) and UseUTF8 then
       Result:=UTF8FindNearestCharStart(PChar(s),length(s),Result);
-  end else
-    Result:=1;
+  end;
+end;
+
+function TCustomSynEdit.AdjustPhysPosToCharacterStart(Line: integer;
+  PhysPos: integer): integer;
+var
+  s: string;
+  BytePos: LongInt;
+begin
+  Result:=PhysPos;
+  if Result<1 then
+    Result:=1
+  else if (Line>=1) and (Line<=Lines.Count) then begin
+    s:=Lines[Line-1];
+    BytePos:=PhysicalToLogicalCol(s,Result);
+    Result:=LogicalToPhysicalCol(s,BytePos);
+  end;
 end;
 
 function TCustomSynEdit.GetLogicalCaretXY: TPoint;
@@ -6802,6 +6820,7 @@ var
   InsDelta: integer;
   {$IFDEF SYN_LAZARUS}
   LogCaretXY: TPoint;
+  LogCaret: TPoint;
   LogSpacePos: integer;
   {$ENDIF}
 
@@ -6991,6 +7010,7 @@ begin
 {begin}                                                                         //mh 2000-10-30
       ecDeleteLastChar:
         if not ReadOnly then begin
+          //debugln('ecDeleteLastChar A');
           if SelAvail then
             SetSelectedTextEmpty
           else begin
@@ -6998,9 +7018,10 @@ begin
             Len := Length(Temp);
             {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-            {$ELSE}
-            Caret := CaretXY;
+            LogCaret:=LogCaretXY;
             {$ENDIF}
+            Caret := CaretXY;
+            //debugln('ecDeleteLastChar B Temp="',DbgStr(Temp),'" CaretX=',dbgs(CaretX),' LogCaretXY=',dbgs(LogCaretXY));
             if {$IFDEF SYN_LAZARUS}LogCaretXY.X{$ELSE}CaretX{$ENDIF} > Len +1
             then begin
               // only move caret one column
@@ -7027,7 +7048,12 @@ begin
               // delete text before the caret
               SpaceCount1 := LeftSpaces(Temp{$IFDEF SYN_LAZARUS},true{$ENDIF});
               SpaceCount2 := 0;
-              if (Temp[CaretX - 1] <= #32) and (SpaceCount1 = CaretX - 1) then
+              //debugln('ecDeleteLastChar C SpaceCount1=',dbgs(SpaceCount1),' Temp[LogCaretXY.X-1]=',DbgStr(Temp[LogCaretXY.X-1]));
+              {$IFDEF SYN_LAZARUS}
+              if (Temp[LogCaretXY.X-1] <= #32) and (SpaceCount1 = CaretX - 1) then
+              {$ELSE}
+              if (Temp[CaretX-1] <= #32) and (SpaceCount1 = CaretX - 1) then
+              {$ENDIF}
               begin
                 // unindent
                 if SpaceCount1 > 0 then begin
@@ -7043,7 +7069,13 @@ begin
                 if SpaceCount2 = SpaceCount1 then
                   SpaceCount2 := 0;
                 {$IFDEF SYN_LAZARUS}
+                // remove visible spaces
                 LogSpacePos:=PhysicalToLogicalCol(Temp,SpaceCount2+1);
+                //debugln('ecDeleteLastChar LogSpacePos=',dbgs(LogSpacePos),
+                //   ' SpaceCount1=',dbgs(SpaceCount1),
+                //   ' SpaceCount2=',dbgs(SpaceCount2),
+                //   ' LogCaretXY.X=',dbgs(LogCaretXY.X),
+                //   ' Temp="',DbgStr(Temp),'"');
                 Temp:=copy(Temp,1,LogSpacePos-1)+copy(Temp,LogCaretXY.X,MaxInt);
                 TrimmedSetLine(CaretY - 1, Temp);
                 fCaretX := LogicalToPhysicalCol(Temp,LogSpacePos);
@@ -7058,27 +7090,35 @@ begin
               end else begin
                 // delete char
                 counter := 1;
-{$IFDEF SYN_MBCSSUPPORT}
+                {$IFDEF SYN_LAZARUS}
+                  {$IFDEF USE_UTF8BIDI_LCL}
+                  CaretX := CaretX - counter;
+                  Helper := Copy(Temp, CaretX, counter);
+                  VDelete(Temp, CaretX, counter, drLTR);
+                  {$ELSE USE_UTF8BIDI_LCL}
+                  LogCaretXY.X:=PhysicalToLogicalCol(Temp,CaretX-counter);
+                  CaretX := LogicalToPhysicalCol(Temp,LogCaretXY.X);
+                  Helper := Copy(Temp, LogCaretXY.X, counter);
+                  System.Delete(Temp, LogCaretXY.X, counter);
+                  //debugln('ecDeleteLastChar delete char CaretX=',dbgs(CaretX),
+                  //  ' Helper="',DbgStr(Helper),'" Temp="',DbgStr(Temp),'"');
+                  {$ENDIF USE_UTF8BIDI_LCL}
+                {$ELSE}
+                {$IFDEF SYN_MBCSSUPPORT}
                 if ByteType(Temp, CaretX - 2) = mbLeadByte then
                   Inc(counter);
-{$ENDIF}
+                {$ENDIF}
                 CaretX := CaretX - counter;
                 Helper := Copy(Temp, CaretX, counter);
-                {$IFDEF USE_UTF8BIDI_LCL}
-                VDelete(Temp, CaretX, counter, drLTR);
-                {$ELSE USE_UTF8BIDI_LCL}
-                {$IFDEF SYN_LAZARUS}
-                counter:=LogCaretXY.X-PhysicalToLogicalCol(Temp,CaretX);
-                {$ENDIF}
                 Delete(Temp, CaretX, counter);
-                {$ENDIF USE_UTF8BIDI_LCL}
+                {$ENDIF}
                 TrimmedSetLine(CaretY - 1, Temp);
               end;
             end;
             if (Caret.X <> CaretX) or (Caret.Y <> CaretY) then begin
               fUndoList.AddChange(crSilentDelete,
                 {$IFDEF SYN_LAZARUS}
-                PhysicalToLogicalPos(CaretXY), PhysicalToLogicalPos(Caret),
+                PhysicalToLogicalPos(CaretXY), LogCaret,
                 {$ELSE}
                 CaretXY, Caret,
                 {$ENDIF}
@@ -7100,8 +7140,6 @@ begin
             begin
               // delete char
               {$IFDEF SYN_LAZARUS}
-                LogCaretXY.X:=
-                       AdjustBytePosToCharacterStart(LogCaretXY.Y,LogCaretXY.X);
                 Counter:=GetCharLen(Temp,LogCaretXY.X);
                 Helper := Copy(Temp, LogCaretXY.X, Counter);
                 Caret.X := LogicalToPhysicalCol(Temp,LogCaretXY.X+Counter);
@@ -7415,7 +7453,6 @@ begin
 // cause problems unless eoTrimTrailingSpaces is set.
             {$IFDEF SYN_LAZARUS}
             LogCaretXY:=PhysicalToLogicalPos(CaretXY);
-            LogCaretXY.X:=AdjustBytePosToCharacterStart(LogCaretXY.Y,LogCaretXY.X);
             {debugln('ecChar CaretXY=',dbgs(CaretXY),
                     ' LogCaretXY=',dbgs(PhysicalToLogicalPos(CaretXY)),
                     ' Adjusted LogCaretXY=',dbgs(LogCaretXY),

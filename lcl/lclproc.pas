@@ -1016,7 +1016,7 @@ end;
 
 function DbgS(const p: TPoint): string;
 begin
-  Result:=' x='+IntToStr(p.x)+',y='+IntToStr(p.y);
+  Result:='(x='+IntToStr(p.x)+',y='+IntToStr(p.y)+')';
 end;
 
 function DbgS(const p: pointer): string;

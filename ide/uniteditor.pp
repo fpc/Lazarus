@@ -2622,6 +2622,7 @@ var
   NewCaretXY: TPoint;
   CursorToLeft: integer;
   NewValue: String;
+  Editor: TSynEdit;
 Begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
@@ -2635,12 +2636,13 @@ Begin
         NewValue:=GetIdentCompletionValue(aCompletion,ValueType,CursorToLeft);
         // insert value plus special chars like brackets, semicolons, ...
         SrcEdit:=GetActiveSE;
-        SrcEdit.EditorComponent.SelText:=NewValue;
+        Editor:=SrcEdit.EditorComponent;
+        Editor.SelText:=NewValue;
         if CursorToLeft>0 then
         begin
-          NewCaretXY:=SrcEdit.EditorComponent.BlockEnd;
+          NewCaretXY:=Editor.LogicalToPhysicalPos(Editor.BlockEnd);
           dec(NewCaretXY.X,CursorToLeft);
-          SrcEdit.EditorComponent.LogicalCaretXY:=NewCaretXY;
+          Editor.CaretXY:=NewCaretXY;
         end;
         ccSelection := '';
         Value:='';
