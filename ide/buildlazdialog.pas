@@ -299,6 +299,7 @@ begin
     Tool.Filename:=Options.MakeFilename;
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformNames[Options.LCLPlatform];
+    Tool.EnvironmentOverrides.Values['LANG']:= 'en_US';
     if CompilerPath<>'' then
       Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
     if not FileExists(Tool.Filename) then begin
