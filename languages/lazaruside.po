@@ -2071,55 +2071,59 @@ msgid "All files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgaltsetclmode
-msgid "Alt Sets Column Mode"
+msgid "Alt-Key sets column mode"
 msgstr ""
 
 #: lazarusidestrconsts:dlgautoident
-msgid "Auto Indent"
+msgid "Auto indent"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbrachighlight
-msgid "Bracket Highlight"
+msgid "Bracket highlighting"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdragdroped
-msgid "Drag Drop Editing"
+msgid "Drag Drop editing"
 msgstr ""
 
 #: lazarusidestrconsts:dlgdropfiles
-msgid "Drop Files"
+msgid "Drop files"
 msgstr ""
 
 #: lazarusidestrconsts:dlghalfpagescroll
-msgid "Half Page Scroll"
+msgid "Half page scroll"
 msgstr ""
 
 #: lazarusidestrconsts:dlgkeepcaretx
-msgid "Keep Caret X"
+msgid "Keep X caret"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpersistentcaret
-msgid "Persistent Caret"
+msgid "Persistent caret"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightmousemovescursor
+msgid "Right mouse moves caret"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscrollbyoneless
-msgid "Scroll By One Less"
+msgid "Scroll by one less"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscrollpastendfile
-msgid "Scroll Past End of File"
+msgid "Scroll past end of file"
 msgstr ""
 
 #: lazarusidestrconsts:dlgscrollpastendline
-msgid "Scroll Past End of Line"
+msgid "Scroll past end of line"
 msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
-msgid "Show Close Buttons in notebook"
+msgid "Show close buttons in notebook"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowscrollhint
-msgid "Show Scroll Hint"
+msgid "Show scroll hint"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmouselinks
@@ -2127,19 +2131,23 @@ msgid "Mouse links"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowgutterhints
-msgid "Show Gutter Hints"
+msgid "Show gutter hints"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsmarttabs
-msgid "Smart Tabs"
+msgid "Smart tabs"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtabstospaces
-msgid "Tabs To Spaces"
+msgid "Tabs to spaces"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtabindent
+msgid "Tab indents blocks"
 msgstr ""
 
 #: lazarusidestrconsts:dlgtrimtrailingspaces
-msgid "Trim Trailing Spaces"
+msgid "Trim trailing spaces"
 msgstr ""
 
 #: lazarusidestrconsts:dlgundoaftersave
@@ -2866,8 +2874,8 @@ msgstr ""
 msgid "Use Compiler Config File (fpc.cfg)"
 msgstr ""
 
-#: lazarusidestrconsts:dlguseadditionalconfig
-msgid "Use Additional Compiler Config File"
+#: lazarusidestrconsts:dlgusecustomconfig
+msgid "Use custom Compiler Config File"
 msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions2
