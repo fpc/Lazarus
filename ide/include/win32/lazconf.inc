@@ -21,8 +21,8 @@
  *                                                                         *
  ***************************************************************************
 }
-//uses
-//  DOS; // .. invincible DOS ..
+uses
+  DOS; // .. invincible DOS ..
 
 const
   DefaultFPCSrcDirs: array[1..1] of string = (
@@ -169,6 +169,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2003/08/25 12:16:14  marco
+   * reverted last patch. CVS dirty.
+
   Revision 1.12  2003/08/25 11:58:59  marco
    * fixed duplicate dos reference
 
