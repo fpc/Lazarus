@@ -707,7 +707,7 @@ var
 begin
   I := FItems.IndexOf(AValue);
   if I >= 0 then
-    ItemIndex := I
+    ItemIndex := I;
   inherited;
 end;
 
@@ -796,6 +796,9 @@ end;
 
 {
   $Log$
+  Revision 1.56  2005/02/15 22:01:54  micha
+  compilation fixes
+
   Revision 1.55  2005/02/15 21:51:32  micha
   always call inherited to set text, setitemindex sets text by indirectly calling RealSetText
 

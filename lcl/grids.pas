@@ -2780,6 +2780,9 @@ end;
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
   C,TL,CTL: Integer;
+{$ifdef GoodClipping}
+  R: TRect;
+{$endif}
 begin
 
   {$IfDef dbgScroll}
