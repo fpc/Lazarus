@@ -3545,7 +3545,7 @@ begin
   end else begin
     // revert code in existing source editor
     NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
-    AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines);
+    NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
     NewSrcEdit.Modified:=false;
     AnUnitInfo.Modified:=false;
     NewSrcEditorCreated:=false;
@@ -6856,6 +6856,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.334  2002/08/03 14:30:37  lazarus
+  MG: added file access monitoring and diff view
+
   Revision 1.333  2002/08/01 14:15:02  lazarus
   MG: started file access monitoring for loaded files
 

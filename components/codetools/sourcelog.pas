@@ -364,6 +364,7 @@ begin
     Clear;
     FSource:=NewSrc;
     FSrcLen:=length(FSource);
+    FLineCount:=-1;
     FReadOnly:=false;
     NotifyHooks(nil);
   end;

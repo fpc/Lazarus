@@ -37,6 +37,14 @@ uses
   LResources, Project, SynEdit, LCLType, DiffPatch;
 
 type
+  PDiffItem = ^TDiffItem;
+  TDiffItem = record
+    Valid: boolean;
+    UnitInfo: TUnitInfo;
+    Diff: string;
+    TxtOnDisk: string;
+  end;
+
   TDiskDiffsDlg = class(TForm)
     MainGroupBox: TGroupBox;
     FilesListBox: TListBox;
@@ -46,17 +54,26 @@ type
     procedure DiskDiffsDlgKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
     procedure DiskDiffsDlgResize(Sender: TObject);
+    procedure FilesListBoxMouseUp(Sender: TOBject; Button: TMouseButton;
+          Shift: TShiftState; X, Y: Integer);
     procedure MainGroupBoxResize(Sender: TObject);
   private
     FUnitList: TList;
+    FCachedDiffs: TList; // List of PDiffItem
     procedure FillFilesListBox;
     procedure SetUnitList(const AValue: TList);
+    procedure ShowDiff;
+    function GetCachedDiff(AnUnitInfo: TUnitInfo): PDiffItem;
+    procedure ClearCache;
   public
     property UnitList: TList read FUnitList write SetUnitList; // list of TUnitInfo
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
   end;
   
+
 var DiskDiffsDlg: TDiskDiffsDlg;
+
 
 function ShowDiskDiffsDialog(AnUnitList: TList): TModalResult;
 
@@ -104,6 +121,12 @@ begin
   end;
 end;
 
+procedure TDiskDiffsDlg.FilesListBoxMouseUp(Sender: TOBject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  ShowDiff;
+end;
+
 procedure TDiskDiffsDlg.MainGroupBoxResize(Sender: TObject);
 begin
   with DiffSynEdit do begin
@@ -126,6 +149,64 @@ procedure TDiskDiffsDlg.SetUnitList(const AValue: TList);
 begin
   FUnitList:=AValue;
   FillFilesListBox;
+end;
+
+procedure TDiskDiffsDlg.ShowDiff;
+var
+  i: integer;
+  DiffItem: PDiffItem;
+begin
+  i:=FilesListBox.ItemIndex;
+  if i>=0 then begin
+    DiffItem:=GetCachedDiff(TUnitInfo(FUnitList[i]));
+    DiffSynEdit.Lines.Text:=DiffItem^.Diff;
+  end else begin
+    DiffSynEdit.Lines.Clear;
+  end;
+end;
+
+function TDiskDiffsDlg.GetCachedDiff(AnUnitInfo: TUnitInfo): PDiffItem;
+var
+  i: integer;
+  fs: TFileStream;
+begin
+  if FCachedDiffs=nil then
+    FCachedDiffs:=TList.Create;
+  for i:=0 to FCachedDiffs.Count-1 do begin
+    Result:=PDiffItem(FCachedDiffs[i]);
+    if (Result<>nil) and (Result^.UnitInfo=AnUnitInfo) then exit;
+  end;
+  New(Result);
+  Result^.UnitInfo:=AnUnitInfo;
+  try
+    fs:=TFileStream.Create(AnUnitInfo.Filename,fmOpenRead);
+    SetLength(Result^.TxtOnDisk,fs.Size);
+    if Result^.TxtOnDisk<>'' then
+      fs.Read(Result^.TxtOnDisk[1],length(Result^.TxtOnDisk));
+    fs.Free;
+    Result^.Diff:=CreateTextDiff(AnUnitInfo.Source.Source,Result^.TxtOnDisk,[]);
+  except
+    On E: Exception do
+      Result^.Diff:='\ Error reading file: '+E.Message;
+  end;
+  FCachedDiffs.Add(Result);
+end;
+
+procedure TDiskDiffsDlg.ClearCache;
+var
+  i: integer;
+  DiffItem: PDiffItem;
+begin
+  if FCachedDiffs=nil then exit;
+  for i:=0 to FCachedDiffs.Count-1 do begin
+    DiffItem:=PDiffItem(FCachedDiffs[i]);
+    if DiffItem<>nil then begin
+      DiffItem^.TxtOnDisk:='';
+      DiffItem^.Diff:='';
+      Dispose(DiffItem);
+    end;
+  end;
+  FCachedDiffs.Clear;
 end;
 
 constructor TDiskDiffsDlg.Create(TheOwner: TComponent);
@@ -159,6 +240,7 @@ begin
       Height:=60;
       Align:=alTop;
       Visible:=true;
+      OnMouseUp:=@FilesListBoxMouseUp;
     end;
     
     DiffSynEdit:=TSynEdit.Create(Self);
@@ -169,7 +251,9 @@ begin
       Top:=FilesListBox.Height+2;
       Width:=MainGroupBox.ClientWidth;
       Height:=MainGroupBox.ClientHeight-Top;
-      Lines.Text:='The Diff View is not implemented yet.';
+      ReadOnly:=true;
+      Gutter.Visible:=false;
+      Lines.Text:='Click on one of the above items to see the diff';
       Visible:=true;
     end;
     
@@ -200,6 +284,13 @@ begin
     OnResize:=@DiskDiffsDlgResize;
     OnKeyDown:=@DiskDiffsDlgKeyDown;
   end;
+end;
+
+destructor TDiskDiffsDlg.Destroy;
+begin
+  ClearCache;
+  FCachedDiffs.Free;
+  inherited Destroy;
 end;
 
 initialization

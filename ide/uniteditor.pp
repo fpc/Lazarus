@@ -233,17 +233,17 @@ type
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
-    property Owner : TComponent read FAOwner;
-    property Source : TStrings read GetSource write SetSource;
-    property ShortName : String read FShortName write fShortName;
-    property FileName : AnsiString read GetFileName;
-    property Modified : Boolean read GetModified write SetModified;
-    property ReadOnly : Boolean read GetReadOnly write SetReadOnly;
-    property InsertMode : Boolean read GetInsertmode;
+    property Owner: TComponent read FAOwner;
+    property Source: TStrings read GetSource write SetSource;
+    property ShortName: String read FShortName write fShortName;
+    property FileName: AnsiString read GetFileName;
+    property Modified: Boolean read GetModified write SetModified;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
+    property InsertMode: Boolean read GetInsertmode;
     property CodeTemplates: TSynEditAutoComplete
        read FCodeTemplates write SetCodeTemplates;
-    property PopupMenu:TPopupMenu read FPopUpMenu write SetPopUpMenu;
-    property EditorComponent:TSynEdit read FEditor;
+    property PopupMenu: TPopupMenu read FPopUpMenu write SetPopUpMenu;
+    property EditorComponent: TSynEdit read FEditor;
     property SyntaxHighlighterType: TLazSyntaxHighlighter 
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
@@ -1189,7 +1189,9 @@ begin
       writeln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks');
       writeln('');
       {$ENDIF}
+      FEditor.BeginUpdate;
       FCodeBuffer.AssignTo(FEditor.Lines);
+      FEditor.EndUpdate;
     end;
   end;
 end;
