@@ -78,6 +78,8 @@ type
                              const AFormBorderStyle: TFormBorderStyle); override;
     class procedure SetIcon(const AForm: TCustomForm; const AIcon: HICON); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
+    class procedure SetBorderIcons(const AForm: TCustomForm;
+                                   const ABorderIcons: TBorderIcons); override;
   end;
 
   { TGtkWSForm }
@@ -167,6 +169,21 @@ begin
                              ACustomForm.Left, ACustomForm.Top);
   end;
   GtkWindowShowModal(GtkWindow);
+end;
+
+procedure TGtkWSCustomForm.SetBorderIcons(const AForm: TCustomForm;
+  const ABorderIcons: TBorderIcons);
+  
+  procedure RaiseNotImplemented;
+  begin
+    raise Exception.Create('TGtkWSCustomForm.SetBorderIcons BorderIcons not supported by gtk interface');
+  end;
+  
+begin
+  if AForm.ComponentState*[csDesigning,csLoading]=[csDesigning] then begin
+    RaiseNotImplemented;
+  end;
+  inherited SetBorderIcons(AForm, ABorderIcons);
 end;
 
 initialization
