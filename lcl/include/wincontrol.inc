@@ -2357,7 +2357,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 Begin
-  Assert(False, Format('Trace:TODO: [TWinControl.LMSetFocus] %s', [ClassName]));
+  Assert(False, Format('Trace: %s', [ClassName]));
   DoEnter;
 end;
 
@@ -2370,7 +2370,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
-  Assert(False, Format('Trace: TODO: [TWinControl.LMKillFocus] %s', [ClassName]));
+  Assert(False, Format('Trace: %s', [ClassName]));
   DoExit;
 end;
 
@@ -3136,6 +3136,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.180  2003/12/06 19:20:46  mattias
+  codecompletion: forward proc body position now block sensitive
+
   Revision 1.179  2003/11/23 00:28:51  mattias
   fixed closing IDE while debugging
 

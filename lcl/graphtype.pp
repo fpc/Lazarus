@@ -49,7 +49,7 @@ type
     ricfRGBA,   // one pixel contains red, green, blue and alpha
                 // If AlphaPrec=0 then there is no alpha.
                 // Same for RedPrec, GreenPrec and BluePrec.
-    ricfGray    // R=G=B. The Red stores the Gray. AlphaPec can be >0.
+    ricfGray    // R=G=B. The Red stores the Gray. AlphaPrec can be >0.
     );
 
   TRawImageByteOrder = (
@@ -209,6 +209,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2003/12/06 19:20:46  mattias
+  codecompletion: forward proc body position now block sensitive
+
   Revision 1.22  2003/11/28 11:25:49  mattias
   added BitOrder for RawImages
 

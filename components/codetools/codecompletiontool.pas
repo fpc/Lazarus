@@ -367,6 +367,12 @@ var
   ProcAVLNode, NearestAVLNode: TAVLTreeNode;
   ProcNodeExt, NearestNodeExt: TCodeTreeNodeExtension;
   InsertBehind: boolean;
+  NearestAVLNodeInFront: TAVLTreeNode;
+  NearestAVLNodeBehind: TAVLTreeNode;
+  ProcPosInFront: Integer;
+  ProcPosBehind: Integer;
+  EmptyLinesInFront: Integer;
+  EmptyLinesBehind: Integer;
 begin
   IsInInterface:=ProcNode.HasParentOfType(ctnInterface);
   if IsInInterface then begin
@@ -413,7 +419,7 @@ begin
       ProcBodyNodes:=GatherProcNodes(StartSearchProc,
                      [phpInUpperCase,phpIgnoreForwards,phpIgnoreMethods],'');
                      
-      // delete current proc from tree
+      // remove current forward proc from tree
       ProcAVLNode:=FindAVLNodeWithNode(ForwardProcNodes,ProcNode);
       if ProcAVLNode=nil then
         RaiseException('TCodeCompletionCodeTool.FindInsertPositionForForwardProc '
@@ -427,19 +433,53 @@ begin
       // sort forward proc definitions with source position
       ForwardProcNodes.OnCompare:=@CompareCodeTreeNodeExtWithNodeStartPos;
       
-      { For debugging:
-      ProcAVLNode:=ForwardProcNodes.FindLowest;
+      // For debugging:
+      {ProcAVLNode:=ForwardProcNodes.FindLowest;
       while ProcAVLNode<>nil do begin
         NearestProcNode:=TCodeTreeNodeExtension(ProcAVLNode.Data).Node;
         writeln('FindInsertPositionForForwardProc B ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
         ProcAVLNode:=ForwardProcNodes.FindSuccessor(ProcAVLNode);
       end;}
 
-      // find nearest forward proc
+      // find nearest forward procs (distance measured in chars)
       NearestAVLNode:=ForwardProcNodes.FindNearest(ProcNodeExt);
       if NearestAVLNode<>nil then begin
+      
+        //writeln('FindInsertPositionForForwardProc Nearest ',TCodeTreeNodeExtension(NearestAVLNode.Data).Node.StartPos,' ',ProcNode.StartPos);
+
+        // find nearest forward procs in front and after
+        if TCodeTreeNodeExtension(NearestAVLNode.Data).Node.StartPos
+          <ProcNode.StartPos
+        then begin
+          NearestAVLNodeInFront:=NearestAVLNode;
+          NearestAVLNodeBehind:=ForwardProcNodes.FindPrecessor(NearestAVLNode);
+        end else begin
+          NearestAVLNodeInFront:=ForwardProcNodes.FindSuccessor(NearestAVLNode);
+          NearestAVLNodeBehind:=NearestAVLNode;
+        end;
+        
+        // choose the nearest of both (distance measured in emtpy lines,
+        // this way blocks of procs are kept)
+        if (NearestAVLNodeInFront<>nil) and (NearestAVLNodeBehind<>nil) then
+        begin
+          ProcPosInFront:=
+               TCodeTreeNodeExtension(NearestAVLNodeInFront.Data).Node.StartPos;
+          ProcPosBehind:=
+               TCodeTreeNodeExtension(NearestAVLNodeBehind.Data).Node.StartPos;
+          EmptyLinesInFront:=EmptyCodeLineCount(Src,
+                       ProcPosInFront,ProcNode.StartPos,Scanner.NestedComments);
+          EmptyLinesBehind:=EmptyCodeLineCount(Src,
+                        ProcNode.StartPos,ProcPosBehind,Scanner.NestedComments);
+          //writeln('FindInsertPositionForForwardProc Nearest InFront or After: EmptyLinesInFront=',EmptyLinesInFront,' EmptyLinesBehind=',EmptyLinesBehind);
+          if EmptyLinesInFront<EmptyLinesBehind then
+            NearestAVLNode:=NearestAVLNodeInFront
+          else
+            NearestAVLNode:=NearestAVLNodeBehind;
+        end;
+        
         NearestNodeExt:=TCodeTreeNodeExtension(NearestAVLNode.Data);
         NearestProcNode:=NearestNodeExt.Node;
+        
         //writeln('FindInsertPositionForForwardProc C ',NearestProcNode.StartPos,' "',copy(Src,NearestProcNode.StartPos,20),'"');
         InsertBehind:=NearestProcNode.StartPos<ProcNode.StartPos;
 

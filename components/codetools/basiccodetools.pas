@@ -53,7 +53,7 @@ function FindNextIDEDirective(const ASource: string; StartPos: integer;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 
-// line ranges and indent
+// indent
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
 function GetLineIndent(const Source: string; Position: integer): integer;
@@ -62,10 +62,6 @@ function GetBlockMinIndent(const Source: string;
 function GetIndentStr(Indent: integer): string;
 procedure IndentText(const Source: string; Indent, TabWidth: integer;
     var NewSource: string);
-function LineEndCount(const Txt: string): integer;
-function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
-function PositionsInSameLine(const Source: string;
-    Pos1, Pos2: integer): boolean;
 
 // identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
@@ -76,6 +72,12 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
     ): integer;
 
 // line/code ends
+function LineEndCount(const Txt: string): integer;
+function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
+function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
+    NestedComments: boolean): integer;
+function PositionsInSameLine(const Source: string;
+    Pos1, Pos2: integer): boolean;
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
@@ -1165,6 +1167,87 @@ begin
   LineEnd:=Position;
   while (LineEnd<=length(Source)) and (not (Source[LineEnd] in [#10,#13])) do
     inc(LineEnd);
+end;
+
+function EmptyCodeLineCount(const Source: string; StartPos, EndPos: integer;
+    NestedComments: boolean): integer;
+{ search forward for a line end or code
+  ignore line ends in comments
+  Result is Position of Start of Line End
+}
+var SrcLen: integer;
+  SrcPos: Integer;
+
+  procedure ReadComment(var P: integer);
+  begin
+    case Source[P] of
+      '{':
+        begin
+          inc(P);
+          while (P<=SrcLen) and (Source[P]<>'}') do begin
+            if NestedComments and (Source[P] in ['{','(','/']) then
+              ReadComment(P)
+            else
+              inc(P);
+          end;
+          inc(P);
+        end;
+      '(':
+        begin
+          inc(P);
+          if (P<=SrcLen) and (Source[P]='*') then begin
+            inc(P);
+            while (P<=SrcLen-1)
+            and ((Source[P]<>'*') or (Source[P-1]<>')')) do begin
+              if NestedComments and (Source[P] in ['{','(','/']) then
+                ReadComment(P)
+              else
+                inc(P);
+            end;
+            inc(P,2);
+          end;
+        end;
+      '/':
+        begin
+          inc(P);
+          if (P<=SrcLen) and (Source[P]='/') then begin
+            inc(P);
+            while (P<=SrcLen)
+            and (not (Source[P] in [#10,#13])) do begin
+              if NestedComments and (Source[P] in ['{','(','/']) then
+                ReadComment(P)
+              else
+                inc(P);
+            end;
+          end;
+        end;
+    end;
+  end;
+
+begin
+  Result:=0;
+  SrcLen:=length(Source);
+  if EndPos>SrcLen then EndPos:=SrcLen+1;
+  SrcPos:=StartPos;
+  while (SrcPos<EndPos) do begin
+    case Source[SrcPos] of
+    '{','(','/':
+      ReadComment(SrcPos);
+    #10,#13:
+      begin
+        // skip line end
+        inc(SrcPos);
+        if (SrcPos<EndPos) and (Source[SrcPos] in [#10,#13])
+        and (Source[SrcPos]<>Source[SrcPos-1]) then
+          inc(SrcPos);
+        // count empty lines
+        if (SrcPos<EndPos) and (Source[SrcPos] in [#10,#13]) then
+          inc(Result);
+      end;
+    else
+      inc(SrcPos);
+    end;
+  end;
 end;
 
 function PositionsInSameLine(const Source: string;

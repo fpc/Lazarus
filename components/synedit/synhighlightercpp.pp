@@ -1489,7 +1489,7 @@ begin
   with TBetterRegistry.Create do
   begin
     try
-      RootKey := integer(HKEY_LOCAL_MACHINE);
+      RootKey := HKEY_LOCAL_MACHINE;
       {$IFNDEF SYN_LAZARUS}
       if OpenKeyReadOnly('\SOFTWARE\Borland\C++Builder') then
       begin
@@ -1524,13 +1524,13 @@ function TSynCppSyn.UseUserSettings(settingIndex: integer): boolean;
       begin
         for i := 1 to Length(name) do
           if name[i] = ' ' then name[i] := '_';
-        Result := attri.LoadFromBorlandRegistry(integer(HKEY_CURRENT_USER),
+        Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
              '\SOFTWARE\Borland\C++Builder\'+settingTag+'\Highlight',name,true);
       end; { ReadCPPB1 }
 
       function ReadCPPB3OrMore(settingTag: string; attri: TSynHighlighterAttributes; key: string): boolean;
       begin
-        Result := attri.LoadFromBorlandRegistry(integer(HKEY_CURRENT_USER),
+        Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
                  '\Software\Borland\C++Builder\'+settingTag+'\Editor\Highlight',
                  key,false);
       end; { ReadCPPB3OrMore }
