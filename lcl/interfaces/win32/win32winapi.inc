@@ -2921,9 +2921,12 @@ End;
   the destination device context.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+var MaskBltResult: boolean;
+    StretchBltResult: boolean;
 Begin
-  Result := MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop) And
-            StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
+  MaskBltResult := MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
+  StretchBltResult := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
+  Result := MaskBltResult and StretchBltResult;
 
   //Result := False; //Windows.StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
 End;
@@ -3013,6 +3016,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.126  2004/08/01 14:31:46  micha
+  fix stretchblt not called because of maskblt failure
+
   Revision 1.125  2004/07/12 13:04:15  micha
   cleanup: move default handling to DefaultHandler
 
