@@ -217,7 +217,7 @@ end;
 
   Creates a copy DC from the given DC
  ------------------------------------------------------------------------------}
-function CopyDCData(const DestinationDC, SourceDC: PDeviceContext): Boolean;
+function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 var
   GCValues: TGDKGCValues;
 begin
@@ -225,30 +225,30 @@ begin
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
   if Result
   then begin
-    with DestinationDC^ do
+    with DestinationDC do
     begin
-      hWnd := SourceDC^.hWnd;
-      Drawable := SourceDC^.Drawable;
+      hWnd := SourceDC.hWnd;
+      Drawable := SourceDC.Drawable;
       if GC<>nil then begin
         gdk_gc_unref(GC);
         GC:=nil;
       end;
-      if (SourceDC^.GC <> nil) and (Drawable <> nil) then begin
-        gdk_gc_get_values(SourceDC^.GC, @GCValues);
+      if (SourceDC.GC <> nil) and (Drawable <> nil) then begin
+        gdk_gc_get_values(SourceDC.GC, @GCValues);
         //GC := gdk_gc_new(Drawable);
         GC := gdk_gc_new_with_values(Drawable, @GCValues, 3 { $3FF});
       end;
-      Origin := SourceDC^.Origin;
-      SpecialOrigin := SourceDC^.SpecialOrigin;
-      PenPos := SourceDC^.PenPos;
-      CurrentBitmap := SourceDC^.CurrentBitmap;
-      CurrentFont := SourceDC^.CurrentFont;
-      CurrentPen := SourceDC^.CurrentPen;
-      CurrentBrush := SourceDC^.CurrentBrush;
-      //CurrentPalette := SourceDC^.CurrentPalette;
-      CurrentTextColor := SourceDC^.CurrentTextColor;
-      CurrentBackColor := SourceDC^.CurrentBackColor;
-      ClipRegion := SourceDC^.ClipRegion;
+      Origin := SourceDC.Origin;
+      SpecialOrigin := SourceDC.SpecialOrigin;
+      PenPos := SourceDC.PenPos;
+      CurrentBitmap := SourceDC.CurrentBitmap;
+      CurrentFont := SourceDC.CurrentFont;
+      CurrentPen := SourceDC.CurrentPen;
+      CurrentBrush := SourceDC.CurrentBrush;
+      //CurrentPalette := SourceDC.CurrentPalette;
+      CurrentTextColor := SourceDC.CurrentTextColor;
+      CurrentBackColor := SourceDC.CurrentBackColor;
+      ClipRegion := SourceDC.ClipRegion;
       SavedContext := nil;
     end;
   end;
@@ -289,7 +289,7 @@ var
   DCOrigin: TPoint;
   RGNType : Longint;
 begin
-  with PDeviceContext(DC)^ do
+  with TDeviceContext(DC) do
   begin
     gdk_gc_set_clip_region(gc,  nil);
     gdk_gc_set_clip_rectangle (gc,  nil);
@@ -297,7 +297,7 @@ begin
       Region:=PGDIObject(ClipRegion);
       RGNType := RegionType(Region^.GDIRegionObject);
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
-        DCOrigin:=GetDCOffset(PDeviceContext(DC));
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
           gdk_region_offset(Region^.GDIRegionObject,DCOrigin.X,DCOrigin.Y);
         gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
@@ -336,7 +336,7 @@ begin
     Pixel := 0;
   end;
 
-  {with PDeviceContext(DC)^ do
+  {with TDeviceContext(DC) do
     If CurrentPalette <> nil then
       GDIColor.Colormap := CurrentPalette^.PaletteColormap
     else}
@@ -391,7 +391,7 @@ Procedure EnsureGCColor(DC : hDC; GC : PGDKGC; var GDIColor : TGDIColor;
   end;
   
 begin
-  with PDeviceContext(DC)^ do
+  with TDeviceContext(DC) do
   begin
     Case GDIColor.ColorRef of
       clScrollbar,
@@ -426,9 +426,9 @@ end;
 
   Sets the forecolor and fill according to the brush
  ------------------------------------------------------------------------------}
-procedure SelectGDKBrushProps(const DC: HDC);
+procedure SelectGDKBrushProps(DC: HDC);
 begin
-  with PDeviceContext(DC)^, CurrentBrush^ do
+  with TDeviceContext(DC), CurrentBrush^ do
   begin
     Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.ColorRef]));
 
@@ -451,9 +451,9 @@ end;
 
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
-procedure SelectGDKPenProps(const DC: HDC);
+procedure SelectGDKPenProps(DC: HDC);
 begin
-  with PDeviceContext(DC)^, CurrentPen^ do
+  with TDeviceContext(DC), CurrentPen^ do
   begin
     IsNullPen := GDIPenStyle = PS_NULL;
     EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
@@ -483,9 +483,9 @@ end;
 
   Sets the forecolor and fill according to the Textcolor
  ------------------------------------------------------------------------------}
-procedure SelectGDKTextProps(const DC: HDC);
+procedure SelectGDKTextProps(DC: HDC);
 begin
-  with PDeviceContext(DC)^ do
+  with TDeviceContext(DC) do
   begin
     EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
     EnsureGCColor(DC, GC, CurrentTextColor, False, False);//Font Color
@@ -493,7 +493,10 @@ begin
   end;
 end;
 
-{Palette Index<->RGB Hash Functions}
+//-----------------------------------------------------------------------------
+
+{ Palette Index<->RGB Hash Functions }
+
 type
   TIndexRGB = record
     Index: longint;
@@ -531,7 +534,7 @@ begin
     Result:=PIndexRGB(HashItem^.Item);
 end;
 
-{Palette Index<->RGB lookup Functions}
+{ Palette Index<->RGB lookup Functions }
 
 function PaletteIndexExists(Pal : PGDIObject; I : longint): Boolean;
 begin
@@ -1206,19 +1209,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GetDCOffset(DC: PDeviceContext): TPoint;
+  function GetDCOffset(DC: TDeviceContext): TPoint;
 
   Returns the DC offset for the DC Origin.
  ------------------------------------------------------------------------------}
-function GetDCOffset(DC: PDeviceContext): TPoint;
+function GetDCOffset(DC: TDeviceContext): TPoint;
 var
   Fixed : PGTKWIdget;
   Adjustment: PGtkAdjustment;
 begin
   if (DC<>nil) then begin
-    Result:=DC^.Origin;
-    if (DC^.SpecialOrigin) and (DC^.hWnd<>0) then begin
-      Fixed := GetFixedWidget(PGTKWidget(DC^.hWnd));
+    Result:=DC.Origin;
+    if (DC.SpecialOrigin) and (DC.hWnd<>0) then begin
+      Fixed := GetFixedWidget(PGTKWidget(DC.hWnd));
       if GtkWidgetIsA(Fixed,GTK_LAYOUT_GET_TYPE) then begin
         // ToDo: add comment
         Adjustment:=gtk_layout_get_hadjustment(PGtkLayout(Fixed));
@@ -3465,6 +3468,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.108  2002/10/01 10:05:50  lazarus
+  MG: changed PDeviceContext into class TDeviceContext
+
   Revision 1.107  2002/09/30 22:39:22  lazarus
   MG: fixed setcursor
 
