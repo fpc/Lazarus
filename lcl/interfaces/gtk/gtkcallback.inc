@@ -111,7 +111,7 @@ begin
         TheWindow:=GetControlWindow(Widget);
         MainWindow:=GetControlWindow(PGtkWidget(Application.MainForm.Handle));
         if TheWindow<>MainWindow then
-          gdk_window_set_transient_for(MainWindow,TheWindow);
+          {gdk_window_set_transient_for(MainWindow,TheWindow)};
       end;
     end
     else if TObject(Data) is TPopupMenu then begin
@@ -120,7 +120,7 @@ begin
         TheWindow:=GetControlWindow(Widget);
         MainWindow:=GetControlWindow(PGtkWidget(Application.MainForm.Handle));
         if TheWindow<>MainWindow then
-          gdk_window_set_transient_for(MainWindow,TheWindow);
+          {gdk_window_set_transient_for(MainWindow,TheWindow)};
       end;
     end;
   end;
@@ -2427,6 +2427,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.137  2002/09/30 22:42:54  lazarus
+  MG: deactivated transient modal forms
+
   Revision 1.136  2002/09/30 20:37:09  lazarus
   MG: fixed transient of modal forms
 
