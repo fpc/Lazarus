@@ -7887,11 +7887,35 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+
+  procedure SetRangeUpdatePolicy(Range: PGtkRange);
+  begin
+    case ScrollInfo.nTrackPos of
+      SB_POLICY_CONTINUOUS:
+        gtk_range_set_update_policy(Range, GTK_UPDATE_CONTINUOUS);
+      SB_POLICY_DISCONTINUOUS:
+        gtk_range_set_update_policy(Range, GTK_UPDATE_DISCONTINUOUS);
+      SB_POLICY_DELAYED:
+        gtk_range_set_update_policy(Range, GTK_UPDATE_DELAYED);
+    end;
+  end;
+  procedure SetScrolledWindowUpdatePolicy(ScrolledWindow:PGTKScrolledWindow);
+  var
+    Range: PGtkRange;
+  begin
+    case SBStyle of
+      SB_VERT: Range := PGtkRange(ScrolledWindow^.vscrollbar);
+      SB_HORZ: Range := PGtkRange(ScrolledWindow^.hscrollbar);
+      else exit;
+    end;
+    SetRangeUpdatePolicy(Range);
+  end;
+  
 const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
   Adjustment: PGtkAdjustment;
-  Scroll : PGTKWidget;
+  Scroll: PGTKWidget;
   NewPolicy: Integer;
   i: Integer;
 begin
@@ -7904,6 +7928,21 @@ begin
   Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
   If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
     Scroll := PGTKWidget(Handle);
+
+  // scrollbar update policy
+  if (Scrollinfo.fmask and SIF_UPDATEPOLICY <> 0) then begin
+    if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+      SetScrolledWindowUpdatePolicy(PGTKScrolledWindow(Scroll))
+    else if GtkWidgetIsA(PgtkWidget(Scroll), gtk_clist_get_type) then
+      SetScrolledWindowUpdatePolicy(PGTKScrolledWindow(@PgtkCList(Scroll)^.container))
+    else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_hscrollbar_get_type) then
+      SetRangeUpdatePolicy(PgtkRange(Scroll))
+    else if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type) then
+      SetRangeUpdatePolicy(PgtkRange(Scroll))
+    else if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
+      SetRangeUpdatePolicy(PGTKRange(Scroll));
+  end;
+
 
   Adjustment:=nil;
   case SBStyle of
@@ -8771,6 +8810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.378  2004/12/16 19:03:57  mattias
+  applied patch for smooth scrolling parameters  from Jesus
+
   Revision 1.377  2004/12/11 01:28:58  mattias
   implemented bvSpace of TBevelCut
 

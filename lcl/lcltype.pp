@@ -694,6 +694,9 @@ const
   SB_BOTTOM = 7;
   SB_RIGHT = 7;
   SB_ENDSCROLL = 8;
+  SB_POLICY_CONTINUOUS = 10;
+  SB_POLICY_DISCONTINUOUS = 11;
+  SB_POLICY_DELAYED=12;
 
   SBS_HORZ = 0;
   SBS_VERT = 1;
@@ -712,6 +715,7 @@ const
   SIF_DISABLENOSCROLL = 8;
   SIF_TRACKPOS = $10;
   SIF_ALL = (SIF_RANGE or SIF_PAGE or SIF_POS or SIF_TRACKPOS);
+  SIF_UPDATEPOLICY = $100;
 
 
   SWP_NOSIZE = 1;
@@ -2267,6 +2271,9 @@ end.
 
 {
   $Log$
+  Revision 1.71  2004/12/16 19:03:57  mattias
+  applied patch for smooth scrolling parameters  from Jesus
+
   Revision 1.70  2004/11/27 13:57:49  mattias
   added more gtk ISO character sets
 
