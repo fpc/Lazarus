@@ -82,10 +82,13 @@ const
   IDC_HANDPT    = IDC_HAND;
 
   LclCursorToWin32CursorMap: array[crLow..crHigh] of PChar = (
-     IDC_SIZEALL, IDC_HANDPT, IDC_HELP, IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT,
-     IDC_MULTIDRAG, IDC_VSPLIT, IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT,
-     IDC_UPARROW, IDC_SIZEWE, IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE,
-     IDC_IBEAM, IDC_CROSS, IDC_ARROW, IDC_ARROW, IDC_ARROW);
+  // uni-direction cursors are mapped to bidirection win32 cursors
+     IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZEWE, IDC_SIZEWE,
+     IDC_SIZENESW, IDC_SIZENS, IDC_SIZENWSE, IDC_SIZEALL, IDC_HANDPT, IDC_HELP,
+     IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT, IDC_MULTIDRAG, IDC_VSPLIT,
+     IDC_HSPLIT, IDC_NODROP, IDC_DRAG, IDC_WAIT, IDC_UPARROW, IDC_SIZEWE,
+     IDC_SIZENWSE, IDC_SIZENS, IDC_SIZENESW, IDC_SIZE, IDC_IBEAM, IDC_CROSS,
+     IDC_ARROW, IDC_ARROW, IDC_ARROW);
 
   { month picker, date picker, time picker, updown }
   ICC_DATE_CLASSES       = $00000100;
@@ -277,6 +280,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.130  2005/01/14 12:16:39  vincents
+  added elements to LclCursorToWin32CursorMap for new crXXX constants
+
   Revision 1.129  2004/12/27 10:18:21  micha
   implement support for tthread.synchronize
 
