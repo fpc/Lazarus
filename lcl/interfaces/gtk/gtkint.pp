@@ -32,7 +32,8 @@ interface
 {$ifdef Trace}
 {$ASSERTIONS ON}
 {$endif}
- 
+
+{ $DEFINE VerboseTimer}
 { $DEFINE VerboseMouseBugfix}
 { $DEFINE RaiseExceptionOnNilPointers}
 
@@ -61,7 +62,7 @@ type
     FMessageQueue: TLazQueue;      // queue of PMsg
     FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem
     WaitingForMessages: boolean;
-    
+
     FRCFilename: string;
     FRCFileParsed: boolean;
     FRCFileAge: integer;
@@ -193,6 +194,9 @@ type
     function  UpdateHint(Sender: TObject): Integer; override;
     function  RecreateWnd(Sender: TObject): Integer; override;
 
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
+    function DestroyTimer(TimerHandle: integer) : boolean; override;
+
     {$I gtkwinapih.inc}
     
     property RCFilename: string read FRCFilename write SetRCFilename;
@@ -225,8 +229,7 @@ begin
   LastLeft:=EmptyLastMouseClick;
   LastMiddle:=EmptyLastMouseClick;
   LastRight:=EmptyLastMouseClick;
-  FOldTimerData:=TList.Create;
-  
+
   // clipboard
   ClipboardSelectionData:=TList.Create;
   for c:=Low(TClipboardType) to High(TClipboardType) do begin
@@ -275,14 +278,6 @@ var i: integer;
   ced: PClipboardEventData;
   c: TClipboardType;
 begin
-  // timer
-  for i:=0 to FOldTimerData.Count-1 do begin
-    t:=PGtkITimerinfo(FOldTimerData[i]);
-    dispose(t);
-  end;
-  FOldTimerData.Free;
-  FOldTimerData:=nil;
-  
   // clipboard
   for i:=0 to ClipboardSelectionData.Count-1 do begin
     ced:=PClipboardEventData(ClipboardSelectionData[i]);
@@ -309,6 +304,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2002/11/23 13:48:44  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.104  2002/11/12 13:16:05  lazarus
   MG: fixed TListView with more than 2 columns
 

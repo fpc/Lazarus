@@ -788,7 +788,6 @@ begin
   end;
    
   FreeStockItems;
-  
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
 end;
@@ -889,6 +888,71 @@ Begin
   ShowHide(Sender);
   Result:=0;
 End;
+
+{------------------------------------------------------------------------------
+  Function: CreateTimer
+  Params: Interval:
+          TimerFunc: Callback
+  Returns: a GTK-timer id (use this ID to destroy timer)
+
+  This function will create a GTK timer object and associate a callback to it.
+
+  Design: A callback to the TTimer class is implemented.
+ ------------------------------------------------------------------------------}
+function TGTKObject.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
+var
+  TimerInfo: PGtkITimerinfo;
+begin
+  if ((Interval < 1) or (TimerFunc = nil))
+  then
+    Result := 0
+  else begin
+    New(TimerInfo);
+    TimerInfo^.TimerFunc := TimerFunc;
+    {$IFDEF VerboseTimer}
+    writeln('TGTKObject.SetTimer ',HexStr(Cardinal(TimerInfo),8),' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+    {$ENDIF}
+    Result:= gtk_timeout_add(Interval, @gtkTimerCB, TimerInfo);
+    if Result = 0 then
+      Dispose(TimerInfo)
+    else begin
+      TimerInfo^.TimerFunc := TimerFunc;
+      TimerInfo^.TimerHandle:=Result;
+      FTimerData.Add(TimerInfo);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: DestroyTimer
+  Params: TimerHandle
+  Returns:
+
+  WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
+           thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB).
+ ------------------------------------------------------------------------------}
+function TGTKObject.DestroyTimer(TimerHandle: integer) : boolean;
+var
+  n : integer;
+  TimerInfo : PGtkITimerinfo;
+begin
+  Assert(False, 'Trace:removing timer!!!');
+  n := FTimerData.Count;
+  while (n > 0) do begin
+    dec (n);
+    TimerInfo := PGtkITimerinfo(FTimerData.Items[n]);
+    if (TimerInfo^.TimerHandle=TimerHandle) then
+    begin
+      {$IFDEF VerboseTimer}
+      writeln('TGTKObject.KillTimer TimerInfo=',HexStr(Cardinal(TimerInfo),8),' TimerHandle=',TimerHandle,' CurTimerCount=',FTimerData.Count,' OldTimerCount=',FOldTimerData.Count);
+      {$ENDIF}
+      gtk_timeout_remove(TimerInfo^.TimerHandle);
+      FTimerData.Delete(n);
+      Dispose(TimerInfo);
+    end;
+  end;
+  Result:=true;
+end;
 
 procedure TGtkObject.LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
 var
@@ -6650,6 +6714,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.292  2002/11/23 13:48:44  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.291  2002/11/21 18:49:53  mattias
   started OnMouseEnter and OnMouseLeave
 
