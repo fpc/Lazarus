@@ -23,6 +23,8 @@
  
 Unit Win32Int;
 
+{$H+}
+
 Interface
 
 {$IFDEF Trace}
@@ -57,12 +59,11 @@ Type
     FGDIObjects: TDynHashArray;
     FMessageQueue: TList;
     FToolTipWindow: HWND;
+    FTimerWindow: HWND;
     FAccelGroup: HACCEL;
-    FTimerData: TList;       // Keeps track of timer event structures
     FControlIndex: Cardinal; // Win32-API control index
     FMainForm: TForm;
     FMenu: HMENU; // Main menu/menu bar
-    FMessage: TMSG; // The Windows message
     FParentWindow: HWND; // The parent window
     FSubMenu: HMENU; // current sub menu
     FWndProc: WNDPROC;
@@ -95,12 +96,14 @@ Type
     Procedure AttachMenu(Sender: TObject);
 
     Function WinRegister: Boolean;
+    Function TimerWinRegister: Boolean;
     Procedure SetName(Window: HWND; Value: PChar);
     Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TCommonDialog);
+    
   Public
     { Constructor of the class }
     Constructor Create;
@@ -119,8 +122,6 @@ Type
     { Removes all callbacks for Sender }
     Procedure RemoveCallbacks(Sender: TObject); Override;
     { Processes all events (Window messages) in the queue }
-    Procedure DoEvents; Override;
-    { Handle all events (Window messages) }
     Procedure HandleEvents; Override;
     { Wait until a message is received }
     Procedure WaitMessage; Override;
@@ -130,6 +131,9 @@ Type
     Function UpdateHint(Sender: TObject): Integer; Override;
     { Create a window again }
     Function RecreateWnd(Sender: TObject): Integer; Override;
+
+    function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
+    function DestroyTimer(TimerHandle: integer) : boolean; override;
 
     {$I win32winapih.inc}
   End;
@@ -165,7 +169,8 @@ Type
 
 Const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
-  ClsName = 'LazarusForm';
+  ClsName : array[0..20] of char = 'LazarusForm';
+  TimerClsName : array[0..20] of char = 'LCLTimerWindow';
 
 Var
   OldClipboardViewer: HWND;
@@ -192,6 +197,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/11/23 13:48:48  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.19  2002/11/15 23:43:54  mattias
   applied patch from Karl Brandt
 

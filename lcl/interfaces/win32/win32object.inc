@@ -13,6 +13,11 @@
  *****************************************************************************
 }
 
+{$IFOPT C-}
+// Uncomment for local trace
+  {$C+}
+  {$DEFINE ASSERT_IS_ON}
+{$ENDIF}
 {------------------------------------------------------------------------------
   Method: TWin32Object.Create
   Params:  None
@@ -31,6 +36,7 @@ Begin
   FMessageQueue := TList.Create;
   FAccelGroup := CreateAcceleratorTable(LPACCEL(@AcTbl), High(AcTbl));
   FTimerData  := TList.Create;
+  FTimerWindow := 0;
   FWndProc := WNDPROC(@WindowProc);
 End;
 
@@ -42,13 +48,37 @@ End;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 Destructor TWin32Object.Destroy;
+var
+  n: integer;
+  TimerInfo : PWin32TimerInfo;
 Begin
   Assert(False, 'Trace:TWin32Object is being destroyed');
+
+  n := FTimerData.Count;
+  if (n > 0) then
+  begin
+    Writeln(Format('[TWin32Object.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    while (n > 0) do
+    begin
+      dec(n);
+      TimerInfo := PWin32Timerinfo (FTimerData.Items[n]);
+      Dispose (TimerInfo);
+      FTimerData.Delete(n);
+    end;
+  end;
+  Assert(False,'FTimerWindow: ' +  IntToStr(FTimerWindow));
+  if FTimerWindow<>0 then
+  begin
+    DestroyWindow(FTimerWindow);
+    FTimerWindow := 0;
+  end;
+
   FMessageQueue.Free;
   FDeviceContexts.Free;
   FGDIObjects.Free;
   FKeyStateList.Free;
   FTimerData.Free;
+
   DestroyAcceleratorTable(FAccelGroup);
 
   Inherited Destroy;
@@ -69,12 +99,30 @@ Begin
   If Not WinRegister then
   Begin
     Assert(False, 'Trace:Win32Object.Init - Register Failed');
+    writeln('Trace:Win32Object.Init - Register Failed');
+    Exit;
+  End;
+  If Not TimerWinRegister then
+  Begin
+    Assert(False, 'Trace:Win32Object.Init - LCLTimerWindow Register Failed');
     Exit;
   End;
 
   FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, NULL, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(NULL), HInstance, NULL);
   Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
 
+  try
+    FTimerWindow :=CreateWindowEx(0, @TimerClsName, nil, WS_POPUPWINDOW, 0, 0, 640, 480, 0, 0, System.HInstance, nil);
+  except
+  // Sometimes an access violation occurs, I don't know why
+    on E: Exception do
+    begin
+      FTimerWindow := 0;
+      writeln('Win32Object.Init: Failed to create a hidden window to receive timer messages');
+      writeln('Exception: ',E.Message);
+    end;
+  end;
+  Assert(False,'FTimerWindow: ' + IntToStr(FTimerWindow));
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL; 
   FStockNullBrush := CreateBrushIndirect(LogBrush);
@@ -892,33 +940,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32Object.DoEvents
-  Params:  None
-  Returns: Nothing
-
-  Tells Windows to process pending events (messages)
- ------------------------------------------------------------------------------}
-Procedure TWin32Object.DoEvents;
-Var
-  RetVal: Boolean;
-Begin
-  While True Do
-  Begin
-    RetVal := PeekMessage(FMessage, HWND(Nil), 0, 0, PM_Remove);
-    With FMessage Do
-    Begin
-      If RetVal And ((Message <> 0) Or ((WParam <> 0) And (LParam <> 0))) Then
-        SendMessage(HWnd, Message, WParam, LParam)
-      Else
-        Break;
-      Message := 0;
-      WParam := 0;
-      LParam := 0;
-    End;
-  End;
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32Object.HandleEvents
   Params:  None
   Returns: Nothing
@@ -926,13 +947,15 @@ End;
   Handle all pending messages
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.HandleEvents;
+var
+  AMessage: TMsg;
 Begin
-  While GetMessage(@FMessage, HWnd(Nil), 0, 0) Do
+  While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
-    If TranslateAccelerator(FMessage.HWnd, FAccelGroup, @FMessage) = 0 Then
+    If TranslateAccelerator(AMessage.HWnd, FAccelGroup, @AMessage) = 0 Then
     Begin
-      TranslateMessage(@FMessage);
-      DispatchMessage(@FMessage);
+      TranslateMessage(@AMessage);
+      DispatchMessage(@AMessage);
     End;
   End;
 End;
@@ -945,20 +968,10 @@ End;
   Passes execution control to Windows
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.WaitMessage;
-Var
-  RetVal: Boolean;
 Begin
-  Assert(False, 'TRACE:TWin32Object.WaitMessage - Start');
-  Repeat
-    RetVal := PeekMessage(FMessage, HWND(Nil), 0, 0, PM_REMOVE);
-    Assert(False, Format('Trace:TWin32Object.WaitMessage --> %S', [WM_To_String(FMessage.Message)]));
-    If FMessage.Message = WM_QUIT Then
-    Begin
-      Assert(False, 'Trace:TWin32Object.WaitMessage - got quit message; exiting the application');
-      Halt(FMessage.WParam);
-    End;
-  Until RetVal;
-  Assert(False, 'TRACE:TWin32Object.WaitMessage - Exit');
+  Assert(False, 'Trace:TWin32Object.WaitMessage - Start');
+  Windows.WaitMessage;
+  Assert(False,'Trace:Leave wait message');
 End;
 
 {------------------------------------------------------------------------------
@@ -970,14 +983,16 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.AppTerminate;
 Var
-  Handle: HWND;
+  MainForm: TForm;
 Begin
   Assert(False, 'Trace:TWin32Object.AppTerminate - Start');
+  MainForm := Nil;
   If Application.MainForm <> Nil Then
-    Handle := Application.MainForm.Handle
-  Else
-    Handle := FMainForm.Handle;
-  DestroyWindow(Handle);
+    MainForm := Application.MainForm
+  Else If FMainForm <> Nil then
+    MainForm := FMainForm;
+  if MainForm<> Nil then
+    DestroyWindow(MainForm.Handle);
 End;
 
 {------------------------------------------------------------------------------
@@ -1058,6 +1073,63 @@ Begin
   Result := 0;
 End;
 
+{------------------------------------------------------------------------------
+  Function: CreateTimer
+  Params: Interval:
+          TimerFunc: Callback
+  Returns: a Timer id (use this ID to destroy timer)
+
+  Design: A timer which sends a wm_timr is created,
+    the wm_timer is received by a hidden window,
+    which calls the TimerFunc in its window proc.
+ ------------------------------------------------------------------------------}
+function TWin32Object.CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer;
+var
+  TimerInfo: PWin32TimerInfo;
+begin
+  Assert(False,'Trace:Create Timer: ' + IntToStr(Interval));
+  Result := 0;
+  if (FTimerWindow<>0) and (Interval >= 1) and (TimerFunc <> nil)
+  then begin
+    New(TimerInfo);
+    TimerInfo^.TimerFunc := TimerFunc;
+    Result:= Windows.SetTimer(FTimerWindow,integer(TimerInfo),Interval,nil);
+    if Result = 0 then
+      Dispose(TimerInfo)
+    else begin
+      TimerInfo^.TimerHandle:= Result;
+      FTimerData.Add(TimerInfo);
+    end;
+  end;
+  Assert(False,'Trace:Result: ' + IntToStr(result));
+end;
+
+{------------------------------------------------------------------------------
+  Function: DestroyTimer
+  Params: TimerHandle
+  Returns:
+ ------------------------------------------------------------------------------}
+function TWin32Object.DestroyTimer(TimerHandle: integer) : boolean;
+var
+  n : integer;
+  TimerInfo : PWin32Timerinfo;
+begin
+  Result:= false;
+  Assert(False,'Trace:removing timer: '+ IntToStr(TimerHandle));
+  n := FTimerData.Count;
+  while (n > 0) do begin
+    dec (n);
+    TimerInfo := PWin32Timerinfo(FTimerData.Items[n]);
+    if (TimerInfo^.TimerHandle=TimerHandle) then
+    begin
+      result := Windows.KillTimer(FTimerWindow, integer(TimerInfo));
+      FTimerData.Delete(n);
+      Dispose(TimerInfo);
+    end;
+  end;
+  Assert(False,'Trace:Destroy timer Result: '+ BOOL_RESULT[result]);
+end;
+
 { Private methods (in no significant order) }
 
 {------------------------------------------------------------------------------
@@ -1083,11 +1155,32 @@ Begin
     HCursor := LoadCursor(0, IDC_Arrow);
     HBrBackground := GetSysColorBrush(Color_BtnFace);
     LPSzMenuName := Nil;
-    LPSzClassName := ClsName;
+    LPSzClassName := @ClsName;
   End;
   Result := Windows.RegisterClass(@WindowClass) <> 0;
   Assert(False, 'Trace:WinRegister - Exit');
 End;
+
+Function TWin32Object.TimerWinRegister: boolean;
+var
+  WinClass: WndClassEx;
+begin
+  with WinClass do begin
+    cbSize := Sizeof(WndClassEx);
+    Style := CS_HRedraw or CS_VRedraw;
+    lpfnWndProc := WndProc(@TimerWindowProc);
+    cbClsExtra := 0;
+    cbWndExtra := 0;
+    hInstance := System.HInstance;
+    _hIcon := LoadIcon(0, IDI_Application);
+    hCursor := LoadCursor(0, IDC_Arrow);
+    hbrBackground := GetStockObject(LTGRAY_BRUSH);
+    lpszMenuName := nil;
+    lpszClassName := @TimerClsName;
+    hIconSm := LoadIcon(0, IDI_APPLICATION);
+  end;
+  result := RegisterClassEx(@WinClass) <> 0;
+end;
 
 {------------------------------------------------------------------------------
   Method: TWin32Object.PaintPixmap
@@ -1667,7 +1760,7 @@ Begin
 //        Width := CW_USEDEFAULT;
 //      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
 
-      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);           
+      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
 
       If Sender Is TForm Then
         OldClipboardViewer := SetClipboardViewer(Window);
@@ -2524,8 +2617,16 @@ Begin
   SetProp(Window, 'MsgList', Nil);
 End;
 
+{$IFDEF ASSERT_IS_ON}
+  {$UNDEF ASSERT_IS_ON}
+  {$C-}
+{$ENDIF}
+
 {
   $Log$
+  Revision 1.27  2002/11/23 13:48:48  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.26  2002/11/15 23:43:54  mattias
   applied patch from Karl Brandt
 
