@@ -452,11 +452,15 @@ begin
     GDK_F1..GDK_F24:    VirtualKey := VK_F1 + (Event^.KeyVal - GDK_F1);
   end;
   
-  if VirtualKey=VK_UNKNOWN then
-    // map all other keys to VK_IRREGULAR + 
+  if VirtualKey=VK_UNKNOWN then begin
+    // map all other keys to VK_IRREGULAR + KeyCode
     VirtualKey := VK_IRREGULAR + KeyCode;
+    if VirtualKey<VK_IRREGULAR then
+      VirtualKey := VK_IRREGULAR;
+  end;
 
-//writeln('GetGTKKeyInfo KeyCode=',KeyCode,' VirtualKey=',VirtualKey
+//writeln('GetGTKKeyInfo Event^.KeyVal=',Event^.KeyVal,' KeyCode=',KeyCode
+//,' VirtualKey=',VirtualKey
 //,' SysKey=',SysKey,' Extended=',Extended,' Toggle=',Toggle);
 
 //  Assert(False, Format('Trace:[GetGTKKeyInfo] Event^.KeyVal %d, Event^.State %d, KeyCode %d, VirtualKey %d, SysKey %d, Extended %d, CtrlDown %d', [Integer(Event^.KeyVal), Integer(Event^.State), Integer(KeyCode), Integer(VirtualKey), Integer(SysKey), Integer(Extended), Integer(CtrlDown)]));
@@ -740,8 +744,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.18  2001/06/20 17:00:20  lazarus
-  MG: alternative key bugfix, shiftstate bugfix
+  Revision 1.19  2001/06/20 17:34:37  lazarus
+  MG: fixed unknown special key code
 
   Revision 1.17  2001/06/20 13:35:51  lazarus
   MG: added VK_IRREGULAR and key grabbing

@@ -143,7 +143,23 @@ implementation
 
 
 function ShowKeyMappingEditForm(Index:integer;
-   AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
+  AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
+   
+  procedure InitComboBox(AComboBox: TComboBox; AKey: integer);
+  var s: string;
+    i: integer;
+  begin
+    s:=KeyAndShiftStateToStr(AKey,[]);
+    i:=AComboBox.Items.IndexOf(s);
+    if i>=0 then
+      AComboBox.ItemIndex:=i
+    else if lowercase(copy(s,1,5))='word(' then begin
+      AComboBox.Items.Add(s);
+      AComboBox.ItemIndex:=AComboBox.Items.IndexOf(s);
+    end else
+      AComboBox.ItemIndex:=0;
+  end;
+   
 begin
   Result:=mrCancel;
   if KeyMappingEditForm<>nil then exit;
@@ -159,15 +175,13 @@ begin
           Key1CtrlCheckBox.Checked:=ssCtrl in Shift1;
           Key1AltCheckBox.Checked:=ssAlt in Shift1;
           Key1ShiftCheckBox.Checked:=ssShift in Shift1;
-          Key1KeyComboBox.ItemIndex:=Key1KeyComboBox.Items.IndexOf(
-             KeyAndShiftStateToStr(Key1,[]));
+          InitComboBox(Key1KeyComboBox,Key1);
         end;
         if Key2<>VK_UNKNOWN then begin
           Key2CtrlCheckBox.Checked:=ssCtrl in Shift2;
           Key2AltCheckBox.Checked:=ssAlt in Shift2;
           Key2ShiftCheckBox.Checked:=ssShift in Shift2;
-          Key2KeyComboBox.ItemIndex:=Key1KeyComboBox.Items.IndexOf(
-             KeyAndShiftStateToStr(Key2,[]));
+          InitComboBox(Key2KeyComboBox,Key2);
         end;
       end;
       Result:=ShowModal;
@@ -770,13 +784,10 @@ end;
 procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift:TShiftState);
 begin
-  writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
-     ,' Key=',Key
-     ,' Ctrl=',ssCtrl in Shift
-     ,' Shift=',ssShift in Shift
-     ,' Alt=',ssAlt in Shift
-     ,' AsString=',KeyAndShiftStateToStr(Key,Shift)
-     );
+  //writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
+  //   ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
+  //   ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToStr(Key,Shift)
+  //   );
   if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
              VK_LSHIFT, VK_RSHIFT] then exit;
   if (GrabbingKey in [1,2]) then begin
