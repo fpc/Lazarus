@@ -795,7 +795,8 @@ begin
     FObjectInspectorOptions.SaveBounds:=false;
   except
     // ToDo
-    writeln('[TEnvironmentOptions.Load]  error reading "',FFilename,'"');
+    on E: Exception do
+      writeln('[TEnvironmentOptions.Load]  error reading "',FFilename,'": '+E.Message);
   end;
 end;
 

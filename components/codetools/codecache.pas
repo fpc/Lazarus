@@ -50,9 +50,9 @@ type
     FScanner: TLinkScanner;
     FOnSetScanner: TNotifyEvent;
     FOnSetFilename: TNotifyEvent;
-    FFileDateValid: boolean;
     FFileChangeStep: integer;
-    FFileDate: longint;
+    FLoadDateValid: boolean;
+    FLoadDate: longint;
     FLastIncludedByFile: string;
     FCodeCache: TCodeCache;
     FIsVirtual: boolean;
@@ -72,8 +72,8 @@ type
     function Revert: boolean; // ignore changes and reload source
     function SaveToFile(const AFilename: string): boolean; override;
     function Save: boolean;
-    property FileDateValid: boolean read FFileDateValid;
-    property FileDate: longint read FFileDate;
+    property LoadDateValid: boolean read FLoadDateValid;
+    property LoadDate: longint read FLoadDate;
     function FileDateOnDisk: longint;
     function FileNeedsUpdate: boolean;
     function FileOnDiskNeedsUpdate: boolean;
@@ -612,7 +612,7 @@ begin
   inherited Create('');
   FFilename:='';
   FLastIncludedByFile:='';
-  FFileDateValid:=false;
+  FLoadDateValid:=false;
   FIsVirtual:=true;
   FIsDeleted:=false;
 end;
@@ -696,7 +696,7 @@ begin
   FFilename := Value;
   FIsVirtual:=not FilenameIsAbsolute(Filename);
   if CompareFilenames(OldFileName,Value)<>0 then begin
-    FFileDateValid:=false;
+    FLoadDateValid:=false;
   end;
   FLastIncludedByFile:='';
   if FCodeCache<>nil then FCodeCache.OnBufferSetFilename(Self,OldFilename);
@@ -719,7 +719,7 @@ begin
   FIsDeleted:=NewValue;
   if FIsDeleted then begin
     Clear;
-    FFileDateValid:=false;
+    FLoadDateValid:=false;
     ReadOnly:=false;
   end;
 end;
@@ -727,8 +727,8 @@ end;
 procedure TCodeBuffer.MakeFileDateValid;
 begin
   FFileChangeStep:=ChangeStep;
-  FFileDateValid:=true;
-  FFileDate:=FileAge(Filename);
+  FLoadDateValid:=true;
+  FLoadDate:=FileAge(Filename);
 end;
 
 function TCodeBuffer.FileDateOnDisk: longint;
@@ -739,9 +739,9 @@ end;
 function TCodeBuffer.FileNeedsUpdate: boolean;
 // file needs update, if file is not modified and file on disk is changed
 begin
-  if FileDateValid then
+  if LoadDateValid then
     Result:=(not Modified) and (FFileChangeStep=ChangeStep) 
-             and (FileDateOnDisk>FileDate)
+             and (FileDateOnDisk<>LoadDate)
   else
     Result:=true;
 end;
@@ -749,7 +749,7 @@ end;
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
 // file on disk needs update, if file is modified
 begin
-  if FileDateValid then
+  if LoadDateValid then
     Result:=Modified or (FFileChangeStep<>ChangeStep) 
   else
     Result:=false;
@@ -757,8 +757,8 @@ end;
 
 function TCodeBuffer.FileOnDiskHasChanged: boolean;
 begin
-  if FileDateValid then
-    Result:=(FileDateOnDisk<>FileDate)
+  if LoadDateValid then
+    Result:=(FileDateOnDisk<>LoadDate)
   else
     Result:=false;
 end;
