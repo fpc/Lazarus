@@ -158,12 +158,22 @@ begin
   SysUtils.FindClose(FileInfo);
 end;
 
-procedure TranslateUnitResourceStrings(const ResUnitName, AFilename: string);
+function UTF8ToSystemCharSet(const s: string): string;
+begin
+  Result:=s;
+  {$IFDEF UseUTF8Translations}
+  Result:=Utf8ToAnsi(Result);
+  {$ENDIF}
+end;
+
+function DoTranslateUnitResourceStrings(const ResUnitName, AFilename: string
+  ): boolean;
 var
   mo: TMOFile;
   TableID, StringID, TableCount: Integer;
   s: String;
 begin
+  Result:=false;
   if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
     exit;
   try
@@ -180,9 +190,12 @@ begin
 
         // translate all resource strings of the unit
         for StringID := 0 to TableCount - 1 do begin
+          // get UTF8 string
           s := mo.Translate(GetResourceStringDefaultValue(TableID,StringID),
             GetResourceStringHash(TableID,StringID));
           if Length(s) > 0 then begin
+            // convert UTF8 to current local
+            s:=UTF8ToSystemCharSet(s);
             SetResourceStringValue(TableID,StringID,s);
           end;
         end;
@@ -190,6 +203,7 @@ begin
     finally
       mo.Free;
     end;
+    Result:=true;
   except
     on e: Exception do;
   end;
@@ -201,10 +215,10 @@ begin
   if (ResUnitName='') or (BaseFilename='')
   or ((Lang='') and (FallbackLang='')) then exit;
 
-  if FallbackLang<>'' then
-    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
-  if Lang<>'' then
-    TranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
+  if (FallbackLang<>'') then
+    DoTranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[FallbackLang]));
+  if (Lang<>'') then
+    DoTranslateUnitResourceStrings(ResUnitName,Format(BaseFilename,[Lang]));
 end;
 
 {-------------------------------------------------------------------------------
