@@ -243,7 +243,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomComboBox.GetSelText: string;
 begin
-  debugln('TCustomComboBox.GetSelText ');
+  //debugln('TCustomComboBox.GetSelText ');
   if FStyle in [csDropDown, csSimple] then
     Result:= Copy(Text, SelStart, SelLength)
   else
@@ -261,7 +261,7 @@ procedure TCustomComboBox.SetSelText(const Val: string);
 var
   OldText, NewText: string;
 begin
-  debugln('TCustomComboBox.SetSelText ',Val);
+  //debugln('TCustomComboBox.SetSelText ',Val);
   if FStyle in [csDropDown, csSimple] then begin
     OldText:=Text;
     NewText:=LeftStr(OldText,SelStart-1)+Val
@@ -337,7 +337,7 @@ procedure TCustomComboBox.SelectAll;
 var
   CurText: String;
 begin
-  debugln('TCustomComboBox.SelectAll ');
+  //debugln('TCustomComboBox.SelectAll ');
   if (FStyle in [csDropDown, csSimple]) then begin
     CurText:=Text;
     if (CurText <> '') then begin
@@ -409,7 +409,7 @@ begin
   end;
   
   if Style=csDropDownList then begin
-    debugln('TCustomComboBox.KeyDown ');
+    //debugln('TCustomComboBox.KeyDown ');
     // DropDownList: allow only navigation keys
     if not (Key in [VK_UP,VK_DOWN,VK_END,VK_HOME,VK_PRIOR,VK_NEXT,VK_TAB,
       VK_RETURN])
@@ -799,6 +799,9 @@ end;
 
 {
   $Log$
+  Revision 1.44  2004/09/01 10:25:58  mattias
+  added some project flags to start getting rid of TProjectType
+
   Revision 1.43  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

@@ -287,7 +287,10 @@ type
      
   TProjectFlag = (
     pfSaveClosedUnits,     // save info about closed files (not part of project)
-    pfSaveOnlyProjectUnits // save no info about foreign files
+    pfSaveOnlyProjectUnits, // save no info about foreign files
+    pfMainUnitIsPascalSource,// main unit is pascal, even it does not end in .pas/.pp
+    pfMainUnitHasUsesSectionForAllUnits,// add/remove pascal units to main uses section
+    pfRunnable // project can be run
     );
   TProjectFlags = set of TProjectFlag;
   
@@ -322,7 +325,7 @@ type
     fJumpHistory: TProjectJumpHistory;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
-    fMainUnitID: Integer;  // only for ptApplication, ptProgram, ptCGIApplication
+    fMainUnitID: Integer;
     fModified: boolean;
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
@@ -546,9 +549,12 @@ const
       '.lpr','.pas','.pas'
     );
     
-  DefaultProjectFlags = [pfSaveClosedUnits];
+  DefaultProjectFlags = [pfSaveClosedUnits,pfMainUnitIsPascalSource,
+                         pfMainUnitHasUsesSectionForAllUnits,pfRunnable];
   ProjectFlagNames : array[TProjectFlag] of string = (
-      'SaveClosedFiles', 'SaveOnlyProjectUnits'
+      'SaveClosedFiles', 'SaveOnlyProjectUnits',
+      'MainUnitIsPascalSource', 'MainUnitHasUsesSectionForAllUnits',
+      'Runnable'
     );
 
 function ProjectTypeNameToType(const s:string): TProjectType;
@@ -558,7 +564,7 @@ function ProjectFlagsToStr(Flags: TProjectFlags): string;
 implementation
 
 const
-  ProjectInfoFileVersion = 3;
+  ProjectInfoFileVersion = 4;
 
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 var f: TProjectFlag;
@@ -1191,27 +1197,24 @@ begin
 
   // create program source
   NewSource:=TStringList.Create;
-  case fProjectType of
+  case ProjectType of
    ptProgram, ptApplication, ptCustomProgram:
     begin
       NewPrgBuf:=CodeToolBoss.CreateFile(
-        'project1'+ProjectDefaultExt[fProjectType]);
+        'project1'+ProjectDefaultExt[ProjectType]);
       PrgUnitInfo:=TUnitInfo.Create(NewPrgBuf);
       PrgUnitInfo.IsPartOfProject:=true;
       PrgUnitInfo.SyntaxHighlighter:=
-        ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[fProjectType]);
+        ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[ProjectType]);
       AddUnit(PrgUnitInfo,false);
       MainUnitID:=0;
       with NewSource do begin
         Add('program Project1;');
         Add('');
         Add('{$mode objfpc}{$H+}');
-        // This results in crashing programs, when stdout is not open
-        //if fProjectType in [ptApplication] then
-        //  Add('{$AppType Gui} // for win32 applications');
         Add('');
         Add('uses');
-        case fProjectType of
+        case ProjectType of
           ptProgram, ptCustomProgram:
             Add('  Classes;');
           ptApplication:
@@ -1224,7 +1227,7 @@ begin
         end;
         Add('');
         Add('begin');
-        case fProjectType of
+        case ProjectType of
          ptApplication:
           begin
             Add('  Application.Initialize;');
@@ -1455,6 +1458,12 @@ var
   end;
 
   procedure LoadFlags;
+  
+    procedure SetFlag(f: TProjectFlag; Value: boolean);
+    begin
+      if Value then Include(FFlags,f) else Exclude(FFlags,f);
+    end;
+  
   var f: TProjectFlag;
   begin
     FFlags:=[];
@@ -1465,6 +1474,14 @@ var
         Include(FFlags,f)
       else
         Exclude(FFlags,f);
+    end;
+    if FileVersion<=3 then begin
+      // set new flags
+      SetFlag(pfMainUnitIsPascalSource,
+                                      ProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfMainUnitHasUsesSectionForAllUnits,
+                                      ProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfRunnable,ProjectType in [ptProgram,ptApplication,ptCustomProgram]);
     end;
   end;
 
@@ -2451,8 +2468,7 @@ begin
         end;
       end;
     end;
-    if (OldUnitName<>'')
-    and (ProjectType in [ptProgram, ptApplication]) then
+    if (OldUnitName<>'') and (pfMainUnitHasUsesSectionForAllUnits in Flags) then
     begin
       // rename unit in program uses section
       CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
@@ -2802,6 +2818,9 @@ end.
 
 {
   $Log$
+  Revision 1.160  2004/09/01 10:25:58  mattias
+  added some project flags to start getting rid of TProjectType
+
   Revision 1.159  2004/09/01 09:43:24  mattias
   implemented registration of project file types
 

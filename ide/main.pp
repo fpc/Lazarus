@@ -4131,8 +4131,8 @@ begin
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
-  end else if Project1.ProjectType in [ptProgram,ptApplication]
-  then begin
+  end
+  else begin
     if FileExists(NewProgramFilename) then begin
       ACaption:=lisOverwriteFile;
       AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewProgramFilename,
@@ -4927,9 +4927,8 @@ Begin
             Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
         end else if Project1.MainUnitID=i then begin
           MainUnitInfo:=Project1.MainUnitInfo;
-          if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
-          then begin
-            MainUnitName:=CreateSrcEditPageName(MainUnitInfo.UnitName,
+          if pfMainUnitIsPascalSource in Project1.Flags then begin
+            MainUnitName:=CreateSrcEditPageName('',
               MainUnitInfo.Filename,MainUnitInfo.EditorIndex);
             if MainUnitName<>'' then begin
               UnitList.Add(TViewUnitsEntry.Create(
@@ -5768,8 +5767,7 @@ begin
         s:='"'+ActiveUnitInfo.Filename+'"'
       else
         s:='"'+ActiveSourceEditor.PageName+'"';
-      if (Project1.ProjectType in [ptProgram, ptApplication])
-      and (ActiveUnitInfo.UnitName<>'')
+      if (ActiveUnitInfo.UnitName<>'')
       and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
           true,ActiveUnitInfo)>=0) then
       begin
@@ -5786,7 +5784,7 @@ begin
           if Result<>mrOk then exit;
           ActiveUnitInfo.IsPartOfProject:=true;
           if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-          and (Project1.ProjectType in [ptProgram,ptApplication])
+          and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
           then begin
             ActiveUnitInfo.ReadUnitNameFromSource(false);
             ShortUnitName:=ActiveUnitInfo.CreateUnitName;
@@ -5834,7 +5832,7 @@ Begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           AnUnitInfo.IsPartOfProject:=false;
           if (Project1.MainUnitID>=0)
-          and (Project1.ProjectType in [ptProgram,ptApplication])
+          and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
           then begin
             if (AnUnitInfo.UnitName<>'') then begin
               if CodeToolBoss.RemoveUnitFromAllUsesSections(
@@ -6046,7 +6044,7 @@ begin
   Result := mrCancel;
 
   // Check if we can run this project
-  if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
+  if (not (pfRunnable in Project1.Flags))
   or (Project1.MainUnitID < 0)
   then Exit;
 
@@ -9986,7 +9984,7 @@ begin
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
-  and (Project1.ProjectType in [ptProgram, ptApplication])
+  and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     ShortUnitName:=AnUnitInfo.UnitName;
@@ -10016,7 +10014,7 @@ begin
   Result:=mrOk;
   AnUnitInfo.IsPartOfProject:=false;
   if (Project1.MainUnitID>=0)
-  and (Project1.ProjectType in [ptProgram, ptApplication])
+  and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
   then begin
     BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
     ShortUnitName:=AnUnitInfo.UnitName;
@@ -10638,6 +10636,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.765  2004/09/01 10:25:58  mattias
+  added some project flags to start getting rid of TProjectType
+
   Revision 1.764  2004/09/01 09:43:24  mattias
   implemented registration of project file types
 
