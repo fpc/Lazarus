@@ -271,8 +271,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.CMMouseEnter(var Message :TLMessage);
 Begin
-if FParent <> nil then
-   FParent.Perform(CM_MOUSEENTER,0,longint(Self));
+  if FParent <> nil then
+    FParent.Perform(CM_MOUSEENTER,0,longint(Self));
 end;
 
 {------------------------------------------------------------------------------}
@@ -280,9 +280,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.CMMouseLeave(var Message :TLMessage);
 Begin
-if FParent <> nil then
-   FParent.Perform(CM_MOUSELEAVE,0,longint(Self));
-
+  if FParent <> nil then
+    FParent.Perform(CM_MOUSELEAVE,0,longint(Self));
 end;
 
 {------------------------------------------------------------------------------}
@@ -1740,6 +1739,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.53  2002/05/29 21:44:38  lazarus
+  MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
+
   Revision 1.52  2002/05/24 07:16:31  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 
