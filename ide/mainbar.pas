@@ -40,17 +40,12 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus,
-  ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls, Graphics, ExtCtrls,
-  Dialogs, LazConf, CompReg, CodeToolManager, CodeCache, DefineTemplates,
-  MsgView, NewProjectDlg, IDEComp, AbstractFormEditor, FormEditor,
-  CustomFormEditor, ObjectInspector, PropEdits, ControlSelection, UnitEditor,
-  CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
-  SynEditKeyCmds, KeyMapping, ProjectOpts, IDEProcs, Process, UnitInfoDlg,
-  Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, ExtToolDialog,
-  MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
-  OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg;
+  Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
+  Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
+  Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
+  ObjectInspector, PropEdits, SynEditKeyCmds,
+  MsgView, EditorOptions, IDEComp, FormEditor,
+  KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
 const
   Version_String = '0.8.3 alpha';
@@ -66,17 +61,25 @@ type
   }
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
 
+
   TSaveFlag = (sfSaveAs, sfSaveToTestDir, sfProjectSaving);
   TSaveFlags = set of TSaveFlag;
+  
   TOpenFlag = (ofProjectLoading, ofOnlyIfExists, ofRevert, ofQuiet,
                ofAddToRecent);
   TOpenFlags = set of TOpenFlag;
+  
   TRevertFlag = (rfQuiet);
   TRevertFlags = set of TRevertFlag;
+  
   TCloseFlag = (cfSaveFirst, cfProjectClosing);
   TCloseFlags = set of TCloseFlag;
+  
   TLoadBufferFlag = (lbfUpdateFromDisk, lbfRevert, lbfCheckIfText);
   TLoadBufferFlags = set of TLoadBufferFlag;
+
+
+  { TMainIDEBar }
 
   TMainIDEBar = class(TForm)
   
@@ -109,8 +112,6 @@ type
     mnuTools: TMenuItem;
     mnuEnvironment: TMenuItem;
     mnuHelp: TMenuItem;
-
-    itmSeperator: TMenuItem;
 
     itmFileNewUnit : TMenuItem;
     itmFileNewForm : TMenuItem;
@@ -209,6 +210,19 @@ type
     // hints. Note/ToDo: hints should be controlled by the lcl, this is a workaround
     HintTimer1 : TTimer;
     HintWindow1 : THintWindow;
+  protected
+    function CreateMenuSeparator : TMenuItem;
+    procedure SetupFileMenu; virtual;
+    procedure SetupEditMenu; virtual;
+    procedure SetupSearchMenu; virtual;
+    procedure SetupViewMenu; virtual;
+    procedure SetupProjectMenu; virtual;
+    procedure SetupRunMenu; virtual;
+    procedure SetupToolsMenu; virtual;
+    procedure SetupEnvironmentMenu; virtual;
+    procedure SetupHelpMenu; virtual;
+    
+    procedure LoadMenuShortCuts; virtual;
   public
     ToolStatus: TIDEToolStatus;
     function FindUnitFile(const AFilename: string): string; virtual; abstract;
@@ -237,6 +251,592 @@ var
 implementation
 
 
+function LoadPixmap(const ResourceName:string): TPixmap;
+begin
+  Result:=TPixmap.Create;
+  Result.LoadFromLazarusResource(ResourceName);
+end;
+
+
+{ TMainIDEBar }
+
+function TMainIDEBar.CreateMenuSeparator : TMenuItem;
+begin
+  Result := TMenuItem.Create(Self);
+  Result.Caption := '-';
+end;
+
+procedure TMainIDEBar.SetupFileMenu;
+begin
+  itmFileNewUnit := TMenuItem.Create(Self);
+  itmFileNewUnit.Name:='itmFileNewUnit';
+  itmFileNewUnit.Caption := lisMenuNewUnit;
+  itmFileNewUnit.Graphic:=LoadPixmap('menu_new');
+  mnuFile.Add(itmFileNewUnit);
+
+  itmFileNewForm := TMenuItem.Create(Self);
+  itmFileNewForm.Name:='itmFileNewForm';
+  itmFileNewForm.Caption := lisMenuNewForm;
+  itmFileNewForm.Graphic:=LoadPixmap('menu_new');
+  mnuFile.Add(itmFileNewForm);
+
+  mnuFile.Add(CreateMenuSeparator);
+
+  itmFileOpen := TMenuItem.Create(Self);
+  itmFileOpen.Name:='itmFileOpen';
+  itmFileOpen.Caption := lisMenuOpen;
+  itmFileOpen.Graphic:=LoadPixmap('menu_open');
+  mnuFile.Add(itmFileOpen);
+
+  itmFileRevert := TMenuItem.Create(Self);
+  itmFileRevert.Name:='itmFileRevert';
+  itmFileRevert.Caption := lisMenuRevert;
+  itmFileRevert.Graphic:=LoadPixmap('menu_undo');
+  mnuFile.Add(itmFileRevert);
+
+  itmFileRecentOpen := TMenuItem.Create(Self);
+  itmFileRecentOpen.Name:='itmFileRecentOpen';
+  itmFileRecentOpen.Caption := lisMenuOpenRecent;
+  mnuFile.Add(itmFileRecentOpen);
+
+  itmFileSave := TMenuItem.Create(Self);
+  itmFileSave.Name:='itmFileSave';
+  itmFileSave.Caption := lisMenuSave;
+  itmFileSave.Graphic:=LoadPixmap('menu_save');
+  mnuFile.Add(itmFileSave);
+
+  itmFileSaveAs := TMenuItem.Create(Self);
+  itmFileSaveAs.Name:='itmFileSaveAs';
+  itmFileSaveAs.Caption := lisMenuSaveAs;
+  itmFileSaveAs.Graphic:=LoadPixmap('menu_save');
+  mnuFile.Add(itmFileSaveAs);
+
+  itmFileSaveAll := TMenuItem.Create(Self);
+  itmFileSaveAll.Name:='itmFileSaveAll';
+  itmFileSaveAll.Caption := lisMenuSaveAll;
+  itmFileSaveAll.Graphic:=LoadPixmap('menu_save');
+  mnuFile.Add(itmFileSaveAll);
+
+  itmFileClose := TMenuItem.Create(Self);
+  itmFileClose.Name:='itmFileClose';
+  itmFileClose.Caption := lisMenuClose;
+  itmFileClose.Enabled := False;
+  mnuFile.Add(itmFileClose);
+
+  itmFileCloseAll := TMenuItem.Create(Self);
+  itmFileCloseAll.Name:='itmFileCloseAll';
+  itmFileCloseAll.Caption := lisMenuCloseAll;
+  itmFileCloseAll.Enabled := False;
+  mnuFile.Add(itmFileCloseAll);
+
+  mnuFile.Add(CreateMenuSeparator);
+
+  itmFileQuit := TMenuItem.Create(Self);
+  itmFileQuit.Name:='itmFileQuit';
+  itmFileQuit.Caption := lisMenuQuit;
+  mnuFile.Add(itmFileQuit);
+end;
+
+procedure TMainIDEBar.SetupEditMenu;
+begin
+  itmEditUndo := TMenuItem.Create(Self);
+  itmEditUndo.Name:='itmEditUndo';
+  itmEditUndo.Caption := lisMenuUndo;
+  itmEditUndo.Graphic:=LoadPixmap('menu_undo');
+  mnuEdit.Add(itmEditUndo);
+
+  itmEditRedo := TMenuItem.Create(Self);
+  itmEditRedo.Name:='itmEditRedo';
+  itmEditRedo.Caption := lisMenuRedo;
+  itmEditRedo.Graphic:=LoadPixmap('menu_redo');
+  mnuEdit.Add(itmEditRedo);
+
+  mnuEdit.Add(CreateMenuSeparator);
+
+  itmEditCut  := TMenuItem.Create(Self);
+  itmEditCut.Name:='itmEditCut';
+  itmEditCut.Caption := lisMenuCut;
+  itmEditCut.Graphic:=LoadPixmap('menu_cut');
+  mnuEdit.Add(itmEditCut);
+
+  itmEditCopy := TMenuItem.Create(Self);
+  itmEditCopy.Name:='itmEditCopy';
+  itmEditCopy.Caption := lisMenuCopy;
+  itmEditCopy.Graphic:=LoadPixmap('menu_copy');
+  mnuEdit.Add(itmEditCopy);
+
+  itmEditPaste := TMenuItem.Create(Self);
+  itmEditPaste.Name:='itmEditPaste';
+  itmEditPaste.Caption := lisMenuPaste;
+  itmEditPaste.Graphic:=LoadPixmap('menu_paste');
+  mnuEdit.Add(itmEditPaste);
+
+  mnuEdit.Add(CreateMenuSeparator);
+
+  itmEditIndentBlock := TMenuItem.Create(Self);
+  itmEditIndentBlock.Name:='itmEditIndentBlock';
+  itmEditIndentBlock.Caption := lisMenuIndentSelection;
+  itmEditIndentBlock.Graphic:=LoadPixmap('menu_indent');
+  mnuEdit.Add(itmEditIndentBlock);
+
+  itmEditUnindentBlock := TMenuItem.Create(Self);
+  itmEditUnindentBlock.Name:='itmEditUnindentBlock';
+  itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
+  itmEditUnindentBlock.Graphic:=LoadPixmap('menu_unindent');
+  mnuEdit.Add(itmEditUnindentBlock);
+
+  itmEditUpperCaseBlock := TMenuItem.Create(Self);
+  itmEditUpperCaseBlock.Name:='itmEditUpperCaseBlock';
+  itmEditUpperCaseBlock.Caption := lisMenuUpperCaseSelection;
+  mnuEdit.Add(itmEditUpperCaseBlock);
+
+  itmEditLowerCaseBlock := TMenuItem.Create(Self);
+  itmEditLowerCaseBlock.Name:='itmEditLowerCaseBlock';
+  itmEditLowerCaseBlock.Caption := lisMenuLowerCaseSelection;
+  mnuEdit.Add(itmEditLowerCaseBlock);
+
+  itmEditTabsToSpacesBlock := TMenuItem.Create(Self);
+  itmEditTabsToSpacesBlock.Name:='itmEditTabsToSpacesBlock';
+  itmEditTabsToSpacesBlock.Caption := lisMenuTabsToSpacesSelection;
+  mnuEdit.Add(itmEditTabsToSpacesBlock);
+
+  mnuEdit.Add(CreateMenuSeparator);
+
+  itmEditCompleteCode := TMenuItem.Create(Self);
+  itmEditCompleteCode.Name:='itmEditCompleteCode';
+  itmEditCompleteCode.Caption := lisMenuCompleteCode;
+  mnuEdit.Add(itmEditCompleteCode);
+end;
+
+procedure TMainIDEBar.SetupSearchMenu;
+begin
+  itmSearchFind := TMenuItem.Create(Self);
+  itmSearchFind.Name:='itmSearchFind';
+  itmSearchFind.Caption := lisMenuFind;
+  mnuSearch.add(itmSearchFind);
+
+  itmSearchFindNext := TMenuItem.Create(Self);
+  itmSearchFindNext.Name:='itmSearchFindNext';
+  itmSearchFindNext.Caption := lisMenuFindNext;
+  mnuSearch.add(itmSearchFindNext);
+
+  itmSearchFindPrevious := TMenuItem.Create(Self);
+  itmSearchFindPrevious.Name:='itmSearchFindPrevious';
+  itmSearchFindPrevious.Caption := lisMenuFindPrevious;
+  mnuSearch.add(itmSearchFindPrevious);
+
+  itmSearchFindInFiles := TMenuItem.Create(Self);
+  itmSearchFindInFiles.Name:='itmSearchFindInFiles';
+  itmSearchFindInFiles.Caption := lisMenuFindInFiles;
+  mnuSearch.add(itmSearchFindInFiles);
+
+  itmSearchReplace := TMenuItem.Create(Self);
+  itmSearchReplace.Name:='itmSearchReplace';
+  itmSearchReplace.Caption := lisMenuReplace;
+  mnuSearch.add(itmSearchReplace);
+
+  mnuSearch.Add(CreateMenuSeparator);
+
+  itmGotoLine := TMenuItem.Create(Self);
+  itmGotoLine.Name:='itmGotoLine';
+  itmGotoLine.Caption := lisMenuGotoLine;
+  mnuSearch.add(itmGotoLine);
+
+  mnuSearch.Add(CreateMenuSeparator);
+
+  itmJumpBack := TMenuItem.Create(Self);
+  itmJumpBack.Name:='itmJumpBack';
+  itmJumpBack.Caption := lisMenuJumpBack;
+  mnuSearch.add(itmJumpBack);
+
+  itmJumpForward := TMenuItem.Create(Self);
+  itmJumpForward.Name:='itmJumpForward';
+  itmJumpForward.Caption := lisMenuJumpForward;
+  mnuSearch.add(itmJumpForward);
+
+  itmAddJumpPoint := TMenuItem.Create(Self);
+  itmAddJumpPoint.Name:='itmAddJumpPoint';
+  itmAddJumpPoint.Caption := lisMenuAddJumpPointToHistory;
+  mnuSearch.add(itmAddJumpPoint);
+
+  itmJumpHistory := TMenuItem.Create(Self);
+  itmJumpHistory.Name:='itmJumpHistory';
+  itmJumpHistory.Caption := lisMenuViewJumpHistory;
+  mnuSearch.add(itmJumpHistory);
+
+  mnuSearch.Add(CreateMenuSeparator);
+
+  itmFindBlockOtherEnd := TMenuItem.Create(Self);
+  itmFindBlockOtherEnd.Name:='itmFindBlockOtherEnd';
+  itmFindBlockOtherEnd.Caption := lisMenuFindBlockOtherEndOfCodeBlock;
+  mnuSearch.add(itmFindBlockOtherEnd);
+
+  itmFindBlockStart := TMenuItem.Create(Self);
+  itmFindBlockStart.Name:='itmFindBlockStart';
+  itmFindBlockStart.Caption := lisMenuFindCodeBlockStart;
+  mnuSearch.add(itmFindBlockStart);
+
+  itmFindDeclaration := TMenuItem.Create(Self);
+  itmFindDeclaration.Name:='itmFindDeclaration';
+  itmFindDeclaration.Caption := lisMenuFindDeclarationAtCursor;
+  mnuSearch.add(itmFindDeclaration);
+
+  itmOpenFileAtCursor := TMenuItem.Create(Self);
+  itmOpenFileAtCursor.Name:='itmOpenFileAtCursor';
+  itmOpenFileAtCursor.Caption := lisMenuOpenFilenameAtCursor;
+  mnuSearch.add(itmOpenFileAtCursor);
+
+  itmGotoIncludeDirective := TMenuItem.Create(Self);
+  itmGotoIncludeDirective.Name:='itmGotoIncludeDirective';
+  itmGotoIncludeDirective.Caption := lisMenuGotoIncludeDirective;
+  mnuSearch.add(itmGotoIncludeDirective);
+end;
+
+procedure TMainIDEBar.SetupViewMenu;
+begin
+  itmViewInspector := TMenuItem.Create(Self);
+  itmViewInspector.Name:='itmViewInspector';
+  itmViewInspector.Caption := lisMenuViewObjectInspector;
+  mnuView.Add(itmViewInspector);
+
+  itmViewProject  := TMenuItem.Create(Self);
+  itmViewProject.Name:='itmViewProject';
+  itmViewProject.Caption := lisMenuViewProjectExplorer;
+  mnuView.Add(itmViewProject);
+
+  mnuView.Add(CreateMenuSeparator);
+
+  itmViewCodeExplorer := TMenuItem.Create(Self);
+  itmViewCodeExplorer.Name:='itmViewCodeExplorer';
+  itmViewCodeExplorer.Caption := lisMenuViewCodeExplorer;
+  mnuView.Add(itmViewCodeExplorer);
+
+  mnuView.Add(CreateMenuSeparator);
+
+  itmViewUnits := TMenuItem.Create(Self);
+  itmViewUnits.Name:='itmViewUnits';
+  itmViewUnits.Caption := lisMenuViewUnits;
+  mnuView.Add(itmViewUnits);
+
+  itmViewForms := TMenuItem.Create(Self);
+  itmViewForms.Name:='itmViewForms';
+  itmViewForms.Caption := lisMenuViewForms;
+  mnuView.Add(itmViewForms);
+
+  mnuView.Add(CreateMenuSeparator);
+
+  itmViewToggleFormUnit := TMenuItem.Create(Self);
+  itmViewToggleFormUnit.Name:='itmViewToggleFormUnit';
+  itmViewToggleFormUnit.Caption := lisMenuViewToggleFormUnit;
+  mnuView.Add(itmViewToggleFormUnit);
+
+  mnuView.Add(CreateMenuSeparator);
+
+  itmViewMessage := TMenuItem.Create(Self);
+  itmViewMessage.Name:='itmViewMessage';
+  itmViewMessage.Caption := lisMenuViewMessages;
+  mnuView.Add(itmViewMessage);
+
+  itmViewDebugWindows := TMenuItem.Create(Self);
+  itmViewDebugWindows.Name := 'itmViewDebugWindows';
+  itmViewDebugWindows.Caption := lisMenuDebugWindows;
+  mnuView.Add(itmViewDebugWindows);
+
+  itmViewWatches := TMenuItem.Create(Self);
+  itmViewWatches.Name:='itmViewWatches';
+  itmViewWatches.Caption := lisMenuViewWatches;
+  itmViewDebugWindows.Add(itmViewWatches);
+
+  itmViewBreakPoints := TMenuItem.Create(Self);
+  itmViewBreakPoints.Name:='itmViewBreakPoints';
+  itmViewBreakPoints.Caption := lisMenuViewBreakPoints;
+  itmViewDebugWindows.Add(itmViewBreakPoints);
+
+  itmViewLocals := TMenuItem.Create(Self);
+  itmViewLocals.Name:='itmViewLocals';
+  itmViewLocals.Caption := lisMenuViewLocalVariables;
+  itmViewDebugWindows.Add(itmViewLocals);
+
+  itmViewCallStack := TMenuItem.Create(Self);
+  itmViewCallStack.Name:='itmViewCallStack';
+  itmViewCallStack.Caption := lisMenuViewCallStack;
+  itmViewDebugWindows.Add(itmViewCallStack);
+
+  itmViewDebugOutput := TMenuItem.Create(Self);
+  itmViewDebugOutput.Name:='itmViewDebugOutput';
+  itmViewDebugOutput.Caption := lisMenuViewDebugOutput;
+  itmViewDebugWindows.Add(itmViewDebugOutput);
+end;
+
+procedure TMainIDEBar.SetupProjectMenu;
+begin
+  itmProjectNew := TMenuItem.Create(Self);
+  itmProjectNew.Name:='itmProjectNew';
+  itmProjectNew.Caption := lisMenuNewProject;
+  mnuProject.Add(itmProjectNew);
+
+  itmProjectOpen := TMenuItem.Create(Self);
+  itmProjectOpen.Name:='itmProjectOpen';
+  itmProjectOpen.Caption := lisMenuOpenProject;
+  mnuProject.Add(itmProjectOpen);
+
+  itmProjectRecentOpen := TMenuItem.Create(Self);
+  itmProjectRecentOpen.Name:='itmProjectRecentOpen';
+  itmProjectRecentOpen.Caption := lisMenuOpenRecentProject;
+  mnuProject.Add(itmProjectRecentOpen);
+
+  itmProjectSave := TMenuItem.Create(Self);
+  itmProjectSave.Name:='itmProjectSave';
+  itmProjectSave.Caption := lisMenuSaveProject;
+  mnuProject.Add(itmProjectSave);
+
+  itmProjectSaveAs := TMenuItem.Create(Self);
+  itmProjectSaveAs.Name:='itmProjectSaveAs';
+  itmProjectSaveAs.Caption := lisMenuSaveProjectAs;
+  mnuProject.Add(itmProjectSaveAs);
+
+  mnuProject.Add(CreateMenuSeparator);
+
+  itmProjectAddTo := TMenuItem.Create(Self);
+  itmProjectAddTo.Name:='itmProjectAddTo';
+  itmProjectAddTo.Caption := lisMenuAddUnitToProject;
+  mnuProject.Add(itmProjectAddTo);
+
+  itmProjectRemoveFrom := TMenuItem.Create(Self);
+  itmProjectRemoveFrom.Name:='itmProjectRemoveFrom';
+  itmProjectRemoveFrom.Caption := lisMenuRemoveUnitFromProject;
+  mnuProject.Add(itmProjectRemoveFrom);
+
+  mnuProject.Add(CreateMenuSeparator);
+
+  itmProjectViewSource := TMenuItem.Create(Self);
+  itmProjectViewSource.Name:='itmProjectViewSource';
+  itmProjectViewSource.Caption := lisMenuViewSource;
+  mnuProject.Add(itmProjectViewSource);
+
+  mnuProject.Add(CreateMenuSeparator);
+
+  itmProjectOptions := TMenuItem.Create(Self);
+  itmProjectOptions.Name:='itmProjectOptions';
+  itmProjectOptions.Caption := lisMenuProjectOptions;
+  mnuProject.Add(itmProjectOptions);
+end;
+
+procedure TMainIDEBar.SetupRunMenu;
+begin
+  itmProjectBuild := TMenuItem.Create(Self);
+  itmProjectBuild.Name:='itmProjectBuild';
+  itmProjectBuild.Caption := lisMenuBuild;
+  mnuRun.Add(itmProjectBuild);
+
+  itmProjectBuildAll := TMenuItem.Create(Self);
+  itmProjectBuildAll.Name:='itmProjectBuildAll';
+  itmProjectBuildAll.Caption := lisMenuBuildAll;
+  mnuRun.Add(itmProjectBuildAll);
+
+  mnuRun.Add(CreateMenuSeparator);
+
+  itmProjectRun := TMenuItem.Create(Self);
+  itmProjectRun.Name:='itmProjectRun';
+  itmProjectRun.Caption := lisMenuProjectRun;
+  mnuRun.Add(itmProjectRun);
+
+  itmProjectPause := TMenuItem.Create(Self);
+  itmProjectPause.Name:='itmProjectPause';
+  itmProjectPause.Caption := lisMenuPause;
+  itmProjectPause.Enabled := false;
+  mnuRun.Add(itmProjectPause);
+
+  itmProjectStepInto := TMenuItem.Create(Self);
+  itmProjectStepInto.Name:='itmProjectStepInto';
+  itmProjectStepInto.Caption := lisMenuStepInto;
+  mnuRun.Add(itmProjectStepInto);
+
+  itmProjectStepOver := TMenuItem.Create(Self);
+  itmProjectStepOver.Name:='itmProjectStepOver';
+  itmProjectStepOver.Caption := lisMenuStepOver;
+  mnuRun.Add(itmProjectStepOver);
+
+  itmProjectRunToCursor := TMenuItem.Create(Self);
+  itmProjectRunToCursor.Name:='itmProjectRunToCursor';
+  itmProjectRunToCursor.Caption := lisMenuRunToCursor;
+  mnuRun.Add(itmProjectRunToCursor);
+
+  itmProjectStop := TMenuItem.Create(Self);
+  itmProjectStop.Name:='itmProjectStop';
+  itmProjectStop.Caption := lisMenuStop;
+  mnuRun.Add(itmProjectStop);
+
+  mnuRun.Add(CreateMenuSeparator);
+
+  itmProjectCompilerSettings := TMenuItem.Create(Self);
+  itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
+  itmProjectCompilerSettings.Caption := lisMenuCompilerOptions;
+  mnuRun.Add(itmProjectCompilerSettings);
+
+  itmProjectRunParameters := TMenuItem.Create(Self);
+  itmProjectRunParameters.Name:='itmProjectRunParameters';
+  itmProjectRunParameters.Caption := lisMenuRunParameters;
+  mnuRun.Add(itmProjectRunParameters);
+end;
+
+procedure TMainIDEBar.SetupToolsMenu;
+begin
+  itmToolConfigure := TMenuItem.Create(Self);
+  itmToolConfigure.Name:='itmToolConfigure';
+  itmToolConfigure.Caption := lisMenuSettings;
+  mnuTools.Add(itmToolConfigure);
+
+  itmToolSyntaxCheck := TMenuItem.Create(Self);
+  itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
+  itmToolSyntaxCheck.Caption := lisMenuQuickSyntaxCheck;
+  mnuTools.Add(itmToolSyntaxCheck);
+
+  itmToolGuessUnclosedBlock := TMenuItem.Create(Self);
+  itmToolGuessUnclosedBlock.Name:='itmToolGuessUnclosedBlock';
+  itmToolGuessUnclosedBlock.Caption := lisMenuGuessUnclosedBlock;
+  mnuTools.Add(itmToolGuessUnclosedBlock);
+
+  itmToolGuessMisplacedIFDEF := TMenuItem.Create(Self);
+  itmToolGuessMisplacedIFDEF.Name:='itmToolGuessMisplacedIFDEF';
+  itmToolGuessMisplacedIFDEF.Caption := lisMenuGuessMisplacedIFDEF;
+  mnuTools.Add(itmToolGuessMisplacedIFDEF);
+
+  itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
+  itmToolConvertDFMtoLFM.Name:='itmToolConvertDFMtoLFM';
+  itmToolConvertDFMtoLFM.Caption := lisMenuConvertDFMtoLFM;
+  mnuTools.Add(itmToolConvertDFMtoLFM);
+
+  itmToolBuildLazarus := TMenuItem.Create(Self);
+  itmToolBuildLazarus.Name:='itmToolBuildLazarus';
+  itmToolBuildLazarus.Caption := lisMenuBuildLazarus;
+  mnuTools.Add(itmToolBuildLazarus);
+
+  itmToolConfigureBuildLazarus := TMenuItem.Create(Self);
+  itmToolConfigureBuildLazarus.Name:='itmToolConfigureBuildLazarus';
+  itmToolConfigureBuildLazarus.Caption := lisMenuConfigureBuildLazarus;
+  mnuTools.Add(itmToolConfigureBuildLazarus);
+end;
+
+procedure TMainIDEBar.SetupEnvironmentMenu;
+begin
+  itmEnvGeneralOptions := TMenuItem.Create(Self);
+  itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
+  itmEnvGeneralOptions.Caption := lisMenuGeneralOptions;
+  mnuEnvironment.Add(itmEnvGeneralOptions);
+
+  itmEnvEditorOptions := TMenuItem.Create(Self);
+  itmEnvEditorOptions.Name:='itmEnvEditorOptions';
+  itmEnvEditorOptions.Caption := lisMenuEditorOptions;
+  mnuEnvironment.Add(itmEnvEditorOptions);
+
+  itmEnvCodeToolsOptions := TMenuItem.Create(Self);
+  itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
+  itmEnvCodeToolsOptions.Caption := lisMenuCodeToolsOptions;
+  mnuEnvironment.Add(itmEnvCodeToolsOptions);
+
+  itmEnvCodeToolsDefinesEditor := TMenuItem.Create(Self);
+  itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
+  itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
+  mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
+end;
+
+procedure TMainIDEBar.SetupHelpMenu;
+begin
+  itmHelpAboutLazarus := TMenuItem.Create(Self);
+  itmHelpAboutLazarus.Name:='itmHelpAboutLazarus';
+  itmHelpAboutLazarus.Caption := lisMenuAboutLazarus;
+  mnuHelp.Add(itmHelpAboutLazarus);
+end;
+
+procedure TMainIDEBar.LoadMenuShortCuts;
+begin
+  with EditorOpts.KeyMap do begin
+    itmFileNewUnit.ShortCut:=CommandToShortCut(ecNewUnit);
+    itmFileNewForm.ShortCut:=CommandToShortCut(ecNewForm);
+    itmFileOpen.ShortCut:=CommandToShortCut(ecOpen);
+    itmFileRevert.ShortCut:=CommandToShortCut(ecRevert);
+    //itmFileRecentOpen.ShortCut:=CommandToShortCut(ec);
+    itmFileSave.ShortCut:=CommandToShortCut(ecSave);
+    itmFileSaveAs.ShortCut:=CommandToShortCut(ecSaveAs);
+    itmFileSaveAll.ShortCut:=CommandToShortCut(ecSaveAll);
+    itmFileClose.ShortCut:=CommandToShortCut(ecClose);
+    itmFileCloseAll.ShortCut:=CommandToShortCut(ecCloseAll);
+    itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
+
+    itmEditUndo.ShortCut:=CommandToShortCut(ecUndo);
+    itmEditRedo.ShortCut:=CommandToShortCut(ecRedo);
+    itmEditCut.ShortCut:=CommandToShortCut(ecCut);
+    itmEditCopy.ShortCut:=CommandToShortCut(ecCopy);
+    itmEditPaste.ShortCut:=CommandToShortCut(ecPaste);
+    itmEditIndentBlock.ShortCut:=CommandToShortCut(ecBlockIndent);
+    itmEditUnindentBlock.ShortCut:=CommandToShortCut(ecBlockUnindent);
+    itmEditUpperCaseBlock.ShortCut:=CommandToShortCut(ecSelectionUpperCase);
+    itmEditLowerCaseBlock.ShortCut:=CommandToShortCut(ecSelectionLowerCase);
+    itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
+    itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
+
+    itmSearchFind.ShortCut:=CommandToShortCut(ecFind);
+    itmSearchFindNext.ShortCut:=CommandToShortCut(ecFindNext);
+    itmSearchFindPrevious.ShortCut:=CommandToShortCut(ecFindPrevious);
+    itmSearchFindInFiles.ShortCut:=CommandToShortCut(ecFindInFiles);
+    itmSearchReplace.ShortCut:=CommandToShortCut(ecReplace);
+    itmGotoLine.ShortCut:=CommandToShortCut(ecGotoLineNumber);
+    itmJumpBack.ShortCut:=CommandToShortCut(ecJumpBack);
+    itmJumpForward.ShortCut:=CommandToShortCut(ecJumpForward);
+    itmAddJumpPoint.ShortCut:=CommandToShortCut(ecAddJumpPoint);
+    itmJumpHistory.ShortCut:=CommandToShortCut(ecViewJumpHistory);
+    itmFindBlockOtherEnd.ShortCut:=CommandToShortCut(ecFindBlockOtherEnd);
+    itmFindBlockStart.ShortCut:=CommandToShortCut(ecFindBlockStart);
+    itmFindDeclaration.ShortCut:=CommandToShortCut(ecFindDeclaration);
+    itmOpenFileAtCursor.ShortCut:=CommandToShortCut(ecOpenFileAtCursor);
+    itmGotoIncludeDirective.ShortCut:=CommandToShortCut(ecGotoIncludeDirective);
+
+    itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
+    itmViewProject.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
+    itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
+    itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
+    itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
+    itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
+    itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
+
+    itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
+    itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
+    //itmProjectRecentOpen.ShortCut:=CommandToShortCut(ec);
+    itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);
+    itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
+    itmProjectAddTo.ShortCut:=CommandToShortCut(ecAddCurUnitToProj);
+    itmProjectRemoveFrom.ShortCut:=CommandToShortCut(ecRemoveFromProj);
+    itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);
+    itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
+
+    itmProjectBuild.ShortCut:=CommandToShortCut(ecBuild);
+    itmProjectBuildAll.ShortCut:=CommandToShortCut(ecBuildAll);
+    itmProjectRun.ShortCut:=CommandToShortCut(ecRun);
+    itmProjectPause.ShortCut:=CommandToShortCut(ecPause);
+    itmProjectStepInto.ShortCut:=CommandToShortCut(ecStepInto);
+    itmProjectStepOver.ShortCut:=CommandToShortCut(ecStepOver);
+    itmProjectRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
+    itmProjectStop.ShortCut:=CommandToShortCut(ecStopProgram);
+    itmProjectCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
+    itmProjectRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
+
+    itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
+    itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
+    itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
+    itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
+    itmToolConvertDFMtoLFM.ShortCut:=CommandToShortCut(ecConvertDFM2LFM);
+    itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
+    itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
+
+    itmEnvGeneralOptions.ShortCut:=CommandToShortCut(ecEnvironmentOptions);
+    itmEnvEditorOptions.ShortCut:=CommandToShortCut(ecEditorOptions);
+    itmEnvCodeToolsOptions.ShortCut:=CommandToShortCut(ecCodeToolsOptions);
+    itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
+
+    itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
+  end;
+end;
 
 end.
 
