@@ -887,7 +887,7 @@ begin
     raise Exception.Create('SetFixedWidget ParentWidget=nil');
   if (ParentWidget=FixedWidget) then
     raise Exception.Create('SetFixedWidget FixedWidget=ParentWidget');
-  if (ParentWidget <> nil) and (FixedWidget <> nil) then
+  if (ParentWidget <> nil) then
     gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
 
@@ -968,6 +968,28 @@ begin
   gtk_object_set_data(ParentWidget, 'core_child', ChildWidget);
 end;
 
+{-------------------------------------------------------------------------------
+  function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
+
+  Retrieves the DummyWidget associated with the ANoteBookWidget
+-------------------------------------------------------------------------------}
+function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
+begin
+  Result:=gtk_object_get_data(PGtkObject(ANoteBookWidget),'LCLDummyPage');
+end;
+
+{-------------------------------------------------------------------------------
+  procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
+    DummyWidget: PGtkWidget): PGtkWidget;
+
+  Associates the DummyWidget with the ANoteBookWidget
+-------------------------------------------------------------------------------}
+procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
+  DummyWidget: PGtkWidget);
+begin
+  gtk_object_set_data(PGtkObject(ANoteBookWidget),'LCLDummyPage',DummyWidget);
+end;
+
 {------------------------------------------------------------------------------
   UpdateNoteBookClientWidget
   Params: ANoteBook: TObject
@@ -977,16 +999,19 @@ end;
 ------------------------------------------------------------------------------}
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
 var Index: integer;
-  NoteBookWidget, PanelWidget, ClientWidget: PGtkWidget;
+  PanelWidget, ClientWidget: PGtkWidget;
+  NoteBookWidget: PGtkNotebook;
 begin
   if not TCustomNotebook(ANoteBook).HandleAllocated then exit;
-  NoteBookWidget:=PGtkWidget(TCustomNotebook(ANoteBook).Handle);
+  NoteBookWidget:=PGtkNotebook(TCustomNotebook(ANoteBook).Handle);
   ClientWidget:=nil;
-  Index:=gtk_notebook_get_current_page(PGtkNoteBook(NoteBookWidget));
-  if Index>=0 then begin
-    PanelWidget:=gtk_notebook_get_nth_page(PGtkNoteBook(NoteBookWidget),Index);
-    if PanelWidget<>nil then
-      ClientWidget:=GetFixedWidget(PanelWidget);
+  if GetGtkNoteBookDummyPage(NoteBookWidget)=nil then begin
+    Index:=gtk_notebook_get_current_page(NoteBookWidget);
+    if Index>=0 then begin
+      PanelWidget:=gtk_notebook_get_nth_page(NoteBookWidget,Index);
+      if PanelWidget<>nil then
+        ClientWidget:=GetFixedWidget(PanelWidget);
+    end;
   end;
   SetFixedWidget(NoteBookWidget,ClientWidget);
 end;
@@ -2695,6 +2720,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.84  2002/09/02 19:10:32  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.83  2002/08/31 11:37:11  lazarus
   MG: fixed destroying combobox
 
