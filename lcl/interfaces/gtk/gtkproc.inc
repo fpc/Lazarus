@@ -893,8 +893,7 @@ procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 begin
   if (ParentWidget=nil) then
     raise Exception.Create('SetFixedWidget ParentWidget=nil');
-  if (ParentWidget <> nil) then
-    gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
+  gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
 
 // ----------------------------------------------------------------------
@@ -982,24 +981,21 @@ end;
   This procedure updates the 'Fixed' object data.
 ------------------------------------------------------------------------------}
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
-var Index: integer;
-  PanelWidget, ClientWidget: PGtkWidget;
+var //Index: integer;
+  {PanelWidget, }ClientWidget: PGtkWidget;
   NoteBookWidget: PGtkNotebook;
 begin
   if not TCustomNotebook(ANoteBook).HandleAllocated then exit;
   NoteBookWidget:=PGtkNotebook(TCustomNotebook(ANoteBook).Handle);
   ClientWidget:=nil;
-  if GetGtkNoteBookDummyPage(NoteBookWidget)=nil then begin
+  {if GetGtkNoteBookDummyPage(NoteBookWidget)=nil then begin
     Index:=gtk_notebook_get_current_page(NoteBookWidget);
     if Index>=0 then begin
       PanelWidget:=gtk_notebook_get_nth_page(NoteBookWidget,Index);
       if PanelWidget<>nil then
         ClientWidget:=GetFixedWidget(PanelWidget);
     end;
-  end;
-
-  ClientWidget:=nil;
-
+  end;}
   SetFixedWidget(NoteBookWidget,ClientWidget);
 end;
 
@@ -2742,6 +2738,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.94  2002/09/08 10:02:00  lazarus
+  MG: fixed streaming visible=false
+
   Revision 1.93  2002/09/06 22:32:21  lazarus
   Enabled cursor property + property editor.
 
