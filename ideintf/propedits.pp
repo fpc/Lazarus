@@ -1746,6 +1746,7 @@ begin
     IValue:=0;
 end;
 
+{$IFDEF VER1_0  workaround}
 Function CallSingleFunc(s : Pointer; Address : Pointer;
   Index, IValue : Longint) : Single; assembler;
 {$asmmode att}
@@ -1816,7 +1817,7 @@ Function CallExtendedFunc(s : Pointer; Address : Pointer;
      movl saveesi,%esi
   end;
 
-Function MyGetFloatProp(Instance : TObject;PropInfo : PPropInfo) : Extended;
+Function GetFloatProp(Instance : TObject;PropInfo : PPropInfo) : Extended;
 
 var
   Index,Ivalue : longint;
@@ -1868,7 +1869,7 @@ begin
   Result:=Value;
 end;
 
-Procedure MySetFloatProp(Instance : TObject;PropInfo : PPropInfo;
+Procedure SetFloatProp(Instance : TObject;PropInfo : PPropInfo;
   Value : Extended);
 
 type
@@ -1936,10 +1937,11 @@ begin
       end;
   end;
 end;
+{$ENDIF VER1_0}
 
 function TPropertyEditor.GetFloatValueAt(Index:Integer):Extended;
 begin
-  with FPropList^[Index] do Result:=MyGetFloatProp(Instance,PropInfo);
+  with FPropList^[Index] do Result:=GetFloatProp(Instance,PropInfo);
 end;
 
 function TPropertyEditor.GetMethodValue:TMethod;
@@ -2078,10 +2080,10 @@ begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
-      Changed:=Changed or (MyGetFloatProp(Instance,PropInfo)<>NewValue);
+      Changed:=Changed or (GetFloatProp(Instance,PropInfo)<>NewValue);
   if Changed then begin
     for I:=0 to FPropCount-1 do
-      with FPropList^[I] do MySetFloatProp(Instance,PropInfo,NewValue);
+      with FPropList^[I] do SetFloatProp(Instance,PropInfo,NewValue);
     Modified;
   end;
 end;
