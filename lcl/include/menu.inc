@@ -62,11 +62,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
-  writeln('AAA1');
   FItems.Free;
-  writeln('AAA2');
   inherited Destroy;
-  writeln('AAA3');
 end;
 
 {------------------------------------------------------------------------------
@@ -136,6 +133,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2002/05/16 14:23:20  lazarus
+  MG: reuced output
+
   Revision 1.7  2002/05/15 15:38:15  lazarus
   MG: improved lresources for big files
 
