@@ -77,11 +77,11 @@ type
     fTopLine: integer;
     fUnitName: String;
 
-    function GetHasResources:boolean;
-    procedure SetUnitName(const NewUnitName:string);
     function GetFileName: string;
+    function GetHasResources:boolean;
     procedure SetReadOnly(const NewValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
+    procedure SetUnitName(const NewUnitName:string);
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -568,7 +568,7 @@ begin
           +LE
           +'initialization'+LE);
         NewSource:=NewSource
-          +'  {$I '+ResourceFilename+'}'+LE);
+          +'  {$I '+ResourceFilename+'}'+LE;
       end;
     end;
     NewSource:=NewSource+Beautified(
@@ -596,7 +596,7 @@ function TUnitInfo.GetHasResources:boolean;
 begin
   Result:=fHasResources or (FormName<>'');
 end;
-  
+
 
 {------------------------------------------------------------------------------
                               TProject Class
@@ -1329,6 +1329,9 @@ end.
 
 {
   $Log$
+  Revision 1.54  2002/03/22 12:36:45  lazarus
+  MG: many fixes, to make it short: events
+
   Revision 1.53  2002/03/21 23:59:59  lazarus
   MG: code creation options applied to new unit source
 

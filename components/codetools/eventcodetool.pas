@@ -34,7 +34,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -55,9 +55,6 @@ type
     function FindIdentifierNodeInClass(ClassNode: TCodeTreeNode;
       Identifier: PChar): TCodeTreeNode;
   protected
-    function InsertNewMethodToClass(ClassSectionNode: TCodeTreeNode;
-        const AMethodName,NewMethod: string;
-        SourceChangeCache: TSourceChangeCache): boolean;
     function CollectPublishedMethods(Params: TFindDeclarationParams;
       FoundContext: TFindContext): TIdentifierFoundResult;
   public
@@ -299,7 +296,7 @@ begin
   if SectionNode=nil then exit;
   ANode:=SectionNode.FirstChild;
 {$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.FindProcNodeInImplementation] A');
+writeln('[TEventsCodeTool.FindMethodNodeInImplementation] A MethodName=',UpperClassName,'.',UpperMethodName);
 {$ENDIF}
   while (ANode<>nil) do begin
     if (ANode.Desc=ctnProcedure) and (ANode.FirstChild<>nil)
@@ -312,6 +309,9 @@ writeln('[TEventsCodeTool.FindProcNodeInImplementation] A');
         ReadNextAtom;
         if CompareSrcIdentifiers(CurPos.StartPos,@UpperMethodName[1]) then
         begin
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.FindMethodNodeInImplementation] B  body found');
+{$ENDIF}
           Result:=ANode;
           exit;
         end;
@@ -456,7 +456,6 @@ var ANode: TCodeTreeNode;
 begin
 
   // ToDo: method overloading
-
   ANode:=FindMethodNodeInImplementation(UpperClassName,UpperMethodName,true);
   Result:=FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
 end;
@@ -540,25 +539,45 @@ begin
   Result:=false;
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
   or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'"');
+{$ENDIF}
   // search typeinfo in source
   FindContext:=FindMethodTypeInfo(ATypeInfo);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] B');
+{$ENDIF}
   // initialize class for code completion
   CodeCompleteClassNode:=ClassNode;
   CodeCompleteSrcChgCache:=SourceChangeCache;
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] C');
+{$ENDIF}
   // check if method definition already exists in class
-  CleanMethodDefinition:=AMethodName
+  CleanMethodDefinition:=UpperCaseStr(AMethodName)
          +FindContext.Tool.ExtractProcHead(FindContext.Node,
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
   if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
-    // insert method definition to class
-    MethodDefinition:=AMethodName
-         +FindContext.Tool.ExtractProcHead(FindContext.Node,
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] insert method definition to class');
+{$ENDIF}
+    // insert method definition into class
+    MethodDefinition:=TrimCodeSpace(FindContext.Tool.ExtractProcHead(
+                 FindContext.Node,
                 [phpWithStart, phpWithoutClassKeyword, phpWithoutClassName,
                  phpWithoutName, phpWithVarModifiers, phpWithParameterNames,
-                 phpWithDefaultValues, phpWithResultType, phpInUpperCase]);
+                 phpWithDefaultValues, phpWithResultType]));
+    MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
+                       AddClassAndNameToProc(MethodDefinition, '', AMethodName);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] MethodDefinition="',MethodDefinition,'"');
+{$ENDIF}
     AddClassInsertion(nil, CleanMethodDefinition, MethodDefinition, AMethodName,
                       '', ncpPublishedProcs);
   end;
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] invoke class completion');
+{$ENDIF}
   if not InsertAllNewClassParts then
     RaiseException('error during inserting new class parts');
 
@@ -566,238 +585,12 @@ begin
   if not CreateMissingProcBodies then
     RaiseException('error during creation of new proc bodies');
 
-  // apply the changes and jump to first new proc body
+  // apply the changes
   if not SourceChangeCache.Apply then
     RaiseException('unable to apply changes');
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.CreatePublishedMethod] END');
 {$ENDIF}
-end;
-
-function TEventsCodeTool.InsertNewMethodToClass(
-  ClassSectionNode: TCodeTreeNode; const AMethodName,NewMethod: string;
-  SourceChangeCache: TSourceChangeCache): boolean;
-// NewMethod is for example 'class function Lol(c: char): char;'
-var InsertNode, ClassNode, ImplementationNode, StartNode, ANode: TCodeTreeNode;
-  Indent, InsertPos, cmp: integer;
-  UpperMethodName, CurProcName, ProcCode, UpperClassName,
-  AClassName: string;
-  StartClassCode: boolean;
-  ClassBodyProcs: TAVLTree;
-  AnAVLNode: TAVLTreeNode;
-begin
-  Result:=false;
-  if (ClassSectionNode=nil) or (SourceChangeCache=nil) or (AMethodName='')
-  or (NewMethod='') then exit;
-  ClassNode:=ClassSectionNode.Parent;
-  if ClassNode=nil then exit;
-  AClassName:=ExtractClassName(ClassNode,false);
-  UpperClassName:=UpperCaseStr(AClassName);
-  UpperMethodName:=UpperCaseStr(AMethodName);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] A ',
-ClassSectionNode.FirstChild<>nil,' "',NewMethod,'"');
-{$ENDIF}
-  // find a nice inserting position
-  if ClassSectionNode.FirstChild<>nil then begin
-    // there are already other child nodes
-    if (cpipLast=SourceChangeCache.BeautifyCodeOptions.ClassPartInsertPolicy)
-    then begin
-      // insert as last
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] B');
-{$ENDIF}
-      InsertNode:=ClassSectionNode.LastChild;
-      Indent:=GetLineIndent(Src,InsertNode.StartPos);
-      InsertPos:=FindFirstLineEndAfterInCode(Src,InsertNode.EndPos,
-                      Scanner.NestedComments);
-    end else begin
-      // insert alphabetically
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] C');
-{$ENDIF}
-      InsertNode:=ClassSectionNode.FirstChild;
-      while (InsertNode<>nil) do begin
-        if (InsertNode.Desc=ctnProcedure) then begin
-          CurProcName:=ExtractProcName(InsertNode,true);
-          if CurProcName>UpperMethodName then
-            break;
-        end;
-        InsertNode:=InsertNode.NextBrother;
-      end;
-      if InsertNode<>nil then begin
-        // insert before insertnode
-        if InsertNode.PriorBrother<>nil then begin
-          // insert after InsertNode.PriorBrother
-          InsertNode:=InsertNode.PriorBrother;
-          Indent:=GetLineIndent(Src,InsertNode.StartPos);
-          InsertPos:=FindFirstLineEndAfterInCode(Src,InsertNode.EndPos,
-                      Scanner.NestedComments);
-        end else begin
-          // insert as first
-          Indent:=GetLineIndent(Src,InsertNode.StartPos);
-          InsertPos:=FindFirstLineEndAfterInCode(Src,
-                             ClassSectionNode.EndPos,Scanner.NestedComments);
-        end;
-      end else begin
-        // insert as last
-        InsertNode:=ClassSectionNode.LastChild;
-        Indent:=GetLineIndent(Src,InsertNode.StartPos);
-        InsertPos:=FindLineEndOrCodeAfterPosition(Src,InsertNode.EndPos,
-                      Scanner.NestedComments);
-      end;
-    end;
-  end else begin
-    // will become first and only child node of section
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] D');
-{$ENDIF}
-    Indent:=GetLineIndent(Src,ClassSectionNode.StartPos)
-                  +SourceChangeCache.BeautifyCodeOptions.Indent;
-    InsertPos:=FindLineEndOrCodeAfterPosition(Src,
-                             ClassSectionNode.StartPos,Scanner.NestedComments);
-  end;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] E');
-{$ENDIF}
-  ProcCode:=SourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
-        NewMethod,'',AMethodName);
-  ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                     ProcCode,Indent,false);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] E2 ProcCode="',ProcCode,'"');
-{$ENDIF}
-  if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
-           ProcCode) then exit;
-           
-  // add method body to implementation section
-
-  ImplementationNode:=FindImplementationNode;
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] F ',ImplementationNode<>nil);
-{$ENDIF}
-  if ImplementationNode=nil then exit;
-  StartNode:=ImplementationNode.FirstChild;
-  if StartNode<>nil then begin
-    // implementation section contains some procs or classes
-
-    // gather proc nodes in implementation section
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] G');
-{$ENDIF}
-    ClassBodyProcs:=GatherProcNodes(StartNode,
-           [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname,
-            phpWithoutClassName],UpperClassName);
-            
-    // ToDo: check if proc already exists
-            
-    StartClassCode:=(ClassBodyProcs.Count=0);
-    UpperMethodName:=UpperClassName+'.'+UpperMethodName;
-    if not StartClassCode then begin
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] H');
-{$ENDIF}
-      // find a nice insert position for the proc body
-      case SourceChangeCache.BeautifyCodeOptions.MethodInsertPolicy of
-        mipAlphabetically:
-          // insert proc in alphabetic order
-          begin
-            AnAVLNode:=ClassBodyProcs.Root;
-            while AnAVLNode<>nil do begin
-              InsertNode:=TCodeTreeNodeExtension(AnAVLNode.Data).Node;
-              CurProcName:=ExtractProcName(InsertNode,true);
-              cmp:=AnsiCompareStr(UpperMethodName,CurProcName);
-              if cmp<0 then
-                AnAVLNode:=AnAVLNode.Left
-              else if cmp>0 then
-                AnAVLNode:=AnAVLNode.Right
-              else
-                break;
-            end;
-            repeat
-              AnAVLNode:=ClassBodyProcs.FindSuccessor(AnAVLNode);
-              if AnAVLNode=nil then break;
-              ANode:=TCodeTreeNodeExtension(AnAVLNode.Data).Node;
-              CurProcName:=ExtractProcName(ANode,true);
-              cmp:=AnsiCompareStr(UpperMethodName,CurProcName);
-              if cmp=0 then
-                InsertNode:=ANode;
-            until cmp<>0;
-            CurProcName:=ExtractProcName(InsertNode,true);
-            cmp:=AnsiCompareStr(UpperMethodName,CurProcName);
-            if cmp<0 then begin
-              // insert in front of InsertNode
-              Indent:=GetLineIndent(Src,InsertNode.StartPos);
-              InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
-                                  InsertNode.StartPos-1,Scanner.NestedComments);
-              if InsertPos<1 then InsertPos:=1;
-            end else begin
-              // insert behind InsertNode
-              Indent:=GetLineIndent(Src,InsertNode.StartPos);
-              InsertPos:=FindLineEndOrCodeAfterPosition(Src,
-                                      InsertNode.EndPos,Scanner.NestedComments);
-            end;
-          end;
-        else  // mipLast
-        
-          // ToDo: mipClassOrder
-        
-          // insert proc body behind last proc body
-          begin
-            AnAVLNode:=ClassBodyProcs.FindLowest;
-            InsertNode:=TCodeTreeNodeExtension(AnAVLNode.Data).Node;
-            while (AnAVLNode<>nil) do begin
-              ANode:=TCodeTreeNodeExtension(AnAVLNode.Data).Node;
-              if InsertNode.StartPos<ANode.StartPos then
-                InsertNode:=ANode;
-              AnAVLNode:=ClassBodyProcs.FindSuccessor(AnAVLNode);
-            end;
-            // insert after InsertNode
-            Indent:=GetLineIndent(Src,InsertNode.StartPos);
-            InsertPos:=FindLineEndOrCodeAfterPosition(Src,
-                                     InsertNode.EndPos,Scanner.NestedComments);
-          end;
-      end;
-    end else begin
-      // this is the first class body
-      // -> add proc body at the end of the implementation section
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] I');
-{$ENDIF}
-      Indent:=GetLineIndent(Src,InsertNode.StartPos);
-      InsertPos:=ImplementationNode.EndPos;
-    end;
-  end else begin
-    // implementation section contains no procs or classes
-    // -> add proc body at the end of the implementation section
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] J');
-{$ENDIF}
-    StartClassCode:=true;
-    Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-    InsertPos:=ImplementationNode.EndPos;
-  end;
-
-  // insert classname to Method string
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] K');
-{$ENDIF}
-  ProcCode:=SourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
-                                              NewMethod,AClassName,AMethodName);
-{$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] L ProcCode="',ProcCode,'"');
-{$ENDIF}
-  // build nice proc
-  ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
-                     Indent,true);
-  if StartClassCode then
-    ProcCode:=SourceChangeCache.BeautifyCodeOptions.LineEnd
-                +GetIndentStr(Indent)+'{ '+AClassName+' }'
-                +SourceChangeCache.BeautifyCodeOptions.LineEnd
-                +ProcCode;
-  if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-           ProcCode) then exit;
-
   Result:=true;
 end;
 
@@ -863,7 +656,7 @@ writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] B ',
 );
 {$ENDIF}
 
-      Result.Add(CurExprType);
+      Result.AddFirst(CurExprType);
       Params.Load(OldInput);
 
       {// build string
@@ -902,7 +695,7 @@ begin
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.CollectPublishedMethods] ',
 ' Node=',FoundContext.Node.DescAsString,
-' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,20),'"',
+' "',copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50),'"',
 ' Tool=',FoundContext.Tool.MainFilename);
 {$ENDIF}
     FirstParameterNode:=FoundContext.Tool.GetFirstParameterNode(

@@ -325,7 +325,8 @@ type
     procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure OnDebuggerWatchChanged(Sender: TObject);
     procedure OnDebuggerOutput(Sender: TObject; const AText: String);
-    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
+    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer;
+      const AExceptionText: String);
     
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -344,8 +345,9 @@ type
 
   private
     FHintSender : TObject;
-    FCodeLastActivated : Boolean; //used for toggling between code and forms
-    FLastFormActivated : TCustomForm;  //used to find the last form so you can display the correct tab
+    FCodeLastActivated : Boolean; // used for toggling between code and forms
+    FLastFormActivated : TCustomForm;// used to find the last form so you can
+                                     // display the correct tab
     FSelectedComponent : TRegisteredComponent;
     fProject: TProject;
     MacroList: TTransferMacroList;
@@ -499,12 +501,6 @@ type
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
 
-
-
-const
-  CapLetters = ['A'..'Z'];
-  SmallLetters = ['a'..'z'];
-  Numbers = ['0'..'1'];
 
 var
   MainIDE : TMainIDE;
@@ -2577,21 +2573,25 @@ CodeToolBoss.SourceCache.WriteAllFileNames;
 {$ENDIF}
     ResourceCode:=CodeToolBoss.FindNextResourceFile(
       ActiveUnitInfo.Source,LinkIndex);
+    if ResourceCode<>nil then
+      NewResFileName:=ResourceCode.Filename
+    else begin
+    
+      // ToDo: warn for errors in source
+    
+      NewResFileName:='';
+    end;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
 {$ENDIF}
-    LFMFilename:=ChangeFileExt(ResourceCode.Filename,'.lfm');
-    if (ResourceCode<>nil) and (not ResourceCode.IsVirtual)
-    and (ActiveUnitInfo.Form<>nil) and (FileExists(LFMFilename)) then
-    begin
-      Result:=DoLoadCodeBuffer(LFMCode,LFMFilename,false,false,true);
-      if not (Result in [mrOk,mrIgnore]) then exit;
-      Result:=mrCancel;
+    if (not ActiveUnitInfo.IsVirtual) and (ActiveUnitInfo.Form<>nil) then begin
+      LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm');
+      if (FileExists(LFMFilename)) then begin
+        Result:=DoLoadCodeBuffer(LFMCode,LFMFilename,false,false,true);
+        if not (Result in [mrOk,mrIgnore]) then exit;
+        Result:=mrCancel;
+      end;
     end;
-    if ResourceCode<>nil then
-      NewResFileName:=ResourceCode.Filename
-    else
-      NewResFileName:='';
   end else begin
     ResourceCode:=nil;
     NewResFilename:='';
@@ -2639,8 +2639,20 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
           else
             exit;
         end;
-        if ExtractFileExt(NewFilename)='' then
+        Ext:=ExtractFileExt(NewFilename);
+        if Ext='' then begin
           NewFilename:=NewFilename+SaveAsFileExt;
+          Ext:=SaveAsFileExt;
+        end;
+        if (Ext='.pas') or (Ext='.pp') then begin
+          if not IsValidIdent(NewUnitName) then begin
+            Result:=MessageDlg('Invalid Pascal Identifier',
+              'The name "'+NewUnitName+'" is not a valid pascal identifier.'
+              ,mtWarning,[mbIgnore,mbCancel],0);
+            if Result=mrCancel then exit;
+            Result:=mrCancel;
+          end;
+        end;
         if EnvironmentOptions.PascalFileLowerCase then
           NewFileName:=ExtractFilePath(NewFilename)
                        +lowercase(ExtractFileName(NewFilename));
@@ -2658,14 +2670,10 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
           if MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0)
              =mrCancel then exit;
         end;
-        if ResourceCode=nil then begin
-          // there are no resource files -> remove any resource files in the
-          // destination
+        if ActiveUnitInfo.FormName='' then begin
+          // unit has no form
+          // -> remove lfm file, so that it will not be auto loaded on next open
           NewResFilename:=ChangeFileExt(NewFilename,'.lfm');
-          if (not DeleteFile(NewResFilename))
-          and (MessageDlg('Delete failed','Deleting of file "'+NewResFilename+'"'
-               +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then exit;
-          NewResFilename:=ChangeFileExt(NewFilename,'.lrs');
           if (not DeleteFile(NewResFilename))
           and (MessageDlg('Delete failed','Deleting of file "'+NewResFilename+'"'
                +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then exit;
@@ -2675,7 +2683,7 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
         if not CodeToolBoss.SaveBufferAs(ActiveUnitInfo.Source,NewFilename,
                NewSource) then exit;
         if ResourceCode<>nil then begin
-          // rename Resource file and form text file
+          // rename Resource file
           // the resource include line in the code will be changed later after
           // changing the unitname
           NewResFilePath:=ExtractFilePath(ResourceCode.Filename);
@@ -2710,7 +2718,8 @@ writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
 {$ENDIF}
         ActiveUnitInfo.Source:=NewSource;
         ActiveUnitInfo.Modified:=false;
-        ActiveSrcEdit.CodeBuffer:=NewSource; // the code is not changed, thus the marks are kept
+        ActiveSrcEdit.CodeBuffer:=NewSource; // the code is not changed,
+                                             // therefore the marks are kept
         // change unitname in project and in source
         Ext:=ExtractFileExt(NewFilename);
         ActiveUnitInfo.UnitName:=NewUnitName;
@@ -2774,8 +2783,10 @@ writeln('*** HasResources=',ActiveUnitInfo.HasResources);
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
-  if ResourceCode<>nil then begin
+  if (ResourceCode<>nil) or (ActiveUnitInfo.Form<>nil) then begin
     // save lrs - lazarus resource file and lfm - lazarus form text file
+    // Note: When there is a bug in the source, no resource code can be found,
+    //       but the LFM file should always be saved
 
     if (ActiveUnitInfo.Form<>nil) then begin
       // stream component to resource code and to lfm file
@@ -2810,38 +2821,47 @@ CheckHeap(IntToStr(GetMem_Cnt));
         until Result<>mrRetry;
         // create lazarus form resource code
         if FormSavingOk then begin
-          MemStream:=TMemoryStream.Create;
-          try
-            BinCompStream.Position:=0;
-            BinaryToLazarusResourceCode(BinCompStream,MemStream
-              ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
-            MemStream.Position:=0;
-            SetLength(CompResourceCode,MemStream.Size);
-            MemStream.Read(CompResourceCode[1],length(CompResourceCode));
-          finally
-            MemStream.Free;
-          end;
+          if ResourceCode<>nil then begin
+            // there is no bug in the source, so the resource code should be
+            // changed too
+            MemStream:=TMemoryStream.Create;
+            try
+              BinCompStream.Position:=0;
+              BinaryToLazarusResourceCode(BinCompStream,MemStream
+                ,'T'+ActiveUnitInfo.FormName,'FORMDATA');
+              MemStream.Position:=0;
+              SetLength(CompResourceCode,MemStream.Size);
+              MemStream.Read(CompResourceCode[1],length(CompResourceCode));
+            finally
+              MemStream.Free;
+            end;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
 {$ENDIF}
-          // replace lazarus form resource code
-          if (not CodeToolBoss.AddLazarusResource(ResourceCode,
-             'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
-          begin
-            ACaption:='Resource error';
-            AText:='Unable to add resource '
-              +'T'+ActiveUnitInfo.FormName+':FORMDATA to resource file '#13
-              +'"'+ResourceCode.FileName+'".'#13
-              +'Probably a syntax error.';
-            Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
-            if Result=mrCancel then Result:=mrAbort;
-            exit;
+            // replace lazarus form resource code
+            if (not CodeToolBoss.AddLazarusResource(ResourceCode,
+               'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
+            begin
+              ACaption:='Resource error';
+              AText:='Unable to add resource '
+                +'T'+ActiveUnitInfo.FormName+':FORMDATA to resource file '#13
+                +'"'+ResourceCode.FileName+'".'#13
+                +'Probably a syntax error.';
+              Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+              if Result=mrCancel then Result:=mrAbort;
+              exit;
+            end;
           end;
           if (not SaveToTestDir) then begin
             // save lfm file
+            LFMFilename:=ChangeFileExt(ActiveUnitInfo.Filename,'.lfm');
             if LFMCode=nil then begin
-              LFMCode:=CodeToolBoss.CreateFile(
-                              ChangeFileExt(ResourceCode.Filename,'.lfm'));
+              LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
+              if LFMCode=nil then begin
+                MessageDlg('Unable to create file',
+                  'Unable to create file "'+LFMFilename+'"',
+                  mtWarning,[mbIgnore,mbCancel],0);
+              end;
             end;
             if LFMCode<>nil then begin
 {$IFDEF IDE_DEBUG}
@@ -2950,8 +2970,11 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
     end;
     Result:=mrOk;
   end;
+  
   // close form
   if ActiveUnitInfo.Form<>nil then begin
+    if FLastFormActivated=ActiveUnitInfo.Form then
+      FLastFormActivated:=nil;
     for i:=TWinControl(ActiveUnitInfo.Form).ComponentCount-1 downto 0 do
       TheControlSelection.Remove(
         TWinControl(ActiveUnitInfo.Form).Components[i]);
@@ -2961,8 +2984,10 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
     OldDesigner.Free;
     ActiveUnitInfo.Form:=nil;
   end;
+  
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
+  
   // close project file (not remove)
   Project.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
@@ -2977,7 +3002,7 @@ end;
 function TMainIDE.DoOpenEditorFile(const AFileName:string; 
   ProjectLoading, OnlyIfExists:boolean):TModalResult;
 var Ext,ACaption,AText:string;
-  i,BookmarkID:integer;
+  i,BookmarkID, LinkIndex:integer;
   ReOpen, FormLoadingOk:boolean;
   NewUnitInfo:TUnitInfo;
   NewPageName, NewProgramName, LFMFilename: string;
@@ -3145,27 +3170,25 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
 writeln('[TMainIDE.DoOpenEditorFile] C');
 {$ENDIF}
   NewUnitInfo.Loaded:=true;
+  Ext:=ExtractFileExt(NewUnitInfo.Filename);
   // read form data
-  if (NewUnitInfo.Unitname<>'') then begin
+  if (NewUnitInfo.Unitname<>'') and ((Ext='.pas') or (Ext='.pp')) then begin
     // this is a unit -> try to find the lfm file
     FormLoadingOk:=true;
-    LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
+{$ENDIF}
+    LFMFilename:='';
     NewBuf:=nil;
-    if FileExists(LFMFilename) then begin
-      Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false,true);
-      if Result<>mrOk then exit;
-      Result:=mrCancel;
-    end else begin
-      i:=-1;
-      NewBuf:=CodeToolBoss.FindNextResourceFile(NewUnitInfo.Source,i);
-      if NewBuf<>nil then begin
-        LFMFilename:=ChangeFileExt(NewBuf.Filename,'.lfm');
-        NewBuf:=nil;
-        if FileExists(LFMFilename) then begin
-          Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false,true);
-          if Result<>mrOk then exit;
-          Result:=mrCancel;
-        end;
+    LinkIndex:=-1;
+    NewBuf:=CodeToolBoss.FindNextResourceFile(NewUnitInfo.Source,LinkIndex);
+    if NewBuf<>nil then begin
+      LFMFilename:=ChangeFileExt(NewBuf.Filename,'.lfm');
+      NewBuf:=nil;
+      if FileExists(LFMFilename) then begin
+        Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false,true);
+        if Result<>mrOk then exit;
+        Result:=mrCancel;
       end;
     end;
     
@@ -3231,9 +3254,10 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
 
             // select the new form (object inspector, formeditor, control selection)
             if not ProjectLoading then begin
-              PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
+              PropertyEditorHook1.LookupRoot := TempForm;
               TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
             end;
+            FLastFormActivated:=TempForm;
           end;
         end;
 {$IFDEF IDE_DEBUG}
@@ -3640,9 +3664,21 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
           end else begin
             NewFilename:=ExpandFilename(SaveDialog.Filename);
             EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
-            if ExtractFileExt(NewFilename)='' then
+            Ext:=ExtractFileExt(NewFilename);
+            if Ext='' then begin
               NewFilename:=NewFilename+'.lpi';
+              Ext:='.lpi';
+            end;
             NewProgramName:=ExtractFileNameOnly(NewFilename);
+            if (Ext='.pas') or (Ext='.pp') then begin
+              if not IsValidIdent(NewProgramName) then begin
+                Result:=MessageDlg('Invalid Pascal Identifier',
+                  'The name "'+NewProgramName+'" is not a valid pascal identifier.'
+                  ,mtWarning,[mbIgnore,mbCancel],0);
+                if Result=mrCancel then exit;
+                Result:=mrCancel;
+              end;
+            end;
             if EnvironmentOptions.PascalFileLowerCase then
               NewFileName:=ExtractFilePath(NewFilename)
                           +lowercase(ExtractFileName(NewFilename));
@@ -3921,12 +3957,22 @@ CheckHeap(IntToStr(GetMem_Cnt));
     end;
   until LowestEditorIndex<0;
   Result:=mrCancel;
-//writeln('TMainIDE.DoOpenProjectFile D');
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoOpenProjectFile D');
+{$ENDIF}
+
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
   and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count)
   then
     SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
+    
+  // select a form (object inspector, formeditor, control selection)
+  if FLastFormActivated<>nil then begin
+    PropertyEditorHook1.LookupRoot := FLastFormActivated;
+    TDesigner(FLastFormActivated.Designer).SelectOnlyThisComponent(
+                                                            FLastFormActivated);
+  end;
 
   // set all modified to false
   for i:=0 to Project.UnitCount-1 do begin
@@ -4846,6 +4892,11 @@ begin
   end;
   if AForm<>nil then begin
     BringWindowToTop(AForm.Handle);
+    if FLastFormActivated=AForm then begin
+      // select the new form (object inspector, formeditor, control selection)
+      PropertyEditorHook1.LookupRoot := AForm;
+      TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
+    end;
   end;
 end;
 
@@ -6085,7 +6136,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
 {$IFDEF IDE_DEBUG}
 writeln('');
-writeln('[TMainIDE.OnPropHookMethodExists] ************');
+writeln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
 {$ENDIF}
   Result:=CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Form.ClassName,AMethodName,TypeData,
@@ -6104,19 +6155,19 @@ begin
   Result.Code:=nil;
   Result.Data:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{ $IFDEF IDE_DEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('');
-writeln('[TMainIDE.OnPropHookCreateMethod] ************');
-{ $ENDIF}
+writeln('[TMainIDE.OnPropHookCreateMethod] ************ ',AMethodName);
+{$ENDIF}
   FOpenEditorsOnCodeToolChange:=true;
   try
     // create published method
     r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
                 ActiveUnitInfo.Form.ClassName,AMethodName,ATypeInfo);
-{ $IFDEF IDE_DEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('');
-writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r);
-{ $ENDIF}
+writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r,' ',AMethodName);
+{$ENDIF}
     ApplyCodeToolChanges;
     if r then begin
       Result:=FormEditor1.JITFormList.CreateNewMethod(TForm(ActiveUnitInfo.Form)
@@ -6387,6 +6438,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.249  2002/03/22 12:36:44  lazarus
+  MG: many fixes, to make it short: events
+
   Revision 1.248  2002/03/21 23:15:39  lazarus
   MG: fixes for save-project-as and pagenames
 

@@ -364,13 +364,18 @@ end;
 function TJITForms.CreateNewMethod(JITForm: TForm; AName: ShortString): TMethod;
 var CodeTemplate,NewCode:Pointer;
   CodeSize:integer;
+  OldCode: Pointer;
 begin
   if JITForm=nil then
     raise Exception.Create('TJITForms.CreateNewMethod JITForm=nil');
   if IndexOf(JITForm)<0 then
     raise Exception.Create('TJITForms.CreateNewMethod JITForm.ClassName='+
       JITForm.ClassName);
-  if JITForm.MethodAddress(AName)<>nil then exit;
+  OldCode:=JITForm.MethodAddress(AName);
+  if OldCode<>nil then begin
+    Result.Code:=OldCode;
+    Result.Data:=JITForm;
+  end;
   CodeTemplate:=MethodAddress('DoNothing');
   CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
   GetMem(NewCode,CodeSize);
@@ -567,10 +572,16 @@ end;
 
 procedure TJITForms.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
+var NewMethod: TMethod;
 begin
-//  writeln('[TJITForms.ReaderFindMethod] '''+FindMethodName+'''');
+{$IFDEF IDE_DEBUG}
+writeln('[TJITForms.ReaderFindMethod] A "'+FindMethodName+'" Address=',HexStr(Cardinal(Address),8));
+{$ENDIF}
   if Address=nil then begin
-    AddNewMethod(FCurReadForm,FindMethodName);
+    // there is no method in the ancestor class with this name
+    // => add a JIT method with this name to the JITForm
+    NewMethod:=CreateNewMethod(FCurReadForm,FindMethodName);
+    Address:=NewMethod.Code;
     Error:=false;
   end;
 end;
@@ -578,7 +589,7 @@ end;
 procedure TJITForms.ReaderSetName(Reader: TReader; Component: TComponent;
   var NewName: Ansistring);
 begin
-//  writeln('[TJITForms.ReaderSetName] OldName='''+Component.Name+''' NewName='''+NewName+'''');
+//  writeln('[TJITForms.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
 end;
 
 procedure TJITForms.ReaderReferenceName(Reader: TReader; var RefName: Ansistring);

@@ -362,7 +362,8 @@ begin
     OnMouseDown := @CurrentEditMouseDown;
     OnDblClick := @CurrentEditDblClick;
     OnExit:=@ValueComboBoxExit;
-    OnChange:=@ValueComboBoxChange;
+    //OnChange:=@ValueComboBoxChange; the on change event is called even,
+                                   // if the user is editing
     OnKeyDown:=@ValueComboBoxKeyDown;
   end;
 
@@ -562,6 +563,8 @@ begin
       NewValue:=ValueEdit.Text
     else
       NewValue:=ValueComboBox.Text;
+    if length(NewValue)>CurRow.Editor.GetEditLimit then
+      NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
     if NewValue<>CurRow.Editor.GetVisualValue then begin
       try
         CurRow.Editor.SetValue(NewValue);
@@ -674,6 +677,7 @@ begin
         ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
         ValueComboBox.Items.BeginUpdate;
         ValueComboBox.Items.Text:='';
+        ValueComboBox.Items.Clear;
         // XXX
         //ValueComboBox.Sorted:=paSortList in Node.Director.GetAttributes;
         NewRow.Editor.GetValues(@AddStringToComboBox);

@@ -184,10 +184,17 @@ const
 type
   // TExprTypeList is used for compatibility checks of whole parameter lists
   TExprTypeList = class
+  private
+    FCapacity: integer;
+    procedure SetCapacity(const AValue: integer);
+  protected
+    procedure Grow;
   public
     Count: integer;
     Items: ^TExpressionType;
     procedure Add(ExprType: TExpressionType);
+    procedure AddFirst(ExprType: TExpressionType);
+    property Capacity: integer read FCapacity write SetCapacity;
     destructor Destroy; override;
     function AsString: string;
   end;
@@ -4298,16 +4305,39 @@ begin
   end;
 end;
 
+procedure TExprTypeList.SetCapacity(const AValue: integer);
+var NewSize: integer;
+begin
+  if FCapacity=AValue then exit;
+  FCapacity:=AValue;
+  NewSize:=FCapacity*SizeOf(TExpressionType);
+  if Items=nil then
+    GetMem(Items,NewSize)
+  else
+    ReAllocMem(Items,NewSize);
+  if Count>Capacity then Count:=Capacity;
+end;
+
+procedure TExprTypeList.Grow;
+begin
+  Capacity:=Capacity+5;
+end;
+
 procedure TExprTypeList.Add(ExprType: TExpressionType);
 var NewSize: integer;
 begin
   inc(Count);
-  NewSize:=Count*SizeOf(TExpressionType);
-  if Count=1 then
-    GetMem(Items,NewSize)
-  else
-    ReAllocMem(Items,NewSize);
+  if Count>Capacity then Grow;
   Items[Count-1]:=ExprType;
+end;
+
+procedure TExprTypeList.AddFirst(ExprType: TExpressionType);
+begin
+  inc(Count);
+  if Count>Capacity then Grow;
+  if Count>1 then
+    Move(Items[0],Items[1],SizeOf(TExpressionType)*(Count-1));
+  Items[0]:=ExprType;
 end;
 
 

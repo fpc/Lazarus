@@ -43,6 +43,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE CTDEBUG}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -135,12 +137,13 @@ procedure TCodeCompletionCodeTool.SetCodeCompleteClassNode(
   const AClassNode: TCodeTreeNode);
 begin
   FreeClassInsertionList;
-  BuildSubTreeForClass(ClassNode);
   ClassNode:=AClassNode;
+  BuildSubTreeForClass(ClassNode);
   StartNode:=ClassNode.FirstChild;
   while (StartNode<>nil) and (StartNode.FirstChild=nil) do
     StartNode:=StartNode.NextBrother;
   if StartNode<>nil then StartNode:=StartNode.FirstChild;
+  JumpToProcName:='';
 end;
 
 procedure TCodeCompletionCodeTool.SetCodeCompleteSrcChgCache(
@@ -256,7 +259,7 @@ function TCodeCompletionCodeTool.NodeExtIsVariable(
 //var APos, TxtLen: integer;
 begin
   Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
-       or (ANodeExt.Flags=ord(ncpPublishedProcs));
+       or (ANodeExt.Flags=ord(ncpPublishedVars));
 {  APos:=1;
   TxtLen:=length(ANodeExt.ExtTxt1);
   while (APos<=TxtLen) and (IsIdentChar[ANodeExt.ExtTxt1[APos]]) do
@@ -828,7 +831,7 @@ begin
   end;
   NewPrivatSectionInsertPos:=-1;
   NewPrivatSectionIndent:=0;
-  PublishedNeeded:=false;
+  PublishedNeeded:=false;// 'published' keyword after first private section needed
   PrivatNode:=nil;
   // search topmost node of private node extensions
   TopMostPrivateNode:=nil;
@@ -846,33 +849,34 @@ begin
     PrivatNode:=TopMostPrivateNode.Parent.PriorBrother;
     while (PrivatNode<>nil) and (PrivatNode.Desc<>ctnClassPrivate) do
       PrivatNode:=PrivatNode.PriorBrother;
-  end;
-  if PrivatNode=nil then begin
-    { Insert a new private section in front of topmost node
-      normally the best place for a new private section is at the end of
-      the first published section. But if a privat variable is already
-      needed in the first published section, then the new private section
-      must be inserted in front of all }
-    if (ClassNode.FirstChild.EndPos>TopMostPrivateNode.StartPos) then begin
-      // topmost node is in the first section
-      // -> insert as the first section
-      ANode:=ClassNode.FirstChild;
-      NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
-      if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID) then
-        NewPrivatSectionInsertPos:=ANode.StartPos
-      else
-        NewPrivatSectionInsertPos:=ANode.FirstChild.EndPos;
-      PublishedNeeded:=CompareNodeIdentChars(ANode,'PUBLISHED')<>0;
-    end else begin
-      // default: insert new privat section behind first published section
-      ANode:=ClassNode.FirstChild;
-      NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
-      NewPrivatSectionInsertPos:=ANode.EndPos;
+    if (PrivatNode=nil) then begin
+      { Insert a new private section in front of topmost node
+        normally the best place for a new private section is at the end of
+        the first published section. But if a privat variable is already
+        needed in the first published section, then the new private section
+        must be inserted in front of all }
+      if (ClassNode.FirstChild.EndPos>TopMostPrivateNode.StartPos) then begin
+        // topmost node is in the first section
+        // -> insert as the first section
+        ANode:=ClassNode.FirstChild;
+        NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
+        if (ANode.FirstChild<>nil) and (ANode.FirstChild.Desc<>ctnClassGUID)
+        then
+          NewPrivatSectionInsertPos:=ANode.StartPos
+        else
+          NewPrivatSectionInsertPos:=ANode.FirstChild.EndPos;
+        PublishedNeeded:=CompareNodeIdentChars(ANode,'PUBLISHED')<>0;
+      end else begin
+        // default: insert new privat section behind first published section
+        ANode:=ClassNode.FirstChild;
+        NewPrivatSectionIndent:=GetLineIndent(Src,ANode.StartPos);
+        NewPrivatSectionInsertPos:=ANode.EndPos;
+      end;
+      ASourceChangeCache.Replace(gtNewLine,gtNewLine,
+        NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
+        GetIndentStr(NewPrivatSectionIndent)+
+          ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('private'));
     end;
-    ASourceChangeCache.Replace(gtNewLine,gtNewLine,
-      NewPrivatSectionInsertPos,NewPrivatSectionInsertPos,
-      GetIndentStr(NewPrivatSectionIndent)+
-        ASourceChangeCache.BeautifyCodeOptions.BeautifyKeyWord('private'));
   end;
 
   InsertNewClassParts(ncpPrivateVars);
@@ -896,6 +900,9 @@ procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
 var ANodeExt: TCodeTreeNodeExtension;
   NewNodeExt: TCodeTreeNodeExtension;
 begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs]');
+{$ENDIF}
   // add new property access methods to ClassProcs
   ANodeExt:=FirstInsert;
   while ANodeExt<>nil do begin
@@ -928,6 +935,9 @@ var AnAVLNode: TAVLTreeNode;
   BeautifyCodeOptions: TBeautifyCodeOptions;
 begin
   if not AddInheritedCodeToOverrideMethod then exit;
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode]');
+{$ENDIF}
   BeautifyCodeOptions:=ASourceChangeCache.BeautifyCodeOptions;
   AnAVLNode:=ClassProcs.FindLowest;
   while AnAVLNode<>nil do begin
@@ -1118,7 +1128,10 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
     // search for missing proc bodies
     if (ProcBodyNodes.Count=0) then begin
       // there were no old proc bodies of the class -> start class
-      
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in implementation ');
+{$ENDIF}
+
       if NodeHasParentOfType(ClassNode,ctnInterface) then begin
         // class is in interface section
         // -> insert at the end of the implementation section
@@ -1185,7 +1198,10 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       // there were old class procs already
       // -> search a good Insert Position behind or in front of
       //    another proc body of this class
-      
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CreateMissingProcBodies  Insert missing bodies between existing ... ClassProcs.Count=',ClassProcs.Count);
+{$ENDIF}
+
       // set default insert position
       Indent:=GetLineIndent(Src,LastExistingProcBody.StartPos);
       InsertPos:=FindLineEndOrCodeAfterPosition(Src,
@@ -1293,6 +1309,9 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
                 ProcCode,TheClassName,'');
             ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                         ProcCode,Indent,ANodeExt.ExtTxt3='');
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CreateMissingProcBodies  Inserting Method Body: "',ProcCode,'" -----');
+{$ENDIF}
             ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
                   InsertPos,InsertPos,ProcCode);
             if JumpToProcName='' then begin
@@ -1352,7 +1371,6 @@ writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsStri
 writeln('TCodeCompletionCodeTool.CompleteCode C ',CleanCursorPos,', |',copy(Src,CleanCursorPos,8));
 {$ENDIF}
     CodeCompleteClassNode:=AClassNode;
-    JumpToProcName:='';
     try
       // go through all properties and procs
       //  insert read + write prop specifiers

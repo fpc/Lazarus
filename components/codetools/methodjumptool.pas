@@ -572,6 +572,7 @@ var DestNode: TCodeTreeNode;
   i, NewCleanPos: integer;
 begin
   Result:=false;
+  if ProcNode=nil then exit;
   // search method body
   DestNode:=FindProcBody(ProcNode);
   if DestNode=nil then begin
