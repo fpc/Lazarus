@@ -31,23 +31,23 @@ uses
 
 type
   { TCustomTimer }
-  {
-    @abstract(A free running timer.)
-    Introduced and (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
-  }
   TCustomTimer = class (TComponent)
   private
     FInterval     : Cardinal;
+    FOnStartTimer: TNotifyEvent;
+    FOnStopTimer: TNotifyEvent;
     FTimerHandle  : integer;
     FOnTimer      : TNotifyEvent;
     FEnabled      : Boolean;
-    procedure UpdateTimer;
-    procedure SetEnabled(Value: Boolean);
-    procedure SetInterval(Value: Cardinal);
-    procedure SetOnTimer(Value: TNotifyEvent);
-    procedure KillTimer;
-  protected
     procedure Timer (var msg); message LM_Timer;
+  protected
+    procedure SetEnabled(Value: Boolean); virtual;
+    procedure SetInterval(Value: Cardinal); virtual;
+    procedure SetOnTimer(Value: TNotifyEvent); virtual;
+    procedure DoOnTimer; virtual;
+    procedure UpdateTimer; virtual;
+    procedure KillTimer; virtual;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -55,9 +55,13 @@ type
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
+    property OnStartTimer: TNotifyEvent read FOnStartTimer write FOnStartTimer;
+    property OnStopTimer: TNotifyEvent read FOnStopTimer write FOnStopTimer;
   end;
 
+
 implementation
+
 
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }
@@ -78,7 +82,6 @@ const
 procedure TimerCBProc(Handle: HWND; message : cardinal; IDEvent: Integer;
   Time: Cardinal);
 begin
-  // Cast Handle back to timer
   if (Handle<>0) then
     TCustomTimer(Handle).Timer (message);
 end;
@@ -122,11 +125,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTimer.KillTimer;
 begin
-  Assert(False, 'Trace:In TCustomTimer.KillTimer');
   if FTimerHandle <> cIdNoTimer then begin
     LCLLinux.KillTimer (integer(Self), 1);
     FTimerHandle := cIdNoTimer;
+    if Assigned(OnStopTimer) then OnStopTimer(Self);
   end;
+end;
+
+procedure TCustomTimer.Loaded;
+begin
+  inherited Loaded;
+  UpdateTimer;
 end;
 
 {------------------------------------------------------------------------------
@@ -139,13 +148,16 @@ end;
 procedure TCustomTimer.UpdateTimer;
 begin
   KillTimer;
-  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then begin
+  if (FEnabled) and (FInterval > 0)
+  and (([csDesigning,csLoading]*ComponentState=[]))
+  and Assigned (FOnTimer) then begin
     FTimerHandle := LCLLinux.SetTimer(Integer(Self), 1,
-                      FInterval, @TimerCBProc);
+                                      FInterval, @TimerCBProc);
     if FTimerHandle=0 then begin
       FTimerHandle:=cIdNoTimer;
       raise EOutOfResources.Create(SNoTimers);
     end;
+    if Assigned(OnStartTimer) then OnStartTimer(Self);
   end;
 end;
 
@@ -158,9 +170,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTimer.Timer (var msg);
 begin
-  Assert(false, 'Trace:Timer received a message -TIMER');
-  if Assigned (FOnTimer) and (FEnabled) and (FInterval > 0) then
-    FOnTimer(Self);
+  if (FEnabled) and (FInterval > 0) then
+    DoOnTimer;
 end;
 
 {------------------------------------------------------------------------------
@@ -173,9 +184,18 @@ end;
 procedure TCustomTimer.SetOnTimer (value : TNotifyEvent);
 begin
   if Value=FOnTimer then exit;
-  Assert(False, 'Trace:SETTING TIMER CALLBACK');
   FOnTimer := value;
   UpdateTimer;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomTimer.DoOnTimer;
+
+ ------------------------------------------------------------------------------}
+procedure TCustomTimer.DoOnTimer;
+begin
+  if Assigned(FOnTimer) then
+    FOnTimer(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -187,7 +207,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTimer.SetEnabled (value : boolean);
 begin
-  Assert(False, 'Trace:In TCustomTimer.SetEnabled');
   if (Value <> FEnabled) then
   begin
     FEnabled := value;
@@ -204,7 +223,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomTimer.SetInterval (value : cardinal);
 begin
-  Assert(False, 'Trace:In TCustomTimer.SetInterval');
   if (value <> FInterval) then
   begin
     FInterval := value;

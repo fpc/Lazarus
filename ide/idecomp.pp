@@ -333,7 +333,7 @@ begin
   RegisterComponents('Misc','Calendar',[TCalendar]);
   RegisterComponents('Misc','Arrow',[TArrow]);
 
-  RegisterComponents('System','ExtCtrls',[TTimer]);
+  RegisterComponents('System','ExtCtrls',[TTimer,TIdleTimer]);
   RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog,
           TColorDialog,TFontDialog]);
 
@@ -342,6 +342,7 @@ begin
 {$IFDEF DATABASE}
   RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
 {$ENDIF}
+
 {$IFDEF INTERBASE}
   RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,
           TIBQuery,TIBDatabase]);

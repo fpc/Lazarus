@@ -230,8 +230,7 @@ begin
       // build lcl
       Tool.Title:='Build LCL';
       Tool.WorkingDirectory:='$(LazarusDir)/lcl';
-      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
-                    Options.TargetOS);
+      SetMakeParams(Options.BuildLCL,Options.ExtraOptions,Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
