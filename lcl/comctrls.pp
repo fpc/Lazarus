@@ -42,6 +42,7 @@ uses
   vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin, CommCtrl;
 
 type
+
 { TAlignment = Class(TWinControl)
   public
    constructor Create(AOwner : TComponent); override;
@@ -124,8 +125,9 @@ type
 
   TCustomDrawTarget = (dtControl, dtItem, dtSubItem);
   TCustomDrawStage = (cdPrePaint, cdPostPaint, cdPreErase, cdPostErase);
-  TCustomDrawState = set of (cdsSelected, cdsGrayed, cdsDisabled, cdsChecked,
+  TCustomDrawStateFlag = (cdsSelected, cdsGrayed, cdsDisabled, cdsChecked,
     cdsFocused, cdsDefault, cdsHot, cdsMarked, cdsIndeterminate);
+  TCustomDrawState = set of TCustomDrawStateFlag;
 
 
 {TListView}
@@ -819,8 +821,8 @@ type
   TTreeNodes = class;
   TTreeNode = class;
 
-  TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsExpanded,
-                nsHasChildren);
+  TNodeState = (nsCut, nsDropHilited, nsFocused, nsSelected, nsMultiSelected,
+                nsExpanded, nsHasChildren);
   TNodeStates = set of TNodeState;
   TNodeAttachMode = (naAdd, naAddFirst, naAddChild, naAddChildFirst, naInsert);
 
@@ -909,9 +911,11 @@ type
     //FItemId: HTreeItem;
     FItems: TTreeNodeArray;  // first level child nodes
     FNextBrother: TTreeNode; // next sibling
+    FNextMultiSelected: TTreeNode;
     FOverlayIndex: Integer;
     FParent: TTreeNode;
     FPrevBrother: TTreeNode; // previous sibling
+    FPrevMultiSelected: TTreeNode;
     FSelectedIndex: Integer;
     FStateIndex: Integer;
     FStates: TNodeStates;
@@ -919,6 +923,7 @@ type
     FText: string;
     FTop: integer;        // top coordinate
     function AreParentsExpanded: Boolean;
+    procedure BindToMultiSelected;
     function CompareCount(CompareMe: Integer): Boolean;
     function DoCanExpand(ExpandIt: Boolean): Boolean;
     procedure DoExpand(ExpandIt: Boolean);
@@ -934,6 +939,7 @@ type
     function GetIndex: Integer;
     function GetItems(AnIndex: Integer): TTreeNode;
     function GetLevel: Integer;
+    function GetMultiSelected: Boolean;
     function GetSelected: Boolean;
     function GetState(NodeState: TNodeState): Boolean;
     function GetTreeNodes: TTreeNodes;
@@ -954,12 +960,14 @@ type
     procedure SetHeight(AValue: integer);
     procedure SetImageIndex(AValue: integer);
     procedure SetItems(AnIndex: Integer; AValue: TTreeNode);
+    procedure SetMultiSelected(const AValue: Boolean);
     procedure SetOverlayIndex(AValue: Integer);
     procedure SetSelected(AValue: Boolean);
     procedure SetSelectedIndex(AValue: Integer);
     procedure SetStateIndex(AValue: Integer);
     procedure SetText(const S: string);
     procedure Unbind;
+    procedure UnbindFromMultiSelected;
     procedure WriteData(Stream: TStream; Info: PTreeNodeInfo);
     procedure WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
   public
@@ -993,16 +1001,19 @@ type
     function GetLastSubChild: TTreeNode;
     function GetNext: TTreeNode;
     function GetNextChild(AValue: TTreeNode): TTreeNode;
+    function GetNextMultiSelected: TTreeNode;
     function GetNextSibling: TTreeNode;
     function GetNextVisible: TTreeNode;
     function GetPrev: TTreeNode;
     function GetPrevChild(AValue: TTreeNode): TTreeNode;
+    function GetPrevMultiSelected: TTreeNode;
     function GetPrevSibling: TTreeNode;
     function GetPrevVisible: TTreeNode;
     function HasAsParent(AValue: TTreeNode): Boolean;
     function IndexOf(AValue: TTreeNode): Integer;
     procedure MakeVisible;
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); virtual;
+    procedure MultiSelectGroup;
     procedure Update;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport(const Prefix: string; Recurse: boolean);
@@ -1023,6 +1034,7 @@ type
     property Items[Index: Integer]: TTreeNode read GetItems write SetItems; default;
     //property ItemId: HTreeItem read FItemId;
     property Level: Integer read GetLevel;
+    property MultiSelected: Boolean read GetMultiSelected write SetMultiSelected;
     property OverlayIndex: Integer read FOverlayIndex write SetOverlayIndex;
     property Owner: TTreeNodes read FOwner;
     property Parent: TTreeNode read FParent;
@@ -1047,13 +1059,14 @@ type
   TTreeNodes = class(TPersistent)
   private
     FCount: integer;
+    FFirstMultiSelected: TTreeNode;
+    FKeepCollapsedNodes: boolean;
     FNodeCache: TNodeCache;
     FOwner: TCustomTreeView;
     FTopLvlCapacity: integer;
     FTopLvlCount: integer;
     FTopLvlItems: TTreeNodeArray; // root and root siblings
     FUpdateCount: Integer;
-    FKeepCollapsedNodes: boolean;
     procedure AddedNode(AValue: TTreeNode);
     procedure ClearCache;
     function GetHandle: THandle;
@@ -1098,6 +1111,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
     procedure Clear;
+    procedure ClearMultiSelection;
     procedure Delete(Node: TTreeNode);
     procedure EndUpdate;
     function GetFirstNode: TTreeNode;
@@ -1126,16 +1140,43 @@ type
 
 { TCustomTreeView }
 
-  TTreeViewState = (tvsScrollbarChanged, tvsMaxRightNeedsUpdate,
-    tvsTopsNeedsUpdate, tvsMaxLvlNeedsUpdate, tvsTopItemNeedsUpdate,
-    tvsBottomItemNeedsUpdate, tvsCanvasChanged, tvsDragged, tvsIsEditing,
-    tvsStateChanging, tvsManualNotify, tvsUpdating, tvsMouseCapture,
-    tvsWaitForDragging, tvsDblClicked);
+  TTreeViewState = (
+    tvsScrollbarChanged,
+    tvsMaxRightNeedsUpdate,
+    tvsTopsNeedsUpdate,
+    tvsMaxLvlNeedsUpdate,
+    tvsTopItemNeedsUpdate,
+    tvsBottomItemNeedsUpdate,
+    tvsCanvasChanged,
+    tvsDragged,
+    tvsIsEditing,
+    tvsStateChanging,
+    tvsManualNotify,
+    tvsUpdating,
+    tvsMouseCapture,
+    tvsWaitForDragging,
+    tvsDblClicked,
+    tvsTripleClicked,
+    tvsQuadClicked
+    );
   TTreeViewStates = set of TTreeViewState;
 
-  TTreeViewOption = (tvoAutoExpand, tvoHideSelection, tvoHotTrack,
-    tvoRightClickSelect, tvoReadOnly, tvoShowButtons, tvoShowRoot, tvoShowLines,
-    tvoToolTips, tvoRowSelect, tvoKeepCollapsedNodes, tvoShowSeparators);
+  TTreeViewOption = (
+    tvoAutoExpand,
+    tvoHideSelection,
+    tvoHotTrack,
+    tvoRightClickSelect,
+    tvoReadOnly,
+    tvoShowButtons,
+    tvoShowRoot,
+    tvoShowLines,
+    tvoToolTips,
+    tvoRowSelect,
+    tvoKeepCollapsedNodes,
+    tvoShowSeparators,
+    tvoAllowMultiselect,
+    tvoAutoItemHeight
+    );
   TTreeViewOptions = set of TTreeViewOption;
 
   TTreeViewExpandSignType = (tvestPlusMinus, tvestArrow);
@@ -1615,6 +1656,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/09/09 17:41:18  lazarus
+  MG: added multiselection to TTreeView
+
   Revision 1.39  2002/09/05 13:33:10  lazarus
   MG: set default value for TStatusBar.SimplePanel
 

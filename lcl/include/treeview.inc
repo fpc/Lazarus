@@ -23,8 +23,6 @@
     TTreeView for LCL
 
   ToDo:
-    - Multiselection
-    - custom draw
     - Drag&Drop
     - Editing
     - Columns
@@ -335,6 +333,19 @@ begin
   Result:=true;
 end;
 
+procedure TTreeNode.BindToMultiSelected;
+var
+  TheTreeNodes: TTreeNodes;
+begin
+  TheTreeNodes:=TreeNodes;
+  if TheTreeNodes=nil then exit;
+  FNextMultiSelected:=TheTreeNodes.FFirstMultiSelected;
+  FPrevMultiSelected:=nil;
+  if FNextMultiSelected<>nil then
+    FNextMultiSelected.FPrevMultiSelected:=Self;
+  TheTreeNodes.FFirstMultiSelected:=Self;
+end;
+
 function TTreeNode.CompareCount(CompareMe: Integer): Boolean;
 {var
   ACount: integer;
@@ -468,12 +479,6 @@ begin
       TreeView.Selected:=nil;
   end;
   Update;
-  { ToDo:
-  if Value then
-    TreeView_SelectItem(Handle, ItemId)
-  else if Selected then
-    TreeView_SelectItem(Handle, nil);
-  }
 end;
 
 function TTreeNode.GetCut: Boolean;
@@ -630,12 +635,22 @@ begin
     Result := nil;
 end;
 
+function TTreeNode.GetNextMultiSelected: TTreeNode;
+begin
+  Result:=FNextMultiSelected;
+end;
+
 function TTreeNode.GetPrevChild(AValue: TTreeNode): TTreeNode;
 begin
   if AValue <> nil then
     Result := AValue.GetPrevSibling
   else
     Result := nil;
+end;
+
+function TTreeNode.GetPrevMultiSelected: TTreeNode;
+begin
+  Result:=FPrevMultiSelected;
 end;
 
 function TTreeNode.GetFirstChild: TTreeNode;
@@ -788,6 +803,21 @@ begin
   Items[AnIndex].Assign(AValue);
 end;
 
+procedure TTreeNode.SetMultiSelected(const AValue: Boolean);
+begin
+  if AValue=GetMultiSelected then exit;
+  if AValue then begin
+    if (Treeview<>nil) and (not (tvoAllowMultiselect in TreeView.Options)) then
+      exit;
+    Include(FStates,nsMultiSelected);
+    if TreeNodes<>nil then BindToMultiSelected;
+  end else begin
+    Exclude(FStates,nsMultiSelected);
+    if TreeNodes<>nil then UnbindFromMultiSelected;
+  end;
+  Update;
+end;
+
 function TTreeNode.IndexOf(AValue: TTreeNode): Integer;
 begin
   if AValue=nil then begin
@@ -828,9 +858,9 @@ procedure TTreeNode.Unbind;
 var OldIndex, i: integer;
   HigherNode: TTreeNode;
 begin
-{$IFDEF TREEVIEW_DEBUG}
-writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
-{$ENDIF}
+  {$IFDEF TREEVIEW_DEBUG}
+  writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
+  {$ENDIF}
   Selected:=false;
   if Owner<>nil then begin
     Owner.ClearCache;
@@ -841,6 +871,7 @@ writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
         tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
     end;
   end;
+  UnbindFromMultiSelected;
   if FPrevBrother<>nil then FPrevBrother.FNextBrother:=FNextBrother;
   if FNextBrother<>nil then FNextBrother.FPrevBrother:=FPrevBrother;
   FPrevBrother:=nil;
@@ -870,6 +901,22 @@ writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
   end;
 end;
 
+procedure TTreeNode.UnbindFromMultiSelected;
+var
+  TheTreeNodes: TTreeNodes;
+begin
+  TheTreeNodes:=TreeNodes;
+  if TheTreeNodes=nil then exit;
+  if TheTreeNodes.FFirstMultiSelected=Self then
+    TheTreeNodes.FFirstMultiSelected:=FNextMultiSelected;
+  if FNextMultiSelected<>nil then
+    FNextMultiSelected.FPrevMultiSelected:=FPrevMultiSelected;
+  if FPrevMultiSelected<>nil then
+    FPrevMultiSelected.FNextMultiSelected:=FNextMultiSelected;
+  FNextMultiSelected:=nil;
+  FPrevMultiSelected:=nil;
+end;
+
 procedure TTreeNode.InternalMove(ANode: TTreeNode;
   AddMode: TAddMode);
 {
@@ -882,12 +929,12 @@ procedure TTreeNode.InternalMove(ANode: TTreeNode;
 var HigherNode: TTreeNode;
   NewIndex, NewParentItemSize, i: integer;
 begin
-{$IFDEF TREEVIEW_DEBUG}
-write('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
-,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
-if ANode<>nil then write(' ANode.Text=',ANode.Text);
-writeln('');
-{$ENDIF}
+  {$IFDEF TREEVIEW_DEBUG}
+  write('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
+  ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
+  if ANode<>nil then write(' ANode.Text=',ANode.Text);
+  writeln('');
+  {$ENDIF}
   Unbind;
   // set parent
   if AddMode in [taAdd, taAddFirst] then
@@ -1076,6 +1123,28 @@ begin
   end;
 end;
 
+procedure TTreeNode.MultiSelectGroup;
+var
+  FirstNode, LastNode, ANode: TTreeNode;
+begin
+  if (TreeView<>nil) and (not (tvoAllowMultiselect in TreeView.Options)) then
+    exit;
+  FirstNode:=GetPrevSibling;
+  while (FirstNode<>nil) and (not FirstNode.MultiSelected) do
+    FirstNode:=FirstNode.GetPrevSibling;
+  if FirstNode=nil then FirstNode:=Self;
+  LastNode:=GetNextSibling;
+  while (LastNode<>nil) and (not LastNode.MultiSelected) do
+    LastNode:=LastNode.GetNextSibling;
+  if LastNode=nil then LastNode:=Self;
+  ANode:=FirstNode;
+  while ANode<>nil do begin
+    ANode.MultiSelected:=true;
+    if ANode=LastNode then break;
+    ANode:=ANode.GetNextSibling;
+  end;
+end;
+
 procedure TTreeNode.MakeVisible;
 begin
   if TreeView<>nil then
@@ -1095,6 +1164,11 @@ begin
     Inc(Result);
     ANode := ANode.Parent;
   end;
+end;
+
+function TTreeNode.GetMultiSelected: Boolean;
+begin
+  Result := GetState(nsMultiSelected);
 end;
 
 function TTreeNode.IsNodeVisible: Boolean;
@@ -1503,6 +1577,18 @@ begin
     GetLastNode.Delete;
 end;
 
+procedure TTreeNodes.ClearMultiSelection;
+var
+  ANode, OldNode: TTreeNode;
+begin
+  ANode:=FFirstMultiSelected;
+  while ANode<>nil do begin
+    OldNode:=ANode;
+    ANode:=ANode.GetNextMultiSelected;
+    OldNode.MultiSelected:=false;
+  end;
+end;
+
 function TTreeNodes.AddChildFirst(ParentNode: TTreeNode; const S: string): TTreeNode;
 begin
   Result := AddChildObjectFirst(ParentNode, S, nil);
@@ -1622,12 +1708,12 @@ var ok: boolean;
 begin
   if Owner=nil then
     TreeNodeError('TTreeNodes.InternalAddObject Owner=nil');
-{$IFDEF TREEVIEW_DEBUG}
-write('[TTreeNodes.InternalAddObject] Node=',Node<>nil,' S=',S,
-' AddMode=',AddModeNames[AddMode]);
-if Node<>nil then write(' Node.Text=',Node.Text);
-writeln('');
-{$ENDIF}
+  {$IFDEF TREEVIEW_DEBUG}
+  write('[TTreeNodes.InternalAddObject] Node=',Node<>nil,' S=',S,
+  ' AddMode=',AddModeNames[AddMode]);
+  if Node<>nil then write(' Node.Text=',Node.Text);
+  writeln('');
+  {$ENDIF}
   Result := Owner.CreateNode;
   ok:=false;
   try
@@ -1635,9 +1721,8 @@ writeln('');
     Result.Text := S;
     // move node in tree (tree of TTreeNode)
     Result.InternalMove(Node,AddMode);
-    if (Owner<>nil) and Owner.AutoExpand and (Node<>nil) and (Node.Parent<>nil)
-    then
-      Node.Parent.Expanded:=true;
+    if (Owner<>nil) and Owner.AutoExpand and (Result.Parent<>nil) then
+      Result.Parent.Expanded:=true;
     if (FUpdateCount=0) and (Owner<>nil) then
       Owner.Invalidate;
     ok:=true;
@@ -2706,12 +2791,20 @@ begin
   if FOptions=NewOptions then exit;
   ChangedOptions:=(FOptions-NewOptions)+(NewOptions-FOptions);
   FOptions:=NewOptions;
-  if (tvoKeepCollapsedNodes) in ChangedOptions then
+  if tvoKeepCollapsedNodes in ChangedOptions then
     Items.KeepCollapsedNodes:=(tvoKeepCollapsedNodes in FOptions);
   if (tvoReadOnly in ChangedOptions) and (not (tvoReadOnly in FOptions)) then
     EndEditing;
+  if (tvoAllowMultiselect in ChangedOptions) then begin
+    if (tvoAllowMultiselect in FOptions) then begin
+      if Selected<>nil then Selected.MultiSelected:=true;
+    end else begin
+      Items.ClearMultiSelection;
+    end;
+  end;
   if ([tvoHideSelection,tvoReadOnly,tvoShowButtons,tvoShowRoot,tvoShowLines]
-  * ChangedOptions)<>[] then
+    * ChangedOptions)<>[]
+  then
     Invalidate;
 end;
 
@@ -3589,8 +3682,10 @@ end;
 }
 procedure TCustomTreeView.WndProc(var Message: TLMessage);
 begin
-  if not (csDesigning in ComponentState) and ((Message.Msg = LM_LBUTTONDOWN) or
-    (Message.Msg = LM_LBUTTONDBLCLK)) and not Dragging and
+  if not (csDesigning in ComponentState)
+  and ((Message.Msg = LM_LBUTTONDOWN)
+    or (Message.Msg = LM_LBUTTONDBLCLK))
+  and not Dragging and
     (DragMode = dmAutomatic) and (DragKind = dkDrag) then
   begin
     if not IsControlMouseMsg(TLMMouse(Message)) then begin
@@ -3601,7 +3696,8 @@ begin
   {else if Message.Msg = CN_BASE+LM_CONTEXTMENU then
     Message.Result := Perform(LM_CONTEXTMENU, Message.WParam, Message.LParam)
   }
-  else inherited WndProc(Message);
+  else
+    inherited WndProc(Message);
 end;
 
 procedure TCustomTreeView.DoStartDrag(var DragObject: TDragObject);
@@ -3672,13 +3768,18 @@ begin
 end;}
 
 procedure TCustomTreeView.DoPaint;
-var a,HalfBorderWidth:integer;
-  SpaceRect:TRect;
+var
+  a,HalfBorderWidth:integer;
+  SpaceRect, DrawRect: TRect;
   Node: TTreeNode;
 begin
   if tvsUpdating in FStates then exit;
   UpdateScrollbars;
   with Canvas do begin
+    if Assigned(FOnCustomDraw) then begin
+      DrawRect:=ClientRect;
+      if not CustomDraw(DrawRect,cdPrePaint) then exit;
+    end;
     // draw nodes
     Node:=TopItem;
     //write('[TCustomTreeView.DoPaint] A Node=',HexStr(Cardinal(Node),8));
@@ -3686,8 +3787,8 @@ begin
     while Node<>nil do begin
       DoPaintNode(Node);
       Node:=Node.GetNextVisible;
-    //write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
-    //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
+      //write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
+      //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
     end;
     // draw unused space below nodes
     SpaceRect:=Rect(BorderWidth,BorderWidth,
@@ -3722,12 +3823,18 @@ begin
       LineTo((ClientWidth-ScrollBarWidth)-1-a,(ClientHeight-ScrollBarWidth)-1-a);
       LineTo(a,(ClientHeight-ScrollBarWidth)-1-a);
     end;
+    if Assigned(FOnCustomDraw) then begin
+      DrawRect:=ClientRect;
+      if not CustomDraw(DrawRect,cdPostPaint) then exit;
+    end;
   end;
 end;
 
 procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
-var NodeRect: TRect;
+var
+  NodeRect: TRect;
   VertMid: integer;
+  NodeSelected: boolean;
 
   function InvertColor(AColor: TColor): TColor;
   var Red, Green, Blue: integer;
@@ -3812,7 +3919,7 @@ var NodeRect: TRect;
             Points[1]:=Point(ARight-1,MidY);
             Points[2]:=Point(MidX-1,ABottom);
           end;
-          PolyGon(Points,3,false);
+          Polygon(Points,3,false);
           FreeMem(Points);
         end;
       end;
@@ -3823,18 +3930,33 @@ var NodeRect: TRect;
 var x, ImgIndex: integer;
   CurBackgroundColor, OldFontColor: TColor;
   CurTextRect: TRect;
+  DrawState: TCustomDrawState;
+  PaintImages: boolean;
 begin
   NodeRect:=Node.DisplayRect(false);
   if (NodeRect.Bottom<0) or (NodeRect.Top>=(ClientHeight-ScrollBarWidth)) then
     exit;
+  NodeSelected:=(Node.Selected) or (Node.MultiSelected);
+  if Assigned(OnCustomDrawItem) then begin
+    DrawState:=[];
+    if NodeSelected then
+      Include(DrawState,cdsSelected);
+    if Node.Focused then
+      Include(DrawState,cdsFocused);
+    if Node.MultiSelected then
+      Include(DrawState,cdsMarked);
+    if not CustomDrawItem(Node,DrawState,cdPrePaint,PaintImages) then exit;
+  end else begin
+    PaintImages:=true;
+  end;
   VertMid:=(NodeRect.Top+NodeRect.Bottom) shr 1;
-//writeln('[TCustomTreeView.DoPaintNode] Node=',HexStr(Cardinal(Node),8),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
+  //writeln('[TCustomTreeView.DoPaintNode] Node=',HexStr(Cardinal(Node),8),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
   with Canvas do begin
     // draw background
-    if (FSelectedNode<>Node) or (not (tvoRowSelect in FOptions)) then
-      CurBackgroundColor:=FBackgroundColor
+    if (tvoRowSelect in FOptions) and NodeSelected then
+      CurBackgroundColor:=FSelectedColor
     else
-      CurBackgroundColor:=FSelectedColor;
+      CurBackgroundColor:=FBackgroundColor;
     if CurBackgroundColor<>clNone then begin
       Brush.Color:=CurBackgroundColor;
       FillRect(NodeRect);
@@ -3844,13 +3966,12 @@ begin
     Pen.Style:=psDot;
     x:=DrawTreeLines(Node);
     Pen.Style:=psSolid;
-//writeln('TCustomTreeView.DoPaintNode x=',x);
     // draw expand sign
     if Node.HasChildren then begin
       DrawExpandSign(x-Indent+(Indent shr 1),VertMid,Node.Expanded);
     end;
     // draw icon
-    if Images<>nil then begin
+    if (Images<>nil) and PaintImages then begin
       if FSelectedNode<>Node then
         ImgIndex:=Node.ImageIndex
       else
@@ -3860,13 +3981,13 @@ begin
       inc(x,Images.Width);
     end;
     // draw state icon
-    if StateImages<>nil then begin
+    if (StateImages<>nil) and PaintImages then begin
       if (Node.StateIndex>=0) and (Node.StateIndex<StateImages.Count) then
         StateImages.Draw(Canvas,x,NodeRect.Top,Node.StateIndex,true);
       inc(x,StateImages.Width);
     end;
     // draw text
-    if (FSelectedNode=Node) and (FSelectedColor<>clNone) then begin
+    if NodeSelected and (FSelectedColor<>clNone) then begin
       Brush.Color:=FSelectedColor;
       CurTextRect:=NodeRect;
       CurTextRect.Left:=x;
@@ -3885,6 +4006,18 @@ begin
       MoveTo(NodeRect.Left,NodeRect.Bottom-1);
       LineTo(NodeRect.Right,NodeRect.Bottom-1);
     end;
+  end;
+  if Assigned(OnCustomDrawItem) then begin
+    DrawState:=[];
+    if Node.Selected then
+      Include(DrawState,cdsSelected);
+    if Node.Focused then
+      Include(DrawState,cdsFocused);
+    if Node.MultiSelected then
+      Include(DrawState,cdsMarked);
+    if not CustomDrawItem(Node,DrawState,cdPostPaint,PaintImages) then exit;
+  end else begin
+    PaintImages:=true;
   end;
 end;
 
@@ -4015,19 +4148,10 @@ var
   CursorNode: TTreeNode;
   bStartDrag: boolean;
 begin
-  if (X>=(ClientWidth-ScrollBarWidth)) or (Y>=(ClientHeight-ScrollBarWidth))
-  then begin
-    // workaround vs scrollbar clientrect bug in lcl
-    inherited MouseDown(Button, Shift, X, Y);
-    exit;
-  end;
-  if Button = mbLeft then begin
-    if ssDouble in Shift then Exit;
-  end;
   fMouseDownX := X;
   fMouseDownY := Y;
   if Button=mbMiddle then begin
-    if ssDouble in Shift then Exit;
+    if ([ssDouble,ssTriple,ssQuad]*Shift)<>[] then Exit;
     if tvsIsEditing in FStates then begin
       // ToDo: insert clipboard text into node text
       //  :=PrimarySelection.AsText;
@@ -4036,27 +4160,42 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   CursorNode:=GetNodeAt(X,Y);
   bStartDrag := false;
-  if (Button = mbLeft) and (CursorNode<>nil) then begin
-    Exclude(fStates,tvsWaitForDragging);
-    if CursorNode.HasChildren
-    and (x>=CursorNode.DisplayExpandSignLeft)
-    and (x<CursorNode.DisplayExpandSignRight) then begin
-      // mousedown occured on expand sign -> expand/collapse
-      CursorNode.Expanded:=not CursorNode.Expanded;
-    end else if x>=CursorNode.DisplayTextLeft then begin
-      // mousedown occured in text -> select node and begin drag operation
-      Include(FStates,tvsMouseCapture);
-      Selected:=CursorNode;
-      bStartDrag := true;
+  if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin
+    if (Button = mbLeft) and (CursorNode<>nil) then begin
+      Exclude(fStates,tvsWaitForDragging);
+      if CursorNode.HasChildren
+      and (x>=CursorNode.DisplayExpandSignLeft)
+      and (x<CursorNode.DisplayExpandSignRight) then begin
+        // mousedown occured on expand sign -> expand/collapse
+        CursorNode.Expanded:=not CursorNode.Expanded;
+      end else if x>=CursorNode.DisplayTextLeft then begin
+        // mousedown occured in text -> select node and begin drag operation
+        Include(FStates,tvsMouseCapture);
+        if not (tvoAllowMultiselect in Options) then begin
+          Selected:=CursorNode;
+        end else begin
+          if (ssShift in Shift) then begin
+            CursorNode.MultiSelectGroup;
+          end else if (ssCtrl in Shift) then begin
+            CursorNode.MultiSelected:=not CursorNode.MultiSelected;
+          end else begin
+            Items.ClearMultiSelection;
+            CursorNode.MultiSelected:=true;
+            writeln('AAA1 ',CursorNode.MultiSelected);
+          end;
+        end;
+        bStartDrag := true;
+      end;
     end;
-  end;
-  if (Button = mbLeft) and bStartDrag then
-    Include(fStates, tvsWaitForDragging)
-  else begin
-    if not (tvsDblClicked in fStates) then begin
-      if Button=mbMiddle then begin
-        // insert primary selection text
+    if (Button = mbLeft) and bStartDrag then
+      Include(fStates, tvsWaitForDragging)
+    else begin
+      if ([tvsDblClicked,tvsTripleClicked,tvsQuadClicked]*fStates)<>[] then
+      begin
+        if Button=mbMiddle then begin
+          // insert primary selection text
 
+        end;
       end;
     end;
   end;
