@@ -234,7 +234,7 @@ type
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
-    procedure EditordoGetValue; override;
+    procedure EditorDoGetValue; override;
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
@@ -1296,7 +1296,7 @@ begin
   end;
 end;
 
-procedure TCustomDbGrid.EditordoGetValue;
+procedure TCustomDbGrid.EditorDoGetValue;
 begin
   inherited EditordoGetValue;
   UpdateData;
@@ -1958,6 +1958,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2005/01/09 14:11:03  mattias
+  registered andadded icon for TTIGrid
+
   Revision 1.27  2005/01/08 15:06:06  mattias
   fixed TabOrder dialog for new TabOrder
 

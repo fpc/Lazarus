@@ -178,6 +178,7 @@ components/rtticontrols/ttichecklistbox.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/tticolorbutton.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/tticombobox.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttiedit.xpm -text svneol=native#image/x-xpixmap
+components/rtticontrols/ttigrid.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttigroupbox.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttiimage.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttilabel.xpm -text svneol=native#image/x-xpixmap

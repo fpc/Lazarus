@@ -230,7 +230,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('RTTI',[TTIPropertyGrid]);
+  RegisterComponents('RTTI',[TTIPropertyGrid,TTIGrid]);
 end;
 
 { TTICustomStringGrid }
