@@ -33,7 +33,10 @@ uses
   ComCtrls, Classes, FPCAdds, LCLType, LMessages, Controls, Graphics, CommCtrl,
   StdCtrls, LCLProc, ImgList, Math, Sysutils,
   // widgetset
-  WSComCtrls, GtkWSComCtrls, WSLCLClasses, WSProc,
+  WSComCtrls, WSLCLClasses, WSProc,
+  // GtkWidgetset
+  GtkWSComCtrls,
+  GtkWSControls,
   // interface
   GtkDef, GtkProc;
   
@@ -42,10 +45,11 @@ type
   // Use GetCommonTreeViewWidgets(PGtkTreeView, var TTVWidgets)
   PTVWidgets = ^TTVWidgets;
   TTVWidgets = record
-    WidgetInfo: PWidgetInfo;
+    ScrollingData: TBaseScrollingWinControlData;
     MainView: PGtkWidget; // can be a GtkTreeView or GtkIconView. You have been Warned! :)
     TreeModel: PGtkTreeModel;
     TreeSelection: PGtkTreeSelection;
+    WidgetInfo: PWidgetInfo;
   end;
 
 type
@@ -76,7 +80,7 @@ type
 
   { TGtk2WSCustomListView }
 
-  TGtk2WSCustomListView = class(TWSCustomListView)
+  TGtk2WSCustomListView = class(TGtkWSCustomListView)
   private
     class function IsIconView(const ALV: TCustomListView): Boolean; virtual;
     // needed when adding or removing columns to a list store
@@ -213,10 +217,6 @@ type
 
 
 implementation
-
-uses
-  GtkWSControls;
-
 
 // Will be used commonly for ListViews and TreeViews
 procedure GetCommonTreeViewWidgets(ATreeViewHandle: PGtkWidget; var TVWidgets: TTVWidgets);

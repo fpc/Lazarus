@@ -14,11 +14,45 @@
  *                                                                           *
  *****************************************************************************
 }
+////////////////////////////////////////
+////   Event Code  /////////////////////
+////////////////////////////////////////
+
+function Gtk2WSLV_ItemSelected(selection: PGtkTreeSelection; model: PGtkTreeModel;
+           path: PGtkTreePath; path_is_currently_selected: GBoolean; WidgetInfo: PWidgetInfo): GBoolean; cdecl;
+var
+  msg: TLMNotify;
+  NM: TNMListView;
+  Widgets: PTVWidgets;
+  AIndex: String;
+begin
+  // this function is called *before* the item is selected
+  // The result should be True to allow the Item to change selection
+  Result := True;
+  Widgets := PTVWidgets(WidgetInfo^.UserData);
+  msg.Msg := CN_NOTIFY;
+
+  FillChar(NM, SizeOf(NM), 0);
+  NM.hdr.hwndfrom := longint(Widgets^.MainView);
+  NM.hdr.code := LVN_ITEMCHANGED;
+  AIndex := gtk_tree_path_to_string(path);
+  NM.iItem := StrToInt(AIndex);
+  NM.iSubItem := 0;//AColumn;
+  if path_is_currently_selected then
+    NM.uOldState := LVIS_SELECTED
+  else
+    NM.uNewState := LVIS_SELECTED;
+  NM.uChanged := LVIF_STATE;
+  msg.NMHdr := @NM;
+
+  Result := DeliverMessage(WidgetInfo^.LCLObject, msg) = 0;
+
+end;
 
 { TGtk2WSCustomListView }
 
 type
-  TLVHack = class(ComCtrls.TCustomListView)
+  TLVHack = class(TCustomListView)
   end;
 
 
@@ -36,8 +70,9 @@ nColumns: Integer;
 i: Integer;
 begin
   nColumns := (ALV.Columns.Count*2);
+  if nColumns = 0 then nColumns := 2; // Add One Column By Default
   GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
-  for i := 0 to ALV.Columns.Count-1 do begin
+  for i := 0 to (nColumns div 2)-1 do begin
     GTypeArray[i*2] := GDK_TYPE_PIXBUF;
     GTypeArray[(i*2)+1] := G_TYPE_STRING;
   end;
@@ -141,6 +176,8 @@ procedure TGtk2WSCustomListView.SetCallbacks(const AScrollWidget: PGtkWidget;
   var Widgets: TTVWidgets; const AWidgetInfo: PWidgetInfo);
 begin
   TGtkWSBaseScrollingWinControl.SetCallbacks(AScrollWidget, AWidgetInfo);
+  TGtkWSWinControl.SetCallbacks(PGtkObject(Widgets.MainView), TComponent(AWidgetInfo^.LCLObject));
+//  gtk_tree_selection_set_select_function(Widgets.TreeSelection,TGtkTreeSelectionFunc(@Gtk2WSLV_ItemSelected), gpointer(AWidgetInfo),nil);
 end;
 
 procedure TGtk2WSCustomListView.ColumnDelete(const ALV: TCustomListView;
@@ -171,7 +208,7 @@ var
   i: Integer;
 begin
   Result := -1;
-  
+
   if not WSCheckHandleAllocated(ALV, 'ColumnGetWidth')
   then Exit;
 
@@ -195,8 +232,9 @@ begin
   if not WSCheckHandleAllocated(ALV, 'ColumnInsert')
   then Exit;
 
-  if AIndex < 0 then RealIndex := 0
-  else RealIndex := AIndex *2;
+  if AIndex < 0 then RealIndex := 0;
+
+  RealIndex := AIndex *2;
 
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
 
@@ -217,6 +255,9 @@ begin
   gtk_tree_view_column_set_attributes(column, pixrenderer,['pixbuf', RealIndex, nil]);
   gtk_tree_view_column_pack_start(column, textrenderer, True);
   gtk_tree_view_column_set_attributes(column, textrenderer, ['text',RealIndex+ 1, nil]);
+  
+  // insert column
+  gtk_tree_view_insert_column(GTK_TREE_VIEW(Widgets.MainView), Column, AIndex);
 
 // dont set these here, it will be set by the lcl
 (*
@@ -236,8 +277,7 @@ begin
   gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
   //set resizable
   gtk_tree_view_column_set_resizable(GTK_TREE_VIEW_COLUMN (column), True);
-  // insert column
-  gtk_tree_view_insert_column(GTK_TREE_VIEW(Widgets.MainView), Column, AIndex);
+
 *)
 end;
 
@@ -273,9 +313,10 @@ begin
   GetCommonTreeViewWidgets(PGtkWidget(ALV.Handle), Widgets);
   with Widgets do begin
     GtkColumn := gtk_tree_view_get_column(PGtkTreeView(MainView), AIndex);
-    gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(AAlignment));
 
+    gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(AAlignment));
   end;
+  DebugLn('ColSetALignment AIndex=',IntTOStr(AIndex),' (GtkColumn=nil)=', BoolToStr(GtkColumn=nil));
 
 end;
 
@@ -622,18 +663,13 @@ function TGtk2WSCustomListView.CreateHandle(const AWinControl: TWinControl;
 var
   Widgets: PTVWidgets;
   ListView: TCustomListView;
-  WidgetInfo: PWidgetInfo;
-  //ScrollingData: PBaseScrollingWinControlData;
+  OrigScrollingData: PBaseScrollingWinControlData;
   //ListViewData: PCustomListViewData;
   //Allocation: TGTKAllocation;
-
   ScrollWidget: PGtkScrolledWindow;
-
-
   nColumns: Integer;
   GTypeArray: PGType;
   i: Integer;
-
 begin
   ListView := TCustomListView(AWinControl as TCustomListView);
 
@@ -656,34 +692,48 @@ begin
 
   New(Widgets);
   with Widgets^ do begin
-
-    GetMem(GTypeArray, SizeOf(GType)*(nColumns+1));
-    for i := 0 to nColumns div 2 do begin
+    GetMem(GTypeArray, SizeOf(GType)*(nColumns{+1}));
+    for i := 0 to (nColumns div 2) -1 do begin
       GTypeArray[i*2] := GDK_TYPE_PIXBUF;
       GTypeArray[(i*2)+1] := G_TYPE_STRING;
     end;
-    GTypeArray[nColumns{+1}] := 0; // -1;
+    GTypeArray[nColumns] := 0; // -1;
 
     TreeModel := gtk_list_store_newv(nColumns, GTypeArray);
     ReAllocMem(GTypeArray, 0);
 
     MainView:=gtk_tree_view_new_with_model(TreeModel);
+    //MainView:=gtk_tree_view_new;
     g_object_unref (G_OBJECT (TreeModel));
 
     TreeSelection := PGtkTreeSelection(gtk_tree_view_get_selection(PGtkTreeView(MainView)));
 
     gtk_container_add(GTK_CONTAINER(ScrollWidget),PGtkWidget(MainView));
-
+  
+    // create widget info
+    // already created in TGtkWSBaseScrollingWinControl
+    // Replace the ScrollingInfo with our info
     WidgetInfo := GetWidgetInfo(ScrollWidget);
-    WidgetInfo^.CoreWidget := PGtkWidget(MainView);
+    OrigScrollingData := WidgetInfo^.UserData;
+    Widgets^.ScrollingData := OrigScrollingData^;
+
     WidgetInfo^.UserData := Widgets;
+  
+    Dispose(OrigScrollingData);
+    Widgets^.WidgetInfo^.CoreWidget := PGtkWidget(Widgets^.MainView);
     //SetMainWidget(ScrollWidget, MainView);
     //GetWidgetInfo(ScrollWidget, True)^.CoreWidget := PGtkWidget(MainView);
-
-    gtk_widget_show_all(PGtkWidget(MainView));
+    gtk_widget_show_all(PGtkWidget(Widgets^.MainView));
+    
+    SetCallbacks(PGtkWidget(ScrollWidget), Widgets^, WidgetInfo);
+   // SetCallbacks(PGtkWidget(MainView), Widgets^, WidgetInfo);
   end;
-  //SetCallbacks(PGtkWidget(ScrollWidget), Widgets^, WidgetInfo);
 
+  (*
+  New(Widgets);
+  Widgets^.WidgetInfo := GetWidgetInfo(ScrollWidget);
+  SetCallbacks(PGtkWidget(ScrollWidget), Widgets^, Widgets^.WidgetInfo);
+  *)
 end;
 
 procedure TGtk2WSCustomListView.BeginUpdate(const ALV: TCustomListView);
