@@ -48,14 +48,10 @@ end;
  ------------------------------------------------------------------------------}
 Destructor TScreen.Destroy;
 begin
-  FHintFont.Free;
-  FHintFont:=nil;
-  FFormList.Free;
-  FFormList:=nil;
-  FSaveFocusedList.Free;
-  FSaveFocusedList:=nil;
-  FFonts.Free;
-  FFonts := nil;
+  FreeThenNil(FHintFont);
+  FreeThenNil(FFormList);
+  FreeThenNil(FSaveFocusedList);
+  FreeThenNil(FFonts);
   inherited Destroy;
 end;
 {
