@@ -40,7 +40,9 @@ unit LCLIntf;
 
 interface
 
-uses Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType, InterfaceBase;
+uses
+  Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType, InterfaceBase,
+  LResources;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -138,12 +140,16 @@ begin
 end;
 
 initialization
+  {$I lclicons.lrs}
   InternalInit;
   
 end.
 
 {
   $Log$
+  Revision 1.2  2003/09/19 16:10:32  mattias
+  started TDBNavigator
+
   Revision 1.1  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

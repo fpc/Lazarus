@@ -36,8 +36,8 @@ unit DbCtrls;
 interface          
 
 uses
-  Classes, SysUtils, DB, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  MaskEdit, LMessages, ExtCtrls, Calendar;
+  Classes, SysUtils, DB, LCLProc, LMessages, GraphType, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar;
 
 Type
   { TFieldDataLink }
@@ -712,6 +712,171 @@ Type
     property OnYearChanged;
   end;
 
+
+  { TDBCustomNavigator }
+
+type
+  TDBNavButton = class;
+  TDBNavDataLink = class;
+
+  TDBNavGlyph = (ngEnabled, ngDisabled);
+  TDBNavButtonType = (nbFirst, nbPrior, nbNext, nbLast,
+                  nbInsert, nbDelete, nbEdit, nbPost, nbCancel, nbRefresh);
+  TDBNavButtonSet = set of TDBNavButtonType;
+  TDBNavButtonStyle = set of (nsAllowTimer, nsFocusRect);
+  TDBNavButtonDirection = (nbdHorizontal,nbdVertical);
+  
+  // for Delphi compatibility
+  TNavigateBtn = TDBNavButtonType;
+
+  TDBNavClickEvent = procedure(Sender: TObject;
+                                Button: TDBNavButtonType) of object;
+  
+const
+  DefaultDBNavigatorButtons = [nbFirst, nbPrior, nbNext, nbLast,
+    nbInsert, nbDelete, nbEdit, nbPost, nbCancel, nbRefresh];
+  DBNavButtonResourceName: array[TDBNavButtonType] of string = (
+    'DBNavFirst', 'DBNavPrior', 'DBNavNext', 'DBNavLast',
+    'DBNavInsert', 'DBNavDelete', 'DBNavEdit', 'DBNavPost',
+    'DBNavCancel', 'DBNavRefresh'
+    );
+
+type
+  TDBCustomNavigator = class(TCustomPanel)
+  private
+    FBeforeAction: TDBNavClickEvent;
+    FConfirmDelete: Boolean;
+    FDataLink: TDBNavDataLink;
+    FDirection: TDBNavButtonDirection;
+    FFlat: Boolean;
+    FOnNavClick: TDBNavClickEvent;
+    FShowButtonHints: boolean;
+    FVisibleButtons: TDBNavButtonSet;
+    FDefaultHints: TStrings;
+    FHints: TStrings;
+    FUpdateButtonsNeeded: boolean;
+    FUpdateButtonsLock: integer;
+    function GetDataSource: TDataSource;
+    function GetHints: TStrings;
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetDirection(const AValue: TDBNavButtonDirection);
+    procedure SetFlat(const AValue: Boolean);
+    procedure SetHints(const AValue: TStrings);
+    procedure SetShowButtonHints(const AValue: boolean);
+    procedure SetVisibleButtons(const AValue: TDBNavButtonSet);
+  protected
+    Buttons: array[TDBNavButtonType] of TDBNavButton;
+    procedure DataChanged; virtual;
+    procedure EditingChanged; virtual;
+    procedure ActiveChanged; virtual;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure UpdateButtons; virtual;
+    procedure UpdateHints; virtual;
+    procedure HintsChanged(Sender: TObject); virtual;
+    procedure ButtonClickHandler(Sender: TObject); virtual;
+    procedure DoOnResize; override;
+    procedure BeginUpdateButtons; virtual;
+    procedure EndUpdateButtons; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure BtnClick(Index: TNavigateBtn); virtual;
+    function VisibleButtonCount: integer; virtual;
+  public
+    property BeforeAction: TDBNavClickEvent read FBeforeAction write FBeforeAction;
+    property ConfirmDelete: Boolean read FConfirmDelete write FConfirmDelete default True;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property Direction: TDBNavButtonDirection read FDirection write SetDirection default nbdHorizontal;
+    property Flat: Boolean read FFlat write SetFlat default False;
+    property Hints: TStrings read GetHints write SetHints;
+    property OnClick: TDBNavClickEvent read FOnNavClick write FOnNavClick;
+    property VisibleButtons: TDBNavButtonSet read FVisibleButtons
+                             write SetVisibleButtons default DefaultDBNavigatorButtons;
+    property ShowButtonHints: boolean read FShowButtonHints write SetShowButtonHints default true;
+  end;
+  
+  
+  { TDBNavButton }
+
+  TDBNavButton = class(TSpeedButton)
+  private
+    FIndex: TDBNavButtonType;
+    FNavStyle: TDBNavButtonStyle;
+  protected
+  public
+    destructor Destroy; override;
+    property NavStyle: TDBNavButtonStyle read FNavStyle write FNavStyle;
+    property Index: TDBNavButtonType read FIndex write FIndex;
+  end;
+
+
+  { TNavDataLink }
+
+  TDBNavDataLink = class(TDataLink)
+  private
+    FNavigator: TDBCustomNavigator;
+  protected
+    procedure EditingChanged; override;
+    procedure DataSetChanged; override;
+    procedure ActiveChanged; override;
+  public
+    constructor Create(TheNavigator: TDBCustomNavigator);
+    destructor Destroy; override;
+  end;
+
+
+  { TDBNavigator }
+
+  TDBNavigator = class(TDBCustomNavigator)
+  published
+    property Align default alNone;
+    property Alignment;
+    property Anchors;
+    property AutoSize;
+    property BeforeAction;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property BorderStyle;
+    property BorderWidth;
+    property Caption;
+    property ClientHeight;
+    property ClientWidth;
+    property Color default clBackground;
+    property ConfirmDelete;
+    property DataSource;
+    property Direction;
+    property DragMode;
+    property Enabled;
+    property Flat;
+    property Font;
+    property Hints;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default False;
+    property Visible;
+    property VisibleButtons;
+  end;
+  
+
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
@@ -733,8 +898,9 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Data Controls',[TDBText,TDBEdit,TDBMemo,TDBImage,
-    TDBListBox,TDBComboBox,TDBCheckBox,TDBRadioGroup,TDBCalendar,TDBGroupBox]);
+  RegisterComponents('Data Controls',[TDBNavigator,TDBText,TDBEdit,TDBMemo,
+    TDBImage,TDBListBox,TDBComboBox,TDBCheckBox,TDBRadioGroup,TDBCalendar,
+    TDBGroupBox]);
 end;
 
 
@@ -1075,12 +1241,16 @@ end;
 {$Include dbgroupbox.inc}
 {$Include dbimage.inc}
 {$Include dbcalendar.inc}
+{$Include dbcustomnavigator.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/09/19 16:10:31  mattias
+  started TDBNavigator
+
   Revision 1.13  2003/09/19 09:40:58  mattias
   registered TDBxxx controls
 
