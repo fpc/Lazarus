@@ -89,6 +89,9 @@ type
     Procedure BookMarkClicked(Sender : TObject);
     Procedure BookMarkGotoClicked(Sender : TObject);
     Procedure ReadOnlyClicked(Sender : TObject);
+    Procedure ToggleBreakpointClicked(Sender : TObject);
+    Procedure OpenAtCursorClicked(Sender : TObject);
+
     property Control : TComponent read FControl;
     property Editor : TmwCustomEdit read FEditor;
 
@@ -149,6 +152,9 @@ type
     procedure SaveAllClicked(Sender : TObject);
     procedure SaveAsClicked(Sender : TObject);
 
+    Procedure OpenFile(FileName: String);
+
+
     property Empty : Boolean read GetEmpty;
   end;
 
@@ -200,9 +206,15 @@ var
 Begin
   FPopupMenu := TPopupMenu.Create(FAOwner);
   FPopupMenu.AutoPopup := True;
+
   MenuItem := TMenuItem.Create(FAOwner);
   MenuItem.Caption := '&Close Page';
   MenuItem.OnClick := @TSourceNotebook(FAOwner).CloseClicked;
+  FPopupMenu.Items.Add(MenuItem);
+
+  MenuItem := TMenuItem.Create(FAOwner);
+  MenuItem.Caption := '&Open file at cursor';
+  MenuItem.OnClick := @OpenAtCursorClicked;
   FPopupMenu.Items.Add(MenuItem);
 
   FPopupMenu.Items.Add(Seperator);
@@ -240,6 +252,20 @@ Begin
   MenuItem.OnClick := @ReadOnlyClicked;
   FPopupMenu.Items.Add(MenuItem);
 
+  FPopupMenu.Items.Add(Seperator);
+  MenuItem := TMenuItem.Create(FAOwner);
+  MenuItem.Caption := 'Debug';
+  FPopupMenu.Items.Add(MenuItem);
+
+      SubMenuItem := TMenuItem.Create(FAOwner);
+      SubMenuItem.Caption := '&Toggle Breakpoint';
+      SubMenuItem.OnClick := @ToggleBreakpointClicked;
+      MenuItem.Add(SubMenuItem);
+
+      SubMenuItem := TMenuItem.Create(FAOwner);
+      SubMenuItem.Caption := '&Run to Cursor';
+      //SubMenuItem.OnClick := @ToggleBreakpoint;
+      MenuItem.Add(SubMenuItem);
 
 end;
 
@@ -271,6 +297,43 @@ Begin
   FEditor.GotoBookMark(Menuitem.Tag);
 end;
 
+
+Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
+var
+  Texts : String;
+  EditorLine : String;
+  X : Integer;
+Begin
+  //get the text by the cursor.
+  EditorLine := FEditor.Lines.Strings[GetCurrentCursorYLine-1];
+  X := GetCurrentCursorXLine-1;
+
+  //walk backwards to a space or non-standard character.
+  while (ord(upcase(EditorLine[x])) >= 65) and (ord(upcase(EditorLine[x])) <= 90) and (X>1) do
+    dec(x);
+  if (X > 1) then Inc(x);
+
+  Texts := Copy(EditorLine,X,length(EditorLine));  //chop off the beginning
+
+  X := 1;
+  while (ord(upcase(Texts[x])) >= 65) and (ord(upcase(Texts[x])) <= 90) and (X< length(Texts)) do
+   inc(x);
+
+  if (X < Length(Texts) ) and (X >1)  then dec(x);
+
+  if not(((ord(upcase(Texts[x])) >= 65) and (ord(upcase(Texts[x])) <= 90))) then dec(x);
+  Texts := Copy(Texts,1,X);
+
+  if FileExists(Lowercase(Texts)) then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts))
+     else
+  if FileExists(Lowercase(Texts)+'.pp') then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pp')
+     else
+  if FileExists(Lowercase(Texts)+'.pas') then TSOurceNotebook(FAOwner).OpenFile(Lowercase(Texts)+'.pas');
+
+Writeln('FILE TO OPEN WAS '+Texts);
+end;
+
+
 Procedure TSourceEditor.ReadOnlyClicked(Sender : TObject);
 var
   MenuItem : TMenuItem;
@@ -278,6 +341,12 @@ Begin
   MenuItem := TMenuItem(sender);
   FEditor.ReadOnly := not(FEditor.ReadOnly);
 //set the statusbar text;
+end;
+
+
+Procedure TSourceEditor.ToggleBreakpointClicked(Sender : TObject);
+Begin
+
 end;
 
 
@@ -777,6 +846,21 @@ Begin
       //create a new page
       TempEditor := NewSE(-1);
       TempEditor.Filename := FOpenDialog.Filename;
+      TempEditor.OPen;
+      Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
+      end;
+
+end;
+
+Procedure TSourceNotebook.OpenFile(FileName: String);
+Var
+    TempEditor : TSourceEditor;
+Begin
+      if FileExists(Filename) then
+      begin
+      //create a new page
+      TempEditor := NewSE(-1);
+      TempEditor.Filename := Filename;
       TempEditor.OPen;
       Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
       end;
