@@ -35,7 +35,7 @@ uses
 ////////////////////////////////////////////////////
   StdCtrls, Controls,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, Classes, Windows, Win32Int, InterfaceBase, LCLType;
+  WSStdCtrls, WSLCLClasses, Classes, Windows, Win32Int, Win32Proc, InterfaceBase, LCLType;
 
 type
 
@@ -131,9 +131,13 @@ type
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
 
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
-    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); {override;}
   end;
 
   { TWin32WSCustomMemo }
@@ -490,14 +494,16 @@ begin
   Result := integer(GetProp(ACustomEdit.Handle, 'MAXLENGTH'));
 end;
 
-procedure TWin32WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+procedure TWin32WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+const
+  EditStyles: array[TEditCharCase] of integer = (0, ES_UPPERCASE, ES_LOWERCASE);
+  EditStyleMask = ES_UPPERCASE or ES_LOWERCASE;
 begin
-  EditSetSelStart(ACustomEdit.Handle, NewStart);
+  UpdateWindowStyle(ACustomEdit.Handle, EditStyles[NewCase], EditStyleMask);
 end;
 
-procedure TWin32WSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+procedure TWin32WSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
 begin
-  EditSetSelLength(ACustomEdit.Handle, NewLength);
 end;
 
 procedure TWin32WSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
@@ -507,6 +513,26 @@ begin
   winhandle := ACustomEdit.Handle;
   SendMessage(winhandle, EM_LIMITTEXT, NewLength, 0);
   SetProp(winhandle, 'MAXLENGTH', NewLength);
+end;
+
+procedure TWin32WSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+  SendMessage(ACustomEdit.Handle, EM_SETPASSWORDCHAR, WParam(NewChar), 0);
+end;
+
+procedure TWin32WSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  Windows.SendMessage(ACustomEdit.Handle, EM_SETREADONLY, Windows.WPARAM(NewReadOnly), 0);
+end;
+
+procedure TWin32WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
+begin
+  EditSetSelStart(ACustomEdit.Handle, NewStart);
+end;
+
+procedure TWin32WSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  EditSetSelLength(ACustomEdit.Handle, NewLength);
 end;
 
 { TWin32WSCustomMemo }

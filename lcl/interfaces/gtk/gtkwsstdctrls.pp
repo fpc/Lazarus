@@ -129,6 +129,11 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
 
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
   end;
@@ -626,6 +631,34 @@ begin
   with PGtkOldEditable(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget)^ do begin
     Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
   end;
+end;
+
+procedure TGtkWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+begin
+  // TODO: implement me!
+end;
+
+procedure TGtkWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+begin
+  // XXX TODO: GTK 1.x does not support EchoMode emNone.
+  // This will have to be coded around, but not a priority
+  SetPasswordChar(ACustomEdit, ACustomEdit.PasswordChar);
+end;
+
+procedure TGtkWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+  gtk_entry_set_max_length(GTK_ENTRY(ACustomEdit.Handle), guint16(NewLength));
+end;
+
+procedure TGtkWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+  gtk_entry_set_visibility(GTK_ENTRY(ACustomEdit.Handle), 
+    (ACustomEdit.EchoMode = emNormal) and (NewChar = #0));
+end;
+
+procedure TGtkWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
+  gtk_entry_set_editable(GTK_ENTRY(ACustomEdit.Handle), not ACustomEdit.ReadOnly);
 end;
 
 procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);

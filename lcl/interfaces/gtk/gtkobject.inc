@@ -6310,21 +6310,6 @@ begin
   Widget:= GTK_WIDGET(wHandle);
 
   case TControl(Sender).fCompStyle of
-  {$IfDef GTK1}
-  csEdit :
-    with TCustomEdit(Sender) do
-      begin
-        // XXX TODO: GTK 1.x does not support EchoMode emNone.
-        // This will have to be coded around, but not a priority
-
-        gtk_entry_set_editable(GTK_ENTRY(wHandle), not (TCustomEdit(Sender).ReadOnly));
-        gtk_entry_set_max_length(GTK_ENTRY(wHandle),
-          guint16(TCustomEdit(Sender).MaxLength));
-        gtk_entry_set_visibility(GTK_ENTRY(wHandle),
-          (TCustomEdit(Sender).EchoMode = emNormal)
-          and (TCustomEdit(Sender).PassWordChar=#0));
-      end;
-  {$EndIf}
   csProgressBar :
     with TProgressBar(Sender) do
     begin
@@ -7675,6 +7660,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.590  2004/09/21 13:28:10  micha
+  convert LM_SETPROPERTIES to interface methods for TCustomEdit
+
   Revision 1.589  2004/09/21 10:05:26  mattias
   fixed disable at designtime and bounding TProgressBar position
 

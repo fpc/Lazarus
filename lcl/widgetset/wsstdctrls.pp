@@ -118,6 +118,11 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; virtual;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; virtual;
 
+    class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); virtual;
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); virtual;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); virtual;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); virtual;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); virtual;
   end;
@@ -268,6 +273,10 @@ procedure TWSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCus
 begin
 end;
 
+procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
+begin
+end;
+
 procedure TWSCustomComboBox.SetSelStart(const ACustomComboBox: TCustomComboBox; NewStart: integer);
 begin
 end;
@@ -277,10 +286,6 @@ begin
 end;
 
 procedure TWSCustomComboBox.SetItemIndex(const ACustomComboBox: TCustomComboBox; NewIndex: integer);
-begin
-end;
-
-procedure TWSCustomComboBox.SetMaxLength(const ACustomComboBox: TCustomComboBox; NewLength: integer);
 begin
 end;
 
@@ -307,6 +312,26 @@ end;
 function  TWSCustomEdit.GetSelLength(const ACustomEdit: TCustomEdit): integer;
 begin
   result := 0;
+end;
+
+procedure TWSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
+begin
+end;
+
+procedure TWSCustomEdit.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+begin
+end;
+
+procedure TWSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+begin
+end;
+
+procedure TWSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+end;
+
+procedure TWSCustomEdit.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+begin
 end;
 
 procedure TWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);

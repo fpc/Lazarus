@@ -46,7 +46,11 @@ end;
 procedure TCustomEdit.CreateWnd;
 begin
   inherited CreateWnd;
-  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  TWSCustomEditClass(WidgetSetClass).SetCharCase(Self, FCharCase);
+  TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, FEchoMode);
+  TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, FMaxLength);
+  TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, FPasswordChar);
+  TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, FReadOnly);
 end;
 
 {------------------------------------------------------------------------------
@@ -236,7 +240,7 @@ Begin
     FCharCase := Value;
     // update interface, it might do the case conversion itself.
     if HandleAllocated then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomEditClass(WidgetSetClass).SetCharCase(Self, Value);
     if FCharCase = ecUpperCase then
       Text := Uppercase(Text)
     else if FCharCase = ecLowerCase then
@@ -254,7 +258,7 @@ begin
   if Value=MaxLength then exit;
   FMaxLength := Value;
   if HandleAllocated then
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    TWSCustomEditClass(WidgetSetClass).SetMaxLength(Self, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -272,7 +276,7 @@ begin
   if FPasswordChar=AValue then exit;
   FPasswordChar:=AValue;
   if HandleAllocated then
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    TWSCustomEditClass(WidgetSetClass).SetPasswordChar(Self, AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -285,7 +289,7 @@ begin
   if (Val <> FEchoMode) then begin
     FEchoMode:= Val;
     if HandleAllocated then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomEditClass(WidgetSetClass).SetEchoMode(Self, Val);
   end;
 end;
 
@@ -299,7 +303,7 @@ begin
   if FreadOnly <> Value then begin
     FReadOnly := Value;
     if HandleAllocated then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomEditClass(WidgetSetClass).SetReadOnly(Self, Value);
   end;
 end;
 
@@ -380,6 +384,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2004/09/21 13:28:10  micha
+  convert LM_SETPROPERTIES to interface methods for TCustomEdit
+
   Revision 1.33  2004/09/07 10:26:16  micha
   fix logs to get rid of comment level 2 warning
 

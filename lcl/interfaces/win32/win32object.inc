@@ -1688,9 +1688,6 @@ const
   LVS_TYPEMASK = LVS_LIST or LVS_REPORT or LVS_SMALLICON or LVS_ICON;
   LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
     LVS_LIST, LVS_REPORT);
-  EDITSTYLES: array[TEditCharCase] of integer = (
-    0, ES_UPPERCASE, ES_LOWERCASE);
-  EDIT_STYLEMASK = ES_UPPERCASE or ES_LOWERCASE;
 Var
   Handle: HWND;
   I, Count: Integer;
@@ -1710,14 +1707,6 @@ begin
     Assert (False, 'Trace:WARNING: [TWin32WidgetSet.SetProperties] --> got nil pointer');
 
   Case TControl(Sender).FCompStyle Of
-
-  csEdit:
-    With (TCustomEdit(Sender)) Do
-    Begin
-      Windows.SendMessage(Handle, EM_SETREADONLY, Windows.WPARAM(ReadOnly), 0);
-      Windows.SendMessage(Handle, EM_LIMITTEXT, Windows.WPARAM(MaxLength), 0);
-      UpdateWindowStyle(Handle, EDITSTYLES[CharCase], EDIT_STYLEMASK);
-    End;
 
   csListView:
     With TListView(Sender) Do
@@ -1890,6 +1879,9 @@ End;
 
 {
   $Log$
+  Revision 1.279  2004/09/21 13:28:10  micha
+  convert LM_SETPROPERTIES to interface methods for TCustomEdit
+
   Revision 1.278  2004/09/19 19:39:10  micha
   undo removal of LM_SETDESIGNING; used by lazarus ide (main.pp)
 
