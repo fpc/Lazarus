@@ -7,14 +7,16 @@ uses
 var
   m, n, x : Cardinal;  
   w: TWait;
+  S: String;
 begin
   m :=0;
   x := 0;
   w := TWait.Create(2);
   while x < 3 do
   begin
-    repeat 
-      Write(Format('[%.10d] ', [m]));
+    repeat  
+      S := Format('[%.10d] ', [m]);
+      Write(S);
       Inc(m);
       for n := 0 to 79 do 
       begin

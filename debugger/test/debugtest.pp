@@ -5,10 +5,11 @@ program debugtest;
 
 
 uses
-  Classes, Forms, DebugTestForm, BreakpointsDlg, LocalsDlg;
+  Classes, Forms, DebugTestForm, BreakpointsDlg, LocalsDlg,
+  Interfaces, Unit1;
 
 begin
-   Application.Initialize; 
-   Application.CreateForm(TDebugTestForm, DebugTestForm1);
+   Application.Initialize;
+   Application.CreateForm(TDebugTestForm, DebugTestFrm);
    Application.Run;
 end.

@@ -100,7 +100,7 @@ type
   end;
 
 var
-  DebugTestForm1: TDebugTestForm;
+  DebugTestFrm: TDebugTestForm;
 
 implementation
 
@@ -113,14 +113,14 @@ begin
   inherited Loaded;
 
   // Not yet through resources
-  txtLog.Scrollbars := ssBoth;
+  //txtLog.Scrollbars := ssBoth;
 end;
 
 destructor TDebugTestForm.Destroy;
 begin
   // This shouldn't be needed, but the OnDestroy event isn't called
   inherited;
-  FormDestroy(Self);
+//  FormDestroy(Self);
 end;
 
 procedure TDebugTestForm.FormCreate(Sender: TObject);
@@ -323,6 +323,12 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.9  2003/05/22 23:08:19  marc
+  MWE: = Moved and renamed debuggerforms so that they can be
+         modified by the ide
+       + Added some parsing to evaluate complex expressions
+         not understood by the debugger
+
   Revision 1.8  2002/04/30 15:57:40  lazarus
   MWE:
     + Added callstack object and dialog

@@ -4,6 +4,10 @@ interface
 
 type
   TWait = class
+  private
+    FTime: TDateTime;
+    FInt: Integer;
+  public
     constructor Create(const ATime: Integer);
     procedure Wait(const ATime: Integer);
   end;
@@ -25,6 +29,8 @@ constructor TWait.Create(const ATime: Integer);
 var
   n: Integer;
 begin
+  FTime := ATime;
+  FInt := ATime;
   inherited Create; 
   n := 0;
   while n < ATime do Inc(n); //something useles 

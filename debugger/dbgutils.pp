@@ -37,6 +37,7 @@ interface
 function GetLine(var ABuffer: String): String;
 function StripLN(const ALine: String): String;
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String): String;
+function ConvertToCString(const AText: String): String;
 
 const
 {$IFDEF WIN32}
@@ -110,10 +111,39 @@ begin
   end;
 end;
 
+function ConvertToCString(const AText: String): String;
+var
+  n: Integer;
+begin
+  Result := AText;
+  n := 1;
+  while n <= Length(Result) do
+  begin
+    case Result[n] of
+      '''': begin
+        if (n < Length(Result))
+        and (Result[n + 1] = '''')
+        then Delete(Result, n, 1)
+        else Result[n] := '"';
+      end;
+      '"': begin
+        Insert('"', Result, n);
+        Inc(n);
+      end;
+    end;
+    Inc(n);
+  end;
+end;
 
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2003/05/22 23:08:19  marc
+  MWE: = Moved and renamed debuggerforms so that they can be
+         modified by the ide
+       + Added some parsing to evaluate complex expressions
+         not understood by the debugger
+
   Revision 1.2  2002/05/10 06:57:47  lazarus
   MG: updated licenses
 

@@ -37,8 +37,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, CmdLineDebugger;
-
+  Classes, Process, Debugger, CmdLineDebugger, GDBTypeInfo;
 
 type
   TGDBMIProgramInfo = record
@@ -65,15 +64,16 @@ type
     function  GDBStepInto: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
     function  GDBJumpTo(const ASource: String; const ALine: Integer): Boolean;
-    function  ProcessResult(var ANewState: TDBGState; var AResultValues: String): Boolean;
+    function  ProcessResult(var ANewState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
     function  ProcessRunning: Boolean;
     function  ProcessStopped(const AParams: String): Boolean;
-    function  ExecuteCommand(const ACommand: String): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; var AResultValues: String): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultState: TDBGState; var AResultValues: String): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const ANoMICommand: Boolean): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; var AResultValues: String; const ANoMICommand: Boolean): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; const ANoMICommand: Boolean): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String; const ANoMICommand: Boolean): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean; overload;
+    function  GetGDBTypeInfo(const AExpression: String): TGDBType;
   protected
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
@@ -158,8 +158,22 @@ type
     constructor Create(const ADebugger: TDebugger); 
   end;
 
+  TGDBMIExpression = class(TObject)
+  private
+    FDebugger: TGDBMIDebugger; 
+    FOperator: String;
+    FLeft: TGDBMIExpression;
+    FRight: TGDBMIExpression;
+    procedure CreateSubExpression(const AExpression: String);
+  protected
+  public
+    constructor Create(const ADebugger: TGDBMIDebugger; const AExpression: String);
+    destructor Destroy; override;
+    function DumpExpression: String;
+    function GetExpression(var AResult: String): Boolean;
+  end;
 
-function CreateValueList(AResultValues: String): TStringList;
+function CreateMIValueList(AResultValues: String): TStringList;
 var
   n: Integer;
   InString: Boolean;
@@ -245,6 +259,20 @@ begin
   then Result.Add(AResultValues);
 end;
 
+function CreateValueList(AResultValues: String): TStringList;
+var
+  n: Integer;
+begin
+  Result := TStringList.Create;
+  if AResultValues = '' then Exit;
+  n := Pos(' = ', AResultValues);
+  if n > 0
+  then begin
+    Delete(AResultValues, n, 1);
+    Delete(AResultValues, n + 1, 1);
+  end;
+  Result.Add(AResultValues);
+end;
 
 
 { =========================================================================== }
@@ -256,21 +284,21 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 //  S: String;
 begin
   FHasSymbols := True; // True untilproven otherwise
-  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName]) and inherited ChangeFileName;
+  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName], False) and inherited ChangeFileName;
 
   if Result and FHasSymbols
   then begin
     // Force setting language
     // Setting extensions dumps GDB (bug #508)
-    ExecuteCommand('-gdb-set language pascal');
+    ExecuteCommand('-gdb-set language pascal', False);
 (*
-    ExecuteCommand('-gdb-set extension-language .lpr pascal');
+    ExecuteCommand('-gdb-set extension-language .lpr pascal', False);
     if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
-    ExecuteCommand('-gdb-set extension-language .lrs pascal');
-    ExecuteCommand('-gdb-set extension-language .dpr pascal');
-    ExecuteCommand('-gdb-set extension-language .pas pascal');
-    ExecuteCommand('-gdb-set extension-language .pp pascal');
-    ExecuteCommand('-gdb-set extension-language .inc pascal');
+    ExecuteCommand('-gdb-set extension-language .lrs pascal', False);
+    ExecuteCommand('-gdb-set extension-language .dpr pascal', False);
+    ExecuteCommand('-gdb-set extension-language .pas pascal', False);
+    ExecuteCommand('-gdb-set extension-language .pp pascal', False);
+    ExecuteCommand('-gdb-set extension-language .inc pascal', False);
 *)
   end;
 end;
@@ -311,52 +339,52 @@ end;
 procedure TGDBMIDebugger.Done;
 begin
   if State = dsRun then GDBPause;
-  ExecuteCommand('-gdb-exit');
+  ExecuteCommand('-gdb-exit', False);
   inherited Done;
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; const ANoMICommand: Boolean): Boolean;
 var
   S: String;
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], False, ResultState, S);
+  Result := ExecuteCommand(ACommand, [], False, ResultState, S, ANoMICommand);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
 var
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, [], False, ResultState, AResultValues);
+  Result := ExecuteCommand(ACommand, [], False, ResultState, AResultValues, ANoMICommand);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; const ANoMICommand: Boolean): Boolean;
 var
   S: String;
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, False, ResultState, S);
+  Result := ExecuteCommand(ACommand, AValues, False, ResultState, S, ANoMICommand);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
 var
   ResultState: TDBGState;
 begin
-  Result := ExecuteCommand(ACommand, AValues, False, ResultState, AResultValues);
+  Result := ExecuteCommand(ACommand, AValues, False, ResultState, AResultValues, ANoMICommand);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
 begin
-  Result := ExecuteCommand(ACommand, AValues, False, AResultState, AResultValues);
+  Result := ExecuteCommand(ACommand, AValues, False, AResultState, AResultValues, ANoMICommand);
 end;
 
-function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultState: TDBGState; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; AValues: array of const; const AIgnoreError: Boolean; var AResultState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
 begin
-  FCommandQueue.Add(ACommand);
+  FCommandQueue.AddObject(ACommand, TObject(Integer(ANoMICommand)));
   if FCommandQueue.Count > 1 then Exit;
   repeat
     SendCmdLn(FCommandQueue[0], AValues);
-    Result := ProcessResult(AResultState, AResultValues);
+    Result := ProcessResult(AResultState, AResultValues, Boolean(Integer(FCommandQueue.Objects[0])));
     if Result
     then begin
       if (AResultState <> dsNone)
@@ -392,13 +420,20 @@ end;
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
 var
   ResultState: TDBGState;
-  ResultValues: String;
+  S, ResultValues: String;
   ResultList: TStringList;
+  Expression: TGDBMIExpression;
 begin
-  Result := ExecuteCommand('-data-evaluate-expression %s', [AExpression], True, ResultState, ResultValues)
+  Expression := TGDBMIExpression.Create(Self, AExpression);
+  if not Expression.GetExpression(S)
+  then S := AExpression;
+  WriteLN('[GDBEval] AskExpr: ', AExpression, ' EvalExp:', S ,' Dump: ', Expression.DumpExpression);
+  Expression.Free;
+  
+  Result := ExecuteCommand('-data-evaluate-expression %s', [S], True, ResultState, ResultValues, False)
     and (ResultState <> dsError);
 
-  ResultList := CreateValueList(ResultValues);
+  ResultList := CreateMIValueList(ResultValues);
   if ResultState = dsError
   then AResult := ResultList.Values['msg']
   else AResult := ResultList.Values['value'];
@@ -424,14 +459,14 @@ begin
       GDBStart;
       if State = dsPause
       then begin
-        Result := ExecuteCommand('-exec-continue');
+        Result := ExecuteCommand('-exec-continue', False);
       end
       else begin
         //error???
       end;
     end;
     dsPause: begin
-      Result := ExecuteCommand('-exec-continue');
+      Result := ExecuteCommand('-exec-continue', False);
     end;
     dsIdle: begin
       WriteLN('[WARNING] Debugger: Unable to run in idle state');
@@ -444,7 +479,7 @@ begin
   Result := False;
   if State in [dsRun, dsError] then Exit;
 
-  Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine]);
+  Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine], False);
 end;
 
 function TGDBMIDebugger.GDBStart: Boolean;
@@ -457,21 +492,35 @@ begin
     if FHasSymbols
     then begin
       if Arguments <>''
-      then ExecuteCommand('-exec-arguments %s', [Arguments]);
-      ExecuteCommand('-break-insert -t main');
-      ExecuteCommand('-exec-run');
+      then ExecuteCommand('-exec-arguments %s', [Arguments], False);
+      ExecuteCommand('-break-insert -t main', False);
+      ExecuteCommand('-exec-run', False);
 
       // try to find PID
+
+//(*
       SendCmdLn('info program', []);
       ReadLine; // skip repeated command
       S := ReadLine;
-      FTargetPID := StrToIntDef(GetPart('child process ', '.', S), 0);
-      if ProcessResult(ResultState, S)
+//*)    
+//      if ExecuteCommand('info program', [], True, ResultState, S, True)
+//      then begin
+        FTargetPID := StrToIntDef(GetPart('child process ', '.', S), 0);
+//        if ResultState = dsNone
+//        then SetState(dsPause)
+//        else SetState(ResultState);
+//      end
+//      else FTargetPID := 0;
+
+//(*
+      if ProcessResult(ResultState, S, True)
       then begin
         if ResultState = dsNone
         then SetState(dsPause)
         else SetState(ResultState);
       end;
+//*)
+
     end;
   end;
   Result := True;
@@ -484,7 +533,7 @@ begin
       Result := GDBStart;
     end;
     dsPause: begin
-      Result := ExecuteCommand('-exec-step');
+      Result := ExecuteCommand('-exec-step', False);
     end;
   else
     Result := False;
@@ -498,7 +547,7 @@ begin
       Result := GDBStart;
     end;
     dsPause: begin
-      Result := ExecuteCommand('-exec-next');
+      Result := ExecuteCommand('-exec-next', False);
     end;
   else
     Result := False;
@@ -523,10 +572,25 @@ begin
   then begin
     // not supported yet
     // ExecuteCommand('-exec-abort');
-    ExecuteCommand('kill');
+    ExecuteCommand('kill', True);
     SetState(dsStop); //assume stop until abort is supported;
   end;
   Result := True;
+end;
+
+function TGDBMIDebugger.GetGDBTypeInfo(const AExpression: String): TGDBType;
+var
+  ResultState: TDBGState;
+  ResultValues: String;
+begin
+  if not ExecuteCommand('ptype %s', [AExpression], True, ResultState, ResultValues, True)
+  or (ResultState = dsError)
+  then begin
+    Result := nil;
+  end
+  else begin
+    Result := TGdbType.CreateFromValues(ResultValues);
+  end;
 end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
@@ -551,7 +615,7 @@ begin
     if S <> ''
     then MessageDlg('Debugger', 'Initialization output: ' + LINE_END + S, mtInformation, [mbOK], 0);
 
-    ExecuteCommand('-gdb-set confirm off');
+    ExecuteCommand('-gdb-set confirm off', False);
     inherited Init;
   end
   else begin
@@ -562,7 +626,7 @@ begin
   end;
 end;
 
-function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState; var AResultValues: String): Boolean;
+function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
 var
   S: String;
 begin
@@ -575,8 +639,14 @@ begin
     then begin
       case S[1] of
         '^': begin // result-record
-          AResultValues := S;
-          S := GetPart('^', ',', AResultValues);
+          if ANoMICommand
+          then begin
+            S := GetPart('^', ',', S);
+          end
+          else begin
+            AResultValues := S;
+            S := GetPart('^', ',', AResultValues);
+          end;
           if S = 'done'
           then begin
             Result := True;
@@ -604,6 +674,10 @@ begin
           then begin
             FHasSymbols := False;
             WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');
+          end
+          else if ANoMICommand 
+          then begin
+            AResultValues := AResultValues + Copy(S, 3, Length(S) - 5) + LINE_END;
           end
           else begin
             WriteLN('[Debugger] Console output: ', S);
@@ -703,7 +777,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     Frame: TStringList;
     Location: TDBGLocationRec;
   begin
-    Frame := CreateValueList(AFrame);
+    Frame := CreateMIValueList(AFrame);
 
     Location.Adress := Pointer(StrToIntDef(Frame.Values['addr'], 0));
     Location.FuncName := Frame.Values['func'];
@@ -721,7 +795,7 @@ var
   BreakPoint: TGDBMIBreakPoint;
 begin
   Result := True;
-  List := CreateValueList(AParams);
+  List := CreateMIValueList(AParams);
   Reason := List.Values['reason'];
   if Reason = 'exited-normally'
   then begin
@@ -761,7 +835,7 @@ begin
         ProcessFrame(List.Values['frame']);
       end
       else begin
-        ExecuteCommand('-exec-continue');
+        ExecuteCommand('-exec-continue', False);
       end;
     end;
   end
@@ -804,7 +878,7 @@ end;
 
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
 begin
-  ExecuteCommand(ACommand);
+  ExecuteCommand(ACommand, False);
 end;
 
 { =========================================================================== }
@@ -822,7 +896,7 @@ begin
   if  (FBreakID <> 0)
   and (Debugger <> nil)
   then begin
-    TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID]);
+    TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID], False);
   end;
 
   inherited Destroy;
@@ -840,7 +914,7 @@ begin
   or (Debugger = nil)
   then Exit;
 
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d', [CMD[Enabled], FBreakID]);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-break-%s %d', [CMD[Enabled], FBreakID], False);
 end;
 
 procedure TGDBMIBreakPoint.DoExpressionChange;
@@ -850,7 +924,7 @@ end;
 procedure TGDBMIBreakPoint.DoStateChange;
 begin
   inherited;
-  if  (Debugger.State = dsStop)
+  if  (Debugger.State in [dsStop, dsPause])
   and (FBreakID = 0)
   then SetBreakpoint;
 end;
@@ -872,9 +946,9 @@ var
 begin
   if Debugger = nil then Exit;
   
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [Source, Line], True, ResultState, S);
-  ResultList := CreateValueList(S);
-  BkptList := CreateValueList(ResultList.Values['bkpt']);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [Source, Line], True, ResultState, S, False);
+  ResultList := CreateMIValueList(S);
+  BkptList := CreateMIValueList(ResultList.Values['bkpt']);
   FBreakID := StrToIntDef(BkptList.Values['number'], 0);
   SetHitCount(StrToIntDef(BkptList.Values['times'], 0));
   SetValid(FBreakID <> 0);
@@ -902,10 +976,10 @@ var
   LocList, List: TStrings;
   Name: String;
 begin
-  LocList := CreateValueList(AParams);
+  LocList := CreateMIValueList(AParams);
   for n := 0 to LocList.Count - 1 do
   begin
-    List := CreateValueList(LocList[n]);
+    List := CreateMIValueList(LocList[n]);
     Name := List.Values['name'];
     if Name = 'this'
     then Name := 'Self';
@@ -984,8 +1058,8 @@ begin
   if Debugger = nil then Exit;
   if not FLocalsValid
   then begin
-    TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', S);
-    List := CreateValueList(S);
+    TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-locals 1', S, False);
+    List := CreateMIValueList(S);
     AddLocals(List.Values['locals']);
     FreeAndNil(List);
     FLocalsValid := True;
@@ -1075,34 +1149,34 @@ begin
   if Debugger = nil then Exit;
 
   Arguments := TStringList.Create;
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d', [AIndex, AIndex], S);
-  List := CreateValueList(S);   
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d', [AIndex, AIndex], S, False);
+  List := CreateMIValueList(S);   
   S := List.Values['stack-args'];
   FreeAndNil(List);
-  List := CreateValueList(S);
+  List := CreateMIValueList(S);
   S := List.Values['frame']; // all arguments
   FreeAndNil(List);
-  List := CreateValueList(S);   
+  List := CreateMIValueList(S);   
   S := List.Values['args'];
   FreeAndNil(List);
   
-  ArgList := CreateValueList(S);
+  ArgList := CreateMIValueList(S);
   for n := 0 to ArgList.Count - 1 do
   begin
-    List := CreateValueList(ArgList[n]);
+    List := CreateMIValueList(ArgList[n]);
     Arguments.Add(List.Values['name'] + '=' + List.Values['value']);
     FreeAndNil(List);
   end;
   FreeAndNil(ArgList);
   
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], S);
-  List := CreateValueList(S);   
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], S, False);
+  List := CreateMIValueList(S);   
   S := List.Values['stack'];
   FreeAndNil(List);
-  List := CreateValueList(S);   
+  List := CreateMIValueList(S);   
   S := List.Values['frame'];
   FreeAndNil(List);
-  List := CreateValueList(S);   
+  List := CreateMIValueList(S);   
   Result := TDBGCallStackEntry.Create(
     AIndex, 
     Pointer(StrToIntDef(List.Values['addr'], 0)),
@@ -1133,8 +1207,8 @@ begin
     if Debugger = nil 
     then FCount := 0
     else begin
-      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', S);
-      List := CreateValueList(S);
+      TGDBMIDebugger(Debugger).ExecuteCommand('-stack-info-depth', S, False);
+      List := CreateMIValueList(S);
       FCount := StrToIntDef(List.Values['depth'], 0);
       FreeAndNil(List);
     end;
@@ -1143,9 +1217,280 @@ begin
   Result := FCount;
 end;
 
+{ =========================================================================== }
+{ TGDBMIExpression }
+{ =========================================================================== }
+
+constructor TGDBMIExpression.Create(const ADebugger: TGDBMIDebugger; const AExpression: String);
+begin
+  inherited Create;
+  FDebugger := ADebugger;
+  FLeft := nil;
+  FRight := nil;
+  CreateSubExpression(Trim(AExpression));
+end;
+
+procedure TGDBMIExpression.CreateSubExpression(const AExpression: String);
+  function CheckOperator(const APos: Integer; const AOperator: String): Boolean;
+  var
+    S: String;
+  begin
+    Result := False;
+    if APos + Length(AOperator) > Length(AExpression) then Exit;
+    if StrLIComp(@AExpression[APos], @AOperator[1], Length(AOperator)) <> 0 then Exit;
+    if (APos > 1) and not (AExpression[APos - 1] in [' ', '(']) then Exit;
+    if (APos + Length(AOperator) <= Length(AExpression)) and not (AExpression[APos + Length(AOperator)] in [' ', '(']) then Exit;
+
+    S := Copy(AExpression, 1, APos - 1);
+    if S <> ''
+    then FLeft := TGDBMIExpression.Create(FDebugger, S);
+    S := Copy(AExpression, APos + Length(AOperator), MaxInt);
+    if S <> ''
+    then FRight := TGDBMIExpression.Create(FDebugger, S);
+    FOperator := AOperator;
+    Result := True;
+  end;
+type
+  TStringState = (ssNone, ssString, ssLeave);
+var
+  n: Integer;
+  S, LastWord: String;
+  HookCount: Integer;
+  InString: TStringState;
+  Sub: TGDBMIExpression;
+begin
+  HookCount := 0;
+  InString := ssNone;
+  LastWord := '';
+  for n := 1 to Length(AExpression)  do
+  begin
+    if AExpression[n] = ''''
+    then begin
+      case InString of
+        ssNone:  InString := ssString;
+        ssString:InString := ssLeave;
+        ssLeave: InString := ssString;
+      end;
+      S := S + AExpression[n];
+      LastWord := '';
+      Continue;
+    end;
+    if InString = ssString
+    then begin
+      S := S + AExpression[n];
+      LastWord := '';
+      Continue;
+    end;
+    InString := ssNone;
+
+    case AExpression[n] of
+      '(', '[': begin
+        if HookCount = 0
+        then begin
+          SetLength(S, Length(S) - Length(LastWord));
+          if S <> ''
+          then FLeft := TGDBMIExpression.Create(FDebugger, S);
+          if LastWord = ''
+          then begin
+            FOperator := AExpression[n];
+          end
+          else begin
+            FOperator := LastWord;
+            FRight := TGDBMIExpression.Create(FDebugger, '');
+            FRight.FOperator := AExpression[n];
+          end;
+          LastWord := '';
+          S := '';
+        end;
+        Inc(HookCount);
+        if HookCount = 1
+        then Continue;
+      end;
+      ')', ']': begin
+        Dec(HookCount);
+        if HookCount = 0
+        then begin
+          if S <> ''
+          then begin
+            if FRight = nil
+            then FRight := TGDBMIExpression.Create(FDebugger, S)
+            else FRight.FRight := TGDBMIExpression.Create(FDebugger, S);
+          end;
+          if n < Length(AExpression)
+          then begin
+            Sub := TGDBMIExpression.Create(FDebugger, '');
+            Sub.FLeft := FLeft;
+            Sub.FOperator := FOperator;
+            Sub.FRight := FRight;
+            FLeft := Sub;
+            Sub := TGDBMIExpression.Create(FDebugger, Copy(AExpression, n + 1, MaxInt));
+            if Sub.FLeft = nil
+            then begin
+              FOperator := Sub.FOperator;
+              FRight := Sub.FRight;
+              Sub.FRight := nil;
+              Sub.Free;
+            end
+            else begin
+              FOperator := '';
+              FRight := Sub;
+            end;
+          end;
+          Exit;
+        end;
+      end;
+    end;
+    if HookCount = 0
+    then begin
+      case AExpression[n] of
+        '-', '+', '*', '/', '^', '@', '=', ',': begin
+          if S <> ''
+          then FLeft := TGDBMIExpression.Create(FDebugger, S);
+          S := Copy(AExpression, n + 1, MaxInt);
+          if Trim(S) <> ''
+          then FRight := TGDBMIExpression.Create(FDebugger, S);
+          FOperator := AExpression[n];
+          Exit;
+        end;
+        'a', 'A': begin
+          if CheckOperator(n, 'and') then Exit;
+        end;
+        'o', 'O': begin
+          if CheckOperator(n, 'or') then Exit;
+        end;
+        'm', 'M': begin
+          if CheckOperator(n, 'mod') then Exit;
+        end;
+        'd', 'D': begin
+          if CheckOperator(n, 'div') then Exit;
+        end;
+        'x', 'X': begin
+          if CheckOperator(n, 'xor') then Exit;
+        end;
+        's', 'S': begin
+          if CheckOperator(n, 'shl') then Exit;
+          if CheckOperator(n, 'shr') then Exit;
+        end;
+      end;
+    end;
+
+    if AExpression[n] = ' '
+    then LastWord := ''
+    else LastWord := LastWord + AExpression[n];
+    S := S + AExpression[n];
+  end;
+  if S = AExpression
+  then FOperator := S
+  else CreateSubExpression(S);
+end;
+
+destructor TGDBMIExpression.Destroy;
+begin
+  FreeAndNil(FRight);
+  FreeAndNil(FLeft);
+  inherited;
+end;
+
+function TGDBMIExpression.DumpExpression: String;
+// Mainly used for debugging purposes
+begin
+  if FLeft = nil
+  then Result := ''
+  else Result := '«L:' + FLeft.DumpExpression + '»';
+
+  if FOperator = '('
+  then Result := Result + '(«R:' + FRight.DumpExpression + '»)'
+  else if FOperator = '['
+  then Result := Result + '[«R:' + FRight.DumpExpression + '»]'
+  else begin
+    if (Length(FOperator) > 0)
+    and (FOperator[1] = '''')
+    then Result := Result + '«O:' + ConvertToCString(FOperator) + '»'
+    else Result := Result + '«O:' + FOperator + '»';
+    if FRight <> nil
+    then Result := Result + '«R:' + FRight.DumpExpression + '»';
+  end;
+end;
+
+function TGDBMIExpression.GetExpression(var AResult: String): Boolean;
+var
+  ResultState: TDBGState;
+  S, ResultValues: String;
+  List: TStrings;
+  GDBType: TGDBType;
+begin  
+  Result := False;
+  
+  if FLeft = nil
+  then AResult := ''
+  else begin
+    if not FLeft.GetExpression(S) then Exit;
+    AResult := S;
+  end;
+
+  if FOperator = '('
+  then begin
+    if not FRight.GetExpression(S) then Exit;
+    AResult := AResult + '(' + S + ')';
+  end
+  else if FOperator = '['
+  then begin              
+    if not FRight.GetExpression(S) then Exit;
+    AResult := AResult + '[' + S + ']';
+  end
+  else begin
+    if (Length(FOperator) > 0)
+    and (FOperator[1] = '''')
+    then AResult := AResult + ConvertToCString(FOperator)
+    else begin                                           
+      GDBType := FDebugger.GetGDBTypeInfo(FOperator);
+      if GDBType = nil
+      then begin
+        // no type possible, use literal operator
+        AResult := AResult + FOperator;
+      end;
+
+      if not FDebugger.ExecuteCommand('ptype %s', [FOperator], True, ResultState, ResultValues, True) then Exit;
+      if ResultState = dsError
+      then begin
+        // no type possible, use literal operator
+        AResult := AResult + FOperator;
+      end
+      else begin
+        WriteLN('PType result: ', ResultValues);
+        List := CreateValueList(ResultValues);
+        S := List.Values['type'];
+        WriteLN('PType type: ', S);
+        List.Free;
+        if (S <> '') and (S[1] = '^') and (Pos('class', S) <> 0)
+        then begin
+          AResult := AResult + GetPart('^', ' ', S) + '(' + FOperator + ')';
+        end
+        else begin
+          // no type possible or no class, use literal operator
+          AResult := AResult + FOperator;
+        end
+      end;
+    end;
+    if FRight <> nil
+    then begin
+      if not FRight.GetExpression(S) then Exit;
+      AResult := AResult + S;
+    end;
+  end;
+  
+  Result := True;
+end;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.9  2003/05/22 23:08:19  marc
+  MWE: = Moved and renamed debuggerforms so that they can be
+         modified by the ide
+       + Added some parsing to evaluate complex expressions
+         not understood by the debugger
+
   Revision 1.8  2002/11/05 22:41:13  lazarus
   MWE:
     * Some minor debugger updates
