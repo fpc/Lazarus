@@ -211,11 +211,51 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.IsCaptionStored: boolean;
 
-  Checks if Caption needs to be saved to stream
+  Checks if 'Caption' needs to be saved to stream
  ------------------------------------------------------------------------------}
 function TMenuItem.IsCaptionStored: boolean;
 begin
   Result := (ActionLink = nil) or not FActionLink.IsCaptionLinked;
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.IsCheckedStored: boolean;
+
+  Checks if 'Checked' needs to be saved to stream
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsCheckedStored: boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsCheckedLinked;
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.IsEnabledStored: boolean;
+
+  Checks if 'Checked' needs to be saved to stream
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsEnabledStored: boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsEnabledLinked;
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.IsShortCutStored: boolean;
+
+  Checks if 'Checked' needs to be saved to stream
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsShortCutStored: boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsShortCutLinked;
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.IsVisibleStored: boolean;
+
+  Checks if 'Checked' needs to be saved to stream
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsVisibleStored: boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsVisibleLinked;
 end;
 
 {------------------------------------------------------------------------------
@@ -587,6 +627,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/08/06 20:05:19  lazarus
+  MG: added actnlist.pp
+
   Revision 1.17  2002/08/06 19:57:40  lazarus
   MG: added actnlist.pp
 
@@ -666,6 +709,9 @@ end;
 
 
   $Log$
+  Revision 1.18  2002/08/06 20:05:19  lazarus
+  MG: added actnlist.pp
+
   Revision 1.17  2002/08/06 19:57:40  lazarus
   MG: added actnlist.pp
 
