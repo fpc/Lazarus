@@ -613,8 +613,7 @@ begin
   end;
   // TODO: get the properties from new bitmap
   with FImage do begin
-    if FHandle<>0 then
-      writeln('WARNING: TBitmap.SetHandle OldHandle not freed');
+    FreeHandle;
     FHandle:=Value;
     FillChar(FDIB, sizeof(FDIB), 0);
     if FHandle <> 0 then
@@ -712,6 +711,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/06/30 15:13:21  mattias
+  fixed releasing bitmap handle
+
   Revision 1.33  2003/06/30 14:58:29  mattias
   implemented multi file add to package editor
 

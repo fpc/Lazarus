@@ -74,6 +74,7 @@ begin
 end;
 
 function TBitmapImage.ReleaseHandle: HBITMAP;
+// simply return the current handle and set to 0 without freeing handles
 begin
   Result:=FHandle;
   if FHandle = FDIBHandle then
@@ -81,6 +82,7 @@ begin
     FDIBHandle := 0;
     FDIB.dsbm.bmBits := nil;
   end;
+  FHandle:=0;
 end;
 
 function TBitmapImage.IsEmpty: boolean;
