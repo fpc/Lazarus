@@ -30,29 +30,15 @@ interface
 uses 
   InterfaceBase;
 
-var
-  InterfaceObject : TInterfaceBase;
-
 implementation
 
 uses 
-  GTKInt, Clipbrd, SysUtils,
-  Forms;  // MG: GTKInt uses forms, so the application object is destroyed
-          //   in the forms finalization section AFTER this finalization
-          //   section. But the lcl objects need the gtk to close cleanly.
-          //   Therefore the application object is freed here before the
-          //   InterfaceObject.
-          //   Probably this is the case for all interfaces, so this should be
-          //   moved to forms.pp.
+  GTKInt, Forms;
 
 initialization
-  InterfaceObject := TgtkObject.Create;
+  InterfaceObject:= TgtkObject.Create;
 
 finalization
-  Application.Free;
-  Application:=nil;
-  FreeAllClipBoards;
-  InterfaceObject.Free;
-  InterfaceObject:=nil;
+  FreeInterfaceObject;
 
 end.

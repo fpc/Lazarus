@@ -25,15 +25,14 @@ unit AllUnits;
 interface
 
 uses
-  InterfaceBase,  Interfaces,    LCLStrConsts,  Lazqueue,
+  InterfaceBase,  LCLStrConsts,  Lazqueue,      GraphMath,
   StringHashList, DynHashArray,  LCLMemManager, ExtendedStrings,
   Buttons,        Extctrls,      Registry,      VCLGlobals,
   Calendar,       Clipbrd,       FileCtrl,      Forms,
   LCLLinux,       Spin,          Comctrls,      Graphics,
-  LMessages,      Stdctrls,      Arrow,         Controls,
+  LMessages,      StdCtrls,      Arrow,         Controls,
   Imglist,        Menus,         Toolwin,       Dialogs,
-  Messages,       UTrace,        Clistbox,      ActnList,
-  GraphicsMath;
+  Messages,       UTrace,        Clistbox,      ActnList;
 
 implementation
 
@@ -42,6 +41,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/10/26 15:15:44  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.16  2002/10/04 14:24:14  lazarus
   MG: added DrawItem to TComboBox/TListBox
 

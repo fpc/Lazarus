@@ -32,24 +32,15 @@ Interface
 Uses
   InterfaceBase;
 
-Var
-  InterfaceObject: TInterfaceBase;
+Implementation
 
-Implementation 
-
-Uses
+uses
   Win32Int, Forms;
 
 Initialization
-
-InterfaceObject := TWin32Object.Create;
+  InterfaceObject := TWin32Object.Create;
 
 Finalization
-
-Application.Free;
-Application := Nil;
-
-InterfaceObject.Free;
-InterfaceObject := Nil;
+  FreeInterfaceObject;
 
 End.

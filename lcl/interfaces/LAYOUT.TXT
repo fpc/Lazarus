@@ -4,7 +4,7 @@ It is organized according to the following structure:
 
 interfaces
   |
-  +--- abstract
+  +--- gnome
   |
   +--- gtk
   |
@@ -15,11 +15,11 @@ interfaces
   +--- ...
   |
 
-interfaces/abstract
-  Abstract definition for initial LCL compilation
+interfaces/gnome:
+  All gnome 1.x specific code goes here.
 
 interfaces/gtk:
-  All gtk specific code goes here.
+  All gtk 1.x specific code goes here.
 
 interfaces/qt:
   All QT specific code goes here.

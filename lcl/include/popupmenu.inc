@@ -45,12 +45,15 @@ begin
   FPopupPoint := Point(X, Y);
   DoPopup(Self);
   HandleNeeded;
-  InterfaceObject.IntSendMessage3(LM_POPUPSHOW, Self, @FPopupPoint);
+  SendMsgToInterface(LM_POPUPSHOW, Self, @FPopupPoint);
 end;
 
 
 {
   $Log$
+  Revision 1.6  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.5  2002/08/17 07:57:05  lazarus
   MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
 
