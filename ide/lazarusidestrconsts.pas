@@ -630,6 +630,7 @@ resourcestring
   dlgCaseSensitive = 'Case Sensitive';
   dlgWholeWordsOnly = 'Whole Words Only';
   dlgRegularExpressions = 'Regular Expressions';
+  dlgMultiLine = 'Multi Line';
   dlgPromptOnReplace = 'Prompt On Replace';
   dlgSROrigin = 'Origin';
   dlgFromCursor = 'From Cursor';

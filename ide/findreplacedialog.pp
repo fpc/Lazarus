@@ -41,7 +41,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, SynEditTypes, SynEdit, IDEProcs, LazarusIdeStrConsts;
+  LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit, IDEProcs,
+  LazarusIdeStrConsts;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);
@@ -57,6 +58,7 @@ type
     CaseSensitiveCheckBox:TCheckBox;
     WholeWordsOnlyCheckBox:TCheckBox;
     RegularExpressionsCheckBox:TCheckBox;
+    MultiLineCheckBox:TCheckBox;
     PromptOnReplaceCheckBox:TCheckBox;
     DirectionRadioGroup:TRadioGroup;
     ScopeRadioGroup:TRadioGroup;
@@ -72,6 +74,8 @@ type
   private
     FOnKey: TOnFindDlgKey;
     fReplaceAllClickedLast:boolean;
+    RegExpr: TRegExpr;
+    function CheckInput: boolean;
     function GetComponentText(c: TFindDlgComponent): string;
     procedure SetComponentText(c: TFindDlgComponent; const AValue: string);
     procedure SetOnKey(const AValue: TOnFindDlgKey);
@@ -84,6 +88,7 @@ type
     procedure SetComboBoxText(AComboBox:TComboBox;const AText:AnsiString);
   public
     constructor Create(TheOwner:TComponent); override;
+    destructor Destroy; override;
   public
     property Options:TSynSearchOptions read GetOptions write SetOptions;
     property FindText:AnsiString read GetFindText write SetFindText;
@@ -108,7 +113,7 @@ begin
     Name:='LazFindReplaceDialog';
     Caption:='';
     Width:=400;
-    Height:=266;
+    Height:=300;
     BorderStyle:= bsDialog;
     Position:=poDesigned;
 
@@ -169,7 +174,7 @@ begin
       Left:=4;
       Top:=58;
       Width:=194;
-      Height:=105;
+      Height:=150;
       Caption:=dlgFROpts ;
       Visible:=true;
     end;
@@ -182,7 +187,6 @@ begin
       Left:=8;
       Top:=6;
       Width:=155;
-      Height:=17;
       Caption:=dlgCaseSensitive ;
       Visible:=true;
     end;
@@ -193,9 +197,8 @@ begin
       Parent:=OptionsGroupBox;
       AutoSize := False;
       Left:=8;
-      Top:=26;
+      Top:=31;
       Width:=155;
-      Height:=17;
       Caption:=dlgWholeWordsOnly;
       Visible:=true;
     end;
@@ -206,11 +209,23 @@ begin
       Parent:=OptionsGroupBox;
       AutoSize := False;
       Left:=8;
-      Top:=46;
+      Top:=56;
       Width:=155;
-      Height:=17;
-      Caption:=dlgRegularExpressions ;
+      Caption:=dlgRegularExpressions;
       Visible:=true;
+    end;
+
+    MultiLineCheckBox:=TCheckBox.Create(Self);
+    with MultiLineCheckBox do begin
+      Name:='MultiLineCheckBox';
+      Parent:=OptionsGroupBox;
+      AutoSize := False;
+      Left:=8;
+      Top:=81;
+      Width:=155;
+      Caption:=dlgMultiLine;
+      Visible:=true;
+      Enabled:=false;
     end;
 
     PromptOnReplaceCheckBox:=TCheckBox.Create(Self);
@@ -219,9 +234,8 @@ begin
       Parent:=OptionsGroupBox;
       AutoSize := False;
       Left:=8;
-      Top:=66;
+      Top:=106;
       Width:=135;
-      Height:=17;
       Caption:=dlgPromptOnReplace ;
       Checked:=true;
       Visible:=true;
@@ -234,7 +248,7 @@ begin
       Left:= 202;
       Top:= 58;
       Width:= 194;
-      Height:=105;
+      Height:=65;
       Caption:=dlgSROrigin;
       with Items do begin
         BeginUpdate;
@@ -251,8 +265,8 @@ begin
     with ScopeRadioGroup do begin
       Name:='ScopeRadioGroup';
       Parent:=Self;
-      Left:=4;
-      Top:=168;
+      Left:=202;
+      Top:=128;
       Width:=194;
       Height:=65;
       Caption:=dlgScope;
@@ -272,7 +286,7 @@ begin
       Name:='DirectionRadioGroup';
       Parent:=Self;
       Left:=202;
-      Top:=168;
+      Top:=198;
       Width:=194;
       Height:=65;
       Caption:=dlgDirection;
@@ -291,8 +305,8 @@ begin
     with OkButton do begin
       Name:='OkButton';
       Parent:= Self;
-      Left:= 143;
-      Top:= 237;
+      Left:= 130;
+      Top:= 268;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
       Visible:=true;
@@ -302,8 +316,8 @@ begin
     with ReplaceAllButton do begin
       Name:='ReplaceAllButton';
       Parent:= Self;
-      Left:= 222;
-      Top:= 237;
+      Left:= 210;
+      Top:= 268;
       Width:=99;
       Caption:=dlgReplaceAll;
       OnClick:=@ReplaceAllButtonClick;
@@ -314,8 +328,8 @@ begin
     with CancelButton do begin
       Name:='CancelButton';
       Parent:= Self;
-      Left:= 321;
-      Top:= 237;
+      Left:= 320;
+      Top:= 268;
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
@@ -324,6 +338,12 @@ begin
   end;
   fReplaceAllClickedLast:=false;
   TextToFindComboBox.SetFocus;
+end;
+
+destructor TLazFindReplaceDialog.Destroy;
+begin
+  RegExpr.Free;
+  inherited Destroy;
 end;
 
 procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
@@ -354,6 +374,7 @@ end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
 begin
+  if not CheckInput then exit;
   fReplaceAllClickedLast:=false;
   TextToFindComboBox.SetFocus;
   ModalResult:=mrOk;
@@ -361,6 +382,7 @@ end;
 
 procedure TLazFindReplaceDialog.ReplaceAllButtonClick(Sender:TObject);
 begin
+  if not CheckInput then exit;
   fReplaceAllClickedLast:=true;
   TextToFindComboBox.SetFocus;
   ModalResult:=mrAll;
@@ -370,6 +392,36 @@ procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
   TextToFindComboBox.SetFocus;
   ModalResult:=mrCancel;
+end;
+
+function TLazFindReplaceDialog.CheckInput: boolean;
+begin
+  Result:=false;
+  if RegularExpressionsCheckBox.Checked then begin
+    if RegExpr=nil then RegExpr:=TRegExpr.Create;
+    try
+      RegExpr.Expression:=FindText;
+      RegExpr.Exec('test');
+    except
+      on E: ERegExpr do begin
+        MessageDlg('Error in regular expression',
+          E.Message,mtError,[mbCancel],0);
+        exit;
+      end;
+    end;
+    if ReplaceTextComboBox.Enabled then begin
+      try
+        RegExpr.Substitute(ReplaceText);
+      except
+        on E: ERegExpr do begin
+          MessageDlg('Error in regular expression',
+            E.Message,mtError,[mbCancel],0);
+          exit;
+        end;
+      end;
+    end;
+  end;
+  Result:=true;
 end;
 
 function TLazFindReplaceDialog.GetComponentText(c: TFindDlgComponent): string;
@@ -401,6 +453,7 @@ begin
   CaseSensitiveCheckBox.Checked:=ssoMatchCase in NewOptions;
   WholeWordsOnlyCheckBox.Checked:=ssoWholeWord in NewOptions;
   RegularExpressionsCheckBox.Checked:=ssoRegExpr in NewOptions;
+  MultiLineCheckBox.Checked:=ssoRegExprMultiLine in NewOptions;
   PromptOnReplaceCheckBox.Checked:=ssoPrompt in NewOptions;
   if ssoEntireScope in NewOptions
     then OriginRadioGroup.ItemIndex:=1
@@ -430,6 +483,7 @@ begin
   if CaseSensitiveCheckBox.Checked then Include(Result,ssoMatchCase);
   if WholeWordsOnlyCheckBox.Checked then Include(Result,ssoWholeWord);
   if RegularExpressionsCheckBox.Checked then Include(Result,ssoRegExpr);
+  if MultiLineCheckBox.Checked then Include(Result,ssoRegExprMultiLine);
   if PromptOnReplaceCheckBox.Checked then Include(Result,ssoPrompt);
   if OriginRadioGroup.ItemIndex=1 then Include(Result,ssoEntireScope);
   if ScopeRadioGroup.ItemIndex=1 then include(Result,ssoSelectedOnly);

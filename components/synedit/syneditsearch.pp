@@ -43,12 +43,22 @@ interface
 
 uses
   Classes
-  {$IFDEF SYN_LAZARUS}, RegExpr{$ENDIF};
+  {$IFDEF SYN_LAZARUS}, SynRegExpr{$ENDIF};
 
 procedure MakeCompTable(Sensitive: boolean);
 procedure MakeDelimiterTable;
 
 type
+  {$IFDEF SYN_LAZARUS}
+  TSynEditSearchResult = class
+  public
+    Start: integer;
+    Len: integer;
+    Replace: string;
+    constructor Create(NewStart, NewLen: integer; const NewReplace: string);
+  end;
+  {$ENDIF}
+
   TSynEditSearch = class(TObject)
   private
     Run: PChar;
@@ -66,11 +76,11 @@ type
     fShiftInitialized: boolean;
     {$IFDEF SYN_LAZARUS}
     FoundLen: integer;
-    RegExprEngine : TRegExprEngine;
+    RegExprEngine : TRegExpr;
     fRegExpr: Boolean;
-    fRegExprFlags: TRegExprFlags;
-    fResultLens: TList;
     fRegExprSingleLine: boolean;
+    fRegExprReplace: string;
+    fReplacement: string;
     function GetResultLen(Index: integer): integer;
     procedure SetRegExpr(const NewValue: boolean);
     {$ENDIF}
@@ -97,10 +107,16 @@ type
     property Sensitive: Boolean read fSensitive write SetSensitive;
     property Whole: Boolean read fWhole write fWhole;
     {$IFDEF SYN_LAZARUS}
+  public
+    procedure ClearResults;
+    function GetReplace(Index: integer): string;
     property RegularExpressions: Boolean read fRegExpr write SetRegExpr;
     property ResultLengths[Index: integer]: integer read GetResultLen;
     property RegExprSingleLine: Boolean 
         read fRegExprSingleLine write fRegExprSingleLine;
+    property RegExprReplace: string
+        read fRegExprReplace write fRegExprReplace;
+    property Replacement: string read fReplacement write fReplacement;
     {$ENDIF}
   end;
 
@@ -108,8 +124,7 @@ implementation
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
- LCLType,
+  LCLLinux, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -146,19 +161,19 @@ begin
   for c := #0 to #255 do DelimTable[c] := not IsCharAlphaNumeric(c);
 end;
 
+{ TSynEditSearch }
+
 constructor TSynEditSearch.Create;
 begin
   inherited Create;
   fResults := TList.Create;
   {$IFDEF SYN_LAZARUS}
   fRegExpr:=false;
-  fResultLens := TList.Create;
   fRegExprSingleLine:=true;
+  RegExprEngine:=TRegExpr.Create;
   FoundLen:=0;
   {$ENDIF}
 end;
-
-{ TSynEditSearch }
 
 function TSynEditSearch.GetFinished: Boolean;
 begin
@@ -169,7 +184,11 @@ function TSynEditSearch.GetResult(Index: integer): integer;
 begin
   Result := 0;
   if (Index >= 0) and (Index < fResults.Count) then
+    {$IFDEF SYN_LAZARUS}
+    Result := TSynEditSearchResult(fResults[Index]).Start;
+    {$ELSE}
     Result := integer(fResults[Index]);
+    {$ENDIF}
 end;
 
 function TSynEditSearch.GetResultCount: integer;
@@ -184,8 +203,12 @@ begin
   if (Delta <> 0) and (fResults.Count > 0) then begin
     i := Pred(fResults.Count);
     while i >= 0 do begin
-      if integer(fResults[i]) <= First then break;
+      if GetResult(i) <= First then break;
+      {$IFDEF SYN_LAZARUS}
+      dec(TSynEditSearchResult(fResults[i]).Start,Delta);
+      {$ELSE}
       fResults[i] := pointer(integer(fResults[i]) - Delta);
+      {$ENDIF}
       Dec(i);
     end;
   end;
@@ -264,12 +287,14 @@ begin
   end else begin
     // regular expressions
     inc(Run);
-    if not RegExprPos(RegExprEngine,Run,Result,FoundLen) then begin
-      Run:=TheEnd;
-      Result:=0;
+    if RegExprEngine.ExecPos(Run-Origin+1) then begin
+      Result:=RegExprEngine.MatchPos[0];
+      FoundLen:=RegExprEngine.MatchLen[0];
+      Run:=Origin+Result-1;
     end else begin
-      inc(Run,Result);
-      Result:=Run-Origin+1;
+      Result:=0;
+      FoundLen:=0;
+      Run:=TheEnd;
     end;
   {$ENDIF}
   end;
@@ -277,11 +302,11 @@ end;
 
 destructor TSynEditSearch.Destroy;
 begin
-  fResults.Free;
   {$IFDEF SYN_LAZARUS}
-  DestroyRegExprEngine(RegExprEngine);
-  fResultLens.Free;
+  ClearResults;
+  RegExprEngine.Free;
   {$ENDIF}
+  fResults.Free;
   inherited Destroy;
 end;
 
@@ -290,6 +315,9 @@ begin
   if Pat <> Value then begin
     Pat := Value;
     fShiftInitialized := FALSE;                                  
+    {$IFDEF SYN_LAZARUS}
+    PatLen:=length(Pat);
+    {$ENDIF}
   end;
   fCount := 0;
 end;
@@ -301,10 +329,7 @@ begin
     MakeCompTable(Value);
     fShiftInitialized := FALSE;
     {$IFDEF SYN_LAZARUS}
-    if fSensitive then
-      Exclude(fRegExprFlags,REF_CaseInsensitive)
-    else
-      Include(fRegExprFlags,REF_CaseInsensitive);
+    RegExprEngine.ModifierI:=not fSensitive;
     {$ENDIF}
   end;
 end;
@@ -312,20 +337,28 @@ end;
 function TSynEditSearch.FindAll(const NewText: string): integer;
 var
   Found: integer;
+  {$IFDEF SYN_LAZARUS}
+  TheReplace: string;
+  {$ENDIF}
 begin
   if not fShiftInitialized then
     InitShiftTable;
+  {$IFDEF SYN_LAZARUS}
+  ClearResults;
+  {$ELSE}
   // never shrink Capacity
   fResults.Count := 0;
-  {$IFDEF SYN_LAZARUS}
-  if fRegExpr then fResultLens.Count := 0;
   {$ENDIF}
   Found := FindFirst(NewText);
   while Found > 0 do
   begin
-    fResults.Add(pointer(Found));
     {$IFDEF SYN_LAZARUS}
-    if fRegExpr then fResultLens.Add(pointer(FoundLen));
+    TheReplace:=Replacement;
+    if fRegExpr then
+      TheReplace:=RegExprEngine.Substitute(Replacement);
+    fResults.Add(TSynEditSearchResult.Create(Found,FoundLen,TheReplace));
+    {$ELSE}
+    fResults.Add(pointer(Found));
     {$ENDIF}
     Found := Next;
   end;
@@ -336,25 +369,16 @@ function TSynEditSearch.FindFirst(const NewText: string): Integer;
 begin
   Result := 0;
   fTextLen := Length(NewText);
+  if fTextLen=0 then exit;
   {$IFDEF SYN_LAZARUS}
   if fRegExpr then begin
-    DestroyRegExprEngine(RegExprEngine);
-    if fSensitive then
-      Exclude(fRegExprFlags,REF_CaseInsensitive)
-    else
-      Include(fRegExprFlags,REF_CaseInsensitive);
-    if fRegExprSingleLine then begin
-      Include(fRegExprFlags,REF_SingleLine);
-      Exclude(fRegExprFlags,REF_MultiLine);
-    end else begin
-      Exclude(fRegExprFlags,REF_SingleLine);
-      Include(fRegExprFlags,REF_MultiLine);
-    end;
-    RegExprEngine:=GenerateRegExprEngine(PChar(Pat+#0),fRegExprFlags);
-    PatLen:=length(Pat);
+    RegExprEngine.ModifierI:=not fSensitive;
+    RegExprEngine.ModifierM:=not fRegExprSingleLine;
+    RegExprEngine.Expression:=Pat;
+    RegExprEngine.InputString:=NewText;
   end;
   {$ENDIF}
-  if fTextLen >= PatLen then
+  if (fTextLen >= PatLen) or fRegExpr then
   begin
     Origin := PChar(NewText);
     TheEnd := Origin + fTextLen;
@@ -364,10 +388,27 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
+procedure TSynEditSearch.ClearResults;
+var
+  i: Integer;
+begin
+  for i:=0 to fResults.Count-1 do
+    TSynEditSearchResult(fResults[i]).Free;
+  fResults.Clear;
+end;
+
+function TSynEditSearch.GetReplace(Index: integer): string;
+begin
+  if (Index >= 0) and (Index < fResults.Count) then
+    Result := TSynEditSearchResult(fResults[Index]).Replace
+  else
+    Result := Replacement;
+end;
+
 function TSynEditSearch.GetResultLen(Index: integer): integer;
 begin
-  if (Index>=0) and (Index<fResultLens.Count) then
-    Result:=Integer(fResultLens[Index])
+  if (Index>=0) and (Index<fResults.Count) then
+    Result := TSynEditSearchResult(fResults[Index]).Len
   else
     Result:=FoundLen;
 end;
@@ -377,8 +418,19 @@ begin
   if NewValue=fRegExpr then exit;
   fRegExpr:=NewValue;
 end;
-{$ENDIF}
 
+
+{ TSynEditSearchResult }
+
+constructor TSynEditSearchResult.Create(NewStart, NewLen: integer;
+  const NewReplace: string);
+begin
+  Start:=NewStart;
+  Len:=NewLen;
+  Replace:=NewReplace;
+end;
+
+{$ENDIF}
 
 initialization
   CompTableSensitive := True; // force the table initialization
