@@ -22,7 +22,7 @@ interface
 uses sysutils;
 
 type
-  TAssertErrorAddrType = {$IFDEF VER1_1}Pointer{$ELSE}Longint{$ENDIF};
+  TAssertErrorAddrType = {$IFNDEF VER1_0}Pointer{$ELSE}Longint{$ENDIF};
 
   TAssertErrorProc = procedure(Const Msg,FN :ShortString;
         LineNo: LongInt; TheAddr: TAssertErrorAddrType);

@@ -301,7 +301,7 @@ end;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl;
 // theClass: PGTKAPIWidgetClientClass
-{$IFDEF VER1_1}
+{$IFNDEF VER1_0}
 type
   TAdjustParams = packed record
     Param1, Param2: TGtkType;
@@ -315,7 +315,7 @@ var
   WidgetClass: PGTKWidgetClass;
   ClientClass: PGTKAPIWidgetClientClass;
   SignalID: Guint;
-{$IFDEF VER1_1}
+{$IFNDEF VER1_0}
   AdjustParams: TAdjustParams;
 {$ENDIF}
 begin
@@ -326,7 +326,7 @@ begin
   WidgetClass := PGTKWidgetClass(theClass);
   ClientClass := PGTKAPIWidgetClientClass(theClass);
 
-  {$IFDEF VER1_1}
+  {$IFNDEF VER1_0}
   AdjustParams.Param1 := gtk_adjustment_get_type;
   AdjustParams.Param2 := AdjustParams.Param1;
   SignalID := gtk_signal_newv(
@@ -348,7 +348,7 @@ begin
     {$ENDIF}
     GTK_TYPE_NONE,
     2, 
-    {$IFDEF VER1_1}
+    {$IFNDEF VER1_0}
     @AdjustParams
     {$ELSE}
     [gtk_adjustment_get_type, gtk_adjustment_get_type]
@@ -937,6 +937,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.49  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 

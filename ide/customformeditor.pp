@@ -1189,7 +1189,7 @@ begin
     Result:=AClassName;
     if (length(Result)>1) and (Result[1]='T') then
       Result:=RightStr(Result,length(Result)-1);
-    {$IfNDef VER1_1}
+    {$IfDef VER1_0}
     //make it more presentable
     Result := Result[1] + lowercase(Copy(Result,2,length(Result)));
     {$EndIf}

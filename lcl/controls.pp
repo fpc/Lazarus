@@ -836,8 +836,8 @@ type
     destructor Destroy; override;
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); dynamic;
     function ManualDock(NewDockSite: TWinControl;
-      DropControl: TControl {$IFDEF VER1_1}= nil{$ENDIF};
-      ControlSide: TAlign {$IFDEF VER1_1}= alNone{$ENDIF}): Boolean;
+      DropControl: TControl {$IFNDEF VER1_0}= nil{$ENDIF};
+      ControlSide: TAlign {$IFNDEF VER1_0}= alNone{$ENDIF}): Boolean;
     function ManualFloat(ScreenPos: TRect): Boolean;
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
@@ -1847,6 +1847,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.157  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.156  2003/10/16 19:43:44  ajgenius
   disable Buffering in TWinControl.WM_PAINT
 

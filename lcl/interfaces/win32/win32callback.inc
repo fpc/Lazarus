@@ -95,7 +95,7 @@ Var
   NotifyUserInput: Boolean;
   PrevWndProc: Pointer;
   NewPos: Integer; //Used by TScrollingWindow
-  {$IFDEF Ver1_1}
+  {$IFNDEF VER1_0}
   List: TMsgArray;
   C: integer;
   {$ENDIF}
@@ -888,6 +888,10 @@ end;
 
 {
   $Log$
+  Revision 1.66  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.65  2003/10/21 15:06:27  micha
   spinedit fix; variables cleanup
 

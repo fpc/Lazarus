@@ -27,7 +27,7 @@
  ***************************************************************************
 }
 uses
-  {$IFDEF VER1_1}
+  {$IFNDEF VER1_0}
   unix,BaseUnix;
   {$ELSE}
   linux;
@@ -39,6 +39,10 @@ uses
 
 {
   $Log$
+  Revision 1.16  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.15  2003/10/31 14:25:59  mazen
   * Fixing VER1_1 compile problem to allow using 1.1 compiler
   * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp

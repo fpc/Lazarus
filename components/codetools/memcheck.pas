@@ -1277,7 +1277,7 @@ end.
 
 {$endif}
 //==============================================================================
-{$ifdef VER1_1}
+{$IFNDEF VER1_0}
 
 {$goto on}
 
@@ -2567,6 +2567,10 @@ end.
 
 {
   $Log$
+  Revision 1.25  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.24  2003/10/30 21:41:11  mattias
   replaced NEW1_1 defines
 

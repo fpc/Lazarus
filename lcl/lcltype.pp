@@ -1831,7 +1831,7 @@ const
 type
   TShortCut = Low(Word)..High(Word);   {should be moved to classes}
 
-{$IFDEF VER1_1}
+{$IFNDEF VER1_0}
 type
   TRTLCriticalSection = pointer;
 {$ENDIF}
@@ -1875,6 +1875,10 @@ end.
 
 {
   $Log$
+  Revision 1.48  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.47  2003/10/30 18:25:18  mattias
   fixed keymapping for irregular keys
 

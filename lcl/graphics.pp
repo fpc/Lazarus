@@ -728,22 +728,22 @@ type
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer);
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
-                         Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
-                         Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+                         Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
+                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
     procedure PolyBezier(const Points: array of TPoint;
-                         Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
-                         Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+                         Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
+                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
     procedure PolyBezier(const Points: array of TPoint);
     procedure Polygon(const Points: array of TPoint;
                       Winding: Boolean;
-                      StartIndex: Integer{$IFDEF VER1_1} = 0{$ENDIF};
-                      NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
+                      StartIndex: Integer{$IFNDEF VER1_0} = 0{$ENDIF};
+                      NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     procedure Polygon(Points: PPoint; NumPts: Integer;
-                      Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
+                      Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF});
     Procedure Polygon(const Points: array of TPoint);
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
-                       NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
+                       NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
     procedure Polyline(const Points: array of TPoint);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer);
@@ -1259,6 +1259,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.95  2003/10/30 21:26:23  mattias
   removed some hints
 

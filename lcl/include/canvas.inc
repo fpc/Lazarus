@@ -381,8 +381,8 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCanvas.PolyBezier(const Points: array of TPoint;
-  Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
-  Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+  Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
+  Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
 var NPoints, i: integer;
   PointArray: ^TPoint;
 begin
@@ -398,8 +398,8 @@ begin
 end;
 
 procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
-  Filled: boolean{$IFDEF VER1_1} = False{$ENDIF};
-  Continuous: boolean{$IFDEF VER1_1} = False{$ENDIF});
+  Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
+  Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
@@ -455,7 +455,7 @@ begin
 end;
 
 procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
-  Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
+  Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF});
 begin
   if NumPts<=0 then exit;
   Changing;
@@ -1236,6 +1236,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.53  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

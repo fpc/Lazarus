@@ -28,7 +28,7 @@
 }
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
-uses
+IFNDEF VER1_0
   {$IFDEF VER1_1}
   unix;
   {$ELSE}
@@ -39,6 +39,10 @@ uses
 
 {
   $Log$
+  Revision 1.9  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.8  2003/08/15 14:01:20  mattias
   combined lazconf things for unix
 

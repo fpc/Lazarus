@@ -723,7 +723,7 @@ begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    Result:=SearchFileInPath(Result,'',{$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
+    Result:=SearchFileInPath(Result,'',{$IFDEF Ver1_0}GetEnv{$ELSE}{$ifdef Unix}FpGetEnv{$else}GetEnv{$endif}{$ENDIF}('PATH'),':',
                              [sffDontSearchInBasePath]);
   end;
   // resolve links
@@ -894,6 +894,10 @@ end;
 
 {
   $Log$
+  Revision 1.33  2003/11/03 16:57:47  peter
+    * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
+      fpc 1.9.x
+
   Revision 1.32  2003/11/01 10:27:41  mattias
   fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
 
