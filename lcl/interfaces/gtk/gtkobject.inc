@@ -2285,6 +2285,7 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
   
 
 var
+  DC : hDC;
   P : Pointer;
   aLabel, pLabel: pchar;
   AccelKey : integer;
@@ -2347,7 +2348,13 @@ begin
         gtk_widget_remove_accelerators(p, 'grab_focus', false);
 		    
       if TLabel(Sender).ShowAccelChar then begin
-	aLabel:= Ampersands2Underscore(pLabel);
+        If TLabel(sender).WordWrap then begin
+          DC := GetDC(TLabel(Sender).Handle);
+          aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, True);
+          DeleteDC(DC);
+        end
+        else
+          aLabel:= Ampersands2Underscore(pLabel);
 	try
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
 	  SetAccelKey(p, AccelKey);
@@ -2358,7 +2365,15 @@ begin
 	  StrDispose(aLabel);
 	end;
       end else begin
-        gtk_label_set_text(PGtkLabel(p), pLabel);
+        If TLabel(sender).WordWrap then begin
+          DC := GetDC(TLabel(Sender).Handle);
+          aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, False);
+          gtk_label_set_text(PGtkLabel(p), aLabel);
+	  StrDispose(aLabel);
+          DeleteDC(DC);
+        end
+        else
+          gtk_label_set_text(PGtkLabel(p), pLabel);
         gtk_label_set_pattern(PGtkLabel(p), nil);
       end;
     end;
@@ -6299,7 +6314,7 @@ var
   var
     lbearing, rbearing, width, ascent, descent: LongInt;
   begin
-    gdk_text_extents(UseFont, @AText[LineStart], LineLen,
+    GetTextExtentIgnoringAmpersands(UseFont, @AText[LineStart], LineLen,
                      @lbearing, @rBearing, @width, @ascent, @descent);
     Result:=Width;
   end;
@@ -6457,6 +6472,43 @@ begin
   CleanUpFont;
 end;
 
+function TgtkObject.ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
+  ProcessAmpersands : Boolean) : PChar;
+var
+  Lines : PPChar;
+  I, NumLines : Longint;
+  TmpStr : PGString;
+  Line : PgChar;
+begin
+  TmpStr := nil;
+  WordWrap(DC, Src, MaxWidthInPixels, Lines, NumLines);
+  For I := 0 to NumLines - 1 do begin
+    If TmpStr <> nil then
+      g_string_append_c(TmpStr, #10);
+
+    If ProcessAmpersands then begin
+      Line := Ampersands2Underscore(Lines[I]);
+      If Line <> nil then begin
+        If TmpStr <> nil then begin
+          g_string_append(TmpStr, Line);
+        end
+        else
+          TmpStr := g_string_new(Line);
+        StrDispose(Line);
+      end;
+    end
+    else begin
+      If Lines[I] <> nil then
+        If TmpStr <> nil then
+          g_string_append(TmpStr, Lines[I])
+        else
+          TmpStr := g_string_new(Lines[I]);
+    end;
+  end;
+  ReallocMem(Lines, 0);
+  If TmpStr <> nil then
+    Result := StrNew(TmpStr^.str);
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -6466,6 +6518,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.251  2002/10/15 22:28:05  lazarus
+  AJ: added forcelinebreaks
+
   Revision 1.250  2002/10/15 16:01:36  lazarus
   MG: fixed timers
 
