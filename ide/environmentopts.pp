@@ -2445,7 +2445,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
     with GrabberColorButton do begin
       Name:='GrabberColorButton';
       Parent:=FormEditMiscGroupBox;
-      Left:=250;
+      Left:=280;
       Top:=0;
       Width:=50;
       Height:=25;
@@ -3225,9 +3225,11 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.GridGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
 begin
   with ShowGridCheckBox do begin
-    SetBounds(6,2,200,Height);
+    SetBounds(6,2,Parent.ClientWidth-7,Height);
   end;
 
   with GridColorButton do begin
@@ -3237,8 +3239,8 @@ begin
   end;
 
   with GridColorLabel do begin
-    SetBounds(GridColorButton.Left+GridColorButton.Width+5,
-           GridColorButton.Top+2,80,Height);
+    x:=GridColorButton.Left+GridColorButton.Width+5;
+    SetBounds(x,GridColorButton.Top+2,Parent.ClientWidth-x-2,Height);
   end;
 
   with SnapToGridCheckBox do begin
@@ -3254,8 +3256,8 @@ begin
   end;
 
   with GridSizeXLabel do begin
-    SetBounds(GridSizeXComboBox.Left+GridSizeXComboBox.Width+5,
-              GridSizeXComboBox.Top+2,150,Height);
+    X:=GridSizeXComboBox.Left+GridSizeXComboBox.Width+5;
+    SetBounds(X,GridSizeXComboBox.Top+2,Parent.ClientWidth-X-2,Height);
   end;
 
   with GridSizeYComboBox do begin
