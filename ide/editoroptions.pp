@@ -1525,30 +1525,34 @@ begin
   // read the old settings, compare and write only the differences
   if SynColorScheme='' then SynColorScheme:=ReadColorScheme(Syn.LanguageName);
   OldSyn:=TCustomSynClass(Syn.ClassType).Create(nil);
-  AddSpecialHilightAttribsToHighlighter(OldSyn);
-  ReadHighlighterSettings(OldSyn,SynColorScheme);
-  // write colorscheme
-  XMLConfig.SetValue('EditorOptions/Color/Lang'
-    +StrToValidXMLName(Syn.LanguageName)+'/Version',
-    EditorOptsFormatVersion);
-  // write all attributes
-  for i:=0 to Syn.AttrCount-1 do begin
-    Attri:=Syn.Attribute[i];
-    OldAttri:=OldSyn.Attribute[i];
-    AttriName:=StrToValidXMLName(Attri.Name);
-    if AttriName='' then continue;
-    Path:='EditorOptions/Color/Lang'+StrToValidXMLName(Syn.LanguageName)
-          +'/Scheme'+StrToValidXMLName(SynColorScheme)
-          +'/'+StrToValidXMLName(AttriName)+'/';
-    if Attri.Background<>OldAttri.Background then
-      XMLConfig.SetValue(Path+'BackgroundColor/Value',Attri.Background);
-    if Attri.Foreground<>OldAttri.Foreground then
-      XMLConfig.SetValue(Path+'ForegroundColor/Value',Attri.Foreground);
-    if Attri.Style<>OldAttri.Style then begin
-      XMLConfig.SetValue(Path+'Style/Bold',fsBold in Attri.Style);
-      XMLConfig.SetValue(Path+'Style/Italic',fsItalic in Attri.Style);
-      XMLConfig.SetValue(Path+'Style/Underline',fsUnderline in Attri.Style);
+  try
+    AddSpecialHilightAttribsToHighlighter(OldSyn);
+    ReadHighlighterSettings(OldSyn,SynColorScheme);
+    // write colorscheme
+    XMLConfig.SetValue('EditorOptions/Color/Lang'
+      +StrToValidXMLName(Syn.LanguageName)+'/Version',
+      EditorOptsFormatVersion);
+    // write all attributes
+    for i:=0 to Syn.AttrCount-1 do begin
+      Attri:=Syn.Attribute[i];
+      OldAttri:=OldSyn.Attribute[i];
+      AttriName:=StrToValidXMLName(Attri.Name);
+      if AttriName='' then continue;
+      Path:='EditorOptions/Color/Lang'+StrToValidXMLName(Syn.LanguageName)
+            +'/Scheme'+StrToValidXMLName(SynColorScheme)
+            +'/'+StrToValidXMLName(AttriName)+'/';
+      if Attri.Background<>OldAttri.Background then
+        XMLConfig.SetValue(Path+'BackgroundColor/Value',Attri.Background);
+      if Attri.Foreground<>OldAttri.Foreground then
+        XMLConfig.SetValue(Path+'ForegroundColor/Value',Attri.Foreground);
+      if Attri.Style<>OldAttri.Style then begin
+        XMLConfig.SetValue(Path+'Style/Bold',fsBold in Attri.Style);
+        XMLConfig.SetValue(Path+'Style/Italic',fsItalic in Attri.Style);
+        XMLConfig.SetValue(Path+'Style/Underline',fsUnderline in Attri.Style);
+      end;
     end;
+  finally
+    OldSyn.Free;
   end;
 end;
 
