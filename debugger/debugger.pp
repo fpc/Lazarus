@@ -37,7 +37,7 @@ unit Debugger;
 interface
 
 uses
-  Classes, SysUtils, DBGUtils, Laz_XMLCfg;
+  Classes, SysUtils, Laz_XMLCfg, IDEProcs, DBGUtils;
 
 type
   TDBGLocationRec = record
@@ -263,6 +263,10 @@ type
     procedure Delete(const AIndex: Integer);
     destructor Destroy; override;
     function Remove(const ABreakPoint: TDBGBreakPoint): Integer;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
+                                const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
+                              const Path: string); virtual;
   public
     property Breakpoints[const AIndex: Integer]: TDBGBreakPoint read GetBreakpoint;
     property Enabled: Boolean read FEnabled write SetEnabled;
@@ -279,6 +283,13 @@ type
   protected
   public
     constructor Create;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
+                                const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
+                              const Path: string); virtual;
+    function GetGroupByName(const GroupName: string): TDBGBreakPointGroup;
+    function IndexOfGroupWithName(const GroupName: string): integer;
+  public
     property Items[const AnIndex: Integer]: TDBGBreakPointGroup
                                             read GetItem write SetItem; default;
   end;
@@ -305,6 +316,11 @@ type
     property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
+                                const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
+                              const Path: string); virtual;
+  public
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Expression: String read FExpression write SetExpression;
     property Valid: Boolean read GetValid;
@@ -341,13 +357,20 @@ type
     procedure DoStateChange; virtual;
     procedure Update(Item: TCollectionItem); override;
   public
-    constructor Create(const ADebugger: TDebugger; const AWatchClass: TDBGWatchClass);
+    constructor Create(const ADebugger: TDebugger;
+                       const AWatchClass: TDBGWatchClass);
     destructor Destroy; override;
     function Add(const AExpression: String): TDBGWatch;
     function Find(const AExpression: String): TDBGWatch;
     procedure AddNotification(const ANotification: TDBGWatchesNotification);
     procedure RemoveNotification(const ANotification: TDBGWatchesNotification);
-    property Items[const AnIndex: Integer]: TDBGWatch read GetItem write SetItem; default;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig;
+                                const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig;
+                              const Path: string); virtual;
+  public
+    property Items[const AnIndex: Integer]: TDBGWatch read GetItem
+                                                      write SetItem; default;
   end;
   
   
@@ -366,6 +389,7 @@ type
   public
     constructor Create(const ADebugger: TDebugger);
     function Count: Integer; virtual;
+  public
     property Names[const AnIndex: Integer]: String read GetName;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Values[const AnIndex: Integer]: String read GetValue;
@@ -387,7 +411,9 @@ type
     function GetArgumentValue(const AnIndex: Integer): String;
   protected
   public
-    constructor Create(const AIndex:Integer; const AnAdress: Pointer; const AnArguments: TStrings; const AFunctionName: String; const ASource: String; const ALine: Integer);
+    constructor Create(const AIndex:Integer; const AnAdress: Pointer;
+                       const AnArguments: TStrings; const AFunctionName: String;
+                       const ASource: String; const ALine: Integer);
     destructor Destroy; override;
     property Adress: Pointer read FAdress;
     property ArgumentCount: Integer read GetArgumentCount;
@@ -492,6 +518,12 @@ type
     function Evaluate(const AExpression: String; var AResult: String): Boolean;  // Evaluates the given expression, returns true if valid
     function Modify(const AExpression, AValue: String): Boolean;                 // Modifies the given expression, returns true if valid
 
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                      const OnLoadFilename: TOnLoadFilenameFromConfig); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                      const OnSaveFilename: TOnSaveFilenameToConfig); virtual;
+
+  public
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
     property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;      // list of all breakpointgroups
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
@@ -672,9 +704,11 @@ begin
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
 end;
 
-procedure TDebugger.DoException(const AExceptionID: Integer; const AExceptionText: String);
+procedure TDebugger.DoException(const AExceptionID: Integer;
+  const AExceptionText: String);
 begin
-  if Assigned(FOnException) then FOnException(Self, AExceptionID, AExceptionText);
+  if Assigned(FOnException) then
+    FOnException(Self, AExceptionID, AExceptionText);
 end;
 
 procedure TDebugger.DoOutput(const AText: String);
@@ -687,7 +721,8 @@ begin
   if Assigned(FOnState) then FOnState(Self);
 end;
 
-function TDebugger.Evaluate(const AExpression: String; var AResult: String): Boolean;
+function TDebugger.Evaluate(const AExpression: String;
+  var AResult: String): Boolean;
 begin
   Result := ReqCmd(dcEvaluate, [AExpression, @AResult]);
 end;
@@ -723,12 +758,42 @@ begin
   Result := False;
 end;
 
+procedure TDebugger.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; const OnLoadFilename: TOnLoadFilenameFromConfig);
+var
+  AFilename: String;
+begin
+  Arguments:=XMLConfig.GetValue(Path+'Arguments/Value','');
+  BreakPointGroups.LoadFromXMLConfig(XMLConfig,Path+'BreakPointGroups/');
+  BreakPoints.LoadFromXMLConfig(XMLConfig,Path+'BreakPoints/',OnLoadFilename,
+                                @BreakPointGroups.GetGroupByName);
+  LoadStringList(XMLConfig,Environment, Path+'Environment/');
+  AFilename:=XMLConfig.GetValue(Path+'ExternalDebugger/Value','');
+  if Assigned(OnLoadFilename) then OnLoadFilename(AFilename);
+  Watches.LoadFromXMLConfig(XMLConfig,Path+'Watches/');
+end;
+
+procedure TDebugger.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  const OnSaveFilename: TOnSaveFilenameToConfig);
+var
+  AFilename: String;
+begin
+  XMLConfig.SetDeleteValue(Path+'Arguments/Value',Arguments,'');
+  BreakPointGroups.SaveToXMLConfig(XMLConfig,Path+'BreakPointGroups/');
+  BreakPoints.SaveToXMLConfig(XMLConfig,Path+'BreakPoints/',OnSaveFilename);
+  SaveStringList(XMLConfig,Environment,Path+'Environment/');
+  AFilename:=ExternalDebugger;
+  if Assigned(OnSaveFilename) then OnSaveFilename(AFilename);
+  Watches.SaveToXMLConfig(XMLConfig,Path+'Watches/');
+end;
+
 procedure TDebugger.Pause;
 begin
   ReqCmd(dcPause, []);
 end;
 
-function TDebugger.ReqCmd(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
+function TDebugger.ReqCmd(const ACommand: TDBGCommand;
+  const AParams: array of const): Boolean;
 begin
   if FState = dsNone then Init;
   if ACommand in Commands
@@ -1185,7 +1250,8 @@ begin
     GetItem(n).DoStateChange;
 end;
 
-function TDBGBreakPoints.Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
+function TDBGBreakPoints.Find(const ASource: String;
+  const ALine: Integer): TDBGBreakPoint;
 var
   n: Integer;
 begin
@@ -1217,7 +1283,8 @@ begin
   end;
 end;
 
-procedure TDBGBreakPoints.RemoveNotification(const ANotification: TDBGBreakPointsNotification);
+procedure TDBGBreakPoints.RemoveNotification(
+  const ANotification: TDBGBreakPointsNotification);
 begin
   FNotificationList.Remove(ANotification);
   ANotification.ReleaseReference;
@@ -1232,12 +1299,11 @@ var
   NewBreakPoint: TDBGBreakPoint;
 begin
   Clear;
-  NewCount:=XMLConfig.GetValue(Path+'BreakPoints/Count',0);
+  NewCount:=XMLConfig.GetValue(Path+'Count',0);
   for i:=0 to NewCount-1 do begin
-    NewBreakPoint:=TDBGBreakPoint.Create(Self);
-    Add(NewBreakPoint);
+    NewBreakPoint:=TDBGBreakPoint(inherited Add);
     NewBreakPoint.LoadFromXMLConfig(XMLConfig,
-      Path+'BreakPoints/Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
+      Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
   end;
 end;
 
@@ -1249,11 +1315,11 @@ var
   CurBreakPoint: TDBGBreakPoint;
 begin
   Cnt:=Count;
-  XMLConfig.SetDeleteValue(Path+'BreakPoints/Count',Cnt,0);
+  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
   for i:=0 to Cnt-1 do begin
     CurBreakPoint:=Items[i];
     CurBreakPoint.SaveToXMLConfig(XMLConfig,
-      Path+'BreakPoints/Item'+IntToStr(i+1)+'/',OnSaveFilename);
+      Path+'Item'+IntToStr(i+1)+'/',OnSaveFilename);
   end;
 end;
 
@@ -1342,6 +1408,22 @@ begin
   then ABreakpoint.Group := nil;
 end;
 
+procedure TDBGBreakPointGroup.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  Name:=XMLConfig.GetValue(Path+'Name/Value','');
+  // the breakpoints of this group are not loaded here.
+  // They are loaded by the TDBGBreakPoints object.
+end;
+
+procedure TDBGBreakPointGroup.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'Name/Value',Name,'');
+  // the breakpoints of this group are not saved here.
+  // They are saved by the TDBGBreakPoints object.
+end;
+
 procedure TDBGBreakPointGroup.RemoveReference(const ABreakPoint: TDBGBreakPoint);
 begin
   FReferences.Remove(ABreakPoint);
@@ -1373,12 +1455,66 @@ begin
   inherited Create(TDBGBreakPointGroup);
 end;
 
-function TDBGBreakPointGroups.GetItem(const AnIndex: Integer): TDBGBreakPointGroup;
+procedure TDBGBreakPointGroups.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  NewCount: integer;
+  NewGroup: TDBGBreakPointGroup;
+  i: Integer;
+begin
+  Clear;
+  NewCount:=XMLConfig.GetValue(Path+'Count',0);
+  for i:=0 to NewCount-1 do begin
+    NewGroup:=TDBGBreakPointGroup(inherited Add);
+    NewGroup.LoadFromXMLConfig(XMLConfig,
+                               Path+'Item'+IntToStr(i+1)+'/');
+  end;
+end;
+
+procedure TDBGBreakPointGroups.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  Cnt: Integer;
+  CurGroup: TDBGBreakPointGroup;
+  i: Integer;
+begin
+  Cnt:=Count;
+  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+  for i:=0 to Cnt-1 do begin
+    CurGroup:=Items[i];
+    CurGroup.SaveToXMLConfig(XMLConfig,
+                             Path+'Item'+IntToStr(i+1)+'/');
+  end;
+end;
+
+function TDBGBreakPointGroups.GetGroupByName(const GroupName: string
+  ): TDBGBreakPointGroup;
+var
+  i: Integer;
+begin
+  i:=IndexOfGroupWithName(GroupName);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+function TDBGBreakPointGroups.IndexOfGroupWithName(const GroupName: string
+  ): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Items[Result].Name,GroupName)<>0) do
+    dec(Result);
+end;
+
+function TDBGBreakPointGroups.GetItem(const AnIndex: Integer
+  ): TDBGBreakPointGroup;
 begin
   Result := TDBGBreakPointGroup(inherited GetItem(AnIndex));
 end;
 
-procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer; const AValue: TDBGBreakPointGroup);
+procedure TDBGBreakPointGroups.SetItem(const AnIndex: Integer;
+  const AValue: TDBGBreakPointGroup);
 begin
   inherited SetItem(AnIndex, AValue);
 end;
@@ -1401,6 +1537,17 @@ constructor TDBGWatch.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FEnabled := False;
+end;
+
+procedure TDBGWatch.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string
+  );
+begin
+  Expression:=XMLConfig.GetValue(Path+'Expression/Value','');
+end;
+
+procedure TDBGWatch.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+begin
+  XMLConfig.SetDeleteValue(Path+'Expression/Value',Expression,'');
 end;
 
 procedure TDBGWatch.DoEnableChange;
@@ -1485,13 +1632,15 @@ begin
   end;
 end;
 
-procedure TDBGWatches.AddNotification(const ANotification: TDBGWatchesNotification);
+procedure TDBGWatches.AddNotification(
+  const ANotification: TDBGWatchesNotification);
 begin
   FNotificationList.Add(ANotification);
   ANotification.AddReference;
 end;
 
-constructor TDBGWatches.Create(const ADebugger: TDebugger; const AWatchClass: TDBGWatchClass);
+constructor TDBGWatches.Create(const ADebugger: TDebugger;
+  const AWatchClass: TDBGWatchClass);
 begin
   FDebugger := ADebugger;
   FNotificationList := TList.Create;
@@ -1551,10 +1700,41 @@ begin
   end;
 end;
 
-procedure TDBGWatches.RemoveNotification(const ANotification: TDBGWatchesNotification);
+procedure TDBGWatches.RemoveNotification(
+  const ANotification: TDBGWatchesNotification);
 begin
   FNotificationList.Remove(ANotification);
   ANotification.ReleaseReference;
+end;
+
+procedure TDBGWatches.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  NewCount: Integer;
+  i: Integer;
+  NewWatch: TDBGWatch;
+begin
+  Clear;
+  NewCount:=XMLConfig.GetValue(Path+'Count',0);
+  for i:=0 to NewCount-1 do begin
+    NewWatch:=TDBGWatch(inherited Add);
+    NewWatch.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i+1)+'/');
+  end;
+end;
+
+procedure TDBGWatches.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
+  );
+var
+  Cnt: Integer;
+  i: Integer;
+  CutWatch: TDBGWatch;
+begin
+  Cnt:=Count;
+  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+  for i:=0 to Cnt-1 do begin
+    CutWatch:=Items[i];
+    CutWatch.SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i+1)+'/');
+  end;
 end;
 
 procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
@@ -1641,7 +1821,9 @@ end;
 { TDBGCallStackEntry }
 { =========================================================================== }
 
-constructor TDBGCallStackEntry.Create(const AIndex: Integer; const AnAdress: Pointer; const AnArguments: TStrings; const AFunctionName: String; const ASource: String; const ALine: Integer);
+constructor TDBGCallStackEntry.Create(const AIndex: Integer;
+  const AnAdress: Pointer; const AnArguments: TStrings;
+  const AFunctionName: String; const ASource: String; const ALine: Integer);
 begin
   inherited Create;   
   FIndex := AIndex;
@@ -1705,7 +1887,8 @@ begin
   inherited Create;
 end;
 
-function TDBGCallStack.CreateStackEntry(const AIndex: Integer): TDBGCallStackEntry; 
+function TDBGCallStack.CreateStackEntry(
+  const AIndex: Integer): TDBGCallStackEntry;
 begin
   Result := nil;
 end;
@@ -1764,6 +1947,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.19  2003/05/21 08:09:04  mattias
+  started loading/saving watches
+
   Revision 1.18  2003/05/20 21:41:07  mattias
   started loading/saving breakpoints
 
