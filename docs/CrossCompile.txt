@@ -34,7 +34,7 @@ compile with fpc.
 
 
 2. Download or compile the win32 units (ppw,ow files for rtl, fcl). These files
-must be compatible (depending on the compiler probably 1.0.8/10 as of now).
+must be compatible (depending on the compiler probably 1.0.10 as of now).
 Install them next to the linux units in /usr/lib/fpc/1.0.x/units.
 See (a) or (b).
 
@@ -51,6 +51,7 @@ compiler is compatible to the source. The same source directory can be used for
 win32, because the output files have different names (.ppu <> .ppw, .o <> .ow).
 Then compile the win32 units (.ppw, .pw):
 
+[]$ make clean OS_TARGET=win32
 []$ make -C compiler cycle OS_TARGET=win32
 []$ make fcl packages OS_TARGET=win32
 
