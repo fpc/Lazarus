@@ -1,0 +1,47 @@
+package dclLVw5;
+
+{$R *.RES}
+{$R 'htmllite.dcr'}
+{$ALIGN OFF}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA OFF}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'ThtmlLite'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl50,
+  VCLJPG50;
+
+{%File 'LiteCons.inc'}
+
+contains
+  HTMLLite in 'HTMLLite.pas',
+  LiteUn2 in 'LiteUn2.pas',
+  LitePars in 'LitePars.pas',
+  LiteSbs1 in 'LiteSbs1.pas',
+  LiteSubs in 'LiteSubs.pas',
+  LiteDith in 'LiteDith.pas',
+  litegif1 in 'litegif1.pas',
+  litegif2 in 'litegif2.pas',
+  LiteReadThd in 'LiteReadThd.pas';
+
+end.

@@ -1,0 +1,45 @@
+package dclLVw3;
+
+{$R *.RES}
+{$R 'htmllite.dcr'}
+{$ALIGN ON}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $00400000}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl30;
+
+contains
+  LiteUn2,
+  LitePars,
+  LiteSbs1,
+  LiteSubs,
+  HTMLLite,
+  jpeg,
+  jconsts,
+  LiteDith,
+  LiteReadThd,
+  litegif2,
+  litegif1;
+
+end.
