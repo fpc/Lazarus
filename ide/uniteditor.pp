@@ -242,7 +242,7 @@ type
 
 implementation
 uses
-  LCLLinux,TypInfo,LResources,Main;
+  LCLLinux,TypInfo,LResources,Main,LazConf;
 
 var
 Editor_Num : Integer;
@@ -691,6 +691,9 @@ if assigned(FEditor) then
 
     FSynAutoComplete:=TSynAutoComplete.Create(FAOwner);
     with FSynAutoComplete do begin
+      if FileExists(SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci')) then
+      AutoCompleteList.LoadFromFile(SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'))
+	else
       AutoCompleteList.LoadFromFile('lazarus.dci');
     end;
 
