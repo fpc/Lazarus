@@ -1,3 +1,5 @@
+// included by forms.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -13,8 +15,17 @@
  *****************************************************************************
 }
 
+function TScrollBox.GetClientScrollOffset: TPoint;
+begin
+  Result.X:=HorzScrollBar.Position;
+  Result.Y:=VertScrollBar.Position;
+end;
+
 constructor TScrollBox.Create(AOwner: TComponent);
 begin
   Inherited Create(AOwner);
   fCompStyle:= csScrollBox;
 end;
+
+// included by forms.pp
+

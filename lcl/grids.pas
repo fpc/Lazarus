@@ -405,7 +405,7 @@ Type
 Type
   //TCustomGrid=Class(TScrollBox)
   //TCustomGrid=Class(TCustomControl)
-  TCustomGrid=Class(TScrollingWinControl)
+  TCustomGrid = Class(TScrollingWinControl)
   Private
     FAutoAdvance: TAutoAdvance;
     FDefaultDrawing: Boolean;
@@ -2362,7 +2362,7 @@ Var
   R: TRect;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  {$IfDef dbgFocus}WriteLn('MouseDown INIT');{$Endif}
+  {$IfDef dbgFocus}WriteLn('TCustomGrid.MouseDown INIT ',Name,':',ClassName);{$Endif}
   If Not FGCache.ValidGrid Then Exit;
   If Not (ssLeft in Shift) Then Exit;
   Gz:=MouseToGridZone(X,Y, False);
@@ -2416,7 +2416,7 @@ begin
         End;
       End;
   End;
-  {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
+  {$ifDef dbgFocus} WriteLn('TCustomGrid.MouseDown END'); {$Endif}
 end;
 
 procedure TCustomGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2452,7 +2452,7 @@ var
 begin
   inherited MouseUp(Button, Shift, X, Y);
   If Not FGCache.ValidGrid Then Exit;
-  {$IfDef dbgFocus}WriteLn('MouseUP INIT');{$Endif}
+  {$IfDef dbgFocus}WriteLn('TCustomGrid.MouseUP INIT');{$Endif}
   Cur:=MouseToCell(Point(x,y));
   Case fGridState of
     gsSelecting:
@@ -2487,7 +2487,7 @@ begin
       End;
   End;
   fGridState:=gsNormal;
-  {$IfDef dbgFocus}WriteLn('MouseUP  END  RND=',Random);{$Endif}
+  {$IfDef dbgFocus}WriteLn('TCustomGrid.MouseUP  END  RND=',Random);{$Endif}
 end;
 
 procedure TCustomGrid.DblClick;

@@ -336,12 +336,6 @@ begin
   UpdateScrollBars;
 end;
 
-function TScrollingWinControl.GetClientScrollOffset: TPoint;
-begin
-  Result.X:=HorzScrollBar.Position;
-  Result.Y:=VertScrollBar.Position;
-end;
-
 procedure TScrollingWinControl.AlignControls(AControl: TControl; var ARect: TRect);
 begin
   HorzScrollBar.AutoCalcRange;
