@@ -742,6 +742,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TControl.GetScrolledClientRect: TRect;
+
+------------------------------------------------------------------------------}
+function TControl.GetScrolledClientRect: TRect;
+var
+  ScrolledOffset: TPoint;
+begin
+  Result:=GetClientRect;
+  ScrolledOffset:=GetClientScrollOffset;
+  inc(Result.Left,ScrolledOffset.X);
+  inc(Result.Top,ScrolledOffset.Y);
+  inc(Result.Right,ScrolledOffset.X);
+  inc(Result.Bottom,ScrolledOffset.Y);
+end;
+
+{------------------------------------------------------------------------------
   function TControl.GetChildsRect(Scrolled: boolean): TRect;
   
   Returns the Client rectangle relative to the controls left, top.
@@ -749,8 +765,27 @@ end;
   (for an example see TScrollingWincontrol).
 ------------------------------------------------------------------------------}
 function TControl.GetChildsRect(Scrolled: boolean): TRect;
+var
+  ScrolledOffset: TPoint;
 begin
   Result:=ClientRect;
+  if Scrolled then begin
+    ScrolledOffset:=GetClientScrollOffset;
+    inc(Result.Left,ScrolledOffset.X);
+    inc(Result.Top,ScrolledOffset.Y);
+    inc(Result.Right,ScrolledOffset.X);
+    inc(Result.Bottom,ScrolledOffset.Y);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.GetClientScrollOffset: TPoint;
+
+  Returns the scrolling offset of the client area.
+------------------------------------------------------------------------------}
+function TControl.GetClientScrollOffset: TPoint;
+begin
+  Result:=Point(0,0);
 end;
 
 {------------------------------------------------------------------------------
@@ -1952,6 +1987,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.97  2002/11/03 22:40:28  lazarus
+  MG: fixed ControlAtPos
+
   Revision 1.96  2002/11/01 14:40:31  lazarus
   MG: fixed mouse coords on scrolling wincontrols
 
