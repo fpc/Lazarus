@@ -177,6 +177,7 @@ type
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure RecreateHandle; virtual;
     procedure Remove(Item: TMenuItem);
+    function IsInMenuBar: boolean; virtual;
   public
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
@@ -304,6 +305,8 @@ procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
 function TextToShortCut(const ShortCutText: string): TShortCut;
 function ShortCutToText(ShortCut: TShortCut): string;
 
+var
+  DesignerMenuItemClick: TNotifyEvent;
 
 procedure Register;
 
@@ -368,10 +371,16 @@ begin
 end;
 
 
+initialization
+  DesignerMenuItemClick:=nil;
+
 end.
 
 {
   $Log$
+  Revision 1.41  2003/04/19 18:37:58  mattias
+  implemented adding OnClick, when clicking on designer menuitem
+
   Revision 1.40  2003/04/04 16:35:24  mattias
   started package registration
 

@@ -50,7 +50,8 @@ begin
   if Enabled then
   begin
     if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
-        not (ActionLink.IsAutoCheckLinked) and AutoCheck) then
+        not (ActionLink.IsAutoCheckLinked) and AutoCheck)
+    then
       Checked := not Checked;
     { Call OnClick if assigned and not equal to associated action's OnExecute.
       If associated action's OnExecute assigned then call it, otherwise, call
@@ -202,7 +203,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenuItem.GetParentComponent: TComponent;
 begin
-  if (FParent <> nil) and (FParent.FMenu <> nil) then
+  if (FParent <> nil) and (FParent.FMenu<>nil) then
     Result := FParent.FMenu
   else
     Result := FParent;
@@ -210,14 +211,13 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.DoClicked
-  Params:  msg: 
-  Returns: Nothing
-
-  Description of the procedure for the class.
  ------------------------------------------------------------------------------}
 procedure TMenuItem.DoClicked(var msg); 
 begin
-  Click;
+  if not (csDesigning in ComponentState) then
+    Click
+  else if Assigned(DesignerMenuItemClick) then
+    DesignerMenuItemClick(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -563,6 +563,15 @@ begin
   I := IndexOf(Item);
   if I<0 then raise EMenuError.Create(SMenuNotFound);
   Delete(I);
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.IsInMenuBar: boolean;
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsInMenuBar: boolean;
+begin
+  Result:=(FParent<>nil) and (FParent.FMenu<>nil)
+          and (FParent.FMenu is TMainMenu);
 end;
 
 {------------------------------------------------------------------------------
@@ -945,6 +954,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/04/19 18:37:58  mattias
+  implemented adding OnClick, when clicking on designer menuitem
+
   Revision 1.32  2003/03/16 09:41:05  mattias
   fixed checking menuitems
 
@@ -1069,6 +1081,9 @@ end;
 
 
   $Log$
+  Revision 1.33  2003/04/19 18:37:58  mattias
+  implemented adding OnClick, when clicking on designer menuitem
+
   Revision 1.32  2003/03/16 09:41:05  mattias
   fixed checking menuitems
 

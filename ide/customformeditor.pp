@@ -39,7 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
-  Forms, IDEComp, JITForms, Compreg, ComponentEditors, KeyMapping,
+  Forms, Menus, IDEComp, JITForms, Compreg, ComponentEditors, KeyMapping,
   EditorOptions, Dialogs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
@@ -130,6 +130,7 @@ TCustomFormEditor
 
     Function GetSelCount : Integer; override;
     Function GetSelComponent(Index : Integer) : TIComponentInterface; override;
+    procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
   public
     JITFormList : TJITForms;
     constructor Create;
@@ -619,10 +620,12 @@ begin
   JITFormList := TJITForms.Create;
   JITFormList.RegCompList := RegCompList;
   JITFormList.OnReaderError:=@JITFormListReaderError;
+  DesignerMenuItemClick:=@OnDesignerMenuItemClick;
 end;
 
 destructor TCustomFormEditor.Destroy;
 begin
+  DesignerMenuItemClick:=nil;
   JITFormList.Free;
   FComponentInterfaceList.Free;
   FSelectedComponents.Free;
@@ -905,6 +908,31 @@ function TCustomFormEditor.GetSelComponent(Index: Integer
   ): TIComponentInterface;
 begin
   Result:=TIComponentInterface(FComponentInterfaceList[Index]);
+end;
+
+procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
+var
+  CompEditor: TBaseComponentEditor;
+  MenuItem: TMenuItem;
+begin
+  if (Sender=nil) or (not (Sender is TMenuItem)) then exit;
+  MenuItem:=TMenuItem(Sender);
+  if (MenuItem.Count>0) or MenuItem.IsInMenuBar then exit;
+
+  CompEditor:=GetComponentEditor(TComponent(Sender));
+  if CompEditor=nil then exit;
+  try
+    CompEditor.Edit;
+  except
+    on E: Exception do begin
+      writeln('TCustomFormEditor.OnDesignerMenuItemClick ERROR: ',E.Message);
+      MessageDlg('Error in '+CompEditor.ClassName,
+        'The component editor of class "'+CompEditor.ClassName+'"'
+        +'has created the error:'#13
+        +'"'+E.Message+'"',
+        mtError,[mbOk],0);
+    end;
+  end;
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;
