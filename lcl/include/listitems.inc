@@ -198,11 +198,11 @@ var
   ItemHeader        : PItemHeader;
   ItemInfo          : PItemInfo;
   PStr              : PShortStr;
-  Flag              : Boolean;
+  //Flag              : Boolean;
   PInt              : PInteger;
 begin
   Clear;
-  Flag:=False;
+  //Flag:=False;
   Stream.ReadBuffer(Size, SizeOf(Integer));
   ItemHeader := AllocMem(Size);
   Owner.BeginUpdate;
@@ -214,7 +214,7 @@ begin
     begin
       with Add do
       begin
-        Flag:=True;
+        //Flag:=True;
         Caption := ItemInfo^.Caption;
         ImageIndex := ItemInfo^.ImageIndex;
         Data := ItemInfo^.Data;
@@ -333,6 +333,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.20  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 

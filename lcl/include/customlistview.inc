@@ -21,7 +21,7 @@ begin
   inherited Create(AOwner);
   FColumns := TListColumns.Create(self);
   FListItems := TListItems.Create(self);
-  FBorderStyle := bsSingle;
+  BorderStyle := bsSingle;
   FScrollBars := ssBoth;
   FSmallImages := nil;
   FCompStyle := csListView;
@@ -620,6 +620,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.36  2004/05/20 21:28:54  marc
   * Fixed win32 listview
 

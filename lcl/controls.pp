@@ -1244,6 +1244,7 @@ type
     FBorderWidth: TBorderWidth;
     FBoundsLockCount: integer;
     FBoundsRealized: TRect;
+    FBorderStyle: TBorderStyle;
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
     FChildSizing: TControlChildSizing;
@@ -1280,7 +1281,6 @@ type
     FCreatingHandle: Boolean; // Set when constructing the handle
                               // Only used for checking
     procedure AlignControl(AControl : TControl);
-    function GetBorderStyle: TBorderStyle;
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
     function GetControlCount: Integer;
@@ -1298,8 +1298,6 @@ type
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
   protected
-    FBorderStyle: TFormBorderStyle;
-
     procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -1374,7 +1372,6 @@ type
     procedure DestroyWnd; virtual;
     procedure UpdateShowing; virtual;
     procedure Update; override;
-    procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure ShowControl(AControl: TControl); virtual;
     procedure WndProc(var Message : TLMessage); override;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); dynamic;
@@ -1412,7 +1409,9 @@ type
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
     
-    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
+    function GetBorderStyle: TBorderStyle;
+    procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
+    //property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
   public
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
@@ -1528,7 +1527,7 @@ type
     procedure Paint; virtual;
 
     property Canvas: TCanvas read FCanvas write FCanvas;
-    property BorderStyle;
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
   end;
 
 
@@ -1735,7 +1734,7 @@ procedure Register;
 implementation
 
 uses
-  WSControls, // Widgetset uses are allowed
+  WSControls, // Widgetset uses circle is allowed
 
   Forms, // the circle can't be broken without breaking Delphi compatibility
   Math;  // Math is in RTL and only a few functions are used.
@@ -2269,6 +2268,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.202  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.201  2004/05/21 09:03:54  micha
   implement new borderstyle
   - centralize to twincontrol (protected)

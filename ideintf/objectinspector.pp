@@ -474,7 +474,7 @@ begin
   FValueFont.Color:=clMaroon;
   FDefaultValueFont:=TFont.Create;
   FDefaultValueFont.Color:=clActiveCaption;
-  fBorderStyle := bsSingle;
+  BorderStyle := bsSingle;
 
   // create sub components
   ValueEdit:=TEdit.Create(Self);

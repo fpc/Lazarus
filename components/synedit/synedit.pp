@@ -334,7 +334,7 @@ type
     fMouseDownX: integer;
     fMouseDownY: integer;
     fBookMarkOpt: TSynBookMarkOpt;
-{$ifndef SYN_LAZARUS}    
+{$ifndef SYN_LAZARUS}
     fBorderStyle: TBorderStyle;
 {$endif}    
     fHideSelection: boolean;
@@ -1212,7 +1212,11 @@ begin
   fInserting := True;
   fMaxLeftChar := 1024;
   fScrollBars := ssBoth;
+  {$IFDEF SYN_LAZARUS}
+  BorderStyle := bsSingle;
+  {$ELSE}
   fBorderStyle := bsSingle;
+  {$ENDIF}
   fInsertCaret := ctVerticalLine;
   fOverwriteCaret := ctBlock;
   FSelectionMode := smNormal;
@@ -1254,10 +1258,10 @@ begin
   with Params do begin
     {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
     WindowClass.Style := WindowClass.Style and not Cardinal(ClassStylesOff);
-    Style := Style or ScrollBar[FScrollBars] or BorderStyles[fBorderStyle]
+    Style := Style or ScrollBar[FScrollBars] or BorderStyles[BorderStyle]
       or WS_CLIPCHILDREN;
     {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-    if NewStyleControls and Ctl3D and (fBorderStyle = bsSingle) then begin
+    if NewStyleControls and Ctl3D and (BorderStyle = bsSingle) then begin
       Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;

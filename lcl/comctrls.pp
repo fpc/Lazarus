@@ -527,6 +527,7 @@ type
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsSingle;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
@@ -2253,6 +2254,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.128  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.127  2004/05/21 09:03:54  micha
   implement new borderstyle
   - centralize to twincontrol (protected)

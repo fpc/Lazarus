@@ -371,7 +371,7 @@ constructor TCustomListBox.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csListBox;
-  FBorderStyle:= bsSingle;
+  BorderStyle:= bsSingle;
   FItems := TExtendedStringList.Create(GetCachedDataSize);
   FCacheValid := True;
   FItemIndex:=-1;

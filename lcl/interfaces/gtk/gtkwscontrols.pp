@@ -27,7 +27,7 @@ unit GtkWSControls;
 interface
 
 uses
-  {$IFDEF GTK2} Gtk2, {$ELSE} Gtk, {$ENDIF}
+  {$IFDEF GTK2} Gtk2, Glib2, {$ELSE} Gtk, Glib, {$ENDIF}
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
@@ -104,14 +104,15 @@ uses
 
 { TGtkWSWinControl }
   
-procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); 
+procedure TGtkWSWinControl.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: Integer);
 var
   Allocation: TGTKAllocation;
 begin                
-  Allocation.X := ALeft;
-  Allocation.Y := ATop;
-  Allocation.Width := AWidth;
-  Allocation.Height := AHeight;
+  Allocation.X := gint16(ALeft);
+  Allocation.Y := gint16(ATop);
+  Allocation.Width := guint16(AWidth);
+  Allocation.Height := guint16(AHeight);
   gtk_widget_size_allocate(PGtkWidget(AWinControl.Handle), @Allocation);
 end;
 
@@ -148,10 +149,10 @@ var
   Allocation: TGTKAllocation;
 begin                
   Widget := PGtkWidget(AWinControl.Handle);
-  Allocation.X := ALeft;
-  Allocation.Y := ATop;
-  Allocation.Width := Widget^.Allocation.Width;
-  Allocation.Height := Widget^.Allocation.Height;
+  Allocation.X := gint16(ALeft);
+  Allocation.Y := gint16(ATop);
+  Allocation.Width := guint16(Widget^.Allocation.Width);
+  Allocation.Height := guint16(Widget^.Allocation.Height);
   gtk_widget_size_allocate(Widget, @Allocation);
 end;
 
@@ -163,8 +164,8 @@ begin
   Widget := PGtkWidget(AWinControl.Handle);
   Allocation.X := Widget^.Allocation.X;
   Allocation.Y := Widget^.Allocation.Y;
-  Allocation.Width := AWidth;
-  Allocation.Height := AHeight;
+  Allocation.Width := guint16(AWidth);
+  Allocation.Height := guint16(AHeight);
   gtk_widget_size_allocate(Widget, @Allocation);
 end;
 

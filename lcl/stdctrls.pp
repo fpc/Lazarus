@@ -400,7 +400,7 @@ type
   public
     property Align;
     property Anchors;
-    property BorderStyle default bsSingle;
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property Constraints;
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
@@ -1549,6 +1549,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.144  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.143  2004/05/21 11:13:18  micha
   add measureitem to tcustomlistbox just like tcustomcombobox has
 

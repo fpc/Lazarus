@@ -984,11 +984,13 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomForm.SetFormBorderStyle(Value: TFormBorderStyle);
 begin
-  if FBorderStyle = Value then exit;
+  if FFormBorderStyle = Value then exit;
   //TODO: Finish SETBORDERSTYLE
-  FBorderStyle := Value;
+  FFormBorderStyle := Value;
   Include(FFormState,fsBorderStyleChanged);
-  inherited SetBorderStyle(Value);
+  // ToDo: implement it.
+  // We can not use inherited SetBorderStyle(Value),
+  // because TBorderSTyle <> TFormBorderSTyle;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1114,7 +1116,7 @@ Begin
   BeginFormUpdate;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
-    FBorderStyle:= bsSizeable;
+    FFormBorderStyle:= bsSizeable;
   // set form style before handle is allocated
   if not (fsFormStyleChanged in FFormState) then
     FFormStyle:= fsNormal;
@@ -1611,6 +1613,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.137  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.136  2004/05/21 09:03:55  micha
   implement new borderstyle
   - centralize to twincontrol (protected)

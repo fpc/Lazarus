@@ -1130,9 +1130,10 @@ begin
   // set the Reference before the constructor is called, so that
   // events and constructors can refer to it
   TComponent(Reference) := Instance;
-  ok:=false;
+
   OldFindGlobalComponent:=FindGlobalComponent;
   FindGlobalComponent:=@FindApplicationComponent;
+  ok:=false;
   try
     Instance.Create(Self);
     ok:=true;
@@ -1179,6 +1180,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2004/05/21 18:12:17  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.79  2004/05/11 11:42:26  mattias
   replaced writeln by debugln
 

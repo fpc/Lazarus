@@ -388,6 +388,7 @@ type
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
   protected
+    FFormBorderStyle: TFormBorderStyle;
     FActionLists: TList;
     function CloseQuery : boolean; virtual;
     function FormUpdating: boolean;
@@ -446,7 +447,7 @@ type
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
     property BorderStyle: TFormBorderStyle
-                      read FBorderStyle write SetFormBorderStyle default bsSizeable;
+                      read FFormBorderStyle write SetFormBorderStyle default bsSizeable;
     property Caption stored IsForm;
     property Color default clBtnFace;
     property Designer: TIDesigner read FDesigner write SetDesigner;
@@ -1052,6 +1053,8 @@ implementation
 
 
 uses
+  WSControls, // Widgetset uses circle is allowed
+  
   Math;
 
 var

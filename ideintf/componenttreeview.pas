@@ -95,7 +95,7 @@ begin
   end else begin
     if FComponentList.IsEqual(PropertyEditorHook.LookupRoot,NewSelection) then
     begin
-      // nodes ok, but maybe node values needs update
+      // nodes ok, but maybe node values need update
       UpdateComponentNodesValues;
       exit;
     end;
