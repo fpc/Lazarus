@@ -2168,7 +2168,7 @@ Begin
     PFMode := SetPolyFillMode(DC, Windows.WINDING)
   else
     PFMode := SetPolyFillMode(DC, Windows.ALTERNATE);
-  Result := Boolean(Windows.Polygon(DC, LPPOINT(Points), NumPts));
+  Result := Boolean(Windows.Polygon(DC, LPPOINT(Points)^, NumPts));
   SetPolyFillMode(DC, PFMode);
 End;
 
@@ -2184,7 +2184,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean;
 Begin
-  Result := Boolean(Windows.Polyline(DC, LPPOINT(Points), NumPts));
+  Result := Boolean(Windows.Polyline(DC, LPPOINT(Points)^, NumPts));
 End;
 
 {------------------------------------------------------------------------------
@@ -2866,6 +2866,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2003/12/30 22:08:48  micha
+  fix for fpc 1.0.x, LPPOINT winapi stuff
+
   Revision 1.88  2003/12/30 08:38:03  micha
   enable selection of checklistbox items (from vincent)
 
