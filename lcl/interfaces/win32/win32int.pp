@@ -135,57 +135,6 @@ Type
   End;
    
   {$I win32listslh.inc}
-
-  WPointer = Pointer;
-  PWin32Control = ^TWin32Control;
-  PPWin32Control = ^PWin32Control;
-  { Properies of the Windows control }
-  TWin32Control = Record
-    TheObject: TWin32Object;
-    Private_Flags: Word;
-    State: Byte;
-    Saved_State: Byte;
-    Name: PChar;
-    TheStyle: Pointer;
-    Window: HWnd;
-    Parent: PWin32Control;
-  End;
-
-  PTabInfo = ^TTabInfo;
-  { Tab information }
-  TTabInfo = Record
-    Caption: PChar;
-    Index: Cardinal;
-  End;
-
-  { Enumerated type of key states }
-  TWin32KeyType = (WIN32_KEY_PRESS, WIN32_KEY_RELEASE);
-  PWin32KeyEvent = ^TWin32KeyEvent;
-  { Key event record }
-  TWin32KeyEvent = Record
-    KeyVal: Word;
-    Length: Integer;
-    Send_Event: Integer;
-    State: Integer;
-    TheString: String;
-    TheType: TWin32KeyType;
-    Window: HWND;
-  End;
-
-  { Record of key data for events }
-  TEventProc = record
-    Name : String[25];
-    CallBack : Procedure(Data : TObject);
-    Data : Pointer;
-  End;
-
-  { Procedural type for casting as a callback procedure }
-  CallbackProcedure = Function: Boolean;
-  { Procedural type for casting as a callback function }
-  TCbFunc = Function(Win32Control: HWND; Event: Pointer; Data: Pointer): Boolean;
-  PCbFunc = ^TCbFunc;
-
-  pTRect = ^TRect;
   
   { Asserts a trace for event named Message in the object Data }
   Procedure EventTrace(Message: String; Data: TObject);
@@ -243,6 +192,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/05/31 13:10:49  lazarus
+  Keith: Code cleanup.
+
   Revision 1.14  2002/05/10 07:43:48  lazarus
   MG: updated licenses
 
