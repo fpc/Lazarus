@@ -2149,7 +2149,7 @@ begin
   // ColorCount
   Desc^.ColorCount:=0;
   // BitsPerPixel
-  case Desc^.Depth of
+  case Desc^.Depth of                       //TODO MWE: Isn't this Visual^.bits_per_rgb
   0..8:   Desc^.BitsPerPixel:=Desc^.Depth;
   9..16:  Desc^.BitsPerPixel:=16;
   17..32: Desc^.BitsPerPixel:=32;
@@ -2158,7 +2158,7 @@ begin
   // LineEnd
   case Desc^.Depth of
   0..8:   Desc^.LineEnd:=rileByteBoundary;
-  9..32:  Desc^.LineEnd:=rileDWordBoundary;
+  9..32:  Desc^.LineEnd:=rileDWordBoundary; //TODO MWE: Isn't there a word boundary (9..16) ?
   else    Desc^.LineEnd:=rileQWordBoundary;
   end;
   // Precisions and Shifts
@@ -2335,9 +2335,16 @@ begin
     DebugLn('RawImage=',RawImageDescriptionAsString(@RawImage));
     {$ENDIF}
   
-    // consistency checks
-    RawImage.Description.AlphaLineEnd:=rileDWordBoundary;
+    // See also GetWindowRawImageDescription
+//    RawImage.Description.AlphaLineEnd:=rileDWordBoundary;
+    case AnImage^.Depth of
+    0..8:   RawImage.Description.AlphaLineEnd:=rileByteBoundary;
+    9..32:  RawImage.Description.AlphaLineEnd:=rileDWordBoundary; //TODO MWE: Isn't there a word boundary (9..16) ?
+    else    RawImage.Description.AlphaLineEnd:=rileQWordBoundary;
+    end;
     RawImage.Description.AlphaBitsPerPixel:=AnImage^.bpp;
+
+    // consistency checks
     if RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth then
       RaiseGDBException('RawImage.Description.AlphaBitsPerPixel<>AnImage^.Depth '+IntToStr(RawImage.Description.AlphaBitsPerPixel)+'<>'+IntToStr(AnImage^.Depth));
 
@@ -3161,16 +3168,6 @@ begin
        {$Else}
           DebugLn('[WARNING] Obsolete messagecall to LM_LV_ADDITEM for ', Sender.ClassName); 
        {$EndIf}
-
-      LM_LV_SELECTITEM:
-       {$IfDef GTK2}
-          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_SELECTITEM');
-       {$Else}
-          DebugLn('[WARNING] Obsolete messagecall to LM_LV_SELECTITEM for ', Sender.ClassName); 
-       {$EndIf}
-      
-      LM_LV_SHOWITEM:
-        DebugLn('[WARNING] Obsolete messagecall to LM_LV_SHOWITEM for ', Sender.ClassName); 
 
       LM_BRINGTOFRONT:
       begin
@@ -9200,6 +9197,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.509  2004/06/22 23:55:51  marc
+  * Fixed RawImage.Description.AlphaLineEnd (it is not always dword based)
+
   Revision 1.508  2004/06/19 00:06:47  mattias
   fixed compilation
 
