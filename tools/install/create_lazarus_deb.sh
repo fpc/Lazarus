@@ -79,7 +79,7 @@ ln -s $LazDestDir/lazarus $LazBuildDir/usr/bin/lazarus
 
 # fixing permissions
 echo "fixing permissions ..."
-find $LazBuildDir -type d | xargs chmod 755   # this is necessary on Debian Woody, don't ask me why
+find $LazBuildDir -type d | xargs chmod 755  # this is necessary on Debian Woody, don't ask me why
 find $LazBuildDir -name '*.sh' -exec chmod a+x {} \;
 
 # creating deb
@@ -91,3 +91,4 @@ echo "$LazDeb created."
 cd -
 
 # end.
+

@@ -71,14 +71,14 @@ if [ "$PkgType" = "deb" ]; then
 
   # change debian files
   DebianRulezDir=$TmpDir/install/debian/
-  Date=13/07/2003
+  Date=Sun Jul 13 16:02:44 CEST 2003
 
   # prepend changelog information, needed for version
   cd $DebianRulezDir
   File=changelog
   OldFile=changelog.old.fpc
   cp $File $OldFile
-  echo "fpc ($LazVersion-$LazRelease) stable; urgency=low" > $File
+  echo "fpc ($LazVersion-$LazRelease) unstable; urgency=low" > $File
   echo '  * Unofficial snapshot build for lazarus' >> $File
   echo " -- Mattias Gaertner <mattias@freepascal.org>  $Date" >> $File
   echo "" >> $File
@@ -107,6 +107,8 @@ if [ "$PkgType" = "deb" ]; then
   cd /usr/src/fpc-$LazVersion
   ./debian/rules binary-arch
   cd -
+  
+  # ToDo: install latest 1.0.10 tar, fix -dHasUnix,
 
 else
   # build fpc rpm
