@@ -382,7 +382,7 @@ begin
   inherited Create(AOwner);
   fCompStyle := csListBox;
   FBorderStyle:= bsSingle;
-  FItems := TExtendedStringList.Create(SizeOf(TCustomListBoxItemRecord));
+  FItems := TExtendedStringList.Create(GetCachedDataSize);
   FCacheValid := True;
   FItemIndex:=-1;
   FCanvas := TControlCanvas.Create;
