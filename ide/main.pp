@@ -6617,7 +6617,7 @@ var DestIndex, UnitIndex: integer;
 begin
   //writeln('');
   //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
-  Project1.JumpHistory.WriteDebugReport;
+  //Project1.JumpHistory.WriteDebugReport;
 
   // update jump history (e.g. delete jumps to closed editors)
   Project1.JumpHistory.DeleteInvalidPositions;
@@ -7262,6 +7262,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.400  2002/10/03 07:19:34  lazarus
+  MG: deactivated publish project
+
   Revision 1.399  2002/10/02 20:30:26  lazarus
   MG: fixed jumping history
 
