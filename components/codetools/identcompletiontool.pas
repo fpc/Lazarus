@@ -96,14 +96,28 @@ type
       NewIdentifier: PChar; NewLevel: integer;
       NewNode: TCodeTreeNode; NewTool: TFindDeclarationTool;
       NewDefaultDesc: TCodeTreeNodeDesc);
+    function IsProcNodeWithParams: boolean;
+    function IsPropertyWithParams: boolean;
+  public
     property ParamList: string read GetParamList write SetParamList;
   end;
   
   TIdentifierListFlag = (ilfFilteredListNeedsUpdate);
   TIdentifierListFlags = set of TIdentifierListFlag;
   
+  TIdentifierListContextFlag = (
+    ilcfContextNeedsEndSemicolon
+    );
+  TIdentifierListContextFlags = set of TIdentifierListContextFlag;
+  
   TIdentifierList = class
   private
+    FContext: TFindContext;
+    FContextFlags: TIdentifierListContextFlags;
+    FStartAtomBehind: TAtomPosition;
+    FStartAtomInFront: TAtomPosition;
+    FStartBracketLvl: integer;
+    FStartContextPos: TCodeXYPosition;
     FCreatedIdentifiers: TList; // list of PChar
     FFilteredList: TList; // list of TIdentifierListItem
     FFlags: TIdentifierListFlags;
@@ -112,6 +126,8 @@ type
     FIdentView: TAVLTree; // tree of TIdentHistListItem sorted for identifiers
     FIdentSearchItem: TIdentifierListItem;
     FPrefix: string;
+    FStartContext: TFindContext;
+    procedure SetContextFlags(const AValue: TIdentifierListContextFlags);
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure UpdateFilteredList;
     function GetFilteredItems(Index: integer): TIdentifierListItem;
@@ -126,11 +142,25 @@ type
     function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
     function FindCreatedIdentifier(const Ident: string): integer;
     function CreateIdentifier(const Ident: string): PChar;
+    function StartUpAtomInFrontIs(const s: string): boolean;
+    function StartUpAtomBehindIs(const s: string): boolean;
   public
-    property Prefix: string read FPrefix write SetPrefix;
+    property Context: TFindContext read FContext write FContext;
+    property ContextFlags: TIdentifierListContextFlags
+                                       read FContextFlags write SetContextFlags;
     property FilteredItems[Index: integer]: TIdentifierListItem
-      read GetFilteredItems;
+                                                          read GetFilteredItems;
     property History: TIdentifierHistoryList read FHistory write SetHistory;
+    property Prefix: string read FPrefix write SetPrefix;
+    property StartAtomInFront: TAtomPosition
+                                 read FStartAtomInFront write FStartAtomInFront;
+    property StartAtomBehind: TAtomPosition
+                                   read FStartAtomBehind write FStartAtomBehind;
+    property StartBracketLvl: integer
+                                   read FStartBracketLvl write FStartBracketLvl;
+    property StartContext: TFindContext read FStartContext write FStartContext;
+    property StartContextPos: TCodeXYPosition
+                                   read FStartContextPos write FStartContextPos;
   end;
   
   //----------------------------------------------------------------------------
@@ -323,6 +353,13 @@ begin
   FHistory:=AValue;
 end;
 
+procedure TIdentifierList.SetContextFlags(
+  const AValue: TIdentifierListContextFlags);
+begin
+  if FContextFlags=AValue then exit;
+  FContextFlags:=AValue;
+end;
+
 function TIdentifierList.GetFilteredItems(Index: integer): TIdentifierListItem;
 begin
   UpdateFilteredList;
@@ -358,6 +395,13 @@ var
   i: Integer;
   p: Pointer;
 begin
+  fContextFlags:=[];
+  fContext:=CleanFindContext;
+  FStartBracketLvl:=0;
+  fStartContext:=CleanFindContext;
+  fStartContextPos.Code:=nil;
+  fStartContextPos.X:=1;
+  fStartContextPos.Y:=1;
   for i:=0 to FCreatedIdentifiers.Count-1 do begin
     p:=FCreatedIdentifiers[i];
     FreeMem(p);
@@ -433,6 +477,16 @@ begin
     end;
   end else
     Result:=nil;
+end;
+
+function TIdentifierList.StartUpAtomInFrontIs(const s: string): boolean;
+begin
+  Result:=StartContext.Tool.FreeUpAtomIs(StartAtomInFront,s);
+end;
+
+function TIdentifierList.StartUpAtomBehindIs(const s: string): boolean;
+begin
+  Result:=StartContext.Tool.FreeUpAtomIs(StartAtomBehind,s);
 end;
 
 { TIdentCompletionTool }
@@ -568,6 +622,7 @@ var
   NewItem: TIdentifierListItem;
   PropertyName: String;
 begin
+  while (CleanPos>1) and (IsIdentChar[Src[CleanPos-1]]) do dec(CleanPos);
   GatherPredefinedIdentifiers(CleanPos,Context,BeautifyCodeOptions);
   if Context.Node.Desc=ctnProperty then begin
     PropertyName:=ExtractPropName(Context.Node,false);
@@ -649,6 +704,8 @@ begin
   CurrentIdentifierList.Clear;
   LastGatheredIdentParent:=nil;
   LastGatheredIdentLevel:=0;
+  CurrentIdentifierList.StartContextPos:=CursorPos;
+  CurrentIdentifierList.StartContext.Tool:=Self;
   
   ActivateGlobalWriteLock;
   Params:=TFindDeclarationParams.Create;
@@ -659,17 +716,14 @@ begin
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                   [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
-    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    if CursorNode.Desc in [ctnClass,ctnClassInterface] then begin
-      BuildSubTreeForClass(CursorNode);
-      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    end;
-    if CursorNode.Desc in AllPascalStatements then begin
-      BuildSubTreeForBeginBlock(CursorNode);
-      CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-    end;
-    GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+                  
+    // find node at position
+    CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);
+    CurrentIdentifierList.StartContext.Node:=CursorNode;
 
+    // get identifier position
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+    
     // find context
     {$IFDEF CTDEBUG}
     writeln('TIdentCompletionTool.GatherIdentifiers B',
@@ -697,6 +751,8 @@ begin
       if (ExprType.Desc=xtContext) then
         GatherContext:=ExprType.Context;
     end;
+    
+    // search and gather identifiers in context
     if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
       {$IFDEF CTDEBUG}
       writeln('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
@@ -714,13 +770,41 @@ begin
       {$IFDEF CTDEBUG}
       writeln('TIdentCompletionTool.GatherIdentifiers F');
       {$ENDIF}
+      CurrentIdentifierList.Context:=GatherContext;
       GatherContext.Tool.FindIdentifierInContext(Params);
     end;
+    
     // add useful identifiers without context
     {$IFDEF CTDEBUG}
     writeln('TIdentCompletionTool.GatherIdentifiers G');
     {$ENDIF}
-    GatherUsefulIdentifiers(CleanCursorPos,GatherContext,BeautifyCodeOptions);
+    GatherUsefulIdentifiers(IdentStartPos,GatherContext,BeautifyCodeOptions);
+    
+    // check for incomplete context
+    // context bracket level
+    CurrentIdentifierList.StartBracketLvl:=
+      GetBracketLvl(Src,CursorNode.StartPos,IdentStartPos,
+                    Scanner.NestedComments);
+    // context behind
+    if IdentEndPos<SrcLen then begin
+      MoveCursorToCleanPos(IdentEndPos);
+      ReadNextAtom;
+      CurrentIdentifierList.StartAtomBehind:=CurPos;
+      if CursorNode.Desc in AllPascalStatements then begin
+        if (CurPos.Flag=cafEnd)
+        or ((AtomIsIdentifier(false))
+            and (not PositionsInSameLine(Src,IdentEndPos,CurPos.StartPos)))
+        then
+          // new identifier will be at end of a statement
+          if CurrentIdentifierList.StartBracketLvl=0 then
+            CurrentIdentifierList.ContextFlags:=
+              CurrentIdentifierList.ContextFlags+[ilcfContextNeedsEndSemicolon];
+      end;
+    end;
+    // context in front of
+    MoveCursorToCleanPos(IdentStartPos);
+    ReadPriorAtom;
+    CurrentIdentifierList.StartAtomInFront:=CurPos;
     
     Result:=true;
   finally
@@ -794,6 +878,16 @@ begin
   Node:=NewNode;
   Tool:=NewTool;
   DefaultDesc:=NewDefaultDesc;
+end;
+
+function TIdentifierListItem.IsProcNodeWithParams: boolean;
+begin
+  Result:=(Node<>nil) and Tool.ProcNodeHasParamList(Node);
+end;
+
+function TIdentifierListItem.IsPropertyWithParams: boolean;
+begin
+  Result:=(Node<>nil) and Tool.PropertyNodeHasParamList(Node);
 end;
 
 { TIdentifierHistoryList }

@@ -296,7 +296,7 @@ Begin
         End;
         False:
         Begin
-          MessageBox(0, PChar(Message), rsWin32Warning, MB_OK);
+          MessageBox(0, PChar(Message), PChar(rsWin32Warning), MB_OK);
         End;
       End;
     End;
@@ -717,6 +717,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.15  2003/03/13 19:57:38  mattias
+  added identcompletion context information and fixed win32 intf
+
   Revision 1.14  2003/03/11 07:46:44  mattias
   more localization for gtk- and win32-interface and lcl
 

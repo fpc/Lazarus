@@ -204,8 +204,11 @@ type
         const AnAtom: shortstring): boolean; // 0=current, 1=prior current, ...
     function GetAtom: string;
     function GetUpAtom: string;
-    function GetAtom(Atom: TAtomPosition): string;
-    function GetUpAtom(Atom: TAtomPosition): string;
+    function GetAtom(const Atom: TAtomPosition): string;
+    function GetUpAtom(const Atom: TAtomPosition): string;
+    function FreeUpAtomIs(const FreeAtomPos: TAtomPosition;
+        const AnAtom: shortstring): boolean;
+    
     function CompareNodeIdentChars(ANode: TCodeTreeNode;
         const AnUpperIdent: string): integer;
     function CompareSrcIdentifiers(
@@ -658,14 +661,30 @@ begin
   Result:=copy(UpperSrc,CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
 end;
 
-function TCustomCodeTool.GetAtom(Atom: TAtomPosition): string;
+function TCustomCodeTool.GetAtom(const Atom: TAtomPosition): string;
 begin
   Result:=copy(Src,Atom.StartPos,Atom.EndPos-Atom.StartPos);
 end;
 
-function TCustomCodeTool.GetUpAtom(Atom: TAtomPosition): string;
+function TCustomCodeTool.GetUpAtom(const Atom: TAtomPosition): string;
 begin
   Result:=copy(UpperSrc,Atom.StartPos,Atom.EndPos-Atom.StartPos);
+end;
+
+function TCustomCodeTool.FreeUpAtomIs(const FreeAtomPos: TAtomPosition;
+  const AnAtom: shortstring): boolean;
+var AnAtomLen,i : integer;
+begin
+  Result:=false;
+  if (FreeAtomPos.StartPos<SrcLen) and (FreeAtomPos.EndPos<=SrcLen+1)
+  and (FreeAtomPos.StartPos>=1) then begin
+    AnAtomLen:=length(AnAtom);
+    if AnAtomLen=FreeAtomPos.EndPos-FreeAtomPos.StartPos then begin
+      for i:=1 to AnAtomLen do
+        if AnAtom[i]<>UpperSrc[FreeAtomPos.StartPos-1+i] then exit;
+      Result:=true;
+    end;
+  end;
 end;
 
 procedure TCustomCodeTool.ReadNextAtom;

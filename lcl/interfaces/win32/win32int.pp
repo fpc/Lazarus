@@ -36,7 +36,7 @@ Interface
   successful compilation.
 }
 Uses
-  {Windows, }Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
+  Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLLinux, LCLType,
   LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def;
 
@@ -188,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2003/03/13 19:57:38  mattias
+  added identcompletion context information and fixed win32 intf
+
   Revision 1.28  2003/03/11 07:46:44  mattias
   more localization for gtk- and win32-interface and lcl
 

@@ -210,6 +210,8 @@ type
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
         var FunctionResult: TCodeTreeNode);
     procedure BuildSubTree(CleanCursorPos: integer); virtual;
+    function FindDeepestExpandedNodeAtPos(CleanCursorPos: integer;
+        ExceptionOnNotFound: boolean): TCodeTreeNode;
 
     function DoAtom: boolean; override;
 
@@ -4443,6 +4445,23 @@ begin
     BuildSubTreeForProcHead(ANode);
   ctnBeginBlock:
     BuildSubTreeForBeginBlock(ANode);
+  end;
+end;
+
+function TPascalParserTool.FindDeepestExpandedNodeAtPos(
+  CleanCursorPos: integer; ExceptionOnNotFound: boolean): TCodeTreeNode;
+begin
+  Result:=FindDeepestNodeAtPos(CleanCursorPos,ExceptionOnNotFound);
+  if Result=nil then exit;
+  if Result.Desc in [ctnClass,ctnClassInterface] then begin
+    BuildSubTreeForClass(Result);
+    Result:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    if Result=nil then exit;
+  end;
+  if Result.Desc in AllPascalStatements then begin
+    BuildSubTreeForBeginBlock(Result);
+    Result:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    if Result=nil then exit;
   end;
 end;
 

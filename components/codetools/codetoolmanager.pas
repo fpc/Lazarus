@@ -237,7 +237,7 @@ type
     
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
-    
+
     // resource string sections
     function GatherResourceStringSections(
           Code: TCodeBuffer; X,Y: integer): boolean;

@@ -77,6 +77,10 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean): integer;
+    
+// brackets
+function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
+    NestedComments: boolean): integer;
 
 // replacements
 function ReplacementNeedsLineEnd(const Source: string;
@@ -1656,6 +1660,75 @@ begin
       inc(Result);
     end;
   end;
+end;
+
+function GetBracketLvl(const Src: string; StartPos, EndPos: integer;
+  NestedComments: boolean): integer;
+var
+  SrcLen: Integer;
+  
+  procedure ReadComment;
+  var
+    CommentEndPos: Integer;
+  begin
+    CommentEndPos:=FindCommentEnd(Src,StartPos,NestedComments);
+    if CommentEndPos>=EndPos then begin
+      // EndPos is in a comment
+      // -> count bracket lvl in comment
+      Result:=0;
+      case Src[StartPos] of
+      '{': inc(StartPos);
+      '(','/': inc(StartPos,2);
+      end;
+    end else
+      // continue after the comment
+      StartPos:=CommentEndPos;
+  end;
+  
+  procedure ReadBrackets(ClosingBracket: Char);
+  begin
+    while StartPos<EndPos do begin
+      case Src[StartPos] of
+      '{','/':
+        ReadComment;
+
+      '(':
+        if (StartPos<SrcLen) and (Src[StartPos]='*') then
+          ReadComment
+        else begin
+          inc(Result);
+          inc(StartPos);
+          ReadBrackets(')');
+        end;
+        
+      '[':
+        begin
+          inc(Result);
+          inc(StartPos);
+          ReadBrackets(']');
+        end;
+
+      ')',']':
+        if (Result>0) then begin
+          if ClosingBracket=Src[StartPos] then
+            dec(Result) // for example: ()
+          else
+            Result:=0; // for example: [)
+          exit;
+        end;
+        
+      end;
+      inc(StartPos);
+    end;
+  end;
+  
+begin
+  Result:=0;
+  SrcLen:=length(Src);
+  if (StartPos<1) then StartPos:=1;
+  if (StartPos>SrcLen) or (EndPos<StartPos) then exit;
+  if (EndPos>SrcLen) then EndPos:=SrcLen;
+  ReadBrackets(#0);
 end;
 
 function FindFirstLineEndInFrontOfInCode(const Source: string;

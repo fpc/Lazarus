@@ -110,8 +110,8 @@ type
     function FindCreateFormStatement(StartPos: integer;
           const UpperClassName, UpperVarName: string;
           var Position: TAtomPosition): integer; // 0=found, -1=not found, 1=found, but wrong classname
-    function AddCreateFormStatement(const AClassName,
-          AVarName: string; SourceChangeCache: TSourceChangeCache): boolean;
+    function AddCreateFormStatement(const AClassName, AVarName: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveCreateFormStatement(const UpperVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function ChangeCreateFormStatement(StartPos: integer;
@@ -140,44 +140,46 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
 
     // blocks (e.g. begin..end)
-    function FindBlockCounterPart(CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-    function FindBlockStart(CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-    function GuessUnclosedBlock(CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindBlockStart(const CursorPos: TCodeXYPosition;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
       
     // compiler directives
-    function GuessMisplacedIfdefEndif(CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-    function FindEnclosingIncludeDirective(CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function GuessMisplacedIfdefEndif(const CursorPos: TCodeXYPosition;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+    function FindEnclosingIncludeDirective(const CursorPos: TCodeXYPosition;
+          var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
       
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
-      SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
 
     // expressions
-    function GetStringConstBounds(CursorPos: TCodeXYPosition;
-      var StartPos, EndPos: TCodeXYPosition;
-      ResolveComments: boolean): boolean;
-    function ReplaceCode(StartPos, EndPos: TCodeXYPosition;
-      const NewCode: string; SourceChangeCache: TSourceChangeCache): boolean;
+    function GetStringConstBounds(const CursorPos: TCodeXYPosition;
+          var StartPos, EndPos: TCodeXYPosition;
+          ResolveComments: boolean): boolean;
+    function ReplaceCode(const StartPos, EndPos: TCodeXYPosition;
+          const NewCode: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
           
     // resource strings
-    function GatherResourceStringSections(CursorPos: TCodeXYPosition;
-      PositionList: TCodeXYPositions): boolean;
-    function IdentifierExistsInResourceStringSection(CursorPos: TCodeXYPosition;
-      const ResStrIdentifier: string): boolean;
+    function GatherResourceStringSections(const CursorPos: TCodeXYPosition;
+          PositionList: TCodeXYPositions): boolean;
+    function IdentifierExistsInResourceStringSection(
+          const CursorPos: TCodeXYPosition;
+          const ResStrIdentifier: string): boolean;
     function CreateIdentifierFromStringConst(
-      const StartCursorPos, EndCursorPos: TCodeXYPosition;
-      var Identifier: string; MaxLen: integer): boolean;
+          const StartCursorPos, EndCursorPos: TCodeXYPosition;
+          var Identifier: string; MaxLen: integer): boolean;
     function StringConstToFormatString(
-      const StartCursorPos, EndCursorPos: TCodeXYPosition;
-      var FormatStringConstant,FormatParameters: string): boolean;
-    function AddResourcestring(SectionPos: TCodeXYPosition;
-      const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
-      SourceChangeCache: TSourceChangeCache): boolean;
+          const StartCursorPos, EndCursorPos: TCodeXYPosition;
+          var FormatStringConstant,FormatParameters: string): boolean;
+    function AddResourcestring(const SectionPos: TCodeXYPosition;
+          const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
+          SourceChangeCache: TSourceChangeCache): boolean;
   end;
 
 
@@ -1203,7 +1205,8 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.GetStringConstBounds(CursorPos: TCodeXYPosition;
+function TStandardCodeTool.GetStringConstBounds(
+  const CursorPos: TCodeXYPosition;
   var StartPos, EndPos: TCodeXYPosition; ResolveComments: boolean): boolean;
 // examples:
 //   's1'+'s2'#13+AFunction(...)+inherited AMethod
@@ -1365,7 +1368,7 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.ReplaceCode(StartPos, EndPos: TCodeXYPosition;
+function TStandardCodeTool.ReplaceCode(const StartPos, EndPos: TCodeXYPosition;
   const NewCode: string; SourceChangeCache: TSourceChangeCache): boolean;
 begin
   Result:=false;
@@ -1373,7 +1376,7 @@ begin
 end;
 
 function TStandardCodeTool.GatherResourceStringSections(
-  CursorPos: TCodeXYPosition; PositionList: TCodeXYPositions): boolean;
+  const CursorPos: TCodeXYPosition; PositionList: TCodeXYPositions): boolean;
   
   function SearchInUsesSection(UsesNode: TCodeTreeNode): boolean;
   var
@@ -1452,7 +1455,7 @@ begin
 end;
 
 function TStandardCodeTool.IdentifierExistsInResourceStringSection(
-  CursorPos: TCodeXYPosition; const ResStrIdentifier: string): boolean;
+  const CursorPos: TCodeXYPosition; const ResStrIdentifier: string): boolean;
 var
   CleanCursorPos: integer;
   ANode: TCodeTreeNode;
@@ -1640,7 +1643,7 @@ begin
   Result:=FormatStringConstant<>'';
 end;
 
-function TStandardCodeTool.AddResourcestring(SectionPos: TCodeXYPosition;
+function TStandardCodeTool.AddResourcestring(const SectionPos: TCodeXYPosition;
   const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
@@ -1847,8 +1850,9 @@ begin
   end;
 end;
 
-function TStandardCodeTool.FindBlockCounterPart(CursorPos: TCodeXYPosition;
-      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+function TStandardCodeTool.FindBlockCounterPart(
+  const CursorPos: TCodeXYPosition;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 // jump from bracket-open to bracket-close or 'begin' to 'end'
 // or 'until' to 'repeat' ...
 var CleanCursorPos: integer;
@@ -1889,7 +1893,7 @@ begin
   Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
 end;
 
-function TStandardCodeTool.FindBlockStart(CursorPos: TCodeXYPosition;
+function TStandardCodeTool.FindBlockStart(const CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 // jump to beginning of current block
 // e.g. bracket open, 'begin', 'repeat', ...
@@ -1938,7 +1942,7 @@ begin
   end;
 end;
 
-function TStandardCodeTool.GuessUnclosedBlock(CursorPos: TCodeXYPosition;
+function TStandardCodeTool.GuessUnclosedBlock(const CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 { search a block (e.g. begin..end) that looks unclosed, i.e. 'begin'
   without 'end' or 'begin' with 'end' in a different column.
@@ -1985,7 +1989,8 @@ begin
   //WriteDebugTreeReport;
 end;
 
-function TStandardCodeTool.GuessMisplacedIfdefEndif(CursorPos: TCodeXYPosition;
+function TStandardCodeTool.GuessMisplacedIfdefEndif(
+  const CursorPos: TCodeXYPosition;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 var
   StartCursorPos, EndCursorPos: integer;
@@ -2017,7 +2022,7 @@ begin
 end;
 
 function TStandardCodeTool.FindEnclosingIncludeDirective(
-  CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
+  const CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition;
   var NewTopLine: integer): boolean;
 var
   CleanCursorPos, LinkIndex, NewCleanPos: integer;

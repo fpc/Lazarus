@@ -45,16 +45,16 @@ type
     icvIdentifier, icvProcWithParams, icvIndexedProp);
 
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
-  X, Y: integer; ItemSelected: boolean; Index: integer;
+  X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
   
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
-  var ValueType: TIdentComplValue): string;
+  var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
 
 implementation
 
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
-  X, Y: integer; ItemSelected: boolean; Index: integer;
+  X, Y, MaxX: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
   
   function InvertColor(AColor: TColor): TColor;
@@ -134,12 +134,14 @@ begin
     SetFontColor(AColor);
     ACanvas.TextOut(x+1,y,s);
     inc(x,ACanvas.TextWidth('procedure '));
+    if x>MaxX then exit;
 
     SetFontColor(clBlack);
     ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
     s:=GetIdentifier(IdentItem.Identifier);
     ACanvas.TextOut(x+1,y,s);
     inc(x,ACanvas.TextWidth(s));
+    if x>MaxX then exit;
     ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
 
     if IdentItem.Node<>nil then begin
@@ -226,31 +228,56 @@ begin
 end;
 
 function GetIdentCompletionValue(aCompletion : TSynCompletion;
-  var ValueType: TIdentComplValue): string;
+  var ValueType: TIdentComplValue; var CursorToLeft: integer): string;
 var
   Index: Integer;
   IdentItem: TIdentifierListItem;
+  IdentList: TIdentifierList;
 begin
+  Result:='';
+  CursorToLeft:=0;
   Index:=aCompletion.Position;
-  IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
+  IdentList:=CodeToolBoss.IdentifierList;
+  IdentItem:=IdentList.FilteredItems[Index];
   ValueType:=icvIdentifier;
-  if IdentItem<>nil then begin
-    Result:=GetIdentifier(IdentItem.Identifier);
-    case IdentItem.GetDesc of
-    
-    ctnProcedure:
-      if (IdentItem.Node<>nil)
-      and IdentItem.Tool.ProcNodeHasParamList(IdentItem.Node) then
-        ValueType:=icvProcWithParams;
+  if IdentItem=nil then exit;
 
-    ctnProperty:
-      if (IdentItem.Node<>nil)
-      and IdentItem.Tool.PropertyNodeHasParamList(IdentItem.Node) then
-        ValueType:=icvIndexedProp;
+  Result:=GetIdentifier(IdentItem.Identifier);
+  case IdentItem.GetDesc of
+  
+  ctnProcedure:
+    if IdentItem.IsProcNodeWithParams then
+      ValueType:=icvProcWithParams;
 
+  ctnProperty:
+    if IdentItem.IsPropertyWithParams then
+      ValueType:=icvIndexedProp;
+
+  end;
+
+  // add brackets for parameter lists
+  case ValueType of
+
+  icvProcWithParams:
+    if (not IdentList.StartUpAtomBehindIs('('))
+    and (not IdentList.StartUpAtomInFrontIs('@')) then begin
+      Result:=Result+'()';
+      inc(CursorToLeft);
     end;
-  end else
-    Result:='';
+
+  icvIndexedProp:
+    if (not IdentList.StartUpAtomBehindIs('[')) then begin
+      Result:=Result+'[]';
+      inc(CursorToLeft);
+    end;
+  end;
+
+  // add semicolon for statement ends
+  if ilcfContextNeedsEndSemicolon in IdentList.ContextFlags then begin
+    Result:=Result+';';
+    if CursorToLeft>0 then
+     inc(CursorToLeft);
+  end;
 end;
 
 end.
