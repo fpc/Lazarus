@@ -95,7 +95,6 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; X
 
 Function TextOut(DC: HDC; X,Y : Integer; Str : Pchar; Count: Integer) : Boolean; override;
 
-Function UnionRect(DestRect, SrcRect1, SrcRect2 : pRect): Boolean; override;
 
 
 Function WindowFromPoint(Point : TPoint) : HWND; override;
@@ -103,6 +102,10 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/23 19:13:57  lazarus
+  Fixxed the errors I commited with Unionrect
+  Shane
+
   Revision 1.8  2001/01/23 19:01:10  lazarus
   Fixxed bug in RestoreDC
   Shane

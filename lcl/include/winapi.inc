@@ -401,11 +401,6 @@ begin
   Result := InterfaceObject.TextOut(DC, X, Y, Str, Count);
 end;
 
-Function UnionRect(DestRect, SrcRect1, SrcRect2 : pRect): Boolean;
-begin
-  Result := InterfaceObject.UnionRect(DestRect, SrcRect1, SrcRect2);
-end;
-
 function WindowFromPoint(Point : TPoint) : HWND;
 begin
   Result := InterfaceObject.WindowFromPoint(Point);
@@ -949,6 +944,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/01/23 19:13:57  lazarus
+  Fixxed the errors I commited with Unionrect
+  Shane
+
   Revision 1.8  2001/01/23 19:01:10  lazarus
   Fixxed bug in RestoreDC
   Shane
