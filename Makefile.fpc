@@ -11,7 +11,7 @@ packages=fcl regexpr
 # Adding lcl codetools synedit, adds the source paths.
 
 [target]
-programs=lazarus
+programs=lazarus startlazarus
 dirs=lcl components packager/registration ideintf designer packager
 exampledirs=examples
 
@@ -70,7 +70,7 @@ LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 LAZARUS_OPT=$(LAZARUS_LIBPATHS)
 
 [rules]
-.PHONY: lcl components packager/registration ideintf packager ide idepkg tools all clean cleanide purge
+.PHONY: lcl components packager/registration ideintf packager ide idepkg starter tools all clean cleanide purge
 .SUFFIXES: .rc .res
 
 %.res: %.rc
@@ -89,10 +89,13 @@ endif
 idepkg:
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(LAZARUS_OPT) @$(LAZARUS_IDE_CONFIG)'
 
+starter: lcl
+	$(MAKE) startlazarus$(EXEEXT)
+
 tools: lcl components
         $(MAKE) -C tools
 
-all: lcl components packager/registration ideintf designer packager ide
+all: lcl components packager/registration ideintf designer packager ide starter
 
 cleanide:
         $(DEL) $(wildcard *$(OEXT))
