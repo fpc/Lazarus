@@ -167,6 +167,7 @@ var
   NewNode: TTreeNode;
   NodeText: String;
 begin
+  ItemTreeview.BeginUpdate;
   if ParentNode=nil then
     FirstSibling:=nil
   else
@@ -186,12 +187,13 @@ begin
       NewNode:=ItemTreeview.Items.InsertObject(NodeBehind,NodeText,AControl)
     else
       NewNode:=ItemTreeview.Items.AddChildObject(ParentNode,NodeText,AControl);
-    if FirstSibling=nil then
+    if (FirstSibling=nil) or (NewNode.GetPrevSibling=nil) then
       FirstSibling:=NewNode;
     if AControl is TWinControl then
       CreateNodes(TWinControl(AControl),NewNode);
     NewNode.Expanded:=true;
   end;
+  ItemTreeview.EndUpdate;
 end;
 
 initialization

@@ -1055,6 +1055,7 @@ begin
     If List.Count > 0 then begin
       J := List.IndexOf(CurrentControl);
       if J<0 then exit;
+      //writeln('TWinControl.FindNextControl A ',CurrentControl.Name,' ',J);
       I := J;
       Repeat
         If GoForward then begin
@@ -1075,6 +1076,7 @@ begin
         and ((not OnlyWinControls) or (Next is TWinControl)) then
           Result := Next;
       until (Result <> nil);
+      //writeln('TWinControl.FindNextControl B ',Result.Name,' ',I);
     end;
   finally
     List.Free;
@@ -3076,6 +3078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.167  2003/09/13 14:01:39  mattias
+  fixed taborder dlg
+
   Revision 1.166  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 

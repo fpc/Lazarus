@@ -38,6 +38,7 @@ object TabOrderDialog: TTabOrderDialog
     ANCHORS = [akright, akbottom]
     CAPTION = 'Ok'
     TABSTOP = True
+    TABORDER = 0
     ONCLICK = OkButtonCLICK
     LEFT = 120
     HEIGHT = 25
@@ -78,11 +79,13 @@ object TabOrderDialog: TTabOrderDialog
     ANCHORS = [akleft, akbottom]
     AUTOSIZE = True
     CAPTION = 'ShowOldValuesCheckbox'
+    CHECKED = True
     DRAGCURSOR = 0
     ONCLICK = ShowOldValuesCheckboxCLICK
+    STATE = cbchecked
     TABORDER = 3
     TABSTOP = True
-    LEFT = 15
+    LEFT = 9
     HEIGHT = 20
     TOP = 320
     WIDTH = 171

@@ -2230,7 +2230,7 @@ begin
       GetDefaultValues(AKey1,AShift1,AKey2,AShift2);
       DefaultKeyStr:=KeyValuesToStr(AKey1,AShift1,AKey2,AShift2);;
     end;
-    writeln('TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr);
+    //writeln('TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr);
     XMLConfig.SetDeleteValue(Prefix+Name+'/Value',CurKeyStr,DefaultKeyStr);
   end;
   Result:=true;
