@@ -714,6 +714,7 @@ var i: integer;
   Dir: string;
 begin
   DoDirSeparators(DirectoryName);
+  DirectoryName := AppendPathDelim(DirectoryName);
   i:=1;
   while i<=length(DirectoryName) do begin
     if DirectoryName[i]=PathDelim then begin
@@ -1068,6 +1069,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2004/10/01 11:44:32  vincents
+  Fixed ForceDirectory, if DirectoryName did not end with PathDelim
+
   Revision 1.1  2004/09/27 22:16:04  vincents
   renamed filectrl.inc to fileutil.inc
 
