@@ -236,7 +236,7 @@ type
     xtLongint,     // longint
     xtLongWord,    // longword
     xtWord,        // word
-    xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH
+    xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1)
     xtNil          // nil  = pointer, class, procedure, method, ...
     );
   TExpressionTypeDescs = set of TExpressionTypeDesc;
@@ -711,6 +711,8 @@ begin
   else if CompareIdentifiers(Identifier,'HIGH')=0 then
     Result:=xtCompilerFunc
   else if CompareIdentifiers(Identifier,'LENGTH')=0 then
+    Result:=xtCompilerFunc
+  else if CompareIdentifiers(Identifier,'COPY')=0 then
     Result:=xtCompilerFunc
 
   // the delphi compiler special types
@@ -4352,9 +4354,16 @@ begin
           writeln('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
         end;
       end
-      else  if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
+      else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
       begin
+        if ParamList.Count<>1 then exit;
         Result.Desc:=xtConstOrdInteger;
+      end
+      else if (CompareIdentifiers(IdentPos,'COPY')=0) then
+      begin
+        if (ParamList.Count<>3) or (Scanner.Values.IsDefined('VER1_0')) then
+          exit;
+        Result.Desc:=xtString;
       end;
     end;
     

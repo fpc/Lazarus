@@ -132,15 +132,6 @@ begin
   end;
 end;
 
-{function UpperCaseStr(const s: string): string;
-var i, l: integer;
-begin
-  l:=length(s);
-  SetLength(Result,l);
-  for i:=1 to l do
-    Result[i]:=UpChars[s[i]];
-end;}
-
 function IsUpperCaseStr(const s: string): boolean;
 var i, l: integer;
 begin
@@ -1015,6 +1006,7 @@ begin
     Add('LENGTH'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     // only fpc 1.1
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
