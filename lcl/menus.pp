@@ -292,7 +292,7 @@ function ShortCutToText(ShortCut: TShortCut): string;
 implementation
 
 uses
-  Interfaces, LCLLinux;
+  Interfaces, LCLLinux, LCLType;
 
 { Menu command managment }
 
@@ -431,10 +431,12 @@ end;
 
 Function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 Begin
-  Result := 0;
-  if WordRec(Key).Hi <> 0 then exit;
+  Result := MapIrregularVirtualKey(Key);
+  if WordRec(Result).Hi <> 0 then begin
+    Result:=0;
+    exit;
+  end;
 
-  Result := Key;
   if ssShift in Shift then Inc(Result,scShift);
   if ssCtrl in Shift then Inc(Result,scCtrl);
   if ssAlt in Shift then Inc(Result,scAlt);
@@ -455,6 +457,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2002/08/16 20:13:09  lazarus
+  MG: custom external tools are now shown in the menu
+
   Revision 1.23  2002/08/15 13:37:57  lazarus
   MG: started menuitem icon, checked, radio and groupindex
 

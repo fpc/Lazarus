@@ -743,9 +743,9 @@ const
 //==============================================
 // Background Modes
 //==============================================
-TRANSPARENT = 1;
-OPAQUE = 2;
-BKMODE_LAST = 2;
+  TRANSPARENT = 1;
+  OPAQUE = 2;
+  BKMODE_LAST = 2;
 
 //==============================================
 // Font constants
@@ -1408,12 +1408,43 @@ const
       'primary selection', 'secondary selection', 'clipboard'
     );
 
+
+
+function MapIrregularVirtualKey(vk: word): word;
+
+
 implementation
+
+
+function MapIrregularVirtualKey(vk: word): word;
+begin
+  if vk<VK_IRREGULAR then begin
+    Result:=vk;
+    exit;
+  end;
+  case vk-VK_IRREGULAR of
+  
+  ord('0')..ord('9'):
+    Result:=vk-VK_IRREGULAR-ord('0')+VK_0;
+    
+  ord('A')..ord('Z'):
+    Result:=vk-VK_IRREGULAR-ord('A')+VK_A;
+
+  ord('a')..ord('z'):
+    Result:=vk-VK_IRREGULAR-ord('a')+VK_A;
+
+  else
+    Result:=vk;
+  end;
+end;
 
 end.
 
 {
   $Log$
+  Revision 1.10  2002/08/16 20:13:09  lazarus
+  MG: custom external tools are now shown in the menu
+
   Revision 1.9  2002/08/15 15:46:48  lazarus
   MG: added changes from Andrew (Clipping)
 

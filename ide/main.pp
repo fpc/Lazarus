@@ -50,10 +50,11 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, SynEditKeyCmds, KeyMapping, ProjectOpts,
   IDEProcs, Process, UnitInfoDlg, Debugger, DBGOutputForm, GDBMIDebugger,
-  RunParamsOpts, ExtToolDialog, MacroPromptDlg, LMessages, ProjectDefs,
-  Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter, BuildLazDialog,
-  MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo, IDEOptionDefs,
-  CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory, DiskDiffsDialog,
+  RunParamsOpts, ExtToolDialog, ExtToolEditDlg, MacroPromptDlg, LMessages,
+  ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, OutputFilter,
+  BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
+  IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
+  DiskDiffsDialog,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -143,6 +144,7 @@ type
     procedure mnuToolConvertDFMtoLFMClicked(Sender : TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
+    procedure mnuCustomExtToolClick(Sender : TObject);
 
     // environment menu
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
@@ -248,6 +250,8 @@ type
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
+    
+    CustomExtToolMenuSeparator: TMenuItem;
 
     procedure SetDefaultsForForm(aForm : TCustomForm);
 
@@ -287,7 +291,7 @@ type
     procedure SetupControlSelection;
     procedure SetupStartProject;
     
-    // method for 'new unit'
+    // methods for 'new unit'
     function CreateNewCodeBuffer(NewUnitType:TNewUnitType;
         NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
@@ -365,6 +369,7 @@ type
     
     // tools
     function DoConvertDFMtoLFM: TModalResult;
+    procedure UpdateCustomToolsInMenu;
 
     // external tools
     function DoRunExternalTool(Index: integer): TModalResult;
@@ -1310,6 +1315,8 @@ begin
   itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
   itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
   itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
+  CustomExtToolMenuSeparator:=nil;
+  UpdateCustomToolsInMenu;
 end;
 
 procedure TMainIDE.SetupEnvironmentMenu;
@@ -1947,9 +1954,7 @@ begin
     EnvironmentOptions.ExternalTools.SaveShortCuts(EditorOpts.KeyMap);
     EditorOpts.Save;
     SourceNotebook.ReloadEditorOptions;
-    
-    // ToDo: update menu
-    
+    UpdateCustomToolsInMenu;
   end;
 end;
 
@@ -1982,6 +1987,21 @@ procedure TMainIDE.mnuToolConfigBuildLazClicked(Sender : TObject);
 begin
   if ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazOpts)=mrOk then
     MiscellaneousOptions.Save;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.mnuCustomExtToolClick(Sender: TObject);
+  
+  Handler for clicking on a menuitem for a custom external tool.
+-------------------------------------------------------------------------------}
+procedure TMainIDE.mnuCustomExtToolClick(Sender: TObject);
+var
+  Index: integer;
+begin
+  if CustomExtToolMenuSeparator=nil then exit;
+  Index:=TMenuItem(Sender).MenuIndex-CustomExtToolMenuSeparator.MenuIndex-1;
+  if (Index<0) or (Index>=EnvironmentOptions.ExternalTools.Count) then exit;
+  DoRunExternalTool(Index);
 end;
 
 //------------------------------------------------------------------------------
@@ -4673,6 +4693,75 @@ begin
   DoCheckFilesOnDisk;
 end;
 
+{-------------------------------------------------------------------------------
+  procedure TMainIDE.UpdateCustomToolsInMenu;
+  
+  Creates a TMenuItem for each custom external tool.
+-------------------------------------------------------------------------------}
+procedure TMainIDE.UpdateCustomToolsInMenu;
+var
+  ToolCount: integer;
+  
+  procedure CreateToolMenuItems;
+  var
+    CurMenuItem: TMenuItem;
+    LastIndex, FirstIndex, ExistingCount: integer;
+  begin
+    // add separator
+    if (ToolCount>0) and (CustomExtToolMenuSeparator=nil) then begin
+      CustomExtToolMenuSeparator:=CreateMenuSeparator;
+      mnuTools.Add(CustomExtToolMenuSeparator);
+    end;
+    // add enough menuitems
+    if CustomExtToolMenuSeparator=nil then exit;
+    FirstIndex:=CustomExtToolMenuSeparator.MenuIndex+1;
+    LastIndex:=FirstIndex;
+    while (LastIndex<mnuTools.Count) and (mnuTools[LastIndex].Caption<>'-') do
+      inc(LastIndex);
+    ExistingCount:=LastIndex-FirstIndex;
+    while ExistingCount<ToolCount do begin
+      CurMenuItem := TMenuItem.Create(Self);
+      CurMenuItem.Name:='itmToolCustomExt'+IntToStr(ExistingCount);
+      CurMenuItem.Caption:=CurMenuItem.Name;
+      mnuTools.Insert(LastIndex,CurMenuItem);
+      inc(LastIndex);
+      inc(ExistingCount);
+    end;
+    // delete unneeded menuitems
+    while ExistingCount>ToolCount do begin
+      mnuTools[LastIndex].Free;
+      dec(LastIndex);
+      dec(ExistingCount);
+    end;
+  end;
+
+  procedure SetToolMenuItems;
+  var
+    CurMenuItem: TMenuItem;
+    i, Index: integer;
+    ExtTool: TExternalToolOptions;
+  begin
+    if CustomExtToolMenuSeparator=nil then exit;
+    i:=CustomExtToolMenuSeparator.MenuIndex+1;
+    Index:=0;
+    while (i<mnuTools.Count) do begin
+      CurMenuItem:=mnuTools[i];
+      if CurMenuItem.Caption='-' then break;
+      ExtTool:=EnvironmentOptions.ExternalTools[Index];
+      CurMenuItem.Caption:=ExtTool.Title;
+      CurMenuItem.ShortCut:=ShortCut(ExtTool.Key,ExtTool.Shift);
+      CurMenuItem.OnClick:=@mnuCustomExtToolClick;
+      inc(i);
+      inc(Index);
+    end;
+  end;
+
+begin
+  ToolCount:=EnvironmentOptions.ExternalTools.Count;
+  CreateToolMenuItems;
+  SetToolMenuItems;
+end;
+
 function TMainIDE.DoCheckSyntax: TModalResult;
 var
   ActiveUnitInfo:TUnitInfo;
@@ -6502,6 +6591,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.342  2002/08/16 20:13:07  lazarus
+  MG: custom external tools are now shown in the menu
+
   Revision 1.341  2002/08/16 19:00:54  lazarus
   MG: added Un-/Comment Selection
 

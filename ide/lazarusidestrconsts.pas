@@ -168,7 +168,7 @@ ResourceString
   lisMenuCompilerOptions = 'Compiler Options...';
   lisMenuRunParameters = 'Run Parameters ...';
   
-  lisMenuSettings = 'Settings ...';
+  lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
   lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';

@@ -494,6 +494,8 @@ begin
   itmFindBlockStart.Caption := lisMenuFindCodeBlockStart;
   mnuSearch.add(itmFindBlockStart);
 
+  mnuSearch.Add(CreateMenuSeparator);
+
   itmFindDeclaration := TMenuItem.Create(Self);
   itmFindDeclaration.Name:='itmFindDeclaration';
   itmFindDeclaration.Caption := lisMenuFindDeclarationAtCursor;
@@ -705,6 +707,8 @@ begin
   itmToolConfigure.Caption := lisMenuSettings;
   mnuTools.Add(itmToolConfigure);
 
+  mnuTools.Add(CreateMenuSeparator);
+
   itmToolSyntaxCheck := TMenuItem.Create(Self);
   itmToolSyntaxCheck.Name:='itmToolSyntaxCheck';
   itmToolSyntaxCheck.Caption := lisMenuQuickSyntaxCheck;
@@ -720,10 +724,14 @@ begin
   itmToolGuessMisplacedIFDEF.Caption := lisMenuGuessMisplacedIFDEF;
   mnuTools.Add(itmToolGuessMisplacedIFDEF);
 
+  mnuTools.Add(CreateMenuSeparator);
+
   itmToolConvertDFMtoLFM := TMenuItem.Create(Self);
   itmToolConvertDFMtoLFM.Name:='itmToolConvertDFMtoLFM';
   itmToolConvertDFMtoLFM.Caption := lisMenuConvertDFMtoLFM;
   mnuTools.Add(itmToolConvertDFMtoLFM);
+
+  mnuTools.Add(CreateMenuSeparator);
 
   itmToolBuildLazarus := TMenuItem.Create(Self);
   itmToolBuildLazarus.Name:='itmToolBuildLazarus';
