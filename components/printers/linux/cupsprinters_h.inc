@@ -114,6 +114,9 @@ type
      function GetPrinterType : TPrinterType; override;
      function GetCanPrint : Boolean; override;
      
+     function GetXDPI: Integer; override;
+     function GetYDPI: Integer; override;
+
      {-------------------------------------------------
          SPECIFIC CUPS METHODS OR PROPERTIES
      --------------------------------------------------}

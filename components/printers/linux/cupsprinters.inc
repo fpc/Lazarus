@@ -33,8 +33,18 @@ begin
   end;
 end;
 
+//Return always 72 because, PostScript it's 72 only
+function TCUPSPrinter.GetXDPI: Integer;
+begin
+  Result:=72;
+end;
 
-{ TCUPSPrinter }
+//Return always 72 because, PostScript it's 72 only
+function TCUPSPrinter.GetYDPI: Integer;
+begin
+  Result:=72;
+end;
+
 constructor TCUPSPrinter.Create;
 begin
   inherited Create;
@@ -154,7 +164,6 @@ end;
 procedure TCUPSPrinter.SetJobState(aJobId : LongInt; aOp : ipp_op_t);
 var Request,R : Pipp_t;                         //IPP Request
     Language  : Pcups_lang_t;                   //Default Language
-    //aState    : ipp_pstate_t;                   //Printer state
     URI       : Array[0..HTTP_MAX_URI] of Char; //Printer URI
 begin
   if not CUPSLibInstalled then Exit;
@@ -194,9 +203,7 @@ end;
 
 function TCUPSPrinter.GetCupsRequest : Pipp_t;
 var Request   : Pipp_t; //IPP Request
-    //Attribute : Pipp_attribute_t; //Current attribute
     Language  : Pcups_lang_t;     //Default Language
-    //aState    : ipp_pstate_t;     //Printer state
     URI       : Array[0..HTTP_MAX_URI] of Char; //Printer URI
 begin
   Result:=Nil;
@@ -269,7 +276,6 @@ function TCUPSPrinter.EnumPPDChoice(Lst : TStrings;
 var i         : integer;
     Option    : Pppd_option_t;
     Choice    : Pppd_choice_t;
-    //Choices   : PPppd_choice_t;
 begin
   Result:=-1;
   if not CUPSLibInstalled then Exit;
@@ -459,13 +465,14 @@ procedure TCUPSPrinter.DoResetPrintersList;
 begin
   inherited DoResetPrintersList;
 
-  if Assigned(fcupsPrinter) then
+  if Assigned(fcupsPPD) then
   begin
-    if Assigned(fcupsPPD) then
-      ppdClose(fcupsPPD);
-
+    ppdClose(fcupsPPD);
     fcupsPPD:=nil;
-
+  end;
+  
+  if fcupsPPDName<>'' then
+  begin
     DeleteFile(fcupsPPDName);
     fcupsPPDName:='';
   end;
