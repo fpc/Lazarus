@@ -9,7 +9,7 @@ SET ISCC="C:\Program Files\Inno Setup 4\iscc.exe"
 SET FPCCVSDIR=c:\lazarus\source\fpc-1.9
 
 :: Path to the lazarus sources checked out of cvs
-SET LAZCVSDIR=c:\lazarus\source\lazarus
+SET LAZCVSDIR=c:\lazarus\source\lazcvs
 
 :: Path to fpc 1.0.10 compiler
 SET RELEASE_PPC=c:\fpc\bin\ppc386-release.exe
@@ -28,7 +28,10 @@ SET GDBDIR=c:\lazarus\source\mingw
 SET BUILDDIR=c:\temp\lazbuild
 
 :: Path to the tool to create an export using a local cvs directory
-SET EXPORTCVS=%LAZCVSDIR%\tools\install\cvsexportlocal.exe
+SET EXPORTCVS=c:\lazarus\source\lazarus\tools\install\cvsexportlocal.exe
+
+:: Path to the directory containing translated version of the GPL license
+SET LICENSEDIR=c:\lazarus\source\license
 
 
 ::=====================================================================
@@ -75,6 +78,9 @@ if not exist %BUILDDIR%\startlazarus.exe goto END
 
 :: create the installer
 %ISCC% lazarus.iss >> installer.log
+
+:: do not delete build dir, if installer failed.
+if not exist output\lazarus-{#AppVersion}-{#SetupDate}-win32.exe goto END
 
 :: delete build dir
 rd /s /q %BUILDDIR% > NUL
