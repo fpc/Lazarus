@@ -1594,7 +1594,7 @@ begin
   if Message.WindowPos <> nil then
   with Message.WindowPos^ do
    begin
-     Writeln(Format('Sizes are %d,%d,%d,%d',[X,Y,cx,cy]));
+     //Writeln(Format('Sizes are %d,%d,%d,%d',[X,Y,cx,cy]));
      FLeft := X;
      FWidth := cX;
      FTop := Y;
@@ -1966,6 +1966,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2001/05/16 10:00:00  lazarus
+  MG: fixed wrong page index in editor closing
+
   Revision 1.29  2001/05/13 22:07:08  lazarus
   Implemented BringToFront / SendToBack.
 

@@ -1860,7 +1860,7 @@ var ActiveSrcEdit: TSourceEditor;
   i:integer;
   OldDesigner: TDesigner;
 begin
-writeln('TMainIDE.DoCloseEditorUnit 1');
+writeln('TMainIDE.DoCloseEditorUnit 1 PageIndex=',PageIndex);
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
@@ -1897,7 +1897,7 @@ writeln('TMainIDE.DoCloseEditorUnit 1');
     ActiveUnitInfo.Form:=nil;
   end;
   // close source editor
-  SourceNoteBook.CloseFile(SourceNoteBook.NoteBook.PageIndex);
+  SourceNoteBook.CloseFile(PageIndex);
   // close project file (not remove)
   Project.CloseEditorIndex(ActiveUnitInfo.EditorIndex);
   ActiveUnitInfo.Loaded:=false;
@@ -3323,8 +3323,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.93  2001/05/15 06:39:48  lazarus
-  MG: bugfixed editor restore order
+  Revision 1.94  2001/05/16 10:00:00  lazarus
+  MG: fixed wrong page index in editor closing
 
   Revision 1.92  2001/04/21 14:50:21  lazarus
   MG: bugfix for mainunits ext <> .lpr
