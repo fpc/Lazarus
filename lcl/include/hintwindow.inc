@@ -32,7 +32,7 @@ begin
   parent := nil;
   Canvas.Font := Screen.HintFont;
   color := clInfoBk;
-  Caption := 'THintWIndow';
+  Caption := 'THintWindow';
   SetBounds(1,1,25,25);
   FHideInterval := 3000;
   TheTimer := TTimer.Create(self);

@@ -1868,6 +1868,18 @@ begin
   {$IFDEF SYN_LAZARUS}
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   {$ENDIF}
+
+  if (X >= fGutterWidth)
+    and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+    and (Y >= 0)
+    and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
+  then begin
+    If Cursor <> crIBeam then
+      Cursor := crIBeam;
+  end else
+    If Cursor <> crDefault then
+      Cursor := crDefault;
+
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
