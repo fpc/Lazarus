@@ -1367,6 +1367,10 @@ msgstr "Errore del debugger"
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "Errore del debugger%sOoops, il debugger è entrato in stato di errore%sSalvate subito il vostro lavoro!%sPremere stop e sperare..."
 
+#: lazarusidestrconsts:lisdebuggerinvalid
+msgid "Debugger invalid"
+msgstr ""
+
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
 msgstr "Opzioni del debugger"
@@ -4295,6 +4299,10 @@ msgstr "Espressioni regolari"
 msgid "Release"
 msgstr "Versione"
 
+#: lazarusidestrconsts:lisdiskdiffrevertall
+msgid "Reload from disk"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolremove
 msgid "Remove"
 msgstr "Rimuovi"
@@ -4442,10 +4450,6 @@ msgstr "Invio"
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Ripristina"
-
-#: lazarusidestrconsts:lisdiskdiffrevertall
-msgid "Revert All"
-msgstr "Ripristina tutti"
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
@@ -5421,6 +5425,10 @@ msgstr "Il file compilatore per il pacchetto %s non è un eseguibile valido:%s%s
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
+msgstr ""
+
+#: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
+msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg

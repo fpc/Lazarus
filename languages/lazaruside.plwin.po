@@ -1369,6 +1369,10 @@ msgstr "B³¹d odpluskwiacza"
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr "B³¹d odpluskwiacza%sOoops, odpluskwiacz wszed³ w stan b³êdu%sZapisz teraz swoj¹ pracê !%sWciœnij zatrzymaj, i miejmy nadziejê ¿e wszystko bêdzie dobrze."
 
+#: lazarusidestrconsts:lisdebuggerinvalid
+msgid "Debugger invalid"
+msgstr ""
+
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
 msgstr "Ustawienia odpluskwiacza"
@@ -4297,6 +4301,10 @@ msgstr "Wyra¿enie regularne"
 msgid "Release"
 msgstr "Release"
 
+#: lazarusidestrconsts:lisdiskdiffrevertall
+msgid "Reload from disk"
+msgstr ""
+
 #: lazarusidestrconsts:lisexttoolremove
 msgid "Remove"
 msgstr "Usuñ"
@@ -4444,10 +4452,6 @@ msgstr "Return"
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Cofnij"
-
-#: lazarusidestrconsts:lisdiskdiffrevertall
-msgid "Revert All"
-msgstr "Przywróæ wszystko"
 
 #: lazarusidestrconsts:lisrevertfailed
 msgid "Revert failed"
@@ -5424,6 +5428,10 @@ msgstr "Plik kompilatora dla pakietu %s nie jest wykonywalny:%s%s"
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
 msgstr "Obecna œcie¿ka do modu³ów dla pliku %s%s%s%s to%s%s%s%s.%s%sBrakuje œcie¿ki do modu³ów LCL %s%s%s.%s%sWskazówka dla pocz¹tkuj¹cych:%sUtwórz aplikacjê Lazarusa i umieœæ plik w katalogu projektu."
+
+#: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
+msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
 msgid "The debugger file \"%s\" is not an executable."

@@ -5346,6 +5346,14 @@ msgstr ""
 msgid "Run-to failed"
 msgstr ""
 
+#: lazarusidestrconsts:lisdebuggerinvalid
+msgid "Debugger invalid"
+msgstr ""
+
+#: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
+msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
+msgstr ""
+
 #: lazarusidestrconsts:lispleaseopenaunitbeforerun
 msgid "Please open a unit before run."
 msgstr ""
@@ -5367,7 +5375,7 @@ msgid "Click on one of the above items to see the diff"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffrevertall
-msgid "Revert All"
+msgid "Reload from disk"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiskdiffignorediskchanges

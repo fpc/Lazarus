@@ -1358,6 +1358,10 @@ msgstr ""
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgstr ""
 
+#: lazarusidestrconsts:lisdebuggerinvalid
+msgid "Debugger invalid"
+msgstr ""
+
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
 msgstr ""
@@ -1952,7 +1956,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfileexts
 msgid "File extensions:"
-msgstr ""
+msgstr "Tiedostopäätteet"
 
 #: lazarusidestrconsts:lispkgmangfileisalreadyinpackage
 msgid "File is already in package"
@@ -2592,35 +2596,35 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertcvsauthor
 msgid "Insert CVS keyword Author"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Author"
 
 #: lazarusidestrconsts:srkmecinsertcvsdate
 msgid "Insert CVS keyword Date"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Date"
 
 #: lazarusidestrconsts:srkmecinsertcvsheader
 msgid "Insert CVS keyword Header"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Header"
 
 #: lazarusidestrconsts:srkmecinsertcvsid
 msgid "Insert CVS keyword ID"
-msgstr ""
+msgstr "Aseta CVS:n avainsana ID"
 
 #: lazarusidestrconsts:srkmecinsertcvslog
 msgid "Insert CVS keyword Log"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Log"
 
 #: lazarusidestrconsts:srkmecinsertcvsname
 msgid "Insert CVS keyword Name"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Name"
 
 #: lazarusidestrconsts:srkmecinsertcvsrevision
 msgid "Insert CVS keyword Revision"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Revision"
 
 #: lazarusidestrconsts:srkmecinsertcvssource
 msgid "Insert CVS keyword Source"
-msgstr ""
+msgstr "Aseta CVS:n avainsana Source"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertdelphi5compilertemp
 msgid "Insert Delphi 5 Compiler Template"
@@ -2672,7 +2676,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
-msgstr ""
+msgstr "Lisää merkkitaulukosta"
 
 #: lazarusidestrconsts:srkmecinsertcharacter
 msgid "Insert from Charactermap"
@@ -3688,11 +3692,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecopenfileatcursor
 msgid "Open file at cursor"
-msgstr ""
+msgstr "Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts:lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr ""
+msgstr "Avaa kursorin osoittama tiedosto"
 
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
@@ -4220,7 +4224,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemreadonly
 msgid "Read Only"
-msgstr ""
+msgstr "Vain luettavissa"
 
 #: lazarusidestrconsts:lispckeditreadonly
 msgid "Read Only: %s"
@@ -4284,6 +4288,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispckoptsrelease
 msgid "Release"
+msgstr ""
+
+#: lazarusidestrconsts:lisdiskdiffrevertall
+msgid "Reload from disk"
 msgstr ""
 
 #: lazarusidestrconsts:lisexttoolremove
@@ -4432,10 +4440,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
-msgstr ""
-
-#: lazarusidestrconsts:lisdiskdiffrevertall
-msgid "Revert All"
 msgstr ""
 
 #: lazarusidestrconsts:lisrevertfailed
@@ -5412,6 +5416,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhecurrentunitpathforthefileisthepathtothelclunits
 msgid "The current unit path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%s is missing.%s%sHint for newbies:%sCreate a lazarus application and put the file into the project directory."
+msgstr ""
+
+#: lazarusidestrconsts:listhedebuggerdoesnotexistsorisnotexecutableseeenviro
+msgid "The debugger %s%s%s%sdoes not exists or is not executable.%s%sSee Environment -> Debugger Options"
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilenamemsg
