@@ -1,6 +1,6 @@
 {
  /***************************************************************************
-                               AbstractEditor.pp
+                               FormEditor.pp
                              -------------------
 
 
@@ -17,28 +17,40 @@
  *                                                                         *
  ***************************************************************************/
 }
-unit AbstractEditor;
+{$H+}
+
+unit FormEditor;
 
 {$mode objfpc}
 
 interface
 
 uses
-  classes, Controls, forms,buttons,sysutils, Graphics,Extctrls;
+  classes, customformeditor,Controls, forms,buttons,sysutils,Graphics,Extctrls;
 
 type
 
-  TAbstractEditor = class
-   public
-     Function BufferModified : Boolean; virtual; abstract;
-     Function LinesInBuffer : Longint; virtual; abstract;
-     Function Filename : String; virtual; abstract;
-     Procedure Copy;  virtual; abstract;
-     Procedure Cut;  virtual; abstract;
-     Procedure Paste;  virtual; abstract;
+  TFormEditor = class(TCustomFormEditor)
+  private
+
+  public
+    constructor Create; override;
+    destructor destroy; override;
   end;
 
 
 implementation
+uses
+  LCLLinux;
+
+constructor TFormEditor.Create;
+Begin
+inherited;
+end;
+
+destructor TFormEditor.destroy;
+Begin
+inherited;
+end;
 
 end.
