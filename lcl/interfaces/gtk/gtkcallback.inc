@@ -214,8 +214,9 @@ begin
         if (not LCLMenuItem.AutoCheck) then begin
           // the gtk always toggles the check flag
           // restore 'checked' flag
-          PGtkCheckMenuItem(Widget)^.flag0:=
-            PGtkCheckMenuItem(Widget)^.flag0 and not bm_checkmenuitem_active;
+          if LCLMenuItem.Checked then
+            PGtkCheckMenuItem(Widget)^.flag0:=
+              PGtkCheckMenuItem(Widget)^.flag0 xor bm_checkmenuitem_active;
         end;
       end else begin
         // menuitem is already in sync -> don't send a change event
@@ -2120,6 +2121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2002/08/22 13:45:58  lazarus
+  MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
+
   Revision 1.104  2002/08/22 12:30:36  lazarus
   MG: fixed key events and changed pixmap loading
 
