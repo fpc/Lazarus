@@ -64,35 +64,30 @@ type
       FOnChange : TNotifyEvent;
       FSorted : boolean;
       procedure SetItems(Value : TStrings);
+      procedure CNDrawItems(var Message : TLMDrawItems) ; message CN_DrawItem;
     protected
       procedure CreateHandle; override;
       procedure DestroyHandle; override;
       procedure DoChange(var msg); message LM_CHANGED;
-     procedure AttachSignals; override;
-//TODO: Took the virtual; off next line
-          function GetSelLength : integer;
-//TODO: Took the virtual; off next line
-          function GetSelStart : integer; 
-//TODO: Took the virtual; off next line
-          function GetSelText : string; 
-          function GetItemIndex : integer; virtual;
-	  function GetMaxLength : integer; virtual;
-          procedure SetItemIndex(Val : integer); virtual;
-	  procedure SetMaxLength(Val : integer); virtual;
-//TODO: Took the virtual; off next line
-          procedure SetSelLength(Val : integer);
-//TODO: Took the virtual; off next line
-          procedure SetSelStart(Val : integer); 
-//TODO: Took the virtual; off next line
-          procedure SetSelText(Val : string);
-	  procedure SetSorted(Val : boolean); virtual;
-          procedure SetStyle(Val : TComboBoxStyle); virtual;
-          property Items : TStrings read FItems write SetItems;
-          property ItemIndex : integer read GetItemIndex write SetItemIndex;
-	  property MaxLength : integer read GetMaxLength write SetMaxLength;
-	  property Sorted : boolean read FSorted write SetSorted;
-          property Style : TComboBoxStyle read FStyle write SetStyle;
-	  property OnChange : TNotifyEvent read FOnChange write FOnChange;
+      procedure AttachSignals; override;
+      function GetSelLength : integer;
+      function GetSelStart : integer;
+      function GetSelText : string;
+      function GetItemIndex : integer; virtual;
+      function GetMaxLength : integer; virtual;
+      procedure SetItemIndex(Val : integer); virtual;
+      procedure SetMaxLength(Val : integer); virtual;
+      procedure SetSelLength(Val : integer);
+      procedure SetSelStart(Val : integer);
+      procedure SetSelText(Val : string);
+      procedure SetSorted(Val : boolean); virtual;
+      procedure SetStyle(Val : TComboBoxStyle); virtual;
+      property Items : TStrings read FItems write SetItems;
+      property ItemIndex : integer read GetItemIndex write SetItemIndex;
+      property MaxLength : integer read GetMaxLength write SetMaxLength;
+      property Sorted : boolean read FSorted write SetSorted;
+      property Style : TComboBoxStyle read FStyle write SetStyle;
+      property OnChange : TNotifyEvent read FOnChange write FOnChange;
     public
           constructor Create(AOwner : TComponent); Override;
           destructor Destroy; override;
@@ -225,10 +220,15 @@ type
 
    TMemo = class(TCustomMemo)
    private
-   published
-      property Lines;
    public
+   published
+      property Align;
+      property Color;
+      property Font;
+
+      property Lines;
       property ReadOnly;
+      property Tabstop;
       property OnChange;
    end;
 
@@ -256,6 +256,8 @@ type
   published
     property Alignment;
     property Caption;
+    property Color;
+    property Font;
     property Visible;
     property Layout;
     property WordWrap;
@@ -430,7 +432,23 @@ type
       procedure Insert(index: Integer; const S: String); override;
    end;
 
-
+ { TComboBoxStrings = class(TStrings)
+  private
+    ComboBox: TCustomComboBox;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+  public
+    function Add(const S: string): Integer; override;
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index: Integer; const S: string); override;
+  end;
+    }
 var
    aColors : Array[1..10] of TColor;
    ColorNum : Integer;
@@ -446,6 +464,7 @@ var
 {$I scrollbar.inc} 
 {$I memo.inc}
 {$I memostrings.inc}
+
 {$I edit.inc}
 {$I buttoncontrol.inc}
 {$I checkbox.inc}
@@ -457,6 +476,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.2  2000/07/16 12:45:01  lazarus
   Added procedure ListBox.Clear (changes by chris, added by stoppok)
 

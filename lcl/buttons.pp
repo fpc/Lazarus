@@ -41,6 +41,7 @@ type
 
   TButton = class(TButtonControl)  //TButtoncontrol is declared in stdctrls.pp
   private
+    FCancel : Boolean;
     FDefault : Boolean;
     FModalResult : TModalResult;
     fOwner: TControl;
@@ -62,8 +63,19 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Default : Boolean read FDefault write SetDefault default false;
-    property ModalResult : TModalResult read FModalResult write FModalResult;
+    property ModalResult : TModalResult read FModalResult write FModalResult default 0;
+    property Cancel : Boolean read FCancel write FCancel default False;
+    property Font;
 
+    property Visible;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+ //   property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
   end;
 
   TButtonGlyph = class
@@ -200,6 +212,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.2  2000/07/16 12:44:31  lazarus
   added OnMouseEnter, OnMouseLeave property (changes by chris, committed by stoppok)
 

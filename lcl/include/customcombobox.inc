@@ -36,7 +36,8 @@ begin
   inherited CreateHandle;
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   NewStrings.Assign(FItems);
-  FItems.Free;
+
+  FItems.free;
   FItems:= NewStrings;
 end;
 
@@ -83,12 +84,13 @@ end;
 procedure TCustomComboBox.SetSorted(Val : boolean);
 var AMessage : TLMSort;
 begin
-  if Val <> FSorted then begin
+  if (Val <> FSorted) then begin
     with AMessage do begin
       Msg:= LM_SORT;
       List:= Items;
       IsSorted:= Val;
     end;
+
     CNSendMessage(LM_SORT, Self, @AMessage);
     FSorted:= Val;
   end;
@@ -254,7 +256,10 @@ begin
 
    fCompStyle := csComboBox;
    SetBounds(1,1,100,25);
-   FItems:= TStringList.Create;
+   FItems := TStringlist.create;
+//   FItems:= TComboBoxStrings.Create;
+//   TComboBoxStrings(FItems).ComboBox := Self;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -308,8 +313,18 @@ begin
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
 end;
 
+Procedure TCustomComboBox.CNDrawItems(var Message : TLMDrawItems);
+Begin
+
+end;
+
+
 {
   $Log$
+  Revision 1.3  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.2  2000/07/23 19:03:10  lazarus
   changed some comments, stoppok
 

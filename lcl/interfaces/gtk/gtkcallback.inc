@@ -9,6 +9,7 @@
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
 begin
+//writeln('delivermessage');
   if TObject(Target) is TWinControl 
   then begin
     Result := PostMessage(TWinControl(Target).Handle, TLMessage(Message).Msg, TLMessage(Message).WParam, TLMessage(Message).LParam);
@@ -89,8 +90,7 @@ begin
    MSG.Msg := LM_PAINT;
    MSG.DC := GetDC(THandle(Widget));
    MSG.Unused := 0;
-   
-   
+
    Result := DeliverPostMessage(Data, MSG);
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
@@ -1077,6 +1077,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.7  2000/10/09 22:50:32  lazarus
   MWE:
     * fixed some selection code

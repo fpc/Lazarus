@@ -60,6 +60,8 @@ type
     FMyFont:TFont;
     FMyString:string;
     FMyBool:boolean;
+    FMyBrush:TBrush;
+    FMyPen:TPen;
   published
     property MyInteger:integer read FMyInteger write FMyInteger;
     property MyCardinal:cardinal read FMyCardinal write FMyCardinal;
@@ -68,6 +70,8 @@ type
     property MyFont:TFont read FMyFont write FMyFont;
     property MyString:string read FMyString write FMyString;
     property MyBool:Boolean read FMyBool write FMyBool;
+    property MyBrush:TBrush read FMyBrush write FMyBrush;
+    property MyPen:TPen read FMyPen write FMyPen;
 	end;
 
 var
@@ -83,6 +87,8 @@ begin
   FMySet:=[MyEnum1];
   FMyEnum:=MyEnum2;
   FMyFont:=TFont.Create;
+  FMyBrush:=TBrush.Create;
+  FMyPen:=TPen.Create;
 
   Name:='Form1';
   Caption := 'Test Form';
@@ -99,6 +105,14 @@ begin
     OI.RootComponent:=Self;
   end;
 end;
+
+procedure TForm1.FormKill(Sender : TObject);
+Begin
+  FMyBrush.Free;
+  FMyPen.Free;
+  FMyFont.Free;
+  Application.terminate;
+End;
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
@@ -187,13 +201,6 @@ begin
    if assigned (Memo1)
       then Memo1.Lines.Add ('ONClick');
 end;
-{------------------------------------------------------------------------------}
-
-procedure TForm1.FormKill(Sender : TObject);
-Begin
-  FMyFont.Free;
-  Application.terminate;
-End;
 
 {------------------------------------------------------------------------------}
 procedure TForm1.LoadMainMenu;

@@ -2,6 +2,12 @@ unit prop_edits;
 {
   Author: Mattias Gaertner
 
+  Abstract:
+    This units defines the property editors used by the object inspector.
+    A Property Editor is the the interface between a row of the object inspector
+    and a property in the RTTI.
+    For more information see the big comment part below.
+
   ToDo:
     -TypInfo.GetPropList is unable to work with nil. incombatibility to delphi
     -digits for floattypes -> I hope, I have guessed right
@@ -9,9 +15,13 @@ unit prop_edits;
     -Save ColorDialog settings
     -ColorToString missing -> taking my own
     -StringToColor missing -> taking my own
-    -System.TypeInfo(Type) missing -> ?
+    -System.TypeInfo(Type) missing -> exists already in the developer version
+         but because I want it now with the stable version I will use my
+         workaround
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
+    -Font property editors
+    -register ModalResultPropertyEditor
 
     -many more... see XXX
 }
@@ -32,7 +42,7 @@ const
 type
   // XXX
   // The IntegerSet (a set of size of an integer)
-  // don't if this is always valid
+  // don't know if this is always valid
   TIntegerSet = set of 0..SizeOf(Integer) * 8 - 1;
 
   TGetStringProc = procedure(const s:string) of object;
@@ -304,13 +314,13 @@ type
     procedure ListMeasureHeight(const NewValue:string; Index:integer;
       ACanvas:TCanvas;  var AHeight:Integer); dynamic;
     procedure ListDrawValue(const NewValue:string; Index:integer;
-      ACanvas:TCanvas;  const ARect:TRect; State: TPropEditDrawState); dynamic;
+      ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); dynamic;
     procedure PropMeasureHeight(const NewValue:string;  ACanvas:TCanvas;
       var AHeight:Integer); dynamic;
     procedure PropDrawName(ACanvas:TCanvas; const ARect:TRect;
-      State:TPropEditDrawState); dynamic;
+      AState:TPropEditDrawState); dynamic;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-      State:TPropEditDrawState); dynamic;
+      AState:TPropEditDrawState); dynamic;
     //property Designer:IFormDesigner read FDesigner;
     property PrivateDirectory:string read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
@@ -458,6 +468,22 @@ type
     function GetValue: string; override;
   end;
 
+{ TMethodPropertyEditor
+  Property editor for all method properties. }
+
+  TMethodPropertyEditor = class(TPropertyEditor)
+  public
+    function AllEqual: Boolean; override;
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetEditLimit: Integer; override;
+    function GetValue: string; override;
+    procedure GetValues(Proc: TGetStringProc); override;
+    procedure SetValue(const AValue: string); override;
+    function GetFormMethodName: string; virtual;
+    function GetTrimmedEventName: string;
+  end;
+
 { TComponentPropertyEditor
   The default editor for TComponents.  It does not allow editing of the
   properties of the component.  It allow the user to set the value of this
@@ -482,6 +508,18 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+{ TModalResultPropertyEditor }
+
+  TModalResultPropertyEditor = class(TIntegerPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: string; override;
+    procedure GetValues(Proc: TGetStringProc); override;
+    procedure SetValue(const Value: string); override;
   end;
 
 { TColorPropertyEditor
@@ -500,9 +538,63 @@ type
     procedure ListMeasureWidth(const NewValue:string; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer);  override;
     procedure ListDrawValue(const NewValue:string; Index:integer;
-      ACanvas:TCanvas;  const ARect:TRect; State: TPropEditDrawState); override;
+      ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-      State:TPropEditDrawState); override;
+      AState:TPropEditDrawState); override;
+  end;
+
+{ TBrushStylePropertyEditor
+  PropertyEditor editor for TBrush's Style.  Simply provides for custom render. }
+
+  TBrushStylePropertyEditor = class(TEnumPropertyEditor)
+  public
+    procedure ListMeasureWidth(const Value: string; Index:integer;
+      ACanvas: TCanvas;  var AWidth: Integer); override;
+    procedure ListDrawValue(const Value: string; Index:integer;
+      ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      AState:TPropEditDrawState); override;
+  end;
+
+{ TPenStylePropertyEditor
+  PropertyEditor editor for TPen's Style.  Simply provides for custom render. }
+
+  TPenStylePropertyEditor = class(TEnumPropertyEditor)
+  public
+    procedure ListMeasureWidth(const Value: string; Index:integer;
+      ACanvas: TCanvas;  var AWidth: Integer); override;
+    procedure ListDrawValue(const Value: string; Index:integer;
+      ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
+    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
+      AState:TPropEditDrawState); override;
+  end;
+
+{ TFontPropertyEditor
+  PropertyEditor editor for the Font property.  Brings up the font dialog as well as
+  allowing the properties of the object to be edited. }
+
+  TFontPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+{ TTabOrderPropertyEditor
+  Property editor for the TabOrder property.  Prevents the property from being
+  displayed when more than one component is selected. }
+
+  TTabOrderPropertyEditor = class(TIntegerPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+{ TCaptionPropertyEditor
+  Property editor for the Caption and Text properties.  Updates the value of
+  the property for each change instead on when the property is approved. }
+
+  TCaptionPropertyEditor = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
   end;
 
 
@@ -567,6 +659,35 @@ procedure GetComponentProperties(Components:TComponentSelectionList;
 //function GetComponentEditor(Component:TComponent;
 //  Designer:IFormDesigner):TComponentEditor;
 
+//==============================================================================
+// XXX
+// This class is a workaround for the missing typeinfo function
+type
+  TDummyClassForPropTypes = class (TPersistent)
+  private
+    FList:PPropList;
+    FCount:integer;
+  public
+    FColor:TColor;
+    FComponent:TComponent;
+    FComponentName:TComponentName;
+    FBrushStyle:TBrushStyle;
+    FPenStyle:TPenStyle;
+    FTabOrder:integer;
+    FCaption:TCaption;
+    function PTypeInfos(const PropName:string):PTypeInfo;
+    constructor Create;
+    destructor Destroy;  override;
+  published
+    property Color:TColor read FColor write FColor;
+    property PropCount:integer read FCount;
+    property DummyComponent:TComponent read FComponent write FComponent;
+    property DummyName:TComponentName read FComponentName write FComponentName;
+    property BrushStyle:TBrushStyle read FBrushStyle;
+    property PenStyle:TPenStyle read FPenStyle;
+    property TabOrder:integer read FTabOrder;
+    property Caption:TCaption read FCaption;
+  end;
 
 //==============================================================================
 
@@ -654,7 +775,7 @@ const
     TEnumPropertyEditor,   // tkEnumeration
     TFloatPropertyEditor,  // tkFloat
     TSetPropertyEditor,    // tkSet
-    nil,                   // tkMethod
+    TMethodPropertyEditor, // tkMethod
     TStringPropertyEditor, // tkSString
     TStringPropertyEditor, // tkLString
     TStringPropertyEditor, // tkAString
@@ -891,6 +1012,7 @@ EditorClass:TPropertyEditorClass);
 var
   P:PPropertyClassRec;
 begin
+  if PropertyType=nil then exit;
   if PropertyClassList=nil then
     PropertyClassList:=TList.Create;
   New(P);
@@ -898,7 +1020,7 @@ begin
   //P^.Group:=CurrentGroup;
   P^.PropertyType:=PropertyType;
   P^.ComponentClass:=ComponentClass;
-  P^.PropertyName:='';
+  P^.PropertyName:=PropertyName;
   if Assigned(ComponentClass) then P^.PropertyName:=PropertyName;
   P^.EditorClass:=EditorClass;
   PropertyClassList.Insert(0,P);
@@ -945,7 +1067,8 @@ begin
        ) or
        ( (PropType^.Kind=tkClass) and
          (P^.PropertyType^.Kind=tkClass) and
-         GetTypeData(PropType)^.ClassType.InheritsFrom(GetTypeData(P^.PropertyType)^.ClassType)
+         GetTypeData(PropType)^.ClassType.InheritsFrom(
+           GetTypeData(P^.PropertyType)^.ClassType)
        ) then
       if ((P^.ComponentClass=nil) or (Obj.InheritsFrom(P^.ComponentClass))) and
          ((P^.PropertyName='') or (CompareText(PropInfo^.Name,P^.PropertyName)=0)) then
@@ -1368,14 +1491,14 @@ begin
 end;
 
 procedure TPropertyEditor.ListDrawValue(const NewValue:string; Index:integer;
-  ACanvas:TCanvas; const ARect:TRect; State: TPropEditDrawState);
+  ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
 var TextY:integer;
 begin
-  TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-1;
+  TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
   if ACanvas.Brush.Color<>clNone then
     ACanvas.FillRect(ARect);
   // XXX Todo: clipping
-  ACanvas.TextOut(ARect.Left+1,TextY,NewValue);
+  ACanvas.TextOut(ARect.Left+2,TextY,NewValue);
 end;
 
 { these three procedures implement the default render behavior of the
@@ -1388,7 +1511,7 @@ begin
 end;
 
 procedure TPropertyEditor.PropDrawName(ACanvas:TCanvas; const ARect:TRect;
-  State:TPropEditDrawState);
+  AState:TPropEditDrawState);
 var TextY:integer;
 begin
   TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
@@ -1397,12 +1520,12 @@ begin
 end;
 
 procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-  State:TPropEditDrawState);
+  AState:TPropEditDrawState);
 var TextY:integer;
 begin
   TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
   // XXX Todo: clipping
-  ACanvas.TextOut(ARect.Left+2,TextY,GetVisualValue)
+  ACanvas.TextOut(ARect.Left+3,TextY,GetVisualValue)
 end;
 
 { TOrdinalPropertyEditor }
@@ -1637,8 +1760,7 @@ var
   V: string;
 begin
   Result := False;
-  if PropCount > 1 then
-  begin
+  if PropCount > 1 then begin
     V := GetStrValue;
     for I := 1 to PropCount - 1 do
       if GetStrValueAt(I) <> V then Exit;
@@ -1805,6 +1927,151 @@ begin
   Result:='('+GetPropType^.Name+')';
 end;
 
+{ TMethodPropertyEditor }
+
+function TMethodPropertyEditor.AllEqual: Boolean;
+var
+  I: Integer;
+  V, T: TMethod;
+begin
+  Result := False;
+  if PropCount > 1 then begin
+    V := GetMethodValue;
+    for I := 1 to PropCount - 1 do begin
+      T := GetMethodValueAt(I);
+      if (T.Code <> V.Code) or (T.Data <> V.Data) then Exit;
+    end;
+  end;
+  Result := True;
+end;
+
+procedure TMethodPropertyEditor.Edit;
+var
+  FormMethodName: string;
+begin
+  FormMethodName := GetValue;
+  // XXX
+  if (FormMethodName = '') {or Designer.MethodFromAncestor(GetMethodValue)} then
+  begin
+    if FormMethodName = '' then
+      FormMethodName := GetFormMethodName;
+    if FormMethodName = '' then begin
+      {raise EPropertyError.CreateRes(@SCannotCreateName);}
+      exit;
+    end;
+    SetValue(FormMethodName);
+  end;
+  // XXX
+  //Designer.ShowMethod(FormMethodName);
+end;
+
+function TMethodPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paSortList, paRevertable];
+end;
+
+function TMethodPropertyEditor.GetEditLimit: Integer;
+begin
+  Result := MaxIdentLength;
+end;
+
+function TMethodPropertyEditor.GetFormMethodName: string;
+//var I: Integer;
+begin
+  // XXX
+  Result:='';
+  {
+  if GetComponent(0) = Designer.GetRoot then begin
+    Result := Designer.GetRootClassName;
+    if (Result <> '') and (Result[1] = 'T') then
+      Delete(Result, 1, 1);
+  end else begin
+    Result := Designer.GetObjectName(GetComponent(0));
+    for I := Length(Result) downto 1 do
+      if Result[I] in ['.','[',']'] then
+        Delete(Result, I, 1);
+  end;
+  }
+  if Result = '' then begin
+    {raise EPropertyError.CreateRes(@SCannotCreateName);}
+    exit;
+  end;
+  //Result := Result + GetTrimmedEventName;
+end;
+
+function TMethodPropertyEditor.GetTrimmedEventName: string;
+begin
+  Result := GetName;
+  if (Length(Result) >= 2) and
+    (Result[1] in ['O','o']) and (Result[2] in ['N','n']) then
+    Delete(Result,1,2);
+end;
+
+function TMethodPropertyEditor.GetValue: string;
+begin
+  // XXX
+  Result := '';
+  //Result:=Designer.GetMethodName(GetMethodValue);
+end;
+
+procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
+begin
+  // XXX
+  //Designer.GetMethods(GetTypeData(GetPropType), Proc);
+end;
+
+procedure TMethodPropertyEditor.SetValue(const AValue: string);
+
+  procedure CheckChainCall(const MethodName: string; Method: TMethod);
+  //var
+    //Persistent: TPersistent;
+    //Component: TComponent;
+    //InstanceMethod: string;
+    //Instance: TComponent;
+  begin
+    {Persistent := GetComponent(0);
+    if Persistent is TComponent then begin
+      Component := TComponent(Persistent);
+      if (Component.Name <> '') and (Method.Data <> Designer.GetRoot) and
+        (TObject(Method.Data) is TComponent) then
+      begin
+        Instance := TComponent(Method.Data);
+        InstanceMethod := Instance.MethodName(Method.Code);
+        if InstanceMethod <> '' then begin
+          // XXX
+          //Designer.ChainCall(MethodName, Instance.Name, InstanceMethod,
+          //  GetTypeData(GetPropType));
+        end;
+      end;
+    end;}
+  end;
+
+//var
+  //NewMethod: Boolean;
+  //CurValue: string;
+  //OldMethod: TMethod;
+begin
+  // XXX
+  exit;
+
+  {CurValue:= GetValue;
+  if (CurValue <> '') and (AValue <> '') and (SameText(CurValue, AValue) or
+    not Designer.MethodExists(AValue)) and not Designer.MethodFromAncestor(GetMethodValue) then
+    Designer.RenameMethod(CurValue, AValue)
+  else
+  begin
+    NewMethod := (AValue <> '') and not Designer.MethodExists(AValue);
+    OldMethod := GetMethodValue;
+    SetMethodValue(Designer.CreateMethod(AValue, GetTypeData(GetPropType)));
+    if NewMethod then
+    begin
+      if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil) then
+        CheckChainCall(AValue, OldMethod);
+      Designer.ShowMethod(AValue);
+    end;
+  end; }
+end;
+
 { TComponentPropertyEditor }
 
 procedure TComponentPropertyEditor.Edit;
@@ -1859,6 +2126,76 @@ end;
 function TComponentNamePropertyEditor.GetEditLimit: Integer;
 begin
   Result := MaxIdentLength;
+end;
+
+function TComponentNamePropertyEditor.GetValue: string;
+begin
+  Result:=inherited GetValue;
+  writeln('OI: Get ComponentName Len'+IntToStr(length(Result))+',Name='''+Result+'''');
+end;
+
+procedure TComponentNamePropertyEditor.SetValue(const Value: string);
+begin
+  writeln('OI: Set ComponentName Len'+IntToStr(length(Value))+',Name='''+Value+'''');
+end;
+
+{ TModalResultPropertyEditor }
+
+const
+  ModalResults: array[mrNone..mrYesToAll] of string = (
+    'mrNone',
+    'mrOk',
+    'mrCancel',
+    'mrAbort',
+    'mrRetry',
+    'mrIgnore',
+    'mrYes',
+    'mrNo',
+    'mrAll',
+    'mrNoToAll',
+    'mrYesToAll');
+
+function TModalResultPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paValueList, paRevertable];
+end;
+
+function TModalResultPropertyEditor.GetValue: string;
+var
+  CurValue: Longint;
+begin
+  CurValue := GetOrdValue;
+  case CurValue of
+    Low(ModalResults)..High(ModalResults):
+      Result := ModalResults[CurValue];
+  else
+    Result := IntToStr(CurValue);
+  end;
+end;
+
+procedure TModalResultPropertyEditor.GetValues(Proc: TGetStringProc);
+var
+  I: Integer;
+begin
+  for I := Low(ModalResults) to High(ModalResults) do Proc(ModalResults[I]);
+end;
+
+procedure TModalResultPropertyEditor.SetValue(const Value: string);
+var
+  I: Integer;
+begin
+  if Value = '' then
+  begin
+    SetOrdValue(0);
+    Exit;
+  end;
+  for I := Low(ModalResults) to High(ModalResults) do
+    if CompareText(ModalResults[I], Value) = 0 then
+    begin
+      SetOrdValue(I);
+      Exit;
+    end;
+  inherited SetValue(Value);
 end;
 
 { TColorPropertyEditor }
@@ -1929,16 +2266,16 @@ begin
 end;
 
 procedure TColorPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-  State:TPropEditDrawState);
+  AState:TPropEditDrawState);
 begin
   if GetVisualValue <> '' then
     ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [pedsInComboList])
   else
-    inherited PropDrawValue(ACanvas, ARect, State);
+    inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
 procedure TColorPropertyEditor.ListDrawValue(const NewValue:string;
-Index:integer; ACanvas:TCanvas;  const ARect:TRect; State: TPropEditDrawState);
+Index:integer; ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState);
 
   function ColorToBorderColor(AColor: TColor): TColor;
   type
@@ -1953,16 +2290,17 @@ Index:integer; ACanvas:TCanvas;  const ARect:TRect; State: TPropEditDrawState);
        (TColorQuad(AColor).Green > 192) or
        (TColorQuad(AColor).Blue > 192) then
       Result := clBlack
-    else if pedsSelected in State then
+    else if pedsSelected in AState then
       Result := clWhite
     else
       Result := AColor;
   end;
 var
-  vRight: Integer;
+  vRight,vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
 begin
-  vRight := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left;
+  vRight := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left - 2;
+  vBottom:=ARect.Bottom-2;
   with ACanvas do
   try
     // save off things
@@ -1971,12 +2309,12 @@ begin
 
     // frame things
     Pen.Color := Brush.Color;
-    Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
+    Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
 
     // set things up and do the work
     Brush.Color := StringToColor(NewValue);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
-    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
+    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
 
     // restore the things we twiddled with
     Brush.Color := vOldBrushColor;
@@ -1984,7 +2322,7 @@ begin
   finally
     inherited ListDrawValue(NewValue, Index, ACanvas,
                             Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
-                            State);
+                            AState);
   end;
 end;
 
@@ -2002,6 +2340,169 @@ begin
     SetOrdValue(NewValue)
   else
     inherited SetValue(Value);
+end;
+
+{ TBrushStylePropertyEditor }
+
+procedure TBrushStylePropertyEditor.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect;  AState:TPropEditDrawState);
+begin
+  if GetVisualValue <> '' then
+    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [])
+  else
+    inherited PropDrawValue(ACanvas, ARect, AState);
+end;
+
+procedure TBrushStylePropertyEditor.ListDrawValue(const Value: string;
+  Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
+var
+  vRight, vBottom: Integer;
+  vOldPenColor, vOldBrushColor: TColor;
+  vOldBrushStyle: TBrushStyle;
+begin
+  vRight := (ARect.Bottom - ARect.Top) {* 2} + ARect.Left -2;
+  vBottom:= ARect.Bottom-2;
+  with ACanvas do
+  try
+    // save off things
+    vOldPenColor := Pen.Color;
+    vOldBrushColor := Brush.Color;
+    vOldBrushStyle := Brush.Style;
+
+    // frame things
+    Pen.Color := Brush.Color;
+    Brush.Color := clWindow;
+    Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
+
+    // set things up
+    Pen.Color := clWindowText;
+    Brush.Style := TBrushStyle(GetEnumValue(GetPropInfo^.PropType, Value));
+
+    // bsClear hack
+    if Brush.Style = bsClear then begin
+      Brush.Color := clWindow;
+      Brush.Style := bsSolid;
+    end
+    else
+      Brush.Color := clWindowText;
+
+    // ok on with the show
+    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
+
+    // restore the things we twiddled with
+    Brush.Color := vOldBrushColor;
+    Brush.Style := vOldBrushStyle;
+    Pen.Color := vOldPenColor;
+  finally
+    inherited ListDrawValue(Value, Index, ACanvas,
+                            Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
+                            AState);
+  end;
+end;
+
+procedure TBrushStylePropertyEditor.ListMeasureWidth(const Value: string;
+  Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
+begin
+  AWidth := AWidth + ACanvas.TextHeight('A') {* 2};
+end;
+
+{ TPenStylePropertyEditor }
+
+procedure TPenStylePropertyEditor.PropDrawValue(ACanvas: TCanvas;
+  const ARect: TRect;  AState:TPropEditDrawState);
+begin
+  if GetVisualValue <> '' then
+    ListDrawValue(GetVisualValue, -1, ACanvas, ARect, [])
+  else
+    inherited PropDrawValue(ACanvas, ARect, AState);
+end;
+
+procedure TPenStylePropertyEditor.ListDrawValue(const Value: string;
+  Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
+var
+  vRight, vTop, vBottom: Integer;
+  vOldPenColor, vOldBrushColor: TColor;
+  vOldPenStyle: TPenStyle;
+begin
+  vRight := (ARect.Bottom - ARect.Top) * 2 + ARect.Left;
+  vTop := (ARect.Bottom - ARect.Top) div 2 + ARect.Top;
+  vBottom := ARect.Bottom-2;
+  with ACanvas do
+  try
+    // save off things
+    vOldPenColor := Pen.Color;
+    vOldBrushColor := Brush.Color;
+    vOldPenStyle := Pen.Style;
+
+    // frame things
+    Pen.Color := Brush.Color;
+    Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
+
+    // white out the background
+    Pen.Color := clWindowText;
+    Brush.Color := clWindow;
+    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
+
+    // set thing up and do work
+    Pen.Color := clWindowText;
+    Pen.Style := TPenStyle(GetEnumValue(GetPropInfo^.PropType, Value));
+    MoveTo(ARect.Left + 1, vTop);
+    LineTo(vRight - 1, vTop);
+    MoveTo(ARect.Left + 1, vTop + 1);
+    LineTo(vRight - 1, vTop + 1);
+
+    // restore the things we twiddled with
+    Brush.Color := vOldBrushColor;
+    Pen.Style := vOldPenStyle;
+    Pen.Color := vOldPenColor;
+  finally
+    inherited ListDrawValue(Value, -1, ACanvas,
+                            Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
+                            AState);
+  end;
+end;
+
+procedure TPenStylePropertyEditor.ListMeasureWidth(const Value: string;
+  Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
+begin
+  AWidth := AWidth + ACanvas.TextHeight('X') * 2;
+end;
+
+{ TFontPropertyEditor }
+
+procedure TFontPropertyEditor.Edit;
+var
+  FontDialog: TFontDialog;
+begin
+  FontDialog := TFontDialog.Create(Application);
+  try
+    //FontDialog.Font := TFont(GetOrdValue);
+    //FontDialog.HelpContext := hcDFontEditor;
+    //FontDialog.Options := FontDialog.Options + [fdShowHelp, fdForceFontExist];
+    //if FontDialog.Execute then
+      //SetOrdValue(Longint(FontDialog.Font));
+  finally
+    FontDialog.Free;
+  end;
+end;
+
+function TFontPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
+end;
+
+{ TTabOrderPropertyEditor }
+
+function TTabOrderPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [];
+end;
+
+{ TCaptionPropertyEditor }
+
+function TCaptionPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paAutoUpdate, paRevertable];
 end;
 
 //==============================================================================
@@ -2070,16 +2571,68 @@ end;
 
 
 //******************************************************************************
+// XXX
+// workaround for missing typeinfo function
+constructor TDummyClassForPropTypes.Create;
+var TypeInfo : PTypeInfo;
+begin
+  inherited Create;
+  TypeInfo:=ClassInfo;
+  FCount:=GetTypeData(TypeInfo)^.Propcount;
+  GetMem(FList,FCount * SizeOf(Pointer));
+  GetPropInfos(TypeInfo,FList);
+end;
+
+destructor TDummyClassForPropTypes.Destroy;
+begin
+  FreeMem(FList);
+  inherited Destroy;
+end;
+
+function TDummyClassForPropTypes.PTypeInfos(const PropName:string):PTypeInfo;
+var Index:integer;
+begin
+  Index:=FCount-1;
+  while (Index>=0) do begin
+    Result:=FList^[Index]^.PropType;
+    //writeln(Result^.Name);
+    if (uppercase(Result^.Name)=uppercase(PropName)) then exit;
+    dec(Index);
+  end;
+  Result:=nil;
+end;
+
+var DummyClassForPropTypes:TDummyClassForPropTypes;
+
+//******************************************************************************
 
 initialization
   PropertyClassList:=TList.Create;
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
-  // the System.TypeInfo(Type) is missing
   //RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
+
+  // XXX workaround for missing typeinfo function
+  DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),nil
+    ,'Color',TColorPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TComponent'),nil
+    ,'',TComponentPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    nil,'Name',TComponentNamePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TBrushStyle'),
+    nil,'',TBrushStylePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TPenStyle'),
+    nil,'',TPenStylePropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('longint'),
+    nil,'',TTabOrderPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
+    nil,'',TCaptionPropertyEditor);
 
 finalization
   PropertyEditorMapperList.Free;  PropertyEditorMapperList:=nil;
   PropertyClassList.Free;  PropertyClassList:=nil;
+  // XXX workaround for missing typeinfo function
+  DummyClassForPropTypes.Free;
 
 end.

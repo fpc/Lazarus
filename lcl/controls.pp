@@ -444,7 +444,7 @@ TCMDialogKey = TLMKEY;
     procedure Resize;
     procedure RequestAlign; dynamic;
     Procedure BeginAutoDrag; dynamic;
-    Procedure ChangeScale(M,D : Integer) ; dynamic;
+    Procedure ChangeScale(M,D : Integer); dynamic;
     Procedure Click; dynamic;
     Procedure DblClick; dynamic;
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
@@ -1123,6 +1123,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.3  2000/11/27 18:52:37  lazarus
   Added the Object Inspector code.
   Added more form editor code.

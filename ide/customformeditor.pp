@@ -105,6 +105,7 @@ TCustomFormEditor
     Function Filename : String; override;
     Function FormModified : Boolean; override;
     Function FindComponent(const Name : String) : TIComponentInterface; override;
+    Function GetFormComponent : TIComponentInterface; override;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; override;
@@ -493,9 +494,7 @@ Found : Boolean;
 I, Num : Integer;
 Begin
 Temp := TComponentInterface.Create;
-Writeln('2');
-//TempClass := GetClass(Typename);
-Writeln('3');
+Writeln('TComponentInterface created......');
 if SelectedComponents.Count = 0 then
 Temp.FControl := TypeClass.Create(nil)
 else
@@ -504,6 +503,7 @@ Writeln('Selected Components > 0');
 if (SelectedComponents.Items[0] is TWinControl) and (csAcceptsControls in TWinControl(SelectedComponents.Items[0]).ControlStyle) then
     Begin
        Writeln('The Control is a TWinControl and it accepts controls');
+       Writeln('The owners name is '+TWinControl(SelectedComponents.Items[0]).Name);
        Temp.FControl := TypeClass.Create(SelectedComponents.Items[0]);
     end
     else
@@ -530,13 +530,20 @@ Writeln('4');
      End
      else
      Begin //CI is not assigned so check the selected control
+     Writeln('CI is not assigned....');
      if SelectedComponents.Count > 0 then
         Begin
+            Writeln('CI is not assigned but something is selected....');
             TempInterface := TComponentInterface(FindComponent(SelectedComponents.Items[0].Name));
+            Writeln('The selected control is....'+TempInterface.FControl.Name);
+
             if (TempInterface.FControl is TWinControl) and
                (csAcceptsControls in TWinControl(TempInterface.FControl).ControlStyle)then
-                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl)
-            else
+                  Begin
+                  Writeln('The selected control IS a TWincontrol and accepts controls');
+                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl);
+                  end
+                  else
                   TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl).Parent;
         end
      end;
@@ -567,10 +574,10 @@ Writeln('TempName + num = '+TempName+Inttostr(num));
 
 
 if (Temp.FControl is TControl) then
-Begin
-if (X <> -1) and (Y <> -1) and (W <> -1) and (H <> -1) then
+ Begin
+ if (X <> -1) and (Y <> -1) and (W <> -1) and (H <> -1) then
    TControl(Temp.FControl).SetBounds(X,Y,W,H)
-else
+ else
    Begin
    if (W <> -1) then TControl(Temp.FControl).Width := W;  //if W=-1 then use default size otherwise use W
 
@@ -585,7 +592,7 @@ else
        TControl(Temp.FControl).Top := (TControl(Temp.FControl).Parent.Height div 2) - (TControl(Temp.FControl).Height div 2);
    end;
 
-end;
+ end;
 
 
 FComponentInterfaceList.Add(Temp);
@@ -593,7 +600,12 @@ FComponentInterfaceList.Add(Temp);
  Result := Temp;
 end;
 
-Procedure TCUstomFormEditor.ClearSelected;
+Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
+Begin
+//this can only be used IF you have one FormEditor per form.  I currently don't
+end;
+
+Procedure TCustomFormEditor.ClearSelected;
 Begin
 FSelectedComponents.Clear;
 end;

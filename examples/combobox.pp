@@ -22,7 +22,7 @@ program combobox;
 {$mode objfpc}
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls;
+  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls,controls;
 
 type
 	TForm1 = class(TFORM)
@@ -127,9 +127,9 @@ var
    s : shortstring;	
 begin
    if sender is TEdit 
-      then s := 'TEdit'
+      then s := TCOntrol(Sender).name+':TEdit - '
    else if sender is TComboBox
-      then s := 'TComboBox'
+      then s := TControl(Sender).name+':TComboBox - '
    else
       s := 'UNKNOWN';
    if assigned (Memo1)
@@ -145,7 +145,7 @@ end;
 
 procedure TForm1.FormKill(Sender : TObject);
 Begin
-  Application.terminate;
+//  Application.terminate;
 End;
 
 {------------------------------------------------------------------------------}
@@ -245,7 +245,8 @@ begin
       Width  := 70;
       Height := 20;
       OnChange := @ComboOnChange;	
-      OnClick  := @ComboOnClick;	
+      OnClick  := @ComboOnClick;
+      Name := 'Edit1';	
       Show;	
    end;
 
@@ -292,6 +293,7 @@ begin
       Items.Add ('abcde!');
       OnChange := @ComboOnChange;	
       OnClick  := @ComboOnClick;	
+      Name := 'ComboBox1';	
       Show;	
    end;
 
@@ -320,6 +322,7 @@ begin
       ItemIndex := 1;
       Items.Add ('33333!');
       Items.Add ('abcde!');
+      Name := 'ComboBox2';	
       Sorted := true;	
       Show;	
    end;
@@ -355,6 +358,10 @@ end.
 
 {
   $Log$
+  Revision 1.3  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.2  2000/07/23 19:04:42  lazarus
   enhanced examples, stoppok
 

@@ -216,7 +216,7 @@ begin
   Width := Screen.Width-5;
   height := 125;
   Position:= poDesigned;
-
+  Name := 'Form1';
   LoadMainMenu;
 
   Bitmap1 := TBitmap.Create;
@@ -251,7 +251,7 @@ begin
   Notebook1.PageIndex := 0;   // Set it to the first page
   Notebook1.Show;
   Notebook1.OnPageChanged := @ControlClick;
-
+  Notebook1.Name := 'Notebook1';
   S := TFileStream.Create('./images/viewunits.xpm', fmOpenRead);
   try
     Pixmap1 := TPixmap.Create;
@@ -271,6 +271,7 @@ begin
     Glyph := Pixmap1;
     Visible := True;
     Flat := False;
+    Name := 'Speedbutton1';
    end;
 
 
@@ -293,6 +294,7 @@ begin
     OnClick := @mnuViewFormsCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton2';
    end;
 
 
@@ -316,6 +318,7 @@ begin
     OnClick := @mnuNewCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton3';
    end;
 
   S := TFileStream.Create('./images/openfile.xpm', fmOpenRead);
@@ -337,6 +340,7 @@ begin
     OnClick := @mnuOpenCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton4';
    end;
 
   S := TFileStream.Create('./images/save.xpm', fmOpenRead);
@@ -358,6 +362,7 @@ begin
     OnClick := @mnuSaveCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton5';
    end;
 
   S := TFileStream.Create('./images/saveall.xpm', fmOpenRead);
@@ -379,6 +384,7 @@ begin
     OnClick := @mnuSaveAllCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton6';
    end;
 
   S := TFileStream.Create('./images/toggleform.xpm', fmOpenRead);
@@ -400,6 +406,7 @@ begin
 //    OnClick := @mnuToggleFormCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton7';
    end;
 
   S := TFileStream.Create('./images/newform.xpm', fmOpenRead);
@@ -421,6 +428,7 @@ begin
     OnClick := @mnuNewFormCLicked;
     Glyph := Pixmap1;
     Visible := True;
+    Name := 'Speedbutton8';
    end;
 
   //start creating the components based on the TIDECOmponent classes
@@ -1598,8 +1606,8 @@ if (X >= 0) and (X <= TControl(sender).Width) and
    if BPressed = 1 then
       Begin //mouse button pressed.
          FormEditor1.ClearSelected;
-         Writeln('Clicked on the form!!!!!  Froms name is '+TFOrm(sender).name);
-         ObjectInspector1.RootComponent := TCOmponent(Sender);
+         Writeln('Clicked on the form!!!!!  Forms name is '+TFOrm(sender).name);
+         ObjectInspector1.RootComponent := TForm(sender);
          FormEditor1.AddSelected(TComponent(Sender));
       end
       else
@@ -1610,23 +1618,23 @@ if (X >= 0) and (X <= TControl(sender).Width) and
             if X > Mouse_Down.X then
                  Begin
                    NewLeft1 := Mouse_Down.X;
-                   NewLeft2 := X;
+                   NewLeft2 := X-Mouse_Down.X;
                  end
                  else
                  Begin
                    NewLeft1 := X;
-                   NewLeft2 := Mouse_Down.X;
+                   NewLeft2 := Mouse_Down.X-X;
                  end;
 
             if Y > Mouse_Down.Y then
                  Begin
                    NewTop1 := Mouse_Down.Y;
-                   NewTop2 := Y;
+                   NewTop2 := Y - Mouse_Down.Y;
                  end
                  else
                  Begin
                    NewTop1 := Y;
-                   NewTop2 := Mouse_Down.Y;
+                   NewTop2 := Mouse_Down.Y - Y;
                  end;
              CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
                          TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),NewLeft1,NewTop1,NewLeft2,NewTop2));
@@ -1642,6 +1650,7 @@ if (X >= 0) and (X <= TControl(sender).Width) and
      TControl(CInterface.Control).OnClick := @ClickOnControl;
       FormEditor1.ClearSelected;
       FormEditor1.AddSelected(TComponent(Cinterface.Control));
+      ObjectInspector1.RootComponent := TForm(sender);
 
    end;
 //TIdeComponent(ideComplist.items[bpressed-1]).
@@ -1672,6 +1681,7 @@ begin
   FormEditor1 := TFormEditor.Create;
   FormEditor1.SelectedComponents.Clear;
   CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,TForm,50,50,300,400));
+  TForm(CInterface.Control).Name := 'Form1';
   TForm(CInterface.Control).Show;
 
 //set the ONCLICK event so we know when a control is dropped onto the form.
@@ -2461,9 +2471,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.11  2000/11/27 20:36:48  lazarus
-  Minor change.  I'm setting the rootcomponent for the ObjectInspector now when you click on a form.
-  No noticable difference.
+  Revision 1.12  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus

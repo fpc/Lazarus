@@ -1110,7 +1110,7 @@ begin
    if GetText <> value
    then begin
 //  added on 3/21/2000.  Need to set FCaption otherwise those components that simply
-//  check FCaption willl always be wrong.
+//  check FCaption will always be wrong.
     FCaption := Value;
 
      //We shouldn't NEED to create our own PCHAR.  We should be able
@@ -1239,6 +1239,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.3  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.2  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

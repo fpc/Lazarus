@@ -79,6 +79,7 @@ or use TPropertyType
      Function FormModified : Boolean; virtual; abstract;
      Function FindComponent(const Name : String) : TIComponentInterface; virtual; abstract;
 
+     Function GetFormComponent: TIComponentInterface; virtual; abstract;
      Function GetComponentByHandle(const Value : Longint): TIComponentInterface; virtual; abstract;
 
      Function GetSelCount : Integer; virtual; abstract;

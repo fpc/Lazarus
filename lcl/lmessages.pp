@@ -271,8 +271,14 @@ LM_EXIT	   = LM_USER+60;
 LM_SCREENINIT = LM_USER+61;
 LM_CLOSEQUERY = LM_USER+62;
 LM_DRAGSTART = LM_USER+63;
+LM_CB_FIRST = LM_USER+64;
+LM_CB_GETCOUNT = LM_CB_FIRST+1;
+LM_CB_GETTEXT = LM_CB_FIRST+2;
+LM_CB_ADDTEXT = LM_CB_FIRST+3;
 
-LM_UNKNOWN = LM_User+99; 
+LM_CB_LAST = LM_CB_FIRST+10;  //LM_USER+74
+
+LM_UNKNOWN = LM_User+99;
 
 LM_SYSCOMMAND = $0112;
 
@@ -284,6 +290,13 @@ BOOL = Boolean;
 
 
 {Linux Messages}
+
+TLMDrawItems = record
+  Msg: Cardinal;
+  Ctl : HWND;
+  DrawItemStruct : PDrawItemStruct;
+  Result : LongInt;
+end;
 
 TLMNoParams = record
     Msg: Cardinal;
@@ -747,6 +760,7 @@ begin
     LM_DRAGINFOCHANGED  : Result :='LM_DRAGINFOCHANGED  ';
 //    LM_SETENABLED       : Result :='LM_SETENABLED       ';
     LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT     ';   
+    LM_CB_GETCOUNT         : Result :='LM_CB_GETCOUNT         ';
   else
     Result := Format('Unkown message 0x%x (%d)', [AMessage, AMessage]);
   end;
@@ -759,6 +773,10 @@ end.
 
 {
   $Log$
+  Revision 1.5  2000/11/29 21:22:35  lazarus
+  New Object Inspector code
+  Shane
+
   Revision 1.4  2000/08/11 14:59:09  lazarus
   Adding all the Synedit files.
   Changed the GDK_KEY_PRESS and GDK_KEY_RELEASE stuff to fix the problem in the editor with the shift key being ignored.
