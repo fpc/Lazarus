@@ -17,11 +17,19 @@
 }
 
 
+const
+  NoInterfaceObject =
+    'No interface object. '
+    +'Plz check if "interfaces" was added to the programs uses section.';
+
 {------------------------------------------------------------------------------}
 {       TApplication Constructor                                               }
 {------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
 begin
+  Focusmessages := True;
+  LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
+
   FTerminate := False;
   FMainForm := nil;
   FMouseControl := nil;
@@ -47,6 +55,7 @@ begin
   FIcon:=nil;
   FList.Free;
   inherited Destroy;
+  LCLProc.SendApplicationMessageFunction:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -149,10 +158,10 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
-  if AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0 then begin
-    writeln('ERROR: no widget interface object. Did u compile an abstract LCL?');
-    raise Exception.Create(
-      'No widget interface object. Did u compile an abstract LCL?');
+  if (InterfaceObject=nil)
+  or (AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0) then begin
+    writeln('ERROR: ',NoInterfaceObject);
+    raise Exception.Create(NoInterfaceObject);
   end;
   InterfaceObject.Init;
   CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
@@ -389,6 +398,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/10/26 15:15:48  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.29  2002/10/26 11:05:59  lazarus
   MG: broke actnlist <-> forms circle
 

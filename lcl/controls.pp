@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, vclglobals, LCLType, LCLProc, GraphType, Graphics,
-  LMessages, LCLLinux, ImgList, UTrace, Menus;
+  LMessages, LCLLinux, InterfaceBase, ImgList, UTrace, Menus;
 
 
 const
@@ -981,7 +981,7 @@ procedure RaiseGDBException(const Msg: string);
 implementation
 
 uses
-  Forms, Interfaces, Math;
+  Forms, Math;
 
 var
   CaptureControl: TControl;
@@ -1015,7 +1015,7 @@ end;
 function CNSendMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
 begin
-  result := InterfaceObject.IntSendMessage3(LM_Message, Sender, Data);
+  result := SendMsgToInterface(LM_Message, Sender, Data);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1379,6 +1379,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/10/26 15:15:45  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.81  2002/10/26 11:20:30  lazarus
   MG: broke some interfaces.pp circles
 
