@@ -2294,12 +2294,40 @@ end;
 procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
 // completion selected -> deactivate completion form
 // Called when user has selected a completion item
+
+  function CharBehindIdent(const Line: string; StartPos: integer): char;
+  begin
+    while (StartPos<=length(Line))
+    and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
+      inc(StartPos);
+    while (StartPos<=length(Line)) and (Line[StartPos] in [' ',#9]) do
+      inc(StartPos);
+    if StartPos<=length(Line) then
+      Result:=Line[StartPos]
+    else
+      Result:=#0;
+  end;
+
+  function CharInFrontOfIdent(const Line: string; StartPos: integer): char;
+  begin
+    while (StartPos>=1)
+    and (Line[StartPos] in ['_','A'..'Z','a'..'z']) do
+      dec(StartPos);
+    while (StartPos>=1) and (Line[StartPos] in [' ',#9]) do
+      dec(StartPos);
+    if StartPos>=1 then
+      Result:=Line[StartPos]
+    else
+      Result:=#0;
+  end;
+
 var
   p1, p2: integer;
   ValueType: TIdentComplValue;
   SrcEdit: TSourceEditor;
   NewValue: string;
   CaretXY: TPoint;
+  Line: string;
 Begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
@@ -2309,19 +2337,24 @@ Begin
         // add to history
         CodeToolBoss.IdentifierHistory.Add(
           CodeToolBoss.IdentifierList.FilteredItems[aCompletion.Position]);
+        SrcEdit:=GetActiveSE;
+        Line:=SrcEdit.EditorComponent.LineText;
+        CaretXY:=SrcEdit.EditorComponent.BlockBegin;
         NewValue:=GetIdentCompletionValue(aCompletion,ValueType);
-        
-        // ToDo: check if there is no @ in front and no bracket behind
-        
         case ValueType of
         icvProcWithParams:
-          NewValue:=NewValue+'()';
+          if (CharBehindIdent(Line,CaretXY.X)<>'(')
+          and (CharInFrontOfIdent(Line,CaretXY.X)<>'@')
+          then
+            NewValue:=NewValue+'()';
         icvIndexedProp:
-          NewValue:=NewValue+'[]';
+          if (CharBehindIdent(Line,CaretXY.X)<>'[')
+          then
+            NewValue:=NewValue+'[]';
         end;
-        SrcEdit:=GetActiveSE;
         SrcEdit.EditorComponent.SelText:=NewValue;
-        if ValueType in [icvProcWithParams,icvIndexedProp] then begin
+        if (NewValue<>'') and (NewValue[length(NewValue)] in [')',']']) then
+        begin
           CaretXY:=SrcEdit.EditorComponent.BlockEnd;
           dec(CaretXY.X);
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
