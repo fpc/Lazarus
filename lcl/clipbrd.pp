@@ -405,8 +405,8 @@ end.
 
 {
   $Log$
-  Revision 1.4  2001/11/12 16:56:06  lazarus
-  MG: CLIPBOARD
+  Revision 1.5  2001/11/12 19:30:00  lazarus
+  MG: added try excepts for clipboard
 
   Revision 1.3  2001/06/15 10:31:05  lazarus
   MG: set longstrings as default

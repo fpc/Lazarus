@@ -845,8 +845,11 @@ begin
   or (PrimarySelection.OnRequest=@PrimarySelectionRequest) then exit;
 writeln('>>> TCustomSynEdit.AquirePrimarySelection <<<');
   FormatList:=CF_TEXT;
-  PrimarySelection.SetSupportedFormats(1,@FormatList);
-  PrimarySelection.OnRequest:=@PrimarySelectionRequest;
+  try
+    PrimarySelection.SetSupportedFormats(1,@FormatList);
+    PrimarySelection.OnRequest:=@PrimarySelectionRequest;
+  except
+  end;
 end;
 {$ENDIF}
 
@@ -921,10 +924,14 @@ begin
     Failed := TRUE; // assume the worst.
     SLen := Length(SText);
     {$IFDEF SYN_LAZARUS}
-    Clipboard.Clear;
-    Clipboard.AsText:=SText;
-    Failed:=not Clipboard.HasFormat(CF_TEXT);
+    try
+      Clipboard.Clear;
+      Clipboard.AsText:=SText;
+      Failed:=not Clipboard.HasFormat(CF_TEXT);
+    except
+    end;
     if not Failed then begin
+      Failed:=true;
       // Copy it in our custom format so we know what kind of block it is.
       // That effects how it is pasted in.
       BufSize:=SLen+SizeOf(TSynSelectionMode)+1;
@@ -940,7 +947,10 @@ begin
           inc(P,SLen);
         end;
         P[0]:=#0;
-        Failed:=not Clipboard.AddFormat(SynEditClipboardFormat,Buf^,BufSize);
+        try
+          Failed:=not Clipboard.AddFormat(SynEditClipboardFormat,Buf^,BufSize);
+        except
+        end;
       finally
         FreeMem(Buf);
       end;
