@@ -29,7 +29,7 @@ unit lMessages;
 
 interface
 
-uses Classes, vclGlobals, LCLType, GraphType;
+uses Classes, SysUtils, vclGlobals, LCLType, GraphType;
 
 const
 
@@ -818,8 +818,6 @@ function GetMessageName(const AMessage: Integer):  String;
 
 Implementation
 
-uses
-  SysUtils;
 
 function GetMessageName(const AMessage: Integer):  String;
 begin
@@ -884,6 +882,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2002/10/25 10:42:08  lazarus
+  MG: broke minor circles
+
   Revision 1.37  2002/10/25 08:25:43  lazarus
   MG: broke circle stdctrls.pp <-> forms.pp
 

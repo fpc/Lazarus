@@ -41,7 +41,7 @@ unit LCLLinux;
 
 interface
 
-uses Classes, LCLType, VCLGlobals, GraphType;
+uses Classes, SysUtils, LCLType, VCLGlobals, GraphType;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -61,7 +61,7 @@ function PredefinedClipboardFormat(
 implementation
 
 uses
-  SysUtils, Interfaces, Strings, Math;
+  Interfaces, Strings, Math;
 
 var
   FPredefinedClipboardFormats:
@@ -105,6 +105,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2002/10/25 10:42:08  lazarus
+  MG: broke minor circles
+
   Revision 1.20  2002/10/24 10:05:51  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 

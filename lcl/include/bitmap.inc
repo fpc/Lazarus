@@ -140,7 +140,7 @@ procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
 begin
 end;
 
-Procedure TBitmap.LoadFromXPMFile(Filename : String);
+Procedure TBitmap.LoadFromXPMFile(const Filename : String);
 var
   pstr : PChar;
 Begin
@@ -148,7 +148,7 @@ Begin
   pStr := StrAlloc(length(Filename) + 1);
   try
     StrPCopy(pStr, Filename);
-    CNSendMessage(LM_LOADXPM,Self,pstr);
+    SendIntfMessage(LM_LOADXPM,Self,pstr);
   finally
     StrDispose(pStr);
   end;
@@ -466,6 +466,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/10/25 10:42:08  lazarus
+  MG: broke minor circles
+
   Revision 1.20  2002/09/16 15:42:17  lazarus
   MG: fixed calling DestroyHandle if not HandleAllocated
 

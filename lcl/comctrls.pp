@@ -38,8 +38,9 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls, LclLinux, LCLType, StdCtrls, ExtCtrls,
-  vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin, CommCtrl;
+  SysUtils, Classes, Controls, Forms, LclLinux, LCLType, StdCtrls, ExtCtrls,
+  vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin, CommCtrl,
+  Buttons;
 
 type
 
@@ -1642,8 +1643,8 @@ procedure CheckCommonControl(CC: Integer);
 
 Implementation
 
-
-uses Forms, Interfaces, Buttons;
+uses
+  Interfaces;
 
 const
   ButtonStates: array[TToolButtonState] of Word = (TBSTATE_CHECKED,
@@ -1700,6 +1701,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/10/25 10:42:07  lazarus
+  MG: broke minor circles
+
   Revision 1.54  2002/10/21 14:40:51  lazarus
   MG: fixes for 1.1
 
