@@ -1016,11 +1016,13 @@ resourcestring
   dlgUnitDepRefresh     = 'Refresh';
    
   // Build lazarus dialog
-  lisBuildJITForm = 'Build JITForm';
   lisCleanLazarusSource = 'Clean Lazarus Source';
   lisBuildLCL = 'Build LCL';
   lisBuildComponent = 'Build Component';
+  lisBuildCodeTools = 'Build CodeTools';
   lisBuildSynEdit = 'Build SynEdit';
+  lisBuildJITForm = 'Build JIT Form';
+  lisBuildPkgReg = 'Build Package Registration';
   lisBuildIDE = 'Build IDE';
   lisBuildExamples = 'Build Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
@@ -1036,6 +1038,7 @@ resourcestring
   lisLazBuildTargetOS = 'Target OS:';
   lisLazBuildLCLInterface = 'LCL interface';
   lisLazBuildBuildJITForm = 'Build JITForm';
+  lisLazBuildWithStaticPackages = 'With Packages';
   lisLazBuildOk = 'Ok';
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';

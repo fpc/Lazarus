@@ -368,6 +368,7 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    function GetIndexAtY(Y: integer): integer;
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Canvas: TCanvas read FCanvas;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
@@ -1449,6 +1450,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.90  2003/04/16 22:59:35  mattias
   added TMaskEdit from Tony
 

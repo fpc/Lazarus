@@ -2339,7 +2339,6 @@ var
   AddOptionsList: TList;
   InheritedOptionStrings: TInheritedCompOptsStrings;
   ConfigDir: String;
-  TargetDir: String;
 begin
   Result:='';
   if not Assigned(OnGetAllRequiredPackages) then exit;
@@ -2363,11 +2362,12 @@ begin
   AddOption('-Fi'+ConfigDir);
   
   // add target option
-  TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
+  // ToDo
+  {TargetDir:=MiscellaneousOptions.BuildLazOpts.TargetDirectory;
   MainIDE.MacroList.SubstituteStr(TargetDir);
-  
   // ToDo write a function in lazconf for this
-  AddOption('-FE'+TargetDir);
+  //if TargetDir<>'' then
+    AddOption('-FE'+TargetDir);}
 end;
 
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;

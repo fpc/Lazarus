@@ -144,7 +144,8 @@ const
   LM_LB_First          = LM_NB_Last +1;
   LM_LB_GETTOPINDEX    = LM_LB_First   +1;
   LM_LB_SETTOPINDEX    = LM_LB_First   +2;
-  LM_LB_Last           = LM_LB_SETTOPINDEX;
+  LM_LB_GETINDEXAT     = LM_LB_First   +3;
+  LM_LB_Last           = LM_LB_GETINDEXAT;
 
 
   //-------------
@@ -1044,6 +1045,9 @@ end.
 
 {
   $Log$
+  Revision 1.48  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.47  2003/04/08 00:09:03  mattias
   added LM_APPENDTEXT from hernan
 

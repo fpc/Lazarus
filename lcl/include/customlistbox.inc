@@ -388,19 +388,26 @@ begin
   if (Val >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Val,FItems.Count]);
   if Val<0 then Val:=-1;
-//writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
+writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
   if HandleAllocated then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
-//writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
+writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 
-{------------------------------------------------------------------------------}
-{  procedure TCustomListBox.Clear                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.Clear
+------------------------------------------------------------------------------}
 procedure TCustomListBox.Clear;
 begin
   FItems.Clear;
+end;
+
+function TCustomListBox.GetIndexAtY(Y: integer): integer;
+begin
+  Result:=-1;
+  if (not HandleAllocated) then exit;
+  Result:=CNSendMessage(LM_LB_GETINDEXAT, Self, @Y);
 end;
 
 
