@@ -15,9 +15,6 @@ unit lresources;
     include file.
 
   ToDo:
-    The ResourceList is currently a sorted list, which is okay for hundreds
-    of resources. But stringtables consist normally of thousands of entries.
-    Therefore a special StringTable Resource is needed.
 
 }
 {$mode objfpc}
@@ -36,8 +33,14 @@ type
   end;
 
   TLResourceList = class(TObject)
-    FList:TList;
+  private
+    FList:TList;  // main list with all resource pointer
+    FMergeList:TList; // list needed for mergesort
+    FSortedCount:integer; // 0 .. FSortedCount-1 resources are sorted
     function FindPosition(Name:AnsiString):integer;
+    procedure Sort;
+    procedure MergeSort(List,MergeList:TList;Pos1,Pos2:integer);
+    procedure Merge(List,MergeList:TList;Pos1,Pos2,Pos3:integer);
   public
     procedure Add(Name,ValueType,Value:AnsiString);
     function Find(Name:AnsiString):LResource;
@@ -53,11 +56,10 @@ function LFMtoLFCstream(LFMStream,LFCStream:TStream):boolean;
  // returns true if successful
 function FindLFMClassName(LFMStream:TStream):AnsiString;
 
-
 var LazarusResources:TLResourceList;
 
-implementation
 
+implementation
 
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
   ResourceName, ResourceType:AnsiString);
@@ -67,9 +69,9 @@ procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
     +#83#187#6#78#83
   );
 }
-const LineEnd:string=#10;
+const LineEnd:ShortString=#10;
   RightMargin:integer=79;
-var s,Indent:string;
+var s,Indent:ShortString;
   p,x:integer;
   c,h:char;
   RangeString,NewRangeString:boolean;
@@ -153,24 +155,35 @@ end;
 
 function LFMtoLFCfile(LFMfilename:ansistring):boolean;
 // returns true if successful
-var LFMStream,LFCStream:TFileStream;
+var
+  LFMFileStream,LFCFileStream:TFileStream;
+  LFMMemStream,LFCMemStream:TMemoryStream;
   LFCfilename,LFMfilenameExt:ansistring;
 begin
   Result:=true;
   try
-    LFMStream:=TFileStream.Create(LFMfilename,fmOpenRead);
+    LFMFileStream:=TFileStream.Create(LFMfilename,fmOpenRead);
+    LFMMemStream:=TMemoryStream.Create;
+    LFCMemStream:=TMemoryStream.Create;
     try
+      LFMMemStream.CopyFrom(LFMFileStream,LFMFileStream.Size);
+      LFMMemStream.Position:=0;
       LFMfilenameExt:=ExtractFileExt(LFMfilename);
       LFCfilename:=copy(LFMfilename,1,
                     length(LFMfilename)-length(LFMfilenameExt))+'.lfc';
-      LFCStream:=TFileStream.Create(LFCfilename,fmCreate);
+      Result:=LFMtoLFCstream(LFMMemStream,LFCMemStream);
+      if not Result then exit;
+      LFCMemStream.Position:=0;
+      LFCFileStream:=TFileStream.Create(LFCfilename,fmCreate);
       try
-        Result:=LFMtoLFCstream(LFMStream,LFCStream);
+        LFCFileStream.CopyFrom(LFCMemStream,LFCMemStream.Size);
       finally
-        LFCStream.Free;
+        LFCFileStream.Free;
       end;
     finally
-      LFMStream.Free;
+      LFMMemStream.Free;
+      LFCMemStream.Free;
+      LFMFileStream.Free;
     end;
   except
     Result:=false;
@@ -199,11 +212,15 @@ begin
   end;
 end;
 
+//==============================================================================
+
 { TLResourceList }
 
 constructor TLResourceList.Create;
 begin
   FList:=TList.Create;
+  FMergeList:=TList.Create;
+  FSortedCount:=0;
 end;
 
 destructor TLResourceList.Destroy;
@@ -218,35 +235,17 @@ begin
     FreeMem(p);
   end;
   FList.Free;
+  FMergeList.Free;
 end;
 
 procedure TLResourceList.Add(Name,ValueType,Value:AnsiString);
 var NewPLResource:PLResource;
-  NewPos,cmp:integer;
 begin
   GetMem(NewPLResource,SizeOf(LResource));
   NewPLResource^.Name:=Name;
   NewPLResource^.ValueType:=uppercase(ValueType);
   NewPLResource^.Value:=Value;
-  if FList.Count=0 then begin
-    FList.Add(NewPLResource);
-  end else begin
-    NewPos:=FindPosition(Name);
-    if (NewPos<0) then begin
-      NewPos:=0;
-    end else if (NewPos<FList.Count) then begin
-      cmp:=AnsiCompareText(LResource(FList[NewPos]^).Name,Name);
-      if cmp=0 then begin
-        // resource already exists
-        // ToDo: replace with an exception
-        writeln('[TLResourceList.Add] ERROR: LResource '''+Name+''' already exists.');
-        halt;
-      end else if cmp<0 then begin
-        inc(NewPos);
-      end;
-    end;
-    FList.Insert(NewPos,NewPLResource);
-  end;
+  FList.Add(NewPLResource);
 end;
 
 function TLResourceList.Find(Name:AnsiString):LResource;
@@ -266,6 +265,7 @@ end;
 function TLResourceList.FindPosition(Name:AnsiString):integer;
 var l,r,cmp:integer;
 begin
+  if FSortedCount<FList.Count then Sort;
   Result:=-1;
   l:=0;
   r:=FList.Count-1;
@@ -279,6 +279,69 @@ begin
     else
       exit;
   end;
+end;
+
+procedure TLResourceList.Sort;
+begin
+  if FSortedCount=FList.Count then exit;
+  // sort the unsorted elements
+  FMergeList.Count:=FList.Count;
+  MergeSort(FList,FMergeList,FSortedCount,FList.Count-1);
+  // merge both
+  Merge(FList,FMergeList,0,FSortedCount,FList.Count-1);
+  FSortedCount:=FList.Count;
+end;
+
+procedure TLResourceList.MergeSort(List,MergeList:TList; Pos1,Pos2:integer);
+var cmp,mid:integer;
+begin
+  if Pos1=Pos2 then begin
+  end else if Pos1+1=Pos2 then begin
+    cmp:=AnsiCompareText(
+           LResource(List[Pos1]^).Name,LResource(List[Pos2]^).Name);
+    if cmp>0 then begin
+      MergeList[Pos1]:=List[Pos1];
+      List[Pos1]:=List[Pos2];
+      List[Pos2]:=MergeList[Pos1];
+    end;
+  end else begin
+    if Pos2>Pos1 then begin
+      mid:=(Pos1+Pos2) shr 1;
+      MergeSort(List,MergeList,Pos1,mid);
+      MergeSort(List,MergeList,mid+1,Pos2);
+      Merge(List,MergeList,Pos1,mid+1,Pos2);
+    end;
+  end;
+end;
+
+procedure TLResourceList.Merge(List,MergeList:TList;Pos1,Pos2,Pos3:integer);
+// merge two sorted arrays
+// the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
+var Src1Pos,Src2Pos,DestPos,cmp,a:integer;
+begin
+  if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
+  Src1Pos:=Pos2-1;
+  Src2Pos:=Pos3;
+  DestPos:=Pos3;
+  while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
+    cmp:=AnsiCompareText(
+           LResource(List[Src1Pos]^).Name,LResource(List[Src2Pos]^).Name);
+    if cmp>0 then begin
+      MergeList[DestPos]:=List[Src1Pos];
+      dec(Src1Pos);
+    end else begin
+      MergeList[DestPos]:=List[Src2Pos];
+      dec(Src2Pos);
+    end;
+    dec(DestPos);
+  end;
+  while Src2Pos>=Pos2 do begin
+    MergeList[DestPos]:=List[Src2Pos];
+    dec(Src2Pos);
+    dec(DestPos);
+  end;
+  for a:=DestPos+1 to Pos3 do
+    List[a]:=MergeList[a];
 end;
 
 initialization

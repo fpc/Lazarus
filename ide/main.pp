@@ -320,13 +320,12 @@ begin
                 Glyph := Pixmap1;
                 Visible := True;
                 Flat := True;
+                Down := True;
                 Name := 'GlobalMouseSpeedButton'+inttostr(i);
              end;
 
-             Writeln('REGCOMPPAGE.COUNT is '+Inttostr(RegCompPage.Count));
-             for x := 0 to RegCompPage.Count-1 do
+             for x := 0 to RegCompPage.Count-1 do  //for every component on the page....
                  begin
-                  Writeln('X = '+inttostr(x));
 		  RegComp := RegCompPage.Items[x];
                   IDEComponent := TIDEComponent.Create;
                   IdeComponent.RegisteredComponent := RegComp;
@@ -1086,7 +1085,6 @@ begin
           else
           begin
              Temp := nil;
-             Writeln('1');
              for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
                  begin
                  if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
@@ -1110,7 +1108,6 @@ begin
             begin
               SelectedComponent := nil;
              Temp := nil;
-             Writeln('2');
              for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
                  begin
                  if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
@@ -1132,9 +1129,7 @@ begin
        if SelectedComponent <> nil then
           TIDeComponent(IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down := False;
        SelectedComponent := nil;
-       writeln('Setting speedbutton down');
              Temp := nil;
-             Writeln('3');
              for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
                  begin
                  if CompareText(TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name, 'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
@@ -1736,9 +1731,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.24  2000/12/29 13:14:04  lazarus
-  Using the lresources.pp and registering components.
-  This is a major change but will create much more flexibility for the IDE.
+  Revision 1.25  2000/12/29 13:35:50  lazarus
+  Mattias submitted new lresources.pp and lazres.pp files.
   Shane
 
   Revision 1.23  2000/12/21 20:28:33  lazarus
