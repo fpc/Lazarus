@@ -361,16 +361,41 @@ begin
   parWindow := gtk_widget_get_parent_window(widget);
   if (ParWindow = Event^.Window) then
      Begin
+         if ShowDebugging then
+         Begin
+           Writeln('***********************');
+           Writeln('Calculating new X and Y');
+           Writeln('TWincontrol(data).left and Top = ',TWinControl(data).Left,',',TWinControl(data).Top);
+           Writeln('Event^.X and Y = ',Event^.X,',',Event^.Y);
+         end;
          Event^.X := Event^.X - TWinControl(data).left;
          Event^.Y := Event^.Y - TWinControl(data).Top;
+         if ShowDebugging then
+         Begin
+           Writeln('CAlculated...');
+           Writeln('TWincontrol(data).left and Top = ',TWinControl(data).Left,',',TWinControl(data).Top);
+           Writeln('Event^.X and Y = ',Event^.X,',',Event^.Y);
+           Writeln('***********************');
+         end;
      end;
        
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
   begin
     Msg := LM_MouseMove;
-    XPos := Round(Event^.X);
-    YPos := Round(Event^.Y);
+    if ShowDebugging then
+    Begin
+       Writeln('re-calcing XPos and YPos');
+       Writeln('Event X and Y :',Event^.X,',',Event^.y);
+    end;
+    
+    XPos := trunc(Event^.X);//Round(Event^.X);
+    YPos := trunc(Event^.Y); //Round(Event^.Y);
+    if ShowDebugging then
+    Begin
+      Writeln('Done...');
+      Writeln('XPos,mYPos :',XPos,',',YPos);
+    end;
 
     Keys := 0;
     if ssShift in ShiftState then Keys := Keys or MK_SHIFT;
@@ -1390,6 +1415,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2001/11/20 17:20:45  lazarus
+  Fixed designer problem with moving controls.
+  Can no longer drag controls off the form.
+  Shane
+
   Revision 1.44  2001/11/14 17:46:58  lazarus
   Changes to make toggling between form and unit work.
   Added BringWindowToTop

@@ -186,6 +186,9 @@ destructor TDesigner.Destroy;
 Begin
   if FPopupMenu<>nil then
     FPopupMenu.Free;
+    
+  FHintWIndow.Free;
+  FHintTimer.Free;
   Inherited Destroy;
 end;
 
@@ -275,11 +278,12 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-    //writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+//    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
     ControlSelection.AdjustSize;
     if Assigned(FOnPropertiesChanged) then
       FOnPropertiesChanged(Self);
   end;
+
 end;
 
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMMouse);
@@ -521,10 +525,12 @@ var
   SenderOrigin:TPoint;
   SenderParentForm:TCustomForm;
   MouseX, MouseY :integer;
+  UpdateLastMove : Boolean;
 Begin
 try
+  UpdateLastMove := True;
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := True;
+  FHintTimer.Enabled := ((Message.keys and MK_LButton) <> MK_LButton);
   if FHintWindow.Visible then
      FHintWindow.Visible := False;
      
@@ -532,12 +538,19 @@ try
 
   SenderParentForm:=GetParentForm(Sender);
   if SenderParentForm=nil then exit;
+
+
   SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
   
 
     MouseX:=Message.Pos.X+SenderOrigin.X;
     MouseY:=Message.Pos.Y+SenderOrigin.Y;
-
+  if (Mouse.CursorPos.X < SenderParentForm.Left) or (Mouse.CursorPos.Y < SenderParentForm.Top) or
+     (Mouse.CursorPos.X > (SenderParentForm.Left+SenderParentForm.Width+(TForm(senderparentform).borderwidth))) or (Mouse.CursorPos.Y > (SenderParentForm.Top+SenderParentForm.Height+(22)))  then
+  Begin
+    UpdateLastMove := False;
+    Exit;
+  end;
 
 //debugging commented out
 {  if (Message.keys and MK_LButton) = MK_LButton then begin
@@ -563,39 +576,43 @@ try
     Shift := Shift + [ssCTRL];
 
   if (Message.keys and MK_LButton) = MK_LButton then begin
-    if ControlSelection.ActiveGrabber<>nil then begin
-      FHasSized:=true;
-      ControlSelection.SizeSelection(
-         MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
-      if Assigned(FOnPropertiesChanged) then
-        FOnPropertiesChanged(Self);
-    end else begin
-      if (not (MouseDownComponent is TCustomForm))
-      and (ControlSelection.Count>=1)
-      and not (ControlSelection[0].Component is TCustomForm) then begin
-        // move selection
+    if ControlSelection.ActiveGrabber<>nil then
+      begin
         FHasSized:=true;
-        ControlSelection.MoveSelection(
-          MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
+        ControlSelection.SizeSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
         if Assigned(FOnPropertiesChanged) then
-          FOnPropertiesChanged(Self);
-      end else begin
-        // rubberband selection/creation
-        ControlSelection.RubberBandBounds:=
-          Rect(MouseDownPos.X,MouseDownPos.Y,MouseX,MouseY);
-        ControlSelection.RubberBandActive:=true;
-        SenderParentForm.Invalidate;
-      end;
+           FOnPropertiesChanged(Self);
+      end
+      else
+      begin
+      if (not (MouseDownComponent is TCustomForm)) and (ControlSelection.Count>=1)
+          and not (ControlSelection[0].Component is TCustomForm) then
+        begin
+          // move selection
+          FHasSized:=true;
+          TControl(MouseDownComponent).SetBounds(TControl(MouseDownComponent).Left+(MouseX-LastMouseMovePos.X),TControl(MouseDownComponent).Top+(MouseY-LastMouseMovePos.Y),TControl(MouseDownComponent).Width,TControl(MouseDownComponent).Height);
+
+//          ControlSelection.MoveSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
+          if Assigned(FOnPropertiesChanged) then
+             FOnPropertiesChanged(Self);
+        end
+        else
+        begin
+          Writeln('Rubberband Selection/creation');
+          // rubberband selection/creation
+          ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,MouseX,MouseY);
+          ControlSelection.RubberBandActive:=true;
+          SenderParentForm.Invalidate;
+        end;
     end;
   end else begin
     ControlSelection.ActiveGrabber:=nil;
   end;
-finally
+ finally
     SenderOrigin:=GetFormRelativeControlTopLeft(Sender);
-    MouseX:=Message.Pos.X+SenderOrigin.X;
-    MouseY:=Message.Pos.Y+SenderOrigin.Y;
-    LastMouseMovePos:=Point(MouseX,MouseY);
-end;
+    if UpdateLastMove then
+       LastMouseMovePos:=Point(MouseX,MouseY);
+ end;
 end;
 
 procedure TDesigner.MouseRightUpOnControl(Sender : TControl; Message:TLMMouse);
@@ -1056,8 +1073,8 @@ begin
                    #10+'Width : '+Inttostr(Control.Width)+ '  Height : '+Inttostr(Control.Height);
 
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Rect.Left := LastMouseMovePos.X+FCustomForm.LEft+10;
-  Rect.Top := LastMouseMovePos.Y+FCustomForm.Top;
+  Rect.Left := Mouse.CursorPos.X+10;
+  Rect.Top := Mouse.CursorPos.Y+5;
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
