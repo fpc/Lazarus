@@ -1061,7 +1061,7 @@ var
   ExpectedMemAvail : longint;
 begin
   pp:=heap_mem_root;
-  Writeln(ptext^,'Heap dump by heaptrc unit');
+  Writeln(ptext^,'Heap dump by memcheck unit');
 {$ifdef EXTRA}
   Writeln(ptext^,'compiled with EXTRA features');
 {$endif EXTRA}
@@ -1187,7 +1187,7 @@ begin
   if (exitcode<>0) and
      (erroraddr<>nil) then
     begin
-       Writeln(ptext^,'No heap dump by heaptrc unit');
+       Writeln(ptext^,'No heap dump by memcheck unit');
        Writeln(ptext^,'Exitcode = ',exitcode);
        if ptext<>@stderr then
          begin
@@ -2249,7 +2249,7 @@ var
   ExpectedMemAvail : longint;
 begin
   pp:=heap_mem_root;
-  Writeln(ptext^,'Heap dump by heaptrc unit');
+  Writeln(ptext^,'Heap dump by memcheck unit');
   Writeln(ptext^,getmem_cnt, ' memory blocks allocated : ',getmem_size,'/',getmem8_size);
   Writeln(ptext^,freemem_cnt,' memory blocks freed     : ',freemem_size,'/',freemem8_size);
   Writeln(ptext^,getmem_cnt-freemem_cnt,' unfreed memory blocks : ',getmem_size-freemem_size);
@@ -2429,7 +2429,7 @@ begin
   ioresult;
   if (exitcode<>0) and (erroraddr<>nil) then
     begin
-       Writeln(ptext^,'No heap dump by heaptrc unit');
+       Writeln(ptext^,'No heap dump by memcheck unit');
        Writeln(ptext^,'Exitcode = ',exitcode);
        if ptext<>@stderr then
          begin
@@ -2561,6 +2561,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2003/07/16 20:35:42  mattias
+  accelerated TLazXPMReader
+
   Revision 1.21  2003/05/05 11:47:04  mazen
   + explicit override of inline assembler type to AT&T (fpc.cfg specify other?)
 

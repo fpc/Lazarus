@@ -170,6 +170,51 @@ type
   end;
   
   
+  { TArrayNodesTree }
+  
+  PArrayNode = ^TArrayNode;
+  TArrayNode = class
+  public
+    Parent: TArrayNode;
+    Value: integer;
+    Childs: PArrayNode;
+    StartValue: integer;
+    Capacity: integer;
+    Data: Pointer;
+    constructor Create;
+    destructor Destroy; override;
+    procedure DeleteChilds;
+    procedure UnbindFromParent;
+    function GetChildNode(ChildValue: integer;
+                          CreateIfNotExists: boolean): TArrayNode;
+    procedure Expand(ValueToInclude: integer);
+    function FindPrevSibling: TArrayNode;
+    function FindNextSibling: TArrayNode;
+    function FindNext: TArrayNode;
+    function FindPrev: TArrayNode;
+    function FindFirstChild: TArrayNode;
+    function FindLastChild: TArrayNode;
+    function FindLastSubChild: TArrayNode;
+    function FindFirstSibling: TArrayNode;
+    function FindLastSibling: TArrayNode;
+    procedure ConsistencyCheck;
+  end;
+  
+  TArrayNodesTree = class
+  public
+    Root: TArrayNode;
+    function FindNode(IntArray: PInteger; Count: integer): TArrayNode;
+    function FindData(IntArray: PInteger; Count: integer): Pointer;
+    function SetNode(IntArray: PInteger; Count: integer;
+                     Data: Pointer): TArrayNode;
+    procedure Delete(Node: TArrayNode);
+    procedure Clear;
+    constructor Create;
+    destructor Destroy; override;
+    procedure ConsistencyCheck;
+  end;
+  
+  
   { TLazReaderXPM }
   { This is a FPImage reader for xpm images. }
 
@@ -181,7 +226,7 @@ type
     FCharsPerPixel: Integer;
     fXHot: Integer;
     fYHot: Integer;
-    FPixelToColorTree: TAvgLvlTree;
+    FPixelToColorTree: TArrayNodesTree;
   protected
     procedure ClearPixelToColorTree;
     procedure InternalRead(Str: TStream; Img: TFPCustomImage); override;
@@ -255,10 +300,10 @@ procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
 var
   PixelCount: cardinal;
   BitsPerLine: cardinal;
-  CurLine: Integer;
-  BytesPerLine: Integer;
-  ExtraBitsPerLine: Integer;
-  CurBitOffset: Cardinal;
+  CurLine: cardinal;
+  BytesPerLine: cardinal;
+  ExtraBitsPerLine: cardinal;
+  CurBitOffset: cardinal;
 begin
   // get current size
   PixelCount:=Width*Height;
@@ -289,10 +334,10 @@ begin
   BitsPerLine:=Width*BitsPerPixel;
   case LineEnd of
   rileTight: ;
-  rileByteBoundary:  BitsPerLine:=(BitsPerLine+7) and not 7;
-  rileWordBoundary:  BitsPerLine:=(BitsPerLine+15) and not 15;
-  rileDWordBoundary: BitsPerLine:=(BitsPerLine+31) and not 31;
-  rileQWordBoundary: BitsPerLine:=(BitsPerLine+63) and not 63;
+  rileByteBoundary:  BitsPerLine:=(BitsPerLine+7) and not cardinal(7);
+  rileWordBoundary:  BitsPerLine:=(BitsPerLine+15) and not cardinal(15);
+  rileDWordBoundary: BitsPerLine:=(BitsPerLine+31) and not cardinal(31);
+  rileQWordBoundary: BitsPerLine:=(BitsPerLine+63) and not cardinal(63);
   end;
   Result:=BitsPerLine;
 end;
@@ -339,19 +384,19 @@ begin
   1,2,4:
       begin
         OneByte:=P^;
-        Bits:=Word((OneByte shr (Shift+Position.Bit)) and PrecMask);
+        Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask);
       end;
   8:  begin
         OneByte:=P^;
-        Bits:=Word((OneByte shr Shift) and PrecMask);
+        Bits:=Word(cardinal(OneByte shr Shift) and PrecMask);
       end;
   16: begin
         TwoBytes:=PWord(P)^;
-        Bits:=Word((TwoBytes shr Shift) and PrecMask);
+        Bits:=Word(cardinal(TwoBytes shr Shift) and PrecMask);
       end;
   32: begin
         FourBytes:=PDWord(P)^;
-        Bits:=Word((FourBytes shr Shift) and PrecMask);
+        Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
       end;
   else
     Bits:=0;
@@ -413,7 +458,7 @@ begin
         FourBytes:=PDWord(P)^;
         PrecMask:=not (PrecMask shl Shift);
         FourBytes:=FourBytes and PrecMask; // clear old
-        FourBytes:=FourBytes or (Bits shl Shift); // set new
+        FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
         PDWord(P)^:=FourBytes;
         //writeln('TLazIntfImage.WriteDataBits 32 Result=',HexStr(Cardinal(FourBytes),8));
       end;
@@ -641,6 +686,7 @@ end;
 
 destructor TLazIntfImage.Destroy;
 begin
+  FreeAllData;
   inherited Destroy;
 end;
 
@@ -853,6 +899,8 @@ begin
       for x:=0 to Width-1 do
         SetInternalColor(x,y,Color);
   end;
+  
+  // ToDo: mask
 end;
 
 { TLazReaderXPM }
@@ -872,18 +920,22 @@ end;
 
 procedure TLazReaderXPM.ClearPixelToColorTree;
 var
-  Node: TAvgLvlTreeNode;
   Entry: PXPMPixelToColorEntry;
+  ArrNode: TArrayNode;
 begin
-  if FPixelToColorTree=nil then exit;
-  Node:=FPixelToColorTree.FindLowest;
-  while Node<>nil do begin
-    Entry:=PXPMPixelToColorEntry(Node.Data);
-    Dispose(Entry);
-    Node:=FPixelToColorTree.FindSuccessor(Node);
+  if FPixelToColorTree<>nil then begin
+    ArrNode:=FPixelToColorTree.Root;
+    while ArrNode<>nil do begin
+      Entry:=PXPMPixelToColorEntry(ArrNode.Data);
+      if Entry<>nil then begin
+        //writeln('TLazReaderXPM.ClearPixelToColorTree A ',HexStr(Cardinal(ArrNode),8),' ',HexStr(Cardinal(Entry),8));
+        Dispose(Entry);
+      end;
+      ArrNode:=ArrNode.FindNext;
+    end;
+    FPixelToColorTree.Free;
+    FPixelToColorTree:=nil;
   end;
-  FPixelToColorTree.Free;
-  FPixelToColorTree:=nil;
 end;
 
 procedure TLazReaderXPM.InternalRead(Str: TStream; Img: TFPCustomImage);
@@ -1059,68 +1111,70 @@ var
   begin
     s := copy(Src,TextStart,TextEnd-TextStart);
     if s = 'transparent' then
-      Result := FPImage.clTransparent
+      Result := FPImage.colTransparent
     else if s = 'none' then
-      Result := FPImage.clTransparent
+      Result := FPImage.colTransparent
     else if s = 'black' then
-      result := FPImage.clBlack
+      result := FPImage.colBlack
     else if s = 'blue' then
-      Result := FPImage.clBlue
+      Result := FPImage.colBlue
     else if s = 'green' then
-      Result := FPImage.clGreen
+      Result := FPImage.colGreen
     else if s = 'cyan' then
-      Result := FPImage.clCyan
+      Result := FPImage.colCyan
     else if s = 'red' then
-      Result := FPImage.clRed
+      Result := FPImage.colRed
     else if s = 'magenta' then
-      Result := FPImage.clMagenta
+      Result := FPImage.colMagenta
     else if s = 'yellow' then
-      Result := FPImage.clYellow
+      Result := FPImage.colYellow
     else if s = 'white' then
-      Result := FPImage.clWhite
+      Result := FPImage.colWhite
     else if s = 'gray' then
-      Result := FPImage.clGray
+      Result := FPImage.colGray
     else if s = 'ltgray' then
-      Result := FPImage.clLtGray
+      Result := FPImage.colLtGray
     else if s = 'dkblue' then
-      Result := FPImage.clDkBlue
+      Result := FPImage.colDkBlue
     else if s = 'dkgreen' then
-      Result := FPImage.clDkGreen
+      Result := FPImage.colDkGreen
     else if s = 'dkcyan' then
-      Result := FPImage.clDkCyan
+      Result := FPImage.colDkCyan
     else if s = 'dkred' then
-      Result := FPImage.clDkRed
+      Result := FPImage.colDkRed
     else if s = 'dkmagenta' then
-      Result := FPImage.clDkMagenta
+      Result := FPImage.colDkMagenta
     else if s = 'dkyellow' then
-      Result := FPImage.clDkYellow
+      Result := FPImage.colDkYellow
     else if s = 'maroon' then
-      Result := FPImage.clMaroon
+      Result := FPImage.colMaroon
     else if s = 'ltgreen' then
-      Result := FPImage.clLtGreen
+      Result := FPImage.colLtGreen
     else if s = 'olive' then
-      Result := FPImage.clOlive
+      Result := FPImage.colOlive
     else if s = 'navy' then
-      Result := FPImage.clNavy
+      Result := FPImage.colNavy
     else if s = 'purple' then
-      Result := FPImage.clPurple
+      Result := FPImage.colPurple
     else if s = 'teal' then
-      Result := FPImage.clTeal
+      Result := FPImage.colTeal
     else if s = 'silver' then
-      Result := FPImage.clSilver
+      Result := FPImage.colSilver
     else if s = 'lime' then
-      Result := FPImage.clLime
+      Result := FPImage.colLime
     else if s = 'fuchsia' then
-      Result := FPImage.clFuchsia
+      Result := FPImage.colFuchsia
     else if s = 'aqua' then
-      Result := FPImage.clAqua
+      Result := FPImage.colAqua
     else
-      Result := FPImage.clTransparent;
+      Result := FPImage.colTransparent;
   end;
   
-  procedure AddColor(const PixelString: string; const AColor: TFPColor);
+  procedure AddColor(const PixelString: string; const AColor: TFPColor;
+    IntArray: PInteger);
   var
     NewEntry: PXPMPixelToColorEntry;
+    i: Integer;
   begin
     {writeln('TLazReaderXPM.InternalRead.AddColor A "',PixelString,'"=',
       HexStr(Cardinal(AColor.Red),4),',',
@@ -1130,12 +1184,15 @@ var
     New(NewEntry);
     NewEntry^.Pixel:=PixelString;
     NewEntry^.Color:=AColor;
+    // add entry to Array Tree
     if FPixelToColorTree=nil then
-      FPixelToColorTree:=TAvgLvlTree.Create(@CompareXPMPixelToColorEntries);
-    FPixelToColorTree.Add(NewEntry);
+      FPixelToColorTree:=TArrayNodesTree.Create;
+    for i:=1 to length(PixelString) do
+      IntArray[i-1]:=ord(PixelString[i]);
+    FPixelToColorTree.SetNode(IntArray,length(PixelString),NewEntry);
   end;
 
-  procedure ReadPalette;
+  procedure ReadPalette(IntArray: PInteger);
   var
     i: Integer;
     Line: TSrcLine;
@@ -1176,22 +1233,22 @@ var
         ColorEnd:=ReadPos;
         NewColor:=TextToColor(ColorStart,ColorEnd);
       end;
-      AddColor(PixelString,NewColor);
+      AddColor(PixelString,NewColor,IntArray);
     end;
   end;
   
-  procedure ReadPixels;
+  procedure ReadPixels(IntArray: PInteger);
   var
     Entry: PXPMPixelToColorEntry;
     y: Integer;
     Line: TSrcLine;
     ReadPos: Integer;
-    Node: TAvgLvlTreeNode;
     x: Integer;
     i: Integer;
     CurColor: TFPColor;
     ProgressCount: Integer;
     ContinueReading: Boolean;
+    CurEntry: PXPMPixelToColorEntry;
   begin
     New(Entry);
     SetLength(Entry^.Pixel,FCharsPerPixel);
@@ -1205,13 +1262,30 @@ var
           RaiseXPMReadError('line too short',ReadPos);
         for x:=0 to FWidth-1 do begin
           for i:=1 to FCharsPerPixel do begin
-            Entry^.Pixel[i]:=Src[ReadPos];
+            //Entry^.Pixel[i]:=Src[ReadPos];
+            IntArray[i-1]:=ord(Src[ReadPos]);
             inc(ReadPos);
           end;
-          Node:=FPixelToColorTree.Find(Entry);
-          if Node=nil then
-            RaiseXPMReadError('pixel not found',ReadPos-FCharsPerPixel);
-          CurColor:=PXPMPixelToColorEntry(Node.Data)^.Color;
+          CurEntry:=PXPMPixelToColorEntry(
+                          FPixelToColorTree.FindData(IntArray,FCharsPerPixel));
+          CurColor:=CurEntry^.Color;
+          {if CurEntry2<>CurEntry then begin
+            writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
+              ' RefPixel=',CurEntry^.Pixel,
+              ' Color=',
+              HexStr(Cardinal(CurColor.Red),4),',',
+              HexStr(Cardinal(CurColor.Green),4),',',
+              HexStr(Cardinal(CurColor.Blue),4),',',
+              HexStr(Cardinal(CurColor.Alpha),4));
+            writeln('Entry2: Pixel=',CurEntry2^.Pixel,
+              ' RefPixel=',CurEntry2^.Pixel,
+              ' Color=',
+              HexStr(Cardinal(CurEntry2^.Color.Red),4),',',
+              HexStr(Cardinal(CurEntry2^.Color.Green),4),',',
+              HexStr(Cardinal(CurEntry2^.Color.Blue),4),',',
+              HexStr(Cardinal(CurEntry2^.Color.Alpha),4));
+          end;}
+          
           {writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
             ' RefPixel=',PXPMPixelToColorEntry(Node.Data)^.Pixel,
             ' Color=',
@@ -1238,6 +1312,8 @@ var
     end;
   end;
 
+var
+  IntArray: PInteger;
 begin
   ClearPixelToColorTree;
   Src:=ReadCompleteStreamToString(Str,1024);
@@ -1246,8 +1322,14 @@ begin
   CurLineNumber:=1;
   LastLineStart:=1;
   ReadHeader;
-  ReadPalette;
-  ReadPixels;
+  GetMem(IntArray,SizeOf(Integer)*(FCharsPerPixel+1));
+  try
+    ReadPalette(IntArray);
+    FPixelToColorTree.ConsistencyCheck;
+    ReadPixels(IntArray);
+  finally
+    FreeMem(IntArray);
+  end;
 end;
 
 function TLazReaderXPM.InternalCheck(Str: TStream): boolean;
@@ -1467,7 +1549,7 @@ var
     if (Result.Alpha>=(alphaOpaque shr 1)) then
       Result.Alpha:=alphaOpaque
     else
-      Result:=clTransparent;
+      Result:=colTransparent;
     Result.Red:=Result.Red shr FRightShiftSample;
     Result.Green:=Result.Green shr FRightShiftSample;
     Result.Blue:=Result.Blue shr FRightShiftSample;
@@ -1708,6 +1790,324 @@ begin
       end;
     end;
   end;
+end;
+
+{ TArrayNode }
+
+constructor TArrayNode.Create;
+begin
+  //writeln('TArrayNode.Create ',Capacity,' Self=',HexStr(Cardinal(Self),8));
+end;
+
+destructor TArrayNode.Destroy;
+begin
+  DeleteChilds;
+  UnbindFromParent;
+  inherited Destroy;
+end;
+
+procedure TArrayNode.DeleteChilds;
+var
+  i: Integer;
+begin
+  if Childs<>nil then begin
+    for i:=0 to Capacity-1 do
+      Childs[i].Free;
+    FreeMem(Childs);
+    Childs:=nil;
+    Capacity:=0;
+  end;
+end;
+
+procedure TArrayNode.UnbindFromParent;
+begin
+  if Parent<>nil then begin
+    Parent.Childs[Value-Parent.StartValue]:=nil;
+    Parent:=nil;
+  end;
+end;
+
+function TArrayNode.GetChildNode(ChildValue: integer; CreateIfNotExists: boolean
+  ): TArrayNode;
+var
+  Index: Integer;
+begin
+  Result:=nil;
+  Index:=ChildValue-StartValue;
+  if (Index<0) or (Index>=Capacity) then begin
+    // out of range
+    if not CreateIfNotExists then exit;
+    Expand(ChildValue);
+    Index:=ChildValue-StartValue;
+  end;
+  Result:=Childs[Index];
+  if (Result=nil) and CreateIfNotExists then begin
+    Result:=TArrayNode.Create;
+    Result.Value:=ChildValue;
+    Result.Parent:=Self;
+    Childs[Index]:=Result;
+  end;
+end;
+
+procedure TArrayNode.Expand(ValueToInclude: integer);
+var
+  Index: Integer;
+  NewChilds: PArrayNode;
+  NewSize: Integer;
+  i: Integer;
+  NewStartValue: Integer;
+  NewCapacity: Integer;
+  OldSize: Integer;
+begin
+  //writeln('TArrayNode.Expand A ',ValueToInclude,' Capacity=',Capacity,' StartValue=',StartValue);
+  if Childs=nil then begin
+    NewStartValue:=ValueToInclude;
+    NewCapacity:=4;
+  end else begin
+    Index:=ValueToInclude-StartValue;
+    if (Index>=0) and (Index<Capacity) then exit;
+    NewStartValue:=StartValue;
+    NewCapacity:=Capacity;
+    if NewStartValue>ValueToInclude then begin
+      inc(NewCapacity,NewStartValue-ValueToInclude);
+      NewStartValue:=ValueToInclude;
+    end else begin
+      Index:=ValueToInclude-NewStartValue;
+      if Index>=NewCapacity then
+        NewCapacity:=Index+1;
+    end;
+    // make NewCapacity a power of 2
+    for i:=1 to 30 do begin
+      if (1 shl i)>=NewCapacity then begin
+        NewCapacity:=1 shl i;
+        break;
+      end;
+    end;
+  end;
+  NewSize:=SizeOf(Pointer)*NewCapacity;
+  GetMem(NewChilds,NewSize);
+  FillChar(NewChilds^,NewSize,0);
+  if Childs<>nil then begin
+    OldSize:=SizeOf(Pointer)*Capacity;
+    System.Move(Childs^,NewChilds[StartValue-NewStartValue],OldSize);
+    FreeMem(Childs);
+  end;
+  Childs:=NewChilds;
+  StartValue:=NewStartValue;
+  Capacity:=NewCapacity;
+end;
+
+function TArrayNode.FindPrevSibling: TArrayNode;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if Parent=nil then exit;
+  i:=Value-Parent.StartValue-1;
+  while (i>=0) do begin
+    if Parent.Childs[i]<>nil then begin
+      Result:=Parent.Childs[i];
+      exit;
+    end;
+    dec(i);
+  end;
+end;
+
+function TArrayNode.FindNextSibling: TArrayNode;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if Parent=nil then exit;
+  i:=Value-Parent.StartValue+1;
+  while (i<Parent.Capacity) do begin
+    if Parent.Childs[i]<>nil then begin
+      Result:=Parent.Childs[i];
+      exit;
+    end;
+    inc(i);
+  end;
+end;
+
+function TArrayNode.FindNext: TArrayNode;
+var
+  SiblingNode: TArrayNode;
+begin
+  Result:=FindFirstChild;
+  if Result<>nil then exit;
+  SiblingNode:=Self;
+  while SiblingNode<>nil do begin
+    Result:=SiblingNode.FindNextSibling;
+    if Result<>nil then exit;
+    SiblingNode:=SiblingNode.Parent;
+  end;
+end;
+
+function TArrayNode.FindPrev: TArrayNode;
+begin
+  Result:=FindPrevSibling;
+  if Result=nil then begin
+    Result:=Parent;
+    exit;
+  end;
+  Result:=Result.FindLastSubChild;
+end;
+
+function TArrayNode.FindFirstChild: TArrayNode;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if Capacity=0 then exit;
+  i:=0;
+  while i<Capacity do begin
+    if Childs[i]<>nil then begin
+      Result:=Childs[i];
+      exit;
+    end;
+    inc(i);
+  end;
+end;
+
+function TArrayNode.FindLastChild: TArrayNode;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if Capacity=0 then exit;
+  i:=Capacity-1;
+  while i>=0 do begin
+    if Childs[i]<>nil then begin
+      Result:=Childs[i];
+      exit;
+    end;
+    dec(i);
+  end;
+end;
+
+function TArrayNode.FindLastSubChild: TArrayNode;
+var
+  ANode: TArrayNode;
+begin
+  ANode:=Self;
+  while ANode<>nil do begin
+    Result:=ANode;
+    ANode:=ANode.FindLastChild;
+  end;
+end;
+
+function TArrayNode.FindFirstSibling: TArrayNode;
+begin
+  if Parent=nil then
+    Result:=nil
+  else
+    Result:=Parent.FindFirstChild;
+end;
+
+function TArrayNode.FindLastSibling: TArrayNode;
+begin
+  if Parent=nil then
+    Result:=nil
+  else
+    Result:=Parent.FindLastChild;
+end;
+
+procedure TArrayNode.ConsistencyCheck;
+
+  procedure R(const Msg: string);
+  begin
+    RaiseGDBException(Msg);
+  end;
+
+var
+  i: Integer;
+  ChildNode: TArrayNode;
+begin
+  if Childs<>nil then begin
+    if Capacity<=0 then R('Capacity too small');
+    for i:=0 to Capacity-1 do begin
+      ChildNode:=Childs[i];
+      if ChildNode<>nil then begin
+        if ChildNode.Value<>i+StartValue then
+          R('Value wrong');
+        if ChildNode.Parent<>Self then
+          R('Parent wrong');
+        ChildNode.ConsistencyCheck;
+      end;
+    end;
+  end else begin
+    if Capacity<>0 then R('Capacity wrong');
+  end;
+end;
+
+{ TArrayNodesTree }
+
+function TArrayNodesTree.FindNode(IntArray: PInteger; Count: integer
+  ): TArrayNode;
+var
+  i: Integer;
+begin
+  Result:=Root;
+  i:=0;
+  while (Result<>nil) and (i<Count) do begin
+    Result:=Result.GetChildNode(IntArray[i],false);
+    inc(i);
+  end;
+end;
+
+function TArrayNodesTree.FindData(IntArray: PInteger; Count: integer): Pointer;
+var
+  ANode: TArrayNode;
+begin
+  ANode:=FindNode(IntArray,Count);
+  if ANode<>nil then
+    Result:=ANode.Data
+  else
+    Result:=nil;
+end;
+
+function TArrayNodesTree.SetNode(IntArray: PInteger; Count: integer;
+  Data: Pointer): TArrayNode;
+var
+  i: Integer;
+begin
+  if Root=nil then
+    Root:=TArrayNode.Create;
+  Result:=Root;
+  for i:=0 to Count-1 do begin
+    //writeln('TArrayNodesTree.SetNode A ',HexStr(Cardinal(Result),8));
+    Result:=Result.GetChildNode(IntArray[i],true);
+  end;
+  Result.Data:=Data;
+end;
+
+procedure TArrayNodesTree.Delete(Node: TArrayNode);
+begin
+  if Node=nil then exit;
+  if Node=Root then Root:=nil;
+  Node.Free;
+end;
+
+procedure TArrayNodesTree.Clear;
+begin
+  Delete(Root);
+end;
+
+constructor TArrayNodesTree.Create;
+begin
+
+end;
+
+destructor TArrayNodesTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TArrayNodesTree.ConsistencyCheck;
+begin
+  if Root<>nil then
+    Root.ConsistencyCheck;
 end;
 
 initialization
