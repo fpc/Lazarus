@@ -3234,6 +3234,7 @@ Function TGTKObject.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
 begin
+  Result := SIMPLEREGION;
   If lpRect <> nil then
     lpRect^ := Rect(0,0,0,0);
   If Not IsValidGDIObject(RGN) then
@@ -3247,7 +3248,7 @@ begin
         Left   := X;
         Top    := Y;
         Right  := X + Width;
-        Bottom := X + Height;
+        Bottom := Y + Height;
       end;
     end;
   end;
@@ -5077,7 +5078,7 @@ begin
           ExtSelectClipRGN(DC, RGN, RGN_AND);
           DeleteObject(RGN);
           GetClipBox(DC, @ClipRect);
-  	  FillRect(DC, ClipRect, HBrush(CurrentBrush));
+          FillRect(DC, ClipRect, HBrush(CurrentBrush));
           SelectClipRGN(DC, Tmp);
           DeleteObject(Tmp);
         end else
@@ -7494,6 +7495,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.178  2002/10/31 04:27:59  lazarus
+  AJ: added TShape
+
   Revision 1.177  2002/10/30 17:43:37  lazarus
   AJ: added IsNullBrush checks to reduce pointless color allocations & GDK function calls
 
