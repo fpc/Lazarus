@@ -102,19 +102,28 @@ var
   OldState: TButtonState;
   OldDown: Boolean;
 begin
-  if FGroupIndex = 0 then Value:= false;
-  if FDown <> Value then begin
-    if FDown and not FAllowAllUp then Exit;
-    OldDown:=FDown;
-    FDown := Value;
-    OldState := fState;
-    if FDown then begin
-      fState := bsExclusive;
-    end else begin
-      FState := bsUp;
+  //since Down needs GroupIndex, then we need to wait that all properties
+  //loaded before we continue
+  if (csLoading in ComponentState) then begin
+    FDownBuffered := Value;
+    exit;
+  end else begin
+    if FGroupIndex = 0 then Value:= false;
+    if FDown <> Value then begin
+      if FDown and not FAllowAllUp then Exit;
+      OldDown:=FDown;
+      FDown := Value;
+      OldState := fState;
+      if FDown then begin
+        fState := bsExclusive;
+      end else begin
+        FState := bsUp;
+      end;
+      if (OldDown<>FDown) or (OldState<>FState) then Invalidate;
+      if Value then begin
+        UpdateExclusive;
+      end;
     end;
-    if (OldDown<>FDown) or (OldState<>FState) then Invalidate;
-    if Value then UpdateExclusive;
   end;
 end;
 
@@ -668,6 +677,12 @@ begin
   end;
 end;
 
+procedure TCustomSpeedButton.Loaded;
+begin
+  inherited Loaded;
+  if FDownBuffered then SetDown(FDownBuffered);
+end;
+
 
 {------------------------------------------------------------------------------
   Method: TCustomSpeedButton.CMEnabledChanged
@@ -769,6 +784,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.64  2005/02/09 11:25:19  mattias
+  fixed loading TSpeedButton.Down  from Yoyong
+
   Revision 1.63  2005/02/05 16:09:52  marc
   * first 64bit changes
 

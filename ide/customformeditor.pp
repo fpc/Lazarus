@@ -1215,6 +1215,8 @@ Var
 Begin
   Result:=nil;
   Temp:=nil;
+  ParentComponent:=nil;
+  AParent:=nil;
   try
     DebugLn('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
@@ -1257,12 +1259,10 @@ Begin
       end else begin
         AParent := TControl(ParentComponent).Parent;
       end;
-      DebugLn('Parent is '''+AParent.Name+'''');
+      DebugLn('Parent is '''+dbgsName(AParent)+'''');
     end else begin
       // create a toplevel component
       // -> a form or a datamodule or a custom component
-      ParentComponent:=nil;
-      AParent:=nil;
       JITList:=GetJITListOfType(TypeClass);
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
@@ -1281,8 +1281,7 @@ Begin
       on e: Exception do begin
         MessageDlg('Error naming component',
           'Error setting the name of a component '
-          +Temp.Component.Name+':'+Temp.Component.ClassName
-          +' to '+NewComponentName,
+          +dbgsName(Temp.Component)+' to '+NewComponentName,
           mtError,[mbCancel],0);
         exit;
       end;

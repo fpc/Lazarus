@@ -253,6 +253,7 @@ type
   private
     FAllowAllUp: Boolean;
     FDown: Boolean;
+    FDownBuffered : Boolean;//buffered value of FDown
     FDragging: Boolean;
     FFlat: Boolean;
     FGlyph:   TButtonGlyph;
@@ -296,6 +297,7 @@ type
     property MouseInControl: Boolean read FMouseInControl;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     function GetActionLinkClass: TControlActionLinkClass; override;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -387,6 +389,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.88  2005/02/09 11:25:19  mattias
+  fixed loading TSpeedButton.Down  from Yoyong
+
   Revision 1.87  2005/02/08 21:46:22  vincents
   fixed fpc 1.0.x compilation
 
