@@ -694,6 +694,8 @@ resourcestring
   fdmBringTofront='Bring to front';
   fdmSendtoback='Send to back';
   fdmDeleteSelection='Delete selection';
+  fdmSnapToGridOption='Option: Snap to grid';
+  fdmSnapToGuideLinesOption='Option: Snap to guide lines';
 
 implementation
 
