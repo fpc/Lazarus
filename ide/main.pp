@@ -37,8 +37,7 @@ uses
   CompReg;
 
 const
-  STANDARDBTNCOUNT = 50;
-
+  Version_String = '0.7';
 type
 
 
@@ -258,7 +257,7 @@ var
 begin
   inherited Create(AOwner);
 
-  Caption := 'Lazarus Editor v 0.5';
+  Caption := 'Lazarus Editor v '+Version_String;
 
   Left := 0;
   Top := 0;
@@ -693,7 +692,7 @@ begin
   SpeedButton5.OnClick := @SourceNotebook.SaveClicked;
   SpeedButton6.OnClick := @SourceNotebook.SaveAllClicked;
 
-
+  EditorOPts.Load;
 
 end;
 
@@ -1621,7 +1620,8 @@ end;
 
 procedure TMainIDE.mnuEnvironmentOptionsClicked(Sender : TObject);
 Begin
-  EditorOptionsForm.ShowModal;
+  if EditorOptionsForm.ShowModal = mrOK then
+   SourceNotebook.ReloadEditorOptions;
 End;
 
 
@@ -1643,8 +1643,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.53  2001/01/31 18:57:29  lazarus
-  Added the ability to use the FIND feature in the editor.
+  Revision 1.54  2001/02/01 16:45:19  lazarus
+  Started the code completion.
   Shane
 
   Revision 1.52  2001/01/31 13:03:33  lazarus

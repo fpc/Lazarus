@@ -71,6 +71,19 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TCustomForm.Deactivate
+  Params:  None
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+Procedure TCustomForm.Deactivate;
+Begin
+  if Assigned(FOnDeactivate) then
+      FOnDeactivate(Self);
+end;
+
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
@@ -825,6 +838,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/02/01 16:45:20  lazarus
+  Started the code completion.
+  Shane
+
   Revision 1.9  2001/01/12 18:46:50  lazarus
   Named the speedbuttons in MAINIDE and took out some writelns.
   Shane

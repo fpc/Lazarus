@@ -75,6 +75,16 @@ SetZOrder(True);
 end;
 
 {------------------------------------------------------------------------------}
+{       TControl.Change
+}
+{------------------------------------------------------------------------------}
+Procedure TControl.Changed;
+Begin
+  Perform(CM_CHANGED,0,Longint(self));
+End;
+
+
+{------------------------------------------------------------------------------}
 {       TControl.ChangeScale
 }
 {------------------------------------------------------------------------------}
@@ -1273,6 +1283,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.10  2001/02/01 16:45:19  lazarus
+  Started the code completion.
+  Shane
+
   Revision 1.9  2001/01/09 18:23:20  lazarus
   Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
   Shane

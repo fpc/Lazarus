@@ -47,6 +47,10 @@ type
   TWindowState = (wsNormal, wsMinimized, wsMaximized);
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
+  TScrollBarKind = (sbHorizontal, sbVertical);
+  TScrollBarInc = 1..32768;
+  TScrollBarStyle = (ssRegular, ssFlat, ssHotTrack);
+
   TControlScrollBar = class(TPersistent)
   end;
 
@@ -78,6 +82,7 @@ type
     FModalResult : TModalResult;
     FOnActivate: TNotifyEvent;
     FOnCreate: TNotifyEvent;
+    FOnDeactivate : TNotifyEvent;
     FOnDestroy: TNotifyEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
@@ -111,6 +116,7 @@ type
     function CloseQuery : boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    Procedure DeActivate; dynamic;
     procedure DoClose(var Action: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
@@ -129,6 +135,7 @@ type
     {events}
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnCreate: TNotifyEvent read FOnCreate write FOnCreate;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
     property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
@@ -181,6 +188,7 @@ type
 //      property WindowState;
       property OnActivate;
       property OnCreate;
+      property OnDeactivate;
       property OnDestroy;
       property OnShow;
       property OnHide;

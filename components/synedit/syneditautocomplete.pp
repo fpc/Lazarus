@@ -251,16 +251,19 @@ begin
         try
           Temp.Text := fCompletionValues[i];
           // indent lines
-          if (IndentLen > 0) and (Temp.Count > 1) then begin
+          if (IndentLen > 0) and (Temp.Count > 1) then
+          begin
             s := StringOfChar(' ', IndentLen);
             for i := 1 to Temp.Count - 1 do
               Temp[i] := s + Temp[i];
           end;
           // find first '|' and use it as caret position
-          for i := 0 to Temp.Count - 1 do begin
+          for i := 0 to Temp.Count - 1 do
+          begin
             s := Temp[i];
             j := Pos('|', s);
-            if j > 0 then begin
+            if j > 0 then
+            begin
               Delete(s, j, 1);
               Temp[i] := s;
 //              if j > 1 then

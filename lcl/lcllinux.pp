@@ -454,6 +454,16 @@ Region_Error = Error;
   SB_RIGHT = 7;
   SB_ENDSCROLL = 8;
 
+  SBS_HORZ = 0;
+  SBS_VERT = 1;
+  SBS_TOPALIGN = 2;
+  SBS_LEFTALIGN = 2;
+  SBS_BOTTOMALIGN = 4;
+  SBS_RIGHTALIGN = 4;
+  SBS_SIZEBOXTOPLEFTALIGN = 2;
+  SBS_SIZEBOXBOTTOMRIGHTALIGN = 4;
+  SBS_SIZEBOX = 8;
+  SBS_SIZEGRIP = $10;
 
   SIF_Range = 1;
   SIF_PAGE = 2;
@@ -1361,6 +1371,10 @@ end.
 
 {
   $Log$
+  Revision 1.5  2001/02/01 16:45:19  lazarus
+  Started the code completion.
+  Shane
+
   Revision 1.4  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

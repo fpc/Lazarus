@@ -37,13 +37,81 @@ uses  vclglobals, classes, sysutils, Graphics, LMessages, Controls, forms;
 type
    TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
    TScrollStyle = (ssNone, ssHorizontal, ssVertical, ssBoth);
-   TScrollBar = class(TWinControl)
-   private
-      fOwner: TControl;
 
-   public
-      constructor Create(AOwner: TComponent); override;
-   end;
+  TScrollCode = (scLineUp, scLineDown, scPageUp, scPageDown, scPosition,
+    scTrack, scTop, scBottom, scEndScroll);
+
+  TScrollEvent = procedure(Sender: TObject; ScrollCode: TScrollCode;
+    var ScrollPos: Integer) of object;
+
+
+  TScrollBar = class(TWinControl)
+  private
+    FKind: TScrollBarKind;
+    FPosition: Integer;
+    FMin: Integer;
+    FMax: Integer;
+    FPageSize: Integer;
+    FRTLFactor: Integer;
+    FSmallChange: TScrollBarInc;
+    FLargeChange: TScrollBarInc;
+    FOnChange: TNotifyEvent;
+    FOnScroll: TScrollEvent;
+    procedure DoScroll(var Message: TLMScroll);
+    function NotRightToLeft: Boolean;
+    procedure SetKind(Value: TScrollBarKind);
+    procedure SetMax(Value: Integer);
+    procedure SetMin(Value: Integer);
+    procedure SetPosition(Value: Integer);
+    procedure SetPageSize(Value: Integer);
+    procedure CNHScroll(var Message: TLMHScroll); message CN_HSCROLL;
+    procedure CNVScroll(var Message: TLMVScroll); message CN_VSCROLL;
+    procedure CNCtlColorScrollBar(var Message: TLMessage); message CN_CTLCOLORSCROLLBAR;
+    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
+    procedure Change; dynamic;
+    procedure Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer); dynamic;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure SetParams(APosition, AMin, AMax: Integer);
+  published
+    property Align;
+    property Anchors;
+    property Ctl3D;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Kind: TScrollBarKind read FKind write SetKind default sbHorizontal;
+    property LargeChange: TScrollBarInc read FLargeChange write FLargeChange default 1;
+    property Max: Integer read FMax write SetMax default 100;
+    property Min: Integer read FMin write SetMin default 0;
+    property PageSize: Integer read FPageSize write SetPageSize;
+    property ParentCtl3D;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property ShowHint;
+    property SmallChange: TScrollBarInc read FSmallChange write FSmallChange default 1;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnScroll: TScrollEvent read FOnScroll write FOnScroll;
+    property OnStartDrag;
+  end;
+
+
 
    TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
    public                                                                                      
@@ -432,6 +500,8 @@ type
 
 implementation {*******}
 
+uses LCLLinux;
+
 
 type
    TSelection = record
@@ -472,6 +542,10 @@ var
    aColors : Array[1..10] of TColor;
    ColorNum : Integer;
 
+const
+
+  SScrollBarRange = 'ScrollBar property out of range';
+
 {$I customgroupbox.inc}
 {$I customcombobox.inc}                                                                                            
 {$I customlistbox.inc}
@@ -495,6 +569,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/02/01 16:45:19  lazarus
+  Started the code completion.
+  Shane
+
   Revision 1.11  2001/01/28 21:06:07  lazarus
   Changes for TComboBox events KeyPress Focus.
   Shane

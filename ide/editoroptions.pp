@@ -416,7 +416,6 @@ begin
       ConfFileName:=SecConfFileName;
     end;
   end;
-writeln('EditorOptionsFile=',ConfFilename);
   XMLConfig:=TXMLConfig.Create(ConfFileName);
 
   // set defaults
@@ -463,7 +462,6 @@ procedure TEditorOptions.Load;
 var SynEditOpt:TSynEditorOption;
   SynEditOptName:ansistring;
 begin
-writeln('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
   // general options
   for SynEditOpt:=Low(TSynEditorOption) to High(TSynEditorOption) do begin
     case SynEditOpt of
@@ -496,7 +494,6 @@ writeln('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
 
   fUndoAfterSave:=
     XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
-writeln('UndoAfterSave',fUndoAfterSave);
   fDoubleClickLine:=
     XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickLine',false);
   fFindTextAtCursor:=
@@ -1134,7 +1131,6 @@ begin
     with FontDialog do begin
       if Execute then begin
         EditorFontComboBox.Text:=FontName;
-writeln('[TEditorOptionsForm.EditorFontButtonClick] fontname=''',FontName,'''');
         for a:=Low(PreviewEdits) to High(PreviewEdits) do begin
           if PreviewEdits[a]<>nil then
             FontDialogNameToFont(FontName,PreviewEdits[a].Font);
@@ -1256,8 +1252,6 @@ begin
   end;
   if Old<>CurHighlightElement then
     ShowCurAttribute;
-  if CurHighlightElement<>nil then
-    writeln('CurHigh: '+CurHighlightElement.Name);
 end;
 
 procedure TEditorOptionsForm.InvalidatePreviews;
@@ -2714,7 +2708,6 @@ begin
   EditorOpts.Save;
 
   try
- writeln('SAVING ',EditorOpts.CodeTemplateFileName);
     SynAutoComplete.AutoCompleteList.SaveToFile(
       EditorOpts.CodeTemplateFileName);
   except
@@ -2730,6 +2723,7 @@ end;
 
 procedure TEditorOptionsForm.CancelButtonClick(Sender:TObject);
 begin
+  EditorOpts.Load;
   ModalResult:=mrCancel;
 end;
 

@@ -423,6 +423,7 @@ TCMDialogKey = TLMKEY;
     FControlState: TControlState;
     Procedure AdjustSize; dynamic;
     { events need to be protected otherwise they can't be overridden ??}
+    Procedure Changed;
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(Var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
     procedure WMMButtonDown(Var Message: TLMMButtonDown); message LM_MBUTTONDOWN;
@@ -1124,6 +1125,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/02/01 16:45:19  lazarus
+  Started the code completion.
+  Shane
+
   Revision 1.10  2001/01/23 23:33:54  lazarus
   MWE:
     - Removed old LM_InvalidateRect

@@ -31,10 +31,10 @@ unit UnitEditor;
 interface
 
 uses
-  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,
+  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,
 {$ifdef NEW_EDITOR_SYNEDIT}
-  SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,
+  SynEdit, SynEditHighlighter, SynHighlighterPas,SynEditAutoComplete,
+  SynEditKeyCmds,SynCompletion,
 {$else}
 	mwcustomedit,mwPasSyn,
 {$endif}
@@ -146,6 +146,8 @@ type
     Function StartFind : Boolean;
     Function FindAgain(StartX,StartLine : Integer) : Boolean;
 
+    Function RefreshEditorSettings : Boolean;
+
     property Editor : TmwCustomEdit read FEditor;
     property Visible : Boolean read FVisible write FVisible default False;
     FindText : String;
@@ -241,6 +243,7 @@ type
     Procedure ToggleBookmark(Value : Integer);
     Procedure GotoBookmark(Value: Integer);
 
+    Procedure ReloadEditorOptions;
 
     property OnCloseFile : TNotifyFileEvent read FOnCloseFile write FOnCloseFile;
     property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOPenFile;
@@ -274,6 +277,7 @@ const
 var
 Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
+ aCompletion : TSynCompletion;
 
 { TSourceEditor }
 
@@ -605,6 +609,8 @@ end;
 Function TSourceEditor.StartFind : Boolean;
 Begin
   Result := False;
+  //setup the find dialog
+
   if not Assigned(FindDialog1) then
          FindDialog1 := TFindDialog.Create(nil);
 
@@ -614,7 +620,9 @@ Begin
         FindText := uppercase(FindDialog1.edtTextToFind.Text);
         Result := FindAgain(1,0);
 
-     end;
+     end
+     else
+     Exit;
 
   if not Result then
      Application.MessageBox('Search String not found.','Not Found',mb_OK);
@@ -802,23 +810,43 @@ Begin
 
 end;
 
+Function TSourceEditor.RefreshEditorSettings : Boolean;
+Begin
+  Result := False;
+
+    if EditorOPts.UseSyntaxHighlight then
+    Begin
+       EditorOPts.GetHighlighterSettings(aHighlighter);
+       FEditor.Highlighter:=aHighlighter;
+    end
+    else
+       FEditor.Highlighter:=nil;
+
+
+
+    with FSynAutoComplete do begin
+      if FileExists(EditorOPts.CodeTemplateFilename) then
+      AutoCompleteList.LoadFromFile(EditorOPts.CodeTemplateFilename)
+	else
+      if FileExists('lazarus.dci') then
+          AutoCompleteList.LoadFromFile('lazarus.dci');
+
+    end;
+
+   EditorOpts.GetSynEditSettings(FEditor);
+end;
+
+
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
 Begin
-if assigned(FEditor) then
+  if assigned(FEditor) then
    Begin
       FSource.Assign(FEditor.Lines);
       FEditor.Free;
    end;
 
-{SynEdit}
 
     FSynAutoComplete:=TSynAutoComplete.Create(FAOwner);
-    with FSynAutoComplete do begin
-      if FileExists(SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci')) then
-      AutoCompleteList.LoadFromFile(SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci'))
-	else
-      AutoCompleteList.LoadFromFile('lazarus.dci');
-    end;
 
     FEditor:=TSynEdit.Create(FAOwner);
     with FEditor do
@@ -828,7 +856,6 @@ if assigned(FEditor) then
     Parent := AParent;
     SetBounds(0,25,TWinControl(FAOwner).ClientWidth - 10,TWinControl(FAOwner).ClientHeight -10);
     Align := alClient;
-    Highlighter:=aHighlighter;
     Gutter.Color:=clBlue;
     AddKey(ecAutoCompletion, word('J'), [ssCtrl], 0, []);
     AddKey(ecFind, word('F'), [ssCtrl], 0, []);
@@ -847,10 +874,11 @@ if assigned(FEditor) then
     Show;
     end;
     FSynAutoComplete.AddEditor(FEditor);
-{SynEdit}
+    RefreshEditorSettings;
+    aCompletion.Editor := FEditor;
 
-FEditor.Lines.Assign(FSource);
-FEditor.Setfocus
+    FEditor.Lines.Assign(FSource);
+    FEditor.Setfocus
 end;
 
 Procedure TSourceEditor.AddControlCode(_Control : TComponent);
@@ -1249,6 +1277,16 @@ begin
       SymbolAttri.ForeGround:=clBlack;
     end;
 
+
+  aCompletion := TSynCompletion.Create(AOwner);
+    with aCompletion do
+      Begin
+
+
+
+      end;
+
+
   StatusBar := TStatusBar.Create(self);
     with Statusbar do
       begin
@@ -1479,8 +1517,8 @@ Begin
                   end;
         End;
 
-//TempEditor now is the editor on the active page
-//Compare it to the editor help by the SourceEditors
+   // TempEditor now is the editor on the active page
+   // Compare it to the editor help by the SourceEditors
    I := 0;
    while TSourceEditor(FSourceEditorList[I]).Editor <> TempEditor do
          inc(i);
@@ -1798,6 +1836,15 @@ begin
                       //This is NOT implemented yet
                     end;
    end;  //case
+end;
+
+Procedure TSourceNotebook.ReloadEditorOptions;
+var
+  I : integer;
+Begin
+  //this reloads the colrs for the highlighter and other settings.
+   for I := 0 to FSourceEditorList.Count-1 do
+      TSOurceEditor(FSourceEditorList.Items[i]).RefreshEditorSettings;
 end;
 
 initialization

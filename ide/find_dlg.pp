@@ -45,10 +45,13 @@ type
     cbRegularExpressions : TCheckBox;
 
     rgForwardBack : TRadioGroup;
+    rgScope : TRadioGroup;
+    rgOrigin : TRadioGroup;
 { event handlers }
     procedure btnOKClicked(Sender : TObject);
     procedure btnCancelClicked(Sender : TObject);
     procedure btnHelpClicked(Sender : TObject);
+    Procedure FindDialogOnActivate(Sender : TObject);
 private
     FFindText : String;
     FOnFind : TNotifyEvent;
@@ -101,7 +104,7 @@ begin
    begin
     parent := Self;
     Left := 10;
-    Top := 35;
+    Top := 30;
     Width :=(Self.Width div 2) - 10;
     Height := (Self.Height div 2) -35;
     Caption := 'Options';
@@ -117,7 +120,7 @@ begin
     begin
      parent := gbGroupBox;
      left := 5;
-     top := 5;
+     top := 3;
      Caption := 'Case Sensitive';
      Name := 'cbCaseSensitive';
      visible := True;
@@ -127,7 +130,7 @@ begin
     begin
      parent := gbGroupBox;
      left := 5;
-     top := 25;
+     top := 20;
      Caption := 'Whole Words';
      Name := 'cbWholeWords';
      visible := True;
@@ -137,7 +140,7 @@ begin
     begin
      parent := gbGroupBox;
      left := 5;
-     top := 50;
+     top := 37;
      Caption := 'Regular Expressions';
      Name := 'cbRegularExpressions';
      visible := True;
@@ -148,7 +151,7 @@ begin
     begin
      parent := self;
      left := (Self.Width div 2) +5;
-     top := 35;
+     top := 30;
      Height := (Self.Height div 2) -35;
      width := (Self.Width div 2) -10;
      Caption := 'Direction';
@@ -157,6 +160,38 @@ begin
      Name := 'rgForwardBack';
      visible := True;
      ItemIndex := 0;
+    end;
+
+  rgScope := TRadioGroup.Create(self);
+   with rgScope do
+    begin
+     parent := self;
+     left := 10;
+     top := (Self.Height div 2)+5;
+     Height := (Self.Height div 2)-35;
+     width := (Self.Width div 2) -10;
+     Caption := 'Scope';
+     Items.Add('Global');
+     Items.Add('Selected Text');
+     Name := 'rgScope';
+     visible := True;
+     ItemIndex := 0;
+    end;
+
+  rgOrigin := TRadioGroup.Create(self);
+   with rgOrigin do
+    begin
+     parent := self;
+     left := (Self.Width div 2) +5;
+     top := (Self.Height div 2) + 5;
+     Height := (Self.Height div 2) -35;
+     width := (Self.Width div 2) -10;
+     Caption := 'Origin';
+     Items.Add('From Cursor');
+     Items.Add('Entire Scope');
+     Name := 'rgOrigin';
+     visible := True;
+     ItemIndex := 1;
     end;
 
    btnOK := TButton.create(self);
@@ -200,6 +235,7 @@ begin
      visible := True;
      OnCLick := @BTnHelpClicked;
      end;
+   OnActivate := @FindDialogOnActivate;
 end;
 
 procedure TFindDialog.btnOKClicked(Sender : TObject);
@@ -217,5 +253,9 @@ procedure TFindDialog.btnHelpClicked(Sender : TObject);
 Begin
 end;
 
+Procedure TFindDialog.FindDialogOnActivate(Sender : TObject);
+Begin
+  edtTextToFind.SetFocus;
+End;
 
 end.

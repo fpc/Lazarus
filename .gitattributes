@@ -1,5 +1,6 @@
 * text=auto !eol
 components/synedit/allunits.pp svneol=native#text/pascal
+components/synedit/syncompletion.pas svneol=native#text/pascal
 components/synedit/synedit.inc svneol=native#text/pascal
 components/synedit/synedit.pp svneol=native#text/pascal
 components/synedit/syneditautocomplete.pp svneol=native#text/pascal
