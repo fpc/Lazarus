@@ -80,6 +80,7 @@ type
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask
+        IsNullBrush : Boolean;
         GDIBrushColor : TGDIColor;
         GDIBrushFill: TGdkFill;
         GDIBrushPixMap: PGdkPixmap;
@@ -427,6 +428,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/10/30 17:43:35  lazarus
+  AJ: added IsNullBrush checks to reduce pointless color allocations & GDK function calls
+
   Revision 1.28  2002/10/20 21:54:03  lazarus
   MG: fixes for 1.1
 
