@@ -659,6 +659,7 @@ type
     procedure FreeHandle; override;
     function ReleaseHandle: HBITMAP;
     function IsEmpty: boolean;
+    function GetPixelFormat: TPixelFormat;
   public
     FDIB: TDIBSection;
     destructor Destroy; override;
@@ -1030,6 +1031,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2003/06/30 17:25:26  mattias
+  fixed parsing of with do try finally end
+
   Revision 1.73  2003/06/30 16:31:04  mattias
   fixed find declaration of with A,B do C; statements
 

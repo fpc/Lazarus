@@ -2080,7 +2080,7 @@ begin
   if BlockStatementStartKeyWordFuncList.DoItUppercase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then
   begin
-    if not ReadTilBlockEnd(ExceptionOnError,CreateNodes) then exit;
+    if not ReadTilBlockEnd(false,CreateNodes) then exit;
     ReadNextAtom;
     if CurPos.Flag<>cafSemicolon then UndoReadNextAtom;
   end else if UpAtomIs('WITH') then begin

@@ -90,5 +90,26 @@ begin
   Result := (FHandle = 0) and (FDIBHandle = 0);
 end;
 
+function TBitmapImage.GetPixelFormat: TPixelFormat;
+begin
+  Result:=pfCustom;
+  if GetHandleType = bmDDB then
+    Result := pfDevice
+  else
+    case FDIB.dsBmih.biBitCount of
+      1: Result := pf1Bit;
+      4: Result := pf4Bit;
+      8: Result := pf8Bit;
+     16: case FDIB.dsBmih.biCompression of
+           BI_RGB : Result := pf15Bit;
+           BI_BITFIELDS: if FDIB.dsBitFields[1] = $7E0 then
+                           Result := pf16Bit;
+         end;
+     24: Result := pf24Bit;
+     32: if FDIB.dsBmih.biCompression = BI_RGB then
+           Result := pf32Bit;
+    end;
+end;
+
 // included by graphics.pp
 
