@@ -15,10 +15,7 @@ unitdependencies.lrs - Icons for the unit dependencies.
 How to update the image resources:
 
 Creating a lazarus resource can easily be done by the lazres program.
-If you have not yet compiled lazres, do:
-
-cd <lazarusdir>/tools/
-ppc386 -Fu../lcl/units -Fu../lcl/units/gtk lazres.pp
+If you have not yet compiled lazres, go to the tools directory and type make.
 
 
 1. bookmark.lrs
