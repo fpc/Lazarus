@@ -344,7 +344,8 @@ var
   AMenuItem: TMenuItem;
 begin
   AMenuItem:=BaseMenuItem as TMenuItem;
-  gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle), AMenuItem.Enabled);
+  gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle),
+                           AMenuItem.Enabled and (AMenuItem.Caption<>'-'));
   Result := True;
 end;
 
@@ -463,6 +464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/06/19 21:06:38  mattias
+  menu separators are now created disabled
+
   Revision 1.28  2004/05/22 14:59:23  mattias
   fixed multi update of TStatusBar
 

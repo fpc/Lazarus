@@ -4672,7 +4672,8 @@ begin
 
 
   // set attributes (enabled and rightjustify)
-  gtk_widget_set_sensitive(MenuItemWidget, LCLMenuItem.Enabled);
+  gtk_widget_set_sensitive(MenuItemWidget,
+                           LCLMenuItem.Enabled and (LCLMenuItem.Caption<>'-'));
   if LCLMenuItem.RightJustify then
     gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
 
@@ -6799,6 +6800,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.283  2004/06/19 21:06:38  mattias
+  menu separators are now created disabled
+
   Revision 1.282  2004/06/17 21:24:19  mattias
   implemented painting menuitem icons from ImageList
 
