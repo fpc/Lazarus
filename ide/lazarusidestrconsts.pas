@@ -1255,6 +1255,7 @@ resourcestring
   rsLanguageSpanish     = 'Spanish';
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
+  rsLanguageRussianWin  = 'Russian(CP1251)';
   rsLanguagePolish      = 'polski';
   rsLanguageItalian     = 'Italian';
   rsLanguageCatalan     = 'Catalan';

@@ -212,7 +212,7 @@ msgstr "<выберите существующий файл>"
 
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
-msgstr ""
+msgstr "<Не выбрано переменных>"
 
 #: lazarusidestrconsts:dlgdoesnotexist
 msgid "\" does not exist."
@@ -240,7 +240,7 @@ msgstr "Нормальный инструмент обязательно должен иметь заголовок и имя файла."
 
 #: lazarusidestrconsts:lismenuabortbuild
 msgid "Abort Build"
-msgstr ""
+msgstr "Прервать сборку"
 
 #: lazarusidestrconsts:lismenutemplateabout
 msgid "About"
@@ -300,11 +300,11 @@ msgstr "Добавить файл к проекту"
 
 #: lazarusidestrconsts:lisa2paddfiles
 msgid "Add Files"
-msgstr ""
+msgstr "Добавить файлы"
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
-msgstr ""
+msgstr "Добавить файлы к пакету"
 
 #: lazarusidestrconsts:srkmecaddjumppoint
 msgid "Add jump point"
@@ -328,7 +328,7 @@ msgstr "Добавить пути к зависимым пакетам/проектам"
 
 #: lazarusidestrconsts:lisa2paddtopackage
 msgid "Add to package"
-msgstr ""
+msgstr "Добавить к пакету"
 
 #: lazarusidestrconsts:lisa2paddunit
 msgid "Add Unit"
@@ -640,7 +640,7 @@ msgstr "Собрать примеры"
 
 #: lazarusidestrconsts:lismenubuildfile
 msgid "Build File"
-msgstr ""
+msgstr "Собрать файл"
 
 #: lazarusidestrconsts:lisbuildide
 msgid "Build IDE"
@@ -804,7 +804,7 @@ msgstr "Выберите исходник программы (*.pp,*.pas,*.lpr)"
 
 #: lazarusidestrconsts:lisedoptschoosescheme
 msgid "Choose Scheme"
-msgstr ""
+msgstr "Выбрать схему"
 
 #: lazarusidestrconsts:lischoosetestbuilddir
 msgid "Choose the directory for tests"
@@ -900,7 +900,7 @@ msgstr "Просмотр настроек CodeTools"
 
 #: lazarusidestrconsts:lisctdefcodetoolsdirectoryvalues
 msgid "CodeTools Directory Values"
-msgstr ""
+msgstr "Параметры каталогов CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
@@ -984,7 +984,7 @@ msgstr "Собрать всё?"
 
 #: lazarusidestrconsts:liscompileidewithoutlinking
 msgid "Compile IDE (without linking)"
-msgstr ""
+msgstr "Компиляция IDE (без сборки)"
 
 #: lazarusidestrconsts:lispckeditcompilepackage
 msgid "Compile package"
@@ -1068,7 +1068,7 @@ msgstr "Настроить \"Собрать Lazarus\""
 
 #: lazarusidestrconsts:lismenuconfigbuildfile
 msgid "Configure Build+Run File"
-msgstr ""
+msgstr "Настроить Собрать+Запустить Файл"
 
 #: lazarusidestrconsts:lismenuconfigcustomcomps
 msgid "Configure custom components"
@@ -1136,7 +1136,7 @@ msgstr "Ошибка копирования"
 
 #: lazarusidestrconsts:lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
-msgstr ""
+msgstr "Скопировать выбранные компоненты в буфер"
 
 #: lazarusidestrconsts:srkmeccopy
 msgid "Copy selection to clipboard"
@@ -1292,7 +1292,7 @@ msgstr "Вырезать"
 
 #: lazarusidestrconsts:lisdsgcutcomponents
 msgid "Cut selected components to clipboard"
-msgstr ""
+msgstr "Вырезать выбранные компоненты в буфер"
 
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
@@ -1328,7 +1328,7 @@ msgstr "Ошибка отладчика%sОп, отладчик находится в нерабочем состоянии%sСохранит
 
 #: lazarusidestrconsts:lismendebuggeroptions
 msgid "Debugger Options"
-msgstr ""
+msgstr "Параметры отладчика"
 
 #: lazarusidestrconsts:dlgcodebugpath
 msgid "Debugger path addition:"
@@ -1348,7 +1348,7 @@ msgstr "По умолчанию"
 
 #: lazarusidestrconsts:liscodefault
 msgid "default (%s)"
-msgstr ""
+msgstr "по умолчанию (%s)"
 
 #: lazarusidestrconsts:dlgdefaulteditorfont
 msgid "Default editor font"
@@ -1416,7 +1416,7 @@ msgstr "Удалить элемент"
 
 #: lazarusidestrconsts:lisdeleteoldfile
 msgid "Delete old file %s%s%s?"
-msgstr ""
+msgstr "Удалить старый файл %s%s%s?"
 
 #: lazarusidestrconsts:lispkgmangdeleteoldpackagefile2
 msgid "Delete old package file %s%s%s?"
@@ -1504,7 +1504,7 @@ msgstr "Описание: "
 
 #: lazarusidestrconsts:liskeycatdesigner
 msgid "Designer commands"
-msgstr ""
+msgstr "Команды дизайнера"
 
 #: lazarusidestrconsts:lispckoptsdesigntimeandruntime
 msgid "Designtime and Runtime"
@@ -1580,7 +1580,7 @@ msgstr "Выдать номера строк в ошибках времени исполнения"
 
 #: lazarusidestrconsts:lisdonotshowsplashscreen
 msgid "Do not show splash screen"
-msgstr ""
+msgstr "Не показывать заставку"
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -1600,7 +1600,7 @@ msgstr "Прикреплён"
 
 #: lazarusidestrconsts:lisdocumentationeditor
 msgid "Documentation Editor"
-msgstr ""
+msgstr "Редактор документации"
 
 #: lazarusidestrconsts:lissortseldomain
 msgid "Domain"
@@ -1612,7 +1612,7 @@ msgstr "Выделить строку дв. щелчком"
 
 #: lazarusidestrconsts:lisenvdoubleclickonmessagesjumpsotherwisesingleclick
 msgid "Double click on messages jumps (otherwise: single click)"
-msgstr ""
+msgstr "Двойной щелчёк на переходах по сообщениям (иначе - одинарный)"
 
 #: lazarusidestrconsts:dlgdownword
 msgid "Down"
@@ -1952,7 +1952,7 @@ msgstr "Файл не найден"
 
 #: lazarusidestrconsts:lisfilenotlowercase
 msgid "File not lowercase"
-msgstr ""
+msgstr "Файл не в нижнем регистре"
 
 #: lazarusidestrconsts:lispkgmangfilenotsaved
 msgid "File not saved"
@@ -1976,7 +1976,7 @@ msgstr "Тип файла"
 
 #: lazarusidestrconsts:lisa2pfilename2
 msgid "Filename"
-msgstr ""
+msgstr "Имя файла"
 
 #: lazarusidestrconsts:lispkgmangfilenamediffersfrompackagename
 msgid "Filename differs from Packagename"
@@ -2600,15 +2600,15 @@ msgstr "Вставить шаблон проекта Delphi 6"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7compilertemp
 msgid "Insert Delphi 7 Compiler Template"
-msgstr ""
+msgstr "Вставить шаблон компилятора Delphi 7"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7directorytem
 msgid "Insert Delphi 7 Directory Template"
-msgstr ""
+msgstr "Вставить шаблон каталога Delphi 7"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertdelphi7projecttempl
 msgid "Insert Delphi 7 Project Template"
-msgstr ""
+msgstr "Вставить шаблон проекта Delphi 7"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertfreepascalcompilert
 msgid "Insert Free Pascal Compiler Template"
@@ -2624,11 +2624,11 @@ msgstr "Вставить шаблон проекта FreePascal"
 
 #: lazarusidestrconsts:lismenuinsertcharacter
 msgid "Insert from Character Map"
-msgstr ""
+msgstr "Вставить из таблицы символов"
 
 #: lazarusidestrconsts:srkmecinsertcharacter
 msgid "Insert from Charactermap"
-msgstr ""
+msgstr "Вставить из таблицы символов"
 
 #: lazarusidestrconsts:lismenueditorinsertfromtemplate
 msgid "Insert From Template..."
@@ -2640,15 +2640,15 @@ msgstr "Вставить заметку о GPL"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
-msgstr ""
+msgstr "Вставить шаблон компилятора Kylix 3"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertkylix3directorytem
 msgid "Insert Kylix 3 Directory Template"
-msgstr ""
+msgstr "Вставить шаблон каталога Kylix 3"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertkylix3projecttempl
 msgid "Insert Kylix 3 Project Template"
-msgstr ""
+msgstr "Вставить шаблон проекта Kylix 3"
 
 #: lazarusidestrconsts:liscodetoolsdefsinsertlazarusdirectorytem
 msgid "Insert Lazarus Directory Template"
@@ -3112,7 +3112,7 @@ msgstr "Загр. рабочий стол из файла"
 
 #: lazarusidestrconsts:dlgcoloadsave
 msgid "Load/Save"
-msgstr ""
+msgstr "Загрузка/сохранение"
 
 #: lazarusidestrconsts:lispckexplloadedpackages
 msgid "Loaded Packages:"
@@ -3160,7 +3160,7 @@ msgstr "Главная"
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
-msgstr ""
+msgstr "Создать исполняемый"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
@@ -3648,7 +3648,7 @@ msgstr "Открыть пакет?"
 
 #: lazarusidestrconsts:lisctdefsopenpreview
 msgid "Open Preview"
-msgstr ""
+msgstr "Открыть предпросмотр"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
@@ -3892,7 +3892,7 @@ msgstr "Вставить из буфера в текущую позицию"
 
 #: lazarusidestrconsts:lisdsgpastecomponents
 msgid "Paste selected components from clipboard"
-msgstr ""
+msgstr "Вставить выбранные компоненты из буфера"
 
 #: lazarusidestrconsts:lispatheditpathtemplates
 msgid "Path templates"
@@ -3972,7 +3972,7 @@ msgstr "Точка"
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "polski"
-msgstr ""
+msgstr "польский"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -4388,7 +4388,7 @@ msgstr "Запуск"
 
 #: lazarusidestrconsts:lismenurunfile
 msgid "Run File"
-msgstr ""
+msgstr "Запустить файл"
 
 #: lazarusidestrconsts:srkmcatrunmenu
 msgid "Run menu commands"
@@ -4676,7 +4676,7 @@ msgstr "Выделить абзац"
 
 #: lazarusidestrconsts:lisdsgselectparentcomponent
 msgid "Select parent component"
-msgstr ""
+msgstr "Выбрать родительский компонент"
 
 #: lazarusidestrconsts:lismenueditorselecttemplate
 msgid "Select Template:"
@@ -4812,7 +4812,7 @@ msgstr "Показать кнопку Закрыть в закладках"
 
 #: lazarusidestrconsts:lisuishowcodetoolsvalues
 msgid "Show CodeTools Values"
-msgstr ""
+msgstr "Показать значения CodeTools"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
@@ -5096,7 +5096,7 @@ msgstr "Переключить модуль/форму"
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
-msgstr ""
+msgstr "Переключить пути"
 
 #: lazarusidestrconsts:dlgsymantecchecking
 msgid "Symantec Checking:"
@@ -5148,7 +5148,7 @@ msgstr "ТАБ сделать пробелами в выделенном"
 
 #: lazarusidestrconsts:lislazbuildtargetdirectory
 msgid "Target Directory:"
-msgstr ""
+msgstr "Каталог назначения:"
 
 #: lazarusidestrconsts:dlgpotargetfilename
 msgid "Target file name:"
@@ -5184,7 +5184,7 @@ msgstr "Просмотр шаблона"
 
 #: lazarusidestrconsts:liscomptest
 msgid "Test"
-msgstr ""
+msgstr "Тест"
 
 #: lazarusidestrconsts:listestdirectory
 msgid "Test directory"
@@ -5224,15 +5224,15 @@ msgstr "Искать текст:"
 
 #: lazarusidestrconsts:lisdiffdlgtext1
 msgid "Text1"
-msgstr ""
+msgstr "Текст1"
 
 #: lazarusidestrconsts:lisdiffdlgtext2
 msgid "Text2"
-msgstr ""
+msgstr "Текст2"
 
 #: lazarusidestrconsts:liscodetoolsdefskylixmaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: /home/user/kylix%s"
-msgstr ""
+msgstr "Главный каталог %s,%sгде Borland установил %s исходники,%sкоторые использует этот %s проект.%sНапример: /home/user/kylix%s"
 
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectoryforproject
 msgid "The %s main directory,%swhere Borland has installed all %s sources,%swhich are used by this %s project.%sFor example: C:/Programme/Borland/Delphi%s"
@@ -5240,7 +5240,7 @@ msgstr "Главный каталог %s, %sгде Borland установил все исходники %s,используемы
 
 #: lazarusidestrconsts:liscodetoolsdefskylixmaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: /home/user/kylix%s"
-msgstr ""
+msgstr "Главный каталог %s,%sгде Borland установил все %s исходники.%sНапример: /home/user/kylix%s"
 
 #: lazarusidestrconsts:liscodetoolsdefsdelphimaindirectorydesc
 msgid "The %s main directory,%swhere Borland has installed all %s sources.%sFor example: C:/Programme/Borland/Delphi%s"
@@ -5476,7 +5476,7 @@ msgstr "Имя пакета %s%s%s некорректно.%sВыберите существующий пакет."
 
 #: lazarusidestrconsts:lisa2pthepackagenameisinvalidpleasechooseanexisting
 msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
-msgstr ""
+msgstr "Имя пакета %s%s%s некорректно.%sВыберите существующий пакет."
 
 #: lazarusidestrconsts:lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
 msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
@@ -5528,7 +5528,7 @@ msgstr "Модуль %s%s%s уже есть. Пропуск приведёт к переименованию,%sОтмена отмен
 
 #: lazarusidestrconsts:listheunitisnotlowercasethefreepascalcompiler10xneeds
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
-msgstr ""
+msgstr "Модуль %s%s%s не в нижнем регистре.%sКомпилятор FreePascal 1.0.x требует имена в нижнем регистре. Если Вы не используете fpc 1.0.x для сборки этого модуля, можно игнорировать это сообщение.%s%sПереименовать файл?"
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
@@ -5656,7 +5656,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisctdefstools
 msgid "Tools"
-msgstr ""
+msgstr "Инструменты"
 
 #: lazarusidestrconsts:srkmcattoolmenu
 msgid "Tools menu commands"
@@ -6168,7 +6168,7 @@ msgstr "Переменная"
 
 #: lazarusidestrconsts:lisctdefvariablename
 msgid "Variable Name"
-msgstr ""
+msgstr "Имя переменной"
 
 #: lazarusidestrconsts:dlgcdtvariableprefix
 msgid "Variable prefix"
@@ -6180,7 +6180,7 @@ msgstr "Переменная:"
 
 #: lazarusidestrconsts:lisctdefvariable
 msgid "Variable: %s"
-msgstr ""
+msgstr "Переменная: %s"
 
 #: lazarusidestrconsts:dlgverbosity
 msgid "Verbosity:"
