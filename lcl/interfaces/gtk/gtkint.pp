@@ -199,6 +199,8 @@ var
   Cursor_SizeNESW : pGDKCursor;
   Cursor_SizeWE   : pGDKCursor;
 
+  Styles : TStrings;
+
 const
   KEYMAP_VKUNKNOWN = $10000;
   KEYMAP_TOGGLE    = $20000;
@@ -430,6 +432,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/08/22 16:43:35  lazarus
+  MG: improved theme support from Andrew
+
   Revision 1.63  2002/08/21 14:06:40  lazarus
   MG: added TDeviceContextMemManager
 
