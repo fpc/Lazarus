@@ -268,6 +268,12 @@ Begin
         End;
       End;
     End;
+    WM_ACTIVATEAPP:
+    Begin
+      if WParam <> 0 then
+        if Windows.IsWindowVisible(Window) then
+          Windows.SetWindowPos(Window, HWND_TOP, 0, 0, 0, 0, $53);
+    End;
     WM_CAPTURECHANGED:
     Begin
       LMessage.Msg := LM_CHANGED;
@@ -900,6 +906,9 @@ end;
 
 {
   $Log$
+  Revision 1.76  2003/12/17 16:06:43  micha
+  bring windows to top on application activation
+
   Revision 1.75  2003/12/15 21:57:16  micha
   checklistbox, implement object+checked; from vincent
 
