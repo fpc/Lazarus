@@ -1156,9 +1156,12 @@ end;
 procedure LRSObjectBinaryToText(Input, Output: TStream);
 
   procedure OutStr(const s: String);
+  {$IFDEF VerboseLRSObjectBinaryToText}
   var
     i: Integer;
+  {$ENDIF}
   begin
+    {$IFDEF VerboseLRSObjectBinaryToText}
     for i:=1 to length(s) do begin
       if (s[i] in [#0..#8,#11..#12,#14..#31]) then begin
         DbgOut('#'+IntToStr(ord(s[i])));
@@ -1166,6 +1169,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       end else
         DbgOut(s[i]);
     end;
+    {$ENDIF}
     if Length(s) > 0 then
       Output.Write(s[1], Length(s));
   end;
