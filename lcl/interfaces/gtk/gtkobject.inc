@@ -2947,8 +2947,10 @@ begin
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
   csEdit        : begin
+                    LockOnChange(PGtkObject(p),+1);
                     gtk_entry_set_text(pGtkEntry(P), pLabel);
-                  end;    
+                    LockOnChange(PGtkObject(p),-1);
+                  end;
 
   csMemo        : begin
                     P:= GetWidgetInfo(P, True)^.ImplementationWidget;
@@ -5146,9 +5148,9 @@ begin
       end;
       ShareWindowAccelGroups(SenderWidget);
     end;
-    
+
     gtk_widget_show(SenderWidget);
-    
+
     SetColor(Sender);
     if (Sender is TCustomForm) then begin
       AWindow:=GetControlWindow(SenderWidget);
@@ -7210,6 +7212,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.350  2003/04/10 09:22:42  mattias
+  implemented changing dependency version
+
   Revision 1.349  2003/04/08 00:09:03  mattias
   added LM_APPENDTEXT from hernan
 
