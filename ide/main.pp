@@ -5626,7 +5626,7 @@ begin
   end;
 
   // Setup debugger
-  if EnvironmentOptions.DebuggerType <> dtNone
+  if EnvironmentOptions.DebuggerClass <> ''
   then begin
     if (DebugBoss.DoInitDebugger <> mrOk)
     then Exit;
@@ -9367,6 +9367,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.627  2003/07/30 23:15:38  marc
+  * Added RegisterDebugger
+
   Revision 1.626  2003/07/28 18:02:05  mattias
   added findinfiles strat implementation from Bob Wingard
 

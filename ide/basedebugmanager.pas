@@ -45,11 +45,14 @@ uses
 type
   TBaseDebugManager = class(TComponent)
   private
+    function GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
   protected
     FDestroying: boolean;
+    FDebugger: TDebugger;
     FExceptions: TIDEExceptions;
     FSignals: TIDESignals;
     FBreakPoints: TIDEBreakPoints;
+    function  FindDebuggerClass(const Astring: String): TDebuggerClass;
     function  GetState: TDBGState; virtual; abstract;
     function  GetCommands: TDBGCommands; virtual; abstract;
   public
@@ -82,9 +85,11 @@ type
                                      ): TModalResult; virtual; abstract;
     function DoViewBreakPointProperties(ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
     function DoCreateWatch(const AExpression: string): TModalResult; virtual; abstract;
-
+    
+    function  DebuggerCount: Integer;
   public
     property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
+    property Debuggers[const AIndex: Integer]: TDebuggerClass read GetDebuggerClass;
     property Destroying: boolean read FDestroying;
     property State: TDBGState read GetState;           // The current state of the debugger
     property BreakPoints: TIDEBreakPoints read FBreakpoints;
@@ -92,13 +97,60 @@ type
     property Signals: TIDESignals read FSignals;                                 // A list of actions for signals we know of
   end;
 
+procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
+
 var
   DebugBoss: TBaseDebugManager;
 
 implementation
 
-initialization
-  DebugBoss:=nil;
+var
+  MDebuggerClasses: TStringList;
 
+procedure RegisterDebugger(const ADebuggerClass: TDebuggerClass);
+begin
+  MDebuggerClasses.AddObject(ADebuggerClass.ClassName, TObject(ADebuggerClass));
+end;
+
+
+{ TBaseDebugManager }
+
+function TBaseDebugManager.DebuggerCount: Integer;
+begin
+  Result := MDebuggerClasses.Count;
+end;
+
+function TBaseDebugManager.FindDebuggerClass(const AString: String): TDebuggerClass;
+var
+  idx: Integer;
+begin
+  idx := MDebuggerClasses.IndexOf(AString);
+  if idx = -1
+  then Result := nil
+  else Result := TDebuggerClass(MDebuggerClasses.Objects[idx]);
+end;
+
+function TBaseDebugManager.GetDebuggerClass(const AIndex: Integer): TDebuggerClass;
+begin
+  Result := TDebuggerClass(MDebuggerClasses.Objects[AIndex]);
+end;
+
+initialization
+  DebugBoss := nil;
+  MDebuggerClasses := TStringList.Create;
+  MDebuggerClasses.Sorted := True;
+  MDebuggerClasses.Duplicates := dupError;
+  
+finalization
+  FreeAndNil(MDebuggerClasses);
+  
 end.
+
+{ =============================================================================
+  $Log$
+  Revision 1.16  2003/07/30 23:15:38  marc
+  * Added RegisterDebugger
+
+}
+
 

@@ -82,7 +82,7 @@ type
     function DebuggerDlgGetFullFilename(Sender: TDebuggerDlg;
       var Filename: string; AskUserIfNotFound: boolean): TModalresult;
   private
-    FDebugger: TDebugger;
+    //FDebugger: TDebugger;
     FBreakpointsNotification: TIDEBreakPointsNotification;
 
     // When no debugger is created the IDE stores all debugger settings in its
@@ -1274,11 +1274,10 @@ var
     ResetDialogs;
   end;
   
-const
-  DEBUGGERCLASS: array[TDebuggerType] of TDebuggerClass = (nil, TGDBMIDebugger, TSSHGDBMIDebugger);
 var
   LaunchingCmdLine, LaunchingApplication, LaunchingParams: String;
   NewWorkingDir: String;
+  DebuggerClass: TDebuggerClass;
 begin
   WriteLN('[TDebugManager.DoInitDebugger] A');
 
@@ -1294,7 +1293,8 @@ begin
   BeginUpdateDialogs;
   try
     try
-      if DEBUGGERCLASS[EnvironmentOptions.DebuggerType] = nil
+      DebuggerClass := FindDebuggerClass(EnvironmentOptions.DebuggerClass);
+      if DebuggerClass = nil
       then begin
         if FDebugger <> nil
         then FreeDebugger;
@@ -1302,9 +1302,9 @@ begin
       end;
       
       // check if debugger is already created with the right type
-      if (FDebugger <> nil)
-      and ( not (FDebugger is DEBUGGERCLASS[EnvironmentOptions.DebuggerType])
-             or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+      if  (FDebugger <> nil)
+      and (not (FDebugger is DebuggerClass)
+            or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
           )
       then begin
         // the current debugger is the wrong type -> free it
@@ -1315,7 +1315,7 @@ begin
       if FDebugger = nil
       then begin
         SaveDebuggerItems;
-        FDebugger := DEBUGGERCLASS[EnvironmentOptions.DebuggerType].Create(EnvironmentOptions.DebuggerFilename);
+        FDebugger := DebuggerClass.Create(EnvironmentOptions.DebuggerFilename);
 
         TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints;
         TManagedSignals(FSignals).Master := FDebugger.Signals;
@@ -1435,8 +1435,8 @@ function TDebugManager.Evaluate(const AExpression: String;
 begin
   Result := (not Destroying)
         and (MainIDE.ToolStatus = itDebugger)
-        and (dcEvaluate in DebugBoss.Commands)
         and (FDebugger <> nil)
+        and (dcEvaluate in FDebugger.Commands)
         and FDebugger.Evaluate(AExpression, AResult)
 end;
 
@@ -1547,6 +1547,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.57  2003/07/30 23:15:38  marc
+  * Added RegisterDebugger
+
   Revision 1.56  2003/07/25 17:05:58  mattias
   moved debugger type to the debugger options
 

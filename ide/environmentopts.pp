@@ -183,9 +183,12 @@ type
     FCompilerFileHistory: TStringList;
     FFPCSourceDirectory: string;
     FFPCSourceDirHistory: TStringList;
-    FDebuggerFilename: string;
-    FDebuggerFileHistory: TStringList;
-    FDebuggerType: TDebuggerType;
+    // TODO: store per debuggerclass options
+    // Maybe these should go to a new TDebuggerOptions class
+    FDebuggerClass: string;
+    FDebuggerFilename: string;         // per debugger class
+    FDebuggerFileHistory: TStringList; // per debugger class
+    FDebuggerType: TDebuggerType; // obsolete
     FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
 
@@ -216,6 +219,7 @@ type
     
     procedure SetCompilerFilename(const AValue: string);
     procedure SetDebuggerFilename(const AValue: string);
+    procedure SetDebuggerType (const AValue: TDebuggerType );
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
     procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
@@ -310,11 +314,13 @@ type
                                         write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
                                               write FFPCSourceDirHistory;
+    property DebuggerClass: String read FDebuggerClass write FDebuggerClass;
     property DebuggerFilename: string read FDebuggerFilename
                                       write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory
                                               write FDebuggerFileHistory;
-    property DebuggerType: TDebuggerType read FDebuggerType write FDebuggerType;
+    property DebuggerType: TDebuggerType read FDebuggerType
+                                         write SetDebuggerType;
     property TestBuildDirectory: string read FTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
@@ -1021,17 +1027,7 @@ begin
       if FFPCSourceDirHistory.Count=0 then begin
       
       end;
-      DebuggerFilename:=XMLConfig.GetValue(
-         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
-      LoadRecentList(XMLConfig,FDebuggerFileHistory,
-         'EnvironmentOptions/DebuggerFilename/History/');
-      if FDebuggerFileHistory.Count=0 then begin
-        FDebuggerFileHistory.Add(DebuggerName[dtNone]);
-        FDebuggerFileHistory.Add('/usr/bin/gdb');
-        FDebuggerFileHistory.Add('/opt/fpc/gdb');
-        FDebuggerFileHistory.Add('/usr/bin/ssh user@hostname gdb');
-      end;
-      LoadDebuggerType(FDebuggerType,'EnvironmentOptions/');
+      
       TestBuildDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
       LoadRecentList(XMLConfig,FTestBuildDirHistory,
@@ -1051,6 +1047,27 @@ begin
         ,'EnvironmentOptions/BackupProjectFiles/');
       LoadBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
+
+      // Debugger
+      // first try to load the old type
+      // it will be overwritten by Class if found
+      DebuggerType := DebuggerNameToType(XMLConfig.GetValue(
+         'EnvironmentOptions/Debugger/Type',''));
+      DebuggerClass := XMLConfig.GetValue(
+         'EnvironmentOptions/Debugger/Class',FDebuggerClass);
+      DebuggerFilename:=XMLConfig.GetValue(
+         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      LoadRecentList(XMLConfig,FDebuggerFileHistory,
+         'EnvironmentOptions/DebuggerFilename/History/');
+(*
+      // Don't add them here, it's done in the dialog
+      if FDebuggerFileHistory.Count=0 then begin
+        FDebuggerFileHistory.Add(DebuggerName[dtNone]);
+        FDebuggerFileHistory.Add('/usr/bin/gdb');
+        FDebuggerFileHistory.Add('/opt/fpc/gdb');
+        FDebuggerFileHistory.Add('/usr/bin/ssh user@hostname gdb');
+      end;
+*)
     end;
 
     // hints
@@ -1218,11 +1235,6 @@ begin
       SaveRecentList(XMLConfig,FFPCSourceDirHistory,
          'EnvironmentOptions/FPCSourceDirectory/History/');
       XMLConfig.SetValue(
-         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
-      SaveRecentList(XMLConfig,FDebuggerFileHistory,
-         'EnvironmentOptions/DebuggerFilename/History/');
-      SaveDebuggerType(DebuggerType,'EnvironmentOptions/');
-      XMLConfig.SetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
       SaveRecentList(XMLConfig,FTestBuildDirHistory,
          'EnvironmentOptions/TestBuildDirectory/History/');
@@ -1232,6 +1244,16 @@ begin
         ,'EnvironmentOptions/BackupProjectFiles/');
       SaveBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
+        
+      // debugger
+      XMLConfig.SetValue('EnvironmentOptions/Debugger/Class', FDebuggerClass);
+      XMLConfig.SetValue(
+         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      SaveRecentList(XMLConfig,FDebuggerFileHistory,
+         'EnvironmentOptions/DebuggerFilename/History/');
+      //TODO: remove when registerdebugger is operational
+      // SaveDebuggerType(DebuggerType,'EnvironmentOptions/');
+      //--
     end;
 
     // hints
@@ -1411,6 +1433,18 @@ begin
     inc(SpacePos);
   FDebuggerFilename:=Trim(copy(FDebuggerFilename,1,SpacePos-1))+
     copy(FDebuggerFilename,SpacePos,length(FDebuggerFilename)-SpacePos+1);
+end;
+
+procedure TEnvironmentOptions.SetDebuggerType(const AValue: TDebuggerType);
+const
+  CLASSNAMES: array[TDebuggerType] of String = (
+    '', 'TGDBMIDEBUGGER', 'TSSHGDBMIDEBUGGER'
+  );
+begin
+  if FDebuggerType = AValue then Exit;
+  
+  FDebuggerType := AValue;
+  DebuggerClass := CLASSNAMES[FDebuggerType];
 end;
 
 //==============================================================================

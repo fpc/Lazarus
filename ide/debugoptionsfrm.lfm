@@ -8,13 +8,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   POSITION = podefaultposonly
   HORZSCROLLBAR.PAGE = 481
   VERTSCROLLBAR.PAGE = 443
-  LEFT = 511
+  LEFT = 636
   HEIGHT = 442
-  TOP = 211
+  TOP = 78
   WIDTH = 480
   object nbDebugOptions: TNOTEBOOK
     ALIGN = altop
-    PAGEINDEX = 0
+    PAGEINDEX = 3
     HEIGHT = 398
     WIDTH = 480
     object pgGeneral: TPAGE
@@ -151,10 +151,10 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         end
         object seLimitLinecount: TSPINEDIT
           ENABLED = False
-          CLIMB_RATE = 4.1015090942382813
-          MINVALUE = 4.1015090942382813
-          MAXVALUE = 4.1015090942382813
-          VALUE = 4.1015090942382813
+          CLIMB_RATE = 7.10933840589535E-34
+          MINVALUE = 7.10933840589535E-34
+          MAXVALUE = 7.10933840589535E-34
+          VALUE = 7.10933840589535E-34
           LEFT = 28
           HEIGHT = 20
           TOP = 53

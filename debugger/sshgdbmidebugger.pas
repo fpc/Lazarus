@@ -37,7 +37,7 @@ unit SSHGDBMIDebugger;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Controls, GDBMIDebugger, DBGUtils;
+  Classes, SysUtils, Dialogs, Controls, GDBMIDebugger, DBGUtils, BaseDebugManager;
   
 type
   TSSHGDBMIDebugger = class(TGDBMIDebugger)
@@ -45,12 +45,24 @@ type
   protected
     function  ParseInitialization: Boolean; override;
   public
+    class function Caption: String; override;
+    class function ExePaths: String; override;
   end;
 
 
 implementation
 
 { TSSHGDBMIDebugger }
+
+function TSSHGDBMIDebugger.Caption: String;
+begin
+  Result := 'GNU debugger through SSH (gdb)';
+end;
+
+function TSSHGDBMIDebugger.ExePaths: String;
+begin
+  Result := '/usr/bin/ssh user@remote /usr/bin/gdb';
+end;
 
 function TSSHGDBMIDebugger.ParseInitialization: Boolean;
 var
@@ -120,10 +132,16 @@ begin
   end;
 end;
 
+initialization
+  RegisterDebugger(TSSHGDBMIDebugger);
+  
 end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/07/30 23:15:39  marc
+  * Added RegisterDebugger
+
   Revision 1.1  2003/07/24 08:52:46  marc
   + Added SSHGDB debugger
 

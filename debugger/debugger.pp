@@ -847,6 +847,9 @@ type
                         //MWE: Now they do make sense !
     destructor Destroy; override;
 
+    class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
+    class function ExePaths: String; virtual;        // The default locations of the exe
+    
     procedure Init; virtual;                         // Initializes the debugger
     procedure Done; virtual;                         // Kills the debugger
     procedure Run;                                   // Starts / continues debugging
@@ -857,8 +860,8 @@ type
     procedure RunTo(const ASource: String; const ALine: Integer); virtual;       // Executes til a certain point
     procedure JumpTo(const ASource: String; const ALine: Integer); virtual;      // No execute, only set exec point
 
-    function  Evaluate(const AExpression: String; var AResult: String): Boolean;  // Evaluates the given expression, returns true if valid
-    function  Modify(const AExpression, AValue: String): Boolean;                 // Modifies the given expression, returns true if valid
+    function  Evaluate(const AExpression: String; var AResult: String): Boolean; // Evaluates the given expression, returns true if valid
+    function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  TargetIsStarted: boolean; virtual;
 
   public
@@ -1002,6 +1005,11 @@ end;
 { TDebugger }
 { =========================================================================== }
 
+function TDebugger.Caption: String;
+begin
+  Result := 'No caption set';
+end;
+
 function TDebugger.ChangeFileName: Boolean;
 begin
   Result := True;
@@ -1120,6 +1128,11 @@ function TDebugger.Evaluate(const AExpression: String;
   var AResult: String): Boolean;
 begin
   Result := ReqCmd(dcEvaluate, [AExpression, @AResult]);
+end;
+
+function TDebugger.ExePaths: String;
+begin
+  Result := '';
 end;
 
 function TDebugger.GetCommands: TDBGCommands;
@@ -3014,6 +3027,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.48  2003/07/30 23:15:39  marc
+  * Added RegisterDebugger
+
   Revision 1.47  2003/07/28 18:02:06  mattias
   added findinfiles strat implementation from Bob Wingard
 

@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
   StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst,
   LazarusIDEStrConsts, FileProcs, InputHistory, EnvironmentOpts,
-  BaseDebugManager, Debugger;
+  BaseDebugManager, Debugger, DBGUtils;
 
 type
   TDebuggerOptionsForm = class (TForm )
@@ -66,11 +66,13 @@ type
     FExceptionDeleteList: TStringList;
     FOldDebuggerPathAndParams: string;
     FDebuggerSpecificComponents: TList;
-    FCurDebuggerType: TDebuggerType; // currently shown debugger type
+    FCurDebuggerClass: TDebuggerClass; // currently shown debugger class
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
     procedure AddSignalLine(const ASignal: TIDESignal);
-    procedure FetchDebuggerType;
+    procedure FetchDebuggerClass;
     procedure FetchDebuggerSpecificOptions;
+    function  GetDebuggerClass: TDebuggerClass;
+    procedure SetDebuggerClass(const AClass: TDebuggerClass);
   public
   end;
 
@@ -110,42 +112,58 @@ begin
   Item.Data := ASignal;
 end;
 
-procedure TDebuggerOptionsForm.FetchDebuggerType;
+procedure TDebuggerOptionsForm.FetchDebuggerClass;
 var
-  ADebuggerType: TDebuggerType;
-  DebuggerType: TDebuggerType;
+  n: Integer;
+  AClass: TDebuggerClass;
+  S: String;
 begin
-  with cmbDebuggerType.Items do begin
+  with cmbDebuggerType.Items do
+  begin
     BeginUpdate;
     Clear;
-    for ADebuggerType:=Low(TDebuggerType) to High(TDebuggerType) do
-      Add(DebuggerName[ADebuggerType]);
+    AddObject('(none)', TObject(-1)); // temporary manual coded
+    for n := 0 to DebugBoss.DebuggerCount - 1 do
+    begin
+      AClass := DebugBoss.Debuggers[n];
+      AddObject(AClass.Caption, TObject(n));
+      if  (FCurDebuggerClass = nil)
+      and (CompareText(AClass.ClassName, EnvironmentOptions.DebuggerClass) = 0)
+      then SetDebuggerClass(AClass);
+    end;
     EndUpdate;
   end;
   
+  if FCurDebuggerClass = nil
+  then SetComboBoxText(cmbDebuggerType, '(none)')
+  else SetComboBoxText(cmbDebuggerType, FCurDebuggerClass.Caption);
+
   with cmbDebuggerPath.Items do begin
     BeginUpdate;
     Assign(EnvironmentOptions.DebuggerFileHistory);
-    if Count=0 then
-      Add('/usr/bin/gdb');
+    if  (Count = 0)
+    and (FCurDebuggerClass <> nil)
+    then begin
+      S := FCurDebuggerClass.ExePaths;
+      while S <> '' do
+      begin
+        Add(GetPart([], [';'], S));
+        if S <> '' then System.Delete(S, 1, 1);
+      end;
+    end;
     EndUpdate;
   end;
     
   FOldDebuggerPathAndParams:=EnvironmentOptions.DebuggerFilename;
   SetComboBoxText(cmbDebuggerPath,FOldDebuggerPathAndParams,20);
-  DebuggerType:=EnvironmentOptions.DebuggerType;
-  SetComboBoxText(cmbDebuggerType,DebuggerName[DebuggerType]);
 end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
 var
-  NewDebuggerType: TDebuggerType;
+  DebuggerClass: TDebuggerClass;
   i: Integer;
   AMemo: TMemo;
 begin
-  NewDebuggerType:=DebuggerNameToType(cmbDebuggerType.Text);
-  if NewDebuggerType=FCurDebuggerType then exit;
-  
   // clear debugger specific options components
   if FDebuggerSpecificComponents=nil then
     FDebuggerSpecificComponents:=TList.Create;
@@ -153,45 +171,59 @@ begin
     TComponent(FDebuggerSpecificComponents[i]).Free;
   FDebuggerSpecificComponents.Clear;
 
-  // create debugger specific options components
-  case NewDebuggerType of
-  
-  dtNone: ;
-  
-  dtGnuDebugger:
-    begin
+  if FCurDebuggerClass = nil then Exit;
 
-    end;
-  
-  dtSSHGNUDebugger:
+  // create debugger specific options components
+  // tmep hack
+  if FCurDebuggerClass.ClassName = 'TSSHGDBMIDEBUGGER'
+  then begin
+    AMemo:=TMemo.Create(Self);
+    FDebuggerSpecificComponents.Add(AMemo);
+    with AMemo do
     begin
-      AMemo:=TMemo.Create(Self);
-      FDebuggerSpecificComponents.Add(AMemo);
-      with AMemo do begin
-        Name:='DebOptsSpecMemo1';
-        Parent:=gbDebuggerSpecific;
-        SetBounds(5,5,Parent.Width-15,Parent.Height-35);
-        WordWrap:=true;
-        ReadOnly:=true;
-        Caption:='The GNU debugger through ssh allows to remote debug via a ssh'
-          +' connection. See docs/RemoteDebugging.txt for details. The path'
-          +' must contain the ssh client filename, the hostname with an optional'
-          +' username and the filename of gdb on the remote computer.'
-          +' For example: "/usr/bin/ssh username@hostname gdb"';
-      end;
+      Name:='DebOptsSpecMemo1';
+      Parent:=gbDebuggerSpecific;
+      SetBounds(5,5,Parent.Width-15,Parent.Height-35);
+      WordWrap:=true;
+      ReadOnly:=true;
+      Caption:='The GNU debugger through ssh allows to remote debug via a ssh'
+        +' connection. See docs/RemoteDebugging.txt for details. The path'
+        +' must contain the ssh client filename, the hostname with an optional'
+        +' username and the filename of gdb on the remote computer.'
+        +' For example: "/usr/bin/ssh username@hostname gdb"';
     end;
-    
   end;
+end;
+
+function TDebuggerOptionsForm.GetDebuggerClass: TDebuggerClass;
+var
+  idx: Integer;
+begin
+  Result := nil;
+
+  idx := cmbDebuggerType.ItemIndex;
+  if idx = -1 then Exit;
+  idx := Integer(cmbDebuggerType.Items.Objects[idx]);
+
+  if idx = -1 then Exit;
+  Result := DebugBoss.Debuggers[idx];
+end;
+
+procedure TDebuggerOptionsForm.SetDebuggerClass(const AClass: TDebuggerClass);
+begin
+  if FCurDebuggerClass = AClass then Exit;
+  FCurDebuggerClass := AClass;
+  FetchDebuggerSpecificOptions;
 end;
 
 procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
 begin
-  cmdExceptionRemove.Enabled :=  clbExceptions.ItemIndex <> -1;
+  cmdExceptionRemove.Enabled := clbExceptions.ItemIndex <> -1;
 end;
 
 procedure TDebuggerOptionsForm.cmbDebuggerTypeCHANGE(Sender: TObject);
 begin
-  FetchDebuggerSpecificOptions;
+  SetDebuggerClass(GetDebuggerClass);
 end;
 
 procedure TDebuggerOptionsForm.cmdExceptionAddCLICK(Sender: TObject);
@@ -264,7 +296,9 @@ begin
 
   EnvironmentOptions.DebuggerFilename:=cmbDebuggerPath.Text;
   EnvironmentOptions.DebuggerFileHistory.Assign(cmbDebuggerPath.Items);
-  EnvironmentOptions.DebuggerType:=DebuggerNameToType(cmbDebuggerType.Text);
+  if FCurDebuggerClass = nil
+  then EnvironmentOptions.DebuggerClass := ''
+  else EnvironmentOptions.DebuggerClass := FCurDebuggerClass.ClassName;
 
   ModalResult:=mrOk;
 end;
@@ -297,7 +331,7 @@ procedure TDebuggerOptionsForm.DebuggerOptionsFormCREATE(Sender: TObject);
 var
   n: Integer;
 begin
-  FCurDebuggerType:=dtNone;
+  FCurDebuggerClass := nil;
   
   FExceptionDeleteList := TStringList.Create;
   FExceptionDeleteList.Sorted := True;
@@ -312,7 +346,10 @@ begin
     AddSignalLine(DebugBoss.Signals[n]);
   end;
 
-  FetchDebuggerType;
+  FetchDebuggerClass;
+
+  // Fix designtime changes
+  nbDebugOptions.PageIndex := 0;
 end;
 
 procedure TDebuggerOptionsForm.DebuggerOptionsFormDESTROY(Sender: TObject);

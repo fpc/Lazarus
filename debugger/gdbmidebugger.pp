@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, Process, SysUtils, Dialogs, DBGUtils, Debugger, CmdLineDebugger,
-  GDBTypeInfo;
+  GDBTypeInfo, BaseDebugManager;
 
 type
   TGDBMIProgramInfo = record
@@ -103,6 +103,8 @@ type
     function  ParseInitialization: Boolean; virtual;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
+    class function Caption: String; override;
+    class function ExePaths: String; override;
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
 
@@ -315,6 +317,11 @@ end;
 { TGDBMIDebugger }
 { =========================================================================== }
 
+function TGDBMIDebugger.Caption: String;
+begin
+  Result := 'GNU debugger (gdb)';
+end;
+
 function TGDBMIDebugger.ChangeFileName: Boolean;
 begin
   FHasSymbols := True; // True until proven otherwise
@@ -396,6 +403,11 @@ var
   ResultState: TDBGState;
 begin
   Result := ExecuteCommand(ACommand, [], ResultState, S, AFlags, ACallback);
+end;
+
+function TGDBMIDebugger.ExePaths: String;
+begin
+  Result := '/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -2007,9 +2019,15 @@ begin
   Result := True;
 end;
 
+initialization
+  RegisterDebugger(TGDBMIDebugger);
+  
 end.
 { =============================================================================
   $Log$
+  Revision 1.34  2003/07/30 23:15:39  marc
+  * Added RegisterDebugger
+
   Revision 1.33  2003/07/24 08:47:37  marc
   + Added SSHGDB debugger
 
