@@ -80,6 +80,7 @@ type
     // file menu
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
+    procedure mnuNewOtherClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
     procedure mnuOpenRecentClicked(Sender : TObject);
     procedure mnuRevertClicked(Sender : TObject);
@@ -405,7 +406,8 @@ type
 
     // files/units
     function DoNewEditorFile(NewUnitType:TNewUnitType;
-        NewFilename: string; NewFlags: TNewFlags):TModalResult;
+        NewFilename: string; NewFlags: TNewFlags): TModalResult;
+    function DoNewOther: TModalResult;
     function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
     function DoCloseEditorFile(PageIndex:integer;
@@ -1560,6 +1562,11 @@ end;
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 begin
   DoNewEditorFile(nuForm,'',[]);
+end;
+
+procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
+begin
+  DoNewOther;
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
@@ -3743,6 +3750,12 @@ begin
   end;
   writeln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
+end;
+
+function TMainIDE.DoNewOther: TModalResult;
+begin
+  Result:=mrCancel;
+  MessageDlg('Not implemented yet','Not implemented yet',mtInformation,[mbOk],0);
 end;
 
 function TMainIDE.DoSaveEditorFile(PageIndex:integer;
@@ -7770,6 +7783,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.470  2003/02/28 10:14:28  mattias
+  started package system (packager)
+
   Revision 1.469  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
