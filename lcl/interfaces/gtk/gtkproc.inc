@@ -472,6 +472,47 @@ begin
   Result := TLMessage(Message).Result;
 end;
 
+{------------------------------------------------------------------------------
+  Function: ObjectToGTKObject
+  Params: AObject: A LCL Object
+  Returns:  The GTKObject of the given object
+
+  Returns the GTKObject of the given object, nil if no object available
+ ------------------------------------------------------------------------------}
+function ObjectToGTKObject(const AObject: TObject): gtk_object;
+var
+   handle : HWND;
+begin
+   if not assigned (AObject) then
+   begin
+      assert (false, 'TRACE: ObjectToGtkObject: object not assigned');
+      handle := 0
+   end
+   else if (AObject is TWinControl) then
+   begin
+      if TWinControl (AObject).HandleAllocated then handle := TWinControl(AObject).Handle
+   end
+   else if (AObject is TMenuItem) then
+   begin 
+      if TMenuItem(AObject).HandleAllocated then handle := TMenuItem(AObject).Handle 
+   end
+   else if (AObject is TMenu) then
+   begin 
+      if TMenu(AObject).HandleAllocated then handle := TMenu(AObject).Items.Handle 
+   end
+   else if (AObject is TCustomDialog) then
+   begin
+      {if TCustomDialog(AObject).HandleAllocated then } handle := TCustomDialog(AObject).Handle
+   end
+   else begin
+      Assert(False, 'Trace:Message received with unhandled class-type'); 
+      handle := 0;
+   end;
+   result := gtk_object (handle);
+   if handle = 0 then assert (false, 'Trace: [ObjectToGtkObject]****** Warning: handle = 0 *******');
+end;
+
+
 (***********************************************************************
   Widget member functions
 ************************************************************************)
@@ -613,6 +654,13 @@ end;
 
  {
   $Log$
+  Revision 1.2  2000/07/30 21:48:34  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 

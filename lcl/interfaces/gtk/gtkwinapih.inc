@@ -24,7 +24,9 @@ function DestroyCaret: Boolean; override;
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
 function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 
+function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; override;
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
+function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
@@ -91,6 +93,13 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:34  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:30  michael
   + Initial import
 

@@ -96,9 +96,19 @@ Begin
   Result := InterfaceObject.DrawEdge(DC, Rect, edge, grfFlags);
 end;
 
+function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+begin
+  Result := InterfaceObject.EnableMenuItem(hMenu, uIDEnableItem, bEnable);
+end;
+
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := InterfaceObject.EnableScrollBar(Wnd, wSBflags, wArrows);
+end;
+
+function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+begin
+  Result := InterfaceObject.EnableWindow(hWnd, bEnable);
 end;
 
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -869,6 +879,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:28  michael
   + Initial import
 

@@ -436,7 +436,7 @@ TCMDialogKey = TLMKEY;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure WMDragStart(Var Message: TLMessage); message LM_DRAGSTART;  //not in delphi
-    Procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
+    procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMHitTest(Var Message: TCMHittest) ; Message CM_HITTEST;
     Procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     Procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
@@ -621,6 +621,7 @@ TCMDialogKey = TLMKEY;
     procedure PaintHandler(var Message: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
     { events need to be protected otherwise they can't be overridden ??}
+    procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
@@ -1122,6 +1123,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 

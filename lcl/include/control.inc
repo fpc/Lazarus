@@ -88,9 +88,9 @@ end;
 {       TControl.CMENABLEDCHANGED
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.CMEnabledChanged(var Message: TLMEssage);
-Begin
-invalidate;
+procedure TControl.CMEnabledChanged(var Message: TLMEssage);
+begin
+  invalidate;
 end;
 
 {------------------------------------------------------------------------------}
@@ -280,12 +280,12 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean);
 begin
-Accept := False;
-if Assigned(FOnDragOver) then
-	Begin
-	Accept := True;
-	//Do something else yet....
-	End;
+  Accept := False;
+  if Assigned(FOnDragOver) 
+  then begin
+    Accept := True;
+  //Do something else yet....
+  end;
 
 end;
 
@@ -337,9 +337,9 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl GetEnabled                                 }
 {------------------------------------------------------------------------------}
-Function TControl.GetEnabled: Boolean;
-Begin
-Result := FEnabled;
+function TControl.GetEnabled: Boolean;
+begin
+  Result := FEnabled;
 end;
 
 {------------------------------------------------------------------------------}
@@ -411,12 +411,12 @@ begin
             end;
           LM_LBUTTONDOWN,
           LM_LBUTTONDBLCLK: begin
-            if FDragMode = dmAutomatic then
-              begin
+            if FDragMode = dmAutomatic 
+            then begin
               Assert(False, 'Trace:Begin AutoDrag called');
               BeginAutoDrag;
-    	      Exit;
-    	      end;
+              Exit;
+            end;
             Include(FControlState,csLButtonDown);
           end;
           LM_LBUTTONUP:
@@ -638,14 +638,14 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
 begin
-If FCursor <> Value then
-	Begin
-	FCursor := Value;
-        //This should not be called if it is already set to VALUE but if
-        //it's not created when it's set, and you set it again it skips this, so for now I do it this way.
-        //later, I'll create the cursor in the CreateComponent (or something like that)
-	CNSendMessage(LM_SetCursor,Self,Nil);
-	End;
+  if FCursor <> Value 
+  then begin
+    FCursor := Value;
+    //This should not be called if it is already set to VALUE but if
+    //it's not created when it's set, and you set it again it skips this, so for now I do it this way.
+    //later, I'll create the cursor in the CreateComponent (or something like that)
+    CNSendMessage(LM_SetCursor,Self,Nil);
+  end;
 
 end;
 
@@ -654,12 +654,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetEnabled(Value: Boolean);
 begin
-If FEnabled <> Value then
-	Begin
-	FEnabled := Value;
-	CNSendMessage(LM_SETENABLED,Self,nil);
-        Perform(CM_ENABLEDCHANGED, 0,0);
-	End;
+  if FEnabled <> Value 
+  then begin
+    FEnabled := Value;
+    Perform(CM_ENABLEDCHANGED, 0, 0);
+  end;
 
 end;
 
@@ -908,23 +907,23 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetParentShowHint(Value : Boolean);
 Begin
-     If FParentShowHint <> Value then
-        Begin
-        FParentShowHint := Value;
-	//Sendmessage to stop/start hints for parent
-        end;
+  if FParentShowHint <> Value 
+  then begin
+    FParentShowHint := Value;
+    //Sendmessage to stop/start hints for parent
+  end;
 end;
 
 {------------------------------------------------------------------------------}
 {  TControl SetPopupMenu                                                                 }
 {------------------------------------------------------------------------------}
-Procedure TControl.SetPopupMenu(Value : TPopupMenu);
-Begin
-     FPopupMenu :=  Value;
+procedure TControl.SetPopupMenu(Value : TPopupMenu);
+begin
+  FPopupMenu :=  Value;
 {    If Value <> nil then
-	Begin
+  begin
 
-	End;
+  end;
 }
 end;
 
@@ -955,9 +954,9 @@ Begin
    CaptureControl := Self;
    end;
 }
-if not (csNoStdEvents in COntrolStyle) then
-	with Message do
-		MouseMove(KeystoShiftState(Keys), XPos, YPos);
+  if not (csNoStdEvents in COntrolStyle) 
+  then with Message do
+    MouseMove(KeystoShiftState(Keys), XPos, YPos);
 
 End;
 
@@ -968,7 +967,7 @@ End;
 
 Procedure TControl.MouseDown(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
 begin
-if Assigned(FOnMOuseDown) then FOnMOuseDOwn(Self, Button, Shift, X,Y);
+  if Assigned(FOnMOuseDown) then FOnMOuseDOwn(Self, Button, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1170,7 +1169,7 @@ begin
   FFont := TFont.Create;
   //FFont.OnChange := @FontChanged;
   FIsControl := False;
-
+  FEnabled := True; {Default}
 end;
 
 {------------------------------------------------------------------------------}
@@ -1240,6 +1239,13 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.2  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

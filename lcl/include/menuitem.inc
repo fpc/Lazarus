@@ -29,7 +29,7 @@ begin
   FItems := nil;
   FMenu := nil;
   FParent := nil;
-  FShortCut := 0;	
+  FShortCut := 0;
   FChecked := False;
   FVisible := True;
   FEnabled := True;
@@ -112,7 +112,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenuItem.Destroy;
 var
-   i : integer;	
+   i : integer;
 begin
   i := 0;
   if assigned (FItems) then
@@ -346,12 +346,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetEnabled(Value: Boolean);
 begin
-If FEnabled <> Value then
-	Begin
-	FEnabled := Value;
-        //TODO: this doesn't work. HAndle is 0.  What's wrong?
-        InterfaceObject.IntSendMessage3(LM_SETENABLED,Self,nil);
-	End;
+ if FEnabled <> Value 
+ then begin
+   FEnabled := Value;
+// TODO, finish with correct params   
+//   if HandleAllocated and (Parent <> nil) 
+//   then EnableMenuItem(Parent.Handle, )
+  end;
 
   //TODO: Add runtime code here
 end;
@@ -380,10 +381,10 @@ end;
 Procedure TMenuItem.SetShortCut(Value : TShortCut);
 Begin
   if FShortCut <> Value then
-	Begin
-	  FShortCut := Value;
-	  MenuChanged(True);  //Use this to do a sendmessage
-	End;
+  begin
+    FShortCut := Value;
+    MenuChanged(True);  //Use this to do a sendmessage
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -403,6 +404,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.2  2000/07/23 19:01:33  lazarus
   menus will be destroyed now, stoppok
 
@@ -431,6 +439,13 @@ end;
 
 
   $Log$
+  Revision 1.3  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.2  2000/07/23 19:01:33  lazarus
   menus will be destroyed now, stoppok
 

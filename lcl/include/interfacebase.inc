@@ -79,9 +79,9 @@ begin
   Result := False;
 end;
 
-Function TInterfacebase.DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
-Begin
-Result := False;
+function TInterfacebase.DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
+begin
+  Result := False;
 end;
 
 function TInterfaceBase.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
@@ -89,9 +89,20 @@ Begin
   Result := False;
 end;
 
+function TInterfaceBase.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+begin
+  Result := False;
+end;
+
 function TInterfaceBase.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := False;
+end;
+
+function TInterfaceBase.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+begin
+  // Your default here
+  // Result := 
 end;
 
 function TInterfaceBase.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
@@ -365,6 +376,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 

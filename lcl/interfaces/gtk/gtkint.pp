@@ -110,6 +110,13 @@ type
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
 
+      FStockNullBrush: HBRUSH;
+      FStockBlackBrush: HBRUSH;
+      FStockLtGrayBrush: HBRUSH;
+      FStockGrayBrush: HBRUSH;
+      FStockDkGrayBrush: HBRUSH;
+      FStockWhiteBrush: HBRUSH;
+      
       procedure CreateComponent(Sender : TObject);
       procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
       procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
@@ -314,6 +321,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:33  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 

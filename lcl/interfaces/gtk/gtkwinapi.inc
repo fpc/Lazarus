@@ -25,6 +25,9 @@ const
   SAbort = 'Abort';
   SRetry = 'Retry';
   SIgnore = 'Ignore';
+  
+const
+  BOOL_TEXT: array[Boolean] of string = ('False', 'True');  
 
 //##apiwiz##sps##   // Do not remove
 
@@ -370,6 +373,9 @@ begin
   Result := 0;
   pNewDC := NewDC;
 
+  // dont copy
+  // In a compatible DC you have to select a bitmap into it
+(*
   if IsValidDC(DC)
   then with PDeviceContext(DC)^ do
   begin
@@ -381,7 +387,9 @@ begin
     // We can't do anything yet
     // Wait till a bitmap get selected
   end;
+*)
 
+  // Maybe copy these ??
   pNewDC^.CurrentFont := CreateDefaultFont;
   pNewDC^.CurrentBrush := CreateDefaultBrush;
   pNewDC^.CurrentPen := CreateDefaultPen;
@@ -909,6 +917,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: EnableMenuItem
+  Params: hMenu:
+          uIDEnableItem:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: EnableScrollBar
   Params:  Wnd, wSBflags, wArrows
   Returns: Nothing
@@ -920,6 +940,20 @@ begin
   Assert(False, 'Trace:TODO: [TgtkObject.EnableScrollBar]');
   //TODO: Implement this;
   Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Function: EnableWindow
+  Params: hWnd:
+          bEnable:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
+begin
+  Assert(False, Format('Trace:[TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
+  if hWnd <> 0 
+  then gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable)
 end;
 
 {------------------------------------------------------------------------------
@@ -1323,8 +1357,59 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetStockObject(Value: Integer): LongInt;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.GetStockObject]');
+  Assert(False, Format('Trace:[TgtkObject.GetStockObject] %d', [Value]));
   Result := 0;
+  case Value of
+    BLACK_BRUSH:         // Black brush.
+      Result := FStockBlackBrush;
+    DKGRAY_BRUSH:        // Dark gray brush.
+      Result := FStockDKGrayBrush;
+    GRAY_BRUSH:          // Gray brush.
+      Result := FStockGrayBrush;
+    LTGRAY_BRUSH:        // Light gray brush.
+      Result := FStockLtGrayBrush;
+    NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
+      Result := FStockNullBrush;
+    WHITE_BRUSH:         // White brush.
+      Result := FStockWhiteBrush;
+(*
+    BLACK_PEN:           // Black pen.
+      begin
+      end;  
+    NULL_PEN:            // Null pen.
+      begin
+      end;  
+    WHITE_PEN:           // White pen.
+      begin
+      end;  
+    ANSI_FIXED_FONT:     // Fixed-pitch (monospace) system font.
+      begin
+      end;  
+    ANSI_VAR_FONT:       // Variable-pitch (proportional space) system font.
+      begin
+      end;  
+    DEVICE_DEFAULT_FONT: // Device-dependent font.
+      begin
+      end;  
+    DEFAULT_GUI_FONT:    // Default font for user interface objects such as menus and dialog boxes.
+      begin
+      end;  
+    OEM_FIXED_FONT:      // Original equipment manufacturer (OEM) dependent fixed-pitch (monospace) font.
+      begin
+      end;  
+    SYSTEM_FONT:         // System font. By default, Windows uses the system font to draw menus, dialog box controls, and text. In Windows versions 3.0 and later, the system font is a proportionally spaced font; earlier versions of Windows used a monospace system font.
+      begin
+      end;  
+    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
+      begin
+      end;  
+    DEFAULT_PALETTE:     // Default palette. This palette consists of the static colors in the system palette.
+      begin
+      end;  
+*)
+  else
+    Assert(False, Format('Trace:TODO: [TgtkObject.GetStockObject] Implement value: %d', [Value]));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1921,7 +2006,7 @@ var Dialog, ALabel : PGtkWidget;
       { If there is the Cancel button, allow the dialog to close }
       if RetValue = IDCANCEL then begin
         gtk_object_set_data(PGtkObject(Dialog), 'modal_result', Pointer(IDCANCEL));
-      end;	
+      end;
       gtk_object_set_data(PGtkObject(AButton), 'modal_result', Pointer(RetValue));
       gtk_signal_connect(PGtkObject(AButton), 'clicked', TGtkSignalFunc(@MessageButtonClicked), @ADialogResult);
       gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.action_area), AButton);
@@ -1940,38 +2025,48 @@ begin
   ALabel:= gtk_label_new(lpText);
   gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.vbox), ALabel);    
   DialogType:= (uType and $0000000F);
-  if DialogType = MB_OKCANCEL then begin
+  if DialogType = MB_OKCANCEL 
+  then begin
     CreateButton(SOK, IDOK);
     CreateButton(SCancel, IDCANCEL);
-  end else begin
-    if DialogType = MB_ABORTRETRYIGNORE then begin
+  end 
+  else begin
+    if DialogType = MB_ABORTRETRYIGNORE 
+    then begin
       CreateButton(SAbort, IDABORT);
       CreateButton(SRetry, IDRETRY);
       CreateButton(SIgnore, IDIGNORE);
-    end else begin
-      if DialogType = MB_YESNOCANCEL then begin
+    end 
+    else begin
+      if DialogType = MB_YESNOCANCEL 
+      then begin
         CreateButton(SYes, IDYES);
-	CreateButton(SNo, IDNO);
-	CreateButton(SCancel, IDCANCEL);
-      end else begin
-        if DialogType = MB_YESNO then begin
+        CreateButton(SNo, IDNO);
+        CreateButton(SCancel, IDCANCEL);
+      end 
+      else begin
+        if DialogType = MB_YESNO 
+        then begin
           CreateButton(SYes, IDYES);
-    	  CreateButton(SNo, IDNO);
-        end else begin
-          if DialogType = MB_RETRYCANCEL then begin
-             CreateButton(SRetry, IDRETRY);
-	     CreateButton(SCancel, IDCANCEL);
-          end else begin
+          CreateButton(SNo, IDNO);
+        end 
+        else begin
+          if DialogType = MB_RETRYCANCEL 
+          then begin
+            CreateButton(SRetry, IDRETRY);
+            CreateButton(SCancel, IDCANCEL);
+          end 
+          else begin
             { We have no buttons to show. Create the default of OK button }
             CreateButton(SOK, IDOK);
           end;  
-	end;
+        end;
       end;
     end;
   end;
   gtk_window_set_title(PGtkWindow(Dialog), lpCaption);
   gtk_window_set_position(PGtkWindow(Dialog), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal(PGtkWindow(Dialog), true);      	  
+  gtk_window_set_modal(PGtkWindow(Dialog), true);  
   gtk_widget_show_all(Dialog);
   while ADialogResult = 0 do begin
     Application.ProcessMessages;
@@ -2873,6 +2968,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/07/30 21:48:34  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.2  2000/07/23 10:53:41  lazarus
   workaround for possible compiler bug (KEYSTATE), stoppok
 

@@ -27,9 +27,10 @@ interface
 
 uses Classes,vclGlobals,LCLLinux;
 
-CONST
+const
 
-//Commands sent to the interface units
+// Commands sent to the interface units
+// add also a escription to a message at the end of this unit
 LM_ComUser = $1000;
 LM_Create = LM_ComUser+1;
 LM_SetLabel = LM_ComUser+2;
@@ -88,7 +89,7 @@ LM_LOADXPM = LM_ComUser+52;
 
 LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
-LM_SETENABLED = LM_COMUSER+54;
+//LM_SETENABLED = LM_COMUSER+54;
 LM_BRINGTOFRONT = LM_COMUSER+55;
 
 //end of messages that are sent to the interface
@@ -728,6 +729,13 @@ begin
     LM_INSERTTOOLBUTTON : Result :='LM_INSERTTOOLBUTTON';
     LM_DELETETOOLBUTTON : Result :='LM_DELETETOOLBUTTON';
     LM_SetCursor        : Result :='LM_SetCursor       ';
+    LM_IMAGECHANGED     : Result :='LM_IMAGECHANGED     ';
+    LM_LAYOUTCHANGED    : Result :='LM_LAYOUTCHANGED    ';
+    LM_BTNDEFAULT_CHANGED: Result :='LM_BTNDEFAULT_CHANGED';
+    LM_LOADXPM          : Result :='LM_LOADXPM          ';
+    LM_DRAGINFOCHANGED  : Result :='LM_DRAGINFOCHANGED  ';
+//    LM_SETENABLED       : Result :='LM_SETENABLED       ';
+    LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT     ';   
   else
     Result := Format('Unkown message 0x%x (%d)', [AMessage, AMessage]);
   end;
@@ -740,6 +748,13 @@ end.
 
 {
   $Log$
+  Revision 1.3  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.2  2000/07/23 10:49:47  lazarus
   added text for LM_Destroy, stoppok
 

@@ -1215,6 +1215,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWinControl.CMEnabledChanged
+  Params: Message
+  Returns: Nothing
+
+  Called when enabled is changed. Takes action to enable control
+ ------------------------------------------------------------------------------}
+procedure TWinControl.CMEnabledChanged(var Message: TLMEssage);
+begin
+  if not Enabled and (Parent <> nil) 
+  then RemoveFocus(False);
+  
+  if HandleAllocated 
+  and not (csDesigning in ComponentState) 
+  then EnableWindow(FHandle, Enabled);
+end;
+
+{------------------------------------------------------------------------------
   Method: TWinControl.WMSetFocus
   Params: Message
   Returns: Nothing
@@ -1573,6 +1590,8 @@ begin
   CNSendMessage(LM_SETSIZE, Self, @R);
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
+  
+  EnableWindow(Handle, Enabled);
  
   //We shouldn't NEED to create our own PCHAR.  We should be able
   //to typecast Caption as a PCHAR but it doesn't work.
@@ -1583,7 +1602,7 @@ begin
   finally
     strDispose(pStr);
   end;
-Assert(False, 'Trace:SETPROP**********************************************');
+  Assert(False, 'Trace:SETPROP**********************************************');
 
  SetProp(Handle,'WinControl',TWinControl(Self));
  SetProp(Handle,'Control',TControl(Self));
@@ -1838,6 +1857,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:32  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:28  michael
   + Initial import
 

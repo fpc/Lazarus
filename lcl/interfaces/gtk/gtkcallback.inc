@@ -73,15 +73,24 @@ begin
    Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-
+//  TLMPaint = packed record
+//    Msg: Cardinal;
+//    DC: HDC;
+//    Unused: Longint;
+//    Result: Longint;
+//  end;
 function gtkdraw( widget: PGtkWidget; area : PgdkRectangle; data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMessage;
+   MSG: TLMPaint;
 begin
    Result := True;
    EventTrace('draw', data);
-   Mess.Msg := LM_PAINT;
-   Result := DeliverMessage(Data, Mess) = 0;
+   MSG.Msg := LM_PAINT;
+   // TODO: get DC
+   MSG.DC := 0;
+   MSG.Unused := 0;
+   
+   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
 function GTKDrawDefault(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
@@ -1023,6 +1032,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/30 21:48:33  lazarus
+  MWE:
+    = Moved ObjectToGTKObject to GTKProc unit
+    * Fixed array checking in LoadPixmap
+    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
+    ~ Some cleanup
+
   Revision 1.1  2000/07/13 10:28:29  michael
   + Initial import
 
