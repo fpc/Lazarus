@@ -1078,16 +1078,6 @@ begin
   Result := TLMessage(AMessage).Result;
 end;
 
-{------------------------------------------------------------------------------
-  procedure NotifyApplicationUserInput;
-
- ------------------------------------------------------------------------------}
-procedure NotifyApplicationUserInput;
-begin
-  if Application<>nil then
-    Application.NotifyUserInputHandler;
-end;
-
 
 {------------------------------------------------------------------------------
   Function: ObjectToGTKObject
@@ -3957,6 +3947,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.148  2002/11/05 20:03:42  lazarus
+  MG: implemented hints
+
   Revision 1.147  2002/11/02 22:25:38  lazarus
   MG: implemented TMethodList and Application Idle handlers
 
