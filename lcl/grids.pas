@@ -427,8 +427,8 @@ type
     property DragDx: Integer read FDragDx write FDragDx;
     property Editor: TWinControl read FEditor write SetEditor;
     property EditorMode: Boolean read FEditorMode write EditorSetMode;
-    property FixedCols: Integer read FFixedCols write SetFixedCols;
-    property FixedRows: Integer read FFixedRows write SetFixedRows;
+    property FixedCols: Integer read FFixedCols write SetFixedCols default 1;
+    property FixedRows: Integer read FFixedRows write SetFixedRows default 1;
     property FixedColor: TColor read GetFixedColor write SetFixedcolor;
     property FocusColor: TColor read FFocusColor write SetFocusColor;
     property GCache: TGridDataCache read FGCAChe;
@@ -802,7 +802,7 @@ begin
   FFixedCols:=AValue;
   fTopLeft.x:=AValue;
   fCol:=Avalue;
-  doTopleftChange(true);
+  if not (csLoading in componentState) then doTopleftChange(true);
 end;
 
 procedure TCustomGrid.SetFixedRows(const AValue: Integer);
@@ -812,7 +812,7 @@ begin
   FFixedRows:=AValue;
   fTopLeft.y:=AValue;
   FRow:=AValue;
-  doTopleftChange(true);
+  if not (csLoading in ComponentState) Then doTopleftChange(true);
 end;
 
 procedure TCustomGrid.SetGridLineColor(const AValue: TColor);
@@ -1071,24 +1071,26 @@ begin
     {$Endif}
   end;
   
-  Dh:=18; //GetSystemMetrics(SM_CYHSCROLL);
-  DV:=18; //GetSystemMetrics(SM_CXVSCROLL);
-  TW:=FGCache.GridWidth;
-  TH:=FGCache.GridHeight;
-
   if not(goSmoothScroll in Options) then begin
     FGCache.TLColOff:=0;
     FGCache.TLRowOff:=0;
   end;
 
+  Dh:=18; //GetSystemMetrics(SM_CYHSCROLL);
+  DV:=18; //GetSystemMetrics(SM_CXVSCROLL);
+  TW:=FGCache.GridWidth;
+  TH:=FGCache.GridHeight;
 
+  HsbRange:=Width - Dv;
+  VsbRange:=Height - Dh;
+  
   HSbVisible:=
-     (FScrollbars in [ssHorizontal, ssBoth]) or
-     (ScrollBarAutomatic(ssHorizontal) and (TW>Width-Dv));
+     ((FScrollbars in [ssHorizontal, ssBoth]) or
+     (ScrollBarAutomatic(ssHorizontal)) and (TW>Width-Dv));
 
   VSbVisible:=
-     (FScrollbars in [ssVertical, ssBoth]) or
-     (ScrollBarAutomatic(ssVertical) and (TH>height-Dh));
+     ((FScrollbars in [ssVertical, ssBoth]) or
+     (ScrollBarAutomatic(ssVertical)) and (TH>height-Dh));
 
   if not HSBVisible then DH:=0;
   if not VSbVisible then DV:=0;
@@ -1117,7 +1119,7 @@ begin
       end;
       
       if HsbRange>ClientWidth then
-        HscrDiv := Double(ColCount-FixedRows-1)/(HsbRange-ClientWidth);
+        HscrDiv := Double(ColCount-FixedCols-1)/(HsbRange-ClientWidth);
 
       {$Ifdef dbgScroll}
       Writeln('TotWidth=',GridWidth,'ClientWidth=',ClientWidth,' Horz Range=',HsbRange);
@@ -1184,6 +1186,7 @@ begin
       if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
 
       SetScrollInfo(Handle, Which, ScrollInfo, True);
+      ShowScrollBar(Handle,Which,true);
     end else
       ShowScrollBar(Handle,Which,false);
   end;
@@ -1815,8 +1818,8 @@ begin
     end;
   end else begin
   
-    TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.Y ]);
-    CTL:= Integer(FGCache.AccumWidth[ FtopLeft.Y ]);
+    TL:=  Integer(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]);
+    CTL:= Integer(FGCache.AccumHeight[ FtopLeft.Y ]);
 
     case message.ScrollCode of
         // Scrolls to start / end of the text
@@ -1959,10 +1962,10 @@ begin
     Raise EGridException.Create('FixedCols<0');
     
   if (aCol=0)And(aFCol=0) then // invalid grid, ok
-  else if (aFCol>=aCol) then
+  else if (aFCol>=aCol) and not (csLoading in componentState) then
     raise EGridException.Create(rsFixedColsTooBig);
   if (aRow=0)and(aFRow=0) then // Invalid grid, ok
-  else if (aFRow>=aRow) then
+  else if (aFRow>=aRow) and not (csLoading in ComponentState) then
     raise EGridException.Create(rsFixedRowsTooBig);
 end;
 
@@ -3279,10 +3282,12 @@ begin
   FixedCols:=1;
   FixedRows:=1;
   Editor:=nil;
-  writeLn('Setting color');
-  Color:=clWhite;
+  
+  //writeLn('Setting color');
   Color:=clWindow;
-  writeLn('Color'=ColorToString(Color));
+  //writeLn('Color', IntToHex(color, 4), ColorToString(Color));
+  Color:=clWhite;
+  //writeLn('Color', IntToHex(Color, 4), ColorToString(Color));
 end;
 
 destructor TCustomGrid.Destroy;
