@@ -19,7 +19,6 @@ LastFileSelectRow : gint;
 // temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
 begin
-//writeln('delivermessage');
   if TObject(Target) is TWinControl 
   then begin
     Result := PostMessage(TWinControl(Target).Handle, TLMessage(Message).Msg,
@@ -828,10 +827,11 @@ var
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
   Dummy: TPoint;
-  //OldLeft, OldTop, OldWidth, OldHeight: integer;
-  //TopLeftChanged, WidthHeightChanged: boolean;
+  OldLeft, OldTop, OldWidth, OldHeight: integer;
+  TopLeftChanged, WidthHeightChanged: boolean;
 begin
   EventTrace('size-allocate', data);
+
 
   PosMsg.msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
   PosMsg.Result := -1;
@@ -840,7 +840,7 @@ begin
   
   with Size^ do Assert(False, Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
   
-  {if (TObject(Data) is TControl) then begin
+  if (TObject(Data) is TControl) then begin
     OldLeft:=TControl(Data).Left;
     OldTop:=TControl(Data).Top;
     OldWidth:=TControl(Data).Width;
@@ -850,7 +850,7 @@ begin
     OldTop:=0;
     OldWidth:=0;
     OldHeight:=0;
-  end;}
+  end;
   
   New(PosMsg.WindowPos);
   try
@@ -877,32 +877,24 @@ begin
       cy := Size^.Height;
       flags := 0;
     end;
-    //TopLeftChanged:=(OldLeft<>Size^.X) or (OldTop<>Size^.Y);
-    //WidthHeightChanged:=(OldWidth<>Size^.Width) or (OldHeight<>Size^.Height);
-    //if TopLeftChanged or WidthHeightChanged then begin
+    TopLeftChanged:=(OldLeft<>Size^.X) or (OldTop<>Size^.Y);
+    WidthHeightChanged:=(OldWidth<>Size^.Width) or (OldHeight<>Size^.Height);
+    if TopLeftChanged or WidthHeightChanged then begin
       Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
 //writeln('[gtksize_allocateCB] Sending LM_WINDOWPOSCHANGED message: Target=',TObject(Data).ClassName,' Left=',Size^.X,' Top=',Size^.Y,' Width=',Size^.Width,' Height=',Size^.Height);
       Result := DeliverMessage(Data, PosMsg) = 0;
-    //end;
+    end;
   finally
     Dispose(PosMsg.WindowPos);
   end;
 
-{
-Writeln('***********************');
-Writeln('[gtksize_allocateCB]');
-Writeln(Format('Size is stated as x=%d y=%d width=%d height=%d',[Size^.x,Size^.y,Size^.width, Size^.height]));
-Writeln('if PosMsg.Result <> 0 then it sends out a LMMOVE and LMSIZE');
-Writeln(Format('PosMsg.Result is %d',[PosMsg.Result]));
-if (TOBject(data) is TWinControl) then
-Writeln('The control name is '+TControl(data).Name);
-Writeln('***********************');
-}
+  { If the message is not handled. A LM_SIZE and LM_MOVE should be sent
+ }
   
-  if (PosMsg.Result <> 0 ) then 
+
+  if (PosMsg.Result = 0) then 
   begin
-    // message is not handled. A LM_SIZE and LM_MOVE should be sent
-    //if WidthHeightChanged then begin
+    if WidthHeightChanged then begin
       with SizeMsg do
       begin
         Msg := LM_SIZE;
@@ -911,11 +903,10 @@ Writeln('***********************');
         Height := Size^.Height;
       end;
       Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
-//writeln('[gtksize_allocateCB] Sending LM_SIZE message: Target=',TObject(Data).ClassName,' Width=',SizeMsg.Width,' Height=',SizeMsg.Height);
       Result := (DeliverMessage(Data, SizeMsg) = 0) or Result;
-    //end;
+    end;
     
-    //if TopLeftChanged then begin
+    if TopLeftChanged then begin
       with MoveMsg do
       begin
         Msg := LM_MOVE;
@@ -924,9 +915,8 @@ Writeln('***********************');
         YPos := Size^.Y;
       end;
       Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
-//writeln('[gtksize_allocateCB] Sending LM_MOVE message: Target=',TObject(Data).ClassName,' XPos=',MoveMsg.XPos,' YPos=',MoveMsg.YPos);
       Result := (DeliverMessage(Data,  MoveMsg) = 0) or Result;
-    //end;
+    end;
   end;
   
 end;
@@ -974,36 +964,6 @@ begin
   finally
     Dispose(Allocation);
   end;    
-
-
-    
-//   Result := True;
-//   Mess.msg := LM_CONFIGUREEVENT;
-
-        //Get the widget owner because the 'fixed' widget called the signal
-        //create a pixmap for drawing behind the scenes
-{        PixMap := gtk_object_get_data(PgtkObject(widget),'Pixmap');
-        if Assigned(PixMap) then
-        gdk_pixmap_unref(pixmap);
-
-        PixMap := gdk_pixmap_new(pgtkwidget(widget)^.window, pgtkwidget(widget)^.allocation.width, pgtkwidget(widget)^.allocation.height,-1);
-}
-        //assign it to the object data for this widget so it's stored there
-        //Clear the canvas area
-
-{            PenColor := TCustomForm(data).Color;
-        gdk_draw_rectangle(pixmap,GetPen(pixmap,TColortoTgdkColor(PenColor)),1,0,0,pgtkwidget(widget)^.allocation.width,pgtkwidget(widget)^.allocation.height);
-//        Assert(False, 'Trace:Storing Pixmap');
-        if widget <> nil then
-        gtk_Object_set_Data(PgtkObject(widget),'Pixmap',Pixmap);
-
-
-//  Mess.msg := LM_PAINT;  //Should I be sending the Draw event??????????
-  
-  Result:= DeliverMessage(Data, Mess);
-}  
-  Assert(False, 'Trace:Exiting Configure');
-
 end;
 
 function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1614,6 +1574,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.59  2002/01/01 18:38:36  lazarus
   MG: more wmsize messages :(
 

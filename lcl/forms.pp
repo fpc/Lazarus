@@ -188,6 +188,7 @@ type
       property Color;
       property ClientHeight;
       property ClientWidth;
+      property Constraints;
       property Enabled;
       property FormStyle;
       property Icon;

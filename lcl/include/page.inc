@@ -42,6 +42,7 @@ begin
 
   Assert(False, 'Trace:[TPage.AttachSignals] Assign Callback Signals');  
   SetCallback(LM_Paint);
+  SetCallback(LM_WINDOWPOSCHANGED);
 end;
 
 {------------------------------------------------------------------------------
@@ -61,10 +62,9 @@ end;
 {------------------------------------------------------------------------------
   TPage Paint
  ------------------------------------------------------------------------------}
-procedure TPage.Paint;
+{procedure TPage.Paint;
 begin
-  { Nothing to do here yet }
-end;
+end;}
 
 {------------------------------------------------------------------------------
   TPage WMPaint
@@ -100,6 +100,11 @@ end;
 
 {
   $Log$
+  Revision 1.5  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.4  2002/01/01 15:50:14  lazarus
   MG: fixed initial component aligning
 

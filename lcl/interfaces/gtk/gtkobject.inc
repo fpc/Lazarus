@@ -382,6 +382,7 @@ var
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
   Titles    : Array [0..255] of PChar;
   BitImage : TBitmap;
+  Geometry : TGdkGeometry;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1252,6 +1253,28 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
 	Accelerate(Widget, TLMShortcut(data^));
       end;
 
+      LM_SETGEOMETRY :
+      begin
+        if Sender is TWinControl then begin
+          Widget:= PGtkWidget(TWinControl(Sender).Handle);
+	  if Widget <> nil then begin
+	    with Geometry, TControl(Sender) do begin
+	      if Constraints.MinWidth > 0 then min_width:= Constraints.MinWidth else min_width:= 1;
+	      if Constraints.MaxWidth > 0 then max_width:= Constraints.MaxWidth else max_width:= 32767;
+	      if Constraints.MinHeight > 0 then min_height:= Constraints.MinHeight else min_height:= 1;
+	      if Constraints.MaxHeight > 0 then max_height:= Constraints.MaxHeight else max_height:= 32767;
+	      base_width:= Width;
+	      base_height:= Height;
+	      width_inc:= 1;
+	      height_inc:= 1;
+	      min_aspect:= 0;
+	      max_aspect:= 1;
+	    end;
+  	    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry, GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+	  end;
+	end;  
+      end;
+
       else
         if Sender<>nil then
           Assert(True, Format('WARNING: Unhandled message %d in IntSendMessage3'
@@ -1306,50 +1329,53 @@ var
   Parent: TWinControl;
   IsTopLevelWidget: boolean;
 begin
-//writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
+  //writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
-  Parent := TControl(Sender).Parent;
+  Parent:= TControl(Sender).Parent;
 
   if Sender is TWinControl then begin
     if TWinControl(Sender).HandleAllocated then begin
-      if not (Sender is TSpeedButton) then begin
-        pWidget := pgtkWidget(TWinControl(Sender).Handle);
+      pWidget := pgtkWidget(TWinControl(Sender).Handle);
     
-        IsTopLevelWidget:=(Sender is TCustomForm) and (Parent=nil);
+      IsTopLevelWidget:= (Sender is TCustomForm) and (Parent = nil);
 
-        if IsTopLevelWidget then
-           gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
+      if IsTopLevelWidget then
+ begin
+        gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
+      end;
 
-        if IsTopLevelWidget then
-           gtk_widget_set_usize(pWidget, -1, -1);
-       
-        gtk_widget_set_usize(pWidget, Width, Height);
+      gtk_widget_set_usize(pWidget, -1, -1);
+      gtk_widget_set_usize(pWidget, Width, Height);
 
-//writeln('[TgtkObject.ResizeChild] D IsTopLevelWidget=',IsTopLevelWidget);
-        if not IsTopLevelWidget then begin
-          if Parent<>nil then begin
-            pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
-            if pFixed <> nil then begin
-              gtk_fixed_move(pFixed, pWidget, Left, Top);
-            end
-            else begin
-              Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
-            end;
-          end 
-          else begin
-            Assert(False, 'Trace:ERROR !!!  - no Fixed Widget found to use when resizing....');
-            raise Exception('ARG2');
+//      if pWidget^.window <> null then begin
+//        gdk_window_move_resize(pWidget^.window, Left, Top, Width, Height);
+//      end;
+
+     { Only move when needed }
+     if not IsTopLevelWidget then begin
+        if Parent <> nil then begin
+          pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
+          if pFixed <> nil then begin
+	    gtk_fixed_move(pFixed, pWidget, Left, Top);
+          end
+ else begin
+            Assert(False, 'Trace:ERROR!!!!  - no Fixed Widget found to use when resizing....');
           end;
-        end
-        else begin
-          gtk_widget_set_uposition(pWidget, Left, Top);
+        end 
+else begin
+          Assert(False, 'Trace:ERROR !!!  - no Fixed Widget found to use when resizing....');
+          raise Exception('ARG2');
         end;
+      end
+ else begin
+        gtk_widget_set_uposition(pWidget, Left, Top);
       end;
     end;
   end;
-//writeln('[TgtkObject.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
+  //writeln('[TgtkObject.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
 end;
+
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.AddChild
@@ -3765,6 +3791,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.108  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.107  2002/03/12 23:55:37  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

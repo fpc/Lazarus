@@ -276,7 +276,7 @@ end;
   Resize event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var Message: TLMSize);
-Begin
+begin
 {$IFDEF CHECK_POSITION}
 Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
 {$ENDIF}
@@ -287,9 +287,8 @@ Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',
        SIZEICONIC : FWIndowState := wsMinimized;
        SIZEFULLSCREEN : FWindowstate := wsMaximized;
       end;
-  RequestAlign;
-  ReAlign;
-  Resize;
+
+  inherited WMSize(Message);
 End;
 
 {------------------------------------------------------------------------------
@@ -972,6 +971,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.34  2002/01/01 15:50:14  lazarus
   MG: fixed initial component aligning
 
