@@ -5428,7 +5428,7 @@ end;
 function TMainIDE.DoSaveForBuild: TModalResult;
 begin
   Result:=mrCancel;
-  if ToolStatus<>itNone then begin
+  if not (ToolStatus in [itNone,itDebugger]) then begin
     Result:=mrAbort;
     exit;
   end;
@@ -5489,6 +5489,17 @@ function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
 var
   DefaultFilename: string;
 begin
+  if ToolStatus=itDebugger then begin
+    Result:=MessageDlg('Stop debugging?',
+      'Stop current debugging and rebuild project?',
+      mtConfirmation,[mbYes,mbNo,mbAbort],0);
+    if Result=mrNo then Result:=mrCancel;
+    if Result<>mrYes then exit;
+    
+    Result:=DebugBoss.DoStopProject;
+    if Result<>mrOk then exit;
+  end;
+  
   Result:=DoSaveForBuild;
   if Result<>mrOk then exit;
 
@@ -9132,6 +9143,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.603  2003/06/09 17:20:43  mattias
+  implemented stop debugging on rebuild
+
   Revision 1.602  2003/06/09 15:58:05  mattias
   implemented view call stack key and jumping to last stack frame with debug info
 
