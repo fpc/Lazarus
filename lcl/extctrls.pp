@@ -459,6 +459,7 @@ type
     constructor Create (AOwner : TComponent); override;
   published
     property Align;
+    property Anchors;
     property Caption;
     property Enabled;
     property ItemIndex;
@@ -466,6 +467,11 @@ type
     property Columns;
     property Visible;
     property OnClick;
+    property OnResize;
+    property OnChangeBounds;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseuP;
   end;
   
   
@@ -748,6 +754,9 @@ end.
 
  {
   $Log$
+  Revision 1.64  2003/06/19 09:26:58  mattias
+  fixed changing unitname during update
+
   Revision 1.63  2003/06/13 15:36:32  mattias
   fixed popupmenu on menueditor
 
