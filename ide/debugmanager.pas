@@ -1150,9 +1150,11 @@ begin
     dsStop: begin
       if (OldState<>dsIdle)
       then begin
+        if EnvironmentOptions.DebuggerShowStopMessage then begin
         MessageDlg(lisExecutionStopped,
           Format(lisExecutionStoppedOn, [#13#13]),
           mtInformation, [mbOK],0);
+        end;
         FDebugger.FileName := '';   
       end;
     end;
@@ -1944,6 +1946,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.83  2005/01/22 20:48:13  mattias
+  added option to omit debugged program stopped  from Andrew Haines
+
   Revision 1.82  2005/01/15 13:44:03  vincents
   use xml units from fpc, if not compiling with fpc 1.0
 

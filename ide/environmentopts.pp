@@ -178,6 +178,7 @@ type
     FDebuggerClass: string;
     FDebuggerFilename: string;         // per debugger class
     FDebuggerFileHistory: TStringList; // per debugger class
+    FDebuggerShowStopMessage: Boolean;
     FTestBuildDirectory: string;
     FTestBuildDirHistory: TStringList;
 
@@ -320,6 +321,8 @@ type
                                               write FDebuggerFileHistory;
     property DebuggerSearchPath: string read FDebuggerSearchPath
                                       write SetDebuggerSearchPath;
+    property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage
+                                              write FDebuggerShowStopMessage;
     property TestBuildDirectory: string read FTestBuildDirectory
                                         write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
@@ -1071,6 +1074,9 @@ begin
          Path+'DebuggerFilename/History/');
       DebuggerSearchPath:=XMLConfig.GetValue(
          Path+'DebuggerSearchPath/Value','');
+      // Debugger General Options
+      DebuggerShowStopMessage:=XMLConfig.GetValue(
+         Path+'DebuggerOptions/ShowStopMessage/Value', True);
     end;
 
     // hints
@@ -1266,6 +1272,8 @@ begin
           FDebuggerClass,'');
       XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
           FDebuggerFilename,'');
+      XMLConfig.SetDeleteValue(Path+'DebuggerOptions/ShowStopMessage/Value',
+          FDebuggerShowStopMessage, True);
       SaveRecentList(XMLConfig,FDebuggerFileHistory,
          Path+'DebuggerFilename/History/');
       XMLConfig.SetDeleteValue(Path+'DebuggerSearchPath/Value',

@@ -38,7 +38,11 @@ uses
   PathEditorDlg, EnvironmentOpts, BaseDebugManager, Debugger, DBGUtils;
 
 type
+
+  { TDebuggerOptionsForm }
+
   TDebuggerOptionsForm = class (TForm )
+    gcbDebuggerGeneralOptions: TCheckGroup;    
     clbExceptions: TCHECKLISTBOX;
     chkMessagesInterface: TCHECKBOX;
     chkClearLogOnRun: TCHECKBOX;
@@ -100,6 +104,7 @@ type
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
     procedure AddSignalLine(const ASignal: TIDESignal);
     procedure FetchDebuggerClass;
+    procedure FetchDebuggerGeneralOptions;
     procedure FetchDebuggerSpecificOptions;
     function  GetDebuggerClass: TDebuggerClass;
     procedure SetDebuggerClass(const AClass: TDebuggerClass);
@@ -187,6 +192,12 @@ begin
   FOldDebuggerPathAndParams:=EnvironmentOptions.DebuggerFilename;
   SetComboBoxText(cmbDebuggerPath,FOldDebuggerPathAndParams,20);
   txtAdditionalPath.Text:=EnvironmentOptions.DebuggerSearchPath;
+end;
+
+procedure TDebuggerOptionsForm.FetchDebuggerGeneralOptions;
+begin
+  // IMPORTANT if more items are added the indexes must be updated here!
+  gcbDebuggerGeneralOptions.Checked[0] := EnvironmentOptions.DebuggerShowStopMessage;
 end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
@@ -301,6 +312,9 @@ begin
   EnvironmentOptions.DebuggerFileHistory.Assign(cmbDebuggerPath.Items);
   EnvironmentOptions.DebuggerSearchPath:=
                                       TrimSearchPath(txtAdditionalPath.Text,'');
+  // IMPORTANT if more items are added the indexes must be updated here!
+  EnvironmentOptions.DebuggerShowStopMessage := gcbDebuggerGeneralOptions.Checked[0];
+  
   if FCurDebuggerClass = nil
   then EnvironmentOptions.DebuggerClass := ''
   else EnvironmentOptions.DebuggerClass := FCurDebuggerClass.ClassName;
@@ -383,6 +397,7 @@ begin
   end;
 
   FetchDebuggerClass;
+  FetchDebuggerGeneralOptions;
 
   // Fix designtime changes
   nbDebugOptions.PageIndex := 0;
