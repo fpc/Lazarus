@@ -975,6 +975,7 @@ type
     FControls: TList;
     FDefWndProc: Pointer;
     //FDockSite: Boolean;
+    FDoubleBuffered: Boolean;
     FClientWidth: Integer;
     FClientHeight: Integer;
     FDockManager: TDockManager;
@@ -1120,6 +1121,7 @@ type
     property DockClients[Index: Integer]: TControl read GetDockClients;
     property DockSite: Boolean read FDockSite write SetDockSite default False;
     property DockManager: TDockManager read FDockManager write FDockManager;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
     property IsResizing: Boolean read GetIsResizing;
     property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;
     property OnDockOver: TDockOverEvent read FOnDockOver write FOnDockOver;
@@ -1857,6 +1859,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.167  2004/01/07 18:05:46  micha
+  add TWinControl.DoubleBuffered property which is a hint for the interface to do double-buffering for this control
+
   Revision 1.166  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

@@ -179,32 +179,42 @@ Var
 
     // create a paint message
     AWinControl := TWinControl(OwnerObject);
-    DC := Windows.GetDC(0);
-    GetWindowSize(Window, MemWidth, MemHeight);
-    MemBitmap := Windows.CreateCompatibleBitmap(DC, MemWidth, MemHeight);
-    Windows.ReleaseDC(0, DC);
-    MemDC := Windows.CreateCompatibleDC(0);
-    OldBitmap := Windows.SelectObject(MemDC, MemBitmap);
+    if AWinControl.DoubleBuffered then
+    begin
+      DC := Windows.GetDC(0);
+      GetWindowSize(Window, MemWidth, MemHeight);
+      MemBitmap := Windows.CreateCompatibleBitmap(DC, MemWidth, MemHeight);
+      Windows.ReleaseDC(0, DC);
+      MemDC := Windows.CreateCompatibleDC(0);
+      OldBitmap := Windows.SelectObject(MemDC, MemBitmap);
+      PaintMsg.DC := MemDC;
+    end;
     GetLclClientOriginOffset(AWinControl.Handle, LeftOffset, TopOffset);
     try
       DC := Windows.BeginPaint(Window, @PS);
-      AWinControl.EraseBackground(MemDC);
       PaintMsg.Msg := LM_PAINT;
-      PaintMsg.DC := MemDC;
       PaintMsg.PaintStruct := @PS;
-      MoveWindowOrgEx(MemDC, LeftOffset, TopOffset);
+      if not AWinControl.DoubleBuffered then
+        PaintMsg.DC := DC;
+      AWinControl.EraseBackground(PaintMsg.DC);
+      MoveWindowOrgEx(PaintMsg.DC, LeftOffset, TopOffset);
       DeliverMessage(OwnerObject, PaintMsg);
-      MoveWindowOrgEx(MemDC, -LeftOffset, -TopOffset);
-      Windows.BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
+      MoveWindowOrgEx(PaintMsg.DC, -LeftOffset, -TopOffset);
+      if AWinControl.DoubleBuffered then
+        Windows.BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
       Windows.EndPaint(Window, @PS);
     finally
-      SelectObject(MemDC, OldBitmap);
-      Windows.OpenClipboard(0);
-      Windows.EmptyClipboard;
-      Windows.SetClipboardData(CF_BITMAP, MemBitmap);
-      Windows.CloseClipboard;
-      DeleteDC(MemDC);
-      DeleteObject(MemBitmap);
+      if AWinControl.DoubleBuffered then
+      begin
+        SelectObject(MemDC, OldBitmap);
+//        for debugging purposes: copy rendered bitmap to clipboard
+//        Windows.OpenClipboard(0);
+//        Windows.EmptyClipboard;
+//        Windows.SetClipboardData(CF_BITMAP, MemBitmap);
+//        Windows.CloseClipboard;
+        DeleteDC(MemDC);
+        DeleteObject(MemBitmap);
+      end;
     end;
   end;
 
@@ -928,6 +938,9 @@ end;
 
 {
   $Log$
+  Revision 1.86  2004/01/07 18:05:46  micha
+  add TWinControl.DoubleBuffered property which is a hint for the interface to do double-buffering for this control
+
   Revision 1.85  2004/01/03 21:06:06  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos
