@@ -49,7 +49,7 @@ interface
 // activate for debug:
 
 { $DEFINE CTDEBUG}
-{$DEFINE ShowSearchPaths}
+{ $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
