@@ -68,6 +68,12 @@ Contents:
 
   TCheckGroup
     State: working
+    
+  TCheckListBox
+    State: working
+
+  TColorButton
+    State: working
 
   TColorDialog
     State: working
@@ -136,6 +142,9 @@ Contents:
     State: working
 
   TPaintBox
+    State: working
+    
+  TPairSplitter
     State: working
 
   TPanel
@@ -266,11 +275,36 @@ Contents:
 -------------------------------------------------------------------------------
 1.5 win32 interface
 
-  State: Examples already works, IDE does not work. Most things implemented.
-         Needs debugging
-  Skills: Knowledge of LCL, win32 api
-  Difficulty: medium
+  General
+    State: Some examples already work, IDE does not work. Most things
+           implemented. Needs debugging
+    Skills: Knowledge of LCL, win32 api
+    Difficulty: medium
 
+  Menus
+    State: needs testing and proper implementation of menu item ids.
+    Skills: win32
+    Difficulty: medium
+    
+  Form Sizes
+    State: form sizes are not honoured, they are often way too big.
+    Skills: win32
+    Difficulty: medium
+
+  TPromptDialog:
+   State: in these dialogs there is no text.
+   Skills: win32
+   Difficulty: medium
+
+  TBitBtn
+   State: no text
+   Skills: win32
+   Difficulty: medium
+
+  TTimers:
+   State: crash the application internally...application hangs.
+   Skills: win32
+   Difficulty: medium
 
 ===============================================================================
 
