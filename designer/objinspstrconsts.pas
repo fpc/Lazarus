@@ -23,6 +23,7 @@ resourcestring
   
   oiscAdd = '&Add';
   oiscDelete = '&Delete';
+  oisUnknown = 'Unknown';
 
   // component editors commands
   oisProperties='Properties';

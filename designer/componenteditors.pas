@@ -214,8 +214,7 @@ type
     function Notebook: TNotebook; override;
     function Page: TPage; virtual;
   end;
-
-
+  
 { Register a component editor to be created when a component derived from
   ComponentClass is the only selection in the designer }
 type

@@ -159,6 +159,7 @@ each control that's dropped onto the form
     function CreateUniqueComponentName(const AClassName: string;
       OwnerComponent: TComponent): string;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
+    procedure CreateChildComponentInterfaces(AComponent: TComponent);
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateComponentFromStream(BinStream: TStream;
@@ -1028,6 +1029,9 @@ Begin
   // add to component list
   FComponentInterfaces.Add(Temp);
 
+  if Temp.Component.Owner<>nil then
+    CreateChildComponentInterfaces(Temp.Component.Owner);
+
   Result := Temp;
 end;
 
@@ -1035,7 +1039,6 @@ Function TCustomFormEditor.CreateComponentFromStream(
   BinStream: TStream; AncestorType: TComponentClass): TIComponentInterface;
 var
   NewJITIndex: integer;
-  i: integer;
   NewComponent: TComponent;
   JITList: TJITComponentList;
 begin
@@ -1054,9 +1057,7 @@ begin
   // create a component interface for the form
   Result:=CreateComponentInterface(NewComponent);
 
-  // create a component interface for each component owned by the new component
-  for i:=0 to NewComponent.ComponentCount-1 do
-    CreateComponentInterface(NewComponent.Components[i]);
+  CreateChildComponentInterfaces(NewComponent);
 end;
 
 function TCustomFormEditor.CreateChildComponentFromStream(BinStream: TStream;
@@ -1224,8 +1225,19 @@ end;
 Function TCustomFormEditor.CreateComponentInterface(
   AComponent: TComponent): TIComponentInterface;
 Begin
+  if FindComponent(AComponent)<>nil then exit;
   Result := TComponentInterface.Create(AComponent);
   FComponentInterfaces.Add(Result);
+end;
+
+procedure TCustomFormEditor.CreateChildComponentInterfaces(
+  AComponent: TComponent);
+var
+  i: Integer;
+begin
+  // create a component interface for each component owned by the new component
+  for i:=0 to AComponent.ComponentCount-1 do
+    CreateComponentInterface(AComponent.Components[i]);
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);

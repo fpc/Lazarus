@@ -72,7 +72,8 @@ type
     dfDuringPaintControl,
     dfShowEditorHints,
     dfShowComponentCaptionHints,
-    dfDestroyingForm
+    dfDestroyingForm,
+    dfDeleting
     );
   TDesignerFlags = set of TDesignerFlag;
 
@@ -148,6 +149,7 @@ type
     PopupMenuComponentEditor: TBaseComponentEditor;
     LastFormCursor: TCursor;
     DeletingComponents: TList;
+    IgnoreDeletingComponents: TList;
 
     LastPaintSender: TControl;
 
@@ -336,6 +338,7 @@ begin
   DDC:=TDesignerDeviceContext.Create;
   LastFormCursor:=crDefault;
   DeletingComponents:=TList.Create;
+  IgnoreDeletingComponents:=TList.Create;
 end;
 
 procedure TDesigner.DeleteFormAndFree;
@@ -354,6 +357,7 @@ Begin
   FHintTimer.Free;
   DDC.Free;
   DeletingComponents.Free;
+  IgnoreDeletingComponents.Free;
   Inherited Destroy;
 end;
 
@@ -1553,6 +1557,7 @@ end;
 procedure TDesigner.DoDeleteSelectedComponents;
 var
   i: integer;
+  AComponent: TComponent;
 begin
   if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
     exit;
@@ -1567,12 +1572,18 @@ begin
   for i:=0 to ControlSelection.Count-1 do
     MarkComponentForDeletion(ControlSelection[i].Component);
   // clear selection by selecting the LookupRoot
-  SelectOnlythisComponent(FLookupRoot);
+  SelectOnlyThisComponent(FLookupRoot);
   // delete marked components
+  Include(FFlags,dfDeleting);
   if DeletingComponents.Count=0 then exit;
-  while DeletingComponents.Count>0 do
-    RemoveComponentAndChilds(
-      TComponent(DeletingComponents[DeletingComponents.Count-1]));
+  while DeletingComponents.Count>0 do begin
+    AComponent:=TComponent(DeletingComponents[DeletingComponents.Count-1]);
+    //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+    RemoveComponentAndChilds(AComponent);
+    //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingComponents.IndexOf(AComponent));
+  end;
+  IgnoreDeletingComponents.Clear;
+  Exclude(FFlags,dfDeleting);
   Modified;
 end;
 
@@ -1581,14 +1592,22 @@ procedure TDesigner.DoDeleteComponent(AComponent: TComponent;
 var
   Hook: TPropertyEditorHook;
 begin
+  //writeln('TDesigner.DoDeleteComponent A ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
   PopupMenuComponentEditor:=nil;
-  if TheFormEditor.FindComponent(AComponent)=nil then begin
-    // unmark component
-    DeletingComponents.Remove(AComponent);
-    exit;
-  end;
   // unselect component
   ControlSelection.Remove(AComponent);
+  if TheFormEditor.FindComponent(AComponent)=nil then begin
+    // thsi component is currently in the process of deletion or the component
+    // was not properly created
+    // -> do not call handlers and simply get rid of the rubbish
+    //writeln('TDesigner.DoDeleteComponent UNKNOWN ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+    if FreeComponent then
+      AComponent.Free;
+    // unmark component
+    DeletingComponents.Remove(AComponent);
+    IgnoreDeletingComponents.Remove(AComponent);
+    exit;
+  end;
   // call RemoveComponent handler
   if Assigned(FOnRemoveComponent) then
     FOnRemoveComponent(Self,AComponent);
@@ -1600,6 +1619,7 @@ begin
   TheFormEditor.DeleteControl(AComponent,FreeComponent);
   // unmark component
   DeletingComponents.Remove(AComponent);
+  IgnoreDeletingComponents.Remove(AComponent);
   // call ComponentDeleted handler
   if Assigned(FOnComponentDeleted) then
     FOnComponentDeleted(Self,AComponent);
@@ -1607,7 +1627,7 @@ end;
 
 procedure TDesigner.MarkComponentForDeletion(AComponent: TComponent);
 begin
-  if not ComponentIsMarkedForDeletion(AComponent) then
+  if (not ComponentIsMarkedForDeletion(AComponent)) then
     DeletingComponents.Add(AComponent);
 end;
 
@@ -1670,16 +1690,20 @@ var
   ChildControl: TControl;
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemoveComponentAndChilds] ',AComponent.Name,':',AComponent.ClassName);
+  Writeln('[TDesigner.RemoveComponentAndChilds] ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
   {$ENDIF}
-  if (AComponent=FLookupRoot) or (AComponent=Form) then exit;
+  if (AComponent=FLookupRoot) or (AComponent=Form)
+  or (IgnoreDeletingComponents.IndexOf(AComponent)>=0)
+  then exit;
   // remove all child controls owned by the LookupRoot
   if (AComponent is TWinControl) then begin
     AWinControl:=TWinControl(AComponent);
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
-      if ChildControl.Owner=FLookupRoot then begin
+      if (ChildControl.Owner=FLookupRoot)
+      and (IgnoreDeletingComponents.IndexOf(ChildControl)<0) then begin
+        //Writeln('[TDesigner.RemoveComponentAndChilds] B ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8),' Child=',ChildControl.Name,':',ChildControl.ClassName,' i=',i);
         RemoveComponentAndChilds(ChildControl);
         // the component list of the form has changed
         // -> restart the search
@@ -1699,8 +1723,13 @@ procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then begin
     {$IFDEF VerboseDesigner}
-    Writeln('opInsert');
+    Writeln('opInsert ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
     {$ENDIF}
+    if dfDeleting in FFlags then begin
+      // a component has auto created a new component during deletion
+      // -> ignore the new component
+      IgnoreDeletingComponents.Add(AComponent);
+    end;
   end
   else
   if Operation = opRemove then begin

@@ -46,10 +46,6 @@ uses
 
 const
   MaxIdentLength: Byte = 63;
-  // XXX ToDo
-  // this variable should be fetched from consts(x).inc
-  // as in fcl/inc/classes.inc
-  srUnknown = 'unknown';
 
 type
   TGetStringProc = procedure(const s:ansistring) of object;
@@ -1967,7 +1963,7 @@ end;
 
 function TPropertyEditor.GetValue:ansistring;
 begin
-  Result:=srUnknown;
+  Result:=oisUnknown;
 end;
 
 function TPropertyEditor.GetVisualValue:ansistring;
