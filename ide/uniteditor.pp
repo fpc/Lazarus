@@ -126,10 +126,13 @@ type
     FVisible : Boolean;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
+    FOnMouseUp: TMouseEvent;
     FOnKeyDown: TKeyEvent;
 
     Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
+          Shift: TShiftState; X,Y: Integer);
+    Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     Function GetWordFromCaret(CaretPos : TPoint) : String;
@@ -264,6 +267,7 @@ type
        read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
     property OnMouseMove : TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnMouseUp : TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
   end;
   
@@ -297,6 +301,7 @@ type
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
+    FOnCtrlMouseUp: TMouseEvent;
     FSourceEditorList : TList; // list of TSourceEditor
     FCodeTemplateModul: TSynEditAutoComplete;
     FKeyStrokes: TSynEditKeyStrokes;
@@ -365,8 +370,11 @@ type
     FHintWindow : THintWindow;
     FHintTimer : TTimer;
     Procedure HintTimer(sender : TObject);
-    Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+    Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate;
+       X,Y : Integer);
     Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; 
+       Shift: TShiftstate; X,Y : Integer);
+    Procedure EditorMouseUp(Sender : TObject; Button : TMouseButton;
        Shift: TShiftstate; X,Y : Integer);
 
     Procedure NextEditor;
@@ -461,7 +469,10 @@ type
     GotoBookmarkMenuItem : TMenuItem;
     property OnAddJumpPoint: TOnAddJumpPoint
        read FOnAddJumpPoint write FOnAddJumpPoint;
-    property OnCloseClicked : TNotifyEvent read FOnCloseClicked write FOnCloseClicked;
+    property OnCloseClicked : TNotifyEvent
+       read FOnCloseClicked write FOnCloseClicked;
+    property OnCtrlMouseUp: TMouseEvent
+       read FOnCtrlMouseUp write FOnCtrlMouseUp;
     property OnDeleteLastJumpPoint: TNotifyEvent
        read FOnDeleteLastJumpPoint write FOnDeleteLastJumpPoint;
     property OnEditorVisibleChanged: TNotifyEvent
@@ -474,15 +485,18 @@ type
        read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
        read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
-    property OnNewClicked : TNotifyEvent read FOnNewClicked write FOnNewClicked;
-    property OnOpenClicked : TNotifyEvent read FOnOPenClicked write FOnOpenClicked;
+    property OnNewClicked : TNotifyEvent
+       read FOnNewClicked write FOnNewClicked;
+    property OnOpenClicked : TNotifyEvent
+       read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked : TNotifyEvent 
        read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
     property OnSaveAsClicked : TNotifyEvent
        read FOnSaveAsClicked write FOnSaveAsClicked;
     property OnSaveAllClicked : TNotifyEvent 
        read FOnSaveAllClicked write FOnSaveAllClicked;
-    property OnSaveClicked : TNotifyEvent read FOnSaveClicked write FOnSaveClicked;
+    property OnSaveClicked : TNotifyEvent
+       read FOnSaveClicked write FOnSaveClicked;
     property OnShowUnitInfo: TNotifyEvent 
        read FOnShowUnitInfo write FOnShowUnitInfo;
     property OnToggleFormUnitClicked : TNotifyEvent 
@@ -1166,6 +1180,7 @@ Begin
   Result:=true;
   SetSyntaxHighlighterType(fSyntaxHighlighterType);
   EditorOpts.GetSynEditSettings(FEditor);
+  FEditor.Options:=FEditor.Options+[eoShowCtrlMouseLinks];
 end;
 
 Procedure TSourceEditor.ccAddMessage(Texts : String);
@@ -1207,6 +1222,7 @@ Begin
       OnSpecialLineColors:=@OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseDown := @EditorMouseDown;
+      OnMouseUp := @EditorMouseUp;
       OnKeyDown := @EditorKeyDown;
       Visible:=true;
     end;
@@ -1511,6 +1527,13 @@ Procedure TSourceEditor.EditorMouseDown(Sender : TObject; Button : TMouseButton;
 begin
   if Assigned(OnMouseDown) then
     OnMouseDown(Sender, Button, Shift, X,Y);
+end;
+
+procedure TSourceEditor.EditorMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Assigned(OnMouseUp) then
+    OnMouseUp(Sender, Button, Shift, X,Y);
 end;
 
 Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key : Word; Shift :
@@ -2439,6 +2462,7 @@ Begin
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
+  Result.OnMouseUp := @EditorMouseUp;
   Result.OnCreateBreakPoint := @BreakPointCreated;
   Result.OnDeleteBreakPoint := @BreakPointDeleted;
   {$IFDEF IDE_DEBUG}
@@ -3311,6 +3335,20 @@ begin
      FHintWindow.Visible := False;
      
   FHintTimer.Enabled := False;
+end;
+
+procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftstate; X, Y: Integer);
+var Handled: boolean;
+begin
+  if GetKeyShiftState=[ssCtrl] then begin
+    // Control+MouseUp = Find Declaration
+    if Assigned(FOnCtrlMouseUp) then begin
+      Handled:=false;
+      FOnCtrlMouseUp(Sender,Button,Shift,X,Y);
+      if Handled then ;
+    end;
+  end;
 end;
 
 Procedure TSourceNotebook.AddWatchAtCursor(Sender : TObject);
