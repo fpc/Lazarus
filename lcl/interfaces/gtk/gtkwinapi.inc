@@ -2498,7 +2498,6 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
-  nIndex: Integer;
   pDC, pSavedDC: PDeviceContext;
 begin
 //writeln('[TgtkObject.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
@@ -2507,8 +2506,7 @@ begin
 
   if {(hWnd <> 0) and} (DC <> 0)
   then begin
-    nIndex := FDeviceContexts.IndexOf(Pointer(DC));
-    if nIndex <> -1
+    if FDeviceContexts.Contains(Pointer(DC))
     then begin
       pDC := PDeviceContext(DC);
       { Release all saved device contexts }
@@ -2538,12 +2536,12 @@ begin
         on Exception do; //Nothing, just try to unref it
                          //(it segfaults if the window doesnt exist anymore :-)
       end;
-      FDeviceContexts.Delete(nIndex);
+      FDeviceContexts.Remove(pDC);
       Dispose(pDC);
       Result := 1;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] FDeviceContexts[%d] DC:0x%x', [nIndex, DC]));
+  Assert(False, Format('trace:< [TgtkObject.ReleaseDC] FDeviceContexts DC:0x%x', [DC]));
 end;
 
 {------------------------------------------------------------------------------
@@ -3389,6 +3387,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2001/03/19 18:51:57  lazarus
+  MG: added dynhasharray and renamed tsynautocompletion
+
   Revision 1.25  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

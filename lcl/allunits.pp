@@ -16,7 +16,7 @@ uses
 	clipbrd,    filectrl,        forms,        lcllinux,   spin, 
 	comctrls,   graphics,        lmessages,    stdctrls, 
 	controls,   imglist,         menus,        toolwin, 
-	dialogs,    messages,        utrace;
+	dialogs,    messages,        utrace,       dynhasharray;
 
 implementation
 end.
@@ -24,6 +24,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/03/19 18:51:57  lazarus
+  MG: added dynhasharray and renamed tsynautocompletion
+
   Revision 1.4  2001/01/30 22:56:54  lazarus
   MWE:
     + added $mode objfpc directive

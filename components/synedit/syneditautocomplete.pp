@@ -113,7 +113,7 @@ type
     {$ENDIF}
   end;
 
-  TSynAutoComplete = class(TCustomSynAutoComplete)
+  TSynEditAutoComplete = class(TCustomSynAutoComplete)
   published
     property AutoCompleteList;
     property CaseSensitive;

@@ -30,14 +30,15 @@ interface
  
 uses 
   InterfaceBase, gtk, gdk, glib, sysutils, lmessages, Classes, Controls,
-  extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, LCLLinux, gtkdef;
+  extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, LCLLinux, gtkdef,
+  DynHashArray;
 
 type
    TgtkObject = class(TInterfaceBase)
    private
       FKeyStateList: TList; // Keeps track of which keys are pressed
-      FDeviceContexts: TList;
-      FGDIObjects: TList;
+      FDeviceContexts: TDynHashArray;
+      FGDIObjects: TDynHashArray;
       FMessageQueue: TList;
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
@@ -247,6 +248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/03/19 18:51:57  lazarus
+  MG: added dynhasharray and renamed tsynautocompletion
+
   Revision 1.10  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

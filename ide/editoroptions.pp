@@ -317,7 +317,7 @@ type
     CodeTemplateDeleteButton:TButton;
     CodeTemplateCodeLabel:TLabel;
     CodeTemplateCodePreview:TPreviewEditor;
-    SynAutoComplete:TSynAutoComplete;
+    SynAutoComplete:TSynEditAutoComplete;
 
     // buttons at bottom
     OkButton:TButton;
@@ -984,7 +984,7 @@ begin
     SetBounds((Screen.Width-470) div 2,(Screen.Height-480) div 2, 455,459);
     Caption:='Editor Options';
     PreviewPasSyn:=TPreviewPasSyn.Create(Self);
-    SynAutoComplete:=TSynAutoComplete.Create(Self);
+    SynAutoComplete:=TSynEditAutoComplete.Create(Self);
 
     MainNoteBook:=TNoteBook.Create(Self);
     with MainNoteBook do begin

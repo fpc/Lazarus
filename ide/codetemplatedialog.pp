@@ -28,18 +28,18 @@ type
     procedure OkButtonClick(Sender:TObject);
   public
     constructor Create(AOwner:TComponent); override;
-    SynAutoComplete:TSynAutoComplete;
+    SynAutoComplete:TSynEditAutoComplete;
     TemplateIndex:integer;
   end;
 
-function AddCodeTemplate(ASynAutoComplete:TSynAutoComplete;
+function AddCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
   var Token,Comment:ansistring):TModalResult;
-function EditCodeTemplate(ASynAutoComplete:TSynAutoComplete;
+function EditCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
   Index:integer):TModalResult;
 
 implementation
 
-function AddCodeTemplate(ASynAutoComplete:TSynAutoComplete;
+function AddCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
   var Token,Comment:ansistring):TModalResult;
 var
   CodeTemplateEditForm:TCodeTemplateEditForm;
@@ -63,7 +63,7 @@ begin
   end;
 end;
 
-function EditCodeTemplate(ASynAutoComplete:TSynAutoComplete;
+function EditCodeTemplate(ASynAutoComplete:TSynEditAutoComplete;
   Index:integer):TModalResult;
 var
   CodeTemplateEditForm:TCodeTemplateEditForm;

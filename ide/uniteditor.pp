@@ -69,7 +69,7 @@ type
     FAOwner : TComponent;
 {$ifdef NEW_EDITOR_SYNEDIT}
     FEditor     : TSynEdit;
-    FCodeTemplates: SynEditAutoComplete.TSynAutoComplete;
+    FCodeTemplates: TSynEditAutoComplete;
 {$else}
     FHighlighter: TmwPasSyn;
     FEditor     : TmwCustomEdit;
@@ -113,7 +113,7 @@ type
     Function GotoMethod(Value : String) : Integer;
     Function GotoMethodDeclaration(Value : String) : Integer;
     procedure SetCodeTemplates(
-         NewCodeTemplates: SynEditAutoComplete.TSynAutoComplete);
+         NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
 
     Function GotoLine(Value : Integer) : Integer;
@@ -181,7 +181,7 @@ type
     property Modified : Boolean read GetModified write SetModified;
     property ReadOnly : Boolean read GetReadOnly;
     property InsertMode : Boolean read GetInsertmode;
-    property CodeTemplates: SynEditAutoComplete.TSynAutoComplete
+    property CodeTemplates: TSynEditAutoComplete
        read FCodeTemplates write SetCodeTemplates;
     property PopupMenu:TPopupMenu read FPopUpMenu write SetPopUpMenu;
     property EditorComponent:TSynEdit read FEditor;
@@ -208,7 +208,7 @@ type
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
-    FCodeTemplateModul : SynEditAutoComplete.TSynAutoComplete;
+    FCodeTemplateModul : TSynEditAutoComplete;
 
     FSourceEditorList : TList; // list of TSourceEditor
     FSaveDialog : TSaveDialog;
@@ -299,7 +299,7 @@ type
     Procedure GotoBookmark(Value: Integer);
 
     Procedure ReloadEditorOptions;
-    Property CodeTemplateModul:SynEditAutoComplete.TSynAutoComplete
+    Property CodeTemplateModul: TSynEditAutoComplete
        read FCodeTemplateModul write FCodeTemplateModul;
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string; 
                                 AnEditor: TCustomSynEdit; var Index:integer);
@@ -1434,7 +1434,7 @@ Begin
 end;
 
 procedure TSourceEditor.SetCodeTemplates(
-  NewCodeTemplates: SynEditAutoComplete.TSynAutoComplete);
+  NewCodeTemplates: TSynEditAutoComplete);
 begin
   if NewCodeTemplates<>FCodeTemplates then begin
     if FCodeTemplates<>nil then
@@ -1502,7 +1502,7 @@ begin
   FMainIDE := AOwner;
 
   FSourceEditorList := TList.Create;
-  FCodeTemplateModul:=SynEditAutoComplete.TSynAutoComplete.Create(Self);
+  FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
     if FileExists(EditorOpts.CodeTemplateFilename) then
       AutoCompleteList.LoadFromFile(EditorOpts.CodeTemplateFilename)

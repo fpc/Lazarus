@@ -16,7 +16,7 @@ interface
 uses
   syntextdrawer, syneditkeycmds, synedittypes, syneditstrconst,
   syneditsearch, syneditmiscprocs, syneditmiscclasses, synedittextbuffer,
-  synedit, synhighlighterpas, syncompletion,
+  synedit, synedithighlighter, synhighlighterpas, syncompletion,
   syneditautocomplete, synhighlighterhtml, synhighlightercpp;
 	
 implementation
@@ -26,6 +26,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/03/19 18:51:57  lazarus
+  MG: added dynhasharray and renamed tsynautocompletion
+
   Revision 1.6  2001/03/19 14:00:48  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

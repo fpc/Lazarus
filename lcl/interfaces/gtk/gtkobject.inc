@@ -22,8 +22,8 @@ constructor TGtkObject.Create;
 begin
   inherited Create;
   FKeyStateList := TList.Create;
-  FDeviceContexts := TList.Create;
-  FGDIObjects := TList.Create;
+  FDeviceContexts := TDynHashArray.Create(-1);
+  FGDIObjects := TDynHashArray.Create(-1);
   FMessageQueue := TList.Create;
   FAccelGroup := gtk_accel_group_new();
 end;
@@ -44,6 +44,7 @@ var
   p: PMsg;
   GDITypeCount: array[TGDIType] of Integer;
   GDIType: TGDIType;
+  HashItem: PDynHashArrayItem;
 begin
   // tidy up the messages
   n:=FMessageQueue.Count-1;
@@ -62,22 +63,25 @@ begin
     WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs and %d unreleased GDIObjects' ,[FDeviceContexts.Count, FGDIObjects.Count]));
     n:=0;
     write('DCs:  ');
-    while (n<7) and (n<FDeviceContexts.Count) do begin
-      write(' ',HexStr(Cardinal(FDeviceContexts[n]),8));
+    HashItem:=FDeviceContexts.FirstHashItem;
+    while (n<7) and (HashItem<>nil) do begin
+      write(' ',HexStr(Cardinal(HashItem^.Item),8));
+      HashItem:=HashItem^.Next;
       inc(n);
     end;
     writeln();
     n:=0;
     write('GDIOs:');
-    while (n<7) and (n<FGDIObjects.Count) do begin
-      write(' ',HexStr(Cardinal(FGDIObjects[n]),8));
+    HashItem:=FGDIObjects.FirstHashItem;
+    for GDIType := Low(GDIType) to High(GDIType) do 
+      GDITypeCount[GDIType] := 0;
+    while (n<7) and (HashItem<>nil) do begin
+      write(' ',HexStr(Cardinal(HashItem^.Item),8));
+      Inc(GDITypeCount[PGdiObject(HashItem^.Item)^.GDIType]);
+      HashItem:=HashItem^.Next;
       inc(n);
     end; 
     writeln();
-    for GDIType := Low(GDIType) to High(GDIType) do 
-      GDITypeCount[GDIType] := 0;
-    for n := 0 to FGDIObjects.Count - 1 do
-      Inc(GDITypeCount[PGdiObject(FGDIObjects[n])^.GDIType]);
     for GDIType := Low(GDIType) to High(GDIType) do 
     begin
       if GDITypeCount[GDIType] > 0 
@@ -2557,7 +2561,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.IsValidDC(const DC: HDC): Boolean;
 begin
-  Result := FDeviceContexts.IndexOf(Pointer(DC)) <> -1;
+  Result := FDeviceContexts.Contains(Pointer(DC));
   Assert(False, Format('Trace:  [TgtkObject.IsValidDC] DC: 0x%x --> %s', [Integer(DC), BOOL_RESULT[Result]]));
 end;
 
@@ -2570,7 +2574,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
 begin
-  Result := FGDIObjects.IndexOf(Pointer(GDIObject)) <> -1;
+  Result := FGDIObjects.Contains(Pointer(GDIObject));
 //  Result := (GDIObject <> 0);
   if Result then
   try
@@ -2686,16 +2690,14 @@ end;
   Creates an initial DC
  ------------------------------------------------------------------------------}
 function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
-var
-  n: Integer;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewGDIObject]', []));
   New(Result);
   FillChar(Result^, SizeOf(TGDIObject), 0);
   Result^.GDIType := GDIType;
-  n := FGDIObjects.Add(Result);
+  FGDIObjects.Add(Result);
 //writeln('[TgtkObject.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
-  Assert(False, Format('Trace:< [TgtkObject.NewGDIObject] FGDIObjects[%d] --> 0x%p', [n, Result]));
+  Assert(False, Format('Trace:< [TgtkObject.NewGDIObject] FGDIObjects --> 0x%p', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -2748,6 +2750,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.36  2001/03/19 18:51:57  lazarus
+  MG: added dynhasharray and renamed tsynautocompletion
+
   Revision 1.35  2001/03/19 14:44:22  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 
