@@ -82,6 +82,9 @@ type
 
     Function CreateSystemFont : hFont;
 
+    procedure InitStockItems; virtual;
+    procedure FreeStockItems; virtual;
+
     Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyLCLControl(Sender : TObject);virtual;
@@ -260,6 +263,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2002/10/21 03:23:35  lazarus
+  AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
+
   Revision 1.92  2002/10/20 21:49:10  lazarus
   MG: fixes for fpc1.1
 

@@ -3734,6 +3734,51 @@ begin
   end;
 end;
 
+Procedure LoadGDKCursors;
+begin
+  // Create default cursor types
+  Cursor_Watch := gdk_cursor_new(gdk_Watch);
+  Cursor_Arrow := gdk_cursor_new(gdk_Arrow);
+  Cursor_Cross := gdk_cursor_new(gdk_Cross);
+  Cursor_Hand1 := gdk_cursor_new(gdk_Hand1);
+  Cursor_XTerm := gdk_cursor_new(gdk_XTerm);
+  Cursor_StdArrow := gdk_cursor_new(GDK_LEFT_PTR);
+  Cursor_HSplit := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
+  Cursor_VSplit := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
+  Cursor_SizeNWSE := gdk_cursor_new(GDK_TOP_LEFT_CORNER);
+  Cursor_SizeNS := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
+  Cursor_SizeNESW := gdk_cursor_new(GDK_BOTTOM_LEFT_CORNER);
+  Cursor_SizeWE := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
+  Cursor_SizeAll:= gdk_cursor_new(GDK_FLEUR);
+  Cursor_Help := gdk_cursor_new(GDK_QUESTION_ARROW);
+end;
+
+Procedure FreeGDKCursors;
+
+  procedure DestroyGdkCursor(var Cursor: pGDKCursor);
+  begin
+    gdk_Cursor_Destroy(Cursor);
+    Cursor:=nil;
+  end;
+
+begin
+  // Destroy default cursor types
+  DestroyGdkCursor(Cursor_Watch);
+  DestroyGdkCursor(Cursor_Arrow);
+  DestroyGdkCursor(Cursor_Cross);
+  DestroyGdkCursor(Cursor_Hand1);
+  DestroyGdkCursor(Cursor_XTerm);
+  DestroyGdkCursor(Cursor_StdArrow);
+  DestroyGdkCursor(Cursor_HSplit);
+  DestroyGdkCursor(Cursor_VSplit);
+  DestroyGdkCursor(Cursor_SizeNWSE);
+  DestroyGdkCursor(Cursor_SizeNS);
+  DestroyGdkCursor(Cursor_SizeNESW);
+  DestroyGdkCursor(Cursor_SizeWE);
+  DestroyGdkCursor(Cursor_Help);
+  DestroyGdkCursor(Cursor_SizeAll);
+end;
+
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 var
   theFonts : PPChar;
@@ -3763,6 +3808,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.134  2002/10/21 03:23:36  lazarus
+  AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
+
   Revision 1.133  2002/10/20 21:54:04  lazarus
   MG: fixes for 1.1
 
