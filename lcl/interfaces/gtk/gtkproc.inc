@@ -982,23 +982,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure Uncapturehandle;
-
-  Frees the CaptureHandle
- ------------------------------------------------------------------------------}
-procedure UncaptureHandle;
-begin
-  if MCaptureHandle <> 0 then begin
-    {$IfDef VerboseMouseCapture}
-    writeln('UncaptureHandle ',HexStr(Cardinal(MCaptureHandle),8));
-    {$ENDIF}
-    //gdk_pointer_ungrab(0);
-    gtk_grab_remove(pgtkwidget(MCaptureHandle));
-    MCaptureHandle:=0;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Procedure: StoreCommonDialogSetup
   Params:    ADialog: TCommonDialog
   Returns:   none
@@ -1494,59 +1477,18 @@ end;
  ------------------------------------------------------------------------------}
 procedure UpdateMouseCaptureControl;
 var
-  OldMouseCaptureHandle,
-  CurMouseCaptureHandle: PGtkWidget;
-
-  procedure NotifyCurCaptureControl;
-  var
-    CurControl: TObject;
-    CaptureChangedMsg: TLMessage;
-  begin
-    if CurMouseCaptureHandle=nil then exit;
-    CurControl:=GetLCLObject(CurMouseCaptureHandle);
-    if CurControl=nil then begin
-      MCaptureHandle:=0;
-      exit;
-    end;
-    with CaptureChangedMsg do begin
-      Msg := Msg;
-      WParam := LM_CAPTURECHANGED;
-      LParam := 0;
-      Result := longint(OldMouseCaptureHandle); // ToDo: 64bit faulty
-    end;
-    {$IFDEF VerboseMouseCapture}
-    writeln('UpdateMouseCaptureControl NotifyCurCaptureControl',
-    ' Old=',HexStr(Cardinal(OldMouseCaptureHandle),8),
-    ' New=',HexStr(Cardinal(MCaptureHandle),8)
-    );
-    {$ENDIF}
-    DeliverMessage(CurControl,CaptureChangedMsg);
-  end;
-
+  OldMouseCaptureWidget,
+  CurMouseCaptureWidget: PGtkWidget;
 begin
-  OldMouseCaptureHandle:=PGtkWidget(MCaptureHandle);
-  CurMouseCaptureHandle:=gtk_grab_get_current;
-  if OldMouseCaptureHandle<>CurMouseCaptureHandle then begin
-    // mouse capture widget has changed
-    UncaptureHandle;
-    MCaptureHandle:=integer(CurMouseCaptureHandle); // ToDo: 64bit faulty
-    NotifyCurCaptureControl;
-  end;
-end;
+  OldMouseCaptureWidget:=MouseCaptureWidget;
+  CurMouseCaptureWidget:=gtk_grab_get_current;
 
-{-------------------------------------------------------------------------------
-  procedure CheckMouseCaptureHandle(CurrentInputWidget: PGtkWidget);
-
-  Compares CurrentInputWidget with cached capture widget
-  and updates if necessary.
--------------------------------------------------------------------------------}
-procedure CheckMouseCaptureHandle(CurrentInputWidget: PGtkWidget);
-begin
-  if (MCaptureHandle <> 0)
-  and (Pointer(MCaptureHandle) <> CurrentInputWidget) then begin
-    // capture differs. => gtk forgot to tell, that the capturing has changed
-    // -> update
-    UpdateMouseCaptureControl;
+  if OldMouseCaptureWidget<>CurMouseCaptureWidget then begin
+    // notify the new capture control
+    MouseCaptureWidget:=CurMouseCaptureWidget;
+    if MouseCaptureWidget<>nil then
+      SendMessage(HWnd(MouseCaptureWidget), LM_CAPTURECHANGED, 0,
+        HWnd(OldMouseCaptureWidget));
   end;
 end;
 
@@ -3560,6 +3502,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.129  2002/10/17 21:00:18  lazarus
+  MG: fixed uncapturing of mouse
+
   Revision 1.128  2002/10/17 15:09:33  lazarus
   MG: made mouse capturing more strict
 
