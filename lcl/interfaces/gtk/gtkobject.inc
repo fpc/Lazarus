@@ -3635,7 +3635,8 @@ begin
   csLabel :
     begin
       P := gtk_label_new(StrTemp);
-      gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 1.0);
+      gtk_label_set_justify(PGtkLabel(P), GTK_JUSTIFY_LEFT);
+      gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 0.0);
     end;
 
   csListBox :
@@ -5502,7 +5503,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.186  2002/08/30 10:06:07  lazarus
+  Fixed alignment of multiline TLabel.
+  Simplified and prettified MessageBoxen.
+
   Revision 1.185  2002/08/30 06:46:04  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
