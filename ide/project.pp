@@ -412,13 +412,13 @@ begin
     end;
   until Result<>mrRetry;
   if ReadUnitName then 
-    fUnitName:=CodeToolBoss.GetSourceName(fSource);
+    fUnitName:=CodeToolBoss.GetSourceName(fSource,false);
   Result:=mrOk;
 end;
 
 procedure TUnitInfo.ReadUnitNameFromSource;
 begin
-  fUnitName:=CodeToolBoss.GetSourceName(fSource);
+  fUnitName:=CodeToolBoss.GetSourceName(fSource,false);
 end;
 
 {------------------------------------------------------------------------------
@@ -919,7 +919,7 @@ begin
 
   if AddToProjectFile and (MainUnit>=0) then begin
     // add unit to uses section
-    ShortUnitName:=CodeToolBoss.GetSourceName(AUnit.Source);
+    ShortUnitName:=AUnit.UnitName;
     if (ShortUnitName<>'') and (not UnitIsUsed(ShortUnitName)) then
       CodeToolBoss.AddUnitToMainUsesSection(Units[MainUnit].Source,
         ShortUnitName,'');
@@ -1429,6 +1429,9 @@ end.
 
 {
   $Log$
+  Revision 1.62  2002/04/21 13:24:06  lazarus
+  MG: small updates and fixes
+
   Revision 1.61  2002/04/15 12:45:57  lazarus
   MG: added save projectunit flags
 

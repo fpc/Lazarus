@@ -3,7 +3,7 @@
 //
 // FreePascal Bindings for libGL by NVIDIA (based on MESA Bindings from Sebastian Günther)
 // Version 0.0.3
-// supported NVIDIA Driver Version: 2802
+// supported NVIDIA Driver Version: 2880
 // this is UNPUBLISHED source code and may not be used by anyone (except matti) for anything
 // later it will be GPL'ed  :)
 // Copyright (C) 2001 Satan
@@ -3436,6 +3436,9 @@ finalization
 end.
 {
   $Log$
+  Revision 1.4  2002/04/21 13:24:07  lazarus
+  MG: small updates and fixes
+
   Revision 1.3  2002/04/15 10:54:58  lazarus
   MG: fixes from satan
 

@@ -2434,9 +2434,10 @@ begin
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
                          SrcEdit.SyntaxHighlighterType);
   end;
-  SaveAsFilename:=CodeToolBoss.GetSourceName(AnUnitInfo.Source);
+  AnUnitInfo.ReadUnitNameFromSource;
+  SaveAsFilename:=AnUnitInfo.UnitName;
   if SaveAsFilename='' then
-    SaveAsFilename:=AnUnitInfo.UnitName;
+    SaveAsFilename:=ExtractFileNameOnly(AnUnitInfo.Filename);
   if SaveAsFilename='' then
     SaveAsFilename:='noname';
     
@@ -2819,8 +2820,8 @@ begin
   // check if unit is a program
   if (not (ofProjectLoading in Flags))
   and FilenameIsPascalSource(AFilename)
-  and (CodeToolBoss.GetSourceType(PreReadBuf)='PROGRAM') then begin
-    NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf);
+  and (CodeToolBoss.GetSourceType(PreReadBuf,false)='PROGRAM') then begin
+    NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf,false);
     if NewProgramName<>'' then begin
       // source is a program
       // either this is a lazarus project
@@ -3638,7 +3639,8 @@ Begin
               MainUnitName:=SourceNoteBook.NoteBook.Pages[
                 MainUnitInfo.EditorIndex];
             if MainUnitName='' then begin
-              MainUnitName:=CodeToolBoss.GetSourceName(MainUnitInfo.Source);
+              MainUnitInfo.ReadUnitNameFromSource;
+              MainUnitName:=MainUnitInfo.UnitName;
             end;
             if MainUnitName='' then begin
               MainUnitName:=ExtractFileName(MainUnitInfo.Filename);
@@ -4224,8 +4226,8 @@ begin
           ActiveUnitInfo.IsPartOfProject:=true;
           if (ActiveUnitInfo.UnitName<>'')
           and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
-            ShortUnitName:=CodeToolBoss.GetSourceName(ActiveUnitInfo.Source);
-            if ShortUnitName='' then ShortUnitName:=ActiveUnitInfo.UnitName;
+            ActiveUnitInfo.ReadUnitNameFromSource;
+            ShortUnitName:=ActiveUnitInfo.UnitName;
             if (ShortUnitName<>'') then
               CodeToolBoss.AddUnitToMainUsesSection(
                  Project1.MainUnitInfo.Source,ShortUnitName,'');
@@ -6235,6 +6237,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.281  2002/04/21 13:24:05  lazarus
+  MG: small updates and fixes
+
   Revision 1.280  2002/04/21 06:53:52  lazarus
   MG: fixed save lrs to test dir
 

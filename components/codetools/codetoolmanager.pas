@@ -221,9 +221,9 @@ type
           var NewX, NewY, NewTopLine: integer): boolean;
 
     // source name  e.g. 'unit UnitName;'
-    function GetSourceName(Code: TCodeBuffer): string;
+    function GetSourceName(Code: TCodeBuffer; SearchMainCode: boolean): string;
     function RenameSource(Code: TCodeBuffer; const NewName: string): boolean;
-    function GetSourceType(Code: TCodeBuffer): string;
+    function GetSourceType(Code: TCodeBuffer; SearchMainCode: boolean): string;
 
     // uses sections
     function FindUnitInAllUsesSections(Code: TCodeBuffer;
@@ -888,9 +888,12 @@ writeln('TCodeToolManager.CompleteCode A ',Code.Filename,' x=',x,' y=',y);
   end;
 end;
 
-function TCodeToolManager.GetSourceName(Code: TCodeBuffer): string;
+function TCodeToolManager.GetSourceName(Code: TCodeBuffer;
+  SearchMainCode: boolean): string;
 begin
   Result:='';
+  if (Code=nil)
+  or ((not SearchMainCode) and (Code.LastIncludedByFile<>'')) then exit;
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.GetSourceName A ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}
@@ -912,9 +915,12 @@ writeln('SourceName=',Result);
 {$ENDIF}
 end;
 
-function TCodeToolManager.GetSourceType(Code: TCodeBuffer): string;
+function TCodeToolManager.GetSourceType(Code: TCodeBuffer;
+  SearchMainCode: boolean): string;
 begin
   Result:='';
+  if (Code=nil)
+  or ((not SearchMainCode) and (Code.LastIncludedByFile<>'')) then exit;
 {$IFDEF CTDEBUG}
 writeln('TCodeToolManager.GetSourceType A ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}

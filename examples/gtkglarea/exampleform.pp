@@ -815,7 +815,7 @@ begin
     ParticleEngine.DrawParticles;
     if ParticleBlended then glDisable(GL_BLEND);
     //glFlush;
-    glFinish;    
+    //glFinish;
     // Swap backbuffer to front
     gtk_gl_area_swap_buffers(PGtkGLArea(GTKGLAreaControl1.Widget));
   end;

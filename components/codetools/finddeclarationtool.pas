@@ -3458,6 +3458,9 @@ begin
   
   Result.Desc:=CurExprDesc;
   Result.Context:=CurContext;
+  if Result.Desc=xtContext then
+    Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
+                                                            Params);
   {$IFDEF ShowExprEval}
   writeln('  FindExpressionTypeOfVariable Result=',ExprTypeToString(Result));
   {$ENDIF}
@@ -3638,6 +3641,7 @@ begin
   if WordIsBooleanOperator.DoItUpperCase(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
+    // Boolean operators
     // < > <= >= <> in is
     Result.Desc:=xtBoolean;
   end
@@ -3649,13 +3653,17 @@ begin
   else if WordIsOrdNumberOperator.DoItUpperCase(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
+    // ordinal number operator
     // or xor and mod div shl shr
     Result.Desc:=xtConstOrdInteger;
   end
   else if WordIsNumberOperator.DoItUpperCase(Src,BinaryOperator.StartPos,
     BinaryOperator.EndPos-BinaryOperator.StartPos)
   then begin
+    // number operator (or string concatenating or set cut)
     // + - *
+    
+    
     if (Src[BinaryOperator.StartPos]='+')
     and (LeftOperand.Desc in [xtAnsiString,xtShortString,xtString,xtChar])
     then begin
@@ -4303,6 +4311,7 @@ function TFindDeclarationTool.IsCompatible(TargetType,
   ExpressionType: TExpressionType; Params: TFindDeclarationParams
   ): TTypeCompatibility;
 // can ExpressionType be assigned to TargetType
+// both expression types must be base types
 var TargetNode, ExprNode: TCodeTreeNode;
 begin
   {$IFDEF ShowExprEval}
