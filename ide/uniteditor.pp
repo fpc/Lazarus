@@ -1147,7 +1147,8 @@ Begin
     try
       Add('unit '+FUnitName+';');
       Add('');
-      Add('{$mode objfpc}{$H+}');
+      Add('{$mode objfpc}');
+      Add('{$H+}');
       Add('');
       Add('interface');
       Add('');
@@ -1253,13 +1254,65 @@ end;
 
 
 Function TSourceEditor.Save : Boolean;
+var
+  s   : TStringList;
+  I,X : Integer;
+  Texts : String;
+  NewUnitName : String;
+  Found : Boolean;
 Begin
   Result := True;
   If Assigned(FOnBeforeSave) then FOnBeforeSave(Self);
 
   try
+    //change the unitname
+     Found := False;
+     S := TStringList.Create;
+     S.Assign(FEditor.Lines);
+     I := 0;
+     NewUnitName := ExtractFileName(FileName);  //in case there is a path
+     If ExtractFileExt(FileName) <> '' then
+     NewUnitName := Copy(NewUnitName,1,length(NewUnitName)-length(ExtractFileExt(Filename)));
+     While I < S.Count do
+       Begin
+         Texts := S.Strings[i];
+         Writeln('Texts = '+Texts);
+         if (pos('unit',lowercase(texts)) <> 0) and
+            (pos(lowercase(unitname)+';',Lowercase(texts)) <> 0) then
+            Begin
+              X := pos(lowercase(unitname)+';',Lowercase(texts));
+              delete(Texts,x,length(unitname));
+              insert(NewUnitName,Texts,x);
+              S.Strings[i] := Texts;
+              Found := True;
+              Break;
+            end;
+         inc(i);
+         
+       end;
+
+    if Found then
+      Begin
+       I := 0;
+     While I < S.Count do
+       Begin
+         Texts := S.Strings[i];
+         if pos(lowercase(format('{$I %s.lrc}',[UnitName])),lowercase(Texts)) <> 0 then
+            Begin
+              X := pos(lowercase(format('{$I %s.lrc}',[UnitName])),Lowercase(Texts));
+              delete(Texts,x,length(format('{$I %s.lrc}',[UnitName])));
+              insert(format('{$I %s.lrc}',[NewUnitName]),Texts,x);
+              S.Strings[i] := Texts;
+              break;
+            end;
+        inc(i);
+       end;
+        FEditor.Lines.Assign(s);
+      end;
+
     FEditor.Lines.SaveToFile(FileName);
     FEditor.Modified := False;
+    UnitName := NewUnitName;
   except
     Result := False;
   end;
@@ -2089,12 +2142,6 @@ Procedure TSourceNotebook.OpenClicked(Sender: TObject);
 Var
   TempEditor : TSourceEditor;
 Begin
-  if (sender is TMenuItem) 
-  and (TMenuItem(sender).name <> 'FileOpen') then
-    //the down arrow next to open was selected
-    OpenFile(TMenuItem(sender).Caption,True)
-  else
-  Begin
     FOpenDialog.Title := 'Open';
     if FOpenDialog.Execute then  Begin
       //create a new page
@@ -2115,7 +2162,6 @@ Begin
       TempEditor.Visible := True;
       UpdateStatusBar;
     end;
-  end;
 end;
 
 Procedure TSourceNotebook.FindClicked(Sender : TObject);
@@ -2295,6 +2341,7 @@ Begin
   else
     SaveAsClicked(Sender);
   UpdateStatusBar;
+
 end;
 
 Function TSourceNotebook.ActiveUnitName : String;

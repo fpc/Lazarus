@@ -147,6 +147,7 @@ type
     procedure mnuEnvEditorOptionsClicked(Sender : TObject);
 
     Procedure OpenFileDownArrowClicked(Sender : TObject);
+    Procedure OpenRecentFile(Sender : TObject);
     Procedure FileClosedEvent(Sender : TObject; Filename : String);
     Procedure FileOpenedEvent(Sender : TObject; Filename : String);
     Procedure FileSavedEvent(Sender : TObject; Filename : String);
@@ -1277,6 +1278,14 @@ Begin
   OpenFilePopupMenu.Popup(0,0);
 end;
 
+Procedure TMainIDE.OpenRecentFile(Sender : TObject);
+Begin
+//  SourceNotebook.OpenFile(TMenuItem(sender).Caption,True);
+Application.MEssagebox('Not yet implemented','Error',MB_OK);
+End;
+
+
+
 //==============================================================================
 {
   This function creates a LFM file from any form.
@@ -1358,7 +1367,7 @@ Begin
 //Add a new menuitem to the popup that displays the filename.
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Caption := Filename;
-  MenuItem.OnClick := @SourceNotebook.OpenClicked;
+  MenuItem.OnClick := @OpenRecentFile;
   OpenFilePopupMenu.Items.Add(MenuItem);
 
   Texts := Filename;
@@ -1782,6 +1791,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2001/02/23 18:37:17  lazarus
+  Added code so the unit source changes when you do a SAVE AS
+  Shane
+
   Revision 1.62  2001/02/22 17:04:57  lazarus
   added environment options + killed ide unit circles
 
