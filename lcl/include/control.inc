@@ -33,7 +33,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 var
-P : TPoint;
+  P : TPoint;
 begin
   if (DragControl = nil) or (pointer(dragcontrol) = pointer($FFFFFFFF)) then
      Begin
@@ -1349,6 +1349,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.32  2002/01/01 18:38:36  lazarus
+  MG: more wmsize messages :(
+
   Revision 1.31  2002/01/01 15:50:14  lazarus
   MG: fixed initial component aligning
 

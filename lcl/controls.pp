@@ -543,7 +543,7 @@ TCMDialogKey = TLMKEY;
     property Font : TFont read FFont write FFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
     property ClientHeight : Integer read FHeight write SetHeight;
-    property ClientWidth : Integer read FWIdth write SetWidth;
+    property ClientWidth : Integer read FWidth write SetWidth;
     property Parent : TWinControl read FParent write SetParent;
     property ShowHint : Boolean read FShowHint write SetShowHint;
     property Visible: Boolean read FVisible write SetVisible;
@@ -1148,6 +1148,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/01/01 18:38:36  lazarus
+  MG: more wmsize messages :(
+
   Revision 1.28  2002/01/01 15:50:13  lazarus
   MG: fixed initial component aligning
 
