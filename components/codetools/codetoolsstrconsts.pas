@@ -166,6 +166,7 @@ ResourceString
   ctsFreePascalComponentLibrary = 'Free Pascal Component Library';
   ctsIncludeDirectoriesPlusDirs = 'include directories: %s';
   ctsPackageDirectories = 'Package directories';
+  ctsUtilsDirectories = 'Utils directories';
   ctsDefsForLazarusSources = 'Definitions for the Lazarus Sources';
   ctsAddsDirToSourcePath = 'adds %s to SrcPath';
   ctsSetsIncPathTo = 'sets IncPath to %s';

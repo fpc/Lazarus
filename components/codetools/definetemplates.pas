@@ -2285,7 +2285,8 @@ var
 //      UnitSearchPath: string;
 //      UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
 var
-  DefTempl, MainDir, FCLDir, RTLDir, PackagesDir, CompilerDir: TDefineTemplate;
+  DefTempl, MainDir, FCLDir, RTLDir, PackagesDir, CompilerDir,
+  UtilsDir, DebugSvrDir: TDefineTemplate;
   s: string;
 begin
   Result:=nil;
@@ -2361,7 +2362,20 @@ begin
   PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
      'packages',da_Directory);
   MainDir.AddChild(PackagesDir);
-  
+
+  // utils
+  UtilsDir:=TDefineTemplate.Create('Utils',ctsUtilsDirectories,'',
+     'utils',da_Directory);
+  MainDir.AddChild(UtilsDir);
+  // utils/debugsvr
+  DebugSvrDir:=TDefineTemplate.Create('DebugSvr','Debug Server','',
+     'debugsvr',da_Directory);
+  UtilsDir.AddChild(DebugSvrDir);
+  DebugSvrDir.AddChild(TDefineTemplate.Create('Interface Path',
+    Format(ctsAddsDirToSourcePath,['..']),ExternalMacroStart+'SrcPath',
+    '..;'+ExternalMacroStart+'SrcPath',da_DefineRecurse));
+
+  // clean upt
   if UnitTree<>nil then begin
     UnitTree.FreeAndClear;
     UnitTree.Free;
