@@ -166,9 +166,11 @@ type
     function GetTopIndex(Sender: TObject): integer;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;
 
+    // forms
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
+    procedure ShowModal(Sender: TObject);
 
     Function GetCaption(Sender : TObject) : String; virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
@@ -188,7 +190,7 @@ type
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
 
-    // messages, callbacks
+    // control functions for messages, callbacks
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
@@ -327,6 +329,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.121  2003/03/15 09:42:49  mattias
+  fixed transient windows
+
   Revision 1.120  2003/03/09 21:13:32  mattias
   localized gtk interface
 

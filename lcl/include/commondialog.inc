@@ -43,6 +43,11 @@ begin
   FHandle := 0;
 end;
 
+function TCommonDialog.HandleAllocated: boolean;
+begin
+  Result:=FHandle<>0;
+end;
+
 procedure TCommonDialog.SetHandle(const AValue: integer);
 begin
   FHandle:=AValue;
@@ -70,6 +75,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/03/15 09:42:49  mattias
+  fixed transient windows
+
   Revision 1.5  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
