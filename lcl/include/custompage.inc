@@ -32,8 +32,8 @@ begin
   end else begin
     SetInitialBounds(0,0,120,100);
   end;
-  Visible := False;
   Caption := '';
+  Visible := false;
 end;
 
 {------------------------------------------------------------------------------

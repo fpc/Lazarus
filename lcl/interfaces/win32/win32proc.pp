@@ -599,6 +599,7 @@ function LCLControlSizeNeedsUpdate(Sender: TWinControl;
   SendSizeMsgOnDiff: boolean): boolean;
 var
   Window:HWND;
+  LMessage: TLMSize;
   IntfWidth, IntfHeight: integer;
 begin
   Result:=false;
@@ -612,7 +613,16 @@ begin
   if SendSizeMsgOnDiff then begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
     Sender.InvalidateClientRectCache(true);
-    Windows.PostMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth, IntfHeight));
+    // send message directly to LCL, some controls not subclassed -> message
+    // never reaches LCL
+    with LMessage do
+    begin
+      Msg := LM_SIZE;
+      SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+      Width := IntfWidth;
+      Height := IntfHeight;
+    end;
+    DeliverMessage(Sender, LMessage);
   end;
 end;
 

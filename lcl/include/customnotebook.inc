@@ -122,10 +122,7 @@ begin
     NewOwner:=FNotebook;
   NewPage := FNotebook.PageClass.Create(NewOwner);
   with NewPage do
-  begin
     Caption := S;
-    Visible := true;
-  end;
 
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('TNBPages.Insert B ',FNotebook;.Name,' Index=',Index,' S="',S,'"');
@@ -231,6 +228,7 @@ end;
 procedure TCustomNotebook.DoCreateWnd;
 var
   i: Integer;
+  lPage: TCustomPage;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
@@ -240,9 +238,10 @@ begin
     {$IFDEF NOTEBOOK_DEBUG}
     DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' ',Page[i].Caption,' ',not (pfAdded in Page[i].Flags));
     {$ENDIF}
-    if not (pfAdded in Page[i].Flags) then begin
-      TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, TCustomPage(FPageList[i]), i);
-      Include(Page[i].FFlags,pfAdded);
+    lPage := Page[i];
+    if not (pfAdded in lPage.Flags) then begin
+      TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, lPage, i);
+      Include(lPage.FFlags,pfAdded);
     end;
   end;
   fAddingPages:=false;
@@ -444,7 +443,14 @@ begin
   APage.Parent := Self;
   if NewZPosition>=0 then
     SetControlIndex(APage,NewZPosition);
-  APage.Visible:=true;
+  if PageIndex = -1 then
+    FPageIndex := Index;
+
+{$ifndef WIN32}
+  // TODO: remove when gtk widgetset fixed to show tabpage tab upon
+  //   AddPage, instead of needing TabPage.Visible := true
+  APage.Visible := true;
+{$endif}
 
   UpdateDesignerFlags(Index);
 
@@ -452,9 +458,7 @@ begin
     TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
     Include(APage.FFlags, pfAdded);
     if PageIndex = Index then
-      DoSendPageIndex
-    else
-      PageIndex := Index;
+      DoSendPageIndex;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('TCustomNotebook.InsertPage END ',Name,' Index=',
@@ -660,6 +664,7 @@ end;
 procedure TCustomNotebook.Change;
 Begin
   fPageIndexOnLastChange:=fPageIndex;
+  ShowCurrentPage;
   if ([csLoading,csDestroying]*ComponentState=[])
   and (not fAddingPages) then begin
     if Assigned(fOnPageChanged) then fOnPageChanged(Self);
@@ -717,6 +722,17 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomNotebook.DoSendPageIndex
+
+  Makes sure Visible = true for page which has index FPageIndex
+ ------------------------------------------------------------------------------}
+procedure TCustomNotebook.ShowCurrentPage;
+begin
+  if (FPageIndex >= 0) and (FPageIndex < PageCount) then
+    Page[FPageIndex].Visible := true;
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomNotebook.DoSendPageIndex;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.DoSendPageIndex;
@@ -726,6 +742,7 @@ begin
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',dbgs(fPageIndex));
   {$ENDIF}
+  ShowCurrentPage;
   TWSCustomNotebookClass(WidgetSetClass).SetPageIndex(Self, FPageIndex);
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendPageIndex] B');
@@ -760,6 +777,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2004/10/23 14:49:38  micha
+  optimize: only create tabpage contents when accessed, not immediately upon creation
+
   Revision 1.65  2004/10/15 12:04:09  mattias
   calling updating notebook tab after realize, needed for close btns
 

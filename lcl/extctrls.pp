@@ -156,6 +156,7 @@ type
     procedure SetPages(AValue: TStrings);
     procedure SetShowTabs(AValue: Boolean);
     procedure SetTabPosition(tabPos: TTabPosition);
+    procedure ShowCurrentPage;
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
   protected
@@ -970,6 +971,9 @@ end.
 
  {
   $Log$
+  Revision 1.124  2004/10/23 14:49:38  micha
+  optimize: only create tabpage contents when accessed, not immediately upon creation
+
   Revision 1.123  2004/09/24 20:23:33  vincents
   fixed fpc 1.0.x compilation
 
