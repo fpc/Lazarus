@@ -5505,6 +5505,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SelectGDKBrushProps(DC: HDC);
 begin
+  if TDeviceContext(DC).SelectedColors=dcscBrush then exit;
+  
   with TDeviceContext(DC), CurrentBrush^ do
   begin
     Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.ColorRef]));
@@ -5519,6 +5521,7 @@ begin
         gdk_gc_set_Stipple(GC,GDIBrushPixmap);
       end
   end;
+  TDeviceContext(DC).SelectedColors:=dcscBrush;
 end;
 
 {------------------------------------------------------------------------------
@@ -5530,12 +5533,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SelectGDKTextProps(DC: HDC);
 begin
+  if TDeviceContext(DC).SelectedColors=dcscFont then exit;
+  
   with TDeviceContext(DC) do
   begin
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
     EnsureGCColor(DC, dccCurrentTextColor, False, False);//Font Color
     Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Color.Pixel, CurrentTextColor.Color.Red, CurrentTextColor.Color.Green, CurrentTextColor.Color.Blue]));
   end;
+  TDeviceContext(DC).SelectedColors:=dcscFont;
 end;
 
 {------------------------------------------------------------------------------
@@ -5547,42 +5553,39 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SelectGDKPenProps(DC: HDC);
 begin
-  if IsValidGDIObject(HGDIOBJ(TDeviceContext(DC).CurrentPen)) then begin
-    with TDeviceContext(DC), CurrentPen^ do begin
-      EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
-      EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
-    end;
+  if TDeviceContext(DC).SelectedColors=dcscPen then exit;
   
-    if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
-      Exclude(TDeviceContext(DC).DCFlags,dcfPenInvalid);
-      if TDeviceContext(DC).GC<>nil then begin
-        with TDeviceContext(DC), CurrentPen^ do
-        begin
-          IsNullPen := GDIPenStyle = PS_NULL;
-          if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
-          then begin
-            gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, 0, 0)
-          end
-          else begin
-            gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,0,0);
-            case GDIPenStyle of
-              PS_DASH:       gdk_gc_set_dashes(GC, 0, [4,4], 2);
-              PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
-              PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
-              PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
-             {This is DEADLY!!!}
-              //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
-            end;
+  with TDeviceContext(DC), CurrentPen^ do begin
+    EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, dccGDIPenColor, False, False);//Pen Color
+  end;
+
+  if (not (dcfPenSelected in TDeviceContext(DC).DCFlags)) then begin
+    Exclude(TDeviceContext(DC).DCFlags,dcfPenInvalid);
+    if TDeviceContext(DC).GC<>nil then begin
+      with TDeviceContext(DC), CurrentPen^ do
+      begin
+        IsNullPen := GDIPenStyle = PS_NULL;
+        if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
+        then begin
+          gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, 0, 0)
+        end
+        else begin
+          gdk_gc_set_line_attributes(GC,GDIPenWidth,GDK_LINE_ON_OFF_DASH,0,0);
+          case GDIPenStyle of
+            PS_DASH:       gdk_gc_set_dashes(GC, 0, [4,4], 2);
+            PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
+            PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
+            PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
+           {This is DEADLY!!!}
+            //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
           end;
         end;
-        Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
       end;
+      Include(TDeviceContext(DC).DCFlags,dcfPenSelected);
     end;
-  end else begin
-    // pen invalid
-    Include(TDeviceContext(DC).DCFlags,dcfPenInvalid);
-    writeln('WARNING: SelectGDKPenProps Pen invalid');
   end;
+  TDeviceContext(DC).SelectedColors:=dcscPen;
 end;
 
 {------------------------------------------------------------------------------
@@ -5988,6 +5991,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.238  2002/10/08 14:10:02  lazarus
+  MG: added TDeviceContext.SelectedColors
+
   Revision 1.237  2002/10/08 13:42:23  lazarus
   MG: added TDevContextColorType
 
