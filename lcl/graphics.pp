@@ -32,10 +32,9 @@ uses
 
 
 type
-
-TColor = longint;  //Also defined in LMessages.pp
+  TColor = longint;  //Also defined in LMessages.pp
+  
 const
-
   // The follow colors match the predefined Delphi Colors
   clBlack =   TColor($000000);
   clMaroon =  TColor($000080);
@@ -735,6 +734,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/01/02 12:10:01  lazarus
+  MG: fixed typo
+
   Revision 1.19  2001/12/28 11:41:50  lazarus
   MG: added TCanvas.Ellipse, TCanvas.Pie
 
