@@ -318,26 +318,29 @@ type
   private
     FStyle:TBevelStyle;
     FShape:TBevelShape;
-    Function GetStyle:TBevelStyle;
-    Procedure SetStyle(aStyle:TBevelStyle);
-    Function GetShape:TBevelShape;
-    Procedure SetShape(aShape:TBevelShape);
-  Protected
-    Procedure Paint; Override;
-  Public
-    Constructor Create(AOwner:TComponent); override;
-    Destructor Destroy; override;
-    Procedure Invalidate; override;
-  Published
-    Property Height;
-    Property Left;
-    Property Name;
-    Property Shape:TBevelShape Read GetShape Write SetShape Default bsBox;
-    Property Top;
-    Property Style:TBevelStyle Read GetStyle Write SetStyle Default bsLowered;
-    Property Visible;
-    Property Width;
-  End;
+    function GetStyle:TBevelStyle;
+    procedure SetStyle(aStyle:TBevelStyle);
+    function GetShape:TBevelShape;
+    procedure SetShape(aShape:TBevelShape);
+  protected
+    procedure Paint; Override;
+  public
+    constructor Create(AOwner:TComponent); override;
+    destructor Destroy; override;
+    procedure Invalidate; override;
+  published
+    property Align;
+    property Anchors;
+    property Constraints;
+    property Height;
+    property Left;
+    property Name;
+    property Shape:TBevelShape Read GetShape Write SetShape Default bsBox;
+    property Top;
+    property Style:TBevelStyle Read GetStyle Write SetStyle Default bsLowered;
+    property Visible;
+    property Width;
+  end;
 
 
   { TCustomRadioGroup }
@@ -502,6 +505,12 @@ end.
 
  {
   $Log$
+  Revision 1.30  2002/09/05 10:12:06  lazarus
+  New dialog for multiline caption of TCustomLabel.
+  Prettified TStrings property editor.
+  Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
+  Removed saving of old combo text (it broke things and is not needed). Cleanups.
+
   Revision 1.29  2002/09/03 08:07:18  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
