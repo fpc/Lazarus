@@ -109,6 +109,16 @@ begin
   Result:=SearchFileInPath('make','',GetEnv('PATH'),':');
 end;
 
+function CreateCompilerTestPascalFilename: string;
+var
+  fs: TFileStream;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
+  if not FileExists(Result) then begin
+    fs:=TFileStream.Create(Result,fmCreate);
+    fs.Free;
+  end;
+end;
 
 initialization
   PrimaryConfigPath:=FExpand('~/.lazarus');
@@ -117,6 +127,9 @@ initialization
 
 {
   $Log$
+  Revision 1.7  2002/12/20 11:08:47  mattias
+  method resolution clause, class ancestor find declaration, 1.1. makros
+
   Revision 1.6  2002/07/01 05:53:31  lazarus
   MG: improved default make path for build lazarus
 

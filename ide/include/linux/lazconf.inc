@@ -101,6 +101,17 @@ begin
   end;
 end;
 
+function CreateCompilerTestPascalFilename: string;
+var
+  fs: TFileStream;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
+  if not FileExists(Result) then begin
+    fs:=TFileStream.Create(Result,fmCreate);
+    fs.Free;
+  end;
+end;
+
 function FindDefaultCompilerPath: string;
 begin
   Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
@@ -117,6 +128,9 @@ initialization
 
 {
   $Log$
+  Revision 1.9  2002/12/20 11:08:47  mattias
+  method resolution clause, class ancestor find declaration, 1.1. makros
+
   Revision 1.8  2002/07/01 05:53:31  lazarus
   MG: improved default make path for build lazarus
 

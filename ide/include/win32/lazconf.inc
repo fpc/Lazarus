@@ -103,17 +103,29 @@ begin
   Result:='';
 end;
 
+function CreateCompilerTestPascalFilename: string;
+var
+  fs: TFileStream;
+begin
+  Result:=AppendPathDelim(GetPrimaryConfigPath)+'compilertest.pas';
+  if not FileExists(Result) then begin
+    fs:=TFileStream.Create(Result,fmCreate);
+    fs.Free;
+  end;
+end;
+
 initialization
   PrimaryConfigPath:=ExtractFilePath(Paramstr(0));
-  { This might need some work because on WinNT the
-    the path is called something different on almost every
-    version of Windows. Probably can use the Windows API to
+  { This need some work. Probably one can use the Windows API to
     get the system path. }
   SecondaryConfigPath:='\windows\system';
 
 
 {
   $Log$
+  Revision 1.7  2002/12/20 11:08:47  mattias
+  method resolution clause, class ancestor find declaration, 1.1. makros
+
   Revision 1.6  2002/07/01 05:53:31  lazarus
   MG: improved default make path for build lazarus
 

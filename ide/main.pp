@@ -2352,7 +2352,8 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
     // rescan compiler defines
     // ask the compiler for its settings
     CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
-                EnvironmentOptions.CompilerFilename,CompilerUnitSearchPath);
+                      EnvironmentOptions.CompilerFilename,
+                      CreateCompilerTestPascalFilename,CompilerUnitSearchPath);
     if CompilerTemplate<>nil then begin
       CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
       // create compiler macros to simulate the Makefiles of the FPC sources
@@ -6209,7 +6210,7 @@ begin
   with CodeToolBoss.DefinePool do begin
     // start the compiler and ask for his settings
     ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
-                          CompilerUnitSearchPath);
+                       CreateCompilerTestPascalFilename,CompilerUnitSearchPath);
     AddTemplate(ADefTempl,false,
       'NOTE: Could not create Define Template for Free Pascal Compiler');
       
@@ -7520,6 +7521,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.439  2002/12/20 11:08:47  mattias
+  method resolution clause, class ancestor find declaration, 1.1. makros
+
   Revision 1.438  2002/12/17 19:49:33  mattias
   finished publish project
 
