@@ -4291,6 +4291,7 @@ begin
         { On root window, we don't allocate a graphics context and so we dont free}
         if pDC^.GC <> nil then begin
           gdk_gc_unref(pDC^.GC);
+          pDC^.GC:=nil;
         end;
       except
         on E:Exception do begin
@@ -5994,6 +5995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.105  2002/08/22 07:30:16  lazarus
+  MG: freeing more unused GCs
+
   Revision 1.104  2002/08/21 15:46:08  lazarus
   MG: fixed a mem leak in RestoreDC
 
