@@ -1381,14 +1381,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl SendDockNotification
-------------------------------------------------------------------------------}
-Procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
-Begin
-  //TODO: SendDockNotification
-end;
-
-{------------------------------------------------------------------------------
        TControl Invalidate
 ------------------------------------------------------------------------------}
 procedure TControl.Invalidate;
@@ -2884,6 +2876,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.179  2004/04/01 18:09:50  mattias
+  removed unneeded SendDockNotification
+
   Revision 1.178  2004/03/24 01:21:41  marc
   * Simplified signals for gtkwsbutton
 
