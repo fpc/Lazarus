@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 (******************************************************************************
                                      TCustomMemo
  ******************************************************************************)
@@ -70,10 +72,14 @@ begin
 //TODO:Call sendmessage
 end;
 
+// included by stdctrls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.4  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

@@ -25,7 +25,7 @@
 Detailed description of the Unit.
 }
 
-unit stdctrls;
+unit StdCtrls;
 
 {$mode objfpc}
 {$LONGSTRINGS ON}
@@ -581,6 +581,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.23  2002/04/18 07:53:08  lazarus
   MG: fixed find declaration of forward def class
 

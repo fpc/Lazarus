@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 {******************************************************************************
                                TCustomComboBox
  ******************************************************************************}
@@ -305,9 +307,13 @@ Begin
 
 end;
 
+// included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.7  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.6  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane
