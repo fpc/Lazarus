@@ -3967,7 +3967,9 @@ begin
       // get the VBox, the form has one child, a VBox
       ParentForm:=TCustomForm(TMenu(Sender).Parent);
       if (ParentForm=nil) or (not (ParentForm is TCustomForm)) then
-        raise Exception.Create('MainMenu without form');
+        RaiseException('MainMenu without form');
+      if ParentForm.Menu<>TMenu(Sender) then
+        RaiseException('form has already a MainMenu');
       Box := PGTKBin(ParentForm.Handle)^.Child;
       gtk_box_pack_start(Box, p, False, False, 0);
       SetAccelGroup(p, gtk_accel_group_get_default);
@@ -5845,6 +5847,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.219  2002/09/19 19:56:14  lazarus
+  MG: accelerated designer drawings
+
   Revision 1.218  2002/09/18 17:07:28  lazarus
   MG: added patch from Andrew
 
