@@ -3662,12 +3662,16 @@ begin
   end;
 end;
 
+{$ifndef VER1_0}
 var
+{$else}
+const
+{$endif}
   {$IFDef GTK1}
-  NoteBookCloseBtnPixmapImg: PGdkPixmap {$ifndef VER1_0} = nil {$endif};
-  NoteBookCloseBtnPixmapMask: PGdkPixmap {$ifndef VER1_0} = nil {$endif};
+  NoteBookCloseBtnPixmapImg: PGdkPixmap = nil;
+  NoteBookCloseBtnPixmapMask: PGdkPixmap = nil;
   {$Else}
-  NoteBookCloseBtnPixbuf: PGdkPixbuf {$ifndef VER1_0} = nil {$endif};
+  NoteBookCloseBtnPixbuf: PGdkPixbuf = nil;
   {$EndIf}
 
 {-------------------------------------------------------------------------------
@@ -7628,6 +7632,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.314  2004/10/16 08:59:26  vincents
+  fixed fpc 1.0 compilation
+
   Revision 1.313  2004/10/15 12:04:09  mattias
   calling updating notebook tab after realize, needed for close btns
 

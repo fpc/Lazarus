@@ -418,12 +418,4 @@ initialization
 //  RegisterWSComponent(TPanel, TGtkWSPanel);
 ////////////////////////////////////////////////////
 
-{$ifdef VER1_0}
-  {$ifdef GTK1}
-  NoteBookCloseBtnPixmapImg := nil;
-  NoteBookCloseBtnPixmapMask := nil;
-  {$else}
-  NoteBookCloseBtnPixbuf := nil;
-  {$endif}
-{$endif}
 end.

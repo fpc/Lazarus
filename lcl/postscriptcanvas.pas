@@ -37,6 +37,9 @@
 unit PostscriptCanvas;
 
 {$mode objfpc}{$H+}
+{$IFDEF VER1_0_10}
+  {$DEFINE DisableFPImage}
+{$ENDIF}
 
 interface
 
