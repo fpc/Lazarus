@@ -324,6 +324,7 @@ type
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
     procedure DoShowMessagesView;
+    procedure DoArrangeSourceEditorAndMessageView;
     function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
@@ -332,6 +333,7 @@ type
     procedure DoJumpToProcedureSection;
     procedure DoCompleteCodeAtCursor;
     function DoInitDebugger: TModalResult;
+    function DoCheckSyntax: TModalResult;
 
     procedure LoadMainMenu;
     procedure LoadSpeedbuttons;
@@ -1530,9 +1532,7 @@ begin
   Handled:=true;
   case Command of
    ecBuild, ecBuildAll:
-    begin
       DoBuildProject(Command=ecBuildAll);
-    end;
     
    ecRun:
     begin
@@ -1545,9 +1545,7 @@ begin
     end;
     
    ecPause:
-    begin
       DoPauseProject;
-    end;
     
    ecStepInto:
     begin
@@ -1580,24 +1578,19 @@ begin
     end;
     
    ecStopProgram:
-    begin
       DoStopProject;
-    end;
     
    ecFindProcedureDefinition,ecFindProcedureMethod:
-    begin
       DoJumpToProcedureSection;
-    end;
     
    ecCompleteCode:
-    begin
       DoCompleteCodeAtCursor;
-    end;
     
    ecExtToolFirst..ecExtToolLast:
-    begin
       DoRunExternalTool(Command-ecExtToolFirst);
-    end;
+    
+   ecSyntaxCheck:
+      DoCheckSyntax;
     
   else
     Handled:=false;
@@ -1919,7 +1912,7 @@ end;
 
 procedure TMainIDE.mnuToolSyntaxCheckClicked(Sender : TObject);
 begin
-  // ToDo
+  DoCheckSyntax;
 end;
 
 //------------------------------------------------------------------------------
@@ -3496,11 +3489,8 @@ begin
 
     ToolStatus:=itBuilder;
     MessagesView.Clear;
-    DoShowMessagesView;
-
-    if (SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top then
-      SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
-         MessagesView.Top-SourceNotebook.Top));
+    DoArrangeSourceEditorAndMessageView;
+   
     Compiler1.OnOutputString:=@MessagesView.Add;
     Result:=Compiler1.Compile(Project,BuildAll,DefaultFilename);
     if Result=mrOk then begin
@@ -3767,6 +3757,42 @@ end;
 function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
 begin
   Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+end;
+
+function TMainIDE.DoCheckSyntax: TModalResult;
+var
+  ActiveUnitInfo:TUnitInfo;
+  ActiveSrcEdit:TSourceEditor;
+  NewCode: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+  ErrorMsg: string;
+begin
+  Result:=mrOk;
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if (ActiveUnitInfo=nil) or (ActiveUnitInfo.Source=nil)
+  or (ActiveSrcEdit=nil) then exit;
+  CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
+  SaveSourceEditorChangesToCodeCache;
+  if not CodeToolBoss.CheckSyntax(ActiveUnitInfo.Source,NewCode,NewX,NewY,
+    NewTopLine,ErrorMsg) then begin
+    // syntax error -> show error and jump
+    // show error in message view
+    DoArrangeSourceEditorAndMessageView;
+    MessagesView.AddSeparator;
+    MessagesView.Add(ErrorMsg);
+    // jump to error in source editor
+    if NewCode<>nil then begin
+      Result:=DoOpenEditorFile(NewCode.Filename,false);
+      if Result=mrOk then begin
+        ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
+        SourceNotebook.BringToFront;
+        ActiveSrcEdit.EditorComponent.SetFocus;
+        ActiveSrcEdit.EditorComponent.CaretXY:=Point(NewX,NewY);
+        ActiveSrcEdit.EditorComponent.TopLine:=NewTopLine;
+        ActiveSrcEdit.ErrorLine:=NewY;
+      end;
+    end;
+  end;
 end;
 
 //-----------------------------------------------------------------------------
@@ -4156,7 +4182,6 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
     if (Project.MainUnit>=0) and Project.Units[Project.MainUnit].IsVirtual then
     begin
       Result:=AFilename;
-      //ProjectDir:=EnvironmentOptions.TestBuildDirectory;
       exit;
     end;
     ProjectDir:=ExtractFilePath(Project.ProjectFile);
@@ -4231,9 +4256,7 @@ begin
           TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
           if TopLine<1 then TopLine:=1;
           if FocusEditor then begin
-//writeln('[TMainIDE.DoJumpToCompilerMessage] A');
             SourceNotebook.BringToFront;
-//writeln('[TMainIDE.DoJumpToCompilerMessage] B');
             SrcEdit.EditorComponent.SetFocus;
           end;
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
@@ -4271,6 +4294,15 @@ begin
 //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
      MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
+end;
+
+procedure TMainIDE.DoArrangeSourceEditorAndMessageView;
+begin
+  DoShowMessagesView;
+
+  if (SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top then
+    SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
+       MessagesView.Top-SourceNotebook.Top));
 end;
 
 function TMainIDE.GetProjectTargetFilename: string;
@@ -4708,6 +4740,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.148  2001/11/19 15:23:17  lazarus
+  MG: added quick syntax check via codetools
+
   Revision 1.147  2001/11/19 12:15:03  lazarus
   MG: added dirty about lazarus dlg
 

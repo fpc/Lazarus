@@ -426,6 +426,7 @@ end;
 function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
   var ErrorMsg: string): boolean;
+// returns true on syntax correct
 var OldCatchExceptions: boolean;
 begin
   Result:=false;
@@ -439,6 +440,7 @@ begin
       FCodeTool.ErrorPosition.Code:=nil;
       ErrorMsg:='internal build code tree error';
       FCodeTool.BuildTree(false);
+      Result:=true;
     except
       on e: Exception do begin
         ErrorMsg:=e.Message;

@@ -34,8 +34,6 @@ interface
 
 {$I codetools.inc}
 
-{$DEFINE CTDEBUG}
-
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,

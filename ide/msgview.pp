@@ -43,6 +43,8 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     Procedure Add(const Texts : String);
+    Procedure AddSeparator;
+    function MsgCount: integer;
     Procedure Clear;
     property Message : String read GetMessage;
     property SelectedMessageIndex : Integer read GetSelectedLineIndex;
@@ -85,9 +87,17 @@ end;
 Procedure  TMessagesView.Add(const Texts : String);
 Begin
   MessageView.Items.Add(Texts);
-  
+end;
 
+Procedure TMessagesView.AddSeparator;
+begin
+  if MsgCount>0 then
+    Add('----------------------------');
+end;
 
+function TMessagesView.MsgCount: integer;
+begin
+  Result:=MessageView.Items.Count;
 end;
 
 {------------------------------------------------------------------------------}

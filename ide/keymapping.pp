@@ -49,6 +49,7 @@ const
   ecWordCompletion     = ecUserFirst + 100;
   ecCompleteCode       = ecUserFirst + 101;
   ecIdentCompletion    = ecUserFirst + 102;
+  ecSyntaxCheck        = ecUserFirst + 103;
 
   ecSave               = ecUserFirst + 200;
   ecOpen               = ecSave      + 1;
@@ -338,6 +339,7 @@ begin
     ecWordCompletion: Result:= 'word completion';
     ecCompleteCode: Result:= 'complete code';
     ecIdentCompletion: Result:= 'identifier completion';
+    ecSyntaxCheck: Result:='syntax check';
     ecSave: Result:= 'save';
     ecOpen: Result:= 'open';
     ecClose: Result:= 'close';
@@ -907,6 +909,7 @@ begin
   Add('Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
   Add('Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Add('Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   Add('Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
   Add('Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
