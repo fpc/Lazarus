@@ -237,7 +237,8 @@ Begin
     Include(FFormState, fsVisible)
   else
     Exclude(FFormState, fsVisible);
-  if (fsCreating in FFormState) or FormUpdating then
+//writeln('TCustomForm.SetVisible ',Name,':',ClassName,' ',FormUpdating);
+  if (fsCreating in FFormState) {or FormUpdating} then
   else
   begin
     inherited Visible := Value;
@@ -1199,6 +1200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/11/09 18:13:33  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.69  2002/11/06 17:46:36  lazarus
   MG: reduced showing forms during creation
 

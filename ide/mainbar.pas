@@ -51,21 +51,25 @@ const
   Version_String = '0.8.5 alpha';
 
 type
-  {
-    The IDE is at anytime in a specific state:
+  // The IDE is at anytime in a specific state:
+  TIDEToolStatus = (
+    itNone,      // The default mode. All editing allowed.
+    itBuilder,   // compiling the project.
+                 //    Loading/Saving/Debugging is not allowed.
+    itDebugger,  // debugging the project.
+                 //    Loading/Saving/Compiling is not allowed.
+    itCodeTools, // the CodeToolBoss is working and has called the progress
+                 //    event. This mode can be deactivated at any time.
+    itCustom     // this state is not used yet.
+    );
 
-    itNone: The default mode. All editing allowed.
-    itBuilder: compiling the project. Loading/Saving/Debugging is not allowed.
-    itDebugger: debugging the project. Loading/Saving/Compiling is not allowed.
-    itCustom: this state is not used yet.
-  }
-  TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
-
+  // new file flags
   TNewFlag = (nfIsPartOfProject // force IsPartOfProject,
                                 //   default is to use a heuristic
               );
   TNewFlags = set of TNewFlag;
 
+  // save file flags
   TSaveFlag = (sfSaveAs,
                sfSaveToTestDir,
                sfProjectSaving,
@@ -73,6 +77,7 @@ type
                );
   TSaveFlags = set of TSaveFlag;
   
+  // open file flags
   TOpenFlag = (ofProjectLoading,// this open is part of opening a whole project
                ofOnlyIfExists,  // do not auto create non existing files
                ofRevert,        // reload file if already open
@@ -83,15 +88,26 @@ type
                );
   TOpenFlags = set of TOpenFlag;
   
+  // revert file flags
   TRevertFlag = (rfQuiet);
   TRevertFlags = set of TRevertFlag;
   
+  // close file flags
   TCloseFlag = (cfSaveFirst, // check if modified and save
                 cfProjectClosing);
   TCloseFlags = set of TCloseFlag;
   
+  // load buffer flags
   TLoadBufferFlag = (lbfUpdateFromDisk, lbfRevert, lbfCheckIfText);
   TLoadBufferFlags = set of TLoadBufferFlag;
+
+  // codetools flags
+  TCodeToolsFlag = (
+    ctfSwitchToFormSource, // bring source notebook to front and show source of
+                           //   current designed form
+    ctfActivateAbortMode   // activate the CodeToolBoss.Abortable mode
+    );
+  TCodeToolsFlags = set of TCodeToolsFlag;
 
 
   { TMainIDEBar }
