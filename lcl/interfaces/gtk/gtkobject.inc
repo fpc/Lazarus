@@ -2094,9 +2094,12 @@ begin
          
          if Sender is TOpenDialog then begin
            // set extra options
-           if ofAllowMultiSelect in TOpenDialog(Sender).Options then begin
+           if ofAllowMultiSelect in TOpenDialog(Sender).Options then
+	   begin
+	     LastFileSelectRow := -1;
+             gtk_signal_connect( gtk_object(PGtkCList(PGtkFileSelection(P)^.file_list)), 'select-row', gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
              gtk_clist_set_selection_mode(
-               PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
+PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
            end;
          end;
       end;
@@ -3483,6 +3486,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.87  2001/12/12 20:19:19  lazarus
+    Modified the the GTKFileSelection so that it will handle and use
+    CTRL and SHIFT keys in a fashion similar to Windows.
+
   Revision 1.86  2001/12/12 14:39:25  lazarus
   MG: carets will now be auto destroyed on widget destroy
 

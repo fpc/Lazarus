@@ -11,6 +11,7 @@ var
 //testing
 LMouseButtonDown,MMouseButtonDown,RMouseButtonDown : Boolean;  //used to track the mouse buttons
 LLastClick, RLastClick, MLastClick : TDateTime;
+LastFileSelectRow : gint;
 
 
 
@@ -621,6 +622,46 @@ begin
   Result:= DeliverMessage(Data, Mess) = 0;
 
   Result := True;
+end;
+
+function gtkOpenDialogRowSelectCB( widget : PGtkWidget; row : gint; column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
+var
+   ShiftState: TShiftState;
+   loop : gint;
+   startRow : gint;
+   endRow : gint;
+begin
+   // only process the callback if there is event data. If there isn't any
+   // event data that means it was called due to a direct function call of the
+   // widget and not an actual mouse click on the widget.
+   if event <> nil then
+   begin
+      ShiftState := GTKEventState2ShiftState(Event^.State);
+      if ssShift in ShiftState then
+      begin
+         if LastFileSelectRow <> -1 then
+         begin
+            startRow := LastFileSelectRow;
+	    endRow := row;
+            if LastFileSelectRow > row then
+	    begin
+	       startRow := row;
+	       endRow := LastFileSelectRow;
+	    end;
+            for loop := startRow to endRow do
+	    begin
+               gtk_clist_select_row(PGtkCList(widget), loop, column);
+	    end;
+         end;
+      end
+      else if not (ssCtrl in ShiftState) then
+      begin
+         gtk_clist_unselect_all(PGtkCList(widget));
+         gtk_clist_select_row(PGtkCList(widget), row, column);
+      end;
+      LastFileSelectRow := row;
+   end;
+   Result := True;
 end;
 
 function gtkDialogOKclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1539,6 +1580,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2001/12/12 20:19:19  lazarus
+    Modified the the GTKFileSelection so that it will handle and use
+    CTRL and SHIFT keys in a fashion similar to Windows.
+
   Revision 1.53  2001/12/12 15:12:31  lazarus
   MG: added file path to files in TOpenDialog
 
