@@ -442,13 +442,13 @@ interface
 
 {$IFNDEF FPC}
 {$DEFINE reRealExceptionAddr} // if defined then exceptions will
-{$ENDIF}
 // jump to appropriate source line, not to Error procedure
+{$ENDIF}
 
 {$DEFINE ComplexBraces} // define for beta-version of braces
 // (in stable version it works only for simple cases)
 
-{.$DEFINE UniCode} // define for Unicode support
+{off $DEFINE UniCode} // define for Unicode support
 
 {$IFNDEF UniCode} // optionts applicable only for non-UniCode
  {$DEFINE UseSetOfChar} // Significant optimization by using set of char
@@ -526,36 +526,35 @@ const
 
 
 const
- NSUBEXP = 15; // max number of subexpression //###0.929
- // Cannot be more than NSUBEXPMAX
- // Be carefull - don't use values which overflow CLOSE opcode
- // (in this case you'll get compiler erorr).
- // Big NSUBEXP will cause more slow work and more stack required
- NSUBEXPMAX = 255; // Max possible value for NSUBEXP. //###0.945
- // Don't change it! It's defined by internal TRegExpr design.
+  NSUBEXP = 15; // max number of subexpression //###0.929
+  // Cannot be more than NSUBEXPMAX
+  // Be carefull - don't use values which overflow CLOSE opcode
+  // (in this case you'll get compiler erorr).
+  // Big NSUBEXP will cause more slow work and more stack required
+  NSUBEXPMAX = 255; // Max possible value for NSUBEXP. //###0.945
+  // Don't change it! It's defined by internal TRegExpr design.
 
- MaxBracesArg = $7FFFFFFF - 1; // max value for {n,m} arguments //###0.933
+  MaxBracesArg = $7FFFFFFF - 1; // max value for {n,m} arguments //###0.933
 
- {$IFDEF ComplexBraces}
- LoopStackMax = 10; // max depth of loops stack //###0.925
- {$ENDIF}
+  {$IFDEF ComplexBraces}
+  LoopStackMax = 10; // max depth of loops stack //###0.925
+  {$ENDIF}
 
- TinySetLen = 3;
- // if range includes more then TinySetLen chars, //###0.934
- // then use full (32 bytes) ANYOFFULL instead of ANYOF[BUT]TINYSET
- // !!! Attension ! If you change TinySetLen, you must
- // change code marked as "//!!!TinySet"
+  TinySetLen = 3;
+  // if range includes more then TinySetLen chars, //###0.934
+  // then use full (32 bytes) ANYOFFULL instead of ANYOF[BUT]TINYSET
+  // !!! Attension ! If you change TinySetLen, you must
+  // change code marked as "//!!!TinySet"
 
 
 type
-
 {$IFDEF UseSetOfChar}
- PSetOfREChar = ^TSetOfREChar;
- TSetOfREChar = set of REChar;
+  PSetOfREChar = ^TSetOfREChar;
+  TSetOfREChar = set of REChar;
 {$ENDIF}
 
- TRegExpr = class
-   private
+  TRegExpr = class
+  private
     startp : array [0 .. NSUBEXP - 1] of PRegExprChar; // founded expr starting points
     endp : array [0 .. NSUBEXP - 1] of PRegExprChar; // founded expr end points
 
@@ -923,8 +922,8 @@ type
     {$ENDIF}
   end;
 
- ERegExpr = class (Exception)
-   public
+  ERegExpr = class (Exception)
+  public
     ErrorCode : integer;
     CompilerErrorPos : integer;
   end;
@@ -991,27 +990,27 @@ uses
 {$ELSE}
 {$IFNDEF LINUX} //js 07-04-2002 only use windows in non-CLX-envirolment -- SYN_CLX doesn't work, why?
 uses
- Windows; // CharUpper/Lower
+  Windows; // CharUpper/Lower
 {$ENDIF}
 {$ENDIF}
 
 const
- TRegExprVersionMajor : integer = 0;
- TRegExprVersionMinor : integer = 947;
- // don't use this const directly, use TRegExpr.VersionXXX instead
+  TRegExprVersionMajor : integer = 0;
+  TRegExprVersionMinor : integer = 947;
+  // don't use this const directly, use TRegExpr.VersionXXX instead
 
- MaskModI = 1;  // modifier /i bit in fModifiers
- MaskModR = 2;  // -"- /r
- MaskModS = 4;  // -"- /s
- MaskModG = 8;  // -"- /g
- MaskModM = 16; // -"- /m
- MaskModX = 32; // -"- /x
+  MaskModI = 1;  // modifier /i bit in fModifiers
+  MaskModR = 2;  // -"- /r
+  MaskModS = 4;  // -"- /s
+  MaskModG = 8;  // -"- /g
+  MaskModM = 16; // -"- /m
+  MaskModX = 32; // -"- /x
 
- {$IFDEF UniCode}
- XIgnoredChars = ' '#9#$d#$a;
- {$ELSE}
- XIgnoredChars = [' ', #9, #$d, #$a];
- {$ENDIF}
+  {$IFDEF UniCode}
+  XIgnoredChars = ' '#9#$d#$a;
+  {$ELSE}
+  XIgnoredChars = [' ', #9, #$d, #$a];
+  {$ENDIF}
 
 {=============================================================}
 {=================== WideString functions ====================}
@@ -1020,24 +1019,24 @@ const
 {$IFDEF UniCode}
 
 function StrPCopy (Dest: PRegExprChar; const Source: RegExprString): PRegExprChar;
- var
+var
   i, Len : Integer;
- begin
+begin
   Len := length (Source); //###0.932
   for i := 1 to Len do
    Dest [i - 1] := Source [i];
   Dest [Len] := #0;
   Result := Dest;
- end; { of function StrPCopy
+end; { of function StrPCopy
 --------------------------------------------------------------}
 
 function StrLCopy (Dest, Source: PRegExprChar; MaxLen: Cardinal): PRegExprChar;
- var i: Integer;
- begin
+var i: Integer;
+begin
   for i := 0 to MaxLen - 1 do
    Dest [i] := Source [i];
   Result := Dest;
- end; { of function StrLCopy
+end; { of function StrLCopy
 --------------------------------------------------------------}
 
 function StrLen (Str: PRegExprChar): Cardinal;
