@@ -111,50 +111,50 @@ type
     FExpirationTimeInDays: integer;
     FGlobalWriteLockIsSet: boolean;
     FGlobalWriteLockStep: integer;
+    function FindIncludeLink(const IncludeFilename: string): string;
+    function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
+    function OnScannerCheckFileOnDisk(Code: pointer): boolean;
+    function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
     function OnScannerGetSource(Sender: TObject; Code: pointer): TSourceLog;
     function OnScannerLoadSource(Sender: TObject; const AFilename: string;
                                  OnlyIfExists: boolean): pointer;
-    function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
-    function OnScannerCheckFileOnDisk(Code: pointer): boolean;
-    procedure OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
-    procedure OnScannerGetSourceStatus(Sender: TObject; Code:Pointer;
-                 var ReadOnly: boolean);
     procedure OnScannerDeleteSource(Sender: TObject; Code: Pointer;
                  Pos, Len: integer);
-    function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
-    function FindIncludeLink(const IncludeFilename: string): string;
+    procedure OnScannerGetSourceStatus(Sender: TObject; Code:Pointer;
+                 var ReadOnly: boolean);
+    procedure OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
     procedure UpdateIncludeLinks;
   public
-    function Count: integer;
-    function FindFile(AFilename: string): TCodeBuffer;
-    function LoadFile(const AFilename: string): TCodeBuffer;
-    function CreateFile(const AFilename: string): TCodeBuffer;
-    function SaveBufferAs(OldBuffer: TCodeBuffer; const AFilename: string;
-          var NewBuffer: TCodeBuffer): boolean;
-    function LastIncludedByFile(const IncludeFilename: string): string;
-    function SaveIncludeLinksToFile(const AFilename: string): boolean;
-    function LoadIncludeLinksFromFile(const AFilename: string): boolean;
-    function SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
-          const XMLPath: string): boolean;
-    function LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
-          const XMLPath: string): boolean;
-    property ExpirationTimeInDays: integer
-          read FExpirationTimeInDays write FExpirationTimeInDays;
-    procedure Clear;
-    procedure ClearAllSourceLogEntries;
     constructor Create;
     destructor Destroy;  override;
-    procedure OnBufferSetScanner(Sender: TCodeBuffer);
-    procedure OnBufferSetFileName(Sender: TCodeBuffer; 
+    function ConsistencyCheck: integer; // 0 = ok
+    function Count: integer;
+    function CreateFile(const AFilename: string): TCodeBuffer;
+    function FindFile(AFilename: string): TCodeBuffer;
+    function LastIncludedByFile(const IncludeFilename: string): string;
+    function LoadFile(const AFilename: string): TCodeBuffer;
+    function LoadIncludeLinksFromFile(const AFilename: string): boolean;
+    function LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
+          const XMLPath: string): boolean;
+    function SaveBufferAs(OldBuffer: TCodeBuffer; const AFilename: string;
+          var NewBuffer: TCodeBuffer): boolean;
+    function SaveIncludeLinksToFile(const AFilename: string): boolean;
+    function SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
+          const XMLPath: string): boolean;
+    procedure Clear;
+    procedure ClearAllSourceLogEntries;
+    procedure OnBufferSetFileName(Sender: TCodeBuffer;
           const OldFilename: string);
+    procedure OnBufferSetScanner(Sender: TCodeBuffer);
+    procedure WriteAllFileNames;
+    procedure WriteDebugReport;
+  public
+    property ExpirationTimeInDays: integer
+          read FExpirationTimeInDays write FExpirationTimeInDays;
     property GlobalWriteLockIsSet: boolean
           read FGlobalWriteLockIsSet write FGlobalWriteLockIsSet;
     property GlobalWriteLockStep: integer
           read FGlobalWriteLockStep write FGlobalWriteLockStep;
-          
-    function ConsistencyCheck: integer; // 0 = ok
-    procedure WriteDebugReport;
-    procedure WriteAllFileNames;
   end;
 
 
@@ -477,6 +477,7 @@ begin
     if IncludeNode<>nil then begin
       // there is already an entry for this file -> update it
       IncludeNode.IncludedByFile:=Code.LastIncludedByFile;
+      IncludeNode.LastTimeUsed:=CurrDate;
     end else if Code.LastIncludedByFile<>'' then begin
       // there is no entry for this include file -> add one
       FIncludeLinks.Add(TIncludedByLink.Create(Code.Filename,
@@ -518,31 +519,41 @@ end;
 
 function TCodeCache.SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
   const XMLPath: string): boolean;
-var Index: integer;
-
+var
+  Index: integer;
+  CurTime: TDateTime;
+  ExpirationTime: TDateTime;
+  
   procedure SaveLinkTree(ANode: TAVLTreeNode);
   var ALink: TIncludedByLink;
     APath: string;
+    DiffTime: TDateTime;
   begin
     if ANode=nil then exit;
     SaveLinkTree(ANode.Left);
     ALink:=TIncludedByLink(ANode.Data);
-    APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
-    XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
-    XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
-    XMLConfig.SetValue(APath+'LastTimeUsed/Value',DateToStr(ALink.LastTimeUsed));
-    inc(Index);
+    DiffTime:=CurTime-ALink.LastTimeUsed;
+    if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
+      APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
+      XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
+      XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
+      XMLConfig.SetValue(APath+'LastTimeUsed/Value',
+                                   FormatDateTime('ddddd', ALink.LastTimeUsed));
+      inc(Index);
+    end;
     SaveLinkTree(ANode.Right);
   end;
 
 begin
   try
+    CurTime:=Now;
+    ExpirationTime:=TDateTime(FExpirationTimeInDays)*(1000*60*60*24);
     UpdateIncludeLinks;
-    XMLConfig.SetValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
-        FExpirationTimeInDays);
-    XMLConfig.SetValue(XMLPath+'IncludeLinks/Count',FIncludeLinks.Count);
+    XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
+        FExpirationTimeInDays,0);
     Index:=0;
     SaveLinkTree(FIncludeLinks.Root);
+    XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/Count',Index,0);
     Result:=true;
   except
     Result:=false;

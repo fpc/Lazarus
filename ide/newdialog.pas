@@ -47,13 +47,14 @@ type
   // Items that can be created in the IDE:
   TNewIDEItemType = (
     niiNone,
-    niiCustom,     // for experts
+    niiCustom,     // for experts (IDE plugins)
     niiUnit,       // pascal unit
     niiForm,       // pascal unit with lcl form
     niiText,       // text file
     niiApplication,// Project: Application
     niiFPCProject, // Project: with hidden main file
-    niiCustomProject// Project: pascal program without any specials
+    niiCustomProject,// Project: pascal program without any specials
+    niiPackage     // standard package
   );
   TNewIDEItemTypes = set of TNewIDEItemType;
 
@@ -552,6 +553,14 @@ begin
     TNewIDEItemTemplate.Create(niiFPCProject,'FPC Project',niifCopy,[]));
   NewCategory.Add(
     TNewIDEItemTemplate.Create(niiCustomProject,'Custom Project',niifCopy,[]));
+
+  {$IFDEF EnablePackageSystem}
+  // category package
+  NewCategory:=TNewIDEItemCategory.Create('Package');
+  Add(NewCategory);
+  NewCategory.Add(
+    TNewIDEItemTemplate.Create(niiPackage,'Package',niifCopy,[]));
+  {$ENDIF}
 end;
 
 destructor TNewIDEItemCategories.Destroy;

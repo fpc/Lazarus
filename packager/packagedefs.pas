@@ -45,9 +45,14 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, IDEProcs, CompilerOptions;
+  Classes, SysUtils, Laz_XMLCfg, CompilerOptions, Forms, FileCtrl, IDEProcs;
 
 type
+  TLazPackage = class;
+  TPkgFile = class;
+  TBasePackageEditor = class;
+  
+
   { TPkgVersion }
 
   TPkgVersion = class
@@ -63,11 +68,27 @@ type
   end;
   
   
+  { TPkgComponent }
+  
+  TPkgComponent = class
+  private
+    FComponentClass: TComponentClass;
+    FPkgFile: TPkgFile;
+  public
+    constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass);
+    destructor Destroy; override;
+  public
+    property ComponentClass: TComponentClass read FComponentClass;
+    property PkgFile: TPkgFile read FPkgFile;
+  end;
+  
+  
   { TPkgFile }
 
   TPkgFileType = (
     pftUnit,   // file is pascal unit
-    pftText    // file is text (e.g. copyright or install notes)
+    pftText,   // file is text (e.g. copyright or install notes)
+    pftBinary  // file is something else
     );
   TPkgFileTypes = set of TPkgFileType;
 
@@ -81,13 +102,14 @@ type
     FFilename: string;
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
+    FPackage: TLazPackage;
     function GetHasRegisteredProc: boolean;
     procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
     procedure SetHasRegisteredProc(const AValue: boolean);
   public
-    constructor Create;
+    constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
     procedure Clear;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -99,6 +121,7 @@ type
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisteredProc: boolean
       read GetHasRegisteredProc write SetHasRegisteredProc;
+    property Package: TLazPackage read FPackage;
   end;
   
   
@@ -154,18 +177,25 @@ type
   TLazPackageFlag = (
     lpfAutoIncrementVersionOnBuild, // increment version before
     lpfModified,           // package needs saving
-    lpfAutoUpdate          // auto compile, if this package
+    lpfAutoUpdate,         // auto compile, if this package
                            // or any required package has been modified
+    lpfOpenInIDE           // open packageeditor in IDE
     );
   TLazPackageFlags = set of TLazPackageFlag;
 
   TLazPackage = class
   private
     FAuthor: string;
+    FAutoLoad: boolean;
+    FComponentCount: integer;
     FConflictPkgs: TList; // TList of TPkgDependency
     FCompilerOptions: TPkgCompilerOptions;
+    FComponents: TList; // TList of TPkgComponent
     FDescription: string;
     FDirectory: string;
+    FInstalled: boolean;
+    FLoaded: boolean;
+    FPackageEditor: TBasePackageEditor;
     FVersion: TPkgVersion;
     FFilename: string;
     FFiles: TList; // TList of TPkgFile
@@ -179,23 +209,30 @@ type
     FUsageOptions: TAdditionalCompilerOptions;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetAutoUpdate: boolean;
+    function GetComponents(Index: integer): TPkgComponent;
     function GetConflictPkgCount: integer;
     function GetConflictPkgs(Index: integer): TPkgDependency;
     function GetDirectory: string;
     function GetFileCount: integer;
     function GetFiles(Index: integer): TPkgFile;
     function GetModified: boolean;
+    function GetOpen: boolean;
     function GetRequiredPkgCount: integer;
     function GetRequiredPkgs(Index: integer): TPkgDependency;
     procedure SetAuthor(const AValue: string);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
+    procedure SetAutoLoad(const AValue: boolean);
     procedure SetAutoUpdate(const AValue: boolean);
     procedure SetDescription(const AValue: string);
     procedure SetFilename(const AValue: string);
     procedure SetFlags(const AValue: TLazPackageFlags);
     procedure SetIconFile(const AValue: string);
+    procedure SetInstalled(const AValue: boolean);
+    procedure SetLoaded(const AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetName(const AValue: string);
+    procedure SetOpen(const AValue: boolean);
+    procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetTitle(const AValue: string);
   public
@@ -206,41 +243,59 @@ type
     procedure UnlockModified;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    function IsVirtual: boolean;
   public
-    property Name: string read FName write SetName;
-    property Title: string read FTitle write SetTitle;
     property Author: string read FAuthor write SetAuthor;
-    property Description: string read FDescription write SetDescription;
-    property Version: TPkgVersion read FVersion;
-    property Filename: string read FFilename write SetFilename; // the .lpk filename
-    property Directory: string read GetDirectory; // the path of the .lpk file
-    property IconFile: string read FIconFile write SetIconFile;
-    property PackageType: TLazPackageType
-      read FPackageType write SetPackageType;
-    property Flags: TLazPackageFlags read FFlags write SetFlags;
-    property Files[Index: integer]: TPkgFile read GetFiles;
-    property FileCount: integer read GetFileCount;
-    property RequiredPkgs[Index: integer]: TPkgDependency read GetRequiredPkgs;
-    property RequiredPkgCount: integer read GetRequiredPkgCount;
-    property ConflictPkgs[Index: integer]: TPkgDependency read GetConflictPkgs;
-    property ConflictPkgCount: integer read GetConflictPkgCount;
-    property Modified: boolean read GetModified write SetModified;
-    property CompilerOptions: TPkgCompilerOptions
-      read FCompilerOptions;
     property AutoIncrementVersionOnBuild: boolean
       read GetAutoIncrementVersionOnBuild write SetAutoIncrementVersionOnBuild;
+    property AutoLoad: boolean read FAutoLoad write SetAutoLoad; { dynamic: load package on next IDE start
+                                  static: compile package into IDE }
     property AutoUpdate: boolean read GetAutoUpdate write SetAutoUpdate;
+    property CompilerOptions: TPkgCompilerOptions
+      read FCompilerOptions;
+    property ComponentCount: integer read FComponentCount;
+    property Components[Index: integer]: TPkgComponent read GetComponents;
+    property ConflictPkgCount: integer read GetConflictPkgCount;
+    property ConflictPkgs[Index: integer]: TPkgDependency read GetConflictPkgs;
+    property Description: string read FDescription write SetDescription;
+    property Directory: string read GetDirectory; // the path of the .lpk file
+    property FileCount: integer read GetFileCount;
+    property Filename: string read FFilename write SetFilename; // the .lpk filename
+    property Files[Index: integer]: TPkgFile read GetFiles;
+    property Flags: TLazPackageFlags read FFlags write SetFlags;
+    property IconFile: string read FIconFile write SetIconFile;
+    property Installed: boolean read FInstalled write SetInstalled; // is in component palette (can be set by projects)
+    property Loaded: boolean read FLoaded write SetLoaded; // package is available for runtime installation
+    property Modified: boolean read GetModified write SetModified;
+    property Name: string read FName write SetName;
+    property PackageType: TLazPackageType
+      read FPackageType write SetPackageType;
+    property RequiredPkgCount: integer read GetRequiredPkgCount;
+    property RequiredPkgs[Index: integer]: TPkgDependency read GetRequiredPkgs;
+    property Title: string read FTitle write SetTitle;
     property UsageOptions: TAdditionalCompilerOptions
       read FUsageOptions;
+    property Version: TPkgVersion read FVersion;
+    property Open: boolean read GetOpen write SetOpen; // a packageeditor is open in the IDE
+    property PackageEditor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
   end;
+  
+  
+  { TBasePackageEditor }
+  
+  TBasePackageEditor = class(TForm)
+  public
+  
+  end;
+  
 
 const
   LazPkgXMLFileVersion = 1;
 
   PkgFileTypeNames: array[TPkgFileType] of string = (
-    'pftUnit', 'pftText' );
+    'pftUnit', 'pftText', 'pftBinary');
   PkgFileTypeIdents: array[TPkgFileType] of string = (
-    'Unit', 'Text' );
+    'Unit', 'Text', 'Binary');
   PkgFileFlag: array[TPkgFileFlag] of string = (
     'pffHasRegisterProc');
   PkgDependencyFlagNames: array[TPkgDependencyFlag] of string = (
@@ -250,7 +305,8 @@ const
   LazPackageTypeIdents: array[TLazPackageType] of string = (
     'RunTime', 'DesignTime', 'RunAndDesignTime');
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
-    'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate');
+    'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate',
+    'lpfOpenInIDE');
     
 
 function PkgFileTypeIdentToType(const s: string): TPkgFileType;
@@ -308,9 +364,10 @@ begin
     Exclude(FFlags,pffHasRegisterProc);
 end;
 
-constructor TPkgFile.Create;
+constructor TPkgFile.Create(ThePackage: TLazPackage);
 begin
   Clear;
+  FPackage:=ThePackage;
 end;
 
 destructor TPkgFile.Destroy;
@@ -458,6 +515,11 @@ begin
   Result:=lpfAutoUpdate in FFlags;
 end;
 
+function TLazPackage.GetComponents(Index: integer): TPkgComponent;
+begin
+  Result:=TPkgComponent(FComponents[Index]);
+end;
+
 function TLazPackage.GetConflictPkgCount: integer;
 begin
   Result:=FConflictPkgs.Count;
@@ -488,6 +550,11 @@ begin
   Result:=lpfModified in FFlags;
 end;
 
+function TLazPackage.GetOpen: boolean;
+begin
+  Result:=lpfOpenInIDE in FFLags;
+end;
+
 function TLazPackage.GetRequiredPkgCount: integer;
 begin
   Result:=FRequiredPkgs.Count;
@@ -513,6 +580,12 @@ begin
   else
     Exclude(FFlags,lpfAutoIncrementVersionOnBuild);
   Modified:=true;
+end;
+
+procedure TLazPackage.SetAutoLoad(const AValue: boolean);
+begin
+  if FAutoLoad=AValue then exit;
+  FAutoLoad:=AValue;
 end;
 
 procedure TLazPackage.SetAutoUpdate(const AValue: boolean);
@@ -554,6 +627,18 @@ begin
   Modified:=true;
 end;
 
+procedure TLazPackage.SetInstalled(const AValue: boolean);
+begin
+  if FInstalled=AValue then exit;
+  FInstalled:=AValue;
+end;
+
+procedure TLazPackage.SetLoaded(const AValue: boolean);
+begin
+  if FLoaded=AValue then exit;
+  FLoaded:=AValue;
+end;
+
 procedure TLazPackage.SetModified(const AValue: boolean);
 begin
   if FModifiedLock>0 then exit;
@@ -568,6 +653,21 @@ begin
   if FName=AValue then exit;
   FName:=AValue;
   Modified:=true;
+end;
+
+procedure TLazPackage.SetOpen(const AValue: boolean);
+begin
+  if Open=AValue then exit;
+  if AValue then
+    Include(FFlags,lpfOpenInIDE)
+  else
+    Exclude(FFlags,lpfOpenInIDE);
+end;
+
+procedure TLazPackage.SetPackageEditor(const AValue: TBasePackageEditor);
+begin
+  if FPackageEditor=AValue then exit;
+  FPackageEditor:=AValue;
 end;
 
 procedure TLazPackage.SetPackageType(const AValue: TLazPackageType);
@@ -588,6 +688,7 @@ constructor TLazPackage.Create;
 begin
   FVersion:=TPkgVersion.Create;
   FConflictPkgs:=TList.Create;
+  FComponents:=TList.Create;
   FRequiredPkgs:=TList.Create;
   FFiles:=TList.Create;
 end;
@@ -596,6 +697,7 @@ destructor TLazPackage.Destroy;
 begin
   Clear;
   FreeAndNil(FFiles);
+  FreeAndNil(FComponents);
   FreeAndNil(FConflictPkgs);
   FreeAndNil(FRequiredPkgs);
   FreeAndNil(FVersion);
@@ -609,6 +711,8 @@ begin
   FAuthor:='';
   for i:=0 to FConflictPkgs.Count-1 do ConflictPkgs[i].Free;
   FConflictPkgs.Clear;
+  for i:=0 to FComponents.Count-1 do Components[i].Free;
+  FComponents.Clear;
   FCompilerOptions.Clear;
   FDescription:='';
   FDirectory:='';
@@ -666,7 +770,7 @@ var
   begin
     NewCount:=XMLConfig.GetValue(ThePath+'Count',0);
     for i:=0 to NewCount-1 do begin
-      PkgFile:=TPkgFile.Create;
+      PkgFile:=TPkgFile.Create(Self);
       PkgFile.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i)+'/',
                                 FileVersion);
       List.Add(PkgFile);
@@ -683,6 +787,10 @@ var
       Include(FFlags,lpfAutoUpdate)
     else
       Exclude(FFlags,lpfAutoUpdate);
+    if XMLConfig.GetValue(ThePath+'OpenInIDE/Value',true) then
+      Include(FFlags,lpfOpenInIDE)
+    else
+      Exclude(FFlags,lpfOpenInIDE);
   end;
 
 begin
@@ -756,6 +864,25 @@ begin
   SavePkgDependencyList(Path+'RequiredPkgs/',FRequiredPkgs);
   XMLConfig.SetDeleteValue(Path+'Title/Value',FTitle,'');
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
+end;
+
+function TLazPackage.IsVirtual: boolean;
+begin
+  Result:=not FilenameIsAbsolute(Filename);
+end;
+
+{ TPkgComponent }
+
+constructor TPkgComponent.Create(ThePkgFile: TPkgFile;
+  TheComponentClass: TComponentClass);
+begin
+  FPkgFile:=ThePkgFile;
+  FComponentClass:=TheComponentClass;
+end;
+
+destructor TPkgComponent.Destroy;
+begin
+  inherited Destroy;
 end;
 
 end.
