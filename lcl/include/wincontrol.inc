@@ -1615,7 +1615,7 @@ Begin
     end
   else
     if HandleAllocated then
-      AControl.InvalidateControl(AControl.Visible, False);
+      AControl.InvalidateControl(AControl.Visible, False, True);
   Remove(AControl);
 //  Perform(CM_CONTROLLISTCHANGE, Integer(AControl), Integer(False));
   Realign;
@@ -2511,6 +2511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2002/11/29 15:14:48  mattias
+  replaced many invalidates by invalidaterect
+
   Revision 1.102  2002/11/27 15:40:36  mattias
   fixed resize request
 
