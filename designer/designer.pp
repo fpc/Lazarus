@@ -437,8 +437,11 @@ begin
     if (ControlSelection.SelectionForm=Form) then begin
       ControlSelection.DrawGuideLines(DDC);
       ControlSelection.DrawGrabbers(DDC);
-      if ControlSelection.RubberBandActive then
-        ControlSelection.DrawRubberBand(DDC);
+    end;
+    if ControlSelection.RubberBandActive
+    and ((ControlSelection.SelectionForm=Form)
+    or (ControlSelection.SelectionForm=nil)) then begin
+      ControlSelection.DrawRubberBand(DDC);
     end;
     DDC.Clear;
   end;
@@ -492,6 +495,7 @@ var i,
   SelectedCompClass: TRegisteredComponent;
   NonVisualComp: TComponent;
   ParentForm: TCustomForm;
+  Shift: TShiftState;
 Begin
   FHintTimer.Enabled := False;
   Exclude(FFLags,dfHasSized);
@@ -519,6 +523,12 @@ Begin
   else
     MouseDownClickCount:=1;
   end;
+
+  Shift := [];
+  if (TheMessage.keys and MK_Shift) = MK_Shift then
+    Include(Shift,ssShift);
+  if (TheMessage.keys and MK_Control) = MK_Control then
+    Include(Shift,ssCtrl);
 
   MouseDownPos:=GetFormRelativeMousePosition(Form);
   LastMouseMovePos:=MouseDownPos;
@@ -559,7 +569,7 @@ Begin
         // no grabber resizing
 
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
-        if (TheMessage.Keys and MK_SHIFT)>0 then begin
+        if (ssShift in Shift) then begin
           // shift key pressed (multiselection)
 
           if CompIndex<0 then begin
@@ -631,10 +641,10 @@ var
   begin
     Shift := [];
     if (TheMessage.keys and MK_Shift) = MK_Shift then
-      Shift := [ssShift];
+      Include(Shift,ssShift);
     if (TheMessage.keys and MK_Control) = MK_Control then
       Include(Shift,ssCtrl);
-      
+
     case TheMessage.Msg of
     LM_LBUTTONUP: Include(Shift,ssLeft);
     LM_MBUTTONUP: Include(Shift,ssMiddle);
@@ -724,6 +734,8 @@ var
   end;
   
   procedure RubberbandSelect;
+  var
+    MaxParentControl: TControl;
   begin
     if (ssShift in Shift)
     and (ControlSelection.SelectionForm<>nil)
@@ -736,14 +748,19 @@ var
     end;
 
     ControlSelection.BeginUpdate;
-    NewRubberbandSelection:=
-      ((not (ssShift in Shift))
-        and ControlSelection.IsOnlySelected(Form))
-      or ((ControlSelection.SelectionForm<>nil)
-        and (ControlSelection.SelectionForm<>Form));
+    // check if start new selection or add/remove:
+    NewRubberbandSelection:= (not (ssShift in Shift))
+      or (ControlSelection.SelectionForm<>Form);
+    // if user press Control key, then component candidates are only childs of
+    // the control, where the mouse started
+    MaxParentControl:=nil;
+    if (ssCtrl in shift) and (MouseDownComponent is TControl) then begin
+      MaxParentControl:=TControl(MouseDownComponent);
+    end;
     SelectionChanged:=false;
     ControlSelection.SelectWithRubberBand(
-      Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged);
+      Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged,
+      MaxParentControl);
     if ControlSelection.Count=0 then begin
       ControlSelection.Add(Form);
       SelectionChanged:=true;
@@ -901,11 +918,13 @@ begin
 
   Shift := [];
   if (TheMessage.keys and MK_Shift) = MK_Shift then
-    Shift := [ssShift];
+    Include(Shift,ssShift);
   if (TheMessage.keys and MK_Control) = MK_Control then
-    Shift := Shift + [ssCTRL];
+    Include(Shift,ssCtrl);
 
-  if ControlSelection.SelectionForm=Form then begin
+  if (ControlSelection.SelectionForm=nil)
+  or (ControlSelection.SelectionForm=Form)
+  then begin
     if (TheMessage.keys and MK_LButton) = MK_LButton then begin
       // left button pressed
       if (ControlSelection.ActiveGrabber<>nil) then begin
@@ -921,11 +940,12 @@ begin
         if Assigned(OnModified) then OnModified(Self);
       end else begin
         // no grabber resizing
-        if (not ComponentIsTopLvl(MouseDownComponent))
+        if (not ControlSelection.RubberBandActive)
+        and (Shift=[])
         and (ControlSelection.Count>=1)
         and not (ControlSelection.IsSelected(Form))
-        and (GetSelectedComponentClass=nil) then
-        begin
+        and (GetSelectedComponentClass=nil)
+        then begin
           // move selection
           if not (dfHasSized in FFlags) then begin
             ControlSelection.SaveBounds;
