@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions,
-  ExtToolEditDlg;
+  Buttons, LazarusIDEStrConsts, FileCtrl, IDEProcs, EnvironmentOpts,
+  CompilerOptions, ExtToolEditDlg, TransferMacros;
 
 type
   TCompilerOptionsTest = (
@@ -24,31 +24,26 @@ type
     procedure ApplicationOnIdle(Sender: TObject);
     procedure CloseButtonCLICK(Sender: TObject);
   private
+    FMacroList: TTransferMacroList;
     FOptions: TCompilerOptions;
     FTest: TCompilerOptionsTest;
+    procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetOptions(const AValue: TCompilerOptions);
   public
-    procedure DoTest;
+    function DoTest: TModalResult;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function RunTool(ExtTool: TExternalToolOptions): TModalResult;
+    procedure AddMsg(const Msg, CurDir: String);
+    procedure AddProgress(const Msg, CurDir: String);
   public
     property Options: TCompilerOptions read FOptions write SetOptions;
     property Test: TCompilerOptionsTest read FTest;
+    property MacroList: TTransferMacroList read FMacroList write SetMacroList;
   end;
 
 
-function ShowCheckCompilerOptsDlg(CompOpts: TCompilerOptions): TModalResult;
-
 implementation
-
-function ShowCheckCompilerOptsDlg(CompOpts: TCompilerOptions): TModalResult;
-var
-  CheckCompilerOptsDlg: TCheckCompilerOptsDlg;
-begin
-  CheckCompilerOptsDlg:=TCheckCompilerOptsDlg.Create(Application);
-  CheckCompilerOptsDlg.Options:=CompOpts;
-  Result:=CheckCompilerOptsDlg.ShowModal;
-end;
 
 { TCheckCompilerOptsDlg }
 
@@ -69,7 +64,13 @@ begin
   FOptions:=AValue;
 end;
 
-procedure TCheckCompilerOptsDlg.DoTest;
+procedure TCheckCompilerOptsDlg.SetMacroList(const AValue: TTransferMacroList);
+begin
+  if FMacroList=AValue then exit;
+  FMacroList:=AValue;
+end;
+
+function TCheckCompilerOptsDlg.DoTest: TModalResult;
 var
   TestDir: String;
   BogusFilename: String;
@@ -77,6 +78,7 @@ var
   CompileTool: TExternalToolOptions;
   CmdLineParams: String;
 begin
+  Result:=mrCancel;
   if Test<>cotNone then exit;
   try
     // check compiler filename
@@ -100,8 +102,9 @@ begin
     if not DirectoryExists(TestDir) then begin
       MessageDlg('Invalid Test Directory',
         'Please check the Test directory under'#13
-        'Environment -> Environment Options -> Files -> Directory for building test projects',
+        +'Environment -> Environment Options -> Files -> Directory for building test projects',
         mtError,[mbCancel],0);
+      Result:=mrCancel;
       exit;
     end;
     // create bogus file
@@ -110,6 +113,7 @@ begin
       MessageDlg('Unable to create Test File',
         'Unable to create Test pascal file "'+BogusFilename+'".',
         mtError,[mbCancel],0);
+      Result:=mrCancel;
       exit;
     end;
     // create compiler command line options
@@ -124,13 +128,12 @@ begin
       CompileTool.Filename:=CompilerFilename;
       CompileTool.CmdLineParams:=CmdLineParams;
       
-      //Result:=EnvironmentOptions.ExternalTools.Run(CompileTool,MacroList);
+      Result:=RunTool(CompileTool);
     finally
       // clean up
       CompileTool.Free;
     end;
 
-    
   finally
     FTest:=cotNone;
   end;
@@ -146,6 +149,22 @@ destructor TCheckCompilerOptsDlg.Destroy;
 begin
   Application.RemoveOnIdleHandler(@ApplicationOnIdle);
   inherited Destroy;
+end;
+
+function TCheckCompilerOptsDlg.RunTool(ExtTool: TExternalToolOptions
+  ): TModalResult;
+begin
+  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,MacroList);
+end;
+
+procedure TCheckCompilerOptsDlg.AddMsg(const Msg, CurDir: String);
+begin
+  // ToDo
+end;
+
+procedure TCheckCompilerOptsDlg.AddProgress(const Msg, CurDir: String);
+begin
+  // ToDo
 end;
 
 initialization

@@ -13,11 +13,11 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
   object OutputGroupBox: TGROUPBOX
     ALIGN = altop
     CAPTION = 'Output'
-    CLIENTHEIGHT = 232
+    CLIENTHEIGHT = 143
     CLIENTWIDTH = 620
     PARENTCTL3D = False
     TABORDER = 0
-    HEIGHT = 249
+    HEIGHT = 160
     WIDTH = 624
     object OutputMemo: TMEMO
       ALIGN = albottom
@@ -27,15 +27,15 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
       TABSTOP = True
       TABSTOP = True
       TABORDER = 0
-      HEIGHT = 207
-      TOP = 25
+      HEIGHT = 126
+      TOP = 17
       WIDTH = 620
     end
     object OutputLabel: TLABEL
       ALIGN = altop
       CAPTION = 'OutputLabel'
       LAYOUT = tltop
-      HEIGHT = 25
+      HEIGHT = 17
       WIDTH = 620
     end
   end
@@ -46,7 +46,7 @@ object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
     ONCLICK = CloseButtonCLICK
     LEFT = 296
     HEIGHT = 25
-    TOP = 264
+    TOP = 272
     WIDTH = 75
   end
 end

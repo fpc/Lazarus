@@ -52,7 +52,7 @@ uses
   // synedit
   SynEditKeyCmds,
   // compile
-  Compiler, CompilerOptions,
+  Compiler, CompilerOptions, CheckCompilerOpts,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   ProjectInspector,
@@ -5579,7 +5579,7 @@ begin
       ToolStatus:=itNone;
     end;
   end;
-
+  
   // execute compilation tool 'After'
   if Result=mrOk then begin
     Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
@@ -9390,6 +9390,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.633  2003/08/13 22:29:28  mattias
+  started check compiler options
+
   Revision 1.632  2003/08/13 16:18:57  mattias
   started check compiler options
 

@@ -37,11 +37,11 @@ type
   TOnGetIncludePath = function(const Directory: string): string of object;
   
   TOuputFilterOption = (
-        ofoSearchForFPCMessages, // scan for freepascal compiler messages
-        ofoSearchForMakeMessages,// scan for make/gmake messages
-        ofoExceptionOnError,     // raise exception on panic, fatal errors
-        ofoMakeFilenamesAbsolute // convert relative filenames to absolute ones
-        );
+    ofoSearchForFPCMessages, // scan for freepascal compiler messages
+    ofoSearchForMakeMessages,// scan for make/gmake messages
+    ofoExceptionOnError,     // raise exception on panic, fatal errors
+    ofoMakeFilenamesAbsolute // convert relative filenames to absolute ones
+    );
   TOuputFilterOptions = set of TOuputFilterOption;
   
   TOutputMessageType = (omtNone, omtFPC, omtLinker, omtMake);
@@ -85,6 +85,7 @@ type
     procedure ReadLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
     function ReadMakeLine(const s: string): boolean;
+  public
     property CurrentDirectory: string read fCurrentDirectory;
     property FilteredLines: TStringList read fFilteredOutput;
     property StopExecute: boolean read FStopExecute write SetStopExecute;

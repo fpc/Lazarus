@@ -137,10 +137,10 @@ function TOpenDialog.DoExecute: boolean;
       if not Result then exit;
     end;
     if (ofPathMustExist in Options)
-    and (not FileExists(ExtractFilePath(AFilename))) then begin
+    and (not FileExists(ExtractFileDir(AFilename))) then begin
       Result:=false;
       MessageDlg(rsfdPathMustExist,
-                 Format(rsfdPathNoExist,[ExtractFilePath(AFilename)]),
+                 Format(rsfdPathNoExist,[ExtractFileDir(AFilename)]),
                  mtError,[mbCancel],0);
       exit;
     end;
@@ -236,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/08/13 22:29:28  mattias
+  started check compiler options
+
   Revision 1.8  2003/06/30 14:58:29  mattias
   implemented multi file add to package editor
 

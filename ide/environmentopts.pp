@@ -1025,7 +1025,7 @@ begin
          'EnvironmentOptions/CompilerFilename/History/');
       if FCompilerFileHistory.Count=0 then begin
         {$IFDEF win32}
-        FCompilerFileHistory.Add('c:/pp/bin/ppc386');
+        FCompilerFileHistory.Add('c:\pp\bin\win32\ppc386.exe');
         {$ELSE}
         FCompilerFileHistory.Add('/usr/bin/ppc386');
         FCompilerFileHistory.Add('/opt/fpc/ppc386');

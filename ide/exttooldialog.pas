@@ -76,7 +76,10 @@ type
     function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     function Run(ExtTool: TExternalToolOptions;
-      Macros: TTransferMacroList): TModalResult;
+                 Macros: TTransferMacroList): TModalResult;
+    function Run(ExtTool: TExternalToolOptions;
+                 Macros: TTransferMacroList;
+                 TheOutputFilter: TOutputFilter): TModalResult;
     function Run(Index: integer; Macros: TTransferMacroList): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
@@ -249,6 +252,12 @@ begin
   end;
 end;
 
+function TExternalToolList.Run(ExtTool: TExternalToolOptions;
+  Macros: TTransferMacroList): TModalResult;
+begin
+  Result:=Run(ExtTool,Macros,nil);
+end;
+
 function TExternalToolList.Run(Index: integer;
   Macros: TTransferMacroList): TModalResult;
 begin
@@ -258,10 +267,9 @@ begin
 end;
 
 function TExternalToolList.Run(ExtTool: TExternalToolOptions;
-  Macros: TTransferMacroList): TModalResult;
+  Macros: TTransferMacroList; TheOutputFilter: TOutputFilter): TModalResult;
 var WorkingDir, Filename, Params, CmdLine, Title: string;
   TheProcess: TProcess;
-  TheOutputFilter: TOutputFilter;
   Abort, ErrorOccurred: boolean;
 begin
   Result:=mrCancel;
@@ -271,85 +279,86 @@ begin
   Params:=ExtTool.CmdLineParams;
   Title:=ExtTool.Title;
   if Title='' then Title:=Filename;
-  if Macros.SubstituteStr(Filename) 
-  and Macros.SubstituteStr(WorkingDir)
-  and Macros.SubstituteStr(Params) then begin
-    Filename:=FindProgram(Filename,GetCurrentDir,false);
-    CmdLine:=Filename;
-    if Params<>'' then
-      CmdLine:=CmdLine+' '+Params;
-    writeln('[TExternalToolList.Run] ',CmdLine);
-    try
-      CheckIfFileIsExecutable(Filename);
-      TheProcess := TProcess.Create(nil);
-      TheProcess.CommandLine := Filename+' '+Params;
-      TheProcess.Options:= [poUsePipes, poNoConsole,poStdErrToOutPut];
-      TheProcess.ShowWindow := swoNone;
-      TheProcess.CurrentDirectory := WorkingDir;
-      if ExtTool.EnvironmentOverrides.Count>0 then
-        ExtTool.AssignEnvironmentTo(TheProcess.Environment);
-      if (ExtTool.NeedsOutputFilter) and Assigned(OnNeedsOutputFilter)
-      then begin
-        Abort:=false;
-        OnNeedsOutputFilter(TheOutputFilter,Abort);
-        if Abort then begin
-          Result:=mrAbort;
-          exit;
-        end;
-        ErrorOccurred:=false;
-        try
-          TheOutputFilter.PrgSourceFilename:='';
-          TheOutputFilter.Options:=[ofoExceptionOnError,
-                                    ofoMakeFilenamesAbsolute];
-          if ExtTool.ScanOutputForFPCMessages then
-            TheOutputFilter.Options:=TheOutputFilter.Options
-                                     +[ofoSearchForFPCMessages];
-          if ExtTool.ScanOutputForMakeMessages then
-            TheOutputFilter.Options:=TheOutputFilter.Options
-                                     +[ofoSearchForMakeMessages];
-          try
-            Result:=mrCancel;
-            try
-              if TheOutputFilter.Execute(TheProcess) then begin
-                TheOutputFilter.ReadLine('"'+Title+'" completed',true);
-              end;
-              if TheOutputFilter.ErrorExists then begin
-                ErrorOccurred:=true;
-              end;
-            finally
-              TheProcess.WaitOnExit;
-              TheProcess.Free;
-            end;
-            if ErrorOccurred then
-              Result:=mrCancel
-            else if TheOutputFilter.Aborted then
-              Result:=mrAbort
-            else
-              Result:=mrOk;
-          except
-            on e: EOutputFilterError do begin
-              writeln('TExternalToolList.Run ',E.Message);
-              ErrorOccurred:=true;
-            end
-            else
-              raise
-          end;
-        finally
-          if Assigned(OnFreeOutputFilter) then
-            OnFreeOutputFilter(TheOutputFilter,ErrorOccurred);
-        end;
-      end else begin
-        AddRunningTool(TheProcess,true);
-        Result:=mrOk;
-      end;
-    except
-      on e: Exception do begin
-        Result:=MessageDlg(lisExtToolFailedToRunTool,
-          Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
-            ),
-          mtError,[mbCancel,mbAbort],0);
+  if (not Macros.SubstituteStr(Filename)) then exit;
+  if (not Macros.SubstituteStr(WorkingDir)) then exit;
+  if (not Macros.SubstituteStr(Params)) then exit;
+  Filename:=FindProgram(Filename,GetCurrentDir,false);
+  CmdLine:=Filename;
+  if Params<>'' then
+    CmdLine:=CmdLine+' '+Params;
+  writeln('[TExternalToolList.Run] ',CmdLine);
+  try
+    CheckIfFileIsExecutable(Filename);
+    TheProcess := TProcess.Create(nil);
+    TheProcess.CommandLine := Filename+' '+Params;
+    TheProcess.Options:= [poUsePipes, poNoConsole,poStdErrToOutPut];
+    TheProcess.ShowWindow := swoNone;
+    TheProcess.CurrentDirectory := WorkingDir;
+    if ExtTool.EnvironmentOverrides.Count>0 then
+      ExtTool.AssignEnvironmentTo(TheProcess.Environment);
+    if (ExtTool.NeedsOutputFilter) and (TheOutputFilter=nil)
+    and Assigned(OnNeedsOutputFilter) then begin
+      Abort:=false;
+      OnNeedsOutputFilter(TheOutputFilter,Abort);
+      if Abort then begin
+        Result:=mrAbort;
         exit;
       end;
+    end;
+    if TheOutputFilter<>nil then begin
+      ErrorOccurred:=false;
+      try
+        TheOutputFilter.PrgSourceFilename:='';
+        TheOutputFilter.Options:=[ofoExceptionOnError,
+                                  ofoMakeFilenamesAbsolute];
+        if ExtTool.ScanOutputForFPCMessages then
+          TheOutputFilter.Options:=TheOutputFilter.Options
+                                   +[ofoSearchForFPCMessages];
+        if ExtTool.ScanOutputForMakeMessages then
+          TheOutputFilter.Options:=TheOutputFilter.Options
+                                   +[ofoSearchForMakeMessages];
+        try
+          Result:=mrCancel;
+          try
+            if TheOutputFilter.Execute(TheProcess) then begin
+              TheOutputFilter.ReadLine('"'+Title+'" completed',true);
+            end;
+            if TheOutputFilter.ErrorExists then begin
+              ErrorOccurred:=true;
+            end;
+          finally
+            TheProcess.WaitOnExit;
+            TheProcess.Free;
+          end;
+          if ErrorOccurred then
+            Result:=mrCancel
+          else if TheOutputFilter.Aborted then
+            Result:=mrAbort
+          else
+            Result:=mrOk;
+        except
+          on e: EOutputFilterError do begin
+            writeln('TExternalToolList.Run ',E.Message);
+            ErrorOccurred:=true;
+          end
+          else
+            raise
+        end;
+      finally
+        if Assigned(OnFreeOutputFilter) then
+          OnFreeOutputFilter(TheOutputFilter,ErrorOccurred);
+      end;
+    end else begin
+      AddRunningTool(TheProcess,true);
+      Result:=mrOk;
+    end;
+  except
+    on e: Exception do begin
+      Result:=MessageDlg(lisExtToolFailedToRunTool,
+        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', #13, e.Message]
+          ),
+        mtError,[mbCancel,mbAbort],0);
+      exit;
     end;
   end;
 end;
