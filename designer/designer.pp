@@ -355,6 +355,7 @@ Begin
 
   X :=TLMMouse(Message).Pos.x;
   Y := TLMMouse(Message).Pos.Y;
+Writeln('Keys is '+inttostr(TlmMouse(Message).keys));
   if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
     Button := mbLEft
    else
@@ -392,14 +393,17 @@ end;
 function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
 Begin
 result := false;
-Writeln('In ISDESIGNMSG');
 if ((Message.msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST)) then
 Result := true;
 
 if (Message.msg=LM_LBUTTONDOWN) then
-   begin  //select the control
-   ControlSelection.Clear;
-   ControlSelection.Add(TControl(Sender));
+   begin
+   MouseDownonControl(sender,message);
+   end
+else
+if (Message.msg=LM_LBUTTONUP) then
+   begin
+   MouseUPONControl(sender,message);
    end
 else
 if Message.msg = LM_MOUSEMOVE then
