@@ -53,7 +53,7 @@ type
     Function AddPage(title: String; Lines : TStringList) : TmwCustomEdit;
     Procedure DeletePage(Value : Integer);
     Function GetEditorfromPage(Value : Integer) : TmwCustomEdit;
-    Procedure SelectText(SelStart,SelEnd : Integer);
+    Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     property CurrentSource : TStrings read GetCurrentSource;
     property CurrentCursorXLine : Integer read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer read GetCurrentCursorYLine write SetCurrentCursorYLine;
@@ -293,18 +293,21 @@ if Temp <> nil then
 
 end;
 
-Procedure TideEditor.SelectText(SelStart,SelEnd : Integer);
+Procedure TideEditor.SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
 var
 temp : TmwCustomEdit;
+P : TPoint;
 begin
 Temp := GetEditorFromPage(Notebook1.PageIndex);
 Writeln('In SelectText');
-Writeln(Format('SelStart and SelEnd are %d,%d',[SelStart,SelEnd]));
 if Temp <> nil then
    Begin
-   Temp.SetSelStart(SelStart);
-   Temp.SetSelEnd(SelEnd);
-
+   P.X := CharStart;
+   P.Y := LineNum;
+   Temp.BlockBegin := P;
+   P.X := CharEnd;
+   P.Y := LineNum2;
+   Temp.BlockEnd := P;
    end;
 
 end;

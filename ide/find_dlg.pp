@@ -146,6 +146,7 @@ begin
      Items.Add('Forward');
      Items.Add('Backward');
      visible := True;
+     ItemIndex := 0;
     end;
 
    btnOK := TButton.create(self);

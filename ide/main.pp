@@ -95,7 +95,8 @@ type
     itmEditCopy: TMenuItem; 
     itmEditPaste: TMenuItem; 
     itmSearchfind: TMenuItem;
-    itmViewInspector: TMenuItem; 
+    itmSearchFindAgain: TMenuItem;
+    itmViewInspector: TMenuItem;
     itmViewProject: TMenuItem; 
     itmViewProjectOptions: TMenuItem;
     itmViewUnits : TMenuItem;
@@ -135,6 +136,7 @@ type
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuSearchFindClicked(Sender : TObject);
+    procedure mnuSearchFindAgainClicked(Sender : TObject);
 
     procedure ControlClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
@@ -793,6 +795,11 @@ itmFileNew := TMenuItem.Create(Self);
   itmSearchFind.OnClick := @mnuSearchFindClicked;
   mnuSearch.add(itmSearchFind);
 
+  itmSearchFindAgain := TMenuItem.Create(nil);
+  itmSearchFindAgain.caption := 'Find &Again';
+  itmSearchFindAgain.OnClick := @mnuSearchFindAgainClicked;
+  itmSearchFindAgain.Enabled := False;
+  mnuSearch.add(itmSearchFindAgain);
 //--------------
 // View
 //--------------
@@ -1792,35 +1799,102 @@ I : Integer;
 Findtext : String;
 CharCount : Integer;
 Found : Boolean;
+StartLineNUmber : Integer;
+Searchto : Integer;
+FoundAt  : Integer;
 Begin
 Found := False;
 if (IDeEditor1.Visible) then
    begin
+   if (Sender is TFindDialog) then StartLineNumber := 0
+   else
+   StartLineNumber := IDEEditor1.CurrentCursorYLine-1;
+
    IDEEditor1.BringToFront;
-   CaseSensitive := TFindDialog(Sender).cbCaseSensitive.Checked;
-   FindText := TFindDialog(Sender).FindText;
-   if CaseSensitive then
+   CaseSensitive := FindDialog1.cbCaseSensitive.Checked;
+   FindText := FindDialog1.FindText;
+   if not CaseSensitive then
    FindText := Uppercase(FindText);
    Source := IDEEditor1.CurrentSource;
    if Source <> nil then
       begin
       CharCount := 0;
-      for I := 0 to Source.Count -1 do
+      if FindDialog1.rgForwardBack.ItemIndex = 0 then
+      Begin
+      for I := StartLineNumber to Source.Count-1 do
+               Begin
+               Str := Source.Strings[i];
+Writeln('Str = '+Str);
+Writeln(Source.Strings[i]);
+
+               //check to see if you should be checking CASE
+               if not CaseSensitive then Str := UpperCase(str);
+
+               if (pos(FindText,Str) <> 0) then
+                  begin
+                  FoundAt := Pos(FindText,Str);
+               {if the text we are searching for appears more than once on a line,
+              the POS function only finds the first one.  Therefore, if we find the text
+                   and this function is called by something other than the FindDialog,
+              and we are on the same line as the cursor we need to DELETE what we found and
+             search again.  The problem is that effects placing the cursor in the right spot.
+            So, when we delete it, if we find it again we place th cursor to the spot the POS
+           function stated plus the difference between the STRING we are searching and the one
+                                          in the editor}
+               //first check to see if we are still on the first line
+               Found := True;
+               if (I = StartLineNumber) and not(Sender is TFindDialog) then
+                  Begin
+                  while (pos(FindText,str) +(Length(Source.Strings[i]) - Length(Str)) <= IDEEDITOR1.CurrentCursorXLine) and (pos(findtext,str) <> 0) do
+                     Begin
+                     Delete(Str,FoundAt,Length(FindText));
+                     end;
+                  if (pos(FindText,str) <> 0) then
+                     Begin
+                       Found := true;
+                       FoundAt :=pos(FindText,str);
+                     end;
+                  end;
+
+               FoundAt := pos(FindText,str) + (Length(Source.Strings[i]) - Length(Str));
+Writeln('***********************************************');
+Writeln('***********************************************');
+Writeln('***********************************************');
+Writeln('***FOUNDAT='+inttostr(foundat)+'********************************************');
+Writeln('***********************************************');
+Writeln('***********************************************');
+               if Found then
+                 Begin
+                  IDEEditor1.CurrentCursorYLine := I+1;
+                  IDEEditor1.CurrentCursorXLine := FoundAt;
+                  IDEEditor1.SelectText(I+1,FoundAt,I+1,FoundAt+Length(FindText));
+                  Break;
+                 end;
+                  end;
+                  CharCount := CharCount + Length(Str);
+               end;
+      end
+      else  {search backwards}
+      Begin
+      if StartLineNumber = 0 then StartLineNUmber := Source.Count-1;
+      for I := StartLineNumber downto 0 do
                Begin
                Str := Source.Strings[i];
                //check to see if you should be checking CASE
-               if CaseSensitive then Str := UpperCase(str);
+               if not CaseSensitive then Str := UpperCase(str);
                if pos(FindText,Str) <> 0 then
                   begin
                   IDEEditor1.CurrentCursorYLine := I+1;
                   IDEEditor1.CurrentCursorXLine := pos(FindText,Str);
-
-                  IdeEditor1.SelectText(CharCount+1,CharCount +length(FindText));
+                  IDEEditor1.SelectText(I+1,pos(FindText,Str),I+1,pos(FindText,Str)+Length(FindText));
                   Found := True;
                   Break;
                   end;
                   CharCount := CharCount + Length(Str);
                end;
+      end;
+
+
       end;
 
 
@@ -1832,9 +1906,14 @@ end;
 
 Procedure TForm1.mnuSearchFindClicked(Sender : TObject);
 Begin
+itmSearchFindAgain.Enabled := True;
 FindDialog1.ShowModal;
 End;
 
+Procedure TForm1.mnuSearchFindAgainClicked(Sender : TObject);
+Begin
+DoFind(itmSearchFindAgain);
+End;
 
 Procedure TForm1.mnuNewProjectClicked(Sender : TObject);
 var
@@ -2240,6 +2319,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/08/10 13:22:51  lazarus
+  Additions for the FIND dialog
+  Shane
+
   Revision 1.4  2000/08/09 18:32:10  lazarus
   Added more code for the find function.
   Shane
