@@ -61,6 +61,10 @@ type
   }
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
 
+  TNewFlag = (nfIsPartOfProject // force IsPartOfProject,
+                                //   default is to use a heuristic
+              );
+  TNewFlags = set of TNewFlag;
 
   TSaveFlag = (sfSaveAs,
                sfSaveToTestDir,

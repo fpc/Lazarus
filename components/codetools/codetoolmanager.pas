@@ -1516,8 +1516,6 @@ end;
 
 function TCodeToolManager.DoOnFindUsedUnit(SrcTool: TFindDeclarationTool;
   const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
-var
-  AFilename: string;
 begin
   if Assigned(OnSearchUsedUnit) then
     Result:=OnSearchUsedUnit(SrcTool.MainFilename,
