@@ -1897,7 +1897,23 @@ end;
  ------------------------------------------------------------------------------}
 function TControl.HasParent : Boolean;
 begin
-   Result := (FParent <> nil);
+  Result := (FParent <> nil);
+end;
+
+{------------------------------------------------------------------------------
+  function TControl.IsParentOf(AControl: TControl): boolean;
+
+ ------------------------------------------------------------------------------}
+function TControl.IsParentOf(AControl: TControl): boolean;
+begin
+  Result:=false;
+  while AControl<>nil do begin
+    AControl:=AControl.Parent;
+    if Self=AControl then begin
+      Result:=true;
+      exit;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1987,6 +2003,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.98  2002/11/04 19:49:36  lazarus
+  MG: added persistent hints for main ide bar
+
   Revision 1.97  2002/11/03 22:40:28  lazarus
   MG: fixed ControlAtPos
 
