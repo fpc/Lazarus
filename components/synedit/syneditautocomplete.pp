@@ -239,6 +239,10 @@ begin
   if not fParsed then
     ParseCompletionList;
   Len := Length(AToken);
+  {$IFDEF SYN_LAZARUS}
+  if (Len=0) and Assigned(fOnTokenNotFound) then
+    fOnTokenNotFound(Self,AToken,AEditor,i);
+  {$ENDIF}
   if (Len > 0) and (AEditor <> nil) and not AEditor.ReadOnly
     and (fCompletions.Count > 0)
   then begin

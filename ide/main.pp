@@ -6085,7 +6085,7 @@ begin
   if FCodeLastActivated then begin
     // send command to source editor
     if ActiveSourceEditor=nil then exit;
-    ActiveSourceEditor.DoEditorBasicAction(EditorCommand);
+    ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand);
   end else begin
     // send command to form editor
     if ActiveUnitInfo=nil then exit;
@@ -6107,6 +6107,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.229  2002/02/22 14:25:00  lazarus
+  MG: fixed completion box for templates and identifiers
+
   Revision 1.228  2002/02/22 14:05:55  lazarus
   MG: edit menu reconnected to source editor
 

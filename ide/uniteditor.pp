@@ -194,7 +194,7 @@ type
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
     
     // editor commands
-    procedure DoEditorBasicAction(EditorCommand: integer);
+    procedure DoEditorExecuteCommand(EditorCommand: integer);
 
     //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
@@ -1494,7 +1494,7 @@ begin
   FVisible:=Value;
 end;
 
-procedure TSourceEditor.DoEditorBasicAction(EditorCommand: integer);
+procedure TSourceEditor.DoEditorExecuteCommand(EditorCommand: integer);
 begin
   EditorComponent.ExecuteCommand(EditorCommand,' ',nil);
 end;
@@ -1752,6 +1752,7 @@ procedure TSourceNotebook.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index:integer);
 var P:TPoint;
 begin
+writeln('RRRRRRRRRRR ',AToken,',',AnEditor.ReadOnly,',',CurrentCompletionType=ctNone);
   if (AnEditor.ReadOnly=false) and (CurrentCompletionType=ctNone) then begin
     CurrentCompletionType:=ctTemplateCompletion;
     with AnEditor do
@@ -1901,98 +1902,101 @@ Begin
       while (X2>0) and (CurLine[X2] in ['A'..'Z','a'..'z','0'..'9','_']) do dec(X2);
       CompName:=copy(CurLine,X2+1,X1-X2-1);
       CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
-      if CompInt = nil then Exit;
-      //get all methods
-      NewStr := '';
-      for I := 0 to CompInt.GetPropCount-1 do
-      Begin
-        PropName:=#3'B'+CompInt.GetPropName(I)+#3'b';
-        PropKind := CompInt.GetPropType(i);
-        case PropKind of
-          tkMethod :
-            Begin
-              TypeInfo := CompInt.GetPropTypeInfo(I);
-              TypeData :=  GetTypeData(TypeInfo);
-
-              //check for parameters
-              if TypeData^.ParamCount > 0 then
-              Begin
-                {Writeln('----');
-                for Count := 0 to 60 do
-                  if TypeData^.ParamList[Count] in ['a'..'z','A'..'Z','0'..'9'] then
-                    Write(TypeData^.ParamList[Count])
-                  else
-                    Begin
-                      Write('$',HexStr(ord(TypeData^.ParamList[Count]),3),' ');
-                    end;
-                }
-                ParamStr := '';
-                Offset:=0;
-                for Count := 0 to TypeData^.ParamCount-1 do
-                begin
-                  Len:=1;  // strange: SizeOf(TParamFlags) is 4, but the data is only 1 byte
-                  Move(TypeData^.ParamList[Offset],MethodRec.Flags,Len);
-                  inc(Offset,Len);
-
-                  Len:=ord(TypeData^.ParamList[Offset]);
-                  inc(Offset);
-                  SetLength(MethodRec.ParamName,Len);
-                  Move(TypeData^.ParamList[Offset],MethodRec.ParamName[1],Len);
-                  inc(Offset,Len);
-
-                  Len:=ord(TypeData^.ParamList[Offset]);
-                  inc(Offset);
-                  SetLength(MethodRec.TypeName,Len);
-                  Move(TypeData^.ParamList[Offset],MethodRec.TypeName[1],Len);
-                  inc(Offset,Len);
-
-                  if ParamStr<>'' then ParamStr:=';'+ParamStr;
-                  if MethodRec.ParamName='' then
-                    ParamStr:=MethodRec.TypeName+ParamStr
-                  else
-                    ParamStr:=MethodRec.ParamName+':'+MethodRec.TypeName+ParamStr;
-                  if (pfVar in MethodRec.Flags) then ParamStr := 'var '+ParamStr;
-                  if (pfConst in MethodRec.Flags) then ParamStr := 'const '+ParamStr;
-                  if (pfOut in MethodRec.Flags) then ParamStr := 'out '+ParamStr;
-                end;
-                NewStr:='('+ParamStr+')';
-              end else NewStr:='';
-              case TypeData^.MethodKind of
-                mkProcedure : 
-                  NewStr := 'procedure   '+PropName+' :'+CompInt.GetPropTypeName(I);
-                mkFunction  : 
-                  NewStr := 'function    '+PropName+' :'+CompInt.GetPropTypeName(I);
-                mkClassFunction : 
-                  NewStr := 'function    '+PropName+' :'+'Function '+NewStr;
-                mkClassProcedure : 
-                  NewStr := 'procedure   '+PropName+' :'+'Procedure '+NewStr;
-                mkConstructor : 
-                  NewStr := 'constructor '+PropName+' '+'procedure ';
-                mkDestructor : 
-                  NewStr := 'destructor  '+PropName+' '+'procedure ';
-              end;
-            end;
-
-
-          tkObject : 
-             NewStr := 'object      '+PropName+' :'+CompInt.GetPropTypeName(I);
-          tkInteger,tkChar,tkEnumeration,tkWChar : 
-             NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-          tkBool :  
-             NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-          tkClass : 
-             NewStr := 'class       '+PropName+' :'+CompInt.GetPropTypeName(I);
-          tkFloat :  
-             NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-          tkSString :  
-             NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-          tkUnKnown,tkLString,tkWString,tkAString,tkVariant :  
-             NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-        end;
-
-        if NewStr <> '' then S.Add(NewStr);
+      if CompInt = nil then begin
+        ccSelection:='';
+      end else begin
+        //get all methods
         NewStr := '';
-      end;  // end for
+        for I := 0 to CompInt.GetPropCount-1 do
+        Begin
+          PropName:=#3'B'+CompInt.GetPropName(I)+#3'b';
+          PropKind := CompInt.GetPropType(i);
+          case PropKind of
+            tkMethod :
+              Begin
+                TypeInfo := CompInt.GetPropTypeInfo(I);
+                TypeData :=  GetTypeData(TypeInfo);
+
+                //check for parameters
+                if TypeData^.ParamCount > 0 then
+                Begin
+                  {Writeln('----');
+                  for Count := 0 to 60 do
+                    if TypeData^.ParamList[Count] in ['a'..'z','A'..'Z','0'..'9'] then
+                      Write(TypeData^.ParamList[Count])
+                    else
+                      Begin
+                        Write('$',HexStr(ord(TypeData^.ParamList[Count]),3),' ');
+                      end;
+                  }
+                  ParamStr := '';
+                  Offset:=0;
+                  for Count := 0 to TypeData^.ParamCount-1 do
+                  begin
+                    Len:=1;  // strange: SizeOf(TParamFlags) is 4, but the data is only 1 byte
+                    Move(TypeData^.ParamList[Offset],MethodRec.Flags,Len);
+                    inc(Offset,Len);
+
+                    Len:=ord(TypeData^.ParamList[Offset]);
+                    inc(Offset);
+                    SetLength(MethodRec.ParamName,Len);
+                    Move(TypeData^.ParamList[Offset],MethodRec.ParamName[1],Len);
+                    inc(Offset,Len);
+
+                    Len:=ord(TypeData^.ParamList[Offset]);
+                    inc(Offset);
+                    SetLength(MethodRec.TypeName,Len);
+                    Move(TypeData^.ParamList[Offset],MethodRec.TypeName[1],Len);
+                    inc(Offset,Len);
+
+                    if ParamStr<>'' then ParamStr:=';'+ParamStr;
+                    if MethodRec.ParamName='' then
+                      ParamStr:=MethodRec.TypeName+ParamStr
+                    else
+                      ParamStr:=MethodRec.ParamName+':'+MethodRec.TypeName+ParamStr;
+                    if (pfVar in MethodRec.Flags) then ParamStr := 'var '+ParamStr;
+                    if (pfConst in MethodRec.Flags) then ParamStr := 'const '+ParamStr;
+                    if (pfOut in MethodRec.Flags) then ParamStr := 'out '+ParamStr;
+                  end;
+                  NewStr:='('+ParamStr+')';
+                end else NewStr:='';
+                case TypeData^.MethodKind of
+                  mkProcedure :
+                    NewStr := 'procedure   '+PropName+' :'+CompInt.GetPropTypeName(I);
+                  mkFunction  :
+                    NewStr := 'function    '+PropName+' :'+CompInt.GetPropTypeName(I);
+                  mkClassFunction :
+                    NewStr := 'function    '+PropName+' :'+'Function '+NewStr;
+                  mkClassProcedure :
+                    NewStr := 'procedure   '+PropName+' :'+'Procedure '+NewStr;
+                  mkConstructor :
+                    NewStr := 'constructor '+PropName+' '+'procedure ';
+                  mkDestructor :
+                    NewStr := 'destructor  '+PropName+' '+'procedure ';
+                end;
+              end;
+
+
+            tkObject :
+               NewStr := 'object      '+PropName+' :'+CompInt.GetPropTypeName(I);
+            tkInteger,tkChar,tkEnumeration,tkWChar :
+               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+            tkBool :
+               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+            tkClass :
+               NewStr := 'class       '+PropName+' :'+CompInt.GetPropTypeName(I);
+            tkFloat :
+               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+            tkSString :
+               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+            tkUnKnown,tkLString,tkWString,tkAString,tkVariant :
+               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+          end;
+
+          if NewStr <> '' then S.Add(NewStr);
+          NewStr := '';
+        end;  // end for
+      end;
     end;
 
    ctWordCompletion:
