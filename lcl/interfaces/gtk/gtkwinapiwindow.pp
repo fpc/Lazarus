@@ -24,9 +24,9 @@
 }
 {
 @abstract(A GTK widget to support controls derived from a wincontrol)
-@author(TGTKWinapiWindow - Marc Weustink <weus@quicknet.nl>)
+@author(TGTKWinapiWindow - Marc Weustink <marc@@freepascal.org>)
 @created(2000)
-@lastmod(2000)
+@lastmod(2003)
 }
 unit GTKWinapiWindow;
 
@@ -105,17 +105,43 @@ type
                                HAdjustment, VAdjustment: PGTKAdjustment); cdecl;
   end;
 
-function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl; forward;
+{$IFDEF gtk2}                                                                                
+//==============================================                                                                                
+//==============================================                                                                                
+// TEMP solution until gtkmarshal.inc is implemeted
+//      to get this compiled
+//==============================================                                                                                
+//==============================================                                                                                
+procedure gtk_marshal_VOID__POINTER_POINTER (closure: PGClosure; 
+                                             return_value: PGValue;
+                                             n_param_values: guint;
+                                             param_values: PGValue;
+                                             invocation_hint: gpointer;
+                                             marshal_data: gpointer); cdecl; external gtklib;
+// #define gtk_marshal_NONE__POINTER_POINTER       gtk_marshal_VOID__POINTER_POINTE  
+//==============================================                                                                                
+//==============================================                                                                                
+{$ENDIF}
+
+type
+  {$IFDEF gtk2}
+  GTKEventResult = gboolean;
+  {$ELSE}
+  GTKEventResult = gint;
+  {$ENDIF}
+   
+
+function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl; forward;
 procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl; forward;
 procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl; forward;
-function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
-  Event: PGDKEventKey): gint; cdecl; forward;
+function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget; 
+  Event: PGDKEventKey): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
-  Event: PGDKEventButton): gint; cdecl; forward;
+  Event: PGDKEventButton): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
-  Event: PGdkEventFocus): gint; cdecl; forward;
+  Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
 function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
-  Event: PGdkEventFocus): gint; cdecl; forward;
+  Event: PGdkEventFocus): GTKEventResult; cdecl; forward;
   
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl; forward;
@@ -138,18 +164,18 @@ procedure GTKAPIWidgetClient_GetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
   var ShowHideOnFocus: boolean); forward;
 
 
-function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
+function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
 // returning 0 would stop the timer, 1 will restart it
 begin
   if PGTKAPIWidgetClient(Client)^.Caret.Timer<=0 then begin
-    Result := 0;
+    Result := gtk_False;
     exit;
   end;
   GTKAPIWidgetClient_DrawCaret(Client);
   if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
-    Result := 1
+    Result := gtk_True
   else
-    Result := 0;
+    Result := gtk_False;
 end;
 
 procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
@@ -182,6 +208,9 @@ begin
 
   gdk_window_set_user_data(Widget^.Window, Widget);
 
+(*
+  // Not used here anymore ??
+  
   with Attributes do
   begin
     X := PGTKStyle(Widget^.theStyle)^.Klass^.XThickness;
@@ -192,12 +221,19 @@ begin
   end;
 //  AttributesMask := AttributesMask or GDK_WA_CURSOR;
 
+*)
+  {$IFDEF gtk2}
+  Widget^.Style := gtk_style_attach(Widget^.Style, Widget^.Window);
+  gtk_style_set_background (Widget^.Style, Widget^.Window, GTK_STATE_NORMAL);
+  gdk_window_set_back_pixmap(Widget^.Window, nil, False);
+  {$ELSE}
   Widget^.theStyle := gtk_style_attach(Widget^.theStyle, Widget^.Window);
-
   gtk_style_set_background (Widget^.theStyle, Widget^.Window, GTK_STATE_NORMAL);
 //  gdk_window_set_background(Widget^.Window, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
 //  gdk_window_set_background (Client^.OtherWindow, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
-  gdk_window_set_back_pixmap(Widget^.Window,nil,0);
+  gdk_window_set_back_pixmap(Widget^.Window, nil, 0);
+  {$ENDIF}
+
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl;
@@ -210,14 +246,14 @@ begin
 end;
   
 function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
-  Event: PGDKEventKey): gint; cdecl;
+  Event: PGDKEventKey): GTKEventResult; cdecl;
 begin
   // supress further processing
   Result := gtk_True;
 end;
 
 function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
-  Event: PGDKEventButton): gint; cdecl;
+  Event: PGDKEventButton): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
   writeln('GTKAPIWidgetClient_ButtonPress ',HexStr(Cardinal(Widget),8));
@@ -229,7 +265,7 @@ begin
 end;
 
 function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
-  Event: PGdkEventFocus): gint; cdecl;
+  Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
   writeln('GTKAPIWidgetClient_FocusIn ',HexStr(Cardinal(Widget),8),' ',event^.thein);
@@ -240,7 +276,7 @@ begin
 end;
 
 function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
-  Event: PGdkEventFocus): gint; cdecl;
+  Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   {$IFDEF VerboseFocus}
   writeln('GTKAPIWidgetClient_FocusOut ',HexStr(Cardinal(Widget),8),' ',event^.thein);
@@ -259,6 +295,9 @@ type
   end;
 {$ENDIF}
 var 
+{$IFDEF gtk2}
+  //GObjectClass: PGObjectClass;
+{$ENDIF}
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
   ClientClass: PGTKAPIWidgetClientClass;
@@ -267,6 +306,9 @@ var
   AdjustParams: TAdjustParams;
 {$ENDIF}
 begin
+{$IFDEF gtk2}
+  //GObjectClass := g_object_class(theClass);
+{$ENDIF}  
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
   ClientClass := PGTKAPIWidgetClientClass(theClass);
@@ -280,9 +322,17 @@ begin
   {$ENDIF}
     'set_scroll_adjustments',
     GTK_RUN_FIRST,
+    {$IFDEF gtk2}
+    gtk_class_type(ObjectClass),
+    {$ELSE}
     ObjectClass^.thetype,
+    {$ENDIF}
     (@ClientClass^.set_scroll_adjustments - Pointer(theClass)),
+    {$IFDEF gtk2}
+    @gtk_marshal_VOID__POINTER_POINTER,
+    {$ELSE}
     @gtk_marshal_NONE__POINTER_POINTER,
+    {$ENDIF}
     GTK_TYPE_NONE,
     2, 
     {$IFDEF VER1_1}
@@ -348,8 +398,11 @@ begin
   if (TheType = 0)
   then begin
     TheType := gtk_type_from_name(TYPE_NAME);
-    if TheType = 0
-    then TheType := gtk_type_unique(gtk_fixed_type,@Info);
+    {$IFDEF gtk2}
+    if TheType = 0 then TheType := gtk_type_unique(GTK_TYPE_FIXED, @Info);
+    {$ELSE}
+    if TheType = 0 then TheType := gtk_type_unique(gtk_fixed_type, @Info);
+    {$ENDIF}
   end;
   Result := TheType;
 end;
@@ -380,6 +433,7 @@ const
                                  (GTK_STATE_INSENSITIVE, GTK_STATE_NORMAL);
 var
   Widget: PGTKWidget;
+  WidgetStyle: PGTKStyle;
   HasFocus: boolean;
   ForeGroundGC: PGdkGC;
   //OldGdkFunction: TGdkFunction;
@@ -390,8 +444,14 @@ begin
     Exit;
   end;
   Widget := PGTKWidget(Client);
+  {$IFDEF gtk2}
+  WidgetStyle := Widget^.Style;
+  {$ELSE}
+  WidgetStyle := PGTKStyle(Widget^.theStyle);
+  {$ENDIF}
   
-  with Client^.Caret do begin
+  with Client^.Caret do 
+  begin
     HasFocus:=gtk_widget_has_focus(Widget);
   
     if (Timer <> 0) and
@@ -401,93 +461,102 @@ begin
       gtk_timeout_remove(Timer);
       Timer := 0;
     end;
-    if IsDrawn and ((not Visible) or Blinking) then begin
+    if IsDrawn and ((not Visible) or Blinking) 
+    then begin
       {$IFDEF VerboseCaret}
       writeln('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),
         ' Hiding Caret IsDrawn=',IsDrawn,' Visible=',Visible,' Blinking=',Blinking);
       {$ENDIF}
       // hide caret
-      if (BackPixmap <> nil) and (Widget<>nil) and (Widget^.theStyle<>nil)
+      if (BackPixmap <> nil) 
+      and (Widget<>nil) 
+      and (WidgetStyle<>nil)
       then gdk_draw_pixmap(
         Widget^.Window, 
-        PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
+        WidgetStyle^.bg_gc[GTK_STATE_NORMAL], 
         BackPixmap, 0, 0,
         X, Y-1, // Y-1 for Delphi compatibility
         Width, Height
       );
       IsDrawn := False;
     end
-    else
-    if Visible
-    and (gtk_widget_has_focus(Widget) or not ShowHideOnFocus)
-    and (not IsDrawn) and (Widget^.Window<>nil) and (Widget^.theStyle<>nil)
-    then begin
-      if Pixmap <> nil then
-        Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
-      
-      //Create backbitmap if needed
-      if (BackPixmap = nil) and (Widget^.Window<>nil) and (Width>0)
-      and (Height>0)
-      then
-        BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
-
-      // undraw old caret
-      if (BackPixmap <> nil) and (Widget<>nil) and (Widget^.theStyle<>nil)
-      and (Width>0) and (Height>0)
-      then gdk_draw_pixmap(
-        BackPixmap, 
-        PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
-        Widget^.Window,
-          X, Y-1, // Y-1 for Delphi compatibility
-          0, 0,
-          Width, Height
-      );
-
-      // draw caret
-      {$IFDEF VerboseCaret}
-      writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
-      ,' ',cardinal(PGTKWidget(Client)^.theStyle)
-      ,' ',cardinal(PGTKWidget(Client)^.Window)
-      ,' ',Width
-      ,' ',Height
-      );
-      {$ENDIF}
-      if (PGTKWidget(Client)^.theStyle<>nil) 
-      and (PGTKWidget(Client)^.Window<>nil)
-      and (Width>0) and (Height>0) then begin
-        // set draw function to xor
-        ForeGroundGC:=PGTKStyle(
-           PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
-        //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
-        //OldGdkFunction:=ForeGroundGCValues.thefunction;
-        {$IFDEF VerboseCaret}
-        writeln('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),' Real Drawing Caret ');
-        {$ENDIF}
-        gdk_gc_set_function(ForeGroundGC,GDK_invert);
-        try
-          // draw the caret
-          //writeln('DRAWING');
-          gdk_draw_rectangle(
-            PGTKWidget(Client)^.Window,
-            ForeGroundGC,
-            1,
-            X, Y-1,  // Y-1 for Delphi compatibility
+    else begin
+      if Visible
+      and (gtk_widget_has_focus(Widget) or not ShowHideOnFocus)
+      and (not IsDrawn) 
+      and (Widget^.Window<>nil) 
+      and (WidgetStyle<>nil)
+      then begin
+        if Pixmap <> nil then
+          Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_DrawCaret] Implement bitmap');
+        
+        //Create backbitmap if needed
+        if (BackPixmap = nil) 
+        and (Widget^.Window<>nil) 
+        and (Width>0)
+        and (Height>0)
+        then
+          BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
+  
+        // undraw old caret
+        if (BackPixmap <> nil) 
+        and (Widget<>nil) 
+        and (WidgetStyle<>nil)
+        and (Width>0) and (Height>0)
+        then gdk_draw_pixmap(
+          BackPixmap, 
+          WidgetStyle^.bg_gc[GTK_STATE_NORMAL], 
+          Widget^.Window,
+            X, Y-1, // Y-1 for Delphi compatibility
+            0, 0,
             Width, Height
-          );
-        finally
-          // restore draw function
-          gdk_gc_set_function(ForeGroundGC,GDK_COPY);
-        end;
-      end else
-        writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
-      IsDrawn := True;
+        );
+  
+        // draw caret
+        {$IFDEF VerboseCaret}
+        writeln('GTKAPIWidgetClient_DrawCaret B Client=',HexStr(Cardinal(Client),8)
+        ,' ',cardinal(WidgetStyle)
+        ,' ',cardinal(Widget^.Window)
+        ,' ',Width
+        ,' ',Height
+        );
+        {$ENDIF}
+        if (WidgetStyle<>nil) 
+        and (Widget^.Window<>nil)
+        and (Width>0) 
+        and (Height>0) 
+        then begin
+          // set draw function to xor
+          ForeGroundGC:=WidgetStyle^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
+          //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
+          //OldGdkFunction:=ForeGroundGCValues.thefunction;
+          {$IFDEF VerboseCaret}
+          writeln('GTKAPIWidgetClient_DrawCaret ',HexStr(Cardinal(Client),8),' Real Drawing Caret ');
+          {$ENDIF}
+          gdk_gc_set_function(ForeGroundGC,GDK_invert);
+          try
+            // draw the caret
+            //writeln('DRAWING');
+            gdk_draw_rectangle(
+              Widget^.Window,
+              ForeGroundGC,
+              1,
+              X, Y-1,  // Y-1 for Delphi compatibility
+              Width, Height
+            );
+          finally
+            // restore draw function
+            gdk_gc_set_function(ForeGroundGC,GDK_COPY);
+          end;
+        end else
+          writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',Widget^.Window<>nil,',',WidgetStyle<>nil);
+        IsDrawn := True;
+      end;
     end;
-    
     //writeln('GTKAPIWidgetClient_DrawCaret A Client=',HexStr(Cardinal(Client),8),' Timer=',Timer,' Blink=',Blinking,' Visible=',Visible,' ShowHideOnFocus=',ShowHideOnFocus,' Focus=',gtk_widget_has_focus(Widget),' IsDrawn=',IsDrawn,' W=',Width,' H=',Height);
     if Visible and Blinking and (Timer = 0) 
     and (not ShowHideOnFocus or HasFocus)
-    then
-      Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
+    then Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
   end;
 end;
 
@@ -636,7 +705,7 @@ end;
 // GTKAPIWidget
 //---------------------------------------------------------------------------
 
-function GTKAPIWidget_FocusIn(Widget: PGTKWidget; Event: PGdkEventFocus): gint; cdecl;
+function GTKAPIWidget_FocusIn(Widget: PGTKWidget; Event: PGdkEventFocus): GTKEventResult; cdecl;
 var
   TopLevel: PGTKWidget;
 begin
@@ -646,13 +715,13 @@ begin
   if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type) 
   then gtk_window_set_focus(PGTKWindow(TopLevel), PGTKAPIWidget(Widget)^.Client);
   
-  Result := -1;
+  Result := gtk_True;
 end;
 
-function GTKAPIWidget_FocusOut(Widget: PGTKWidget; Event: PGdkEventFocus): gint; cdecl;
+function GTKAPIWidget_FocusOut(Widget: PGTKWidget; Event: PGdkEventFocus): GTKEventResult; cdecl;
 begin
   Assert(False, 'Trace:[GTKAPIWidget_FocusOut]');
-  Result := -1;
+  Result := gtk_True;
 end;
 
 
@@ -704,8 +773,9 @@ end;
 function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
+{$IFNDEF gtk2}
 const
-  Args : array[0..1] of TGTKArg =
+  ARGS : array[0..1] of TGTKArg =
     ((
       thetype : GTK_TYPE_OBJECT;
       name : 'hadjustment';
@@ -716,11 +786,19 @@ const
       name : 'vadjustment';
       d:(object_data : nil)
     ));
+{$ENDIF}
 begin
+{$IFDEF gtk2}
+  // MWE: IMO the arguments can't work since we supply the adjustments as nil
+  //      for gtk2 newv doesn't exist so the desision is easy
+  //      TODO: check if we still need to pass the args in gtk1
+  Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
+{$ELSE}
   Args[0].thetype := GTK_ADJUSTMENT_TYPE;
   Args[1].thetype := GTK_ADJUSTMENT_TYPE;
 
-  Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @Args[0]);
+  Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @ARGS[0]);
+{$ENDIF}
 
   // create client widget
   APIWidget := PGTKAPIWidget(Result);
@@ -836,6 +914,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/04/04 00:46:23  marc
+  MWE:
+    Initial port to gtk2
+
   Revision 1.44  2003/03/17 08:51:10  mattias
   added IsWindowVisible
 
