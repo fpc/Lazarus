@@ -8,7 +8,7 @@ unit InterbaseLaz;
 interface
 
 uses
-  RegisterInterbase, LazarusPackageIntf; 
+  RegisterInterbase, Interbase, LazarusPackageIntf; 
 
 implementation
 

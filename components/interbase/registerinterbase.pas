@@ -30,7 +30,8 @@ implementation
 
 procedure RegisterUnitInterbase;
 begin
-  RegisterComponents('Interbase',[TIBDatabase,TIBTransaction{,TIBQuery}]);
+  RegisterComponents('Interbase',[TIBDatabase,TIBTransaction
+                                  {$IFNDEF VER1_0},TIBQuery{$ENDIF}]);
 end;
 
 procedure Register;

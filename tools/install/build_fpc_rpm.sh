@@ -158,6 +158,14 @@ else
   fi
   cd -
   
+  # fix Makefile bug: it tests /usr/src/redhat, instaed of /usr/src/redhat/RPMS
+  cd $TmpDir
+  cat Makefile | \
+    sed -e 's#ifeq ($(wildcard $(REDHATDIR)),)#ifeq ($(wildcard $(REDHATDIR)/RPMS),)#' \
+    > New.Makefile
+  mv New.Makefile Makefile
+  cd -
+
   # fix fpc.spec bug: smart_strip.sh is searched at wrong location
   SmartStripWhileBuild="/usr/src/redhat/BUILD/fpc-$CompilerVersion.$CompilerRelease.$CompilerPatch/smart_strip.sh"
   cat $SpecFile | \
