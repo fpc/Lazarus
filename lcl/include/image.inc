@@ -19,7 +19,7 @@ begin
   inherited Create(AOwner);
   FCompStyle := csImage;
   ControlStyle:= [csCaptureMouse, csDoubleClicks];
-  FAutoSize := False;
+  AutoSize := False;
   FCenter := False;
   FStretch := False;
   FTransparent := True;
@@ -41,12 +41,13 @@ begin
   FPicture.Assign(AValue);  //the onchange of the picture gets called and notifies that something changed.
 end;
 
-procedure TImage.SetAutoSize(const Value : Boolean);
+procedure TImage.DoAutoSize;
 var
   ModifyWidth,
   ModifyHeight : Boolean;
 begin
-  If Value then begin
+  If AutoSize and not AutoSizing then begin
+    AutoSizing := True;
     ModifyWidth := (Align = alleft) or (Align = alRight) or (Align = alNone);
     ModifyHeight := (Align = alTop) or (Align = alBottom) or (Align = alNone);
     If ModifyWidth and (Picture.Width > 0) then
@@ -54,8 +55,8 @@ begin
     If ModifyHeight and (Picture.Height > 0) then
       Height := Max(Picture.Height, CONSTRAINTS.MinHeight);
     PictureChanged(Self);
+    AutoSizing := False;
   end;
-  FAutoSize := Value;
 end;
 
 procedure TImage.SetStretch(Value : Boolean);
