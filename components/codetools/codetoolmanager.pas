@@ -120,6 +120,7 @@ type
     function OnParserProgress(Tool: TCustomCodeTool): boolean;
     function OnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
+    function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
   public
     DefinePool: TDefinePool; // definition templates (rules)
     DefineTree: TDefineTree; // cache for defines (e.g. initial compiler values)
@@ -352,6 +353,11 @@ begin
     Result:=0;
 end;
 
+function GetOwnerForCodeTreeNode(ANode: TCodeTreeNode): TObject;
+begin
+  Result:=CodeToolBoss.GetOwnerForCodeTreeNode(ANode);
+end;
+
 
 { TCodeToolManager }
 
@@ -382,39 +388,39 @@ end;
 
 destructor TCodeToolManager.Destroy;
 begin
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] A');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] A');
+  {$ENDIF}
   GlobalValues.Free;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] B');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] B');
+  {$ENDIF}
   FSourceTools.FreeAndClear;
   FSourceTools.Free;
   FResourceTool.Free;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] C');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] C');
+  {$ENDIF}
   DefineTree.Free;
   DefinePool.Free;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] D');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] D');
+  {$ENDIF}
   SourceChangeCache.Free;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] E');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] E');
+  {$ENDIF}
   SourceCache.Free;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] F');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] F');
+  {$ENDIF}
   inherited Destroy;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.Destroy] END');
-{$ENDIF}
-{$IFDEF MEM_CHECK}
-CheckHeap('TCodeToolManager.Destroy END');
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.Destroy] END');
+  {$ENDIF}
+  {$IFDEF MEM_CHECK}
+  CheckHeap('TCodeToolManager.Destroy END');
+  {$ENDIF}
 end;
 
 procedure TCodeToolManager.BeginUpdate;
@@ -1805,6 +1811,27 @@ begin
   Result:=FResourceTool;
 end;
 
+function TCodeToolManager.GetOwnerForCodeTreeNode(ANode: TCodeTreeNode
+  ): TObject;
+var
+  AToolNode: TAVLTreeNode;
+  CurTool: TCustomCodeTool;
+  RootCodeTreeNode: TCodeTreeNode;
+begin
+  Result:=nil;
+  if ANode=nil then exit;
+  RootCodeTreeNode:=ANode.GetRoot;
+  AToolNode:=FSourceTools.FindLowest;
+  while (AToolNode<>nil) do begin
+    CurTool:=TCustomCodeTool(AToolNode.Data);
+    if CurTool.Tree.Root=RootCodeTreeNode then begin
+      Result:=CurTool;
+      exit;
+    end;
+    AToolNode:=FSourceTools.FindSuccessor(AToolNode);
+  end;
+end;
+
 procedure TCodeToolManager.OnToolSetWriteLock(Lock: boolean);
 begin
   if Lock then ActivateWriteLock else DeactivateWriteLock;
@@ -1885,12 +1912,14 @@ end;
 
 initialization
   CodeToolBoss:=TCodeToolManager.Create;
+  OnFindOwnerOfCodeTreeNode:=@GetOwnerForCodeTreeNode;
 
 
 finalization
   {$IFDEF CTDEBUG}
   writeln('codetoolmanager.pas - finalization');
   {$ENDIF}
+  OnFindOwnerOfCodeTreeNode:=nil;
   CodeToolBoss.Free;
   CodeToolBoss:=nil;
   {$IFDEF CTDEBUG}

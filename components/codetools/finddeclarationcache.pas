@@ -635,28 +635,41 @@ var
   NewSearchRangeFlags: TNodeCacheEntryFlags;
 
   procedure RaiseConflictException;
-  var s: string;
+  var
+    s: string;
   begin
     s:='[TCodeTreeNodeCache.Add] internal error:'
         +' conflicting cache nodes: Ident='+GetIdentifier(Identifier);
     if Owner<>nil then
     s:=s+' Owner='+Owner.DescAsString;
-    s:=s+' Old: Start='+IntToStr(OldEntry^.CleanStartPos)
-             +' End='+IntToStr(OldEntry^.CleanEndPos);
-    if OldEntry^.NewNode<>nil then
+    s:=s+' OwnerPos='+IntToStr(Owner.StartPos);
+    s:=s+' Old: Range='+IntToStr(OldEntry^.CleanStartPos)
+             +'-'+IntToStr(OldEntry^.CleanEndPos);
+    if OldEntry^.NewNode<>nil then begin
       s:=s+' Node='+OldEntry^.NewNode.DescAsString
-    else
+          +' Pos='+IntToStr(OldEntry^.NewNode.StartPos);
+    end else
       s:=s+' Node=nil';
-    if OldEntry^.NewTool<>nil then
+    if OldEntry^.NewTool<>nil then begin
       s:=s+' Tool='+OldEntry^.NewTool.MainFilename;
-    s:=s+' New: Start='+IntToStr(CleanStartPos)
-             +' End='+IntToStr(CleanEndPos);
-    if NewNode<>nil then
+      if OldEntry^.NewNode<>nil then
+        s:=s+' Src="'
+          +StringToPascalConst(
+          copy(OldEntry^.NewTool.Src,OldEntry^.NewNode.StartPos,50))+'"';
+    end;
+    s:=s+' New: Range='+IntToStr(CleanStartPos)
+             +'-'+IntToStr(CleanEndPos);
+    if NewNode<>nil then begin
       s:=s+' Node='+NewNode.DescAsString
-    else
+          +' Pos='+IntToStr(NewNode.StartPos);
+    end else
       s:=s+' Node=nil';
-    if NewTool<>nil then
+    if NewTool<>nil then begin
       s:=s+' Tool='+NewTool.MainFilename;
+      if NewNode<>nil then
+        s:=s+' Src="'
+          +StringToPascalConst(copy(NewTool.Src,NewNode.StartPos,50))+'"';
+    end;
     raise Exception.Create(s);
   end;
 

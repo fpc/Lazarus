@@ -180,6 +180,8 @@ type
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
     function GetLevel: integer;
     function DescAsString: string;
+    function GetRoot: TCodeTreeNode;
+    function FindOwner: TObject;
     procedure Clear;
     constructor Create;
     function ConsistencyCheck: integer; // 0 = ok
@@ -247,6 +249,14 @@ function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithNodeStartPos(
   NodeData1, NodeData2: pointer): integer;
+
+type
+  TOnFindOwnerOfCodeTreeNode = function (ANode: TCodeTreeNode): TObject;
+  
+var
+  OnFindOwnerOfCodeTreeNode: TOnFindOwnerOfCodeTreeNode;
+  
+function FindOwnerOfCodeTreeNode(ANode: TCodeTreeNode): TObject;
 
 
 implementation
@@ -351,6 +361,14 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+function FindOwnerOfCodeTreeNode(ANode: TCodeTreeNode): TObject;
+begin
+  if Assigned(OnFindOwnerOfCodeTreeNode) then
+    Result:=OnFindOwnerOfCodeTreeNode(ANode)
+  else
+    Result:=nil;
 end;
 
 { TCodeTreeNode }
@@ -473,6 +491,18 @@ end;
 function TCodeTreeNode.DescAsString: string;
 begin
   Result:=NodeDescriptionAsString(Desc);
+end;
+
+function TCodeTreeNode.GetRoot: TCodeTreeNode;
+begin
+  Result:=Self;
+  while (Result.Parent<>nil) do Result:=Result.Parent;
+  while (Result.PriorBrother<>nil) do Result:=Result.PriorBrother;
+end;
+
+function TCodeTreeNode.FindOwner: TObject;
+begin
+  Result:=FindOwnerOfCodeTreeNode(Self);
 end;
 
 { TCodeTree }

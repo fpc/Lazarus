@@ -928,6 +928,18 @@ begin
           Result:=FindIdentifierInContext(Params);
         end;
         if Result then begin
+        
+          // adjust result for nicer position
+          NewNode:=Params.NewNode;
+          if (NewNode<>nil) and (NewNode.Desc=ctnProcedure)
+          and (NewNode.FirstChild<>nil)
+          and (NewNode.FirstChild.Desc=ctnProcedureHead) then begin
+            // Instead of jumping to the procedure keyword,
+            // jump to the procedure name
+            Params.NewNode:=NewNode.FirstChild;
+            Params.NewCleanPos:=Params.NewNode.StartPos;
+          end;
+            
           Params.ConvertResultCleanPosToCaretPos;
           NewNode:=Params.NewNode;
           NewTool:=Params.NewCodeTool;
@@ -1528,6 +1540,13 @@ var
     if Found and (not (fdfDoNotCache in Params.NewFlags))
     and (FirstSearchedNode<>nil) then begin
       // cache result
+      if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+        // ToDo:
+        // The search range is from start to end of search.
+        // This does not work for overloaded procs.
+        // -> do not cache
+        exit;
+      end;
       AddResultToNodeCaches(FirstSearchedNode,ContextNode,
         fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
     end;
@@ -1583,7 +1602,7 @@ var
       // unsuccessful
       // -> return the found proc
       Params.SetResult(Params.FoundProc^.Context.Tool,
-                       Params.FoundProc^.Context.Node.FirstChild);
+                       Params.FoundProc^.Context.Node);
       FindIdentifierInContext:=true;
       exit;
     end;
@@ -1794,12 +1813,12 @@ var
         ctnTypeSection, ctnVarSection, ctnConstSection, ctnResStrSection,
         ctnLabelSection,
         ctnInterface, ctnImplementation,
-        ctnClassPublished,ctnClassPublic,ctnClassProtected, ctnClassPrivate,
+        ctnClassPublished,ctnClassPublic,ctnClassProtected,ctnClassPrivate,
         ctnRecordCase, ctnRecordVariant,
         ctnProcedureHead, ctnParameterList:
           // these codetreenodes build a parent-child-relationship, but
           // for pascal it is only a range, hence after searching in the
-          // childs of the last node, it must be searched next in the childs
+          // childs of the last node, search must continue in the childs
           // of the prior node
           ;
 
@@ -2963,14 +2982,13 @@ begin
       end;
       // search the identifier in the interface of the used unit
       Params.Save(OldInput);
-      try
-        Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
-                     -[fdfExceptionOnNotFound];
-        Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-        if Result then exit;
-      finally
-        Params.Load(OldInput);
-      end;
+      Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
+                   -[fdfExceptionOnNotFound];
+      Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
+if Result and (Params.NewNode.Desc=ctnProcedureHead) then
+writeln('CCC1 TFindDeclarationTool.FindIdentifierInUsesSection');
+      if Result then exit;
+      Params.Load(OldInput);
       // restore the cursor
       MoveCursorToCleanPos(UnitNameAtom.StartPos);
     end;
@@ -3083,15 +3101,14 @@ begin
   if InterfaceNode=nil then
     RaiseException(ctsInterfaceSectionNotFound);
   Params.Save(OldInput);
-  try
-    Params.Flags:=(fdfGlobalsSameIdent*Params.Flags)
-                  -[fdfExceptionOnNotFound,fdfSearchInParentNodes];
-    Params.ContextNode:=InterfaceNode;
-    Result:=FindIdentifierInContext(Params);
-  finally
-    Params.Load(OldInput)
-  end;
-  
+  Params.Flags:=(fdfGlobalsSameIdent*Params.Flags)
+                -[fdfExceptionOnNotFound,fdfSearchInParentNodes];
+  Params.ContextNode:=InterfaceNode;
+  Result:=FindIdentifierInContext(Params);
+if Result and (Params.NewNode.Desc=ctnProcedureHead) then
+writeln('DDD1 ',MainFilename);
+  Params.Load(OldInput);
+
   // save result in cache
   if FInterfaceIdentifierCache=nil then
     FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
@@ -5589,6 +5606,13 @@ begin
   NewFlags:=[];
 end;
 
+procedure TFindDeclarationParams.SetResult(AFindContext: TFindContext);
+begin
+  ClearResult;
+  NewCodeTool:=AFindContext.Tool;
+  NewNode:=AFindContext.Node;
+end;
+
 procedure TFindDeclarationParams.SetResult(ANewCodeTool: TFindDeclarationTool;
   ANewNode: TCodeTreeNode);
 begin
@@ -5641,13 +5665,6 @@ begin
   end;
   Dispose(FoundProc);
   FoundProc:=nil;
-end;
-
-procedure TFindDeclarationParams.SetResult(AFindContext: TFindContext);
-begin
-  ClearResult;
-  NewCodeTool:=AFindContext.Tool;
-  NewNode:=AFindContext.Node;
 end;
 
 procedure TFindDeclarationParams.SetIdentifier(

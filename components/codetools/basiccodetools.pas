@@ -125,6 +125,8 @@ function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;
   NestedComments: boolean): integer;
+function CleanCodeFromComments(const DirtyCode: string;
+    NestedComments: boolean): string;
 
 // line ranges and indent
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
@@ -169,11 +171,15 @@ function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
 
-//
-function CleanCodeFromComments(const DirtyCode: string;
-    NestedComments: boolean): string;
+// space and special chars
 function TrimCodeSpace(const ACode: string): string;
 function CodeIsOnlySpace(const ACode: string; FromPos, ToPos: integer): boolean;
+function StringToPascalConst(const s: string): string;
+
+// other useful stuff
+procedure RaiseCatchableException(const Msg: string);
+
+
 
 //-----------------------------------------------------------------------------
 
@@ -1853,7 +1859,7 @@ begin
       ReadComment(DirtyPos);
     end;
   end;
-  Result:=LeftStr(Result,CleanPos);
+  SetLength(Result,CleanPos-1);
 end;
 
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
@@ -1988,6 +1994,68 @@ begin
       exit;
     end;
   end;
+end;
+
+function StringToPascalConst(const s: string): string;
+
+  function Convert(var DestStr: string): integer;
+  var
+    SrcLen, SrcPos, DestPos: integer;
+    c: char;
+    i: integer;
+  begin
+    SrcLen:=length(s);
+    DestPos:=0;
+    for SrcPos:=1 to SrcLen do begin
+      inc(DestPos);
+      c:=s[SrcPos];
+      if c>=' ' then begin
+        if DestStr<>'' then
+          DestStr[DestPos]:=c;
+      end else begin
+        if DestStr<>'' then
+          DestStr[DestPos]:='#';
+        inc(DestPos);
+        i:=ord(c);
+        if i>=100 then begin
+          if DestStr<>'' then
+            DestStr[DestPos]:=chr((i div 100)+ord('0'));
+          inc(DestPos);
+        end;
+        if i>=10 then begin
+          if DestStr<>'' then
+            DestStr[DestPos]:=chr(((i div 10) mod 10)+ord('0'));
+          inc(DestPos);
+        end;
+        if DestStr<>'' then
+          DestStr[DestPos]:=chr((i mod 10)+ord('0'));
+      end;
+    end;
+    Result:=DestPos;
+  end;
+
+var
+  NewLen: integer;
+begin
+  Result:='';
+  NewLen:=Convert(Result);
+  if NewLen=length(s) then begin
+    Result:=s;
+    exit;
+  end;
+  SetLength(Result,NewLen);
+  Convert(Result);
+end;
+
+procedure RaiseCatchableException(const Msg: string);
+begin
+  { Raises an exception.
+    gdb does not catch fpc Exception objects, therefore this procedure raises
+    a standard AV which is catched by gdb. }
+  writeln('ERROR in CodeTools: ',Msg);
+  // creates an exception, that gdb catches:
+  writeln('Creating gdb catchable error:');
+  if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
 function CountNeededLineEndsToAddForward(const Src: string;
