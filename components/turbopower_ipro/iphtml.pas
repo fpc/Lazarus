@@ -3342,7 +3342,7 @@ begin
 end;
 
 type
-  TFriendPanel = class(TCustomPanel);
+  TFriendPanel = class(TCustomPanel) end;
 
 const
   LF = #10;
@@ -3818,7 +3818,7 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
     Precisions : array[TFloatType] of Integer =
       {$IFDEF IP_LAZARUS}
       // ftSingle,ftDouble,ftExtended,ftComp,ftCurr,ftFixed16,ftFixed32
-      (7, 15, 18, 18, 19);
+      (7, 15, 18, 18, 19, 4, 8);
       {$ELSE}
       (7, 15, 18, 18, 19);
       {$ENDIF}
@@ -3840,7 +3840,12 @@ function GetPropertyValue(PI: PPropInfo; const AObject: TObject): string;
   function GetVariantProperty : string;
   begin
     {$IFDEF FPC}
+    {$IFDEF VER1_0}
+    // 1.0.x does not support variants
+    Result := '';
+    {$ELSE}
     Result := AnsiString(GetVariantProp(AObject, PI));
+    {$ENDIF}
     {$ELSE}
     Result := GetVariantProp(AObject, PI);
     {$ENDIF}
@@ -8295,9 +8300,12 @@ end;
 procedure TIpHtml.ClearRectList;
 var
   i : Integer;
+  p: PIpHtmlRectListEntry;
 begin
-  for i := pred(RectList.Count) downto 0 do
-    Freemem(PIpHtmlRectListEntry(RectList[i]));
+  for i := pred(RectList.Count) downto 0 do begin
+    p:=PIpHtmlRectListEntry(RectList[i]);
+    Freemem(p);
+  end;
   RectList.Clear;
 end;
 
@@ -10654,13 +10662,18 @@ begin
 end;
 
 procedure TIpHtmlNodeA.ClearAreaList;
+var
+  a: Pointer;
+  m: Pointer;
 begin
   while AreaList.Count > 0 do begin
-    FreeMem(AreaList[0]);
+    a:=AreaList[0];
+    FreeMem(a);
     AreaList.Delete(0);
   end;
   while MapAreaList.Count > 0 do begin
-    FreeMem(MapAreaList[0]);
+    m:=MapAreaList[0];
+    FreeMem(m);
     MapAreaList.Delete(0);
   end;
 end;
@@ -17569,6 +17582,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.9  2003/06/24 18:08:59  mattias
+  fixes for fpc 1.0.x
+
   Revision 1.8  2003/06/24 15:23:10  mattias
   deleted unused code
 
