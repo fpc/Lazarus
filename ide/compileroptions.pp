@@ -1878,7 +1878,7 @@ Processor specific options:
   else
     CurOutputDir:='';
   if CurOutputDir<>'' then
-    switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
+    switches := switches + ' '+PrepareCmdLineOption('-FE'+CurOutputDir);
 
   { TODO: Implement the following switches. They need to be added
           to the dialog. }
@@ -4082,7 +4082,9 @@ begin
             '$(LazarusDir)/lcl/units'
           +';$(LazarusDir)/lcl/units/$(LCLWidgetType)'
           +';$(LazarusDir)/components/units'
-          +';$(LazarusDir)/components/custom';
+          +';$(LazarusDir)/components/custom'
+          +';$(LazarusDir)/packager/units'
+          ;
     end else
     if AButton=IncludeFilesPathEditBtn then begin
       OldPath:=edtIncludeFiles.Text;
@@ -4094,7 +4096,8 @@ begin
             '$(LazarusDir)/lcl'
           +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)'
           +';$(LazarusDir)/components/synedit'
-          +';$(LazarusDir)/components/codetools');
+          +';$(LazarusDir)/components/codetools'
+          );
     end else
     if AButton=LibrariesPathEditBtn then begin
       OldPath:=edtLibraries.Text;

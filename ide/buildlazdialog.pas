@@ -69,7 +69,7 @@ type
     FTargetDirectory: string;
     fTargetOS: string;
     fLCLPlatform: TLCLPlatform;
-    fAutoInstallPackages: TStringList;
+    fStaticAutoInstallPackages: TStringList;
     procedure SetTargetDirectory(const AValue: string);
   public
     constructor Create;
@@ -89,7 +89,7 @@ type
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
     property TargetOS: string read fTargetOS write fTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
-    property AutoInstallPackages: TStringList read fAutoInstallPackages;
+    property StaticAutoInstallPackages: TStringList read fStaticAutoInstallPackages;
     property TargetDirectory: string read FTargetDirectory write SetTargetDirectory;
   end;
 
@@ -703,7 +703,7 @@ procedure TBuildLazarusOptions.Save(XMLConfig: TXMLConfig; const Path: string);
 begin
   XMLConfig.SetDeleteValue(Path+'BuildLCL/Value',
                            MakeModeNames[fBuildLCL],
-                           MakeModeNames[mmNone]);
+                           MakeModeNames[mmBuild]);
   XMLConfig.SetDeleteValue(Path+'BuildComponents/Value',
                            MakeModeNames[fBuildComponents],
                            MakeModeNames[mmBuild]);
@@ -732,7 +732,8 @@ begin
   XMLConfig.SetDeleteValue(Path+'TargetDirectory/Value',
                            FTargetDirectory,DefaultTargetDirectory);
   // auto install packages
-  SaveStringList(XMLConfig,fAutoInstallPackages,Path+'AutoInstallPackages/');
+  SaveStringList(XMLConfig,fStaticAutoInstallPackages,
+                 Path+'StaticAutoInstallPackages/');
 end;
 
 procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);
@@ -762,7 +763,8 @@ begin
                                      DefaultTargetDirectory)));
 
   // auto install packages
-  LoadStringList(XMLConfig,fAutoInstallPackages,Path+'AutoInstallPackages/');
+  LoadStringList(XMLConfig,fStaticAutoInstallPackages,
+                 Path+'StaticAutoInstallPackages/');
 end;
 
 procedure TBuildLazarusOptions.SetTargetDirectory(const AValue: string);
@@ -789,12 +791,12 @@ begin
   fLCLPlatform:=lpGtk;
 
   // auto install packages
-  fAutoInstallPackages:=TStringList.Create;
+  fStaticAutoInstallPackages:=TStringList.Create;
 end;
 
 destructor TBuildLazarusOptions.Destroy;
 begin
-  fAutoInstallPackages.Free;
+  fStaticAutoInstallPackages.Free;
   inherited Destroy;
 end;
 

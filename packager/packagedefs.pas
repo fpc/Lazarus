@@ -506,6 +506,7 @@ type
     function GetCompileSourceFilename: string;
     function GetOutputDirectory: string;
     function GetStateFilename: string;
+    function GetSrcFilename: string;
     function GetCompilerFilename: string;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
@@ -612,7 +613,7 @@ type
 
 const
   LazPkgXMLFileVersion = 1;
-
+  
   PkgFileTypeNames: array[TPkgFileType] of string = (
     'pftUnit', 'pftLFM', 'pftLRS', 'pftInclude', 'pftText', 'pftBinary');
   PkgFileTypeIdents: array[TPkgFileType] of string = (
@@ -2300,6 +2301,11 @@ function TLazPackage.GetStateFilename: string;
 begin
   Result:=GetOutputDirectory
           +ChangeFileExt(GetCompileSourceFilename,'.compiled');
+end;
+
+function TLazPackage.GetSrcFilename: string;
+begin
+  Result:=FDirectory+GetCompileSourceFilename;
 end;
 
 function TLazPackage.GetCompilerFilename: string;

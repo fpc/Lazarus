@@ -817,6 +817,10 @@ begin
     AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],cpBase);
     AddFile('db/db.pp','DB',pftUnit,[pffHasRegisterProc],cpBase);
 
+    // use the packager/units/lazaruspackageintf.o file as indicator,
+    // if FCL has been recompiled
+    OutputStateFile:='$(LazarusDir)/packager/units/lazaruspackageintf.o';
+
     Modified:=false;
   end;
 end;
