@@ -993,7 +993,7 @@ begin
   with ComponentNotebook do begin
     Parent := Self;
     Name := 'ComponentNotebook';
-    Left := ToggleFormSpeedBtn.Left + ToggleFormSpeedBtn.Width + 2;
+    Left := pnlSpeedButtons.Left + pnlSpeedButtons.Width + 2;
     Top := 0;
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
@@ -7069,7 +7069,8 @@ begin
   if ActiveUnitInfo = nil then Exit;
 
   SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
-  ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
+  ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form)
+                                or (ActiveUnitInfo.FormName<>'');
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
@@ -7881,6 +7882,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.482  2003/03/11 11:05:50  mattias
+  fixed toggle form or src button
+
   Revision 1.481  2003/03/11 11:00:08  mattias
   implemented auto loading forms on open
 
