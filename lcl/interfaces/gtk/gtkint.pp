@@ -148,6 +148,7 @@ type
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
     procedure ListViewChangeItem(TheListView: TObject; Index: integer);
+    procedure ListViewAddItem(TheListView: TObject);
     procedure BringFormToFront(Sender: TObject);
 
     procedure SetText(Child,Data : Pointer);virtual;
@@ -308,6 +309,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2002/11/12 13:16:05  lazarus
+  MG: fixed TListView with more than 2 columns
+
   Revision 1.103  2002/11/12 10:53:43  lazarus
   MG: fixed setting gdk pen style
 
