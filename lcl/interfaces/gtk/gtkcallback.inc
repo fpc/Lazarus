@@ -384,9 +384,6 @@ begin
         Flags := Flags or KF_UP or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
-        // send the message directly to the LCL
-        // (Posting the message via queue
-        //  has the risk of getting out of sync with the gtk)
         Result := DeliverPostMessage(Data, Msg);
       end;
     GDK_KEY_PRESS:
@@ -415,9 +412,6 @@ begin
         // Flags := Flags or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
-        // send the message directly to the LCL
-        // (Posting the message via queue
-        //  has the risk of getting out of sync with the gtk)
         Result := DeliverPostMessage(Data, Msg);
 
         if KeyCode <> $FFFF
@@ -2352,6 +2346,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.129  2002/09/16 14:46:08  lazarus
+  MG: renamed designerstr.pas to objinspstrconsts.pas
+
   Revision 1.128  2002/09/16 08:54:03  lazarus
   MG: gtk mlouse events can now be fetched before or after
 
