@@ -1382,6 +1382,7 @@ resourcestring
   lisBuildJITForm = 'Build JIT Form';
   lisBuildPkgReg = 'Build Package Registration';
   lisBuildIDE = 'Build IDE';
+  lisBuildStarter = 'Build Starter';
   lisBuildExamples = 'Build Examples';
   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
   lisLazBuildCleanAll = 'Clean all';
