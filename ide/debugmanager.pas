@@ -355,7 +355,7 @@ begin
   else begin
     FMaster.OnChange := @CallStackChanged;
     FMaster.OnClear := @CallStackClear;
-    DoNotify := DoNotify or FMaster.Count <> 0;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
   end;
 
   if DoNotify
@@ -387,7 +387,7 @@ begin
   if FMaster <> nil
   then begin
     FMaster.OnChange := @LocalsChanged;
-    DoNotify := DoNotify or FMaster.Count <> 0;
+    DoNotify := DoNotify or (FMaster.Count <> 0);
   end;
 
   if DoNotify
@@ -1863,6 +1863,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.71  2004/08/27 09:19:27  micha
+  fix compile by adding braces
+
   Revision 1.70  2004/08/26 23:50:05  marc
   * Restructured debugger view classes
   * Fixed help
