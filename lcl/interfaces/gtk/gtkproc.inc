@@ -2539,63 +2539,58 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
+  procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
     MenuItemWidget: PGtkWidget);
 
-  Sets the caption of a menuitem
+  Update the inner widgets of a menuitem widget.
  ------------------------------------------------------------------------------}
-procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
-  MenuItemWidget: PGtkWidget);
-var
-  ShortCutPos: integer;
-  s: string;
-  LabelWidget: PGtkLabel;
-begin
-  if (MenuItemWidget=nil) or (LCLMenuItem=nil) then exit;
-  LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
-  if LabelWidget=nil then exit;
-  //Check for a shortcut key
-  s:=LCLMenuItem.Caption;
-  ShortCutPos := pos('&', s);
-  if ShortCutPos <> 0 then begin
-    if (LCLMenuItem.Parent<>nil)
-    and (LCLMenuItem.Parent.HandleAllocated)
-    and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_MENU_BAR_TYPE)
-    then begin
-      // this is a menu item in the main bar of a form
-      // -> accelerator should be Alt+Key
-      s[ShortCutPos] := '_';
-      Accelerate(LCLMenuItem,MenuItemWidget,
-        gtk_label_parse_uline(LabelWidget,PChar(s)),
-        GDK_MOD1_MASK,'activate_item');
-    end else begin
-      // Because gnome changes menuitem shortcuts via keyboard, we can't
-      // set the accelerator.
-      // It would be cool, to know if a window manager with the gnome feature
-      // is running, but there is probably no reliable code to do that, so we
-      // simply delete all ampersands and don't set the letter shortcut.
-      DeleteAmpersands(s);
-      gtk_label_set_text(LabelWidget,PChar(s));
-      {Accelerate(LCLMenuItem,MenuItemWidget,
-        gtk_label_parse_uline(LabelWidget,PChar(s)),0,'activate_item');}
-    end;
-  end
-  else begin
-    gtk_label_set_text(LabelWidget,PChar(s));
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem;
-    MenuItemWidget: PGtkWidget);
-
-  Creates the inner widgets of a menuitem widget.
- ------------------------------------------------------------------------------}
-procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem;
+procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
   MenuItemWidget: PGtkWidget);
 var
   HBoxWidget: PGtkWidget;
   LabelWidget: PGtkAccelLabel;
+
+  procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
+    MenuItemWidget: PGtkWidget);
+  var
+    ShortCutPos: integer;
+    s: string;
+    LabelWidget: PGtkLabel;
+  begin
+    if (MenuItemWidget=nil) or (LCLMenuItem=nil) then exit;
+    LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
+    if LabelWidget=nil then begin
+    end;
+    //Check for a shortcut key
+    s:=LCLMenuItem.Caption;
+    ShortCutPos := pos('&', s);
+    if ShortCutPos <> 0 then begin
+      if (LCLMenuItem.Parent<>nil)
+      and (LCLMenuItem.Parent.HandleAllocated)
+      and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_MENU_BAR_TYPE)
+      then begin
+        // this is a menu item in the main bar of a form
+        // -> accelerator should be Alt+Key
+        s[ShortCutPos] := '_';
+        Accelerate(LCLMenuItem,MenuItemWidget,
+          gtk_label_parse_uline(LabelWidget,PChar(s)),
+          GDK_MOD1_MASK,'activate_item');
+      end else begin
+        // Because gnome changes menuitem shortcuts via keyboard, we can't
+        // set the accelerator.
+        // It would be cool, to know if a window manager with the gnome feature
+        // is running, but there is probably no reliable code to do that, so we
+        // simply delete all ampersands and don't set the letter shortcut.
+        DeleteAmpersands(s);
+        gtk_label_set_text(LabelWidget,PChar(s));
+        {Accelerate(LCLMenuItem,MenuItemWidget,
+          gtk_label_parse_uline(LabelWidget,PChar(s)),0,'activate_item');}
+      end;
+    end
+    else begin
+      gtk_label_set_text(LabelWidget,PChar(s));
+    end;
+  end;
 
   procedure CreateIcon;
   var
@@ -2707,7 +2702,7 @@ begin
     gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
 
   // create the hbox containing the label and the control
-  CreateInnerMenuItem(LCLMenuItem,MenuItemWidget);
+  UpdateInnerMenuItem(LCLMenuItem,MenuItemWidget);
 
   gtk_widget_show(MenuItemWidget);
   Result:=MenuItemWidget;
@@ -3241,7 +3236,7 @@ var
   TempWidget,
   TempWidget2 : Pointer;
 begin
-  // Create the VBox, we need that to place controls outside
+  // Create the VBox. We need that to place controls outside
   // the client area (like menu and the statusbar)
   Result := gtk_vbox_new(False, 0);
   If FormWidget = nil then
@@ -4068,6 +4063,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.171  2003/05/01 11:44:03  mattias
+  fixed changing menuitem separator and normal
+
   Revision 1.170  2003/04/26 10:45:34  mattias
   fixed right control release
 
