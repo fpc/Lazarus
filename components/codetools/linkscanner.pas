@@ -1189,7 +1189,7 @@ var
     {$IFDEF win32}
     // windows
     Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and
-       (UpChars(TheFilename[1]]) in ['A'..'Z']) and (TheFilename[2]=':'));
+       (UpChars[TheFilename[1]]) in ['A'..'Z']) and (TheFilename[2]=':'));
     {$ELSE}
     Result:=(TheFilename<>'') and (TheFilename[1]='/');
     {$ENDIF}
