@@ -2033,6 +2033,9 @@ begin
 
   ecSaveAll:
     DoSaveAll([sfCheckAmbigiousFiles]);
+    
+  ecQuit:
+    mnuQuitClicked(Self);
 
   ecBuild:
     begin
@@ -6233,6 +6236,7 @@ procedure TMainIDE.DoRestart;
 {$IFNDEF VER1_0}
     StartLazProcess := TProcess.Create(nil);
     try
+      // TODO: use the target directory, where the new startlazarus is
       StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
       ExeName := AppendPathDelim(StartLazProcess.CurrentDirectory) +
         'startlazarus' + GetDefaultExecutableExt;
@@ -6250,6 +6254,7 @@ procedure TMainIDE.DoRestart;
 {$ENDIF}
   end;
 
+var CanClose: boolean;
 begin
 {$IFDEF VER1_0}
   if not StartedByStartLazarus then begin
@@ -6257,7 +6262,10 @@ begin
     exit;
   end;
 {$ENDIF}
-  mnuQuitClicked(Self);
+  CanClose:=true;
+  MainIDEBar.OnCloseQuery(Self, CanClose);
+  if not CanClose then exit;
+  MainIDEBar.Close;
   if Application.Terminated then begin
     if StartedByStartLazarus then
       ExitCode := ExitCodeRestartLazarus
@@ -10955,6 +10963,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.802  2004/12/02 11:23:41  mattias
+  synedit now stops, when key was handled
+
   Revision 1.801  2004/11/26 21:43:41  vincents
   fixed fpc 1.0.x compilation
 

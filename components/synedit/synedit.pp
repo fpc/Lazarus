@@ -6739,9 +6739,15 @@ begin
       ExecuteCommand(Command, AChar, Data);
     // notify hooked command handlers after the command was executed inside of
     // the class
-    NotifyHookedCommandHandlers(TRUE, Command, AChar, Data);
+    {$IFDEF SYN_LAZARUS}
+    if Command <> ecNone then
+    {$ENDIF}
+      NotifyHookedCommandHandlers(TRUE, Command, AChar, Data);
   end;
-  DoOnCommandProcessed(Command, AChar, Data);
+  {$IFDEF SYN_LAZARUS}
+  if Command <> ecNone then
+  {$ENDIF}
+    DoOnCommandProcessed(Command, AChar, Data);
 end;
 
 procedure TCustomSynEdit.ExecuteCommand(Command: TSynEditorCommand;
