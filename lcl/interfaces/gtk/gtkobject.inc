@@ -1644,7 +1644,7 @@ begin
   if not (Sender is TWinControl) then exit;
   case TWinControl(Sender).fCompStyle of
 
-  csListBox:
+  csListBox, csCheckListBox:
     begin
       AWidget:=PGtkWidget(TWinControl(Sender).Handle);
       ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
@@ -1687,7 +1687,7 @@ begin
   Y:=PInteger(PointerToY)^;
   case TWinControl(Sender).fCompStyle of
 
-  csListBox:
+  csListBox, csCheckListBox:
     begin
       AWidget:=PGtkWidget(TWinControl(Sender).Handle);
       ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
@@ -2275,11 +2275,11 @@ begin
               Result := integer(Data);
             end;
             
-          csListBox :
+          csCheckListBox, csListBox:
             begin
               Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
               Data:= TGtkListStringList.Create(PGtkList(Widget),
-                                               TWinControl(Sender));
+                TWinControl(Sender), TControl(Sender).fCompStyle = csCheckListBox);
               Result:= Integer(Data);
             end;
         else 
@@ -2298,7 +2298,7 @@ begin
            csComboBox:
              Result:=GetComboBoxItemIndex(TComboBox(Sender));
 
-           csListBox:
+           csListBox, csCheckListBox:
              begin
                if Handle<>0 then begin
                  Widget:=nil;
@@ -2346,7 +2346,7 @@ begin
           csComboBox:
             SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
 
-          csListBox:
+          csListBox, csCheckListBox:
           begin
             if Integer(Data)>=0 then
               gtk_list_select_item(
@@ -2468,7 +2468,7 @@ begin
       LM_GETSELCOUNT :
       begin
         case (Sender as TControl).fCompStyle of
-          csListBox :
+          csListBox, csCheckListBox :
             Result:=g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle),
                                True)^.ImplementationWidget)^.selection);
           csCListBox:
@@ -2479,7 +2479,7 @@ begin
   
       LM_GETSEL :
         case (Sender as TControl).fCompStyle of
-        csListBox:
+        csListBox, csCheckListBox:
           begin
             { Get the child in question of that index }
             Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
@@ -2519,7 +2519,8 @@ begin
          begin
             case TControl(Sender).fCompStyle of
                csComboBox, 
-               csListBox   : TGtkListStringList(TLMSort(Data^).List).Sorted:=
+               csListBox,
+               csCheckListBox   : TGtkListStringList(TLMSort(Data^).List).Sorted:=
                                   TLMSort(Data^).IsSorted;
                csCListBox  : TGtkCListStringList(TLMSort(Data^).List).Sorted :=
                                   TLMSort(Data^).IsSorted;
@@ -2530,10 +2531,10 @@ begin
       LM_SETSEL:
       begin
         if (Sender is TControl)
-        and (TControl(Sender).fCompStyle in [csListBox, csCListBox])
+        and (TControl(Sender).fCompStyle in [csListBox, csCheckListBox, csCListBox])
         and assigned (data) then
         begin
-          if (TControl(Sender).fCompStyle = csListBox) then
+          if (TControl(Sender).fCompStyle in [csListBox, csCheckListBox]) then
           begin
             if TLMSetSel(Data^).Selected then begin
               gtk_list_select_item(
@@ -2561,7 +2562,7 @@ begin
       LM_SETSELMODE :
       begin
          if (Sender is TControl) and 
-            (TControl(Sender).fCompStyle in [csListBox, csCListBox]) and
+            (TControl(Sender).fCompStyle in [csListBox, csCheckListBox, csCListBox]) and
             assigned (data) then 
          begin
             if TLMSetSelMode(Data^).MultiSelect then 
@@ -2573,7 +2574,7 @@ begin
             else 
               SelectionMode:= GTK_SELECTION_BROWSE;
             case TControl(Sender).fCompStyle of
-              csListBox  : gtk_list_set_selection_mode(PGtkList(              
+              csListBox, csCheckListBox  : gtk_list_set_selection_mode(PGtkList(
                 GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), SelectionMode);
               csCListBox : gtk_clist_set_selection_mode(PGtkCList(
                 GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),SelectionMode);
@@ -2587,7 +2588,7 @@ begin
       begin
         if (Sender is TControl) then
         begin
-          if (TControl(Sender).fCompStyle = csListBox) then
+          if (TControl(Sender).fCompStyle in [csListBox, csCheckListBox]) then
             begin
               { In TempWidget, a viewport is stored }
               Widget:= PGtkWidget(PGtkBin(Handle)^.child);
@@ -4375,7 +4376,7 @@ begin
   gtk_combo_set_case_sensitive(Widget, 1);
   
   // Items
-  ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox);
+  ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox,False);
   gtk_object_set_data(PGtkObject(Widget), 'LCLList', ItemList);
   ItemList.Assign(ComboBox.Items);
   ItemList.Sorted:= ComboBox.Sorted;
@@ -4834,7 +4835,7 @@ begin
       SetupProps:= true;
     end;
 
-  csListBox :
+  csListBox, csCheckListBox:
     begin
       p:= gtk_scrolled_window_new(nil, nil);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
@@ -7352,6 +7353,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.377  2003/06/20 01:37:47  marc
+  + Added TCheckListBox component
+
   Revision 1.376  2003/06/13 10:09:04  mattias
   fixed Set/GetPixel
 
