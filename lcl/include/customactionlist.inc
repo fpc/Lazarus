@@ -124,8 +124,8 @@ var
   ShiftState: TShiftState;
   Action: TCustomAction;
 begin
-  ShiftState := Forms.KeyDataToShiftState(Message.KeyData);
-  ShortCut := Menus.ShortCut(Message.CharCode, ShiftState);
+  ShiftState := MsgKeyDataToShiftState(Message.KeyData);
+  ShortCut := KeyToShortCut(Message.CharCode, ShiftState);
   if ShortCut <> scNone then
     for I := 0 to FActions.Count - 1 do
     begin

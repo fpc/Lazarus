@@ -64,6 +64,9 @@ function PredefinedClipboardFormat(
 function CharLower(c: char): char;
 function CharUpper(c: char): char;
 
+function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
+
+
 {$IFDEF win32}
 function GetTickCount: DWord; stdcall; external 'kernel32.dll' name 'GetTickCount';
 {$ELSE}
@@ -149,6 +152,15 @@ begin
   Result:=UpperCaseChars[c];
 end;
 
+function MsgKeyDataToShiftState(KeyData: Longint): TShiftState;
+begin
+  Result := [];
+
+  if GetKeyState(VK_SHIFT) < 0 then Include(Result, ssShift);
+  if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
+  if KeyData and $20000000 <> 0 then Include(Result, ssAlt);
+end;
+
 {$I winapi.inc}
 {$I lclintf.inc}
 
@@ -179,6 +191,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2005/03/11 14:40:37  mattias
+  moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
+
   Revision 1.18  2004/11/10 15:25:32  mattias
   updated memcheck.pas from heaptrc.pp
 

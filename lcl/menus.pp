@@ -371,15 +371,7 @@ end;
 
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 begin
-  Result := Key;
-  if WordRec(Result).Hi <> 0 then begin
-    Result:=0;
-    exit;
-  end;
-
-  if ssShift in Shift then Inc(Result,scShift);
-  if ssCtrl in Shift then Inc(Result,scCtrl);
-  if ssAlt in Shift then Inc(Result,scAlt);
+  Result := LCLType.KeyToShortCut(Key,Shift);
 end;
 
 procedure ShortCutToKey(const ShortCut: TShortCut; var Key: Word;
@@ -406,6 +398,9 @@ end.
 
 {
   $Log$
+  Revision 1.79  2005/03/11 14:40:37  mattias
+  moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
+
   Revision 1.78  2005/03/07 00:52:51  mattias
   various Delphi compatibilities  from C Western
 

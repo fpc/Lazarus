@@ -1193,7 +1193,7 @@ const
 {$ENDIF}
 
 
-function KeysToShiftState(Keys:Word): TShiftState;
+function KeysToShiftState(Keys: Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 
 type
@@ -1340,11 +1340,7 @@ end;
 
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 begin
-  Result := [];
-
-  if GetKeyState(VK_SHIFT) < 0 then Include(Result, ssShift);
-  if GetKeyState(VK_CONTROL) < 0 then Include(Result, ssCtrl);
-  if KeyData and $20000000 <> 0 then Include(Result, ssAlt);
+  Result := MsgKeyDataToShiftState(KeyData);
 end;
 
 //------------------------------------------------------------------------------

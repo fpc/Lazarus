@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, FPCAdds,
-  LCLStrConsts, LCLProc, ImgList, LCLClasses, LMessages;
+  LCLStrConsts, LCLType, LCLProc, LCLIntf, ImgList, LCLClasses, LMessages;
   
 type
 
@@ -297,10 +297,6 @@ var
 procedure Register;
 
 implementation
-
-uses Controls,
-  Menus,        {func Shortcut}
-  Forms;        {func KeyDataToShiftState}
 
 procedure RegisterActions(const CategoryName: string;
   const AClasses: array of TBasicActionClass; Resource: TComponentClass);

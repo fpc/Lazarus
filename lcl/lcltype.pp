@@ -2147,6 +2147,7 @@ function HiWord(i: integer): word;
 function LoWord(i: integer): word;
 Function Char2VK(C : Char) : Word;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
+function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
 
 
 implementation
@@ -2176,6 +2177,19 @@ end;
 function MulDiv(nNumber, nNumerator, nDenominator: Integer): Integer;
 begin
   Result:=(int64(nNumber)*int64(nNumerator)) div nDenominator;
+end;
+
+function KeyToShortCut(const Key: Word; const Shift: TShiftState): TShortCut;
+begin
+  Result := Key;
+  if WordRec(Result).Hi <> 0 then begin
+    Result:=0;
+    exit;
+  end;
+
+  if ssShift in Shift then Inc(Result,scShift);
+  if ssCtrl in Shift then Inc(Result,scCtrl);
+  if ssAlt in Shift then Inc(Result,scAlt);
 end;
 
 {------------------------------------------------------------------------------
@@ -2322,6 +2336,9 @@ end.
 
 {
   $Log$
+  Revision 1.78  2005/03/11 14:40:37  mattias
+  moved CM_ message constants from crontrols.pp to lmessages.pp to break circles and clean up controls.pp
+
   Revision 1.77  2005/03/08 10:29:19  mattias
   fixed bmp 16 bit loading  from Peter J. Haas
 
