@@ -13,7 +13,7 @@ units=alllclunits
 implicitunits= \
   actnlist \
   arrow \
-  avglcltree \
+  avglvltree \
   buttons \
   calendar \
   checklst \

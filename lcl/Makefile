@@ -257,7 +257,7 @@ endif
 endif
 override TARGET_DIRS+=interfaces
 override TARGET_UNITS+=alllclunits
-override TARGET_IMPLICITUNITS+=actnlist arrow avglcltree buttons calendar checklst clipbrd clistbox comctrls commctrl controls dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings filectrl fpcadds forms graphics graphmath graphtype grids imglist interfacebase lazlinkedlist lclintf lclproc lclmemmanager lclstrconsts lcltype lmessages lresources maskedit menus pairsplitter postscriptprinter printers spin stdctrls stringhashlist textstrings toolwin utrace vclglobals
+override TARGET_IMPLICITUNITS+=actnlist arrow avglvltree buttons calendar checklst clipbrd clistbox comctrls commctrl controls dbctrls dbgrids dialogs dynamicarray dynhasharray editbtn extctrls extdlgs extendedstrings filectrl fpcadds forms graphics graphmath graphtype grids imglist interfacebase lazlinkedlist lclintf lclproc lclmemmanager lclstrconsts lcltype lmessages lresources maskedit menus pairsplitter postscriptprinter printers spin stdctrls stringhashlist textstrings toolwin utrace vclglobals
 override TARGET_RSTS+=lclstrconsts
 override CLEAN_FILES+=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) $(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 override INSTALL_BUILDUNIT=alllclunits
