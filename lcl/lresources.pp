@@ -52,15 +52,18 @@ type
     FMergeList: TList; // list needed for mergesort
     FSortedCount: integer; // 0 .. FSortedCount-1 resources are sorted
     function FindPosition(const Name: AnsiString):integer;
+    function GetItems(Index: integer): TLResource;
     procedure Sort;
     procedure MergeSort(List, MergeList: TList; Pos1, Pos2: integer);
     procedure Merge(List, MergeList: TList; Pos1, Pos2, Pos3: integer);
   public
+    constructor Create;
+    destructor Destroy;  override;
     procedure Add(const Name, ValueType, Value: AnsiString);
     procedure Add(const Name, ValueType: AnsiString; Values: array of string);
     function Find(const Name: AnsiString):TLResource;
-    constructor Create;
-    destructor Destroy;  override;
+    function Count: integer;
+    property Items[Index: integer]: TLResource read GetItems;
   end;
   
 
@@ -565,6 +568,14 @@ begin
   FMergeList.Free;
 end;
 
+function TLResourceList.Count: integer;
+begin
+  if (Self<>nil) and (FList<>nil) then
+    Result:=FList.Count
+  else
+    Result:=0;
+end;
+
 procedure TLResourceList.Add(const Name,ValueType: AnsiString;
   Values: array of string);
 var
@@ -635,6 +646,11 @@ begin
     else
       exit;
   end;
+end;
+
+function TLResourceList.GetItems(Index: integer): TLResource;
+begin
+  Result:=TLResource(FList[Index]);
 end;
 
 procedure TLResourceList.Sort;

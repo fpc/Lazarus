@@ -1914,41 +1914,6 @@ begin
   end;
 end;
 
-{function TTreeNodes.CreateItem(Node: TTreeNode): TTVItem;
-begin
-  Node.FInTree := True;
-  with Result do
-  begin
-    mask := TVIF_TEXT or TVIF_PARAM or TVIF_IMAGE or TVIF_SELECTEDIMAGE;
-    lParam := Longint(Node);
-    pszText := LPSTR_TEXTCALLBACK;
-    iImage := I_IMAGECALLBACK;
-    iSelectedImage := I_IMAGECALLBACK;
-  end;
-end;}
-
-{function TTreeNodes.AddItem(Parent, Target: HTreeItem;
-  const Item: TTVItem; AddMode: TAddMode): HTreeItem;
-var
-  InsertStruct: TTVInsertStruct;
-begin
-  ClearCache;
-  with InsertStruct do begin
-    hParent := Parent;
-    case AddMode of
-      taAddFirst:
-        hInsertAfter := TVI_FIRST;
-      taAdd:
-        hInsertAfter := TVI_LAST;
-      taInsert:
-        hInsertAfter := Target;
-    end;
-  end;
-  InsertStruct.item := Item;
-  FOwner.FChangeTimer.Enabled := False;
-  Result := TreeView_InsertItem(Handle, InsertStruct);
-end;}
-
 function TTreeNodes.GetFirstNode: TTreeNode;
 begin
   if FTopLvlItems<>nil then

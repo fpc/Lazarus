@@ -1081,7 +1081,7 @@ begin
     try
       Setlength(Result,fs.Size);
       if Result<>'' then
-        fs.Read(Result,length(Result));
+        fs.Read(Result[1],length(Result));
     finally
       fs.Free;
     end;
@@ -1093,6 +1093,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2004/12/06 17:31:02  mattias
+  added access to lresources
+
   Revision 1.6  2004/12/04 01:17:41  mattias
   implemented Target Directory for IDE
 
