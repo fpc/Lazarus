@@ -195,12 +195,9 @@ begin
   end;
 end;
 
-procedure TDBEdit.WMKillFocus(var Message: TLMKillFocus);
+procedure TDBEdit.EditingDone;
 begin
-  //I am not sure where else to do this :/
-  //we need to make sure the field is updated
-  //if we leave the edit after changes
-
+  inherited EditingDone;
   FDataLink.UpdateRecord;
 end;
 
@@ -227,6 +224,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/08/08 20:51:15  mattias
+  replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
+
   Revision 1.5  2004/08/05 19:33:48  vincents
   allow backspace as a valid input
 

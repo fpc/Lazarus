@@ -27,6 +27,10 @@
 
   Abstract:
     Functions and Dialog to change the class of a designer component.
+    
+  ToDo:
+    - add uses and package of new class if needed
+    - test controls with childs
 }
 unit ChangeClassDialog;
 
@@ -35,11 +39,11 @@ unit ChangeClassDialog;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, AVGLvlTree, LFMTrees, CodeCache, CodeToolManager,
   // IDE
-  SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, FormEditingIntf,
-  CheckLFMDlg, Project, MainIntf;
+  SrcEditorIntf, PropEdits, LazarusIDEStrConsts, ComponentReg, ComponentEditors,
+  FormEditingIntf, CheckLFMDlg, Project, MainIntf;
 
 type
   TChangeClassDlg = class(TForm)
@@ -132,7 +136,8 @@ var
 
     // stream selection
     ComponentStream:=TMemoryStream.Create;
-    if not FormEditingHook.SaveSelectionToStream(ComponentStream) then begin
+    if (not FormEditingHook.SaveSelectionToStream(ComponentStream))
+    or (ComponentStream.Size=0) then begin
       ShowAbortMessage('Unable to stream selected components.');
       exit;
     end;
@@ -142,6 +147,7 @@ var
   function ParseLFMStream: boolean;
   var
     SrcEdit: TSourceEditorInterface;
+    Msg: String;
   begin
     Result:=false;
     if not CodeToolBoss.GatherExternalChanges then begin
@@ -155,15 +161,23 @@ var
     end;
     UnitCode:=UnitInfo.Source;
     LFMBuffer:=CodeToolBoss.CreateTempFile('changeclass.lfm');
-    if LFMBuffer=nil then begin
+    if (LFMBuffer=nil) or (ComponentStream.Size=0) then begin
       ShowAbortMessage('Unable to create temporary lfm buffer.');
       exit;
     end;
-    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree) then begin
+    ComponentStream.Position:=0;
+    LFMBuffer.LoadFromStream(ComponentStream);
+    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false) then begin
+      debugln('ChangePersistentClass-Before--------------------------------------------');
+      debugln(LFMBuffer.Source);
+      debugln('ChangePersistentClass-Before--------------------------------------------');
       if CodeToolBoss.ErrorMessage<>'' then
         MainIDEInterface.DoJumpToCodeToolBossError
-      else
-        ShowAbortMessage('Error parsing lfm component stream.');
+      else begin
+        Msg:='Error parsing lfm component stream.';
+        if LFMTree<>nil then Msg:=Msg+#13#13+LFMTree.FirstErrorAsString+#13;
+        ShowAbortMessage(Msg);
+      end;
       exit;
     end;
     Result:=true;
@@ -196,19 +210,30 @@ var
 
   function CheckProperties: boolean;
   begin
-    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil);
+    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil,false);
     if not Result and (CodeToolBoss.ErrorMessage<>'') then
       MainIDEInterface.DoJumpToCodeToolBossError;
   end;
 
-  function DeleteSelection: boolean;
-  begin
-    Result:=false;
-  end;
-
   function InsertStreamedSelection: boolean;
+  var
+    MemStream: TMemoryStream;
   begin
     Result:=false;
+    if LFMBuffer.SourceLength=0 then exit;
+    MemStream:=TMemoryStream.Create;
+    try
+      debugln('ChangePersistentClass-After--------------------------------------------');
+      debugln(LFMBuffer.Source);
+      debugln('ChangePersistentClass-After--------------------------------------------');
+      LFMBuffer.SaveToStream(MemStream);
+      MemStream.Position:=0;
+      Result:=FormEditingHook.InsertFromStream(MemStream,nil,[cpsfReplace]);
+      if not Result then
+        ShowAbortMessage('Replacing selection failed.');
+    finally
+      MemStream.Free;
+    end;
   end;
 
 begin
@@ -231,7 +256,6 @@ begin
     if not ParseLFMStream then exit;
     if not ChangeClassName then exit;
     if not CheckProperties then exit;
-    if not DeleteSelection then exit;
     if not InsertStreamedSelection then exit;
   finally
     ComponentStream.Free;

@@ -53,7 +53,7 @@ type
   TOnPersistentAdded = procedure(Sender: TObject; APersistent: TPersistent;
     ComponentClass: TRegisteredComponent) of object;
   TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
-    TxtCompStream: TStream; ParentControl: TWinControl;
+    TxtCompStream: TStream; Parent: TComponent;
     var NewComponent: TComponent) of object;
   TOnRemovePersistent = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
@@ -166,7 +166,7 @@ type
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
 
     // procedures for working with components and persistents
-    procedure DoDeleteSelectedPersistents;
+    function DoDeleteSelectedPersistents: boolean;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
     procedure MarkPersistentForDeletion(APersistent: TPersistent);
     function PersistentIsMarkedForDeletion(APersistent: TPersistent): boolean;
@@ -175,7 +175,11 @@ type
     Procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
-    procedure DoPasteSelectionFromClipboard;
+    function GetPasteParent: TComponent;
+    function DoPasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
+                                           ): boolean;
+    function DoInsertFromStream(s: TStream; PasteParent: TComponent;
+                                Flags: TComponentPasteSelectionFlags): Boolean;
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
     procedure GiveComponentsNames;
@@ -216,12 +220,14 @@ type
 
     procedure Modified; override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
-    procedure CopySelection; override;
-    procedure CutSelection; override;
+    function CopySelection: boolean; override;
+    function CutSelection: boolean; override;
     function CanPaste: Boolean; override;
-    procedure PasteSelection; override;
-    procedure DeleteSelection; override;
+    function PasteSelection(Flags: TComponentPasteSelectionFlags): boolean; override;
+    function DeleteSelection: boolean; override;
     function CopySelectionToStream(AllComponentsStream: TStream): boolean; override;
+    function InsertFromStream(s: TStream; Parent: TComponent;
+                              Flags: TComponentPasteSelectionFlags): Boolean; override;
     function InvokeComponentEditor(AComponent: TComponent;
                                    MenuIndex: integer): boolean; override;
     procedure DoProcessCommand(Sender: TObject; var Command: word;
@@ -513,6 +519,12 @@ begin
   Result:=true;
 end;
 
+function TDesigner.InsertFromStream(s: TStream; Parent: TComponent;
+  Flags: TComponentPasteSelectionFlags): Boolean;
+begin
+  Result:=DoInsertFromStream(s,Parent,Flags);
+end;
+
 function TDesigner.DoCopySelectionToClipboard: boolean;
 var
   AllComponentsStream: TMemoryStream;
@@ -549,34 +561,58 @@ begin
   Result:=true;
 end;
 
-procedure TDesigner.DoPasteSelectionFromClipboard;
+function TDesigner.GetPasteParent: TComponent;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  for i:=0 to ControlSelection.Count-1 do begin
+    if (ControlSelection[i].IsTWinControl)
+    and (csAcceptsControls in
+         TWinControl(ControlSelection[i].Persistent).ControlStyle)
+    and (not ControlSelection[i].ParentInSelection) then begin
+      Result:=TWinControl(ControlSelection[i].Persistent);
+      break;
+    end;
+  end;
+  if (Result=nil)
+  and (FLookupRoot is TWinControl) then
+    Result:=TWinControl(FLookupRoot);
+end;
+
+function TDesigner.DoPasteSelectionFromClipboard(
+  Flags: TComponentPasteSelectionFlags): boolean;
+var
+  PasteParent: TComponent;
+  AllComponentText: string;
+  CurTextCompStream: TMemoryStream;
+begin
+  Result:=false;
+  if not CanPaste then exit;
+  // read component stream from clipboard
+  AllComponentText:=ClipBoard.AsText;
+  if AllComponentText='' then exit;
+  CurTextCompStream:=TMemoryStream.Create;
+  try
+    CurTextCompStream.Write(AllComponentText[1],length(AllComponentText));
+    PasteParent:=GetPasteParent;
+    if not DoInsertFromStream(CurTextCompStream,PasteParent,Flags) then
+      exit;
+  finally
+    CurTextCompStream.Free;
+  end;
+  Result:=true;
+end;
+
+function TDesigner.DoInsertFromStream(s: TStream;
+  PasteParent: TComponent; Flags: TComponentPasteSelectionFlags): Boolean;
 var
   AllComponentText: string;
   StartPos: Integer;
   EndPos: Integer;
   CurTextCompStream: TStream;
-  PasteParent: TWinControl;
   NewSelection: TControlSelection;
-
-  procedure GetPasteParent;
-  var
-    i: Integer;
-  begin
-    if PasteParent<>nil then exit;
-
-    for i:=0 to ControlSelection.Count-1 do begin
-      if (ControlSelection[i].IsTWinControl)
-      and (csAcceptsControls in
-           TWinControl(ControlSelection[i].Persistent).ControlStyle)
-      and (not ControlSelection[i].ParentInSelection) then begin
-        PasteParent:=TWinControl(ControlSelection[i].Persistent);
-        break;
-      end;
-    end;
-    if (PasteParent=nil)
-    and (FLookupRoot is TWinControl) then
-      PasteParent:=TWinControl(FLookupRoot);
-  end;
+  l: Integer;
 
   procedure FindUniquePosition(AComponent: TComponent);
   var
@@ -643,7 +679,8 @@ var
       // add new component to new selection
       NewSelection.Add(NewComponent);
       // set new nice bounds
-      FindUniquePosition(NewComponent);
+      if cpsfFindUniquePositions in Flags then
+        FindUniquePosition(NewComponent);
       // finish adding component
       NotifyPersistentAdded(NewComponent);
       Modified;
@@ -653,16 +690,18 @@ var
   end;
 
 begin
-  if not CanPaste then exit;
+  Result:=false;
+  if (cpsfReplace in Flags) and (not DeleteSelection) then exit;
 
-  PasteParent:=nil;
-  GetPasteParent;
+  if PasteParent=nil then PasteParent:=GetPasteParent;
   NewSelection:=TControlSelection.Create;
   try
 
     // read component stream from clipboard
-    AllComponentText:=ClipBoard.AsText;
-    if AllComponentText='' then exit;
+    if (s.Size<=S.Position) then exit;
+    l:=s.Size-s.Position;
+    SetLength(AllComponentText,l);
+    s.Read(AllComponentText[1],length(AllComponentText));
 
     StartPos:=1;
     EndPos:=StartPos;
@@ -682,9 +721,9 @@ begin
           inc(EndPos);
         // extract text for the current component
         {$IFDEF VerboseDesigner}
-        writeln('TDesigner.DoPasteSelectionFromClipboard==============================');
+        writeln('TDesigner.DoInsertFromStream==============================');
         writeln(copy(AllComponentText,StartPos,EndPos-StartPos));
-        writeln('TDesigner.DoPasteSelectionFromClipboard==============================');
+        writeln('TDesigner.DoInsertFromStream==============================');
         {$ENDIF}
 
         CurTextCompStream:=TMemoryStream.Create;
@@ -709,6 +748,7 @@ begin
       ControlSelection.Assign(NewSelection);
     NewSelection.Free;
   end;
+  Result:=true;
 end;
 
 procedure TDesigner.DoShowTabOrderEditor;
@@ -754,15 +794,16 @@ begin
   ControlSelection.AssignPersistent(AComponent);
 end;
 
-procedure TDesigner.CopySelection;
+function TDesigner.CopySelection: boolean;
 begin
-  DoCopySelectionToClipboard;
+  Result:=DoCopySelectionToClipboard;
 end;
 
-procedure TDesigner.CutSelection;
+function TDesigner.CutSelection: boolean;
 begin
-  if DoCopySelectionToClipboard then
-    DoDeleteSelectedPersistents;
+  Result:=DoCopySelectionToClipboard;
+  if Result then
+    Result:=DoDeleteSelectedPersistents;
 end;
 
 function TDesigner.CanPaste: Boolean;
@@ -772,14 +813,15 @@ begin
       and (not (csDestroying in FLookupRoot.ComponentState));
 end;
 
-procedure TDesigner.PasteSelection;
+function TDesigner.PasteSelection(
+  Flags: TComponentPasteSelectionFlags): boolean;
 begin
-  DoPasteSelectionFromClipboard;
+  Result:=DoPasteSelectionFromClipboard(Flags);
 end;
 
-procedure TDesigner.DeleteSelection;
+function TDesigner.DeleteSelection: boolean;
 begin
-  DoDeleteSelectedPersistents;
+  Result:=DoDeleteSelectedPersistents;
 end;
 
 function TDesigner.InvokeComponentEditor(AComponent: TComponent;
@@ -836,7 +878,7 @@ begin
         CutSelection;
 
     ecPasteComponents:
-      PasteSelection;
+      PasteSelection([cpsfFindUniquePositions]);
 
     else
       Handled:=false;
@@ -1564,13 +1606,15 @@ Begin
   {$ENDIF}
 end;
 
-procedure TDesigner.DoDeleteSelectedPersistents;
+function TDesigner.DoDeleteSelectedPersistents: boolean;
 var
   i: integer;
   APersistent: TPersistent;
 begin
+  Result:=true;
   if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
     exit;
+  Result:=false;
   if (ControlSelection.LookupRootSelected) then begin
     if ControlSelection.Count>1 then
       MessageDlg(lisInvalidDelete,
@@ -1595,6 +1639,7 @@ begin
   IgnoreDeletingPersistent.Clear;
   Exclude(FFlags,dfDeleting);
   Modified;
+  Result:=true;
 end;
 
 procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
@@ -1917,7 +1962,7 @@ end;
 
 procedure TDesigner.OnPasteMenuClick(Sender: TObject);
 begin
-  PasteSelection;
+  PasteSelection([cpsfFindUniquePositions]);
 end;
 
 procedure TDesigner.OnTabOrderMenuClick(Sender: TObject);

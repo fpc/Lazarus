@@ -142,7 +142,7 @@ Type
     procedure Reset; override;
     procedure SetFocus; override;
 
-    procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure EditingDone; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1248,6 +1248,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/08/08 20:51:15  mattias
+  replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
+
   Revision 1.15  2003/09/22 15:03:19  ajgenius
   partly fixed streaming of DBCalendar, and opRemove notification of DBText DBEdit DBCalendar
 

@@ -174,6 +174,10 @@ Begin
         //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
       end;
       if FActiveControl=AComponent then FActiveControl:=nil;
+      if AComponent=FDefaultControl then
+        FDefaultControl:=nil;
+      if AComponent=FCancelControl then
+        FCancelControl:=nil;
     end;
   end;
   if FDesigner<>nil then FDesigner.Notification(AComponent,Operation);
@@ -1719,6 +1723,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.147  2004/08/08 20:51:15  mattias
+  replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
+
   Revision 1.146  2004/07/25 01:04:45  mattias
   TXMLPropStorage basically working
 

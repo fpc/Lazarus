@@ -30,20 +30,31 @@ uses
   PropEdits, ObjInspStrConsts;
 
 
-{ TComponentEditorDesigner }
 
 type
+  { TComponentEditorDesigner }
+  
+  TComponentPasteSelectionFlag = (
+    cpsfReplace,
+    cpsfFindUniquePositions
+    );
+  TComponentPasteSelectionFlags = set of TComponentPasteSelectionFlag;
+
+
   TComponentEditorDesigner = class(TIDesigner)
   protected
     FForm: TCustomForm;
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
   public
-    procedure CopySelection; virtual; abstract;
-    procedure CutSelection; virtual; abstract;
-    function CanPaste: Boolean; virtual; abstract;
-    procedure PasteSelection; virtual; abstract;
-    procedure DeleteSelection; virtual; abstract;
+    function CopySelection: boolean; virtual; abstract;
+    function CutSelection: boolean; virtual; abstract;
+    function CanPaste: boolean; virtual; abstract;
+    function PasteSelection(Flags: TComponentPasteSelectionFlags): boolean; virtual; abstract;
+    function DeleteSelection: boolean; virtual; abstract;
     function CopySelectionToStream(s: TStream): boolean; virtual; abstract;
+    function InsertFromStream(s: TStream; Parent: TComponent;
+                              Flags: TComponentPasteSelectionFlags
+                              ): Boolean; virtual; abstract;
     function InvokeComponentEditor(AComponent: TComponent;
                                    MenuIndex: integer): boolean; virtual; abstract;
 

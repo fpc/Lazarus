@@ -22,7 +22,7 @@ unit FormEditingIntf;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls;
+  Classes, SysUtils, TypInfo, Forms, Controls, ComponentEditors;
   
 type
   { TIComponentInterface }
@@ -77,16 +77,18 @@ type
   end;
 
   { TAbstractFormEditor }
-
+  
   TAbstractFormEditor = class
   protected
     function GetDesigner(Index: integer): TIDesigner; virtual; abstract;
   public
     // components
-    Function FindComponentByName(const Name : ShortString) : TIComponentInterface; virtual; abstract;
+    Function FindComponentByName(const Name: ShortString
+                                 ): TIComponentInterface; virtual; abstract;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
-    Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
+    Function CreateComponent(CI : TIComponentInterface;
+                             TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
     Function CreateComponentFromStream(BinStream: TStream;
                              AncestorType: TComponentClass; Interactive: boolean
@@ -102,10 +104,20 @@ type
     property Designer[Index: integer]: TIDesigner read GetDesigner;
     function GetCurrentDesigner: TIDesigner; virtual; abstract;
     function GetDesignerForm(AComponent: TComponent): TCustomForm; virtual; abstract;
-    function GetDesignerByComponent(AComponent: TComponent): TIDesigner; virtual; abstract;
+    function GetDesignerByComponent(AComponent: TComponent
+                                    ): TIDesigner; virtual; abstract;
 
     // selection
     function SaveSelectionToStream(s: TStream): Boolean; virtual; abstract;
+    function InsertFromStream(s: TStream; Parent: TComponent;
+                              Flags: TComponentPasteSelectionFlags
+                              ): Boolean; virtual; abstract;
+    function ClearSelection: Boolean; virtual; abstract;
+    function DeleteSelection: Boolean; virtual; abstract;
+    function CopySelectionToClipboard: Boolean; virtual; abstract;
+    function CutSelectionToClipboard: Boolean; virtual; abstract;
+    function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
+                                         ): Boolean; virtual; abstract;
   end;
 
 

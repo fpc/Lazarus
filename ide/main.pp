@@ -2960,7 +2960,7 @@ begin
   // clear formeditor
   if not Assigned(FormEditor1) then
     FormEditor1 := TFormEditor.Create;
-  FormEditor1.ClearSelected;
+  FormEditor1.ClearSelection;
 
   // create jit component
   CInterface := TComponentInterface(
@@ -3791,7 +3791,7 @@ begin
     if ComponentLoadingOk then begin
       if not Assigned(FormEditor1) then
         FormEditor1 := TFormEditor.Create;
-      if not (ofProjectLoading in Flags) then FormEditor1.ClearSelected;
+      if not (ofProjectLoading in Flags) then FormEditor1.ClearSelection;
 
       // create JIT component
       CInterface := TComponentInterface(
@@ -6550,8 +6550,8 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
-  if not CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg) then
-  begin
+  if not CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,true)
+  then begin
     DoJumpToCompilerMessage(-1,true);
   end;
 
@@ -6637,7 +6637,8 @@ begin
     if HasDFMFile and (LFMCode=nil) then
       writeln('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
     if (LFMCode<>nil)
-    and (not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg)) then begin
+    and (not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true)) then
+    begin
       DoJumpToCompilerMessage(-1,true);
       exit;
     end;
@@ -10531,6 +10532,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.747  2004/08/08 20:51:15  mattias
+  replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
+
   Revision 1.746  2004/08/08 18:20:41  mattias
   added main IDe hints
 

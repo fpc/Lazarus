@@ -248,6 +248,7 @@ type
     function FindErrorAtLine(Line: integer): TLFMError;
     function FindErrorAtNode(Node: TLFMTreeNode): TLFMError;
     function FindError(ErrorTypes: TLFMErrorTypes): TLFMError;
+    function FirstErrorAsString: string;
   end;
   
 const
@@ -364,6 +365,12 @@ begin
   Result:=FirstError;
   while (Result<>nil) and (not (Result.ErrorType in ErrorTypes)) do
     Result:=Result.NextError;
+end;
+
+function TLFMTree.FirstErrorAsString: string;
+begin
+  Result:='';
+  if FirstError<>nil then Result:=FirstError.ErrorMessage;
 end;
 
 procedure TLFMTree.ProcessValue;

@@ -116,7 +116,8 @@ type
           KeepPath: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
     function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
-                  const OnGetDefineProperties: TOnGetDefineProperties): boolean;
+                  const OnGetDefineProperties: TOnGetDefineProperties;
+                  RootMustBeClassInIntf: boolean): boolean;
 
     // Application.Createform statements
     function FindCreateFormStatement(StartPos: integer;
@@ -892,7 +893,8 @@ begin
 end;
 
 function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
-  const OnGetDefineProperties: TOnGetDefineProperties): boolean;
+  const OnGetDefineProperties: TOnGetDefineProperties;
+  RootMustBeClassInIntf: boolean): boolean;
 var
   RootContext: TFindContext;
 
@@ -1147,7 +1149,6 @@ var
                        DefaultErrorPosition);
       exit;
     end;
-
   end;
 
   procedure CheckLFMProperty(LFMProperty: TLFMPropertyNode;
@@ -1220,6 +1221,43 @@ var
     end;
     Result:=true;
   end;
+  
+  function FindClassContext(const ClassName: string): TFindContext;
+  var
+    Params: TFindDeclarationParams;
+    Identifier: PChar;
+    OldInput: TFindDeclarationInput;
+    StartTool: TStandardCodeTool;
+  begin
+    Result:=CleanFindContext;
+    Params:=TFindDeclarationParams.Create;
+    StartTool:=Self;
+    Identifier:=PChar(ClassName);
+    try
+      Params.Flags:=[fdfExceptionOnNotFound,
+        fdfSearchInParentNodes,
+        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
+        fdfIgnoreOverloadedProcs];
+      Params.ContextNode:=FindInterfaceNode;
+      if Params.ContextNode=nil then
+        Params.ContextNode:=FindMainUsesSection;
+      Params.SetIdentifier(StartTool,Identifier,nil);
+      try
+        Params.Save(OldInput);
+        if FindIdentifierInContext(Params) then begin
+          Params.Load(OldInput);
+          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+          if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
+            Result:=CleanFindContext;
+        end;
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
 
   function CheckLFMRoot(RootLFMNode: TLFMTreeNode): boolean;
   var
@@ -1245,17 +1283,21 @@ var
     end;
     
     // find root type
-    RootClassNode:=FindClassNodeInInterface(LookupRootTypeName,true,false,false);
+    if RootMustBeClassInIntf then begin
+      RootClassNode:=FindClassNodeInInterface(LookupRootTypeName,true,false,false);
+      RootContext:=CleanFindContext;
+      RootContext.Node:=RootClassNode;
+      RootContext.Tool:=Self;
+    end else begin
+      RootContext:=FindClassContext(LookupRootTypeName);
+      RootClassNode:=RootContext.Node;
+    end;
     if RootClassNode=nil then begin
       LFMTree.AddError(lfmeMissingRoot,LookupRootLFMNode,
                        'type '+LookupRootLFMNode.TypeName+' not found',
                        LookupRootLFMNode.TypeNamePosition);
       exit;
     end;
-
-    RootContext:=CleanFindContext;
-    RootContext.Node:=RootClassNode;
-    RootContext.Tool:=Self;
     Result:=CheckLFMObjectValues(LookupRootLFMNode,RootContext);
   end;
   

@@ -353,7 +353,7 @@ type
                        read FOnGetDefineProperties write FOnGetDefineProperties;
     function FindLFMFileName(Code: TCodeBuffer): string;
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-          var LFMTree: TLFMTree): boolean;
+          var LFMTree: TLFMTree; RootMustBeClassInIntf: boolean): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
     function AddLazarusResourceHeaderComment(Code: TCodeBuffer;
@@ -610,6 +610,7 @@ begin
     TempFilename:=VirtualTempDir+PathDelim+IntToStr(i)+PathDelim+AFilename;
     Result:=FindFile(TempFilename);
     if (Result<>nil) and (Result.ReferenceCount=0) then exit;
+    inc(i);
   until Result=nil;
   Result:=SourceCache.CreateFile(TempFilename);
   Result.IncrementRefCount;
@@ -2031,7 +2032,7 @@ begin
 end;
 
 function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
-  var LFMTree: TLFMTree): boolean;
+  var LFMTree: TLFMTree; RootMustBeClassInIntf: boolean): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -2039,7 +2040,8 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(UnitCode) then exit;
   try
-    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree,OnGetDefineProperties);
+    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree,OnGetDefineProperties,
+                                  RootMustBeClassInIntf);
   except
     on e: Exception do HandleException(e);
   end;

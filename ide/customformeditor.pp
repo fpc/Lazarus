@@ -141,12 +141,20 @@ each control that's dropped onto the form
     destructor Destroy; override;
 
     // selection
-    Function AddSelected(Value : TComponent) : Integer;
+    Function AddSelected(Value: TComponent) : Integer;
     Procedure DeleteComponent(AComponent: TComponent; FreeComponent: boolean);
-    Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
+    Function FindComponentByName(const Name: ShortString
+                                 ): TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     function SaveSelectionToStream(s: TStream): Boolean; override;
-    Procedure ClearSelected;
+    function InsertFromStream(s: TStream; Parent: TComponent;
+                              Flags: TComponentPasteSelectionFlags): Boolean; override;
+    function ClearSelection: Boolean; override;
+    function DeleteSelection: Boolean; override;
+    function CopySelectionToClipboard: Boolean; override;
+    function CutSelectionToClipboard: Boolean; override;
+    function PasteSelectionFromClipboard(Flags: TComponentPasteSelectionFlags
+                                         ): Boolean; override;
 
     // JIT forms
     function IsJITComponent(AComponent: TComponent): boolean;
@@ -676,10 +684,12 @@ begin
 
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
+  FormEditingHook:=Self;
 end;
 
 destructor TCustomFormEditor.Destroy;
 begin
+  FormEditingHook:=nil;
   DesignerMenuItemClick:=nil;
   FreeAndNil(JITFormList);
   FreeAndNil(JITDataModuleList);
@@ -795,6 +805,115 @@ begin
   if ADesigner is TComponentEditorDesigner then
     Result:=TComponentEditorDesigner(ADesigner).CopySelectionToStream(s)
   else
+    Result:=false;
+end;
+
+function TCustomFormEditor.InsertFromStream(s: TStream; Parent: TComponent;
+  Flags: TComponentPasteSelectionFlags): Boolean;
+var
+  ADesigner: TIDesigner;
+begin
+  ADesigner:=GetCurrentDesigner;
+  if ADesigner is TComponentEditorDesigner then
+    Result:=TComponentEditorDesigner(ADesigner).InsertFromStream(s,Parent,Flags)
+  else
+    Result:=false;
+end;
+
+function TCustomFormEditor.ClearSelection: Boolean;
+var
+  ASelection: TPersistentSelectionList;
+begin
+  if Selection.Count=0 then exit;
+  ASelection:=TPersistentSelectionList.Create;
+  try
+    Selection:=ASelection;
+  except
+    on E: Exception do begin
+      MessageDlg('Error',
+        'Unable to clear form editing selection'#13
+        +E.Message,mtError,[mbCancel],0);
+    end;
+  end;
+  ASelection.Free;
+  Result:=(Selection=nil) or (Selection.Count=0);
+end;
+
+function TCustomFormEditor.DeleteSelection: Boolean;
+var
+  ADesigner: TIDesigner;
+begin
+  if (Selection.Count=0) then begin
+    Result:=true;
+    exit;
+  end;
+  if Selection[0] is TComponent then begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).DeleteSelection;
+    end;
+  end;
+  Result:=Selection.Count=0;
+  if Selection.Count>0 then begin
+    MessageDlg('Error',
+      'Do not know how to delete this form editing selection',
+      mtError,[mbCancel],0);
+  end;
+end;
+
+function TCustomFormEditor.CopySelectionToClipboard: Boolean;
+var
+  ADesigner: TIDesigner;
+begin
+  if (Selection.Count=0) then begin
+    Result:=false;
+    exit;
+  end;
+  if Selection[0] is TComponent then begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).CopySelection;
+    end;
+  end;
+  Result:=Selection.Count=0;
+  if Selection.Count>0 then begin
+    MessageDlg('Error',
+      'Do not know how to copy this form editing selection',
+      mtError,[mbCancel],0);
+  end;
+end;
+
+function TCustomFormEditor.CutSelectionToClipboard: Boolean;
+var
+  ADesigner: TIDesigner;
+begin
+  if (Selection.Count=0) then begin
+    Result:=false;
+    exit;
+  end;
+  if Selection[0] is TComponent then begin
+    ADesigner:=FindRootDesigner(TComponent(Selection[0]));
+    if ADesigner is TComponentEditorDesigner then begin
+      TComponentEditorDesigner(ADesigner).CutSelection;
+    end;
+  end;
+  Result:=Selection.Count=0;
+  if Selection.Count>0 then begin
+    MessageDlg('Error',
+      'Do not know how to cut this form editing selection',
+      mtError,[mbCancel],0);
+  end;
+end;
+
+function TCustomFormEditor.PasteSelectionFromClipboard(
+  Flags: TComponentPasteSelectionFlags): Boolean;
+var
+  ADesigner: TIDesigner;
+begin
+  ADesigner:=GetCurrentDesigner;
+  if ADesigner is TComponentEditorDesigner then begin
+    Result:=TComponentEditorDesigner(ADesigner).PasteSelection(Flags);
+  end else
     Result:=false;
 end;
 
@@ -1344,11 +1463,6 @@ begin
     if j<0 then exit;
     inc(i);
   end;
-end;
-
-Procedure TCustomFormEditor.ClearSelected;
-Begin
-  FSelection.Clear;
 end;
 
 function TCustomFormEditor.TranslateKeyToDesignerCommand(Key: word;
