@@ -109,6 +109,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnResize;
   end;
 
 
@@ -301,6 +302,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/06/13 12:53:51  mattias
+  fixed TUpDown and added handler lists for TControl
+
   Revision 1.42  2003/05/03 09:53:33  mattias
   fixed popupmenu for component palette
 

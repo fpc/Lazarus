@@ -129,7 +129,8 @@ var
   OldTop: Integer;
   OldWidth: Integer;
   OldHeight: Integer;
-  
+  CurBounds: TRect;
+
   function UpdatePosSizeChanged: boolean;
   begin
     SizeChanged:= (FWidth <> OldWidth) or (FHeight <> OldHeight);
@@ -229,6 +230,11 @@ begin
   // notify user about resize
   if (not (csLoading in ComponentState)) then begin
     Resize;
+    CurBounds:=BoundsRect;
+    if not CompareRect(@FLastDoChangeBounds,@CurBounds) then begin
+      FLastDoChangeBounds:=CurBounds;
+      DoOnChangeBounds;
+    end;
     SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
 end;
@@ -501,10 +507,32 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TControl.DoOnResize;
+  
+  Call events
 ------------------------------------------------------------------------------}
 procedure TControl.DoOnResize;
+var
+  i: Integer;
 begin
   if Assigned(FOnResize) then FOnResize(Self);
+  i:=FControlHandlers[chtOnResize].Count;
+  while FControlHandlers[chtOnResize].NextDownIndex(i) do
+    TNotifyEvent(FControlHandlers[chtOnResize][i])(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.DoOnResize;
+
+  Call events
+------------------------------------------------------------------------------}
+procedure TControl.DoOnChangeBounds;
+var
+  i: Integer;
+begin
+  if Assigned(FOnChangeBounds) then FOnChangeBounds(Self);
+  i:=FControlHandlers[chtOnChangeBounds].Count;
+  while FControlHandlers[chtOnChangeBounds].NextDownIndex(i) do
+    TNotifyEvent(FControlHandlers[chtOnChangeBounds][i])(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -911,6 +939,20 @@ end;
 procedure TControl.VisibleChanging;
 begin
 
+end;
+
+procedure TControl.AddControlHandler(HandlerType: TControlHandlerType;
+  AMethod: TMethod; AsLast: boolean);
+begin
+  if FControlHandlers[HandlerType]=nil then
+    FControlHandlers[HandlerType]:=TMethodList.Create;
+  FControlHandlers[HandlerType].Add(AMethod);
+end;
+
+procedure TControl.RemoveControlHandler(HandlerType: TControlHandlerType;
+  AMethod: TMethod);
+begin
+  FControlHandlers[HandlerType].Remove(AMethod);
 end;
 
 {------------------------------------------------------------------------------
@@ -2012,6 +2054,37 @@ begin
           and not (csReadingState in ControlState);
 end;
 
+procedure TControl.AddHandlerOnResize(OnResizeEvent: TNotifyEvent;
+  AsLast: boolean);
+begin
+  AddControlHandler(chtOnResize,TMethod(OnResizeEvent),AsLast);
+end;
+
+procedure TControl.RemoveHandlerOnResize(OnResizeEvent: TNotifyEvent);
+begin
+  RemoveControlHandler(chtOnResize,TMethod(OnResizeEvent));
+end;
+
+procedure TControl.AddHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent;
+  AsLast: boolean);
+begin
+  AddControlHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsLast);
+end;
+
+procedure TControl.RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent
+  );
+begin
+  RemoveControlHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent));
+end;
+
+procedure TControl.RemoveAllControlHandlersOfObject(AnObject: TObject);
+var
+  HandlerType: TControlHandlerType;
+begin
+  for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
+    FControlHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
+end;
+
 {------------------------------------------------------------------------------
        TControl.SetZOrderPosition
 ------------------------------------------------------------------------------}
@@ -2103,6 +2176,8 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TControl.Destroy;
+var
+  HandlerType: TControlHandlerType;
 begin
   //writeln('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
@@ -2112,6 +2187,8 @@ begin
   //writeln('[TControl.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
   //writeln('[TControl.Destroy] END ',Name,':',ClassName);
+  for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
+    FreeThenNil(FControlHandlers[HandlerType]);
 end;
 
 {------------------------------------------------------------------------------
@@ -2311,6 +2388,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.133  2003/06/13 12:53:52  mattias
+  fixed TUpDown and added handler lists for TControl
+
   Revision 1.132  2003/06/12 18:55:44  mattias
   improved designer to recognize auto child moves
 
