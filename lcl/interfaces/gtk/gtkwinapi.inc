@@ -7854,6 +7854,8 @@ var DCOrigin: TPoint;
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
+  if (Width=0) and (Height=0) then exit;
+  if (SrcWidth=0) and (SrcHeight=0) then exit;
   if Result
   then begin
     with TDeviceContext(DestDC) do begin
@@ -8198,6 +8200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.242  2003/06/13 10:37:20  mattias
+  fixed AV on StretchDraw 0x0
+
   Revision 1.241  2003/06/07 13:04:03  mattias
   ComboBoxDropDown from Yoyong
 
