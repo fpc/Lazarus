@@ -86,7 +86,7 @@ Type
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
-    Procedure AddNBPage(Parent, Child: TObject; Index: Integer);
+    Procedure AddNBPage(Notebook: TCustomNotebook; NewPage: TPage; Index: Integer);
     Procedure RemoveNBPage(Parent: TObject; Index: Integer);
     Procedure SetText(Window: HWND; Data: Pointer);
     Procedure SetColor(Sender : TObject);
@@ -187,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/12/16 09:02:27  mattias
+  applied win32 notebook patch from Vincent
+
   Revision 1.24  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 

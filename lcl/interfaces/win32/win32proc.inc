@@ -517,7 +517,7 @@ Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
 Begin
   If Target = Nil Then
   begin
-    WriteLn('[DeliverMessage] Nil');
+    WriteLn('[DeliverMessage Target: Pointer] Nil');
     Exit;
   end;
   If TObject(Target) Is TControl Then
@@ -544,7 +544,10 @@ End;
 Function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
 Begin
   If Target = Nil Then
-    Assert(False, 'Trace:DeliverMessage --> got nil object');
+  begin
+    WriteLn('[DeliverMessage (Target: TObject)] Nil');
+    Exit;
+  end;
   If Target Is TControl Then
     TControl(Target).WindowProc(Message)
   Else
@@ -673,6 +676,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.11  2002/12/16 09:02:27  mattias
+  applied win32 notebook patch from Vincent
+
   Revision 1.10  2002/12/04 20:39:18  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 

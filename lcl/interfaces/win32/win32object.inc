@@ -15,8 +15,8 @@
 
 {$IFOPT C-}
 // Uncomment for local trace
-  {$C+}
-  {$DEFINE ASSERT_IS_ON}
+//  {$C+}
+//  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 {------------------------------------------------------------------------------
   Method: TWin32Object.Create
@@ -182,18 +182,19 @@ Begin
     Begin 
       Assert(False, 'Trace:TWin32Object.GetText - csPage: Start');
       Ctrl := ((Sender As TPage).Parent As TNotebook);
-      Try
-        Assert(False, 'Trace:TWin32Object.GetText - Filling TC_ITEM');
+      Caption := StrAlloc(MAX_PATH);
+      try
         TCI.mask := TCIF_TEXT;
         TCI.cchTextMax := MAX_PATH;
-        TCI.pszText := StrAlloc(MAX_PATH);
+        TCI.pszText := Caption;
         Assert(False, 'Trace:TWin32Object.GetText - Getting the text');
-        TabCtrl_GetItem(Ctrl.Handle, Ctrl.PageIndex, TCI);
-        Data := String(TCI.pszText);
+        Result := (Windows.Sendmessage(Ctrl.Handle, TCM_GETITEM, (Sender as TPage).PageIndex, LPARAM(@TCI))<>0);
+        if Result
+          then Data := StrPas(Caption);
         Assert(False, Format('Trace:TWin32Object.GetText - Returning the text --> %S', [Data]));
-      Except
-        StrDispose(TCI.pszText);
-      End;
+      finally
+        StrDispose(Caption);
+      end;
       Assert(False, 'Trace:TWin32Object.GetText - csPage: Exit');
     End;
     Else
@@ -252,17 +253,29 @@ Begin
     Begin
       SendMessage(Handle, WM_SETTEXT, 0, LPARAM(Data));
     End;
-    csPage:
+    csNotebook:
     Begin
+      Assert(False, 'Trace: TWin32Object.SetLabel - Got csNotebook');
+      with TLMNotebookEvent(Data^) do
+      if Parent=Sender then
+      begin
+        TCI.mask := TCIF_TEXT;
+        Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [Str]));
+        TCI.pszText := PChar(Str);
+        Windows.SendMessage((Sender As TCustomNotebook).Handle, TCM_SETITEM, Page, LPARAM(@TCI));
+      end
+    End;
+    csPage:
+    begin
       Assert(False, 'Trace: TWin32Object.SetLabel - Got csPage');
-      Assert(False, Format('Trace: TWin32Object.SetLabel - Class Name: %S', [Sender.ClassName]));
-      TCI.mask := TCIF_TEXT;
-      TCI.pszText := Data;
-      //Assert(False, Format('Trace: TWin32Object.SetLabel - Page Index: %N', [PTabInfo(Data)^.Index]));
-      //Assert(False, Format('Trace: TWin32Object.SetLabel - Page Index: %S', [StrPas(PTabInfo(Data)^.Caption)]));
-      SendMessage(Handle, TCM_SETITEM, ((Sender As TPage).Parent As TNotebook).PageIndex, LPARAM(@TCI));
-      //Assert(False, Format('Trace: TWin32Object.SetLabel - PTabInfo(@Sender)^.Index: %N', [PTabInfo(@Sender)^.Index]));
-      //Assert(False, Format('Trace: TWin32Object.SetLabel - PTabInfo(@Sender)^.Caption: %S', [StrPas(PTabInfo(@Sender)^.Caption)]));
+      // We can't set label of a page not yet added
+      if (Sender As TPage).PageIndex < Windows.SendMessage((Sender As TPage).Parent.Handle, TCM_GETITEMCOUNT,0,0) then
+      begin
+        Assert(False, Format('Trace:TWin32Object.SetLabel - label --> %S', [String(PChar(Data))]));
+        TCI.mask := TCIF_TEXT;
+        TCI.pszText := Data;
+        Windows.SendMessage((Sender As TPage).Parent.Handle, TCM_SETITEM, (Sender As TPage).PageIndex, LPARAM(@TCI));
+      end;
     End;
     csToolButton:
     Begin
@@ -279,10 +292,10 @@ Begin
       UpdateWindow(HOwner);
     End;
 
-    Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
   End;
+  Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
 End;
-
+{$C+}
 {------------------------------------------------------------------------------
   Method: TWin32Object.IntSendMessage3
   Params:  LM_Message - message to be processed
@@ -309,6 +322,8 @@ Var
   R, R2: TRECT;
   SelectionMode: DWORD; // currently only used for listboxes
   TBB: Array[0..1] Of TBBUTTON; // Limited to 2 buttons at present
+  WindowStyle: Integer; //used by LM_SETTABPOSITION
+  OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
 Begin
   Result := 0;   //default value just in case nothing sets it
   Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
@@ -534,22 +549,27 @@ activate_time :	the time at which the activation event occurred.
           begin
             With PRect(Data)^ do
             begin
-              R.Left:=Left;
-              R.Top:=Top;
-              R.Bottom:=Bottom;
-              R.Right:=Right;
-            {Get the width and height for the form}  
+              R := Rect(Left,Top,Right,Bottom);
+            {Get the width and height for the form}
             If TControl(Sender).FCompStyle = csForm Then
               begin
                  R.Right:=Left + Right;
                  R.Bottom:=Top + Bottom;
                  if (Sender is TCustomForm) and ((Sender as TCustomForm).Menu<>nil) then Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,true)
                  else Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
-                 R.Right:=R.Right - R.Left;
-                 R.Bottom:=R.Bottom - R.Top; 
+                 R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top)
+              end
+            else if TControl(Sender).FCompStyle = csPage then
+              begin
+                if (Sender As TWinControl).Parent.Handle<>0 then
+                begin
+                  Windows.GetClientRect((Sender As TWinControl).Parent.Handle,@R);
+                  Windows.SendMessage((Sender As TWinControl).Parent.Handle, TCM_AdjustRect, 0, LPARAM(@R));
+                  R := Rect(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+                end
               end;
             If TWinControl(Sender).HandleAllocated Then
-                  ResizeChild(Sender, Left, Top, R.Right , R.Bottom);
+                  ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
             end;
           end;
         End;
@@ -596,7 +616,7 @@ activate_time :	the time at which the activation event occurred.
         LM_ADDPAGE:
         Begin
           Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-          AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, TLMNotebookEvent(Data^).Page);
+          AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TPage, TLMNotebookEvent(Data^).Page);
         End;
         LM_REMOVEPAGE:
         Begin
@@ -610,27 +630,21 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETTABPOSITION :
         Begin
-          Case TTabPosition(TLMNotebookEvent(Data^).TabPosition^) Of
-            tpTop:
-            Begin
-              R.Top := 0;
-              TabCtrl_AdjustRect(Handle, True, Windows.RECT(R));
+          // VS: not tested
+          With TLMNotebookEvent(Data^) Do
+          Begin
+            WindowStyle := Windows.GetWindowLong((Sender As TWinControl).Handle, GWL_STYLE);
+            Case TTabPosition(TabPosition^) Of
+              tpTop:
+                WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
+              tpBottom:
+                WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
+              tpLeft:
+                WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
+              tpRight:
+                WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
             End;
-            tpBottom:
-            Begin
-              R.Bottom := 0;
-              TabCtrl_AdjustRect(Handle, True, Windows.RECT(R));
-            End;
-            tpLeft:
-            Begin
-              R.Left := 0;
-              TabCtrl_AdjustRect(Handle, True, Windows.RECT(R));
-            End;
-            tpRight:
-            Begin
-              R.Right := 0;
-              TabCtrl_AdjustRect(Handle, True, Windows.RECT(R));
-            End;
+            Windows.SetWindowLong((Sender As TWinControl).Handle, GWL_STYLE, WindowStyle);
           End;
         End;
         LM_INSERTTOOLBUTTON:
@@ -754,7 +768,15 @@ activate_time :	the time at which the activation event occurred.
             csNotebook:
             Begin
               Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-              SendMessage(Handle, TCM_SETCURSEL, LParam(Integer(Data)), 0);
+              with TLMNotebookEvent(Data^) do
+              begin
+                OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
+                SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
+{                if (Page>=0) And ((Parent As TCustomNotebook).Page[Page].HandleAllocated)
+                  then ShowWindow((Parent As TCustomNotebook).Page[Page].Handle, SW_SHOW);}
+                if (OldPageIndex>=0) and (OldPageIndex<>Page) and ((Parent As TCustomNotebook).Page[OldPageIndex].HandleAllocated)
+                  then ShowWindow((Parent As TCustomNotebook).Page[OldPageIndex].Handle, SW_HIDE);
+              end;
             End;
           End;
         End;  
@@ -877,7 +899,7 @@ activate_time :	the time at which the activation event occurred.
     End; // end of else-part of 1st case
   End; // end of 1st case
 End;
-
+{$C-}
 {------------------------------------------------------------------------------
   Method: TWin32Object.SetCallback
   Params: Msg    - message for which to set a callback
@@ -1408,7 +1430,7 @@ Var
   TM: TEXTMETRICA;
 Begin
   Handle := (Sender As TWinControl).Handle;
-  If (TControl(Sender).Parent Is TCustomGroupBox) Or (TControl(Sender).Parent Is TPage) Then
+  If (TControl(Sender).Parent Is TCustomGroupBox) Then
   Begin
     DC := GetDC(Handle);
     GetTextMetrics(DC, TM);
@@ -1954,48 +1976,13 @@ Begin
       TControl(Sender).FCompStyle := csFrame;
       IntSendMessage3(LM_CREATE, Sender, Nil);
     End;
-    // TPage - Notebook page 
+    // TPage - Notebook page
     csPage:
     Begin
-      Assert(False, 'Trace:TODO: Create a csPage component.');
-      Assert(False, 'Trace:Going to try it here.  I''m guaranteeing nothing.');
-      Assert(False, 'Trace:csPage - class name is ' + Sender.ClassName);
-      With ((Sender As TPage).Parent As TNotebook) Do
-      Begin
-        StrDispose(StrTemp);
-        Try
-          Assert(False, Format('Trace:Page caption --> %S', [Page[PageIndex].Caption]));
-          StrTemp := StrAlloc(Length(Page[PageIndex].Caption) + 1);
-          StrPCopy(StrTemp, Page[PageIndex].Caption);
-        Except
-          On E: Exception Do
-          Begin
-            Assert(False, Format('Trace:TWin32Object.CreateComponent - could not create in csPage --> %S', [E.Message]));
-            //Exit;
-          End;
-        End;
-        With TCI Do
-        Begin
-          Mask := TCIF_TEXT;
-          PSzText := StrTemp;
-        End;
-        Try
-          Assert(False, Format('Trace:Number of pages: %D, current page: %D', [Pages.Count, PageIndex]));
-          Window := TabCtrl_InsertItem(Handle, PageIndex, TCI);
-        Except
-          Assert(False, 'Trace:csPage - Could not insert page');
-          Exit;
-        End;
-        {If PageIndex >= Pages.Count - 1 Then
-          TabCtrl_DeleteItem(Handle, Pages.Count)
-        Else}
-        If (PageIndex + 1 < Pages.Count) And (Pages.Count > 1) Then
-          PageIndex := PageIndex + 1
-        Else
-          TabCtrl_DeleteItem(Handle, Pages.Count);
-        SetProp(Handle, 'Lazarus', @Sender);
-        Self.SetName(Handle, StrTemp);
-      End;
+      Assert(False, 'Trace:Create a csPage component.');
+      Window := CreateWindow('STATIC', Nil, WS_CHILD, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      ShowWindow(Window, SW_HIDE);
+      SetProp(Window, 'Lazarus', Sender);
     End;
     csPopupMenu:
     Begin
@@ -2094,7 +2081,7 @@ Var
   Handle: HWND;
 Begin
   Handle := ObjectToHWND(Sender);
-
+  If TControl(Sender).FCompStyle = csPage then exit;
   If TControl(Sender).Visible Then
   Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
@@ -2111,16 +2098,41 @@ End;
 
 { -----------------------------------------------------------------------------
   Method: TWin32Object.AddNBPage
-  Params: Parent - A notebook control
-          Child  - Page to insert
+  Params: Notebook - A notebook control
+          NewPage - Page to insert
           Index  - The position in the notebook to insert the page
   Returns: Nothing
 
   Adds a new page to a notebook
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.AddNBPage(Parent, Child: TObject; Index: Integer);
+Procedure TWin32Object.AddNBPage(Notebook: TCustomNotebook; NewPage: TPage; Index: Integer);
+Var
+  TabControlItem: TC_ITEM;
+  PageCaption: string;
+  OldPageIndex: integer;
+  R: TRect;
 Begin
   Assert(False, 'Trace:TWin32Object.AddNBPage - Start');
+  With Notebook, TabControlItem do
+  Begin
+    Mask := 0;
+    // Before adding, the page caption comes from TControl.FCaption.
+    // After adding, it is read from the TabControl,
+    // so we cache it temporarily for later use.
+    PageCaption := NewPage.Caption;
+    Windows.SendMessage(Handle, TCM_INSERTITEM, Index, integer(@TabControlItem));
+    // Set page caption in tabcontrol
+    SetLabel(NewPage, PChar(PageCaption));
+    // Adjust page size to fit in tabcontrol, no bounds needed.
+    IntSendMessage3(LM_SETSIZE, NewPage, @R);
+    // Do the page switch. The are no tabcontrol notifications so we have to
+    // do the hiding and showing ourselves.
+    OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
+    SendMessage(Handle,TCM_SETCURSEL,NewPage.PageIndex,0);
+    ShowWindow(NewPage.Handle, SW_SHOW);
+    if (OldPageIndex>=0) and (OldPageIndex<>NewPage.PageIndex)
+      then ShowWindow(Page[OldPageIndex].Handle, SW_HIDE);
+  End;
 End;
 
 {------------------------------------------------------------------------------
@@ -2575,6 +2587,9 @@ End;
 
 {
   $Log$
+  Revision 1.33  2002/12/16 09:02:27  mattias
+  applied win32 notebook patch from Vincent
+
   Revision 1.32  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 

@@ -871,6 +871,12 @@ begin
     LM_SETFORMICON      : Result :='LM_SETFORMICON     ';
     LM_SETSHORTCUT      : Result :='LM_SETSHORTCUT     ';
     LM_SETGEOMETRY      : Result :='LM_SETGEOMETRY     ';
+    LM_GETITEMS         : Result :='LM_GETITEMS        ';
+    LM_GETITEMINDEX     : Result :='LM_GETITEMINDEX    ';
+    LM_SETITEMINDEX     : Result :='LM_SETITEMINDEX    ';
+    LM_SORT             : Result :='LM_SORT            ';
+    LM_SETSELMODE       : Result :='LM_SETSELMODE      ';
+    LM_SETBORDER        : Result :='LM_SETBORDER       ';
     LM_SCREENINIT       : Result :='LM_SCREENINIT      ';
     // additional for TNoteBook
     LM_NB_UpdateTab     : Result := 'LM_NB_UpdateTab';
@@ -886,6 +892,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2002/12/16 09:02:27  mattias
+  applied win32 notebook patch from Vincent
+
   Revision 1.41  2002/12/01 22:00:34  mattias
   fixed DeleteCriticalSection
 

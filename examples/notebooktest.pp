@@ -100,8 +100,23 @@ begin
 end;
 
 procedure TForm1.Button1Click(Sender : TObject);
+var
+  NewPageIndex: integer;
+  NewPage: TPage;
+  PageLabel: TLabel;
 begin
-  Notebook1.Pages.Add(Format('[Page %d]', [Notebook1.Pages.Count]));
+  NewPageIndex := Notebook1.Pages.Add(Format('[Page %d]', [Notebook1.Pages.Count]));
+  NewPage := Notebook1.Page[NewPageIndex];
+  PageLabel := TLabel.Create(Self);
+  with PageLabel do
+  begin
+    Left := 20;
+    Top := 10 + NewPageIndex * 20;
+    Width := 500;
+    Height := 20;
+    Caption := Format('This is page [%d]',[NewPageIndex]);
+    Parent := NewPage;
+  end;
 end;
 
 procedure TForm1.Button2Click(Sender : TObject);

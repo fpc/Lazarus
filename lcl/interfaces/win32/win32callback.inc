@@ -14,8 +14,8 @@
 }
 {$IFOPT C-}
 // Uncomment for local trace
-  {$C+}
-  {$DEFINE ASSERT_IS_ON}
+//  {$C+}
+//  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
 {*************************************************************}
@@ -59,6 +59,19 @@ Var
   R: TRect;
   OwnerObject: TObject;
   WinProcess: Boolean;
+  procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
+  var
+    NoteBook: TCustomNotebook;
+    PageIndex: integer;
+    PageHandle: HWND;
+  begin
+    Notebook := TObject(GetProp(NotebookHandle, 'Lazarus')) as TCustomNotebook;
+    PageIndex := SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
+    PageHandle := Notebook.Page[PageIndex].Handle;
+    if Showing
+      then ShowWindow(PageHandle, SW_SHOW)
+      else ShowWindow(PageHandle, SW_HIDE);
+  end;
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -312,6 +325,16 @@ Begin
         Msg := LM_NOTIFY;
         IDCtrl := WParam;
         NMHdr := PNMHDR(LParam);
+        With NMHdr^ do
+        Begin
+          If code = TCN_SELCHANGING
+            Then ShowHideTabPage(HWndFrom, False);
+          If code = TCN_SELCHANGE Then
+          begin
+            ShowHideTabPage(HWndFrom, True);
+            idFrom := SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
+          end;
+        end;
       End;
     End;
     WM_PAINT:
@@ -479,6 +502,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2002/12/16 09:02:27  mattias
+  applied win32 notebook patch from Vincent
+
   Revision 1.20  2002/12/09 17:53:22  mattias
   Patch from Martin for reszing windows
 

@@ -114,8 +114,10 @@ begin
         else
           // deleting last page
           NewPageIndex:=-1;
+          
+        if NewPageIndex>=0 then
+          fNoteBook.PageIndex:=NewPageIndex;
       end;
-      fNoteBook.PageIndex:=NewPageIndex;
     end;
     if (FNoteBook.HandleAllocated) and (TPage(fPageList[Index]).HandleAllocated)
     then begin
@@ -734,6 +736,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/12/16 09:02:27  mattias
+  applied win32 notebook patch from Vincent
+
   Revision 1.27  2002/11/18 17:06:29  mattias
   improved designer rubberband
 

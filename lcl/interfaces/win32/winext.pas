@@ -76,6 +76,12 @@ Const
   { Left-to-right reading text }
   WS_EX_LTRLEADING = 0;
 
+  { Tab Control Styles}
+  TCS_RIGHT = $0002;
+  TCS_BOTTOM = $0002;
+  TCS_VERTICAL = $0080;
+  TCS_MULTILINE = $0200;
+
 { Win32 API functions not included in windows.pp }
 { Get the ancestor at level Flag of window HWnd }
 Function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; External 'user32';
