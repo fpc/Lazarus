@@ -69,6 +69,8 @@ type
     procedure MainMouseDown(Sender: TObject; Button: TMouseButton; 
         Shift: TShiftState; X,Y: Integer);
     procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
+          const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
 
     // file menu
     procedure mnuNewUnitClicked(Sender : TObject);
@@ -2746,10 +2748,7 @@ begin
   end;
 
   // change unitname on SourceNotebook
-  if AnUnitInfo.EditorIndex>=0 then
-    SourceNoteBook.NoteBook.Pages[AnUnitInfo.EditorIndex]:=
-                      CreateSrcEditPageName(NewUnitName,NewFilename,
-                                            SourceNoteBook.NoteBook.PageIndex);
+  UpdateSourceNames;
 
   // change syntax highlighter
   if not AnUnitInfo.CustomHighlighter then begin
@@ -3599,7 +3598,7 @@ begin
   end else begin
     FCodeLastActivated:=true;
   end;
-  writeln('TMainIDE.DoNewUnit end ',NewUnitInfo.Filename);
+  writeln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
 end;
 
@@ -3669,8 +3668,10 @@ begin
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
     Result:=DoShowSaveFileAsDialog(ActiveUnitInfo,ResourceCode);
-    if Result in [mrIgnore, mrOk] then Result:=mrCancel
-    else exit;
+    if Result in [mrIgnore, mrOk] then
+      Result:=mrCancel
+    else
+      exit;
     LFMCode:=nil;
   end;
 
@@ -6153,6 +6154,7 @@ begin
     CatchExceptions:=true;
     OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
     OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
+    OnSearchUsedUnit:=@OnCodeToolBossSearchUsedUnit;
   end;
 
   // codetools consistency check
@@ -6915,6 +6917,23 @@ begin
       HintWindow1.Visible := False;
 end;
 
+function TMainIDE.OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
+  const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  Result:=nil;
+  // check if SrcFilename is project file
+  AnUnitInfo:=Project1.ProjectUnitWithFilename(SrcFilename);
+  if AnUnitInfo=nil then exit;
+  // SrcFilename is a project file
+  // -> search virtual project files
+  AnUnitInfo:=Project1.ProjectUnitWithUnitname(TheUnitName);
+  if AnUnitInfo=nil then exit;
+  // virtual unit found
+  Result:=AnUnitInfo.Source;
+end;
+
 Procedure TMainIDE.MainMouseDown(Sender: TObject; Button: TMouseButton; Shift:
   TShiftState; X, Y: Integer);
 begin
@@ -7420,6 +7439,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.420  2002/10/30 22:28:47  lazarus
+  MG: fixed used virtual files and IsPartOfProject Bug
+
   Revision 1.419  2002/10/30 18:24:42  lazarus
   MG: fixed unitname update bug
 
