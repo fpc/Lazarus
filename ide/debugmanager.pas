@@ -41,7 +41,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Dialogs, CompilerOptions, EditorOptions,
   EnvironmentOpts, KeyMapping, UnitEditor, Project, IDEProcs,
-  Debugger, RunParamsOpts, ExtToolDialog,
+  Debugger, RunParamsOpts, ExtToolDialog, LazarusIDEStrConsts,
   ProjectDefs, BaseDebugManager, MainBar, DebuggerDlg;
   
 type
@@ -220,17 +220,72 @@ procedure TDebugManager.OnDebuggerCurrentLine(Sender: TObject;
 // if SrcLine = -1 then no source is available
 var
   ActiveSrcEdit: TSourceEditor;
-  UnitFile: String;
+  SearchFile, UnitFile: String;
+  OpenDialog: TOpenDialog;
+  UnitInfo: TUnitInfo;
+  n: Integer;
 begin
   if (Sender<>FDebugger) or (Sender=nil) then exit;
 
   //TODO: Show assembler window if no source can be found.
-  if ALocation.SrcLine = -1 then Exit;
+  if ALocation.SrcLine = -1 
+  then begin
+    MessageDlg('Execution paused',
+      Format('Execution paused'#13#13 + 
+             '  Adress: $%p'#13 + 
+             '  Procedure: %s'#13 + 
+             '  File: %s'#13#13#13 + 
+             '(Some day an assembler window might popup here :)'#13,  
+        [ALocation.Adress, ALocation.FuncName, ALocation.SrcFile]),
+      mtInformation, [mbOK],0);
+    
+    Exit;
+  end;
 
   UnitFile := MainIDE.FindUnitFile(ALocation.SrcFile);
   if UnitFile = ''
   then UnitFile := ALocation.SrcFile;
-  if MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists]) <> mrOk then exit;
+  
+  if MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists, ofQuiet]) <> mrOk 
+  then begin
+    // Try to find it ourself in the project files
+    SearchFile := ExtractFilenameOnly(ALocation.SrcFile); 
+    UnitFile := '';
+    for n := Project1.UnitCount - 1 downto 0 do
+    begin
+      UnitInfo := Project1.Units[n];
+      if CompareFileNames(SearchFile, ExtractFilenameOnly(UnitInfo.FileName)) = 0
+      then begin
+        UnitFile := UnitInfo.FileName;
+        Break;
+      end;
+    end;
+    
+    if (UnitFile = '')
+    or (MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists, ofQuiet]) <> mrOk)
+    then begin
+      UnitFile := ALocation.SrcFile;
+      repeat
+        if MessageDlg('File not found',
+          'The file "'+UnitFile+'"'#13
+          +'was not found.'#13
+          +'Do you want to locate it yourself ?'#13
+          ,mtConfirmation, [mbYes, mbNo], 0) <> mrYes   
+        then Exit;
+        
+        OpenDialog := TOpenDialog.Create(Application);
+        try
+          OpenDialog.Title := lisOpenFile;
+          OpenDialog.FileName := ALocation.SrcFile;
+          if not OpenDialog.Execute 
+          then Exit;
+          UnitFile := OpenDialog.FileName;
+        finally
+          OpenDialog.Free;
+        end;
+      until MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists, ofQuiet]) = mrOk;
+    end;
+  end;  
 
   ActiveSrcEdit := SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;
@@ -576,3 +631,12 @@ end;
 
 end.
 
+{ =============================================================================
+  $Log$
+  Revision 1.8  2002/10/02 00:17:03  lazarus
+  MWE:
+    + Honoured the ofQuiet flag in DoOpenNotExistingFile, so custom messages
+      can be shown
+    + Added a dialog to make custom locate of a debug file possible
+
+}
