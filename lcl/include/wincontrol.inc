@@ -576,7 +576,7 @@ function TWinControl.GetClientRect: TRect;
     end;
   end;
 
-var r: TRect;
+var //r: TRect;
   InterfaceWidth, InterfaceHeight: integer;
 begin
   if not HandleAllocated then begin
@@ -592,7 +592,7 @@ begin
     Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
     StoreClientRect(Result);
 
-    r:=inherited GetClientRect;
+    {r:=inherited GetClientRect;
     if (r.Left<>Result.Left)
     or (r.Top<>Result.Top)
     or (r.Right<>Result.Right)
@@ -601,7 +601,7 @@ begin
       //  ' Old=',r.Left,',',r.Top,',',r.Right,',',r.Bottom,
       //  ' New=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom
       //  );
-    end;
+    end;}
     
   end else begin
     Result:=Rect(0,0,FClientWidth,FClientHeight);
@@ -2460,6 +2460,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2002/10/31 21:29:47  lazarus
+  MG: implemented TControlScrollBar.Size
+
   Revision 1.94  2002/10/26 15:15:49  lazarus
   MG: broke LCL<->interface circles
 
