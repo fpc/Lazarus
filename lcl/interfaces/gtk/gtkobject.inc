@@ -2091,8 +2091,8 @@ begin
          if Sender is TOpenDialog then begin
            // set extra options
            if ofAllowMultiSelect in TOpenDialog(Sender).Options then begin
-             {gtk_clist_set_selection_mode(
-               PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_BROWSE);}
+             gtk_clist_set_selection_mode(
+               PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
            end;
          end;
       end;
@@ -3479,6 +3479,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.85  2001/12/12 08:29:21  lazarus
+        Add code to allow TOpenDialog to do multiple line selects.   MAH
+
   Revision 1.84  2001/12/11 16:51:37  lazarus
   Modified the Watches dialog
   Shane
