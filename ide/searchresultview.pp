@@ -149,8 +149,8 @@ begin
   fUpdating:= false;
 end;//EndUpdate
 
-{Brings The results tab named APageName to front if APageName does not exist
- does nothing}
+{Brings the results tab named APageName to front.
+ If APageName does not exist, does nothing}
 procedure TSearchResultsView.BringResultsToFront(APageName: string);
 begin
   if PageExists(APageName) then
@@ -213,8 +213,6 @@ var
   SearchObj: TLazSearch;
 begin
   Result:= nil;
-  SearchObj:= TLazSearch.Create;
-  SearchObj.SearchString:= SearchText;
   if Assigned(ResultsNoteBook) then
   begin
     With ResultsNoteBook do
@@ -228,6 +226,8 @@ begin
       else
       begin
         NewPage:= Pages.Add(ResultsName + SPACE);
+        SearchObj:= TLazSearch.Create;
+        SearchObj.SearchString:= SearchText;
         fSearchObjectList.AddObject(ResultsName + SPACE, SearchObj);
         if NewPage > -1 then
         begin
@@ -389,15 +389,15 @@ begin
   if i > -1 then
   begin
     ThePage:= ResultsNoteBook.Page[i];
-  end;//if
-  if Assigned(ThePage) then
-  begin
-    TheListBox:= GetListBox(ThePage.PageIndex);
-    if Assigned(TheListBox) then
+    if Assigned(ThePage) then
     begin
-      i:= TheListBox.ItemIndex;
-      if i > -1 then
-        result:= TheListBox.Items[i];
+      TheListBox:= GetListBox(ThePage.PageIndex);
+      if Assigned(TheListBox) then
+      begin
+        i:= TheListBox.ItemIndex;
+        if i > -1 then
+          result:= TheListBox.Items[i];
+      end;//if
     end;//if
   end;//if
 end;//GetSelectedText

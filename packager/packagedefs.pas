@@ -274,6 +274,30 @@ type
   PPkgDependency = ^TPkgDependency;
   
   
+  { TPkgPair }
+
+  TPkgPair = class
+  public
+    Package1: TLazPackage;
+    Package2: TLazPackage;
+    constructor Create(Pkg1, Pkg2: TLazPackage);
+    function ComparePair(Pkg1, Pkg2: TLazPackage): integer;
+    function Compare(PkgPair: TPkgPair): integer;
+  end;
+  
+  
+  { TPkgPairTree }
+  
+  TPkgPairTree = class(TAVLTree)
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function FindPair(Pkg1, Pkg2: TLazPackage; IgnoreOrder: boolean): TPkgPair;
+    function AddPair(Pkg1, Pkg2: TLazPackage): TPkgPair;
+    function AddPairIfNotExists(Pkg1, Pkg2: TLazPackage): TPkgPair;
+  end;
+
+
   { TPkgCompilerOptions }
   
   TPkgCompilerOptions = class(TBaseCompilerOptions)
@@ -3218,6 +3242,80 @@ end;
 function TPublishPackageOptions.GetDefaultDestinationDir: string;
 begin
   Result:='$(TestDir)/publishedpackage/';
+end;
+
+{ TPkgPairTree }
+
+function ComparePkgPairs(Pair1, Pair2: TPkgPair): integer;
+begin
+  Result:=Pair1.Compare(Pair2);
+end;
+
+constructor TPkgPairTree.Create;
+begin
+  inherited Create(@ComparePkgPairs);
+end;
+
+destructor TPkgPairTree.Destroy;
+begin
+  FreeAndClear;
+  inherited Destroy;
+end;
+
+function TPkgPairTree.FindPair(Pkg1, Pkg2: TLazPackage; IgnoreOrder: boolean
+  ): TPkgPair;
+var
+  Comp: integer;
+  ANode: TAVLTreeNode;
+begin
+  ANode:=Root;
+  while (ANode<>nil) do begin
+    Result:=TPkgPair(ANode.Data);
+    Comp:=Result.ComparePair(Pkg1,Pkg2);
+    if Comp=0 then exit;
+    if Comp<0 then begin
+      ANode:=ANode.Left
+    end else begin
+      ANode:=ANode.Right
+    end;
+  end;
+  if IgnoreOrder then
+    Result:=FindPair(Pkg2,Pkg1,false)
+  else
+    Result:=nil;
+end;
+
+function TPkgPairTree.AddPair(Pkg1, Pkg2: TLazPackage): TPkgPair;
+begin
+  Result:=TPkgPair.Create(Pkg1,Pkg2);
+  Add(Result);
+end;
+
+function TPkgPairTree.AddPairIfNotExists(Pkg1, Pkg2: TLazPackage): TPkgPair;
+begin
+  Result:=FindPair(Pkg1,Pkg2,true);
+  if Result=nil then
+    Result:=AddPair(Pkg1,Pkg2);
+end;
+
+{ TPkgPair }
+
+constructor TPkgPair.Create(Pkg1, Pkg2: TLazPackage);
+begin
+  Package1:=Pkg1;
+  Package2:=Pkg2;
+end;
+
+function TPkgPair.ComparePair(Pkg1, Pkg2: TLazPackage): integer;
+begin
+  Result:=Package1.Compare(Pkg1);
+  if Result=0 then
+    Result:=Package2.Compare(Pkg2);
+end;
+
+function TPkgPair.Compare(PkgPair: TPkgPair): integer;
+begin
+  Result:=ComparePair(PkgPair.Package1,PkgPair.Package2);
 end;
 
 initialization

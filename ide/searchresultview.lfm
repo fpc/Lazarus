@@ -3,6 +3,7 @@ object SearchResultsView: TSearchResultsView
   CLIENTHEIGHT = 225
   CLIENTWIDTH = 799
   ONCREATE = Form1Create
+  ONDESTROY = SearchResultsViewDestroy
   HORZSCROLLBAR.PAGE = 800
   VERTSCROLLBAR.PAGE = 226
   LEFT = 280
