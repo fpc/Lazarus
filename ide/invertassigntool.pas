@@ -46,7 +46,7 @@ function InvertAssignment(ALines:TStrings):TStrings;
 
 implementation
 
-// This functiosn inverts all Assignment operation.
+// This function inverts all Assignments operation.
 // like valuea := valueb; to valueb := valuea;
 function InvertAssignment(ALines:TStrings):TStrings;
 var iLeft, iSize : integer; //for identation purpose only
@@ -70,7 +70,7 @@ var iLeft, iSize : integer; //for identation purpose only
     var i : integer;
     begin
       Result := '';
-      for i := 0 to iChar do  Result := Result+' ';
+      for i := 0 to iChar-1 do  Result := Result+' ';
     end;
 
   var iPos: integer;
@@ -101,7 +101,7 @@ var iLeft, iSize : integer; //for identation purpose only
     if Pos(':=',s) > 0 then
     begin
       if s_Comment <> '' then s_Comment := ' '+s_Comment;
-      
+
       // Inverting
       iPos    := Pos(':=', s );
       s_Right := ClearLine( Copy(s,iPos+2, Length(s)-iPos) );
@@ -121,7 +121,7 @@ begin
 
   Result := TStringList.Create;
 
-  // Let's find the Bigest at Right Word for Identation
+  // Let's find the Bigest Words at Right for Identation
   iSize := 0;
   for i := 0 to ALines.Count-1 do
   begin
