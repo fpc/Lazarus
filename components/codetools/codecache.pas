@@ -141,7 +141,7 @@ type
     property ExpirationTimeInDays: integer
           read FExpirationTimeInDays write FExpirationTimeInDays;
     procedure Clear;
-    procedure ClearAllSourleLogEntries;
+    procedure ClearAllSourceLogEntries;
     constructor Create;
     destructor Destroy;  override;
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
@@ -185,7 +185,7 @@ begin
   FItems.FreeAndClear;
 end;
 
-procedure TCodeCache.ClearAllSourleLogEntries;
+procedure TCodeCache.ClearAllSourceLogEntries;
 var
   ANode: TAVLTreeNode;
 begin

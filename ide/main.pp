@@ -6303,7 +6303,7 @@ procedure TMainIDE.ApplyCodeToolChanges;
 begin
   // all changes were handled automatically by events
   // just clear the logs
-  CodeToolBoss.SourceCache.ClearAllSourleLogEntries;
+  CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
 end;
 
 procedure TMainIDE.DoJumpToProcedureSection;
@@ -6553,10 +6553,11 @@ begin
     if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
       ActiveSrcEdit.EditorComponent.CaretY,
+      ActiveSrcEdit.EditorComponent.TopLine,
       NewSource,NewX,NewY,NewTopLine) then
     begin
       ApplyCodeToolChanges;
-      DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+      DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
         NewSource, NewX, NewY, NewTopLine, true);
     end else begin
       // error: probably a syntax error or just not in a procedure head/body
@@ -7389,6 +7390,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.411  2002/10/13 21:23:42  lazarus
+  MG: code completion: added local variable completion
+
   Revision 1.410  2002/10/13 10:19:18  lazarus
   MG: publish project: save project after dialog
 

@@ -122,7 +122,6 @@ type
     procedure AddMarker(Position: integer; SomeData: Pointer);
     procedure AddMarkerXY(Line, Column: integer; SomeData: Pointer);
     procedure AdjustPosition(var APosition: integer);
-    procedure AdjustCursor(var Line, Column: integer);
     procedure NotifyHooks(Entry: TSourceLogEntry);
     procedure IncreaseHookLock;
     procedure DecreaseHookLock;
@@ -511,18 +510,6 @@ var i: integer;
 begin
   for i:=0 to Count-1 do
     Items[i].AdjustPosition(APosition);
-end;
-
-procedure TSourceLog.AdjustCursor(var Line, Column: integer);
-var p: integer;
-begin
-  if Count=0 then exit;
-  LineColToPosition(Line,Column,p);
-  if p>0 then begin
-    AdjustPosition(p);
-    AbsoluteToLineCol(p,Line,Column);
-  end else
-    Line:=-1;
 end;
 
 procedure TSourceLog.BuildLineRanges;
