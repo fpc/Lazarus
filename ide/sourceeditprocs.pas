@@ -81,69 +81,70 @@ var
   AColor: TColor;
   ANode: TCodeTreeNode;
 begin
-  with ACanvas do begin
-    if CurrentCompletionType=ctIdentCompletion then begin
-      // draw
-      IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
-      if IdentItem=nil then begin
-        TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
-        exit;
+  if CurrentCompletionType=ctIdentCompletion then begin
+    // draw
+    IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
+    if IdentItem=nil then begin
+      ACanvas.TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
+      exit;
+    end;
+    // first write the type
+    // var, procedure, property, function, type, const
+    case IdentItem.GetDesc of
+
+    ctnVarDefinition:
+      begin
+        AColor:=clMaroon;
+        s:='var';
       end;
-      // first write the type
-      // var, procedure, property, function, type, const
-      case IdentItem.Node.Desc of
 
-      ctnVarDefinition:
-        begin
-          AColor:=clMaroon;
-          s:='var';
-        end;
+    ctnTypeDefinition:
+      begin
+        AColor:=clDkGray;
+        s:='type';
+      end;
 
-      ctnTypeDefinition:
-        begin
-          AColor:=clDkGray;
-          s:='type';
-        end;
+    ctnConstDefinition:
+      begin
+        AColor:=clOlive;
+        s:='const';
+      end;
 
-      ctnConstDefinition:
-        begin
-          AColor:=clOlive;
-          s:='const';
-        end;
-
-      ctnProcedure:
-        if IdentItem.Tool.NodeIsFunction(IdentItem.Node) then begin
-          AColor:=clTeal;
-          s:='function';
-        end else begin
-          AColor:=clNavy;
-          s:='procedure';
-        end;
-        
-      ctnProperty:
-        begin
-          AColor:=clPurple;
-          s:='property';
-        end;
-
-      else
-        AColor:=clGray;
-        s:='';
+    ctnProcedure:
+      if (IdentItem.Node<>nil)
+      and IdentItem.Tool.NodeIsFunction(IdentItem.Node) then begin
+        AColor:=clTeal;
+        s:='function';
+      end else begin
+        AColor:=clNavy;
+        s:='procedure';
       end;
       
-      SetFontColor(AColor);
-      TextOut(x+1,y,s);
-      inc(x,TextWidth('procedure '));
+    ctnProperty:
+      begin
+        AColor:=clPurple;
+        s:='property';
+      end;
 
-      SetFontColor(clBlack);
-      Font.Style:=Font.Style+[fsBold];
-      s:=GetIdentifier(IdentItem.Identifier);
-      TextOut(x+1,y,s);
-      inc(x,TextWidth(s));
-      Font.Style:=Font.Style-[fsBold];
+    else
+      AColor:=clGray;
+      s:='';
+    end;
+    
+    SetFontColor(AColor);
+    ACanvas.TextOut(x+1,y,s);
+    inc(x,ACanvas.TextWidth('procedure '));
 
+    SetFontColor(clBlack);
+    ACanvas.Font.Style:=ACanvas.Font.Style+[fsBold];
+    s:=GetIdentifier(IdentItem.Identifier);
+    ACanvas.TextOut(x+1,y,s);
+    inc(x,ACanvas.TextWidth(s));
+    ACanvas.Font.Style:=ACanvas.Font.Style-[fsBold];
+
+    if IdentItem.Node<>nil then begin
       case IdentItem.Node.Desc of
-      
+
       ctnProcedure:
         begin
           s:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
@@ -151,14 +152,14 @@ begin
              phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
              phpWithOfObject]);
         end;
-        
+
       ctnProperty:
         begin
           s:=IdentItem.Tool.ExtractProperty(IdentItem.Node,
             [phpWithoutName,phpWithVarModifiers,
              phpWithParameterNames,phpWithDefaultValues,phpWithResultType]);
         end;
-        
+
       ctnVarDefinition:
         begin
           ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
@@ -179,42 +180,46 @@ begin
 
       else
         exit;
-      
-      end;
-      
-      SetFontColor(clBlack);
-      TextOut(x+1,y,s);
 
+      end;
     end else begin
-      // parse AKey for text and style
-      i := 1;
-      while i <= Length(AKey) do begin
-        case AKey[i] of
-        #1, #2:
-          begin
-            // set color
-            Font.Color := (Ord(AKey[i + 3]) shl 8 + Ord(AKey[i + 2])) shl 8
-                          + Ord(AKey[i + 1]);
-            inc(i, 4);
-          end;
-        #3:
-          begin
-            // set style
-            case AKey[i + 1] of
-            'B': Font.Style := Font.Style + [fsBold];
-            'b': Font.Style := Font.Style - [fsBold];
-            'U': Font.Style := Font.Style + [fsUnderline];
-            'u': Font.Style := Font.Style - [fsUnderline];
-            'I': Font.Style := Font.Style + [fsItalic];
-            'i': Font.Style := Font.Style - [fsItalic];
-            end;
-            inc(i, 2);
-          end;
-        else
-          TextOut(x+1, y, AKey[i]);
-          x := x + TextWidth(AKey[i]);
-          inc(i);
+      // IdentItem.Node=nil
+      exit;
+    end;
+    
+    SetFontColor(clBlack);
+    ACanvas.TextOut(x+1,y,s);
+
+  end else begin
+    // parse AKey for text and style
+    i := 1;
+    while i <= Length(AKey) do begin
+      case AKey[i] of
+      #1, #2:
+        begin
+          // set color
+          ACanvas.Font.Color := (Ord(AKey[i + 3]) shl 8
+                        + Ord(AKey[i + 2])) shl 8
+                        + Ord(AKey[i + 1]);
+          inc(i, 4);
         end;
+      #3:
+        begin
+          // set style
+          case AKey[i + 1] of
+          'B': ACanvas.Font.Style := ACanvas.Font.Style + [fsBold];
+          'b': ACanvas.Font.Style := ACanvas.Font.Style - [fsBold];
+          'U': ACanvas.Font.Style := ACanvas.Font.Style + [fsUnderline];
+          'u': ACanvas.Font.Style := ACanvas.Font.Style - [fsUnderline];
+          'I': ACanvas.Font.Style := ACanvas.Font.Style + [fsItalic];
+          'i': ACanvas.Font.Style := ACanvas.Font.Style - [fsItalic];
+          end;
+          inc(i, 2);
+        end;
+      else
+        ACanvas.TextOut(x+1, y, AKey[i]);
+        x := x + ACanvas.TextWidth(AKey[i]);
+        inc(i);
       end;
     end;
   end;
@@ -231,14 +236,16 @@ begin
   ValueType:=icvIdentifier;
   if IdentItem<>nil then begin
     Result:=GetIdentifier(IdentItem.Identifier);
-    case IdentItem.Node.Desc of
+    case IdentItem.GetDesc of
     
     ctnProcedure:
-      if IdentItem.Tool.ProcNodeHasParamList(IdentItem.Node) then
+      if (IdentItem.Node<>nil)
+      and IdentItem.Tool.ProcNodeHasParamList(IdentItem.Node) then
         ValueType:=icvProcWithParams;
 
     ctnProperty:
-      if IdentItem.Tool.PropertyNodeHasParamList(IdentItem.Node) then
+      if (IdentItem.Node<>nil)
+      and IdentItem.Tool.PropertyNodeHasParamList(IdentItem.Node) then
         ValueType:=icvIndexedProp;
 
     end;

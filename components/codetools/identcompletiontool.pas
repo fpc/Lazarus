@@ -79,6 +79,7 @@ type
     FParamList: string;
     FParamListValid: boolean;
     function GetParamList: string;
+    procedure SetParamList(const AValue: string);
   public
     Compatibility: TIdentifierCompatibility;
     HasChilds: boolean;   // identifier can contain childs (class, record)
@@ -87,8 +88,10 @@ type
     Level: integer;
     Node: TCodeTreeNode;
     Tool: TFindDeclarationTool;
+    DefaultDesc: TCodeTreeNodeDesc;
     function AsString: string;
-    property ParamList: string read GetParamList;
+    function GetDesc: TCodeTreeNodeDesc;
+    property ParamList: string read GetParamList write SetParamList;
   end;
   
   TIdentifierListFlag = (ilfFilteredListNeedsUpdate);
@@ -101,6 +104,7 @@ type
     FHistory: TIdentifierHistoryList;
     FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
     FIdentView: TAVLTree; // tree of TIdentHistListItem sorted for identifiers
+    FIdentSearchItem: TIdentifierListItem;
     FPrefix: string;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure UpdateFilteredList;
@@ -113,6 +117,7 @@ type
     procedure Add(NewItem: TIdentifierListItem);
     function Count: integer;
     function GetFilteredCount: integer;
+    function HasIdentifier(Identifier: PChar; const ParamList: string): boolean;
   public
     property Prefix: string read FPrefix write SetPrefix;
     property FilteredItems[Index: integer]: TIdentifierListItem
@@ -159,7 +164,10 @@ type
     CurrentIdentifierList: TIdentifierList;
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
-    procedure GatherPredefinedIdentifiers;
+    procedure GatherPredefinedIdentifiers(CleanPos: integer;
+      const Context: TFindContext);
+    procedure GatherUsefulIdentifiers(CleanPos: integer;
+      const Context: TFindContext);
   public
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList): boolean;
@@ -320,6 +328,7 @@ begin
   FFlags:=[ilfFilteredListNeedsUpdate];
   FItems:=TAVLTree.Create(@CompareIdentListItems);
   FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
+  FIdentSearchItem:=TIdentifierListItem.Create;
 end;
 
 destructor TIdentifierList.Destroy;
@@ -328,6 +337,7 @@ begin
   FItems.Free;
   FIdentView.Free;
   FFilteredList.Free;
+  FIdentSearchItem.Free;
   inherited Destroy;
 end;
 
@@ -364,6 +374,15 @@ function TIdentifierList.GetFilteredCount: integer;
 begin
   UpdateFilteredList;
   Result:=FFilteredList.Count;
+end;
+
+function TIdentifierList.HasIdentifier(Identifier: PChar;
+  const ParamList: string): boolean;
+begin
+  FIdentSearchItem.Identifier:=Identifier;
+  FIdentSearchItem.ParamList:='';
+  Result:=FIdentView.FindKey(FIdentSearchItem,
+                             @CompareIdentListItemsForIdents)<>nil;
 end;
 
 { TIdentCompletionTool }
@@ -437,9 +456,64 @@ begin
   CurrentIdentifierList.Add(NewItem);
 end;
 
-procedure TIdentCompletionTool.GatherPredefinedIdentifiers;
+procedure TIdentCompletionTool.GatherPredefinedIdentifiers(CleanPos: integer;
+  const Context: TFindContext);
+// Add predefined identifiers
+
+  function StatementLevel: integer;
+  var
+    ANode: TCodeTreeNode;
+  begin
+    Result:=0;
+    ANode:=Context.Node;
+    while (ANode<>nil) and (not (ANode.Desc in [ctnBeginBlock,ctnAsmBlock])) do
+    begin
+      ANode:=ANode.Parent;
+      inc(Result);
+    end;
+    if ANode=nil then Result:=0;
+  end;
+
+var
+  NewItem: TIdentifierListItem;
+  ProcNode: TCodeTreeNode;
 begin
-  // ToDo:
+  if Context.Node.Desc in AllPascalStatements then begin
+    if Context.Tool.NodeIsInAMethod(Context.Node)
+    and (not CurrentIdentifierList.HasIdentifier('Self','')) then begin
+      // method body -> add 'Self'
+      NewItem:=TIdentifierListItem.Create;
+      NewItem.Compatibility:=icompUnknown;
+      NewItem.HasChilds:=true;
+      NewItem.Identifier:='Self';
+      NewItem.Level:=StatementLevel;
+      NewItem.Node:=nil;
+      NewItem.Tool:=nil;
+      NewItem.DefaultDesc:=ctnVarDefinition;
+      CurrentIdentifierList.Add(NewItem);
+    end;
+    ProcNode:=Context.Node.GetNodeOfType(ctnProcedure);
+    if Context.Tool.NodeIsFunction(ProcNode)
+    and (not CurrentIdentifierList.HasIdentifier('Result','')) then begin
+      // function body -> add 'Result'
+      NewItem:=TIdentifierListItem.Create;
+      NewItem.Compatibility:=icompUnknown;
+      NewItem.HasChilds:=false;
+      NewItem.Identifier:='Result';
+      NewItem.Level:=StatementLevel;
+      NewItem.Node:=nil;
+      NewItem.Tool:=nil;
+      NewItem.DefaultDesc:=ctnNone;
+      CurrentIdentifierList.Add(NewItem);
+    end;
+  end;
+end;
+
+procedure TIdentCompletionTool.GatherUsefulIdentifiers(CleanPos: integer;
+  const Context: TFindContext);
+begin
+  GatherPredefinedIdentifiers(CleanPos,Context);
+  
 end;
 
 function TIdentCompletionTool.GatherIdentifiers(
@@ -519,11 +593,11 @@ begin
       {$ENDIF}
       GatherContext.Tool.FindIdentifierInContext(Params);
     end;
-    // add predefined identifiers
+    // add useful identifiers without context
     {$IFDEF CTDEBUG}
     writeln('TIdentCompletionTool.GatherIdentifiers G');
     {$ENDIF}
-    GatherPredefinedIdentifiers;
+    GatherUsefulIdentifiers(CleanCursorPos,GatherContext);
     
     Result:=true;
   finally
@@ -541,13 +615,21 @@ end;
 function TIdentifierListItem.GetParamList: string;
 begin
   if not FParamListValid then begin
-    if Node.Desc=ctnProcedure then
+    if (Node<>nil) and (Node.Desc=ctnProcedure) then
       FParamList:=Tool.ExtractProcHead(Node,
          [phpWithoutClassKeyword,phpWithoutClassName,
-          phpWithoutName,phpInUpperCase]);
+          phpWithoutName,phpInUpperCase])
+    else
+      FParamList:='';
     FParamListValid:=true;
   end;
   Result:=FParamList;
+end;
+
+procedure TIdentifierListItem.SetParamList(const AValue: string);
+begin
+  FParamList:=AValue;
+  FParamListValid:=true;
 end;
 
 function TIdentifierListItem.AsString: string;
@@ -560,9 +642,19 @@ begin
   Result:=Result+' History='+IntToStr(HistoryIndex);
   Result:=Result+' Ident='+GetIdentifier(Identifier);
   Result:=Result+' Lvl='+IntToStr(Level);
-  Result:=Result+' File='+Tool.MainFilename;
-  Result:=Result+' Node='+Node.DescAsString
-    +' "'+StringToPascalConst(copy(Tool.Src,Node.StartPos,50))+'"';
+  if Tool<>nil then
+    Result:=Result+' File='+Tool.MainFilename;
+  if Node<>nil then
+    Result:=Result+' Node='+Node.DescAsString
+      +' "'+StringToPascalConst(copy(Tool.Src,Node.StartPos,50))+'"';
+end;
+
+function TIdentifierListItem.GetDesc: TCodeTreeNodeDesc;
+begin
+  if Node<>nil then
+    Result:=Node.Desc
+  else
+    Result:=DefaultDesc;
 end;
 
 { TIdentifierHistoryList }
@@ -628,7 +720,7 @@ begin
     // create a new history item
     NewHistItem:=TIdentHistListItem.Create;
     NewHistItem.Identifier:=GetIdentifier(NewItem.Identifier);
-    NewHistItem.NodeDesc:=NewItem.Node.Desc;
+    NewHistItem.NodeDesc:=NewItem.GetDesc;
     NewHistItem.ParamList:=NewItem.ParamList;
     AdjustIndex:=0;
   end;
