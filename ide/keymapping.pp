@@ -203,7 +203,13 @@ const
   ecCodeToolsDefinesEd   = ecUserFirst + 807;
   
   // help menu
-  ecAboutLazarus         = ecUserFirst + 1000;
+  ecAboutLazarus         = ecUserFirst + 900;
+  
+  // designer
+  ecCopyComponents       = ecUserFirst + 1000;
+  ecCutComponents        = ecUserFirst + 1001;
+  ecPasteComponents      = ecUserFirst + 1002;
+  ecSelectParentComponent= ecUserFirst + 1003;
   
 
 type
@@ -656,6 +662,12 @@ begin
     
     // help menu
     ecAboutLazarus          : Result:= lisMenuAboutLazarus;
+    
+    // desginer
+    ecCopyComponents        : Result:= lisDsgCopyComponents;
+    ecCutComponents         : Result:= lisDsgCutComponents;
+    ecPasteComponents       : Result:= lisDsgPasteComponents;
+    ecSelectParentComponent : Result:= lisDsgSelectParentComponent;
 
     else
       Result:= srkmecunknown;
@@ -1498,6 +1510,13 @@ begin
   // help menu
   C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,caAll)];
   Add(C,'About Lazarus',ecAboutLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  
+  // designer
+  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesignOnly)];
+  Add(C,'Copy selected Components to clipboard',ecCopyComponents,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
+  Add(C,'Cut selected Components to clipboard',ecCutComponents,VK_X,[ssCtrl],VK_Delete,[ssShift]);
+  Add(C,'Paste Components from clipboard',ecPasteComponents,VK_V,[ssCtrl],VK_Insert,[ssShift]);
+  Add(C,'Select parent component',ecSelectParentComponent,VK_ESCAPE,[],VK_UNKNOWN,[]);
 end;
 
 destructor TKeyCommandRelationList.Destroy;

@@ -203,6 +203,44 @@ type
   end;
 
 
+  { TColorButton }
+
+  TColorButton = class(TGraphicControl)
+  private
+    FBorderWidth: integer;
+    FButtonColor: TColor;
+    FColorDialog: TColorDialog;
+    FOnColorChanged: TNotifyEvent;
+    procedure SetBorderWidth(const AValue: integer);
+  protected
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+                      X, Y: Integer); override;
+    procedure Paint; override;
+    procedure SetButtonColor(Value: TColor);
+  public
+    constructor Create(AnOwner: TComponent); override;
+    destructor Destroy; Override;
+  published
+    property Align;
+    property Anchors;
+    property BorderWidth: integer read FBorderWidth write SetBorderWidth;
+    property ButtonColor:TColor read FButtonColor write SetButtonColor;
+    property Hint;
+    property OnChangeBounds;
+    property OnColorChanged: TNotifyEvent read FOnColorChanged
+                                          write FOnColorChanged;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPaint;
+    property OnResize;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Visible;
+  end;
+
+
   { TFontDialog }
 
   TFontDialogOption = (fdAnsiOnly, fdTrueTypeOnly, fdEffects,
@@ -279,6 +317,7 @@ procedure Register;
 begin
   RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,
                                     TColorDialog,TFontDialog]);
+  RegisterComponents('Additional',[TColorButton]);
 end;
 
 function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
@@ -333,6 +372,7 @@ end;
 {$I inputdialog.inc}
 {$I messagedialogs.inc}
 {$I promptdialog.inc}
+{$I colorbutton.inc}
 
 initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
@@ -346,6 +386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.30  2003/04/13 13:45:04  mattias
   implemented broken dependencies dialog
 

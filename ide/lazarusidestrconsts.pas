@@ -227,6 +227,11 @@ resourcestring
   lisMenuCodeToolsDefinesEditor = 'CodeTools defines editor';
   
   lisMenuAboutLazarus = 'About Lazarus';
+  
+  lisDsgCopyComponents = 'Copy selected components to clipboard';
+  lisDsgCutComponents = 'Cut selected components to clipboard';
+  lisDsgPasteComponents = 'Paste selected components from clipboard';
+  lisDsgSelectParentComponent = 'Select parent component';
 
   // main
   lisChooseProgramSourcePpPasLpr = 'Choose program source (*.pp,*.pas,*.lpr)';
@@ -1206,6 +1211,7 @@ resourcestring
   srkmCatToolMenu       = 'Tools menu commands';
   srkmCatEnvMenu        = 'Environment menu commands';
   srkmCarHelpMenu       = 'Help menu commands';
+  lisKeyCatDesigner     = 'Designer commands';
 
   //Languages
   rsLanguageAutomatic   = 'Automatic (or english)';

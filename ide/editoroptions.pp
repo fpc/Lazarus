@@ -284,28 +284,6 @@ type
        read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
   end;
 
-  { color button }
-  TColorButton = class(TCustomControl)
-  private
-    FOnColorChanged:TNotifyEvent;
-    FButtonColor:TColor;
-    FColorDialog:TColorDialog;
-    FBorderWidth:integer;
-  protected
-    procedure Paint; override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
-    procedure SetButtonColor(Value:TColor);
-  public
-    constructor Create(AnOwner : TComponent); override;
-    destructor Destroy; Override;
-  published
-    property BorderWidth:integer read FBorderWidth write FBorderWidth;
-    property ButtonColor:TColor read FButtonColor write SetButtonColor;
-    property OnColorChanged:TNotifyEvent 
-      read FOnColorChanged write FOnColorChanged;
-  end;
-
   { Editor Options form }
   TEditorOptionsForm = class(TForm)
     MainNoteBook:TNoteBook;
@@ -1930,74 +1908,6 @@ begin
   KeyMap.AssignTo(ASynEdit.KeyStrokes,[caSourceEditor]);
 end;
 
-
-{ TColorButton }
-
-constructor TColorButton.Create(AnOwner: TComponent);
-begin
-  Inherited Create(AnOwner);
-  Align := alNone;
-  FBorderWidth:=2;
-  Setbounds(1,1,75,25);
-end;
-
-destructor TColorButton.Destroy;
-Begin
-  inherited Destroy;
-end;
-
-procedure TColorButton.Paint;
-var a: integer;
-begin
-  //inherited Paint;
-  with Canvas do begin
-    Brush.Color:=ButtonColor;
-    FillRect(Bounds(0, 0, Width, Height));
-    Pen.Color:=clWhite;
-    for a:=0 to FBorderWidth-1 do begin
-      MoveTo(a,Height-a);
-      LineTo(a,a);
-      LineTo(Width-a,a);
-    end;
-    Pen.Color:=clBlack;
-    for a:=0 to FBorderWidth-1 do begin
-      MoveTo(Width-a-1,a);
-      LineTo(Width-a-1,Height-a-1);
-      MoveTo(a,Height-a-1);
-      LineTo(Width-a,Height-a-1);
-    end;
-  end;
-end;
-
-procedure TColorButton.SetButtonColor(Value:TColor);
-begin
-  if Value=FButtonColor then exit;
-  FButtonColor:=Value;
-  if Assigned(FOnColorChanged) then
-    FOnColorChanged(Self);
-  Invalidate;
-end;
-
-procedure TColorButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
-  X, Y: Integer);
-var NewColor:TColor;
-begin
-  if FColorDialog<>nil then exit;
-  if not Enabled then exit;
-  NewColor:=ButtonColor;
-  FColorDialog:=TColorDialog.Create(Application);
-  try
-    FColorDialog.Color:=ButtonColor;
-    if FColorDialog.Execute then begin
-      NewColor:=FColorDialog.Color;
-    end;
-  finally
-    FColorDialog.Free;
-    FColorDialog:=nil;
-  end;
-  ButtonColor:=NewColor;
-  Invalidate;
-end;
 
 { TEditorOptionsForm }
 

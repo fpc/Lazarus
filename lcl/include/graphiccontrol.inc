@@ -82,6 +82,7 @@ end;
 procedure TGraphicControl.Paint;
 begin
   Assert(False, Format('Trace:[TGraphicControl.Paint] %s', [ClassName]));
+  if Assigned(FOnPaint) then FOnPaint(Self);
 end;
 
 // included by controls.pp
@@ -90,6 +91,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/06/13 21:08:53  mattias
+  moved TColorButton to dialogs.pp
+
   Revision 1.6  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
