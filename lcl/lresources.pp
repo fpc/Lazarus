@@ -2212,7 +2212,8 @@ end;
 destructor TLRSObjectReader.Destroy;
 begin
   { Seek back the amount of bytes that we didn't process until now: }
-  FStream.Seek(Integer(FBufPos) - Integer(FBufEnd), soFromCurrent);
+  if Assigned(FStream) then
+    FStream.Seek(Integer(FBufPos) - Integer(FBufEnd), soFromCurrent);
 
   if Assigned(FBuffer) then
     FreeMem(FBuffer, FBufSize);
