@@ -28,7 +28,11 @@ interface
 
 uses
   // libs
+  {$IFDEF GTK2}
+  GLib2, Gtk2,
+  {$ELSE}
   GLib, Gtk, 
+  {$ENDIF}
   // LCL
   Buttons, Classes, LCLType, LMessages, Controls,
   // widgetset
@@ -139,7 +143,11 @@ begin
   end;
 
   BtnWidget := PGtkButton(AWinControl.Handle);
+  {$IFDEF GTK2}
+  LblWidget := PGtkLabel(PGtkBin(BtnWidget)^.Child);
+  {$ELSE}
   LblWidget := PGtkLabel(BtnWidget^.Child);
+  {$ENDIF}
 
   if LblWidget = nil
   then begin

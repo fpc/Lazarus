@@ -4023,11 +4023,6 @@ begin
   Result := PAcceleratorKey(gtk_object_get_data(PGtkObject(Widget),'AccelKey'));
 end;
 
-{$Ifdef GTK2}
-const
-  GDK_VOIDSYMBOL = $FFFFFF;
-{$EndIf}
-
 function SetAccelKey(const Widget: PGtkWidget;
   Key: guint; Mods: TGdkModifierType; const Signal: string): PAcceleratorKey;
 begin
@@ -6747,6 +6742,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.276  2004/04/19 09:30:04  marc
+  * Fixed compilation for gtk2
+
   Revision 1.275  2004/04/11 18:58:26  micha
   fix (lm_)setcursor changes for gtk target
 

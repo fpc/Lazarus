@@ -267,7 +267,12 @@ const
 type
   TGdkPixBufBuffer = {$IFDEF Gtk2}Pguchar{$ELSE}PChar{$ENDIF};
   
-  
+ 
+{$IFDEF GTK2}
+const
+  GDK_VOIDSYMBOL = $FFFFFF;
+{$ENDIF}
+ 
 // MWE: All the IFDEFs for GTK2 annoyed me so I defined all (most) constants here
 {$IFNDEF GTK2}
   {$I gtkkeysyms.inc}
@@ -569,6 +574,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/04/19 09:30:04  marc
+  * Fixed compilation for gtk2
+
   Revision 1.58  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

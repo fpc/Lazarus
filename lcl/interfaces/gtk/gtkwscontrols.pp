@@ -27,7 +27,7 @@ unit GtkWSControls;
 interface
 
 uses
-  Gtk,
+  {$IFDEF GTK2} Gtk2, {$ELSE} Gtk, {$ENDIF}
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////

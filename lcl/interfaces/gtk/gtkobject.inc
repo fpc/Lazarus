@@ -2067,7 +2067,7 @@ function TGtkWidgetSet.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
 var
   Visual: PGdkVisual;
   Width, Height: integer;
-  WindowType: TGdkWindowType;
+//  WindowType: TGdkWindowType;
   IsGdkBitmap: Boolean;
 begin
   Result := false;
@@ -2084,15 +2084,15 @@ begin
   If GDKWindow <> nil then begin
     Visual:=gdk_window_get_visual(GDKWindow);
     GDK_Window_Get_Size(GDKWindow,@Width,@Height);
-    if Visual=nil then begin
-      WindowType:=gdk_window_get_type(GDKWindow);
-      if WindowType=GDK_WINDOW_PIXMAP then begin
+//    if Visual=nil then begin
+//      WindowType:=gdk_window_get_type(GDKWindow);
+//      if WindowType=GDK_WINDOW_PIXMAP then begin
         // a pixmap without visual
         //writeln('TGtkWidgetSet.GetWindowRawImageDescription GdkBitmap Type=',WindowType,' ',Width,',',Height,' ',GDK_WINDOW_PIXMAP);
         // ToDo: find a test: gdkpixmap or gdkbitmap
         //if IsBitmap then IsGdkBitmap:=true;
-      end;
-    end;
+//      end;
+//    end;
   end;
   if Visual=nil then begin
     Visual := GDK_Visual_Get_System;
@@ -9404,6 +9404,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.496  2004/04/19 09:30:04  marc
+  * Fixed compilation for gtk2
+
   Revision 1.495  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved
