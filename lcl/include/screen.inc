@@ -92,19 +92,62 @@ begin
   if (Self=nil) or (ACustomForm=nil)
   or (csDestroying in ACustomForm.ComponentState) then
     RaiseGDBException('TScreen.MoveFormToFocusFront');
-  FCustomForms.Remove(ACustomForm);
-  FCustomForms.Insert(0, ACustomForm);
-  if ACustomForm is TForm then
+  if (FCustomForms.Count=0) or (TObject(FCustomForms[0])<>ACustomForm) then
   begin
-    Screen.FFormList.Remove(ACustomForm);
-    Screen.FFormList.Insert(0, ACustomForm);
+    FCustomForms.Remove(ACustomForm);
+    FCustomForms.Insert(0, ACustomForm);
+  end;
+  if ACustomForm is TForm then begin
+    if (FFormList.Count=0) or (TObject(FFormList[0])<>ACustomForm) then begin
+      FFormList.Remove(ACustomForm);
+      FFormList.Insert(0, ACustomForm);
+    end;
   end;
 end;
 
 procedure TScreen.MoveFormToZFront(ACustomForm: TCustomForm);
 begin
-  FCustomFormsZOrdered.Remove(ACustomForm);
-  FCustomFormsZOrdered.Insert(0, ACustomForm);
+  if (FCustomFormsZOrdered.Count=0)
+  or (TObject(FCustomFormsZOrdered[0])<>ACustomForm) then begin
+    FCustomFormsZOrdered.Remove(ACustomForm);
+    FCustomFormsZOrdered.Insert(0, ACustomForm);
+  end;
+end;
+
+function TScreen.GetCurrentModalForm: TCustomForm;
+var
+  i: Integer;
+begin
+  i:=GetCurrentModalFormZIndex;
+  if (i>=0) then
+    Result:=CustomFormsZOrdered[i]
+  else
+    Result:=nil;
+end;
+
+function TScreen.GetCurrentModalFormZIndex: Integer;
+begin
+  Result:=0;
+  while (Result<CustomFormCount)
+  and (not (fsModal in CustomFormsZOrdered[Result].FormState)) do
+    inc(Result);
+  if Result=CustomFormCount then Result:=-1;
+end;
+
+function TScreen.CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
+var
+  CurForm: TCustomForm;
+  i: Integer;
+begin
+  i:=0;
+  Result:=false;
+  while (i<CustomFormCount) do begin
+    CurForm:=CustomFormsZOrdered[i];
+    if CurForm=AForm then
+      Result:=true;
+    if fsModal in CurForm.FormState then exit;
+    inc(i);
+  end;
 end;
 
 procedure TScreen.UpdateScreen;

@@ -5961,9 +5961,33 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.IsWindowEnabled(handle: HWND): boolean;
+var
+  LCLObject: TObject;
+  Widget: PGtkWidget;
+  AForm: TCustomForm;
+  //i: Integer;
 begin
-  { TODO: implement me! }
-  Result := false;
+  Widget:=PGtkWidget(handle);
+  Result:=(Widget<>nil) and GTK_WIDGET_SENSITIVE(Widget)
+          and GTK_WIDGET_PARENT_SENSITIVE(Widget);
+  LCLObject:=GetLCLObject(PGtkWidget(Handle));
+  //debugln('TGtkWidgetSet.IsWindowEnabled A ',DbgSName(LCLObject),' Result=',dbgs(Result),
+  //  ' SENSITIVE=',dbgs(GTK_WIDGET_SENSITIVE(Widget)),
+  //  ' PARENT_SENSITIVE=',dbgs(GTK_WIDGET_PARENT_SENSITIVE(Widget)),
+  //  ' TOPLEVEL=',dbgs(GTK_WIDGET_TOPLEVEL(Widget)),
+  //  '');
+  if Result and GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
+    LCLObject:=GetLCLObject(Widget);
+    if (LCLObject is TCustomForm) then begin
+      AForm:=TCustomForm(LCLObject);
+      if not Screen.CustomFormBelongsToActiveGroup(AForm) then
+        Result:=false;
+      //debugln('TGtkWidgetSet.IsWindowEnabled B ',dbgs(Screen.CustomFormBelongsToActiveGroup(AForm)));
+      //for i:=0 to Screen.CustomFormCount-1 do begin
+      //  debugln('  ',dbgs(i),' ',DbgSName(Screen.CustomFormsZOrdered[i]));
+      //end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -8872,6 +8896,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.393  2005/02/05 13:33:05  mattias
+  implemented gtkwidgetset.IsWindowEnabled
+
   Revision 1.392  2005/02/05 09:05:50  micha
   add platform independent winapi function IsWindowEnabled
 

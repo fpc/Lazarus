@@ -11279,7 +11279,7 @@ begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
   if FDisplayState = dsSource then begin
     // send command to source editor
-    if ActiveSourceEditor=nil then exit;
+    if (ActiveSourceEditor=nil) then exit;
     ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand);
   end else begin
     // send command to form editor
@@ -11383,6 +11383,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.843  2005/02/05 13:33:05  mattias
+  implemented gtkwidgetset.IsWindowEnabled
+
   Revision 1.842  2005/01/29 14:36:03  mattias
   reactivated fast xml units without widestrings
 

@@ -1750,6 +1750,8 @@ begin
   SaveFocusCount := FocusCount;
   Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
   Screen.FFocusedForm := Self;
+  Screen.MoveFormToFocusFront(Self);
+  Screen.MoveFormToZFront(Self);
   //SaveCursor := Screen.Cursor;
   //Screen.Cursor := crDefault;
   //SaveCount := Screen.FCursorCount;
@@ -1890,6 +1892,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.177  2005/02/05 13:33:05  mattias
+  implemented gtkwidgetset.IsWindowEnabled
+
   Revision 1.176  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

@@ -685,6 +685,8 @@ type
     snActiveFormChanged
     );
 
+  { TScreen }
+
   TScreen = class(TLCLComponent)
   private
     FActiveControl: TWinControl;
@@ -732,12 +734,15 @@ type
     function GetHintFont: TFont; virtual;
   public
     constructor Create(AOwner : TComponent); override;
-    destructor Destroy; Override;
+    destructor Destroy; override;
     function CustomFormIndex(AForm: TCustomForm): integer;
     function FormIndex(AForm: TForm): integer;
     function CustomFormZIndex(AForm: TCustomForm): integer;
     procedure MoveFormToFocusFront(ACustomForm: TCustomForm);
     procedure MoveFormToZFront(ACustomForm: TCustomForm);
+    function GetCurrentModalForm: TCustomForm;
+    function GetCurrentModalFormZIndex: Integer;
+    function CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
     procedure UpdateScreen;
     // handler
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
