@@ -45,6 +45,12 @@ type
   TNotifyFileEvent = procedure(Sender: Tobject; Filename : String) of Object;
 
 
+{---- TSource Editor ---
+  TSourceEditor is the class that controls access the the Editor and the source code.
+  It creates the PopupMenu that appears when you right-click on the editor.  It calls
+  the editor functions for bookmarks, saves/opens files, adds control code to the source,
+  creates the initial code for a form, and holds the unitname and filename properties.
+ ---- TSource Editor ---}
   TSourceEditor = class
   private
     FAOwner : TComponent; //Owned by a TSourceNotebook
@@ -55,7 +61,8 @@ type
     FHighlighter: TmwPasSyn;
     FEditor     : TmwCustomEdit;
 {$endif}
-    FControl: TComponent;  //if this is a Form or Datamodule, this is used
+    //if this is a Form or Datamodule, this is used
+    FControl: TComponent;
 
     //pulled out of the editor by the Function Getxxx
     FCurrentCursorXLine : Integer;
