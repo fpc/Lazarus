@@ -787,9 +787,9 @@ begin
       y := 0;
       while y <= FCustomForm.Height do begin
 
-//         MoveTo(x,y);
-//         LineTo(x+1,y);
-         Pixels[X,Y]:=FGridColor;
+         MoveTo(x,y);
+         LineTo(x+1,y);
+//         Pixels[X,Y]:=FGridColor;
 
          Inc(y, GridSizeY);
       end;
