@@ -6574,13 +6574,15 @@ var
   NewJumpPoint: TProjectJumpHistoryPosition;
 begin
   //writeln('');
-  //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   ActiveUnitInfo:=Project1.UnitWithEditorIndex(APageIndex);
   if (ActiveUnitInfo=nil) then exit;
   NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
     ACaretXY,ATopLine);
+  //Project1.JumpHistory.WriteDebugReport;
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                    NewJumpPoint);
+  //Project1.JumpHistory.WriteDebugReport;
   if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
   //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   //Project1.JumpHistory.WriteDebugReport;
@@ -7262,6 +7264,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.401  2002/10/03 14:48:14  lazarus
+  MG: fixed jump history
+
   Revision 1.400  2002/10/03 07:19:34  lazarus
   MG: deactivated publish project
 
