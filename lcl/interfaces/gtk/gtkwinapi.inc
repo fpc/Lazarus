@@ -1308,8 +1308,9 @@ var
   PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
   CharSetRegistry, CharSetCoding: string;
   n: Integer;
+  CachedFont: TGdkFontCacheItem;
 
-  procedure LoadFont;
+  function LoadFont: boolean;
   begin
     S := Format('%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s',
       [FontNameRegistry, Foundry, FamilyName, WeightName,
@@ -1319,6 +1320,12 @@ var
       ]);
 
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
+    Result:=GdiObject^.GDIFontObject<>nil;
+    
+    if Result then begin
+      FontCache.Add(GdiObject^.GDIFontObject,LogFont,LongFontName);
+    end;
+    
     {$IFDEF VerboseFonts}
     DebugLn('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
     {$ENDIF}
@@ -1352,10 +1359,10 @@ var
 begin
   // For info about xlfd see:
   //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
-  // Lets fill in all the xlfd parts. Assume we have scalable fonts
+  // Lets fill in all the xlfd parts. Assume we have scalable fonts.
 
   {$IFDEF VerboseFonts}
-  DebugLn('TGtkWidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
+  DebugLn('TGtkWidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',dbgs(LogFont.lfHeight),' LongName=',LongFontName);
   {$ENDIF}
 
   Result := 0;
@@ -1363,6 +1370,13 @@ begin
 
   try
     GdiObject^.LogFont := LogFont;
+    
+    CachedFont:=FontCache.FindGDKFont(LogFont,LongFontName);
+    if CachedFont<>nil then begin
+      CachedFont.IncreaseRefCount;
+      GdiObject^.GDIFontObject := CachedFont.GdkFont;
+      exit;
+    end;
 
     // set default values
     FontNameRegistry := '*';
@@ -1531,96 +1545,65 @@ begin
     {$IFDEF VerboseFonts}
     write('CreateFontIndirect->');
     {$ENDIF}
-    LoadFont;
+    if LoadFont then exit;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      if (WeightName='normal') then begin
-        WeightName:='medium';
-        LoadFont;
-      end else if (WeightName='bold') then begin
-        WeightName:='black';
-        LoadFont;
-      end;
+    if (WeightName='normal') then begin
+      WeightName:='medium';
+      if LoadFont then exit;
+    end else if (WeightName='bold') then begin
+      WeightName:='black';
+      if LoadFont then exit;
     end;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      if (WeightName='medium') then begin
-        WeightName:='regular';
-        LoadFont;
-      end else if (WeightName='black') then begin
-        WeightName:='demi bold';
-        LoadFont;
-      end;
+    if (WeightName='medium') then begin
+      WeightName:='regular';
+      if LoadFont then exit;
+    end else if (WeightName='black') then begin
+      WeightName:='demi bold';
+      if LoadFont then exit;
     end;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try instead of mono spaced, character cell spaced
-      if (Spacing='m') then begin
-        Spacing:='c';
-        LoadFont;
-      end;
+    // try instead of mono spaced, character cell spaced
+    if (Spacing='m') then begin
+      Spacing:='c';
+      if LoadFont then exit;
     end;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try instead of italic  oblique
-      if (Slant='i') then begin
-        Slant := 'o';
-        LoadFont;
-      end;
+    // try instead of italic  oblique
+    if (Slant='i') then begin
+      Slant := 'o';
+      if GdiObject^.GDIFontObject <> nil then exit;
     end;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try all weights
-      WeightName := '*';
-      LoadFont;
-    end;
+    // try all weights
+    WeightName := '*';
+    if GdiObject^.GDIFontObject <> nil then exit;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try all slants
-      Slant := '*';
-      LoadFont;
-    end;
+    // try all slants
+    Slant := '*';
+    if GdiObject^.GDIFontObject <> nil then exit;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try all spacings
-      Spacing := '*';
-      LoadFont;
-    end;
+    // try all spacings
+    Spacing := '*';
+    if GdiObject^.GDIFontObject <> nil then exit;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try one height lower
-      PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
-      LoadFont;
-    end;
+    // try one height lower
+    PixelSize := IntToStr(Abs(LogFont.lfHeight)-1);
+    if GdiObject^.GDIFontObject <> nil then exit;
 
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // try one height higher
-      PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
-      LoadFont;
-    end;
+    // try one height higher
+    PixelSize := IntToStr(Abs(LogFont.lfHeight)+1);
+    if GdiObject^.GDIFontObject <> nil then exit;
 
-    if (GdiObject^.GDIFontObject = nil) and (Foundry<>'*')
-    then begin
-      // try all Familys
+    if (Foundry<>'*') then begin
+      // try all Families
       PixelSize := IntToStr(Abs(LogFont.lfHeight));
       FamilyName := '*';
-      LoadFont;
+      if GdiObject^.GDIFontObject <> nil then exit;
     end;
-
-    if GdiObject^.GDIFontObject = nil
-    then begin
-      // nothing exists -> use default
-      LoadDefaultFont;
-    end;
+    
+    // nothing exists -> use default
+    LoadDefaultFont;
 
   finally
     if GdiObject^.GDIFontObject = nil
@@ -2133,32 +2116,41 @@ begin
     case GDIType of
       gdiFont:
         begin
-          if GDIFontObject<>nil then
-          {$Ifdef GTK2}
-           pango_font_description_free(GDIFontObject);
-          {$Else}
-          gdk_font_unref(GDIFontObject);
-          {$EndIf}
+          if GDIFontObject<>nil then begin
+            {$Ifdef GTK2}
+            pango_font_description_free(GDIFontObject);
+            {$Else}
+            FontCache.UnRef(GDIFontObject);
+            {$EndIf}
+          end;
         end;
       gdiBrush:
         begin
+          {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
+          {$ENDIF}
           if (GDIBrushPixmap <> nil)
           then gdk_bitmap_unref(GDIBrushPixmap);
+          {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;
+          {$ENDIF}
 
           FreeGDIColor(@GDIBrushColor);
         end;
       gdiBitmap:
         begin
+          {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
+          {$ENDIF}
           if GDIBitmapObject <> nil then
             gdk_bitmap_unref(GDIBitmapObject);
           If (Visual <> nil) and (not SystemVisual) then
             gdk_visual_unref(Visual);
           If Colormap <> nil then
             gdk_colormap_unref(Colormap);
+          {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;
+          {$ENDIF}
         end;
       gdiPen:
         begin
@@ -2171,12 +2163,16 @@ begin
         end;
       gdiPalette:
         begin
+          {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
+          {$ENDIF}
           If PaletteVisual <> nil then
             gdk_visual_unref(PaletteVisual);
           If PaletteColormap <> nil then
             gdk_colormap_unref(PaletteColormap);
+          {$IFDEF DebugGDKTraps}
           EndGDKErrorTrap;
+          {$ENDIF}
 
           RGBTable.Free;
           IndexTable.Free;
@@ -3175,114 +3171,114 @@ begin
     then begin
       DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Uninitialized GC');
       Result := False;
-    end
-    else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
+      exit;
+    end;
+    if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
       DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Rect=nil');
       Result := False;
-    end else begin
-      // TODO: implement other parameters.
+      exit;
+    end;
+    // TODO: implement other parameters.
 
-      // to reduce flickering calculate first and then paint
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      buffered := false;
-      UseFont:=nil;
-      buffer := Drawable;
+    // to reduce flickering calculate first and then paint
+    DCOrigin:=GetDCOffset(TDeviceContext(DC));
+    buffered := false;
+    UseFont:=nil;
+    buffer := Drawable;
+    UnRef := false;
+    UnderLine := false;
 
-      if (Str<>nil) and (Count>0) then begin
-        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-          UseFont := GetDefaultFont(false);
-          UnRef := false;
-          UnderLine := false;
-        end else begin
-          UseFont := CurrentFont^.GDIFontObject;
-          UnRef := False;
-          UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
-        end;
-
-        if UseFont <> nil then begin
-          if (Options and ETO_CLIPPED) <> 0 then
-          begin
-            X := Rect^.Left;
-            Y := Rect^.Top;
-            IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                              Rect^.Right, Rect^.Bottom);
-          end;
-        end else begin
-          DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Missing Font');
-          Result := False;
-        end;
+    if (Str<>nil) and (Count>0) then begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
+        UseFont := GetDefaultFont(false);
+      end else begin
+        UseFont := CurrentFont^.GDIFontObject;
+        UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
       end;
 
-      if ((Options and ETO_OPAQUE) <> 0) then
-      begin
-        Width := Rect^.Right - Rect^.Left;
-        Height := Rect^.Bottom - Rect^.Top;
-        SelectedColors := dcscCustom;
-        EnsureGCColor(DC, dccCurrentBackColor, True, False);
-        if buffered then begin
-          Left:=0;
-          Top:=0;
-        end else begin
-          Left:=Rect^.Left+DCOrigin.X;
-          Top:=Rect^.Top+DCOrigin.Y;
+      if UseFont <> nil then begin
+        if (Options and ETO_CLIPPED) <> 0 then
+        begin
+          X := Rect^.Left;
+          Y := Rect^.Top;
+          IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                            Rect^.Right, Rect^.Bottom);
         end;
+      end else begin
+        DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Missing Font');
+        Result := False;
+      end;
+    end;
+
+    if ((Options and ETO_OPAQUE) <> 0) then
+    begin
+      Width := Rect^.Right - Rect^.Left;
+      Height := Rect^.Bottom - Rect^.Top;
+      SelectedColors := dcscCustom;
+      EnsureGCColor(DC, dccCurrentBackColor, True, False);
+      if buffered then begin
+        Left:=0;
+        Top:=0;
+      end else begin
+        Left:=Rect^.Left+DCOrigin.X;
+        Top:=Rect^.Top+DCOrigin.Y;
+      end;
+      {$IFDEF DebugGDKTraps}
+      BeginGDKErrorTrap;
+      {$ENDIF}
+      if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
+        StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef,
+                           Left, Top, Width, Height)
+      else
+        gdk_draw_rectangle(buffer, GC, 1, Left, Top, Width, Height);
+      {$IFDEF DebugGDKTraps}
+      EndGDKErrorTrap;
+      {$ENDIF}
+    end;
+
+    if UseFont<>nil then begin
+      LineLen := FindChar(#10,Str,Count);
+      UpdateDCTextMetric(TDeviceContext(DC));
+      LineHeight:=GetTextHeight(DCTextMetric);
+      if Buffered then begin
+        TxtPt.X := 0;
+        TxtPt.Y := LineHeight;
+      end
+      else begin
+        TopY := Y;
+        TxtPt.X := X + DCOrigin.X;
+        TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+      end;
+      SelectGDKTextProps(DC);
+      LineStart:=Str;
+      if LineLen < 0 then begin
+        LineLen:=Count;
+        if Count> 0 then DrawTextLine;
+      end else
+      Begin  //write multiple lines
+        StrEnd:=Str+Count;
+        while LineStart < StrEnd do begin
+          LineEnd:=LineStart+LineLen;
+          if LineLen>0 then DrawTextLine;
+          inc(TxtPt.Y,LineHeight);
+          LineStart:=LineEnd+1; // skip #10
+          if (LineStart<StrEnd) and (LineStart^=#13) then
+            inc(LineStart); // skip #10
+          Count:=StrEnd-LineStart;
+          LineLen:=FindChar(#10,LineStart,Count);
+          if LineLen<0 then
+            LineLen:=Count;
+        end;
+      end;
+      If UnRef then begin
         {$IFDEF DebugGDKTraps}
         BeginGDKErrorTrap;
         {$ENDIF}
-        if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
-          StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef,
-                             Left, Top, Width, Height)
-        else
-          gdk_draw_rectangle(buffer, GC, 1, Left, Top, Width, Height);
+        FontCache.UnRef(UseFont);
         {$IFDEF DebugGDKTraps}
         EndGDKErrorTrap;
         {$ENDIF}
-      end;
-
-      if UseFont<>nil then begin
-        LineLen := FindChar(#10,Str,Count);
-        UpdateDCTextMetric(TDeviceContext(DC));
-        LineHeight:=GetTextHeight(DCTextMetric);
-        if Buffered then begin
-          TxtPt.X := 0;
-          TxtPt.Y := LineHeight;
-        end
-        else begin
-          TopY := Y;
-          TxtPt.X := X + DCOrigin.X;
-          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
-        end;
-        SelectGDKTextProps(DC);
-        LineStart:=Str;
-        if LineLen < 0 then begin
-          LineLen:=Count;
-          if Count> 0 then DrawTextLine;
-        end else
-        Begin  //write multiple lines
-          StrEnd:=Str+Count;
-          while LineStart < StrEnd do begin
-            LineEnd:=LineStart+LineLen;
-            if LineLen>0 then DrawTextLine;
-            inc(TxtPt.Y,LineHeight);
-            LineStart:=LineEnd+1; // skip #10
-            if (LineStart<StrEnd) and (LineStart^=#13) then
-              inc(LineStart); // skip #10
-            Count:=StrEnd-LineStart;
-            LineLen:=FindChar(#10,LineStart,Count);
-            if LineLen<0 then
-              LineLen:=Count;
-          end;
-        end;
-        If UnRef then begin
-          {$IFDEF DebugGDKTraps}
-          BeginGDKErrorTrap;
-          {$ENDIF}
-          GDK_Font_UnRef(UseFont);
-          {$IFDEF DebugGDKTraps}
-          EndGDKErrorTrap;
-          {$ENDIF}
-        end;
       end;
     end;
   end;
@@ -5384,7 +5380,7 @@ begin
       Size.cY := GDK_String_Height(UseFont, Str)
         {$IfNDef Win32} + descent div 2{$EndIf};
       If UnRef then
-        GDK_Font_UnRef(UseFont);
+        FontCache.UnRef(UseFont);
     end;
   end;
   Assert(False, 'trace:< [TGtkWidgetSet.GetTextExtentPoint]');
@@ -8506,7 +8502,7 @@ begin
         end;
         Result := True;
         If UnRef then
-          GDK_Font_UnRef(UseFont);
+          FontCache.UnRef(UseFont);
       end;
     end;
   end;
@@ -8709,6 +8705,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.358  2004/08/10 17:34:13  mattias
+  implemented font cache for gtk, which accelerates switching fonts
+
   Revision 1.357  2004/07/01 10:23:27  mattias
   fixed uninitialsed vars   from Jeroen
 

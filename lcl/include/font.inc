@@ -712,6 +712,7 @@ var
 begin
   if FFontData.Handle = 0 then with ALogFont do
   begin
+    FillChar(ALogFont,SizeOf(ALogFont),0);
     lfHeight := Height;
     lfWidth := 0; 
     lfEscapement := 0; 
@@ -734,6 +735,7 @@ begin
     end;
 
     // ask the interface for the nearest font
+    // TODO: cache the result for other fonts
     FFontData.Handle := CreateFontIndirectEx(ALogFont,Name);
   end;
   
@@ -751,7 +753,6 @@ procedure TFont.FreeHandle;
 begin
   if FFontData.Handle <> 0 
   then begin
-    //TODO: what if a font is currently selected
     DeleteObject(FFontData.Handle);
     FFontData.Handle := 0;
   end;
@@ -833,6 +834,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/08/10 17:34:13  mattias
+  implemented font cache for gtk, which accelerates switching fonts
+
   Revision 1.13  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

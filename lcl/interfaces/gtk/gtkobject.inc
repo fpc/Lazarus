@@ -8403,7 +8403,7 @@ begin
     then begin
       GdiObject:=NewGDIObject(gdiFont);
       GdiObject^.GDIFontObject := GCValues.Font;
-      gdk_font_ref(GCValues.Font);
+      FontCache.Ref(GdiObject^.GDIFontObject);
     end
     else GdiObject := CreateDefaultFont;
     {$EndIf}
@@ -8624,25 +8624,32 @@ var
   UseFont : PGDKFont;
   UnRef : Boolean;
   AvgTxtLen: Integer;
+  CachedFont: TGdkFontCacheItem;
 begin
   with TDeviceContext(DC) do begin
     if dcfTextMetricsValid in DCFlags then begin
       // cache valid
     end else begin
+      UnRef := False;
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
-        UseFont := GetDefaultFont(true);
-        UnRef := True;
+        UseFont := GetDefaultFont(false);
       end
       else begin
         UseFont := CurrentFont^.GDIFontObject;
-        UnRef := False;
       end;
       If UseFont = nil then
         DebugLn('WARNING: [TGtkWidgetSet.GetTextMetrics] Missing font')
       else begin
         FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
-        with DCTextMetric do begin
+        CachedFont:=FontCache.FindGDKFont(UseFont);
+        if (CachedFont<>nil) and (CachedFont.MetricsValid) then begin
+          DCTextMetric.lBearing:=CachedFont.lBearing;
+          DCTextMetric.rBearing:=CachedFont.rBearing;
+          DCTextMetric.IsDoubleByteChar:=CachedFont.IsDoubleByteChar;
+          DCTextMetric.TextMetric:=CachedFont.TextMetric;
+        end
+        else with DCTextMetric do begin
           IsDoubleByteChar:=FontIsDoubleByteCharsFont(UseFont);
           gdk_text_extents(UseFont, TestString,
             length(TestString), @lbearing, @rBearing, @dummy,
@@ -8661,16 +8668,23 @@ begin
             XT.cX := XT.cX div AvgTxtLen;
           TextMetric.tmHeight := XT.cY;
           TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
-          TextMetric.tmAveCharWidth :=  XT.cX;
+          TextMetric.tmAveCharWidth := XT.cX;
           if TextMetric.tmAveCharWidth<1 then TextMetric.tmAveCharWidth:=1;
           TextMetric.tmMaxCharWidth :=
             Max(gdk_char_width(UseFont, 'W'),
                 gdk_char_width(UseFont, 'M')); // temp hack
           if TextMetric.tmMaxCharWidth<1 then
             TextMetric.tmMaxCharWidth:=1;
+          if (CachedFont<>nil) then begin
+            CachedFont.lBearing:=DCTextMetric.lBearing;
+            CachedFont.rBearing:=DCTextMetric.rBearing;
+            CachedFont.IsDoubleByteChar:=DCTextMetric.IsDoubleByteChar;
+            CachedFont.TextMetric:=DCTextMetric.TextMetric;
+            CachedFont.MetricsValid:=true;
+          end;
         end;
         If UnRef then
-          GDK_Font_UnRef(UseFont);
+          FontCache.UnRef(UseFont);
       end;
       Include(DCFlags,dcfTextMetricsValid);
     end;
@@ -8703,6 +8717,7 @@ begin
       if FDefaultFont = nil then
         raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
     end;
+    gdk_font_ref(FDefaultFont); // mark as used
   end;
   Result:=FDefaultFont;
   if IncreaseReferenceCount then
@@ -9084,11 +9099,11 @@ var
   procedure CleanUpFont;
   begin
     If UnRef then
-        {$IfDef GTK2}
-         pango_font_description_free(UseFontDesc);
-        {$Else}
-        GDK_Font_UnRef(UseFont);
-        {$EndIf}
+      {$IfDef GTK2}
+      pango_font_description_free(UseFontDesc);
+      {$Else}
+      FontCache.UnRef(UseFont);
+      {$EndIf}
   end;
 
 var
@@ -9215,6 +9230,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.521  2004/08/10 17:34:13  mattias
+  implemented font cache for gtk, which accelerates switching fonts
+
   Revision 1.520  2004/08/09 21:12:43  mattias
   implemented FormStyle fsSplash for splash screens
 

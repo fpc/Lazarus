@@ -143,7 +143,7 @@ type
   end;
 
   TDevContextTextMetric = record
-    lbearing: LongInt;
+    lBearing: LongInt;
     rBearing: LongInt;
     TextMetric: TTextMetric;
     IsDoubleByteChar: boolean;
@@ -575,6 +575,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/08/10 17:34:13  mattias
+  implemented font cache for gtk, which accelerates switching fonts
+
   Revision 1.61  2004/05/16 23:24:41  marc
   + Added WSBitBtn interface
   + Implemented WSBitBtn interface for gtk

@@ -65,7 +65,7 @@ uses
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
-  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
   // Target OS specific
   {$IFDEF UNIX}
@@ -459,6 +459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.184  2004/08/10 17:34:13  mattias
+  implemented font cache for gtk, which accelerates switching fonts
+
   Revision 1.183  2004/05/22 14:35:32  mattias
   fixed button return key
 

@@ -1205,6 +1205,7 @@ lcl/interfaces/gtk/gtkcallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkcomboboxcallback.inc svneol=native#text/pascal
 lcl/interfaces/gtk/gtkdef.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkdragcallback.inc svneol=native#text/pascal
+lcl/interfaces/gtk/gtkfontcache.pas svneol=native#text/pascal
 lcl/interfaces/gtk/gtkglobals.pp svneol=native#text/pascal
 lcl/interfaces/gtk/gtkimages.lrs svneol=native#text/pascal
 lcl/interfaces/gtk/gtkint.pp svneol=native#text/pascal
