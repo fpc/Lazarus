@@ -6074,12 +6074,14 @@ begin
           mtInformation, [mbOk], 0);
       end else begin
         if MessageDlg(Format(lisAddToProject, [s]), mtConfirmation, [mbYes,
-          mbCancel], 0)
-          =mrOk then
-        begin
+          mbCancel], 0) in [mrOk,mrYes]
+        then begin
           Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
           if Result=mrIgnore then Result:=mrOk;
-          if Result<>mrOk then exit;
+          if Result<>mrOk then begin
+            debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
+            exit;
+          end;
           ActiveUnitInfo.IsPartOfProject:=true;
           if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
           and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
@@ -11380,6 +11382,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.840  2005/01/26 15:56:13  mattias
+  fixed add editor file to project
+
   Revision 1.839  2005/01/26 15:45:07  mattias
   implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
 
