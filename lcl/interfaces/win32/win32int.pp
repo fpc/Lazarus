@@ -103,7 +103,7 @@ Type
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
-    Procedure CreateCommonDialog(Sender: TCommonDialog);
+    Procedure CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
     Procedure CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
 
   Public
@@ -186,6 +186,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2003/09/14 09:43:45  mattias
+  fixed common dialogs from Karl
+
   Revision 1.39  2003/09/08 13:24:17  mattias
   removed class function
 
