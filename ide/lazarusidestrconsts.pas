@@ -47,8 +47,8 @@ resourcestring
   // command line help
   listhisHelpMessage = 'this help message';
   lisprimaryConfigDirectoryWhereLazarusStoresItsConfig =
-    '                      primary config '
-    +'directory, where Lazarus stores its config files. Default is ';
+    '                      primary config '+
+    'directory, where Lazarus stores its config files. Default is ';
   lislazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
   lisIDEOptions = 'IDE Options:';
   lisCmdLineLCLInterfaceSpecificOptions =
@@ -56,8 +56,11 @@ resourcestring
   lisDoNotShowSplashScreen = '                      Do not show splash screen';
   lisSkipLoadingLastProject = '                      Skip loading last project';
   lissecondaryConfigDirectoryWhereLazarusSearchesFor =
-    '                      secondary config '
-    +'directory, where Lazarus searches for config template files. Default is ';
+    '                      secondary config '+
+    'directory, where Lazarus searches for config template files. Default is ';
+  lisFileWhereDebugOutputIsWritten =
+    '                      file, where debug output is written to. If it is '+
+    'not specified, debug output is written to the console.';
 
   // component palette
   lisSelectionTool = 'Selection tool';

@@ -789,6 +789,7 @@ const
   NoSplashScreenOptLong='--no-splash-screen';
   NoSplashScreenOptShort='--nsc';
   SkipLastProjectOpt='--skip-last-project';
+  DebugLogOpt='--debug-log=';
 
   function ParamIsOption(ParamIndex: integer;
     const Option: string): boolean;
@@ -836,6 +837,9 @@ begin
     writeln('or ',SecondaryConfPathOptShort,' <path>');
     writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                         75, 22), GetSecondaryConfigPath);
+    writeln('');
+    writeln(DebugLogOpt,' <file>');
+    writeln(BreakString(lisFileWhereDebugOutputIsWritten, 75, 22));
     writeln('');
     writeln(NoSplashScreenOptLong);
     writeln('or ',NoSplashScreenOptShort);
@@ -10907,6 +10911,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.783  2004/10/11 17:48:59  vincents
+  Command line help for --debug-log.
+
   Revision 1.782  2004/10/01 19:56:10  vincents
   fix LazProjectDescriptors memleak
 
