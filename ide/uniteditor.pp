@@ -958,12 +958,14 @@ var
   TempSource : TStringList;
   Ancestor : String;
 begin
+Writeln('**********************************************************');
   TempSource := TStringList.Create;
   TempSource.Assign(Source);
 
   //get the control name
   PI := _Control.ClassInfo;
   nmControlType := PI^.Name;
+  nmControlType := Uppercase(nmControlType[1]+nmControlType[2])+Lowercase(Copy(nmControlType,3,length(nmControlType)));
   Ancestor := GetAncestor;
   Ancestor := 'TFORM';
 
@@ -977,7 +979,7 @@ For I := 0 to TempSource.Count-1 do
     Writeln('Ancestor is '+Ancestor);
     Writeln('TWinControl(_Control.Owner).Name is '+TWinControl(_Control.Owner).Name);
     Writeln('Line is '+TempSource.Strings[i]);
-    if (pos(Ancestor,TempSource.Strings[i]) <> 0)
+    if (pos(uppercase(Ancestor),uppercase(TempSource.Strings[i])) <> 0)
     and (pos(lowercase(TWinControl(_Control.Owner).Name),
           lowercase(TempSource.Strings[i])) <> 0)
     and (pos('CLASS',Uppercase(TempSource.Strings[i])) <> 0) then
@@ -990,7 +992,7 @@ For I := 0 to TempSource.Count-1 do
      Begin
        //alphabetical
        inc(i);
-       NewSource := _Control.Name+' : '+nmControlType+';';
+       NewSource := uppercase(_Control.Name[1])+lowercase(Copy(_Control.Name,2,length(_Control.Name)))+' : '+nmControlType+';';
 
        //  Here I decide if I need to try and insert the control's text code in any certain order.
        //if there's no controls then I just insert it, otherwise...
@@ -998,7 +1000,7 @@ For I := 0 to TempSource.Count-1 do
        while NewSource > (trim(TempSource.Strings[i])) do
          inc(i);
 
-          TempSource.Insert(i,'       '+NewSource);
+          TempSource.Insert(i,'    '+NewSource);
      end;
 
 
