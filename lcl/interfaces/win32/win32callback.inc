@@ -154,6 +154,7 @@ Var
   begin
     Notebook := TObject(GetProp(NotebookHandle, 'Wincontrol')) as TCustomNotebook;
     PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
+    if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
     if Showing then
       Flags := SW_SHOW
@@ -1109,6 +1110,9 @@ end;
 
 {
   $Log$
+  Revision 1.98  2004/03/05 18:37:46  micha
+  prevent selection invalid page
+
   Revision 1.97  2004/03/05 12:16:08  micha
   fix designer (overlay) window transparency issue
   fix releasedesignerdc to use correct window
