@@ -8756,6 +8756,8 @@ var
   ActiveSrcEdit:TSourceEditor;
   ErrorCaret: TPoint;
   OpenFlags: TOpenFlags;
+  ErrorFilename: string;
+  ErrorTopLine: integer;
 begin
   if CodeToolBoss.ErrorMessage='' then begin
     UpdateSourceNames;
@@ -8782,13 +8784,15 @@ writeln('TMainIDE.DoJumpToCodeToolBossError A ',CodeToolBoss.ErrorCode<>nil);
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
-writeln('TMainIDE.DoJumpToCodeToolBossError B ',CodeToolBoss.ErrorCode.Filename,' ',CodeToolBoss.ErrorCode.IsVirtual);
+    ErrorFilename:=CodeToolBoss.ErrorCode.Filename;
+    ErrorTopLine:=CodeToolBoss.ErrorTopLine;
+writeln('TMainIDE.DoJumpToCodeToolBossError B ',ErrorFilename,' ',CodeToolBoss.ErrorCode.IsVirtual);
     OpenFlags:=[ofOnlyIfExists,ofUseCache];
     if CodeToolBoss.ErrorCode.IsVirtual then
       Include(OpenFlags,ofVirtualFile);
-    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,OpenFlags)=mrOk
+    if DoOpenEditorFile(ErrorFilename,-1,OpenFlags)=mrOk
     then begin
-writeln('TMainIDE.DoJumpToCodeToolBossError C ',CodeToolBoss.ErrorCode.Filename,' ',CodeToolBoss.ErrorCode.IsVirtual);
+writeln('TMainIDE.DoJumpToCodeToolBossError C ',ErrorFilename);
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       MessagesView.ShowOnTop;
       SourceNoteBook.ShowOnTop;
@@ -8796,8 +8800,8 @@ writeln('TMainIDE.DoJumpToCodeToolBossError C ',CodeToolBoss.ErrorCode.Filename,
         CaretXY:=ErrorCaret;
         BlockBegin:=CaretXY;
         BlockEnd:=CaretXY;
-        if CodeToolBoss.ErrorTopLine>0 then
-          TopLine:=CodeToolBoss.ErrorTopLine;
+        if ErrorTopLine>0 then
+          TopLine:=ErrorTopLine;
       end;
       SourceNotebook.FocusEditor;
       SourceNotebook.ClearErrorLines;
@@ -10267,6 +10271,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.698  2004/01/11 11:32:46  mattias
+  updates defines for fpc 1.9.2
+
   Revision 1.697  2004/01/09 15:20:38  mattias
   fixed close editor shortcut
 

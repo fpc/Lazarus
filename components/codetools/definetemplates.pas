@@ -3201,6 +3201,7 @@ begin
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
   MainDir.AddChild(RTLDir);
+  // rtl include paths
   s:=IncPathMacro
     +';'+Dir+'rtl'+DS+'objpas'+DS
     +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
@@ -3216,6 +3217,7 @@ begin
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+  // rtl/$(TargetOS)
   if TargetOS<>'' then begin
     RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
                                      TargetOS,da_Directory);
@@ -3224,8 +3226,14 @@ begin
     RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
       Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
       ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+    s:=SrcPathMacro
+      +';'+Dir+'rtl'+DS+'objpas'+DS;
+    RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
+      Format(ctsAddsDirToSourcePath,[TargetProcessor]),
+      ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
   end;
+  // rtl/win32
   RTLWin32Dir:=TDefineTemplate.Create('Win32','Win32','','win32',da_Directory);
   RTLDir.AddChild(RTLWin32Dir);
   RTLWin32Dir.AddChild(TDefineTemplate.Create('Include Path',
@@ -3251,6 +3259,7 @@ begin
     +';'+Dir+'fcl'+DS+'classes'+DS
     +';'+Dir+'rtl'+DS+TargetOS+DS
     ,da_DefineRecurse));
+  // fcl/db
   FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
   FCLDir.AddChild(FCLDBDir);
   FCLDBInterbaseDir:=TDefineTemplate.Create('interbase','interbase','',
