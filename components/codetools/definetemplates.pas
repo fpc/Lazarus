@@ -54,11 +54,11 @@ uses
   KeywordFuncLists, FileProcs;
 
 const
-  ExternalMacroStart: char = '#'; // !!! this is hardcoded in linkscanner.pas
+  ExternalMacroStart = ExprEval.ExternalMacroStart;
   {$ifdef win32}
-  SpecialChar: char = '/'; // used to use PathDelim, e.g. /\
+  SpecialChar = '/'; // used to use PathDelim, e.g. /\
   {$else}
-  SpecialChar: char = '\';
+  SpecialChar = '\';
   {$endif}
   {$ifdef win32}
   {$define CaseInsensitiveFilenames}
@@ -69,6 +69,9 @@ const
   StdDefTemplFPCSrc = 'Free Pascal Sources';
   StdDefTemplLazarusSources = 'Lazarus Sources';
   StdDefTemplLCLProject = 'LCL Project';
+  
+  // Standard macros
+  DefinePathMacroName = ExternalMacroStart+'DefinePath';
   
   // virtual directory
   VirtualDirectory='VIRTUALDIRECTORY';
@@ -1355,9 +1358,9 @@ function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
 var
   ExpandedDirectory, EvalResult: string;
 
-  function ReadValue(const PreValue: string): string;
+  function ReadValue(const PreValue, CurDefinePath: string): string;
   // replace variables of the form $() and functions of the form $name()
-  // replace backslash characters
+  // replace SpecialChar
 
     function SearchBracketClose(const s: string; Position:integer): integer;
     var BracketClose:char;
@@ -1366,7 +1369,7 @@ var
       else BracketClose:='{';
       inc(Position);
       while (Position<=length(s)) and (s[Position]<>BracketClose) do begin
-        if s[Position]='\' then
+        if s[Position]=SpecialChar then
           inc(Position)
         else if (s[Position] in ['(','{']) then
           Position:=SearchBracketClose(s,Position);
@@ -1374,7 +1377,7 @@ var
       end;
       Result:=Position;
     end;
-    
+
     function ExecuteMacroFunction(const FuncName, Params: string): string;
     var UpFuncName, Ext: string;
     begin
@@ -1393,7 +1396,7 @@ var
         Result:='<Unknown function '+FuncName+'>';
     end;
 
-  // function ReadValue(const PreValue: string): string;
+  // function ReadValue(const PreValue, CurDefinePath: string): string;
   var MacroStart,MacroEnd: integer;
     MacroFuncName, MacroStr, MacroParam: string;
   begin
@@ -1423,7 +1426,7 @@ var
         if MacroFuncName<>'' then begin
           // Macro function -> substitute macro parameter first
           MacroParam:=ReadValue(copy(MacroStr,length(MacroFuncName)+3
-              ,length(MacroStr)-length(MacroFuncName)-3));
+              ,length(MacroStr)-length(MacroFuncName)-3),CurDefinePath);
           // execute the macro function
           MacroStr:=ExecuteMacroFunction(MacroFuncName,MacroParam);
         end else begin
@@ -1431,14 +1434,18 @@ var
           MacroStr:=copy(Result,MacroStart+2,MacroEnd-MacroStart-3);
 //writeln('**** MacroStr=',MacroStr);
 //writeln('DirDef.Values=',DirDef.Values.AsString);
-          if DirDef.Values.IsDefined(MacroStr) then
-            MacroStr:=DirDef.Values.Variables[MacroStr]
-          else if Assigned(FOnReadValue) then begin
-            MacroParam:=MacroStr;
-            MacroStr:='';
-            FOnReadValue(Self,MacroParam,MacroStr);
-          end else
-            MacroStr:='';
+          if MacroStr=DefinePathMacroName then begin
+            MacroStr:=CurDefinePath;
+          end else begin
+            if DirDef.Values.IsDefined(MacroStr) then
+              MacroStr:=DirDef.Values.Variables[MacroStr]
+            else if Assigned(FOnReadValue) then begin
+              MacroParam:=MacroStr;
+              MacroStr:='';
+              FOnReadValue(Self,MacroParam,MacroStr);
+            end else
+              MacroStr:='';
+          end;
 //writeln('**** Result MacroStr=',MacroStr);
         end;
         Result:=copy(Result,1,MacroStart-1)+MacroStr
@@ -1478,13 +1485,13 @@ var
         // Define for a single Directory (not SubDirs)
         if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
           DirDef.Values.Variables[DefTempl.Variable]:=
-            ReadValue(DefTempl.Value);
+            ReadValue(DefTempl.Value,CurPath);
         end;
 
       da_DefineRecurse:
         // Define for current and sub directories
         DirDef.Values.Variables[DefTempl.Variable]:=
-            ReadValue(DefTempl.Value);
+            ReadValue(DefTempl.Value,CurPath);
 
       da_Undefine:
         // Undefine for a single Directory (not SubDirs)
@@ -1505,12 +1512,12 @@ var
       da_If, da_ElseIf:
         begin
           // test expression in value
-          EvalResult:=DirDef.Values.Eval(ReadValue(DefTempl.Value));
+          EvalResult:=DirDef.Values.Eval(ReadValue(DefTempl.Value,CurPath));
           if EvalResult='1' then
             CalculateIfChilds
           else if EvalResult='0' then begin
-            FErrorDescription:=
-               'Syntax Error in expression "'+ReadValue(DefTempl.Value)+'"';
+            FErrorDescription:='Syntax Error in expression '
+                               +'"'+ReadValue(DefTempl.Value,CurPath)+'"';
             FErrorTemplate:=DefTempl;
             exit;
           end;
@@ -1534,11 +1541,11 @@ var
           // template for a sub directory
           {$ifdef win32}
           if CurPath='' then
-            SubPath:=ReadValue(DefTempl.Value)
+            SubPath:=ReadValue(DefTempl.Value,CurValue)
           else
-            SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value);
+            SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value,CurPath);
           {$else}
-          SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value);
+          SubPath:=CurPath+PathDelim+ReadValue(DefTempl.Value,CurPath);
           {$endif}
           // test if ExpandedDirectory is part of SubPath
           if FilenameIsMatching(SubPath,ExpandedDirectory,false) then
@@ -1556,7 +1563,7 @@ begin
   Result:=true;
   FErrorTemplate:=nil;
   if DirDef.Path<>VirtualDirectory then
-    ExpandedDirectory:=ReadValue(DirDef.Path)
+    ExpandedDirectory:=ReadValue(DirDef.Path,'')
   else
     ExpandedDirectory:=DirDef.Path;
   DirDef.Values.Clear;

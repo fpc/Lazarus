@@ -45,6 +45,9 @@ uses
   {$ENDIF}
   Classes, SysUtils, ExprEval, SourceLog, KeywordFuncLists;
 
+const
+  PascalCompilerDefine = ExternalMacroStart+'Compiler';
+
 type
 //----------------------------------------------------------------------------
   TOnGetSource = function(Sender: TObject; Code: Pointer): TSourceLog
@@ -80,6 +83,7 @@ type
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
   TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC);
+  TPascalCompiler = (pcFPC, pcDelphi);
 
   TLinkScanner = class(TObject)
   private
@@ -149,6 +153,7 @@ type
     FSkippingTillEndif: boolean;
     FSkipIfLevel: integer;
     FCompilerMode: TCompilerMode;
+    FPascalCompiler: TPascalCompiler;
     procedure SkipTillEndifElse;
     function SkipIfDirective: boolean;
     function IfdefDirective: boolean;
@@ -221,6 +226,8 @@ type
     property MainCode: pointer read FMainCode write SetMainCode;
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode read FCompilerMode write FCompilerMode;
+    property PascalCompiler: TPascalCompiler
+        read FPascalCompiler write FPascalCompiler;
     property ScanTillInterfaceEnd: boolean
         read FScanTillInterfaceEnd write SetScanTillInterfaceEnd;
     procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
@@ -282,6 +289,9 @@ const
 const
   CompilerModeNames: array[TCompilerMode] of shortstring=(
         'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC'
+     );
+  PascalCompilerNames: array[TPascalCompiler] of shortstring=(
+        'FPC', 'DELPHI'
      );
 
 var
@@ -590,6 +600,9 @@ end;
 
 procedure TLinkScanner.Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
 var LastTokenIsEqual, LastTokenIsEnd: boolean;
+  cm: TCompilerMode;
+  pc: TPascalCompiler;
+  s: string;
 begin
   if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then exit;
 {$IFDEF CTDEBUG}
@@ -612,12 +625,22 @@ writeln('TLinkScanner.Scan C ',SrcLen);
   CommentStyle:=CommentNone;
   CommentLevel:=0;
   CompilerMode:=cmFPC;
+  PascalCompiler:=pcFPC;
   IfLevel:=0;
   FSkippingTillEndif:=false;
   if Assigned(FOnGetInitValues) then
     FInitValues.Assign(FOnGetInitValues(FMainCode));
 //writeln('TLinkScanner.Scan C --------');
   Values.Assign(FInitValues);
+  for cm:=Low(TCompilerMode) to High(TCompilerMode) do
+    if Values.IsDefined(CompilerModeVars[cm]) then begin
+      CompilerMode:=cm;
+    end;
+  s:=Values.Variables[PascalCompilerDefine];
+  for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
+    if (s=PascalCompilerNames[pc]) then begin
+      PascalCompiler:=pc;
+    end;
 //writeln(Values.AsString);
 //writeln('TLinkScanner.Scan D --------');
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
@@ -1227,8 +1250,8 @@ begin
   inc(SrcPos);
   AddPath:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   PathDivider:=':';
-  Values.Variables['#INCPATH']:=Values.Variables['#INCPATH']+
-    PathDivider+AddPath;
+  Values.Variables[ExternalMacroStart+'INCPATH']:=
+    Values.Variables[ExternalMacroStart+'INCPATH']+PathDivider+AddPath;
   Result:=true;
 end;
 
@@ -1308,7 +1331,7 @@ var
       if NewCode<>nil then exit;
     end;
     // then search the file in the include path
-    IncludePath:=Values.Variables['#INCPATH'];
+    IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH'];
     if Values.IsDefined('DELPHI') then
       PathDivider:=':'
     else
@@ -1714,7 +1737,7 @@ begin
     IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
     IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
   end;
-  For CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
+  for CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
     CompilerModeVars[CompMode]:='FPC_'+CompilerModeNames[CompMode];
 end;
 

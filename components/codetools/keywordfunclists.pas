@@ -90,7 +90,8 @@ var
   WordIsBooleanOperator,
   WordIsOrdNumberOperator,
   WordIsNumberOperator,
-  WordIsPredefinedIdentifier,
+  WordIsPredefinedFPCIdentifier,
+  WordIsPredefinedDelphiIdentifier,
   UnexpectedKeyWordInBeginBlock: TKeyWordFunctionList;
   UpChars: array[char] of char;
 
@@ -592,7 +593,6 @@ begin
   WordIsKeyWord:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsKeyWord);
   with WordIsKeyWord do begin
-    Add('ABSOLUTE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AND',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -853,9 +853,9 @@ begin
     Add('-' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('*' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
-  WordIsPredefinedIdentifier:=TKeyWordFunctionList.Create;
-  KeyWordLists.Add(WordIsPredefinedIdentifier);
-  with WordIsPredefinedIdentifier do begin
+  WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsPredefinedFPCIdentifier);
+  with WordIsPredefinedFPCIdentifier do begin
     Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -863,6 +863,29 @@ begin
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SINGLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DOUBLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTENDED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('COMP'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('STRING'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHORTSTRING',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WIDESTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TRUE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FALSE'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NIL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
+  with WordIsPredefinedDelphiIdentifier do begin
+    Add('POINTER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INT64'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('CARDINAL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTEGER'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('QWORD'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('REAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SINGLE'     ,{$ifdef FPC}@{$endif}AllwaysTrue);

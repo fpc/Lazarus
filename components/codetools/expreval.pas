@@ -34,6 +34,9 @@ uses
   {$ENDIF}
   Classes, SysUtils, KeyWordFuncLists;
 
+const
+  ExternalMacroStart = '#';
+
 type
   TOnValuesChanged = procedure of object;
   

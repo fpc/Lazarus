@@ -124,7 +124,7 @@ type
     xtExtended, xtCurrency, xtComp, xtInt64, xtCardinal, xtQWord, xtBoolean,
     xtByteBool, xtLongBool, xtString, xtAnsiString, xtShortString, xtWideString,
     xtPChar, xtPointer, xtConstOrdInteger, xtConstString, xtConstReal,
-    xtConstSet, xtConstBoolean, xtAddress, xtNil);
+    xtConstSet, xtConstBoolean, xtAddress, xtLongInt, xtNil);
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
@@ -133,12 +133,12 @@ const
     'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
     'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
     'PChar', 'Pointer', 'ConstOrdInt', 'ConstString', 'ConstReal', 'ConstSet',
-    'ConstBoolean', '@-Operator', 'Nil'
+    'ConstBoolean', '@-Operator', 'LongInt', 'Nil'
   );
 
   xtAllTypes = [xtContext..High(TExpressionTypeDesc)];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
-  xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger];
+  xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongInt];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtLongBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
@@ -280,6 +280,8 @@ type
     function FindIdentifierInUsedUnit(const AnUnitName: string;
       Params: TFindDeclarationParams): boolean;
   protected
+    WordIsPredefinedIdentifier: TKeyWordFunctionList;
+    procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); override;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
   protected
     procedure DoDeleteNodes; override;
@@ -293,6 +295,7 @@ type
     procedure AddResultToNodeCaches(Identifier: PChar;
       StartNode, EndNode: TCodeTreeNode; SearchedForward: boolean;
       Params: TFindDeclarationParams; SearchRangeFlags: TNodeCacheEntryFlags);
+  protected
     function FindDeclarationOfIdentifier(
       Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
@@ -457,8 +460,11 @@ begin
     Result:=xtExtended
   else if CompareIdentifiers(Identifier,'COMP'#0)=0 then
     Result:=xtComp
+  // the delphi compiler special types
   else if CompareIdentifiers(Identifier,'CURRENCY'#0)=0 then
     Result:=xtCurrency
+  else if CompareIdentifiers(Identifier,'LONGINT'#0)=0 then
+    Result:=xtLongInt
   else
     Result:=xtNone;
 end;
@@ -2958,6 +2964,18 @@ begin
   end;
 end;
 
+procedure TFindDeclarationTool.BeginParsing(DeleteNodes,
+  OnlyInterfaceNeeded: boolean);
+begin
+  inherited BeginParsing(DeleteNodes,OnlyInterfaceNeeded);
+  
+  case Scanner.PascalCompiler of
+  pcDelphi: WordIsPredefinedIdentifier:=WordIsPredefinedDelphiIdentifier;
+  else
+    WordIsPredefinedIdentifier:=WordIsPredefinedFPCIdentifier;
+  end;
+end;
+
 function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
   Params: TFindDeclarationParams): boolean;
 const
@@ -2981,7 +2999,8 @@ writeln('[TFindDeclarationTool.FindIdentifierInHiddenUsedUnits] ',
     MoveCursorToNodeStart(Tree.Root);
     ReadNextAtom;
     ReadNextAtom;
-    if Scanner.InitialValues.IsDefined('LINUX') then
+    if Scanner.InitialValues.IsDefined('LINUX')
+    and (Scanner.PascalCompiler<>pcDelphi) then
       SystemUnitName:='SYSLINUX'
     else
       // ToDo: other OS than linux
@@ -3012,7 +3031,8 @@ writeln('[TFindDeclarationTool.FindIdentifierInHiddenUsedUnits] ',
       if Result then exit;
     end;
     if (SpecialUnitType>sutObjPas)
-    and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC]) then begin
+    and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+    and (Scanner.PascalCompiler=pcFPC) then begin
       // try hidden used unit 'objpas'
       Result:=FindIdentifierInUsedUnit('ObjPas',Params);
       if Result then exit;

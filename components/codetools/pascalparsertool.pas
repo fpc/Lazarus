@@ -482,7 +482,7 @@ end;
 function TPascalParserTool.UnexpectedKeyWord: boolean;
 begin
   Result:=false;
-  RaiseException('unexpected word "'+GetAtom+'"');
+  RaiseException('unexpected keyword "'+GetAtom+'"');
 end;
 
 procedure TPascalParserTool.BuildTree(OnlyInterfaceNeeded: boolean);
@@ -1142,7 +1142,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    external <id or number> index <id>
    [alias: <string constant>]
 }
-var IsSpecifier: boolean;
+var IsSpecifier, EndSemicolonFound: boolean;
   Attr: TProcHeadAttributes;
 begin
 //writeln('[TPascalParserTool.ReadTilProcedureHeadEnd] ',
@@ -1168,17 +1168,20 @@ begin
   end;
   if IsFunction or IsOperator then begin
     // read function result type
-    if not AtomIsChar(':') then
-      RaiseException(': expected, but '+GetAtom+' found');
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    if CreateNodes then begin
-      CreateChildNode;
-      CurNode.Desc:=ctnIdentifier;
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
+    if AtomIsChar(':') then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      if CreateNodes then begin
+        CreateChildNode;
+        CurNode.Desc:=ctnIdentifier;
+        CurNode.EndPos:=CurPos.EndPos;
+        EndChildNode;
+      end;
+      ReadNextAtom;
+    end else begin
+      if (Scanner.CompilerMode<>cmDelphi) then
+        RaiseException(': expected, but '+GetAtom+' found');
     end;
-    ReadNextAtom;
   end;
   if UpAtomIs('OF') then begin
     // read 'of object'
@@ -1195,12 +1198,15 @@ begin
     UndoReadNextAtom;
     exit;
   end;
-  if not AtomIsChar(';') then
-    RaiseException('; expected, but '+GetAtom+' found');
+  if AtomIsChar(';') then begin
+    ReadNextAtom;
+    EndSemicolonFound:=true;
+  end else begin
+    EndSemicolonFound:=false;
+  end;
   if (CurPos.StartPos>SrcLen) then
     RaiseException('semicolon not found');
   repeat
-    ReadNextAtom;
     if IsMethod then
       IsSpecifier:=IsKeyWordMethodSpecifier.DoItUppercase(UpperSrc,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
@@ -1209,16 +1215,19 @@ begin
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos);
     if IsSpecifier then begin
       // read specifier
-      if UpAtomIs('MESSAGE') or UpAtomIs('EXTERNAL') then begin
-        if UpAtomIs('EXTERNAL') then
-          HasForwardModifier:=true;
-        repeat
+      if UpAtomIs('MESSAGE') then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end else if UpAtomIs('EXTERNAL') then begin
+        HasForwardModifier:=true;
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+        if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
           ReadNextAtom;
-          if UpAtomIs('END') then begin
-            UndoReadNextAtom;
-            exit;
-          end;
-        until (CurPos.Startpos>SrcLen) or AtomIsChar(';');
+          ReadConstant(true,false,[]);
+        end else begin
+          RaiseException('"name" expected, but '+GetAtom+' found');
+        end;
       end else if AtomIsChar('[') then begin
         // read assembler alias   [public,alias: 'alternative name']
         repeat
@@ -1259,14 +1268,23 @@ begin
           exit;
         end;
       end;
-      if not AtomIsChar(';') then
-        RaiseException('; expected, but '+GetAtom+' found');
+      if not AtomIsChar(';') then begin
+        if (Scanner.CompilerMode<>cmDelphi) then
+          RaiseException('; expected, but '+GetAtom+' found');
+        // Delphi allows procs without ending semicolon
+        UndoReadNextAtom; // unread unknown atom
+        if AtomIsChar(';') then
+          UndoReadNextAtom; // unread semicolon
+        break;
+      end;
     end else begin
       // current atom does not belong to procedure/method declaration
-      UndoReadNextAtom;
-      UndoReadNextAtom;
+      UndoReadNextAtom; // unread unknown atom
+      if AtomIsChar(';') then
+        UndoReadNextAtom; // unread semicolon
       break;
     end;
+    ReadNextAtom;
   until false;
 end;
 
@@ -1555,7 +1573,7 @@ begin
     end;
   else
     begin
-      RaiseException('unexpected keyword '+GetAtom+' found');
+      RaiseException('unknown section keyword '+GetAtom+' found');
       Result:=false;
     end;
   end;
@@ -1729,7 +1747,7 @@ begin
       or UpAtomIs('REPEAT') then
     begin
       if BlockType=ebtAsm then
-        RaiseException('unexpected keyword "'+GetAtom+'" found');
+        RaiseException('unexpected keyword in asm block "'+GetAtom+'" found');
       if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
         ReadTilBlockEnd(false,CreateNodes);
     end else if UpAtomIs('UNTIL') then begin
@@ -1787,7 +1805,8 @@ var BlockType: TEndBlockType;
         RaiseException('"repeat" expected, but "'
                        +GetAtom+'" found');
     else
-      RaiseException('unexpected keyword "'+GetAtom+'" found');
+      RaiseException('unexpected keyword "'+GetAtom+'" found'
+                    +' while reading blocks backwards');
     end;
   end;
 
@@ -2128,7 +2147,7 @@ function TPascalParserTool.KeyWordFuncType: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom+' in type section');
   CreateChildNode;
   CurNode.Desc:=ctnTypeSection;
   // read all type definitions  Name = Type;
@@ -2175,7 +2194,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom+' in var section');
   CreateChildNode;
   CurNode.Desc:=ctnVarSection;
   // read all variable definitions  Name : Type; [cvar;] [public [name '']]
@@ -2223,7 +2242,7 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom+' in const section');
   CreateChildNode;
   CurNode.Desc:=ctnConstSection;
   // read all constants  Name = <Const>; or Name : type = <Const>;
@@ -2277,7 +2296,7 @@ function TPascalParserTool.KeyWordFuncResourceString: boolean;
 }
 begin
   if not (CurSection in [ctnProgram,ctnInterface,ctnImplementation]) then
-    RaiseException('unexpected keyword '+GetAtom);
+    RaiseException('unexpected keyword '+GetAtom+' in resourcestring section');
   CreateChildNode;
   CurNode.Desc:=ctnResStrSection;
   // read all string constants Name = 'abc';
@@ -2429,7 +2448,7 @@ function TPascalParserTool.KeyWordFuncTypeProc: boolean;
     function(ParmList):SimpleType of object;
     procedure; cdecl; popstack; register; pascal; stdcall;
 }
-var IsFunction: boolean;
+var IsFunction, SemicolonFound: boolean;
 begin
   IsFunction:=UpAtomIs('FUNCTION');
   CreateChildNode;
@@ -2440,11 +2459,13 @@ begin
     ReadParamList(true,false,[]);
   end;
   if IsFunction then begin
-    if not AtomIsChar(':') then
+    if AtomIsChar(':') then begin
+      ReadNextAtom;
+      AtomIsIdentifier(true);
+      ReadNextAtom;
+    end else begin
       RaiseException(': expected, but '+GetAtom+' found');
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    ReadNextAtom;
+    end;
   end;
   if UpAtomIs('OF') then begin
     if not ReadNextUpAtomIs('OBJECT') then
@@ -2454,20 +2475,41 @@ begin
   end;
   if AtomIsChar('=') and NodeHasParentOfType(CurNode,ctnConstDefinition) then
   begin
+    // for example  'const f: procedure = nil;'
   end else begin
-    if not AtomIsChar(';') then
-      RaiseException('; expected, but '+GetAtom+' found');
+    if AtomIsChar(';') then begin
+      ReadNextAtom;
+      SemicolonFound:=true;
+    end else begin
+      SemicolonFound:=false;
+    end;
     // read modifiers
     repeat
-      ReadNextAtom;
-      if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos) then begin
+      if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+      begin
+        if not SemicolonFound then
+          RaiseException('; expected, but '+GetAtom+' found');
         UndoReadNextAtom;
         break;
       end else begin
-        if not ReadNextAtomIsChar(';') then
-          RaiseException('; expected, but '+GetAtom+' found');
+        if not ReadNextAtomIsChar(';') then begin
+          if Scanner.CompilerMode<>cmDelphi then begin
+            RaiseException('; expected, but '+GetAtom+' found');
+          end else begin
+            // delphi allows proc modifiers without semicolons
+            if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+              CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+            begin
+              RaiseException('; expected, but '+GetAtom+' found');
+            end;
+            UndoReadNextAtom;
+          end;
+        end else begin
+          SemicolonFound:=true;
+        end;
       end;
+      ReadNextAtom;
     until false;
   end;
   CurNode.EndPos:=CurPos.StartPos;
