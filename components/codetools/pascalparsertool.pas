@@ -238,6 +238,7 @@ type
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
     function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
+    function MoveCursorToPropType(PropNode: TCodeTreeNode): boolean;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
@@ -4211,6 +4212,28 @@ begin
     end;
   end;
   Result:=false;
+end;
+
+function TPascalParserTool.MoveCursorToPropType(PropNode: TCodeTreeNode
+  ): boolean;
+begin
+  Result:=false;
+  if (PropNode=nil) or (PropNode.Desc<>ctnProperty) then exit;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom;
+  if not UpAtomIs('PROPERTY') then exit;
+  ReadNextAtom;
+  AtomIsIdentifier(true);
+  ReadNextAtom;
+  if CurPos.Flag=cafEdgedBracketOpen then begin
+    ReadTilBracketClose(true);
+    ReadNextAtom;
+  end;
+  if CurPos.Flag in [cafSemicolon,cafEND] then exit;
+  if not (CurPos.Flag=cafColon) then
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom]);
+  ReadNextAtom;
+  AtomIsIdentifier(true);
 end;
 
 function TPascalParserTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;

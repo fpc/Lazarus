@@ -61,7 +61,7 @@ begin
     File1:=ReadAllLinks(File1,false);
     File2:=ReadAllLinks(File2,false);
   end;
-  Result:=CompareFilenames(File1, File1);
+  Result:=CompareFilenames(File1, File2);
 end;
 
 {------------------------------------------------------------------------------
@@ -850,6 +850,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2003/03/29 21:41:19  mattias
+  fixed path delimiters for environment directories
+
   Revision 1.20  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 

@@ -24,7 +24,7 @@
     Defines TLCLMemManager, which is the base class for various
     memory managers in the lcl and its interfaces.
     An own memory manager is somewhat faster and makes debugging and
-    proiling easier.
+    profiling easier.
 }
 unit LCLMemManager;
 
@@ -41,7 +41,8 @@ type
     Next: PLCLMemManagerItem;
   end;
 
-  // memory manager template
+  { memory manager template }
+  
   TLCLMemManager = class
   private
     procedure SetMaxFreeRatio(NewValue: integer);
@@ -68,6 +69,28 @@ type
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
+  end;
+  
+  
+  { TLCLNonFreeMemManager - a memory manager for records without freeing }
+  
+  TLCLEnumItemsMethod = procedure(Item: Pointer) of object;
+
+  TLCLNonFreeMemManager = class
+  private
+    FItemSize: integer;
+    FItems: TList;
+    FCurItem: Pointer;
+    FEndItem: Pointer;
+    FCurSize: integer;
+    FFirstSize: integer;
+  public
+    property ItemSize: integer read FItemSize;
+    procedure Clear;
+    constructor Create(TheItemSize: integer);
+    destructor Destroy; override;
+    function NewItem: Pointer;
+    procedure EnumerateItems(Method: TLCLEnumItemsMethod);
   end;
   
 
@@ -161,6 +184,75 @@ begin
   Item:=FFirstFree;
   FFirstFree:=FFirstFree^.Next;
   Dispose(Item);
+end;
+
+{ TLCLNonFreeMemManager }
+
+procedure TLCLNonFreeMemManager.Clear;
+var
+  i: Integer;
+  p: Pointer;
+begin
+  if FItems<>nil then begin
+    for i:=0 to FItems.Count-1 do begin
+      p:=FItems[i];
+      FreeMem(p);
+    end;
+    FItems.Free;
+    FItems:=nil;
+  end;
+  FCurItem:=nil;
+  FEndItem:=nil;
+  FCurSize:=FItemSize*4;
+end;
+
+constructor TLCLNonFreeMemManager.Create(TheItemSize: integer);
+begin
+  FItemSize:=TheItemSize;
+  FFirstSize:=FItemSize*4;
+  FCurSize:=FFirstSize;
+end;
+
+destructor TLCLNonFreeMemManager.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TLCLNonFreeMemManager.NewItem: Pointer;
+begin
+  if (FCurItem=FEndItem) then begin
+    inc(FCurSize,FCurSize);
+    GetMem(FCurItem,FCurSize);
+    if FItems=nil then FItems:=TList.Create;
+    FItems.Add(FCurItem);
+    FEndItem:=Pointer(integer(FCurSize)+FCurSize);
+  end;
+  Result:=FCurItem;
+  inc(integer(FCurItem),FItemSize);
+end;
+
+procedure TLCLNonFreeMemManager.EnumerateItems(Method: TLCLEnumItemsMethod);
+var
+  Cnt: Integer;
+  i: Integer;
+  p: Pointer;
+  Size: Integer;
+  Last: Pointer;
+begin
+  if FItems<>nil then begin
+    Cnt:=FItems.Count-1;
+    Size:=FFirstSize;
+    for i:=0 to Cnt-1 do begin
+      inc(Size,Size);
+      p:=FItems[i];
+      Last:=Pointer(integer(p)+Size);
+      while p<>Last do begin
+        Method(p);
+        inc(integer(p),FItemSize);
+      end;
+    end;
+  end;
 end;
 
 end.

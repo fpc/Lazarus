@@ -45,6 +45,7 @@ uses
   GraphType,
   LCLLinux,
   LMessages,
+  LCLMemManager,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -374,6 +375,14 @@ const
   TINTARRGROWFACTOR = 64;
   DEFAULT_PRINTMARGIN = 0.5; {inches}                                  {!!.10}
 type
+  {$IFDEF IP_LAZARUS}
+  TIpEnumItemsMethod = TLCLEnumItemsMethod;
+  TIpHtmlPoolManager = class(TLCLNonFreeMemManager)
+  public
+    constructor Create(TheItemSize, MaxItems : DWord);
+    function NewItm : Pointer;
+  end;
+  {$ELSE}
   TIpEnumItemsMethod = procedure(Item: Pointer) of object;
   TIpHtmlPoolManager = class
   protected
@@ -391,6 +400,7 @@ type
     function NewItm : Pointer;
     procedure EnumerateItems(Method: TIpEnumItemsMethod);
   end;
+  {$ENDIF}
 
   TIpHtml = class;
   TIpHtmlAlign = (haDefault, haLeft, haCenter, haRight, haJustify, haChar);
@@ -2986,20 +2996,21 @@ begin
   end;
 end;
 
+{$IFDEF IP_LAZARUS}
+constructor TIpHtmlPoolManager.Create(TheItemSize, MaxItems : DWord);
+begin
+  inherited Create(TheItemSize);
+end;
+
+function TIpHtmlPoolManager.NewItm : Pointer;
+begin
+  Result:=NewItem;
+end;
+
+{$ELSE IP_LAZARUS}
+
 constructor TIpHtmlPoolManager.Create(ItemSize, MaxItems : DWord);
 begin
-  {$IFDEF IP_LAZARUS}
-  // Root = start of mem block
-  // Next = end of used memory = start of unused mem
-  // NextPage = end of mem block
-  // InternalSize = size of one item
-  if MaxItems=0 then ;
-  InternalSize:=ItemSize;
-  GetMem(Root,InternalSize);
-  FillChar(Root^,InternalSize,0);
-  NextPage := Pointer(DWord(Root)+InternalSize);
-  Next := Root;
-  {$ELSE}
   InitializeCriticalSection(Critical);
   EnterCriticalSection(Critical);
   try
@@ -3013,15 +3024,11 @@ begin
   finally
     LeaveCriticalSection(Critical);
   end;
-  {$ENDIF}
   {Top := Pointer(DWord(Root) + InternalSize * MaxItems);}           {!!.12}
 end;
 
 destructor TIpHtmlPoolManager.Destroy;
 begin
-  {$IFDEF IP_LAZARUS}
-  FreeMem(Root);
-  {$ELSE}
   EnterCriticalSection(Critical);
   try
     if Root <> nil then
@@ -3031,48 +3038,26 @@ begin
     LeaveCriticalSection(Critical);
   end;
   DeleteCriticalSection(Critical);
-  {$ENDIF}
 end;
 
 function TIpHtmlPoolManager.NewItm : Pointer;
 begin
-  {$IFNDEF IP_LAZARUS}
   EnterCriticalSection(Critical);
-  {$ENDIF}
   if Next = NextPage then
     Grow;
   Result := Next;
   inc(DWord(Next), InternalSize);
-  {$IFNDEF IP_LAZARUS}
   LeaveCriticalSection(Critical);
-  {$ENDIF}
 end;
 
 procedure TIpHtmlPoolManager.Grow;
-{$IFDEF IP_LAZARUS}
-var
-  OldSize, NewSize: integer;
-  OldRoot: Pointer;
-{$ELSE}
 var                                                                    {!!.10}
   P: Pointer;                                                          {!!.10}
-{$ENDIF}
 begin
-  {$IFDEF IP_LAZARUS}
-  // double allocated memory
-  OldSize:=NextPage-Root;
-  NewSize:=2*OldSize;
-  OldRoot:=Root;
-  ReAllocMem(Root,NewSize);
-  NextPage:=Pointer(integer(Root)+NewSize);
-  FillChar(Pointer(integer(Root)+OldSize)^,OldSize,0);
-  Next:=Pointer(integer(Next)-integer(OldRoot)+integer(Root));
-  {$ELSE}
   P := VirtualAlloc(NextPage, 4096, MEM_COMMIT, PAGE_READWRITE);       {!!.10}
   if P = nil then                                                      {!!.10}
     raise Exception.Create('Out of memory');                           {!!.10}
   inc(DWord(NextPage),4096);
-  {$ENDIF}
 end;
 
 procedure TIpHtmlPoolManager.EnumerateItems(Method: TIpEnumItemsMethod);
@@ -3085,6 +3070,7 @@ begin
     inc(DWord(P), InternalSize);
   end;
 end;
+{$ENDIF IP_LAZARUS}
 
 function ParseConstant(const S: string): AnsiChar;
 Const
@@ -7988,8 +7974,13 @@ var
   DefPageRect : TRect;
   Min, Max, W, H : Integer;
 begin
-writeln('TIpHtml.GetPageRect A ',ClassName,' ',Width,',',Height);
-  if not DoneLoading then exit;
+writeln('TIpHtml.GetPageRect A ',ClassName,' ',Width,',',Height,' DoneLoading=',DoneLoading);
+  if not DoneLoading then begin
+    {$IFDEF IP_LAZARUS}
+    SetRectEmpty(Result);
+    {$ENDIF}
+    exit;
+  end;
   DoneLoading := False;
   SetRectEmpty(FPageRect);
   if FHtml <> nil then begin
@@ -8018,6 +8009,7 @@ writeln('TIpHtml.GetPageRect A ',ClassName,' ',Width,',',Height);
   end;
   Result := FPageRect;
   DoneLoading := True;
+writeln('TIpHtml.GetPageRect B ',ClassName,' ',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom);
 end;
 
 procedure TIpHtml.InvalidateSize;
@@ -16888,13 +16880,13 @@ writeln('TIpHtmlCustomPanel.InternalOpenURL C ',BaseURL);
         Application.ProcessMessages;
         MasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
           MarginWidth, MarginHeight);
-        try
+        // LazDebug try
           MasterFrame.OpenURL(URL, False);
-        except
+        { LazDebug except
           MasterFrame.Free;
           MasterFrame := nil;
           raise;
-        end;
+        end;}
         {CurURL := URL;}                                               {!!.12}
       end;
     end else begin
@@ -17079,14 +17071,15 @@ begin
   MasterFrame := nil;
   MasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
     MarginWidth, MarginHeight);
-  try
+  // LazDebug try
     if NewHtml <> nil then
       MasterFrame.SetHtml(NewHtml);
+  { LazDebug
   except
     MasterFrame.Free;
     MasterFrame := nil;
     raise;
-  end;
+  end;}
 end;
 
 procedure TIpHtmlCustomPanel.URLCheck(Sender: TIpHtml; const URL: string;
@@ -17288,13 +17281,13 @@ begin
       MasterFrame := nil;
       Application.ProcessMessages;
       MasterFrame := TIpHtmlNVFrame.Create(Self, DataProvider, FlagErrors);
-      try
+      // LazDebug try
         MasterFrame.OpenURL(URL);
-      except
+      { LazDebug except
         MasterFrame.Free;
         MasterFrame := nil;
         raise;
-      end;
+      end;}
       CurURL := URL;
     end else begin
       Push(Target, TargetFrame.CURURL +  TargetFrame.CurAnchor);
@@ -17353,6 +17346,19 @@ begin
   { Intentionally empty }
 end;
 {End !!.14}
+
+{$IFDEF IP_LAZARUS}
+  FlatSB_GetScrollInfo: function(hWnd: HWND; BarFlag: Integer;
+    var ScrollInfo: TScrollInfo): BOOL; stdcall;
+  FlatSB_GetScrollPos: function(hWnd: HWND; nBar: Integer): Integer; stdcall;
+  FlatSB_SetScrollPos: function(hWnd: HWND; nBar, nPos: Integer;
+    bRedraw: BOOL): Integer; stdcall;
+  FlatSB_SetScrollProp: function(p1: HWND; index: Integer; newValue: Integer;
+    p4: Bool): Bool; stdcall;
+  FlatSB_SetScrollInfo: function(hWnd: HWND; BarFlag: Integer;
+    const ScrollInfo: TScrollInfo; Redraw: BOOL): Integer; stdcall;
+{$ENDIF}
+
 
 procedure InitScrollProcs;
 var
@@ -17532,6 +17538,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.3  2003/03/29 21:41:19  mattias
+  fixed path delimiters for environment directories
+
   Revision 1.2  2003/03/28 19:39:54  mattias
   started typeinfo for double extended
 

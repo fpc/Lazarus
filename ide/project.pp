@@ -402,10 +402,6 @@ const
       'Application'#13
       +'A graphical lcl/freepascal program. The program file is '
       +'automatically maintained by lazarus.'#13
-      +#13
-      +#13
-      +'WARNING:'#13
-      +'Form editing is under development and should not be used.'
 
       // ptProgram
       ,'Program:'#13
@@ -2285,6 +2281,9 @@ end.
 
 {
   $Log$
+  Revision 1.101  2003/03/29 21:41:19  mattias
+  fixed path delimiters for environment directories
+
   Revision 1.100  2003/03/29 17:20:04  mattias
   added TMemoScrollBar
 

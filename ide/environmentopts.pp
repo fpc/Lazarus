@@ -209,6 +209,10 @@ type
     // language
     fLanguage: TLazarusLanguage;
     
+    procedure SetCompilerFilename(const AValue: string);
+    procedure SetDebuggerFilename(const AValue: string);
+    procedure SetFPCSourceDirectory(const AValue: string);
+    procedure SetLazarusDirectory(const AValue: string);
     procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
 
     procedure InitLayoutList;
@@ -217,6 +221,7 @@ type
     function FileHasChangedOnDisk: boolean;
     function GetXMLCfg: TXMLConfig;
     procedure FileUpdated;
+    procedure SetTestBuildDirectory(const AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -287,24 +292,24 @@ type
     
     // files
     property LazarusDirectory: string read FLazarusDirectory
-                                      write FLazarusDirectory;
+                                      write SetLazarusDirectory;
     property LazarusDirHistory: TStringList read FLazarusDirsHistory
                                             write FLazarusDirsHistory;
     property CompilerFilename: string read FCompilerFilename
-                                      write FCompilerFilename;
+                                      write SetCompilerFilename;
     property CompilerFileHistory: TStringList read FCompilerFileHistory
                                               write FCompilerFileHistory;
     property FPCSourceDirectory: string read FFPCSourceDirectory
-                                        write FFPCSourceDirectory;
+                                        write SetFPCSourceDirectory;
     property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
                                               write FFPCSourceDirHistory;
     property DebuggerFilename: string read FDebuggerFilename
-                                      write FDebuggerFilename;
+                                      write SetDebuggerFilename;
     property DebuggerFileHistory: TStringList read FDebuggerFileHistory
                                               write FDebuggerFileHistory;
     property DebuggerType: TDebuggerType read FDebuggerType write FDebuggerType;
     property TestBuildDirectory: string read FTestBuildDirectory
-                                        write FTestBuildDirectory;
+                                        write SetTestBuildDirectory;
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
                                               write FTestBuildDirHistory;
 
@@ -681,16 +686,16 @@ begin
   FShowHintsForMainSpeedButtons:=true;
 
   // files
-  FLazarusDirectory:=IDEProcs.ProgramDirectory;
+  LazarusDirectory:=IDEProcs.ProgramDirectory;
   FLazarusDirsHistory:=TStringList.Create;
-  FCompilerFilename:='';
+  CompilerFilename:='';
   FCompilerFileHistory:=TStringList.Create;
-  FFPCSourceDirectory:='';
+  FPCSourceDirectory:='';
   FFPCSourceDirHistory:=TStringList.Create;
-  FDebuggerFilename:='';
+  DebuggerFilename:='';
   FDebuggerFileHistory:=TStringList.Create;
   FDebuggerType:=dtNone;
-  FTestBuildDirectory:={$ifdef win32}'c:/temp'{$else}'/tmp'{$endif};
+  TestBuildDirectory:={$ifdef win32}'c:\temp\'{$else}'/tmp/'{$endif};
   FTestBuildDirHistory:=TStringList.Create;
 
   // recent files and directories
@@ -897,15 +902,15 @@ begin
 
     if not OnlyDesktop then begin
       // files
-      FLazarusDirectory:=XMLConfig.GetValue(
+      LazarusDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory);
       LoadRecentList(XMLConfig,FLazarusDirsHistory,
          'EnvironmentOptions/LazarusDirectory/History/');
       if FLazarusDirsHistory.Count=0 then begin
         FLazarusDirsHistory.Add(ProgramDirectory);
       end;
-      FCompilerFilename:=XMLConfig.GetValue(
-         'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
+      CompilerFilename:=TrimFilename(XMLConfig.GetValue(
+         'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename));
       LoadRecentList(XMLConfig,FCompilerFileHistory,
          'EnvironmentOptions/CompilerFilename/History/');
       if FCompilerFileHistory.Count=0 then begin
@@ -916,15 +921,15 @@ begin
         FCompilerFileHistory.Add('/opt/fpc/ppc386');
         {$ENDIF}
       end;
-      FFPCSourceDirectory:=XMLConfig.GetValue(
+      FPCSourceDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
       LoadRecentList(XMLConfig,FFPCSourceDirHistory,
          'EnvironmentOptions/FPCSourceDirectory/History/');
       if FFPCSourceDirHistory.Count=0 then begin
       
       end;
-      FDebuggerFilename:=XMLConfig.GetValue(
-         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      FDebuggerFilename:=TrimFilename(XMLConfig.GetValue(
+         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename));
       LoadRecentList(XMLConfig,FDebuggerFileHistory,
          'EnvironmentOptions/DebuggerFilename/History/');
       if FDebuggerFileHistory.Count=0 then begin
@@ -933,17 +938,17 @@ begin
         FDebuggerFileHistory.Add('/opt/fpc/gdb');
       end;
       LoadDebuggerType(FDebuggerType,'EnvironmentOptions/');
-      FTestBuildDirectory:=XMLConfig.GetValue(
+      TestBuildDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
       LoadRecentList(XMLConfig,FTestBuildDirHistory,
          'EnvironmentOptions/TestBuildDirectory/History/');
       if FTestBuildDirHistory.Count=0 then begin
         {$IFDEF win32}
-        FTestBuildDirHistory.Add('c:/tmp');
-        FTestBuildDirHistory.Add('c:/windows/temp');
+        FTestBuildDirHistory.Add('c:\tmp\');
+        FTestBuildDirHistory.Add('c:\windows\temp\');
         {$ELSE}
-        FTestBuildDirHistory.Add('/tmp');
-        FTestBuildDirHistory.Add('/var/tmp');
+        FTestBuildDirHistory.Add('/tmp/');
+        FTestBuildDirHistory.Add('/var/tmp/');
         {$ENDIF}
       end;
 
@@ -1261,10 +1266,40 @@ begin
     FFileAge:=0;
 end;
 
+procedure TEnvironmentOptions.SetTestBuildDirectory(const AValue: string);
+begin
+  if FTestBuildDirectory=AValue then exit;
+  FTestBuildDirectory:=AppendPathDelim(TrimFilename(AValue));
+end;
+
 procedure TEnvironmentOptions.SetOnApplyWindowLayout(
   const AValue: TOnApplyIDEWindowLayout);
 begin
   FOnApplyWindowLayout:=AValue;
+end;
+
+procedure TEnvironmentOptions.SetLazarusDirectory(const AValue: string);
+begin
+  if FLazarusDirectory=AValue then exit;
+  FLazarusDirectory:=AppendPathDelim(TrimFilename(AValue));
+end;
+
+procedure TEnvironmentOptions.SetFPCSourceDirectory(const AValue: string);
+begin
+  if FFPCSourceDirectory=AValue then exit;
+  FFPCSourceDirectory:=AppendPathDelim(TrimFilename(AValue));
+end;
+
+procedure TEnvironmentOptions.SetCompilerFilename(const AValue: string);
+begin
+  if FCompilerFilename=AValue then exit;
+  FCompilerFilename:=TrimFilename(AValue);
+end;
+
+procedure TEnvironmentOptions.SetDebuggerFilename(const AValue: string);
+begin
+  if FDebuggerFilename=AValue then exit;
+  FDebuggerFilename:=TrimFilename(AValue);
 end;
 
 //==============================================================================

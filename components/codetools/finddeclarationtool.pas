@@ -1089,7 +1089,7 @@ var
     writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',AFilename);
     {$ENDIF}
     NewCode:=TCodeBuffer(Scanner.OnLoadSource(
-                                          Self,ExpandFilename(AFilename),true));
+                            Self,ExpandFilename(TrimFilename(AFilename)),true));
     Result:=NewCode<>nil;
   end;
   
@@ -5665,7 +5665,7 @@ begin
                  fdfTopLvlResolving,fdfFunctionResult];
   ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
   {$IFDEF CTDEBUG}
-  writeln('TCodeCompletionCodeTool.FindTermTypeAsString ExprTypeToString=',
+  writeln('TFindDeclarationTool.FindTermTypeAsString ExprTypeToString=',
     ExprTypeToString(ExprType));
   {$ENDIF}
   case ExprType.Desc of
@@ -5716,10 +5716,16 @@ begin
             Result:=GetIdentifier(
                      @FindContext.Tool.Src[FindContext.Node.Parent.StartPos]);
 
+        ctnProperty:
+          begin
+            FindContext.Tool.MoveCursorToPropType(FindContext.Node);
+            Result:=FindContext.Tool.GetAtom;
+          end;
+          
         end;
         
         if Result='' then begin
-          writeln('TCodeCompletionCodeTool.FindTermTypeAsString ContextNode=',
+          writeln('TFindDeclarationTool.FindTermTypeAsString ContextNode=',
             FindContext.Node.DescAsString);
           RaiseTermNotSimple;
         end;
