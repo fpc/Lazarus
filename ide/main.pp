@@ -6800,15 +6800,44 @@ function TMainIDE.DoMakeResourceString: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  //StartX, StartY, EndX, EndY: integer;
+  StartPos, EndPos: TPoint;
+  StartCode, EndCode: TCodeBuffer;
 begin
+  Result:=mrCancel;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
   writeln('[TMainIDE.DoGotoIncludeDirective] ************');
   {$ENDIF}
+  // calculate start and end of expression in source
+  if ActiveSrcEdit.EditorComponent.SelText='' then begin
+    if CodeToolBoss.GetExpressionBounds(ActiveUnitInfo.Source,
+      ActiveSrcEdit.EditorComponent.CaretX,
+      ActiveSrcEdit.EditorComponent.CaretY,
+      StartCode,StartPos.X,StartPos.Y,
+      EndCode,EndPos.X,EndPos.Y) then
+    begin
+      if (StartCode<>ActiveUnitInfo.Source)
+      or (EndCode<>ActiveUnitInfo.Source) then begin
+        MessageDlg('No String Constant Found','Invalid expression.'#13
+        +'Hint: The Make Resourcestring Function expects a string constant'
+        +' in a single file. Please select the expression and try again.',
+        mtError,[mbCancel],0);
+        exit;
+      end;
+    end else begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+  end else begin
+    StartPos:=ActiveSrcEdit.EditorComponent.BlockBegin;
+    EndPos:=ActiveSrcEdit.EditorComponent.BlockEnd;
+  end;
+  
+  // check that the expression is a string constant
+  
+  
   // ToDo:
-  // - determine start and end of string constant in source
   // - write and open wizard
   MessageDlg('Not implemented yet','Sorry, not implemented yet.',mtInformation,
     [mbCancel],0);
@@ -7659,6 +7688,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.456  2003/01/28 17:04:33  mattias
+  renamed one Rect
+
   Revision 1.455  2003/01/19 14:44:27  mattias
   started make resource string
 
