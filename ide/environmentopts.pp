@@ -1061,7 +1061,10 @@ begin
       Name:='NoteBook';
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-      Pages[0]:='Desktop';
+      if PageCount>0 then
+        Pages[0]:='Desktop'
+      else
+        Pages.Add('Desktop');
       Pages.Add('Form Editor');
       Pages.Add('Object Inspector');
       Pages.Add('Files');

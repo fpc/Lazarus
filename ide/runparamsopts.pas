@@ -398,7 +398,10 @@ begin
     Name:='Notebook';
     Parent:=Self;
     SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-    Pages[0]:='Local';
+    if PageCount>0 then
+      Pages[0]:='Local'
+    else
+      Pages.Add('Local');
     Pages.Add('Environment');
     Visible:=true;
   end;

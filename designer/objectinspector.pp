@@ -1731,7 +1731,10 @@ begin
   with NoteBook do begin
     Name:='NoteBook';
     Parent:=Self;
-    Pages.Strings[0]:='Properties';
+    if PageCount>0 then
+      Pages.Strings[0]:='Properties'
+    else
+      Pages.Add('Properties');
     Pages.Add('Events');
     PopupMenu:=MainPopupMenu;
     Align:= alClient;
