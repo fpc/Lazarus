@@ -1064,6 +1064,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/03/11 23:22:46  lazarus
+  MG: added TPicture clipboard support
+
   Revision 1.25  2002/03/08 16:16:55  lazarus
   MG: fixed parser of end blocks in initialization section added label sections
 

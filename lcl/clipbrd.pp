@@ -278,6 +278,7 @@ function SecondarySelection: TClipboard;
 function Clipboard(ClipboardType: TClipboardType): TClipboard;
 function SetClipboard(ClipboardType: TClipboardType;
   NewClipboard: TClipboard): TClipboard;
+procedure FreeAllClipboards;
 
 function RegisterClipboardFormat(const Format: string): TClipboardFormat;
 
@@ -375,6 +376,13 @@ begin
   Result:=PredefinedClipboardFormat(pcfDelphiComponent);
 end;
 
+procedure FreeAllClipboards;
+var AClipboardType: TClipboardType;
+begin
+  for AClipboardType:=Low(TClipboardType) to High(TClipboardType) do
+    FreeAndNil(FClipboards[AClipboardType]);
+end;
+
 //-----------------------------------------------------------------------------
 
 procedure InternalInit;
@@ -390,10 +398,8 @@ begin
 end;
 
 procedure InternalFinal;
-var AClipboardType: TClipboardType;
 begin
-  for AClipboardType:=Low(TClipboardType) to High(TClipboardType) do
-    FClipboards[AClipboardType].Free;
+  FreeAllClipboards;
 end;
 
 initialization
@@ -401,11 +407,14 @@ initialization
   
 finalization
   InternalFinal;
-  
+
 end.
 
 {
   $Log$
+  Revision 1.8  2002/03/11 23:22:46  lazarus
+  MG: added TPicture clipboard support
+
   Revision 1.7  2002/03/09 11:55:13  lazarus
   MG: fixed class method completion
 

@@ -290,6 +290,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure SaveToStream(Stream: TStream); virtual; abstract;
     procedure LoadFromLazarusResource(const ResName: String); virtual; abstract;
+    procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
+    procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
     constructor Create; // virtual;
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
@@ -396,7 +398,7 @@ type
   end;
 
 
-  EInvalidGraphic=class(Exception);
+  EInvalidGraphic = class(Exception);
 
 
   TCanvas = class(TPersistent)
@@ -497,8 +499,8 @@ type
   private
     FRefCount: Integer;
   protected
-    procedure Reference;
-    procedure Release;
+    procedure Reference; // increase reference count
+    procedure Release;   // decrease reference count
     procedure FreeHandle; virtual; abstract;
     property RefCount: Integer read FRefCount;
   end;
@@ -622,7 +624,11 @@ var
  ***************************************************************************)
 implementation
 
-uses Controls;
+
+uses Controls, ClipBrd;
+
+const
+  GraphicsFinalized: boolean = false;
 
 type
   TBitmapCanvas = class(TCanvas)
@@ -741,12 +747,22 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 
+initialization
+
+finalization
+  GraphicsFinalized:=true;
+  FreeAndNil(PicClipboardFormats);
+  FreeAndNil(PicFileFormats);
+
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/03/11 23:22:46  lazarus
+  MG: added TPicture clipboard support
+
   Revision 1.27  2002/03/11 20:36:34  lazarus
   MG: fixed parser for multiple variant identifiers
 

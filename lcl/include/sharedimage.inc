@@ -1,3 +1,5 @@
+// included by graphics.pp
+
 { TSharedImage }
 
 procedure TSharedImage.Reference;
@@ -7,13 +9,14 @@ end;
 
 procedure TSharedImage.Release;
 begin
-  if Pointer(Self) <> nil then
-  begin
+  if Pointer(Self) <> nil then begin
     Dec(FRefCount);
-    if FRefCount = 0 then
-    begin
+    if FRefCount = 0 then begin
       FreeHandle;
       Free;
     end;
   end;
 end;
+
+// included by graphics.pp
+

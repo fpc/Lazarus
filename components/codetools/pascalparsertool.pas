@@ -1088,6 +1088,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
  proc specifiers with parameters:
    message <id or number>;
    external;
+   external <id>;
    external name <id>;
    external <id or number> name <id>;
    external <id or number> index <id>;
@@ -1174,8 +1175,6 @@ begin
           if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
             ReadNextAtom;
             ReadConstant(true,false,[]);
-          end else begin
-            RaiseException('"name" expected, but '+GetAtom+' found');
           end;
         end;
       end else if AtomIsChar('[') then begin

@@ -124,7 +124,7 @@ type
     xtExtended, xtCurrency, xtComp, xtInt64, xtCardinal, xtQWord, xtBoolean,
     xtByteBool, xtLongBool, xtString, xtAnsiString, xtShortString, xtWideString,
     xtPChar, xtPointer, xtConstOrdInteger, xtConstString, xtConstReal,
-    xtConstSet, xtConstBoolean, xtAddress, xtLongInt, xtNil);
+    xtConstSet, xtConstBoolean, xtAddress, xtLongInt, xtWord, xtNil);
   TExpressionTypeDescs = set of TExpressionTypeDesc;
   
 const
@@ -133,12 +133,12 @@ const
     'Extended', 'Currency', 'Comp', 'Int64', 'Cardinal', 'QWord', 'Boolean',
     'ByteBool', 'LongBool', 'String', 'AnsiString', 'ShortString', 'WideString',
     'PChar', 'Pointer', 'ConstOrdInt', 'ConstString', 'ConstReal', 'ConstSet',
-    'ConstBoolean', '@-Operator', 'LongInt', 'Nil'
+    'ConstBoolean', '@-Operator', 'LongInt', 'Word', 'Nil'
   );
 
   xtAllTypes = [xtContext..High(TExpressionTypeDesc)];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
-  xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongInt];
+  xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongInt, xtWord];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtLongBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
@@ -465,6 +465,10 @@ begin
     Result:=xtCurrency
   else if CompareIdentifiers(Identifier,'LONGINT'#0)=0 then
     Result:=xtLongInt
+  else if CompareIdentifiers(Identifier,'WORD'#0)=0 then
+    Result:=xtWord
+  else if CompareIdentifiers(Identifier,'LONGWORD'#0)=0 then
+    Result:=xtCardinal
   else
     Result:=xtNone;
 end;

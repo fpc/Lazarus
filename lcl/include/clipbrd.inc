@@ -18,14 +18,14 @@ end;
 
 constructor TClipboard.Create(AClipboardType: TClipboardType);
 begin
-//writeln('[TClipboard.Create] A ',ClipboardTypeName[AClipboardType]);
+//writeln('[TClipboard.Create] A ',ClipboardTypeName[AClipboardType],' Self=',HexStr(Cardinal(Self),8));
   inherited Create;
   FClipboardType:=AClipboardType;
 end;
 
 destructor TClipboard.Destroy;
 begin
-//writeln('[TClipboard.Destroy] A ',ClipboardTypeName[ClipboardType]);
+//writeln('[TClipboard.Destroy] A ',ClipboardTypeName[ClipboardType],' Self=',HexStr(Cardinal(Self),8));
   OnRequest:=nil; // this will notify the owner
   if FAllocated then begin
     ClipboardGetOwnership(ClipboardType,nil,0,nil);
@@ -594,6 +594,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2002/03/11 23:22:46  lazarus
+  MG: added TPicture clipboard support
+
   Revision 1.6  2002/03/09 11:55:13  lazarus
   MG: fixed class method completion
 
