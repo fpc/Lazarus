@@ -104,6 +104,7 @@ type
     procedure LoadXPMFromLazResource(const ResourceName: string;
       Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
     procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
+    procedure LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
 
     procedure SetRCFilename(const AValue: string);
     procedure ParseRCFile;
@@ -480,6 +481,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2002/09/03 08:07:20  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.68  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
