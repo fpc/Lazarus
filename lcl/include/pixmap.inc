@@ -240,8 +240,13 @@ begin
       FreeMem(XPM);
   end;
 
-  FWidth:=NewWidth;
-  FHeight:=NewHeight;
+  if HandleAllocated then begin
+    FWidth:=NewWidth;
+    FHeight:=NewHeight;
+  end else begin
+    FWidth:=0;
+    FHeight:=0;
+  end;
 end;
 
 // included by graphics.pp
@@ -249,6 +254,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/04/03 17:42:13  mattias
+  added exception handling for createpixmapindirect
+
   Revision 1.17  2002/12/18 17:59:12  mattias
   minor cleanup
 

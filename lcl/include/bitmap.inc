@@ -39,7 +39,8 @@ end;
 procedure TBitmap.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   HandleNeeded;
-  ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
+  if HandleAllocated then
+    ACanvas.CopyRect(ARect, Self.Canvas, Rect(0, 0, Width, Height));
 end;
 
 constructor TBitmap.VirtualCreate;
@@ -188,7 +189,7 @@ var
   pstr : PChar;
 Begin
   HandleNeeded;
-  if Filename<>'' then begin
+  if (Filename<>'') and HandleAllocated then begin
     pStr:=PChar(Filename);
     SendIntfMessage(LM_LOADXPM,Self,pstr);
   end;
@@ -416,7 +417,7 @@ begin
     Reference;
     FHandle:=Value;
     FillChar(FDIB, sizeof(FDIB), 0);
-    if Value <> 0 then
+    if FHandle <> 0 then
       GetObject(FHandle, SizeOf(FDIB), @FDIB);
     Changed(Self);
   end;
@@ -528,6 +529,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2003/04/03 17:42:13  mattias
+  added exception handling for createpixmapindirect
+
   Revision 1.28  2003/03/12 14:39:29  mattias
   fixed clipping origin in stretchblt
 
