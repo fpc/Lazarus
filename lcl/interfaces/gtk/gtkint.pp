@@ -145,7 +145,6 @@ type
       NotOnParentsClientArea: boolean): PGtkWidget;
     function CreateToolBar(ToolBarObject: TObject): PGtkWidget;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
-    procedure DestroyLCLComponent(Sender: TObject);virtual;
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
@@ -308,6 +307,7 @@ type
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: integer) : boolean; override;
+    procedure DestroyLCLComponent(Sender: TObject);virtual;
 
     {$I gtkwinapih.inc}
     {$I gtklclintfh.inc}
@@ -455,6 +455,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.208  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.207  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Dialogs,
+  Dialogs,
 ////////////////////////////////////////////////////
-  WSDialogs, WSLCLClasses;
+  WSDialogs, WSLCLClasses, Windows;
 
 type
 
@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TWin32WSFileDialog }
@@ -106,6 +107,11 @@ type
 
 implementation
 
+procedure TWin32WSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+begin
+  DestroyWindow(ACommonDialog.Handle);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -114,7 +120,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCommonDialog, TWin32WSCommonDialog);
+  RegisterWSComponent(TCommonDialog, TWin32WSCommonDialog);
 //  RegisterWSComponent(TFileDialog, TWin32WSFileDialog);
 //  RegisterWSComponent(TOpenDialog, TWin32WSOpenDialog);
 //  RegisterWSComponent(TSaveDialog, TWin32WSSaveDialog);

@@ -3423,7 +3423,7 @@ procedure TWinControl.DestroyComponent;
 begin
   if not HandleAllocated then
     RaiseGDBException('TWinControl.DestroyComponent Handle already destroyed');
-  CNSendMessage(LM_DESTROY, Self, nil);
+  TWSWinControlClass(WidgetSetClass).DestroyHandle(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -3912,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.279  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.278  2004/09/14 15:48:28  micha
   convert LM_INVALIDATE message to interface method
 

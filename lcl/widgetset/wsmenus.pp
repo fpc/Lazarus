@@ -53,6 +53,7 @@ type
 
   TWSMenuItem = class(TWSLCLComponent)
     class procedure AttachMenu(const AMenuItem: TMenuItem); virtual;
+    class procedure DestroyHandle(const AMenuItem: TMenuItem); virtual;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
@@ -81,6 +82,10 @@ implementation
 { TWSMenuItem }
 
 procedure TWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+begin
+end;
+
+procedure TWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 begin
 end;
 

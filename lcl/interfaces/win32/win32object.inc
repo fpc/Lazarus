@@ -258,13 +258,6 @@ end;
            integer!!!!!
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
-Var
-  //Bitmap: HBITMAP; // Pixel map type image
-  //CBI: COMBOBOXINFO;
-  Handle: HWND;
-  AMenu: TMenu;
-  AccelTable: HACCEL;
-
 Begin
   Result := 0;   //default value just in case nothing sets it
   Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
@@ -280,55 +273,6 @@ Begin
       Result := SetProperties(Sender);
     LM_SETDESIGNING:
       if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
-  Else
-  Begin
-    Handle := ObjectToHWND(Sender);
-    If Handle = HWND(Nil) Then
-    Begin
-      //Assert (False, Format('Trace:[TWin32WidgetSet.IntSendMessage3] %S --> got Handle = Nil', [Sender.ClassName]));
-      //Handle := (Sender As TWinControl).Handle;
-      //TWinControl(Sender).Handle := Handle;
-      //Assert(False, Format('Trace:[TWin32WidgetSet.IntSendMessag3] Sender is %S', [Sender.ClassName]));
-      Exit;
-    End;
-    Case LM_Message of
-      LM_DESTROY:
-      Begin
-        If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then
-        Begin
-          If Handle <> 0 Then
-          begin
-            AccelTable := Windows.GetProp(Handle, 'Accel');
-            if AccelTable <> 0 then
-              DestroyAcceleratorTable(AccelTable);
-            DestroyWindow(Handle);
-          end;
-        End
-        Else If Sender Is TMenu Then
-        Begin
-          If Handle <> 0 Then
-            DestroyMenu(Handle)
-        End
-        Else If Sender Is TMenuItem Then
-        Begin
-          { not assigned when this the menuitem of a TMenu; handle is destroyed above }
-          if Assigned(TMenuItem(Sender).Parent) then
-            DeleteMenu((Sender as TMenuItem).Parent.Handle, TMenuItem(Sender).Command, MF_BYCOMMAND);
-          AMenu:=TMenuItem(Sender).GetParentMenu;
-          if (AMenu<>nil) and (AMenu.Parent<>nil)
-          and (AMenu.Parent is TCustomForm)
-          and TCustomForm(AMenu.Parent).HandleAllocated 
-          and not (csDestroying in AMenu.Parent.ComponentState) then
-            DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
-        End
-        Else
-          Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
-      End;
-      Else
-        Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
-        // unhandled message
-      End; // end of 2nd case
-    End; // end of else-part of 1st case
   End; // end of 1st case
 End;
 
@@ -2066,6 +2010,9 @@ End;
 
 {
   $Log$
+  Revision 1.274  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.273  2004/09/18 11:06:47  micha
   remove LM_RECREATEWND message, as it is not used by LCL
 

@@ -77,6 +77,7 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
     class procedure SetColor(const AWinControl: TWinControl); virtual;
 
+    class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
     class procedure ShowHide(const AWinControl: TWinControl); virtual;
   end;       
@@ -167,6 +168,10 @@ begin
 end;
 
 procedure TWSWinControl.SetColor(const AWinControl: TWinControl);
+begin
+end;
+
+procedure TWSWinControl.DestroyHandle(const AWinControl: TWinControl);
 begin
 end;
 

@@ -3107,9 +3107,6 @@ begin
     begin
       Case LM_Message of
 
-      LM_DESTROY :
-        DestroyLCLComponent(Sender);
-
       LM_MovePage :
         if Sender is TCustomNoteBook then begin
           MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
@@ -7890,6 +7887,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.583  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.582  2004/09/18 11:06:47  micha
   remove LM_RECREATEWND message, as it is not used by LCL
 

@@ -40,7 +40,7 @@ end;
 procedure TCommonDialog.Close;
 begin
   DoClose;
-  CNSendMessage(LM_DESTROY, Self, nil);
+  TWSCommonDialogClass(WidgetSetClass).DestroyHandle(Self);
   FHandle := 0;
 end;
 
@@ -97,6 +97,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.16  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

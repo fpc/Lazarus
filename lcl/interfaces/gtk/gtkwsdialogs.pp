@@ -40,6 +40,7 @@ type
   protected
   public
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
 
   { TGtkWSFileDialog }
@@ -142,6 +143,12 @@ begin
                         TColorDialog(ACommonDialog).Color);
   gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
   GtkWindowShowModal(GtkWindow);
+end;
+
+procedure TGtkWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+begin
+  { TODO: cleanup }
+  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(ACommonDialog);
 end;
 
 initialization

@@ -44,6 +44,7 @@ type
   protected
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
+    class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
   end;
@@ -140,6 +141,12 @@ begin
       TGtkWidgetSet(InterfaceObject).RegroupMenuItem(HMENU(MenuItem),GroupIndex);
   end;
   //DebugLn('TGtkWidgetSet.AttachMenu END ',AMenuItem.Name,':',AMenuItem.ClassName);
+end;
+
+procedure TGtkWSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+begin
+  { TODO: cleanup }
+  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(AMenuItem);
 end;
 
 procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);

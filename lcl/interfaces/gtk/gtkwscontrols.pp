@@ -70,6 +70,7 @@ type
     class procedure SetColor(const AWinControl: TWinControl); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
+    class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
@@ -419,6 +420,11 @@ begin
     // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
   end;
   Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [AWinControl.ClassName]));
+end;
+
+procedure TGtkWSWinControl.DestroyHandle(const AWinControl: TWinControl);
+begin
+  TGtkWidgetSet(InterfaceObject).DestroyLCLComponent(AWinControl);
 end;
 
 procedure TGtkWSWinControl.Invalidate(const AWinControl: TWinControl);

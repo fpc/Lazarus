@@ -554,7 +554,7 @@ begin
       dec(i);
     end;
   end;
-  SendMsgToInterface(LM_DESTROY, Self, nil);
+  TWSMenuItemClass(WidgetSetClass).DestroyHandle(Self);
   FHandle:=0;
 end;
 
@@ -1150,6 +1150,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.62  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 
@@ -1364,6 +1367,9 @@ end;
 
 
   $Log$
+  Revision 1.63  2004/09/18 12:43:15  micha
+  convert LM_DESTROY message to interface methods
+
   Revision 1.62  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 

@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Menus,
+  Menus, Forms,
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses,
   Windows, Controls, Classes, SysUtils, Win32Int, Win32Proc, InterfaceBase, LCLProc;
@@ -47,6 +47,7 @@ type
   protected
   public
     class procedure AttachMenu(const AMenuItem: TMenuItem); override;
+    class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
   end;
@@ -219,6 +220,20 @@ begin
     DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
 end;
 
+procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
+var
+  AMenu: TMenu;
+begin
+  { not assigned when this the menuitem of a TMenu; handle is destroyed above }
+  if Assigned(AMenuItem.Parent) then
+    DeleteMenu(AMenuItem.Parent.Handle, AMenuItem.Command, MF_BYCOMMAND);
+  AMenu := AMenuItem.GetParentMenu;
+  if (AMenu<>nil) and (AMenu.Parent<>nil)
+  and (AMenu.Parent is TCustomForm)
+  and TCustomForm(AMenu.Parent).HandleAllocated 
+  and not (csDestroying in AMenu.Parent.ComponentState) then
+    DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
+end;
 
 procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 var 

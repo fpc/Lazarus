@@ -54,6 +54,7 @@ type
   TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
   end;
 
   { TWSFileDialog }
@@ -93,6 +94,10 @@ type
 
 
 implementation
+
+procedure TWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+begin
+end;
 
 procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 begin
