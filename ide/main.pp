@@ -366,7 +366,7 @@ type
 
     // files/units
     function DoNewEditorUnit(NewUnitType:TNewUnitType;
-        const NewFilename: string):TModalResult;
+        NewFilename: string):TModalResult;
     function DoSaveEditorUnit(PageIndex:integer;
         SaveAs, SaveToTestDir, ProjectSaving:boolean):TModalResult;
     function DoCloseEditorUnit(PageIndex:integer;
@@ -2379,12 +2379,12 @@ end;
 //==============================================================================
 
 function TMainIDE.DoNewEditorUnit(NewUnitType:TNewUnitType;
-  const NewFilename: string):TModalResult;
+  NewFilename: string):TModalResult;
 var NewUnitInfo:TUnitInfo;
   TempForm : TCustomForm;
   CInterface : TComponentInterface;
   NewSrcEdit: TSourceEditor;
-  NewUnitName: string;
+  NewUnitName, Ext: string;
   NewBuffer, ResourceCode: TCodeBuffer;
 begin
 writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
@@ -2395,6 +2395,12 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
                                    NewUnitName+UnitTypeDefaultExt[NewUnitType]);
   end else begin
     NewUnitName:=ExtractFileNameOnly(NewFilename);
+    Ext:=ExtractFileExt(NewUnitName);
+    if (Ext='.pp') or (Ext='.pas') then begin
+      if EnvironmentOptions.PascalFileLowerCase then
+        NewFilename:=ExtractFilePath(NewFilename)
+                     +lowercase(ExtractFileName(NewFilename));
+    end;
     NewBuffer:=CodeToolBoss.CreateFile(NewFilename);
   end;
   if NewBuffer=nil then exit;
@@ -6089,6 +6095,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.254  2002/03/23 19:05:50  lazarus
+  MG: pascal lowercase for open new unit
+
   Revision 1.253  2002/03/23 16:40:29  lazarus
   MWE:
     + Added loval variables menu item

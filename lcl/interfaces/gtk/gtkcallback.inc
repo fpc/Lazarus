@@ -827,7 +827,7 @@ var
   OldLeft, OldTop, OldWidth, OldHeight: integer;
   TopLeftChanged, WidthHeightChanged: boolean;
   
-  DummyW, DummyH, DummyD: integer;
+//  DummyW, DummyH, DummyD: integer;
 begin
   EventTrace('size-allocate', data);
 
@@ -1591,6 +1591,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/03/23 19:05:52  lazarus
+  MG: pascal lowercase for open new unit
+
   Revision 1.62  2002/03/16 21:40:55  lazarus
   MG: reduced size+move messages between lcl and interface
 
