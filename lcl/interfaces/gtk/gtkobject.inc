@@ -268,6 +268,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TGtkObject.LCLtoGtkMessagePending
+  Params:  None
+  Returns: boolean
+
+  Returns true if any messages from the lcl to the gtk is in cache and needs
+  delivery.
+ ------------------------------------------------------------------------------}
+function TgtkObject.LCLtoGtkMessagePending: boolean;
+begin
+  Result:=(FWidgetsWithResizeRequest.Count>0);
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.SendCachedGtkMessages
   Params:  None
   Returns: Nothing
@@ -490,30 +503,38 @@ var
   Msg: TMsg; 
   p: pMsg;
 begin
-  SendCachedLCLMessages; // send cached LCL messages to the gtk
-  //gtk_main;
-  // first let gtk handle all its messages
-  while gtk_events_pending<>0 do
-    gtk_main_iteration_do(False);
-  SendCachedGtkMessages; // send cached gtk messages to the lcl
+  repeat
+    // send cached LCL messages to the gtk
+    SendCachedLCLMessages;
 
-  // then handle our own messages
-  with FMessageQueue do
-    while First<>nil do
-    begin
-      p := PMsg(First^.Data);
-      Msg := p^;
-      if Msg.Message=LM_PAINT then
-        FPaintMessages.Remove(First);
-      Delete(First);
-      with Msg do
-        SendMessage(hWND, Message, WParam, LParam);
-      case Msg.Message of
-       LM_PAINT:
-         ReleaseDC(0,Msg.WParam);
+    // let gtk handle all its messages and call our callbacks
+    while gtk_events_pending<>0 do
+      gtk_main_iteration_do(False);
+
+    // send cached gtk messages to the lcl
+    SendCachedGtkMessages;
+
+    // then handle our own messages
+    with FMessageQueue do begin
+      while First<>nil do
+      begin
+        p := PMsg(First^.Data);
+        Msg := p^;
+        if Msg.Message=LM_PAINT then
+          FPaintMessages.Remove(First);
+        Delete(First);
+        with Msg do
+          SendMessage(hWND, Message, WParam, LParam);
+        case Msg.Message of
+         LM_PAINT:
+           ReleaseDC(0,Msg.WParam);
+        end;
+        Dispose(p);
       end;
-      Dispose(p);
     end;
+    
+    // proceed until all messages are handled
+  until (gtk_events_pending=0) and (not LCLtoGtkMessagePending);
 end;
 
 {------------------------------------------------------------------------------
@@ -4976,6 +4997,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.136  2002/06/07 06:40:18  lazarus
+  MG: gtk HandleEvents will now process all pending events
+
   Revision 1.135  2002/06/06 07:23:24  lazarus
   MG: small fixes to reduce form repositioing
 
