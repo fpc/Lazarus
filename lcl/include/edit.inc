@@ -1,12 +1,18 @@
+// included by stdctrls.pp
+
 (******************************************************************************
                                      TEdit
                                 base found in stdctrls.pp
  ******************************************************************************)
 
+// included by stdctrls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

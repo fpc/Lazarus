@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 {******************************************************************************
                                TRadioButton
  ******************************************************************************}
@@ -103,6 +105,8 @@ begin
    GetGroup := FGroup;
 end;
 
+// included by stdctrls.pp
+
 (*
 procedure TRadioButton.ReCreate;
 //var
@@ -136,6 +140,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.1  2000/07/13 10:28:27  michael
   + Initial import
 

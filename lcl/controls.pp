@@ -750,7 +750,8 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
-    function GetClientORigin: TPoint; override;
+    function GetClientOrigin: TPoint; override;
+    function GetClientRect: TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     Function  IsControlMouseMsg(var Message : TLMMOuse): Boolean;
     property BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
@@ -1219,6 +1220,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.38  2002/04/04 12:25:01  lazarus
   MG: changed except statements to more verbosity
 

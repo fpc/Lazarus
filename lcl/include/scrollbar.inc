@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 {------------------------------------------------------------------------------}
 {  function TScrollBar.Create                                                      }
 {------------------------------------------------------------------------------}
@@ -193,3 +195,6 @@ procedure TScrollBar.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   DefaultHandler(Message);
 end;
+
+// included by stdctrls.pp
+

@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 {------------------------------------------------------------------------------}
 
 constructor TToggleBox.Create(AOwner : TComponent);
@@ -10,4 +12,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+
+// included by stdctrls.pp
 

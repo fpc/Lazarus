@@ -1,3 +1,5 @@
+// included by stdctrls.pp
+
 (******************************************************************************
                                      TMemoStrings
  ******************************************************************************)
@@ -111,9 +113,14 @@ begin
   end;
 end;
 
+// included by stdctrls.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/04/18 08:09:03  lazarus
+  MG: added include comments
+
   Revision 1.2  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 
