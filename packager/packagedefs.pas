@@ -658,11 +658,12 @@ function FindNextPkgDependecyNodeWithSameName(Node: TAVLTreeNode): TAVLTreeNode;
 begin
   Result:=nil;
   if (Node=nil) or (PackageDependencies=nil) then exit;
-  Node:=PackageDependencies.FindSuccessor(Node);
-  if AnsiCompareText(TPkgDependency(Node.Data).PackageName,
-                     TPkgDependency(Result.Data).PackageName)=0
+  Result:=PackageDependencies.FindSuccessor(Node);
+  if (Result<>nil)
+  and (AnsiCompareText(TPkgDependency(Node.Data).PackageName,
+                     TPkgDependency(Result.Data).PackageName)<>0)
   then
-    Result:=Node;
+    Result:=nil;
 end;
 
 function FindLowestPkgDependencyWithName(const PkgName: string): TPkgDependency;
@@ -934,7 +935,7 @@ procedure TPkgDependency.LoadFromXMLConfig(XMLConfig: TXMLConfig;
 begin
   if FileVersion=1 then ;
   Clear;
-  FPackageName:=XMLConfig.GetValue(Path+'PackageName/Value','');
+  PackageName:=XMLConfig.GetValue(Path+'PackageName/Value','');
   MaxVersion.LoadFromXMLConfig(XMLConfig,Path+'MaxVersion/',FileVersion);
   MinVersion.LoadFromXMLConfig(XMLConfig,Path+'MinVersion/',FileVersion);
   if XMLConfig.GetValue(Path+'MaxVersion/Valid',false) then
