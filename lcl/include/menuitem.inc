@@ -115,15 +115,18 @@ procedure TMenuItem.CreateHandle;
 var i: Integer;
 begin
   //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
+  if not FVisible then RaiseGDBException('');
   Handle := TWSMenuItemClass(WidgetSetClass).CreateHandle(Self);
   if FItems<>nil then begin
     for i := 0 to Count - 1 do begin
-      Items[i].HandleNeeded;
+      if Items[i].Visible then
+        Items[i].HandleNeeded;
     end;
   end;
   if Parent <> nil then
   begin
     Parent.HandleNeeded;
+    //DebugLn('TMenuItem.CreateHandle Attaching ... ',Name,':',ClassName);
     if Parent.HandleAllocated then
       TWSMenuItemClass(WidgetSetClass).AttachMenu(Self);
   end;
@@ -663,13 +666,47 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.IndexOfCaption(const ACaption: string): Integer;
 
-  Resturns the index of the menuitem with the given caption or -1
+  Returns the index of the menuitem with the given caption or -1
  ------------------------------------------------------------------------------}
 function TMenuItem.IndexOfCaption(const ACaption: string): Integer;
 begin
   for Result:=0 to Count-1 do
     if Items[Result].Caption=ACaption then exit;
   Result:=-1;
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.VisibleIndexOf(Item: TMenuItem): Integer;
+
+  Returns the index of the menuitem of all visible menuitems
+ ------------------------------------------------------------------------------}
+function TMenuItem.VisibleIndexOf(Item: TMenuItem): Integer;
+
+  procedure RaiseVisibleInconsistency;
+  begin
+    raise Exception.Create('TMenuItem.VisibleIndexOf '+dbgsName(Item)+' is visible, but not in parents list');
+  end;
+
+var
+  i: Integer;
+  CurMenuItem: TMenuItem;
+begin
+  if (FItems = nil) or (Item=nil) or (not Item.Visible) then
+    Result := -1
+  else begin
+    Result:=0;
+    i:=0;
+    while (i<FItems.Count) do begin
+      CurMenuItem:=TMenuItem(FItems[i]);
+      if CurMenuItem.Visible then begin
+        if CurMenuItem=Item then exit;
+        inc(Result);
+      end;
+      inc(i);
+    end;
+    Result:=-1;
+    if Item.Visible then RaiseVisibleInconsistency;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -755,6 +792,15 @@ begin
     if (TheImgList<>nil) and (FImageIndex<TheImgList.Count) then
       Result:=Point(TheImgList.Width,TheImgList.Height);
   end;
+end;
+
+function TMenuItem.MenuVisibleIndex: integer;
+begin
+  Result:=-1;
+  if Parent=nil then
+    Result:=-1
+  else
+    Result:=Parent.VisibleIndexOf(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1049,8 +1095,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetVisible(AValue: Boolean);
 begin
-  // ToDo tell interface
-  FVisible := AValue;
+  if FVisible=AValue then exit;
+  //debugln('TMenuItem.SetVisible ',dbgsname(Self),' NewValue=',dbgs(AValue),' HandleAllocated=',dbgs(HandleAllocated));
+  if ([csDestroying]*ComponentState<>[]) then exit;
+  if AValue then begin
+    FVisible := AValue;
+    if (not (csLoading in ComponentState)) and Parent.HandleAllocated then
+      HandleNeeded;
+    if HandleAllocated then
+      TWSMenuItemClass(WidgetSetClass).SetVisible(Self,true);
+  end else begin
+    if HandleAllocated then begin
+      TWSMenuItemClass(WidgetSetClass).SetVisible(Self,false);
+      DestroyHandle;
+    end;
+    FVisible := AValue;
+  end;
 end;
 
 procedure TMenuItem.UpdateImages;
@@ -1074,8 +1134,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.ShortcutChanged(const OldValue, Value: TShortcut);
 begin
-  if not HandleAllocated then Exit;
-  TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, OldValue, Value);
+  if HandleAllocated then
+    TWSMenuItemClass(WidgetSetClass).SetShortCut(Self, OldValue, Value);
 end;
 
 {------------------------------------------------------------------------------
@@ -1150,6 +1210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2004/12/10 21:36:27  mattias
+  implemented TMenuItem.SetVisible
+
   Revision 1.64  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods
@@ -1372,6 +1435,9 @@ end;
 
 
   $Log$
+  Revision 1.65  2004/12/10 21:36:27  mattias
+  implemented TMenuItem.SetVisible
+
   Revision 1.64  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

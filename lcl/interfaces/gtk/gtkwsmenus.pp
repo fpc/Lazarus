@@ -27,16 +27,15 @@ unit GtkWSMenus;
 interface
 
 uses
-  Classes, InterfaceBase, LCLType, WSMenus, WSLCLClasses,
+  Classes, InterfaceBase, LCLProc, LCLType, WSMenus, WSLCLClasses,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  GtkInt, gtkproc, gtkglobals, Menus;
+  GtkInt, gtkProc, gtkglobals, Menus;
 
 type
-
   { TGtkWSMenuItem }
 
   TGtkWSMenuItem = class(TWSMenuItem)
@@ -48,6 +47,7 @@ type
     class procedure DestroyHandle(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); override;
   end;
 
   { TGtkWSMenu }
@@ -113,7 +113,7 @@ begin
     if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
       // mainmenu (= a menu bar)
       ContainerMenu:=ParentMenuWidget;
-      gtk_menu_bar_insert(ParentMenuWidget,MenuItem, AMenuItem.MenuIndex);
+      gtk_menu_bar_insert(ParentMenuWidget,MenuItem, AMenuItem.MenuVisibleIndex);
     end
     else begin
       // menu item
@@ -134,7 +134,7 @@ begin
           gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
         end;
       end;
-      gtk_menu_insert(ContainerMenu, MenuItem, AMenuItem.MenuIndex);
+      gtk_menu_insert(ContainerMenu, MenuItem, AMenuItem.MenuVisibleIndex);
     end;
 
     SetContainerMenuToggleSize;
@@ -171,6 +171,20 @@ procedure TGtkWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
 begin
   Accelerate(AMenuItem, PGtkWidget(AMenuItem.Handle), NewShortcut,
     {$Ifdef GTK2}'activate'{$Else}'activate_item'{$EndIF});
+end;
+
+procedure TGtkWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
+  const Visible: boolean);
+var
+  MenuItemWidget: PGtkWidget;
+begin
+  if not AMenuItem.HandleAllocated then exit;
+  MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
+  if gtk_widget_visible(MenuItemWidget)=Visible then exit;
+  if Visible then
+    gtk_widget_show(MenuItemWidget)
+  else
+    gtk_widget_hide(MenuItemWidget);
 end;
 
 { TGtkWSMenu }

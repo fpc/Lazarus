@@ -57,6 +57,7 @@ type
     class procedure DestroyHandle(const AMenuItem: TMenuItem); virtual;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
     class procedure SetShortCut(const AMenuItem: TMenuItem; const OldShortCut, NewShortCut: TShortCut); virtual;
+    class procedure SetVisible(const AMenuItem: TMenuItem; const Visible: boolean); virtual;
   end;
   TWSMenuItemClass = class of TWSMenuItem;
 
@@ -104,6 +105,12 @@ end;
 procedure TWSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
   const OldShortCut, NewShortCut: TShortCut);
 begin
+end;
+
+procedure TWSMenuItem.SetVisible(const AMenuItem: TMenuItem;
+  const Visible: boolean);
+begin
+
 end;
           
 { TWSMenu }

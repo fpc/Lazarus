@@ -189,6 +189,7 @@ type
     procedure InitiateAction; virtual;
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
+    function VisibleIndexOf(Item: TMenuItem): Integer;
     function IsCheckItem: boolean; virtual;
     procedure Add(Item: TMenuItem);
     procedure AddSeparator;
@@ -209,6 +210,7 @@ type
     property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
     property Parent: TMenuItem read GetParent;
     property Command: integer read FCommand;
+    function MenuVisibleIndex: integer;
   published
     property Action: TBasicAction read GetAction write SetAction;
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
@@ -401,6 +403,9 @@ end.
 
 {
   $Log$
+  Revision 1.75  2004/12/10 21:36:27  mattias
+  implemented TMenuItem.SetVisible
+
   Revision 1.74  2004/11/10 20:53:18  vincents
   Destroy menu handle, when destroying form handle.
 
