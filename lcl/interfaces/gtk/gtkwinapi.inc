@@ -1098,8 +1098,9 @@ begin
             end;
 
             If BitSize <= 0 then
-              BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)*(NumScans + StartScan);
-            If MemSize(Bits) <> (BitSize + 5) then begin
+              BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)
+                                     *(NumScans + StartScan);
+            If MemSize(Bits) <> BitSize then begin
               writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
               exit;
             end;
@@ -3223,26 +3224,7 @@ begin
                     end;
               end;
 
-              // Andrew, plz check this:
-              if (biBitCount <> 24) and
-                ((biWidth mod (biBitCount div 8)) <> 0)
-              then
-                biSizeImage := biWidth  + (biBitCount div 8)
-              else
-                biSizeImage := biWidth;
-              {if (biBitCount <> 24) and
-                ((biWidth mod (8 div biBitCount)) <> 0)
-              then
-                biSizeImage := biWidth  + (8 div biBitCount)
-              else
-                biSizeImage := biWidth;}
-
-              if ((biWidth*biBitCount div 8) mod 4) = 0 then
-                biSizeImage := biSizeImage*biBitCount div 8
-              else
-                biSizeImage := (biSizeImage*biBitCount div 8) + 4;
-
-              biSizeImage := biSizeImage*biHeight;
+              biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
 
               //I have no idea what I am doing here, but whatever...
               If GetSystemMetrics(SM_CXSCREEN) >= biWidth then
@@ -6729,6 +6711,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.128  2002/09/10 15:23:22  lazarus
+  MG: fixed calculation of bitmap size
+
   Revision 1.127  2002/09/10 06:49:22  lazarus
   MG: scrollingwincontrol from Andrew
 
