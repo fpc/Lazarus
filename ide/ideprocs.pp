@@ -30,8 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText,
-  FileCtrl, FileProcs;
+  Classes, SysUtils, Laz_XMLCfg, GetText, FileCtrl, FileProcs;
 
 type
   // comments
@@ -89,6 +88,7 @@ function CopyFileWithMethods(const SrcFilename, DestFilename: string;
 function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
              OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
              Data: TObject): boolean;
+function ProgramDirectory: string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -1206,6 +1206,11 @@ begin
   and not HandleError(ceSrcDirDoesNotExists,SrcDir,'') then exit;
   
   CopyDir(SrcDir,DestDirectory);
+end;
+
+function ProgramDirectory: string;
+begin
+  Result:=ExpandFilename(ExtractFilePath(ReadAllLinks(ParamStr(0),false)));
 end;
 
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
