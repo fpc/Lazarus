@@ -497,8 +497,7 @@ function TCustomCodeTool.UpAtomIs(const AnAtom: shortstring): boolean;
 var AnAtomLen,i : integer;
 begin
   Result:=false;
-  if (CurPos.StartPos<SrcLen) and (CurPos.EndPos<=SrcLen+1)
-  and (CurPos.StartPos>=1) then begin
+  if (CurPos.EndPos<=SrcLen+1) and (CurPos.StartPos>=1) then begin
     AnAtomLen:=length(AnAtom);
     if AnAtomLen=CurPos.EndPos-CurPos.StartPos then begin
       for i:=1 to AnAtomLen do

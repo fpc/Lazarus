@@ -38,18 +38,29 @@ unit DelphiUnit2Laz;
 interface
 
 uses
+  // FCL+LCL
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  FileCtrl, CodeCache, CodeToolManager, DefineTemplates,
+  Buttons, StdCtrls, FileCtrl,
+  // Components
+  SynEdit, CodeCache, CodeToolManager, DefineTemplates,
+  // IDE
   DialogProcs, IDEProcs, LazarusIDEStrConsts;
 
 type
-  TForm2 = class(TForm)
+  TRepairLFMDialog = class(TForm)
+    ErrorsGroupBox: TGroupBox;
+    LFMGroupBox: TGroupBox;
+    ErrorsListBox: TListBox;
+    RemoveAllButton: TButton;
+    CancelButton: TButton;
+    LFMSynEdit: TSynEdit;
+    procedure RemoveAllButtonClick(Sender: TObject);
   private
   public
   end;
 
 var
-  Form2: TForm2; 
+  RepairLFMDialog: TRepairLFMDialog;
   
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
@@ -213,6 +224,13 @@ begin
     exit;
   end;
   Result:=mrOk;
+end;
+
+{ TRepairLFMDialog }
+
+procedure TRepairLFMDialog.RemoveAllButtonClick(Sender: TObject);
+begin
+
 end;
 
 initialization

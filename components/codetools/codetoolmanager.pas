@@ -752,7 +752,7 @@ begin
   Result:='.ppu';
   Evaluator:=DefineTree.GetDefinesForDirectory(Directory,true);
   if Evaluator=nil then exit;
-  if Evaluator.IsDefined('WIN32') then
+  if Evaluator.IsDefined('WIN32') and Evaluator.IsDefined('VER1_0') then
     Result:='.ppw';
 end;
 

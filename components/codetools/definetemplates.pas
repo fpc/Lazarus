@@ -2606,7 +2606,7 @@ var
 
   procedure ProcessOutputLine(var Line: string);
   var
-    SymbolName, SymbolValue, UpLine: string;
+    SymbolName, SymbolValue, UpLine, NewPath: string;
     i: integer;
   begin
     UpLine:=UpperCaseStr(Line);
@@ -2643,7 +2643,10 @@ var
         DefineSymbol(SymbolName,SymbolValue);
       end;
     end else if copy(UpLine,1,17)='USING UNIT PATH: ' then begin
-      UnitSearchPath:=UnitSearchPath+copy(Line,18,length(Line)-17)+#13;
+      NewPath:=copy(Line,18,length(Line)-17);
+      if not FilenameIsAbsolute(NewPath) then
+        NewPath:=ExpandFileName(NewPath);
+      UnitSearchPath:=UnitSearchPath+NewPath+#13;
     end;
   end;
   

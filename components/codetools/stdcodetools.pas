@@ -2680,7 +2680,7 @@ begin
     TypeNode:=FindTypeNodeOfDefinition(VarNode);
     MoveCursorToNodeStart(TypeNode);
     ReadNextAtom;
-    if UpAtomIs(VarType) then begin
+    if AtomIs(VarType) then begin
       // rename the identifier
       MoveCursorToNodeStart(VarNode);
       ReadNextAtom;
@@ -2699,7 +2699,7 @@ begin
     Result:=SourceChangeCache.Apply;
   end else begin
     // old variable not found -> add it
-    Result:=AddPublishedVariable(UpperClassName,NewVarName, VarType,
+    Result:=AddPublishedVariable(UpperClassName,NewVarName,VarType,
                                  SourceChangeCache);
   end;
 end;
