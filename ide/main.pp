@@ -1339,6 +1339,8 @@ begin
   with EnvironmentOptions do begin
     ObjectInspectorOptions.AssignTo(ObjectInspector1);
   end;
+  
+  ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
 end;
 
 procedure TMainIDE.SetupCompilerInterface;
@@ -2440,7 +2442,6 @@ end;
 procedure TMainIDE.DoViewAnchorEditor;
 var
   WasVisible: boolean;
-  ALayout: TIDEWindowLayout;
 begin
   if AnchorDesigner=nil then begin
     AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
@@ -2449,8 +2450,6 @@ begin
     WasVisible:=AnchorDesigner.Visible;
 
   AnchorDesigner.Show;
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByForm(AnchorDesigner);
-  ALayout.Apply;
   if not WasVisible then
     AnchorDesigner.ShowOnTop;
 end;
@@ -11383,6 +11382,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.844  2005/02/05 16:06:57  mattias
+  implemented TAnchorsPropertyEditor to show a button to show the anchor editor
+
   Revision 1.843  2005/02/05 13:33:05  mattias
   implemented gtkwidgetset.IsWindowEnabled
 

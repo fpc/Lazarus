@@ -161,8 +161,17 @@ type
     property Selection: TPersistentSelectionList read FSelection;
   end;
   
+  { TAnchorPropertyEditor }
+
+  TAnchorPropertyEditor = class(TSetPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
+  end;
+  
 var
   AnchorDesigner: TAnchorDesigner;
+  ShowAnchorDesigner: TNotifyEvent;
 
 implementation
 
@@ -829,7 +838,21 @@ begin
                    or (TAnchorDesigner.ControlToStr(CurSide.Control)<>FSibling);
 end;
 
+{ TAnchorPropertyEditor }
+
+function TAnchorPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=(inherited GetAttributes)+[paDialog];
+end;
+
+procedure TAnchorPropertyEditor.Edit;
+begin
+  ShowAnchorDesigner(Self);
+end;
+
 initialization
+  RegisterPropertyEditor(TypeInfo(TAnchors), TControl, 'Anchors',
+    TAnchorPropertyEditor);
   {$I anchoreditor.lrs}
 
 end.
