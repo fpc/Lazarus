@@ -266,7 +266,6 @@ begin
     exit;
     
   FTabStop := Value;
-  TabOrder := -1;
 end;
 
 {------------------------------------------------------------------------------}
@@ -291,7 +290,7 @@ end;
 Function TControl.GetTabOrder : TTabOrder;
 Begin
   If Parent <> nil then
-    Result := Parent.FTabList.IndexOf(Self)
+    Result := ListIndexOf(Parent.FTabList, Self)
   else
     Result := -1;
 end;
@@ -312,28 +311,20 @@ var
   CurentOrder,
   OrderCount    : Integer;
 begin
-  If Parent = nil then
+  If (Parent = nil) or not CanTab then
     exit;
   CurentOrder := GetTabOrder;
-  If not CanTab then
-  begin
-    If CurentOrder >= 0 then
-      Parent.FTabList.Delete(CurentOrder);
-    exit;
-  end;
   If CurentOrder >= 0 then begin
-    OrderCount := Parent.FTabList.Count;
-    If Value < 0 then
-      Value := 0;
-    If Value >= OrderCount then
+    OrderCount := ListCount(Parent.FTabList);
+    If (Value < 0) or (Value >= OrderCount) then
       Value := OrderCount - 1;
     If Value <> CurentOrder then begin
-      Parent.FTabList.Delete(CurentOrder);
-      Parent.FTabList.Insert(Value,Self);
-    end
+      ListRemove(Parent.FTabList, Self);
+      ListInsert(Parent.FTabList, Value,Self);
+    end;
   end
   else
-    Parent.FTabList.Insert(Parent.FTabList.Count,Self);
+    ListAdd(Parent.FTabList, Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -478,6 +469,65 @@ begin
   Message.Result := 0;
   If Self <> nil then WindowProc(Message);
     Result := Message.Result;
+end;
+
+Function TControl.PerformTab : Boolean;
+
+  Function TopLevelAncestor(TopControl : TControl) : TWinControl;
+  begin
+    Result := nil;
+
+    If TopControl = nil then
+      exit;
+
+    If TopControl is TForm then
+      Result := TForm(TopControl)
+    else
+      Result := TopLevelAncestor(TopControl.Parent);
+  end;
+
+var
+  I : Integer;
+  List : TList;
+  FirstFocus, OFocus, NFocus : TControl;
+  TopLevel : TWinControl;
+begin
+  NFocus := nil;
+  OFocus := nil;
+  TopLevel := TopLevelAncestor(Self);
+  If TopLevel = nil then
+    exit;
+  try
+    List := TList.Create;
+    TopLevel.GetTabOrderList(List);
+    FirstFocus := nil;
+    For I := 0 to List.Count - 1 do
+      If List[I] <> nil then begin
+        If I = 0 then
+          FirstFocus := TControl(List[I]);
+        If TControl(List[I]).Focused then begin
+          OFocus := TControl(List[I]);
+          Break;
+        end;
+      end;
+  Finally
+    List.Free;
+  end;
+
+  NFocus := TopLevel.FindNextControl(OFocus,True,True,False);
+  If NFocus = OFocus then begin
+    Result := True;
+    exit;
+  end;
+  If (NFocus <> nil) then begin
+    NFocus.SetFocus;
+    Result := NFocus.Focused;
+  end
+  else
+    If FirstFocus <> nil then begin
+      FirstFocus.SetFocus;
+      Result := FirstFocus.Focused;
+    end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1884,6 +1934,13 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.88  2002/09/29 15:08:38  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.87  2002/09/27 20:52:23  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 

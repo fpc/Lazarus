@@ -616,6 +616,7 @@ type
     property TabOrder : TTabOrder read GetTabOrder write SetTaborder;
   public
     FCompStyle : LongInt;
+    Function PerformTab : Boolean; Virtual;
     // use overload to simulate default
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
     procedure BeginDrag(Immediate: Boolean); //overload;
@@ -1357,6 +1358,13 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/09/29 15:08:37  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.73  2002/09/27 20:52:20  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
