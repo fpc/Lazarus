@@ -1601,7 +1601,8 @@ end;
 
 procedure TProject.SetProjectFile(const NewProjectFilename: string);
 begin
-  if AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectFile))=0 then
+  if (AnsiCompareText(fTitle,ExtractFileNameOnly(fProjectFile))=0)
+  or (fProjectFile='') then
     fTitle:=ExtractFileNameOnly(NewProjectFilename);
   fProjectFile:=NewProjectFilename;
   
@@ -1695,6 +1696,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2001/11/17 09:48:56  lazarus
+  MG: changing project filename will now also change the title
+
   Revision 1.41  2001/11/15 13:49:50  lazarus
   MG: fixed open non existing file and unitname in save project as
 
