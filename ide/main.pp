@@ -119,9 +119,6 @@ type
     procedure mnuNewClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
-    procedure mnuSaveClicked(Sender : TObject);
-    procedure mnuSaveAsClicked(Sender : TObject);
-    procedure mnuSaveAllClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
     procedure mnuViewInspectorClicked(Sender : TObject);
@@ -355,7 +352,7 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton3.Left + 26;
-    OnClick := @mnuOpenCLicked;
+//    OnClick := @SourceNotebook.OpenClicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton4';
@@ -377,7 +374,6 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton4.Left + 26;
-    OnClick := @mnuSaveCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton5';
@@ -399,7 +395,6 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton5.left + 26;
-    OnClick := @mnuSaveAllCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton6';
@@ -667,8 +662,8 @@ begin
   itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
   itmFileSaveAll.OnClick := @SourceNotebook.SaveAllClicked;
   itmFileClose.OnClick := @SourceNotebook.CloseClicked;
-
-
+  Speedbutton4.OnClick := @SourceNotebook.OpenClicked;
+  itmFileOpen.OnClick := @SourceNotebook.OpenClicked;
 end;
 
 procedure TForm1.OIOnAddAvailableComponent(AComponent:TComponent;
@@ -1227,24 +1222,6 @@ Begin
   Assert(False, 'Trace:Exiting SetName_Form');
 end;
 
-procedure TForm1.mnuSaveClicked(Sender : TObject);
-begin
-//this is no longer used.  TSourceNotebook.SaveClicked is called
-end;
-
-{------------------------------------------------------------------------------}
-
-Procedure TForm1.mnuSaveAsClicked(Sender : TObject);
-Begin
-//this is no longer used.  TSourceNotebook.SaveAsClicked is called
-end;
-
-Procedure TForm1.mnuSaveAllClicked(Sender : TObject);
-Begin
-//this is no longer used.  TSourceNotebook.SaveAllClicked is called
-
-End;
-
 
 Procedure TForm1.mnuToggleFormClicked(Sender : TObject);
 Begin
@@ -1643,23 +1620,8 @@ end;
 {------------------------------------------------------------------------------}
 
 procedure TForm1.mnuQuitClicked(Sender : TObject);
-var
-I : Integer;
-SList : TUnitInfo;
 begin
-//if there is a project loaded, check if it should be saved
-
-//free the unitlist objects
-if Project1.UnitList.Count > 0 then
-  For I := 0 to Project1.UnitList.Count -1 do
-            Begin
-            SList := TUnitInfo(Project1.UnitList.Items[I]);
-            SList.Destroy;
-            end;
-
-Project1.UnitList.Free;
-
-Close;
+   Close;
 end;
 
 
@@ -1896,6 +1858,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2000/12/20 14:32:42  lazarus
+  Fixed File OPen in the IDE.
+  Shane
+
   Revision 1.19  2000/12/19 18:43:12  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

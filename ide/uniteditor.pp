@@ -1,6 +1,6 @@
 {
  /***************************************************************************
-                               IDEEditor.pp
+                               UnitEditor.pp
                              -------------------
 
 
@@ -89,6 +89,8 @@ type
     Procedure CreateFormUnit(AForm : TCustomForm);
     Function Close : Boolean;
     Function Save : Boolean;
+    Function Open : Boolean;
+
     property Source : TStrings read GetSource write SetSource;
     property CurrentCursorXLine : Integer read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer read GetCurrentCursorYLine write SetCurrentCursorYLine;
@@ -112,13 +114,16 @@ type
     FEmpty : Boolean;
     FSourceEditorList : TList;
     FSaveDialog : TSaveDialog;
+    FOpenDialog : TOpenDialog;
     Function GetEmpty : Boolean;  //look at the # of pages
 
   protected
+    Function CreateNotebook : Boolean;
     Function GetActiveSE : TSourceEditor;
     Function ActiveUnitName : String;
     Function ActiveFileName : String;
     Function DisplayPage(SE : TSourceEditor) : Boolean;
+    Function NewSE(Pagenum : Integer) : TSourceEditor;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -126,6 +131,7 @@ type
     Procedure DisplayCodeforControl(Control : TObject);
     Function CreateUnitFromForm(AForm : TForm) : TSourceEditor;
     procedure CloseClicked(Sender : TObject);
+    procedure OpenClicked(Sender : TObject);
     procedure SaveClicked(Sender : TObject);
     procedure SaveAllClicked(Sender : TObject);
     procedure SaveAsClicked(Sender : TObject);
@@ -367,22 +373,31 @@ end;
 Function TSourceEditor.Close : Boolean;
 Begin
   Result := True;
-Writeln('1');
-  if Assigned(self) then Writeln(';Self is assigned') else Writeln('Self not assinged');
-
   If Assigned(FOnBeforeClose) then
      Begin
-      Writeln('Its assigned!');
       FOnBeforeClose(Self);
      end;
-Writeln('2');
 
   FSource.Clear;
-Writeln('3');
 
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
-Writeln('Exiting TSourceEditor.Close');
 end;
+
+Function TSourceEditor.Open : Boolean;
+Begin
+  Result := True;
+  If Assigned(FOnBeforeOpen) then FOnBeforeOpen(Self);
+
+  try
+    FEditor.Lines.LoadFromFile(FileName);
+    FUnitName := Filename;
+  except
+    Result := False;
+  end;
+
+  If Assigned(FOnAfterOpen) then FOnAfterOpen(Self);
+end;
+
 
 Function TSourceEditor.Save : Boolean;
 Begin
@@ -426,6 +441,7 @@ begin
 
   FSourceEditorList := TList.Create;
   FSaveDialog := TSaveDialog.Create(Self);
+  FOpenDialog := TOpenDialog.Create(Self);
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -436,16 +452,12 @@ begin
   inherited Destroy;
 end;
 
-Function TSourceNotebook.CreateUnitFromForm(AForm : TForm): TSourceEditor;
-Var
-  TempSourceEditor : TSourceEditor;
-  Notebook_Just_Created : Boolean;
-  PageIndex : Integer;
-begin
-  Notebook_Just_Created := (not assigned(Notebook1)) or (Notebook1.Pages.Count = 0);
-
+Function TSourceNotebook.CreateNotebook : Boolean;
+Begin
+  Result := False;
   if not assigned(Notebook1) then
      Begin
+     Result := True;
      Notebook1 := TNotebook.Create(self);
      with Notebook1 do
           Begin
@@ -462,21 +474,42 @@ begin
       Show;  //used to display the code form
       end;
 
-  if Notebook_Just_Created then PageIndex := 0
+End;
+
+Function TSourceNotebook.CreateUnitFromForm(AForm : TForm): TSourceEditor;
+Var
+  TempSourceEditor : TSourceEditor;
+  Notebook_Just_Created : Boolean;
+  PageIndex : Integer;
+begin
+  Notebook_Just_Created := (not assigned(Notebook1)) or (Notebook1.Pages.Count = 0);
+
+  if Notebook_Just_Created then
+  TempSourceEditor := NewSe(0)
   else
-  PageIndex := Notebook1.Pages.Add('some title');
-
-
-  TempSourceEditor := TSourceEditor.Create(Self,Notebook1.Page[Pageindex]);
+  tempSourceEditor := NewSe(-1);
 
   TempSourceEditor.CreateFormUnit(AForm);
-  FSourceEditorList.Add(TempSourceEditor);
 
-  Notebook1.PAges.Strings[PageIndex] := TempSourceEditor.Unitname;
+  Notebook1.Pages.Strings[Notebook1.PageIndex] := TempSourceEditor.Unitname;
 
   Result := TempSourceEditor;
   Show;
 end;
+
+Function TSOurceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
+
+Begin
+ if CreateNotebook then Pagenum := 0;
+
+if Pagenum = -1 then
+  Pagenum := Notebook1.Pages.Add('title');
+  Result := TSourceEditor.Create(Self,Notebook1.Page[PageNum]);
+  Notebook1.Pageindex := Pagenum;
+  FSourceEditorList.Add(Result);
+
+end;
+
 
 Procedure TSourceNotebook.DisplayCodeforControl(Control : TObject);
 Var
@@ -579,6 +612,25 @@ Begin
 Result := Notebook1.Pages.Count = 0;
 end;
 
+Procedure TSourceNotebook.OpenClicked(Sender: TObject);
+Var
+    TempEditor : TSourceEditor;
+Begin
+  Writeln('***********************OPENCLICKED');
+   FOpenDialog.Title := 'Open';
+Writeln('1');
+   if FOpenDialog.Execute then  Begin
+Writeln('2');
+      //create a new page
+      TempEditor := NewSE(-1);
+Writeln('3');
+      TempEditor.Filename := FOpenDialog.Filename;
+      TempEditor.OPen;
+      Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
+Writeln('4');
+      end;
+
+end;
 
 Procedure TSourceNotebook.SaveClicked(Sender: TObject);
 Begin
@@ -603,21 +655,15 @@ end;
 Procedure TSourceNotebook.CloseClicked(Sender : TObject);
 Begin
 if (GetActiveSE.Modified) then
-    If Application.MessageBox('Source has changed.  Save now?','Warning',mb_YEsNo) = mrYes then
-       Begin
+    If Application.MessageBox('Source has changed.  Save now?','Warning',mb_YesNo) = mrYes then
        SaveClicked(Sender);
-       end;
-Writeln('Calling Close');
-    GetActiveSE.Close;
-Writeln('Called Close');
-//    FSourceEditorList.Delete(FSourceEditorList.IndexOf(GetActiveSE));
-Writeln('Deleting Notebook Page');
-    Notebook1.Pages.Delete(Notebook1.Pageindex);
-Writeln('Notebook page deleted');
 
-if Notebook1.Pages.Count = 0 then Begin
+    GetActiveSE.Close;
+
+    Notebook1.Pages.Delete(Notebook1.Pageindex);
+
+if Notebook1.Pages.Count = 0 then
         Hide;
-        end;
 
 
 end;
