@@ -2492,19 +2492,19 @@ Begin
 
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='FindDeclarationMenuItem';
-  MenuItem.Caption := '&Find Declaration';
+  MenuItem.Caption := uemFindDeclaration;
   MenuItem.OnClick := @FindDeclarationClicked;
   SrcPopupMenu.Items.Add(MenuItem);
   
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='OpenFileAtCursorMenuItem';
-  MenuItem.Caption := '&Open file at cursor';
+  MenuItem.Caption := uemOpenFileAtCursor;
   MenuItem.OnClick := @OpenAtCursorClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='ClosePageMenuItem';
-  MenuItem.Caption := '&Close Page';
+  MenuItem.Caption := uemClosePage;
   MenuItem.OnClick := @CloseClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 
@@ -2512,28 +2512,28 @@ Begin
 
   GotoBookmarkMenuItem := TMenuItem.Create(Self);
   GotoBookmarkMenuItem.Name:='GotoBookmarkMenuItem';
-  GotoBookmarkMenuItem.Caption := '&Goto Bookmark';
+  GotoBookmarkMenuItem.Caption := uemGotoBookmark;
   SrcPopupMenu.Items.Add(GotoBookmarkMenuItem);
 
   for I := 0 to 9 do
     Begin
       SubMenuItem := TMenuItem.Create(Self);
       SubmenuItem.Name:='GotoBookmark'+IntToStr(I)+'MenuItem';
-      SubMenuItem.Caption := 'Bookmark '+inttostr(i);
+      SubMenuItem.Caption := uemBookmarkN+inttostr(i);
       SubMenuItem.OnClick := @BookmarkGotoClicked;
       GotoBookmarkMenuItem.Add(SubMenuItem);
     end;
 
   SetBookmarkMenuItem := TMenuItem.Create(Self);
   SetBookmarkMenuItem.Name:='SetBookmarkMenuItem';
-  SetBookmarkMenuItem.Caption := '&Set Bookmark';
+  SetBookmarkMenuItem.Caption := uemSetBookmark;
   SrcPopupMenu.Items.Add(SetBookmarkMenuItem);
 
   for I := 0 to 9 do
     Begin
       SubMenuItem := TMenuItem.Create(Self);
       SubMenuItem.Name:='SubSetBookmarkMenuItem'+IntToStr(I);
-      SubMenuItem.Caption := 'Bookmark '+inttostr(i);
+      SubMenuItem.Caption := uemBookmarkN+inttostr(i);
       SubMenuItem.OnClick := @BookmarkClicked;
       SetBookmarkMenuItem.Add(SubMenuItem);
     end;
@@ -2542,14 +2542,14 @@ Begin
 
   ReadOnlyMenuItem := TMenuItem.Create(Self);
   ReadOnlyMenuItem.Name:='ReadOnlyMenuItem';
-  ReadOnlyMenuItem.Caption := 'Read Only';
+  ReadOnlyMenuItem.Caption := uemReadOnly;
   ReadOnlyMenuItem.OnClick := @ReadOnlyClicked;
   ReadOnlyMenuItem.ShowAlwaysCheckable:=true;
   SrcPopupMenu.Items.Add(ReadOnlyMenuItem);
 
   ShowLineNumbersMenuItem := TMenuItem.Create(Self);
   ShowLineNumbersMenuItem.Name := 'ShowLineNumbersMenuItem';
-  ShowLineNumbersMenuItem.Caption := 'Show Line Numbers';
+  ShowLineNumbersMenuItem.Caption := dlgShowLineNumbers;
   ShowLineNumbersMenuItem.OnClick := @ToggleLineNumbersClicked;
   ShowLineNumbersMenuItem.ShowAlwaysCheckable:=true;
   SrcPopupMenu.Items.Add(ShowLineNumbersMenuItem);
@@ -2558,7 +2558,7 @@ Begin
 
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='ShowUnitInfo';
-  MenuItem.Caption := 'Unit Info';
+  MenuItem.Caption := uemUnitInfo;
   MenuItem.OnClick:=@ShowUnitInfo;
   SrcPopupMenu.Items.Add(MenuItem);
 
@@ -2566,25 +2566,25 @@ Begin
 
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='DebugMenuItem';
-  MenuItem.Caption := 'Debug';
+  MenuItem.Caption := uemDebugWord;
   SrcPopupMenu.Items.Add(MenuItem);
 
       SubMenuItem := TMenuItem.Create(Self);
       SubMenuItem.Name := 'ToggleBreakpointMenuItem';
-      SubMenuItem.Caption := '&Toggle Breakpoint';
+      SubMenuItem.Caption := uemToggleBreakpoint;
       SubMenuItem.OnClick := @ToggleBreakpointClicked;
       MenuItem.Add(SubMenuItem);
 
 
       SubMenuItem := TMenuItem.Create(Self);
       SubMenuItem.Name := 'AddWatchAtCursorMenuItem';
-      SubMenuItem.Caption := '&Add Watch At Cursor';
+      SubMenuItem.Caption := uemAddWatchAtCursor;
       SubMenuItem.OnClick := @AddWatchAtCursor;
       MenuItem.Add(SubMenuItem);
 
       SubMenuItem := TMenuItem.Create(Self);
       SubMenuItem.Name := 'RunToCursorMenuItem';
-      SubMenuItem.Caption := '&Run to Cursor';
+      SubMenuItem.Caption := uemRunToCursor;
       //SubMenuItem.OnClick := @ToggleBreakpoint;
       MenuItem.Add(SubMenuItem);
 
@@ -2592,13 +2592,13 @@ Begin
 
   MoveEditorLeftMenuItem := TMenuItem.Create(Self);
   MoveEditorLeftMenuItem.Name := 'MoveEditorLeftMenuItem';
-  MoveEditorLeftMenuItem.Caption := 'Move Editor Left';
+  MoveEditorLeftMenuItem.Caption := uemMoveEditorLeft;
   MoveEditorLeftMenuItem.OnClick :=@MoveEditorLeftClicked;
   SrcPopupMenu.Items.Add(MoveEditorLeftMenuItem);
 
   MoveEditorRightMenuItem := TMenuItem.Create(Self);
   MoveEditorRightMenuItem.Name := 'MoveEditorRightMenuItem';
-  MoveEditorRightMenuItem.Caption := 'Move Editor Right';
+  MoveEditorRightMenuItem.Caption := uemMoveEditorRight;
   MoveEditorRightMenuItem.OnClick :=@MoveEditorRightClicked;
   SrcPopupMenu.Items.Add(MoveEditorRightMenuItem);
 
@@ -2606,7 +2606,7 @@ Begin
 
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Name := 'EditorPropertiesMenuItem';
-  MenuItem.Caption := 'Editor properties';
+  MenuItem.Caption := uemEditorproperties;
   MenuItem.OnClick :=@EditorPropertiesClicked;
   SrcPopupMenu.Items.Add(MenuItem);
 end;
@@ -2903,13 +2903,11 @@ End;
 
 Procedure TSourceNotebook.FindInFilesClicked(Sender : TObject);
 Begin
-  if MessageDlg('Not implemented yet',
-    'If You can help us to implement this feature, mail to'#13
-   +'lazarus@miraclec.com', mtInformation,[mbOk,mbCancel],0)=mrCancel then exit;
+  if MessageDlg(ueNotImplCap,
+    ueNotImplText, mtInformation,[mbOk,mbCancel],0)=mrCancel then exit;
   if FindInFilesDialog.ShowModal=mrOk then begin
-    MessageDlg('I told You: Not implemented yet',
-      'If You can help us to implement this feature, mail to'#13
-     +'lazarus@miraclec.com', mtInformation,[mbOk,mbCancel],0);
+    MessageDlg(ueNotImplCapAgain,
+      ueNotImplText, mtInformation,[mbOk,mbCancel],0);
   end;
 End;
 
@@ -3017,8 +3015,8 @@ begin
   if ActEdit.ReadOnly and (ActEdit.CodeBuffer<>nil) 
   and (not ActEdit.CodeBuffer.IsVirtual) 
   and (not FileIsWritable(ActEdit.CodeBuffer.Filename)) then begin
-    MessageDlg('File is readonly',
-      'The file "'+ActEdit.CodeBuffer.Filename+'" is not writable.',
+    MessageDlg(ueFileROCap,
+      ueFileROText1+ActEdit.CodeBuffer.Filename+ueFileROText2,
       mtError,[mbCancel],0);
     exit;
   end;
@@ -3329,7 +3327,7 @@ begin
   Statusbar.Panels[3].Text := TempEditor.Filename;
 
   If TempEditor.Modified then
-    StatusBar.Panels[1].Text := 'Modified'
+    StatusBar.Panels[1].Text := ueModified
   else
     StatusBar.Panels[1].Text := '';
 
@@ -3337,16 +3335,16 @@ begin
     if StatusBar.Panels[1].Text <> '' then
       StatusBar.Panels[1].Text := StatusBar.Panels[1].Text + '/ReadOnly'
     else
-      StatusBar.Panels[1].Text := 'Readonly';
+      StatusBar.Panels[1].Text := uepReadonly;
 
 
   Statusbar.Panels[0].Text :=
     Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
 
   if GetActiveSE.InsertMode then
-    Statusbar.Panels[2].Text := 'INS'
+    Statusbar.Panels[2].Text := uepIns
   else
-    Statusbar.Panels[2].Text := 'OVR';
+    Statusbar.Panels[2].Text := uepOvr;
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
