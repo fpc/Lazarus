@@ -570,6 +570,7 @@ end;
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 {$IFDEF VerboseFocus}
+var
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
@@ -659,6 +660,7 @@ end;
 function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 {$IFDEF VerboseFocus}
+var
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
@@ -2670,6 +2672,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.174  2003/03/26 00:21:25  mattias
+  implemented build lazarus extra options -d
+
   Revision 1.173  2003/03/25 13:00:39  mattias
   implemented TMemo.SelLength, improved OI hints
 
