@@ -1023,7 +1023,7 @@ begin
     if CurPath<>'' then begin
       if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDir+CurPath;
-      CurPath:=TrimFilename(CurPath);
+      CurPath:=AppendPathDelim(TrimFilename(CurPath));
       if Result<>'' then
         CurPath:=';'+CurPath;
       Result:=Result+CurPath;
