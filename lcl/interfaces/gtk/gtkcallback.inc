@@ -432,6 +432,8 @@ begin
   if Extended then Flags := KF_EXTENDED;
   if SysKey then Flags := Flags or KF_ALTDOWN;
   Msg.KeyData := $00000000; //TODO: OEM char
+  
+
 
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
 
@@ -2539,6 +2541,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.164  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.163  2003/01/24 11:58:00  mattias
   fixed clipboard waiting and kwrite targets
 
