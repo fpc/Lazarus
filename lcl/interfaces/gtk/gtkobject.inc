@@ -6256,8 +6256,11 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateDefaultBrush: PGdiObject;
 begin
-//write('  TGtkWidgetSet.CreateDefaultBrush ->');
+//debugln('  TGtkWidgetSet.CreateDefaultBrush ->');
   Result := NewGDIObject(gdiBrush);
+  {$IFDEF DebugGDIBrush}
+  debugln('TGtkWidgetSet.CreateDefaultBrush Created: ',HexStr(Cardinal(Result),8));
+  {$ENDIF}
   Result^.GDIBrushFill := GDK_SOLID;
   Result^.GDIBrushColor.ColorRef := 0;
   Result^.GDIBrushColor.Colormap := gdk_colormap_get_system;
@@ -6941,6 +6944,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.605  2004/10/01 13:16:44  mattias
+  fixed unselecting TCanvas objects
+
   Revision 1.604  2004/09/25 15:05:38  mattias
   implemented Rename Identifier
 

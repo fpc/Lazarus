@@ -125,9 +125,10 @@ end;
 procedure TCanvas.CreateBrush;
 var OldHandle: HBRUSH;
 begin
-//DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
+//DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Self),8)
 // ,'  Brush=',HexStr(Cardinal(Pointer(Brush)),8));
   OldHandle:=SelectObject(FHandle, Brush.Handle);
+  //debugln('TCanvas.CreateBrush ',ClassName,' Self=',HexStr(Cardinal(Self),8),' OldHandle=',HexStr(Cardinal(OldHandle),8),' NewHandle=',HexStr(Cardinal(Brush.Handle),8),' FSavedBrushHandle=',HexStr(Cardinal(FSavedBrushHandle),8));
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
@@ -608,7 +609,7 @@ procedure TCanvas.Frame3d(var ARect: TRect; const FrameWidth : integer;
   const Style : TGraphicsBevelCut);
 begin
   Changing;
-  RequiredState([csHandleValid]);
+  RequiredState([csHandleValid,csBrushValid,csPenValid]);
   LCLIntf.Frame3d(FHandle, ARect, FrameWidth, Style);
   Changed;
 end;
@@ -1090,7 +1091,7 @@ end;
 procedure TCanvas.SetHandle(NewHandle: HDC);
 begin
   if FHandle<>NewHandle then begin
-    //DebugLn('[TCanvas.SetHandle] Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
+    //DebugLn('[TCanvas.SetHandle] Self=',HexStr(Cardinal(Self),8),' Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
     if FHandle <> 0 then
     begin
       DeselectHandles;
@@ -1103,7 +1104,7 @@ begin
       Include(FState, csHandleValid);
       FHandle := NewHandle;
     end;
-    //DebugLn('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
+    //DebugLn('[TCanvas.SetHandle] END Self=',HexStr(Cardinal(Self),8),' Handle=',HexStr(FHandle,8));
   end;
 end;
 
@@ -1116,8 +1117,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.DeselectHandles;
 begin
-  if (FHandle<>0)
-  and (FState * [csPenValid, csBrushValid, csFontValid] <> []) then begin
+  //debugln('TCanvas.DeselectHandles ',ClassName,' Self=',HexStr(Cardinal(Self),8),' Handle=',HexStr(Cardinal(FHandle),8),' FSavedBrushHandle=',HexStr(Cardinal(FSavedBrushHandle),8));
+  if (FHandle<>0) then begin
     // select default sub handles in the device context without deleting owns
     if FSavedBrushHandle<>0 then begin
       SelectObject(FHandle,FSavedBrushHandle);
@@ -1264,6 +1265,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2004/10/01 13:16:44  mattias
+  fixed unselecting TCanvas objects
+
   Revision 1.82  2004/09/29 15:18:27  mattias
   fixed TBitmap.Canvas.Frame3d
 

@@ -112,8 +112,10 @@ type
 
   TCopymode = longint;
 
-  TCanvasStates = (csHandleValid, csFontValid, csPenvalid, csBrushValid,
-                   csRegionValid);
+  TCanvasStates = (csHandleValid,
+                   csFontValid, // true if Font properties correspond to
+                                // selected Font Handle in DC
+                   csPenvalid, csBrushValid, csRegionValid);
   TCanvasState = set of TCanvasStates;
   TCanvasOrientation = (csLefttoRight, coRighttoLeft);
 
@@ -1317,9 +1319,10 @@ type
     FOldBitmap: HBitmap;
     FOldPaletteValid: boolean;
     FOldPalette: HPALETTE;
-    procedure FreeDC;
+    procedure FreeDC; // called by TBitmap.FreeCanvasContext
   protected
     procedure CreateHandle; override;
+    procedure DeselectHandles; override;
   public
     constructor Create(ABitmap: TBitmap);
     destructor Destroy; override;
@@ -1778,6 +1781,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.157  2004/10/01 13:16:43  mattias
+  fixed unselecting TCanvas objects
+
   Revision 1.156  2004/09/29 15:18:26  mattias
   fixed TBitmap.Canvas.Frame3d
 

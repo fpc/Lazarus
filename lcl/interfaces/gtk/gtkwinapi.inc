@@ -1031,7 +1031,9 @@ begin
   //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
   try
-    //DebugLn('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+    {$IFDEF DebugGDIBrush}
+    DebugLn('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+    {$ENDIF}
     GObject^.IsNullBrush := False;
     with LogBrush do
     begin
@@ -2097,7 +2099,6 @@ end;
   Params:  none
   Returns: Nothing
 
-
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.DeleteObject(GDIObject: HGDIOBJ): Boolean;
 
@@ -2136,6 +2137,10 @@ begin
         begin
           {$IFDEF DebugGDKTraps}
           BeginGDKErrorTrap;
+          {$ENDIF}
+          {$IFDEF DebugGDIBrush}
+          debugln('TGtkWidgetSet.DeleteObject gdiBrush: ',HexStr(Cardinal(GdiObject),8));
+          //if Cardinal(GdiObject)=$404826F4 then RaiseGDBException('');
           {$ENDIF}
           if (GDIBrushPixmap <> nil)
           then gdk_bitmap_unref(GDIBrushPixmap);
@@ -8690,6 +8695,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.369  2004/10/01 13:16:44  mattias
+  fixed unselecting TCanvas objects
+
   Revision 1.368  2004/09/29 15:18:27  mattias
   fixed TBitmap.Canvas.Frame3d
 

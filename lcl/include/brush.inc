@@ -124,7 +124,7 @@ end;
 
   Copies the source brush to itself
  ------------------------------------------------------------------------------}
-Procedure TBrush.Assign(Source : Tpersistent);
+Procedure TBrush.Assign(Source: TPersistent);
 begin
   if Source is TBrush
   then begin
@@ -214,7 +214,6 @@ procedure TBrush.FreeHandle;
 begin
   if FBrushData.Handle <> 0
   then begin
-    //TODO: what if a brush is currently selected
     if FBrushHandleCached then begin
       BrushResourceCache.FindItem(FBrushData.Handle).DecreaseRefCount;
       FBrushHandleCached:=false;
@@ -227,6 +226,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/10/01 13:16:44  mattias
+  fixed unselecting TCanvas objects
+
   Revision 1.10  2004/08/11 22:05:07  mattias
   fixed brush handle cache size
 

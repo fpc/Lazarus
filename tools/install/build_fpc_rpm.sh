@@ -50,8 +50,10 @@ TmpDir=/tmp/fpc_patchdir
 if [ "$WithTempDir" = "yes" ]; then
   rm -rf $TmpDir
   mkdir $TmpDir
-  rsync -aq --exclude="*.ppu" --exclude="*.o" --exclude="*.ppw" --exclude="CVS" \
-    --exclude="cvslog" $FPCSourceDir $TmpDir
+  rsync -aq --exclude="*.ppu" --exclude="*.o" --exclude="*.ppw" \
+    --exclude=".#*" --exclude="*~" --exclude="*.bak" \
+    --exclude="CVS" --exclude="cvslog" --exclude="*.orig" --exclude="*.rej" \
+    $FPCSourceDir $TmpDir
 else
   TmpDir=$FPCSourceDir
 fi

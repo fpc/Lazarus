@@ -67,6 +67,23 @@ begin
   //  ' Handle=',HexStr(Cardinal(GetUpdatedHandle([csHandleValid])),8));
 end;
 
+procedure TBitmapCanvas.DeselectHandles;
+begin
+  if HandleAllocated then begin
+    if FOldBitmapValid then begin
+      SelectObject(FHandle, FOldBitmap);
+      FOldBitmap:=0;
+      FOldBitmapValid:=false;
+    end;
+    if FOldPaletteValid then begin
+      SelectPalette(FHandle, FOldPalette, True);
+      FOldPalette:=0;
+      FOldPaletteValid:=false;
+    end;
+  end;
+  inherited DeselectHandles;
+end;
+
 {------------------------------------------------------------------------------
   Method: TBitmapCanvas.Destroy
   Params:  None
@@ -94,16 +111,6 @@ begin
   if not HandleAllocated then exit;
   //DebugLn('TBitmapCanvas.FreeDC START Self=',HexStr(Cardinal(Self),8),' FBitmap=',HexStr(Cardinal(FBitmap),8));
   if FBitmap<>nil then begin
-    if FOldBitmapValid then begin
-      SelectObject(FHandle, FOldBitmap);
-      FOldBitmap:=0;
-      FOldBitmapValid:=false;
-    end;
-    if FOldPaletteValid then begin
-      SelectPalette(FHandle, FOldPalette, True);
-      FOldPalette:=0;
-      FOldPaletteValid:=false;
-    end;
     OldHandle := FHandle;
     Handle := 0;
     DeleteDC(OldHandle);
@@ -117,6 +124,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/10/01 13:16:44  mattias
+  fixed unselecting TCanvas objects
+
   Revision 1.12  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
