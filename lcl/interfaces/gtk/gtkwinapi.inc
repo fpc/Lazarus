@@ -194,6 +194,7 @@ var
   {$IFDEF GTK1}
   FormWidget: PGtkWidget;
   FormWindow: PGdkWindowPrivate;
+  WindowDesktop: Integer;
   {$ENDIF}
 begin
   {$IFDEF VerboseFocus}
@@ -219,15 +220,26 @@ begin
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
-      // how to set the keyboard focus to the raised window?
       {$IFDEF GTK1}
       FormWidget:=PGtkWidget(AForm.Handle);
       FormWindow:=PGdkWindowPrivate(FormWidget^.window);
       if FormWindow<>nil then begin
-        GDK_WINDOW_ACTIVATE(FormWindow);
+        WindowDesktop := GDK_WINDOW_GET_DESKTOP(FormWindow);
+        // this prevents the window from appearing on a different desktop
+        // which could be undesirable.
+        
+        // check if the window is on all desktops or is on the current desktop
+        if (WindowDesktop < 0) or (WindowDesktop = GDK_GET_CURRENT_DESKTOP) then begin
+          GDK_WINDOW_ACTIVATE(FormWindow);
+        end
+        else begin
+          // TODO: Figure out how to set the focus on an inactive desktop without
+          //       bringing the window to the current desktop
+        end;
       end;
       {$ENDIF}
 {$ifdef gtk2}
+      // this currently will bring the window to the current desktop and focus it
       gtk_window_present(PGtkWindow(hWnd));
 {$endif gtk2}
     end;
@@ -8985,6 +8997,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.418  2005/03/21 18:59:50  mattias
+  gtk1 intf no longer moves a focused window to another desktop  from Andrew Haines
+
   Revision 1.417  2005/03/21 08:12:10  mattias
   fixed removing focus of a gtk listbox on delete item  from Collin Western
 
