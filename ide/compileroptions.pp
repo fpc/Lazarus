@@ -41,6 +41,8 @@ type
     fOptionsString: String;
     xmlcfg: TXMLConfig;
 
+    fProjectFile: String;
+
     fStyle: Integer;
     fD2Ext: Boolean;
     fCStyleOp: Boolean;
@@ -97,14 +99,21 @@ type
     fLibraries: String;
     fOtherUnitFiles: String;
     fCompilerPath: String;
+
+    procedure LoadTheCompilerOptions;
+    procedure SaveTheCompilerOptions;
   public
     constructor Create;
     destructor Destroy; override;
 
-    procedure LoadCompilerOptions;
-    procedure SaveCompilerOptions;
+    procedure LoadCompilerOptions(UseExistingFile: Boolean);
+    procedure SaveCompilerOptions(UseExistingFile: Boolean);
     function MakeOptionsString: String;
     function ParseSearchPaths(switch, paths: String): String;
+    function GetXMLConfigPath: String;
+
+    property ProjectFile: String read fProjectFile write fProjectFile;
+    property XMLConfigFile: TXMLConfig read xmlcfg write xmlcfg;
     
     property Style: Integer read fStyle write fStyle;
     property D2Extensions: Boolean read fD2Ext write fD2Ext;
@@ -308,6 +317,9 @@ compilerOpts: TCompilerOptions;
 
 implementation
 
+uses
+  main, project;
+
 const
   CONFIG_FILENAME = 'compileroptions.xml';
 
@@ -317,34 +329,11 @@ const
 constructor TCompilerOptions.Create;
 var
   confPath: String;
+  fn: String;
 begin
   inherited Create;
   Assert(False, 'Trace:Compiler Options Class Created');
 
-  confPath := GetPrimaryConfigPath + '/' + CONFIG_FILENAME;
-
-  
-  // See if config path exists and if not create it
-  if (not DirectoryExists(GetPrimaryConfigPath)) then
-  begin
-     try
-        // Create the directory
-        CreatePrimaryConfigPath;
-
-        { TODO:
-            Try to read the configuration from the secondary path
-            If successful, then read it in and write it to the primary path
-            If unsuccessful, then just use defaults
-        }
-     except
-       Assert(False, 'Trace:There was a problem creating the config directory. Using defaults.');
-       Assert(False, 'Trace:File = ' + confPath);
-       confPath := './' + CONFIG_FILENAME;
-     end;
-  end;
-
-  xmlcfg := TXMLConfig.Create(SetDirSeparators(confPath));
-  
   fOptionsString := '';
 
   { Set Defaults }
@@ -411,152 +400,191 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCompilerOptions.Destroy;
 begin
-  xmlcfg.Free;
   inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions LoadCompilerOptions                                      }
 {------------------------------------------------------------------------------}
-procedure TCompilerOptions.LoadCompilerOptions;
+procedure TCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean);
+var
+  confPath: String;
+begin
+  if (UseExistingFile and (XMLConfigFile <> nil)) then
+  begin
+    LoadTheCompilerOptions;
+  end
+  else
+  begin
+    confPath := GetXMLConfigPath;
+    XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
+    LoadTheCompilerOptions;
+    XMLConfigFile.Free;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{  TfrmCompilerOptions LoadTheCompilerOptions                                      }
+{------------------------------------------------------------------------------}
+procedure TCompilerOptions.LoadTheCompilerOptions;
 begin
   { Load the compiler options from the XML file }
 
   { Parsing }
-  Style := xmlcfg.GetValue('CompilerOptions/Parsing/Style/Value', 1);
+  Style := XMLConfigFile.GetValue('CompilerOptions/Parsing/Style/Value', 1);
 
-  D2Extensions := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', true);
-  CStyleOperators := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', true);
-  AllowLabel := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', true);
-  CPPInline := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', true);
-  CStyleMacros := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', false);
-  TPCompatible := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/TPCompatible/Value', false);
-  InitConstructor := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/InitConstructor/Value', false);
-  StaticKeyword := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/StaticKeyword/Value', false);
-  DelphiCompat := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', false);
-  UseAnsiStrings := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', false);
-  GPCCompat := xmlcfg.GetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', false);
+  D2Extensions := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', true);
+  CStyleOperators := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', true);
+  AllowLabel := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', true);
+  CPPInline := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', true);
+  CStyleMacros := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', false);
+  TPCompatible := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/TPCompatible/Value', false);
+  InitConstructor := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/InitConstructor/Value', false);
+  StaticKeyword := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/StaticKeyword/Value', false);
+  DelphiCompat := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', false);
+  UseAnsiStrings := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', false);
+  GPCCompat := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', false);
 
   { CodeGeneration }
-  UnitStyle := xmlcfg.GetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', 1);
-  IOChecks := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', false);
-  RangeChecks := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Checks/RangeChecks/Value', false);
-  OverflowChecks := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', false);
-  StackChecks := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', false);
-  HeapSize := xmlcfg.GetValue('CompilerOptions/CodeGeneration/HeapSize/Value', 8000000);
+  UnitStyle := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', 1);
+  IOChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', false);
+  RangeChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/RangeChecks/Value', false);
+  OverflowChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', false);
+  StackChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', false);
+  HeapSize := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/HeapSize/Value', 8000000);
 
-  Generate := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Generate/Value', 1);
-  TargetProcessor := xmlcfg.GetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', 1);
-  VariablesInRegisters := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', false);
-  UncertainOptimizations := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', false);
-  OptimizationLevel := xmlcfg.GetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', 1);
+  Generate := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Generate/Value', 1);
+  TargetProcessor := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', 1);
+  VariablesInRegisters := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', false);
+  UncertainOptimizations := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', false);
+  OptimizationLevel := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', 1);
 
   { Linking }
-  GenerateDebugInfo := xmlcfg.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', false);
-  GenerateDebugDBX := xmlcfg.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', false);
-  UseHeaptrc := xmlcfg.GetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', false);
-  StripSymbols := xmlcfg.GetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', false);
-  LinkStyle := xmlcfg.GetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', 1);
-  PassLinkerOptions := xmlcfg.GetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', false);
-  LinkerOptions := xmlcfg.GetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', '');
+  GenerateDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', false);
+  GenerateDebugDBX := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', false);
+  UseHeaptrc := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', false);
+  StripSymbols := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', false);
+  LinkStyle := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', 1);
+  PassLinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', false);
+  LinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', '');
     
   { Other }
-  ShowErrors := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', false);
-  ShowWarn := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', true);
-  ShowNotes := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', true);
-  ShowHints := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', true);
-  ShowGenInfo := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', true);
-  ShowLineNum := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', false);
-  ShowAll := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', false);
-  ShowDebugInfo := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', false);
-  ShowUsedFiles := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', false);
-  ShowTriedFiles := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', false);
-  ShowDefMacros := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowDefMacros/Value', false);
-  ShowCompProc := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', false);
-  ShowCond := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', false);
-  ShowNothing := xmlcfg.GetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', false);
-  WriteFPCLogo := xmlcfg.GetValue('CompilerOptions/Other/WriteFPCLogo/Value', true);
-  UseConfigFile := xmlcfg.GetValue('CompilerOptions/Other/ConfigFile/UseConfigFile/Value', false);
-  AdditionalConfigFile := xmlcfg.GetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', false);
-  ConfigFilePath := xmlcfg.GetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', './ppc386.cfg');
+  ShowErrors := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', false);
+  ShowWarn := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', true);
+  ShowNotes := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', true);
+  ShowHints := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', true);
+  ShowGenInfo := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', true);
+  ShowLineNum := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', false);
+  ShowAll := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', false);
+  ShowDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', false);
+  ShowUsedFiles := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', false);
+  ShowTriedFiles := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', false);
+  ShowDefMacros := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowDefMacros/Value', false);
+  ShowCompProc := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', false);
+  ShowCond := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', false);
+  ShowNothing := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', false);
+  WriteFPCLogo := XMLConfigFile.GetValue('CompilerOptions/Other/WriteFPCLogo/Value', true);
+  UseConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/UseConfigFile/Value', false);
+  AdditionalConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', false);
+  ConfigFilePath := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', './ppc386.cfg');
 
   { SearchPaths }
-  IncludeFiles := xmlcfg.GetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', '');
-  Libraries := xmlcfg.GetValue('CompilerOptions/SearchPaths/Libraries/Value', '');
-  OtherUnitFiles := xmlcfg.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
-  CompilerPath := xmlcfg.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
+  IncludeFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', '');
+  Libraries := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/Libraries/Value', '');
+  OtherUnitFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
+  CompilerPath := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SaveCompilerOptions                                     }
+{  TfrmCompilerOptions SaveCompilerOptions                                      }
 {------------------------------------------------------------------------------}
-procedure TCompilerOptions.SaveCompilerOptions;
+procedure TCompilerOptions.SaveCompilerOptions(UseExistingFile: Boolean);
+var
+  confPath: String;
+begin
+  if ((UseExistingFile) and (XMLConfigFile <> nil)) then
+  begin
+    SaveTheCompilerOptions;
+  end
+  else
+  begin
+    confPath := GetXMLConfigPath;
+    XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
+    SaveTheCompilerOptions;
+    XMLConfigFile.Free;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{  TfrmCompilerOptions SaveTheCompilerOptions                                     }
+{------------------------------------------------------------------------------}
+procedure TCompilerOptions.SaveTheCompilerOptions;
 begin
   { Save the compiler options to the XML file }
 
   { Parsing }
-  xmlcfg.SetValue('CompilerOptions/Parsing/Style/Value', Style);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', CStyleOperators);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', AllowLabel);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', CPPInline);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', CStyleMacros);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/TPCompatible/Value', TPCompatible);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/InitConstructor/Value', InitConstructor);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/StaticKeyword/Value', StaticKeyword);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', DelphiCompat);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings);
-  xmlcfg.SetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', GPCCompat);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', CStyleOperators);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', AllowLabel);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', CPPInline);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', CStyleMacros);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/TPCompatible/Value', TPCompatible);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/InitConstructor/Value', InitConstructor);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/StaticKeyword/Value', StaticKeyword);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', DelphiCompat);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings);
+  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', GPCCompat);
 
   { CodeGeneration }
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', UnitStyle);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', IOChecks);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Checks/RangeChecks/Value', RangeChecks);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', OverflowChecks);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', StackChecks);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/HeapSize/Value', HeapSize);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Generate/Value', Generate);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', TargetProcessor);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', VariablesInRegisters);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', UncertainOptimizations);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', OptimizationLevel);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', UnitStyle);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', IOChecks);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/RangeChecks/Value', RangeChecks);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', OverflowChecks);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', StackChecks);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/HeapSize/Value', HeapSize);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Generate/Value', Generate);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', TargetProcessor);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', VariablesInRegisters);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', UncertainOptimizations);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', OptimizationLevel);
 
   { Linking }
-  xmlcfg.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
-  xmlcfg.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', GenerateDebugDBX);
-  xmlcfg.SetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', UseHeaptrc);
-  xmlcfg.SetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', StripSymbols);
-  xmlcfg.SetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', LinkStyle);
-  xmlcfg.SetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', PassLinkerOptions);
-  xmlcfg.SetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', LinkerOptions);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', GenerateDebugDBX);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', UseHeaptrc);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', StripSymbols);
+  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', LinkStyle);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', PassLinkerOptions);
+  XMLConfigFile.SetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', LinkerOptions);
     
   { Other }
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', ShowErrors);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', ShowWarn);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', ShowNotes);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', ShowHints);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', ShowGenInfo);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', ShowLineNum);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', ShowAll);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', ShowDebugInfo);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', ShowUsedFiles);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', ShowTriedFiles);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowDefMacros/Value', ShowDefMacros);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', ShowCompProc);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', ShowCond);
-  xmlcfg.SetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', ShowNothing);
-  xmlcfg.SetValue('CompilerOptions/Other/WriteFPCLogo/Value', WriteFPCLogo);
-  xmlcfg.SetValue('CompilerOptions/Other/ConfigFile/UseConfigFile/Value', UseConfigFile);
-  xmlcfg.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
-  xmlcfg.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', ShowErrors);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', ShowWarn);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', ShowNotes);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', ShowHints);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', ShowGenInfo);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', ShowLineNum);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', ShowAll);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', ShowDebugInfo);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', ShowUsedFiles);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', ShowTriedFiles);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowDefMacros/Value', ShowDefMacros);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', ShowCompProc);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', ShowCond);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', ShowNothing);
+  XMLConfigFile.SetValue('CompilerOptions/Other/WriteFPCLogo/Value', WriteFPCLogo);
+  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/UseConfigFile/Value', UseConfigFile);
+  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
+  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
 
   { SearchPaths }
-  xmlcfg.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
-  xmlcfg.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
-  xmlcfg.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
-  xmlcfg.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
 
-  xmlcfg.Flush;
+  XMLConfigFile.Flush;
 end;
 
 {------------------------------------------------------------------------------}
@@ -923,6 +951,46 @@ begin
   Result := tempsw;
 end;
 
+{------------------------------------------------------------------------------
+  TCompilerOptions GetXMLConfigPath
+ ------------------------------------------------------------------------------}
+function TCompilerOptions.GetXMLConfigPath: String;
+var
+  confPath: String;
+  fn: String;
+begin
+  Result := '';
+
+  // Setup the filename to write to
+  if (ProjectFile <> '') then
+    fn := ProjectFile
+  else
+    fn := CONFIG_FILENAME;
+
+  confPath := GetPrimaryConfigPath + '/' + fn;
+
+  // See if config path exists and if not create it
+  if (not DirectoryExists(GetPrimaryConfigPath)) then
+  begin
+     try
+        // Create the directory
+        CreatePrimaryConfigPath;
+
+        { TODO:
+            Try to read the configuration from the secondary path
+            If successful, then read it in and write it to the primary path
+            If unsuccessful, then just use defaults
+        }
+     except
+       Assert(False, 'Trace:There was a problem creating the config directory. Using defaults.');
+       Assert(False, 'Trace:File = ' + confPath);
+       confPath := './' + fn;
+       Result := confPath;
+     end;
+  end;
+
+  Result := confPath;
+end;
 
 
 {------------------------------------------------------------------------------}
@@ -936,7 +1004,8 @@ begin
   Width := 379;
   Caption := 'Compiler Options';
   OnShow := @CreateForm;
-  CompilerOpts.LoadCompilerOptions;
+  MainIDE.Project.CompilerOptions.LoadCompilerOptions(true);
+  //CompilerOpts.LoadCompilerOptions(true);
   
   nbMain := TNotebook.Create(Self);
   nbMain.Parent := Self;
@@ -1010,7 +1079,8 @@ begin
 
   { Save the options and hide the dialog }
   PutCompilerOptions;
-  CompilerOpts.SaveCompilerOptions;
+  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
+  //CompilerOpts.SaveCompilerOptions(true);
   Hide;
 end;
 
@@ -1034,7 +1104,8 @@ begin
   Assert(False, 'Trace:Apply compiler options changes');
 
   PutCompilerOptions;
-  CompilerOpts.SaveCompilerOptions;
+  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
+  //CompilerOpts.SaveCompilerOptions(true);
 end;
 
 {------------------------------------------------------------------------------}
