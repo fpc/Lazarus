@@ -10,6 +10,11 @@
  *                                                                           *
  *****************************************************************************
 
+  Author: Mattias Gaertner
+  
+  Abstract:
+    FPC bindings to the gtkglarea library.
+    The library is not big and was translated completely to FPC ().
 }
 unit GTKGLArea_Int;
 
@@ -79,6 +84,7 @@ type
   TGdkGLPixmap = record end;
   PGdkGLPixmap = ^TGdkGLPixmap;
 
+  TGtkGlAreaMakeCurrentType = integer;
 
 function gdk_gl_pixmap_new(visual:PGdkVisual; pixmap:PGdkPixmap):PGdkGLPixmap;cdecl;external;
 function gdk_gl_pixmap_ref(glpixmap:PGdkGLPixmap):PGdkGLPixmap;cdecl;external;

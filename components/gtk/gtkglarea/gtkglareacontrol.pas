@@ -22,7 +22,13 @@ interface
 uses
   Classes, SysUtils, LCLType, LCLIntf, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
   Forms, Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
-  LResources, GTKInt, GLib, Gtk, NVGL, GTKGLArea_Int;
+  LResources, GTKInt, GLib, Gtk, NVGL,
+  {$IFDEF UseGtkGlAreaLib}
+  GTKGLArea_Int
+  {$ELSE}
+  OpenGLGtkWidget
+  {$ENDIF}
+  ;
   
 type
   TGtkGlAreaMakeCurrentEvent = procedure(Sender: TObject;
@@ -50,10 +56,10 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     Procedure Paint; virtual;
-    procedure DoOnResize; override;
+    procedure RealizeBounds; override;
     procedure DoOnPaint; virtual;
     procedure SwapBuffers; virtual;
-    function MakeCurrent: integer; virtual;
+    function MakeCurrent: boolean; virtual;
     function RestoreOldGtkGLAreaControl: boolean;
     function SharingAreasCount: integer;
     property SharingAreas[Index: integer]: TCustomGTKGLAreaControl read GetSharingAreas;
@@ -175,7 +181,7 @@ procedure TCustomGTKGLAreaControl.Paint;
 begin
   if (not (csDesigning in ComponentState))
   and Enabled and Visible and HandleAllocated
-  and (gint(True) = MakeCurrent) then begin
+  and MakeCurrent then begin
     try
       UpdateFrameTimeDiff;
       DoOnPaint;
@@ -185,19 +191,19 @@ begin
   end;
 end;
 
-procedure TCustomGTKGLAreaControl.DoOnResize;
+procedure TCustomGTKGLAreaControl.RealizeBounds;
 var
   RestoreNeeded: Boolean;
 begin
   RestoreNeeded:=false;
   if (not (csDesigning in ComponentState))
   and Enabled and Visible and HandleAllocated
-  and (gint(True) = MakeCurrent) then begin
+  and MakeCurrent then begin
     RestoreNeeded:=true;
     glViewport (0, 0, Width, Height);
   end;
   try
-    inherited DoOnResize;
+    inherited RealizeBounds;
   finally
     if RestoreNeeded then
       RestoreOldGtkGLAreaControl;
@@ -214,7 +220,7 @@ begin
   gtk_gl_area_swap_buffers(Widget);
 end;
 
-function TCustomGTKGLAreaControl.MakeCurrent: integer;
+function TCustomGTKGLAreaControl.MakeCurrent: boolean;
 var
   Allowed: Boolean;
 begin
@@ -222,15 +228,16 @@ begin
     Allowed:=true;
     OnMakeCurrent(Self,Allowed);
     if not Allowed then begin
-      Result:=gint(False);
+      Result:=False;
       exit;
     end;
   end;
   // make sure the widget is realized
   gtk_widget_realize(PGtkWidget(Widget));
   // make current
-  Result:=gtk_gl_area_make_current(Widget);
-  if Result=gint(True) then begin
+  Result:=gtk_gl_area_make_current(Widget)
+          {$IFDEF UseGtkGlAreaLib}=gint(True){$ENDIF};
+  if Result then begin
     // on success push on stack
     if GtkGLAreaControlStack=nil then
       GtkGLAreaControlStack:=TList.Create;
@@ -251,7 +258,11 @@ begin
   if GtkGLAreaControlStack.Count>0 then begin
     RestoredControl:=
       TGTKGLAreaControl(GtkGLAreaControlStack[GtkGLAreaControlStack.Count-1]);
+    {$IFDEF UseGtkGlAreaLib}
     if gtk_gl_area_make_current(RestoredControl.Widget)<>gint(true) then
+    {$ELSE}
+    if not gtk_gl_area_make_current(RestoredControl.Widget) then
+    {$ENDIF}
       exit;
   end;
   Result:=true;

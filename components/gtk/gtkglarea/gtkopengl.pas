@@ -8,7 +8,8 @@ unit GTKOpenGL;
 interface
 
 uses
-  GTKGLArea_Int, GTKGLAreaControl, nvGL, nvGLX, LazarusPackageIntf; 
+  GTKGLAreaControl, GTKGLArea_Int, OpenGLGtkWidget, nvGL, nvGLX, 
+    LazarusPackageIntf; 
 
 implementation
 

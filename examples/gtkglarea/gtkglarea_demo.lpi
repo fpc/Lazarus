@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="3"/>
+    <PathDelim Value="/"/>
+    <Version Value="5"/>
     <General>
-      <ProjectType Value="Program"/>
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
+        <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="4"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="gtkglarea_demo"/>
@@ -22,17 +24,17 @@
         <Loaded Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="GTKGLArea_Demo"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="28"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="19" Y="620"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="34" Y="828"/>
+        <EditorIndex Value="4"/>
         <Filename Value="exampleform.pp"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
-        <TopLine Value="599"/>
+        <TopLine Value="801"/>
         <UnitName Value="ExampleForm"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="28"/>
       </Unit1>
     </Units>
     <PublishOptions>
@@ -55,7 +57,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="2"/>
+    <Version Value="4"/>
     <SearchPaths>
       <LCLWidgetType Value="gtk"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/gtk/"/>

@@ -4,10 +4,14 @@
     <Name Value="GTKOpenGL"/>
     <Author Value="Mattias Gaertner, Satan"/>
     <CompilerOptions>
+      <Version Value="4"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/"/>
         <LCLWidgetType Value="gtk"/>
       </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -16,28 +20,32 @@
 Please make sure that you link to the right libgtkgl. If you accidently link to libgtkgl-2.0 then you will mix gtk1 and gtk2 libraries, which will result in strange errors, up to freezing your windowmanager."/>
     <License Value="LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="5">
+    <Files Count="6">
       <Item1>
         <Filename Value="gtkglarea.lrs"/>
         <Type Value="LRS"/>
       </Item1>
       <Item2>
-        <Filename Value="gtkglarea_int.pp"/>
-        <UnitName Value="GTKGLArea_Int"/>
-      </Item2>
-      <Item3>
         <Filename Value="gtkglareacontrol.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="GTKGLAreaControl"/>
+      </Item2>
+      <Item3>
+        <Filename Value="gtkglarea_int.pp"/>
+        <UnitName Value="GTKGLArea_Int"/>
       </Item3>
       <Item4>
-        <Filename Value="nvgl.pp"/>
-        <UnitName Value="nvGL"/>
+        <Filename Value="openglgtkwidget.pas"/>
+        <UnitName Value="OpenGLGtkWidget"/>
       </Item4>
       <Item5>
+        <Filename Value="nvgl.pp"/>
+        <UnitName Value="nvGL"/>
+      </Item5>
+      <Item6>
         <Filename Value="nvglx.pp"/>
         <UnitName Value="nvGLX"/>
-      </Item5>
+      </Item6>
     </Files>
     <AutoIncrementVersionOnBuild Value="False"/>
     <Type Value="RunAndDesignTime"/>

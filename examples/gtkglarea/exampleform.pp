@@ -28,8 +28,8 @@ unit ExampleForm;
 interface
 
 uses
-  Classes, SysUtils, GTKGlArea, GTKGLArea_Int, Forms, LResources, Buttons,
-  StdCtrls, Dialogs, gtk, glib, NVGL, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
+  Classes, SysUtils, Forms, LResources, Buttons,
+  StdCtrls, Dialogs, NVGL, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
   GTKGLAreaControl;
 
 type
@@ -101,8 +101,8 @@ var AnExampleForm: TExampleForm;
     ParticleList, CubeList, BackList: GLuint;
 
 var direction: boolean;
-    hour, minutes, secs, msecs, usecs, mmsecs: word;
     timer: single;
+    LastMsecs: integer;
 
 implementation
 
@@ -628,7 +628,7 @@ begin
   glEnable(GL_DEPTH_TEST);          // enables depth testing
   glShadeModel(GL_SMOOTH);          // enables smooth color shading
   {blending}
-  glColor4f(1.0,1.0,1.0,0.5);			// Full Brightness, 50% Alpha ( NEW )
+  glColor4f(1.0,1.0,1.0,0.5);       // Full Brightness, 50% Alpha ( NEW )
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
   glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
   {}
@@ -745,8 +745,11 @@ begin
   
 end;
 
+var
+  CurTime: TDateTime;
+  MSecs: integer;
 begin
-  if (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.Widget)) then
+  if GTKGLAreaControl1.MakeCurrent then
   begin
     if not AreaInitialized then begin
       myInit;
@@ -760,10 +763,12 @@ begin
       AreaInitialized:=true;
     end;
 
-    GetTime(hour, minutes, secs, msecs, usecs);
-    timer:=msecs-mmsecs;
+    CurTime:=Now;
+    MSecs:=round(CurTime*86400*1000) mod 1000;
+    if MSecs<0 then MSecs:=1000+MSecs;
+    timer:=msecs-LastMsecs;
     if timer<0 then timer:=1000+timer;
-    mmsecs:=msecs;
+    LastMsecs:=MSecs;
     
     ParticleEngine.MoveParticles;
     
@@ -820,14 +825,14 @@ begin
     //glFlush;
     //glFinish;
     // Swap backbuffer to front
-    gtk_gl_area_swap_buffers(PGtkGLArea(GTKGLAreaControl1.Widget));
+    GTKGLAreaControl1.SwapBuffers;
   end;
 end;
 
 procedure TExampleForm.GTKGLAreaControl1Resize(Sender: TObject);
 begin
   if (AreaInitialized)
-  and (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.widget)) then
+  and GTKGLAreaControl1.MakeCurrent then
     glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);
 end;
 

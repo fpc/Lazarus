@@ -80,6 +80,7 @@ components/gtk/gtkglarea/gtkopengl.lpk svneol=native#text/pascal
 components/gtk/gtkglarea/gtkopengl.pas svneol=native#text/pascal
 components/gtk/gtkglarea/nvgl.pp svneol=native#text/pascal
 components/gtk/gtkglarea/nvglx.pp svneol=native#text/pascal
+components/gtk/gtkglarea/openglgtkwidget.pas svneol=native#text/pascal
 components/gtk/gtkglarea/tgtkglareacontrol.xpm -text svneol=native#image/x-xpixmap
 components/htmllite/html32.res svneol=native#unset
 components/htmllite/htmllite.dcr -text svneol=native#application/x-director
