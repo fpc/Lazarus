@@ -98,7 +98,6 @@ type
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
-    procedure mnuSearchOpenFileAtCursor(Sender: TObject);
     procedure mnuFindDeclarationClicked(Sender : TObject);
     procedure mnuOpenFileAtCursorClicked(Sender : TObject);
     procedure mnuGotoIncludeDirectiveClicked(Sender : TObject);
@@ -1038,7 +1037,7 @@ begin
   itmFindBlockStart.OnClick:=@mnuSearchFindBlockStart;
   itmFindBlockOtherEnd.OnClick:=@mnuSearchFindBlockOtherEnd;
   itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
-  itmOpenFileAtCursor.OnClick:=@mnuSearchOpenFileAtCursor;
+  itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 end;
 
 procedure TMainIDE.SetupTransferMacros;
@@ -4247,14 +4246,40 @@ var ActiveSrcEdit: TSourceEditor;
     end;
     Result:=false;
   end;
+  
+  function CheckIfIncludeDirectiveInFront(const Line: string;
+    X: integer): boolean;
+  var
+    DirectiveEnd, DirectiveStart: integer;
+    Directive: string;
+  begin
+    Result:=false;
+    DirectiveEnd:=X;
+    while (DirectiveEnd>1) and (Line[DirectiveEnd-1] in [' ',#9]) do
+      dec(DirectiveEnd);
+    DirectiveStart:=DirectiveEnd-1;
+    while (DirectiveStart>0) and (Line[DirectiveStart]<>'$') do
+      dec(DirectiveStart);
+    Directive:=uppercase(copy(Line,DirectiveStart,DirectiveEnd-DirectiveStart));
+    if (Directive='$INCLUDE') or (Directive='$I') then begin
+      if ((DirectiveStart>1) and (Line[DirectiveStart-1]='{'))
+      or ((DirectiveStart>2)
+        and (Line[DirectiveStart-2]='(') and (Line[DirectiveStart-1]='*'))
+      then begin
+        Result:=true;
+      end;
+    end;
+  end;
 
-  function GetFilenameAtRowCol(XY: TPoint): string;
+  function GetFilenameAtRowCol(XY: TPoint;
+    var IsIncludeDirective: boolean): string;
   var
     Line: string;
     Len, Stop: integer;
     StopChars: set of char;
   begin
     Result := '';
+    IsIncludeDirective:=false;
     if (XY.Y >= 1) and (XY.Y <= ActiveSrcEdit.EditorComponent.Lines.Count) then 
     begin
       Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
@@ -4267,28 +4292,35 @@ var ActiveSrcEdit: TSourceEditor;
           Inc(Stop);
         while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
           Dec(XY.X);
-        if Stop > XY.X then
+        if Stop > XY.X then begin
           Result := Copy(Line, XY.X, Stop - XY.X);
+          IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
+        end;
       end;
     end;
   end;
 
+var IsIncludeDirective: boolean;
 begin
-  writeln('TMainIDE.DoOpenFileAtCursor');
   Result:=mrCancel;
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   
   // parse filename at cursor
-  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.CaretXY);
+  FName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.CaretXY,
+                             IsIncludeDirective);
   if FName='' then exit;
   
   // get searchpath for directory of current file
   if ActiveUnitInfo.IsVirtual then
     SPath:='.'
   else begin
-    SPath:='.;'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(
-                          ExtractFilePath(ActiveUnitInfo.Filename));
+    if IsIncludeDirective then
+      SPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(
+                            ExtractFilePath(ActiveUnitInfo.Filename))
+    else
+      SPath:='.;'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(
+                            ExtractFilePath(ActiveUnitInfo.Filename));
   end;
   
   // search file in path (search especially for pascal files)
@@ -6957,10 +6989,6 @@ begin
   DoFindDeclarationAtCursor;
 end;
 
-procedure TMainIDE.mnuSearchOpenFileAtCursor(Sender: TObject);
-begin
-  // ToDo
-end;
 
 
 //-----------------------------------------------------------------------------
@@ -6976,6 +7004,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.339  2002/08/09 19:48:12  lazarus
+  MG: Open File at cursor now checks for include directive
+
   Revision 1.338  2002/08/08 10:33:48  lazarus
   MG: main bar speedbar open arrow now shows recent projects and files
 
