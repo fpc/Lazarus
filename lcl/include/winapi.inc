@@ -189,6 +189,11 @@ begin
   Result := InterfaceObject.Ellipse(DC,x1,y1,x2,y2);
 end;
 
+function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer;
+begin
+  Result := InterfaceObject.ExcludeClipRect(DC,Left,Top,Right,Bottom);
+end;
+
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 begin
   Result := InterfaceObject.ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
@@ -365,6 +370,27 @@ begin
   Result := InterfaceObject.HideCaret(hWnd);
 end;
 
+{------------------------------------------------------------------------------
+  Function: IntersectClipRect
+  Params:  dc: hdc; Left, Top, Right, Bottom: Integer
+  Returns: Integer
+
+  Shrinks the current clipping region in the device context dc to the boundary
+  defined by Left, Top, Right, Bottom.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+      Region_Error
+
+ ------------------------------------------------------------------------------}
+function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
+Begin
+  Result := InterfaceObject.IntersectClipRect(dc,Left,Top,Right,Bottom);
+end;
+
 Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean;
 begin
   Result := InterfaceObject.InvalidateRect(aHandle, Rect, bErase);
@@ -429,6 +455,11 @@ end;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 begin
   Result := InterfaceObject.Rectangle(DC, X1, Y1, X2, Y2);
+end;
+
+function RectVisible(dc : hdc; ARect: TRect) : Boolean;
+begin
+  Result := InterfaceObject.RectVisible(dc,ARect);
 end;
 
 function ReleaseCapture:  Boolean;
@@ -602,18 +633,13 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function AdjustWindowRectEx( Var Rect: TRect; Style1: Word; MenuExist : Boolean; Style2 : Word) : Boolean;
+function AdjustWindowRectEx( Var Rect: TRect; Style1: Word; MenuExist : Boolean;
+  Style2 : Word) : Boolean;
 begin
+  // ToDo:
   Result := true;
-  try
-    if MenuExist 
-    then Rect.Top := Rect.Top + 25;
-  except
-    on E: Exception do begin
-      writeln('AdjustWindowRectEx: ',E.Message);
-      Result := False;
-    end;
-  end;
+  if MenuExist
+  then Rect.Top := Rect.Top + 25;
 end;
 
 {------------------------------------------------------------------------------
@@ -655,9 +681,9 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function CopyRect(var lprcDst: TRect; const lprcSrc: TRect): Boolean;
+function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 begin
-  Move(lprcSrc, lprcDst, SizeOf(TRect));
+  Move(SrcRect, DestRect, SizeOf(TRect));
   Result := True;
 end;
 
@@ -715,16 +741,6 @@ begin
   Result := CreatePenIndirect(LogPen);
 end;
 
-
-{------------------------------------------------------------------------------
-  Function: ExcludeClipRect
-  Params:
--------------------------------------------------------------------------------}
-Function ExcludeClipRect(dc: hdc; LEft,Top, Right, Bottom : Integer) : Integer;
-begin
-//TODO: Finish ExcludeClipRect
-Result := SimpleRegion;
-end;
 
 {------------------------------------------------------------------------------
   Function: EndPaint
@@ -785,106 +801,65 @@ end;
 
 {------------------------------------------------------------------------------
   Function: InflateRect
-  Params:   Rect: points to structure that increases or decreases in size.
-            dx  : amount to increase or decrease the rectangle width.
-            dy  : amount to increase or decrease the rectangle height.
+  Params:   ARect: points to structure that increases or decreases in size.
+            dx   : amount to increase the rectangle width.
+            dy   : amount to increase the rectangle height.
   Returns:  True if succesful
 
   Increases or decreases the width and height of the specified rectangle.
  ------------------------------------------------------------------------------}
-function InflateRect(var Rect: TRect; dx, dy: Integer): Boolean;
+function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;
 begin
-  with Rect do
-  begin
-    Dec(Left, dx);
-    Inc(Right, dx);
-    Dec(Top, dy);
-    Inc(Bottom, dy);
+  // make sure, that after deflating holds: Left<=Right
+  if (dx<0) and (ARect.Right-ARect.Left+2*dx<0) then begin
+    ARect.Left:=(ARect.Left+ARect.Right) shr 1;
+    ARect.Right:=ARect.Left;
+  end else begin
+    dec(ARect.Left,dx);
+    inc(ARect.Right,dx);
   end;
 
+  // make sure, that after deflating holds: Top<=Bottom
+  if (dy<0) and (ARect.Bottom-ARect.Top+2*dy<0) then begin
+    ARect.Top:=(ARect.Top+ARect.Bottom) shr 1;
+    ARect.Bottom:=ARect.Top;
+  end else begin
+    dec(ARect.Top,dy);
+    inc(ARect.Bottom,dy);
+  end;
+  
   Result := True;
 end;
 
 {------------------------------------------------------------------------------
-  Function: IntersectClipRect
-  Params:
-  Returns:
- ------------------------------------------------------------------------------}
-function IntersectClipRect(dc: hdc; Leftrect, Toprect, RightREct,Bottomrect : Integer): Integer;
-Begin
-//TODO: FInish me IntersectClipRect in winapi.inc
-result := Error;
-end;
-
-{------------------------------------------------------------------------------
   Function: IntersectRect
-  Params:
-  Returns:
+  Params:  var DestRect: TRect; const SrcRect1, SrcRect2: TRect
+  Returns: Boolean
+  
+  Intersects SrcRect1 and SrcRect2 into DestRect.
+  Intersecting means that DestRect will be the overlapping area of lprcSrc1 and
+  lprcSrc2. If SrcRect1 and SrcRect2 does not overlapp the Result is false, else
+  true.
  ------------------------------------------------------------------------------}
-function IntersectRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean;
-var
-  URect: TRect;
-  h1,h2,v1,v2: Integer;
+function IntersectRect(var DestRect: TRect;
+  const SrcRect1, SrcRect2: TRect): Boolean;
 begin
   Result := False;
 
-  // Sanity Checks
-  if IsRectEmpty(lprcSrc1) or IsRectEmpty(lprcSrc1) then 
-  begin
-    SetRectEmpty(lprcDst);
-    Exit;
+   // test if rectangles intersects
+  Result:=(SrcRect2.Left >= SrcRect1.Right)
+       or (SrcRect2.Right <= SrcRect1.Left)
+       or (SrcRect2.Top >= SrcRect1.Bottom)
+       or (SrcRect2.Bottom <= SrcRect1.Top);
+       
+  if Result then begin
+    DestRect.Left:=Max(SrcRect1.Left,SrcRect2.Left);
+    DestRect.Top:=Max(SrcRect1.Top,SrcRect2.Top);
+    DestRect.Right:=Min(SrcRect1.Right,SrcRect2.Right);
+    DestRect.Bottom:=Min(SrcRect1.Bottom,SrcRect2.Bottom);
+  end else begin
+    SetRectEmpty(DestRect);
   end;
-
-   // next test for no intersection at all.
-   with lprcSrc2 do
-     if ((Left > lprcSrc1.Left  ) and (Left >= lprcSrc1.Right  )) 
-     or ((Right <= lprcSrc1.Left) and (Right < lprcSrc1.Right  )) 
-     or ((Top > lprcSrc1.Top    ) and (Top >= lprcSrc1.Bottom  )) 
-     or ((Bottom <= lprcSrc1.Top) and (Bottom < lprcSrc1.Bottom)) 
-     then begin
-       SetRectEmpty(lprcDst);
-       Exit;
-     end;
-
-   // we got this far, ok intersecting rects
-   UnionRect(URect, lprcSrc1, lprcSrc2);
-   
-   with URect do
-   begin
-     if lprcSrc1.Top = lprcSrc2.Top 
-     then h1 := Top 
-     else if lprcSrc1.Top = Top 
-       then h1 := lprcSrc2.Top 
-       else h1 := lprcSrc1.Top;
-
-     if lprcSrc2.Bottom = lprcSrc1.Bottom 
-     then h2 := Bottom 
-     else if lprcSrc2.Bottom = Bottom 
-       then h2 := lprcSrc1.Bottom 
-       else h2 := lprcSrc2.Bottom;
-
-     if lprcSrc1.Left = lprcSrc2.Left 
-     then v1 := Left 
-     else if lprcSrc1.Left = Left 
-       then v1 := lprcSrc2.Left 
-       else v1 := lprcSrc1.Left;
-
-     if lprcSrc2.Right = lprcSrc1.Right 
-     then v2 := Right 
-     else if lprcSrc2.Right = Right 
-     then v2 := lprcSrc1.Right 
-     else v2 := lprcSrc2.Right;
-   end;
-
-   with lprcDst do
-   begin
-     Left := Min(v1, v2);
-     Right := Max(v1, v2);
-     Top := Min(h1, h2);
-     Bottom := Max(h1, h2);
-   end;
-
-   Result := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -902,13 +877,14 @@ end;
 
 {------------------------------------------------------------------------------
   Function: IsRectEmpty
-  Params:
-  Returns:
+  Params: const lprc: TRect
+  Returns: Boolean
 
+  Returns true if ARect is (0,0,0,0)
  ------------------------------------------------------------------------------}
-function IsRectEmpty(const lprc: TRect): Boolean; 
+function IsRectEmpty(const ARect: TRect): Boolean;
 begin
-  with lprc do
+  with ARect do
     Result := (Left = 0) and (Top = 0) and (Right = 0) and (Bottom = 0);
 end;
 
@@ -1002,15 +978,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: RectVisible
--------------------------------------------------------------------------------}
-Function RectVisible(dc : hdc; Rect: TRect) : Boolean;
-Begin
-//TODO: Finish me!  RectVisible in winapi.inc
-result := True;
-end;
-
-{------------------------------------------------------------------------------
   Function: ScrollWindow   In progress pbd
   Params:   Handle
             XAmount +scroll down -scroll up 
@@ -1020,7 +987,8 @@ end;
 
   scrolls a window or portion of a window
  ------------------------------------------------------------------------------}
-function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean;
+function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer;
+  Rect, ClipRect: PRect): Boolean;
 begin
   Result := ScrollWindowEx(hWnd, XAmount, YAmount, Rect, ClipRect, 0, 0, 0);
 end;
@@ -1030,33 +998,27 @@ end;
   Params:
   Returns: 
  ------------------------------------------------------------------------------}
-Function SetRect(var Rect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
+Function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
 Begin
   Result := True;
-  try
-    with Rect do
-    begin
-      Left := xLeft;
-      Top := yTop;
-      Right := xRight;
-      Bottom := yBottom;
-    end;
-  except
-    on E: Exception do begin
-      writeln('AdjustWindowRectEx: ',E.Message);
-      Result := False;
-    end;
-  End;
+  with ARect do begin
+    Left := xLeft;
+    Top := yTop;
+    Right := xRight;
+    Bottom := yBottom;
+  end;
 End;
 
 {------------------------------------------------------------------------------
   Function: SetRectEmpty
   Params: Rect to clear 
   Returns: essentially nothing
+  
+  
  ------------------------------------------------------------------------------}
-function SetRectEmpty(var lprc: TRect): Boolean;
+function SetRectEmpty(var ARect: TRect): Boolean;
 begin
-  FillChar(lprc, SizeOf(TRect), 0);
+  FillChar(ARect, SizeOf(TRect), 0);
   Result := True;
 end;
 
@@ -1111,31 +1073,29 @@ end;
 
 {------------------------------------------------------------------------------
   Function: UnionRect          pbd
-  Params: lprcDst: TRect Result  INTENT OUT
-          lprcSrc1, lprcSrc2 TRects to Union INTENT IN
+  Params: var DestRect: TRect; const SrcRect1, SrcRect2: TRect
   Returns: Boolean 0 on failure
 
+  Creates the union rectangle of SrcRect1 and SrcRect2 into DestRect.
+  The union rectangle encloses SrcRect1 and SrcRect2.
  ------------------------------------------------------------------------------}
-function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean;
+function UnionRect(var DestRect: TRect;
+  const SrcRect1, SrcRect2: TRect): Boolean;
 begin
   Result := True;
-  try
-    lprcDst.Left := Min(lprcSrc1.Left, lprcSrc2.Left);
-    lprcDst.Top := Min(lprcSrc1.Top, lprcSrc2.Top);
-    lprcDst.Right := Max(lprcSrc1.Right, lprcSrc2.Right);
-    lprcDst.Bottom := Max(lprcSrc1.Bottom, lprcSrc2.Bottom);
-  except
-    on E: Exception do begin
-      writeln('AdjustWindowRectEx: ',E.Message);
-      Result := False;
-    end;
-  end;
+  DestRect.Left := Min(SrcRect1.Left, SrcRect2.Left);
+  DestRect.Top := Min(SrcRect1.Top, SrcRect2.Top);
+  DestRect.Right := Max(SrcRect1.Right, SrcRect2.Right);
+  DestRect.Bottom := Max(SrcRect1.Bottom, SrcRect2.Bottom);
 end;
 
 //##apiwiz##epi##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/06/21 15:41:56  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.32  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

@@ -62,6 +62,7 @@ function EnableMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean):
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; override;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; override;
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
+Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  override;
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
@@ -95,6 +96,7 @@ Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; over
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
+function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer; override;
 function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; override;
 
 function KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean; override;
@@ -113,6 +115,7 @@ function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt
 
 function RealizePalette(DC: HDC): Cardinal; override;
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; override;
+function RectVisible(dc : hdc; ARect: TRect) : Boolean; override;
 Function ReleaseCapture : Boolean; override;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
@@ -154,6 +157,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/06/21 15:41:57  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.31  2002/06/04 15:17:26  lazarus
   MG: improved TFont for XLFD font names
 

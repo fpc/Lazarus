@@ -78,6 +78,7 @@ function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; {$IFD
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function EqualRect --> independent
+Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -116,6 +117,7 @@ function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer; {$IFDEF IF_BASE_MEMB
 function HideCaret(hWnd: HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function InflateRect --> independent
+function IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IntersectRect --> independent
 Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsCharAlphaNumeric --> independent
@@ -140,6 +142,7 @@ function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt
 
 function RealizePalette(DC: HDC): Cardinal; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function RectVisible(dc : hdc; ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -216,29 +219,28 @@ type
 
 //##apiwiz##spi##    // Do not remove
 
-function AdjustWindowRectEx( Var Rect: TRect; Style1: Word; MenuExist : Boolean; Style2 : Word) : Boolean;
+function AdjustWindowRectEx(Var Rect: TRect; Style1: Word; MenuExist : Boolean;
+  Style2 : Word) : Boolean;
 
 Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;
 
 Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
-function CopyRect(var lprcDst: TRect; const lprcSrc: TRect): Boolean;
+function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
   Italic, Underline, StrikeOut, CharSet, OutputPrecision, ClipPrecision,
   Quality, PitchAndFamily: Cardinal; FaceName: PChar): HFONT;
 function CreatePen(Style, Width: Integer; Color: TColorRef): HPEN;
 
 Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
-Function ExcludeClipRect(dc: hdc; LEft,Top, Right, Bottom : Integer) : Integer;
 function EqualRect(const lprc1, lprc2: TRect): Boolean;
 
 function GetScrollPos(Handle: HWND; nBar: Integer): Integer;
 function GetScrollRange(Handle: HWND; nBar: Integer; var lpMinPos, lpMaxPos: Integer): Boolean;
 
-function InflateRect(var Rect: TRect; dx, dy: Integer): Boolean;
-function IntersectClipRect(dc: hdc; Leftrect, Toprect, RightREct,Bottomrect : Integer): Integer;
-function IntersectRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean;
+function InflateRect(var ARect: TRect; dx, dy: Integer): Boolean;
+function IntersectRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean;
 Function IsCharAlphaNumeric(c : Char) : Boolean;
-function IsRectEmpty(const lprc: TRect): Boolean; 
+function IsRectEmpty(const ARect: TRect): Boolean;
 
 function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean;
 
@@ -249,16 +251,14 @@ function MakeLResult(l, h: Word): LRESULT;
 Function PtInRect(Rect : TRect; Point : TPoint) : Boolean;
 Function PointtoSmallPoint(const P : TPoint) : TSmallPoint;
 
-function RectVisible(dc : hdc; Rect: TRect) : Boolean;
-
 function ScrollWindow(hWnd: HWND; XAmount, YAmount: Integer; Rect, ClipRect: PRect): Boolean;
-function SetRect(Var Rect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
-function SetRectEmpty(var lprc: TRect): Boolean;
+function SetRect(Var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
+function SetRectEmpty(var ARect: TRect): Boolean;
 function SetScrollPos(Handle: HWND; nBar, nPos: Integer; bRedraw: Boolean): Integer;
 function SetScrollRange(Handle: HWND; nBar, nMinPos, nMaxPos: Integer; bRedraw: Boolean): Boolean;
-Function SmallPointtoPoint(const P : TSmallPoint) : Tpoint;
+Function SmallPointToPoint(const P : TSmallPoint) : Tpoint;
 
-function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean; //pbd
+function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolean; //pbd
 
 
 //##apiwiz##epi##    // Do not remove
@@ -269,6 +269,9 @@ function UnionRect(var lprcDst: TRect; const lprcSrc1, lprcSrc2: TRect): Boolean
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/06/21 15:41:56  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.27  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 

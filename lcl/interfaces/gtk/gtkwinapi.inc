@@ -1908,6 +1908,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: ExcludeClipRect
+  Params:  dc: hdc; Left, Top, Right, Bottom : Integer
+  Returns: integer
+
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.ExcludeClipRect(dc: hdc;
+  Left, Top, Right, Bottom : Integer) : Integer;
+begin
+  // ToDo:
+  Result:=SimpleRegion;
+end;
+
+{------------------------------------------------------------------------------
   Function: ExtTextOut
   Params:  none
   Returns: Nothing
@@ -3160,6 +3174,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: IntersectClipRect
+  Params:  dc: hdc; Left, Top, Right, Bottom: Integer
+  Returns: Integer
+
+  Shrinks the current clipping region in the device context dc to the boundary
+  defined by Left, Top, Right, Bottom.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+      Region_Error
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.IntersectClipRect(dc: hdc;
+  Left, Top, Right, Bottom: Integer): Integer;
+begin
+  // ToDo:
+  Result:=SimpleRegion;
+end;
+
+{------------------------------------------------------------------------------
   Function: InvalidateRect
   Params: aHandle:
           Rect:
@@ -3171,41 +3208,23 @@ function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect;
   bErase : Boolean) : Boolean;
 var
   gdkRect : TGDKRectangle;
-  {$IFDEF ClientRectBugFix}
   Widget: PGtkWidget;
-  {$ENDIF}
 begin
 //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Result := True;
-  try
-    gdkRect.X := Rect^.Left;
-    gdkRect.Y := Rect^.Top;
-    gdkRect.Width := (Rect^.Right - Rect^.Left);
-    gdkRect.Height := (Rect^.Bottom - Rect^.Top);
-    
-    {$IFDEF ClientRectBugFix}
-    Widget:=GetFixedWidget(PGtkWidget(aHandle));
-    if Widget=nil then Widget:=PgtkWidget(aHandle);
+  gdkRect.X := Rect^.Left;
+  gdkRect.Y := Rect^.Top;
+  gdkRect.Width := (Rect^.Right - Rect^.Left);
+  gdkRect.Height := (Rect^.Bottom - Rect^.Top);
+  
+  Widget:=GetFixedWidget(PGtkWidget(aHandle));
+  if Widget=nil then Widget:=PgtkWidget(aHandle);
 
-    if bErase then
-      gdk_window_clear_area(Widget^.Window,
-                            gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
+  if bErase then
+    gdk_window_clear_area(Widget^.Window,
+                          gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
-    gtk_widget_draw(Widget, @gdkRect);
-    {$ELSE}
-    if bErase then
-      gdk_window_clear_area(PGtkWidget(aHandle)^.Window,
-                            gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-
-    gtk_widget_draw(PGtkWidget(aHandle), @gdkRect);
-    {$ENDIF}
-  except
-    on E: Exception do begin
-      writeln('TGTKObject.InvalidateRect: ',E.Message);
-      Result := False;
-    end;
-  end;
-
+  gtk_widget_draw(Widget, @gdkRect);
 end;
 
 {------------------------------------------------------------------------------
@@ -3681,6 +3700,16 @@ begin
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
+end;
+
+{------------------------------------------------------------------------------
+  Function: RectVisible
+  Params:  dc : hdc; ARect: TRect
+  Returns: True if ARect is not completely clipped away.
+ ------------------------------------------------------------------------------}
+function TgtkObject.RectVisible(dc : hdc; ARect: TRect) : Boolean;
+begin
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -4781,6 +4810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2002/06/21 15:41:56  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.79  2002/06/19 19:46:10  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
