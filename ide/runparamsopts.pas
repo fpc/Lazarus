@@ -66,6 +66,7 @@ type
     // local options
     fHostApplicationFilename: string;
     fCmdLineParams: string;
+    fUseDisplay: boolean;
     fUseLaunchingApplication: boolean;
     fLaunchingApplicationPathPlusParams: string;
     fWorkingDirectory: string;
@@ -93,6 +94,7 @@ type
            write fLaunchingApplicationPathPlusParams;
     property WorkingDirectory: string 
            read fWorkingDirectory write fWorkingDirectory;
+    property UseDisplay: boolean read fUseDisplay write FUseDisplay;
     property Display: string read fDisplay write fDisplay;
     
     // environment options
@@ -118,6 +120,7 @@ type
     WorkingDirectoryEdit: TEdit;
     WorkingDirectoryBtn: TBitBtn;
     DisplayGroupBox: TGroupBox;
+    UseDisplayCheckBox: TCheckBox;
     DisplayEdit: TEdit;
     SystemVariablesGroupBox: TGroupBox;
     SystemVariablesListView: TListView;
@@ -224,6 +227,7 @@ begin
   fUseLaunchingApplication:=false;
   fLaunchingApplicationPathPlusParams:=DefaultLauncherApplication;
   fWorkingDirectory:='';
+  fUseDisplay:=false;
   fDisplay:=':0';
     
   // environment options
@@ -265,6 +269,9 @@ begin
   fWorkingDirectory:=XMLConfig.GetValue(
     Path+'RunParams/local/WorkingDirectory/Value',
       fWorkingDirectory);
+  fUseDisplay:=XMLConfig.GetValue(
+    Path+'RunParams/local/Display/Use',
+      fUseDisplay);
   fDisplay:=XMLConfig.GetValue(
     Path+'RunParams/local/Display/Value',
       fDisplay);
@@ -309,6 +316,8 @@ begin
     fLaunchingApplicationPathPlusParams);
   XMLConfig.SetValue(Path+'RunParams/local/WorkingDirectory/Value',
     fWorkingDirectory);
+  XMLConfig.SetValue(Path+'RunParams/local/Display/Use',
+    fUseDisplay);
   XMLConfig.SetValue(Path+'RunParams/local/Display/Value',
     fDisplay);
 
@@ -335,7 +344,8 @@ begin
       Value:=UserOverrides.Values[Variable];
       EnvList.Values[Variable]:=Value;
     end;
-    EnvList.Values['DISPLAY']:=Display;
+    if UseDisplay then
+      EnvList.Values['DISPLAY']:=Display;
     Strings.Assign(EnvList);
   finally
     EnvList.Free;
@@ -521,16 +531,26 @@ begin
     Name:='DisplayGroupBox';
     Parent:=NoteBook.Page[0];
     SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
-                 w,60);
+                 w,80);
     Caption:='Display (not for win32)';
     Visible:=true;
   end;
   
+  UseDisplayCheckBox:=TCheckBox.Create(Self);
+  with UseDisplayCheckBox do begin
+    Name:='UseDisplayCheckBox';
+    Parent:=DisplayGroupBox;
+    SetBounds(5,3,200,Height);
+    Caption:='Use display';
+    Checked:=false;
+    Visible:=true;
+  end;
+
   DisplayEdit:=TEdit.Create(Self);
   with DisplayEdit do begin
     Name:='DisplayEdit';
     Parent:=DisplayGroupBox;
-    SetBounds(5,5,w-15,25);
+    SetBounds(5,UseDisplayCheckBox.Top+UseDisplayCheckBox.Height+3,w-15,25);
     Caption:='';
     Visible:=true;
   end;
@@ -715,11 +735,11 @@ begin
 
   with DisplayGroupBox do begin
     SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
-                 w,60);
+                 w,80);
   end;
 
   with DisplayEdit do begin
-    SetBounds(5,5,w-15,25);
+    SetBounds(5,UseDisplayCheckBox.Top+UseDisplayCheckBox.Height+3,w-15,25);
   end;
 end;
 
@@ -899,6 +919,7 @@ begin
   fOptions.LaunchingApplicationPathPlusParams:=
                                      Trim(UseLaunchingApplicationComboBox.Text);
   fOptions.WorkingDirectory:=Trim(WorkingDirectoryEdit.Text);
+  fOptions.UseDisplay:=UseDisplayCheckBox.Checked;
   fOptions.Display:=Trim(DisplayEdit.Text);
   
   // environment
@@ -941,6 +962,7 @@ begin
   SetComboBoxText(UseLaunchingApplicationComboBox,
                   fOptions.LaunchingApplicationPathPlusParams);
   WorkingDirectoryEdit.Text:=fOptions.WorkingDirectory;
+  UseDisplayCheckBox.Checked:=fOptions.UseDisplay;
   DisplayEdit.Text:=fOptions.Display;
   
   // environment
