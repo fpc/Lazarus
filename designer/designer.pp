@@ -530,7 +530,10 @@ Begin
 try
   UpdateLastMove := True;
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := ((Message.keys and MK_LButton) <> MK_LButton);
+
+  //don't want it enabled when a mouse button is pressed.
+  FHintTimer.Enabled := (Message.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
+  
   if FHintWindow.Visible then
      FHintWindow.Visible := False;
      
@@ -590,15 +593,14 @@ try
         begin
           // move selection
           FHasSized:=true;
-          TControl(MouseDownComponent).SetBounds(TControl(MouseDownComponent).Left+(MouseX-LastMouseMovePos.X),TControl(MouseDownComponent).Top+(MouseY-LastMouseMovePos.Y),TControl(MouseDownComponent).Width,TControl(MouseDownComponent).Height);
+//          TControl(MouseDownComponent).SetBounds(TControl(MouseDownComponent).Left+(MouseX-LastMouseMovePos.X),TControl(MouseDownComponent).Top+(MouseY-LastMouseMovePos.Y),TControl(MouseDownComponent).Width,TControl(MouseDownComponent).Height);
 
-//          ControlSelection.MoveSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
+          ControlSelection.MoveSelection(MouseX-LastMouseMovePos.X, MouseY-LastMouseMovePos.Y);
           if Assigned(FOnPropertiesChanged) then
              FOnPropertiesChanged(Self);
         end
         else
         begin
-          Writeln('Rubberband Selection/creation');
           // rubberband selection/creation
           ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,MouseX,MouseY);
           ControlSelection.RubberBandActive:=true;
