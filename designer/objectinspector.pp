@@ -587,6 +587,7 @@ begin
         end;
       end;
       Exclude(FStates,pgsApplyingValue);
+      DoPaint(true);
       if Assigned(FOnModified) then FOnModified(Self);
     end;
   end;
