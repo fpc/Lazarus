@@ -290,7 +290,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.CMVisibleChanged(var MEssage : TLMessage);
 begin
-  if not (csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle) then begin
+  if not (csDesigning in ComponentState)
+  or (csNoDesignVisible in ControlStyle) then begin
     InvalidateControl(true, FVisible and (csOpaque in ControlStyle));
   end;
 end;
@@ -1081,8 +1082,9 @@ end;
 procedure TControl.Show;
 begin
   if Parent <> nil then Parent.ShowControl(Self);
-  if not(csDesigning in ComponentState) or (csNoDesignVisible in ControlStyle) then
-    Visible:= true;
+  if not (csDesigning in ComponentState)
+  or (csNoDesignVisible in ControlStyle) then
+    Visible := true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1452,9 +1454,9 @@ begin
         AParent.InsertControl(Self);
         while AParent.Controls[0] <> Self do begin
           AControl:= AParent.Controls[0];
-  	  AParent.RemoveControl(AControl);
-	  AParent.InsertControl(AControl);
-	end;  
+      	  AParent.RemoveControl(AControl);
+      	  AParent.InsertControl(AControl);
+      	end;
       end;
     end;
   end;    
@@ -1725,6 +1727,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.49  2002/05/13 15:26:13  lazarus
+  MG: fixed form positioning when show, hide, show
+
   Revision 1.48  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 
