@@ -25,6 +25,7 @@
 {$ENDIF}
 
 { $DEFINE CHECK_POSITION}
+{ $DEFINE VerboseMouseBugfix}
 
 {------------------------------------------------------------------------------}
 {  TWinControl AdjustSize                                                      }
@@ -902,9 +903,9 @@ begin
     and (CaptureControl.Parent = Self) 
     then Control := CaptureControl;
   end
-  else
-    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),
-                            False,True,False);
+  else begin
+    Control := ControlAtPos(SmallPointToPoint(TheMessage.Pos),False,True,False);
+  end;
 
   Result := False;
   if Control <> nil then
@@ -923,6 +924,7 @@ begin
       ' MsgPos=',TheMessage.Pos.X,',',TheMessage.Pos.Y,
       ' Control=',Control.Left,',',Control.Top,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,
+      ' Scrolled=',GetClientScrollOffset.X,',',GetClientScrollOffset.Y,
       ' P=',P.X,',',P.Y
       );
       {$ENDIF}
@@ -2579,6 +2581,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2003/01/18 21:31:43  mattias
+  fixed scrolling offset of TScrollingWinControl
+
   Revision 1.114  2003/01/01 13:04:26  mattias
   clean ups
 
