@@ -2051,17 +2051,36 @@ Begin
   if Assigned(FOnKeyDown) then FOnKeyDown(Self, Key, Shift);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl KeyUp                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl KeyDownBeforeInterface
+------------------------------------------------------------------------------}
+procedure TWinControl.KeyDownBeforeInterface(var Key: Word; Shift: TShiftState
+  );
+begin
+  if WantsKeyBeforeInterface(Key,Shift) then
+    KeyDown(Key,Shift);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl KeyDownAfterInterface
+------------------------------------------------------------------------------}
+procedure TWinControl.KeyDownAfterInterface(var Key: Word; Shift: TShiftState);
+begin
+  if not WantsKeyBeforeInterface(Key,Shift) then
+    KeyDown(Key,Shift);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl KeyUp
+------------------------------------------------------------------------------}
 Procedure TWinControl.KeyUp(var Key: Word; shift : TShiftState);
 begin
   if Assigned(FOnKeyUp) then FOnKeyUp(Self, Key, Shift);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl ControlKeyUp                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl ControlKeyUp
+------------------------------------------------------------------------------}
 procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
 var
   Form: TCustomForm;
@@ -2101,36 +2120,41 @@ end;
 {------------------------------------------------------------------------------
   Method: TWinControl.WantsKey
   Params: CharCode - the key to inspect whether it is wanted
-  Returns: 0 - if not wanted
+  Returns: true if key is wanted before the interface handles it.
+
+  Checks if control wants the passed key to handle before the interface.
+ ------------------------------------------------------------------------------}
+function TWinControl.WantsKeyBeforeInterface(Key: word; Shift: TShiftState
+  ): boolean;
+var
+  lWantKeys: dword;
+{ values for lWantKeys
+           0 - if not wanted
            1 - if wanted, but is special (arrow)
            2 - if wanted, but is special (tab)
            4 - if wanted, but is special (all)
            8 - if wanted, is normal key
-
-  Checks if the passed key is a special key, and if so, returns non zero
-  Also determines type of special key, see return values
- ------------------------------------------------------------------------------}
-function TWinControl.WantsKey(CharCode: word): dword; 
-var
-  lWantKeys: dword;
+}
 begin
-  // we don't know what keys are special, different widgetsets may have
-  // different set of special keys; send message to control asking
-  // if it wants to handle it, if not, set lWantKeys to zero, so that
-  // KeyDown will not be called
+  // For Delphi compatibility we send a LM_GETDLGCODE message to the control
+  // asking if it wants to handle the key.
+  // We don't define a default handler for LM_GETDLGCODE,
+  // so the default return is 0.
+  // Note: Contrary to Delphi/win32api, we don't know what keys are special,
+  // different widgetsets may have different sets of special keys;
   lWantKeys := Perform(LM_GETDLGCODE, 0, 0);
   if (lWantKeys and DLGC_WANTALLKEYS) <> 0 then
   begin
     lWantKeys := DLGC_WANTALLKEYS;
   end else begin
-    case CharCode of
+    case Key of
     VK_TAB: 
       lWantKeys := lWantKeys and DLGC_WANTTAB;
     VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT:
       lWantKeys := lWantKeys and DLGC_WANTARROWS;
     end;
   end;  
-  Result := lWantKeys;
+  Result := (lWantKeys<>0);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2140,8 +2164,9 @@ function TWinControl.DoKeyDown(Var Message: TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
-  lWantsKey: dword;
 begin
+  //debugln('TWinControl.DoKeyDown ',Name,':',ClassName,' ');
+
   Result := True;
   F := GetParentForm(Self);
   if  (F <> nil)
@@ -2164,12 +2189,8 @@ begin
     // let user handle the key
     if not (csNoStdEvents in ControlStyle) then 
     begin
-      lWantsKey := WantsKey(CharCode);
-      if (lWantsKey > 0) and (lWantsKey <= DLGC_WANTALLKEYS) then
-      begin
-        KeyDown(CharCode, ShiftState);
-        if CharCode = VK_UNKNOWN then Exit;
-      end;
+      KeyDownBeforeInterface(CharCode, ShiftState);
+      if CharCode = VK_UNKNOWN then Exit;
     end;
 
     // let application handle the key
@@ -3110,17 +3131,18 @@ end;
   Params:   Msg: The message
   Returns:  nothing
 
-  event handler.
+  Event handler for keys not handled by the interface
  ------------------------------------------------------------------------------}
-Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
+Procedure TWinControl.WMKeyDown(Var Message: TLMKeyDown);
 var
   ShiftState: TShiftState;
 begin
   //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
-  if WantsKey(Message.CharCode) = 8 then
+  if not (csNoStdEvents in ControlStyle) then
   begin
     ShiftState := KeyDataToShiftState(Message.KeyData);
-    KeyDown(Message.CharCode, ShiftState);
+    KeyDownAfterInterface(Message.CharCode, ShiftState);
+    // Note: Message.CharCode can now be different or even 0
   end;
 end;
 
@@ -3131,7 +3153,7 @@ end;
 
   event handler.
  ------------------------------------------------------------------------------}
-Procedure TWinControl.WMKeyUp(Var Message : TLMKeyUp);
+Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
 Begin
   Assert(False, Format('Trace:[TWinControl.WMKeyUp] %s', [ClassName]));
   if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
@@ -3725,6 +3747,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.246  2004/07/01 10:08:31  mattias
+  made key handling more flexible
+
   Revision 1.245  2004/06/30 11:07:20  micha
   implement return key clicks default button; escape key clicks cancel button
 

@@ -1269,14 +1269,9 @@ begin
   SourceNotebook.OnInitIdentCompletion :=@OnSrcNotebookInitIdentCompletion;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
-  SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
-  SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
   SourceNotebook.OnReadOnlyChanged := @OnSrcNotebookReadOnlyChanged;
-  SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
-  SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
-  SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
   SourceNotebook.OnShowHintForSource :=@OnSrcNotebookShowHintForSource;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
@@ -10445,6 +10440,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.732  2004/07/01 10:08:31  mattias
+  made key handling more flexible
+
   Revision 1.731  2004/06/25 00:30:15  mattias
   fixed FileMask for FPCSrc scan
 

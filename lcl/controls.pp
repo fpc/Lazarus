@@ -1255,7 +1255,7 @@ type
 
 
   { TWinControl }
-
+  
   TWinControlFlag = (
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
@@ -1326,7 +1326,7 @@ type
     procedure SetParentCtl3D(Value : Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
-    function  WantsKey(CharCode: word): dword;
+    function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -1404,6 +1404,12 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
+    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); dynamic;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyPress(var Key: Char); dynamic;
+    procedure KeyUp(var Key: Word; Shift : TShiftState); dynamic;
   protected
     Function  FindNextControl(CurrentControl: TControl; GoForward,
                               CheckTabStop, CheckParent, OnlyWinControls
@@ -1419,7 +1425,6 @@ type
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
     function  ParentHandlesAllocated: boolean; override;
-    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); dynamic;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
     procedure CreateWnd; virtual; //creates the window
@@ -1429,9 +1434,6 @@ type
     procedure FixupTabList;
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; virtual; //gets called after the window is created
-    procedure KeyDown(var Key: Word; Shift : TShiftState); dynamic;
-    procedure KeyPress(var Key: Char); dynamic;
-    procedure KeyUp(var Key: Word; Shift : TShiftState); dynamic;
     procedure Loaded; override;
     procedure MainWndProc(var Message : TLMessage);
     procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
@@ -2324,6 +2326,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.218  2004/07/01 10:08:31  mattias
+  made key handling more flexible
+
   Revision 1.217  2004/06/30 11:07:20  micha
   implement return key clicks default button; escape key clicks cancel button
 

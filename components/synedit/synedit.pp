@@ -41,7 +41,6 @@ Known Issues:
   -DoubleBuffered
   -Font.CharSet
   -DropFiles
-  -WMGetDlgCode
   -THintWindow
   -DragAcceptFiles
   -Font DBCS / MBCS  double, multi byte character set
@@ -4280,10 +4279,7 @@ end;
 
 procedure TCustomSynEdit.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
-  {$IFNDEF SYN_LAZARUS}
-  // ToDo WMGetDlgCode
   inherited;
-  {$ENDIF}
   Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTALLKEYS;
   if fWantTabs and (GetKeyState(VK_CONTROL) >= 0) then
     Msg.Result := Msg.Result or DLGC_WANTTAB;

@@ -378,14 +378,9 @@ type
     FOnInitIdentCompletion: TOnInitIdentCompletion;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMovingPage: TOnMovingPage;
-    FOnNewClicked: TNotifyEvent;
-    FOnOpenClicked: TNotifyEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
     fOnReadOnlyChanged: TNotifyEvent;
-    FOnSaveAsClicked: TNotifyEvent;
-    FOnSaveAllClicked: TNotifyEvent;
-    FOnSaveClicked: TNotifyEvent;
     FOnShowHintForSource: TOnShowHintForSource;
     FOnShowUnitInfo: TNotifyEvent;
     FOnToggleFormUnitClicked: TNotifyEvent;
@@ -470,7 +465,7 @@ type
 
     function GetEditors(Index:integer): TSourceEditor;
 
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); override;
 
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -507,11 +502,6 @@ type
     procedure ClearErrorLines;
     procedure ClearExecutionLines;
 
-    Procedure NewClicked(Sender: TObject);
-    procedure OpenClicked(Sender: TObject);
-    procedure SaveClicked(Sender: TObject);
-    procedure SaveAllClicked(Sender: TObject);
-    procedure SaveAsClicked(Sender: TObject);
     procedure CloseClicked(Sender: TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
@@ -599,19 +589,10 @@ type
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
                          read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
     property OnMovingPage: TOnMovingPage read FOnMovingPage write FOnMovingPage;
-    property OnNewClicked: TNotifyEvent read FOnNewClicked write FOnNewClicked;
-    property OnOpenClicked: TNotifyEvent
-                                       read FOnOPenClicked write FOnOpenClicked;
     property OnOpenFileAtCursorClicked: TNotifyEvent
                read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
     property OnReadOnlyChanged: TNotifyEvent
                                read fOnReadOnlyChanged write fOnReadOnlyChanged;
-    property OnSaveAsClicked: TNotifyEvent
-                                   read FOnSaveAsClicked write FOnSaveAsClicked;
-    property OnSaveAllClicked: TNotifyEvent
-                                 read FOnSaveAllClicked write FOnSaveAllClicked;
-    property OnSaveClicked: TNotifyEvent
-                                       read FOnSaveClicked write FOnSaveClicked;
     property OnShowHintForSource: TOnShowHintForSource
                            read FOnShowHintForSource write FOnShowHintForSource;
     property OnShowUnitInfo: TNotifyEvent
@@ -1894,6 +1875,7 @@ end;
 Procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift :
   TShiftState);
 begin
+  writeln('TSourceEditor.EditorKeyDown A ',TComponent(Sender).Name,':',ClassName,' ',Key);
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
 end;
@@ -1909,10 +1891,10 @@ begin
   TopLine := FEditor.TopLine;
   LineHeight := FEditor.LineHeight;
   if CursorPos.Y > 1 then
-     LineNum := CursorPos.Y div LineHeight
-     else
-     LineNum := 1;
-  LineNum := LineNUm + (TopLine);
+    LineNum := CursorPos.Y div LineHeight
+  else
+    LineNum := 1;
+  LineNum := LineNum + (TopLine);
   XLine := CursorPos.X div FEditor.CharWidth;
   if XLine = 0 then inc(XLine);
 
@@ -3948,21 +3930,6 @@ begin
   SrcEdit.FocusEditor;
 end;
 
-Procedure TSourceNotebook.NewClicked(Sender: TObject);
-Begin
-  if Assigned(FOnNewClicked) then FOnNewClicked(Sender);
-End;
-
-Procedure TSourceNotebook.OpenClicked(Sender: TObject);
-Begin
-  if Assigned(FOnOpenClicked) then FOnOpenClicked(Sender);
-end;
-
-Procedure TSourceNotebook.SaveClicked(Sender: TObject);
-Begin
-  if Assigned(FOnSaveClicked) then FOnSaveClicked(Sender);
-end;
-
 Function TSourceNotebook.ActiveFileName: AnsiString;
 Begin
   Result := GetActiveSE.FileName;
@@ -4023,16 +3990,6 @@ begin
       Result:=ShortName+'('+IntToStr(i)+')';
     until PageNameExists(Result)=false;
   end;
-end;
-
-Procedure TSourceNotebook.SaveAsClicked(Sender: TObject);
-Begin
-  if Assigned(FOnSaveAsClicked) then FOnSaveAsClicked(Sender);
-end;
-
-Procedure TSourceNotebook.SaveAllClicked(Sender: TObject);
-Begin
-  if Assigned(FOnSaveAllClicked) then FOnSaveAllClicked(Sender);
 end;
 
 procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
@@ -4302,7 +4259,8 @@ Begin
   end;
 end;
 
-procedure TSourceNotebook.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TSourceNotebook.KeyDownBeforeInterface(var Key: Word;
+  Shift: TShiftState);
 var i, Command: integer;
 Begin
   inherited KeyDown(Key,Shift);
@@ -4313,13 +4271,13 @@ Begin
 
     ecGotoMarker0..ecGotoMarker9:
       begin
-	  BookMarkGoto(Command - ecGotoMarker0);
+        BookMarkGoto(Command - ecGotoMarker0);
         Key:=0;
       end;
 
     ecSetMarker0..ecSetMarker9:
       begin
-	  BookMarkSet(Command - ecSetMarker0);
+	BookMarkSet(Command - ecSetMarker0);
         Key:=0;
       end;
 
