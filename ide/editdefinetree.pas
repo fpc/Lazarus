@@ -234,6 +234,9 @@ var
   CustomOpts: TDefineTemplate;
 begin
   Result:=false; // no change
+  if ParentTemplate=nil then
+    RaiseException('UpdateCompilerOptionsTemplates internal error');
+  
   { ToDo:
 
     StackChecks
@@ -376,6 +379,7 @@ var
   OldNode: TDefineTemplate;
 begin
   Result:=false; // no change
+  if ParentTemplate=nil then exit;
   OldNode:=ParentTemplate.FindChildByName(Name);
   if OldNode<>nil then begin
     OldNode.Unbind;

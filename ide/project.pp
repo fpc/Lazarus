@@ -288,7 +288,7 @@ type
 
   TEndUpdateProjectEvent =
     procedure(Sender: TObject; ProjectChanged: boolean) of object;
-
+    
   TProject = class(TObject)
   private
     fActiveEditorIndexAtStart: integer;
@@ -302,6 +302,7 @@ type
     FFirstRequiredDependency: TPkgDependency;
     fFirst: array[TUnitInfoList] of TUnitInfo;
 
+    fDestroying: boolean;
     FFlags: TProjectFlags;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
@@ -455,6 +456,7 @@ type
     property CompilerOptions: TProjectCompilerOptions
                                    read fCompilerOptions write fCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
+    property Destroying: boolean read fDestroying;
     property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
@@ -1311,6 +1313,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TProject.Destroy;
 begin
+  fDestroying:=true;
   Clear;
   FreeThenNil(fBookmarks);
   FreeThenNil(xmlconfig);
@@ -2733,7 +2736,7 @@ procedure TProjectDefineTemplates.UpdateMain;
 begin
   // update the package block define template (the container for all other
   // define templates of the package)
-  if FMain=nil then begin
+  if (FMain=nil) and (not Owner.Destroying) then begin
     // create the main project template
     FMain:=CreateProjectTemplate(FProjectDir);
     FMain.SetDefineOwner(Owner,false);
@@ -2749,8 +2752,10 @@ begin
     exit;
   end;
   Exclude(FFlags,ptfFlagsChanged);
+  if Owner.Destroying then exit;
   if FMain=nil then UpdateMain;
 
+  if (FProjectDir=nil) then exit;
   UpdateCompilerOptionsTemplates(FProjectDir,Owner.CompilerOptions,true,true);
 end;
 
@@ -2784,6 +2789,9 @@ end.
 
 {
   $Log$
+  Revision 1.145  2003/12/26 09:37:19  mattias
+  added TProject.Destroying
+
   Revision 1.144  2003/12/25 14:17:06  mattias
   fixed many range check warnings
 
