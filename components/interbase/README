@@ -9,4 +9,7 @@ You need to install
   For example:
   ln -s /usr/local/firebird/lib/libfbclient.so /usr/lib/libgds.so
   
+
+Links:
+  http://www.progdigy.com/
   

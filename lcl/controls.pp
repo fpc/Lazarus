@@ -1454,7 +1454,6 @@ type
     procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
     procedure ReAlign; // realign all childs
     procedure RealSetText(const Value: TCaption); override;
-    procedure ReCreateWnd;
     procedure RemoveFocus(Removing: Boolean);
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
@@ -1536,6 +1535,7 @@ type
     Procedure Insert(AControl: TControl);
     Procedure Insert(AControl: TControl; Index: integer);
     Procedure Remove(AControl: TControl);
+    procedure ReCreateWnd;
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure Hide;
     procedure Repaint; override;
@@ -2346,6 +2346,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.227  2004/07/23 22:14:22  mattias
+  fixed compilation for fpc 1.0.10
+
   Revision 1.226  2004/07/14 15:57:53  mattias
   fixed 1.0.10 compilation  from Vincent
 
