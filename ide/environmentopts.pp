@@ -238,11 +238,13 @@ type
     property MaxRecentOpenFiles: integer
        read FMaxRecentOpenFiles write FMaxRecentOpenFiles;
     procedure AddToRecentOpenFiles(const AFilename: string);
+    procedure RemoveFromRecentOpenFiles(const AFilename: string);
     property RecentProjectFiles: TStringList
        read FRecentProjectFiles write FRecentProjectFiles;
     property MaxRecentProjectFiles: integer
        read FMaxRecentProjectFiles write FMaxRecentProjectFiles;
     procedure AddToRecentProjectFiles(const AFilename: string);
+    procedure RemoveFromRecentProjectFiles(const AFilename: string);
     property LastSavedProjectFile: string
        read FLastSavedProjectFile write FLastSavedProjectFile;
     property OpenLastProjectAtStart: boolean
@@ -962,9 +964,21 @@ begin
   AddToRecentList(AFilename,FRecentOpenFiles,FMaxRecentOpenFiles);
 end;
 
+procedure TEnvironmentOptions.RemoveFromRecentOpenFiles(const AFilename: string
+  );
+begin
+  RemoveFromRecentList(AFilename,FRecentOpenFiles);
+end;
+
 procedure TEnvironmentOptions.AddToRecentProjectFiles(const AFilename: string);
 begin
   AddToRecentList(AFilename,FRecentProjectFiles,FMaxRecentProjectFiles);
+end;
+
+procedure TEnvironmentOptions.RemoveFromRecentProjectFiles(
+  const AFilename: string);
+begin
+  RemoveFromRecentList(AFilename,FRecentProjectFiles);
 end;
 
 procedure TEnvironmentOptions.InitLayoutList;

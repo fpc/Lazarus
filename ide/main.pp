@@ -1454,6 +1454,13 @@ begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
     if DoOpenEditorFile(AFilename,-1,[ofAddToRecent])=mrOk then begin
       UpdateEnvironment;
+    end else begin
+      // open failed
+      if not FileExists(AFilename) then begin
+        // file does not exist -> delete it from recent file list
+        EnvironmentOptions.RemoveFromRecentOpenFiles(AFilename);
+        UpdateEnvironment;
+      end;
     end;
   end;
 end;
@@ -1862,6 +1869,12 @@ begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
     if DoOpenProjectFile(AFilename)=mrOk then begin
       UpdateEnvironment;
+    end else begin
+      // open failed
+      if not FileExists(AFilename) then begin
+        EnvironmentOptions.RemoveFromRecentProjectFiles(AFilename);
+        UpdateEnvironment;
+      end;
     end;
   end;
 end;
@@ -6689,6 +6702,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.354  2002/08/27 09:22:44  lazarus
+  MG: not existing files will now be removed from recent lists
+
   Revision 1.353  2002/08/27 08:55:27  lazarus
   MG: fixed editing empty resources
 
