@@ -49,14 +49,14 @@ uses
 type
   TGtk2WidgetSet = class(TGtkWidgetSet)
   protected
-    procedure AppendText(Sender: TObject; Str: PChar); override;
+    procedure AppendText(Sender: TObject; Str: PChar);
     function CreateComponent(Sender : TObject): THandle; override;
-    function GetText(Sender: TComponent; var Text: String): Boolean; override;
+    function GetText(Sender: TComponent; var Text: String): Boolean;
     procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); override;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);override;
-    procedure SetLabel(Sender : TObject; Data : Pointer); override;
+    procedure SetLabel(Sender : TObject; Data : Pointer);
     function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
@@ -594,6 +594,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2004/09/12 19:08:35  mazen
+  * Fix compilation problem with GTK2
+
   Revision 1.33  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

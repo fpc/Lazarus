@@ -192,8 +192,8 @@ begin
         gtk_text_buffer_insert(aTextBuffer, @aTextIter2, str, StrLen(str));
         gtk_text_buffer_end_user_action(aTextBuffer);
       end;
-      else
-        inherited AppendText(Sender, Str);
+      {else
+        inherited AppendText(Sender, Str);}
     end;
   end;
 end;
@@ -348,8 +348,8 @@ begin
                   Text := StrPas(CS);
                   g_free(CS);
                end;
-  else
-    Result := inherited GetText(Sender, Text);
+  {else
+    Result := inherited GetText(Sender, Text);}
   end;
 end;
 
@@ -438,7 +438,7 @@ begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
 
-      LM_CLB_GETCHECKED :
+(*      LM_CLB_GETCHECKED :
       begin
         Result := 0;
         if Assigned(Data)
@@ -457,9 +457,9 @@ begin
                result := 1;
           end;
         end;
-      end;
+      end; *)
 
-      LM_CLB_SETCHECKED :
+      (*LM_CLB_SETCHECKED :
       begin
         if Assigned(Data)
         and (Sender is TControl)
@@ -474,7 +474,7 @@ begin
           then
               gtk_list_store_set(GTK_LIST_STORE(aTreeModel), @aTreeIter, [0, TLMSetChecked(Data^).Checked, -1]);
         end;
-      end;
+      end;*)
 
       LM_GETITEMINDEX :
       begin
@@ -985,7 +985,7 @@ var
   AccelKey : integer;
 begin
   if Sender is TMenuItem then begin
-    inherited SetLabel(Sender, Data);
+    //inherited SetLabel(Sender, Data);
     exit;
   end;
 
@@ -1054,8 +1054,8 @@ begin
                     gtk_text_buffer_insert(aTextBuffer, @aTextIter1, pLabel, StrLen(pLabel));
                     gtk_text_buffer_end_user_action(aTextBuffer);
                   end;
-  else
-    inherited SetLabel(Sender, Data);
+  {else
+    inherited SetLabel(Sender, Data);}
   end;
   Assert(False, Format('trace:  [TGtk2WidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
 end;
@@ -1375,6 +1375,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.17  2004/09/12 19:09:08  mazen
+  * Fix compilation problem with GTK2
+
   Revision 1.16  2004/09/08 16:20:24  mazen
   * Commenting removed messages
   * Can someone please verify they can be removed please?
