@@ -887,6 +887,7 @@ Begin
   {$IFDEF VerboseFocus}
   writeln('TSourceEditor.FocusEditor A ',PageName,' ',FEditor.Name);
   {$ENDIF}
+  if SourceNotebook<>nil then SourceNotebook.Visible:=true;
   FEditor.SetFocus;
   {$IFDEF VerboseFocus}
   writeln('TSourceEditor.FocusEditor END ',PageName,' ',FEditor.Name);
@@ -3482,6 +3483,7 @@ Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] A ');
   {$ENDIF}
+  Visible:=true;
   TempEditor := NewSE(-1);
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.NewFile] B ');
@@ -3506,6 +3508,7 @@ Begin
   {$ENDIF}
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
+  Visible:=true;
   TempEditor.Close;
   TempEditor.Free;
   if Notebook.PageCount>1 then begin
@@ -3536,6 +3539,7 @@ begin
   if (NoteBook=nil) or (fAutoFocusLock>0) then exit;
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
+  Show;
   SrcEdit.FocusEditor;
 end;
 
