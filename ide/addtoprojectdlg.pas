@@ -684,6 +684,7 @@ constructor TAddToProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Name:='AddToProjectDialog';
+  Caption:=lisProjAddToProject;
   fPackages:=TAVLTree.Create(@CompareLazPackageIDNames);
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,500,300);

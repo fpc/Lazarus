@@ -78,6 +78,7 @@ resourcestring
   // component editors
   cesStringGridEditor = 'StringGrid Editor ...';
   cesStringGridEditor2 = 'StringGrid Editor';
+  oisCreateDefaultEvent = 'Create default event';
 
   // Actions Editor
   cActionListEditorUnknownCategory='(Unknown)';

@@ -389,6 +389,10 @@ msgstr "Añadir rutas a los paquetes/proyectos dependientes"
 msgid "Add to package"
 msgstr "Añadir a paquete"
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""

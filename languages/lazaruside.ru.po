@@ -378,6 +378,10 @@ msgstr "Добавить пути к зависимым пакетам/проектам"
 msgid "Add to package"
 msgstr "Добавить к пакету"
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr "Добавить наблюдение..."

@@ -556,7 +556,7 @@ end;
 
 function TDefaultComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result:='Edit';
+  Result:=oisCreateDefaultEvent;
 end;
 
 procedure TDefaultComponentEditor.ExecuteVerb(Index: Integer);

@@ -5874,6 +5874,10 @@ msgstr ""
 msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgstr ""
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
 msgstr ""

@@ -136,6 +136,10 @@ msgstr ""
 msgid "Confirme clear all images ?"
 msgstr "¿Confirme limpiar todas las imágenes?"
 
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr ""
+
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
 msgstr "Suprimir"

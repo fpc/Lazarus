@@ -389,6 +389,10 @@ msgstr "Dodaj ¶cie¿ki do zale¿nych pakietów/projektów"
 msgid "Add to package"
 msgstr "Dodaj do pakietu"
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""

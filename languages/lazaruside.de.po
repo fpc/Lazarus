@@ -388,6 +388,10 @@ msgstr ""
 msgid "Add to package"
 msgstr ""
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""

@@ -388,6 +388,10 @@ msgstr "Aggiungi percorsi ai pacchetti/progetti dipendenti"
 msgid "Add to package"
 msgstr "Aggiungi al pacchetto"
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""

@@ -1908,6 +1908,7 @@ resourcestring
     +'already exists in the project%swith file: %s%s%s.';
   lisProjAddTheUnitNameAlreadyExistsInTheSelection = 'The unit name %s%s%s '
     +'already exists in the selection%swith file: %s%s%s.';
+  lisProjAddToProject = 'Add to project';
   lisProjAddNewRequirement = 'New Requirement';
   lisProjAddFiles = 'Add files';
   lisProjAddEditorFile = 'Add editor files';

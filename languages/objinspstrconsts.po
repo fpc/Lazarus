@@ -190,6 +190,10 @@ msgstr ""
 msgid "StringGrid Editor"
 msgstr ""
 
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr ""
+
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
 msgstr ""

@@ -388,6 +388,10 @@ msgstr "Ajouter les chemins dépendant des paquets/projets"
 msgid "Add to package"
 msgstr "Ajouter au paquet"
 
+#: lazarusidestrconsts:lisprojaddtoproject
+msgid "Add to project"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddwatch
 msgid "Add watch ..."
 msgstr ""
