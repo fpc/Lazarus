@@ -222,7 +222,6 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-
 function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -363,22 +362,45 @@ begin
   Result := DeliverPostMessage(Data, MSG);
 end;
 
-function gtkfrmactivate( widget: PGtkWidget; Event : TgdkEventFocus;
+function gtkfrmactivate( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
+{$IFDEF VerboseFocus}
+  LCLObject: TControl;
+{$ENDIF}
 begin
   EventTrace('activate', data);
+  {$IFDEF VerboseFocus}
+  write('gtkfrmactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn);
+  LCLObject:=TControl(GetLCLObject(Widget));
+  if LCLObject<>nil then
+    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    writeln(' LCLObject=nil');
+  {$ENDIF}
   Mess.Msg := LM_ACTIVATE;
   Result := DeliverPostMessage(Data, Mess);
 end;
 
-function gtkfrmdeactivate( widget: PGtkWidget; Event : TgdkEventFocus;
+function gtkfrmdeactivate( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
+{$IFDEF VerboseFocus}
+  LCLObject: TControl;
+{$ENDIF}
 begin
   EventTrace('deactivate', data);
+  {$IFDEF VerboseFocus}
+  write('gtkfrmdeactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
+        ' GetFocus=',HexStr(Cardinal(Widget),8));
+  LCLObject:=TControl(GetLCLObject(Widget));
+  if LCLObject<>nil then
+    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    writeln(' LCLObject=nil');
+  {$ENDIF}
   Mess.Msg := LM_DEACTIVATE;
   Result := DeliverPostMessage(Data, Mess);
 end;
@@ -400,7 +422,6 @@ var
 begin
   Result:=true;
   
-  {$DEFINE KeyBugFix}
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
 
   FillChar(Msg,SizeOf(Msg),0);
@@ -435,12 +456,7 @@ begin
       // send the message directly to the LCL
       Msg.Result:=0;
       Code := Msg.CharCode;
-      {$IFDEF KeyBugFix}
       Result := DeliverMessage(Data, Msg)=0;
-      {$ELSE}
-      TObject(Data).Dispatch(Msg);
-      Result := (Msg.Result=0);
-      {$ENDIF}
 
       If Msg.CharCode <> Code then begin
         // key was handled by LCL
@@ -482,12 +498,7 @@ begin
       Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
       Code := Msg.CharCode;
       // send the message directly to the LCL
-      {$IFDEF KeyBugFix}
       Result := DeliverMessage(Data, Msg)=0;
-      {$ELSE}
-      TObject(Data).Dispatch(Msg);
-      Result := (Msg.Result=0);
-      {$ENDIF}
 
       If Msg.CharCode <> Code then begin
         // key was handled by LCL
@@ -519,12 +530,7 @@ begin
         Msg.CharCode := KeyCode;
         Msg.Result:=0;
         // send the message directly to the LCL
-        {$IFDEF KeyBugFix}
         Result := DeliverMessage(Data, Msg)=0;
-        {$ELSE}
-        TObject(Data).Dispatch(Msg);
-        Result := (Msg.Result=0);
-        {$ENDIF}
         If Msg.CharCode <> KeyCode then begin
           // key was handled by lcl
           gtk_signal_emit_stop_by_name (GTK_OBJECT (Widget), 'key_press_event');
@@ -556,24 +562,49 @@ begin
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
-
-function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
+function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+{$IFDEF VerboseFocus}
+  LCLObject: TControl;
+{$ENDIF}
 begin
   EventTrace('focus', data);
-  
+  {$IFDEF VerboseFocus}
+  write('GTKFocusCB Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
+        ' GetFocus=',HexStr(Cardinal(GetFocus),8));
+  LCLObject:=TControl(GetLCLObject(Widget));
+  if LCLObject<>nil then
+    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    writeln(' LCLObject=nil');
+  {$ENDIF}
+
   //TODO: fill in old focus
   Mess.msg := LM_SETFOCUS;
   Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
   Result := DeliverMessage(Data,  Mess) = 0;
 end;
 
-function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus; data: gPointer) : GBoolean; cdecl;
+function GTKKillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
+  data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+{$IFDEF VerboseFocus}
+  LCLObject: TControl;
+{$ENDIF}
 begin
   EventTrace('killfocus', data);
+  {$IFDEF VerboseFocus}
+  write('GTKKillFocusCB Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
+        ' GetFocus=',HexStr(Cardinal(GetFocus),8));
+  LCLObject:=TControl(GetLCLObject(Widget));
+  if LCLObject<>nil then
+    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+  else
+    writeln(' LCLObject=nil');
+  {$ENDIF}
   Mess.msg := LM_KILLFOCUS;
 
   //TODO: fill in new focus
@@ -2505,6 +2536,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.153  2002/10/21 22:12:47  lazarus
+  MG: fixed frmactivate
+
   Revision 1.152  2002/10/20 21:49:09  lazarus
   MG: fixes for fpc1.1
 
