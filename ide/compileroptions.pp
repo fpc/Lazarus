@@ -133,6 +133,7 @@ type
     fDontUseConfigFile: Boolean;
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
+    fCustomOptions: string;
 
     procedure LoadTheCompilerOptions;
     procedure SaveTheCompilerOptions;
@@ -148,6 +149,7 @@ type
     
     function MakeOptionsString: String;
     function MakeOptionsString(const MainSourceFileName: string): String;
+    function CustomOptionsAsString: string;
     function ParseSearchPaths(const switch, paths: String): String;
     function ParseOptions(const Delim, Switch, OptionStr: string): string;
     function GetXMLConfigPath: String;
@@ -238,6 +240,7 @@ type
     property DontUseConfigFile: Boolean read fDontUseConfigFile write fDontUseConfigFile;
     property AdditionalConfigFile: Boolean read fAdditionalConfigFile write fAdditionalConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
+    property CustomOptions: string read fCustomOptions write fCustomOptions;
   end;
 
 
@@ -245,7 +248,6 @@ type
   
   TfrmCompilerOptions = class(TForm)
     nbMain: TNotebook;
-    //bvlButtonBar: TBevel;
 
     { Search Paths Controls }
     grpOtherUnits: TGroupBox;
@@ -316,7 +318,6 @@ type
     grpOptimizations: TGroupBox;
     chkOptVarsInReg: TCheckBox;
     chkOptUncertain: TCheckBox;
-    //bvlOptSepLine: TBevel;
     radOptLevel1: TRadioButton;
     radOptLevel2: TRadioButton;
     radOptLevel3: TRadioButton;
@@ -369,6 +370,8 @@ type
     chkConfigFile: TCheckBox;
     chkAdditionalConfigFile: TCheckBox;
     edtConfigPath: TEdit;
+    grpCustomOptions: TGroupBox;
+    memCustomOptions: TMemo;
 
     { Buttons }
     btnTest: TButton;
@@ -472,9 +475,16 @@ begin
   { Target }
   TargetFilename := XMLConfigFile.GetValue('CompilerOptions/Target/Filename/Value', '');
 
+  { SearchPaths }
+  IncludeFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', '');
+  Libraries := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/Libraries/Value', '');
+  OtherUnitFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
+  CompilerPath := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
+  UnitOutputDirectory := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', '');
+  LCLWidgetType := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', 'gtk');
+
   { Parsing }
   Style := XMLConfigFile.GetValue('CompilerOptions/Parsing/Style/Value', 1);
-
   D2Extensions := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', true);
   CStyleOperators := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', true);
   IncludeAssertionCode := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/IncludeAssertionCode/Value', true);
@@ -513,7 +523,7 @@ begin
   PassLinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', false);
   LinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', '');
     
-  { Other }
+  { Messages }
   ShowErrors := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', true);
   ShowWarn := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', true);
   ShowNotes := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', true);
@@ -531,18 +541,13 @@ begin
   ShowNothing := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', false);
   ShowHintsForUnusedProjectUnits := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowHintsForUnusedProjectUnits/Value', false);
   WriteFPCLogo := XMLConfigFile.GetValue('CompilerOptions/Other/WriteFPCLogo/Value', true);
+  StopAfterErrCount := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', 1);
+
+  { Other }
   DontUseConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/DontUseConfigFile/Value', false);
   AdditionalConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', false);
   ConfigFilePath := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', './fpc.cfg');
-  StopAfterErrCount := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', 1);
-
-  { SearchPaths }
-  IncludeFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', '');
-  Libraries := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/Libraries/Value', '');
-  OtherUnitFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
-  CompilerPath := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
-  UnitOutputDirectory := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', '');
-  LCLWidgetType := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', 'gtk');
+  CustomOptions := XMLConfigFile.GetValue('CompilerOptions/Other/CustomOptions/Value', '');
 end;
 
 {------------------------------------------------------------------------------}
@@ -576,6 +581,14 @@ begin
   
   { Target }
   XMLConfigFile.SetValue('CompilerOptions/Target/Filename/Value', TargetFilename);
+
+  { SearchPaths }
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', UnitOutputDirectory);
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', LCLWidgetType);
 
   { Parsing }
   XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
@@ -617,7 +630,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', PassLinkerOptions);
   XMLConfigFile.SetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', LinkerOptions);
     
-  { Other }
+  { Messages }
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', ShowErrors);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', ShowWarn);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', ShowNotes);
@@ -635,18 +648,13 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', ShowNothing);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowHintsForUnusedProjectUnits/Value', ShowHintsForUnusedProjectUnits);
   XMLConfigFile.SetValue('CompilerOptions/Other/WriteFPCLogo/Value', WriteFPCLogo);
+  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', StopAfterErrCount);
+
+  { Other }
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/DontUseConfigFile/Value', DontUseConfigFile);
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
   XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
-  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', StopAfterErrCount);
-
-  { SearchPaths }
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', UnitOutputDirectory);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', LCLWidgetType);
+  XMLConfigFile.SetValue('CompilerOptions/Other/CustomOptions/Value', CustomOptions);
 
   XMLConfigFile.Flush;
 end;
@@ -1147,9 +1155,25 @@ begin
     or (UnitOutputDirectory<>'') then
       switches := switches + ' '+PrepareCmdLineOption('-o' + tempsw);
   end;
+  
+  tempsw:=CustomOptionsAsString;
+  if tempsw<>'' then
+    Switches:=Switches+' '+tempsw;
 
   fOptionsString := switches;
   Result := fOptionsString;
+end;
+
+function TCompilerOptions.CustomOptionsAsString: string;
+var
+  i: Integer;
+begin
+  Result:=CustomOptions;
+  if Result='' then exit;
+  for i:=1 to length(Result) do
+    if Result[i]<' ' then Result[i]:=' ';
+  if Result='' then exit;
+  Result:=Trim(Result);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1244,7 +1268,15 @@ begin
   fLoaded := false;
   FModified := false;
 
-  { Set Defaults }
+  // search paths
+  fIncludeFiles := '';
+  fLibraries := '';
+  fOtherUnitFiles := '';
+  fCompilerPath := '/opt/fpc/ppc386';
+  fUnitOutputDir := '';
+  fLCLWidgetType := 'gtk';
+  
+  // parsing
   fStyle := 1;
   fD2Ext := true;
   fCStyleOp := true;
@@ -1259,6 +1291,7 @@ begin
   fUseAnsiStr := false;
   fGPCCompat := false;
     
+  // code generation
   fUnitStyle := 1;
   fIOChecks := false;
   fRangeChecks := false;
@@ -1272,6 +1305,7 @@ begin
   fOptLevel := 1;
   fTargetOS := 'linux';
     
+  // linking
   fGenDebugInfo := false;
   fGenDebugDBX := false;
   fUseLineInfoUnit := true;
@@ -1282,6 +1316,7 @@ begin
   fPassLinkerOpt := false;
   fLinkerOptions := '';
     
+  // messages
   fShowErrors := true;
   fShowWarn := true;
   fShowNotes := true;
@@ -1299,17 +1334,13 @@ begin
   fShowNothing := false;
   fShowHintsForUnusedProjectUnits := false;
   fWriteFPCLogo := true;
+  fStopAfterErrCount := 1;
+
+  // other
   fDontUseConfigFile := false;
   fAdditionalConfigFile := false;
   fConfigFilePath := './fpc.cfg';
-  fStopAfterErrCount := 1;
-    
-  fIncludeFiles := '';
-  fLibraries := '';
-  fOtherUnitFiles := '';
-  fCompilerPath := '/opt/fpc/ppc386';
-  fUnitOutputDir := '';
-  fLCLWidgetType := 'gtk';
+  fCustomOptions := '';
 end;
 
 procedure TCompilerOptions.Assign(CompOpts: TCompilerOptions);
@@ -1317,7 +1348,15 @@ begin
   fOptionsString := CompOpts.fOptionsString;
   fLoaded := CompOpts.fLoaded;
 
-  { Set Defaults }
+  // Search Paths
+  fIncludeFiles := CompOpts.fIncludeFiles;
+  fLibraries := CompOpts.fLibraries;
+  fOtherUnitFiles := CompOpts.fOtherUnitFiles;
+  fCompilerPath := CompOpts.fCompilerPath;
+  fUnitOutputDir := CompOpts.fUnitOutputDir;
+  fLCLWidgetType := CompOpts.fLCLWidgetType;
+
+  // Parsing
   fStyle := CompOpts.fStyle;
   fD2Ext := CompOpts.fD2Ext;
   fCStyleOp := CompOpts.fCStyleOp;
@@ -1332,6 +1371,7 @@ begin
   fUseAnsiStr := CompOpts.fUseAnsiStr;
   fGPCCompat := CompOpts.fGPCCompat;
 
+  // Code Generation
   fUnitStyle := CompOpts.fUnitStyle;
   fIOChecks := CompOpts.fIOChecks;
   fRangeChecks := CompOpts.fRangeChecks;
@@ -1345,6 +1385,7 @@ begin
   fOptLevel := CompOpts.fOptLevel;
   fTargetOS := CompOpts.fTargetOS;
 
+  // Linking
   fGenDebugInfo := CompOpts.fGenDebugInfo;
   fGenDebugDBX := CompOpts.fGenDebugDBX;
   fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
@@ -1355,6 +1396,7 @@ begin
   fPassLinkerOpt := CompOpts.fPassLinkerOpt;
   fLinkerOptions := CompOpts.fLinkerOptions;
 
+  // Messages
   fShowErrors := CompOpts.fShowErrors;
   fShowWarn := CompOpts.fShowWarn;
   fShowNotes := CompOpts.fShowNotes;
@@ -1372,26 +1414,28 @@ begin
   fShowNothing := CompOpts.fShowNothing;
   fShowHintsForUnusedProjectUnits := CompOpts.fShowHintsForUnusedProjectUnits;
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
+  fStopAfterErrCount := CompOpts.fStopAfterErrCount;
+
+  // Other
   fDontUseConfigFile := CompOpts.fDontUseConfigFile;
   fAdditionalConfigFile := CompOpts.fAdditionalConfigFile;
   fConfigFilePath := CompOpts.fConfigFilePath;
-  fStopAfterErrCount := CompOpts.fStopAfterErrCount;
-
-  fIncludeFiles := CompOpts.fIncludeFiles;
-  fLibraries := CompOpts.fLibraries;
-  fOtherUnitFiles := CompOpts.fOtherUnitFiles;
-  fCompilerPath := CompOpts.fCompilerPath;
-  fUnitOutputDir := CompOpts.fUnitOutputDir;
-  
-  fLCLWidgetType := CompOpts.fLCLWidgetType;
+  fCustomOptions := CompOpts.fCustomOptions;
 end;
 
 function TCompilerOptions.IsEqual(CompOpts: TCompilerOptions): boolean;
 begin
   Result:=
-        (fOptionsString = CompOpts.fOptionsString)
-    and (fLoaded = CompOpts.fLoaded)
+    // search paths
+        (fIncludeFiles = CompOpts.fIncludeFiles)
+    and (fLibraries = CompOpts.fLibraries)
+    and (fOtherUnitFiles = CompOpts.fOtherUnitFiles)
+    and (fCompilerPath = CompOpts.fCompilerPath)
+    and (fUnitOutputDir = CompOpts.fUnitOutputDir)
 
+    and (fLCLWidgetType = CompOpts.fLCLWidgetType)
+
+    // parsing
     and (fStyle = CompOpts.fStyle)
     and (fD2Ext = CompOpts.fD2Ext)
     and (fCStyleOp = CompOpts.fCStyleOp)
@@ -1406,6 +1450,7 @@ begin
     and (fUseAnsiStr = CompOpts.fUseAnsiStr)
     and (fGPCCompat = CompOpts.fGPCCompat)
 
+    // code generation
     and (fUnitStyle = CompOpts.fUnitStyle)
     and (fIOChecks = CompOpts.fIOChecks)
     and (fRangeChecks = CompOpts.fRangeChecks)
@@ -1419,6 +1464,7 @@ begin
     and (fOptLevel = CompOpts.fOptLevel)
     and (fTargetOS = CompOpts.fTargetOS)
 
+    // linking
     and (fGenDebugInfo = CompOpts.fGenDebugInfo)
     and (fGenDebugDBX = CompOpts.fGenDebugDBX)
     and (fUseLineInfoUnit = CompOpts.fUseLineInfoUnit)
@@ -1429,6 +1475,7 @@ begin
     and (fPassLinkerOpt = CompOpts.fPassLinkerOpt)
     and (fLinkerOptions = CompOpts.fLinkerOptions)
 
+    // messages
     and (fShowErrors = CompOpts.fShowErrors)
     and (fShowWarn = CompOpts.fShowWarn)
     and (fShowNotes = CompOpts.fShowNotes)
@@ -1446,18 +1493,13 @@ begin
     and (fShowNothing = CompOpts.fShowNothing)
     and (fShowHintsForUnusedProjectUnits = CompOpts.fShowHintsForUnusedProjectUnits)
     and (fWriteFPCLogo = CompOpts.fWriteFPCLogo)
+    
+    // other
     and (fDontUseConfigFile = CompOpts.fDontUseConfigFile)
     and (fAdditionalConfigFile = CompOpts.fAdditionalConfigFile)
     and (fConfigFilePath = CompOpts.fConfigFilePath)
     and (fStopAfterErrCount = CompOpts.fStopAfterErrCount)
-
-    and (fIncludeFiles = CompOpts.fIncludeFiles)
-    and (fLibraries = CompOpts.fLibraries)
-    and (fOtherUnitFiles = CompOpts.fOtherUnitFiles)
-    and (fCompilerPath = CompOpts.fCompilerPath)
-    and (fUnitOutputDir = CompOpts.fUnitOutputDir)
-
-    and (fLCLWidgetType = CompOpts.fLCLWidgetType)
+    and (fCustomOptions = CompOpts.fCustomOptions)
     ;
 end;
 
@@ -1710,6 +1752,7 @@ begin
   chkAdditionalConfigFile.Checked := CompilerOpts.AdditionalConfigFile;
   edtConfigPath.Enabled := chkAdditionalConfigFile.Checked;
   edtConfigPath.Text := CompilerOpts.ConfigFilePath;
+  memCustomOptions.Text := CompilerOpts.CustomOptions;
   
   edtErrorCnt.Text := IntToStr(CompilerOpts.StopAfterErrCount);
     
@@ -1847,6 +1890,7 @@ begin
   CompilerOpts.DontUseConfigFile := not chkConfigFile.Checked;
   CompilerOpts.AdditionalConfigFile := chkAdditionalConfigFile.Checked;
   CompilerOpts.ConfigFilePath := edtConfigPath.Text;
+  CompilerOpts.CustomOptions := memCustomOptions.Text;
   
   CompilerOpts.StopAfterErrCount := StrToIntDef(edtErrorCnt.Text,1);
     
@@ -2873,6 +2917,26 @@ begin
     Width := 330;
     Text := '';
     Visible := True;
+  end;
+  
+  grpCustomOptions := TGroupBox.Create(Self);
+  with grpCustomOptions do begin
+    Name:='grpCustomOptions';
+    Parent:=nbMain.Page[Page];;
+    Left:=grpConfigFile.Left;
+    Top:=grpConfigFile.Top+grpConfigFile.Height+10;
+    Width:=grpConfigFile.Width;
+    Height:=200;
+    Caption:='Custom options';
+    Visible:=true;
+  end;
+  
+  memCustomOptions := TMemo.Create(Self);
+  with memCustomOptions do begin
+    Name:='memCustomOptions';
+    Parent:=grpCustomOptions;
+    Align:=alClient;
+    Visible:=true;
   end;
 end;
 
