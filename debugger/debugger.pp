@@ -800,7 +800,7 @@ type
     FExceptions: TDBGExceptions;
     FExitCode: Integer;
     FExternalDebugger: String;
-    FExceptionss: TDBGExceptions;
+    //FExceptionss: TDBGExceptions;
     FFileName: String;
     FLocals: TDBGLocals;
     FSignals: TDBGSignals;
@@ -3014,6 +3014,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.47  2003/07/28 18:02:06  mattias
+  added findinfiles strat implementation from Bob Wingard
+
   Revision 1.46  2003/07/25 17:05:58  mattias
   moved debugger type to the debugger options
 

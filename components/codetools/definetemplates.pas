@@ -3232,6 +3232,11 @@ begin
   DirTempl:=TDefineTemplate.Create('Examples',
     Format(ctsNamedDirectory,['Examples']),
     '','examples',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('Unit path addition',
+    Format(ctsAddsDirToSourcePath,['components']),
+    ExternalMacroStart+'SrcPath',
+    '..;..'+ds+'components'+ds+'units;'+SrcPath
+    ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',

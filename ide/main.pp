@@ -149,6 +149,7 @@ type
     procedure mnuEditInsertChangeLogEntryClick(Sender: TObject);
 
     // search menu
+    procedure mnuSearchFindInFiles(Sender: TObject);
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
@@ -608,6 +609,7 @@ type
     procedure SaveIncludeLinks;
     function DoMakeResourceString: TModalResult;
     function DoDiff: TModalResult;
+    function DoFindInFiles: TModalResult;
 
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
@@ -910,7 +912,6 @@ procedure TMainIDE.CreateOftenUsedForms;
 begin
   Application.CreateForm(TMessagesView, MessagesView);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
-  Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
 end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
@@ -1200,7 +1201,7 @@ begin
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
   itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
-  itmSearchFindInFiles.OnClick := @SourceNotebook.FindInFilesClicked;
+  itmSearchFindInFiles.OnClick := @mnuSearchFindInFiles;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
   itmIncrementalFind.OnClick := @SourceNotebook.IncrementalFindClicked;
   itmGotoLine.OnClick := @SourceNotebook.GotoLineClicked;
@@ -8323,6 +8324,13 @@ begin
   end;
 end;
 
+function TMainIDE.DoFindInFiles: TModalResult;
+begin
+  Result:=mrOk;
+  DoArrangeSourceEditorAndMessageView(true);
+  SourceNotebook.FindInFiles(Project1);
+end;
+
 procedure TMainIDE.DoCompleteCodeAtCursor;
 var
   ActiveSrcEdit: TSourceEditor;
@@ -9210,6 +9218,11 @@ begin
   DoEditMenuCommand(ecInsertChangeLogEntry);
 end;
 
+procedure TMainIDE.mnuSearchFindInFiles(Sender: TObject);
+begin
+  DoFindInFiles;
+end;
+
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
 begin
   DoCompleteCodeAtCursor;
@@ -9354,6 +9367,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.626  2003/07/28 18:02:05  mattias
+  added findinfiles strat implementation from Bob Wingard
+
   Revision 1.625  2003/07/24 08:47:36  marc
   + Added SSHGDB debugger
 

@@ -533,7 +533,6 @@ type
     FOldLazarusDir: string;
     FOldCompilerFilename: string;
     FOldFPCSourceDir: string;
-    FOldDebuggerFilename: string;
     FOldTestDir: string;
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
