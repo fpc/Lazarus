@@ -852,6 +852,21 @@ end;
   Sets the cursor for a widget
  ------------------------------------------------------------------------------}
 procedure SetCursor(AWinControl : TWinControl);
+
+  procedure SetDesigningCursor(AWindow: PGdkWindow);
+  var
+    ChildWindows, ListEntry: PGList;
+  begin
+    gdk_window_set_cursor(AWindow, Cursor_StdArrow);
+    ChildWindows:=gdk_window_get_children(AWindow);
+    ListEntry:=ChildWindows;
+    while ListEntry<>nil do begin
+      SetDesigningCursor(PGdkWindow(ListEntry^.Data));
+      ListEntry:=ListEntry^.Next;
+    end;
+    g_list_free(ChildWindows);
+  end;
+
 var
   AWidget, FixWidget: PGtkWidget;
   AWindow: PGdkWindow;
@@ -868,8 +883,9 @@ begin
     AWindow:=AWidget^.Window;
   if AWindow=nil then exit;
 
+if AWinControl is TEdit then writeln('AAA1 SetCursor ',AWinControl.Name,' ',csDesigning in AWinControl.ComponentState);
   if csDesigning in AWinControl.ComponentState then begin
-    gdk_window_set_cursor (AWindow, Cursor_Arrow);
+    SetDesigningCursor(AWindow);
   end else begin
     case AWinControl.Cursor of
     crAppStart : gdk_window_set_cursor (AWindow, Cursor_Watch);
@@ -1479,6 +1495,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.49  2002/06/21 17:54:24  lazarus
+  MG: in design mode the mouse cursor is now also set for hidden gdkwindows
+
   Revision 1.48  2002/06/21 16:59:16  lazarus
   MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
 
