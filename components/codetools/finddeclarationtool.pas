@@ -1596,7 +1596,7 @@ var CurAtom, NextAtom: TAtomPosition;
     Result:=false;
   end;
   
-  procedure ResolveIdentifier;
+  procedure ResolveIdentifier(var AFindContext: TFindContext);
   begin
     // for example  'AnObject[3]'
     
@@ -1610,7 +1610,7 @@ var CurAtom, NextAtom: TAtomPosition;
     end;
     
     // check special identifiers 'Result' and 'Self'
-    if (Result.Node=Params.ContextNode) then begin
+    if (AFindContext.Node=Params.ContextNode) then begin
       if CompareSrcIdentifier(CurAtom.StartPos,'SELF') then begin
         // SELF in a method is the object itself
         // -> check if in a proc
@@ -1618,8 +1618,9 @@ var CurAtom, NextAtom: TAtomPosition;
         while (ProcNode<>nil) do begin
           if (ProcNode.Desc=ctnProcedure) then begin
             // in a proc -> find the class context
-            if Result.Tool.FindClassOfMethod(ProcNode,Params,true) then begin
-              Result:=CreateFindContext(Params);
+            if AFindContext.Tool.FindClassOfMethod(ProcNode,Params,true) then
+            begin
+              AFindContext:=CreateFindContext(Params);
               exit;
             end;
           end;
@@ -1633,7 +1634,7 @@ var CurAtom, NextAtom: TAtomPosition;
           if (ProcNode.Desc=ctnProcedure) then begin
             Params.Save(OldInput);
             Include(Params.Flags,fdfFunctionResult);
-            Result:=Result.Tool.FindBaseTypeOfNode(Params,ProcNode);
+            AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,ProcNode);
             Params.Load(OldInput);
             exit;
           end;
@@ -1646,14 +1647,15 @@ var CurAtom, NextAtom: TAtomPosition;
 
     if (NextAtomType in [atSpace])
     and CompareSrcIdentifier(CurAtom.StartPos,'FREE')
-    and ((Result.Node.Desc=ctnClass) or NodeIsInAMethod(Result.Node)) then
+    and ((AFindContext.Node.Desc=ctnClass)
+    or NodeIsInAMethod(AFindContext.Node)) then
     begin
       // FREE calls the destructor of an object
       Params.Save(OldInput);
       Params.SetIdentifier(Self,'DESTRUCTOR',nil);
       Exclude(Params.Flags,fdfExceptionOnNotFound);
-      if Result.Tool.FindIdentifierInContext(Params) then begin
-        Result:=CreateFindContext(Params);
+      if AFindContext.Tool.FindIdentifierInContext(Params) then begin
+        AFindContext:=CreateFindContext(Params);
         exit;
       end;
       Params.Load(OldInput);
@@ -1667,19 +1669,19 @@ var CurAtom, NextAtom: TAtomPosition;
                     +(fdfGlobals*Params.Flags);
       if CurAtomType=atPreDefIdentifier then
         Exclude(Params.Flags,fdfExceptionOnNotFound);
-      if Result.Node=Params.ContextNode then begin
+      if AFindContext.Node=Params.ContextNode then begin
         // there is no special context -> also search in parent contexts
         Params.Flags:=Params.Flags
                      +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
       end else
         // special context
-        Params.ContextNode:=Result.Node;
+        Params.ContextNode:=AFindContext.Node;
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
-      if Result.Tool.FindIdentifierInContext(Params) then begin
-        Result:=CreateFindContext(Params);
+      if AFindContext.Tool.FindIdentifierInContext(Params) then begin
+        AFindContext:=CreateFindContext(Params);
       end else begin
         // predefined identifier not redefined
-        Result:=CreateFindContext(Self,nil);
+        AFindContext:=CreateFindContext(Self,nil);
       end;
 
       // ToDo: check if identifier in 'Protected' section
@@ -1689,10 +1691,11 @@ var CurAtom, NextAtom: TAtomPosition;
     end;
     
     // find base type
-    if Result.Node<>nil then begin
-      if (Result.Node<>nil)
-      and (Result.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
-        Result.Tool.BuildSubTreeForProcHead(Result.Node,FuncResultNode);
+    if AFindContext.Node<>nil then begin
+      if (AFindContext.Node<>nil)
+      and (AFindContext.Node.Desc in [ctnProcedure,ctnProcedureHead]) then begin
+        AFindContext.Tool.BuildSubTreeForProcHead(AFindContext.Node,
+                                                  FuncResultNode);
         if FuncResultNode<>nil then begin
           // this is function
           if (NextAtomType in [atSpace,atNone,atRoundBracketClose,
@@ -1711,14 +1714,15 @@ var CurAtom, NextAtom: TAtomPosition;
           Include(Params.Flags,fdfFunctionResult);
         end;
       end;
-      Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node);
+      AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
+                                                         AFindContext.Node);
     end;
   end;
   
-  procedure ResolvePoint;
+  procedure ResolvePoint(var AFindContext: TFindContext);
   begin
     // for example 'A.B'
-    if Result.Node=Params.ContextNode then begin
+    if AFindContext.Node=Params.ContextNode then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,'.']);
     end;
@@ -1728,12 +1732,12 @@ var CurAtom, NextAtom: TAtomPosition;
       ReadNextAtom;
       RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
     end;
-    if (Result.Node.Desc in AllUsableSourceTypes) then begin
+    if (AFindContext.Node.Desc in AllUsableSourceTypes) then begin
       // identifier in front of the point is a unit name
-      if Result.Tool<>Self then begin
-        Result.Node:=Result.Tool.GetInterfaceNode;
+      if AFindContext.Tool<>Self then begin
+        AFindContext.Node:=AFindContext.Tool.GetInterfaceNode;
       end else begin
-        Result:=CreateFindContext(Self,Params.ContextNode);
+        AFindContext:=CreateFindContext(Self,Params.ContextNode);
       end;
     end;
     // there is no special left to do, since Result already points to
@@ -1754,7 +1758,7 @@ var CurAtom, NextAtom: TAtomPosition;
     // -> context is default context
   end;
   
-  procedure ResolveUp;
+  procedure ResolveUp(var AFindContext: TFindContext);
   begin
     // for example:
     //   1. 'PInt = ^integer'  pointer type
@@ -1765,7 +1769,7 @@ var CurAtom, NextAtom: TAtomPosition;
       ReadNextAtom;
       RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
     end;
-    if Result.Node<>Params.ContextNode then begin
+    if AFindContext.Node<>Params.ContextNode then begin
       // left side of expression has defined a special context
       // => this '^' is a dereference
       if (not (NextAtomType in [atSpace,atPoint,atAS,atUP,atEdgedBracketOpen]))
@@ -1774,19 +1778,20 @@ var CurAtom, NextAtom: TAtomPosition;
         ReadNextAtom;
         RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
       end;
-      if Result.Node.Desc<>ctnPointerType then begin
+      if AFindContext.Node.Desc<>ctnPointerType then begin
         MoveCursorToCleanPos(CurAtom.StartPos);
         RaiseExceptionFmt(ctsIllegalQualifier,['^']);
       end;
-      Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node.FirstChild);
-    end else if NodeHasParentOfType(Result.Node,ctnPointerType) then begin
-    //end else if Result.Node.Parent.Desc=ctnPointerType then begin
+      AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
+                                                  AFindContext.Node.FirstChild);
+    end else if NodeHasParentOfType(AFindContext.Node,ctnPointerType) then begin
+    //end else if AFindContext.Node.Parent.Desc=ctnPointerType then begin
       // this is a pointer type definition
       // -> the default context is ok
     end;
   end;
   
-  procedure ResolveEdgedBracketClose;
+  procedure ResolveEdgedBracketClose(var AFindContext: TFindContext);
   begin
     { for example:  a[]
         this could be:
@@ -1804,16 +1809,18 @@ var CurAtom, NextAtom: TAtomPosition;
       ReadNextAtom;
       RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
     end;
-    if Result.Node<>Params.ContextNode then begin
-      case Result.Node.Desc of
+    if AFindContext.Node<>Params.ContextNode then begin
+      case AFindContext.Node.Desc of
 
       ctnArrayType:
         // the array type is the last child node
-        Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node.LastChild);
+        AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
+                                                   AFindContext.Node.LastChild);
 
       ctnPointerType:
         // the pointer type is the only child node
-        Result:=Result.Tool.FindBaseTypeOfNode(Params,Result.Node.FirstChild);
+        AFindContext:=AFindContext.Tool.FindBaseTypeOfNode(Params,
+                                                  AFindContext.Node.FirstChild);
 
       ctnClass:
         begin
@@ -1824,16 +1831,16 @@ var CurAtom, NextAtom: TAtomPosition;
                         +fdfAllClassVisibilities*Params.Flags;
           // special identifier for default property
           Params.SetIdentifier(Self,'[',nil);
-          Params.ContextNode:=Result.Node;
-          Result.Tool.FindIdentifierInContext(Params);
-          Result:=Params.NewCodeTool.FindBaseTypeOfNode(
+          Params.ContextNode:=AFindContext.Node;
+          AFindContext.Tool.FindIdentifierInContext(Params);
+          AFindContext:=Params.NewCodeTool.FindBaseTypeOfNode(
                                                        Params,Params.NewNode);
           Params.Load(OldInput);
         end;
 
       ctnIdentifier:
         begin
-          MoveCursorToNodeStart(Result.Node);
+          MoveCursorToNodeStart(AFindContext.Node);
           ReadNextAtom;
           if UpAtomIs('STRING') or UpAtomIs('ANSISTRING')
           or UpAtomIs('SHORTSTRING') then begin
@@ -1860,7 +1867,7 @@ var CurAtom, NextAtom: TAtomPosition;
     end;
   end;
 
-  procedure ResolveRoundBracketClose;
+  procedure ResolveRoundBracketClose(var AFindContext: TFindContext);
   begin
     { for example:
         (a+b)   expression bracket: the type is the result type of the
@@ -1874,7 +1881,7 @@ var CurAtom, NextAtom: TAtomPosition;
       ReadNextAtom;
       RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
     end;
-    if Result.Node<>Params.ContextNode then begin
+    if AFindContext.Node<>Params.ContextNode then begin
       // typecast or function
     end else begin
       // expression
@@ -1888,7 +1895,7 @@ var CurAtom, NextAtom: TAtomPosition;
     end;
   end;
   
-  procedure ResolveINHERITED;
+  procedure ResolveINHERITED(var AFindContext: TFindContext);
   begin
     // for example: inherited A;
     if not (NextAtomType in [atSpace,atIdentifier,atPreDefIdentifier]) then
@@ -1904,7 +1911,7 @@ var CurAtom, NextAtom: TAtomPosition;
     // searching in the ancestor
 
     // find ancestor of class of method
-    ProcNode:=Result.Node;
+    ProcNode:=AFindContext.Node;
     while (ProcNode<>nil) do begin
       if not (ProcNode.Desc in [ctnProcedure,ctnProcedureHead,ctnBeginBlock,
          ctnAsmBlock,ctnWithVariable,ctnWithStatement,ctnCaseBlock,
@@ -1913,10 +1920,10 @@ var CurAtom, NextAtom: TAtomPosition;
         break;
       end;
       if ProcNode.Desc=ctnProcedure then begin
-        Result.Tool.FindClassOfMethod(ProcNode,Params,true);
+        AFindContext.Tool.FindClassOfMethod(ProcNode,Params,true);
         // find class ancestor
         Params.NewCodeTool.FindAncestorOfClass(Params.NewNode,Params,true);
-        Result:=CreateFindContext(Params);
+        AFindContext:=CreateFindContext(Params);
         exit;
       end;
       ProcNode:=ProcNode.Parent;
@@ -1966,13 +1973,13 @@ begin
   {$ENDIF}
 
   case CurAtomType of
-  atIdentifier, atPreDefIdentifier:  ResolveIdentifier;
-  atPoint:             ResolvePoint;
+  atIdentifier, atPreDefIdentifier:  ResolveIdentifier(Result);
+  atPoint:             ResolvePoint(Result);
   atAS:                ResolveAs;
-  atUP:                ResolveUp;
-  atEdgedBracketClose: ResolveEdgedBracketClose;
-  atRoundBracketClose: ResolveRoundBracketClose;
-  atINHERITED:         ResolveINHERITED;
+  atUP:                ResolveUp(Result);
+  atEdgedBracketClose: ResolveEdgedBracketClose(Result);
+  atRoundBracketClose: ResolveRoundBracketClose(Result);
+  atINHERITED:         ResolveINHERITED(Result);
   else
     // expression start found
     begin
@@ -4165,8 +4172,6 @@ end;
 procedure TFindDeclarationTool.ClearNodeCaches(Force: boolean);
 var
   NodeCache: TCodeTreeNodeCache;
-  GlobalWriteLockIsSet: boolean;
-  GlobalWriteLockStep: integer;
   BaseTypeCache: TBaseTypeCache;
 begin
   // check if there is something in cache to delete
