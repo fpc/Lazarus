@@ -535,8 +535,9 @@ Begin
           End
           Else If Sender Is TMenuItem Then
           Begin
-            DeleteMenu((Sender as TMenuItem).Parent.Handle, Handle, MF_BYCOMMAND);
-            { release menu item id }
+            { not assigned when this the menuitem of a TMenu; handle is destroyed above }
+            if Assigned(TMenuItem(Sender).Parent) then
+              DeleteMenu((Sender as TMenuItem).Parent.Handle, TMenuItem(Sender).Command, MF_BYCOMMAND);
             DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
           End
           Else
@@ -2673,6 +2674,9 @@ End;
 
 {
   $Log$
+  Revision 1.57  2003/06/25 20:49:58  mattias
+  fixed menu destroy from Micha
+
   Revision 1.56  2003/06/25 20:48:48  mattias
   fixed progressbar from Micha
 
