@@ -1,3 +1,5 @@
+// included by buttons.pp
+
 {******************************************************************************
                                    TSpeedButton
  ******************************************************************************
@@ -486,7 +488,6 @@ var
   NewState: TButtonState;
 begin
   inherited MouseMove(Shift, X, Y);
-  
   if csDesigning in ComponentState then exit;
 
   if FDragging 
@@ -513,12 +514,9 @@ begin
     end;
   end
   else begin
-    Assert(False,'Trace:FDragging is False');
-    if not FMouseInControl 
-    then begin
-      Assert(False,'Trace:FMouseInControl is false');
+    {if not FMouseInControl then begin
       UpdateTracking;
-    end;
+    end;}
   end;
 end;
 
@@ -548,7 +546,7 @@ begin
       SetDown(not FDown);
       if FDown then Repaint;
     end;
-    UpdateTracking;
+    //UpdateTracking;
   end;
   inherited MouseUp(Button, Shift, X, Y);
 end;
@@ -621,8 +619,8 @@ procedure TSpeedButton.CMEnabledChanged(var Message: TLMEssage);
 Begin
   //Should create a new glyph based on the new state
 
-  UpdateTracking;
-  Repaint;
+  //UpdateTracking;
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------
@@ -634,14 +632,13 @@ end;
 procedure TSpeedButton.CMMouseEnter(var Message :TLMessage);
 begin
   inherited CMMouseEnter(Message);
-
   if csDesigning in ComponentState then exit;
   
   if  not FMouseInControl
   and Enabled and (GetCapture = 0) 
   then begin
     FMouseInControl := True;
-    RePaint;
+    Invalidate;
   end;
 end;
 
@@ -654,10 +651,9 @@ end;
 procedure TSpeedButton.CMMouseLeave(var Message :TLMessage);
 begin
   inherited CMMouseLeave(Message);
-
   if csDesigning in ComponentState then exit;
-  
-  if  FMouseInControl
+
+  if FMouseInControl
   and Enabled and not FDragging
   then begin
     FMouseInControl := False;
@@ -671,9 +667,15 @@ end;
   {$C-}
 {$ENDIF}
 
+
+// included by buttons.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/11/21 18:49:53  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.30  2002/09/27 20:52:23  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
