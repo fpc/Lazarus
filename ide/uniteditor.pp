@@ -213,7 +213,6 @@ type
     FProcessingCommand: boolean;
 
     FSaveDialog : TSaveDialog;
-    FOpenDialog : TOpenDialog;
 
     FOnNewClicked : TNotifyEvent;
     FOnOpenClicked : TNotifyEvent;
@@ -1499,7 +1498,6 @@ begin
     end;
   end;
   FSaveDialog := TSaveDialog.Create(Self);
-  FOpenDialog := TOpenDialog.Create(Self);
   BuildPopupMenu;
 
 

@@ -1332,7 +1332,7 @@ begin
     try
       OpenDialog.Title:='Open file';
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
-      if OpenDialog.Execute then begin
+      if OpenDialog.Execute and (OpenDialog.Filename<>'') then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
         if DoOpenEditorFile(AFilename,false)=mrOk then begin
@@ -1668,7 +1668,7 @@ begin
     try
       OpenDialog.Title:='Open Project File (*.lpi)';
       OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
-      if OpenDialog.Execute then begin
+      if OpenDialog.Execute and (OpenDialog.Filename<>'') then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
         if DoOpenProjectFile(AFilename)=mrOk then begin
@@ -4348,6 +4348,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2001/10/25 20:01:35  lazarus
+  MG: fixed empty TOpenDialog
+
   Revision 1.126  2001/10/23 09:13:51  lazarus
   MG: fixed TestProject
 
