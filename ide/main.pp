@@ -3181,10 +3181,14 @@ CheckHeap(IntToStr(GetMem_Cnt));
   if ExtractFileNameOnly(AFileName)='' then exit;
   AFilename:=ExpandFileName(AFilename);
   Ext:=lowercase(ExtractFileExt(AFilename));
-  if (Ext='.lpr') and (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
+  if (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
     // load instead of lazarus program file the project info file
     AFileName:=ChangeFileExt(AFileName,'.lpi');
     Ext:='.lpi';
+  end;
+  if Ext<>'.lpi' then begin
+    Result:=DoOpenEditorFile(AFilename,false);
+    exit;
   end;
   repeat
     if not FileExists(AFilename) then begin
@@ -3295,7 +3299,7 @@ var NewProjectType:TProjectType;
   ProgramTitle, Ext: string;
   MainUnitInfo: TUnitInfo;
 begin
-//writeln('[TMainIDE.DoCreateProjectForProgram] A');
+writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   Result:=mrCancel;
 
   if SomethingOfProjectIsModified then begin
@@ -3347,7 +3351,7 @@ begin
  
   UpdateCaption;
 
-//writeln('[TMainIDE.DoCreateProjectForProgram] END');
+writeln('[TMainIDE.DoCreateProjectForProgram] END');
   Result:=mrOk;
 end;
 
@@ -4751,6 +4755,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.151  2001/11/20 15:09:21  lazarus
+  MG: open project now only opens lpi files
+
   Revision 1.150  2001/11/19 22:01:25  lazarus
   MG: run button and menu run  now builds+runs
 
