@@ -683,6 +683,7 @@ function GetMessageName(const AMessage: Integer):  String;
 begin
   case AMessage of
     LM_Create           : Result :='LM_Create          ';
+    LM_Destroy          : Result :='LM_Destroy         ';
     LM_SetLabel         : Result :='LM_SetLabel        ';
     LM_SetLeft          : Result :='LM_SetLeft         ';
     LM_SetTop           : Result :='LM_SetTop          ';
@@ -739,6 +740,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2000/07/23 10:49:47  lazarus
+  added text for LM_Destroy, stoppok
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 
