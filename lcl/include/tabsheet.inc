@@ -24,7 +24,7 @@
 
 function TTabSheet.GetTabIndex: Integer;
 begin
-  Result:=inherited PageIndex;
+  Result:=PageIndex;
 end;
 
 function TTabSheet.GetPageControl: TPageControl;
@@ -39,6 +39,11 @@ procedure TTabSheet.SetPageControl(APageControl: TPageControl);
 begin
   if PageControl=APageControl then exit;
   Parent:=PageControl;
+end;
+
+procedure TTabSheet.SetTabIndex(const AValue: Integer);
+begin
+  PageIndex:=AValue;
 end;
 
 procedure TTabSheet.DoHide;

@@ -152,6 +152,7 @@ type
     function GetPageControl: TPageControl;
     function GetTabIndex: Integer;
     procedure SetPageControl(APageControl: TPageControl);
+    procedure SetTabIndex(const AValue: Integer);
   protected
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;
@@ -159,7 +160,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     property PageControl: TPageControl read GetPageControl write SetPageControl;
-    property TabIndex: Integer read GetTabIndex;
+    property TabIndex: Integer read GetTabIndex write SetTabIndex;
   published
     property Caption;
     property ClientHeight;
@@ -2305,6 +2306,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2004/08/04 09:35:38  mattias
+  implemented setting TTabSheet.TabIndex
+
   Revision 1.140  2004/07/24 11:23:56  mattias
   Designer can now handle TPersistent selections, TCollectionPropertyEditor basically working
 

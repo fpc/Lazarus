@@ -275,19 +275,19 @@ procedure RegisterActions(const CategoryName: string;
   const AClasses: array of TBasicActionClass; Resource: TComponentClass);
 procedure UnRegisterActions(const AClasses: array of TBasicActionClass);
 procedure EnumRegisteredActions(Proc: TEnumActionProc; Info: Pointer);
-function CreateAction(AOwner: TComponent;
+function CreateAction(TheOwner: TComponent;
   ActionClass: TBasicActionClass): TBasicAction;
 
 const
   RegisterActionsProc: procedure (const CategoryName: string;
-    const AClasses: array of TBasicActionClass; Resource: TComponentClass)= nil;
-  UnRegisterActionsProc:
-    procedure (const AClasses: array of TBasicActionClass) = nil;
-  EnumRegisteredActionsProc:
-    procedure (Proc: TEnumActionProc; Info: Pointer) = nil;
-  CreateActionProc:
-    function (AOwner: TComponent;
-              ActionClass: TBasicActionClass): TBasicAction = nil;
+                                  const AClasses: array of TBasicActionClass;
+                                  Resource: TComponentClass)= nil;
+  UnRegisterActionsProc: procedure(const AClasses: array of TBasicActionClass
+                                   ) = nil;
+  EnumRegisteredActionsProc: procedure(Proc: TEnumActionProc;
+                                       Info: Pointer) = nil;
+  CreateActionProc: function(TheOwner: TComponent;
+                            ActionClass: TBasicActionClass): TBasicAction = nil;
 
 var
   ApplicationActionComponent: TComponent;
@@ -324,11 +324,11 @@ begin
     raise Exception.Create(SInvalidActionEnumeration);
 end;
 
-function CreateAction(AOwner: TComponent;
+function CreateAction(TheOwner: TComponent;
   ActionClass: TBasicActionClass): TBasicAction;
 begin
   if Assigned(CreateActionProc) then
-    Result := CreateActionProc(AOwner, ActionClass)
+    Result := CreateActionProc(TheOwner, ActionClass)
   else
     raise Exception.Create(SInvalidActionCreation);
 end;

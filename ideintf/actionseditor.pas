@@ -102,15 +102,58 @@ type
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
   end;
+  
+
+  { Action Registration }
+
+type
+  TNotifyActionListChange = procedure;
 
 var
-  ActionListEditorForm: TActionListEditor;
+  NotifyActionListChange: TNotifyActionListChange = nil;
 
+procedure RegActions(const ACategory: string;
+                     const AClasses: array of TBasicActionClass;
+                     AResource: TComponentClass);
+procedure UnRegActions(const Classes: array of TBasicActionClass);
+procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
+function CreateAction(TheOwner: TComponent; ActionClass:
+                      TBasicActionClass): TBasicAction;
+
+
+  { ActionListEditorForm }
+
+var
+  ActionListEditorForm: TActionListEditor; // global since there is normally
+                                           // only one needed
 
 procedure ShowActionListEditor(AActionList: TActionList;
   ADesigner: TComponentEditorDesigner);
 
 implementation
+
+
+procedure RegActions(const ACategory: string;
+  const AClasses: array of TBasicActionClass; AResource: TComponentClass);
+begin
+
+end;
+
+procedure UnRegActions(const Classes: array of TBasicActionClass);
+begin
+
+end;
+
+procedure EnumActions(Proc: TEnumActionProc; Info: Pointer);
+begin
+
+end;
+
+function CreateAction(TheOwner: TComponent; ActionClass:
+  TBasicActionClass): TBasicAction;
+begin
+
+end;
 
 procedure ShowActionListEditor(AActionList: TActionList;
   ADesigner:TComponentEditorDesigner);

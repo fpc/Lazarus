@@ -307,7 +307,7 @@ type
     //property BorderStyle;
     property Color;
     property Columns stored false;
-    //property Constraints;
+    property Constraints;
     //property Ctl3D;
     property DataSource;
     property DefaultDrawing;
@@ -1767,6 +1767,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2004/08/04 09:35:38  mattias
+  implemented setting TTabSheet.TabIndex
+
   Revision 1.9  2004/08/03 15:38:53  vincents
   fix 1.0.x compilation.
 
