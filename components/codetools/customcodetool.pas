@@ -515,11 +515,20 @@ begin
     '#':
       begin
         i:=CurPos.StartPos+1;
-        while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
-          inc(i);
-        if (i<=SrcLen)
-        and (not (Src[i] in ['''','#'])) then
-          Result:=true;
+        if (i<=SrcLen) then begin
+          if IsNumberChar[Src[i]] then begin
+            // decimal
+            while (i<=SrcLen) and (IsNumberChar[Src[i]]) do
+              inc(i);
+          end else if Src[i]='$' then begin
+            // hexadecimal
+            while (i<=SrcLen) and (IsHexNumberChar[Src[i]]) do
+              inc(i);
+          end;
+          if (i<=SrcLen)
+          and (not (Src[i] in ['''','#'])) then
+            Result:=true;
+        end;
       end;
 
     '''':
@@ -672,9 +681,21 @@ begin
           '#':
             begin
               inc(CurPos.EndPos);
-              while (CurPos.EndPos<=SrcLen)
-              and (IsNumberChar[Src[CurPos.EndPos]]) do
-                inc(CurPos.EndPos);
+              if (CurPos.EndPos<=SrcLen) then begin
+                if (IsNumberChar[Src[CurPos.EndPos]]) then begin
+                  // decimal
+                  repeat
+                    inc(CurPos.EndPos);
+                  until (CurPos.EndPos>SrcLen)
+                        or (not IsNumberChar[Src[CurPos.EndPos]]);
+                end else if Src[CurPos.EndPos]='$' then begin
+                  // hexadecimal
+                  repeat
+                    inc(CurPos.EndPos);
+                  until (CurPos.EndPos>SrcLen)
+                        or (not IsHexNumberChar[Src[CurPos.EndPos]]);
+                end;
+              end;
             end;
           '''':
             begin

@@ -1346,9 +1346,14 @@ function TCustomSynEdit.GetSelText: string;
     FillChar(P^, Len, #$20);
     Inc(P, Len);
   end;
-
+  
+{$IFDEF SYN_LAZARUS}
+var
+  sLineBreak: string;
+{$ELSE}
 const
   sLineBreak = #$0D#$0A;
+{$ENDIF}
 var
   First, Last, TotalLen: Integer;
   ColFrom, ColTo: Integer;
@@ -1361,6 +1366,9 @@ var
 {$ENDIF}
   P: PChar;
 begin
+  {$IFDEF SYN_LAZARUS}
+  sLineBreak:=AdjustLineBreaks(#$0D#$0A);
+  {$ENDIF}
   if not SelAvail then
     Result := ''
   else begin
