@@ -696,6 +696,8 @@ begin
 
     if EnvironmentOptions.CompilerFilename='' then
       EnvironmentOptions.CompilerFilename:=FindDefaultCompilerPath;
+    if EnvironmentOptions.FPCSourceDirectory='' then
+      EnvironmentOptions.FPCSourceDirectory:=FindDefaultFPCSrcDirectory;
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
     OnApplyWindowLayout:=@Self.OnApplyWindowLayout;
@@ -6257,8 +6259,7 @@ begin
   end;
   if (EnvironmentOptions.FPCSourceDirectory='') then begin
     writeln('');
-    writeln(
-      'NOTE: FPC Source Directory not set!  (see Environment Options)');
+    writeln('NOTE: FPC Source Directory not set! (see Environment Options)');
   end;
   
   // set global variables
@@ -7720,6 +7721,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.459  2003/02/06 20:46:51  mattias
+  default fpc src dirs and clean ups
+
   Revision 1.458  2003/02/05 13:46:57  mattias
   fixed TCustomEdit.SelStart when nothing selected
 
