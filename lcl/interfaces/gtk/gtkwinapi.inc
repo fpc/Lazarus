@@ -178,25 +178,6 @@ begin
                        Height, ROP);
 end;
 
-{$IFDEF GTK1}
-function InternalGtkShowWindow(AForm: TCustomForm): gint; cdecl;
-var
-  XDisplay: xlib.PDisplay;
-  XWindow: X.TWindow;
-  FormWidget: PGtkWidget;
-  FormWindow: PGdkWindowPrivate;
-begin
-  Result := 0;
-  if not AForm.HandleAllocated then exit;
-  FormWidget:=PGtkWidget(AForm.Handle);
-  FormWindow:=PGdkWindowPrivate(FormWidget^.window);
-  if FormWindow=nil then exit;
-  XWindow := GDK_WINDOW_XWINDOW (FormWindow);
-  XDisplay := GDK_WINDOW_XDISPLAY (FormWindow);
-  if (XDisplay<>nil) and (XWindow>0) then
-    XSetInputFocus(XDisplay, XWindow, X.RevertToNone, X.CurrentTime);
-end;
-{$ENDIF}
 {------------------------------------------------------------------------------
   Function: BringWindowToTop
   Params: hWnd:
@@ -211,8 +192,6 @@ var
   GdkWindow: PGdkWindow;
   AForm: TCustomForm;
   {$IFDEF GTK1}
-  XDisplay: xlib.PDisplay;
-  XWindow: x.TWindow;
   FormWidget: PGtkWidget;
   FormWindow: PGdkWindowPrivate;
   {$ENDIF}
@@ -245,13 +224,7 @@ begin
       FormWidget:=PGtkWidget(AForm.Handle);
       FormWindow:=PGdkWindowPrivate(FormWidget^.window);
       if FormWindow<>nil then begin
-        XWindow := GDK_WINDOW_XWINDOW (FormWindow);
-        XDisplay := GDK_WINDOW_XDISPLAY (FormWindow);
-        if GDK_GET_CURRENT_DESKTOP <> GDK_GET_DESKTOP_OF_WINDOW(FormWindow) then
-          GDK_SET_DESKTOP_OF_WINDOW(FormWindow, GDK_GET_CURRENT_DESKTOP);
-        XMapWindow(XDisplay, XWindow);
-        // a horrible horrible hack to give "something" time to unminimize the window
-        gtk_timeout_add(50, TGtkFunction(@InternalGtkShowWindow), AForm);
+        GDK_WINDOW_ACTIVATE(FormWindow);
       end;
       {$ENDIF}
 {$ifdef gtk2}
@@ -9005,6 +8978,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.413  2005/03/18 15:32:13  mattias
+  next try to fix the crashing when switching focus  from Andrew Haines
+
   Revision 1.412  2005/03/17 10:10:51  mattias
   added gtk1 check for current desktop on focussing windows  from Andrew Haines
 

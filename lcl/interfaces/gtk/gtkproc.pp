@@ -68,8 +68,9 @@ const
 
 {$IFDEF GTK1}
   function GDK_GET_CURRENT_DESKTOP(): gint;
-  function GDK_GET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate): gint;
-  function GDK_SET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate; Desktop: gint): gint;
+  function GDK_WINDOW_GET_DESKTOP(Window: PGdkWindowPrivate): gint;
+  function GDK_WINDOW_SET_DESKTOP(Window: PGdkWindowPrivate; Desktop: gint): gint;
+  procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
 {$ENDIF}
   
 
@@ -1096,7 +1097,7 @@ begin
 end;
 
 
-function GDK_GET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate): gint;
+function GDK_WINDOW_GET_DESKTOP(Window: PGdkWindowPrivate): gint;
 var
   xdisplay: PDisplay;
   xwindow: TWindow;
@@ -1122,7 +1123,7 @@ begin
   end;
 end;
 
-function GDK_SET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate; Desktop: gint): gint;
+function GDK_WINDOW_SET_DESKTOP(Window: PGdkWindowPrivate; Desktop: gint): gint;
 var
   XDisplay: PDisplay;
   XScreen: PScreen;
@@ -1149,6 +1150,35 @@ begin
 
   XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
 end;
+
+
+procedure GDK_WINDOW_ACTIVATE(Window: PGdkWindowPrivate);
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XRootWindow,
+  XWindow: TWindow;
+  XEvent: TXClientMessageEvent;
+  _NET_ACTIVE_WINDOW: Integer;
+begin
+  XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  XScreen := XDefaultScreenOfDisplay(xdisplay);
+  XRootWindow := XRootWindowOfScreen(xscreen);
+  XWindow := GDK_WINDOW_XWINDOW (Window);
+
+  _NET_ACTIVE_WINDOW := XInternAtom(xdisplay, '_NET_ACTIVE_WINDOW', false);
+
+  XEvent._type := ClientMessage;
+  XEvent.window := XWindow;
+  XEvent.message_type := _NET_ACTIVE_WINDOW;
+  XEvent.format := 32;
+  XEvent.data.l[0] := 1; //Message is from program
+  XEvent.data.l[1] := CurrentTime;
+  XEvent.data.l[1] := 0; // Applications current active window
+
+  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+end;
+
 {$ENDIF}
 
 initialization
