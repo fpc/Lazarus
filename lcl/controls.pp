@@ -28,6 +28,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+{ $DEFINE ClientRectBugFix}
+
 {$IFOPT C-}
 // Uncomment for local trace
 //  {$C+}
@@ -1204,6 +1206,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/05/06 08:50:36  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.44  2002/04/24 16:11:17  lazarus
   MG: started new client rectangle
 
