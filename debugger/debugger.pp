@@ -797,6 +797,10 @@ type
                                  const AExceptionText: String) of object;
 
   TDebuggerProperties = class(TPersistent)
+  private
+    FTest: String;
+  published
+    property Test: String read FTest write FTest;
   end;
 
   TDebugger = class(TObject)
@@ -831,8 +835,6 @@ type
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
   protected
-    class function CreateProperties: TDebuggerProperties; virtual;
-    
     function  CreateBreakPoints: TDBGBreakPoints; virtual;
     function  CreateLocals: TDBGLocals; virtual;
     function  CreateCallStack: TDBGCallStack; virtual;
@@ -863,8 +865,11 @@ type
 
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
-    class function GetProperties: TDebuggerProperties;
-    class procedure SetProperties(const AProperties: TDebuggerProperties);
+
+    // debugger properties
+    class function CreateProperties: TDebuggerProperties; virtual;         // Creates and initializes debuggerproperties
+    class function GetProperties: TDebuggerProperties;                     // Get the current properties
+    class procedure SetProperties(const AProperties: TDebuggerProperties); // Set the current properties
     
     procedure Init; virtual;                         // Initializes the debugger
     procedure Done; virtual;                         // Kills the debugger
@@ -1096,6 +1101,8 @@ end;
 class function TDebugger.CreateProperties: TDebuggerProperties; 
 begin
   Result := TDebuggerProperties.Create;
+  if MDebuggerProperties <> nil
+  then Result.Assign(MDebuggerProperties);
 end;
 
 function TDebugger.CreateSignals: TDBGSignals;
@@ -3135,6 +3142,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.55  2004/01/03 01:17:25  marc
+  + Added debugger optioes
+
   Revision 1.54  2003/12/27 11:22:36  mattias
   minor fixes
 

@@ -60,6 +60,7 @@ type
     cmbDebuggerType: TCOMBOBOX;
     cmbDebuggerPath: TCOMBOBOX;
     N1: TMENUITEM;
+    pnlDebugSpecific: TPanel;
     seLimitLinecount: TSPINEDIT;
     txtAdditionalPath: TEDIT;
     gbDebuggerType: TGROUPBOX;
@@ -90,7 +91,7 @@ type
     procedure cmdOKCLICK (Sender: TObject );
     procedure cmdOpenDebuggerPathCLICK(Sender: TObject);
   private
-    ThePropertyEditorHook: TPropertyEditorHook;
+    FPropertyEditorHook: TPropertyEditorHook;
     FExceptionDeleteList: TStringList;
     FOldDebuggerPathAndParams: string;
     FDebuggerSpecificComponents: TList;
@@ -194,6 +195,7 @@ var
   //Selection: TComponentSelectionList;
 begin
 
+//  FPropertyEditorHook.LookupRoot := nil;
   {ThePropertyEditorHook.LookupRoot:=FCurDebuggerObject;
   Selection:=TComponentSelectionList.Create;
   if FCurDebuggerObject<>nil then
@@ -209,6 +211,11 @@ begin
   FDebuggerSpecificComponents.Clear;
 
   if FCurDebuggerClass = nil then Exit;
+
+//  FPropertyEditorHook.LookupRoot := FCurDebuggerClass.GetProperties;
+  PropertyGrid.Clear;
+//  PropertyGrid.Selections.Add(FCurDebuggerClass.GetProperties);
+  PropertyGrid.BuildPropertyList;
 
   // create debugger specific options components
   // temp hack
@@ -392,9 +399,9 @@ begin
   end;
 
   // create the PropertyEditorHook (the interface to the properties)
-  ThePropertyEditorHook:=TPropertyEditorHook.Create;
+  FPropertyEditorHook:=TPropertyEditorHook.Create;
   // create the PropertyGrid
-  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,ThePropertyEditorHook
+  PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,FPropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
@@ -402,11 +409,13 @@ begin
       25);
   with PropertyGrid do begin
     Name:='PropertyGrid';
-    Visible:=false;
-    Parent:=gbDebuggerSpecific;
+    // Use panel for border
+    Parent := pnlDebugSpecific;   //gbDebuggerSpecific;
+    Visible:=True;
     Align:=alClient;
     SplitterX:=120;
   end;
+//  pnlDebugSpecific.Visible := False;
 
   FetchDebuggerClass;
 

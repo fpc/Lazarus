@@ -1,20 +1,20 @@
 object DebuggerOptionsForm: TDebuggerOptionsForm
-  BorderStyle = bsdialog
+  BorderStyle = BSDIALOG
   Caption = 'Debugger Options'
   ClientHeight = 442
   ClientWidth = 480
   OnCreate = DebuggerOptionsFormCREATE
   OnDestroy = DebuggerOptionsFormDESTROY
-  Position = poscreencenter
+  Position = POSCREENCENTER
   HorzScrollBar.Page = 481
   VertScrollBar.Page = 443
-  Left = 419
+  Left = 411
   Height = 442
-  Top = 257
+  Top = 185
   Width = 480
   object nbDebugOptions: TNotebook
-    Align = altop
-    PageIndex = 3
+    Align = ALTOP
+    PageIndex = 0
     Height = 398
     Width = 480
     object pgGeneral: TPage
@@ -29,6 +29,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Debugger type and path'
         ClientHeight = 69
         ClientWidth = 468
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 2
@@ -71,6 +72,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Additional search path'
         ClientHeight = 35
         ClientWidth = 468
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 1
         Left = 2
@@ -99,12 +101,24 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Debugger specific options (depends on type of debugger)'
         ClientHeight = 187
         ClientWidth = 468
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 2
         Left = 2
         Height = 204
         Top = 156
         Width = 472
+        object pnlDebugSpecific: TPanel
+          Align = ALCLIENT
+          BevelOuter = BVNONE
+          BorderWidth = 4
+          ClientHeight = 187
+          ClientWidth = 468
+          TabOrder = 0
+          TabStop = True
+          Height = 187
+          Width = 468
+        end
       end
     end
     object pgEventLog: TPage
@@ -119,6 +133,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'General'
         ClientHeight = 115
         ClientWidth = 226
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -166,6 +181,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         ClientHeight = 171
         ClientWidth = 228
         Enabled = False
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 1
         Left = 242
@@ -270,6 +286,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Ignore these exceptions'
         ClientHeight = 311
         ClientWidth = 464
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -333,6 +350,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         Caption = 'Signals'
         ClientHeight = 337
         ClientWidth = 464
+        ParentColor = True
         ParentCtl3D = False
         TabOrder = 0
         Left = 4
@@ -381,7 +399,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
               Width = 75
             end>
           PopupMenu = popSignal
-          ViewStyle = vsreport
+          ViewStyle = VSREPORT
           Left = 8
           Height = 292
           Top = 5

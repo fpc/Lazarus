@@ -639,10 +639,7 @@ var a:integer;
 begin
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
-  IncreaseChangeStep;
-  for a:=0 to FRows.Count-1 do
-    Rows[a].Free;
-  FRows.Clear;
+  ClearRows;
   FComponentList.Assign(NewSelections);
   BuildPropertyList;
   CurRow:=GetRowByPath(OldSelectedRowPath);
