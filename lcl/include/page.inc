@@ -64,7 +64,7 @@ procedure TPage.SetImageIndex(const AValue: integer);
 begin
   if FImageIndex=AValue then exit;
   FImageIndex:=AValue;
-  if (csLoading in ComponentState) then exit;
+  if not HandleAllocated or (csLoading in ComponentState) then exit;
   CNSendMessage(LM_NB_UpdateTab, Self, nil);
 end;
 
@@ -73,13 +73,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TPage.ReadState(Reader: TAbstractReader);
 begin
-   inherited ReadState(Reader);
+  inherited ReadState(Reader);
 
   if Reader.Parent is TNoteBook then begin
     with TNBPages(TNoteBook(Reader.Parent).fAccess) do
       InsertPage(Count,Self);
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TPage.Destroy;
 begin
-   inherited Destroy;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -124,6 +123,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.10  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.9  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 
