@@ -1012,6 +1012,7 @@ begin
       Add('Symbol=Symbol');
     end;
   end;
+  Add(NewInfo);
 
   // create info for Python
   NewInfo:=TEditOptLanguageInfo.Create;
