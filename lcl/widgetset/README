@@ -1,0 +1,3 @@
+This directory contains all interface component classes.
+These classes will never get instantiated and may only 
+contain class functions.
