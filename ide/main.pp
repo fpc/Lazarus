@@ -7218,7 +7218,7 @@ var
   BinCompStream: TMemoryStream;
   CInterface: TComponentInterface;
 begin
-writeln('TMainIDE.OnDesignerPasteComponent A');
+  writeln('TMainIDE.OnDesignerPasteComponent A');
   NewComponent:=nil;
 
   // check the class of the new component
@@ -7270,10 +7270,7 @@ writeln('TMainIDE.OnDesignerPasteComponent A');
       exit;
     end;
     NewComponent:=CInterface.Component;
-    
-    writeln('TMainIDE.OnDesignerPasteComponent E  ToDo: add new components to source');
-    // add all new components to the source
-    // ToDo
+
   finally
     BinCompStream.Free;
   end;
@@ -7296,6 +7293,8 @@ begin
             Sender.ClassName);
     exit;
   end;
+  if AComponentClass=nil then
+    AComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
   BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,
                 [ctfSwitchToFormSource]);
 
@@ -9234,6 +9233,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.608  2003/06/18 11:50:53  mattias
+  implemented Paste components in source
+
   Revision 1.607  2003/06/17 23:26:53  mattias
   started copy/paste for components
 
