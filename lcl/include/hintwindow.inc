@@ -23,6 +23,8 @@
 
 }
 
+const HintBorderWidth=2;
+
 constructor THintWindow.Create(AOwner: TComponent);
 var
   TheTimer: TCustomTimer;
@@ -34,7 +36,7 @@ begin
   Canvas.Font := Screen.HintFont;
   BorderStyle := bsNone;
   Caption := 'THintWindow';
-  SetBounds(1,1,25,25);
+  SetInitialBounds(1,1,25,25);
   FHideInterval := 3000;
   TheTimer := TCustomTimer.Create(self);
   FAutoHideTimer := TheTimer;
@@ -75,13 +77,16 @@ End;
 
 procedure THintWindow.Paint;
 var
-  Rect: TRect;
+  ARect: TRect;
   TS : TTextStyle;
 begin
-  Rect := ClientRect;
+  ARect := ClientRect;
   Canvas.Brush.Color := Color;
   Canvas.Pen.Width := 1;
-  DrawEdge(Canvas.Handle, Rect, BDR_RAISEDOUTER, BF_RECT);
+  //debugln('THintWindow.Paint A ',dbgs(ARect));
+  DrawEdge(Canvas.Handle, ARect, BDR_RAISEDOUTER, BF_RECT);
+  InflateRect(ARect,-2*HintBorderWidth,-2*HintBorderWidth);
+  //debugln('THintWindow.Paint B ',dbgs(ARect));
   with TS do
   begin
     Alignment  := taCenter;
@@ -91,10 +96,10 @@ begin
     ExpandTabs := true;
     ShowPrefix := false;
     WordBreak  := true;
-    Opaque     := true;
+    Opaque     := false;
     SystemFont := false;
   end;
-  Canvas.TextRect(Rect, Rect.Left, Rect.Top, Caption, TS);
+  Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
@@ -132,8 +137,9 @@ begin
   if AHint='' then exit;
   DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
            Result, DT_CalcRect or DT_NOPREFIX);
-  InflateRect(Result, 2, 2);
-  Inc(Result.Right, 3);
+  inc(Result.Right,4*HintBorderWidth);
+  inc(Result.Bottom,4*HintBorderWidth);
+  //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
 end;
 
 procedure THintWindow.ReleaseHandle;

@@ -697,34 +697,17 @@ end;
 
 function TCustomPropertyStorage.ReadInteger(const Ident: string; Default: Longint): Longint;
 begin
-  StorageNeeded(True);
-  try
-    Result := DoReadInteger(RootSection, Ident, Default);
-  finally
-    FreeStorage;
-  end;
+  Result := DoReadInteger(RootSection, Ident, Default);
 end;
 
 procedure TCustomPropertyStorage.WriteInteger(const Ident: string; Value: Longint);
 begin
-  StorageNeeded(False);
-  try
-    DoReadInteger(RootSection, Ident, Value);
-  finally
-    FreeStorage;
-  end;
+  DoReadInteger(RootSection, Ident, Value);
 end;
 
-
 procedure TCustomPropertyStorage.EraseSections;
-
 begin
-  StorageNeeded(False);
-  try
-    DoEraseSections(RootSection);
-  finally
-    FreeStorage;
-  end;
+  DoEraseSections(RootSection);
 end;
 
 procedure TCustomPropertyStorage.SetStoredValues(Value: TStoredValues);

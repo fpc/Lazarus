@@ -653,7 +653,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ActivateHint(ARect: TRect; const AHint: String); virtual;
-    function CalcHintRect(MaxWidth: Integer; const AHint: String; AData: Pointer): TRect; virtual;
+    function CalcHintRect(MaxWidth: Integer; const AHint: String;
+                          AData: Pointer): TRect; virtual;
     procedure ReleaseHandle;
   public
     property AutoHide : Boolean read FAutoHide write SetAutoHide;
@@ -872,6 +873,7 @@ type
     FHintColor: TColor;
     FHintControl: TControl;
     FHintHidePause: Integer;
+    FHintHidePausePerChar: Integer;
     FHintPause: Integer;
     FHintShortCuts: Boolean;
     FHintShortPause: Integer;
@@ -1003,6 +1005,7 @@ type
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor;
     property HintHidePause: Integer read FHintHidePause write FHintHidePause;
+    property HintHidePausePerChar: Integer read FHintHidePausePerChar write FHintHidePausePerChar;
     property HintPause: Integer read FHintPause write FHintPause;
     property HintShortCuts: Boolean read FHintShortCuts write FHintShortCuts;
     property HintShortPause: Integer read FHintShortPause write FHintShortPause;
@@ -1426,6 +1429,7 @@ end;
 
 procedure FreeInterfaceObject;
 begin
+  //debugln('FreeInterfaceObject');
   Application.Free;
   Application:=nil;
   FreeAllClipBoards;

@@ -111,17 +111,17 @@ begin
   if (FFileName<>'') then
     Result:=FFIleName
   else
-{$ifdef unix}
+    {$ifdef unix}
     Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariable('HOME'))
             +'.'+ExtractFileName(Application.ExeName);
 
-{$else}
+    {$else}
     Result:=ChangeFileExt(Application.ExeName,'.xml');
-{$endif}
+    {$endif}
+  //debugln('TCustomXMLPropStorage.GetXMLFileName "',Result,'"');
 end;
 
 function TCustomXMLPropStorage.FixPath(const APath: String): String;
-
 begin
   Result:=StringReplace(APath,'.','/',[rfReplaceAll]);
 end;
@@ -139,25 +139,25 @@ function TCustomXMLPropStorage.DoReadString(const Section, Ident,
   TheDefault: string): string;
 begin
   Result:=FXML.GetValue(FixPath(Section)+'/'+Ident, TheDefault);
-  //debugln('TCustomXMLPropStorage.DoReadString Section=',Section,' Ident=',Ident,' Result=',Result);
+  //debugln('TCustomXMLPropStorage.DoReadString Section="',Section,'" Ident="',Ident,'" Result=',Result);
 end;
 
 procedure TCustomXMLPropStorage.DoWriteString(const Section, Ident,
   Value: string);
 begin
-  //debugln('TCustomXMLPropStorage.DoWriteString Section=',Section,' Ident=',Ident,' Value=',Value);
+  //debugln('TCustomXMLPropStorage.DoWriteString Section="',Section,'" Ident="',Ident,'" Value="',Value,'"');
   FXML.SetValue(FixPath(Section)+'/'+Ident, Value);
 end;
 
 procedure TCustomXMLPropStorage.DoEraseSections(const ARootSection: String);
 begin
+  //debugln('TCustomXMLPropStorage.DoEraseSections ARootSection="',ARootSection,'"');
   FXML.DeleteSubNodes(FixPath(ARootSection));
 end;
 
 { TPropStorageXMLConfig }
 
 procedure TPropStorageXMLConfig.DeleteSubNodes(const ARootNode: String);
-
 var
   Node, Child: TDOMNode;
   i: Integer;

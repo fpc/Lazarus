@@ -22,7 +22,8 @@ const
   DefHintColor = clInfoBk;  { default hint window color }
   DefHintPause = 500;       { default pause before hint window displays (ms) }
   DefHintShortPause = 0;    { default reshow pause }
-  DefHintHidePause = DefHintPause * 5; { default pause before hint is hidden }
+  DefHintHidePause = 5*DefHintPause; { default pause before hint is hidden (ms) }
+  DefHintHidePausePerChar = 100;     { added to DefHintHidePause (ms) }
 
 function FindApplicationComponent(const ComponentName: string): TComponent;
 begin
@@ -82,6 +83,7 @@ begin
   FHintShortCuts := True;
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
+  FHintHidePausePerChar := DefHintHidePausePerChar;
   FShowHint := true;
   FFormList := nil;
   FOnIdle := nil;
@@ -514,9 +516,9 @@ var
   Info: THintInfoAtMouse;
 begin
   Info:=GetHintInfoAtMouse;
-  //DebugLn'TApplication.DoOnMouseMove Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
-  if FHintControl <> Info.Control then
-  begin
+  //DebugLn('TApplication.DoOnMouseMove Info.ControlHasHint=',dbgs(Info.ControlHasHint),' Type=',dbgs(ord(FHintTimerType)),' FHintControl=',DbgSName(FHintControl),' Info.Control=',DbgSName(Info.Control));
+  if (FHintControl <> Info.Control) or (not (FHintTimerType in [ahtShowHint]))
+  then begin
     if Info.ControlHasHint then
     begin
       FHintControl := Info.Control;
@@ -570,15 +572,13 @@ begin
   ParentOrigin.Y := 0;
   if FHintControl.Parent <> nil then
     ParentOrigin := FHintControl.Parent.ClientOrigin;
-  {else if (FHintControl is TWinControl) and
-    (TWinControl(FHintControl).ParentWindow <> 0) then
-    Windows.ClientToScreen(TWinControl(FHintControl).ParentWindow, ParentOrigin);}
   OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
     ParentOrigin.Y - ClientOrigin.Y);
   HintInfo.CursorPos := FHintControl.ScreenToClient(Info.MousePos);
   HintInfo.HintStr := GetShortHint(Info.Control.Hint);
   HintInfo.ReshowTimeout := 0;
-  HintInfo.HideTimeout := FHintHidePause;
+  HintInfo.HideTimeout := FHintHidePause
+                          +FHintHidePausePerChar*length(HintInfo.HintStr);
   HintInfo.HintWindowClass := HintWindowClass;
   HintInfo.HintData := nil;
   CanShow := FHintControl.Perform(CM_HINTSHOW, 0, LParam(@HintInfo)) = 0;
@@ -599,9 +599,9 @@ begin
       end;
     end;
 
-    { make the hint have the same BiDiMode as the activating control }
+    // make the hint have the same BiDiMode as the activating control
     //FHintWindow.BiDiMode := FHintControl.BiDiMode;
-    { calculate the width of the hint based on HintStr and MaxWidth }
+    // calculate the width of the hint based on HintStr and MaxWidth
     with HintInfo do
       HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
     OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
@@ -612,7 +612,7 @@ begin
         Dec(Right, FHintWindow.Canvas.TextWidth(HintInfo.HintStr) + 5);
       end;}
 
-    { Convert the client's rect to screen coordinates }
+    // Convert the client's rect to screen coordinates
     {with HintInfo do
     begin
       FHintCursorRect.TopLeft :=
@@ -638,6 +638,7 @@ end;
 procedure TApplication.StartHintTimer(Interval: integer;
   TimerType: TAppHintTimerType);
 begin
+  //debugln('TApplication.StartHintTimer ',dbgs(Interval));
   StopHintTimer;
   FHintTimerType:=TimerType;
   if Interval>0 then begin
@@ -906,7 +907,7 @@ begin
   HideHint;
   if FHintControl <> nil then
   begin
-    //FHintControl := nil;
+    FHintControl := nil;
     //FHintActive := False;
     //UnhookHintHooks;
     //StopHintTimer;
@@ -918,8 +919,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.HideHint;
 begin
-  if FHintWindow<>nil then
+  if FHintWindow<>nil then begin
     FHintWindow.Visible:=false;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1407,6 +1409,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.103  2005/02/26 20:26:03  mattias
+  fixed hint size and activate
+
   Revision 1.102  2005/02/21 13:54:26  mattias
   added navigation key check for up/down already handled
 
