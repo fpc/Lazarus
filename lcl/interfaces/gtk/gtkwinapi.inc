@@ -162,9 +162,11 @@ begin
   Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_WINDOW_TYPE);
   if Result then begin
     GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
-    gdk_window_raise(GdkWindow);
-    // how to set the keyboard focus to the raised window?
-    //gtk_window_activate_focus(PGtkWindow(hWnd));
+    if GdkWindow<>nil then begin
+      gdk_window_raise(GdkWindow);
+      // how to set the keyboard focus to the raised window?
+      //gtk_window_activate_focus(PGtkWindow(hWnd));
+    end;
   end;
 end;
 
@@ -610,17 +612,19 @@ var
 begin
   if ClipboardType in [ctPrimarySelection, ctSecondarySelection, ctClipboard] then
   begin
-{$IfDef DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetOwnerShip] A');
-{$EndIf}
+    {$IfDef DEBUG_CLIPBOARD}
+    writeln('[TgtkObject.ClipboardGetOwnerShip] A');
+    {$EndIf}
     ClipboardHandler[ClipboardType]:=nil;
     Result:=false;
     if (ClipboardWidget=nil) or (FormatCount=0) or (Formats=nil) then
     begin
       // end ownership
-      if (ClipBoardWidget <> nil) and
-         (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType]) = GetControlWindow(ClipboardWidget)) then
-      begin
+      if (ClipBoardWidget <> nil)
+      and (GetControlWindow(ClipboardWidget)<>nil)
+      and (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType]) =
+           GetControlWindow(ClipboardWidget))
+      then begin
         gtk_selection_owner_set(nil,ClipboardTypeAtoms[ClipboardType],0);
       end;
       Result:=true;
@@ -636,9 +640,9 @@ writeln('[TgtkObject.ClipboardGetOwnerShip] A');
     ExpFormatCnt:=FormatCount;
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       ClipboardExtraGtkFormats[ClipboardType][gtkFormat]:=false;
-{$IfDef DEBUG_CLIPBOARD}
-writeln('[TgtkObject.ClipboardGetOwnerShip] B');
-{$EndIf}
+    {$IfDef DEBUG_CLIPBOARD}
+    writeln('[TgtkObject.ClipboardGetOwnerShip] B');
+    {$EndIf}
     if IsFormatSupported(gdk_atom_intern('text/plain',1)) then
     begin
       // lcl provides 'text/plain' and the gtk-interface will automatically
@@ -2930,6 +2934,7 @@ var
   Widget, ClientWidget: PGtkWidget;
   i : integer;
   DCOrigin: TPoint;
+  AWindow: PGdkWindow;
 begin
   Result := IsValidDC(DC);
   if Result then
@@ -2943,14 +2948,17 @@ begin
         ClientWidget:=GetFixedWidget(Widget);
         if ClientWidget=nil then
           ClientWidget:=Widget;
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
-        for i:= 1 to FrameWidth do begin
-          gtk_draw_shadow(ClientWidget^.thestyle,
-                          GetControlWindow(ClientWidget), GTK_STATE_NORMAL,
-                          GtkShadowType[Style],
-                          ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
-                          ARect.Right - ARect.Left-1, ARect.Bottom-ARect.Top-1);
-          InflateRect(ARect, -1, -1);
+        AWindow:=GetControlWindow(ClientWidget);
+        if AWindow<>nil then begin
+          DCOrigin:=GetDCOffset(TDeviceContext(DC));
+          for i:= 1 to FrameWidth do begin
+            gtk_draw_shadow(ClientWidget^.thestyle,
+                            AWindow, GTK_STATE_NORMAL,
+                            GtkShadowType[Style],
+                            ARect.Left+DCOrigin.X, ARect.Top+DCOrigin.Y,
+                            ARect.Right - ARect.Left-1, ARect.Bottom-ARect.Top-1);
+            InflateRect(ARect, -1, -1);
+          end;
         end;
       end;
     end;
@@ -4715,6 +4723,9 @@ function TGTKObject.InvalidateRect(aHandle : HWND; Rect : pRect;
 var
   gdkRect : TGDKRectangle;
   Widget: PGtkWidget;
+  {$IfDef Win32}
+  AWindow: PGdkWindow;
+  {$EndIf}
 begin
 //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Result := True;
@@ -4726,19 +4737,21 @@ begin
   Widget:=GetFixedWidget(PGtkWidget(aHandle));
   if Widget=nil then Widget:=PgtkWidget(aHandle);
 
-{$IfNDef Win32}
+  {$IfNDef Win32}
   if bErase then
     gtk_widget_queue_clear_area(Widget,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(Widget, gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-{$Else}
-  if bErase then
-    gdk_window_clear_area(GetControlWindow(Widget),
+  {$Else}
+  if bErase then begin
+    AWindow:=GetControlWindow(Widget);
+    if AWindow<>nil then
+      gdk_window_clear_area(AWindow,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-
+  end;
   gtk_widget_draw(Widget, @gdkRect);
-{$EndIf}  
+  {$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -7579,6 +7592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.188  2002/11/09 18:13:36  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.187  2002/11/09 15:02:08  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
