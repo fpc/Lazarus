@@ -3002,11 +3002,68 @@ Begin
 end;
 
 function TMainIDE.DoOpenFileAtCursor(Sender: TObject):TModalResult;
+var SE: TSourceEditor;
+    FName,SPath: String;
+
+  function FindPasFile(var FName: String; SPath: String): Boolean;
+  //  Searches for FName in Spath
+  //  If FName is not found, we'll check extensions pp and pas too
+  //  Returns true if found. FName contains the full file+path in that case
+  var TempFile,TempPath,CurPath,Ext: String;
+      i,p: Integer;
+  begin
+    if SPath='' then SPath:='.';
+    Result:=true;
+    for i:=0 to 2 do begin
+      case i of
+        1: Ext:='.pp';
+        2: Ext:='.pas';
+        else Ext:='';
+      end;
+      TempPath:=SPath;
+      while TempPath<>'' do begin
+        p:=pos(';',TempPath);
+        if p=0 then p:=length(TempPath)+1;
+        CurPath:=copy(TempPath,1,p-1)+'/';
+        Delete(TempPath,1,p);
+        TempFile:=ExpandFileName(CurPath+FName+Ext);
+        if FileExists(TempFile) then begin
+          FName:=TempFile;
+          exit;
+        end;
+        TempFile:=ExpandFileName(CurPath+lowercase(FName)+Ext);
+        if FileExists(TempFile) then begin
+          FName:=TempFile;
+          exit;
+        end;
+        TempFile:=ExpandFileName(CurPath+uppercase(FName)+Ext);
+        if FileExists(TempFile) then begin
+          FName:=TempFile;
+          exit;
+        end;
+      end;
+    end;
+    result:=false;
+  end;
+
 begin
-writeln('TMainIDE.DoOpenFileAtCursor');
+  writeln('TMainIDE.DoOpenFileAtCursor');
   Result:=mrCancel;
-  // ToDo
-  // check if include, unit, or simply a filename (in a string or comment)
+  SE:=SourceNoteBook.GetActiveSE;
+  if SE=nil then exit;
+  FName:=SE.EditorComponent.GetWordAtRowCol(SE.EditorComponent.CaretXY);
+  if FName='' then exit;
+  SPath:=ExtractFilePath(Project.ProjectFile)+';'
+        +EnvironmentOptions.LazarusDirectory+'/lcl;'
+        +EnvironmentOptions.LazarusDirectory+'/designer';
+  if FindPasFile(FName,SPath) then begin
+    result:=mrOk;
+    EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(FName);
+    if DoOpenEditorFile(FName,false)=mrOk then begin
+      EnvironmentOptions.AddToRecentOpenFiles(FName);
+      SaveEnvironment;
+    end;
+  end;
 end;
 
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
@@ -5092,6 +5149,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.168  2001/12/10 16:22:40  lazarus
+  MG: started open file at cursor
+
   Revision 1.167  2001/12/10 14:32:57  lazarus
   MOdified the Watches dialog and added the lfm and lrs files for it and the insert watch dialog.
 
