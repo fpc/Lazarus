@@ -4482,7 +4482,7 @@ begin
   else begin
     // main unit is only loaded in background
     // -> just reload the source and update the source name
-    Result:=Project1.MainUnitInfo.ReadUnitSource(true);
+    Result:=Project1.MainUnitInfo.ReadUnitSource(true,true);
   end;
 end;
 
@@ -4850,6 +4850,7 @@ var
   MainUnitInfo: TUnitInfo;
   i: integer;
   DestFilename: string;
+  SkipSavingMainSource: Boolean;
 begin
   Result:=mrCancel;
   if not (ToolStatus in [itNone,itDebugger]) then begin
@@ -4857,6 +4858,8 @@ begin
     exit;
   end;
   SaveSourceEditorChangesToCodeCache(-1);
+  SkipSavingMainSource:=false;
+
   writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
 
   // check that all new units are saved first to get valid filenames
@@ -4912,13 +4915,17 @@ begin
       if Result=mrAbort then exit;
     end else begin
       // not loaded in source editor (hidden)
-      if not (sfSaveToTestDir in Flags) then
-        DestFilename:=MainUnitInfo.Filename
-      else
+      if not (sfSaveToTestDir in Flags) then begin
+        DestFilename:=MainUnitInfo.Filename;
+        if not MainUnitInfo.NeedsSaveToDisk then
+          SkipSavingMainSource:=true;
+      end else
         DestFilename:=GetTestUnitFilename(MainUnitInfo);
-      Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source, DestFilename,
-                                     not (sfSaveToTestDir in Flags));
-      if Result=mrAbort then exit;
+      if not SkipSavingMainSource then begin
+        Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source, DestFilename,
+                                       not (sfSaveToTestDir in Flags));
+        if Result=mrAbort then exit;
+      end;
     end;
     // clear modified flags
     if not (sfSaveToTestDir in Flags) then begin
@@ -5655,7 +5662,7 @@ end;
 
 function TMainIDE.DoSaveAll(Flags: TSaveFlags): TModalResult;
 begin
-writeln('TMainIDE.DoSaveAll');
+  writeln('TMainIDE.DoSaveAll');
   Result:=DoSaveProject(Flags);
   SaveEnvironment;
   SaveIncludeLinks;
@@ -5676,13 +5683,15 @@ function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 var
   PkgOptions: string;
 begin
-  // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
-  SourceNotebook.ClearErrorLines;
   try
+    // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
+    SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
                          '',Flags+[blfWithoutIDE]);
     if Result<>mrOk then exit;
+    
+    // then compile the IDE
     if ([blfWithStaticPackages,blfOnlyIDE]*Flags=[])
     and (MiscellaneousOptions.BuildLazOpts.ItemIDE.MakeMode=mmNone) then exit;
 
@@ -8639,6 +8648,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.550  2003/05/02 10:28:59  mattias
+  improved file checking
+
   Revision 1.549  2003/05/01 20:48:47  mattias
   fixed building lazarus without IDE
 
