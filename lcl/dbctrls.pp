@@ -41,6 +41,7 @@ uses
 
 Type
   { TFieldDataLink }
+
   TFieldDataLink = class(TDataLink)
   private
     FField: TField;
@@ -103,7 +104,9 @@ Type
     property OnActiveChange: TNotifyEvent read FOnActiveChange write FOnActiveChange;
   end;
 
- { TDBEdit }
+
+  { TDBEdit }
+
   TDBEdit = class(TCustomMaskEdit)
   private
     FDataLink: TFieldDataLink;
@@ -146,7 +149,9 @@ Type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   end;
 
+
   { TDBText }
+
   TDBText = class(TLabel)
   private
     FDataLink: TFieldDataLink;
@@ -172,7 +177,9 @@ Type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
   end;
 
+
   { TDBListBox }
+
   TDBListBox = class(TCustomListBox)
     FDataLink: TFieldDataLink;
 
@@ -218,6 +225,63 @@ Type
     //same as dbedit need to match the datalink status
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
   end;
+
+
+  { TDBRadioGroup }
+
+  TDBRadioGroup = class(TCustomRadioGroup)
+  private
+    FDataLink: TFieldDataLink;
+    FOnChange: TNotifyEvent;
+    FValue: string;
+    FInSetValue: boolean;
+    FValues: TStrings;
+    function GetDataField: string;
+    function GetDataSource: TDataSource;
+    function GetField: TField;
+    function GetReadOnly: Boolean;
+    procedure SetDataField(const AValue: string);
+    procedure SetDataSource(const AValue: TDataSource);
+    procedure SetItems(const AValue: TStrings);
+    procedure SetReadOnly(const AValue: Boolean);
+    procedure SetValue(const AValue: string);
+    procedure SetValues(const AValue: TStrings);
+  protected
+    procedure Change; virtual;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure DataChange(Sender: TObject);
+    procedure UpdateData(Sender: TObject);
+    property DataLink: TFieldDataLink read FDataLink;
+    function GetButtonValue(Index: Integer): string;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    property Field: TField read GetField;
+    property ItemIndex;
+    property Value: string read FValue write SetValue;
+  published
+    property Align;
+    property Anchors;
+    property Caption;
+    property Columns;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    property Enabled;
+    property Items write SetItems;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseuP;
+    property OnResize;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property Values: TStrings read FValues write SetValues;
+    property Visible;
+  end;
+
+
 
 implementation
 
@@ -530,12 +594,16 @@ end;
 {$Include dbedit.inc}
 {$Include dbtext.inc}
 {$Include dblistbox.inc}
+{$Include dbradiogroup.inc}
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/09/15 22:02:02  mattias
+  implemented TDBRadioGroup
+
   Revision 1.2  2003/09/15 01:56:48  ajgenius
   Added TDBListBox. needs more work for ReadOnly
 

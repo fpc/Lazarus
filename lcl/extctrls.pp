@@ -458,7 +458,7 @@ type
 
   TRadioGroup = class(TCustomRadioGroup)
   public
-    constructor Create (AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
   published
     property Align;
     property Anchors;
@@ -756,6 +756,9 @@ end.
 
  {
   $Log$
+  Revision 1.72  2003/09/15 22:02:02  mattias
+  implemented TDBRadioGroup
+
   Revision 1.71  2003/09/04 11:10:18  mattias
   added csClickEvents to TImage
 
