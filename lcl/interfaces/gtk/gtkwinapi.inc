@@ -1668,19 +1668,19 @@ end;
 
 {------------------------------------------------------------------------------
   Method:  CreatePolygonRgn
-  Params:  Points, NumPts, Winding
+  Params:  Points, NumPts, FillMode
   Returns: the handle to the region
 
   Creates a Polygon, a closed many-sided shaped region. The Points parameter is
-  an array of points that give the vertices of the polygon. Winding determines
-  what points are going to be included in the region. When Winding is True,
-  points are selected by using the Winding fill algorithm. When Winding is
-  False, points are selected by using using the even-odd (alternative) fill
+  an array of points that give the vertices of the polygon. FillMode=Winding
+  determines what points are going to be included in the region. When Winding
+  is True, points are selected by using the Winding fill algorithm. When Winding
+  is False, points are selected by using using the even-odd (alternative) fill
   algorithm. NumPts indicates the number of points to use.
   The first point is always connected to the last point.
  ------------------------------------------------------------------------------}
 Function TgtkObject.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
-  Winding : Boolean): HRGN;
+  FillMode: integer): HRGN;
 var
   i: integer;
   PointArray: PGDKPoint;
@@ -1697,7 +1697,7 @@ begin
     PointArray[i].y:=Points[i].y;
   end;
 
-  If Winding then
+  If FillMode=Winding then
     fr := GDK_WINDING_RULE
   else
     fr := GDK_EVEN_ODD_RULE;
@@ -7566,6 +7566,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.195  2002/12/25 13:30:37  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.194  2002/12/22 22:42:55  mattias
   custom controls now support child wincontrols
 
