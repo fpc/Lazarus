@@ -144,6 +144,14 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.CreateDIBitmap(DC: HDC;
+  var InfoHeader: TBitmapInfoHeader;
+  dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
+  wUsage: UINT): HBITMAP;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
 begin
   Result := 0;
@@ -188,6 +196,11 @@ begin
   // 32 characters. If the interface does not support long font names, it can
   // simple omitt this function
   Result := CreateFontIndirect(LogFont);
+end;
+
+function TInterfaceBase.CreatePalette(const LogPalette: TLogPalette): HPalette;
+begin
+  Result := 0;
 end;
 
 function TInterfaceBase.CreatePenIndirect(const LogPen: TLogPen): HPEN;
@@ -651,12 +664,19 @@ begin
   Result := 1;
 end;
 
-function TInterfaceBase.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean;
+function TInterfaceBase.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
+  bEnable: Boolean): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean;
+function TInterfaceBase.EnableScrollBar(Wnd: HWND;
+  wSBflags, wArrows: Cardinal): Boolean;
 begin
   Result := False;
 end;
@@ -720,7 +740,8 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer;
+function TInterfaceBase.ExtSelectClipRGN(dc: hdc; rgn : hrgn;
+  Mode : Longint) : Integer;
 var
   OldC, Clip : hRGN;
 begin
@@ -734,13 +755,19 @@ begin
   DeleteObject(oldC);
 end;
 
-function TInterfaceBase.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean;
+function TInterfaceBase.FillRect(DC: HDC; const Rect: TRect;
+  Brush: HBRUSH): Boolean;
 begin
   Result := False;
 end;
 
 function TInterfaceBase.FloodFill(DC: HDC; X, Y: Integer; Color: TColor;
   FillStyle: TFillStyle; Brush: HBRUSH): Boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.FillRgn(DC: HDC; RegionHnd: HRGN; hbr: HBRUSH): BOOL;
 begin
   Result := false;
 end;
@@ -848,6 +875,11 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetMapMode(DC: HDC): Integer;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.GetNotebookTabIndexAtPos(Handle: HWND;
   const ClientPos: TPoint): integer;
 begin
@@ -856,6 +888,12 @@ end;
 
 function TInterfaceBase.GetObject(GDIObject: HGDIOBJ; BufSize: Integer;
   Buf: Pointer): Integer;
+begin
+  Result := 0;
+end;
+
+function TInterfaceBase.GetPaletteEntries(Palette: HPALETTE;
+  StartIndex, NumEntries: UINT; var PaletteEntries): UINT;
 begin
   Result := 0;
 end;
@@ -902,6 +940,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetSystemPaletteEntries(DC: HDC;
+  StartIndex, NumEntries: UINT; var PaletteEntries): UINT;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.GetTextColor(DC: HDC) : TColorRef;
 begin
   Result := 0;
@@ -919,6 +963,12 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.GetTextExtentPoint32(DC: HDC; Str: PChar;
+  Count: Integer; var Size: TSize): Boolean;
+begin
+  Result := GetTextExtentPoint(DC,Str,Count,Size);
+end;
+
 function TInterfaceBase.GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;
 begin
   Result := False;
@@ -929,9 +979,11 @@ begin
   Result := 0;
 end;
 
-Function TInterfaceBase.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
+Function TInterfaceBase.GetWindowOrgEx(dc : hdc; P : PPoint): Integer;
 Begin
   Result := 0;
+  if P<>nil then
+    P^:=Point(0,0);
 end;
 
 function TInterfaceBase.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
@@ -1125,7 +1177,7 @@ function TInterfaceBase.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
 var
   P : TPoint;
 Begin
-  GetWindowOrgEx(dc, P);
+  GetWindowOrgEx(dc, @P);
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
@@ -1439,6 +1491,11 @@ begin
   Result := 0;
 end;
 
+function TInterfacebase.SetMapMode(DC: HDC; MapMode: Integer): Integer;
+begin
+  Result := 0;
+end;
+
 Function TInterfacebase.SetProp(Handle: hwnd; Str : PChar;
   Data : Pointer) : Boolean;
 Begin
@@ -1447,6 +1504,12 @@ end;
 
 function TInterfaceBase.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
+begin
+  Result := 0;
+end;
+
+function TInterfaceBase.SetStretchBltMode(DC: HDC;
+  StretchMode: Integer): Integer;
 begin
   Result := 0;
 end;
@@ -1514,6 +1577,15 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.StretchDIBits(DC: HDC;
+  DestX, DestY, DestWidth, DestHeight,
+  SrcX, SrcY, SrcWidth, SrcHeight: Integer;
+  Bits: Pointer; var BitsInfo: TBitmapInfo;
+  Usage: UINT; Rop: DWORD): Integer;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.StretchMaskBlt(DestDC: HDC;
   X, Y, Width, Height: Integer; SrcDC: HDC;
   XSrc, YSrc, SrcWidth, SrcHeight: Integer;
@@ -1554,6 +1626,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.75  2002/12/26 11:00:14  mattias
   added included by to unitinfo and a few win32 functions
 
