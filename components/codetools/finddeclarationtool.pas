@@ -3251,10 +3251,13 @@ begin
         Params.NewCleanPos);
     end else begin
       // do not save proc identifiers or collect results
+      Result:=false;
     end;
-  end else
+  end else begin
     // identifier does not exist in interface
     FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
+    Result:=false;
+  end;
 end;
 
 function TFindDeclarationTool.CompareNodeIdentifier(Node: TCodeTreeNode;

@@ -1207,17 +1207,39 @@ var
   TypeData: PTypeData;
   PropInfo: PPropInfo;
   CurCount, i: integer;
+  //CurParent: TClass;
 begin
   TypeInfo:=Instance.ClassInfo;
   TypeData:=GetTypeData(TypeInfo);
   GetMem(BigList,TypeData^.PropCount * SizeOf(Pointer));
+
+  // read all properties and remove doubles
+  TypeInfo:=Instance.ClassInfo;
   FCount:=0;
   repeat
     // read all property infos of current class
+    TypeData:=GetTypeData(TypeInfo);
+    // skip unitname
     PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+    // read property count
     CurCount:=PWord(PropInfo)^;
-    // Now point PropInfo to first propinfo record.
     inc(Longint(PropInfo),SizeOf(Word));
+    
+    {writeln('TPropInfoList.Create D ',CurCount,' TypeData^.ClassType=',HexStr(Cardinal(TypeData^.ClassType),8));
+    writeln('TPropInfoList.Create E ClassName="',TypeData^.ClassType.ClassName,'"',
+    ' TypeInfo=',HexStr(Cardinal(TypeInfo),8),
+    ' TypeData^.ClassType.ClassInfo=',HexStr(Cardinal(TypeData^.ClassType.ClassInfo),8),
+    ' TypeData^.ClassType.ClassParent=',HexStr(Cardinal(TypeData^.ClassType.ClassParent),8),
+    ' TypeData^.ParentInfo=',HexStr(Cardinal(TypeData^.ParentInfo),8),
+    '');
+    CurParent:=TypeData^.ClassType.ClassParent;
+    if CurParent<>nil then begin
+      writeln('TPropInfoList.Create F CurParent.ClassName=',CurParent.ClassName,
+        ' CurParent.ClassInfo=',HexStr(Cardinal(CurParent.ClassInfo),8),
+        '');
+    end;}
+    
+    // read properties
     while CurCount>0 do begin
       if PropInfo^.PropType^.Kind in Filter then begin
         // check if name already exists in list
@@ -1237,7 +1259,6 @@ begin
     end;
     TypeInfo:=TypeData^.ParentInfo;
     if TypeInfo=nil then break;
-    TypeData:=GetTypeData(TypeInfo);
   until false;
     
   // create FList
