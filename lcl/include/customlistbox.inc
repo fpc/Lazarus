@@ -171,4 +171,12 @@ begin
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
 end;
 
+{------------------------------------------------------------------------------}
+{  procedure TCustomListBox.Clear                                            }
+{------------------------------------------------------------------------------}
+procedure TCustomListBox.Clear;
+begin
+  FItems.Clear;
+end;
+
 
