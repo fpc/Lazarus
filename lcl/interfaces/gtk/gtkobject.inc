@@ -5953,6 +5953,63 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
+
+  Sets the gtk resource file and parses it.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
+const
+  TestString = '{Am|g_}';
+  AVGBuffer : Pchar =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890()|_ ';
+var
+  XT : TSize;
+  dummy: LongInt;
+  UseFont : PGDKFont;
+  UnRef : Boolean;
+begin
+  with TDeviceContext(DC) do begin
+    if dcfTextMetricsValid in DCFlags then begin
+      // cache valid
+    end else begin
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFont := GetDefaultFont;
+        UnRef := True;
+      end
+      else begin
+        UseFont := CurrentFont^.GDIFontObject;
+        UnRef := False;
+      end;
+      If UseFont = nil then
+        WriteLn('WARNING: [TgtkObject.GetTGextMetrics] Missing font')
+      else begin
+        FillChar(DCTextMetric, SizeOf(DCTextMetric), 0);
+        with DCTextMetric do begin
+          gdk_text_extents(UseFont, TestString,
+            length(TestString), @lbearing, @rBearing, @dummy,
+            @TextMetric.tmAscent, @TextMetric.tmDescent);
+          GetTextExtentPoint(HDC(DC), AVGBuffer, StrLen(AVGBuffer), XT);
+          XT.cX := XT.cX div StrLen(AVGBuffer);
+          TextMetric.tmHeight := XT.cY;
+          TextMetric.tmAscent := TextMetric.tmHeight - TextMetric.tmDescent;
+          TextMetric.tmAveCharWidth :=  XT.cX;
+          if TextMetric.tmAveCharWidth<2 then TextMetric.tmAveCharWidth:=2;
+          TextMetric.tmMaxCharWidth :=
+            Max(gdk_char_width(UseFont, 'W'),
+                gdk_char_width(UseFont, 'M')); // temp hack
+          if TextMetric.tmMaxCharWidth<2 then
+            TextMetric.tmMaxCharWidth:=2;
+          If UnRef then
+            GDK_Font_UnRef(UseFont);
+        end;
+      end;
+      Include(DCFlags,dcfTextMetricsValid);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: SetRCFilename
   Params:  const AValue: string
   Returns: none
@@ -6223,6 +6280,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.245  2002/10/10 19:43:16  lazarus
+  MG: accelerated GetTextMetrics
+
   Revision 1.244  2002/10/10 09:44:30  lazarus
   MG: fixed gtk warnings on creating TMemo
 
