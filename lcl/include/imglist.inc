@@ -312,14 +312,25 @@ end;
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
-
-  with Image do
-  begin
+  with Image do begin
     Width := FWidth;
     Height := FHeight;
     Self.Draw(Canvas, 0, 0, Index, True);
   end;
+end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
+    Mask: TBitmap);
+
+  Fetches the index'th image. This is only available if there is one image
+  per index.
+ ------------------------------------------------------------------------------}
+procedure TCustomImageList.GetInternalImage(Index: integer; var Image,
+  Mask: TBitmap);
+begin
+  Image:=TBitmap(FImageList[Index]);
+  Mask:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -327,7 +338,7 @@ end;
   Params:
   Returns: Count
 
-  Fetches the index'th image into an icon.
+  Returns the number of images.
  ------------------------------------------------------------------------------}
 Function TCustomImageList.GetCount : Integer;
 begin
@@ -840,6 +851,9 @@ end;
 {
 
   $Log$
+  Revision 1.13  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.12  2002/08/22 13:45:58  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 

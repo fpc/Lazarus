@@ -377,6 +377,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
+  
+  Returns the index of the page of the tab at the client position.
+  For example:
+    Index:=NoteBook1.PageIndexAtClientPos(
+               NoteBook1.ScreenToClient(Mouse.CursorPos));
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
+begin
+  if HandleAllocated then
+    Result:=LCLLinux.GetNotebookTabIndexAtPos(Handle,ClientPos)
+  else
+    Result:=-1;
+end;
+
+{------------------------------------------------------------------------------
   method TCustomNotebook DoCloseTabClicked
   Params: APage: TPage
   Result: none
@@ -681,6 +697,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.24  2002/10/26 15:56:45  lazarus
   MG: fixed changing notebook pageindex at designtime
 

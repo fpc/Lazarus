@@ -921,6 +921,7 @@ end;
 initialization
   FocusCount := 0;
   Focusmessages := True;
+  HintWindowClass := THintWindow;
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);

@@ -19,8 +19,21 @@
 }
 
 procedure TBitMap.Assign(Source: TPersistent);
+var
+ SrcBitmap: TBitmap;
 begin
-//TODO: Finish TBITMAP ASSIGN
+  //TODO: Finish TBITMAP ASSIGN
+  if Source=Self then exit;
+  if Source is TBitmap then begin
+    FreeContext;
+    SrcBitmap:=TBitmap(Source);
+    Width:=SrcBitmap.Width;
+    Height:=SrcBitmap.Height;
+    Canvas.Brush.Color:=clWindow;
+    Canvas.FillRect(Rect(0,0,Width,Height));
+    SrcBitmap.Draw(Canvas,Rect(0,0,Width,Height));
+  end else
+    inherited;
 end;
 
 procedure TBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
@@ -145,12 +158,9 @@ var
   pstr : PChar;
 Begin
   HandleNeeded;
-  pStr := StrAlloc(length(Filename) + 1);
-  try
-    StrPCopy(pStr, Filename);
+  if Filename<>'' then begin
+    pStr:=PChar(Filename);
     SendIntfMessage(LM_LOADXPM,Self,pstr);
-  finally
-    StrDispose(pStr);
   end;
 end;
 
@@ -168,6 +178,7 @@ end;
 
 procedure TBitMap.PaletteNeeded;
 begin
+
 end;
 
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
@@ -365,7 +376,7 @@ end;
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
   if FImage.FHandle = Value then exit;
-  // TODO: the properties from new bitmap
+  // TODO: get the properties from new bitmap
   with FImage do begin
     FreeContext;
     Release;
@@ -466,6 +477,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.21  2002/10/25 10:42:08  lazarus
   MG: broke minor circles
 
