@@ -91,7 +91,7 @@ function UncommentLines(const s: string): string;
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 function NameToValidIdentifier(const s: string): string;
 function GetCurrentUserName: string;
-
+function GetCurrentMailAddress: string;
 
 implementation
 
@@ -976,6 +976,11 @@ end;
 function GetCurrentUserName: string;
 begin
   Result:=GetEnv('USER');
+end;
+
+function GetCurrentMailAddress: string;
+begin
+  Result:='<'+GetCurrentUserName+'@'+GetEnv('HOSTNAME')+'>';
 end;
 
 end.

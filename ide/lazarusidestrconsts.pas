@@ -127,6 +127,7 @@ ResourceString
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertUserName = 'Current username';
   lisMenuInsertDateTime = 'Current date and time';
+  lisMenuInsertChangeLogEntry = 'ChangeLog entry';
   lisMenuCompleteCode = 'Complete Code';
 
   lisMenuFind = 'Find';

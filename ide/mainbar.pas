@@ -159,6 +159,7 @@ type
     itmEditInsertGPLNotice: TMenuItem;
     itmEditInsertUsername: TMenuItem;
     itmEditInsertDateTime: TMenuItem;
+    itmEditInsertChangeLogEntry: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;
@@ -562,6 +563,11 @@ begin
       itmEditInsertDateTime.Name:='itmEditInsertDateTime';
       itmEditInsertDateTime.Caption := lisMenuInsertDateTime;
       itmEditInsertGeneral.Add(itmEditInsertDateTime);
+
+      itmEditInsertChangeLogEntry := TMenuItem.Create(Self);
+      itmEditInsertChangeLogEntry.Name:='itmEditInsertChangeLogEntry';
+      itmEditInsertChangeLogEntry.Caption := lisMenuInsertChangeLogEntry;
+      itmEditInsertGeneral.Add(itmEditInsertChangeLogEntry);
     end;
   end;
 
@@ -962,6 +968,7 @@ begin
     itmEditInsertGPLNotice.ShortCut:=CommandToShortCut(ecInsertGPLNotice);
     itmEditInsertUsername.ShortCut:=CommandToShortCut(ecInsertUserName);
     itmEditInsertDateTime.ShortCut:=CommandToShortCut(ecInsertDateTime);
+    itmEditInsertChangeLogEntry.ShortCut:=CommandToShortCut(ecInsertChangeLogEntry);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);

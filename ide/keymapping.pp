@@ -85,6 +85,7 @@ const
   ecInsertGPLNotice      = ecUserFirst + 80;
   ecInsertUserName       = ecUserFirst + 81;
   ecInsertDateTime       = ecUserFirst + 82;
+  ecInsertChangeLogEntry = ecUserFirst + 83;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -507,6 +508,7 @@ begin
     ecInsertGPLNotice: Result:='Insert GPL notice';
     ecInsertUserName: Result:='Insert current username';
     ecInsertDateTime: Result:='Insert current date and time';
+    ecInsertChangeLogEntry: Result:='Insert ChangeLog entry';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1197,6 +1199,7 @@ begin
   Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert username',ecInsertUserName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert date and time',ecInsertDateTime,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert ChangeLog entry',ecInsertChangeLogEntry,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands','Command commands',caAll)];
