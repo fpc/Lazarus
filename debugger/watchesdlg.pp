@@ -74,6 +74,7 @@ type
   protected
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
+    procedure WatchesUpdate(const TheWatches: TDBGWatches);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -224,6 +225,14 @@ begin
   else inherited;
 end;
 
+procedure TWatchesDlg.WatchesUpdate(const TheWatches: TDBGWatches);
+var
+  i: Integer;
+begin
+  for i:=0 to TheWatches.Count-1 do
+    WatchUpdate(TheWatches,TheWatches[i]);
+end;
+
 procedure TWatchesDlg.WatchAdd(const ASender: TDBGWatches; const AWatch: TDBGWatch);
 var
   Item: TListItem;
@@ -263,6 +272,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.6  2003/05/28 09:00:35  mattias
+  watches dialog now without DoInitDebugger
+
   Revision 1.5  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 

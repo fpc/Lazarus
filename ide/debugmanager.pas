@@ -99,7 +99,11 @@ type
     procedure DebugDialogDestroy(Sender: TObject);
     procedure ViewDebugDialog(const ADialogType: TDebugDialogType);
     procedure DestroyDebugDialog(const ADialogType: TDebugDialogType);
+    procedure InitDebugOutputDlg;
     procedure InitBreakPointDlg;
+    procedure InitWatchesDlg;
+    procedure InitLocalsDlg;
+    procedure InitCallStackDlg;
   protected
     function  GetState: TDBGState; override;
     function  GetCommands: TDBGCommands; override;
@@ -568,10 +572,15 @@ begin
     CurDialog.Tag := Integer(ADialogType);
     CurDialog.OnDestroy := @DebugDialogDestroy;
     EnvironmentOptions.IDEWindowLayoutList.Apply(CurDialog,CurDialog.Name);
-    if (CurDialog is TBreakPointsDlg) then
-      InitBreakPointDlg;
+    case ADialogType of
+    ddtOutput:      InitDebugOutputDlg;
+    ddtBreakpoints: InitBreakPointDlg;
+    ddtWatches:     InitWatchesDlg;
+    ddtLocals:      InitLocalsDlg;
+    ddtCallStack:   InitCallStackDlg;
+    end;
     //DoInitDebugger;
-    //CurDialog.Debugger := FDebugger;
+    CurDialog.Debugger := FDebugger;
   end else begin
     CurDialog:=FDialogs[ADialogType];
     if (CurDialog is TBreakPointsDlg) then begin
@@ -592,6 +601,10 @@ begin
   FDialogs[ADialogType] := nil;
 end;
 
+procedure TDebugManager.InitDebugOutputDlg;
+begin
+end;
+
 procedure TDebugManager.InitBreakPointDlg;
 var
   TheDialog: TBreakPointsDlg;
@@ -600,6 +613,22 @@ begin
   if (Project1<>nil) then
     TheDialog.BaseDirectory:=Project1.ProjectDirectory;
   TheDialog.BreakPointsUpdate(FBreakPoints);
+end;
+
+procedure TDebugManager.InitWatchesDlg;
+var
+  TheDialog: TWatchesDlg;
+begin
+  TheDialog:=TWatchesDlg(FDialogs[ddtWatches]);
+  TheDialog.WatchesUpdate(FWatches);
+end;
+
+procedure TDebugManager.InitLocalsDlg;
+begin
+end;
+
+procedure TDebugManager.InitCallStackDlg;
+begin
 end;
 
 constructor TDebugManager.Create(TheOwner: TComponent);
@@ -814,7 +843,7 @@ var
 //@@  OldBreakpoints: TDBGBreakpoints;
 //@@  OldBreakPointGroups: TDBGBreakPointGroups;
   OldWatches: TDBGWatches;
-
+  
   procedure ResetDialogs;
   var
     DialogType: TDebugDialogType;
@@ -1159,6 +1188,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.33  2003/05/28 09:00:35  mattias
+  watches dialog now without DoInitDebugger
+
   Revision 1.32  2003/05/28 08:46:23  mattias
   break;points dialog now gets the items without debugger
 
