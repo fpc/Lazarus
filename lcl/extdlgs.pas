@@ -219,25 +219,26 @@ Type
   private
     FDate: TDateTime;
     FDayChanged: TNotifyEvent;
-    FDialogTitle: String;
     FDisplaySettings: TDisplaySettings;
     FHelpContext: THelpContext;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
-    Function TitleStored : Boolean;
+    function GetDialogTitle: String;
+    procedure SetDialogTitle(const AValue: String);
+    Function IsTitleStored: Boolean;
   Public
-    Constructor Create(AOwner : TComponent); override;
+    Constructor Create(AOwner: TComponent); override;
     Destructor Destroy; override;
-    Function Execute : Boolean; override;
-    Function CreateForm : TCalendarDialogForm; virtual;
+    Function Execute: Boolean; override;
+    Function CreateForm: TCalendarDialogForm; virtual;
   Published
-    Property DialogTitle : String Read FDialogTitle Write FDialogTitle Stored TitleStored;
-    Property Date : TDateTime Read FDate Write FDate;
-    Property DisplaySettings : TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
+    Property DialogTitle: String Read GetDialogTitle Write SetDialogTitle Stored IsTitleStored;
+    Property Date: TDateTime Read FDate Write FDate;
+    Property DisplaySettings: TDisplaySettings Read FDisplaySettings Write FDisplaySettings;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    property OnDayChanged : TNotifyEvent read FDayChanged write FDayChanged;
-    property OnMonthChanged : TNotifyEvent read FMonthChanged write FMonthChanged;
-    property OnYearChanged : TNotifyEvent read FYearChanged write FYearChanged;
+    property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
+    property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
+    property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
   end;
 
 function CreateCalendarForm(AOwner: TComponent; AHelpContext: THelpContext): TCalendarDialogForm;
@@ -1279,16 +1280,26 @@ end;
 
 { TCalendarDialog }
 
-function TCalendarDialog.TitleStored: Boolean;
+function TCalendarDialog.IsTitleStored: Boolean;
 begin
-  Result:=FDialogTitle<>rsPickDate;
+  Result:=Title<>rsPickDate;
+end;
+
+function TCalendarDialog.GetDialogTitle: String;
+begin
+  Result:=Title;
+end;
+
+procedure TCalendarDialog.SetDialogTitle(const AValue: String);
+begin
+  Title:=AValue;
 end;
 
 constructor TCalendarDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDate:=Sysutils.Date;
-  FDialogTitle:=rsPickDate;
+  Title:=rsPickDate;
 end;
 
 destructor TCalendarDialog.Destroy;
@@ -1297,11 +1308,9 @@ begin
 end;
 
 function TCalendarDialog.Execute: Boolean;
-
 Var
-  Dlg : TCalendarDialogForm;
-  D : TDateTime;
-
+  Dlg: TCalendarDialogForm;
+  D: TDateTime;
 begin
   Dlg:=CreateForm;
   With Dlg do

@@ -86,11 +86,11 @@ type
     function DoExecute : boolean; virtual;
   public
     FCompStyle : LongInt;
-    constructor Create (AOwner : TComponent); override;
-    function Execute : boolean; virtual;
-    property Handle : integer read FHandle write SetHandle;
-    property Title : string read FTitle write FTitle;
-    property UserChoice : integer read FUserChoice write FUserChoice;
+    constructor Create(TheOwner: TComponent); override;
+    function Execute: boolean; virtual;
+    property Handle: integer read FHandle write SetHandle;
+    property Title: string read FTitle write FTitle;
+    property UserChoice: integer read FUserChoice write FUserChoice;
     procedure Close; virtual;
     procedure DoShow; virtual;
     procedure DoClose; virtual;
@@ -416,6 +416,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2004/04/03 13:10:20  mattias
+  fixed TCalendarDialog.DialogTitle
+
   Revision 1.48  2004/03/20 17:36:56  mattias
   added IDEIntf package and component editors for MemDS
 

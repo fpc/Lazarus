@@ -24,12 +24,12 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCommonDialog.Create (AOwner : TComponent);
+constructor TCommonDialog.Create (TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
 end;
 
-function TCommonDialog.Execute : boolean;
+function TCommonDialog.Execute: boolean;
 begin
   FUserChoice := mrNone;
   CNSendMessage(LM_CREATE, Self, nil);
@@ -98,6 +98,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/04/03 13:10:20  mattias
+  fixed TCalendarDialog.DialogTitle
+
   Revision 1.12  2004/02/23 08:19:04  micha
   revert intf split
 
