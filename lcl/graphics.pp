@@ -680,6 +680,8 @@ type
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
+    procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); override;
+    procedure SaveToClipboardFormat(FormatID: TClipboardFormat); override;
     Procedure LoadFromXPMFile(const Filename : String);
     procedure LoadFromFile(const Filename: string); Override;
     procedure Mask(ATransparentColor: TColor);
@@ -953,6 +955,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.56  2002/12/12 17:47:44  mattias
   new constants for compatibility
 
