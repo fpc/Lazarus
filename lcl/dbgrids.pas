@@ -1136,7 +1136,10 @@ begin
   end else begin
     F := GetFieldFromGridColumn(aCol);
     if F<>nil then begin
-      S := F.DisplayText;
+      if F.dataType <> ftBlob then
+        S := F.DisplayText
+      else
+        S := '(blob)';
     end else
       S := '';
     FixRectangle;
@@ -1725,7 +1728,10 @@ begin
   end else begin
     F := GetFieldFromGridColumn(DataCol);
     if F<>nil then begin
-      S := F.DisplayText;
+      if F.dataType <> ftBlob then
+        S := F.DisplayText
+      else
+        S := '(blob)';
     end else
       S := '';
     R := FixRectangle();
@@ -2045,6 +2051,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2005/03/23 15:59:33  mattias
+  blob fields for TDBGrid  from Jose A. Rimon
+
   Revision 1.35  2005/03/08 10:32:47  mattias
   BorderStyle for TCustomEdit in win32 intf  from Jesus
 
