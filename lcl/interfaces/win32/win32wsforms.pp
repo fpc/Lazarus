@@ -46,6 +46,8 @@ type
   private
   protected
   public
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
   end;
 
   { TWin32WSScrollBox }
@@ -186,7 +188,19 @@ begin
   Result := Params.Window;
 end;
 
+{ TWin32WSScrollingWinControl }
 
+function ScrollWindowPtr(hWnd:HWND; XAmount:longint; YAmount:longint; lpRect: pointer; lpClipRect: pointer):WINBOOL; stdcall; external 'user32' name 'ScrollWindow';
+
+procedure TWin32WSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
+  const DeltaX, DeltaY: integer);
+var
+  lVisible: boolean;
+begin
+  lVisible := AWinControl.HandleAllocated and Windows.IsWindowVisible(AWinControl.Handle);
+  if lVisible then
+    ScrollWindowPtr(AWinControl.Handle, DeltaX, DeltaY, nil, nil);
+end;
 
 { TWin32WSCustomForm }
 
@@ -340,7 +354,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TWin32WSScrollingWinControl);
+  RegisterWSComponent(TScrollingWinControl, TWin32WSScrollingWinControl);
   RegisterWSComponent(TScrollBox, TWin32WSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWin32WSCustomFrame);
 //  RegisterWSComponent(TFrame, TWin32WSFrame);

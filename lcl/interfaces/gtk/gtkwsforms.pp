@@ -40,6 +40,8 @@ type
   private
   protected
   public
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl;
+      const DeltaX, DeltaY: integer); override;
   end;
 
   { TGtkWSScrollBox }
@@ -115,6 +117,13 @@ implementation
 
 { TGtkWSCustomForm }
 
+procedure TGtkWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl;
+  const DeltaX, DeltaY: integer);
+begin
+end;
+          
+{ TGtkWSCustomForm }
+
 procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
@@ -168,7 +177,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl);
+  RegisterWSComponent(TScrollingWinControl, TGtkWSScrollingWinControl);
 //  RegisterWSComponent(TScrollBox, TGtkWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TGtkWSCustomFrame);
 //  RegisterWSComponent(TFrame, TGtkWSFrame);

@@ -51,7 +51,10 @@ uses
 type
   { TWSScrollingWinControl }
 
+  TWSScrollingWinControlClass = class of TWSScrollingWinControl;
   TWSScrollingWinControl = class(TWSWinControl)
+    class procedure ScrollBy(const AWinControl: TScrollingWinControl; 
+      const DeltaX, DeltaY: integer); virtual;
   end;
 
   { TWSScrollBox }
@@ -105,6 +108,13 @@ type
 
 implementation
 
+{ TWSScrollingWinControl }
+
+procedure TWSScrollingWinControl.ScrollBy(const AWinControl: TScrollingWinControl; 
+  const DeltaX, DeltaY: integer);
+begin
+end;
+  
 { TWSCustomForm }
 
 procedure TWSCustomForm.CloseModal(const ACustomForm: TCustomForm);
