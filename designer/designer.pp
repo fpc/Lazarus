@@ -1037,10 +1037,14 @@ var
   AHint : String;
   Control : TControl;
   Position : TPoint;
+  BW       : Integer;
 begin
+  BW := 0;
+  if (FCustomForm is TForm) then
+     BW := TForm(FCustomForm).BorderWidth;
   FHintTimer.Enabled := False;
   Position := Mouse.CursorPos;
-  if ((Position.X < FCustomForm.LEft) or (Position.X > (FCustomForm.Left+FCustomForm.Width)) or (Position.Y < FCustomForm.Top) or (Position.Y > (FCustomForm.Top+FCustomForm.Height))) then Exit;
+  if ((Position.X < (FCustomForm.LEft +BW)) or (Position.X > (FCustomForm.Left+FCustomForm.Width - BW)) or (Position.Y < FCustomForm.Top+22) or (Position.Y > (FCustomForm.Top+FCustomForm.Height - BW))) then Exit;
 
   Position := FCustomForm.ScreenToClient(Position);
 

@@ -186,6 +186,7 @@ type
       property ActiveCOntrol;
       property Align;
       property AutoSize;
+      property BorderWidth;
       property Caption;
       property Color;
       property ClientHeight;
