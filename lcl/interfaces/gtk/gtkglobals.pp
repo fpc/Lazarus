@@ -19,7 +19,13 @@ unit GTKGlobals;
 interface
 
 uses
-  InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls, Forms,
+  SysUtils, Classes, InterfaceBase,
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2,
+  {$ELSE}
+  glib, gdk, gtk,
+  {$ENDIF}
+  LMessages, Controls, Forms,
   VclGlobals, LCLLinux, LCLType, GTKDef, DynHashArray, LazQueue;
 
 {$I dragicons.inc}
