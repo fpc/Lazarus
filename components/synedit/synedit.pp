@@ -6338,9 +6338,10 @@ procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
     fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2
-        {$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF}) div fCharWidth);
+        {$IFDEF SYN_LAZARUS} - ScrollBarWidth{$ENDIF})
+                            div fCharWidth);
     fLinesInWindow := (ClientHeight {$IFDEF SYN_LAZARUS}-13{$ENDIF})
-         div fTextHeight;
+                       div fTextHeight;
     if bFont then begin
       if Gutter.ShowLineNumbers then
         GutterChanged(Self)
@@ -6601,6 +6602,9 @@ begin
     {$ELSE}
     DragAcceptFiles(Handle, TRUE);
     {$ENDIF}
+  {$IFDEF SYN_LAZARUS}
+  SizeOrFontChanged(true);
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.DestroyWnd;
