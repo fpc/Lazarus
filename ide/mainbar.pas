@@ -290,12 +290,12 @@ type
     itmProjectViewSource: TMenuItem;
     itmProjectViewToDos: TMenuItem;
     itmProjectOptions: TMenuItem;
+    itmProjectCompilerOptions: TMenuItem;
 
     // run menu
     itmRunMenuBuild: TMenuItem;
     itmRunMenuBuildAll: TMenuItem;
     itmRunMenuAbortBuild: TMenuItem;
-    itmRunMenuCompilerSettings: TMenuItem;
     itmRunMenuRun: TMenuItem;
     itmRunMenuPause: TMenuItem;
     itmRunMenuStepInto: TMenuItem;
@@ -1119,9 +1119,19 @@ begin
   itmProjectInspector.Name:='itmProjectInspector';
   itmProjectInspector.Caption := lisMenuProjectInspector;
   itmProjectInspector.Bitmap.LoadFromLazarusResource('menu_projectinspector');
-  {$IFNDEF DisablePkgs}
+
+  itmProjectOptions := TMenuItem.Create(Self);
+  itmProjectOptions.Name:='itmProjectOptions';
+  itmProjectOptions.Caption := lisMenuProjectOptions;
+  itmProjectOptions.Bitmap.LoadFromLazarusResource('menu_projectoptions');
+  mnuProject.Add(itmProjectOptions);
+
+  itmProjectCompilerOptions := TMenuItem.Create(Self);
+  itmProjectCompilerOptions.Name:='itmProjectCompilerOptions';
+  itmProjectCompilerOptions.Caption := lisMenuCompilerOptions;
+  mnuRun.Add(itmProjectCompilerOptions);
+
   mnuProject.Add(itmProjectInspector);
-  {$ENDIF}
 
   itmProjectAddTo := TMenuItem.Create(Self);
   itmProjectAddTo.Name:='itmProjectAddTo';
@@ -1144,14 +1154,6 @@ begin
   itmProjectViewToDos.Name:='itmProjectViewToDos';
   itmProjectViewToDos.Caption := lisMenuViewProjectTodos;
   mnuProject.Add(itmProjectViewToDos);
-
-  mnuProject.Add(CreateMenuSeparator);
-
-  itmProjectOptions := TMenuItem.Create(Self);
-  itmProjectOptions.Name:='itmProjectOptions';
-  itmProjectOptions.Caption := lisMenuProjectOptions;
-  itmProjectOptions.Bitmap.LoadFromLazarusResource('menu_projectoptions');
-  mnuProject.Add(itmProjectOptions);
 end;
 
 procedure TMainIDEBar.SetupRunMenu;
@@ -1172,11 +1174,6 @@ begin
   itmRunMenuAbortBuild.Name:='itmRunMenuAbortBuild';
   itmRunMenuAbortBuild.Caption := lisMenuAbortBuild;
   mnuRun.Add(itmRunMenuAbortBuild);
-
-  itmRunMenuCompilerSettings := TMenuItem.Create(Self);
-  itmRunMenuCompilerSettings.Name:='itmRunMenuCompilerSettings';
-  itmRunMenuCompilerSettings.Caption := lisMenuCompilerOptions;
-  mnuRun.Add(itmRunMenuCompilerSettings);
 
   mnuRun.Add(CreateMenuSeparator);
 
@@ -1516,10 +1513,11 @@ begin
     itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
     itmProjectPublish.ShortCut:=CommandToShortCut(ecPublishProject);
     itmProjectInspector.ShortCut:=CommandToShortCut(ecProjectInspector);
+    itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
+    itmProjectCompilerOptions.ShortCut:=CommandToShortCut(ecCompilerOptions);
     itmProjectAddTo.ShortCut:=CommandToShortCut(ecAddCurUnitToProj);
     itmProjectRemoveFrom.ShortCut:=CommandToShortCut(ecRemoveFromProj);
     itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);
-    itmProjectOptions.ShortCut:=CommandToShortCut(ecProjectOptions);
 
     // run menu
     itmRunMenuBuild.ShortCut:=CommandToShortCut(ecBuild);
@@ -1532,7 +1530,6 @@ begin
     itmRunMenuRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
     itmRunMenuStop.ShortCut:=CommandToShortCut(ecStopProgram);
     itmRunMenuResetDebugger.ShortCut:=CommandToShortCut(ecResetDebugger);
-    itmRunMenuCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
     itmRunMenuRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
     itmRunMenuBuildFile.ShortCut:=CommandToShortCut(ecBuildFile);
     itmRunMenuRunFile.ShortCut:=CommandToShortCut(ecRunFile);

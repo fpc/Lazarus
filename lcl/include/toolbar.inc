@@ -103,6 +103,7 @@ var
   SaveFont, StockFont: HFONT;
   TxtMetric: TTextMetric;}
 begin
+  BeginUpdate;
   inherited CreateWnd;
 
   {Perform(TB_SETEXTENDEDSTYLE, 0, LParam(Perform(TB_GETEXTENDEDSTYLE, 0, 0) or
@@ -124,6 +125,37 @@ begin
   end;
   RecreateButtons;
   Invalidate;}
+  UpdateVisibleBar;
+  EndUpdate;
+end;
+
+procedure TToolBar.ControlsAligned;
+var
+  i: Integer;
+  CurControl: TControl;
+  NewLeft: Integer;
+  NewTop: Integer;
+  NewWidth: Integer;
+  NewHeight: Integer;
+begin
+  if FUpdateCount>0 then begin
+    UpdateVisibleBar;
+    exit;
+  end;
+  writeln('TToolBar.ControlsAligned START');
+  // ToDo
+  // hack: stupid put in a row
+  for i:=0 to ControlCount-1 do begin
+    CurControl:=Controls[i];
+    NewLeft:=i*ButtonWidth;
+    NewTop:=0;
+    NewWidth:=ButtonWidth;
+    NewHeight:=ButtonHeight;
+    writeln('TToolBar.ControlsAligned ',CurControl.Name,
+      ' Old=',CurControl.Left,',',CurControl.Top,',',CurControl.Width,',',CurControl.Height,
+      ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight);
+    CurControl.SetBoundsKeepBase(NewLeft,NewTop,NewWidth,NewHeight,true);
+  end;
 end;
 
 procedure TToolBar.RepositionButton(Index: Integer);
@@ -290,6 +322,7 @@ begin
     Include(FToolBarFlags,tbfUpdateVisibleBarNeeded);
     exit;
   end;
+  writeln('TToolBar.UpdateVisibleBar');
   ReAlign;
   Invalidate;
   Exclude(FToolBarFlags,tbfUpdateVisibleBarNeeded);
@@ -338,14 +371,6 @@ begin
     if tbfUpdateVisibleBarNeeded in FToolBarFlags then
       UpdateVisibleBar;
   end;
-end;
-
-procedure TToolBar.AlignControls(AControl: TControl; var Rect: TRect);
-begin
-  if FUpdateCount > 0 then Exit;
-  BeginUpdate;
-  // ToDo
-  EndUpdate;
 end;
 
 function TToolBar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
@@ -1906,6 +1931,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.18  2004/02/12 18:09:10  mattias
   removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
 

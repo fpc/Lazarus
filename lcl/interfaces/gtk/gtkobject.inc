@@ -1079,6 +1079,9 @@ procedure TgtkObject.RealizeWidgetSize(Widget: PGtkWidget; NewWidth,
   NewHeight: integer);
 var
   Requisition: TGtkRequisition;
+  {$IFDEF NewToolBar}
+  FixedWidget: Pointer;
+  {$ENDIF}
   {$IFDEF VerboseSizeMsg}
   LCLObject: TObject;
   {$ENDIF}
@@ -1120,6 +1123,16 @@ begin
     gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
       PGtkCombo(Widget)^.entry^.allocation.width, NewHeight);
   end;
+
+  {$IFDEF NewToolBar}
+  if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
+    FixedWidget:=GetFixedWidget(Widget);
+    if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
+      writeln('WARNING: ToDo TgtkObject.RealizeWidgetSize ',NewWidth,',',NewHeight);
+      gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
+    end;
+  end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -2921,9 +2934,7 @@ begin
   Widget := PgtkWidget(TCustomForm(Sender).Handle);
   AWindow:=GetControlWindow(Widget);
   if AWindow<>nil then begin
-    BeginGDKErrorTrap;
     gdk_window_raise(AWindow);
-    EndGDKErrorTrap;
   end;
 end;
 
@@ -2952,9 +2963,7 @@ var
   pixmapwid   : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
   pLabel      : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
   Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
-  {$IFNDEF NewToolBar}
   pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
-  {$ENDIF}
   GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   ListItem    : PGtkListItem;          // currently only used for listboxes
   Rect        : TRect;
@@ -3028,21 +3037,19 @@ begin
       LM_AddChild :
       begin
         Assert(False, 'Trace:Adding a child to Parent');
-        If (TWinControl(Sender).Parent is TToolbar) then
-        Begin
-          //  Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
+        {$IFNDEF NewToolBar}
+        If (TControl(Sender).Parent is TToolbar) then Begin
           exit;
+        end;
+        {$ENDIF}
+        AParent := (Sender as TWinControl).Parent;
+        if Not Assigned(AParent) then Begin
+          Assert(true, Format('Trace: [TgtkObject.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
         end
         else Begin
-          AParent := (Sender as TWinControl).Parent;
-          if Not Assigned(AParent) then Begin
-            Assert(true, Format('Trace: [TgtkObject.IntSendMessage3] %s --> Parent is not assigned', [Sender.ClassName]));
-          end
-          else Begin
-            Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle),
-                     AParent.Left, AParent.Top);
-          end;
+          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
+          AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle),
+                   AParent.Left, AParent.Top);
         end;
       end;
 
@@ -3331,6 +3338,10 @@ begin
 
       LM_TB_BUTTONCOUNT:
       begin
+        {$IFDEF NewToolBar}
+        writeln('Obsolete: TgtkObject.IntSendMessage3 LM_TB_BUTTONCOUNT');
+        exit;
+        {$ENDIF}
         if (Sender is TToolbar)
         then Result := pgtkToolbar(Handle)^.num_Children
         else Result := -1;
@@ -3388,9 +3399,10 @@ begin
       LM_INSERTTOOLBUTTON:
       begin
         {$IFDEF NewToolBar}
-        writeln('tgtkobject.IntSendMessage3  LM_INSERTTOOLBUTTON');
-        {$ELSE}
-         If (SENDER is TWINCONTROL) Then
+        writeln('Obsolete: TgtkObject.IntSendMessage3 LM_INSERTTOOLBUTTON');
+        exit;
+        {$ENDIF}
+         If (SENDER is TToolbutton) Then
          Begin
             pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
             try
@@ -3413,21 +3425,20 @@ begin
               pgtkwidget(handle),pstr,pStr2,Num);
          StrDispose(pStr);
          StrDispose(pStr2);
-        {$ENDIF}
       end;
 
       LM_DELETETOOLBUTTON:
       Begin
         {$IFDEF NewToolBar}
-        writeln('tgtkobject.IntSendMessage3  LM_DELETETOOLBUTTON');
-        {$ELSE}
+        writeln('Obsolete: TgtkObject.IntSendMessage3 LM_DELETETOOLBUTTON');
+        exit;
+        {$ENDIF}
          with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
             children := g_list_remove(pgList(children), sender);
   // Next 3 lines: should be same as above, remove when above lines are proofed
   //         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children :=
   //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
   //               sender);
-        {$ENDIF}
       end;
 
       LM_Invalidate :
@@ -6229,6 +6240,33 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
+  
+  Creates a gtk_toolbar and puts a fixed widget as client area.
+  Since we are not using the gtk tool buttons, we can put any LCL control as
+  child and get all LCL TControl abilities.
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreateToolBar(ToolBarObject: TObject): PGtkWidget;
+{$IFDEF NewToolBar}
+var
+  ClientWidget: PGtkWidget;
+{$ENDIF}
+begin
+  Result := gtk_toolbar_new();
+  {$IFDEF NewToolBar}
+  ClientWidget := gtk_fixed_new();
+  gtk_toolbar_insert_widget(PGTKToolbar(Result),ClientWidget,nil,nil,0);
+  gtk_widget_show(ClientWidget);
+  SetFixedWidget(Result,ClientWidget);
+  SetMainWidget(Result,ClientWidget);
+  gtk_toolbar_set_space_size(PGTKToolbar(Result),0);
+  gtk_toolbar_set_space_style(PGTKToolbar(Result),GTK_TOOLBAR_SPACE_EMPTY);
+  writeln('TgtkObject.CreateToolBar ',PGTKToolbar(Result)^.button_maxw,',',PGTKToolbar(Result)^.button_maxh);
+  {$ENDIF}
+  gtk_widget_show(Result);
+end;
+
+{------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
   Returns:  nothing
@@ -6673,14 +6711,11 @@ begin
 
   csToggleBox :
     begin
-       P := gtk_toggle_button_new_with_label(StrTemp);
+      P := gtk_toggle_button_new_with_label(StrTemp);
     end;
 
   csToolbar:
-    begin
-       p := gtk_toolbar_new();
-       gtk_widget_show (P);
-    end;
+    P:=CreateToolBar(Sender);
 
   csToolButton:
     begin
@@ -9190,6 +9225,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.470  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.469  2004/02/21 01:01:03  mattias
   added uninstall popupmenuitem to package graph explorer
 

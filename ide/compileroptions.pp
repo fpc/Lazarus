@@ -1980,7 +1980,7 @@ Processor specific options:
     case (LinkStyle) of
       1:  switches := switches + ' -XD';
       2:  switches := switches + ' -XS';
-      3:  switches := switches + ' -XX';
+      3:  switches := switches + ' -XX -CX';
     end;
 
   // additional Linker options

@@ -1748,7 +1748,7 @@ resourcestring
   lisDiskDiffChangedFiles = 'Changed files:';
   lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff = 'Click on one of the '
     +'above items to see the diff';
-  lisDiskDiffRevertAll = 'Revert All';
+  lisDiskDiffRevertAll = 'Reload from disk';
   lisDiskDiffIgnoreDiskChanges = 'Ignore disk changes';
   
   // edit define tree

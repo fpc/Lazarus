@@ -788,7 +788,7 @@ type
   
   TToolBar = class;
 
-  TToolButton = class(TGraphicControl)
+  TToolButton = class(TCustomControl)
   private
     FAllowAllUp: Boolean;
     FDown: Boolean;
@@ -802,13 +802,11 @@ type
     FStyle: TToolButtonStyle;
     FUpdateCount: Integer;
     FWrap: Boolean;
-    function CalculateButtonState: Word;
     function GetIndex: Integer;
     function IsCheckedStored: Boolean;
     function IsImageIndexStored: Boolean;
     function IsWidthStored: Boolean;
     procedure SetAutoSize(const Value: Boolean); Override;
-    procedure SetButtonState(State: Word);
     procedure SetDown(Value: Boolean);
     procedure SetDropdownMenu(Value: TPopupMenu);
     procedure SetGrouped(Value: Boolean);
@@ -929,7 +927,6 @@ type
     procedure HotImageListChange(Sender: TObject);
     procedure UpdateVisibleBar;
   protected
-    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
     procedure CancelMenu; dynamic;
     //procedure ChangeScale(M, D: Integer); override;
@@ -937,6 +934,7 @@ type
     procedure ClickButton(Button: TToolButton); dynamic;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure ControlsAligned; override;
     function FindButtonFromAccel(Accel: Word): TToolButton;
     procedure InitMenu(Button: TToolButton); dynamic;
     procedure Loaded; override;
@@ -2234,6 +2232,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.110  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.109  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

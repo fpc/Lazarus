@@ -145,6 +145,7 @@ type
     function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
+    function CreateToolBar(ToolBarObject: TObject): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
@@ -422,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.168  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.167  2004/01/22 11:23:36  mattias
   started MaskBlt for gtkIF and applied patch for dir dlg in env opts from Vincent
 

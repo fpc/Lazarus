@@ -789,12 +789,13 @@ type
     procedure DoAutoSize; Virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
-    procedure SetAutoSize(const Value : Boolean); virtual;
+    procedure SetAutoSize(const Value: Boolean); virtual;
     procedure BoundsChanged; dynamic;
     procedure DoConstraintsChange(Sender: TObject); virtual;
     procedure DoBorderSpacingChange(Sender: TObject); virtual;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
-    procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
+    procedure ConstrainedResize(var MinWidth, MinHeight,
+                                MaxWidth, MaxHeight: TConstraintSize); virtual;
     procedure DoOnResize; virtual;
     procedure DoOnChangeBounds; virtual;
     procedure Resize; virtual;
@@ -855,7 +856,8 @@ type
     procedure TripleClick; dynamic;
     procedure QuadClick; dynamic;
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
-    procedure DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean); dynamic;
+    procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
+                       var Accept:Boolean); dynamic;
     procedure DragCanceled; dynamic;
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
@@ -950,11 +952,11 @@ type
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
     procedure AddControl; virtual;
-    Procedure DragDrop(Source: TObject; X,Y : Integer); Dynamic;
+    Procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
     procedure SendToBack;
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
-    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight : integer); virtual;
-    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight : integer;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
                                 Lock: boolean); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     Procedure SetTextBuf(Buffer : PChar); virtual;
@@ -1265,7 +1267,9 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
-    procedure AlignControls(AControl : TControl; var ARect: TRect); virtual;
+    procedure AlignControls(AControl: TControl; var ARect: TRect); virtual;
+    function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
+                        AControlList: TList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
     Function CanTab: Boolean; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
@@ -2357,6 +2361,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.177  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.176  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

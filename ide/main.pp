@@ -1614,11 +1614,12 @@ begin
   itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
   itmProjectPublish.OnClick := @mnuPublishProjectClicked;
   itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
+  itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
+  itmProjectCompilerOptions.OnClick := @mnuProjectCompilerSettingsClicked;
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
   itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
   itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
-  itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
 end;
 
 procedure TMainIDE.SetupRunMenu;
@@ -1634,7 +1635,6 @@ begin
   itmRunMenuStepOver.OnClick := @mnuStepOverProjectClicked;
   itmRunMenuRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
   itmRunMenuStop.OnClick := @mnuStopProjectClicked;
-  itmRunMenuCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   itmRunMenuRunParameters.OnClick := @mnuRunParametersClicked;
   itmRunMenuBuildFile.OnClick := @mnuBuildFileClicked;
   itmRunMenuRunFile.OnClick := @mnuRunFileClicked;
@@ -10335,6 +10335,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.712  2004/02/21 15:37:32  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.711  2004/02/17 22:17:39  mattias
   accelerated conversion from data to lrs
 

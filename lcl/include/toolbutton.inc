@@ -111,6 +111,7 @@ var
   IconLeft: Integer;
   IconTop: Integer;
 begin
+  writeln('TToolButton.Paint A FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight);
   if FToolBar<>nil then begin
     PaintRect:=ClientRect; // the whole paint area
 
@@ -118,7 +119,7 @@ begin
     ButtonRect:=PaintRect;
     if Style=tbsDropDown then begin
       DropDownButtonRect:=ButtonRect;
-      DropDownButtonRect.Left:=Max(0,DropDownButtonRect.Right-10);
+      DropDownButtonRect.Left:=Max(0,DropDownButtonRect.Right-10);// ToDo replace 10 by const
       ButtonRect.Right:=DropDownButtonRect.Left;
     end;
 
@@ -168,39 +169,11 @@ begin
   inherited Paint;
 end;
 
-function TToolButton.CalculateButtonState: Word;
-begin
-  Result := 0;
-  if FDown then
-    if Style = tbsCheck then
-      Result := Result or ButtonStates[tbsChecked]
-    else
-      Result := Result or ButtonStates[tbsPressed];
-  if Enabled and ((FToolBar = nil) or FToolBar.Enabled) then
-    Result := Result or ButtonStates[tbsEnabled];
-  if not Visible and not (csDesigning in ComponentState) then
-    Result := Result or ButtonStates[tbsHidden];
-  if FIndeterminate then Result := Result or ButtonStates[tbsIndeterminate];
-  if FWrap then Result := Result or ButtonStates[tbsWrap];
-  if FMarked then Result := Result or ButtonStates[tbsMarked];
-end;
-
 procedure TToolButton.SetAutoSize(const Value: Boolean);
 begin
   if Value = AutoSize then exit;
   Inherited SetAutoSize(Value);
   RequestAlign;
-end;
-
-procedure TToolButton.SetButtonState(State: Word);
-begin
-  FDown := State and (TBSTATE_CHECKED or TBSTATE_PRESSED) <> 0;
-  Enabled := State and TBSTATE_ENABLED <> 0;
-  if not (csDesigning in ComponentState) then
-    Visible := State and TBSTATE_HIDDEN = 0;
-  FIndeterminate := not FDown and (State and TBSTATE_INDETERMINATE <> 0);
-  FWrap := State and TBSTATE_WRAP <> 0;
-  FMarked := State and TBSTATE_MARKED <> 0;
 end;
 
 procedure TToolButton.SetToolBar(NewToolBar: TToolBar);
@@ -230,7 +203,10 @@ end;
 
 procedure TToolButton.CMHitTest(var Message: TCMHitTest);
 begin
-  Message.Result := Ord(not (Style in [tbsDivider, tbsSeparator]) or (DragKind = dkDock));
+  if (not (Style in [tbsDivider, tbsSeparator])) or (DragKind = dkDock) then
+    Message.Result := 1
+  else
+    Message.Result := 0;
 end;
 
 procedure TToolButton.SetDown(Value: Boolean);
@@ -396,6 +372,7 @@ begin
   
   // remove from old button list
   i:=Index;
+  //writeln('TToolButton.SetParent A ',Name,' OldIndex=',Index);
   if i>=0 then
     FToolBar.FButtons.Delete(i);
   FToolBar:=nil;
@@ -409,17 +386,16 @@ begin
     i:=Index;
     if i<0 then
       FToolBar.FButtons.Add(Self);
+    UpdateVisibleToolbar;
   end;
+  //writeln('TToolButton.SetParent A ',Name,' NewIndex=',Index);
 end;
 
 procedure TToolButton.UpdateVisibleToolbar;
-var
-  AToolBar: TToolBar;
 begin
-  if Parent is TToolBar then begin
-    AToolBar:=TToolBar(Parent);
-    AToolBar.UpdateVisibleBar;
-  end;
+  //writeln('TToolButton.UpdateVisibleToolbar ',Parent is TToolBar);
+  if Parent is TToolBar then
+    TToolBar(Parent).UpdateVisibleBar;
 end;
 
 {$ELSE NewToolBar}
@@ -888,6 +864,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.8  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

@@ -258,7 +258,7 @@ var
     if NewWidth<0 then NewWidth:=0;
     if NewHeight<0 then NewHeight:=0;
 
-    if AAlign<>alNone then begin
+    if AAlign in [alLeft,alTop,alRight,alBottom,alClient] then begin
       { Realign
 
         Use Align to align a control to the top, bottom, left, or right of a
@@ -468,8 +468,10 @@ var
         AlignList.Insert(X, Control);
       end;
     end;
-    for I := 0 to AlignList.Count - 1 do
-      DoPosition(TControl(AlignList[I]), AAlign);
+    
+    if not DoAlignChildControls(AAlign,AControl,AlignList,ARect) then
+      for I := 0 to AlignList.Count - 1 do
+        DoPosition(TControl(AlignList[I]), AAlign);
   end;
 
 var
@@ -487,10 +489,10 @@ begin
   end;
 
   try
-    {if csDesigning in ComponentState then begin
-      writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
-      if AControl<>nil then writeln('  AControl=',AControl.Name,':',AControl.ClassName);
-    end;}
+    //if csDesigning in ComponentState then begin
+      //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
+      //if AControl<>nil then writeln('  AControl=',AControl.Name,':',AControl.ClassName);
+    //end;
     if AlignWork then
     begin
       AdjustClientRect(ARect);
@@ -507,16 +509,22 @@ begin
         DoAlign(alClient);
         DoAlign(alCustom);
         DoAlign(alNone);
-        ControlsAligned;
       finally
         AlignList.Free;
       end;
     end;
+    ControlsAligned;
   finally
     Exclude(FFlags,wcfAligningControls);
   end;
 
   if Showing then AdjustSize;
+end;
+
+function TWinControl.DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
+  AControlList: TList; var ARect: TRect): Boolean;
+begin
+  Result:=false;
 end;
 
 procedure TWinControl.DoChildSizingChange(Sender: TObject);
@@ -3370,6 +3378,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.202  2004/02/21 15:37:33  mattias
+  moved compiler options to project menu, added -CX for smartlinking
+
   Revision 1.201  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

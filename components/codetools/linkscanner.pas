@@ -97,7 +97,7 @@ type
 
   TCommentStyle = (CommentNone, CommentTP, CommentOldTP, CommentDelphi);
 
-  TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC);
+  TCompilerMode = (cmFPC, cmDELPHI, cmGPC, cmTP, cmOBJFPC, cmMac);
   TPascalCompiler = (pcFPC, pcDelphi);
 
   { TMissingIncludeFile is a missing include file together with all
@@ -443,7 +443,7 @@ const
 
 const
   CompilerModeNames: array[TCompilerMode] of shortstring=(
-        'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC'
+        'FPC', 'DELPHI', 'GPC', 'TP', 'OBJFPC', 'MAC'
      );
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
         'FPC', 'DELPHI'
