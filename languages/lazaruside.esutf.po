@@ -5301,9 +5301,17 @@ msgstr "Desplazar a la derecha un caracter"
 msgid "Scroll up one line"
 msgstr "Desplazar arriba una línea"
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Buscar Resultados"
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"

@@ -526,6 +526,10 @@ msgstr ""
 msgid "Search Results"
 msgstr ""
 
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewanchoreditor
 msgid "View Anchor Editor"
 msgstr ""
@@ -5520,6 +5524,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisueerrorinregularexpression
 msgid "Error in regular expression"
+msgstr ""
+
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
 msgstr ""
 
 #: lazarusidestrconsts:lisuenotfound

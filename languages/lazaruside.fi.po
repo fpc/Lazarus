@@ -844,7 +844,7 @@ msgstr "Sama kirjainkoko"
 
 #: lazarusidestrconsts:lisfindfilecasesensitive
 msgid "Case sensitive"
-msgstr ""
+msgstr "Sama kirjainkoko"
 
 #: lazarusidestrconsts:rslanguagecatalan
 msgid "Catalan"
@@ -1280,7 +1280,7 @@ msgstr "Vahvista seuraavat muutokset"
 
 #: lazarusidestrconsts:lisprojinspconfirmdeletingdependency
 msgid "Confirm deleting dependency"
-msgstr ""
+msgstr "Vahvista riippuvuuden poistaminen"
 
 #: lazarusidestrconsts:lisprojinspconfirmremovingfile
 msgid "Confirm removing file"
@@ -1664,7 +1664,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojinspdeletedependencyfor
 msgid "Delete dependency for %s?"
-msgstr ""
+msgstr "Poistetaanko riippuvuus %s :n ?"
 
 #: lazarusidestrconsts:lispkgmangdeletefailed
 msgid "Delete failed"
@@ -1820,7 +1820,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfiledirectoryoptions
 msgid "Directory options"
-msgstr ""
+msgstr "Kansion lisäasetukset"
 
 #: lazarusidestrconsts:dlgeddisplay
 msgid "Display"
@@ -2280,7 +2280,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfilefilemaskbak
 msgid "File mask (*;*.*;*.bak?)"
-msgstr ""
+msgstr "Tiedostojen suodatus/maskaus (*;*.*;*.bak?)"
 
 #: lazarusidestrconsts:srkmcatfilemenu
 msgid "File menu commands"
@@ -2312,7 +2312,7 @@ msgstr "Tiedosto ei ole tekstitiedosto"
 
 #: lazarusidestrconsts:lisa2pfilenotunit
 msgid "File not unit"
-msgstr ""
+msgstr "Tiedosto ei ole Pascal:n käännösyksikkö (unit)"
 
 #: lazarusidestrconsts:lisa2pfilename2
 msgid "Filename"
@@ -2896,7 +2896,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfindfileincludesubdirectories
 msgid "Include sub directories"
-msgstr ""
+msgstr "Sisällytetään myös alikansiot "
 
 #: lazarusidestrconsts:dlgincludesystemvariables
 msgid "Include system variables"
@@ -3900,11 +3900,11 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecmoveeditorleft
 msgid "Move editor left"
-msgstr ""
+msgstr "Siirry vasemmalla olevalle välilehdelle"
 
 #: lazarusidestrconsts:srkmecmoveeditorright
 msgid "Move editor right"
-msgstr ""
+msgstr "Siirry oikealla olevalle välilehdelle"
 
 #: lazarusidestrconsts:liscodetoolsdefsmovenodedown
 msgid "Move node down"
@@ -4452,7 +4452,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2ppascalunitsmusthavetheextensionpporpas
 msgid "Pascal units must have the extension .pp or .pas"
-msgstr ""
+msgstr "Pascal:n käännösyksikön (unit) tiedostopääte on joko .pp tai .pas"
 
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
@@ -4844,7 +4844,7 @@ msgstr "Säännölliset lausekkeet"
 
 #: lazarusidestrconsts:lisfindfileregularexpressions
 msgid "Regular expressions"
-msgstr ""
+msgstr "Säännölliset lausekkeet"
 
 #: lazarusidestrconsts:lispckoptsrelease
 msgid "Release"
@@ -5290,9 +5290,17 @@ msgstr ""
 msgid "Scroll up one line"
 msgstr ""
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Hakutulokset"
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
@@ -6680,7 +6688,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletocreatedirectory
 msgid "Unable to create directory"
-msgstr ""
+msgstr "Kansion luonti epäonnistui"
 
 #: lazarusidestrconsts:lisunabletocreatedirectory2
 msgid "Unable to create directory %s%s%s"
@@ -7348,7 +7356,7 @@ msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts:lisfindfilewholewordsonly
 msgid "Whole words only"
-msgstr ""
+msgstr "Etsi vain kokonaisia sanoja"
 
 #: lazarusidestrconsts:dlgwidthpos
 msgid "Width:"
@@ -7624,7 +7632,7 @@ msgstr "Hae kaikista avoinna olevista tiedostoista"
 
 #: lazarusidestrconsts:lisfindfilesearchindirectories
 msgid "search in directories"
-msgstr ""
+msgstr "Etsi kansioista"
 
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"

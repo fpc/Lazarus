@@ -5300,9 +5300,17 @@ msgstr "Scorri a sinistra di un carattere"
 msgid "Scroll up one line"
 msgstr "Scorri in alto di una riga"
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Risultati della ricerca"
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"

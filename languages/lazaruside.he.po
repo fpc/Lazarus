@@ -5301,8 +5301,16 @@ msgstr ""
 msgid "Scroll up one line"
 msgstr ""
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
+msgstr ""
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
 msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo

@@ -5290,9 +5290,17 @@ msgstr "Прокрутить влево 1 символ"
 msgid "Scroll up one line"
 msgstr "Прокрутить вверх 1 строку"
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Результаты поиска"
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"

@@ -5301,9 +5301,17 @@ msgstr "Przewiñ w prawo o jeden znak"
 msgid "Scroll up one line"
 msgstr "Przewiñ w górê o jedn¹ liniê"
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Wyniki wyszukiwania"
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"

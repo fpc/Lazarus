@@ -5300,9 +5300,17 @@ msgstr "Défilement d'un caractère à droite"
 msgid "Scroll up one line"
 msgstr "Défilement d'une ligne en haut"
 
+#: lazarusidestrconsts:lissearchfor
+msgid "Search For "
+msgstr ""
+
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
 msgstr "Resultats de la recherche"
+
+#: lazarusidestrconsts:lissearchagain
+msgid "Search again"
+msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchincommentstoo
 msgid "Search in comments too"
