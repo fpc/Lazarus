@@ -88,6 +88,10 @@ Function GetWindowLong(Handle: HWND; Int: Integer): LongInt; Override;
 Function GetWindowOrgEx(DC: HDC; Var P: TPoint): Integer; Override;
 Function GetWindowRect(Handle: HWND; Var Rect: TRect): Integer; Override;
 
+{$IFDEF ClientRectBugFix}
+Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+{$ENDIF}
+
 Function HideCaret(HWnd: HWND): Boolean; Override;
 
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
@@ -147,6 +151,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/05/13 22:00:25  lazarus
+  Keith: Implemented GetWindowSize
+
   Revision 1.6  2002/05/10 07:43:49  lazarus
   MG: updated licenses
 

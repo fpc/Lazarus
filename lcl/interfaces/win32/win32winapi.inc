@@ -1053,6 +1053,20 @@ Begin
   Result := Integer(Windows.GetWindowRect(Handle, @Rect));
 End;
 
+{$IFDEF ClientRectBugFix}
+Function TWin32Object.GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+var
+  R: TRect;
+begin
+  Result := GetClientRect(Handle, R);
+  with R Do
+  begin
+    Width := right - left;
+    Height := bottom - top;
+  end;
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Method:  HideCaret
   Params:  HWnd - handle to the window with the caret
@@ -1837,6 +1851,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/05/13 22:00:24  lazarus
+  Keith: Implemented GetWindowSize
+
   Revision 1.9  2002/05/10 07:43:49  lazarus
   MG: updated licenses
 
