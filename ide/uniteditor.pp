@@ -250,7 +250,6 @@ type
 
     Procedure NextEditor;
     Procedure PrevEditor;
-    procedure UpdateStatusBar;
     MarksImgList : TImageList;
     Procedure ProcessParentCommand(Sender: TObject; 
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
@@ -275,6 +274,7 @@ type
     Function SetSourceForUnit(UnitName : String; NewSource : TStrings) : Boolean;
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
+    procedure UpdateStatusBar;
 
     Procedure DisplayFormforActivePage;
     Procedure DisplayCodeforControl(Control : TObject);
@@ -2357,7 +2357,8 @@ begin
    TempEditor := GetActiveSE;
    if TempEditor = nil then Exit;
    TempEditor.ErrorLine:=-1;
-   Statusbar.Panels[3].Text := ExtractFileName(TempEditor.Filename);
+writeln('TSourceNotebook.UpdateStatusBar ',TempEditor.Filename);
+   Statusbar.Panels[3].Text := TempEditor.Filename;
 
    If TempEditor.Modified then
      StatusBar.Panels[1].Text := 'Modified'

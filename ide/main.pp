@@ -2190,6 +2190,7 @@ begin
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
+  NewSrcEdit.Filename:=NewUnitInfo.Filename;
   
   NewUnitInfo.Loaded:=true;
   // read form data
@@ -2270,8 +2271,9 @@ begin
       end;
     end;
   end;
+  SourceNoteBook.UpdateStatusBar;
   Result:=mrOk;
-//writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
+//writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'" NewSrcEdit.Filename=',NewSrcEdit.Filename);
 end;
 
 function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -3721,8 +3723,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.112  2001/07/31 18:40:23  lazarus
-  MG: added unit info, arrow xpms, and many changes from jens arm
+  Revision 1.113  2001/07/31 18:57:48  lazarus
+  MG: fixed source ediotr statusbar filename
 
   Revision 1.111  2001/07/29 20:33:23  lazarus
   MG: bugfixed event propeditor, DoJumpToMethod with searchpath
