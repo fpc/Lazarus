@@ -94,6 +94,10 @@ Var
   WinProcess: Boolean;
   PrevWndProc: Pointer;
   NewPos: Integer; //Used by TScrollingWindow
+  {$IFDEF Ver1_1}
+  List: TMsgArray;
+  C: integer;
+  {$ENDIF}
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -854,6 +858,9 @@ end;
 
 {
   $Log$
+  Revision 1.64  2003/10/16 20:35:37  mattias
+  added missing definitions
+
   Revision 1.63  2003/10/06 10:50:10  mattias
   added recursion to InvalidateClientRectCache
 
