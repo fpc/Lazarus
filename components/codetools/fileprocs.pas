@@ -55,7 +55,7 @@ function FileIsExecutable(const AFilename: string): boolean;
 function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
-
+function TrimFilename(const AFilename: string): string;
 
 implementation
 
@@ -217,6 +217,123 @@ begin
     end;
   except
   end;
+end;
+
+function TrimFilename(const AFilename: string): string;
+// trim double path delims, heading and trailing spaces
+// and special dirs . and ..
+var SrcPos, DestPos, l, DirStart: integer;
+  c: char;
+begin
+  Result:=AFilename;
+  l:=length(AFilename);
+  SrcPos:=1;
+  DestPos:=1;
+  
+  // skip trailing spaces
+  while (l>=1) and (AFilename[SrcPos]=' ') do dec(l);
+  
+  // skip heading spaces
+  while (SrcPos<=l) and (AFilename[SrcPos]=' ') do inc(SrcPos);
+  
+  // trim double path delims and special dirs . and ..
+  while (SrcPos<=l) do begin
+    c:=AFilename[SrcPos];
+    // check for double path delims
+    if (c=PathDelim) then begin
+      inc(SrcPos);
+      {$IFDEF win32}
+      if (DestPos>2)
+      {$ELSE}
+      if (DestPos>1)
+      {$ENDIF}
+      and (Result[DestPos-1]=PathDelim) then begin
+        // skip second PathDelim
+        continue;
+      end;
+      Result[DestPos]:=c;
+      inc(DestPos);
+      continue;
+    end;
+    // check for special dirs . and ..
+    if (c='.') then begin
+      if (SrcPos<l) then begin
+        if (AFilename[SrcPos+1]=PathDelim) then begin
+          // special dir ./
+          // -> skip
+          inc(SrcPos,2);
+          continue;
+        end else if (AFilename[SrcPos+1]='.')
+        and (SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim) then
+        begin
+          // special dir ..
+          //  1. ..      -> copy
+          //  2. /..     -> skip .., keep /
+          //  3. C:..    -> copy
+          //  4. C:\..   -> skip .., keep C:\
+          //  5. \\..    -> skip .., keep \\
+          //  6. xxx../..   -> copy
+          //  7. xxxdir/..  -> trim dir and skip ..
+          if DestPos=1 then begin
+            //  1. ..      -> copy
+          end else if (DestPos=2) and (Result[1]=PathDelim) then begin
+            //  2. /..     -> skip .., keep /
+            inc(SrcPos,2);
+            continue;
+          {$IFDEF win32}
+          end else if (DestPos=3) and (Result[2]=':')
+          and (Result[1] in ['a'..'z','A'..'Z']) then begin
+            //  3. C:..    -> copy
+          end else if (DestPos=4) and (Result[2]=':') and (Result[3]=PathDelim)
+          and (Result[1] in ['a'..'z','A'..'Z']) then begin
+            //  4. C:\..   -> skip .., keep C:\
+            inc(SrcPos,2);
+            continue;
+          end else if (DestPos=3) and (Result[1]=PathDelim)
+          and (Result[2]=PathDelim) then
+            //  5. \\..    -> skip .., keep \\
+            inc(SrcPos,2);
+            continue;
+          {$ENDIF}
+          end else begin
+            DirStart:=DestPos;
+            while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
+              dec(DirStart);
+            if (DestPos-DirStart=2) and (Result[DirStart]='.')
+            and (Result[DirStart+1]='.') then begin
+              //  6. xxx../..   -> copy
+            end else begin
+              //  7. xxxdir/..  -> trim dir and skip ..
+              DestPos:=DirStart;
+              inc(SrcPos,2);
+              continue;
+            end;
+          end;
+        end;
+      end else begin
+        // special dir . at end of filename
+        if DestPos=1 then begin
+          Result:='.';
+          exit;
+        end else begin
+          // skip
+          break;
+        end;
+      end;
+    end;
+    // copy directory
+    repeat
+      Result[DestPos]:=c;
+      inc(DestPos);
+      inc(SrcPos);
+      if (SrcPos>l) then break;
+      c:=AFilename[SrcPos];
+      if c=PathDelim then break;
+    until false;
+  end;
+  // trim result
+  if DestPos<=length(AFilename) then
+    SetLength(Result,DestPos-1);
 end;
 
 end.

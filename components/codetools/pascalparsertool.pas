@@ -2514,7 +2514,10 @@ begin
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
   end;
-  if CurPos.Flag=cafEND then ReadNextAtom;
+  if CurPos.Flag=cafEND then begin
+    ReadNextAtom;
+    if UpAtomIs('DEPRECATED') then ReadNextAtom;
+  end;
   Result:=true;
 end;
 
