@@ -16,188 +16,10 @@ This code is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-VERSION: 0.8.3
----------------
-CHANGES   - Better Editor Support
-            Renamed Editor functions
-            Editors uses .Dispatch instead of .Perform
-            Introduced EditorOptions:
-            EO_AUTOSIZE  = Let the grid automatically resize the editor
-            EO_HOOKKEYS  = Let the grid process known keydows first
-            EO_HOOKEXIT  = Let the grid handle the focus
-            EO_SELECTALL = Editor wants to receive SelectAll msg on Key RETURN
-            EO_WANTCHAR  = Editor wants to Preview Keys on the grid (soon)
-            EO_GETSETVAL = Editor wants to receive GetValue,SetValue msgs (soon)
-            This Options should be set in GM_SETGRID message (msg.Options:= ..)
+Cur version: 0.8.4
+The log was moved to end of file, search for: The_Log
 
-          - Deleted Scr1 Conditional
-          
-FIXES     Painting and Crashes at desing time
-
-TODOS     Better editor Support
-          TCustomgrid Inherited from TCustomControl to get rid of
-            - published VertScrollBar
-            - published HorzScrollBar
-            - published AutoScroll
-            - translucid look at design time?
-          Detect ReadOnly grid in editors
-          Detect changes in the grid.
-          Column Resizing at design time
-          ...
-
-
-VERSION: 0.8.2
----------------
-CHANGES		Demo Program
-			
-			Too many internal changes to be listed, scrollbars are now
-			proportional to client/grid sizes (with goSmoothScroll option
-			and almost proptional without it), removed OnEditor, etc.
-			
-ADDED		goSmoothScroll. (default) allows scroll the grid by pixel basis
-            goThumbTracking. The grid acts always as if this is set, the 
-			  value is ignored due to current implementation, however if
-			  the user set it explicitly then, when the user is scrolling,
-			  the focused cell will be following the scroll position.
-			goTabs.
-			goAlwaysShowEditor. Still need some working
-			
-NEW			AutoAdvance. Choose where the next cell position should go 
-              if a RETURN or TABS(if enabled) is pressed
-			
-			  aaRight. Selected cell will go to the right
-			  aaDown.  Selected cell will go to down
-		  
-BUGS		goEditing: 
-			  - pressing RETURN doesn't edit the current cell
-			  - pressing other keys doesn't start editing (need F2)
-			goTabs:
-			  - Shift-TAB doesn't work
-			goAlwaysShowEditor: 
-			  - Still working :)
-			...
-						
-
-VERSION: 0.8.1
----------------
-DATE: 28-DEC-2002
-
-CHANGES -- Continued migrating properties from TCustomGrid to TDrawGrid
-	   (onCellAttr, DefaultCellAttr, FixedColor, etc.)
-
-FIXES   -- FGrid in TDrawGrid was not destroyed
-        -- goEditing now works. I mean, you can now stop showing the 
-	   editor at F2 (although editor needs more work)
-           Default cell editor
-	-- DefaultEditor parent is now TStringGrid
-	-- Some fpc 1.1 issues (Mattias)
-	
-
-VERSION: 0.8.0
----------------
-DATE: 20-DEC-2002
-
-CHANGES Many internal changes (width,height removed from pcellsprop,
-        fgrid removed from tcustomgrid, colRowToClientCellRect now
-        uses col,row instead of point(col,row), cleaned DynamicArray,
-        drawcells splitted in DrawFixedCells, DrawInteriorCells, DrawFocused
-        so TStringGrid can implement ordered cell drawin and TCustomGrid
-        draw cells is simpler, etc).
-
-ADDED   ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer);
-        DeleteColRow(IsColumn:Boolea; Index:Integer);
-        MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
-        SortColRow(IsColumn: Boolean; Index: Integer);
-        SortColRow(IsColumn: Boolean; Index,FromIndex,ToIndex: Integer);
-        Property OnColRowMoved: TgridOperationEvent
-        Property OnColRowDeleted: TgridOperationEvents
-        Property OnColRowExchanged: TgridOperationEvents
-
-ADDED   TcustomGrid derivatives can now replace sort algorithm overriding
-        Sort method and using exchangeColRow as needed.
-        
-
-VERSION:  0.7.3
------------------
-DATE: 10-DIC-2002
-
-ADDED goDblClickAutoSize to grid Options, Doubleclicking col's right edge
-      automatically adjust column width (in TStringGrid).
-      Implemented AutoAdjustColumn() and AutoAdjustColumns.
-
-FIXED col, row increment after grid.clear don't show the grid ( if
-      fixed rows-cols = 0 )
-      
-ADDED version info to saved grid files.
-
-ADDED NEW DEMO: mysql_query. A program that connects to MySQL and shows query
-      results in a grid which you can save and load.
-      
-
-VERSION:  0.7.2
------------------
-DATE: 5-DIC-2002
-FIXED a bug that prevents col, and row sizing. MouseDown uses only Left clicks
-
-VERSION:  0.7.1
------------------
-DATE: 3-DIC-2002
-ADDED LoadFromFile and SaveToFile to XML file.
-  SaveOptions   (soDesign,soPosition,soAttributes,soContent);
-  soDesign:     Save & Load ColCount,RowCount,FixedCols,FixedRows,
-                ColWidths, RowHeights and Options (TCustomGrid)
-  soPosition:   Save & Load Scroll Position, Row, Col and Selection (TCustomGrid)
-  soAttributes: Save & Load Colors, Text Alignment & Layout, etc. (TDrawGrid)
-  soContent:    Save & Load Text (TStringGrid)
-  
-ADDED TCustomgrid.Clear.
-                Wipe completly the grid.
-ADDED goRelaxedRowSelect option
-                You can see focused cell and navigate freely if goRowSelect is
-                set.
-FIXED Crash on reducing Rowcount
-
-
-VERSION:  0.7.0
------------------
-RELEASE DATE: 30-NOV-2002
-
-This unit version provides TCustomGrid, TDrawGrid and TStringGrid for lazarus
-from the component user perpective there should be to much differences.
-This release has only basic editing support.
-
-Old Features:
-  Almost all that T*Grid can do.
-
-New Features :
-
-  OnHeaderClick:
-              Detect clicks on Row(Column) Headers, it uses a property: DragDx
-              as a threshold in order to detect Col(Row) moving or clicking.
-              
-  OnCellAttr: In this Event You can easily customize the grid.
-  OnDrawCell: Draw your specific cells here and then call .DefaultDrawCell
-              to let the grid draw other cells.
-  SortColumn,
-  SortRow:    Sorting capabilities are built! you need only write one
-              OnCompareCells handler to do your custom sorting needs.
-              
-  Exposed: DeleteColumn, DeleteRow, MoveColumn, MoveRow.
-  
-  RowAttr[],RowColor[],RowFontColor[],RowAlign[]
-  ColAttr[],ColColor[],ColFontColor[],ColAlign[]
-  CellAttr[],CellColor[],CellFontColor[],CellAlign[]
-
-  GridLineStyle, FocusColor, etc.
-  
-Bugs:
-
-  + Editor: it has a unneeded feature "auto cell filling" :)
-    
-  others.
 }
-
-{.$Define dbgScroll}
 
 unit Grids;
 
@@ -280,6 +102,8 @@ Type
   TUpdateOption = (uoNone, uoQuick, uoFull);
   TAutoAdvance = (aaDown,aaRight);
   
+  TGridStatus = (stNormal, stEditorHiding, stEditorShowing, stFocusing);
+  
 
 Type
   PCellAttr=^TCellAttr;
@@ -315,6 +139,7 @@ Type
   Private
     FGrid: TCustomGrid;
   Protected
+    //procedure WndProc(var TheMessage : TLMessage); Override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); Override;
     Procedure msg_SetValue(Var Msg: TGridMessage); Message GM_SETVALUE;
     Procedure msg_GetValue(Var Msg: TGridMessage); Message GM_GETVALUE;
@@ -326,11 +151,13 @@ Type
   TOnDrawCell =
     Procedure(Sender: TObject; Col, Row: Integer; aRect: TRect;
               aState:TGridDrawState) of Object;
+              
   TOnBeforeSelectionEvent =
     Procedure(Sender: TObject; Col, Row: Integer;
               Var CanChange: Boolean) of Object;
   TOnSelectEvent =
     Procedure(Sender: TObject; Col,Row: Integer) of Object;
+    
   TOnCellAttrEvent =
     Procedure(Sender:TObject; const Col, Row:Integer; aState: TGridDrawState;
               Var CellProps: TCellAttr) of Object;
@@ -339,10 +166,13 @@ Type
                sIndex,tIndex: Integer) of object;
   THdrEvent =
     Procedure(Sender: TObject; IsColumn: Boolean; Index: Integer) of Object;
+    
   TOnCompareCells =
     Function (Sender: TObject; Acol,ARow,Bcol,BRow: Integer): Integer of Object;
-  TSelectEditorEvent=
-    Procedure(Sender: TObject; Var aEditor: TWinControl) of Object;
+    
+  TSelectEditorEvent =
+    Procedure(Sender: TObject; Col,Row: Integer;
+              Var Editor: TWinControl) of Object;
 
 
   TVirtualGrid=Class
@@ -405,7 +235,7 @@ Type
 Type
   //TCustomGrid=Class(TScrollBox)
   //TCustomGrid=Class(TCustomControl)
-  TCustomGrid = Class(TScrollingWinControl)
+  TCustomGrid=Class(TScrollingWinControl)
   Private
     FAutoAdvance: TAutoAdvance;
     FDefaultDrawing: Boolean;
@@ -432,8 +262,6 @@ Type
     
     FUpdateCount: Integer;
     FUpdateScrollBarsCount: Integer;
-    FFocusing: Boolean;
-    ImFocused: Boolean;
 
     
     // Cached Values
@@ -445,6 +273,7 @@ Type
     FOnBeforeSelection: TOnBeforeSelectionEvent;
     FOnSelection: TOnSelectEvent;
     FOnTopLeftChange: TNotifyEvent;
+    FSkipUnselectable: Boolean;
     
     Procedure AdjustCount(IsColumn:Boolean; OldValue, NewValue:Integer);
     Procedure CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
@@ -471,7 +300,7 @@ Type
     Function ScrollToCell(Const aCol,aRow: Integer): Boolean;
     Function ScrollGrid(Relative:Boolean; DCol,DRow: Integer): TPoint;
     procedure SetDefaultDrawing(const AValue: Boolean);
-    procedure SetEditor(const AValue: TWinControl);
+    procedure SetEditor(AValue: TWinControl);
     procedure SetFocusColor(const AValue: TColor);
     procedure SetGridLineStyle(const AValue: TPenStyle);
     procedure SetSelectActive(const AValue: Boolean);
@@ -500,9 +329,11 @@ Type
     Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-
+    
   protected
     fGridState: TGridState;
+    
+    procedure WndProc(var TheMessage : TLMessage); Override;
     
     Procedure AutoAdjustColumn(aCol: Integer); Virtual;
     function  CellRect(ACol, ARow: Integer): TRect;
@@ -513,6 +344,7 @@ Type
 
     procedure ColWidthsChanged; dynamic;
     procedure DblClick; Override;
+    Procedure DestroyHandle; Override;
     Procedure doExit; Override;
     Procedure doEnter; Override;
 
@@ -531,7 +363,8 @@ Type
     Procedure HeaderClick(IsColumn: Boolean; Index: Integer); Dynamic;
     procedure InvalidateCol(ACol: Integer);
     procedure InvalidateRow(ARow: Integer);
-    Procedure InvalidateCell(aCol, aRow: Integer);
+    Procedure InvalidateCell(aCol, aRow: Integer); Overload;
+    Procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); Overload;
     Procedure InvalidateGrid;
     procedure KeyDown(var Key : Word; Shift : TShiftState); Override;
     procedure KeyUp(var Key : Word; Shift : TShiftState); Override;
@@ -543,6 +376,7 @@ Type
     Function  MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
     Function  MoveNextSelectable(DCol, DRow: Integer): Boolean;
     Function  TryMoveSelection(Relative: Boolean; Var DCol, DRow: Integer): Boolean;
+    Procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
     
 
     Procedure MoveSelection; Virtual;
@@ -555,7 +389,7 @@ Type
     Procedure Sort(ColSorting: Boolean; Index,IndxFrom,IndxTo:Integer); virtual;
     Procedure TopLeftChanged; dynamic;
     Procedure SaveContent(cfg: TXMLConfig); Virtual;
-    
+
     // Editor support
   Protected
     FEditorHiding: Boolean;
@@ -573,6 +407,7 @@ Type
     Procedure doEditorGetValue; Virtual;
     Procedure doEditorSetValue; Virtual;
     Procedure SelectEditor; Virtual;
+    Function ShouldEdit: Boolean;
   Public
     Procedure EditorExit(Sender: TObject);
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
@@ -599,6 +434,7 @@ Type
     property LeftCol:Integer read GetLeftCol write SetLeftCol;
     property Options: TGridOptions read FOptions write SetOptions;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
+    Property SkipUnselectable: Boolean Read FSkipUnselectable Write FSkipUnselectable;
     Property RowCount: Integer Read GetRowCount Write SetRowCount;
     Property Row: Integer Read FRow Write SetRow;
     Property SaveOptions: TSaveOptions Read FsaveOptions Write FSaveOptions;
@@ -710,7 +546,6 @@ Type
     Property ColAlign[aCol: Integer]: Integer read GetColAlign write SetColAlign;
 
     property FixedColor: TColor read GetFixedColor write SetFixedColor default clBtnFace;
-    Property HorzScrollBar;
 
     Property RowAttr[aRow: Integer]: TCellAttr read GetRowAttr write SetRowAttr;
     Property RowColor[aRow: Integer]: TColor read GetRowColor write SetRowColor;
@@ -738,6 +573,7 @@ Type
     Property GridLineStyle;
     Property FocusColor;
     Property SaveOptions;
+    Property SkipUnselectable;
     //property TabStops;
     property TopRow;
   Published
@@ -765,28 +601,30 @@ Type
     property Options;
     //property ParentBiDiMode;
     //property ParentColor;
-    //property ParentCtl3D;
+    property ParentCtl3D;
     //property ParentFont;
-    //property ParentShowHint;
-    //property PopupMenu;
+    property ParentShowHint;
+    property PopupMenu;
     property ScrollBars;
-    //property ShowHint;
+    property ShowHint;
     property TabOrder;
     property TabStop;
     property Visible;
     property VisibleColCount;
     property VisibleRowCount;
 
-    Property OnDrawCell;
+
     Property OnBeforeSelection;
-    Property OnSelection;
     Property OnCellAttr: TOnCellAttrEvent read fonCellAttr Write fOnCellAttr;
-    Property OnTopleftChange;
     Property OnCompareCells;
-    Property OnColRowMoved: TgridOperationEvent Read FOnColRowMoved Write FOnColRowMoved;
     Property OnColRowDeleted: TgridOperationEvent Read FOnColRowDeleted Write FOnColRowDeleted;
     Property OnColRowExchanged: TgridOperationEvent Read FOnColRowExchanged Write FOnColRowExchanged;
+    Property OnColRowMoved: TgridOperationEvent Read FOnColRowMoved Write FOnColRowMoved;
+    Property OnDrawCell;
     Property OnHeaderClick: THdrEvent Read FOnHeaderClick Write FOnHeaderClick;
+    Property OnSelectEditor;
+    Property OnSelection;
+    Property OnTopleftChange;
   End;
   
   TStringGrid = class(TDrawGrid)
@@ -837,7 +675,15 @@ DeleteObject(Pen);
 ReleaseDC(Handle, Dc);
 FMoveLast:=P;
 }
-
+Function RndStr:String;
+Var
+  i: Integer;
+Begin
+  Result:='';
+  For i:=1 to 10 do begin
+    Result:=Result+ Char(Ord('A')+Random(20));
+  End;
+End;
 Function PointIgual(Const P1,P2: TPoint): Boolean;
 begin
   result:=(P1.X=P2.X)And(P1.Y=P2.Y);
@@ -866,6 +712,15 @@ Begin
   Result.Top:=Min(R.Top, R.Bottom);
   Result.Right:=Max(R.Left, R.Right);
   Result.Bottom:=Max(R.Top, R.Bottom);
+End;
+
+Procedure SwapInt(Var I1,I2: Integer);
+var
+  Tmp: Integer;
+begin
+  Tmp:=I1;
+  I1:=I2;
+  I2:=Tmp;
 End;
 
 function GetDefaultCellAttr: TCellAttr;
@@ -1009,13 +864,18 @@ Begin
   if result<0 then Result:=fDefColWidth;
 End;
 
-procedure TCustomGrid.SetEditor(const AValue: TWinControl);
+procedure TCustomGrid.SetEditor(AValue: TWinControl);
 Var
   Msg: TGridMessage;
 begin
-  if {Not(goEditing in Options) or }(FEditor=AValue) then exit;
+  if FEditor=AValue then exit;
   FEditor:=AValue;
   if FEditor<>nil Then Begin
+    //FEditor.ControlStyle:=FEditor.ControlStyle - [csCaptureMouse];
+    If FEditor.Parent=nil Then FEditor.Visible:=False;
+    If FEditor.Parent<>Self Then FEditor.Parent:=Self;
+    FEditor.TabStop:=False;
+    
     Msg.MsgID:=GM_SETGRID;
     Msg.Grid:=Self;
     Msg.Options:=0;
@@ -1024,9 +884,11 @@ begin
     If Msg.Options And EO_HOOKKEYS = EO_HOOKKEYS Then begin
       FEditor.OnKeyDown:=@EditorKeyDown;
     End;
+    
     If Msg.Options And EO_HOOKEXIT = EO_HOOKEXIT Then begin
       FEditor.OnExit:=@EditorExit;
     End;
+    
     {$IfDef EditorDbg}
     Write('SetEditor-> Editor=',FEditor.Name,' ');
     If FEditorOptions And EO_AUTOSIZE = EO_AUTOSIZE Then Write('EO_AUTOSIZE ');
@@ -1106,6 +968,7 @@ Begin
   if AValue<>Integer(FRows[ARow]) Then begin
     FRows[ARow]:=Pointer(AValue);
     VisualChange;
+    If (FEditor<>nil)And(Feditor.Visible)And(ARow<=FRow) Then EditorPos;
     RowHeightsChanged;
   End;
 End;
@@ -1116,6 +979,7 @@ Begin
   If Avalue<>Integer(FCols[ACol]) Then begin
     FCols[ACol]:=Pointer(AValue);
     VisualChange;
+    If (FEditor<>nil)And(Feditor.Visible)And(ACol<=FCol) Then EditorPos;
     ColWidthsChanged;
   end;
 End;
@@ -1450,11 +1314,11 @@ begin
     RNew:=ColRowToClientCellRect(aCol,aRow);
     
     Xinc:=0;
-    if Rnew.Left<fw then Xinc:=-1
-    Else If RNew.Right>Cw Then XInc:=1;
+    if Rnew.Left + FGCache.TLColOff < fw then Xinc:=-1
+    Else If RNew.Right + FGCache.TLColOff > Cw Then XInc:=1;
     Yinc:=0;
-    if RNew.Top<fh Then Yinc:=-1
-    Else If RNew.Bottom>Ch Then YInc:=1;
+    if RNew.Top + FGCAche.TLRowOff < fh Then Yinc:=-1
+    Else If RNew.Bottom + FGCache.TLRowOff >Ch Then YInc:=1;
     
     With FTopLeft do
     If ((XInc=0)And(Yinc=0)) or
@@ -1464,11 +1328,12 @@ begin
     Then Break;
 
     Inc(FTopLeft.x, XInc);
-    Inc(FTopLeft.y, Yinc);
+    Inc(FTopLeft.y, YInc);
   end;
 
   Result:=Not PointIgual(OldTopleft,FTopLeft);
-  If result Then doTopleftChange(False);
+  If result Then doTopleftChange(False)
+  Else ResetOffset(True, True);
 End;
 
 {Returns a valid TopLeft from a proposed TopLeft[DCol,DRow] which are
@@ -1681,9 +1546,8 @@ begin
       If (ARow=FRow) And
          (IsCellVisible(FCol,ARow) Or (Rs And (ARow>=Top) And (ARow<=Bottom)))
       Then Begin
-        If (goEditing in Options)And(goAlwaysShowEditor in Options)And
-           (Editor<>nil) Then begin
-           //WriteLn('No Draw Focus Rect');
+        If ShouldEdit And (FEditor<>nil)And(FEditor.Visible) then Begin
+          //WriteLn('No Draw Focus Rect');
         End Else begin
           ColRowToOffset(True, True, FCol, R.Left, R.Right);
           DrawFocusRect(FCol,FRow, R{ColRowToClienTCellRect(FCol,FRow)}, [gdFocused]);
@@ -1945,6 +1809,30 @@ begin
   visualChange;
 end;
 
+procedure TCustomGrid.WndProc(var TheMessage: TLMessage);
+begin
+  {
+  Case TheMessage.Msg of
+    LM_SETFOCUS:
+      Begin
+        (*
+        Write('LM_SETFOCUS RECIBIDO');
+        If FExchangingFocus Then Begin
+          WriteLn(' - AVOIDING');
+          Exit;
+        End Else WriteLn;
+        *)
+      End;
+
+    LM_LBUTTONDOWN: WriteLn('LM_MOUSEDOWN');
+    CM_MOUSEENTER:  WriteLn('CM_MOUSEENTER');
+    CM_MOUSELEAVE:  WriteLn('CM_MOUSELEAVE');
+    LM_MOUSEMOVE:   WriteLn('LM_MOUSEMOVE');
+  End;
+  }
+  inherited WndProc(TheMessage);
+end;
+
 { Scroll grid to the given Topleft[aCol,aRow] as needed }
 procedure TCustomGrid.TryScrollTo(aCol, aRow: Integer);
 Var
@@ -2047,7 +1935,7 @@ end;
 procedure TCustomGrid.SetSelectActive(const AValue: Boolean);
 begin
   if FSelectActive=AValue then exit;
-  FSelectActive:=AValue;
+  FSelectActive:=AValue and Not(goEditing in Options);
   If FSelectActive Then FPivot:=Point(FCol,FRow);
 end;
 
@@ -2095,8 +1983,7 @@ end;
 
 function TCustomGrid.doRowSizing(X, Y: Integer): Boolean;
 Var
-  R: TRect;
-  Loc: Integer;
+  OffTop,OffBottom: Integer;
 begin
   Result:=False;
   If gsRowSizing = fGridState Then begin
@@ -2108,32 +1995,16 @@ begin
   End Else
   If (fGridState=gsNormal)And(X<FGCache.FixedWidth)And(Y>FGCache.FixedHeight) Then
   begin
-    fSplitter.Y:=OffsetToColRow(False, True, Y, Loc);
+    fSplitter.Y:=OffsetToColRow(False, True, Y, OffTop{dummy});
     If Fsplitter.Y>=0 Then begin
-      ColRowToOffset(False, True, FSplitter.Y, R.Top, R.Bottom);
+      ColRowToOffset(False, True, FSplitter.Y, OffTop, OffBottom);
       FSplitter.X:=Y;
-      If (R.Bottom-Y)<(Y-R.Top) Then Loc:=R.Bottom
-      Else begin
-        Loc:=R.Top;
-        Dec(FSplitter.y);
-      End;
-      IF (Abs(Loc-y)<=2)And(FSplitter.Y>=FFixedRows) then Cursor:=crVSplit
-      Else                                                Cursor:=crDefault;
+      If (OffBottom-Y)<(Y-OffTop) Then SwapInt(OffTop, OffBottom)
+      Else Dec(FSplitter.y);
+      IF (Abs(OffTop-y)<=2)And(FSplitter.Y>=FFixedRows) then Cursor:=crVSplit
+      Else                                                   Cursor:=crDefault;
       Result:=True;
     End;
-    {
-    FSplitter:=MouseToCell(Point(X,Y)); // Resizing Row
-    R:=ColRowToClientCellRect(FSplitter.x, FSplitter.y);
-    Fsplitter.x:=y;                       // Resizing y reference
-    If (R.Bottom-Y)<(Y-R.Top) Then Loc:=R.Bottom
-    Else Begin
-      Loc:=R.Top;
-      Dec(FSplitter.y);                   // Resizing row is the previous
-    End;
-    IF (Abs(Loc-y)<=2)And(FSplitter.Y>=FFixedRows) then Cursor:=crVSplit
-    Else                                                Cursor:=crDefault;
-    Result:=True;
-    }
   End
     Else
       If Cursor=crVSplit Then Cursor:=crDefault;
@@ -2253,45 +2124,6 @@ begin
   Result:=true;
 end;
 
-{
-Function TCustomGrid.GetColRowOffset(IsCol, Fisical: Boolean; Offset: Integer;
-  var Rest: Integer): Integer;
-Var
-  i,j,k: Integer;
-  L: TList;
-begin
-  Result:=-1;
-  If Offset<0 Then Exit; // Out of Range;
-  j:=0; k:=0;
-  If IsCol Then begin
-    If Offset>FGCache.GridWidth Then Exit; // Out of Range;
-    If Fisical Then
-      If Offset>FGCache.FixedWidth Then begin
-        k:=FTopLeft.X;
-        Offset:=Offset - FGCache.FixedWidth;
-      End;
-    for i:=k to ColCount-1 do begin
-      if Offset<j Then Break;
-      j:=j+getColWidths(i);
-      Result:=i;
-    End;
-  End  Else Begin
-    If Offset>FGCache.GridHeight Then Exit; // Out of Range
-    If Fisical Then
-      If Offset>FGCache.FixedHeight Then begin
-        k:=FTopLeft.Y;
-        Offset:=Offset - FGCache.FixedHeight;
-      End;
-    For i:=k to RowCount-1 do begin
-      If Offset<j Then Break;
-      j:=j+GetRowheights(i);
-      Result:=i;
-    End;
-
-  End;
-  Rest:=Offset;
-end;
-}
 function TCustomGrid.MouseToGridZone(X, Y: Integer; CellCoords: Boolean): TGridZone;
 begin
   Result:=gzNormal;
@@ -2355,6 +2187,8 @@ begin
   VisualChange;
 end;
 
+
+
 procedure TCustomGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 Var
@@ -2362,9 +2196,13 @@ Var
   R: TRect;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  {$IfDef dbgFocus}WriteLn('TCustomGrid.MouseDown INIT ',Name,':',ClassName);{$Endif}
+
   If Not FGCache.ValidGrid Then Exit;
   If Not (ssLeft in Shift) Then Exit;
+  If csDesigning in componentState Then Exit;
+
+  {$IfDef dbgFocus} WriteLn('MouseDown INIT'); {$Endif}
+  
   Gz:=MouseToGridZone(X,Y, False);
   Case Gz of
     gzFixedCols:
@@ -2395,14 +2233,10 @@ begin
       End;
     gzNormal:
       Begin
-        if csDesigning in ComponentState Then Exit;
 
-        // is user clicking on a selection?
-        // is user dragging the selection?
-        // is user only selecting a new cell range?
         fGridState:=gsSelecting;
-        //WriteLn('GridState = ',Ord(FGridState));
         FSplitter:=MouseToCell(Point(X,Y));
+
         If Not (goEditing in Options) Then begin
           If ssShift in Shift Then begin
             SelectActive:=(goRangeSelect in Options);
@@ -2413,10 +2247,23 @@ begin
             End;
           End;
           MoveExtend(False, fsplitter.X, fSplitter.y);
+        End Else begin
+          If TryMoveSelection(False, FSplitter.X, FSplitter.Y) Then Begin
+            MoveExtend(False, FSplitter.X, FSplitter.Y);
+          End Else begin
+            If ShouldEdit Then begin
+              SelectEditor;
+              EditorShow;
+            End;
+          End;
+          If (FEditor=nil) And Not Focused then begin
+            {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
+            LCLLinux.SetFocus(Self.Handle);
+          End;
         End;
       End;
   End;
-  {$ifDef dbgFocus} WriteLn('TCustomGrid.MouseDown END'); {$Endif}
+  {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
 end;
 
 procedure TCustomGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2448,24 +2295,18 @@ procedure TCustomGrid.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
    Cur: TPoint;
-   Ok: Boolean;
 begin
   inherited MouseUp(Button, Shift, X, Y);
   If Not FGCache.ValidGrid Then Exit;
-  {$IfDef dbgFocus}WriteLn('TCustomGrid.MouseUP INIT');{$Endif}
+  {$IfDef dbgFocus}WriteLn('MouseUP INIT');{$Endif}
   Cur:=MouseToCell(Point(x,y));
   Case fGridState of
     gsSelecting:
       Begin
-
-        Ok:=TryMoveSelection(False, Cur.x, Cur.y);
-        If Not Ok Then begin
-          Cur:=Point(FCol,FRow);
-          FFocusing:=True;
+        If SelectActive Then begin
+          MoveExtend(False, Cur.x, Cur.y);
+          SelectActive:=False;
         End;
-        
-        MoveExtend(False, Cur.x, Cur.y);
-        SelectActive:=False;
       End;
     gsColMoving:
       begin
@@ -2487,7 +2328,7 @@ begin
       End;
   End;
   fGridState:=gsNormal;
-  {$IfDef dbgFocus}WriteLn('TCustomGrid.MouseUP  END  RND=',Random);{$Endif}
+  {$IfDef dbgFocus}WriteLn('MouseUP  END  RND=',Random);{$Endif}
 end;
 
 procedure TCustomGrid.DblClick;
@@ -2507,42 +2348,36 @@ begin
     Inherited DblClick;
 end;
 
+procedure TCustomGrid.DestroyHandle;
+begin
+  editorGetValue;
+  inherited DestroyHandle;
+end;
+
 procedure TCustomGrid.doExit;
 begin
-  {$IfDef dbgFocus}WriteLn('DoExit');{$Endif}
+  If FEditorShowing Then Begin
+    {$IfDef dbgFocus}WriteLn('DoExit - EditorShowing');{$Endif}
+  End Else begin
+    {$IfDef dbgFocus}WriteLn('DoExit - Ext');{$Endif}
+    Invalidate;
+  End;
   inherited doExit;
-  Invalidate;
-  ImFocused:=False;
 end;
 
 procedure TCustomGrid.doEnter;
 begin
   inherited doEnter;
-  
-  {$IfDef dbgFocus}WriteLn('***---*** DoEnter  INIT ImFocused= ',ImFocused);{$Endif}
   If FEditorHiding Then begin
-    // Self generated doEnter
+    {$IfDef dbgFocus}WriteLn('DoEnter - EditorHiding');{$Endif}
   End Else begin
-    // Got the focus for some other reason
-    //Invalidate; // redraw the focused cell
-    // Handle click on focused cell, still needs to show the editor
-
-
-    //If Not ImFocused Then
-    {
-    If (goEditing in Options)And(goAlwaysShowEditor In Options) Then begin
+    {$IfDef dbgFocus}WriteLn('DoEnter - Ext');{$Endif}
+    If ShouldEdit Then Begin
       SelectEditor;
-      EditorShow;
-    End;
-    }
-
-    FFocusing:=True;
-    If (goAlwaysShowEditor in Options)And(FGridState=gsNormal) Then Begin
-      FGridState:=gsSelecting;
-    End;
-
+      If Feditor=nil Then Invalidate
+      Else                EditorShow;
+    End Else Invalidate;
   End;
-  //ImFocused:=True;
 end;
 
 procedure TCustomGrid.KeyDown(var Key: Word; Shift: TShiftState);
@@ -2557,30 +2392,38 @@ Var
     FGCache.TLRowOff:=0;
     SelectActive:=Sh;
     SmallMove:= Rel and (Abs(ACol)<2)And(Abs(Arow)<2);
-    //WriteLn('ACol=',ACol,' ARow=',ARow,' Rel=',Rel,' SmallMove=',SmallMove);
-    If SmallMove {And (goNextSelectable in Options)}
-    Then MoveNextSelectable(acol,aRow)
-    Else MoveExtend(Rel,aCol,aRow);
+    If SmallMove And SkipUnSelectable Then MoveNextSelectable(acol,aRow)
+    Else                                   MoveExtend(Rel,aCol,aRow);
     
     Key:=0;
   End;
 Var
   R: TRect;
   Relaxed: Boolean;
+  //PF: TCustomForm;
 begin
   inherited KeyDown(Key, Shift);
   If Not FGCache.ValidGrid Then Exit;
   Sh:=(ssShift in Shift);
   Relaxed:=Not (goRowSelect in Options) or (goRelaxedRowSelect in Options);
   
-  If (Key=Vk_TAB)And(goTabs in Options) Then begin
-    Case FAutoAdvance of
-      aaRight:
-        If Sh Then Key:=VK_LEFT
-        Else       Key:=VK_RIGHT;
-      aaDown:
-        If Sh Then Key:=VK_UP
-        Else       Key:=VK_DOWN;
+  If (Key=Vk_TAB) Then Begin
+    If (goTabs in Options) Then begin
+      Case FAutoAdvance of
+        aaRight:
+          If Sh Then Key:=VK_LEFT
+          Else       Key:=VK_RIGHT;
+        aaDown:
+          If Sh Then Key:=VK_UP
+          Else       Key:=VK_DOWN;
+      End;
+    End Else begin
+      // TODO
+      (*
+      Pf:=GetParentForm(Self);
+      If (Pf<>nil) Then Pf.FocusControl(Self);
+      PerformTab;
+      *)
     End;
   End;
   
@@ -2655,39 +2498,11 @@ end;
 
 { Convert a fisical Mouse coordinate into fisical a cell coordinate }
 function TCustomGrid.MouseToCell(Mouse: TPoint): TPoint;
-
 Var
-   //i,j: Integer;
-   //P: TPoint;
    d: Integer;
 begin
   Result.X:= OffsetToColRow(True, True, Mouse.x, d);
   Result.Y:= OffsetToColRow(False,True, Mouse.y, d);
-{  Exit;
-  P:=Point(0,0);
-  If Mouse.x>FGCache.FixedWidth Then begin
-    P.x:=fTopLeft.x;
-    Mouse.X:=Mouse.X-FGCache.FixedWidth;
-  End;
-  If Mouse.y>FGCache.FixedHeight Then begin
-    p.y:=fTopLeft.y;
-    Mouse.Y:=Mouse.Y-FGCache.Fixedheight;
-  End;
-
-  Result.x:=-1; Result.y:=-1;
-  j:=0;
-  for i:=P.x to ColCount-1 do begin
-    if Mouse.x<j Then Break;
-    j:=j+getColWidths(i);
-    Result.x:=i;
-  End;
-  j:=0;
-  For i:=P.y to RowCount-1 do begin
-    if Mouse.y<j then break;
-    j:=j+getRowheights(i);
-    Result.y:=i;
-  End;
-}
 end;
 
 { Convert a fisical Mouse coordinate into logical a cell coordinate }
@@ -2740,15 +2555,16 @@ End;
 Function TCustomGrid.MoveExtend(Relative: Boolean; DCol, DRow: Integer): Boolean;
 Var
   InvalidateAll: Boolean;
+  LastEditor: TWinControl;
+  WasVis: Boolean;
 begin
   Result:=TryMoveSelection(Relative,DCol,DRow);
   If Not result Then Exit;
   
-  {$IfDef dbgFocus}WriteLn('  MoveExtend INIT');{$Endif}
-  
-  // Going to change selection, get editor value before that
-  EditorGetValue;
-  
+  {$IfDef dbgFocus}WriteLn(' MoveExtend INIT FCol= ',FCol, ' FRow= ',FRow);{$Endif}
+
+  LastEditor:=Editor;
+  WasVis:=(LastEditor<>nil)And(LastEditor.Visible);
   // default range
   If goRowSelect in Options Then FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
   Else                           FRange:=Rect(DCol,DRow,DCol,DRow);
@@ -2774,19 +2590,16 @@ begin
       InvalidateCell(DCol, DRow);
     End;
     
-  fCol:=DCol;
-  fRow:=DRow;
-  Editor:=nil;
-  
-  MoveSelection;
-  
 
+  SwapInt(DCol,FCol);
+  SwapInt(DRow,FRow);
+
+  MoveSelection;
   SelectEditor;
 
-  if (goAlwaysShowEditor in Options) And
-    Not(goRowSelect in Options) Then EditorShow;
+  ProcessEditor(LastEditor,DCol,DRow,WasVis);
 
-  {$IfDef dbgFocus}WriteLn('  MoveExtend FIN');{$Endif}
+  {$IfDef dbgFocus}WriteLn(' MoveExtend FIN FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 end;
 
 function TCustomGrid.MoveNextSelectable(DCol, DRow: Integer
@@ -2833,18 +2646,47 @@ begin
 
   // Change on Focused cell?
   If (Dcol=FCol)And(DRow=FRow) Then begin
-
-    If FFocusing And (goAlwaysShowEditor In Options) Then begin
-      SelectEditor;
-      EditorShow;
-    End;
-
   End Else begin
     Result:=True;
-    if Assigned(OnBeforeSelection) Then
-      OnBeforeSelection(Self, DCol, DRow, Result);
+    if Assigned(OnBeforeSelection) Then OnBeforeSelection(Self, DCol, DRow, Result);
   End;
-  FFocusing:=False;
+end;
+
+procedure TCustomGrid.ProcessEditor(LastEditor: TWinControl; DCol, DRow: Integer; WasVis: Boolean);
+  Procedure RestoreEditor;
+  begin
+    SwapInt(Integer(FEditor),Integer(LastEditor));
+    SwapInt(FCol,DCol);
+    SwapInt(FRow,DRow);
+  End;
+  Procedure HideLastEditor;
+  Begin
+    RestoreEditor;
+    EditorGetValue;
+    RestoreEditor;
+  End;
+Var
+  WillVis: Boolean;
+begin
+  WillVis:=(FEditor<>nil)And ShouldEdit;
+
+  if WillVis or WasVis Then begin
+    if Not WillVis Then HideLastEditor Else
+    If Not WasVis Then  EditorShow
+    Else begin
+      If LastEditor=FEditor Then begin
+        RestoreEditor;
+        doEditorGetValue;
+        RestoreEditor;
+        EditorPos;
+        doEditorSetValue;
+      End Else begin
+        LastEditor.Visible:=False;
+        lastEditor.Parent:=nil;
+        EditorShow;
+      End;
+    End;
+  End;
 end;
 
 
@@ -2882,16 +2724,20 @@ begin
 end;
 
 procedure TCustomGrid.InvalidateCell(aCol, aRow: Integer);
+begin
+  InvalidateCell(ACol,ARow, False);
+End;
+
+procedure TCustomGrid.InvalidateCell(aCol, aRow: Integer; Redraw: Boolean);
 Var
   R: TRect;
 begin
   {$IfDef dbgPaint}
-    WriteLn('InvalidateCell  Col=',aCol, ' Row=',aRow);
+    WriteLn('InvalidateCell  Col=',aCol, ' Row=',aRow,' Redraw=',Redraw);
   {$Endif}
   R:=ColRowToClientCellRect(aCol, aRow);
   InvalidateRect(Handle, @R, False);
-  //InvalidateRect(Handle, @R, True);
-End;
+end;
 
 procedure TCustomGrid.InvalidateGrid;
 begin
@@ -2924,7 +2770,7 @@ procedure TCustomGrid.EditorHide;
 begin
   if (Editor<>nil) And Editor.HandleAllocated And Editor.Visible Then begin
     If Not FEditorHiding Then begin
-      {$IfDef dbgFocus} WriteLn('EditorHide INIT');{$Endif}
+      {$IfDef dbgFocus} WriteLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}
       FEditorHiding:=True;
       Editor.Visible:=False;
       Editor.Parent:=nil;
@@ -2937,16 +2783,18 @@ end;
 
 procedure TCustomGrid.EditorShow;
 begin
-  If Not (csDesigning in ComponentState)And(goEditing in Options) Then
+  If csDesigning in ComponentState then Exit;
+  
+  If (goEditing in Options) Then
     If (Editor<>nil) And Not Editor.Visible Then Begin
       If Not FEditorShowing Then Begin
-        {$IfDef dbgFocus} WriteLn('EditorShow INIT');{$Endif}
+        {$IfDef dbgFocus} WriteLn('EditorShow INIT FCol=',FCol,' FRow=',FRow);{$Endif}
         FEditorShowing:=True;
-        ResetOffset(True, True);
+        ScrollToCell(FCol,FRow);
         EditorReset;
         LCLLinux.SetFocus(Editor.Handle);
         FEditorShowing:=False;
-        ImFocused:=True;
+        InvalidateCell(FCol,FRow,True);
         {$IfDef dbgFocus} WriteLn('EditorShow FIN');{$Endif}
       End;
     End;
@@ -2959,8 +2807,11 @@ begin
   if FEditor<>nil Then begin
     Msg.CellRect:=ColRowToClientCellRect(FCol,FRow);
     If FEditorOptions And EO_AUTOSIZE = EO_AUTOSIZE Then begin
-      With Msg.CellRect do
-        FEditor.SetBounds(Left, Top, Right-Left, Bottom-Top);
+      With Msg.CellRect do begin
+        Right:=Right-Left;
+        Bottom:=Bottom-Top;
+        FEditor.SetBounds(Left, Top, Right, Bottom);
+      End;
     End Else Begin
       Msg.MsgID:=GM_SETPOS;
       Msg.Grid:=Self;
@@ -2973,8 +2824,8 @@ end;
 
 procedure TCustomGrid.EditorReset;
 begin
-  Editor.Parent:=Self;
   EditorSetValue;
+  Editor.Parent:=Self;
   Editor.Visible:=True;
 end;
 
@@ -3008,9 +2859,9 @@ begin
     If Editor<>nil Then Begin
       Editor.Visible:=False;
       Editor.Parent:=nil;
+      //InvalidateCell(FCol,FRow, True);
     End;
     FEditorHiding:=False;
-    ImFocused:=False;
     {$IfDef dbgFocus} WriteLn('EditorExit FIN'); {$Endif}
   End;
 end;
@@ -3028,6 +2879,8 @@ begin
     Begin
       If (Key=VK_TAB) And Not (goTabs in Options) Then begin
           // let the focus go
+          KeyDown(Key, Shift);
+          //WriteLn('Editor KeyTab Pressed, Focus Should leave the grid');
           Exit;
       End;
       Key:=0;
@@ -3051,8 +2904,13 @@ Var
 begin
   aEditor:= Editor;
   If (goEditing in Options) And Assigned(OnSelectEditor) Then
-    OnSelectEditor(Self, aEditor);
+    OnSelectEditor(Self, fCol,FRow, aEditor);
   If aEditor<>Editor Then Editor:=aEditor;
+end;
+
+function TCustomGrid.ShouldEdit: Boolean;
+begin
+  Result:=(goEditing in Options)And(goAlwaysShowEditor in Options);
 end;
 
 procedure TCustomGrid.EditorCancel;
@@ -3144,6 +3002,7 @@ begin
     End;
   End;
 end;
+
 
 procedure TCustomGrid.LoadContent(cfg: TXMLConfig);
 Var
@@ -3264,6 +3123,7 @@ begin
   fGridLineColor:=clGray;
   FGridLineStyle:=psSolid;
   fFocusColor:=clRed;
+  FSkipUnSelectable:=True;
 
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
@@ -3549,6 +3409,40 @@ begin
   Else             FRows.ExchangeColRow(True, Index, WithIndex);
 end;
 
+{
+procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
+begin
+  Write(Name,'.WndProc msg= ');
+  Case TheMessage.Msg of
+    LM_SHOWWINDOW: WriteLn('LM_SHOWWINDOW');
+    LM_SETFOCUS: WriteLn('LM_SETFOCUS');
+    LM_PAINT: WriteLn('LM_PAINT');
+    LM_KEYUP: WriteLn('LM_KEYUP');
+    LM_WINDOWPOSCHANGED: WriteLn('LM_WINDOWPOSCHANGED');
+    LM_MOVE: WriteLn('LM_MOVE');
+    LM_KILLFOCUS: WriteLn('LM_KILLFOCUS');
+    CM_BASE..CM_MOUSEWHEEL:
+      begin
+        Case TheMessage.Msg of
+          CM_MOUSEENTER: WriteLn('CM_MOUSEENTER');
+          CM_MOUSELEAVE: WriteLn('CM_MOUSELEAVE');
+          CM_VISIBLECHANGED: WriteLn('CM_VISIBLECHANGED');
+          CM_TEXTCHANGED: WriteLn('CM_TEXTCHANGED');
+          CM_SHOWINGCHANGED: WriteLn('CM_SHOWINGCHANGED');
+          Else WriteLn('CM_BASE + ',TheMessage.Msg-CM_BASE);
+        End
+
+      End;
+    CN_BASE..CN_NOTIFY:
+      begin
+        WriteLn('CN_BASE + ',TheMessage.Msg-CN_BASE);
+      End;
+    Else
+      WriteLn(TheMessage.Msg,' (',IntToHex(TheMessage.Msg, 4),')');
+  End;
+  inherited WndProc(TheMessage);
+end;
+}
 { TStringCellEditor }
 procedure TStringCellEditor.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -3843,7 +3737,7 @@ procedure TDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect;
   aState: TGridDrawstate);
 begin
   // Draw focused cell if we have the focus
-  If Self.Focused Then begin
+  If Self.Focused Or (ShouldEdit And ((Feditor=nil)or Not Feditor.Focused)) Then begin
     If (gdFocused in aState)Then begin
       Canvas.Pen.Color:=FFocusColor;
       Canvas.Pen.Style:=psDot;
@@ -4397,3 +4291,203 @@ LazarusResources.Add('tstringgrid','XPM',[
 ]);
 
 end.
+
+{  The_Log
+
+
+VERSION: 0.8.4:
+---------------
+Date: 21-JAN-2003
+- Moved log to the end of file
+- Editor should be set in OnSelectEditor or SelectEditor in descendants.
+- Added SkipUnselectable, this allow the seleccion [using UP,DOWN,LEFT,TOP,
+  TABS (if goTabs)] select the next selectable cell.
+- Fixed goAlwaysShowEditor
+- Fixed bug (gtk-CRITICAL) when destroying the grid and the editor is visible
+- Fixed bug selecting a partial visible cell while the grid is scrolled
+- missing: tabb from the grid, and Shift-Tab in goTabs mode.
+
+
+
+VERSION: 0.8.3
+---------------
+CHANGES   - Better Editor Support
+            Renamed Editor functions
+            Editors uses .Dispatch instead of .Perform
+            Introduced EditorOptions:
+            EO_AUTOSIZE  = Let the grid automatically resize the editor
+            EO_HOOKKEYS  = Let the grid process known keydows first
+            EO_HOOKEXIT  = Let the grid handle the focus
+            EO_SELECTALL = Editor wants to receive SelectAll msg on Key RETURN
+            EO_WANTCHAR  = Editor wants to Preview Keys on the grid (soon)
+            EO_GETSETVAL = Editor wants to receive GetValue,SetValue msgs (soon)
+            This Options should be set in GM_SETGRID message (msg.Options:= ..)
+
+          - Deleted Scr1 Conditional
+
+FIXES     Painting and Crashes at desing time
+
+TODOS     Better editor Support
+          TCustomgrid Inherited from TCustomControl to get rid of
+            - published VertScrollBar
+            - published HorzScrollBar
+            - published AutoScroll
+            - translucid look at design time?
+          Detect ReadOnly grid in editors
+          Detect changes in the grid.
+          Column Resizing at design time
+          ...
+
+
+VERSION: 0.8.2
+---------------
+CHANGES		Demo Program
+
+			Too many internal changes to be listed, scrollbars are now
+			proportional to client/grid sizes (with goSmoothScroll option
+			and almost proptional without it), removed OnEditor, etc.
+
+ADDED		goSmoothScroll. (default) allows scroll the grid by pixel basis
+            goThumbTracking. The grid acts always as if this is set, the
+			  value is ignored due to current implementation, however if
+			  the user set it explicitly then, when the user is scrolling,
+			  the focused cell will be following the scroll position.
+			goTabs.
+			goAlwaysShowEditor. Still need some working
+
+NEW			AutoAdvance. Choose where the next cell position should go
+              if a RETURN or TABS(if enabled) is pressed
+
+			  aaRight. Selected cell will go to the right
+			  aaDown.  Selected cell will go to down
+
+BUGS		goEditing:
+			  - pressing RETURN doesn't edit the current cell
+			  - pressing other keys doesn't start editing (need F2)
+			goTabs:
+			  - Shift-TAB doesn't work
+			goAlwaysShowEditor:
+			  - Still working :)
+			...
+
+
+VERSION: 0.8.1
+---------------
+DATE: 28-DEC-2002
+
+CHANGES -- Continued migrating properties from TCustomGrid to TDrawGrid
+	   (onCellAttr, DefaultCellAttr, FixedColor, etc.)
+
+FIXES   -- FGrid in TDrawGrid was not destroyed
+        -- goEditing now works. I mean, you can now stop showing the
+	   editor at F2 (although editor needs more work)
+           Default cell editor
+	-- DefaultEditor parent is now TStringGrid
+	-- Some fpc 1.1 issues (Mattias)
+
+
+VERSION: 0.8.0
+---------------
+DATE: 20-DEC-2002
+
+CHANGES Many internal changes (width,height removed from pcellsprop,
+        fgrid removed from tcustomgrid, colRowToClientCellRect now
+        uses col,row instead of point(col,row), cleaned DynamicArray,
+        drawcells splitted in DrawFixedCells, DrawInteriorCells, DrawFocused
+        so TStringGrid can implement ordered cell drawin and TCustomGrid
+        draw cells is simpler, etc).
+
+ADDED   ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer);
+        DeleteColRow(IsColumn:Boolea; Index:Integer);
+        MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+        SortColRow(IsColumn: Boolean; Index: Integer);
+        SortColRow(IsColumn: Boolean; Index,FromIndex,ToIndex: Integer);
+        Property OnColRowMoved: TgridOperationEvent
+        Property OnColRowDeleted: TgridOperationEvents
+        Property OnColRowExchanged: TgridOperationEvents
+
+ADDED   TcustomGrid derivatives can now replace sort algorithm overriding
+        Sort method and using exchangeColRow as needed.
+
+
+VERSION:  0.7.3
+-----------------
+DATE: 10-DIC-2002
+
+ADDED goDblClickAutoSize to grid Options, Doubleclicking col's right edge
+      automatically adjust column width (in TStringGrid).
+      Implemented AutoAdjustColumn() and AutoAdjustColumns.
+
+FIXED col, row increment after grid.clear don't show the grid ( if
+      fixed rows-cols = 0 )
+
+ADDED version info to saved grid files.
+
+ADDED NEW DEMO: mysql_query. A program that connects to MySQL and shows query
+      results in a grid which you can save and load.
+
+
+VERSION:  0.7.2
+-----------------
+DATE: 5-DIC-2002
+FIXED a bug that prevents col, and row sizing. MouseDown uses only Left clicks
+
+VERSION:  0.7.1
+-----------------
+DATE: 3-DIC-2002
+ADDED LoadFromFile and SaveToFile to XML file.
+  SaveOptions   (soDesign,soPosition,soAttributes,soContent);
+  soDesign:     Save & Load ColCount,RowCount,FixedCols,FixedRows,
+                ColWidths, RowHeights and Options (TCustomGrid)
+  soPosition:   Save & Load Scroll Position, Row, Col and Selection (TCustomGrid)
+  soAttributes: Save & Load Colors, Text Alignment & Layout, etc. (TDrawGrid)
+  soContent:    Save & Load Text (TStringGrid)
+
+ADDED TCustomgrid.Clear.
+                Wipe completly the grid.
+ADDED goRelaxedRowSelect option
+                You can see focused cell and navigate freely if goRowSelect is
+                set.
+FIXED Crash on reducing Rowcount
+
+
+VERSION:  0.7.0
+-----------------
+RELEASE DATE: 30-NOV-2002
+
+This unit version provides TCustomGrid, TDrawGrid and TStringGrid for lazarus
+from the component user perpective there should be to much differences.
+This release has only basic editing support.
+
+Old Features:
+  Almost all that T*Grid can do.
+
+New Features :
+
+  OnHeaderClick:
+              Detect clicks on Row(Column) Headers, it uses a property: DragDx
+              as a threshold in order to detect Col(Row) moving or clicking.
+
+  OnCellAttr: In this Event You can easily customize the grid.
+  OnDrawCell: Draw your specific cells here and then call .DefaultDrawCell
+              to let the grid draw other cells.
+  SortColumn,
+  SortRow:    Sorting capabilities are built! you need only write one
+              OnCompareCells handler to do your custom sorting needs.
+
+  Exposed: DeleteColumn, DeleteRow, MoveColumn, MoveRow.
+
+  RowAttr[],RowColor[],RowFontColor[],RowAlign[]
+  ColAttr[],ColColor[],ColFontColor[],ColAlign[]
+  CellAttr[],CellColor[],CellFontColor[],CellAlign[]
+
+  GridLineStyle, FocusColor, etc.
+
+Bugs:
+
+  + Editor: it has a unneeded feature "auto cell filling" :)
+
+  others.
+}
+
+

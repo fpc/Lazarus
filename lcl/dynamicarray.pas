@@ -36,7 +36,6 @@ Type
   EArray=Class(Exception);
   
   TOnNotifyItem = Procedure(Sender: TObject; Col,Row: integer; Var Item: Pointer) of Object;
-  TOnCompareItem = Function (Sender: TObject; Acol,ARow,Bcol,BRow: Integer): Integer of Object;
   TOnExchangeItem = Procedure (Sender: TObject; Index, WithIndex: Integer) of Object;
 
   TArray=Class
