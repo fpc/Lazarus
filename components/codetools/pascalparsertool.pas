@@ -2928,7 +2928,10 @@ var SubRangeOperatorFound: boolean;
     // read till ';', ':', ')', '=', 'end'
     while (CurPos.StartPos<=SrcLen) do begin
       if (CurPos.Flag in [cafSemicolon,cafColon,cafRoundBracketClose,
-        cafEqual,cafEdgedBracketClose]) or AtomIsKeyWord
+        cafEqual,cafEdgedBracketClose])
+      or (AtomIsKeyWord
+          and (not IsKeyWordInConstAllowed.DoItUpperCase(UpperSrc,
+                                CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)))
       then
         break;
       if (CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen]) then
