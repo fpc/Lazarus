@@ -1341,7 +1341,8 @@ Begin
   end else if TheMessage.Msg=LM_RBUTTONUP then begin
     // right click -> popup menu
     DisableRubberBand;
-    if not ControlSelection.IsSelected(MouseDownComponent) then
+    if EnvironmentOptions.RightClickSelects
+    and (not ControlSelection.IsSelected(MouseDownComponent)) then
       PointSelect;
     PopupMenuComponentEditor:=GetComponentEditorForSelection;
     BuildPopupMenu;

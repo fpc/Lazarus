@@ -189,6 +189,7 @@ type
     FShowComponentCaptions: boolean;
     FShowEditorHints: boolean;
     FAutoCreateFormsOnOpen: boolean;
+    FRightClickSelects: boolean;
     FGrabberColor: TColor;
     FMarkerColor: TColor;
     FRubberbandSelectionColor: TColor;
@@ -307,6 +308,8 @@ type
                                       write FShowEditorHints;
     property AutoCreateFormsOnOpen: boolean read FAutoCreateFormsOnOpen
                                             write FAutoCreateFormsOnOpen;
+    property RightClickSelects: boolean read FRightClickSelects
+                                        write FRightClickSelects;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property RubberbandSelectionColor: TColor read FRubberbandSelectionColor
@@ -469,6 +472,7 @@ type
     ShowComponentCaptionsCheckBox: TCheckBox;
     ShowEditorHintsCheckBox: TCheckBox;
     AutoCreateFormsOnOpenCheckBox: TCheckBox;
+    RightClickSelectsCheckBox: TCheckBox;
     GrabberColorLabel: TLabel;
     GrabberColorButton: TColorButton;
     MarkerColorLabel: TLabel;
@@ -813,6 +817,7 @@ begin
   FShowComponentCaptions:=false;
   FShowEditorHints:=true;
   FAutoCreateFormsOnOpen:=true;
+  FRightClickSelects:=true;
   FGrabberColor:=clBlack;
   FMarkerColor:=clDkGray;
   FRubberbandSelectionColor:=clNavy;
@@ -922,6 +927,7 @@ var XMLConfig: TXMLConfig;
   FileVersion: integer;
   CurDebuggerClass: String;
   OldDebuggerType: TDebuggerType;
+  Path: String;
 
   procedure LoadBackupInfo(var BackupInfo: TBackupInfo; const Path:string);
   var i:integer;
@@ -976,164 +982,168 @@ var XMLConfig: TXMLConfig;
 begin
   try
     XMLConfig:=GetXMLCfg(false);
-    FileVersion:=XMLConfig.GetValue('EnvironmentOptions/Version/Value',0);
+    Path:='EnvironmentOptions/';
+    
+    FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
     
     // language
     LoadLanguage;
 
     // auto save
     FAutoSaveEditorFiles:=XMLConfig.GetValue(
-       'EnvironmentOptions/AutoSave/EditorFiles',true);
+       Path+'AutoSave/EditorFiles',true);
     FAutoSaveProject:=XMLConfig.GetValue(
-       'EnvironmentOptions/AutoSave/Project',true);
+       Path+'AutoSave/Project',true);
     FAutoSaveIntervalInSecs:=XMLConfig.GetValue(
-       'EnvironmentOptions/AutoSave/IntervalInSecs',600);
+       Path+'AutoSave/IntervalInSecs',600);
     FLastSavedProjectFile:=XMLConfig.GetValue(
-       'EnvironmentOptions/AutoSave/LastSavedProjectFile','');
+       Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=XMLConfig.GetValue(
-       'EnvironmentOptions/AutoSave/OpenLastProjectAtStart',true);
+       Path+'AutoSave/OpenLastProjectAtStart',true);
 
     // windows
     FIDEWindowLayoutList.LoadFromXMLConfig(XMLConfig,
-      'EnvironmentOptions/Desktop/');
+      Path+'Desktop/');
     FIDEDialogLayoutList.LoadFromXMLConfig(XMLConfig,
-      'EnvironmentOptions/Desktop/Dialogs');
+      Path+'Desktop/Dialogs');
     FMinimizeAllOnMinimizeMain:=XMLConfig.GetValue(
-      'EnvironmentOptions/Desktop/MinimizeAllOnMinimizeMain/Value',true);
+      Path+'Desktop/MinimizeAllOnMinimizeMain/Value',true);
     FHideIDEOnRun:=XMLConfig.GetValue(
-      'EnvironmentOptions/Desktop/HideIDEOnRun/Value',false);
+      Path+'Desktop/HideIDEOnRun/Value',false);
 
     // form editor
     FShowGrid:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/ShowGrid',true);
+       Path+'FormEditor/ShowGrid',true);
     FGridColor:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GridColor',FGridColor);
+       Path+'FormEditor/GridColor',FGridColor);
     FSnapToGrid:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/SnapToGrid',true);
+       Path+'FormEditor/SnapToGrid',true);
     FGridSizeX:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GridSizeX',8);
+       Path+'FormEditor/GridSizeX',8);
     FGridSizeY:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GridSizeY',8);
+       Path+'FormEditor/GridSizeY',8);
     FShowGuideLines:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/ShowGuideLines',true);
+       Path+'FormEditor/ShowGuideLines',true);
     FSnapToGuideLines:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/SnapToGuideLines',true);
+       Path+'FormEditor/SnapToGuideLines',true);
     FGuideLineColorLeftTop:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GuideLineColorLeftTop',
+       Path+'FormEditor/GuideLineColorLeftTop',
        FGuideLineColorLeftTop);
     FGuideLineColorRightBottom:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GuideLineColorRightBottom',
+       Path+'FormEditor/GuideLineColorRightBottom',
        FGuideLineColorRightBottom);
     FShowComponentCaptions:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/ShowComponentCaptions',true);
+       Path+'FormEditor/ShowComponentCaptions',true);
     FShowEditorHints:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/ShowEditorHints',true);
+       Path+'FormEditor/ShowEditorHints',true);
     FAutoCreateFormsOnOpen:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/AutoCreateFormsOnOpen',true);
+       Path+'FormEditor/AutoCreateFormsOnOpen',true);
+    FRightClickSelects:=XMLConfig.GetValue(
+       Path+'FormEditor/RightClickSelects',true);
     FGrabberColor:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/GrabberColor/Value',FGrabberColor);
+       Path+'FormEditor/GrabberColor/Value',FGrabberColor);
     FMarkerColor:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/MarkerColor/Value',FMarkerColor);
+       Path+'FormEditor/MarkerColor/Value',FMarkerColor);
     FRubberbandSelectionColor:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/Rubberband/SelectionColor/Value',
+       Path+'FormEditor/Rubberband/SelectionColor/Value',
        FRubberbandSelectionColor);
     FRubberbandCreationColor:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/Rubberband/CreationColor/Value',
+       Path+'FormEditor/Rubberband/CreationColor/Value',
        FRubberbandCreationColor);
     FRubberbandSelectsGrandChilds:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/Rubberband/SelectsGrandChilds/Value',
+       Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
        false);
 
     if not OnlyDesktop then begin
       // files
       LazarusDirectory:=XMLConfig.GetValue(
-         'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory);
+         Path+'LazarusDirectory/Value',FLazarusDirectory);
       LoadRecentList(XMLConfig,FLazarusDirsHistory,
-         'EnvironmentOptions/LazarusDirectory/History/');
+         Path+'LazarusDirectory/History/');
       if FLazarusDirsHistory.Count=0 then begin
         FLazarusDirsHistory.Add(ProgramDirectory);
       end;
       CompilerFilename:=TrimFilename(XMLConfig.GetValue(
-         'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename));
+         Path+'CompilerFilename/Value',FCompilerFilename));
       LoadRecentList(XMLConfig,FCompilerFileHistory,
-         'EnvironmentOptions/CompilerFilename/History/');
+         Path+'CompilerFilename/History/');
       if FCompilerFileHistory.Count=0 then
         GetDefaultCompilerFilenames(FCompilerFileHistory);
       FPCSourceDirectory:=XMLConfig.GetValue(
-         'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+         Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
       LoadRecentList(XMLConfig,FFPCSourceDirHistory,
-         'EnvironmentOptions/FPCSourceDirectory/History/');
+         Path+'FPCSourceDirectory/History/');
       if FFPCSourceDirHistory.Count=0 then begin
       
       end;
       
       TestBuildDirectory:=XMLConfig.GetValue(
-         'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
+         Path+'TestBuildDirectory/Value',FTestBuildDirectory);
       LoadRecentList(XMLConfig,FTestBuildDirHistory,
-         'EnvironmentOptions/TestBuildDirectory/History/');
+         Path+'TestBuildDirectory/History/');
       if FTestBuildDirHistory.Count=0 then
         GetDefaultTestBuildDirs(FTestBuildDirHistory);
 
       // backup
       LoadBackupInfo(FBackupInfoProjectFiles
-        ,'EnvironmentOptions/BackupProjectFiles/');
+        ,Path+'BackupProjectFiles/');
       LoadBackupInfo(FBackupInfoOtherFiles
-        ,'EnvironmentOptions/BackupOtherFiles/');
+        ,Path+'BackupOtherFiles/');
 
       // Debugger
       // first try to load the old type
       // it will be overwritten by Class if found
       CurDebuggerClass := XMLConfig.GetValue(
-         'EnvironmentOptions/Debugger/Class','');
+         Path+'Debugger/Class','');
       if CurDebuggerClass='' then begin
         // try old format
         OldDebuggerType := DebuggerNameToType(XMLConfig.GetValue(
-          'EnvironmentOptions/Debugger/Type',''));
+          Path+'Debugger/Type',''));
         if OldDebuggerType=dtGnuDebugger then
           CurDebuggerClass:='TGDBMIDEBUGGER';
       end;
       DebuggerClass:=CurDebuggerClass;
       DebuggerFilename:=XMLConfig.GetValue(
-         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+         Path+'DebuggerFilename/Value',FDebuggerFilename);
       LoadRecentList(XMLConfig,FDebuggerFileHistory,
-         'EnvironmentOptions/DebuggerFilename/History/');
+         Path+'DebuggerFilename/History/');
     end;
 
     // hints
     FShowHintsForComponentPalette:=XMLConfig.GetValue(
-      'EnvironmentOptions/ShowHintsForComponentPalette/Value',true);
+      Path+'ShowHintsForComponentPalette/Value',true);
     FShowHintsForMainSpeedButtons:=XMLConfig.GetValue(
-      'EnvironmentOptions/ShowHintsForMainSpeedButtons/Value',true);
+      Path+'ShowHintsForMainSpeedButtons/Value',true);
       
     // messages view
     fMsgViewDblClickJumps:=XMLConfig.GetValue(
-      'EnvironmentOptions/MsgViewDblClickJumps/Value',false);
+      Path+'MsgViewDblClickJumps/Value',false);
 
     // recent files and directories
     FMaxRecentOpenFiles:=XMLConfig.GetValue(
-      'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+      Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
     LoadRecentList(XMLConfig,FRecentOpenFiles,
-      'EnvironmentOptions/Recent/OpenFiles/');
+      Path+'Recent/OpenFiles/');
     FMaxRecentProjectFiles:=XMLConfig.GetValue(
-      'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+      Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
     LoadRecentList(XMLConfig,FRecentProjectFiles,
-      'EnvironmentOptions/Recent/ProjectFiles/');
+      Path+'Recent/ProjectFiles/');
     FMaxRecentPackageFiles:=XMLConfig.GetValue(
-      'EnvironmentOptions/Recent/PackageFiles/Max',FMaxRecentOpenFiles);
+      Path+'Recent/PackageFiles/Max',FMaxRecentOpenFiles);
     LoadRecentList(XMLConfig,FRecentPackageFiles,
-      'EnvironmentOptions/Recent/PackageFiles/');
+      Path+'Recent/PackageFiles/');
 
     // external tools
-    fExternalTools.Load(XMLConfig,'EnvironmentOptions/ExternalTools/');
+    fExternalTools.Load(XMLConfig,Path+'ExternalTools/');
     
     // naming
-    LoadPascalFileExt('EnvironmentOptions/');
+    LoadPascalFileExt(Path+'');
     fPascalFileAutoLowerCase:=XMLConfig.GetValue(
-      'EnvironmentOptions/PascalFileAutoLowerCase/Value',false);
+      Path+'PascalFileAutoLowerCase/Value',false);
     fPascalFileAskLowerCase:=XMLConfig.GetValue(
-      'EnvironmentOptions/PascalFileAskLowerCase/Value',true);
+      Path+'PascalFileAskLowerCase/Value',true);
     fAmbigiousFileAction:=AmbigiousFileActionNameToType(XMLConfig.GetValue(
-      'EnvironmentOptions/AmbigiousFileAction/Value',
+      Path+'AmbigiousFileAction/Value',
         AmbigiousFileActionNames[fAmbigiousFileAction]));
         
     // object inspector
@@ -1150,6 +1160,7 @@ end;
 
 procedure TEnvironmentOptions.Save(OnlyDesktop: boolean);
 var XMLConfig: TXMLConfig;
+  Path: String;
 
   procedure SaveBackupInfo(var BackupInfo: TBackupInfo; Path:string);
   var i:integer;
@@ -1181,147 +1192,150 @@ var XMLConfig: TXMLConfig;
 begin
   try
     XMLConfig:=GetXMLCfg(true);
-    XMLConfig.SetValue('EnvironmentOptions/Version/Value',EnvOptsVersion);
+    Path:='EnvironmentOptions/';
+
+    XMLConfig.SetValue(Path+'Version/Value',EnvOptsVersion);
 
     // language
-    XMLConfig.SetDeleteValue('EnvironmentOptions/Language/ID'
+    XMLConfig.SetDeleteValue(Path+'Language/ID'
        ,LazarusLanguageIDs[fLanguage],LazarusLanguageIDs[llAutomatic]);
 
     // auto save
-    XMLConfig.SetDeleteValue('EnvironmentOptions/AutoSave/EditorFiles'
+    XMLConfig.SetDeleteValue(Path+'AutoSave/EditorFiles'
        ,FAutoSaveEditorFiles,true);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/AutoSave/Project',
+    XMLConfig.SetDeleteValue(Path+'AutoSave/Project',
        FAutoSaveProject,true);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/AutoSave/IntervalInSecs'
+    XMLConfig.SetDeleteValue(Path+'AutoSave/IntervalInSecs'
        ,FAutoSaveIntervalInSecs,600);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/AutoSave/LastSavedProjectFile'
+    XMLConfig.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile'
        ,FLastSavedProjectFile,'');
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/AutoSave/OpenLastProjectAtStart',
+       Path+'AutoSave/OpenLastProjectAtStart',
        FOpenLastProjectAtStart,true);
 
     // windows
     FIDEWindowLayoutList.SaveToXMLConfig(XMLConfig,
-      'EnvironmentOptions/Desktop/');
+      Path+'Desktop/');
     FIDEDialogLayoutList.SaveToXMLConfig(XMLConfig,
-      'EnvironmentOptions/Desktop/Dialogs');
+      Path+'Desktop/Dialogs');
     XMLConfig.SetDeleteValue(
-      'EnvironmentOptions/Desktop/MinimizeAllOnMinimizeMain/Value',
+      Path+'Desktop/MinimizeAllOnMinimizeMain/Value',
       FMinimizeAllOnMinimizeMain,true);
     XMLConfig.SetDeleteValue(
-      'EnvironmentOptions/Desktop/HideIDEOnRun/Value',FHideIDEOnRun,false);
+      Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,false);
 
     // form editor
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/ShowGrid',FShowGrid,true);
+       Path+'FormEditor/ShowGrid',FShowGrid,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/GridColor',FGridColor,clBlack);
+       Path+'FormEditor/GridColor',FGridColor,clBlack);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/SnapToGrid',FSnapToGrid,true);
+       Path+'FormEditor/SnapToGrid',FSnapToGrid,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/GridSizeX',FGridSizeX,8);
+       Path+'FormEditor/GridSizeX',FGridSizeX,8);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/GridSizeY',FGridSizeY,8);
+       Path+'FormEditor/GridSizeY',FGridSizeY,8);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/ShowGuideLines',FShowGuideLines,true);
+       Path+'FormEditor/ShowGuideLines',FShowGuideLines,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/SnapToGuideLines',FSnapToGuideLines,true);
+       Path+'FormEditor/SnapToGuideLines',FSnapToGuideLines,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/GuideLineColorLeftTop',
+       Path+'FormEditor/GuideLineColorLeftTop',
        FGuideLineColorLeftTop,clGreen);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/GuideLineColorRightBottom',
+       Path+'FormEditor/GuideLineColorRightBottom',
        FGuideLineColorRightBottom,clBlue);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/FormEditor/ShowComponentCaptions',
+    XMLConfig.SetDeleteValue(Path+'FormEditor/ShowComponentCaptions',
        FShowComponentCaptions,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints,true);
+       Path+'FormEditor/ShowEditorHints',FShowEditorHints,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/AutoCreateFormsOnOpen',
-       FAutoCreateFormsOnOpen,true);
+       Path+'FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/GrabberColor/Value',FGrabberColor,clBlack);
+       Path+'FormEditor/RightClickSelects',FRightClickSelects,true);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/MarkerColor/Value',FMarkerColor,clDkGray);
+       Path+'FormEditor/GrabberColor/Value',FGrabberColor,clBlack);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/Rubberband/SelectionColor/Value',
+       Path+'FormEditor/MarkerColor/Value',FMarkerColor,clDkGray);
+    XMLConfig.SetDeleteValue(
+       Path+'FormEditor/Rubberband/SelectionColor/Value',
        FRubberbandSelectionColor,clBlack);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/Rubberband/CreationColor/Value',
+       Path+'FormEditor/Rubberband/CreationColor/Value',
        FRubberbandCreationColor,clRed);
     XMLConfig.SetDeleteValue(
-       'EnvironmentOptions/FormEditor/Rubberband/SelectsGrandChilds/Value',
+       Path+'FormEditor/Rubberband/SelectsGrandChilds/Value',
        FRubberbandSelectsGrandChilds,false);
 
     if not OnlyDesktop then begin
       // files
       XMLConfig.SetDeleteValue(
-         'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory,'');
+         Path+'LazarusDirectory/Value',FLazarusDirectory,'');
       SaveRecentList(XMLConfig,FLazarusDirsHistory,
-         'EnvironmentOptions/LazarusDirectory/History/');
+         Path+'LazarusDirectory/History/');
       XMLConfig.SetDeleteValue(
-         'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename,'');
+         Path+'CompilerFilename/Value',FCompilerFilename,'');
       SaveRecentList(XMLConfig,FCompilerFileHistory,
-         'EnvironmentOptions/CompilerFilename/History/');
+         Path+'CompilerFilename/History/');
       XMLConfig.SetValue(
-         'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+         Path+'FPCSourceDirectory/Value',FFPCSourceDirectory);
       SaveRecentList(XMLConfig,FFPCSourceDirHistory,
-         'EnvironmentOptions/FPCSourceDirectory/History/');
+         Path+'FPCSourceDirectory/History/');
       XMLConfig.SetValue(
-         'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
+         Path+'TestBuildDirectory/Value',FTestBuildDirectory);
       SaveRecentList(XMLConfig,FTestBuildDirHistory,
-         'EnvironmentOptions/TestBuildDirectory/History/');
+         Path+'TestBuildDirectory/History/');
 
       // backup
       SaveBackupInfo(FBackupInfoProjectFiles
-        ,'EnvironmentOptions/BackupProjectFiles/');
+        ,Path+'BackupProjectFiles/');
       SaveBackupInfo(FBackupInfoOtherFiles
-        ,'EnvironmentOptions/BackupOtherFiles/');
+        ,Path+'BackupOtherFiles/');
         
       // debugger
-      XMLConfig.SetDeleteValue('EnvironmentOptions/Debugger/Class',
+      XMLConfig.SetDeleteValue(Path+'Debugger/Class',
           FDebuggerClass,'');
-      XMLConfig.SetDeleteValue('EnvironmentOptions/DebuggerFilename/Value',
+      XMLConfig.SetDeleteValue(Path+'DebuggerFilename/Value',
           FDebuggerFilename,'');
       SaveRecentList(XMLConfig,FDebuggerFileHistory,
-         'EnvironmentOptions/DebuggerFilename/History/');
+         Path+'DebuggerFilename/History/');
     end;
 
     // hints
-    XMLConfig.SetDeleteValue('EnvironmentOptions/ShowHintsForComponentPalette/Value',
+    XMLConfig.SetDeleteValue(Path+'ShowHintsForComponentPalette/Value',
       FShowHintsForComponentPalette,true);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/ShowHintsForMainSpeedButtons/Value',
+    XMLConfig.SetDeleteValue(Path+'ShowHintsForMainSpeedButtons/Value',
       FShowHintsForMainSpeedButtons,true);
 
     // messages view
-    XMLConfig.SetDeleteValue('EnvironmentOptions/MsgViewDblClickJumps/Value',
+    XMLConfig.SetDeleteValue(Path+'MsgViewDblClickJumps/Value',
       fMsgViewDblClickJumps,false);
 
     // recent files and directories
     XMLConfig.SetValue(
-      'EnvironmentOptions/Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+      Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
     SaveRecentList(XMLConfig,FRecentOpenFiles,
-      'EnvironmentOptions/Recent/OpenFiles/');
+      Path+'Recent/OpenFiles/');
     XMLConfig.SetValue(
-      'EnvironmentOptions/Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+      Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
     SaveRecentList(XMLConfig,FRecentProjectFiles,
-      'EnvironmentOptions/Recent/ProjectFiles/');
+      Path+'Recent/ProjectFiles/');
     XMLConfig.SetValue(
-      'EnvironmentOptions/Recent/PackageFiles/Max',FMaxRecentPackageFiles);
+      Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles);
     SaveRecentList(XMLConfig,FRecentPackageFiles,
-      'EnvironmentOptions/Recent/PackageFiles/');
+      Path+'Recent/PackageFiles/');
 
     // external tools
-    fExternalTools.Save(XMLConfig,'EnvironmentOptions/ExternalTools/');
+    fExternalTools.Save(XMLConfig,Path+'ExternalTools/');
 
     // naming
-    XMLConfig.SetDeleteValue('EnvironmentOptions/Naming/PascalFileExtension',
+    XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
       PascalExtension[fPascalFileExtension],'.pas');
-    XMLConfig.SetDeleteValue('EnvironmentOptions/PascalFileAutoLowerCase/Value',
+    XMLConfig.SetDeleteValue(Path+'PascalFileAutoLowerCase/Value',
       fPascalFileAutoLowerCase,false);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/PascalFileAskLowerCase/Value',
+    XMLConfig.SetDeleteValue(Path+'PascalFileAskLowerCase/Value',
       fPascalFileAskLowerCase,true);
-    XMLConfig.SetDeleteValue('EnvironmentOptions/AutoDeleteAmbigiousSources/Value',
+    XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbigiousSources/Value',
       AmbigiousFileActionNames[fAmbigiousFileAction],
       AmbigiousFileActionNames[afaAsk]);
 
@@ -2412,44 +2426,65 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
   end;
   
   procedure SetupMiscGroupBox;
+  var
+    x: Integer;
+    y: Integer;
+    w: Integer;
   begin
+    x:=5;
+    y:=5;
+    w:=300;
+  
     ShowComponentCaptionsCheckBox:=TCheckBox.Create(Self);
     with ShowComponentCaptionsCheckBox do begin
       Name:='ShowComponentCaptionsCheckBox';
       Parent:=FormEditMiscGroupBox;
-      Top:=5;
-      Left:=5;
-      Width:=240;
+      Left:=x;
+      Top:=y;
+      Width:=w;
       Caption:=dlgShowCaps;
+      inc(y,Height+5);
     end;
 
     ShowEditorHintsCheckBox:=TCheckBox.Create(Self);
     with ShowEditorHintsCheckBox do begin
       Name:='ShowEditorHintsCheckBox';
       Parent:=FormEditMiscGroupBox;
-      Top:=ShowComponentCaptionsCheckBox.Top
-           +ShowComponentCaptionsCheckBox.Height+5;
-      Left:=ShowComponentCaptionsCheckBox.Left;
-      Width:=ShowComponentCaptionsCheckBox.Width;
+      Left:=x;
+      Top:=y;
+      Width:=w;
       Caption:=dlgShowEdrHints;
+      inc(y,Height+5);
     end;
 
     AutoCreateFormsOnOpenCheckBox:=TCheckBox.Create(Self);
     with AutoCreateFormsOnOpenCheckBox do begin
       Name:='AutoCreateFormsOnOpenCheckBox';
       Parent:=FormEditMiscGroupBox;
-      Top:=ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5;
-      Left:=ShowEditorHintsCheckBox.Left;
-      Width:=ShowEditorHintsCheckBox.Width+100;
+      Left:=x;
+      Top:=y;
+      Width:=w;
       Caption:=dlgAutoForm;
+      inc(y,Height+5);
+    end;
+
+    RightClickSelectsCheckBox:=TCheckBox.Create(Self);
+    with RightClickSelectsCheckBox do begin
+      Name:='RightClickSelectsCheckBox';
+      Parent:=FormEditMiscGroupBox;
+      Left:=x;
+      Top:=y;
+      Width:=w;
+      Caption:=dlgRightClickSelects;
+      inc(y,Height+5);
     end;
 
     GrabberColorButton:=TColorButton.Create(Self);
     with GrabberColorButton do begin
       Name:='GrabberColorButton';
       Parent:=FormEditMiscGroupBox;
-      Left:=280;
-      Top:=0;
+      Left:=x;
+      Top:=y;
       Width:=50;
       Height:=25;
     end;
@@ -2576,8 +2611,8 @@ begin
     Parent:=Notebook.Page[Page];
     Left:=5;
     Top:=GridGroupBox.Top+GridGroupBox.Height+5;
-    Width:=Parent.ClientWidth-2*Left;
-    Height:=100;
+    Width:=GridGroupBox.Width;
+    Height:=Parent.ClientHeight-Top-5;
     Caption:=dlgEnvMisc;
     OnResize:=@FormEditMiscGroupBoxResize;
   end;
@@ -2588,10 +2623,10 @@ begin
   with RubberbandGroupBox do begin
     Name:='RubberbandGroupBox';
     Parent:=Notebook.Page[Page];
-    Left:=5;
-    Top:=FormEditMiscGroupBox.Top+FormEditMiscGroupBox.Height+5;
-    Width:=GridGroupBox.Width;
-    Height:=120;
+    Left:=GuideLinesGroupBox.Left;
+    Top:=GuideLinesGroupBox.Top+GuideLinesGroupBox.Height+5;
+    Width:=GuideLinesGroupBox.Width;
+    Height:=Parent.ClientHeight-5-Top;
     Caption:=dlgRubberBandGroup;
     OnResize:=@RubberbandGroupBoxResize;
   end;
@@ -2791,6 +2826,8 @@ begin
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
+var
+  y: Integer;
 begin
   // form editor page
   with GridGroupBox do begin
@@ -2800,13 +2837,14 @@ begin
     SetBounds(GridGroupBox.Left+GridGroupBox.Width+5,GridGroupBox.Top,
               GridGroupBox.Width,GridGroupBox.Height);
   end;
+  y:=GridGroupBox.Top+GridGroupBox.Height+5;
   with FormEditMiscGroupBox do begin
-    SetBounds(5,GridGroupBox.Top+GridGroupBox.Height+5,
-              Max(Parent.ClientWidth-2*Left,10),100);
+    SetBounds(5,y,
+              GridGroupBox.Width,Parent.ClientHeight-5-y);
   end;
   with RubberbandGroupBox do begin
-    SetBounds(5,FormEditMiscGroupBox.Top+FormEditMiscGroupBox.Height+5,
-              Max(Parent.ClientWidth-2*Left,10),100);
+    SetBounds(FormEditMiscGroupBox.Left+FormEditMiscGroupBox.Width+5,y,
+              GuideLinesGroupBox.Width,Parent.ClientHeight-5-y);
   end;
 end;
 
@@ -3208,7 +3246,7 @@ procedure TEnvironmentOptionsDialog.FormEditMiscGroupBoxResize(Sender: TObject);
 var
   w: Integer;
 begin
-  w:=(FormEditMiscGroupBox.ClientWidth div 2)-10;
+  w:=FormEditMiscGroupBox.ClientWidth-10;
   with ShowComponentCaptionsCheckBox do begin
     SetBounds(5,5,w,Height);
   end;
@@ -3223,6 +3261,12 @@ begin
   with AutoCreateFormsOnOpenCheckBox do begin
     SetBounds(ShowEditorHintsCheckBox.Left,
               ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
+              w,Height);
+  end;
+
+  with RightClickSelectsCheckBox do begin
+    SetBounds(AutoCreateFormsOnOpenCheckBox.Left,
+              AutoCreateFormsOnOpenCheckBox.Top+AutoCreateFormsOnOpenCheckBox.Height+5,
               w,Height);
   end;
 end;
@@ -3543,6 +3587,7 @@ begin
     ShowComponentCaptionsCheckBox.Checked:=ShowComponentCaptions;
     ShowEditorHintsCheckBox.Checked:=ShowEditorHints;
     AutoCreateFormsOnOpenCheckBox.Checked:=AutoCreateFormsOnOpen;
+    RightClickSelectsCheckBox.Checked:=RightClickSelects;
     GrabberColorButton.ButtonColor:=GrabberColor;
     MarkerColorButton.ButtonColor:=MarkerColor;
     RubberbandSelectColorButton.ButtonColor:=RubberbandSelectionColor;
@@ -3670,6 +3715,7 @@ begin
     ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints:=ShowEditorHintsCheckBox.Checked;
     AutoCreateFormsOnOpen:=AutoCreateFormsOnOpenCheckBox.Checked;
+    RightClickSelects:=RightClickSelectsCheckBox.Checked;
     GrabberColor:=GrabberColorButton.ButtonColor;
     MarkerColor:=MarkerColorButton.ButtonColor;
     RubberbandSelectionColor:=RubberbandSelectColorButton.ButtonColor;
