@@ -51,6 +51,7 @@ uses
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, 
   GraphMath;
 
+
 type
   TgtkObject = class(TInterfaceBase)
   protected
@@ -200,7 +201,7 @@ type
 
 implementation
 
-uses 
+uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc;
@@ -308,6 +309,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.102  2002/11/12 10:16:18  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.101  2002/11/09 18:13:33  lazarus
   MG: fixed gdkwindow checks
 
