@@ -36,12 +36,12 @@ interface
 uses
   LCLLinux, LCLType,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
-  SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs;
+  SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList;
 
 const
   { editor commands constants. see syneditkeycmds.pp for more
   
-  These values can change from version to version, so DO NOT save them to file!
+   These values can change from version to version, so DO NOT save them to file!
   
   }
   ecNone                 = SynEditKeyCmds.ecNone;
@@ -298,7 +298,7 @@ function ShowKeyMappingEditForm(Index:integer;
 function KeyStrokesConsistencyErrors(ASynEditKeyStrokes:TSynEditKeyStrokes;
    Protocol: TStrings; var Index1,Index2:integer):integer;
 function EditorCommandToDescriptionString(cmd: word):AnsiString;
-function StrToVKCode(s: string): integer;
+function StrToVKCode(const s: string): integer;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
 
@@ -310,24 +310,39 @@ implementation
 
 const
   KeyMappingFormatVersion = 2;
+  UnknownVKPrefix = 'Word(''';
+  UnknownVKPostfix = ''')';
 
-function StrToVKCode(s: string): integer;
-var i: integer;
+  VirtualKeyStrings: TStringHashList = nil;
+  
+
+function StrToVKCode(const s: string): integer;
+var
+  i: integer;
 begin
   Result:=VK_UNKNOWN;
-  if copy(s,1,6)='Word(''' then
-    Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
-  else if s<>'none' then begin
-    for i:=1 to 300 do
-      if KeyAndShiftStateToStr(i,[])=s then begin
-        Result:=i;
-        exit;
-      end;
-    for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
-      if KeyAndShiftStateToStr(i,[])=s then begin
-        Result:=i;
-        exit;
-      end;
+  if VirtualKeyStrings=nil then
+    VirtualKeyStrings:=TStringHashList.Create(true);
+  i:=-1; //VirtualKeyStrings(s);
+  if i>=0 then begin
+  
+  end else begin
+    if (length(UnknownVKPrefix)<length(s))
+    and (AnsiStrLComp(PChar(s),PChar(UnknownVKPrefix),length(UnknownVKPrefix))=0)
+    then
+      Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
+    else if s<>'none' then begin
+      for i:=1 to 300 do
+        if KeyAndShiftStateToStr(i,[])=s then begin
+          Result:=i;
+          exit;
+        end;
+      for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
+        if KeyAndShiftStateToStr(i,[])=s then begin
+          Result:=i;
+          exit;
+        end;
+    end;
   end;
 end;
 
@@ -656,81 +671,125 @@ begin
 end;
 
 function KeyAndShiftStateToStr(Key:Word; ShiftState:TShiftState):AnsiString;
-begin
-  Result:='';
-  if ssCtrl in ShiftState then Result:=Result+'+Ctrl';
-  if ssAlt in ShiftState then Result:=Result+'+Alt';
-  if ssShift in ShiftState then Result:=Result+'+Shift';
-  if Result<>'' then
-    Result:=copy(Result,2,length(Result)-1)+'+';
-  case Key of
-  VK_UNKNOWN    :Result:=Result+'Unknown';
-  VK_LBUTTON    :Result:=Result+'Mouse Button Left';
-  VK_RBUTTON    :Result:=Result+'Mouse Button Right';
-  VK_CANCEL     :Result:=Result+'Cancel';
-  VK_MBUTTON    :Result:=Result+'Mouse Button Middle';
-  VK_BACK       :Result:=Result+'Backspace';
-  VK_TAB        :Result:=Result+'Tab';
-  VK_CLEAR      :Result:=Result+'Clear';
-  VK_RETURN     :Result:=Result+'Return';
-  VK_SHIFT      :Result:=Result+'Shift';
-  VK_CONTROL    :Result:=Result+'Control';
-  VK_MENU       :Result:=Result+'Menu';
-  VK_PAUSE      :Result:=Result+'Pause';
-  VK_CAPITAL    :Result:=Result+'Capital';
-  VK_KANA       :Result:=Result+'Kana';
-//  VK_HANGUL     :Result:=Result+'Hangul';
-  VK_JUNJA      :Result:=Result+'Junja';
-  VK_FINAL      :Result:=Result+'Final';
-  VK_HANJA      :Result:=Result+'Hanja';
-//  VK_KANJI      :Result:=Result+'Kanji';
-  VK_ESCAPE     :Result:=Result+'Escape';
-  VK_CONVERT    :Result:=Result+'Convert';
-  VK_NONCONVERT :Result:=Result+'Nonconvert';
-  VK_ACCEPT     :Result:=Result+'Accept';
-  VK_MODECHANGE :Result:=Result+'Mode Change';
-  VK_SPACE      :Result:=Result+'Space';
-  VK_PRIOR      :Result:=Result+'Prior';
-  VK_NEXT       :Result:=Result+'Next';
-  VK_END        :Result:=Result+'End';
-  VK_HOME       :Result:=Result+'Home';
-  VK_LEFT       :Result:=Result+'Left';
-  VK_UP         :Result:=Result+'Up';
-  VK_RIGHT      :Result:=Result+'Right';
-  VK_DOWN       :Result:=Result+'Down';
-  VK_SELECT     :Result:=Result+'Select';
-  VK_PRINT      :Result:=Result+'Print';
-  VK_EXECUTE    :Result:=Result+'Execute';
-  VK_SNAPSHOT   :Result:=Result+'Snapshot';
-  VK_INSERT     :Result:=Result+'Insert';
-  VK_DELETE     :Result:=Result+'Delete';
-  VK_HELP       :Result:=Result+'Help';
-  VK_0..VK_9    :Result:=Result+IntToStr(Key-VK_0);
-  VK_A..VK_Z    :Result:=Result+chr(ord('A')+Key-VK_A);
-  VK_LWIN       :Result:=Result+'left windows key';
-  VK_RWIN       :Result:=Result+'right windows key';
-  VK_APPS       :Result:=Result+'application key';
-  VK_NUMPAD0..VK_NUMPAD9:Result:=Result+'Numpad '+IntToStr(Key-VK_NUMPAD0);
-  VK_MULTIPLY   :Result:=Result+'*';
-  VK_ADD        :Result:=Result+'+';
-  VK_SEPARATOR  :Result:=Result+'|';
-  VK_SUBTRACT   :Result:=Result+'-';
-  VK_DECIMAL    :Result:=Result+'.';
-  VK_DIVIDE     :Result:=Result+'/';
-  VK_F1..VK_F24 :Result:=Result+'F'+IntToStr(Key-VK_F1+1);
-  VK_NUMLOCK    :Result:=Result+'Numlock';
-  VK_SCROLL     :Result:=Result+'Scroll';
-  VK_EQUAL      :Result:=Result+'=';
-  VK_COMMA      :Result:=Result+',';
-  VK_POINT      :Result:=Result+'.';
-  VK_SLASH      :Result:=Result+'/';
-  VK_AT         :Result:=Result+'@';
-  else
-    if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then
-      Result:=Result+chr(Key-VK_IRREGULAR)
-    else
-      Result:=Result+'Word('''+IntToStr(Key)+''')';
+var
+  p, ResultLen: integer;
+
+  procedure AddStr(const s: string);
+  var
+    OldP: integer;
+  begin
+    if s<>'' then begin
+      OldP:=p;
+      inc(p,length(s));
+      if p<=ResultLen then
+        Move(s[1],Result[OldP+1],length(s));
+    end;
   end;
+
+  procedure AddAttribute(const s: string);
+  begin
+    if p>0 then
+      AddStr('+');
+    AddStr(s);
+  end;
+  
+  procedure AddAttributes;
+  begin
+    if ssCtrl in ShiftState then AddAttribute('Ctrl');
+    if ssAlt in ShiftState then AddAttribute('Alt');
+    if ssShift in ShiftState then AddAttribute('Shift');
+  end;
+  
+  procedure AddKey;
+  begin
+    AddStr(' ');
+    case Key of
+    VK_UNKNOWN    :AddStr('Unknown');
+    VK_LBUTTON    :AddStr('Mouse Button Left');
+    VK_RBUTTON    :AddStr('Mouse Button Right');
+    VK_CANCEL     :AddStr('Cancel');
+    VK_MBUTTON    :AddStr('Mouse Button Middle');
+    VK_BACK       :AddStr('Backspace');
+    VK_TAB        :AddStr('Tab');
+    VK_CLEAR      :AddStr('Clear');
+    VK_RETURN     :AddStr('Return');
+    VK_SHIFT      :AddStr('Shift');
+    VK_CONTROL    :AddStr('Control');
+    VK_MENU       :AddStr('Menu');
+    VK_PAUSE      :AddStr('Pause');
+    VK_CAPITAL    :AddStr('Capital');
+    VK_KANA       :AddStr('Kana');
+  //  VK_HANGUL     :AddStr('Hangul');
+    VK_JUNJA      :AddStr('Junja');
+    VK_FINAL      :AddStr('Final');
+    VK_HANJA      :AddStr('Hanja');
+  //  VK_KANJI      :AddStr('Kanji');
+    VK_ESCAPE     :AddStr('Escape');
+    VK_CONVERT    :AddStr('Convert');
+    VK_NONCONVERT :AddStr('Nonconvert');
+    VK_ACCEPT     :AddStr('Accept');
+    VK_MODECHANGE :AddStr('Mode Change');
+    VK_SPACE      :AddStr('Space');
+    VK_PRIOR      :AddStr('Prior');
+    VK_NEXT       :AddStr('Next');
+    VK_END        :AddStr('End');
+    VK_HOME       :AddStr('Home');
+    VK_LEFT       :AddStr('Left');
+    VK_UP         :AddStr('Up');
+    VK_RIGHT      :AddStr('Right');
+    VK_DOWN       :AddStr('Down');
+    VK_SELECT     :AddStr('Select');
+    VK_PRINT      :AddStr('Print');
+    VK_EXECUTE    :AddStr('Execute');
+    VK_SNAPSHOT   :AddStr('Snapshot');
+    VK_INSERT     :AddStr('Insert');
+    VK_DELETE     :AddStr('Delete');
+    VK_HELP       :AddStr('Help');
+    VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
+    VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
+    VK_LWIN       :AddStr('left windows key');
+    VK_RWIN       :AddStr('right windows key');
+    VK_APPS       :AddStr('application key');
+    VK_NUMPAD0..VK_NUMPAD9:AddStr('Numpad '+IntToStr(Key-VK_NUMPAD0));
+    VK_MULTIPLY   :AddStr('*');
+    VK_ADD        :AddStr('+');
+    VK_SEPARATOR  :AddStr('|');
+    VK_SUBTRACT   :AddStr('-');
+    VK_DECIMAL    :AddStr('.');
+    VK_DIVIDE     :AddStr('/');
+    VK_F1..VK_F24 :AddStr('F'+IntToStr(Key-VK_F1+1));
+    VK_NUMLOCK    :AddStr('Numlock');
+    VK_SCROLL     :AddStr('Scroll');
+    VK_EQUAL      :AddStr('=');
+    VK_COMMA      :AddStr(',');
+    VK_POINT      :AddStr('.');
+    VK_SLASH      :AddStr('/');
+    VK_AT         :AddStr('@');
+    else
+      if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then
+        AddStr(chr(Key-VK_IRREGULAR))
+      else begin
+        AddStr(UnknownVKPrefix);
+        AddStr(IntToStr(Key));
+        AddStr(UnknownVKPostfix);
+      end;
+    end;
+  end;
+  
+  procedure AddAttributesAndKey;
+  begin
+    AddAttributes;
+    AddKey;
+  end;
+
+begin
+  ResultLen:=0;
+  p:=0;
+  AddAttributesAndKey;
+  ResultLen:=p;
+  SetLength(Result,ResultLen);
+  p:=0;
+  AddAttributesAndKey;
 end;
 
 { TKeyMappingEditForm }
@@ -1695,6 +1754,10 @@ end;
 //------------------------------------------------------------------------------
 initialization
   KeyMappingEditForm:=nil;
+  
+finalization
+  VirtualKeyStrings.Free;
+  VirtualKeyStrings:=nil;
 
 end.
 
