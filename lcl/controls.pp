@@ -894,7 +894,7 @@ type
     function IsVisibleStored: Boolean;
     procedure CheckMenuPopup(const P: TSmallPoint);
     procedure DoBeforeMouseMessage;
-    procedure DoConstrainedResize(var NewWidth, NewHeight: integer);
+    procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: integer);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
                           Shift: TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
@@ -2982,6 +2982,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.286  2005/03/04 17:55:34  micha
+  fix bug 605: resizing upward or leftward should not move control
+
   Revision 1.285  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

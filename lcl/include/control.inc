@@ -311,7 +311,7 @@ begin
     ' New='+dbgs(ALeft)+','+dbgs(ATop)+','+dbgs(AWidth),',',dbgs(AHeight));
   {$ENDIF}
   // constraint the size
-  DoConstrainedResize(AWidth, AHeight);
+  DoConstrainedResize(ALeft, ATop, AWidth, AHeight);
 
   // check, if we are already processing this bound change
   NewBounds:=Bounds(ALeft,ATop,AWidth,AHeight);
@@ -847,7 +847,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}
-procedure TControl.DoConstrainedResize(var NewWidth, NewHeight : integer);
+procedure TControl.DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: integer);
 var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
   MinWidth:= Constraints.EffectiveMinWidth;
@@ -858,14 +858,44 @@ begin
   ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
 
   if (MinWidth > 0) and (NewWidth < MinWidth) then
+  begin
+    if NewLeft <> Left then
+    begin
+      Dec(NewLeft, MinWidth - NewWidth);
+      if NewLeft < Left then
+        NewLeft := Left;
+    end;
     NewWidth:= MinWidth
-  else if (MaxWidth > 0) and (NewWidth > MaxWidth) then
+  end else if (MaxWidth > 0) and (NewWidth > MaxWidth) then
+  begin
+    if NewLeft <> Left then
+    begin
+      Inc(NewLeft, NewWidth - MaxWidth);
+      if NewLeft > Left then
+        NewLeft := Left;
+    end;
     NewWidth:= MaxWidth;
+  end;
 
   if (MinHeight > 0) and (NewHeight < MinHeight) then
+  begin
+    if NewTop <> Top then
+    begin
+      Dec(NewTop, MinHeight - NewHeight);
+      if NewTop < Top then
+        NewTop := Top;
+    end;
     NewHeight:= MinHeight
-  else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
+  end else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
+  begin
+    if NewTop <> Top then
+    begin
+      Inc(NewTop, NewHeight - MaxHeight);
+      if NewTop > Top then
+        NewTop := Top;
+    end;
     NewHeight:= MaxHeight;
+  end;
   //debugln('TControl.DoConstrainedResize ',DbgSName(Self),' ',dbgs(NewWidth),',',dbgs(NewHeight));
 end;
 
@@ -3467,6 +3497,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.247  2005/03/04 17:55:34  micha
+  fix bug 605: resizing upward or leftward should not move control
+
   Revision 1.246  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 
