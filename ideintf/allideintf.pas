@@ -22,7 +22,7 @@ uses
   IDECommands, PropEdits, ObjInspStrConsts, ObjectInspector, ColumnDlg,
   ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ActionsEditor, HelpIntf, TextTools, FormEditingIntf,
-  SrcEditorIntf, ComponentReg;
+  SrcEditorIntf, ComponentReg, PackageIntf;
 
 implementation
 

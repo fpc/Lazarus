@@ -345,7 +345,9 @@ type
           const NewUnitName, NewUnitInFile: string): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
-    function FindUsedUnits(Code: TCodeBuffer; var MainUsesSection,
+    function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection,
+          ImplementationUsesSection: TStrings): boolean;
+    function FindUsedUnitNames(Code: TCodeBuffer; var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
 
     // resources
@@ -1989,8 +1991,8 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindUsedUnits(Code: TCodeBuffer; var MainUsesSection,
-  ImplementationUsesSection: TStrings): boolean;
+function TCodeToolManager.FindUsedUnitFiles(Code: TCodeBuffer;
+  var MainUsesSection, ImplementationUsesSection: TStrings): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -1998,8 +2000,24 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.FindUsedUnits(MainUsesSection,
-                                       ImplementationUsesSection);
+    Result:=FCurCodeTool.FindUsedUnitFiles(MainUsesSection,
+                                           ImplementationUsesSection);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindUsedUnitNames(Code: TCodeBuffer;
+  var MainUsesSection, ImplementationUsesSection: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindUsedUnits A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindUsedUnitNames(MainUsesSection,
+                                           ImplementationUsesSection);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -781,9 +781,9 @@ begin
   ClearChilds;
   UpdateSourceType;
   if CodeBuffer=nil then exit;
-  if CodeToolBoss.FindUsedUnits(CodeBuffer,
-                                UsedInterfaceFilenames,
-                                UsedImplementationFilenames) then
+  if CodeToolBoss.FindUsedUnitFiles(CodeBuffer,
+                                    UsedInterfaceFilenames,
+                                    UsedImplementationFilenames) then
   begin
     Exclude(FFlags,unfParseError);
     for i:=0 to UsedInterfaceFilenames.Count-1 do

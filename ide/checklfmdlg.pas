@@ -39,8 +39,8 @@ uses
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
   // IDE
-  LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions,
-  ComponentReg;
+  ComponentReg, PackageIntf,
+  LazarusIDEStrConsts, OutputFilter, IDEProcs, IDEOptionDefs, EditorOptions;
 
 type
   TCheckLFMDialog = class(TForm)
@@ -135,30 +135,41 @@ var
     i: Integer;
   begin
     Result:=false;
-    // collect all missing object types
     MissingObjectTypes:=TStringList.Create;
-    CurError:=LFMTree.FirstError;
-    while CurError<>nil do begin
-      if CurError.IsMissingObjectType then begin
-        TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
-        if MissingObjectTypes.IndexOf(TypeName)<0 then
-          MissingObjectTypes.Add(TypeName);
+    try
+      // collect all missing object types
+      CurError:=LFMTree.FirstError;
+      while CurError<>nil do begin
+        if CurError.IsMissingObjectType then begin
+          TypeName:=(CurError.Node as TLFMObjectNode).TypeName;
+          if MissingObjectTypes.IndexOf(TypeName)<0 then
+            MissingObjectTypes.Add(TypeName);
+        end;
+        CurError:=CurError.NextError;
       end;
-      CurError:=CurError.NextError;
-    end;
-    // keep all object types with a registered component class
-    for i:=MissingObjectTypes.Count-1 downto 0 do begin
-      RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
-      if (RegComp=nil) or (RegComp.GetUnitName='') then
-        MissingObjectTypes.Delete(i);
-    end;
-    if MissingObjectTypes.Count>0 then begin
+      
+      // keep all object types with a registered component class
+      for i:=MissingObjectTypes.Count-1 downto 0 do begin
+        RegComp:=IDEComponentPalette.FindComponent(MissingObjectTypes[i]);
+        if (RegComp=nil) or (RegComp.GetUnitName='') then
+          MissingObjectTypes.Delete(i);
+      end;
+      if MissingObjectTypes.Count=0 then exit;
+      
       // there are missing object types with registered component classes
-
+      if PackageEditingInterface.AddUnitDependenciesForComponentClasses(
+           PascalBuffer.Filename,MissingObjectTypes)<>mrOk
+      then
+        exit;
+      
+      // check LFM again
+      LFMTree.Free;
+      LFMTree:=nil;
+      Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
+                                    RootMustBeClassInIntf,ObjectsMustExists);
+    finally
+      MissingObjectTypes.Free;
     end;
-    MissingObjectTypes.Free;
-    Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                                  RootMustBeClassInIntf,ObjectsMustExists);
   end;
   
 begin

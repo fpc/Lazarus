@@ -217,6 +217,7 @@ type
     // dependency handling
     procedure AddDependencyToPackage(APackage: TLazPackage;
                                      Dependency: TPkgDependency);
+    procedure AddDependencyToPackage(APackage, RequiredPackage: TLazPackage);
     procedure RemoveDependencyFromPackage(APackage: TLazPackage;
                          Dependency: TPkgDependency; AddToRemovedList: boolean);
     procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
@@ -1025,6 +1026,7 @@ begin
     AddFile('listviewpropedit.pp','ListViewPropEdit',pftUnit,[],cpBase);
     AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
     AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
+    AddFile('packageintf.pas','PackageIntf',pftUnit,[],cpBase);
     AddFile('propedits.pp','PropEdits',pftUnit,[],cpBase);
     AddFile('srceditorintf.pas','SrcEditorIntf',pftUnit,[],cpBase);
     AddFile('texttools.pas','TextTools',pftUnit,[],cpBase);
@@ -1924,6 +1926,16 @@ begin
   Dependency.LoadPackageResult:=lprUndefined;
   OpenDependency(Dependency);
   EndUpdate;
+end;
+
+procedure TLazPackageGraph.AddDependencyToPackage(APackage,
+  RequiredPackage: TLazPackage);
+var
+  NewDependency: TPkgDependency;
+begin
+  NewDependency:=TPkgDependency.Create;
+  NewDependency.PackageName:=RequiredPackage.Name;
+  AddDependencyToPackage(APackage,NewDependency);
 end;
 
 procedure TLazPackageGraph.RemoveDependencyFromPackage(APackage: TLazPackage;

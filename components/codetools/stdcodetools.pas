@@ -96,9 +96,12 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromAllUsesSections(const UpperUnitName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function FindUsedUnits(var MainUsesSection,
+    function FindUsedUnitNames(var MainUsesSection,
+          ImplementationUsesSection: TStrings): boolean;
+    function FindUsedUnitFiles(var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
+    function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -600,7 +603,30 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.FindUsedUnits(var MainUsesSection,
+function TStandardCodeTool.FindUsedUnitNames(var MainUsesSection,
+  ImplementationUsesSection: TStrings): boolean;
+var
+  MainUsesNode, ImplementatioUsesNode: TCodeTreeNode;
+begin
+  MainUsesSection:=nil;
+  ImplementationUsesSection:=nil;
+  // find the uses sections
+  BuildTree(false);
+  MainUsesNode:=FindMainUsesSection;
+  ImplementatioUsesNode:=FindImplementationUsesSection;
+  // create lists
+  try
+    MainUsesSection:=UsesSectionToUnitNames(MainUsesNode);
+    ImplementationUsesSection:=UsesSectionToUnitNames(ImplementatioUsesNode);
+  except
+    FreeAndNil(MainUsesSection);
+    FreeAndNil(ImplementationUsesSection);
+    raise;
+  end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindUsedUnitFiles(var MainUsesSection,
   ImplementationUsesSection: TStrings): boolean;
 var
   MainUsesNode, ImplementatioUsesNode: TCodeTreeNode;
@@ -665,6 +691,25 @@ begin
     end;
     // add filename to list
     Result.AddObject(UnitFilename,NewCode);
+    // read keyword 'uses' or comma
+    ReadPriorAtom;
+  until not AtomIsChar(',');
+end;
+
+function TStandardCodeTool.UsesSectionToUnitnames(UsesNode: TCodeTreeNode
+  ): TStrings;
+var
+  InAtom, UnitNameAtom: TAtomPosition;
+  AnUnitName: string;
+begin
+  Result:=TStringList.Create;
+  if UsesNode=nil then exit;
+  MoveCursorToUsesEnd(UsesNode);
+  repeat
+    // read prior unit name
+    ReadPriorUsedUnit(UnitNameAtom, InAtom);
+    AnUnitName:=GetAtom(UnitNameAtom);
+    Result.Add(AnUnitName);
     // read keyword 'uses' or comma
     ReadPriorAtom;
   until not AtomIsChar(',');

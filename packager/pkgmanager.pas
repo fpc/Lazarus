@@ -44,10 +44,9 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
-  Dialogs, Menus,
+  Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
-  DialogProcs, LazarusIDEStrConsts, IDEProcs, KeyMapping,
+  DialogProcs, LazarusIDEStrConsts, IDEProcs, KeyMapping, ObjectLists,
   EnvironmentOpts, MiscOptions, ProjectDefs, InputHistory, Project,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
@@ -119,7 +118,7 @@ type
     // misc
     procedure OnApplicationIdle(Sender: TObject);
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
-                                                     var Description: string);
+                                            var Description: string);
   private
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
@@ -171,7 +170,13 @@ type
                           NewFilename: string): TModalResult; override;
     function FindIncludeFileInProjectDependencies(Project1: TProject;
                           const Filename: string): string; override;
-
+    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
+                         ComponentClassnames: TStrings): TModalResult; override;
+    function GetMissingDependenciesForUnit(const UnitFilename: string;
+                         ComponentClassnames: TStrings;
+                         var List: TObjectList): TModalResult;
+    function GetOwnersOfUnit(const UnitFilename: string): TList;
+    
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
     function DoShowPackageGraph: TModalResult;
@@ -1758,28 +1763,14 @@ begin
   MissingUnits:=PackageGraph.FindNotInstalledRegisterUnits(nil,
                                               AProject.FirstRequiredDependency);
   if MissingUnits<>nil then begin
-    Msg:='Probably you need to install some packages for before continuing.'#13
-      +#13
-      +'Warning:'#13
-      +'The project depends on some packages, which contain units with'
-      +' the Register procedure. The Register procedure is normally used '
-      +' to install components in the IDE. But the following units belong '
-      +' to packages which are not yet installed in the IDE. If you'
-      +' try to open a form in the IDE, that uses such components, you'
-      +' will get errors about missing components and the form loading'
-      +' will probably create very unpleasant results.'#13
-      +#13
-      +'This has no impact on opening the project or any of its sources.'#13
-      +#13
-      +'It only means: It is a bad idea to open the forms for designing, before'
-      +' installing the missing packages.'#13
-      +#13;
+    Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [#13,
+      #13, #13, #13, #13, #13, #13, #13, #13]);
     for i:=0 to MissingUnits.Count-1 do begin
       PkgFile:=TPkgFile(MissingUnits[i]);
-      Msg:=Msg+'  unit '+PkgFile.UnitName
-              +' in package '+PkgFile.LazPackage.IDAsString;
+      Msg:=Msg+' unit '+PkgFile.UnitName
+              +' in package '+PkgFile.LazPackage.IDAsString+#13;
     end;
-    Result:=MessageDlg('Package needs installation',
+    Result:=MessageDlg(lisPackageNeedsInstallation,
       Msg,mtWarning,[mbIgnore,mbCancel],0);
     if Result<>mrIgnore then
       AProject.AutoOpenDesignerFormsDisabled:=true;
@@ -2468,6 +2459,276 @@ begin
   finally
     PkgList.Free;
   end;
+end;
+
+function TPkgManager.AddUnitDependenciesForComponentClasses(
+  const UnitFilename: string; ComponentClassnames: TStrings): TModalResult;
+var
+  UnitBuf: TCodeBuffer;
+  UnitNames: TStringList;
+  Packages: TList;
+  MissingDependencies: TObjectList;
+  
+  function LoadAndParseUnitBuf: TModalResult;
+  begin
+    if not CodeToolBoss.GatherExternalChanges then begin
+      Result:=mrCancel;
+      MainIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+    UnitBuf:=CodeToolBoss.LoadFile(UnitFilename,false,false);
+    if UnitBuf=nil then begin
+      Result:=MessageDlg('Error loading file',
+        'Loading '+UnitFilename+' failed.',
+        mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+    Result:=mrOk;
+  end;
+
+  function CollectNeededUnitnamesAndPackages: TModalResult;
+  var
+    i: Integer;
+    RegComp: TRegisteredComponent;
+    NewUnitName: String;
+    PkgFile: TPkgFile;
+  begin
+    for i:=0 to ComponentClassnames.Count-1 do begin
+      RegComp:=IDEComponentPalette.FindComponent(ComponentClassnames[i]);
+      if (RegComp<>nil) then begin
+        NewUnitName:=RegComp.GetUnitName;
+        if (NewUnitName<>'') and (UnitNames.IndexOf(NewUnitName)<0) then
+          UnitNames.Add(NewUnitName);
+        if (RegComp is TPkgComponent) then begin
+          PkgFile:=TPkgComponent(RegComp).PkgFile;
+          if (PkgFile<>nil) and (PkgFile.LazPackage<>nil)
+          and (Packages.IndexOf(PkgFile.LazPackage)<0) then
+            Packages.Add(PkgFile.LazPackage);
+        end;
+      end;
+    end;
+    Result:=mrOk;
+  end;
+
+  function RemoveExistingUnitnames: TModalResult;
+  var
+    ImplementationUsesSection: TStringList;
+    MainUsesSection: TStringList;
+    j: LongInt;
+    i: Integer;
+  begin
+    Result:=LoadAndParseUnitBuf;
+    if Result<>mrOk then exit;
+    if not CodeToolBoss.FindUsedUnitNames(UnitBuf,MainUsesSection,
+      ImplementationUsesSection)
+    then begin
+      MainIDE.DoJumpToCodeToolBossError;
+      exit;
+    end;
+    for i:=0 to MainUsesSection.Count-1 do begin
+      j:=UnitNames.IndexOf(MainUsesSection[i]);
+      if j>=0 then UnitNames.Delete(j);
+    end;
+    MainUsesSection.Free;
+    ImplementationUsesSection.Free;
+    Result:=mrOk;
+  end;
+  
+  function AskUser: TModalResult;
+  var
+    UsesAdditions: String;
+    UnitOwner: TObject;
+    RequiredPackage: TLazPackage;
+    i: Integer;
+    PackageAdditions: String;
+    Msg: String;
+  begin
+    UsesAdditions:='';
+    for i:=0 to UnitNames.Count-1 do begin
+      if UsesAdditions<>'' then UsesAdditions:=UsesAdditions+', ';
+      UsesAdditions:=UsesAdditions+UnitNames[i];
+    end;
+    writeln('TPkgManager.AddUnitDependenciesForComponentClasses UsesAdditions=',UsesAdditions);
+    PackageAdditions:='';
+    for i:=0 to MissingDependencies.Count-1 do begin
+      UnitOwner:=TObject(MissingDependencies[i]);
+      RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
+      if UnitOwner is TProject then begin
+        PackageAdditions:=PackageAdditions
+          +'Adding new Dependency for project '+TProject(UnitOwner).Title
+          +': package '+RequiredPackage.Name
+          +#13#13;
+      end else if UnitOwner is TLazPackage then begin
+        PackageAdditions:=PackageAdditions
+          +'Adding new Dependency for package '+TLazPackage(UnitOwner).Name
+          +': package '+RequiredPackage.Name
+          +#13#13;
+      end;
+    end;
+    writeln('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
+    Msg:='';
+    if UsesAdditions<>'' then begin
+      Msg:=Msg+'The following units will be added to the uses section of'#13
+              +UnitFilename+':'#13
+              +UsesAdditions+#13#13;
+    end;
+    if PackageAdditions<>'' then begin
+      Msg:=Msg+PackageAdditions;
+    end;
+    if Msg<>'' then begin
+      Result:=MessageDlg('Confirm changes',
+        Msg,mtConfirmation,[mbOk,mbAbort],0);
+      exit;
+    end;
+    Result:=mrOk;
+  end;
+  
+  function AddDependencies: TModalResult;
+  var
+    i: Integer;
+    UnitOwner: TObject;
+    RequiredPackage: TLazPackage;
+  begin
+    for i:=0 to MissingDependencies.Count-1 do begin
+      UnitOwner:=TObject(MissingDependencies[i]);
+      RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
+      if UnitOwner is TProject then begin
+        writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
+        AddProjectDependency(TProject(UnitOwner),RequiredPackage);
+      end else if UnitOwner is TLazPackage then begin
+        writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
+        PackageGraph.AddDependencyToPackage(TLazPackage(UnitOwner),
+                                            RequiredPackage);
+      end;
+    end;
+    Result:=mrOk;
+  end;
+
+  function AddUsedUnits: TModalResult;
+  var
+    i: Integer;
+  begin
+    Result:=LoadAndParseUnitBuf;
+    if Result<>mrOk then exit;
+    for i:=0 to UnitNames.Count-1 do begin
+      writeln('TPkgManager.AddUnitDependenciesForComponentClasses Extending Uses ',UnitBuf.Filename,' ',UnitNames[i]);
+      if not CodeToolBoss.AddUnitToMainUsesSection(UnitBuf,UnitNames[i],'') then
+        MainIDE.DoJumpToCodeToolBossError;
+    end;
+    Result:=mrOk;
+  end;
+
+begin
+  Result:=mrCancel;
+  UnitNames:=TStringList.Create;
+  Packages:=TList.Create;
+  MissingDependencies:=nil;
+  try
+  
+    Result:=CollectNeededUnitnamesAndPackages;
+    if Result<>mrOk then exit;
+    
+    Result:=RemoveExistingUnitnames;
+    if Result<>mrOk then exit;
+    
+    Result:=GetMissingDependenciesForUnit(UnitFilename,ComponentClassnames,
+                                          MissingDependencies);
+    if Result<>mrOk then exit;
+    if (UnitNames.Count=0)
+    and ((MissingDependencies=nil) or (MissingDependencies.Count=0)) then begin
+      // no change needed
+      Result:=mrOk;
+      exit;
+    end;
+
+    Result:=AskUser;
+    if Result<>mrOk then exit;
+    
+    Result:=AddDependencies;
+    if Result<>mrOk then exit;
+
+    Result:=AddUsedUnits;
+    if Result<>mrOk then exit;
+
+    Result:=mrOk;
+  finally
+    UnitNames.Free;
+    Packages.Free;
+    MissingDependencies.Free;
+  end;
+end;
+
+function TPkgManager.GetMissingDependenciesForUnit(
+  const UnitFilename: string; ComponentClassnames: TStrings;
+  var List: TObjectList): TModalResult;
+var
+  UnitOwners: TList;
+  UnitOwner: TObject;
+  FirstDependency: TPkgDependency;
+  CurClassID: Integer;
+  CurOwnerID: Integer;
+  CurCompClass: string;
+  CurRegisteredComponent: TRegisteredComponent;
+  PkgFile: TPkgFile;
+  RequiredPackage: TLazPackage;
+begin
+  Result:=mrCancel;
+  List:=nil;
+  UnitOwners:=GetOwnersOfUnit(UnitFilename);
+  if (UnitOwners<>nil) then begin
+    for CurOwnerID:=0 to UnitOwners.Count-1 do begin
+      UnitOwner:=TObject(UnitOwners[CurOwnerID]);
+      if UnitOwner is TProject then
+        FirstDependency:=TProject(UnitOwner).FirstRequiredDependency
+      else if UnitOwner is TLazPackage then
+        FirstDependency:=TLazPackage(UnitOwner).FirstRequiredDependency
+      else
+        FirstDependency:=nil;
+      for CurClassID:=0 to ComponentClassnames.Count-1 do begin
+        CurCompClass:=ComponentClassnames[CurClassID];
+        CurRegisteredComponent:=IDEComponentPalette.FindComponent(CurCompClass);
+        if CurRegisteredComponent is TPkgComponent then begin
+          PkgFile:=TPkgComponent(CurRegisteredComponent).PkgFile;
+          if PkgFile<>nil then begin
+            RequiredPackage:=PkgFile.LazPackage;
+            if (RequiredPackage<>nil)
+            and (RequiredPackage<>UnitOwner)
+            and (FindCompatibleDependencyInList(FirstDependency,pdlRequires,
+              RequiredPackage)=nil)
+            then begin
+              if List=nil then List:=TObjectList.Create;
+              List.AddObject(UnitOwner,RequiredPackage);
+              //writeln('TPkgManager.GetMissingDependenciesForUnit A ',UnitOwner.ClassName,' ',RequiredPackage.Name);
+              //if TObject(List[List.Count-1])<>UnitOwner then RaiseException('A');
+              //if TObject(List.Objects[List.Count-1])<>RequiredPackage then RaiseException('B');
+            end;
+          end;
+        end;
+      end;
+    end;
+    UnitOwners.Free;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.GetOwnersOfUnit(const UnitFilename: string): TList;
+var
+  PkgFile: TPkgFile;
+begin
+  Result:=TList.Create;
+  // check if unit is part of project
+  if Project1<>nil then begin
+    if Project1.UnitInfoWithFilename(UnitFilename,
+      [pfsfResolveFileLinks,pfsfOnlyProjectFiles])<>nil
+    then
+      Result.Add(Project1);
+  end;
+  // find all packages owning file
+  PkgFile:=PackageGraph.FindFileInAllPackages(UnitFilename,false,true);
+  if (PkgFile<>nil) and (PkgFile.LazPackage<>nil) then
+    Result.Add(PkgFile.LazPackage);
+  if Result.Count=0 then
+    FreeThenNil(Result);
 end;
 
 function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;

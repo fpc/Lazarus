@@ -402,8 +402,8 @@ begin
       fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
       if not Assigned(fRootCBuffer) then Exit;
 
-      if CodeToolBoss.FindUsedUnits(fRootCBuffer,UsedInterfaceFilenames,
-                                    UsedImplementationFilenames) then
+      if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
+                                        UsedImplementationFilenames) then
       begin
         try
           for i:=0 to UsedInterfaceFilenames.Count-1 do
@@ -461,8 +461,8 @@ begin
       begin
         fRootCBuffer:=CodeToolBoss.LoadFile(fFileName,false,false);
         if not Assigned(fRootCBuffer) then Exit;
-        if CodeToolBoss.FindUsedUnits(fRootCBuffer,UsedInterfaceFilenames,
-                                      UsedImplementationFilenames) then
+        if CodeToolBoss.FindUsedUnitFiles(fRootCBuffer,UsedInterfaceFilenames,
+                                          UsedImplementationFilenames) then
         begin
           try
             for i:=0 to UsedInterfaceFilenames.Count-1 do

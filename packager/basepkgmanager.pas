@@ -44,7 +44,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, PackageDefs, ComponentReg, CompilerOptions, Project;
+  Classes, SysUtils, Forms, PackageDefs, ComponentReg, CompilerOptions, Project,
+  PackageIntf;
 
 type
   TPkgSaveFlag = (
@@ -68,19 +69,26 @@ type
     );
   TPkgCompileFlags = set of TPkgCompileFlag;
 
-  TBasePkgManager = class(TComponent)
+  TBasePkgManager = class(TPackageEditingInterface)
   public
+    // initialization and menu
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
     procedure SetRecentPackagesMenu; virtual; abstract;
     procedure SaveSettings; virtual; abstract;
-
-    function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
-
-    procedure LoadInstalledPackages; virtual; abstract;
     procedure UpdateVisibleComponentPalette; virtual; abstract;
 
+    // files
+    function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
+    function OnRenameFile(const OldFilename,
+                          NewFilename: string): TModalResult; virtual; abstract;
+    function FindIncludeFileInProjectDependencies(Project1: TProject;
+                          const Filename: string): string; virtual; abstract;
+
+    // project
     function OpenProjectDependencies(AProject: TProject;
                        ReportMissing: boolean): TModalResult; virtual; abstract;
     procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
@@ -90,19 +98,24 @@ type
     procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
     function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; virtual; abstract;
     function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; virtual; abstract;
+    function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
 
-    function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
+    // package editors
     function DoNewPackage: TModalResult; virtual; abstract;
-    function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoOpenPackageFile(AFilename: string;
                          Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
     function DoSavePackage(APackage: TLazPackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
+
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
+
+    // package graph
     procedure DoShowPackageGraphPathList(PathList: TList); virtual; abstract;
+
+    // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoCompilePackage(APackage: TLazPackage;
@@ -110,12 +123,11 @@ type
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoSavePackageMainSource(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
-    function OnRenameFile(const OldFilename,
-                          NewFilename: string): TModalResult; virtual; abstract;
-    function FindIncludeFileInProjectDependencies(Project1: TProject;
-                          const Filename: string): string; virtual; abstract;
-
-    function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
+                      
+    // package installation
+    procedure LoadInstalledPackages; virtual; abstract;
+    function DoShowOpenInstalledPckDlg: TModalResult; virtual; abstract;
+    function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; virtual; abstract;
     function DoSaveAutoInstallConfig: TModalResult; virtual; abstract;
@@ -189,6 +201,20 @@ begin
     Result:=Result+PkgCompileFlagNames[f];
   end;
   Result:='['+Result+']';
+end;
+
+{ TBasePkgManager }
+
+constructor TBasePkgManager.Create(TheOwner: TComponent);
+begin
+  PackageEditingInterface:=Self;
+  inherited Create(TheOwner);
+end;
+
+destructor TBasePkgManager.Destroy;
+begin
+  inherited Destroy;
+  PackageEditingInterface:=nil;
 end;
 
 initialization
