@@ -2610,7 +2610,8 @@ begin
   end else begin
     NewUnitName:=ExtractFileNameOnly(NewFilename);
     if FilenameIsPascalUnit(NewFilename) then begin
-      if EnvironmentOptions.PascalFileLowerCase then
+      if EnvironmentOptions.PascalFileAutoLowerCase
+      or EnvironmentOptions.PascalFileAskLowerCase then
         NewFilename:=ExtractFilePath(NewFilename)
                      +lowercase(ExtractFileName(NewFilename));
     end;
@@ -2728,6 +2729,10 @@ var
   SrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewHighlighter: TLazSyntaxHighlighter;
+  FileWithoutPath: String;
+  AmbigiousFiles: TStringList;
+  i: Integer;
+  AmbigiousFilename: String;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   OldFilePath:=ExtractFilePath(AnUnitInfo.Filename);
@@ -2772,6 +2777,17 @@ begin
     SaveDialog.Free;
   end;
 
+  // check file path
+  NewFilePath:=ExtractFilePath(NewFilename);
+  if not DirectoryExists(NewFilePath) then begin
+    ACaption:='Directory not found';
+    AText:='The destination directory'#13+
+      '"'+NewFilePath+'" does not exist.';
+    MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
+
   // check unitname
   if FilenameIsPascalUnit(NewFilename) then begin
     NewUnitName:=ExtractFileNameOnly(NewFilename);
@@ -2808,26 +2824,61 @@ begin
   end;
   
   // check filename
-  if EnvironmentOptions.PascalFileLowerCase
-  and FilenameIsPascalUnit(NewFilename)
-  then
-    NewFileName:=ExtractFilePath(NewFilename)
-                 +lowercase(ExtractFileName(NewFilename));
-  if FileExists(NewFilename) then begin
+  if FilenameIsPascalUnit(NewFilename) then begin
+    FileWithoutPath:=ExtractFileName(NewFilename);
+    // check if file should be auto renamed
+    if EnvironmentOptions.PascalFileAskLowerCase then begin
+      if CompareFilenames(lowercase(FileWithoutPath),FileWithoutPath)<>0
+      then begin
+        Result:=MessageDlg('Rename file?',
+           'This looks like a pascal file.'#13
+          +'fpc 1.0.x expects pascal files lowercase.'#13
+          +'Rename it to lowercase?',
+          mtWarning,[mbYes,mbNo],0);
+        if Result=mrYes then
+          NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
+        Result:=mrOk;
+      end;
+    end else begin
+      if EnvironmentOptions.PascalFileAutoLowerCase then
+        NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
+    end;
+  end;
+  if (AnUnitInfo.IsVirtual
+      or (CompareFilenames(NewFilename,AnUnitInfo.Filename)<>0))
+  and FileExists(NewFilename) then begin
     ACaption:='Overwrite file?';
     AText:='A file "'+NewFilename+'" already exists.'#13'Replace it?';
     Result:=MessageDlg(ACaption, AText, mtConfirmation,[mbok,mbCancel],0);
     if Result=mrCancel then exit;
   end;
   
-  // check file path
+  // check ambigious files
   NewFilePath:=ExtractFilePath(NewFilename);
-  if not DirectoryExists(NewFilePath) then begin
-    ACaption:='Directory not found';
-    AText:='The destination directory'#13+
-      '"'+NewFilePath+'" does not exist.';
-    Result:=MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0);
-    exit;
+  AmbigiousFiles:=
+    FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
+  if AmbigiousFiles<>nil then begin
+    Result:=MessageDlg('Ambigious files found',
+      'There are other files in the directory with the same name,'#13
+      +'which only differ in case:'#13
+      +AmbigiousFiles.Text+#13
+      +'Delete them?',
+      mtWarning,[mbYes,mbNo,mbAbort],0);
+    if Result=mrAbort then exit;
+    if Result=mrYes then begin
+      NewFilePath:=AppendPathDelim(ExtractFilePath(NewFilename));
+      for i:=0 to AmbigiousFiles.Count-1 do begin
+        AmbigiousFilename:=NewFilePath+AmbigiousFiles[i];
+        if (FileExists(AmbigiousFilename))
+        and (not DeleteFile(AmbigiousFilename))
+        and (MessageDlg('Delete failed','Deleting of file "'+AmbigiousFilename+'"'
+             +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then
+        begin
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+    end;
   end;
   
   // check new resource file
@@ -3500,7 +3551,7 @@ begin
       
       // apply naming conventions
       NewProgramName:=ExtractFileNameOnly(NewFilename);
-      if EnvironmentOptions.PascalFileLowerCase then
+      if EnvironmentOptions.PascalFileAutoLowerCase then
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
@@ -7933,6 +7984,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.487  2003/03/14 22:51:24  mattias
+  improved case renaming of pascal files
+
   Revision 1.486  2003/03/14 21:38:36  mattias
   implemented diff dialog
 
