@@ -58,7 +58,7 @@ cat $SpecFile | \
   sed -e 's/^Version: .*/Version: '"$LazVersion/" \
       -e 's/^Release: .*/Release: '"$LazRelease/" \
       -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
-      -e 's/^\(\%doc \%{exampledir}\/\*\)/\1\/*/' \
+      -e 's/^\%doc \(\%{exampledir}\/\)\*/\1/' \
   > $SpecFile
 
 # change Makefile for new rpmbuild
