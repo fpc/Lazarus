@@ -4377,7 +4377,7 @@ function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Lo
       lbColor := RGB(R,G,B);
     end;
 
-    If GradientBrush <> -1 then
+    If GradientBrush <> 0 then
       LCLLinux.DeleteObject(GradientBrush);
     GradientBrush := LCLLinux.CreateBrushIndirect(NewBrush);
   end;
@@ -4443,7 +4443,7 @@ function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Lo
         StartColor := EndColor;
         EndColor := Swap;
       end;
-      UseBrush := -1;
+      UseBrush := 0;
       MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
       If MaxSteps >= 4 then
         MaxSteps := Floor(Power(2, MaxSteps))
@@ -4465,7 +4465,7 @@ function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Lo
             UseBrush);
         end;
       end;
-      If UseBrush <> -1 then
+      If UseBrush <> 0 then
         LCLLinux.DeleteObject(UseBrush);
     end;
   end;
@@ -4636,7 +4636,7 @@ begin
       {$ENDIF}
       gtk_timeout_remove (TimerInfo^.TimerHandle);
       // mark as invalid
-      TimerInfo^.TimerHandle:=-1;
+      TimerInfo^.TimerHandle:= 0;
       TimerInfo^.TimerFunc := nil;
       FTimerData.Delete(n);
       //FOldTimerData.Add(TimerInfo);
@@ -6770,7 +6770,7 @@ var
     If ScaleDest = nil then
       exit;
     DeleteObject(ScaleBMP);
-    ScaleBMP := CreateCompatibleBitmap(-1, Width, Height);
+    ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
     Scale := PGdiObject(ScaleBMP);
     gdk_pixbuf_render_pixmap_and_mask(ScaleDest,@Scale^.GDIPixmapObject,
       @Scale^.GDIBitmapMaskObject,0);
@@ -6805,7 +6805,7 @@ var
       BLACKNESS,
       DSTINVERT :
         begin
-          ScaleBMP := CreateCompatibleBitmap(-1, Width, Height);
+          ScaleBMP := CreateCompatibleBitmap(0, Width, Height);
           Scale := PGdiObject(ScaleBMP);
           Scale^.GDIBitmapMaskObject := SRCClip;
           SetRasterOperation(ScaleROPGC);
@@ -6813,7 +6813,7 @@ var
           exit; //skip scaling
         end;
         else begin
-           ScaleBMP := CreateCompatibleBitmap(-1, SRCWidth, SRCHeight);
+           ScaleBMP := CreateCompatibleBitmap(0, SRCWidth, SRCHeight);
            Scale := PGdiObject(ScaleBMP);
            Scale^.GDIBitmapMaskObject := SRCClip;
         end;
@@ -7400,6 +7400,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.165  2002/10/20 21:54:04  lazarus
+  MG: fixes for 1.1
+
   Revision 1.164  2002/10/20 21:49:11  lazarus
   MG: fixes for fpc1.1
 
