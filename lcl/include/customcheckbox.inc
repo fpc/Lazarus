@@ -134,6 +134,9 @@ begin
     FState := cbUnChecked;
   if FState <> OldState then
   begin
+    if Assigned(Action)
+    and (Action is TCustomAction) then
+      TCustomAction(Action).Checked := FState=cbChecked;
     ApplyChanges;
     if UseOnChange then begin
       DoOnChange;
@@ -195,6 +198,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2004/02/05 09:45:33  mattias
+  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+
   Revision 1.15  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

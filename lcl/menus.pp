@@ -106,6 +106,7 @@ type
     FHandle: HMenu;
     FHelpContext: THelpContext;
     FHint: String;
+    FImageChangeLink: TChangeLink;
     FImageIndex : Integer;
     FItems: TList; // list of TMenuItem
     FMenu: TMenu;
@@ -126,6 +127,9 @@ type
     function IsCheckedStored: boolean;
     function IsEnabledStored: boolean;
     function IsHelpContextStored: boolean;
+    function IsHintStored: Boolean;
+    function IsImageIndexStored: Boolean;
+    function IsOnClickStored: Boolean;
     function IsShortCutStored: boolean;
     function IsVisibleStored: boolean;
     procedure SetAutoCheck(const AValue: boolean);
@@ -145,13 +149,17 @@ type
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
+    procedure AssignTo(Dest: TPersistent); override;
     function GetAction: TBasicAction;
     function GetActionLinkClass: TMenuActionLinkClass; dynamic;
     function GetHandle: HMenu;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
+    procedure DoClicked(var msg); message LM_ACTIVATE;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
-    procedure DoClicked(var msg); message LM_ACTIVATE;
+    procedure Loaded; override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     procedure InitiateActions;
     procedure MenuChanged(Rebuild : Boolean);
@@ -162,6 +170,8 @@ type
     procedure SetParentComponent(AValue : TComponent); override;
     procedure SetShortCut(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
+    procedure UpdateImages;
+    procedure ImageListChange(Sender: TObject);
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
   public
@@ -207,9 +217,11 @@ type
                               stored IsEnabledStored default True;
     property Bitmap: TBitmap read FBitmap write SetBitmap;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
-    property HelpContext: THelpContext read FHelpContext write FHelpContext stored IsHelpContextStored default 0;
-    property Hint: String read FHint write FHint;
-    property ImageIndex: Integer read FImageIndex write SetImageIndex;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext
+                                           stored IsHelpContextStored default 0;
+    property Hint: String read FHint write FHint stored IsHintStored;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex
+                                                      stored IsImageIndexStored;
     property RadioItem: Boolean read FRadioItem write SetRadioItem
                                 default False;
     property RightJustify: boolean read FRightJustify write SetRightJustify;
@@ -221,7 +233,8 @@ type
                                              write SetSubMenuImages;
     property Visible: Boolean read FVisible write SetVisible
                               stored IsVisibleStored default True;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick
+                                                         stored IsOnClickStored;
   end;
 
 
@@ -391,6 +404,9 @@ end.
 
 {
   $Log$
+  Revision 1.62  2004/02/05 09:45:33  mattias
+  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+
   Revision 1.61  2004/02/04 17:06:26  mattias
   fixed updating menu designer caption when editing in OI
 

@@ -51,17 +51,18 @@ begin
   begin
     if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
         not (ActionLink.IsAutoCheckLinked) and AutoCheck)
-    then
+    then begin
       // Break a little Delphi compatibility
       // It makes no sense to uncheck a checked RadioItem (besides, GTK cant handle it)
-      if not RadioItem or not Checked
-      then Checked := not Checked;
+      if (not RadioItem) or (not Checked) then
+        Checked := not Checked;
+    end;
 
     { Call OnClick if assigned and not equal to associated action's OnExecute.
       If associated action's OnExecute assigned then call it, otherwise, call
       OnClick. }
     if Assigned(FOnClick)
-    {and (Action <> nil) and (FOnClick <> Action.OnExecute)} then
+    and (Action <> nil) and (FOnClick <> Action.OnExecute) then
       FOnClick(Self)
     else if not (csDesigning in ComponentState) and (ActionLink <> nil) then
       FActionLink.Execute(Self)
@@ -94,6 +95,9 @@ begin
   FVisible := True;
   FEnabled := True;
   FCommand := UniqueCommand;
+
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := @ImageListChange;
   //writeln('TMenuItem.Create END TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
 end;
 
@@ -173,8 +177,9 @@ begin
       dec(i);
     end;
   end;
-  FItems.Free;
-  FItems:=nil;
+  FreeAndNil(FItems);
+  FreeAndNil(FActionLink);
+  FreeAndNil(FImageChangeLink);
   if FParent<>nil then
     FParent.FItems.Remove(Self);
   if FCommand <> 0 then CommandPool[FCommand] := False;
@@ -403,7 +408,7 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.IsEnabledStored: boolean;
 
-  Checks if 'Checked' needs to be saved to stream
+  Checks if 'Enabled' needs to be saved to stream
  ------------------------------------------------------------------------------}
 function TMenuItem.IsEnabledStored: boolean;
 begin
@@ -415,10 +420,25 @@ begin
   Result := (ActionLink = nil) or not FActionLink.IsHelpContextLinked;
 end;
 
+function TMenuItem.IsHintStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsHintLinked;
+end;
+
+function TMenuItem.IsImageIndexStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsImageIndexLinked;
+end;
+
+function TMenuItem.IsOnClickStored: Boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsOnExecuteLinked;
+end;
+
 {------------------------------------------------------------------------------
   function TMenuItem.IsShortCutStored: boolean;
 
-  Checks if 'Checked' needs to be saved to stream
+  Checks if 'ShotCut' needs to be saved to stream
  ------------------------------------------------------------------------------}
 function TMenuItem.IsShortCutStored: boolean;
 begin
@@ -428,7 +448,7 @@ end;
 {------------------------------------------------------------------------------
   function TMenuItem.IsVisibleStored: boolean;
 
-  Checks if 'Checked' needs to be saved to stream
+  Checks if 'Visible' needs to be saved to stream
  ------------------------------------------------------------------------------}
 function TMenuItem.IsVisibleStored: boolean;
 begin
@@ -519,6 +539,25 @@ begin
   end;
   SendMsgToInterface(LM_DESTROY, Self, nil);
   FHandle:=0;
+end;
+
+procedure TMenuItem.Loaded;
+begin
+  inherited Loaded;
+  if Action <> nil then ActionChange(Action, True);
+end;
+
+procedure TMenuItem.Notification(AComponent: TComponent; Operation: TOperation
+  );
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
+    if AComponent = Action then
+      Action := nil
+    else if AComponent = FSubMenuImages then
+      SubMenuImages := nil
+    {else if AComponent = FMerged then
+      MergeWith(nil)};
 end;
 
 {------------------------------------------------------------------------------
@@ -858,22 +897,22 @@ end;
 {------------------------------------------------------------------------------
   procedure TMenuItem.SetSubMenuImages(const AValue: TCustomImageList);
 
-  Enables a menuItem.
+  Sets the new sub images list
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetSubMenuImages(const AValue: TCustomImageList);
 begin
-  if FSubMenuImages=AValue then exit;
-  // ToDo:
-  raise Exception.Create('TMenuItem.SetSubMenuImages: not implemented yet');
-  {if FSubMenuImages <> nil then
+  if FSubMenuImages <> nil then
     FSubMenuImages.UnRegisterChanges(FImageChangeLink);
-  FSubMenuImages := Value;
+  FSubMenuImages := AValue;
   if FSubMenuImages <> nil then
   begin
     FSubMenuImages.RegisterChanges(FImageChangeLink);
     FSubMenuImages.FreeNotification(Self);
   end;
-  UpdateItems;}
+  UpdateImages;
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then begin
+    // ToDo: Update images
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -968,6 +1007,18 @@ begin
   FVisible := AValue;
 end;
 
+procedure TMenuItem.UpdateImages;
+begin
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then begin
+    // ToDo: Update images
+  end;
+end;
+
+procedure TMenuItem.ImageListChange(Sender: TObject);
+begin
+  if Sender = SubMenuImages then UpdateImages;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TMenuItem.ShortcutChanged
   Params:  OldValue: Old shortcut, Value: New shortcut
@@ -1044,35 +1095,22 @@ begin
   if Sender=Action then ActionChange(Sender,False);
 end;
 
-
-{------------------------------------------------------------------------------
-  Method:  TMenuItem.VerifyGroupIndex
-  Params:  Position: Integer; Value: Byte
-  Returns: Nothing
-
-  Make sure, that all GroupIndex are in ascending order.
- ------------------------------------------------------------------------------}
-(*
- *  MWE: Disabled this feature, it makes not much sense
- *  suppose a menu with items grouped like : G=1, G=1, ---, G=2, G=2
- *  where --- is separator with G=0
- *  It will fail to insert ---
-
-procedure TMenuItem.VerifyGroupIndex(Position: Integer; Value: Byte);
-var
-  i: Integer;
+procedure TMenuItem.AssignTo(Dest: TPersistent);
 begin
-  for i:=0 to GetCount-1 do
-    if i<Position then begin
-      if Items[i].GroupIndex>Value then
-        raise EMenuError.Create(rsGroupIndexCannotBeLessThanPrevious)
+  if Dest is TCustomAction then begin
+    with TCustomAction(Dest) do
+    begin
+      Caption := Self.Caption;
+      Enabled := Self.Enabled;
+      HelpContext := Self.HelpContext;
+      Hint := Self.Hint;
+      ImageIndex := Self.ImageIndex;
+      OnExecute := Self.OnClick;
+      Visible := Self.Visible;
     end
-    else
-      // Ripple change to menu items at Position and after
-      if (Items[i].GroupIndex<>0) and (Items[i].GroupIndex<Value) then
-        Items[i].FGroupIndex:=Value;
+  end else
+    inherited AssignTo(Dest);
 end;
-*)
 
 // included by menus.pp
 
@@ -1080,6 +1118,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2004/02/05 09:45:33  mattias
+  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+
   Revision 1.49  2004/02/04 17:06:26  mattias
   fixed updating menu designer caption when editing in OI
 
@@ -1258,6 +1299,9 @@ end;
 
 
   $Log$
+  Revision 1.50  2004/02/05 09:45:33  mattias
+  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+
   Revision 1.49  2004/02/04 17:06:26  mattias
   fixed updating menu designer caption when editing in OI
 

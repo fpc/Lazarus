@@ -231,6 +231,10 @@ begin
       else FState := bsUp;
     end;
   end;
+  if FState<>OldState then
+    if (Action is TCustomAction) then
+      TCustomAction(Action).Checked := FState=bsDown;
+
   if InvalidateOnChange
   and ((FState<>OldState) or (FLastDrawFlags<>GetDrawFlags))
   then
@@ -244,7 +248,6 @@ function TSpeedButton.GetDrawFlags: integer;
 begin
   Result:=DFCS_BUTTONPUSH;
   if FState in [bsDown, bsExclusive] then inc(Result,DFCS_PUSHED);
-//  if FMouseInControl then inc(Result,DFCS_CHECKED);
   if not Enabled then inc(Result,DFCS_INACTIVE);
 
   if Flat and (not (csDesigning in ComponentState)) and
@@ -527,6 +530,8 @@ begin
     if not FDown
     then begin
       FState := bsDown;
+      if (Action is TCustomAction) then
+        TCustomAction(Action).Checked := False;
       Invalidate;
     end;
     FDragging := True;
@@ -768,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2004/02/05 09:45:33  mattias
+  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+
   Revision 1.45  2004/02/02 18:01:31  mattias
   added TSpeedButton.Action and TBitBtn.Action
 

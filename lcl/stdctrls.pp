@@ -31,8 +31,8 @@ interface
 
 uses
   VCLGlobals, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc,
-  Graphics, GraphType, LMessages, Controls, ExtendedStrings, LCLIntf,
-  ClipBrd, GraphMath, Forms;
+  LMessages, Graphics, GraphType, ExtendedStrings, LCLIntf,
+  ClipBrd, ActnList, GraphMath, Controls, Forms;
 
 type
 
@@ -755,10 +755,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property Action;
     property AllowGrayed;
+    property Align;
     property Anchors;
     property AutoSize;
     property Caption;
+    property Constraints;
     property Checked;
     property DragCursor;
     property DragKind;
@@ -775,6 +778,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnChangeBounds;
+    property OnResize;
     property OnStartDrag;
     property ParentShowHint;
     property PopupMenu;
@@ -1489,6 +1494,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2004/02/05 09:45:33  mattias
+  implemented Actions for TSpeedButton, TMenuItem, TCheckBox
+
   Revision 1.126  2004/02/04 23:30:18  mattias
   completed TControl actions
 

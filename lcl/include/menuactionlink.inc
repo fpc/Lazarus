@@ -28,20 +28,20 @@ end;
 
 function TMenuActionLink.IsCaptionLinked: Boolean;
 begin
-  Result := inherited IsCaptionLinked and
-        (AnsiCompareText(FClient.Caption, (Action as TCustomAction).Caption)=0);
+  Result := inherited IsCaptionLinked
+    and (AnsiCompareText(FClient.Caption, (Action as TCustomAction).Caption)=0);
 end;
 
 function TMenuActionLink.IsCheckedLinked: Boolean;
 begin
-  Result := inherited IsCheckedLinked and
-    (FClient.Checked = (Action as TCustomAction).Checked);
+  Result := inherited IsCheckedLinked
+    and (FClient.Checked = (Action as TCustomAction).Checked);
 end;
 
 function TMenuActionLink.IsEnabledLinked: Boolean;
 begin
-  Result := inherited IsEnabledLinked and
-    (FClient.Enabled = (Action as TCustomAction).Enabled);
+  Result := inherited IsEnabledLinked
+    and (FClient.Enabled = (Action as TCustomAction).Enabled);
 end;
 
 function TMenuActionLink.IsHelpContextLinked: Boolean;
@@ -52,38 +52,38 @@ end;
 
 function TMenuActionLink.IsHintLinked: Boolean;
 begin
-  Result := inherited IsHintLinked and
-    (FClient.Hint = (Action as TCustomAction).Hint);
+  Result := inherited IsHintLinked
+            and (FClient.Hint = (Action as TCustomAction).Hint);
 end;
 
 function TMenuActionLink.IsGroupIndexLinked: Boolean;
 begin
-  Result := FClient.RadioItem and inherited IsGroupIndexLinked and
-    (FClient.GroupIndex = (Action as TCustomAction).GroupIndex);
+  Result := FClient.RadioItem and inherited IsGroupIndexLinked
+            and (FClient.GroupIndex = (Action as TCustomAction).GroupIndex);
 end;
 
 function TMenuActionLink.IsImageIndexLinked: Boolean;
 begin
-  Result := inherited IsImageIndexLinked and
-    (FClient.ImageIndex = (Action as TCustomAction).ImageIndex);
+  Result := inherited IsImageIndexLinked
+            and (FClient.ImageIndex = (Action as TCustomAction).ImageIndex);
 end;
 
 function TMenuActionLink.IsShortCutLinked: Boolean;
 begin
-  Result := inherited IsShortCutLinked and
-    (FClient.ShortCut = (Action as TCustomAction).ShortCut);
+  Result := inherited IsShortCutLinked
+            and (FClient.ShortCut = (Action as TCustomAction).ShortCut);
 end;
 
 function TMenuActionLink.IsVisibleLinked: Boolean;
 begin
-  Result := inherited IsVisibleLinked and
-    (FClient.Visible = (Action as TCustomAction).Visible);
+  Result := inherited IsVisibleLinked
+            and (FClient.Visible = (Action as TCustomAction).Visible);
 end;
 
 function TMenuActionLink.IsOnExecuteLinked: Boolean;
 begin
-  Result := inherited IsOnExecuteLinked and
-    (@FClient.OnClick = @Action.OnExecute);
+  Result := inherited IsOnExecuteLinked
+            and (@FClient.OnClick = @Action.OnExecute);
 end;
 
 procedure TMenuActionLink.SetAutoCheck(Value: Boolean);
