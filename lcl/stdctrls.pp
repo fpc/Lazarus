@@ -588,20 +588,20 @@ begin
       '&' :
          If I + 1 <= Length(Str) then begin
            If Str[I+1] = '&' then begin
-             I += 2;
+             Inc(I,2);
              Tmp := Tmp + '&';
            end
            else begin
              If Result  < 0 then
                Result := Length(Tmp) + 1;
-             I += 1;
+             Inc(I,1);
            end;
          end
          else
-           I += 1;
+           Inc(I,1);
       else begin
         Tmp := Tmp + Str[I];
-        I += 1;
+        Inc(I,1);
       end;
     end;
   SetLength(Str,0);
@@ -631,6 +631,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/08/25 13:31:35  lazarus
+  MG: replaced C-style operators
+
   Revision 1.34  2002/08/24 06:51:22  lazarus
   MG: from Andrew: style list fixes, autosize for radio/checkbtns
 
