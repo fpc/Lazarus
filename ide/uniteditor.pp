@@ -227,6 +227,7 @@ type
     procedure InsertGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
     procedure InsertDateTime;
+    procedure InsertChangeLogEntry;
 
 
     // editor commands
@@ -924,6 +925,9 @@ Begin
   ecInsertDateTime:
     InsertDateTime;
 
+  ecInsertChangeLogEntry:
+    InsertChangeLogEntry;
+
   else
     begin
       Handled:=false;
@@ -1164,6 +1168,13 @@ end;
 procedure TSourceEditor.InsertDateTime;
 begin
   FEditor.SelText:=DateTimeToStr(now);
+end;
+
+procedure TSourceEditor.InsertChangeLogEntry;
+var s: string;
+begin
+  s:=DateToStr(now)+'   '+GetCurrentUserName+' '+GetCurrentMailAddress;
+  FEditor.SelText:=s;
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
