@@ -251,8 +251,9 @@ begin
   
   Include(FControlState, csCustomPaint);
   try
+    ControlState := ControlState + [csCustomPaint];
     inherited WMPaint(Message);
-    Paint; // TODO: move this to the PaintWindow function;
+    ControlState := ControlState - [csCustomPaint];
   finally
     Exclude(FControlState, csCustomPaint);
   end;
@@ -938,8 +939,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.23  2001/07/06 06:25:37  lazarus
-  MG: fixes for ide speedbuttons, form.showmodal, initial lazarus.dci
+  Revision 1.24  2001/07/10 13:25:49  lazarus
+  MG: repaints reduced
 
   Revision 1.22  2001/06/28 18:15:03  lazarus
   MG: bugfixes for destroying controls

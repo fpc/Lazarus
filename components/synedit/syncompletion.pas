@@ -348,7 +348,9 @@ begin
         CurrentString := Copy(CurrentString, 1, Length(CurrentString) - 1);
       end;
   end;
-  Paint;
+  {$ifdef SYN_LAZARUS}
+  Invalidate;
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.KeyPress(var Key: char);
@@ -364,7 +366,9 @@ begin
   else if Assigned(OnCancel) then
     OnCancel(Self);
   end; // case
-  Paint;
+  {$ifdef SYN_LAZARUS}
+  Invalidate;
+  {$ENDIF}
 end;
 
 procedure TSynBaseCompletionForm.MouseDown(Button: TMouseButton;
@@ -394,7 +398,9 @@ begin
     Scroll.Max := 0
   else
     Scroll.Max := ItemList.Count - NbLinesInWindow;
+  {$IFNDEF SYN_LAZARUS}  
   Position := Position;
+  {$ENDIF}
   Scroll.LargeChange := NbLinesInWindow;
 
   // draw a rectangle around the window
@@ -418,7 +424,7 @@ begin
         Canvas.Rectangle(0, FFontHeight * i, width, FFontHeight * (i + 1));
         Canvas.Pen.Color := clBlack;
         Canvas.Font.Color := clWhite;
-        Hint := ItemList[Scroll.Position + i];
+        Hint := ItemList[Position];
       end
       else
         Begin
@@ -445,7 +451,8 @@ begin
     Position := Scroll.Position
   else if Position > Scroll.Position + NbLinesInWindow - 1 then
     Position := Scroll.Position + NbLinesInWindow - 1;
-  Paint;
+writeln('TSynBaseCompletionForm.ScrollChange');
+  Invalidate;
 end;
 
 procedure TSynBaseCompletionForm.ScrollGetFocus(Sender: TObject);
@@ -539,7 +546,7 @@ begin
         Scroll.Position := Position
       else if Scroll.Position < Position - NbLinesInWindow + 1 then
         Scroll.Position := Position - NbLinesInWindow + 1;
-      invalidate;
+      Invalidate;
     end;
   end;
 end;
