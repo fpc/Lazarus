@@ -916,20 +916,25 @@ end;
  ------------------------------------------------------------------------------}
 function TGTKObject.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP;
 var
-  visual: PGDKVisual;
+  Depth : Longint;
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
-  
-  if (IsValidDC(DC) and (PDeviceContext(DC)^.Drawable <> nil)) then
-    Visual := gdk_window_get_visual(Pointer(PDeviceContext(DC)^.Drawable))
-  else
-    Visual := gdk_visual_get_system;
-  
-  if Visual <> nil then
-    Result := CreateBitmap(Width, Height, 1, Visual^.Depth, nil)
-  else
-    Result := 0;
-  
+
+  Depth := -1;
+
+  if (IsValidDC(DC) and (PDeviceContext(DC)^.Drawable <> nil))
+  then begin
+    gdk_window_get_geometry(PDeviceContext(DC)^.Drawable, nil, nil, nil,
+      nil, @Depth);
+    If Depth = -1 then
+      Depth := gdk_visual_get_system^.Depth;
+  end
+  else Depth := gdk_visual_get_system^.Depth;
+
+  if Depth <> -1
+  then Result := CreateBitmap(Width, Height, 1, Depth, nil)
+  else Result := 0;
+
   Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
@@ -2840,6 +2845,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+var
+  BitmapSection : TDIBSECTION;
 begin
   Assert(False, 'trace:[TgtkObject.GetObject]');
   Result := 0;
@@ -2848,7 +2855,72 @@ begin
     case PGDIObject(GDIObj)^.GDIType of
       gdiBitmap:
         begin
-          Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiBitmap');
+          Assert(False, 'Trace:FINISH: [TgtkObject.GetObject] gdiBitmap');
+          if Buf = nil then
+            Result := SizeOf(TDIBSECTION)
+          else begin
+            With PGDIObject(GDIObj)^, BitmapSection,
+              BitmapSection.dsBm, BitmapSection.dsBmih
+            do begin
+              {dsBM - BITMAP}
+              //bmType := ???;
+              bmWidth := 0 ;
+              bmHeight := 0;
+              {bmWidthBytes: Longint;
+              bmPlanes: Word;
+              bmBitsPixel: Word;
+              bmBits: Pointer; }
+
+              {dsBmih - BITMAPINFOHEADER}
+              biSize := 0;
+              biWidth := 0;
+              biHeight := 0;
+              biPlanes := 0;
+              biBitCount := 1;
+
+              {biCompression : DWORD;
+              biSizeImage : DWORD;
+              biXPelsPerMeter : Longint;
+              biYPelsPerMeter : Longint;
+              biClrUsed : DWORD;
+              biClrImportant : DWORD;}
+
+              {dsBitfields: array[0..2] of DWORD;
+              dshSection: THandle;
+              dsOffset: DWORD;}
+              case GDIBitmapType of
+                gbBitmap:
+                  If GDIBitmapObject <> nil then begin
+                    GDK_WINDOW_GET_SIZE(GDIBitmapObject, @bmWidth, @bmHeight);
+                    biSize := 0;
+                  end;
+                gbPixmap:
+                  If GDIPixmapObject <> nil then begin
+                    gdk_window_get_geometry(GDIPixmapObject, nil, nil,
+                      @bmWidth, @bmHeight, @biBitCount);
+                    biSize := 0;
+                  end;
+                gbImage :
+                  If GDIRawImageObject <> nil then
+                    With GDIRawImageObject^ do begin
+                      bmHeight := Height;
+                      bmWidth := Width;
+                      biBitCount := Depth;
+                    end;
+              end;
+              biWidth := bmWidth;
+              biHeight := bmHeight;
+            end;
+            if BufSize >= SizeOf(BitmapSection)
+            then begin
+              PDIBSECTION(Buf)^ := BitmapSection;
+              Result:= SizeOf(TDIBSECTION);
+            end else
+            if BufSize>0 then begin
+              Move(BitmapSection,Buf^,BufSize);
+              Result:=BufSize;
+            end;
+          end;
         end;
       gdiBrush:
         begin
@@ -2968,6 +3040,9 @@ begin
       
    (* ANSI_FIXED_FONT:     // Fixed-pitch (monospace) system font.
       begin
+        {If FStockFixedFont = 0 then
+          FStockFixedFont := GetStockFixedFont;
+        Result := FStockFixedFont;}
       end;
     ANSI_VAR_FONT:       // Variable-pitch (proportional space) system font.
       begin
@@ -2985,12 +3060,18 @@ begin
 *)
     SYSTEM_FONT:         // System font. By default, Windows uses the system font to draw menus, dialog box controls, and text. In Windows versions 3.0 and later, the system font is a proportionally spaced font; earlier versions of Windows used a monospace system font.
       begin
+        If FStockSystemFont <> 0 then begin //This is a Temporary Hack!!! This
+          DeleteObject(FStockSystemFont);   //should really only be done on
+          FStockSystemFont := 0;            //theme change.
+        end;
+
         If FStockSystemFont = 0 then
           FStockSystemFont := CreateSystemFont;
         Result := FStockSystemFont;
       end;
 (*    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
       begin
+        Result := GetStockObject(ANSI_FIXED_FONT);
       end;
     DEFAULT_PALETTE:     // Default palette. This palette consists of the static colors in the system palette.
       begin
@@ -5577,6 +5658,7 @@ var
 
   Procedure SetClipping(DestGC : PGDKGC; GDIBitmap : PGdiObject);
   begin
+    SelectGDIRegion(DestDC);
     if (GDIBitmap <> NIL) AND (GDIBitmap^.GDIBitmapMaskObject <> nil) then
       begin
         gdk_gc_set_clip_mask(DestGC, GDIBitmap^.GDIBitmapMaskObject);
@@ -5588,13 +5670,14 @@ var
   begin
     gdk_gc_set_clip_mask (DestGC, nil);
     gdk_gc_set_clip_origin (DestGC, 0,0);
+    SelectGDIRegion(DestDC);
   end;
 
   Procedure SetRasterOperation(ScaleROPGC : PGDKGC);
   begin
     Case ROP of
       WHITENESS,
-      BLACKNESS, 
+      BLACKNESS,
       SRCCOPY :
         GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
       SRCPAINT :
@@ -5630,7 +5713,7 @@ var
   begin
     Result := False;
     ScaleSRC := nil;
-    ScaleDest := nil;  
+    ScaleDest := nil;
     ShrinkWidth := Width < SrcWidth;
     ShrinkHeight := Height < SrcHeight;
     //GDKPixbuf Scaling is not done in the same way as Windows
@@ -5640,23 +5723,25 @@ var
     GDK_INTERP_BILINEAR,GDK_INTERP_HYPER);}
     If ShrinkWidth and ShrinkHeight then
       ScaleMethod := GDK_INTERP_TILES
-    else  
+    else
       If ShrinkWidth or ShrinkHeight then
         ScaleMethod := GDK_INTERP_BILINEAR//GDK_INTERP_HYPER
-      else  
+      else
         ScaleMethod := GDK_INTERP_BILINEAR;
     ScaleSRC := gdk_pixbuf_get_from_drawable(nil,Scale^.GDIPixmapObject,
       GDK_ColorMap_Get_System,0,0,0,0,SrcWidth,SrcHeight);
     If ScaleSRC = nil then
       exit;
-    ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,Width,Height,ScaleMethod);
+    If (Width > 0) and (Height > 0) then
+      ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,Width,Height,ScaleMethod);
     GDK_Pixbuf_Unref(ScaleSRC);
     If ScaleDest = nil then
       exit;
     DeleteObject(ScaleBMP);
     ScaleBMP := CreateCompatibleBitmap(-1, Width, Height);
     Scale := PGdiObject(ScaleBMP);
-    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,@Scale^.GDIPixmapObject, nil,0);
+    gdk_pixbuf_render_pixmap_and_mask(ScaleDest,@Scale^.GDIPixmapObject,
+      @Scale^.GDIBitmapMaskObject,0);
     GDK_Pixbuf_Unref(ScaleDest);
     Result := True;
   {$Else not NoGdkPixbufLib}
@@ -5666,9 +5751,16 @@ var
   {$EndIf}
   end;
 
-  Function ScaleAndROP(ScaleROPGC : PGDKGC; SRC : PGDKDrawable) : Boolean;
+  Function ScaleAndROP(ScaleROPGC : PGDKGC; SRC : PGDKDrawable;
+    SRCBit : PGDIObject) : Boolean;
+  var
+    SRCClip : PGDKPixmap;
   begin
     Result := False;
+    SRCClip := nil;
+    If SRCBit <> nil then
+      If SRCBit^.GDIBitmapMaskObject <> nil then
+        SRCClip := SRCBit^.GDIBitmapMaskObject;
     if ScaleROPGC = nil
     then begin
       WriteLn('WARNING: [TgtkObject.StretchBlt] Uninitialized GC');
@@ -5683,6 +5775,7 @@ var
         begin
           ScaleBMP := CreateCompatibleBitmap(-1, Width, Height);
           Scale := PGdiObject(ScaleBMP);
+          Scale^.GDIBitmapMaskObject := SRCClip;
           SetRasterOperation(ScaleROPGC);
           Result := True;
           exit; //skip scaling
@@ -5690,6 +5783,7 @@ var
         else begin
            ScaleBMP := CreateCompatibleBitmap(-1, SRCWidth, SRCHeight);
            Scale := PGdiObject(ScaleBMP);
+           Scale^.GDIBitmapMaskObject := SRCClip;
         end;
     end;
 
@@ -5706,7 +5800,6 @@ var
     //copy source into scale buffer
     gdk_window_copy_area(Scale^.GDIPixmapObject, fGC,0, 0,
        SRC, XSRC, YSRC, SRCWidth, SRCHeight);
-
     // Set raster operation to SRCCOPY
     GDK_GC_Set_Function(ScaleROPGC, GDK_Copy);
 
@@ -5714,7 +5807,7 @@ var
     If (Width <> SrcWidth) or (Height <> SrcHeight) then
       Result := ScaleBuffer(ScaleROPGC)
     else
-      Result := True;  
+      Result := True;
 
     //set raster operation
     If Result then
@@ -5752,7 +5845,9 @@ var
     fGC := GDK_GC_New(DestDevContext^.Drawable);
 
     // perform raster operation and scaling in a buffer
-    If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable) then
+    If not ScaleAndROP(DestDevContext^.GC,
+      SrcDevContext^.Drawable, SrcGDIBitmap)
+    then
       exit;
 
     GDK_GC_Unref(fGC);
@@ -5761,13 +5856,13 @@ var
       WHITENESS, BLACKNESS :
         ROPFILLBUFFER(DestDC);
     end;
-    
+
     // set clipping mask for transparency
-    SetClipping(DestDevContext^.GC, SrcGDIBitmap);
+    SetClipping(DestDevContext^.GC, Scale);
 
     // draw image
     gdk_window_copy_area(DestDevContext^.Drawable,
-      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject, 
+      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
 
     // unset clipping mask for transparency
@@ -5791,7 +5886,9 @@ var
     fGC := GDK_GC_New(SrcDevContext^.Drawable);
 
     // perform raster operation and scaling in a buffer
-    If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable) then
+    If not ScaleAndROP(DestDevContext^.GC, SrcDevContext^.Drawable,
+      SrcGDIBitmap)
+    then
       exit;
 
     GDK_GC_Unref(fGC);
@@ -5800,13 +5897,13 @@ var
       WHITENESS, BLACKNESS :
         ROPFILLBUFFER(DestDC);
     end;
-    
+
     // set clipping mask for transparency
-    SetClipping(DestDevContext^.GC, SrcGDIBitmap);
+    SetClipping(DestDevContext^.GC, Scale);
 
     // draw image
     gdk_window_copy_area(DestDevContext^.Drawable,
-      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject, 
+      DestDevContext^.GC,X, Y, Scale^.GDIPixmapObject,
       0, 0, Width, Height);
 
     // unset clipping mask for transparency
@@ -5929,7 +6026,6 @@ begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
-
     with PDeviceContext(DestDC)^ do begin
       Inc(X,Origin.X);
       Inc(Y,Origin.Y);
@@ -5941,40 +6037,6 @@ begin
 
     //writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     //  ' XSrc=',XSrc,' YSrc=',YSrc,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight);
-
-    (*
-
-    Result := DRAWABLE_MATRIX[
-      PDeviceContext(SrcDC)^.Drawable <> nil,
-      PDeviceContext(DestDC)^.Drawable <> nil
-    ]();
-
-    *)
-
-    // To Supress GDK Errors/Warnings
-    {If (XSrc < 0 ) then begin
-      inc(SrcWidth,XSrc);
-      XSrc := 0;
-    end;
-
-    // To Supress GDK Errors/Warnings
-    If (YSrc < 0 ) then begin
-      inc(SrcHeight,YSrc);
-      YSrc := 0;
-    end;
-    if (SrcWidth<=0) or (SrcHeight<=0) then exit;
-
-    // To Supress GDK Errors/Warnings
-    If (X < 0 ) then begin
-      Width := Width - X;
-      X := 0; 
-    end;
-
-    // To Supress GDK Errors/Warnings
-    If (Y < 0 ) then begin
-      Height := Height - Y;
-      Y := 0; 
-    end;}
 
     If PDeviceContext(SrcDC)^.Drawable = nil then begin
       If PDeviceContext(DestDC)^.Drawable = nil then
@@ -6261,6 +6323,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.119  2002/09/03 08:07:22  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.118  2002/09/02 08:13:17  lazarus
   MG: fixed GraphicClass.Create
 
