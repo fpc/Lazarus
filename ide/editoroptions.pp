@@ -219,6 +219,7 @@ type
     EditorOptionsGroupBox:TGroupBox;
     AltSetsColumnModeCheckBox:TCheckBox;
     AutoIndentCheckBox:TCheckBox;
+    BracketHighlightCheckBox: TCheckBox;
     DragDropEditingCheckBox:TCheckBox;
     DropFilesCheckBox:TCheckBox;
     HalfPageScrollCheckBox:TCheckBox;
@@ -595,6 +596,7 @@ begin
       case SynEditOpt of
         eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
         eoAutoIndent:SynEditOptName:='AutoIndent';
+        eoBracketHighlight:SynEditOptName:='BracketHighlight';
         eoDragDropEditing:SynEditOptName:='DragDropEditing';
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
@@ -706,6 +708,7 @@ begin
       case SynEditOpt of
         eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
         eoAutoIndent:SynEditOptName:='AutoIndent';
+        eoBracketHighlight:SynEditOptName:='BracketHighlight';
         eoDragDropEditing:SynEditOptName:='DragDropEditing';
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
@@ -1174,6 +1177,7 @@ begin
   // general
   SetOption(AltSetsColumnModeCheckBox,eoAltSetsColumnMode);
   SetOption(AutoIndentCheckBox,eoAutoIndent);
+  SetOption(BracketHighlightCheckBox,eoBracketHighlight);
   SetOption(DragDropEditingCheckBox,eoDragDropEditing);
   SetOption(DropFilesCheckBox,eoDropFiles);
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
@@ -1913,12 +1917,26 @@ begin
     Show;
   end;
 
+  BracketHighlightCheckBox:=TCheckBox.Create(Self);
+  with BracketHighlightCheckBox do begin
+    Name:='BracketHighlightCheckBox';
+    Parent:=EditorOptionsGroupBox;
+    Top:=AutoIndentCheckBox.Top+AutoIndentCheckBox.Height+5;
+    Left:=AutoIndentCheckBox.Left;
+    Width:=ChkBoxW;
+    Height:=AltSetsColumnModeCheckBox.Height;
+    Caption:='Bracket Highlight';
+    Checked:=eoBracketHighlight in EditorOpts.SynEditOptions;
+    OnClick:=@GeneralCheckBoxOnClick;
+    Show;
+  end;
+
   DragDropEditingCheckBox:=TCheckBox.Create(Self);
   with DragDropEditingCheckBox do begin
     Name:='DragDropEditingCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=AutoIndentCheckBox.Top+AutoIndentCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
+    Top:=BracketHighlightCheckBox.Top+BracketHighlightCheckBox.Height+5;
+    Left:=BracketHighlightCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Drag Drop Editing';
@@ -2016,8 +2034,8 @@ begin
   with ScrollPastEoFCheckBox do begin
     Name:='ScrollPastEoFCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ScrollByOneLessCheckBox.Top+ScrollByOneLessCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
+    Top:=5;
+    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Scroll Past End of File';
@@ -2030,8 +2048,8 @@ begin
   with ScrollPastEoLCheckBox do begin
     Name:='ScrollPastEoLCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=5;
-    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
+    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
+    Left:=ScrollPastEoFCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Scroll Past End of Line';

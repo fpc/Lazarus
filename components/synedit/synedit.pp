@@ -160,14 +160,18 @@ type
     sfWaitForDragging, sfInsideRedo);                                           //mh 2000-10-30
   TSynStateFlags = set of TSynStateFlag;
 
-  TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent, eoDragDropEditing,     //mh 2000-11-20
+  TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
+    {$IFDEF SYN_LAZARUS}eoBracketHighlight,{$ENDIF}
+    eoDragDropEditing,     //mh 2000-11-20
     eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
     eoScrollByOneLess, eoScrollPastEof, eoScrollPastEol, eoShowScrollHint,
     eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces);
   TSynEditorOptions = set of TSynEditorOption;
 
 const
-  SYNEDIT_DEFAULT_OPTIONS = [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
+  SYNEDIT_DEFAULT_OPTIONS = [eoAutoIndent,
+    {$IFDEF SYN_LAZARUS}eoBracketHighlight,{$ENDIF}
+    eoDragDropEditing, eoScrollPastEol,
     eoShowScrollHint, eoSmartTabs, eoTabsToSpaces, eoTrimTrailingSpaces];
 
 type
@@ -1996,9 +2000,8 @@ var
     Style: TFontStyles;
   end;
   dc: HDC;
-
-m1: integer;
-
+  // positions of highlight brackets, the X are zero based
+  nBracketX, nBracketY, nAntiBracketX, nAntiBracketY: integer;
 
 { local procedures }
 
@@ -2218,7 +2221,6 @@ m1: integer;
     end;
 
   begin
-  inc(m1);
     if Background = clNone then Background := colEditorBG;
     if Foreground = clNone then Foreground := Font.Color;
     // Do we have to paint the old chars first, or can we just append?
@@ -2393,12 +2395,34 @@ m1: integer;
             // Store the token chars with the attributes in the TokenAccu
             // record. This will paint any chars already stored if there is
             // a (visible) change in the attributes.
+            {$IFDEF SYN_LAZARUS}
+            if ((nBracketY<>nLine) or (nTokenPos<>nBracketX))
+            and ((nAntiBracketY<>nLine) or (nTokenPos<>nAntiBracketX)) then
+            begin
+              // normal token
+              if Assigned(attr) then
+                AddHighlightToken(sToken, nTokenPos, nTokenLen, attr.Foreground,
+                  attr.Background, attr.Style)
+              else
+                AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
+                  Font.Style);
+            end else begin
+              // Bracket Highlighting
+              if Assigned(attr) then
+                AddHighlightToken(sToken, nTokenPos, nTokenLen, attr.Foreground,
+                  attr.Background, attr.Style+[fsBold])
+              else
+                AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
+                  Font.Style+[fsBold]);
+            end;
+            {$ELSE}
             if Assigned(attr) then
               AddHighlightToken(sToken, nTokenPos, nTokenLen, attr.Foreground,
                 attr.Background, attr.Style)
             else
               AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
                 Font.Style);
+            {$ENDIF}
           end;
           // Let the highlighter scan the next token.
           fHighlighter.Next;
@@ -2421,11 +2445,97 @@ m1: integer;
       end;
     end;
   end;
+  
+  {$IFDEF SYN_LAZARUS}
+  procedure InitializeHighlightBrackets;
+  // test if caret over bracket and search anti bracket
+  const
+    Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
+  var sLine: string;
+    i, PosX, PosY, Len: integer;
+    Test, BracketInc, BracketDec: char;
+    NumBrackets: integer;
+  begin
+    // check for bracket under the cursor
+    nBracketY:=0;
+    nAntiBracketY:=0;
+    if not (eoBracketHighlight in fOptions) then exit;
+    if (fCaretY >= FirstLine) and (fCaretY <= LastLine) then begin
+      sLine := Lines[fCaretY - 1];
+      Len := Length(sLine);
+      if (fCaretX >= 1) and (fCaretX <= Len) then begin
+        if (sLine[fCaretX] in ['(',')','[',']','{','}']) then begin
+          nBracketY:=fCaretY;
+          nBracketX:=fCaretX-1; // zero based
+          // find antibracket
+          NumBrackets := 1;
+          PosX:=fCaretX;
+          PosY:=fCaretY;
+          BracketInc := sLine[fCaretX];
+          i:=0;
+          while Brackets[i]<>BracketInc do inc(i);
+          BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
+          if Odd(i) then begin
+            // closing bracket -> search opening bracket
+            repeat
+              // search until start of line
+              while PosX > 1 do begin
+                Dec(PosX);
+                Test := sLine[PosX];
+                if Test = BracketInc then
+                  Inc(NumBrackets)
+                else if Test = BracketDec then begin
+                  Dec(NumBrackets);
+                  if NumBrackets = 0 then begin
+                    // matching bracket found, set caret and bail out
+                    nAntiBracketX:=PosX-1; // zero based
+                    nAntiBracketY:=PosY;
+                    break;
+                  end;
+                end;
+              end;
+              // get previous line if possible
+              if (nAntiBracketY>0) or (PosY <=FirstLine) then break;
+              Dec(PosY);
+              sLine := Lines[PosY - 1];
+              PosX := Length(sLine) + 1;
+            until FALSE;
+          end else begin
+            // opening bracket -> search closing bracket
+            repeat
+              // search until end of line
+              Len := Length(sLine);
+              while PosX < Len do begin
+                Inc(PosX);
+                Test := sLine[PosX];
+                if Test = BracketInc then
+                  Inc(NumBrackets)
+                else if Test = BracketDec then begin
+                  Dec(NumBrackets);
+                  if NumBrackets = 0 then begin
+                    // matching bracket found, set caret and bail out
+                    nAntiBracketX:=PosX-1; // zero based
+                    nAntiBracketY:=PosY;
+                    break;
+                  end;
+                end;
+              end;
+              // get next line if possible
+              if (nAntiBracketY>0) or (PosY >= LastLine) then break;
+              Inc(PosY);
+              sLine := Lines[PosY - 1];
+              PosX := 0;
+            until FALSE;
+          end;
+        end;
+      end;
+    end;
+  end;
+  {$ENDIF}
 
 { end local procedures }
 
 begin
-m1:=0;
   colEditorBG := Color;
   if Assigned(Highlighter) and Assigned(Highlighter.WhitespaceAttribute) then
   begin
@@ -2457,11 +2567,14 @@ m1:=0;
     // Adjust the invalid area to not include this area.
     AClip.Left := rcToken.Right;
   end;
-  // Paint the visible text lines. To make this easier, compute first the
-  // necessary information about the selected area: is there any visible
-  // selected area, and what are its lines / columns?
-  // Moved to two local procedures to make it easier to read.
   if (LastLine >= FirstLine) then begin
+    {$IFDEF SYN_LAZARUS}
+    InitializeHighlightBrackets;
+    {$ENDIF}
+    // Paint the visible text lines. To make this easier, compute first the
+    // necessary information about the selected area: is there any visible
+    // selected area, and what are its lines / columns?
+    // Moved to two local procedures to make it easier to read.
     ComputeSelectionInfo;
     fTextDrawer.Style := Font.Style;
     fTextDrawer.BeginDrawing(dc);
@@ -3201,7 +3314,7 @@ var
   cf: TCompositionForm;
 {$ENDIF}
 begin
-  if (PaintLock <> 0) or not Focused then
+  if (PaintLock <> 0) {or not Focused} then
     Include(fStateFlags, sfCaretChanged)
   else begin
     Exclude(fStateFlags, sfCaretChanged);
@@ -4671,13 +4784,33 @@ begin
     case Command of
 // horizontal caret movement or selection
       ecLeft, ecSelLeft:
-        MoveCaretHorz(-1, Command = ecSelLeft);
+        begin
+          MoveCaretHorz(-1, Command = ecSelLeft);
+          {$IFDEF SYN_LAZARUS}
+          if eoBracketHighlight in fOptions then Update;
+          {$ENDIF}
+        end;
       ecRight, ecSelRight:
-        MoveCaretHorz(1, Command = ecSelRight);
+        begin
+          MoveCaretHorz(1, Command = ecSelRight);
+          {$IFDEF SYN_LAZARUS}
+          if eoBracketHighlight in fOptions then Update;
+          {$ENDIF}
+        end;
       ecPageLeft, ecSelPageLeft:
-        MoveCaretHorz(-CharsInWindow, Command = ecSelPageLeft);
+        begin
+          MoveCaretHorz(-CharsInWindow, Command = ecSelPageLeft);
+          {$IFDEF SYN_LAZARUS}
+          if eoBracketHighlight in fOptions then Update;
+          {$ENDIF}
+        end;
       ecPageRight, ecSelPageRight:
-        MoveCaretHorz(CharsInWindow, Command = ecSelPageRight);
+        begin
+          MoveCaretHorz(CharsInWindow, Command = ecSelPageRight);
+          {$IFDEF SYN_LAZARUS}
+          if eoBracketHighlight in fOptions then Update;
+          {$ENDIF}
+        end;
 {begin}                                                                         //mh 2000-10-19
       ecLineStart, ecSelLineStart:
         begin

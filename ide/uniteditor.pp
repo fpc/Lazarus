@@ -694,7 +694,6 @@ var
   Texts, Texts2, TheName : String;
   Handled: boolean;
 Begin
-writeln('TSourceEditor.ProcessUserCommand');
   Handled:=true;
   case Command of
   ecCodeCompletion :
@@ -817,7 +816,6 @@ writeln('TSourceEditor.ProcessUserCommand');
     end;
   end;  //case
   if Handled then Command:=ecNone;
-writeln('TSourceEditor.ProcessUserCommand END');
 end;
 
 Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
@@ -1575,11 +1573,15 @@ Begin
 End;
 
 Procedure TSourceNotebook.ccCancel(Sender : TObject);
+var ActSE: TSourceEditor;
 begin
+writeln('TSourceNotebook.ccCancel ',sCompl<>nil,' ',GetActiveSE<>nil);
   if sCompl=nil then exit;
   sCompl.Deactivate;
   sCompl:=nil;
   CurrentCompletionType:=ctNone;
+  ActSE:=GetActiveSE;
+  if ActSE<>nil then LCLLinux.ShowCaret(ActSE.EditorComponent.Handle);
 end;
 
 Procedure TSourceNotebook.ccExecute(Sender : TObject);
