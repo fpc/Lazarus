@@ -531,7 +531,6 @@ Begin
       LMessage.Msg := LM_ERASEBKGND;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
-      LMessage.Result := 1;
       WinProcess := false;
     End;
     WM_GETDLGCODE:
@@ -883,6 +882,7 @@ Begin
   If WinProcess Then
   begin    
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
+    WinProcess := false;
   end;
 
   Case Msg Of
@@ -994,6 +994,19 @@ Begin
       DeliverMessage(OwnerObject, PLMsg^);
     End;
   {$ENDIF VER1_1_MSG}
+
+  case Msg of
+    WM_ERASEBKGND:
+    begin
+      if LMessage.Result = 0 then
+        WinProcess := true;
+    end;
+  end;
+
+  if WinProcess then
+  begin    
+    PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
+  end;
 
   { LMMouseEvent and LMInsertText have no Result field }
 
@@ -1198,6 +1211,9 @@ end;
 
 {
   $Log$
+  Revision 1.111  2004/06/10 13:26:10  micha
+  try fix LM_ERASEBKGND bug: not responding to user Result
+
   Revision 1.110  2004/06/02 19:32:05  vincents
   fix out of bounds error, when canceling combobox selection
 
