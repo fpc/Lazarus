@@ -1388,7 +1388,7 @@ begin
           message, so it works there. The LCL is OS independent, and so it uses
           a better way: }
         InterfaceObject.HandleEvents; // process all events
-        if Application.FTerminate then
+        if Application.Terminated then
           ModalResult := mrCancel
         else if ModalResult <> 0 then begin
           CloseModal;
@@ -1423,6 +1423,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2003/08/12 21:35:11  mattias
+  TApplication now descends from TCustomApplication
+
   Revision 1.108  2003/07/01 13:49:36  mattias
   clean up
 

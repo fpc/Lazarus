@@ -73,7 +73,6 @@ begin
   Focusmessages := True;
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
-  FTerminate := False;
   FMainForm := nil;
   FMouseControl := nil;
   FHandle := 0;
@@ -111,6 +110,7 @@ begin
   FreeThenNil(FOnKeyDownHandler);
   inherited Destroy;
   
+  // restore exception handling
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
 end;
@@ -210,6 +210,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.Initialize;
 begin
+  {$IFDEF UseCustApp}
+  inherited Initialize;
+  {$ENDIF}
   // interface object and screen
   if (InterfaceObject=nil)
   or (AnsiCompareText(InterfaceObject.Classname,'TINTERFACEBASE')=0) then begin
@@ -337,7 +340,7 @@ begin
       //                            Command, Data);
     end
     else
-    if FHelpFile <> '' then
+    if HelpFile <> '' then
     begin
       //HelpHandle := Handle;
       //if FMainForm <> nil then HelpHandle := FMainForm.Handle;
@@ -377,6 +380,17 @@ begin
   begin
     FreeThenNil(FHintWindow);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.SetTitle(const AValue: String);
+ ------------------------------------------------------------------------------}
+procedure TApplication.SetTitle(const AValue: String);
+begin
+  {$IFDEF UseCustApp}
+  inherited SetTitle(AValue);
+  {$ENDIF}
+  // ToDo: tell the interface
 end;
 
 {------------------------------------------------------------------------------
@@ -648,16 +662,15 @@ end;
  ------------------------------------------------------------------------------}
 function TApplication.GetTitle: string;
 var
-  ext : string;
+  Ext: string;
 begin
-  If FTitle = '' then begin
+  Result := Title;
+  If Result = '' then begin
     Result := ExtractFileName(GetExeName);
     Ext := ExtractFileExt(Result);
     If Ext <> '' then
       Delete(Result, Length(Result) - Length(Ext) + 1, Length(Ext));
-  end
-  else
-    Result := FTitle;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -678,6 +691,10 @@ begin
     Halt;
   end;
   Include(FFlags,AppHandlingException);
+  {$IFDEF UseCustApp}
+  if StopOnException then
+    inherited Terminate;
+  {$ENDIF}
   // before we do anything, write it down
   if ExceptObject is Exception then begin
     writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
@@ -691,8 +708,8 @@ begin
   // handle the exception
   if ExceptObject is Exception then begin
     if not (ExceptObject is EAbort) then
-      if Assigned(FOnException) then
-        FOnException(Sender, Exception(ExceptObject))
+      if Assigned(OnException) then
+        OnException(Sender, Exception(ExceptObject))
       else
         ShowException(Exception(ExceptObject));
   end else
@@ -710,7 +727,7 @@ end;
 procedure TApplication.HandleMessage;
 begin
   InterfaceObject.HandleEvents; // process all events
-  if not FTerminate then Idle;
+  if not Terminated then Idle;
 end;
 
 {------------------------------------------------------------------------------
@@ -848,6 +865,13 @@ begin
 
 end;
 
+{$IFDEF UseCustApp}
+function TApplication.GetConsoleApplication: boolean;
+begin
+  Result:=false;
+end;
+{$ENDIF}
+
 procedure TApplication.SetHint(const AValue: string);
 begin
   if FHint=AValue then exit;
@@ -909,7 +933,8 @@ begin
   if AppNoExceptionMessages in FFlags then exit;
   Msg := E.Message;
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
-  if (not FTerminate) and (Self<>nil) then begin
+  if (not {$IFDEF UseCustApp}Terminated{$ELSE}FTerminate{$ENDIF})
+  and (Self<>nil) then begin
     MsgResult:=MessageBox(PChar(Msg),PChar(GetTitle),
                           MB_OKCANCEL + MB_ICONERROR);
     if MsgResult<>mrOk then begin
@@ -918,7 +943,11 @@ begin
       Halt;
     end;
   end else
+    {$IFDEF UseCustApp}
+    inherited ShowException(E);
+    {$ELSE}
     SysUtils.ShowException(ExceptObject, ExceptAddr);
+    {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -927,7 +956,11 @@ end;
 {------------------------------------------------------------------------------}
 procedure TApplication.Terminate;
 begin
+  {$IFDEF UseCustApp}
+  inherited Terminate;
+  {$ELSE}
   FTerminate := True;
+  {$ENDIF}
   InterfaceObject.AppTerminate;
 end;
 
@@ -1098,6 +1131,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2003/08/12 21:35:11  mattias
+  TApplication now descends from TCustomApplication
+
   Revision 1.60  2003/08/09 16:30:33  mattias
   fixed LM_ShowModal for win32 intf from Karl
 
