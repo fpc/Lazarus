@@ -2635,6 +2635,7 @@ begin
 
   Widget:=PGtkWidget(Handle);
   FixWidget:=GetFixedWidget(Widget);
+  SetWidgetIsDestroyingHandle(Widget);
 
   // remove pending size messages
   FWidgetsWithResizeRequest.Remove(Widget);
@@ -5505,6 +5506,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.191  2002/08/31 11:37:10  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.190  2002/08/31 10:55:15  lazarus
   MG: fixed range check error in ampersands2underscore
 
