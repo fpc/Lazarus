@@ -50,6 +50,8 @@ type
 
   TCompilerOptions = class(TObject)
   private
+    FModified: boolean;
+    FOnModified: TNotifyEvent;
     fOptionsString: String;
     xmlconfig: TXMLConfig;
 
@@ -134,6 +136,7 @@ type
 
     procedure LoadTheCompilerOptions;
     procedure SaveTheCompilerOptions;
+    procedure SetModified(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -141,6 +144,8 @@ type
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
     procedure Assign(CompOpts: TCompilerOptions);
+    function IsEqual(CompOpts: TCompilerOptions): boolean;
+    
     function MakeOptionsString: String;
     function MakeOptionsString(const MainSourceFileName: string): String;
     function ParseSearchPaths(const switch, paths: String): String;
@@ -148,6 +153,9 @@ type
     function GetXMLConfigPath: String;
     procedure Clear;
     function CreateTargetFilename(const MainSourceFileName: string): string;
+
+    property Modified: boolean read FModified write SetModified;
+    property OnModified: TNotifyEvent read FOnModified write FOnModified;
 
     property ProjectFile: String read fProjectFile write fProjectFile;
     property TargetFilename: String read fTargetFilename write fTargetFilename;
@@ -556,6 +564,7 @@ begin
     XMLConfigFile.Free;
     XMLConfigFile := nil;
   end;
+  fModified:=false;
 end;
 
 {------------------------------------------------------------------------------}
@@ -640,6 +649,14 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', LCLWidgetType);
 
   XMLConfigFile.Flush;
+end;
+
+procedure TCompilerOptions.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
+  if Assigned(OnModified) then
+    OnModified(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1225,6 +1242,7 @@ procedure TCompilerOptions.Clear;
 begin
   fOptionsString := '';
   fLoaded := false;
+  FModified := false;
 
   { Set Defaults }
   fStyle := 1;
@@ -1366,6 +1384,81 @@ begin
   fUnitOutputDir := CompOpts.fUnitOutputDir;
   
   fLCLWidgetType := CompOpts.fLCLWidgetType;
+end;
+
+function TCompilerOptions.IsEqual(CompOpts: TCompilerOptions): boolean;
+begin
+  Result:=
+        (fOptionsString = CompOpts.fOptionsString)
+    and (fLoaded = CompOpts.fLoaded)
+
+    and (fStyle = CompOpts.fStyle)
+    and (fD2Ext = CompOpts.fD2Ext)
+    and (fCStyleOp = CompOpts.fCStyleOp)
+    and (fIncludeAssertionCode = CompOpts.fIncludeAssertionCode)
+    and (fAllowLabel = CompOpts.fAllowLabel)
+    and (fCPPInline = CompOpts.fCPPInline)
+    and (fCMacros = CompOpts.fCMacros)
+    and (fTPCompat = CompOpts.fTPCompat)
+    and (fInitConst = CompOpts.fInitConst)
+    and (fStaticKwd = CompOpts.fStaticKwd)
+    and (fDelphiCompat = CompOpts.fDelphiCompat)
+    and (fUseAnsiStr = CompOpts.fUseAnsiStr)
+    and (fGPCCompat = CompOpts.fGPCCompat)
+
+    and (fUnitStyle = CompOpts.fUnitStyle)
+    and (fIOChecks = CompOpts.fIOChecks)
+    and (fRangeChecks = CompOpts.fRangeChecks)
+    and (fOverflowChecks = CompOpts.fOverflowChecks)
+    and (fStackChecks = CompOpts.fStackChecks)
+    and (fHeapSize = CompOpts.fHeapSize)
+    and (fGenerate = CompOpts.fGenerate)
+    and (fTargetProc = CompOpts.fTargetProc)
+    and (fVarsInReg = CompOpts.fVarsInReg)
+    and (fUncertainOpt = CompOpts.fUncertainOpt)
+    and (fOptLevel = CompOpts.fOptLevel)
+    and (fTargetOS = CompOpts.fTargetOS)
+
+    and (fGenDebugInfo = CompOpts.fGenDebugInfo)
+    and (fGenDebugDBX = CompOpts.fGenDebugDBX)
+    and (fUseLineInfoUnit = CompOpts.fUseLineInfoUnit)
+    and (fUseHeaptrc = CompOpts.fUseHeaptrc)
+    and (fGenGProfCode = CompOpts.fGenGProfCode)
+    and (fStripSymbols = CompOpts.fStripSymbols)
+    and (fLinkStyle = CompOpts.fLinkStyle)
+    and (fPassLinkerOpt = CompOpts.fPassLinkerOpt)
+    and (fLinkerOptions = CompOpts.fLinkerOptions)
+
+    and (fShowErrors = CompOpts.fShowErrors)
+    and (fShowWarn = CompOpts.fShowWarn)
+    and (fShowNotes = CompOpts.fShowNotes)
+    and (fShowHints = CompOpts.fShowHints)
+    and (fShowGenInfo = CompOpts.fShowGenInfo)
+    and (fShowLineNum = CompOpts.fShowLineNum)
+    and (fShowAll = CompOpts.fShowAll)
+    and (fShowAllProcsOnError = CompOpts.fShowAllProcsOnError)
+    and (fShowDebugInfo = CompOpts.fShowDebugInfo)
+    and (fShowUsedFiles = CompOpts.fShowUsedFiles)
+    and (fShowTriedFiles = CompOpts.fShowTriedFiles)
+    and (fShowDefMacros = CompOpts.fShowDefMacros)
+    and (fShowCompProc = CompOpts.fShowCompProc)
+    and (fShowCond = CompOpts.fShowCond)
+    and (fShowNothing = CompOpts.fShowNothing)
+    and (fShowHintsForUnusedProjectUnits = CompOpts.fShowHintsForUnusedProjectUnits)
+    and (fWriteFPCLogo = CompOpts.fWriteFPCLogo)
+    and (fDontUseConfigFile = CompOpts.fDontUseConfigFile)
+    and (fAdditionalConfigFile = CompOpts.fAdditionalConfigFile)
+    and (fConfigFilePath = CompOpts.fConfigFilePath)
+    and (fStopAfterErrCount = CompOpts.fStopAfterErrCount)
+
+    and (fIncludeFiles = CompOpts.fIncludeFiles)
+    and (fLibraries = CompOpts.fLibraries)
+    and (fOtherUnitFiles = CompOpts.fOtherUnitFiles)
+    and (fCompilerPath = CompOpts.fCompilerPath)
+    and (fUnitOutputDir = CompOpts.fUnitOutputDir)
+
+    and (fLCLWidgetType = CompOpts.fLCLWidgetType)
+    ;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1642,8 +1735,12 @@ var
   code: LongInt;
   hs: LongInt;
   i: integer;
+  OldCompOpts: TCompilerOptions;
 begin
   { Put the compiler options into the TCompilerOptions class to be saved }
+  
+  OldCompOpts:=TCompilerOptions.Create;
+  OldCompOpts.Assign(CompilerOpts);
 
   if (radStyleIntel.Checked) then
       CompilerOpts.Style := 1
@@ -1766,6 +1863,10 @@ begin
   i:=TargetOSRadioGroup.Itemindex;
   if i<0 then i:=0;
   CompilerOpts.TargetOS:= TargetOSRadioGroup.Items[i];
+  
+  if not OldCompOpts.IsEqual(CompilerOpts) then
+    CompilerOpts.Modified:=true;
+  OldCompOpts.Free;
 end;
 
 {------------------------------------------------------------------------------}

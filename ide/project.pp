@@ -1906,6 +1906,7 @@ var i: integer;
 begin
   Result:=Modified;
   for i:=0 to UnitCount-1 do Result:=Result or Units[i].Modified;
+  Result:=Result or CompilerOptions.Modified;
 end;
 
 Function TProject.UnitWithForm(AForm : TComponent) : TUnitInfo;
@@ -2100,6 +2101,9 @@ end.
 
 {
   $Log$
+  Revision 1.86  2002/11/16 13:56:20  mattias
+  project now notices, if compiler options changed
+
   Revision 1.85  2002/10/30 22:28:49  lazarus
   MG: fixed used virtual files and IsPartOfProject Bug
 
