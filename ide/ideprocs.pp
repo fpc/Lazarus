@@ -890,10 +890,11 @@ begin
     if StartPos>l then break;
     EndPos:=StartPos;
     while (EndPos<=l) and (SearchPath[EndPos]<>';') do inc(EndPos);
-    CurPath:=TrimFilename(copy(SearchPath,StartPos,EndPos-StartPos));
+    CurPath:=copy(SearchPath,StartPos,EndPos-StartPos);
     if CurPath<>'' then begin
       if (BaseDirectory<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDirectory+CurPath;
+      CurPath:=TrimFilename(CurPath);
       if Result<>'' then
         CurPath:=';'+CurPath;
       Result:=Result+CurPath;
