@@ -4030,7 +4030,6 @@ begin
     end;
   end;
   
-
   Result:=mrOk;
   writeln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
@@ -4285,7 +4284,7 @@ begin
     exit;
 
   if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
-  and (AFilename<>'') then
+  and (AFilename<>'') and FilenameIsAbsolute(AFilename) then
     EnvironmentOptions.AddToRecentOpenFiles(AFilename);
 
   // check if this is a hidden unit:
@@ -4300,7 +4299,7 @@ begin
   
   // check for special files
   if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
-  and FileExists(AFilename) then begin
+  and (not FilenameIsAbsolute(AFilename)) and FileExists(AFilename) then begin
     // check for project information files (.lpi)
     if (CompareFileExt(AFilename,'.lpi',false)=0) then begin
       if MessageDlg('Open Project?',
@@ -4361,7 +4360,7 @@ begin
   end;
   
   // check if file exists
-  if (not FileExists(AFilename)) then begin
+  if FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then begin
     // file does not exists
     if (ofRevert in Flags) then begin
       // revert failed, due to missing file
@@ -4383,8 +4382,12 @@ begin
     // -> just load the source
     NewUnitInfo:=Project1.Units[UnitIndex];
     LoadBufferFlags:=[lbfCheckIfText];
-    if not (ofUseCache in Flags) then Include(LoadBufferFlags,lbfUpdateFromDisk);
-    if ofRevert in Flags then Include(LoadBufferFlags,lbfRevert);
+    if FilenameIsAbsolute(AFilename) then begin
+      if (not (ofUseCache in Flags)) then
+        Include(LoadBufferFlags,lbfUpdateFromDisk);
+      if ofRevert in Flags then
+        Include(LoadBufferFlags,lbfRevert);
+    end;
     Result:=DoLoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags);
     if Result<>mrOk then exit;
     NewUnitInfo.Source:=NewBuf;
@@ -8604,6 +8607,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.542  2003/04/28 08:16:13  mattias
+  implemented environment path browse buttons
+
   Revision 1.541  2003/04/27 20:31:53  mattias
   implemented open package for component palette
 
