@@ -66,20 +66,23 @@ Type
     FFileType: TFileType;
     FMask: String;
     FOnChange: TNotifyEvent;
+    FLastChangeFileName: string;
     function MaskIsStored: boolean;
     procedure SetDirectory(const AValue: String);
     procedure SetDrive(const AValue: Char);
     procedure SetFileName(const AValue: String);
     procedure SetFileType(const AValue: TFileType);
     procedure SetMask(const AValue: String);
-    procedure ChangeFileName;
+    procedure UpdateSelectedFileName;
   protected
+    procedure DoChangeFile; virtual;
     procedure UpdateFileList; virtual;
     procedure Click; override;
     procedure Loaded; override;
     function IndexOfFile(const AFilename: string): integer;
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   public
     property Drive: Char Read FDrive Write SetDrive default ' ';
@@ -221,16 +224,18 @@ procedure TCustomFileListBox.UpdateFileList;
 Var
   Info: TSearchRec;
   Added: Boolean;
-  
+
   procedure AddFile(FileAttr: TFileAttr; SysAttr: integer);
   begin
     if (not Added) and (FileAttr in FileType)
     and ((Info.Attr and SysAttr)>0) then begin
+      if (Info.Attr and faDirectory)>0 then
+        Info.Name := '['+Info.Name+']';
       Items.Add(Info.Name);
       Added:=true;
     end;
   end;
-  
+
 begin
   if [csloading,csdestroying]*ComponentState<>[] then exit;
   Clear;
@@ -247,11 +252,13 @@ begin
       AddFile(ftNormal,faArchive);
     Until SysUtils.FindNext(info) <> 0;
   SysUtils.FindClose(Info);
+
+  UpdateSelectedFileName;
 end;
 
 procedure TCustomFileListBox.Click;
 begin
-  ChangeFileName;
+  UpdateSelectedFileName;
   inherited Click; 
 end;
 
@@ -262,12 +269,26 @@ begin
 end;
 
 function TCustomFileListBox.IndexOfFile(const AFilename: string): integer;
+var
+  CurItem: string;
 begin
   Result:=0;
-  while (Result<Items.Count)
-  and (CompareFilenames(AFilename,Items[Result])<>0) do
+  while (Result<Items.Count) do begin
+    CurItem:=Items[Result];
+    if (CompareFilenames(AFilename,CurItem)=0)
+    or ((CurItem<>'') and (CurItem[1]='[') and (CurItem[length(CurItem)]=']')
+      and (CompareFilenames('['+AFilename+']',CurItem)=0))
+    then
+      exit;
     inc(Result);
+  end;
   Result:=-1;
+end;
+
+procedure TCustomFileListBox.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  UpdateSelectedFileName;
+  inherited KeyUp(Key, Shift);
 end;
 
 procedure TCustomFileListBox.SetFileType(const AValue: TFileType);
@@ -313,22 +334,35 @@ begin
   UpdateFileList;
 end;
 
-procedure TCustomFileListBox.ChangeFileName;
+procedure TCustomFileListBox.UpdateSelectedFileName;
 var
   i: Integer;
 begin
   i:=ItemIndex;
-  If (i<0) or (FFileName = FDirectory+DirectorySeparator+Items[i]) then Exit;
-  FFileName := FDirectory+DirectorySeparator+Items[i];
+  if i<0 then
+    FFileName := ''
+  else begin
+    FFileName := FDirectory+DirectorySeparator+Items[i];
+    if (FFileName<>'')
+    and (FFileName[1]='[') and (FFileName[length(FFileName)]=']') then
+      FFileName:=copy(FFileName,2,length(FFileName)-2);
+  end;
+  DoChangeFile;
+end;
+
+procedure TCustomFileListBox.DoChangeFile;
+begin
+  if FFilename=FLastChangeFileName then exit;
+  FLastChangeFileName:=FFilename;
   If Assigned(FOnChange) then FOnChange(Self);
 end;
 
-constructor TCustomFileListBox.Create(AOwner: TComponent);
+constructor TCustomFileListBox.Create(TheOwner: TComponent);
 var
   FileDrive: String;
 begin
-  inherited Create(AOwner);
-  //Initializes DirectorySeparator and the Mask property.
+  inherited Create(TheOwner);
+  //Initializes the Mask property.
   FMask := GetAllFilesMask;
   //Initializes the FileType property.
   FFileType := [ftNormal];
@@ -345,6 +379,8 @@ begin
   UpdateFileList;
   //Initializes the Sorted property.
   Sorted := True;
+  //An trick for the first time TCustomFileListBox.UpdateSelectedFileName work.
+  FFileName := '_';
 end;
 
 destructor TCustomFileListBox.Destroy;
@@ -364,6 +400,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2004/04/21 17:41:29  mattias
+  added directory brackets  from Luis
+
   Revision 1.25  2004/03/12 15:48:57  mattias
   fixed 1.0.x compilation
 
