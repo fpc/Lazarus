@@ -173,11 +173,12 @@ var
   begin
     if not TWinControl(Sender).HandleAllocated then
       exit;
-  
+
+    // send scroll message
     FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
-    if Windows.GetScrollInfo(TWinControl(Sender).Handle, SB_VERT, ScrollInfo) then
+    if Windows.GetScrollInfo(Handle, SB_VERT, ScrollInfo) then
     begin
       with TLMMouseEvent(Message) do
       begin
@@ -188,7 +189,7 @@ var
           WParam := ScrollInfo.nMin;
         WParam := SB_THUMBPOSITION or (WParam shl 16);
       end;
-      Windows.PostMessage(TWinControl(Sender).Handle, WM_VSCROLL, WParam, HWND(nil));
+      Windows.PostMessage(Handle, WM_VSCROLL, WParam, HWND(nil));
     end;
   end;
 
@@ -539,7 +540,6 @@ Function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   Formats: PClipboardFormat): Boolean;
 Var
   I: Integer;
-  P: PChar;
 
   procedure PutTextOnClipBoard;
   var
@@ -3065,6 +3065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2004/06/17 21:33:01  micha
+  fix scroll message handling for comboboxes
+
   Revision 1.117  2004/06/10 18:14:10  vincents
   converted win32proc.inc to unit
 

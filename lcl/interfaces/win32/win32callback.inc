@@ -24,6 +24,11 @@
 {            callback routines                                }
 {*************************************************************}
 
+{ forward declarations }
+
+function ComboBoxEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
+    LParam: Windows.LParam): LResult; stdcall; forward;
+
 {-----------------------------------------------------------------------------
   Function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
@@ -131,6 +136,7 @@ Var
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
   OverlayWindow: HWND;
+  TargetWindow: HWND;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -686,29 +692,34 @@ Begin
         X := SmallInt(Lo(LParam));
         Y := SmallInt(Hi(LParam));
         // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
-        if GetWindowRect(Window, R) <> 0 then
-        begin
-          if (X < R.Left) or (R.Right < X)
-            or (Y < R.Top) or (R.Bottom < Y) then
-          begin
-            P.X := X;
-            P.Y := Y;
-            Window := TWin32WidgetSet(InterfaceObject).WindowFromPoint(P);
-            if Window = HWND(nil) then
-              exit;
+        P.X := X;
+        P.Y := Y;
+        TargetWindow := TWin32WidgetSet(InterfaceObject).WindowFromPoint(P);
+        if TargetWindow = HWND(nil) then
+          exit;
 
-            PostMessage(Window, WM_MOUSEWHEEL, WParam, LParam);
-            exit;
-          end;
+        // check if the window is an edit control of a combobox, if so,
+        // redirect it to the combobox, not the edit control
+        if Windows.GetWindowLong(TargetWindow, GWL_WNDPROC) = longint(@ComboBoxEditWindowProc) then
+          TargetWindow := Windows.GetParent(TargetWindow);
+        if TargetWindow <> Window then
+        begin
+          Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
+          exit;
         end;
 
-        Msg := LM_MOUSEWHEEL;
-        WheelDelta := SmallInt(Hi(WParam));
-        State := GetShiftState;
-        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
-      End;
-      WinProcess := false;
-    End;
+        // the mousewheel message is for us
+        // windows handles combobox's mousewheel messages
+        if TWinControl(OwnerObject).FCompStyle <> csComboBox then
+        begin
+          Msg := LM_MOUSEWHEEL;
+          WheelDelta := SmallInt(Hi(WParam));
+          State := GetShiftState;
+          UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+          WinProcess := false;
+        end;
+      end;
+    end;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:
     begin
@@ -1231,6 +1242,9 @@ end;
 
 {
   $Log$
+  Revision 1.115  2004/06/17 21:33:01  micha
+  fix scroll message handling for comboboxes
+
   Revision 1.114  2004/06/15 15:37:29  micha
   fix groupbox background erasing
 
