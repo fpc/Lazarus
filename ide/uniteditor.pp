@@ -64,7 +64,12 @@ type
     semActiveBreakPoint,
     semInactiveBreakPoint,
     semInvalidBreakPoint,
-    semUnknownBreakpoint
+    semUnknownBreakpoint,
+    semMultiActiveBreakPoint,
+    semMultiInactiveBreakPoint,
+    semMultiInvalidBreakPoint,
+    semMultiUnknownBreakPoint,
+    semMultiMixedBreakPoint
     );
   TSrcEditMarkerTypes = set of TSrcEditMarkerType;
 
@@ -229,9 +234,9 @@ type
     
     // gutter
     procedure CreateBreakPoint(const ALine: Integer);
-    procedure SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
+    procedure SetBreakPointMark(const ALine: Integer; const AType: TSrcEditMarkerType);
     function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
-    function  IsBreakPointMark(const ABreakPointMark: TSynEditMark): Boolean;
+    function  IsBreakPointMark(const AMark: TSynEditMark): Boolean;
     procedure RemoveBreakPoint(const ALine: Integer); overload;
     procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
 
@@ -546,9 +551,9 @@ type
     property IncrementalSearchStr: string
       read FIncrementalSearchStr write SetIncrementalSearchStr;
   published
-    Notebook : TNotebook;
-    SrcPopUpMenu : TPopupMenu;
-    StatusBar : TStatusBar;
+    Notebook: TNotebook;
+    SrcPopUpMenu: TPopupMenu;
+    StatusBar: TStatusBar;
     SetBookmarkMenuItem : TMenuItem;
     GotoBookmarkMenuItem : TMenuItem;
     property OnAddJumpPoint: TOnAddJumpPoint
@@ -626,7 +631,12 @@ const
        10,  // active breakpoint
        11,  // inactive breakpoint
        12,  // invalid breakpoint
-       13   // unknown breakpoint
+       13,  // unknown breakpoint
+       14,  // multi active breakpoint
+       14,  // multi inactive breakpoint
+       14,  // multi invalid breakpoint
+       14,  // multi unknown breakpoint
+       14   // multi mixed breakpoint
     );
 
 var
@@ -1149,14 +1159,19 @@ Begin
 end;
 
 function TSourceEditor.IsBreakPointMark(
-  const ABreakPointMark: TSynEditMark): Boolean;
+  const AMark: TSynEditMark): Boolean;
 begin
-  Result := (ABreakPointMark <> nil)
-        and (ABreakPointMark.ImageIndex in [
+  Result := (AMark <> nil)
+        and (AMark.ImageIndex in [
                SrcEditMarkerImgIndex[semActiveBreakPoint],
                SrcEditMarkerImgIndex[semInactiveBreakPoint],
                SrcEditMarkerImgIndex[semInvalidBreakPoint],
-               SrcEditMarkerImgIndex[semUnknownBreakPoint]
+               SrcEditMarkerImgIndex[semUnknownBreakPoint],
+               SrcEditMarkerImgIndex[semMultiActiveBreakPoint],
+               SrcEditMarkerImgIndex[semMultiInactiveBreakPoint],
+               SrcEditMarkerImgIndex[semMultiInvalidBreakPoint],
+               SrcEditMarkerImgIndex[semMultiUnknownBreakPoint],
+               SrcEditMarkerImgIndex[semMultiMixedBreakPoint]
              ]);
 end;
 
@@ -1177,11 +1192,11 @@ end;
 
 procedure TSourceEditor.CreateBreakPoint (const ALine: Integer);
 begin
-  SetBreakPoint(Aline, semUnknownBreakpoint);
+  SetBreakPointMark(Aline, semUnknownBreakpoint);
   DebugBoss.DoCreateBreakPoint(FileName, ALine);
 end;
 
-procedure TSourceEditor.SetBreakPoint(const ALine: Integer;
+procedure TSourceEditor.SetBreakPointMark(const ALine: Integer;
   const AType: TSrcEditMarkerType);
 var
   BreakPtMark: TSynEditMark;
@@ -1429,6 +1444,7 @@ var
   i:integer;
   AllMarks: TSynEditMarks;
   aha: TAdditionalHilightAttribute;
+  ImgIndex: Integer;
 begin
   aha := ahaNone;
   
@@ -1446,15 +1462,28 @@ begin
     begin
       if (AllMarks[i] <> nil) 
       then begin
-        if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semActiveBreakPoint]
-        then aha := ahaEnabledBreakpoint
-        else if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semInactiveBreakPoint]
-        then aha := ahaDisabledBreakpoint
-        else if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semInvalidBreakPoint]
-        then aha := ahaInvalidBreakpoint
-        else if AllMarks[i].ImageIndex = SrcEditMarkerImgIndex[semUnknownBreakPoint]
-        then aha := ahaUnknownBreakpoint
-        else Continue;
+        ImgIndex:=AllMarks[i].ImageIndex;
+        if (ImgIndex = SrcEditMarkerImgIndex[semActiveBreakPoint])
+          or (ImgIndex = SrcEditMarkerImgIndex[semMultiActiveBreakPoint])
+        then
+          aha := ahaEnabledBreakpoint
+        else if (ImgIndex = SrcEditMarkerImgIndex[semInactiveBreakPoint])
+          or (ImgIndex = SrcEditMarkerImgIndex[semMultiInactiveBreakPoint])
+        then
+          aha := ahaDisabledBreakpoint
+        else if (ImgIndex = SrcEditMarkerImgIndex[semInvalidBreakPoint])
+          or (ImgIndex = SrcEditMarkerImgIndex[semMultiInvalidBreakPoint])
+        then
+          aha := ahaInvalidBreakpoint
+        else if (ImgIndex = SrcEditMarkerImgIndex[semUnknownBreakPoint])
+          or (ImgIndex = SrcEditMarkerImgIndex[semMultiUnknownBreakPoint])
+        then
+          aha := ahaUnknownBreakpoint
+        else if (ImgIndex = SrcEditMarkerImgIndex[semMultiMixedBreakPoint])
+        then
+          aha := ahaEnabledBreakpoint
+        else
+          Continue;
         Break;
       end;
     end;
@@ -2075,6 +2104,11 @@ begin
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
   Pixmap1.LoadFromLazarusResource('UnknownBreakPoint');
+  MarksImgList.Add(Pixmap1,nil);
+  // load multi mixed breakpoint image
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  Pixmap1.LoadFromLazarusResource('MultiBreakPoint');
   MarksImgList.Add(Pixmap1,nil);
 
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
@@ -2705,10 +2739,14 @@ var
   MarkSrcEdit: TSourceEditor;
   MarkDesc: String;
   MarkEditorIndex: Integer;
+  MarkMenuItem: TMenuItem;
 begin
   if not (Sender is TPopupMenu) then exit;
-  ASrcEdit:=FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
+  ASrcEdit:=
+    FindSourceEditorWithEditorComponent(TPopupMenu(Sender).PopupComponent);
   if ASrcEdit=nil then exit;
+  
+  // readonly
   ReadOnlyMenuItem.Checked:=ASrcEdit.ReadOnly;
   ShowLineNumbersMenuItem.Checked:=
     ASrcEdit.EditorComponent.Gutter.ShowLineNumbers;
@@ -2724,15 +2762,27 @@ begin
       MarkDesc:=MarkDesc+': '+Notebook.Pages[MarkEditorIndex]
         +' ('+IntToStr(BookMarkY)+','+IntToStr(BookMarkX)+')';
     end;
-    SetBookmarkMenuItem[BookMarkID].Checked:=(MarkSrcEdit<>nil);
-    SetBookmarkMenuItem[BookMarkID].Caption:=uemSetBookmark+MarkDesc;
-    GotoBookmarkMenuItem[BookMarkID].Checked:=
-      SetBookmarkMenuItem[BookMarkID].Checked;
-    GotoBookmarkMenuItem[BookMarkID].Caption:=uemBookmarkN+MarkDesc;
+    // set book mark item
+    MarkMenuItem:=SetBookmarkMenuItem[BookMarkID];
+    MarkMenuItem.Checked:=(MarkSrcEdit<>nil);
+    MarkMenuItem.Caption:=uemSetBookmark+MarkDesc;
+    // goto book mark item
+    MarkMenuItem:=GotoBookmarkMenuItem[BookMarkID];
+    MarkMenuItem.Checked:=(MarkSrcEdit<>nil);
+    MarkMenuItem.Caption:=uemBookmarkN+MarkDesc;
   end;
   
+  // editor layout
   MoveEditorLeftMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
   MoveEditorRightMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
+  
+  if SrcPopUpMenu.PopupPoint.X>ASrcEdit.EditorComponent.Gutter.Width then begin
+    // user clicked on text
+
+  end else begin
+    // user clicked on gutter
+
+  end;
 end;
 
 procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
@@ -3916,7 +3966,7 @@ Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
 begin
   // restart hint timer
   FHintTimer.Enabled := False;
-  FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools;
+  FHintTimer.Enabled := EditorOpts.AutoToolTipSymbTools and Visible;
 end;
 
 procedure TSourceNotebook.EditorMouseDown(Sender: TObject;
