@@ -2,56 +2,58 @@ object WatchPropertyDlg: TWatchPropertyDlg
   Caption = 'Watch Properties'
   ClientHeight = 200
   ClientWidth = 420
-  Position = POSCREENCENTER
+  Position = poScreenCenter
   HorzScrollBar.Page = 421
   VertScrollBar.Page = 201
+  Left = 339
   Height = 200
+  Top = 283
   Width = 420
   object lblExpression: TLabel
     Caption = 'Expression:'
-    Layout = TLTOP
-    Left = 15
+    Left = 16
     Height = 17
-    Top = 20
+    Top = 14
     Width = 65
   end
   object txtExpression: TEdit
     TabOrder = 2
+    TabOrder = 2
     Left = 105
-    Height = 1
-    Top = 17
+    Height = 23
+    Top = 8
     Width = 300
   end
   object lblRepCount: TLabel
     Caption = 'Repeat Count:'
-    Layout = TLTOP
     Left = 15
     Height = 17
     Top = 45
     Width = 80
   end
   object txtRepCount: TEdit
+    TabOrder = 4
     Text = '0'
     TabOrder = 4
     Left = 105
-    Height = 1
-    Top = 42
+    Height = 23
+    Top = 39
     Width = 60
   end
   object lblDigits: TLabel
     Caption = 'Digits:'
-    Layout = TLTOP
-    Left = 175
+    Left = 176
     Height = 17
     Top = 45
     Width = 40
   end
   object txtDigits: TEdit
+    TabOrder = 6
     Text = '0'
     TabOrder = 6
     Left = 225
-    Height = 1
-    Top = 45
+    Height = 23
+    Top = 39
     Width = 180
   end
   object chkEnabled: TCheckBox
@@ -63,7 +65,7 @@ object WatchPropertyDlg: TWatchPropertyDlg
     Left = 15
     Height = 20
     Top = 65
-    Width = 60
+    Width = 84
   end
   object chkAllowFunc: TCheckBox
     AllowGrayed = True
