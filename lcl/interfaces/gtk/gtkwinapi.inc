@@ -1580,13 +1580,13 @@ begin
               Tmp := CreateRectRGN(0,0,1,1);
               Result := CombineRGN(Tmp, Clip, RGN, mode);
               DeleteObject(Clip);
-              SelectClipRGN(DC, TMP);
+              SelectClipRGN(DC, Tmp);
               DeleteObject(Tmp);
             end;
           end;
         end
-        else
-          Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
+      else
+        Result := Inherited ExtSelectClipRGN(dc, rgn, mode);
       DeleteObject(OldC);
     end;
   end;
@@ -1602,7 +1602,7 @@ end;
 function TgtkObject.DeleteDC(hDC: HDC): Boolean;
 begin
   // TODO:
-  // for now it's just the same, however CreateDC/ReleaseDC
+  // for now it's just the same, however CreateDC/FreeDC
   // and GetDC/ReleaseDC are couples
   // we should use gdk_new_gc for create and gtk_new_gc for Get
   Result:= (ReleaseDC(0, hDC) = 1);
@@ -2496,6 +2496,7 @@ Function TGTKObject.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
   X, Y : Longint;
+  OldCnt: integer;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
@@ -2510,6 +2511,8 @@ begin
       Result := SIMPLEREGION;
     end
     else begin
+// ClipBug
+OldCnt:=FGDIObjects.Count;
       Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);    
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
@@ -2519,6 +2522,9 @@ begin
         Right  := X + Width;
         Bottom := Y + Height;
       end;  
+if OldCnt<>FGDIObjects.Count then begin
+  writeln('TGTKObject.GetClipBox ',OldCnt,',',FGDIObjects.Count);
+end;
     end;
   end;  
 end;
@@ -2538,7 +2544,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : Integer; 
+Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
@@ -4271,9 +4277,9 @@ begin
       DeleteObject(HGDIObj(pDC^.CurrentPen));
       DeleteObject(HGDIObj(pDC^.CurrentFont));
       DeleteObject(HGDIObj(pDC^.CurrentBitmap));
-      SelectClipRGN(DC, 0);
+      DeleteObject(HGDIObj(pDC^.ClipRegion));
       try
-        { On root window, we don't allocate a graphics context }
+        { On root window, we don't allocate a graphics context and so we dont free}
         if pDC^.GC <> nil then begin
           gdk_gc_unref(pDC^.GC);
         end;
@@ -4317,12 +4323,22 @@ begin
     end;
 
     // TODO copy bitmap also 
+    
+    if (pDC^.ClipRegion<>0) and (pSavedDC^.ClipRegion <> pDC^.ClipRegion) then
+    begin
+      // clipping region has changed
+      // clipping regions are extraordinary gdiobjects. Users can not set them
+      // or read them. If a clipping region is changed, it is always created new
+      // -> destroy the current clipping region
+      DeleteObject(pDC^.ClipRegion);
+      pDC^.ClipRegion := 0;
+    end;
       
     Result := CopyDCData(pDC, pSavedDC);
     pDC^.SavedContext := pSavedDC^.SavedContext;
     pSavedDC^.SavedContext := nil;
 
-    //prevent deleting of copied objects;
+    //prevent deleting of copied objects:
     if pSavedDC^.CurrentBitmap = pDC^.CurrentBitmap 
     then pSavedDC^.CurrentBitmap := nil;  
     if pSavedDC^.CurrentFont = pDC^.CurrentFont 
@@ -4331,6 +4347,10 @@ begin
     then pSavedDC^.CurrentPen := nil;     
     if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
     then pSavedDC^.CurrentBrush := nil;   
+    if pSavedDC^.CurrentBrush = pDC^.CurrentBrush
+    then pSavedDC^.CurrentBrush := nil;
+    if pSavedDC^.ClipRegion = pDC^.ClipRegion
+    then pSavedDC^.ClipRegion := 0;
 
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
@@ -4465,34 +4485,34 @@ Function TgtkObject.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
-  if Result <> ERROR
-  then with PDeviceContext(DC)^ do
-  begin
-    if (GC = nil) and (RGN <> 0)
-    then begin
-      WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
-      Result := ERROR;
-    end
-    else begin
-      If (RGN = 0) or (GC = nil) then begin
-        DeleteObject(ClipRegion);
-        ClipRegion := 0;
-        if GC<>nil then
-          SelectGDIRegion(DC);
+  if Result <> ERROR then
+    with PDeviceContext(DC)^ do
+    begin
+      if (GC = nil) and (RGN <> 0)
+      then begin
+        WriteLn('WARNING: [TgtkObject.SelectClipRGN] Uninitialized GC');
+        Result := ERROR;
       end
-      else
-        If IsValidGDIObject(RGN) then begin
+      else begin
+        If (GC = nil) or (RGN = 0) then begin
           DeleteObject(ClipRegion);
-          ClipRegion := CreateRectRGN(0,0,0,0);
-          Result := CombineRGN(ClipRegion, RGN, RGN, RGN_COPY);
-          SelectGDIRegion(DC);
+          ClipRegion := 0;
+          if GC<>nil then
+            SelectGDIRegion(DC);
         end
-        else begin
-          Result := ERROR;
-          WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');
-        end;
+        else
+          If IsValidGDIObject(RGN) then begin
+            DeleteObject(ClipRegion);
+            ClipRegion := CreateRectRGN(0,0,0,0);
+            Result := CombineRGN(ClipRegion, RGN, RGN, RGN_COPY);
+            SelectGDIRegion(DC);
+          end
+          else begin
+            Result := ERROR;
+            WriteLn('WARNING: [TgtkObject.SelectClipRGN] Invalid RGN');
+          end;
+      end;
     end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4570,11 +4590,11 @@ begin
       begin
         with PDeviceContext(DC)^ do
         begin
-          Result := CreateRectRGN(0,0,1,1);
-          GetClipRGN(DC, Result);
-writeln('EEE1');
-          SelectClipRGN(DC, GDIObj);
-writeln('EEE2');
+          Result := ClipRegion;
+          ClipRegion := 0;
+          //CreateRectRGN(0,0,1,1);
+          //GetClipRGN(DC, Result);
+          if GC <> nil then SelectClipRGN(DC, GDIObj);
         end;
       end;
     end;
@@ -5960,6 +5980,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.98  2002/08/21 10:46:37  lazarus
+  MG: fixed unreleased gdiRegions
+
   Revision 1.97  2002/08/21 08:13:38  lazarus
   MG: accelerated new/dispose of gdiobjects
 
