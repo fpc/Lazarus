@@ -3505,12 +3505,11 @@ Begin
   if TempEditor <> nil then TempEditor.FindPrevious;
 End;
 
-//FindInFiles
 function TSourceNotebook.CreateFindInFilesDialog: TLazFindInFilesDialog;
 begin
   Result := TLazFindInFilesDialog.Create(Application);
   LoadFindInFilesHistory(Result);
-end;//CreateFindInFilesDialog
+end;
 
 procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
   procedure AssignToComboBox(AComboBox: TComboBox; Strings: TStrings);
@@ -3524,7 +3523,11 @@ begin
   begin
     with ADialog, InputHistories do
     begin
-      AssignToComboBox(TextToFindComboBox, FindHistory);
+      TextToFindComboBox.Items.Assign(FindHistory);
+      if not EditorOpts.FindTextAtCursor then begin
+        if TextToFindComboBox.Items.Count>0 then
+          TextToFindComboBox.ItemIndex:=0;
+      end;
       AssignToComboBox(DirectoryComboBox, FindInFilesPathHistory);
       AssignToComboBox(FileMaskComboBox, FindInFilesMaskHistory);
       Options:=FindInFilesSearchOptions;
@@ -3561,19 +3564,19 @@ begin
     AnUnitInfo:=AProject.FirstPartOfProject;
     while AnUnitInfo<>nil do begin
       //Only if file exists on disk.
-      if FilenameIsAbsolute(AnUnitInfo.FileName) and
-                            FileExists(AnUnitInfo.FileName) then
+      if FilenameIsAbsolute(AnUnitInfo.FileName)
+      and FileExists(AnUnitInfo.FileName) then
         TheFileList.Add(AnUnitInfo.FileName);
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-    end;//while
+    end;
     SearchForm:= FIFCreateSearchForm(ADialog);
     SearchForm.SearchFileList:= TheFileList;
     DoFindInFiles(SearchForm);
   finally
     FreeAndNil(TheFileList);
     FreeAndNil(SearchForm);
-  end;//finally
-end;//FIFSearchProject
+  end;
+end;
 
 procedure TSourceNoteBook.FIFSearchDir(ADialog: TLazFindInFilesDialog);
 var
@@ -3691,16 +3694,15 @@ begin
   if FindInFilesDialog.ShowModal=mrOk then
   begin
     SaveFindInFilesHistory(FindInFilesDialog);
-    LoadFindInFilesHistory(FindInFilesDialog);
     if FindInFilesDialog.FindText <>'' then
     begin
       case FindInFilesDialog.WhereRadioGroup.ItemIndex of
         Integer(0): FIFSearchProject(AProject, FindInFilesDialog);
         integer(1): FIFSearchOpenFiles(FindInFilesDialog);
         integer(2): FIFSearchDir(FindInFilesDialog);
-      end;//case
-    end;//if
-  end;//if
+      end;
+    end;
+  end;
   IDEDialogLayoutList.SaveLayout(FindInFilesDialog);
 end;
 
