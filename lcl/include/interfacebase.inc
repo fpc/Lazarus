@@ -1126,7 +1126,7 @@ var
   P : TPoint;
 Begin
   GetWindowOrgEx(dc, P);
-  Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, P);
+  Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
 function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND;
@@ -1429,17 +1429,24 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.SetCursor(hCursor: HICON): HCURSOR;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.SetFocus(hWnd: HWND): HWND;
 begin
   Result := 0;
 end;
 
-Function TInterfacebase.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
+Function TInterfacebase.SetProp(Handle: hwnd; Str : PChar;
+  Data : Pointer) : Boolean;
 Begin
   Result := True;
 end;
 
-function TInterfaceBase.SetSCrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
+function TInterfaceBase.SetScrollInfo(Handle : HWND; SBStyle : Integer;
+  ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
   Result := 0;
 end;
@@ -1474,7 +1481,7 @@ begin
 end;
 
 Function TInterfaceBase.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
-  var OldPoint: TPoint) : Boolean;
+  OldPoint: PPoint) : Boolean;
 Begin
   Result := False;
 end;
@@ -1490,17 +1497,27 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
+function TInterfaceBase.ShowScrollBar(Handle: HWND; wBar: Integer;
+  bShow: Boolean): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
+procedure TInterfaceBase.Sleep(dwMilliseconds: DWORD);
+begin
+
+end;
+
+function TInterfaceBase.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+function TInterfaceBase.StretchMaskBlt(DestDC: HDC;
+  X, Y, Width, Height: Integer; SrcDC: HDC;
+  XSrc, YSrc, SrcWidth, SrcHeight: Integer;
+  Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
   Result := False;
 end;
@@ -1537,6 +1554,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/12/26 11:00:14  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.74  2002/12/25 13:30:36  mattias
   added more windows funcs and fixed jump to compiler error end of file
 
