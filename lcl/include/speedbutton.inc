@@ -335,7 +335,6 @@ begin
   UpdateState(false);
   if FGlyph=nil then exit;
 
-//  PaintRect := Rect(0, 0, Width, Height);
   PaintRect:= ClientRect;
 
   {if Transparent and not (csDesigning in ComponentState) then
@@ -344,6 +343,7 @@ begin
     BrushStyle:= bsSolid;}
 
   FLastDrawFlags:=GetDrawFlags;
+  //writeln('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
   DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, FLastDrawFlags);
 
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
@@ -704,6 +704,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/02/16 01:40:43  mattias
+  fixed uninitialized style
+
   Revision 1.34  2003/02/06 20:46:51  mattias
   default fpc src dirs and clean ups
 
