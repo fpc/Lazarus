@@ -83,18 +83,28 @@ begin
 end;
 
 function CheckFilenameForLCLPaths(const Filename: string): TModalResult;
+// check if the unitpath of the directory of filename contains the path to the
+// LCL
 var
   Directory: String;
   UnitPath: String;
   LazarusSrcDir: string;
   LCLPath: String;
+  NextStartPos: Integer;
 begin
+  // get directory of filename
   Directory:=ExtractFilePath(Filename);
+  // get unitpath definition of directory
   UnitPath:=CodeToolBoss.GetUnitPathForDirectory(Directory);
+  // get lazarus source directory
   LazarusSrcDir:=
            CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LazarusDir'];
-  LCLPath:=TrimFilename(LazarusSrcDir+PathDelim+'lcl'+PathDelim+'units');
-  if SearchDirectoryInSearchPath(UnitPath,LCLPath,1)<1 then begin
+  // create base path to LCL compiled units <LazarusSrcDir>/lcl/units/
+  LCLPath:=TrimFilename(LazarusSrcDir+SetDirSeparators('/lcl/units/'));
+  NextStartPos:=1;
+  writeln('CheckFilenameForLCLPaths UnitPath="',UnitPath,'" LCLPath="',LCLPath,'"');
+  if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then begin
+    LCLPath:=LCLPath+'$(TargetCPU)'+PathDelim+'$(TargetOS)';
     Result:=MessageDlg('LCL unit path missing',
       'The current unit path for the file'#13
       +'"'+Filename+'" is'#13
@@ -103,7 +113,7 @@ begin
       +'The path to the LCL units "'+LCLPath+'" is missing.'#13
       +#13
       +'Hint for newbies:'#13
-      +'Create a lazarus application and put the file into project directory.',
+      +'Create a lazarus application and put the file into the project directory.',
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;

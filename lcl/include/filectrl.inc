@@ -66,6 +66,41 @@ begin
   Result:=CompareFilenames(File1,File2);
 end;
 
+function CompareFilenames(Filename1: PChar; Len1: integer;
+  Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer;
+var
+  File1: string;
+  File2: string;
+  i: Integer;
+begin
+  if (Len1=0) or (Len2=0) then begin
+    Result:=Len1-Len2;
+    exit;
+  end;
+  if ResolveLinks then begin
+    SetLength(File1,Len1);
+    Move(Filename1^,File1[1],Len1);
+    SetLength(File2,Len2);
+    Move(Filename2^,File2[1],Len2);
+    Result:=CompareFilenames(File1,File2);
+  end else begin
+    Result:=0;
+    i:=1;
+    while (Result=0) and ((i<=Len1) and (i<=Len2)) do begin
+      {$IFDEF Win32}
+      Result:=Ord(LowerCaseTable[Ord(Filename1[i])])
+             -Ord(LowerCaseTable[Ord(Filename2[i])]); //!! Must be replaced by ansi characters !!
+      {$ELSE}
+      Result:=Ord(Filename1[i])
+             -Ord(Filename2[i]); //!! Must be replaced by ansi characters !!
+      {$ENDIF}
+      Inc(i);
+    end;
+    if Result=0 Then
+      Result:=Len1-Len2;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   function FilenameIsAbsolute(TheFilename: string):boolean;
  ------------------------------------------------------------------------------}
@@ -898,6 +933,9 @@ end;
 
 {
   $Log$
+  Revision 1.41  2004/01/23 19:36:49  mattias
+  fixed searching dir in searchpath under win32
+
   Revision 1.40  2004/01/03 20:19:22  mattias
   fixed reopening virtual files
 

@@ -565,19 +565,20 @@ begin
   if (UpperUnitName='') or (length(UpperUnitName)>255)
   or (SourceChangeCache=nil) then exit;
   BuildTree(false);
-  Result:=true;
   SectionNode:=Tree.Root;
   while (SectionNode<>nil) do begin
-    if (SectionNode.Desc in [ctnProgram,ctnInterface,ctnImplementation]) then
-    begin
-      if RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
-         SourceChangeCache) then begin
-        Result:=RemoveUnitFromAllUsesSections(UpperUnitName,SourceChangeCache);
+    if (SectionNode.Desc in [ctnProgram,ctnInterface,ctnImplementation])
+    and (SectionNode.FirstChild<>nil)
+    and (SectionNode.FirstChild.Desc=ctnUsesSection) then begin
+      if not RemoveUnitFromUsesSection(SectionNode.FirstChild,UpperUnitName,
+         SourceChangeCache)
+      then begin
         exit;
       end;
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
+  Result:=true;
 end;
 
 function TStandardCodeTool.FindUsedUnits(var MainUsesSection,

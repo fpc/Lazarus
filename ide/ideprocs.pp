@@ -112,6 +112,8 @@ function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): stri
 function ShortenSearchPath(const SearchPath, BaseDirectory, ChompDirectory: string): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
+function GetNextUsedDirectoryInSearchPath(const SearchPath,
+                          FilterDir: string; var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer): integer;
 
@@ -464,7 +466,8 @@ var
 begin
   PathLen:=length(SearchPath);
   repeat
-    while (NextStartPos<=PathLen) and (SearchPath[NextStartPos]=';') do
+    while (NextStartPos<=PathLen)
+    and (SearchPath[NextStartPos] in [';',#0..#32]) do
       inc(NextStartPos);
     CurStartPos:=NextStartPos;
     while (NextStartPos<=PathLen) and (SearchPath[NextStartPos]<>';') do
@@ -473,6 +476,22 @@ begin
     if Result<>'' then exit;
   until (NextStartPos>PathLen);
   Result:='';
+end;
+
+function GetNextUsedDirectoryInSearchPath(const SearchPath,
+                    FilterDir: string; var NextStartPos: integer): string;
+// searches next directory in search path,
+// which is equal to FilterDir or is in FilterDir
+begin
+  while (NextStartPos<=length(SearchPath)) do begin
+    Result:=GetNextDirectoryInSearchPath(SearchPath,NextStartPos);
+    if (Result<>'')
+    and ((CompareFilenames(Result,FilterDir)=0)
+      or FileIsInPath(Result,FilterDir))
+    then
+      exit;
+  end;
+  Result:=''
 end;
 
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
@@ -484,7 +503,6 @@ var
   StartPos: Integer;
   DirEndPos: Integer;
   CurDirLen: Integer;
-  i: Integer;
   CurDirEndPos: Integer;
 begin
   Result:=-1;
@@ -506,7 +524,7 @@ begin
   EndPos:=1;
   while EndPos<=PathLen do begin
     StartPos:=EndPos;
-    while (SearchPath[StartPos]=';') do begin
+    while (SearchPath[StartPos] in [';',#0..#32]) do begin
       inc(StartPos);
       if StartPos>PathLen then exit;
     end;
@@ -523,13 +541,12 @@ begin
       if CurDirEndPos=StartPos then CurDirEndPos:=StartPos+1;
     end;
     if CurDirEndPos-StartPos=CurDirLen then begin
-      i:=CurDirLen-1;
-      while i>=0 do begin
-        if SearchPath[StartPos+i]<>Directory[DirStartPos+i] then break;
-        dec(i);
-      end;
-      if i<0 then begin
-      
+      // directories have same length -> compare chars
+      if FileCtrl.CompareFilenames(@SearchPath[StartPos],CurDirLen,
+                          @Directory[DirStartPos],CurDirLen,
+                          false)=0
+      then begin
+        // directory found
         Result:=StartPos;
         exit;
       end;

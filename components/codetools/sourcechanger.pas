@@ -390,35 +390,49 @@ end;
 function TSourceChangeCache.FindEntryInRange(
   FromPos, ToPos: integer): TSourceChangeCacheEntry;
 var ANode: TAVLTreeNode;
+  NextNode: TAVLTreeNode;
 begin
   ANode:=FEntries.Root;
+  // find nearest node to FromPos
   while ANode<>nil do begin
     Result:=TSourceChangeCacheEntry(ANode.Data);
-    if Result.ToPos<=FromPos then
-      ANode:=ANode.Left
-    else if Result.FromPos>=ToPos then
-      ANode:=ANode.Right
+    if FromPos<=Result.FromPos then
+      NextNode:=ANode.Left
     else
-      exit;
+      NextNode:=ANode.Right;
+    if NextNode=nil then begin
+      // ANode is now one behind or at the first candidate
+      NextNode:=FEntries.FindPrecessor(ANode);
+      if NextNode<>nil then begin
+        ANode:=NextNode;
+        Result:=TSourceChangeCacheEntry(ANode.Data);
+      end;
+      while (Result.FromPos<ToPos) do begin
+        if (Result.FromPos<Result.ToPos) // entry has a range (is a delete operation)
+        and (Result.FromPos<ToPos)
+        and (Result.ToPos>FromPos) then begin
+          // entry intersects range
+          exit;
+        end;
+        ANode:=FEntries.FindSuccessor(ANode);
+        if ANode=nil then begin
+          Result:=nil;
+          exit;
+        end;
+        Result:=TSourceChangeCacheEntry(ANode.Data);
+      end;
+      // not found
+      break;
+    end;
+    ANode:=NextNode;
   end;
   Result:=nil;
 end;
 
 function TSourceChangeCache.FindEntryAtPos(
   APos: integer): TSourceChangeCacheEntry;
-var ANode: TAVLTreeNode;
 begin
-  ANode:=FEntries.Root;
-  while ANode<>nil do begin
-    Result:=TSourceChangeCacheEntry(ANode.Data);
-    if Result.ToPos<=APos then
-      ANode:=ANode.Left
-    else if Result.FromPos>APos then
-      ANode:=ANode.Right
-    else
-      exit;
-  end;
-  Result:=nil;
+  Result:=FindEntryInRange(APos,APos);
 end;
 
 function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
@@ -505,10 +519,12 @@ begin
   end;
 
   if ToPos>FromPos then begin
-    // this is a delete operation -> check the whole range for writable buffers
+    // this is a replace/delete operation
+    // -> check the whole range for writable buffers
     if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
   end else if (DirectCode<>nil) and (FromDirectPos<ToDirectPos) then begin
-    // this is a direct delete operation -> check if the DirectCode is writable
+    // this is a direct replace/delete operation
+    // -> check if the DirectCode is writable
     if DirectCode.ReadOnly then
       RaiseCodeReadOnly(DirectCode);
   end;
@@ -1285,7 +1301,6 @@ procedure TBeautifyCodeOptions.WriteDebugReport;
 begin
   writeln('TBeautifyCodeOptions.WriteDebugReport Consistency=',
     ConsistencyCheck);
-    
 end;
 
 { ESourceChangeCacheError }

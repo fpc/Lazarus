@@ -47,6 +47,8 @@ uses
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(const Filename1, Filename2: string;
                           ResolveLinks: boolean): integer;
+function CompareFilenames(Filename1: PChar; Len1: integer;
+  Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer;
 function FilenameIsAbsolute(TheFilename: string):boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 procedure CheckIfFileIsSymlink(const AFilename: string);
@@ -127,6 +129,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2004/01/23 19:36:49  mattias
+  fixed searching dir in searchpath under win32
+
   Revision 1.20  2003/12/21 13:58:06  mattias
   renamed DirectoryExists to DirPathExists to reduce ambigiousity
 
