@@ -137,7 +137,7 @@ type
     Procedure BookMarkGoto(Value : Integer);
 
     Procedure ccExecute(Sender : TObject);
-
+    procedure ccComplete(var Value: ansistring; Shift: TShiftState);
 
     Procedure ProcessUserCommand(Sender: TObject; var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 
@@ -280,6 +280,8 @@ var
 Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
 aCompletion : TSynCompletion;
+scompl : TSynBaseCompletion;  //used in ccexecute and cccomplete
+
 
 { TSourceEditor }
 
@@ -838,6 +840,25 @@ Begin
    EditorOpts.GetSynEditSettings(FEditor);
 end;
 
+procedure TSourceEditor.ccComplete(var Value: ansistring; Shift: TShiftState);
+var
+  S1,S2 : String;
+Begin
+Writeln('ccComplete.  Value = '+Value);
+Writeln('FEditor.seltext = '+FEditor.Seltext);
+  S1 := Copy(Value,1,pos(' ',Value)-1);
+  Delete(Value,1,pos(' ',Value));
+  S2 := Copy(Value,1,pos(' ',Value)-1);
+
+if S1 = 'property' then Value := S2
+   else
+if S1 = 'procedure' then Value := S2+'(';
+
+Value := Feditor.SelText + Value;
+scompl.Deactivate;
+End;
+
+
 Procedure TSourceEditor.ccExecute(Sender : TObject);
 type
 
@@ -847,7 +868,6 @@ type
     TypeName : ShortString;
    end;
 var
-  scompl : TSynBaseCompletion;
   S : TStrings;
   CompInt : TComponentInterface;
   CompName : String;
@@ -1006,6 +1026,7 @@ Begin
     RefreshEditorSettings;
     aCompletion.Editor := FEditor;
     aCompletion.OnExecute := @ccExecute;
+    aCompletion.OnCodeCompletion := @ccComplete;
     FEditor.Lines.Assign(FSource);
     FEditor.Setfocus
 end;

@@ -38,7 +38,6 @@ Known Issues:
 unit SynCompletion;
 
 {$I SynEdit.inc}
-
 interface
 
 uses
@@ -262,6 +261,8 @@ begin
   Scroll.OnChange := {$IFDEF FPC}@{$ENDIF}ScrollChange;
   Scroll.Parent := self;
   Scroll.OnEnter := {$IFDEF FPC}@{$ENDIF}ScrollGetFocus;
+  Scroll.Width := 10;
+  Scroll.Visible := TRue;  //shane
   Visible := false;
   FFontHeight := Canvas.TextHeight('Cyrille de Brebisson');
   Color := clWindow;

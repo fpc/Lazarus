@@ -240,8 +240,7 @@ Begin
     else
     Result := nil;
 
-//does freeing this kill my result?  Check this...
-//   Freemem(PP);
+   Freemem(PP);
 end;
 
 Function TComponentInterface.GetPPropInfoByName(Name:String): PPropInfo;
@@ -266,13 +265,11 @@ Begin
   else
     Result := nil;
 
-//does freeing this kill my result?  Check this...
-//   Freemem(PP);
+   Freemem(PP);
 end;
 
 Function TComponentInterface.GetComponentType    : String;
 Begin
-//???What do I return? TObject's Classtype?
   Result:=FControl.ClassName;
 end;
 
@@ -495,7 +492,8 @@ end;
 Function TComponentInterface.Focus : Boolean;
 Begin
   // XXX Todo:
-
+  if (FCOntrol is TWinControl) {and (TWinControl(FControl).CanFocus)} then
+  TWinControl(FControl).SetFocus;
 end;
 
 Function TComponentInterface.Delete : Boolean;
