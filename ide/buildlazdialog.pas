@@ -58,7 +58,7 @@ type
   TLCLPlatforms = set of TLCLPlatform;
   
   TBuildLazarusFlag = (
-    blfWithoutIDE,
+    blfWithoutLinkingIDE,
     blfOnlyIDE,
     blfQuick,
     blfWithStaticPackages,
@@ -321,8 +321,6 @@ begin
           CurMakeMode:=mmCleanBuild
         else
           CurMakeMode:=mmNone;
-      if (blfWithoutIDE in Flags) and (CurItem=Options.ItemIDE) then
-        CurMakeMode:=mmNone;
       if (blfQuick in Flags) and (CurMakeMode=mmCleanBuild) then
         CurMakeMode:=mmBuild;
       if CurMakeMode=mmNone then continue;
@@ -371,6 +369,13 @@ function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
       System.Delete(Result,StartPos,p-StartPos+3);
     end;
   end;
+  
+  procedure AppendExtraOption(const AddOption: string);
+  begin
+    if AddOption='' then exit;
+    if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
+    ExtraOptions:=ExtraOptions+AddOption;
+  end;
 
 var
   CurItem: TBuildLazarusItem;
@@ -378,15 +383,6 @@ var
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
-  // check for special IDE config file
-  if CurItem=Options.ItemIDE then begin
-    MakeIDECfgFilename:=GetMakeIDEConfigFilename;
-    if (blfUseMakeIDECfg in Flags) and (CurItem=Options.ItemIDE)
-    and (FileExists(MakeIDECfgFilename)) then begin
-      ExtraOptions:='@'+MakeIDECfgFilename;
-      exit;
-    end;
-  end;
 
   // create extra options
   ExtraOptions:=Options.ExtraOptions;
@@ -395,11 +391,20 @@ begin
     // remove profiler option for JIT form
     ExtraOptions:=RemoveProfilerOption(ExtraOptions);
   end else if CurItem=Options.ItemIDE then begin
-    // add package options for IDE
-    if PackageOptions<>'' then begin
-      if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
-      ExtraOptions:=ExtraOptions+PackageOptions;
+    // check for special IDE config file
+    if (blfUseMakeIDECfg in Flags) then begin
+      MakeIDECfgFilename:=GetMakeIDEConfigFilename;
+      if (FileExists(MakeIDECfgFilename)) then begin
+        ExtraOptions:='@'+MakeIDECfgFilename;
+        exit;
+      end;
     end;
+    // check if linking should be skipped
+    if blfWithoutLinkingIDE in Flags then begin
+      AppendExtraOption('-Cn');
+    end;
+    // add package options for IDE
+    AppendExtraOption(PackageOptions);
   end;
 end;
 

@@ -37,7 +37,8 @@ type
   protected
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
   public
-    function CreateUniqueComponentName(const AClassName: string): string; virtual; abstract;
+    function CreateUniqueComponentName(const AClassName: string
+                                       ): string; virtual; abstract;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
   end;
 
