@@ -245,7 +245,7 @@ override COMPILER_UNITDIR+=$(LCLUNITDIR)
 override TARGET_UNITS+=interfaces
 override TARGET_IMPLICITUNITS+=gnomeint
 override CLEAN_FILES+=$(wildcard ../../units/gnome/*$(OEXT)) $(wildcard ../../units/gnome/*$(PPUEXT)) $(wildcard ../../units/gnome/*$(RSTEXT)) $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
-override COMPILER_OPTIONS+=-gl
+override COMPILER_OPTIONS+=-gl -dgtk1  -dgnome1
 override COMPILER_UNITDIR+=../../units ../gtk .
 override COMPILER_UNITTARGETDIR+=../../units/gnome
 ifdef REQUIRE_UNITSDIR
@@ -1529,7 +1529,7 @@ ifdef CREATESMART
 override FPCOPT+=-CX
 endif
 ifdef DEBUG
-override FPCOPT+=-gl
+override FPCOPT+=-gl -dgtk1  -dgnome1
 override FPCOPTDEF+=DEBUG
 endif
 ifdef RELEASE
