@@ -567,10 +567,8 @@ end;
 Procedure TWinControl.ReCreateWnd;
 Begin
 //send a message to inform the interface that we need to destroy and recreate this control
-  if FHandle <> 0 then
-  Begin
+  if HandleAllocated then
     CNSendMessage(LM_RECREATEWND,Self,Nil);
-  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2283,6 +2281,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/08/24 06:51:22  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.76  2002/08/17 15:45:33  lazarus
   MG: removed ClientRectBugfix defines
 
