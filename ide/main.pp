@@ -1517,7 +1517,7 @@ Begin
 
 //create first form file
 
-  TempSource.Clear;
+(*  TempSource.Clear;
   TempSource.Add('unit Unit1;');
   TempSource.Add('');
   tempSource.Add('{$mode objfpc}');
@@ -1540,7 +1540,9 @@ Begin
   TempSource.Add('end.');
 
   SourceNotebook.NewFile('Unit1',TempSource,True);
-
+*)
+  mnuNewFormClicked(sender);
+  
   Proj_Info := TUnitInfo.Create;
   with Proj_Info do
       Begin
@@ -1783,6 +1785,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2001/02/27 18:39:22  lazarus
+  Changed NEWPROJECT to call NEWFORMCLICKED to create the first unit.
+  Shane
+
   Revision 1.65  2001/02/25 16:32:48  lazarus
   MWE:
     + Added new debugger classes
