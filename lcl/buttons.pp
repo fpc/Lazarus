@@ -255,6 +255,7 @@ type
     property ParentShowHint;
   end;
 
+procedure Register;
 
 implementation
 
@@ -273,6 +274,12 @@ const
     idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
     idButtonAll);
 
+procedure Register;
+begin
+  RegisterComponentsProc('Standard',[TButton]);
+  RegisterComponentsProc('Additional',[TBitBtn,TSpeedButton]);
+end;
+
 {$I buttons.inc}
 {$I bitbtn.inc}
 {$I buttonglyph.inc}
@@ -288,6 +295,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.38  2003/04/02 13:23:23  mattias
   fixed default font
 
