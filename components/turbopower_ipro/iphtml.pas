@@ -17332,8 +17332,8 @@ end;
 function LazFlatSB_SetScrollProp(p1: HWND; index: Integer; newValue: Integer;
   p4: Bool): Bool; stdcall;
 begin
+  // ToDo
   Result:=true;
-  writeln('LazFlatSB_SetScrollProp');
 end;
 
 function LazFlatSB_SetScrollInfo(hWnd: HWND; BarFlag: Integer;
@@ -17548,6 +17548,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.6  2003/03/31 09:13:33  mattias
+  fixes for fpc 1.0.7
+
   Revision 1.5  2003/03/30 20:37:15  mattias
   ipro now shows simple HTML pages
 

@@ -150,7 +150,7 @@ type
     function TranslateY(Ycoord: Integer): Integer; // Y axis is backwards in postscript
     procedure AddFill;
     procedure ResetPos; // reset back to last moveto location
-    procedure PenChanged(APen: TPSPen);
+    procedure PenChanged(Sender: TObject);
   public
     MPostScript: TPostScript;
     constructor Create(APostScript: TPostScript);
@@ -216,7 +216,7 @@ type
     procedure SetWidth(const AValue: Integer);
     procedure GrabCanvas;
     procedure UpdateBoundingBox;
-    procedure PatternChanged(APattern: TPSPattern);
+    procedure PatternChanged(Sender: TObject);
     procedure InsertPattern(APattern: TPSPattern); // adds the pattern to the postscript
     procedure RemovePattern(APattern: TPSPattern); // remove the pattern from the postscript
 
@@ -322,7 +322,7 @@ begin
 end;
 
 { This is called when drawing pen is changed but NOT when brush changes }
-procedure TPostScriptCanvas.PenChanged(APen: TPSPen);
+procedure TPostScriptCanvas.PenChanged(Sender: TObject);
 begin
      if FPostScript[FPostScript.Count-2] = '%%PEN' then begin
         // last operation was a pen, so delete it
@@ -494,7 +494,7 @@ begin
 
      //calculate ratios
      if radius <1 then exit; // do nothing
-     YRatio := (Y2 - Y1) / (X2-X1);
+     YRatio := real(Y2 - Y1) / (X2-X1);
 
      // find center
      CenterX := ((X2 - X1) div 2) + X1;
@@ -545,7 +545,7 @@ begin
 
      // reset scale so we don't change the line thickness
      // adding 0.01 to compensate for scaling error - there may be a deeper problem here...
-     FPostScript.Add(format('%.6f',[(1 / X)+0.01])+' '+format('%.6f',[(1 / Y)+0.01])+' scale stroke grestore');
+     FPostScript.Add(format('%.6f',[(real(1) / X)+0.01])+' '+format('%.6f',[(real(1) / Y)+0.01])+' scale stroke grestore');
 
      // close out and return origin
      FPostScript.Add(inttostr(-X)+' '+inttostr(-TranslateY(Y))+' translate closepath stroke');
@@ -640,14 +640,13 @@ begin
 end;
 
 { Pattern changed so update the postscript code }
-procedure TPostScript.PatternChanged(APattern: TPSPattern);
+procedure TPostScript.PatternChanged(Sender: TObject);
 begin
      // called anytime a pattern changes.  Update the postscript code.
      // look for and delete the current postscript code for this pattern
      // then paste the pattern back into the code before the first page
-     RemovePattern(APattern);
-     InsertPattern(APattern);
-
+     RemovePattern(Sender As TPSPattern);
+     InsertPattern(Sender As TPSPattern);
 end;
 
 { Places a pattern definition into the bottom of the header in postscript }
