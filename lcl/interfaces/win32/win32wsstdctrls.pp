@@ -196,7 +196,6 @@ type
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
-    class procedure SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout); override;
   end;
 
   { TWin32WSStaticText }
@@ -893,11 +892,10 @@ end;
 
 const
   AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
-  LayoutToStaticTextFlags: array[TTextLayout] of dword = (0,0,0) {(SS_TOP, SS_VCENTER, SS_BOTTOM)};
 
-function CalcStaticTextFlags(const Alignment: TAlignment; const Layout: TTextLayout): dword;
+function CalcStaticTextFlags(const Alignment: TAlignment): dword;
 begin
-  Result := AlignmentToStaticTextFlags[Alignment] or LayoutToStaticTextFlags[Layout];
+  Result := AlignmentToStaticTextFlags[Alignment];
 end;
 
 function TWin32WSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
@@ -912,8 +910,7 @@ begin
   begin
     pClassName := 'STATIC';
     WindowTitle := StrCaption;
-    Flags := Flags or CalcStaticTextFlags(
-      TCustomStaticText(AWinControl).Alignment, TCustomStaticText(AWinControl).Layout);
+    Flags := Flags or CalcStaticTextFlags(TCustomStaticText(AWinControl).Alignment);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -924,13 +921,6 @@ procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustom
 begin
   // can not apply on the fly: needs window recreate
   TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomStaticText);
-end;
-
-procedure TWin32WSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout);
-begin
-  // TODO
-  UpdateWindowStyle(ACustomStaticText.Handle, 
-    LayoutToStaticTextFlags[NewLayout], 0 {SS_TOP or SS_VCENTER or SS_BOTTOM});
 end;
 
 { TWin32WSCustomCheckBox }

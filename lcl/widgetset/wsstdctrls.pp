@@ -156,7 +156,6 @@ type
   TWSCustomStaticTextClass = class of TWSCustomStaticText;
   TWSCustomStaticText = class(TWSWinControl)
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); virtual;
-    class procedure SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout); virtual;
   end;
 
   { TWSStaticText }
@@ -372,10 +371,6 @@ end;
 { TWSCustomStaticText }
 
 procedure TWSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
-begin
-end;
-
-procedure TWSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout);
 begin
 end;
 

@@ -29,7 +29,6 @@ constructor TCustomStaticText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csStaticText;
-  FLayout := tlTop;
   fAlignment := taLeftJustify;
   FShowAccelChar:= true;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
@@ -94,21 +93,6 @@ begin
   if Val <> FFocusControl then begin
     FFocusControl:= Val;
     if Val <> nil then Val.FreeNotification(Self);
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomStaticText.SetLayout
-  Params: None
-  Returns: Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCustomStaticText.SetLayout(Value: TTextLayout);
-begin
-  if FLayout <> Value then begin
-    FLayout:= Value;
-    if HandleAllocated then
-      TWSCustomStaticTextClass(WidgetSetClass).SetLayout(Self, Value);
   end;
 end;
 
@@ -187,6 +171,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2005/01/11 21:36:36  micha
+  remove TStaticText.Layout property, not supported by delphi, hard to implement
+
   Revision 1.10  2005/01/07 20:51:11  micha
   swap TCustomStaticText and TCustomLabel
 

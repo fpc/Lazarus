@@ -742,12 +742,10 @@ type
   TCustomStaticText = class(TWinControl)
   private
     FAlignment: TAlignment;
-    FLayout: TTextLayout;
     FFocusControl: TWinControl;
     FShowAccelChar: boolean;
     FStaticBorderStyle: TStaticBorderStyle;
     procedure SetAlignment(Value: TAlignment);
-    procedure SetLayout(Value: TTextLayout);
     procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
     function  GetStaticBorderStyle: TStaticBorderStyle;
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
@@ -766,7 +764,6 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
-    property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
   end;
 
@@ -786,7 +783,6 @@ type
     property Constraints;
     property FocusControl;
     property Font;
-    property Layout;
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
@@ -1216,6 +1212,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.183  2005/01/11 21:36:36  micha
+  remove TStaticText.Layout property, not supported by delphi, hard to implement
+
   Revision 1.182  2005/01/11 13:25:23  vincents
   TCustomCheckBox.AllowGray defaults to false.
 
