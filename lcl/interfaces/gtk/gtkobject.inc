@@ -280,7 +280,11 @@ begin
   FreeStockItems;
 
   if FGTKToolTips<>nil then begin
+    {$IFDEF Gtk2}
+    gtk_object_sink(PGTKObject(FGTKToolTips));
+    {$ELSE}
     gtk_object_unref(PGTKObject(FGTKToolTips));
+    {$ENDIF}
     FGTKToolTips := nil;
   end;
 
@@ -3922,7 +3926,9 @@ begin
     LM_PAINT :
     begin
       ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
+      {$IFNDEF Gtk2}
       ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
+      {$ENDIF}
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
@@ -8145,6 +8151,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.407  2003/09/05 19:29:38  mattias
+  Success: The first gtk2 application ran without error
+
   Revision 1.406  2003/09/05 18:19:54  ajgenius
   Make GTK2 "compile". linking fails still
   (Makefile.fpc needs pkgconfig libs/GTK2 linking rules,
@@ -8152,7 +8161,7 @@ end;
   (like gtk2 examples do) apps still won't work(yet).  I think we
   need to do a lot of work to make sure incompatible(also to get rid
   of deprecated) things are done in GTK2 interface itself, and just
-  use more {$Ifdef GTK1} in the gtk interface itself.
+  use more $Ifdef GTK1 in the gtk interface itself.
 
   Revision 1.405  2003/09/04 11:10:18  mattias
   added csClickEvents to TImage

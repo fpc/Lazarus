@@ -2042,6 +2042,8 @@ begin
   // - Find the realize handler to change data
   Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
   SignalID := gtk_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
+  if SignalID<0 then
+    RaiseGDBException('ConnectSignal');
   if csfConnectRealize in SFlags then
     RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))
   else
@@ -3769,8 +3771,11 @@ begin
       If AnsiCompareText(WName,'default')=0 then begin
         NoName:=nil;
         StyleObject^.Widget :=
+          // GTK2 does not allow to instantiate the abstract base Widget
+          // so we use the invisible HBOX, which is hopefully not defined in the
+          // theme
           GTK_WIDGET_NEW(
-            {$IFDEF Gtk2}GTK_TYPE_WIDGET{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
+            {$IFDEF Gtk2}GTK_TYPE_HBOX{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
             NoName,[]);
       end
     else
@@ -4518,6 +4523,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.196  2003/09/05 19:29:38  mattias
+  Success: The first gtk2 application ran without error
+
   Revision 1.195  2003/09/05 19:03:19  ajgenius
   removed a redundant routine which broke gtk1
 
@@ -4528,7 +4536,7 @@ end;
   (like gtk2 examples do) apps still won't work(yet).  I think we
   need to do a lot of work to make sure incompatible(also to get rid
   of deprecated) things are done in GTK2 interface itself, and just
-  use more {$Ifdef GTK1} in the gtk interface itself.
+  use more $Ifdef GTK1 in the gtk interface itself.
 
   Revision 1.193  2003/09/04 10:51:30  mattias
   fixed default size of preview widget

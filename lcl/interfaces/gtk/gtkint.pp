@@ -266,7 +266,7 @@ implementation
 
 uses
   Buttons, Menus, StdCtrls, PairSplitter, Math,
-  GTKWinApiWindow, ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl,
+  GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
 
 {$I gtklistsl.inc}
@@ -360,6 +360,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.143  2003/09/05 19:29:38  mattias
+  Success: The first gtk2 application ran without error
+
   Revision 1.142  2003/09/04 10:51:30  mattias
   fixed default size of preview widget
 
