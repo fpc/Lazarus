@@ -273,7 +273,6 @@ function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 function GetParentForm(Control:TControl): TCustomForm;
 function IsAccel(VK : Word; const Str : String): Boolean;
-function CreateLFM(AForm:TCustomForm):integer;
 function InitResourceComponent(Instance: TComponent; RootAncestor: TClass):Boolean;
 
 
@@ -325,63 +324,6 @@ begin
   Result := true;
 end;
 
-
-//==============================================================================
-{
-  This function creates a LFM file from any form.
-  To create the LFC file use the program lazres or the
-  LFMtoLFCfile function.
-}
-function CreateLFM(AForm:TCustomForm):integer;
-// 0 = ok
-// -1 = error while streaming AForm to binary stream
-// -2 = error while streaming binary stream to text file
-var BinStream,TxtMemStream:TMemoryStream;
-  Driver: TAbstractObjectWriter;
-  Writer:TWriter;
-  TxtFileStream:TFileStream;
-begin
-  BinStream:=TMemoryStream.Create;
-  try
-    try
-      Driver:=TBinaryObjectWriter.Create(BinStream,4096);
-      try
-        Writer:=TWriter.Create(Driver);
-        try
-          Writer.WriteDescendent(AForm,nil);
-        finally
-          Writer.Free;
-        end;
-      finally
-        Driver.Free;
-      end;
-    except
-      Result:=-1;
-      exit;
-    end;
-    try
-      // transform binary to text and save LFM file
-      TxtMemStream:=TMemoryStream.Create;
-      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm',fmCreate);
-      try
-        BinStream.Position:=0;
-        ObjectBinaryToText(BinStream,TxtMemStream);
-        TxtMemStream.Position:=0;
-        TxtFileStream.CopyFrom(TxtMemStream,TxtMemStream.Size);
-      finally
-        TxtMemStream.Free;
-        TxtFileStream.Free;
-      end;
-    except
-      Result:=-2;
-      exit;
-    end;
-  finally
-    BinStream.Free;
-  end;
-end;
-
-//==============================================================================
 
 
 //==============================================================================

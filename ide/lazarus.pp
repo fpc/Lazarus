@@ -51,7 +51,7 @@ begin
      Paint;
    end;
 
-   Application.CreateForm(TForm1, Form1);
+   Application.CreateForm(TMainIDE, MainIDE);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    Application.CreateForm(TTestForm, TestForm1);
    Application.CreateForm(TViewUnits1, ViewUnits1);
@@ -63,6 +63,12 @@ end.
 
 {
   $Log$
+  Revision 1.6  2001/01/04 20:33:53  lazarus
+  Moved lresources.
+  Moved CreateLFM to Main.pp
+  Changed Form1 and TFOrm1 to MainIDE and TMainIDE
+  Shane
+
   Revision 1.5  2000/12/19 18:43:12  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

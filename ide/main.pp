@@ -24,6 +24,7 @@
 unit main;
 
 {$mode objfpc}
+{ $mode delphi}
 
 interface
 
@@ -40,7 +41,7 @@ const
 type
 
 
-  TForm1 = class(TFORM)
+  TMainIDE = class(TFORM)
     FontDialog1  : TFontDialog;
     ColorDialog1 : TColorDialog;
     FindDialog1  : TFindDialog;
@@ -148,7 +149,9 @@ type
     procedure mnuSearchFindAgainClicked(Sender : TObject);
 
     Procedure OpenFileDownArrowClicked(Sender : TObject);
+    Procedure FileClosedEvent(Sender : TObject; Filename : String);
     Procedure FileOpenedEvent(Sender : TObject; Filename : String);
+    Procedure FileSavedEvent(Sender : TObject; Filename : String);
 
     procedure MouseDownOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
     procedure MouseMoveOnControl(Sender : TObject; Shift : TShiftState; X, Y: Integer);
@@ -199,7 +202,7 @@ const
   Numbers = ['0'..'1'];
 
 var
-  Form1 : TForm1;
+  MainIDE : TMainIDE;
   FormEditor1 : TFormEditor;
   // this should be moved to FormEditor <...
   ObjectInspector1 : TObjectInspector;
@@ -216,9 +219,9 @@ uses
   TestForm, ViewUnit_dlg,ViewForm_dlg, Math,lresources;
 
 
-{ TForm1 }
+{ TMainIDE }
 
-constructor TForm1.Create(AOwner: TComponent);
+constructor TMainIDE.Create(AOwner: TComponent);
 
 
 
@@ -259,14 +262,14 @@ var
 begin
   inherited Create(AOwner);
 
-  Caption := Format('Lazarus Editor v 0.5- Lazarus path = %s    Highlight colors: %d , %d , %d ,%d ,%d',[Application.exename,clHighlight, clHighlighttext, clRed,clBlue,clYellow]);
+  Caption := 'Lazarus Editor v 0.5';
 
   Left := 0;
   Top := 0;
   Width := Screen.Width-5;
   height := 125;
   Position:= poDesigned;
-  Name := 'Form1';
+  Name := 'MainIDE';
 
 
   LoadMainMenu;
@@ -292,7 +295,7 @@ begin
   Notebook1 := TNotebook.Create(Self);
   Notebook1.Parent := Self;
   Notebook1.Align := alBottom;
-  Notebook1.Left := 0;
+  Notebook1.Left := 1;
 //  Notebook1.Top :=50+ mnuBarMain.Top+MnuBarMain.Height + 2;
   Notebook1.Top :=50+ 2;
   Notebook1.Width := ClientWidth;
@@ -352,6 +355,14 @@ begin
   Notebook1.Name := 'Notebook1';
 
 
+
+  Pixmap1:=TPixMap.Create;
+  Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadResource('btn_viewforms',Pixmap1) then
+  begin
+    LoadResource('default',Pixmap1);
+  end;
+
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
   if not LoadResource('btn_viewunits',Pixmap1) then
@@ -372,26 +383,20 @@ begin
    end;
 
 
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_viewforms',Pixmap1) then
-  begin
-    LoadResource('default',Pixmap1);
-  end;
-
   SpeedButton2 := TSpeedButton.Create(Self);
   with Speedbutton2 do
    Begin
     Parent := self;
     Enabled := True;
     Top := 28;
-    Left := Speedbutton1.Left + 26;
+    Left := SpeedButton1.Left +26;
     OnClick := @mnuViewFormsCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Flat := true;
     Name := 'Speedbutton2';
    end;
+
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
@@ -683,7 +688,9 @@ begin
 
   SourceNotebook := TSourceNotebook.Create(self);
   SourceNotebook.OnActivate := @CodeorFormActivated;
+  SourceNotebook.OnCloseFile := @FileClosedEvent;
   SourceNotebook.OnOpenFile := @FileOpenedEvent;
+  SourceNotebook.OnSaveFile := @FileSavedEvent;
 
   itmFileSave.OnClick := @SourceNotebook.SaveClicked;
   itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
@@ -697,25 +704,25 @@ begin
 
 end;
 
-procedure TForm1.OIOnAddAvailableComponent(AComponent:TComponent;
+procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
 var Allowed:boolean);
 begin
   Allowed:=(not (AComponent is TGrabber));
 end;
 
-procedure TForm1.OIOnSelectComponent(AComponent:TComponent);
+procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
 begin
   SelectOnlyThisComponent(AComponent);
 end;
 
-Procedure TForm1.ToolButtonCLick(Sender : TObject);
+Procedure TMainIDE.ToolButtonCLick(Sender : TObject);
 Begin
   Assert(False, 'Trace:TOOL BUTTON CLICK!');
 
 
 {if ComboBox1.Parent = Toolbar1 then
   Begin
-   ComboBox1.Parent := Form1;
+   ComboBox1.Parent := MainIDE;
    ComboBox1.Left := 25;
    ComboBox1.top := 25;
   end
@@ -724,29 +731,29 @@ Begin
 
 end;
 
-Procedure TForm1.FormPaint(Sender : TObject);
+Procedure TMainIDE.FormPaint(Sender : TObject);
 begin
 
 end;
 
 
-procedure TForm1.ButtonClick(Sender : TObject);
+procedure TMainIDE.ButtonClick(Sender : TObject);
 Begin
 End;
 
 {------------------------------------------------------------------------------}
-procedure TForm1.FormShow(Sender : TObject);
+procedure TMainIDE.FormShow(Sender : TObject);
 Begin
 
 end;
 
-procedure TForm1.FormKill(Sender : TObject);
+procedure TMainIDE.FormKill(Sender : TObject);
 Begin
 Assert(False, 'Trace:DESTROYING FORM');
 End;
 
 {------------------------------------------------------------------------------}
-procedure TForm1.LoadMainMenu;
+procedure TMainIDE.LoadMainMenu;
 var
 
 fContext : Integer;
@@ -987,14 +994,14 @@ end;
 {------------------------------------------------------------------------------}
 {PRIVATE METHOD}
 
-function TForm1.CreateSeperator : TMenuItem;
+function TMainIDE.CreateSeperator : TMenuItem;
 begin
   itmSeperator := TMenuItem.Create(Self);
   itmSeperator.Caption := '-';
   Result := itmSeperator;
 end;
 
-function TForm1.ReturnActiveUnitList : TUnitInfo;
+function TMainIDE.ReturnActiveUnitList : TUnitInfo;
 var
   I : Integer;
   SList : TUnitInfo;
@@ -1008,7 +1015,7 @@ end;
 {Fills the View Units dialog and the View Forms dialog}
 {------------------------------------------------------------------------------}
 
-Procedure TForm1.UpdateViewDialogs;
+Procedure TMainIDE.UpdateViewDialogs;
 Var
 I : Integer;
 SList : TUnitInfo;
@@ -1036,7 +1043,7 @@ End;
 
 
 
-Procedure TForm1.SetFlags(SList : TUnitInfo);
+Procedure TMainIDE.SetFlags(SList : TUnitInfo);
 var
 Texts : String;
 tempNUm1, TempNUm2 : Integer;
@@ -1067,7 +1074,7 @@ if SList.Flags = pfNone then
 
 end;
 
-Procedure TForm1.SetName_Form(SList : TUnitInfo);
+Procedure TMainIDE.SetName_Form(SList : TUnitInfo);
 Begin
   if (SList.flags = pfSource) or (SList.Flags = pfProject) then
      Begin
@@ -1090,26 +1097,26 @@ Begin
   Assert(False, 'Trace:Exiting SetName_Form');
 end;
 
-procedure TForm1.mnuSaveClicked(Sender : TObject);
+procedure TMainIDE.mnuSaveClicked(Sender : TObject);
 begin
 //this is no longer used.  TSourceNotebook.SaveClicked is called
 end;
 
 {------------------------------------------------------------------------------}
 
-Procedure TForm1.mnuSaveAsClicked(Sender : TObject);
+Procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
 Begin
 //this is no longer used.  TSourceNotebook.SaveAsClicked is called
 end;
 
-Procedure TForm1.mnuSaveAllClicked(Sender : TObject);
+Procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
 Begin
 //this is no longer used.  TSourceNotebook.SaveAllClicked is called
 
 End;
 
 
-Procedure TForm1.mnuToggleFormClicked(Sender : TObject);
+Procedure TMainIDE.mnuToggleFormClicked(Sender : TObject);
 Begin
 writeln('Toggle form clicked');
 
@@ -1120,7 +1127,7 @@ if FCodeLastActivated then
 end;
 
 
-Procedure TForm1.CodeorFormActivated(Sender : TObject);
+Procedure TMainIDE.CodeorFormActivated(Sender : TObject);
 Begin
 FCodeLastActivated := (TForm(Sender) = TForm(SourceNotebook));
 if FCodeLastActivated then Writeln('TRUE') else Writeln('False');
@@ -1138,7 +1145,7 @@ end;
 ------------------------------------------------------------------------
 }
 
-Procedure TForm1.ControlClick(Sender : TObject);
+Procedure TMainIDE.ControlClick(Sender : TObject);
 var
   Page : Integer;
   I : Integer;
@@ -1220,7 +1227,7 @@ begin
 end;
 
 
-function TForm1.FindDesigner(ChildComponent:TComponent):TDesigner;
+function TMainIDE.FindDesigner(ChildComponent:TComponent):TDesigner;
 begin
   if ChildComponent is TForm then
     Result:=TDesigner(TForm(ChildComponent).Designer)
@@ -1231,7 +1238,7 @@ begin
     Result:=nil;
 end;
 
-procedure TForm1.SelectOnlyThisComponent(AComponent:TComponent);
+procedure TMainIDE.SelectOnlyThisComponent(AComponent:TComponent);
 var
   CurDesigner:TDesigner;
 begin
@@ -1257,7 +1264,7 @@ end;
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
-procedure TForm1.MouseDownOnControl(Sender : TObject; Button: TMouseButton;
+procedure TMainIDE.MouseDownOnControl(Sender : TObject; Button: TMouseButton;
 Shift : TShiftState; X, Y: Integer);
 Begin
   if GetCaptureGrabber<>nil then exit;
@@ -1281,7 +1288,7 @@ Begin
   end;
 End;
 
-procedure TForm1.MouseMoveOnControl(Sender : TObject;
+procedure TMainIDE.MouseMoveOnControl(Sender : TObject;
 Shift : TShiftState; X, Y: Integer);
 var
   CurDesigner: TDesigner;
@@ -1308,7 +1315,7 @@ Begin
   end;
 End;
 
-procedure TForm1.MouseUpOnControl(Sender : TObject; Button: TMouseButton;
+procedure TMainIDE.MouseUpOnControl(Sender : TObject; Button: TMouseButton;
 Shift : TShiftState; X, Y: Integer);
 // We clicked on the form.  Let's see what the active selection is in the IDE
 // control bar. If it's the pointer, then we set the
@@ -1383,7 +1390,7 @@ writeln('NewComponent is TControl');
 end;
 
 {------------------------------------------------------------------------------}
-procedure TForm1.mnuNewFormClicked(Sender : TObject);
+procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 var
   I,N: Integer;
   SList : TUnitInfo;
@@ -1423,7 +1430,7 @@ end;
 
 
 {------------------------------------------------------------------------------}
-procedure TForm1.mnuOpenClicked(Sender : TObject);
+procedure TMainIDE.mnuOpenClicked(Sender : TObject);
 var
   Str : TStringList;
   SList : TUnitInfo;
@@ -1438,14 +1445,81 @@ end;
 {----------------OpenFileDownArrowClicked--------------------------------------}
 {------------------------------------------------------------------------------}
 
-Procedure TForm1.OpenFileDownArrowClicked(Sender : TObject);
+Procedure TMainIDE.OpenFileDownArrowClicked(Sender : TObject);
 Begin
 //display the PopupMenu
 if OpenFilePopupMenu.Items.Count > 0 then
 OpenFilePopupMenu.Popup(0,0);
 end;
 
-Procedure TForm1.FileOpenedEvent(Sender : TObject; Filename : String);
+//==============================================================================
+{
+  This function creates a LFM file from any form.
+  To create the LFC file use the program lazres or the
+  LFMtoLFCfile function.
+}
+function CreateLFM(AForm:TCustomForm):integer;
+// 0 = ok
+// -1 = error while streaming AForm to binary stream
+// -2 = error while streaming binary stream to text file
+var BinStream,TxtMemStream:TMemoryStream;
+  Driver: TAbstractObjectWriter;
+  Writer:TWriter;
+  TxtFileStream:TFileStream;
+begin
+  BinStream:=TMemoryStream.Create;
+  try
+    try
+      Driver:=TBinaryObjectWriter.Create(BinStream,4096);
+      try
+        Writer:=TWriter.Create(Driver);
+        try
+          Writer.WriteDescendent(AForm,nil);
+        finally
+          Writer.Free;
+        end;
+      finally
+        Driver.Free;
+      end;
+    except
+      Result:=-1;
+      exit;
+    end;
+    try
+      // transform binary to text and save LFM file
+      TxtMemStream:=TMemoryStream.Create;
+      TxtFileStream:=TFileStream.Create(lowercase(AForm.ClassName)+'.lfm',fmCreate);
+      try
+        BinStream.Position:=0;
+        ObjectBinaryToText(BinStream,TxtMemStream);
+        TxtMemStream.Position:=0;
+        TxtFileStream.CopyFrom(TxtMemStream,TxtMemStream.Size);
+      finally
+        TxtMemStream.Free;
+        TxtFileStream.Free;
+      end;
+    except
+      Result:=-2;
+      exit;
+    end;
+  finally
+    BinStream.Free;
+  end;
+end;
+
+//==============================================================================
+
+
+
+
+Procedure TMainIDE.FileClosedEvent(Sender : TObject; Filename : String);
+var
+MenuItem : TMenuItem;
+Begin
+
+end;
+
+Procedure TMainIDE.FileOpenedEvent(Sender : TObject; Filename : String);
 var
 MenuItem : TMenuItem;
 Begin
@@ -1461,15 +1535,29 @@ RunSpeedButton.Enabled := True;
 
 end;
 
+Procedure TMainIDE.FileSavedEvent(Sender : TObject; Filename : String);
+var
+MenuItem : TMenuItem;
+Begin
+//sender is the TSourceEditor
+writeln('FILESAVEDEVENT');
+If TSourceEditor(Sender).IsControlUnit then
+  begin
+   Writeln('*****************CREATRING LFM********************');
+   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
+ //  writeln('RESULT IS '+inttostr(CreateLFM(Self)));
+   end;
+end;
 
-Procedure TForm1.mnuCloseClicked(Sender : TObject);
+
+Procedure TMainIDE.mnuCloseClicked(Sender : TObject);
 Begin
 
 end;
 
 {------------------------------------------------------------------------------}
 
-procedure TForm1.mnuQuitClicked(Sender : TObject);
+procedure TMainIDE.mnuQuitClicked(Sender : TObject);
 var
 I : Integer;
 SList : TUnitInfo;
@@ -1491,55 +1579,55 @@ end;
 
 
 {------------------------------------------------------------------------------}
-procedure TForm1.mnuViewInspectorClicked(Sender : TObject);
+procedure TMainIDE.mnuViewInspectorClicked(Sender : TObject);
 begin
  ObjectInspector1.Show;
 end;
 
 
 {------------------------------------------------------------------------------}
-procedure TForm1.mnuViewCompilerSettingsClicked(Sender : TObject);
+procedure TMainIDE.mnuViewCompilerSettingsClicked(Sender : TObject);
 begin
  frmCompilerOptions.Show;
 end;
 
-Procedure TForm1.mnuViewUnitsClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
 Begin
 
 end;
 
-Procedure TForm1.mnuViewFormsClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewFormsClicked(Sender : TObject);
 Begin
 
 end;
 
-Procedure TForm1.mnuViewCodeExplorerClick(Sender : TObject);
+Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
 begin
 SourceNotebook.Show;
 end;
 
-Procedure TForm1.mnuViewMessagesClick(Sender : TObject);
+Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
 Begin
   Messagedlg.Show;
 End;
 
-Procedure TForm1.DoFind(Sender : TObject);
+Procedure TMainIDE.DoFind(Sender : TObject);
 Begin
 
 end;
 
-Procedure TForm1.mnuSearchFindClicked(Sender : TObject);
+Procedure TMainIDE.mnuSearchFindClicked(Sender : TObject);
 Begin
 itmSearchFindAgain.Enabled := True;
 FindDialog1.ShowModal;
 End;
 
-Procedure TForm1.mnuSearchFindAgainClicked(Sender : TObject);
+Procedure TMainIDE.mnuSearchFindAgainClicked(Sender : TObject);
 Begin
 DoFind(itmSearchFindAgain);
 End;
 
-Procedure TForm1.mnuNewProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuNewProjectClicked(Sender : TObject);
 var
   SList : TUnitInfo;
 Begin
@@ -1548,18 +1636,18 @@ end;
 
 {------------------------------------------------------------}
 
-Procedure TForm1.mnuOpenProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 Begin
 
 end;
 
-Procedure TForm1.mnuSaveProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuSaveProjectClicked(Sender : TObject);
 Begin
 
 end;
 
 
-Procedure TForm1.mnuBuildProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
 if SourceNotebook.Empty then Begin
    Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
@@ -1586,7 +1674,7 @@ Compiler1.Compile(SourceNotebook.ActiveUnitName);
 end;
 
 
-Procedure TForm1.mnuRunProjectClicked(Sender : TObject);
+Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
 var
   Filename : String;
   TheProcess : TProcess;
@@ -1616,7 +1704,7 @@ if SourceNotebook.Empty then Begin
 end;
 
 
-Procedure TForm1.mnuViewColorClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewColorClicked(Sender : TObject);
 begin
 
 ColorDialog1.Execute;
@@ -1625,13 +1713,13 @@ ColorDialog1.Execute;
 end;
 
 
-Procedure TForm1.mnuViewFontClicked(Sender : TObject);
+Procedure TMainIDE.mnuViewFontClicked(Sender : TObject);
 Begin
 FontDialog1.Execute;
 
 end;
 
-Function TForm1.ReturnFormName(Source : TStringlist) : String;
+Function TMainIDE.ReturnFormName(Source : TStringlist) : String;
 Var
 I : Integer;
 Num,Num2 : Integer;
@@ -1754,7 +1842,7 @@ if Found then
 result := Texts;
 end;
 
-Procedure TForm1.MessageViewDblClick(Sender : TObject);
+Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
 Begin
 
 end;
@@ -1770,8 +1858,10 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.31  2001/01/04 16:12:54  lazarus
-  Removed some writelns and changed the property editor for TStrings a bit.
+  Revision 1.32  2001/01/04 20:33:53  lazarus
+  Moved lresources.
+  Moved CreateLFM to Main.pp
+  Changed Form1 and TFOrm1 to MainIDE and TMainIDE
   Shane
 
   Revision 1.30  2001/01/03 18:44:54  lazarus

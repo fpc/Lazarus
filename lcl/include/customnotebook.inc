@@ -176,7 +176,6 @@ begin
   //Exclude(fComponentStyle, csInheritable);
 
   TabPosition := tpTop;
-
   ShowTabs := False;
 end;
 
@@ -430,6 +429,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/01/04 20:33:53  lazarus
+  Moved lresources.
+  Moved CreateLFM to Main.pp
+  Changed Form1 and TFOrm1 to MainIDE and TMainIDE
+  Shane
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

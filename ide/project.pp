@@ -144,10 +144,10 @@ begin
   INIFile.WriteInteger('Main Window','Create',1);
   INIFile.WriteInteger('Main Window','Visible',1);
   INIFile.WriteInteger('Main Window','State',0);  //0 = normal?
-  INIFile.WriteInteger('Main Window','Left',Form1.Left);
-  INIFile.WriteInteger('Main Window','Top',Form1.Top);
-  INIFile.WriteInteger('Main Window','Width',Form1.Width);
-  INIFile.WriteInteger('Main Window','Height',Form1.Height);
+  INIFile.WriteInteger('Main Window','Left',MainIDE.Left);
+  INIFile.WriteInteger('Main Window','Top',MainIDE.Top);
+  INIFile.WriteInteger('Main Window','Width',MainIDE.Width);
+  INIFile.WriteInteger('Main Window','Height',MainIDE.Height);
 
   INIFile.WriteInteger('Message Window','Create',1);
   if Messagedlg.Visible 
@@ -155,10 +155,10 @@ begin
   else INIFile.WriteInteger('Message WIndow','Visible',0);
 
   INIFile.WriteInteger('Message Window','State',0);  //0 = normal?
-  INIFile.WriteInteger('Message Window','Left',Form1.Left);
-  INIFile.WriteInteger('Message Window','Top',Form1.Top);
-  INIFile.WriteInteger('Message Window','Width',Form1.Width);
-  INIFile.WriteInteger('Message Window','Height',Form1.Height);
+  INIFile.WriteInteger('Message Window','Left',MainIDE.Left);
+  INIFile.WriteInteger('Message Window','Top',MainIDE.Top);
+  INIFile.WriteInteger('Message Window','Width',MainIDE.Width);
+  INIFile.WriteInteger('Message Window','Height',MainIDE.Height);
 
 
   IniFile.Free;
@@ -198,8 +198,8 @@ begin
       SList.Filename := TempStr;
       SList.Source.LoadFromFile(SList.Filename);
       SList.Page := -1;
-      Form1.SetFlags(SList);
-      Form1.SetName_Form(SList);
+      MainIDE.SetFlags(SList);
+      MainIDE.SetName_Form(SList);
       FUnits.Add(SList);
     end;
   end;
@@ -251,11 +251,11 @@ begin
     tempEditor.LeftChar := INIFIle.ReadInteger('View'+inttostr(i),'LeftCol',0);
   end;
 
-  Form1.Visible := (INIFile.ReadInteger('Main Window','Visible',1) = 1);
-  Form1.Left := INIFile.ReadInteger('Main Window','Left',0);
-  Form1.Top := INIFile.ReadInteger('Main Window','Top',0);
-  Form1.Height := INIFile.ReadInteger('Main Window','Height',100);
-  Form1.Width := INIFile.ReadInteger('Main Window','Width',800);
+  MainIDE.Visible := (INIFile.ReadInteger('Main Window','Visible',1) = 1);
+  MainIDE.Left := INIFile.ReadInteger('Main Window','Left',0);
+  MainIDE.Top := INIFile.ReadInteger('Main Window','Top',0);
+  MainIDE.Height := INIFile.ReadInteger('Main Window','Height',100);
+  MainIDE.Width := INIFile.ReadInteger('Main Window','Width',800);
 
   Messagedlg.Visible := (INIFile.ReadInteger('Message WIndow','Visible',1) = 1);
   Messagedlg.Left := INIFile.ReadInteger('Message Window','Left',0);
@@ -293,6 +293,12 @@ end;
 end.
 {
   $Log$
+  Revision 1.3  2001/01/04 20:33:53  lazarus
+  Moved lresources.
+  Moved CreateLFM to Main.pp
+  Changed Form1 and TFOrm1 to MainIDE and TMainIDE
+  Shane
+
   Revision 1.2  2000/12/19 18:43:13  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

@@ -159,7 +159,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
+  published
     property ActivePage;
     property PageIndex;
     property Pages;
@@ -321,6 +321,12 @@ end.
 
  {
   $Log$
+  Revision 1.3  2001/01/04 20:33:53  lazarus
+  Moved lresources.
+  Moved CreateLFM to Main.pp
+  Changed Form1 and TFOrm1 to MainIDE and TMainIDE
+  Shane
+
   Revision 1.2  2000/12/29 15:04:07  lazarus
   Added more images to the resource.
   Shane

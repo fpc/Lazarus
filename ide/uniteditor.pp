@@ -93,7 +93,6 @@ type
     Procedure ToggleBreakpointClicked(Sender : TObject);
     Procedure OpenAtCursorClicked(Sender : TObject);
 
-    property Control : TComponent read FControl;
     property Editor : TmwCustomEdit read FEditor;
 
   public
@@ -104,14 +103,16 @@ type
     Procedure KeyPressed(Sender : TObject; var key: char);
     Procedure CreateFormUnit(AForm : TCustomForm);
     Procedure CreateNewUnit;
+    Function IsControlUnit : Boolean;
     Function Close : Boolean;
     Function Save : Boolean;
     Function Open : Boolean;
 
-    property Source : TStrings read GetSource write SetSource;
+    property Control : TComponent read FControl;
     property CurrentCursorXLine : Integer read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property Owner : TComponent read FAOwner;
+    property Source : TStrings read GetSource write SetSource;
     property UnitName : String read FUnitName;
     property FileName : String read FFileName write FFilename;
     property Modified : Boolean read GetModified;
@@ -133,6 +134,8 @@ type
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
     FOnOpenFile : TNotifyFileEvent;
+    FOnCloseFile : TNotifyFileEvent;
+    FOnSaveFile : TNotifyFileEvent;
     Function GetEmpty : Boolean;  //look at the # of pages
   protected
     Function CreateNotebook : Boolean;
@@ -147,6 +150,7 @@ type
     Procedure DisplayFormforActivePage;
     Procedure DisplayCodeforControl(Control : TObject);
     Function CreateUnitFromForm(AForm : TForm) : TSourceEditor;
+
     procedure CloseClicked(Sender : TObject);
     Procedure NewClicked(Sender: TObject);
     procedure OpenClicked(Sender : TObject);
@@ -157,7 +161,9 @@ type
     Procedure OpenFile(FileName: String);
 
 
+    property OnCloseFile : TNotifyFileEvent read FOnCloseFile write FOnCloseFile;
     property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOPenFile;
+    property OnSaveFile : TNotifyFileEvent read FOnSaveFile write FOnSaveFile;
     property Empty : Boolean read GetEmpty;
   end;
 
@@ -178,7 +184,7 @@ Begin
   FSource := TStringList.create;
 
   BuildPopupMenu;
-
+  FControl := nil;
   CreateEditor(AOwner,AParent);
   FEditor.PopupMenu := FPopupMenu;
 
@@ -638,6 +644,7 @@ Begin
 
   try
     FEditor.Lines.SaveToFile(FileName);
+    FModified := False;
   except
     Result := False;
   end;
@@ -650,6 +657,11 @@ Begin
 CreateEditor(FAOwner,AParent);
 End;
 
+
+Function TSourceEditor.IsControlUnit : Boolean;
+Begin
+Result := (FControl <> nil);
+end;
 
 {------------------------------------------------------------------------}
                       { TSourceNotebook }
@@ -891,7 +903,10 @@ End;
 Procedure TSourceNotebook.SaveClicked(Sender: TObject);
 Begin
 if ActiveFileName <> '' then
-GetActiveSE.Save
+   begin
+   if (GetActiveSE.Save) then
+   if assigned(FOnSaveFile) then FOnSaveFile(TObject(GetActiveSE),ActiveFilename)
+   end
 else
 SaveAsClicked(Sender);
 
@@ -914,7 +929,8 @@ if (GetActiveSE.Modified) then
     If Application.MessageBox('Source has changed.  Save now?','Warning',mb_YesNo) = mrYes then
        SaveClicked(Sender);
 
-    GetActiveSE.Close;
+    if (GetActiveSE.Close) then
+    if assigned(FOnCloseFile) then FOnCloseFile(self,ActiveFileName);
 
     Notebook1.Pages.Delete(Notebook1.Pageindex);
 
@@ -936,7 +952,8 @@ Begin
   if FSaveDialog.Execute then
   begin
     GetActiveSe.FileName := FSaveDialog.Filename;
-    GetActiveSE.Save;
+    if (GetActiveSE.Save) then
+       if assigned(FOnSaveFile) then FOnSaveFile(TObject(GetActiveSE),ActiveFilename);
   end
   else
     Exit;
@@ -960,7 +977,8 @@ Begin
         if FSaveDialog.Execute then
            begin
            TempEditor.FileName := FSaveDialog.Filename;
-           TempEditor.Save;
+           if (TempEditor.Save) then
+                if assigned(FOnSaveFile) then FOnSaveFile(TObject(TempEditor),TempEditor.FileName);
            end
            else
            Break;
