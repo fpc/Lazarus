@@ -1262,8 +1262,9 @@ begin
         Add('program Project1;');
         Add('');
         Add('{$mode objfpc}{$H+}');
-        if fProjectType in [ptApplication] then
-          Add('{$AppType Gui} // for win32 applications');
+        // This results in crashing programs, when stdout is not open
+        //if fProjectType in [ptApplication] then
+        //  Add('{$AppType Gui} // for win32 applications');
         Add('');
         Add('uses');
         case fProjectType of
@@ -2738,6 +2739,9 @@ end.
 
 {
   $Log$
+  Revision 1.141  2003/11/25 08:59:01  mattias
+  fixed a few more black colors
+
   Revision 1.140  2003/11/22 23:56:33  mattias
   fixed win32 intf menu height from Wojciech
 

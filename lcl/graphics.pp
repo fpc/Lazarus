@@ -846,7 +846,7 @@ type
     Handle is interface dependent. }
 
   TBitmapInternalStateFlag = (
-    bmisCreateingCanvas
+    bmisCreatingCanvas
     );
   TBitmapInternalState = set of TBitmapInternalStateFlag;
 
@@ -897,7 +897,7 @@ type
     procedure SetWidth(NewWidth: Integer); override;
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
-    procedure StoreOriginalStream(Stream: TStream); virtual;
+    procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
     {$IFDEF UseFPImage}
     procedure ReadStreamWithFPImage(Stream: TStream; Size: Longint;
                                ReaderClass: TFPCustomImageReaderClass); virtual;
@@ -1257,6 +1257,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2003/11/25 08:59:01  mattias
+  fixed a few more black colors
+
   Revision 1.97  2003/11/22 17:22:14  mattias
   moved TBevelCut to controls.pp
 

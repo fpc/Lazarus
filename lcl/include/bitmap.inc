@@ -128,14 +128,14 @@ end;
 
 procedure TBitmap.CreateCanvas;
 begin
-  if (FCanvas <> nil) or (bmisCreateingCanvas in FInternalState) then exit;
-  Include(FInternalState,bmisCreateingCanvas);
+  if (FCanvas <> nil) or (bmisCreatingCanvas in FInternalState) then exit;
+  Include(FInternalState,bmisCreatingCanvas);
   try
     FCanvas := TBitmapCanvas.Create(Self);
     FCanvas.OnChange := @Changed;
     FCanvas.OnChanging := @Changing;
   finally
-    Exclude(FInternalState,bmisCreateingCanvas);
+    Exclude(FInternalState,bmisCreatingCanvas);
   end;
 end;
 
@@ -486,7 +486,7 @@ begin
   end;
   
   // store original stream
-  StoreOriginalStream(Stream);
+  StoreOriginalStream(Stream,Size);
   MemStream:=FImage.SaveStream;
 
   // determine stream type
@@ -684,19 +684,19 @@ begin
   {$ENDIF}
 end;
 
-procedure TBitmap.StoreOriginalStream(Stream: TStream);
+procedure TBitmap.StoreOriginalStream(Stream: TStream; Size: integer);
 var
   MemStream: TMemoryStream;
 begin
   if Stream<>FImage.SaveStream then begin
     MemStream:=TMemoryStream.Create;
-    MemStream.CopyFrom(Stream,Stream.Size-Stream.Position);
+    MemStream.CopyFrom(Stream,Size);
     FreeAndNil(FImage.FSaveStream);
     FImage.SaveStream:=MemStream;
   end else
     MemStream:=FImage.SaveStream;
   FImage.SaveStreamType:=bnNone;
-  MemStream.Position:=0;
+  FImage.SaveStream.Position:=0;
 end;
 
 {$IFDEF UseFPImage}
@@ -706,6 +706,7 @@ var
   IntfImg: TLazIntfImage;
   ImgReader: TFPCustomImageReader;
   ImgHandle, ImgMaskHandle: HBitmap;
+  NewSaveStream: TMemoryStream;
 begin
   UnshareImage;
   if Size = 0 then begin
@@ -713,22 +714,29 @@ begin
     Height:=0;
     exit;
   end;
-  StoreOriginalStream(Stream);
+  StoreOriginalStream(Stream,Size);
 
   IntfImg:=nil;
   ImgReader:=nil;
   try
+    // store save stream during reading
+    NewSaveStream:=FImage.SaveStream;
+    FImage.SaveStream:=nil;
+    // read image
     IntfImg:=TLazIntfImage.Create(0,0);
     IntfImg.GetDescriptionFromDevice(0);
     ImgReader:=ReaderClass.Create;
     InitFPImageReader(ImgReader);
-    FImage.SaveStream.Position:=0;
-    IntfImg.LoadFromStream(FImage.SaveStream,ImgReader);
+    NewSaveStream.Position:=0;
+    IntfImg.LoadFromStream(NewSaveStream,ImgReader);
     FinalizeFPImageReader(ImgReader);
     IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle);
     Handle:=ImgHandle;
     MaskHandle:=ImgMaskHandle;
   finally
+    // restore save stream
+    FImage.SaveStream:=NewSaveStream;
+    // clean up
     IntfImg.Free;
     ImgReader.Free;
   end;
@@ -760,6 +768,7 @@ begin
     exit;
   end;
 
+  writeln('WriteStreamWithFPImage');
   // write image to temporary stream
   MemStream:=TMemoryStream.Create;
   IntfImg:=nil;
@@ -780,7 +789,7 @@ begin
     FImage.SaveStreamType:=bnNone;
     MemStream:=nil;
     // copy savestream to destination stream
-    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+    DoWriteOriginal;
   finally
     MemStream.Free;
     IntfImg.Free;
@@ -953,6 +962,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2003/11/25 08:59:01  mattias
+  fixed a few more black colors
+
   Revision 1.50  2003/11/23 14:09:45  mattias
   fixed mem leak  thx to Vincent
 

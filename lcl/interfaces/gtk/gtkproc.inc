@@ -4793,6 +4793,7 @@ var
   SysColor: TColorRef;
   BaseColor: TColorRef;
   Red, Green, Blue: byte;
+  success: Boolean;
 begin
   BaseColor := Color and $FF;
 
@@ -5041,11 +5042,23 @@ begin
       end;
     ?????????????????}
   end;
-  if (style <> nil) then
-    if  (style^.colormap <> nil) then
-      gdk_colormap_query_color(style^.colormap,result.foreground.pixel, @result.foreground)
-    else
-      gdk_colormap_query_color(gdk_colormap_get_system(),result.foreground.pixel, @result.foreground)
+  
+  if (result.foreground.pixel = 0) and ((result.foreground.red <> 0) or
+     (result.foreground.blue <> 0) or (result.foreground.green <> 0)) then
+   begin
+     if (style <> nil) and (style^.colormap <> nil) then
+         gdk_colormap_alloc_colors(style^.colormap, @result.foreground, 1,
+           false, true, nil)
+       else
+         gdk_colormap_alloc_colors(gdk_colormap_get_system(),
+           @result.foreground, 1, false, true, @success);
+   end else
+     if (style <> nil) and (style^.colormap <> nil) then
+       gdk_colormap_query_color(style^.colormap,result.foreground.pixel,
+         @result.foreground)
+     else
+       gdk_colormap_query_color(gdk_colormap_get_system(),
+         result.foreground.pixel, @result.foreground);
 end;
 
 Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
@@ -5601,6 +5614,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.229  2003/11/25 08:59:01  mattias
+  fixed a few more black colors
+
   Revision 1.228  2003/11/23 13:13:35  mattias
   added clWindow for gtklistitem
 

@@ -205,6 +205,7 @@ var
   TheWinControl: TWinControl;
   ClientWidget: PGtkWidget;
   MainWidget: PGtkWidget;
+  ClientAreaStyle: PGtkStyle;
 begin
   {$ifdef GTK2}
   Result := False;
@@ -237,7 +238,7 @@ begin
       //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
       //writeln(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
       if (TheWinControl<>nil) then begin
-        BeginGDKErrorTrap;
+        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(GetControlWindow(Widget),NewEventMask);
@@ -248,7 +249,7 @@ begin
           gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
         //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
-        EndGDKErrorTrap;
+        {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       end;
 
       if TheWinControl<>nil then begin
@@ -3192,6 +3193,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.205  2003/11/25 08:59:01  mattias
+  fixed a few more black colors
+
   Revision 1.204  2003/10/19 16:33:10  marc
   * Fixed VKey keypad handling
 
