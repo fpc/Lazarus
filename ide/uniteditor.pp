@@ -2690,6 +2690,7 @@ var
       s:=HistoryList[FindReplaceDlgHistoryIndex[FindDlgComponent]]
     else
       s:=FindReplaceDlgUserText[FindDlgComponent];
+    //writeln('  SetHistoryText "',s,'"');
     FindReplaceDlg.ComponentText[FindDlgComponent]:=s
   end;
   
@@ -2706,6 +2707,7 @@ begin
     HistoryList:=InputHistories.ReplaceHistory;
   CurIndex:=FindReplaceDlgHistoryIndex[FindDlgComponent];
   CurText:=FindReplaceDlg.ComponentText[FindDlgComponent];
+  //writeln('TSourceNotebook.FindReplaceDlgKey CurIndex=',CurIndex,' CurText="',CurText,'"');
   if Key=VK_Down then begin
     // go forward in history
     if CurIndex>=0 then begin
