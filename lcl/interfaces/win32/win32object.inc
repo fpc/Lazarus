@@ -2010,6 +2010,9 @@ Begin
       bsSizeToolWin:
         FlagsEx:=WS_EX_TOOLWINDOW;
       End;//case
+      if (Parent = HWND(nil)) and (TCustomForm(Sender).Owner is TCustomForm) then
+        Parent := TCustomForm(TCustomForm(Sender).Owner).Handle;
+
       If TCustomForm(Sender).FormStyle = fsStayOnTop Then
         FlagsEx:= FlagsEx or WS_EX_TOPMOST;
       try
@@ -2812,6 +2815,9 @@ End;
 
 {
   $Log$
+  Revision 1.102  2003/08/30 18:55:42  mattias
+  implemented sticked windows from Micha
+
   Revision 1.101  2003/08/28 09:10:01  mattias
   listbox and comboboxes now set sort and selection at handle creation
 
