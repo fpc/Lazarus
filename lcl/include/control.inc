@@ -1466,6 +1466,7 @@ begin
 //writeln('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
   SetParent(nil);
+  FConstraints.Free;
   FFont.Free;
 //writeln('[TControl.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
@@ -1629,6 +1630,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.42  2002/04/03 11:26:34  lazarus
+  MG: fixed mem leaks
+
   Revision 1.41  2002/03/29 17:12:52  lazarus
   MG: added Triple and Quad mouse clicks to lcl and synedit
 
