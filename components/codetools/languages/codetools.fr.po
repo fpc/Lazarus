@@ -60,6 +60,10 @@ msgstr "; prévu après la propriété \"%s\", mais %s trouvé"
 msgid "\"%s\" not found"
 msgstr "\"%s\" non trouvé"
 
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
 msgstr "\"end\" de la classe/objet non trouvé"

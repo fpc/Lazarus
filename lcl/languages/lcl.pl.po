@@ -272,6 +272,10 @@ msgstr "B³êdna warto¶æ w³a¶ciwo¶ci"
 msgid "Invalid stream format"
 msgstr "B³êdny format strumienia"
 
+#: lclstrconsts:rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr ""
+
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
 msgstr "Lista musi byæ pusta"
@@ -339,6 +343,10 @@ msgstr "Wybierz czcionkê"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Wybierz kolor"
+
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"

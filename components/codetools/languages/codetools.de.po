@@ -50,6 +50,10 @@ msgstr ""
 msgid "\"%s\" not found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
 msgstr ""

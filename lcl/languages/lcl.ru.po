@@ -262,6 +262,10 @@ msgstr "Неправильное значение свойства"
 msgid "Invalid stream format"
 msgstr "Неправильный формат потока"
 
+#: lclstrconsts:rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr ""
+
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
 msgstr "Список должен быть пуст"
@@ -329,6 +333,10 @@ msgstr "Выбрать шрифт"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Выбрать цвет"
+
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"

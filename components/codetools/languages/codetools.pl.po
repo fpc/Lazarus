@@ -60,6 +60,10 @@ msgstr "zamiast \";\" po specyfikacji w³a¶ciwo¶ci \"%s\" znalaz³em %s"
 msgid "\"%s\" not found"
 msgstr "nie znalaz³em \"%s\""
 
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
 msgstr "brakuje \"end\" dla klasy/obiektu"

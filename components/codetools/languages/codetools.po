@@ -218,6 +218,10 @@ msgstr ""
 msgid "Forward class definition not resolved: %s"
 msgstr ""
 
+#: codetoolsstrconsts:ctsclassofdefinitionnotresolved
+msgid "\"class of\" definition not resolved: %s"
+msgstr ""
+
 #: codetoolsstrconsts:ctstypeidentifier
 msgid "type identifier"
 msgstr ""

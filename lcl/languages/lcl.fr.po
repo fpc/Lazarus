@@ -272,6 +272,10 @@ msgstr "Valeur de propriété incorrecte"
 msgid "Invalid stream format"
 msgstr "Format de flux incorrecte"
 
+#: lclstrconsts:rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
+msgstr ""
+
 #: lclstrconsts:rslistmustbeempty
 msgid "List must be empty"
 msgstr "List doit être vide"
@@ -339,6 +343,10 @@ msgstr "Choisir une police"
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr "Choisir une couleur"
+
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
 
 #: lclstrconsts:smenunotfound
 msgid "Sub-menu is not in menu"

@@ -106,6 +106,10 @@ msgstr ""
 msgid "Save file as"
 msgstr ""
 
+#: lclstrconsts:rsfdselectdirectory
+msgid "Select Directory"
+msgstr ""
+
 #: lclstrconsts:rsselectcolortitle
 msgid "Select color"
 msgstr ""
@@ -376,5 +380,9 @@ msgstr ""
 
 #: lclstrconsts:rscannotfocus
 msgid "Can not focus"
+msgstr ""
+
+#: lclstrconsts:rslistindexexceedsbounds
+msgid "List index exceeds bounds (%d)"
 msgstr ""
 
