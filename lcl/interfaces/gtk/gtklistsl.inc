@@ -145,6 +145,7 @@ end;
 function TGtkListStringList.Add(const S: string): Integer;
 var li : PGtkWidget;
   l, m, r, cmp: integer;
+  item_requisition: TGtkRequisition;
 begin
   BeginUpdate;
   try
@@ -183,11 +184,16 @@ begin
     ConnectItemCallbacks(PGtkListItem(li));
     Include(FStates,glsItemCacheNeedsUpdate);
     gtk_widget_show(li);
+    gtk_list_insert_items(FGtkList, g_list_append(nil, li), Result);
     if (Owner is TListBox)
     and (TListBox(Owner).ItemHeight>1) then begin
-      gtk_widget_set_usize(li,li^.Allocation.Width,TListBox(Owner).ItemHeight);
+      if li^.Allocation.Width>1 then
+        item_requisition.Width:=li^.Allocation.Width
+      else
+        gtk_widget_size_request(li,@item_requisition);
+      gtk_widget_set_usize(li,Max(li^.Allocation.Width,item_requisition.Width),
+                           TListBox(Owner).ItemHeight);
     end;
-    gtk_list_insert_items(FGtkList, g_list_append(nil, li), Result);
   finally
     EndUpdate;
   end;
@@ -774,6 +780,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/04/11 12:48:07  mattias
+  fixed gtk warning on setting item height
+
   Revision 1.13  2003/04/05 16:39:47  mattias
   implemented showing files in opened package
 
