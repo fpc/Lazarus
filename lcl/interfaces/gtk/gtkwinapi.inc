@@ -2420,7 +2420,7 @@ var
         LineWidth := Max(LineWidth, AP.cX);
       end;
       
-      LineWidth := Max(MaxLength, LineWidth);
+      LineWidth := Min(MaxLength, LineWidth);
       
       theRect.Right := theRect.Left + LineWidth;
       theRect.Bottom := theRect.Top + NumLines*TM.tmHeight;
@@ -7374,6 +7374,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.159  2002/10/15 22:28:06  lazarus
+  AJ: added forcelinebreaks
+
   Revision 1.158  2002/10/15 17:09:54  lazarus
   AJ: fixed GTK DrawText to use WordWrap, and add DT_EditControl
 
