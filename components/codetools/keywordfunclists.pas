@@ -544,6 +544,8 @@ begin
     Add('PASCAL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASSEMBLER',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FAR'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEAR'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
@@ -564,6 +566,8 @@ begin
     Add('POPSTACK',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CDECL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('FAR'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('NEAR'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordSection:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordSection);

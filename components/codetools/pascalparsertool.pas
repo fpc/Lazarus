@@ -1086,9 +1086,11 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    stdcall, virtual, abstract, dynamic, overload, override, cdecl, inline
 
  proc specifiers with parameters:
-   message <id or number>
-   external <id or number> name <id>
-   external <id or number> index <id>
+   message <id or number>;
+   external;
+   external name <id>;
+   external <id or number> name <id>;
+   external <id or number> index <id>;
    [alias: <string constant>]
 }
 var IsSpecifier: boolean;
@@ -1166,13 +1168,15 @@ begin
       end else if UpAtomIs('EXTERNAL') then begin
         HasForwardModifier:=true;
         ReadNextAtom;
-        if not UpAtomIs('NAME') then
-          ReadConstant(true,false,[]);
-        if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
-          ReadNextAtom;
-          ReadConstant(true,false,[]);
-        end else begin
-          RaiseException('"name" expected, but '+GetAtom+' found');
+        if not AtomIsChar(';') then begin
+          if not UpAtomIs('NAME') then
+            ReadConstant(true,false,[]);
+          if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
+          end else begin
+            RaiseException('"name" expected, but '+GetAtom+' found');
+          end;
         end;
       end else if AtomIsChar('[') then begin
         // read assembler alias   [public,alias: 'alternative name']
@@ -2456,8 +2460,8 @@ begin
         '''object'' expected, but '+GetAtom+' found');
     ReadNextAtom;
   end;
-  if AtomIsChar('=') and NodeHasParentOfType(CurNode,ctnConstDefinition) then
-  begin
+  if AtomIsChar('=')
+  and (CurNode.Parent.Desc in [ctnConstDefinition,ctnVarDefinition]) then begin
     // for example  'const f: procedure = nil;'
   end else begin
     if AtomIsChar(';') then begin
@@ -2465,7 +2469,8 @@ begin
       EqualFound:=false;
     end else if AtomIsChar('=') then begin
       EqualFound:=true;
-    end;
+    end else
+      EqualFound:=false;
     if not EqualFound then begin
       // read modifiers
       repeat
@@ -2478,6 +2483,9 @@ begin
           break;
         end else begin
           if not ReadNextAtomIsChar(';') then begin
+            if AtomIsChar('=') then begin
+              break;
+            end;
             if Scanner.CompilerMode<>cmDelphi then begin
               RaiseException('; expected, but '+GetAtom+' found');
             end else begin

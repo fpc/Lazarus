@@ -1038,9 +1038,12 @@ begin
     Values.Variables[FDirectiveName]:='0'
   else if (ValueStr='PRELOAD') and (FDirectiveName='ASSERTIONS') then
     Values.Variables[FDirectiveName]:=ValueStr
-  else
+  else if (FDirectiveName='LOCALSYMBOLS') then
+    // ignore link object directive
+  else begin
     RaiseException(
       'invalid flag value "'+ValueStr+'" for directive '+FDirectiveName);
+  end;
   Result:=ReadNextSwitchDirective;
 end;
 
