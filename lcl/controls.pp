@@ -41,8 +41,8 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, vclglobals, Graphics, LMessages, LCLLinux, ImgList, UTrace,
-  Menus, LCLType;
+  Classes, SysUtils, vclglobals, GraphType, Graphics, LMessages, LCLLinux,
+  ImgList, UTrace, Menus, LCLType;
 
 
 // Cursor constants
@@ -1236,6 +1236,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/08/06 09:32:48  lazarus
+  MG: moved TColor definition to graphtype.pp and registered TColor names
+
   Revision 1.54  2002/07/09 17:18:22  lazarus
   MG: fixed parser for external vars
 
