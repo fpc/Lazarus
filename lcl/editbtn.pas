@@ -27,10 +27,12 @@ unit EditBtn;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LMessages, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs;
+  Classes, SysUtils, LResources, LCLStrConsts, LCLType, LMessages, Graphics,
+  Controls, Forms, Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs;
 
 type
+  { TCustomEditButton }
+
   TCustomEditButton = class(TEdit)
   private
     FButton: TSpeedButton;
@@ -72,6 +74,9 @@ type
     Property Flat : Boolean Read GetFlat Write SetFlat;
     Property ButtonOnlyWhenFocused : Boolean Read FButtonNeedsFocus Write SetButtonNeedsFocus;
   end;
+  
+  
+  { TEditButton }
   
   TEditButton = Class(TCustomEditButton)
   Public
@@ -120,6 +125,9 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
+
+
+  { TFileNameEdit }
 
   TAcceptFileNameEvent = Procedure (Sender : TObject; Var Value : String) of Object;
   TDialogKind = (dkOpen,dkSave,dkPictureOpen,dkPictureSave);
@@ -200,6 +208,9 @@ type
     property OnStartDrag;
   end;
   
+  
+  { TDirectoryEdit }
+  
   TDirectoryEdit = Class(TCustomEditButton)
   private
     FDialogTitle: String;
@@ -267,6 +278,9 @@ type
     property OnStartDrag;
   end;
   
+  
+  { TDateEdit }
+  
   TAcceptDateEvent = Procedure (Sender : TObject; Var ADate : TDateTime; Var Action : Boolean) of Object;
   TDateEdit = Class(TCustomEditButton)
   private
@@ -331,6 +345,9 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
+  
+  
+  { TCalcEdit }
   
   TAcceptValueEvent = Procedure (Sender : TObject; Var AValue : Double; Var Action : Boolean) of Object;
   TCalcEdit = Class(TCustomEditButton)
@@ -401,8 +418,6 @@ type
     property OnStartDrag;
   end;
 
-procedure Register;
-
 Var
   FileOpenGlyph : TBitmap;
   DateGlyph : TBitmap;
@@ -414,12 +429,12 @@ Const
   ResBtnCalendar   = 'btncalendar';
   ResBtnCalculator = 'btncalculator';
 
+procedure Register;
+
 implementation
 
-uses lresources;
-
-Function GlyphFromBitmapOrResource(B : TBitmap; ResourceName : String) : TBitmap;
-
+Function GlyphFromBitmapOrResource(B : TBitmap;
+  const ResourceName : String) : TBitmap;
 begin
   Result:=TBitmap.Create;
   If Assigned(B) then
@@ -453,7 +468,6 @@ end;
 
 
 { TEditBtn }
-
 
 constructor TCustomEditButton.Create(AOwner: TComponent);
 begin
@@ -523,17 +537,17 @@ end;
 
 function TCustomEditButton.GetGlyph : TBitmap;
 Begin
- Result:=FButton.Glyph;
+  Result:=FButton.Glyph;
 end;
 
 procedure TCustomEditButton.SetNumGlyphs(ANumber: Integer);
 Begin
- FButton.NumGlyphs:=ANumber;
+  FButton.NumGlyphs:=ANumber;
 end;
 
 function TCustomEditButton.GetNumGlyphs:Integer;
 begin
- Result:=FButton.NumGlyphs;
+  Result:=FButton.NumGlyphs;
 end;
 
 procedure TCustomEditButton.Notification(AComponent: TComponent; Operation: TOperation);

@@ -251,7 +251,8 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Dialogs',[TOpenPictureDialog,TSavePictureDialog]);
+  RegisterComponents('Dialogs',[TOpenPictureDialog,TSavePictureDialog,
+                                TCalendarDialog,TCalculatorDialog]);
 end;
 
 { TPreviewFileControl }
@@ -1208,19 +1209,17 @@ end;
 procedure TCalendarDialogForm.InitForm;
 
 begin
-  ClientHeight:=150;
-  ClientWidth:=200;
+  Height:=150;
+  Width:=200;
+  Position:=poScreenCenter;
   BorderStyle:=bsDialog;
   FCalendar:=TCalendar.Create(Self);
   With FCalendar do
     begin
     Parent:=Self;
-    Top:=0;
-    Left:=0;
-    Width:=Width;
-    Height:=98;
+    SetBounds(0,0,Self.Width,98);
     Align:=alClient;
-    Anchors:=[akLeft,akRight,aktop,akbottom];
+    //Anchors:=[akLeft,akRight,akTop,akBottom];
     end;
   FPanel:=TPanel.Create(Self);
   With FPanel do
@@ -1230,7 +1229,7 @@ begin
     Height:=32;
     Width:=200;
     Align:=alBottom;
-    Anchors:=[akLeft,akRight,akbottom];
+    Anchors:=[akLeft,akRight,akBottom];
     Caption:='';
     BevelOuter:=bvLowered;
     end;
@@ -1243,7 +1242,7 @@ begin
     Height:=24;
     Width:=50;
     Left:=Self.Width-FOK.Width-4;
-    Anchors:=[akright,aktop];
+    Anchors:=[akRight,akTop];
     Default:=True;
     ModalResult:=MrOK;
     end;
