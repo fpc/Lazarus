@@ -402,7 +402,7 @@ var
 begin
   if DC=0 then ;
   if not (cfColorAllocated in GDIColor^.ColorFlags) then begin
-    Case GDIColor^.ColorRef of
+    Case TColor(GDIColor^.ColorRef) of
       clScrollbar..clEndColors:
         RGBColor := GetSysColor(GDIColor^.ColorRef and $FF);
       else
@@ -493,7 +493,7 @@ begin
     else
       exit;
     end;
-    Case GDIColor^.ColorRef of
+    Case TColor(GDIColor^.ColorRef) of
       clScrollbar,
       clInfoBk,
       clMenu,
@@ -4087,6 +4087,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.176  2003/05/27 17:58:31  mattias
+  fixed range checks
+
   Revision 1.175  2003/05/26 21:42:35  mattias
   fixed typos
 
