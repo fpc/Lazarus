@@ -1449,6 +1449,8 @@ begin
   itmProjectBuildAll.OnClick := @mnuBuildAllProjectClicked;
   mnuRun.Add(itmProjectBuildAll);
 
+  mnuRun.Add(CreateSeperator);
+
   itmProjectRun := TMenuItem.Create(Self);
   itmProjectRun.Name:='itmProjectRun';
   itmProjectRun.Caption := 'Run';
@@ -6000,6 +6002,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.226  2002/02/20 16:01:43  lazarus
+  MG: fixed editor opts general flags
+
   Revision 1.225  2002/02/18 22:46:10  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 

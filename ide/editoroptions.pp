@@ -1963,13 +1963,13 @@ begin
   // general
   SetOption(AltSetsColumnModeCheckBox,eoAltSetsColumnMode);
   SetOption(AutoIndentCheckBox,eoAutoIndent);
-  SetOption(BracketHighlightCheckBox,eoBracketHighlight);
+  //SetOption(BracketHighlightCheckBox,eoBracketHighlight);
   SetOption(DragDropEditingCheckBox,eoDragDropEditing);
   SetOption(DropFilesCheckBox,eoDropFiles);
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
   SetOption(KeepCaretXCheckBox,eoKeepCaretX);
-  SetOption(NoCaretCheckBox,eoNoCaret);
-  SetOption(NoSelectionCheckBox,eoNoSelection);
+  //SetOption(NoCaretCheckBox,eoNoCaret);
+  //SetOption(NoSelectionCheckBox,eoNoSelection);
   SetOption(ScrollByOneLessCheckBox,eoScrollByOneLess);
   SetOption(ScrollPastEoFCheckBox,eoScrollPastEoF);
   SetOption(ScrollPastEoLCheckBox,eoScrollPastEoL);
@@ -4250,11 +4250,28 @@ end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender:TObject);
 var res: TModalResult;
+  SynOptions: TSynEditorOptions;
 begin
   SaveCurCodeTemplate;
   
   // save all values
+  SynOptions:=PreviewEdits[1].Options;
+  if BracketHighlightCheckBox.Checked then
+    Include(SynOptions,eoBracketHighlight)
+  else
+    Exclude(SynOptions,eoBracketHighlight);
+  if NoCaretCheckBox.Checked then
+    Include(SynOptions,eoNoCaret)
+  else
+    Exclude(SynOptions,eoNoCaret);
+  if NoSelectionCheckBox.Checked then
+    Include(SynOptions,eoNoSelection)
+  else
+    Exclude(SynOptions,eoNoSelection);
+  PreviewEdits[1].Options:=SynOptions;
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
+  PreviewEdits[1].Options:=SynOptions-[eoBracketHighlight]
+                                     +[eoNoCaret,eoNoSelection];
 
   // general
   EditorOpts.UndoAfterSave:=UndoAfterSaveCheckBox.Checked;
