@@ -1062,6 +1062,10 @@ end;
 function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
   if Target=nil then writeln('[DeliverMessage] Target = nil');
+  {$IFDEF VerboseDeliverMessage}
+  writeln('DeliverMessage ',TComponent(Target).Name,':',TObject(Target).ClassName,
+          ' Message=',TLMessage(AMessage).Msg);
+  {$ENDIF}
   if TObject(Target) is TControl then
   begin
     TControl(Target).WindowProc(TLMessage(AMessage));
@@ -3986,6 +3990,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.143  2002/10/27 22:37:12  lazarus
+  MG: added verbosity to delivermessage
+
   Revision 1.142  2002/10/27 11:51:35  lazarus
   MG: fixed memleaks
 
