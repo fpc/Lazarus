@@ -1077,10 +1077,8 @@ begin
   // events and constructors can refer to it
   TComponent(Reference) := Instance;
   ok:=false;
-  if FindGlobalComponent=nil then begin
-    OldFindGlobalComponent:=FindGlobalComponent;
-    FindGlobalComponent:=@FindApplicationComponent;
-  end;
+  OldFindGlobalComponent:=FindGlobalComponent;
+  FindGlobalComponent:=@FindApplicationComponent;
   try
     Instance.Create(Self);
     ok:=true;
@@ -1115,6 +1113,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2003/11/17 22:53:26  mattias
+  updated Makefiles
+
   Revision 1.64  2003/11/07 18:47:30  micha
   hintwindow fixes
 
