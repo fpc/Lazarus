@@ -1780,12 +1780,13 @@ begin
 
     LM_MOUSEMOVE:
     begin
-      if (sender is TComboBox) then Begin
+      if (sender is TComboBox) 
+      then Begin
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
         ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button), 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
       end
-       else
-       ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
+      else
+        ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK)
     end;
     
     LM_PRESSED :
@@ -1943,20 +1944,75 @@ begin
 
     LM_HSCROLL:
     begin
-      ConnectSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
+      if Sender is TCustomListView
+      then begin
+        ConnectSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
+      end
+      else begin
+        ConnectSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
+      end;
     end;
 
     LM_VSCROLL:
     begin
-      ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
+      if Sender is TCustomListView
+      then begin
+        ConnectSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
+      end
+      else begin
+        ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
+      end;
     end;
     
     LM_YEARCHANGED :  //calendar
     Begin
       ConnectSignal(gObject, 'prev-year', @gtkyearchanged);
       ConnectSignal(gObject, 'next-year', @gtkyearchanged);
+    end;    
+    
+    // Listview & Header control
+    
+    //HDN_BEGINTRACK
+    //HDN_DIVIDERDBLCLICK
+
+    HDN_ENDTRACK, 
+    HDN_TRACK:
+    begin
+      ConnectSignal(gObject, 'resize-column', @gtkLVResizeColumn);
+      ConnectSignal(gObject, 'abort-column-resize', @gtkLVAbortColumnResize);
+    end;
+     
+    HDN_ITEMCHANGED,
+    HDN_ITEMCHANGING: 
+    begin
+      ConnectSignal(gObject, 'resize-column', @gtkLVResizeColumn);
     end;
 
+//    HDN_ITEMDBLCLICK 
+    HDN_ITEMCLICK,
+    LVN_COLUMNCLICK: 
+    begin
+      ConnectSignal(gObject, 'click-column', @gtkLVClickColumn);
+    end;
+
+//    LVN_DELETEALLITEMS,
+    LVN_DELETEITEM, 
+    LVN_INSERTITEM:
+    begin
+      ConnectSignal(gObject, 'row-move', @gtkLVRowMove);
+    end;
+
+    LVN_ITEMCHANGED,
+    LVN_ITEMCHANGING: 
+    begin
+      ConnectSignal(gObject, 'select-row', @gtkLVSelectRow);
+      ConnectSignal(gObject, 'unselect-row', @gtkLVUnSelectRow);
+      ConnectSignal(gObject, 'toggle-focus-row', @gtkLVToggleFocusRow);
+      ConnectSignal(gObject, 'select-all', @gtkLVSelectAll);
+      ConnectSignal(gObject, 'unselect-all', @gtkLVUnSelectAll);
+      ConnectSignal(gObject, 'end-selection', @gtkLVEndSelection);
+    end;
+    
 (*
     LM_WINDOWPOSCHANGED:
     begin
@@ -2063,6 +2119,17 @@ begin
           SetCallback(LM_YEARCHANGED,Sender);
           SetCallback(LM_DAYCHANGED,Sender);
         End;
+        
+        csListview:
+        begin
+          SetCallback(LM_HSCROLL,Sender);
+          SetCallback(LM_VSCROLL,Sender);
+          SetCallback(LVN_COLUMNCLICK,Sender); 
+          SetCallback(LVN_ITEMCHANGED,Sender);
+          SetCallback(LVN_ITEMCHANGING,Sender);
+          SetCallback(LVN_DELETEITEM,Sender);
+          SetCallback(LVN_INSERTITEM,Sender);
+        end;
 
       end; //case
     end
@@ -3778,6 +3845,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.112  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.111  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane
