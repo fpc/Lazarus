@@ -86,8 +86,6 @@ const
   LM_LAYOUTCHANGED  = LM_ComUser+50;
   LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
 
-  LM_LOADXPM        = LM_ComUser+52;
-
   LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
   //LM_SETENABLED   = LM_COMUSER+54;
@@ -920,8 +918,6 @@ begin
   LM_LAYOUTCHANGED  :Result:='LM_LAYOUTCHANGED';
   LM_BTNDEFAULT_CHANGED :Result:='LM_BTNDEFAULT_CHANGED';
 
-  LM_LOADXPM        :Result:='LM_LOADXPM';
-
   LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
 
   //LM_SETENABLED   :Result:='LM_SETENABLED';
@@ -1082,6 +1078,9 @@ end.
 
 {
   $Log$
+  Revision 1.65  2004/06/18 20:15:06  micha
+  remove obsolete LM_LOADXPM message
+
   Revision 1.64  2004/06/14 12:54:02  micha
   fix designer cursor to not set Form.Cursor directly
 

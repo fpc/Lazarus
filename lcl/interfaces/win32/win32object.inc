@@ -406,7 +406,6 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
 Var
-  XPMFIle : TFileStream;
   //Bitmap: HBITMAP; // Pixel map type image
   //CBI: COMBOBOXINFO;
   DC: HDC;
@@ -468,29 +467,6 @@ Begin
       PLMScreenInit(Data)^.ColorDepth := GetDeviceCaps(DC, BitsPixel);
       ReleaseDC(Handle, DC);
     End;
-    LM_LOADXPM:
-      Begin
-        If (Sender is TBitmap) Then
-        Begin
-         //Until CreateBitmap supports setting Data
-         //GTK requires the Bitmap loading to be done
-         //by the interface, aka here, so a hack...
-          XPMFile := TFileStream.Create(String(Data), fmOpenRead);
-          Try
-            (Sender as TBitmap).LoadFromStream(XPMFile);
-          Finally
-            XPMFile.Free;
-          end;
-          {Assert(False, Format('Trace:Bitmap name: %S', [StrPas(Data)]));
-          //SData := String(Data);
-          NormalizeIconName(Data);
-          //Data := PChar(SData);
-          Bitmap := LoadImage(0, LPCTSTR(Data), IMAGE_ICON, 0, 0, LR_DefaultSize Or LR_LoadFromFile);
-          Assert(False, 'Trace:1');
-          If Bitmap = HBITMAP(Nil) Then
-            Assert(False, 'Trace:BITMAP NOT LOADED!');}
-        End;
-      End;
   Else
   Begin
     Handle := ObjectToHWND(Sender);
@@ -3294,6 +3270,9 @@ End;
 
 {
   $Log$
+  Revision 1.208  2004/06/18 20:15:06  micha
+  remove obsolete LM_LOADXPM message
+
   Revision 1.207  2004/06/18 19:55:43  micha
   fix xp themes drawing image on bitbtn
 
