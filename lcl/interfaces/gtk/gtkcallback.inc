@@ -809,7 +809,7 @@ end;
 function ControlGetsMouseDownBefore(AControl: TControl): boolean;
 begin
   case AControl.fCompStyle of
-  csCheckBox:
+  csCheckBox, csToggleBox:
     Result:=false;
   else
     Result:=true;
@@ -1101,7 +1101,8 @@ function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 begin
   case AControl.fCompStyle of
   csCheckBox,
-  csRadioButton:
+  csRadioButton,
+  csToggleBox:
     Result:=false;
   else
     Result:=true;
@@ -2541,6 +2542,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.168  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.167  2003/02/18 22:56:23  mattias
   fixed key grabbing
 
