@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <PathDelim Value="/"/>
     <Version Value="5"/>
     <General>
       <Flags>
@@ -23,14 +24,14 @@
         <UsageCount Value="30"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="31" Y="143"/>
+        <CursorPos X="17" Y="24"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="LazConverterForm"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="130"/>
+        <TopLine Value="1"/>
         <UnitName Value="mainunit"/>
         <UsageCount Value="30"/>
       </Unit1>
@@ -74,7 +75,7 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="3"/>
+    <Version Value="4"/>
     <SearchPaths>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
@@ -98,7 +99,7 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-dTRANSLATESTRING"/>
+      <CustomOptions Value="-d_off_TRANSLATESTRING"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

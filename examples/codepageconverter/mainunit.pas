@@ -27,7 +27,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, FileFind, Menus{$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF};
+  StdCtrls, Buttons, ComCtrls, FileFind, Menus
+  {$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF};
 
 type
   TLazConverterForm = class(TForm)
@@ -129,92 +130,92 @@ var tmp:tstringlist;
     i:integer;
     ok:boolean;
 
-               function ConvertMe(var tmp:tstringlist):boolean;
-               var cpin,cpout:tstringlist;
-                   ok:boolean;
-                   i:integer;
+   function ConvertMe(var tmp:tstringlist):boolean;
+   var cpin,cpout:tstringlist;
+       ok:boolean;
+       i:integer;
+   begin
+     ok:=true;result:=true;
+     if trim(tmp.text)='' then result:=false else
+     begin
+       cpin:=tstringlist.create;
+       cpout:=tstringlist.create;
+       try
+         try
+           cpin.LoadFromFile(origpath+combobox1.text);
+         except
+           ok:=false;
+         end;
+         try
+           cpout.LoadFromFile(origpath+combobox2.text);
+         except
+           ok:=false;
+         end;
+         if ok then
+         begin
+           if cpin.Count=cpout.Count then
+           begin
+             for i:=0 to cpin.Count-1 do
+             begin
+               cpin[i]:=trim(cpin[i]);
+               cpout[i]:=trim(cpout[i]);
+               if (cpin[i]<>'') and (cpout[i]<>'') then
                begin
-                 ok:=true;result:=true;
-                 if trim(tmp.text)='' then result:=false else
-                 begin
-                   cpin:=tstringlist.create;
-                   cpout:=tstringlist.create;
-                   try
-                     try
-                       cpin.LoadFromFile(origpath+combobox1.text);
-                     except
-                       ok:=false;
-                     end;
-                     try
-                       cpout.LoadFromFile(origpath+combobox2.text);
-                     except
-                       ok:=false;
-                     end;
-                     if ok then
-                     begin
-                       if cpin.Count=cpout.Count then
-                       begin
-                         for i:=0 to cpin.Count-1 do
-                         begin
-                           cpin[i]:=trim(cpin[i]);
-                           cpout[i]:=trim(cpout[i]);
-                           if (cpin[i]<>'') and (cpout[i]<>'') then
-                           begin
-                             tmp.text:=Replace(tmp.text,char(strtoint(cpin[i])),char(strtoint(cpout[i])));
-                           end;
-                         end;
-                       end else result:=false;
-                     end else result:=false;
-                   finally
-                     cpin.free;
-                     cpout.free;
-                   end;
-                 end;
+                 tmp.text:=Replace(tmp.text,char(strtoint(cpin[i])),char(strtoint(cpout[i])));
                end;
-    
-               function ConvertMeLRS(var tmp:tstringlist):boolean;
-               var cpin,cpout:tstringlist;
-                   ok:boolean;
-                   i:integer;
+             end;
+           end else result:=false;
+         end else result:=false;
+       finally
+         cpin.free;
+         cpout.free;
+       end;
+     end;
+   end;
+
+   function ConvertMeLRS(var tmp:tstringlist):boolean;
+   var cpin,cpout:tstringlist;
+       ok:boolean;
+       i:integer;
+   begin
+     result:=true;
+     ok:=true;
+     if trim(tmp.text)='' then result:=false else
+     begin
+       cpin:=tstringlist.create;
+       cpout:=tstringlist.create;
+       try
+         try
+           cpin.LoadFromFile(origpath+combobox1.text);
+         except
+          ok:=false;
+         end;
+         try
+           cpout.LoadFromFile(origpath+combobox2.text);
+         except
+           ok:=false;
+         end;
+         if ok then
+         begin
+           if cpin.Count=cpout.Count then
+           begin
+             for i:=0 to cpin.Count-1 do
+             begin
+               cpin[i]:=trim(cpin[i]);
+               cpout[i]:=trim(cpout[i]);
+               if (cpin[i]<>'') and (cpout[i]<>'') then
                begin
-                 result:=true;
-                 ok:=true;
-                 if trim(tmp.text)='' then result:=false else
-                 begin
-                   cpin:=tstringlist.create;
-                   cpout:=tstringlist.create;
-                   try
-                     try
-                       cpin.LoadFromFile(origpath+combobox1.text);
-                     except
-                      ok:=false;
-                     end;
-                     try
-                       cpout.LoadFromFile(origpath+combobox2.text);
-                     except
-                       ok:=false;
-                     end;
-                     if ok then
-                     begin
-                       if cpin.Count=cpout.Count then
-                       begin
-                         for i:=0 to cpin.Count-1 do
-                         begin
-                           cpin[i]:=trim(cpin[i]);
-                           cpout[i]:=trim(cpout[i]);
-                           if (cpin[i]<>'') and (cpout[i]<>'') then
-                           begin
-                             tmp.text:=Replace(tmp.text,'#'+cpin[i],'#'+cpout[i]);
-                           end;
-                         end;
-                       end else result:=false;
-                     end else result:=false;
-                   finally
-                     cpin.free;
-                     cpout.free;
-                   end;
-                 end;
+                 tmp.text:=Replace(tmp.text,'#'+cpin[i],'#'+cpout[i]);
                end;
+             end;
+           end else result:=false;
+         end else result:=false;
+       finally
+         cpin.free;
+         cpout.free;
+       end;
+     end;
+   end;
 
 begin
   if FileSearch1.filesfound.Count-1=-1 then abort;
