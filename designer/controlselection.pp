@@ -300,6 +300,7 @@ const
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 function GetParentFormRelativeBounds(Component: TComponent): TRect;
 function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
+function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
 function ComponentIsTopLvl(AComponent: TComponent): boolean;
 procedure GetComponentBounds(AComponent: TComponent;
   var Left, Top, Width, Height: integer);
@@ -375,6 +376,18 @@ begin
     Result.X:=LongRec(Component.DesignInfo).Lo;
     Result.Y:=LongRec(Component.DesignInfo).Hi;
   end;
+end;
+
+function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
+var
+  FormClientOrigin: TPoint;
+begin
+  Result.X:=0;
+  Result.Y:=0;
+  GetCaretPos(Result);
+  FormClientOrigin:=Form.ClientOrigin;
+  dec(Result.X,FormClientOrigin.X);
+  dec(Result.Y,FormClientOrigin.Y);
 end;
 
 function ComponentIsTopLvl(AComponent: TComponent): boolean;

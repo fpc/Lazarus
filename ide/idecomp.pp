@@ -50,6 +50,9 @@ uses
 {$ENDIF}
 ;
 
+const
+  ComponentPaletteBtnWidth  = 25;
+  ComponentPaletteBtnHeight = 25;
 
 type
    {--------------------------------------------
@@ -254,7 +257,8 @@ Begin
    Begin
     Parent := nParent;
     Flat := True;
-    SetBounds((FRegisteredComponent.IndexInPage+1)*27,Top,25,25);
+    SetBounds((FRegisteredComponent.IndexInPage+1)*27,Top,
+              ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
     Enabled := True;
     Glyph := Pixmap1;
     Visible := True;

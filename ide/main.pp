@@ -915,8 +915,8 @@ begin
         Parent := ComponentNotebook.Page[PageCount];
         Parent.OnMouseMove := @MainMouseMoved;  //this is for the hints
         Enabled := True;
-        Width := 26;
-        Height := 26;
+        Width := ComponentPaletteBtnWidth;
+        Height := ComponentPaletteBtnHeight;
         OnClick := @ControlClick;
         Glyph := SelectionPointerPixmap;
         Visible := True;
@@ -6594,6 +6594,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.344  2002/08/19 18:24:25  lazarus
+  MG: fixed mouse coords while component dragging
+
   Revision 1.343  2002/08/17 11:38:01  lazarus
   MG: fixed keygrabbing key translation
 
