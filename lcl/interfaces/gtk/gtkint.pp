@@ -111,6 +111,8 @@ type
     procedure ShowHide(Sender : TObject);
     procedure GetNoteBookCloseBtnPixmap(Window: PGdkWindow;
                                         var Img, Mask: PGdkPixmap);
+    procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
+    procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
     procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
     procedure AddNBPage(ANoteBook, APage: TObject; Index: Integer);
     procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);
@@ -478,6 +480,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.67  2002/09/01 16:11:22  lazarus
   MG: double, triple and quad clicks now works
 
