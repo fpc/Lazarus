@@ -34,7 +34,7 @@ The IDE files are the files in the <lazarus>, designer and debugger directory.
 They are under the GPL 2, with the following exceptions:
 objectinspector.pp, propedits.pp, transfermacros.pp, wordcompletion.pp,
 patheditordlg.pas, outputfilter.pas, inputfiledialog.pas, findreplacedialog.pp,
-findinfiles.pas
+findinfilesdlg.pas
 These files are under the modified LGPL as described in COPYING.modifiedLGPL.
 
 
