@@ -74,8 +74,8 @@ var i: integer;
 begin
   SendMsgToInterface(LM_CREATE, Self, nil); // CreateComponent(nil);
   // initiate creation of subitems
-  // Note: FItems is a MenuItem, by using Createhandle all subitems will be
-  //       created.
+  // Note: FItems is a MenuItem, by using HandleNeeded all subitems will
+  //       create their handles.
   for i:=0 to Items.Count-1 do
     Items[i].HandleNeeded;
 end;
@@ -204,6 +204,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/06/13 06:05:49  mattias
+  started context diff
+
   Revision 1.16  2002/11/12 10:16:17  lazarus
   MG: fixed TMainMenu creation
 

@@ -1264,7 +1264,11 @@ var
   Control: TWinControl;
 begin
   inherited Loaded;
-  if FMenu<>nil then FMenu.HandleNeeded;
+  if FMenu<>nil then begin
+    writeln('TCustomForm.Loaded A ',Name,':',ClassName,' ',ClientHeight);
+    FMenu.HandleNeeded;
+    writeln('TCustomForm.Loaded B ',Name,':',ClassName,' ',ClientHeight);
+  end;
   if ActiveControl <> nil then
   begin
     Control := ActiveControl;
@@ -1426,6 +1430,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2003/06/13 06:05:49  mattias
+  started context diff
+
   Revision 1.101  2003/06/10 00:46:16  mattias
   fixed aligning controls
 
