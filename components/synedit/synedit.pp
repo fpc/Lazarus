@@ -2374,8 +2374,27 @@ var
         pszText := PChar(@Token[First]);
         nCharsToPaint := Min(Last - First + 1, TokenLen - First + 1);
       end;
+      {$IFDEF SYN_LAZARUS}
+      // Draw the right edge under the text if necessary
+      if bDoRightEdge and (not (eoHideRightMargin in Options))
+      and (nRightEdge>=rcToken.Left) and (nRightEdge<rcToken.Right) then begin
+        // draw background
+        InternalFillRect(dc,rcToken);
+        // draw edge
+        LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+        LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+        // draw text
+        fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
+          pszText, nCharsToPaint);
+      end else begin
+        // draw text with background
+        fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
+          pszText, nCharsToPaint);
+      end;
+      {$ELSE}
       fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions, rcToken,
         pszText, nCharsToPaint);
+      {$ENDIF}
       rcToken.Left := rcToken.Right;
     end;
   end;
@@ -2463,6 +2482,14 @@ var
         rcToken.Right := rcLine.Right;
         InternalFillRect(dc, rcToken);
       end;
+      {$IFDEF SYN_LAZARUS}
+      // Draw the right edge if necessary.
+      if bDoRightEdge and (not (eoHideRightMargin in Options))
+      and (nRightEdge>=rcToken.Left) then begin
+        LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+        LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      end;
+      {$ENDIF}
     end;
   end;
 
@@ -2830,20 +2857,15 @@ var
         // of the invalid area with the correct colors.
         PaintHighlightToken(TRUE);
       end;
+      {$IFNDEF SYN_LAZARUS}
       // Now paint the right edge if necessary. We do it line by line to reduce
       // the flicker. Should not cost very much anyway, compared to the many
       // calls to ExtTextOut.
       if bDoRightEdge then begin
-        {$IFDEF SYN_LAZARUS}
-        if (not (eoHideRightMargin in Options)) then begin
-          LCLLinux.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
-          LCLLinux.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
-        end;
-        {$ELSE}
         Windows.MoveToEx(dc, nRightEdge, rcLine.Top, nil);
         Windows.LineTo(dc, nRightEdge, rcLine.Bottom + 1);
-        {$ENDIF}
       end;
+      {$ENDIF}
     end;
   end;
   
@@ -3023,16 +3045,13 @@ begin
   if (rcToken.Top < rcToken.Bottom) then begin
     SetBkColor(dc, ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
+    {$IFNDEF SYN_LAZARUS}
     // Draw the right edge if necessary.
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
-      {$IFDEF SYN_LAZARUS}
-      LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-      LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      {$ELSE}
       Windows.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       Windows.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
-      {$ENDIF}
     end;
+    {$ENDIF}
   end;
   
   {$IFDEF SYN_LAZARUS}
