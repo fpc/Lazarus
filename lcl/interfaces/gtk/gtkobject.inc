@@ -5012,6 +5012,7 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   AWindow: PGdkWindow;
+  Adjustment: PGtkAdjustment;
 begin
   p := nil;
   SetupProps:= false;
@@ -5354,22 +5355,16 @@ begin
 
   csScrollBar :
     begin
+      Adjustment := PgtkAdjustment(
+                     gtk_adjustment_new(1,TScrollBar(sender).min,
+                     TScrollBar(sender).max,
+                     TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
+                     TScrollBar(sender).Pagesize));
       if (TScrollBar(sender).kind = sbHorizontal) then
-      begin
-        P := gtk_hscrollbar_new(PgtkAdjustment(
-                 gtk_adjustment_new(1,TScrollBar(sender).min,
-                 TScrollBar(sender).max,
-                 TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-                 TScrollBar(sender).Pagesize)));
-      end
+        P := gtk_hscrollbar_new(Adjustment)
       else
-      Begin
-        P := gtk_vscrollbar_new(PgtkAdjustment(
-                 gtk_adjustment_new(1,TScrollBar(sender).min,
-                 TScrollBar(sender).max,
-                 TScrollBar(sender).SmallChange, TScrollBar(sender).LargeChange,
-                 TScrollBar(sender).Pagesize)));
-      end;
+        P := gtk_vscrollbar_new(Adjustment);
+      gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar', P);
     end;
 
   csScrolledWindow :
@@ -7008,6 +7003,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.623  2005/02/05 14:53:35  mattias
+  fixed for gtk TScrollBar  from Andrew Haines
+
   Revision 1.622  2005/02/05 09:09:52  mattias
   implemented TListView for gtk2   From Andrew Haines
 
