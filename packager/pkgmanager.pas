@@ -104,6 +104,8 @@ type
     procedure SetupMainBarShortCuts; override;
     procedure SetRecentPackagesMenu; override;
     procedure AddFileToRecentPackages(const Filename: string);
+    
+    function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
 
     procedure LoadInstalledPackages; override;
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
@@ -125,6 +127,8 @@ type
                               Flags: TPkgCompileFlags): TModalResult; override;
     function DoSavePackageMainSource(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
+    function OnRenameFile(const OldFilename,
+                          NewFilename: string): TModalResult; override;
   end;
 
 implementation
@@ -918,6 +922,20 @@ begin
   MainIDE.SaveEnvironment;
 end;
 
+function TPkgManager.GetDefaultSaveDirectoryForFile(const Filename: string
+  ): string;
+var
+  APackage: TLazPackage;
+  PkgFile: TPkgFile;
+begin
+  Result:='';
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
+  if PkgFile=nil then exit;
+  APackage:=PkgFile.LazPackage;
+  if APackage.AutoCreated or (not APackage.HasDirectory) then exit;
+  Result:=APackage.Directory;
+end;
+
 procedure TPkgManager.LoadInstalledPackages;
 begin
   // base packages
@@ -1431,6 +1449,41 @@ begin
       exit;
     end;
   end;
+
+  Result:=mrOk;
+end;
+
+function TPkgManager.OnRenameFile(const OldFilename, NewFilename: string
+  ): TModalResult;
+var
+  OldPackage: TLazPackage;
+  OldPkgFile: TPkgFile;
+  NewPkgFile: TPkgFile;
+begin
+  Result:=mrOk;
+  if (OldFilename=NewFilename) or (not FilenameIsPascalUnit(NewFilename)) then
+    exit;
+  OldPkgFile:=PackageGraph.FindFileInAllPackages(OldFilename,false,true);
+  if (OldPkgFile=nil) or (OldPkgFile.LazPackage.ReadOnly) then
+    exit;
+  OldPackage:=OldPkgFile.LazPackage;
+  NewPkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,false,true);
+  if (NewPkgFile<>nil) and (OldPackage<>NewPkgFile.LazPackage) then exit;
+
+  Result:=MessageDlg('Rename file in package?',
+    'The package '+OldPackage.IDAsString+' owns the file'#13
+    +'"'+OldFilename+'".'#13
+    +'Should the file be renamed in the package as well?',
+    mtConfirmation,[mbYes,mbNo,mbAbort],0);
+  if Result=mrNo then begin
+    Result:=mrOk;
+    exit;
+  end;
+  if Result<>mrYes then exit;
+  
+  OldPkgFile.Filename:=NewFilename;
+  if OldPackage.Editor<>nil then OldPackage.Editor.UpdateAll;
+  OldPackage.Modified:=true;
 
   Result:=mrOk;
 end;

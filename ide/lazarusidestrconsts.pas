@@ -188,6 +188,7 @@ resourcestring
   lisMenuSaveProject = 'Save Project';
   lisMenuSaveProjectAs = 'Save Project As...';
   lisMenuPublishProject = 'Publish Project';
+  lisMenuProjectInspector = 'Project Inspector';
   lisMenuAddUnitToProject = 'Add active unit to Project';
   lisMenuRemoveUnitFromProject = 'Remove from Project';
   lisMenuViewSource = 'View Source';

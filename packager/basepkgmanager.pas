@@ -73,6 +73,8 @@ type
     procedure SetupMainBarShortCuts; virtual; abstract;
     procedure SetRecentPackagesMenu; virtual; abstract;
 
+    function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
+
     procedure LoadInstalledPackages; virtual; abstract;
     
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
@@ -91,6 +93,8 @@ type
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoSavePackageMainSource(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
+    function OnRenameFile(const OldFilename,
+                          NewFilename: string): TModalResult; virtual; abstract;
   end;
 
 var

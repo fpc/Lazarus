@@ -262,6 +262,7 @@ type
     itmProjectSave: TMenuItem;
     itmProjectSaveAs: TMenuItem;
     itmProjectPublish: TMenuItem;
+    itmProjectInspector: TMenuItem;
     itmProjectAddTo: TMenuItem;
     itmProjectRemoveFrom: TMenuItem;
     itmProjectViewSource: TMenuItem;
@@ -986,6 +987,14 @@ begin
 
   mnuProject.Add(CreateMenuSeparator);
 
+  itmProjectInspector := TMenuItem.Create(Self);
+  itmProjectInspector.Name:='itmProjectInspector';
+  itmProjectInspector.Caption := lisMenuProjectInspector;
+  itmProjectInspector.Graphic:=LoadPixmap('menu_projectinspector');
+  {$IFDEF EnablePkgs}
+  mnuProject.Add(itmProjectInspector);
+  {$ENDIF}
+
   itmProjectAddTo := TMenuItem.Create(Self);
   itmProjectAddTo.Name:='itmProjectAddTo';
   itmProjectAddTo.Caption := lisMenuAddUnitToProject;
@@ -1095,6 +1104,7 @@ begin
   itmPkgOpenPackage := TMenuItem.Create(Self);
   itmPkgOpenPackage.Name:='itmPkgOpenPackage';
   itmPkgOpenPackage.Caption := lisMenuOpenPackage;
+  itmPkgOpenPackage.Graphic:=LoadPixmap('pkg_package');
   {$IFDEF EnablePkgs}
   mnuComponents.Add(itmPkgOpenPackage);
   {$ENDIF}
@@ -1102,6 +1112,7 @@ begin
   itmPkgOpenPackageFile := TMenuItem.Create(Self);
   itmPkgOpenPackageFile.Name:='itmPkgOpenPackageFile';
   itmPkgOpenPackageFile.Caption := lisMenuOpenPackageFile;
+  itmPkgOpenPackageFile.Graphic:=LoadPixmap('pkg_package');
   {$IFDEF EnablePkgs}
   mnuComponents.Add(itmPkgOpenPackageFile);
   {$ENDIF}
@@ -1109,6 +1120,7 @@ begin
   itmPkgOpenRecent := TMenuItem.Create(Self);
   itmPkgOpenRecent.Name:='itmPkgOpenRecent';
   itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
+  itmPkgOpenRecent.Graphic:=LoadPixmap('pkg_package');
   {$IFDEF EnablePkgs}
   mnuComponents.Add(itmPkgOpenRecent);
   {$ENDIF}
@@ -1120,6 +1132,7 @@ begin
   itmPkgPkgGraph := TMenuItem.Create(Self);
   itmPkgPkgGraph.Name:='itmPkgPkgGraph';
   itmPkgPkgGraph.Caption := lisMenuPackageGraph;
+  itmPkgPkgGraph.Graphic:=LoadPixmap('pkg_packagegraph');
   {$IFDEF EnablePkgs}
   mnuComponents.Add(itmPkgPkgGraph);
   {$ENDIF}
@@ -1307,6 +1320,7 @@ begin
     itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);
     itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
     itmProjectPublish.ShortCut:=CommandToShortCut(ecPublishProject);
+    itmProjectInspector.ShortCut:=CommandToShortCut(ecProjectInspector);
     itmProjectAddTo.ShortCut:=CommandToShortCut(ecAddCurUnitToProj);
     itmProjectRemoveFrom.ShortCut:=CommandToShortCut(ecRemoveFromProj);
     itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);

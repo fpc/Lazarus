@@ -177,11 +177,12 @@ const
   ecSaveProject          = ecUserFirst + 703;
   ecSaveProjectAs        = ecUserFirst + 704;
   ecPublishProject       = ecUserFirst + 705;
-  ecAddCurUnitToProj     = ecUserFirst + 706;
-  ecRemoveFromProj       = ecUserFirst + 707;
-  ecViewProjectSource    = ecUserFirst + 708;
-  ecViewProjectTodos     = ecUserFirst + 709;
-  ecProjectOptions       = ecUserFirst + 710;
+  ecProjectInspector     = ecUserFirst + 706;
+  ecAddCurUnitToProj     = ecUserFirst + 707;
+  ecRemoveFromProj       = ecUserFirst + 708;
+  ecViewProjectSource    = ecUserFirst + 709;
+  ecViewProjectTodos     = ecUserFirst + 710;
+  ecProjectOptions       = ecUserFirst + 711;
 
   // option commmands
   ecRunParameters        = ecUserFirst + 800;
@@ -609,6 +610,7 @@ begin
     ecSaveProject           : Result:= lisMenuSaveProject;
     ecSaveProjectAs         : Result:= lisMenuSaveProjectAs;
     ecPublishProject        : Result:= lisMenuPublishProject;
+    ecProjectInspector      : Result:= lisMenuProjectInspector;
     ecAddCurUnitToProj      : Result:= lisMenuAddUnitToProject;
     ecRemoveFromProj        : Result:= lisMenuRemoveUnitFromProject;
     ecViewProjectSource     : Result:= lisMenuViewSource;
@@ -1445,6 +1447,7 @@ begin
   Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Save project as',ecSaveProjectAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Publish project',ecPublishProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Project Inspector',ecProjectInspector,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
   Add(C,'Remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View project source',ecViewProjectSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);

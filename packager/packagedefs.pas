@@ -588,6 +588,7 @@ type
   
   TBasePackageEditor = class(TForm)
   public
+    procedure UpdateAll; virtual; abstract;
   end;
   
 
@@ -2455,6 +2456,7 @@ begin
   if UnitOutputDirectory=AValue then exit;
   InvalidateOptions;
   inherited SetUnitOutputDir(AValue);
+  LazPackage.DefineTemplates.OutputDirectoryChanged;
 end;
 
 constructor TPkgCompilerOptions.Create(ThePackage: TLazPackage);

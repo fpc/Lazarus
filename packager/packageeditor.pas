@@ -128,7 +128,7 @@ type
     FPlugins: TStringList;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
-    procedure UpdateAll;
+    procedure UpdateAll; override;
     procedure UpdateTitle;
     procedure UpdateButtons;
     procedure UpdateFiles;
@@ -321,20 +321,26 @@ begin
     if CurNode.Parent<>nil then begin
       if CurNode.Parent=FilesNode then begin
         AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Remove file',@RemoveBitBtnClick,true);
+        AddPopupMenuItem('Remove file',@RemoveBitBtnClick,
+                         RemoveBitBtn.Enabled);
       end else if (CurDependency<>nil) and (not Removed) then begin
         AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,true);
+        AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,
+                         RemoveBitBtn.Enabled);
         AddPopupMenuItem('Move dependency up',@MoveDependencyUpClick,
-                         CurDependency.PrevRequiresDependency<>nil);
+                         (CurDependency.PrevRequiresDependency<>nil)
+                         and (not LazPackage.ReadOnly));
         AddPopupMenuItem('Move dependency down',@MoveDependencyDownClick,
-                         CurDependency.NextRequiresDependency<>nil);
+                         (CurDependency.NextRequiresDependency<>nil)
+                         and (not LazPackage.ReadOnly));
       end else if (CurNode.Parent=RemovedFilesNode) then begin
         AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Add file',@ReAddMenuItemClick,true);
+        AddPopupMenuItem('Add file',@ReAddMenuItemClick,
+                         AddBitBtn.Enabled);
       end else if (CurNode.Parent=RemovedRequiredNode) then begin
         AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
-        AddPopupMenuItem('Add dependency',@ReAddMenuItemClick,true);
+        AddPopupMenuItem('Add dependency',@ReAddMenuItemClick,
+                         AddBitBtn.Enabled);
       end;
     end;
   end else begin
@@ -1041,7 +1047,7 @@ begin
      and (FilesTreeView.Selected<>nil)
      and ((FilesTreeView.Selected.Parent=FilesNode)
            or (FilesTreeView.Selected.Parent=RequiredPackagesNode));
-  InstallBitBtn.Enabled:=true;
+  InstallBitBtn.Enabled:=(not LazPackage.AutoCreated);
   OptionsBitBtn.Enabled:=true;
   CompilerOptionsBitBtn.Enabled:=true;
 end;

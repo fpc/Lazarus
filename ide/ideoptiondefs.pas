@@ -45,7 +45,8 @@ type
     nmiwUnitDependenciesName,
     nmiwCodeExplorerName,
     nmiwClipbrdHistoryName,
-    nmiwPkgGraphExplorer
+    nmiwPkgGraphExplorer,
+    nmiwProjectInspector
     );
 
   // form names for non modal IDE windows:
@@ -58,7 +59,8 @@ const
     'UnitDependencies',
     'CodeExplorer',
     'ClipBrdHistory',
-    'PkgGraphExplorer'
+    'PkgGraphExplorer',
+    'ProjectInspector'
    );
 
 type
