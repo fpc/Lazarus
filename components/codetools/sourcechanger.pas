@@ -118,6 +118,7 @@ type
   
   //----------------------------------------------------------------------------
   TOnBeforeApplyChanges = procedure(var Abort: boolean) of object;
+  TOnAfterApplyChanges = procedure of object;
 
   TSourceChangeCache = class
   private
@@ -126,6 +127,8 @@ type
     FBuffersToModify: TList; // sorted list of TCodeBuffer
     FBuffersToModifyNeedsUpdate: boolean;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FOnAfterApplyChanges: TOnAfterApplyChanges;
+    FUpdateLock: integer;
     Src: string;
     procedure DeleteOldText(CleanFromPos,CleanToPos: integer);
     procedure InsertNewText(ACode: TCodeBuffer; DirectPos: integer;
@@ -139,6 +142,8 @@ type
     procedure UpdateBuffersToModify;
   public
     BeautifyCodeOptions: TBeautifyCodeOptions;
+    procedure BeginUpdate;
+    procedure EndUpdate;
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
     function Replace(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
         const Text: string): boolean;
@@ -151,8 +156,11 @@ type
     property BuffersToModify[Index: integer]: TCodeBuffer
         read GetBuffersToModify;
     function BuffersToModifyCount: integer;
+    function BufferIsModified(ACode: TCodeBuffer): boolean;
     property OnBeforeApplyChanges: TOnBeforeApplyChanges
         read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
+    property OnAfterApplyChanges: TOnAfterApplyChanges
+        read FOnAfterApplyChanges write FOnAfterApplyChanges;
     procedure Clear;
     function ConsistencyCheck: integer;
     procedure WriteDebugReport;
@@ -264,10 +272,12 @@ var ANode: TAVLTreeNode;
   NewEntry: TSourceChangeCacheEntry;
   p: pointer;
 begin
+{$IFDEF CTDEBUG}
 writeln('TSourceChangeCache.ReplaceEx FrontGap=',ord(FrontGap),
 ' AfterGap=',ord(AfterGap),' FromPos=',FromPos,' ToPos=',ToPos,
 ' Text="',Text,'"');
 if FromCode<>nil then writeln('FromCode=',FromCode.Filename,' FromDirectPos=',FromDirectPos);
+{$ENDIF}
   Result:=false;
   if (MainScanner=nil) or (FromPos>ToPos) or (FromPos<1)
   or (ToPos>MainScanner.CleanedLen+1) then
@@ -294,7 +304,9 @@ if FromCode<>nil then writeln('FromCode=',FromCode.Filename,' FromDirectPos=',Fr
     FEntries.MoveDataRightMost(ANode);
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
+{$IFDEF CTDEBUG}
 writeln('TSourceChangeCache.ReplaceEx SUCCESS');
+{$ENDIF}
 end;
 
 function TSourceChangeCache.Replace(FrontGap, AfterGap: TGapTyp;
@@ -305,8 +317,10 @@ end;
 
 procedure TSourceChangeCache.Clear;
 begin
+  FUpdateLock:=0;
   FEntries.FreeAndClear;
   FBuffersToModify.Clear;
+  FBuffersToModifyNeedsUpdate:=true;
 end;
 
 function TSourceChangeCache.ConsistencyCheck: integer;
@@ -338,9 +352,15 @@ var CurNode, PrecNode: TAVLTreeNode;
   BetweenGap: TGapTyp;
   Abort: boolean;
 begin
+{$IFDEF CTDEBUG}
 writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
+{$ENDIF}
   Result:=false;
   if MainScanner=nil then exit;
+  if FUpdateLock>0 then begin
+    Result:=true;
+    exit;
+  end;
   if Assigned(FOnBeforeApplyChanges) then begin
     Abort:=false;
     FOnBeforeApplyChanges(Abort);
@@ -349,97 +369,105 @@ writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
       exit;
     end;
   end;
-  Src:=MainScanner.CleanedSrc;
-  // apply the changes beginning with the last
-  CurNode:=FEntries.FindHighest;
-  while CurNode<>nil do begin
-    FirstEntry:=TSourceChangeCacheEntry(CurNode.Data);
+  try
+    Src:=MainScanner.CleanedSrc;
+    // apply the changes beginning with the last
+    CurNode:=FEntries.FindHighest;
+    while CurNode<>nil do begin
+      FirstEntry:=TSourceChangeCacheEntry(CurNode.Data);
+{$IFDEF CTDEBUG}
 writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
 ' Text="',FirstEntry.Text,'"');
-    InsertText:=FirstEntry.Text;
-    // add after gap
-    case FirstEntry.AfterGap of
-      gtSpace:
-        begin
-          if ((FirstEntry.ToPos>MainScanner.CleanedLen)
-              or (not IsSpaceChar[MainScanner.Src[FirstEntry.ToPos]])) then
-            InsertText:=InsertText+' ';
-        end;
-      gtNewLine:
-        begin
-          NeededLineEnds:=CountNeededLineEndsToAddForward(FirstEntry.ToPos,1);
-          if NeededLineEnds>0 then
-            InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
-        end;
-      gtEmptyLine:
-        begin
-          NeededLineEnds:=CountNeededLineEndsToAddForward(FirstEntry.ToPos,2);
-          for i:=1 to NeededLineEnds do
-            InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
-        end;
-    end;
-    if FirstEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
-      NeededIndent:=GetLineIndent(MainScanner.Src,FirstEntry.ToPos);
-      j:=FirstEntry.ToPos;
-      while (j<=MainScanner.SrcLen) and (IsSpaceChar[MainScanner.Src[j]]) do
-        inc(j);
-      dec(NeededIndent,j-FirstEntry.ToPos);
-      if NeededIndent>0 then
-        InsertText:=InsertText+GetIndentStr(NeededIndent);
-    end;
-    // add text from nodes inserted at the same position
-    PrecNode:=FEntries.FindPrecessor(CurNode);
-    CurEntry:=FirstEntry;
-    while (PrecNode<>nil) do begin
-      PrecEntry:=TSourceChangeCacheEntry(PrecNode.Data);
-      if PrecEntry.FromPos=CurEntry.FromPos then begin
-        BetweenGap:=PrecEntry.AfterGap;
-        if ord(BetweenGap)<ord(CurEntry.FrontGap) then
-          BetweenGap:=CurEntry.FrontGap;
-        case BetweenGap of
-          gtSpace:
-            InsertText:=' '+InsertText;
-          gtNewLine:
-            InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
-          gtEmptyLine:
-            InsertText:=BeautifyCodeOptions.LineEnd+BeautifyCodeOptions.LineEnd
-                           +InsertText;
-        end;
-        InsertText:=PrecEntry.Text+InsertText;
-      end else
-        break;
-      CurNode:=PrecNode;
-      CurEntry:=PrecEntry;
+{$ENDIF}
+      InsertText:=FirstEntry.Text;
+      // add after gap
+      case FirstEntry.AfterGap of
+        gtSpace:
+          begin
+            if ((FirstEntry.ToPos>MainScanner.CleanedLen)
+                or (not IsSpaceChar[MainScanner.Src[FirstEntry.ToPos]])) then
+              InsertText:=InsertText+' ';
+          end;
+        gtNewLine:
+          begin
+            NeededLineEnds:=CountNeededLineEndsToAddForward(FirstEntry.ToPos,1);
+            if NeededLineEnds>0 then
+              InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
+          end;
+        gtEmptyLine:
+          begin
+            NeededLineEnds:=CountNeededLineEndsToAddForward(FirstEntry.ToPos,2);
+            for i:=1 to NeededLineEnds do
+              InsertText:=InsertText+BeautifyCodeOptions.LineEnd;
+          end;
+      end;
+      if FirstEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
+        NeededIndent:=GetLineIndent(MainScanner.Src,FirstEntry.ToPos);
+        j:=FirstEntry.ToPos;
+        while (j<=MainScanner.SrcLen) and (IsSpaceChar[MainScanner.Src[j]]) do
+          inc(j);
+        dec(NeededIndent,j-FirstEntry.ToPos);
+        if NeededIndent>0 then
+          InsertText:=InsertText+GetIndentStr(NeededIndent);
+      end;
+      // add text from nodes inserted at the same position
       PrecNode:=FEntries.FindPrecessor(CurNode);
+      CurEntry:=FirstEntry;
+      while (PrecNode<>nil) do begin
+        PrecEntry:=TSourceChangeCacheEntry(PrecNode.Data);
+        if PrecEntry.FromPos=CurEntry.FromPos then begin
+          BetweenGap:=PrecEntry.AfterGap;
+          if ord(BetweenGap)<ord(CurEntry.FrontGap) then
+            BetweenGap:=CurEntry.FrontGap;
+          case BetweenGap of
+            gtSpace:
+              InsertText:=' '+InsertText;
+            gtNewLine:
+              InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
+            gtEmptyLine:
+              InsertText:=BeautifyCodeOptions.LineEnd
+                            +BeautifyCodeOptions.LineEnd+InsertText;
+          end;
+          InsertText:=PrecEntry.Text+InsertText;
+        end else
+          break;
+        CurNode:=PrecNode;
+        CurEntry:=PrecEntry;
+        PrecNode:=FEntries.FindPrecessor(CurNode);
+      end;
+      // add front gap
+      case CurEntry.FrontGap of
+        gtSpace:
+          begin
+            if (CurEntry.FromPos=1)
+            or (not IsSpaceChar[MainScanner.Src[CurEntry.FromPos-1]]) then
+              InsertText:=' '+InsertText;
+          end;
+        gtNewLine:
+          begin
+            NeededLineEnds:=CountNeededLineEndsToAddBackward(
+                                      CurEntry.FromPos-1,1);
+            if NeededLineEnds>0 then
+              InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
+          end;
+        gtEmptyLine:
+          begin
+            NeededLineEnds:=CountNeededLineEndsToAddBackward(
+                                CurEntry.FromPos-1,2);
+            for i:=1 to NeededLineEnds do
+              InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
+          end;
+      end;
+      // delete old text in code buffers
+      DeleteOldText(FirstEntry.FromPos,FirstEntry.ToPos);
+      // insert new text
+      InsertNewText(FirstEntry.FromCode,FirstEntry.FromDirectPos,InsertText);
+      CurNode:=PrecNode;
     end;
-    // add front gap
-    case CurEntry.FrontGap of
-      gtSpace:
-        begin
-          if (CurEntry.FromPos=1)
-          or (not IsSpaceChar[MainScanner.Src[CurEntry.FromPos-1]]) then
-            InsertText:=' '+InsertText;
-        end;
-      gtNewLine:
-        begin
-          NeededLineEnds:=CountNeededLineEndsToAddBackward(CurEntry.FromPos-1,1);
-          if NeededLineEnds>0 then
-            InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
-        end;
-      gtEmptyLine:
-        begin
-          NeededLineEnds:=CountNeededLineEndsToAddBackward(CurEntry.FromPos-1,2);
-          for i:=1 to NeededLineEnds do
-            InsertText:=BeautifyCodeOptions.LineEnd+InsertText;
-        end;
-    end;
-    // delete old text in code buffers
-    DeleteOldText(FirstEntry.FromPos,FirstEntry.ToPos);
-    // insert new text
-    InsertNewText(FirstEntry.FromCode,FirstEntry.FromDirectPos,InsertText);
-    CurNode:=PrecNode;
+  finally
+    if Assigned(FOnAfterApplyChanges) then FOnAfterApplyChanges();
+    FEntries.FreeAndClear;
   end;
-  FEntries.FreeAndClear;
   Result:=true;
 end;
 
@@ -489,18 +517,35 @@ end;
 
 procedure TSourceChangeCache.DeleteOldText(CleanFromPos,CleanToPos: integer);
 begin
+{$IFDEF CTDEBUG}
 writeln('[TSourceChangeCache.DeleteOldText] Pos=',CleanFromPos,'-',CleanToPos);
+{$ENDIF}
   MainScanner.DeleteRange(CleanFromPos,CleanToPos);
 end;
 
 procedure TSourceChangeCache.InsertNewText(ACode: TCodeBuffer;
   DirectPos: integer; const InsertText: string);
 begin
+{$IFDEF CTDEBUG}
 writeln('[TSourceChangeCache.InsertNewText] Code=',ACode.Filename,
 ' Pos=',DirectPos,' Text="',InsertText,'"');
+{$ENDIF}
   ACode.Insert(DirectPos,InsertText);
 end;
 
+procedure TSourceChangeCache.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TSourceChangeCache.EndUpdate;
+begin
+  if FUpdateLock<=0 then exit;
+  dec(FUpdateLock);
+  if FUpdateLock<=0 then
+    Apply;
+end;
+    
 procedure TSourceChangeCache.SetMainScanner(NewScanner: TLinkScanner);
 begin
   if NewScanner=FMainScanner then exit;
@@ -520,6 +565,12 @@ begin
   Result:=FBuffersToModify.Count;
 end;
 
+function TSourceChangeCache.BufferIsModified(ACode: TCodeBuffer): boolean;
+begin
+  UpdateBuffersToModify;
+  Result:=FBuffersToModify.IndexOf(ACode)>=0;
+end;
+
 procedure TSourceChangeCache.UpdateBuffersToModify;
 // build a sorted and unique list of all TCodeBuffer(s) which will be modified
 // by the 'Apply' operation
@@ -527,6 +578,7 @@ var ANode: TAVLTreeNode;
   AnEntry: TSourceChangeCacheEntry;
 begin
   if not FBuffersToModifyNeedsUpdate then exit;
+//writeln('[TSourceChangeCache.UpdateBuffersToModify]');
   FBuffersToModify.Clear;
   ANode:=FEntries.FindLowest;
   while ANode<>nil do begin
@@ -559,18 +611,22 @@ begin
 end;
 
 procedure TBeautifyCodeOptions.AddAtom(var s:string; NewAtom: string);
-var RestLineLen: integer;
+var RestLineLen, LastLineEndInAtom: integer;
 begin
   if NewAtom='' then exit;
-//writeln('    AddAtom="',NewAtom,'"');
+//writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom);
   if IsIdentStartChar[NewAtom[1]] then begin
     if WordIsKeyWord.DoIt(NewAtom) then
       NewAtom:=BeautifyWord(NewAtom,KeyWordPolicy)
     else
       NewAtom:=BeautifyWord(NewAtom,IdentifierPolicy);
   end;
-  if (CurLineLen+length(NewAtom)>LineLength) and (LastSplitPos>0) then begin
-//writeln('    NEW LINE  "',copy(s,LastSplitPos,5));
+  LastLineEndInAtom:=length(NewAtom);
+  while (LastLineEndInAtom>=1) and (not (NewAtom[LastLineEndInAtom] in [#10,#13]))
+  do dec(LastLineEndInAtom);
+  if (LastLineEndInAtom<1) and (CurLineLen+length(NewAtom)>LineLength)
+  and (LastSplitPos>0) then begin
+//writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
     RestLineLen:=length(s)-LastSplitPos+1;
     s:=copy(s,1,LastSplitPos-1)+LineEnd+IndentStr
        +copy(s,LastSplitPos,RestLineLen)+NewAtom;
@@ -578,7 +634,10 @@ begin
     LastSplitPos:=-1;
   end else begin
     s:=s+NewAtom;
-    inc(CurLineLen,length(NewAtom));
+    if LastLineEndInAtom<1 then begin
+      inc(CurLineLen,length(NewAtom));
+    end else
+      CurLineLen:=length(NewAtom)-LastLineEndInAtom;
   end;
 end;
 
@@ -724,13 +783,16 @@ begin
     AddAtom(Result,LineEnd+LineEnd+IndentStr);
     AddAtom(Result,'end;');
   end;
+{$IFDEF CTDEBUG}
 writeln('[TBeautifyCodeOptions.BeautifyProc] Result="',Result,'"');
+{$ENDIF}
 end;
 
 function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
   IndentSize: integer): string;
 var CurAtom: string;
 begin
+//writeln('[TBeautifyCodeOptions.BeautifyStatement] ',AStatement);
   Src:=AStatement;
   UpperSrc:=UpperCaseStr(Src);
   SrcLen:=length(Src);
@@ -760,7 +822,7 @@ begin
     AddAtom(Result,CurAtom);
     LastAtomType:=CurAtomType;
   end;
-writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
+//writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
 end;
 
 function TBeautifyCodeOptions.AddClassNameToProc(

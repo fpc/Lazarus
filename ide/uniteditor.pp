@@ -36,10 +36,9 @@ uses
   {$ENDIF}
   Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
-  Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache,
+  Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,SynCompletion, 
-  Graphics, Extctrls, Menus;
+  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus;
 
 type
   // --------------------------------------------------------------------------
@@ -72,13 +71,15 @@ type
     //if this is a Form or Datamodule, this is used
     FControl: TComponent;
 
-    FFileName : AnsiString;
+    FCodeBuffer: TCodeBuffer;
+    FIgnoreCodeBufferLock: integer;
     FShortName : String;
 
     FPopUpMenu : TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
     FErrorLine: integer;
     FExecutionLine: integer;
+    FModified: boolean;
 
     FOnAfterClose : TNotifyEvent;
     FOnAfterOpen : TNotifyEvent;
@@ -93,6 +94,7 @@ type
 
     Function FindFile(const Value : String) : String;
 
+    procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
     Procedure SetSource(Value : TStrings);
     Function GetCurrentCursorXLine : Integer;
@@ -109,6 +111,7 @@ type
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
+    function GetFilename: string;
 
     Function GotoLine(Value : Integer) : Integer;
 
@@ -141,6 +144,8 @@ type
          ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
+    procedure OnCodeBufferChanged(Sender: TSourceLog;
+      SrcLogEntry: TSourceLogEntry);
 
     property Visible : Boolean read FVisible write FVisible default False;
   public
@@ -149,14 +154,18 @@ type
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     Function Close : Boolean;
     procedure AdjustMarksByCodeCache;
+    procedure IncreaseIgnoreCodeBufferLock;
+    procedure DecreaseIgnoreCodeBufferLock;
+    procedure UpdateCodeBuffer; // copy the source from EditorComponent
 
     procedure StartFindAndReplace(Replace:boolean);
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
     procedure DoFindAndReplace;
     procedure FindAgain;
-
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
+    
+    property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property Control : TComponent read FControl write FControl;
     property CurrentCursorXLine : Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
@@ -165,7 +174,7 @@ type
     property Owner : TComponent read FAOwner;
     property Source : TStrings read GetSource write SetSource;
     property ShortName : String read FShortName write fShortName;
-    property FileName : AnsiString read FFileName write FFilename;
+    property FileName : AnsiString read GetFileName;
     property Modified : Boolean read GetModified write SetModified;
     property ReadOnly : Boolean read GetReadOnly;
     property InsertMode : Boolean read GetInsertmode;
@@ -263,6 +272,8 @@ type
     function EditorCount:integer;
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
     Function GetActiveSE : TSourceEditor;
+    procedure LockAllEditorsInSourceChangeCache;
+    procedure UnlockAllEditorsInSourceChangeCache;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -797,16 +808,20 @@ end;
 
 Procedure TSourceEditor.UserCommandProcessed(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
-  //Handled: boolean;
+var Handled: boolean;
 begin
-  {Handled:=true;
+  Handled:=true;
   case Command of
-  
-  else begin
-    Handled:=false;}
-    TSourceNotebook(FaOwner).ParentCommandProcessed(self,Command,aChar,Data);
-  {end;
-  if Handled then Command:=ecNone;}
+    ecUndo:
+      if (FEditor.Modified=false) and (CodeBuffer<>nil) then 
+        CodeBuffer.Assign(FEditor.Lines);
+  else
+    begin
+      Handled:=false;
+      TSourceNotebook(FaOwner).ParentCommandProcessed(self,Command,aChar,Data);
+    end;
+  end;
+  if Handled then Command:=ecNone;
 end;
 
 Procedure TSourceEditor.EditorStatusChanged(Sender: TObject;
@@ -839,7 +854,7 @@ begin
     if Assigned(FOnDeleteBreakPoint) then FOnDeleteBreakPoint(Self,Line);
     fEditor.Marks.Remove(BreakPtMark);
     BreakPtMark.Free;
-    fEditor.Modified:=true;
+    fModified:=true;
   end else begin
     // create breakpoint
     BreakPtMark:=TSynEditMark.Create(fEditor);
@@ -850,7 +865,7 @@ begin
     BreakPtMark.Line:=Line;
     fEditor.Marks.Place(BreakPtMark);
     if Assigned(FOnCreateBreakPoint) then FOnCreateBreakPoint(Self,Line);
-    fEditor.Modified:=true;
+    fModified:=true;
   end;
 end;
 
@@ -1121,6 +1136,144 @@ TControl(FCOntrol).Visible := False;
 TControl(FCOntrol).Visible := True;
 end;
 
+procedure TSourceEditor.SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
+begin
+  if NewCodeBuffer=FCodeBuffer then exit;
+  if FCodeBuffer<>nil then
+    FCodeBuffer.RemoveChangeHook(@OnCodeBufferChanged);
+  FCodeBuffer:=NewCodeBuffer;
+  if FCodeBuffer<>nil then begin
+    FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
+    if (FIgnoreCodeBufferLock<=0) and (not FCodeBuffer.IsEqual(FEditor.Lines))
+    then begin
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('WARNING: TSourceEditor.SetCodeBuffer - loosing marks');
+writeln('');
+{$ENDIF}
+      FCodeBuffer.AssignTo(FEditor.Lines);
+    end;
+  end;
+end;
+
+procedure TSourceEditor.OnCodeBufferChanged(Sender: TSourceLog;
+  SrcLogEntry: TSourceLogEntry);
+  
+  procedure InsertTxt(StartPos: TPoint; const Txt: string);
+  begin
+    FEditor.CaretXY:=StartPos;
+    FEditor.BlockBegin:=StartPos;
+    FEditor.BlockEnd:=StartPos;
+    FEditor.SelText:=Txt;
+  end;
+  
+  procedure DeleteTxt(StartPos, EndPos: TPoint);
+  begin
+    FEditor.CaretXY:=StartPos;
+    FEditor.BlockBegin:=StartPos;
+    FEditor.BlockEnd:=EndPos;
+    FEditor.SelText:='';
+  end;
+  
+  procedure MoveTxt(StartPos, EndPos, MoveToPos: TPoint;
+    DirectionForward: boolean);
+  var Txt: string;
+  begin
+    FEditor.CaretXY:=StartPos;
+    FEditor.BlockBegin:=StartPos;
+    FEditor.BlockEnd:=EndPos;
+    Txt:=FEditor.SelText;
+    if DirectionForward then begin
+      FEditor.CaretXY:=MoveToPos;
+      FEditor.BlockBegin:=MoveToPos;
+      FEditor.BlockEnd:=MoveToPos;
+      FEditor.SelText:=Txt;
+      FEditor.CaretXY:=StartPos;
+      FEditor.BlockBegin:=StartPos;
+      FEditor.BlockEnd:=EndPos;
+      FEditor.SelText:='';
+    end else begin
+      FEditor.SelText:='';
+      FEditor.CaretXY:=MoveToPos;
+      FEditor.BlockBegin:=MoveToPos;
+      FEditor.BlockEnd:=MoveToPos;
+      FEditor.SelText:=Txt;
+    end;
+  end;
+  
+var StartPos, EndPos, MoveToPos: TPoint;
+begin
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceEditor.OnCodeBufferChanged] A ',FIgnoreCodeBufferLock,' ',SrcLogEntry<>nil);
+{$ENDIF}
+  if FIgnoreCodeBufferLock>0 then exit;
+  if SrcLogEntry<>nil then begin
+    FEditor.BeginUpdate;
+    FEditor.BeginUndoBlock;
+    case SrcLogEntry.Operation of
+      sleoInsert:
+        begin
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+          if StartPos.Y>=1 then
+            InsertTxt(StartPos,SrcLogEntry.Txt);
+        end;
+      sleoDelete:
+        begin
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+            EndPos.Y,EndPos.X);
+          if (StartPos.Y>=1) and (EndPos.Y>=1) then
+            DeleteTxt(StartPos,EndPos);
+        end;
+      sleoMove:
+        begin
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position,StartPos.Y,StartPos.X);
+          Sender.AbsoluteToLineCol(SrcLogEntry.Position+SrcLogEntry.Len,
+            EndPos.Y,EndPos.X);
+          Sender.AbsoluteToLineCol(SrcLogEntry.MoveTo,MoveToPos.Y,MoveToPos.X);
+          if (StartPos.Y>=1) and (EndPos.Y>=1) and (MoveToPos.Y>=1) then
+            MoveTxt(StartPos, EndPos, MoveToPos,
+              SrcLogEntry.Position<SrcLogEntry.MoveTo);
+        end;
+    end;
+    FEditor.EndUndoBlock;
+    FEditor.EndUpdate;
+  end else begin
+    if Sender.IsEqual(FEditor.Lines) then exit;
+    Sender.AssignTo(FEditor.Lines);
+  end;
+end;
+
+procedure TSourceEditor.IncreaseIgnoreCodeBufferLock;
+begin
+  inc(FIgnoreCodeBufferLock);
+end;
+
+procedure TSourceEditor.DecreaseIgnoreCodeBufferLock;
+begin
+  if FIgnoreCodeBufferLock<=0 then exit;
+  dec(FIgnoreCodeBufferLock);
+end;
+
+procedure TSourceEditor.UpdateCodeBuffer;
+// copy the source from EditorComponent
+begin
+  if not FEditor.Modified then exit;
+{$IFDEF IDE_DEBUG}
+if FCodeBuffer=nil then begin
+  writeln('');
+  writeln('*********** Oh, no: UpdateCodeBuffer ************');
+  writeln('');
+end;
+{$ENDIF}
+  if FCodeBuffer=nil then exit;
+  IncreaseIgnoreCodeBufferLock;
+  FModified:=FModified or FEditor.Modified;
+  FCodeBuffer.Assign(FEditor.Lines);
+  FEditor.Modified:=false;
+  DecreaseIgnoreCodeBufferLock;
+end;
+
 Function TSourceEditor.GetSource : TStrings;
 Begin
   //return synedit's source.
@@ -1166,12 +1319,13 @@ end;
 
 Function TSourceEditor.GetModified : Boolean;
 Begin
-  Result := FEditor.Modified;
+  Result := FEditor.Modified or FModified;
 end;
 
 procedure TSourceEditor.SetModified(NewValue:boolean);
 begin
-  FEditor.Modified:=NewValue;
+  FModified:=NewValue;
+  if not FModified then FEditor.Modified:=false;
 end;
 
 Function TSourceEditor.GetInsertMode : Boolean;
@@ -1186,6 +1340,7 @@ Begin
     FOnBeforeClose(Self);
 
   Visible := False;
+  CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
 end;
 
@@ -1211,7 +1366,6 @@ begin
     end;
     dec(i);
   end;
-  
 end;
 
 Procedure TSourceEditor.ReParent(AParent : TWInControl);
@@ -1236,6 +1390,14 @@ begin
     FPopupMenu:=NewPopupMenu;
     if FEditor<>nil then FEditor.PopupMenu:=NewPopupMenu;
   end;
+end;
+
+function TSourceEditor.GetFilename: string;
+begin
+  if FCodeBuffer<>nil then
+    Result:=FCodeBuffer.Filename
+  else
+    Result:='';
 end;
 
 {------------------------------------------------------------------------}
@@ -1746,15 +1908,39 @@ End;
 
 Function TSourceNotebook.CreateNotebook : Boolean;
 Begin
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] START');
+{$ENDIF}
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('[TSourceNotebook.CreateNotebook] A '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   ClearUnUsedEditorComponents(false);
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] A');
+{$ENDIF}
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('[TSourceNotebook.CreateNotebook] B '+IntToStr(GetMem_Cnt));
+{$ENDIF}
   Result := False;
   if not assigned(Notebook) then
     Begin
       Result := True;
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] B');
+{$ENDIF}
       Notebook := TNotebook.Create(self);
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] C');
+{$ENDIF}
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('[TSourceNotebook.CreateNotebook] C '+IntToStr(GetMem_Cnt));
+{$ENDIF}
       with Notebook do
         Begin
           Parent := Self;
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] D');
+{$ENDIF}
           Align := alClient;
           Left := 0;
           Top :=2;
@@ -1763,11 +1949,25 @@ Begin
           Pages.Strings[0] := 'unit1';
           PageIndex := 0;   // Set it to the first page
           OnPageChanged := @NotebookPageChanged;
-          Show;
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] E');
+{$ENDIF}
+          Visible := true;
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] F');
+{$ENDIF}
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('[TSourceNotebook.CreateNotebook] F '+IntToStr(GetMem_Cnt));
+{$ENDIF}
         end; //with
       Show;  //used to display the code form
-
     end;
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.CreateNotebook] END');
+{$ENDIF}
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('[TSourceNotebook.CreateNotebook] END '+IntToStr(GetMem_Cnt));
+{$ENDIF}
 End;
 
 Procedure TSourceNotebook.ClearUnUsedEditorComponents(Force: boolean);
@@ -2029,6 +2229,36 @@ Begin
   Result:= FindSourceEditorWithPageIndex(Notebook.PageIndex);
 end;
 
+procedure TSourceNotebook.LockAllEditorsInSourceChangeCache;
+// lock all sourceeditors that are to be modified by the CodeToolBoss
+var i: integer;
+begin
+  for i:=0 to EditorCount-1 do begin
+    if CodeToolBoss.SourceChangeCache.BufferIsModified(Editors[i].CodeBuffer)
+    then begin
+      with Editors[i].EditorComponent do begin
+        BeginUpdate;
+        BeginUndoBlock;
+      end;
+    end;
+  end;
+end;
+
+procedure TSourceNotebook.UnlockAllEditorsInSourceChangeCache;
+// lock all sourceeditors that are to be modified by the CodeToolBoss
+var i: integer;
+begin
+  for i:=0 to EditorCount-1 do begin
+    if CodeToolBoss.SourceChangeCache.BufferIsModified(Editors[i].CodeBuffer)
+    then begin
+      with Editors[i].EditorComponent do begin
+        EndUndoBlock;
+        EndUpdate;
+      end;
+    end;
+  end;
+end;
+
 Function TSourceNotebook.Empty : Boolean;
 Begin
   Result := (not assigned(Notebook)) or (Notebook.Pages.Count = 0);
@@ -2190,22 +2420,28 @@ Var
   TempEditor : TSourceEditor;
 Begin
   //create a new page
-//writeln('[TSourceNotebook.NewFile] A ');
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.NewFile] A ');
+{$ENDIF}
   TempEditor := NewSE(-1);
-//writeln('[TSourceNotebook.NewFile] B ');
+writeln('[TSourceNotebook.NewFile] B ');
   TempEditor.ShortName := NewShortName;
-//writeln('[TSourceNotebook.NewFile] C ');
-  ASource.AssignTo(TempEditor.Source);
-//writeln('[TSourceNotebook.NewFile] D ');
+writeln('[TSourceNotebook.NewFile] C ');
+  TempEditor.CodeBuffer:=ASource;
+writeln('[TSourceNotebook.NewFile] D ');
   Notebook.Pages[Notebook.PageIndex] :=
     FindUniquePageName(NewShortName,Notebook.PageIndex);
-//writeln('[TSourceNotebook.NewFile] end');
+{$IFDEF IDE_DEBUG}
+writeln('[TSourceNotebook.NewFile] end');
+{$ENDIF}
 end;
 
 Procedure TSourceNotebook.CloseFile(PageIndex:integer);
 var TempEditor: TSourceEditor;
 Begin
-//writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
+{$IFDEF IDE_DEBUG}
+writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
+{$ENDIF}
   TempEditor:= FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   TempEditor.Close;
@@ -2223,7 +2459,9 @@ Begin
     Notebook:=nil;
     Hide;
   end;
-//writeln('TSourceNotebook.CloseFile END');
+{$IFDEF IDE_DEBUG}
+writeln('TSourceNotebook.CloseFile END');
+{$ENDIF}
 end;
 
 Procedure TSourceNotebook.NewClicked(Sender: TObject);
@@ -2383,7 +2621,8 @@ begin
      Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
 
    if GetActiveSE.InsertMode then
-     Statusbar.Panels[2].Text := 'INS' else
+     Statusbar.Panels[2].Text := 'INS'
+   else
      Statusbar.Panels[2].Text := 'OVR';
 End;
 

@@ -4770,7 +4770,7 @@ begin
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin
     // replace old resource
-    FromPos:=FindFirstLineEndInFrontOfInCode(Src,OldPosition.StartPos,
+    FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,OldPosition.StartPos,
                 Scanner.NestedComments);
     ToPos:=FindFirstLineEndAfterInCode(Src,OldPosition.EndPos,
                 Scanner.NestedComments);
@@ -4810,7 +4810,7 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin
-    OldPosition.StartPos:=FindFirstLineEndInFrontOfInCode(Src,
+    OldPosition.StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,
          OldPosition.StartPos,Scanner.NestedComments);
     OldPosition.EndPos:=FindFirstLineEndAfterInCode(Src,OldPosition.EndPos,
          Scanner.NestedComments);
@@ -4954,13 +4954,13 @@ begin
     if FromPos<1 then exit;
     SourceChangeCache.MainScanner:=Scanner;
     Indent:=GetLineIndent(Src,FromPos);
-    FromPos:=FindFirstLineEndInFrontOfInCode(Src,FromPos,
+    FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,FromPos,
                     Scanner.NestedComments);
     SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,FromPos,
        SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
          'Application.CreateForm('+AClassName+','+AVarName+');',Indent));
   end else begin
-    FromPos:=FindFirstLineEndInFrontOfInCode(Src,OldPosition.StartPos,
+    FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,OldPosition.StartPos,
                                          Scanner.NestedComments);
     ToPos:=FindFirstLineEndAfterInCode(Src,OldPosition.EndPos,
                                        Scanner.NestedComments);
@@ -4980,7 +4980,7 @@ begin
   Result:=false;
   if FindCreateFormStatement(-1,'*',UpperVarName,Position)=-1 then
     exit;
-  FromPos:=FindFirstLineEndInFrontOfInCode(Src,Position.StartPos,
+  FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,Position.StartPos,
                                        Scanner.NestedComments);
   ToPos:=FindFirstLineEndAfterInCode(Src,Position.EndPos,
                                      Scanner.NestedComments);
@@ -5043,7 +5043,7 @@ begin
     if FindCreateFormStatement(Position,'*','*',StatementPos)=-1 then
       break;
     Position:=StatementPos.EndPos;
-    StatementPos.StartPos:=FindFirstLineEndInFrontOfInCode(Src,
+    StatementPos.StartPos:=FindLineEndOrCodeInFrontOfPosition(Src,
        StatementPos.StartPos,Scanner.NestedComments);
     InsertPos:=StatementPos.StartPos;
     StatementPos.EndPos:=FindFirstLineEndAfterInCode(Src,
@@ -5138,7 +5138,7 @@ begin
     Indent:=GetLineIndent(Src,SectionNode.StartPos)
               +SourceChangeCache.BeautifyCodeOptions.Indent;
   end;
-  InsertPos:=FindFirstLineEndInFrontOfInCode(Src,SectionNode.EndPos,
+  InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,SectionNode.EndPos,
                Scanner.NestedComments);
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
           SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -5172,9 +5172,9 @@ begin
     if VarNode.FirstChild<>nil then begin
       // variable definition has the form  'VarName: VarType;'
       // -> delete whole line
-      FromPos:=FindFirstLineEndInFrontOfInCode(Src,VarNode.StartPos,
+      FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,VarNode.StartPos,
                       Scanner.NestedComments);
-      ToPos:=FindLineEndOrCodeAfterPosition(Src,VarNode.EndPos,
+      ToPos:=FindFirstLineEndAfterInCode(Src,VarNode.EndPos,
                       Scanner.NestedComments);
     end else begin
       // variable definition has the form  'VarName, NextVarName: VarType;'
@@ -6051,7 +6051,7 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] B');
 {$ENDIF}
       InsertNode:=ClassSectionNode.LastChild;
       Indent:=GetLineIndent(Src,InsertNode.StartPos);
-      InsertPos:=FindLineEndOrCodeAfterPosition(Src,InsertNode.EndPos,
+      InsertPos:=FindFirstLineEndAfterInCode(Src,InsertNode.EndPos,
                       Scanner.NestedComments);
     end else begin
       // insert alphabetically
@@ -6073,12 +6073,12 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] C');
           // insert after InsertNode.PriorBrother
           InsertNode:=InsertNode.PriorBrother;
           Indent:=GetLineIndent(Src,InsertNode.StartPos);
-          InsertPos:=FindLineEndOrCodeAfterPosition(Src,InsertNode.EndPos,
+          InsertPos:=FindFirstLineEndAfterInCode(Src,InsertNode.EndPos,
                       Scanner.NestedComments);
         end else begin
           // insert as first
           Indent:=GetLineIndent(Src,InsertNode.StartPos);
-          InsertPos:=FindLineEndOrCodeAfterPosition(Src,
+          InsertPos:=FindFirstLineEndAfterInCode(Src,
                              ClassSectionNode.EndPos,Scanner.NestedComments);
         end;
       end else begin
@@ -6297,6 +6297,9 @@ procedure TCodeCompletionCodeTool.AddInsert(PosNode: TCodeTreeNode;
   const CleanDef, Def, IdentifierName: string);
 var NewInsert, InsertPos, Last: TCodeTreeNodeExtension;
 begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.AddInsert] ',CleanDef,',',Def,',',Identifiername);
+{$ENDIF}
   NewInsert:=NodeExtMemManager.NewNode;
   with NewInsert do begin
     Node:=PosNode;
@@ -6407,6 +6410,9 @@ begin
   MoveCursorToNodeStart(PropNode);
   ReadNextAtom; // read 'property'
   ReadNextAtom; // read name
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] Checking Property ',GetAtom);
+{$ENDIF}
   Parts[ppName]:=CurPos;
   ReadNextAtom;
   if AtomIsChar('[') then begin
@@ -6414,20 +6420,32 @@ begin
     Parts[ppParamList].StartPos:=CurPos.StartPos;
     InitExtraction;
     if not ReadParamList(false,true,[phpInUpperCase,phpWithoutBrackets])
-    then exit;
+    then begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] error parsing param list');
+{$ENDIF}
+      exit;
+    end;
     CleanParamList:=GetExtraction;
     Parts[ppParamList].EndPos:=CurPos.EndPos;
-    ReadNextAtom;
   end else
     CleanParamList:='';
   if not AtomIsChar(':') then begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore property');
+{$ENDIF}
     // no type -> ignore this property
     Result:=true;
     exit;
   end;
   ReadNextAtom; // read type
   if (CurPos.StartPos>PropNode.EndPos)
-  or UpAtomIs('END') or AtomIsChar(';') then exit;
+  or UpAtomIs('END') or AtomIsChar(';') then begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
+{$ENDIF}
+    exit;
+  end;
   Parts[ppType]:=CurPos;
   // read specifiers
   ReadNextAtom;
@@ -6472,6 +6490,9 @@ begin
   // check read specifier
   if (Parts[ppReadWord].StartPos>0) or (Parts[ppWriteWord].StartPos<1) then
   begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] read specifier needed');
+{$ENDIF}
     AccessParamPrefix:=
       ASourceChangeCache.BeautifyCodeOptions.PropertyReadIdentPrefix;
     if Parts[ppRead].StartPos>0 then
@@ -6483,10 +6504,10 @@ begin
     or (AnsiCompareText(AccessParamPrefix,
             LeftStr(AccessParam,length(AccessParamPrefix)))=0) then
     begin
+      // the read identifier is a function
       if Parts[ppRead].StartPos<1 then
         AccessParam:=AccessParamPrefix+copy(Src,Parts[ppName].StartPos,
             Parts[ppName].EndPos-Parts[ppName].StartPos);
-      // the read identifier is a function
       if (Parts[ppParamList].StartPos>0) then begin
         if (Parts[ppIndexWord].StartPos<1) then begin
           // param list, no index
@@ -6507,16 +6528,24 @@ begin
       end;
       // check if function exists
       if not ProcExists(CleanAccessFunc) then begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAccessFunc,' does not exist');
+{$ENDIF}
         // add insert demand for function
         // build function code
         if (Parts[ppParamList].StartPos>0) then begin
           MoveCursorToCleanPos(Parts[ppParamList].StartPos);
+          ReadNextAtom;
           InitExtraction;
           if not ReadParamList(false,true,[phpWithParameterNames,
                                phpWithoutBrackets,phpWithVarModifiers,
                                phpWithComments])
-          then
+          then begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
+{$ENDIF}
             exit;
+          end;
           ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
             // param list, no index
@@ -6576,6 +6605,9 @@ begin
   // check write specifier
   if (Parts[ppWriteWord].StartPos>0) or (Parts[ppReadWord].StartPos<1) then
   begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
+{$ENDIF}
     AccessParamPrefix:=
       ASourceChangeCache.BeautifyCodeOptions.PropertyWriteIdentPrefix;
     if Parts[ppWrite].StartPos>0 then
@@ -6616,6 +6648,7 @@ begin
         // build function code
         if (Parts[ppParamList].StartPos>0) then begin
           MoveCursorToCleanPos(Parts[ppParamList].StartPos);
+          ReadNextAtom;
           InitExtraction;
           if not ReadParamList(false,true,[phpWithParameterNames,
                                phpWithoutBrackets,phpWithVarModifiers,
@@ -6683,6 +6716,9 @@ begin
   end;
   // check stored specifier
   if (Parts[ppStoredWord].StartPos>0) then begin
+{$IFDEF CTDEBUG}
+writeln('[TCodeCompletionCodeTool.CompleteProperty] stored specifier needed');
+{$ENDIF}
     if Parts[ppStored].StartPos>0 then
       AccessParam:=copy(Src,Parts[ppStored].StartPos,
             Parts[ppStored].EndPos-Parts[ppStored].StartPos)
@@ -7046,7 +7082,6 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
   CursorNode, ProcNode, ImplementationNode, SectionNode,
   ANode: TCodeTreeNode;
   ProcCode: string;
-  InInterface: boolean;
   ANodeExt: TCodeTreeNodeExtension;
 begin
   Result:=false;
@@ -7066,7 +7101,6 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode A ',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
-  InInterface:=NodeHasParentOfType(CursorNode,ctnInterface);
   ImplementationNode:=FindImplementationNode;
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
   FirstInsert:=nil;
@@ -7077,7 +7111,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode A ',NodeDescriptionAsString(Cursor
     ClassNode:=ClassNode.Parent;
   if ClassNode<>nil then begin
 {$IFDEF CTDEBUG}
-writeln('TCodeCompletionCodeTool.CompleteCode B ',NodeDescriptionAsString(ClassNode.Desc));
+writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(ClassNode.Desc));
 {$ENDIF}
     // cursor is in class/object definition
     if CursorNode.SubDesc=ctnsForwardDeclaration then exit;
@@ -7184,34 +7218,40 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
     if (ProcNode.Desc=ctnProcedure)
     and (ProcNode.SubDesc=ctnsForwardDeclaration) then begin
       // Node is forward Proc
-      if InInterface then begin
-        // node is forward proc in interface
         
-        // check if proc already exists
-        ProcCode:=ExtractProcHead(ProcNode,[phpInUpperCase]);
-        if FindProcNode(FindNextNodeOnSameLvl(ProcNode),ProcCode,
-               [phpInUpperCase])<>nil
-        then exit;
+      // check if proc already exists
+      ProcCode:=ExtractProcHead(ProcNode,[phpInUpperCase]);
+      if FindProcNode(FindNextNodeOnSameLvl(ProcNode),ProcCode,
+             [phpInUpperCase])<>nil
+      then exit;
         
-        // -> create proc body at end of implementation
+      // -> create proc body at end of implementation
 
-        Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
-        InsertPos:=ImplementationNode.EndPos;
-
-        // build nice proc
-        ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithVarModifiers,
-                    phpWithParameterNames,phpWithResultType,phpWithComments]);
-        if ProcCode='' then exit;
-        ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
-                           Indent,true);
-        if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
-          InsertPos,InsertPos,ProcCode) then exit;
-        if not SourceChangeCache.Apply then exit;
-        
-        // reparse code and find jump point into new proc
-        Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine);
-        exit;
+      Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
+      if ImplementationNode.Desc=ctnImplementation then
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,
+           ImplementationNode.EndPos,Scanner.NestedComments)
+      else begin
+        // insert in front of main program begin..end.
+        StartNode:=ImplementationNode.LastChild;
+        if (StartNode=nil) or (StartNode.Desc<>ctnBeginBlock) then exit;
+        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,StartNode.StartPos,
+           Scanner.NestedComments);
       end;
+
+      // build nice proc
+      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithVarModifiers,
+                  phpWithParameterNames,phpWithResultType,phpWithComments]);
+      if ProcCode='' then exit;
+      ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
+                         Indent,true);
+      if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
+        InsertPos,InsertPos,ProcCode) then exit;
+      if not SourceChangeCache.Apply then exit;
+        
+      // reparse code and find jump point into new proc
+      Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine);
+      exit;
     end;
   end;
 end;

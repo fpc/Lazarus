@@ -288,12 +288,9 @@ begin
     raise;
   end;
 
-  if FMainForm = nil then
-  begin
+  if FMainForm = nil then begin
     FMainForm := TForm(ref);
-  end
-  else
-  begin;
+  end else begin
     if not assigned(FList) then
       FList := TList.Create;
     FList.Add(TForm(ref));
@@ -303,6 +300,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/10/15 13:11:28  lazarus
+  MG: added complete code
+
   Revision 1.7  2001/07/01 23:33:13  lazarus
   MG: added WaitMessage and HandleEvents is now non blocking
 

@@ -24,11 +24,16 @@ program lazarus;
 
 {$mode objfpc}{$H+}
 
+{$I ide.inc}
+
 {$IFDEF SUPPORTS_RESOURCES}
   {$R *.res}
 {$ENDIF}
 
 uses 
+{$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+{$ENDIF}
   Forms,
   Splash,
   Main,
@@ -51,6 +56,9 @@ begin
   end;
 
   Application.CreateForm(TMainIDE, MainIDE);
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap('TMainIDE created');
+{$ENDIF}
   Application.CreateForm(TMessagesView, MessagesView);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   SplashForm.StartTimer;
@@ -63,6 +71,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2001/10/15 13:11:27  lazarus
+  MG: added complete code
+
   Revision 1.20  2001/08/02 12:58:35  lazarus
   MG: win32 interface patch from Keith Bowes
 

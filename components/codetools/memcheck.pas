@@ -64,6 +64,8 @@ const
   { put crc in sig
     this allows to test for writing into that part }
   usecrc : boolean = true;
+  
+  MaxDumpCnt : integer = 10;
 
 var
   getmem_cnt,
@@ -806,7 +808,7 @@ end;
 procedure dumpheap;
 var
   pp : pheap_mem_info;
-  i : longint;
+  i, WrittenCnt : longint;
   ExpectedMemAvail : longint;
 begin
   pp:=heap_mem_root;
@@ -825,6 +827,7 @@ begin
   If ExpectedMemAvail<>MemAvail then
     Writeln(ptext^,'Should be : ',ExpectedMemAvail);
   i:=getmem_cnt-freemem_cnt;
+  WrittenCnt:=0;
   while pp<>nil do
    begin
      if i<0 then
@@ -855,9 +858,10 @@ begin
           dump_change_after(pp,ptext^);
           dump_change_after(pp,error_file);
           error_in_heap:=true;
-       end
+       end;
 {$endif EXTRA}
-       ;
+     inc(WrittenCnt);
+     if WrittenCnt>=MaxDumpCnt then break;
      pp:=pp^.previous;
    end;
 end;

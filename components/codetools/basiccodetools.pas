@@ -1131,6 +1131,7 @@ function FindLineEndOrCodeAfterPosition(const Source: string;
    Position: integer; NestedComments: boolean): integer;
 { search forward for a line end or code
   ignore line ends in comments
+  Result is Position of Start of Line End
 }
 var SrcLen: integer;
 
@@ -1203,7 +1204,33 @@ end;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
    Position: integer; NestedComments: boolean): integer;
 { search backward for a line end or code
-  ignore line ends in comments
+  ignore line ends in comments or at the end of comment lines
+   (comment lines are lines without code and at least one comment)
+  Result is Position of Start of Line End
+  
+  examples: Position points at char 'a'
+  
+    1:  | 
+    2: a:=1;
+    
+    1:  b:=1; |
+    2:  // comment
+    3:  // comment
+    4:  a:=1;
+    
+    1:  |
+    2: /* */
+    3:  a:=1;
+    
+    1: end;| /*
+    2: */ a:=1;
+    
+    1: b:=1; // comment |
+    2: a:=1;
+    
+    1: b:=1; /*
+    2: comment */   |
+    3: a:=1;
 }
   procedure ReadComment(var P: integer);
   begin
@@ -1238,34 +1265,48 @@ function FindLineEndOrCodeInFrontOfPosition(const Source: string;
   end;
 
 var TestPos: integer;
+  OnlySpace: boolean;
 begin
-  Result:=Position;
+  if Position<=1 then begin
+    Result:=1;
+    exit;
+  end;
+  Result:=Position-1;
   while (Result>0) do begin
     case Source[Result] of
       '}',')':
         ReadComment(Result);
       #10,#13:
         begin
-          // test if it is a '//' comment
+          // line end in code found
           dec(Result);
           if (Result>1) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then dec(Result);
+          // test if it is a comment line (a line without code and at least one
+          // comment)
           TestPos:=Result-1;
+          OnlySpace:=true;
           while (TestPos>1) do begin
             if (Source[TestPos]='/') and (Source[TestPos-1]='/') then begin
               // this is a comment line end -> search further
+              dec(TestPos);
               break;
             end else if Source[TestPos] in [#10,#13] then begin
               // no comment, the line end ist really there :)
               exit;
-            end else
+            end else if OnlySpace and (Source[TestPos] in ['}',')']) then begin
+              // this is a comment line end -> search further
+              break;
+            end else begin
+              if (Source[Result]>' ') then OnlySpace:=false;
               dec(TestPos);
+            end;
           end;
           Result:=TestPos;
         end;
     else
       begin
-        if (Source[Result]<=' ') or (Source[Result]=';') then
+        if (Source[Result]<=' ') or (Source[Result] in [';',',']) then
           dec(Result)
         else
           exit;

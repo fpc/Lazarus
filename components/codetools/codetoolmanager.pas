@@ -48,6 +48,7 @@ type
   TGetStringProc = procedure(const s: string) of object;
   TOnBeforeApplyChanges = procedure(Manager: TCodeToolManager;
                                     var Abort: boolean) of object;
+  TOnAfterApplyChanges = procedure(Manager: TCodeToolManager) of object;
 
   TCodeToolManager = class
   private
@@ -59,6 +60,7 @@ type
     FJumpCentered: boolean;
     FCursorBeyondEOL: boolean;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
+    FOnAfterApplyChanges: TOnAfterApplyChanges;
     FLastException: Exception;
     FCatchExceptions: boolean;
     FWriteExceptions: boolean;
@@ -74,6 +76,7 @@ type
     procedure SetJumpCentered(NewValue: boolean);
     procedure SetCursorBeyondEOL(NewValue: boolean);
     procedure BeforeApplyingChanges(var Abort: boolean);
+    procedure AfterApplyingChanges;
     function HandleException(AnException: Exception): boolean;
   public
     DefinePool: TDefinePool; // definitions for all directories (rules)
@@ -81,6 +84,10 @@ type
     SourceCache: TCodeCache; // cache for source (units, include files, ...)
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
+    
+    // Write Lock
+    procedure BeginUpdate;
+    procedure EndUpdate;
 
     // file handling
     property SourceExtensions: string
@@ -112,6 +119,8 @@ type
     // events
     property OnBeforeApplyChanges: TOnBeforeApplyChanges
           read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
+    property OnAfterApplyChanges: TOnAfterApplyChanges
+          read FOnAfterApplyChanges write FOnAfterApplyChanges;
 
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
@@ -217,6 +226,7 @@ begin
   SourceCache:=TCodeCache.Create;
   SourceChangeCache:=TSourceChangeCache.Create;
   SourceChangeCache.OnBeforeApplyChanges:=@BeforeApplyingChanges;
+  SourceChangeCache.OnAfterApplyChanges:=@AfterApplyingChanges;
   GlobalValues:=TExpressionEvaluator.Create;
   FSourceExtensions:='.pp;.pas;.lpr;.dpr;.dpk';
   FLastException:=nil;
@@ -243,11 +253,16 @@ writeln('[TCodeToolManager.Destroy] C');
 {$ENDIF}
   DefineTree.Free;
   DefinePool.Free;
-  SourceChangeCache.Free;
-  SourceCache.Free;
-  FLastException.Free;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.Destroy] D');
+{$ENDIF}
+  SourceChangeCache.Free;
+{$IFDEF CTDEBUG}
+writeln('[TCodeToolManager.Destroy] E');
+{$ENDIF}
+  SourceCache.Free;
+{$IFDEF CTDEBUG}
+writeln('[TCodeToolManager.Destroy] F');
 {$ENDIF}
   inherited Destroy;
 {$IFDEF CTDEBUG}
@@ -256,6 +271,16 @@ writeln('[TCodeToolManager.Destroy] END');
 {$IFDEF MEM_CHECK}
 CheckHeap('TCodeToolManager.Destroy END');
 {$ENDIF}
+end;
+
+procedure TCodeToolManager.BeginUpdate;
+begin
+  SourceChangeCache.BeginUpdate;
+end;
+
+procedure TCodeToolManager.EndUpdate;
+begin
+  SourceChangeCache.EndUpdate;
 end;
 
 function TCodeToolManager.FindFile(const ExpandedFilename: string): TCodeBuffer;
@@ -1019,6 +1044,12 @@ begin
     FOnBeforeApplyChanges(Self,Abort);
 end;
 
+procedure TCodeToolManager.AfterApplyingChanges;
+begin
+  if Assigned(FOnAfterApplyChanges) then
+    FOnAfterApplyChanges(Self);
+end;
+
 function TCodeToolManager.ConsistencyCheck: integer;
 // 0 = ok
 begin
@@ -1098,6 +1129,9 @@ writeln('codetoolmanager.pas - finalization');
 {$ENDIF}
   CodeToolBoss.Free;
   CodeToolBoss:=nil;
+{$IFDEF CTDEBUG}
+writeln('codetoolmanager.pas - finalization finished');
+{$ENDIF}
 
 end.
 

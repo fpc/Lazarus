@@ -200,12 +200,14 @@ type
     // CodeToolBoss events
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
                                     var Abort: boolean);
+    procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FSelectedComponent : TRegisteredComponent;
     fProject: TProject;
     MacroList: TTransferMacroList;
     FMessagesViewBoundsRectValid: boolean;
+    FOpenEditorsOnCodeToolChange: boolean;
 
     Function CreateSeperator : TMenuItem;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
@@ -565,8 +567,13 @@ CheckHeap(IntToStr(GetMem_Cnt));
   else if (EnvironmentOptions.OpenLastprojectAtStart)
   and (FileExists(EnvironmentOptions.LastSavedProjectFile)) 
   and (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)=mrOk) then
+  begin
     // last project loaded
-  else
+writeln('TMainIDE.Create last project loaded successfully');
+{$IFDEF IDE_MEM_CHECK}
+CheckHeap(IntToStr(GetMem_Cnt));
+{$ENDIF}
+  end else
     // create new project
     DoNewProject(ptApplication);
     
@@ -1459,9 +1466,13 @@ end;
 
 Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
 Begin
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.SetDefaultsforForm] A');
+{$ENDIF}
   aForm.Designer := TDesigner.Create(aForm, TheControlSelection);
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.SetDefaultsforForm] B');
+{$ENDIF}
   with TDesigner(aForm.Designer) do begin
     FormEditor := FormEditor1;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
@@ -1484,9 +1495,13 @@ var CanClose: boolean;
 begin
   CanClose:=true;
   OnCloseQuery(Sender, CanClose);
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.mnuQuitClicked 1');
+{$ENDIF}
   if CanClose then Close;
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.mnuQuitClicked 2');
+{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------}
@@ -1843,7 +1858,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
     exit;
   end;
   if ActiveSrcEdit.Modified then begin
-    ActiveUnitInfo.Source.Assign(ActiveSrcEdit.Source);
+    ActiveSrcEdit.UpdateCodeBuffer;
     ActiveUnitInfo.Modified:=true;
   end;
   if (not SaveToTestDir) and (ActiveUnitInfo.Source.IsVirtual) then
@@ -1857,11 +1872,15 @@ CheckHeap(IntToStr(GetMem_Cnt));
   
   if ActiveUnitInfo.HasResources then begin
     LinkIndex:=-1;
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit B');
 CodeToolBoss.SourceCache.WriteAllFileNames;
+{$ENDIF}
     ResourceCode:=CodeToolBoss.FindNextResourceFile(
       ActiveUnitInfo.Source,LinkIndex);
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
+{$ENDIF}
     if ResourceCode<>nil then
       LFMCode:=
         CodeToolBoss.LoadFile(ChangeFileExt(ResourceCode.Filename,'.lfm'))
@@ -1891,32 +1910,33 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
         EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
         if not CodeToolBoss.SaveBufferAs(ActiveUnitInfo.Source,NewFilename,
                NewSource) then exit;
-writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
         if ResourceCode<>nil then begin
           // rename Resource file and form text file
+          // the resource include line in the code will be changed later
           CodeToolBoss.SaveBufferAs(ResourceCode,
             ChangeFileExt(NewFilename,ResourceFileExt),ResourceCode);
           LinkIndex:=-1;
           ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit D ',ResourceCode<>nil);
 if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
+{$ENDIF}
           if LFMCode<>nil then begin
             if not CodeToolBoss.SaveBufferAs(LFMCode,
               ChangeFileExt(NewFilename,'.lfm'),LFMCode) then
                 LFMCode:=nil;
           end;
         end;
+{$IFDEF IDE_DEBUG}
+writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
+{$ENDIF}
         ActiveUnitInfo.Source:=NewSource;
         ActiveUnitInfo.Modified:=false;
-        NewUnitName:=ExtractFileName(ActiveUnitInfo.Filename);
-        NewUnitName:=ChangeFileExt(NewUnitName,'');
-        // change unitname in source
-        if ActiveUnitInfo.UnitName<>NewUnitName then begin
-          ActiveUnitInfo.UnitName:=NewUnitName;
-          ActiveUnitInfo.Source.AssignTo(ActiveSrcEdit.Source);
-        end;
+        ActiveSrcEdit.CodeBuffer:=NewSource; // the code is not changed, thus the marks are kept
+        NewUnitName:=ExtractFileNameOnly(ActiveUnitInfo.Filename);
+        // change unitname in source (resource filename is also changed)
+        ActiveUnitInfo.UnitName:=NewUnitName;
         // change unitname on SourceNotebook
-        ActiveSrcEdit.Filename:=ActiveUnitInfo.Filename;
         NewPageName:=SourceNoteBook.FindUniquePageName(
             ActiveUnitInfo.Filename,SourceNoteBook.NoteBook.PageIndex);
         SourceNoteBook.NoteBook.Pages[SourceNoteBook.NoteBook.PageIndex]:=
@@ -1956,7 +1976,9 @@ if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename)
     end;
   end;
 
+{$IFDEF IDE_DEBUG}
 writeln('*** HasResources=',ActiveUnitInfo.HasResources);
+{$ENDIF}
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -2002,7 +2024,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
       finally
         MemStream.Free;
       end;
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
+{$ENDIF}
       // replace lazarus form resource code
       if not CodeToolBoss.AddLazarusResource(ResourceCode,
          'T'+ActiveUnitInfo.FormName,CompResourceCode) then
@@ -2016,7 +2040,9 @@ writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
         if Result=mrCancel then Result:=mrAbort;
         exit;
       end;
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit F ',ResourceCode.Modified);
+{$ENDIF}
       if not SaveToTestDir then begin
         if ResourceCode.Modified then begin
           Result:=DoSaveCodeBufferToFile(ResourceCode,ResourceCode.Filename,
@@ -2031,7 +2057,9 @@ writeln('TMainIDE.DoSaveEditorUnit F ',ResourceCode.Modified);
         if not Result=mrOk then exit;
         Result:=mrCancel;
       end;
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit G ',LFMCode<>nil);
+{$ENDIF}
       if (not SaveToTestDir) and (LFMCode<>nil) then begin
         repeat
           try
@@ -2070,6 +2098,7 @@ writeln('TMainIDE.DoSaveEditorUnit G ',LFMCode<>nil);
     ActiveUnitInfo.Modified:=false;
     ActiveSrcEdit.Modified:=false;
   end;
+  SourceNoteBook.UpdateStatusBar;
 writeln('TMainIDE.DoSaveEditorUnit END');
   Result:=mrOk;
 end;
@@ -2078,7 +2107,7 @@ function TMainIDE.DoCloseEditorUnit(PageIndex:integer;
   SaveFirst: boolean):TModalResult;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  ACaption,AText:string;
+  ACaption,AText: string;
   i:integer;
   OldDesigner: TDesigner;
 begin
@@ -2153,12 +2182,6 @@ CheckHeap(IntToStr(GetMem_Cnt));
   Result:=mrCancel;
   if AFileName='' then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
-  if (not ProjectLoading) and (ToolStatus=itNone)
-  and ((Ext='.lpi') or (Ext='.lpr')) then begin
-    // load program file and project info file
-    Result:=DoOpenProjectFile(AFilename);
-    exit;
-  end;
   // check if the project knows this file
   i:=Project.UnitCount-1;
   while (i>=0) and (Project.Units[i].Filename<>AFileName) do dec(i);
@@ -2177,6 +2200,12 @@ CheckHeap(IntToStr(GetMem_Cnt));
     if (Ext='.pp') or (Ext='.pas') then
       NewUnitInfo.ReadUnitNameFromSource;
   end else begin
+    if (not ProjectLoading) and (ToolStatus=itNone)
+    and ((Ext='.lpi') or (Ext='.lpr')) then begin
+      // load program file and project info file
+      Result:=DoOpenProjectFile(AFilename);
+      exit;
+    end;
     Result:=DoLoadCodeBuffer(PreReadBuf,AFileName);
     if Result<>mrOk then exit;
     Result:=mrCancel;
@@ -2218,11 +2247,12 @@ CheckHeap(IntToStr(GetMem_Cnt));
       NewUnitInfo.ReadUnitNameFromSource;
     Project.AddUnit(NewUnitInfo,false);
   end;
-{$IFDEF IDEDEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.DoOpenEditorFile] B');
 {$ENDIF}
   // create a new source editor
   NewUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(Ext);
+writeln('[TMainIDE.DoOpenEditorFile] B2');
   NewPageName:=NewUnitInfo.UnitName;
   if NewPageName='' then begin
     NewPageName:=ExtractFileName(AFilename);
@@ -2230,7 +2260,9 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
       NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
     if NewpageName='' then NewPageName:='file';
   end;
+writeln('[TMainIDE.DoOpenEditorFile] B3');
   SourceNotebook.NewFile(NewPageName,NewUnitInfo.Source);
+writeln('*** TMainIDE.DoOpenEditorFile C');
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   if not ProjectLoading then
     Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex)
@@ -2253,9 +2285,8 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
-  NewSrcEdit.Filename:=NewUnitInfo.Filename;
   
-{$IFDEF IDEDEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.DoOpenEditorFile] C');
 {$ENDIF}
   NewUnitInfo.Loaded:=true;
@@ -2292,8 +2323,9 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
           except
             on E: Exception do begin
               ACaption:='Format error';
-              AText:='Unable to convert text form data of file "'
-                 +NewBuf.Filename+'" into binary stream. ('+E.Message+')';
+              AText:='Unable to convert text form data of file '#13
+                +'"'+NewBuf.Filename+'"'#13
+                +'into binary stream. ('+E.Message+')';
               Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
               if Result=mrCancel then Result:=mrAbort;
               if Result<>mrOk then exit;
@@ -2311,8 +2343,8 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
           FormEditor1.CreateFormFromStream(BinLFMStream));
         if CInterface=nil then begin
           ACaption:='Form load error';
-          AText:='Unable to build form from file "'
-             +NewBuf.Filename+'".';
+          AText:='Unable to build form from file '#13
+                      +'"'+NewBuf.Filename+'".';
           Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
           if Result=mrCancel then Result:=mrAbort;
           if Result<>mrOk then exit;
@@ -2335,7 +2367,7 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
           PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
           TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
         end;
-{$IFDEF IDEDEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.DoOpenEditorFile] LFM end');
 {$ENDIF}
       finally
@@ -2356,7 +2388,7 @@ var MainUnitInfo: TUnitInfo;
   NewPageName, Ext: string;
   NewSrcEdit: TSourceEditor;
 begin
-//writeln('[TMainIDE.DoOpenMainUnit] A');
+writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
   if Project.MainUnit<0 then exit;
   MainUnitInfo:=Project.Units[Project.MainUnit];
@@ -2388,7 +2420,7 @@ begin
   NewSrcEdit.EditorComponent.CaretXY:=MainUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=MainUnitInfo.TopLine;
   Result:=mrOk;
-//writeln('[TMainIDE.DoOpenMainUnit] END');
+writeln('[TMainIDE.DoOpenMainUnit] END');
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -2471,7 +2503,7 @@ begin
 writeln('TMainIDE.DoOpenFileAtCursor');
   Result:=mrCancel;
   // ToDo
-  // check if include, unit, or simply a filename
+  // check if include, unit, or simply a filename (in a string or comment)
 end;
 
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
@@ -2570,8 +2602,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
       MainUnitSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
         MainUnitInfo.EditorIndex);
       if MainUnitSrcEdit.Modified then begin
-        MainUnitInfo.Source.Assign(MainUnitSrcEdit.Source);
-writeln('  >>> ',MainUnitInfo.Source.SourceLength);
+        MainUnitSrcEdit.UpdateCodeBuffer;
         MainUnitInfo.Modified:=true;
       end;
     end;
@@ -2598,7 +2629,6 @@ writeln('  >>> ',MainUnitInfo.Source.SourceLength);
     end;
   end;
 
-writeln('  AAA ',Project.ProjectFile);
   SaveAs:=SaveAs or (Project.ProjectFile='');
   if SaveAs and (not SaveToTestDir) then begin
     // let user choose a filename
@@ -2643,8 +2673,9 @@ writeln('  AAA ',Project.ProjectFile);
       end else if Project.ProjectType in [ptProgram, ptApplication] then begin
         if FileExists(NewProgramFilename) then begin
           ACaption:='Overwrite file?';
-          AText:='A file "'+NewProgramFilename+'" already exists.'#13'Replace it?';
-          Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0);
+          AText:='A file "'+NewProgramFilename+'" already exists.'#13
+                          +'Replace it?';
+          Result:=MessageDlg(ACaption, AText, mtconfirmation,[mbOk,mbCancel],0);
           if Result=mrCancel then exit;
         end;
       end;
@@ -2660,13 +2691,12 @@ writeln('  AAA ',Project.ProjectFile);
         end;
         NewBuf.Source:=MainUnitInfo.Source.Source;
         MainUnitInfo.Source:=NewBuf;
+        MainUnitSrcEdit.CodeBuffer:=NewBuf;
         // change program name
         NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
         CodeToolBoss.RenameSource(MainUnitInfo.Source,NewProgramName);
         // update source editor of main unit
-        MainUnitInfo.Source.AssignTo(MainUnitSrcEdit.Source);
         MainUnitInfo.Modified:=true;
-        MainUnitSrcEdit.Filename:=MainUnitInfo.Filename;
         NewPageName:=ExtractFileName(MainUnitInfo.Filename);
         Ext:=ExtractFileExt(NewPagename);
         if (Ext='.pp') or (Ext='.pas') then
@@ -2788,7 +2818,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
   Result:=DoCloseProject;
   if Result=mrAbort then exit;
   // create a new one
-//writeln('TMainIDE.DoOpenProjectFile B');
+writeln('TMainIDE.DoOpenProjectFile B');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -2801,7 +2831,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
     if Result in [mrAbort,mrIgnore] then exit;
     Project.Units[Project.MainUnit].Source:=NewBuf;
   end;
-//writeln('TMainIDE.DoOpenProjectFile C');
+writeln('TMainIDE.DoOpenProjectFile C');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -2846,7 +2876,7 @@ writeln('TMainIDE.DoOpenProjectFile D');
   EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
   EnvironmentOptions.Save(false);
   Result:=mrOk;
-writeln('TMainIDE.DoOpenProjectFile end ',CodeToolBoss.ConsistencyCheck);
+writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -3630,6 +3660,246 @@ begin
   Result:=TestDir+Result+'.lpr';
 end;
 
+//------------------------------------------------------------------------------
+
+procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
+  var RegisteredComponent: TRegisteredComponent);
+begin
+  RegisteredComponent:=SelectedComponent;
+end;
+
+procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
+begin
+  ControlClick(ComponentNoteBook);
+end;
+
+procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject; 
+  Component: TComponent;  Value: boolean);
+begin
+  SetDesigning(Component,Value);
+end;
+
+procedure TMainIDE.OnDesignerComponentListChanged(Sender: TObject);
+begin
+  ObjectInspector1.FillComponentComboBox;
+end;
+
+procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
+begin
+  ObjectInspector1.RefreshPropertyValues;
+end;
+
+procedure TMainIDE.OnDesignerAddComponent(Sender: TObject; 
+  Component: TComponent; ComponentClass: TRegisteredComponent);
+var i: integer;
+  ActiveForm: TCustomForm;
+  ActiveUnitInfo: TUnitInfo;
+  FormClassName: string;
+begin
+  ActiveForm:=TDesigner(Sender).Form;
+  if ActiveForm=nil then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
+    halt;
+  end;
+  // find source for form
+  i:=Project.UnitCount-1;
+  while (i>=0) do begin
+    if (Project.Units[i].Loaded) 
+    and (Project.Units[i].Form=ActiveForm) then break;
+    dec(i);
+  end;
+  if i<0 then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
+    halt;
+  end;
+  ActiveUnitInfo:=Project.Units[i];
+  // add needed unit to source
+  CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
+            ComponentClass.UnitName,'');
+  // add component definition to form source
+  FormClassName:=ActiveForm.ClassName;
+  if CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,'*',
+    FormClassName) then begin
+    CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,FormClassName,
+      Component.Name, Component.ClassName);
+  end;
+end;
+
+procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
+  Component: TComponent);
+var i: integer;
+  ActiveForm: TCustomForm;
+  ActiveUnitInfo: TUnitInfo;
+  FormClassName: string;
+begin
+  ActiveForm:=TDesigner(Sender).Form;
+  if ActiveForm=nil then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
+    halt;
+  end;
+  // find source for form
+  i:=Project.UnitCount-1;
+  while (i>=0) do begin
+    if (Project.Units[i].Loaded) 
+    and (Project.Units[i].Form=ActiveForm) then break;
+    dec(i);
+  end;
+  if i<0 then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
+    halt;
+  end;
+  ActiveUnitInfo:=Project.Units[i];
+  // remove component definition to form source
+  FormClassName:=ActiveForm.ClassName;
+  if CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
+    Component.Name) then begin
+    ActiveUnitInfo.Modified:=true;
+  end;
+end;
+
+procedure TMainIDE.OnDesignerModified(Sender: TObject);
+var i: integer;
+begin
+  i:=Project.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
+  if i>=0 then begin
+    Project.Units[i].Modified:=true;
+    if Project.Units[i].Loaded then
+      SourceNotebook.FindSourceEditorWithPageIndex(
+        Project.Units[i].EditorIndex).EditorComponent.Modified:=true;
+  end;
+end;
+
+procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
+var NewSelectedComponents : TComponentSelectionList;
+  i: integer;
+begin
+writeln('[TMainIDE.OnControlSelectionChanged]');
+  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+  NewSelectedComponents:=TComponentSelectionList.Create;
+  for i:=0 to TheControlSelection.Count-1 do begin
+    NewSelectedComponents.Add(TheControlSelection[i].Component);
+  end;
+  FormEditor1.SelectedComponents:=NewSelectedComponents;
+  NewSelectedComponents.Free;
+writeln('[TMainIDE.OnControlSelectionChanged] END');
+end;
+
+// -----------------------------------------------------------------------------
+
+procedure TMainIDE.InitCodeToolBoss;
+// initialize the CodeToolBoss, which is the frontend for the codetools.
+// - sets a basic set of compiler macros
+// ToDo: build a frontend for the codetools and save the settings
+var CompilerUnitSearchPath: string;
+  ADefTempl: TDefineTemplate;
+  c: integer;
+begin
+  FOpenEditorsOnCodeToolChange:=false;
+  
+  if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
+    writeln('');
+    writeln('Warning *: Compiler Filename not set! (see Environment Options)');
+  end;
+  if (EnvironmentOptions.LazarusDirectory='') then begin
+    writeln('');
+    writeln(
+      'Warning *: Lazarus Source Directory not set!  (see Environment Options)');
+  end;
+  if (EnvironmentOptions.FPCSourceDirectory='') then begin
+    writeln('');
+    writeln(
+      'Warning: FPC Source Directory not set!  (see Environment Options)');
+  end;
+  
+  // set global variables
+  with CodeToolBoss.GlobalValues do begin
+    Variables[ExternalMacroStart+'LazarusSrcDir']:=
+      EnvironmentOptions.LazarusDirectory;
+    Variables[ExternalMacroStart+'FPCSrcDir']:=
+      EnvironmentOptions.FPCSourceDirectory;
+    Variables[ExternalMacroStart+'LCLWidgetType']:='gtk';
+    Variables[ExternalMacroStart+'ProjectDir']:='';
+  end;
+  
+  // build DefinePool and Define Tree
+  with CodeToolBoss.DefinePool do begin
+    // start the compiler and ask for his settings
+    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
+                          CompilerUnitSearchPath);
+    if ADefTempl=nil then begin
+      writeln('');
+      writeln(
+        'Warning: Could not create Define Template for Free Pascal Compiler');
+    end;
+    Add(ADefTempl);
+    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
+    // create compiler macros to simulate the Makefiles of the FPC sources
+    ADefTempl:=CreateFPCSrcTemplate(EnvironmentOptions.FPCSourceDirectory,
+                          CompilerUnitSearchPath);
+    if ADefTempl=nil then begin
+      writeln('');
+      writeln(
+        'Warning: Could not create Define Template for Free Pascal Sources');
+    end;
+    Add(ADefTempl);
+    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
+    // create compilr macros for the lazarus sources 
+    ADefTempl:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)','$(#LCLWidgetType)');
+    if ADefTempl=nil then begin
+      writeln('');
+      writeln(
+        'Warning: Could not create Define Template for Lazarus Sources');
+    end;
+    Add(ADefTempl);
+    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
+  end;  
+  // build define tree
+  with CodeToolBoss do begin
+    DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
+                     '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)'));
+    //DefineTree.WriteDebugReport;
+  end;
+  c:=CodeToolBoss.ConsistencyCheck;
+  if c<>0 then begin
+    writeln('CodeToolBoss.ConsistencyCheck=',c);
+    Halt;
+  end;
+  
+  with CodeToolBoss do begin
+    WriteExceptions:=true;
+    CatchExceptions:=true;
+    OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
+    OnAfterApplyChanges:=@OnAfterCodeToolBossApplyChanges;
+  end;
+end;
+
+procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
+  var Abort: boolean);
+// the CodeToolBoss built a list of Sources that will be modified
+// 1. open all of them in the source notebook
+// 2. lock the editors to reduce repaints and undo steps
+var i: integer;
+begin
+  if FOpenEditorsOnCodeToolChange then begin
+    // open all sources in editor
+    for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
+      if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
+        false)<>mrOk then
+      begin
+        Abort:=true;
+        exit;
+      end;
+    end;
+  end;
+  // lock all editors
+  SourceNoteBook.LockAllEditorsInSourceChangeCache;
+end;
+
+procedure TMainIDE.OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
+begin
+  SourceNoteBook.UnlockAllEditorsInSourceChangeCache;
+end;
+
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache;
 // save all open sources to code tools cache
 var i: integer;
@@ -3642,38 +3912,17 @@ begin
       SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
         CurUnitInfo.EditorIndex);
       if SrcEdit.Modified then begin
-        CurUnitInfo.Source.Assign(SrcEdit.Source);
+        SrcEdit.UpdateCodeBuffer;
         CurUnitInfo.Modified:=true;
-        SrcEdit.Modified:=false;
       end;
     end;
   end;
 end;
 
 procedure TMainIDE.ApplyCodeToolChanges;
-// reload all loaded project sources from code tools cache
-// moves marks (bookmarks, breakpoint, ToDo: goto history)
-var i: integer;
-  AnUnitInfo: TUnitInfo;
-  SrcEdit: TSourceEditor;
 begin
-  if Project=nil then exit;
-  for i:=0 to Project.UnitCount-1 do begin
-    AnUnitInfo:=Project.Units[i];
-    if AnUnitInfo.Source.Count>0 then begin
-      // source has changed
-      if AnUnitInfo.EditorIndex>=0 then begin
-        // source is loaded in editor
-        SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
-          AnUnitInfo.EditorIndex);
-        SrcEdit.AdjustMarksByCodeCache;
-        // apply source
-        AnUnitInfo.Source.AssignTo(SrcEdit.EditorComponent.Lines);
-        SrcEdit.EditorComponent.Modified:=true;
-      end;
-      AnUnitInfo.Source.ClearEntries;
-    end;
-  end;
+  // all changes were handled automatically by events
+  // just clear the logs
   CodeToolBoss.SourceCache.ClearAllSourleLogEntries;
 end;
 
@@ -3689,7 +3938,7 @@ begin
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
   SaveSourceEditorChangesToCodeCache;
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-{$IFDEF IDEDEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.DoJumpToProcedureSection] ************');
 {$ENDIF}
@@ -3724,11 +3973,12 @@ begin
   GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,ActiveSrcEdit,
     ActiveUnitInfo);
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  FOpenEditorsOnCodeToolChange:=true;
   SaveSourceEditorChangesToCodeCache;
   CodeToolBoss.VisibleEditorLines:=ActiveSrcEdit.EditorComponent.LinesInWindow;
-{$IFDEF IDEDEBUG}
+{$IFDEF IDE_DEBUG}
 writeln('');
-writeln('[TMainIDE.DoJumpToProcedureSection] ************');
+writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
 {$ENDIF}
   if CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
@@ -3748,246 +3998,18 @@ writeln('[TMainIDE.DoJumpToProcedureSection] ************');
     NewSrcEdit.EditorComponent.CaretXY:=Point(NewX,NewY);
     NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
   end else begin
-    // probably a syntax error or just not in a procedure head/body / class
-    // -> ignore
+    // error: probably a syntax error or just not in a procedure head/body
+    // or not in a class
+    // -> there are enough events to handle everything, so it is ignored here
     ApplyCodeToolChanges;
   end;
+  FOpenEditorsOnCodeToolChange:=false;
 end;
-
-procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
-  var RegisteredComponent: TRegisteredComponent);
-begin
-  RegisteredComponent:=SelectedComponent;
-end;
-
-procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
-begin
-  ControlClick(ComponentNoteBook);
-end;
-
-procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject; 
-  Component: TComponent;  Value: boolean);
-begin
-  SetDesigning(Component,Value);
-end;
-
-procedure TMainIDE.OnDesignerComponentListChanged(Sender: TObject);
-begin
-  ObjectInspector1.FillComponentComboBox;
-end;
-
-procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
-begin
-  ObjectInspector1.RefreshPropertyValues;
-end;
-
-procedure TMainIDE.OnDesignerAddComponent(Sender: TObject; 
-  Component: TComponent; ComponentClass: TRegisteredComponent);
-var i: integer;
-  ActiveForm: TCustomForm;
-  ActiveUnitInfo: TUnitInfo;
-  ActiveSrcEdit: TSourceEditor;
-  FormClassName: string;
-begin
-  ActiveForm:=TDesigner(Sender).Form;
-  if ActiveForm=nil then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
-    halt;
-  end;
-  // find source for form
-  i:=Project.UnitCount-1;
-  while (i>=0) do begin
-    if (Project.Units[i].Loaded) 
-    and (Project.Units[i].Form=ActiveForm) then break;
-    dec(i);
-  end;
-  if i<0 then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
-    halt;
-  end;
-  ActiveUnitInfo:=Project.Units[i];
-  // add needed unit to source
-  CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-            ComponentClass.UnitName,'');
-  // add component definition to form source
-  FormClassName:=ActiveForm.ClassName;
-  if CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,'*',
-    FormClassName) then begin
-    CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,FormClassName,
-      Component.Name, Component.ClassName);
-    ActiveUnitInfo.Modified:=true;
-    ActiveSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-        ActiveUnitInfo.EditorIndex);
-    ActiveUnitInfo.Source.Assign(ActiveSrcEdit.Source);
-    ActiveSrcEdit.EditorComponent.Modified:=true;
-  end;
-end;
-
-procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
-  Component: TComponent);
-var i: integer;
-  ActiveForm: TCustomForm;
-  ActiveUnitInfo: TUnitInfo;
-  ActiveSrcEdit: TSourceEditor;
-  FormClassName: string;
-begin
-  ActiveForm:=TDesigner(Sender).Form;
-  if ActiveForm=nil then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
-    halt;
-  end;
-  // find source for form
-  i:=Project.UnitCount-1;
-  while (i>=0) do begin
-    if (Project.Units[i].Loaded) 
-    and (Project.Units[i].Form=ActiveForm) then break;
-    dec(i);
-  end;
-  if i<0 then begin
-    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
-    halt;
-  end;
-  ActiveUnitInfo:=Project.Units[i];
-  // remove component definition to form source
-  FormClassName:=ActiveForm.ClassName;
-  if CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
-    Component.Name) then begin
-    ActiveUnitInfo.Modified:=true;
-    ActiveSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-        ActiveUnitInfo.EditorIndex);
-    ActiveUnitInfo.Source.Assign(ActiveSrcEdit.Source);
-    ActiveSrcEdit.EditorComponent.Modified:=true;
-  end;
-end;
-
-procedure TMainIDE.OnDesignerModified(Sender: TObject);
-var i: integer;
-begin
-  i:=Project.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
-  if i>=0 then begin
-    Project.Units[i].Modified:=true;
-    if Project.Units[i].Loaded then
-      SourceNotebook.FindSourceEditorWithPageIndex(
-        Project.Units[i].EditorIndex).EditorComponent.Modified:=true;
-  end;
-end;
-
-procedure TMainIDE.OnControlSelectionChanged(Sender: TObject);
-var NewSelectedComponents : TComponentSelectionList;
-  i: integer;
-begin
-writeln('[TMainIDE.OnControlSelectionChanged]');
-  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
-  NewSelectedComponents:=TComponentSelectionList.Create;
-  for i:=0 to TheControlSelection.Count-1 do begin
-    NewSelectedComponents.Add(TheControlSelection[i].Component);
-  end;
-  FormEditor1.SelectedComponents:=NewSelectedComponents;
-  NewSelectedComponents.Free;
-writeln('[TMainIDE.OnControlSelectionChanged] END');
-end;
-
-
-procedure TMainIDE.InitCodeToolBoss;
-var CompilerUnitSearchPath: string;
-  ADefTempl: TDefineTemplate;
-  c: integer;
-begin
-  if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
-    writeln('');
-    writeln('Warning *: Compiler Filename not set! (see Environment Options)');
-  end;
-  if (EnvironmentOptions.LazarusDirectory='') then begin
-    writeln('');
-    writeln(
-      'Warning *: Lazarus Source Directory not set!  (see Environment Options)');
-  end;
-  if (EnvironmentOptions.FPCSourceDirectory='') then begin
-    writeln('');
-    writeln(
-      'Warning: FPC Source Directory not set!  (see Environment Options)');
-  end;
-  
-  // set global variables
-  with CodeToolBoss.GlobalValues do begin
-    Variables[ExternalMacroStart+'LazarusSrcDir']:=
-      EnvironmentOptions.LazarusDirectory;
-    Variables[ExternalMacroStart+'FPCSrcDir']:=
-      EnvironmentOptions.FPCSourceDirectory;
-    Variables[ExternalMacroStart+'LCLWidgetType']:='gtk';
-    Variables[ExternalMacroStart+'ProjectDir']:='';
-  end;
-  
-  // build DefinePool and Define Tree
-  with CodeToolBoss.DefinePool do begin
-    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
-                          CompilerUnitSearchPath);
-    if ADefTempl=nil then begin
-      writeln('');
-      writeln(
-        'Warning: Could not create Define Template for Free Pascal Compiler');
-    end;
-    Add(ADefTempl);
-    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-    ADefTempl:=CreateFPCSrcTemplate(EnvironmentOptions.FPCSourceDirectory,
-                          CompilerUnitSearchPath);
-    if ADefTempl=nil then begin
-      writeln('');
-      writeln(
-        'Warning: Could not create Define Template for Free Pascal Sources');
-    end;
-    Add(ADefTempl);
-    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-    ADefTempl:=CreateLazarusSrcTemplate('$(#LazarusSrcDir)','$(#LCLWidgetType)');
-    if ADefTempl=nil then begin
-      writeln('');
-      writeln(
-        'Warning: Could not create Define Template for Lazarus Sources');
-    end;
-    Add(ADefTempl);
-    CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-  end;  
-  // build define tree
-  with CodeToolBoss do begin
-    DefineTree.Add(DefinePool.CreateLCLProjectTemplate(
-                     '$(#LazarusSrcDir)','$(#LCLWidgetType)','$(#ProjectDir)'));
-    //DefineTree.WriteDebugReport;
-  end;
-  c:=CodeToolBoss.ConsistencyCheck;
-  if c<>0 then begin
-    writeln('CodeToolBoss.ConsistencyCheck=',c);
-    Halt;
-  end;
-  
-  with CodeToolBoss do begin
-    OnBeforeApplyChanges:=@OnBeforeCodeToolBossApplyChanges;
-    WriteExceptions:=true;
-    CatchExceptions:=true;
-  end;
-end;
-
-procedure TMainIDE.OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
-  var Abort: boolean);
-// the CodeToolBoss built a list of Sources that will be modified
-// -> open all of them in the source editor
-var i: integer;
-begin
-  for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
-    if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
-      false)<>mrOk then
-    begin
-      Abort:=true;
-      exit;
-    end;
-  end;
-end;
-
 
 initialization
   { $I mainide.lrs}
   {$I images/laz_images.lrs}
   {$I images/mainicon.lrs}
-
 
 
 end.
@@ -3996,8 +4018,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.119  2001/10/12 23:23:17  lazarus
-  MG: added new key: complete code
+  Revision 1.120  2001/10/15 13:11:27  lazarus
+  MG: added complete code
 
   Revision 1.115  2001/10/09 09:46:49  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle

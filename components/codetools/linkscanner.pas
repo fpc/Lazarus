@@ -1565,7 +1565,7 @@ procedure TLinkScanner.FindCodeInRange(CleanStartPos, CleanEndPos: integer;
 var ACode: Pointer;
   LinkIndex: integer;
 begin
-  if (CleanStartPos<1) or (CleanStartPos>=CleanEndPos)
+  if (CleanStartPos<1) or (CleanStartPos>CleanEndPos)
   or (CleanEndPos>CleanedLen+1) or (UniqueSortedCodeList=nil) then exit;
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
   if LinkIndex<0 then exit;
@@ -1577,7 +1577,7 @@ begin
       exit;
     if ACode<>Links[LinkIndex].Code then begin
       ACode:=Links[LinkIndex].Code;
-     AddCodeToList(ACode);
+      AddCodeToList(ACode);
     end;
   until false;
 end;

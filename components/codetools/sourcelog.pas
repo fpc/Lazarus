@@ -55,13 +55,17 @@ type
     Position: integer;
     Len: integer;
     MoveTo: integer;
-    LineEnds: integer;
+    LineEnds: integer; // number of line ends in txt
     LengthOfLastLine: integer;
+    Txt: string;
     Operation: TSourceLogEntryOperation;
     procedure AdjustPosition(var APosition: integer);
-    constructor Create(APos, ALength, AMoveTo: integer; const Txt: string;
+    constructor Create(APos, ALength, AMoveTo: integer; const ATxt: string;
       AnOperation: TSourceLogEntryOperation);
   end;
+  
+  TOnSourceChange = procedure(Sender: TSourceLog; Entry: TSourceLogEntry)
+                         of object;
 
   TSourceLogMarker = class
   private
@@ -88,10 +92,13 @@ type
     FOnInsert: TOnSourceLogInsert;
     FOnDelete: TOnSourceLogDelete;
     FOnMove: TOnSourceLogMove;
+    FChangeHooks: {$ifdef fpc}^{$else}array of {$endif}TOnSourceChange;
+    FChangeHookCount: integer;
     FSource: string;
     FChangeStep: integer;
     FReadOnly: boolean;
     FWriteLock: integer;
+    FChangeHookLock: integer;
     procedure SetSource(const NewSrc: string);
     function GetItems(Index: integer): TSourceLogEntry;
     procedure SetItems(Index: integer; AnItem: TSourceLogEntry);
@@ -99,6 +106,7 @@ type
     procedure BuildLineRanges;
     procedure IncreaseChangeStep;
     procedure SetReadOnly(const Value: boolean);
+    function IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
   public
     Data: Pointer;
     function LineCount: integer;
@@ -115,6 +123,9 @@ type
     procedure AddMarkerXY(Line, Column: integer; SomeData: Pointer);
     procedure AdjustPosition(var APosition: integer);
     procedure AdjustCursor(var Line, Column: integer);
+    procedure NotifyHooks(Entry: TSourceLogEntry);
+    procedure IncreaseHookLock;
+    procedure DecreaseHookLock;
     property Source: string read FSource write SetSource;
     property Modified: boolean read FModified write FModified;
     // Line and Column begin at 1
@@ -124,9 +135,6 @@ type
     procedure Delete(Pos, Len: integer);
     procedure Replace(Pos, Len: integer; const Txt: string);
     procedure Move(Pos, Len, MoveTo: integer);
-    property OnInsert: TOnSourceLogInsert read FOnInsert write FOnInsert;
-    property OnDelete: TOnSourceLogDelete read FOnDelete write FOnDelete;
-    property OnMove: TOnSourceLogMove read FOnMove write FOnMove;
     function LoadFromFile(const Filename: string): boolean; virtual;
     function SaveToFile(const Filename: string): boolean; virtual;
     function IsEqual(sl: TStrings): boolean;
@@ -142,6 +150,12 @@ type
     function ConsistencyCheck: integer;
     constructor Create(const ASource: string);
     destructor Destroy; override;
+    
+    procedure AddChangeHook(AnOnSourceChange: TOnSourceChange);
+    procedure RemoveChangeHook(AnOnSourceChange: TOnSourceChange);
+    property OnInsert: TOnSourceLogInsert read FOnInsert write FOnInsert;
+    property OnDelete: TOnSourceLogDelete read FOnDelete write FOnDelete;
+    property OnMove: TOnSourceLogMove read FOnMove write FOnMove;
   end;
 
 
@@ -174,13 +188,14 @@ end;
 { TSourceLogEntry }
 
 constructor TSourceLogEntry.Create(APos, ALength, AMoveTo: integer;
-  const Txt: string; AnOperation: TSourceLogEntryOperation);
+  const ATxt: string; AnOperation: TSourceLogEntryOperation);
 begin
   Position:=APos;
   Len:=ALength;
   MoveTo:=AMoveTo;
   Operation:=AnOperation;
   LineEnds:=LineEndCount(Txt, LengthOfLastLine);
+  Txt:=ATxt;
 end;
 
 procedure TSourceLogEntry.AdjustPosition(var APosition: integer);
@@ -231,12 +246,18 @@ begin
   FLineCount:=-1;
   FChangeStep:=0;
   Data:=nil;
+  FChangeHooks:=nil;
+  FChangeHookCount:=0;
   FReadOnly:=false;
 end;
 
 destructor TSourceLog.Destroy;
 begin
   Clear;
+  if FChangeHooks<>nil then begin
+    FreeMem(FChangeHooks);
+    FChangeHooks:=nil;
+  end;
   FMarkers.Free;
   FLog.Free;
   inherited Destroy;
@@ -288,6 +309,7 @@ begin
   IncreaseChangeStep;
   Data:=nil;
   FReadOnly:=false;
+  NotifyHooks(nil);
 end;
 
 function TSourceLog.GetItems(Index: integer): TSourceLogEntry;
@@ -315,6 +337,26 @@ begin
   Result:=fMarkers.Count;
 end;
 
+procedure TSourceLog.NotifyHooks(Entry: TSourceLogEntry);
+var i: integer;
+begin
+  if (FChangeHooks=nil) or (FChangeHookLock>0) then exit;
+  for i:=0 to FChangeHookCount-1 do
+    FChangeHooks[i](Self,Entry);
+end;
+
+procedure TSourceLog.IncreaseHookLock;
+begin
+  inc(FChangeHookLock);
+end;
+
+procedure TSourceLog.DecreaseHookLock;
+begin
+  if FChangeHookLock<=0 then exit;
+  dec(FChangeHookLock);
+  if FChangeHookLock=0 then NotifyHooks(nil);
+end;
+
 procedure TSourceLog.SetSource(const NewSrc: string);
 begin
 //writeln('TSourceLog.SetSource ',length(NewSrc));
@@ -323,6 +365,7 @@ begin
     FSource:=NewSrc;
     FSrcLen:=length(FSource);
     FReadOnly:=false;
+    NotifyHooks(nil);
   end;
 end;
 
@@ -330,14 +373,15 @@ procedure TSourceLog.Insert(Pos: integer; const Txt: string);
 var i: integer;
   NewSrcLogEntry: TSourceLogEntry;
 begin
+  if Txt='' then exit;
   if Assigned(FOnInsert) then FOnInsert(Self,Pos,Txt);
+  NewSrcLogEntry:=TSourceLogEntry.Create(Pos,length(Txt),-1,Txt,sleoInsert);
+  FLog.Add(NewSrcLogEntry);
+  NotifyHooks(NewSrcLogEntry);
   FSource:=copy(FSource,1,Pos-1)
           +Txt
           +copy(FSource,Pos,length(FSource)-Pos+1);
   FSrcLen:=length(FSource);
-writeln('TSourceLog.Insert ',fSrcLen);
-  NewSrcLogEntry:=TSourceLogEntry.Create(Pos,length(Txt),-1,Txt,sleoInsert);
-  FLog.Add(NewSrcLogEntry);
   for i:=0 to FMarkers.Count-1 do begin
     if (not Markers[i].Deleted) then
       NewSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
@@ -351,12 +395,13 @@ procedure TSourceLog.Delete(Pos, Len: integer);
 var i: integer;
   NewSrcLogEntry: TSourceLogEntry;
 begin
+  if Len=0 then exit;
   if Assigned(FOnDelete) then FOnDelete(Self,Pos,Len);
-  System.Delete(FSource,Pos,Len);
-  FSrcLen:=length(FSource);
-writeln('TSourceLog.Delete ',fSrcLen,',',length(fSource));
   NewSrcLogEntry:=TSourceLogEntry.Create(Pos,Len,-1,'',sleoDelete);
   FLog.Add(NewSrcLogEntry);
+  NotifyHooks(NewSrcLogEntry);
+  System.Delete(FSource,Pos,Len);
+  FSrcLen:=length(FSource);
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then begin
       if (Markers[i].NewPosition<=Pos) and (Markers[i].NewPosition<Pos+Len) then
@@ -375,17 +420,24 @@ procedure TSourceLog.Replace(Pos, Len: integer; const Txt: string);
 var i: integer;
   DeleteSrcLogEntry, InsertSrcLogEntry: TSourceLogEntry;
 begin
+  if (Len=0) and (Txt='') then exit;
+  if Len=length(Txt) then begin
+    i:=1;
+    while (i<=Len) and (FSource[Pos+i-1]=Txt[i]) do inc(i);
+    if i>Len then exit;
+  end;
   if Assigned(FOnDelete) then FOnDelete(Self,Pos,Len);
   if Assigned(FOnInsert) then FOnInsert(Self,Pos,Txt);
+  DeleteSrcLogEntry:=TSourceLogEntry.Create(Pos,Len,-1,'',sleoDelete);
+  FLog.Add(DeleteSrcLogEntry);
+  NotifyHooks(DeleteSrcLogEntry);
+  InsertSrcLogEntry:=TSourceLogEntry.Create(Pos,length(Txt),-1,Txt,sleoInsert);
+  FLog.Add(InsertSrcLogEntry);
+  NotifyHooks(InsertSrcLogEntry);
   FSource:=copy(FSource,1,Pos-1)
           +Txt
           +copy(FSource,Pos+Len,length(FSource)-Pos-Len+1);
   FSrcLen:=length(FSource);
-writeln('TSourceLog.Replace ',fSrcLen,',',length(fSource));
-  DeleteSrcLogEntry:=TSourceLogEntry.Create(Pos,Len,-1,'',sleoDelete);
-  FLog.Add(DeleteSrcLogEntry);
-  InsertSrcLogEntry:=TSourceLogEntry.Create(Pos,length(Txt),-1,Txt,sleoInsert);
-  FLog.Add(InsertSrcLogEntry);
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then begin
       if (Markers[i].NewPosition<=Pos) and (Markers[i].NewPosition<Pos+Len) then
@@ -407,6 +459,9 @@ var i: integer;
 begin
   if Assigned(FOnMove) then FOnMove(Self,Pos,Len,MoveTo);
   if (MoveTo>=Pos) and (MoveTo<Pos+Len) then exit;
+  NewSrcLogEntry:=TSourceLogEntry.Create(Pos,Len,MoveTo,'',sleoMove);
+  FLog.Add(NewSrcLogEntry);
+  NotifyHooks(NewSrcLogEntry);
   if MoveTo<Pos then begin
     FSource:=copy(FSource,1,MoveTo-1)
             +copy(FSource,Pos,Len)
@@ -419,9 +474,6 @@ begin
             +copy(FSource,MoveTo,length(FSource)-MoveTo+1);
   end;
   FSrcLen:=length(FSource);
-writeln('TSourceLog.Move ',fSrcLen,',',length(fSource));
-  NewSrcLogEntry:=TSourceLogEntry.Create(Pos,Len,MoveTo,'',sleoMove);
-  FLog.Add(NewSrcLogEntry);
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then
       NewSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
@@ -468,7 +520,8 @@ begin
   if p>0 then begin
     AdjustPosition(p);
     AbsoluteToLineCol(p,Line,Column);
-  end;
+  end else
+    Line:=-1;
 end;
 
 procedure TSourceLog.BuildLineRanges;
@@ -661,6 +714,7 @@ var y,p,LineLen: integer;
 begin
   if sl=nil then exit;
   if IsEqual(sl) then exit;
+  IncreaseHookLock;
   Clear;
   fSrcLen:=sl.Count*2;
   for y:=0 to sl.Count-1 do inc(fSrcLen,length(sl[y]));
@@ -679,6 +733,7 @@ begin
     fSource[p]:=#10;
     inc(p);
   end;
+  DecreaseHookLock;
 end;
 
 procedure TSourceLog.AssignTo(sl: TStrings);
@@ -703,14 +758,16 @@ end;
 
 procedure TSourceLog.LoadFromStream(s: TStream);
 begin
+  IncreaseHookLock;
   Clear;
   if s=nil then exit;
   s.Position:=0;
-  fSrcLen:=s.Size;
+  fSrcLen:=s.Size-s.Position;
   if fSrcLen>0 then begin
     SetLength(fSource,fSrcLen);
     s.Read(fSource[1],fSrcLen);
   end;
+  DecreaseHookLock;
 end;
 
 procedure TSourceLog.SaveToStream(s: TStream);
@@ -740,6 +797,41 @@ begin
   end;
   Result:=0;
 end;
+
+function TSourceLog.IndexOfChangeHook(AChangeHook: TOnSourceChange): integer;
+begin
+  Result:=FChangeHookCount-1;
+  while (Result>=0) and (FChangeHooks[Result]<>AChangeHook) do dec(Result);
+end;
+
+procedure TSourceLog.AddChangeHook(AnOnSourceChange: TOnSourceChange);
+var i: integer;
+begin
+  i:=IndexOfChangeHook(AnOnSourceChange);
+  if i>=0 then exit;
+  inc(FChangeHookCount);
+  if FChangeHooks=nil then
+    GetMem(FChangeHooks, SizeOf(TOnSourceChange))
+  else
+    ReallocMem(FChangeHooks, SizeOf(TOnSourceChange) * FChangeHookCount);
+  FChangeHooks[FChangeHookCount-1]:=AnOnSourceChange;
+end;
+
+procedure TSourceLog.RemoveChangeHook(AnOnSourceChange: TOnSourceChange);
+var i,j: integer;
+begin
+  i:=IndexOfChangeHook(AnOnSourceChange);
+  if i<0 then exit;
+  dec(FChangeHookCount);
+  if FChangeHookCount=1 then
+    FreeMem(FChangeHooks)
+  else begin
+    for j:=i to FChangeHookCount-2 do
+      FChangeHooks[j]:=FChangeHooks[j+1];
+    ReAllocMem(FChangeHooks,SizeOf(TOnSourceChange) * FChangeHookCount);
+  end;
+end;
+
 
 end.
 
