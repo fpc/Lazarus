@@ -2098,31 +2098,33 @@ function TLinkScanner.IncludeDirective: boolean;
 var IncFilename: string;
 begin
   inc(SrcPos);
-  IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-  if PascalCompiler<>pcDelphi then begin
-    // default is fpc behaviour
-    if ExtractFileExt(IncFilename)='' then
-      IncFilename:=IncFilename+'.pp';
-  end else begin
-    // delphi understands quoted include files and default extension is .pas
-    if (copy(IncFilename,1,1)='''')
-    and (copy(IncFilename,length(IncFilename),1)='''') then
-      IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
-    if ExtractFileExt(IncFilename)='' then
-      IncFilename:=IncFilename+'.pas';
-  end;
-  UpdateCleanedSource(CommentEndPos-1);
-  // put old position on stack
-  PushIncludeLink(CleanedLen,CommentEndPos,Code);
-  // load include file
-  Result:=IncludeFile(IncFilename);
-  if Result then begin
-    if (SrcPos<=SrcLen) then
-      CommentEndPos:=SrcPos
-    else
-      ReturnFromIncludeFile;
-  end else begin
-    PopIncludeLink;
+  if (Src[SrcPos]<>'%') then begin
+    IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
+    if PascalCompiler<>pcDelphi then begin
+      // default is fpc behaviour
+      if ExtractFileExt(IncFilename)='' then
+        IncFilename:=IncFilename+'.pp';
+    end else begin
+      // delphi understands quoted include files and default extension is .pas
+      if (copy(IncFilename,1,1)='''')
+      and (copy(IncFilename,length(IncFilename),1)='''') then
+        IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
+      if ExtractFileExt(IncFilename)='' then
+        IncFilename:=IncFilename+'.pas';
+    end;
+    UpdateCleanedSource(CommentEndPos-1);
+    // put old position on stack
+    PushIncludeLink(CleanedLen,CommentEndPos,Code);
+    // load include file
+    Result:=IncludeFile(IncFilename);
+    if Result then begin
+      if (SrcPos<=SrcLen) then
+        CommentEndPos:=SrcPos
+      else
+        ReturnFromIncludeFile;
+    end else begin
+      PopIncludeLink;
+    end;
   end;
   //writeln('[TLinkScanner.IncludeDirective] END ',CommentEndPos,',',SrcPos,',',SrcLen);
 end;
