@@ -1019,8 +1019,8 @@ begin
   end;
 
 
-  ButtonTop := 1;
-  ButtonLeft := 1;
+  ButtonTop := 2;
+  ButtonLeft := 2;
   NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, lisHintNewUnit);
 
   OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, lisHintOpen);
@@ -1037,7 +1037,7 @@ begin
   ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, lisHintToggleFormUnit);
 
   // new row
-  ButtonLeft := 1;
+  ButtonLeft := 2;
   ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, lisHintViewUnits);
   ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, lisHintViewForms);
   inc(ButtonLeft,13);
@@ -9143,6 +9143,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.604  2003/06/13 21:21:09  mattias
+  added tcolorbutton xpm
+
   Revision 1.603  2003/06/09 17:20:43  mattias
   implemented stop debugging on rebuild
 
