@@ -24,6 +24,8 @@ unit MemCheck;
 
 {$goto on}
 
+{$DEFINE EXTRA}
+
 interface
 
 Procedure DumpHeap;
