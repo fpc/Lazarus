@@ -35,7 +35,7 @@ for unit in $UnitList; do
 done
 
 $FPDoc $DescrFiles --input=@$InputFileList --content=lcl.cnt --package=lcl \
-  --format=html
+  --format=html -o lcl
 
 # end.
 

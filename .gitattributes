@@ -373,6 +373,7 @@ docs/LCLMessages.txt svneol=native#text/plain
 docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
 docs/Packages.txt svneol=native#text/plain
 docs/RemoteDebugging.txt svneol=native#text/plain
+docs/html/lcl/interfaces/gtk/README.txt svneol=native#text/plain
 docs/html/update_gtkintf_html.sh -text svneol=native#application/x-sh
 docs/html/update_html.sh -text svneol=native#application/x-sh
 docs/html/update_lcl_html.sh -text svneol=native#application/x-sh
