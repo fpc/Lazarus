@@ -46,10 +46,17 @@ type
 
   TProjectWriteFlag = (
     pwfDontSaveClosedUnits,
-    pwfSaveOnlyProjectUnits
+    pwfSaveOnlyProjectUnits,
+    pwfSkipDebuggerSettings,
+    pwfSkipJumpPoints
     );
   TProjectWriteFlags = set of TProjectWriteFlag;
 
+const
+  pwfSkipSessionInfo = [pwfSaveOnlyProjectUnits,pwfSkipDebuggerSettings,
+                        pwfSkipJumpPoints];
+  
+type
   TNewUnitType = (
     nuEmpty,      // no code
     nuUnit,       // unit

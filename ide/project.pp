@@ -66,7 +66,7 @@ type
   TOnLoadProjectInfo = procedure(TheProject: TProject;
                                  XMLConfig: TXMLConfig) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
-                                 XMLConfig: TXMLConfig) of object;
+               XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags) of object;
                                  
   TUnitInfoList = (
     uilPartOfProject,
@@ -1351,7 +1351,8 @@ begin
       xmlconfig.SetValue(Path+'General/TargetFileExt/Value'
           ,TargetFileExt);
       xmlconfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-      if not (pfSaveOnlyProjectUnits in Flags) then begin
+      if (not (pfSaveOnlyProjectUnits in Flags))
+      and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
         fJumpHistory.DeleteInvalidPositions;
         fJumpHistory.SaveToXMLConfig(xmlconfig,Path);
       end;
@@ -1371,7 +1372,8 @@ begin
       SavePkgDependencyList(XMLConfig,Path+'RequiredPackages/',
         FFirstRequiredDependency,pdlRequires);
         
-      if Assigned(OnSaveProjectInfo) then OnSaveProjectInfo(Self,XMLConfig);
+      if Assigned(OnSaveProjectInfo) then
+        OnSaveProjectInfo(Self,XMLConfig,ProjectWriteFlags);
 
       xmlconfig.Flush;
       Modified:=false;
@@ -3154,6 +3156,9 @@ end.
 
 {
   $Log$
+  Revision 1.174  2005/01/12 23:28:16  mattias
+  implemented skipping debugger settings for publishing projects
+
   Revision 1.173  2004/12/30 11:24:05  mattias
   updated russian utf translation  from Vasily
 

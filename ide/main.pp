@@ -521,7 +521,7 @@ type
     procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
                                              XMLConfig: TXMLConfig);
     procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
-                                                 XMLConfig: TXMLConfig);
+                         XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
 
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
@@ -4243,9 +4243,10 @@ begin
 end;
 
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
-  XMLConfig: TXMLConfig);
+  XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
 begin
-  if TheProject=Project1 then
+  if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags))
+  then
     DebugBoss.SaveProjectSpecificInfo(XMLConfig);
 end;
 
@@ -7816,8 +7817,9 @@ begin
     CurProject:=TProject(TPublishProjectOptions(Options).Owner);
     NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
     DeleteFile(NewProjectFilename);
-    Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags,
-                                    NewProjectFilename);
+    Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
+                                   +[pwfSkipDebuggerSettings,pwfSkipJumpPoints],
+                                   NewProjectFilename);
     if Result<>mrOk then begin
       debugln('TMainIDE.DoPublishModule CurProject.WriteProject failed');
       exit;
@@ -11373,6 +11375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.830  2005/01/12 23:28:16  mattias
+  implemented skipping debugger settings for publishing projects
+
   Revision 1.829  2005/01/12 22:39:44  mattias
   fixed creating new item from new dialog
 
