@@ -328,6 +328,8 @@ begin
           else
             Kind := DialogButtonKind[Buttons[curBtn]];
         end;
+	if Height < Glyph.Height + 5 then
+	  Height := Glyph.Height + 5;
         if ButtonIndex = TheDefaultIndex then Default := true;
         Visible:=true;
       end;
@@ -377,6 +379,9 @@ end;
 
 {
    $Log$
+   Revision 1.15  2004/04/20 09:18:44  micha
+   reserve enough space for glyph on button in message dialogs
+
    Revision 1.14  2004/04/10 17:58:57  mattias
    implemented mainunit hints for include files
 
