@@ -767,6 +767,10 @@ begin
 
   // calculate text rectangle
   fRect := ARect;
+  if Style.Alignment = taLeftJustify then
+    fRect.Left := X;
+  if Style.Layout = tlTop then
+    fRect.Top := Y;
   if (Style.Alignment in [taRightJustify,taCenter])
   or (Style.Layout in [tlCenter,tlBottom]) then begin
     DrawText(Self.Handle,pChar(Text),Length(Text),fRect,DT_CALCRECT or Options);
@@ -1265,6 +1269,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2004/11/07 17:21:08  micha
+  fix text position to be at X, Y; if alignment/layout indicates so
+
   Revision 1.83  2004/10/01 13:16:44  mattias
   fixed unselecting TCanvas objects
 
