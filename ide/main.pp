@@ -8768,7 +8768,6 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
   MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;
-writeln('TMainIDE.DoJumpToCodeToolBossError A ',CodeToolBoss.ErrorCode<>nil);
   if CodeToolBoss.ErrorCode<>nil then begin
     MessagesView.AddMsg(Project1.RemoveProjectPathFromFilename(
        CodeToolBoss.ErrorCode.Filename)
@@ -8786,13 +8785,11 @@ writeln('TMainIDE.DoJumpToCodeToolBossError A ',CodeToolBoss.ErrorCode<>nil);
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
     ErrorFilename:=CodeToolBoss.ErrorCode.Filename;
     ErrorTopLine:=CodeToolBoss.ErrorTopLine;
-writeln('TMainIDE.DoJumpToCodeToolBossError B ',ErrorFilename,' ',CodeToolBoss.ErrorCode.IsVirtual);
     OpenFlags:=[ofOnlyIfExists,ofUseCache];
     if CodeToolBoss.ErrorCode.IsVirtual then
       Include(OpenFlags,ofVirtualFile);
     if DoOpenEditorFile(ErrorFilename,-1,OpenFlags)=mrOk
     then begin
-writeln('TMainIDE.DoJumpToCodeToolBossError C ',ErrorFilename);
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       MessagesView.ShowOnTop;
       SourceNoteBook.ShowOnTop;
@@ -10271,6 +10268,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.699  2004/01/13 13:16:37  mattias
+  extended GridXY labels
+
   Revision 1.698  2004/01/11 11:32:46  mattias
   updates defines for fpc 1.9.2
 
