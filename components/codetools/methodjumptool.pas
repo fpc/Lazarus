@@ -835,7 +835,8 @@ begin
     // if there is a comment in front of the top position, it probably belongs
     // to the destination code
     // -> adjust the topline position, so that the comment is visible
-    NewTopLineCleanPos:=FindLineEndOrCodeInFrontOfPosition(NewTopLineCleanPos);
+    NewTopLineCleanPos:=FindLineEndOrCodeInFrontOfPosition(NewTopLineCleanPos,
+                                                           false);
     if (NewTopLineCleanPos>=1) and (Src[NewTopLineCleanPos] in [#13,#10])
     then begin
       inc(NewTopLineCleanPos);

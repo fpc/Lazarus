@@ -116,6 +116,8 @@ type
         var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
     function FindLineEndOrCodeAfterPosition(StartPos: integer): integer;
     function FindLineEndOrCodeInFrontOfPosition(StartPos: integer): integer;
+    function FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
+        StopAtDirectives: boolean): integer;
     function FindFirstLineEndAfterInCode(StartPos: integer): integer;
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
@@ -1622,6 +1624,12 @@ end;
 
 function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer
   ): integer;
+begin
+  Result:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
+end;
+
+function TCustomCodeTool.FindLineEndOrCodeInFrontOfPosition(StartPos: integer;
+  StopAtDirectives: boolean): integer;
 { Searches a nice position in the cleaned source in front of StartPos.
   It will skip any space or comments (not directives) till next
   line end or compiler directive or code or include file end.
@@ -1632,7 +1640,7 @@ begin
   LinkIndex:=Scanner.LinkIndexAtCleanPos(StartPos);
   LinkStart:=Scanner.Links[LinkIndex].CleanedPos;
   Result:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
-                        StartPos,LinkStart,Scanner.NestedComments);
+                    StartPos,LinkStart,Scanner.NestedComments,StopAtDirectives);
 end;
 
 function TCustomCodeTool.FindFirstLineEndAfterInCode(StartPos: integer

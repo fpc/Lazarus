@@ -143,7 +143,8 @@ function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
-    Position, MinPosition: integer; NestedComments: boolean): integer;
+    Position, MinPosition: integer; NestedComments: boolean;
+    StopAtDirectives: boolean): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndInFrontOfInCode(const Source: string;
@@ -1355,19 +1356,17 @@ begin
         ReadComment(Result);
       #10,#13:
         exit;
+      #9,' ',';':
+        inc(Result);
     else
-      begin
-        if (Source[Result]<=' ') or (Source[Result]=';') then
-          inc(Result)
-        else
-          exit;
-      end;
+      exit;
     end;
   end;
 end;
 
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
-   Position, MinPosition: integer; NestedComments: boolean): integer;
+   Position, MinPosition: integer; NestedComments: boolean;
+   StopAtDirectives: boolean): integer;
 { search backward for a line end or code
   ignore line ends in comments or at the end of comment lines
    (comment lines are lines without code and at least one comment)
@@ -1414,7 +1413,8 @@ var SrcStart: integer;
             else
               dec(P);
           end;
-          Result:=not ((P>=SrcStart) and (Source[P+1]='$'));
+          Result:=not (StopAtDirectives
+                       and (P>=SrcStart) and (Source[P+1]='$'));
           dec(P);
         end;
       ')':
@@ -1429,7 +1429,8 @@ var SrcStart: integer;
               else
                 dec(P);
             end;
-            Result:=not ((P>=SrcStart) and (Source[P+1]='$'));
+            Result:=not (StopAtDirectives
+                         and (P>=SrcStart) and (Source[P+1]='$'));
             dec(P,2);
           end else
             Result:=true;

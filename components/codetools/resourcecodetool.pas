@@ -129,7 +129,7 @@ begin
     InsertAtom.EndPos:=ResourceCode.SourceLength+1;
   end;
   InsertAtom.StartPos:=BasicCodeTools.FindLineEndOrCodeInFrontOfPosition(Src,
-                                   InsertAtom.StartPos,1,false)+1;
+                                   InsertAtom.StartPos,1,false,true)+1;
   InsertAtom.EndPos:=BasicCodeTools.FindLineEndOrCodeAfterPosition(Src,
                                    InsertAtom.EndPos,SrcLen,false);
   NewResData:=ResourceData;

@@ -848,7 +848,7 @@ function TStandardCodeTool.ChangeCreateFormStatement(StartPos: integer;
   OnlyIfExists: boolean; SourceChangeCache: TSourceChangeCache): boolean;
 var MainBeginNode: TCodeTreeNode;
   OldPosition: TAtomPosition;
-  FromPos, ToPos, Indent: integer;
+  FromPos, ToPos: integer;
 begin
   Result:=false;
   if (OldClassName='') or (length(OldClassName)>255)
