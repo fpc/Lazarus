@@ -1390,7 +1390,7 @@ Var
     Result := 0;
     If ofAllowMultiSelect In Options Then Result := Result Or OFN_ALLOWMULTISELECT;
     If ofCreatePrompt In Options Then Result := Result Or OFN_CREATEPROMPT;
-//    If Not (ofOldStyleDialog In Options) Then Result := Result Or OFN_EXPLORER;
+    If Not (ofOldStyleDialog In Options) Then Result := Result Or OFN_EXPLORER;
     If ofExtensionDifferent In Options Then Result := Result Or OFN_EXTENSIONDIFFERENT;
     If ofFileMustExist In Options Then Result := Result Or OFN_FILEMUSTEXIST;
     If ofHideReadOnly In Options Then Result := Result Or OFN_HIDEREADONLY;
@@ -2887,6 +2887,9 @@ End;
 
 {
   $Log$
+  Revision 1.151  2003/12/21 11:51:35  micha
+  use oldstyledialog flag
+
   Revision 1.150  2003/12/20 12:54:34  micha
   fix spinedit value retrieval
 
