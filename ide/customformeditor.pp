@@ -164,6 +164,9 @@ each control that's dropped onto the form
       TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function CreateComponentFromStream(BinStream: TStream;
                        AncestorType: TComponentClass): TIComponentInterface; override;
+    Function CreateChildComponentFromStream(BinStream: TStream;
+                       ComponentClass: TComponentClass; Root: TComponent;
+                       ParentControl: TWinControl): TIComponentInterface; override;
     Procedure SetComponentNameAndClass(CI: TIComponentInterface;
       const NewName, NewClassName: shortstring);
     Procedure ClearSelected;
@@ -1055,6 +1058,33 @@ begin
   // create a component interface for each component owned by the new component
   for i:=0 to NewComponent.ComponentCount-1 do
     CreateComponentInterface(NewComponent.Components[i]);
+end;
+
+function TCustomFormEditor.CreateChildComponentFromStream(BinStream: TStream;
+  ComponentClass: TComponentClass; Root: TComponent;
+  ParentControl: TWinControl): TIComponentInterface;
+var
+  NewComponent: TComponent;
+  JITList: TJITComponentList;
+  i: Integer;
+begin
+  Result:=nil;
+  
+  JITList:=FindJITList(Root);
+  if JITList=nil then
+    RaiseException('TCustomFormEditor.CreateChildComponentFromStream ClassName='+
+                   Root.ClassName);
+
+  NewComponent:=JITList.AddJITChildComponentFromStream(
+                                   Root,BinStream,ComponentClass,ParentControl);
+                                                 
+  // create a component interface for the new child component
+  Result:=CreateComponentInterface(NewComponent);
+
+  // create a component interface for each new child component
+  for i:=0 to Root.ComponentCount-1 do
+    if FindComponent(Root.Components[i])=nil then
+      CreateComponentInterface(Root.Components[i]);
 end;
 
 Procedure TCustomFormEditor.SetComponentNameAndClass(CI: TIComponentInterface;

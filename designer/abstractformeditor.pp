@@ -31,7 +31,7 @@ unit AbstractFormEditor;
 interface
 
 uses
-  Classes, TypInfo;
+  Classes, TypInfo, Controls;
 
 type
 
@@ -103,6 +103,11 @@ type
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
     Function CreateComponentFromStream(BinStream: TStream;
                                      AncestorType: TComponentClass
+                                     ): TIComponentInterface; virtual; abstract;
+    Function CreateChildComponentFromStream(BinStream: TStream;
+                                     ComponentClass: TComponentClass;
+                                     Root: TComponent;
+                                     ParentControl: TWinControl
                                      ): TIComponentInterface; virtual; abstract;
   end;
 

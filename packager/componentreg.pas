@@ -87,6 +87,7 @@ type
     procedure AddToPalette; virtual;
     function CanBeCreatedInDesigner: boolean; virtual;
     procedure ShowHideControl(Show: boolean);
+    function IsTControl: boolean;
   public
     property ComponentClass: TComponentClass read FComponentClass;
     property PageName: string read FPageName;
@@ -274,8 +275,13 @@ end;
 
 procedure TRegisteredComponent.ShowHideControl(Show: boolean);
 begin
-  if ComponentClass.InheritsFrom(TControl) then
+  if IsTControl then
     Visible:=Show;
+end;
+
+function TRegisteredComponent.IsTControl: boolean;
+begin
+  Result:=ComponentClass.InheritsFrom(TControl);
 end;
 
 { TBaseComponentPage }

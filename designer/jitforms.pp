@@ -64,6 +64,11 @@ type
 
 
   { TJITComponentList }
+  
+  TJITCompListFlag = (
+    jclAutoRenameComponents
+    );
+  TJITCompListFlags = set of TJITCompListFlag;
 
   TJITComponentList = class(TPersistentWithTemplates)
   private
@@ -77,6 +82,7 @@ type
     FCurReadChildClass: TComponentClass;
     FOnReaderError: TJITReaderErrorEvent;
     FJITComponents: TList;
+    FFlags: TJITCompListFlags;
     // jit procedures
     function CreateVMTCopy(SourceClass: TClass;
                            const NewClassName: ShortString):Pointer;
@@ -104,11 +110,12 @@ type
       const FindClassName: Ansistring; var ComponentClass: TComponentClass);
     procedure ReaderCreateComponent(Reader: TReader;
       ComponentClass: TComponentClass; var Component: TComponent);
+    procedure ReaderReadComponent(Component: TComponent);
     // some useful functions
     function GetItem(Index:integer):TComponent;
     function GetClassNameFromStream(s:TStream):shortstring;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
-    procedure InitReading;
+    procedure InitReading(BinStream: TStream; var Reader: TReader); virtual;
     function DoCreateJITComponent(NewComponentName,NewClassName:shortstring
                                   ):integer;
     procedure DoFinishReading; virtual;
@@ -134,6 +141,10 @@ type
                            const OldName,NewName:ShortString);
     procedure RenameComponentClass(JITComponent:TComponent;
                                    const NewName:ShortString);
+    // child components
+    function AddJITChildComponentFromStream(JITOwnerComponent: TComponent;
+      BinStream: TStream; ComponentClass: TComponentClass;
+      ParentControl: TWinControl): TComponent;
   public
     property OnReaderError: TJITReaderErrorEvent
                                        read FOnReaderError write FOnReaderError;
@@ -317,7 +328,7 @@ begin
   if NewClassName='' then begin
 
     // Application.MessageBox('No classname in form stream found.','',mb_OK);
-    MessageDlg('No classname in stream found.',mterror,[mbOK],0);
+    MessageDlg('No classname in stream found.',mtError,[mbOK],0);
 
     exit;
   end;
@@ -330,28 +341,11 @@ begin
     writeln('[TJITComponentList.AddJITFormFromStream] 2');
     {$ENDIF}
 
-    Reader:=TReader.Create(BinStream,4096);
-    MyFindGlobalComponentProc:=@OnFindGlobalComponent;
-    FindGlobalComponent:=@MyFindGlobalComponent;
-
+    InitReading(BinStream,Reader);
     {$IFDEF IDE_VERBOSE}
     writeln('[TJITComponentList.AddJITFormFromStream] 3');
     {$ENDIF}
     try
-      // connect TReader events
-      Reader.OnError:=@ReaderError;
-      Reader.OnFindMethod:=@ReaderFindMethod;
-      Reader.OnSetName:=@ReaderSetName;
-      Reader.OnReferenceName:=@ReaderReferenceName;
-      Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
-      Reader.OnCreateComponent:=@ReaderCreateComponent;
-      Reader.OnFindComponentClass:=@ReaderFindComponentClass;
-
-      {$IFDEF IDE_VERBOSE}
-      writeln('[TJITComponentList.AddJITFormFromStream] 4');
-      {$ENDIF}
-      InitReading;
-
       Reader.ReadRootComponent(FCurReadJITComponent);
       if FCurReadJITComponent.Name='' then begin
         NewName:=FCurReadJITComponent.ClassName;
@@ -369,9 +363,11 @@ begin
       Reader.Free;
     end;
   except
-    writeln('[TJITComponentList.AddJITFormFromStream] ERROR reading form stream'
-       +' of Class ''',NewClassName,'''');
-    Result:=-1;
+    on E: Exception do begin
+      writeln('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+         +' of Class ''',NewClassName,''' Error: ',E.Message);
+      Result:=-1;
+    end;
   end;
 end;
 
@@ -380,8 +376,31 @@ begin
   Result:=Application.FindComponent(AName);
 end;
 
-procedure TJITComponentList.InitReading;
+procedure TJITComponentList.InitReading(BinStream: TStream;
+  var Reader: TReader);
 begin
+  FFlags:=FFlags-[jclAutoRenameComponents];
+  
+  Reader:=TReader.Create(BinStream,4096);
+  MyFindGlobalComponentProc:=@OnFindGlobalComponent;
+  FindGlobalComponent:=@MyFindGlobalComponent;
+
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITComponentList.InitReading] A');
+  {$ENDIF}
+  // connect TReader events
+  Reader.OnError:=@ReaderError;
+  Reader.OnFindMethod:=@ReaderFindMethod;
+  Reader.OnSetName:=@ReaderSetName;
+  Reader.OnReferenceName:=@ReaderReferenceName;
+  Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
+  Reader.OnCreateComponent:=@ReaderCreateComponent;
+  Reader.OnFindComponentClass:=@ReaderFindComponentClass;
+
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITComponentList.InitReading] B');
+  {$ENDIF}
+
   FCurReadChildClass:=nil;
   FCurReadChild:=nil;
   FCurReadErrorMsg:='';
@@ -469,6 +488,64 @@ begin
   if (NewName='') or (not IsValidIdent(NewName)) then
     raise Exception.Create('TJITComponentList.RenameComponentClass invalid name: "'+NewName+'"');
   DoRenameClass(JITComponent.ClassType,NewName);
+end;
+
+function TJITComponentList.AddJITChildComponentFromStream(
+  JITOwnerComponent: TComponent; BinStream: TStream;
+  ComponentClass: TComponentClass; ParentControl: TWinControl): TComponent;
+var
+  Reader: TReader;
+  NewComponent: TComponent;
+begin
+  Result:=nil;
+  NewComponent:=nil;
+  if IndexOf(JITOwnerComponent)<0 then
+    RaiseException('TJITComponentList.AddJITChildComponentFromStream');
+  {$IFDEF IDE_VERBOSE}
+  writeln('[TJITComponentList.AddJITChildComponentFromStream] A');
+  {$ENDIF}
+  try
+    InitReading(BinStream,Reader);
+    {$IFDEF IDE_VERBOSE}
+    writeln('[TJITComponentList.AddJITChildComponentFromStream] B');
+    {$ENDIF}
+    try
+      FCurReadJITComponent:=JITOwnerComponent;
+      FCurReadClass:=JITOwnerComponent.ClassType;
+
+      FFlags:=FFlags+[jclAutoRenameComponents];
+      {$IFDEF IDE_VERBOSE}
+      writeln('[TJITComponentList.AddJITChildComponentFromStream] C1 ',ComponentClass.ClassName);
+      {$ENDIF}
+      Reader.Root := FCurReadJITComponent;
+      Reader.Owner := FCurReadJITComponent;
+      Reader.Parent := ParentControl;
+      Reader.BeginReferences;
+      try
+        Reader.Driver.BeginRootComponent;
+        NewComponent:=Reader.ReadComponent(nil);
+          NewComponent.Name,':',NewComponent.ClassName,' ',
+          csDesigning in NewComponent.ComponentState);
+        Reader.FixupReferences;
+      finally
+        Reader.EndReferences;
+      end;
+
+      {$IFDEF IDE_VERBOSE}
+      writeln('[TJITComponentList.AddJITChildComponentFromStream] D');
+      {$ENDIF}
+      DoFinishReading;
+    finally
+      FindGlobalComponent:=nil;
+      Reader.Free;
+    end;
+  except
+    on E: Exception do begin
+      writeln('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+         +' of Class ''',ComponentClass.ClassName,''' Error: ',E.Message);
+    end;
+  end;
+  Result:=NewComponent;
 end;
 
 function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
@@ -736,10 +813,25 @@ begin
   end;
 end;
 
-procedure TJITComponentList.ReaderSetName(Reader: TReader; Component: TComponent;
-  var NewName: Ansistring);
+procedure TJITComponentList.ReaderSetName(Reader: TReader;
+  Component: TComponent; var NewName: Ansistring);
+var
+  CurName: String;
+  i: Integer;
 begin
 //  writeln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
+  if jclAutoRenameComponents in FFlags then begin
+    while (NewName<>'') and (NewName[length(NewName)] in ['0'..'9']) do
+      System.Delete(NewName,length(NewName),1);
+    if NewName='' then
+      NewName:=Component.ClassName;
+    i:=0;
+    repeat
+      inc(i);
+      CurName:=NewName+IntToStr(i);
+    until FCurReadJITComponent.FindComponent(CurName)=nil;
+    NewName:=CurName;
+  end;
 end;
 
 procedure TJITComponentList.ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
@@ -819,6 +911,11 @@ begin
 //  writeln('[TJITComponentList.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
 end;
 
+procedure TJITComponentList.ReaderReadComponent(Component: TComponent);
+begin
+  writeln('TJITComponentList.ReaderReadComponent A ',Component.Name,':',Component.ClassName);
+end;
+
 //==============================================================================
 
 
@@ -848,7 +945,7 @@ end;
 
 procedure TJITForms.DoFinishReading;
 
-  procedure ApplyVisible;
+{  procedure ApplyVisible;
   var
     i: integer;
     AControl: TControl;
@@ -865,11 +962,11 @@ procedure TJITForms.DoFinishReading;
             AControl.ControlState-[csVisibleSetInLoading];
       end;
     end;
-  end;
+  end;}
 
 begin
   inherited DoFinishReading;
-  ApplyVisible;
+  //ApplyVisible;
 end;
 
 
