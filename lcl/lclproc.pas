@@ -166,6 +166,39 @@ function UTF8FindNearestCharStart(UTF8Str: PChar; Len: integer;
 function UTF8CharStart(UTF8Str: PChar; Len, Index: integer): PChar;
 
 
+// Endian utility functions
+// MWE: maybe to RTL ?
+// inline ?
+
+function BEtoN(const AValue: SmallInt): SmallInt;
+function BEtoN(const AValue: Word): Word;
+function BEtoN(const AValue: LongInt): LongInt;
+function BEtoN(const AValue: DWord): DWord;
+function BEtoN(const AValue: Int64): Int64;
+function BEtoN(const AValue: QWord): QWord;
+
+function LEtoN(const AValue: SmallInt): SmallInt;
+function LEtoN(const AValue: Word): Word;
+function LEtoN(const AValue: LongInt): LongInt;
+function LEtoN(const AValue: DWord): DWord;
+function LEtoN(const AValue: Int64): Int64;
+function LEtoN(const AValue: QWord): QWord;
+
+function NtoBE(const AValue: SmallInt): SmallInt;
+function NtoBE(const AValue: Word): Word;
+function NtoBE(const AValue: LongInt): LongInt;
+function NtoBE(const AValue: DWord): DWord;
+function NtoBE(const AValue: Int64): Int64;
+function NtoBE(const AValue: QWord): QWord;
+
+function NtoLE(const AValue: SmallInt): SmallInt;
+function NtoLE(const AValue: Word): Word;
+function NtoLE(const AValue: LongInt): LongInt;
+function NtoLE(const AValue: DWord): DWord;
+function NtoLE(const AValue: Int64): Int64;
+function NtoLE(const AValue: QWord): QWord;
+
+
 implementation
 
 var
@@ -1229,6 +1262,306 @@ begin
     if (Index>0) or (Len<0) then
       Result:=nil;
   end;
+end;
+
+//==============================================================================
+// Endian utils
+//==============================================================================
+
+function BEtoN(const AValue: SmallInt): SmallInt;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function BEtoN(const AValue: Word): Word;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function BEtoN(const AValue: LongInt): LongInt;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function BEtoN(const AValue: DWord): DWord;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function BEtoN(const AValue: Int64): Int64;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function BEtoN(const AValue: QWord): QWord;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function LEtoN(const AValue: SmallInt): SmallInt;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function LEtoN(const AValue: Word): Word;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function LEtoN(const AValue: LongInt): LongInt;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function LEtoN(const AValue: DWord): DWord;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function LEtoN(const AValue: Int64): Int64;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function LEtoN(const AValue: QWord): QWord;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function NtoBE(const AValue: SmallInt): SmallInt;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function NtoBE(const AValue: Word): Word;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function NtoBE(const AValue: LongInt): LongInt;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function NtoBE(const AValue: DWord): DWord;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function NtoBE(const AValue: Int64): Int64;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function NtoBE(const AValue: QWord): QWord;
+begin
+  {$IFDEF ENDIAN_BIG}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function NtoLE(const AValue: SmallInt): SmallInt;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function NtoLE(const AValue: Word): Word;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shr 8) or (AValue shl 8);
+  {$ENDIF}
+end;
+
+function NtoLE(const AValue: LongInt): LongInt;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function NtoLE(const AValue: Cardinal): Cardinal;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 24)
+           or ((AValue and $0000FF00) shl 8)
+           or ((AValue and $00FF0000) shr 8)
+           or (AValue shr 24);
+  {$ENDIF}
+end;
+
+function NtoLE(const AValue: Int64): Int64;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
+end;
+
+function NtoLE(const AValue: QWord): QWord;
+begin
+  {$IFDEF ENDIAN_LITTLE}
+    Result := AValue;
+  {$ELSE}
+    Result := (AValue shl 56)
+           or ((AValue and $000000000000FF00) shl 40)
+           or ((AValue and $0000000000FF0000) shl 24)
+           or ((AValue and $00000000FF000000) shl 8)
+           or ((AValue and $000000FF00000000) shr 8)
+           or ((AValue and $0000FF0000000000) shr 24)
+           or ((AValue and $00FF000000000000) shr 40)
+           or (AValue shr 56);
+  {$ENDIF}
 end;
 
 initialization

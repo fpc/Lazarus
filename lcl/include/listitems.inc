@@ -270,11 +270,12 @@ type
 procedure TListItems.ReadData(Stream: TStream);
 var
   I, J, Size, L, Len: Integer;
-  ItemHeader        : PItemHeader;
-  ItemInfo          : PItemInfo;
-  PStr              : PShortStr;
-  //Flag              : Boolean;
-  PInt              : PInteger;
+  ItemHeader: PItemHeader;
+  ItemInfo: PItemInfo;
+  PStr: PShortStr;
+  PInt: PInteger;
+  ListItem: TListItem;
+  SubCount: Integer;
 begin
   Clear;
   //Flag:=False;
@@ -288,30 +289,27 @@ begin
     PStr := nil;
     for I := 0 to ItemHeader^.Count - 1 do
     begin
-      with Add do
+      ListItem := Add;
+      ListItem.Caption := ItemInfo^.Caption;
+      ListItem.ImageIndex := LEtoN(ItemInfo^.ImageIndex);
+      // ListItem.StateIndex := LEtoN(ItemInfo^.StateIndex);
+      // ListItem.OverlayIndex := LEtoN(ItemInfo^.OverlayIndex);
+
+      //TODO: check if we need to stream a data pointer
+      ListItem.Data := Pointer(LEtoN(PtrInt(ItemInfo^.Data)));
+      
+      PStr := @ItemInfo^.Caption;
+      Inc(Integer(PStr), Length(PStr^) + 1);
+      Len := 0;
+      SubCount := LEtoN(ItemInfo^.SubItemCount);
+      for J := 0 to SubCount - 1 do
       begin
-        {$IFDEF Endian_BIG}
-        ReverseBytes(@ItemInfo^.ImageIndex,4);
-        ReverseBytes(@ItemInfo^.StateIndex,4);
-        ReverseBytes(@ItemInfo^.OverlayIndex,4);
-        ReverseBytes(@ItemInfo^.SubItemCount,4);
-        ReverseBytes(@ItemInfo^.Data,4);
-        {$ENDIF}
-        //Flag:=True;
-        Caption := ItemInfo^.Caption;
-        ImageIndex := ItemInfo^.ImageIndex;
-        Data := ItemInfo^.Data;
-        PStr := @ItemInfo^.Caption;
-        Inc(Integer(PStr), Length(PStr^) + 1);
-        Len := 0;
-        for J := 0 to ItemInfo^.SubItemCount - 1 do
-        begin
-          SubItems.Add(PStr^);
-          L := Length(PStr^);
-          Inc(Len, L + 1);
-          Inc(Integer(PStr), L + 1);
-        end;
+        ListItem.SubItems.Add(PStr^);
+        L := Length(PStr^);
+        Inc(Len, L + 1);
+        Inc(Integer(PStr), L + 1);
       end;
+
       Inc(Integer(ItemInfo), SizeOf(TItemInfo)-255+Length(ItemInfo^.Caption)+Len);
     end;
     
@@ -325,10 +323,7 @@ begin
         then begin
           for J := 0 to Item[I].SubItems.Count - 1 do
           begin
-            {$ifdef Endian_BIG}
-            ReverseBytes(PInt,4);
-            {$endif}
-            Item[I].SubItemImages[J] := PInt^;
+            Item[I].SubItemImages[J] := LEtoN(PInt^);
             Inc(PInt);
           end;
         end;
@@ -337,11 +332,6 @@ begin
   finally
     FreeMem(ItemHeader, Size);
     Owner.EndUpdate;
-      
-    // MWE: Still needed ???  
-    //      ENdUpdate already added all items.
-    //if Flag then
-    //   Owner.ItemAdded(-1);
   end;
 end;
 
@@ -373,12 +363,8 @@ begin
   end;
   ItemHeader := AllocMem(Size);
   try
-    ItemHeader^.Size := Size;
-    ItemHeader^.Count := Count;
-    {$ifdef Endian_BIG}
-    ReverseBytes(@ItemHeader^.Size,4);
-    ReverseBytes(@ItemHeader^.Count,4);
-    {$endif}
+    ItemHeader^.Size := NtoLE(Size);
+    ItemHeader^.Count := NtoLE(Count);
     ItemInfo := @ItemHeader^.Items;
     PStr := nil;
     for I := 0 to Count - 1 do
@@ -386,27 +372,22 @@ begin
       with Item[I] do
       begin
         ItemInfo^.Caption := Caption;
-        ItemInfo^.ImageIndex := ImageIndex;
-        ItemInfo^.StateIndex := -1 {StateIndex};
-        ItemInfo^.OverlayIndex := -1 {OverlayIndex};
-        ItemInfo^.SubItemCount := SubItems.Count;
-        ItemInfo^.Data := Data;
-        {$IFDEF Endian_BIG}
-        ReverseBytes(@ItemInfo^.ImageIndex,4);
-        ReverseBytes(@ItemInfo^.StateIndex,4);
-        ReverseBytes(@ItemInfo^.OverlayIndex,4);
-        ReverseBytes(@ItemInfo^.SubItemCount,4);
-        ReverseBytes(@ItemInfo^.Data,4);
-        {$ENDIF}
+        ItemInfo^.ImageIndex := NtoLE(ImageIndex);
+        ItemInfo^.StateIndex := NtoLE(Integer(-1)) {StateIndex};
+        ItemInfo^.OverlayIndex := NtoLE(Integer(-1)) {OverlayIndex};
+        ItemInfo^.SubItemCount := NtoLE(SubItems.Count);
+        // TODO: check this
+        // Stream pointers ???
+        ItemInfo^.Data := Pointer(NtoLE(PtrInt(Data)));
         PStr := @ItemInfo^.Caption;
-        Inc(Integer(PStr), Length(ItemInfo^.Caption) + 1);
+        Inc(Pointer(PStr), Length(ItemInfo^.Caption) + 1);
         Len := 0;
         for J := 0 to SubItems.Count - 1 do
         begin
           PStr^ := SubItems[J];
           L := Length(PStr^);
           Inc(Len, L + 1);
-          Inc(Integer(PStr), L + 1);
+          Inc(Pointer(PStr), L + 1);
         end;
       end;
       Inc(Integer(ItemInfo), SizeOf(TItemInfo) - 255 +
@@ -419,10 +400,7 @@ begin
     begin
       for J := 0 to  Item[I].SubItems.Count - 1 do
       begin
-        PInt^ :=  Item[I].SubItemImages[J];
-        {$ifdef Endian_BIG}
-        ReverseBytes(PInt,4);
-        {$endif}
+        PInt^ := NtoLE(Item[I].SubItemImages[J]);
         Inc(PInt);
       end;
     end;
@@ -436,6 +414,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/11/13 17:22:15  marc
+  + Added generic endian functions
+
   Revision 1.25  2004/11/13 15:53:14  marc
   * Fixed endianess
 
