@@ -94,19 +94,22 @@ type
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
     procedure PassCmdLineOptions; override;
+    
+    // styles
+    procedure FreeAllStyles; virtual;
 
-    Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
-      SetupProps : Boolean); Virtual;
+    procedure ReDraw(Child : Pointer);virtual;
+    procedure ShowHide(Sender : TObject);virtual;
 
-    Function GetCaption(Sender : TObject) : String; Virtual;
     Function GetCompStyle(Sender : TObject) : Longint; Virtual;
     Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
     function CreateAPIWidget(AWinControl: TWinControl): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
+    Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
+      SetupProps : Boolean); Virtual;
     procedure DestroyLCLControl(Sender : TObject);virtual;
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);virtual;
     procedure AssignSelf(Child ,Data : Pointer);virtual;
-    procedure ReDraw(Child : Pointer);virtual;
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
     
     // device contexts
@@ -142,7 +145,7 @@ type
     procedure CheckRCFilename;virtual;
     procedure ParseRCFile;virtual;
 
-    procedure ShowHide(Sender : TObject);virtual;
+    // notebook
     procedure GetNoteBookCloseBtnPixmap(Window: PGdkWindow;
                                         var Img, Mask: PGdkPixmap);virtual;
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
@@ -152,10 +155,15 @@ type
     procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);virtual;
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
+    // listview
     procedure ListViewChangeItem(TheListView: TObject; Index: integer);
     procedure ListViewAddItem(TheListView: TObject);
-    procedure BringFormToFront(Sender: TObject);
 
+    procedure BringFormToFront(Sender: TObject);
+    procedure SetWindowSizeAndPosition(Window: PGtkWindow;
+      AWinControl: TWinControl);virtual;
+
+    Function GetCaption(Sender : TObject) : String; Virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
@@ -170,15 +178,17 @@ type
       Color: TColor);virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
-    function HashPaintMessage(p: pointer): integer;virtual;
-    function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;virtual;
-    
+    procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
+      var Lines: PPChar; var LineCount: integer);
+
+    // messages, callbacks
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
 
-    procedure SetWindowSizeAndPosition(Window: PGtkWindow;
-      AWinControl: TWinControl);virtual;
+    function HashPaintMessage(p: pointer): integer;virtual;
+    function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;virtual;
+
     procedure RemoveCallbacks(Sender : TObject); virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
 //  public
@@ -188,8 +198,6 @@ type
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
 
-    procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
-      var Lines: PPChar; var LineCount: integer);
   public
     constructor Create; 
     destructor Destroy; override;
@@ -310,6 +318,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.113  2002/12/17 16:32:12  mattias
+  freeing GDIObjects without AppTerminate
+
   Revision 1.112  2002/12/15 11:52:28  mattias
   started gtk2 interface
 
