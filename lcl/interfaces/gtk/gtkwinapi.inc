@@ -1203,7 +1203,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetKeyState(nVirtKey: Integer): Smallint;
 const
-  KEYSTATE: array[Boolean] of Smallint = (0, $8000);
+  KEYSTATE: array[Boolean] of Smallint = (0, -32768{$8000});
   TOGGLESTATE: array[Boolean] of Smallint = (0, 1);
 begin
   case nVirtKey of
@@ -1212,7 +1212,7 @@ begin
     VK_LMENU:    nVirtKey := VK_MENU;
   end;
   Result := KEYSTATE[FKeyStateList.IndexOf(Pointer(nVirtKey)) <> -1];
-  
+
   // try extended keys
   if Result = 0 
   then begin
@@ -2873,6 +2873,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/23 10:53:41  lazarus
+  workaround for possible compiler bug (KEYSTATE), stoppok
+
   Revision 1.1  2000/07/13 10:28:30  michael
   + Initial import
 
