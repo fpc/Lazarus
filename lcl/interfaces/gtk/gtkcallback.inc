@@ -121,7 +121,7 @@ end;
   Result: GBoolean
 
   GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped),
-  but before the widget itself got the realize signal.
+  but before the widget itself gets the realize signal.
   That means that the gdk window on the xserver has been created.
 -------------------------------------------------------------------------------}
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
@@ -174,6 +174,7 @@ end;
 -------------------------------------------------------------------------------}
   {$IFDEF CustomFonts}
   procedure ModifyWidgetStyle(AWinControl: TWinControl; AWidget: PGtkWidget);
+  // MG: design study for changing font in gtkwidgets
   var
     RCStyle: PGtkRcStyle;
   begin
@@ -252,6 +253,7 @@ begin
         {$IFDEF CustomFonts}
         ModifyWidgetStyle(TheWinControl,Widget);
         {$ENDIF}
+        UpdateWidgetStyleOfControl(TheWinControl);
       end;
 
     end;
@@ -2879,6 +2881,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.246  2004/08/28 10:22:13  mattias
+  added hints for long props in OI  from Andrew Haines
+
   Revision 1.245  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 

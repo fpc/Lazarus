@@ -35,12 +35,13 @@ unit GTKWinapiWindow;
 interface
 
 uses
+  SysUtils, LCLProc,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  SysUtils, LCLProc;
+  GtkDef;
 
 { $Define VerboseCaret}
 
@@ -221,40 +222,19 @@ end;
 
 procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl;
 // theClass: PGTKAPIWidgetClientClass
-{$IFNDEF VER1_0}
-type
-  TAdjustParams = packed record
-    Param1, Param2: TGtkType;
-  end;
-{$ENDIF}
-var 
-{$IFDEF gtk2}
-  //GObjectClass: PGObjectClass;
-{$ENDIF}
+var
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
   ClientClass: PGTKAPIWidgetClientClass;
   SignalID: Guint;
-{$IFNDEF VER1_0}
-  AdjustParams: TAdjustParams;
-{$ENDIF}
 begin
-{$IFDEF gtk2}
-  //GObjectClass := g_object_class(theClass);
-{$ENDIF}
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
   ClientClass := PGTKAPIWidgetClientClass(theClass);
   
   MParentClass := gtk_type_class(gtk_fixed_get_type);
 
-  {$IFNDEF VER1_0}
-  AdjustParams.Param1 := gtk_adjustment_get_type;
-  AdjustParams.Param2 := AdjustParams.Param1;
-  SignalID := gtk_signal_newv(
-  {$ELSE}
   SignalID := gtk_signal_new(
-  {$ENDIF}
     'set_scroll_adjustments',
     GTK_RUN_FIRST,
     {$IFDEF gtk2}
@@ -270,11 +250,7 @@ begin
     {$ENDIF}
     GTK_TYPE_NONE,
     2, 
-    {$IFNDEF VER1_0}
-    @AdjustParams
-    {$ELSE}
     [gtk_adjustment_get_type, gtk_adjustment_get_type]
-    {$ENDIF}
   );
   
   ClientClass^.set_scroll_adjustments := nil;
@@ -327,7 +303,6 @@ begin
   Result := PGTKWidget(gtk_type_new(GTKAPIWidgetClient_GetType()));
 end;
 
-
 function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl;
 // returning 0 would stop the timer, 1 will restart it
 begin
@@ -344,7 +319,7 @@ end;
 
 procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl;
 {$IFNDEF gtk2}
-  procedure RealizeIC;
+  procedure RealizeIC; // MG: it isn't called, why that?
   var
     width, height: GInt;
     mask: TGdkEventMask;
@@ -438,10 +413,10 @@ begin
   
 //@  gtk_widget_set_flags(AWidget, GTK_REALIZED);
   
-{$Ifdef GTK2}
+  {$Ifdef GTK2}
   gtk_widget_set_double_buffered(AWidget, False);
   gtk_widget_set_redraw_on_allocate(AWidget, False);
-{$EndIf}
+  {$EndIf}
 
 //@  with Attributes do
 //@  begin
@@ -470,19 +445,10 @@ begin
     or GDK_BUTTON_MOTION_MASK or GDK_ENTER_NOTIFY_MASK or GDK_LEAVE_NOTIFY_MASK
     or GDK_KEY_PRESS_MASK or GDK_KEY_RELEASE_MASK);
 
-{$IFDEF gtk2}
 //@  AWidget^.Style := gtk_style_attach(AWidget^.Style, AWidget^.Window);
 //@  gtk_style_set_background(AWidget^.Style, AWidget^.Window, GTK_STATE_NORMAL);
-  gdk_window_set_back_pixmap(AWidget^.Window, nil, False);
+  gdk_window_set_back_pixmap(AWidget^.Window, nil, GdkFalse);
 
-{$ELSE gtk2}
-//@  AWidget^.theStyle := gtk_style_attach(AWidget^.theStyle, AWidget^.Window);
-//@  gtk_style_set_background(AWidget^.theStyle, AWidget^.Window, GTK_STATE_NORMAL);
-  gdk_window_set_back_pixmap(AWidget^.Window, nil, 0);
-  
-  RealizeIC;
-{$ENDIF gtk2}
-  
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(AWidget: PGTKWidget); cdecl;
@@ -496,7 +462,7 @@ begin
     end;
   end;
     
-{$IFNDEF GTK2}
+  {$IFNDEF GTK2}
   with PGTKAPIWidgetClient(AWidget)^ do
   begin
     if ic <> nil
@@ -510,7 +476,7 @@ begin
       ic_attr := nil;
     end;
   end;
-{$ENDIF}    
+  {$ENDIF}
                           
   PGTKWidgetClass(MParentClass)^.unrealize(AWidget);
 end;                        
@@ -526,7 +492,7 @@ var
 begin         
   PGTKWidgetClass(MParentClass)^.size_allocate(AWidget, AAllocation);
   
-{$IFNDEF GTK2}
+  {$IFNDEF GTK2}
   ic := PGTKAPIWidgetClient(AWidget)^.ic;
   ic_attr := PGTKAPIWidgetClient(AWidget)^.ic_attr;
 
@@ -538,7 +504,7 @@ begin
     ic_attr^.preedit_area.height := guint16(height);
     _gdk_ic_set_attr(ic, ic_attr, GDK_IC_PREEDIT_AREA);
   end;
-{$ENDIF}    
+  {$ENDIF}
 end;  
 
   
@@ -573,10 +539,10 @@ begin
   gtk_widget_set_flags(AWidget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(AWidget), False);
 
-{$IFNDEF GTK2}
+  {$IFNDEF GTK2}
   if PGTKAPIWidgetClient(AWidget)^.ic <> nil
   then gdk_im_begin(PGTKAPIWidgetClient(AWidget)^.ic, AWidget^.Window);
-{$ENDIF}
+  {$ENDIF}
   
   Result := gtk_False;
 end;
@@ -591,9 +557,9 @@ begin
   gtk_widget_unset_flags(AWidget, GTK_HAS_FOCUS);
   GTKAPIWidgetClient_DrawCaret(PGTKAPIWidgetClient(AWidget), False);
 
-{$IFNDEF GTK2}
+  {$IFNDEF GTK2}
   gdk_im_end;
-{$ENDIF}
+  {$ENDIF}
 
   Result := gtk_False;
 end;
@@ -620,7 +586,7 @@ begin
         ' Blinking='+dbgs(Blinking),' HasFocus=',dbgs(gtk_widget_has_focus(PGtkWidget(Client))),
         ' ShowHideOnFocus='+dbgs(ShowHideOnFocus),
         ' Window='+dbgs(PGtkWidget(Client)^.Window<>nil),
-        ' Style='+dbgs({$IFDEF gtk2}gtk_widget_get_style(PGtkWidget(Client)){$else}PGTKStyle(PGtkWidget(Client)^.theStyle){$endif}<>nil));
+        ' Style='+dbgs(gtk_widget_get_style(PGtkWidget(Client))<>nil));
     end;
   end;
 end;
@@ -641,12 +607,8 @@ begin
     Exit;
   end;
   Widget := PGTKWidget(Client);
-  {$IFDEF gtk2}
-  WidgetStyle := Widget^.Style;
-  {$ELSE}
-  WidgetStyle := PGTKStyle(Widget^.theStyle);
-  {$ENDIF}
-  
+  WidgetStyle := gtk_widget_get_style(Widget);
+
   with Client^.Caret do 
   begin
     HasFocus:=gtk_widget_has_focus(Widget);
@@ -788,7 +750,7 @@ begin
         ' Blinking='+dbgs(Blinking),' HasFocus=',dbgs(gtk_widget_has_focus(PGtkWidget(Client))),
         ' ShowHideOnFocus='+dbgs(ShowHideOnFocus),
         ' Window='+dbgs(PGtkWidget(Client)^.Window<>nil),
-        ' Style='+dbgs({$IFDEF gtk2}gtk_widget_get_style(PGtkWidget(Client)){$else}PGTKStyle(PGtkWidget(Client)^.theStyle){$endif}<>nil));
+        ' Style='+dbgs(gtk_widget_get_style(PGtkWidget(Client))<>nil));
     end;
   end;
 end;
@@ -994,23 +956,20 @@ begin
   end;
   Result := wawType;
 end;
+
 {$IFDEF GTK1}
 function Laz_GTK_OBJECT_CONSTRUCTED(AnObject: PGtkObject): gboolean; cdecl;external gtkdll name 'gtk_object_constructed';
 {$ENDIF GTK1}
+
 function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
-{$IFNDEF gtk2}
+{$IFDEF gtk1}
 var
   NewArgs: array[0..1] of TGTKArg;
 {$ENDIF}
 begin
-{$IFDEF gtk2}
-  // MWE: IMO the arguments can't work since we supply the adjustments as nil
-  //      for gtk2 newv doesn't exist so the decision is easy
-  //      TODO: check if we still need to pass the args in gtk1
-  Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
-{$ELSE}
+{$IFDEF gtk1}
   FillChar(NewArgs[0],SizeOf(TGTKArg)*(High(NewArgs)-Low(NewArgs)+1),0);
   NewArgs[0].theType:=GTK_ADJUSTMENT_TYPE;
   NewArgs[0].name:='hadjustment';
@@ -1026,6 +985,11 @@ begin
   gtk_object_arg_set (PGtkObject(Result), @NewArgs[1], NULL);
   if (not Laz_GTK_OBJECT_CONSTRUCTED (PGtkObject(Result))) then
     gtk_object_default_construct (PGtkObject(Result));
+{$ELSE}
+  // MWE: IMO the arguments can't work since we supply the adjustments as nil
+  //      for gtk2 newv doesn't exist so the decision is easy
+  //      TODO: check if we still need to pass the args in gtk1
+  Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
 {$ENDIF}
 
   APIWidget := PGTKAPIWidget(Result);
@@ -1146,6 +1110,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/08/28 10:22:13  mattias
+  added hints for long props in OI  from Andrew Haines
+
   Revision 1.62  2004/08/16 16:03:52  mattias
   added UniCode keyvals
 

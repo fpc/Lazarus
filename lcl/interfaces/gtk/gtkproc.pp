@@ -273,7 +273,10 @@ function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
 function GetWidgetDebugReport(Widget: PGtkWidget): string;
 function GetWindowDebugReport(AWindow: PGDKWindow): string;
+function GetStyleDebugReport(AStyle: PGTKStyle): string;
+function GetRCStyleDebugReport(AStyle: PGtkRcStyle): string;
 function WidgetFlagsToString(Widget: PGtkWidget): string;
+function GdkColorToStr(Color: PGDKColor): string;
 
 // gtk resources
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
@@ -857,15 +860,8 @@ begin
         RCName:=AComponent.Name+'_'+RCName;
     end;
     gtk_widget_set_name(AWidget,PChar(RCName));
+    //debugln('Set_RC_Name ',GetWidgetDebugReport(AWidget),' RCName="',RCName,'"');
     gtk_widget_set_rc_style(AWidget);
-  end;
-  if (Sender is TCustomForm) then begin
-    ACustomForm:=TCustomForm(Sender);
-    if (ACustomForm.Parent=nil)
-    and ((Application.MainForm=ACustomForm)
-      or (Application.MainForm=nil))
-    then
-      UpdateSysColorMap(AWidget);
   end;
 end;
 

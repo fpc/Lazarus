@@ -22,10 +22,7 @@
 
   ToDo:
    - backgroundcolor=clNone
-   - auto sizing of component tree if no pair splitter
-   - pair splitter
-   - default values for property editors
-   - set to default value
+   - replace pair splitter with splitter
    - Define Init values
    - Set to init value
 }
@@ -530,7 +527,7 @@ begin
 
   SetInitialBounds(0,0,200,130);
   ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
-  BorderWidth:=1;
+  BorderWidth:=0;
   BorderStyle := bsSingle;
 
   // create sub components
@@ -1284,10 +1281,15 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
-var SplitDistance:integer;
+var
+  SplitDistance:integer;
+  Index: Integer;
+  fPropRow: TOIPropertyGridRow;
+  fHint: String;
+  fpoint: TPoint;
+  fHintRect: TRect;
 begin
   inherited MouseMove(Shift,X,Y);
-  
   SplitDistance:=X-SplitterX;
   if FDragging then begin
     if ssLeft in Shift then begin
@@ -1300,6 +1302,39 @@ begin
       Cursor:=crHSplit;
     end else begin
       Cursor:=crDefault;
+    end;
+    // to check if the property text fits in its box, if not show a hint
+    if ShowHint then begin
+      Index := MouseToIndex(y,false);
+      if Index > -1 then begin
+        fPropRow := GetRow(Index);
+        if X < SplitterX then begin
+          // Mouse is over property name...
+          fHint := fPropRow.Name;
+          if (Canvas.TextWidth(fHint)+BorderWidth+GetTreeIconX(Index)+Indent)
+          >= SplitterX
+          then begin
+            fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
+            fpoint := ClientToScreen(
+                                   Point(BorderWidth+GetTreeIconX(Index)+Indent,
+                                   fPropRow.Top - TopY-1));
+            MoveRect(fHintRect,fPoint.x,fPoint.y);
+            FHintWindow.ActivateHint(fHintRect,fHint);
+          end;
+        end
+        else begin
+          // Mouse is over property value...
+          fHint := fPropRow.LastPaintedValue;
+          if length(fHint)>100 then fHint:=copy(fHint,1,100)+'...';
+          if Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)
+          then begin
+            fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
+            fpoint := ClientToScreen(Point(SplitterX,fPropRow.Top - TopY-1));
+            MoveRect(fHintRect,fPoint.x,fPoint.y);
+            FHintWindow.ActivateHint(fHintRect,fHint);
+          end;
+        end;
+      end;
     end;
   end;
 end;

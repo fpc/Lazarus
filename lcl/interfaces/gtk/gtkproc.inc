@@ -729,6 +729,35 @@ begin
 {$endif gtk1}
 end;
 
+function GetStyleDebugReport(AStyle: PGTKStyle): string;
+begin
+  Result:='[';
+  if AStyle=nil then
+    Result:=Result+'nil'
+  else begin
+    Result:=Result+'FG[N]:='+GdkColorToStr(@AStyle^.fg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'BG[N]:='+GdkColorToStr(@AStyle^.bg[GTK_STATE_NORMAL])+' ';
+    Result:=Result+'BG_Pixmap[N]:='+HexStr(Cardinal(AStyle^.bg_pixmap[GTK_STATE_NORMAL]),8)+' ';
+    Result:=Result+'rc_style='+GetRCStyleDebugReport(AStyle^.rc_style);
+  end;
+  Result:=Result+']';
+end;
+
+function GetRCStyleDebugReport(AStyle: PGtkRcStyle): string;
+begin
+  Result:='[';
+  if AStyle=nil then
+    Result:=Result+'nil'
+  else begin
+    Result:=Result+'name="'+AStyle^.name+'" ';
+    Result:=Result+'font_name="'+AStyle^.font_name+'" ';
+    Result:=Result+'fontset_name="'+AStyle^.fontset_name+'" ';
+    Result:=Result+'bg_pixmap_name[N]="'+AStyle^.bg_pixmap_name[GTK_STATE_NORMAL]+'" ';
+    Result:=Result+'engine='+HexStr(Cardinal(AStyle^.engine),8);
+  end;
+  Result:=Result+']';
+end;
+
 function WidgetFlagsToString(Widget: PGtkWidget): string;
 begin
   Result:='[';
@@ -745,6 +774,15 @@ begin
       Result:=Result+'D';
   end;
   Result:=Result+']';
+end;
+
+function GdkColorToStr(Color: PGDKColor): string;
+begin
+  if Color=nil then
+    Result:='nil'
+  else
+    Result:='R'+HexStr(Color^.Red,4)+'G'+HexStr(Color^.Green,4)
+           +'B'+HexStr(Color^.Blue,4);
 end;
 
 {------------------------------------------------------------------------------
@@ -5244,6 +5282,7 @@ begin
   {$IFDEF NoStyle}
   exit;
   {$ENDIF}
+  //debugln('UpdateSysColorMap ',GetWidgetDebugReport(Widget));
   gtk_widget_set_rc_style(Widget);
   MainStyle:=gtk_widget_get_style(Widget);
   if MainStyle=nil then exit;
@@ -5576,6 +5615,7 @@ begin
   ClientAreaWidget := gtk_layout_new(nil, nil);
   WindowStyle:=GetStyle(lgsWindow);
   gtk_widget_set_style(ClientAreaWidget,WindowStyle);
+  //debugln('CreateFormContents Style=',GetStyleDebugReport(WindowStyle));
   gtk_container_add(PGtkContainer(ScrolledWidget), ClientAreaWidget);
 
   gtk_object_set_data(FormWidget,odnScrollArea,ScrolledWidget);
@@ -5899,7 +5939,7 @@ begin
       WidgetName:='LazStyle'+WName;
       gtk_widget_set_name(StyleObject^.Widget,PChar(WidgetName));
       gtk_widget_ensure_style(StyleObject^.Widget);
-      gtk_widget_size_request(StyleObject^.widget, @Requisition);
+      gtk_widget_size_request(StyleObject^.Widget, @Requisition);
       StyleObject^.Style:=gtk_widget_get_style(StyleObject^.Widget);
       // ToDo: find out, why sometimes the style is not initialized.
       // for example: why the following occurs:
@@ -6508,12 +6548,12 @@ var
   Widget, FixWidget : PGTKWidget;
   NewColor: TGdkColor;
   MainWidget: PGtkWidget;
+  i: Integer;
 
   procedure CreateRCStyle;
   begin
-    if RCStyle=nil then begin
+    if RCStyle=nil then
       RCStyle:=gtk_rc_style_new;
-    end;
   end;
 
 begin
@@ -6536,7 +6576,7 @@ begin
   try
     // set default background
     if (AWinControl.Color=clNone) then begin
-      // default not needed background -> remove default background
+      // clNone => remove default background
       if (FixWidget^.Window<>nil) then begin
         gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
       end;
@@ -6565,6 +6605,23 @@ begin
 
     end;
     
+    {if (AWinControl is TCustomForm) then begin
+      gdk_window_set_back_pixmap(FixWidget^.Window,nil,GdkFalse);
+
+      NewColor:=TColorToTGDKColor(clRed);
+
+      CreateRCStyle;
+      for i:=0 to 4 do begin
+        debugln('AAA1 i=',dbgs(i),' ',RCStyle^.bg_pixmap_name[i],' ',RCStyle^.Name);
+        RCStyle^.bg[i]:=NewColor;
+
+        // Indicate which colors the GtkRcStyle will affect;
+        // unflagged colors will follow the theme
+        RCStyle^.color_flags[i]:=
+          RCStyle^.color_flags[i] or GTK_RC_BG;
+      end;
+    end;}
+    
     // set font color
     if (AWinControl.Font.Color and SYS_COLOR_BASE)=0 then begin
       NewColor:=TColorToTGDKColor(AWinControl.Font.Color);
@@ -6582,7 +6639,7 @@ begin
     
   finally
     if RCStyle<>nil then begin
-      //DebugLn('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
+      DebugLn('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
       gtk_widget_modify_style(Widget,RCStyle);
       gtk_rc_style_unref(RCStyle);
     end;
@@ -7130,6 +7187,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.295  2004/08/28 10:22:13  mattias
+  added hints for long props in OI  from Andrew Haines
+
   Revision 1.294  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 

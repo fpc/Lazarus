@@ -84,7 +84,8 @@ procedure FreeThenNil(var AnObject: TObject);
 procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
 procedure CallInterfaceFinalizationHandlers;
 
-function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
+function OffsetRect(var ARect: TRect; dx, dy: Integer): Boolean;
+procedure MoveRect(var ARect: TRect; x, y: Integer);
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
 procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
@@ -487,6 +488,14 @@ begin
   // creates an exception, that gdb catches:
   debugln(rsCreatingGdbCatchableError);
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
+procedure MoveRect(var ARect: TRect; x, y: Integer);
+begin
+  inc(ARect.Right,x-ARect.Left);
+  inc(ARect.Bottom,y-ARect.Top);
+  ARect.Left:=x;
+  ARect.Top:=y;
 end;
 
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);

@@ -6925,8 +6925,6 @@ begin
 
     gtk_widget_show(SenderWidget);
 
-    UpdateWidgetStyleOfControl(LCLControl);
-
     if (ACustomForm<>nil) and (ACustomForm.Parent=nil) then begin
       AWindow:=GetControlWindow(SenderWidget);
       if (AWindow<>nil) and (ACustomForm.Icon<>nil) then begin
@@ -8421,6 +8419,7 @@ begin
   if aDC <> nil
   then begin
     {$Ifdef GTK1}
+    // ToDo: create font on demand
     if GCValues.Font <> nil
     then begin
       GdiObject:=NewGDIObject(gdiFont);
@@ -9252,6 +9251,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.535  2004/08/28 10:22:13  mattias
+  added hints for long props in OI  from Andrew Haines
+
   Revision 1.534  2004/08/27 08:55:22  micha
   implement tapplication.minimize for win32, stub for gtk
 
