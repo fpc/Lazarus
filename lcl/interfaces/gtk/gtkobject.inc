@@ -6026,20 +6026,29 @@ begin
    
   case TControl(Sender).fCompStyle of
     csComboBox:
-      case TCustomComboBox(Sender).Style of
-        csDropDownList :
-          begin
-            gtk_combo_set_value_in_list(PgtkCombo(Handle),-1, 0);
-            gtk_combo_set_use_arrows_always(PgtkCombo(Handle),-1);
-            gtk_combo_set_case_sensitive(PGtkCombo(Handle),0);
-          end;
-        else
-          begin
-            gtk_combo_set_value_in_list(PgtkCombo(Handle),0,0);
-            gtk_combo_set_use_arrows_always(PgtkCombo(Handle),0);
-          end;
+      begin
+        case TCustomComboBox(Sender).Style of
+          csDropDownList :
+            begin
+              gtk_combo_set_value_in_list(PgtkCombo(Handle),-1, 0);
+              gtk_combo_set_use_arrows_always(PgtkCombo(Handle),-1);
+              gtk_combo_set_case_sensitive(PGtkCombo(Handle),0);
+            end;
+          else
+            begin
+              gtk_combo_set_value_in_list(PgtkCombo(Handle),0,0);
+              gtk_combo_set_use_arrows_always(PgtkCombo(Handle),0);
+            end;
+        end;
+
+        if TCustomComboBox(Sender).ArrowKeysTraverseList = True then
+        begin
+          gtk_combo_set_use_arrows(PgtkCombo(Handle),-1);
+        end else
+        begin
+          gtk_combo_set_use_arrows(PgtkCombo(Handle),0);
+        end;
       end;
-  
     csEdit :
       with TCustomEdit(Sender) do
         begin
@@ -7314,6 +7323,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.375  2003/06/12 16:18:23  mattias
+  applied TComboBox fix for grabbing keys from Yoyong
+
   Revision 1.374  2003/06/10 17:23:35  mattias
   implemented tabstop
 
