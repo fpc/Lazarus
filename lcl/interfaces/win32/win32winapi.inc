@@ -370,9 +370,10 @@ Type
   PColorArray = ^TColorArray;
   TColorArray = Array[0..1] Of TColorMap;
   PPixmapArray = ^TPixmapArray;
-  TPixmapArray = Array[0..1] Of PChar;
+  TPixmapArray = Array[0..1000] Of PChar;
 Var
   AliasLen, BitCount, C, Planes: Cardinal;
+  AList: TList;
   Bits: PBitData;
   ColorArray: PColorArray;
   ColorCount: Integer;
@@ -386,36 +387,159 @@ Var
   PixmapInfo: TStringList;
 Const
   DC_SCREEN = 0;
+
+  Procedure NormalizeString(Var Str: String);
+  Var
+    S: String;
+  Const
+    keyTab = #9;
+  Begin
+    Assert(False, 'Trace:NormalizeString - Start');
+    Str := Replace(Str, keyTab, ' ', True);
+    S := '';
+
+    While True Do
+    Begin
+      Str := Replace(Str, '  ', ' ', True);
+      If Str = S Then
+        Break;
+      S := Str;
+    End;
+    Assert(False, 'Trace:NormalizeString - Exit');
+  End;
+
+  Function StrToInt(Const Str: String): Integer;
+  Var
+    S: String;
+  Begin
+    Assert(False, 'Trace:StrToInt - Start');
+    S := Trim(Str);
+    Result := SysUtils.StrToInt(S);
+    Assert(False, 'Trace:StrToInt - Exit');
+  End;
+
+  Function CreateColorMap: PColorArray;
+  Var
+    Elem: String;
+    I: Integer;
+    Idx: Cardinal;
+    ColorMap: TColorMap;
+  Begin
+    Assert(False, 'Trace:CreateColorMap - Start');
+    If ColorCount = 0 Then
+    Begin
+      Assert(False, 'Trace:CreateColorMap - Color count was not retrieved; can''t create color map');
+      AList := Nil;
+      Result := Nil;
+      Exit;
+    End;
+
+    AList := TList.Create;
+    For I := 1 To ColorCount Do
+    Begin
+      Try
+        Elem := String(PixmapArray^[I]);
+        Idx := Length(Elem) - 6;
+        With ColorMap Do
+        Begin
+          Alias := Copy(Elem, 1, AliasLen);
+          If Copy(Elem, Length(Elem) - 5, 4) <> 'None' Then
+            Color := StrToInt('$' + Copy(Elem, Idx, Length(Elem) - Idx - 1))
+          Else
+            Color := TransColor;
+          Assert(False, Format('Trace:CreateColorMap - color-map entry info --> item: %D, data: %S, alias: %S, color:0x%X', [I, String(PixmapArray^[I]), Alias, Color]));
+        End;
+        AList.Add(@ColorMap);
+      Except
+        On E: Exception Do
+          Assert(False, Format('Trace:CreateColorMap - Could not create color-map entry --> %S', [E.Message]));
+      End;
+    End;
+
+    TList(Result) := AList;
+    Assert(False, 'Trace:CreateColorMap - Exit');
+  End;
+
+  Procedure DestroyColorMap(ColorMap: PColorArray);
+  Begin
+    Assert(False, 'Trace:DestroyColorMap - Start');
+    If ColorMap <> Nil Then
+      ColorMap := Nil;
+
+    If AList <> Nil Then
+    Begin
+      AList.Free;
+      AList := Nil;
+    End;
+
+    Assert(False, 'Trace:DestroyColorMap - Exit');
+  End;
+
+  Procedure DoDrawBitmap;
+  Var
+    CX, CY: Cardinal;
+  Begin
+    Assert(False, 'Trace:DoDrawBitmap - Start');
+
+    If (ColorCount = 0) Or (AList = Nil) Then
+    Begin
+      Assert(False, 'Trace:DoDrawBitmap - No information to create bitmap');
+      Exit;
+    End;
+
+    Assert(False, 'Trace:DoDrawBitmap - TODO: Draw the bitmap');
+    Assert(False, 'Trace:DoDrawBitmap - Exit');
+  End;
 Begin
   Assert(False, 'Trace:TWin32Object.CreatePixmapIndirect - Start');
+
+  Height := 0;
+  Width := 0;
+  ColorCount := 0;
+  AliasLen := 0;
+  Result := HBITMAP(Nil);
+
   PixmapArray := PPixmapArray(Data);
+  NormalizeString(String(PixmapArray^[0]));
   PixmapInfo := Split(String(PixmapArray^[0]), ' ', 3, False);
   If PixmapInfo.Count = 6 Then
     Assert(False, 'Trace:TODO: TWin32Object.CreatePixmapIndirect - Get Pixmaps with six sections working');
+
   Try
     Width := StrToInt(PixmapInfo[0]);
+    Assert(False, Format('Trace: Pixmap width --> %D', [Width]));
     Height := StrToInt(PixmapInfo[1]);
+    Assert(False, Format('Trace: Pixmap height --> %D', [Height]));
     ColorCount := StrToInt(PixmapInfo[2]);
-    AliasLen := StrToInt(Copy(PixmapInfo[3], 1, Length(PixMapInfo[3]) - 1));
+    Assert(False, Format('Trace: number of colors --> %D', [ColorCount]));
+    If PixmapInfo[3][Length(PixmapInfo[3])] = '"' Then
+      PixmapInfo[3] := Copy(PixmapInfo[3], 1, Length(PixMapInfo[3]) - 1);
+    AliasLen := StrToInt(PixmapInfo[3]);
+    Assert(False, Format('Trace: characters per pixel --> %D', [AliasLen]));
     Assert(False, Format('Trace:TWin32Object.CreatePixmapIndirect - Pixmap info: Width - %D; Height - %D; Number of Colors - %D; Characters per pixel - %D; Transparent color - 0x%X', [Width, Height, ColorCount, AliasLen, TransColor]));
   Except
     On E: Exception Do
     Begin
       Assert(False, 'Trace:Error: TWin32Object.CreatePixmapIndirect - could not retrieve pixmap info --> ' + E.Message);
-      Result := HBITMAP(Nil);
-      Exit;
     End;
   End;
+
   // Temp values
   //Width := 100;
   //Height := 100;
   DC := CreateCompatibleDC(DC_SCREEN);
-  Result := CreateCompatibleBitmap(DC, Width, Height);
+  If (Width <> 0) And (Height <> 0) Then
+    Result := CreateCompatibleBitmap(DC, Width, Height);
   OldObject := SelectObject(DC, Result);
-  Assert(False, 'Trace:TODO: TWin32Object.CreatePixmapIndirect - Set the color info of the bitmap');
-  SelectObject(DC, OldObject);
+  //GetMem(PixmapArray, (Width + ColorCount) * SizeOf(PChar));
+  ColorArray := CreateColorMap;
+  DoDrawBitmap;
+  DestroyColorMap(ColorArray);
+  //FreeMem(PixmapArray);
   PixmapInfo.Free;
   PixmapInfo := Nil;
+  PixmapArray := Nil;
+  SelectObject(DC, OldObject);
   DeleteDC(DC);
   Assert(False, 'Trace:TWin32Object.CreatePixmapIndirect - Exit');
 End;
@@ -1708,6 +1832,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/01/29 18:55:27  lazarus
+  Keith: Fixed duplicate compiler options on Win32
+
   Revision 1.4  2002/01/21 09:04:30  lazarus
   Keith: Removed redef of Assert
 

@@ -26,7 +26,7 @@ program lazarus;
 
 {$I ide.inc}
 
-{$IFDEF SUPPORTS_RESOURCES}
+{$IFDEF WIN32}
   {$R *.res}
 {$ENDIF}
 
@@ -70,6 +70,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2002/01/29 18:55:27  lazarus
+  Keith: Fixed duplicate compiler options on Win32
+
   Revision 1.26  2001/12/11 16:51:36  lazarus
   Modified the Watches dialog
   Shane

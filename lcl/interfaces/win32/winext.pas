@@ -83,6 +83,9 @@ Function GetComboBoxInfo(Const hwndCombo: HWND; pcbi: PCOMBOBOXINFO): BOOL; StdC
 { Convert string Str to a PChar }
 Function StrToPChar(Const Str: String): PChar;
 
+{ Replace OrigStr with ReplStr in Str }
+Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
+
 { Creates a string list limited to Count (-1 for no limit) entries by splitting
   Str into substrings around SplitStr }
 Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;
@@ -105,6 +108,24 @@ Function StrToPChar(Const Str: String): PChar;
 Begin
   TmpStr := PChar(Str);
   Result := TmpStr;
+End;
+
+Function Replace(Const Str, OrigStr, ReplStr: String; Const Global: Boolean): String;
+Var
+  InsPt: Byte;
+Begin
+  Result := Str;
+  Repeat
+    InsPt := Pos(OrigStr, Result);
+    If InsPt <> 0 Then
+    Begin
+      Delete(Result, InsPt, Length(OrigStr));
+      Insert(ReplStr, Result, InsPt);
+    End;
+
+    If Not Global Then
+      Break;
+  Until InsPt = 0;
 End;
 
 Function Split(Const Str: String; SplitStr: String; Count: Integer; Const CaseSensitive: Boolean): TStringList;

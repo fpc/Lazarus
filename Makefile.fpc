@@ -33,8 +33,6 @@ destdir=$(BASEDIR)/dist
 ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET), win32)
 LCL_PLATFORM=win32
-override FPCOPT+=-dSUPPORTS_RESOURCES
-export FPCOPT
 else
 LCL_PLATFORM=gtk
 endif
@@ -49,7 +47,7 @@ endif
         windres -i $< -o $@
 
 ide:
-ifeq ($(LCL_PLATFORM), win32)
+ifeq ($(OS_TARGET), win32)
         $(MAKE) lazarus.res
 endif
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
@@ -60,10 +58,10 @@ all: lcl components ide
 
 clean: cleanall
         $(DEL) $(wildcard ./designer/*$(OEXT))
-        $(DEL) $(wildcard ./designer/*$(PPUEXT))
-        $(DEL) $(wildcard ./debugger/*$(OEXT))
-        $(DEL) $(wildcard ./debugger/*$(PPUEXT))
-ifeq ($(LCL_PLATFORM), win32)
+        $(wildcard ./designer/*$(PPUEXT))
+        $(wildcard ./debugger/*$(OEXT))
+        $(wildcard ./debugger/*$(PPUEXT))
+ifeq ($(OS_TARGET), win32)
         $(DEL) $(wildcard *.res)
         $(DEL) lazarus.owr
 endif
