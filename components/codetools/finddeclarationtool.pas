@@ -3458,7 +3458,7 @@ begin
   
   Result.Desc:=CurExprDesc;
   Result.Context:=CurContext;
-  if Result.Desc=xtContext then
+  if (Result.Desc=xtContext) and (not (fdfFindVariable in StartFlags)) then
     Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
                                                             Params);
   {$IFDEF ShowExprEval}
