@@ -240,12 +240,9 @@ procedure TgtkObject.SendCachedLCLMessages;
         if ParentFixed <> nil then begin
           gtk_fixed_move(PGtkFixed(ParentFixed), Widget,
                          LCLControl.Left, LCLControl.Top);
-        end else begin
-          if not (LCLControl.Parent is TNoteBook) then begin
-            writeln('WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
-            writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
-          end;
-          Assert(False, 'WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
+        end else if not (LCLControl.Parent is TNoteBook) then begin
+          writeln('WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
+          writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
         end;
       end
       else begin
@@ -1300,7 +1297,7 @@ begin
 
       LM_ShowTabs :
       begin
-        gtk_notebook_set_show_tabs(PGtkNotebook(Handle), 
+        gtk_notebook_set_show_tabs(PGtkNotebook(Handle),
           Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
       end;
 
@@ -1503,7 +1500,7 @@ begin
               Integer(Data), 1);    // column
               
           csNotebook:
-            begin
+            if Data<>nil then begin
               gtk_notebook_set_page(PGtkNotebook(Handle),
                                     TLMNotebookEvent(Data^).Page);
               UpdateNoteBookClientWidget(Sender);
@@ -3808,7 +3805,10 @@ begin
       P := gtk_notebook_new();
       gtk_notebook_set_scrollable(P, true);
       gtk_notebook_popup_enable(P);
-      gtk_notebook_set_show_tabs(P, false);   // Turn tabs off
+      if TCustomNotebook(Sender).PageCount=0 then
+        // a gtk notebook needs a page
+        // -> add dummy page
+        AddDummyNoteBookPage(PGtkNotebook(p));
     end;
 
   csPage:    // TPage - Notebook page
@@ -4032,12 +4032,9 @@ begin
         if ParentFixed <> nil then begin
           gtk_fixed_move(PGtkFixed(ParentFixed), SenderWidget,
                          LCLControl.Left, LCLControl.Top);
-        end else begin
-          if not (LCLControl.Parent is TNoteBook) then begin
-            writeln('WARNING: TgtkObject.ShowHide - no Fixed Widget found');
-            writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
-          end;
-          Assert(False, 'WARNING: TgtkObject.ShowHide - no Fixed Widget found');
+        end else if not (LCLControl.Parent is TNoteBook) then begin
+          writeln('WARNING: TgtkObject.ShowHide - no Fixed Widget found');
+          writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
         end;
       end;
       UnsetResizeRequest(SenderWidget);
@@ -4107,6 +4104,73 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
+  
+  Returns the number of pages in a PGtkNotebook
+-------------------------------------------------------------------------------}
+function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
+var
+  AListItem: PGList;
+begin
+  Result:=0;
+  if ANoteBookWidget=nil then exit;
+  AListItem:=ANoteBookWidget^.children;
+  while AListItem<>nil do begin
+    inc(Result);
+    AListItem:=AListItem^.Next;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
+
+  Adds the dummy page.
+  A gtk notebook must have at least one page, but TNoteBook also allows no pages
+  at all. Therefore at least a dummy page is added. This dummy page is removed
+  as soon as other pages are added.
+-------------------------------------------------------------------------------}
+procedure TgtkObject.AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
+var
+  DummyWidget, AWidget, ALabel, MenuLabel: PGtkWidget;
+begin
+  if NoteBookWidget=nil then exit;
+  DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
+  if (DummyWidget=nil) then begin
+    // the notebook has no pages
+    // -> add a dummy page
+    DummyWidget := gtk_hbox_new(false, 0);
+    AWidget := gtk_fixed_new;
+    gtk_widget_show(AWidget);
+    //gtk_box_pack_start_defaults(GTK_BOX(DummyWidget),AWidget);
+    gtk_container_add(GTK_CONTAINER(DummyWidget), AWidget);
+    gtk_widget_show(DummyWidget);
+    ALabel:=gtk_label_new('');
+    gtk_widget_show(ALabel);
+    MenuLabel:=gtk_label_new('');
+    gtk_widget_show(MenuLabel);
+    gtk_notebook_prepend_page_menu(NoteBookWidget,DummyWidget,ALabel,MenuLabel);
+    SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
+  
+  Removes the dummy page.
+  See also AddDummyNoteBookPage
+-------------------------------------------------------------------------------}
+procedure TGtkObject.RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
+var
+  DummyWidget: PGtkWidget;
+begin
+  DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
+  if DummyWidget=nil then exit;
+  gtk_notebook_remove_page(NoteBookWidget,0);
+  DummyWidget:=nil;
+  SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
+end;
+
+{-------------------------------------------------------------------------------
   method TGtkObject UpdateNotebookPageTab
   Params: ANoteBook: TCustomNotebook; APage: TPage
   Result: none
@@ -4169,7 +4233,7 @@ var
         gtk_pixmap_set(PGtkPixmap(MenuPixmapWidget),Img,Mask);
       end else begin
         // there is no pixmap for the image in the menu
-        // -> insert one ot the left side of the label
+        // -> insert one at the left side of the label
         MenuPixmapWidget:=gtk_pixmap_new(Img,Mask);
         gtk_object_set_data(PGtkObject(MenuWidget),'TabPixmap',MenuPixmapWidget);
         gtk_widget_show(MenuPixmapWidget);
@@ -4322,7 +4386,7 @@ begin
     gtk_object_set_data(PGtkObject(TabWidget), 'TabPixmap', nil);
     gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn', nil);
     // put a label into the tab
-    TabLabelWidget:=gtk_label_new('Unset Value');
+    TabLabelWidget:=gtk_label_new('');
     gtk_object_set_data(PGtkObject(TabWidget), 'TabLabel', TabLabelWidget);
     gtk_widget_show(TabLabelWidget);
     gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabLabelWidget);
@@ -4335,14 +4399,15 @@ begin
     // put a pixmap into the menu
     gtk_object_set_data(PGtkObject(MenuWidget), 'TabPixmap', nil);
     // put a label into the menu
-    MenuLabelWidget:=gtk_label_new('Unset Value');
+    MenuLabelWidget:=gtk_label_new('');
     gtk_object_set_data(PGtkObject(MenuWidget), 'TabLabel', MenuLabelWidget);
     gtk_widget_show(MenuLabelWidget);
     gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuLabelWidget);
   end;
 
   gtk_widget_show(MenuWidget);
-  
+
+  RemoveDummyNoteBookPage(PGtkNotebook(NoteBookWidget));
   gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget),PageWidget,
     TabWidget,MenuWidget,Index);
 
@@ -4355,9 +4420,17 @@ end;
        *Note: Remove Notebook Page
 ------------------------------------------------------------------------------}
 procedure TgtkObject.RemoveNBPage(ANoteBook: TObject; Index: Integer);
+var
+  NoteBookWidget: PGtkNotebook;
 begin
   Assert(false, 'Trace:Removing a notebook page');
-  gtk_notebook_remove_page(PGtkNotebook(TWinControl(ANoteBook).Handle), Index);
+  NoteBookWidget:=PGtkNotebook(TWinControl(ANoteBook).Handle);
+  if GetGtkNoteBookPageCount(NoteBookWidget)>1 then begin
+    gtk_notebook_remove_page(NoteBookWidget, Index);
+  end else begin
+    AddDummyNoteBookPage(NoteBookWidget);
+    gtk_notebook_remove_page(NoteBookWidget, Index+1);
+  end;
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 
@@ -5514,8 +5587,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.193  2002/09/02 19:10:28  lazarus
+  MG: TNoteBook now starts with no Page and TPage has no auto names
+
   Revision 1.192  2002/09/01 16:11:22  lazarus
-  MG: double, triple and quad clicks now works
+  MG: double, triple and quad clicks now work
 
   Revision 1.191  2002/08/31 11:37:10  lazarus
   MG: fixed destroying combobox
