@@ -215,7 +215,9 @@ type
     property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
   end;
 
+
   { Compiler options form }
+  
   TfrmCompilerOptions = class(TForm)
     nbMain: TNotebook;
     //bvlButtonBar: TBevel;
@@ -3053,7 +3055,10 @@ begin
       OldPath:=edtOtherUnits.Text;
       Templates:=SetDirSeparators(
             '$(LazarusDir)/lcl/units'
-          +';$(LazarusDir)/lcl/units/$(LCLWidgetType)');
+          +';$(LazarusDir)/lcl/units/$(LCLWidgetType)'
+          +';$(LazarusDir)/components/units'
+          +';$(LazarusDir)/components/custom'
+          );
     end else
     if AButton=IncludeFilesPathEditBtn then begin
       OldPath:=edtIncludeFiles.Text;
@@ -3080,10 +3085,8 @@ var AButton: TPathEditorButton;
 begin
   if Sender is TPathEditorButton then begin
     AButton:=TPathEditorButton(Sender);
-writeln('TfrmCompilerOptions.PathEditBtnExecuted ',TComponent(Sender).Name,':',Sender.ClassName,' ',AButton.CurrentPathEditor.ModalResult);
     if AButton.CurrentPathEditor.ModalResult<>mrOk then exit;
     NewPath:=AButton.CurrentPathEditor.Path;
-writeln('TfrmCompilerOptions.PathEditBtnExecuted ',TComponent(Sender).Name,':',Sender.ClassName,' ',NewPath);
     if AButton=OtherUnitsPathEditBtn then begin
       edtOtherUnits.Text:=NewPath;
     end else

@@ -187,7 +187,7 @@ begin
   // path groupbox
   PathGroupBox.SetBounds(6,6,MaxX-2*6,PathGroupBoxHeight);
   PathEdit.SetBounds(2,2,
-                     PathGroupBox.Width-10,Max(0,PathGroupBox.Height-57));
+                     Max(1,PathGroupBox.Width-10),Max(1,PathGroupBox.Height-57));
   MoveUpButton.SetBounds(8,PathEdit.Top+PathEdit.Height+8,
                          120,MoveUpButton.Height);
   MoveDownButton.SetBounds(MoveUpButton.Left+MoveUpButton.Width+8,
@@ -205,15 +205,15 @@ begin
     Left:=PathGroupBox.Left;
     Top:=PathGroupBox.Top+PathGroupBox.Height+8;
     Width:=PathGroupBox.Width;
-    Height:=Max(0,MaxY-50-Top);
+    Height:=Max(1,MaxY-50-Top);
   end;
-  TemplatesListBox.SetBounds(2,2,Max(0,TemplateGroupBox.Width-10),
-                             Max(0,TemplateGroupBox.Height-57));
+  TemplatesListBox.SetBounds(2,2,Max(1,TemplateGroupBox.Width-10),
+                             Max(1,TemplateGroupBox.Height-57));
   AddTemplateButton.SetBounds(8,TemplatesListBox.Top+TemplatesListBox.Height+8,
                               100,AddTemplateButton.Height);
 
   // buttons at bottom
-  OkButton.SetBounds(20,Max(0,MaxY-35),100,OkButton.Height);
+  OkButton.SetBounds(20,Max(1,MaxY-35),100,OkButton.Height);
   CancelButton.SetBounds(OkButton.Left+OkButton.Width+10,OkButton.Top,
                          OkButton.Width,OkButton.Height);
                          
