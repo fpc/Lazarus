@@ -6,9 +6,6 @@
                              Graphic Controls
                    Initial Revision  : Mon Jul 26 0:02:58 1999
 
-  Contains :
-    TGraphicsObject - TFont
-
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,7 +19,7 @@
 }
 unit Graphics;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -31,7 +28,7 @@ interface
 {$endif}
 
 uses
- SysUtils,classes,vclGlobals,LMessages, LCLLinux;
+ SysUtils, Classes, vclGlobals, LMessages, LCLLinux;
 
 
 type
@@ -117,7 +114,7 @@ const
 
 type
   TFontPitch = (fpDefault, fpVariable, fpFixed);
-  TFontName = string;
+  TFontName = shortstring;
   TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
   TFontCharSet = 0..255;
   TFontDataName = string[LF_FACESIZE -1];
@@ -202,13 +199,6 @@ type
     //Function GetWidth(Value : String) : Integer;
     constructor Create;
     destructor Destroy; override;
-    property Color : TColor read FColor write SetColor;
-    property Height : Integer read FFontData.Height write SetHeight;
-    property Name : TFontName read GetName write SetName;
-    property Pitch: TFontPitch read FFontData.Pitch write SetPitch;
-    property PixelsPerInch : Integer read FPixelsPerInch;
-    property Size: Integer read GetSize write SetSize;
-    property Style : TFontStyles read FFontData.Style write SetStyle;
     // Extra properties
     // TODO: implement them though GetTextMetrics, not here
     //property Width : Integer read FWidth write FWidth;
@@ -216,10 +206,18 @@ type
     //property YBias : Integer read FYBias write FYBias;
     //-----------------
     property Handle : HFONT read GetHandle write SetHandle;
+    property PixelsPerInch : Integer read FPixelsPerInch;
+  published
+    property Color : TColor read FColor write SetColor;
+    property Height : Integer read FFontData.Height write SetHeight;
+    property Name : TFontName read GetName write SetName;
+    property Pitch: TFontPitch read FFontData.Pitch write SetPitch;
+    property Size: Integer read GetSize write SetSize;
+    property Style : TFontStyles read FFontData.Style write SetStyle;
   end;
 
 
-  TPen = class(TgraphicsObject)
+  TPen = class(TGraphicsObject)
   private
     FPenData : TPenData;
     FMode : TPenMode;
@@ -235,8 +233,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    property Color: TColor read FPenData.Color write SetColor;
     property Handle : HPEN read GetHandle write SetHandle;
+  published
+    property Color: TColor read FPenData.Color write SetColor;
     property Mode: TPenMode read FMode write SetMode;
     property Style: TPenStyle read FPenData.Style write SetStyle;
     property Width: Integer read FPenData.Width write SetWidth;
@@ -273,20 +272,141 @@ type
   TCanvasStates = (csHandleValid, csFontValid, csPenvalid, csBrushValid);
   TCanvasState = set of TCanvasStates;
   TCanvasOrientation = (csLefttoRight, coRighttoLeft);
+
+  TProgressStage = (psStarting, psRunning, psEnding);
+  TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
+    PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
+    const Msg: string) of object;
   
   TCanvas = class;
 
   TGraphic = class(TPersistent)
   private
-    FWidth : Integer;
-    FHeight : Integer;
+    FModified: Boolean;
+    FTransparent: Boolean;
+    FOnChange: TNotifyEvent;
+    FOnProgress: TProgressEvent;
+    procedure SetModified(Value: Boolean);
   protected
+    procedure Changed(Sender: TObject); virtual;
+    function Equals(Graphic: TGraphic): Boolean; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); virtual; abstract;
+    function GetEmpty: Boolean; virtual; abstract;
+    function GetHeight: Integer; virtual; abstract;
+    function GetTransparent: Boolean; virtual;
+    function GetWidth: Integer; virtual; abstract;
+    procedure Progress(Sender: TObject; Stage: TProgressStage;
+      PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
+      const Msg: string); dynamic;
+    procedure ReadData(Stream: TStream); virtual;
+    procedure SetHeight(Value: Integer); virtual; abstract;
+    procedure SetTransparent(Value: Boolean); virtual;
+    procedure SetWidth(Value: Integer); virtual; abstract;
+    procedure WriteData(Stream: TStream); virtual;
   public
+    procedure LoadFromFile(const Filename: string); virtual;
+    procedure SaveToFile(const Filename: string); virtual;
+    procedure LoadFromStream(Stream: TStream); virtual; abstract;
+    procedure SaveToStream(Stream: TStream); virtual; abstract;
     constructor Create; virtual;
-    property Height: Integer read FHeight write FHeight;
-    property Width: Integer read FWidth write FWidth;
+    property Empty: Boolean read GetEmpty;
+    property Height: Integer read GetHeight write SetHeight;
+    property Modified: Boolean read FModified write SetModified;
+    property Transparent: Boolean read GetTransparent write SetTransparent;
+    property Width: Integer read GetWidth write SetWidth;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
   end;
+
+  TGraphicClass = class of TGraphic;
+
+  { TPicture }
+  { TPicture is a TGraphic container.  It is used in place of a TGraphic if the
+    graphic can be of any TGraphic class.  LoadFromFile and SaveToFile are
+    polymorphic. For example, if the TPicture is holding an Icon, you can
+    LoadFromFile a bitmap file, where if the class was TIcon you could only read
+    .ICO files.
+      LoadFromFile - Reads a picture from disk.  The TGraphic class created
+        determined by the file extension of the file.  If the file extension is
+        not recognized an exception is generated.
+      SaveToFile - Writes the picture to disk.
+      LoadFromClipboardFormat - Reads the picture from the handle provided in
+        the given clipboard format.  If the format is not supported, an
+        exception is generated.
+      SaveToClipboardFormats - Allocates a global handle and writes the picture
+        in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE
+        for metafiles, etc.).  Formats will contain the formats written.
+        Returns the number of clipboard items written to the array pointed to
+        by Formats and Datas or would be written if either Formats or Datas are
+        nil.
+      SupportsClipboardFormat - Returns true if the given clipboard format
+        is supported by LoadFromClipboardFormat.
+      Assign - Copys the contents of the given TPicture.  Used most often in
+        the implementation of TPicture properties.
+      RegisterFileFormat - Register a new TGraphic class for use in
+        LoadFromFile.
+      RegisterClipboardFormat - Registers a new TGraphic class for use in
+        LoadFromClipboardFormat.
+      UnRegisterGraphicClass - Removes all references to the specified TGraphic
+        class and all its descendents from the file format and clipboard format
+        internal lists.
+      Height - The native, unstretched, height of the picture.
+      Width - The native, unstretched, width of the picture.
+      Graphic - The TGraphic object contained by the TPicture
+      Bitmap - Returns a bitmap.  If the contents is not already a bitmap, the
+        contents are thrown away and a blank bitmap is returned.
+      Icon - Returns an icon.  If the contents is not already an icon, the
+        contents are thrown away and a blank icon is returned.
+      }
+
+  TPicture = class(TPersistent)
+  private
+    FGraphic: TGraphic;
+    FOnChange: TNotifyEvent;
+    FOnProgress: TProgressEvent;
+    procedure ForceType(GraphicType: TGraphicClass);
+    function GetBitmap: TBitmap;
+    function GetHeight: Integer;
+    function GetWidth: Integer;
+    procedure ReadData(Stream: TStream);
+    procedure SetBitmap(Value: TBitmap);
+    procedure SetGraphic(Value: TGraphic);
+    procedure WriteData(Stream: TStream);
+  protected
+    procedure AssignTo(Dest: TPersistent); override;
+    procedure Changed(Sender: TObject); dynamic;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure Progress(Sender: TObject; Stage: TProgressStage;
+      PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
+      const Msg: string); dynamic;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LoadFromFile(const Filename: string);
+    procedure SaveToFile(const Filename: string);
+    //procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle;
+    //  APalette: HPALETTE);
+    //procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
+    //  var APalette: HPALETTE);
+    //class function SupportsClipboardFormat(AFormat: Word): Boolean;
+    procedure Assign(Source: TPersistent); override;
+    class procedure RegisterFileFormat(const AnExtension, ADescription: string;
+      AGraphicClass: TGraphicClass);
+    //class procedure RegisterClipboardFormat(AFormat: Word;
+    //  AGraphicClass: TGraphicClass);
+    class procedure UnregisterGraphicClass(AClass: TGraphicClass);
+    property Bitmap: TBitmap read GetBitmap write SetBitmap;
+    property Graphic: TGraphic read FGraphic write SetGraphic;
+    property Height: Integer read GetHeight;
+    property Width: Integer read GetWidth;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
+  end;
+
+
+  EInvalidGraphic=class(Exception);
+
 
   TCanvas = class(TPersistent)
   private
@@ -322,9 +442,9 @@ type
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
   public
-
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
-    Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect; TransparentColor :TColor);
+    Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
+        TransparentColor :TColor);
     constructor Create;
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
     destructor Destroy; override;
@@ -383,7 +503,8 @@ type
     destructor Destroy; override;
   end;
 
-  TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit, pf32bit, pfCustom);
+  TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit,
+                  pf32bit, pfCustom);
 
   TBitmap = class(TGraphic)
   private
@@ -393,30 +514,41 @@ type
     FPalette: HPALETTE;
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
+    FHeight: integer;
+    FWidth: integer;
     Procedure FreeContext;
-    Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE; const NDIB : TDIBSection; OS2Format : Boolean);
+    Procedure NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
+       const NDIB : TDIBSection; OS2Format : Boolean);
     procedure SetHandle(Value: HBITMAP);
     procedure SetMaskHandle(Value: HBITMAP);
     function GetHandle: HBITMAP; virtual;
     function GetMaskHandle: HBITMAP; virtual;
   protected
     procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
+    function GetEmpty: Boolean; override;
+    function GetHeight: Integer; override;
+    function GetWidth: Integer; override;
     procedure HandleNeeded;
     procedure MaskHandleNeeded;
     procedure PaletteNeeded;
+    procedure ReadData(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; Size: Longint); virtual;
+    procedure SetHeight(Value: Integer); override;
+    procedure SetWidth(Value: Integer); override;
+    procedure WriteData(Stream: TStream); override;
+    procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
   public
     constructor Create; override;
     destructor Destroy ; Override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
     property Handle: HBITMAP read GetHandle write SetHandle;
-    procedure LoadFromStream(Stream: TStream); {override;  // Uncomment when method is implemented in TGraphic }
+    procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
     Procedure LoadFromXPMFile(Filename : String);
     procedure Mask(ATransparentColor: TColor);
-    procedure SaveToStream(Stream: TStream); {override;   // Uncomment when method is implemented in TGraphic }
+    procedure SaveToStream(Stream: TStream); override;
     Function ReleaseHandle : HBITMAP;
     property Canvas : TCanvas read FCanvas write FCanvas;
     property MaskHandle: HBITMAP read GetMaskHandle write SetMaskHandle;
@@ -494,6 +626,7 @@ end;
 
 {$I graphicsobject.inc}
 {$I graphic.inc}
+{$I picture.inc}
 {$I sharedimage.inc}
 {$I bitmapimage.inc}
 {$I bitmap.inc}
@@ -512,6 +645,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/03/05 14:20:04  lazarus
+  added streaming to tgraphic, added tpicture
+
   Revision 1.5  2001/02/04 19:23:26  lazarus
   Goto dialog added
   Shane

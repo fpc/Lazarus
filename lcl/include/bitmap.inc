@@ -24,13 +24,14 @@ end;
 
 destructor TBitMap.Destroy;
 begin
+  FImage.Release;
   FCanvas.Free;
   inherited Destroy;
 end;
 
 procedure TBitMap.FreeContext;
 begin
-if (FCanvas <> nil) then TBitmapCanvas(FCanvas).FreeDC;
+  if (FCanvas <> nil) then TBitmapCanvas(FCanvas).FreeDC;
 end;
 
 procedure TBitMap.FreeImage;
@@ -81,7 +82,7 @@ end;
 
 procedure TBitMap.LoadFromStream(Stream: TStream);
 begin
-   ReadStream(Stream, Stream.Size - Stream.Position);
+  ReadStream(Stream, Stream.Size - Stream.Position);
 end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
@@ -94,18 +95,19 @@ end;
 
 Procedure TBitmap.LoadFromXPMFile(Filename : String);
 var
-pstr : PChar;
+  pstr : PChar;
 Begin
-HandleNeeded;
-pStr := StrAlloc(length(Filename) + 1);
-StrPCopy(pStr, Filename);
+  HandleNeeded;
+  pStr := StrAlloc(length(Filename) + 1);
+  StrPCopy(pStr, Filename);
 
-CNSendMessage(LM_LOADXPM,Self,pstr);
-StrDispose(pStr);
+  CNSendMessage(LM_LOADXPM,Self,pstr);
+  StrDispose(pStr);
 end;
 
 
-Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE; const NDIB : TDIBSection; OS2Format : Boolean);
+Procedure TBitmap.NewImage(NHandle: HBITMAP; NPallette: HPALETTE;
+   const NDIB : TDIBSection; OS2Format : Boolean);
 Begin
 
 end;
@@ -114,12 +116,62 @@ procedure TBitMap.PaletteNeeded;
 begin
 end;
 
-
-
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
+type
+  BITMAP = record
+          bmType : Longint;
+          bmWidth : Longint;
+          bmHeight : Longint;
+          bmWidthBytes : Longint;
+          bmPlanes : Word;
+          bmBitsPixel : Word;
+          bmBits : Pointer;
+       end;
+  PBITMAP = ^BITMAP;
+
+  BITMAPINFOHEADER = record
+          biSize : DWORD;
+          biWidth : Longint;
+          biHeight : Longint;
+          biPlanes : WORD;
+          biBitCount : WORD;
+          biCompression : DWORD;
+          biSizeImage : DWORD;
+          biXPelsPerMeter : Longint;
+          biYPelsPerMeter : Longint;
+          biClrUsed : DWORD;
+          biClrImportant : DWORD;
+       end;
+
+  RGBQUAD = record
+          rgbBlue : BYTE;
+          rgbGreen : BYTE;
+          rgbRed : BYTE;
+          rgbReserved : BYTE;
+       end;
+
+  BITMAPINFO = record
+          bmiHeader : BITMAPINFOHEADER;
+          bmiColors : array[0..0] of RGBQUAD;
+       end;
+
+  PBITMAPINFO = ^BITMAPINFO;
+
+  TBitsObj = array[1..1] of byte;
+  PBitsObj = ^TBitsObj;
+
+const
+  BI_RGB = 0;
+
 var
-  Bmf: TBitmapFileHeader;
+  BmpHead: TBitmapFileHeader;
   DIB: TDIBSection;
+  ReadSize: integer;
+  BmpInfo:PBitmapInfo;
+  ImgSize:longint;
+  Bits:PBitsObj;
+  InfoSize,BmpWidth,BmpHeight:integer;
+  BitsPerPixel,ColorsUsed:integer;
 begin
   FreeContext;
   if Size = 0 then
@@ -129,18 +181,64 @@ begin
   end
   else
   begin
-    Stream.ReadBuffer(Bmf, sizeof(Bmf));
-    if Bmf.bfType <> $4D42 then
-          //InvalidBitmap;
-          exit;
-    //TODO: Write ReadDIB
-    //ReadDIB(Stream, Size - sizeof(Bmf));
+    ReadSize:=Stream.Read(BmpHead, sizeof(BmpHead));
+    if (BmpHead.bfType <> $4D42) or (BmpHead.bfOffBits<ReadSize) then begin
+      raise EInOutError.Create('Invalid windows bitmap (header)');
+    end;
+    InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
+    GetMem(BmpInfo,InfoSize);
+    try
+      ReadSize:=Stream.Read(BmpInfo^,InfoSize);
+      if ReadSize<>InfoSize then
+        raise EInOutError.Create('Invalid windows bitmap (info)');
+      if BmpInfo^.bmiHeader.biSize<>sizeof(BitmapInfoHeader) then
+        raise EInOutError.Create('OS2 bitmaps are not supported yet');
+      if BmpInfo^.bmiHeader.biCompression<>bi_RGB then
+        raise EInOutError.Create('RLE compression is not supported yet');
+
+      // Let's now support only 24bit bmps! Then we can use the palette. Not yet.
+      BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
+      if BitsPerPixel<>24 then begin
+        ColorsUsed:=BmpInfo^.bmiHeader.biClrUsed;
+        if ColorsUsed=0 then ColorsUsed:=1 shl ColorsUsed;
+        // s:=SizeOf(TLogPalette)+(CoorsUsed-1)*SizeOf(TPaletteEntry);
+      end;
+      // Palette is fake now. Then it'll be better!
+      // EInOutError.Create('Only truecolor is supported yet.');
+      BmpHeight:=BmpInfo^.bmiHeader.biHeight;
+      BmpWidth:=BmpInfo^.bmiHeader.biWidth;
+      ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
+      GetMem(Bits,ImgSize);
+      try
+        ReadSize:=Stream.Read(Bits^,ImgSize);
+        if ReadSize<>InfoSize then
+          raise EInOutError.Create('Invalid windows bitmap (bits)');
+
+        // ToDo: create a bitmap handle
+
+      finally
+        FreeMem(Bits);
+      end;
+    finally
+      FreeMem(BmpInfo);
+    end;
   end;
 end;
 
+procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
+var Size: longint;
+begin
+  // ToDo
+  // this is only a workaround till we can save bitmaps
+  if WriteSize then begin
+    Size:=0;
+    Stream.Write(Size, SizeOf(Size));
+  end;
+end;
 
 procedure TBitMap.SaveToStream(Stream: TStream);
 begin
+  WriteStream(Stream, False);
 end;
 
 procedure TBitmap.SetHandle(Value: HBITMAP);
@@ -168,10 +266,54 @@ Begin
   FImage.FHandle := 0;
 end;
 
+function TBitmap.GetEmpty: boolean;
+begin
+  with FImage do
+    Result := (FHandle = 0) and (FDIBHandle = 0);
+end;
+
+function TBitmap.GetHeight: Integer;
+begin
+  Result := FHeight;
+end;
+
+function TBitmap.GetWidth: Integer;
+begin
+  Result := FWidth;
+end;
+
+procedure TBitmap.ReadData(Stream: TStream);
+var
+  Size: Longint;
+begin
+  Stream.Read(Size, SizeOf(Size));
+  ReadStream(Stream, Size);
+end;
+
+procedure TBitmap.WriteData(Stream: TStream);
+begin
+  WriteStream(Stream, True);
+end;
+
+procedure TBitmap.SetWidth(Value: Integer);
+begin
+  FWidth:=Value;
+  // ToDo
+end;
+
+procedure TBitmap.SetHeight(Value: Integer);
+begin
+  FHeight:=Value;
+  // ToDo
+end;
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/03/05 14:20:04  lazarus
+  added streaming to tgraphic, added tpicture
+
   Revision 1.2  2000/12/29 20:32:33  lazarus
   Speedbuttons can now draw disabled images.
   Shane
