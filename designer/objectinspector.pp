@@ -1045,7 +1045,7 @@ begin
   inherited MouseDown(Button,Shift,X,Y);
 
   //hide the hint
-  if FHintWindow.Visible then FHintWindow.Visible := False;
+  FHintWindow.Visible := False;
   
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin

@@ -48,7 +48,7 @@ begin
     Enabled:=true;
 end;
 
-procedure TIdleTimer.DoOnUserInput(Sender: TObject);
+procedure TIdleTimer.DoOnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   if not AutoEnabled then exit;
   // automatic start, stop or restart

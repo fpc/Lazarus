@@ -422,6 +422,8 @@ type
     property HideInterval : Integer read FHideInterval write SetHideInterval;
   end;
 
+  THintWindowClass = class of THintWindow;
+
 
   { TScreen }
 
@@ -458,28 +460,47 @@ type
 
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
+  TOnUserInputEvent = procedure(Sender: TObject; Msg: Cardinal) of object;
   
-  TApplicationStateType = (AppWaiting, AppIdleEndSent);
-  TApplicationState = set of TApplicationStateType;
+  TAppHintTimerType = (ahtNone, ahtShowHint, ahtHideHint, ahtReshowHint);
+  THintInfoAtMouse = record
+    MousePos: TPoint;
+    Control: TControl;
+    ControlHasHint: boolean;
+  end;
+
+  TApplicationFlag = (AppWaiting, AppIdleEndSent);
+  TApplicationFlags = set of TApplicationFlag;
 
   TApplication = class(TComponent)
   private
+    FFlag: TApplicationFlags;
     FHandle : THandle;
+    FHint: string;
+    FHintColor: TColor;
+    FHintControl: TControl;
+    FHintHidePause: Integer;
+    FHintPause: Integer;
+    FHintShortCuts: Boolean;
+    FHintShortPause: Integer;
+    FHintTimer: TCustomTimer;
+    FHintTimerType: TAppHintTimerType;
+    FHintWindow: THintWindow;
     FIcon: TIcon;
     FList: TList;
     FMainForm : TForm;
     FMouseControl: TControl;
     FOnException: TExceptionEvent;
+    FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
     FOnIdleHandler: TMethodList;
     FOnIdleEnd: TNotifyEvent;
     FOnIdleEndHandler: TMethodList;
-    FOnUserInput: TNotifyEvent;
+    FOnUserInput: TOnUserInputEvent;
     FOnUserInputHandler: TMethodList;
-    FState: TApplicationState;
+    FShowHint: Boolean;
     FTerminate : Boolean;
     FTitle : String;
-    procedure wndproc(var Message : TLMessage);
     procedure DoOnIdleEnd;
     function GetExename: String;
     function GetIconHandle: HICON;
@@ -487,10 +508,20 @@ type
     procedure IconChanged(Sender: TObject);
     procedure Idle;
     procedure MouseIdle(const CurrentControl: TControl);
+    procedure SetHint(const AValue: string);
+    procedure SetHintColor(const AValue: TColor);
     procedure SetIcon(AValue: TIcon);
+    procedure SetShowHint(const AValue: Boolean);
+    procedure StopHintTimer;
+    procedure WndProc(var AMessage : TLMessage);
   protected
     procedure NotifyIdleHandler;
     procedure NotifyIdleEndHandler;
+    function IsHintMsg(var Msg: TMsg): Boolean;
+    procedure DoOnMouseMove; virtual;
+    procedure ShowHintWindow(const Info: THintInfoAtMouse);
+    procedure StartHintTimer(Interval: integer; TimerType: TAppHintTimerType);
+    procedure OnHintTimer(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -501,7 +532,9 @@ type
     procedure HandleException(Sender: TObject);
     procedure HandleMessage;
     function IsWaiting: boolean;
-    procedure HintMouseMessage(Control : TControl; var Message: TLMessage);
+    procedure CancelHint;
+    procedure HideHint;
+    procedure HintMouseMessage(Control : TControl; var AMessage: TLMessage);
     property Icon: TIcon read FIcon write SetIcon;
     procedure Initialize;
     function MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
@@ -510,22 +543,30 @@ type
     procedure Run;
     procedure ShowException(E: Exception);
     procedure Terminate;
-    procedure NotifyUserInputHandler;
+    procedure NotifyUserInputHandler(Msg: Cardinal);
     procedure AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
     procedure RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
     procedure AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
     procedure RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
-    procedure AddOnUserInputHandler(AnOnUserInputHandler: TNotifyEvent);
-    procedure RemoveOnUserInputHandler(AnOnUserInputHandler: TNotifyEvent);
+    procedure AddOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
+    procedure RemoveOnUserInputHandler(AnOnUserInputHandler: TOnUserInputEvent);
   public
     property Exename: String read GetExeName;
     property Handle: THandle read FHandle;
-    property Terminated: Boolean read FTerminate;
+    property Hint: string read FHint write SetHint;
+    property HintColor: TColor read FHintColor write SetHintColor;
+    property HintHidePause: Integer read FHintHidePause write FHintHidePause;
+    property HintPause: Integer read FHintPause write FHintPause;
+    property HintShortCuts: Boolean read FHintShortCuts write FHintShortCuts;
+    property HintShortPause: Integer read FHintShortPause write FHintShortPause;
     property MainForm: TForm read FMainForm;
+    property Terminated: Boolean read FTerminate;
     property OnException: TExceptionEvent read FOnException write FOnException;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
-    property OnUserInput: TNotifyEvent read FOnUserInput write FOnUserInput;
+    property OnHint: TNotifyEvent read FOnHint write FOnHint;
+    property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
+    property ShowHint: Boolean read FShowHint write SetShowHint;
     property Title: String read GetTitle write FTitle;
   end;
   
@@ -560,6 +601,7 @@ function GetParentForm(Control:TControl): TCustomForm;
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
 function IsAccel(VK : Word; const Str : ShortString): Boolean;
+procedure NotifyApplicationUserInput(Msg: Cardinal);
 
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
@@ -569,6 +611,7 @@ var
   Application : TApplication;
   Screen : TScreen;
   ExceptionObject : TExceptObject;
+  HintWindowClass: THintWindowClass;
 
 type
   TMessageBoxFunction =
@@ -578,7 +621,9 @@ var
 
 procedure FreeInterfaceObject;
 
+
 implementation
+
 
 uses
   LResources, Math;
@@ -586,6 +631,17 @@ uses
 var
   FocusMessages: Boolean;
   FocusCount: Integer;
+
+{------------------------------------------------------------------------------
+  procedure NotifyApplicationUserInput;
+
+ ------------------------------------------------------------------------------}
+procedure NotifyApplicationUserInput(Msg: Cardinal);
+begin
+  if Application<>nil then
+    Application.NotifyUserInputHandler(Msg);
+end;
+
 
 //------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
@@ -808,10 +864,9 @@ initialization
 finalization
   writeln('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
-  Application.Free;
-  Application:= nil;
-  Screen.Free;
-  Screen:= nil;  
+  HintWindowClass:=THintWindow;
+  FreeThenNil(Application);
+  FreeThenNil(Screen);
 
 end.
 
