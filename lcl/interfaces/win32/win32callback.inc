@@ -1,4 +1,4 @@
-// included by win32int.pp
+{%MainUnit win32int.pp}
 
 {
  *****************************************************************************
@@ -941,7 +941,8 @@ Begin
         // redirect it to the combobox, not the edit control
         if GetWindowInfo(TargetWindow)^.isComboEdit then
           TargetWindow := Windows.GetParent(TargetWindow);
-        if TargetWindow <> Window then
+        // Don't send the message to the overlay window, to avoid recursion
+        if (TargetWindow <> Window) and (TargetWindow<>WindowInfo^.Overlay) then
         begin
           Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
           exit;
@@ -1527,6 +1528,9 @@ end;
 
 {
   $Log$
+  Revision 1.186  2005/02/01 15:48:03  vincents
+  fixed handling WM_MOUSEWHEEL in designer form (bug 647).
+
   Revision 1.185  2005/01/21 22:07:10  micha
   simpler overlay window
 
