@@ -938,17 +938,17 @@ begin
   Dispatch(TheMessage);
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl SendDockNotification                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl SendDockNotification
+------------------------------------------------------------------------------}
 Procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
 Begin
 //TODO: SendDockNotification
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl Invalidate                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl Invalidate
+------------------------------------------------------------------------------}
 procedure TControl.Invalidate;
 Begin
   InvalidateControl(Visible, csOpaque in ControlStyle);
@@ -2079,6 +2079,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.120  2003/03/25 10:45:40  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.119  2003/03/17 23:39:30  mattias
   added TCheckGroup
 
