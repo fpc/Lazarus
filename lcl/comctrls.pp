@@ -1467,6 +1467,7 @@ type
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
+    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     //procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
     //procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
   protected
@@ -1750,6 +1751,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/03/02 17:03:19  lazarus
+  MG: fixed TTreeView resize update
+
   Revision 1.20  2002/03/02 13:22:27  lazarus
   MG: fixed find declaration and inheriting class visibility flags
 

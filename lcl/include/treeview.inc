@@ -4224,6 +4224,12 @@ begin
   inherited;
 end;
 
+procedure TCustomTreeView.WMSize(var Msg: TLMSize);
+begin
+  Include(FStates,tvsScrollbarChanged);
+  inherited;
+end;
+
 { CustomDraw support }
 
 procedure TCustomTreeView.CanvasChanged(Sender: TObject);
