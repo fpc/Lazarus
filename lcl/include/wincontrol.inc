@@ -1628,18 +1628,18 @@ end;
 {  TWinControl UpdateControlState                                                      }
 {------------------------------------------------------------------------------}
 procedure TWinControl.UpdateControlState;
-var Control : TWinControl;
+var AWinControl : TWinControl;
 begin
-  Control:= Self;
+  AWinControl:= Self;
   { If any of the parent is not visible, exit }
-  while Control.Parent <> nil do 
+  while AWinControl.Parent <> nil do
   begin
-    Control:= Control.Parent;
-    if not Control.Showing then Exit;
+    AWinControl:= AWinControl.Parent;
+    if (not AWinControl.Showing) or (not AWinControl.HandleAllocated) then Exit;
   end;
 
-  if (Control is TCustomForm)
-  or (Control.FParentWindow <> 0) 
+  if (AWinControl is TCustomForm)
+  or (AWinControl.FParentWindow <> 0)
   then UpdateShowing;
 end;
 
@@ -2581,6 +2581,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2003/01/24 13:53:53  mattias
+  fixed TRadioGroup.Items editing in IDE
+
   Revision 1.115  2003/01/18 21:31:43  mattias
   fixed scrolling offset of TScrollingWinControl
 
