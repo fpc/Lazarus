@@ -33,10 +33,11 @@ todo: credit who created the TComponentDatalink idea (Johana ...)
 unit DBGrids;
 
 {$mode objfpc}{$H+}
+{$define EnableIsSeq}
 interface
 
 uses
-  Classes, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
+  Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
   Controls, Buttons;
 
 type
@@ -295,7 +296,7 @@ type
     FOptions: TDbGridOptions;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
-    FNumRecords: Integer;
+    //FNumRecords: Integer;
     FColumns: TDbGridColumns;
     FLayoutChangedCount: integer;
     FVisualChangeCount: Integer;
@@ -307,6 +308,8 @@ type
     FTempText : string;
     FDrawingActiveRecord: Boolean;
     FEditingColumn: Integer;
+    //FScrolling,FScrollCalc: boolean;
+    FOldPosition: Integer;
     function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     procedure OnRecordChanged(Field:TField);
@@ -346,14 +349,11 @@ type
     function FieldIndexFromGridColumn(Column: Integer): Integer;
 
     procedure UpdateGridColumnSizes;
+    procedure UpdateScrollbarRange;
     procedure BeginVisualChange;
     procedure EndVisualChange;
     procedure DoLayoutChanged;
     procedure WriteColumns(Writer: TWriter);
-    
-    {
-    procedure WMSize(var Msg: TLMSize); message LM_SIZE;
-    }
     
     procedure OnTitleFontChanged(Sender: TObject);
     procedure RestoreEditor;
@@ -404,6 +404,7 @@ type
     function  SelectCell(aCol, aRow: Integer): boolean; override;
     procedure UpdateActive;
     function  UpdateGridCounts: Integer;
+    procedure UpdateVertScrollbar(const aVisible: boolean; const aRange,aPage: Integer); override;
     procedure VisualChange; override;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     
@@ -649,8 +650,10 @@ end;
 procedure TCustomDbGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
 begin
   {$ifdef dbgdbgrid}
-  DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',IntToStr(Distance),'), Invalidating');
+  DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',IntToStr(Distance),')');
+  Debugln('Dataset.RecordCount=',IntToStr(aDataSet.RecordCount));
   {$endif}
+  UpdateScrollBarRange;
   UpdateActive;
   if Distance<>0 then Invalidate;
 end;
@@ -711,7 +714,7 @@ begin
     if dgColLines in fOptions then
       Include(OldOptions, goVertLine)
     else
-      Include(OldOptions, goVertLine);
+      Exclude(OldOptions, goVertLine);
     
     if dgColumnResize in fOptions then
       Include(OldOptions, goColSizing)
@@ -763,12 +766,9 @@ var
   BuffCount: Integer;
 begin
   if FDataLink.Active then begin
-    //if FGCache.ValidGrid then
-    BuffCount := ClientHeight div DefaultRowHeight;
+    BuffCount := GCache.ClientHeight div DefaultRowHeight;
     if dgTitles in Options then Dec(BuffCount, 1);
     FDataLink.BufferCount:= BuffCount;
-    //else
-    //  FDataLink.BufferCount:=0;
     {$ifdef dbgdbgrid}
     DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=' + IntToStr(Fdatalink.BufferCount));
     {$endif}
@@ -789,22 +789,79 @@ begin
   end;
 end;
 
+{$ifdef dbgdbgrid}
+function SBCodeToStr(Code: Integer): String;
+begin
+  Case Code of
+    SB_LINEUP : result := 'SB_LINEUP';
+    SB_LINEDOWN: result := 'SB_LINEDOWN';
+    SB_PAGEUP: result := 'SB_PAGEUP';
+    SB_PAGEDOWN: result := 'SB_PAGEDOWN';
+    SB_THUMBTRACK: result := 'SB_THUMBTRACK';
+    SB_THUMBPOSITION: result := 'SB_THUMBPOSITION';
+    SB_ENDSCROLL: result := 'SB_SCROLLEND';
+    SB_TOP: result := 'SB_TOP';
+    SB_BOTTOM: result := 'SB_BOTTOM';
+    else result :=IntToStr(Code)+ ' -> ?';
+  end;
+end;
+{$endif}
+
 procedure TCustomDbGrid.WMVScroll(var Message: TLMVScroll);
 var
-  Num: Integer;
-  C, TL: Integer;
+  IsSeq, IsFirst, IsLast: boolean;
+  aPos: Integer;
+  DeltaRec: integer;
 begin
-  inherited;
-  if not GCache.ValidGrid then Exit;
+  if not FDatalink.Active then exit;
+  
   {$ifdef dbgdbgrid}
-  DebugLn('VSCROLL: Code=',dbgs(Message.ScrollCode),' Position=', dbgs(Message.Pos));
+  DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
+          ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
   {$endif}
-  exit;
-  C:=Message.Pos+GCache.Fixedheight;
-  Num:=(FNumRecords + FixedRows) * DefaultRowHeight;
-  TL:= Num div C;
-  GCache.TLRowOff:= C - TL*DefaultRowHeight;
-  DebugLn('---- Offset=',dbgs(C), ' ScrollTo=> TL=',dbgs(TL), ' TLRowOFf=', dbgs(GCache.TLRowOff));
+
+  IsSeq := FDatalink.DataSet.IsSequenced {$ifndef EnableIsSeq} and false {$endif};
+  if IsSeq then begin
+    aPos := Message.Pos;
+    FDatalink.DataSet.RecNo := aPos;
+  end else begin
+    IsFirst := false;
+    IsLast := false;
+    case Message.ScrollCode of
+      SB_PAGEUP: DeltaRec := -VisibleRowCount;
+      SB_LINEUP: DeltaRec := -1;
+      SB_LINEDOWN: DeltaRec := 1;
+      SB_PAGEDOWN: DeltaRec := VisibleRowCount;
+      SB_THUMBPOSITION:
+        begin
+          if Message.Pos=4 then IsLast := True
+          else if Message.Pos=0 then IsFirst := True
+          else begin
+            DeltaRec := Message.Pos - FOldPosition;
+            if DeltaRec=0 then exit; // no movement at all
+            if DeltaRec<-1 then DeltaRec := -VisibleRowCount
+            else if DeltaRec>1 then DeltaRec := VisibleRowCount;
+          end;
+        end;
+      else
+        exit; // SB_THUMPOSITION, SB_ENDSCROLL
+    end;
+    if IsFirst then FDataLink.DataSet.First
+    else if IsLast then FDatalink.DataSet.Last
+    else if (DeltaRec<>0) then FDatalink.Moveby(DeltaRec);
+
+    if FDatalink.Dataset.BOF then aPos := 0
+    else if FDataLink.DataSet.EOF then aPos := 4
+    else aPos := 2;
+  end;
+  
+  ScrollBarPosition(SB_VERT, aPos);
+  FOldPosition:=aPos;
+  
+  
+  {$ifdef dbgdbgrid}
+  DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
+  {$endif}
 end;
 
 
@@ -972,6 +1029,48 @@ begin
     ColWidths[i] := GetColumnWidth(i);
 end;
 
+procedure TCustomDbGrid.UpdateScrollbarRange;
+var
+  aRange, aPage: Integer;
+  aPos: Integer;
+  isSeq: boolean;
+  ScrollInfo: TScrollInfo;
+begin
+  if FDatalink.Active then begin
+    IsSeq := FDatalink.dataset.IsSequenced{$ifndef EnableIsSeq}and false{$endif};
+    if IsSeq then begin
+      aRange := FDatalink.DataSet.RecordCount + 2;
+      aPage := VisibleRowCount;
+      if aPage<1 then aPage := 1;
+      aPos := FDataLink.DataSet.RecNo;
+    end else begin
+      aRange := 6;
+      aPage := 2;
+      if FDatalink.EOF then aPos := 5 else
+      if FDatalink.BOF then aPos := 0
+      else aPos := 2;
+    end;
+  end else begin
+    aRange := 0;
+    aPage := 0;
+    aPos := 0;
+  end;
+
+  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  ScrollInfo.fMask := SIF_ALL or SIF_UPDATEPOLICY;
+  //ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS;
+  ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
+  ScrollInfo.nMin := 0;
+  ScrollInfo.nMax := aRange;
+  ScrollInfo.nPos := aPos;
+  ScrollInfo.nPage := aPage;
+  SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
+  FOldPosition := aPos;
+  {$ifdef dbgdbgrid}
+  DebugLn('UpdateScrollBarRange: aRange=' + IntToStr(aRange)+
+    ' aPage=' + IntToStr(aPage) + ' aPos='+IntToStr(aPos));
+  {$endif}
+end;
 procedure TCustomDbGrid.BeginVisualChange;
 begin
   inc(FVisualChangeCount);
@@ -985,31 +1084,12 @@ begin
 end;
 
 procedure TCustomDbGrid.doLayoutChanged;
-var
-  Count: Integer;
-  NumRows: Integer;
 begin
   if csDestroying in ComponentState then
     exit;
-  if not HandleAllocated then
-    exit;
-  Count := UpdateGridCounts;
-  if Count=0 then
-    Clear
-  else begin
-    if not FDatalink.Active or not FDatalink.Dataset.Active then
-      NumRows := RowCount
-    else
-      NumRows := FDataLink.DataSet.RecordCount + FixedRows;
-    {
-    if FDataLink.Active then
-      NumRows := FDataLink.DataSet.RecordCount + FixedRows
-    else
-      NumRows := RowCount;
-    }
-    ScrollBarRange(SB_HORZ, GridWidth + 2);
-    ScrollBarRange(SB_VERT, NumRows * DefaultRowHeight + 2);
-  end;
+  if UpdateGridCounts=0 then
+    Clear;
+  UpdateScrollBarRange;
 end;
 
 procedure TCustomDbGrid.WriteColumns(Writer: TWriter);
@@ -1019,15 +1099,7 @@ begin
   else
     Writer.WriteCollection(FColumns);
 end;
-{
-procedure TCustomDbGrid.WMSize(var Msg: TLMSize);
-begin
-  BeginVisualChange;
-  inherited WMSize(Msg);
-  LayoutChanged;
-  EndVisualChange;
-end;
-}
+
 procedure TCustomDbGrid.OnTitleFontChanged(Sender: TObject);
 begin
   if FColumns.Enabled then
@@ -1044,6 +1116,7 @@ begin
   end;
 end;
 
+(*
 // Workaround: dataset is not EOF after Append!
 type
   TMyDs=class(TDataSet)
@@ -1059,17 +1132,20 @@ begin
   Result := GetBookmarkFlag(Buffer);
 end;
 {$ENDIF}
-
+*)
 function TCustomDbGrid.IsEOF: boolean;
 begin
   with FDatalink do
     result :=
-      Active and
+      Active and DataSet.EOF;
+(*
+
 {$IFNDEF VER1_0}
       (TMyDS(Dataset).GetBookmarkFlag(DataSet.ActiveBuffer) = bfEOF);
 {$ELSE}
       (TMyDS(Dataset).DoGetBookmarkFlag(DataSet.ActiveBuffer) = bfEOF);
 {$ENDIF}
+*)
 end;
 
 function TCustomDbGrid.GetColumnTitle(Column: Integer): string;
@@ -1633,6 +1709,11 @@ end;
 
 function TCustomDbGrid.GridCanModify: boolean;
 begin
+  {$ifdef dbgdbgrid}
+    DebugLn(' ReadOnly=', BoolToStr(ReadOnly), ' dgEditing=', BoolToStr(dgEditing in Options));
+    DebugLn(' FDatalink.ReadOnly=', BoolToStr(FDatalink.ReadOnly), ' FDatalink.ACtive=', BooltoStr(FDatalink.ACtive));
+    DebugLn(' ds.CanModify=',BoolToStr(Fdatalink.Dataset.CanModify));
+  {$endif}
   result := not ReadOnly and (dgEditing in Options) and not FDataLink.ReadOnly
     and FDataLink.Active and FDatalink.DataSet.CanModify;
 end;
@@ -1746,7 +1827,10 @@ begin
     if not Active then exit;
     //if not GCache.ValidGrid then Exit;
     //if DataSource=nil then Exit;
-    DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(ActiveRecord), ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
+    {$IfDef dbgdbgrid}
+    DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(ActiveRecord),
+            ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
+    {$endif}
     Row:= FixedRows + ActiveRecord;
   end;
   //Invalidate;
@@ -1781,10 +1865,16 @@ begin
   end;
 end;
 
+procedure TCustomDbGrid.UpdateVertScrollbar(const aVisible: boolean;
+  const aRange, aPage: Integer);
+begin
+end;
+
 procedure TCustomDbGrid.VisualChange;
 begin
-  if FVisualChangeCount=0 then
+  if FVisualChangeCount=0 then begin
     inherited VisualChange;
+  end;
 end;
 
 constructor TCustomDbGrid.Create(AOwner: TComponent);
@@ -1813,7 +1903,8 @@ begin
     
   inherited Options :=
     [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect,
-     goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected ];
+     goSmoothScroll, goColMoving, goTabs, goEditing, goDrawFocusSelected,
+     goColSizing ];
 
   
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
@@ -2703,6 +2794,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2004/12/21 22:49:29  mattias
+  implemented scrollbar codes for gtk intf  from Jesus
+
   Revision 1.21  2004/10/12 08:23:20  mattias
   fixed compiler options interface double variables
 

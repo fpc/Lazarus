@@ -7889,15 +7889,15 @@ function TGtkWidgetSet.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
 
   procedure SetRangeUpdatePolicy(Range: PGtkRange);
+  var
+    UpdPolicy: TGTKUpdateType;
   begin
     case ScrollInfo.nTrackPos of
-      SB_POLICY_CONTINUOUS:
-        gtk_range_set_update_policy(Range, GTK_UPDATE_CONTINUOUS);
-      SB_POLICY_DISCONTINUOUS:
-        gtk_range_set_update_policy(Range, GTK_UPDATE_DISCONTINUOUS);
-      SB_POLICY_DELAYED:
-        gtk_range_set_update_policy(Range, GTK_UPDATE_DELAYED);
+      SB_POLICY_DISCONTINUOUS:	UpdPolicy := GTK_UPDATE_DISCONTINUOUS;
+      SB_POLICY_DELAYED:	UpdPolicy := GTK_UPDATE_DELAYED;
+      else 			UpdPolicy := GTK_UPDATE_CONTINUOUS;
     end;
+    gtk_range_set_update_policy(Range, UpdPolicy);
   end;
   procedure SetScrolledWindowUpdatePolicy(ScrolledWindow:PGTKScrolledWindow);
   var
@@ -8810,6 +8810,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.379  2004/12/21 22:49:29  mattias
+  implemented scrollbar codes for gtk intf  from Jesus
+
   Revision 1.378  2004/12/16 19:03:57  mattias
   applied patch for smooth scrolling parameters  from Jesus
 
