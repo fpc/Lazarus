@@ -2599,7 +2599,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TFont.FColor">
+<element name="TFont.FHandle">
 <short></short>
 <descr>
 </descr>
@@ -2608,7 +2608,25 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TFont.FFontData">
+<element name="TFont.FPitch">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFont.FStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFont.FCharSet">
 <short></short>
 <descr>
 </descr>
@@ -2618,15 +2636,6 @@
 
 <!-- variable Visibility: private -->
 <element name="TFont.FPixelsPerInch">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFont.FFontName">
 <short></short>
 <descr>
 </descr>
@@ -2654,6 +2663,42 @@
 
 <!-- variable Visibility: private -->
 <element name="TFont.FFontHandleCached">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFont.FColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFont.FFontName">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFont.FSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TFont.FHeight">
 <short></short>
 <descr>
 </descr>
@@ -2717,6 +2762,38 @@
 
 <!-- argument Visibility: default -->
 <element name="TFont.SetData.FontData">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFont.SetName">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFont.SetName.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TFont.SetSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TFont.SetSize.AValue">
 <short></short>
 </element>
 
@@ -2908,22 +2985,6 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TFont.SetName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFont.SetName.AValue">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
 <element name="TFont.SetPitch">
 <short></short>
 <descr>
@@ -2936,22 +2997,6 @@
 
 <!-- argument Visibility: default -->
 <element name="TFont.SetPitch.Value">
-<short></short>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TFont.SetSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TFont.SetSize.value">
 <short></short>
 </element>
 
@@ -3264,7 +3309,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPen.FPenData">
+<element name="TPen.FHandle">
 <short></short>
 <descr>
 </descr>
@@ -3273,7 +3318,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TPen.FMode">
+<element name="TPen.FColor">
 <short></short>
 <descr>
 </descr>
@@ -3283,6 +3328,33 @@
 
 <!-- variable Visibility: private -->
 <element name="TPen.FPenHandleCached">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPen.FWidth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPen.FStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPen.FMode">
 <short></short>
 <descr>
 </descr>
@@ -3575,7 +3647,34 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TBrush.FBrushData">
+<element name="TBrush.FHandle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TBrush.FColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TBrush.FBitmap">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TBrush.FStyle">
 <short></short>
 <descr>
 </descr>
@@ -10307,6 +10406,27 @@
 
 <!-- argument Visibility: default -->
 <element name="ClearXLFDStyle.LongFontName">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="XLFDHeightIsSet">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="XLFDHeightIsSet.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="XLFDHeightIsSet.LongFontName">
 <short></short>
 </element>
 

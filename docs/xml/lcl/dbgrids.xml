@@ -23,6 +23,15 @@
 </element>
 
 <!-- unresolved type reference Visibility: default -->
+<element name="LCLIntf">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- unresolved type reference Visibility: default -->
 <element name="LCLProc">
 <short></short>
 <descr>
@@ -1459,6 +1468,33 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TColumn.FMinSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TColumn.FMaxSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TColumn.FSizePriority">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TColumn.FontChanged">
 <short></short>
@@ -1584,6 +1620,54 @@
 
 <!-- function result Visibility: default -->
 <element name="TColumn.GetLayout.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.GetMaxSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.GetMaxSize.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.GetMinSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.GetMinSize.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.GetSizePriority">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.GetSizePriority.Result">
 <short></short>
 </element>
 
@@ -1716,6 +1800,38 @@
 </element>
 
 <!-- function Visibility: private -->
+<element name="TColumn.IsMinSizeStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.IsMinSizeStored.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.IsMaxSizeStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.IsMaxSizeStored.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
 <element name="TColumn.IsReadOnlyStored">
 <short></short>
 <descr>
@@ -1728,6 +1844,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TColumn.IsReadOnlyStored.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.IsSizePriorityStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.IsSizePriorityStored.Result">
 <short></short>
 </element>
 
@@ -1892,6 +2024,38 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TColumn.SetMaxSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TColumn.SetMaxSize.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TColumn.SetMinSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TColumn.SetMinSize.Avalue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TColumn.SetPickList">
 <short></short>
 <descr>
@@ -1920,6 +2084,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TColumn.SetReadOnly.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TColumn.SetSizePriority">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TColumn.SetSizePriority.AValue">
 <short></short>
 </element>
 
@@ -2016,6 +2196,54 @@
 
 <!-- function result Visibility: default -->
 <element name="TColumn.GetDefaultWidth.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.GetDefaultMinSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.GetDefaultMinSize.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.GetDefaultMaxSize">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.GetDefaultMaxSize.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TColumn.GetDefaultSizePriority">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TColumn.GetDefaultSizePriority.Result">
 <short></short>
 </element>
 
@@ -2227,6 +2455,24 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TColumn.MinSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TColumn.MaxSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TColumn.PickList">
 <short></short>
 <descr>
@@ -2237,6 +2483,15 @@
 
 <!-- property Visibility: published -->
 <element name="TColumn.ReadOnly">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TColumn.SizePriority">
 <short></short>
 <descr>
 </descr>
@@ -2665,15 +2920,6 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TCustomDbGrid.FNumRecords">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
 <element name="TCustomDbGrid.FColumns">
 <short></short>
 <descr>
@@ -2772,6 +3018,15 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TCustomDbGrid.FOldPosition">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: private -->
 <element name="TCustomDbGrid.GetCurrentField">
 <short></short>
@@ -2801,6 +3056,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomDbGrid.GetDataSource.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomDbGrid.GetRecordCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomDbGrid.GetRecordCount.Result">
 <short></short>
 </element>
 
@@ -3403,6 +3674,17 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomDbGrid.UpdateScrollbarRange">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomDbGrid.BeginVisualChange">
 <short></short>
 <descr>
@@ -3933,6 +4215,37 @@
 </seealso>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TCustomDbGrid.GetAutoFillColumnInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.GetAutoFillColumnInfo.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.GetAutoFillColumnInfo.aMin">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.GetAutoFillColumnInfo.aMax">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.GetAutoFillColumnInfo.aPriority">
+<short></short>
+</element>
+
 <!-- function Visibility: protected -->
 <element name="TCustomDbGrid.GetEditMask">
 <short></short>
@@ -4282,6 +4595,32 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomDbGrid.UpdateVertScrollbar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.UpdateVertScrollbar.aVisible">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.UpdateVertScrollbar.aRange">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomDbGrid.UpdateVertScrollbar.aPage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomDbGrid.VisualChange">
 <short></short>
 <descr>
@@ -4532,6 +4871,15 @@
 
 <!-- property Visibility: published -->
 <element name="TdbGrid.AutoAdvance">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TdbGrid.AutoFillColumns">
 <short></short>
 <descr>
 </descr>

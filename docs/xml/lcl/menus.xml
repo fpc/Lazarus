@@ -1832,6 +1832,27 @@
 </element>
 
 <!-- function Visibility: public -->
+<element name="TMenuItem.VisibleIndexOf">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMenuItem.VisibleIndexOf.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TMenuItem.VisibleIndexOf.Item">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
 <element name="TMenuItem.IsCheckItem">
 <short></short>
 <descr>
@@ -2076,6 +2097,22 @@
 </descr>
 <seealso>
 </seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TMenuItem.MenuVisibleIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TMenuItem.MenuVisibleIndex.Result">
+<short></short>
 </element>
 
 <!-- property Visibility: published -->

@@ -369,6 +369,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TBarChart.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TBarChart.BevelInner">
 <short></short>
 <descr>

@@ -271,7 +271,7 @@
 </element>
 
 <!-- object Visibility: default -->
-<element name="TScrollBar">
+<element name="TCustomScrollBar">
 <short></short>
 <descr>
 </descr>
@@ -282,7 +282,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FKind">
+<element name="TCustomScrollBar.FKind">
 <short></short>
 <descr>
 </descr>
@@ -291,7 +291,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FPosition">
+<element name="TCustomScrollBar.FPosition">
 <short></short>
 <descr>
 </descr>
@@ -300,7 +300,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FMin">
+<element name="TCustomScrollBar.FMin">
 <short></short>
 <descr>
 </descr>
@@ -309,7 +309,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FMax">
+<element name="TCustomScrollBar.FMax">
 <short></short>
 <descr>
 </descr>
@@ -318,7 +318,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FPageSize">
+<element name="TCustomScrollBar.FPageSize">
 <short></short>
 <descr>
 </descr>
@@ -327,7 +327,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FRTLFactor">
+<element name="TCustomScrollBar.FRTLFactor">
 <short></short>
 <descr>
 </descr>
@@ -336,7 +336,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FSmallChange">
+<element name="TCustomScrollBar.FSmallChange">
 <short></short>
 <descr>
 </descr>
@@ -345,7 +345,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FLargeChange">
+<element name="TCustomScrollBar.FLargeChange">
 <short></short>
 <descr>
 </descr>
@@ -354,7 +354,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FOnChange">
+<element name="TCustomScrollBar.FOnChange">
 <short></short>
 <descr>
 </descr>
@@ -363,7 +363,7 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TScrollBar.FOnScroll">
+<element name="TCustomScrollBar.FOnScroll">
 <short></short>
 <descr>
 </descr>
@@ -372,7 +372,7 @@
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.DoScroll">
+<element name="TCustomScrollBar.DoScroll">
 <short></short>
 <descr>
 </descr>
@@ -383,12 +383,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.DoScroll.Message">
+<element name="TCustomScrollBar.DoScroll.Message">
 <short></short>
 </element>
 
 <!-- function Visibility: private -->
-<element name="TScrollBar.NotRightToLeft">
+<element name="TCustomScrollBar.NotRightToLeft">
 <short></short>
 <descr>
 </descr>
@@ -399,12 +399,12 @@
 </element>
 
 <!-- function result Visibility: default -->
-<element name="TScrollBar.NotRightToLeft.Result">
+<element name="TCustomScrollBar.NotRightToLeft.Result">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.SetKind">
+<element name="TCustomScrollBar.SetKind">
 <short></short>
 <descr>
 </descr>
@@ -415,12 +415,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetKind.Value">
+<element name="TCustomScrollBar.SetKind.Value">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.SetMax">
+<element name="TCustomScrollBar.SetMax">
 <short></short>
 <descr>
 </descr>
@@ -431,12 +431,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetMax.Value">
+<element name="TCustomScrollBar.SetMax.Value">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.SetMin">
+<element name="TCustomScrollBar.SetMin">
 <short></short>
 <descr>
 </descr>
@@ -447,12 +447,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetMin.Value">
+<element name="TCustomScrollBar.SetMin.Value">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.SetPosition">
+<element name="TCustomScrollBar.SetPosition">
 <short></short>
 <descr>
 </descr>
@@ -463,12 +463,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetPosition.Value">
+<element name="TCustomScrollBar.SetPosition.Value">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.SetPageSize">
+<element name="TCustomScrollBar.SetPageSize">
 <short></short>
 <descr>
 </descr>
@@ -479,12 +479,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetPageSize.Value">
+<element name="TCustomScrollBar.SetPageSize.Value">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.CNHScroll">
+<element name="TCustomScrollBar.CNHScroll">
 <short></short>
 <descr>
 </descr>
@@ -495,12 +495,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.CNHScroll.Message">
+<element name="TCustomScrollBar.CNHScroll.Message">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.CNVScroll">
+<element name="TCustomScrollBar.CNVScroll">
 <short></short>
 <descr>
 </descr>
@@ -511,12 +511,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.CNVScroll.Message">
+<element name="TCustomScrollBar.CNVScroll.Message">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.CNCtlColorScrollBar">
+<element name="TCustomScrollBar.CNCtlColorScrollBar">
 <short></short>
 <descr>
 </descr>
@@ -527,12 +527,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.CNCtlColorScrollBar.Message">
+<element name="TCustomScrollBar.CNCtlColorScrollBar.Message">
 <short></short>
 </element>
 
 <!-- procedure Visibility: private -->
-<element name="TScrollBar.WMEraseBkgnd">
+<element name="TCustomScrollBar.WMEraseBkgnd">
 <short></short>
 <descr>
 </descr>
@@ -543,12 +543,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.WMEraseBkgnd.Message">
+<element name="TCustomScrollBar.WMEraseBkgnd.Message">
 <short></short>
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TScrollBar.CreateParams">
+<element name="TCustomScrollBar.CreateParams">
 <short></short>
 <descr>
 </descr>
@@ -559,23 +559,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.CreateParams.Params">
+<element name="TCustomScrollBar.CreateParams.Params">
 <short></short>
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TScrollBar.CreateWnd">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: protected -->
-<element name="TScrollBar.Change">
+<element name="TCustomScrollBar.CreateWnd">
 <short></short>
 <descr>
 </descr>
@@ -586,7 +575,18 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TScrollBar.Scroll">
+<element name="TCustomScrollBar.Change">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomScrollBar.Scroll">
 <short></short>
 <descr>
 </descr>
@@ -597,17 +597,17 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.Scroll.ScrollCode">
+<element name="TCustomScrollBar.Scroll.ScrollCode">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.Scroll.ScrollPos">
+<element name="TCustomScrollBar.Scroll.ScrollPos">
 <short></short>
 </element>
 
 <!-- constructor Visibility: public -->
-<element name="TScrollBar.Create">
+<element name="TCustomScrollBar.Create">
 <short></short>
 <descr>
 </descr>
@@ -618,12 +618,12 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.Create.AOwner">
+<element name="TCustomScrollBar.Create.AOwner">
 <short></short>
 </element>
 
 <!-- procedure Visibility: public -->
-<element name="TScrollBar.SetParams">
+<element name="TCustomScrollBar.SetParams">
 <short></short>
 <descr>
 </descr>
@@ -634,18 +634,119 @@
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetParams.APosition">
+<element name="TCustomScrollBar.SetParams.APosition">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetParams.AMin">
+<element name="TCustomScrollBar.SetParams.AMin">
 <short></short>
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TScrollBar.SetParams.AMax">
+<element name="TCustomScrollBar.SetParams.AMax">
 <short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.Kind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.LargeChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.Max">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.Min">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.PageSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.Position">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.SmallChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.TabStop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.OnChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomScrollBar.OnScroll">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
+<element name="TScrollBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- property Visibility: published -->
@@ -659,6 +760,15 @@
 
 <!-- property Visibility: published -->
 <element name="TScrollBar.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TScrollBar.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -1018,7 +1128,25 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TGroupBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TGroupBox.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TGroupBox.ChildSizing">
 <short></short>
 <descr>
 </descr>
@@ -2268,25 +2396,7 @@
 </element>
 
 <!-- property Visibility: protected -->
-<element name="TCustomComboBox.Items">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
 <element name="TCustomComboBox.ItemHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: protected -->
-<element name="TCustomComboBox.ItemIndex">
 <short></short>
 <descr>
 </descr>
@@ -2581,6 +2691,24 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TCustomComboBox.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBox.ItemIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TCustomComboBox.SelLength">
 <short></short>
 <descr>
@@ -2609,6 +2737,15 @@
 
 <!-- property Visibility: public -->
 <element name="TCustomComboBox.Style">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBox.Text">
 <short></short>
 <descr>
 </descr>
@@ -2674,6 +2811,15 @@
 
 <!-- property Visibility: published -->
 <element name="TComboBox.AutoDropDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBox.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -4317,6 +4463,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListBox.BorderStyle">
 <short></short>
 <descr>
@@ -5795,6 +5950,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TEdit.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TEdit.Constraints">
 <short></short>
 <descr>
@@ -6068,6 +6232,15 @@
 
 <!-- property Visibility: published -->
 <element name="TMemo.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TMemo.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -6616,6 +6789,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TLabel.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TLabel.Caption">
 <short></short>
 <descr>
@@ -6933,6 +7115,17 @@
 <!-- function result Visibility: default -->
 <element name="TButtonControl.ColorIsStored.Result">
 <short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TButtonControl.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- property Visibility: protected -->
@@ -7332,6 +7525,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TCheckBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TCheckBox.Caption">
 <short></short>
 <descr>
@@ -7630,6 +7832,15 @@
 
 <!-- property Visibility: published -->
 <element name="TToggleBox.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToggleBox.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -7954,6 +8165,15 @@
 
 <!-- property Visibility: published -->
 <element name="TRadioButton.AutoSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioButton.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -8622,6 +8842,15 @@
 
 <!-- property Visibility: published -->
 <element name="TStaticText.AutoSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TStaticText.BorderSpacing">
 <short></short>
 <descr>
 </descr>

@@ -31,6 +31,15 @@
 </seealso>
 </element>
 
+<!-- unresolved type reference Visibility: default -->
+<element name="LCLStrConsts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <!-- function Visibility: default -->
 <element name="CompareFilenames">
 <short></short>
@@ -415,6 +424,27 @@
 
 <!-- function result Visibility: default -->
 <element name="ProgramDirectory.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: default -->
+<element name="DirectoryIsWritable">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="DirectoryIsWritable.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="DirectoryIsWritable.DirectoryName">
 <short></short>
 </element>
 

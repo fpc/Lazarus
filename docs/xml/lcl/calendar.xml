@@ -562,6 +562,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TCalendar.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TCalendar.Constraints">
 <short></short>
 <descr>

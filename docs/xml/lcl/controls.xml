@@ -1120,15 +1120,6 @@
 </seealso>
 </element>
 
-<!-- alias type Visibility: default -->
-<element name="TTranslateString">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
 <!-- object Visibility: default -->
 <element name="TWinControl">
 <short></short>
@@ -1379,6 +1370,57 @@
 
 <!-- set type Visibility: default -->
 <element name="TAnchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TAnchorSideReference">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAnchorSideReference.asrTop">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAnchorSideReference.asrBottom">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAnchorSideReference.asrCenter">
+<short></short>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="asrLeft">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: default -->
+<element name="asrRight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- "type" alias type Visibility: default -->
+<element name="TTranslateString">
 <short></short>
 <descr>
 </descr>
@@ -4964,6 +5006,142 @@
 </element>
 
 <!-- object Visibility: default -->
+<element name="TAnchorSide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TAnchorSide.FControl">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TAnchorSide.FKind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TAnchorSide.FOwner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TAnchorSide.FSide">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TAnchorSide.SetControl">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAnchorSide.SetControl.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TAnchorSide.SetSide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAnchorSide.SetSide.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TAnchorSide.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAnchorSide.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TAnchorSide.Create.TheKind">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TAnchorSide.Owner">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TAnchorSide.Kind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAnchorSide.Control">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TAnchorSide.Side">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- object Visibility: default -->
 <element name="TControlActionLink">
 <short></short>
 <descr>
@@ -5403,6 +5581,15 @@
 
 <!-- variable Visibility: private -->
 <element name="TControl.FAnchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TControl.FAnchorSides">
 <short></short>
 <descr>
 </descr>
@@ -6138,6 +6325,27 @@
 </element>
 
 <!-- function Visibility: private -->
+<element name="TControl.GetAnchorSide">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.GetAnchorSide.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.GetAnchorSide.Kind">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
 <element name="TControl.GetBoundsRect">
 <short></short>
 <descr>
@@ -6294,6 +6502,22 @@
 
 <!-- function result Visibility: default -->
 <element name="TControl.GetUndockWidth.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TControl.IsAnchorsStored">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TControl.IsAnchorsStored.Result">
 <short></short>
 </element>
 
@@ -7022,6 +7246,22 @@
 </errors>
 <seealso>
 </seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TControl.AnchorSideChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.AnchorSideChanged.TheAnchorSide">
+<short></short>
 </element>
 
 <!-- function Visibility: protected -->
@@ -10397,15 +10637,6 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.Anchors">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
 <element name="TControl.Action">
 <short></short>
 <descr>
@@ -10421,6 +10652,29 @@
 </descr>
 <seealso>
 </seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.AnchorSide">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TControl.AnchorSide.Kind">
+<short></short>
 </element>
 
 <!-- property Visibility: public -->
@@ -10460,6 +10714,15 @@
 </element>
 
 <!-- property Visibility: public -->
+<element name="TControl.ClientHeight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
 <element name="TControl.ClientOrigin">
 <short></short>
 <descr>
@@ -10478,15 +10741,6 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.ClientHeight">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
 <element name="TControl.ClientWidth">
 <short></short>
 <descr>
@@ -10496,7 +10750,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.ControlOrigin">
+<element name="TControl.Color">
 <short></short>
 <descr>
 </descr>
@@ -10506,6 +10760,15 @@
 
 <!-- property Visibility: public -->
 <element name="TControl.Constraints">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.ControlOrigin">
 <short></short>
 <descr>
 </descr>
@@ -10524,15 +10787,6 @@
 
 <!-- property Visibility: public -->
 <element name="TControl.ControlStyle">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TControl.Color">
 <short></short>
 <descr>
 </descr>
@@ -10568,7 +10822,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.OnResize">
+<element name="TControl.MouseEntered">
 <short></short>
 <descr>
 </descr>
@@ -10587,6 +10841,15 @@
 
 <!-- property Visibility: public -->
 <element name="TControl.OnClick">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControl.OnResize">
 <short></short>
 <descr>
 </descr>
@@ -10631,16 +10894,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.Visible">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="TControl.WindowProc">
+<element name="TControl.TabOrder">
 <short></short>
 <descr>
 </descr>
@@ -10658,7 +10912,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.TabOrder">
+<element name="TControl.Visible">
 <short></short>
 <descr>
 </descr>
@@ -10667,7 +10921,7 @@
 </element>
 
 <!-- property Visibility: public -->
-<element name="TControl.MouseEntered">
+<element name="TControl.WindowProc">
 <short></short>
 <descr>
 </descr>
@@ -11231,6 +11485,42 @@
 </seealso>
 </element>
 
+<!-- property Visibility: public -->
+<element name="TControlChildSizing.EnlargeHorizontal">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlChildSizing.EnlargeVertical">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlChildSizing.ShrinkHorizontal">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TControlChildSizing.ShrinkVertical">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <!-- property Visibility: published -->
 <element name="TControlChildSizing.LeftRightSpacing">
 <short></short>
@@ -11260,42 +11550,6 @@
 
 <!-- property Visibility: published -->
 <element name="TControlChildSizing.VerticalSpacing">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TControlChildSizing.EnlargeHorizontal">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TControlChildSizing.EnlargeVertical">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TControlChildSizing.ShrinkHorizontal">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TControlChildSizing.ShrinkVertical">
 <short></short>
 <descr>
 </descr>

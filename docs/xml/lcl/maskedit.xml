@@ -1417,6 +1417,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TMaskEdit.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TMaskEdit.CharCase">
 <short></short>
 <descr>

@@ -284,6 +284,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TPairSplitterSide.ChildSizing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TPairSplitterSide.ClientWidth">
 <short></short>
 <descr>
@@ -702,6 +711,15 @@
 
 <!-- property Visibility: published -->
 <element name="TPairSplitter.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPairSplitter.BorderSpacing">
 <short></short>
 <descr>
 </descr>

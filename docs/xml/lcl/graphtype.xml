@@ -101,6 +101,11 @@
 <short></short>
 </element>
 
+<!-- enumeration value Visibility: default -->
+<element name="TGraphicsBevelCut.bvSpace">
+<short></short>
+</element>
+
 <!-- enumeration type Visibility: default -->
 <element name="TRawImageColorFormat">
 <short></short>

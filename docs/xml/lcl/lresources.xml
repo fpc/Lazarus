@@ -164,6 +164,27 @@
 <short></short>
 </element>
 
+<!-- function Visibility: private -->
+<element name="TLResourceList.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TLResourceList.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLResourceList.GetItems.Index">
+<short></short>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TLResourceList.Sort">
 <short></short>
@@ -242,6 +263,28 @@
 <short></short>
 </element>
 
+<!-- constructor Visibility: public -->
+<element name="TLResourceList.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TLResourceList.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: public -->
 <element name="TLResourceList.Add">
 <short></short>
@@ -315,8 +358,8 @@
 <short></short>
 </element>
 
-<!-- constructor Visibility: public -->
-<element name="TLResourceList.Create">
+<!-- function Visibility: public -->
+<element name="TLResourceList.Count">
 <short></short>
 <descr>
 </descr>
@@ -326,15 +369,23 @@
 </seealso>
 </element>
 
-<!-- destructor Visibility: public -->
-<element name="TLResourceList.Destroy">
+<!-- function result Visibility: default -->
+<element name="TLResourceList.Count.Result">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TLResourceList.Items">
 <short></short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TLResourceList.Items.Index">
+<short></short>
 </element>
 
 <!-- object Visibility: default -->

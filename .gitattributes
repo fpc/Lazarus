@@ -405,6 +405,7 @@ docs/xml/lcl/customtimer.xml svneol=native#text/xml
 docs/xml/lcl/dbactns.xml svneol=native#text/xml
 docs/xml/lcl/dbctrls.xml svneol=native#text/xml
 docs/xml/lcl/dbgrids.xml svneol=native#text/xml
+docs/xml/lcl/defaulttranslator.xml svneol=native#text/xml
 docs/xml/lcl/dialogs.xml svneol=native#text/xml
 docs/xml/lcl/dirsel.xml svneol=native#text/xml
 docs/xml/lcl/dynamicarray.xml svneol=native#text/xml

@@ -374,6 +374,24 @@
 </element>
 
 <!-- resource string Visibility: default -->
+<element name="rsgtkFilter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsgtkHistory">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
 <element name="rsDefaultFileInfoValue">
 <short></short>
 <descr>
@@ -951,6 +969,24 @@
 
 <!-- resource string Visibility: default -->
 <element name="rsPickDate">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- resource string Visibility: default -->
+<element name="rsModified">
 <short></short>
 <descr>
 </descr>

@@ -1487,7 +1487,25 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TScrollBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TScrollBox.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TScrollBox.ChildSizing">
 <short></short>
 <descr>
 </descr>
@@ -4597,6 +4615,15 @@
 
 <!-- property Visibility: published -->
 <element name="TForm.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TForm.ChildSizing">
 <short></short>
 <descr>
 </descr>

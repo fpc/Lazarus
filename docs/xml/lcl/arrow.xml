@@ -286,7 +286,34 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TArrow.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TArrow.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TArrow.ArrowType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TArrow.BorderSpacing">
 <short></short>
 <descr>
 </descr>

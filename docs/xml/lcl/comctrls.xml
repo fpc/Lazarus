@@ -1311,6 +1311,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TTabSheet.ChildSizing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TTabSheet.ClientHeight">
 <short></short>
 <descr>
@@ -1790,6 +1799,15 @@
 
 <!-- property Visibility: published -->
 <element name="TPageControl.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPageControl.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -4158,6 +4176,15 @@
 
 <!-- property Visibility: published -->
 <element name="TTabControl.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTabControl.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -7526,6 +7553,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TListView.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TListView.BorderWidth">
 <short></short>
 <descr>
@@ -8157,6 +8193,24 @@
 
 <!-- property Visibility: published -->
 <element name="TProgressBar.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TProgressBar.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -9209,6 +9263,15 @@
 
 <!-- property Visibility: published -->
 <element name="TUpDown.ArrowKeys">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TUpDown.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -11749,6 +11812,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TToolBar.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TToolBar.BorderWidth">
 <short></short>
 <descr>
@@ -11777,6 +11849,15 @@
 
 <!-- property Visibility: published -->
 <element name="TToolBar.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TToolBar.ChildSizing">
 <short></short>
 <descr>
 </descr>
@@ -12846,6 +12927,15 @@
 
 <!-- property Visibility: published -->
 <element name="TTrackBar.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTrackBar.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -20785,6 +20875,15 @@
 
 <!-- property Visibility: published -->
 <element name="TTreeView.AutoExpand">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TTreeView.BorderSpacing">
 <short></short>
 <descr>
 </descr>

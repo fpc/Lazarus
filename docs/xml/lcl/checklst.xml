@@ -286,6 +286,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TCheckListBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TCheckListBox.BorderStyle">
 <short></short>
 <descr>

@@ -1453,7 +1453,7 @@
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TColorButton.MouseUp">
+<element name="TColorButton.Click">
 <short></short>
 <descr>
 </descr>
@@ -1461,26 +1461,6 @@
 </errors>
 <seealso>
 </seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TColorButton.MouseUp.Button">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TColorButton.MouseUp.Shift">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TColorButton.MouseUp.X">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TColorButton.MouseUp.Y">
-<short></short>
 </element>
 
 <!-- procedure Visibility: protected -->
@@ -1508,6 +1488,17 @@
 <!-- argument Visibility: default -->
 <element name="TColorButton.SetButtonColor.Value">
 <short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TColorButton.ShowColorDialog">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
 </element>
 
 <!-- constructor Visibility: public -->
@@ -1548,6 +1539,15 @@
 
 <!-- property Visibility: published -->
 <element name="TColorButton.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TColorButton.BorderSpacing">
 <short></short>
 <descr>
 </descr>

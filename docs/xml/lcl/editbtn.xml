@@ -656,7 +656,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.ButtonWidth">
+<element name="TEditButton.AutoSize">
 <short></short>
 <descr>
 </descr>
@@ -665,7 +665,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.DirectInput">
+<element name="TEditButton.Align">
 <short></short>
 <descr>
 </descr>
@@ -674,7 +674,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.Glyph">
+<element name="TEditButton.Anchors">
 <short></short>
 <descr>
 </descr>
@@ -683,25 +683,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.NumGlyphs">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.OnButtonClick">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.Flat">
+<element name="TEditButton.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -719,7 +701,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.AutoSize">
+<element name="TEditButton.ButtonWidth">
 <short></short>
 <descr>
 </descr>
@@ -738,6 +720,15 @@
 
 <!-- property Visibility: published -->
 <element name="TEditButton.Ctl3D">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.DirectInput">
 <short></short>
 <descr>
 </descr>
@@ -773,7 +764,25 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TEditButton.Flat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TEditButton.Font">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.Glyph">
 <short></short>
 <descr>
 </descr>
@@ -791,7 +800,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.ParentColor">
+<element name="TEditButton.NumGlyphs">
 <short></short>
 <descr>
 </descr>
@@ -800,79 +809,7 @@
 </element>
 
 <!-- property Visibility: published -->
-<element name="TEditButton.ParentCtl3D">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.ParentFont">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.ParentShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.PopupMenu">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.ReadOnly">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.ShowHint">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.TabOrder">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.TabStop">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: published -->
-<element name="TEditButton.Visible">
+<element name="TEditButton.OnButtonClick">
 <short></short>
 <descr>
 </descr>
@@ -1008,6 +945,96 @@
 
 <!-- property Visibility: published -->
 <element name="TEditButton.OnStartDrag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.ParentColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.ParentCtl3D">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.ParentFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.ReadOnly">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.ShowHint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.TabOrder">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.TabStop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TEditButton.Visible">
 <short></short>
 <descr>
 </descr>
@@ -1418,6 +1445,33 @@
 
 <!-- property Visibility: published -->
 <element name="TFileNameEdit.Flat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TFileNameEdit.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TFileNameEdit.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TFileNameEdit.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -1999,6 +2053,33 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TDirectoryEdit.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDirectoryEdit.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDirectoryEdit.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TDirectoryEdit.AutoSize">
 <short></short>
 <descr>
@@ -2549,6 +2630,33 @@
 
 <!-- property Visibility: published -->
 <element name="TDateEdit.Flat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDateEdit.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDateEdit.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDateEdit.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -3157,6 +3265,33 @@
 
 <!-- property Visibility: published -->
 <element name="TCalcEdit.Flat">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalcEdit.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalcEdit.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCalcEdit.BorderSpacing">
 <short></short>
 <descr>
 </descr>

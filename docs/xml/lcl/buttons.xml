@@ -541,6 +541,24 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TButton.AutoSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TButton.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TButton.Cancel">
 <short></short>
 <descr>
@@ -1373,6 +1391,15 @@
 
 <!-- property Visibility: published -->
 <element name="TBitBtn.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TBitBtn.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -2511,6 +2538,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TSpeedButton.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TSpeedButton.Constraints">
 <short></short>
 <descr>
@@ -2629,6 +2665,15 @@
 
 <!-- property Visibility: published -->
 <element name="TSpeedButton.OnClick">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TSpeedButton.OnDblClick">
 <short></short>
 <descr>
 </descr>

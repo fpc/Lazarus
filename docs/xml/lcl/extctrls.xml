@@ -1841,6 +1841,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TPage.ChildSizing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TPage.ClientWidth">
 <short></short>
 <descr>
@@ -2143,6 +2152,15 @@
 
 <!-- property Visibility: published -->
 <element name="TNotebook.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TNotebook.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -2771,6 +2789,15 @@
 
 <!-- property Visibility: published -->
 <element name="TShape.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TShape.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -3676,6 +3703,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TPaintBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TPaintBox.Color">
 <short></short>
 <descr>
@@ -4237,6 +4273,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TImage.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TImage.Center">
 <short></short>
 <descr>
@@ -4591,6 +4636,15 @@
 
 <!-- property Visibility: published -->
 <element name="TBevel.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TBevel.BorderSpacing">
 <short></short>
 <descr>
 </descr>
@@ -5150,7 +5204,25 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TRadioGroup.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TRadioGroup.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TRadioGroup.ChildSizing">
 <short></short>
 <descr>
 </descr>
@@ -5885,7 +5957,25 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TCheckGroup.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TCheckGroup.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckGroup.ChildSizing">
 <short></short>
 <descr>
 </descr>
@@ -6662,6 +6752,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TLabeledEdit.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TLabeledEdit.CharCase">
 <short></short>
 <descr>
@@ -7323,6 +7422,15 @@
 </element>
 
 <!-- property Visibility: published -->
+<element name="TPanel.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
 <element name="TPanel.BevelInner">
 <short></short>
 <descr>
@@ -7369,6 +7477,15 @@
 
 <!-- property Visibility: published -->
 <element name="TPanel.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TPanel.ChildSizing">
 <short></short>
 <descr>
 </descr>

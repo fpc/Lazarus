@@ -2022,6 +2022,15 @@
 </element>
 
 <!-- variable Visibility: private -->
+<element name="TCustomGrid.FAutoFillColumns">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
 <element name="TCustomGrid.FDefaultDrawing">
 <short></short>
 <descr>
@@ -2453,6 +2462,15 @@
 </seealso>
 </element>
 
+<!-- variable Visibility: private -->
+<element name="TCustomGrid.FLastWidth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
 <!-- procedure Visibility: private -->
 <element name="TCustomGrid.AdjustCount">
 <short></short>
@@ -2488,6 +2506,27 @@
 </errors>
 <seealso>
 </seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomGrid.CalcColumnWidth">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TCustomGrid.CalcColumnWidth.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CalcColumnWidth.Index">
+<short></short>
 </element>
 
 <!-- procedure Visibility: private -->
@@ -2575,6 +2614,22 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.CheckTopLeft.CheckRows">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetAutoFillColumns">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetAutoFillColumns.AValue">
 <short></short>
 </element>
 
@@ -3052,6 +3107,17 @@
 </element>
 
 <!-- procedure Visibility: private -->
+<element name="TCustomGrid.InternalAutoFillColumns">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
 <element name="TCustomGrid.MyTextRect">
 <short></short>
 <descr>
@@ -3210,6 +3276,27 @@
 
 <!-- argument Visibility: default -->
 <element name="TCustomGrid.SetColwidths.Avalue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomGrid.SetRawColWidths">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetRawColWidths.ACol">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.SetRawColWidths.AValue">
 <short></short>
 </element>
 
@@ -3713,6 +3800,37 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomGrid.CalcAutoSizeColumn">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CalcAutoSizeColumn.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CalcAutoSizeColumn.AMin">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CalcAutoSizeColumn.AMax">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.CalcAutoSizeColumn.APriority">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.CalcFocusRect">
 <short></short>
 <descr>
@@ -3994,6 +4112,37 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomGrid.DoSetBounds">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DoSetBounds.ALeft">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DoSetBounds.ATop">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DoSetBounds.AWidth">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.DoSetBounds.AHeight">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.DrawBackGround">
 <short></short>
 <descr>
@@ -4208,6 +4357,37 @@
 
 <!-- function result Visibility: default -->
 <element name="TCustomGrid.EditorIsReadOnly.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.GetAutoFillColumnInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetAutoFillColumnInfo.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetAutoFillColumnInfo.aMin">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetAutoFillColumnInfo.aMax">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.GetAutoFillColumnInfo.aPriority">
 <short></short>
 </element>
 
@@ -4877,6 +5057,11 @@
 <short></short>
 </element>
 
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.ScrollBarRange.aPage">
+<short></short>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TCustomGrid.ScrollBarPosition">
 <short></short>
@@ -5141,6 +5326,58 @@
 </element>
 
 <!-- procedure Visibility: protected -->
+<element name="TCustomGrid.UpdateHorzScrollBar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.UpdateHorzScrollBar.aVisible">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.UpdateHorzScrollBar.aRange">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.UpdateHorzScrollBar.aPage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomGrid.UpdateVertScrollbar">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.UpdateVertScrollbar.aVisible">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.UpdateVertScrollbar.aRange">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.UpdateVertScrollbar.aPage">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
 <element name="TCustomGrid.VisualChange">
 <short></short>
 <descr>
@@ -5201,6 +5438,15 @@
 
 <!-- property Visibility: protected -->
 <element name="TCustomGrid.AutoAdvance">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: protected -->
+<element name="TCustomGrid.AutoFillColumns">
 <short></short>
 <descr>
 </descr>
@@ -5977,6 +6223,37 @@
 <short></short>
 </element>
 
+<!-- procedure Visibility: public -->
+<element name="TCustomGrid.MouseToCell">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.MouseToCell.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.MouseToCell.Y">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.MouseToCell.ACol">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCustomGrid.MouseToCell.ARow">
+<short></short>
+</element>
+
 <!-- function Visibility: public -->
 <element name="TCustomGrid.MouseToLogcell">
 <short></short>
@@ -6496,6 +6773,37 @@
 <short></short>
 </element>
 
+<!-- procedure Visibility: protected -->
+<element name="TDrawGrid.GetAutoFillColumnInfo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetAutoFillColumnInfo.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetAutoFillColumnInfo.aMin">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetAutoFillColumnInfo.aMax">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TDrawGrid.GetAutoFillColumnInfo.aPriority">
+<short></short>
+</element>
+
 <!-- function Visibility: protected -->
 <element name="TDrawGrid.GetEditMask">
 <short></short>
@@ -6877,6 +7185,15 @@
 
 <!-- property Visibility: published -->
 <element name="TDrawGrid.AutoAdvance">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TDrawGrid.BorderSpacing">
 <short></short>
 <descr>
 </descr>
