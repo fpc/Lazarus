@@ -153,6 +153,8 @@ type
     
     ComponentNotebook : TNotebook;
 
+    HintTimer1 : TTimer;
+    HintWindow1 : THintWindow;
     // event handlers
     procedure FormShow(Sender : TObject);
     procedure FormClose(Sender : TObject; var Action: TCloseAction);
@@ -252,7 +254,15 @@ type
                                
     // MessagesView Events
     procedure MessagesViewSelectionChanged(sender : TObject);
+    
+    //Hint Timer
+    Procedure HintTimer1Timer(Sender : TObject);
+    
+    Procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
+    Procedure MainMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X,Y: Integer);
+    Procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
+    FHintSender : TObject;
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FLastFormActivated : TCustomForm;  //used to find the last form so you can display the corret tab
     FSelectedComponent : TRegisteredComponent;
@@ -508,6 +518,8 @@ begin
     Top := 0;
     Width := Self.ClientWidth - Left;
     Height := 60; //Self.ClientHeight - ComponentNotebook.Top;
+    OnMOuseMOve := @MainMouseMOved;
+
   end;
 
   PageCount := 0;
@@ -525,6 +537,7 @@ begin
       with GlobalMouseSpeedButton do
       Begin
         Parent := ComponentNotebook.Page[PageCount];
+        Parent.OnMouseMove := @MainMouseMoved;  //this is for the hints
         Enabled := True;
         Width := 26;
         Height := 26;
@@ -534,6 +547,8 @@ begin
         Flat := True;
         Down := True;
         Name := 'GlobalMouseSpeedButton'+IntToStr(PageCount);
+        Hint := 'Selection tool';
+        OnMouseMove := @MainMouseMoved;
       end;
       for x := 0 to RegCompPage.Count-1 do //for every component on the page....
       begin
@@ -542,6 +557,7 @@ begin
         IDEComponent.RegisteredComponent := RegComp;
         IDEComponent._SpeedButton(Self,ComponentNotebook.Page[PageCount]);
         IDEComponent.SpeedButton.OnClick := @ControlClick;
+        IDEComponent.SpeedButton.OnMouseMove := @MainMouseMoved;
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
         IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
         IDEComponent.SpeedButton.ShowHint := True;
@@ -560,11 +576,27 @@ begin
     OnCommandLineCreate:=@OnCmdLineCreate;
   end;
 
+  HintTimer1 := TTimer.Create(self);
+  with HintTimer1 do
+    Begin
+      Enabled := False;
+      Interval := 100;
+      OnTimer := @HintTimer1Timer;
+    end;
+    
+  HintWindow1 := THintWindow.Create(nil);
+  HIntWindow1.Visible := False;
+  HintWindow1.Caption := '';
+  HintWindow1.AutoHide := False;
+
   // MainIDE form events
   OnShow := @FormShow;
   OnClose := @FormClose;
   OnCloseQuery := @FormCloseQuery;
-
+  
+  OnMouseMOve := @MainMouseMoved;
+  OnMouseDown := @MainMouseDown;
+  OnKeyDown := @MainKeyDown;
   // object inspector
   ObjectInspector1 := TObjectInspector.Create(Self);
   if (EnvironmentOptions.SaveWindowPositions) 
@@ -709,6 +741,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
   EditorOpts:=nil;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
+  HIntTimer1.Free;
+  HintWindow1.Free;
 writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
@@ -786,7 +820,7 @@ procedure TMainIDE.LoadSpeedbuttons;
   
   function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
     var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
-    const AOnClick: TNotifyEvent): TSpeedButton;
+    const AOnClick: TNotifyEvent; AHint : String): TSpeedButton;
   begin
     Result := TSpeedButton.Create(Self);
     with Result do
@@ -804,6 +838,8 @@ procedure TMainIDE.LoadSpeedbuttons;
       //Transparent:=True;
       if mfTop in AMoveFlags then Inc(ATop, Height + 1);
       if mfLeft in AMoveFlags then Inc(ALeft, Width + 1);
+      Hint := AHint;
+      OnMouseMove := @MainMouseMoved;
 //writeln('---- W=',Width,',',Height,' Transparent=',Transparent);
       Visible := True;
     end;
@@ -826,30 +862,30 @@ begin
 
   ButtonTop := 1;
   ButtonLeft := 1;
-  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked);
-  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked);
+  NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, 'New Unit');
+  OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, 'Open');
 
   // store left
   n := ButtonLeft;
-  OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked);
+  OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked, '');
   OpenFileArrowSpeedBtn.Width := 12;
   ButtonLeft := n+12+1;
   
-  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
-  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked);
-  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked);
-  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked);
+  SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked, 'Save');
+  SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveAllClicked, 'Save all');
+  NewFormSpeedBtn       := CreateButton('NewFormSpeedBtn'      , 'btn_newform'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewFormClicked, 'New Form');
+  ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 2, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuToggleFormUnitCLicked, 'Toggle Form/Unit');
 
 // new row
   ButtonLeft := 1;
-  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked);
-  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked);   
+  ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked, 'View Units');
+  ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked, 'View Forms');
   inc(ButtonLeft,12);
-  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked);
-  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked);
+  RunSpeedButton        := CreateButton('RunSpeedButton'       , 'btn_run'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuRunProjectClicked, 'Run');
+  PauseSpeedButton      := CreateButton('PauseSpeedButton'     , 'btn_pause'       , 2, ButtonLeft, ButtonTop, [mfLeft], @mnuPauseProjectClicked, 'Pause');
   PauseSpeedButton.Enabled:=false;
-  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked);
-  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked);
+  StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, 'Step Into');
+  StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, 'Step Over');
   
 //  pnlSpeedButtons.Width := ButtonLeft;
 //  pnlSpeedButtons.Height := ButtonTop;
@@ -4937,6 +4973,83 @@ begin
      [mbOk],0);
 end;
 
+Procedure TMainIDE.HintTimer1Timer(Sender : TObject);
+var
+  Rect : TRect;
+  AHint : String;
+  cPosition : TPoint;
+  TextPosition : TPoint;
+  SE : TSourceEditor;
+  WIndow : TWInControl;
+  Caret : TPoint;
+  Control : TCOntrol;
+  Control2 : TControl;
+  tempPosition : TPoint;
+begin
+  HintTimer1.Enabled := False;
+
+  cPosition := Mouse.CursorPos;
+  Window := FindLCLWindow(cPosition);
+  if not(Assigned(window)) then Exit;
+
+  //get the parent until parent is nil
+  While Window.Parent <> nil do
+  Window := Window.Parent;
+
+  if (window <> Self) then Exit;
+
+  Control := nil;
+  
+  if (FHintSender is TSpeedButton) then
+    Control := TControl(FHintSender);
+    
+  AHint := '';
+
+  if (Control <> nil) and (Control is TSpeedButton) then
+     AHint := TSpeedButton(Control).Hint;
+
+
+  //If no hint, then Exit
+  if AHint = '' then Exit;
+
+  Rect := HintWindow1.CalcHintRect(0,AHint,nil);  //no maxwidth
+  Rect.Left := cPosition.X+10;
+  Rect.Top := cPosition.Y+10;
+  Rect.Top := Rect.Top + 25;
+  Rect.Right := Rect.Left + Rect.Right+3;
+  Rect.Bottom := Rect.Top + Rect.Bottom+3;
+
+  HintWindow1.ActivateHint(Rect,AHint);
+
+end;
+
+Procedure TMainIDE.MainKeyDown(Sender: TObject; var Key: Word; Shift:
+  TShiftState);
+begin
+  HintTimer1.Enabled := False;
+  if HintWIndow1.Visible then
+      HintWindow1.Visible := False;
+end;
+
+Procedure TMainIDE.MainMouseDown(Sender: TObject; Button: TMouseButton; Shift:
+  TShiftState; X, Y: Integer);
+begin
+  HintTimer1.Enabled := False;
+  if HintWIndow1.Visible then
+      HintWindow1.Visible := False;
+
+end;
+
+Procedure TMainIDE.MainMouseMoved(Sender: TObject; Shift: TShiftState; X, Y:
+  Integer);
+begin
+  if HintWindow1.Visible then
+      HintWindow1.Visible := False;
+  HintTimer1.Enabled := False;
+  HintTimer1.Enabled := not ((ssLeft in Shift) or (ssRight in Shift) or (ssMiddle in Shift));
+  FHintSender := Sender;
+end;
+
 //-----------------------------------------------------------------------------
 
 initialization
@@ -4951,6 +5064,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.163  2001/12/04 14:28:04  lazarus
+  Added hints to the main ide.
+  Shane
+
   Revision 1.162  2001/12/02 13:05:33  lazarus
   MG: reduced output
 
