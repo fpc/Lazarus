@@ -7123,7 +7123,7 @@ var
         // find word start
         while AText[WordEnd] in [' ',#9] do inc(WordEnd);
         // find word end
-        while not (AText[WordEnd] in [' ',#9,#10,#13]) do inc(WordEnd);
+        while not (AText[WordEnd] in [#0,' ',#9,#10,#13]) do inc(WordEnd);
         // calculate word width
         WordWidth:=GetLineWidthInPixel(Result,WordEnd-Result);
       until LineWidth+WordWidth>MaxWidthInPixel;
@@ -7301,6 +7301,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.366  2003/05/30 16:25:47  mattias
+  started datamodule
+
   Revision 1.365  2003/05/20 21:41:07  mattias
   started loading/saving breakpoints
 
