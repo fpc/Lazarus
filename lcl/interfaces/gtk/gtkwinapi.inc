@@ -3590,7 +3590,7 @@ begin
                   Visual := gdk_visual_get_system;
                   gdk_visual_ref(Visual);
                 end;
-                If Colormap = nil then
+                If Colormap <> nil then
                   gdk_colormap_unref(Colormap);
                 ColorMap := gdk_colormap_new(Visual, 1);
               end else
@@ -7467,6 +7467,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.170  2002/10/24 20:59:35  lazarus
+  AJ: fixed typo causing gdk cmap error
+
   Revision 1.169  2002/10/23 20:47:27  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl
