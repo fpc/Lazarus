@@ -119,7 +119,7 @@ type
     Procedure KeyUp(Sender: TControl; TheMessage:TLMKEY);
 
     procedure DoDeleteSelectedComponents;
-    Procedure RemoveControl(Control: TComponent);
+    Procedure RemoveControl(AComponent: TComponent);
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
 
@@ -226,14 +226,39 @@ Begin
   Inherited Destroy;
 end;
 
-Procedure TDesigner.RemoveControl(Control : TComponent);
+Procedure TDesigner.RemoveControl(AComponent :TComponent);
+var
+  i: integer;
+  ChildControl: TControl;
 Begin
-  Writeln('[TDesigner.RemoveControl] ',Control.Name,':',Control.ClassName);
+  {$IFDEF VerboseDesigner}
+  Writeln('[TDesigner.RemoveControl] ',AComponent.Name,':',AComponent.ClassName);
+  {$ENDIF}
+  // remove all child controls
+  if (AComponent is TWinControl) then begin
+    i:=Form.ComponentCount-1;
+    while (i>=0) do begin
+      if (Form.Components[i] is TControl) then begin
+        ChildControl:=TControl(Form.Components[i]);
+        if ChildControl.Parent=AComponent then begin
+          RemoveControl(ChildControl);
+          // the component list of the form has changed
+          // -> restart the search
+          i:=Form.ComponentCount-1;
+          continue;
+        end;
+      end;
+      dec(i);
+    end;
+  end;
+  // remove component
   if Assigned(FOnRemoveComponent) then
-    FOnRemoveComponent(Self,Control);
-  //FCustomForm.RemoveControl(TControl(Control));
+    FOnRemoveComponent(Self,AComponent);
   // this sends a message to notification and removes it from the controlselection
-  FFormEditor.DeleteControl(Control);
+  {$IFDEF VerboseDesigner}
+  Writeln('[TDesigner.RemoveControl] C ',AComponent.Name,':',AComponent.ClassName);
+  {$ENDIF}
+  FFormEditor.DeleteControl(AComponent);
 end;
 
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
