@@ -2559,9 +2559,11 @@ begin
         // erase the background and draw the line number string in one go
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
-        InternalFillRect(DC, rcLine);
-        LCLIntf.DrawText(DC, PChar(S), Length(S), rcLine,
-          DT_RIGHT or DT_Center or DT_SINGLELINE or DT_NOPREFIX);
+        //InternalFillRect(DC, rcLine);
+        fTextDrawer.ExtTextOut(fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
+          rcLine,PChar(S),Length(S));
+        //LCLIntf.DrawText(DC, PChar(S), Length(S), rcLine,
+        //  DT_RIGHT or DT_Center or DT_SINGLELINE or DT_NOPREFIX);
         //LCLIntf.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
         //  @rcLine, PChar(s), Length(s), nil);
         {$ELSE}
