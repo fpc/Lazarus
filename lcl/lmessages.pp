@@ -333,6 +333,8 @@ const
   LM_RBUTTONQUADCLK = LM_USER+73;
   LM_MOUSELAST2 = LM_RBUTTONQUADCLK;
 
+  LM_GRABFOCUS = LM_USER+74;
+
   LM_INTERFACEFIRST = LM_User+99;
   LM_INTERFACELAST = LM_User+199;
 
@@ -845,6 +847,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2002/09/04 09:32:17  lazarus
+  MG: improved streaming error handling
+
   Revision 1.29  2002/09/01 16:11:21  lazarus
   MG: double, triple and quad clicks now works
 

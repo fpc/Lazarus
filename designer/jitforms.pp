@@ -73,7 +73,7 @@ type
     procedure ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
     procedure ReaderAncestorNotFound(Reader: TReader; const ComponentName: Ansistring;
       ComponentClass: TPersistentClass; var Component: TComponent);
-    procedure ReaderError(Reader: TReader; const Message: Ansistring;
+    procedure ReaderError(Reader: TReader; const ErrorMsg: Ansistring;
       var Handled: Boolean);
     procedure ReaderFindComponentClass(Reader: TReader; const FindClassName: Ansistring;
       var ComponentClass: TComponentClass);
@@ -619,9 +619,9 @@ procedure TJITForms.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
 var NewMethod: TMethod;
 begin
-{$IFDEF IDE_DEBUG}
-writeln('[TJITForms.ReaderFindMethod] A "'+FindMethodName+'" Address=',HexStr(Cardinal(Address),8));
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TJITForms.ReaderFindMethod] A "'+FindMethodName+'" Address=',HexStr(Cardinal(Address),8));
+  {$ENDIF}
   if Address=nil then begin
     // there is no method in the ancestor class with this name
     // => add a JIT method with this name to the JITForm
@@ -646,14 +646,29 @@ procedure TJITForms.ReaderAncestorNotFound(Reader: TReader;
   const ComponentName: Ansistring;  ComponentClass: TPersistentClass;
   var Component: TComponent);
 begin
+// ToDo: this is for custom form templates
 //  writeln('[TJITForms.ReaderAncestorNotFound] ComponentName='''+ComponentName
 //    +''' Component='''+Component.Name+'''');
 end;
 
-procedure TJITForms.ReaderError(Reader: TReader; const Message: Ansistring;
+procedure TJITForms.ReaderError(Reader: TReader; const ErrorMsg: Ansistring;
   var Handled: Boolean);
+// ToDo: use SUnknownProperty when it is published by the fpc team
+const
+  SUnknownProperty = 'Unknown property';
 begin
-  writeln('[TJITForms.ReaderError] '''+Message+'''');
+  // ToDo: let user decide if an error is evil
+  if RightStr(ErrorMsg,length(SUnknownProperty))=SUnknownProperty then begin
+    { this property is not defined
+      This means:
+        A) The property is not yet implemented -> ignore (skip)
+        B) The property was renamed or removed -> skip
+    }
+    Handled:=true;
+  end;
+  writeln('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+  writeln('[TJITForms.ReaderError] "'+ErrorMsg+'" ignoring=',Handled);
+  writeln('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 end;
 
 procedure TJITForms.ReaderFindComponentClass(Reader: TReader;
