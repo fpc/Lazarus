@@ -1419,6 +1419,7 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure SetScrolledLeft(AValue: integer);
     procedure SetScrolledTop(AValue: integer);
+    procedure SetSelectedColor(Value: TColor);
     procedure SetSelection(Value: TTreeNode);
     procedure SetShowButton(Value: Boolean);
     procedure SetShowLines(Value: Boolean);
@@ -1568,6 +1569,7 @@ type
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
+    property SelectionColor: TColor read FSelectedColor write SetSelectedColor;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
     property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor;
   end;
@@ -1578,6 +1580,7 @@ type
     property Anchors;
     property AutoExpand;
     //property BiDiMode;
+    property BackgroundColor;
     property BorderStyle;
     property BorderWidth;
     property ChangeDelay;
@@ -1605,6 +1608,7 @@ type
     property RightClickSelect;
     property RowSelect;
     property ScrollBars;
+    property SelectionColor;
     property ShowButtons;
     property ShowHint;
     property ShowLines;
@@ -1716,6 +1720,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/01/04 21:25:05  lazarus
+  MG: published background and selection color in TTreeView
+
   Revision 1.15  2002/01/04 21:07:49  lazarus
   MG: added TTreeView
 
