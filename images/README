@@ -6,6 +6,7 @@ mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons (Open, Save, Run,...)
 components_images.lrs - Icons and pics for lcl components
 editoroptions.lrs - Icons for editor options
+codetoolsdefines.lrs - Icons for CodeTools Defines Editor
 
 
 How to update the image resources:
@@ -45,4 +46,11 @@ cd <lazarusdir>/images/sourceeditor/
 
 cd <lazarusdir>/images/
 ../tools/lazres ../editoroptions.lrs keymaprelation.xpm keymapcategory.xpm
+
+
+6. codetoolsdefines.lrs
+
+cd <lazarusdir>/images/codetoolsdefines
+../../tools/lazres ../../codetoolsdefines.lrs *.xpm
+
 
