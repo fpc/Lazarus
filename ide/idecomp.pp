@@ -338,7 +338,7 @@ begin
   RegisterComponents('Additional','Grids',[TStringGrid,TDrawGrid]);
 
   // Common
-  RegisterComponents('Common Controls','ImgList',[TImageList]);
+  RegisterComponents('Common Controls','Controls',[TImageList]);
   RegisterComponents('Common Controls','ComCtrls',[TTrackbar, TProgressBar,
     TTreeView, TListView, TStatusBar, TToolBar, TUpDown]);
 

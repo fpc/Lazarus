@@ -53,6 +53,8 @@ type
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
     
+    procedure LoadInstalledPackages; virtual; abstract;
+    
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
     function DoNewPackage: TModalResult; virtual; abstract;
   end;

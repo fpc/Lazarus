@@ -46,6 +46,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, LCLProc, Forms, COntrols, KeyMapping, EnvironmentOpts,
   UComponentManMain, PackageEditor, PackageDefs, PackageLinks, PackageSystem,
+  ComponentReg,
   BasePkgManager, MainBar;
 
 type
@@ -58,6 +59,8 @@ type
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
+
+    procedure LoadInstalledPackages; override;
 
     function ShowConfigureCustomComponents: TModalResult; override;
     function DoNewPackage: TModalResult; override;
@@ -75,6 +78,7 @@ end;
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  IDEComponentPalette:=TIDEComponentPalette.Create;
   PackageGraph:=TLazPackageGraph.Create;
   PackageEditors:=TPackageEditors.Create;
 end;
@@ -83,6 +87,7 @@ destructor TPkgManager.Destroy;
 begin
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);
+  FreeThenNil(IDEComponentPalette);
   inherited Destroy;
 end;
 
@@ -101,6 +106,15 @@ end;
 procedure TPkgManager.SetupMainBarShortCuts;
 begin
 
+end;
+
+procedure TPkgManager.LoadInstalledPackages;
+begin
+  // base packages
+  PackageGraph.AddStaticBasePackages;
+  PackageGraph.RegisterStaticPackages;
+  // custom packages
+  // ToDo
 end;
 
 function TPkgManager.ShowConfigureCustomComponents: TModalResult;

@@ -39,13 +39,16 @@ interface
 
 uses
   Classes, SysUtils, AVL_Tree, FileCtrl, Forms, Controls, Dialogs,
-  LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf;
+  LazarusIDEStrConsts, IDEProcs, PackageLinks, PackageDefs, LazarusPackageIntf,
+  ComponentReg, RegisterLCL, RegisterFCL;
   
 type
   TLazPackageGraph = class
   private
     FAbortRegistration: boolean;
     FErrorMsg: string;
+    FFCLPackage: TLazPackage;
+    FLCLPackage: TLazPackage;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
@@ -55,6 +58,8 @@ type
     procedure SetAbortRegistration(const AValue: boolean);
     procedure SetErrorMsg(const AValue: string);
     procedure SetRegistrationPackage(const AValue: TLazPackage);
+    function CreateFCLPackage: TLazPackage;
+    function CreateLCLPackage: TLazPackage;
   public
     constructor Create;
     destructor Destroy; override;
@@ -68,10 +73,14 @@ type
       IgnorePackage: TLazPackage): string;
     function NewPackage(const Prefix: string): TLazPackage;
     procedure ConsistencyCheck;
-    procedure RegisterUnit(const TheUnitName: string;
+    procedure RegisterUnitHandler(const TheUnitName: string;
       RegisterProc: TRegisterProc);
+    procedure RegisterComponentsHandler(const Page: string;
+      ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
-    procedure RegisterPackage(APackage: TLazPackage);
+    procedure AddPackage(APackage: TLazPackage);
+    procedure AddStaticBasePackages;
+    procedure RegisterStaticPackages;
   public
     property Packages[Index: integer]: TLazPackage read GetPackages;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -81,12 +90,26 @@ type
     property ErrorMsg: string read FErrorMsg write SetErrorMsg;
     property AbortRegistration: boolean read FAbortRegistration
                                         write SetAbortRegistration;
+    property FCLPackage: TLazPackage read FFCLPackage;
+    property LCLPackage: TLazPackage read FLCLPackage;
   end;
   
 var
   PackageGraph: TLazPackageGraph;
 
 implementation
+
+procedure RegisterComponentsGlobalHandler(const Page: string;
+  ComponentClasses: array of TComponentClass);
+begin
+  PackageGraph.RegisterComponentsHandler(Page,ComponentClasses);
+end;
+
+procedure RegisterNoIconGlobalHandler(
+  ComponentClasses: array of TComponentClass);
+begin
+  PackageGraph.RegisterComponentsHandler('',ComponentClasses);
+end;
 
 { TLazPackageGraph }
 
@@ -112,7 +135,9 @@ begin
   if FRegistrationPackage=AValue then exit;
   FRegistrationPackage:=AValue;
   AbortRegistration:=false;
-  LazarusPackageIntf.RegisterUnit:=@RegisterUnit;
+  LazarusPackageIntf.RegisterUnit:=@RegisterUnitHandler;
+  RegisterComponentsProc:=@RegisterComponentsGlobalHandler;
+  RegisterNoIconProc:=@RegisterNoIconGlobalHandler;
 end;
 
 constructor TLazPackageGraph.Create;
@@ -123,8 +148,12 @@ end;
 
 destructor TLazPackageGraph.Destroy;
 begin
-  if LazarusPackageIntf.RegisterUnit=@RegisterUnit then
+  if LazarusPackageIntf.RegisterUnit=@RegisterUnitHandler then
     LazarusPackageIntf.RegisterUnit:=nil;
+  if RegisterComponentsProc=@RegisterComponentsGlobalHandler then
+    RegisterComponentsProc:=nil;
+  if RegisterNoIconProc=@RegisterNoIconGlobalHandler then
+    RegisterNoIconProc:=nil;
   Clear;
   FItems.Free;
   FTree.Free;
@@ -216,7 +245,7 @@ begin
   CheckList(FItems,true,true,true);
 end;
 
-procedure TLazPackageGraph.RegisterUnit(const TheUnitName: string;
+procedure TLazPackageGraph.RegisterUnitHandler(const TheUnitName: string;
   RegisterProc: TRegisterProc);
 begin
   if AbortRegistration then exit;
@@ -237,6 +266,7 @@ begin
       RegistrationError('Invalid Unitname: '+FRegistrationUnitName);
       exit;
     end;
+    // check unit file
     FRegistrationFile:=FRegistrationPackage.FindUnit(FRegistrationUnitName);
     if FRegistrationFile=nil then begin
       RegistrationError('Unit not found: '+FRegistrationUnitName);
@@ -259,6 +289,56 @@ begin
   finally
     FRegistrationUnitName:='';
     FRegistrationFile:=nil;
+  end;
+end;
+
+procedure TLazPackageGraph.RegisterComponentsHandler(const Page: string;
+  ComponentClasses: array of TComponentClass);
+var
+  i: integer;
+  CurComponent: TComponentClass;
+  NewPkgComponent: TPkgComponent;
+  CurClassname: string;
+begin
+  if AbortRegistration or (Low(ComponentClasses)>High(ComponentClasses)) then
+    exit;
+
+  ErrorMsg:='';
+
+  // check package
+  if FRegistrationPackage=nil then begin
+    RegistrationError('');
+    exit;
+  end;
+  // check unit file
+  if FRegistrationFile=nil then begin
+    RegistrationError('Can not register components without unit');
+    exit;
+  end;
+  // register components
+  for i:=Low(ComponentClasses) to High(ComponentClasses) do begin
+    CurComponent:=ComponentClasses[i];
+    if (CurComponent=nil) then continue;
+    try
+      CurClassname:=CurComponent.Classname;
+      if not IsValidIdent(CurClassname) then begin
+        RegistrationError('Invalid component class');
+        continue;
+      end;
+    except
+      on E: Exception do begin
+        RegistrationError(E.Message);
+        continue;
+      end;
+    end;
+    if IDEComponentPalette.FindComponent(CurClassname)<>nil then begin
+      RegistrationError(
+        'Component Class "'+CurComponent.ClassName+'" already defined');
+    end;
+    if AbortRegistration then exit;
+    NewPkgComponent:=
+      FRegistrationPackage.AddComponent(FRegistrationFile,Page,CurComponent);
+    IDEComponentPalette.AddComponent(NewPkgComponent);
   end;
 end;
 
@@ -290,10 +370,91 @@ begin
     AbortRegistration:=true;
 end;
 
-procedure TLazPackageGraph.RegisterPackage(APackage: TLazPackage);
+function TLazPackageGraph.CreateFCLPackage: TLazPackage;
 begin
-  RegistrationPackage:=APackage;
-  // ToDo
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='FCL';
+    Filename:='$(#FPCSrcDir)/fcl/';
+    Version.SetValues(1,0,1,1);
+    Author:='FPC team';
+    AutoLoad:=true;
+    AutoUpdate:=false;
+    Description:='FCL - FreePascal Component Library';
+    PackageType:=lptDesignTime;
+
+    // add files
+    AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],CompPriorityBase);
+    AddFile('db/db.pp','DB',pftUnit,[pffHasRegisterProc],CompPriorityBase);
+
+    Modified:=false;
+  end;
+end;
+
+function TLazPackageGraph.CreateLCLPackage: TLazPackage;
+begin
+  Result:=TLazPackage.Create;
+  with Result do begin
+    AutoCreated:=true;
+    Name:='LCL';
+    Filename:='$(#LazarusDir)/lcl/';
+    Version.SetValues(1,0,1,1);
+    Author:='Lazarus';
+    AutoLoad:=true;
+    AutoUpdate:=false;
+    Description:='LCL - Lazarus Component Library';
+    PackageType:=lptDesignTime;
+
+    // add files
+    AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],CompPriorityLCL);
+    
+    // add requirements
+    AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
+    
+    Modified:=false;
+  end;
+end;
+
+procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
+begin
+  FTree.Add(APackage);
+  FItems.Add(APackage);
+end;
+
+procedure TLazPackageGraph.AddStaticBasePackages;
+begin
+  // FCL
+  FFCLPackage:=CreateFCLPackage;
+  AddPackage(FFCLPackage);
+  // LCL
+  FLCLPackage:=CreateLCLPackage;
+  AddPackage(FLCLPackage);
+end;
+
+procedure TLazPackageGraph.RegisterStaticPackages;
+begin
+  // FCL
+  RegistrationPackage:=FCLPackage;
+  RegisterFCL.Register;
+  
+  // LCL
+  RegistrationPackage:=LCLPackage;
+  RegisterLCL.Register;
+
+  // clean up
+  RegistrationPackage:=nil;
 end;
 
 initialization
