@@ -44,7 +44,7 @@ interface
 
 {$I codetools.inc}
 
-// activate for debug:
+// activate for debugging:
 
 // mem check
 { $DEFINE MEM_CHECK}
@@ -622,9 +622,9 @@ type
   end;
 
 const
-  fdfGlobals = [fdfExceptionOnNotFound, fdfIgnoreUsedUnits, fdfTopLvlResolving];
+  fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving];
   fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
-                fdfIgnoreMissingParams,
+                fdfIgnoreMissingParams, fdfIgnoreUsedUnits,
                 fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect];
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
                               fdfExceptionOnNotFound];
@@ -2291,8 +2291,7 @@ begin
         Params.SetIdentifier(Self,@Src[Result.Node.StartPos],
                              @CheckSrcIdentifier);
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                      +(fdfGlobals*Params.Flags)
-                      -[fdfIgnoreUsedUnits];
+                      +(fdfGlobals*Params.Flags);
         Params.ContextNode:=Result.Node.Parent;
         if (Params.ContextNode.Desc in [ctnVarDefinition,ctnConstDefinition])
         then begin
@@ -2317,8 +2316,7 @@ begin
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],
                                @CheckSrcIdentifier);
           Params.Flags:=[fdfExceptionOnNotFound]
-                        +(fdfGlobals*OldInput.Flags)
-                        +[fdfIgnoreUsedUnits];
+                        +(fdfGlobals*OldInput.Flags);
           Params.ContextNode:=Params.NewCodeTool.FindInterfaceNode;
           TypeFound:=Params.NewCodeTool.FindIdentifierInContext(Params);
         end;
@@ -2362,8 +2360,7 @@ begin
           Params.Save(OldInput);
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                        +(fdfGlobals*Params.Flags)
-                        -[fdfIgnoreUsedUnits];
+                        +(fdfGlobals*Params.Flags);
           Params.ContextNode:=Result.Node.Parent;
           if FindIdentifierInContext(Params) then begin
             if Params.NewNode.Desc in [ctnTypeDefinition] then begin
@@ -2523,7 +2520,7 @@ begin
       // -> proceed the search normally ...
     end else begin
       // search the identifier in the class first
-      // 1. search the class
+      // 1. search the class in the same unit
       Params.Save(OldInput);
       try
         Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes]
@@ -2705,7 +2702,7 @@ begin
     Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
                    fdfExceptionOnNotFound]
                   +(fdfGlobals*Params.Flags)
-                  -[fdfIgnoreUsedUnits,fdfTopLvlResolving];
+                  -[fdfTopLvlResolving];
     if not SearchBaseClass then
       Params.SetIdentifier(Self,@Src[AncestorAtom.StartPos],nil)
     else begin
@@ -2814,80 +2811,6 @@ begin
   Exclude(Params.Flags,fdfIgnoreCurContextNode);
   Result:=Params.NewCodeTool.FindIdentifierInContext(Params);
   Params.Load(OldInput);
-
-  
-  (*
-  if (ClassNode=nil) or (not (ClassNode.Desc in [ctnClass,ctnClassInterface]))
-  then
-    RaiseException('[TFindDeclarationTool.FindIdentifierInAncestors] '
-      +' invalid classnode');
-  Result:=false;
-  // search the ancestor name
-  MoveCursorToNodeStart(ClassNode);
-  ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
-  if UpAtomIs('PACKED') then ReadNextAtom;
-  ReadNextAtom;
-  if not AtomIsChar('(') then begin
-    // no ancestor class specified
-    // check class name
-    ClassIdentNode:=ClassNode.Parent;
-    if (ClassIdentNode=nil) or (ClassIdentNode.Desc<>ctnTypeDefinition) then
-    begin
-      MoveCursorToNodeStart(ClassNode);
-      RaiseException(ctsClassWithoutName);
-    end;
-    // if this class is not TObject, TObject is class ancestor
-    SearchTObject:=not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
-    if not SearchTObject then begin
-      // this is 'TObject', no more ancestors -> stop search
-      exit;
-    end;
-  end else begin
-    ReadNextAtom;
-    AtomIsIdentifier(true);
-    // ancestor name found
-    AncestorAtom:=CurPos;
-    SearchTObject:=false;
-  end;
-  {$IFDEF ShowTriedContexts}
-  writeln('[TFindDeclarationTool.FindIdentifierInAncestors] ',
-  ' Ident="',GetIdentifier(Params.Identifier),'"',
-  ' search ancestor class = ',GetAtom);
-  writeln('  Flags=[',FindDeclarationFlagsAsString(Params.Flags),']');
-  {$ENDIF}
-  // search ancestor class context
-  CurPos.StartPos:=CurPos.EndPos;
-  Params.Save(OldInput);
-  try
-    Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
-                   fdfExceptionOnNotFound]
-                  +(fdfGlobals*Params.Flags)
-                  -[fdfTopLvlResolving];
-    if not SearchTObject then
-      Params.SetIdentifier(Self,@Src[AncestorAtom.StartPos],nil)
-    else begin
-      Params.SetIdentifier(Self,'TObject',nil);
-      Exclude(Params.Flags,fdfExceptionOnNotFound);
-    end;
-    Params.ContextNode:=ClassNode;
-    if not FindIdentifierInContext(Params) then begin
-      MoveCursorToNodeStart(ClassNode);
-      //writeln('  AQ*** ',TCodeBuffer(Scanner.MainCode).Filename,' ',CurPos.StartPos);
-      RaiseException(ctsDefaultClassAncestorTObjectNotFound);
-    end;
-    AncestorNode:=Params.NewNode;
-    AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,AncestorNode);
-    Params.Load(OldInput);
-    Params.ContextNode:=AncestorContext.Node;
-    if (AncestorContext.Tool<>Self)
-    and (not (fdfIgnoreClassVisibility in Params.Flags)) then
-      Exclude(Params.Flags,fdfClassPrivate);
-    Exclude(Params.Flags,fdfIgnoreCurContextNode);
-    Result:=AncestorContext.Tool.FindIdentifierInContext(Params);
-  finally
-    Params.Load(OldInput);
-  end;
-  *)
 end;
 
 {$IFDEF DebugPrefix}
@@ -3962,7 +3885,7 @@ var
     ctnClass, ctnProperty:
       begin
         if ExprType.Context.Node.Desc=ctnClass then begin
-          // search default property in class
+          // search default property of the class
           Params.Save(OldInput);
           Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
                         +fdfGlobals*Params.Flags;
@@ -3982,8 +3905,7 @@ var
             Params.SetIdentifier(ExprType.Context.Tool,
                                  @Src[CurPos.StartPos],nil);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                        +(fdfGlobals*Params.Flags)
-                        -[fdfIgnoreUsedUnits];
+                        +(fdfGlobals*Params.Flags);
           Params.ContextNode:=ExprType.Context.Node.Parent;
           if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
             if Params.NewNode.Desc in [ctnTypeDefinition] then begin
@@ -4740,7 +4662,7 @@ begin
           Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
           Params.Flags:=fdfDefaultForExpressions+Params.Flags*fdfGlobals;
           Params.ContextNode:=StartContextNode;
-          Params.OnIdentifierFound:=@Self.CheckSrcIdentifier;
+          Params.OnIdentifierFound:=@Params.IdentifierTool.CheckSrcIdentifier;
           Params.IdentifierTool.ReadNextAtom;
           Params.FoundProc^.ExprInputList:=
                               Params.IdentifierTool.CreateParamExprList(
