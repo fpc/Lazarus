@@ -280,6 +280,8 @@ const
      );
 
 var
+  CompilerModeVars: array[TCompilerMode] of shortstring;
+
   IsSpaceChar, IsLineEndChar, IsWordChar, IsIdentStartChar, IsIdentChar,
   IsNumberChar, IsCommentStartChar, IsCommentEndChar, IsHexNumberChar,
   IsEqualOperatorStartChar:
@@ -1028,7 +1030,7 @@ begin
   ValueStr:=copy(UpperSrc,ValStart,SrcPos-ValStart);
   // undefine all mode macros
   for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
-    Values.Undefine('FPC_'+CompilerModeNames[AMode]);
+    Values.Undefine(CompilerModeVars[AMode]);
   CompilerMode:=cmFPC;
   // define new mode macro
   if (ValueStr='DEFAULT') then begin
@@ -1040,7 +1042,7 @@ begin
     for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
       if CompilerModeNames[AMode]=ValueStr then begin
         CompilerMode:=AMode;
-        Values.Variables['FPC_'+CompilerModeNames[AMode]]:='1';
+        Values.Variables[CompilerModeVars[AMode]]:='1';
         ModeValid:=true;
         break;
       end;
@@ -1220,8 +1222,8 @@ begin
   inc(SrcPos);
   AddPath:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   PathDivider:=':';
-  Values.Variables['INCLUDEPATH']:=Values.Variables['INCLUDEPATH']
-          +PathDivider+AddPath;
+  Values.Variables['#INCPATH']:=Values.Variables['#INCPATH']+
+    PathDivider+AddPath;
   Result:=true;
 end;
 
@@ -1678,6 +1680,7 @@ end;
 //------------------------------------------------------------------------------
 procedure InternalInit;
 var c: char;
+  CompMode: TCompilerMode;
 begin
   for c:=Low(char) to high(char) do begin
     IsLineEndChar[c]:=c in [#10,#13];
@@ -1691,6 +1694,8 @@ begin
     IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
     IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
   end;
+  For CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
+    CompilerModeVars[CompMode]:='FPC_'+CompilerModeNames[CompMode];
 end;
 
 initialization

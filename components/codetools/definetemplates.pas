@@ -54,7 +54,7 @@ uses
   KeywordFuncLists, FileProcs;
 
 const
-  ExternalMacroStart: char = '#';
+  ExternalMacroStart: char = '#'; // !!! it is hardcoded in linkscanner.pas
   {$ifdef win32}
   SpecialChar: char = '/';
   {$else}
@@ -115,6 +115,8 @@ type
     procedure AddChild(ADefineTemplate: TDefineTemplate);
     procedure InsertAfter(APrior: TDefineTemplate);
     procedure Assign(ADefineTemplate: TDefineTemplate); virtual;
+    function  IsEqual(ADefineTemplate: TDefineTemplate;
+      CheckSubNodes: boolean): boolean;
     function LoadFromXMLConfig(XMLConfig: TXMLConfig;
         const Path: string): boolean;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -637,6 +639,29 @@ begin
   WriteNode(Self,'  ');
 end;
 
+function TDefineTemplate.IsEqual(ADefineTemplate: TDefineTemplate;
+  CheckSubNodes: boolean): boolean;
+var SrcNode, DestNode: TDefineTemplate;
+begin
+  Result:=(ADefineTemplate<>nil)
+      and (Name=ADefineTemplate.Name)
+      and (Description=ADefineTemplate.Description)
+      and (Variable=ADefineTemplate.Variable)
+      and (Value=ADefineTemplate.Value)
+      and (Action=ADefineTemplate.Action)
+      and (ChildCount=ADefineTemplate.ChildCount);
+  if Result and CheckSubNodes then begin
+    SrcNode:=FirstChild;
+    DestNode:=ADefineTemplate.FirstChild;
+    while SrcNode<>nil do begin
+      Result:=SrcNode.IsEqual(DestNode,true);
+      if not Result then exit;
+      SrcNode:=SrcNode.Next;
+      DestNode:=DestNode.Next;
+    end;
+  end;
+end;
+
 
 { TDirectoryDefines }
 
@@ -1036,9 +1061,12 @@ procedure TDefineTree.ReplaceSameName(ADefineTemplate: TDefineTemplate);
 // else add as last
 var OldDefineTemplate: TDefineTemplate;
 begin
-  if ADefineTemplate=nil then exit;
+  if (ADefineTemplate=nil) then exit;
   OldDefineTemplate:=FindDefineTemplateByName(ADefineTemplate.Name);
   if OldDefineTemplate<>nil then begin
+    if not OldDefineTemplate.IsEqual(ADefineTemplate,true) then begin
+      ClearCache;
+    end;
     ADefineTemplate.InsertAfter(OldDefineTemplate);
     if OldDefineTemplate=FFirstDefineTemplate then
       FFirstDefineTemplate:=FFirstDefineTemplate.Next;
@@ -1054,6 +1082,9 @@ begin
   if ADefineTemplate=nil then exit;
   OldDefineTemplate:=FindDefineTemplateByName(ADefineTemplate.Name);
   if OldDefineTemplate<>nil then begin
+    if not OldDefineTemplate.IsEqual(ADefineTemplate,true) then begin
+      ClearCache;
+    end;
     ADefineTemplate.InsertAfter(OldDefineTemplate);
     if OldDefineTemplate=FFirstDefineTemplate then
       FFirstDefineTemplate:=FFirstDefineTemplate.Next;

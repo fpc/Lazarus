@@ -40,7 +40,7 @@ uses
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGBreakpoint, DBGWatch, GDBDebugger, RunParamsOpts, ExtToolDialog, 
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg, 
-  OutputFilter, BuildLazDialog, MiscOptions;
+  OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree;
 
 const
   Version_String = '0.8.2 alpha';
@@ -749,6 +749,8 @@ begin
                     'Freepascal source directory',nil));
   MacroList.Add(TTransferMacro.Create('LazarusDir','',
                     'Lazarus directory',nil));
+  MacroList.Add(TTransferMacro.Create('LCLWidgetType','',
+                    'LCL Widget Type',nil));
   MacroList.Add(TTransferMacro.Create('Params','',
                     'Command line parameters of program',nil));
   MacroList.Add(TTransferMacro.Create('Prompt','',
@@ -2104,6 +2106,7 @@ begin
     frmCompilerOptions.GetCompilerOptions;
     if frmCompilerOptions.ShowModal=mrOk then begin
       SourceNoteBook.SearchPaths:=SearchPaths;
+      SetCompilerOptionsToCodeToolBoss(Project.CompilerOptions);
     end;
   finally
     frmCompilerOptions.Free;
@@ -3306,6 +3309,7 @@ end;
 
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
 var i:integer;
+  ds: char;
 Begin
 writeln('TMainIDE.DoNewProject A');
   Result:=mrCancel;
@@ -3335,16 +3339,16 @@ writeln('TMainIDE.DoNewProject A');
   Project.CompilerOptions.CompilerPath:='$(CompPath)';
   SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
 
+  ds:=PathDelim;
   case NewProjectType of
    ptApplication:
     begin
-      // create a first form unit
+      // add lcl units to search path
       Project.CompilerOptions.OtherUnitFiles:=
-         '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
-        +';'+
-         '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
-         +PathDelim
-         +CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
+        '$(LazarusDir)'+ds+'lcl'+ds+'units'
+       +';'+
+        '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
+      // create a first form unit
       DoNewEditorUnit(nuForm,'');
     end;
    ptProgram,ptCustomProgram:
@@ -3353,6 +3357,8 @@ writeln('TMainIDE.DoNewProject A');
       DoOpenMainUnit(false);
     end;
   end;
+  
+  SetCompilerOptionsToCodeToolBoss(Project.CompilerOptions);
  
   // set all modified to false
   for i:=0 to Project.UnitCount-1 do
@@ -3488,7 +3494,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
           ACaption:='Overwrite file?';
           AText:='A file "'+NewProgramFilename+'" already exists.'#13
                           +'Replace it?';
-          Result:=MessageDlg(ACaption, AText, mtconfirmation,[mbOk,mbCancel],0);
+          Result:=MessageDlg(ACaption, AText, mtConfirmation,[mbOk,mbCancel],0);
           if Result=mrCancel then exit;
         end;
       end;
@@ -3664,6 +3670,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
     ExtractFilePath(Project.ProjectFile);
   CodeToolBoss.DefineTree.ClearCache;
+  SetCompilerOptionsToCodeToolBoss(Project.CompilerOptions);
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename,
@@ -4688,6 +4695,10 @@ begin
     Handled:=true;
     s:=EnvironmentOptions.LazarusDirectory;
     if s='' then s:=ExtractFilePath(ParamStr(0));
+  end else if MacroName='lclwidgettype' then begin
+    Handled:=true;
+    s:=Project.CompilerOptions.LCLWidgetType;
+    if s='' then s:='gtk';
   end else if MacroName='fpcsrcdir' then begin
     Handled:=true;
     s:=EnvironmentOptions.FPCSourceDirectory;
@@ -5763,6 +5774,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.212  2002/02/06 22:23:13  lazarus
+  MG: codetools now know the compiler options
+
   Revision 1.211  2002/02/06 09:37:40  lazarus
   MG: outputfilter now recognizes, if compiler in sub directory
 

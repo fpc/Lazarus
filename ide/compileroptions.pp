@@ -1,6 +1,6 @@
 { /***************************************************************************
-                          compiler.pp  -  Main application unit
-                             -------------------
+                          compiler.pp  -  Lazarus IDE unit
+                          --------------------------------
                    Compiler options form sets the switches for the project
                    file for the PPC386 compiler.
 
@@ -32,7 +32,7 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  XMLCfg, FileCtrl, Dialogs;
+  XMLCfg, FileCtrl, Dialogs, Controls;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -87,6 +87,7 @@ type
     fShowGenInfo: Boolean;
     fShowLineNum: Boolean;
     fShowAll: Boolean;
+    fShowAllProcsOnError: Boolean;
     fShowDebugInfo: Boolean;
     fShowUsedFiles: Boolean;
     fShowTriedFiles: Boolean;
@@ -106,6 +107,7 @@ type
     fOtherUnitFiles: String;
     fCompilerPath: String;
     fUnitOutputDir: string;
+    fLCLWidgetType: string;
 
     procedure LoadTheCompilerOptions;
     procedure SaveTheCompilerOptions;
@@ -115,6 +117,7 @@ type
 
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
+    procedure Assign(CompOpts: TCompilerOptions);
     function MakeOptionsString: String;
     function MakeOptionsString(const MainSourceFileName: string): String;
     function ParseSearchPaths(const switch, paths: String): String;
@@ -171,6 +174,8 @@ type
     property ShowGenInfo: Boolean read fShowGenInfo write fShowGenInfo;
     property ShowLineNum: Boolean read fShowLineNum write fShowLineNum;
     property ShowAll: Boolean read fShowAll write fShowAll;
+    property ShowAllProcsOnError: Boolean
+      read fShowAllProcsOnError write fShowAllProcsOnError;
     property ShowDebugInfo: Boolean read fShowDebugInfo write fShowDebugInfo;
     property ShowUsedFiles: Boolean read fShowUsedFiles write fShowUsedFiles;
     property ShowTriedFiles: Boolean read fShowTriedFiles write fShowTriedFiles;
@@ -192,6 +197,7 @@ type
     property OtherUnitFiles: String read fOtherUnitFiles write fOtherUnitFiles;
     property CompilerPath: String read fCompilerPath write fCompilerPath;
     property UnitOutputDirectory: string read fUnitOutputDir write fUnitOutputDir;
+    property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
   end;
 
   { Compiler options form }
@@ -274,6 +280,7 @@ type
     chkGeneralInfo: TCheckBox;
     chkLineNumbers: TCheckBox;
     chkEverything: TCheckBox;
+    chkAllProcsOnError: TCheckBox;
     chkDebugInfo: TCheckBox;
     chkUsedFiles: TCheckBox;
     chkTriedFiles: TCheckBox;
@@ -308,6 +315,8 @@ type
     
     grpUnitOutputDir: TGroupBox;
     edtUnitOutputDir: TEdit;
+    
+    LCLWidgetTypeRadioGroup: TRadioGroup;
 
     { Buttons }
     btnTest: TButton;
@@ -369,7 +378,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions LoadCompilerOptions                                      }
+{  TfrmCompilerOptions LoadCompilerOptions                                     }
 {------------------------------------------------------------------------------}
 procedure TCompilerOptions.LoadCompilerOptions(UseExistingFile: Boolean);
 var
@@ -391,7 +400,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions LoadTheCompilerOptions                                      }
+{  TfrmCompilerOptions LoadTheCompilerOptions                                  }
 {------------------------------------------------------------------------------}
 procedure TCompilerOptions.LoadTheCompilerOptions;
 begin
@@ -447,6 +456,7 @@ begin
   ShowGenInfo := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', true);
   ShowLineNum := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', false);
   ShowAll := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', false);
+  ShowAllProcsOnError := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowAllProcsOnError/Value', false);
   ShowDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', false);
   ShowUsedFiles := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', false);
   ShowTriedFiles := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', false);
@@ -467,6 +477,7 @@ begin
   OtherUnitFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
   CompilerPath := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
   UnitOutputDirectory := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', '');
+  LCLWidgetType := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', 'gtk');
 end;
 
 {------------------------------------------------------------------------------}
@@ -546,6 +557,7 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', ShowGenInfo);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', ShowLineNum);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', ShowAll);
+  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowAllProcsOnError/Value', ShowAllProcsOnError);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', ShowDebugInfo);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', ShowUsedFiles);
   XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', ShowTriedFiles);
@@ -566,7 +578,8 @@ begin
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
   XMLConfigFile.SetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', UnitOutputDirectory);
-  
+  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', LCLWidgetType);
+
   XMLConfigFile.Flush;
 end;
 
@@ -806,11 +819,8 @@ begin
   if (StaticKeyword) then
     tempsw := tempsw + 't';
 
-  if (tempsw <> '') then
-  begin
+  if (tempsw <> '') then begin
     tempsw := '-S' + tempsw;
-
-    { Add in Symantec Checking }
     switches := switches + ' ' + tempsw;
   end;
 
@@ -846,9 +856,7 @@ begin
   if (StackChecks) then
     tempsw := tempsw + 't';
 
-  if (tempsw <> '') then
-  begin
-    { Add in Checks }
+  if (tempsw <> '') then begin
     switches := switches + ' -C' + tempsw;
   end;
 
@@ -864,7 +872,7 @@ begin
   sxxx = Set stack size to xxx
 }
 
-  switches := switches + ' ' + '-O';
+  switches := switches + ' -O';
 
   { Generate }
   { Generate    g = smaller    G = faster }
@@ -899,33 +907,33 @@ begin
   { Debugging }
   { Debug Info for GDB }
   if (GenerateDebugInfo) then
-    switches := switches + ' ' + '-g';
+    switches := switches + ' -g';
 
   { Debug Info for DBX }
   if (GenerateDebugDBX) then
-    switches := switches + ' ' + '-gd';
+    switches := switches + ' -gd';
 
   { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
   if (UseLineInfoUnit) then
-    switches := switches + ' ' + '-gl';
+    switches := switches + ' -gl';
 
   { Use Heaptrc Unix }
   if (UseHeaptrc) then
-    switches := switches + ' ' + '-gh';
+    switches := switches + ' -gh';
 
   { Strip Symbols }
   if (StripSymbols) then
-    switches := switches + ' ' + '-Xs';
+    switches := switches + ' -Xs';
 
   { Link Style
      -XD = Link with dynamic libraries
      -XS = Link with static libraries 
-  
-  TODO -XX = link smart   
+     -XX = Link smart
   }
   case (LinkStyle) of
-    1:  switches := switches + ' ' + '-XD';
-    2:  switches := switches + ' ' + '-XS';
+    1:  switches := switches + ' -XD';
+    2:  ; // this is the default  switches := switches + ' -XS';
+    3:  switches := switches + ' -XX';
   end;
 
 
@@ -935,6 +943,10 @@ begin
   { ---------------- Other Tab -------------------- }
 
   { Verbosity }
+  { The following switches will not be needed by the IDE
+      x = Output some executable info (Win32 only)
+      r = Rhide/GCC compatibility mode
+  }
   tempsw := '';
     
   if (ShowErrors) then
@@ -949,6 +961,8 @@ begin
     tempsw := tempsw + 'i';
   if (ShowLineNum) then
     tempsw := tempsw + 'l';
+  if (ShowAllProcsOnError) then
+    tempsw := tempsw + 'b';
   if (ShowDebugInfo) then
     tempsw := tempsw + 'd';
   if (ShowUsedFiles) then
@@ -968,29 +982,19 @@ begin
   if (ShowNothing) then
     tempsw := '0';
 
-  if (tempsw <> '') then
-  begin
+  if (tempsw <> '') then begin
     tempsw := '-v' + tempsw;
-
-    { Add in Verbosity }
     switches := switches + ' ' + tempsw;
   end;
 
-  { TODO: Implement the following switches. They need to be added
-          to the dialog. }
-{
-      b = Show all procedure declarations if overloaded function error occurs
-      x = Output some executable info (Win32 only)
-      r = Rhide/GCC compatibility mode
-}
 
   { Write an FPC logo }
   if (WriteFPCLogo) then
-    switches := switches + ' ' + '-l';
+    switches := switches + ' -l';
 
-  { Use Config File }
+  { Ignore Config File }
   if DontUseConfigFile then
-    switches := switches + ' ' + '-n';
+    switches := switches + ' -n';
 
   { Use Additional Config File     @ = yes and path }
   if (AdditionalConfigFile) and (ConfigFilePath<>'') then
@@ -1204,6 +1208,7 @@ begin
   fShowGenInfo := true;
   fShowLineNum := false;
   fShowAll := false;
+  fShowAllProcsOnError := false;
   fShowDebugInfo := false;
   fShowUsedFiles := false;
   fShowTriedFiles := false;
@@ -1223,6 +1228,79 @@ begin
   fOtherUnitFiles := '';
   fCompilerPath := '/opt/fpc/ppc386';
   fUnitOutputDir := '';
+  fLCLWidgetType := 'gtk';
+end;
+
+procedure TCompilerOptions.Assign(CompOpts: TCompilerOptions);
+begin
+  fOptionsString := CompOpts.fOptionsString;
+  fLoaded := CompOpts.fLoaded;
+
+  { Set Defaults }
+  fStyle := CompOpts.fStyle;
+  fD2Ext := CompOpts.fD2Ext;
+  fCStyleOp := CompOpts.fCStyleOp;
+  fIncludeAssertionCode := CompOpts.fIncludeAssertionCode;
+  fAllowLabel := CompOpts.fAllowLabel;
+  fCPPInline := CompOpts.fCPPInline;
+  fCMacros := CompOpts.fCMacros;
+  fTPCompat := CompOpts.fTPCompat;
+  fInitConst := CompOpts.fInitConst;
+  fStaticKwd := CompOpts.fStaticKwd;
+  fDelphiCompat := CompOpts.fDelphiCompat;
+  fUseAnsiStr := CompOpts.fUseAnsiStr;
+  fGPCCompat := CompOpts.fGPCCompat;
+
+  fUnitStyle := CompOpts.fUnitStyle;
+  fIOChecks := CompOpts.fIOChecks;
+  fRangeChecks := CompOpts.fRangeChecks;
+  fOverflowChecks := CompOpts.fOverflowChecks;
+  fStackChecks := CompOpts.fStackChecks;
+  fHeapSize := CompOpts.fHeapSize;
+  fGenerate := CompOpts.fGenerate;
+  fTargetProc := CompOpts.fTargetProc;
+  fVarsInReg := CompOpts.fVarsInReg;
+  fUncertainOpt := CompOpts.fUncertainOpt;
+  fOptLevel := CompOpts.fOptLevel;
+
+  fGenDebugInfo := CompOpts.fGenDebugInfo;
+  fGenDebugDBX := CompOpts.fGenDebugDBX;
+  fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
+  fUseHeaptrc := CompOpts.fUseHeaptrc;
+  fStripSymbols := CompOpts.fStripSymbols;
+  fLinkStyle := CompOpts.fLinkStyle;
+  fPassLinkerOpt := CompOpts.fPassLinkerOpt;
+  fLinkerOptions := CompOpts.fLinkerOptions;
+
+  fShowErrors := CompOpts.fShowErrors;
+  fShowWarn := CompOpts.fShowWarn;
+  fShowNotes := CompOpts.fShowNotes;
+  fShowHints := CompOpts.fShowHints;
+  fShowGenInfo := CompOpts.fShowGenInfo;
+  fShowLineNum := CompOpts.fShowLineNum;
+  fShowAll := CompOpts.fShowAll;
+  fShowAllProcsOnError := CompOpts.fShowAllProcsOnError;
+  fShowDebugInfo := CompOpts.fShowDebugInfo;
+  fShowUsedFiles := CompOpts.fShowUsedFiles;
+  fShowTriedFiles := CompOpts.fShowTriedFiles;
+  fShowDefMacros := CompOpts.fShowDefMacros;
+  fShowCompProc := CompOpts.fShowCompProc;
+  fShowCond := CompOpts.fShowCond;
+  fShowNothing := CompOpts.fShowNothing;
+  fShowHintsForUnusedProjectUnits := CompOpts.fShowHintsForUnusedProjectUnits;
+  fWriteFPCLogo := CompOpts.fWriteFPCLogo;
+  fDontUseConfigFile := CompOpts.fDontUseConfigFile;
+  fAdditionalConfigFile := CompOpts.fAdditionalConfigFile;
+  fConfigFilePath := CompOpts.fConfigFilePath;
+  fStopAfterErrCount := CompOpts.fStopAfterErrCount;
+
+  fIncludeFiles := CompOpts.fIncludeFiles;
+  fLibraries := CompOpts.fLibraries;
+  fOtherUnitFiles := CompOpts.fOtherUnitFiles;
+  fCompilerPath := CompOpts.fCompilerPath;
+  fUnitOutputDir := CompOpts.fUnitOutputDir;
+  
+  fLCLWidgetType := CompOpts.fLCLWidgetType;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1233,7 +1311,7 @@ begin
   inherited Create(AOwner);
 
   Assert(False, 'Trace:Compiler Options Form Created');
-  SetBounds((Screen.Width-390) div 2,(Screen.Height-500) div 2,379,480);
+  SetBounds((Screen.Width-440) div 2,(Screen.Height-500) div 2,435,480);
   Caption := 'Compiler Options';
   OnShow := @CreateForm;
   
@@ -1283,7 +1361,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions Destructor                                               }
+{  TfrmCompilerOptions Destructor                                              }
 {------------------------------------------------------------------------------}
 destructor TfrmCompilerOptions.Destroy;
 begin
@@ -1291,7 +1369,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions FormOnShow Event                                         }
+{  TfrmCompilerOptions FormOnShow Event                                        }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.CreateForm(Sender: TObject);
 begin
@@ -1299,7 +1377,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonOKClicked                                          }
+{  TfrmCompilerOptions ButtonOKClicked                                         }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonOKClicked(Sender: TObject);
 begin
@@ -1308,22 +1386,22 @@ begin
 
   { Save the options and hide the dialog }
   PutCompilerOptions;
-  Hide;
+  ModalResult:=mrOk;
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonCancelClicked                                      }
+{  TfrmCompilerOptions ButtonCancelClicked                                     }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonCancelClicked(Sender: TObject);
 begin
   // Cancel any changes
   Assert(False, 'Trace:Cancel compiler options changes');
 
-  Hide;
+  ModalResult:=mrCancel;
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonApplyClicked                                       }
+{  TfrmCompilerOptions ButtonApplyClicked                                      }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonApplyClicked(Sender: TObject);
 begin
@@ -1346,6 +1424,7 @@ begin
   // Test MakeOptionsString function
   Assert(False, 'Trace:Test MakeOptionsString function');
 
+  PutCompilerOptions;
   teststr := CompilerOpts.MakeOptionsString;
   WriteLn('CompilerOpts.MakeOptionsString: ' + teststr);
   i:=1;
@@ -1366,6 +1445,7 @@ end;
 {  TfrmCompilerOptions GetCompilerOptions                                      }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.GetCompilerOptions;
+var i: integer;
 begin
   { Get the compiler options and apply them to the dialog }
   case CompilerOpts.Style of
@@ -1437,6 +1517,7 @@ begin
   chkGeneralInfo.Checked := CompilerOpts.ShowGenInfo;
   chkLineNumbers.Checked := CompilerOpts.ShowLineNum;
   chkEverything.Checked := CompilerOpts.ShowAll;
+  chkAllProcsOnError.Checked := CompilerOpts.ShowAllProcsOnError;
   chkDebugInfo.Checked := CompilerOpts.ShowDebugInfo;
   chkUsedFiles.Checked := CompilerOpts.ShowUsedFiles;
   chkTriedFiles.Checked := CompilerOpts.ShowTriedFiles;
@@ -1460,6 +1541,10 @@ begin
   edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
   edtCompiler.Text := CompilerOpts.CompilerPath;
   edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
+  
+  i:=LCLWidgetTypeRadioGroup.Items.IndexOf(CompilerOpts.LCLWidgetType);
+  if i<0 then i:=0;
+  LCLWidgetTypeRadioGroup.ItemIndex:=i;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1467,8 +1552,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.PutCompilerOptions;
 var
-    code: LongInt;
-    hs: LongInt;
+  code: LongInt;
+  hs: LongInt;
+  i: integer;
 begin
   { Put the compiler options into the TCompilerOptions class to be saved }
 
@@ -1559,6 +1645,7 @@ begin
   CompilerOpts.ShowGenInfo := chkGeneralInfo.Checked;
   CompilerOpts.ShowLineNum := chkLineNumbers.Checked;
   CompilerOpts.ShowAll := chkEverything.Checked;
+  CompilerOpts.ShowAllProcsOnError := chkAllProcsOnError.Checked;
   CompilerOpts.ShowDebugInfo := chkDebugInfo.Checked;
   CompilerOpts.ShowUsedFiles := chkUsedFiles.Checked;
   CompilerOpts.ShowTriedFiles := chkTriedFiles.Checked;
@@ -1581,10 +1668,14 @@ begin
   CompilerOpts.OtherUnitFiles := edtOtherUnits.Text;
   CompilerOpts.CompilerPath := edtCompiler.Text;
   CompilerOpts.UnitOutputDirectory := edtUnitOutputDir.Text;
+  
+  i:=LCLWidgetTypeRadioGroup.Itemindex;
+  if i<0 then i:=0;
+  CompilerOpts.LCLWidgetType:= LCLWidgetTypeRadioGroup.Items[i];
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupParsingTab                                          }
+{  TfrmCompilerOptions SetupParsingTab                                         }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupParsingTab(Sender: TObject);
 begin
@@ -1598,7 +1689,7 @@ begin
     Top := 10;
     Left := 10;
     Height := 45;
-    Width := 215;
+    Width := 250;
     Caption := 'Style:';
     Visible := True;
   end;
@@ -1646,7 +1737,7 @@ begin
     Top := 65;
     Left := 10;
     Height := 316;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Symantec Checking:';
     Visible := True;
   end;
@@ -1798,7 +1889,7 @@ end;
 
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupCodeGenerationTab                                   }
+{  TfrmCompilerOptions SetupCodeGenerationTab                                  }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupCodeGenerationTab(Sender: TObject);
 begin
@@ -2090,7 +2181,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupLinkingTab                                          }
+{  TfrmCompilerOptions SetupLinkingTab                                         }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupLinkingTab(Sender: TObject);
 begin
@@ -2104,7 +2195,7 @@ begin
     Top := 10;
     Left := 10;
     Height := 130;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Debugging:';
     Visible := True;
   end;
@@ -2178,7 +2269,7 @@ begin
     Top := grpDebugging.Top + grpDebugging.Height + 10;
     Left := 10;
     Height := 70;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Link Libraries:';
     Visible := True;
   end;
@@ -2216,7 +2307,7 @@ begin
     Top := grpLinkLibraries.Top + grpLinkLibraries.Height + 10;
     Left := 10;
     Height := 75;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Options:';
     Visible := True;
   end;
@@ -2240,14 +2331,14 @@ begin
     Top := 27;
     Left := 8;
     Height := 23;
-    Width := 330;
+    Width := Parent.ClientWidth-20;
     Text := '';
     Visible := True;
   end;
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupOtherTab                                            }
+{  TfrmCompilerOptions SetupOtherTab                                           }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupOtherTab(Sender: TObject);
 begin
@@ -2260,8 +2351,8 @@ begin
     Parent := nbMain.Page[3];
     Top := 10;
     Left := 10;
-    Height := 191;
-    Width := 350;
+    Height := 212;
+    Width := Self.ClientWidth-28;
     Caption := 'Verbosity:';
     Visible := True;
   end;
@@ -2274,7 +2365,7 @@ begin
     Top := 6;
     Left := 8;
     Height := 16;
-    Width := 140;
+    Width := (grpVerbosity.ClientWidth div 2)-12;
     Visible := True;
   end;
 
@@ -2284,9 +2375,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Warnings';
     Top := 27;
-    Left := 8;
-    Height := 16;
-    Width := 140;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
     Visible := True;
   end;
 
@@ -2296,9 +2387,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Notes';
     Top := 48;
-    Left := 8;
-    Height := 16;
-    Width := 140;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
     Visible := True;
   end;
 
@@ -2308,9 +2399,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Hints';
     Top := 69;
-    Left := 8;
-    Height := 16;
-    Width := 140;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
     Visible := True;
   end;
 
@@ -2320,9 +2411,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show General Info';
     Top := 90;
-    Left := 8;
-    Height := 16;
-    Width := 140;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
     Visible := True;
   end;
 
@@ -2332,9 +2423,21 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Line Numbers';
     Top := 111;
-    Left := 8;
-    Height := 16;
-    Width := 140;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
+    Visible := True;
+  end;
+
+  chkAllProcsOnError := TCheckBox.Create(grpVerbosity);
+  with chkAllProcsOnError do
+  begin
+    Parent := grpVerbosity;
+    Caption := 'Show all procs on error';
+    Top := 132;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
     Visible := True;
   end;
 
@@ -2343,10 +2446,10 @@ begin
   begin
     Parent := grpVerbosity;
     Caption := 'Show Everything';
-    Top := 132;
-    Left := 8;
-    Height := 16;
-    Width := 140;
+    Top := 153;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
     Visible := True;
   end;
 
@@ -2356,9 +2459,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Debug Info';
     Top := 6;
-    Left := 160;
+    Left := (grpVerbosity.ClientWidth div 2)+4;
     Height := 16;
-    Width := 180;
+    Width := (grpVerbosity.ClientWidth div 2)-12;
     Visible := True;
   end;
 
@@ -2368,9 +2471,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Used Files';
     Top := 27;
-    Left := 160;
-    Height := 16;
-    Width := 180;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
     Visible := True;
   end;
 
@@ -2380,9 +2483,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Tried Files';
     Top := 48;
-    Left := 160;
-    Height := 16;
-    Width := 180;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
     Visible := True;
   end;
 
@@ -2392,9 +2495,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Defined Macros';
     Top := 69;
-    Left := 160;
-    Height := 16;
-    Width := 180;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
     Visible := True;
   end;
 
@@ -2402,11 +2505,11 @@ begin
   with chkCompiledProc do
   begin
     Parent := grpVerbosity;
-    Caption := 'Show Compiled Procedure';
+    Caption := 'Show Compiled Procedures';
     Top := 90;
-    Left := 160;
-    Height := 16;
-    Width := 180;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
     Visible := True;
   end;
 
@@ -2416,9 +2519,9 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Conditionals';
     Top := 111;
-    Left := 160;
-    Height := 16;
-    Width := 180;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
     Visible := True;
   end;
 
@@ -2428,9 +2531,21 @@ begin
     Parent := grpVerbosity;
     Caption := 'Show Nothing (only errors)';
     Top := 132;
-    Left := 160;
-    Height := 16;
-    Width := 180;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
+    Visible := True;
+  end;
+
+  chkFPCLogo := TCheckBox.Create(Self);
+  with chkFPCLogo do
+  begin
+    Parent := grpVerbosity;
+    Caption := 'Write an FPC Logo';
+    Top := 153;
+    Left := chkDebugInfo.Left;
+    Height := chkDebugInfo.Height;
+    Width := chkDebugInfo.Width;
     Visible := True;
   end;
 
@@ -2439,38 +2554,23 @@ begin
   begin
     Parent := grpVerbosity;
     Caption := 'Show Hints for unused project units';
-    Top := 153;
-    Left := 8;
-    Height := 16;
+    Top := 174;
+    Left := ChkErrors.Left;
+    Height := ChkErrors.Height;
     Width := 250;
     Visible := True;
   end;
   
   {------------------------------------------------------------}
 
-  chkFPCLogo := TCheckBox.Create(Self);
-  with chkFPCLogo do
-  begin
-    Parent := nbMain.Page[3];
-    Caption := 'Write An FPC Logo';
-    Top := grpVerbosity.Top + grpVerbosity.Height + 12;
-    Left := 10;
-    Height := 16;
-    Width := 150;
-    Visible := True;
-  end;
-
-
-  {------------------------------------------------------------}
-
   grpConfigFile := TGroupBox.Create(Self);
   with grpConfigFile do
   begin
     Parent := nbMain.Page[3];
-    Top := grpVerbosity.Top + grpVerbosity.Height + 40;
+    Top := grpVerbosity.Top + grpVerbosity.Height + 10;
     Left := 10;
     Height := 95;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Config Files:';
     Visible := True;
   end;
@@ -2538,7 +2638,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupSearchPathsTab                                      }
+{  TfrmCompilerOptions SetupSearchPathsTab                                     }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupSearchPathsTab(Sender: TObject);
 begin
@@ -2552,7 +2652,7 @@ begin
     Top := 10;
     Left := 10;
     Height := 55;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Include Files:';
     Visible := True;
   end;
@@ -2564,7 +2664,7 @@ begin
     Top := 8;
     Left := 8;
     Height := 23;
-    Width := 330;
+    Width := Parent.ClientWidth-2*Left;
     Text := '';
     Visible := True;
   end;
@@ -2579,7 +2679,7 @@ begin
     Top := grpIncludeFiles.Top + grpIncludeFiles.Height + 7;
     Left := 10;
     Height := 55;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Libraries:';
     Visible := True;
   end;
@@ -2591,7 +2691,7 @@ begin
     Top := 8;
     Left := 8;
     Height := 23;
-    Width := 330;
+    Width := Parent.ClientWidth-2*Left;
     Text := '';
     Visible := True;
   end;
@@ -2605,7 +2705,7 @@ begin
     Top := grpLibraries.Top + grpLibraries.Height + 7;
     Left := 10;
     Height := 55;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Other Unit Files (Delimiter is semicolon):';
     Visible := True;
   end;
@@ -2617,7 +2717,7 @@ begin
     Top := 8;
     Left := 8;
     Height := 23;
-    Width := 330;
+    Width := Parent.ClientWidth-2*Left;
     Text := '';
     Visible := True;
   end;
@@ -2631,7 +2731,7 @@ begin
     Top := grpOtherUnits.Top + grpOtherUnits.Height + 7;
     Left := 10;
     Height := 55;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Path To Compiler:';
     Visible := True;
   end;
@@ -2643,7 +2743,7 @@ begin
     Top := 8;
     Left := 8;
     Height := 23;
-    Width := 330;
+    Width := Parent.ClientWidth-2*Left;
     Text := '';
     Visible := True;
   end;
@@ -2657,7 +2757,7 @@ begin
     Top := grpCompiler.Top + grpCompiler.Height + 7;
     Left := 10;
     Height := 55;
-    Width := 350;
+    Width := Self.ClientWidth-28;
     Caption := 'Unit output directory:';
     Visible := True;
   end;
@@ -2669,14 +2769,36 @@ begin
     Top := 8;
     Left := 8;
     Height := 23;
-    Width := 330;
+    Width := Parent.ClientWidth-2*Left;
     Text := '';
     Visible := True;
   end;  
+  
+  
+  {------------------------------------------------------------}
+  
+  LCLWidgetTypeRadioGroup:=TRadioGroup.Create(Self);
+  with LCLWidgetTypeRadioGroup do begin
+    Name:='LCLWidgetTypeRadioGroup';
+    Parent:=nbMain.Page[4];
+    Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+7;
+    Left:=grpUnitOutputDir.Left;
+    Width:=150;
+    Height:=40;
+    Caption:='LCL Widget Type';
+    with Items do begin
+      Add('gtk');
+      Add('win32');
+    end;
+    Columns:=2;
+    ItemIndex:=0;
+    Visible:=true;
+  end;
+  
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupButtonBar                                           }
+{  TfrmCompilerOptions SetupButtonBar                                          }
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.SetupButtonBar(Sender: TObject);
 begin
@@ -2722,8 +2844,6 @@ begin
     Visible := True;
   end;
 
-  { Test button for testing MakeOptionsString function. Remove
-    when this function is working correctly. }
   btnTest := TButton.Create(Self);
   with btnTest do
   begin
