@@ -492,7 +492,7 @@ type
     //FReadOnly : Boolean;
     FBorderStyle: TBorderStyle;
     FDefItemHeight: integer;
-    FImages : TCustomImageList;
+    FSmallImages : TCustomImageList;
     FListItems : TListItems;
     FColumns : TViewColumns;
     FViewStyle : TViewStyle;
@@ -506,7 +506,7 @@ type
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
     procedure SetDefaultItemHeight(AValue: integer);
-    procedure SetImages(const AValue: TCustomImageList);
+    procedure SetSmallImages(const AValue: TCustomImageList);
     procedure SetItems(Value : TListItems);
     procedure SetMultiSElect(const AValue: Boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
@@ -529,31 +529,47 @@ type
     Procedure ItemAdded;  //called by TListItems
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+//    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    property Columns : TViewColumns read FColumns write FColumns;
+//    property ColumnClick: Boolean read FColumnClick write SetColumnClick default True;
+    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight;
+//    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
+    property Items: TListItems read FListItems write SetItems;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+//    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
+//    property RowSelect: Boolean read FRowSelect write SetRowSelect default False;
     property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
     property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
-    property DefaultItemHeight: integer
-      read FDefItemHeight write SetDefaultItemHeight;
-
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
+    property SmallImages: TCustomImageList read FSmallImages write SetSmallImages;
+    property Sorted: Boolean read FSorted write SetSorted;
+    property SortColumn: Integer read FSortColumn write SetSortColumn;
+    property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
-    property Columns : TViewColumns read FColumns write FColumns;
-    property ViewStyle : TViewStyle read FViewStyle write SetViewStyle;
-    property Items : TListItems read FListItems write SetItems;
-    property Sorted : Boolean read FSorted write SetSorted;
-    property SortColumn : Integer read FSortColumn write SetSortColumn;
-    property MultiSelect : Boolean read FMultiSelect write SetMultiSelect default False;
-    property Images : TCustomImageList read FImages write SetImages;
-    property ScrollBars: TScrollStyle
-      read FScrollBars write SetScrollBars default ssBoth;
   end;
 
  TListView = class(TCustomListView)
-  published
+  published   
+    property Align;
+    property Anchors;
+//    property BorderStyle;
+    property BorderWidth;
+    property Color;
     property Columns;
-    property ScrollBars;
+//    property ColumnClick;
+//    property Constraints;
+    property Enabled;
+    property Font;
+//    property HideSelection;
     property Items;
-    property Images;
+    property MultiSelect;
+//    property ReadOnly default False;
+//    property RowSelect;
+    property ScrollBars;
+    property SmallImages;
+    property SortColumn;
     property Visible;
     property ViewStyle;
     property OnMOuseMOve;
@@ -1757,6 +1773,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/03/11 23:07:23  lazarus
+  MWE:
+    * Made TListview more Delphi compatible
+    * Did some cleanup
+
   Revision 1.24  2002/03/08 09:30:30  lazarus
   MG: nicer parameter names
 
