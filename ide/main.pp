@@ -4124,11 +4124,12 @@ begin
     else
       AText:='Source of page "'+ActiveSrcEdit.PageName+'" has changed. Save?';
     ACaption:='Source modified';
-    if Messagedlg(ACaption, AText, mtConfirmation, [mbYes, mbNo], 0)=mrYes then
-    begin
+    Result:=Messagedlg(ACaption, AText,
+                       mtConfirmation, [mbYes, mbNo, mbAbort], 0);
+    if Result=mrYes then begin
       Result:=DoSaveEditorFile(PageIndex,[sfCheckAmbigiousFiles]);
-      if Result=mrAbort then exit;
     end;
+    if Result=mrAbort then exit;
     Result:=mrOk;
   end;
   
@@ -8250,6 +8251,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.516  2003/04/10 10:17:27  mattias
+  added Abort to save on modified
+
   Revision 1.515  2003/04/09 23:36:33  mattias
   implemented removing and readding package items
 
