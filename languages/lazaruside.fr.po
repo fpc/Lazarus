@@ -804,6 +804,10 @@ msgstr "Ne peut pas référencer des composants sans unité"
 msgid "Cancel"
 msgstr "Annuler"
 
+#: lazarusidestrconsts:liscannotfindlazarusstarter
+msgid "Cannot find lazarus starter:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_capital
 msgid "Capital"
 msgstr "Majuscule"
@@ -4830,6 +4834,10 @@ msgstr "Section Resourcestring :"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildrestartafterbuild
+msgid "Restart After Successfull Build"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry

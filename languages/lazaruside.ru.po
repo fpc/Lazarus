@@ -794,6 +794,10 @@ msgstr "Не могу зарегистрировать компоненты без модуля"
 msgid "Cancel"
 msgstr "Отмена"
 
+#: lazarusidestrconsts:liscannotfindlazarusstarter
+msgid "Cannot find lazarus starter:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_capital
 msgid "Capital"
 msgstr "Заглавный"
@@ -4821,6 +4825,10 @@ msgstr "Секция Resourcestring:"
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
 msgstr "Перезапуск"
+
+#: lazarusidestrconsts:lislazbuildrestartafterbuild
+msgid "Restart After Successfull Build"
+msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
 msgid "Restore window geometry"

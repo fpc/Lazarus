@@ -794,6 +794,10 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancel·lar"
 
+#: lazarusidestrconsts:liscannotfindlazarusstarter
+msgid "Cannot find lazarus starter:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_capital
 msgid "Capital"
 msgstr "Majúscula"
@@ -4820,6 +4824,10 @@ msgstr "Secció de cadena de recursos"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildrestartafterbuild
+msgid "Restart After Successfull Build"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry

@@ -1370,6 +1370,10 @@ msgstr ""
 msgid "Stop the debugging?"
 msgstr ""
 
+#: lazarusidestrconsts:liscannotfindlazarusstarter
+msgid "Cannot find lazarus starter:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisresourcefilecomment
 msgid "This is an automatically generated lazarus resource file"
 msgstr ""
@@ -4550,12 +4554,12 @@ msgstr ""
 msgid "With Packages"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildok
-msgid "Ok"
+#: lazarusidestrconsts:lislazbuildrestartafterbuild
+msgid "Restart After Successfull Build"
 msgstr ""
 
-#: lazarusidestrconsts:liscldirkeepalltextfiles
-msgid "Keep all text files"
+#: lazarusidestrconsts:lislazbuildok
+msgid "Ok"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildcancel
@@ -7424,6 +7428,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
 msgid "Simple Syntax (e.g. * instead of .*)"
+msgstr ""
+
+#: lazarusidestrconsts:liscldirkeepalltextfiles
+msgid "Keep all text files"
 msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter

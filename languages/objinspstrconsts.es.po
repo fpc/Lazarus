@@ -26,11 +26,11 @@ msgstr "Imagen seleccionada"
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
-msgstr ""
+msgstr "%s: Ya registrado"
 
 #: objinspstrconsts:oishelpnotregistered
 msgid "%s: Not registered"
-msgstr ""
+msgstr "%s: No registrado"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
@@ -42,7 +42,7 @@ msgstr "&Añadir"
 
 #: objinspstrconsts:oiscancel
 msgid "&Cancel"
-msgstr ""
+msgstr "&Cancelar"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
@@ -50,7 +50,7 @@ msgstr "&Suprimir"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr ""
+msgstr "&Cargar"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
@@ -58,7 +58,7 @@ msgstr ""
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr ""
+msgstr "&Guardar"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -90,7 +90,7 @@ msgstr "Todo"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files (*.*)|*.*"
-msgstr ""
+msgstr "Todos los archivos (*.*)|*.*"
 
 #: objinspstrconsts:oisarray
 msgid "Array"
@@ -102,15 +102,15 @@ msgstr ""
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr ""
+msgstr "Navegador %s%s%s no ejecutable."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Navegador %s%s%s no encontrado."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "&Limpiar"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -130,7 +130,7 @@ msgstr "Limpiar"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr ""
+msgstr "Confirmar suprimir"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
@@ -142,7 +142,7 @@ msgstr "Suprimir"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr ""
+msgstr "Suprimir elemento %s%s%s?"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
@@ -158,15 +158,15 @@ msgstr "Error"
 
 #: objinspstrconsts:oiserrorloadingimage
 msgid "Error loading image"
-msgstr ""
+msgstr "Error cargando imagen"
 
 #: objinspstrconsts:oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
-msgstr ""
+msgstr "Error cargando imagen %s%s%s:%s%s"
 
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr ""
+msgstr "Error mientras ejecutando %s%s%s:%s%s"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -178,31 +178,31 @@ msgstr ""
 
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr ""
+msgstr "Contexto de ayuda %s no encontrado in la Base de datos %s%s%s."
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr ""
+msgstr "Contexto de ayuda %s no encontrado."
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgstr ""
+msgstr "Base de datos de ayuda %s%s%s no encontró un visor para una página de ayuda de tipo %s"
 
 #: objinspstrconsts:oishelphelpdatabasenotfound
 msgid "Help Database %s%s%s not found"
-msgstr ""
+msgstr "Base de datos de ayuda %s%s%s no encontrada"
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr ""
+msgstr "Palabra clave de ayuda %s%s%s no encontrada en la Base de datos %s%s%s."
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr ""
+msgstr "Palabra clave de ayuda %s%s%s no encontrada."
 
 #: objinspstrconsts:oishelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr ""
+msgstr "Nodo de ayuda %s%s%s no tiene Base de datos de ayuda"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
@@ -234,7 +234,7 @@ msgstr "Editor de ListView"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr ""
+msgstr "Cargar Diálogo de Imagen"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -246,11 +246,11 @@ msgstr "Nuevo"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr ""
+msgstr "No se encontró navegador HTML.%sPor favor defina uno en Help(Ayuda) -> Configure Help(Configurar Ayuda) -> Viewers(Visores)"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
-msgstr ""
+msgstr "Objecto"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -266,7 +266,7 @@ msgstr ""
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr ""
+msgstr "Seleccione un archivo"
 
 #: objinspstrconsts:oisset
 msgid "Set"
@@ -298,7 +298,7 @@ msgstr "Editor de StringGrid ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr ""
+msgstr "Diálogo Editor de Cadenas"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
@@ -306,11 +306,11 @@ msgstr "Sub-elemento"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr ""
+msgstr "La base de datos de ayuda %s%s%s no pudo encontrar el archivo %s%s%s."
 
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
-msgstr ""
+msgstr "El macro %s en BrowserParams será remplazado por la URL."
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"

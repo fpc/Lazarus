@@ -805,6 +805,10 @@ msgstr "No se puede registrar los componentes sin una unidad"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: lazarusidestrconsts:liscannotfindlazarusstarter
+msgid "Cannot find lazarus starter:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:srvk_capital
 msgid "Capital"
 msgstr "Capital"
@@ -4831,6 +4835,10 @@ msgstr "Sección Resourcestring:"
 
 #: lazarusidestrconsts:lismenurestart
 msgid "Restart"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildrestartafterbuild
+msgid "Restart After Successfull Build"
 msgstr ""
 
 #: lazarusidestrconsts:rsiwprestorewindowgeometry
