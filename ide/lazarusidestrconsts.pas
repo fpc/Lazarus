@@ -739,7 +739,7 @@ resourcestring
   dlgMarginGutter = 'Margin and gutter';//What is gutter?
   dlgVisibleRightMargin = 'Visible right margin';
   dlgVisibleGutter = 'Visible gutter';//I know only about fish guts... :( :)
-  dlgShowLineNumbers = 'Show line numbers';
+  dlgShowLineNumbers = 'Show compiling line numbers';
   dlgRightMargin = 'Right margin';
   dlgRightMarginColor = 'Right margin color';
   dlgGutterWidth = 'Gutter width';// as I am food technology bachelor
@@ -903,7 +903,7 @@ resourcestring
   dlgLinkSmart = 'Link Smart';
   dlgPassOptsLinker = 'Pass Options To The Linker (Delimiter is space)';
   lisCOTargetOSSpecificOptions = 'Target OS specific options';
-  dlgVerbosity = 'Verbosity:';
+  dlgVerbosity = 'Verbosity during compilation:';
   dlgCOShowErr = 'Show Errors';
   dlgShowWarnings = 'Show Warnings';
   dlgShowNotes = 'Show Notes';
@@ -925,11 +925,11 @@ resourcestring
   dlgUseAdditionalConfig = 'Use Additional Compiler Config File';
   lisCustomOptions2 = 'Custom options';
   dlgStopAfterNrErr = 'Stop after number of errors:';
-  dlgOtherUnitFiles = 'Other Unit Files (Delimiter is semicolon):';
-  dlgCOIncFiles = 'Include Files:';
-  dlgCOSources = 'Other Sources:  (.pp/.pas files)';
-  dlgCOLibraries = 'Libraries:';
-  dlgCODebugPath = 'Debugger path addition:';
+  dlgOtherUnitFiles = 'Other Unit Files (-Fu) (Delimiter is semicolon):';
+  dlgCOIncFiles = 'Include Files (-Fi):';
+  dlgCOSources = 'Other Sources (.pp/.pas files, used only by IDE not by compiler)';
+  dlgCOLibraries = 'Libraries (-Fl):';
+  dlgCODebugPath = 'Debugger path addition (none):';
   dlgToFPCPath = 'Path To Compiler:';
   lisCOSkipCallingCompiler = 'Skip calling Compiler';
   lisCOExecuteAfter = 'Execute after';
@@ -940,7 +940,7 @@ resourcestring
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
   lisCOShowAllMessages = 'Show all messages';
-  dlgUnitOutp = 'Unit output directory:';
+  dlgUnitOutp = 'Unit output directory (-FE):';
   lisCOdefault = 'default (%s)';
   dlgButApply = 'Apply';
   dlgCOShowOptions = 'Show Options';
