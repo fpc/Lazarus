@@ -141,6 +141,7 @@ var
   LCLObject: TControl;
   {$ENDIF}
   GdkWindow: PGdkWindow;
+  AForm: TCustomForm;
 begin
   {$IFDEF VerboseFocus}
   write('TGTKObject.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
@@ -154,6 +155,9 @@ begin
   if Result then begin
     GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
     if GdkWindow<>nil then begin
+      AForm:=TCustomForm(GetLCLObject(PgtkWidget(hwnd)));
+      if (AForm<>nil) and (AForm is TCustomForm) then
+        Screen.MoveFormToFront(AForm);
       gdk_window_raise(GdkWindow);
       // how to set the keyboard focus to the raised window?
       //gtk_window_activate_focus(PGtkWindow(hWnd));
@@ -8074,6 +8078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.234  2003/04/16 17:20:24  mattias
+  implemented package check broken dependency on compile
+
   Revision 1.233  2003/04/11 21:21:34  mattias
   implemented closing unneeded package
 
