@@ -835,7 +835,11 @@ msgid "Compiler Options for Project: %s"
 msgstr ""
 
 #: lazarusidestrconsts:lischoosedelphiunit
-msgid "Choose Delphi unit"
+msgid "Choose Delphi unit (*.pas)"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosedelphiproject
+msgid "Choose Delphi project (*.dpr)"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoreadfileerror
@@ -2835,7 +2839,7 @@ msgid "Show Hints"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
-msgid "Show General Info"
+msgid "Show general info"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowprocserror
@@ -2843,39 +2847,43 @@ msgid "Show all procs on error"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshoweverything
-msgid "Show Everything"
+msgid "Show everything"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowsummary
+msgid "Show summary"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowdebuginfo
-msgid "Show Debug Info"
+msgid "Show debug info"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowusedfiles
-msgid "Show Used Files"
+msgid "Show used files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowtriedfiles
-msgid "Show Tried Files"
+msgid "Show tried files"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowdefinedmacros
-msgid "Show Defined Macros"
+msgid "Show defined macros"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
-msgid "Show Compiled Procedures"
+msgid "Show compiled procedures"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowconditionals
-msgid "Show Conditionals"
+msgid "Show conditionals"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshownothing
-msgid "Show Nothing (only errors)"
+msgid "Show nothing (only errors)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwritefpclogo
-msgid "Write an FPC Logo"
+msgid "Write an FPC logo"
 msgstr ""
 
 #: lazarusidestrconsts:dlghintsunused
@@ -5868,6 +5876,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojaddnewrequirement
 msgid "New Requirement"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojaddfiles
+msgid "Add files"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojaddeditorfile
+msgid "Add editor files"
 msgstr ""
 
 #: lazarusidestrconsts:lisprojaddaddfiletoproject

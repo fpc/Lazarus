@@ -349,6 +349,10 @@ msgstr "Añadir plantilla de código"
 msgid "Add editor file to Project"
 msgstr "Añadir archivo de editor al Proyecto"
 
+#: lazarusidestrconsts:lisprojaddeditorfile
+msgid "Add editor files"
+msgstr ""
+
 #: lazarusidestrconsts:lisaf2paddfiletoapackage
 msgid "Add file to a package"
 msgstr "Añadir archivo a un paquete"
@@ -356,6 +360,10 @@ msgstr "Añadir archivo a un paquete"
 #: lazarusidestrconsts:lisprojaddaddfiletoproject
 msgid "Add file to project:"
 msgstr "Añadir archivo al proyecto:"
+
+#: lazarusidestrconsts:lisprojaddfiles
+msgid "Add files"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2paddfilestopackage
 msgid "Add files to package"
@@ -901,9 +909,13 @@ msgstr "Verificar consistencia"
 msgid "Checks:"
 msgstr "Verificar:"
 
+#: lazarusidestrconsts:lischoosedelphiproject
+msgid "Choose Delphi project (*.dpr)"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedelphiunit
-msgid "Choose Delphi unit"
-msgstr "Escoja unidad de Delphi"
+msgid "Choose Delphi unit (*.pas)"
+msgstr ""
 
 #: lazarusidestrconsts:lisctdefchoosedirectory
 msgid "Choose Directory"
@@ -5525,33 +5537,9 @@ msgstr "Mostrar Todo"
 msgid "Show CodeTools Values"
 msgstr "Mostrar Valores de CodeTools"
 
-#: lazarusidestrconsts:dlgshowcompiledprocedures
-msgid "Show Compiled Procedures"
-msgstr "Mostrar Procedimientos Compilados"
-
-#: lazarusidestrconsts:dlgshowconditionals
-msgid "Show Conditionals"
-msgstr "Mostrar Condicionales"
-
-#: lazarusidestrconsts:dlgshowdebuginfo
-msgid "Show Debug Info"
-msgstr "Mostrar información de depuración"
-
-#: lazarusidestrconsts:dlgshowdefinedmacros
-msgid "Show Defined Macros"
-msgstr "Mostrar Macros definidas"
-
 #: lazarusidestrconsts:dlgcoshowerr
 msgid "Show Errors"
 msgstr "Mostrar errores"
-
-#: lazarusidestrconsts:dlgshoweverything
-msgid "Show Everything"
-msgstr "Mostrar Todo"
-
-#: lazarusidestrconsts:dlgshowgeneralinfo
-msgid "Show General Info"
-msgstr "Mostrar información general"
 
 #: lazarusidestrconsts:dlgguidelines
 msgid "Show Guide Lines"
@@ -5569,10 +5557,6 @@ msgstr "Ver sugerencias para unidades sin uso en el código fuente principal"
 msgid "Show Notes"
 msgstr "Mostrar notas"
 
-#: lazarusidestrconsts:dlgshownothing
-msgid "Show Nothing (only errors)"
-msgstr "No mostrar nada (sólo errores)"
-
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
 msgstr "Mostrar Opciones"
@@ -5580,14 +5564,6 @@ msgstr "Mostrar Opciones"
 #: lazarusidestrconsts:fdmshowoptions
 msgid "Show Options for form editing"
 msgstr "Mostrar opciones para edición de formularios"
-
-#: lazarusidestrconsts:dlgshowtriedfiles
-msgid "Show Tried Files"
-msgstr "Mostrar archivos Intentados"
-
-#: lazarusidestrconsts:dlgshowusedfiles
-msgid "Show Used Files"
-msgstr "Mostrar archivos usados"
 
 #: lazarusidestrconsts:dlgshowwarnings
 msgid "Show Warnings"
@@ -5609,6 +5585,10 @@ msgstr "Mostrar todos los procs de error"
 msgid "Show close buttons in notebook"
 msgstr ""
 
+#: lazarusidestrconsts:dlgshowcompiledprocedures
+msgid "Show compiled procedures"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompileroptions
 msgid "Show compiler options"
 msgstr "Mostrar opciones del compilador"
@@ -5617,9 +5597,29 @@ msgstr "Mostrar opciones del compilador"
 msgid "Show component captions"
 msgstr "Mostrar títulos de componentes"
 
+#: lazarusidestrconsts:dlgshowconditionals
+msgid "Show conditionals"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowdebuginfo
+msgid "Show debug info"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowdefinedmacros
+msgid "Show defined macros"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowedrhints
 msgid "Show editor hints"
 msgstr "Mostrar sugerencias del editor"
+
+#: lazarusidestrconsts:dlgshoweverything
+msgid "Show everything"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowgeneralinfo
+msgid "Show general info"
+msgstr ""
 
 #: lazarusidestrconsts:dlgqshowgrid
 msgid "Show grid"
@@ -5633,8 +5633,24 @@ msgstr ""
 msgid "Show line numbers"
 msgstr ""
 
+#: lazarusidestrconsts:dlgshownothing
+msgid "Show nothing (only errors)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show scroll hint"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowsummary
+msgid "Show summary"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowtriedfiles
+msgid "Show tried files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowusedfiles
+msgid "Show used files"
 msgstr ""
 
 #: lazarusidestrconsts:liscldirsimplesyntaxeginsteadof
@@ -7382,8 +7398,8 @@ msgid "Write Error"
 msgstr ""
 
 #: lazarusidestrconsts:dlgwritefpclogo
-msgid "Write an FPC Logo"
-msgstr "Escribir un logo de FPC"
+msgid "Write an FPC logo"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefswriteerror
 msgid "Write error"
