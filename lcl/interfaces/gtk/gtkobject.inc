@@ -1145,6 +1145,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TgtkObject.ListViewAddItem(TheListView: TObject);
+------------------------------------------------------------------------------}
+procedure TgtkObject.ListViewAddItem(TheListView: TObject);
+var
+  ListView: TListView;
+  ListViewWidget: PGtkCList;
+  Titles: PPGChar;
+  i, Count: integer;
+begin
+  ListView:=TListView(TheListView);
+  ListViewWidget:= PGtkCList(GetWidgetInfo(
+                         Pointer(ListView.Handle), True)^.ImplementationWidget);
+  Count:=ListViewWidget^.columns;
+  GetMem(Titles,SizeOf(PGChar)*Count);
+  Titles[0]:=#0;
+  for i:=1 to Count-1 do Titles[i]:=nil;
+  gtk_clist_append(ListViewWidget,Titles);
+  FreeMem(Titles);
+end;
+
+{------------------------------------------------------------------------------
   procedure TgtkObject.BringFormToFront(Sender: TObject);
 ------------------------------------------------------------------------------}
 procedure TgtkObject.BringFormToFront(Sender: TObject);
@@ -1188,7 +1209,6 @@ var
   ListItem  : PGtkListItem;          // currently only used for listboxes
   Rect      : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
-  Titles    : Array [0..1] of PChar;
   Geometry  : TGdkGeometry;
   Accel     : integer;
   AWindow   : PGdkWindow;
@@ -1291,12 +1311,7 @@ begin
       LM_LV_ADDITEM :
       if (Sender is TListView) then
       begin
-        Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-
-        Titles[0] := #0;
-        Titles[1] := nil;
-        Num := gtk_clist_append(PgtkCList(Widget),@Titles);
-
+        ListViewAddItem(Sender);
         ListViewChangeItem(Sender,Num);
       end;
 
@@ -4147,13 +4162,14 @@ begin
         gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
 
         // add items (the item properties are set via LM_SETPROPERTIES)
-        GetMem(Titles,SizeOf(PChar)*2);
+        GetMem(Titles,SizeOf(PChar)*GTK_CLIST (TempWidget)^.columns);
+        for TempInt:=0 to GTK_CLIST (TempWidget)^.columns do
+          Titles[TempInt]:=nil;
         for TempInt:=0 to Items.Count-1 do begin
           if Items[TempInt].Caption<>'' then
             Titles[0] := PChar(Items[TempInt].Caption)
           else
             Titles[0] := #0;
-          Titles[1] := nil;
           gtk_clist_append(PgtkCList(TempWidget),Titles);
         end;
         FreeMem(Titles);
@@ -5776,7 +5792,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.SelectGDKPenProps(DC: HDC);
 
-  procedure SetDashes(Dashes: array of gint8);
+  procedure SetDashes(const Dashes: array of gint8);
   begin
     laz_gdk_gc_set_dashes(TDeviceContext(DC).GC,0,Pgint8(@Dashes[Low(Dashes)]),
       High(Dashes)-Low(Dashes)+1);
@@ -6583,6 +6599,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.284  2002/11/12 13:16:05  lazarus
+  MG: fixed TListView with more than 2 columns
+
   Revision 1.283  2002/11/12 10:53:44  lazarus
   MG: fixed setting gdk pen style
 
