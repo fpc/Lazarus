@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Classes, StdCtrls, Controls, Graphics, Forms,
+  Classes, StdCtrls, Controls, Graphics, Forms, SysUtils,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses, Windows, LCLType, 
   Win32Int, Win32Proc, InterfaceBase, Win32WSControls;
@@ -81,6 +81,7 @@ type
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetMaxLength(const ACustomComboBox: TCustomComboBox): integer; override;
+    class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
     class procedure SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
       NewTraverseList: boolean); override;
@@ -144,6 +145,7 @@ type
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
+    class function  GetText(const AWinControl: TWinControl; var AText: string): boolean; override;
 
     class procedure SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase); override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
@@ -627,6 +629,26 @@ begin
   Result := GetWindowInfo(ACustomComboBox.Handle)^.MaxLength;
 end;
 
+function  TWin32WSCustomComboBox.GetText(const AWinControl: TWinControl; var AText: string): boolean;
+var
+  Handle: HWND;
+  CapLen: dword;
+  Caption: PChar;
+begin
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    exit;
+  AText := '';
+  Handle := AWinControl.Handle;
+  // TODO: this can be made shorter probably, using SetLength(AText, ...)
+  // + 1 = terminating null character
+  CapLen := Windows.SendMessage(Handle, WM_GETTEXTLENGTH, 0, 0) + 1;
+  Caption := StrAlloc(CapLen);
+  Windows.SendMessage(Handle, WM_GETTEXT, CapLen, LPARAM(Caption));
+  AText := StrPas(Caption);
+  StrDispose(Caption);
+end;
+
 procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
   NewTraverseList: boolean);
 begin
@@ -741,6 +763,25 @@ end;
 function  TWin32WSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
 begin
   Result := GetWindowInfo(ACustomEdit.Handle)^.MaxLength;
+end;
+
+function  TWin32WSCustomEdit.GetText(const AWinControl: TWinControl; var AText: string): boolean;
+var
+  CapLen: dword;
+  Caption: PChar;
+  Handle: HWND;
+begin
+  Result := AWinControl.HandleAllocated;
+  if not Result then
+    exit;
+  AText := '';
+  Handle := AWinControl.Handle;
+  // TODO: this can be made shorter probably, using SetLength(AText, ...)
+  CapLen := GetWindowTextLength(Handle);
+  Caption := StrAlloc(CapLen + 1);
+  GetWindowText(Handle, Caption, CapLen + 1);
+  AText := StrPas(Caption);
+  StrDispose(Caption);
 end;
 
 procedure TWin32WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
