@@ -1483,14 +1483,18 @@ Type
 
     SRC := nil;
 
-    If gdk_pixbuf_loader_write(Loader, PChar(@BMPInfo), SizeOf(BMPInfo) div
-       SizeOf(Char))
+    If gdk_pixbuf_loader_write(Loader, PChar(@BMPInfo),
+                               SizeOf(BMPInfo) div SizeOf(Char))
     then begin
-      If gdk_pixbuf_loader_write(Loader, Pchar(Data), BMPInfo.InfoHeader.biSizeImage) then begin
-          SRC := gdk_pixbuf_loader_get_pixbuf(loader);
+      If gdk_pixbuf_loader_write(Loader, PChar(Data),
+        BMPInfo.InfoHeader.biSizeImage) then
+      begin
+        SRC := gdk_pixbuf_loader_get_pixbuf(loader);
+        if Src=nil then
+          WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Pixbuf!');
       end
       else
-        WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Data!');
+        WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Image!');
     end
     else
       WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Bitmap Header!');
@@ -7297,6 +7301,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.365  2003/05/20 21:41:07  mattias
+  started loading/saving breakpoints
+
   Revision 1.364  2003/05/19 08:16:33  mattias
   fixed allocation of dc backcolor
 
