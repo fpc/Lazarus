@@ -1885,8 +1885,12 @@ begin
           Highlighter:=PreviewSyn;
         EditorOpts.GetSynEditSettings(PreviewEdits[a]);
         EditorOpts.KeyMap.AssignTo(PreviewEdits[a].KeyStrokes);
-        if a<>3 then
+        if a<>3 then begin
           Lines.Text:=EditorOpts.HighlighterList[CurLanguageID].SampleSource;
+          PreviewEdits[a].Options:=PreviewEdits[a].Options
+                +[eoNoCaret, eoNoSelection]
+                -[eoBracketHighlight];
+        end;
       end;
   end;
   CodeTemplateCodePreview.Gutter.Visible:=false;
