@@ -39,8 +39,8 @@ type
   published
     TextToFindLabel:TLabel;
     ReplaceWithLabel:TLabel;
-    TextToFindComboBox:TComboBox;
-    ReplaceTextComboBox:TComboBox;
+    TextToFindEdit:TEdit;
+    ReplaceTextEdit:TEdit;
     OptionsGroupBox:TGroupBox;
     CaseSensitiveCheckBox:TCheckBox;
     WholeWordsOnlyCheckBox:TCheckBox;
@@ -52,7 +52,7 @@ type
     OkButton:TButton;
     ReplaceAllButton:TButton;
     CancelButton:TButton;
-    procedure TextToFindComboBoxKeyDown(Sender: TObject; var Key:Word; 
+    procedure TextToFindeditKeyDown(Sender: TObject; var Key:Word;
        Shift:TShiftState);
     procedure OkButtonClick(Sender:TObject);
     procedure ReplaceAllButtonClick(Sender:TObject);
@@ -104,29 +104,29 @@ begin
       Show;
     end;
 
-    TextToFindComboBox:=TComboBox.Create(Self);
-    with TextToFindComboBox do begin
-      Name:='TextToFindComboBox';
+    TextToFindEdit:=TEdit.Create(Self);
+    with TextToFindEdit do begin
+      Name:='TextToFindEdit';
       Parent:=Self;
       Left:=90;
       Top:=4;
       Width:=220;
       Height:=21;
       Text:='';
-      OnKeyDown:=@TextToFindComboBoxKeyDown;
+      OnKeyDown:=@TextToFindEditKeyDown;
       Show;
     end;
 
-    ReplaceTextComboBox:=TComboBox.Create(Self);
-    with ReplaceTextComboBox do begin
-      Name:='ReplaceTextComboBox';
+    ReplaceTextedit:=Tedit.Create(Self);
+    with ReplaceTextedit do begin
+      Name:='ReplaceTextedit';
       Parent:=Self;
       Left:=90;
       Top:=28;
       Width:=220;
       Height:=21;
       Text:='';
-      OnKeyDown:=@TextToFindComboBoxKeyDown;
+      OnKeyDown:=@TextToFindeditKeyDown;
       Show;
     end;
     
@@ -292,14 +292,14 @@ begin
     end;
   end;
   fReplaceAllClickedLast:=false;
-  TextToFindComboBox.SetFocus;
+  TextToFindedit.SetFocus;
 end;
 
-procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
+procedure TLazFindReplaceDialog.TextToFindeditKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
 begin
- // if (Key=VK_RETURN) then OkButtonClick(Sender);
- // if (Key=VK_ESCAPE) then CancelButtonClick(Sender);
+  if (Key=VK_RETURN) then OkButtonClick(Sender);
+  if (Key=VK_ESCAPE) then CancelButtonClick(Sender);
 end;
 
 procedure TLazFindReplaceDialog.OkButtonClick(Sender:TObject);
@@ -334,7 +334,7 @@ begin
     then DirectionRadioGroup.ItemIndex:=0
     else DirectionRadioGroup.ItemIndex:=1;
   ReplaceAllButton.Enabled:=ssoReplace in NewOptions;
-  ReplaceTextComboBox.Enabled:=ReplaceAllButton.Enabled;
+  ReplaceTextedit.Enabled:=ReplaceAllButton.Enabled;
   ReplaceWithLabel.Enabled:=ReplaceAllButton.Enabled;
   PromptOnReplaceCheckBox.Enabled:=ReplaceAllButton.Enabled;
   if ssoReplace in NewOptions then begin
@@ -361,22 +361,22 @@ end;
 
 function TLazFindReplaceDialog.GetFindText:AnsiString;
 begin
-  Result:=TextToFindComboBox.Text;
+  Result:=TextToFindedit.Text;
 end;
 
 procedure TLazFindReplaceDialog.SetFindText(NewFindText:AnsiString);
 begin
-  TextToFindComboBox.Text:=NewFindText;
+  TextToFindedit.Text:=NewFindText;
 end;
 
 function TLazFindReplaceDialog.GetReplaceText:AnsiString;
 begin
-  Result:=ReplaceTextComboBox.Text;
+  Result:=ReplaceTextedit.Text;
 end;
 
 procedure TLazFindReplaceDialog.SetReplaceText(NewReplaceText:AnsiString);
 begin
-  ReplaceTextComboBox.Text:=NewReplaceText;
+  ReplaceTextedit.Text:=NewReplaceText;
 end;
 
 end.

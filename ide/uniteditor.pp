@@ -338,7 +338,8 @@ type
      Edit1 : TEdit;
      btnOK : TBitbtn;
      btnCancel : TBitBtn;
-     Procedure GotoDialogActivate(sender : TObject);
+    procedure Edit1KeyDown(Sender: TObject; var Key:Word;
+       Shift:TShiftState);
    private
    public
      constructor Create(AOwner : TComponent); override;
@@ -403,10 +404,14 @@ end;
 Function TSourceEditor.GotoLine(Value : Integer) : Integer;
 Var
   P : TPoint;
+  TopLine: integer;
 Begin
   P.X := 0;
   P.Y := Value;
+  TopLine := P.Y - (FEditor.LinesInWindow div 2);
+  if TopLine < 1 then TopLine:=1;
   FEditor.CaretXY := P;
+  FEditor.TopLine := TopLine;
   Result:=FEditor.CaretY;
 end;
 
@@ -777,7 +782,7 @@ Writeln('[ProcessUserCommand]  --------------');
     if (GotoDialog.ShowModal = mrOK) then
      Begin
        try
-         GotoLine(Strtoint(GotoDialog.Edit1.Text));
+         GotoLine(StrToInt(GotoDialog.Edit1.Text));
        except
          GotoLine(0);
        end;
@@ -2617,8 +2622,9 @@ begin
       Top := 30;
       Width := self.width-40;
       Left := 5;
-      Visible := True;
       Caption := '';
+      OnKeyDown:=@Edit1KeyDown;
+      Visible := True;
     end;
 
     btnOK := TBitbtn.Create(self);
@@ -2641,15 +2647,16 @@ begin
       Visible := True;
     end;
 
-    OnActivate := @GotoDialogActivate;
+    Edit1.SetFocus;
   end;
 end;
 
-Procedure TfrmGoto.GotoDialogActivate(sender : TObject);
-Begin
-   Edit1.Text := '';
-   Edit1.SetFocus;
-End;
+procedure TfrmGoto.Edit1KeyDown(Sender: TObject; var Key:Word;
+   Shift:TShiftState);
+begin
+  if (Key=VK_RETURN) then ModalResult:=mrOk;
+  if (Key=VK_ESCAPE) then ModalResult:=mrCancel;
+end;
 
 
 initialization
