@@ -782,7 +782,8 @@ Begin
       if lWinControl is TRadioButton then
         Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
       // focus window
-      if Windows.GetFocus <> Window then
+      if (Windows.GetFocus <> Window) and 
+          ((lWinControl = nil) or (lWinControl.CanFocus)) then
         Windows.SetFocus(Window);
     End;
     WM_LBUTTONUP:
@@ -1488,6 +1489,9 @@ end;
 
 {
   $Log$
+  Revision 1.178  2005/01/02 22:27:15  micha
+  focus window only if possible
+
   Revision 1.177  2005/01/02 22:18:52  micha
   focus window on left-click
 
