@@ -31,7 +31,7 @@ unit UnitEditor;
 interface
 
 uses
-  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,CustomFormEditor,keymapping,
+  classes, Controls, forms,buttons,comctrls,sysutils,Dialogs,FormEditor,Find_Dlg,EditorOPtions,CustomFormEditor,keymapping,stdctrls,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynHighlighterPas,SynEditAutoComplete,
   SynEditKeyCmds,SynCompletion,
@@ -109,6 +109,7 @@ type
     Function GotoMethod(Value : String) : Integer;
     Function GotoMethodDeclaration(Value : String) : Integer;
 
+    Function GotoLine(Value : Integer) : Integer;
 
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
     Procedure CreateFormFromUnit;
@@ -246,6 +247,18 @@ type
     property MainIDE : TComponent read FMainIDE;
   end;
 
+{Goto dialog}
+
+   TfrmGoto = class(TForm)
+     Label1 : TLabel;
+     Edit1 : TEdit;
+     btnOK : TBitbtn;
+     btnCancel : TBitBtn;
+     Procedure GotoDialogActivate(sender : TObject);
+   private
+   public
+     constructor Create(AOwner : TCOmponent); override;
+   end;
 
 implementation
 uses
@@ -272,13 +285,14 @@ Editor_Num : Integer;
 aHighlighter: TSynPasSyn;
 aCompletion : TSynCompletion;
 scompl : TSynBaseCompletion;  //used in ccexecute and cccomplete
-
+GotoDialog : TfrmGoto;
 
 { TSourceEditor }
 
 {The constructor for @link(TSourceEditor).  AOwner is the @link(TSOurceNotebook) and
  the AParent is usually a page of a @link(TNotebook)
 }
+
 constructor TSourceEditor.create(AOwner : TComponent; AParent : TWinControl);
 Begin
   inherited Create;
@@ -384,6 +398,13 @@ Begin
   menuItem.OnClick := @ToggleLineNumbersClicked;
   FPopupMenu.Items.Add(MenuItem);
 
+end;
+
+{------------------------------G O T O   L I N E  ---------------------------------}
+Function TSOurceEditor.GotoLine(Value : Integer) : Integer;
+Begin
+  CurrentCursorYLine := Value;
+  CurrentCursorXLine := 0;
 end;
 
 {------------------------------G O T O   M E T H O D ---------------------------------}
@@ -780,6 +801,15 @@ if Command >= ecFirstParent then
    ecPrevEditor : Begin
                     TSourceNotebook(FaOwner).PrevEditor;
                   End;
+
+   ecGotoLineNumber : if (GotoDialog.ShowModal = mrOK) then
+                        Begin
+                          try
+                            GotoLine(Strtoint(GotoDialog.Edit1.Text));
+                          except
+                            GotoLine(0);
+                          end;
+                        end;
 
    end;  //case
 
@@ -1431,7 +1461,9 @@ begin
        SimplePanel := False;
       end;
 
+GotoDialog := TfrmGoto.Create(self);
 
+ Writeln('TSOurceNotebook create exiting');
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -1439,6 +1471,7 @@ begin
 
   FSourceEditorList.Free;
   aHighlighter.Free;
+  Gotodialog.free;
   inherited Destroy;
 end;
 
@@ -1963,6 +1996,69 @@ Begin
    for I := 0 to FSourceEditorList.Count-1 do
       TSOurceEditor(FSourceEditorList.Items[i]).RefreshEditorSettings;
 end;
+
+
+
+{  GOTO DIALOG}
+
+Constructor TfrmGoto.Create(AOWner : TComponent);
+begin
+  inherited;
+  position := poScreenCenter;
+  Width := 250;
+  Height := 150;
+  Caption := 'Goto';
+
+  Label1 := TLabel.Create(self);
+  with Label1 do
+    Begin
+     Parent := self;
+     Top := 10;
+     Left := 5;
+     Caption := 'Goto line :';
+     Visible := True;
+    end;
+
+   Edit1 := TEdit.Create(self);
+   with Edit1 do
+     Begin
+      Parent := self;
+      Top := 30;
+      Width := self.width-40;
+      Left := 5;
+      Visible := True;
+      Caption := '';
+     end;
+
+
+   btnOK := TBitbtn.Create(self);
+   with btnOK do
+     Begin
+      Parent := self;
+      Top := 110;
+      Left := 100;
+      Visible := True;
+      kind := bkOK
+     end;
+
+   btnCancel := TBitbtn.Create(self);
+   with btnCancel do
+     Begin
+      Parent := self;
+      Top := 110;
+      Left := 180;
+      Visible := True;
+      kind := bkCancel
+     end;
+  OnActivate := @GotoDialogActivate;
+end;
+
+Procedure TfrmGoto.GotoDialogActivate(sender : TObject);
+Begin
+   Edit1.Text := '';
+   Edit1.SetFocus;
+End;
+
 
 initialization
 Editor_Num := 0;

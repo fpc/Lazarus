@@ -545,7 +545,7 @@ begin
                                  VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   Add('Find procedure method',ecFindProcedureMethod,
                                  VK_DOWN,[ssShift,SSCtrl],VK_UNKNOWN,[]);
-  Add('Go to line number',ecGotoLineNumber,VK_G,[ssAlt],VK_UNKNOWN,[]);
+  Add('Go to line number',ecGotoLineNumber,VK_G,[ssCtrl],VK_UNKNOWN,[]);
 
   Add('Go to next editor',ecNextEditor, VK_S, [ssShift,ssCtrl], VK_UNKNOWN, []);
   Add('Go to prior editor',ecPrevEditor, VK_A, [ssShift,ssCtrl], VK_UNKNOWN, []);

@@ -476,7 +476,7 @@ type
     procedure CreateHandle; override;
   public
     constructor Create(ABitMap : TBitmap);
-    destructor Destroy; override;
+    destructor Destroy; //overriding causes a crash with flat speedbuttons
     // TODO: replace this by property BitmapHandle;
     // MWE: Not needed
     //property Bitmap: TBitmap read FBitmap;
@@ -512,6 +512,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/02/04 19:23:26  lazarus
+  Goto dialog added
+  Shane
+
   Revision 1.4  2001/02/04 18:24:41  lazarus
   Code cleanup
   Shane
