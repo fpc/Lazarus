@@ -940,6 +940,7 @@ begin
           then begin
             if Assigned(OnModified) then OnModified(Self);
             FCustomForm.Invalidate;
+            //SendCachedLCLMessages;
           end;
         end
         else
@@ -949,7 +950,7 @@ begin
                                                   LastMouseMovePos.X,
                                                   LastMouseMovePos.Y);
           ControlSelection.RubberBandActive:=true;
-          SenderParentForm.Invalidate;
+          FCustomForm.Invalidate;
         end;
       end;
     end
