@@ -5,13 +5,29 @@
 {------------------------------------------------------------------------------}
 {  TFileDialog Execute                                                         }
 {------------------------------------------------------------------------------}
+function TFileDialog.Execute : boolean;
+begin
+  FOldWorkingDir:=GetCurrentDir;
+  if FInitialDir<>'' then SetCurrentDir(FInitialDir);
+  try
+    FUserChoice := mrNone;
+    CNSendMessage(LM_CREATE, Self, nil);
+    Result:= DoExecute;
+    CNSendMessage(LM_DESTROY, Self, nil);
+    FHandle := 0;
+  finally
+    SetCurrentDir(FOldWorkingDir);
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{  TFileDialog DoExecute                                                         }
+{------------------------------------------------------------------------------}
 function TFileDialog.DoExecute : boolean;
 begin
-
   CNSendMessage(LM_SETFILTER, Self, nil);
   CNSendMessage(LM_SETFILENAME, Self, nil);
   Result:= inherited DoExecute;
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -59,14 +75,17 @@ end;
  ------------------------------------------------------------------------------}
 constructor TSaveDialog.Create (AOwner : TComponent);
 begin
-   inherited Create(AOwner);
-   fCompStyle := csFileDialog;
-   FTitle:= 'Save file as:';
+  inherited Create(AOwner);
+  fCompStyle := csFileDialog;
+  FTitle:= 'Save file as:';
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/03/27 11:11:13  lazarus
+  MG: fixed mouse msg, added filedialog initialdir
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

@@ -58,10 +58,10 @@ type
      FTitle : string;
      FUserChoice: integer;
    protected
+      function DoExecute : boolean; virtual;
    public
       FCompStyle : LongInt;
       constructor Create (AOwner : TComponent); override;
-      function DoExecute : boolean; virtual;
       function Execute : boolean; virtual;
       property Handle : integer read FHandle write FHandle;
       property Title : string read FTitle write FTitle;
@@ -72,15 +72,19 @@ type
 
    TFileDialog = class(TCommonDialog)
    private
-      FFileName : String;
-      FFilter: String;
+     FFileName : String;
+     FFilter: String;
+     FInitialDir: string;
+     FOldWorkingDir: string;
    protected
-      procedure SetFileName(value :String);
-      procedure SetFilter(value :String);
+     function DoExecute : boolean; override;
+     procedure SetFileName(value :String);
+     procedure SetFilter(value :String);
    public
-      function DoExecute : boolean; override;
-      property FileName : String read FFileName write SetFileName;
-      property Filter : String read FFilter write SetFilter;
+     function Execute : boolean; override;
+     property FileName : String read FFileName write SetFileName;
+     property Filter : String read FFilter write SetFilter;
+     property InitialDir: string read FInitialDir write FInitialDir;
    end;
 
    TOpenDialog = class(TFileDialog)
@@ -199,6 +203,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/03/27 11:11:13  lazarus
+  MG: fixed mouse msg, added filedialog initialdir
+
   Revision 1.4  2001/03/03 00:48:03  lazarus
   + added support for message dialogs
   stoppok

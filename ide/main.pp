@@ -277,8 +277,8 @@ var
 
   ObjectInspector1 : TObjectInspector;
   PropertyEditorHook1 : TPropertyEditorHook;
-  // ...>
   SourceNotebook : TSourceNotebook;
+
   TagInc : Integer;
 
 
@@ -1160,12 +1160,16 @@ end;
 
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
+  AFilename: string;
 begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     OpenDialog.Title:='Open file';
+    OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
     if OpenDialog.Execute then begin
-      DoOpenEditorFile(ExpandFilename(OpenDialog.Filename),false);
+      AFilename:=ExpandFilename(OpenDialog.Filename);
+      EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
+      DoOpenEditorFile(AFilename,false);
     end;
   finally
     OpenDialog.Free;
@@ -1398,12 +1402,16 @@ end;
 
 Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
+  AFileName: string;
 begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     OpenDialog.Title:='Open Project File (*.lpi)';
+    OpenDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
     if OpenDialog.Execute then begin
-      DoOpenProjectFile(ExpandFilename(OpenDialog.Filename));
+      AFilename:=ExpandFilename(OpenDialog.Filename);
+      EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(AFilename);
+      DoOpenProjectFile(AFilename);
     end;
   finally
     OpenDialog.Free;
@@ -1700,8 +1708,10 @@ writeln('TMainIDE.DoSaveCurUnit 1');
       try
         SaveDialog.Title:='Save '+ActiveUnitInfo.UnitName;
         SaveDialog.FileName:=lowercase(ActiveUnitInfo.UnitName)+'.pp';
+        SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
         if SaveDialog.Execute then begin
           NewFilename:=ExpandFilename(SaveDialog.Filename);
+          EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
           if ExtractFileExt(NewFilename)='' then
             NewFilename:=NewFilename+'.pp';
           if FileExists(NewFilename) then begin
@@ -2323,8 +2333,10 @@ writeln('TMainIDE.DoSaveProject 1');
       else if SaveDialog.Filename='' then
         SaveDialog.Filename:='Project1.lpi';
       repeat
+        SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
         if SaveDialog.Execute then begin
           NewFilename:=ExpandFilename(SaveDialog.Filename);
+          EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
           if ExtractFileExt(NewFilename)='' then
             NewFilename:=NewFilename+'.lpi';
           NewProgramFilename:=ChangeFileExt(
@@ -2842,8 +2854,8 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
     Result:=(TheFilename<>'') and (TheFilename[1]='/');
     {$ELSE}
     // windows
-    Result:=(length(TheFilename)<3) or (copy(TheFilename,1,2)='\\')
-        or ((upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
+    Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and 
+       (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
     {$ENDIF}
   end;
 
@@ -3022,6 +3034,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.82  2001/03/27 11:11:13  lazarus
+  MG: fixed mouse msg, added filedialog initialdir
+
   Revision 1.81  2001/03/26 14:52:30  lazarus
   MG: TSourceLog + compiling bugfixes
 

@@ -316,18 +316,19 @@ begin
       if BackPixmap = nil 
       then BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
       
-      if BackPixmap <> nil 
+      if (BackPixmap <> nil) and (Widget<>nil) and (PGTKStyle(Widget^.theStyle)<>nil)
       then gdk_draw_pixmap(
         BackPixmap, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
         Widget^.Window, X, Y, 0, 0, Width, Height
       );
 
-      gdk_draw_rectangle(
-        PGTKWidget(Client)^.Window, 
-        PGTKStyle(PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]],
-        1, X, Y, Width, Height
-      );
+      if PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil then
+        gdk_draw_rectangle(
+          PGTKWidget(Client)^.Window, 
+          PGTKStyle(PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]],
+          1, X, Y, Width, Height
+        );
       IsDrawn := True;
       
       if Timer = 0 then Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
@@ -545,6 +546,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/03/27 11:11:13  lazarus
+  MG: fixed mouse msg, added filedialog initialdir
+
   Revision 1.5  2001/03/26 14:58:32  lazarus
   MG: setwindowpos + bugfixes
 

@@ -379,23 +379,34 @@ begin
     MessE.UserData := Data;
     Result := DeliverPostMessage(Data, MessE);
   end
-   else
-       begin
-       case event^.Button of
-         1 :     if event^.thetype = gdk_button_press then   MessI.Msg := LM_LBUTTONDOWN
-                  else
-                     MessI.Msg := LM_LBUTTONDBLCLK;
-         2 :     if event^.thetype = gdk_button_press then   MessI.Msg := LM_MBUTTONDOWN
-                  else
-                     MessI.Msg := LM_MBUTTONDBLCLK;
-         3 :     if event^.thetype = gdk_button_press then   MessI.Msg := LM_RBUTTONDOWN
-                  else
-                     MessI.Msg := LM_RBUTTONDBLCLK;
+  else begin
+    MessI.Keys := 0;
+    case event^.Button of
+         1 : begin
+               MessI.Keys := MessI.Keys or MK_LBUTTON;
+               if event^.thetype = gdk_button_press then begin
+                 MessI.Msg := LM_LBUTTONDOWN;
+               end else
+                 MessI.Msg := LM_LBUTTONDBLCLK;
+             end;
+         2 : begin
+               MessI.Keys := MessI.Keys or MK_MBUTTON;
+               if event^.thetype = gdk_button_press then
+                 MessI.Msg := LM_MBUTTONDOWN
+               else
+                 MessI.Msg := LM_MBUTTONDBLCLK;
+             end;
+         3 : begin
+               MessI.Keys := MessI.Keys or MK_RBUTTON;
+               if event^.thetype = gdk_button_press then
+                 MessI.Msg := LM_RBUTTONDOWN
+               else
+                 MessI.Msg := LM_RBUTTONDBLCLK;
+             end;
          else MessI.Msg := LM_NULL;
-       end; //case
+    end; //case
     MessI.XPos := Trunc(Event^.X);
     MessI.YPos := Trunc(Event^.Y);
-    MessI.Keys := 0;
     if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
     if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
     if ssLeft in ShiftState then MessI.Keys := MessI.Keys or MK_LBUTTON;
@@ -1105,6 +1116,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2001/03/27 11:11:13  lazarus
+  MG: fixed mouse msg, added filedialog initialdir
+
   Revision 1.28  2001/03/26 14:58:31  lazarus
   MG: setwindowpos + bugfixes
 

@@ -76,6 +76,7 @@ type
 
     // recent files and directories
     // ToDo
+    FLastOpenDialogDir: string;
 
     procedure SetFileName(NewFilename: string);
   public
@@ -129,6 +130,10 @@ type
        read FBackupInfoRepositoryFiles write FBackupInfoRepositoryFiles;
     property BackupInfoOtherFiles: TBackupInfo
        read FBackupInfoOtherFiles write FBackupInfoOtherFiles;
+
+    // recent files and directories
+    property LastOpenDialogDir: string
+       read FLastOpenDialogDir write FLastOpenDialogDir;
   end;
 
   //----------------------------------------------------------------------------
@@ -259,6 +264,9 @@ begin
     MaxCounter:=9;               // for bakCounter
     SubDirectory:='backup';    
   end;
+
+  // recent files and directories
+  FLastOpenDialogDir:='';
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -380,6 +388,10 @@ begin
         ,'EnvironmentOptions/BackupOtherFiles/');
     end;
 
+    // recent files and directories
+    FLastOpenDialogDir:=XMLConfig.GetValue(
+       'EnvironmentOptions/Recent/LastOpenDialogDir/Value',FLastOpenDialogDir);
+
     XMLConfig.Free;
 
     // object inspector
@@ -471,6 +483,10 @@ begin
       SaveBackupInfo(FBackupInfoOtherFiles
         ,'EnvironmentOptions/BackupOtherFiles/');
     end;
+
+    // recent files and directories
+    XMLConfig.SetValue('EnvironmentOptions/Recent/LastOpenDialogDir/Value'
+        ,FLastOpenDialogDir);
 
     XMLConfig.Flush;
     XMLConfig.Free;

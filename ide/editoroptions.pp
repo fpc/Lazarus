@@ -532,6 +532,16 @@ end;
 { TEditorOptions }
 
 constructor TEditorOptions.Create;
+
+  function CreateConfigPath(Path: string): boolean;
+  begin
+    // ToDo: use ForceDirectory
+    if not DirectoryExists(Path) then
+      Result:=CreateDir(Path)
+    else
+      Result:=true;
+  end;
+
 var ConfFileName,SecConfFileName:string;
 begin
   inherited Create;
@@ -546,6 +556,10 @@ begin
       ConfFileName:=SecConfFileName;
     end;
   end;
+
+  if not CreateConfigPath(ExtractFilePath(ConfFilename)) then
+    writeln('WARNING: config path "'+ExtractFilePath(ConfFilename)
+             +'" does not exist');
   XMLConfig:=TXMLConfig.Create(ConfFileName);
 
   // set defaults
