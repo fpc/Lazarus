@@ -532,6 +532,8 @@ end;
 
 constructor TEditorOptions.Create;
 var ConfFileName: string;
+  fs:TFileStream;
+  res:TLResource;
 begin
   inherited Create;
   ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+EditOptsConfFileName);
@@ -569,6 +571,20 @@ begin
   // Code Tools options
   fCodeTemplateFileName:=SetDirSeparators(GetPrimaryConfigPath+'/lazarus.dci');
   CopySecondaryConfigFile('lazarus.dci');
+  if not FileExists(fCodeTemplateFileName) then begin
+    res:=LazarusResources.Find('lazarus_dci_file');
+  if (res<>nil) and (res.Value<>'') and (res.ValueType='DCI') then begin
+    try
+      fs:=TFileStream.Create(fCodeTemplateFileName,fmCreate);
+      try
+        fs.Write(res.Value[1],length(res.Value));
+      finally
+        fs.Free;
+      end;
+    except
+    end;
+  end;
+  end;
 end;
 
 destructor TEditorOptions.Destroy;
@@ -3241,6 +3257,11 @@ begin
   ModalResult:=mrCancel;
 end;
 
+//=============================================================================
+
+initialization
+
+{$I lazarus_dci.lrs}
 
 end.
 

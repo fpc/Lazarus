@@ -1,0 +1,33 @@
+  LazarusResources.Add('lazarus_dci_file','DCI',
+    '[arrayd | array declaration (var)]'#13#10'array[0..|] of ;'#13#10#13#10'['
+    +'arrayc | array declaration (const)]'#13#10'array[0..|] of = ();'#13#10#13
+    +#10'[cases | case statement]'#13#10'case | of'#13#10'  : ;'#13#10'  : ;'
+    +#13#10'end;'#13#10'  '#13#10'[casee | case statement (with else)]'#13#10
+    +'case | of'#13#10'  : ;'#13#10'  : ;'#13#10'else ;'#13#10'end;'#13#10'  '
+    +#13#10'[classf | class declaration (all parts)]'#13#10'T| = class(T)'#13
+    +#10'private'#13#10#13#10'protected'#13#10#13#10'public'#13#10#13#10'publi'
+    +'shed '#13#10#13#10'end;'#13#10#13#10'[classd | class declaration (no par'
+    +'ts)]'#13#10'T| = class(T)'#13#10#13#10'end;'#13#10#13#10'[classc | class'
+    +' declaration (with Create/Destroy overrides)]'#13#10'T| = class(T)'#13#10
+    +'private'#13#10#13#10'protected'#13#10#13#10'public'#13#10'  constructor '
+    +'Create; override;'#13#10'  destructor Destroy; override;'#13#10'publishe'
+    +'d '#13#10#13#10'end;'#13#10#13#10'[fors | for (no begin/end)]'#13#10'for'
+    +' | :=  to  do'#13#10#13#10'[forb | for statement]'#13#10'for | :=  to  d'
+    +'o'#13#10'begin'#13#10#13#10'end;'#13#10#13#10'[function | function decla'
+    +'ration]'#13#10'function |(): ;'#13#10'begin'#13#10#13#10'end;'#13#10#13
+    +#10'[ifs | if (no begin/end)]'#13#10'if | then'#13#10#13#10'[ifb | if sta'
+    +'tement]'#13#10'if | then'#13#10'begin'#13#10#13#10'end;'#13#10#13#10'[if'
+    +'e | if then (no begin/end) else (no begin/end)]'#13#10'if | then'#13#10
+    +#13#10'else'#13#10#13#10'[ifeb | if then else]'#13#10'if | then'#13#10'be'
+    +'gin'#13#10#13#10'end'#13#10'else'#13#10'begin'#13#10#13#10'end;'#13#10#13
+    +#10'[procedure | procedure declaration]'#13#10'procedure |();'#13#10'begi'
+    +'n'#13#10#13#10'end;'#13#10#13#10'[trye | try except]'#13#10'try'#13#10' '
+    +' | '#13#10'except'#13#10#13#10'end;'#13#10#13#10'[tryf | try finally]'#13
+    +#10'try'#13#10'  | '#13#10'finally'#13#10#13#10'end;'#13#10#13#10'[trycf '
+    +'| try finally (with Create/Free)]'#13#10'|variable := typename.Create; '
+    +#13#10'try'#13#10#13#10'finally'#13#10'  variable.Free;'#13#10'end;'#13#10
+    +#13#10'[whileb | while statement]'#13#10'while | do'#13#10'begin'#13#10#13
+    +#10'end;'#13#10#13#10'[whiles | while (no begin)]'#13#10'while | do'#13#10
+    +#13#10'[withb | with statement]'#13#10'with | do'#13#10'begin'#13#10#13#10
+    +'end;'#13#10#13#10'[withs | with (no begin)]'#13#10'with | do'#13#10
+  );

@@ -925,10 +925,9 @@ begin
   Show;
   CNSendMEssage(LM_ShowModal, Self, nil);
   Repeat
-
-  Application.ProcessMessages;
-  If ModalResult <> 0 then Close;
-  If Application.FTerminate then ModalResult := mrCancel;
+    Application.HandleMessage;
+    If ModalResult <> 0 then Close;
+    If Application.FTerminate then ModalResult := mrCancel;
   until ModalResult <> 0;
 
   Exclude(FFormState, fsModal);
@@ -939,6 +938,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2001/07/06 06:25:37  lazarus
+  MG: fixes for ide speedbuttons, form.showmodal, initial lazarus.dci
+
   Revision 1.22  2001/06/28 18:15:03  lazarus
   MG: bugfixes for destroying controls
 

@@ -330,7 +330,7 @@ end;
 function LoadSpeedBtnPixMap(const ResourceName:string):TPixmap;
 begin
   Result:=TPixmap.Create;
-  Result.TransparentColor:=clNone;
+  //Result.TransparentColor:=clNone;
   if not LoadPixmapRes(ResourceName,Result) then
     LoadPixmapRes('default',Result);
 end;
@@ -681,12 +681,12 @@ begin
   n := ButtonLeft;
   OpenFileArrowSpeedBtn := CreateButton('OpenFileArrowSpeedBtn', 'btn_downarrow' , 1, ButtonLeft, ButtonTop, [mfLeft], @OpenFileDownArrowClicked);
   OpenFileArrowSpeedBtn.Width := 12;
-  ButtonLeft := n+12;
+  ButtonLeft := n+12+1;
   
   SaveSpeedBtn          := CreateButton('SaveSpeedBtn'         , 'btn_save'      , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuSaveClicked);
   SaveAllSpeedBtn       := CreateButton('SaveAllSpeedBtn'      , 'btn_saveall'   , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuSaveAllClicked);
   // new row
-  ButtonLeft := 0;
+  ButtonLeft := 1;
   ViewUnitsSpeedBtn     := CreateButton('ViewUnitsSpeedBtn'    , 'btn_viewunits' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewUnitsClicked);
   ViewFormsSpeedBtn     := CreateButton('ViewFormsSpeedBtn'    , 'btn_viewforms' , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuViewFormsClicked);   
   ToggleFormSpeedBtn    := CreateButton('ToggleFormSpeedBtn'   , 'btn_toggleform', 1, ButtonLeft, ButtonTop, [mfLeft], @mnuToggleFormUnitCLicked);
@@ -3490,6 +3490,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2001/07/06 06:25:37  lazarus
+  MG: fixes for ide speedbuttons, form.showmodal, initial lazarus.dci
+
   Revision 1.105  2001/07/01 15:55:43  lazarus
   MG: JumpToCompilerMessage now centered in source editor
 
