@@ -533,17 +533,20 @@ begin
     gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(Column.Alignment));
     // set auto sizing
     case Column.AutoSize of
-      True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+      //True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+      True : gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_GROW_ONLY);
       False: gtk_tree_view_column_set_sizing(GtkColumn, GTK_TREE_VIEW_COLUMN_FIXED);
     end;
+
     // set width
-    GtkColumn^.width := Column.Width;
+    gtk_tree_view_column_set_fixed_width(GtkColumn, Column.Width);
+    //GtkColumn^.width := Column.Width;
     // set Visible
     gtk_tree_view_column_set_visible(GtkColumn, Column.Visible);
     // set MinWidth
-    gtk_tree_view_column_set_min_width(GtkColumn, Column.MinWidth);
+    //gtk_tree_view_column_set_min_width(GtkColumn, Column.MinWidth);
     // set MaxWidth
-    gtk_tree_view_column_set_max_width(GtkColumn, Column.MaxWidth);
+    //gtk_tree_view_column_set_max_width(GtkColumn, Column.MaxWidth);
   end;
   
   // ViewStyle
