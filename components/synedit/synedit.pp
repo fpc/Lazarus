@@ -6334,9 +6334,9 @@ begin
               StartOfBlock := CaretXY;
               if fInserting then begin
                 {$IFDEF USE_UTF8BIDI_LCL}
-                CaretNew := CaretX;
-                utf8bidi.Insert(AChar, Temp, CaretNew);
-                CaretX := CaretNew;
+                CaretNew.X := CaretX;
+                utf8bidi.Insert(Temp, AChar, CaretNew.X);
+                CaretX := CaretNew.X;
                 {$ELSE USE_UTF8BIDI_LCL}
                 Len := Length(Temp);
                 if Len < CaretX then
@@ -6358,7 +6358,14 @@ begin
 {$ENDIF}
                 Helper := Copy(Temp, CaretX, counter);
                 {$IFDEF SYN_LAZARUS}
-                Temp[CaretX] := AChar[1];
+{$IFDEF USE_UTF8BIDI_LCL}
+WriteLn('passed her!');
+                CaretNew.X := CaretX;
+                utf8bidi.insert(Temp,AChar,CaretNew.X);
+                CaretX := CaretNew.X;
+{$ELSE USE_UTF8BIDI_LCL}
+                insert(Temp,AChar,CaretX);
+{$ENDIF USE_UTF8BIDI_LCL}
                 {$ELSE}
                 Temp[CaretX] := AChar;
                 {$ENDIF}
