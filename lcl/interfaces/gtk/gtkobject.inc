@@ -4024,9 +4024,11 @@ begin
        gtk_widget_show(TempWidget);
        SetFixedWidget(p, TempWidget);
        SetMainWidget(p, TempWidget);
-      //Try to make all hint forms transient to the main form
-       If Application.MainForm <> nil then
-         gtk_window_set_transient_for(PGTKWindow(P), PGTKWindow(Application.MainForm.Handle));
+       //Try to make all hint forms transient to the main form
+       If (Application<>nil) and (Application.MainForm <> nil)
+       and (Application.MainForm.HandleAllocated) then
+         gtk_window_set_transient_for(PGTKWindow(P),
+                                       PGTKWindow(Application.MainForm.Handle));
        gtk_widget_show(p);
     end;
 
@@ -5492,6 +5494,7 @@ begin
   if Sender is TWinControl then
   with Sender as TWinControl do
   begin
+    if not HandleAllocated then exit;
     if (Length(Hint) > 0) and (ShowHint or (csDesigning in ComponentState))
     then begin
       strTemp := StrAlloc(Length(Hint) + 1);
@@ -6280,6 +6283,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.247  2002/10/14 19:00:49  lazarus
+  MG: fixed zombie timers
+
   Revision 1.246  2002/10/11 07:28:05  lazarus
   MG: gtk interface now sends keyboard events via DeliverMessage
 
