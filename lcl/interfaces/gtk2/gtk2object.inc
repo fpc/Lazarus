@@ -1,5 +1,5 @@
 {******************************************************************************
-                                   TGTK2Object
+                                   TGtk2WidgetSet
  ******************************************************************************
 
  *****************************************************************************
@@ -175,9 +175,9 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  procedure Tgtk2Object.AppendText(Sender: TObject; Str: PChar);
+  procedure TGtk2WidgetSet.AppendText(Sender: TObject; Str: PChar);
  ------------------------------------------------------------------------------}
-procedure Tgtk2Object.AppendText(Sender: TObject; Str: PChar);
+procedure TGtk2WidgetSet.AppendText(Sender: TObject; Str: PChar);
 var
   Widget : PGtkWidget;
   aTextBuffer : PGtkTextBuffer;
@@ -203,7 +203,7 @@ begin
   end;
 end;
 
-procedure Tgtk2Object.CreateComponent(Sender : TObject);
+procedure TGtk2WidgetSet.CreateComponent(Sender : TObject);
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
@@ -327,7 +327,7 @@ begin
   FinishComponentCreate(Sender, P, SetupProps);
 end;
 
-function TGtk2Object.GetText(Sender: TComponent; var Text: String): Boolean;
+function TGtk2WidgetSet.GetText(Sender: TComponent; var Text: String): Boolean;
 var
   CS: PChar;
   Widget : PGtkWidget;
@@ -357,7 +357,7 @@ begin
   end;
 end;
 
-procedure Tgtk2Object.HookSignals(Sender: TObject);
+procedure TGtk2WidgetSet.HookSignals(Sender: TObject);
 begin
   if (Sender is TWinControl) then
      Begin
@@ -395,7 +395,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtk2Object.IntSendMessage3
+  Method: TGtk2WidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK2
            Sender     - sending control
            data       - pointer to (optional)
@@ -406,7 +406,7 @@ end;
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
  ------------------------------------------------------------------------------}
-function Tgtk2Object.IntSendMessage3(LM_Message : Integer; Sender : TObject;
+function TGtk2WidgetSet.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
   handle      : hwnd;                  // handle of sender
@@ -428,7 +428,7 @@ begin
 
   Assert(False, 'Trace:Message received');
   if Sender <> nil then
-    Assert(False, Format('Trace:  [Tgtk2Object.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
+    Assert(False, Format('Trace:  [TGtk2WidgetSet.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
 
   // The following case is now split into 2 separate parts:
   //   1st part should contain all messages which don't need the "handle" variable
@@ -804,14 +804,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TGTK2Object.SetCallback
+  Function: TGtk2WidgetSet.SetCallback
   Params: Msg - message for which to set a callback
           sender - object to which callback will be send
   Returns:  nothing
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-procedure TGTK2Object.SetCallback(Msg : LongInt; Sender: TObject);
+procedure TGtk2WidgetSet.SetCallback(Msg : LongInt; Sender: TObject);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
@@ -910,7 +910,7 @@ begin
   end;
 end;
 
-Function TGtk2Object.LoadStockPixmap(StockID: longint) : HBitmap;
+Function TGtk2WidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
 var
   Pixmap : PGDIObject;
   StockName : PChar;
@@ -966,14 +966,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtk2Object.SetLabel
+  Method: TGtk2WidgetSet.SetLabel
   Params:  sender - the calling object
            data   - String (PChar) to be set as label for a control
   Returns: Nothing
 
   Sets the label text on a widget
  ------------------------------------------------------------------------------}
-procedure Tgtk2Object.SetLabel(Sender : TObject; Data : Pointer);
+procedure TGtk2WidgetSet.SetLabel(Sender : TObject; Data : Pointer);
 var
   Widget : PGtkWidget;
   aTextBuffer : PGtkTextBuffer;
@@ -990,15 +990,15 @@ begin
   end;
 
   if Sender is TWinControl
-  then Assert(False, Format('Trace:  [Tgtk2Object.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+  then Assert(False, Format('Trace:  [TGtk2WidgetSet.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
   else begin
-    Assert(False, Format('Trace:WARNING: [Tgtk2Object.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-    RaiseException('[Tgtk2Object.SetLabel] ERROR: Sender ('+Sender.Classname+')'
+    Assert(False, Format('Trace:WARNING: [TGtk2WidgetSet.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+    RaiseException('[TGtk2WidgetSet.SetLabel] ERROR: Sender ('+Sender.Classname+')'
         +' is not TWinControl ');
   end;
 
   Widget := PGtkWidget(TWinControl(Sender).Handle);
-  Assert(Widget = nil, 'Trace:WARNING: [Tgtk2Object.SetLabel] --> got nil pointer');
+  Assert(Widget = nil, 'Trace:WARNING: [TGtk2WidgetSet.SetLabel] --> got nil pointer');
   Assert(False, 'Trace:Setting Str1 in SetLabel');
   pLabel := pchar(Data);
 
@@ -1057,18 +1057,18 @@ begin
   else
     inherited SetLabel(Sender, Data);
   end;
-  Assert(False, Format('trace:  [Tgtk2Object.SetLabel] %s --> END', [Sender.ClassName]));
+  Assert(False, Format('trace:  [TGtk2WidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtk2Object.SetProperties
+  Method: TGtk2WidgetSet.SetProperties
   Params:  Sender : the lcl object which called this func via SenMessage
   Returns: currently always 0
 
   Depending on the compStyle, this function will apply all properties of
   the calling object to the corresponding GTK2 object.
  ------------------------------------------------------------------------------}
-function Tgtk2Object.SetProperties(Sender : TObject) : integer;
+function TGtk2WidgetSet.SetProperties(Sender : TObject) : integer;
 const
   cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
@@ -1085,9 +1085,9 @@ begin
 
   if Sender is TWinControl
   then
-    Assert(False, Format('Trace:  [Tgtk2Object.SetProperties] %s', [Sender.ClassName]))
+    Assert(False, Format('Trace:  [TGtk2WidgetSet.SetProperties] %s', [Sender.ClassName]))
   else
-    RaiseException('Tgtk2Object.SetProperties: '
+    RaiseException('TGtk2WidgetSet.SetProperties: '
                    +' Sender.ClassName='+Sender.ClassName);
 
   wHandle:= Pointer(TWinControl(Sender).Handle);
@@ -1167,10 +1167,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure Tgtk2Object.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+  procedure TGtk2WidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
     MultiSelect, ExtendedSelect: boolean);
 ------------------------------------------------------------------------------}
-procedure Tgtk2Object.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+procedure TGtk2WidgetSet.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
   MultiSelect, ExtendedSelect: boolean);
 var
   AControl: TWinControl;
@@ -1201,10 +1201,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function Tgtk2Object.SetTopIndex(Sender: TObject; NewTopIndex: integer
+  function TGtk2WidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
     ): integer;
 ------------------------------------------------------------------------------}
-function Tgtk2Object.SetTopIndex(Sender: TObject; NewTopIndex: integer
+function TGtk2WidgetSet.SetTopIndex(Sender: TObject; NewTopIndex: integer
   ): integer;
 var
   aTreeView: PGtkTreeView;
@@ -1243,9 +1243,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure Tgtk2Object.UpdateDCTextMetric(DC: TDeviceContext);
+  procedure TGtk2WidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
  ------------------------------------------------------------------------------}
-procedure Tgtk2Object.UpdateDCTextMetric(DC: TDeviceContext);
+procedure TGtk2WidgetSet.UpdateDCTextMetric(DC: TDeviceContext);
 const
   TestString = '{Am|g_}';
 var
@@ -1285,7 +1285,7 @@ begin
         StrikeOut := CurrentFont^.StrikeOut;
       end;
       If UseFontDesc = nil then
-        WriteLn('WARNING: [Tgtk2Object.GetTextMetrics] Missing font')
+        WriteLn('WARNING: [TGtk2WidgetSet.GetTextMetrics] Missing font')
       else begin
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
@@ -1375,6 +1375,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.8  2004/03/05 00:41:15  marc
+  * Renamed TGtk2Object to TGtk2WidgetSet
+
   Revision 1.7  2004/01/04 16:44:33  mattias
   updated gtk2 package
 

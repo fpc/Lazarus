@@ -36,7 +36,7 @@ const
 //##apiwiz##sps##   // Do not remove
 
 
-function Tgtk2Object.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+function TGtk2WidgetSet.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
 var
   paintrect : TGDKRectangle;
 begin
@@ -58,7 +58,7 @@ begin
   end;
 end;
 
-function Tgtk2Object.CreateFontIndirectEx(const LogFont: TLogFont;
+function TGtk2WidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 var
   GdiObject: PGdiObject;
@@ -179,7 +179,7 @@ end;
   inherited routine apears to work fine so, turned off for now. Doesn't work
   properly, and needs to take & into account before its fully useable....
  ------------------------------------------------------------------------------}
-function TGTK2Object.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+function TGtk2WidgetSet.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 
   Function Alignment : TPangoAlignment;
   begin
@@ -218,7 +218,7 @@ begin
   exit;
 
   if (Str=nil) or (Str[0]=#0) then exit;
-  Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  Assert(False, Format('trace:> [TGtk2WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 
   Result := Longint(IsValidDC(DC));
@@ -227,7 +227,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [Tgtk2Object.DrawText] Uninitialized GC');
+      WriteLn('WARNING: [TGtk2WidgetSet.DrawText] Uninitialized GC');
       Result := 0;
     end
     else begin
@@ -327,11 +327,11 @@ begin
       end;
     end;
   end;
-  Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+  Assert(False, Format('trace:> [TGtk2WidgetSet.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
 end;
 
-Function Tgtk2Object.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+Function TGtk2WidgetSet.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 begin
   If (Handle <> 0) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) then
   begin
@@ -351,7 +351,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function Tgtk2Object.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+function TGtk2WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 var
   LineStart, LineEnd, StrEnd: PChar;
@@ -426,19 +426,19 @@ var
   end;
 
 begin
-  Assert(False, Format('trace:> [Tgtk2Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:> [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Uninitialized GC');
+      WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Uninitialized GC');
       Result := False;
     end
     else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
-      WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Rect=nil');
+      WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
       Result := False;
     end else begin
       // TODO: implement other parameters.
@@ -460,7 +460,7 @@ begin
       
       GetStyle('default');
       If (UseFontDesc = nil) or (GetStyleWidget('default')=nil) then
-        WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Font')
+        WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font')
       else begin
         // to reduce flickering calculate first and then paint
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
@@ -468,7 +468,7 @@ begin
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
 
         If (Layout = nil) then
-          WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Pango Layout')
+          WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Pango Layout')
         else begin
           pango_layout_set_font_description(Layout, UseFontDesc);
 
@@ -556,7 +556,7 @@ begin
       end;
     end;
   end;
-  Assert(False, Format('trace:< [Tgtk2Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Assert(False, Format('trace:< [TGtk2WidgetSet.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 
 {------------------------------------------------------------------------------
@@ -565,7 +565,7 @@ end;
   Returns: True if succesful
 
  ------------------------------------------------------------------------------}
-function Tgtk2Object.GetCursorPos(var lpPoint: TPoint ): Boolean;
+function TGtk2WidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 {$IfnDef GTK2_2} //we need a GTK2_2 FLAG somehow
   {$IfNDef Win32}
   var
@@ -603,12 +603,12 @@ begin
    then g_list_free(TopList);
    {$Else}
       // Win32 Todo
-      writeln('ToDo(Win32): Tgtk2object.GetCursorPos');
+      writeln('ToDo(Win32): TGtk2WidgetSet.GetCursorPos');
   {$EndIf}
 {$EndIf}
 end;
 
-function Tgtk2Object.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
+function TGtk2WidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 var
   DCOrigin: TPoint;
@@ -644,7 +644,7 @@ begin
       end;
 
       If UseFontDesc = nil then
-        WriteLn('WARNING: [Tgtk2Object.GetTextExtentPoint] Missing Font')
+        WriteLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetStyle('default');
@@ -709,7 +709,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTK2Object.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
+Function TGtk2WidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 var
   DCOrigin: TPoint;
@@ -732,7 +732,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [Tgtk2Object.TextOut] Uninitialized GC');
+      WriteLn('WARNING: [TGtk2WidgetSet.TextOut] Uninitialized GC');
     end
     else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
@@ -750,7 +750,7 @@ begin
       end;
 
       If UseFontDesc = nil then
-        WriteLn('WARNING: [Tgtk2Object.TextOut] Missing Font')
+        WriteLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetStyle('default');
@@ -826,6 +826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/03/05 00:41:15  marc
+  * Renamed TGtk2Object to TGtk2WidgetSet
+
   Revision 1.6  2004/02/04 12:48:17  mattias
   added CLX colors
 

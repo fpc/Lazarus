@@ -36,7 +36,7 @@ uses
   Gtk2Int, Forms;
 
 initialization
-  InterfaceObject := TGtk2Object.Create;
+  InterfaceObject := TGtk2WidgetSet.Create;
 
 finalization
   FreeInterfaceObject;
