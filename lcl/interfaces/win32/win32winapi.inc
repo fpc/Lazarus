@@ -183,8 +183,8 @@ var
       with TLMMouseEvent(Message) do
       begin
         WParam := Windows.WParam(ScrollInfo.nPos - (WheelDelta * Integer(ScrollInfo.nPage) * 4) div (120 * 10));
-        if WParam > ScrollInfo.nMax then
-          WParam := ScrollInfo.nMax;
+        if WParam > ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1 then
+          WParam := ScrollInfo.nMax - integer(ScrollInfo.nPage) + 1;
         if WParam < ScrollInfo.nMin then
           WParam := ScrollInfo.nMin;
         WParam := SB_THUMBPOSITION or (WParam shl 16);
@@ -2997,6 +2997,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2004/06/20 12:48:21  micha
+  fix default scroll handler to send scroll position within range
+
   Revision 1.121  2004/06/20 12:29:26  micha
   make flat speedbuttons nicer
 
