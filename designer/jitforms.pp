@@ -45,7 +45,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, CompReg, Forms, Controls, LCLLinux, Dialogs;
+  Classes, SysUtils, CompReg, Forms, Controls, LCLLinux, Dialogs, JITForm;
 
 type
   //----------------------------------------------------------------------------
@@ -143,46 +143,8 @@ begin
   Result:=MyFindGlobalComponentProc(AName);
 end;
 
-type
-  //----------------------------------------------------------------------------
-  // TJITForm is a template TForm descendent class that can be altered at
-  // runtime
-  TJITForm = class (TForm)
-  protected
-    class function NewInstance : TObject; override;
-  public
-    constructor Create(TheOwner: TComponent); override;
-  end;
-
-  TJITFormClass = class of TJITForm;
   //----------------------------------------------------------------------------
 
-// Define a dummy component to set the csDesigning flag which can not set by a
-// TForm, because SetDesigning is protected.
-type
-  TSetDesigningComponent = class(TComponent)
-  public
-    class procedure SetDesigningOfControl(AComponent: TComponent; Value: Boolean);
-  end;
-
-procedure TSetDesigningComponent.SetDesigningOfControl(
-  AComponent: TComponent; Value: Boolean);
-begin
-  AComponent.SetDesigning(Value);
-end;
-
-{ TJITForm }
-
-function TJITForm.NewInstance: TObject;
-begin
-  Result:=inherited NewInstance;
-  TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
-end;
-
-constructor TJITForm.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-end;
 
 { TJITForms }
 

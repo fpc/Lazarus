@@ -120,6 +120,7 @@ designer/designermenu.pp svneol=native#text/pascal
 designer/designerprocs.pas svneol=native#text/pascal
 designer/filesystem.pp svneol=native#text/pascal
 designer/graphpropedits.pas svneol=native#text/pascal
+designer/jitform/jitform.pas svneol=native#text/pascal
 designer/jitforms.pp svneol=native#text/pascal
 designer/menueditorform.pas svneol=native#text/pascal
 designer/menupropedit.pp svneol=native#text/pascal

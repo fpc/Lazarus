@@ -198,8 +198,21 @@ else
 UNITSDIR:=$(wildcard $(FPCDIR)/units/$(OS_TARGET))
 endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
-override TARGET_DIRS+=synedit codetools
-override CLEAN_FILES+=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))
+override PACKAGE_NAME=lazarus/jitform
+override PACKAGE_VERSION=0.8a
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
+override TARGET_UNITS+=jitform
+override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+override COMPILER_OPTIONS+=-gl
+override COMPILER_UNITDIR+=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
+override COMPILER_UNITTARGETDIR+=../units
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
 endif
@@ -392,6 +405,20 @@ endif
 endif
 else
 CROSSBINDIR=
+endif
+ifdef inUnix
+ifndef GCCLIBDIR
+GCCLIBDIR:=$(shell dirname `(gcc -v 2>&1)| head -n 1| awk '{ print $$4 } '`)
+endif
+ifeq ($(OS_TARGET),linux)
+ifndef OTHERLIBDIR
+OTHERLIBDIR:=$(shell grep -v "^\#" /etc/ld.so.conf | awk '{ ORS=" "; print $1 }')
+endif
+endif
+ifeq ($(OS_TARGET),netbsd)
+OTHERLIBDIR+=/usr/pkg/lib
+endif
+export GCCLIBDIR OTHERLIB
 endif
 LOADEREXT=.as
 EXEEXT=.exe
@@ -750,6 +777,247 @@ else
 TAROPT=vz
 TAREXT=.tar.gz
 endif
+override REQUIRE_PACKAGES=rtl fcl
+ifeq ($(OS_TARGET),linux)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_INET=1
+REQUIRE_PACKAGES_FCL=1
+REQUIRE_PACKAGES_MYSQL=1
+REQUIRE_PACKAGES_IBASE=1
+endif
+ifeq ($(OS_TARGET),go32v2)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),win32)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+REQUIRE_PACKAGES_MYSQL=1
+REQUIRE_PACKAGES_IBASE=1
+endif
+ifeq ($(OS_TARGET),os2)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),freebsd)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_INET=1
+REQUIRE_PACKAGES_FCL=1
+REQUIRE_PACKAGES_MYSQL=1
+REQUIRE_PACKAGES_IBASE=1
+endif
+ifeq ($(OS_TARGET),beos)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),netbsd)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_INET=1
+REQUIRE_PACKAGES_FCL=1
+REQUIRE_PACKAGES_MYSQL=1
+REQUIRE_PACKAGES_IBASE=1
+endif
+ifeq ($(OS_TARGET),amiga)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),atari)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),sunos)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),qnx)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),netware)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifeq ($(OS_TARGET),openbsd)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_INET=1
+REQUIRE_PACKAGES_FCL=1
+REQUIRE_PACKAGES_MYSQL=1
+REQUIRE_PACKAGES_IBASE=1
+endif
+ifeq ($(OS_TARGET),wdosx)
+REQUIRE_PACKAGES_RTL=1
+REQUIRE_PACKAGES_PASZLIB=1
+REQUIRE_PACKAGES_FCL=1
+endif
+ifdef REQUIRE_PACKAGES_RTL
+PACKAGEDIR_RTL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /rtl/$(OS_TARGET)/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_RTL),)
+ifneq ($(wildcard $(PACKAGEDIR_RTL)/$(OS_TARGET)),)
+UNITDIR_RTL=$(PACKAGEDIR_RTL)/$(OS_TARGET)
+else
+UNITDIR_RTL=$(PACKAGEDIR_RTL)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_RTL)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_RTL) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_RTL)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_RTL=
+UNITDIR_RTL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /rtl/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_RTL),)
+UNITDIR_RTL:=$(firstword $(UNITDIR_RTL))
+else
+UNITDIR_RTL=
+endif
+endif
+ifdef UNITDIR_RTL
+override COMPILER_UNITDIR+=$(UNITDIR_RTL)
+endif
+endif
+ifdef REQUIRE_PACKAGES_PASZLIB
+PACKAGEDIR_PASZLIB:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /paszlib/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_PASZLIB),)
+ifneq ($(wildcard $(PACKAGEDIR_PASZLIB)/$(OS_TARGET)),)
+UNITDIR_PASZLIB=$(PACKAGEDIR_PASZLIB)/$(OS_TARGET)
+else
+UNITDIR_PASZLIB=$(PACKAGEDIR_PASZLIB)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_PASZLIB)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_PASZLIB) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_PASZLIB)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_PASZLIB=
+UNITDIR_PASZLIB:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /paszlib/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_PASZLIB),)
+UNITDIR_PASZLIB:=$(firstword $(UNITDIR_PASZLIB))
+else
+UNITDIR_PASZLIB=
+endif
+endif
+ifdef UNITDIR_PASZLIB
+override COMPILER_UNITDIR+=$(UNITDIR_PASZLIB)
+endif
+endif
+ifdef REQUIRE_PACKAGES_INET
+PACKAGEDIR_INET:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /inet/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_INET),)
+ifneq ($(wildcard $(PACKAGEDIR_INET)/$(OS_TARGET)),)
+UNITDIR_INET=$(PACKAGEDIR_INET)/$(OS_TARGET)
+else
+UNITDIR_INET=$(PACKAGEDIR_INET)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_INET)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_INET) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_INET)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_INET=
+UNITDIR_INET:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /inet/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_INET),)
+UNITDIR_INET:=$(firstword $(UNITDIR_INET))
+else
+UNITDIR_INET=
+endif
+endif
+ifdef UNITDIR_INET
+override COMPILER_UNITDIR+=$(UNITDIR_INET)
+endif
+endif
+ifdef REQUIRE_PACKAGES_FCL
+PACKAGEDIR_FCL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /fcl/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_FCL),)
+ifneq ($(wildcard $(PACKAGEDIR_FCL)/$(OS_TARGET)),)
+UNITDIR_FCL=$(PACKAGEDIR_FCL)/$(OS_TARGET)
+else
+UNITDIR_FCL=$(PACKAGEDIR_FCL)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_FCL)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_FCL) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_FCL)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_FCL=
+UNITDIR_FCL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /fcl/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_FCL),)
+UNITDIR_FCL:=$(firstword $(UNITDIR_FCL))
+else
+UNITDIR_FCL=
+endif
+endif
+ifdef UNITDIR_FCL
+override COMPILER_UNITDIR+=$(UNITDIR_FCL)
+endif
+endif
+ifdef REQUIRE_PACKAGES_MYSQL
+PACKAGEDIR_MYSQL:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /mysql/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_MYSQL),)
+ifneq ($(wildcard $(PACKAGEDIR_MYSQL)/$(OS_TARGET)),)
+UNITDIR_MYSQL=$(PACKAGEDIR_MYSQL)/$(OS_TARGET)
+else
+UNITDIR_MYSQL=$(PACKAGEDIR_MYSQL)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_MYSQL)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_MYSQL) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_MYSQL)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_MYSQL=
+UNITDIR_MYSQL:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /mysql/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_MYSQL),)
+UNITDIR_MYSQL:=$(firstword $(UNITDIR_MYSQL))
+else
+UNITDIR_MYSQL=
+endif
+endif
+ifdef UNITDIR_MYSQL
+override COMPILER_UNITDIR+=$(UNITDIR_MYSQL)
+endif
+endif
+ifdef REQUIRE_PACKAGES_IBASE
+PACKAGEDIR_IBASE:=$(firstword $(subst /Makefile.fpc,,$(strip $(wildcard $(addsuffix /ibase/Makefile.fpc,$(PACKAGESDIR))))))
+ifneq ($(PACKAGEDIR_IBASE),)
+ifneq ($(wildcard $(PACKAGEDIR_IBASE)/$(OS_TARGET)),)
+UNITDIR_IBASE=$(PACKAGEDIR_IBASE)/$(OS_TARGET)
+else
+UNITDIR_IBASE=$(PACKAGEDIR_IBASE)
+endif
+ifdef CHECKDEPEND
+$(PACKAGEDIR_IBASE)/$(FPCMADE):
+	$(MAKE) -C $(PACKAGEDIR_IBASE) $(FPCMADE)
+override ALLDEPENDENCIES+=$(PACKAGEDIR_IBASE)/$(FPCMADE)
+endif
+else
+PACKAGEDIR_IBASE=
+UNITDIR_IBASE:=$(subst /Package.fpc,,$(strip $(wildcard $(addsuffix /ibase/Package.fpc,$(UNITSDIR)))))
+ifneq ($(UNITDIR_IBASE),)
+UNITDIR_IBASE:=$(firstword $(UNITDIR_IBASE))
+else
+UNITDIR_IBASE=
+endif
+endif
+ifdef UNITDIR_IBASE
+override COMPILER_UNITDIR+=$(UNITDIR_IBASE)
+endif
+endif
 ifndef NOCPUDEF
 override FPCOPTDEF=$(CPU_TARGET)
 endif
@@ -840,6 +1108,12 @@ override COMPILER_UNITTARGETDIR=$(COMPILER_TARGETDIR)
 override UNITTARGETDIRPREFIX=$(TARGETDIRPREFIX)
 endif
 endif
+ifdef GCCLIBDIR
+override FPCOPT+=-Fl$(GCCLIBDIR)
+endif
+ifdef OTHERLIBDIR
+override FPCOPT+=$(addprefix -Fl,$(OTHERLIBDIR))
+endif
 ifdef OPT
 override FPCOPT+=$(OPT)
 endif
@@ -862,10 +1136,192 @@ ifeq ($(OS_SOURCE),$(OS_TARGET))
 EXECPPAS:=@$(PPAS)
 endif
 endif
+.PHONY: fpc_units
+ifdef TARGET_UNITS
+override ALLTARGET+=fpc_units
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_UNITS))
+override IMPLICITUNITPPUFILES=$(addsuffix $(PPUEXT),$(TARGET_IMPLICITUNITS))
+override INSTALLPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES) $(IMPLICITUNITPPUFILES)
+endif
+fpc_units: $(UNITPPUFILES)
 ifdef TARGET_RSTS
 override RSTFILES=$(addsuffix $(RSTEXT),$(TARGET_RSTS))
 override CLEANRSTFILES+=$(RSTFILES)
 endif
+.PHONY: fpc_all fpc_smart fpc_debug fpc_release
+$(FPCMADE): $(ALLDEPENDENCIES) $(ALLTARGET)
+	@$(ECHOREDIR) Compiled > $(FPCMADE)
+fpc_all: $(FPCMADE)
+fpc_smart:
+	$(MAKE) all LINKSMART=1 CREATESMART=1
+fpc_debug:
+	$(MAKE) all DEBUG=1
+fpc_release:
+	$(MAKE) all RELEASE=1
+.SUFFIXES: $(EXEEXT) $(PPUEXT) $(OEXT) .pas .pp .rc .res
+%$(PPUEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(PPUEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pp
+	$(COMPILER) $<
+	$(EXECPPAS)
+%$(EXEEXT): %.pas
+	$(COMPILER) $<
+	$(EXECPPAS)
+%.res: %.rc
+	windres -i $< -o $@
+vpath %.pp $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %.pas $(COMPILER_SOURCEDIR) $(COMPILER_INCLUDEDIR)
+vpath %$(PPUEXT) $(COMPILER_UNITTARGETDIR)
+.PHONY: fpc_install fpc_sourceinstall fpc_exampleinstall
+ifdef INSTALL_UNITS
+override INSTALLPPUFILES+=$(addsuffix $(PPUEXT),$(INSTALL_UNITS))
+endif
+ifdef INSTALL_BUILDUNIT
+override INSTALLPPUFILES:=$(filter-out $(INSTALL_BUILDUNIT)$(PPUEXT),$(INSTALLPPUFILES))
+endif
+ifdef INSTALLPPUFILES
+override INSTALLPPULINKFILES:=$(subst $(PPUEXT),$(OEXT),$(INSTALLPPUFILES)) $(addprefix $(STATICLIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(INSTALLPPUFILES)))
+override INSTALLPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPUFILES))
+override INSTALLPPULINKFILES:=$(wildcard $(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPULINKFILES)))
+override INSTALL_CREATEPACKAGEFPC=1
+endif
+ifdef INSTALLEXEFILES
+override INSTALLEXEFILES:=$(addprefix $(TARGETDIRPREFIX),$(INSTALLEXEFILES))
+endif
+fpc_install: all $(INSTALLTARGET)
+ifdef INSTALLEXEFILES
+	$(MKDIR) $(INSTALL_BINDIR)
+ifdef UPXPROG
+	-$(UPXPROG) $(INSTALLEXEFILES)
+endif
+	$(INSTALLEXE) $(INSTALLEXEFILES) $(INSTALL_BINDIR)
+endif
+ifdef INSTALL_CREATEPACKAGEFPC
+ifdef FPCMAKE
+ifdef PACKAGE_VERSION
+ifneq ($(wildcard Makefile.fpc),)
+	$(FPCMAKE) -p -T$(OS_TARGET) Makefile.fpc
+	$(MKDIR) $(INSTALL_UNITDIR)
+	$(INSTALL) Package.fpc $(INSTALL_UNITDIR)
+endif
+endif
+endif
+endif
+ifdef INSTALLPPUFILES
+	$(MKDIR) $(INSTALL_UNITDIR)
+	$(INSTALL) $(INSTALLPPUFILES) $(INSTALL_UNITDIR)
+ifneq ($(INSTALLPPULINKFILES),)
+	$(INSTALL) $(INSTALLPPULINKFILES) $(INSTALL_UNITDIR)
+endif
+ifneq ($(wildcard $(LIB_FULLNAME)),)
+	$(MKDIR) $(INSTALL_LIBDIR)
+	$(INSTALL) $(LIB_FULLNAME) $(INSTALL_LIBDIR)
+ifdef inUnix
+	ln -sf $(LIB_FULLNAME) $(INSTALL_LIBDIR)/$(LIB_NAME)
+endif
+endif
+endif
+ifdef INSTALL_FILES
+	$(MKDIR) $(INSTALL_DATADIR)
+	$(INSTALL) $(INSTALL_FILES) $(INSTALL_DATADIR)
+endif
+fpc_sourceinstall: distclean
+	$(MKDIR) $(INSTALL_SOURCEDIR)
+	$(COPYTREE) $(BASEDIR)/* $(INSTALL_SOURCEDIR)
+fpc_exampleinstall: $(addsuffix _distclean,$(TARGET_EXAMPLEDIRS))
+ifdef HASEXAMPLES
+	$(MKDIR) $(INSTALL_EXAMPLEDIR)
+endif
+ifdef EXAMPLESOURCEFILES
+	$(COPY) $(EXAMPLESOURCEFILES) $(INSTALL_EXAMPLEDIR)
+endif
+ifdef TARGET_EXAMPLEDIRS
+	$(COPYTREE) $(addsuffix /*,$(TARGET_EXAMPLEDIRS)) $(INSTALL_EXAMPLEDIR)
+endif
+.PHONY: fpc_distinstall
+fpc_distinstall: install exampleinstall
+.PHONY: fpc_zipinstall fpc_zipsourceinstall fpc_zipexampleinstall
+ifndef PACKDIR
+ifndef inUnix
+PACKDIR=$(BASEDIR)/../fpc-pack
+else
+PACKDIR=/tmp/fpc-pack
+endif
+endif
+ifndef ZIPNAME
+ifdef DIST_ZIPNAME
+ZIPNAME=$(DIST_ZIPNAME)
+else
+ZIPNAME=$(ZIPPREFIX)$(PACKAGE_NAME)$(ZIPSUFFIX)
+endif
+endif
+ifndef ZIPTARGET
+ifdef DIST_ZIPTARGET
+ZIPTARGET=DIST_ZIPTARGET
+else
+ZIPTARGET=install
+endif
+endif
+ifndef USEZIP
+ifdef inUnix
+USETAR=1
+endif
+endif
+ifndef inUnix
+USEZIPWRAPPER=1
+endif
+ifdef USEZIPWRAPPER
+ZIPPATHSEP=$(PATHSEP)
+ZIPWRAPPER=$(subst /,$(PATHSEP),$(DIST_DESTDIR)/fpczip$(BATCHEXT))
+else
+ZIPPATHSEP=/
+endif
+ZIPCMD_CDPACK:=cd $(subst /,$(ZIPPATHSEP),$(PACKDIR))
+ZIPCMD_CDBASE:=cd $(subst /,$(ZIPPATHSEP),$(BASEDIR))
+ifdef USETAR
+ZIPDESTFILE:=$(DIST_DESTDIR)/$(ZIPNAME)$(TAREXT)
+ZIPCMD_ZIP:=$(TARPROG) cf$(TAROPT) $(ZIPDESTFILE) *
+else
+ZIPDESTFILE:=$(DIST_DESTDIR)/$(ZIPNAME)$(ZIPEXT)
+ZIPCMD_ZIP:=$(subst /,$(ZIPPATHSEP),$(ZIPPROG)) -Dr $(ZIPOPT) $(ZIPDESTFILE) *
+endif
+fpc_zipinstall:
+	$(MAKE) $(ZIPTARGET) INSTALL_PREFIX=$(PACKDIR) ZIPINSTALL=1
+	$(MKDIR) $(DIST_DESTDIR)
+	$(DEL) $(ZIPDESTFILE)
+ifdef USEZIPWRAPPER
+ifneq ($(ECHOREDIR),echo)
+	$(ECHOREDIR) -e "$(subst \,\\,$(ZIPCMD_CDPACK))" > $(ZIPWRAPPER)
+	$(ECHOREDIR) -e "$(subst \,\\,$(ZIPCMD_ZIP))" >> $(ZIPWRAPPER)
+	$(ECHOREDIR) -e "$(subst \,\\,$(ZIPCMD_CDBASE))" >> $(ZIPWRAPPER)
+else
+	echo $(ZIPCMD_CDPACK) > $(ZIPWRAPPER)
+	echo $(ZIPCMD_ZIP) >> $(ZIPWRAPPER)
+	echo $(ZIPCMD_CDBASE) >> $(ZIPWRAPPER)
+endif
+ifdef inUnix
+	/bin/sh $(ZIPWRAPPER)
+else
+	$(ZIPWRAPPER)
+endif
+	$(DEL) $(ZIPWRAPPER)
+else
+	$(ZIPCMD_CDPACK) ; $(ZIPCMD_ZIP) ; $(ZIPCMD_CDBASE)
+endif
+	$(DELTREE) $(PACKDIR)
+fpc_zipsourceinstall:
+	$(MAKE) fpc_zipinstall ZIPTARGET=sourceinstall ZIPSUFFIX=src
+fpc_zipexampleinstall:
+ifdef HASEXAMPLES
+	$(MAKE) fpc_zipinstall ZIPTARGET=exampleinstall ZIPSUFFIX=exm
+endif
+fpc_zipdistinstall:
+	$(MAKE) fpc_zipinstall ZIPTARGET=distinstall
 .PHONY: fpc_clean fpc_cleanall fpc_distclean
 ifdef EXEFILES
 override CLEANEXEFILES:=$(addprefix $(TARGETDIRPREFIX),$(CLEANEXEFILES))
@@ -1013,114 +1469,29 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
-TARGET_DIRS_SYNEDIT=1
-TARGET_DIRS_CODETOOLS=1
-ifdef TARGET_DIRS_SYNEDIT
-synedit_all:
-	$(MAKE) -C synedit all
-synedit_debug:
-	$(MAKE) -C synedit debug
-synedit_smart:
-	$(MAKE) -C synedit smart
-synedit_release:
-	$(MAKE) -C synedit release
-synedit_examples:
-	$(MAKE) -C synedit examples
-synedit_shared:
-	$(MAKE) -C synedit shared
-synedit_install:
-	$(MAKE) -C synedit install
-synedit_sourceinstall:
-	$(MAKE) -C synedit sourceinstall
-synedit_exampleinstall:
-	$(MAKE) -C synedit exampleinstall
-synedit_distinstall:
-	$(MAKE) -C synedit distinstall
-synedit_zipinstall:
-	$(MAKE) -C synedit zipinstall
-synedit_zipsourceinstall:
-	$(MAKE) -C synedit zipsourceinstall
-synedit_zipexampleinstall:
-	$(MAKE) -C synedit zipexampleinstall
-synedit_zipdistinstall:
-	$(MAKE) -C synedit zipdistinstall
-synedit_clean:
-	$(MAKE) -C synedit clean
-synedit_distclean:
-	$(MAKE) -C synedit distclean
-synedit_cleanall:
-	$(MAKE) -C synedit cleanall
-synedit_info:
-	$(MAKE) -C synedit info
-synedit_makefiles:
-	$(MAKE) -C synedit makefiles
-synedit:
-	$(MAKE) -C synedit all
-.PHONY: synedit_all synedit_debug synedit_smart synedit_release synedit_examples synedit_shared synedit_install synedit_sourceinstall synedit_exampleinstall synedit_distinstall synedit_zipinstall synedit_zipsourceinstall synedit_zipexampleinstall synedit_zipdistinstall synedit_clean synedit_distclean synedit_cleanall synedit_info synedit_makefiles synedit
-endif
-ifdef TARGET_DIRS_CODETOOLS
-codetools_all:
-	$(MAKE) -C codetools all
-codetools_debug:
-	$(MAKE) -C codetools debug
-codetools_smart:
-	$(MAKE) -C codetools smart
-codetools_release:
-	$(MAKE) -C codetools release
-codetools_examples:
-	$(MAKE) -C codetools examples
-codetools_shared:
-	$(MAKE) -C codetools shared
-codetools_install:
-	$(MAKE) -C codetools install
-codetools_sourceinstall:
-	$(MAKE) -C codetools sourceinstall
-codetools_exampleinstall:
-	$(MAKE) -C codetools exampleinstall
-codetools_distinstall:
-	$(MAKE) -C codetools distinstall
-codetools_zipinstall:
-	$(MAKE) -C codetools zipinstall
-codetools_zipsourceinstall:
-	$(MAKE) -C codetools zipsourceinstall
-codetools_zipexampleinstall:
-	$(MAKE) -C codetools zipexampleinstall
-codetools_zipdistinstall:
-	$(MAKE) -C codetools zipdistinstall
-codetools_clean:
-	$(MAKE) -C codetools clean
-codetools_distclean:
-	$(MAKE) -C codetools distclean
-codetools_cleanall:
-	$(MAKE) -C codetools cleanall
-codetools_info:
-	$(MAKE) -C codetools info
-codetools_makefiles:
-	$(MAKE) -C codetools makefiles
-codetools:
-	$(MAKE) -C codetools all
-.PHONY: codetools_all codetools_debug codetools_smart codetools_release codetools_examples codetools_shared codetools_install codetools_sourceinstall codetools_exampleinstall codetools_distinstall codetools_zipinstall codetools_zipsourceinstall codetools_zipexampleinstall codetools_zipdistinstall codetools_clean codetools_distclean codetools_cleanall codetools_info codetools_makefiles codetools
-endif
-all: $(addsuffix _all,$(TARGET_DIRS))
-debug: $(addsuffix _debug,$(TARGET_DIRS))
-smart: $(addsuffix _smart,$(TARGET_DIRS))
-release: $(addsuffix _release,$(TARGET_DIRS))
-examples: $(addsuffix _examples,$(TARGET_DIRS))
-shared: $(addsuffix _shared,$(TARGET_DIRS))
-install: $(addsuffix _install,$(TARGET_DIRS))
-sourceinstall: $(addsuffix _sourceinstall,$(TARGET_DIRS))
-exampleinstall: $(addsuffix _exampleinstall,$(TARGET_DIRS))
-distinstall: $(addsuffix _distinstall,$(TARGET_DIRS))
-zipinstall: $(addsuffix _zipinstall,$(TARGET_DIRS))
-zipsourceinstall: $(addsuffix _zipsourceinstall,$(TARGET_DIRS))
-zipexampleinstall: $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
-zipdistinstall: $(addsuffix _zipdistinstall,$(TARGET_DIRS))
-clean: fpc_clean $(addsuffix _clean,$(TARGET_DIRS))
-distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
+debug: fpc_debug
+smart: fpc_smart
+release: fpc_release
+examples:
+shared:
+install: fpc_install
+sourceinstall: fpc_sourceinstall
+exampleinstall: fpc_exampleinstall
+distinstall: fpc_distinstall
+zipinstall: fpc_zipinstall
+zipsourceinstall: fpc_zipsourceinstall
+zipexampleinstall: fpc_zipexampleinstall
+zipdistinstall: fpc_zipdistinstall
+clean: fpc_clean
+distclean: fpc_distclean
+cleanall: fpc_cleanall
 info: fpc_info
-makefiles: fpc_makefiles $(addsuffix _makefiles,$(TARGET_DIRS))
-.PHONY: all debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean info makefiles
+makefiles: fpc_makefiles
+.PHONY: debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-cleanall: clean
+.PHONY: cleartarget all
+cleartarget:
+	-$(DEL) $(COMPILER_UNITTARGETDIR)/jitform$(PPUEXT)
+all: cleartarget jitform$(PPUEXT)

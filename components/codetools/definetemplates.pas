@@ -2422,9 +2422,13 @@ begin
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create(
     'Component path addition',
-    Format(ctsAddsDirToSourcePath,['designer, debugger, synedit,codetools']),
+    Format(ctsAddsDirToSourcePath,['designer, jitform, debugger, synedit, codetools']),
     ExternalMacroStart+'SrcPath',
-    'components'+ds+'synedit;components'+ds+'codetools;designer;debugger;'
+       'designer;'
+      +'designer'+ds+'jitform;'
+      +'debugger;'
+      +'components'+ds+'synedit;'
+      +'components'+ds+'codetools;'
       +SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
@@ -2509,7 +2513,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'components'+ds+'synedit;'+'..'+ds+'components'+ds+'codetools;'
+      '..'+ds+'components'+ds+'synedit;'+'..'+ds+'components'+ds+'codetools;'
+      +'jitform;'
       +SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',

@@ -11,17 +11,19 @@ packages=fcl regexpr
 
 [target]
 programs=lazarus
-dirs=lcl components
+dirs=lcl components designer/jitform
 exampledirs=examples
 
 [compiler]
 options=-gl
-unitdir=lcl/units lcl/units/$(LCL_PLATFORM) designer debugger components/units .
+unitdir=lcl/units lcl/units/$(LCL_PLATFORM) designer designer/units debugger \
+        components/units .
 includedir=include include/$(OS_TARGET)
 targetdir=.
 
 [clean]
-files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT))
+files=$(wildcard ./designer/*$(OEXT)) $(wildcard ./designer/*$(PPUEXT)) \
+      $(wildcard ./debugger/*$(OEXT)) $(wildcard ./debugger/*$(PPUEXT))
 
 [install]
 basedir=lib/lazarus
@@ -62,6 +64,7 @@ all: lcl components ide
 cleanide:
         $(DEL) $(wildcard *$(OEXT))
         $(DEL) $(wildcard *$(PPUEXT))
+        $(DEL) $(wildcard *$(RSTEXT))
         $(DEL) $(wildcard ./designer/*$(OEXT))
         $(DEL) $(wildcard ./designer/*$(PPUEXT))
         $(DEL) $(wildcard ./debugger/*$(OEXT))

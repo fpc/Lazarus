@@ -43,6 +43,7 @@ type
 
   TBuildLazarusOptions = class
   private
+    fBuildJITForm: TMakeMode;
     fBuildLCL: TMakeMode;
     fBuildComponents: TMakeMode;
     fBuildSynEdit: TMakeMode;
@@ -63,6 +64,7 @@ type
       read fBuildComponents write fBuildComponents;
     property BuildSynEdit: TMakeMode read fBuildSynEdit write fBuildSynEdit;
     property BuildCodeTools: TMakeMode read fBuildCodeTools write fBuildCodeTools;
+    property BuildJITForm: TMakeMode read fBuildJITForm write fBuildJITForm;
     property BuildIDE: TMakeMode read fBuildIDE write fBuildIDE;
     property BuildExamples: TMakeMode read fBuildExamples write fBuildExamples;
     property CleanAll: boolean read fCleanAll write fCleanAll;
@@ -81,6 +83,7 @@ type
     BuildCodeToolsRadioGroup: TRadioGroup;
     BuildIDERadioGroup: TRadioGroup;
     BuildExamplesRadioGroup: TRadioGroup;
+    BuildJITFormCheckBox: TCheckBox;
     OptionsLabel: TLabel;
     OptionsEdit: TEdit;
     LCLInterfaceRadioGroup: TRadioGroup;
@@ -173,6 +176,35 @@ var
       Tool.CmdLineParams:='OPT='''+ExtraOpts+''' '+Tool.CmdLineParams;
   end;
   
+  function CreateJITFormOptions: string;
+  var
+    p, StartPos: integer;
+  begin
+    Result:=Options.ExtraOptions;
+    // delete profiler option
+    p:=Pos('-pg',Result);
+    if (p>0)
+    and ((p+3>length(Result)) or (Result[p+3]=' ')) // option end
+    and ((p=1) or (Result[p-1]=' ')) then begin
+      // profiler option found
+      StartPos:=p;
+      while (StartPos>1) and (Result[StartPos-1]=' ') do
+        dec(StartPos);
+      System.Delete(Result,StartPos,p-StartPos+3);
+    end;
+  end;
+  
+  function DoBuildJITForm: TModalResult;
+  begin
+    // build IDE jitform
+    Tool.Title:='Build JITForm';
+    Tool.WorkingDirectory:='$(LazarusDir)/designer/jitform';
+    SetMakeParams(Options.BuildJITForm,CreateJITFormOptions,
+                  Options.TargetOS);
+    Result:=ExternalTools.Run(Tool,Macros);
+    if Result<>mrOk then exit;
+  end;
+  
 begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
@@ -230,6 +262,10 @@ begin
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
       end;
+    end;
+    if Options.BuildJITForm<>mmNone then begin
+      Result:=DoBuildJITForm;
+      if Result<>mrOk then exit;
     end;
     if Options.BuildIDE<>mmNone then begin
       // build IDE
@@ -438,6 +474,17 @@ begin
       end;
       Visible:=true;
     end;
+    
+    BuildJITFormCheckBox:=TCheckBox.Create(Self);
+    with BuildJITFormCheckBox do begin
+      Name:='BuildJITFormCheckBox';
+      Parent:=Self;
+      SetBounds(LCLInterfaceRadioGroup.Left,
+           LCLInterfaceRadioGroup.Top+LCLInterfaceRadioGroup.Height+50,
+           LCLInterfaceRadioGroup.Width,Height);
+      Caption:='Build JITForm';
+      Visible:=true;
+    end;
 
     OkButton:=TButton.Create(Self);
     with OkButton do begin
@@ -471,6 +518,7 @@ begin
   BuildSynEditRadioGroup.ItemIndex:=0;
   BuildCodeToolsRadioGroup.ItemIndex:=0;
   BuildIDERadioGroup.ItemIndex:=1;
+  BuildJITFormCheckBox.Checked:=true;
   BuildExamplesRadioGroup.ItemIndex:=1;
   OptionsEdit.Text:='';
 end;
@@ -526,6 +574,11 @@ begin
     Top:=BuildLCLRadioGroup.Top;
     Width:=Parent.ClientWidth-Left-10;
   end;
+  with BuildJITFormCheckBox do
+    BuildJITFormCheckBox.SetBounds(LCLInterfaceRadioGroup.Left,
+           LCLInterfaceRadioGroup.Top+LCLInterfaceRadioGroup.Height+50,
+           LCLInterfaceRadioGroup.Width,Height);
+
   OkButton.SetBounds(Self.ClientWidth-180,Self.ClientHeight-38,80,25);
   CancelButton.SetBounds(Self.ClientWidth-90,OkButton.Top,
               OkButton.Width,OkButton.Height);
@@ -552,6 +605,7 @@ begin
   BuildExamplesRadioGroup.ItemIndex:=MakeModeToInt(Options.BuildExamples);
   OptionsEdit.Text:=Options.ExtraOptions;
   LCLInterfaceRadioGroup.ItemIndex:=ord(Options.LCLPlatform);
+  BuildJITFormCheckBox.Checked:=Options.BuildJITForm in [mmBuild, mmCleanBuild];
   TargetOSEdit.Text:=Options.TargetOS;
 end;
 
@@ -567,6 +621,10 @@ begin
   Options.BuildExamples:=IntToMakeMode(BuildExamplesRadioGroup.ItemIndex);
   Options.ExtraOptions:=OptionsEdit.Text;
   Options.LCLPlatform:=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
+  if BuildJITFormCheckBox.Checked then
+    Options.BuildJITForm:=mmBuild
+  else
+    Options.BuildJITForm:=mmNone;
   Options.TargetOS:=TargetOSEdit.Text;
 end;
 
@@ -596,6 +654,7 @@ begin
   XMLConfig.SetValue(Path+'BuildComponents/Value',MakeModeNames[fBuildComponents]);
   XMLConfig.SetValue(Path+'BuildSynEdit/Value',MakeModeNames[fBuildSynEdit]);
   XMLConfig.SetValue(Path+'BuildCodeTools/Value',MakeModeNames[fBuildCodeTools]);
+  XMLConfig.SetValue(Path+'BuildJITForm/Value',MakeModeNames[fBuildJITForm]);
   XMLConfig.SetValue(Path+'BuildIDE/Value',MakeModeNames[fBuildIDE]);
   XMLConfig.SetValue(Path+'BuildExamples/Value',MakeModeNames[fBuildExamples]);
   XMLConfig.SetValue(Path+'CleanAll/Value',fCleanAll);
@@ -615,6 +674,8 @@ begin
                                     MakeModeNames[fBuildSynEdit]));
   fBuildCodeTools:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildCodeTools/Value',
                                       MakeModeNames[fBuildCodeTools]));
+  fBuildJITForm:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildJITForm/Value',
+                                              MakeModeNames[fBuildJITForm]));
   fBuildIDE:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildIDE/Value',
                                               MakeModeNames[fBuildIDE]));
   fBuildExamples:=StrToMakeMode(XMLConfig.GetValue(Path+'BuildExamples/Value',
