@@ -1555,6 +1555,7 @@ Begin
     Caption := CS_To_String(CompStyle);
 
   Assert(False, Format('Trace:TWin32Object.CreateComponent - Creating component %S with the caption of %S', [Sender.ClassName, Caption]));
+  Assert(False, Format('Trace:TWin32Object.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
 
   // until here remove when debug not needed
   If Caption = '' Then
@@ -1587,7 +1588,7 @@ Begin
     End;
     csButton:
     Begin
-      Assert(False, 'Trace:CreateComponent - Creating Button');
+      {Assert(False, 'Trace:CreateComponent - Creating Button');
       Assert(False, 'Trace:CreateComponent - Value of Button Parent is $' + IntToHex(LongInt((Sender as TControl).Parent), 8));
       Assert(False, 'Trace:CreateComponent - Value of Button Owner is $' + IntToHex(LongInt((Sender as TControl).Owner), 8));
       ParentControl := (Sender As TControl).Owner;
@@ -1596,7 +1597,7 @@ Begin
       Assert(False, 'Trace:CreateComponent - Value of Button Left   is $' + IntToHex((Sender as TControl).Left  , 4));
       Assert(False, 'Trace:CreateComponent - Value of Button Top    is $' + IntToHex((Sender as TControl).Top   , 4));
       Assert(False, 'Trace:CreateComponent - Value of Button Width  is $' + IntToHex((Sender as TControl).Width , 4));
-      Assert(False, 'Trace:CreateComponent - Value of Button Height is $' + IntToHex((Sender as TControl).Height, 4));
+      Assert(False, 'Trace:CreateComponent - Value of Button Height is $' + IntToHex((Sender as TControl).Height, 4));}
       If Not (Sender As TButton).Default Then
         Flags := Flags Or BS_PUSHBUTTON
       Else
@@ -2000,7 +2001,7 @@ Begin
     If (Sender Is TControl) Then
     Begin
       Assert(False, 'Trace:CreateComponent - Assigning window to TControl');
-      (Sender As TWinControl).Handle := Window;
+      //(Sender As TControl).Handle := Window;
     End
     Else
       If (Sender Is TControlCanvas) Then
@@ -2952,6 +2953,9 @@ End;
 
 {
   $Log$
+  Revision 1.9  2002/01/21 08:42:06  lazarus
+  Keith: Fixed some run-time exceptions for FPC 1.1
+
   Revision 1.8  2002/01/18 09:07:44  lazarus
   Keith: Fixed menu creation
 

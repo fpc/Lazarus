@@ -31,6 +31,12 @@ Const
 
 //##apiwiz##sps##   // Do not remove
 
+Procedure Assert(Const PassErr: Boolean; Const Msg: String);
+Begin
+  {$IFNDEF VER1_1}
+    Assert(PassErr, Msg);
+  {$ENDIF}
+End;
 
 {------------------------------------------------------------------------------
   Method:  Arc
@@ -806,7 +812,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetStockObject(Value: Integer): LongInt;
 Begin
-  Assert(False, Format('Trace:> [TWin32Object.GetStockObject] %d', [Value]));
+  Assert(False, Format('Trace:> [TWin32Object.GetStockObject] %d ', [Value]));
   Result := Windows.GetStockObject(Value);
   Assert(False, Format('Trace:< [TWin32Object.GetStockObject] %d --> 0x%x', [Value, Result]));
 End;
@@ -832,9 +838,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetSystemMetrics(NIndex: Integer): Integer;
 Begin
-  Assert(False, Format('Trace:> [TWin32Object.GetSystemMetrics] %d', [NIndex]));
+  Assert(False, Format('Trace:[TWin32Object.GetSystemMetrics] %s', [IntToStr(NIndex)]));
   Result := Windows.GetSystemMetrics(NIndex);
-  Assert(False, Format('Trace:< [TWin32Object.GetSystemMetrics] %d --> 0x%x (%d)', [NIndex, Result, Result]));
+  Assert(False, Format('Trace:[TWin32Object.GetSystemMetrics] %s --> 0x%S (%s)', [IntToStr(NIndex), IntToHex(Result, 8), IntToStr(Result)]));
 End;
 
 {------------------------------------------------------------------------------
@@ -852,9 +858,9 @@ Function TWin32Object.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; Va
 Var
   NMax, NWd: Integer;
 Begin
-  Assert(False, 'Trace:> [TWin32Object.GetTextExtentPoint]');
+  Assert(False, 'Trace:[TWin32Object.GetTextExtentPoint] - Start');
   Result := Windows.GetTextExtentPoint32(DC, Str, Count, @Size);
-  Assert(False, 'Trace:< [TWin32Object.GetTextExtentPoint]');
+  Assert(False, 'Trace:[TWin32Object.GetTextExtentPoint] - Exit');
 End;
 
 {------------------------------------------------------------------------------
@@ -1314,7 +1320,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Integer;
 Begin
-  Result := Windows.SendMessage(HandleWnd, Msg, wParam, lParam);
+  Result := Windows.SendMessage(HandleWnd, Msg, WParam, LParam);
 End;
 
 {------------------------------------------------------------------------------
@@ -1327,9 +1333,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 Begin
-  Assert(False, Format('trace:> [TWin32Object.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
+  Assert(False, Format('Trace:> [TWin32Object.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
   Result := Windows.SetBkColor(DC, Color);
-  Assert(False, Format('trace:< [TWin32Object.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
+  Assert(False, Format('Trace:< [TWin32Object.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1465,7 +1471,7 @@ Function TWin32Object.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: 
 Begin
 //  Assert(False, 'Trace:[TWin32Object.SetScrollInfo]');
   With ScrollInfo Do
-    Assert(False, Format('Trace:> [TWin32Object.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
+   // Assert(False, Format('Trace:> [TWin32Object.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
 
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
   With ScrollInfo Do
@@ -1637,9 +1643,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
 Begin
-  Assert(True, Format('trace:> [TWin32Object.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
+  Assert(True, Format('Trace:> [TWin32Object.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := Windows.StretchBlt(DestDc, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
-  Assert(True, Format('trace:< [TWin32Object.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
+  Assert(True, Format('Trace:< [TWin32Object.StretchBlt] DestDC:0x%x --> %s', [DestDC, BOOL_TEXT[Result]]));
 End;
 
 {------------------------------------------------------------------------------
@@ -1709,6 +1715,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/01/21 08:42:06  lazarus
+  Keith: Fixed some run-time exceptions for FPC 1.1
+
   Revision 1.2  2002/01/17 03:17:44  lazarus
   Keith: Fixed TPage creation
 

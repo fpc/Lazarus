@@ -86,6 +86,7 @@ begin
   inherited Create;
   FOverlayIndex := -1;
   FStateIndex := -1;
+  FStates := [];
   FOwner := AnOwner;
   FSubTreeCount:=1;
   if Owner<>nil then inc(Owner.FCount);
