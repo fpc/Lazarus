@@ -2524,10 +2524,22 @@ end;
   TControl SetWidth
 ------------------------------------------------------------------------------}
 procedure TControl.SetWidth(Value: Integer);
+
+  procedure CheckDesignBounds;
+  begin
+    // the user changed the width
+    if Value<0 then
+      raise Exception.Create(
+        'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative width '
+          +dbgs(Value)+' not allowed.');
+  end;
+
 begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
+  if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
+    CheckDesignBounds;
   SetBounds(FLeft, FTop, Max(0,Value), FHeight);
 end;
 
@@ -2535,10 +2547,22 @@ end;
   TControl SetHeight
 ------------------------------------------------------------------------------}
 procedure TControl.SetHeight(Value: Integer);
+
+  procedure CheckDesignBounds;
+  begin
+    // the user changed the height
+    if Value<0 then
+      raise Exception.Create(
+        'TWinControl.SetHeight ('+DbgSName(Self)+'): Negative height '
+          +dbgs(Value)+' not allowed.');
+  end;
+
 begin
   {$IFDEF CHECK_POSITION}
   DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
+  if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
+    CheckDesignBounds;
   SetBounds(FLeft, FTop, FWidth, Max(0,Value));
 end;
 
@@ -3400,6 +3424,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.234  2005/01/13 19:52:50  mattias
+  added desgntime check for TControl.Width/Height for negative values
+
   Revision 1.233  2005/01/12 23:18:07  mattias
   limited widget sizes to 10000x10000
 

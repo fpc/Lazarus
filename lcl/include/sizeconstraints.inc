@@ -62,7 +62,9 @@ begin
   FMaxInterfaceWidth:=MaxW;
   FMaxInterfaceHeight:=MaxH;
   
-  FControl.RequestAlign;
+  if (FControl.Width<>MinMaxWidth(FControl.Width))
+  or (FControl.Height<>MinMaxHeight(FControl.Height)) then
+    FControl.RequestAlign;
 end;
 
 function TSizeConstraints.EffectiveMinWidth: integer;

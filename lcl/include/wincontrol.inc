@@ -3966,6 +3966,21 @@ end;
   Sets the bounds of the control.
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
+
+  procedure CheckDesignBounds;
+  begin
+    if FRealizeBoundsLockCount>0 then exit;
+    // the user changed the bounds
+    if aWidth<0 then
+      raise Exception.Create(
+        'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative width '
+          +dbgs(aWidth)+' not allowed.');
+    if aHeight<0 then
+      raise Exception.Create(
+        'TWinControl.SetBounds ('+DbgSName(Self)+'): Negative height '
+          +dbgs(aHeight)+' not allowed.');
+  end;
+
 var
   NewBounds, OldBounds: TRect;
 begin
@@ -3985,6 +4000,8 @@ begin
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
 
   if not CompareRect(@NewBounds,@OldBounds) then begin
+    if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
+      CheckDesignBounds;
     // LCL bounds are not up2date -> process new bounds
     LockRealizeBounds;
     try
@@ -4264,6 +4281,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.297  2005/01/13 19:52:50  mattias
+  added desgntime check for TControl.Width/Height for negative values
+
   Revision 1.296  2005/01/08 14:23:56  micha
   move taborder and tabstop to twincontrol
 
