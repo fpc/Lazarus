@@ -1477,47 +1477,89 @@ begin
 end;
 
 procedure TMainIDE.SetupStartProject;
+
+  function ExtractCmdLineFilenames: TStrings;
+  var
+    i: LongInt;
+    Filename: String;
+  begin
+    Result:=nil;
+    i:=ParamCount;
+    while (i>0) do begin
+      Filename:=ParamStr(i);
+      if (Filename='') or (Filename[1]='-') then break;
+      if Result=nil then Result:=TStringList.Create;
+      Result.Insert(0,Filename);
+      dec(i);
+    end;
+  end;
+
 var
-  LastParam: String;
   ProjectLoaded: Boolean;
   AProjectFilename: String;
+  CmdLineFiles: TStrings;
+  i: Integer;
+  OpenFlags: TOpenFlags;
+  AFilename: String;
 begin
   {$IFDEF IDE_DEBUG}
   writeln('TMainIDE.Create A ***********');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
-  LastParam:=ParamStr(ParamCount);
-  ProjectLoaded:=false;
+  CmdLineFiles:=ExtractCmdLineFilenames;
+  try
+    ProjectLoaded:=false;
 
-  // try command line project
-  if (ParamCount>0) and (LastParam[1]<>'-') then begin
-    AProjectFilename:=LastParam;
-    if (CompareFileExt(AProjectFilename,'.lpi',false)<>0) then begin
-      AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
+    // try command line project
+    if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
+      AProjectFilename:=CmdLineFiles[0];
+      if (CompareFileExt(AProjectFilename,'.lpr',false)<>0) then
+        AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
+      AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
+      if FileExists(AProjectFilename) then begin
+        CmdLineFiles.Delete(0);
+        ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[])=mrOk);
+      end;
     end;
-    ProjectLoaded:=(DoOpenProjectFile(LastParam,[])=mrOk);
+
+    // try loading last project
+    if (not ProjectLoaded)
+    and (not SkipAutoLoadingLastProject)
+    and (EnvironmentOptions.OpenLastProjectAtStart)
+    and (FileExists(EnvironmentOptions.LastSavedProjectFile)) then begin
+      ProjectLoaded:=
+        (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
+    end;
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
+
+    if not ProjectLoaded then
+      // create new project
+      DoNewProject(ProjectDescriptorApplication);
+
+    UpdateWindowsMenu;
+    
+    // load the cmd line files
+    OpenFlags:=[ofAddToRecent,ofRegularFile];
+    for i:=0 to CmdLineFiles.Count-1 do
+      Begin
+        AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
+        if i<CmdLineFiles.Count then
+          Include(OpenFlags,ofMultiOpen)
+        else
+          Exclude(OpenFlags,ofMultiOpen);
+        if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
+          break;
+        end;
+      end;
+
+    {$IFDEF IDE_DEBUG}
+    writeln('TMainIDE.Create B');
+    {$ENDIF}
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
+  finally
+    CmdLineFiles.Free;
   end;
-
-  // try loading last project
-  if (not ProjectLoaded)
-  and (not SkipAutoLoadingLastProject)
-  and (EnvironmentOptions.OpenLastProjectAtStart)
-  and (FileExists(EnvironmentOptions.LastSavedProjectFile)) then begin
-    ProjectLoaded:=
-      (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile,[])=mrOk);
-  end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject B');{$ENDIF}
-
-  if not ProjectLoaded then
-    // create new project
-    DoNewProject(ProjectDescriptorApplication);
-
-  UpdateWindowsMenu;
-  {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.Create B');
-  {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
 end;
 
 procedure TMainIDE.ReOpenIDEWindows;
@@ -11331,6 +11373,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.825  2005/01/09 23:16:19  mattias
+  implemented loading command line filenames at start
+
   Revision 1.824  2005/01/09 15:26:05  mattias
   added Invert attribution tool  from sergio
 
