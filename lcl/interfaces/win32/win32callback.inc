@@ -352,35 +352,10 @@ Begin
         ScrollCode := Lo(WParam);
         Pos := Hi(WParam);
         ScrollBar := LParam;
-        If OwnerObject Is TScrollingWinControl Then
-        With TScrollingWinControl(OwnerObject).HorzScrollbar do
+        if ScrollBar <> 0 then
         begin
-          NewPos := Position;
-          case ScrollCode of
-          SB_LINEUP:
-            Dec(NewPos, Increment);
-          SB_LINEDOWN:
-            Inc(NewPos, Increment);
-          SB_PAGEUP:
-            Dec(NewPos, Page);
-          SB_PAGEDOWN:
-            Inc(NewPos, Page);
-          SB_THUMBPOSITION, SB_THUMBTRACK:
-            NewPos := Pos;
-          SB_TOP:
-            NewPos := 0;
-          SB_BOTTOM:
-            NewPos := Range;
-          end;
-          Windows.GetClientRect(Window,@R);
-          if NewPos < 0 then NewPos := 0;
-          if NewPos > (Range - (Page - 1)) then Begin
-            NewPos := Range - (Page - 1);
-            Win32Def.ScrollWindow(Window,Position - NewPos,0,nil,@R);
-            Position:=NewPos;
-            Exit;
-          End;
-          Win32Def.ScrollWindow(Window,Position - NewPos,0,nil,@R);
+          // send message to actual scrollbar window
+          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Lazarus'));
         end;
       End;
     End;
@@ -653,35 +628,10 @@ Begin
         ScrollCode := Lo(WParam);
         Pos := Hi(WParam);
         ScrollBar := LParam;
-        If OwnerObject Is TScrollingWinControl Then
-        With TScrollingWinControl(OwnerObject).VertScrollbar do
+        if ScrollBar <> 0 then
         begin
-          NewPos := Position;
-          case ScrollCode of
-          SB_LINEUP:
-            Dec(NewPos, Increment);
-          SB_LINEDOWN:
-            Inc(NewPos, Increment);
-          SB_PAGEUP:
-            Dec(NewPos, Page);
-          SB_PAGEDOWN:
-            Inc(NewPos, Page);
-          SB_THUMBPOSITION, SB_THUMBTRACK:
-            NewPos := Pos;
-          SB_TOP:
-            NewPos := 0;
-          SB_BOTTOM:
-            NewPos := Range;
-          end;
-          Windows.GetClientRect(Window,@R);
-          if NewPos < 0 then NewPos := 0;
-          if NewPos > (Range - (Page - 1)) then Begin
-            NewPos := Range - (Page - 1);
-            Win32Def.ScrollWindow(Window,0,Position - NewPos,nil,@R);
-            Position:=NewPos;
-            Exit;
-          End;
-          Win32Def.ScrollWindow(Window,0,Position - NewPos,nil,@R);
+          // send message to actual scrollbar window
+          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Lazarus'));
         end;
       End;
     End;
@@ -697,6 +647,11 @@ Begin
 //      SendMessage(Window, WM_MOVE, 0, MakeLParam(PWindowPos(LParam)^.x, PWindowPos(LParam)^.y));
 //      SendMessage(Window, WM_SIZE, 0, MakeLParam(R.right-R.left, R.bottom-R.top));
 //      WinProcess:=false;
+    End;
+    WM_MEASUREITEM:
+    Begin
+      if wParam <> 0 then
+        CNSendMessage(LM_MEASUREITEM, TObject(Windows.GetProp(Windows.GetDlgItem(Window, WParam), 'WinControl')), Pointer(LParam));
     End;
     WM_DRAWITEM:
     Begin
@@ -888,6 +843,9 @@ end;
 
 {
   $Log$
+  Revision 1.70  2003/11/21 20:32:01  micha
+  cleanups; wm_hscroll/wm_vscroll fix
+
   Revision 1.69  2003/11/18 07:20:39  micha
   added "included by" notice at top of file
 

@@ -60,6 +60,7 @@ Type
     FMenu: HMENU;        // Main menu/menu bar
     FSubMenu: HMENU;     // current sub menu
     FWin32MenuHeight: Integer;
+    FNextControlId: Cardinal;
 
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -186,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2003/11/21 20:32:01  micha
+  cleanups; wm_hscroll/wm_vscroll fix
+
   Revision 1.51  2003/11/14 20:23:31  micha
   fpimage fixes
 

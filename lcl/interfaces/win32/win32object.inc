@@ -47,6 +47,7 @@ Begin
   Windows.AdjustwindowRect(@R1,WS_OVERLAPPEDWINDOW,true);
   Windows.AdjustwindowRect(@R2,WS_OVERLAPPEDWINDOW,false);
   FWin32MenuHeight:= R2.Top - R1.Top;
+  FNextControlId := 0;
 End;
 
 {------------------------------------------------------------------------------
@@ -1547,7 +1548,7 @@ Begin
     If ofAllowMultiSelect in Options Then
       SizeStr:=15*MAX_PATH  // Tested with 210 selected files
     Else
-      SizeStr:=256;
+      SizeStr:=MAX_PATH;
     GetMem(FName,SizeStr);
     StrPCopy(FName,Filename);
     If Filter <> '' Then Begin
@@ -1833,12 +1834,16 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.CreateComponent(Sender: TObject);
 Var
-  Buddy,Parent, Handle, Window: HWnd;
-  Caption : String;
+  Buddy, Parent, Handle, Window: HWnd;
   CompStyle, Left, Top, Height, Width: Integer;
-  Flags,FlagsEx: DWord;
+  AlternateCreateWindow: Boolean;
+  MenuHandle: HMENU;
+  Caption : String;
+  Flags, FlagsEx: DWord;
   DoSubClass: Boolean;
-  StrTemp: PChar;
+  StrCaption: PChar;
+  WindowTitle: PChar;
+  pClassName: PChar;
   R: TRect;
   //TCI: TC_ITEM;
 Const
@@ -1853,6 +1858,7 @@ Begin
   Assert(False, 'Trace:CreateComponent - 1');
 
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  FlagsEx := 0;
   Assert(False, 'Trace:Setting flags');
   Window := HWND(Nil);
   Buddy := HWND(Nil);
@@ -1869,7 +1875,9 @@ Begin
     Parent := FAppHandle;
 
   DoSubClass := true;
+  AlternateCreateWindow := false;
   CompStyle := csNone;
+  WindowTitle := nil;
   Assert(False, 'Trace:Setting compstyle');
   //Caption := '';
   Assert(False, 'Trace:Setting caption');
@@ -1912,29 +1920,18 @@ Begin
   // until here remove when debug not needed
   If Caption = '' Then
     Caption := 'Blank';
-  StrTemp := StrAlloc(Length(Caption) + 1);
-  StrPCopy(StrTemp, Caption);
+  StrCaption := StrAlloc(Length(Caption) + 1);
+  StrPCopy(StrCaption, Caption);
   Assert(False, 'Trace:CreateComponent - Control Style is ' + CS_To_String(CompStyle));
 
   Case CompStyle Of
-    csAlignment:
-    Begin
-      Assert(False, 'Trace:TODO: Code csAlignment.  If anyone knows how to do this, please do.');
-      Handle:=TWinControl(Sender).Handle;
-      GetClientRect(Handle, R);
-      MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
-      Window := Handle;
-    End;
-    csArrow:
-    Begin
-      Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - Figure out what a csArrow is and code it');
-      Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a cursor. This will have to be good enough for now.');
-      LoadCursor(HInst(Nil), IDC_SizeWE);
-    End;
+    // controls with a window handle
     csBitBtn:
     Begin
-      Window := CreateWindow('BUTTON', Nil, Flags or BS_PUSHBUTTON Or BS_OWNERDRAW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      IntSendMessage3(LM_LOADXPM, Sender, StrTemp);
+      pClassName := 'BUTTON';
+      Flags := Flags or BS_PUSHBUTTON or BS_OWNERDRAW;
+      WindowTitle := nil;
+      IntSendMessage3(LM_LOADXPM, Sender, StrCaption);
     End;
     csButton:
     Begin
@@ -1943,23 +1940,29 @@ Begin
         Flags := Flags Or BS_PUSHBUTTON
       Else
         Flags := Flags Or BS_DEFPUSHBUTTON;
-      Window := CreateWindow('BUTTON', StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := 'BUTTON';
+      WindowTitle := StrCaption;
     End;
     csCalendar:
     Begin
-      Window := CreateWindow('SysMonthCal32', StrTemp, WS_CHILD Or WS_VISIBLE, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
+      pClassName := 'SysMonthCal32';
+      WindowTitle := StrCaption;
+      Flags := WS_CHILD or WS_VISIBLE;
       DoSubClass := False;
     End;
     csCheckbox:
     Begin
-      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
+      pClassName := 'BUTTON';
+      WindowTitle := StrCaption;
+      Flags := Flags Or BS_AUTOCHECKBOX;
     End;
     csComboBox:
     Begin
       Flags := Flags or ComboBoxStyles[TCustomComboBox(Sender).Style];
       If TComboBox(Sender).Sorted Then
         Flags:= Flags or CBS_SORT;
-      Window := CreateWindow('COMBOBOX', Nil, Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := 'COMBOBOX';
+      Flags := Flags or WS_VSCROLL or CBS_AUTOHSCROLL or CBS_HASSTRINGS;
     End;
     csImage:
     Begin
@@ -1972,7 +1975,7 @@ Begin
      // SetOwner(Window, Sender);
      // ReleaseDC(Handle, DC);
     End;
-    csListBox:
+    csListBox, csCheckListBox:
     Begin
       With TCustomListBox(Sender) do
       Begin
@@ -1983,8 +1986,12 @@ Begin
             Flags:= Flags or LBS_EXTENDEDSEL
           else
             Flags:= Flags or LBS_MULTIPLESEL;
-       end;
-      Window := CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, Flags or WS_VSCROLL or LBS_NOINTEGRALHEIGHT, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+        if CompStyle = csCheckListBox then
+          Flags := Flags or LBS_OWNERDRAWFIXED;
+      end;
+      FlagsEx := WS_EX_CLIENTEDGE;
+      pClassName := 'LISTBOX';
+      Flags := Flags or WS_VSCROLL or LBS_NOINTEGRALHEIGHT;
     End;
     csCListBox:
     Begin
@@ -1998,31 +2005,23 @@ Begin
           else
             Flags:= Flags or LBS_MULTIPLESEL;
       End;
-      Window := CreateWindowEx(WS_EX_CLIENTEDGE,'LISTBOX', Nil, Flags Or LBS_MULTICOLUMN or WS_HSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
+      FlagsEx := WS_EX_CLIENTEDGE;
+      pClassName := 'LISTBOX';
+      Flags := Flags or LBS_MULTICOLUMN or WS_HSCROLL;
     End;
     csEdit:
     Begin
-      Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      FlagsEx := WS_EX_CLIENTEDGE;
+      pClassName := 'EDIT';
+      WindowTitle := StrCaption;
+      Flags := Flags Or ES_AUTOHSCROLL;
     End;
-    csFileDialog, csOpenFileDialog, csSaveFileDialog,
-    csColorDialog, csFontDialog:
-    Begin
-      CreateCommonDialog(TCommonDialog(Sender),CompStyle);
-    End;
-    csSelectDirectoryDialog:
-      CreateSelectDirectoryDialog(TSelectDirectoryDialog(Sender));
     csFixed:
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
-      Window := CreateWindow(@ClsName, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := @ClsName;
+      WindowTitle := StrCaption;
       DoSubClass := false;
-    End;
-    csFont:
-    Begin
-      Assert(False, 'Trace:CreateComponent - Creating a font');
-      With LPLogFont(@Sender)^ Do
-        Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
     End;
     csForm:
     Begin
@@ -2048,38 +2047,42 @@ Begin
 
       If TCustomForm(Sender).FormStyle = fsStayOnTop Then
         FlagsEx:= FlagsEx or WS_EX_TOPMOST;
-      try
-        Window := CreateWindowEx(FlagsEx, @ClsName, StrTemp, Flags, LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), Parent, HMENU(Nil), HInstance, Nil);
-      except
-        writeln('Exception occured creating window');
-      end;
-      Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
-      Assert(False, 'Trace:Creating a Form - SetProp');
+      pClassName := @ClsName;
+      WindowTitle := StrCaption;
+      Left := LongInt(CW_USEDEFAULT);
+      Top := LongInt(CW_USEDEFAULT);
+      Width := LongInt(CW_USEDEFAULT);
+      Height := LongInt(CW_USEDEFAULT);
       DoSubClass := false;
-      If Window = 0 then
-      Begin
-        MessageBox(0, 'csForm CreateWindow Failed', nil, mb_Ok);
-        Exit;
-      End;
     End;
     csHintWindow:
     Begin
-      Window := CreateWindow(@ClsName, StrTemp,WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := @ClsName;
+      WindowTitle := StrCaption;
+      Flags := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+      Left := LongInt(CW_USEDEFAULT);
+      Top := LongInt(CW_USEDEFAULT);
+      Width := LongInt(CW_USEDEFAULT);
+      Height := LongInt(CW_USEDEFAULT);
       DoSubClass := false;
     End;
     csFrame, csGroupBox:
     Begin
-      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      TWinControl(Sender).InvalidateClientRectCache(true);
+      pClassName := 'BUTTON';
+      WindowTitle := StrCaption;
+      Flags := Flags Or BS_GROUPBOX;
     End;
     csLabel:
     Begin
-      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := 'STATIC';
+      WindowTitle := StrCaption;
+      Flags := Flags Or SS_LEFT;
     End;
     csListView:
     Begin
-      Window := CreateWindow(WC_LISTVIEW, StrTemp, Flags Or LVS_LIST Or LVS_SINGLESEL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      SetOwner(Window, Sender);
+      pClassName := WC_LISTVIEW;
+      WindowTitle := StrCaption;
+      Flags := Flags Or LVS_LIST Or LVS_SINGLESEL;
     End;
     csMemo:
     Begin
@@ -2097,25 +2100,19 @@ Begin
         ssBoth:
           Flags := Flags Or WS_HSCROLL Or WS_VSCROLL;
       End;
-      Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-    End;
-    csMainMenu, csMenuBar:
-    Begin
-      Window := CreateMenu;
-      FMenu := Window;
-      Assert(False, Format('Trace:Main menu owner --> %S', [(TComponent(Sender).Owner As TWinControl).ClassName]));
-    End;
-    csMenuItem:
-    Begin
-      Window := CreateMenu;
+      FlagsEx := WS_EX_CLIENTEDGE;
+      pClassName := 'EDIT';
+      WindowTitle := StrCaption;
     End;
     csNotebook:
     Begin
-      Window := CreateWindow(WC_TABCONTROL, Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := WC_TABCONTROL;
     End;
     csRadioButton:
     Begin
-      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTORADIOBUTTON, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := 'BUTTON';
+      WindowTitle := StrCaption;
+      Flags := Flags Or BS_AUTORADIOBUTTON;
     End;
     csScrollBar:
     Begin
@@ -2125,38 +2122,37 @@ Begin
         sbVertical:
           Flags := Flags Or SBS_VERT;
       End;
-      Window := CreateWindow('SCROLLBAR', Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := 'SCROLLBAR';
     End;
     csScrollBox:
     Begin
       //Todo: Make control respond to user scroll request
-      Window := CreateWindowEx(WS_EX_CLIENTEDGE, @ClsName, Nil, Flags or WS_HSCROLL or WS_VSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      DoSubClass:=False;
+      FlagsEx := WS_EX_CLIENTEDGE;
+      pClassName := @ClsName;
+      Flags := Flags or WS_HSCROLL or WS_VSCROLL;
+      DoSubClass := false;
     End;
     csScrolledWindow:
     Begin
       Assert(False, 'TRACE: CreateComponent - creating a scrolled window');
-      Window := CreateWindow(@ClsName, strTemp, WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_Visible, LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), LongInt(CW_USEDEFAULT), HWND(Nil), HMENU(Nil), HInstance, Nil);
+      pClassName := @ClsName;
+      WindowTitle := StrCaption;
+      Flags := WS_OVERLAPPEDWINDOW Or WS_HSCROLL Or WS_VSCROLL Or WS_VISIBLE;
+      Left := LongInt(CW_USEDEFAULT);
+      Top := LongInt(CW_USEDEFAULT);
+      Width := LongInt(CW_USEDEFAULT);
+      Height := LongInt(CW_USEDEFAULT);
       DoSubClass := false;
-    End;
-    csSpinEdit:
-    Begin
-      Assert(False, 'Trace:TODO: Create a spin edit control.  What is a spin edit contol anyway?');
-      //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
-      Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      Window := CreateUpDownControl(Flags Or WS_Border or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT,
-        0, 0,       // pos -  ignored for buddy
-        0, 0,       // size - ignored for buddy
-        Parent, 0, HInstance, Buddy,
-        Trunc(TSpinEdit(Sender).MaxValue),
-        Trunc(TSpinEdit(Sender).MinValue),
-        Trunc(TSpinEdit(Sender).Value));
-      Assert(False, 'TRACE:Spin edit control not created');
     End;
     csStatusBar:
     Begin
       Assert(False, 'TRACE:CreateComponent - Creating Status Bar');
-      Window := CreateStatusWindow(Flags, StrTemp, Parent, 0);
+      pClassName := STATUSCLASSNAME;
+      WindowTitle := StrCaption;
+      Left := LongInt(CW_USEDEFAULT);
+      Top := LongInt(CW_USEDEFAULT);
+      Width := LongInt(CW_USEDEFAULT);
+      Height := LongInt(CW_USEDEFAULT);
     End;
     csGTKTable:
     Begin
@@ -2170,35 +2166,35 @@ Begin
     csToggleBox:
     Begin
       Assert(False, 'TRACE: CreateComponent - Creating toggle box');
-      Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX Or BS_PUSHLIKE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := 'BUTTON';
+      WindowTitle := StrCaption;
+      Flags := Flags Or BS_AUTOCHECKBOX Or BS_PUSHLIKE;
     End;
     csToolBar:
     Begin
-      Window := CreateWindow(TOOLBARCLASSNAME, LPSTR(Nil), Flags OR CCS_ADJUSTABLE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := TOOLBARCLASSNAME;
+      Flags := Flags OR CCS_ADJUSTABLE;
     End;
     csToolButton:
     Begin
-      Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
+      pClassName := ToolBtnClsName;
+      Flags := 0;
       DoSubClass := false;
     End;
     // TCustomPage - Notebook page
     csPage:
     Begin
       Assert(False, 'Trace:Create a csPage component.');
-      Window := CreateWindowEx(WS_EX_CONTROLPARENT, @ClsName, Nil, Flags and not WS_VISIBLE, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      ShowWindow(Window, SW_HIDE);
+      FlagsEx := WS_EX_CONTROLPARENT;
+      pClassName := @ClsName;
+      Flags := Flags and not WS_VISIBLE;
       DoSubClass := false;
     End;
     csPanel:
     Begin
       Assert(False, 'Trace:Create a csPanel component.');
-      Window := CreateWindowEx(0, @ClsName, Nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := @ClsName;
       DoSubClass := false;
-    End;
-    csPopupMenu:
-    Begin
-      Window := CreatePopupMenu;
-      FSubMenu := Window;
     End;
     csProgressBar:
     Begin
@@ -2209,14 +2205,88 @@ Begin
         if (Orientation = pbVertical) or (Orientation = pbTopDown) then
           Flags := Flags or PBS_VERTICAL;
       end;
-      Window := CreateWindow(PROGRESS_CLASS, nil, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := PROGRESS_CLASS;
     End;
     csTrackBar:
     Begin
       Assert(False, 'TRACE:CreateComponent - Creating a Track Bar (if we''re lucky)');
-      Window := CreateWindow(TRACKBAR_CLASS, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      pClassName := TRACKBAR_CLASS;
+      WindowTitle := StrCaption;
     End;
+  else
+    AlternateCreateWindow := true;
+    case CompStyle of
+      // these controls create no window handle using CreateWindowEx
+      csAlignment:
+      Begin
+        Assert(False, 'Trace:TODO: Code csAlignment.  If anyone knows how to do this, please do.');
+        Handle:=TWinControl(Sender).Handle;
+        GetClientRect(Handle, R);
+        MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
+        Window := Handle;
+      End;
+      csArrow:
+      Begin
+        Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - Figure out what a csArrow is and code it');
+        Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a cursor. This will have to be good enough for now.');
+        LoadCursor(HInst(Nil), IDC_SizeWE);
+      End;
+      csFileDialog, csOpenFileDialog, csSaveFileDialog,
+      csColorDialog, csFontDialog:
+      Begin
+        CreateCommonDialog(TCommonDialog(Sender),CompStyle);
+      End;
+      csSelectDirectoryDialog:
+        CreateSelectDirectoryDialog(TSelectDirectoryDialog(Sender));
+      csFont:
+      Begin
+        Assert(False, 'Trace:CreateComponent - Creating a font');
+        With LPLogFont(@Sender)^ Do
+          Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
+      End;
+      csMainMenu, csMenuBar:
+      Begin
+        Window := CreateMenu;
+        FMenu := Window;
+        Assert(False, Format('Trace:Main menu owner --> %S', [(TComponent(Sender).Owner As TWinControl).ClassName]));
+      End;
+      csMenuItem:
+      Begin
+        Window := CreateMenu;
+      End;
+      csSpinEdit:
+      Begin
+        //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
+        Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrCaption, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+        Window := CreateUpDownControl(Flags Or WS_Border or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT,
+          0, 0,       // pos -  ignored for buddy
+          0, 0,       // size - ignored for buddy
+          Parent, 0, HInstance, Buddy,
+          Trunc(TSpinEdit(Sender).MaxValue),
+          Trunc(TSpinEdit(Sender).MinValue),
+          Trunc(TSpinEdit(Sender).Value));
+      End;
+      csPopupMenu:
+      Begin
+        Window := CreatePopupMenu;
+        FSubMenu := Window;
+      End;
+    end;
   End; {Case}
+
+  if not AlternateCreateWindow then
+  begin
+    if (Flags and WS_CHILD) <> 0 then
+    begin
+      // menu handle is also for specifying a control id if this is a child
+      MenuHandle := HMENU(FNextControlId);
+      Inc(FNextControlId);
+    end else begin
+      MenuHandle := HMENU(nil);
+    end;
+    Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
+        Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+  end;
 
   if Window <> HWND(nil) then
     Windows.SetProp(Window, 'Lazarus', Integer(Sender));
@@ -2260,10 +2330,23 @@ Begin
   End;
 
   Try
-    StrDispose(StrTemp);
+    StrDispose(StrCaption);
   Except
     Assert(False, 'Trace:Warning: Tried to dispose a string that was not allocated');
   End;
+
+  case CompStyle of
+    csCListBox:
+    begin
+      SendMessage(Window, LB_SETCOLUMNWIDTH, WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
+    end;
+    csFrame, csGroupBox:
+      TWinControl(Sender).InvalidateClientRectCache(true);
+    csListView:
+      SetOwner(Window, Sender);
+    csPage:
+      ShowWindow(Window, SW_HIDE);
+  end;
 
   Assert(False, 'Trace:Leaving CreateComponent');
 End;
@@ -2813,6 +2896,9 @@ End;
 
 {
   $Log$
+  Revision 1.132  2003/11/21 20:32:01  micha
+  cleanups; wm_hscroll/wm_vscroll fix
+
   Revision 1.131  2003/11/21 08:40:54  micha
   menuitems gone that have images, init bug
 
