@@ -533,6 +533,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.BuildAllButtonClick(Sender: TObject);
 begin
+  Save(Options);
   Options.SetBuildAll;
   Load(Options);
 end;
