@@ -5185,7 +5185,7 @@ begin
         if Winding then begin
           Tmp := CreateRectRGN(0,0,0,0);
           GetClipRGN(DC, Tmp);
-          RGN := CreatePolygonRgn(Points, OldNumPts, True);
+          RGN := CreatePolygonRgn(Points, OldNumPts, LCLType.Winding);
           ExtSelectClipRGN(DC, RGN, RGN_AND);
           DeleteObject(RGN);
           GetClipBox(DC, @ClipRect);
@@ -7570,6 +7570,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.197  2002/12/27 08:46:32  mattias
+  changes for fpc 1.1
+
   Revision 1.196  2002/12/26 11:00:15  mattias
   added included by to unitinfo and a few win32 functions
 
