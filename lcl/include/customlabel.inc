@@ -114,6 +114,7 @@ end;
 procedure TCustomLabel.CMTextChanged(var Message: TLMSetText);
 begin
   Invalidate;
+  AdjustSize;
 end;
 
 Function TCustomLabel.GetShowAccelChar : Boolean;
@@ -250,6 +251,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2005/01/26 17:51:34  mattias
+  calling autosizing on changing TLabel.Caption
+
   Revision 1.26  2005/01/24 12:23:11  mattias
   fixed TColorButton.Paint
 
