@@ -268,7 +268,6 @@ begin
 // RegisterStandardComponents
 
   RegisterComponentsProc:=@RegisterComponents;
-  RegisterComponents('','ExtCtrls',[TPage]);
   RegisterComponents('Standard','Menus',[TMenu,TPopupMenu]);
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
@@ -277,11 +276,12 @@ begin
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TProgressBar
-          ,TToolBar,TTrackbar]);
-  RegisterComponents('','ComCtrls',[TToolbutton]);
+          ,TToolBar,TToolbutton,TTrackbar]);
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
   RegisterComponents('System','ExtCtrls',[TTimer]);
+//  RegisterComponents('','ComCtrls',[TToolbutton]);
+  RegisterComponents('','ExtCtrls',[TPage]);
 
   RegisterComponentsProc:=nil;
 

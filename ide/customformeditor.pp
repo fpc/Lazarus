@@ -106,8 +106,11 @@ TCustomFormEditor
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     Function GetFormComponent : TIComponentInterface; override;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
+    Function CreateControlComponentInterface(Control: TCOmponent) : TIComponentInterface;
+
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
+    Function NewFormFromLFM(_Filename : String): TCustomform;
     Procedure ClearSelected;
     property SelectedComponents : TComponentSelectionList read FSelectedComponents write FSelectedComponents;
     property Obj_Inspector : TObjectInspector read FObj_Inspector write FObj_Inspector;
@@ -470,6 +473,8 @@ begin
 end;
 
 destructor TCustomFormEditor.Destroy;
+var
+  I : Integer;
 begin
   JITFormList.Destroy;
   FComponentInterfaceList.Free;
@@ -496,7 +501,13 @@ Begin
        Writeln('1');
        RemoveFromComponentInterfaceList(Temp);
        Writeln('2');
-       Temp.Delete;
+       if (Value is TCustomForm) then
+           begin
+            JITFormList.DestroyJITFOrm(TForm(Value));
+            Temp.Destroy;
+           end
+           else
+           Temp.Delete;
        Writeln('3');
      end;
 end;
@@ -567,7 +578,7 @@ Begin
     Begin
     //this should be a form
        NewFormIndex := JITFormList.AddNewJITForm;
-       if NewFormIndex > 0 then
+       if NewFormIndex >= 0 then
        Temp.FControl := JITFormList[NewFormIndex];
 //       Temp.FControl := TypeClass.Create(nil);
     end;
@@ -592,6 +603,7 @@ Begin
 
   if ParentCI <> nil then
    Begin
+    Writeln('ParentCI <> nil');
     TempName := Temp.FControl.ClassName;
     delete(TempName,1,1);
     writeln('TempName is '''+TempName+'''');
@@ -603,8 +615,7 @@ Begin
       inc(num);
       for I := 0 to FComponentInterfaceList.Count-1 do
       begin
-        DummyComponent:=TComponent(TComponentInterface(
-          FComponentInterfaceList.Items[i]).FControl);
+        DummyComponent:=TComponent(TComponentInterface(FComponentInterfaceList.Items[i]).FControl);
         if UpCase(DummyComponent.Name)=UpCase(TempName+IntToStr(Num)) then
         begin
           Found := True;
@@ -615,6 +626,7 @@ Begin
     Temp.FControl.Name := TempName+IntToStr(Num);
     Writeln('TempName + num = '+TempName+Inttostr(num));
    end;
+
   if (Temp.FControl is TControl) then
   Begin
     CompLeft:=X;
@@ -653,5 +665,48 @@ Begin
   FSelectedComponents.Clear;
 end;
 
+Function TCustomFormEditor.NewFormFromLFM(_Filename : String): TCustomForm;
+var
+  BinStream: TMemoryStream;
+  TxtStream : TFileStream;
+  Index    : Integer;
+Begin
+  Writeln('[NewFormFromLFM]');
+  result := nil;
+  try
+    BinStream := TMemoryStream.Create;
+      try
+        TxtStream:= TFileStream.Create(_Filename,fmOpenRead);
+        try
+          ObjectTexttoBinary(TxtStream,BinStream);
+        finally
+          TxtStream.Free;
+        end;
+        BinStream.Position := 0;
+        Writeln('[NewFormFromLFM] calling AddJITFORMFromStream');
+        Index := JITFormList.AddJITFormFromStream(binStream);
+        Writeln('[NewFormFromLFM] index='+inttostr(index));
+        Result := JITFormList[Index];
+      finally
+        BinStream.Free;
+      end;
+     except
+        //some error raised
+     end;
+
+
+end;
+
+Function TCustomFormEditor.CreateControlComponentInterface(Control: TComponent) :TIComponentInterface;
+var
+  Temp : TComponentInterface;
+
+Begin
+  Temp := TComponentInterface.Create;
+  Temp.FControl := Control;
+  FComponentInterfaceList.Add(Temp);
+  Result := Temp;
+
+end;
 
 end.

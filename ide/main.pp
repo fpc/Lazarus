@@ -1560,13 +1560,45 @@ end;
 
 Procedure TMainIDE.FileOpenedEvent(Sender : TObject; Filename : String);
 var
-MenuItem : TMenuItem;
+  MenuItem : TMenuItem;
+  CInterface : TComponentInterface;
+  TempForm : TCustomForm;
+  Texts : String;
+  I : Integer;
 Begin
 //Add a new menuitem to the popup that displays the filename.
   MenuItem := TMenuItem.Create(Self);
   MenuItem.Caption := Filename;
   MenuItem.OnClick := @SourceNotebook.OpenClicked;
   OpenFilePopupMenu.Items.Add(MenuItem);
+
+  Texts := Filename;
+  //chop off the extension.
+  delete(Texts,pos('.',Texts),length(texts));
+  Texts := Texts + '.lfm';
+  Writeln('the filename is '+texts);
+  if FileExists(Texts) then
+    begin
+     FormEditor1.SelectedComponents.Clear;
+     TempForm := FormEditor1.NewFormFromLFM(Texts);
+
+     CInterface := TComponentInterface(FormEditor1.CreateControlComponentInterface(tempForm));
+     TempForm.Designer := TDesigner.Create(TempForm);
+     TDesigner(TempForm.Designer).MainIDE := Self;
+     TDesigner(TempForm.Designer).FormEditor := FormEditor1;
+     TDesigner(tempForm.Designer).SourceEditor := TSourceEditor(sender);
+     TSourceEditor(sender).control := TempForm;
+     TempForm.OnActivate := @CodeOrFormActivated;
+     for I := 0 to TempForm.ComponentCount -1 do
+         FormEditor1.CreateControlComponentInterface(TempForm.Components[i]);
+     TempForm.Show;
+     SetDesigning(TempForm,True);
+     PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
+     FormEditor1.ClearSelected;
+     FormEditor1.AddSelected(TComponent(CInterface.Control));
+
+    end;
+
 //enable save buttons here
 SpeedButton5.Enabled := True;
 SpeedButton6.Enabled := True;
@@ -1901,6 +1933,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2001/01/15 20:55:44  lazarus
+  Changes for loading filesa
+  Shane
+
   Revision 1.44  2001/01/15 18:25:51  lazarus
   Fixed a stupid error I caused by using a variable as an index in main.pp and this variable sometimes caused an exception because the index was out of range.
   Shane

@@ -27,7 +27,7 @@ unit UnitEditor;
 interface
 
 uses
-  classes, Controls, forms,buttons,sysutils,Dialogs,
+  classes, Controls, forms,buttons,sysutils,Dialogs,FormEditor,
 {$ifdef NEW_EDITOR_SYNEDIT}
   synedit,SysHighlighterpas,
 {$else}
@@ -123,7 +123,7 @@ type
     Function Save : Boolean;
     Function Open : Boolean;
 
-    property Control : TComponent read FControl;
+    property Control : TComponent read FControl write FControl;
     property CurrentCursorXLine : Integer read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property Owner : TComponent read FAOwner;
@@ -145,6 +145,7 @@ type
   private
     Notebook1 : TNotebook;
     FEmpty : Boolean;
+    FFormEditor : TFormEditor;
     FSourceEditorList : TList;
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
@@ -184,6 +185,7 @@ type
     property OnOpenFile : TNotifyFileEvent read FOnOPenFile write FOnOPenFile;
     property OnSaveFile : TNotifyFileEvent read FOnSaveFile write FOnSaveFile;
     property Empty : Boolean read GetEmpty;
+    property FormEditor : TFormEditor read FFormEditor write FFormEditor;
     property MainIDE : TComponent read FMainIDE;
   end;
 
@@ -851,42 +853,7 @@ end;
 {This method checks to see if the loaded unit is a form unit.
  If so, it creates the form                                  }
 Procedure TSourceEditor.CreateFormFromUnit;
-Var
-  I,X : Integer;
-  Found : Boolean;
-  Texts : String;
 Begin
-  Writeln('CREATEFORMFROMUNIT');
-  for I := 0 to Source.Count -1 do
-      begin
-        Found := (Pos('initialization',lowercase(Source.Strings[i])) <> 0);
-        if Found then break;
-      end;
-
-  if Not Found then exit;
-
-  Writeln('Found Initialization at '+inttostr(i));
-
-  For X := I to Source.Count-1 do
-      Begin
-      Found := (pos('{<LAZARUSFORMDEF>}',Source.Strings[x]) <> 0);
-      if Found then Break;
-      end;
-
-  if Not Found then exit;
-  Writeln('Found the lazarusformdef line');
-  inc(x);
-  Texts := Source.Strings[x];
-  Writeln('texts = '+texts);
-  //grab the file name
-  Texts := Copy(Texts,pos('{$I ',Texts)+4,Length(Texts));
-  Texts := Copy(Texts,1,pos('.',Texts)+3);
-  Writeln('the resource file is '+Texts);
-  Writeln('Calling the function');
-  TMainIDE(TSourceNotebook(FAOwner).MainIDe).LoadResourceFromFile(Texts);
-  Writeln('Called the function');
-
-
 end;
 
 
@@ -1227,7 +1194,7 @@ Begin
         TempEditor.Filename := FOpenDialog.Filename;
         if (TempEditor.Open) then
         Begin
-           if assigned(FOnOPenFile) then FOnOpenFile(self,FOpenDialog.Filename);
+           if assigned(FOnOPenFile) then FOnOpenFile(TObject(TempEditor),FOpenDialog.Filename);
            Notebook1.Pages.Strings[Notebook1.Pageindex] := TempEditor.UnitName;
         end;
       end;
@@ -1259,8 +1226,13 @@ Begin
       //create a new page
       TempEditor := NewSE(-1);
       TempEditor.Filename := Filename;
-      TempEditor.OPen;
-      Notebook1.Pages.Strings[Notebook1.Pageindex] := ExtractFileName(TempEditor.UnitName);
+
+      if (TempEditor.OPen) then
+        Begin
+           if assigned(FOnOPenFile) then FOnOpenFile(TObject(TempEditor),FOpenDialog.Filename);
+           Notebook1.Pages.Strings[Notebook1.Pageindex] := ExtractFileName(TempEditor.UnitName);
+        end;
+
       end;
 
 end;
