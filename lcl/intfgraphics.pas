@@ -31,7 +31,7 @@ unit IntfGraphics;
 interface
 
 uses
-  Classes, SysUtils, fpImage, AvgLvlTree, LCLType, LCLProc, GraphType;
+  Classes, SysUtils, fpImage, AvgLvlTree, LCLType, LCLProc, GraphType, LCLIntf;
 
 type
   { TLazIntfImage }
@@ -274,9 +274,6 @@ procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
                        BitsPerPixel, Prec, Shift: cardinal; Bits: word);
 
 implementation
-
-uses
-  LCLIntf;
 
 var
   IsSpaceChar, IsNumberChar, IsHexNumberChar: array[char] of Boolean;
@@ -791,7 +788,8 @@ begin
     y:=Height-y;
   Position:=FLineStarts[y];
   BitOffset:=FDataDescription.BitsPerPixel*cardinal(x)+Position.Bit;
-  Position.Bit:=7 - (BitOffset and 7);
+  Position.Bit:=(BitOffset and 7);
+  //Position.Bit:=7 - (BitOffset and 7);
   inc(Position.Byte,BitOffset shr 3);
 end;
 
@@ -804,7 +802,8 @@ begin
     y:=Height-y;
   Position:=FMaskLineStarts[y];
   BitOffset:=FDataDescription.AlphaBitsPerPixel*cardinal(x)+Position.Bit;
-  Position.Bit:=7 - (BitOffset and 7);
+  Position.Bit:=(BitOffset and 7);
+  //Position.Bit:=7 - (BitOffset and 7);
   inc(Position.Byte,BitOffset shr 3);
 end;
 
@@ -1257,8 +1256,9 @@ var
       inc(ReadPos,FCharsPerPixel);
       // skip spaces
       while IsSpaceChar[Src[ReadPos]] do inc(ReadPos);
-      // read 'c'
-      if Src[ReadPos]<>'c' then RaiseXPMReadError('"c" expected',ReadPos);
+      // read 'c' (sometimes the 'c' is a 's')
+      if not (Src[ReadPos] in ['c','s']) then
+        RaiseXPMReadError('"c" expected',ReadPos);
       inc(ReadPos);
       // skip spaces
       while IsSpaceChar[Src[ReadPos]] do inc(ReadPos);

@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType, InterfaceBase,
-  LResources, Menus;
+  LResources, MenuType;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -151,6 +151,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.4  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

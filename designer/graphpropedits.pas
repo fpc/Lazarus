@@ -142,6 +142,9 @@ var
 {Form For Picture/Graphic Property Editor}
 type
   TGraphicPropertyEditorForm = class(TForm)
+  private
+    FModified: boolean;
+    procedure SetModified(const AValue: boolean);
   protected
     Opendlg: TOPENDIALOG;
     Savedlg: TSAVEDIALOG;
@@ -164,6 +167,7 @@ type
 
     FileName : String;
     Constructor Create(AOwner : TComponent); Override;
+    property Modified: boolean read FModified write SetModified;
   end;
 
 Constructor TGraphicPropertyEditorForm.Create(AOwner : TComponent);
@@ -296,31 +300,27 @@ begin
   end;
 end;
 
+procedure TGraphicPropertyEditorForm.SetModified(const AValue: boolean);
+begin
+  if FModified=AValue then exit;
+  FModified:=AValue;
+end;
+
 procedure TGraphicPropertyEditorForm.LoadBTNCLICK(Sender: TObject);
-Const
-  Formats : Array[0..1{7}] of String =
-    ('.xpm',
-     '.bmp'{,
-     '.ico',
-     '.png',
-     '.gif',
-     '.jpg',
-     '.jpeg',
-     '.tiff'});
-     //Until Graphics Handlers Have been Added for these others,
-     //Only .xpm, and .bpm can actually load using TPicture.
-     //We esspecially need to make an icon handler that will
-     //support .ico AND .xpm,  for windows/*nix compatibility.
-var
-  Ext : String;
-  I : Integer;
 begin
   If OpenDlg.Execute then begin
-    Ext := ExtractFileExt(OpenDlg.FileName);
     FileName := OpenDlg.FileName;
-    For I := Low(Formats) to High(Formats) do
-      If AnsiCompareText(Ext,Formats[I]) = 0 then
-        Preview.Picture.LoadFromFile(OpenDlg.FileName);
+    try
+      Preview.Picture.LoadFromFile(FileName);
+      Modified:=true;
+    except
+      on E: Exception do begin
+        MessageDlg('Error loading image',
+          'Error loading image "'+FileName+'":'#13+
+          E.Message,
+          mtError,[mbOk],0);
+      end;
+    end;
   end;
   SaveBTN.Enabled := False;
   If Assigned(Preview.Picture.Graphic) then
@@ -343,6 +343,7 @@ begin
   end;
   ScrollBox.Invalidate;
   SaveBTN.Enabled := False;
+  Modified:=true;
 end;
 
 { TGraphicPropertyEditor }
@@ -356,12 +357,12 @@ begin
   TheDialog := TGraphicPropertyEditorForm.Create(Application);
   try
     If (ABitmap <> nil) and not ABitmap.Empty then begin
-      TheDialog.Preview.Picture.Pixmap.Width := ABitmap.Width;
-      TheDialog.Preview.Picture.Pixmap.Height := ABitmap.Height;
-      With TheDialog.Preview.Picture.Pixmap.Canvas do begin
-        Brush.Color := clWhite;
-        FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-        Draw(0, 0, ABitmap);
+      With TheDialog.Preview.Picture.Bitmap do begin
+        Width := ABitmap.Width;
+        Height := ABitmap.Height;
+        Canvas.Brush.Color := clWhite;
+        Canvas.FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
+        Canvas.Draw(0, 0, ABitmap);
       end;
     end
     else
@@ -369,27 +370,25 @@ begin
       
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
-        If TheDialog.FileName <> '' then begin
-          If FileExists(TheDialog.FileName) then begin
-            Ext := Lowercase(ExtractFileName(TheDialog.FileName));
-            if ABitmap=nil then ABitmap:=TBitmap.Create;
-            If (ABitmap is TBitmap)
-            and ((AnsiCompareText(Ext, '.xpm') = 0)
-              or (AnsiCompareText(Ext, '.bmp') = 0))
-            then
-              ABitmap.LoadFromFile(TheDialog.FileName)
-            else begin
-              ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
-              ABitmap.Height := TheDialog.Preview.Picture.Graphic.Height;
-              With ABitmap.Canvas do begin
-                Brush.Color := clWhite;
-                FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-                Draw(0, 0, TheDialog.Preview.Picture.Graphic);
-              end;
+        If TheDialog.Modified and FileExists(TheDialog.FileName) then begin
+          Ext := ExtractFileExt(TheDialog.FileName);
+          if ABitmap=nil then ABitmap:=TBitmap.Create;
+          If (ABitmap is TBitmap)
+          and ((AnsiCompareText(Ext, '.xpm') = 0)
+            or (AnsiCompareText(Ext, '.bmp') = 0))
+          then begin
+            ABitmap.LoadFromFile(TheDialog.FileName);
+          end else begin
+            ABitmap.Width := TheDialog.Preview.Picture.Graphic.Width;
+            ABitmap.Height := TheDialog.Preview.Picture.Graphic.Height;
+            With ABitmap.Canvas do begin
+              Brush.Color := clWhite;
+              FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
+              Draw(0, 0, TheDialog.Preview.Picture.Graphic);
             end;
-            // ToDo: check if pixmap has changed
-            SetOrdValue(longint(ABitmap));
           end;
+          SetOrdValue(longint(ABitmap));
+          Modified;
         end;
       end
       else if ABitmap<>nil then begin
@@ -474,19 +473,21 @@ begin
   TheDialog := TGraphicPropertyEditorForm.Create(Application);
   try
     If not ABitmap.Empty then begin
-      TheDialog.Preview.Picture.Pixmap.Width := ABitmap.Width;
-      TheDialog.Preview.Picture.Pixmap.Height := ABitmap.Height;
-      With TheDialog.Preview.Picture.Pixmap.Canvas do begin
-        Brush.Color := clWhite;
-        FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
-        Draw(0, 0, ABitmap);
+      With TheDialog.Preview.Picture.Bitmap do begin
+        Width := ABitmap.Width;
+        Height := ABitmap.Height;
+        Canvas.Brush.Color := clWhite;
+        Canvas.FillRect(Rect(0, 0, ABitmap.Width, ABitmap.Height));
+        Canvas.Draw(0, 0, ABitmap);
       end;
     end;
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
-        LoadBitmap;
-        // ToDo: check if button glyph has changed
-        SetOrdValue(Longint(ABitmap));
+        if TheDialog.Modified then begin
+          LoadBitmap;
+          SetOrdValue(Longint(ABitmap));
+          Modified;
+        end;
       end
       else
         ABitmap.FreeImage;

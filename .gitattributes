@@ -1041,6 +1041,7 @@ lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal
 lcl/maskedit.pp svneol=native#text/pascal
 lcl/menus.pp svneol=native#text/pascal
+lcl/menutype.pas svneol=native#text/pascal
 lcl/nonwin32/messages.pp svneol=native#text/pascal
 lcl/pairsplitter.pas svneol=native#text/pascal
 lcl/postscriptprinter.pas svneol=native#text/pascal

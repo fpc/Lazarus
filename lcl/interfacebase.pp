@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
-  GraphType, GraphMath, Menus;
+  GraphType, GraphMath, MenuType;
 
 type
 
@@ -108,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.36  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

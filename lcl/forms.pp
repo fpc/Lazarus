@@ -42,8 +42,8 @@ interface
 
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
-  LCLIntf, InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer,
-  ActnList, ClipBrd,CustApp;
+  LCLIntf, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
+  CustomTimer, ActnList, ClipBrd,CustApp;
 
 type
   TProcedure = procedure;
@@ -1031,7 +1031,7 @@ implementation
 
 
 uses
-  LResources, Math;
+  Math;
 
 var
   FocusMessages: Boolean;

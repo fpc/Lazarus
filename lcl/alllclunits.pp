@@ -31,7 +31,7 @@ uses
   LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
   ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
+  LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages, MenuType,
   // the interface base
   InterfaceBase, {$IFDEF UseFPImage}IntfGraphics,{$ENDIF}
   // components and functions
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.1  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 

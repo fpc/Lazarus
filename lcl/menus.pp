@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LMessages, ActnList, Graphics, ImgList;
+  LCLIntf, InterfaceBase, LMessages, ActnList, Graphics, ImgList, MenuType;
 
 
 type
@@ -92,7 +92,7 @@ type
 
   { TMenuItem }
 
-  TMenuItem = class(TComponent)
+  TMenuItem = class(TBaseMenuItem)
   private
     FActionLink: TMenuActionLink;
     FAutoCheck: boolean;
@@ -314,9 +314,6 @@ procedure Register;
 
 implementation
 
-uses
-  LCLIntf, InterfaceBase;
-
 { Menu command managment }
 
 var
@@ -388,6 +385,9 @@ end.
 
 {
   $Log$
+  Revision 1.56  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.55  2003/11/16 01:56:15  mattias
   changed TMenuItem.Graphic to TMenuItem.Bitmap
 

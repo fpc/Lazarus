@@ -2012,8 +2012,6 @@ begin
   Width:=0;
   Height:=0;
 
-  BeginGDKErrorTrap;
-
   If GDKWindow <> nil then begin
     Visual:=gdk_window_get_visual(GDKWindow);
     GDK_Window_Get_Size(GDKWindow,@Width,@Height);
@@ -2022,8 +2020,6 @@ begin
     Visual := GDK_Visual_Get_System;
     if Visual=nil then exit;
   end;
-  
-  EndGDKErrorTrap;
 
   FillChar(Desc^,SizeOf(TRawImageDescription),0);
 
@@ -2042,8 +2038,8 @@ begin
   end;
 
   // Palette
-  Desc^.HasPalette:=Visual^.thetype in [GDK_VISUAL_GRAYSCALE,GDK_VISUAL_STATIC_COLOR,
-                                  GDK_VISUAL_PSEUDO_COLOR];
+  Desc^.HasPalette:=Visual^.thetype in [GDK_VISUAL_GRAYSCALE,
+                               GDK_VISUAL_STATIC_COLOR,GDK_VISUAL_PSEUDO_COLOR];
   // Depth
   Desc^.Depth:=Visual^.Depth;
   // Width + Height
@@ -2092,32 +2088,7 @@ begin
   Desc^.AlphaLineEnd:=rileByteBoundary;
 
   {$IFDEF VerboseRawImage}
-  with Desc^ do begin
-    writeln('TgtkObject.GetDeviceRawImageDescription A ',
-      ' Format=',ord(Format),
-      ' HasPalette=',HasPalette,
-      ' Depth=',Depth,
-      ' Width=',Width,
-      ' Height=',Height,
-      ' PaletteEntries=',PaletteEntries,
-      ' ByteOrder=',ord(ByteOrder),
-      ' LineOrder=',ord(LineOrder),
-      ' ColorCount=',ColorCount,
-      ' BitsPerPixel=',BitsPerPixel,
-      ' LineEnd=',ord(LineEnd),
-      ' RedPrec=',RedPrec,
-      ' RedShift=',RedShift,
-      ' GreenPrec=',GreenPrec,
-      ' GreenShift=',GreenShift,
-      ' BluePrec=',BluePrec,
-      ' BlueShift=',BlueShift,
-      ' AlphaSeparate=',AlphaSeparate,
-      ' AlphaPrec=',AlphaPrec,
-      ' AlphaShift=',AlphaShift,
-      ' AlphaBitsPerPixel=',AlphaBitsPerPixel,
-      ' AlphaLineEnd=',ord(AlphaLineEnd),
-    '');
-  end;
+  writeln('TgtkObject.GetDeviceRawImageDescription A ',RawImageDescriptionAsString(Desc));
   {$ENDIF}
 
   Result:=true;
@@ -8490,6 +8461,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.437  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.436  2003/11/08 14:12:48  mattias
   fixed scrollbar events under gtk from Colin
 

@@ -36,7 +36,7 @@ uses
   {$IFDEF UseFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
-  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LResources,
+  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
   GraphType, GraphMath;
 
 type
@@ -858,10 +858,12 @@ type
     FPalette: HPALETTE;
     FPixelFormat: TPixelFormat;
     FTransparentColor: TColor;
-    FHeight: integer;
     FTransparentMode: TTransparentMode;
-    FWidth: integer;
     FInternalState: TBitmapInternalState;
+    {$IFNDEF UseFPImage}
+    FWidth: integer;
+    FHeight: integer;
+    {$ENDIF}
     Procedure FreeCanvasContext;
     function GetCanvas: TCanvas;
     procedure CreateCanvas;
@@ -888,6 +890,7 @@ type
     procedure MaskHandleNeeded;
     procedure PaletteNeeded;
     procedure UnshareImage;
+    procedure FreeSaveStream;
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(Stream: TStream; Size: Longint); virtual;
     procedure SetWidthHeight(NewWidth, NewHeight: integer); virtual;
@@ -956,6 +959,7 @@ type
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   end;
 
+
   { TPortableNetworkGraphic }
 
   TPortableNetworkGraphic = class(TBitmap)
@@ -974,16 +978,10 @@ type
 
   { TIcon }
   {
-    @abstract()
-    Introduced by Marc Weustink <weus@quicknet.nl>
-    Currently maintained by ?
-  }
-  {
     TIcon reads and writes .ICO file format.
-    ! Currently it is only a TPixmap, but eventually it will become a TBitmap
-    descendent. !
+    ! Currently it is only a TBitmap !
   }
-  TIcon = class(TPixmap)
+  TIcon = class(TBitmap)
   end;
 
 
@@ -1082,8 +1080,6 @@ const
  ***************************************************************************)
 implementation
 
-uses
-  LCLIntf;
 
 function SendIntfMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
@@ -1257,6 +1253,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.98  2003/11/25 08:59:01  mattias
   fixed a few more black colors
 

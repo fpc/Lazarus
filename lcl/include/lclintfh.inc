@@ -79,8 +79,8 @@ function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; Border
 
 function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function LclCheckMenuItem(AMenuItem: TMenuItem): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LclCheckMenuItem(AMenuItem: TBaseMenuItem): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LclEnableMenuItem(AMenuItem: TBaseMenuItem): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -141,6 +141,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.3  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

@@ -1,4 +1,7 @@
 { $Id$ }
+
+// included by gtkint.pp
+
 {******************************************************************************
                  All GTK interface communication implementations.
                    Initial Revision  : Sun Nov 23 23:53:53 2003
@@ -28,8 +31,8 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function LclCheckMenuItem(AMenuItem: TMenuItem): Boolean; override;
-function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
+function LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
+function LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -37,6 +40,9 @@ function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.2  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

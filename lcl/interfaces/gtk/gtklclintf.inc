@@ -30,18 +30,20 @@
 
 {------------------------------------------------------------------------------
   Function: LCLCheckMenuItem
-  Params:  AMenuItem
+  Params:  BaseMenuItem
   Returns: Nothing
   
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
-function TgtkObject.LclCheckMenuItem(AMenuItem: TMenuItem): Boolean; 
+function TgtkObject.LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
 var
   IsRadio: Boolean;
   Group: PGSList;
   Item: Pointer;
+  AMenuItem: TMenuItem;
 begin
-  Item := Pointer(AMenuItem.Handle); 
+  AMenuItem:=BaseMenuItem as TMenuItem;
+  Item := Pointer(AMenuItem.Handle);
   IsRadio := gtk_is_radio_menu_item(Item);
   if IsRadio or gtk_is_check_menu_item(Item)
   then begin
@@ -65,13 +67,16 @@ end;
 
 {------------------------------------------------------------------------------
   Function: LCLEnableMenuItem
-  Params: AMenuItem: 
+  Params: BaseMenuItem:
   Returns:
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-function TGTKObject.LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; 
+function TGTKObject.LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
+var
+  AMenuItem: TMenuItem;
 begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
   gtk_widget_set_sensitive(pgtkwidget(AMenuItem.Handle), AMenuItem.Enabled);
   Result := True;
 end;
@@ -82,6 +87,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.2  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

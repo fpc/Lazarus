@@ -5061,7 +5061,8 @@ begin
          result.foreground.pixel, @result.foreground);
 end;
 
-Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
+Function StyleForegroundColor(Color: TColorRef;
+  DefaultColor: PGDKColor): PGDKColor;
 var
   style : PGTKStyle;
 begin
@@ -5614,6 +5615,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.230  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.229  2003/11/25 08:59:01  mattias
   fixed a few more black colors
 

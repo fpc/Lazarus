@@ -205,7 +205,6 @@ var
   TheWinControl: TWinControl;
   ClientWidget: PGtkWidget;
   MainWidget: PGtkWidget;
-  ClientAreaStyle: PGtkStyle;
 begin
   {$ifdef GTK2}
   Result := False;
@@ -3193,6 +3192,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.206  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.205  2003/11/25 08:59:01  mattias
   fixed a few more black colors
 

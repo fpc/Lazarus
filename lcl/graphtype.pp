@@ -29,7 +29,7 @@ unit GraphType;
 interface
 
 uses
-  Classes, LCLType;
+  Classes, SysUtils, LCLType;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
@@ -119,13 +119,56 @@ type
   end;
   PRawImagePosition = ^TRawImagePosition;
 
+function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
+
 implementation
+
+function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
+
+  function BoolStr(b: boolean): string;
+  begin
+    if b then
+      Result:='true'
+    else
+      Result:='false';
+  end;
+
+begin
+  Result:='';
+  with Desc^ do begin
+    Result:=' Format='+IntToStr(ord(Format))
+      +' HasPalette='+BoolStr(HasPalette)
+      +' Depth='+IntToStr(Depth)
+      +' Width='+IntToStr(Width)
+      +' Height='+IntToStr(Height)
+      +' PaletteEntries='+IntToStr(PaletteColorCount)
+      +' ByteOrder='+IntToStr(ord(ByteOrder))
+      +' LineOrder='+IntToStr(ord(LineOrder))
+      +' ColorCount='+IntToStr(ColorCount)
+      +' BitsPerPixel='+IntToStr(BitsPerPixel)
+      +' LineEnd='+IntToStr(ord(LineEnd))
+      +' RedPrec='+IntToStr(RedPrec)
+      +' RedShift='+IntToStr(RedShift)
+      +' GreenPrec='+IntToStr(GreenPrec)
+      +' GreenShift='+IntToStr(GreenShift)
+      +' BluePrec='+IntToStr(BluePrec)
+      +' BlueShift='+IntToStr(BlueShift)
+      +' AlphaSeparate='+BoolStr(AlphaSeparate)
+      +' AlphaPrec='+IntToStr(AlphaPrec)
+      +' AlphaShift='+IntToStr(AlphaShift)
+      +' AlphaBitsPerPixel='+IntToStr(AlphaBitsPerPixel)
+      +' AlphaLineEnd='+IntToStr(ord(AlphaLineEnd));
+  end;
+end;
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.20  2003/08/25 16:43:32  mattias
   moved many graphics types form graphtype.pp to graphics.pp
 

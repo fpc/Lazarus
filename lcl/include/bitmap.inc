@@ -52,13 +52,13 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
-    writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
+    //writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
     // TBitmap can share image data
     // -> check if already shared
     SrcBitmap:=TBitmap(Source);
     if SrcBitmap.FImage=FImage then exit;
     
-    writeln('TBitMap.Assign A  RefCount=',FImage.RefCount);
+    //writeln('TBitMap.Assign A  RefCount=',FImage.RefCount);
     // image is not shared => new image data
     // -> free canvas (interface handles)
     FreeCanvasContext;
@@ -67,7 +67,7 @@ begin
     // share FImage with assign graphic
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
-    writeln('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
+    //writeln('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
   {$IFDEF UseFPImage}
   end else if Source is TFPCustomImage then begin
     SrcFPImage:=TFPCustomImage(Source);
@@ -216,8 +216,7 @@ begin
   UnshareImage;
   FImage.FDIB.dsbmih.biClrUsed := 0;
   FImage.FDIB.dsbmih.biClrImportant := 0;
-  FreeAndNil(FImage.FSaveStream);
-  FImage.SaveStreamType:=bnNone;
+  FreeSaveStream;
 end;
 
 procedure TBitMap.HandleNeeded;
@@ -359,16 +358,59 @@ begin
   end;
 end;
 
+procedure TBitmap.FreeSaveStream;
+begin
+  if FImage.FSaveStream<>nil then begin
+    //writeln('TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size);
+  end;
+  FreeAndNil(FImage.FSaveStream);
+  FImage.SaveStreamType:=bnNone;
+end;
+
 procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
-var
-  MemStream: TMemoryStream;
 
   procedure RaiseInvalidBitmapHeader;
   begin
     raise EInOutError.Create(
       'TBitmap.ReadStream: Invalid windows bitmap (header)');
   end;
-  
+
+{$IFDEF UseFPImage}
+var
+  MemStream: TMemoryStream;
+  StreamType: TBitmapNativeType;
+  ReaderClass: TFPCustomImageReaderClass;
+begin
+  MemStream:=nil;
+  try
+    // create mem stream if not already done (to read the image type)
+    if (Stream is TMemoryStream) then begin
+      MemStream:=TMemoryStream(Stream);
+    end else begin
+      MemStream:=TMemoryStream.Create;
+      MemStream.CopyFrom(Stream,Size);
+      MemStream.Position:=0;
+    end;
+    // get image type
+    StreamType:=TestStreamBitmapNativeType(MemStream);
+    ReaderClass:=nil;
+    case StreamType of
+    bnWinBitmap:  ReaderClass:=TFPReaderBMP;
+    bnXPixmap:    ReaderClass:=TLazReaderXPM;
+    else
+      RaiseInvalidBitmapHeader;
+    end;
+    //writeln('TBitmap.ReadStream ',ClassName,' Size=',Size,' Reader=',ReaderClass.ClassName,' Stream=',Stream.ClassName);
+    ReadStreamWithFPImage(MemStream,Size,ReaderClass);
+  finally
+    if MemStream<>Stream then
+      MemStream.Free;
+  end;
+end;
+{$ELSE if not UseFPImage}
+var
+  MemStream: TMemoryStream;
+
   procedure CreateEmptyBitmap;
   var
     DIB: TDIBSection;
@@ -487,18 +529,25 @@ begin
   
   // store original stream
   StoreOriginalStream(Stream,Size);
+  // hide SaveStream (so, that it won't be destroyed due to the change)
   MemStream:=FImage.SaveStream;
+  try
+    FImage.SaveStream:=nil;
 
-  // determine stream type
-  FImage.SaveStreamType:=TestStreamBitmapNativeType(MemStream);
-  // read stream
-  case FImage.SaveStreamType of
-  bnWinBitmap:  ReadBMPStream;
-  bnXPixmap:    ReadXPMStream;
-  else
-    RaiseInvalidBitmapHeader;
+    // determine stream type
+    FImage.SaveStreamType:=TestStreamBitmapNativeType(MemStream);
+    // read stream
+    case FImage.SaveStreamType of
+    bnWinBitmap:  ReadBMPStream;
+    bnXPixmap:    ReadXPMStream;
+    else
+      RaiseInvalidBitmapHeader;
+    end;
+  finally
+    FImage.SaveStream:=MemStream;
   end;
 end;
+{$ENDIF  if not UseFPImage}
 
 procedure TBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
 begin
@@ -671,7 +720,7 @@ begin
     WritePixels(Bits, Header);
     // save stream, so that further saves will be fast
     MemStream.Position:=0;
-    FreeAndNil(FImage.FSaveStream);
+    FreeSaveStream;
     FImage.SaveStream:=MemStream;
     MemStream:=nil;
     FImage.SaveStreamType:=bnWinBitmap;
@@ -691,8 +740,8 @@ begin
   if Stream<>FImage.SaveStream then begin
     MemStream:=TMemoryStream.Create;
     MemStream.CopyFrom(Stream,Size);
-    FreeAndNil(FImage.FSaveStream);
-    FImage.SaveStream:=MemStream;
+    FreeSaveStream;
+    FImage.FSaveStream:=MemStream;
   end else
     MemStream:=FImage.SaveStream;
   FImage.SaveStreamType:=bnNone;
@@ -718,9 +767,9 @@ begin
 
   IntfImg:=nil;
   ImgReader:=nil;
+  // hide SaveStream during reading (so that it won't be destroyed)
+  NewSaveStream:=FImage.SaveStream;
   try
-    // store save stream during reading
-    NewSaveStream:=FImage.SaveStream;
     FImage.SaveStream:=nil;
     // read image
     IntfImg:=TLazIntfImage.Create(0,0);
@@ -747,6 +796,7 @@ procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
 
   Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
   begin
+    //writeln('DoWriteStreamSize ',ClassName,' Size=',Size,' WriteSize=',WriteSize);
     if WriteSize then
       DestStream.WriteBuffer(Size, SizeOf(Size));
   end;
@@ -767,8 +817,8 @@ begin
     DoWriteOriginal;
     exit;
   end;
+  //writeln('WriteStreamWithFPImage');
 
-  writeln('WriteStreamWithFPImage');
   // write image to temporary stream
   MemStream:=TMemoryStream.Create;
   IntfImg:=nil;
@@ -784,7 +834,7 @@ begin
     FreeAndNil(IntfImg);
     // save stream, so that further saves will be fast
     MemStream.Position:=0;
-    FreeAndNil(FImage.FSaveStream);
+    FreeSaveStream;
     FImage.SaveStream:=MemStream;
     FImage.SaveStreamType:=bnNone;
     MemStream:=nil;
@@ -962,6 +1012,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.51  2003/11/25 08:59:01  mattias
   fixed a few more black colors
 

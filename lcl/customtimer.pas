@@ -26,11 +26,13 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LMessages, VCLGlobals;
-
+  Classes, SysUtils, LCLStrConsts, LCLType, LMessages, VCLGlobals,
+  InterfaceBase;
 
 type
+
   { TCustomTimer }
+  
   TCustomTimer = class (TComponent)
   private
     FInterval     : Cardinal;
@@ -61,9 +63,6 @@ type
 
 
 implementation
-
-uses
-  InterfaceBase;
 
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }

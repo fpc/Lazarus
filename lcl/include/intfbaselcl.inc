@@ -258,12 +258,12 @@ begin
   Result:=true;
 end;
 
-function TInterfaceBase.LclCheckMenuItem(AMenuItem: TMenuItem): Boolean;
+function TInterfaceBase.LclCheckMenuItem(AMenuItem: TBaseMenuItem): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.LclEnableMenuItem(AMenuItem: TMenuItem): Boolean;
+function TInterfaceBase.LclEnableMenuItem(AMenuItem: TBaseMenuItem): Boolean;
 begin
   Result := False;
 end;
@@ -468,6 +468,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.3  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

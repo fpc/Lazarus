@@ -71,7 +71,7 @@ uses
   {$ENDIF}
   SysUtils, Classes, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   VclGlobals, LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
-  GraphType, GraphMath, Graphics, Menus;
+  GraphType, GraphMath, Graphics, MenuType, Menus;
 
 
 type
@@ -401,6 +401,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.159  2003/11/26 21:30:19  mattias
+  reduced unit circles, fixed fpImage streaming
+
   Revision 1.158  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32
