@@ -382,6 +382,8 @@ type
     FSubItems: TStrings;
     //FIndex   : Integer;
     FCaption : String;
+    FImageIndex: Integer;
+    procedure SetImageIndex(const AValue: Integer);
     Procedure SetCaption(const Value : String);
 //    Procedure SetSubItems(Value : TStrings);
     Function GetIndex : Integer;
@@ -396,6 +398,7 @@ type
     property Index : Integer read GetIndex;
     property Owner : TListItems read FOwner;
     property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
+    property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
   end;
 
  TListItems = class(TPersistent)
@@ -470,6 +473,8 @@ type
     FSorted    : Boolean;
     FSortColumn : Integer;
     FMultiSelect: Boolean;
+    FImageList: TImageList;
+    procedure SetImageList(const AValue: TImageList);
     procedure SetMultiSElect(const AValue: Boolean);
     procedure SetItems(Value : TListItems);
   protected
@@ -492,6 +497,7 @@ type
     property Sorted : Boolean read FSorted write SetSorted;
     property SortColumn : Integer read FSortColumn write SetSortColumn;
     property MultiSelect : Boolean read FMultiSelect write SetMultiSelect default False;
+    property ImageList : TImageList read FImageList write SetImageList;
   end;
 
  TListView = class(TCustomListView)
@@ -1013,6 +1019,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/12/21 18:16:59  lazarus
+  Added TImage class
+  Shane
+
   Revision 1.10  2001/12/19 21:36:05  lazarus
   Added MultiSelect to TListView
   Shane

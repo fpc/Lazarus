@@ -732,6 +732,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2001/12/21 18:16:59  lazarus
+  Added TImage class
+  Shane
+
   Revision 1.17  2001/11/12 22:12:57  lazarus
   MG: fixed parser: multiple brackets, nil, string[]
 

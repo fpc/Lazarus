@@ -303,7 +303,7 @@ begin
           ,TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
-          ,TBevel,TRadioGroup]);
+          ,TBevel,TRadioGroup,TImage]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView
           ,TProgressBar,TToolBar,TTrackbar]);
 

@@ -2277,6 +2277,9 @@ PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
          gtk_widget_show(p);
       end;
 
+      csImage : Begin
+                   p := gtk_image_new(nil,nil);
+                   end;
       csLabel :
       begin
          P := gtk_label_new(StrTemp);
@@ -3006,6 +3009,7 @@ var
    ColName   : String;
    pColName : PChar;
    pRowText : PChar;
+   Image : PgdkImage;
 
 begin
    result := 0;     // default if nobody sets it
@@ -3172,7 +3176,16 @@ begin
                  
                gtk_clist_thaw(PgtkCList(Handle));
 
-            end;
+               end;
+            csImage:  Begin
+                       //Image changed.
+                       Widget := PgtkWidget(PdeviceContext(TBitmap(sender).handle));
+                       Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,widget^.allocation.width,widget^.allocation.height);
+                       if Handle = nil then
+                       TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
+                       else
+                       gtk_image_set(PgtkImage(handle),Image,nil);
+                      end;
       else
          Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
    end;
@@ -3627,6 +3640,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.95  2001/12/21 18:17:00  lazarus
+  Added TImage class
+  Shane
+
   Revision 1.94  2001/12/20 19:11:23  lazarus
   Changed the delay for the hints from 100 miliseconds to 500.  I'm hoping this reduces the crashing for some people until I determine the problem.
   Shane

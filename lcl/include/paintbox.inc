@@ -4,8 +4,7 @@ constructor TPaintBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csReplicatable];
-  Width := 105;
-  Height := 105;
+  setbounds(0,0,105,105);
 end;
 
 procedure TPaintBox.Paint;

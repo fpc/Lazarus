@@ -41,7 +41,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages;
+  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages,Graphics;
 
 type
   { workaround problem with fcl }
@@ -236,7 +236,24 @@ type
 //    property OnStartDock;
 //    property OnStartDrag;
   end;
-
+  
+  TImage = class(TGraphicControl)
+  private
+    FPicture: TPicture;
+    procedure SetPicture(const AValue: TPicture);
+    Procedure PictureChanged(SEnder : TObject);
+  protected
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    Property Align;
+    property Picture : TPicture read FPicture write SetPicture;
+    property Visible;
+    property OnCLick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+  end;
   TBevelStyle=(bsLowered, bsRaised);
   TBevelShape=(bsBox, bsFrame, bsTopLine, bsBottomLine, bsLeftLine, bsRightLine);
   TBevel=Class(TGraphicControl)
@@ -320,7 +337,7 @@ TCN_SELCHANGE = TCN_FIRST - 1;
 
 implementation
 
- uses Graphics, interfaces;
+ uses interfaces;
 
 {$I page.inc}
 {$I customnotebook.inc}
@@ -330,11 +347,17 @@ implementation
 {$I customradiogroup.inc}
 {$I radiogroup.inc}
 {$I bevel.inc}
+{$I image.inc}
+
 
 end.
 
  {
   $Log$
+  Revision 1.15  2001/12/21 18:16:59  lazarus
+  Added TImage class
+  Shane
+
   Revision 1.14  2001/11/05 18:18:19  lazarus
   added popupmenu+arrows to notebooks, added target filename
 

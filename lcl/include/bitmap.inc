@@ -345,6 +345,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/12/21 18:16:59  lazarus
+  Added TImage class
+  Shane
+
   Revision 1.11  2001/10/10 17:55:04  lazarus
   MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
 

@@ -63,4 +63,13 @@ begin
  Inherited Destroy;
 end;
 
+procedure TListItem.SetImageIndex(const AValue: Integer);
+begin
+  if AValue <> FImageIndex then
+    Begin
+      FImageIndex := AValue;
+      ItemChanged(self);
+    end;
+end;
+
 

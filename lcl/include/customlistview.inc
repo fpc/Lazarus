@@ -133,3 +133,12 @@ begin
      end;
      
 end;
+
+procedure TCustomListView.SetImageList(const AValue: TImageList);
+begin
+  if AValue <> FImageList then
+     Begin
+        FImageList := AValue;
+        CNSendMessage(LM_SETPROPERTIES,self,nil);
+     end;
+end;
