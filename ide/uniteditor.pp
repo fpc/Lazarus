@@ -50,6 +50,7 @@ uses
   LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
+  TSourceNoteBook = class;
   // --------------------------------------------------------------------------
 
   TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint,
@@ -131,6 +132,8 @@ type
     FOnMouseDown: TMouseEvent;
     FOnMouseUp: TMouseEvent;
     FOnKeyDown: TKeyEvent;
+    
+    FSourceNoteBook: TSourceNotebook;
 
     Procedure EditorMouseMoved(Sender: TObject; Shift: TShiftState; X,Y:Integer);
     Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
@@ -138,8 +141,8 @@ type
     Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    function GetWordFromCaret(const ACaretPos: TPoint) : String;
-    function GetWordFromCaretEx(const ACaretPos: TPoint; const ALeftLimit, ARightLimit: TCharSet): String;
+    function GetWordFromCaretEx(const ACaretPos: TPoint;
+      const ALeftLimit, ARightLimit: TCharSet): String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
     Procedure SetSource(Value : TStrings);
@@ -200,12 +203,14 @@ type
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
-    Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     Function Close : Boolean;
+
+    // codebuffer
     procedure IncreaseIgnoreCodeBufferLock;
     procedure DecreaseIgnoreCodeBufferLock;
     procedure UpdateCodeBuffer; // copy the source from EditorComponent
 
+    // dialogs
     procedure StartFindAndReplace(Replace:boolean);
     procedure OnReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; var Action: TSynReplaceAction);
@@ -214,8 +219,14 @@ type
     procedure FindPrevious;
     procedure ShowGotoLineDialog;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
+    procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
+    
+    // gutter
     procedure SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
     procedure RemoveBreakPoint(const ALine: Integer); overload;
+    
+    // selections
+    Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
     procedure TabsToSpacesInSelection;
@@ -226,12 +237,10 @@ type
     procedure SelectLine;
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
-
     procedure InsertGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
-
     procedure InsertCVSKeyword(const AKeyWord: string);
 
     // editor commands
@@ -239,14 +248,13 @@ type
 
     //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
+    function GetWordFromCaret(const ACaretPos: TPoint) : String;
     Function GetWordAtCurrentCaret: String;
 
-    //used to get the x,y of the caret if the caret was where the mouse is
-    //used in
-    //GetWordAtPosition
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
     procedure CenterCursor;
-    
+  public
+    // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property CurrentCursorXLine : Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
@@ -283,6 +291,8 @@ type
     property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp : TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
+    
+    property SourceNoteBook: TSourceNotebook read FSourceNoteBook;
   end;
   
   //============================================================================
@@ -303,7 +313,7 @@ type
     ShowLineNumbersMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
     MoveEditorRightMenuItem: TMenuItem;
-    procedure NotebookShowHint(Sender: TObject; HintInfo: Pointer);
+    procedure NotebookShowTabHint(Sender: TObject; HintInfo: Pointer);
     procedure SrcPopUpMenuPopup(Sender: TObject);
     Procedure BookMarkClicked(Sender : TObject);
     Procedure BookMarkGotoClicked(Sender : TObject);
@@ -323,8 +333,6 @@ type
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
-    FOnCtrlMouseUp: TMouseEvent;
-    FOnMovingPage: TOnMovingPage;
     FSourceEditorList : TList; // list of TSourceEditor
     FCodeTemplateModul: TSynEditAutoComplete;
     FKeyStrokes: TSynEditKeyStrokes;
@@ -335,6 +343,7 @@ type
     FOnAddWatchAtCursor: TNotifyEvent;
     FOnCloseClicked: TNotifyEvent;
     FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
+    FOnCtrlMouseUp: TMouseEvent;
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
     FOnDeleteLastJumpPoint: TNotifyEvent;
     FOnEditorVisibleChanged: TNotifyEvent;
@@ -342,6 +351,7 @@ type
     FOnEditorPropertiesClicked: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
+    FOnMovingPage: TOnMovingPage;
     FOnNewClicked: TNotifyEvent;
     FOnOpenClicked: TNotifyEvent;
     FOnOpenFileAtCursorClicked: TNotifyEvent;
@@ -397,9 +407,9 @@ type
        Shift: TShiftstate; X,Y : Integer);
 
     //hintwindow stuff
-    FHintWindow : THintWindow;
-    FHintTimer : TTimer;
-    Procedure HintTimer(sender : TObject);
+    FHintWindow: THintWindow;
+    FHintTimer: TTimer;
+    Procedure HintTimer(Sender: TObject);
     procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
     procedure ShowSynEditHint(const MousePos: TPoint);
 
@@ -434,6 +444,7 @@ type
     function FindSourceEditorWithEditorComponent(
       EditorComp: TComponent): TSourceEditor;
     Function GetActiveSE : TSourceEditor;
+    procedure SetActiveSE(SrcEdit: TSourceEditor);
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
 
@@ -470,6 +481,7 @@ type
     procedure AddJumpPointClicked(Sender: TObject);
     procedure DeleteLastJumpPointClicked(Sender: TObject);
     procedure ViewJumpHistoryClicked(Sender: TObject);
+    procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
     
     Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer);
     Procedure CloseFile(PageIndex:integer);
@@ -612,6 +624,10 @@ Begin
 //writeln('TSourceEditor.Create A ',AOwner.ClassName);
   inherited Create;
   FAOwner := AOwner;
+  if (FAOwner<>nil) and (FAOwner is TSourceNotebook) then
+    FSourceNoteBook:=TSourceNotebook(FAOwner)
+  else
+    FSourceNoteBook:=nil;
 
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
@@ -680,12 +696,21 @@ begin
   if Top<10 then Top:=P.y+2*EditorComponent.LineHeight;
 end;
 
+procedure TSourceEditor.ActivateHint(ClientPos: TPoint; const TheHint: string);
+var
+  ScreenPos: TPoint;
+begin
+  if SourceNoteBook=nil then exit;
+  ScreenPos:=EditorComponent.ClientToScreen(ClientPos);
+  SourceNoteBook.ActivateHint(ScreenPos,TheHint);
+end;
+
 {------------------------------S T A R T  F I N D-----------------------------}
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 var ALeft,ATop:integer;
 begin
-  if Owner is TSourceNotebook then
-    TSourceNotebook(Owner).InitFindDialog;
+  if SourceNotebook<>nil then
+    SourceNotebook.InitFindDialog;
   if Replace then
     FindReplaceDlg.Options :=
       FindReplaceDlg.Options + [ssoReplace, ssoReplaceAll, ssoPrompt]
@@ -753,8 +778,8 @@ var OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
   TopLine: integer;
 begin
-  if Owner is TSourceNotebook then
-    TSourceNotebook(Owner).AddJumpPointClicked(Self);
+  if SourceNotebook<>nil then
+    SourceNotebook.AddJumpPointClicked(Self);
   OldCaretXY:=EditorComponent.CaretXY;
   if EditorComponent.SelAvail then begin
     if ssoBackwards in FindReplaceDlg.Options then
@@ -2375,7 +2400,7 @@ Begin
           OnPageChanged := @NotebookPageChanged;
           OnCloseTabClicked:=@CloseClicked;
           ShowHint:=true;
-          OnShowHint:=@NotebookShowHint;
+          OnShowHint:=@NotebookShowTabHint;
           {$IFDEF IDE_DEBUG}
           writeln('[TSourceNotebook.CreateNotebook] E');
           {$ENDIF}
@@ -2431,7 +2456,8 @@ begin
   MoveEditorRightMenuItem.Enabled:=(NoteBook<>nil) and (NoteBook.PageCount>1);
 end;
 
-procedure TSourceNotebook.NotebookShowHint(Sender: TObject; HintInfo: Pointer);
+procedure TSourceNotebook.NotebookShowTabHint(Sender: TObject;
+  HintInfo: Pointer);
 var
   Tabindex: integer;
   ASrcEdit: TSourceEditor;
@@ -2672,6 +2698,15 @@ Begin
   if (FSourceEditorList=nil) or (FSourceEditorList.Count=0)
     or (Notebook=nil) or (Notebook.PageIndex<0) then exit;
   Result:=FindSourceEditorWithPageIndex(Notebook.PageIndex);
+end;
+
+procedure TSourceNotebook.SetActiveSE(SrcEdit: TSourceEditor);
+var
+  i: integer;
+begin
+  i:=FindPageWithEditor(SrcEdit);
+  if i>=0 then
+    NoteBook.PageIndex:=i;
 end;
 
 procedure TSourceNotebook.LockAllEditorsInSourceChangeCache;
@@ -2940,6 +2975,20 @@ procedure TSourceNotebook.ViewJumpHistoryClicked(Sender: TObject);
 begin
   if Assigned(OnViewJumpHistory) then
     OnViewJumpHistory(Sender);
+end;
+
+procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
+  const TheHint: string);
+var
+  HintWinRect: TRect;
+begin
+  if FHintWindow<>nil then
+    FHintWindow.Visible:=false;
+  if FHintWindow=nil then
+    FHintWindow:=THintWindow.Create(Self);
+  HintWinRect := FHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
+  OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
+  FHintWindow.ActivateHint(HintWinRect,TheHint);
 end;
 
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);
@@ -3526,8 +3575,12 @@ end;
 procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal
   );
 begin
-  FHintTimer.Enabled:=false;
-  IdentCompletionTimer.Enabled:=false;
+  if FHintTimer<>nil then
+    FHintTimer.Enabled:=false;
+  if IdentCompletionTimer<>nil then
+    IdentCompletionTimer.Enabled:=false;
+  if FHintWindow<>nil then
+    FHintWindow.Visible:=false;
 end;
 
 procedure TSourceNotebook.EditorMouseUp(Sender: TObject; Button: TMouseButton;
@@ -3574,62 +3627,6 @@ begin
     if Assigned(OnShowHintForSource) then
       OnShowHintForSource(ASrcEdit,EditPos,EditCaret);
   end;
-
-  (*Window := FindLCLWindow(cPosition);
-  if not(Assigned(window)) then Exit;
-
-  //get the parent until parent is nil
-  While Window.Parent <> nil do
-    Window := Window.Parent;
-
-  if (window <> Self) then Exit;
-
-  cPosition := ScreenToClient(cPosition);
-
-  //Get the active SourceEditor
-  Se := GetActiveSE;
-  if Not Assigned(se) then Exit;
-
-  //Account for the gutter and tabs
-  TextPosition.x := cPosition.X-EditorOPts.GutterWidth;
-  TextPosition.Y := cPosition.Y - 28;
-
-  if (dcEvaluate in DebugBoss.Commands)
-  and SE.EditorComponent.SelAvail
-  then AHint := SE.EditorComponent.SelText
-  else AHint := '';
-  if AHint = ''
-  then AHint := SE.GetWordFromCaretEx(
-    SE.GetCaretPosFromCursorPos(TextPosition),
-    [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '='],
-    [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '=', '.']
-  );
-
-  //If no hint, then Exit
-  if AHint = '' then Exit;
-
-  //defaults for now just to demonstrate
-  if lowercase(AHint) = 'integer' then
-    AHint := 'type System.integer: -2147483648..214748347 system.pas'
-  else
-  if lowercase(AHint) = 'real' then
-    AHint := 'type System.Real: Double -system.pas'
-  else
-  if DebugBoss.Evaluate(AHint, HintEval) then
-    AHint := AHint + ' = ' + HintEval;
-
-
-  Caret := SE.GetCaretPosfromCursorPos(TextPosition);
-  AHint := inttostr(Caret.Y)+','+Inttostr(Caret.X)+' : '+aHint;
-  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Rect.Left := cPosition.X+Left+10;
-  Rect.Top := cPosition.Y+Top+10;
-  //adding tab height
-  Rect.Top := Rect.Top + 25;
-  Rect.Right := Rect.Left + Rect.Right+3;
-  Rect.Bottom := Rect.Top + Rect.Bottom+3;
-  FHintWindow.ActivateHint(Rect,AHint);
-  *)
 end;
 
 Procedure TSourceNotebook.AddWatchAtCursor(Sender : TObject);
