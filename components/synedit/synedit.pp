@@ -1575,7 +1575,7 @@ var
   C: char;
   Cmd: TSynEditorCommand;
 begin
-writeln('[TCustomSynEdit.KeyDown] ',Key
+//writeln('[TCustomSynEdit.KeyDown] ',Key
   ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   inherited;
   Data := nil;
@@ -1583,7 +1583,7 @@ writeln('[TCustomSynEdit.KeyDown] ',Key
   try
     Cmd := TranslateKeyCode(Key, Shift, Data);
     if Cmd <> ecNone then begin
-writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
+//writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
       CommandProcessor(Cmd, C, Data);

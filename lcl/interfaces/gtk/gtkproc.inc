@@ -209,7 +209,7 @@ begin
   Extended := False;
   Toggle := False;
   
-writeln('[GetGTKKeyInfo] Event^.KeyVal=',Event^.KeyVal);
+//writeln('[GetGTKKeyInfo] Event^.KeyVal=',Event^.KeyVal);
   case Event^.KeyVal of
     // Normal ASCII chars
     32..255:
@@ -896,7 +896,7 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.27  2001/12/10 11:13:15  lazarus
+  Revision 1.28  2001/12/10 11:16:00  lazarus
   MG: added GDK_dead_circumflex key
 
   Revision 1.26  2001/11/16 20:08:41  lazarus
