@@ -265,9 +265,8 @@ begin
   if ALocation.SrcLine = -1 
   then begin
     MessageDlg(lisExecutionPaused,
-      Format(Format(lisExecutionPausedAdress, [#13#13, #13, #13, #13#13#13, #13]
-        ),
-        [ALocation.Adress, ALocation.FuncName, ALocation.SrcFile]),
+      Format(lisExecutionPausedAdress, [#13#13, ALocation.Adress, #13,
+        ALocation.FuncName, #13, ALocation.SrcFile, #13#13#13, #13]),
       mtInformation, [mbOK],0);
     
     Exit;
@@ -692,6 +691,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.17  2003/05/22 06:50:04  mattias
+  fixed double formats
+
   Revision 1.16  2003/05/21 16:19:12  mattias
   implemented saving breakpoints and watches
 
