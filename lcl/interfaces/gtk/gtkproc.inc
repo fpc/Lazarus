@@ -4427,10 +4427,20 @@ begin
   end;
 end;
 
-Function CreateFormContents(var FormWidget : Pointer) : Pointer;
+{-------------------------------------------------------------------------------
+  Function CreateFormContents(AForm: TCustomForm;
+    var FormWidget: Pointer): Pointer;
+
+  Creates the contents for the form (normally a hbox plus a client area.
+  The hbox is needed for the menu.) The FormWidget is the main widget, for which
+  the client area is associated. If FormWidget=nil then the hbox will be used
+  as main widget.
+-------------------------------------------------------------------------------}
+Function CreateFormContents(AForm: TCustomForm;
+  var FormWidget: Pointer): Pointer;
 var
   ScrolledWidget,
-  LayoutWidget: Pointer;
+  ClientAreaWidget: Pointer;
 begin
   // Create the VBox. We need that to place controls outside
   // the client area (like menu)
@@ -4439,23 +4449,34 @@ begin
     FormWidget := Result;
 
   // Create the form client area
-  ScrolledWidget := gtk_scrolled_window_new(nil,nil);
-  gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
-  gtk_widget_show(ScrolledWidget);
+  if {$IFDEF PolymorphClientArea}(AForm=nil) or AForm.HasVisibleScrollbars
+     {$ELSE}true{$ENDIF}
+  then begin
+    ScrolledWidget := gtk_scrolled_window_new(nil,nil);
+    gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
+    gtk_widget_show(ScrolledWidget);
+    ClientAreaWidget := gtk_layout_new(nil, nil);
+    gtk_container_add(ScrolledWidget, ClientAreaWidget);
+  end else begin
+    ScrolledWidget:=nil;
+    ClientAreaWidget := gtk_fixed_new;
+    gtk_box_pack_end(Result, ClientAreaWidget, True, True, 0);
+  end;
+  
+  gtk_object_set_data(FormWidget,odnScrollArea,ScrolledWidget);
 
-  gtk_object_set_data(FormWidget,'scroll_area', ScrolledWidget);
+  gtk_widget_show(ClientAreaWidget);
+  SetFixedWidget(FormWidget, ClientAreaWidget);
+  SetMainWidget(FormWidget, ClientAreaWidget);
 
-  LayoutWidget := gtk_layout_new(nil, nil);
-  gtk_container_add(ScrolledWidget, LayoutWidget);
-  gtk_widget_show(LayoutWidget);
-  SetFixedWidget(FormWidget, LayoutWidget);
-  SetMainWidget(FormWidget, LayoutWidget);
-
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.hscrollbar, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(PGtkScrolledWindow(ScrolledWidget),
-                                 GTK_POLICY_NEVER,
-                                 GTK_POLICY_NEVER);
+  if ScrolledWidget<>nil then begin
+    GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.hscrollbar,
+                           GTK_CAN_FOCUS);
+    GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.vscrollbar,
+                           GTK_CAN_FOCUS);
+    gtk_scrolled_window_set_policy(PGtkScrolledWindow(ScrolledWidget),
+                                   GTK_POLICY_NEVER,GTK_POLICY_NEVER);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5518,6 +5539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.224  2003/11/01 10:27:41  mattias
+  fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
+
   Revision 1.223  2003/10/30 21:26:23  mattias
   removed some hints
 

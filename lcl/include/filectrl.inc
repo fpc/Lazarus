@@ -420,8 +420,11 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux.Access({$ELSE}BaseUnix.FpAccess({$ENDIF}
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.R_OK){$IFNDEF Ver1_0}=0){$ENDIF};
+  {$IFDEF Ver1_0}
+  Result:= Linux.Access(AFilename,Linux.R_OK);
+  {$ELSE}
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.R_OK)=0;
+  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -433,8 +436,11 @@ begin
   {$IFDEF win32}
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.W_OK){$IFNDEF Ver1_0}=0){$ENDIF};
+  {$IFDEF Ver1_0}
+  Result:= Linux.Access(AFilename,Linux.W_OK);
+  {$ELSE}
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.W_OK)=0;
+  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -603,8 +609,11 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0){$ENDIF};
+  {$IFDEF Ver1_0}
+  Result:= Linux.Access(AFilename,Linux.X_OK);
+  {$ELSE}
+  Result:= BaseUnix.FpAccess(AFilename,BaseUnix.X_OK)=0;
+  {$ENDIF}
   {$ENDIF}
 end;
 
@@ -625,8 +634,7 @@ begin
     raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
   end;
   {$IFNDEF win32}
-  if not{$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}(BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0){$ENDIF} then
+  if not FileIsExecutable(AFilename) then
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
@@ -634,7 +642,7 @@ begin
       AText:='read access denied for '+AText;
     {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
       AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
+             +' does not exist or is a dangling symlink';
     {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
       AText:='a directory component in '+Atext+' is not a directory';
     {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
@@ -886,6 +894,9 @@ end;
 
 {
   $Log$
+  Revision 1.32  2003/11/01 10:27:41  mattias
+  fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
+
   Revision 1.31  2003/10/31 15:14:43  mazen
   + added some paranthesis to avoid operators precedence problems
 

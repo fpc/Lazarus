@@ -401,7 +401,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuQuitClicked(Sender : TObject);
 begin
-   Free;
+  Close;
 end;
 {------------------------------------------------------------------------------}
 
@@ -413,6 +413,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2003/11/01 10:27:40  mattias
+  fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
+
   Revision 1.7  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

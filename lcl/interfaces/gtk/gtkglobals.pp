@@ -300,6 +300,12 @@ var
   ModalWindows: TList; // list of PGtkWindow
 
 
+// gtk object data names
+const
+  odnScrollArea = 'scroll_area'; // the gtk_scrolled_window of a widget
+                                 // used by TCustomForm and TScrollbox
+  
+
 implementation
 
 initialization

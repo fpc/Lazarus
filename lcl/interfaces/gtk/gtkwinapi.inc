@@ -4606,7 +4606,7 @@ begin
     ScrollWidget:=Widget;
   end else begin
     ScrollWidget:=PGtkWidget(gtk_object_get_data(
-                                             PGtkObject(Widget),'scroll_area'));
+                                             PGtkObject(Widget),odnScrollArea));
   end;
   if ScrollWidget=nil then exit;
   if BarKind=SM_CYVSCROLL then begin
@@ -4635,7 +4635,7 @@ begin
     ScrollWidget:=Widget;
   end else begin
     ScrollWidget:=PGtkWidget(gtk_object_get_data(
-                                             PGtkObject(Widget),'scroll_area'));
+                                             PGtkObject(Widget),odnScrollArea));
   end;
   if ScrollWidget=nil then exit;
   if SBStyle=SB_VERT then begin
@@ -4663,7 +4663,7 @@ begin
   if (Handle = 0) then exit;
 
   Adjustment := nil;
-  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), 'scroll_area');
+  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
   If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
     Scroll := PGTKWidget(Handle);
 
@@ -7735,12 +7735,13 @@ const
 var
   Adjustment: PGtkAdjustment;
   Scroll : PGTKWidget;
+  NewPolicy: Integer;
 begin
   Result := 0;
   if (Handle = 0) then exit;
   
   Adjustment := nil;
-  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), 'scroll_area');
+  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
   If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
     Scroll := PGTKWidget(Handle);
 
@@ -7805,12 +7806,16 @@ begin
     begin
       if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
       begin
-        if SBStyle in [SB_BOTH, SB_HORZ]
-          then gtk_object_set(PGTKObject(Scroll), 'hscrollbar_policy',
-                              [POLICY[bRedraw], nil]);
-        if SBStyle in [SB_BOTH, SB_VERT]
-          then gtk_object_set(PGTKObject(Scroll), 'vscrollbar_policy',
-                              [POLICY[bRedraw], nil]);
+        if SBStyle in [SB_BOTH, SB_HORZ] then
+          NewPolicy:=POLICY[bRedraw]
+        else
+          NewPolicy:=GTK_POLICY_NEVER;
+        gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[NewPolicy,nil]);
+        if SBStyle in [SB_BOTH, SB_VERT] then
+          NewPolicy:=POLICY[bRedraw]
+        else
+          NewPolicy:=GTK_POLICY_NEVER;
+        gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[NewPolicy,nil]);
       end
       else
       begin
@@ -8055,31 +8060,39 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
-{const
-  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);}
+const
+  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+var
+  Widget: PGtkWidget;
+  NewPolicy: Integer;
 begin
   Assert(False, 'trace:[TgtkObject.ShowScrollBar]');
   Result:=false;
-{  Result := (Handle <> 0);
-  if Result
-  then begin
-    if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type)
-    then begin
-      if wBar in [SB_BOTH, SB_HORZ]
-      then gtk_object_set(PGTKObject(Handle), 'hscrollbar_policy', [POLICY[bShow], nil]);
-      if wBar in [SB_BOTH, SB_VERT]
-      then gtk_object_set(PGTKObject(Handle), 'vscrollbar_policy', [POLICY[bShow], nil]);
+  Result := (Handle <> 0);
+  if Result then begin
+    Widget:=PGtkWidget(Handle);
+    if GtkWidgetIsA(Widget,gtk_scrolled_window_get_type) then begin
+      if wBar in [SB_BOTH, SB_HORZ] then
+        NewPolicy:=POLICY[bShow]
+      else
+        NewPolicy:=GTK_POLICY_NEVER;
+      gtk_object_set(PGTKObject(Widget), 'hscrollbar_policy', [NewPolicy,nil]);
+      if wBar in [SB_BOTH, SB_VERT] then
+        NewPolicy:=POLICY[bShow]
+      else
+        NewPolicy:=GTK_POLICY_NEVER;
+      gtk_object_set(PGTKObject(Widget), 'vscrollbar_policy', [NewPolicy,nil]);
     end
     else begin
-      if (wBar = SB_CTL) and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_widget_get_type)
+      if (wBar = SB_CTL)
+      and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),gtk_widget_get_type)
       then begin
         if bShow
-        then gtk_widget_show(PGTKWidget(Handle))
-        else gtk_widget_hide(PGTKWidget(Handle));
+        then gtk_widget_show(Widget)
+        else gtk_widget_hide(Widget);
       end;
     end;
   end;
-}
 end;
 
 {------------------------------------------------------------------------------
@@ -9025,6 +9038,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.296  2003/11/01 10:27:41  mattias
+  fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
+
   Revision 1.295  2003/10/31 14:54:10  mattias
   added the possibility to disbale double buffering
 

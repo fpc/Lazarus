@@ -291,8 +291,8 @@ begin
   SetPosition(ScrollInfo.nTrackPos);
 
   if FControl is TScrollingWinControl then begin
-    // I am not positive that this is right, but it apeared to be when I compared
-    // results to Delphi 4
+    // I am not positive that this is right, but it apeared to be when I
+    // compared results to Delphi 4
     if FSmooth then
       FIncrement := FPage div 10;
   end;

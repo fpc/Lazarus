@@ -135,7 +135,8 @@ type
     function CreateForm(ACustomForm: TCustomForm): PGtkWidget;
     function CreateListView(ListViewObject: TObject): PGtkWidget;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
-    function CreateSimpleClientAreaWidget(Sender: TObject): PGtkWidget;
+    function CreateSimpleClientAreaWidget(Sender: TObject;
+      NotOnParentsClientArea: boolean): PGtkWidget;
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
@@ -398,6 +399,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.154  2003/11/01 10:27:41  mattias
+  fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
+
   Revision 1.153  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

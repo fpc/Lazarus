@@ -120,6 +120,11 @@ begin
   IsUpdating := False;
 end;
 
+function TScrollingWinControl.HasVisibleScrollbars: boolean;
+begin
+  Result:=VertScrollBar.Visible and HorzScrollBar.Visible;
+end;
+
 Function TScrollingWinControl.StoreScrollBars : Boolean;
 begin
   Result := Not AutoScroll;

@@ -3537,6 +3537,7 @@ var
   ScrollInfo: TScrollInfo;
 begin
   if not (tvsScrollbarChanged in FStates) then exit;
+  
   if not HandleAllocated or (FUpdateCount>0) then begin
     //Include(FStates,tvsScrollbarChanged);
   end else begin
@@ -3566,9 +3567,8 @@ begin
         //' MaxRight=',FMaxRight
         //);
       end else begin
-      
-        // ToDo: tell interface to remove horizontal scrollbar
-      
+        FLastHorzScrollInfo.cbSize:=0;
+        ShowScrollBar(Handle,SB_HORZ,false);
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
         // vertical scrollbar
@@ -3590,9 +3590,8 @@ begin
         //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
         //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
       end else begin
-
-        // ToDo: tell interface to remove vertical scrollbar
-
+        FLastVertScrollInfo.cbSize:=0;
+        ShowScrollBar(Handle,SB_VERT,false);
       end;
     end;
   end;

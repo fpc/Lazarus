@@ -4339,7 +4339,7 @@ begin
       //end
       //else begin
       If Sender is TScrollBox then begin
-        Scroll := gtk_object_get_data(gObject, 'scroll_area');
+        Scroll := gtk_object_get_data(gObject, odnScrollArea);
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(Scroll))), 'value-changed', @GTKHScrollCB);
       end
@@ -4357,7 +4357,7 @@ begin
       //end
       //else begin
       If Sender is TScrollBox then begin
-        Scroll := gtk_object_get_data(gObject, 'scroll_area');
+        Scroll := gtk_object_get_data(gObject, odnScrollArea);
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
           PGTKScrolledWindow(Scroll))), 'value-changed', @GTKVScrollCB);
       end
@@ -5467,11 +5467,11 @@ begin
   if ClipboardWidget=nil then
     SetClipboardWidget(Result);
 
-  Box := CreateFormContents(Result);
+  Box := CreateFormContents(ACustomForm,Result);
   gtk_container_add(PGtkContainer(Result), Box);
   {$IfDef GTK2}
   //so we can double buffer ourselves, eg, the Form Designer
-  gtk_widget_set_double_buffered (Box, False);
+  gtk_widget_set_double_buffered(Box, False);
   {$EndIf}
   gtk_widget_show(Box);
 
@@ -5597,11 +5597,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject): PGtkWidget;
+  function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject;
+    NotOnParentsClientArea: boolean): PGtkWidget;
 
   Create a fixed widget in a horizontal box
  ------------------------------------------------------------------------------}
-function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject): PGtkWidget;
+function TgtkObject.CreateSimpleClientAreaWidget(Sender: TObject;
+  NotOnParentsClientArea: boolean): PGtkWidget;
 var
   TempWidget: PGtkWidget;
   WinWidgetInfo: PWinWidgetInfo;
@@ -5610,8 +5612,10 @@ begin
   TempWidget := gtk_fixed_new();
   gtk_container_add(GTK_CONTAINER(Result), TempWidget);
   gtk_widget_show(TempWidget);
-  WinWidgetInfo:=GetWidgetInfo(Result,true);
-  Include(WinWidgetInfo^.Flags,wwiNotOnParentsClientArea);
+  if NotOnParentsClientArea then begin
+    WinWidgetInfo:=GetWidgetInfo(Result,true);
+    Include(WinWidgetInfo^.Flags,wwiNotOnParentsClientArea);
+  end;
   SetFixedWidget(Result, TempWidget);
   SetMainWidget(Result, TempWidget);
   gtk_widget_show(Result);
@@ -5957,13 +5961,13 @@ begin
     end;
 
   csPage:    // TCustomPage - Notebook page
-    P:=CreateSimpleClientAreaWidget(Sender);
+    P:=CreateSimpleClientAreaWidget(Sender,true);
 
   csPairSplitter:
     p:=CreatePairSplitter(Sender);
 
   csPairSplitterSide:
-    P:=CreateSimpleClientAreaWidget(Sender);
+    P:=CreateSimpleClientAreaWidget(Sender,true);
 
   csPanel:
     begin
@@ -5982,7 +5986,7 @@ begin
       P := gtk_menu_new();
 
   csPreviewFileControl:
-    P:=CreateSimpleClientAreaWidget(Sender);
+    P:=CreateSimpleClientAreaWidget(Sender,true);
 
   csProgressBar:
     with (TProgressBar (Sender)) do
@@ -6110,7 +6114,7 @@ begin
       gtk_container_add(PGTKContainer(P), TempWidget);
       gtk_widget_show(TempWidget);
 
-      gtk_object_set_data(P,'scroll_area', TempWidget);
+      gtk_object_set_data(P,odnScrollArea, TempWidget);
       
       TempWidget2 := gtk_layout_new(nil, nil);
       gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
@@ -8463,6 +8467,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.434  2003/11/01 10:27:41  mattias
+  fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
+
   Revision 1.433  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

@@ -165,7 +165,8 @@ type
     procedure Paint; dynamic;
     procedure PaintWindow(dc : Hdc); override;
 
-    Procedure UpdateScrollbars;
+    procedure UpdateScrollbars; virtual;
+    function HasVisibleScrollbars: boolean; virtual;
 
     property Canvas: TControlCanvas read FCanvas;
   published
@@ -308,6 +309,7 @@ type
     //property OnUnDock;
   end;
 
+
   { TCustomForm }
 
   TIDesigner = class;
@@ -415,8 +417,6 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
-  public
-    // properties
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;

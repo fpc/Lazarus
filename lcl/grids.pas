@@ -1184,8 +1184,8 @@ begin
       if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
 
       SetScrollInfo(Handle, Which, ScrollInfo, True);
-    end;
-    //ShowScrollBar(Handle,Which,IsVisible);
+    end else
+      ShowScrollBar(Handle,Which,false);
   end;
 end;
 
