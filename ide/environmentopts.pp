@@ -159,7 +159,7 @@ type
     FGuideLineColorRightBottom: TColor;
     FShowComponentCaptions: boolean;
     FShowEditorHints: boolean;
-    FAutoCreateForms: boolean;
+    FAutoCreateFormsOnOpen: boolean;
     FGrabberColor: TColor;
     FMarkerColor: TColor;
     FRubberbandSelectionColor: TColor;
@@ -225,23 +225,23 @@ type
     procedure SetLazarusDefaultFilename;
     procedure GetDefaultFPCSourceDirectory;
     property OnApplyWindowLayout: TOnApplyIDEWindowLayout
-       read FOnApplyWindowLayout write SetOnApplyWindowLayout;
+                         read FOnApplyWindowLayout write SetOnApplyWindowLayout;
     
     // auto save
-    property AutoSaveEditorFiles: boolean
-       read FAutoSaveEditorFiles write FAutoSaveEditorFiles;
-    property AutoSaveProject: boolean
-       read FAutoSaveProject write FAutoSaveProject;
-    property AutoSaveIntervalInSecs: integer
-       read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
+    property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles
+                                          write FAutoSaveEditorFiles;
+    property AutoSaveProject: boolean read FAutoSaveProject
+                                      write FAutoSaveProject;
+    property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs
+                                             write FAutoSaveIntervalInSecs;
        
     // windows
     property IDEWindowLayoutList: TIDEWindowLayoutList
-        read FIDEWindowLayoutList write FIDEWindowLayoutList;
+                           read FIDEWindowLayoutList write FIDEWindowLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList
-        read FIDEDialogLayoutList write FIDEDialogLayoutList;
-    property MinimizeAllOnMinimizeMain: boolean
-        read FMinimizeAllOnMinimizeMain write FMinimizeAllOnMinimizeMain;
+                           read FIDEDialogLayoutList write FIDEDialogLayoutList;
+    property MinimizeAllOnMinimizeMain: boolean read FMinimizeAllOnMinimizeMain
+                                               write FMinimizeAllOnMinimizeMain;
 
     // form editor
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -250,93 +250,98 @@ type
     property GridSizeX: integer read FGridSizeX write FGridSizeX;
     property GridSizeY: integer read FGridSizeY write FGridSizeY;
     property ShowGuideLines: boolean read FShowGuideLines write FShowGuideLines;
-    property SnapToGuideLines: boolean read FSnapToGuideLines write FSnapToGuideLines;
-    property GuideLineColorLeftTop: TColor
-       read FGuideLineColorLeftTop write FGuideLineColorLeftTop;
-    property GuideLineColorRightBottom: TColor
-       read FGuideLineColorRightBottom write FGuideLineColorRightBottom;
+    property SnapToGuideLines: boolean
+                                 read FSnapToGuideLines write FSnapToGuideLines;
+    property GuideLineColorLeftTop: TColor read FGuideLineColorLeftTop
+                                           write FGuideLineColorLeftTop;
+    property GuideLineColorRightBottom: TColor read FGuideLineColorRightBottom
+                                               write FGuideLineColorRightBottom;
     property ShowComponentCaptions: boolean
        read FShowComponentCaptions write FShowComponentCaptions;
-    property ShowEditorHints: boolean read FShowEditorHints write FShowEditorHints;
-    property AutoCreateForms: boolean read FAutoCreateForms write FAutoCreateForms;
+    property ShowEditorHints: boolean read FShowEditorHints
+                                      write FShowEditorHints;
+    property AutoCreateFormsOnOpen: boolean read FAutoCreateFormsOnOpen
+                                            write FAutoCreateFormsOnOpen;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
-    property RubberbandSelectionColor: TColor
-      read FRubberbandSelectionColor write FRubberbandSelectionColor;
-    property RubberbandCreationColor: TColor
-      read FRubberbandCreationColor write FRubberbandCreationColor;
+    property RubberbandSelectionColor: TColor read FRubberbandSelectionColor
+                                              write FRubberbandSelectionColor;
+    property RubberbandCreationColor: TColor read FRubberbandCreationColor
+                                             write FRubberbandCreationColor;
     property RubberbandSelectsGrandChilds: boolean
-      read FRubberbandSelectsGrandChilds write FRubberbandSelectsGrandChilds;
+                                            read FRubberbandSelectsGrandChilds
+                                            write FRubberbandSelectsGrandChilds;
 
     // object inspector
-    property ObjectInspectorOptions: TOIOptions
-       read FObjectInspectorOptions write FObjectInspectorOptions;
+    property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions
+                                                write FObjectInspectorOptions;
 
     // hints
     property ShowHintsForComponentPalette: boolean
-       read FShowHintsForComponentPalette write FShowHintsForComponentPalette;
+                                            read FShowHintsForComponentPalette
+                                            write FShowHintsForComponentPalette;
     property ShowHintsForMainSpeedButtons: boolean
-       read FShowHintsForMainSpeedButtons write FShowHintsForMainSpeedButtons;
+                                            read FShowHintsForMainSpeedButtons
+                                            write FShowHintsForMainSpeedButtons;
     
     // files
-    property LazarusDirectory: string
-       read FLazarusDirectory write FLazarusDirectory;
-    property LazarusDirHistory: TStringList
-       read FLazarusDirsHistory write FLazarusDirsHistory;
-    property CompilerFilename: string
-       read FCompilerFilename write FCompilerFilename;
-    property CompilerFileHistory: TStringList
-       read FCompilerFileHistory write FCompilerFileHistory;
-    property FPCSourceDirectory: string
-       read FFPCSourceDirectory write FFPCSourceDirectory;
-    property FPCSourceDirHistory: TStringList
-       read FFPCSourceDirHistory write FFPCSourceDirHistory;
-    property DebuggerFilename: string
-       read FDebuggerFilename write FDebuggerFilename;
-    property DebuggerFileHistory: TStringList
-       read FDebuggerFileHistory write FDebuggerFileHistory;
-    property DebuggerType: TDebuggerType
-       read FDebuggerType write FDebuggerType;
-    property TestBuildDirectory: string
-       read FTestBuildDirectory write FTestBuildDirectory;
-    property TestBuildDirHistory: TStringList
-       read FTestBuildDirHistory write FTestBuildDirHistory;
+    property LazarusDirectory: string read FLazarusDirectory
+                                      write FLazarusDirectory;
+    property LazarusDirHistory: TStringList read FLazarusDirsHistory
+                                            write FLazarusDirsHistory;
+    property CompilerFilename: string read FCompilerFilename
+                                      write FCompilerFilename;
+    property CompilerFileHistory: TStringList read FCompilerFileHistory
+                                              write FCompilerFileHistory;
+    property FPCSourceDirectory: string read FFPCSourceDirectory
+                                        write FFPCSourceDirectory;
+    property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
+                                              write FFPCSourceDirHistory;
+    property DebuggerFilename: string read FDebuggerFilename
+                                      write FDebuggerFilename;
+    property DebuggerFileHistory: TStringList read FDebuggerFileHistory
+                                              write FDebuggerFileHistory;
+    property DebuggerType: TDebuggerType read FDebuggerType write FDebuggerType;
+    property TestBuildDirectory: string read FTestBuildDirectory
+                                        write FTestBuildDirectory;
+    property TestBuildDirHistory: TStringList read FTestBuildDirHistory
+                                              write FTestBuildDirHistory;
 
     // recent files and directories
-    property RecentOpenFiles: TStringList
-       read FRecentOpenFiles write FRecentOpenFiles;
-    property MaxRecentOpenFiles: integer
-       read FMaxRecentOpenFiles write FMaxRecentOpenFiles;
+    property RecentOpenFiles: TStringList read FRecentOpenFiles
+                                          write FRecentOpenFiles;
+    property MaxRecentOpenFiles: integer read FMaxRecentOpenFiles
+                                         write FMaxRecentOpenFiles;
     procedure AddToRecentOpenFiles(const AFilename: string);
     procedure RemoveFromRecentOpenFiles(const AFilename: string);
-    property RecentProjectFiles: TStringList
-       read FRecentProjectFiles write FRecentProjectFiles;
-    property MaxRecentProjectFiles: integer
-       read FMaxRecentProjectFiles write FMaxRecentProjectFiles;
+    property RecentProjectFiles: TStringList read FRecentProjectFiles
+                                             write FRecentProjectFiles;
+    property MaxRecentProjectFiles: integer read FMaxRecentProjectFiles
+                                            write FMaxRecentProjectFiles;
     procedure AddToRecentProjectFiles(const AFilename: string);
     procedure RemoveFromRecentProjectFiles(const AFilename: string);
-    property LastSavedProjectFile: string
-       read FLastSavedProjectFile write FLastSavedProjectFile;
-    property OpenLastProjectAtStart: boolean
-       read FOpenLastProjectAtStart write FOpenLastProjectAtStart;
+    property LastSavedProjectFile: string read FLastSavedProjectFile
+                                          write FLastSavedProjectFile;
+    property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
+                                             write FOpenLastProjectAtStart;
 
     // backup
-    property BackupInfoProjectFiles: TBackupInfo 
-       read FBackupInfoProjectFiles write FBackupInfoProjectFiles;
-    property BackupInfoOtherFiles: TBackupInfo
-       read FBackupInfoOtherFiles write FBackupInfoOtherFiles;
+    property BackupInfoProjectFiles: TBackupInfo read FBackupInfoProjectFiles
+                                                 write FBackupInfoProjectFiles;
+    property BackupInfoOtherFiles: TBackupInfo read FBackupInfoOtherFiles
+                                               write FBackupInfoOtherFiles;
        
     // external tools
-    property ExternalTools: TExternalToolList
-       read fExternalTools write fExternalTools;
+    property ExternalTools: TExternalToolList read fExternalTools
+                                              write fExternalTools;
 
     // naming conventions
-    property PascalFileExtension: TPascalExtType 
-       read fPascalFileExtension write fPascalFileExtension;
-    property PascalFileLowerCase: boolean
-       read fPascalFileLowerCase write fPascalFileLowerCase;
-    property AmbigiousFileAction: TAmbigiousFileAction
-       read fAmbigiousFileAction write fAmbigiousFileAction;
+    property PascalFileExtension: TPascalExtType read fPascalFileExtension
+                                                 write fPascalFileExtension;
+    property PascalFileLowerCase: boolean read fPascalFileLowerCase
+                                          write fPascalFileLowerCase;
+    property AmbigiousFileAction: TAmbigiousFileAction read fAmbigiousFileAction
+                                                     write fAmbigiousFileAction;
        
     // language
     property Language: TLazarusLanguage read fLanguage write fLanguage;
@@ -404,7 +409,7 @@ type
     FormEditMiscGroupBox: TGroupBox;
     ShowComponentCaptionsCheckBox: TCheckBox;
     ShowEditorHintsCheckBox: TCheckBox;
-    AutoCreateFormsCheckBox: TCheckBox;
+    AutoCreateFormsOnOpenCheckBox: TCheckBox;
     GrabberColorLabel: TLabel;
     GrabberColorButton: TColorButton;
     MarkerColorLabel: TLabel;
@@ -656,7 +661,7 @@ begin
   FGuideLineColorRightBottom:=clGreen;
   FShowComponentCaptions:=false;
   FShowEditorHints:=true;
-  FAutoCreateForms:=true;
+  FAutoCreateFormsOnOpen:=true;
   FGrabberColor:=clBlack;
   FMarkerColor:=clDkGray;
   FRubberbandSelectionColor:=clNavy;
@@ -867,8 +872,8 @@ begin
        'EnvironmentOptions/FormEditor/ShowComponentCaptions',FShowComponentCaptions);
     FShowEditorHints:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints);
-    FAutoCreateForms:=XMLConfig.GetValue(
-       'EnvironmentOptions/FormEditor/AutoCreateForms',FAutoCreateForms);
+    FAutoCreateFormsOnOpen:=XMLConfig.GetValue(
+       'EnvironmentOptions/FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen);
     FGrabberColor:=XMLConfig.GetValue(
        'EnvironmentOptions/FormEditor/GrabberColor/Value',FGrabberColor);
     FMarkerColor:=XMLConfig.GetValue(
@@ -1073,7 +1078,7 @@ begin
     XMLConfig.SetValue(
        'EnvironmentOptions/FormEditor/ShowEditorHints',FShowEditorHints);
     XMLConfig.SetValue(
-       'EnvironmentOptions/FormEditor/AutoCreateForms',FAutoCreateForms);
+       'EnvironmentOptions/FormEditor/AutoCreateFormsOnOpen',FAutoCreateFormsOnOpen);
     XMLConfig.SetValue(
        'EnvironmentOptions/FormEditor/GrabberColor/Value',FGrabberColor);
     XMLConfig.SetValue(
@@ -2268,9 +2273,9 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Caption:=dlgShowEdrHints;
     end;
 
-    AutoCreateFormsCheckBox:=TCheckBox.Create(Self);
-    with AutoCreateFormsCheckBox do begin
-      Name:='AutoCreateFormsCheckBox';
+    AutoCreateFormsOnOpenCheckBox:=TCheckBox.Create(Self);
+    with AutoCreateFormsOnOpenCheckBox do begin
+      Name:='AutoCreateFormsOnOpenCheckBox';
       Parent:=FormEditMiscGroupBox;
       Top:=ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5;
       Left:=ShowEditorHintsCheckBox.Left;
@@ -2968,7 +2973,7 @@ begin
               ShowComponentCaptionsCheckBox.Width,Height);
   end;
 
-  with AutoCreateFormsCheckBox do begin
+  with AutoCreateFormsOnOpenCheckBox do begin
     SetBounds(ShowEditorHintsCheckBox.Left,
               ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5,
               ShowEditorHintsCheckBox.Width,Height);
@@ -3253,7 +3258,7 @@ begin
     GuideLineColorRightBottomButton.ButtonColor:=GuideLineColorRightBottom;
     ShowComponentCaptionsCheckBox.Checked:=ShowComponentCaptions;
     ShowEditorHintsCheckBox.Checked:=ShowEditorHints;
-    AutoCreateFormsCheckBox.Checked:=AutoCreateForms;
+    AutoCreateFormsOnOpenCheckBox.Checked:=AutoCreateFormsOnOpen;
     GrabberColorButton.ButtonColor:=GrabberColor;
     MarkerColorButton.ButtonColor:=MarkerColor;
     RubberbandSelectColorButton.ButtonColor:=RubberbandSelectionColor;
@@ -3379,7 +3384,7 @@ begin
     GuideLineColorRightBottom:=GuideLineColorRightBottomButton.ButtonColor;
     ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
     ShowEditorHints:=ShowEditorHintsCheckBox.Checked;
-    AutoCreateForms:=AutoCreateFormsCheckBox.Checked;
+    AutoCreateFormsOnOpen:=AutoCreateFormsOnOpenCheckBox.Checked;
     GrabberColor:=GrabberColorButton.ButtonColor;
     MarkerColor:=MarkerColorButton.ButtonColor;
     RubberbandSelectionColor:=RubberbandSelectColorButton.ButtonColor;
