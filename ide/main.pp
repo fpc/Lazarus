@@ -2299,7 +2299,7 @@ begin
   // create a buffer for the new resource file and for the LFM file
   ResourceCode:=
     CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,ResourceFileExt));
-  ResourceCode.Source:=lisResourceFileComment;
+  ResourceCode.Source:='{ '+lisResourceFileComment+' }';
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
 
   // clear formeditor
@@ -2678,7 +2678,7 @@ begin
                                                'T'+AnUnitInfo.FormResourceName);
             end;
             if (not CodeToolBoss.AddLazarusResourceHeaderComment(ResourceCode,
-               'This is an automatically created Lazarus Resource file')) then
+               lisResourceFileComment)) then
             begin
               ACaption:='Resource save error';
               AText:='Unable to add resource header comment'
@@ -6689,6 +6689,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.353  2002/08/27 08:55:27  lazarus
+  MG: fixed editing empty resources
+
   Revision 1.352  2002/08/27 08:21:28  lazarus
   MG: fixed replacing form resources
 

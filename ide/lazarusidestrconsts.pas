@@ -185,7 +185,7 @@ ResourceString
 
   // resource files
   lisResourceFileComment =
-    '{ This is an automatically generated lazarus resource file }';
+    'This is an automatically generated lazarus resource file';
 
   // file dialogs
   lisOpenFile = 'Open file';
