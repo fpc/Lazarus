@@ -1863,6 +1863,7 @@ var
     if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then begin
       PopulateFileAndDirectoryLists(PGtkFileSelection(theDialog.Handle),
         AFilterEntry^.Mask);
+      TOpenDialog(TheDialog).FilterIndex := AFilterEntry^.FilterIndex + 1;
       UpdateDetailView(TOpenDialog(theDialog));
     end;
   end;
@@ -2976,6 +2977,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.275  2005/03/11 15:35:49  mattias
+  implemented for gtk intf TFileDialog.FilterIndex  from Jesus
+
   Revision 1.274  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

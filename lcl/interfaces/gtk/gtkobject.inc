@@ -4174,7 +4174,7 @@ var
   FilterList: TList;
   HBox, LabelWidget, FilterPullDownWidget,
   MenuWidget, MenuItemWidget: PGtkWidget;
-  i, CurMask: integer;
+  i, j, CurMask: integer;
   s: String;
 begin
   ExtractFilterList(OpenDialog.Filter,FilterList);
@@ -4230,9 +4230,11 @@ begin
   Result := 'none'; { Don't use '' as null return as this is used for *.* }
   if FilterList.Count>0 then begin
     i:=0;
+    j:=OpenDialog.FilterIndex - 1; // FilterIndex is 1 based
+    if j<0 then j:=0;
     CurMask:=0;
     while (i<FilterList.Count) do begin
-      if PFileSelFilterEntry(FilterList[i])^.FilterIndex=OpenDialog.FilterIndex
+      if PFileSelFilterEntry(FilterList[i])^.FilterIndex=j
       then begin
         CurMask:=i;
         break;
@@ -4240,6 +4242,7 @@ begin
       inc(i);
     end;
     Result := PFileSelFilterEntry(FilterList[CurMask])^.Mask;
+    gtk_option_menu_set_history(GTK_OPTION_MENU(FilterPullDownWidget), CurMask);
   end;
 end;
 
@@ -6897,6 +6900,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.643  2005/03/11 15:35:49  mattias
+  implemented for gtk intf TFileDialog.FilterIndex  from Jesus
+
   Revision 1.642  2005/03/08 00:28:03  mattias
   implemented gtk2 AppMinimize
 
