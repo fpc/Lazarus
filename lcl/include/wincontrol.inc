@@ -428,6 +428,7 @@ Begin
 end;
 
 function TWinControl.GetClientRect: TRect;
+{ $DEFINE NewClientRect}
 {$IFDEF NewClientRect}
 var r: TRect;
 begin
@@ -1882,15 +1883,15 @@ var
   end;
 
 begin
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
-' Old=',Left,',',Top,',',Width,',',Height,
-' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
-' BLC=',BoundsLockCount,
-' Realized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
-',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top
-);
-{$ENDIF}
+  {$IFDEF CHECK_POSITION}
+  writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
+  ' Old=',Left,',',Top,',',Width,',',Height,
+  ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
+  ' BLC=',BoundsLockCount,
+  ' Realized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
+  ',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top
+  );
+  {$ENDIF}
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
   if CompareRect(@NewBounds,@OldBounds) then begin
@@ -1901,11 +1902,11 @@ writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
       // the bounds were not yet send to the InterfaceObject -> send them
       BeginUpdateBounds;
       try
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] RealizeBounds A ',Name,':',ClassName,
-' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
-{$ENDIF}
+        {$IFDEF CHECK_POSITION}
+        writeln('[TWinControl.SetBounds] RealizeBounds A ',Name,':',ClassName,
+        ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+        ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+        {$ENDIF}
         FBoundsRealized:=NewBounds;
         R:=Rect(Left,Top,Width,Height);
         CNSendMessage(LM_SetSize, Self, @R);
@@ -1918,11 +1919,11 @@ writeln('[TWinControl.SetBounds] RealizeBounds A ',Name,':',ClassName,
       // LCL bounds are not up2date -> process new bounds
       BeginUpdateBounds;
       try
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
-' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
-' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
-{$ENDIF}
+        {$IFDEF CHECK_POSITION}
+        writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
+        ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
+        ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
+        {$ENDIF}
         inherited SetBounds(ALeft, ATop, AWidth, AHeight);
         NewBounds:=Bounds(Left, Top, Width, Height);
 
@@ -1930,11 +1931,11 @@ writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
         and (not CompareRect(@NewBounds,@FBoundsRealized)) then
         begin
           // the bounds were not yet send to the InterfaceObject -> send them
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] RealizeBounds B ',Name,':',ClassName,
-' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
-{$ENDIF}
+          {$IFDEF CHECK_POSITION}
+          writeln('[TWinControl.SetBounds] RealizeBounds B ',Name,':',ClassName,
+          ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+          ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+          {$ENDIF}
           FBoundsRealized:=NewBounds;
           R:=Rect(Left,Top,Width,Height);
           CNSendMessage(LM_SetSize, Self, @R);
@@ -2071,6 +2072,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/04/27 15:35:50  lazarus
+  MG: fixed window shrinking
+
   Revision 1.60  2002/04/24 16:11:17  lazarus
   MG: started new client rectangle
 
