@@ -2679,7 +2679,7 @@ Var
   Handle: HWND;
   I, Count: Integer;
   LVC: LV_COLUMN;
-  Style: Integer;
+  Style: dword;
   H: THandle;
 begin
   Result := 0; // default if nobody sets it
@@ -2705,7 +2705,7 @@ begin
   csListView:
     With TListView(Sender) Do
     Begin
-      Style := GetWindowLong(Handle, GWL_STYLE);
+      Style := dword(GetWindowLong(Handle, GWL_STYLE));
       if (Style and LVS_TYPEMASK) <> LISTVIEWSTYLES[ViewStyle]
       then begin
         Style := Style and not LVS_TYPEMASK or LISTVIEWSTYLES[ViewStyle];
@@ -2997,6 +2997,9 @@ End;
 
 {
   $Log$
+  Revision 1.198  2004/05/21 11:18:30  micha
+  use unsigned integer for control styles; fixes compiler warning
+
   Revision 1.197  2004/05/21 09:03:55  micha
   implement new borderstyle
   - centralize to twincontrol (protected)
