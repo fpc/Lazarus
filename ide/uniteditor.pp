@@ -3382,7 +3382,6 @@ Begin
               begin
                 TextToFindComboBox.Text:=FindText;
                 Options:= Options-[ssoReplace,ssoReplaceAll,ssoBackwards];
-                Options:= Options+[ssoEntireScope];
                 //Whole Words ?
                 if FindInFilesDialog.WholeWordsOnlyCheckBox.Checked then
                   Options:= Options+[ssoWholeWord]
