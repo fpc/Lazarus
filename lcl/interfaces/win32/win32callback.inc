@@ -394,6 +394,7 @@ Begin
         CharCode := Word(WParam);
         Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
+      WinProcess := false;
     End;
     WM_CLOSE:
     Begin
@@ -1054,6 +1055,12 @@ Begin
         WinProcess := LMKey.CharCode <> VK_UNKNOWN;
       end;
     end;
+
+    WM_CHAR:
+    begin
+      // if Key is set to zero, inhibit key, else default processing
+      WinProcess := LMChar.CharCode <> 0;
+    end;
   end;
 
   if WinProcess then
@@ -1269,6 +1276,9 @@ end;
 
 {
   $Log$
+  Revision 1.126  2004/07/07 08:15:28  micha
+  fix not listening to Key := #0 in WM_CHAR message
+
   Revision 1.125  2004/07/02 20:24:51  micha
   fix wm_getdlgcode to get default code, then let the user override
 
