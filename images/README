@@ -51,7 +51,7 @@ cd <lazarusdir>/images/
 6. laz_images.lrs
 
 cd <lazarusdir>/images/
-../tools/lazres laz_images.lrs btn_*.xpm menu/menu_*.xpm
+../tools/lazres laz_images.lrs btn_*.xpm pkg_*.xpm menu/menu_*.xpm
 
 
 7. splash.lrs
