@@ -214,6 +214,9 @@ procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
 
 implementation
 
+uses
+  LMessages;
+
 { -----------------------------------------------------------------------------
   Method: AddAllNBPages
   Params: Notebook - A notebook control
@@ -419,6 +422,22 @@ begin
   end;
 end;
 
+procedure SendSelChangeMessage(const ANotebook: TCustomNotebook; const AHandle: HWND;
+  const APageIndex: integer);
+var
+  Mess: TLMNotify;
+  NMHdr: tagNMHDR;
+begin
+  FillChar(Mess,SizeOf(Mess),0);
+  Mess.Msg := LM_NOTIFY;
+  FillChar(NMHdr,SizeOf(NMHdr),0);
+  NMHdr.code := TCN_SELCHANGE;
+  NMHdr.hwndfrom := AHandle;
+  NMHdr.idfrom := APageIndex;  //use this to set pageindex to the correct page.
+  Mess.NMHdr := @NMHdr;
+  DeliverMessage(ANotebook, Mess);
+end;
+
 procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 var
   OldPageIndex: Integer;
@@ -438,6 +457,8 @@ begin
       NotebookTabChanged(ANotebook, AIndex);
       PageHandle := ANotebook.CustomPage(AIndex).Handle;
       SetWindowPos(PageHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+      // send message
+      SendSelChangeMessage(ANotebook, Handle, AIndex);
     end;
     if (OldPageIndex >= 0) and (OldPageIndex<>AIndex)
     and (OldPageIndex < ANotebook.PageCount)
