@@ -1600,8 +1600,6 @@ Begin
     Assert(False, Format('Trace:[TWin32Object.CreateComponent] - Caption set to %S', [Caption]));
     CompStyle := TMenuItem(Sender).FCompStyle;
     Assert(False, Format('Trace:[TWin32Object.CreateComponent] - CompStyle set to %S', [CS_To_String(CompStyle)]));
-    Handle := TMenuItem(Sender).Handle;
-    Assert(False, Format('Trace:[TWin32Object.CreateComponent] - Handle set to %D', [Handle]));
   End
   Else If (Sender Is TMenu) Or (Sender Is TPopupMenu) Then
     CompStyle := TMenu(Sender).FCompStyle
@@ -1833,66 +1831,19 @@ Begin
       Window := CreateMenu;
       FMenu := Window;
       Assert(False, Format('Trace:Main menu owner --> %S', [((Sender As TComponent).Owner As TWinControl).ClassName]));
-      //DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
-      With (Sender As TMenu) Do
-      Begin
-        StrDispose(StrTemp);
-        For I := 0 To Items.Count - 1 Do
-        Begin
-          Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].ClassName, I, Items[I].Caption]));
-          StrTemp := StrAlloc(Length(Items[I].Caption) + 1);
-          StrPCopy(StrTemp, Items[I].Caption);
-          Items[I].Handle := CreateMenu;
-          AppendMenu(Window, MF_POPUP, Items[I].Handle, StrTemp);
-          Self.SetProp(Items[I].Handle, 'Lazarus', Items[I]);
-          Self.SetName(Items[I].Handle, StrTemp);
-          For J := 0 To Items[I].Count - 1 Do
-          Begin
-            Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].Items[J].ClassName, J, Items[I].Items[J].Caption]));
-            Inc(FControlIndex);
-            StrDispose(StrTemp);
-            StrTemp := StrAlloc(Length(Items[I].Items[J].Caption) + 1);
-            StrPCopy(StrTemp, Items[I].Items[J].Caption);
-            Items[I].Items[J].Handle := CreatePopupMenu;
-            Windows.AppendMenu(Items[I].Handle, MF_STRING, FControlIndex, StrTemp);
-            Self.SetProp(Items[I].Items[J].Handle, 'Lazarus', Items[I].Items[J]);
-            Self.SetName(Items[I].Items[J].Handle, StrTemp);
-            If Items[I].Items[J].Count > 0 Then
-            Begin
-              For K := 0 To Items[I].Items[J].Count - 1 Do
-              Begin
-                Assert(False, Format('Trace:TWin32Object.CreateComponent - Menu class: %S, menu-item class: %S, item: %D, Caption: %S', [ClassName, Items[I].Items[J].Items[K].ClassName, K, Items[I].Items[J].Items[K].Caption]));
-                Inc(FControlIndex);
-                StrDispose(StrTemp);
-                StrTemp := StrAlloc(Length(Items[I].Items[J].Items[K].Caption) + 1);
-                StrPCopy(StrTemp, Items[I].Items[J].Items[K].Caption);
-                Items[I].Items[J].Items[K].Handle := CreatePopupMenu;
-                Windows.AppendMenu(Items[I].Items[J].Handle, MF_STRING, FControlIndex, StrTemp);
-                Self.SetProp(Items[I].Items[J].Items[K].Handle, 'Lazarus', Items[I].Items[J].Items[K]);
-                Self.SetName(Items[I].Items[J].Items[K].Handle, StrTemp);
-              End;
-            End;
-          End;
-          Windows.DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
-          Assert(False, Format('Trace:Menu handle: 0x%X, item handle: 0x%X', [Window, Items[I].Handle]));
-        End;
-      End;
       Windows.SetMenu(((Sender As TComponent).Owner As TWinControl).Handle, Window);
-      Windows.DrawMenuBar(((Sender As TComponent).Owner As TWinControl).Handle);
       Self.SetProp(Window, 'Lazarus', Sender);
       Self.SetName(Window, StrTemp);
     End;
     csMenuItem:
     Begin
       Window := CreateMenu;
-      // Do I append the menu here or in AttachMenu?  Setting a property for now.
-      //AppendMenu((Sender As TMenu).Parent.Handle, MF_Enabled Or MF_Popup Or MF_String, Window,  StrTemp);
       SetProp(Window, 'MenuCaption', StrTemp);
       AccelIndex := Pos('&', Caption);
       If AccelIndex <> 0 Then
         SetAccelKey(Window, Nil);
-      //SetProp(Window, 'Lazarus', Sender);
-      //SetName(Window, StrTemp);
+      SetProp(Window, 'Lazarus', Sender);
+      SetName(Window, StrTemp);
     End;
     csNotebook:
     Begin
@@ -1990,7 +1941,6 @@ Begin
       Assert(False, 'Trace:TODO: Code csGroupBox.  Is this the same as csFrame?');
       TControl(Sender).FCompStyle := csFrame;
       IntSendMessage3(LM_CREATE, Sender, Nil);
-      exit;
     End;}
     // TPage - Notebook page
     csPage:
@@ -2565,8 +2515,33 @@ End;
   Attaches the calling Menu to its Parent
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.AttachMenu(Sender: TObject);
+var MenuInfo: MENUITEMINFO;
+    MenuHandle: HMenu;
+    ParentMenuHandle: HMenu;
+    Style: integer;
+    Mask: integer;
 Begin
-
+  Mask := MIIM_TYPE or MIIM_ID;
+  if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
+  if (Sender as TMenuItem).Caption = '-' then Style := MFT_SEPARATOR
+  else Style := MFT_STRING;
+  MenuHandle := (Sender as TMenuItem).Handle;
+  with MenuInfo do begin
+    cbsize:=sizeof(MENUITEMINFO);
+    fMask:=Mask;
+    fType:=Style;
+    fState:=MFS_ENABLED;
+    wID:=MenuHandle;
+    hSubmenu:=MenuHandle;
+    hbmpChecked:=0;
+    hbmpUnchecked:=0;
+    dwItemData:=integer(Sender);
+    dwTypeData:=LPSTR((Sender as TmenuItem).Caption);
+    cch:=length((Sender as TMenuItem).Caption);
+  end;
+  ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
+  InsertMenuItem(ParentMenuHandle, 0, false, @MenuInfo);
+  DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
 End;
 
 {------------------------------------------------------------------------------
@@ -2603,6 +2578,9 @@ End;
 
 {
   $Log$
+  Revision 1.41  2003/01/08 18:04:21  mattias
+  patch from Martin Smat fixing submenus and menu underscores
+
   Revision 1.40  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 
