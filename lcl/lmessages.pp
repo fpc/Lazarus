@@ -46,34 +46,13 @@ const
   //-------------
   LM_ComUser        = $1000;
   LM_Create         = LM_ComUser+1;
-  LM_SetLeft        = LM_ComUser+3;
-  LM_SetTop         = LM_ComUser+4;
-  LM_SetWidth       = LM_ComUser+5;
-  LM_SetHeight      = LM_ComUser+6;
-  LM_AssignEvent    = LM_ComUser+10;
-  LM_AssignSelf     = LM_ComUser+11;
-  LM_SetName        = LM_ComUser+12;
-  LM_RESIZECHILDREN = LM_ComUser+13;
-  LM_CANVASCREATE   = LM_ComUser+19;
-
-  LM_MINIMIZE       = LM_COMUSER+59;
-
+  
   LM_SETDESIGNING   = LM_COMUSER+60;
 
   LM_SETGEOMETRY    = LM_COMUSER+62;
 
-  LM_GETSELTEXT     = LM_COMUSER+66;
-  LM_SETSELTEXT     = LM_COMUSER+67;
-
-  // TComboBox
-  LM_CB_FIRST       = LM_COMUSER+90;  // LM_COMUSER+90
-  LM_CB_GETCOUNT    = LM_CB_FIRST+0;
-  LM_CB_GETTEXT     = LM_CB_FIRST+1;
-  LM_CB_ADDTEXT     = LM_CB_FIRST+2;
-  LM_CB_LAST        = LM_CB_FIRST+9; // LM_COMUSER+99
-
   // TNoteBook
-  LM_NB_First       = LM_CB_LAST+1;
+  LM_NB_First       = LM_COMUSER+100;
   LM_NB_UpdateTab   = LM_NB_First+0;
   LM_NB_Last        = LM_NB_UpdateTab;
 
@@ -763,31 +742,10 @@ begin
   //-------------
   LM_ComUser        :Result:='LM_ComUser';
   LM_Create         :Result:='LM_Create';
-  LM_SetLeft        :Result:='LM_SetLeft';
-  LM_SetTop         :Result:='LM_SetTop';
-  LM_SetWidth       :Result:='LM_SetWidth';
-  LM_SetHeight      :Result:='LM_SetHeight';
-  LM_AssignEvent    :Result:='LM_AssignEvent';
-  LM_AssignSelf     :Result:='LM_AssignSelf';
-  LM_SetName        :Result:='LM_SetName';
-  LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
-  LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
-
-  LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
   LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
 
   LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
-
-  LM_GETSELTEXT     :Result:='LM_GETSELTEXT';
-  LM_SETSELTEXT     :Result:='LM_SETSELTEXT';
-
-  // TComboBox
-  //LM_CB_FIRST       :Result:='LM_CB_FIRST';
-  LM_CB_GETCOUNT    :Result:='LM_CB_GETCOUNT';
-  LM_CB_GETTEXT     :Result:='LM_CB_GETTEXT';
-  LM_CB_ADDTEXT     :Result:='LM_CB_ADDTEXT';
-  //LM_CB_LAST        :Result:='LM_CB_LAST';
 
   // TNoteBook
   //LM_NB_First       :Result:='LM_NB_First';
@@ -889,6 +847,9 @@ end.
 
 {
   $Log$
+  Revision 1.118  2004/09/24 10:49:56  micha
+  remove obsolete messages
+
   Revision 1.117  2004/09/24 07:52:35  micha
   convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
   remove message LM_SETPROPERTIES, conversion done
