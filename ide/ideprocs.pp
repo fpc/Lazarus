@@ -92,6 +92,8 @@ procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 function NameToValidIdentifier(const s: string): string;
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
+procedure RaiseException(const Msg: string);
+
 
 implementation
 
@@ -987,6 +989,21 @@ end;
 function GetCurrentMailAddress: string;
 begin
   Result:='<'+GetCurrentUserName+'@'+GetEnv('HOSTNAME')+'>';
+end;
+
+{------------------------------------------------------------------------------
+  procedure RaiseException(const Msg: string);
+
+  Raises an exception.
+  gdb does not catch fpc Exception objects, therefore this procedure raises
+  a standard AV which is catched by gdb.
+ ------------------------------------------------------------------------------}
+procedure RaiseException(const Msg: string);
+begin
+  writeln('ERROR in IDE: ',Msg);
+  // creates an exception, that gdb catches:
+  writeln('Creating gdb catchable error:');
+  if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
 end.

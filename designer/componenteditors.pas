@@ -628,10 +628,27 @@ end;
 
 //------------------------------------------------------------------------------
 
+procedure InternalFinal;
+var
+  p: PComponentClassRec;
+  i: integer;
+begin
+  if ComponentClassList<>nil then begin
+    for i:=0 to ComponentClassList.Count-1 do begin
+      p:=PComponentClassRec(ComponentClassList[i]);
+      Dispose(p);
+    end;
+    ComponentClassList.Free;
+  end;
+end;
+
 initialization
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TNotebook,TNotebookComponentEditor);
   RegisterComponentEditor(TPage,TPageComponentEditor);
+  
+finalization
+  InternalFinal;
 
 end.
 

@@ -457,14 +457,10 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomComboBox.Destroy;
 begin
-  writeln('TCustomComboBox.Destroy A ',Name);
   if HandleAllocated then DestroyHandle;
-  writeln('TCustomComboBox.Destroy B ',Name);
   FItems.Free;
   FItems:=nil;
-  writeln('TCustomComboBox.Destroy C ',Name);
   inherited Destroy;
-  writeln('TCustomComboBox.Destroy D ',Name,' ',FItems<>nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -553,6 +549,9 @@ end;
 
 {
   $Log$
+  Revision 1.14  2002/09/16 16:06:21  lazarus
+  MG: replaced halt with raiseexception
+
   Revision 1.13  2002/09/16 15:42:17  lazarus
   MG: fixed calling DestroyHandle if not HandleAllocated
 

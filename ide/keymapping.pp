@@ -1454,7 +1454,8 @@ begin
   if (Index<0) or (Index>=Count) then begin
     writeln('[TKeyCommandRelationList.GetRelation] Index out of bounds '
       ,Index,' Count=',Count);
-    Halt;
+    // creates an exception, that gdb catches:
+    if (Index div ((Index and 1) div 10000))=0 then ;
   end;
   Result:= TKeyCommandRelation(FRelations[Index]);
 end;
