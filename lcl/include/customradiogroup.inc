@@ -101,39 +101,48 @@ var
 begin
   if FCreatingWnd then exit;
   FCreatingWnd := true;
-  //writeln('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' ',FItems.Count);
+  //writeln('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
   // destroy radiobuttons, if there are too many
   while FButtonList.Count>FItems.Count do begin
     TRadioButton(FButtonList[FButtonList.Count-1]).Free;
     FButtonList.Delete(FButtonList.Count-1);
   end;
+  //writeln('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  // create as many TRadioButton as needed
+  while (FButtonList.Count<FItems.Count) do begin
+    Temp := TRadioButton.Create (self);
+    Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
+    Temp.AutoSize := False;
+    Temp.OnClick := @Clicked;
+    FButtonList.Add(Temp);
+  end;
+    
+  //writeln('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  if FItems.Count>=0 then begin
+    if (FItemIndex>=FItems.Count) then FItemIndex:=0;
+  end else
+    FItemIndex:=-1;
+
+  //writeln('[TCustomRadioGroup.CreateWnd] D ',Name,':',ClassName,' ',FItems.Count);
+  inherited CreateWnd;
+  //writeln('[TCustomRadioGroup.CreateWnd] E ',Name,':',ClassName,' ',FItems.Count,' ',FButtonList.Count);
+
   if FItems.Count>0 then begin
-    // create as many TRadioButton as needed
-    while (FButtonList.Count<FItems.Count) do begin
-      Temp := TRadioButton.Create (self);
-      Temp.Name:='RadioButton'+IntToStr(FButtonList.Count);
-      Temp.AutoSize := False;
-      Temp.Parent := Self;
-      Temp.OnClick := @Clicked;
-      FButtonList.Add(Temp);
-    end;
-    
-    if (FItemIndex>=FItems.Count) or (FItemIndex<0) then FItemIndex:=0;
-    
-    DoPositionButtons;
-    
-    i := 0;
-    while i < FItems.Count do begin
+    for i:=0 to FItems.Count-1 do begin
       Temp := TRadioButton(FButtonList[i]);
-      Temp.Caption := FItems.Strings[i];
+      Temp.Caption := FItems[i];
+      Temp.Parent := Self;
+    end;
+    DoPositionButtons;
+
+    for i:=0 to FItems.Count-1 do begin
+      Temp := TRadioButton(FButtonList[i]);
       Temp.Checked := (i = FItemIndex);
-      Temp.Visible:=true;
-      inc(i);
+      Temp.Visible := true;
     end;
   end;
-  //writeln('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' ',FItems.Count);
-  inherited CreateWnd;
-  //writeln('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' ',FItems.Count);
+  //writeln('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' ',FItems.Count);
+
   FCreatingWnd := false;
 end;
 
@@ -149,6 +158,7 @@ end;
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
   if HandleAllocated then RecreateWnd;
+  OwnerFormDesignerModified(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -338,6 +348,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2003/01/24 13:53:53  mattias
+  fixed TRadioGroup.Items editing in IDE
+
   Revision 1.14  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
