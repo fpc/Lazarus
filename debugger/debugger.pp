@@ -519,7 +519,7 @@ type
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject;
                                    const ALocation: TDBGLocationRec) of object;
-  TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionID: Integer;
+  TDBGExceptionEvent = procedure(Sender: TObject; const AExceptionClass: String;
                                  const AExceptionText: String) of object;
 
   TDebugger = class(TObject)
@@ -552,7 +552,7 @@ type
     function  CreateWatches: TDBGWatches; virtual;
     procedure DoCurrent(const ALocation: TDBGLocationRec);
     procedure DoDbgOutput(const AText: String);
-    procedure DoException(const AExceptionID: Integer; const AExceptionText: String);
+    procedure DoException(const AExceptionClass: String; const AExceptionText: String);
     procedure DoOutput(const AText: String);
     procedure DoState(const OldState: TDBGState);
     function  ChangeFileName: Boolean; virtual;
@@ -771,11 +771,11 @@ begin
   if Assigned(FOnDbgOutput) then FOnDbgOutput(Self, AText);
 end;
 
-procedure TDebugger.DoException(const AExceptionID: Integer;
+procedure TDebugger.DoException(const AExceptionClass: String;
   const AExceptionText: String);
 begin
   if Assigned(FOnException) then
-    FOnException(Self, AExceptionID, AExceptionText);
+    FOnException(Self, AExceptionClass, AExceptionText);
 end;
 
 procedure TDebugger.DoOutput(const AText: String);
@@ -2287,6 +2287,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.33  2003/05/29 17:40:10  marc
+  MWE: * Fixed string resolving
+       * Updated exception handling
+
   Revision 1.32  2003/05/28 17:40:55  mattias
   recuced update notifications
 

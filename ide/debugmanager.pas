@@ -71,7 +71,7 @@ type
     procedure OnDebuggerCurrentLine(Sender: TObject;
                                     const ALocation: TDBGLocationRec);
     procedure OnDebuggerOutput(Sender: TObject; const AText: String);
-    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer;
+    procedure OnDebuggerException(Sender: TObject; const AExceptionClass: String;
                                   const AExceptionText: String);
   private
     FDebugger: TDebugger;
@@ -448,13 +448,17 @@ end;
 //-----------------------------------------------------------------------------
 
 procedure TDebugManager.OnDebuggerException(Sender: TObject;
-  const AExceptionID: Integer; const AExceptionText: String);
+  const AExceptionClass: String; const AExceptionText: String);
+var
+  msg: String;
 begin
   if Destroying then exit;
-  MessageDlg('Error',
-    Format('Project %s raised exception class %d with message ''%s''.',
-           [Project1.Title, AExceptionID, AExceptionText]),
-    mtError,[mbOk],0);
+  
+  if AExceptionText = ''
+  then msg := Format('Project %s raised exception class ''%s''.', [Project1.Title, AExceptionClass])
+  else msg := Format('Project %s raised exception class ''%s'' with message ''%s''.', [Project1.Title, AExceptionClass, AExceptionText]);
+
+  MessageDlg('Error', msg, mtError,[mbOk],0);
 end;
 
 procedure TDebugManager.OnDebuggerOutput(Sender: TObject; const AText: String);
@@ -1340,6 +1344,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.37  2003/05/29 17:40:10  marc
+  MWE: * Fixed string resolving
+       * Updated exception handling
+
   Revision 1.36  2003/05/29 07:25:02  mattias
   added Destroying flag, debugger now always shuts down
 
