@@ -106,6 +106,7 @@ type
 
   TStatusBar = Class(TWinControl)
   private
+    FCanvas: TCanvas;
     FHandlePanelCount: integer; // realized panels in the Handle object
     FHandleObjectNeedsUpdate: boolean;
     FHandleUpdatePanelIndex: integer; // which panel in the handle object needs update
@@ -128,6 +129,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     function UpdatingStatusBar: boolean;
+    property Canvas: TCanvas read FCanvas;
   published
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
@@ -2284,6 +2286,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.156  2005/01/03 11:54:37  micha
+  add TStatusBar.Canvas
+
   Revision 1.155  2005/01/03 01:07:08  mattias
   fixed registering TProgressBar, disabled docking in TToolBar, return key for codeexplorer, updated finnish translation
 

@@ -21,6 +21,8 @@ constructor TStatusBar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   fCompStyle := csStatusBar;
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
   FPanels := TStatusPanels.Create(Self);
@@ -63,6 +65,7 @@ end;
 {------------------------------------------------------------------------------}
 destructor TStatusBar.Destroy;
 begin
+  FreeThenNil(FCanvas);
   FreeThenNil(FPanels);
   inherited Destroy;
 end;
