@@ -571,6 +571,19 @@
     +'  N     ",'#10'"N N N   N N       N N       N N N     N N N ",'#10'"    '
     +'                              N         "};'#10
   );
+  LazarusResources.Add('timagelist','XPM',
+    '/* XPM */'#10'static char *timagelist[]={'#10'"20 20 6 1",'#10'"# c #0000'
+    +'00",'#10'"d c #0058c0",'#10'"c c #008000",'#10'"a c #a8dcff",'#10'"b c #'
+    +'ffff00",'#10'". c #ffffff",'#10'"...................#",'#10'"aaaaaaaaaaa'
+    +'aaaaaaaa#",'#10'".................#a#",'#10'"aaaaaaaaaaaaaaaaa#a#",'#10
+    +'"...............#a#a#",'#10'"aabaabaaaaaaaaa#a#a#",'#10'"aaabbaaaaa...aa'
+    +'#a#a#",'#10'"abbbbbbaa.aa.aa#a#a#",'#10'"aaabbaaaaaaa..a#a#a#",'#10'"aab'
+    +'aabaaaa.aaaa#a#a#",'#10'"aaaaaaaaaaaaaaa#a#a#",'#10'"aaaaaaaaaaaaaaa#a#a'
+    +'#",'#10'"aaaaaaaaaaaaaaa#a#c#",'#10'"aaaaaaaaaaaaaac#c#c#",'#10'"ddddddd'
+    +'ddddddcc#c#c#",'#10'"ddddddddddddccc#c#c#",'#10'"dddddddddddcccc#c#c#",'
+    +#10'"ddddddddddccccc#c#c#",'#10'"ddddddddddccccc#c#c#",'#10'"ddddddddddcc'
+    +'ccc#c#c#"};'#10
+  );
   LazarusResources.Add('timage','XPM',
     '/* XPM */'#10'static char *timage[]={'#10'"20 20 5 1",'#10'"c c #0058c0",'
     +#10'"b c #008000",'#10'". c #a8dcff",'#10'"# c #ffff00",'#10'"a c #ffffff'

@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,Arrow,
-  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs,Calendar
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs,Calendar,ImgList
 
 {$IFDEF DATABASE}
 ,db
@@ -306,6 +306,7 @@ begin
           ,TBevel,TRadioGroup,TImage]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView
           ,TProgressBar,TToolBar,TTrackbar]);
+  RegisterComponents('Additional','ImgList',[TImageList]);
 
   RegisterComponents('Misc','Calendar',[TCalendar]);
   RegisterComponents('Misc','Arrow',[TArrow]);

@@ -24,8 +24,6 @@
 const
   TTreeNodeStreamVersion : word = 1;
   
-  // workaround till clientwidth/height is working correctly with scrollbars
-  ScrollBarWidth=19;
   // maximum scroll range
   MAX_SCROLL = 32767;
 

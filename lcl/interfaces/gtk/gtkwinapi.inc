@@ -3849,8 +3849,13 @@ begin
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
           gtk_hscrollbar_get_type) 
         then
-          Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment;
-          
+          Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment
+        else  //clist
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+          gtk_clist_get_type)
+        then
+          Adjustment :=  gtk_clist_get_hadjustment(PgtkCList(handle));
+
       SB_VERT:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
                          gtk_scrolled_window_get_type) 
@@ -3861,8 +3866,13 @@ begin
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
           gtk_vscrollbar_get_type) 
         then
-          Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment;
-          
+          Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment
+        else  //clist
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+          gtk_clist_get_type)
+        then
+          Adjustment :=  gtk_clist_get_vadjustment(PgtkCList(handle));
+
       SB_CTL:
         if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_range_get_type)
         then begin
@@ -3872,6 +3882,7 @@ begin
       else
         Adjustment := nil;
     end;
+
     if Adjustment <> nil
     then with ScrollInfo, Adjustment^ do begin
       Result := Round(Value);
@@ -4317,6 +4328,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/01/08 16:02:45  lazarus
+  Minor changes to TListView.
+  Added TImageList to the IDE
+  Shane
+
   Revision 1.56  2002/01/04 21:07:49  lazarus
   MG: added TTreeView
 

@@ -490,6 +490,8 @@ type
  TCustomListView = class(TWinControl)
   private
     //FReadOnly : Boolean;
+    FBorderStyle: TBorderStyle;
+    FDefItemHeight: integer;
     FImages : TCustomImageList;
     FListItems : TListItems;
     FColumns : TViewColumns;
@@ -498,13 +500,25 @@ type
     FSortColumn : Integer;
     FMultiSelect: Boolean;
     FImageChangeLink : TChangeLink;
+    FScrollBars: TScrollStyle;
+    FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
+    FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
+    FLastHorzScrollInfo: TScrollInfo;
+    FLastVertScrollInfo: TScrollInfo;
+    procedure SetDefaultItemHeight(AValue: integer);
     procedure SetImages(const AValue: TCustomImageList);
-    procedure SetMultiSElect(const AValue: Boolean);
     procedure SetItems(Value : TListItems);
+    procedure SetMultiSElect(const AValue: Boolean);
+    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetScrolledLeft(AValue: integer);
+    procedure SetScrolledTop(AValue: integer);
+    procedure UpdateScrollbars;
   protected
     ParentWindow : TScrolledWindow;
     procedure Delete(Item : TListItem);
     procedure InsertItem(Item : TListItem);
+    Function GetMaxScrolledLeft : Integer;
+    Function GetMaxScrolledTop : Integer;
     Procedure SetViewStyle (value : TViewStyle);
     Procedure SetSortColumn(Value : Integer);
     Procedure SetSorted(Value : Boolean);
@@ -513,6 +527,13 @@ type
     Procedure ColumnsChanged(Sender : TObject); //called by TViewColumns
     Procedure ImageChanged(Sender : TObject);
     Procedure ItemAdded;  //called by TListItems
+    procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
+    procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+    property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
+    property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
+    property DefaultItemHeight: integer
+      read FDefItemHeight write SetDefaultItemHeight;
+
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
@@ -523,11 +544,14 @@ type
     property SortColumn : Integer read FSortColumn write SetSortColumn;
     property MultiSelect : Boolean read FMultiSelect write SetMultiSelect default False;
     property Images : TCustomImageList read FImages write SetImages;
+    property ScrollBars: TScrollStyle
+      read FScrollBars write SetScrollBars default ssBoth;
   end;
 
  TListView = class(TCustomListView)
   published
     property Columns;
+    property ScrollBars;
     property Items;
     property Images;
     property Visible;
@@ -1675,6 +1699,9 @@ const
   ButtonStyles: array[TToolButtonStyle] of Word = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
     TBSTYLE_DROPDOWN, TBSTYLE_SEP, TBSTYLE_SEP);
 
+  // workaround till clientwidth/height is working correctly with scrollbars
+  ScrollBarWidth=19;
+
 { Toolbar menu support }
 
 var
@@ -1720,6 +1747,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/01/08 16:02:43  lazarus
+  Minor changes to TListView.
+  Added TImageList to the IDE
+  Shane
+
   Revision 1.16  2002/01/04 21:25:05  lazarus
   MG: published background and selection color in TTreeView
 

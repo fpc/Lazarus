@@ -218,6 +218,7 @@ images/components/tibquery.ico -text svneol=native#image/x-icon
 images/components/tibquery.xpm -text svneol=native#image/x-xpixmap
 images/components/timage.ico -text svneol=unset#image/x-icon
 images/components/timage.xpm -text svneol=native#image/x-xpixmap
+images/components/timagelist.xpm -text svneol=native#image/x-xpixmap
 images/components/tlabel.ico -text svneol=unset#image/x-icon
 images/components/tlabel.xpm -text svneol=native#image/x-xpixmap
 images/components/tlistbox.ico -text svneol=unset#image/x-icon

@@ -474,36 +474,32 @@ begin
       begin
         if (Sender is TListView) then
         begin
-          writeln('IN LM_LV_DELETEITEM');
           Num := Integer(data^);
-          gtk_clist_remove(PgtkCList(Handle),Num);
+          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          gtk_clist_remove(PgtkCList(Widget),Num);
         end;
       end;
       LM_LV_CHANGEITEM :
       begin
-        writeln('IN LM_LV_CHANGEITEM');
         if (Sender is TListView) then
         begin
+          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+
           Num := Integer(data^);
-          Writeln('NUM,Rows = ',num,',',PGTKCList(Handle)^.rows);
 
           AddItemListItem := TListView(sender).Items[Num];
-          Writeln('AddItemListItem.Caption = ',AddItemListItem.Caption);
           pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
           StrPCopy(pStr, AddItemListItem.Caption);
-          gtk_clist_set_text(PgtkCList(Handle),num,0,pStr);
+          gtk_clist_set_text(PgtkCList(Widget),num,0,pStr);
           if (TCustomListView(sender).Images <> nil) and (TListItem(TCustomListView(sender).Items[Num]).ImageIndex > -1) then
               Begin
-              Writeln('Checking images');
               if (TListItem(TCustomListView(sender).Items[Num]).ImageIndex < TCustomListView(sender).Images.Count) then
                    begin
                    //draw image
-                     Writeln('drawing image');
-                     Writeln('TListItem(TCustomListView(sender).Items[i]).ImageIndex is ',TListItem(TCustomListView(sender).Items[Num]).ImageIndex);
                      BitImage := TBitmap.Create;
                      TCustomListView(sender).Images.GetBitmap(TListItem(TCustomListView(sender).Items[Num]).ImageIndex,BitImage);
 
-                     gtk_clist_set_pixtext(Pgtkclist(handle),Num,0,pStr,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                     gtk_clist_set_pixtext(Pgtkclist(Widget),Num,0,pStr,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
                      end;
 
               end;
@@ -514,7 +510,7 @@ begin
              Begin
                pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count]) + 1);
                StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count]);
-               gtk_clist_set_text(PgtkCList(Handle),num,count+1,pStr);
+               gtk_clist_set_text(PgtkCList(Widget),num,count+1,pStr);
                StrDispose(pStr);
              end;
         end;
@@ -524,22 +520,22 @@ begin
       begin
         if (Sender is TListView) then
         begin
+          Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+
           //get last item and add it..
-          Writeln('LV_AddItem');
           pStr := StrAlloc(length('Test') + 1);
           StrPCopy(pStr, 'Test');
           Titles[0] := pStr;
           for Count := 1 to 255 do
             Titles[Count] := nil;
-          Num := gtk_clist_append(PgtkCList(Handle),@Titles);
-          Writeln('NUm in AddItem is =',num);
+          Num := gtk_clist_append(PgtkCList(Widget),@Titles);
           StrDispose(pStr);
+
           AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count-1];
           if AddItemListItem <> nil then
             Begin
-             gtk_clist_set_text(PgtkCList(handle),num,0,@AddItemListItem.Caption);
+             gtk_clist_set_text(PgtkCList(Widget),num,0,@AddItemListItem.Caption);
             end;
-        Writeln('LV_AddItem DONE');
         end;
         
       end;
@@ -1983,12 +1979,13 @@ var
    caption : ansistring;          // the caption of "Sender"
    StrTemp : PChar;               // same as "caption" but as PChar
    TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
+   TempWidget2: PgtkWidget;       //used by TListView
    p          : pointer;          // ptr to the newly created GtkWidget
    CompStyle,                     // componentstyle (type) of GtkWidget which will be created
    TempInt   : Integer;           // local use when neccessary
    Adjustment: PGTKAdjustment;    // currently only used for csFixed
    // - for csBitBtn
-   Box       : Pointer;           // currently only used for TBitBtn and TForm
+   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
    //pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
    pixmapwid : pGtkWidget;        // currently only used for TBitBtn
    //mask      : pGDKBitmap;        // currently only used for TBitBtn
@@ -2165,12 +2162,49 @@ begin
       
       csListView :
       Begin
+//         tempwidget := gtk_fixed_new;
+//         Box := gtk_hbox_new(False,0);
+//         gtk_widget_show(box);
          if TCustomListView(sender).Columns.Count > 0 then
-            P := PgtkWidget(gtk_clist_new(TCustomListView(sender).Columns.Count))
+            p := PgtkWidget(gtk_clist_new(TCustomListView(sender).Columns.Count))
          else
-            P := PgtkWidget(gtk_clist_new(1));
-            
+            p := PgtkWidget(gtk_clist_new(1));
+//         gtk_box_pack_start(Pgtkbox(box),p,True,False,0);
+         
+         if TCustomListView(sender).ScrollBars in [ssBoth, ssHorizontal] then
+            Begin
+//              gtk_clist_set_hadjustment(PgtkCList(P),PgtkAdjustment(gtk_adjustment_new(1,1,100,1,10,10)));
+              tempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
+//              gtk_box_pack_end(Pgtkbox(box),TempWidget2,False,False,0);
+              gtk_widget_show(tempwidget2);
+            end;
+//         Tempwidget2 := box;
+//         Box := gtk_vbox_new(False,0);
+//         gtk_widget_show(Box);
+//         gtk_fixed_put(Pgtkfixed(tempwidget),box,0,0);
+//         gtk_box_pack_start(Pgtkbox(box),Tempwidget2,True,False,0);
+         
+         if TCustomListView(sender).ScrollBars in [ssBoth, ssVertical] then
+             Begin
+                gtk_clist_set_vadjustment(PgtkCList(P),PgtkAdjustment(gtk_adjustment_new(1,1,100,1,10,10)));
+                TempWidget2 := gtk_hscrollbar_new(gtk_clist_get_hadjustment(PgtkCList(p)));
+                gtk_widget_show(tempwidget2);
+//                gtk_box_pack_end(pgtkbox(box),TempWidget2,TRue,False,0);
+             end;
+             
+//         GetWidgetInfo(tempWidget, True)^.ImplementationWidget := P;
+//         SetMainWidget(P,TempWidget);//p, TempWidget);
+
+
+//         gtk_fixed_put(PgtkFixed(TempWidget), P,0,0);
+
+//         GetWidgetInfo(tempWidget, True)^.ImplementationWidget := P;
+//         SetMainWidget(TempWidget,P);//p, TempWidget);
+
+
          gtk_widget_show(P);
+//         gtk_widget_show(tempwidget);
+//         SetFixedWidget(P,TempWidget);
       end;
       
 
@@ -3155,39 +3189,40 @@ begin
             Begin
                //set up columns..
                //
-               gtk_clist_freeze(PgtkCList(Handle));
+               Widget := PgtkWidget(Handle);//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+               gtk_clist_freeze(PgtkCList(Widget));
                for I := 0 to Columns.Count-1 do
                  Begin
                    ColName := Columns.Item[i].Caption;
                    GetMem(pColName,Length(colname)+1);
                    pColName := StrPcopy(pColName,ColName);
-                   gtk_clist_set_column_title(Pgtkclist(Handle),I,pColName);
+                   gtk_clist_set_column_title(Pgtkclist(Widget),I,pColName);
                    Dispose(pColName);
                    
                    //set column alignment
-                   gtk_clist_set_column_justification(PgtkCList(Handle),I,aGTKJUSTIFICATION[Columns.Item[i].Alignment]);
+                   gtk_clist_set_column_justification(PgtkCList(Widget),I,aGTKJUSTIFICATION[Columns.Item[i].Alignment]);
 
                    //set width
-                   gtk_clist_set_column_width(PgtkCList(Handle),I,Columns.Item[i].Width);
+                   gtk_clist_set_column_width(PgtkCList(Widget),I,Columns.Item[i].Width);
 
 
                    //set auto sizing
-                   gtk_clist_set_column_auto_resize(PgtkCList(Handle),I,Columns.Item[i].AutoSize);
+                   gtk_clist_set_column_auto_resize(PgtkCList(Widget),I,Columns.Item[i].AutoSize);
 
                    //set Visible
-                   gtk_clist_set_column_visibility(PgtkCList(Handle),I,Columns.Item[i].Visible);
+                   gtk_clist_set_column_visibility(PgtkCList(Widget),I,Columns.Item[i].Visible);
                  end;
 
 //sorting
                  if (TCustomListView(sender).ViewStyle = vsReport) then
-                 gtk_clist_column_titles_show(PgtkCList(Handle))
+                 gtk_clist_column_titles_show(PgtkCList(Widget))
                  else
-                 gtk_clist_column_titles_Hide(PgtkCList(Handle));
+                 gtk_clist_column_titles_Hide(PgtkCList(Widget));
 
-                 gtk_clist_set_sort_column(PgtkCList(Handle),TCustomListView(sender).SortColumn);
+                 gtk_clist_set_sort_column(PgtkCList(Widget),TCustomListView(sender).SortColumn);
                  
 //multiselect
-                 gtk_clist_set_selection_mode(PgtkCList(Handle),aGTkSelectionMode[TCustomListView(sender).MultiSelect]);
+                 gtk_clist_set_selection_mode(PgtkCList(Widget),aGTkSelectionMode[TCustomListView(sender).MultiSelect]);
 
 //TODO:This doesn't work right now
 //                 gtk_clist_set_auto_sort(PgtkCList(handle),TCustomListView(sender).Sorted);
@@ -3199,7 +3234,7 @@ begin
 
                    GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).Caption)+1);
                    pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).Caption);
-                   gtk_clist_set_text(Pgtkclist(Handle),0,I+1,pRowText);
+                   gtk_clist_set_text(Pgtkclist(Widget),0,I+1,pRowText);
 
                    //do image if one is assigned....
                    Writeln('Starting image section');
@@ -3215,8 +3250,8 @@ begin
                              BitImage := TBitmap.Create;
                              TCustomListView(sender).Images.GetBitmap(TListItem(TCustomListView(sender).Items[i]).ImageIndex,BitImage);
                              
-                             gtk_clist_set_pixmap(Pgtkclist(handle),I,0,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
-                             gtk_clist_set_pixtext(Pgtkclist(handle),I,0,pRowText,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                             gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+                             gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
 //                             bitimage.Free;
 
                            end;
@@ -3234,7 +3269,7 @@ begin
                         Begin
                           GetMem(pRowText,Length(TListItem(TCustomListView(sender).Items[i]).SubItems.Strings[X-1])+1);
                           pRowText := StrPcopy(pRowText,TListItem(TCustomListView(sender).Items[i]).SubItems.Strings[X-1]);
-                          gtk_clist_set_text(Pgtkclist(Handle),X,I+1,pRowText);
+                          gtk_clist_set_text(Pgtkclist(Widget),X,I+1,pRowText);
                           freemem(pRowText);
                         end;
                       end;  //for loop
@@ -3243,7 +3278,7 @@ begin
 
                  end;
                  
-               gtk_clist_thaw(PgtkCList(Handle));
+               gtk_clist_thaw(PgtkCList(Widget));
 
                end;
             csImage:  Begin
@@ -3709,6 +3744,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.101  2002/01/08 16:02:45  lazarus
+  Minor changes to TListView.
+  Added TImageList to the IDE
+  Shane
+
   Revision 1.100  2002/01/04 20:29:04  lazarus
   Added images to TListView.
   Shane
