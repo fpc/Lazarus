@@ -805,6 +805,9 @@ begin
   // call init and pass cmd line args
   gtk_init (@argc, @argv);
   
+  If Assigned(Screen) then
+    FillScreenFonts(Screen.Fonts);
+
   // read gtk rc file
   FRCFileParsed:=true;
   ParseRCFile;
@@ -4041,7 +4044,7 @@ begin
 
   csHintWindow :
     Begin
-       p := gtk_window_new(gtk_window_Popup);
+       p := gtk_window_new(gtk_window_popup);
        gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
 
        // Create the form client area
@@ -4050,18 +4053,22 @@ begin
        gtk_widget_show(TempWidget);
        SetFixedWidget(p, TempWidget);
        SetMainWidget(p, TempWidget);
-       //Try to make all hint forms transient to the main form
-       If (Application<>nil) and (Application.MainForm <> nil)
-       and (Application.MainForm.HandleAllocated) then
-         gtk_window_set_transient_for(PGTKWindow(P),
-                                       PGTKWindow(Application.MainForm.Handle));
-       gtk_widget_show(p);
+
+       TCustomForm(Sender).FormStyle := fsStayOnTop;
+       TCustomForm(Sender).BorderStyle := bsNone;
+       gtk_widget_realize(p);
+       gdk_window_set_decorations(GetControlWindow(P),
+         GetWindowDecorations(TCustomForm(Sender)));
+       gdk_window_set_functions(GetControlWindow(P),
+         GetWindowFunction(TCustomForm(Sender)));
+       gtk_widget_show_all(p);
     end;
 
   csImage :
     Begin
       p := gtk_image_new(nil,nil);
     end;
+
 
   csLabel :
     begin
@@ -6528,6 +6535,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.254  2002/10/18 16:08:10  lazarus
+  AJ: Partial HintWindow Fix; Added Screen.Font & Font.Name PropEditor; Started to fix ComboBox DropDown size/pos
+
   Revision 1.253  2002/10/17 21:00:17  lazarus
   MG: fixed uncapturing of mouse
 
