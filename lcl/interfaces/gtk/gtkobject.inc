@@ -1507,10 +1507,7 @@ begin
       LM_SETFOCUS:
       begin
         writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
-        if GTK_WIDGET_CAN_FOCUS(PgtkWidget(Handle)) then
-          gtk_widget_grab_focus(PgtkWidget(handle))
-        else
-          Writeln('The control '+TControl(Sender).name+' can not get focus');
+        SetFocus(Handle);
       end;
 
       LM_SetSize :
@@ -6510,6 +6507,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.259  2002/10/21 22:12:47  lazarus
+  MG: fixed frmactivate
+
   Revision 1.258  2002/10/21 03:23:35  lazarus
   AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
 
