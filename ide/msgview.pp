@@ -59,7 +59,7 @@ constructor TMessagesView.Create(AOwner : TComponent);
 Begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
-    Caption:='Compiler messages';
+    Caption:='Compiler Messages';
     MessageView := TListBox.Create(Self);
     With MessageView do Begin
       Parent:= Self;

@@ -305,6 +305,8 @@ type
     procedure SetupSearchPathsTab(Sender: TObject);
     procedure SetupButtonBar(Sender: TObject);
   public
+    CompilerOpts: TCompilerOptions;
+
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -319,12 +321,8 @@ type
 
 var
   frmCompilerOptions: TfrmCompilerOptions;
-  compilerOpts: TCompilerOptions;
 
 implementation
-
-uses
-  project;
 
 const
   CONFIG_FILENAME = 'compileroptions.xml';
@@ -1020,8 +1018,6 @@ begin
   SetBounds((Screen.Width-390) div 2,(Screen.Height-480) div 2,379,455);
   Caption := 'Compiler Options';
   OnShow := @CreateForm;
-//  MainIDE.Project.CompilerOptions.LoadCompilerOptions(true);
-  CompilerOpts.LoadCompilerOptions(true);
   
   nbMain := TNotebook.Create(Self);
   nbMain.Parent := Self;
@@ -1081,8 +1077,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.CreateForm(Sender: TObject);
 begin
-  { Get all the compiler options }
-  GetCompilerOptions;
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -1095,8 +1090,6 @@ begin
 
   { Save the options and hide the dialog }
   PutCompilerOptions;
-//  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
-  CompilerOpts.SaveCompilerOptions(true);
   Hide;
 end;
 
@@ -1120,8 +1113,6 @@ begin
   Assert(False, 'Trace:Apply compiler options changes');
 
   PutCompilerOptions;
-//  MainIDE.Project.CompilerOptions.SaveCompilerOptions(true);
-  CompilerOpts.SaveCompilerOptions(true);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2465,11 +2456,6 @@ begin
   end;
 end;
 
-initialization
-  CompilerOpts := TCompilerOptions.Create;
-
-finalization
-  CompilerOpts.Free;
   
 end.
 

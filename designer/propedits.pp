@@ -3035,7 +3035,7 @@ begin
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('shortstring'),
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
-    nil,'Lines',TStringsPropertyEditor);
+    nil,'',TStringsPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
     nil,'ModalResult',TModalResultPropertyEditor);
 end;

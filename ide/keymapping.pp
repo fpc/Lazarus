@@ -38,7 +38,9 @@ const
 
   ecSave               = ecUserFirst + 200;
   ecOpen               = ecSave + 1;
-  ecClose              = ecOpen + 2;
+  ecClose              = ecOpen + 1;
+  ecBuild              = ecClose + 1;
+  ecRun                = ecBuild + 1;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
@@ -730,6 +732,8 @@ begin
   Add('Save',ecSave,VK_S,[ssCtrl],VK_UNKNOWN,[]);
   Add('Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
   Add('Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
 
   Add('Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
   Add('Go to source editor 2',ecGotoEditor0,VK_2,[ssAlt],VK_UNKNOWN,[]);

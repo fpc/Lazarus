@@ -16,41 +16,227 @@ unit CodeTools;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, ExprEval;
+
+type
+//-----------------------------------------------------------------------------
+// source log
+
+  TSourceLogEntryOperation = (sleoInsert, sleoDelete, sleoMove);
+
+  TSourceLogEntry = class
+  private
+  public
+    Position: integer;
+    Len: integer;
+    MoveTo: integer;
+    LineEnds: integer;
+    LengthOfLastLine: integer;
+    Operation: TSourceLogEntryOperation;
+    constructor Create(APos, ALength, AMoveTo: integer; Txt: string;
+      AnOperation: TSourceLogEntryOperation);
+  end;
+
+  TSourceLogMarker = class
+  private
+  public
+    Position: integer;
+    NewPosition: integer;
+    Deleted: boolean;
+    Data: Pointer;
+  end;
+
+  TLineRange = record
+    StartPos, EndPos: integer;
+  end;
+
+  TSourceLog = class;
+
+  TOnSourceLogInsert = procedure(Sender: TSourceLog; Pos: integer; Txt: string)
+                        of object;
+  TOnSourceLogDelete = procedure(Sender: TSourceLog; Pos, Len: integer)
+                        of object;
+  TOnSourceLogMove = procedure(Sender: TSourceLog; Pos, Len, MoveTo: integer)
+                      of object;
+
+  TSourceLog = class
+  private
+    FLog: TList; // list of TSourceLogEntry
+    FMarkers: TList; // list of TSourceLogMarker;
+    FModified: boolean;
+    FSource: string;
+    FLineCount: integer;
+    FLineRanges: ^TLineRange; // array of TLineRange
+    FOnInsert: TOnSourceLogInsert;
+    FOnDelete: TOnSourceLogDelete;
+    FOnMove: TOnSourceLogMove;
+    procedure SetSource(NewSrc: string);
+    function GetItems(Index: integer): TSourceLogEntry;
+    procedure SetItems(Index: integer; AnItem: TSourceLogEntry);
+    function GetMarkers(Index: integer): TSourceLogMarker;
+    procedure BuildLineRanges;
+  public
+    property Items[Index: integer]: TSourceLogEntry read GetItems write SetItems; default;
+    function Count: integer;
+    property Markers[Index: integer]: TSourceLogMarker read GetMarkers;
+    function MarkerCount: integer;
+    procedure AddMarker(Position: integer; Data: Pointer);
+    procedure AddMarker(Line, Column: integer; Data: Pointer);
+    property Source: string read FSource write SetSource;
+    property Modified: boolean read FModified write FModified;
+    procedure LineColToPosition(Line, Column: integer; var Position: integer);
+    procedure AbsoluteToLineCol(Position: integer; var Line, Column: integer);
+    procedure Insert(Pos: integer; Txt: string);
+    procedure Delete(Pos, Len: integer);
+    procedure Replace(Pos, Len: integer; Txt: string);
+    procedure Move(Pos, Len, MoveTo: integer);
+    property OnInsert: TOnSourceLogInsert read FOnInsert write FOnInsert;
+    property OnDelete: TOnSourceLogDelete read FOnDelete write FOnDelete;
+    property OnMove: TOnSourceLogMove read FOnMove write FOnMove;
+    procedure Clear;
+    constructor Create(ASource: string);
+    destructor Destroy; override;
+  end;
+
+//-----------------------------------------------------------------------------
+type
+  TCodeTreeNodeDesc = (
+      ctnNone,
+      ctnClass,
+      ctnClassPublished, ctnClassPrivate, ctnClassProtected, ctnPublic,
+      ctnProcedureHead,
+      ctnProcedureName, ctnParameterList,
+      ctnFunctionType, ctnProcedureModifier,
+      ctnBeginBlock, ctnAsmBlock,
+      ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization
+    );
+  TCodeTreeNodeDescs = set of TCodeTreeNodeDesc;
+
+const
+  AllClassSections: TCodeTreeNodeDescs =
+     [ctnClassPublished, ctnClassPrivate, ctnClassProtected, ctnPublic];
+  AllCodeSections: TCodeTreeNodeDescs =
+     [ctnInterface, ctnImplementation, ctnInitialization, ctnFinalization];
+  AllBlocks: TCodeTreeNodeDescs = [ctnBeginBlock, ctnAsmBlock];
+
+  // CodeTreeNodeSubDescs
+  ctnsNone               = 0;
+  ctnsForwardDeclaration = 1;
+
+type
+  TCodePosition = packed record
+    P: integer;
+    CodeID: word;
+  end;
+
+  TCodeTreeNode = class
+  public
+    Desc: TCodeTreeNodeDesc;
+    SubDesc: Word;
+    Parent, NextBrother, PriorBrother, FirstChild: TCodeTreeNode;
+    StartPos, EndPos: TCodePosition;
+    function Next: TCodeTreeNode;
+    function Prior: TCodeTreeNode;
+    procedure Clear;
+    constructor Create;
+  end;
+
+  TCodeTree = class
+  private
+    FSources: TList; // list of TSourceLog
+    function GetSources(CodeID: integer): TSourceLog;
+    procedure SetSources(CodeID: integer; ASource: TSourceLog);
+  public
+    Root: TCodeTreeNode;
+    property Sources[CodeID: integer]: TSourceLog read GetSources write SetSources;
+    function SourcesCount: integer;
+    function AddSource(NewSource: TSourceLog): integer;
+    procedure DeleteNode(ANode: TCodeTreeNode);
+    procedure Clear;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+//-----------------------------------------------------------------------------
+
+  TCustomCodeTool = class(TObject)
+  private
+    FIgnoreIncludeFiles: boolean;
+    FIgnoreCompilerDirectives: boolean;
+    FInitValues: TExpressionEvaluator;
+  protected
+    function GetMainSource: TSourceLog;
+    procedure SetMainSource(ASource: TSourceLog);
+  public
+    Tree: TCodeTree;
+    Values: TExpressionEvaluator;
+    Pos: TCodePosition;
+    AtomStart: integer;
+    Atom: string;
+    property MainSource: TSourceLog read GetMainSource write SetMainSource;
+    procedure ReadNextPascalAtom; virtual;
+    function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
+    function ReadTilBracketClose: boolean;
+    property IgnoreIncludeFiles: boolean
+        read FIgnoreIncludeFiles write FIgnoreIncludeFiles;
+    property IgnoreCompilerDirectives: boolean
+        read FIgnoreCompilerDirectives write FIgnoreCompilerDirectives;
+    property InitCompilerValues: TExpressionEvaluator
+        read FInitValues write FInitValues;
+    procedure Clear; virtual;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  TClassAndProcCodeTool = class(TCustomCodeTool)
+  private
+  public
+    procedure BuildTree; virtual;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+  ECodeToolError = class(Exception);
+
+//-----------------------------------------------------------------------------
+
+
+// functions / procedures
 
 // program name
-function RenameProgramInSource(var Source:string;
+function RenameProgramInSource(Source:TSourceLog;
    NewProgramName:string):boolean;
 function FindProgramNameInSource(Source:string;
    var ProgramNameStart,ProgramNameEnd:integer):string;
 
 // unit name
-function RenameUnitInSource(var Source:string; NewUnitName:string):boolean;
+function RenameUnitInSource(Source:TSourceLog; NewUnitName:string):boolean;
 function FindUnitNameInSource(Source:string;
    var UnitNameStart,UnitNameEnd:integer):string;
 
 // uses sections
 function UnitIsUsedInSource(Source,UnitName:string):boolean;
-function RenameUnitInProgramUsesSection(var Source:string; 
+function RenameUnitInProgramUsesSection(Source:TSourceLog; 
    OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddToProgramUsesSection(var Source:string; 
+function AddToProgramUsesSection(Source:TSourceLog; 
    AUnitName,InFileName:string):boolean;
-function RemoveFromProgramUsesSection(var Source:string; 
+function RemoveFromProgramUsesSection(Source:TSourceLog; 
    AUnitName:string):boolean;
-function RenameUnitInInterfaceUsesSection(var Source:string; 
+function RenameUnitInInterfaceUsesSection(Source:TSourceLog; 
    OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddToInterfaceUsesSection(var Source:string; 
+function AddToInterfaceUsesSection(Source:TSourceLog; 
    AUnitName,InFileName:string):boolean;
-function RemoveFromInterfaceUsesSection(var Source:string; 
+function RemoveFromInterfaceUsesSection(Source:TSourceLog; 
    AUnitName:string):boolean;
 
+// single uses section
 function IsUnitUsedInUsesSection(Source,UnitName:string; 
    UsesStart:integer):boolean;
-function RenameUnitInUsesSection(var Source: string; UsesStart: integer;
+function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
    OldUnitName, NewUnitName, NewInFile:string): boolean;
-function AddUnitToUsesSection(var Source:string; UnitName,InFilename:string;
+function AddUnitToUsesSection(Source:TSourceLog; UnitName,InFilename:string;
    UsesStart:integer):boolean;
-function RemoveUnitFromUsesSection(var Source:string; UnitName:string;
+function RemoveUnitFromUsesSection(Source:TSourceLog; UnitName:string;
    UsesStart:integer):boolean;
 
 // compiler directives
@@ -60,9 +246,9 @@ function SplitCompilerDirective(Directive:string;
    var DirectiveName,Parameters:string):boolean;
 
 // createform
-function AddCreateFormToProgram(var Source:string;
+function AddCreateFormToProgram(Source:TSourceLog;
    AClassName,AName:string):boolean;
-function RemoveCreateFormFromProgram(var Source:string;
+function RemoveCreateFormFromProgram(Source:TSourceLog;
    AClassName,AName:string):boolean;
 function CreateFormExistsInProgram(Source:string;
    AClassName,AName:string):boolean;
@@ -71,7 +257,7 @@ function ListAllCreateFormsInProgram(Source:string):TStrings;
 // resource code
 function FindResourceInCode(Source:string; AddCode:string;
    var Position,EndPosition:integer):boolean;
-function AddResourceCode(var Source:string; AddCode:string):boolean;
+function AddResourceCode(Source:TSourceLog; AddCode:string):boolean;
 
 // form components
 function FindFormClassDefinitionInSource(Source:string; FormClassName:string;
@@ -79,7 +265,7 @@ function FindFormClassDefinitionInSource(Source:string; FormClassName:string;
    ):boolean;
 function FindFormComponentInSource(Source: string; FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): integer;
-function AddFormComponentToSource(var Source:string; FormBodyStartPos: integer;
+function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): boolean;
 
 // code search
@@ -92,6 +278,8 @@ function ReadNextPascalAtom(Source:string;
 function ReadRawNextPascalAtom(Source:string;
    var Position,AtomStart:integer):string;
 
+// utilities
+function LineEndCount(Txt: string; var LengthOfLastLine: integer): integer;
 
 const MaxLineLength:integer=80;
 
@@ -105,6 +293,19 @@ const
   // ToDo: find the constant in the fpc units.
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
   
+
+type
+  TCodeTreeNodeMemManager = class
+  private
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function CreateNode: TCodeTreeNode;
+    procedure DisposeNode(ANode: TCodeTreeNode);
+  end;
+
+var
+  NodeMemManager: TCodeTreeNodeMemManager; 
 
 function FindIncludeDirective(Source,Section:string; Index:integer;
    var IncludeStart,IncludeEnd:integer):boolean;
@@ -158,16 +359,14 @@ begin
     Result:=false;
 end;
 
-function RenameUnitInSource(var Source:string; NewUnitName:string):boolean;
+function RenameUnitInSource(Source:TSourceLog; NewUnitName:string):boolean;
 var UnitNameStart,UnitNameEnd:integer;
 begin
   UnitNameStart:=0;
   UnitNameEnd:=0;
-  Result:=(FindUnitNameInSource(Source,UnitNameStart,UnitNameEnd)<>'');
+  Result:=(FindUnitNameInSource(Source.Source,UnitNameStart,UnitNameEnd)<>'');
   if Result then
-    Source:=copy(Source,1,UnitNameStart-1)
-           +NewUnitName
-           +copy(Source,UnitNameEnd,length(Source)-UnitNameEnd+1);
+    Source.Replace(UnitNameStart,UnitNameEnd-UnitNameStart,NewUnitName);
 end;
 
 function FindUnitNameInSource(Source:string;
@@ -180,15 +379,13 @@ begin
     Result:='';
 end;
 
-function RenameProgramInSource(var Source:string;
+function RenameProgramInSource(Source: TSourceLog;
    NewProgramName:string):boolean;
 var ProgramNameStart,ProgramNameEnd:integer;
 begin
-  Result:=(FindProgramNameInSource(Source,ProgramNameStart,ProgramNameEnd)<>'');
+  Result:=(FindProgramNameInSource(Source.Source,ProgramNameStart,ProgramNameEnd)<>'');
   if Result then
-    Source:=copy(Source,1,ProgramNameStart-1)
-           +NewProgramName
-           +copy(Source,ProgramNameEnd,length(Source)-ProgramNameEnd+1);
+    Source.Replace(ProgramNameStart,ProgramNameEnd-ProgramNameStart,NewProgramName)
 end;
 
 function FindProgramNameInSource(Source:string;
@@ -217,7 +414,7 @@ begin
   until UsesStart<1;
 end;
 
-function RenameUnitInProgramUsesSection(var Source:string; 
+function RenameUnitInProgramUsesSection(Source:TSourceLog; 
    OldUnitName, NewUnitName, NewInFile:string): boolean;
 var
   ProgramTermStart,ProgramTermEnd, 
@@ -225,29 +422,31 @@ var
 begin
   Result:=false;
   // search Program section
-  ProgramTermStart:=SearchCodeInSource(Source,'program',1,ProgramTermEnd,false);
+  ProgramTermStart:=SearchCodeInSource(Source.Source,'program',1,ProgramTermEnd
+    ,false);
   if ProgramTermStart<1 then exit;
   // search programname
-  ReadNextPascalAtom(Source,ProgramTermEnd,ProgramTermStart);
+  ReadNextPascalAtom(Source.Source,ProgramTermEnd,ProgramTermStart);
   // search semicolon after programname
-  if not (ReadNextPascalAtom(Source,ProgramTermEnd,ProgramTermStart)=';') then exit;
+  if not (ReadNextPascalAtom(Source.Source,ProgramTermEnd,ProgramTermStart)=';')
+  then exit;
   UsesEnd:=ProgramTermEnd;
-  ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-  if UsesEnd>length(Source) then exit;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then begin
+  ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
+  if UsesEnd>length(Source.Source) then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then begin
     // no uses section in interface -> add one
-    Source:=copy(Source,1,ProgramTermEnd-1)
-           +EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;'
-           +copy(Source,ProgramTermEnd,length(Source)-ProgramTermEnd+1);
+    Source.Insert(ProgramTermEnd,EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;');
     UsesEnd:=ProgramTermEnd;
-    ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then exit;
   Result:=RenameUnitInUsesSection(Source,UsesStart,OldUnitName
     ,NewUnitName,NewInFile);
 end;
 
-function AddToProgramUsesSection(var Source:string; 
+function AddToProgramUsesSection(Source:TSourceLog; 
   AUnitName,InFileName:string):boolean;
 var
   ProgramTermStart,ProgramTermEnd, 
@@ -256,29 +455,31 @@ begin
   Result:=false;
   if (AUnitName='') or (AUnitName=';') then exit;
   // search program
-  ProgramTermStart:=SearchCodeInSource(Source,'program',1,ProgramTermEnd,false);
+  ProgramTermStart:=SearchCodeInSource(Source.Source,'program',1,ProgramTermEnd
+    ,false);
   if ProgramTermStart<1 then exit;
   // search programname
-  ReadNextPascalAtom(Source,ProgramTermEnd,ProgramTermStart);
+  ReadNextPascalAtom(Source.Source,ProgramTermEnd,ProgramTermStart);
   // search semicolon after programname
-  if not (ReadNextPascalAtom(Source,ProgramTermEnd,ProgramTermStart)=';') then exit;
+  if not (ReadNextPascalAtom(Source.Source,ProgramTermEnd,ProgramTermStart)=';')
+  then exit;
   // search uses section
   UsesEnd:=ProgramTermEnd;
-  ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-  if UsesEnd>length(Source) then exit;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then begin
+  ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
+  if UsesEnd>length(Source.Source) then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then begin
     // no uses section after program term -> add one
-    Source:=copy(Source,1,ProgramTermEnd-1)
-           +EndOfline+EndOfline+'uses'+EndOfline+'  ;'
-           +copy(Source,ProgramTermEnd,length(Source)-ProgramTermEnd+1);
+    Source.Insert(ProgramTermEnd,EndOfline+EndOfline+'uses'+EndOfline+'  ;');
     UsesEnd:=ProgramTermEnd;
-    ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then exit;
   Result:=AddUnitToUsesSection(Source,AUnitName,InFileName,UsesStart);
 end;
 
-function RenameUnitInInterfaceUsesSection(var Source:string; 
+function RenameUnitInInterfaceUsesSection(Source:TSourceLog; 
    OldUnitName, NewUnitName, NewInFile:string): boolean;
 var
   InterfaceStart,InterfaceWordEnd, 
@@ -286,25 +487,26 @@ var
 begin
   Result:=false;
   // search interface section
-  InterfaceStart:=SearchCodeInSource(Source,'interface',1,InterfaceWordEnd,false);
+  InterfaceStart:=SearchCodeInSource(Source.Source,'interface',1
+     ,InterfaceWordEnd,false);
   if InterfaceStart<1 then exit;
   UsesEnd:=InterfaceWordEnd;
-  ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-  if UsesEnd>length(Source) then exit;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then begin
+  ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
+  if UsesEnd>length(Source.Source) then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then begin
     // no uses section in interface -> add one
-    Source:=copy(Source,1,InterfaceWordEnd-1)
-           +EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;'
-           +copy(Source,InterfaceWordEnd,length(Source)-InterfaceWordEnd+1);
+    Source.Insert(InterfaceWordEnd,EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;');
     UsesEnd:=InterfaceWordEnd;
-    ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then exit;
   Result:=RenameUnitInUsesSection(Source,UsesStart,OldUnitName
     ,NewUnitName,NewInFile);
 end;
 
-function AddToInterfaceUsesSection(var Source:string; 
+function AddToInterfaceUsesSection(Source:TSourceLog; 
   AUnitName,InFileName:string):boolean;
 var
   InterfaceStart,InterfaceWordEnd, 
@@ -313,24 +515,25 @@ begin
   Result:=false;
   if AUnitName='' then exit;
   // search interface section
-  InterfaceStart:=SearchCodeInSource(Source,'interface',1,InterfaceWordEnd,false);
+  InterfaceStart:=SearchCodeInSource(Source.Source,'interface',1
+    ,InterfaceWordEnd,false);
   if InterfaceStart<1 then exit;
   UsesEnd:=InterfaceWordEnd;
-  ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-  if UsesEnd>length(Source) then exit;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then begin
+  ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
+  if UsesEnd>length(Source.Source) then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then begin
     // no uses section in interface -> add one
-    Source:=copy(Source,1,InterfaceWordEnd-1)
-           +EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;'
-           +copy(Source,InterfaceWordEnd,length(Source)-InterfaceWordEnd+1);
+    Source.Insert(InterfaceWordEnd,EndOfLine+EndOfLine+'uses'+EndOfLine+'  ;');
     UsesEnd:=InterfaceWordEnd;
-    ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   end;
-  if not (lowercase(copy(Source,UsesStart,UsesEnd-UsesStart))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,UsesEnd-UsesStart))='uses')
+  then exit;
   Result:=AddUnitToUsesSection(Source,AUnitName,InFileName,UsesStart);
 end;
 
-function RemoveFromProgramUsesSection(var Source:string; 
+function RemoveFromProgramUsesSection(Source:TSourceLog; 
    AUnitName:string):boolean;
 var
   ProgramTermStart,ProgramTermEnd, 
@@ -340,20 +543,22 @@ begin
   Result:=false;
   if AUnitName='' then exit;
   // search program
-  ProgramTermStart:=SearchCodeInSource(Source,'program',1,ProgramTermEnd,false);
+  ProgramTermStart:=SearchCodeInSource(Source.Source,'program',1
+     ,ProgramTermEnd,false);
   if ProgramtermStart<1 then exit;
   // search programname
-  ReadNextPascalAtom(Source,ProgramTermEnd,ProgramTermStart);
+  ReadNextPascalAtom(Source.Source,ProgramTermEnd,ProgramTermStart);
   // search semicolon after programname
-  if not (ReadNextPascalAtom(Source,ProgramTermEnd,ProgramTermStart)=';') then exit;
+  if not (ReadNextPascalAtom(Source.Source,ProgramTermEnd,ProgramTermStart)=';')
+  then exit;
   UsesEnd:=ProgramTermEnd;
-  Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-  if UsesEnd>length(Source) then exit;
+  Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
+  if UsesEnd>length(Source.Source) then exit;
   if not (lowercase(Atom)='uses') then exit;
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
 
-function RemoveFromInterfaceUsesSection(var Source:string; 
+function RemoveFromInterfaceUsesSection(Source:TSourceLog; 
    AUnitName:string):boolean;
 var
   InterfaceStart,InterfaceWordEnd, 
@@ -363,11 +568,12 @@ begin
   Result:=false;
   if AUnitName='' then exit;
   // search interface section
-  InterfaceStart:=SearchCodeInSource(Source,'interface',1,InterfaceWordEnd,false);
+  InterfaceStart:=SearchCodeInSource(Source.Source,'interface',1
+    ,InterfaceWordEnd,false);
   if InterfaceStart<1 then exit;
   UsesEnd:=InterfaceWordEnd;
-  Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
-  if UsesEnd>length(Source) then exit;
+  Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
+  if UsesEnd>length(Source.Source) then exit;
   if not (lowercase(Atom)='uses') then exit;
   Result:=RemoveUnitFromUsesSection(Source,AUnitName,UsesStart);
 end;
@@ -399,7 +605,7 @@ begin
   Result:=true;
 end;
 
-function RenameUnitInUsesSection(var Source: string; UsesStart: integer;
+function RenameUnitInUsesSection(Source:TSourceLog; UsesStart: integer;
    OldUnitName, NewUnitName, NewInFile:string): boolean;
 var UsesEnd:integer;
   LineStart,LineEnd,OldUsesStart:integer;
@@ -413,23 +619,22 @@ begin
   if (NewUnitName='') or (NewUnitName=';')
   or (OldUnitName=';') or (UsesStart<1) then exit;
   UsesEnd:=UsesStart+4;
-  if not (lowercase(copy(Source,UsesStart,4))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
   // parse through all used units and see if it is already there
   if NewInFile<>'' then
     NewInFile:=' in '''+NewInFile+'''';
   s:=', ';
   repeat
-    Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
     if (lowercase(Atom)=lowercase(OldUnitName)) then begin
       // unit already used
       OldUsesStart:=UsesStart;
       // find comma or semicolon
       repeat
-        Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+        Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
       until (Atom=',') or (Atom=';') or (Atom='');
-      Source:=copy(Source,1,OldUsesStart-1)
-             +NewUnitName+NewInFile
-             +copy(Source,UsesStart,length(Source)-UsesStart+1);
+      Source.Replace(OldUsesStart,UsesStart-OldUsesStart,
+             NewUnitName+NewInFile);
       Result:=true;
       exit;
     end else if (Atom=';') then begin
@@ -438,21 +643,17 @@ begin
     end;
     // read til next comma or semicolon
     while (Atom<>',') and (Atom<>';') and (Atom<>'') do
-      Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+      Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   until Atom<>',';
   // unit not used yet -> add it
-  Source:=copy(Source,1,UsesStart-1)
-         +s+NewUnitName+NewInFile
-         +copy(Source,UsesStart,length(Source)-UsesStart+1);
-  GetLineStartEndAtPosition(Source,UsesStart,LineStart,LineEnd);
+  Source.Insert(UsesStart,s+NewUnitName+NewInFile);
+  GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
   if (LineEnd-LineStart>MaxLineLength) or (NewInFile<>'') then
-    Source:=copy(Source,1,UsesStart-1)
-           +EndOfLine+'  '
-           +copy(Source,UsesStart,length(Source)-UsesStart+1);
+    Source.Insert(UsesStart,EndOfLine+'  ');
   Result:=true;
 end;
 
-function AddUnitToUsesSection(var Source:string; UnitName,InFilename:string;
+function AddUnitToUsesSection(Source:TSourceLog; UnitName,InFilename:string;
    UsesStart:integer):boolean;
 var UsesEnd:integer;
   LineStart,LineEnd:integer;
@@ -461,11 +662,11 @@ begin
   Result:=false;
   if (UnitName='') or (UnitName=';') or (UsesStart<1) then exit;
   UsesEnd:=UsesStart+4;
-  if not (lowercase(copy(Source,UsesStart,4))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
   // parse through all used units and see if it is already there
   s:=', ';
   repeat
-    Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
     if (lowercase(Atom)=lowercase(UnitName)) then begin
       // unit found
       Result:=true;
@@ -476,23 +677,19 @@ begin
     end;
     // read til next comma or semicolon
     while (Atom<>',') and (Atom<>';') and (Atom<>'') do
-      Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+      Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   until Atom<>',';
   // unit not used yet -> add it
   if InFilename<>'' then 
     InFileName:=' in '''+InFileName+'''';
-  Source:=copy(Source,1,UsesStart-1)
-         +s+UnitName+InFileName
-         +copy(Source,UsesStart,length(Source)-UsesStart+1);
-  GetLineStartEndAtPosition(Source,UsesStart,LineStart,LineEnd);
+  Source.Insert(UsesStart,s+UnitName+InFileName);
+  GetLineStartEndAtPosition(Source.Source,UsesStart,LineStart,LineEnd);
   if (LineEnd-LineStart>MaxLineLength) or (InFileName<>'') then
-    Source:=copy(Source,1,UsesStart-1)
-           +EndOfLine+'  '
-           +copy(Source,UsesStart,length(Source)-UsesStart+1);
+    Source.Insert(UsesStart,EndOfLine+'  ');
   Result:=true;
 end;
 
-function RemoveUnitFromUsesSection(var Source:string; UnitName:string;
+function RemoveUnitFromUsesSection(Source:TSourceLog; UnitName:string;
    UsesStart:integer):boolean;
 var UsesEnd,OldUsesStart,OldUsesEnd:integer;
   Atom:string;
@@ -502,26 +699,24 @@ begin
     exit;
   // search interface section
   UsesEnd:=UsesStart+4;
-  if not (lowercase(copy(Source,UsesStart,4))='uses') then exit;
+  if not (lowercase(copy(Source.Source,UsesStart,4))='uses') then exit;
   // parse through all used units and see if it is there
   OldUsesEnd:=-1;
   repeat
-    Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+    Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
     if (lowercase(Atom)=lowercase(UnitName)) then begin
       // unit found
       OldUsesStart:=UsesStart;
       // find comma or semicolon
       repeat
-        Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+        Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
       until (Atom=',') or (Atom=';') or (Atom='');
       if OldUsesEnd<1 then
         // first used unit
-        Source:=copy(Source,1,OldUsesStart-1)
-               +copy(Source,UsesStart,length(Source)-UsesStart+1)
+        Source.Delete(OldUsesStart,UsesStart-OldUsesStart)
       else
         // not first used unit (remove comma in front of unitname too)
-        Source:=copy(Source,1,OldUsesEnd-1)
-               +copy(Source,UsesStart,length(Source)-UsesStart+1);
+        Source.Delete(OldUsesEnd,UsesStart-OldUsesEnd);
       Result:=true;
       exit;
     end else 
@@ -529,37 +724,36 @@ begin
 
     // read til next comma or semicolon
     while (Atom<>',') and (Atom<>';') and (Atom<>'') do
-      Atom:=ReadNextPascalAtom(Source,UsesEnd,UsesStart);
+      Atom:=ReadNextPascalAtom(Source.Source,UsesEnd,UsesStart);
   until Atom<>',';
   // unit not used
 end;
 
-function AddCreateFormToProgram(var Source:string;
+function AddCreateFormToProgram(Source:TSourceLog;
   AClassName,AName:string):boolean;
 // insert 'Application.CreateForm(<AClassName>,<AName>);'
 // in front of 'Application.Run;'
 var Position,EndPosition:integer;
 begin
   Result:=false;
-  Position:=SearchCodeInSource(Source,'application.run',1,EndPosition,false);
+  Position:=SearchCodeInSource(Source.Source,'application.run',1
+    ,EndPosition,false);
   if Position<1 then exit;
-  Source:=copy(Source,1,Position-1)
-         +'Application.CreateForm('+AClassName+','+AName+');'+EndOfLine+'  ';
-         +copy(Source,EndPosition,length(Source)-EndPosition+1);
+  Source.Insert(Position,
+         +'Application.CreateForm('+AClassName+','+AName+');'+EndOfLine+'  ');
   Result:=true;
 end;
 
-function RemoveCreateFormFromProgram(var Source:string;
+function RemoveCreateFormFromProgram(Source:TSourceLog;
    AClassName,AName:string):boolean;
 // remove 'Application.CreateForm(<AClassName>,<AName>);'
 var Position,EndPosition:integer;
 begin
   Result:=false;
-  Position:=SearchCodeInSource(Source,
+  Position:=SearchCodeInSource(Source.Source,
      ';application.createform('+AClassName+','+AName+')',1,EndPosition,false);
   if Position<1 then exit;
-  Source:=copy(Source,1,Position-1)
-         +copy(Source,EndPosition,length(Source)-EndPosition+1);
+  Source.Delete(Position,EndPosition-Position);
   Result:=true;
 end;
 
@@ -616,17 +810,15 @@ begin
   Result:=true;
 end;
 
-function AddResourceCode(var Source:string; AddCode:string):boolean;
+function AddResourceCode(Source:TSourceLog; AddCode:string):boolean;
 var StartPos,EndPos:integer;
 begin
-  if FindResourceInCode(Source,AddCode,StartPos,EndPos) then begin
+  if FindResourceInCode(Source.Source,AddCode,StartPos,EndPos) then begin
     // resource exists already -> replace it
-    Source:=copy(Source,1,StartPos-1)
-           +AddCode
-           +copy(Source,EndPos,length(Source)-EndPos+1);
+    Source.Replace(StartPos,EndPos-StartPos,AddCode);
   end else begin
     // add resource
-    Source:=Source+EndOfLine+AddCode;
+    Source.Insert(length(Source.Source)+1,EndOfLine+AddCode);
   end;
   Result:=true;
 end;
@@ -674,14 +866,14 @@ begin
   Result:=-1;
 end;
 
-function AddFormComponentToSource(var Source:string; FormBodyStartPos: integer;
+function AddFormComponentToSource(Source:TSourceLog; FormBodyStartPos: integer;
   ComponentName, ComponentClassName: string): boolean;
 var Position, AtomStart: integer;
   Atom: string;
   PriorSpaces, NextSpaces: string;
 begin
   Result:=false;
-  if FindFormComponentInSource(Source,FormBodyStartPos
+  if FindFormComponentInSource(Source.Source,FormBodyStartPos
        ,ComponentName,ComponentClassName)>0 then begin
     Result:=true;
     exit;
@@ -690,7 +882,7 @@ begin
   repeat
     // find a good position to insert the component
     // in front of next section and in front of procedures/functions
-    Atom:=lowercase(ReadNextPascalAtom(Source,Position,AtomStart));
+    Atom:=lowercase(ReadNextPascalAtom(Source.SOurce,Position,AtomStart));
     if (Atom='procedure') or (Atom='function') or (Atom='end') or (Atom='class')
     or (Atom='constructor') or (Atom='destructor')
     or (Atom='public') or (Atom='private') or (Atom='protected')
@@ -704,13 +896,13 @@ begin
         PriorSpaces:='';
         NextSpaces:='    ';
       end;
-      Source:=copy(Source,1,AtomStart-1)
+      Source.Insert(AtomStart,
              +PriorSpaces+ComponentName+': '+ComponentClassName+';'+EndOfLine
-             +NextSpaces+copy(Source,AtomStart,length(Source)-AtomStart+1);
+             +NextSpaces);
       Result:=true;
       exit;
     end;
-  until Position>length(Source);
+  until Position>length(Source.Source);
   Result:=false;
 end;
 
@@ -936,6 +1128,7 @@ begin
         // test for double char operator :=, +=, -=, /=, *=, <>, <=, >=, **, ..
         if ((c2='=') and  (c1 in [':','+','-','/','*','<','>']))
         or ((c1='<') and (c2='>'))
+        or ((c1='>') and (c2='<'))
         or ((c1='.') and (c2='.'))
         or ((c1='*') and (c2='*'))
         then inc(Position);
@@ -945,5 +1138,674 @@ begin
   Result:=copy(Source,AtomStart,Position-AtomStart);
 end;
 
+function LineEndCount(Txt: string; var LengthOfLastLine: integer): integer;
+var i, LastLineEndPos: integer;
+begin
+  i:=1;
+  LastLineEndPos:=0;
+  Result:=0;
+  while i<length(Txt) do begin
+    if (Txt[i] in [#10,#13]) then begin
+      inc(Result);
+      inc(i);
+      if (i<=length(Txt)) and (Txt[i] in [#10,#13]) and (Txt[i-1]<>Txt[i]) then
+        inc(i);
+      LastLineEndPos:=i;
+    end else
+      inc(i);
+  end;
+  LengthOfLastLine:=length(Txt)-LastLineEndPos;
+end;
+
+
+{ TSourceLogEntry }
+
+constructor TSourceLogEntry.Create(APos, ALength, AMoveTo: integer; Txt: string;
+  AnOperation: TSourceLogEntryOperation);
+begin
+  Position:=APos;
+  Len:=ALength;
+  MoveTo:=AMoveTo;
+  Operation:=AnOperation;
+  LineEnds:=LineEndCount(Txt, LengthOfLastLine);
+end;
+
+{ TSourceLogMarker }
+
+{ TSourceLog }
+
+constructor TSourceLog.Create(ASource: string);
+begin
+  inherited Create;
+  FModified:=false;
+  FSource:=ASource;
+  FLog:=TList.Create;
+  FMarkers:=TList.Create;
+  FLineRanges:=nil;
+  FLineCount:=-1;
+end;
+
+destructor TSourceLog.Destroy;
+begin
+  Clear;
+  FMarkers.Free;
+  FLog.Free;
+  inherited Destroy;
+end;
+
+procedure TSourceLog.Clear;
+var i: integer;
+begin
+  for i:=0 to Count-1 do Items[i].Free;
+  FLog.Clear;
+  for i:=0 to MarkerCount-1 do Markers[i].Free;
+  FMarkers.Clear;
+  FSource:='';
+  FModified:=false;
+  if FLineRanges<>nil then begin
+    FreeMem(FLineRanges);
+    FLineRanges:=nil;
+  end;
+  FLineCount:=-1;
+end;
+
+function TSourceLog.GetItems(Index: integer): TSourceLogEntry;
+begin
+  Result:=TSourceLogEntry(FLog[Index]);
+end;
+
+procedure TSourceLog.SetItems(Index: integer; AnItem: TSourceLogEntry);
+begin
+  FLog[Index]:=AnItem;
+end;
+
+function TSourceLog.Count: integer;
+begin
+  Result:=fLog.Count;
+end;
+
+function TSourceLog.GetMarkers(Index: integer): TSourceLogMarker;
+begin
+  Result:=TSourceLogMarker(FMarkers[Index]);
+end;
+
+function TSourceLog.MarkerCount: integer;
+begin
+  Result:=fMarkers.Count;
+end;
+
+procedure TSourceLog.SetSource(NewSrc: string);
+begin
+  Clear;
+  FSource:=NewSrc;
+end;
+
+procedure TSourceLog.Insert(Pos: integer; Txt: string);
+var i: integer;
+begin
+  if Assigned(FOnInsert) then FOnInsert(Self,Pos,Txt);
+  FSource:=copy(FSource,1,Pos-1)
+          +Txt
+          +copy(FSource,Pos,length(FSource)-Pos+1);
+  FLog.Add(TSourceLogEntry.Create(Pos,length(Txt),-1,Txt,sleoInsert));
+  for i:=0 to FMarkers.Count-1 do begin
+    if (Markers[i].Deleted=false) and (Markers[i].NewPosition>Pos) then begin
+      Markers[i].NewPosition:=Markers[i].NewPosition+length(Txt);
+    end;
+  end;
+  FLineCount:=-1;
+  FModified:=true;
+end;
+
+procedure TSourceLog.Delete(Pos, Len: integer);
+var i: integer;
+begin
+  if Assigned(FOnDelete) then FOnDelete(Self,Pos,Len);
+  System.Delete(FSource,Pos,Len);
+  FLog.Add(TSourceLogEntry.Create(Pos,Len,-1,'',sleoDelete));
+  for i:=0 to FMarkers.Count-1 do begin
+    if (Markers[i].Deleted=false) and (Markers[i].NewPosition>Pos) then begin
+      if Markers[i].Position<Pos+Len then
+        Markers[i].Deleted:=true
+      else 
+        Markers[i].NewPosition:=Markers[i].NewPosition-Len;
+    end;
+  end;
+  FLineCount:=-1;
+  FModified:=true;
+end;
+
+procedure TSourceLog.Replace(Pos, Len: integer; Txt: string);
+var i: integer;
+begin
+  if Assigned(FOnDelete) then FOnDelete(Self,Pos,Len);
+  if Assigned(FOnInsert) then FOnInsert(Self,Pos,Txt);
+  FSource:=copy(FSource,1,Pos-1)
+          +Txt
+          +copy(FSource,Pos+Len,length(FSource)-Pos-Len+1);
+  FLog.Add(TSourceLogEntry.Create(Pos,Len,-1,'',sleoDelete));
+  FLog.Add(TSourceLogEntry.Create(Pos,length(Txt),-1,Txt,sleoInsert));
+  for i:=0 to FMarkers.Count-1 do begin
+    if (Markers[i].Deleted=false) and (Markers[i].NewPosition>Pos) then begin
+      if Markers[i].Position<Pos+Len then
+        Markers[i].Deleted:=true
+      else 
+        Markers[i].NewPosition:=Markers[i].NewPosition-Len+length(Txt);
+    end;
+  end;
+  FLineCount:=-1;
+  FModified:=true;
+end;
+
+procedure TSourceLog.Move(Pos, Len, MoveTo: integer);
+var i: integer;
+begin
+  if Assigned(FOnMove) then FOnMove(Self,Pos,Len,MoveTo);
+  if (MoveTo>=Pos) and (MoveTo<Pos+Len) then exit;
+  if MoveTo<Pos then begin
+    FSource:=copy(FSource,1,MoveTo-1)
+            +copy(FSource,Pos,Len)
+            +copy(FSource,MoveTo,Pos-MoveTo)
+            +copy(FSource,Pos+Len,length(FSource)-Pos-Len+1);
+  end else begin
+    FSource:=copy(FSource,1,Pos-1)
+            +copy(FSource,Pos+Len,MoveTo-Pos-Len)
+            +copy(FSource,Pos,Len)
+            +copy(FSource,MoveTo,length(FSource)-MoveTo+1);
+  end;
+  FLog.Add(TSourceLogEntry.Create(Pos,Len,MoveTo,'',sleoMove));
+  for i:=0 to FMarkers.Count-1 do begin
+    if (Markers[i].Deleted=false) and (Markers[i].NewPosition>Pos)
+    and (Markers[i].Position<Pos+Len) then
+      Markers[i].NewPosition:=Markers[i].NewPosition+MoveTo-Pos;
+  end;
+  FLineCount:=-1;
+  FModified:=true;
+end;
+
+procedure TSourceLog.AddMarker(Position: integer; Data: Pointer);
+var NewMarker: TSourceLogMarker;
+begin
+  NewMarker:=TSourceLogMarker.Create;
+  NewMarker.Position:=Position;
+  NewMarker.Data:=Data;
+  NewMarker.Deleted:=false;
+  FMarkers.Add(NewMarker);
+end;
+
+procedure TSourceLog.AddMarker(Line, Column: integer; Data: Pointer);
+var NewMarker: TSourceLogMarker;
+begin
+  NewMarker:=TSourceLogMarker.Create;
+  LineColToPosition(Line,Column,NewMarker.Position);
+  NewMarker.Data:=Data;
+  NewMarker.Deleted:=false;
+  FMarkers.Add(NewMarker);
+end;
+
+procedure TSourceLog.BuildLineRanges;
+var len,p,line:integer;
+  c:char;
+begin
+  if FLineCount>=0 then exit;
+  if FLineRanges<>nil then begin
+    FreeMem(FLineRanges);
+    FLineRanges:=nil;
+  end;
+  // count line ends
+  FLineCount:=0;
+  Len:=length(FSource);
+  p:=1;
+  while (p<=Len) do begin
+    if (not (FSource[p] in [#10,#13])) then begin
+      inc(p);
+    end else begin
+      // new line
+      inc(FLineCount);
+      c:=FSource[p];
+      inc(p);
+      if (p<=Len) and (c in [#13,#10]) and (FSource[p]<>FSource[p-1]) then
+        inc(p);
+    end;
+  end;
+  if (FSource<>'') and (not (FSource[Len] in [#10,#13])) then inc(FLineCount);
+  // build line range list
+  if FLineCount>0 then begin
+    GetMem(FLineRanges,FLineCount*SizeOf(TLineRange));
+    p:=1;
+    line:=0;
+    FLineRanges[line].StartPos:=1;
+    FLineRanges[FLineCount-1].EndPos:=Len;
+    while (p<=Len) do begin
+      if (not (FSource[p] in [#10,#13])) then begin
+        inc(p);
+      end else begin
+        // new line
+        FLineRanges[line].EndPos:=p;
+        inc(line);
+        c:=FSource[p];
+        inc(p);
+        if (p<=Len) and (c in [#10,#13]) and (FSource[p]<>FSource[p-1]) then
+          inc(p);
+        if line<FLineCount then
+          FLineRanges[line].StartPos:=p;
+      end;
+    end;
+  end;
+end;
+
+procedure TSourceLog.LineColToPosition(Line, Column: integer;
+  var Position: integer);
+begin
+  BuildLineRanges;
+  if (Line>=0) and (Line<FLineCount) then begin
+    if (Line<FLineCount-1) then begin
+      if (Column<FLineRanges[Line+1].StartPos-FLineRanges[Line].EndPos) then begin
+        Position:=FLineRanges[Line].StartPos+Column-1;
+      end else begin
+        Position:=-1;  exit;
+      end;
+    end else begin
+      if (Column<=length(Source)-FLineRanges[Line].StartPos) then begin
+        Position:=FLineRanges[Line].StartPos+Column-1;
+      end else begin
+        Position:=-1;  exit;
+      end;
+    end;
+  end else begin
+    Position:=-1;  exit;
+  end;
+end;
+
+procedure TSourceLog.AbsoluteToLineCol(Position: integer;
+  var Line, Column: integer);
+var l,r,m:integer;
+begin
+  BuildLineRanges;
+  if (FLineCount=0) or (Position<1) or (Position>=length(FSource)) then begin
+    Line:=-1;
+    Column:=-1;
+    exit;
+  end;
+  if (Position>=FLineRanges[FLineCount-1].StartPos) then begin
+    Line:=FLineCount-1;
+    Column:=Position-FLineRanges[Line].StartPos+1;
+    exit;
+  end;
+  // binary search for the line
+  l:=0;
+  r:=FLineCount;
+  repeat
+    m:=(l+r) shr 1;
+    if FLineRanges[m].StartPos>Position then begin
+      // too high, search lower
+      r:=m-1;
+    end else if FLineRanges[m+1].StartPos<=Position then begin
+      // too low, search higher
+      l:=m+1;
+    end else begin
+      // line found
+      Line:=m;
+      Column:=Position-FLineRanges[Line].StartPos+1;
+      exit;
+    end;
+  until false;
+end;
+
+{ TCodeTreeNode }
+
+constructor TCodeTreeNode.Create;
+begin
+  Clear;
+end;
+
+procedure TCodeTreeNode.Clear;
+begin
+  Desc:=ctnNone;
+  SubDesc:=ctnsNone;
+  Parent:=nil;
+  NextBrother:=nil;
+  PriorBrother:=nil;
+  FirstChild:=nil;
+  StartPos.P:=-1;
+  EndPos.P:=-1;
+end;
+
+function TCodeTreeNode.Next: TCodeTreeNode;
+begin
+  Result:=Self;
+  while (Result<>nil) and (Result.NextBrother=nil) do
+    Result:=Result.Parent;
+  if Result<>nil then Result:=Result.NextBrother;
+end;
+
+function TCodeTreeNode.Prior: TCodeTreeNode;
+begin
+  if PriorBrother<>nil then
+    Result:=PriorBrother
+  else
+    Result:=Parent;
+end;
+
+{ TCodeTree }
+
+constructor TCodeTree.Create;
+begin
+  Root:=nil;
+  FSources:=TList.Create;
+end;
+
+destructor TCodeTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TCodeTree.GetSources(CodeID: integer): TSourceLog;
+begin
+  Result:=TSourceLog(FSources[CodeID]);
+end;
+
+procedure TCodeTree.SetSources(CodeID: integer; ASource: TSourceLog);
+begin
+  FSources[CodeID]:=ASource;
+end;
+
+function TCodeTree.SourcesCount: integer;
+begin
+  Result:=FSources.Count;
+end;
+
+function TCodeTree.AddSource(NewSource: TSourceLog): integer;
+begin
+  Result:=FSources.Add(NewSource);
+end;
+
+procedure TCodeTree.Clear;
+begin
+  DeleteNode(Root);
+  Root:=nil;
+  FSources.Clear;
+end;
+
+procedure TCodeTree.DeleteNode(ANode: TCodeTreeNode);
+begin
+  if ANode=nil then exit;
+  while (ANode.FirstChild<>nil) do DeleteNode(ANode.FirstChild);
+  with ANode do begin
+    if (Parent<>nil) and (Parent.FirstChild=ANode) then
+      Parent.FirstChild:=NextBrother;
+    if NextBrother<>nil then NextBrother.PriorBrother:=PriorBrother;
+    if PriorBrother<>nil then PriorBrother.NextBrother:=NextBrother;
+    NextBrother:=nil;
+    PriorBrother:=nil;
+  end;
+  NodeMemManager.DisposeNode(ANode);
+end;
+
+{ TCodeTreeNodeMemManager }
+
+constructor TCodeTreeNodeMemManager.Create;
+begin
+  inherited Create;
+end;
+
+destructor TCodeTreeNodeMemManager.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TCodeTreeNodeMemManager.CreateNode: TCodeTreeNode;
+begin
+  Result:=TCodeTreeNode.Create;
+end;
+
+procedure TCodeTreeNodeMemManager.DisposeNode(ANode: TCodeTreeNode);
+begin
+  ANode.Free;
+end;
+
+{ TCustomCodeTool }
+
+constructor TCustomCodeTool.Create;
+begin
+  inherited Create;
+  FIgnoreIncludeFiles:=true;
+  FIgnoreCompilerDirectives:=true;
+  FInitValues:=nil;
+  Tree:=TCodeTree.Create;
+  Values:=nil;
+  Clear;
+end;
+
+destructor TCustomCodeTool.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TCustomCodeTool.Clear;
+begin
+  Tree.Clear;
+  if Values<>nil then begin
+    Values.Free;  Values:=nil;
+  end;
+  Pos.P:=1;
+  Pos.CodeID:=0;
+  AtomStart:=-1;
+  Atom:='';
+end;
+
+function TCustomCodeTool.GetMainSource: TSourceLog;
+begin
+  if Tree.SourcesCount=0 then Result:=nil
+  else Result:=Tree.Sources[0];
+end;
+
+procedure TCustomCodeTool.SetMainSource(ASource: TSourceLog);
+begin
+  Clear;
+  Tree.AddSource(ASource);
+end;
+
+procedure TCustomCodeTool.ReadNextPascalAtom;
+var DirectiveName:string;
+  DirStart,DirEnd,EndPos:integer;
+begin
+  repeat
+    Atom:=ReadRawNextPascalAtom(Tree.Sources[Pos.CodeID].Source,Pos.P,AtomStart);
+    if (copy(Atom,1,2)='{$') or (copy(Atom,1,3)='(*$') then begin
+      if copy(Atom,1,2)='{$' then begin
+        DirStart:=3;
+        DirEnd:=length(Atom);
+      end else begin
+        DirStart:=4;
+        DirEnd:=length(Atom)-1;
+      end;        
+      EndPos:=DirStart;
+      while (EndPos<DirEnd) and (Atom[EndPos] in IdentifierChar) do inc(EndPos);
+      DirectiveName:=lowercase(copy(Atom,DirStart,EndPos-DirStart));
+      if (length(DirectiveName)=1) and (Atom[DirEnd] in ['+','-']) then begin
+        // switch
+
+      end else if (DirectiveName='i') or (DirectiveName='include') then begin
+        // include directive
+
+      end;
+    end else
+      break;
+  until false;
+end;
+
+function TCustomCodeTool.ReadTilSection(
+  SectionType: TCodeTreeNodeDesc): boolean;
+var LastAtom: string;
+  SectionName: string;
+begin
+  Result:=false;
+  if not (SectionType in AllCodeSections) then exit;
+  case SectionType of
+    ctnInterface: SectionName:='interface';
+    ctnImplementation: SectionName:='implementation';
+    ctnInitialization: SectionName:='initialization';
+   else SectionName:='finalization';
+  end;
+  repeat
+    LastAtom:=Atom;
+    ReadNextPascalAtom;
+  until (Atom='') or ((LastAtom<>'=') and (lowercase(Atom)=SectionName));
+  Result:=(Atom<>'');
+end;
+
+function TCustomCodeTool.ReadTilBracketClose: boolean;
+var CloseBracket: char;
+begin
+  Result:=false;
+  if Atom='(' then CloseBracket:=')'
+  else if Atom='[' then CloseBracket:=']'
+  else exit;
+  repeat
+    ReadNextPascalAtom;
+    if (Atom='(') or (Atom='[') then begin
+      if not ReadTilBracketClose then exit;
+    end;
+  until (Atom='') or (Atom=CloseBracket);
+  Result:=true;
+end;
+
+{ TClassAndProcCodeTool }
+
+constructor TClassAndProcCodeTool.Create;
+begin
+  inherited Create;
+end;
+
+destructor TClassAndProcCodeTool.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TClassAndProcCodeTool.BuildTree;
+var LastPos: TCodePosition;
+  LastAtomStart: integer;
+  LowAtom: string;
+  CurSection: TCodeTreeNodeDesc;
+  ANode, ParentNode, LastParentChild: TCodeTreeNode;
+begin
+  Pos.P:=1;
+  Pos.CodeID:=0;
+  if not IgnoreCompilerDirectives then begin
+    if Values=nil then Values:=TExpressionEvaluator.Create;
+    Values.Assign(FInitValues);
+  end;
+  // parse interface and implementation section
+  // store all class definitions and method heads along with their method bodies
+  if not ReadTilSection(ctnInterface) then 
+    raise ECodeToolError.Create('interface section not found');
+  ANode:=NodeMemManager.CreateNode;
+  ANode.Desc:=ctnInterface;
+  ANode.StartPos:=Pos;
+  Tree.DeleteNode(Tree.Root);
+  Tree.Root:=ANode;
+  ParentNode:=ANode;
+  LastParentChild:=nil;
+  CurSection:=ctnInterface;
+  repeat
+    LastPos:=Pos;
+    LastAtomStart:=AtomStart;
+    ReadNextPascalAtom;
+    LowAtom:=lowercase(Atom);
+    if LowAtom='=' then begin
+      ReadNextPascalAtom;
+      if (LowAtom='class') or (LowAtom='object') then begin
+        // find end of class
+        ReadNextPascalAtom;
+        if Atom='(' then
+          if not ReadTilBracketClose then
+            raise ECodeToolError.Create(
+              'syntax error: close bracket not found');
+        ANode:=NodeMemManager.CreateNode;
+        ANode.Desc:=ctnClass;
+        ANode.StartPos.P:=LastAtomStart;
+        ANode.StartPos.CodeID:=LastPos.CodeID;
+        if Atom=';' then begin
+          // forward class definition found
+          ANode.SubDesc:=ctnsForwardDeclaration;
+        end else begin
+          while (lowercase(Atom)<>'end') and (Atom<>'') do
+            ReadNextPascalAtom;
+          if Atom='' then
+            raise ECodeToolError.Create(
+              'syntax error: "end" for class/object not found');
+        end;
+        ANode.EndPos:=Pos;
+        ANode.Parent:=ParentNode;
+        ANode.PriorBrother:=LastParentChild;
+        if ANode.PriorBrother<>nil then
+          ANode.PriorBrother.NextBrother:=ANode
+        else
+          ParentNode.FirstChild:=ANode;
+        LastParentChild:=ANode;
+      end;
+    end else begin
+      if (LowAtom='procedure') or (LowAtom='function')
+      or (LowAtom='constructor') or (LowAtom='destructor') then begin
+        // last atom can not be '=' => this is a method declaration
+        // read til semicolon
+        repeat
+          ReadNextPascalAtom;
+          if (Atom='(') then begin
+            if not ReadTilBracketClose then
+              raise ECodeToolError.Create(
+                'syntax error: missing semicolon after method declaration');
+          end;
+        until (Atom=';') or (Atom='');
+        ANode:=NodeMemManager.CreateNode;
+        ANode.Desc:=ctnProcedureHead;
+        ANode.StartPos.P:=LastAtomStart;
+        ANode.StartPos.CodeID:=LastPos.CodeID;
+        ANode.EndPos:=Pos;
+        ANode.Parent:=ParentNode;
+        ANode.PriorBrother:=LastParentChild;
+        if ANode.PriorBrother<>nil then
+          ANode.PriorBrother.NextBrother:=ANode
+        else
+          ParentNode.FirstChild:=ANode;
+        LastParentChild:=ANode;
+      end else if (CurSection=ctnInterface) and (LowAtom='implementation') then
+      begin
+        // close interface section node
+        Tree.Root.EndPos:=Pos;
+        // start implementation section node
+        ANode:=NodeMemManager.CreateNode;
+        ANode.Desc:=ctnProcedureHead;
+        ANode.StartPos:=Pos;
+        ParentNode:=ANode;
+        LastParentChild:=nil;
+        CurSection:=ctnImplementation;
+        Tree.Root.NextBrother:=ANode;
+        ANode.PriorBrother:=Tree.Root;
+      end else if (CurSection=ctnImplementation) then begin
+        if (LowAtom='initialization') or (LowAtom='finalization') then begin
+          break;
+        end else if (LowAtom='end') then begin
+          ReadNextPascalAtom;
+          if Atom<>'.' then
+            raise ECodeToolError.Create(
+              'syntax error: "end." expected, but "end '+Atom+'" found');
+        end;
+      end;
+    end;
+  until (Atom='');
+end;
+
+
+//-----------------------------------------------------------------------------
+
+initialization
+  NodeMemManager:=TCodeTreeNodeMemManager.Create;
+
+finalization
+  NodeMemManager.Free;
 
 end.

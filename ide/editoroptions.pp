@@ -9,7 +9,7 @@ unit editoroptions;
     Currently only for TSynEdit.
 
   ToDo:
-   - Code template deleting, value editing, saving
+   - Code template adding does not scroll listbox and the synedit is all white 
    - color schemes, key mapping schemes
    - Resizing
    - SetSynEditSettings
@@ -360,6 +360,7 @@ type
     AddHighlightElements:array [Low(AdditionalHiglightAttributes)..
             High(AdditionalHiglightAttributes)] of TSynHighlightElement;
     CurHighlightElement:TSynHighlightElement;
+    CurCodeTemplate: integer;
 
     procedure SetupButtonBar;
     procedure SetupGeneralPage;
@@ -377,6 +378,7 @@ type
     procedure FontDialogNameToFont(FontDialogName:Ansistring;AFont:TFont);
     procedure InvalidatePreviews;
     procedure ShowCurCodeTemplate;
+    procedure SaveCurCodeTemplate;
   public
     constructor Create(AOwner: TComponent); override;
   end;
@@ -486,6 +488,45 @@ const
     'end;',
     ''
   );
+
+
+function BuildBorlandDCIFile(
+  ACustomSynAutoComplete: TCustomSynAutoComplete):boolean;
+// returns if something has changed
+var sl: TStringList;
+  i, sp, ep: integer;
+  Token, Comment, Value: string;
+begin
+  Result:=false;
+  sl:=TStringList.Create;
+  try
+    for i:=0 to ACustomSynAutoComplete.Completions.Count-1 do begin
+      Token:=ACustomSynAutoComplete.Completions[i];
+      Comment:=ACustomSynAutoComplete.CompletionComments[i];
+      Value:=ACustomSynAutoComplete.CompletionValues[i];
+      sl.Add('['+Token+' | '+Comment+']');
+      sp:=1;
+      ep:=1;
+      while ep<=length(Value) do begin
+        if Value[ep] in [#10,#13] then begin
+          sl.Add(copy(Value,sp,ep-sp));
+          inc(ep);
+          if (ep<=length(Value)) and (Value[ep] in [#10,#13]) 
+          and (Value[ep]<>Value[ep-1]) then inc(ep);
+          sp:=ep;
+        end else inc(ep);
+      end;
+      if ep>sp then
+        sl.Add(copy(Value,sp,ep-sp));
+    end;
+    if ACustomSynAutoComplete.AutoCompleteList.Equals(sl)=false then begin
+      Result:=true;
+      ACustomSynAutoComplete.AutoCompleteList:=sl;
+    end;
+  finally
+    sl.Free;
+  end;
+end;
 
 
 { TEditorOptions }
@@ -1623,17 +1664,21 @@ procedure TEditorOptionsForm.ShowCurCodeTemplate;
 var i,sp,ep:integer;
   s:ansistring;
 begin
+  CodeTemplateCodePreview.Lines.BeginUpdate;
   CodeTemplateCodePreview.Lines.Clear;
   i:=0;
   while i<CodeTemplateListBox.Items.Count do begin
     if CodeTemplateListBox.Selected[i] then begin
+      CurCodeTemplate:=i;
       s:=SynAutoComplete.CompletionValues[i];
       sp:=1;
       ep:=1;
       while ep<=length(s) do begin
         if s[ep] in [#10,#13] then begin
           CodeTemplateCodePreview.Lines.Add(copy(s,sp,ep-sp));
-          while (ep<=length(s)) and (s[ep] in [#10,#13]) do inc(ep);
+          inc(ep);
+          if (ep<=length(s)) and (s[ep] in [#10,#13]) and (s[ep-1]<>s[ep]) then
+            inc(ep);
           sp:=ep;
         end else inc(ep);
       end;
@@ -1643,7 +1688,23 @@ begin
     end;
     inc(i);
   end;
+  CodeTemplateCodePreview.Lines.EndUpdate;
   CodeTemplateCodePreview.Invalidate;
+end;
+
+procedure TEditorOptionsForm.SaveCurCodeTemplate;
+var
+  NewValue: string;
+begin
+  if CurCodeTemplate<0 then exit;
+  NewValue:=CodeTemplateCodePreview.Lines.Text;
+  if NewValue<>'' then begin
+    if copy(NewValue,length(NewValue)-1,2)=#10#13 then
+      NewValue:=copy(NewValue,1,length(NewValue)-2)
+    else if NewValue[length(NewValue)] in [#10,#13] then
+      NewValue:=copy(NewValue,1,length(NewValue)-1);
+  end;
+  SynAutoComplete.CompletionValues[CurCodeTemplate]:=NewValue;
 end;
 
 procedure TEditorOptionsForm.FillCodeTemplateListBox;
@@ -1663,6 +1724,7 @@ end;
 procedure TEditorOptionsForm.CodeTemplateListBoxMouseUp(Sender:TObject;
   Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
 begin
+  SaveCurCodeTemplate;
   ShowCurCodeTemplate;
 end;
 
@@ -1670,23 +1732,23 @@ procedure TEditorOptionsForm.CodeTemplateButtonClick(Sender:TObject);
 var Token,Comment:ansistring;
   Index:integer;
 begin
+  SaveCurCodeTemplate;
   if Sender=CodeTemplateAddButton then begin
     Token:='new';
     Comment:='(custom)';
+    CurCodeTemplate:=-1;
     if AddCodeTemplate(SynAutoComplete,Token,Comment)=mrOk then begin
       SynAutoComplete.AddCompletion(Token, '', Comment);
       FillCodeTemplateListBox;
       Index:=SynAutoComplete.Completions.IndexOf(Token);
-      if Index>=0 then
+      if Index>=0 then begin
         CodeTemplateListBox.Selected[Index]:=true;
+        CodeTemplateListBox.ItemIndex:=Index;
+      end;
       ShowCurCodeTemplate;
     end;
   end else if Sender=CodeTemplateEditButton then begin
-    Index:=0;
-    while Index<CodeTemplateListBox.Items.Count do begin
-      if CodeTemplateListBox.Selected[Index] then break;
-      inc(Index);
-    end;
+    Index:=CurCodeTemplate;
     if Index<CodeTemplateListBox.Items.Count then begin
       if EditCodeTemplate(SynAutoComplete,Index)=mrOk then begin
         CodeTemplateListBox.Items[Index]:=
@@ -1696,8 +1758,21 @@ begin
       end;
     end;
   end else if Sender=CodeTemplateDeleteButton then begin
-    // ToDo XXX
-
+    if CurCodeTemplate>=0 then begin
+      if MessageDlg('Delete template '
+          +'"'+SynAutoComplete.Completions[CurCodeTemplate]+' - '
+          +SynAutoComplete.CompletionComments[CurCodeTemplate]+'"'
+          +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK then begin
+        SynAutoComplete.DeleteCompletion(CurCodeTemplate);
+        dec(CurCodeTemplate);
+        FillCodeTemplateListBox;
+        if CurCodeTemplate>=0 then begin
+          CodeTemplateListBox.Selected[CurCodeTemplate]:=true;
+          CodeTemplateListBox.ItemIndex:=CurCodeTemplate;
+        end;
+        ShowCurCodeTemplate;
+      end;
+    end;
   end;
 end;
 
@@ -3002,7 +3077,9 @@ begin
     Lines.Clear;
     Gutter.Visible:=false;
     Show;
-  end; 
+  end;
+
+  CurCodeTemplate:=-1;
 end;
 
 procedure TEditorOptionsForm.SetupButtonBar;
@@ -3035,10 +3112,11 @@ begin
 end;
 
 procedure TEditorOptionsForm.OkButtonClick(Sender:TObject);
-var AText,ACaption:AnsiString;
+var res: TModalResult;
 begin
   // save all values
-  
+  SaveCurCodeTemplate;
+
   EditorOpts.SetHighlighterSettings(PreviewPasSyn);
   EditorOpts.SetSynEditSettings(PreviewEdits[1]);
 
@@ -3060,16 +3138,20 @@ begin
 
   EditorOpts.Save;
 
-  try
-    SynAutoComplete.AutoCompleteList.SaveToFile(
-      EditorOpts.CodeTemplateFileName);
-  except
-    ACaption:='Error';
-    AText:=' Unable to write code templates to file '''
-      +EditorOpts.CodeTemplateFileName+'''! ';
-    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+  if BuildBorlandDCIFile(SynAutoComplete) then begin
+    Res:=mrOk;
+    repeat
+      try
+        SynAutoComplete.AutoCompleteList.SaveToFile(
+          EditorOpts.CodeTemplateFileName);
+      except
+        res:=MessageDlg(' Unable to write code templates to file '''
+          +EditorOpts.CodeTemplateFileName+'''! ',mtError
+          ,[mbAbort, mbIgnore, mbRetry],0);
+        if res=mrAbort then exit;
+      end;
+    until Res<>mrRetry;
   end;
-   
 
   ModalResult:=mrOk;
 end;

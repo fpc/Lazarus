@@ -138,7 +138,7 @@ type
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     fOnUnitNameChange: TOnUnitNameChange;
     fReadOnly:  Boolean;
-    fSource: TStrings;
+    fSource: TSourceLog;
     fSyntaxHighlighter: TLazSyntaxHighlighter;
     fTopLine: integer;
     fUnitName: String;
@@ -174,7 +174,7 @@ type
     property OnUnitNameChange: TOnUnitNameChange
         read fOnUnitNameChange write fOnUnitNameChange;
     property ReadOnly: Boolean read fReadOnly write fReadOnly;
-    property Source: TStrings read fSource write fSource;
+    property Source: TSourceLog read fSource write fSource;
     property SyntaxHighlighter: TLazSyntaxHighlighter
         read fSyntaxHighlighter write fSyntaxHighlighter;
     property TopLine: integer read fTopLine write fTopLine;
@@ -514,7 +514,7 @@ constructor TUnitInfo.Create;
 begin
   inherited Create;
   Assert(False, 'Project Unit Info Class Created');
-  fSource := TStringList.Create;
+  fSource := TSourceLog.Create('');
   fBreakPoints:=TProjectBreakPointList.Create;
   Clear;
 end;
@@ -537,6 +537,7 @@ function TUnitInfo.WriteUnitSource: TModalResult;
 var
   ACaption:string;
   AText:string;
+  fs: TFileStream;
 begin
   if Assigned(fOnFileBackup) then begin
     Result:=fOnFileBackup(fFilename,IsPartOfProject);
@@ -544,7 +545,12 @@ begin
   end;
   repeat
     try
-      Source.SaveToFile(fFilename);
+      fs:=TFileStream.Create(fFilename,fmCreate);
+      try
+        fs.Write(Source.Source[1],Length(Source.Source));
+      finally
+        fs.Free;
+      end;
     except
       ACaption:='Write error';
       AText:='Unable to write file "'+fFilename+'"!';
@@ -564,10 +570,19 @@ function TUnitInfo.ReadUnitSource(ReadUnitName:boolean): TmodalResult;
 var UnitNameStart,UnitNameEnd:integer;
   ACaption:string;
   AText:string;
+  fs: TFileStream;
+  s: string;
 begin
   repeat
     try
-      Source.LoadFromFile(fFilename);
+      fs:=TFileStream.Create(fFilename,fmOpenRead);
+      try
+        Setlength(s,fs.Size);
+        fs.Read(s[1],Length(s));
+        Source.Source:=s;
+      finally
+        fs.Free;
+      end;
     except
       ACaption:='Read error';
       AText:='Unable to read file "'+fFilename+'"!';
@@ -578,7 +593,7 @@ begin
     end;
   until Result<>mrRetry;
   if ReadUnitName then
-    fUnitName:=FindUnitNameInSource(Source.Text,UnitNameStart,UnitNameEnd);
+    fUnitName:=FindUnitNameInSource(Source.Source,UnitNameStart,UnitNameEnd);
   Result:=mrOk;
 end;
 
@@ -657,7 +672,7 @@ begin
 end;
 
 procedure TUnitInfo.SetUnitName(NewUnitName:string);
-var SrcTxt,OldIncludeFilename,NewIncludeFilename:string;
+var OldIncludeFilename,NewIncludeFilename:string;
   IncludeStart,IncludeEnd:integer;
   Allowed:boolean;
 begin
@@ -667,18 +682,17 @@ begin
       if Assigned(fOnUnitNameChange) then
         fOnUnitNameChange(Self,fUnitName,NewUnitName,Allowed);
       if not Allowed then exit;
-      SrcTxt:=Source.Text;
-      RenameUnitInSource(SrcTxt,NewUnitName);
-      if FindIncludeDirective(SrcTxt,'initialization',1,IncludeStart,IncludeEnd)
-      then begin
-        OldIncludeFilename:=copy(SrcTxt,IncludeStart,IncludeEnd-IncludeStart);
+      RenameUnitInSource(Source,NewUnitName);
+      if FindIncludeDirective(Source.Source,'initialization',1
+         ,IncludeStart,IncludeEnd) then
+      begin
+        OldIncludeFilename:=copy(Source.Source,IncludeStart
+          ,IncludeEnd-IncludeStart);
         NewIncludeFilename:=
           ExtractFilePath(OldIncludeFilename)+NewUnitName+ResourceFileExt;
-        SrcTxt:=copy(SrcTxt,1,IncludeStart-1)
-              +'{$I '+NewIncludeFilename+'}'
-              +copy(SrcTxt,IncludeEnd,length(SrcTxt)-IncludeEnd+1);
+        Source.Replace(IncludeStart,IncludeEnd-IncludeStart,
+              '{$I '+NewIncludeFilename+'}');
       end;
-      Source.Text:=SrcTxt;
       fUnitName:=NewUnitName;
       fModified:=true;
     end;
@@ -687,10 +701,11 @@ end;
 
 procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType);
 var ResourceFilename:string;
+  NewSource: TStringList;
 begin
   ResourceFilename:=fUnitName+ResourceFileExt;
-  Source.Clear;
-  if NewUnitType in [nuForm,nuUnit] then with Source do begin
+  NewSource:=TStringList.Create;
+  if NewUnitType in [nuForm,nuUnit] then with NewSource do begin
     Add('unit '+fUnitName+';');
     Add('');
     Add('{$mode objfpc}{$H+}');
@@ -729,7 +744,7 @@ begin
     Add('');
     Add('end.');
     Add('');
-  end else if NewUnitType in [nuCustomProgram] then with Source do begin
+  end else if NewUnitType in [nuCustomProgram] then with NewSource do begin
     Add('program CustomProgram;');
     Add('');
     Add('{$mode objfpc}{$H+}');
@@ -741,6 +756,8 @@ begin
     Add('end.');
     Add('');
   end;
+  Source.Source:=NewSource.Text;
+  NewSource.Free;
   fModified:=true;
 end;
 
@@ -759,6 +776,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TProject.Create(TheProjectType: TProjectType);
 var PrgUnitInfo: TUnitInfo;
+  NewSource: TStringList;
 begin
   inherited Create;
 
@@ -781,6 +799,7 @@ begin
   fUnitOutputDirectory := '.';
 
   // create program source
+  NewSource:=TStringList.Create;
   case fProjectType of
    ptProgram, ptApplication, ptCustomProgram:
     begin
@@ -790,7 +809,7 @@ begin
         ExtensionToLazSyntaxHighlighter(ProjectDefaultExt[fProjectType]);
       AddUnit(PrgUnitInfo,false);
       MainUnit:=0;
-      with Units[MainUnit].Source do begin
+      with NewSource do begin
         Add('program Project1;');
         Add('');
         Add('{$mode objfpc}{$H+}');
@@ -814,8 +833,10 @@ begin
         Add('end.');
         Add('');
       end;
+      Units[MainUnit].Source.Source:=NewSource.Text;
     end;
   end;
+  NewSource.Free;
 end;
 
 {------------------------------------------------------------------------------
@@ -920,7 +941,6 @@ writeln('TProject.ReadProject 2 ',LPIFilename);
     exit;
   end;
 
-writeln('TProject.ReadProject 3');
   try
     ProjectType := ProjectTypeNameToType(xmlcfg.GetValue(
        'ProjectOptions/General/ProjectType/Value', ''));
@@ -937,7 +957,6 @@ writeln('TProject.ReadProject 3');
        'ProjectOptions/General/UnitOutputDirectory/Value', '.');
     fBookmarks.LoadFromXMLConfig(xmlcfg,'ProjectOptions/');
 
-writeln('TProject.ReadProject 4');
     NewUnitCount:=xmlcfg.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
       NewUnitInfo:=TUnitInfo.Create;
@@ -946,13 +965,11 @@ writeln('TProject.ReadProject 4');
          xmlcfg,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
     end;
 
-writeln('TProject.ReadProject 5');
     // Load the compiler options
     CompilerOptions.XMLConfigFile := xmlcfg;
     CompilerOptions.ProjectFile := ProjectFile;
     CompilerOptions.LoadCompilerOptions(true);
 
-writeln('TProject.ReadProject 6');
   finally
     xmlcfg.Free;
     xmlcfg:=nil;
@@ -966,7 +983,7 @@ end;
   TProject AddUnit
  ------------------------------------------------------------------------------}
 procedure TProject.AddUnit(AUnit: TUnitInfo; AddToProjectFile:boolean);
-var SrcText,ShortUnitName:string;
+var ShortUnitName:string;
   UnitNameStart,UnitNameEnd:integer;
 begin
   if (AUnit = nil) then exit;
@@ -977,13 +994,11 @@ begin
 
   if AddToProjectFile and (MainUnit>=0) then begin
     // add unit to uses section
-    SrcText:=Units[MainUnit].Source.Text;
-    ShortUnitName:=FindUnitNameInSource(AUnit.Source.Text,
+    ShortUnitName:=FindUnitNameInSource(AUnit.Source.Source,
        UnitNameStart,UnitNameEnd);
     if ShortUnitName='' then ShortUnitName:=AUnit.UnitName;
-    if (ShortUnitName<>'') 
-    and AddToProgramUsesSection(SrcText,ShortUnitName,'') then
-      Units[MainUnit].Source.Text:=SrcText;
+    if (ShortUnitName<>'') then
+      AddToProgramUsesSection(Units[MainUnit].Source,ShortUnitName,'');
   end;
   Modified:=true;
 end;
@@ -993,8 +1008,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TProject.RemoveUnit(Index: integer);
 var
-  SrcText:string;
-  SrcChanged:boolean;
   OldUnitInfo: TUnitInfo;
 begin
   if (Index<0) or (Index>=UnitCount) then begin
@@ -1010,16 +1023,11 @@ begin
 
   if MainUnit>=0 then begin
     // remove unit from uses section and from createforms in program file
-    SrcText:=Units[MainUnit].Source.Text;
-    SrcChanged:=false;
     if OldUnitInfo.UnitName<>'' then
-      if RemoveFromProgramUsesSection(SrcText,OldUnitInfo.UnitName) then
-        SrcChanged:=true;
+      RemoveFromProgramUsesSection(Units[MainUnit].Source,OldUnitInfo.UnitName);
     if (OldUnitInfo.FormName<>'') and (RemoveCreateFormFromProjectFile(
         'T'+OldUnitInfo.FormName,OldUnitInfo.FormName)) then
-      SrcChanged:=true;
-    if SrcChanged then
-      Units[MainUnit].Source.Text:=SrcText;
+      Units[MainUnit].Source.Modified:=true;
   end;
 
   // delete bookmarks on this unit
@@ -1113,35 +1121,21 @@ begin
 end;
 
 function TProject.AddCreateFormToProjectFile(AClassName,AName:string):boolean;
-var
-  SrcText:string;
 begin
-  SrcText:=Units[MainUnit].Source.Text;
-  Result:=AddCreateFormToProgram(SrcText,AClassName,AName);
-  if Result then begin
-    Units[MainUnit].Source.Text:=SrcText;
-    Modified:=true;
-  end;
+  Result:=AddCreateFormToProgram(Units[MainUnit].Source,AClassName,AName);
+  if Result then Modified:=true;
 end;
 
 function TProject.RemoveCreateFormFromProjectFile(
   AClassName,AName:string):boolean;
-var
-  SrcText:string;
 begin
-  SrcText:=Units[MainUnit].Source.Text;
-  Result:=RemoveCreateFormFromProgram(SrcText,AClassName,AName);
-  if Result then begin
-    Units[MainUnit].Source.Text:=SrcText;
-    Modified:=true;
-  end;
+  Result:=RemoveCreateFormFromProgram(Units[MainUnit].Source,AClassName,AName);
+  if Result then Modified:=true;
 end;
 
 function TProject.FormIsCreatedInProjectFile(AClassname,AName:string):boolean;
-var SrcTxt:string;
 begin
-  SrcTxt:=Units[MainUnit].Source.Text;
-  Result:=CreateFormExistsInProgram(SrcTxt,AClassName,AName);
+  Result:=CreateFormExistsInProgram(Units[MainUnit].Source.Source,AClassName,AName);
 end;
 
 function TProject.IndexOfUnitWithName(AUnitName:string; 
@@ -1170,24 +1164,23 @@ begin
 end;
 
 function TProject.UnitIsUsed(AUnitName:string):boolean;
-var SrcTxt:string;
 begin
-  SrcTxt:=Units[MainUnit].Source.Text;
-  Result:=UnitIsUsedInSource(SrcTxt,AUnitName);
+  Result:=UnitIsUsedInSource(Units[MainUnit].Source.Source,AUnitName);
 end;
 
 function TProject.GetResourceFilename(AnUnitInfo: TUnitInfo;
   Index:integer):string;
-var SrcTxt:string;
+var
   IncludeStart,IncludeEnd:integer;
   IncludeDirective,IncludeFilename:string;
 begin
-  SrcTxt:=AnUnitInfo.Source.Text;
   // find the first include filename in the intialization section
-  if FindIncludeDirective(SrcTxt,'initialization',Index,IncludeStart,IncludeEnd)
+  if FindIncludeDirective(AnUnitInfo.Source.Source,'initialization'
+     ,Index,IncludeStart,IncludeEnd)
   then begin
-    SplitCompilerDirective(copy(SrcTxt,IncludeStart,IncludeEnd-IncludeStart)
-          ,IncludeDirective,IncludeFilename);
+    SplitCompilerDirective(copy(AnUnitInfo.Source.Source
+           ,IncludeStart,IncludeEnd-IncludeStart)
+         ,IncludeDirective,IncludeFilename);
     Result:=IncludeFilename;
   end else
     Result:='';
@@ -1288,8 +1281,7 @@ begin
 end;
 
 procedure TProject.SetProjectFile(NewProjectFilename: string);
-var NewProgramName,Ext,SrcTxt:string;
-  SrcChanged:boolean;
+var NewProgramName,Ext:string;
 begin
   DoDirSeparators(NewProjectFilename);
   NewProjectFilename:=ExpandFilename(NewProjectFilename);
@@ -1299,12 +1291,8 @@ begin
     // change programname in source
     NewProgramName:=ExtractFilename(NewProjectFilename);
     NewProgramName:=copy(NewProgramName,1,length(NewProgramName)-length(Ext));
-    if MainUnit>=0 then begin
-      SrcTxt:=Units[MainUnit].Source.Text;
-      SrcChanged:=RenameProgramInSource(SrcTxt,NewProgramName);
-      if SrcChanged then
-        Units[MainUnit].Source.Text:=SrcTxt;
-    end;
+    if MainUnit>=0 then
+      RenameProgramInSource(Units[MainUnit].Source,NewProgramName);
   end;
   if MainUnit>=0 then begin
     Units[MainUnit].Filename:=ChangeFileExt(NewProjectFilename
@@ -1373,7 +1361,6 @@ end;
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
   OldUnitName, NewUnitName: string;  var Allowed: boolean);
 var i:integer;
-  SrcTxt:string;
 begin
   if AnUnitInfo.IsPartOfProject then begin
     // check if no other project unit has this name
@@ -1386,9 +1373,8 @@ begin
       end;
     if ProjectType in [ptProgram, ptApplication] then begin
       // rename unit in program uses section
-      SrcTxt:=Units[MainUnit].Source.Text;
-      if RenameUnitInProgramUsesSection(SrcTxt,OldUnitName,NewUnitName,'') then
-        Units[MainUnit].Source.Text:=SrcTxt;
+      RenameUnitInProgramUsesSection(Units[MainUnit].Source
+        ,OldUnitName,NewUnitName,'');
     end;
   end;
 end;
@@ -1406,6 +1392,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2001/03/26 14:52:30  lazarus
+  MG: TSourceLog + compiling bugfixes
+
   Revision 1.16  2001/03/19 14:00:47  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

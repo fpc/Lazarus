@@ -33,7 +33,7 @@ interface
 uses
   Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
-  Compiler, MsgView, WordCompletion,
+  Compiler, MsgView, WordCompletion, CodeTools,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds,SynCompletion, 
@@ -57,6 +57,9 @@ type
   TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
 
   TOnCreateDeleteBreakPoint = procedure(Sender: TObject; line:integer) of object;
+
+  TOnProcessUserCommand = procedure(Sender: TObject;
+            Command: integer; var Handled: boolean) of object;
 
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor and the source
@@ -222,6 +225,7 @@ type
     FOnSaveAsClicked : TNotifyEvent;
     FOnSaveAllClicked : TNotifyEvent;
     FOnToggleFormUnitClicked : TNotifyEvent;
+    FOnProcessUserCommand: TOnProcessUserCommand;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -326,6 +330,8 @@ type
        read FOnSaveAllClicked write FOnSaveAllClicked;
     property OnToggleFormUnitClicked : TNotifyEvent 
        read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
+    property OnProcessUserCommand: TOnProcessUserCommand
+       read FOnProcessUserCommand write FOnProcessUserCommand;
   end;
 
 {Goto dialog}
@@ -2573,6 +2579,7 @@ begin
    if not Visible then exit;
    TempEditor := GetActiveSE;
    if TempEditor = nil then Exit;
+   TempEditor.ErrorLine:=-1;
    Statusbar.Panels[3].Text := ExtractFileName(TempEditor.Filename);
 
    If TempEditor.Modified then
@@ -2636,7 +2643,14 @@ end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+var Handled: boolean;
 begin
+  if Assigned(FOnProcessUserCommand) then begin
+    Handled:=false;
+    FOnProcessUserCommand(Self,Command,Handled);
+    if Handled then exit;
+  end;
+
   case Command of
   ecNextEditor:
     NextEditor;

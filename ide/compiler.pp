@@ -35,7 +35,7 @@ type
   TOnOutputString = procedure (Value: String) of Object;
   TErrorType = (etNone, etHint, etWarning, etError, etFatal);
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
-     of object;
+      of object;
   
   TCompiler = class(TObject)
   private
@@ -48,7 +48,8 @@ type
     function Compile(AProject: TProject): TModalResult;
     function GetSourcePosition(Line: string; var Filename:string;
        var CaretXY: TPoint; var MsgType: TErrorType): boolean;
-    property OnOutputString : TOnOutputString read FOnOutputString write FOnOutputString;
+    property OnOutputString : TOnOutputString
+       read FOnOutputString write FOnOutputString;
     property OutputList : TStringList read FOutputList;
     property OnCommandLineCreate: TOnCmdLineCreate
        read FOnCmdLineCreate write FOnCmdLineCreate;
@@ -64,7 +65,14 @@ var
 
 function ErrorTypeNameToType(Name:string): TErrorType;
 
+
 implementation
+
+// to get more detailed error messages consider the os
+{$IFDEF linux}
+uses linux;
+{$ENDIF linux}
+
 
 function ErrorTypeNameToType(Name:string): TErrorType;
 begin
@@ -102,22 +110,74 @@ const
   BufSize = 1024;
 var
   CmdLine : String;
-  Buf : Array[1..BUFSIZE] of char;
   I, Count, LineStart : longint;
-  Texts : String;
+  OutputLine, Buf : String;
   WriteMessage, ABort : Boolean;
-  OldCurDir: string;
+  OldCurDir, ProjectDir: string;
   TheProcess : TProcess;
+
+  procedure ProcessOutputLine;
+  begin
+writeln('[TCompiler.Compile] Output="',OutputLine,'"');
+    FOutputList.Add(OutputLine);
+
+    //determine what type of message it is
+    if (pos(') Hint:',OutputLine) <> 0) then
+      WriteMessage := AProject.CompilerOptions.ShowHints
+                   or AProject.CompilerOptions.ShowAll
+    else if (pos(') Note:',OutputLine) <> 0) then
+      WriteMessage := AProject.CompilerOptions.ShowNotes
+                   or AProject.CompilerOptions.ShowAll
+    else if (pos(') Error:',OutputLine) <> 0) then
+      WriteMessage := AProject.CompilerOptions.ShowErrors
+                   or AProject.CompilerOptions.ShowAll
+    else if (pos(') Warning:',OutputLine) <> 0) then
+      WriteMessage := AProject.CompilerOptions.ShowWarn
+                   or AProject.CompilerOptions.ShowAll
+    else if (copy(OutputLine,1,5)='Panic') or (pos(') Fatal:',OutputLine) <> 0)
+    then begin
+      Result:=mrCancel;
+      WriteMessage := true;
+    end;
+    if (WriteMessage) and Assigned(OnOutputString) then
+      OnOutputString(OutputLine);
+
+    Application.ProcessMessages;
+    OutputLine:='';
+  end;
+
+// TCompiler.Compile
 begin
   Result:=mrCancel;
   if AProject.MainUnit<0 then exit;
   OldCurDir:=GetCurrentDir;
-  if not SetCurrentDir(ExtractFilePath(AProject.ProjectFile)) then exit;
+  ProjectDir:=ExtractFilePath(AProject.ProjectFile);
+  if not SetCurrentDir(ProjectDir) then exit;
   try
-    Texts := '';
     FOutputList.Clear;
-    CmdLine := CompilerOpts.CompilerPath;
-    CmdLine := CmdLine + ' '+ CompilerOpts.MakeOptionsString;
+    SetLength(Buf,BufSize);
+    CmdLine := AProject.CompilerOptions.CompilerPath;
+    // TProcess does not report, if a program can not be executed
+    // to get good error messages consider the os
+    {$IFDEF linux}
+    if not Linux.Access(CmdLine,Linux.X_OK) then begin
+      case LinuxError of
+        sys_eacces: OutputLine:='execute access denied for "'+CmdLine+'"';
+        sys_enoent: OutputLine:='a directory component in "'+CmdLine+'"'
+                      +' does not exist or is a dangling symlink';
+        sys_enotdir: OutputLine:='a directory component in "'+CmdLine+'"'
+                      +' is not a directory';
+        sys_enomem: OutputLine:='insufficient memory';
+        sys_eloop: OutputLine:='"'+CmdLine+'" has a circular symbolic link';
+      else
+        OutputLine:='unable to execute "'+CmdLine+'"';
+      end;
+      OutputLine:='Error: '+OutputLine;
+      ProcessOutputLine;
+      exit;
+    end;
+    {$ENDIF linux}
+    CmdLine := CmdLine + ' '+ AProject.CompilerOptions.MakeOptionsString;
     CmdLine := CmdLine + ' '+ AProject.ProjectFile;
     Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
     if Assigned(FOnCmdLineCreate) then begin
@@ -130,52 +190,41 @@ begin
     end;
 
     try
-      TheProcess:=TProcess.Create(CmdLine,[poExecuteOnCreate,poUsePipes
-         ,poNoConsole,poStdErrToOutput]);
+      TheProcess:=TProcess.Create(CmdLine,[poUsePipes,poNoConsole
+           ,poStdErrToOutput]);
+      Result:=mrOk;
+      try
+        TheProcess.CurrentDirectory:=ProjectDir;
+        TheProcess.Execute;
+        Application.ProcessMessages;
 
-      repeat
-        Count:=TheProcess.Output.Read(Buf,BufSize);
-writeln('[TCompiler.Compile] ',Count,' ',TheProcess.Running,' ',TheProcess.ExitStatus);
-        if (Count=0) then begin
-          TheProcess.Free;
-          TheProcess:=nil;
-        end;
-        LineStart:=1;
-        WriteMessage := False;
-        for I:=1 to Count do begin
-          if Buf[i] in [#10,#13] then begin
-            SetLength(TextS,i-LineStart);
-            if TextS<>'' then
-              Move(Buf[LineStart],TextS[1],length(TextS));
-writeln('[TCompiler.Compile] Output="',TextS,'"');
-            //determine what type of message it is
-            if (pos(') Hint:',Texts) <> 0) then
-              WriteMessage := CompilerOpts.ShowHints or CompilerOpts.ShowAll
-            else if (pos(') Note:',Texts) <> 0) then
-              WriteMessage := CompilerOpts.ShowNotes or CompilerOpts.ShowAll
-            else if (pos(') Error:',Texts) <> 0) then
-              WriteMessage := CompilerOpts.ShowErrors or CompilerOpts.ShowAll
-            else if (pos(') Warning:',Texts) <> 0) then
-              WriteMessage := CompilerOpts.ShowWarn or CompilerOpts.ShowAll
-            else if (copy(TextS,1,5)='Panic') or (pos(') Fatal:',Texts) <> 0) then
-              WriteMessage := true;
-            FOutputList.Add(Texts);
-
-            if (WriteMessage) and Assigned(OnOutputString) then
-              OnOutputString(Texts);
-
-//            Application.ProcessMessages;
-            if (Buf[i]=#13) and (i<Count) and (Buf[i+1]=#10) then inc(i);
-            LineStart:=i+1;
+        OutputLine:='';
+        repeat
+          if TheProcess.Output<>nil then
+            Count:=TheProcess.Output.Read(Buf[1],length(Buf))
+          else
+            Count:=0;         
+          WriteMessage := False;
+          LineStart:=1;
+          i:=1;
+          while i<=Count do begin
+            if Buf[i] in [#10,#13] then begin
+              OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
+              ProcessOutputLine;
+              if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1]) then
+                inc(i);
+              LineStart:=i+1;
+            end;
+            inc(i);
           end;
-        end;
-      until Count=0;
-      Writeln('-----------Exiting Compiler.Compile');
-      Application.ProcessMessages;
-      writeln('[TCompiler.Compile] 2');
+          OutputLine:=copy(Buf,LineStart,Count-LineStart+1);
+        until Count=0;
+      finally
+        TheProcess.Free;
+      end;
     except
       on e: Exception do begin
-        writeln('[TCompiler.Compile] exectpion "',E.Message,'"');
+        writeln('[TCompiler.Compile] exception "',E.Message,'"');
         FOutputList.Add(E.Message);
         if Assigned(OnOutputString) then
           OnOutputString(E.Message);
@@ -186,7 +235,6 @@ writeln('[TCompiler.Compile] Output="',TextS,'"');
   finally
     SetCurrentDir(OldCurDir);
   end;
-  Result:=mrOk;
   writeln('[TCompiler.Compile] end');
 end;
 
@@ -232,6 +280,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2001/03/26 14:52:30  lazarus
+  MG: TSourceLog + compiling bugfixes
+
   Revision 1.8  2001/03/12 09:34:51  lazarus
   MG: added transfermacros, renamed dlgmessage.pp to msgview.pp
 

@@ -99,6 +99,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=300;
     Height:=140;
+    Position:=poScreenCenter;
 
     TokenLabel:=TLabel.Create(Self);
     with TokenLabel do begin

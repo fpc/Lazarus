@@ -18,6 +18,9 @@ uses
   Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
   ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs;
 
+const
+  EnvOptsVersion: integer = 100;
+
 type
   //----------------------------------------------------------------------------
   TBackupType = (
@@ -52,6 +55,8 @@ type
     FWindowPositionsValid: boolean; // the following values are valid
     FMainWindowBounds: TRect;
     FSourceEditorBounds: TRect;
+    FMessagesViewBoundsValid: boolean;
+    FMessagesViewBounds: TRect;
     
     // form editor
     FDisplayGrid: boolean;
@@ -100,6 +105,10 @@ type
        read FMainWindowBounds write FMainWindowBounds;
     property SourceEditorBounds: TRect
        read FSourceEditorBounds write FSourceEditorBounds;
+    property MessagesViewBoundsValid: boolean
+       read FMessagesViewBoundsValid write FMessagesViewBoundsValid;
+    property MessagesViewBounds: TRect
+       read FMessagesViewBounds write FMessagesViewBounds;
 
     // form editor
     property DisplayGrid: boolean read FDisplayGrid write FDisplayGrid;
@@ -220,6 +229,10 @@ begin
   // windows
   FSaveWindowPositions:=true;
   FWindowPositionsValid:=false;
+  FMainWindowBounds:=Bounds(0,0,600,100);
+  FSourceEditorBounds:=Bounds(230,150,400,200);
+  FMessagesViewBoundsValid:=false;
+  FMessagesViewBounds:=Bounds(230,350,400,100);
 
   // form editor
   FDisplayGrid:=true;
@@ -280,6 +293,7 @@ end;
 
 procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
 var XMLConfig: TXMLConfig;
+  FileVersion: integer;
 
   procedure LoadRect(AKey:string; var ARect:TRect);
   begin
@@ -312,6 +326,7 @@ var XMLConfig: TXMLConfig;
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
+    FileVersion:=XMLConfig.GetValue('EnvironmentOptions/Version/Value',0);
 
     // auto save
     FAutoSaveEditorFiles:=XMLConfig.GetValue(
@@ -332,6 +347,13 @@ begin
       LoadRect('EnvironmentOptions/Desktop/MainWindowBounds',FMainWindowBounds);
       LoadRect('EnvironmentOptions/Desktop/SourceEditorBounds'
         ,FSourceEditorBounds);
+    end;
+    if FileVersion>=100 then begin
+      FMessagesViewBoundsValid:=XMLConfig.GetValue(
+        'EnvironmentOptions/Desktop/MessagesViewBoundsValid',false);
+      if FMessagesViewBoundsValid then
+        LoadRect('EnvironmentOptions/Desktop/MessagesViewBounds'
+           ,FMessagesViewBounds);
     end;
 
     // form editor
@@ -403,6 +425,7 @@ var XMLConfig: TXMLConfig;
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
+    XMLConfig.SetValue('EnvironmentOptions/Version/Value',EnvOptsVersion);
 
     // auto save
     XMLConfig.SetValue('EnvironmentOptions/AutoSave/EditorFiles'
@@ -423,6 +446,11 @@ begin
       SaveRect('EnvironmentOptions/Desktop/SourceEditorBounds'
         ,FSourceEditorBounds);
     end;
+    XMLConfig.SetValue('EnvironmentOptions/Desktop/MessagesViewBoundsValid'
+       ,FMessagesViewBoundsValid);
+    if FMessagesViewBoundsValid then
+      SaveRect('EnvironmentOptions/Desktop/MessagesViewBounds'
+        ,FMessagesViewBounds);
 
     // form editor
     XMLConfig.SetValue('EnvironmentOptions/FormEditor/DisplayGrid',FDisplayGrid);
