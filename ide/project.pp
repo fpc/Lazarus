@@ -49,8 +49,8 @@ uses
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
   CompilerOptions, FileCtrl, CodeToolManager, CodeCache, Forms, Controls,
-  EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree,
-  DefineTemplates, PackageDefs;
+  EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
+  EditDefineTree, DefineTemplates, PackageDefs;
 
 type
   TUnitInfo = class;
@@ -93,6 +93,7 @@ type
     FComponentLastLRSStreamSize: TStreamSeekType;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
+    FDescriptor: TProjectFileDescriptor;
     fEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
@@ -129,6 +130,7 @@ type
     function GetPrevUnitWithComponent: TUnitInfo;
     function GetPrevUnitWithEditorIndex: TUnitInfo;
     procedure SetBuildFileIfActive(const AValue: boolean);
+    procedure SetDescriptor(const AValue: TProjectFileDescriptor);
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
@@ -183,7 +185,8 @@ type
     property PrevPartOfProject: TUnitInfo read GetPrevPartOfProject;
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
-    property BuildFileIfActive: boolean read FBuildFileIfActive write SetBuildFileIfActive;
+    property BuildFileIfActive: boolean read FBuildFileIfActive
+                                        write SetBuildFileIfActive;
     property Component: TComponent read fComponent write SetComponent;
     property ComponentName: string read fComponentName write fComponentName;
     property ComponentResourceName: string read fComponentResourceName
@@ -197,7 +200,8 @@ type
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
-    property EditorIndex:integer read fEditorIndex write SetEditorIndex;
+    property Descriptor: TProjectFileDescriptor read FDescriptor write SetDescriptor;
+    property EditorIndex: integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
     property HasResources: boolean read GetHasResources write fHasResources;
@@ -1156,6 +1160,12 @@ begin
   if FBuildFileIfActive=AValue then exit;
   FBuildFileIfActive:=AValue;
   Modified:=true;
+end;
+
+procedure TUnitInfo.SetDescriptor(const AValue: TProjectFileDescriptor);
+begin
+  if FDescriptor=AValue then exit;
+  FDescriptor:=AValue;
 end;
 
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
@@ -2856,6 +2866,9 @@ end.
 
 {
   $Log$
+  Revision 1.158  2004/08/30 16:02:17  mattias
+  started project interface
+
   Revision 1.157  2004/08/07 10:57:08  mattias
   fixed extract proc selection block level check
 

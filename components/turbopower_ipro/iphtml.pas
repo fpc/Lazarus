@@ -5244,6 +5244,7 @@ begin
     IpHtmlTagText :
       begin
         CurContainer := TIpHtmlNodeText.Create(Parent);
+        if CurContainer=nil then ;
         CurContainer.FEscapedText := GetTokenString;
         NextToken;
       end;
@@ -6418,6 +6419,7 @@ var
   CurBasefont : TIpHtmlNodeBASEFONT;
 begin
   CurBasefont := TIpHtmlNodeBASEFONT.Create(Parent);
+  if CurBasefont=nil then ;
   CurBasefont.Size := ParseInteger('SIZE', 3);
   NextToken;
 end;
@@ -17589,6 +17591,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.15  2004/08/30 16:02:17  mattias
+  started project interface
+
   Revision 1.14  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

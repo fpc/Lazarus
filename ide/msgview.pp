@@ -395,7 +395,7 @@ end;
 procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  debugln('TMessagesView.MessagesViewKeyDown ',dbgs(Key));
+  //debugln('TMessagesView.MessagesViewKeyDown ',dbgs(Key));
   ExecuteIDECommand(Self,Key,Shift);
 end;
 

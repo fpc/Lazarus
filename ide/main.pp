@@ -431,6 +431,7 @@ type
     // methods for start
     procedure LoadGlobalOptions;
     procedure SetupMainMenu; override;
+    procedure SetuptStandardProjectTypes;
     procedure SetRecentFilesMenu;
     procedure SetRecentProjectFilesMenu;
     procedure SetupFileMenu; override;
@@ -931,6 +932,9 @@ begin
   SetupSpeedButtons;
   SetupComponentNoteBook;
   ConnectMainBarEvents;
+  
+  // create main IDE register items
+  SetuptStandardProjectTypes;
 
   // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(nil);
@@ -1011,6 +1015,7 @@ begin
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
+  FreeThenNil(LazProjectFileDescriptors);
   // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
@@ -1512,6 +1517,28 @@ begin
   SetupEnvironmentMenu;
   SetupWindowsMenu;
   SetupHelpMenu;
+end;
+
+procedure TMainIDE.SetuptStandardProjectTypes;
+var
+  FileDescPascalUnit: TFileDescPascalUnit;
+  FileDescPascalUnitWithForm: TFileDescPascalUnitWithForm;
+  FileDescPascalUnitWithDataModule: TFileDescPascalUnitWithDataModule;
+  FileDescText: TFileDescText;
+begin
+  LazProjectFileDescriptors:=TLazProjectFileDescriptors.Create;
+  // basic pascal unit
+  FileDescPascalUnit:=TFileDescPascalUnit.Create;
+  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnit);
+  // pascal unit with form
+  FileDescPascalUnitWithForm:=TFileDescPascalUnitWithForm.Create;
+  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnitWithForm);
+  // pascal unit with datamodule
+  FileDescPascalUnitWithDataModule:=TFileDescPascalUnitWithDataModule.Create;
+  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnitWithDataModule);
+  // empty text file
+  FileDescText:=TFileDescText.Create;
+  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescText);
 end;
 
 procedure TMainIDE.SetRecentFilesMenu;
@@ -10608,6 +10635,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.763  2004/08/30 16:02:17  mattias
+  started project interface
+
   Revision 1.762  2004/08/29 08:59:37  mattias
   fixed searching units first lowercase
 

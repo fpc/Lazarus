@@ -37,7 +37,9 @@ unit ProjectDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, SynRegExpr, FileCtrl, PublishModule;
+  Classes, SysUtils, Laz_XMLCfg, Forms, SynRegExpr, FileCtrl,
+  ProjectIntf,
+  LazarusIDEStrConsts, PublishModule;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
@@ -59,6 +61,69 @@ type
    );
 
   TUnitUsage = (uuIsPartOfProject, uuIsLoaded, uuIsModified, uuNotUsed);
+  
+  
+  { TLazProjectFileDescriptors }
+  
+  TLazProjectFileDescriptors = class(TProjectFileDescriptors)
+  private
+    fDestroying: boolean;
+    fItems: TList; // list of TProjectFileDescriptor
+  protected
+    function GetItems(Index: integer): TProjectFileDescriptor; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function Count: integer; override;
+    function GetUniqueName(const Name: string): string; override;
+    function IndexOf(const Name: string): integer; override;
+    function FindByName(const Name: string): TProjectFileDescriptor; override;
+    procedure RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
+    procedure UnregisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
+  end;
+  
+var
+  LazProjectFileDescriptors: TLazProjectFileDescriptors;
+  
+type
+  { TFileDescPascalUnit }
+  
+  TFileDescPascalUnit = class(TProjectFileDescriptor)
+  public
+    constructor Create;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+  
+
+  { TFileDescPascalUnitWithForm }
+
+  TFileDescPascalUnitWithForm = class(TFileDescPascalUnit)
+  public
+    constructor Create;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+
+  { TFileDescPascalUnitWithDataModule }
+
+  TFileDescPascalUnitWithDataModule = class(TFileDescPascalUnit)
+  public
+    constructor Create;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+
+  { TFileDescText }
+
+  TFileDescText = class(TProjectFileDescriptor)
+  public
+    constructor Create;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
 
 
   //---------------------------------------------------------------------------
@@ -891,5 +956,166 @@ begin
   end;
 end;
 
+{ TLazProjectFileDescriptors }
+
+function TLazProjectFileDescriptors.GetItems(Index: integer): TProjectFileDescriptor;
+begin
+  Result:=TProjectFileDescriptor(FItems[Index]);
+end;
+
+constructor TLazProjectFileDescriptors.Create;
+begin
+  ProjectFileDescriptors:=Self;
+  FItems:=TList.Create;
+end;
+
+destructor TLazProjectFileDescriptors.Destroy;
+var
+  i: Integer;
+begin
+  fDestroying:=true;
+  for i:=Count-1 downto 0 do Items[i].Release;
+  FItems.Free;
+  FItems:=nil;
+  ProjectFileDescriptors:=nil;
+  inherited Destroy;
+end;
+
+function TLazProjectFileDescriptors.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TLazProjectFileDescriptors.GetUniqueName(const Name: string): string;
+var
+  i: Integer;
+begin
+  Result:=Name;
+  if IndexOf(Result)<0 then exit;
+  i:=0;
+  repeat
+    inc(i);
+    Result:=Name+IntToStr(i);
+  until IndexOf(Result)<0;
+end;
+
+function TLazProjectFileDescriptors.IndexOf(const Name: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Name,Items[Result].Name)<>0) do
+    dec(Result);
+end;
+
+function TLazProjectFileDescriptors.FindByName(const Name: string
+  ): TProjectFileDescriptor;
+var
+  i: LongInt;
+begin
+  i:=IndexOf(Name);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
+procedure TLazProjectFileDescriptors.RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor
+  );
+begin
+  FileDescriptor.Name:=GetUniqueName(FileDescriptor.Name);
+  FItems.Add(FileDescriptor);
+end;
+
+procedure TLazProjectFileDescriptors.UnregisterFileDescriptor(
+  FileDescriptor: TProjectFileDescriptor);
+var
+  i: LongInt;
+begin
+  if fDestroying then exit;
+  i:=FItems.IndexOf(FileDescriptor);
+  if i<0 then
+    raise Exception.Create('TLazProjectFileDescriptors.UnregisterFileDescriptor');
+  FItems.Delete(i);
+  FileDescriptor.Release;
+end;
+
+{ TFileDescPascalUnit }
+
+constructor TFileDescPascalUnit.Create;
+begin
+  inherited Create;
+  Name:='unit';
+end;
+
+function TFileDescPascalUnit.GetLocalizedName: string;
+begin
+  Result:='Unit';
+end;
+
+function TFileDescPascalUnit.GetLocalizedDescription: string;
+begin
+  Result:=lisNewDlgCreateANewPascalUnit;
+end;
+
+{ TFileDescPascalUnitWithForm }
+
+constructor TFileDescPascalUnitWithForm.Create;
+begin
+  inherited Create;
+  Name:='form';
+  Persistent:=TForm;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileDescPascalUnitWithForm.GetLocalizedName: string;
+begin
+  Result:='Form';
+end;
+
+function TFileDescPascalUnitWithForm.GetLocalizedDescription: string;
+begin
+  Result:=lisNewDlgCreateANewUnitWithALCLForm;
+end;
+
+{ TFileDescPascalUnitWithDataModule }
+
+constructor TFileDescPascalUnitWithDataModule.Create;
+begin
+  inherited Create;
+  Name:='datamodule';
+  Persistent:=TDataModule;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileDescPascalUnitWithDataModule.GetLocalizedName: string;
+begin
+  Result:='Data Module';
+end;
+
+function TFileDescPascalUnitWithDataModule.GetLocalizedDescription: string;
+begin
+  Result:=lisNewDlgCreateANewUnitWithADataModule;
+end;
+
+{ TFileDescText }
+
+constructor TFileDescText.Create;
+begin
+  inherited Create;
+  Name:='text';
+end;
+
+function TFileDescText.GetLocalizedName: string;
+begin
+  Result:='Text';
+end;
+
+function TFileDescText.GetLocalizedDescription: string;
+begin
+  Result:=lisNewDlgCreateANewEmptyTextFile;
+end;
+
+initialization
+  LazProjectFileDescriptors:=nil;
+  
 end.
 

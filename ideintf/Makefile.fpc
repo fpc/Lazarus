@@ -18,25 +18,26 @@ options=-gl
 dirs=../packager/registration
 units=allideintf
 implicitunits=actionseditor \
+  actionseditor \
   columndlg \
   componenteditors \
+  componentreg \
   componenttreeview \
   configstorage \
+  formeditingintf \
   graphpropedits \
+  helpfpdoc \
+  helphtml \
+  helpintf \
   idecommands \
   imagelisteditor \
   listviewpropedit \
   objectinspector \
   objinspstrconsts \
+  projectintf \
   propedits \
-  helpfpdoc \
-  helphtml \
-  helpintf \
-  texttools \
-  actionseditor \
-  formeditingintf \
   srceditorintf \
-  componentreg
+  texttools
 
 [clean]
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) \
