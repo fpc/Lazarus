@@ -343,6 +343,8 @@ procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
   const Key: guint; Mods: TGdkModifierType; const Signal : string);
 procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
   const Msg : TLMShortCut; const Signal : string);
+procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
+procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
