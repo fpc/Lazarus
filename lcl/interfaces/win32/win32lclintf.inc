@@ -30,7 +30,13 @@
 
 procedure TWin32Object.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
-  Windows.DrawFrameControl(TCanvas(Canvas).Handle, TControl(Arrow).ClientRect, DFC_MENU, DFCS_MENUARROW);
+  Windows.DrawFrameControl(TCanvas(Canvas).Handle, 
+{$ifdef VER1_0}
+  	Windows.RECT(TControl(Arrow).ClientRect),
+{$else}  
+  	TControl(Arrow).ClientRect,
+{$endif}  
+	DFC_MENU, DFCS_MENUARROW);
 end;
 
 {------------------------------------------------------------------------------
@@ -194,6 +200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/02/22 15:47:58  micha
+  fp 1.0 compatiblity
+
   Revision 1.11  2004/02/20 19:52:18  micha
   fixed: tarrow crash in win32
   added: interface function DrawArrow to draw themed arrow
