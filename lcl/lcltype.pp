@@ -867,6 +867,15 @@ type
     ItemState: TBaseOwnerDrawState;
   end;
 
+  PMeasureItemStruct = ^TMeasureItemStruct;
+  TMeasureItemStruct = record
+    CtlType : UINT;
+    CtlID : UINT;
+    itemID : UINT;
+    itemWidth : UINT;
+    itemHeight : UINT;
+    itemData : DWORD;
+  end;
 
   PPaintStruct = ^TPaintStruct;
   tagPAINTSTRUCT = packed record
@@ -1998,6 +2007,9 @@ end.
 
 {
   $Log$
+  Revision 1.61  2004/05/14 17:17:29  micha
+  add measureitem message and struct
+
   Revision 1.60  2004/03/08 00:48:05  mattias
   moved TOnwerDrawState to StdCtrls
 

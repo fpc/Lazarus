@@ -391,6 +391,14 @@ type
     Result : LongInt;
   end;
 
+  TLMMeasureItem = record
+    // message from the interface to the LCL
+    Msg: Cardinal;
+    idCtl: Cardinal;
+    MeasureItemStruct: PMeasureItemStruct;
+    Result: LongInt;
+  end;
+
 {$if defined(ver1_0) or not(defined(win32))}
   TLMNoParams = record
     Msg: Cardinal;
@@ -1072,6 +1080,9 @@ end.
 
 {
   $Log$
+  Revision 1.63  2004/05/14 17:17:29  micha
+  add measureitem message and struct
+
   Revision 1.62  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes
