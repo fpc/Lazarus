@@ -92,9 +92,11 @@ type
     function FirstAvailFormSelected: integer;
     procedure SelectOnlyThisAutoCreateForm(Index: integer);
     function GetAutoCreatedFormsList: TStrings;
-    procedure SetAutoCreateForms;
+    function GetProjectTitle: string;
+    function SetAutoCreateForms: boolean;
+    function SetProjectTitle: boolean;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     property Project: TProject read FProject write SetProject;
   end;
 
@@ -117,9 +119,9 @@ end;
 
 { TProjectOptionsDialog }
 
-constructor TProjectOptionsDialog.Create(AOwner: TComponent);
+constructor TProjectOptionsDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Width:=430;
     Height:=375;
@@ -127,9 +129,7 @@ begin
     OnResize:= @ProjectOptionsResize;
     OnClose:= @ProjectOptionsClose;
     Caption:=dlgProjectOptions;
-    Constraints.MinWidth:= 400;
-    Constraints.MinHeight:= 300;
-    
+
     NoteBook:=TNoteBook.Create(Self);
     with NoteBook do begin
       Parent:=Self;
@@ -470,6 +470,7 @@ begin
     Project.AutoCreateForms:=FormsAutoCreateNewFormsCheckBox.Checked;
     
     SetAutoCreateForms;
+    SetProjectTitle;
   end;
     
   IDEDialogLayoutList.SaveLayout(Self);
@@ -497,6 +498,15 @@ begin
   end else begin
     Result:=nil;
   end;  
+end;
+
+function TProjectOptionsDialog.GetProjectTitle: string;
+begin
+  Result:='';
+  if (FProject=nil) or (FProject.MainUnitID<0) then begin
+    exit;
+  end;
+  CodeToolBoss.GetApplicationTitleStatement(FProject.MainUnitInfo.Source,Result);
 end;
 
 procedure TProjectOptionsDialog.FillAutoCreateFormsListbox;
@@ -671,10 +681,11 @@ begin
   end;
 end;
 
-procedure TProjectOptionsDialog.SetAutoCreateForms;
+function TProjectOptionsDialog.SetAutoCreateForms: boolean;
 var i: integer;
     OldList: TStrings;
 begin
+  Result:=true;
   if (Project.MainUnitID < 0) or (Project.ProjectType in [ptCustomProgram]) then
     exit;
   OldList:= GetAutoCreatedFormsList;
@@ -695,10 +706,49 @@ begin
     begin
       MessageDlg(lisProjOptsError,
         Format(lisProjOptsUnableToChangeTheAutoCreateFormList, [LineEnding]),
-          mtError, [mbCancel], 0);
+          mtWarning, [mbCancel], 0);
+      Result:=false;
+      exit;
     end;
   finally
     OldList.Free;
+  end;
+end;
+
+function TProjectOptionsDialog.SetProjectTitle: boolean;
+var
+  OldTitle: String;
+begin
+  Result:=true;
+  if (Project.MainUnitID < 0) or (Project.ProjectType in [ptCustomProgram]) then
+    exit;
+  OldTitle:=GetProjectTitle;
+  if (OldTitle='') and Project.TitleIsDefault then exit;
+  
+  if (OldTitle<>Project.Title) and (not Project.TitleIsDefault) then begin
+    // set Application.Title:= statement
+    if not CodeToolBoss.SetApplicationTitleStatement(
+      Project.MainUnitInfo.Source, Project.Title) then
+    begin
+      MessageDlg(lisProjOptsError,
+        'Unable to change project title in source.'#13
+        +CodeToolBoss.ErrorMessage,
+        mtWarning, [mbCancel], 0);
+      Result:=false;
+    end;
+  end;
+  
+  if (OldTitle<>'') and Project.TitleIsDefault then begin
+    // delete title
+    if not CodeToolBoss.RemoveApplicationTitleStatement(
+      Project.MainUnitInfo.Source) then
+    begin
+      MessageDlg(lisProjOptsError,
+        'Unable to remove project title from source.'#13
+        +CodeToolBoss.ErrorMessage,
+        mtWarning, [mbCancel], 0);
+      Result:=false;
+    end;
   end;
 end;
 

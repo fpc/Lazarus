@@ -389,6 +389,10 @@ type
     function ReadProject(const LPIFilename: string): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string): TModalResult;
+                          
+    // title
+    function GetDefaultTitle: string;
+    function TitleIsDefault: boolean;
 
     // units
     function UnitCount:integer;
@@ -421,7 +425,6 @@ type
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure MoveEditorIndex(OldEditorIndex, NewEditorIndex: integer);
-    
 
     // Application.CreateForm statements
     function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
@@ -1496,6 +1499,16 @@ begin
     xmlconfig.Free;
     xmlconfig:=nil;
   until Result<>mrRetry;
+end;
+
+function TProject.GetDefaultTitle: string;
+begin
+  Result:=ExtractFilenameOnly(ProjectInfoFile);
+end;
+
+function TProject.TitleIsDefault: boolean;
+begin
+  Result:=(Title='') or (Title=GetDefaultTitle);
 end;
 
 {------------------------------------------------------------------------------
@@ -2833,6 +2846,9 @@ end.
 
 {
   $Log$
+  Revision 1.152  2004/03/20 12:55:48  mattias
+  implemented adding Application.Title:= statements
+
   Revision 1.151  2004/03/17 11:28:35  mattias
   fixed setting project LCLWidgetSet in defines
 

@@ -365,7 +365,7 @@ type
     // Delphi to Lazarus conversion
     function ConvertDelphiToLazarusSource(Code: TCodeBuffer;
           AddLRSCode: boolean): boolean;
-
+          
     // Application.Createform(ClassName,VarName) statements in program source
     function FindCreateFormStatement(Code: TCodeBuffer; StartPos: integer;
           const AClassName, AVarName: string;
@@ -381,6 +381,13 @@ type
     function ListAllCreateFormStatements(Code: TCodeBuffer): TStrings;
     function SetAllCreateFromStatements(Code: TCodeBuffer; 
           List: TStrings): boolean;
+          
+    // Application.Title:= statements in program source
+    function GetApplicationTitleStatement(Code: TCodeBuffer;
+          var Title: string): boolean;
+    function SetApplicationTitleStatement(Code: TCodeBuffer;
+          const NewTitle: string): boolean;
+    function RemoveApplicationTitleStatement(Code: TCodeBuffer): boolean;
 
     // forms
     function RenameForm(Code: TCodeBuffer;
@@ -2195,6 +2202,57 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.GetApplicationTitleStatement(Code: TCodeBuffer;
+  var Title: string): boolean;
+var
+  StartPos, StringConstStartPos, EndPos: integer;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetApplicationTitleStatement A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindApplicationTitleStatement(StartPos,
+                                                    StringConstStartPos,EndPos);
+    Result:=FCurCodeTool.GetApplicationTitleStatement(StringConstStartPos,
+                                                      EndPos,Title);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.SetApplicationTitleStatement(Code: TCodeBuffer;
+  const NewTitle: string): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.SetApplicationTitleStatement A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.SetApplicationTitleStatement(NewTitle,
+                                                      SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RemoveApplicationTitleStatement(Code: TCodeBuffer
+  ): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RemoveApplicationTitleStatement A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RemoveApplicationTitleStatement(SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -2532,22 +2532,41 @@ begin
 end;
 
 function StringToPascalConst(const s: string): string;
+// converts s to
 
   function Convert(var DestStr: string): integer;
   var
     SrcLen, SrcPos, DestPos: integer;
     c: char;
     i: integer;
+    InString: Boolean;
   begin
     SrcLen:=length(s);
     DestPos:=0;
+    InString:=false;
     for SrcPos:=1 to SrcLen do begin
       inc(DestPos);
       c:=s[SrcPos];
       if c>=' ' then begin
+        // normal char
+        if not InString then begin
+          if DestStr<>'' then DestStr[DestPos]:='''';
+          inc(DestPos);
+          InString:=true;
+        end;
         if DestStr<>'' then
           DestStr[DestPos]:=c;
+        if c='''' then begin
+          if DestStr<>'' then DestStr[DestPos]:='''';
+          inc(DestPos);
+        end;
       end else begin
+        // special char
+        if InString then begin
+          if DestStr<>'' then DestStr[DestPos]:='''';
+          inc(DestPos);
+          InString:=false;
+        end;
         if DestStr<>'' then
           DestStr[DestPos]:='#';
         inc(DestPos);
@@ -2565,6 +2584,11 @@ function StringToPascalConst(const s: string): string;
         if DestStr<>'' then
           DestStr[DestPos]:=chr((i mod 10)+ord('0'));
       end;
+    end;
+    if InString then begin
+      inc(DestPos);
+      if DestStr<>'' then DestStr[DestPos]:='''';
+      InString:=false;
     end;
     Result:=DestPos;
   end;
