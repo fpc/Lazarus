@@ -26,11 +26,11 @@ uses
   StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLLinux, PropEdits;
 
 type
- {TPixmapPropertyEditor
+ {TGraphicPropertyEditor
   The default property editor for all TGraphic's and sub types (e.g. TBitmap,
   TPixmap, TIcon, etc.). }
 
-  TPixmapPropertyEditor = class(TClassPropertyEditor)
+  TGraphicPropertyEditor = class(TClassPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -39,14 +39,14 @@ type
 { TPicturePropertyEditor
   The default property editor for TPicture}
 
-  TPicturePropertyEditor = class(TPixmapPropertyEditor)
+  TPicturePropertyEditor = class(TGraphicPropertyEditor)
   public
     procedure Edit; override;
   end;
 
 { TButtonGlyphPropEditor
   The default property editor for the Glyphs of TSpeedButton and TBitBtn }
-  TButtonGlyphPropEditor = class(TPixmapPropertyEditor)
+  TButtonGlyphPropEditor = class(TGraphicPropertyEditor)
   public
     procedure Edit; override;
   end;
@@ -135,7 +135,7 @@ var
 
 {Form For Picture/Graphic Property Editor}
 type
-  TPicturePropertyEditorForm = class(TForm)
+  TGraphicPropertyEditorForm = class(TForm)
   protected
     Opendlg: TOPENDIALOG;
     Savedlg: TSAVEDIALOG;
@@ -146,8 +146,6 @@ type
     LoadBTN: TBUTTON;
     SaveBTN: TBUTTON;
     ClearBTN : TBUTTON;
-
-    ScrollPanel : TPanel;
 
     ScrollBox : TScrollBox;
 
@@ -162,7 +160,7 @@ type
     Constructor Create(AOwner : TComponent); Override;
   end;
 
-Constructor TPicturePropertyEditorForm.Create(AOwner : TComponent);
+Constructor TGraphicPropertyEditorForm.Create(AOwner : TComponent);
 begin
   Inherited Create(AOwner);
 
@@ -217,28 +215,14 @@ begin
     TOP := 8;
     WIDTH := 310;
     AutoSize := False;
+    Color := clWhite;
     AutoScroll := True;
     Show;
   end;
 
-  ScrollPanel := TPanel.Create(ScrollBox);
-  With ScrollPanel do begin
-    Parent := ScrollBox;
-    Caption := '';
-    BorderStyle := bsNone;
-    BevelInner := bvNone;
-    BevelOuter := bvNone;
-    Color := clWhite;
-    LEFT := 0;
-    HEIGHT := 356;
-    TOP := 0;
-    WIDTH := 302;
-    Show;
-  end;
-
-  Preview := TIMAGE.Create(ScrollPanel);
+  Preview := TIMAGE.Create(ScrollBox);
   With Preview do begin
-    Parent := ScrollPanel;
+    Parent := ScrollBox;
     LEFT := 0;
     HEIGHT := 356;
     TOP := 0;
@@ -253,8 +237,6 @@ begin
     Stretch := False;
     Show;
   end;
-
-  ScrollPanel.AutoSize := True;
 
   CANCELBTN := TBITBTN.Create(Self);
   With CANCELBTN do begin
@@ -308,7 +290,7 @@ begin
   end;
 end;
 
-procedure TPicturePropertyEditorForm.LoadBTNCLICK(Sender: TObject);
+procedure TGraphicPropertyEditorForm.LoadBTNCLICK(Sender: TObject);
 Const
   Formats : Array[0..1{7}] of String =
     ('.xpm',
@@ -340,32 +322,32 @@ begin
       SaveBTN.Enabled := True;
 end;
 
-procedure TPicturePropertyEditorForm.SaveBTNCLICK(Sender: TObject);
+procedure TGraphicPropertyEditorForm.SaveBTNCLICK(Sender: TObject);
 begin
   If SaveDlg.Execute then
     Preview.Picture.SaveToFile(SaveDlg.FileName);
 end;
 
-procedure TPicturePropertyEditorForm.ClearBTNCLICK(Sender: TObject);
+procedure TGraphicPropertyEditorForm.ClearBTNCLICK(Sender: TObject);
 begin
   With Preview do begin
     Picture.Graphic := nil;
     Width := 0;
     Height := 0;
   end;
-  ScrollPanel.Invalidate;
+  ScrollBox.Invalidate;
   SaveBTN.Enabled := False;
 end;
 
-{ TPixmapPropertyEditor }
-procedure TPixmapPropertyEditor.Edit;
+{ TGraphicPropertyEditor }
+procedure TGraphicPropertyEditor.Edit;
 var
-  TheDialog: TPicturePropertyEditorForm;
+  TheDialog: TGraphicPropertyEditorForm;
   Pixmap : TBitmap;
   Ext : String;
 begin
   Pixmap := TBitmap(GetOrdValue);
-  TheDialog := TPicturePropertyEditorForm.Create(Application);
+  TheDialog := TGraphicPropertyEditorForm.Create(Application);
   If not Pixmap.Empty then begin
     TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
     TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
@@ -403,7 +385,7 @@ begin
   end;
 end;
 
-function TPixmapPropertyEditor.GetAttributes: TPropertyAttributes;
+function TGraphicPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paRevertable, paReadOnly];
 end;
@@ -411,11 +393,11 @@ end;
 { TPicturePropertyEditor }
 procedure TPicturePropertyEditor.Edit;
 var
-  TheDialog: TPicturePropertyEditorForm;
+  TheDialog: TGraphicPropertyEditorForm;
   Picture : TPicture;
 begin
   Picture := TPicture(GetOrdValue);
-  TheDialog := TPicturePropertyEditorForm.Create(Application);
+  TheDialog := TGraphicPropertyEditorForm.Create(Application);
   If (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then begin
     TheDialog.Preview.Picture.Bitmap.Width := Picture.Width;
     TheDialog.Preview.Picture.Bitmap.Height := Picture.Height;
@@ -444,10 +426,9 @@ end;
 
 procedure TButtonGlyphPropEditor.Edit;
 var
-  TheDialog: TPicturePropertyEditorForm;
+  TheDialog: TGraphicPropertyEditorForm;
   Pixmap : TPixmap;
-  Component : TComponent;
-  
+
   Procedure LoadPixmap;
   var
     ext : String;
@@ -455,9 +436,8 @@ var
     Ext := ExtractFileName(TheDialog.FileName);
     Pixmap := TPixmap.Create;
     if AnsiCompareText(Ext, '.xpm') = 0 then begin
-      If TheDialog.FileName <> '' then
-        If FileExists(TheDialog.FileName) then
-          Pixmap.LoadFromFile(TheDialog.FileName);
+      If FileExists(TheDialog.FileName) then
+        Pixmap.LoadFromFile(TheDialog.FileName);
     end
     else begin
       Pixmap.Width := TheDialog.Preview.Picture.Graphic.Width;
@@ -469,16 +449,10 @@ var
       end;
     end;
   end;
+  
 begin
-  Component := TComponent(GetComponent(0));
-  If (Component = nil) or ((not (Component is TSpeedButton)) and
-    (not (Component is TBitBtn))) or (LowerCase(GetName) <> 'glyph')
-  then begin
-    Inherited Edit;
-    exit;
-  end;
   Pixmap := TPixmap(GetOrdValue);
-  TheDialog := TPicturePropertyEditorForm.Create(Application);
+  TheDialog := TGraphicPropertyEditorForm.Create(Application);
   If not Pixmap.Empty then begin
     TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
     TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
@@ -808,8 +782,7 @@ initialization
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TPenStyle'),
     nil,'',TPenStylePropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TFont), nil,'',TFontPropertyEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TPixmap), nil,'',TPixmapPropertyEditor);
-  RegisterPropertyEditor(ClassTypeInfo(TBitmap), nil,'',TPixmapPropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TGraphic), nil,'',TGraphicPropertyEditor);
   RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
 
   RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph',
