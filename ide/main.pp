@@ -59,6 +59,8 @@ uses
   BaseDebugManager, DebugManager, MainBar;
 
 type
+  TDisplayState = (dsSource, dsInspector, dsForm, dsInspector2);
+
   TMainIDE = class(TMainIDEBar)
     // event handlers
     
@@ -187,7 +189,7 @@ type
     procedure ControlClick(Sender : TObject);
     
     // Global IDE events
-    Procedure OnProcessIDECommand(Sender: TObject; Command: word;
+    procedure OnProcessIDECommand(Sender: TObject; Command: word;
       var Handled: boolean);
 
     // Environment options dialog events
@@ -197,33 +199,35 @@ type
        TheEnvironmentOptions: TEnvironmentOptions);
 
     // SourceNotebook events
-    Procedure OnSrcNoteBookActivated(Sender : TObject);
-    Procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
+    procedure OnSrcNoteBookActivated(Sender : TObject);
+    procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
       APageIndex: integer; DeleteForwardHistory: boolean);
-    Procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
+    procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
       Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
-    Procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
-    Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
+    procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
+    procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 
     // this is fired when the editor is focused, changed, ?.
     //   Anything that causes the status change
-    Procedure OnSrcNotebookEditorChanged(Sender : TObject);
+    procedure OnSrcNotebookEditorChanged(Sender : TObject);
     
-    Procedure OnSrcNotebookFileNew(Sender : TObject);
-    Procedure OnSrcNotebookFileOpen(Sender : TObject);
-    Procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
-    Procedure OnSrcNotebookFileSave(Sender : TObject);
-    Procedure OnSrcNotebookFileSaveAs(Sender : TObject);
-    Procedure OnSrcNotebookFileClose(Sender : TObject);
-    Procedure OnSrcNotebookFindDeclaration(Sender : TObject);
-    Procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
+    procedure OnSrcNotebookFileNew(Sender : TObject);
+    procedure OnSrcNotebookFileOpen(Sender : TObject);
+    procedure OnSrcNotebookFileOpenAtCursor(Sender : TObject);
+    procedure OnSrcNotebookFileSave(Sender : TObject);
+    procedure OnSrcNotebookFileSaveAs(Sender : TObject);
+    procedure OnSrcNotebookFileClose(Sender : TObject);
+    procedure OnSrcNotebookFindDeclaration(Sender : TObject);
+    procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
     procedure OnSrcNotebookMovingPage(Sender: TObject;
       OldPageIndex, NewPageIndex: integer);
-    Procedure OnSrcNotebookSaveAll(Sender : TObject);
+    procedure OnSrcNotebookSaveAll(Sender : TObject);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
-    Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
-    Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
+    procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
+    procedure OnSrcNotebookToggleObjectInsp(Sender: TObject);
+    
+    procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
 
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectComponent(AComponent:TComponent);
@@ -288,7 +292,7 @@ type
     FHintShowTimer: TTimer;
     FHintPersistentTimer: TTimer;
 
-    FCodeLastActivated : Boolean; // used for toggling between code and forms
+    FDisplayState : TDisplayState;
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
     FSelectedComponent : TRegisteredComponent;
@@ -519,6 +523,7 @@ type
     property SelectedComponent : TRegisteredComponent 
       read FSelectedComponent write FSelectedComponent;
     procedure DoBringToFrontFormOrUnit;
+    procedure DoBringToFrontFormOrInspector;
     procedure SetDesigning(AComponent: TComponent; Value : Boolean);
 
     // editor and environment options
@@ -1111,6 +1116,7 @@ begin
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
+  SourceNotebook.OnToggleObjectInspClicked:= @OnSrcNotebookToggleObjectInsp;
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
   DebugBoss.ConnectSourceNotebookEvents;
 
@@ -1464,9 +1470,8 @@ end;
 
 {------------------------------------------------------------------------------}
 
-Procedure TMainIDE.mnuToggleFormUnitClicked(Sender : TObject);
-Begin
-  FCodeLastActivated:=not FCodeLastActivated;
+procedure TMainIDE.mnuToggleFormUnitClicked(Sender : TObject);
+begin
   DoBringToFrontFormOrUnit;
 end;
 
@@ -1680,12 +1685,17 @@ begin
   mnuSaveAllClicked(Sender);
 end;
 
-Procedure TMainIDE.OnSrcNotebookToggleFormUnit(Sender : TObject);
+procedure TMainIDE.OnSrcNotebookToggleFormUnit(Sender : TObject);
 begin
   mnuToggleFormUnitClicked(Sender);
 end;
 
-Procedure TMainIDE.OnProcessIDECommand(Sender: TObject;
+procedure TMainIDE.OnSrcNotebookToggleObjectInsp(Sender: TObject);
+begin
+  mnuViewInspectorClicked(Sender);
+end;
+
+procedure TMainIDE.OnProcessIDECommand(Sender: TObject;
   Command: word;  var Handled: boolean);
 var
   ASrcEdit: TSourceEditor;
@@ -1760,6 +1770,9 @@ begin
      
    ecToggleFormUnit:
      mnuToggleFormUnitClicked(Self);
+     
+   ecToggleObjectInsp:
+     mnuViewInspectorClicked(Self);  
 
   else
     Handled:=false;
@@ -1946,7 +1959,10 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuViewInspectorClicked(Sender : TObject);
 begin
+{  
   ObjectInspector1.Show;
+  BringWindowToTop(ObjectInspector1.Handle);}
+  DoBringToFrontFormOrInspector;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2547,7 +2563,7 @@ begin
   // show form
   AForm.Show;
   SetDesigning(AForm,True);
-  FCodeLastActivated:=false;
+  FDisplayState:= dsForm;
 
   // select the new form (object inspector, formeditor, control selection)
   PropertyEditorHook1.LookupRoot := AForm;
@@ -3202,7 +3218,7 @@ begin
 
           if not (ofProjectLoading in Flags) then begin
             TempForm.Show;
-            FCodeLastActivated:=false;
+	    FDisplayState:= dsForm;
           end;
           SetDesigning(TempForm,True);
 
@@ -3640,7 +3656,7 @@ begin
       SourceNoteBook.GetActiveSE;
     ShowDesignForm(TCustomForm(NewUnitInfo.Form));
   end else begin
-    FCodeLastActivated:=true;
+    FDisplayState:= dsSource;
   end;
   writeln('TMainIDE.DoNewEditorFile end ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoNewUnit end');{$ENDIF}
@@ -5583,26 +5599,26 @@ var AForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
 begin
   AForm:=nil;
-  if FCodeLastActivated then begin
-    if SourceNoteBook.NoteBook<>nil then begin
-      AForm:=SourceNotebook;
-      if FLastFormActivated<>nil then begin
-        ActiveUnitInfo := Project1.UnitWithForm(FLastFormActivated);
-        if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex>=0) then
-        begin
-          SourceNotebook.Notebook.PageIndex := ActiveUnitInfo.EditorIndex;
-        end;
-      end;
-    end;
-  end
-  else
-  begin
-    if (SourceNoteBook.NoteBook<>nil) then begin
+  if FDisplayState = dsSource then begin
+    if (SourceNoteBook.NoteBook <> nil) then begin
       ActiveUnitInfo:=Project1.UnitWithEditorIndex(
         SourceNoteBook.NoteBook.PageIndex);
-      if (ActiveUnitInfo<>nil) then
+      if (ActiveUnitInfo <> nil) then
         AForm:=TCustomForm(ActiveUnitInfo.Form);
-      FLastFormActivated := AForm;
+      FLastFormActivated:= AForm;
+      if AForm <> nil then FDisplayState:= dsForm;
+    end;
+  end else begin
+    if SourceNoteBook.NoteBook <> nil then begin
+      AForm:= SourceNotebook;
+      if FLastFormActivated <> nil then begin
+        ActiveUnitInfo:= Project1.UnitWithForm(FLastFormActivated);
+        if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
+        begin
+          SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
+        end;
+      end;
+      FDisplayState:= dsSource;
     end;
   end;
   if AForm<>nil then begin
@@ -5613,6 +5629,41 @@ begin
       TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
     end;
   end;
+end;
+
+procedure TMainIDE.DoBringToFrontFormOrInspector;
+var AForm: TCustomForm;
+  ActiveUnitInfo: TUnitInfo;
+begin
+  AForm:=nil;
+  case FDisplayState of
+    dsInspector:
+      if (SourceNoteBook.NoteBook <> nil) then begin
+        ActiveUnitInfo:= Project1.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex);
+        if (ActiveUnitInfo <> nil) then
+          AForm:=TCustomForm(ActiveUnitInfo.Form);
+        FLastFormActivated:= AForm;
+        if AForm <> nil then FDisplayState:= dsForm;
+      end;
+    dsInspector2:
+      if SourceNoteBook.NoteBook <> nil then begin
+        AForm:= SourceNotebook;
+        if FLastFormActivated <> nil then begin
+          ActiveUnitInfo:= Project1.UnitWithForm(FLastFormActivated);
+          if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
+          begin
+            SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
+          end;
+        end;
+        FDisplayState:= dsSource;
+      end;
+    else begin
+      AForm:= ObjectInspector1;
+      FDisplayState:= Succ(FDisplayState);
+    end;
+  end;
+    
+  if AForm <> nil then BringWindowToTop(AForm.Handle);
 end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
@@ -6661,15 +6712,15 @@ begin
   ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
 end;
 
-Procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
+procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
 begin
-  FCodeLastActivated:=True;
+  FDisplayState:= dsSource;
   DoCheckFilesOnDisk;
 end;
 
 Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
 begin
-  FCodeLastActivated:=False;
+  FDisplayState:= dsForm;
   FLastFormActivated := TDesigner(Sender).Form;
 end;
 
@@ -7421,7 +7472,7 @@ var
   ActiveUnitInfo: TUnitInfo;
 begin
   GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
-  if FCodeLastActivated then begin
+  if FDisplayState = dsSource then begin
     // send command to source editor
     if ActiveSourceEditor=nil then exit;
     ActiveSourceEditor.DoEditorExecuteCommand(EditorCommand);
@@ -7505,6 +7556,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.424  2002/11/04 20:57:24  lazarus
+  Make object inspector toggling work.
+
   Revision 1.423  2002/11/04 19:49:34  lazarus
   MG: added persistent hints for main ide bar
 
