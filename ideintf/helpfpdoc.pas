@@ -87,7 +87,8 @@ begin
         
         // default is index.html
         if Filename='' then Filename:='index.';
-        
+        DebugLn('TFPDocHTMLHelpDatabase.ShowHelp Filename="',Filename,'" UnitName="',UnitName,'"');
+
         // FPDoc Html always has .html as extension
         Filename:=UnitName+'/'+Filename+'html';
 
@@ -101,11 +102,13 @@ begin
           //debugln('B TheBaseURL=',TheBaseURL);
           TheBaseURL:=ExtractURLDirectory(TheBaseURL);
           //debugln('C TheBaseURL=',TheBaseURL);
-          DebugLn('TFPDocHTMLHelpDatabase.ShowHelp BaseURL of Node.URL=',TheBaseURL);
+          DebugLn('TFPDocHTMLHelpDatabase.ShowHelp BaseURL of Node.URL="',TheBaseURL,'"');
         end;
 
-        if TheBaseURL='' then
+        if TheBaseURL='' then begin
           TheBaseURL:=GetEffectiveBaseURL;
+          DebugLn('TFPDocHTMLHelpDatabase.ShowHelp GetEffectiveBaseURL="',TheBaseURL,'"');
+        end;
 
         // show URL
         if TheBaseURL<>'' then

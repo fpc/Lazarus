@@ -13,7 +13,7 @@ LazarusResources.Add('THelpOptionsDialog','FORMDATA',[
   +'Button'#7'OnClick'#7#17'CancelButtonClick'#8'TabOrder'#2#1#4'Left'#3#132#1#6
   +'Height'#2#25#3'Top'#3#8#1#5'Width'#2'K'#0#0#9'TNotebook'#12'MainNotebook'#5
   +'Align'#7#5'alTop'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#9'PageInde'
-  +'x'#2#0#6'Height'#3#0#1#5'Width'#3#244#1#0#5'TPage'#11'ViewersPage'#7'Captio'
+  +'x'#2#1#6'Height'#3#0#1#5'Width'#3#244#1#0#5'TPage'#11'ViewersPage'#7'Captio'
   +'n'#6#11'ViewersPage'#11'ClientWidth'#3#240#1#12'ClientHeight'#3#226#0#4'Lef'
   +'t'#2#2#6'Height'#3#226#0#3'Top'#2#28#5'Width'#3#240#1#0#8'TListBox'#14'View'
   +'ersListBox'#7'Anchors'#11#5'akTop'#6'akLeft'#8'akBottom'#0#16'ClickOnSelCha'
@@ -24,5 +24,16 @@ LazarusResources.Add('THelpOptionsDialog','FORMDATA',[
   +'sGroupBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Capt'
   +'ion'#6#19'ViewerPropsGroupBox'#12'ClientHeight'#3#192#0#11'ClientWidth'#3'<'
   +#1#11'ParentColor'#9#8'TabOrder'#2#2#4'Left'#3#168#0#6'Height'#3#209#0#3'Top'
-  +#2#7#5'Width'#3'@'#1#0#0#0#0#0
+  +#2#7#5'Width'#3'@'#1#0#0#0#5'TPage'#12'DataBasePage'#7'Caption'#6#12'DataBas'
+  +'ePage'#11'ClientWidth'#3#240#1#12'ClientHeight'#3#226#0#4'Left'#2#2#6'Heigh'
+  +'t'#3#226#0#3'Top'#2#28#5'Width'#3#240#1#0#6'TLabel'#14'DatabasesLabel'#7'Ca'
+  +'ption'#6#14'DatabasesLabel'#4'Left'#2#6#6'Height'#2#17#3'Top'#2#10#5'Width'
+  +#2'A'#0#0#8'TListBox'#16'DatabasesListBox'#7'Anchors'#11#5'akTop'#6'akLeft'#8
+  +'akBottom'#0#16'ClickOnSelChange'#8#17'OnSelectionChange'#7#31'DatabasesList'
+  +'BoxSelectionChange'#8'TabOrder'#2#1#8'TopIndex'#2#255#4'Left'#2#6#6'Height'
+  +#3#186#0#3'Top'#2'$'#5'Width'#3#152#0#0#0#9'TGroupBox'#22'DataBasesPropsGrou'
+  +'pBox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#7'Caption'#6
+  +#22'DataBasesPropsGroupBox'#12'ClientHeight'#3#200#0#11'ClientWidth'#3'?'#1
+  +#11'ParentColor'#9#8'TabOrder'#2#2#4'Left'#3#166#0#6'Height'#3#217#0#3'Top'#2
+  +#4#5'Width'#3'C'#1#0#0#0#0#0
 ]);

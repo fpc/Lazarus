@@ -82,10 +82,14 @@ type
     procedure mnuHelpConfigureHelpClicked(Sender: TObject);
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
   private
+    FFCLHelpDBPath: THelpBasePathObject;
+    FLCLHelpDBPath: THelpBasePathObject;
     FMainHelpDB: THelpDatabase;
+    FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
     FFCLHelpDB: THelpDatabase;
     FLCLHelpDB: THelpDatabase;
+    FRTLHelpDBPath: THelpBasePathObject;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
   public
@@ -105,8 +109,14 @@ type
                                        var ErrMsg: string): TShowHelpResult; override;
     procedure ShowHelpForMessage(Line: integer); override;
   public
-    property MainHelpDB: THelpDatabase read FMainHelpDB;
     property FCLHelpDB: THelpDatabase read FFCLHelpDB;
+    property FCLHelpDBPath: THelpBasePathObject read FFCLHelpDBPath;
+    property LCLHelpDB: THelpDatabase read FLCLHelpDB;
+    property LCLHelpDBPath: THelpBasePathObject read FLCLHelpDBPath;
+    property MainHelpDB: THelpDatabase read FMainHelpDB;
+    property MainHelpDBPath: THelpBasePathObject read FMainHelpDBPath;
+    property RTLHelpDB: THelpDatabase read FRTLHelpDB;
+    property RTLHelpDBPath: THelpBasePathObject read FRTLHelpDBPath;
   end;
 
   { Help Contexts for IDE help }
@@ -115,6 +125,10 @@ const
   lihcRTLUnits = 'RTLUnits';
   lihcFCLUnits = 'FCLUnits';
   lihcLCLUnits = 'LCLUnits';
+
+  lihRTLURL = 'http://www.freepascal.org/docs-html/rtl/';
+  lihFCLURL = 'http://www.freepascal.org/docs-html/fcl/';
+  lihLCLURL = 'http://www.freepascal.org/docs-html/lcl/';
 
 var
   HelpBoss: TBaseHelpManager;
@@ -288,13 +302,16 @@ function TIDEHelpDatabases.GetBaseDirectoryForBasePathObject(
   BasePathObject: TObject): string;
 begin
   Result:='';
-  if (BasePathObject=HelpBoss) or (BasePathObject=MainIDEInterface) then
+  if (BasePathObject is THelpBasePathObject) then
+    Result:=THelpBasePathObject(BasePathObject).BasePath
+  else if (BasePathObject=HelpBoss) or (BasePathObject=MainIDEInterface) then
     Result:=EnvironmentOptions.LazarusDirectory
   else if BasePathObject is TProject then
     Result:=TProject(BasePathObject).ProjectDirectory
   else if BasePathObject is TLazPackage then
     Result:=TLazPackage(BasePathObject).Directory;
-  IDEMacros.SubstituteMacros(Result);
+  if Result<>'' then
+    IDEMacros.SubstituteMacros(Result);
 end;
 
 function TIDEHelpDatabases.ShowHelpForSourcePosition(
@@ -332,8 +349,11 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FMainHelpDB:=HelpDatabases.CreateHelpDatabase(lihcStartPage,
                                                   THTMLHelpDatabase,true);
     HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
-    HTMLHelp.BasePathObject:=Self;
-    // nodes
+    FMainHelpDBPath:=THelpBasePathObject.Create;
+    FMainHelpDBPath.BasePath:='$(LazarusDir)';
+    HTMLHelp.BasePathObject:=FMainHelpDBPath;
+
+    // HTML nodes for the IDE
     StartNode:=THelpNode.CreateURLID(HTMLHelp,'Lazarus',
                                      'file://docs/index.html',lihcStartPage);
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,StartNode);
@@ -349,14 +369,17 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FRTLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcRTLUnits,
                                                  TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FRTLHelpDB as TFPDocHTMLHelpDatabase;
+    HTMLHelp.DefaultBaseURL:=lihRTLURL;
+    FRTLHelpDBPath:=THelpBasePathObject.Create;
+    HTMLHelp.BasePathObject:=FRTLHelpDBPath;
 
-    // FPDoc: units in the RTL
+    // FPDoc nodes for units in the RTL
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'RTL - Free Pascal Run Time Library Units',
-                   'http://www.freepascal.org/docs-html/rtl/index.html');
+                   'file://index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/rtl',
-                   '*.pp;*.pas',true);
+                                            '*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
   end;
 
@@ -369,14 +392,17 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FFCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcFCLUnits,
                                                  TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FFCLHelpDB as TFPDocHTMLHelpDatabase;
+    HTMLHelp.DefaultBaseURL:=lihFCLURL;
+    FFCLHelpDBPath:=THelpBasePathObject.Create;
+    HTMLHelp.BasePathObject:=FFCLHelpDBPath;
 
-    // FPDoc: units in the FCL
+    // FPDoc nodes for units in the FCL
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units',
-                   'http://www.freepascal.org/docs-html/fcl/index.html');
+                   'file://index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
-                   '*.pp;*.pas',true);
+                                            '*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
   end;
 
@@ -389,16 +415,17 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FLCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcLCLUnits,
                                                  TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FLCLHelpDB as TFPDocHTMLHelpDatabase;
-    HTMLHelp.BasePathObject:=Self;
+    HTMLHelp.DefaultBaseURL:=lihLCLURL;
+    FLCLHelpDBPath:=THelpBasePathObject.Create;
+    HTMLHelp.BasePathObject:=FLCLHelpDBPath;
 
-    // FPDoc: units in the LCL
+    // FPDoc nodes for units in the LCL
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'LCL - Lazarus Component Library Units',
-                   'http://www.freepascal.org/docs-html/lcl/index.html');
-    //               'file://$(LazarusDir)/docs/html/index.html');
+                   'file://index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(LazarusDir)/lcl',
-                   '*.pp;*.pas',false);
+                                            '*.pp;*.pas',false);
     HTMLHelp.RegisterItem(DirItem);
   end;
 
@@ -430,6 +457,10 @@ begin
   FreeThenNil(HelpDatabases);
   FreeThenNil(HelpViewers);
   FreeThenNil(HelpOpts);
+  FreeThenNil(FMainHelpDBPath);
+  FreeThenNil(FRTLHelpDBPath);
+  FreeThenNil(FFCLHelpDBPath);
+  FreeThenNil(FLCLHelpDBPath);
   inherited Destroy;
 end;
 
@@ -437,7 +468,7 @@ procedure THelpManager.ConnectMainBarEvents;
 begin
   with MainIDEBar do begin
     itmHelpAboutLazarus.OnClick := @mnuHelpAboutLazarusClicked;
-    itmHelpOnlineHelp.OnClick :=@mnuHelpOnlineHelpClicked;
+    itmHelpOnlineHelp.OnClick := @mnuHelpOnlineHelpClicked;
     itmHelpConfigureHelp.OnClick :=@mnuHelpConfigureHelpClicked;
   end;
 end;

@@ -31,7 +31,10 @@ type
   THTMLHelpDatabase = class(THelpDatabase)
   private
     FBaseURL: string;
+    FDefaultBaseURL: string;
+    function IsBaseURLStored: boolean;
     procedure SetBaseURL(const AValue: string);
+    procedure SetDefaultBaseURL(const AValue: string);
   public
     constructor Create(TheID: THelpDatabaseID); override;
     function ShowURL(const URL, Title: string;
@@ -39,8 +42,11 @@ type
     function ShowHelp(Query: THelpQuery; BaseNode, NewNode: THelpNode;
                       var ErrMsg: string): TShowHelpResult; override;
     function GetEffectiveBaseURL: string;
-  public
-    property BaseURL: string read FBaseURL write SetBaseURL;
+    procedure Load(Storage: TConfigStorage); override;
+    procedure Save(Storage: TConfigStorage); override;
+    property DefaultBaseURL: string read FDefaultBaseURL write SetDefaultBaseURL;
+  published
+    property BaseURL: string read FBaseURL write SetBaseURL stored IsBaseURLStored;
   end;
   
   
@@ -73,7 +79,24 @@ implementation
 procedure THTMLHelpDatabase.SetBaseURL(const AValue: string);
 begin
   if FBaseURL=AValue then exit;
-  FBaseURL:=AValue;
+  //debugln('THTMLHelpDatabase.SetBaseURL ',dbgsName(Self),' ',AValue);
+  if AValue<>'' then
+    FBaseURL:=AValue
+  else
+    FBaseURL:=DefaultBaseURL;
+end;
+
+procedure THTMLHelpDatabase.SetDefaultBaseURL(const AValue: string);
+begin
+  if FDefaultBaseURL=AValue then exit;
+  if (FBaseURL='') or (FBaseURL=FDefaultBaseURL) then
+    FBaseURL:=FDefaultBaseURL;
+  FDefaultBaseURL:=AValue;
+end;
+
+function THTMLHelpDatabase.IsBaseURLStored: boolean;
+begin
+  Result:=FBaseURL<>DefaultBaseURL;
 end;
 
 constructor THTMLHelpDatabase.Create(TheID: THelpDatabaseID);
@@ -149,10 +172,25 @@ begin
     Result:=BaseURL;
     if (HelpDatabases<>nil) then
       IDEMacros.SubstituteMacros(Result);
-  end else if (BasePathObject<>nil) and (Databases<>nil) then
+    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL BaseURL="',Result,'"');
+  end else if (BasePathObject<>nil) and (Databases<>nil) then begin
     Result:=Databases.GetBaseURLForBasePathObject(BasePathObject);
+    //debugln('THTMLHelpDatabase.GetEffectiveBaseURL BasePathObject="',Result,'"');
+  end;
   if (Result<>'') and (Result[length(Result)]<>'/') then
     Result:=Result+'/';
+end;
+
+procedure THTMLHelpDatabase.Load(Storage: TConfigStorage);
+begin
+  inherited Load(Storage);
+  BaseURL:=Storage.GetValue('BaseURL/Value',DefaultBaseURL);
+end;
+
+procedure THTMLHelpDatabase.Save(Storage: TConfigStorage);
+begin
+  inherited Save(Storage);
+  Storage.SetDeleteValue('BaseURL/Value',BaseURL,DefaultBaseURL);
 end;
 
 { THTMLBrowserHelpViewer }

@@ -35,7 +35,7 @@ object HelpOptionsDialog: THelpOptionsDialog
   object MainNotebook: TNotebook
     Align = alTop
     Anchors = [akTop, akLeft, akBottom]
-    PageIndex = 0
+    PageIndex = 1
     Height = 256
     Width = 500
     object ViewersPage: TPage
@@ -51,7 +51,7 @@ object HelpOptionsDialog: THelpOptionsDialog
         ClickOnSelChange = False
         OnSelectionChange = ViewersListBoxSelectionChange
         TabOrder = 0
-        TopIndex = 18446744073709551615
+        TopIndex = -1
         Left = 8
         Height = 180
         Top = 36
@@ -75,6 +75,45 @@ object HelpOptionsDialog: THelpOptionsDialog
         Height = 209
         Top = 7
         Width = 320
+      end
+    end
+    object DataBasePage: TPage
+      Caption = 'DataBasePage'
+      ClientWidth = 496
+      ClientHeight = 226
+      Left = 2
+      Height = 226
+      Top = 28
+      Width = 496
+      object DatabasesLabel: TLabel
+        Caption = 'DatabasesLabel'
+        Left = 6
+        Height = 17
+        Top = 10
+        Width = 65
+      end
+      object DatabasesListBox: TListBox
+        Anchors = [akTop, akLeft, akBottom]
+        ClickOnSelChange = False
+        OnSelectionChange = DatabasesListBoxSelectionChange
+        TabOrder = 1
+        TopIndex = -1
+        Left = 6
+        Height = 186
+        Top = 36
+        Width = 152
+      end
+      object DataBasesPropsGroupBox: TGroupBox
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Caption = 'DataBasesPropsGroupBox'
+        ClientHeight = 200
+        ClientWidth = 319
+        ParentColor = True
+        TabOrder = 2
+        Left = 166
+        Height = 217
+        Top = 4
+        Width = 323
       end
     end
   end

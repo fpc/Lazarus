@@ -403,6 +403,9 @@ type
     procedure UnregisterItem(AnItem: THelpDBItem);
     function RegisteredItemCount: integer;
     function GetRegisteredItem(Index: integer): THelpDBItem;
+    procedure Load(Storage: TConfigStorage); virtual;
+    procedure Save(Storage: TConfigStorage); virtual;
+    function GetLocalizedName: string; virtual;
   public
     property Databases: THelpDatabases read FDatabases write SetDatabases;
     property ID: THelpDatabaseID read FID write SetID;
@@ -484,6 +487,8 @@ type
     procedure UnregisterHelpDatabaseClass(AHelpDB: THelpDatabaseClass);
     function HelpDatabaseClassCount: integer;
     function GetHelpDatabaseClass(Index: integer): THelpDatabaseClass;
+    procedure Load(Storage: TConfigStorage); virtual;
+    procedure Save(Storage: TConfigStorage); virtual;
   end;
   
   
@@ -540,6 +545,18 @@ type
   end;
   
   
+  { THelpBasePathObject }
+  
+  THelpBasePathObject = class(TPersistent)
+  private
+    FBasePath: string;
+  protected
+    procedure SetBasePath(const AValue: string); virtual;
+  public
+    property BasePath: string read FBasePath write SetBasePath;
+  end;
+  
+  
 var
   HelpDatabases: THelpDatabases; // initialized by the IDE
   HelpViewers: THelpViewers; // initialized by the IDE
@@ -592,6 +609,7 @@ function FilenameToURL(const Filename: string): string;
 procedure SplitURL(const URL: string; var URLType, URLPath, URLParams: string);
 function CombineURL(const URLType, URLPath, URLParams: string): string;
 function URLFilenameIsAbsolute(const Filename: string): boolean;
+function FindURLPathStart(const URL: string): integer;
 function FindURLPathEnd(const URL: string): integer;
 function ChompURLParams(const URL: string): string;
 function ExtractURLDirectory(const URL: string): string;
@@ -761,6 +779,26 @@ begin
     Result:=FilenameIsAbsolute(SetDirSeparators(Filename));
 end;
 
+function FindURLPathStart(const URL: string): integer;
+var
+  Len: Integer;
+  ColonPos: Integer;
+  URLStartPos: Integer;
+begin
+  Result:=-1;
+  Len:=length(URL);
+  // search colon
+  ColonPos:=1;
+  while (ColonPos<=len) and (URL[ColonPos]<>':') do
+    inc(ColonPos);
+  if ColonPos=Len then exit;
+  URLStartPos:=ColonPos+1;
+  // skip the '//' after the colon
+  if (URLStartPos<=Len) and (URL[URLStartPos]='/') then inc(URLStartPos);
+  if (URLStartPos<=Len) and (URL[URLStartPos]='/') then inc(URLStartPos);
+  Result:=URLStartPos;
+end;
+
 function FindURLPathEnd(const URL: string): integer;
 var
   Len: Integer;
@@ -778,9 +816,14 @@ end;
 function ExtractURLDirectory(const URL: string): string;
 var
   p: Integer;
+  PathStart: LongInt;
 begin
+  Result:='';
+  PathStart:=FindURLPathStart(URL);
+  if PathStart<1 then exit;
   p:=FindURLPathEnd(URL);
   while (p>0) and (URL[p]<>'/') do dec(p);
+  if p<=PathStart then exit;
   Result:=copy(URL,1,p);
 end;
 
@@ -1125,6 +1168,21 @@ end;
 function THelpDatabase.GetRegisteredItem(Index: integer): THelpDBItem;
 begin
   Result:=THelpDBItem(FSearchItems[Index]);
+end;
+
+procedure THelpDatabase.Load(Storage: TConfigStorage);
+begin
+
+end;
+
+procedure THelpDatabase.Save(Storage: TConfigStorage);
+begin
+
+end;
+
+function THelpDatabase.GetLocalizedName: string;
+begin
+  Result:=ID;
 end;
 
 procedure THelpDatabase.Reference;
@@ -1605,6 +1663,44 @@ begin
   Result:=THelpDatabaseClass(FHelpDBClasses[Index]);
 end;
 
+procedure THelpDatabases.Load(Storage: TConfigStorage);
+var
+  i: Integer;
+  HelpDB: THelpDatabase;
+  Path: String;
+begin
+  for i:=0 to Count-1 do begin
+    HelpDB:=Items[i];
+    Path:=HelpDB.ID;
+    if (Path='') or (not IsValidIdent(Path)) then continue;
+    Storage.AppendBasePath(Path);
+    try
+      HelpDB.Load(Storage);
+    finally
+      Storage.UndoAppendBasePath;
+    end;
+  end;
+end;
+
+procedure THelpDatabases.Save(Storage: TConfigStorage);
+var
+  i: Integer;
+  HelpDB: THelpDatabase;
+  Path: String;
+begin
+  for i:=0 to Count-1 do begin
+    HelpDB:=Items[i];
+    Path:=HelpDB.ID;
+    if (Path='') or (not IsValidIdent(Path)) then continue;
+    Storage.AppendBasePath(Path);
+    try
+      HelpDB.Save(Storage);
+    finally
+      Storage.UndoAppendBasePath;
+    end;
+  end;
+end;
+
 { THelpViewers }
 
 function THelpViewers.GetItems(Index: integer): THelpViewer;
@@ -1665,10 +1761,13 @@ procedure THelpViewers.Load(Storage: TConfigStorage);
 var
   i: Integer;
   Viewer: THelpViewer;
+  Path: String;
 begin
   for i:=0 to Count-1 do begin
     Viewer:=Items[i];
-    Storage.AppendBasePath(Viewer.StorageName);
+    Path:=Viewer.StorageName;
+    if (Path='') or (not IsValidIdent(Path)) then continue;
+    Storage.AppendBasePath(Path);
     try
       Viewer.Load(Storage);
     finally
@@ -1681,10 +1780,13 @@ procedure THelpViewers.Save(Storage: TConfigStorage);
 var
   i: Integer;
   Viewer: THelpViewer;
+  Path: String;
 begin
   for i:=0 to Count-1 do begin
     Viewer:=Items[i];
-    Storage.AppendBasePath(Viewer.StorageName);
+    Path:=Viewer.StorageName;
+    if (Path='') or (not IsValidIdent(Path)) then continue;
+    Storage.AppendBasePath(Path);
     try
       Viewer.Save(Storage);
     finally
@@ -2105,6 +2207,14 @@ constructor THelpQueryNode.Create(const TheHelpDatabaseID: THelpDatabaseID;
 begin
   inherited Create(TheHelpDatabaseID);
   FNode:=TheNode;
+end;
+
+{ THelpBasePathObject }
+
+procedure THelpBasePathObject.SetBasePath(const AValue: string);
+begin
+  if FBasePath=AValue then exit;
+  FBasePath:=AValue;
 end;
 
 initialization

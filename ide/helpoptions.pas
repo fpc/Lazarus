@@ -64,6 +64,10 @@ type
   { THelpOptionsDialog }
 
   THelpOptionsDialog = class(TForm)
+    DataBasePage: TPage;
+    DatabasesLabel: TLabel;
+    DataBasesPropsGroupBox: TGroupBox;
+    DatabasesListBox: TListBox;
     ViewerPropsGroupBox: TGroupBox;
     ViewersLabel: TLabel;
     ViewersListBox: TListBox;
@@ -72,6 +76,7 @@ type
     CancelButton: TButton;
     ViewersPage: TPage;
     procedure CancelButtonClick(Sender: TObject);
+    procedure DatabasesListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure HelpOptionsDialogClose(Sender: TObject;
       var CloseAction: TCloseAction);
     procedure HelpOptionsDialogCreate(Sender: TObject);
@@ -80,8 +85,11 @@ type
   private
   public
     ViewersPropertiesGrid: TCustomPropertiesGrid;
+    DatabasesPropertiesGrid: TCustomPropertiesGrid;
     procedure FillViewersList;
     procedure FillViewerPropGrid;
+    procedure FillDatabasesList;
+    procedure FillDatabasesPropGrid;
   end;
   
 var
@@ -120,7 +128,10 @@ begin
   ViewersPage.Caption:=lisHlpOptsViewers;
   ViewerPropsGroupBox.Caption:=lisHlpOptsProperties;
   ViewersLabel.Caption:=lisHlpOptsViewers;
-  
+  DataBasePage.Caption:=lisHlpOptsDatabases;
+  DataBasesPropsGroupBox.Caption:=lisHlpOptsProperties;
+  DatabasesLabel.Caption:=lisHlpOptsDatabases;
+
   ViewersPropertiesGrid:=TCustomPropertiesGrid.Create(Self);
   with ViewersPropertiesGrid do begin
     Name:='ViewersPropertiesGrid';
@@ -128,8 +139,17 @@ begin
     Align:=alClient;
   end;
   
+  DatabasesPropertiesGrid:=TCustomPropertiesGrid.Create(Self);
+  with DatabasesPropertiesGrid do begin
+    Name:='DatabasesPropertiesGrid';
+    Parent:=DataBasesPropsGroupBox;
+    Align:=alClient;
+  end;
+
   FillViewersList;
   FillViewerPropGrid;
+  FillDatabasesList;
+  FillDatabasesPropGrid;
 end;
 
 procedure THelpOptionsDialog.OkButtonClick(Sender: TObject);
@@ -179,6 +199,42 @@ begin
   end;
 end;
 
+procedure THelpOptionsDialog.FillDatabasesList;
+var
+  i: Integer;
+  HelpDB: THelpDatabase;
+begin
+  if (HelpDatabases=nil) then begin
+    DatabasesListBox.Items.Clear;
+    exit;
+  end;
+  DatabasesListBox.Items.BeginUpdate;
+  for i:=0 to HelpDatabases.Count-1 do begin
+    HelpDB:=HelpDatabases[i];
+    if DatabasesListBox.Items.Count>i then
+      DatabasesListBox.Items[i]:=HelpDB.GetLocalizedName
+    else
+      DatabasesListBox.Items.Add(HelpDB.GetLocalizedName);
+  end;
+  while DatabasesListBox.Items.Count>HelpDatabases.Count do
+    DatabasesListBox.Items.Delete(DatabasesListBox.Items.Count-1);
+  if (DatabasesListBox.ItemIndex<0) and (DatabasesListBox.Items.Count>0) then
+    DatabasesListBox.ItemIndex:=0;
+  DatabasesListBox.Items.EndUpdate;
+end;
+
+procedure THelpOptionsDialog.FillDatabasesPropGrid;
+var
+  i: LongInt;
+begin
+  i:=DatabasesListBox.ItemIndex;
+  if (HelpDatabases=nil) or (i<0) or (i>=HelpDatabases.Count) then begin
+    DatabasesPropertiesGrid.TIObject:=nil;
+  end else begin
+    DatabasesPropertiesGrid.TIObject:=HelpDatabases[i];
+  end;
+end;
+
 procedure THelpOptionsDialog.HelpOptionsDialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -189,6 +245,12 @@ procedure THelpOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   // ToDo: restore backup
   ModalResult:=mrCancel;
+end;
+
+procedure THelpOptionsDialog.DatabasesListBoxSelectionChange(Sender: TObject;
+  User: boolean);
+begin
+  FillDatabasesPropGrid;
 end;
 
 { THelpOptions }
@@ -233,6 +295,11 @@ begin
         HelpViewers.Load(Storage);
       end;
 
+      if HelpDatabases<>nil then begin
+        Storage:=TXMLOptionsStorage.Create(XMLConfig,'Databases');
+        HelpDatabases.Load(Storage);
+      end;
+
     finally
       XMLConfig.Free;
       Storage.Free;
@@ -258,6 +325,11 @@ begin
       if HelpViewers<>nil then begin
         Storage:=TXMLOptionsStorage.Create(XMLConfig,'Viewers');
         HelpViewers.Save(Storage);
+      end;
+
+      if HelpDatabases<>nil then begin
+        Storage:=TXMLOptionsStorage.Create(XMLConfig,'Databases');
+        HelpDatabases.Save(Storage);
       end;
 
       XMLConfig.Flush;

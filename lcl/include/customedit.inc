@@ -330,13 +330,13 @@ Begin
   //check to see if the charcase should affect the text.
   if FCharCase = ecUppercase then
   Begin
-    Temp := Uppercase(text);
+    Temp := Uppercase(Text);
     if Temp <> Text then Text := Temp;
   end
   else
   if FCharCase = ecLowercase then
   Begin
-    Temp := Lowercase(text);
+    Temp := Lowercase(Text);
     if Temp <> Text then Text := Temp;
   end;
 
@@ -367,6 +367,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2004/12/27 16:51:19  mattias
+  implemented dialog to edit basic help db settings
+
   Revision 1.35  2004/11/03 14:18:35  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

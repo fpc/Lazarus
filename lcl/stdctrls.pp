@@ -546,7 +546,6 @@ type
   Protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
     procedure CreateWnd; override;
-
     procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
     procedure Change; dynamic;
     function GetSelLength: integer; virtual;
@@ -1183,6 +1182,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.174  2004/12/27 16:51:19  mattias
+  implemented dialog to edit basic help db settings
+
   Revision 1.173  2004/12/16 20:13:27  vincents
   made some protected TCustomCombobox properties public, so they can be used by the win32 widget set.
 

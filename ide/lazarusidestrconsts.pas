@@ -2592,7 +2592,8 @@ resourcestring
   lisHlpOptsHelpOptions = 'Help Options';
   lisHlpOptsViewers = 'Viewers';
   lisHlpOptsProperties = 'Properties:';
-  
+  lisHlpOptsDatabases = 'Databases';
+
   // enclose selection dialog
   lisEncloseSelection = 'Enclose Selection';
   lisEnclose = 'Enclose';

@@ -264,6 +264,7 @@ type
                                  DefItemHeight: integer);
     destructor Destroy;  override;
     function CanEditRowValue: boolean;
+    procedure SaveChanges;
     function ConsistencyCheck: integer;
     function GetActiveRow: TOIPropertyGridRow;
     function GetHintTypeAt(RowIndex: integer; X: integer): TPropEditHint;
@@ -350,6 +351,7 @@ type
   TCustomPropertiesGrid = class(TOICustomPropertyGrid)
   private
     FAutoFreeHook: boolean;
+    FSaveOnChangeTIObject: boolean;
     function GetTIObject: TPersistent;
     procedure SetAutoFreeHook(const AValue: boolean);
     procedure SetTIObject(const AValue: TPersistent);
@@ -357,6 +359,9 @@ type
     constructor Create(TheOwner: TComponent); override;
     property TIObject: TPersistent read GetTIObject write SetTIObject;
     property AutoFreeHook: boolean read FAutoFreeHook write SetAutoFreeHook;
+    property SaveOnChangeTIObject: boolean read FSaveOnChangeTIObject
+                                           write FSaveOnChangeTIObject
+                                           default true;
   end;
 
 
@@ -769,6 +774,7 @@ var
   OldExpanded: boolean;
   OldChangeStep: integer;
 begin
+  //debugln('TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' ',dbgs(FItemIndex));
   if not CanEditRowValue then exit;
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
@@ -784,9 +790,9 @@ begin
       {$IFNDEF DoNotCatchOIExceptions}
       try
       {$ENDIF}
-        //writeln('TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+        //debugln('TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
         CurRow.Editor.SetValue(NewValue);
-        //writeln('TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+        //debugln('TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
       {$IFNDEF DoNotCatchOIExceptions}
       except
         on E: Exception do begin
@@ -814,7 +820,7 @@ begin
         if OldExpanded then
           ExpandRow(FItemIndex);
       end;
-      //writeln('TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
+      //debugln('TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual);
     finally
       Exclude(FStates,pgsApplyingValue);
     end;
@@ -931,14 +937,14 @@ begin
   if i>=0 then SetRowValue;
 end;
 
-procedure TOICustomPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TOICustomPropertyGrid.ValueComboBoxKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
 begin
   HandleStandardKeys(Key,Shift);
 end;
 
-procedure TOICustomPropertyGrid.ValueComboBoxKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TOICustomPropertyGrid.ValueComboBoxKeyUp(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
 begin
   HandleKeyUp(Key,Shift);
 end;
@@ -1240,6 +1246,11 @@ begin
   end else begin
     Result:=true;
   end;
+end;
+
+procedure TOICustomPropertyGrid.SaveChanges;
+begin
+  SetRowValue;
 end;
 
 function TOICustomPropertyGrid.GetHintTypeAt(RowIndex: integer; X: integer
@@ -3005,6 +3016,8 @@ begin
     or (AValue=nil) then
       exit;
   end;
+  if SaveOnChangeTIObject then
+    SaveChanges;
   if PropertyEditorHook=nil then
     PropertyEditorHook:=TPropertyEditorHook.Create;
   PropertyEditorHook.LookupRoot:=AValue;
@@ -3026,7 +3039,8 @@ var
   Hook: TPropertyEditorHook;
 begin
   Hook:=TPropertyEditorHook.Create;
-  AutoFreeHook:=true;
+  FSaveOnChangeTIObject:=true;
+  FAutoFreeHook:=true;
   CreateWithParams(TheOwner,Hook,AllTypeKinds,25);
 end;
 
