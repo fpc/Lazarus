@@ -38,7 +38,7 @@ interface
 
 uses
   VCLGlobals, Classes, SysUtils, LCLType, Graphics, GraphType, LMessages,
-  Controls, Forms, ExtendedStrings;
+  Controls, Forms, ExtendedStrings, LCLLinux, GraphicsMath;
 
 
 type
@@ -880,7 +880,8 @@ Function DeleteAmpersands(var Str : String) : Longint;
 
 implementation
 
-uses LCLLinux, Interfaces, Math, GraphicsMath;
+uses
+  Interfaces, Math;
 
 
 type
@@ -1405,6 +1406,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/10/24 10:05:51  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.59  2002/10/23 20:47:26  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl

@@ -36,7 +36,8 @@ unit Dialogs;
 
 interface
 
-uses Classes, Forms, Controls, VCLGlobals, LMessages, GraphType, Graphics;
+uses
+  Classes, Forms, Controls, VCLGlobals, LMessages, GraphType, Graphics;
 
 //type
 //   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
@@ -294,6 +295,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/10/24 10:05:51  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.20  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 

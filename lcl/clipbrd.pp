@@ -135,61 +135,6 @@ type
     FormatID: TClipboardFormat;
     Stream: TMemoryStream;
   end;
-  
-type
-  TPredefinedClipboardFormat = (
-      pcfText,
-      pcfBitmap,
-      pcfPixmap,
-      pcfIcon,
-      pcfPicture,
-      pcfObject,
-      pcfComponent,
-      pcfCustomData,
-     
-     // Delphi definitions (only for compatibility)
-      pcfDelphiText,
-      pcfDelphiBitmap,
-      pcfDelphiPicture,
-      pcfDelphiMetaFilePict,
-      pcfDelphiObject,
-      pcfDelphiComponent,
-     
-     // Kylix definitions (only for compatibility)
-      pcfKylixPicture,
-      pcfKylixBitmap,
-      pcfKylixDrawing,
-      pcfKylixComponent
-    );
-    
-const
-  PredefinedClipboardMimeTypes : array[TPredefinedClipboardFormat] of string = (
-     'text/plain',
-     'image/lcl.bitmap',
-     'image/lcl.pixmap',
-     'image/lcl.icon',
-     'image/lcl.picture',
-     'application/lcl.object',
-     'application/lcl.component',
-     'application/lcl.customdata',
-     
-     // Delphi definitions (only for compatibility)
-     'text/plain',
-     'image/delphi.bitmap',
-     'Delphi Picture',
-     'image/delphi.metafilepict',
-     'application/delphi.object',
-     'Delphi Component',
-     
-     // Kylix definitons (only for compatibility)
-     'image/delphi.picture',
-     'image/delphi.bitmap',
-     'image/delphi.drawing',
-     'application/delphi.component'
-  );
-
-function PredefinedClipboardFormat(
-  AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
 
 { for delphi compatibility:
@@ -291,8 +236,6 @@ implementation
 
 var
   FClipboards: array[TClipboardType] of TClipboard;
-  FPredefinedClipboardFormats:
-    array[TPredefinedClipboardFormat] of TClipboardFormat;
 
 
 {$I clipbrd.inc}
@@ -341,15 +284,6 @@ begin
   Result := FClipboards[ClipboardType];
 end;
 
-function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat
-  ): TClipboardFormat;
-begin
-  if FPredefinedClipboardFormats[AFormat]=0 then
-    FPredefinedClipboardFormats[AFormat]:=
-      ClipboardRegisterFormat(PredefinedClipboardMimeTypes[AFormat]);
-  Result:=FPredefinedClipboardFormats[AFormat];
-end;
-
 function CF_Text: TClipboardFormat;
 begin
   Result:=PredefinedClipboardFormat(pcfDelphiText);
@@ -392,13 +326,9 @@ end;
 procedure InternalInit;
 var
   AClipboardType: TClipboardType;
-  AClipboardFormat: TPredefinedClipboardFormat;
 begin
   for AClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     FClipboards[AClipboardType]:=nil;
-  for AClipboardFormat:=Low(TPredefinedClipboardFormat) to
-    High(TPredefinedClipboardFormat) do
-      FPredefinedClipboardFormats[AClipboardFormat]:=0;
 end;
 
 procedure InternalFinal;
@@ -416,6 +346,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2002/10/24 10:05:50  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.9  2002/05/10 06:05:48  lazarus
   MG: changed license to LGPL
 

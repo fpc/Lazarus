@@ -1560,10 +1560,14 @@ type
   _MSG = tagMSG;
 
 
+//------------------------------------------------------------------------------
 // prototype for timer callback
-TFNTimerProc = procedure(Handle: HWND; Message : cardinal; IDEvent: Integer; Time: Cardinal); 
+type
+  TFNTimerProc = procedure(Handle: HWND; Message : cardinal; IDEvent: Integer;
+                           Time: Cardinal);
 
 
+//------------------------------------------------------------------------------
 // clipboard
 type
   TClipboardFormat = cardinal;
@@ -1579,10 +1583,62 @@ const
       'primary selection', 'secondary selection', 'clipboard'
     );
 
+type
+  TPredefinedClipboardFormat = (
+      pcfText,
+      pcfBitmap,
+      pcfPixmap,
+      pcfIcon,
+      pcfPicture,
+      pcfObject,
+      pcfComponent,
+      pcfCustomData,
+
+     // Delphi definitions (only for compatibility)
+      pcfDelphiText,
+      pcfDelphiBitmap,
+      pcfDelphiPicture,
+      pcfDelphiMetaFilePict,
+      pcfDelphiObject,
+      pcfDelphiComponent,
+
+     // Kylix definitions (only for compatibility)
+      pcfKylixPicture,
+      pcfKylixBitmap,
+      pcfKylixDrawing,
+      pcfKylixComponent
+    );
+
+const
+  PredefinedClipboardMimeTypes : array[TPredefinedClipboardFormat] of string = (
+     'text/plain',
+     'image/lcl.bitmap',
+     'image/lcl.pixmap',
+     'image/lcl.icon',
+     'image/lcl.picture',
+     'application/lcl.object',
+     'application/lcl.component',
+     'application/lcl.customdata',
+
+     // Delphi definitions (only for compatibility)
+     'text/plain',
+     'image/delphi.bitmap',
+     'Delphi Picture',
+     'image/delphi.metafilepict',
+     'application/delphi.object',
+     'Delphi Component',
+
+     // Kylix definitons (only for compatibility)
+     'image/delphi.picture',
+     'image/delphi.bitmap',
+     'image/delphi.drawing',
+     'application/delphi.component'
+  );
 
 
-function MapIrregularVirtualKey(vk: word): word;
+// key mapping
 Function Char2VK(C : Char) : Word;
+function MapIrregularVirtualKey(vk: word): word;
 
 
 implementation
@@ -1618,10 +1674,14 @@ begin
   end;
 end;
 
+
 end.
 
 {
   $Log$
+  Revision 1.23  2002/10/24 10:05:51  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.22  2002/10/15 17:09:53  lazarus
   AJ: fixed GTK DrawText to use WordWrap, and add DT_EditControl
 

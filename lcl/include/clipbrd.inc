@@ -447,7 +447,7 @@ begin
   try
     for f:=Low(TPredefinedClipboardFormat) to High(TPredefinedClipboardFormat) do
     begin
-      Result:=FPredefinedClipboardFormats[f];
+      Result:=PredefinedClipboardFormat(f);
       if (f in PicFormats) and (Result<>0) then begin
         if not FAllocated then begin
           for i:=0 to cnt-1 do
@@ -488,8 +488,8 @@ begin
     end;
     if not Result then begin
       Result:=
-            ((FPredefinedClipboardFormats[pcfPicture]=FormatID)
-        or (FPredefinedClipboardFormats[pcfDelphiPicture]=FormatID))
+            ((PredefinedClipboardFormat(pcfPicture)=FormatID)
+        or (PredefinedClipboardFormat(pcfDelphiPicture)=FormatID))
         and (HasPictureFormat);
     end;
   end else
@@ -610,6 +610,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2002/10/24 10:05:51  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.9  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

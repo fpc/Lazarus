@@ -54,11 +54,18 @@ uses Classes, LCLType, VCLGlobals, GraphType;
 function MakeLong(A,B : Word) : LongInt;
 function MakeWord(A,B : Byte) : Word;
 
+function PredefinedClipboardFormat(
+  AFormat: TPredefinedClipboardFormat): TClipboardFormat;
+
+
 implementation
 
 uses
-
   SysUtils, Interfaces, Strings, Math;
+
+var
+  FPredefinedClipboardFormats:
+    array[TPredefinedClipboardFormat] of TClipboardFormat;
 
 function MakeLong(A,B : Word) : LongInt;
 begin
@@ -70,12 +77,37 @@ Begin
   Result := A or B shl 8;
 end;
 
+function PredefinedClipboardFormat(AFormat: TPredefinedClipboardFormat
+  ): TClipboardFormat;
+begin
+  if FPredefinedClipboardFormats[AFormat]=0 then
+    FPredefinedClipboardFormats[AFormat]:=
+      ClipboardRegisterFormat(PredefinedClipboardMimeTypes[AFormat]);
+  Result:=FPredefinedClipboardFormats[AFormat];
+end;
+
+
 {$I winapi.inc}
 
+procedure InternalInit;
+var
+  AClipboardFormat: TPredefinedClipboardFormat;
+begin
+  for AClipboardFormat:=Low(TPredefinedClipboardFormat) to
+    High(TPredefinedClipboardFormat) do
+      FPredefinedClipboardFormats[AClipboardFormat]:=0;
+end;
+
+initialization
+  InternalInit;
+  
 end.
 
 {
   $Log$
+  Revision 1.20  2002/10/24 10:05:51  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.19  2002/06/04 15:17:21  lazarus
   MG: improved TFont for XLFD font names
 
