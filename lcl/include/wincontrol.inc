@@ -313,14 +313,6 @@ begin
       end;
 end;
 
-Procedure TWinControl.SetAutoSize(const Value : Boolean);
-begin
-  If AutoSize <> Value then begin
-    FAutoSize := Value;
-    DoAutoSize;
-  end;
-end;
-
 {------------------------------------------------------------------------------}
 {  TWinControl BroadCast                                                       }
 {------------------------------------------------------------------------------}
@@ -2409,6 +2401,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2002/09/10 06:49:19  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.85  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 
