@@ -148,6 +148,12 @@ type
     itmEditTabsToSpacesBlock: TMenuItem;
     itmEditCommentBlock: TMenuItem;
     itmEditUncommentBlock: TMenuItem;
+    itmEditSelect: TMenuItem;
+    itmEditSelectAll: TMenuItem;
+    itmEditSelectToBrace: TMenuItem;
+    itmEditSelectCodeBlock: TMenuItem;
+    itmEditSelectLine: TMenuItem;
+    itmEditSelectParagraph: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;
@@ -488,6 +494,41 @@ begin
   mnuEdit.Add(itmEditUncommentBlock);
 
   mnuEdit.Add(CreateMenuSeparator);
+
+  itmEditSelect := TMenuItem.Create(Self);
+  itmEditSelect.Name:='itmEditSelect';
+  itmEditSelect.Caption := lisMenuSelect;
+  mnuEdit.Add(itmEditSelect);
+
+  // select sub menu items
+    itmEditSelectAll := TMenuItem.Create(Self);
+    itmEditSelectAll.Name:='itmEditSelectAll';
+    itmEditSelectAll.Caption := lisMenuSelectAll;
+    itmEditSelect.Add(itmEditSelectAll);
+
+    itmEditSelectToBrace := TMenuItem.Create(Self);
+    itmEditSelectToBrace.Name:='itmEditSelectToBrace';
+    itmEditSelectToBrace.Caption := lisMenuSelectToBrace;
+    itmEditSelect.Add(itmEditSelectToBrace);
+
+    itmEditSelectCodeBlock := TMenuItem.Create(Self);
+    itmEditSelectCodeBlock.Name:='itmEditSelectCodeBlock';
+    itmEditSelectCodeBlock.Caption := lisMenuSelectCodeBlock;
+    itmEditSelectCodeBlock.Enabled:=false;
+    itmEditSelect.Add(itmEditSelectCodeBlock);
+
+    itmEditSelectLine := TMenuItem.Create(Self);
+    itmEditSelectLine.Name:='itmEditSelectLine';
+    itmEditSelectLine.Caption := lisMenuSelectLine;
+    itmEditSelect.Add(itmEditSelectLine);
+
+    itmEditSelectParagraph := TMenuItem.Create(Self);
+    itmEditSelectParagraph.Name:='itmEditSelectParagraph';
+    itmEditSelectParagraph.Caption := lisMenuSelectParagraph;
+    itmEditSelect.Add(itmEditSelectParagraph);
+
+  mnuEdit.Add(CreateMenuSeparator);
+
 
   itmEditCompleteCode := TMenuItem.Create(Self);
   itmEditCompleteCode.Name:='itmEditCompleteCode';
@@ -876,6 +917,11 @@ begin
     itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
     itmEditCommentBlock.ShortCut:=CommandToShortCut(ecSelectionComment);
     itmEditUncommentBlock.ShortCut:=CommandToShortCut(ecSelectionUncomment);
+    itmEditSelectAll.ShortCut:=CommandToShortCut(ecSelectAll);
+    itmEditSelectToBrace.ShortCut:=CommandToShortCut(ecSelectToBrace);
+    itmEditSelectCodeBlock.ShortCut:=CommandToShortCut(ecSelectCodeBlock);
+    itmEditSelectLine.ShortCut:=CommandToShortCut(ecSelectLine);
+    itmEditSelectParagraph.ShortCut:=CommandToShortCut(ecSelectParagraph);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);

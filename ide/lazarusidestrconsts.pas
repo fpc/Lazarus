@@ -116,8 +116,14 @@ ResourceString
   lisMenuTabsToSpacesSelection = 'Tabs to spaces in selection';
   lisMenuCommentSelection = 'Comment selection';
   lisMenuUncommentSelection = 'Uncomment selection';
+  lisMenuSelect = 'Select';
+  lisMenuSelectAll = 'Select all';
+  lisMenuSelectToBrace = 'Select to brace';
+  lisMenuSelectCodeBlock = 'Select code block';
+  lisMenuSelectLine = 'Select line';
+  lisMenuSelectParagraph = 'Select paragraph';
   lisMenuCompleteCode = 'Complete Code';
-  
+
   lisMenuFind = 'Find';
   lisMenuFindNext = 'Find &Next';
   lisMenuFindPrevious = 'Find &Previous';

@@ -77,6 +77,10 @@ const
   ecSelectionTabs2Spaces = ecUserFirst + 52;
   ecSelectionComment     = ecUserFirst + 53;
   ecSelectionUncomment   = ecUserFirst + 54;
+  ecSelectToBrace        = ecUserFirst + 55;
+  ecSelectCodeBlock      = ecUserFirst + 56;
+  ecSelectLine           = ecUserFirst + 57;
+  ecSelectParagraph      = ecUserFirst + 58;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -492,6 +496,10 @@ begin
     ecSelectionTabs2Spaces: Result:='Selection tabs to spaces';
     ecSelectionComment: Result:='Comment selection';
     ecSelectionUncomment: Result:='Uncomment selection';
+    ecSelectToBrace: Result:= 'Select to brace';
+    ecSelectCodeBlock: Result:= 'Select code block';
+    ecSelectLine: Result:= 'Select line';
+    ecSelectParagraph: Result:= 'Select paragraph';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1140,7 +1148,6 @@ begin
 
   // selection
   C:=Categories[AddCategory('Selection','Text selection commands',caSrcEditOnly)];
-  Add(C,'Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
   Add(C,'Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
   Add(C,'Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_Insert,[ssShift]);
@@ -1155,6 +1162,11 @@ begin
   Add(C,'Select page bottom',ecSelPageBottom,VK_NEXT, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Select to absolute beginning',ecSelEditorTop,VK_HOME, [ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Select to absolute end',ecSelEditorBottom,VK_END, [ssShift,ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Select all',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Select to brace',ecSelectToBrace,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Select code block',ecSelectCodeBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Select line',ecSelectLine,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Select paragraph',ecSelectParagraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);
