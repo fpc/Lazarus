@@ -2612,7 +2612,7 @@ begin
     ACanvas.FillRect(ARect);
     ACanvas.Color := OldColor;
   end;
-  ACanvas.TextRect(ARect, 2,0,AValue, Style);
+  ACanvas.TextRect(ARect, ARect.Left+2,ARect.Top,AValue, Style);
 end;
 
 { these three procedures implement the default render behavior of the
@@ -2641,7 +2641,7 @@ begin
     ExpandTabs := True;
     SystemFont := False;
   end;
-  ACanvas.TextRect(ARect, 2,0,GetName, Style);
+  ACanvas.TextRect(ARect,ARect.Left+2,ARect.Top,GetName, Style);
 end;
 
 procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect: TRect;
@@ -2661,7 +2661,7 @@ begin
     ExpandTabs := True;
     SystemFont := False;
   end;
-  ACanvas.TextRect(ARect, 3,0,GetVisualValue, Style);
+  ACanvas.TextRect(ARect,ARect.Left+3,ARect.Top,GetVisualValue, Style);
 end;
 
 procedure TPropertyEditor.UpdateSubProperties;

@@ -4748,7 +4748,7 @@ procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
 begin
   inherited DrawCell(aCol, aRow, aRect, aState);
   if DefaultDrawing then begin
-    Canvas.TextRect(aRect, 3, 0, Cells[aCol,aRow]);
+    Canvas.TextRect(aRect,ARect.Left+3,ARect.Top, Cells[aCol,aRow]);
     //MyTExtRect(aRect, 3, 0, Cells[aCol,aRow], Canvas.Textstyle.Clipping);
   end;
 end;

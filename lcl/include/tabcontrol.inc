@@ -546,7 +546,7 @@ begin
     TS.Layout:= tlCenter;
     TS.Opaque:= false;
     TS.Clipping:= false;
-    Canvas.TextRect(ARect, 0, 0, Caption, TS);
+    Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
   end;
 end;
 
@@ -643,6 +643,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.5  2004/09/12 20:59:05  vincents
   fix fpc 1.0.x compilation
 

@@ -382,7 +382,7 @@ var
             TextStyle.Alignment  := taLeftJustify;
         end;
     end;
-    Canvas.TextRect(theRect, 0, 0, Caption, TextStyle);
+    Canvas.TextRect(theRect, ARect.Left, ARect.Top, Caption, TextStyle);
   end;
 
   Procedure DoDisabledTextRect(Rect : TRect; Highlight, Shadow : TColor);
@@ -474,6 +474,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.14  2004/07/16 21:49:00  mattias
   added RTTI controls
 

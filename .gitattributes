@@ -1058,6 +1058,7 @@ lcl/arrow.pp svneol=native#text/pascal
 lcl/avglvltree.pas svneol=native#text/pascal
 lcl/buttons.pp svneol=native#text/pascal
 lcl/calendar.pp svneol=native#text/pascal
+lcl/chart.pp svneol=native#text/pascal
 lcl/checklst.pas svneol=native#text/pascal
 lcl/clipbrd.pp svneol=native#text/pascal
 lcl/clistbox.pp svneol=native#text/pascal

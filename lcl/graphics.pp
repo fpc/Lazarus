@@ -901,7 +901,7 @@ type
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
     Procedure RoundRect(const Rect: TRect; RX,RY: Integer);
     procedure TextOut(X,Y: Integer; const Text: String); virtual;
-    procedure TextRect(ARect: TRect; X, Y: integer; const Text: string);
+    procedure TextRect(const ARect: TRect; X, Y: integer; const Text: string);
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
                        const Style: TTextStyle); virtual;
     function TextExtent(const Text: string): TSize; virtual;
@@ -1758,6 +1758,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.153  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.152  2004/09/20 23:13:46  mattias
   moved remaining TCanvas handle dependent methods to protected
 

@@ -172,7 +172,7 @@ begin
       ShowPrefix := ShowAccelChar;
       SystemFont:=false;
     end;
-    TextRect(R, 0, 0, Caption, TR);
+    TextRect(R, R.Left, R.Top, Caption, TR);
   end;
 end;
 
@@ -187,6 +187,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.7  2004/08/04 09:57:17  mattias
   TStaticText.CanTab=false
 

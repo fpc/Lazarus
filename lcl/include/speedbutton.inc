@@ -493,14 +493,14 @@ begin
     If not Enabled then begin
       Canvas.Font.Color := clBtnHighlight;
       OffsetRect(PaintRect, 1, 1);
-      Canvas.TextRect(PaintRect, 0, 0, Caption, TXTStyle);
+      Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
       Canvas.Font.Color := clBtnShadow;
       OffsetRect(PaintRect, -1, -1);
     end
     else
       Canvas.Font.Color := clBtnText;
     //DebugLn('TCustomSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
-    Canvas.TextRect(PaintRect, 0, 0, Caption, TXTStyle);
+    Canvas.TextRect(PaintRect, PaintRect.Left, PaintRect.Top, Caption, TXTStyle);
   end;
 
   inherited Paint;
@@ -761,6 +761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.59  2004/07/15 10:43:38  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

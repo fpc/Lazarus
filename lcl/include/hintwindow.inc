@@ -95,7 +95,7 @@ begin
     Opaque     := true;
     SystemFont := false;
   end;
-  Canvas.TextRect(Rect, 0, 0, Caption, TS);
+  Canvas.TextRect(Rect, Rect.Left, Rect.Top, Caption, TS);
 end;
 
 procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);

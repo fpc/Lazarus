@@ -712,7 +712,8 @@ end;
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-Procedure TCanvas.TextRect(ARect: TRect; X,Y : Integer; const Text : String);
+Procedure TCanvas.TextRect(const ARect: TRect; X,Y : Integer;
+  const Text : String);
 begin
   TextRect(ARect,X,Y,Text,TextStyle);
 end;
@@ -729,9 +730,8 @@ var
   Options : Longint;
   fRect : TRect;
 begin
+  //debugln('TCanvas.TextRect A Text="',Text,'" ',dbgs(ARect));
   Changing;
-  ARect.Left := ARect.Left + X;
-  ARect.Top := ARect.Top + Y;
   Options := 0;
   case Style.Alignment of
     taRightJustify : Options := DT_RIGHT;
@@ -782,6 +782,7 @@ begin
   end;
   If Style.SystemFont then
     SetTextColor(Self.Handle, Font.Color);
+  //debugln('TCanvas.TextRect DRAW Text="',Text,'" ',dbgs(fRect));
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
   Changed;
 end;
@@ -1259,6 +1260,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.80  2004/09/20 23:13:46  mattias
   moved remaining TCanvas handle dependent methods to protected
 

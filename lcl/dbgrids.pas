@@ -1228,7 +1228,7 @@ begin
       DrawArrow(Canvas, aRect, GetDataSetState)
     else
     if (aRow=0)and(ACol>=FixedCols) then begin
-      Canvas.TextRect(ARect, 2, 2,  GetColumnTitle(aCol));
+      Canvas.TextRect(ARect,ARect.Left+2,ARect.Top+2,GetColumnTitle(aCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(aCol);
@@ -1236,7 +1236,7 @@ begin
       S := F.DisplayText;
     end else
       S := '';
-    Canvas.TextRect(Arect, 2, 2, S);
+    Canvas.TextRect(Arect,ARect.Left+2,ARect.Top+2, S);
     //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
   end;
 end;
@@ -1712,7 +1712,7 @@ begin
       DrawArrow(Canvas, Rect, GetDataSetState)
     else
     if (DataCol>=FixedCols) then begin
-      Canvas.TextRect(Rect, 2, 2,  GetColumnTitle(DataCol));
+      Canvas.TextRect(Rect,Rect.Left+2,Rect.Top+2,GetColumnTitle(DataCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(DataCol);
@@ -1720,7 +1720,7 @@ begin
       S := F.DisplayText;
     end else
       S := '';
-    Canvas.TextRect(Rect, 2, 2, S);
+    Canvas.TextRect(Rect,Rect.Left+2,Rect.Top+2,S);
     //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
   end;
 end;
@@ -2546,6 +2546,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2004/09/24 13:45:31  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.17  2004/09/23 12:59:37  vincents
   fix fpc 1.0.x. compilation
 

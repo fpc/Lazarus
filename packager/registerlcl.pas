@@ -42,7 +42,7 @@ uses
   Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, Forms, Grids, Controls,
   Dialogs, Spin, Arrow, Calendar, MaskEdit, CheckLst, PairSplitter, ExtDlgs,
   DBCtrls, DBGrids, EditBtn, ActnList, FileCtrl, XMLPropStorage, IniPropStorage,
-  Graphics;
+  Graphics, Chart;
   
 procedure Register;
 
@@ -74,6 +74,7 @@ begin
   RegisterUnit('Graphics',@Graphics.Register);
   RegisterUnit('XMLPropStorage',@XMLPropStorage.Register);
   RegisterUnit('IniPropStorage',@IniPropStorage.Register);
+  RegisterUnit('Chart',@Chart.Register);
 end;
 
 end.

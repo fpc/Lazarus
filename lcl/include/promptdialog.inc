@@ -148,7 +148,7 @@ procedure TPromptDialog.Paint;
 begin
   Inherited Paint;
   Canvas.Brush := Brush;
-  Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
+  Canvas.TextRect(TextBox, TextBox.Left, TextBox.Top, MSG, TextStyle);
   if assigned (FBitmap) then
     Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,FBitmap.Width,FBitmap.Height),
                     FBitmap.Canvas, Rect(0,0,FBitmap.Width,FBitmap.Height));
@@ -381,6 +381,9 @@ end;
 
 {
    $Log$
+   Revision 1.17  2004/09/24 13:45:32  mattias
+   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
    Revision 1.16  2004/07/15 10:43:38  mattias
    added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

@@ -21,7 +21,6 @@
  *                                                                           *
  *****************************************************************************
 }
-
 unit ExtCtrls;
 
 {$mode objfpc}
@@ -868,6 +867,7 @@ type
     Function CanTab: Boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
+    property Align default alNone;
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
@@ -877,6 +877,7 @@ type
     property Caption read GetText write SetText;
     property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
     property ParentColor stored ParentColorIsStored;
+    property TabStop default False;
   end;
 
 
@@ -884,7 +885,7 @@ type
 
   TPanel = class(TCustomPanel)
   published
-    property Align default alNone;
+    property Align;
     property Alignment;
     property Anchors;
     property AutoSize;
@@ -908,7 +909,7 @@ type
     property PopupMenu;
     property ShowHint;
     property TabOrder;
-    property TabStop default False;
+    property TabStop;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -968,6 +969,9 @@ end.
 
  {
   $Log$
+  Revision 1.122  2004/09/24 13:45:32  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.121  2004/09/24 10:23:49  mattias
   fixed 1.0.10 compilation
 

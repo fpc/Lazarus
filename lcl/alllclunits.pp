@@ -45,7 +45,7 @@ uses
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
   DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics,
-  PropertyStorage, IniPropStorage, XMLPropStorage,
+  PropertyStorage, IniPropStorage, XMLPropStorage, Chart,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
   WSCheckLst, WSCListBox, WSComCtrls, WSControls,
@@ -63,6 +63,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/09/24 13:45:31  mattias
+  fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
+
   Revision 1.20  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 
