@@ -2604,10 +2604,6 @@ Begin
           writeln('[TSourceNotebook.CreateNotebook] D');
           {$ENDIF}
           Align := alClient;
-          Left := 0;
-          Top :=2;
-          Width := ClientWidth;
-          Height := ClientHeight-Notebook.top;
           if PageCount>0 then
             Pages.Strings[0] := 'unit1'
           else
