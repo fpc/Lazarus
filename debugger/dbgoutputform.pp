@@ -51,13 +51,6 @@ type
   public
     procedure AddText(const AText: String);
     procedure Clear;
-  published
-    // publish some properties until fpcbug #1888 is fixed
-    property Top;
-    property Left;
-    property Width; 
-    property Height; 
-    property Caption;
   end;
 
 implementation
@@ -88,9 +81,6 @@ begin
   
   // Not yet through resources
   txtOutput.Scrollbars := ssBoth;  
-  
-  // Not yet through resources
-  mnuPopUp.Items.Add(popClear);
 end;
 
 procedure TDbgOutputForm.popClearClick(Sender: TObject);
@@ -104,6 +94,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2002/05/30 22:45:57  lazarus
+  MWE:
+    - Removed menucreation from loaded since streaming works
+
   Revision 1.7  2002/05/10 07:00:08  lazarus
   MG: fixed typo
 

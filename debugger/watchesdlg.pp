@@ -72,18 +72,10 @@ type
 
     procedure UpdateItem(const AItem: TListItem; const AWatch: TDBGWatch);
   protected
-    procedure Loaded; override;
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published         
-    // publish some properties until fpcbug #1888 is fixed
-    property Top;
-    property Left;
-    property Width; 
-    property Height; 
-    property Caption;
   end;
 
 
@@ -122,23 +114,6 @@ begin
   if Item = nil
   then Result := nil
   else Result := TDBGWatch(Item.Data);
-end;
-
-procedure TWatchesDlg.Loaded;
-begin
-  inherited Loaded;
-  
-  // Not yet through resources
-  mnuPopUp.Items.Add(popAdd);
-  mnuPopUp.Items.Add(N1);
-  mnuPopUp.Items.Add(popProperties);
-  mnuPopUp.Items.Add(popEnabled);
-  mnuPopUp.Items.Add(popDelete);
-  mnuPopUp.Items.Add(N2);
-  mnuPopUp.Items.Add(popDisableAll);
-  mnuPopUp.Items.Add(popEnableAll);
-  mnuPopUp.Items.Add(popDeleteAll);
-
 end;
 
 procedure TWatchesDlg.lvWatchesClick(Sender: TObject);
@@ -289,6 +264,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.4  2002/05/30 22:45:57  lazarus
+  MWE:
+    - Removed menucreation from loaded since streaming works
+
   Revision 1.3  2002/05/30 21:53:56  lazarus
   MG: fixed form streaming of not direct TForm descendents
 

@@ -72,18 +72,10 @@ type
 
     procedure UpdateItem(const AItem: TListItem; const ABreakpoint: TDBGBreakPoint);
   protected
-    procedure Loaded; override;
     procedure SetDebugger(const ADebugger: TDebugger); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    // publish some properties until fpcbug #1888 is fixed
-    property Top;
-    property Left;
-    property Width; 
-    property Height; 
-    property Caption;
   end;
 
 
@@ -141,23 +133,6 @@ begin
   FBreakpointsNotification.OnRemove := nil;
   FBreakpointsNotification.ReleaseReference;
   inherited;
-end;
-
-procedure TBreakPointsDlg.Loaded;
-begin
-  inherited Loaded;
-  
-  // Not yet through resources
-  mnuPopUp.Items.Add(popAdd);
-  popAdd.Add(popAddSourceBP);
-  mnuPopUp.Items.Add(N1);
-  mnuPopUp.Items.Add(popProperties);
-  mnuPopUp.Items.Add(popEnabled);
-  mnuPopUp.Items.Add(popDelete);
-  mnuPopUp.Items.Add(N2);
-  mnuPopUp.Items.Add(popDisableAll);
-  mnuPopUp.Items.Add(popEnableAll);
-  mnuPopUp.Items.Add(popDeleteAll);
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
@@ -285,6 +260,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.7  2002/05/30 22:45:57  lazarus
+  MWE:
+    - Removed menucreation from loaded since streaming works
+
   Revision 1.6  2002/05/10 06:57:47  lazarus
   MG: updated licenses
 
