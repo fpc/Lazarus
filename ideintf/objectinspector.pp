@@ -574,7 +574,7 @@ begin
     FDefaultItemHeight:=DefItemHeight;
 
   BuildPropertyList;
-  
+
   FHintTimer := TTimer.Create(nil);
   FHintTimer.Interval := 500;
   FHintTimer.Enabled := False;
@@ -602,6 +602,7 @@ begin
     ScrollInfo.nMax := TopMax+ClientHeight;
     ScrollInfo.nPage := ClientHeight;
     if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
+    if TopY > ScrollInfo.nMax then TopY:=ScrollInfo.nMax;
     ScrollInfo.nPos := TopY;
     ShowScrollBar(Handle, SB_VERT, True);
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
