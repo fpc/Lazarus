@@ -208,6 +208,10 @@ end;
 procedure TFrmComponentMan.FrmMainCREATE(Sender: TObject);
 begin
   MyFile := TStringList.Create;
+  {$IFDEF EnablePkgs}
+  Caption:='Custom Component Manager (No packages!)';
+  Label1.Caption:='Installed Custom Components';
+  {$ENDIF}
 end;
 
 procedure TFrmComponentMan.FrmMainDESTROY(Sender: TObject);

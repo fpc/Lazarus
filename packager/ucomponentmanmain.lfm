@@ -11,6 +11,7 @@ object FrmComponentMan: TFrmComponentMan
   HEIGHT = 244
   TOP = 171
   WIDTH = 465
+  HELPTYPE = htkeyword
   object ListComps: TLISTBOX
     ANCHORS = [aktop, akleft]
     ONCLICK = ListCompsCLICK
@@ -21,6 +22,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 184
     TOP = 28
     WIDTH = 224
+    HELPTYPE = htkeyword
   end
   object Label1: TLABEL
     AUTOSIZE = True
@@ -31,6 +33,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 14
     TOP = 8
     WIDTH = 130
+    HELPTYPE = htkeyword
   end
   object Button1: TBUTTON
     ANCHORS = [aktop, akleft]
@@ -42,6 +45,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 15
     TOP = 220
     WIDTH = 75
+    HELPTYPE = htkeyword
   end
   object BtnRemove: TBUTTON
     ANCHORS = [aktop, akleft]
@@ -53,6 +57,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 15
     TOP = 220
     WIDTH = 75
+    HELPTYPE = htkeyword
   end
   object Label2: TLABEL
     AUTOSIZE = True
@@ -63,6 +68,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 14
     TOP = 28
     WIDTH = 113
+    HELPTYPE = htkeyword
   end
   object Label3: TLABEL
     AUTOSIZE = True
@@ -73,6 +79,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 14
     TOP = 132
     WIDTH = 77
+    HELPTYPE = htkeyword
   end
   object Label4: TLABEL
     AUTOSIZE = True
@@ -83,6 +90,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 16
     TOP = 80
     WIDTH = 83
+    HELPTYPE = htkeyword
   end
   object BtnCancel: TBITBTN
     KIND = bkcancel
@@ -97,6 +105,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 25
     TOP = 212
     WIDTH = 75
+    HELPTYPE = htkeyword
   end
   object Bitbtn2: TBITBTN
     KIND = bkok
@@ -112,6 +121,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 25
     TOP = 212
     WIDTH = 75
+    HELPTYPE = htkeyword
   end
   object LblComponent: TLABEL
     ANCHORS = [aktop, akleft]
@@ -121,6 +131,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 17
     TOP = 48
     WIDTH = 193
+    HELPTYPE = htkeyword
   end
   object LblUnit: TLABEL
     ANCHORS = [aktop, akleft]
@@ -130,6 +141,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 17
     TOP = 156
     WIDTH = 196
+    HELPTYPE = htkeyword
   end
   object TxtPage: TEDIT
     ANCHORS = [aktop, akleft]
@@ -140,6 +152,7 @@ object FrmComponentMan: TFrmComponentMan
     HEIGHT = 23
     TOP = 100
     WIDTH = 192
+    HELPTYPE = htkeyword
   end
   object DlgLoad: TOPENDIALOG
     OPTIONS = [ofenablesizing, ofviewdetail]
