@@ -625,6 +625,7 @@ type
     procedure CreateDesignerForComponent(AComponent: TComponent);
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
+    procedure ShowDesignerForm(AForm: TCustomForm);
 
     // editor and environment options
     procedure SaveEnvironment; override;
@@ -2041,6 +2042,13 @@ begin
   ShowControlsInComponentalette:=(FLastFormActivated=nil)
     or (TDesigner(FLastFormActivated.Designer).LookupRoot is TControl);
   IDEComponentPalette.ShowHideControls(ShowControlsInComponentalette);
+end;
+
+procedure TMainIDE.ShowDesignerForm(AForm: TCustomForm);
+begin
+  // do not call 'AForm.Show', because it will set Visible to true
+  AForm.BringToFront;
+  LCLLinux.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
@@ -4611,7 +4619,10 @@ Begin
         end;
         if AForm=nil then
           AForm:=SourceNotebook;
-        AForm.ShowOnTop;
+        if csDesigning in AForm.ComponentState then
+          ShowDesignerForm(AForm)
+        else
+          AForm.ShowOnTop;
       end;
     end;
   finally
@@ -6432,7 +6443,8 @@ begin
   // hide all collected windows
   for i:=0 to HiddenWindowsOnRun.Count-1 do begin
     AForm:=TCustomForm(HiddenWindowsOnRun[i]);
-    AForm.Hide;
+    if not (csDesigning in ComponentState) then
+      AForm.Hide;
   end;
 end;
 
@@ -6456,7 +6468,10 @@ var
 begin
   while HiddenWindowsOnRun.Count>0 do begin
     AForm:=TCustomForm(HiddenWindowsOnRun[0]);
-    AForm.Show;
+    if (csDesigning in ComponentState) then
+      ShowDesignerForm(AForm)
+    else
+      AForm.Show;
     HiddenWindowsOnRun.Delete(0);
   end;
 end;
@@ -6501,7 +6516,7 @@ begin
   if AForm=nil then exit;
   FDisplayState:= dsForm;
   FLastFormActivated:=AForm;
-  AForm.ShowOnTop;
+  ShowDesignerForm(AForm);
   if TheControlSelection.SelectionForm<>AForm then begin
     // select the new form (object inspector, formeditor, control selection)
     TheControlSelection.AssignComponent(ActiveUnitInfo.Component);
@@ -9143,6 +9158,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.605  2003/06/16 22:47:19  mattias
+  fixed keeping TForm.Visible=false
+
   Revision 1.604  2003/06/13 21:21:09  mattias
   added tcolorbutton xpm
 
