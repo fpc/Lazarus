@@ -131,7 +131,8 @@ const
   ecSaveAll              = ecUserFirst + 209;
   ecClose                = ecUserFirst + 210;
   ecCloseAll             = ecUserFirst + 211;
-  ecQuit                 = ecUserFirst + 212;
+  ecCleanDirectory       = ecUserFirst + 212;
+  ecQuit                 = ecUserFirst + 213;
 
   // IDE navigation
   ecJumpToEditor         = ecUserFirst + 300;
@@ -613,6 +614,7 @@ begin
   ecSaveAll: SetResult(VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   ecClose: SetResult(VK_F4,[ssCtrl],VK_UNKNOWN,[]);
   ecCloseAll: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecCleanDirectory: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecQuit: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // view menu
@@ -1090,6 +1092,7 @@ begin
     ecSaveAll               : Result:= srkmecSaveAll;
     ecClose                 : Result:= lismenuclose;
     ecCloseAll              : Result:= srkmecCloseAll;
+    ecCleanDirectory        : Result:= lisMenuCleanDirectory;
     ecQuit                  : Result:= lismenuquit;
     
     // edit menu
@@ -2020,6 +2023,7 @@ begin
   AddDefault(C,'SaveAll',ecSaveAll);
   AddDefault(C,'Close',ecClose);
   AddDefault(C,'CloseAll',ecCloseAll);
+  AddDefault(C,'Clean Directory',ecCleanDirectory);
   AddDefault(C,'Quit',ecQuit);
 
   // view menu

@@ -193,6 +193,7 @@ type
     itmFileSaveAll: TMenuItem;
     itmFileClose: TMenuItem;
     itmFileCloseAll: TMenuItem;
+    itmFileCleanDirectory: TMenuItem;
     itmFileQuit: TMenuItem;
 
     // edit menu
@@ -636,6 +637,13 @@ begin
   itmFileCloseAll.Caption := lisMenuCloseAll;
   itmFileCloseAll.Enabled := False;
   mnuFile.Add(itmFileCloseAll);
+
+  mnuFile.Add(CreateMenuSeparator);
+
+  itmFileCleanDirectory := TMenuItem.Create(Self);
+  itmFileCleanDirectory.Name:='itmFileCleanDirectory';
+  itmFileCleanDirectory.Caption := lisMenuCleanDirectory;
+  mnuFile.Add(itmFileCleanDirectory);
 
   mnuFile.Add(CreateMenuSeparator);
 
@@ -1428,6 +1436,7 @@ begin
     itmFileSaveAll.ShortCut:=CommandToShortCut(ecSaveAll);
     itmFileClose.ShortCut:=CommandToShortCut(ecClose);
     itmFileCloseAll.ShortCut:=CommandToShortCut(ecCloseAll);
+    itmFileCleanDirectory.ShortCut:=CommandToShortCut(ecCleanDirectory);
     itmFileQuit.ShortCut:=CommandToShortCut(ecQuit);
 
     // edit menu

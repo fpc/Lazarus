@@ -116,13 +116,13 @@ function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer): integer;
 
 // XMLConfig
-procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList;
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
-function AddToRecentList(const s: string; RecentList: TStringList;
+function AddToRecentList(const s: string; RecentList: TStrings;
   Max: integer): boolean;
-procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
+procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings;
@@ -190,7 +190,7 @@ uses
      {$ENDIF}
   {$EndIf};
 
-function AddToRecentList(const s: string; RecentList: TStringList;
+function AddToRecentList(const s: string; RecentList: TStrings;
   Max: integer): boolean;
 begin
   if (RecentList.Count>0) and (RecentList[0]=s) then begin
@@ -206,7 +206,7 @@ begin
       RecentList.Delete(RecentList.Count-1);
 end;
 
-procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
+procedure RemoveFromRecentList(const s: string; RecentList: TStrings);
 var i: integer;
 begin
   i:=RecentList.Count-1;
@@ -216,7 +216,7 @@ begin
   end;
 end;
 
-procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList;
+procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 begin
   SaveStringList(XMLConfig,List,Path);
@@ -722,7 +722,7 @@ begin
   SysUtils.FindClose(FileInfo);
 end;
 
-procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
+procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings;
   const Path: string);
 begin
   LoadStringList(XMLConfig,List,Path);

@@ -117,6 +117,7 @@ resourcestring
   lisMenuClose = 'Close';
   lisMenuCloseAll = 'Close all editor files';
   lisMenuQuit = 'Quit';
+  lisMenuCleanDirectory = 'Clean directory';
   
   lisMenuUndo = 'Undo';
   lisMenuRedo = 'Redo';
@@ -544,7 +545,7 @@ resourcestring
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.';
 
 
-  //IDE components
+  // IDE components
   ideStandard = 'Standard';
   ideAdditional = 'Additional';
   ideMisc = 'Misc';
@@ -553,10 +554,10 @@ resourcestring
   ideDataAccess = 'Data Access';
   ideInterbase = 'Interbase Data Access';
 
-  //Environment dialog
+  // Environment dialog
   dlgBakDirectory='(no subdirectoy)';
   
-  //Search dialog
+  // Search dialog
   dlgSearchCaption = 'Searching...';
   dlgSearchAbort = 'Search terminated by user.';
   
@@ -741,7 +742,7 @@ resourcestring
   dlgIndentCodeTo = 'Indent code to';
   dlgCodeToolsTab = 'Code Tools';
   
-  //CodeTools dialogue
+  // CodeTools dialog
   dlgCodeToolsOpts = 'CodeTools Options';
   dlgCodeCreation = 'Code Creation';
   dlgWordsPolicies = 'Words';
@@ -783,6 +784,7 @@ resourcestring
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
 
+  // source editor
   locwndSrcEditor = 'Lazarus Source Editor';
   
   // compiler options
@@ -945,7 +947,7 @@ resourcestring
   dlgDownWord = 'Down';
   dlgReplaceAll = 'Replace All';
   
-  //IDEOptionDefs
+  // IDEOptionDefs
   dlgGetPosition = 'Get position';
   dlgLeftPos     = 'Left:';
   dlgWidthPos    = 'Width:';
@@ -1087,6 +1089,7 @@ resourcestring
   srkmecGotoMarker            = 'Go to Marker %d';
   srkmecSetMarker             = 'Set Marker %d';
   srkmecPeriod                = 'period';
+
   // sourcenotebook
   srkmecJumpToEditor          = 'Focus to source editor';
   srkmecNextEditor            = 'Go to next editor';
@@ -1094,6 +1097,7 @@ resourcestring
   srkmecMoveEditorLeft        = 'Move editor left';
   srkmecMoveEditorRight       = 'Move editor right';
   srkmecGotoEditor            = 'Go to editor %d';
+
   // file menu
   srkmecNew                   = 'New';
   srkmecNewUnit               = 'New unit';
@@ -1118,6 +1122,7 @@ resourcestring
   srkmecInsertCVSName         = 'Insert CVS keyword Name';
   srkmecInsertCVSRevision     = 'Insert CVS keyword Revision';
   srkmecInsertCVSSource       = 'Insert CVS keyword Source';
+  
   // search menu
   srkmecFind                      = 'Find text';
   srkmecFindNext                  = 'Find next';
@@ -1130,6 +1135,7 @@ resourcestring
   srkmecAddJumpPoint              = 'Add jump point';
   srkmecOpenFileAtCursor          = 'Open file at cursor';
   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
+  
   // view menu
   srkmecToggleFormUnit            = 'Switch between form and unit';
   srkmecToggleObjectInsp          = 'View Object Inspector';
@@ -1145,6 +1151,7 @@ resourcestring
   srkmecViewUnits                 = 'View units';
   srkmecViewForms                 = 'View forms';
   srkmecViewUnitDependencies      = 'View unit dependencies';
+  
   // codetools
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
@@ -1154,7 +1161,6 @@ resourcestring
   srkmecFindDeclaration           = 'Find declaration';
   srkmecFindBlockOtherEnd         = 'Find block other end';
   srkmecFindBlockStart            = 'Find block start';
-  // project uuse menu resource
 
   // run menu
   srkmecBuild                     = 'build program/project';
@@ -1169,10 +1175,12 @@ resourcestring
   srkmecBuildFile                 = 'build file';
   srkmecRunFile                   = 'run file';
   srkmecConfigBuildFile           = 'config build file';
+  
   // tools menu
   srkmecExtToolSettings           = 'External tools settings';
   srkmecBuildLazarus              = 'Build lazarus';
   srkmecExtTool                   = 'External tool %d';
+  
   // environment menu
   srkmecEnvironmentOptions        = 'General environment options';
   srkmecCodeToolsOptions          = 'Codetools options';
@@ -1180,6 +1188,7 @@ resourcestring
   lisMenuRescanFPCSourceDirectory = 'Rescan FPC source directory';
   srkmecMakeResourceString        = 'Make resource string';
   srkmecDiff                      = 'Diff';
+  
   // help menu
   srkmecunknown                   = 'unknown editor command';
    
@@ -1231,7 +1240,7 @@ resourcestring
   srVK_SCROLL     = 'Scroll';
   srVK_IRREGULAR  = 'Irregular ';
    
-  //Category
+  // Category
   srkmCatCursorMoving   = 'Cursor moving commands';
   srkmCatSelection      = 'Text selection commands';
   srkmCatEditing        = 'Text editing commands';
@@ -1250,7 +1259,7 @@ resourcestring
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
 
-  //Languages
+  // Languages
   rsLanguageAutomatic   = 'Automatic (or english)';
   rsLanguageEnglish     = 'English';
   rsLanguageDeutsch     = 'Deutsch';
@@ -1262,7 +1271,7 @@ resourcestring
   rsLanguageItalian     = 'Italian';
   rsLanguageCatalan     = 'Catalan';
 
-  //Units dependencies
+  // Unit dependencies
   dlgUnitDepCaption     = 'Unit dependencies';
   dlgUnitDepBrowse      = 'Browse...';
   dlgUnitDepRefresh     = 'Refresh';
@@ -1297,6 +1306,7 @@ resourcestring
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With Packages';
   lisLazBuildOk = 'Ok';
+  lisClDirKeepAllTextFiles = 'Keep all text files';
   lisLazBuildCancel = 'Cancel';
   lisLazBuildNone = 'None';
   lisLazBuildBuild = 'Build';
@@ -1511,7 +1521,7 @@ resourcestring
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
   lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
 
-  //todolist
+  // todolist
   lisTodoListCaption='ToDo List';
   lisTodolistRefresh='Refresh todo items';
   lisTodoListGotoLine='Goto selected source line';
@@ -2270,6 +2280,13 @@ resourcestring
   lisCTDefVariable = 'Variable: %s';
   lisCTDefnoVariableSelected = '<no variable selected>';
   lisCTDefVariableName = 'Variable Name';
+
+  // clean directory dialog
+  lisClDirCleanSubDirectories = 'Clean sub directories';
+  lisClDirRemoveFilesMatchingFilter = 'Remove files matching filter';
+  lisClDirSimpleSyntaxEGInsteadOf = 'Simple Syntax (e.g. * instead of .*)';
+  lisClDirKeepFilesMatchingFilter = 'Keep files matching filter';
+  lisClDirCleanDirectory = 'Clean Directory';
 
 implementation
 end.

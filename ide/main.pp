@@ -81,7 +81,7 @@ uses
   MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
   InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm, DialogProcs,
   FindReplaceDialog, FindInFilesDlg, CodeExplorer, BuildFileDlg, ExtractProcDlg,
-  DelphiUnit2Laz,
+  DelphiUnit2Laz, CleanDirDlg,
   // main ide
   MainBar;
 
@@ -110,6 +110,7 @@ type
     procedure mnuSaveAllClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuCloseAllClicked(Sender : TObject);
+    procedure mnuCleanDirectoryClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
 
     // edit menu
@@ -1528,6 +1529,7 @@ begin
   itmFileClose.OnClick := @mnuCloseClicked;
   itmFileCloseAll.Enabled := False;
   itmFileCloseAll.OnClick := @mnuCloseAllClicked;
+  itmFileCleanDirectory.OnClick := @mnuCleanDirectoryClicked;
   itmFileQuit.OnClick := @mnuQuitClicked;
 end;
 
@@ -1845,6 +1847,11 @@ begin
   while (SourceNoteBook.NoteBook<>nil)
   and (DoCloseEditorFile(SourceNoteBook.NoteBook.PageIndex,
        [cfSaveFirst])=mrOk) do ;
+end;
+
+procedure TMainIDE.mnuCleanDirectoryClicked(Sender: TObject);
+begin
+  ShowCleanDirectoryDialog(Project1.ProjectDirectory,MacroList);
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileNew(Sender : TObject);
@@ -10206,6 +10213,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.678  2003/11/28 23:24:57  mattias
+  implemented Clean Directories
+
   Revision 1.677  2003/11/28 10:33:43  mattias
   fixed todolist  by Bob
 

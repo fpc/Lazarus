@@ -1,0 +1,164 @@
+object CleanDirectoryDialog: TCleanDirectoryDialog
+  CAPTION = 'Clean Directory'
+  CLIENTHEIGHT = 345
+  CLIENTWIDTH = 502
+  ONCREATE = CleanDirectoryDialogCreate
+  HORZSCROLLBAR.PAGE = 503
+  VERTSCROLLBAR.PAGE = 346
+  LEFT = 316
+  HEIGHT = 345
+  TOP = 212
+  WIDTH = 502
+  object OkButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Ok'
+    TABSTOP = True
+    TABORDER = 0
+    ONCLICK = OkButtonClick
+    LEFT = 128
+    HEIGHT = 25
+    TOP = 312
+    WIDTH = 97
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 269
+    HEIGHT = 25
+    TOP = 312
+    WIDTH = 97
+  end
+  object DirGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft, akright]
+    CAPTION = 'Directory'
+    CLIENTHEIGHT = 63
+    CLIENTWIDTH = 482
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 2
+    LEFT = 8
+    HEIGHT = 80
+    TOP = 8
+    WIDTH = 486
+    object DirCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft, akright]
+      MAXLENGTH = 0
+      PARENTCTL3D = False
+      TABORDER = 0
+      TABSTOP = True
+      TEXT = 'DirCombobox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 9
+      WIDTH = 468
+    end
+    object SubDirsCheckbox: TCHECKBOX
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft, akright]
+      AUTOSIZE = True
+      CAPTION = 'Clean sub directories'
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      LEFT = 6
+      HEIGHT = 20
+      TOP = 39
+      WIDTH = 468
+    end
+  end
+  object RemoveGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft, akright]
+    CAPTION = 'Remove files matching filter:'
+    CLIENTHEIGHT = 68
+    CLIENTWIDTH = 482
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 3
+    LEFT = 8
+    HEIGHT = 85
+    TOP = 96
+    WIDTH = 486
+    object RemoveCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft, akright]
+      MAXLENGTH = 0
+      PARENTCTL3D = False
+      TABORDER = 0
+      TABSTOP = True
+      TEXT = 'RemoveCombobox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 8
+      WIDTH = 468
+    end
+    object SimpleSyntaxRemoveCheckbox: TCHECKBOX
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      AUTOSIZE = True
+      CAPTION = 'Simple syntax (e.g. * instead of .*)'
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      LEFT = 6
+      HEIGHT = 20
+      TOP = 37
+      WIDTH = 468
+    end
+  end
+  object KeepGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft, akright]
+    CAPTION = 'Keep files matching filter:'
+    CLIENTHEIGHT = 89
+    CLIENTWIDTH = 482
+    COLOR = -2147483633
+    PARENTCOLOR = True
+    PARENTCTL3D = False
+    TABORDER = 4
+    LEFT = 8
+    HEIGHT = 106
+    TOP = 190
+    WIDTH = 486
+    object KeepCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft, akright]
+      MAXLENGTH = 0
+      PARENTCTL3D = False
+      TABORDER = 0
+      TABSTOP = True
+      TEXT = 'KeepCombobox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 8
+      WIDTH = 468
+    end
+    object SimpleSyntaxKeepCheckbox: TCHECKBOX
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      AUTOSIZE = True
+      CAPTION = 'Simple syntax (e.g. * instead of .*)'
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      LEFT = 6
+      HEIGHT = 20
+      TOP = 35
+      WIDTH = 468
+    end
+    object KeepTextFilesCheckbox: TCHECKBOX
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      AUTOSIZE = True
+      CAPTION = 'Keep Text Files'
+      DRAGCURSOR = 0
+      TABORDER = 2
+      TABSTOP = True
+      LEFT = 6
+      HEIGHT = 20
+      TOP = 61
+      WIDTH = 468
+    end
+  end
+end

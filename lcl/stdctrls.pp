@@ -294,6 +294,7 @@ type
   public
     property ItemIndex;
   published
+    property Align;
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
@@ -1462,6 +1463,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2003/11/28 23:24:57  mattias
+  implemented Clean Directories
+
   Revision 1.111  2003/11/27 19:40:34  mattias
   added TListBox.PopupMenu
 
