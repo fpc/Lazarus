@@ -32,10 +32,33 @@
       - add missing forward proc bodies
       - complete event assignments
       - complete local variables
-      -
+      - insert header comment for classes
 
   ToDo:
-    -insert header comment for classes
+    -add code for index properties (TList, array of, Pointer array)
+      TList:
+        property Items[Index: integer]: AType accesstlist;
+        -> creates
+          property Items[Index: Type1]: Type2 read GetItems write SetItems;
+          private FItems: TList;
+          private function GetItems(Index: Type1): Type2;
+            begin
+              Result:=Type2(FItems[Index]);
+            end;
+          private procedure SetItems(Index: Type1; const AValue: Type2);
+            begin
+              FItems[Index]:=Type2;
+            end;
+          public constructor Create;
+            begin
+              FItems:=TList.Create;
+            end;
+          public destructor Destroy; override;
+            begin
+              FItems.Free;
+              inherited Destroy;
+            end;
+
     -ProcExists: search procs in ancestors too
     -VarExists: search vars in ancestors too
 }
