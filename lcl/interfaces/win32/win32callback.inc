@@ -781,6 +781,9 @@ Begin
       // RadioButton functionality
       if lWinControl is TRadioButton then
         Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
+      // focus window
+      if Windows.GetFocus <> Window then
+        Windows.SetFocus(Window);
     End;
     WM_LBUTTONUP:
     Begin
@@ -1485,6 +1488,9 @@ end;
 
 {
   $Log$
+  Revision 1.177  2005/01/02 22:18:52  micha
+  focus window on left-click
+
   Revision 1.176  2004/12/31 16:29:58  micha
   prevent reporting of spurious mousemove messages
 
