@@ -66,6 +66,7 @@ ide/dlgmessage.lfm svneol=native#text/plain
 ide/dlgmessage.lrs svneol=native#text/pascal
 ide/dlgmessage.pp svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
+ide/environmentopts.pp svneol=native#text/pascal
 ide/find_dlg.pp svneol=native#text/pascal
 ide/findreplacedialog.pp svneol=native#text/pascal
 ide/formeditor.pp svneol=native#text/pascal
