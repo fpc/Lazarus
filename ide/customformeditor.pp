@@ -47,7 +47,8 @@ TGetProc = Function : Variant of Object;
       private
         FControl : TComponent;
         FFormEditor : TCustomFormEditor;  //used to call it's functions
-        Function FSetProp(Name : String; PRI : PPropInfo; const Value) : Boolean;
+        Function FSetProp(PRI : PPropInfo; const Value) : Boolean;
+        Function FGetProp(PRI : PPropInfo; var Value) : Boolean;
       protected
         Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
         Function GetPPropInfobyName(Name : String) : PPropInfo;
@@ -106,7 +107,8 @@ TCustomFormEditor
     Function AddSelected(Value : TComponent) : Integer;
     Function Filename : String; override;
     Function FormModified : Boolean; override;
-    Function FindComponent(const Name : String) : TIComponentInterface; override;
+    Function FindComponentByName(const Name : String) : TIComponentInterface; override;
+    Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     Function GetFormComponent : TIComponentInterface; override;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
@@ -136,7 +138,7 @@ begin
 inherited;
 end;
 
-Function TComponentInterface.FSetProp(Name : String; PRI : PPropInfo; const Value) : Boolean;
+Function TComponentInterface.FSetProp(PRI : PPropInfo; const Value) : Boolean;
 Begin
        case PRI^.PropType^.Kind of
        tkBool: SetOrdProp(FControl,PRI,longint(Value));
@@ -146,33 +148,65 @@ Begin
        tkWString : Begin
                     Writeln('String...');
                     SetStrProp(FControl,PRI,String(Value));
-                    Result := True;
                    end;
        tkInteger,
        tkInt64   : Begin
                     Writeln('Int64...');
                     SetInt64Prop(FControl,PRI,Int64(Value));
-                    Result := True;
                    end;
        tkFloat  : Begin
                     Writeln('Float...');
                     SetFloatProp(FControl,PRI,Extended(Value));
-                    Result := True;
                    end;
        tkVariant  : Begin
                     Writeln('Variant...');
                     SetVariantProp(FControl,PRI,Variant(Value));
-                    Result := True;
                    end;
        tkMethod  : Begin
                     Writeln('Method...');
                     SetMethodProp(FControl,PRI,TMethod(value));
-                    Result := True;
                    end;
          else
           Result := False;
        end;//case
 end;
+
+Function TComponentInterface.FGetProp(PRI : PPropInfo; var Value) : Boolean;
+Begin
+Result := True;
+       case PRI^.PropType^.Kind of
+       tkBool    : Longint(Value) := GetOrdProp(FControl,PRI);
+       tkSString,
+       tkLString,
+       tkAString,
+       tkWString : Begin
+                    Writeln('Get String...');
+                    String(Value) := GetStrProp(FControl,PRI);
+                    Writeln('The string returned is '+String(value));
+                    Writeln('*Get String...');
+                   end;
+       tkInteger,
+       tkInt64   : Begin
+                    Writeln('Get Int64...');
+                    Int64(Value) := GetInt64Prop(FControl,PRI);
+                   end;
+       tkFloat  : Begin
+                    Writeln('Get Float...');
+                    Extended(Value) := GetFloatProp(FControl,PRI);
+                   end;
+       tkVariant  : Begin
+                    Writeln('Get Variant...');
+                    Variant(Value) := GetVariantProp(FControl,PRI);
+                   end;
+       tkMethod  : Begin
+                    Writeln('Get Method...');
+                    TMethod(Value) := GetMethodProp(FControl,PRI);
+                   end;
+         else
+          Result := False;
+       end;//case
+end;
+
 
 Function TComponentInterface.GetPPropInfoByIndex(Index:Integer): PPropInfo;
 var
@@ -238,7 +272,7 @@ result := nil;
 if (FCOntrol is TControl) then
 if TControl(FControl).Parent <> nil then
    begin
-   Result := FFormEditor.FindComponent(TControl(FControl).Parent.Name);
+   Result := FFormEditor.FindComponentByName(TControl(FControl).Parent.Name);
    end;
 end;
 
@@ -322,79 +356,21 @@ end;
 
 Function TComponentInterface.GetPropValue(Index : Integer; var Value) : Boolean;
 var
-
-PRI : PPropInfo;
-J : Longint;
-Num : Integer;
+PP : PPropInfo;
 Begin
-PRI := GetPPropInfoByIndex(Index);
-if PRI <> nil then
-        with PRI^ do
-            Begin
-               Result := True;
-               If (Proptype^.kind in Ordinaltypes) Then
-                  begin
-                    J:=GetOrdProp(FControl,pri);
-                    If PropType^.Kind=tkenumeration then
-                       String(Value) := GetEnumName(Proptype,J)
-	            else
-                       Integer(Value) := J;
-                  end
-               else
-               Case pri^.proptype^.kind of
-                  tkfloat :  begin
-                     Real(Value) := GetFloatProp(FControl,pri);
-                     end;
-                  tkAstring : begin
-                     AnsiString(Value) := GetStrProp(FControl,Pri);
-                     end;
-                   else
-                     Begin
-                      Real(Value) := -1;
-                      Result := False;
-                     end;
-               end;  //end of the CASE
-
-            end;  //end of the with PRI^...
+PP := GetPPropInfoByIndex(Index);
+Result := FGetProp(PP,Value);
 end;
 
 Function TComponentInterface.GetPropValuebyName(Name: String; var Value) : Boolean;
 var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
 PRI : PPropInfo;
-I,J : Longint;
-Num : Integer;
 Begin
-PRI := GetPropInfo(FControl.ClassInfo,Name);
+Result := False;
+PRI := GetPPropInfoByName(Name);
+
 if PRI <> nil then
-        with PRI^ do
-            Begin
-               Result := True;
-               If (Proptype^.kind in Ordinaltypes) Then
-                  begin
-                    J:=GetOrdProp(FControl,pri);
-                    If PropType^.Kind=tkenumeration then
-                       String(Value) := GetEnumName(Proptype,J)
-	            else
-                       Integer(Value) := J;
-                  end
-               else
-               Case pri^.proptype^.kind of
-                  tkfloat :  begin
-                     Real(Value) := GetFloatProp(FControl,pri);
-                     end;
-                  tkAstring : begin
-                     AnsiString(Value) := GetStrProp(FControl,Pri);
-                     end;
-                  else
-                     Begin
-                     Result := False;
-                     Integer(Value) := -1;
-                     end;
-               end;  //end of the CASE
-            end;  //end of the with PRI^...
+Result := FGetProp(PRI,Value);
 end;
 
 Function TComponentInterface.SetProp(Index : Integer; const Value) : Boolean;
@@ -405,7 +381,7 @@ Begin
   PRI := GetPPropInfoByIndex(Index);
   if PRI <> nil then
       Begin
-        Result := FSetProp(PRI^.Name,PRI,Value);
+        Result := FSetProp(PRI,Value);
       end;
 end;
 
@@ -413,18 +389,13 @@ Function TComponentInterface.SetPropbyName(Name : String; const Value) : Boolean
 var
 PRI : PPropInfo;
 Begin
-Writeln('*************');
-Writeln('SetPropByName');
 Result := False;
 
 PRI := GetPropInfo(FControl.ClassInfo,Name);
 if PRI <> nil then
    Begin
-   Result :=FSetProp(Name,PRI,Value);
+   Result :=FSetProp(PRI,Value);
    end;
-
-Writeln('*************');
-
 end;
 
 
@@ -504,7 +475,7 @@ Begin
 Result := FModified;
 end;
 
-Function TCustomFormEditor.FindComponent(const Name : String) : TIComponentInterface;
+Function TCustomFormEditor.FindComponentByName(const Name : String) : TIComponentInterface;
 Var
   Num : Integer;
 Begin
@@ -513,6 +484,20 @@ Begin
       Begin
         Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
         if TComponentInterface(Result).FControl.Name = Name then break;
+        inc(num);
+      end;
+end;
+
+
+Function TCustomFormEditor.FindComponent(AComponent: TComponent) : TIComponentInterface;
+Var
+  Num : Integer;
+Begin
+  Num := 0;
+  While Num < FComponentInterfaceList.Count do
+      Begin
+        Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
+        if TComponentInterface(Result).FControl = AComponent then break;
         inc(num);
       end;
 end;
@@ -548,41 +533,7 @@ if (SelectedComponents.Items[0] is TWinControl) and (csAcceptsControls in TWinCo
     end;
 end;
 
-
-Writeln('4');
-
-  if Assigned(CI) then
-     Begin
-        if (TComponentInterface(CI).FControl is TWinControl) and
-           (csAcceptsControls in TWinControl(TComponentInterface(CI).FControl).COntrolStyle)then
-            begin
-               TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl);
-            end
-            else
-               TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl).Parent;
-
-
-     End
-     else
-     Begin //CI is not assigned so check the selected control
-     Writeln('CI is not assigned....');
-     if SelectedComponents.Count > 0 then
-        Begin
-            Writeln('CI is not assigned but something is selected....');
-            TempInterface := TComponentInterface(FindComponent(SelectedComponents.Items[0].Name));
-            Writeln('The selected control is....'+TempInterface.FControl.Name);
-
-            if (TempInterface.FControl is TWinControl) and
-               (csAcceptsControls in TWinControl(TempInterface.FControl).ControlStyle)then
-                  Begin
-                  Writeln('The selected control IS a TWincontrol and accepts controls');
-                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl);
-                  end
-                  else
-                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl).Parent;
-        end
-     end;
-Writeln('5');
+//create a name for the control
 
 
 TempName := Temp.FControl.ClassName;
@@ -606,6 +557,43 @@ While Found do
    end;
 Temp.FControl.Name := TempName+Inttostr(num);
 Writeln('TempName + num = '+TempName+Inttostr(num));
+
+
+Writeln('4');
+
+  if Assigned(CI) then
+     Begin
+        if (TComponentInterface(CI).FControl is TWinControl) and
+           (csAcceptsControls in TWinControl(TComponentInterface(CI).FControl).COntrolStyle)then
+            begin
+               TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl);
+            end
+            else
+               TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl).Parent;
+
+
+     End
+     else
+     Begin //CI is not assigned so check the selected control
+     Writeln('CI is not assigned....');
+     if SelectedComponents.Count > 0 then
+        Begin
+            Writeln('CI is not assigned but something is selected....');
+            TempInterface := TComponentInterface(FindComponentByName(SelectedComponents.Items[0].Name));
+            Writeln('The selected control is....'+TempInterface.FControl.Name);
+
+            if (TempInterface.FControl is TWinControl) and
+               (csAcceptsControls in TWinControl(TempInterface.FControl).ControlStyle)then
+                  Begin
+                  Writeln('The selected control IS a TWincontrol and accepts controls');
+                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl);
+                  end
+                  else
+                  TWinControl(Temp.FControl).Parent := TWinControl(TempInterface.FControl).Parent;
+        end
+     end;
+Writeln('5');
+
 
 
 if (Temp.FControl is TControl) then

@@ -28,29 +28,30 @@ unit main;
 interface
 
 uses
-  classes,LclLinux,compiler, stdctrls,forms,buttons,menus,comctrls,
+  Classes, LclLinux, compiler, stdctrls, forms, buttons, menus, comctrls,
   Spin, project,sysutils, global,
-  compileroptions,Controls,graphics,extctrls, Dialogs,dlgMEssage,
-  Designer,process,idecomp,Find_dlg,FormEditor,CustomFormEditor,ObjectInspector;
+  compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
+  Designer, process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
+  CustomFormEditor, ObjectInspector, ControlSelection;
 
 const
   STANDARDBTNCOUNT = 50;
 
 type
 
- TForm1 = class(TFORM)
-    Opendialog1   : TOpenDialog;
-    Savedialog1   : TSaveDialog;
-    FontDialog1   : TFontDialog;
-    ColorDialog1  : TColorDialog;
-    FindDialog1   : TFindDialog;
-    ToolBar1      : TToolBar;
-    Toolbutton1   : TToolButton;
-    Toolbutton2   : TToolButton;
-    Toolbutton3   : TToolButton;
-    Toolbutton4   : TToolButton;
-    Pixmap1       : TPixmap;//used to assign the tspeedbutton its image
-    Bitmap1       : TBitmap;
+  TForm1 = class(TFORM)
+    Opendialog1  : TOpenDialog;
+    Savedialog1  : TSaveDialog;
+    FontDialog1  : TFontDialog;
+    ColorDialog1 : TColorDialog;
+    FindDialog1  : TFindDialog;
+    ToolBar1     : TToolBar;
+    Toolbutton1  : TToolButton;
+    Toolbutton2  : TToolButton;
+    Toolbutton3  : TToolButton;
+    Toolbutton4  : TToolButton;
+    Pixmap1      : TPixmap;//used to assign the tspeedbutton its image
+    Bitmap1      : TBitmap;
     SpeedButton1 : TSpeedButton;
     SpeedButton2 : TSpeedButton;
     SpeedButton3 : TSpeedButton;
@@ -139,13 +140,18 @@ type
     procedure mnuViewMessagesClick(Sender : TObject);
     procedure mnuSearchFindClicked(Sender : TObject);
     procedure mnuSearchFindAgainClicked(Sender : TObject);
-    procedure MouseDownonForm(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
-    procedure MouseUponForm(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
-    procedure ClickonControl(Sender : TObject);
 
+    procedure MouseDownOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
+    procedure MouseMoveOnControl(Sender : TObject; Shift : TShiftState; X, Y: Integer);
+    procedure MouseUpOnControl(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
     procedure ControlClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
-private
+
+    function FindDesigner(ChildComponent:TComponent):TDesigner;
+    procedure SelectOnlyThisComponent(AComponent:TComponent);
+    procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
+    procedure OIOnSelectComponent(AComponent:TComponent);
+  private
     Function CreateSeperator : TMenuItem;
     Procedure SetBtnDefaults(Control : Pointer;I,Page : Integer);
     Function ReturnActiveUnitList : TUnitInfo;
@@ -156,7 +162,7 @@ private
     function RenameUnit(OldUnitName, NewUnitName : string;SList : TUnitInfo) : Boolean;
     Procedure ReAssignEditorLines(SList : TUnitInfo);
     Procedure ReAssignSourcefromEditor(var SList : TUnitInfo);
-protected
+ protected
     procedure DoFind(Sender : TObject);
 
     procedure FormShow(Sender : TObject);
@@ -167,7 +173,7 @@ protected
 
     Standardbtn : Array[1..STANDARDBTNCOUNT] of TSpeedbutton;
 
-public
+  public
     constructor Create(AOwner: TComponent); override; 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
@@ -176,9 +182,10 @@ public
 
     procedure FormPaint(Sender : TObject);
     //these numbers are used to determine where the mouse was when the button was pressed
-    Mouse_Down : TPoint;
+    MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
+    MouseDownControl: TObject;
     bpressed : Integer;
-end;
+  end;
 
 
 
@@ -189,14 +196,17 @@ const
   Numbers = ['0'..'1'];
 
 var
-Form1 : TForm1;
-FormEditor1 : TFormEditor;
-ObjectInspector1 : TObjectInspector;
+  Form1 : TForm1;
+  FormEditor1 : TFormEditor;
+  ObjectInspector1 : TObjectInspector;
 
-Taginc : Integer;
+  TagInc : Integer;
 implementation
+
 uses
-  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg;
+  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg, Math;
+
+{ TForm1 }
 
 constructor TForm1.Create(AOwner: TComponent);  
 var
@@ -217,6 +227,8 @@ begin
   Position:= poDesigned;
   Name := 'Form1';
   LoadMainMenu;
+
+  MouseDownControl:=nil;
 
   Bitmap1 := TBitmap.Create;
   Bitmap1.Handle := CreatePixmapIndirect(@IMGOK_Check, ColorToRGB(clBtnFace));
@@ -632,19 +644,31 @@ begin
   Compiler1.OutputString := @Messagedlg.Add;
 
   ObjectInspector1 := TObjectInspector.Create(Self);
-  ObjectInspector1.left := 0;
-  ObjectInspector1.Top := Top+Height+25;
-  ObjectInspector1.Height := 400;
+  ObjectInspector1.SetBounds(0,Top+Height+5,230,600);
+  ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
+  ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
 
   ObjectInspector1.Show;
+
   FormEditor1 := TFormEditor.Create;
   FormEditor1.Obj_Inspector := ObjectInspector1;
 
 end;
 
+procedure TForm1.OIOnAddAvailableComponent(AComponent:TComponent;
+var Allowed:boolean);
+begin
+  Allowed:=(not (AComponent is TGrabber));
+end;
+
+procedure TForm1.OIOnSelectComponent(AComponent:TComponent);
+begin
+  SelectOnlyThisComponent(AComponent);
+end;
+
 Procedure TForm1.ToolButtonCLick(Sender : TObject);
 Begin
-Assert(False, 'Trace:TOOL BUTTON CLICK!');
+  Assert(False, 'Trace:TOOL BUTTON CLICK!');
 
 
 {if ComboBox1.Parent = Toolbar1 then
@@ -739,7 +763,7 @@ begin
 //--------------
 
   
-itmFileNew := TMenuItem.Create(Self);
+  itmFileNew := TMenuItem.Create(Self);
   itmFileNew.Caption := 'New Unit';
   itmFileNew.OnClick := @mnuNewClicked;
   mnuFile.Add(itmFileNew);
@@ -1089,6 +1113,7 @@ end;
 
 Function TForm1.Create_LFM(SList : TUnitInfo) : Boolean;
 Begin
+
 end;
 
 Function TForm1.SavebyUnit(SList : TUnitInfo) : Boolean;
@@ -1210,25 +1235,25 @@ end;
 
 Procedure TForm1.SetName_Form(SList : TUnitInfo);
 Begin
-        if (SList.flags = pfSource) or (SList.Flags = pfProject) then
-           Begin
-           Assert(False, 'Trace:filename is '+SList.Filename);
-           Assert(False, 'Trace:pos is '+inttostr(pos('.',SList.Filename)));
-           if pos('.',SList.Filename) > 0 then
-           SList.Name := Copy(ExtractFileName(SList.Filename),1,pos('.',ExtractFileName(SList.Filename))-1)
-           else
-           SList.Name := ExtractFileName(SList.Filename);
+  if (SList.flags = pfSource) or (SList.Flags = pfProject) then
+     Begin
+     Assert(False, 'Trace:filename is '+SList.Filename);
+     Assert(False, 'Trace:pos is '+inttostr(pos('.',SList.Filename)));
+     if pos('.',SList.Filename) > 0 then
+     SList.Name := Copy(ExtractFileName(SList.Filename),1,pos('.',ExtractFileName(SList.Filename))-1)
+     else
+     SList.Name := ExtractFileName(SList.Filename);
 
-           Assert(False, 'Trace:Name of new unit is '+SList.Name);
-           end;
+     Assert(False, 'Trace:Name of new unit is '+SList.Name);
+     end;
 
-        if SList.flags = pfSource then
-           Begin
-           SList.FormName := ReturnFormname(SList.Source);
-           if SList.FormName <> '' then
-              SList.Flags := pfForm;
-           end;
-Assert(False, 'Trace:Exiting SetName_Form');
+  if SList.flags = pfSource then
+     Begin
+     SList.FormName := ReturnFormname(SList.Source);
+     if SList.FormName <> '' then
+        SList.Flags := pfForm;
+     end;
+  Assert(False, 'Trace:Exiting SetName_Form');
 end;
 
 procedure TForm1.mnuSaveClicked(Sender : TObject);
@@ -1245,27 +1270,26 @@ end;
 
 Procedure TForm1.mnuSaveAsClicked(Sender : TObject);
 var
-SList : TUnitInfo;
+  SList : TUnitInfo;
 Begin
-SList := ReturnActiveUnitList;
-if SList = nil then Exit;
-Assert(False, 'Trace:SLIST.PAGE is '+inttostr(SList.Page));
-SaveDialog1.Title := 'Save '+SList.Name+' as :';
-if SList.Filename <> '' then
-SaveDialog1.Filename := SList.Filename
-else
-SaveDialog1.Filename := ExtractFilePath(Project1.Name)+SList.Name;
+  SList := ReturnActiveUnitList;
+  if SList = nil then Exit;
+  Assert(False, 'Trace:SLIST.PAGE is '+inttostr(SList.Page));
+  SaveDialog1.Title := 'Save '+SList.Name+' as :';
+  if SList.Filename <> '' then
+    SaveDialog1.Filename := SList.Filename
+  else
+    SaveDialog1.Filename := ExtractFilePath(Project1.Name)+SList.Name;
 
-if SaveDialog1.Execute then
-     begin
-     RenameUnit(SList.Name, ExtractFileName(SaveDialog1.Filename),SList);
-     SList.Filename := SaveDialog1.Filename;
-     end
-     else
-     Exit;
+  if SaveDialog1.Execute then
+  begin
+    RenameUnit(SList.Name, ExtractFileName(SaveDialog1.Filename),SList);
+    SList.Filename := SaveDialog1.Filename;
+  end
+  else
+    Exit;
 
-SaveByUnit(SList);
-
+  SaveByUnit(SList);
 end;
 
 Procedure TForm1.mnuSaveAllClicked(Sender : TObject);
@@ -1296,15 +1320,16 @@ End;
 
 Procedure TForm1.ControlClick(Sender : TObject);
 var
-Page : Integer;
-I : Integer;
+  Page : Integer;
+  I : Integer;
 begin
-if bpressed > -1 then
-if (bpressed = 1) and (sender <> Notebook1) then  //1 is really just the FIRST one on the notebook page.
-   Begin
+  if bpressed > -1 then
+  if (bpressed = 1) and (sender <> Notebook1) then
+    // 1 is really just the FIRST one on the notebook page.
+    Begin
     //raise the 1st button on that page.
-   Page := Notebook1.Pageindex;
-   For I := 0 to Notebook1.Page[Page].ControlCount-1 do
+    Page := Notebook1.Pageindex;
+    For I := 0 to Notebook1.Page[Page].ControlCount-1 do
        Begin
          if (Notebook1.PAge[page].Controls[i] is TSpeedButton) then
 	     Begin
@@ -1401,148 +1426,290 @@ begin
   IdeEditor1.Visible:= true;
 end;
 
+function TForm1.FindDesigner(ChildComponent:TComponent):TDesigner;
+begin
+  if ChildComponent is TForm then
+    Result:=TDesigner(TForm(ChildComponent).Designer)
+  else if Assigned(ChildComponent.Owner)
+  and (ChildComponent.Owner is TForm) then
+    Result:=TDesigner(TForm(ChildComponent.Owner).Designer)
+  else
+    Result:=nil;
+end;
+
+procedure TForm1.SelectOnlyThisComponent(AComponent:TComponent);
+var
+  CurDesigner:TDesigner;
+begin
+  // select control in Designer
+  CurDesigner:=FindDesigner(AComponent);
+  if (CurDesigner<>nil) then begin
+    CurDesigner.ControlSelection.Clear;
+    CurDesigner.ControlSelection.Add(TControl(AComponent));
+  end;
+  FormEditor1.ClearSelected;
+  // this will automatically inform the object inspector
+  FormEditor1.AddSelected(AComponent);
+end;
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {
+   Currently Unused !
           Used when we a control is clicked.  This is used
             to update the Object Inspector.
 }
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
-Procedure TForm1.ClickOnControl(Sender : TObject);
+{Procedure TForm1.ClickOnControl(Sender : TObject);
+// We clicked on the form.  Let's see what the active selection is in the IDE
+// control bar. If it's the pointer, then we set the
+// FormEditor1.SelectedComponents to Sender,
+// otherwise we drop a control and call the CreateComponent function.
 var
-  CInterface : TComponentInterface;
+  ParentCI, NewCI : TComponentInterface;
+  CurDesigner:TDesigner;
+  NewLeft, NewTop, NewWidth, NewHeight : Integer;
 Begin
-//We clicked on the form.  Let's see what the active selection is in the IDE control
-//bar.  If it's the pointer, then we set the FormEditor1.SelectedComponents to Sender,
-//otherwise we drop a control and call the CreateComponent function.
-if BPressed = 1 then
-   Begin //mouse button pressed.
+  if BPressed = 1 then
+  Begin //mouse button pressed.
+    FormEditor1.ClearSelected;
+    Writeln('Clicked on the control!!!!!  Control name is '+TControl(sender).name);
+    // this will automatically inform the object inspector
+    FormEditor1.AddSelected(TComponent(Sender));
+  end
+  else
+  Begin  //add a new control
+    ParentCI:=TComponentInterface(FormEditor1.FindComponent(TComponent(Sender)));
+    if Assigned(ParentCI) then begin
+      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
+      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
+      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
+      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
+      NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,
+        TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType)
+        ,NewLeft,NewTop,NewWidth,NewHeight));
+      NewCI.SetPropByName('Visible',True); //Control).Visible := True;
 
-      FormEditor1.ClearSelected;
-      Writeln('Clicked on the control!!!!!  Control name is '+TControl(sender).name);
-      FormEditor1.AddSelected(TComponent(Sender));
-   end
-   else
-   Begin  //add a new control
-     CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
-                         TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),-1,-1,-1,-1));
-     CInterface.Setpropbyname('Visible',True);//Control).Visible := True;
+      //set the ONCLICK event so we know when the control is selected;
+      TControl(NewCI.Control).OnClick := @ClickOnControl;
 
-     //set the ONCLICK event so we know when the control is selected;
-     TControl(CInterface.Control).OnClick := @ClickOnControl;
-   end;
+      if NewCI.Control is TControl then begin
+        NewCI.SetPropByName('OnClick',@ClickOnControl);
+        // select form in Designer
+        if ParentCI.Control is TForm then
+          CurDesigner:=TDesigner(TForm(ParentCI.Control).Designer)
+        else if Assigned(ParentCI.Control.Owner)
+        and (ParentCI.Control.Owner is TForm) then
+          CurDesigner:=TDesigner(TForm(ParentCI.Control.Owner).Designer)
+        else
+          CurDesigner:=nil;
+        if (CurDesigner<>nil) then begin
+          CurDesigner.ControlSelection.Clear;
+          CurDesigner.ControlSelection.Add(TControl(NewCI.Control));
+        end;
+      end;
+    end;
+  end;
 
-ControlClick(Notebook1);  //this resets it to the mouse.
-
-
-
-end;
+  ControlClick(Notebook1);  //this resets it to the mouse.
+end;}
 
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {
-          Used when we click on a form that was created.
+          Used when we click on a control that was created.
                   This can be used to detect when
                  a control is dropped onto a form
 }
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------}
-procedure TForm1.MouseDownonForm(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
+procedure TForm1.MouseDownOnControl(Sender : TObject; Button: TMouseButton;
+Shift : TShiftState; X, Y: Integer);
 Begin
-Writeln('Mouse down at '+inttostr(x)+'   '+inttostr(y));
-Mouse_Down.X := X;
-Mouse_Down.Y := Y;
+  if GetCaptureGrabber<>nil then exit;
 
+  MouseDownPos.X := X;
+  MouseDownPos.Y := Y;
+  if not (Sender is TCustomForm) then begin
+    inc(MouseDownPos.X,TControl(Sender).Left);
+    inc(MouseDownPos.Y,TControl(Sender).Top);
+  end;
+  MouseDownControl:=Sender;
+  LastMouseMovePos:=MouseDownPos;
+  Writeln(TComponent(Sender).Name+'.OnMouseDown at '+inttostr(MouseDownPos.x)
+    +','+inttostr(MouseDownPos.Y)+' x='+IntToStr(x));
+
+  if BPressed = 1 then
+  Begin //mouse pointer button pressed.
+    if not (Sender is TCustomForm) then begin
+      SelectOnlyThisComponent(TComponent(Sender));
+    end;
+  end;
 End;
 
-procedure TForm1.MouseUponForm(Sender : TObject; Button: TMouseButton; Shift : TShiftState; X, Y: Integer);
+procedure TForm1.MouseMoveOnControl(Sender : TObject;
+Shift : TShiftState; X, Y: Integer);
 var
-  CInterface : TComponentInterface;
-NewLeft1, NewTop1 : Integer;
-NewLeft2, NewTop2 : Integer;
+  CurDesigner: TDesigner;
+  CaptureGrabber:TGrabber;
 Begin
+  CaptureGrabber:=GetCaptureGrabber;
+  if CaptureGrabber<>nil then begin
+    CaptureGrabber.CaptureMouseMove(TControl(Sender),Shift,X,Y);
+  end else begin
+    CurDesigner:=FindDesigner(TComponent(Sender));
+    if Assigned(MouseDownControl) then begin
+      if BPressed = 1 then begin
+        // mouse pointer button pressed
+        if not (Sender is TCustomForm) then begin
+          // move selection
+          if Assigned(CurDesigner) then begin
+            CurDesigner.ControlSelection.MoveSelection(
+              X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
+            LastMouseMovePos:=Point(X,Y);
+          end;
+        end;
+      end;
+    end;
+  end;
+End;
 
-//see if they moved the mouse or simply clicked on the form
-if (X >= 0) and (X <= TControl(sender).Width) and
-   (Y >= 0) and (Y <= TControl(sender).Height) then
-   begin
-     //mouse was down and up on the form.
+procedure TForm1.MouseUpOnControl(Sender : TObject; Button: TMouseButton;
+Shift : TShiftState; X, Y: Integer);
+// We clicked on the form.  Let's see what the active selection is in the IDE
+// control bar. If it's the pointer, then we set the
+// FormEditor1.SelectedComponents to Sender,
+// otherwise we drop a control and call the CreateComponent function.
+var
+  ParentCI, NewCI : TComponentInterface;
+  NewLeft, NewTop, NewWidth, NewHeight : Integer;
+//  CInterface : TComponentInterface;
+  CaptureGrabber:TGrabber;
+Begin
+  CaptureGrabber:=GetCaptureGrabber;
+  if CaptureGrabber<>nil then begin
+    CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,X,Y);
+    exit;
+  end;
 
-   //We clicked on the form.  Let's see what the active selection is in the IDE control
-   //bar.  If it's the pointer, then we set the FormEditor1.SelectedComponents to Sender,
-   //otherwise we drop a control and call the CreateComponent function.
-   if BPressed = 1 then
-      Begin //mouse button pressed.
-         FormEditor1.ClearSelected;
-         Writeln('Clicked on the form!!!!!  Forms name is '+TFOrm(sender).name);
-         ObjectInspector1.RootComponent := TForm(sender);
-         FormEditor1.AddSelected(TComponent(Sender));
+  MouseUpPos.X := X;
+  MouseUpPos.Y := Y;
+  if not (Sender is TCustomForm) then begin
+    inc(MouseUpPos.X,TControl(Sender).Left);
+    inc(MouseUpPos.Y,TControl(Sender).Top);
+  end;
+  Writeln(TComponent(Sender).Name+'.OnMouseUp at '+inttostr(x)+','+inttostr(y));
+
+  if BPressed = 1 then
+  Begin //mouse pointer button pressed.
+    if Sender is TCustomForm then
+      SelectOnlyThisComponent(TComponent(Sender));
+  end
+  else
+  Begin  //add a new control
+    ParentCI:=TComponentInterface(FormEditor1.FindComponent(TComponent(Sender)));
+    if (TComponent(Sender) is TWinControl)
+      and (not (csAcceptsControls in TWinControl(Sender).ControlStyle)) then
+    begin
+      ParentCI:=TComponentInterface(
+        FormEditor1.FindComponent(TWinControl(Sender).Parent));
+    end;
+    if Assigned(ParentCI) then begin
+      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
+      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
+      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
+      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
+      if Abs(NewWidth+NewHeight)<7 then begin
+        // this very small component is probably only a wag, take default size
+        NewWidth:=0;
+        NewHeight:=0;
+      end;
+      NewCI := TComponentInterface(FormEditor1.CreateComponent(ParentCI,
+        TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType)
+        ,NewLeft,NewTop,NewWidth,NewHeight));
+      NewCI.SetPropByName('Visible',True); //Control).Visible := True;
+
+      ObjectInspector1.FillComponentComboBox;
+      TDesigner(TForm(NewCI.Control.Owner).Designer).AddControlCode(NewCI.Control);
+      if NewCI.Control is TControl then begin
+        // set the OnMouseDown and OnMouseUp event so we know when the control
+        // is selected or a new control is dropped
+writeln('NewComponent is TControl');
+        NewCI.SetPropByName('OnMouseUp',@MouseUpOnControl);
+        NewCI.SetPropByName('OnMouseDown',@MouseDownOnControl);
+        NewCI.SetPropByName('OnMouseMove',@MouseMoveOnControl);
+        SelectOnlyThisComponent(TComponent(NewCI.Control));
+      end;
+    end;
+  end;
+
+  MouseDownControl:=nil;
+  ControlClick(Notebook1);  //this resets it to the mouse.
+exit;
+//see if the mouse moved or there was simply a click on the form
+{  if (X >= 0) and (X <= TControl(sender).Width) and
+  (Y >= 0) and (Y <= TControl(sender).Height) then
+  begin
+    // mouse was down and up on the form.
+    // We clicked on the form.  Let's see what the active selection is in the
+    // IDE control bar. If it's the pointer, then we set the
+    // FormEditor1.SelectedComponents to Sender,
+    // otherwise we drop a control and call the CreateComponent function.
+    if BPressed = 1 then
+      Begin // mouse pointer button pressed.
+        FormEditor1.ClearSelected;
+        Writeln('Clicked on the form!!!!!  Forms name is '+TForm(Sender).Name);
+        FormEditor1.AddSelected(TComponent(Sender));
       end
-      else
-      Begin  //add a new control
-        //check to see if the mouse moved between clicks.  If so then they sized the control
-        if (X <> Mouse_Down.x) or (Y <> Mouse_Down.Y) then
-           begin
-            if X > Mouse_Down.X then
-                 Begin
-                   NewLeft1 := Mouse_Down.X;
-                   NewLeft2 := X-Mouse_Down.X;
-                 end
-                 else
-                 Begin
-                   NewLeft1 := X;
-                   NewLeft2 := Mouse_Down.X-X;
-                 end;
+    else
+      Begin
+        // add a new control
 
-            if Y > Mouse_Down.Y then
-                 Begin
-                   NewTop1 := Mouse_Down.Y;
-                   NewTop2 := Y - Mouse_Down.Y;
-                 end
-                 else
-                 Begin
-                   NewTop1 := Y;
-                   NewTop2 := Mouse_Down.Y - Y;
-                 end;
-             CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
-                         TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),NewLeft1,NewTop1,NewLeft2,NewTop2));
-            end
-           else
+        // check to see if the mouse moved between clicks.
+        // If so then they sized the control
+        if (MouseUpPos.X <> MouseDownPos.X) or (MouseUpPos.Y <> MouseDownPos.Y) then begin
+
+          //  CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
+          //    TComponentClass(TIdeComponent(
+          //       ideComplist.items[bpressed-1]).ClassType)
+          //       ,NewLeft1,NewTop1,NewLeft2,NewTop2));
+        end
+        else begin
+
+        end;
+
         CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,
-                         TComponentClass(TIdeComponent(ideComplist.items[bpressed-1]).ClassType),Mouse_Down.X,Mouse_Down.Y,-1,-1));
+                         TComponentClass(TIdeComponent(
+                         ideComplist.items[bpressed-1]).ClassType),
+                         MouseDownPos.X,MouseDownPos.Y,-1,-1));
 
-     {Set up some default values for the control here}
-     {    CInterface is a TComponentInterface defined in CustomFormEditor.pp}
+     //Set up some default values for the control here
+     //    CInterface is a TComponentInterface defined in CustomFormEditor.pp
      CInterface.SetPropByName('VISIBLE',True);
 //     CInterface.SetPropByName('NAME','PLEASEWORK1');
 //     CInterface.SetPropbyName('CAPTION','Click me!');
      CInterface.SetPropByName('HINT','Click');
-     CInterface.SetPropbyName('TOP',10);
-     CInterface.SetPropbyName('ONCLICK',@ClickOnControl);
+     CInterface.SetPropByName('TOP',10);
+     CInterface.SetPropByName('ONCLICK',@ClickOnControl);
 
      //set the ONCLICK event so we know when the control is selected;
 //     TControl(CInterface.Control).OnClick := @ClickOnControl;
       FormEditor1.ClearSelected;
       FormEditor1.AddSelected(TComponent(Cinterface.Control));
-      ObjectInspector1.RootComponent := TForm(sender);
-      ObjectInspector1.FillComponentComboBox;
-
    end;
 //TIdeComponent(ideComplist.items[bpressed-1]).
 
-
    end;
      ControlClick(Notebook1);  //this resets it to the mouse.
+}
+Writeln('MouseuponControl');
 end;
 
-{Procedure TForm1.ClickOnForm(Sender : TObject);
-Begin
-end;
- }
+
+
 {------------------------------------------------------------------------------}
 procedure TForm1.mnuNewFormClicked(Sender : TObject);
 var
@@ -1554,24 +1721,28 @@ var
   TempForm : TForm;
   CInterface : TComponentInterface;
 begin
-  TempForm := TForm.Create(Self);
-  TempForm.Parent := Self;
+  //TempForm := TForm.Create(Self);
+  //TempForm.Parent := Self;
   if not Assigned(FormEditor1) then
   FormEditor1 := TFormEditor.Create;
   FormEditor1.SelectedComponents.Clear;
 
-  CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,TForm,50,50,300,400));
-  TForm(CInterface.Control).Name := 'Form1';
-  TForm(CInterface.Control).Designer := TDesigner.Create(TCustomForm(CInterface.Control));
-  TDesigner(TForm(CInterface.Control).Designer).FormEditor := FormEditor1;
-  TForm(CInterface.Control).Show;
+  CInterface := TComponentInterface(
+    FormEditor1.CreateComponent(nil,TForm,
+       ObjectInspector1.Left+ObjectInspector1.Width+5,ObjectInspector1.Top,
+       400,300));
+  TempForm:=TForm(CInterface.Control);
+  TempForm.Designer :=
+    TDesigner.Create(TCustomForm(CInterface.Control));
+  TDesigner(TempForm.Designer).FormEditor := FormEditor1;
+  TempForm.OnMouseDown := @MouseDownOnControl;
+  TempForm.OnMouseUp := @MouseUpOnControl;
+  TempForm.OnMouseMove := @MouseMoveOnControl;
+  TempForm.Show;
 
-//set the ONCLICK event so we know when a control is dropped onto the form.
-  TForm(CInterface.Control).OnMouseDown := @MouseDownOnForm;
-  TForm(CInterface.Control).OnMouseUp := @MouseUpOnForm;
+  ObjectInspector1.RootComponent := TForm(CInterface.Control);
   FormEditor1.ClearSelected;
   FormEditor1.AddSelected(TComponent(CInterface.Control));
-
 end;
 
 
@@ -2148,6 +2319,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2000/12/15 15:29:09  lazarus
+  Changes my Mattias for dropping controls.
+  Changes by Shane for adding code to the form source.
+
   Revision 1.16  2000/12/01 20:23:34  lazarus
   renamed Object_Inspector and Prop_edits by removing the underline.
   Shane

@@ -57,6 +57,7 @@ type
     procedure SetCapacity(const NewCapacity:integer);
   public
     procedure Clear;
+    function IsEqual(SourceSelectionList:TComponentSelectionList):boolean;
     property Count:integer read GetCount;
     property Capacity:integer read GetCapacity write SetCapacity;
     function Add(c:TComponent):integer;
@@ -259,6 +260,7 @@ type
   private
     // XXX
     //FDesigner:IFormDesigner;
+    FLookupRoot:TComponent;
     FComponents:TComponentSelectionList;
     FPropList:PInstPropList;
     FPropCount:Integer;
@@ -289,7 +291,8 @@ type
     procedure Modified;
   public
     constructor Create({const ADesigner:IFormDesigner;}
-      ComponentList:TComponentSelectionList;  APropCount:Integer); virtual;
+      LookupRoot:TComponent;  ComponentList:TComponentSelectionList;
+      APropCount:Integer); virtual;
     destructor Destroy; override;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
@@ -651,7 +654,7 @@ type
 procedure RegisterPropertyEditorMapper(Mapper:TPropertyEditorMapperFunc);
 
 procedure GetComponentProperties(Components:TComponentSelectionList;
-  Filter:TTypeKinds; Proc:TGetPropEditProc);
+  Filter:TTypeKinds;  Proc:TGetPropEditProc;  LookupRoot:TComponent);
 
 //procedure RegisterComponentEditor(ComponentClass:TComponentClass;
 //  ComponentEditor:TComponentEditorClass);
@@ -881,14 +884,14 @@ begin
   GetSStrProp:=Value;
 end;
 
-function GetStrProp(Instance : TObject;PropInfo : PPropInfo) : Ansistring;
+{function GetStrProp(Instance : TObject;PropInfo : PPropInfo) : Ansistring;
 var s:Ansistring;
 begin
   Case Propinfo^.PropType^.Kind of
     tkSString : Result:=GetSStrProp(Instance,PropInfo);
     tkAString :
-      { Dirty trick which is necessary to increase the reference
-       counter of Result... }
+      // Dirty trick which is necessary to increase the reference
+      // counter of Result...
       begin
         Pointer(Result):=GetAStrProp(Instance,Propinfo);
         s:=Result;
@@ -896,6 +899,51 @@ begin
       end;
   else
     Result:='';
+  end;
+end;}
+
+function GetStrProp(Instance: TObject; PropInfo: PPropInfo): AnsiString;
+var
+  Index, IValue: LongInt;
+  ShortResult: ShortString;
+  AnsiResult:AnsiString;
+begin
+  SetIndexValues(PropInfo, Index, IValue);
+  case Propinfo^.PropType^.Kind of
+    tkSString:
+  	  case (PropInfo^.PropProcs) and 3 of
+	          ptField:
+          Result := PShortString(Pointer(Instance) + LongWord(PropInfo^.GetProc))^;
+   	    ptStatic:
+	            begin
+        		 CallSStringFunc(Instance, PropInfo^.GetProc, Index, IValue, ShortResult);
+          		Result := ShortResult;
+          end;
+  	    ptVirtual:
+	            begin
+         		CallSStringFunc(Instance, PPointer(Pointer(Instance.ClassType) +
+         		  LongWord(PropInfo^.GetProc))^, Index, IValue, ShortResult);
+    	      Result := ShortResult;
+     	    end;
+       end;
+   	tkAString:
+      begin
+    	case (PropInfo^.PropProcs) and 3 of
+        ptField:
+   	      Pointer(Result) := PPointer(Pointer(Instance) + LongWord(PropInfo^.GetProc))^;
+  	    ptStatic:
+	        Pointer(Result) := Pointer(LongWord(CallIntegerFunc(Instance,
+            PropInfo^.GetProc, Index, IValue)));
+  	    ptVirtual:
+	        Pointer(Result) := Pointer(LongWord(CallIntegerFunc(Instance,
+   	        PPointer(Pointer(Instance.ClassType) + LongWord(PropInfo^.GetProc))^, Index, IValue)));
+  	  end;
+      AnsiResult:=Result;
+      Pointer(AnsiResult):=nil;
+     end;
+    else
+	  // Property is neither of type AnsiString nor of type ShortString
+      SetLength(Result, 0);
   end;
 end;
 
@@ -1301,14 +1349,14 @@ begin
 end;
 
 procedure GetComponentProperties(Components:TComponentSelectionList;
-  Filter:TTypeKinds; Proc:TGetPropEditProc);
+  Filter:TTypeKinds; Proc:TGetPropEditProc;  LookupRoot:TComponent);
 var
   I,J,CompCount:Integer;
   CompType:TClass;
   Candidates:TPropInfoList;
   PropLists:TList;
   Editor:TPropertyEditor;
-  DirClass:TPropertyEditorClass;
+  EditClass:TPropertyEditorClass;
   PropInfo:PPropInfo;
   AddEditor:Boolean;
   Obj:TPersistent;
@@ -1321,11 +1369,11 @@ begin
   try
     for I:=Candidates.Count-1 downto 0 do begin
       PropInfo:=Candidates[I];
-      DirClass:=GetEditorClass(PropInfo,Obj);
-      if DirClass=nil then
+      EditClass:=GetEditorClass(PropInfo,Obj);
+      if EditClass=nil then
         Candidates.Delete(I)
       else begin
-        Editor:=DirClass.Create(Components,1);
+        Editor:=EditClass.Create(LookupRoot,Components,1);
         try
           Editor.SetPropEntry(0,Components[0],PropInfo);
           Editor.Initialize;
@@ -1350,9 +1398,9 @@ begin
       for I:=0 to CompCount-1 do
         TPropInfoList(PropLists[I]).Intersect(Candidates);
       for I:=0 to Candidates.Count-1 do begin
-        DirClass:=GetEditorClass(Candidates[I],Obj);
-        if DirClass=nil then continue;
-        Editor:=DirClass.Create(Components,CompCount);
+        EditClass:=GetEditorClass(Candidates[I],Obj);
+        if EditClass=nil then continue;
+        Editor:=EditClass.Create(LookupRoot,Components,CompCount);
         try
           AddEditor:=true;
           for j:=0 to CompCount-1 do begin
@@ -1391,10 +1439,12 @@ end;
 { TPropertyEditor }
 
 constructor TPropertyEditor.Create({const ADesigner:IFormDesigner;}
-  ComponentList:TComponentSelectionList;  APropCount:Integer);
+  LookupRoot:TComponent;  ComponentList:TComponentSelectionList;
+  APropCount:Integer);
 begin
   // XXX
   //FDesigner:=ADesigner;
+  FLookupRoot:=LookupRoot;
   FComponents:=ComponentList;
   GetMem(FPropList,APropCount * SizeOf(TInstProp));
   FPropCount:=APropCount;
@@ -2121,7 +2171,7 @@ begin
       if SubComponent<>nil then
         Components.Add(SubComponent);
     end;
-    GetComponentProperties(Components, tkProperties, Proc);
+    GetComponentProperties(Components, tkProperties, Proc, FLookupRoot);
   finally
     Components.Free;
   end;
@@ -2213,9 +2263,19 @@ begin
 end;
 
 function TMethodPropertyEditor.GetValue: string;
+var MethodValue:TMethod;
 begin
-  // XXX
-  Result := '';
+  // XXX this is a workaround til TFormEditor can do this
+  MethodValue:=GetMethodValue;
+  if Assigned(MethodValue.Code) then
+    if Assigned(FLookupRoot) then begin
+      Result:=FLookupRoot.MethodName(MethodValue.Code);
+      if Result='' then
+        Result:='Unpublished';
+    end else
+      Result:='No LookupRoot'
+  else
+    Result := '';
   //Result:=Designer.GetMethodName(GetMethodValue);
 end;
 
@@ -2300,8 +2360,15 @@ begin
 end;
 
 function TComponentPropertyEditor.GetValue: string;
+var Component: TComponent;
 begin
-  Result := '' {Designer.GetComponentName(TComponent(GetOrdValue))};
+  Component:=TComponent(GetOrdValue);
+  // XXX workaround til TFormEditor can do this
+  //Result:=Designer.GetComponentName(Component);
+  if Assigned(Component) then
+    Result:=Component.Name
+  else
+    Result:='';
 end;
 
 procedure TComponentPropertyEditor.GetValues(Proc: TGetStringProc);
@@ -2766,12 +2833,24 @@ procedure TComponentSelectionList.Assign(
   SourceSelectionList:TComponentSelectionList);
 var a:integer;
 begin
+  if SourceSelectionList=Self then exit;
   Clear;
   if (SourceSelectionList<>nil) and (SourceSelectionList.Count>0) then begin
     FComponents.Capacity:=SourceSelectionList.Count;
     for a:=0 to SourceSelectionList.Count-1 do
       Add(SourceSelectionList[a]);
   end;
+end;
+
+function TComponentSelectionList.IsEqual(
+ SourceSelectionList:TComponentSelectionList):boolean;
+var a:integer;
+begin
+  Result:=false;
+  if FComponents.Count<>SourceSelectionList.Count then exit;
+  for a:=0 to FComponents.Count-1 do
+    if Items[a]<>SourceSelectionList[a] then exit;
+  Result:=true;
 end;
 
 

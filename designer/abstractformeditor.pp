@@ -92,7 +92,8 @@ or use TPropertyType
    public
      Function Filename : String; virtual; abstract;
      Function FormModified : Boolean; virtual; abstract;
-     Function FindComponent(const Name : String) : TIComponentInterface; virtual; abstract;
+     Function FindComponentByName(const Name : String) : TIComponentInterface; virtual; abstract;
+     Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
      Function GetFormComponent: TIComponentInterface; virtual; abstract;
      Function GetComponentByHandle(const Value : Longint): TIComponentInterface; virtual; abstract;
