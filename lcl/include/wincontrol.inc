@@ -646,6 +646,22 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  TWinControl InvalidateClientRectCache
+
+  The clientrect is cached. Check if cache is valid.
+-------------------------------------------------------------------------------}
+function TWinControl.ClientRectNeedsInterfaceUpdate: boolean;
+var
+  IntfClientRect: TRect;
+begin
+  Result:=false;
+  if not HandleAllocated then exit;
+  LCLLinux.GetClientRect(Handle,IntfClientRect);
+  Result:=(FClientWidth<>IntfClientRect.Right)
+       or (FClientHeight<>IntfClientRect.Bottom);
+end;
+
+{-------------------------------------------------------------------------------
   TWinControl DoSetBounds
   Params: ALeft, ATop, AWidth, AHeight : integer
   
@@ -653,9 +669,9 @@ end;
   
   Normally the clientwidth/clientheight is adjusted automatically by the
   interface. But it is up to interface when this will be done. The gtk for
-  example just puts resize requests into a queue. The LCL resizes the childs
-  just after this procedure due to the clientrect. On complex forms with lots
-  of nested controls, this results in thousands of resizes.
+  example just puts resize requests into a queue. The LCL would resize the
+  childs just after this procedure due to the clientrect. On complex forms with
+  lots of nested controls, this would result in thousands of resizes.
   Changing the clientrect in the LCL to the most probable size reduces
   unneccessary resizes.
 -------------------------------------------------------------------------------}
@@ -2243,8 +2259,10 @@ var
   dc,Memdc : hdc;
   MemBitmap, OldBitmap : HBITMAP;
   PS : TPaintStruct;
+  MemWidth: Integer;
+  MemHeight: Integer;
 begin
-//writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
+  //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
   if ([csDestroying,csLoading]*ComponentState<>[]) or (not HandleAllocated) then
     exit;
 
@@ -2264,21 +2282,25 @@ begin
       PaintHandler(Msg);
   end
   else begin
+    // NOTE: not every interface uses this part
     //writeln('TWinControl.WMPaint Painting doublebuffered ',Name,':',classname);
     DC := GetDC(0);
-    MemBitmap := CreateCompatibleBitmap(DC, ClientRect.Right, ClientRect.Bottom);
+    MemWidth:=Width;
+    MemHeight:=Height;
+    MemBitmap := CreateCompatibleBitmap(DC, MemWidth, MemHeight);
     ReleaseDC(0, DC);
     MemDC := CreateCompatibleDC(0);
     OldBitmap := SelectObject(MemDC, MemBitmap);
-    Include(FFlags,wcfEraseBackground);
     try
       DC := BeginPaint(Handle, PS);
+      Include(FFlags,wcfEraseBackground);
       Perform(LM_ERASEBKGND, MemDC, 0);
+      Exclude(FFlags,wcfEraseBackground);
       Msg.DC := MemDC;
       WMPaint(Msg);
       Msg.DC := 0;
       //TODO:bitblt
-      BitBlt(DC, 0, 0, ClientRect.Right, ClientRect.Bottom, MemDC, 0, 0, SRCCOPY);
+      BitBlt(DC, 0, 0, MemWidth, MemHeight, MemDC, 0, 0, SRCCOPY);
       EndPaint(Handle, PS);
     finally
       Exclude(FFlags,wcfEraseBackground);
@@ -2428,11 +2450,14 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEraseBkgnd(var Message: TLMEraseBkgnd);
-begin            
+var
+  ARect: TRect;
+begin
   if {not FDoubleBuffered or} (Message.DC<>0) and (wcfEraseBackground in FFlags)
   then begin
     CreateBrush;
-    FillRect(Message.DC, ClientRect, FBrush.Handle)
+    ARect:=Rect(0,0,Width,Height);
+    FillRect(Message.DC,ARect,FBrush.Handle)
   end;
 end;
 
@@ -2644,6 +2669,9 @@ begin
 
   SetProp(Handle,'WinControl',TWinControl(Self));
   SetProp(Handle,'Control',TControl(Self));
+
+  // send pending resize messages
+  Resize;
 end;
 
 {------------------------------------------------------------------------------
@@ -2948,6 +2976,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.162  2003/08/23 21:17:09  mattias
+  several fixes for the win32 intf, added pending OnResize events
+
   Revision 1.161  2003/08/23 11:30:50  mattias
   fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
 

@@ -633,6 +633,37 @@ Begin
     SetProp(Control, 'Class', Pointer(AnObject));
 End;
 
+{-------------------------------------------------------------------------------
+  function LCLBoundsNeedsUpdate(Sender: TObject;
+    SendSizeMsgOnDiff: boolean): boolean;
+    
+  Returns true if LCL bounds and win32 bounds differ for the control.
+-------------------------------------------------------------------------------}
+function LCLControlSizeNeedsUpdate(Sender: TObject;
+  SendSizeMsgOnDiff: boolean): boolean;
+var
+  TheWinControl: TWinControl;
+  Window: HWnd;
+  IntfWidth, IntfHeight: integer;
+begin
+  Result:=false;
+  if not (Sender is TWinControl) then exit;
+  TheWinControl:=TWinControl(Sender);
+  if not TheWinControl.HandleAllocated then exit;
+  Window:=TheWinControl.Handle;
+  GetWindowSize(Window,IntfWidth,IntfHeight);
+  if (TheWinControl.Width=IntfWidth)
+  and (TheWinControl.Height=IntfHeight)
+  and (not TheWinControl.ClientRectNeedsInterfaceUpdate) then
+    exit;
+  Result:=true;
+  if SendSizeMsgOnDiff then begin
+    //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
+    TheWinControl.InvalidateClientRectCache;
+    SendMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth,IntfHeight));
+  end;
+end;
+
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
@@ -764,6 +795,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.21  2003/08/23 21:17:09  mattias
+  several fixes for the win32 intf, added pending OnResize events
+
   Revision 1.20  2003/08/17 12:26:00  mattias
   fixed parts of the win32 intf size system
 

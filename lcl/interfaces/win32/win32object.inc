@@ -1163,7 +1163,8 @@ Begin
   AWinControl.Parent := Nil;
   AWinControl.Parent := AParent;
 
-  ResizeChild(Sender, AWinControl.Left, AWinControl.Top, AWinControl.Width, AWinControl.Height);
+  ResizeChild(Sender,AWinControl.Left,AWinControl.Top,
+              AWinControl.Width,AWinControl.Height);
   ShowHide(Sender);
 
   Result := 0;
@@ -1715,6 +1716,7 @@ Begin
     '');
   {$ENDIF}
   MoveWindow(Handle, Left, Top, Width, Height, True);
+  LCLControlSizeNeedsUpdate(Sender,true);
 End;
 
 {------------------------------------------------------------------------------
@@ -2831,6 +2833,9 @@ End;
 
 {
   $Log$
+  Revision 1.94  2003/08/23 21:17:09  mattias
+  several fixes for the win32 intf, added pending OnResize events
+
   Revision 1.93  2003/08/23 11:30:51  mattias
   fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
 

@@ -87,7 +87,6 @@ Var
   PLMsg: PLMessage;
   R: TRect;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
-  NewClientWidth, NewClientHeight: integer;
   OwnerObject: TObject;
   TheWinControl: TWinControl;
   WinProcess: Boolean;
@@ -577,14 +576,16 @@ Begin
         end
         Else begin
           GetWindowRelativePosition(Window,NewLeft,NewTop);
-          XPos := NewLeft; //LoWord(LParam);
-          YPos := NewTop; //HiWord(LParam);
+          XPos := NewLeft;
+          YPos := NewTop;
         end;
         Win32PosToLCLPos(OwnerObject, XPos, YPos);
         if OwnerObject is TWinControl then begin
           TheWinControl:=TWinControl(OwnerObject);
-          {writeln('Win32CallBack WM_MOVE ',TheWinControl.Name,':',TheWinControl.ClassName,
-            ' NewPos=',XPos,',',YPos);}
+          {$IFDEF VerboseSizeMsg}
+          writeln('Win32CallBack WM_MOVE ',TheWinControl.Name,':',TheWinControl.ClassName,
+            ' NewPos=',XPos,',',YPos);
+          {$ENDIF}
           if (TheWinControl.Left=XPos) and (TheWinControl.Top=YPos) then
             exit;
         end;
@@ -599,29 +600,20 @@ Begin
         GetWindowSize(Window,NewWidth,NewHeight);
         Width:=NewWidth;
         Height:=NewHeight;
-        {Width := LoWord(LParam);
-        Height := HiWord(LParam);
-        // adjust size for scrollbars
-        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0 then
-          Width := Width + GetSystemMetrics(SM_CXVSCROLL);
-        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0 then
-          Height := Height + GetSystemMetrics(SM_CYHSCROLL);}
         if (OwnerObject is TWinControl) then begin
           TheWinControl:=TWinControl(OwnerObject);
+          {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          NewClientWidth:=R.Right-R.Left;
-          NewClientHeight:=R.Bottom-R.Top;
-          {writeln('Win32Callback: WM_SIZE ',TheWinControl.Name,':',TheWinControl.ClassName,
+          writeln('Win32Callback: WM_SIZE ',TheWinControl.Name,':',TheWinControl.ClassName,
             ' NewSize=',Width,',',Height,
             ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
             ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
-            ' OldClientSize=',TheWinControl.ClientWidth,',',TheWinControl.ClientHeight,
+            ' OldClientSize=',TheWinControl.CachedClientWidth,',',TheWinControl.CachedClientHeight,
             ' NewClientSize=',R.Right,',',R.Bottom);
-          }
+          {$ENDIF}
           if (TheWinControl.Width=Width)
           and (TheWinControl.Height=Height)
-          and (TheWinControl.ClientWidth=NewClientWidth)
-          and (TheWinControl.ClientHeight=NewClientHeight) then
+          and (not TheWinControl.ClientRectNeedsInterfaceUpdate) then
             exit;
           TheWinControl.InvalidateClientRectCache;
         end;
@@ -715,6 +707,9 @@ end;
 
 {
   $Log$
+  Revision 1.54  2003/08/23 21:17:09  mattias
+  several fixes for the win32 intf, added pending OnResize events
+
   Revision 1.53  2003/08/17 12:51:35  mattias
   added directory selection dialog from Vincent
 

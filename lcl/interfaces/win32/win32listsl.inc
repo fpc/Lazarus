@@ -48,7 +48,7 @@ begin
   LCLBoundsToWin32Bounds(Sender,ALeft, ATop, AWidth, AHeight);
   ComboHandle:=TWinControl(Sender).Handle;
   MoveWindow(ComboHandle,ALeft,ATop,AWidth,AHeight,true);
-  SendMessage(ComboHandle, WM_SIZE, 0, MakeLParam(AWidth,AEditHeight));
+  LCLControlSizeNeedsUpdate(Sender,true);
 end;
 {*************************************************************}
 {                      TWin32ListStringList methods           }
@@ -405,6 +405,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/08/23 21:17:09  mattias
+  several fixes for the win32 intf, added pending OnResize events
+
   Revision 1.14  2003/08/23 11:30:51  mattias
   fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
 

@@ -1081,6 +1081,7 @@ type
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache;
+    function ClientRectNeedsInterfaceUpdate: boolean;
     Function Focused : Boolean; override;
     Procedure BroadCast(var Message);
     procedure DefaultHandler(var Message); override;
@@ -1108,6 +1109,8 @@ type
     property ControlCount: Integer read GetControlCount;
     property Handle : HWND read GetHandle write SetHandle;
     property Showing : Boolean read FShowing;
+    property CachedClientWidth: integer read FClientWidth;
+    property CachedClientHeight: integer read FClientHeight;
   end;
 
 
@@ -1657,6 +1660,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.143  2003/08/23 21:17:08  mattias
+  several fixes for the win32 intf, added pending OnResize events
+
   Revision 1.142  2003/08/23 11:30:50  mattias
   fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
 
