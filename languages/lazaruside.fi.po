@@ -156,7 +156,7 @@ msgstr ""
 
 #: lazarusidestrconsts:uemclosepage
 msgid "&Close Page"
-msgstr ""
+msgstr "Sulje välilehti"
 
 #: lazarusidestrconsts:lismenucomponents
 msgid "&Components"
@@ -988,7 +988,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscldircleandirectory
 msgid "Clean Directory"
-msgstr ""
+msgstr "Ylimääräisten tiedostojen poisto"
 
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
@@ -1000,11 +1000,11 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucleandirectory
 msgid "Clean directory"
-msgstr ""
+msgstr "Ylimääräisten tiedostojen poisto"
 
 #: lazarusidestrconsts:liscldircleansubdirectories
 msgid "Clean sub directories"
-msgstr ""
+msgstr "Poista tiedostot myös alikansioista"
 
 #: lazarusidestrconsts:lislazbuildcleanbuild
 msgid "Clean+Build"
@@ -1344,7 +1344,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
-msgstr "Kopio"
+msgstr "Kopioi"
 
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
@@ -1616,7 +1616,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
-msgstr ""
+msgstr "Oletuksena käytettävä Pascal-kielen tiedostopääte"
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
 msgid "Define"
@@ -2044,7 +2044,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
-msgstr ""
+msgstr "Virhe luettaessa %s%s%s%s%s"
 
 #: lazarusidestrconsts:lispkgmangerrorreadingfile
 msgid "Error reading file"
@@ -2208,7 +2208,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listodolfile
 msgid "File"
-msgstr ""
+msgstr "Tiedosto"
 
 #: lazarusidestrconsts:lisa2pfilealreadyexistsintheproject
 msgid "File %s%s%s already exists in the project."
@@ -2364,7 +2364,7 @@ msgstr "Etsi kohdistimen osoittaman kohdan määrittely"
 
 #: lazarusidestrconsts:lismenufindidentifierrefs
 msgid "Find Identifier References"
-msgstr ""
+msgstr "Etsi tunnisteiden nimiä"
 
 #: lazarusidestrconsts:lismenutemplatefindnext
 msgid "Find Next"
@@ -2616,7 +2616,7 @@ msgstr "Hyppää riville :"
 
 #: lazarusidestrconsts:listodolistgotoline
 msgid "Goto selected source line"
-msgstr ""
+msgstr "Mene valitun kohdan osoittamalle lähdekoodiriville"
 
 #: lazarusidestrconsts:srkmgrabkey
 msgid "Grab Key"
@@ -3396,7 +3396,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepalltextfiles
 msgid "Keep all text files"
-msgstr ""
+msgstr "Säilytä kaikki tekstitiedostot"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -3404,7 +3404,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr ""
+msgstr "Säilytettävien tiedostojen tiedostopäätteet"
 
 #: lazarusidestrconsts:dlgforwardprocskeeporder
 msgid "Keep order of procedures"
@@ -3588,7 +3588,7 @@ msgstr ""
 
 #: lazarusidestrconsts:listodolline
 msgid "Line"
-msgstr ""
+msgstr "Rivi"
 
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
@@ -3832,11 +3832,11 @@ msgstr ""
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
-msgstr ""
+msgstr "Siirry vasemmanpuoleiselle välilehdelle"
 
 #: lazarusidestrconsts:uemmoveeditorright
 msgid "Move Editor Right"
-msgstr ""
+msgstr "Siirry oikeanpuoleiselle välilehdelle"
 
 #: lazarusidestrconsts:lisexttoolmoveup
 msgid "Move Up"
@@ -4900,7 +4900,7 @@ msgstr ""
 
 #: lazarusidestrconsts:liscldirremovefilesmatchingfilter
 msgid "Remove files matching filter"
-msgstr ""
+msgstr "Poistettavien tiedostojen tiedostopäätteet"
 
 #: lazarusidestrconsts:lismenuremovefromproject
 msgid "Remove from Project"
@@ -4936,7 +4936,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenurenameidentifier
 msgid "Rename Identifier"
-msgstr ""
+msgstr "Vaida tunnisteen nimeä"
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -5628,7 +5628,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshoweverything
 msgid "Show everything"
-msgstr ""
+msgstr "Näytä kaikki (hidas)"
 
 #: lazarusidestrconsts:dlgshowgeneralinfo
 msgid "Show general info"
@@ -5656,7 +5656,7 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgshowsummary
 msgid "Show summary"
-msgstr ""
+msgstr "Näytä yhteenveto"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show tried files"
@@ -5768,7 +5768,7 @@ msgstr "espanja"
 
 #: lazarusidestrconsts:rslanguagespanishutf
 msgid "Spanish (UTF8)"
-msgstr ""
+msgstr "espanja (UTF8)"
 
 #: lazarusidestrconsts:lisuidsrc
 msgid "Src"
@@ -7480,7 +7480,7 @@ msgstr "väri vasemmalla ja ylhäällä"
 
 #: lazarusidestrconsts:dlgrightbottomclr
 msgid "color for right, bottom"
-msgstr "väri oikealla ja alhaalls"
+msgstr "väri oikealla ja alhaalla"
 
 #: lazarusidestrconsts:srkmeccompileroptions
 msgid "compiler options"
