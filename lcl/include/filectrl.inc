@@ -475,16 +475,16 @@ begin
     Result:=Result+'c'
   else
     Result:=Result+'-';
-  // other permissions
-  if STAT_IROTH and info.mode=STAT_IROTH then
+  // user permissions
+  if STAT_IRUSR and info.mode=STAT_IRUsr then
     Result:=Result+'r'
   else
     Result:=Result+'-';
-  if STAT_IWOTH and info.mode=STAT_IWOTH then
+  if STAT_IWUsr and info.mode=STAT_IWUsr then
     Result:=Result+'w'
   else
     Result:=Result+'-';
-  if STAT_IXOTH and info.mode=STAT_IXOTH then
+  if STAT_IXUsr and info.mode=STAT_IXUsr then
     Result:=Result+'x'
   else
     Result:=Result+'-';
@@ -501,20 +501,20 @@ begin
     Result:=Result+'x'
   else
     Result:=Result+'-';
-  // user permissions
-  if STAT_IRUSR and info.mode=STAT_IRUsr then
+  // other permissions
+  if STAT_IROTH and info.mode=STAT_IROTH then
     Result:=Result+'r'
   else
     Result:=Result+'-';
-  if STAT_IWUsr and info.mode=STAT_IWUsr then
+  if STAT_IWOTH and info.mode=STAT_IWOTH then
     Result:=Result+'w'
   else
     Result:=Result+'-';
-  if STAT_IXUsr and info.mode=STAT_IXUsr then
+  if STAT_IXOTH and info.mode=STAT_IXOTH then
     Result:=Result+'x'
   else
     Result:=Result+'-';
-    
+
 
   // user name
   //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
@@ -877,6 +877,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2003/08/07 07:12:29  mattias
+  fixed file description permission order
+
   Revision 1.26  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 
