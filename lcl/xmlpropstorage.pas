@@ -19,6 +19,10 @@ unit XMLPropStorage;
 
 interface
 
+{$IFDEF VER1_9_5}
+  {$DEFINE EnableSessionProps}
+{$ENDIF}
+
 {$IFNDEF VER1_0}
 uses
   Classes, SysUtils, Forms, PropertyStorage, XMLCfg, DOM;
@@ -59,7 +63,6 @@ type
     property FileName;
     property RootNodePath;
     property Active;
-    property StoredValues;
     property OnSaveProperties;
     property OnRestoreProperties;
   end;
@@ -131,12 +134,12 @@ function TCustomXMLPropStorage.DoReadString(const Section, Ident, Default: strin
   ): string;
 begin
   Result:=FXML.GetValue(FixPath(Section)+'/'+Ident, Default);
-  writeln('TCustomXMLPropStorage.DoReadString Section=',Section,' Ident=',Ident,' Result=',Result);
+  //debugln('TCustomXMLPropStorage.DoReadString Section=',Section,' Ident=',Ident,' Result=',Result);
 end;
 
 procedure TCustomXMLPropStorage.DoWriteString(const Section, Ident, Value: string);
 begin
-  writeln('TCustomXMLPropStorage.DoWriteString Section=',Section,' Ident=',Ident,' Value=',Value);
+  //debugln('TCustomXMLPropStorage.DoWriteString Section=',Section,' Ident=',Ident,' Value=',Value);
   FXML.SetValue(FixPath(Section)+'/'+Ident, Value);
 end;
 

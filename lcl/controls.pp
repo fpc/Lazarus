@@ -2355,11 +2355,13 @@ var
   EndPos: LongInt;
   PropertyStr: String;
   AControl: TControl;
+  PointPos: LongInt;
 begin
   ARoot:=Root;
   if ARoot is TControl then begin
     AControl:=TControl(ARoot);
     PropsAsStr:=AControl.SessionProperties;
+    //debugln('PropsAsStr=',PropsAsStr);
     StartPos:=1;
     while (StartPos<=length(PropsAsStr)) do begin
       EndPos:=StartPos;
@@ -2367,6 +2369,15 @@ begin
         inc(EndPos);
       if (EndPos>StartPos) then begin
         PropertyStr:=copy(PropsAsStr,StartPos,EndPos-StartPos);
+        //debugln('A PropertyStr=',PropertyStr);
+        // if no point char, then prepend the owner name as default
+        PointPos:=StartPos;
+        while (PointPos<EndPos) and (PropsAsStr[PointPos]<>'.') do
+          inc(PointPos);
+        if PointPos=EndPos then
+          PropertyStr:=AControl.Name+'.'+PropertyStr;
+        // add to list
+        //debugln('B PropertyStr=',PropertyStr);
         List.Add(PropertyStr);
       end;
       StartPos:=EndPos+1;
@@ -2395,6 +2406,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.235  2004/08/16 20:40:26  mattias
+  published TForm.SessionProperties, added property editor and activated the storage components for fpc 1.9.5 because of rttiutils
+
   Revision 1.234  2004/08/13 16:40:47  mazen
   + TCharater type used to allow UTF8 keyboard with gtk2
 

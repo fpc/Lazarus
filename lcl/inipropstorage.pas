@@ -19,6 +19,10 @@ unit IniPropStorage;
 
 interface
 
+{$IFDEF VER1_9_5}
+  {$DEFINE EnableSessionProps}
+{$ENDIF}
+
 {$IFNDEF VER1_0}
 uses
   Classes, SysUtils, Forms, IniFiles, PropertyStorage;
@@ -36,19 +40,19 @@ Type
     FIniFileName: String;
     FIniSection: String;
   protected
-    Function IniFileClass : TIniFileClass; virtual;
+    Function IniFileClass: TIniFileClass; virtual;
     procedure StorageNeeded(ReadOnly: Boolean);override;
     procedure FreeStorage; override;
-    Function GetIniFileName : string; virtual;
-    Function RootSection : String; Override;
-    Property IniFile : TCustomIniFile Read FIniFile;
+    Function GetIniFileName: string; virtual;
+    Function RootSection: String; Override;
+    Property IniFile: TCustomIniFile Read FIniFile;
   public
     function  DoReadString(const Section, Ident, Default: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
     procedure DoEraseSections(const ARootSection : String);override;
   public
-    property IniFileName : String Read FIniFileName Write FIniFileName;
-    property IniSection : String Read FIniSection Write FIniSection;
+    property IniFileName: String Read FIniFileName Write FIniFileName;
+    property IniSection: String Read FIniSection Write FIniSection;
   end;
   
   { TIniPropStorage }
@@ -58,7 +62,6 @@ Type
     property IniFileName;
     property IniSection;
     property Active;
-    property StoredValues;
     property OnSaveProperties;
     property OnRestoreProperties;
   end;

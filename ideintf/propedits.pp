@@ -741,6 +741,16 @@ type
   end;
 
 
+{ TSessionPropertiesPropertyEditor
+  PropertyEditor editor for TControl.SessionProperties properties.
+  Show a dialog on Edit. }
+
+  TSessionPropertiesPropertyEditor = class(TStringPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
+  end;
+
 { TListElementPropertyEditor
   A property editor for a single element of a TListPropertyEditor
   This editor simply redirects all methods to the TListPropertyEditor }
@@ -1888,8 +1898,8 @@ type
   TGetStrFunc = function(const StrValue:ansistring):Integer of object;
 var
   I:Integer;
-  Values:TStringList;
-  AddValue:TGetStrFunc;
+  Values: TStringList;
+  AddValue: TGetStrFunc;
 begin
   if not AutoFill then Exit;
   Values:=TStringList.Create;
@@ -4735,6 +4745,46 @@ begin
   Result:='';
 end;
 
+{ TSessionPropertiesPropertyEditor }
+
+function TSessionPropertiesPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paDialog,paRevertable];
+end;
+
+procedure TSessionPropertiesPropertyEditor.Edit;
+var
+  Dialog: TStringsPropEditorDlg;
+  s: String;
+  i: Integer;
+  c: Char;
+begin
+  Dialog:=TStringsPropEditorDlg.Create(Application);
+  try
+    Dialog.Editor:=Self;
+    s:=GetStrValue;
+    for i:=1 to length(s) do if s[i]=';' then s[i]:=#10;
+    Dialog.Memo.Text:=s;
+    if Dialog.ShowModal=mrOk then begin
+      s:=Dialog.Memo.Text;
+      i:=1;
+      while i<=length(s) do begin
+        c:=s[i];
+        if c in [#13,#10] then begin
+          s[i]:=';';
+          inc(i);
+          if (i<=length(s)) and (s[i] in [#10,#13]) and (c<>s[i]) then
+            System.Delete(s,i,1);
+        end else
+          inc(i);
+      end;
+      SetStrValue(s);
+    end;
+  finally
+    Dialog.Free;
+  end;
+end;
+
 //==============================================================================
 
 
@@ -5789,6 +5839,8 @@ begin
     nil,'',TCaptionPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TStrings'),
     nil,'',TStringsPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    nil,'SessionProperties',TSessionPropertiesPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TModalResult'),
     nil,'ModalResult',TModalResultPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TShortCut'),

@@ -19,6 +19,10 @@ unit PropertyStorage;
 
 interface
 
+{$IFDEF VER1_9_5}
+  {$DEFINE EnableSessionProps}
+{$ENDIF}
+
 {$IFNDEF VER1_0}
 uses
   Classes, SysUtils, RTLConst

@@ -555,9 +555,10 @@ type
     property OnResize;
     property OnShow;
     property ParentFont;
-    property PixelsPerInch stored False;
+    property PixelsPerInch;
     property PopupMenu;
     property Position;
+    property SessionProperties;
     property ShowHint;
     property TextHeight;
     property Visible;
