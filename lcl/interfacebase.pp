@@ -77,11 +77,13 @@ type
     {$UNDEF IF_BASE_MEMBER}
   end;
 
+{$I defaultbitbtnimages.inc}
+{$I messagedialogpixmaps.inc}
 
 implementation
 
 Uses
-  Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
+  Dialogs, LCLStrConsts, Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
 
 procedure TInterfaceBase.SendCachedLCLMessages;
 begin
@@ -99,6 +101,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2002/10/12 16:36:39  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.16  2002/10/11 16:00:39  lazarus
   AJ: made InputQuery Interface Dependant
 

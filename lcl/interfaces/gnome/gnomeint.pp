@@ -52,13 +52,20 @@ type
     {$I gnomewinapih.inc}
   end;
 
+const
+  LAZARUS_STOCK_BUTTON_ALL = 'lazarus_button_all';
+  LAZARUS_STOCK_BUTTON_YESALL = 'lazarus_button_yesall';
+  LAZARUS_STOCK_BUTTON_NOALL = 'lazarus_button_noall';
+  LAZARUS_STOCK_BUTTON_ABORT = 'lazarus_button_abort';
+  LAZARUS_STOCK_BUTTON_RETRY = 'lazarus_button_retry';
+  LAZARUS_STOCK_BUTTON_IGNORE = 'lazarus_button_ignore';
 
 implementation
 
 uses
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
-  LResources, Math, gtkglobals, GTKPRoc;
+  LResources, Math, gtkglobals, GTKPRoc, LCLStrConsts;
 
 procedure TGnomeObject.CreateComponent(Sender : TObject);
 var
@@ -150,15 +157,100 @@ end;
 
 {$I gnomewinapi.inc}
 
-initialization
-  gnome_init('lazarus', '0.8.5', argc, argv);
-  
-finalization
+var
+  LAZBTNALL,
+  LAZBTNYESALL,
+  LAZBTNNOALL,
+  LAZBTNABORT,
+  LAZBTNRETRY,
+  LAZBTNIGNORE : PGnomeStockPixmapEntryData;
 
+Procedure InitGnome;
+begin
+  gnome_init('lazarus', '0.8.5a', argc, argv);
+
+  New(LAZBTNAll);
+  With LAZBTNAll^ do begin
+    thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
+    Width := 20;
+    Height := 18;
+    theLabel := Ampersands2Underscore(PChar(rsMbALL));
+    xpm_data := PPgchar(@IMGALL_Check[0]);
+  end;
+  gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_ALL, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNALL));
+
+  New(LAZBTNYESAll);
+  With LAZBTNYESAll^ do begin
+    thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
+    Width := 20;
+    Height := 18;
+    theLabel := Ampersands2Underscore(PChar(rsMbYesToAll));
+    xpm_data := PPgchar(@IMGALL_Check[0]);
+  end;
+  gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_YESALL, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNYESALL));
+
+  New(LAZBTNNOAll);
+  With LAZBTNNOAll^ do begin
+    thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
+    Width := 20;
+    Height := 18;
+    theLabel := Ampersands2Underscore(PChar(rsMbNOToAll));
+    xpm_data := PPgchar(@IMGALL_Check[0]);
+  end;
+  gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_NOALL, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNNOALL));
+
+  New(LAZBTNABORT);
+  With LAZBTNABORT^ do begin
+    thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
+    Width := 20;
+    Height := 18;
+    theLabel := Ampersands2Underscore(PChar(rsMbAbort));
+    xpm_data := PPgchar(@IMGCancel_X[0]);
+  end;
+  gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_ABORT, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNABORT));
+
+  New(LAZBTNRETRY);
+  With LAZBTNRETRY^ do begin
+    thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
+    Width := 20;
+    Height := 18;
+    theLabel := Ampersands2Underscore(PChar(rsMbRetry));
+    xpm_data := PPgchar(@IMGOK_Check[0]);
+  end;
+  gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_RETRY, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNRETRY));
+
+  New(LAZBTNIGNORE);
+  With LAZBTNIGNORE^ do begin
+    thetype := GNOME_STOCK_PIXMAP_TYPE_DATA;
+    Width := 20;
+    Height := 18;
+    theLabel := Ampersands2Underscore(PChar(rsMbIgnore));
+    xpm_data := PPgchar(@IMGOK_Check[0]);
+  end;
+  gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_IGNORE, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNIGNORE));
+end;
+
+Procedure CleanupGnome;
+begin
+  Dispose(LAZBTNALL);
+  Dispose(LAZBTNYESALL);
+  Dispose(LAZBTNNOALL);
+  Dispose(LAZBTNABORT);
+  Dispose(LAZBTNRETRY);
+  Dispose(LAZBTNIGNORE);
+end;
+
+initialization
+  InitGnome;
+finalization
+  CleanupGnome;
 end.
 
 {
   $Log$
+  Revision 1.4  2002/10/12 16:36:40  lazarus
+  AJ: added new QueryUser/NotifyUser
+
   Revision 1.3  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 
