@@ -98,6 +98,8 @@ type
   end;
 
 
+procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
+
 implementation
 
 uses
@@ -426,6 +428,25 @@ procedure TGtkWSWinControl.ShowHide(const AWinControl: TWinControl);
 begin
   // other methods use ShowHide also, can't move code
   TGtkWidgetSet(InterfaceObject).ShowHide(AWinControl);
+end;
+
+{ helper/common routines }
+
+procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
+begin
+  if (GtkWindow=nil) then exit;
+  TGtkWidgetSet(InterfaceObject).UnsetResizeRequest(PgtkWidget(GtkWindow));
+
+  if ModalWindows=nil then ModalWindows:=TList.Create;
+  ModalWindows.Add(GtkWindow);
+
+  gtk_window_set_modal(GtkWindow, true);
+  gtk_widget_show(PGtkWidget(GtkWindow));
+
+  {$IFDEF VerboseTransient}
+  DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
+  {$ENDIF}
+  TGtkWidgetSet(InterfaceObject).UpdateTransientWindows;
 end;
 
 initialization

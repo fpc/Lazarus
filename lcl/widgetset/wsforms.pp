@@ -44,9 +44,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Forms,
+  Forms,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Forms, Controls;
+  WSLCLClasses, WSControls, Controls;
 
 type
   { TWSScrollingWinControl }
@@ -74,6 +74,7 @@ type
   TWSCustomForm = class(TWSScrollingWinControl)
     class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); virtual;
+    class procedure ShowModal(const ACustomForm: TCustomForm); virtual;
   end;
   TWSCustomFormClass = class of TWSCustomForm;
 
@@ -108,6 +109,10 @@ begin
   // will be done in interface override
 end;
 
+procedure TWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -118,7 +123,7 @@ initialization
 //  RegisterWSComponent(TScrollBox, TWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWSCustomFrame);
 //  RegisterWSComponent(TFrame, TWSFrame);
-  RegisterWSComponent(TCustomForm, TWSCustomForm);
+//  RegisterWSComponent(TCustomForm, TWSCustomForm);
 //  RegisterWSComponent(TForm, TWSForm);
 //  RegisterWSComponent(THintWindow, TWSHintWindow);
 //  RegisterWSComponent(TScreen, TWSScreen);

@@ -1682,7 +1682,7 @@ begin
   try
     Show;
     try
-      CNSendMessage(LM_SHOWMODAL, Self, nil);
+      TWSCustomFormClass(WidgetSetClass).ShowModal(Self);
       repeat
         { Delphi calls Application.HandleMessage
           But HandleMessage processes all pending events and then calls idle,
@@ -1808,6 +1808,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.156  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.155  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

@@ -334,7 +334,8 @@ procedure Register;
 
 implementation
 
-uses Math;
+uses 
+  Math, WSDialogs;
 
 const
   //
@@ -419,6 +420,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.51  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

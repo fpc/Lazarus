@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Forms,
+  Forms,
 ////////////////////////////////////////////////////
-  WSForms, WSLCLClasses;
+  WSForms, WSLCLClasses, Windows, SysUtils;
 
 type
 
@@ -77,6 +77,7 @@ type
   private
   protected
   public
+    class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
 
   { TWin32WSForm }
@@ -114,6 +115,41 @@ type
 
 implementation
 
+{-----------------------------------------------------------------------------
+  Function: DisableWindowsProc
+  Params: Window - handle of toplevel windows to be disabled
+          Data   - handle of current window form
+  Returns: Whether the enumeration should continue
+
+  Used in LM_SHOWMODAL to disable the windows of application thread
+  except the current form.
+ -----------------------------------------------------------------------------}
+function DisableWindowsProc(Window: HWND; Data: LParam): LongBool; stdcall;
+var
+  Buffer: array[0..15] of Char;
+begin
+  Result:=true;
+  // Don't disable the current window form
+  if Window=HWND(Data) then exit;
+
+  // Don't disable any ComboBox listboxes
+  if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
+    and (StrIComp(Buffer, 'ComboLBox')=0) then exit;
+
+  EnableWindow(Window,False);
+end;
+
+{ TWin32WSCustomForm }
+
+procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  FormHandle: HWND;
+begin
+  FormHandle := ACustomForm.Handle;
+  EnumThreadWindows(GetWindowThreadProcessId(FormHandle, nil), @DisableWindowsProc, FormHandle);
+  ShowWindow(FormHandle, SW_SHOW);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -126,7 +162,7 @@ initialization
 //  RegisterWSComponent(TScrollBox, TWin32WSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TWin32WSCustomFrame);
 //  RegisterWSComponent(TFrame, TWin32WSFrame);
-//  RegisterWSComponent(TCustomForm, TWin32WSCustomForm);
+  RegisterWSComponent(TCustomForm, TWin32WSCustomForm);
 //  RegisterWSComponent(TForm, TWin32WSForm);
 //  RegisterWSComponent(THintWindow, TWin32WSHintWindow);
 //  RegisterWSComponent(TScreen, TWin32WSScreen);

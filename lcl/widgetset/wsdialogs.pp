@@ -44,14 +44,17 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Dialogs,
+  Dialogs,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
 type
   { TWSCommonDialog }
 
+  TWSCommonDialogClass = class of TWSCommonDialog;
   TWSCommonDialog = class(TWSLCLComponent)
+  public
+    class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
   end;
 
   { TWSFileDialog }
@@ -91,6 +94,10 @@ type
 
 
 implementation
+
+procedure TWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
+begin
+end;
 
 initialization
 

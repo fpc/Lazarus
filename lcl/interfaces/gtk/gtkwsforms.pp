@@ -27,7 +27,10 @@ unit GtkWSForms;
 interface
 
 uses
-  Forms, WSForms, WSLCLClasses;
+  {$IFDEF GTK2} Gtk2, Glib2, gdk2, {$ELSE} Gtk, gdk, Glib, {$ENDIF}
+  SysUtils, Classes, Controls, LMessages, InterfaceBase, graphics,
+  Dialogs, WSDialogs, WSLCLClasses, gtkint, gtkproc, gtkwscontrols,
+  Forms, WSForms, Math;
 
 type
 
@@ -69,8 +72,9 @@ type
   private
   protected
   public
-    class procedure SetFormBorderStyle(const AWinControl: TWinControl;
+    class procedure SetFormBorderStyle(const AForm: TCustomForm;
                              const AFormBorderStyle: TFormBorderStyle); override;
+    class procedure ShowModal(const ACustomForm: TCustomForm); override;
   end;
 
   { TGtkWSForm }
@@ -110,12 +114,27 @@ implementation
 
 { TGtkWSCustomForm }
 
-procedure TGtkWSCustomForm.SetFormBorderStyle(const AWinControl: TWinControl;
+procedure TGtkWSCustomForm.SetFormBorderStyle(const AForm: TCustomForm;
   const AFormBorderStyle: TFormBorderStyle);
 begin
-  inherited SetFormBorderStyle(AWinControl, AFormBorderStyle);
+  inherited SetFormBorderStyle(AForm, AFormBorderStyle);
   // the form border style can only be set at creation time.
   // This is Delphi compatible, so no Recreatewnd needed.
+end;
+
+procedure TGtkWSCustomForm.ShowModal(const ACustomForm: TCustomForm);
+var
+  GtkWindow: PGtkWindow;
+begin
+  ReleaseMouseCapture;
+  if ACustomForm.Parent=nil then begin
+    GtkWindow:=PGtkWindow(ACustomForm.Handle);
+    gtk_window_set_default_size(GtkWindow,
+                          Max(1,ACustomForm.Width),Max(1,ACustomForm.Height));
+    gtk_widget_set_uposition(PGtkWidget(GtkWindow),
+                             ACustomForm.Left, ACustomForm.Top);
+  end;
+  GtkWindowShowModal(GtkWindow);
 end;
 
 initialization
@@ -130,7 +149,7 @@ initialization
 //  RegisterWSComponent(TScrollBox, TGtkWSScrollBox);
 //  RegisterWSComponent(TCustomFrame, TGtkWSCustomFrame);
 //  RegisterWSComponent(TFrame, TGtkWSFrame);
-//  RegisterWSComponent(TCustomForm, TGtkWSCustomForm);
+  RegisterWSComponent(TCustomForm, TGtkWSCustomForm);
 //  RegisterWSComponent(TForm, TGtkWSForm);
 //  RegisterWSComponent(THintWindow, TGtkWSHintWindow);
 //  RegisterWSComponent(TScreen, TGtkWSScreen);

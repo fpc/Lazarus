@@ -335,15 +335,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SHOWMODAL:
-      Begin
-        If Sender Is TCommonDialog Then
-          Exit
-        Else begin
-          EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@DisableWindowsProc, Handle);
-          ShowWindow(Handle, SW_Show);
-        end;
-      End;
       LM_TB_BUTTONCOUNT:
       Begin
         If Sender Is TToolbar Then
@@ -2472,6 +2463,9 @@ End;
 
 {
   $Log$
+  Revision 1.252  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.251  2004/09/12 19:50:36  micha
   convert LM_SETSIZE message to new interface method
 

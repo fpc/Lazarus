@@ -444,53 +444,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.ShowModal(Sender: TObject);
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.ShowModal(Sender: TObject);
-var
-  GtkWindow: PGtkWindow;
-  ACustomForm: TCustomForm;
-begin
-  ReleaseMouseCapture;
-   
-  if Sender is TCommonDialog then
-  begin
-    GtkWindow:=PGtkWindow(TCommonDialog(Sender).Handle);
-    gtk_window_set_title(GtkWindow,PChar(TCommonDialog(Sender).Title));
-    if Sender is TColorDialog then
-      SetColorDialogColor(PGtkColorSelection(GtkWindow),
-                          TColorDialog(Sender).Color);
-    gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
-  end else if (Sender is TCustomForm) then begin
-    ACustomForm:=TCustomForm(Sender);
-    if ACustomForm.Parent=nil then begin
-      GtkWindow:=PGtkWindow(ACustomForm.Handle);
-      gtk_window_set_default_size(GtkWindow,
-                            Max(1,ACustomForm.Width),Max(1,ACustomForm.Height));
-      gtk_widget_set_uposition(PGtkWidget(GtkWindow),
-                               ACustomForm.Left, ACustomForm.Top);
-    end;
-  end else begin
-    GtkWindow:=nil;
-    DebugLn('WARNING: TGtkWidgetSet.ShowModal ',Sender.ClassName);
-    exit;
-  end;
-  if (GtkWindow=nil) then exit;
-  UnsetResizeRequest(PgtkWidget(GtkWindow));
-
-  if ModalWindows=nil then ModalWindows:=TList.Create;
-  ModalWindows.Add(GtkWindow);
-
-  gtk_window_set_modal(GtkWindow, true);
-  gtk_widget_show(PGtkWidget(GtkWindow));
-
-  {$IFDEF VerboseTransient}
-  DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
-  {$ENDIF}
-  UpdateTransientWindows;
-end;
-
-{------------------------------------------------------------------------------
   procedure TGtkWidgetSet.UpdateTransientWindows;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.UpdateTransientWindows;
@@ -3161,8 +3114,6 @@ begin
 
       LM_DESTROY :
         DestroyLCLComponent(Sender);
-
-      LM_ShowModal: ShowModal(Sender);
 
       LM_TB_BUTTONCOUNT:
       begin
@@ -6810,35 +6761,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetColorDialogColor
-  Params:  ColorSelection : a gtk color selection dialog;
-           Color          : the color to select
-  Returns: nothing
-
-  Set the color of the color selection dialog
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetColorDialogColor(ColorSelection: PGtkColorSelection;
-  Color: TColor);
-var
-  SelectionColor: TGDKColor;
-  colorSel : PGTKCOLORSELECTION;
-begin
-  {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Start Color=',HexStr(Cardinal(Color),8));
-  {$ENDIF}
-  Color:=ColorToRGB(Color);
-  {$IFDEF VerboseColorDialog}
-  DebugLn('TGtkWidgetSet.SetColorDialogColor Converted Color=',HexStr(Cardinal(Color),8));
-  {$ENDIF}
-  SelectionColor.Pixel := 0;
-  SelectionColor.Red :=  Red(Color) shl 8;
-  SelectionColor.Green:= Green(Color) shl 8;
-  SelectionColor.Blue:= Blue(Color) shl 8;
-  colorSel := PGTKCOLORSELECTION((PGTKCOLORSELECTIONDIALOG(ColorSelection))^.colorsel);
-  gtk_color_selection_set_current_color(colorSel,@SelectionColor);
-end;
-
-{------------------------------------------------------------------------------
   Method: TGtkWidgetSet.GetValue
   Params:  Sender : the lcl object which called this func via SenMessage
            Data   : pointer to component specific variable
@@ -8502,6 +8424,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.560  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.559  2004/09/12 19:50:35  micha
   convert LM_SETSIZE message to new interface method
 

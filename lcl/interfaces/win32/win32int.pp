@@ -227,13 +227,13 @@ Uses
  Win32WSControls,
 // Win32WSDbCtrls,
 // Win32WSDBGrids,
-// Win32WSDialogs,
+ Win32WSDialogs,
 // Win32WSDirSel,
 // Win32WSEditBtn,
 // Win32WSExtCtrls,
 // Win32WSExtDlgs,
 // Win32WSFileCtrl,
-// Win32WSForms,
+ Win32WSForms,
 // Win32WSGrids,
 // Win32WSImgList,
 // Win32WSMaskEdit,
@@ -282,6 +282,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.108  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.107  2004/09/12 19:50:36  micha
   convert LM_SETSIZE message to new interface method
 

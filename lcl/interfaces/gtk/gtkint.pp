@@ -237,8 +237,6 @@ type
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
-    procedure ShowModal(Sender: TObject); virtual;
-    procedure UpdateTransientWindows; virtual;
     procedure UntransientWindow(GtkWindow: PGtkWindow);
     procedure InitializeFileDialog(FileDialog: TFileDialog;
       var SelWidget: PGtkWidget; Title: PChar);
@@ -257,8 +255,6 @@ type
     function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetProperties (Sender: TObject) : integer;virtual;
-    procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
-      Color: TColor);virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
     procedure UpdateStatusBarPanels(StatusBar: TObject;
@@ -267,7 +263,6 @@ type
                                    StatusPanelWidget: PGtkWidget); virtual;
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
-    procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
   public
     // for gtk specific components:
@@ -303,7 +298,10 @@ type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
         
     // helper routines needed by interface methods
+    procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
+    // |-forms
+    procedure UpdateTransientWindows; virtual;
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
       ProcessAmpersands : Boolean) : PChar;
   
@@ -343,13 +341,13 @@ uses
  GtkWSControls,
 // GtkWSDbCtrls,
 // GtkWSDBGrids,
-// GtkWSDialogs,
+ GtkWSDialogs,
 // GtkWSDirSel,
 // GtkWSEditBtn,
  GtkWSExtCtrls,
 // GtkWSExtDlgs,
 // GtkWSFileCtrl,
-// GtkWSForms,
+ GtkWSForms,
 // GtkWSGrids,
 // GtkWSImgList,
 // GtkWSMaskEdit,
@@ -458,6 +456,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.203  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.202  2004/09/12 19:50:35  micha
   convert LM_SETSIZE message to new interface method
 

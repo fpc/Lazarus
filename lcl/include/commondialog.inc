@@ -80,7 +80,7 @@ function TCommonDialog.DoExecute : boolean;
 var CanClose: boolean;
 begin
   if Assigned(FOnShow) then FOnShow(Self);
-  CNSendMessage(LM_SHOWMODAL, Self, nil);
+  TWSCommonDialogClass(WidgetSetClass).ShowModal(Self);
   repeat
     Application.HandleMessage;
     if (FUserChoice <> mrNone) and (Handle<>0)
@@ -97,6 +97,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.15  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

@@ -30,30 +30,6 @@ const
   WM_THEMECHANGED = $31A;
 
 {-----------------------------------------------------------------------------
-  Function: DisableWindowsProc
-  Params: Window - handle of toplevel windows to be disabled
-          Data   - handle of current window form
-  Returns: Whether the enumeration should continue
-
-  Used in LM_SHOWMODAL to disable the windows of application thread
-  except the current form.
- -----------------------------------------------------------------------------}
-Function DisableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
-var
-  Buffer: array[0..15] of Char;
-Begin
-  Result:=true;
-  // Don't disable the current window form
-  if Window=HWND(Data) then exit;
-
-  // Don't disable any ComboBox listboxes
-  if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
-    and (stricomp(Buffer, 'ComboLBox')=0) then exit;
-
-  EnableWindow(Window,False);
-End;
-
-{-----------------------------------------------------------------------------
   Function: EnableWindowsProc
   Params: Window - handle of toplevel windows to be enabled
           Data   - nothing
@@ -1319,6 +1295,9 @@ end;
 
 {
   $Log$
+  Revision 1.139  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.138  2004/09/07 14:13:16  micha
   fix key handling of maskedit (inhibit backspace handling)
 

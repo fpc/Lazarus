@@ -153,7 +153,6 @@ const
   LM_CONFIGUREEVENT = LM_User+31;
   //LM_DRAW         = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
   LM_PAINT          = LM_User+32;
-  LM_SHOWMODAL      = LM_USER+33;
   LM_OK_CLICKED     = LM_USER+36;
   LM_CANCEL_CLICKED = LM_USER+37;
   //LM_KEYDOWN      = LM_User+38; // Windows Compatability
@@ -933,7 +932,6 @@ begin
   LM_CONFIGUREEVENT :Result:='LM_CONFIGUREEVENT';
   //LM_DRAW         :Result:='LM_DRAW';
   LM_PAINT          :Result:='LM_PAINT';
-  LM_SHOWMODAL      :Result:='LM_SHOWMODAL';
   LM_OK_CLICKED     :Result:='LM_OK_CLICKED';
   LM_CANCEL_CLICKED :Result:='LM_CANCEL_CLICKED';
   //LM_KEYDOWN      :Result:='LM_KEYDOWN';
@@ -984,6 +982,9 @@ end.
 
 {
   $Log$
+  Revision 1.92  2004/09/13 13:13:46  micha
+  convert LM_SHOWMODAL to interface methods
+
   Revision 1.91  2004/09/12 19:50:35  micha
   convert LM_SETSIZE message to new interface method
 
