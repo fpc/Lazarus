@@ -5619,7 +5619,10 @@ begin
     if Project1.Units[i].Loaded then
       SrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(
         Project1.Units[i].EditorIndex);
-    if SrcEdit<>nil then SrcEdit.Modified:=true;
+    if SrcEdit<>nil then begin
+      SrcEdit.Modified:=true;
+      SourceNotebook.UpdateStatusBar;
+    end;
   end;
 end;
 
@@ -6811,6 +6814,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.365  2002/09/08 10:01:54  lazarus
+  MG: fixed streaming visible=false
+
   Revision 1.364  2002/09/06 19:11:46  lazarus
   MG: fixed scrollbars of TTreeView
 
