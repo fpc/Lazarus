@@ -302,15 +302,28 @@ type
   end;
   
   
-  {$IFNDEF VER1_0_10}
   { TLazReaderBMP }
   { This is an imroved FPImage writer for bmp images. }
-  TLazReaderBMP = class(TFPReaderBMP)
-  protected
-    procedure SetupRead(nPalette, nRowBits: Integer; Stream : TStream); override;
-    procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); override;
+  TLazReaderBMP = class (TFPCustomImageReader)
+    Private
+      Procedure FreeBufs;       // Free (and nil) buffers.
+    protected
+      ReadSize: Integer;       // Size (in bytes) of 1 scanline.
+      BFI: TBitMapInfoHeader;  // The header as read from the stream.
+      FPalette: PFPcolor;      // Buffer with Palette entries.
+      LineBuf: PByte;          // Buffer for 1 scanline. Can be Byte, TColorRGB or TColorRGBA
+
+      // SetupRead will allocate the needed buffers, and read the colormap if needed.
+      procedure SetupRead(nPalette, nRowBits: Integer; Stream: TStream); virtual;
+      procedure ReadScanLine(Row: Integer; Stream: TStream); virtual;
+      procedure WriteScanLine(Row: Integer; Img: TFPCustomImage); virtual;
+      // required by TFPCustomImageReader
+      procedure InternalRead(Stream: TStream; Img: TFPCustomImage); override;
+      function  InternalCheck(Stream: TStream) : boolean; override;
+    public
+      constructor Create; override;
+      destructor Destroy; override;
   end;
-  {$ENDIF}
 
 
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
@@ -2821,48 +2834,184 @@ begin
     Root.ConsistencyCheck;
 end;
 
-{$IFNDEF VER1_0_10}
 { TLazReaderBMP }
 
-procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream
-  );
+function BmpRGBAToFPColor(Const RGBA: TColorRGBA): TFPcolor;
 var
+  NewAlpha: Byte;
+begin
+  with Result, RGBA do
+    begin
+    Red   :=(R shl 8) or R;
+    Green :=(G shl 8) or G;
+    Blue  :=(B shl 8) or B;
+    NewAlpha:=255-A;
+    alpha :=(NewAlpha shl 8) or NewAlpha;
+    end;
+end;
+
+Function RGBToFPColor(Const RGB: TColorRGB) : TFPColor;
+begin
+  with Result,RGB do
+    begin
+    Red   := (R shl 8) + R;
+    Green := (G shl 8) + G;
+    Blue  := (B shl 8) + B;
+    Alpha := AlphaOpaque;
+    end;
+end;
+
+procedure TLazReaderBMP.FreeBufs;
+begin
+  If (LineBuf<>Nil) then
+    begin
+    FreeMem(LineBuf);
+    LineBuf:=Nil;
+    end;
+  If (FPalette<>Nil) then
+    begin
+    FreeMem(FPalette);
+    FPalette:=Nil;
+    end;
+end;
+
+procedure TLazReaderBMP.SetupRead(nPalette, nRowBits: Integer; Stream: TStream);
+{$ifdef VER1_0}
+type
+  tcolinfo = ARRAY [0..0] OF TColorRGBA;
+  pcolinfo = ^tcolinfo;
+var
+  ColInfo: pcolinfo;
+{$else}
+var
+  ColInfo: ARRAY OF TColorRGBA;
+{$endif}
   i: Integer;
 begin
-  inherited SetupRead(nPalette, nRowBits, Stream);
-  // workaround for palette bug in FPReadBMP
-  for i:=0 to nPalette-1 do begin
-    FPalette[i].Alpha:=$ffff-FPalette[i].Alpha;
-  end;
+  if nPalette>0 then
+    begin
+    GetMem(FPalette, nPalette*SizeOf(TFPColor));
+{$ifdef VER1_0}
+    GetMem(ColInfo, nPalette*Sizeof(TColorRGBA));
+    if BFI.biClrUsed>0 then
+      Stream.Read(ColInfo^[0],BFI.ClrUsed*SizeOf(TColorRGBA))
+    else // Seems to me that this is dangerous.
+      Stream.Read(ColInfo^[0],nPalette*SizeOf(TColorRGBA));
+    for i := 0 to nPalette-1 do
+      FPalette[i] := BmpRGBAToFPColor(ColInfo^[i]);
+{$else}
+    SetLength(ColInfo, nPalette);
+    if BFI.biClrUsed>0 then
+      Stream.Read(ColInfo[0],BFI.biClrUsed*SizeOf(TColorRGBA))
+    else // Seems to me that this is dangerous.
+      Stream.Read(ColInfo[0],nPalette*SizeOf(TColorRGBA));
+    for i := 0 to High(ColInfo) do
+      FPalette[i] := BmpRGBAToFPColor(ColInfo[i]);
+{$endif}
+    end
+  else if BFI.biClrUsed>0 then { Skip palette }
+    Stream.Position := Stream.Position + BFI.biClrUsed*SizeOf(TColorRGBA);
+  ReadSize:=((nRowBits + 31) div 32) shl 2;
+  GetMem(LineBuf,ReadSize);
+{$ifdef VER1_0}
+    FreeMem(ColInfo, nPalette*Sizeof(TColorRGBA));
+{$endif}
+end;
+
+procedure TLazReaderBMP.ReadScanLine(Row: Integer; Stream: TStream);
+begin
+  {
+    Add here support for compressed lines. The 'readsize' is the same in the end.
+  }
+  Stream.Read(LineBuf[0],ReadSize);
 end;
 
 procedure TLazReaderBMP.WriteScanLine(Row: Integer; Img: TFPCustomImage);
-// workaround for alpha value bug in FPReadBMP
-
-  function BmpRGBAToFPColor(Const RGBA: TColorRGBA) : TFPcolor;
-  var
-    NewAlpha: Byte;
-  begin
-    with Result, RGBA do
-      begin
-      Red   :=(R shl 8) or R;
-      Green :=(G shl 8) or G;
-      Blue  :=(B shl 8) or B;
-      NewAlpha:=255-A;
-      alpha :=(NewAlpha shl 8) or NewAlpha;
-      end;
-  end;
-
-var
-  Column: Integer;
+Var
+  Column : Integer;
 begin
-  if BFI.BitCount=32 then begin
-    for Column:=0 to img.Width-1 do
-      img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
-  end else
-    inherited WriteScanLine(Row, Img);
+  Case BFI.biBitCount of
+   1 :
+     for Column:=0 to Img.Width-1 do
+       if ((LineBuf[Column div 8] shr (7-(Column and 7)) ) and 1) <> 0 then
+         img.colors[Column,Row]:=FPalette[1]
+       else
+         img.colors[Column,Row]:=FPalette[0];
+   4 :
+      for Column:=0 to img.Width-1 do
+        img.colors[Column,Row]:=FPalette[(LineBuf[Column div 2] shr (((Column+1) and 1)*4)) and $0f];
+   8 :
+      for Column:=0 to img.Width-1 do
+        img.colors[Column,Row]:=FPalette[LineBuf[Column]];
+   16 :
+      Raise FPImageException.Create('16 bpp bitmaps not supported');
+   24 :
+      for Column:=0 to img.Width-1 do
+        img.colors[Column,Row]:=RGBToFPColor(PColorRGB(LineBuf)[Column]);
+   32 :
+      for Column:=0 to img.Width-1 do
+        img.colors[Column,Row]:=BmpRGBAToFPColor(PColorRGBA(LineBuf)[Column]);
+    end;
 end;
-{$ENDIF}
+
+procedure TLazReaderBMP.InternalRead(Stream: TStream; Img: TFPCustomImage);
+Var
+  Row : Integer;
+begin
+  Stream.Read(BFI,SizeOf(BFI));
+  { This will move past any junk after the BFI header }
+  Stream.Position:=Stream.Position-SizeOf(BFI)+BFI.biSize;
+  with BFI do
+    begin
+    if (biCompression<>0) then
+      Raise FPImageException.Create('Compressed bitmaps not supported');
+    Img.Width:=biWidth;
+    Img.Height:=biHeight;
+    end;
+  Case BFI.biBitCount of
+    1 : { Monochrome }
+      SetupRead(2,Img.Width,Stream);
+    4 :
+      SetupRead(16,Img.Width*4,Stream);
+    8 :
+      SetupRead(256,Img.Width*8,Stream);
+    16 :
+      Raise FPImageException.Create('16 bpp bitmaps not supported');
+    24:
+      SetupRead(0,Img.Width*8*3,Stream);
+    32:
+      SetupRead(0,Img.Width*8*4,Stream);
+  end;
+  Try
+    for Row:=Img.Height-1 downto 0 do
+      begin
+      ReadScanLine(Row,Stream); // Scanline in LineBuf with Size ReadSize.
+      WriteScanLine(Row,Img);
+      end;
+  finally
+    FreeBufs;
+  end;
+end;
+
+function TLazReaderBMP.InternalCheck(Stream: TStream): boolean;
+var
+  BFH:TBitMapFileHeader;
+begin
+  stream.Read(BFH,SizeOf(BFH));
+  With BFH do
+    Result:=(bfType=BMmagic); // Just check magic number
+end;
+
+constructor TLazReaderBMP.Create;
+begin
+  inherited Create;
+end;
+
+destructor TLazReaderBMP.Destroy;
+begin
+  FreeBufs;
+  inherited Destroy;
+end;
 
 //------------------------------------------------------------------------------
 procedure InternalInit;
