@@ -98,6 +98,7 @@ function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
+function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
@@ -300,6 +301,44 @@ begin
       Result:=Result+NewPath;
     end;
   end;
+end;
+
+function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
+var
+  OldPathLen: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  ResultStartPos: Integer;
+begin
+  Result:=SearchPath;
+  OldPathLen:=length(SearchPath);
+  EndPos:=1;
+  ResultStartPos:=1;
+  repeat
+    StartPos:=EndPos;
+    while (StartPos<=OldPathLen) and (SearchPath[StartPos]=';') do
+      inc(StartPos);
+    if StartPos>OldPathLen then break;
+    EndPos:=StartPos;
+    while (EndPos<=OldPathLen) and (SearchPath[EndPos]<>';') do
+      inc(EndPos);
+    if SearchDirectoryInSearchPath(RemoveSearchPath,SearchPath,StartPos)>0 then
+    begin
+      // remove path -> skip
+    end else begin
+      // keep path -> copy
+      if ResultStartPos>1 then begin
+        Result[ResultStartPos]:=';';
+        inc(ResultStartPos);
+      end;
+      while StartPos<EndPos do begin
+        Result[ResultStartPos]:=SearchPath[StartPos];
+        inc(ResultStartPos);
+        inc(StartPos);
+      end;
+    end;
+  until false;
+  SetLength(Result,ResultStartPos-1);
 end;
 
 function GetNextDirectoryInSearchPath(const SearchPath: string;
