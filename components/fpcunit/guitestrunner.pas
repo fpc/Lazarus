@@ -1,3 +1,19 @@
+{ Copyright (C) 2004 Dean Zobec
+
+  This library is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Library General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or (at your
+  option) any later version.
+
+  This program is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License
+  for more details.
+
+  You should have received a copy of the GNU Library General Public License
+  along with this library; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+}
 unit GuiTestRunner;
 
 {$mode objfpc}{$H+}
@@ -20,7 +36,7 @@ type
     actCopy: TAction;
     actCut: TAction;
     ActionList1: TActionList;
-    BitBtn1: TBitBtn;
+    btnClose: TBitBtn;
     btnRun: TBitBtn;
     ComboBox1: TComboBox;
     ImageList1: TImageList;
@@ -30,12 +46,13 @@ type
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    pbBar1: TPaintBox;
     PopupMenu1: TPopupMenu;
     PopupMenu2: TPopupMenu;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
     XMLMemo: TMemo;
-    PaintBox1: TPaintBox;
+    pbBar: TPaintBox;
     Panel4: TPanel;
     Panel5: TPanel;
     Splitter1: TSplitter;
@@ -45,16 +62,13 @@ type
     Panel3: TPanel;
     tsTestTree: TTabSheet;
     tsResultsXML: TTabSheet;
-    TreeView1: TTreeView;
-    procedure BitBtn1Click(Sender: TObject);
+    TestTree: TTreeView;
+    procedure BtnCloseClick(Sender: TObject);
     procedure GUITestRunnerCreate(Sender: TObject);
     procedure GUITestRunnerDestroy(Sender: TObject);
     procedure MenuItem3Click(Sender: TObject);
-    procedure PaintBox1Click(Sender: TObject);
-    procedure PaintBox1Paint(Sender: TObject);
-    procedure TreeView1Change(Sender: TObject; Node: TTreeNode);
-    procedure TreeView1Click(Sender: TObject);
-    procedure XMLMemoChange(Sender: TObject);
+    procedure TestTreeSelectionChanged(Sender: TObject);
+    procedure pbBarPaint(Sender: TObject);
     procedure actCopyExecute(Sender: TObject);
     procedure actCutExecute(Sender: TObject);
     procedure btnRunClick(Sender: TObject);
@@ -62,7 +76,6 @@ type
     { private declarations }
     suiteList: TStringList;
     currentTestNode: TTreeNode;
-    EnabledTestsCount: Integer;
     failureCounter: Integer;
     errorCounter: Integer;
     testsCounter: Integer;
@@ -77,8 +90,7 @@ type
     procedure AddError(ATest: TTest; AError: TTestFailure);
     procedure StartTest(ATest: TTest);
     procedure EndTest(ATest: TTest);
-    procedure DrawBar;
-  end; 
+  end;
 
 var
   TestRunner: TGUITestRunner;
@@ -86,39 +98,6 @@ var
 implementation
 
 { TGUITestRunner }
-
-procedure TGUITestRunner.TreeView1Change(Sender: TObject; Node: TTreeNode);
-begin
-
-end;
-
-procedure TGUITestRunner.TreeView1Click(Sender: TObject);
-var
-  Node: TTreeNode;
-begin
-  if TreeView1.Selected <> nil then
-  begin
-     Memo1.Lines.Clear;
-     Node := TreeView1.Selected;
-     if (Node.Level = 2) then
-       if (TObject(Node.Data) is TTestFailure)  then
-       begin
-         Memo1.Lines.Add('Exception Message: ' + TTestFailure(Node.Data).ExceptionMessage);
-         Memo1.Lines.Add('Exception Class Name: ' + TTestFailure(Node.Data).ExceptionClassName);
-         if TTestFailure(Node.Data).SourceUnitName <> '' then
-         begin
-           Memo1.Lines.Add('Unit Name: ' + TTestFailure(Node.Data).SourceUnitName);
-           Memo1.Lines.Add('Method Name: ' + TTestFailure(Node.Data).MethodName);
-           Memo1.Lines.Add('Line Number: ' + IntToStr(TTestFailure(Node.Data).LineNumber));
-         end;
-       end;
-  end;
-end;
-
-procedure TGUITestRunner.XMLMemoChange(Sender: TObject);
-begin
-
-end;
 
 procedure TGUITestRunner.actCopyExecute(Sender: TObject);
 begin
@@ -142,11 +121,10 @@ begin
   ComboBox1.ItemIndex := 0;
 end;
 
-procedure TGUITestRunner.BitBtn1Click(Sender: TObject);
+procedure TGUITestRunner.BtnCloseClick(Sender: TObject);
 begin
   Close;
 end;
-
 
 procedure TGUITestRunner.GUITestRunnerDestroy(Sender: TObject);
 begin
@@ -158,16 +136,17 @@ begin
   Clipboard.AsText := Memo1.Lines.Text;
 end;
 
-procedure TGUITestRunner.PaintBox1Click(Sender: TObject);
+procedure TGUITestRunner.TestTreeSelectionChanged(Sender: TObject);
 begin
-
+  if (Sender as TTreeView).Selected <> nil then
+    Memo1.Lines.Text := (Sender as TTreeview).Selected.Text
 end;
 
-procedure TGUITestRunner.PaintBox1Paint(Sender: TObject);
+procedure TGUITestRunner.pbBarPaint(Sender: TObject);
 var
   msg: string;
 begin
-  with PaintBox1 do
+  with (Sender as TPaintBox) do
   begin
     Canvas.Brush.Color := clGray;
     Canvas.Rectangle(0, 0, Width, Height);
@@ -176,8 +155,7 @@ begin
     Canvas.Brush.Color := barColor;
     if TestsCounter <> 0 then
     begin
-      Canvas.Rectangle(0, 0, round((TestsCounter{- FailureCounter- ErrorCounter})/EnabledTestsCount*
-        Width), Height);
+      Canvas.Rectangle(0, 0, round(TestsCounter / GetTestRegistry.CountTestCases * Width), Height);
       Canvas.Font.Color := clWhite;
       msg := 'Runs: ' + IntToStr(TestsCounter);
       if ErrorCounter <> 0 then
@@ -194,14 +172,13 @@ var
   testResult: TTestResult;
   testSuite: TTest;
 begin
-  TreeView1.items.Clear;
+  TestTree.items.Clear;
   suiteList.Clear;
   currentTestNode := nil;
   if ComboBox1.ItemIndex = 0 then
     testSuite := GetTestRegistry
   else
     testSuite := GetTestRegistry[ComboBox1.itemindex - 1];
-  enabledTestsCount := testSuite.CountTestCases;
   failureCounter := 0;
   errorCounter := 0;
   testsCounter := 0;
@@ -209,21 +186,23 @@ begin
   try
     testResult.AddListener(self);
     testSuite.Run(testResult);
-    XMLMemo.lines.text:= TestResultAsXML(testResult);
+    XMLMemo.lines.text:= '<TestResults>' + system.sLineBreak +
+      TestResultAsXML(testResult) + system.sLineBreak + '</TestResults>';
   finally
     testResult.Free;
   end;
-  PaintBox1.invalidate;
+  pbBar.invalidate;
+  pbBar1.invalidate;
 end;
 
 procedure TGUITestRunner.AddFailure(ATest: TTest; AFailure: TTestFailure);
 var
   node: TTreeNode;
 begin
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Message: ' + AFailure.ExceptionMessage, AFailure);
+  node := TestTree.Items.AddChild(currentTestNode, 'Message: ' + AFailure.ExceptionMessage);
   node.ImageIndex := 4;
   node.SelectedIndex := 4;
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Exception: ' + AFailure.ExceptionClassName, AFailure);
+  node := TestTree.Items.AddChild(currentTestNode, 'Exception: ' + AFailure.ExceptionClassName);
   node.ImageIndex := 4;
   node.SelectedIndex := 4;
   currentTestNode.ImageIndex := 3;
@@ -232,7 +211,7 @@ begin
   node.ImageIndex := 3;
   node.SelectedIndex := 3;
   Inc(failureCounter);
-  if BarColor <> clRed then
+  if errorCounter = 0 then
     barColor := clFuchsia;
 end;
 
@@ -240,19 +219,19 @@ procedure TGUITestRunner.AddError(ATest: TTest; AError: TTestFailure);
 var
   node: TTreeNode;
 begin
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Exception message: ' + AError.ExceptionMessage, AError);
+  node := TestTree.Items.AddChild(currentTestNode, 'Exception message: ' + AError.ExceptionMessage);
   node.ImageIndex := 4;
   node.SelectedIndex := 4;
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Exception class: ' + AError.ExceptionClassName, AError);
+  node := TestTree.Items.AddChild(currentTestNode, 'Exception class: ' + AError.ExceptionClassName);
   node.ImageIndex := 4;
   node.SelectedIndex := 4;
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Unit name: ' + AError.SourceUnitName, AError);
+  node := TestTree.Items.AddChild(currentTestNode, 'Unit name: ' + AError.SourceUnitName);
   node.ImageIndex := 11;
   node.SelectedIndex := 11;
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Method name: ' + AError.MethodName, AError);
+  node := TestTree.Items.AddChild(currentTestNode, 'Method name: ' + AError.MethodName);
   node.ImageIndex := 11;
   node.SelectedIndex := 11;
-  node := TreeView1.Items.AddChildObject(currentTestNode, 'Line number: ' + IntToStr(AError.LineNumber), AError);
+  node := TestTree.Items.AddChild(currentTestNode, 'Line number: ' + IntToStr(AError.LineNumber));
   node.ImageIndex := 11;
   node.SelectedIndex := 11;
   currentTestNode.ImageIndex := 2;
@@ -274,28 +253,24 @@ begin
   end
   else
     begin
-      if TreeView1.Items.Count = 0 then
+      if TestTree.Items.Count = 0 then
       begin
-        parentNode := TreeView1.Items.AddFirst(nil, ATest.TestSuiteName);
+        parentNode := TestTree.Items.AddFirst(nil, ATest.TestSuiteName);
       end
       else
-        parentNode := TreeView1.Items.Add(TTreeNode(suiteList.Objects[SuiteList.Count - 1]), ATest.TestSuiteName);
+        parentNode := TestTree.Items.Add(TTreeNode(suiteList.Objects[SuiteList.Count - 1]), ATest.TestSuiteName);
       suiteList.AddObject(ATest.TestSuiteName, parentNode);
     end;
-  currentTestNode := TreeView1.Items.AddChildObject(parentNode, ATest.TestName, ATest);
+  currentTestNode := TestTree.Items.AddChild(parentNode, ATest.TestName);
   Application.ProcessMessages;
 end;
 
 procedure TGUITestRunner.EndTest(ATest: TTest);
 begin
   Inc(testsCounter);
-  PaintBox1.invalidate;
+  pbBar.invalidate;
+  pbBar1.invalidate;
   Application.ProcessMessages;
-end;
-
-procedure TGUITestRunner.DrawBar;
-begin
-
 end;
 
 { TGUITestRunner.IInterface }
