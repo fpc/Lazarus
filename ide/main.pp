@@ -42,14 +42,10 @@ uses
   Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, ExtToolDialog,
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, MainBar;
+  TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg,
+  BaseDebugManager, DebugManager, MainBar;
 
 type
-
-  {$DEFINE IDE_TYPE}
-  {$I ide_debugger.inc}
-  {$UNDEF IDE_TYPE}  
-
   TMainIDE = class(TMainIDEBar)
     // event handlers
     //procedure FormShow(Sender : TObject);
@@ -201,10 +197,6 @@ type
                                          var Abort: boolean);
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
-
-    {$DEFINE IDE_HEAD}
-    {$I ide_debugger.inc}
-    {$UNDEF IDE_HEAD}  
   private
     FHintSender : TObject;
     FCodeLastActivated : Boolean; // used for toggling between code and forms
@@ -221,9 +213,6 @@ type
     function CreateSeperator : TMenuItem;
     procedure SetDefaultsForForm(aForm : TCustomForm);
 
-    {$DEFINE IDE_PRIVATE}
-    {$I ide_debugger.inc}
-    {$UNDEF IDE_PRIVATE}
   protected
     procedure ToolButtonClick(Sender : TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
@@ -243,7 +232,7 @@ type
     procedure SetupToolsMenu;
     procedure SetupEnvironmentMenu;
     procedure SetupHelpMenu;
-    procedure ConnectFormEvents;
+    procedure ConnectMainBarEvents;
     procedure LoadMenuShortCuts;
     procedure SetupSpeedButtons;
     procedure SetupComponentNoteBook;
@@ -293,9 +282,7 @@ type
     function DoCompleteLoadingProjectInfo: TModalResult;
 
   public
-    ToolStatus: TIDEToolStatus;
- 
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
     // files/units
@@ -306,7 +293,7 @@ type
     function DoCloseEditorUnit(PageIndex:integer;
         SaveFirst: boolean):TModalResult;
     function DoOpenEditorFile(const AFileName:string;
-        Flags: TOpenFlags): TModalResult;
+        Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject):TModalResult;
     function DoSaveAll: TModalResult;
     function DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -320,7 +307,7 @@ type
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     function DoBuildProject(BuildAll: boolean): TModalResult;
-    function DoInitProjectRun: TModalResult;
+    function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
@@ -335,13 +322,13 @@ type
 
     // useful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
-      var ActiveUnitInfo:TUnitInfo);
+      var ActiveUnitInfo:TUnitInfo); override;
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo);
     procedure GetUnitWithPageIndex(PageIndex:integer; 
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
-    function FindUnitFile(const AFilename: string): string;
+    function FindUnitFile(const AFilename: string): string; override;
     function DoSaveStreamToFile(AStream:TStream; const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream; 
@@ -382,8 +369,8 @@ type
     procedure DoArrangeSourceEditorAndMessageView;
     function GetProjectTargetFilename: string;
     function GetTestProjectFilename: string;
-    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string;
-    function GetRunCommandLine: string;
+    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
+    function GetRunCommandLine: string; override;
     procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
       var Handled, Abort: boolean);
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
@@ -412,10 +399,6 @@ type
     procedure SaveEnvironment;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
-
-    {$DEFINE IDE_PUBLIC}
-    {$I ide_debugger.inc}
-    {$UNDEF IDE_PUBLIC}
   end;
 
 
@@ -574,9 +557,10 @@ begin
   end;
 end;
 
-constructor TMainIDE.Create(AOwner: TComponent);
+constructor TMainIDE.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  MainIDE:=Self;
+  inherited Create(TheOwner);
 
   // load options
   ParseCmdLineOptions;
@@ -597,10 +581,14 @@ begin
     SetupMainMenu;
     SetupSpeedButtons;
     SetupComponentNoteBook;
-    ConnectFormEvents;
+    ConnectMainBarEvents;
     SetupHints;
   end;
 
+  DebugBoss:=TDebugManager.Create(Self);
+  DebugBoss.ConnectMainBarEvents;
+
+  LoadMenuShortCuts;
   SetupComponentTabs;
   SetupOutputFilter;
   SetupCompilerInterface;
@@ -608,9 +596,8 @@ begin
   SetupFormEditor;
   SetupSourceNotebook;
   SetupTransferMacros;
-  DebugConstructor;
   SetupControlSelection;
-  
+
   SetupStartProject;
 end;
 
@@ -618,10 +605,9 @@ destructor TMainIDE.Destroy;
 begin
 writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
-  if FDebugger <> nil then FDebugger.Done;
+  DebugBoss.EndDebugging;
 
   FreeThenNil(Project1);
-  FreeThenNil(FBreakPoints);
   if TheControlSelection<>nil then begin
     TheControlSelection.OnChange:=nil;
     FreeThenNil(TheControlSelection);
@@ -637,8 +623,6 @@ writeln('[TMainIDE.Destroy] A');
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(HintTimer1);
   FreeThenNil(HintWindow1);
-  FreeThenNil(Watches_Dlg);
-  FreeThenNil(FDebugger);
 
 writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
@@ -959,9 +943,7 @@ begin
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
-  SourceNotebook.OnAddWatchAtCursor := @OnSrcNotebookAddWatchesAtCursor;
-  SourceNotebook.OnCreateBreakPoint := @OnSrcNotebookCreateBreakPoint;
-  SourceNotebook.OnDeleteBreakPoint := @OnSrcNotebookDeleteBreakPoint;
+  DebugBoss.ConnectSourceNotebookEvents;
 
   // connect search menu to sourcenotebook
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
@@ -1118,9 +1100,6 @@ begin
   SetupToolsMenu;
   SetupEnvironmentMenu;
   SetupHelpMenu;
-  DebugLoadMenus;
-  
-  LoadMenuShortCuts;
 end;
 
 procedure TMainIDE.AddRecentSubMenu(ParentMenuItem: TMenuItem;
@@ -1395,6 +1374,26 @@ begin
   itmViewDebugWindows.Name := 'itmViewDebugWindows';
   itmViewDebugWindows.Caption := 'Debug windows';
   mnuView.Add(itmViewDebugWindows);
+  
+  itmViewWatches := TMenuItem.Create(Self);
+  itmViewWatches.Name:='itmViewWatches';
+  itmViewWatches.Caption := 'Watches';
+  itmViewDebugWindows.Add(itmViewWatches);
+
+  itmViewBreakPoints := TMenuItem.Create(Self);
+  itmViewBreakPoints.Name:='itmViewBreakPoints';
+  itmViewBreakPoints.Caption := 'BreakPoints';
+  itmViewDebugWindows.Add(itmViewBreakPoints);
+
+  itmViewLocals := TMenuItem.Create(Self);
+  itmViewLocals.Name:='itmViewLocals';
+  itmViewLocals.Caption := 'Local Variables';
+  itmViewDebugWindows.Add(itmViewLocals);
+
+  itmViewDebugOutput := TMenuItem.Create(Self);
+  itmViewDebugOutput.Name:='itmViewDebugOutput';
+  itmViewDebugOutput.Caption := 'Debug output';
+  itmViewDebugWindows.Add(itmViewDebugOutput);
 end;
 
 procedure TMainIDE.SetupProjectMenu;
@@ -1599,7 +1598,7 @@ begin
   mnuHelp.Add(itmHelpAboutLazarus);
 end;
 
-procedure TMainIDE.ConnectFormEvents;
+procedure TMainIDE.ConnectMainBarEvents;
 begin
   //OnShow := @FormShow;
   OnClose := @FormClose;
@@ -1807,11 +1806,11 @@ begin
    ecBuildAll:    DoBuildProject(Command=ecBuildAll);
     
    ecRun:         DoRunProject;
-   ecPause:       DoPauseProject;
-   ecStepInto:    DoStepIntoProject;
-   ecStepOver:    DoStepOverProject;
-   ecRunToCursor: DoRunToCursor;
-   ecStopProgram: DoStopProject;
+   ecPause:       DebugBoss.DoPauseProject;
+   ecStepInto:    DebugBoss.DoStepIntoProject;
+   ecStepOver:    DebugBoss.DoStepOverProject;
+   ecRunToCursor: DebugBoss.DoRunToCursor;
+   ecStopProgram: DebugBoss.DoStopProject;
     
    ecFindProcedureDefinition,ecFindProcedureMethod:
      DoJumpToProcedureSection;
@@ -2033,27 +2032,27 @@ end;
 
 Procedure TMainIDE.mnuPauseProjectClicked(Sender : TObject);
 begin
-  DoPauseProject;
+  DebugBoss.DoPauseProject;
 end;
 
 Procedure TMainIDE.mnuStepIntoProjectClicked(Sender : TObject);
 begin
-  DoStepIntoProject;
+  DebugBoss.DoStepIntoProject;
 end;
 
 Procedure TMainIDE.mnuStepOverProjectClicked(Sender : TObject);
 begin
-  DoStepOverProject;
+  DebugBoss.DoStepOverProject;
 end;
 
 Procedure TMainIDE.mnuRunToCursorProjectClicked(Sender : TObject);
 begin
-  DoRunToCursor;
+  DebugBoss.DoRunToCursor;
 end;
 
 Procedure TMainIDE.mnuStopProjectClicked(Sender : TObject);
 begin
-  DoStopProject;
+  DebugBoss.DoStopProject;
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
@@ -2402,7 +2401,8 @@ function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
-  NewResFilename, NewResFilePath, OldFilePath, NewPageName: string;
+  NewResFilename, NewResFilePath, OldFilePath, NewPageName,
+  NewLFMFilename: string;
   ACaption, AText: string;
   SrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
@@ -2502,9 +2502,10 @@ begin
   if AnUnitInfo.FormName='' then begin
     // unit has no form
     // -> remove lfm file, so that it will not be auto loaded on next open
-    NewResFilename:=ChangeFileExt(NewFilename,'.lfm');
-    if (not DeleteFile(NewResFilename))
-    and (MessageDlg('Delete failed','Deleting of file "'+NewResFilename+'"'
+    NewLFMFilename:=ChangeFileExt(NewFilename,'.lfm');
+    if (FileExists(NewLFMFilename))
+    and (not DeleteFile(NewLFMFilename))
+    and (MessageDlg('Delete failed','Deleting of file "'+NewLFMFilename+'"'
          +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then
     begin
       Result:=mrCancel;
@@ -4351,10 +4352,9 @@ end;
 
 function TMainIDE.DoInitProjectRun: TModalResult;
 var
-  ProgramFilename, LaunchingCmdLine, LaunchingApplication,
-  LaunchingParams: String;
+  ProgramFilename: String;
 begin
-  if ToolStatus = itDebugger
+  if ToolStatus <> itNone
   then begin
     // already running so no initialization needed
     Result := mrOk;
@@ -4382,17 +4382,12 @@ begin
       [mbCancel], 0);
     Exit;
   end;
-  LaunchingCmdLine:=GetRunCommandLine;
 
   // Setup debugger
   case EnvironmentOptions.DebuggerType of
     dtGnuDebugger: begin
-      if (FDebugger = nil)
-      and (DoInitDebugger <> mrOk)
+      if (DebugBoss.DoInitDebugger <> mrOk)
       then Exit;
-      SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
-      FDebugger.FileName := LaunchingApplication;
-      FDebugger.Arguments := LaunchingParams;
       // ToDo: set working directory
     end;
   else 
@@ -4400,7 +4395,7 @@ begin
     try
       CheckIfFileIsExecutable(ProgramFilename);
       FRunProcess := TProcess.Create(nil);
-      FRunProcess.CommandLine := LaunchingCmdLine;
+      FRunProcess.CommandLine := GetRunCommandLine;
       FRunProcess.CurrentDirectory:=
                                    Project1.RunParameterOptions.WorkingDirectory;
       FRunProcess.Options:= [poNoConsole];
@@ -4412,9 +4407,6 @@ begin
                           'Error: %s', [ProgramFilename, e.Message]), mterror, [mbok], 0);
     end;
   end;   
-  
-  if FDebugOutputDlg <> nil
-  then FDebugOutputDlg.Clear;
   
   Result := mrOK;
   ToolStatus := itDebugger;
@@ -4433,13 +4425,10 @@ begin
 
   Result := mrCancel;
 
-  case EnvironmentOptions.DebuggerType of
-    dtGnuDebugger: begin
-      if FDebugger = nil then Exit;
-      FDebugger.Run;
-      Result := mrOK;
-    end;
-  else
+  if EnvironmentOptions.DebuggerType <> dtNone then begin
+    DebugBoss.RunDebugger;
+    Result := mrOK;
+  end else begin
     if FRunProcess = nil then Exit;
     try
       Writeln('  EXECUTING "',FRunProcess.CommandLine,'"');
@@ -6148,7 +6137,7 @@ begin
 
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
   end;   
-  DebugCreateShortCuts;
+  DebugBoss.SetupMainBarShortCuts;
 end;
 
 procedure TMainIDE.mnuSearchFindBlockOtherEnd(Sender: TObject);
@@ -6185,6 +6174,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.259  2002/03/27 10:39:42  lazarus
+  MG: splitted main.pp: debugger management in TDebugManager
+
   Revision 1.258  2002/03/27 09:25:31  lazarus
   MG: renamed main Project to Project1
 

@@ -138,6 +138,10 @@ type
     itmViewForms : TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewDebugWindows: TMenuItem;
+    itmViewwatches: TMenuItem;
+    itmViewBreakpoints: TMenuItem;
+    itmViewLocals: TMenuItem;
+    itmViewDebugOutput: TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -178,7 +182,18 @@ type
     HintTimer1 : TTimer;
     HintWindow1 : THintWindow;
   public
-  
+    ToolStatus: TIDEToolStatus;
+    function FindUnitFile(const AFilename: string): string; virtual; abstract;
+    procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor;
+      var ActiveUnitInfo:TUnitInfo); virtual; abstract;
+      
+    function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
+    function GetRunCommandLine: string; virtual; abstract;
+
+    function DoOpenEditorFile(const AFileName:string;
+        Flags: TOpenFlags): TModalResult; virtual; abstract;
+    function DoInitProjectRun: TModalResult; virtual; abstract;
+    
   end;
 
 var
