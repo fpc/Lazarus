@@ -1607,6 +1607,8 @@ begin
   TForm(CInterface.Control).Name := 'Form1';
 //set the ONCLICK event so we know when a control is dropped onto the form.
   TFOrm(CInterface.Control).OnClick := @ClickOnForm;
+  FormEditor1.ClearSelected;
+  FormEditor1.AddSelected(TComponent(CInterface.Control));
 
 end;
 
@@ -2389,8 +2391,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.7  2000/11/27 18:59:01  lazarus
-  Changed the View Inspector menu item so it works.
+  Revision 1.8  2000/11/27 19:08:16  lazarus
+  Changed the NEw Form feature so the Object Inspector updates right away.
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus
