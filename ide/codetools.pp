@@ -321,6 +321,10 @@ type
 
 // functions / procedures
 
+// source type
+function FindSourceType(const Source: string;
+  var SrcNameStart, SrcNameEnd: integer): string;
+
 // program name
 function RenameProgramInSource(Source:TSourceLog;
    const NewProgramName:string):boolean;
@@ -486,6 +490,17 @@ begin
     Result:=false;
 end;
 
+function FindSourceType(const Source: string;
+  var SrcNameStart, SrcNameEnd: integer): string;
+begin
+  // read first atom for type
+  SrcNameEnd:=1;
+  Result:=ReadNextPascalAtom(Source,SrcNameEnd,SrcNameStart);
+  // read second atom for name
+  if Result<>'' then
+    ReadNextPascalAtom(Source,SrcNameEnd,SrcNameStart);
+end;
+
 function RenameUnitInSource(Source:TSourceLog;
   const NewUnitName:string):boolean;
 var UnitNameStart,UnitNameEnd:integer;
@@ -500,9 +515,8 @@ end;
 function FindUnitNameInSource(const Source:string;
   var UnitNameStart,UnitNameEnd:integer):string;
 begin
-  UnitNameStart:=SearchCodeInSource(Source,'unit',1,UnitNameEnd,false);
-  if UnitNameStart>0 then
-    Result:=ReadNextPascalAtom(Source,UnitNameEnd,UnitNameStart)
+  if uppercase(FindSourceType(Source,UnitNameStart,UnitNameEnd))='UNIT' then
+    Result:=copy(Source,UnitNameStart,UnitNameEnd-UnitNameStart)
   else
     Result:='';
 end;
@@ -519,9 +533,9 @@ end;
 function FindProgramNameInSource(const Source:string;
    var ProgramNameStart,ProgramNameEnd:integer):string;
 begin
-  ProgramNameStart:=SearchCodeInSource(Source,'program',1,ProgramNameEnd,false);
-  if ProgramNameStart>0 then
-    Result:=ReadNextPascalAtom(Source,ProgramNameEnd,ProgramNameStart)
+  if uppercase(FindSourceType(Source,ProgramNameStart,ProgramNameEnd))='PROGRAM'
+  then
+    Result:=copy(Source,ProgramNameStart,ProgramNameEnd-ProgramNameStart)
   else
     Result:='';
 end;
