@@ -152,12 +152,5 @@ begin
   end;
 end;
 
-//procedure TCustomPanel.WMWindowPosChanged(var Message: TLMWindowPosChanged);
-//begin
-//  // size changed?
-//  if (Message.WindowPos^.Flags and $1{SWP_NOSIZE}) = 0 then
-//    Invalidate;
-//end;
-
 // included by extctrls.pp
 
