@@ -43,6 +43,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.Click;
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.Click;
+begin
+  if Enabled then
+  begin
+    if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
+        not (ActionLink.IsAutoCheckLinked) and AutoCheck) then
+      Checked := not Checked;
+    { Call OnClick if assigned and not equal to associated action's OnExecute.
+      If associated action's OnExecute assigned then call it, otherwise, call
+      OnClick. }
+    if Assigned(FOnClick)
+    {and (Action <> nil) and (FOnClick <> Action.OnExecute)} then
+      FOnClick(Self)
+    else if not (csDesigning in ComponentState) and (ActionLink <> nil) then
+      FActionLink.Execute(Self)
+    else if Assigned(FOnClick) then
+      FOnClick(Self);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TMenuItem.Create
   Params:  TheOwner: the owner of the class
   Returns: Nothing
@@ -194,9 +217,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.DoClicked(var msg); 
 begin
-  Assert(False, 'Trace:Menu received a message - CLICKED');
-  if Assigned (FOnClick) then
-    FOnClick(Self);
+  Click;
 end;
 
 {------------------------------------------------------------------------------
@@ -924,6 +945,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/03/16 09:41:05  mattias
+  fixed checking menuitems
+
   Revision 1.31  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
@@ -1045,6 +1069,9 @@ end;
 
 
   $Log$
+  Revision 1.32  2003/03/16 09:41:05  mattias
+  fixed checking menuitems
+
   Revision 1.31  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

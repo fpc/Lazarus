@@ -158,29 +158,31 @@ type
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     FCompStyle : LongInt;
-    procedure Add(Item: TMenuItem);
-    procedure AddSeparator;
     constructor Create(TheOwner: TComponent); override;
-    procedure Delete(Index: Integer);
     destructor Destroy; override;
     function GetImageList: TCustomImageList; virtual;
     function GetParentComponent: TComponent; override;
     function GetParentMenu: TMenu; virtual;
     function HandleAllocated : Boolean;
-    procedure HandleNeeded; virtual;
     function HasIcon: boolean; virtual;
     function HasParent : Boolean; override;
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
+    function IsCheckItem: boolean; virtual;
+    procedure Add(Item: TMenuItem);
+    procedure AddSeparator;
+    procedure Click; virtual;
+    procedure Delete(Index: Integer);
+    procedure HandleNeeded; virtual;
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure RecreateHandle; virtual;
     procedure Remove(Item: TMenuItem);
+  public
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
     property Items[Index: Integer]: TMenuItem read GetItem; default;
     property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
     property Parent: TMenuItem read GetParent;
-    function IsCheckItem: boolean; virtual;
   published
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
     property Caption: String
@@ -362,6 +364,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2003/03/16 09:41:05  mattias
+  fixed checking menuitems
+
   Revision 1.38  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
