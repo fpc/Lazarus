@@ -734,7 +734,7 @@ var
   function GetDebugFileName: string;
   const
     DebugLogStart = '--debug-log=';
-    DebugLogStartLength = length(DebugLogStart);
+    DebugLogStartLength = {$IFNDEF VER1_0}length(DebugLogStart){$ELSE}12{$ENDIF};
   var
     i: integer;
     EnvVarName: string;
@@ -742,9 +742,9 @@ var
     Result := '';
     // first try to find the log file name in the command line parameters
     for i:= 1 to Paramcount do begin
-      if copy(ParamStr(i),1, length(DebugLogStart))=DebugLogStart then begin
-        Result := copy(ParamStr(i), length(DebugLogStart)+1,
-                   Length(ParamStr(i))-length(DebugLogStart));
+      if copy(ParamStr(i),1, DebugLogStartLength)=DebugLogStart then begin
+        Result := copy(ParamStr(i), DebugLogStartLength+1,
+                   Length(ParamStr(i))-DebugLogStartLength);
       end;
     end;
     // if not found yet, then try to find in the environment variables
