@@ -28,7 +28,7 @@ lcl: lcl_all
 examples: lcl
         $(MAKE) -C examples
 
-components: components_all
+components: lcl components_all
 
 ide: 
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)

@@ -127,15 +127,6 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
-# Pre Settings
-#####################################################################
-
-#ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-#  THE_EDIT=mwedit92
-#else
-#  THE_EDIT=mwedit
-#endif
-#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -174,6 +165,21 @@ endif
 endif
 endif
 
+ifndef PACKAGESDIR
+PACKAGESDIR=$(FPCDIR)/packages
+endif
+ifndef TOOLKITSDIR
+TOOLKITSDIR=
+endif
+ifndef COMPONENTSDIR
+COMPONENTSDIR=
+endif
+
+# Create units dir
+ifneq ($(FPCDIR),.)
+UNITSDIR=$(FPCDIR)/units/$(OS_TARGET)
+endif
+
 #####################################################################
 # User Settings
 #####################################################################
@@ -181,10 +187,12 @@ endif
 
 # Targets
 
-override DIROBJECTS+=$(wildcard synedit mwedit)
+override UNITOBJECTS+=allunits
 
 # Clean
 
+override EXTRACLEANUNITS+=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
+override EXTRACLEANFILES+=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 # Install
 
@@ -195,9 +203,17 @@ ZIPTARGET=install
 
 # Directories
 
+override NEEDUNITDIR=$(UNITTARGETDIR) ../../lcl/units
+ifndef TARGETDIR
+TARGETDIR=.
+endif
+ifndef UNITTARGETDIR
+UNITTARGETDIR=../units
+endif
 
 # Packages
 
+override PACKAGES+=rtl fcl gtk
 
 # Libraries
 
@@ -476,6 +492,115 @@ endif
 endif
 
 
+# Check if the dirs really exists, else turn it off
+ifeq ($(wildcard $(UNITSDIR)),)
+UNITSDIR=
+endif
+ifeq ($(wildcard $(TOOLKITSDIR)),)
+TOOLKITSDIR=
+endif
+ifeq ($(wildcard $(PACKAGESDIR)),)
+PACKAGESDIR=
+endif
+ifeq ($(wildcard $(COMPONENTSDIR)),)
+COMPONENTSDIR=
+endif
+
+
+# PACKAGESDIR packages
+
+PACKAGERTL=1
+PACKAGEFCL=1
+PACKAGEGTK=1
+
+ifdef PACKAGERTL
+ifneq ($(wildcard $(FPCDIR)/rtl),)
+ifneq ($(wildcard $(FPCDIR)/rtl/$(OS_TARGET)),)
+PACKAGEDIR_RTL=$(FPCDIR)/rtl/$(OS_TARGET)
+else
+PACKAGEDIR_RTL=$(FPCDIR)/rtl
+endif
+ifeq ($(wildcard $(PACKAGEDIR_RTL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_rtl
+package_rtl:
+	$(MAKE) -C $(PACKAGEDIR_RTL) all
+endif
+UNITDIR_RTL=$(PACKAGEDIR_RTL)
+else
+PACKAGEDIR_RTL=
+ifneq ($(wildcard $(UNITSDIR)/rtl),)
+ifneq ($(wildcard $(UNITSDIR)/rtl/$(OS_TARGET)),)
+UNITDIR_RTL=$(UNITSDIR)/rtl/$(OS_TARGET)
+else
+UNITDIR_RTL=$(UNITSDIR)/rtl
+endif
+else
+UNITDIR_RTL=
+endif
+endif
+ifdef UNITDIR_RTL
+override NEEDUNITDIR+=$(UNITDIR_RTL)
+endif
+endif
+ifdef PACKAGEFCL
+ifneq ($(wildcard $(FPCDIR)/fcl),)
+ifneq ($(wildcard $(FPCDIR)/fcl/$(OS_TARGET)),)
+PACKAGEDIR_FCL=$(FPCDIR)/fcl/$(OS_TARGET)
+else
+PACKAGEDIR_FCL=$(FPCDIR)/fcl
+endif
+ifeq ($(wildcard $(PACKAGEDIR_FCL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_fcl
+package_fcl:
+	$(MAKE) -C $(PACKAGEDIR_FCL) all
+endif
+UNITDIR_FCL=$(PACKAGEDIR_FCL)
+else
+PACKAGEDIR_FCL=
+ifneq ($(wildcard $(UNITSDIR)/fcl),)
+ifneq ($(wildcard $(UNITSDIR)/fcl/$(OS_TARGET)),)
+UNITDIR_FCL=$(UNITSDIR)/fcl/$(OS_TARGET)
+else
+UNITDIR_FCL=$(UNITSDIR)/fcl
+endif
+else
+UNITDIR_FCL=
+endif
+endif
+ifdef UNITDIR_FCL
+override NEEDUNITDIR+=$(UNITDIR_FCL)
+endif
+endif
+ifdef PACKAGEGTK
+ifneq ($(wildcard $(PACKAGESDIR)/gtk),)
+ifneq ($(wildcard $(PACKAGESDIR)/gtk/$(OS_TARGET)),)
+PACKAGEDIR_GTK=$(PACKAGESDIR)/gtk/$(OS_TARGET)
+else
+PACKAGEDIR_GTK=$(PACKAGESDIR)/gtk
+endif
+ifeq ($(wildcard $(PACKAGEDIR_GTK)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_gtk
+package_gtk:
+	$(MAKE) -C $(PACKAGEDIR_GTK) all
+endif
+UNITDIR_GTK=$(PACKAGEDIR_GTK)
+else
+PACKAGEDIR_GTK=
+ifneq ($(wildcard $(UNITSDIR)/gtk),)
+ifneq ($(wildcard $(UNITSDIR)/gtk/$(OS_TARGET)),)
+UNITDIR_GTK=$(UNITSDIR)/gtk/$(OS_TARGET)
+else
+UNITDIR_GTK=$(UNITSDIR)/gtk
+endif
+else
+UNITDIR_GTK=
+endif
+endif
+ifdef UNITDIR_GTK
+override NEEDUNITDIR+=$(UNITDIR_GTK)
+endif
+endif
+
 
 #####################################################################
 # Default Directories
@@ -680,6 +805,10 @@ ifdef VERBOSE
 override FPCOPT+=-vwni
 endif
 
+ifdef NEEDUNITDIR
+override FPCOPT+=$(addprefix -Fu,$(NEEDUNITDIR))
+endif
+
 ifdef UNITSDIR
 override FPCOPT+=-Fu$(UNITSDIR)
 endif
@@ -751,17 +880,15 @@ endif
 # Standard rules
 #####################################################################
 
-all: fpc_all $(addsuffix _all,$(DIROBJECTS))
+debug: fpc_debug
 
-debug: fpc_debug $(addsuffix _debug,$(DIROBJECTS))
+smart: fpc_smart
 
-smart: fpc_smart $(addsuffix _smart,$(DIROBJECTS))
+shared: fpc_shared
 
-shared: fpc_shared $(addsuffix _shared,$(DIROBJECTS))
+showinstall: fpc_showinstall
 
-showinstall: fpc_showinstall $(addsuffix _showinstall,$(DIROBJECTS))
-
-install: fpc_install $(addsuffix _install,$(DIROBJECTS))
+install: fpc_install
 
 sourceinstall: fpc_sourceinstall
 
@@ -773,17 +900,29 @@ zipsourceinstall: fpc_zipsourceinstall
 
 zipexampleinstall: fpc_zipexampleinstall
 
-clean: fpc_clean $(addsuffix _clean,$(DIROBJECTS))
+clean: fpc_clean
 
-distclean: fpc_distclean $(addsuffix _distclean,$(DIROBJECTS))
+distclean: fpc_distclean
 
-cleanall: fpc_cleanall $(addsuffix _cleanall,$(DIROBJECTS))
-
-require: $(addsuffix _require,$(DIROBJECTS))
+cleanall: fpc_cleanall
 
 info: fpc_info
 
-.PHONY:  all debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall require info
+.PHONY:  debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall info
+
+#####################################################################
+# Units
+#####################################################################
+
+.PHONY: fpc_units
+
+override ALLTARGET+=fpc_units
+
+override UNITPPUFILES=$(addsuffix $(PPUEXT),$(UNITOBJECTS))
+override INSTALLPPUFILES+=$(UNITPPUFILES)
+override CLEANPPUFILES+=$(UNITPPUFILES)
+
+fpc_units: $(UNITPPUFILES)
 
 #####################################################################
 # General compile rules
@@ -1186,133 +1325,6 @@ endif
 	@$(ECHO)
 
 #####################################################################
-# Directories
-#####################################################################
-
-OBJECTDIRSYNEDIT=1
-OBJECTDIRMWEDIT=1
-
-# Dir synedit
-
-ifdef OBJECTDIRSYNEDIT
-.PHONY:  synedit_all synedit_debug synedit_examples synedit_test synedit_smart synedit_shared synedit_showinstall synedit_install synedit_sourceinstall synedit_exampleinstall synedit_zipinstall synedit_zipsourceinstall synedit_zipexampleinstall synedit_clean synedit_distclean synedit_cleanall synedit_require synedit_info
-
-synedit_all:
-	$(MAKE) -C synedit all
-
-synedit_debug:
-	$(MAKE) -C synedit debug
-
-synedit_examples:
-	$(MAKE) -C synedit examples
-
-synedit_test:
-	$(MAKE) -C synedit test
-
-synedit_smart:
-	$(MAKE) -C synedit smart
-
-synedit_shared:
-	$(MAKE) -C synedit shared
-
-synedit_showinstall:
-	$(MAKE) -C synedit showinstall
-
-synedit_install:
-	$(MAKE) -C synedit install
-
-synedit_sourceinstall:
-	$(MAKE) -C synedit sourceinstall
-
-synedit_exampleinstall:
-	$(MAKE) -C synedit exampleinstall
-
-synedit_zipinstall:
-	$(MAKE) -C synedit zipinstall
-
-synedit_zipsourceinstall:
-	$(MAKE) -C synedit zipsourceinstall
-
-synedit_zipexampleinstall:
-	$(MAKE) -C synedit zipexampleinstall
-
-synedit_clean:
-	$(MAKE) -C synedit clean
-
-synedit_distclean:
-	$(MAKE) -C synedit distclean
-
-synedit_cleanall:
-	$(MAKE) -C synedit cleanall
-
-synedit_require:
-	$(MAKE) -C synedit require
-
-synedit_info:
-	$(MAKE) -C synedit info
-endif
-
-# Dir mwedit
-
-ifdef OBJECTDIRMWEDIT
-.PHONY:  mwedit_all mwedit_debug mwedit_examples mwedit_test mwedit_smart mwedit_shared mwedit_showinstall mwedit_install mwedit_sourceinstall mwedit_exampleinstall mwedit_zipinstall mwedit_zipsourceinstall mwedit_zipexampleinstall mwedit_clean mwedit_distclean mwedit_cleanall mwedit_require mwedit_info
-
-mwedit_all:
-	$(MAKE) -C mwedit all
-
-mwedit_debug:
-	$(MAKE) -C mwedit debug
-
-mwedit_examples:
-	$(MAKE) -C mwedit examples
-
-mwedit_test:
-	$(MAKE) -C mwedit test
-
-mwedit_smart:
-	$(MAKE) -C mwedit smart
-
-mwedit_shared:
-	$(MAKE) -C mwedit shared
-
-mwedit_showinstall:
-	$(MAKE) -C mwedit showinstall
-
-mwedit_install:
-	$(MAKE) -C mwedit install
-
-mwedit_sourceinstall:
-	$(MAKE) -C mwedit sourceinstall
-
-mwedit_exampleinstall:
-	$(MAKE) -C mwedit exampleinstall
-
-mwedit_zipinstall:
-	$(MAKE) -C mwedit zipinstall
-
-mwedit_zipsourceinstall:
-	$(MAKE) -C mwedit zipsourceinstall
-
-mwedit_zipexampleinstall:
-	$(MAKE) -C mwedit zipexampleinstall
-
-mwedit_clean:
-	$(MAKE) -C mwedit clean
-
-mwedit_distclean:
-	$(MAKE) -C mwedit distclean
-
-mwedit_cleanall:
-	$(MAKE) -C mwedit cleanall
-
-mwedit_require:
-	$(MAKE) -C mwedit require
-
-mwedit_info:
-	$(MAKE) -C mwedit info
-endif
-
-#####################################################################
 # Local Makefile
 #####################################################################
 
@@ -1320,3 +1332,12 @@ ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
 
+#####################################################################
+# Users rules
+#####################################################################
+
+cleartarget:
+	-$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+
+all: cleartarget allunits$(PPUEXT)
+	-$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)

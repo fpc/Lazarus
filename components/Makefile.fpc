@@ -3,16 +3,17 @@
 #
 
 [targets]
-dirs=$(THE_EDIT)
+#dirs=$(THE_EDIT)
+dirs=synedit mwedit
 
 [dirs]
 
 [presettings]
-ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-  THE_EDIT=mwedit92
-else
-  THE_EDIT=mwedit
-endif
+#ifneq (,$(findstring NEW_EDITOR,$(OPT)))
+#  THE_EDIT=mwedit92
+#else
+#  THE_EDIT=mwedit
+#endif
 
 [postsettings]
 

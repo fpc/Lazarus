@@ -1,0 +1,31 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[targets]
+units=allunits
+
+[require]
+packages=fcl gtk
+
+[clean]
+units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
+files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
+
+[dirs]
+# target dir needs to be . or a full path otherwise the 
+# unittargetdir will be corrupt
+targetdir=.
+unittargetdir=../units
+unitdir=$(UNITTARGETDIR) ../../lcl/units 
+
+[libs]
+
+[rules]
+cleartarget:
+        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+
+all: cleartarget allunits$(PPUEXT)
+        -$(DEL) $(UNITTARGETDIR)/allunits$(PPUEXT)
+
