@@ -217,6 +217,7 @@ type
         ProcSpec: TProcedureSpecifier): boolean;
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
+    function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
 
     function FindVarNode(StartNode: TCodeTreeNode;
         const UpperVarName: string): TCodeTreeNode;
@@ -4036,6 +4037,21 @@ begin
   // ToDo: ppu, ppw, dcu
 
   Result:=MoveCursorToProcSpecifier(ProcNode,ProcSpec);
+end;
+
+function TPascalParserTool.GetProcNameIdentifier(ProcNode: TCodeTreeNode
+  ): PChar;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=nil;
+  if ProcNode=nil then exit;
+  if ProcNode.Desc=ctnProcedure then begin
+    ProcNode:=ProcNode.FirstChild;
+    if ProcNode=nil then exit;
+  end;
+  Result:=@Src[ProcNode.StartPos];
 end;
 
 function TPascalParserTool.ClassSectionNodeStartsWithWord(

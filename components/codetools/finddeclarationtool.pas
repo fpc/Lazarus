@@ -1616,8 +1616,11 @@ var
                             Params.NewNode);
         Result:=IdentFoundResult<>ifrProceedSearch;
         if IdentFoundResult<>ifrAbortSearch then exit;
-      end else
+      end else begin
+        if fdfCollect in Params.Flags then
+          Result:=false;
         exit;
+      end;
     end;
     // identifier was not found
     if Params.FoundProc<>nil then begin
@@ -3041,8 +3044,8 @@ begin
       Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
                    -[fdfExceptionOnNotFound];
       Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-      if Result then exit;
       Params.Load(OldInput);
+      if Result then exit;
       // restore the cursor
       MoveCursorToCleanPos(UnitNameAtom.StartPos);
     end;
@@ -3251,13 +3254,10 @@ begin
     end;
     // search the identifier in the interface of the used unit
     Params.Save(OldInput);
-    try
-      Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
-                   -[fdfExceptionOnNotFound];
-      Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
-    finally
-      Params.Load(OldInput);
-    end;
+    Params.Flags:=[fdfIgnoreUsedUnits]+(fdfGlobalsSameIdent*Params.Flags)
+                 -[fdfExceptionOnNotFound];
+    Result:=NewCodeTool.FindIdentifierInInterface(Self,Params);
+    Params.Load(OldInput);
   end;
 end;
 

@@ -59,16 +59,6 @@ uses
 type
   TIdentCompletionTool = class;
 
-  // history, level, alphabetically, compatibility, prefix
-  TIdentifierCategory = (
-    icatVar,
-    icatConst,
-    icatFunc,
-    icatType,
-    icatEnum
-    );
-  TIdentifierCategories = set of TIdentifierCategory;
-    
   TIdentifierCompatibility = (
     icompExact,
     icompCompatible,
@@ -78,34 +68,46 @@ type
   TIdentifierCompatibilities = set of TIdentifierCompatibility;
   
   TIdentifierListItem = class
-  private
-    AVLNode: TAVLTreeNode;
   public
-    Category: TIdentifierCategory;
     Compatibility: TIdentifierCompatibility;
-    HasChilds: boolean;
+    HasChilds: boolean;   // identifier can contain childs (class, record)
     HistoryIndex: integer;
     Identifier: PChar;
+    Level: integer;
     Node: TCodeTreeNode;
-    Tool: TIdentCompletionTool;
+    Tool: TFindDeclarationTool;
+    function AsString: string;
   end;
+  
+  TIdentifierListFlag = (ilfFilteredListNeedsUpdate);
+  TIdentifierListFlags = set of TIdentifierListFlag;
   
   TIdentifierList = class
   private
-    FCount: integer;
+    FFilteredList: TList;
+    FFlags: TIdentifierListFlags;
+    FItems: TAVLTree;
     FPrefix: string;
-    Items: TAVLTree;
+    procedure UpdateFilteredList;
+    function GetFilteredItems(Index: integer): TIdentifierListItem;
     procedure SetPrefix(const AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure Add(NewItem: TIdentifierListItem);
+    function Count: integer;
+    function GetFilteredCount: integer;
   public
-    property Count: integer read FCount;
     property Prefix: string read FPrefix write SetPrefix;
+    property FilteredItems[Index: integer]: TIdentifierListItem
+      read GetFilteredItems;
   end;
 
   TIdentCompletionTool = class(TFindDeclarationTool)
+  private
+    LastGatheredIdentParent: TCodeTreeNode;
+    LastGatheredIdentLevel: integer;
   protected
     CurrentIdentifierList: TIdentifierList;
     function CollectAllIdentifiers(Params: TFindDeclarationParams;
@@ -115,8 +117,59 @@ type
     function GatherIdentifiers(const CursorPos: TCodeXYPosition;
       var IdentifierList: TIdentifierList): boolean;
   end;
+  
+const
+  IdentifierCompatibilityNames: array[TIdentifierCompatibility] of string = (
+    'icompExact',
+    'icompCompatible',
+    'icompUnknown',
+    'icompIncompatible'
+    );
 
 implementation
+
+function CompareIdentListItems(Data1, Data2: Pointer): integer;
+var
+  Item1: TIdentifierListItem;
+  Item2: TIdentifierListItem;
+begin
+  Item1:=TIdentifierListItem(Data1);
+  Item2:=TIdentifierListItem(Data2);
+  
+  // first sort for Compatibility  (lower is better)
+  if ord(Item1.Compatibility)<ord(Item2.Compatibility) then begin
+    Result:=-1;
+    exit;
+  end else if ord(Item1.Compatibility)>ord(Item2.Compatibility) then begin
+    Result:=1;
+    exit;
+  end;
+  
+  // then sort for History (lower is better)
+  if Item1.HistoryIndex<Item2.HistoryIndex then begin
+    Result:=-1;
+    exit;
+  end else if Item1.HistoryIndex>Item2.HistoryIndex then begin
+    Result:=1;
+    exit;
+  end;
+
+  // then sort for Level (lower is better)
+  if Item1.Level<Item2.Level then begin
+    Result:=-1;
+    exit;
+  end else if Item1.Level>Item2.Level then begin
+    Result:=1;
+    exit;
+  end;
+
+  // then sort alpabetically (lower is better)
+  Result:=CompareIdentifiers(Item1.Identifier,Item2.Identifier);
+  if Result<>0 then exit;
+
+  // no difference found
+  Result:=0;
+end;
 
 { TIdentifierList }
 
@@ -124,21 +177,76 @@ procedure TIdentifierList.SetPrefix(const AValue: string);
 begin
   if FPrefix=AValue then exit;
   FPrefix:=AValue;
+  Include(FFlags,ilfFilteredListNeedsUpdate);
+end;
+
+procedure TIdentifierList.UpdateFilteredList;
+var
+  AnAVLNode: TAVLTreeNode;
+  CurItem: TIdentifierListItem;
+begin
+  if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
+  if FFilteredList=nil then FFilteredList:=TList.Create;
+  if Prefix='' then exit;
+  AnAVLNode:=FItems.FindLowest;
+  while AnAVLNode<>nil do begin
+    CurItem:=TIdentifierListItem(AnAVLNode.Data);
+    if (CurItem.Identifier<>nil)
+    and ComparePrefixIdent(PChar(Prefix),CurItem.Identifier) then begin
+      {$IFDEF CTDEBUG}
+      writeln('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
+      {$ENDIF}
+      FFilteredList.Add(CurItem);
+    end;
+    AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
+  end;
+  Exclude(FFlags,ilfFilteredListNeedsUpdate);
+end;
+
+function TIdentifierList.GetFilteredItems(Index: integer): TIdentifierListItem;
+begin
+  UpdateFilteredList;
+  if (Index<0) or (Index>=FFilteredList.Count) then
+    Result:=nil
+  else
+    Result:=TIdentifierListItem(FFilteredList[Index]);
 end;
 
 constructor TIdentifierList.Create;
 begin
-
+  FFlags:=[ilfFilteredListNeedsUpdate];
+  FItems:=TAVLTree.Create(@CompareIdentListItems);
 end;
 
 destructor TIdentifierList.Destroy;
 begin
+  Clear;
+  FItems.Free;
+  FFilteredList.Free;
   inherited Destroy;
 end;
 
 procedure TIdentifierList.Clear;
 begin
+  FItems.FreeAndClear;
+  Include(FFlags,ilfFilteredListNeedsUpdate);
+end;
 
+procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
+begin
+  FItems.Add(NewItem);
+  Include(FFlags,ilfFilteredListNeedsUpdate);
+end;
+
+function TIdentifierList.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TIdentifierList.GetFilteredCount: integer;
+begin
+  UpdateFilteredList;
+  Result:=FFilteredList.Count;
 end;
 
 { TIdentCompletionTool }
@@ -146,9 +254,58 @@ end;
 function TIdentCompletionTool.CollectAllIdentifiers(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
+var
+  NewItem: TIdentifierListItem;
+  Ident: PChar;
 begin
-  writeln('::: COLLECT IDENT ',FoundContext.Node.DescAsString);
+  // proceed searching ...
   Result:=ifrProceedSearch;
+
+  writeln('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
+    ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
+    ,' ',fdfIgnoreUsedUnits in Params.Flags);
+    
+  if LastGatheredIdentParent<>FoundContext.Node.Parent then begin
+    // new context level
+    LastGatheredIdentParent:=FoundContext.Node.Parent;
+    inc(LastGatheredIdentLevel);
+  end;
+
+  Ident:=nil;
+  case FoundContext.Node.Desc of
+  
+  ctnTypeDefinition:
+    begin
+      if (FoundContext.Node.FirstChild<>nil)
+      and (FoundContext.Node.FirstChild.Desc in [ctnClass,ctnClassInterface])
+      and ((ctnsForwardDeclaration and FoundContext.Node.FirstChild.SubDesc)>0)
+      then
+        // skip forward definition
+        exit;
+      Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
+    end;
+  
+  ctnVarDefinition,ctnConstDefinition:
+    Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
+    
+  ctnProcedure,ctnProcedureHead:
+    Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
+    
+  end;
+  if Ident=nil then exit;
+
+  NewItem:=TIdentifierListItem.Create;
+  NewItem.Compatibility:=icompUnknown;
+  NewItem.HasChilds:=false;
+  NewItem.HistoryIndex:=0;
+  NewItem.Identifier:=Ident;
+  NewItem.Level:=LastGatheredIdentLevel;
+  NewItem.Node:=FoundContext.Node;
+  NewItem.Tool:=FoundContext.Tool;
+  
+  writeln('  IDENT COLLECTED: ',NewItem.AsString);
+  
+  CurrentIdentifierList.Add(NewItem);
 end;
 
 procedure TIdentCompletionTool.GatherPredefinedIdentifiers;
@@ -164,12 +321,18 @@ var
   CursorNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
   GatherContext: TFindContext;
+  ExprType: TExpressionType;
+  ContextExprStartPos: Integer;
 begin
   Result:=false;
   if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
   CurrentIdentifierList:=IdentifierList;
   CurrentIdentifierList.Clear;
+  LastGatheredIdentParent:=nil;
+  LastGatheredIdentLevel:=0;
+  
   ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
   try
     // build code tree
     {$IFDEF CTDEBUG}
@@ -179,32 +342,84 @@ begin
                   [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
     GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
-    
+
     // find context
-    MoveCursorToCleanPos(IdentStartPos);
-    Params.ContextNode:=CursorNode;
-    Params.SetIdentifier(Self,nil,nil);
-    Params.Flags:=[fdfExceptionOnNotFound,
-                   fdfSearchInParentNodes,fdfSearchInAncestors]
-                  +fdfAllClassVisibilities;
-    GatherContext:=FindContextNodeAtCursor(Params);
+    {$IFDEF CTDEBUG}
+    writeln('TIdentCompletionTool.GatherIdentifiers B',
+      ' CleanCursorPos=',CleanCursorPos,
+      ' IdentStartPos=',IdentStartPos,' IdentEndPos=',IdentEndPos,
+      ' Ident=',copy(Src,IdentStartPos,IdentEndPos-IdentStartPos));
+    {$ENDIF}
+    GatherContext:=CreateFindContext(Self,CursorNode);
+    ContextExprStartPos:=FindStartOfVariable(IdentStartPos);
+    {$IFDEF CTDEBUG}
+    writeln('TIdentCompletionTool.GatherIdentifiers C',
+      ' ContextExprStartPos=',ContextExprStartPos,
+      ' Expr=',StringToPascalConst(copy(Src,ContextExprStartPos,
+                    IdentStartPos-ContextExprStartPos)));
+    {$ENDIF}
+    if ContextExprStartPos<IdentStartPos then begin
+      MoveCursorToCleanPos(IdentStartPos);
+      Params.ContextNode:=CursorNode;
+      Params.SetIdentifier(Self,nil,nil);
+      Params.Flags:=[fdfExceptionOnNotFound,
+                     fdfSearchInParentNodes,fdfSearchInAncestors]
+                    +fdfAllClassVisibilities;
+      ExprType:=FindExpressionTypeOfVariable(ContextExprStartPos,IdentStartPos,
+                                             Params);
+      if (ExprType.Desc=xtContext) then
+        GatherContext:=ExprType.Context;
+    end;
     if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
+      {$IFDEF CTDEBUG}
+      writeln('TIdentCompletionTool.GatherIdentifiers D CONTEXT: ',
+        GatherContext.Tool.MainFilename,
+        ' ',GatherContext.Node.DescAsString,
+        ' "',StringToPascalConst(copy(GatherContext.Tool.Src,GatherContext.Node.StartPos,50)),'"');
+      {$ENDIF}
       // gather all identifiers in context
       Params.ContextNode:=GatherContext.Node;
       Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
       Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                      fdfCollect,fdfFindVariable,fdfIgnoreCurContextNode]
                     +fdfAllClassVisibilities;
+      {$IFDEF CTDEBUG}
+      writeln('TIdentCompletionTool.GatherIdentifiers F');
+      {$ENDIF}
       GatherContext.Tool.FindIdentifierInContext(Params);
     end;
     // add predefined identifiers
+    {$IFDEF CTDEBUG}
+    writeln('TIdentCompletionTool.GatherIdentifiers G');
+    {$ENDIF}
     GatherPredefinedIdentifiers;
     
     Result:=true;
   finally
+    Params.Free;
     ClearIgnoreErrorAfter;
     DeactivateGlobalWriteLock;
   end;
+  {$IFDEF CTDEBUG}
+  writeln('TIdentCompletionTool.GatherIdentifiers END');
+  {$ENDIF}
+end;
+
+{ TIdentifierListItem }
+
+function TIdentifierListItem.AsString: string;
+begin
+  Result:=IdentifierCompatibilityNames[Compatibility];
+  if HasChilds then
+    Result:=Result+' HasChilds'
+  else
+    Result:=Result+' HasNoChilds';
+  Result:=Result+' History='+IntToStr(HistoryIndex);
+  Result:=Result+' Ident='+GetIdentifier(Identifier);
+  Result:=Result+' Lvl='+IntToStr(Level);
+  Result:=Result+' File='+Tool.MainFilename;
+  Result:=Result+' Node='+Node.DescAsString
+    +' "'+StringToPascalConst(copy(Tool.Src,Node.StartPos,50))+'"';
 end;
 
 end.

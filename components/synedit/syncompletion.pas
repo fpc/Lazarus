@@ -52,10 +52,12 @@ uses
   {$IFDEF SYN_LAZARUS}SynEditTextBuffer,{$ENDIF} SynEdit;
 
 type
-  TSynBaseCompletionPaintItem = function(AKey: string; ACanvas: TCanvas;
-    X, Y: integer
-    {$IFDEF SYN_LAZARUS}; Selected: boolean{$ENDIF}
-    ): boolean of object;
+  TSynBaseCompletionPaintItem =
+    function(
+      {$IFDEF SYN_LAZARUS}const {$ENDIF}AKey: string; ACanvas: TCanvas;
+      X, Y: integer
+      {$IFDEF SYN_LAZARUS}; Selected: boolean; Index: integer{$ENDIF}
+      ): boolean of object;
   TCodeCompletionEvent = procedure(var Value: string; Shift: TShiftState)
     of object;
   TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
@@ -431,10 +433,10 @@ begin
   {$IFNDEF SYN_LAZARUS}
   // canvas.draw is unfinished in lcl
   with bitmap do begin
-  {$ENDIF}
     canvas.pen.color := color;
     canvas.brush.color := color;
     canvas.Rectangle(0, 0, Width, Height);
+  {$ENDIF}
     for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - 1) do begin
       if i + Scroll.Position = Position then begin
         Canvas.Brush.Color := clSelect;
@@ -453,6 +455,7 @@ begin
           Canvas.Brush.Color := Color;
           {$IFDEF SYN_LAZARUS}
           Canvas.Font.Color := TextColor;
+          Canvas.FillRect(Rect(0, FFontHeight * i, width, FFontHeight * (i + 1)));
           {$ELSE}
           Canvas.Font.Color := clBlack;
           {$ENDIF}
@@ -461,7 +464,8 @@ begin
       if not Assigned(OnPaintItem)
       or not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
           {$IFDEF SYN_LAZARUS}
-          1, FFontHeight * i +1, i + Scroll.Position = Position
+          1, FFontHeight * i +1, i + Scroll.Position = Position,
+          i + Scroll.Position
           {$ELSE}
           0, FFontHeight * i
           {$ENDIF}
@@ -646,15 +650,20 @@ procedure TSynBaseCompletion.Execute(s: string; x, y: integer);
 begin
   SetCaretRespondToFocus(TCustomSynEdit(Form.CurrentEditor).Handle,false);
   CurrentString := s;
-  if assigned(OnExecute) then
+  if Assigned(OnExecute) then
     OnExecute(Self);
   {$IFDEF SYN_LAZARUS}
   if (ItemList.Count=1) and Assigned(OnValidate) then begin
     OnValidate(Form, []);
     exit;
   end;
+  if (ItemList.Count=0) and Assigned(OnCancel) then begin
+    OnCancel(Form);
+    exit;
+  end;
   
   Form.SetBounds(x,y,Form.Width,Form.Height);
+  Form.Color:=clNone;
   {$ELSE}
   Form.Left:=x;
   Form.Top:=y;

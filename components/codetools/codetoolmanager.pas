@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, CodeToolsStrConsts, EventCodeTool, CodeTree, CodeAtom,
   SourceChanger, DefineTemplates, CodeCache, ExprEval, LinkScanner,
   KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool, FindDeclarationTool,
-  ResourceCodeTool;
+  IdentCompletionTool, ResourceCodeTool;
 
 type
   TCodeToolManager = class;
@@ -127,6 +127,7 @@ type
     SourceCache: TCodeCache; // cache for source (units, include files, ...)
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
+    IdentifierList: TIdentifierList;
     
     procedure ActivateWriteLock;
     procedure DeactivateWriteLock;
@@ -229,6 +230,9 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function FindSmartHint(Code: TCodeBuffer; X,Y: integer): string;
+    
+    // gather identifiers
+    function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -395,6 +399,7 @@ begin
   {$IFDEF CTDEBUG}
   writeln('[TCodeToolManager.Destroy] B');
   {$ENDIF}
+  IdentifierList.Free;
   FSourceTools.FreeAndClear;
   FSourceTools.Free;
   FResourceTool.Free;
@@ -745,6 +750,32 @@ begin
   end;
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.FindSmartHint END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.GatherIdentifiers(Code: TCodeBuffer; X, Y: integer
+  ): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GatherIdentifiers A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GatherIdentifiers B ',FCurCodeTool.Scanner<>nil);
+  {$ENDIF}
+  try
+    Result:=FCurCodeTool.GatherIdentifiers(CursorPos,IdentifierList);
+  except
+    on e: Exception do HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GatherIdentifiers END ');
   {$ENDIF}
 end;
 

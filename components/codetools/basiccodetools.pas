@@ -170,6 +170,7 @@ function CompareTextIgnoringSpace(const Txt1, Txt2: string;
 function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
+function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 
 // space and special chars
 function TrimCodeSpace(const ACode: string): string;
@@ -1910,6 +1911,23 @@ begin
     end else begin
       Result:=0; // for example  nil nil
     end;
+  end;
+end;
+
+function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
+begin
+  if PrefixIdent<>nil then begin
+    if Identifier<>nil then begin
+      while UpChars[PrefixIdent^]=UpChars[Identifier^] do begin
+        inc(PrefixIdent);
+        inc(Identifier);
+      end;
+      Result:=not IsIDChar[PrefixIdent^];
+    end else begin
+      Result:=false;
+    end;
+  end else begin
+    Result:=true;
   end;
 end;
 
