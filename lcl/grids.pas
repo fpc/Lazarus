@@ -152,9 +152,9 @@ Type
     Procedure(Sender: TObject; Col, Row: Integer; aRect: TRect;
               aState:TGridDrawState) of Object;
               
-  TOnBeforeSelectionEvent =
+  TOnCanSelectEvent =
     Procedure(Sender: TObject; Col, Row: Integer;
-              Var CanChange: Boolean) of Object;
+              Var CanSelect: Boolean) of Object;
   TOnSelectEvent =
     Procedure(Sender: TObject; Col,Row: Integer) of Object;
     
@@ -270,7 +270,8 @@ Type
     FOptions: TGridOptions;
 
     FOnDrawCell: TOnDrawcell;
-    FOnBeforeSelection: TOnBeforeSelectionEvent;
+    FOnCanSelect: TOnCanSelectEvent;
+    FOnBeforeSelection: TOnSelectEvent;
     FOnSelection: TOnSelectEvent;
     FOnTopLeftChange: TNotifyEvent;
     FSkipUnselectable: Boolean;
@@ -324,7 +325,6 @@ Type
     Procedure doTopleftChange(DimChg: Boolean);
     Procedure TryScrollTo(aCol,aRow: integer);
     Procedure UpdateScrollBarPos(Which: TControlScrollbar);
-    procedure VisualChange;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
@@ -379,7 +379,9 @@ Type
     Procedure ProcessEditor(LastEditor:TWinControl; DCol,DRow: Integer; WasVis: Boolean);
     
 
+    Procedure BeforeMoveSelection(Const DCol,DRow: Integer); Virtual;
     Procedure MoveSelection; Virtual;
+    Function  CanSelect(Const DCol,DRow: Integer): Boolean;
     Procedure DrawCellGrid(Rect: TRect; aCol,aRow: Integer; astate: TGridDrawState);
     Procedure Paint; override;
     Procedure ResetOffset(chkCol, ChkRow: Boolean);
@@ -389,6 +391,7 @@ Type
     Procedure Sort(ColSorting: Boolean; Index,IndxFrom,IndxTo:Integer); virtual;
     Procedure TopLeftChanged; dynamic;
     Procedure SaveContent(cfg: TXMLConfig); Virtual;
+    procedure VisualChange; virtual;
 
     // Editor support
   Protected
@@ -446,12 +449,14 @@ Type
     property VisibleRowCount: Integer read GetVisibleRowCount;
 
     Property OnDrawCell: TOnDrawCell Read FOnDrawCell Write FOnDrawCell;
-    Property OnBeforeSelection: TOnBeforeSelectionEvent Read fOnBeforeSelection Write fOnBeforeSelection;
+    Property OnCanSelect: TOnCanSelectEvent Read fOnCanSelect Write fOnCanSelect;
+    Property OnBeforeSelection: TOnSelectEvent Read FOnBeforeSelection Write FOnBeforeSelection;
+    
     Property OnSelection: TOnSelectEvent Read fOnSelection Write fOnSelection;
     Property OnTopLeftChange: TNotifyEvent Read FOnTopLeftChange Write FOnTopLeftChange;
     Property OnCompareCells: TOnCompareCells Read FOnCompareCells Write FOnCompareCells;
     Property OnSelectEditor: TSelectEditorEvent Read FOnSelectEditor Write FOnSelectEditor;
-
+    Property GCache: TGridDataCache Read FGCAChe;
   Public
     Constructor Create(AOwner: TComponent); Override;
     Destructor Destroy; override;
@@ -615,6 +620,7 @@ Type
 
 
     Property OnBeforeSelection;
+    Property OnCanSelect;
     Property OnCellAttr: TOnCellAttrEvent read fonCellAttr Write fOnCellAttr;
     Property OnCompareCells;
     Property OnColRowDeleted: TgridOperationEvent Read FOnColRowDeleted Write FOnColRowDeleted;
@@ -833,7 +839,7 @@ Var
   R: TRect;
 begin
   R:=FGCache.VisibleGrid;
-  Result:=r.Right-r.left+1+FFixedCols;
+  Result:=r.Right-r.left+1;//+FFixedCols;
 end;
 
 function TCustomGrid.GetVisibleRowCount: Integer;
@@ -841,7 +847,7 @@ Var
   R: TRect;
 begin
   R:=FGCache.VisibleGrid;
-  Result:=r.bottom-r.top+1+FFixedRows;
+  Result:=r.bottom-r.top+1;//+FFixedRows;
 end;
 
 function TCustomGrid.GetLeftCol: Integer;
@@ -2568,6 +2574,7 @@ begin
   Result:=TryMoveSelection(Relative,DCol,DRow);
   If (Not Result) Then Exit;
   
+  BeforeMoveSelection(DCol,DRow);
   {$IfDef dbgFocus}WriteLn(' MoveExtend INIT FCol= ',FCol, ' FRow= ',FRow);{$Endif}
 
   LastEditor:=Editor;
@@ -2654,8 +2661,7 @@ begin
   // Change on Focused cell?
   If (Dcol=FCol)And(DRow=FRow) Then begin
   End Else begin
-    Result:=True;
-    if Assigned(OnBeforeSelection) Then OnBeforeSelection(Self, DCol, DRow, Result);
+    Result:=CanSelect(DCol,DRow);
   End;
 end;
 
@@ -2696,6 +2702,16 @@ begin
   End;
 end;
 
+procedure TCustomGrid.BeforeMoveSelection(Const DCol,DRow: Integer);
+begin
+  if Assigned(OnBeforeSelection) Then OnBeforeSelection(Self, DCol, DRow);
+end;
+
+Function TCustomGrid.CanSelect(Const DCol,DRow: Integer): Boolean;
+begin
+  Result:=true;
+  if Assigned(OnCanSelect) Then OnCanSelect(Self, DCol, DRow, Result);
+end;
 
 procedure TCustomGrid.MoveSelection;
 begin
