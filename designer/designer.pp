@@ -1061,10 +1061,10 @@ begin
     Count:=AWinControl.ControlCount;
     for I := 0 to Count - 1 do begin
       with AWinControl.Controls[I] do begin
-        if (Visible or (csDesigning in ComponentState)
-        and not (csNoDesignVisible in ControlStyle))
-        and (csOpaque in ControlStyle) then
-        begin
+        if (Visible or ((csDesigning in ComponentState)
+          and not (csNoDesignVisible in ControlStyle)))
+        and (csOpaque in ControlStyle)
+        then begin
           Clip := ExcludeClipRect(aDDC.DC, Left, Top, Left + Width, Top + Height);
           if Clip = NullRegion then exit;
         end;
