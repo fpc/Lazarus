@@ -78,6 +78,7 @@ type
     function GetPriority: TComponentPriority; override;
     procedure ConsistencyCheck; override;
     function Icon: TBitmap;
+    function GetIconCopy: TBitMap;
     function HasIcon: boolean;
     function Createable: boolean; override;
   public
@@ -2341,25 +2342,28 @@ begin
 end;
 
 function TPkgComponent.Icon: TBitmap;
+begin
+  if not fIconLoaded then begin
+    fIcon:=GetIconCopy;
+    fIconLoaded:=true;
+  end;
+  Result:=FIcon;
+end;
+
+function TPkgComponent.GetIconCopy: TBitMap;
 var
   ResName: string;
   res: TLResource;
 begin
-  if not fIconLoaded then begin
-    if Page.PageName<>'' then begin
-      FIcon:=TPixmap.Create;
-      FIcon.TransparentColor:=clWhite;
-      ResName:=ComponentClass.ClassName;
-      res:=LazarusResources.Find(ResName);
-      if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
-        FIcon.LoadFromLazarusResource(ResName);
-      end else begin
-        FIcon.LoadFromLazarusResource('default');
-      end;
-    end;
-    fIconLoaded:=true;
+  Result:=TPixmap.Create;
+  Result.TransparentColor:=clWhite;
+  ResName:=ComponentClass.ClassName;
+  res:=LazarusResources.Find(ResName);
+  if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
+    Result.LoadFromLazarusResource(ResName);
+  end else begin
+    Result.LoadFromLazarusResource('default');
   end;
-  Result:=FIcon;
 end;
 
 function TPkgComponent.HasIcon: boolean;

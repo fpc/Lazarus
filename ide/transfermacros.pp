@@ -96,10 +96,10 @@ type
     procedure Clear;
     procedure Delete(Index: integer);
     procedure Add(NewMacro: TTransferMacro);
+    function FindByName(const MacroName: string): TTransferMacro; virtual;
     function SubstituteStr(var s:string): boolean; virtual;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
-    function FindByName(const MacroName: string): TTransferMacro; virtual;
     property MarkUnhandledMacros: boolean read FMarkUnhandledMacros write SetMarkUnhandledMacros;
   end;
 
@@ -373,10 +373,11 @@ begin
   l:=0;
   r:=fItems.Count-1;
   m:=0;
+  Result:=nil;
   while l<=r do begin
     m:=(l+r) shr 1;
     Result:=Items[m];
-    cmp:=AnsiCompareText(Result.Name,Items[m].Name);
+    cmp:=AnsiCompareText(MacroName,Result.Name);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then

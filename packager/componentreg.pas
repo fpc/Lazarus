@@ -75,6 +75,9 @@ type
     FComponentClass: TComponentClass;
     FPage: TBaseComponentPage;
     FPageName: string;
+  protected
+    FVisible: boolean;
+    procedure SetVisible(const AValue: boolean); virtual;
   public
     constructor Create(TheComponentClass: TComponentClass;
       const ThePageName: string);
@@ -89,6 +92,7 @@ type
     property PageName: string read FPageName;
     property Page: TBaseComponentPage read FPage write FPage;
     property Button: TComponent read FButton write FButton;
+    property Visible: boolean read FVisible write SetVisible;
   end;
 
 
@@ -101,7 +105,11 @@ type
     FPageName: string;
     FPalette: TBaseComponentPalette;
     FPriority: TComponentPriority;
+    FSelectButton: TComponent;
     function GetItems(Index: integer): TRegisteredComponent;
+  protected
+    FVisible: boolean;
+    procedure SetVisible(const AValue: boolean); virtual;
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
@@ -118,6 +126,8 @@ type
     property Palette: TBaseComponentPalette read FPalette;
     property Priority: TComponentPriority read FPriority write FPriority;
     property PageComponent: TComponent read FPageComponent write FPageComponent;
+    property SelectButton: TComponent read FSelectButton write FSelectButton;
+    property Visible: boolean read FVisible write SetVisible;
   end;
 
 
@@ -154,6 +164,7 @@ type
       const Priority: TComponentPriority): TBaseComponentPage;
     function FindComponent(const CompClassName: string): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
+    function IndexOfPageComponent(AComponent: TComponent): integer;
   public
     property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
     property UpdateLock: integer read FUpdateLock;
@@ -205,11 +216,18 @@ end;
 
 { TRegisteredComponent }
 
+procedure TRegisteredComponent.SetVisible(const AValue: boolean);
+begin
+  if FVisible=AValue then exit;
+  FVisible:=AValue;
+end;
+
 constructor TRegisteredComponent.Create(TheComponentClass: TComponentClass;
   const ThePageName: string);
 begin
   FComponentClass:=TheComponentClass;
   FPageName:=ThePageName;
+  FVisible:=true;
 end;
 
 destructor TRegisteredComponent.Destroy;
@@ -249,16 +267,24 @@ begin
   Result:=TRegisteredComponent(FItems[Index]);
 end;
 
+procedure TBaseComponentPage.SetVisible(const AValue: boolean);
+begin
+  if FVisible=AValue then exit;
+  FVisible:=AValue;
+end;
+
 constructor TBaseComponentPage.Create(const ThePageName: string);
 begin
   FPageName:=ThePageName;
   FItems:=TList.Create;
+  FVisible:=FPageName<>'';
 end;
 
 destructor TBaseComponentPage.Destroy;
 begin
   Clear;
   FreeThenNil(FPageComponent);
+  FreeThenNil(FSelectButton);
   FItems.Free;
   inherited Destroy;
 end;
@@ -266,13 +292,9 @@ end;
 procedure TBaseComponentPage.Clear;
 var
   i: Integer;
-  AComponent: TRegisteredComponent;
 begin
-  for i:=0 to FItems.Count-1 do begin
-    AComponent:=Items[i];
-    FreeThenNil(AComponent.FButton);
-    AComponent.Page:=nil;
-  end;
+  ClearButtons;
+  for i:=0 to FItems.Count-1 do Items[i].Page:=nil;
   FItems.Clear;
 end;
 
@@ -283,6 +305,7 @@ var
 begin
   Cnt:=Count;
   for i:=0 to Cnt-1 do FreeThenNil(Items[i].FButton);
+  FreeThenNil(FSelectButton);
 end;
 
 procedure TBaseComponentPage.ConsistencyCheck;
@@ -474,6 +497,17 @@ begin
       Result:=Prefix+IntToStr(i);
     until FindComponent(Result)=nil;
   end;
+end;
+
+function TBaseComponentPalette.IndexOfPageComponent(AComponent: TComponent
+  ): integer;
+begin
+  if AComponent<>nil then begin
+    Result:=Count-1;
+    while (Result>=0) and (Pages[Result].PageComponent<>AComponent) do
+      dec(Result);
+  end else
+    Result:=-1;
 end;
 
 
