@@ -3866,6 +3866,10 @@ msgstr ""
 msgid "\362\325\323\323\313\311\312"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagepolish
+msgid "polski"
+msgstr ""
+
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
 msgstr ""

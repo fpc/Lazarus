@@ -3852,6 +3852,10 @@ msgstr "Najpierw wybierz element."
 msgid "Point"
 msgstr "Punkt"
 
+#: lazarusidestrconsts:rslanguagepolish
+msgid "polski"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Podgl±d"

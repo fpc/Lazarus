@@ -1224,7 +1224,7 @@ resourcestring
   rsLanguageSpanish     = 'EspaÒol';
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Ú’””À… ';
-  rsLanguagePolish      = 'Polish';
+  rsLanguagePolish      = 'polski';
 
   //Units dependencies
   dlgUnitDepCaption     = 'Unit dependencies';

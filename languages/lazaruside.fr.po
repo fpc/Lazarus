@@ -3851,6 +3851,10 @@ msgstr "Sélectionnez un élément en premier svp"
 msgid "Point"
 msgstr "Point"
 
+#: lazarusidestrconsts:rslanguagepolish
+msgid "polski"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Exemple"

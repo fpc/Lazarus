@@ -3842,6 +3842,10 @@ msgstr ""
 msgid "Point"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagepolish
+msgid "polski"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Vista previa"
