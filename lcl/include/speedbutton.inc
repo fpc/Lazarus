@@ -59,7 +59,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TSpeedbutton.Destroy;
 begin
-  FGlyph.Free;
+  FreeAndNil(FGlyph);
   inherited Destroy;
 end;
 
@@ -290,6 +290,7 @@ begin
       else FState := bsUp;
     end;
   end;
+  if FGlyph=nil then exit;
 
   PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
@@ -656,6 +657,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/09/06 16:14:19  lazarus
+  MG: fixed removing TSpeedButton
+
   Revision 1.24  2002/09/03 22:31:25  lazarus
   MG: removed old workaround in TSpeedButton
 
