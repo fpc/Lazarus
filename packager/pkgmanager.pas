@@ -2391,7 +2391,7 @@ begin
       +'end;'+e
       +e
       +'initialization'+e
-      +'  RegisterPackage('''+APackage.Name+''',@Register)'
+      +'  RegisterPackage('''+APackage.Name+''',@Register);'
       +e;
     if UsedUnits<>'' then UsedUnits:=UsedUnits+', ';
     UsedUnits:=UsedUnits+'LazarusPackageIntf';
