@@ -106,8 +106,15 @@ var
       if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then 
         with Control do
         begin
-          Width2 := Parent.FLastResize.X + FLastWidth;
-          Height2 := Parent.FLastResize.Y + FLastHeight;
+          if FLastWidth = 0 then 
+	    Width2 := Parent.FLastResize.X + Width
+	  else
+	    Width2 := Parent.FLastResize.X + FLastWidth;
+	  if FLastHeight = 0 then
+	    Height2 := Parent.FLastResize.Y + Height
+	  else
+            Height2 := Parent.FLastResize.Y + FLastHeight;
+	    
           //writeln('  FLastWidth=',FLastWidth,' akLeft=',akLeft in Anchors,' akRight=',akRight in Anchors,' akTop=',akTop in Anchors);
           R := BoundsRect;
           if not (akLeft in Anchors) then
@@ -216,12 +223,12 @@ var
     Control: TControl;
   begin
     AlignList.Clear;
-    if (AControl <> nil) and
-       ((AAlign = alNone)
-    or AControl.Visible
-    or (csDesigning in AControl.ComponentState)
-    and not (csNoDesignVisible in AControl.ControlStyle))
-    and (AControl.Align = AAlign) then
+    if (AControl <> nil)
+      and (AControl.Align = AAlign)
+      and ((AAlign = alNone) or AControl.Visible
+        or (csDesigning in AControl.ComponentState)
+        and not (csNoDesignVisible in AControl.ControlStyle))
+    then
       AlignList.Add(AControl);
 
     for I := 0 to ControlCount - 1 do
@@ -229,11 +236,11 @@ var
       Control := Controls[I];
 
       if (Control.Align = AAlign) 
-      and ((AAlign = alNone)
-        or (Control.Visible
-          or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
+        and ((AAlign = alNone)
+          or (Control.Visible
+            or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
             [csAcceptsControls, csNoDesignVisible]))
-        or (csDesigning in Control.ComponentState)
+          or (csDesigning in Control.ComponentState)
           and not (csNoDesignVisible in Control.ControlStyle)) then
       begin
         if Control = AControl then Continue;
@@ -2281,6 +2288,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2002/08/30 06:46:03  lazarus
+  Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
+  Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
+  Make Anchors work again and publish them for various controls.
+  SelStart and Co. for TEdit, SelectAll procedure for TComboBox and TEdit.
+  Clean up and fix some bugs for TComboBox, plus selection stuff.
+
   Revision 1.79  2002/08/25 14:32:11  lazarus
   MG: calendar now ignores double clicks
 
