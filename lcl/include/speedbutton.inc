@@ -295,7 +295,15 @@ begin
   else
     BrushStyle:= bsSolid;}
   
-  Canvas.Brush.Color:= clBtnFace;
+  DrawFlags:=DFCS_BUTTONPUSH;
+  if Flat then inc(DrawFlags,DFCS_FLAT);
+  if FState in [bsDown, bsExclusive] then inc(DrawFlags,DFCS_PUSHED);
+  if FMouseInControl then inc(DrawFlags,DFCS_CHECKED);
+  if not Enabled then inc(DrawFlags,DFCS_INACTIVE);
+  
+  DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+
+  {Canvas.Brush.Color:= clBtnFace;
   Canvas.FillRect(PaintRect);
 
   if FFlat then begin
@@ -324,7 +332,7 @@ begin
       Canvas.Brush.Color:= clBtnHighlight;
       Canvas.FillRect(PaintRect);
     end;
-  end;
+  end;}
   
   GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
   if TButtonGlyph(FGlyph).NumGlyphs > 1 then
@@ -667,6 +675,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/06/01 08:41:28  lazarus
+  MG: DrawFramControl now uses gtk style, transparent STrechBlt
+
   Revision 1.14  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL
 

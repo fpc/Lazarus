@@ -60,15 +60,16 @@ type
       gdiBitmap: (
         GDIBitmapMaskObject: PGdkPixmap;
         case GDIBitmapType: TGDIBitmapType of
-          gbBitmap: (GDIBitmapObject: PGdkBitmap); 
-          gbPixmap: (GDIPixmapObject: PGdkPixmap);
+          gbBitmap: (GDIBitmapObject: PGdkBitmap); // pixmap with depth 1
+          gbPixmap: (GDIPixmapObject: PGdkPixmap); // normal pixmap
           gbImage : (GDIRawImageObject: PGDIRawImage);
       );
       gdiBrush: ( 
+        // ToDo: add bitmap mask
         GDIBrushColor: TGdkColor;
         GDIBrushFill: TGdkFill;
         GDIBrushPixMap: PGdkPixmap;
-      ); 
+      );
       gdiFont: (
         GDIFontObject: PGdkFont;
         LogFont: TLogFont;  // for now font info is stored as well, later query font params
@@ -140,6 +141,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/06/01 08:41:28  lazarus
+  MG: DrawFramControl now uses gtk style, transparent STrechBlt
+
   Revision 1.6  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 

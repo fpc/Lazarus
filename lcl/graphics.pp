@@ -638,15 +638,15 @@ const
 type
   TBitmapCanvas = class(TCanvas)
   private
-    FBitmap : TBitMap;
-    FOldBitMap : HBitmap;
+    FBitmap : TBitmap;
+    FOldBitmap : HBitmap;
     FOldPalette : HPALETTE;
     procedure FreeDC;
   protected
     procedure CreateHandle; override;
   public
-    constructor Create(ABitMap : TBitmap);
-    destructor Destroy; override; // overriding causes a crash with flat speedbuttons
+    constructor Create(ABitmap : TBitmap);
+    destructor Destroy; override;
     // TODO: replace this by property BitmapHandle;
     // MWE: Not needed
     //property Bitmap: TBitmap read FBitmap;
@@ -765,6 +765,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/06/01 08:41:28  lazarus
+  MG: DrawFramControl now uses gtk style, transparent STrechBlt
+
   Revision 1.30  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

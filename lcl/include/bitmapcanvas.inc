@@ -48,12 +48,13 @@ begin
 
     Assert(False, Format('trace:[TBitmapCanvas.CreateHandle] Got Handle 0x%x', [FBitmap.Handle]));
 
-    if FBitmap.Handle = 0
-    then FOldBitmap := 0
-    else FOldBitmap := SelectObject(DC, FBitmap.Handle);
+    if FBitmap.Handle = 0 then
+      FOldBitmap := 0
+    else
+      FOldBitmap := SelectObject(DC, FBitmap.Handle);
 
-    if FBitmap.FPalette = 0
-    then FOldPalette := 0
+    if FBitmap.FPalette = 0 then
+      FOldPalette := 0
     else begin
       FOldPalette := SelectPalette(DC, FBitmap.FPalette, True);
       RealizePalette(DC);
@@ -90,8 +91,14 @@ var
 begin
   if FHandle <> 0 then
   begin
-    if FOldBitmap <> 0 then SelectObject(FHandle, FOldBitmap);
-    if FOldPalette <> 0 then SelectPalette(FHandle, FOldPalette, True);
+    if FOldBitmap <> 0 then begin
+      SelectObject(FHandle, FOldBitmap);
+      FOldBitmap:=0;
+    end;
+    if FOldPalette <> 0 then begin
+      SelectPalette(FHandle, FOldPalette, True);
+      FOldPalette:=0;
+    end;
     hBmp := FHandle;
     Handle := 0;
     DeleteDC(hBmp);
@@ -101,6 +108,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/06/01 08:41:28  lazarus
+  MG: DrawFramControl now uses gtk style, transparent STrechBlt
+
   Revision 1.4  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

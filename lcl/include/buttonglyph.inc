@@ -83,10 +83,7 @@ begin
   inc(DestRect.Right,Offset.X);
   inc(DestRect.Top,Offset.Y);
   inc(DestRect.Bottom,Offset.Y);
-  if not Transparent then
-    Canvas.Copyrect(DestRect, TPixmap(FOriginal).Canvas, Result)
-  else
-    ;    
+  Canvas.Copyrect(DestRect, TPixmap(FOriginal).Canvas, Result)
 end;
 
 

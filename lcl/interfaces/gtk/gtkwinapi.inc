@@ -1271,26 +1271,36 @@ end;
 
 {------------------------------------------------------------------------------
   Function: CreatePixmapIndirect
-  Params:  Data: Raw pixmap data
+  Params:  Data: Raw pixmap data (PPGChar fo xpm file)
   Returns: Handle to LCL bitmap
 
   Creates a bitmap from raw pixmap data.
+  If TransColor < 0 the transparency mask will be automatically gnerated.
  ------------------------------------------------------------------------------}
 function TgtkObject.CreatePixmapIndirect(const Data: Pointer;
   const TransColor: Longint): HBITMAP;
 var
   GdiObject: PGdiObject;
   GDKColor: TGDKColor;
+  Window: PGdkWindow;
+  ColorMap: PGdkColormap;
   P: Pointer;
 begin
   GdiObject := NewGDIObject(gdiBitmap); 
-  if TransColor >= 0 then
-    GDKColor := AllocGDKColor(TransColor)
+  if TransColor >= 0 then begin
+    GDKColor := AllocGDKColor(TransColor);
+    p := @GDKColor;
+  end else
+    p:=nil; // automatically create transparency mask
+  Window:=nil; // use the X root window for colormap
+  if Window<>nil then
+    ColorMap:=gdk_window_get_colormap(Window)
   else
-    GDKColor := AllocGDKColor(ColorToRGB(clRed)); 
-  p := @GDKColor;
-  GdiObject^.GDIBitmapObject := gdk_pixmap_colormap_create_from_xpm_d(nil,
-           gdk_colormap_get_system, @(GdiObject^.GDIBitmapMaskObject), p, data);
+    ColorMap:=gdk_colormap_get_system;
+  GdiObject^.GDIPixmapObject :=
+    gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
+           @(GdiObject^.GDIBitmapMaskObject), p, data);
+  GdiObject^.GDIBitmapType:=gbPixmap;
   Result := HBITMAP(GdiObject);
 end;
 
@@ -1418,12 +1428,84 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean;
+function TgtkObject.DrawFrameControl(DC: HDC; var Rect : TRect;
+  uType, uState : Cardinal) : Boolean;
 const
   ADJUST_FLAG: array[Boolean] of Integer = (0, BF_ADJUST);
   PUSH_EDGE_FLAG: array[Boolean] of Integer = (EDGE_RAISED, EDGE_SUNKEN);
   PUSH_EDGE_FLAG2: array[Boolean] of Integer = (0, BF_FLAT);
+var
+  Widget: PGtkWidget;
+  
+  procedure DrawButtonPush;
+  var
+    State: TGtkStateType;
+    Shadow: TGtkShadowType;
+  begin
+    if Widget<>nil then begin
+    
+      // use the gtk paint functions to draw a widget style dependent button
+      
+      // set State (the interior filling style)
+      if (DFCS_INACTIVE and uState)<>0 then begin
+        // button disabled
+        State:=GTK_STATE_INSENSITIVE;
+      end else begin
+        if (DFCS_PUSHED and uState)<>0 then begin
+          // button enabled, down
+          if (DFCS_CHECKED and uState)<>0 then begin
+            // button enabled, down, special (e.g. mouse over)
+            State:=GTK_STATE_ACTIVE;
+          end else begin
+            // button enabled, down, normal
+            State:=GTK_STATE_SELECTED;
+          end;
+        end else begin
+          // button enabled, up
+          if (DFCS_CHECKED and uState)<>0 then begin
+            // button enabled, up, special (e.g. mouse over)
+            State:=GTK_STATE_PRELIGHT;
+          end else begin
+            // button enabled, up, normal
+            State:=GTK_STATE_NORMAL;
+          end;
+        end;
+      end;
+      // set Shadow (the border style)
+      if (DFCS_PUSHED and uState)<>0 then begin
+        // button down
+        Shadow:=GTK_SHADOW_IN;
+      end else begin
+        if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
+          // button up, flat, no special
+          Shadow:=GTK_SHADOW_NONE;
+        end else begin
+          // button up
+          Shadow:=GTK_SHADOW_OUT;
+        end;
+      end;
+      gtk_draw_box(Widget^.TheStyle,Widget^.Window,
+             State,
+             Shadow,
+             Rect.Left,Rect.Top,
+             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+    end else begin
+      // draw without widget style
+      Result := DrawEdge(DC, Rect,
+                         PUSH_EDGE_FLAG[(uState and DFCS_PUSHED) <> 0],
+                         BF_RECT or ADJUST_FLAG[
+                                    (uState and DFCS_ADJUSTRECT) <> 0]
+                         );
+    end;
+  end;
+  
 begin
+  if IsValidDC(DC) then
+    //Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd)
+    Widget:=@PGtkFixed(GetFixedWidget(PGtkWidget(
+                              PDeviceContext(DC)^.hWnd)))^.Container.Widget
+  else
+    Widget:=nil;
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
@@ -1458,12 +1540,16 @@ begin
           DFCS_BUTTONPUSH:
             begin
               Assert(False, 'Trace:DFCS_BUTTONPUSH in uState');
-              Result := DrawEdge(DC, Rect, PUSH_EDGE_FLAG[(uState and DFCS_PUSHED) <> 0], BF_RECT or ADJUST_FLAG[(uState and DFCS_ADJUSTRECT) <> 0]);
+              DrawButtonPush;
             end;
           DFCS_BUTTONCHECK:
             begin
               Assert(False, 'Trace:State ButtonCheck');
-              Result := DrawEdge(DC, Rect, PUSH_EDGE_FLAG2[(uState and DFCS_FLAT) <> 0], BF_RECT or ADJUST_FLAG[(uState and DFCS_ADJUSTRECT) <> 0]);
+              Result := DrawEdge(DC, Rect,
+                                 PUSH_EDGE_FLAG2[(uState and DFCS_FLAT) <> 0],
+                                 BF_RECT or ADJUST_FLAG[
+                                            (uState and DFCS_ADJUSTRECT) <> 0]
+                                 );
               if (uState and DFCS_CHECKED) <> 0 then
                  Begin
                  //TODO:write the code to draw a check inside the box defined by Rect
@@ -1487,7 +1573,8 @@ end;
   Draws one or more edges of a rectangle, not including the 
   right and bottom edge.
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean;
+function TgtkObject.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
+  grfFlags: Cardinal): Boolean;
 Var
   InnerTL, OuterTL,
   InnerBR, OuterBR: TGDKColor;
@@ -1743,10 +1830,10 @@ begin
           gdk_draw_rectangle(Drawable, GC, 1, Rect^.Left, Rect^.Top, Width, Height);
         end;
         if (Options and ETO_CLIPPED) <> 0 then
-	begin
+        begin
           X := Rect^.Left;
           Y := Rect^.Top;
-	end;
+        end;
         SelectGDKTextProps(DC);
         Line := 1;
         OldText := StrPas(pStr);
@@ -1838,7 +1925,8 @@ begin
         Result:= False;
       end
       else begin
-        Widget:= PGtkFixed(GetFixedWidget(PGtkWidget(PDeviceContext(DC)^.hWnd)))^.Container.Widget;
+        Widget:=PGtkFixed(GetFixedWidget(PGtkWidget(
+                                  PDeviceContext(DC)^.hWnd)))^.Container.Widget;
         for i:= 1 to FrameWidth do begin
           gtk_paint_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL,
                            GtkShadowType[Style], nil, @Widget, nil,
@@ -4422,36 +4510,41 @@ end;
   resizes the bitmap to fit the dimensions of the destination rectangle. 
   Sizing is done according to the stretching mode currently set in the 
   destination device context.
+  If SrcDC contains a mask the pixmap will be copied with this transparency.
+  
+  ToDo: Scaling and ROP
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
-//var
-  //pixmap : PgdkPixmap;
-  //pixmapwid : pgtkWidget;
+var
+  SrcDevContext, DestDevContext: PDeviceContext;
+  SrcGDIBitmap: PGdiObject;
+  
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
 //writeln('[TgtkObject.StretchBlt] ',Result);
   if Result then begin
-    gdk_gc_set_function(PDeviceContext(DestDC)^.GC, GDK_COPY);
+    SrcDevContext:=PDeviceContext(SrcDC);
+    DestDevContext:=PDeviceContext(DestDC);
+    SrcGDIBitmap:=SrcDevContext^.CurrentBitmap;
+    gdk_gc_set_function(DestDevContext^.GC, GDK_COPY);
     // TODO: Add scaling and ROP
-    //first create a pixmap with transparency
-    if PgdiObject(SRCdc)^.GDIBitmapMaskObject <> nil then begin
-//  THIS is test code for transparency
-{      pixmap := pgdkPixmap(PgdiObject(Srcdc)^.GDIBitmapObject);
-      pixmapwid := gtk_pixmap_new(pixmap,PgdiObject(SRCdc)^.GDIBitmapMAskObject);
-
-      gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,PDeviceContext(DestDC)^.GC,
-        PgdkDrawable(pixmapwid^.window),
-        XSrc, YSrc, X, Y, SrcWidth, SrcHeight);}
-//writeln('[TgtkObject.StretchBlt] B ');
-      gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
-        PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
-        XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
-    end else begin
-      gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
-        PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
-        XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
+    if SrcGDIBitmap^.GDIBitmapMaskObject <> nil then
+    begin
+      // set clipping mask for transparency
+      gdk_gc_set_clip_mask(DestDevContext^.GC,
+                           SrcGDIBitmap^.GDIBitmapMaskObject);
+      gdk_gc_set_clip_origin(DestDevContext^.GC, X, Y);
+    end;
+    // draw image
+    gdk_draw_pixmap(DestDevContext^.Drawable,
+                    DestDevContext^.GC, SrcDevContext^.Drawable,
+                    XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
+    if SrcGDIBitmap^.GDIBitmapMaskObject <> nil then begin
+      // unset clipping mask for transparency
+      gdk_gc_set_clip_mask (DestDevContext^.GC,nil);
+      gdk_gc_set_clip_origin (DestDevContext^.GC, 0,0);
     end;
 //writeln('[TgtkObject.StretchBlt] C ');
   end;
@@ -4539,6 +4632,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/06/01 08:41:28  lazarus
+  MG: DrawFramControl now uses gtk style, transparent STrechBlt
+
   Revision 1.72  2002/05/27 17:58:42  lazarus
   MG: added command line help
 

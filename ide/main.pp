@@ -771,8 +771,8 @@ procedure TMainIDE.SetupSpeedButtons;
       NumGlyphs := ANumGlyphs;
       Flat := True;
       //Transparent:=True;
-      if mfTop in AMoveFlags then Inc(ATop, Height + 1);
-      if mfLeft in AMoveFlags then Inc(ALeft, Width + 1);
+      if mfTop in AMoveFlags then Inc(ATop, Height);
+      if mfLeft in AMoveFlags then Inc(ALeft, Width);
       Hint := AHint;
       OnMouseMove := @MainMouseMoved;
       Visible := True;
@@ -6404,6 +6404,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.305  2002/06/01 08:41:27  lazarus
+  MG: DrawFramControl now uses gtk style, transparent STrechBlt
+
   Revision 1.304  2002/05/30 22:08:09  lazarus
   MG: TMenuItems now all owned by mainbar
 
