@@ -1623,6 +1623,8 @@ const
 // GetDeviceCaps constants
 //==============================================
   BI_RGB        = 0;
+  BI_RLE8       = 1;
+  BI_RLE4       = 2;
   BI_BITFIELDS  = 3;
 
 
@@ -2320,6 +2322,9 @@ end.
 
 {
   $Log$
+  Revision 1.77  2005/03/08 10:29:19  mattias
+  fixed bmp 16 bit loading  from Peter J. Haas
+
   Revision 1.76  2005/02/08 21:46:23  vincents
   fixed fpc 1.0.x compilation
 
