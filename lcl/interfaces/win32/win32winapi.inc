@@ -172,61 +172,81 @@ var
   end;
 
   procedure DrawOwnerButton(Data: PDrawItemStruct);
-  var flags:integer; // How the button looks like (pressed or not pressed)
-      BitmapHandle: HBITMAP; // Handle of bitmap
-      OldBitmapHandle: HBITMAP; // Handle of provious bitmap in hdcBitmap
+  var Flags:integer; // How the button looks like (pressed or not pressed)
+      BitmapHandle: HBITMAP; // Handle of the button glyph
+      OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
+      HdcNewBitmap: HDC; // Device context of the new Bitmap
+      OldFontHandle: HFONT; // Handle of previous font in hdcNewBitmap
       BitmapBuf: BITMAP; // Buffer for bitmap
-      hdcBitmap: HDC; // Memory device context for the bitmap
-      xDestBitmap: integer; // X coordinate of destination rectangle for bitmap
-      yDestBitmap: integer; // Y coordinate of destination rectangle for bitmap
+      XDestBitmap: integer; // X coordinate of destination rectangle for bitmap
+      YDestBitmap: integer; // Y coordinate of destination rectangle for bitmap
       TextSize: SIZE; // For computing the length of button caption in pixels
-      TextPosFlags:integer; // Flags for text position on the button
+      NewBitmap: HBITMAP; // Handle of the new bitmap
+      ButtonCaption: string; // Text written on the button
+      XDestText: integer; // X coordinate of destination rectangle for caption
+      YDestText: integer; // Y coordinate of destination rectangle for caption
+      BitmapFlags: integer; // flags for glyph (enabled or disabled)
+      TextFlags: integer; // flags for caption (enabled or disabled)
   begin
-    flags:=DFCS_BUTTONPUSH;
-    if (Data^.itemState and ODS_SELECTED)<>0 then
-      flags:=flags or DFCS_PUSHED;
-    DrawFrameControl(Data^._HDC, Data^.rcItem, DFC_BUTTON, flags);
-    InflateRect(Data^.rcItem, -2, -2);
-    if (Data^.itemState and ODS_SELECTED)<>0 then
-      OffsetRect(Data^.rcItem, 1, 1);
-    SetBkMode(Data^._HDC, TRANSPARENT);
+    ButtonCaption := TBitBtn(Sender).Caption;
+    NewBitmap := CreateCompatibleBitmap(Data^._HDC, Data^.rcItem.Right - Data^.rcItem.Left + 1, Data^.rcItem.Bottom - Data^.rcItem.Top + 1);
+    HdcNewBitmap := CreateCompatibleDC(Data^._HDC);
+    OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
+    OldFontHandle := SelectObject(hdcNewBitmap, TBitBtn(Sender).Font.Handle);
     BitmapHandle := TBitBtn(Sender).Glyph.Handle;
-    hdcBitmap := Windows.CreateCompatibleDC(Data^._HDC);
     Windows.GetObject(BitmapHandle, sizeof(BitmapBuf), @BitmapBuf);
-    OldBitmapHandle := Windows.SelectObject(hdcBitmap, BitmapHandle);
-    {Windows.}GetTextExtentPoint32(Data^._HDC, LPSTR(TBitBtn(Sender).Caption), length(TBitBtn(Sender).Caption), TextSize);
+    GetTextExtentPoint32(Data^._HDC, LPSTR(ButtonCaption), length(ButtonCaption), TextSize);
     case TBitBtn(Sender).Layout of
       blGlyphLeft: begin
-        xDestBitmap:=Data^.rcItem.Left+((Data^.rcItem.Right-Data^.rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1;
-        yDestBitmap:=Data^.rcItem.Top+((Data^.rcItem.Bottom-Data^.rcItem.Top)-BitmapBuf.bmHeight) shr 1;
-        TextPosFlags:=DT_SINGLELINE or DT_LEFT or DT_VCENTER;
-        Inc(Data^.rcItem.Left, xDestBitmap+BitmapBuf.bmWidth+2);
+        XDestBitmap := Data^.rcItem.Left + ((Data^.rcItem.Right - Data^.rcItem.Left) - (TextSize.cx + BitmapBuf.bmWidth + 2)) shr 1;
+        YDestBitmap := Data^.rcItem.Top + ((Data^.rcItem.Bottom - Data^.rcItem.Top) - BitmapBuf.bmHeight) shr 1;
+        XDestText := XDestBitmap+BitmapBuf.bmWidth + 2;
+        YDestText := (Data^.rcItem.Bottom - Data^.rcItem.Top - TextSize.cy) shr 1;
       end;
       blGlyphRight: begin
-        xDestBitmap:=Data^.rcItem.Right-((Data^.rcItem.Right-Data^.rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1 - BitmapBuf.bmWidth;
-        yDestBitmap:=Data^.rcItem.Top+((Data^.rcItem.Bottom-Data^.rcItem.Top)-BitmapBuf.bmHeight) shr 1;
-        TextPosFlags:=DT_SINGLELINE or DT_RIGHT or DT_VCENTER;
-        Data^.rcItem.Right:=xDestBitmap-2;
+        XDestBitmap := Data^.rcItem.Right - ((Data^.rcItem.Right - Data^.rcItem.Left) - (TextSize.cx + BitmapBuf.bmWidth + 2)) shr 1 - BitmapBuf.bmWidth;
+        YDestBitmap := Data^.rcItem.Top + ((Data^.rcItem.Bottom - Data^.rcItem.Top) - BitmapBuf.bmHeight) shr 1;
+        XDestText := XDestBitmap - 2 - TextSize.cx;
+        YDestText := (Data^.rcItem.Bottom - Data^.rcItem.Top - TextSize.cy) shr 1;
       end;
       blGlyphTop: begin
-        xDestBitmap:=Data^.rcItem.Left+((Data^.rcItem.Right-Data^.rcItem.Left)-BitmapBuf.bmWidth) shr 1;
-        yDestBitmap:=Data^.rcItem.Top+((Data^.rcItem.Bottom-Data^.rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1;
-        TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_TOP;
-        Inc(Data^.rcItem.Top, yDestBitmap+BitmapBuf.bmHeight+2);
+        XDestBitmap := Data^.rcItem.Left + ((Data^.rcItem.Right - Data^.rcItem.Left) - BitmapBuf.bmWidth) shr 1;
+        YDestBitmap := Data^.rcItem.Top + ((Data^.rcItem.Bottom - Data^.rcItem.Top) - (TextSize.cy + BitmapBuf.bmHeight + 2)) shr 1;
+        XDestText := (Data^.rcItem.Right - Data^.rcItem.Left - TextSize.cx) shr 1;
+        YDestText := YDestBitmap + BitmapBuf.bmHeight + 2;
       end;
       blGlyphBottom: begin
-        xDestBitmap:=Data^.rcItem.Left+((Data^.rcItem.Right-Data^.rcItem.Left)-BitmapBuf.bmWidth) shr 1;
-        yDestBitmap:=Data^.rcItem.Bottom-((Data^.rcItem.Bottom-Data^.rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1 - BitmapBuf.bmHeight;
-        TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_BOTTOM;
-        Data^.rcItem.Bottom:=yDestBitmap-2;
+        XDestBitmap := Data^.rcItem.Left + ((Data^.rcItem.Right - Data^.rcItem.Left) - BitmapBuf.bmWidth) shr 1;
+        YDestBitmap := Data^.rcItem.Bottom - ((Data^.rcItem.Bottom - Data^.rcItem.Top) - (TextSize.cy + BitmapBuf.bmHeight + 2)) shr 1 - BitmapBuf.bmHeight;
+        XDestText := (Data^.rcItem.Right - Data^.rcItem.Left - TextSize.cx) shr 1;
+        YDestText := YDestBitmap - 2 - TextSize.cy;
       end;
     end;
-    Windows.BitBlt(Data^._HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
-    Windows.DrawText(Data^._HDC, LPSTR(TBitBtn(Sender).Caption), -1,
-        {$ifdef VER1_0}Windows.Rect({$endif}Data^.rcItem{$ifdef VER1_0}){$endif}, TextPosFlags);
-    if OldBitmapHandle <> 0 then
-      Windows.SelectObject(hdcBitmap, OldBitmapHandle);
-    Windows.DeleteDC(hdcBitmap);
+    Flags := DFCS_BUTTONPUSH;
+    BitmapFlags := DST_BITMAP;
+    TextFlags := DST_PREFIXTEXT;
+    if (Data^.itemState and ODS_DISABLED) <> 0 then
+    begin
+      BitmapFlags := BitmapFlags or DSS_DISABLED;
+      TextFlags := TextFlags or DSS_DISABLED;
+    end;
+    if (Data^.itemState and ODS_SELECTED) <> 0 then
+    begin
+      inc(XDestBitmap);
+      inc(YDestBitmap);
+      inc(XDestText);
+      inc(YDestText);
+      Flags := Flags or DFCS_PUSHED;
+    end;
+    DrawFrameControl(HdcNewBitmap, Data^.rcItem, DFC_BUTTON, Flags);
+    SetBkMode(HdcNewBitmap, TRANSPARENT);
+    DrawState(HdcNewBitmap, 0, nil, BitmapHandle, 0, XDestBitmap, YDestBitmap, 0, 0, BitmapFlags);
+    DrawState(HdcNewBitmap, 0, nil, LPARAM(LPSTR(ButtonCaption)), 0, XDestText, YDestText, 0, 0, TextFlags);
+    SelectObject(HdcNewBitmap, OldBitmapHandle);
+    SelectObject(HdcNewBitmap, OldFontHandle);
+    DrawState(Data^._HDC, 0, nil, NewBitmap, 0, 0, 0, 0, 0, DST_BITMAP);
+    DeleteDC(HdcNewBitmap);
+    DeleteObject(NewBitmap);
   end;
 
   procedure DrawCheckListBoxItem(CheckListBox: TCheckListBox; Data: PDrawItemStruct);
@@ -2921,6 +2941,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2004/03/07 12:26:31  micha
+  rewrite to enable drawing of disabled button
+
   Revision 1.103  2004/03/05 12:16:09  micha
   fix designer (overlay) window transparency issue
   fix releasedesignerdc to use correct window
