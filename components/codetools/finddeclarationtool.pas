@@ -192,14 +192,21 @@ writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',ExpandedFilename);
 
   function SearchUnitFileInPath(const APath, TheUnitName: string): TCodeBuffer;
   var PathStart, PathEnd: integer;
+    ADir: string;
   begin
+writeln('--------------------------------------');
+writeln(APath,'   ',TheUnitName);
+writeln('--------------------------------------');
     PathStart:=1;
     while PathStart<=length(APath) do begin
       PathEnd:=PathStart;
       while (PathEnd<=length(APath)) and (APath[PathEnd]<>';') do inc(PathEnd);
       if PathEnd>PathStart then begin
-        Result:=SearchUnitFileInDir(copy(APath,PathStart,PathEnd-PathStart),
-                                    TheUnitName);
+        ADir:=copy(APath,PathStart,PathEnd-PathStart);
+        if (ADir<>'') and (ADir[length(ADir)]<>OSDirSeparator) then
+          ADir:=ADir+OSDirSeparator;
+writeln('B ',ADir);
+        Result:=SearchUnitFileInDir(ADir,TheUnitName);
         if Result<>nil then exit;
       end;
       PathStart:=PathEnd+1;

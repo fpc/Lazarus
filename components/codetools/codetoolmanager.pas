@@ -1071,8 +1071,11 @@ begin
   Result:=nil;
   if Code=nil then exit;
 //DefineTree.WriteDebugReport;
-  Result:=DefineTree.GetDefinesForDirectory(
-    ExtractFilePath(TCodeBuffer(Code).Filename));
+  if not TCodeBuffer(Code).IsVirtual then
+    Result:=DefineTree.GetDefinesForDirectory(
+      ExtractFilePath(TCodeBuffer(Code).Filename))
+  else
+    Result:=DefineTree.GetDefinesForVirtualDirectory;
 end;
 
 procedure TCodeToolManager.OnDefineTreeReadValue(Sender: TObject;

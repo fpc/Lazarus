@@ -3192,7 +3192,7 @@ writeln('TMainIDE.DoNewProject A');
   end;
 
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
-    '(unknown Project Directory)';
+    VirtualDirectory;
 
   Project:=TProject.Create(NewProjectType);
   Project.OnFileBackup:=@DoBackupFile;
@@ -3358,6 +3358,9 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
         end;
       end;
       Project.ProjectFile:=NewFilename;
+      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+        ExtractFilePath(Project.ProjectFile);
+      CodeToolBoss.DefineTree.ClearCache;
       EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
       if (MainUnitInfo<>nil) then begin
         // switch MainUnitInfo to new code
@@ -3514,6 +3517,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
   Project.ReadProject(LPIFilename);
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+    ExtractFilePath(Project.ProjectFile);
+  CodeToolBoss.DefineTree.ClearCache;
 writeln('TMainIDE.DoOpenProjectFile B2');
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
@@ -4831,7 +4837,7 @@ begin
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.FPCSourceDirectory;
     Variables[ExternalMacroStart+'LCLWidgetType']:='gtk';
-    Variables[ExternalMacroStart+'ProjectDir']:='';
+    Variables[ExternalMacroStart+'ProjectDir']:=VirtualDirectory;
   end;
   
   // build DefinePool and Define Tree
@@ -5375,6 +5381,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.184  2001/12/16 12:55:57  lazarus
+  MG: fixed project codetool variable
+
   Revision 1.183  2001/12/16 11:20:26  lazarus
   MG: find declaration for uses sections
 

@@ -69,7 +69,10 @@ const
   StdDefTemplFPCSrc = 'Free Pascal Sources';
   StdDefTemplLazarusSources = 'Lazarus Sources';
   StdDefTemplLCLProject = 'LCL Project';
-
+  
+  // virtual directory
+  VirtualDirectory='VIRTUALDIRECTORY';
+  
   // FPC operating systems and processor types
   FPCOperatingSystemNames: array[1..11] of shortstring =(
       'linux', 'freebsd', 'win32', 'go32v1', 'go32v2', 'beos', 'os2', 'amiga',
@@ -144,6 +147,7 @@ type
   private
     FFirstDefineTemplate: TDefineTemplate;
     FCache: TAVLTree; // tree of TDirectoryDefines
+    FVirtualDirCache: TDirectoryDefines;
     FOnReadValue: TOnReadValue;
     FErrorTemplate: TDefineTemplate;
     FErrorDescription: string;
@@ -151,6 +155,7 @@ type
     function Calculate(DirDef: TDirectoryDefines): boolean;
   public
     function GetDefinesForDirectory(const Path: string): TExpressionEvaluator;
+    function GetDefinesForVirtualDirectory: TExpressionEvaluator;
     property RootTemplate: TDefineTemplate
         read FFirstDefineTemplate write FFirstDefineTemplate;
     procedure Add(ADefineTemplate: TDefineTemplate);
@@ -649,6 +654,8 @@ end;
 procedure TDefineTree.ClearCache;
 begin
   FCache.FreeAndClear;
+  FVirtualDirCache.Free;
+  FVirtualDirCache:=nil;
 end;
 
 constructor TDefineTree.Create;
@@ -707,6 +714,25 @@ begin
       Result:=DirDef.Values;
     end else begin
       DirDef.Free;
+      Result:=nil;
+    end;
+  end;
+end;
+
+function TDefineTree.GetDefinesForVirtualDirectory: TExpressionEvaluator;
+begin
+  if FVirtualDirCache<>nil then
+    Result:=FVirtualDirCache.Values
+  else begin
+writeln('################');
+    FVirtualDirCache:=TDirectoryDefines.Create;
+    FVirtualDirCache.Path:=VirtualDirectory;
+    if Calculate(FVirtualDirCache) then begin
+      Result:=FVirtualDirCache.Values;
+writeln(Result.AsString);
+    end else begin
+      FVirtualDirCache.Free;
+      FVirtualDirCache:=nil;
       Result:=nil;
     end;
   end;
@@ -915,7 +941,10 @@ begin
 //writeln('[TDefineTree.Calculate] "',DirDef.Path,'"');
   Result:=true;
   FErrorTemplate:=nil;
-  ExpandedDirectory:=ReadValue(DirDef.Path);
+  if DirDef.Path<>VirtualDirectory then
+    ExpandedDirectory:=ReadValue(DirDef.Path)
+  else
+    ExpandedDirectory:=DirDef.Path;
   DirDef.Values.Clear;
   // compute the result of all matching DefineTemplates
   CalculateTemplate(FFirstDefineTemplate,'');
