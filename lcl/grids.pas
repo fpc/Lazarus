@@ -2004,7 +2004,7 @@ begin
     // FVSbVisible, FHSbVisible are supposed to be update (if used ScrolLBarShow)
     // how can we know if GetScrollbarVisible is indeed implemented?....
     if Which = SB_VERT then result := FVSbVisible else
-    if Which = SB_HORZ then result := FHsbVisible) else
+    if Which = SB_HORZ then result := FHsbVisible else
     if Which = SB_BOTH then result := FHsbVisible and FVsbVisible;
     {$ENDIF}
   end;
