@@ -53,7 +53,6 @@ uses Classes, SysUtils;
 type
   TDynHashArray = class;
   
-  THashMethod = function(Sender: TDynHashArray; Item: Pointer): integer of object;
   THashFunction = function(Sender: TDynHashArray; Item: Pointer): integer;
   TOwnerHashFunction = function(Item: Pointer): integer of object;
   TOnGetKeyForHashItem = function(Item: pointer): pointer;
@@ -81,7 +80,6 @@ type
     FLowWaterMark: integer;
     FHighWaterMark: integer;
     FCustomHashFunction: THashFunction;
-    FCustomHashMethod: THashMethod;
     FOnGetKeyForHashItem: TOnGetKeyForHashItem;
     FOptions: TDynHashArrayOptions;
     FOwnerHashFunction: TOwnerHashFunction;
@@ -90,7 +88,6 @@ type
     procedure ComputeWaterMarks;
     procedure SetCapacity(NewCapacity: integer);
     procedure SetCustomHashFunction(const AValue: THashFunction);
-    procedure SetCustomHashMethod(const AValue: THashMethod);
     procedure SetOnGetKeyForHashItem(const AValue: TOnGetKeyForHashItem);
     procedure SetOptions(const AValue: TDynHashArrayOptions);
     procedure SetOwnerHashFunction(const AValue: TOwnerHashFunction);
@@ -110,6 +107,7 @@ type
     function IndexOfKey(Key: Pointer): integer;
     function FindHashItem(Item: Pointer): PDynHashArrayItem;
     function FindHashItemWithKey(Key: Pointer): PDynHashArrayItem;
+    function FindItemWithKey(Key: Pointer): Pointer;
     function GetHashItem(HashIndex: integer): PDynHashArrayItem;
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
     procedure AssignTo(List: TList);
@@ -120,8 +118,6 @@ type
     property Capacity: integer read FCapacity;
     property CustomHashFunction: THashFunction
        read FCustomHashFunction write SetCustomHashFunction;
-    property CustomHashMethod: THashMethod
-       read FCustomHashMethod write SetCustomHashMethod;
     property OwnerHashFunction: TOwnerHashFunction
        read FOwnerHashFunction write SetOwnerHashFunction;
     property OnGetKeyForHashItem: TOnGetKeyForHashItem
@@ -302,35 +298,39 @@ end;
 
 function TDynHashArray.IndexOf(AnItem: Pointer): integer;
 begin
-  if (AnItem=nil) or (FItems=nil) then exit(-1);
-  if Assigned(OnGetKeyForHashItem) then begin
-    AnItem:=OnGetKeyForHashItem(AnItem);
-  end;
-  Result:=IndexOfKey(AnItem);
+  if (AnItem<>nil) and (FItems<>nil) then begin
+    if Assigned(OnGetKeyForHashItem) then begin
+      AnItem:=OnGetKeyForHashItem(AnItem);
+    end;
+    Result:=IndexOfKey(AnItem);
+  end else
+    Result:=-1;
 end;
 
 function TDynHashArray.IndexOfKey(Key: Pointer): integer;
 begin
-  if (FItems=nil)
-  or ((not Assigned(OnGetKeyForHashItem)) and (Key=nil)) then exit(-1);
-  if (dhaoCachingEnabled in Options)
-  and (Key=FHashCacheItem) and (FHashCacheIndex>=0) then
-    exit(FHashCacheIndex);
-  if Assigned(FCustomHashFunction) then
-    Result:=FCustomHashFunction(Self,Key)
-  else if Assigned(FCustomHashMethod) then
-    Result:=FCustomHashMethod(Self,Key)
-  else if Assigned(FOwnerHashFunction) then
-    Result:=FOwnerHashFunction(Key)
-  else
-    Result:=integer((Cardinal(Key) mod Cardinal(PrimeNumber))
-            +(Cardinal(Key) mod 17)
-             ) mod FCapacity;
-  {if (Key=FHashCacheItem) and (FHashCacheIndex>=0)
-  and (Result<>FHashCacheIndex) then begin
-    writeln(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
-    raise Exception.Create('GROSSER MIST');
-  end;}
+  if (FItems<>nil)
+  and ((Key<>nil) or Assigned(OnGetKeyForHashItem)) then begin
+
+    if (dhaoCachingEnabled in Options)
+    and (Key=FHashCacheItem) and (FHashCacheIndex>=0) then
+      exit(FHashCacheIndex);
+    if not Assigned(FCustomHashFunction) then begin
+      if not Assigned(FOwnerHashFunction) then begin
+        Result:=integer((Cardinal(Key) mod Cardinal(PrimeNumber))
+                +(Cardinal(Key) mod 17)
+                 ) mod FCapacity;
+      end else
+        Result:=FOwnerHashFunction(Key);
+    end else
+      Result:=FCustomHashFunction(Self,Key);
+    {if (Key=FHashCacheItem) and (FHashCacheIndex>=0)
+    and (Result<>FHashCacheIndex) then begin
+      writeln(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
+      raise Exception.Create('GROSSER MIST');
+    end;}
+  end else
+    Result:=-1;
 end;
 
 procedure TDynHashArray.Clear;
@@ -473,41 +473,74 @@ end;
 function TDynHashArray.FindHashItem(Item: Pointer): PDynHashArrayItem;
 var Index: integer;
 begin
-  if (Item=nil) or (FItems=nil) then exit(nil);
-  Index:=IndexOf(Item);
-  Result:=FItems[Index];
-  if (Result=nil) then exit;
-  while (Result^.Item<>Item) do begin
-    Result:=Result^.Next;
-    if Result=nil then exit;
-    if Result^.IsOverflow=false then begin
-      Result:=nil;
-      exit;
+  if (Item<>nil) and (FItems<>nil) then begin
+    Index:=IndexOf(Item);
+    Result:=FItems[Index];
+    if (Result<>nil) then begin
+      while (Result^.Item<>Item) do begin
+        Result:=Result^.Next;
+        if Result=nil then exit;
+        if Result^.IsOverflow=false then begin
+          Result:=nil;
+          exit;
+        end;
+      end;
+      SaveCacheItem(Item,Index);
     end;
-  end;
-  SaveCacheItem(Item,Index);
+  end else
+    Result:=nil;
 end;
 
 function TDynHashArray.FindHashItemWithKey(Key: Pointer): PDynHashArrayItem;
 var Index: integer;
 begin
-  if FItems=nil then exit(nil);
-  Index:=IndexOfKey(Key);
-  Result:=FItems[Index];
-  if (Result=nil) then exit;
-  if Assigned(OnGetKeyForHashItem) then begin
-    if OnGetKeyForHashItem(Result^.Item)=Key then exit;
-    // search in overflow hash items
-    Result:=Result^.Next;
-    while (Result<>nil) and (Result^.IsOverflow) do begin
-      if OnGetKeyForHashItem(Result^.Item)=Key then begin
-        FHashCacheIndex:=Index;
-        FHashCacheItem:=Key;
-        exit;
+  if FItems<>nil then begin
+    Index:=IndexOfKey(Key);
+    Result:=FItems[Index];
+    if (Result<>nil) then begin
+      if Assigned(OnGetKeyForHashItem) then begin
+        if OnGetKeyForHashItem(Result^.Item)=Key then exit;
+        // search in overflow hash items
+        Result:=Result^.Next;
+        while (Result<>nil) and (Result^.IsOverflow) do begin
+          if OnGetKeyForHashItem(Result^.Item)=Key then begin
+            FHashCacheIndex:=Index;
+            FHashCacheItem:=Key;
+            exit;
+          end;
+          Result:=Result^.Next;
+        end;
+        Result:=nil;
       end;
-      Result:=Result^.Next;
     end;
+  end else
     Result:=nil;
+end;
+
+function TDynHashArray.FindItemWithKey(Key: Pointer): Pointer;
+var
+  Index: integer;
+  HashItem: PDynHashArrayItem;
+begin
+  Result:=nil;
+  if FItems<>nil then begin
+    Index:=IndexOfKey(Key);
+    HashItem:=FItems[Index];
+    if (HashItem<>nil)
+    and Assigned(OnGetKeyForHashItem) then begin
+      if OnGetKeyForHashItem(HashItem^.Item)=Key then exit;
+      // search in overflow hash items
+      HashItem:=HashItem^.Next;
+      while (HashItem<>nil) and (HashItem^.IsOverflow) do begin
+        if OnGetKeyForHashItem(HashItem^.Item)=Key then begin
+          FHashCacheIndex:=Index;
+          FHashCacheItem:=Key;
+          Result:=HashItem^.Item;
+          exit;
+        end;
+        HashItem:=HashItem^.Next;
+      end;
+    end;
   end;
 end;
 
@@ -536,17 +569,15 @@ procedure TDynHashArray.SetCustomHashFunction(const AValue: THashFunction);
 begin
   if FCustomHashFunction=AValue then exit;
   FCustomHashFunction:=AValue;
-  FCustomHashMethod:=nil;
   FOwnerHashFunction:=nil;
   RebuildItems;
 end;
 
-procedure TDynHashArray.SetCustomHashMethod(const AValue: THashMethod);
+procedure TDynHashArray.SetOwnerHashFunction(const AValue: TOwnerHashFunction);
 begin
-  if FCustomHashMethod=AValue then exit;
+  if FOwnerHashFunction=AValue then exit;
   FCustomHashFunction:=nil;
-  FCustomHashMethod:=AValue;
-  FOwnerHashFunction:=nil;
+  FOwnerHashFunction:=AValue;
   RebuildItems;
 end;
 
@@ -603,15 +634,6 @@ end;
 procedure TDynHashArray.SetOptions(const AValue: TDynHashArrayOptions);
 begin
   FOptions:=AValue;
-end;
-
-procedure TDynHashArray.SetOwnerHashFunction(const AValue: TOwnerHashFunction);
-begin
-  if FOwnerHashFunction=AValue then exit;
-  FCustomHashFunction:=nil;
-  FCustomHashMethod:=nil;
-  FOwnerHashFunction:=AValue;
-  RebuildItems;
 end;
 
 { TDynHashArrayItemMemManager }

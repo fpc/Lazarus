@@ -4536,12 +4536,7 @@ begin
   if Result
   then with TDeviceContext(DC) do
   begin
-    if GC = nil
-    then begin
-      WriteLn('WARNING: [TgtkObject.LineTo] Uninitialized GC');
-      Result := False;
-    end
-    else begin
+    if GC <> nil then begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       SelectGDKPenProps(DC);
 
@@ -4557,6 +4552,9 @@ begin
                     X+DCOrigin.X, Y+DCOrigin.Y);
       PenPos:= Point(X, Y);
       Result := True;
+    end else begin
+      WriteLn('WARNING: [TgtkObject.LineTo] Uninitialized GC');
+      Result := False;
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
@@ -7229,6 +7227,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.144  2002/10/07 10:55:18  lazarus
+  MG: accelerated TDynHashArray
+
   Revision 1.143  2002/10/04 22:59:14  lazarus
   MG: added OnDrawItem to OI
 
