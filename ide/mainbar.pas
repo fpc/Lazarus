@@ -211,6 +211,7 @@ type
     itmProjectRecentOpen: TMenuItem;
     itmProjectSave: TMenuItem;
     itmProjectSaveAs: TMenuItem;
+    itmProjectPublish: TMenuItem;
     itmProjectAddTo: TMenuItem;
     itmProjectRemoveFrom: TMenuItem;
     itmProjectViewSource: TMenuItem;
@@ -839,6 +840,11 @@ begin
   itmProjectSaveAs.Caption := lisMenuSaveProjectAs;
   mnuProject.Add(itmProjectSaveAs);
 
+  itmProjectPublish := TMenuItem.Create(Self);
+  itmProjectPublish.Name:='itmProjectPublish';
+  itmProjectPublish.Caption := lisMenuPublishProject;
+  mnuProject.Add(itmProjectPublish);
+
   mnuProject.Add(CreateMenuSeparator);
 
   itmProjectAddTo := TMenuItem.Create(Self);
@@ -1078,6 +1084,7 @@ begin
     //itmProjectRecentOpen.ShortCut:=CommandToShortCut(ec);
     itmProjectSave.ShortCut:=CommandToShortCut(ecSaveProject);
     itmProjectSaveAs.ShortCut:=CommandToShortCut(ecSaveProjectAs);
+    itmProjectPublish.ShortCut:=CommandToShortCut(ecPublishProject);
     itmProjectAddTo.ShortCut:=CommandToShortCut(ecAddCurUnitToProj);
     itmProjectRemoveFrom.ShortCut:=CommandToShortCut(ecRemoveFromProj);
     itmProjectViewSource.ShortCut:=CommandToShortCut(ecViewProjectSource);

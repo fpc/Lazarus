@@ -73,6 +73,7 @@ const
 procedure CheckHeap;
 procedure CheckHeap(const txt: ansistring);
 procedure CheckHeapWrtMemCnt(const txt: ansistring);
+procedure WriteGetMemCount(const txt: ansistring);
 
 function MemCheck_getmem_cnt: longint;
 function MemCheck_freemem_cnt: longint;
@@ -178,6 +179,22 @@ begin
   GetMem(p,4);
   FreeMem(p);
   QuickTrace:=true;
+
+  // don't count mem counts of this proc
+  inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
+end;
+
+procedure WriteGetMemCount(const txt: ansistring);
+var
+  StartGetMemCnt, CurGetMemCount, DiffGetMemCount: longint;
+begin
+  StartGetMemCnt:=MemCheck_getmem_cnt;
+  CurGetMemCount:=StartGetMemCnt-HiddenGetMemCnt;
+  DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
+  LastWrittenGetMemCnt:=CurGetMemCount;
+
+  writeln('>>> memcheck.pp - WriteGetMemCount "',txt,'" ',
+    CurGetMemCount,'(',StartGetMemCnt,') +',DiffGetMemCount);
 
   // don't count mem counts of this proc
   inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);

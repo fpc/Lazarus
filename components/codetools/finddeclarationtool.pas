@@ -27,7 +27,7 @@
 
   ToDo:
     - many things, search for 'ToDo'
-    - ignore errors behind cursor
+    - ignore errors behind cursor (implemented, not tested)
     - variants
     - interfaces
     - Get and Set property access parameter lists
@@ -47,6 +47,10 @@ interface
 
 // activate for debug:
 
+// mem check
+{ $DEFINE MEM_CHECK}
+
+// verbosity
 { $DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
@@ -59,8 +63,9 @@ interface
 { $DEFINE ShowBaseTypeCache}
 { $DEFINE ShowCacheDependencies}
 { $DEFINE ShowCollect}
-{ $DEFINE IgnoreErrorAfterCursor}
 
+// new features
+{ $DEFINE IgnoreErrorAfterCursor}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -768,6 +773,7 @@ begin
   ActivateGlobalWriteLock;
   try
     // build code tree
+    
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
@@ -856,6 +862,17 @@ end;
 function TFindDeclarationTool.FindDeclarationInUsesSection(
   UsesNode: TCodeTreeNode; CleanPos: integer;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  
+  procedure RaiseUsesExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
+  end;
+  
+  procedure RaiseStrConstExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+  end;
+  
 var UnitName, UnitInFilename: string;
   UnitNamePos, UnitInFilePos: TAtomPosition;
 begin
@@ -867,7 +884,7 @@ begin
   MoveCursorToNodeStart(UsesNode);
   ReadNextAtom;
   if not UpAtomIs('USES') then
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['"uses"',GetAtom]);
+    RaiseUsesExpected;
   repeat
     ReadNextAtom;  // read name
     if CurPos.StartPos>CleanPos then break;
@@ -877,8 +894,7 @@ begin
     ReadNextAtom;
     if UpAtomIs('IN') then begin
       ReadNextAtom;
-      if not AtomIsStringConstant then
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsStringConstant,GetAtom]);
+      if not AtomIsStringConstant then RaiseStrConstExpected;
       UnitInFilePos:=CurPos;
       ReadNextAtom;
     end else
@@ -1186,12 +1202,16 @@ var
   NodeCacheEntryFlags: TNodeCacheEntryFlags;
 
   procedure InitNodesAndCacheAccess;
-  begin
-    ContextNode:=Params.ContextNode;
-    if ContextNode=nil then begin
+  
+    procedure RaiseInternalError;
+    begin
       RaiseException('[TFindDeclarationTool.FindIdentifierInContext] '
         +' internal error: Params.ContextNode=nil');
     end;
+  
+  begin
+    ContextNode:=Params.ContextNode;
+    if ContextNode=nil then RaiseInternalError;
     StartContextNode:=ContextNode;
     FirstSearchedNode:=nil;
     LastSearchedNode:=nil;
@@ -1264,6 +1284,13 @@ var
   function CheckResult(NewResult, CallOnIdentifierFound: boolean): boolean;
   // returns: true if ok to exit
   //          false if search should continue
+  
+    procedure RaiseNotFound;
+    begin
+      Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
+                                            [GetIdentifier(Params.Identifier)]);
+    end;
+  
   var IdentFoundResult: TIdentifierFoundResult;
   begin
     Result:=true;
@@ -1318,8 +1345,7 @@ var
     // -> raise exception
     if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
       Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-    Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
-                                            [GetIdentifier(Params.Identifier)]);
+    RaiseNotFound;
   end;
   
   procedure MoveContextNodeToChilds;
@@ -1783,10 +1809,46 @@ end;
 
 function TFindDeclarationTool.FindBaseTypeOfNode(Params: TFindDeclarationParams;
   Node: TCodeTreeNode): TFindContext;
+  
+  procedure RaiseForwardClassNameLess;
+  begin
+    RaiseException('[TFindDeclarationTool.FindBaseTypeOfNode] '
+                  +'forward class node without name');
+  end;
+  
+  procedure RaiseCircleDefs;
+  begin
+    Params.NewCodeTool.RaiseException(ctsCircleInDefinitions
+      +' ('+ctsIdentifier+'='+GetIdentifier(Params.Identifier)+')');
+  end;
+  
+  procedure RaiseInternalError;
+  begin
+    Params.IdentifierTool.RaiseException(
+       '[TFindDeclarationTool.FindBaseTypeOfNode]'
+      +' internal error: not IsPCharInSrc(Params.Identifier) '
+      +' Params.IdentifierTool.='
+              +TCodeBuffer(Params.IdentifierTool.Scanner.MainCode).Filename
+      +' Ident="'+GetIdentifier(Params.Identifier)+'"');
+  end;
+  
+  procedure RaiseBaseTypeOfNotFound;
+  begin
+    RaiseExceptionFmt(ctsBaseTypeOfNotFound,[GetIdentifier(Params.Identifier)]);
+  end;
+  
 var OldInput: TFindDeclarationInput;
   ClassIdentNode, DummyNode: TCodeTreeNode;
   NodeStack: TCodeTreeNodeStack;
   OldPos: integer;
+  
+  procedure RaiseForwardNotResolved;
+  begin
+    RaiseExceptionFmt(ctsForwardClassDefinitionNotResolved,
+        [copy(Src,ClassIdentNode.StartPos,
+            ClassIdentNode.EndPos-ClassIdentNode.StartPos)]);
+  end;
+  
 begin
   Result.Node:=Node;
   Result.Tool:=Self;
@@ -1833,8 +1895,7 @@ begin
         if (ClassIdentNode=nil) or (not (ClassIdentNode.Desc=ctnTypeDefinition))
         then begin
           MoveCursorToCleanPos(Result.Node.StartPos);
-          RaiseException('[TFindDeclarationTool.FindBaseTypeOfNode] '
-                        +'forward class node without name');
+          RaiseForwardClassNameLess;
         end;
         Params.Save(OldInput);
         try
@@ -1849,9 +1910,7 @@ begin
           if (Params.NewNode.Desc<>ctnTypeDefinition)
           or (Params.NewCodeTool<>Self) then begin
             MoveCursorToCleanPos(Result.Node.StartPos);
-            RaiseExceptionFmt(ctsForwardClassDefinitionNotResolved,
-                [copy(Src,ClassIdentNode.StartPos,
-                    ClassIdentNode.EndPos-ClassIdentNode.StartPos)]);
+            RaiseForwardNotResolved;
           end;
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
           exit;
@@ -1889,8 +1948,7 @@ begin
               if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
                 // circle detected
                 Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-                Params.NewCodeTool.RaiseException(ctsCircleInDefinitions
-                  +' ('+ctsIdentifier+'='+GetIdentifier(Params.Identifier)+')');
+                RaiseCircleDefs;
               end;
               Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                             Params.NewNode)
@@ -1936,8 +1994,7 @@ begin
                 if NodeExistsInStack(@NodeStack,Params.NewNode) then begin
                   // circle detected
                   Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
-                  Params.NewCodeTool.RaiseException(ctsCircleInDefinitions
-                    +' ('+ctsIdentifier+'='+GetIdentifier(Params.Identifier)+')');
+                  RaiseCircleDefs;
                 end;
                 Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
                                                               Params.NewNode)
@@ -2014,15 +2071,10 @@ begin
         // ToDo ppu, ppw, dcu
 
         if (not Params.IdentifierTool.IsPCharInSrc(Params.Identifier)) then
-          Params.IdentifierTool.RaiseException(
-            '[TFindDeclarationTool.FindBaseTypeOfNode]'
-           +' internal error: not IsPCharInSrc(Params.Identifier) '
-           +' Params.IdentifierTool.='
-                   +TCodeBuffer(Params.IdentifierTool.Scanner.MainCode).Filename
-           +' Ident="'+GetIdentifier(Params.Identifier)+'"');
+          RaiseInternalError;
         Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
       end;
-      RaiseExceptionFmt(ctsBaseTypeOfNotFound,[GetIdentifier(Params.Identifier)]);
+      RaiseBaseTypeOfNotFound;
     end;
   finally
     // cache the result in all nodes
@@ -2533,6 +2585,17 @@ var
     MoveCursorToCleanPos(LastPos);
   end;
   
+  procedure RaiseBinaryOperatorNotFound;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsBinaryOperator,GetAtom]);
+  end;
+  
+  procedure RaiseInternalError;
+  begin
+    RaiseException('[TFindDeclarationTool.FindExpressionResultType]'
+      +' internal error: unknown precedence lvl for operator '+GetAtom);
+  end;
+  
 var OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
@@ -2566,7 +2629,7 @@ begin
     if not WordIsBinaryOperator.DoItUpperCase(UpperSrc,CurPos.StartPos,
             CurPos.EndPos-CurPos.StartPos)
     then
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsBinaryOperator,GetAtom]);
+      RaiseBinaryOperatorNotFound;
     // put operator on stack
     ExprStack[StackPtr].theOperator:=CurPos;
     if WordIsLvl1Operator.DoItUpperCase(UpperSrc,CurPos.StartPos,
@@ -2586,8 +2649,7 @@ begin
     then
       ExprStack[StackPtr].OperatorLvl:=4
     else
-      RaiseException('[TFindDeclarationTool.FindExpressionResultType]'
-        +' internal error: unknown precedence lvl for operator '+GetAtom);
+      RaiseInternalError;
     // execute stack if possible
     ReadNextAtom;
     ExecuteStack;
@@ -2881,8 +2943,11 @@ end;
 
 procedure TFindDeclarationTool.BuildTree(OnlyInterfaceNeeded: boolean);
 begin
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TFindDeclarationTool.BuildTree Checking depends ...');{$ENDIF}
   CheckDependsOnNodeCaches;
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TFindDeclarationTool.BuildTree building tree');{$ENDIF}
   inherited BuildTree(OnlyInterfaceNeeded);
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TFindDeclarationTool.BuildTree  tree built');{$ENDIF}
 end;
 
 function TFindDeclarationTool.FindIdentifierInHiddenUsedUnits(
@@ -2974,6 +3039,11 @@ function TFindDeclarationTool.FindEndOfVariable(
     (A).B
     inherited A
 }
+  procedure RaiseIdentNotFound;
+  begin
+    RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+  end;
+
 var
   FirstIdentifier: boolean;
 begin
@@ -2987,23 +3057,35 @@ begin
     ReadNextAtom;
   end;
   repeat
-    if AtomIsChar('(') then begin
-      ReadTilBracketClose(true);
-      FirstIdentifier:=false;
-    end else if AtomIsChar('.') then begin
-      if FirstIdentifier and ExceptionIfNoVariableStart then
-        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
-      ReadNextAtom;
-      AtomIsIdentifier(true);
-    end else if AtomIsChar('^') then begin
-      if FirstIdentifier and ExceptionIfNoVariableStart then
-        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
-    end else if AtomIsChar('[') then begin
-      if FirstIdentifier and ExceptionIfNoVariableStart then
-        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
-      ReadTilBracketClose(true);
-    end else
-      break;
+    case CurPos.Flag of
+    cafRoundBracketOpen:
+      begin
+        ReadTilBracketClose(true);
+        FirstIdentifier:=false;
+      end;
+      
+    cafPoint:
+      begin
+        if FirstIdentifier and ExceptionIfNoVariableStart then
+          RaiseIdentNotFound;
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+      end;
+
+    cafEdgedBracketOpen:
+      begin
+        if FirstIdentifier and ExceptionIfNoVariableStart then
+          RaiseIdentNotFound;
+        ReadTilBracketClose(true);
+      end;
+      
+    else
+      if AtomIsChar('^') then begin
+        if FirstIdentifier and ExceptionIfNoVariableStart then
+          RaiseIdentNotFound;
+      end else
+        break;
+    end;
     ReadNextAtom;
   until false;
   if LastAtoms.Count>0 then
@@ -3025,6 +3107,11 @@ function TFindDeclarationTool.FindStartOfVariable(EndPos: integer): integer;
   8. (A as B)
   9. (@A)
 }
+  procedure RaiseIdentNotFound;
+  begin
+    RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
+  end;
+
 var CurAtom, NextAtom: TAtomPosition;
   NextAtomType, CurAtomType: TVariableAtomType;
 begin
@@ -3058,7 +3145,7 @@ begin
       begin
         MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+        RaiseIdentNotFound;
       end;
       Result:=NextAtom.StartPos;
       exit;
@@ -3092,15 +3179,41 @@ var
   CurExprDesc: TExpressionTypeDesc;
   IsIdentEndOfVar: TIsIdentEndOfVar;
 
+  procedure RaiseIdentExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+  end;
+
+  procedure RaiseIdentNotFound;
+  begin
+    RaiseExceptionFmt(ctsIdentifierNotFound,[GetAtom]);
+  end;
+
+  procedure RaiseIllegalQualifierFound;
+  begin
+    RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+  end;
+
+  procedure RaisePointNotFound;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
+  end;
+
   procedure InitAtomQueue;
+  
+    procedure RaiseInternalError;
+    begin
+      RaiseException('internal codetool error: FindExpressionTypeOfVariable '
+        +' StartPos='+IntToStr(StartPos)+' EndPos='+IntToStr(EndPos));
+    end;
+  
   begin
     if StartPos<1 then
       StartPos:=FindStartOfVariable(EndPos)
     else if EndPos<1 then
       EndPos:=FindEndOfVariable(StartPos,true);
     if (StartPos<1) then
-      RaiseException('internal codetool error: FindExpressionTypeOfVariable '
-        +' StartPos='+IntToStr(StartPos)+' EndPos='+IntToStr(EndPos));
+      RaiseInternalError;
     {$IFDEF ShowExprEval}
     writeln('  InitAtomQueue Expr="',copy(Src,StartPos,EndPos-StartPos),'"');
     {$ENDIF}
@@ -3252,44 +3365,42 @@ var
     // find sub identifier
     if not IdentFound then begin
       Params.Save(OldInput);
-      try
-        // build new param flags for sub identifiers
-        Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
-                      +fdfAllClassVisibilities
-                      +(fdfGlobals*Params.Flags);
-        if CurContext.Node=StartContext.Node then begin
-          // there is no special context -> also search in parent contexts
-          Params.Flags:=Params.Flags
-                       +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
-        end else begin
-          // only search in special context
-          Params.ContextNode:=CurContext.Node;
-        end;
 
-        // check identifier for overloaded procs
-        if (NextAtomType<>vatRoundBracketOpen)
-        or (IsIdentifierEndOfVariable
-            and (fdfIgnoreOverloadedProcs in StartFlags))
-        then
-          Include(Params.Flags,fdfIgnoreOverloadedProcs)
-        else
-          Exclude(Params.Flags,fdfIgnoreOverloadedProcs);
-
-        // search ...
-        Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
-        if CurContext.Tool.FindIdentifierInContext(Params) then begin
-          CurContext:=CreateFindContext(Params);
-        end else begin
-          // predefined identifier not redefined
-          CurExprDesc:=PredefinedIdentToExprTypeDesc(@Src[CurAtom.StartPos]);
-          CurContext:=CreateFindContext(Self,nil);
-        end;
-
-        // ToDo: check if identifier in 'Protected' section
-
-      finally
-        Params.Load(OldInput);
+      // build new param flags for sub identifiers
+      Params.Flags:=[fdfSearchInAncestors,fdfExceptionOnNotFound]
+                    +fdfAllClassVisibilities
+                    +(fdfGlobals*Params.Flags);
+      if CurContext.Node=StartContext.Node then begin
+        // there is no special context -> also search in parent contexts
+        Params.Flags:=Params.Flags
+                     +[fdfSearchInParentNodes,fdfIgnoreCurContextNode];
+      end else begin
+        // only search in special context
+        Params.ContextNode:=CurContext.Node;
       end;
+
+      // check identifier for overloaded procs
+      if (NextAtomType<>vatRoundBracketOpen)
+      or (IsIdentifierEndOfVariable
+          and (fdfIgnoreOverloadedProcs in StartFlags))
+      then
+        Include(Params.Flags,fdfIgnoreOverloadedProcs)
+      else
+        Exclude(Params.Flags,fdfIgnoreOverloadedProcs);
+
+      // search ...
+      Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
+      if CurContext.Tool.FindIdentifierInContext(Params) then begin
+        CurContext:=CreateFindContext(Params);
+      end else begin
+        // predefined identifier not redefined
+        CurExprDesc:=PredefinedIdentToExprTypeDesc(@Src[CurAtom.StartPos]);
+        CurContext:=CreateFindContext(Self,nil);
+      end;
+
+      // ToDo: check if identifier in 'Protected' section
+
+      Params.Load(OldInput);
     end;
     ResolveBaseTypeOfIdentifier;
   end;
@@ -3301,7 +3412,7 @@ var
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+      RaiseIdentExpected;
     end;
     if (CurContext.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
@@ -3334,13 +3445,13 @@ var
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+      RaiseIdentExpected;
     end;
     // 'as' is a type cast, so the left side is irrelevant
     // -> context is default context
     CurContext:=StartContext;
   end;
-
+  
   procedure ResolveUp;
   begin
     // for example:
@@ -3351,7 +3462,7 @@ var
     then begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+      RaiseIllegalQualifierFound;
     end;
     if (CurExprDesc=xtPointer) then exit;
     if (CurContext.Node<>StartContext.Node) then begin
@@ -3362,7 +3473,7 @@ var
       then begin
         MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,['.',GetAtom]);
+        RaisePointNotFound;
       end;
       if CurContext.Node.Desc<>ctnPointerType then begin
         MoveCursorToCleanPos(CurAtom.StartPos);
@@ -3377,23 +3488,35 @@ var
   end;
 
   procedure ResolveEdgedBracketOpen;
+  { for example:  a[]
+      this could be:
+        1. ranged array
+        2. dynamic array
+        3. indexed pointer
+        4. default property
+        5. indexed property
+        6. string character
+  }
+
+    procedure RaiseTypeIdentNotFound;
+    begin
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsTypeIdentifier,GetAtom]);
+    end;
+    
+    procedure RaiseIdentInCurContextNotFound;
+    begin
+      CurContext.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
+                                        [ctsIdentifier,GetAtom]);
+    end;
+  
   begin
-    { for example:  a[]
-        this could be:
-          1. ranged array
-          2. dynamic array
-          3. indexed pointer
-          4. default property
-          5. indexed property
-          6. string character
-    }
     if not (NextAtomType in [vatSpace,vatPoint,vatAs,vatUp,vatRoundBracketClose,
       vatRoundBracketOpen,vatEdgedBracketClose,vatEdgedBracketOpen])
     or ((CurContext.Node=nil) and (not (CurExprDesc in xtAllStringTypes))) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+      RaiseIllegalQualifierFound;
     end;
     if CurExprDesc in xtAllStringTypes then begin
       CurExprDesc:=xtChar;
@@ -3448,8 +3571,7 @@ var
               end else begin
                 // not a type
                 CurContext.Tool.ReadTilTypeOfProperty(CurContext.Node);
-                RaiseExceptionFmt(ctsStrExpectedButAtomFound,
-                                  [ctsTypeIdentifier,GetAtom]);
+                RaiseTypeIdentNotFound;
               end;
             end else begin
               // predefined identifier
@@ -3458,8 +3580,7 @@ var
             Params.Load(OldInput);
           end;
         end else
-          CurContext.Tool.RaiseExceptionFmt(ctsStrExpectedButAtomFound,
-                                            [ctsIdentifier,GetAtom]);
+          RaiseIdentInCurContextNotFound;
       end;
       
     ctnIdentifier:
@@ -3474,14 +3595,14 @@ var
         end else begin
           MoveCursorToCleanPos(CurAtom.StartPos);
           ReadNextAtom;
-          RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+          RaiseIllegalQualifierFound;
         end;
       end;
 
     else
       MoveCursorToCleanPos(CurAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+      RaiseIllegalQualifierFound;
     end;
   end;
 
@@ -3498,7 +3619,7 @@ var
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+      RaiseIllegalQualifierFound;
     end;
     if CurContext.Node<>StartContext.Node then begin
       // typecast or function
@@ -3521,7 +3642,7 @@ var
     if (CurContext.Node<>StartContext.Node) or (CurContext.Node=nil)
     then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
-      RaiseExceptionFmt(ctsIllegalQualifier,[GetAtom]);
+      RaiseIllegalQualifierFound;
     end;
     if (not NodeIsInAMethod(CurContext.Node)) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
@@ -3531,7 +3652,7 @@ var
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+      RaiseIdentExpected;
     end;
 
     ReadNextExpressionAtom;
@@ -3567,7 +3688,7 @@ var
         // there is no inherited identifier
         MoveCursorToCleanPos(CurAtom.StartPos);
         ReadNextAtom;
-        RaiseExceptionFmt(ctsIdentifierNotFound,[GetAtom]);
+        RaiseIdentNotFound;
       end;
       CurContext:=CreateFindContext(Params);
     finally
@@ -3694,6 +3815,12 @@ function TFindDeclarationTool.ReadOperandTypeAtCursor(
 var EndPos, SubStartPos: integer;
 
   procedure ReadEdgedBracketOperand;
+  
+    procedure RaiseConstExpected;
+    begin
+      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsConstant,GetAtom]);
+    end;
+  
   begin
     // 'set' constant
     SubStartPos:=CurPos.StartPos;
@@ -3713,7 +3840,7 @@ var EndPos, SubStartPos: integer;
         MoveCursorToCleanPos(SubStartPos);
         ReadNextAtom; // read '['
         ReadNextAtom;
-        RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsConstant,GetAtom]);
+        RaiseConstExpected;
       end;
     end else begin
       // empty set '[]'
@@ -3725,6 +3852,11 @@ var EndPos, SubStartPos: integer;
     ReadNextAtom;
     ReadTilBracketClose(true);
     MoveCursorToCleanPos(CurPos.EndPos);
+  end;
+  
+  procedure RaiseIdentExpected;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
   end;
 
 begin
@@ -3782,7 +3914,7 @@ begin
     Result.Desc:=xtPointer;
   end
   else
-    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom]);
+    RaiseIdentExpected;
 
   {$IFDEF ShowExprEval}
   write('[TFindDeclarationTool.ReadOperandTypeAtCursor] END ',
@@ -4317,7 +4449,8 @@ begin
   if (CurPos.StartPos=CurPos.EndPos) then
     Result:=vatSpace
   else if WordIsPredefinedIdentifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-    CurPos.EndPos-CurPos.StartPos) then
+    CurPos.EndPos-CurPos.StartPos)
+  then
     Result:=vatPreDefIdentifier
   else if AtomIsIdentifier(false) then
     Result:=vatIdentifier
@@ -4347,6 +4480,12 @@ function TFindDeclarationTool.CreateParamExprList(StartPos: integer;
 var ExprType: TExpressionType;
   BracketClose: char;
   ExprStartPos, ExprEndPos: integer;
+  
+  procedure RaiseBracketNotFound;
+  begin
+    RaiseExceptionFmt(ctsStrExpectedButAtomFound,[BracketClose,GetAtom]);
+  end;
+  
 begin
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.CreateParamExprList] ',
@@ -4389,7 +4528,7 @@ begin
         ReadNextAtom;
         if AtomIsChar(BracketClose) then break;
         if not AtomIsChar(',') then
-          RaiseExceptionFmt(ctsStrExpectedButAtomFound,[BracketClose,GetAtom]);
+          RaiseBracketNotFound;
         ReadNextAtom;
       end;
     end;
@@ -4418,12 +4557,18 @@ end;
 
 function TFindDeclarationTool.ContextIsDescendOf(DescendContext,
   AncestorContext: TFindContext; Params: TFindDeclarationParams): boolean;
+  
+  procedure RaiseInternalError;
+  begin
+    RaiseException('[TFindDeclarationTool.ContextIsDescendOf] '
+      +' internal error: DescendContext.Desc<>ctnClass');
+  end;
+  
 var CurContext: TFindContext;
   OldInput: TFindDeclarationInput;
 begin
   if DescendContext.Node.Desc<>ctnClass then
-    RaiseException('[TFindDeclarationTool.ContextIsDescendOf] '
-      +' internal error: DescendContext.Desc<>ctnClass');
+    RaiseInternalError;
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.ContextIsDescendOf] ',
   ' DescendContext="',copy(DescendContext.Tool.Src,DescendContext.Node.Parent.StartPos,15),'"');

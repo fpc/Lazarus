@@ -175,6 +175,7 @@ resourcestring
   lisMenuOpenRecentProject = 'Open Recent Project';
   lisMenuSaveProject = 'Save Project';
   lisMenuSaveProjectAs = 'Save Project As...';
+  lisMenuPublishProject = 'Save Project';
   lisMenuAddUnitToProject = 'Add active unit to Project';
   lisMenuRemoveUnitFromProject = 'Remove from Project';
   lisMenuViewSource = 'View Source';

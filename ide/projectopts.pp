@@ -66,8 +66,7 @@ type
     // Info
     SaveClosedUnitInfoCheckBox: TCheckBox;
     SaveOnlyProjectUnitInfoCheckBox: TCheckBox;
-
-
+    
     // buttons at bottom
     OkButton: TButton;
     CancelButton: TButton;

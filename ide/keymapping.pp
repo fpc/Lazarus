@@ -24,8 +24,6 @@
     Contains classes to store key-command relationships, can update
     TSynEditKeyStrokes and provides a dialog for editing a single
     commandkey.
-
-  ToDo:
 }
 unit KeyMapping;
 
@@ -150,10 +148,11 @@ const
   ecOpenProject          = ecUserFirst + 702;
   ecSaveProject          = ecUserFirst + 703;
   ecSaveProjectAs        = ecUserFirst + 704;
-  ecAddCurUnitToProj     = ecUserFirst + 705;
-  ecRemoveFromProj       = ecUserFirst + 706;
-  ecViewProjectSource    = ecUserFirst + 707;
-  ecProjectOptions       = ecUserFirst + 708;
+  ecPublishProject       = ecUserFirst + 705;
+  ecAddCurUnitToProj     = ecUserFirst + 706;
+  ecRemoveFromProj       = ecUserFirst + 707;
+  ecViewProjectSource    = ecUserFirst + 708;
+  ecProjectOptions       = ecUserFirst + 709;
 
   ecRunParameters        = ecUserFirst + 800;
   ecCompilerOptions      = ecUserFirst + 801;
@@ -597,6 +596,7 @@ begin
     ecOpenProject: Result:='Open project';
     ecSaveProject: Result:='Save project';
     ecSaveProjectAs: Result:='Save project as';
+    ecPublishProject: Result:='Publish project';
     ecAddCurUnitToProj: Result:='Add active unit to project';
     ecRemoveFromProj: Result:='Remove active unit from project';
     ecViewProjectSource: Result:='View project source';
@@ -1406,6 +1406,7 @@ begin
   Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Save project',ecSaveProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Save project as',ecSaveProjectAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Publish project',ecPublishProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
   Add(C,'Remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View project source',ecViewProjectSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);

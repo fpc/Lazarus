@@ -233,8 +233,11 @@ type
     destructor Destroy; override;
     property Items[Index:integer]:TSelectedControl read GetItems write SetItems; default;
     function Count:integer;
-    procedure BeginUpDate;
+    
+    procedure BeginUpdate;
     procedure EndUpdate;
+    property UpdateLock: integer read FUpdateLock;
+    
     function IndexOf(AComponent:TComponent):integer;
     function Add(AComponent: TComponent):integer;
     function AssignComponent(AComponent:TComponent): boolean;
@@ -487,7 +490,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TControlSelection.BeginUpDate;
+procedure TControlSelection.BeginUpdate;
 begin
   inc(FUpdateLock);
 end;
@@ -1245,7 +1248,6 @@ begin
   {$IFDEF VerboseDesigner}
   writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
   {$ENDIF}
-  BeginResizing;
   if FActiveGrabber<>nil then
     GrabberPos:=FActiveGrabber.Positions
   else
@@ -1253,6 +1255,8 @@ begin
   if [gpTop,gpBottom] * GrabberPos = [] then dy:=0;
   if [gpLeft,gpRight] * GrabberPos = [] then dx:=0;
   if (dx=0) and (dy=0) then exit;
+
+  BeginResizing;
   if gpLeft in GrabberPos then begin
     FLeft:=FLeft+dx;
     FWidth:=FWidth-dx;

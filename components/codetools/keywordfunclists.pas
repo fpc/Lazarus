@@ -29,7 +29,12 @@ unit KeywordFuncLists;
 
 interface
 
+{ $DEFINE MEM_CHECK}
+
 uses
+  {$IFDEF MEM_CHECK}
+  MemCheck,
+  {$ENDIF}
   Classes, SysUtils;
 
 type
