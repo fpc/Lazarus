@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  Laz_XMLCfg;
+  XMLCfg;
   
 type
   TStartLazarusOptions = class
