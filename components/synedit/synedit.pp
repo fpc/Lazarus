@@ -2274,7 +2274,7 @@ begin
   // and fill only the area after the last visible line.
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
-  LCLIntf.SetBkColor(dc,ColorRef(Canvas.Brush.Color));
+  LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
   {$ENDIF}
   if fGutter.ShowLineNumbers then begin
     fTextDrawer.BeginDrawing(dc);

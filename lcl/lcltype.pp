@@ -1251,12 +1251,6 @@ const
 
 
 //==============================================
-// Color constants
-//==============================================
-
-  CLR_INVALID = LongWord($FFFFFFFF);
-
-//==============================================
 // API system Color constants  pbd
 // note these are usually shown ORed with
 // $80000000 as these would have interfered with
@@ -1264,6 +1258,13 @@ const
 // GetSysColor and SetSysColor expects the values
 // below
 //==============================================
+
+type
+  COLORREF = LongInt;
+  TColorRef = COLORREF;
+
+const
+  CLR_INVALID = TColorRef($FFFFFFFF);
 
   COLOR_SCROLLBAR = 0;
   COLOR_BACKGROUND = 1;
@@ -1307,7 +1308,7 @@ const
   COLOR_BTNHILIGHT = COLOR_BTNHIGHLIGHT;
 
   MAX_SYS_COLORS = COLOR_ENDCOLORS;
-  SYS_COLOR_BASE = $80000000;
+  SYS_COLOR_BASE = TColorRef($80000000);
 
 
 //==============================================
@@ -1551,13 +1552,10 @@ type
 
   LOGFONT = LOGFONTA;
 
-  COLORREF = LongWord;
-  TColorRef = LongWord;
-
   PLogBrush = ^TLogBrush;
   tagLOGBRUSH = packed record
     lbStyle: LongWord;
-    lbColor: COLORREF;
+    lbColor: TColorRef;
     lbHatch: Longint;
   end;
   TLogBrush = tagLOGBRUSH;
@@ -1571,7 +1569,6 @@ type
     palPalEntry: array [Byte] of TPaletteEntry;
   end;
 
-type
   PEnumLogFontA = ^TEnumLogFontA;
   PEnumLogFontW = ^TEnumLogFontW;
   PEnumLogFont = PEnumLogFontA;
@@ -1914,6 +1911,9 @@ end.
 
 {
   $Log$
+  Revision 1.52  2003/12/26 10:16:54  mattias
+  changed TColorRef from longword to longint
+
   Revision 1.51  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

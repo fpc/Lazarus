@@ -263,7 +263,7 @@ begin
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
-        Case TColor(CurrentTextColor.ColorRef) of
+        Case CurrentTextColor.ColorRef of
           clScrollbar..clEndColors:
             RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
           else
@@ -848,6 +848,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/12/26 10:16:54  mattias
+  changed TColorRef from longword to longint
+
   Revision 1.4  2003/10/15 20:33:37  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

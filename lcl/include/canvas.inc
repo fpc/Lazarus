@@ -135,7 +135,7 @@ begin
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
-  SetBkColor(FHandle, ColorRef(Brush.Color));
+  SetBkColor(FHandle, Brush.Color);
   SetBkMode(FHandle, TRANSPARENT);
 end;
 
@@ -170,7 +170,7 @@ begin
   if (OldHandle<>Font.Handle) and (FSavedFontHandle=0) then
     FSavedFontHandle:=OldHandle;
   Include(FState, csFontValid);
-  SetTextColor(FHandle, TColorRef(Font.Color));
+  SetTextColor(FHandle, Font.Color);
 end;
 
 {------------------------------------------------------------------------------
@@ -772,7 +772,7 @@ begin
     FillRect(fRect);
   end;
   If Style.SystemFont then
-    SetTextColor(Self.Handle, ColorRef(Font.Color));
+    SetTextColor(Self.Handle, Font.Color);
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
   Changed;
 end;
@@ -1254,6 +1254,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2003/12/26 10:16:54  mattias
+  changed TColorRef from longword to longint
+
   Revision 1.57  2003/12/23 11:16:41  mattias
   started key combinations, fixed some range check errors
 

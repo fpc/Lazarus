@@ -172,7 +172,7 @@ begin
     begin
       lopnStyle := PEN_STYLES[FPenData.Style];
       lopnWidth.X := FPenData.Width;
-      lopnColor := ColorRef(FPenData.Color);
+      lopnColor := FPenData.Color;
     end;
     FPenData.Handle := CreatePenIndirect(LogPen);
   end;
@@ -201,6 +201,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/12/26 10:16:54  mattias
+  changed TColorRef from longword to longint
+
   Revision 1.7  2003/12/23 11:16:41  mattias
   started key combinations, fixed some range check errors
 
