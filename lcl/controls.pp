@@ -713,9 +713,9 @@ type
     property ClientRect: TRect read GetClientRect;
     property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
     property ClientWidth: Integer read GetClientWidth write SetClientWidth stored False;
-    property Constraints : TSizeConstraints read FConstraints write SetConstraints;
+    property Constraints: TSizeConstraints read FConstraints write SetConstraints;
     property ControlState: TControlState read FControlState write FControlState;
-    property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
+    property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
     property Color : TColor read FColor write SetColor stored ColorIsStored;
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
@@ -1460,6 +1460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.118  2003/05/24 08:51:41  mattias
+  implemented designer close query
+
   Revision 1.117  2003/05/09 14:21:25  mattias
   added published properties for gtkglarea
 

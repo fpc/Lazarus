@@ -724,9 +724,7 @@ var
   n: Integer;
   ok: boolean;
 begin
-  bShow := (FVisible or (csDesigning in ComponentState)
-          and not (csNoDesignVisible in ControlStyle))
-          and not (csReadingState in ControlState);
+  bShow := HandleObjectShouldBeVisible;
 
   if bShow then begin
     if not HandleAllocated then CreateHandle;
@@ -1849,7 +1847,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TWinControl.Hide;
 begin
-   Visible := False;
+  Visible := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -2596,6 +2594,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.130  2003/05/24 08:51:41  mattias
+  implemented designer close query
+
   Revision 1.129  2003/04/20 20:32:40  mattias
   implemented removing, re-adding, updating project dependencies
 

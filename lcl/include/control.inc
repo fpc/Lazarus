@@ -1833,9 +1833,10 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.HandleObjectShouldBeVisible: boolean;
 begin
-  Result:=Visible
+  Result:=(Visible
           or ((csDesigning in ComponentState)
-              and not (csNoDesignVisible in ControlStyle));
+              and not (csNoDesignVisible in ControlStyle)))
+          and not (csReadingState in ControlState);
 end;
 
 {------------------------------------------------------------------------------
@@ -2106,6 +2107,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.124  2003/05/24 08:51:41  mattias
+  implemented designer close query
+
   Revision 1.123  2003/05/03 09:53:33  mattias
   fixed popupmenu for component palette
 
