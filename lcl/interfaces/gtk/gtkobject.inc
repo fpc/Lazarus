@@ -6036,6 +6036,21 @@ begin
   Widget:= PGtkWidget(Handle);
    
   case TControl(Sender).fCompStyle of
+    csComboBox:
+      case TCustomComboBox(Sender).Style of
+        csDropDownList :
+          begin
+            gtk_combo_set_value_in_list(PgtkCombo(Handle),-1, 0);
+            gtk_combo_set_use_arrows_always(PgtkCombo(Handle),-1);
+            gtk_combo_set_case_sensitive(PGtkCombo(Handle),0);
+          end;
+        else
+          begin
+            gtk_combo_set_value_in_list(PgtkCombo(Handle),0,0);
+            gtk_combo_set_use_arrows_always(PgtkCombo(Handle),0);
+          end;
+      end;
+  
     csEdit :
       with TCustomEdit(Sender) do
         begin
@@ -7310,6 +7325,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.368  2003/06/07 09:34:21  mattias
+  added ambigius compiled unit test for packages
+
   Revision 1.367  2003/06/03 10:29:22  mattias
   implemented updates between source marks and breakpoints
 
