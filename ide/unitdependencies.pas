@@ -155,6 +155,7 @@ type
   { TUnitDependenciesView }
   
   TOnGetProjectMainFilename = function(Sender: TObject): string of object;
+  TOnOpenFile = procedure(Sender: TObject; const Filename: string) of object;
 
   TUnitDependenciesView = class(TForm)
     SrcTypeImageList: TImageList;
@@ -177,9 +178,12 @@ type
           var AllowCollapse: Boolean);
     procedure UnitTreeViewExpanding(Sender: TObject; Node: TTreeNode;
           var AllowExpansion: Boolean);
+    procedure UnitTreeViewMouseDown(Sender: TOBject; Button: TMouseButton;
+          Shift: TShiftState; X, Y: Integer);
   private
     FOnAccessingSources: TNotifyEvent;
     FOnGetProjectMainFilename: TOnGetProjectMainFilename;
+    FOnOpenFile: TOnOpenFile;
     FRootCodeBuffer: TCodeBuffer;
     FRootFilename: string;
     FRootNode: TUnitNode;
@@ -203,6 +207,7 @@ type
       read FOnAccessingSources write FOnAccessingSources;
     property OnGetProjectMainFilename: TOnGetProjectMainFilename
       read FOnGetProjectMainFilename write FOnGetProjectMainFilename;
+    property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
     property RootFilename: string read FRootFilename write SetRootFilename;
     property RootShortFilename: string read FRootShortFilename write SetRootShortFilename;
   end;
@@ -312,6 +317,20 @@ begin
     UnitNode.CreateGrandChildren;
   end else begin
     AllowExpansion:=false;
+  end;
+end;
+
+procedure TUnitDependenciesView.UnitTreeViewMouseDown(Sender: TOBject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  ATreeNode: TTreeNode;
+  CurNode: TUnitNode;
+begin
+  if ssDouble in Shift then begin
+    ATreeNode:=UnitTreeView.GetNodeAt(X,Y);
+    if ATreeNode=nil then exit;
+    CurNode:=TUnitNode(ATreeNode.Data);
+    if Assigned(OnOpenFile) then OnOpenFile(Self,CurNode.Filename);;
   end;
 end;
 
@@ -490,6 +509,7 @@ begin
       Images:=SrcTypeImageList;
       //StateImages:=SrcTypeImageList;
       OnAdvancedCustomDrawItem:=@UnitTreeViewAdvancedCustomDrawItem;
+      OnMouseDown:=@UnitTreeViewMouseDown;
       Visible:=true;
     end;
     
