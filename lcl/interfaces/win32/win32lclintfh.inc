@@ -27,21 +27,28 @@
 }
 
 //##apiwiz##sps##   // Do not remove
+function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 
-function LclCheckMenuItem(BaseMenuItem: TComponent): Boolean; override;
-function LclEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
+function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
+function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
 procedure StatusBarInsertPanel(StatusBar: TObject; index: integer); override;
 procedure StatusBarPanelUpdate(StatusBar: TObject; index: integer); override;
 procedure StatusBarRemovePanel(StatusBar: TObject; index: integer); override;
 procedure StatusBarSetSimpleText(StatusBar: TObject); override;
 procedure StatusBarSetStyle(StatusBar: TObject); override;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.5  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 

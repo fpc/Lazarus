@@ -74,17 +74,16 @@ function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; {$IFDEF I
 function GetWindowRelativePosition(Handle : hwnd; var Left, Top: integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function Frame(DC: HDC; const ARect: TRect): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer;
-                 const Style : TGraphicsBevelCut
-                 ): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const Style : TGraphicsBevelCut): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+
+function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function LClCheckMenuItem(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function LClEnableMenuItem(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
+function MenuItemSetCheck(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function MenuItemSetEnable(AMenuItem: TComponent): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd; Side: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -149,6 +148,11 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.9  2004/01/11 11:57:54  mattias
   implemented TCustomListBox.ItemRect for gtk1 intf
 

@@ -29,6 +29,18 @@
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
+  Function: GetAcceleratorString
+  Params: AVKey:
+          AShiftState:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: GetListBoxIndexAtY
   Params: ListBox:
           y:
@@ -45,6 +57,44 @@ begin
     else Result := -1;
   end;
 end;
+
+{------------------------------------------------------------------------------
+  Function: MenuItemSetCheck
+  Params:  BaseMenuItem
+  Returns: Nothing
+
+  Checks or unchecks the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
+var
+  CheckFlag: Integer;
+  AMenuItem: TMenuItem;
+Begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
+  if AMenuItem.Checked then CheckFlag := MF_CHECKED
+  else CheckFlag := MF_UNCHECKED;
+  CheckFlag := CheckFlag or MF_BYCOMMAND;
+  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> DWORD($FFFFFFFF);
+End;
+
+{------------------------------------------------------------------------------
+  Function: MenuItemSetEnable
+  Params: BaseMenuItem:
+  Returns:
+
+  Enables, disables, or grays the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.MenuItemSetEnable(BaseMenuItem: TComponent): Boolean;
+Var
+  EnableFlag: Integer;
+  AMenuItem: TMenuItem;
+Begin
+  AMenuItem:=BaseMenuItem as TMenuItem;
+  if AMenuItem.Enabled then EnableFlag := MF_ENABLED
+  else EnableFlag := MF_GRAYED;
+  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
+End;
 
 {------------------------------------------------------------------------------
   Procedure: StatusBarInsertPanel
@@ -104,44 +154,6 @@ begin
   // Your code here
 end;
 
-{------------------------------------------------------------------------------
-  Function: LCLCheckMenuItem
-  Params:  BaseMenuItem
-  Returns: Nothing
-
-  Checks or unchecks the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32Object.LclCheckMenuItem(BaseMenuItem: TComponent): Boolean;
-var
-  CheckFlag: Integer;
-  AMenuItem: TMenuItem;
-Begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  if AMenuItem.Checked then CheckFlag := MF_CHECKED
-  else CheckFlag := MF_UNCHECKED;
-  CheckFlag := CheckFlag or MF_BYCOMMAND;
-  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> DWORD($FFFFFFFF);
-End;
-
-{------------------------------------------------------------------------------
-  Function: LCLEnableMenuItem
-  Params: BaseMenuItem:
-  Returns:
-
-  Enables, disables, or grays the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32Object.LclEnableMenuItem(BaseMenuItem: TComponent): Boolean;
-Var
-  EnableFlag: Integer;
-  AMenuItem: TMenuItem;
-Begin
-  AMenuItem:=BaseMenuItem as TMenuItem;
-  if AMenuItem.Enabled then EnableFlag := MF_ENABLED
-  else EnableFlag := MF_GRAYED;
-  EnableFlag := EnableFlag or MF_BYCOMMAND;
-  Result := Boolean(Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag));
-End;
-
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -149,6 +161,11 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.6  2004/01/09 20:03:13  mattias
   implemented new statusbar methods in gtk intf
 

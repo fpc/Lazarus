@@ -219,6 +219,11 @@ begin
   Result := InterfaceObject.GetScrollbarVisible(Handle, SBStyle);
 end;
 
+function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+begin
+  Result := InterfaceObject.GetAcceleratorString(AVKey, AShiftState);
+end;
+
 {------------------------------------------------------------------------------
   function GetWindowRelativePosition(Handle: hwnd;
     var Left, Top: integer): boolean;
@@ -242,19 +247,19 @@ begin
   Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
 
-function LclCheckMenuItem(AMenuItem: TComponent): Boolean;
-begin
-  Result := InterfaceObject.LclCheckMenuItem(AMenuItem);
-end;
-
-function LclEnableMenuItem(AMenuItem: TComponent): Boolean;
-begin
-  Result := InterfaceObject.LclEnableMenuItem(AMenuItem);
-end;
-
 function LoadStockPixmap(StockID: longint) : HBitmap;
 begin
   Result := InterfaceObject.LoadStockPixmap(StockID);
+end;
+
+function MenuItemSetCheck(AMenuItem: TComponent): Boolean;
+begin
+  Result := InterfaceObject.MenuItemSetCheck(AMenuItem);
+end;
+
+function MenuItemSetEnable(AMenuItem: TComponent): Boolean;
+begin
+  Result := InterfaceObject.MenuItemSetEnable(AMenuItem);
 end;
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
@@ -491,6 +496,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.9  2004/01/11 11:57:54  mattias
   implemented TCustomListBox.ItemRect for gtk1 intf
 

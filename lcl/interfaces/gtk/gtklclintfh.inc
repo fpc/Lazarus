@@ -30,12 +30,12 @@
 }
 
 //##apiwiz##sps##   // Do not remove
+function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
 
-function LCLCheckMenuItem(BaseMenuItem: TComponent): Boolean; override;
-function LCLEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
-
+function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
+function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
 
 procedure StatusBarInsertPanel(StatusBar: TObject; Index: integer); override;
 procedure StatusBarPanelUpdate(StatusBar: TObject; Index: integer); override;
@@ -47,6 +47,11 @@ procedure StatusBarSetStyle(StatusBar: TObject); override;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.7  2004/01/11 11:57:54  mattias
   implemented TCustomListBox.ItemRect for gtk1 intf
 

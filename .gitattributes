@@ -1060,6 +1060,7 @@ lcl/interfaces/win32/win32winapi.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32winapih.inc svneol=native#text/pascal
 lcl/interfaces/win32/winext.pas svneol=native#text/pascal
 lcl/intfgraphics.pas svneol=native#text/pascal
+lcl/intfstrconsts.pas svneol=native#text/pascal
 lcl/languages/lcl.ca.po svneol=native#text/plain
 lcl/languages/lcl.de.po svneol=native#text/plain
 lcl/languages/lcl.es.po svneol=native#text/plain

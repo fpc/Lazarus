@@ -27,6 +27,8 @@ interface
 {off $DEFINE GDK_ERROR_TRAP_FLUSH}
 {$DEFINE REPORT_GDK_ERRORS}
 
+{.$DEFINE VerboseAccelerator}
+
 uses
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}

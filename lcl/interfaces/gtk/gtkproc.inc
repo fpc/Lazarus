@@ -3522,12 +3522,15 @@ var
 begin
   { Map the shift states }
   GDKModifier:= 0;
-  if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
+  if ssShift in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_SHIFT_MASK;
   if ssAlt in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_MOD1_MASK;
   if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
 
   // Send the unmodified keysym ?
-  GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[0];
+  if (ssShift in Msg.NewModifier)
+  and ((Msg.NewKey < VK_F1) or  (Msg.NewKey > VK_F24) )
+  then GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[0]
+  else GDKKey := GetVKeyInfo(Msg.NewKey).KeySym[1];
 
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
@@ -5728,6 +5731,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.242  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.241  2004/01/10 22:34:20  mattias
   started double buffering for gtk intf
 

@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LMessages, GraphType, GraphMath;
+  LMessages, GraphType, GraphMath, IntfStrConsts;
 
 type
 
@@ -92,6 +92,10 @@ var
 
 implementation
 
+const
+  UNKNOWN_VK_PREFIX = 'Word(''';
+  UNKNOWN_VK_POSTFIX = ''')';
+
 {$I interfacebase.inc}
 {$I intfbasewinapi.inc}
 {$I intfbaselcl.inc}
@@ -107,6 +111,11 @@ end.
 
 {
   $Log$
+  Revision 1.41  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.40  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

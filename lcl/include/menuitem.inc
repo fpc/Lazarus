@@ -645,7 +645,7 @@ begin
     if (FParent <> nil)
     and not (csReading in ComponentState)
     and HandleAllocated
-    then LclCheckMenuItem(Self);
+    then MenuItemSetCheck(Self);
   end;
 end;
 
@@ -674,7 +674,7 @@ begin
   if FEnabled <> AValue then begin
     FEnabled := AValue;
     if HandleAllocated and (Parent <> nil)
-    then LclEnableMenuItem(Self);
+    then MenuItemSetEnable(Self);
     MenuChanged(False);
   end;
 end;
@@ -997,6 +997,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.44  2004/01/10 18:09:38  mattias
   implemented TMenuItem.Clear
 
@@ -1158,6 +1163,11 @@ end;
 
 
   $Log$
+  Revision 1.45  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.44  2004/01/10 18:09:38  mattias
   implemented TMenuItem.Clear
 

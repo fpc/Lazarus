@@ -29,6 +29,18 @@
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
+  Function: GetAcceleratorString
+  Params: AVKey:
+          AShiftState:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: GetListBoxIndexAtY
   Params: ListBox:
           y:
@@ -168,13 +180,13 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  Function: LCLCheckMenuItem
+  Function: MenuItemSetCheck
   Params:  BaseMenuItem
   Returns: Nothing
   
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
-function TgtkObject.LclCheckMenuItem(BaseMenuItem: TComponent): Boolean;
+function TgtkObject.MenuItemSetCheck(BaseMenuItem: TComponent): Boolean;
 var
   IsRadio: Boolean;
   Group: PGSList;
@@ -205,13 +217,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: LCLEnableMenuItem
+  Function: MenuItemSetEnable
   Params: BaseMenuItem:
   Returns:
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-function TGTKObject.LCLEnableMenuItem(BaseMenuItem: TComponent): Boolean;
+function TGTKObject.MenuItemSetEnable(BaseMenuItem: TComponent): Boolean;
 var
   AMenuItem: TMenuItem;
 begin
@@ -292,12 +304,16 @@ begin
   UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
 end;
 
-
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/01/11 16:38:29  marc
+  * renamed (Check|Enable)MenuItem to MenuItemSet(Check|Enable)
+  + Started with accelerator nameing routines
+  * precheckin for createwidget splitup
+
   Revision 1.8  2004/01/11 11:57:54  mattias
   implemented TCustomListBox.ItemRect for gtk1 intf
 
