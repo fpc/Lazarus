@@ -81,6 +81,8 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     procedure BuildAllButtonClick(Sender: TObject);
+    procedure ConfigureBuildLazarusDlgKeyDown(Sender: TObject; var Key: Word;
+          Shift: TShiftState);
     procedure ConfigureBuildLazarusDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
@@ -101,6 +103,9 @@ function BuildLazarus(Options: TBuildLazarusOptions;
 
 implementation
 
+
+uses
+  LCLType;
 
 const
   MakeModeNames: array[TMakeMode] of string = (
@@ -240,6 +245,7 @@ begin
     Position:=poScreenCenter;
     Caption:='Configure "Build Lazarus"';
     OnResize:=@ConfigureBuildLazarusDlgResize;
+    OnKeyDown:=@ConfigureBuildLazarusDlgKeyDown;
     
     CleanAllCheckBox:=TCheckBox.Create(Self);
     with CleanAllCheckBox do begin
@@ -398,6 +404,13 @@ begin
   BuildIDERadioGroup.ItemIndex:=1;
   BuildExamplesRadioGroup.ItemIndex:=1;
   OptionsEdit.Text:='';
+end;
+
+procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgKeyDown(
+  Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key=VK_Escape then
+    ModalResult:=mrCancel;
 end;
 
 procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgResize(

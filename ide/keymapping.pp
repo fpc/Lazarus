@@ -283,11 +283,15 @@ begin
     Result:=StrToIntDef(copy(s,7,length(s)-8),VK_UNKNOWN)
   else if s<>'none' then begin
     for i:=1 to 300 do
-      if KeyAndShiftStateToStr(i,[])=s then
+      if KeyAndShiftStateToStr(i,[])=s then begin
         Result:=i;
+        exit;
+      end;
     for i:=VK_IRREGULAR+33 to VK_IRREGULAR+255 do
-      if KeyAndShiftStateToStr(i,[])=s then
+      if KeyAndShiftStateToStr(i,[])=s then begin
         Result:=i;
+        exit;
+      end;
   end;
 end;
 

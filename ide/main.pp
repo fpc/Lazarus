@@ -1603,6 +1603,9 @@ begin
 
    ecBuildLazarus:
      DoBuildLazarus;
+     
+   ecConfigBuildLazarus:
+     mnuToolConfigBuildLazClicked(Self);
     
   else
     Handled:=false;
@@ -6591,6 +6594,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.343  2002/08/17 11:38:01  lazarus
+  MG: fixed keygrabbing key translation
+
   Revision 1.342  2002/08/16 20:13:07  lazarus
   MG: custom external tools are now shown in the menu
 
