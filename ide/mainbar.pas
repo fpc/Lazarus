@@ -193,6 +193,7 @@ type
     itmEditInsertCVSSource: TMenuItem;
 
     itmEditInsertGPLNotice: TMenuItem;
+    itmEditInsertLGPLNotice: TMenuItem;
     itmEditInsertUsername: TMenuItem;
     itmEditInsertDateTime: TMenuItem;
     itmEditInsertChangeLogEntry: TMenuItem;
@@ -672,6 +673,11 @@ begin
       itmEditInsertGPLNotice.Caption := lisMenuInsertGPLNotice;
       itmEditInsertGeneral.Add(itmEditInsertGPLNotice);
 
+      itmEditInsertLGPLNotice := TMenuItem.Create(Self);
+      itmEditInsertLGPLNotice.Name:='itmEditInsertLGPLNotice';
+      itmEditInsertLGPLNotice.Caption := lisMenuInsertLGPLNotice;
+      itmEditInsertGeneral.Add(itmEditInsertLGPLNotice);
+
       itmEditInsertUsername := TMenuItem.Create(Self);
       itmEditInsertUsername.Name:='itmEditInsertUsername';
       itmEditInsertUsername.Caption := lisMenuInsertUsername;
@@ -1150,6 +1156,7 @@ begin
     itmEditInsertCVSSource.ShortCut:=CommandToShortCut(ecInsertCVSSource);
 
     itmEditInsertGPLNotice.ShortCut:=CommandToShortCut(ecInsertGPLNotice);
+    itmEditInsertLGPLNotice.ShortCut:=CommandToShortCut(ecInsertLGPLNotice);
     itmEditInsertUsername.ShortCut:=CommandToShortCut(ecInsertUserName);
     itmEditInsertDateTime.ShortCut:=CommandToShortCut(ecInsertDateTime);
     itmEditInsertChangeLogEntry.ShortCut:=CommandToShortCut(ecInsertChangeLogEntry);

@@ -86,17 +86,18 @@ const
   ecSelectParagraph      = ecUserFirst + 59;
   
   ecInsertGPLNotice      = ecUserFirst + 80;
-  ecInsertUserName       = ecUserFirst + 81;
-  ecInsertDateTime       = ecUserFirst + 82;
-  ecInsertChangeLogEntry = ecUserFirst + 83;
-  ecInsertCVSAuthor      = ecUserFirst + 84;
-  ecInsertCVSDate        = ecUserFirst + 85;
-  ecInsertCVSHeader      = ecUserFirst + 86;
-  ecInsertCVSID          = ecUserFirst + 87;
-  ecInsertCVSLog         = ecUserFirst + 88;
-  ecInsertCVSName        = ecUserFirst + 89;
-  ecInsertCVSRevision    = ecUserFirst + 90;
-  ecInsertCVSSource      = ecUserFirst + 91;
+  ecInsertLGPLNotice     = ecUserFirst + 81;
+  ecInsertUserName       = ecUserFirst + 82;
+  ecInsertDateTime       = ecUserFirst + 83;
+  ecInsertChangeLogEntry = ecUserFirst + 84;
+  ecInsertCVSAuthor      = ecUserFirst + 85;
+  ecInsertCVSDate        = ecUserFirst + 86;
+  ecInsertCVSHeader      = ecUserFirst + 87;
+  ecInsertCVSID          = ecUserFirst + 88;
+  ecInsertCVSLog         = ecUserFirst + 89;
+  ecInsertCVSName        = ecUserFirst + 90;
+  ecInsertCVSRevision    = ecUserFirst + 91;
+  ecInsertCVSSource      = ecUserFirst + 92;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -524,6 +525,7 @@ begin
     ecSelectLine            : Result:= lismenuselectline;
     ecSelectParagraph       : Result:= lismenuselectparagraph;
     ecInsertGPLNotice       : Result:= srkmecInsertGPLNotice;
+    ecInsertLGPLNotice      : Result:= srkmecInsertLGPLNotice;
     ecInsertUserName        : Result:= srkmecInsertUserName;
     ecInsertDateTime        : Result:= srkmecInsertDateTime;
     ecInsertChangeLogEntry  : Result:= srkmecInsertChangeLogEntry;
@@ -1284,6 +1286,7 @@ begin
   Add(C,'Break line and move cursor',ecLineBreak,VK_RETURN,[],VK_UNKNOWN,[]);
   Add(C,'Break line, leave cursor',ecInsertLine,VK_N,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert LGPL notice',ecInsertLGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert username',ecInsertUserName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert date and time',ecInsertDateTime,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Insert ChangeLog entry',ecInsertChangeLogEntry,VK_UNKNOWN,[],VK_UNKNOWN,[]);

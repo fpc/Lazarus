@@ -72,6 +72,11 @@ type
                atPoint, atAt, atNumber, atStringConstant, atNewLine,
                atSpace, atSymbol);
   TAtomTypes = set of TAtomType;
+  
+  TBeautifyCodeFlag = (
+    bcfNoIndentOnBreakLine
+    );
+  TBeautifyCodeFlags = set of TBeautifyCodeFlag;
 
   TBeautifyCodeOptions = class
   private
@@ -102,11 +107,16 @@ type
     PropertyWriteIdentPrefix: string;
     PropertyStoredIdentPostfix: string;
     PrivatVariablePrefix: string;
+    CurFlags:  TBeautifyCodeFlags;
 
     function BeautifyProc(const AProcCode: string; IndentSize: integer;
         AddBeginEnd: boolean): string;
     function BeautifyStatement(const AStatement: string; IndentSize: integer
         ): string;
+    function BeautifyStatementLeftAligned(const AStatement: string;
+        IndentSize: integer): string;
+    function BeautifyStatement(const AStatement: string; IndentSize: integer;
+        BeautifyFlags: TBeautifyCodeFlags): string;
     function AddClassAndNameToProc(const AProcCode, AClassName,
         AMethodName: string): string;
     function BeautifyWord(const AWord: string; WordPolicy: TWordPolicy): string;
@@ -1023,11 +1033,19 @@ begin
 end;
 
 function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
-  IndentSize: integer): string;
+  IndentSize: integer; BeautifyFlags: TBeautifyCodeFlags): string;
 var CurAtom: string;
+  OldIndent: Integer;
 begin
   //writeln('**********************************************************');
   //writeln('[TBeautifyCodeOptions.BeautifyStatement] "',AStatement,'"');
+  // set flags
+  CurFlags:=BeautifyFlags;
+  if bcfNoIndentOnBreakLine in CurFlags then begin
+    OldIndent:=Indent;
+    Indent:=0;
+  end;
+  // init
   Src:=AStatement;
   UpperSrc:=UpperCaseStr(Src);
   SrcLen:=length(Src);
@@ -1039,6 +1057,7 @@ begin
   LastSrcLineStart:=1;
   CurLineLen:=length(Result);
   LastAtomType:=atNone;
+  // read atoms
   while (CurPos<=SrcLen) do begin
     repeat
       ReadNextAtom;
@@ -1062,8 +1081,25 @@ begin
     AddAtom(Result,CurAtom);
     LastAtomType:=CurAtomType;
   end;
+  // restore flags
+  if bcfNoIndentOnBreakLine in CurFlags then begin
+    Indent:=OldIndent;
+  end;
+  CurFlags:=[];
   //writeln('[TBeautifyCodeOptions.BeautifyStatement] Result="',Result,'"');
   //writeln('**********************************************************');
+end;
+
+function TBeautifyCodeOptions.BeautifyStatement(const AStatement: string;
+  IndentSize: integer): string;
+begin
+  Result:=BeautifyStatement(AStatement,IndentSize,[]);
+end;
+
+function TBeautifyCodeOptions.BeautifyStatementLeftAligned(
+  const AStatement: string; IndentSize: integer): string;
+begin
+  Result:=BeautifyStatement(AStatement,IndentSize,[bcfNoIndentOnBreakLine]);
 end;
 
 function TBeautifyCodeOptions.AddClassAndNameToProc(const AProcCode, AClassName,
