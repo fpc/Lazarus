@@ -94,12 +94,6 @@ type
     FRCFileAge: integer;
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
-    {$IFDef GTK1}
-    FNoteBookCloseBtnPixmapImg: PGdkPixmap;
-    FNoteBookCloseBtnPixmapMask: PGdkPixmap;
-    {$Else}
-    FNoteBookCloseBtnPixbuf : PGdkPixbuf;
-    {$EndIf}
 
     FLogHandlerID: guint; // ID returend by set_handler
 
@@ -184,8 +178,6 @@ type
     function CreateEmptyRegion: hRGN; override;
 
     // images
-    procedure LoadXPMFromLazResource(const ResourceName: string;
-      Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);virtual;
     {$IfNDef NoGdkPixbufLib}
     procedure LoadPixbufFromLazResource(const ResourceName: string;
       var Pixbuf: PGdkPixbuf);
@@ -213,12 +205,6 @@ type
     procedure ParseRCFile;virtual;
 
     // notebook
-    {$IFDef GTK1}
-    procedure GetNoteBookCloseBtnImage(Window: PGdkWindow;
-                                       var Img, Mask: PGdkPixmap);virtual;
-    {$Else}
-    procedure GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);virtual;
-    {$EndIF}
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
@@ -289,8 +275,6 @@ type
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     // |-forms
     procedure UpdateTransientWindows; virtual;
-    // |-notebook
-    procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);virtual;
     // |-listbox
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
                                MultiSelect, ExtendedSelect: boolean); virtual;
@@ -449,6 +433,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.214  2004/09/24 18:00:51  micha
+  convert LM_NB_UPDATETAB message to interface method
+
   Revision 1.213  2004/09/24 15:31:01  micha
   convert LM_LB_GETTOPINDEX and LM_LB_SETTOPINDEX message to interface methods
 

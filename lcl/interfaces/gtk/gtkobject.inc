@@ -3029,8 +3029,6 @@ begin
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
 
-  LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
-
   else
     begin
       Case LM_Message of
@@ -5680,34 +5678,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  method TGtkWidgetSet LoadXPMFromLazResource
-  Params: const ResourceName: string;
-          Window: PGdkWindow;
-          var PixmapImg, PixmapMask: PGdkPixmap
-  Result: none
-
-  Loads a pixmap from a lazarus resource. The resource must be a XPM file.
--------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.LoadXPMFromLazResource(const ResourceName: string;
-  Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
-var
-  ImgData: PPGChar;
-begin
-  PixmapImg:=nil;
-  PixmapMask:=nil;
-  try
-    ImgData:=PPGChar(LazResourceXPMToPPChar(ResourceName));
-  except
-    on e: Exception do
-      DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
-  end;
-  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
-  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,PixmapMask,nil,ImgData);
-  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-  FreeMem(ImgData);
-end;
-
-{-------------------------------------------------------------------------------
   method TGtkWidgetSet LoadPixbufFromLazResource
   Params: const ResourceName: string;
           var Pixbuf: PGdkPixbuf
@@ -5732,34 +5702,6 @@ begin
   pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
-end;
-{$EndIF}
-
-{-------------------------------------------------------------------------------
-  method TGtkWidgetSet GetNoteBookCloseBtnImage
-  Params:
-  Result: none
-
-  Loads the image for the close button in the tabs of the TCustomNoteBook(s).
--------------------------------------------------------------------------------}
-{$IfDef GTK1}
-procedure TGtkWidgetSet.GetNoteBookCloseBtnImage(Window: PGdkWindow;
-  var Img, Mask: PGdkPixmap);
-begin
-  if (FNoteBookCloseBtnPixmapImg=nil)
-  and (Window<>nil) then begin
-    LoadXPMFromLazResource('tnotebook_close_tab',Window,
-                        FNoteBookCloseBtnPixmapImg,FNoteBookCloseBtnPixmapMask);
-  end;
-  Img:=FNoteBookCloseBtnPixmapImg;
-  Mask:=FNoteBookCloseBtnPixmapMask;
-end;
-{$Else}
-procedure TGtkWidgetSet.GetNoteBookCloseBtnImage(var Img: PGdkPixbuf);
-begin
-  if (FNoteBookCloseBtnPixbuf=nil) then
-    LoadPixbufFromLazResource('tnotebook_close_tab', FNoteBookCloseBtnPixbuf);
-  Img:=FNoteBookCloseBtnPixbuf;
 end;
 {$EndIF}
 
@@ -5793,212 +5735,6 @@ begin
     gtk_notebook_append_page_menu(NoteBookWidget,DummyWidget,ALabel,MenuLabel);
     SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
   end;
-end;
-
-{-------------------------------------------------------------------------------
-  method TGtkWidgetSet UpdateNotebookPageTab
-  Params: ANoteBook: TCustomNotebook; APage: TCustomPage
-  Result: none
-
-  Updates the tab of a page of a notebook. This contains the image to the left
-  side, the label, the close button, the menu image and the menu label.
--------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.UpdateNotebookPageTab(ANoteBook, APage: TObject);
-var
-  TheNoteBook: TCustomNotebook;
-  ThePage: TCustomPage;
-
-  NoteBookWidget: PGtkWidget;  // the notebook
-  PageWidget: PGtkWidget;      // the page (content widget)
-  TabWidget: PGtkWidget;       // the tab (hbox containing a pixmap, a label
-                               //          and a close button)
-  TabImageWidget: PGtkWidget;  // the icon widget in the tab (a fixed widget)
-  TabLabelWidget: PGtkWidget;  // the label in the tab
-  TabCloseBtnWidget: PGtkWidget;// the close button in the tab
-  TabCloseBtnImageWidget: PGtkWidget; // the pixmap in the close button
-  MenuWidget: PGtkWidget;      // the popup menu (hbox containing a pixmap and
-                               // a label)
-  MenuImageWidget: PGtkWidget; // the icon widget in the popup menu item (a fixed widget)
-  MenuLabelWidget: PGtkWidget; // the label in the popup menu item
-
-  procedure UpdateTabImage;
-  var
-    HasIcon: Boolean;
-    IconSize: TPoint;
-  begin
-    HasIcon:=false;
-    IconSize:=Point(0,0);
-    if (TheNoteBook.Images<>nil)
-    and (ThePage.ImageIndex>=0)
-    and (ThePage.ImageIndex<TheNoteBook.Images.Count) then begin
-      // page has valid image
-      IconSize:=Point(TheNoteBook.Images.Width,TheNoteBook.Images.Height);
-      HasIcon:=(IconSize.X>0) and (IconSize.Y>0);
-    end;
-
-    if HasIcon then begin
-      // page has an image
-      if TabImageWidget<>nil then begin
-        // there is already an icon widget for the image in the tab
-        // -> resize the icon widget
-        gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
-      end else begin
-        // there is no pixmap for the image in the tab
-        // -> insert one ot the left side of the label
-        TabImageWidget:= gtk_label_new(#0);
-        g_signal_connect(PgtkObject(TabImageWidget), 'expose_event',
-                           TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        {$IFNDEF GTK2}
-        g_signal_connect(PgtkObject(TabImageWidget), 'draw',
-                             TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
-        {$ENDIF}
-        gtk_object_set_data(PGtkObject(TabWidget),'TabImage',TabImageWidget);
-        gtk_widget_set_usize(TabImageWidget,IconSize.X,IconSize.Y);
-        gtk_widget_show(TabImageWidget);
-        gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabImageWidget);
-        gtk_box_reorder_child(PGtkBox(TabWidget),TabImageWidget,0);
-      end;
-      if MenuImageWidget<>nil then begin
-        // there is already an icon widget for the image in the menu
-        // -> resize the icon widget
-        gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
-      end else begin
-        // there is no icon widget for the image in the menu
-        // -> insert one at the left side of the label
-        MenuImageWidget:=gtk_label_new(#0);
-        g_signal_connect_after(PgtkObject(MenuImageWidget), 'expose_event',
-                          TGTKSignalFunc(@PageIconWidgetExposeAfter), ThePage);
-        {$IFNDEF GTK2}
-        g_signal_connect_after(PgtkObject(MenuImageWidget), 'draw',
-                             TGTKSignalFunc(@PageIconWidgetDrawAfter), ThePage);
-        {$ENDIF}
-        gtk_widget_set_usize(MenuImageWidget,IconSize.X,IconSize.Y);
-        gtk_object_set_data(PGtkObject(MenuWidget),'TabImage',MenuImageWidget);
-        gtk_widget_show(MenuImageWidget);
-        gtk_box_pack_start_defaults(PGtkBox(MenuWidget),MenuImageWidget);
-        gtk_box_reorder_child(PGtkBox(MenuWidget),MenuImageWidget,0);
-      end;
-    end else begin
-      // page does not have an image
-      if TabImageWidget<>nil then begin
-        // there is a pixmap for an old image in the tab
-        // -> remove the icon widget
-        DestroyWidget(TabImageWidget);
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabImage', nil);
-        TabImageWidget:=nil;
-      end;
-      if MenuImageWidget<>nil then begin
-        // there is a pixmap for an old image in the menu
-        // -> remove the icon widget
-        DestroyWidget(MenuImageWidget);
-        gtk_object_set_data(PGtkObject(MenuWidget), 'TabImage', nil);
-        MenuImageWidget:=nil;
-      end;
-    end;
-  end;
-
-  procedure UpdateTabLabel;
-  var TheCaption: PChar;
-  begin
-    TheCaption:=PChar(ThePage.Caption);
-    if TheCaption=nil then
-      TheCaption:=#0;
-    gtk_label_set_text(PGtkLabel(TabLabelWidget),TheCaption);
-    if MenuLabelWidget<>nil then
-      gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
-  end;
-
-  procedure UpdateTabCloseBtn;
-  var
-    {$IfDef GTK1}
-    Img: PGdkPixmap;
-    Mask: PGdkBitmap;
-    {$Else}
-    Img: PGdkPixbuf;
-    {$EndIf}
-  begin
-    {$IfDef GTK1}
-    GetNoteBookCloseBtnImage(GetControlWindow(NoteBookWidget),Img,Mask);
-    {$Else}
-    GetNoteBookCloseBtnImage(Img);
-    {$EndIf}
-    if (nboShowCloseButtons in TheNotebook.Options) and (Img<>nil) then begin
-      // close buttons enabled
-      if TabCloseBtnWidget=nil then begin
-        // there is no close button yet
-        // -> add one to the right side of the label in the tab
-        TabCloseBtnWidget:=gtk_button_new;
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
-                            TabCloseBtnWidget);
-        begin
-          // put a pixmap into the button
-         {$IfDef GTK1}
-          TabCloseBtnImageWidget:=gtk_pixmap_new(Img,Mask);
-         {$Else}
-          TabCloseBtnImageWidget:=gtk_image_new_from_pixbuf(Img);
-         {$EndIf}
-          gtk_object_set_data(PGtkObject(TabCloseBtnWidget),'TabCloseBtnImage',
-                              TabCloseBtnImageWidget);
-          gtk_widget_show(TabCloseBtnImageWidget);
-          gtk_container_add(PGtkContainer(TabCloseBtnWidget),
-                            TabCloseBtnImageWidget);
-        end;
-        gtk_widget_show(TabCloseBtnWidget);
-        g_signal_connect(PGtkObject(TabCloseBtnWidget), 'clicked',
-          TGTKSignalFunc(@gtkNoteBookCloseBtnClicked), APage);
-        gtk_box_pack_start_defaults(PGtkBox(TabWidget),TabCloseBtnWidget);
-      end;
-    end else begin
-      // close buttons disabled
-      if TabCloseBtnWidget<>nil then begin
-        // there is a close button
-        // -> remove it
-        gtk_object_set_data(PGtkObject(TabWidget), 'TabCloseBtn',
-                            nil);
-        DestroyWidget(TabCloseBtnWidget);
-        TabCloseBtnWidget:=nil;
-      end;
-    end;
-  end;
-
-begin
-  ThePage:=TCustomPage(APage);
-  TheNoteBook:=TCustomNotebook(ANoteBook);
-  if (APage=nil) or (not ThePage.HandleAllocated) then exit;
-  if TheNoteBook=nil then begin
-    TheNoteBook:=TCustomNotebook(ThePage.Parent);
-    if TheNoteBook=nil then exit;
-  end;
-  NoteBookWidget:=PGtkWidget(TWinControl(TheNoteBook).Handle);
-  PageWidget:=PGtkWidget(TWinControl(ThePage).Handle);
-
-  // get the tab container and the tab components: pixmap, label and closebtn
-  TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
-                                        PageWidget);
-  if TabWidget<>nil then begin
-    TabImageWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabImage');
-    TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel');
-    TabCloseBtnWidget:=gtk_object_get_data(PGtkObject(TabWidget),'TabCloseBtn');
-  end else begin
-    TabImageWidget:=nil;
-    TabLabelWidget:=nil;
-    TabCloseBtnWidget:=nil;
-  end;
-
-  // get the menu container and its components: pixmap and label
-  MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
-                                          PageWidget);
-  if MenuWidget<>nil then begin
-    MenuImageWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabImage');
-    MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel');
-  end else begin
-    MenuImageWidget:=nil;
-    MenuLabelWidget:=nil;
-  end;
-
-  UpdateTabImage;
-  UpdateTabLabel;
-  UpdateTabCloseBtn;
 end;
 
 {------------------------------------------------------------------------------
@@ -7267,6 +7003,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.601  2004/09/24 18:00:52  micha
+  convert LM_NB_UPDATETAB message to interface method
+
   Revision 1.600  2004/09/24 17:20:43  micha
   convert LM_SETGEOMETRY message to interface method
 

@@ -650,7 +650,7 @@ var i: integer;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   for i := 0 to PageCount - 1 do
-    CNSendMessage(LM_NB_UpdateTab, Page[i], nil);
+    TWSCustomPageClass(Page[i].WidgetSetClass).UpdateProperties(Page[i]);
 end;
 
 function TCustomNotebook.ChildClassAllowed(ChildClass: TClass): boolean;
@@ -788,6 +788,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/09/24 18:00:51  micha
+  convert LM_NB_UPDATETAB message to interface method
+
   Revision 1.61  2004/09/23 16:37:13  vincents
   fix compilation
 

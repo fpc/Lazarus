@@ -4642,6 +4642,33 @@ begin
   Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
 
+{-------------------------------------------------------------------------------
+  method LoadXPMFromLazResource
+  Params: const ResourceName: string;
+          Window: PGdkWindow;
+          var PixmapImg, PixmapMask: PGdkPixmap
+  Result: none
+
+  Loads a pixmap from a lazarus resource. The resource must be a XPM file.
+-------------------------------------------------------------------------------}
+procedure LoadXPMFromLazResource(const ResourceName: string;
+  Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
+var
+  ImgData: PPGChar;
+begin
+  PixmapImg:=nil;
+  PixmapMask:=nil;
+  try
+    ImgData:=PPGChar(LazResourceXPMToPPChar(ResourceName));
+  except
+    on e: Exception do
+      DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
+  end;
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
+  PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,PixmapMask,nil,ImgData);
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
+  FreeMem(ImgData);
+end;
 
 {------------------------------------------------------------------------------
   procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
@@ -7282,6 +7309,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.310  2004/09/24 18:00:52  micha
+  convert LM_NB_UPDATETAB message to interface method
+
   Revision 1.309  2004/09/17 20:30:13  vincents
   replaced write by DbgOut
 

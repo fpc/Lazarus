@@ -47,11 +47,6 @@ const
   LM_ComUser        = $1000;
   LM_Create         = LM_ComUser+1;
   
-  // TNoteBook
-  LM_NB_First       = LM_COMUSER+100;
-  LM_NB_UpdateTab   = LM_NB_First+0;
-  LM_NB_Last        = LM_NB_UpdateTab;
-
 
   //-------------
   // lcl messages
@@ -733,11 +728,6 @@ begin
   LM_ComUser        :Result:='LM_ComUser';
   LM_Create         :Result:='LM_Create';
 
-  // TNoteBook
-  //LM_NB_First       :Result:='LM_NB_First';
-  LM_NB_UpdateTab   :Result:='LM_NB_UpdateTab';
-  //LM_NB_Last        :Result:='LM_NB_Last';
-
   //-------------
   // lcl messages
   //
@@ -827,6 +817,9 @@ end.
 
 {
   $Log$
+  Revision 1.122  2004/09/24 18:00:51  micha
+  convert LM_NB_UPDATETAB message to interface method
+
   Revision 1.121  2004/09/24 17:20:43  micha
   convert LM_SETGEOMETRY message to interface method
 

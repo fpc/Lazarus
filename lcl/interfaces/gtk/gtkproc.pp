@@ -575,6 +575,9 @@ procedure Accelerate(Component: TComponent; const Widget: PGtkWidget;
 procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
 procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
 
+procedure LoadXPMFromLazResource(const ResourceName: string;
+  Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
+
 // pixmaps
 procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);

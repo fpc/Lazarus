@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
   { TWin32WSCustomNotebook }
@@ -258,6 +259,13 @@ begin
     TWin32WidgetSet(InterfaceObject).ResizeChild(Notebook.Page[I], R.Left, R.Top, R.Right, R.Bottom);
 end;
 
+{ TWin32WSCustomPage }
+
+procedure TWin32WSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+begin
+  // TODO: implement me!
+end;
+
 { TWin32WSCustomNotebook }
 
 procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
@@ -356,7 +364,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomPage, TWin32WSCustomPage);
+  RegisterWSComponent(TCustomPage, TWin32WSCustomPage);
   RegisterWSComponent(TCustomNotebook, TWin32WSCustomNotebook);
 //  RegisterWSComponent(TPage, TWin32WSPage);
 //  RegisterWSComponent(TNotebook, TWin32WSNotebook);

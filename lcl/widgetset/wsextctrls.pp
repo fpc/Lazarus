@@ -51,7 +51,9 @@ uses
 type
   { TWSCustomPage }
 
+  TWSCustomPageClass = class of TWSCustomPage;
   TWSCustomPage = class(TWSWinControl)
+    class procedure UpdateProperties(const ACustomPage: TCustomPage); virtual;
   end;
 
   { TWSCustomNotebook }
@@ -161,6 +163,12 @@ type
 
 
 implementation
+
+{ TWSCustomPage }
+
+procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
+begin
+end;
 
 { TWSCustomNotebook }
 
