@@ -2772,6 +2772,8 @@ var
     with TDeviceContext(DC) do begin
       gdk_draw_text(Drawable, UseFont, GC, TxtPt.X, TxtPt.Y,
                     LineStart, LineLen);
+      gdk_draw_text(Drawable, UseFont, GC, 0,0,
+                    'A'#0,2);
       if UnderLine then begin
         UnderLineLen := Rect^.Right-Rect^.Left;
         Y := TxtPt.Y + 1;
@@ -2779,7 +2781,7 @@ var
       end;
     end;
   end;
-  
+
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
@@ -3503,6 +3505,20 @@ begin
 
   // If we are here we didn't find anything
   Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  function GetFontLanguageInfo(DC: HDC): DWord; override;
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetFontLanguageInfo(DC: HDC): DWord;
+begin
+  Result := 0;
+  If IsValidDC(DC) then
+  with TDeviceContext(DC) do begin
+    UpdateDCTextMetric(TDeviceContext(DC));
+    if TDeviceContext(DC).DCTextMetric.IsDoubleByteChar then
+      inc(Result,GCP_DBCS);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -7520,6 +7536,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.192  2002/12/05 22:16:33  mattias
+  double byte char font started
+
   Revision 1.191  2002/12/05 17:26:02  mattias
   implemented fsUnderLine for ExtTextOut for gtk
 
