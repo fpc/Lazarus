@@ -60,7 +60,6 @@ const
   clDefault = TColor($20000000);
   
   //System colors
-  // TODO : kick these out into platform specific units!
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
   clBackground              = TColor(SYS_COLOR_BASE or COLOR_BACKGROUND);
   clActiveCaption           = TColor(SYS_COLOR_BASE or COLOR_ACTIVECAPTION);
@@ -963,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2003/05/19 08:16:32  mattias
+  fixed allocation of dc backcolor
+
   Revision 1.66  2003/04/02 13:23:23  mattias
   fixed default font
 
