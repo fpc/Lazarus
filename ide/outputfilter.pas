@@ -46,10 +46,10 @@ type
   TOutputFilter = class
   private
     fCurrentDirectory: string;
-    fCurrentCompilerSubDir: string;
     fFilteredOutput: TStringList;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
+    fCompilingHistory: TStringList;
     fMakeDirHistory: TStringList;
     fOnOutputString: TOnOutputString;
     fOptions: TOuputFilterOptions;
@@ -115,6 +115,8 @@ end;
 procedure TOutputFilter.Clear;
 begin
   fFilteredOutput.Clear;
+  if fCompilingHistory<>nil then fCompilingHistory.Clear;
+  if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
 end;
 
 procedure TOutputFilter.Execute(TheProcess: TProcess);
@@ -126,11 +128,11 @@ var
 begin
   TheProcess.Execute;
   fCurrentDirectory:=TheProcess.CurrentDirectory;
-  fCurrentCompilerSubDir:='';
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
   if (fCurrentDirectory<>'')
   and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
     fCurrentDirectory:=fCurrentDirectory+PathDelim;
+  if fCompilingHistory<>nil then fCompilingHistory.Clear;
   if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
   SetLength(Buf,BufSize);
   Application.ProcessMessages;
@@ -197,18 +199,11 @@ begin
     fLastMessageType:=omtFPC;
     fLastErrorType:=etNone;
     Result:=true;
-    i:=length(s);
-    while (i>0) and (s[i]<>PathDelim) do dec(i);
-    if i=0 then begin
-      fCurrentCompilerSubDir:='';
-    end else begin
-      // compiler is compiling a file in a sub directory
-      j:=length('Compiling ')+1;
-      fCurrentCompilerSubDir:=copy(s,j,i-j+1);
-      if (copy(fCurrentCompilerSubDir,1,2)='.'+PathDelim) then
-        fCurrentCompilerSubDir:=copy(fCurrentCompilerSubDir,3,
-                     length(fCurrentCompilerSubDir)-2);
-    end;
+    if fCompilingHistory=nil then fCompilingHistory:=TStringList.Create;
+    i:=length('Compiling ');
+    if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
+      inc(i,2);
+    fCompilingHistory.Add(copy(s,i+1,length(s)-i));
     exit;
   end;
   if ('Assembling '=copy(s,1,length('Assembling ')))
@@ -305,11 +300,20 @@ begin
       end else
         SkipMessage:=false;
       Msg:=s;
-      if (fCurrentCompilerSubDir<>'') then begin
+      if (fCompilingHistory<>nil) then begin
         Filename:=copy(s,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
-          Msg:=fCurrentCompilerSubDir+Msg;
-          inc(FilenameEndPos,length(fCurrentCompilerSubDir));
+          i:=fCompilingHistory.Count-1;
+          while (i>=0) do begin
+            j:=length(fCompilingHistory[i])-FilenameEndPos;
+            if copy(fCompilingHistory[i],j+1,FilenameEndPos)=Filename then
+            begin
+              Msg:=copy(fCompilingHistory[i],1,j)+Msg;
+              inc(FilenameEndPos,j);
+              break;
+            end;
+            dec(i);
+          end;
         end;
       end;
       if (ofoMakeFilenamesAbsolute in Options) then begin
@@ -419,6 +423,7 @@ destructor TOutputFilter.Destroy;
 begin
   fFilteredOutput.Free;
   fMakeDirHistory.Free;
+  fCompilingHistory.Free;
   inherited Destroy;
 end;
 
