@@ -46,34 +46,47 @@ uses
   LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
+  {TExtractCodeAttribute = (
+    // extract attributes:
+    phpWithComments,       // extract comments and spaces
+    phpInUpperCase,        // turn to uppercase
+    phpCommentsToSpace,    // replace comments with a single space
+                           //  (default is to skip unnecessary space,
+                           //    e.g 'Do   ;' normally becomes 'Do;'
+                           //    with this option you get 'Do ;')
+    );
+  TExtractCodeAttributes = set of TExtractCodeAttribute;}
+
   TProcHeadAttribute = (
-      // extract attributes:
-      phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
-      phpWithoutClassKeyword,// without 'class' proc keyword
-      phpAddClassName,       // extract/add 'ClassName.'
-      phpWithoutClassName,   // skip classname
-      phpWithoutName,        // skip function name
-      phpWithoutParamList,   // skip param list
-      phpWithVarModifiers,   // extract 'var', 'out', 'const'
-      phpWithParameterNames, // extract parameter names
-      phpWithoutParamTypes,  // skip colon, param types and default values
-      phpWithDefaultValues,  // extract default values
-      phpWithResultType,     // extract colon + result type
-      phpWithOfObject,       // extract 'of object'
-      phpWithCallingSpecs,   // extract cdecl; inline;
-      phpWithComments,       // extract comments
-      phpInUpperCase,        // turn to uppercase
-      phpCommentsToSpace,    // replace comments with a single space
-                             //   (normally unnecessary space is skipped)
-      phpWithoutBrackets,    // skip start- and end-bracket of parameter list
-      // search attributes:
-      phpIgnoreForwards,     // skip forward procs
-      phpIgnoreProcsWithBody,// skip procs with begin..end
-      phpIgnoreMethods,      // skip method bodies and definitions
-      phpOnlyWithClassname,  // skip procs without the right classname
-      phpFindCleanPosition,  // read til ExtractSearchPos
-      // parse attributes:
-      phpCreateNodes         // create nodes during reading
+    // extract attributes:
+    phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
+    phpWithoutClassKeyword,// without 'class' proc keyword
+    phpAddClassName,       // extract/add 'ClassName.'
+    phpWithoutClassName,   // skip classname
+    phpWithoutName,        // skip function name
+    phpWithoutParamList,   // skip param list
+    phpWithVarModifiers,   // extract 'var', 'out', 'const'
+    phpWithParameterNames, // extract parameter names
+    phpWithoutParamTypes,  // skip colon, param types and default values
+    phpWithDefaultValues,  // extract default values
+    phpWithResultType,     // extract colon + result type
+    phpWithOfObject,       // extract 'of object'
+    phpWithCallingSpecs,   // extract cdecl; inline;
+    phpWithComments,       // extract comments and spaces
+    phpInUpperCase,        // turn to uppercase
+    phpCommentsToSpace,    // replace comments with a single space
+                           //  (default is to skip unnecessary space,
+                           //    e.g 'Do   ;' normally becomes 'Do;'
+                           //    with this option you get 'Do ;')
+    phpWithoutBrackets,    // skip start- and end-bracket of parameter list
+    // search attributes:
+    phpIgnoreForwards,     // skip forward procs
+    phpIgnoreProcsWithBody,// skip procs with begin..end
+    phpIgnoreMethods,      // skip method bodies and definitions
+    phpOnlyWithClassname,  // skip procs without the right classname
+    phpFindCleanPosition,  // read til ExtractSearchPos
+    // parse attributes:
+    phpCreateNodes         // create nodes during reading
     );
   TProcHeadAttributes = set of TProcHeadAttribute;
   
@@ -201,6 +214,8 @@ type
     function DoAtom: boolean; override;
 
     function ExtractNode(ANode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): string;
+    function ExtractCode(StartPos, EndPos: integer;
         Attr: TProcHeadAttributes): string;
 
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -1678,6 +1693,22 @@ begin
   // reparse the clean source
   MoveCursorToNodeStart(ANode);
   while (ANode.EndPos>CurPos.StartPos)
+  and (CurPos.StartPos<=SrcLen) do
+    ExtractNextAtom(true,Attr);
+  // copy memorystream to Result string
+  Result:=GetExtraction;
+end;
+
+function TPascalParserTool.ExtractCode(StartPos, EndPos: integer;
+  Attr: TProcHeadAttributes): string;
+begin
+  Result:='';
+  ExtractProcHeadPos:=phepNone;
+  if (StartPos<1) or (StartPos>=EndPos) or (StartPos>SrcLen) then exit;
+  InitExtraction;
+  // reparse the clean source
+  MoveCursorToCleanPos(StartPos);
+  while (EndPos>CurPos.StartPos)
   and (CurPos.StartPos<=SrcLen) do
     ExtractNextAtom(true,Attr);
   // copy memorystream to Result string

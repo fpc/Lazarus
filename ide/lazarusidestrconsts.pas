@@ -302,6 +302,8 @@ resourcestring
   ideInterbase = 'Interbase Data Access';
 
   //Environment dialog
+  dlgBakDirectory='(no subdirectoy)';
+  
   dlgEnvOpts = 'Environment Options';
   dlgDesktop = 'Desktop';
   dlgFrmEditor = 'Form Editor';
@@ -368,7 +370,6 @@ resourcestring
   dlgPasExt = 'Default pascal extension';
   dlgPasLower = 'Save pascal files lowercase';
   dlgAmbigFileAct = 'Ambigious file action:';
-  //TODO Make it
   dlgEnvAsk = 'Ask';
   dlgAutoDel = 'Auto delete file';
   dlgAutoRen = 'Auto rename file';
@@ -700,7 +701,245 @@ resourcestring
   fdmSnapToGridOption='Option: Snap to grid';
   fdmSnapToGuideLinesOption='Option: Snap to guide lines';
 
-implementation
+  //-----------------------
+  // keyMapping
+  //
+  srkmEditKeys ='Edit Keys';
+  srkmCommand  = 'Command ';
+  srkmConflic  = 'Conflict ';
+  srkmConflicW = ' conflicts with ';
+  srkmCommand1 = '    command1 "';
+  srkmCommand2 = '    command2 "';
+  srkmEditForCmd='Edit keys for command';
+  srkmKey      = 'Key';
+  srkmGrabKey  = 'Grab Key';
+  srkmPressKey = 'Please press a key ...';
+  srkmAlternKey= 'Alternative Key';
+  srkmAlreadyConnected = ' The key "%s" is already connected to "%s".';
 
+  //Commands
+   srkmecWordLeft              = 'Move cursor word left';
+   srkmecWordRight             = 'Move cursor word right';
+   srkmecLineStart             = 'Move cursor to line start';
+   srkmecLineEnd               = 'Move cursor to line end';
+   srkmecPageUp                = 'Move cursor up one page';
+   srkmecPageDown              = 'Move cursor down one page';
+   srkmecPageLeft              = 'Move cursor left one page';
+   srkmecPageRight             = 'Move cursor right one page';
+   srkmecPageTop               = 'Move cursor to top of page';
+   srkmecPageBottom            = 'Move cursor to bottom of page';
+   srkmecEditorTop             = 'Move cursor to absolute beginning';
+   srkmecEditorBottom          = 'Move cursor to absolute end';
+   srkmecGotoXY                = 'Goto XY';
+   srkmecSelLeft               = 'SelLeft';
+   srkmecSelRight              = 'SelRight';
+   srkmecSelUp                 = 'Select Up';
+   srkmecSelDown               = 'Select Down';
+   srkmecSelWordLeft           = 'Select Word Left';
+   srkmecSelWordRight          = 'Select Word Right';
+   srkmecSelLineStart          = 'Select Line Start';
+   srkmecSelLineEnd            = 'Select Line End';
+   srkmecSelPageUp             = 'Select Page Up';
+   srkmecSelPageDown           = 'Select Page Down';
+   srkmecSelPageLeft           = 'Select Page Left';
+   srkmecSelPageRight          = 'Select Page Right';
+   srkmecSelPageTop            = 'Select Page Top';
+   srkmecSelPageBottom         = 'Select Page Bottom';
+   srkmecSelEditorTop          = 'Select to absolute beginning';
+   srkmecSelEditorBottom       = 'Select to absolute end';
+   srkmecSelGotoXY             = 'Select Goto XY';
+   srkmecSelectAll             = 'Select All';
+   srkmecDeleteLastChar        = 'Delete Last Char';
+   srkmecDeletechar            = 'Delete char at cursor';
+   srkmecDeleteWord            = 'Delete to end of word';
+   srkmecDeleteLastWord        = 'Delete to start of word';
+   srkmecDeleteBOL             = 'Delete to beginning of line';
+   srkmecDeleteEOL             = 'Delete to end of line';
+   srkmecDeleteLine            = 'Delete current line';
+   srkmecClearAll              = 'Delete whole text';
+   srkmecLineBreak             = 'Break line and move cursor';
+   srkmecInsertLine            = 'Break line, leave cursor';
+   srkmecChar                  = 'Char';
+   srkmecImeStr                = 'Ime Str';
+   srkmecCut                   = 'Cut selection to clipboard';
+   srkmecCopy                  = 'Copy selection to clipboard';
+   srkmecPaste                 = 'Paste clipboard to current position';
+   srkmecScrollUp              = 'Scroll up one line';
+   srkmecScrollDown            = 'Scroll down one line';
+   srkmecScrollLeft            = 'Scroll left one char';
+   srkmecScrollRight           = 'Scroll right one char';
+   srkmecInsertMode            = 'Insert Mode';
+   srkmecOverwriteMode         = 'Overwrite Mode';
+   srkmecToggleMode            = 'Toggle Mode';
+   srkmecBlockIndent           = 'Indent block';
+   srkmecBlockUnindent         = 'Unindent block';
+   srkmecShiftTab              = 'Shift Tab';
+   srkmecMatchBracket          = 'Go to matching bracket';
+   srkmecNormalSelect          = 'Normal selection mode';
+   srkmecColumnSelect          = 'Column selection mode';
+   srkmecLineSelect            = 'Line selection mode';
+   srkmecAutoCompletion        = 'Code template completion';
+   srkmecUserFirst             = 'User First';
+   srkmecGotoMarker            = 'Go to Marker %d';
+   srkmecSetMarker             = 'Set Marker %d';
+   srkmecPeriod                = 'period';
+    // sourcenotebook
+   srkmecJumpToEditor          = 'Focus to source editor';
+   srkmecNextEditor            = 'Go to next editor';
+   srkmecPrevEditor            = 'Go to prior editor';
+   srkmecMoveEditorLeft        = 'Move editor left';
+   srkmecMoveEditorRight       = 'Move editor right';
+   srkmecGotoEditor            = 'Go to editor %d';
+    // file menu
+   srkmecNew                   = 'New';
+   srkmecNewUnit               = 'New unit';
+   srkmecNewForm               = 'New form';
+   srkmecSaveAs                = 'Save as';
+   srkmecSaveAll               = 'Save all';
+   srkmecCloseAll              = 'Close all';
+
+    // edit menu
+   srkmecSelectionTabs2Spaces  = 'Convert tabs to spaces in selection';
+   srkmecInsertGPLNotice       = 'Insert GPL notice';
+   srkmecInsertUserName        = 'Insert current username';
+   srkmecInsertDateTime        = 'Insert current date and time';
+   srkmecInsertChangeLogEntry  = 'Insert ChangeLog entry';
+   srkmecInsertCVSAuthor       = 'Insert CVS keyword Author';
+   srkmecInsertCVSDate         = 'Insert CVS keyword Date';
+   srkmecInsertCVSHeader       = 'Insert CVS keyword Header';
+   srkmecInsertCVSID           = 'Insert CVS keyword ID';
+   srkmecInsertCVSLog          = 'Insert CVS keyword Log';
+   srkmecInsertCVSName         = 'Insert CVS keyword Name';
+   srkmecInsertCVSRevision     = 'Insert CVS keyword Revision';
+   srkmecInsertCVSSource       = 'Insert CVS keyword Source';
+    // search menu
+   srkmecFind                      = 'Find text';
+   srkmecFindNext                  = 'Find next';
+   srkmecFindPrevious              = 'Find previous';
+   srkmecFindInFiles               = 'Find in files';
+   srkmecReplace                   = 'Replace text';
+   srkmecFindProcedureDefinition   = 'Find procedure definiton';
+   srkmecFindProcedureMethod       = 'Find procedure method';
+   srkmecGotoLineNumber            = 'Go to line number';
+   srkmecAddJumpPoint              = 'Add jump point';
+   srkmecOpenFileAtCursor          = 'Open file at cursor';
+   srkmecGotoIncludeDirective      = 'Go to to include directive of current include file';
+    // view menu
+   srkmecToggleFormUnit            = 'Switch between form and unit';
+   srkmecToggleObjectInsp          = 'View Object Inspector';
+   srkmecToggleProjectExpl         = 'View project explorer';
+   srkmecTogglecodeExpl            = 'View code explorer';
+   srkmecToggleMessages            = 'View messages';
+   srkmecToggleWatches             = 'View watches';
+   srkmecToggleBreakPoints         = 'View breakpoints';
+   srkmecToggleDebuggerOut         = 'View debugger output';
+   srkmecToggleLocals              = 'View local variables';
+   srkmecTogglecallStack           = 'View call stack';
+   srkmecViewUnits                 = 'View units';
+   srkmecViewForms                 = 'View forms';
+   srkmecViewUnitDependencies      = 'View unit dependencies';
+    // codetools
+   srkmecWordCompletion            = 'Word completion';
+   srkmecCompletecode              = 'Complete code';
+   srkmecSyntaxCheck               = 'Syntax check';
+   srkmecGuessMisplacedIFDEF       = 'Guess misplaced $IFDEF';
+   srkmecFindDeclaration           = 'Find declaration';
+   srkmecFindBlockOtherEnd         = 'Find block other end';
+   srkmecFindBlockStart            = 'Find block start';
+   // project uuse menu resource
+
+   // run menu
+   srkmecBuild                     = 'build program/project';
+   srkmecBuildAll                  = 'build all files of program/project';
+   srkmecRun                       = 'run program';
+   srkmecPause                     = 'pause program';
+   srkmecStopProgram               = 'stop program';
+   srkmecRunParameters             = 'run parameters';
+   srkmecCompilerOptions           = 'compiler options';
+    // tools menu
+   srkmecExtToolSettings           = 'External tools settings';
+   srkmecBuildLazarus              = 'Build lazarus';
+   srkmecExtTool                   = 'External tool %d';
+    // environment menu
+   srkmecEnvironmentOptions        = 'General environment options';
+   srkmecCodeToolsOptions          = 'Codetools options';
+   srkmecCodeToolsDefinesEd        = 'Codetools defines editor';
+   srkmecMakeResourceString        = 'Make resource string';
+    // help menu
+   srkmecunknown                   = 'unknown editor command';
+   
+   //Key strings
+   srVK_UNKNOWN    = 'Unknown';
+   srVK_LBUTTON    = 'Mouse Button Left';
+   srVK_RBUTTON    = 'Mouse Button Right';
+   //srVK_CANCEL     = 'Cancel'; = dlgCancel
+   srVK_MBUTTON    = 'Mouse Button Middle';
+   srVK_BACK       = 'Backspace';
+   srVK_TAB        = 'Tab';
+   srVK_CLEAR      = 'Clear';
+   srVK_RETURN     = 'Return';
+   srVK_SHIFT      = 'Shift';
+   srVK_CONTROL    = 'Control';
+   srVK_MENU       = 'Menu';
+   srVK_PAUSE      = 'Pause key';
+   srVK_CAPITAL    = 'Capital';
+   srVK_KANA       = 'Kana';
+   srVK_JUNJA      = 'Junja';
+   srVK_FINAL      = 'Final';
+   srVK_HANJA      = 'Hanja';
+   srVK_ESCAPE     = 'Escape';
+   srVK_CONVERT    = 'Convert';
+   srVK_NONCONVERT = 'Nonconvert';
+   srVK_ACCEPT     = 'Accept';
+   srVK_MODECHANGE = 'Mode Change';
+   srVK_SPACE      = 'Space key';
+   srVK_PRIOR      = 'Prior';
+   srVK_NEXT       = 'Next';
+   srVK_END        = 'End';
+   srVK_HOME       = 'Home';
+   srVK_LEFT       = 'Left';
+   srVK_UP         = 'Up';
+   srVK_RIGHT      = 'Right';
+   //srVK_DOWN       = 'Down'; = dlgdownword
+   //srVK_SELECT     = 'Select'; = lismenuselect
+   srVK_PRINT      = 'Print';
+   srVK_EXECUTE    = 'Execute';
+   srVK_SNAPSHOT   = 'Snapshot';
+   srVK_INSERT     = 'Insert';
+   //srVK_DELETE     = 'Delete'; dlgeddelete
+   srVK_HELP       = 'Help';
+   srVK_LWIN       = 'left windows key';
+   srVK_RWIN       = 'right windows key';
+   srVK_APPS       = 'application key';
+   srVK_NUMPAD     = 'Numpad %d';
+   srVK_NUMLOCK    = 'Numlock';
+   srVK_SCROLL     = 'Scroll';
+   srVK_IRREGULAR  = 'Irregular ';
+   
+   //Category
+   srkmCatCursorMoving   = 'Cursor moving commands';
+   srkmCatSelection      = 'Text selection commands';
+   srkmCatEditing        = 'Text editing commands';
+   srkmCatCmdCmd         = 'Command commands';
+   srkmCatSearchReplace  = 'Text search and replace commands';
+   srkmCatMarker         = 'Text marker commands';
+   srkmCatCodeTools      = 'CodeTools commands';
+   srkmCatSrcNoteBook    = 'Source Notebook commands';
+   srkmCatFileMenu       = 'File menu commands';
+   srkmCatViewMenu       = 'View menu commands';
+   srkmCatProjectMenu    = 'Project menu commands';
+   srkmCatRunMenu        = 'Run menu commands';
+   srkmCatToolMenu       = 'Tools menu commands';
+   srkmCatEnvMenu        = 'Environment menu commands';
+   srkmCarHelpMenu       = 'Help menu commands';
+
+   //Languages
+   rsLanguageAutomatic   = 'Automatic (or english)';
+   rsLanguageEnglish     = 'English';
+   rsLanguageDeutsch     = 'Deutsch';
+   rsLanguageSpanish     = 'Español';
+   rsLanguageFrench      = 'French';
+
+implementation
 end.
 

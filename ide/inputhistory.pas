@@ -39,10 +39,12 @@ uses
 
 const
   // these are the names of the various history lists in the IDE:
-  PublishProjectDestDirs = 'PublishProjectDestinationDirectories';
-  PublishProjectCommandsAfter = 'PublishProjectCommmandsAfter';
-  PublishProjectIncludeFileFilter = 'PublishProjectIncludeFileFilter';
-  PublishProjectExcludeFileFilter = 'PublishProjectExcludeFileFilter';
+  hlPublishProjectDestDirs = 'PublishProjectDestinationDirectories';
+  hlPublishProjectCommandsAfter = 'PublishProjectCommmandsAfter';
+  hlPublishProjectIncludeFileFilter = 'PublishProjectIncludeFileFilter';
+  hlPublishProjectExcludeFileFilter = 'PublishProjectExcludeFileFilter';
+  hlMakeResourceStringSections = 'MakeResourceStringSections';
+  hlMakeResourceStringPrefixes = 'MakeResourceStringPrefixes';
 
 type
   TFileDialogSettings = record
@@ -65,6 +67,7 @@ type
     function Push(const Entry: string): integer;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  public
     property Name: string read FName write SetName;
     property MaxCount: integer read FMaxCount write SetMaxCount;
   end;
@@ -163,8 +166,8 @@ type
     property HistoryLists: THistoryLists read FHistoryLists;
   end;
 
-const
-  InputHistories: TInputHistories = nil;
+var
+  InputHistories: TInputHistories;
 
 
 implementation
@@ -262,19 +265,19 @@ procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
   // Find- and replace-history
-  XMLConfig.SetValue(Path+'Find/History/Max',FMaxFindHistory);
+  XMLConfig.SetDeleteValue(Path+'Find/History/Max',FMaxFindHistory,20);
   SaveRecentList(XMLConfig,FFindHistory,Path+'Find/History/Find/');
   SaveRecentList(XMLConfig,FReplaceHistory,Path+'Find/History/Replace/');
   SaveRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
-  XMLConfig.SetValue(Path+'FPCUnitLinks/FPCAge',FLastFPCAge);
-  XMLConfig.SetValue(Path+'FPCUnitLinks/FPCPath',FLastFPCPath);
-  XMLConfig.SetValue(Path+'FPCUnitLinks/FPCSearchPath',FLastFPCSearchPath);
-  XMLConfig.SetValue(Path+'FPCUnitLinks/UnitLinks',FLastFPCUnitLinks);
+  XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/FPCAge',FLastFPCAge,0);
+  XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/FPCPath',FLastFPCPath,'');
+  XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/FPCSearchPath',FLastFPCSearchPath,'');
+  XMLConfig.SetDeleteValue(Path+'FPCUnitLinks/UnitLinks',FLastFPCUnitLinks,'');
   with FFileDialogSettings do begin
-    XMLConfig.SetValue(Path+'FileDialog/Width',Width);
-    XMLConfig.SetValue(Path+'FileDialog/Height',Height);
-    XMLConfig.SetValue(Path+'FileDialog/InitialDir',InitialDir);
-    XMLConfig.SetValue(Path+'FileDialog/MaxHistory',MaxHistory);
+    XMLConfig.SetDeleteValue(Path+'FileDialog/Width',Width,0);
+    XMLConfig.SetDeleteValue(Path+'FileDialog/Height',Height,0);
+    XMLConfig.SetDeleteValue(Path+'FileDialog/InitialDir',InitialDir,'');
+    XMLConfig.SetDeleteValue(Path+'FileDialog/MaxHistory',MaxHistory,20);
     SaveRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
   FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/');
@@ -312,8 +315,8 @@ var
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
-    XMLConfig.SetValue('InputHistory/Version/Value',
-      InputHistoryVersion);
+    XMLConfig.SetDeleteValue('InputHistory/Version/Value',
+      InputHistoryVersion,0);
     SaveToXMLConfig(XMLConfig,'InputHistory/');
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -425,8 +428,8 @@ end;
 procedure THistoryList.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
   );
 begin
-  XMLConfig.SetValue(Path+'Name',Name);
-  XMLConfig.SetValue(Path+'MaxCount',MaxCount);
+  XMLConfig.SetDeleteValue(Path+'Name',Name,'');
+  XMLConfig.SetDeleteValue(Path+'MaxCount',MaxCount,20);
   SaveRecentList(XMLConfig,Self,Path);
 end;
 
@@ -489,7 +492,7 @@ procedure THistoryLists.SaveToXMLConfig(XMLConfig: TXMLConfig;
 var
   i, CurID: integer;
 begin
-  XMLConfig.SetValue(Path+'Count',Count);
+  XMLConfig.SetDeleteValue(Path+'Count',Count,0);
   CurID:=0;
   for i:=0 to Count-1 do begin
     if Items[i].Count>0 then begin
@@ -525,6 +528,10 @@ procedure THistoryLists.Add(const ListName, Entry: string);
 begin
   GetList(ListName,true).Push(Entry);
 end;
+
+initialization
+  InputHistories:= nil;
+
 
 end.
 

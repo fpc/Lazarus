@@ -241,7 +241,7 @@ type
     // resource string sections
     function GatherResourceStringSections(
           Code: TCodeBuffer; X,Y: integer): boolean;
-    
+
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
           var StartCode: TCodeBuffer; var StartX, StartY: integer;

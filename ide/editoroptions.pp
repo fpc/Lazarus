@@ -5129,7 +5129,7 @@ begin
     Height:=23;
     Top:=Self.Height-Height-15;
     Left:=Self.Width-Width-10;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     OnClick:=@CancelButtonClick;
     Show;
   end;

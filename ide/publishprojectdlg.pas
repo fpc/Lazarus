@@ -216,7 +216,7 @@ var
   List: THistoryList;
 begin
   // destination directories
-  List:=InputHistories.HistoryLists.GetList(PublishProjectDestDirs,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true);
   if List.Count=0 then begin
     List.Add('$(TestDir)/publishedproject/');
     List.Add('$(ProjectDir)/published/');
@@ -224,20 +224,20 @@ begin
   DestDirComboBox.Items.Assign(List);
   
   // command after
-  List:=InputHistories.HistoryLists.GetList(PublishProjectCommandsAfter,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true);
   if List.Count=0 then begin
     List.Add('/bin/tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)');
   end;
   CommandAfterCombobox.Items.Assign(List);
 
   // file filter
-  List:=InputHistories.HistoryLists.GetList(PublishProjectIncludeFileFilter,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true);
   if List.Count=0 then begin
     List.Add(DefPublProjIncFilter);
   end;
   IncludeFilterCombobox.Items.Assign(List);
 
-  List:=InputHistories.HistoryLists.GetList(PublishProjectExcludeFileFilter,true);
+  List:=InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true);
   if List.Count=0 then begin
     List.Add(DefPublProjExcFilter);
   end;
@@ -248,20 +248,20 @@ procedure TPublishProjectDialog.SaveHistoryLists;
 begin
   // destination directories
   SetComboBox(DestDirComboBox,DestDirComboBox.Text,20);
-  InputHistories.HistoryLists.GetList(PublishProjectDestDirs,true).Assign(
+  InputHistories.HistoryLists.GetList(hlPublishProjectDestDirs,true).Assign(
     DestDirComboBox.Items);
     
   // command after
   SetComboBox(CommandAfterCombobox,CommandAfterCombobox.Text,20);
-  InputHistories.HistoryLists.GetList(PublishProjectCommandsAfter,true).Assign(
+  InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true).Assign(
     CommandAfterCombobox.Items);
 
   // file filter
   SetComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
-  InputHistories.HistoryLists.GetList(PublishProjectIncludeFileFilter,true).Assign(
+  InputHistories.HistoryLists.GetList(hlPublishProjectIncludeFileFilter,true).Assign(
     IncludeFilterCombobox.Items);
   SetComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
-  InputHistories.HistoryLists.GetList(PublishProjectExcludeFileFilter,true).Assign(
+  InputHistories.HistoryLists.GetList(hlPublishProjectExcludeFileFilter,true).Assign(
     ExcludeFilterCombobox.Items);
 end;
 

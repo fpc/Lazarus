@@ -14,10 +14,30 @@
  *                                                                           *
  *****************************************************************************
 }
+const
+  DialogResult : Array[mrNone..mrYesToAll] of Longint = (
+    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
+    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
+    idButtonYesToAll);
+
+  DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (
+    bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
+    bkIgnore, bkAll, bkCustom, bkCustom);
+
+  DialogButtonText : Array[idButtonOK..idButtonNoToAll] of String = (
+    rsmbOk, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, rsmbClose, rsmbAbort,
+    rsmbRetry, rsmbIgnore, rsmbAll, rsmbYesToAll, rsmbNoToAll);
+
+  DialogCaption : Array[idDialogWarning..idDialogConfirm] of String = (
+    rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);
+
 type
   TPromptDialog = class(TForm)
     procedure PromptDialogKeyDown(Sender: TObject; var Key: Word;
           Shift: TShiftState);
+
+    function GetDialogCaption(idDiag : Integer) : String;
+    function GetDialogButtonText(idBut : Integer): string;
   public
     TheDefaultIndex : Longint;
 
@@ -94,23 +114,37 @@ begin
   end;
 end;
 
-const
-  DialogResult : Array[mrNone..mrYesToAll] of Longint = (
-    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
-    idButtonIgnore, idButtonYes,idButtonNo, idButtonAll, idButtonNoToAll,
-    idButtonYesToAll);
+{** Return the localized or not title of dialog}
+function TPromptDialog.GetDialogCaption(idDiag: Integer): String;
+begin
+  Result:='?';
+  Case idDiag of
+    idDialogWarning : Result:=rsMtWarning;
+    idDialogError   : Result:=rsMtError;
+    idDialogInfo    : Result:=rsMtInformation;
+    idDialogConfirm : Result:=rsMtConfirmation;
+  end;
+end;
 
-  DialogButtonKind : Array[idButtonOK..idButtonNoToAll] of TBitBtnKind = (
-    bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
-    bkIgnore, bkAll, bkCustom, bkCustom);
-
-  DialogButtonText : Array[idButtonOK..idButtonNoToAll] of String = (
-    rsmbOk, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo, rsmbClose, rsmbAbort,
-    rsmbRetry, rsmbIgnore, rsmbAll, rsmbYesToAll, rsmbNoToAll);
-
-  DialogCaption : Array[idDialogWarning..idDialogConfirm] of String = (
-    rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation);
-
+{** Return the text associed a an standard button}
+function TPromptDialog.GetDialogButtonText(idBut: Integer): string;
+begin
+  Result:='';
+  Case idBut of
+    idButtonOk       : Result:=rsmbOk;
+    idButtonCancel   : Result:=rsmbCancel;
+    idButtonHelp     : Result:=rsmbHelp;
+    idButtonYes      : Result:=rsmbYes;
+    idButtonNo       : Result:=rsmbNo;
+    idButtonClose    : Result:=rsmbClose;
+    idButtonAbort    : Result:=rsmbAbort;
+    idButtonRetry    : Result:=rsmbRetry;
+    idButtonIgnore   : Result:=rsmbIgnore;
+    idButtonAll      : Result:=rsmbAll;
+    idButtonYesToAll : Result:=rsmbYesToAll;
+    idButtonNoToAll  : Result:=rsmbNoToAll;
+  end;
+end;
 
 procedure TPromptDialog.Paint;
 begin
@@ -151,7 +185,7 @@ begin
         If ACaption <> '' then
           Caption := ACaption
         else
-          Caption := DialogCaption[DialogType];
+          Caption := GetDialogCaption(DialogType);
       end;
     else begin
       FBitmap := TBitmap.Create;
@@ -203,7 +237,8 @@ var
 begin
   FillChar(TextStyle, SizeOf(TextStyle), 0);
 
-  With TextStyle do begin
+  With TextStyle do
+  begin
     Clipping   := True;
     Wordbreak  := True;
     SystemFont := True;
@@ -229,8 +264,9 @@ begin
   begin
     If (Buttons[curBtn] >= Low(DialogButtonKind)) and
       (Buttons[curBtn] <= High(DialogButtonKind))
-    then begin
-      curBtnWidth := Canvas.TextWidth(DialogButtonText[Buttons[curBtn]]);
+    then
+    begin
+      curBtnWidth := Canvas.TextWidth(GetDialogButtonText(Buttons[curBtn]));
       if curBtnWidth > cBtnWidth then
         cBtnWidth := curBtnWidth;
       Inc(reqBtnWidth, cBtnWidth + cBtnDist)
@@ -263,13 +299,16 @@ begin
 
   // create the buttons
   ButtonIndex := -1;
-  for curBtn := 0 to NumButtons - 1 do begin
+  for curBtn := 0 to NumButtons - 1 do
+  begin
     If (Buttons[curBtn] >= Low(DialogButtonKind)) and
       (Buttons[curBtn] <= High(DialogButtonKind))
-    then begin
+    then
+    begin
       inc(ButtonIndex);
 
-      with TBitBtn.Create(Self) do begin
+      with TBitBtn.Create(Self) do
+      begin
         Parent:= Self;
         SetBounds (ButtonLeft, 2 * cLabelSpacing + reqHeight, cBtnWidth, cBtnHeight);
         inc(ButtonLeft, cBtnDist);
@@ -280,11 +319,13 @@ begin
           idButtonNoToAll :
             begin
               Glyph.Handle := LoadStockPixmap(Buttons[curBtn]);
-              If Buttons[curBtn] = idButtonYesToAll then begin
+              If Buttons[curBtn] = idButtonYesToAll then
+              begin
                 ModalResult := mrYesToAll;
                 Caption := rsmbYesToAll;
               end
-              else begin
+              else
+              begin
                 ModalResult := mrNoToAll;
                 Caption := rsmbNoToAll;
               end;
@@ -340,6 +381,9 @@ end;
 
 {
    $Log$
+   Revision 1.3  2003/03/04 09:21:09  mattias
+   added localization for env options from Olivier
+
    Revision 1.2  2002/11/05 21:21:36  lazarus
    MG: fixed moving button with LEFT and RIGHT in messagedlgs
 

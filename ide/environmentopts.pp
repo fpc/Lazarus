@@ -529,7 +529,7 @@ function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
-
+function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
 
 implementation
 
@@ -589,6 +589,17 @@ begin
       exit;
   end;
   Result:=afaAsk;
+end;
+
+function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
+begin
+  Result :=rsLanguageAutomatic;
+  Case aLangId of
+    llEnglish : Result:=rsLanguageEnglish;
+    llGerman  : Result:=rsLanguageDeutsch;
+    llSpanish : Result:=rsLanguageSpanish;
+    llFrench  : Result:=rsLanguageFrench;
+  end;
 end;
 
 { TEnvironmentOptions }
@@ -1326,10 +1337,15 @@ begin
     Left:=5;
     Top:=3;
     Width:=LanguageGroupBox.ClientWidth-2*Left;
-    with Items do begin
+    with Items do
+    begin
       BeginUpdate;
-      for l:=Low(TLazarusLanguage) to High(TLazarusLanguage) do begin
-        Add(LazarusLanguageNames[l]+' ['+LazarusLanguageIDs[l]+']');
+      for l:=Low(TLazarusLanguage) to High(TLazarusLanguage) do
+      begin
+        If l<>Low(TLazarusLanguage) then
+          Add(GetLazarusLanguageNames(l)+' ['+LazarusLanguageIDs[l]+']')
+        else
+          Add(GetLazarusLanguageNames(l)); //No [] if automatic
       end;
       EndUpdate;
     end;
@@ -1788,7 +1804,7 @@ begin
     Height:=25;
     with Items do begin
       BeginUpdate;
-      Add('(no subdirectoy)');
+      Add(dlgBakDirectory);
       Add('backup');
       EndUpdate;
     end;
@@ -2467,11 +2483,11 @@ begin
     Caption:=dlgAmbigFileAct;
     with Items do begin
       BeginUpdate;
-      Add('Ask');
-      Add('Auto delete file');
-      Add('Auto rename file');
-      Add('Warn on compile');
-      Add('Ignore');
+      Add(dlgEnvAsk);
+      Add(dlgAutoDel);
+      Add(dlgAutoRen);
+      Add(dlgAmbigWarn);
+      Add(dlgIgnoreVerb);
       EndUpdate;
     end;
     Visible:=true;

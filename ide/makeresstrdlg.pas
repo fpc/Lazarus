@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs,
   ExtCtrls, LResources, LazarusIDEStrConsts, IDEOptionDefs, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
-  EditorOptions;
+  EditorOptions, InputHistory;
   
 type
   TMakeResStrDialog = class(TForm)
@@ -80,6 +80,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure FillResourceStringSections(Positions: TCodeXYPositions);
+    procedure FillIdentPrefixes;
   end;
   
 function ShowMakeResStrDialog(
@@ -104,7 +105,7 @@ begin
   // reachable resourcestring sections
   MakeResStrDialog.FillResourceStringSections(Positions);
   // identifier prefixes
-  // ToDo
+  MakeResStrDialog.FillIdentPrefixes;
   // identifiers and values
   // ToDo
   // resourcestrings
@@ -368,7 +369,9 @@ var
   p: PCodeXYPosition;
   s: String;
 begin
+  // the history list contains the filenames plus the
   with ResStrSectionComboBox do begin
+    Text:='';
     Items.BeginUpdate;
     for i:=0 to Positions.Count-1 do begin
       p:=Positions[i];
@@ -381,7 +384,22 @@ begin
     while Items.Count>Positions.Count do
       Items.Delete(Items.Count-1);
     Items.EndUpdate;
+    ItemIndex:=0;
   end;
+end;
+
+procedure TMakeResStrDialog.FillIdentPrefixes;
+var
+  HistoryList: THistoryList;
+begin
+  // get the Prefixes history list
+  HistoryList:=
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
+  IdentPrefixComboBox.Items.Assign(HistoryList);
+  if IdentPrefixComboBox.Items.Count>0 then
+    IdentPrefixComboBox.Text:=IdentPrefixComboBox.Items[0]
+  else
+    IdentPrefixComboBox.Text:='rs';
 end;
 
 end.

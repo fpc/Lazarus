@@ -34,7 +34,8 @@ interface
 uses
   LCLLinux, LCLType,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
-  SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList;
+  SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList,
+  LazarusIDEStrConsts;
 
 const
   { editor commands constants. see syneditkeycmds.pp for more
@@ -326,7 +327,9 @@ const
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 begin
-  Result:=DefaultName;
+  Result:=EditorCommandToDescriptionString(cmd);
+  if Result=srkmecunknown then
+    Result:=DefaultName;
 end;
 
 function StrToVKCode(const s: string): integer;
@@ -380,16 +383,20 @@ begin
     try
       KeyCommandRelationList:=AKeyCommandRelationList;
       KeyIndex:=Index;
-      Caption:='Edit Keys';
-      with KeyCommandRelationList.Relations[Index] do begin
-        CommandLabel.Caption:='Command: '+LocalizedName;
-        if Key1<>VK_UNKNOWN then begin
+      Caption:=srkmEditKeys;
+
+      with KeyCommandRelationList.Relations[Index] do
+      begin
+        CommandLabel.Caption:=srkmCommand+LocalizedName;
+        if Key1<>VK_UNKNOWN then
+        begin
           Key1CtrlCheckBox.Checked:=ssCtrl in Shift1;
           Key1AltCheckBox.Checked:=ssAlt in Shift1;
           Key1ShiftCheckBox.Checked:=ssShift in Shift1;
           InitComboBox(Key1KeyComboBox,Key1);
         end;
-        if Key2<>VK_UNKNOWN then begin
+        if Key2<>VK_UNKNOWN then
+        begin
           Key2CtrlCheckBox.Checked:=ssCtrl in Shift2;
           Key2AltCheckBox.Checked:=ssAlt in Shift2;
           Key2ShiftCheckBox.Checked:=ssShift in Shift2;
@@ -406,239 +413,215 @@ end;
 function EditorCommandToDescriptionString(cmd: word):AnsiString;
 begin
   case cmd of
-    ecNone: Result:= 'None';
-    ecLeft: Result:= 'Left';
-    ecRight: Result:= 'Right';
-    ecUp: Result:= 'Up';
-    ecDown: Result:= 'Down';
-    ecWordLeft: Result:= 'Word Left';
-    ecWordRight: Result:= 'Word Right';
-    ecLineStart: Result:= 'Line Start';
-    ecLineEnd: Result:= 'Line End';
-    ecPageUp: Result:= 'Page Up';
-    ecPageDown: Result:= 'Page Down';
-    ecPageLeft: Result:= 'Page Left';
-    ecPageRight: Result:= 'Page Right';
-    ecPageTop: Result:= 'Page Top';
-    ecPageBottom: Result:= 'Page Bottom';
-    ecEditorTop: Result:= 'Editor Top';
-    ecEditorBottom: Result:= 'Editor Bottom';
-    ecGotoXY: Result:= 'Goto XY';
-    ecSelLeft: Result:= 'SelLeft';
-    ecSelRight: Result:= 'SelRight';
-    ecSelUp: Result:= 'Sel Up';
-    ecSelDown: Result:= 'Sel Down';
-    ecSelWordLeft: Result:= 'Sel Word Left';
-    ecSelWordRight: Result:= 'Sel Word Right';
-    ecSelLineStart: Result:= 'Sel Line Start';
-    ecSelLineEnd: Result:= 'Sel Line End';
-    ecSelPageUp: Result:= 'Sel Page Up';
-    ecSelPageDown: Result:= 'Sel Page Down';
-    ecSelPageLeft: Result:= 'Sel Page Left';
-    ecSelPageRight: Result:= 'Sel Page Right';
-    ecSelPageTop: Result:= 'Sel Page Top';
-    ecSelPageBottom: Result:= 'Sel Page Bottom';
-    ecSelEditorTop: Result:= 'Sel Editor Top';
-    ecSelEditorBottom: Result:= 'Sel Editor Bottom';
-    ecSelGotoXY: Result:= 'Sel Goto XY';
-    ecSelectAll: Result:= 'Select All';
-    ecDeleteLastChar: Result:= 'Delete Last Char';
-    ecDeleteChar: Result:= 'Delete Char';
-    ecDeleteWord: Result:= 'Delete Word';
-    ecDeleteLastWord: Result:= 'Delete Last Word';
-    ecDeleteBOL: Result:= 'Delete BOL';
-    ecDeleteEOL: Result:= 'Delete EOL';
-    ecDeleteLine: Result:= 'Delete Line';
-    ecClearAll: Result:= 'Clear All';
-    ecLineBreak: Result:= 'Line Break';
-    ecInsertLine: Result:= 'Insert Line';
-    ecChar: Result:= 'Char';
-    ecImeStr: Result:= 'Ime Str';
-    ecUndo: Result:= 'Undo';
-    ecRedo: Result:= 'Redo';
-    ecCut: Result:= 'Cut';
-    ecCopy: Result:= 'Copy';
-    ecPaste: Result:= 'Paste';
-    ecScrollUp: Result:= 'Scroll Up';
-    ecScrollDown: Result:= 'Scroll Down';
-    ecScrollLeft: Result:= 'Scroll Left';
-    ecScrollRight: Result:= 'Scroll Right';
-    ecInsertMode: Result:= 'Insert Mode';
-    ecOverwriteMode: Result:= 'Overwrite Mode';
-    ecToggleMode: Result:= 'Toggle Mode';
-    ecBlockIndent: Result:= 'Block Indent';
-    ecBlockUnindent: Result:= 'Block Unindent';
-    ecTab: Result:= 'Tab';
-    ecShiftTab: Result:= 'Shift Tab';
-    ecMatchBracket: Result:= 'Match Bracket';
-    ecNormalSelect: Result:= 'Normal Select';
-    ecColumnSelect: Result:= 'Column Select';
-    ecLineSelect: Result:= 'Line Select';
-    ecAutoCompletion: Result:= 'Auto Completion';
-    ecUserFirst: Result:= 'User First';
-    ecGotoMarker0: Result:= 'Goto Marker 0';
-    ecGotoMarker1: Result:= 'Goto Marker 1';
-    ecGotoMarker2: Result:= 'Goto Marker 2';
-    ecGotoMarker3: Result:= 'Goto Marker 3';
-    ecGotoMarker4: Result:= 'Goto Marker 4';
-    ecGotoMarker5: Result:= 'Goto Marker 5';
-    ecGotoMarker6: Result:= 'Goto Marker 6';
-    ecGotoMarker7: Result:= 'Goto Marker 7';
-    ecGotoMarker8: Result:= 'Goto Marker 8';
-    ecGotoMarker9: Result:= 'Goto Marker 9';
-    ecSetMarker0: Result:= 'Set Marker 0';
-    ecSetMarker1: Result:= 'Set Marker 1';
-    ecSetMarker2: Result:= 'Set Marker 2';
-    ecSetMarker3: Result:= 'Set Marker 3';
-    ecSetMarker4: Result:= 'Set Marker 4';
-    ecSetMarker5: Result:= 'Set Marker 5';
-    ecSetMarker6: Result:= 'Set Marker 6';
-    ecSetMarker7: Result:= 'Set Marker 7';
-    ecSetMarker8: Result:= 'Set Marker 8';
-    ecSetMarker9: Result:= 'Set Marker 9';
-    ecPeriod: Result:= 'period';
+    ecNone                  : Result:= dlgEnvNone;
+    ecLeft                  : Result:= srvk_left;
+    ecRight                 : Result:= srvk_right;
+    ecUp                    : Result:= dlgUpWord;
+    ecDown                  : Result:= dlgDownWord;
+    ecWordLeft              : Result:= srkmecWordLeft;
+    ecWordRight             : Result:= srkmecWordRight;
+    ecLineStart             : Result:= srkmecLineStart;
+    ecLineEnd               : Result:= srkmecLineEnd;
+    ecPageUp                : Result:= srkmecPageUp;
+    ecPageDown              : Result:= srkmecPageDown;
+    ecPageLeft              : Result:= srkmecPageLeft;
+    ecPageRight             : Result:= srkmecPageRight;
+    ecPageTop               : Result:= srkmecPageTop;
+    ecPageBottom            : Result:= srkmecPageBottom;
+    ecEditorTop             : Result:= srkmecEditorTop;
+    ecEditorBottom          : Result:= srkmecEditorBottom;
+    ecGotoXY                : Result:= srkmecGotoXY;
+    ecSelLeft               : Result:= srkmecSelLeft;
+    ecSelRight              : Result:= srkmecSelRight;
+    ecSelUp                 : Result:= srkmecSelUp;
+    ecSelDown               : Result:= srkmecSelDown;
+    ecSelWordLeft           : Result:= srkmecSelWordLeft;
+    ecSelWordRight          : Result:= srkmecSelWordRight;
+    ecSelLineStart          : Result:= srkmecSelLineStart;
+    ecSelLineEnd            : Result:= srkmecSelLineEnd;
+    ecSelPageUp             : Result:= srkmecSelPageUp;
+    ecSelPageDown           : Result:= srkmecSelPageDown;
+    ecSelPageLeft           : Result:= srkmecSelPageLeft;
+    ecSelPageRight          : Result:= srkmecSelPageRight;
+    ecSelPageTop            : Result:= srkmecSelPageTop;
+    ecSelPageBottom         : Result:= srkmecSelPageBottom;
+    ecSelEditorTop          : Result:= srkmecSelEditorTop;
+    ecSelEditorBottom       : Result:= srkmecSelEditorBottom;
+    ecSelGotoXY             : Result:= srkmecSelGotoXY;
+    ecSelectAll             : Result:= srkmecSelectAll;
+    ecDeleteLastChar        : Result:= srkmecDeleteLastChar;
+    ecDeleteChar            : Result:= srkmecDeleteChar;
+    ecDeleteWord            : Result:= srkmecDeleteWord;
+    ecDeleteLastWord        : Result:= srkmecDeleteLastWord;
+    ecDeleteBOL             : Result:= srkmecDeleteBOL;
+    ecDeleteEOL             : Result:= srkmecDeleteEOL;
+    ecDeleteLine            : Result:= srkmecDeleteLine;
+    ecClearAll              : Result:= srkmecClearAll;
+    ecLineBreak             : Result:= srkmecLineBreak;
+    ecInsertLine            : Result:= srkmecInsertLine;
+    ecChar                  : Result:= srkmecChar;
+    ecImeStr                : Result:= srkmecImeStr;
+    ecUndo                  : Result:= lisMenuUndo;
+    ecRedo                  : Result:= lisMenuRedo;
+    ecCut                   : Result:= srkmecCut;
+    ecCopy                  : Result:= srkmecCopy;
+    ecPaste                 : Result:= srkmecPaste;
+    ecScrollUp              : Result:= srkmecScrollUp;
+    ecScrollDown            : Result:= srkmecScrollDown;
+    ecScrollLeft            : Result:= srkmecScrollLeft;
+    ecScrollRight           : Result:= srkmecScrollRight;
+    ecInsertMode            : Result:= srkmecInsertMode;
+    ecOverwriteMode         : Result:= srkmecOverwriteMode;
+    ecToggleMode            : Result:= srkmecToggleMode;
+    ecBlockIndent           : Result:= srkmecBlockIndent;
+    ecBlockUnindent         : Result:= srkmecBlockUnindent;
+    ecTab                   : Result:= srVK_TAB;
+    ecShiftTab              : Result:= srkmecShiftTab;
+    ecMatchBracket          : Result:= srkmecMatchBracket;
+    ecNormalSelect          : Result:= srkmecNormalSelect;
+    ecColumnSelect          : Result:= srkmecColumnSelect;
+    ecLineSelect            : Result:= srkmecLineSelect;
+    ecAutoCompletion        : Result:= srkmecAutoCompletion;
+    ecUserFirst             : Result:= srkmecUserFirst;
+    ecGotoMarker0 ..
+    ecGotoMarker9           : Result:= Format(srkmecGotoMarker,[cmd-ecGotoMarker0]);
+    ecSetMarker0 ..
+    ecSetMarker9            : Result:= Format(srkmecSetMarker,[cmd-ecSetMarker0]);
+    ecPeriod                : Result:= srkmecPeriod;
 
     // sourcenotebook
-    ecJumpToEditor: Result:='jump to editor';
-    ecNextEditor: Result:= 'next editor';
-    ecPrevEditor: Result:= 'previous editor';
-    ecMoveEditorLeft: Result:= 'move editor left';
-    ecMoveEditorRight: Result:= 'move editor right';
-    ecGotoEditor1: Result:='goto editor 1';
-    ecGotoEditor2: Result:='goto editor 2';
-    ecGotoEditor3: Result:='goto editor 3';
-    ecGotoEditor4: Result:='goto editor 4';
-    ecGotoEditor5: Result:='goto editor 5';
-    ecGotoEditor6: Result:='goto editor 6';
-    ecGotoEditor7: Result:='goto editor 7';
-    ecGotoEditor8: Result:='goto editor 8';
-    ecGotoEditor9: Result:='goto editor 9';
-    ecGotoEditor0: Result:='goto editor 10';
+    ecJumpToEditor          : Result:= srkmecJumpToEditor;
+    ecNextEditor            : Result:= srkmecNextEditor;
+    ecPrevEditor            : Result:= srkmecPrevEditor;
+    ecMoveEditorLeft        : Result:= srkmecMoveEditorLeft;
+    ecMoveEditorRight       : Result:= srkmecMoveEditorRight;
+    ecGotoEditor1..
+    ecGotoEditor0           : Format(srkmecGotoEditor,[cmd-ecGotoEditor1]);
 
     // file menu
-    ecNew: Result:='new';
-    ecNewUnit: Result:='new unit';
-    ecNewForm: Result:='new form';
-    ecOpen: Result:= 'open';
-    ecRevert: Result:= 'revert';
-    ecSave: Result:= 'save';
-    ecSaveAs: Result:= 'save as';
-    ecSaveAll: Result:= 'save all';
-    ecClose: Result:= 'close';
-    ecCloseAll: Result:= 'close all';
-    ecQuit: Result:= 'quit';
+    ecNew                   : Result:= srkmecNew;
+    ecNewUnit               : Result:= srkmecNewUnit;
+    ecNewForm               : Result:= srkmecNewForm;
+    ecOpen                  : Result:= lisMenuOpen;
+    ecRevert                : Result:= lisMenuRevert;
+    ecSave                  : Result:= lisMenuSave;
+    ecSaveAs                : Result:= srkmecSaveAs;
+    ecSaveAll               : Result:= srkmecSaveAll;
+    ecClose                 : Result:= lismenuclose;
+    ecCloseAll              : Result:= srkmecCloseAll;
+    ecQuit                  : Result:= lismenuquit;
     
     // edit menu
-    ecSelectionUpperCase: Result:='Selection uppercase';
-    ecSelectionLowerCase: Result:='Selection lowercase';
-    ecSelectionTabs2Spaces: Result:='Selection tabs to spaces';
-    ecSelectionComment: Result:='Comment selection';
-    ecSelectionUncomment: Result:='Uncomment selection';
-    ecSelectionSort: Result:='Sort selection';
-    ecSelectToBrace: Result:= 'Select to brace';
-    ecSelectCodeBlock: Result:= 'Select code block';
-    ecSelectLine: Result:= 'Select line';
-    ecSelectParagraph: Result:= 'Select paragraph';
-    ecInsertGPLNotice: Result:='Insert GPL notice';
-    ecInsertUserName: Result:='Insert current username';
-    ecInsertDateTime: Result:='Insert current date and time';
-    ecInsertChangeLogEntry: Result:='Insert ChangeLog entry';
-    ecInsertCVSAuthor: Result:='Insert CVS keyword Author';
-    ecInsertCVSDate: Result:='Insert CVS keyword Date';
-    ecInsertCVSHeader: Result:='Insert CVS keyword Header';
-    ecInsertCVSID: Result:='Insert CVS keyword ID';
-    ecInsertCVSLog: Result:='Insert CVS keyword Log';
-    ecInsertCVSName: Result:='Insert CVS keyword Name';
-    ecInsertCVSRevision: Result:='Insert CVS keyword Revision';
-    ecInsertCVSSource: Result:='Insert CVS keyword Source';
+    ecSelectionUpperCase    : Result:= lismenuuppercaseselection;
+    ecSelectionLowerCase    : Result:= lismenulowercaseselection;
+    ecSelectionTabs2Spaces  : Result:= srkmecSelectionTabs2Spaces;
+    ecSelectionComment      : Result:= lismenucommentselection;
+    ecSelectionUncomment    : Result:= lismenuuncommentselection;
+    ecSelectionSort         : Result:= lismenusortselection;
+    ecSelectToBrace         : Result:= lismenuselecttobrace;
+    ecSelectCodeBlock       : Result:= lismenuselectcodeblock;
+    ecSelectLine            : Result:= lismenuselectline;
+    ecSelectParagraph       : Result:= lismenuselectparagraph;
+    ecInsertGPLNotice       : Result:= srkmecInsertGPLNotice;
+    ecInsertUserName        : Result:= srkmecInsertUserName;
+    ecInsertDateTime        : Result:= srkmecInsertDateTime;
+    ecInsertChangeLogEntry  : Result:= srkmecInsertChangeLogEntry;
+    ecInsertCVSAuthor       : Result:= srkmecInsertCVSAuthor;
+    ecInsertCVSDate         : Result:= srkmecInsertCVSDate;
+    ecInsertCVSHeader       : Result:= srkmecInsertCVSHeader;
+    ecInsertCVSID           : Result:= srkmecInsertCVSID;
+    ecInsertCVSLog          : Result:= srkmecInsertCVSLog;
+    ecInsertCVSName         : Result:= srkmecInsertCVSName;
+    ecInsertCVSRevision     : Result:= srkmecInsertCVSRevision;
+    ecInsertCVSSource       : Result:= srkmecInsertCVSSource;
 
     // search menu
-    ecFind: Result:= 'Find text';
-    ecFindNext: Result:= 'Find next';
-    ecFindPrevious: Result:= 'Find Previous';
-    ecFindInFiles: Result:= 'Find in files';
-    ecReplace: Result:= 'Replace text';
-    ecIncrementalFind: Result:= 'Incremental Find';
-    ecFindProcedureDefinition: Result:= 'find procedure definition';
-    ecFindProcedureMethod: Result:= 'find procedure method';
-    ecGotoLineNumber: Result:= 'goto line number';
-    ecJumpBack: Result:='jump back';
-    ecJumpForward: Result:='jump forward';
-    ecAddJumpPoint: Result:='add jump point';
-    ecViewJumpHistory: Result:='view jump history';
-    ecOpenFileAtCursor: Result:='open file at cursor';
-    ecGotoIncludeDirective: Result:='goto to include directive of current include file';
+    ecFind                  : Result:= srkmecFind;
+    ecFindNext              : Result:= srkmecFindNext;
+    ecFindPrevious          : Result:= srkmecFindPrevious;
+    ecFindInFiles           : Result:= srkmecFindInFiles;
+    ecReplace               : Result:= srkmecReplace;
+    ecIncrementalFind       : Result:= lismenuincrementalfind;
+    ecFindProcedureDefinition:Result:= srkmecFindProcedureDefinition;
+    ecFindProcedureMethod   : Result:= srkmecFindProcedureMethod;
+    ecGotoLineNumber        : Result:= srkmecGotoLineNumber;
+    ecJumpBack              : Result:= lismenujumpback;
+    ecJumpForward           : Result:= lismenujumpforward;
+    ecAddJumpPoint          : Result:= srkmecAddJumpPoint;
+    ecViewJumpHistory       : Result:= lismenuviewjumphistory;
+    ecOpenFileAtCursor      : Result:= srkmecOpenFileAtCursor;
+    ecGotoIncludeDirective  : Result:= srkmecGotoIncludeDirective;
 
     // view menu
-    ecToggleFormUnit: Result:= 'switch between form and source';
-    ecToggleObjectInsp: Result:= 'view object inspector';
-    ecToggleProjectExpl: Result:= 'view project explorer';
-    ecToggleCodeExpl: Result:= 'view code explorer';
-    ecToggleMessages: Result:= 'view messages';
-    ecToggleWatches: Result:= 'view watches';
-    ecToggleBreakPoints: Result:= 'view breakpoints';
-    ecToggleDebuggerOut: Result:= 'view debugger output';
-    ecToggleLocals: Result := 'view local variables';
-    ecToggleCallStack: Result := 'view call stack';
-    ecViewUnits: Result:= 'view units';
-    ecViewForms: Result:= 'view forms';
-    ecViewUnitDependencies: Result:= 'view unit dependencies';
+    ecToggleFormUnit        : Result:= srkmecToggleFormUnit;
+    ecToggleObjectInsp      : Result:= srkmecToggleObjectInsp;
+    ecToggleProjectExpl     : Result:= srkmecToggleProjectExpl;
+    ecToggleCodeExpl        : Result:= srkmecToggleCodeExpl;
+    ecToggleMessages        : Result:= srkmecToggleMessages;
+    ecToggleWatches         : Result:= srkmecToggleWatches;
+    ecToggleBreakPoints     : Result:= srkmecToggleBreakPoints;
+    ecToggleDebuggerOut     : Result:= srkmecToggleDebuggerOut;
+    ecToggleLocals          : Result:= srkmecToggleLocals;
+    ecToggleCallStack       : Result:= srkmecToggleCallStack;
+    ecViewUnits             : Result:= srkmecViewUnits;
+    ecViewForms             : Result:= srkmecViewForms;
+    ecViewUnitDependencies  : Result:= srkmecViewUnitDependencies;
 
     // codetools
-    ecWordCompletion: Result:= 'word completion';
-    ecCompleteCode: Result:= 'complete code';
-    ecIdentCompletion: Result:= 'identifier completion';
-    ecSyntaxCheck: Result:='syntax check';
-    ecGuessUnclosedBlock: Result:='guess unclosed block';
-    ecGuessMisplacedIFDEF: Result:='guess misplaced $IFDEF';
-    ecConvertDFM2LFM: Result:='convert DFM file to LFM';
-    ecFindDeclaration: Result:='find declaration';
-    ecFindBlockOtherEnd: Result:='find block other end';
-    ecFindBlockStart: Result:='find block start';
+    ecWordCompletion        : Result:= srkmecWordCompletion;
+    ecCompleteCode          : Result:= srkmecCompleteCode;
+    ecIdentCompletion       : Result:= dlgedidcomlet;
+    ecSyntaxCheck           : Result:= srkmecSyntaxCheck;
+    ecGuessUnclosedBlock    : Result:= lismenuguessunclosedblock;
+    ecGuessMisplacedIFDEF   : Result:= srkmecGuessMisplacedIFDEF;
+    ecConvertDFM2LFM        : Result:= lismenuconvertdfmtolfm;
+    ecFindDeclaration       : Result:= srkmecFindDeclaration;
+    ecFindBlockOtherEnd     : Result:= srkmecFindBlockOtherEnd;
+    ecFindBlockStart        : Result:= srkmecFindBlockStart;
 
-    // project
-    ecNewProject: Result:='New project';
-    ecNewProjectFromFile: Result:='New project from file';
-    ecOpenProject: Result:='Open project';
-    ecSaveProject: Result:='Save project';
-    ecSaveProjectAs: Result:='Save project as';
-    ecPublishProject: Result:='Publish project';
-    ecAddCurUnitToProj: Result:='Add active unit to project';
-    ecRemoveFromProj: Result:='Remove active unit from project';
-    ecViewProjectSource: Result:='View project source';
-    ecProjectOptions: Result:='View project options';
+    // project (menu string resource)
+    ecNewProject            : Result:= lisMenuNewProject;
+    ecNewProjectFromFile    : Result:= lisMenuNewProjectFromFile;
+    ecOpenProject           : Result:= lisMenuOpenProject;
+    ecSaveProject           : Result:= lisMenuSaveProject;
+    ecSaveProjectAs         : Result:= lisMenuSaveProjectAs;
+    ecPublishProject        : Result:= lisMenuPublishProject;
+    ecAddCurUnitToProj      : Result:= lisMenuAddUnitToProject;
+    ecRemoveFromProj        : Result:= lisMenuRemoveUnitFromProject;
+    ecViewProjectSource     : Result:= lisMenuViewSource;
+    ecProjectOptions        : Result:= lisMenuProjectOptions;
 
-    // run menu
-    ecBuild: Result:= 'build program/project';
-    ecBuildAll: Result:= 'build all files of program/project';
-    ecRun: Result:= 'run program';
-    ecPause: Result:= 'pause program';
-    ecStepInto: Result:= 'step into';
-    ecStepOver: Result:= 'step over';
-    ecRunToCursor: Result:= 'run to cursor';
-    ecStopProgram: Result:= 'stop program';
-    ecRunParameters: Result:= 'run parameters';
-    ecCompilerOptions: Result:= 'compiler options';
+    // run menu (menu string resource)
+    ecBuild                 : Result:= srkmecBuild;
+    ecBuildAll              : Result:= srkmecBuildAll;
+    ecRun                   : Result:= srkmecRun;
+    ecPause                 : Result:= srkmecPause;
+    ecStepInto              : Result:= lisMenuStepInto;
+    ecStepOver              : Result:= lisMenuStepOver;
+    ecRunToCursor           : Result:= lisMenuRunToCursor;
+    ecStopProgram           : Result:= srkmecStopProgram;
+    ecRunParameters         : Result:= srkmecRunParameters;
+    ecCompilerOptions       : Result:= srkmecCompilerOptions;
     
     // tools menu
-    ecExtToolSettings: Result:= 'external tools settings';
-    ecConfigBuildLazarus: Result:= 'configure build-lazarus';
-    ecBuildLazarus: Result:= 'build lazarus';
-    ecExtToolFirst..ecExtToolLast:
-              Result:='external tool '+IntToStr(cmd-ecExtToolFirst+1);
+    ecExtToolSettings       : Result:= srkmecExtToolSettings;
+    ecConfigBuildLazarus    : Result:= lismenuconfigurebuildlazarus;
+    ecBuildLazarus          : Result:= srkmecBuildLazarus;
+    ecExtToolFirst..
+    ecExtToolLast           : Result:= Format(srkmecExtTool,[cmd-ecExtToolFirst+1]);
 
     // environment menu
-    ecEnvironmentOptions: Result:= 'environment options';
-    ecEditorOptions: Result:= 'editor options';
-    ecCodeToolsOptions: Result:= 'codetools options';
-    ecCodeToolsDefinesEd: Result:= 'codetools defines editor';
-    ecMakeResourceString: Result:='make resource string';
+    ecEnvironmentOptions    : Result:= srkmecEnvironmentOptions;
+    ecEditorOptions         : Result:= lismenueditoroptions;
+    ecCodeToolsOptions      : Result:= srkmecCodeToolsOptions;
+    ecCodeToolsDefinesEd    : Result:= srkmecCodeToolsDefinesEd;
+    ecMakeResourceString    : Result:= srkmecMakeResourceString;
 
     // help menu
-    ecAboutLazarus: Result:= 'about lazarus';
+    ecAboutLazarus          : Result:= lisMenuAboutLazarus;
 
     else
-      Result:='unknown editor command';
+      Result:= srkmecunknown;
   end;
 end;
 
@@ -668,13 +651,14 @@ begin
           Index2:=b;
         end;
         inc(Result);
-        if Protocol<>nil then begin
-          Protocol.Add('Conflict '+IntToStr(Result));
-          Protocol.Add('    command1 "'
+        if Protocol<>nil then
+        begin
+          Protocol.Add(srkmConflic+IntToStr(Result));
+          Protocol.Add(srkmCommand1
             +EditorCommandToDescriptionString(Key1.Command)+'"'
             +'->'+KeyAndShiftStateToStr(Key1.Key,Key1.Shift));
-          Protocol.Add(' conflicts with ');
-          Protocol.Add('    command2 "'
+          Protocol.Add(srkmConflicW);
+          Protocol.Add(srkmCommand2
             +EditorCommandToDescriptionString(Key2.Command)+'"'
             +'->'+KeyAndShiftStateToStr(Key2.Key,Key2.Shift)
            );
@@ -717,75 +701,78 @@ var
   
   procedure AddKey;
   begin
-    if p>0 then
-      AddStr(' ');
+    if p>0 then  AddStr(' ');
+    
     case Key of
-    VK_UNKNOWN    :AddStr('Unknown');
-    VK_LBUTTON    :AddStr('Mouse Button Left');
-    VK_RBUTTON    :AddStr('Mouse Button Right');
-    VK_CANCEL     :AddStr('Cancel');
-    VK_MBUTTON    :AddStr('Mouse Button Middle');
-    VK_BACK       :AddStr('Backspace');
-    VK_TAB        :AddStr('Tab');
-    VK_CLEAR      :AddStr('Clear');
-    VK_RETURN     :AddStr('Return');
-    VK_SHIFT      :AddStr('Shift');
-    VK_CONTROL    :AddStr('Control');
-    VK_MENU       :AddStr('Menu');
-    VK_PAUSE      :AddStr('Pause');
-    VK_CAPITAL    :AddStr('Capital');
-    VK_KANA       :AddStr('Kana');
+    VK_UNKNOWN    :AddStr(srVK_UNKNOWN);
+    VK_LBUTTON    :AddStr(srVK_LBUTTON);
+    VK_RBUTTON    :AddStr(srVK_RBUTTON);
+    VK_CANCEL     :AddStr(dlgCancel);
+    VK_MBUTTON    :AddStr(srVK_MBUTTON);
+    VK_BACK       :AddStr(srVK_BACK);
+    VK_TAB        :AddStr(srVK_TAB);
+    VK_CLEAR      :AddStr(srVK_CLEAR);
+    VK_RETURN     :AddStr(srVK_RETURN);
+    VK_SHIFT      :AddStr(srVK_SHIFT);
+    VK_CONTROL    :AddStr(srVK_CONTROL);
+    VK_MENU       :AddStr(srVK_MENU);
+    VK_PAUSE      :AddStr(srVK_PAUSE);
+    VK_CAPITAL    :AddStr(srVK_CAPITAL);
+    VK_KANA       :AddStr(srVK_KANA);
   //  VK_HANGUL     :AddStr('Hangul');
-    VK_JUNJA      :AddStr('Junja');
-    VK_FINAL      :AddStr('Final');
-    VK_HANJA      :AddStr('Hanja');
+    VK_JUNJA      :AddStr(srVK_JUNJA);
+    VK_FINAL      :AddStr(srVK_FINAL);
+    VK_HANJA      :AddStr(srVK_HANJA );
   //  VK_KANJI      :AddStr('Kanji');
-    VK_ESCAPE     :AddStr('Escape');
-    VK_CONVERT    :AddStr('Convert');
-    VK_NONCONVERT :AddStr('Nonconvert');
-    VK_ACCEPT     :AddStr('Accept');
-    VK_MODECHANGE :AddStr('Mode Change');
-    VK_SPACE      :AddStr('Space');
-    VK_PRIOR      :AddStr('Prior');
-    VK_NEXT       :AddStr('Next');
-    VK_END        :AddStr('End');
-    VK_HOME       :AddStr('Home');
-    VK_LEFT       :AddStr('Left');
-    VK_UP         :AddStr('Up');
-    VK_RIGHT      :AddStr('Right');
-    VK_DOWN       :AddStr('Down');
-    VK_SELECT     :AddStr('Select');
-    VK_PRINT      :AddStr('Print');
-    VK_EXECUTE    :AddStr('Execute');
-    VK_SNAPSHOT   :AddStr('Snapshot');
-    VK_INSERT     :AddStr('Insert');
-    VK_DELETE     :AddStr('Delete');
-    VK_HELP       :AddStr('Help');
+    VK_ESCAPE     :AddStr(srVK_ESCAPE);
+    VK_CONVERT    :AddStr(srVK_CONVERT);
+    VK_NONCONVERT :AddStr(srVK_NONCONVERT);
+    VK_ACCEPT     :AddStr(srVK_ACCEPT);
+    VK_MODECHANGE :AddStr(srVK_MODECHANGE);
+    VK_SPACE      :AddStr(srVK_SPACE);
+    VK_PRIOR      :AddStr(srVK_PRIOR);
+    VK_NEXT       :AddStr(srVK_NEXT);
+    VK_END        :AddStr(srVK_END);
+    VK_HOME       :AddStr(srVK_HOME);
+    VK_LEFT       :AddStr(srVK_LEFT);
+    VK_UP         :AddStr(srVK_UP);
+    VK_RIGHT      :AddStr(srVK_RIGHT);
+    VK_DOWN       :AddStr(dlgdownword);
+    VK_SELECT     :AddStr(lismenuselect);
+    VK_PRINT      :AddStr(srVK_PRINT);
+    VK_EXECUTE    :AddStr(srVK_EXECUTE);
+    VK_SNAPSHOT   :AddStr(srVK_SNAPSHOT);
+    VK_INSERT     :AddStr(srVK_INSERT);
+    VK_DELETE     :AddStr(dlgeddelete);
+    VK_HELP       :AddStr(srVK_HELP);
     VK_0..VK_9    :AddStr(IntToStr(Key-VK_0));
     VK_A..VK_Z    :AddStr(chr(ord('A')+Key-VK_A));
-    VK_LWIN       :AddStr('left windows key');
-    VK_RWIN       :AddStr('right windows key');
-    VK_APPS       :AddStr('application key');
-    VK_NUMPAD0..VK_NUMPAD9: begin AddStr('Numpad ');AddStr(IntToStr(Key-VK_NUMPAD0)); end;
+    VK_LWIN       :AddStr(srVK_LWIN);
+    VK_RWIN       :AddStr(srVK_RWIN);
+    VK_APPS       :AddStr(srVK_APPS);
+    VK_NUMPAD0..VK_NUMPAD9:  AddStr(Format(srVK_NUMPAD,[Key-VK_NUMPAD0]));
     VK_MULTIPLY   :AddStr('*');
     VK_ADD        :AddStr('+');
     VK_SEPARATOR  :AddStr('|');
     VK_SUBTRACT   :AddStr('-');
     VK_DECIMAL    :AddStr('.');
     VK_DIVIDE     :AddStr('/');
-    VK_F1..VK_F24 :begin AddStr('F'); AddStr(IntToStr(Key-VK_F1+1)); end;
-    VK_NUMLOCK    :AddStr('Numlock');
-    VK_SCROLL     :AddStr('Scroll');
+    VK_F1..VK_F24 : AddStr('F'+IntToStr(Key-VK_F1+1));
+    VK_NUMLOCK    :AddStr(srVK_NUMLOCK);
+    VK_SCROLL     :AddStr(srVK_SCROLL);
     VK_EQUAL      :AddStr('=');
     VK_COMMA      :AddStr(',');
     VK_POINT      :AddStr('.');
     VK_SLASH      :AddStr('/');
     VK_AT         :AddStr('@');
     else
-      if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then begin
-        AddStr('Irregular ');
+      if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then
+      begin
+        AddStr(srVK_IRREGULAR);
         AddStr(chr(Key-VK_IRREGULAR));
-      end else begin
+      end
+      else
+      begin
         AddStr(UnknownVKPrefix);
         AddStr(IntToStr(Key));
         AddStr(UnknownVKPostfix);
@@ -816,9 +803,10 @@ var a:integer;
   s:AnsiString;
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
+  if LazarusResources.Find(ClassName)=nil then
+  begin
     SetBounds((Screen.Width-200) div 2,(Screen.Height-270) div 2,216,310);
-    Caption:='Edit keys for command';
+    Caption:=srkmEditForCmd;
     OnKeyUp:=@FormKeyUp;
 
     OkButton:=TButton.Create(Self);
@@ -836,7 +824,7 @@ begin
     with CancelButton do begin
       Name:='CancelButton';
       Parent:=Self;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       Left:=125;
       Top:=OkButton.Top;
       Width:=OkButton.Width;
@@ -847,7 +835,7 @@ begin
     with CommandLabel do begin
       Name:='CommandLabel';
       Parent:=Self;
-      Caption:='Command';
+      Caption:=srkmCommand;
       Left:=5;
       Top:=5;
       Width:=Self.ClientWidth-Left-Left;
@@ -858,7 +846,7 @@ begin
     with Key1GroupBox do begin
       Name:='Key1GroupBox';
       Parent:=Self;
-      Caption:='Key';
+      Caption:=srkmKey;
       Left:=5;
       Top:=CommandLabel.Top+CommandLabel.Height+8;
       Width:=Self.ClientWidth-Left-Left;
@@ -923,7 +911,7 @@ begin
       Top:=Key1KeyComboBox.Top+Key1KeyComboBox.Height+5;
       Width:=Key1KeyComboBox.Width;
       Height:=25;
-      Caption:='Grab Key';
+      Caption:=srkmGrabKey;
       Name:='Key1GrabButton';
       OnClick:=@Key1GrabButtonClick;
     end;
@@ -932,7 +920,7 @@ begin
     with Key2GroupBox do begin
       Name:='Key2GroupBox';
       Parent:=Self;
-      Caption:='Alternative Key';
+      Caption:=srkmAlternKey;
       Left:=5;
       Top:=Key1GroupBox.Top+Key1GroupBox.Height+8;
       Width:=Key1GroupBox.Width;
@@ -997,7 +985,7 @@ begin
       Top:=Key2KeyComboBox.Top+Key2KeyComboBox.Height+5;
       Width:=Key2KeyComboBox.Width;
       Height:=25;
-      Caption:='Grab Key';
+      Caption:=srkmGrabKey;
       Name:='Key2GrabButton';
       OnClick:=@Key2GrabButtonClick;
     end;
@@ -1009,7 +997,7 @@ end;
 procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
 var NewKey1,NewKey2:integer;
   NewShiftState1,NewShiftState2:TShiftState;
-  ACaption,AText:AnsiString;
+  AText:AnsiString;
   DummyRelation, CurRelation:TKeyCommandRelation;
 begin
   NewKey1:=VK_UNKNOWN;
@@ -1017,46 +1005,51 @@ begin
   NewKey2:=VK_UNKNOWN;
   NewShiftState2:=[];
   NewKey1:=StrToVKCode(Key1KeyComboBox.Text);
-  if NewKey1<>VK_UNKNOWN then begin
+  if NewKey1<>VK_UNKNOWN then
+  begin
     if Key1CtrlCheckBox.Checked then include(NewShiftState1,ssCtrl);
     if Key1AltCheckBox.Checked then include(NewShiftState1,ssAlt);
     if Key1ShiftCheckBox.Checked then include(NewShiftState1,ssShift);
   end;
+
   CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
   DummyRelation:=KeyCommandRelationList.Find(NewKey1,NewShiftState1,
                                                       CurRelation.Parent.Areas);
   if (DummyRelation<>nil) 
-  and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then begin
-    ACaption:='No No No';
-    AText:=' The key "'+KeyAndShiftStateToStr(NewKey1,NewShiftState1)+'"'
-            +' is already connected to "'+DummyRelation.Name+'".';
-    MessageDlg(ACaption,AText,mterror,[mbok],0);
+  and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
+  begin
+    AText:=Format(srkmAlreadyConnected,[KeyAndShiftStateToStr(NewKey1,NewShiftState1),DummyRelation.Name]);
+    MessageDlg(AText,mtError,[mbok],0);
     exit;
   end;
+
   NewKey2:=StrToVKCode(Key2KeyComboBox.Text);
   if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
     NewKey2:=VK_UNKNOWN;
-  if NewKey2<>VK_UNKNOWN then begin
+  if NewKey2<>VK_UNKNOWN then
+  begin
     if Key2CtrlCheckBox.Checked then include(NewShiftState2,ssCtrl);
     if Key2AltCheckBox.Checked then include(NewShiftState2,ssAlt);
     if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
   end;
-  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,
-                                                      CurRelation.Parent.Areas);
-  if (DummyRelation<>nil) 
-  and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then begin
-    ACaption:='No No No';
-    AText:=' The key "'+KeyAndShiftStateToStr(NewKey2,NewShiftState2)+'"'
-            +' is already connected to "'+DummyRelation.Name+'".';
-    MessageDlg(ACaption,AText,mterror,[mbok],0);
+  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,CurRelation.Parent.Areas);
+  
+  if (DummyRelation<>nil) and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
+  begin
+    AText:=Format(srkmAlreadyConnected,[KeyAndShiftStateToStr(NewKey2,NewShiftState2),DummyRelation.Name]);
+    MessageDlg(AText,mterror,[mbok],0);
     exit;
   end;
-  if NewKey1=VK_UNKNOWN then begin
+
+  if NewKey1=VK_UNKNOWN then
+  begin
     NewKey1:=NewKey2;
     NewShiftState1:=NewShiftState2;
     NewKey2:=VK_UNKNOWN;
   end;
-  with CurRelation do begin
+
+  with CurRelation do
+  begin
     Key1:=NewKey1;
     Shift1:=NewShiftState1;
     Key2:=NewKey2;
@@ -1085,14 +1078,16 @@ var i: integer;
 begin
   if GrabbingKey=0 then exit;
   // enable all components
-  for i:=0 to ComponentCount-1 do begin
+  for i:=0 to ComponentCount-1 do
+  begin
     if (Components[i] is TWinControl) then
       TWinControl(Components[i]).Enabled:=true;
   end;
+  
   if GrabbingKey=1 then
-    Key1GrabButton.Caption:='Grab Key'
+    Key1GrabButton.Caption:=srkmGrabKey
   else if GrabbingKey=2 then
-    Key2GrabButton.Caption:='Grab Key';
+           Key2GrabButton.Caption:=srkmGrabKey;
   GrabbingKey:=0;
 end;
 
@@ -1102,7 +1097,8 @@ begin
   i:=AComboBox.Items.IndexOf(AValue);
   if i>=0 then
     AComboBox.ItemIndex:=i
-  else begin
+  else
+  begin
     AComboBox.Items.Add(AValue);
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AValue);
   end;
@@ -1115,19 +1111,21 @@ begin
   GrabbingKey:=AGrabbingKey;
   if GrabbingKey=0 then exit;
   // disable all components
-  for i:=0 to ComponentCount-1 do begin
-    if (Components[i] is TWinControl) then begin
+  for i:=0 to ComponentCount-1 do
+  begin
+    if (Components[i] is TWinControl) then
+    begin
       if ((GrabbingKey=1) and (Components[i]<>Key1GrabButton)
-      and (Components[i]<>Key1GroupBox))
-      or ((GrabbingKey=2) and (Components[i]<>Key2GrabButton)
-      and (Components[i]<>Key2GroupBox)) then
-        TWinControl(Components[i]).Enabled:=false;
+         and (Components[i]<>Key1GroupBox))
+         or ((GrabbingKey=2) and (Components[i]<>Key2GrabButton)
+         and (Components[i]<>Key2GroupBox)) then
+                   TWinControl(Components[i]).Enabled:=false;
     end;
   end;
   if GrabbingKey=1 then
-    Key1GrabButton.Caption:='Please press a key ...'
+    Key1GrabButton.Caption:=srkmPressKey
   else if GrabbingKey=2 then
-    Key2GrabButton.Caption:='Please press a key ...';
+           Key2GrabButton.Caption:=srkmPressKey;
 end;
 
 procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
@@ -1139,18 +1137,22 @@ begin
      );}
   if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
              VK_LSHIFT, VK_RSHIFT] then exit;
-  if (GrabbingKey in [1,2]) then begin
-    if GrabbingKey=1 then begin
+  if (GrabbingKey in [1,2]) then
+  begin
+    if GrabbingKey=1 then
+    begin
       Key1CtrlCheckBox.Checked:=(ssCtrl in Shift);
       Key1ShiftCheckBox.Checked:=(ssShift in Shift);
       Key1AltCheckBox.Checked:=(ssAlt in Shift);
       SetComboBox(Key1KeyComboBox,KeyAndShiftStateToStr(Key,[]));
-    end else if GrabbingKey=2 then begin
-      Key2CtrlCheckBox.Checked:=(ssCtrl in Shift);
-      Key2ShiftCheckBox.Checked:=(ssShift in Shift);
-      Key2AltCheckBox.Checked:=(ssAlt in Shift);
-      SetComboBox(Key2KeyComboBox,KeyAndShiftStateToStr(Key,[]));
-    end;
+    end
+    else if GrabbingKey=2 then
+         begin
+           Key2CtrlCheckBox.Checked:=(ssCtrl in Shift);
+           Key2ShiftCheckBox.Checked:=(ssShift in Shift);
+           Key2AltCheckBox.Checked:=(ssAlt in Shift);
+           SetComboBox(Key2KeyComboBox,KeyAndShiftStateToStr(Key,[]));
+         end;
     Key:=0;
     DeactivateGrabbing;
   end;
@@ -1174,14 +1176,17 @@ end;
 
 procedure TKeyCommandRelation.SetParent(const AValue: TKeyCommandCategory);
 begin
-  if Parent<>AValue then begin
+  if Parent<>AValue then
+  begin
     // unbind
-    if Parent<>nil then begin
+    if Parent<>nil then
+    begin
       Parent.Remove(Self);
     end;
     // bind
     fParent:=AValue;
-    if Parent<>nil then begin
+    if Parent<>nil then
+    begin
       Parent.Add(Self);
     end;
   end;
@@ -1216,7 +1221,7 @@ begin
   // create default keymapping
 
   // moving
-  C:=Categories[AddCategory('CursorMoving','Cursor moving commands',caSrcEditOnly)];
+  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,caSrcEditOnly)];
   Add(C,'Move cursor word left',ecWordLeft, VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor word right',ecWordRight, VK_RIGHT, [ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Move cursor to line start',ecLineStart, VK_HOME, [],VK_UNKNOWN,[]);
@@ -1235,7 +1240,7 @@ begin
   Add(C,'Scroll right one char',ecScrollRight, VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // selection
-  C:=Categories[AddCategory('Selection','Text selection commands',caSrcEditOnly)];
+  C:=Categories[AddCategory('Selection',srkmCatSelection,caSrcEditOnly)];
   Add(C,'Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
   Add(C,'Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
   Add(C,'Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_Insert,[ssShift]);
@@ -1263,7 +1268,7 @@ begin
   Add(C,'Sort selection',ecSelectionSort,VK_UNKNOWN, [],VK_UNKNOWN,[]);
 
   // editing
-  C:=Categories[AddCategory('editing commands','Text editing commands',caSrcEditOnly)];
+  C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEditOnly)];
   Add(C,'Indent block',ecBlockIndent,VK_I,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Unindent block',ecBlockUnindent,VK_U,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Delete last char',ecDeleteLastChar,VK_BACK, [],VK_BACK, [ssShift]);
@@ -1290,12 +1295,12 @@ begin
   Add(C,'Insert CVS keyword Source',ecInsertCVSSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // command commands
-  C:=Categories[AddCategory('CommandCommands','Command commands',caAll)];
+  C:=Categories[AddCategory('CommandCommands',srkmCatCmdCmd,caAll)];
   Add(C,'Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Redo',ecRedo,VK_Z,[ssCtrl,ssShift],VK_UNKNOWN,[]);
-  
+
   // search & replace
-  C:=Categories[AddCategory('SearchReplace','Text search and replace commands',caSrcEditOnly)];
+  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,caSrcEditOnly)];
   Add(C,'Go to matching bracket',ecMatchBracket,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Find next',ecFindNext,VK_F3,[],VK_UNKNOWN,[]);
@@ -1311,7 +1316,7 @@ begin
   Add(C,'Open file at cursor',ecOpenFileAtCursor,VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
   // marker
-  C:=Categories[AddCategory('Marker','Text marker commands',caSrcEditOnly)];
+  C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEditOnly)];
   Add(C,'Go to marker 0',ecGotoMarker0,VK_0,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Go to marker 1',ecGotoMarker1,VK_1,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Go to marker 2',ecGotoMarker2,VK_2,[ssCtrl],VK_UNKNOWN,[]);
@@ -1332,9 +1337,9 @@ begin
   Add(C,'Set marker 7',ecSetMarker7,VK_7,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Set marker 8',ecSetMarker8,VK_8,[ssShift,ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Set marker 9',ecSetMarker9,VK_9,[ssShift,ssCtrl],VK_UNKNOWN,[]);
-  
+
   // codetools
-  C:=Categories[AddCategory('CodeTools','CodeTools commands',caSrcEditOnly)];
+  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,caSrcEditOnly)];
   Add(C,'Code template completion',ecAutoCompletion,VK_J,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
@@ -1353,7 +1358,7 @@ begin
   Add(C,'Goto include directive',ecGotoIncludeDirective,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // source notebook
-  C:=Categories[AddCategory('SourceNotebook','Source Notebook commands',caAll)];
+  C:=Categories[AddCategory('SourceNotebook',srkmCatSrcNoteBook,caAll)];
   Add(C,'Go to next editor',ecNextEditor, VK_TAB, [ssCtrl], VK_UNKNOWN, []);
   Add(C,'Go to prior editor',ecPrevEditor, VK_TAB, [ssShift,ssCtrl], VK_UNKNOWN, []);
   Add(C,'Go to source editor 1',ecGotoEditor0,VK_1,[ssAlt],VK_UNKNOWN,[]);
@@ -1370,7 +1375,7 @@ begin
   Add(C,'Move editor right',ecMoveEditorLeft, VK_UNKNOWN, [], VK_UNKNOWN, []);
 
   // file menu
-  C:=Categories[AddCategory('FileMenu','File menu commands',caAll)];
+  C:=Categories[AddCategory('FileMenu',srkmCatFileMenu,caAll)];
   Add(C,'New',ecNew,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'NewUnit',ecNewUnit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'NewForm',ecNewForm,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1384,7 +1389,7 @@ begin
   Add(C,'Quit',ecQuit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // view menu
-  C:=Categories[AddCategory('ViewMenu','View menu commands',caAll)];
+  C:=Categories[AddCategory('ViewMenu',srkmCatViewMenu,caAll)];
   Add(C,'Toggle view Object Inspector',ecToggleObjectInsp,VK_F11,[],VK_UNKNOWN,[]);
   Add(C,'Toggle view Project Explorer',ecToggleProjectExpl,VK_F11,[ssCtrl,ssAlt],VK_UNKNOWN,[]);
   Add(C,'Toggle view Code Explorer',ecToggleCodeExpl,VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1401,7 +1406,7 @@ begin
   Add(C,'Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
 
   // project menu
-  C:=Categories[AddCategory('ProjectMenu','Project menu commands',caAll)];
+  C:=Categories[AddCategory('ProjectMenu',srkmCatProjectMenu,caAll)];
   Add(C,'New project',ecNewProject,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'New project from file',ecNewProjectFromFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open project',ecOpenProject,VK_F11,[ssCtrl],VK_UNKNOWN,[]);
@@ -1414,7 +1419,7 @@ begin
   Add(C,'View project options',ecProjectOptions,VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu
-  C:=Categories[AddCategory('RunMenu','Run menu commands',caAll)];
+  C:=Categories[AddCategory('RunMenu',srkmCatRunMenu,caAll)];
   Add(C,'Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
@@ -1427,21 +1432,21 @@ begin
   Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
-  C:=Categories[AddCategory(KeyCategoryToolMenuName,'Tools menu commands',caAll)];
+  C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];
   Add(C,'External Tools settings',ecExtToolSettings,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Build Lazarus',ecBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Configure "Build Lazarus"',ecConfigBuildLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Make resource string',ecMakeResourceString,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // environment menu
-  C:=Categories[AddCategory('EnvironmentMenu','Environment menu commands',caAll)];
+  C:=Categories[AddCategory('EnvironmentMenu',srkmCatEnvMenu,caAll)];
   Add(C,'General environment options',ecEnvironmentOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Editor options',ecEditorOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'CodeTools options',ecCodeToolsOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'CodeTools defines editor',ecCodeToolsDefinesEd,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // help menu
-  C:=Categories[AddCategory('HelpMenu','Help menu commands',caAll)];
+  C:=Categories[AddCategory('HelpMenu',srkmCarHelpMenu,caAll)];
   Add(C,'About Lazarus',ecAboutLazarus,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 end;
 
@@ -1460,7 +1465,8 @@ end;
 function TKeyCommandRelationList.GetRelation(
   Index:integer):TKeyCommandRelation;
 begin
-  if (Index<0) or (Index>=Count) then begin
+  if (Index<0) or (Index>=Count) then
+  begin
     writeln('[TKeyCommandRelationList.GetRelation] Index out of bounds '
       ,Index,' Count=',Count);
     // creates an exception, that gdb catches:
@@ -1493,7 +1499,7 @@ begin
   if NewCount>fExtToolCount then begin
     // increase available external tool commands
     while NewCount>fExtToolCount do begin
-      Add(ExtToolCat,'External tool '+IntToStr(fExtToolCount),
+      Add(ExtToolCat,Format(srkmecExtTool,[fExtToolCount]),
            ecExtToolFirst+fExtToolCount,VK_UNKNOWN,[],VK_UNKNOWN,[]);
       inc(fExtToolCount);
     end;
@@ -1688,8 +1694,7 @@ begin
   end;
 end;
 
-function TKeyCommandRelationList.GetCategory(Index: integer
-  ): TKeyCommandCategory;
+function TKeyCommandRelationList.GetCategory(Index: integer): TKeyCommandCategory;
 begin
   Result:=TKeyCommandCategory(fCategories[Index]);
 end;

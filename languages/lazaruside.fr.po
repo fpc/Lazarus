@@ -1,12 +1,27 @@
 msgid ""
 msgstr ""
-""
 "Last-Translator: \n"
-"PO-Revision-Date: 2003-02-17 23:16+0100\n"
+"PO-Revision-Date: 2003-03-03 23:06+0100\n"
 "Language-Team:  <fr@li.org>\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
+
+#: lazarusidestrconsts:srkmcommand1
+msgid "    command1 \""
+msgstr "    commande 1 \""
+
+#: lazarusidestrconsts:srkmcommand2
+msgid "    command2 \""
+msgstr "    commande 2 \""
+
+#: lazarusidestrconsts:srkmconflicw
+msgid " conflicts with "
+msgstr "Confli avec "
+
+#: lazarusidestrconsts:srkmalreadyconnected
+msgid " The key \"%s\" is already connected to \"%s\"."
+msgstr "La touche \"%s\" est déjà associée à la commande \"%s\"."
 
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "&Add Watch At Cursor"
@@ -84,6 +99,10 @@ msgstr "&Voir"
 msgid "&Windows"
 msgstr "&Fenêtres"
 
+#: lazarusidestrconsts:dlgbakdirectory
+msgid "(no subdirectoy)"
+msgstr "(Aucun)"
+
 #: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
 msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
 msgstr "--primary-config-path <path>\n                         Répertoire de configuration primaire, où Lazarus\n                         enregistre ses fichiers de configurations. Par défaut c'est \n                         %s\n\n"
@@ -104,9 +123,17 @@ msgstr "\" est protèger en écriture."
 msgid "About Lazarus"
 msgstr "A propos de Lazarus"
 
+#: lazarusidestrconsts:srvk_accept
+msgid "Accept"
+msgstr "Accept"
+
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
 msgstr "Ajouter l'unité active au projet"
+
+#: lazarusidestrconsts:srkmecaddjumppoint
+msgid "Add jump point"
+msgstr "Ajouter un point de saut"
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
@@ -148,6 +175,10 @@ msgstr "Alphabétiquement"
 msgid "Alt Sets Column Mode"
 msgstr "Alt fixe le mode colonne"
 
+#: lazarusidestrconsts:srkmalternkey
+msgid "Alternative Key"
+msgstr "Touche complémentaire"
+
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
 msgstr "Action sur les ambiguïtés"
@@ -155,6 +186,10 @@ msgstr "Action sur les ambiguïtés"
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
 msgstr "Application"
+
+#: lazarusidestrconsts:srvk_apps
+msgid "application key"
+msgstr ""
 
 #: lazarusidestrconsts:dlgapplicationsettings
 msgid "Application Settings"
@@ -200,6 +235,10 @@ msgstr "Enregistrement auto"
 msgid "Auto-create forms:"
 msgstr "Fiches auto créées"
 
+#: lazarusidestrconsts:rslanguageautomatic
+msgid "Automatic (or english)"
+msgstr "Automatique (ou englais)"
+
 #: lazarusidestrconsts:dlgavailableforms
 msgid "Available forms:"
 msgstr "Fiches disponibles"
@@ -211,6 +250,10 @@ msgstr "Retour"
 #: lazarusidestrconsts:dlgbackcolor
 msgid "Background color"
 msgstr "Couleur de fond"
+
+#: lazarusidestrconsts:srvk_back
+msgid "Backspace"
+msgstr "Retour arrière"
 
 #: lazarusidestrconsts:dlgenvbckup
 msgid "Backup"
@@ -229,12 +272,20 @@ msgid "Bold"
 msgstr "Gras"
 
 #: lazarusidestrconsts:uembookmarkn
-msgid "Bookmark "
-msgstr "Signet"
+msgid "Bookmark"
+msgstr "Aller au signet"
 
 #: lazarusidestrconsts:dlgbrachighlight
 msgid "Bracket Highlight"
 msgstr "Mise en évidence des parenthèses"
+
+#: lazarusidestrconsts:srkmeclinebreak
+msgid "Break line and move cursor"
+msgstr "Coupe la ligne et déplace le curseur"
+
+#: lazarusidestrconsts:srkmecinsertline
+msgid "Break line, leave cursor"
+msgstr "Coupe la ligne sans bouger le curseur"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
@@ -252,9 +303,17 @@ msgstr "Construire"
 msgid "Build all"
 msgstr "Construire tout"
 
+#: lazarusidestrconsts:srkmecbuildall
+msgid "build all files of program/project"
+msgstr "Construit tous les fichiers du programme"
+
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
 msgstr "Construire Lazarus"
+
+#: lazarusidestrconsts:srkmecbuild
+msgid "build program/project"
+msgstr "Compile le programme"
 
 #: lazarusidestrconsts:dlgcmacro
 msgid "C Style Macros (global)"
@@ -276,6 +335,10 @@ msgstr "Pile d'appel"
 msgid "Cancel"
 msgstr "Annuler"
 
+#: lazarusidestrconsts:srvk_capital
+msgid "Capital"
+msgstr "Majuscule"
+
 #: lazarusidestrconsts:dlgcasesensitive
 msgid "Case Sensitive"
 msgstr "Respecter la casse"
@@ -287,6 +350,10 @@ msgstr "Centrer sur la ligne du curseur"
 #: lazarusidestrconsts:lismenuinsertchangelogentry
 msgid "ChangeLog entry"
 msgstr "Entrée ChangeLog"
+
+#: lazarusidestrconsts:srkmecchar
+msgid "Char"
+msgstr "Caractère"
 
 #: lazarusidestrconsts:dlgcheckconsistency
 msgid "Check consistency"
@@ -312,9 +379,17 @@ msgstr "L'odre des objets"
 msgid "Class part insert policy"
 msgstr "Politique d'insertion de portion d'objet"
 
+#: lazarusidestrconsts:srvk_clear
+msgid "Clear"
+msgstr "Suppr"
+
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
 msgstr "Fermer"
+
+#: lazarusidestrconsts:srkmeccloseall
+msgid "Close all"
+msgstr "Fermer tout"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
@@ -340,9 +415,17 @@ msgstr "Génération de code"
 msgid "Code parameters"
 msgstr "Paramètres du code"
 
+#: lazarusidestrconsts:srkmecautocompletion
+msgid "Code template completion"
+msgstr "Complèter avec le modèle de code"
+
 #: lazarusidestrconsts:dlgedcodetempl
 msgid "Code templates"
 msgstr "Modèles de code"
+
+#: lazarusidestrconsts:srkmcatcodetools
+msgid "CodeTools commands"
+msgstr "Commandes des outils code"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor"
@@ -371,6 +454,18 @@ msgstr "couleurs prédéfinies :"
 #: lazarusidestrconsts:dlgenvcolors
 msgid "Colors"
 msgstr "Couleurs"
+
+#: lazarusidestrconsts:srkmeccolumnselect
+msgid "Column selection mode"
+msgstr "Mode sélection type colonne"
+
+#: lazarusidestrconsts:srkmcommand
+msgid "Command "
+msgstr "Commande "
+
+#: lazarusidestrconsts:srkmcatcmdcmd
+msgid "Command commands"
+msgstr "Commandes"
 
 #: lazarusidestrconsts:dlgcommandlineparams
 msgid "Command line parameters (without application name)"
@@ -424,13 +519,29 @@ msgstr "Configurer la construction de lazarus"
 msgid "Configure custom tools ..."
 msgstr "Configurer les outils..."
 
+#: lazarusidestrconsts:srkmconflic
+msgid "Conflict "
+msgstr "Conflit"
+
 #: lazarusidestrconsts:dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
 msgstr "Le nom du constructeur doit être \"Init\" (le destructeur doit être \"Done\")"
 
+#: lazarusidestrconsts:srvk_control
+msgid "Control"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_convert
+msgid "Convert"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuconvertdfmtolfm
 msgid "Convert DFM file to LFM"
 msgstr "Convertir un DFM en LFM"
+
+#: lazarusidestrconsts:srkmecselectiontabs2spaces
+msgid "Convert tabs to spaces in selection"
+msgstr "Convertir les tabulations de la sélection en espaces"
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
@@ -439,6 +550,10 @@ msgstr "Copier"
 #: lazarusidestrconsts:liscopyerror
 msgid "Copy Error"
 msgstr "Erreur de copie"
+
+#: lazarusidestrconsts:srkmeccopy
+msgid "Copy selection to clipboard"
+msgstr "Copie de la sélection dans le presse papier"
 
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
@@ -464,6 +579,10 @@ msgstr "Curseur au delà de la fin de ligne"
 msgid "Cursor column in current editor"
 msgstr "Colonne du curseur dans l'éditeur courant"
 
+#: lazarusidestrconsts:srkmcatcursormoving
+msgid "Cursor moving commands"
+msgstr "Commandes de déplacements"
+
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
 msgstr "Ligne du curseur dans l'éditeur courant"
@@ -471,6 +590,10 @@ msgstr "Ligne du curseur dans l'éditeur courant"
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
 msgstr "Couper"
+
+#: lazarusidestrconsts:srkmeccut
+msgid "Cut selection to clipboard"
+msgstr "Couper la sélection vers le presse papier"
 
 #: lazarusidestrconsts:lismenuinsertcvskeyword
 msgid "CVS keyword"
@@ -512,6 +635,18 @@ msgstr "Délai"
 msgid "Delete"
 msgstr "Supprime"
 
+#: lazarusidestrconsts:srkmecdeletechar
+msgid "Delete char at cursor"
+msgstr "Supprimer le caractère sous le curseur"
+
+#: lazarusidestrconsts:srkmecdeleteline
+msgid "Delete current line"
+msgstr "Supprimer la ligne courante"
+
+#: lazarusidestrconsts:srkmecdeletelastchar
+msgid "Delete Last Char"
+msgstr "Supprimer le dernier caractère"
+
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
 msgstr "Supprimer la sélection"
@@ -519,6 +654,26 @@ msgstr "Supprimer la sélection"
 #: lazarusidestrconsts:dlgdeltemplate
 msgid "Delete template "
 msgstr "Supprimer le modèle"
+
+#: lazarusidestrconsts:srkmecdeletebol
+msgid "Delete to beginning of line"
+msgstr "Supprimer le début de la ligne"
+
+#: lazarusidestrconsts:srkmecdeleteeol
+msgid "Delete to end of line"
+msgstr "Supprimer la fin de la ligne"
+
+#: lazarusidestrconsts:srkmecdeleteword
+msgid "Delete to end of word"
+msgstr "supprimer la fin du mot"
+
+#: lazarusidestrconsts:srkmecdeletelastword
+msgid "Delete to start of word"
+msgstr "Supprimer le début du mot"
+
+#: lazarusidestrconsts:srkmecclearall
+msgid "Delete whole text"
+msgstr "Supprimer tout le texte"
 
 #: lazarusidestrconsts:dlgdelphi2ext
 msgid "Delphi 2 Extensions"
@@ -535,6 +690,10 @@ msgstr "Bureau"
 #: lazarusidestrconsts:dlgdesktopfiles
 msgid "Desktop files"
 msgstr "Fichiers bureau"
+
+#: lazarusidestrconsts:rslanguagedeutsch
+msgid "Deutsch"
+msgstr "Allemand"
 
 #: lazarusidestrconsts:idedialogs
 msgid "Dialogs"
@@ -600,9 +759,17 @@ msgstr "Dynamique"
 msgid "E&nvironment"
 msgstr "&Configuration"
 
+#: lazarusidestrconsts:srkmeditkeys
+msgid "Edit Keys"
+msgstr "Edition des touches"
+
+#: lazarusidestrconsts:srkmeditforcmd
+msgid "Edit keys for command"
+msgstr "Edition des touches de la commande"
+
 #: lazarusidestrconsts:dlgededit
 msgid "Edit..."
-msgstr "Modif..."
+msgstr "Editer..."
 
 #: lazarusidestrconsts:dlgedfiles
 msgid "Editor files"
@@ -628,6 +795,14 @@ msgstr "Propriétés de l'éditeur"
 msgid "Element"
 msgstr "Elément "
 
+#: lazarusidestrconsts:srvk_end
+msgid "End"
+msgstr "Fin"
+
+#: lazarusidestrconsts:rslanguageenglish
+msgid "English"
+msgstr "Englais"
+
 #: lazarusidestrconsts:dlgentirescope
 msgid "Entire Scope"
 msgstr "Toute la portée"
@@ -636,13 +811,37 @@ msgstr "Toute la portée"
 msgid "Environment"
 msgstr "Environement"
 
+#: lazarusidestrconsts:srkmcatenvmenu
+msgid "Environment menu commands"
+msgstr "Commandes du menu Configuration"
+
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "Environment options"
 msgstr "Options d'environnement"
 
+#: lazarusidestrconsts:srvk_escape
+msgid "Escape"
+msgstr "Echap"
+
+#: lazarusidestrconsts:rslanguagespanish
+msgid "Espa\361ol"
+msgstr "Espagnol"
+
+#: lazarusidestrconsts:srvk_execute
+msgid "Execute"
+msgstr ""
+
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Nom étendu du fichier de l'éditeur courant"
+
+#: lazarusidestrconsts:srkmecexttool
+msgid "External tool %d"
+msgstr "Outils externe %d"
+
+#: lazarusidestrconsts:srkmecexttoolsettings
+msgid "External tools settings"
+msgstr "Configurations des outils externes"
 
 #: lazarusidestrconsts:dlgextralinespacing
 msgid "Extra line spacing"
@@ -660,9 +859,17 @@ msgstr "Extensions de fichier"
 msgid "File is readonly"
 msgstr "Fichier en lecture seule"
 
+#: lazarusidestrconsts:srkmcatfilemenu
+msgid "File menu commands"
+msgstr "Commandes du menu Fichier"
+
 #: lazarusidestrconsts:dlgenvfiles
 msgid "Files"
 msgstr "Fichiers"
+
+#: lazarusidestrconsts:srvk_final
+msgid "Final"
+msgstr "Fin"
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
@@ -680,21 +887,61 @@ msgstr "Chercher l'occurrence &suivante"
 msgid "Find &Previous"
 msgstr "Chercher l'occurrence &précédente"
 
+#: lazarusidestrconsts:srkmecfindblockotherend
+msgid "Find block other end"
+msgstr "Chercher la fin d'un bloque"
+
+#: lazarusidestrconsts:srkmecfindblockstart
+msgid "Find block start"
+msgstr "Chercher le début d'un bloque"
+
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
 msgstr "Chercher le début du bloc de code"
+
+#: lazarusidestrconsts:srkmecfinddeclaration
+msgid "Find declaration"
+msgstr "Chercher la déclaration"
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
 msgstr "Rechercher la déclaration sous le curseur"
 
+#: lazarusidestrconsts:srkmecfindinfiles
+msgid "Find in files"
+msgstr "Chercher dans les fichiers"
+
+#: lazarusidestrconsts:srkmecfindnext
+msgid "Find next"
+msgstr "Poursuivre la recherche"
+
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
 msgstr "Chercher la fin du bloc de code"
 
+#: lazarusidestrconsts:srkmecfindprevious
+msgid "Find previous"
+msgstr "Revenir sur la recherche"
+
+#: lazarusidestrconsts:srkmecfindproceduredefinition
+msgid "Find procedure definiton"
+msgstr "Chercher la définition de procédure"
+
+#: lazarusidestrconsts:srkmecfindproceduremethod
+msgid "Find procedure method"
+msgstr "Chercher la méthode"
+
+#: lazarusidestrconsts:srkmecfind
+msgid "Find text"
+msgstr "Chercher le texte"
+
 #: lazarusidestrconsts:dlgfindtextatcursor
 msgid "Find text at cursor"
 msgstr "Cherche le texte sous le curseur"
+
+#: lazarusidestrconsts:srkmecjumptoeditor
+msgid "Focus to source editor"
+msgstr "Active l'éditeur de source"
 
 #: lazarusidestrconsts:dlgforecolor
 msgid "Foreground color"
@@ -728,6 +975,10 @@ msgstr "FPC Erreur sur le répertoire source"
 msgid "Freepascal source directory"
 msgstr "Répertoire de sources de FreePascal"
 
+#: lazarusidestrconsts:rslanguagefrench
+msgid "French"
+msgstr "Français"
+
 #: lazarusidestrconsts:dlgfromcursor
 msgid "From Cursor"
 msgstr "Depuis le curseur"
@@ -735,6 +986,10 @@ msgstr "Depuis le curseur"
 #: lazarusidestrconsts:lismenuinsertgeneral
 msgid "General"
 msgstr "Générales"
+
+#: lazarusidestrconsts:srkmecenvironmentoptions
+msgid "General environment options"
+msgstr "Options d'environement générales"
 
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
@@ -756,6 +1011,34 @@ msgstr "Vous produisez"
 msgid "Global"
 msgstr "Globale"
 
+#: lazarusidestrconsts:srkmecgotoeditor
+msgid "Go to editor %d"
+msgstr "Aller à l'éditeur %d"
+
+#: lazarusidestrconsts:srkmecgotolinenumber
+msgid "Go to line number"
+msgstr "Aller à la ligne"
+
+#: lazarusidestrconsts:srkmecgotomarker
+msgid "Go to Marker %d"
+msgstr "Aller au signet %d"
+
+#: lazarusidestrconsts:srkmecmatchbracket
+msgid "Go to matching bracket"
+msgstr "Allez à la parenthèse assortie"
+
+#: lazarusidestrconsts:srkmecnexteditor
+msgid "Go to next editor"
+msgstr "Aller à l'éditeur suivant"
+
+#: lazarusidestrconsts:srkmecpreveditor
+msgid "Go to prior editor"
+msgstr "Aller à l'éditeur précédent"
+
+#: lazarusidestrconsts:srkmecgotoincludedirective
+msgid "Go to to include directive of current include file"
+msgstr "Aller à la déclaration d'inclusion du fichier courant"
+
 #: lazarusidestrconsts:lismenugotoincludedirective
 msgid "Goto include directive"
 msgstr "Aller à la directive \"Include\""
@@ -764,6 +1047,10 @@ msgstr "Aller à la directive \"Include\""
 msgid "Goto line"
 msgstr "Aller à la ligne"
 
+#: lazarusidestrconsts:srkmecgotoxy
+msgid "Goto XY"
+msgstr "Aller en XY"
+
 #: lazarusidestrconsts:dlggpccomp
 msgid "GPC (GNU Pascal Compiler) Compatible"
 msgstr "Compatibilité GPC (GNU Pascal Compiler)"
@@ -771,6 +1058,10 @@ msgstr "Compatibilité GPC (GNU Pascal Compiler)"
 #: lazarusidestrconsts:lismenuinsertgplnotice
 msgid "GPL notice"
 msgstr "Notice GPL"
+
+#: lazarusidestrconsts:srkmgrabkey
+msgid "Grab Key"
+msgstr "Editeur de touche"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
@@ -791,6 +1082,10 @@ msgstr "Taille de grille X"
 #: lazarusidestrconsts:dlggridy
 msgid "Grid size Y"
 msgstr "Taille de grille Y"
+
+#: lazarusidestrconsts:srkmecguessmisplacedifdef
+msgid "Guess misplaced $IFDEF"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
@@ -816,9 +1111,21 @@ msgstr "Largeur de gouttière"
 msgid "Half Page Scroll"
 msgstr "Scroll d'un demie page"
 
+#: lazarusidestrconsts:srvk_hanja
+msgid "Hanja"
+msgstr ""
+
 #: lazarusidestrconsts:dlgheapsize
 msgid "Heap Size"
 msgstr "Taille de tas"
+
+#: lazarusidestrconsts:srvk_help
+msgid "Help"
+msgstr "Aide"
+
+#: lazarusidestrconsts:srkmcarhelpmenu
+msgid "Help menu commands"
+msgstr "Commandes du menu Aide"
 
 #: lazarusidestrconsts:dlgedhintcommand
 msgid "Hint: click on the command you want to edit"
@@ -831,6 +1138,10 @@ msgstr "Aide pour les composants de la palette (Hint)"
 #: lazarusidestrconsts:dlgspbhints
 msgid "Hints for main speed buttons (open, save, ...)"
 msgstr "Aide pour les principaux boutons rapide (Ouvrir,Enregistrer,...) "
+
+#: lazarusidestrconsts:srvk_home
+msgid "Home"
+msgstr "Debut"
 
 #: lazarusidestrconsts:dlghostapplication
 msgid "Host application"
@@ -856,6 +1167,10 @@ msgstr "Si vous souhaitez aider à implémenter cette fonctionnalité, mailler à \0
 msgid "Ignore"
 msgstr "Ignorer"
 
+#: lazarusidestrconsts:srkmecimestr
+msgid "Ime Str"
+msgstr ""
+
 #: lazarusidestrconsts:dlginfrontofmethods
 msgid "In front of methods"
 msgstr "Devant les méthodes"
@@ -876,6 +1191,10 @@ msgstr "Inclure les variables système"
 msgid "Incremental Find"
 msgstr "Poursuivre la recherche"
 
+#: lazarusidestrconsts:srkmecblockindent
+msgid "Indent block"
+msgstr "Indente un bloque"
+
 #: lazarusidestrconsts:dlgindentcodeto
 msgid "Indent code to"
 msgstr "Indentation depuis"
@@ -891,6 +1210,62 @@ msgstr "Info"
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "INS"
+
+#: lazarusidestrconsts:srvk_insert
+msgid "Insert"
+msgstr "Inser"
+
+#: lazarusidestrconsts:srkmecinsertchangelogentry
+msgid "Insert ChangeLog entry"
+msgstr "Ajoute une entrée au ChangeLog"
+
+#: lazarusidestrconsts:srkmecinsertdatetime
+msgid "Insert current date and time"
+msgstr "Insert la date et l'heure courante"
+
+#: lazarusidestrconsts:srkmecinsertusername
+msgid "Insert current username"
+msgstr "Insert le nom d'utilisateur"
+
+#: lazarusidestrconsts:srkmecinsertcvsauthor
+msgid "Insert CVS keyword Author"
+msgstr "Insert le mot clé CVS Author"
+
+#: lazarusidestrconsts:srkmecinsertcvsdate
+msgid "Insert CVS keyword Date"
+msgstr "Insert le mot clé CVS Date"
+
+#: lazarusidestrconsts:srkmecinsertcvsheader
+msgid "Insert CVS keyword Header"
+msgstr "Insert le mot clé CVS Header"
+
+#: lazarusidestrconsts:srkmecinsertcvsid
+msgid "Insert CVS keyword ID"
+msgstr "Insert le mot clé CVS ID"
+
+#: lazarusidestrconsts:srkmecinsertcvslog
+msgid "Insert CVS keyword Log"
+msgstr "Insert le mot clé CVS Log"
+
+#: lazarusidestrconsts:srkmecinsertcvsname
+msgid "Insert CVS keyword Name"
+msgstr "Insert le mot clé CVS Name"
+
+#: lazarusidestrconsts:srkmecinsertcvsrevision
+msgid "Insert CVS keyword Revision"
+msgstr "Insert le mot clé CVS Revision"
+
+#: lazarusidestrconsts:srkmecinsertcvssource
+msgid "Insert CVS keyword Source"
+msgstr "Insert le mot clé CVS Source"
+
+#: lazarusidestrconsts:srkmecinsertgplnotice
+msgid "Insert GPL notice"
+msgstr "Insert la licence GPL"
+
+#: lazarusidestrconsts:srkmecinsertmode
+msgid "Insert Mode"
+msgstr "Mode insertion"
 
 #: lazarusidestrconsts:dlginsspaceafter
 msgid "Insert space after"
@@ -928,6 +1303,10 @@ msgstr "Multi sélection non valide"
 msgid "Invalid Pascal Identifier"
 msgstr "Identificateur Pascal invalide"
 
+#: lazarusidestrconsts:srvk_irregular
+msgid "Irregular "
+msgstr "Irrégulière"
+
 #: lazarusidestrconsts:dlgedital
 msgid "Italic"
 msgstr "Italique"
@@ -948,9 +1327,17 @@ msgstr "Aller en avant"
 msgid "Jumping (e.g. Method Jumping)"
 msgstr "Méthode de sauts"
 
+#: lazarusidestrconsts:srvk_junja
+msgid "Junja"
+msgstr ""
+
+#: lazarusidestrconsts:srvk_kana
+msgid "Kana"
+msgstr ""
+
 #: lazarusidestrconsts:dlgkeepcaretx
 msgid "Keep Caret X"
-msgstr ""
+msgstr "Conserve la position X"
 
 #: lazarusidestrconsts:dlgcokeepvarsreg
 msgid "Keep certain variables in registers"
@@ -960,13 +1347,17 @@ msgstr "Concerve certaines variables dans les registres"
 msgid "Keep order of procedures"
 msgstr "Garde l'odre des procédures"
 
+#: lazarusidestrconsts:srkmkey
+msgid "Key"
+msgstr "Touche"
+
 #: lazarusidestrconsts:dlgkeymappingerrors
 msgid "Key mapping errors"
 msgstr "Erreur d'assignation de touche"
 
 #: lazarusidestrconsts:dlgkeymappingscheme
 msgid "Key Mapping Scheme"
-msgstr "Modèle d'assignation de touche"
+msgstr "Modèle "
 
 #: lazarusidestrconsts:dlgkeymapping
 msgid "Key Mappings"
@@ -1024,6 +1415,14 @@ msgstr "LCL Options spécifiques d'interface:"
 msgid "LCL Widget Type"
 msgstr "LCL Type de composant graphique"
 
+#: lazarusidestrconsts:srvk_left
+msgid "Left"
+msgstr "Gauche"
+
+#: lazarusidestrconsts:srvk_lwin
+msgid "left windows key"
+msgstr "Touche Windows gauche"
+
 #: lazarusidestrconsts:dlglevel1opt
 msgid "Level 1 (Quick Optimizations)"
 msgstr "Niveau 1 (Optimisation rapide)"
@@ -1043,6 +1442,10 @@ msgstr "Librairies"
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\n\nLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.\n\nLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr "Licence: GPL/LGPL\n\nLazarus est une suite de librairie pour Free Pascal qui émule Delphi.\nFree Pascal est un compilateur sous licence GPL fonctionnant sous Linux,\nWin32, OS/2, 68K et plus. Free Pascal est employé pour compiler du code\nDelphi orienter objet (OOP).\n\nLazarus est un morceau du puzzle qui vous permettra de développer des programmes\ncomme Delphi sur toutes les plates formes supportée par Free Pascal.\nL'IDE deviendra par la suite un outil de RAD comme Delphi.\n\nPendant le développement de Lazarus, nous avons besoin de plus de développeurs."
+
+#: lazarusidestrconsts:srkmeclineselect
+msgid "Line selection mode"
+msgstr "Mode sélection ligne"
 
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
@@ -1106,7 +1509,7 @@ msgstr "Marge et gouttière"
 
 #: lazarusidestrconsts:dlgmarkercolor
 msgid "Marker color"
-msgstr "Couleur de marqueur"
+msgstr "Couleur de signet"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
@@ -1123,6 +1526,10 @@ msgstr "Fichiers projet récents maxi"
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
 msgstr "Compteur maximum"
+
+#: lazarusidestrconsts:srvk_menu
+msgid "Menu"
+msgstr "Menu"
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
@@ -1156,13 +1563,77 @@ msgstr "Divers"
 msgid "Mix methods and properties"
 msgstr "Mélange de méthodes et propriétés"
 
+#: lazarusidestrconsts:srvk_modechange
+msgid "Mode Change"
+msgstr "Change mode"
+
 #: lazarusidestrconsts:uemodified
 msgid "Modified"
 msgstr "Modifié"
 
+#: lazarusidestrconsts:srvk_lbutton
+msgid "Mouse Button Left"
+msgstr "Bouton gauche"
+
+#: lazarusidestrconsts:srvk_mbutton
+msgid "Mouse Button Middle"
+msgstr "Boutton central"
+
+#: lazarusidestrconsts:srvk_rbutton
+msgid "Mouse Button Right"
+msgstr "Bouton droit"
+
 #: lazarusidestrconsts:dlgmouselinks
 msgid "Mouse links"
 msgstr "Liens souris"
+
+#: lazarusidestrconsts:srkmecpagedown
+msgid "Move cursor down one page"
+msgstr "Déplace le curseur en bas de page"
+
+#: lazarusidestrconsts:srkmecpageleft
+msgid "Move cursor left one page"
+msgstr "Déplace le curseur à gauche de la page"
+
+#: lazarusidestrconsts:srkmecpageright
+msgid "Move cursor right one page"
+msgstr "Déplace le curseur à droite de la page"
+
+#: lazarusidestrconsts:srkmeceditortop
+msgid "Move cursor to absolute beginning"
+msgstr "Déplacez le curseur au début absolu"
+
+#: lazarusidestrconsts:srkmeceditorbottom
+msgid "Move cursor to absolute end"
+msgstr "Déplacez le curseur à la fin absolu"
+
+#: lazarusidestrconsts:srkmecpagebottom
+msgid "Move cursor to bottom of page"
+msgstr "Déplacez le curseur a la fin de la page"
+
+#: lazarusidestrconsts:srkmeclineend
+msgid "Move cursor to line end"
+msgstr "Déplacez le curseur à la fin de ligne"
+
+#: lazarusidestrconsts:srkmeclinestart
+msgid "Move cursor to line start"
+msgstr "Déplacez le curseur au début de la ligne"
+
+#: lazarusidestrconsts:srkmecpagetop
+msgid "Move cursor to top of page"
+msgstr "Déplacez le curseur en haut de la page"
+
+#: lazarusidestrconsts:srkmecpageup
+msgid "Move cursor up one page"
+msgstr "Déplacez le curseur vers le haut d'une page"
+
+#: lazarusidestrconsts:srkmecwordleft
+msgid "Move cursor word left"
+msgstr "Déplacez le curseur à gauche d'un mot"
+
+#: lazarusidestrconsts:srkmecwordright
+msgid "Move cursor word right"
+msgstr "Déplacez le curseur à droite d'un mot"
 
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
@@ -1188,9 +1659,13 @@ msgstr "Les composants sélectionnés doivent être d'une même fiche."
 msgid "Naming"
 msgstr "Extension"
 
+#: lazarusidestrconsts:srkmecnew
+msgid "New"
+msgstr "Nouveau"
+
 #: lazarusidestrconsts:lismenunewother
 msgid "New ..."
-msgstr ""
+msgstr "Nouveau..."
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
@@ -1208,13 +1683,25 @@ msgstr "Nouveau projet depuis le fichier"
 msgid "New Unit"
 msgstr "Nouvelle unité"
 
+#: lazarusidestrconsts:srvk_next
+msgid "Next"
+msgstr "Suivant"
+
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
 msgstr "Pas d'erreurs trouvées sur l'assignation de touche"
 
+#: lazarusidestrconsts:srvk_nonconvert
+msgid "Nonconvert"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvnone
 msgid "None"
 msgstr "Aucun"
+
+#: lazarusidestrconsts:srkmecnormalselect
+msgid "Normal selection mode"
+msgstr "Mode de sélection normal"
 
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
@@ -1223,6 +1710,14 @@ msgstr "Non implémenté à ce jour"
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
 msgstr "Notes: Les fichiers du projet sont tous dans le répertoire du projet"
+
+#: lazarusidestrconsts:srvk_numlock
+msgid "Numlock"
+msgstr "Verr Num"
+
+#: lazarusidestrconsts:srvk_numpad
+msgid "Numpad %d"
+msgstr "%d pavé num."
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
@@ -1235,6 +1730,10 @@ msgstr "Ouvrir"
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
 msgstr "Ouvrir un fichier"
+
+#: lazarusidestrconsts:srkmecopenfileatcursor
+msgid "Open file at cursor"
+msgstr "Ouvrir le fichier sous le curseur"
 
 #: lazarusidestrconsts:lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
@@ -1266,11 +1765,11 @@ msgstr "Optimisations"
 
 #: lazarusidestrconsts:fdmsnaptogridoption
 msgid "Option: Snap to grid"
-msgstr ""
+msgstr "Option: Rupture à la grille"
 
 #: lazarusidestrconsts:fdmsnaptoguidelinesoption
 msgid "Option: Snap to guide lines"
-msgstr ""
+msgstr "Option: Rupture pour guider des lignes"
 
 #: lazarusidestrconsts:dlgfropts
 msgid "Options"
@@ -1308,6 +1807,10 @@ msgstr "Destination"
 msgid "Overflow"
 msgstr "Débordement"
 
+#: lazarusidestrconsts:srkmecoverwritemode
+msgid "Overwrite Mode"
+msgstr "Mode recouvrement"
+
 #: lazarusidestrconsts:uepovr
 msgid "OVR"
 msgstr "REC"
@@ -1324,6 +1827,10 @@ msgstr "Passez des options au compilateur (séparées par des espaces)"
 msgid "Paste"
 msgstr "Coller"
 
+#: lazarusidestrconsts:srkmecpaste
+msgid "Paste clipboard to current position"
+msgstr "Colle le presse papier à la position courante"
+
 #: lazarusidestrconsts:dlgtofpcpath
 msgid "Path To Compiler:"
 msgstr "Chemins à compiler"
@@ -1331,6 +1838,18 @@ msgstr "Chemins à compiler"
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
 msgstr "Pause"
+
+#: lazarusidestrconsts:srvk_pause
+msgid "Pause key"
+msgstr "Touche pause"
+
+#: lazarusidestrconsts:srkmecpause
+msgid "Pause program"
+msgstr "Suspendre le programme"
+
+#: lazarusidestrconsts:srkmecperiod
+msgid "period"
+msgstr "période"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent Caret"
@@ -1344,6 +1863,10 @@ msgstr "S.V.P. vérifiez le nom du compilateur"
 msgid "Please check the freepascal source directory"
 msgstr "S.V.P. , vérifiez le répertoire des sources de FreePascal"
 
+#: lazarusidestrconsts:srkmpresskey
+msgid "Please press a key ..."
+msgstr "Appuyez sur une touche SVP ..."
+
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
 msgstr "Exemple"
@@ -1351,6 +1874,14 @@ msgstr "Exemple"
 #: lazarusidestrconsts:dlgcdtpreview
 msgid "Preview (Max line length = 1)"
 msgstr "Exemple (Maxi de ligne Longueur=-1)"
+
+#: lazarusidestrconsts:srvk_print
+msgid "Print"
+msgstr "Imprimer"
+
+#: lazarusidestrconsts:srvk_prior
+msgid "Prior"
+msgstr "Précédent"
 
 #: lazarusidestrconsts:dlgforwardprocsinsertpolicy
 msgid "Procedure insert policy"
@@ -1379,6 +1910,10 @@ msgstr "Nom de fichier du projet"
 #: lazarusidestrconsts:dlgprojfiles
 msgid "Project files"
 msgstr "Fichiers projet"
+
+#: lazarusidestrconsts:srkmcatprojectmenu
+msgid "Project menu commands"
+msgstr "Commandes du menu Projet"
 
 #: lazarusidestrconsts:dlgprojectoptions
 msgid "Project Options"
@@ -1452,13 +1987,25 @@ msgstr "Remplacer"
 msgid "Replace All"
 msgstr "Remplacer tout"
 
+#: lazarusidestrconsts:srkmecreplace
+msgid "Replace text"
+msgstr ""
+
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
 msgstr "Rapport"
 
+#: lazarusidestrconsts:srvk_return
+msgid "Return"
+msgstr "Entrée"
+
 #: lazarusidestrconsts:lismenurevert
 msgid "Revert"
 msgstr "Restaurer"
+
+#: lazarusidestrconsts:srvk_right
+msgid "Right"
+msgstr "Droite"
 
 #: lazarusidestrconsts:dlgrightmargin
 msgid "Right margin"
@@ -1468,9 +2015,17 @@ msgstr "Marge droite"
 msgid "Right margin color"
 msgstr "Couleur de la marge droite"
 
+#: lazarusidestrconsts:srvk_rwin
+msgid "right windows key"
+msgstr "Touche Windows droite"
+
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
 msgstr "Exécuter"
+
+#: lazarusidestrconsts:srkmcatrunmenu
+msgid "Run menu commands"
+msgstr "Commandes menu Exécuter"
 
 #: lazarusidestrconsts:dlgrunparameters
 msgid "Run parameters"
@@ -1479,6 +2034,10 @@ msgstr "Paramètres d'exécution"
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
 msgstr "Paramètres d'exécution..."
+
+#: lazarusidestrconsts:srkmecrun
+msgid "run program"
+msgstr "Exécuter le programme"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
@@ -1548,9 +2107,21 @@ msgstr "Zoomé"
 msgid "Scope"
 msgstr "Portée"
 
+#: lazarusidestrconsts:srvk_scroll
+msgid "Scroll"
+msgstr "Défilement"
+
 #: lazarusidestrconsts:dlgscrollbyoneless
 msgid "Scroll By One Less"
 msgstr "Déplacement d'une ligne"
+
+#: lazarusidestrconsts:srkmecscrolldown
+msgid "Scroll down one line"
+msgstr "Défilement d'une ligne en bas"
+
+#: lazarusidestrconsts:srkmecscrollleft
+msgid "Scroll left one char"
+msgstr "Défilement d'un caractère à gauche"
 
 #: lazarusidestrconsts:dlgscrollpastendfile
 msgid "Scroll Past End of File"
@@ -1559,6 +2130,14 @@ msgstr "Déplacement après la fin du fichier"
 #: lazarusidestrconsts:dlgscrollpastendline
 msgid "Scroll Past End of Line"
 msgstr "Déplacement après la fin de ligne"
+
+#: lazarusidestrconsts:srkmecscrollright
+msgid "Scroll right one char"
+msgstr "Défilement d'un caractère à droite"
+
+#: lazarusidestrconsts:srkmecscrollup
+msgid "Scroll up one line"
+msgstr "Défilement d'une ligne en haut"
 
 #: lazarusidestrconsts:dlgsearchpaths
 msgid "Search Paths"
@@ -1584,6 +2163,14 @@ msgstr "Sélectionner le bloc de code"
 msgid "Select Delphi form files (*.dfm)"
 msgstr "Sélectionner les fichiers fiches DELPHI (*.dfm)"
 
+#: lazarusidestrconsts:srkmecseldown
+msgid "Select Down"
+msgstr "Sélection vers le bas"
+
+#: lazarusidestrconsts:srkmecselgotoxy
+msgid "Select Goto XY"
+msgstr "Sélection en XY"
+
 #: lazarusidestrconsts:dlgrubberbandselectsgrandchilds
 msgid "Select grand childs"
 msgstr "Choisir les grands enfants"
@@ -1592,17 +2179,69 @@ msgstr "Choisir les grands enfants"
 msgid "Select line"
 msgstr "Sélectionner la ligne"
 
+#: lazarusidestrconsts:srkmecsellineend
+msgid "Select Line End"
+msgstr "Sélection de la fin de ligne"
+
+#: lazarusidestrconsts:srkmecsellinestart
+msgid "Select Line Start"
+msgstr "Sélection du début de ligne"
+
+#: lazarusidestrconsts:srkmecselpagebottom
+msgid "Select Page Bottom"
+msgstr "Sélection du bas de page"
+
+#: lazarusidestrconsts:srkmecselpagedown
+msgid "Select Page Down"
+msgstr "Sélection la page vers le bas"
+
+#: lazarusidestrconsts:srkmecselpageleft
+msgid "Select Page Left"
+msgstr "Sélection la page vers la gauche"
+
+#: lazarusidestrconsts:srkmecselpageright
+msgid "Select Page Right"
+msgstr "Sélection la page vers la droite"
+
+#: lazarusidestrconsts:srkmecselpagetop
+msgid "Select Page Top"
+msgstr "Sélection le haut de page"
+
+#: lazarusidestrconsts:srkmecselpageup
+msgid "Select Page Up"
+msgstr "Sélection la page vers le haut"
+
 #: lazarusidestrconsts:lismenuselectparagraph
 msgid "Select paragraph"
 msgstr "Sélectionner le paragraphe"
+
+#: lazarusidestrconsts:srkmecseleditortop
+msgid "Select to absolute beginning"
+msgstr "Sélection au début absolu"
+
+#: lazarusidestrconsts:srkmecseleditorbottom
+msgid "Select to absolute end"
+msgstr "Sélection a la fin absolu"
 
 #: lazarusidestrconsts:lismenuselecttobrace
 msgid "Select to brace"
 msgstr "Ancrer la sélection"
 
+#: lazarusidestrconsts:srkmecselup
+msgid "Select Up"
+msgstr "Sélection vers le haut"
+
+#: lazarusidestrconsts:srkmecselwordleft
+msgid "Select Word Left"
+msgstr "Sélection du mot de gauche"
+
+#: lazarusidestrconsts:srkmecselwordright
+msgid "Select Word Right"
+msgstr "Sélection du mot de droite"
+
 #: lazarusidestrconsts:dlgselectedtext
 msgid "Selected Text"
-msgstr "Sélection"
+msgstr "Texte sélectionné"
 
 #: lazarusidestrconsts:dlgruberbandselectioncolor
 msgid "Selection"
@@ -1611,6 +2250,14 @@ msgstr "Sélectionner"
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
 msgstr "Sélection d'outils"
+
+#: lazarusidestrconsts:srkmecselleft
+msgid "SelLeft"
+msgstr "Sélection gauche"
+
+#: lazarusidestrconsts:srkmecselright
+msgid "SelRight"
+msgstr "Sélection droite"
 
 #: lazarusidestrconsts:fdmsendtoback
 msgid "Send to back"
@@ -1624,13 +2271,25 @@ msgstr "Réinitialiser tous les éléments"
 msgid "Set element to default"
 msgstr "Réinitialiser l'élément "
 
+#: lazarusidestrconsts:srkmecsetmarker
+msgid "Set Marker %d"
+msgstr "Fixer le signet %d"
+
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Variable pour l'affectation"
 
+#: lazarusidestrconsts:srvk_shift
+msgid "Shift"
+msgstr "Shift"
+
+#: lazarusidestrconsts:srkmecshifttab
+msgid "Shift Tab"
+msgstr "Shift Tab"
+
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
-msgstr "Affiches toutes les proc. sur l'erreur"
+msgstr "Affiches toutes les proc.sur l'erreur"
 
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
@@ -1706,7 +2365,7 @@ msgstr "Voir les options"
 
 #: lazarusidestrconsts:dlgshowscrollhint
 msgid "Show Scroll Hint"
-msgstr ""
+msgstr "Afficher les scroll de conseils"
 
 #: lazarusidestrconsts:dlgshowtriedfiles
 msgid "Show Tried Files"
@@ -1744,6 +2403,10 @@ msgstr "Aligner sur la grille"
 msgid "Snap to Guide Lines"
 msgstr "Aligner sur les lignes de guide"
 
+#: lazarusidestrconsts:srvk_snapshot
+msgid "Snapshot"
+msgstr "Impr Ecran"
+
 #: lazarusidestrconsts:lismenusortselection
 msgid "Sort selection"
 msgstr "Trier la sélection"
@@ -1752,9 +2415,17 @@ msgstr "Trier la sélection"
 msgid "Source Editor"
 msgstr "Editeur de source"
 
+#: lazarusidestrconsts:srkmcatsrcnotebook
+msgid "Source Notebook commands"
+msgstr "Commandes des onglets de sources"
+
 #: lazarusidestrconsts:dlgspacenotcosmos
 msgid "Space"
 msgstr "Espace"
+
+#: lazarusidestrconsts:srvk_space
+msgid "Space key"
+msgstr "Touche espace"
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
@@ -1788,6 +2459,10 @@ msgstr "Arrêter"
 msgid "Stop after number of errors:"
 msgstr "Arrêt après un nombre d'érreurs"
 
+#: lazarusidestrconsts:srkmecstopprogram
+msgid "stop program"
+msgstr "Arrêt du programme"
+
 #: lazarusidestrconsts:dlgcdtstoredpostfix
 msgid "Stored postfix"
 msgstr "Suffixe \"Stored\""
@@ -1804,6 +2479,10 @@ msgstr "Style :"
 msgid "Sub directory"
 msgstr "Sous répertoire"
 
+#: lazarusidestrconsts:srkmectoggleformunit
+msgid "Switch between form and unit"
+msgstr "Basculer entre Ficher et Unité"
+
 #: lazarusidestrconsts:dlgsymantecchecking
 msgid "Symantec Checking:"
 msgstr "Vérification de Symantec:"
@@ -1816,6 +2495,10 @@ msgstr "Symbole à la fin (.pp~)"
 msgid "Symbol in front (.~pp)"
 msgstr "Symbole au début (.~pp)"
 
+#: lazarusidestrconsts:srkmecsyntaxcheck
+msgid "Syntax check"
+msgstr "Vérifier la syntaxe"
+
 #: lazarusidestrconsts:idesystem
 msgid "System"
 msgstr "Système"
@@ -1823,6 +2506,10 @@ msgstr "Système"
 #: lazarusidestrconsts:dlgrunosystemvariables
 msgid "System variables"
 msgstr "Variables système"
+
+#: lazarusidestrconsts:srvk_tab
+msgid "Tab"
+msgstr "Tab"
 
 #: lazarusidestrconsts:dlgtabwidths
 msgid "Tab widths:"
@@ -1871,6 +2558,22 @@ msgstr "Le répertoire de tests \"%s\" non trouvé."
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
 msgstr "Attributs texte"
+
+#: lazarusidestrconsts:srkmcatediting
+msgid "Text editing commands"
+msgstr "Commandes d'édition de texte"
+
+#: lazarusidestrconsts:srkmcatmarker
+msgid "Text marker commands"
+msgstr "Commandes des signets"
+
+#: lazarusidestrconsts:srkmcatsearchreplace
+msgid "Text search and replace commands"
+msgstr "Commandes de recherche et remplacement"
+
+#: lazarusidestrconsts:srkmcatselection
+msgid "Text selection commands"
+msgstr "Commandes de sélection de texte"
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
@@ -1924,6 +2627,14 @@ msgstr "Basculer Fiche/Unité"
 msgid "Toggle form/unit view"
 msgstr "Basculer voir Unité/Fiche"
 
+#: lazarusidestrconsts:srkmectogglemode
+msgid "Toggle Mode"
+msgstr "Mode bascule"
+
+#: lazarusidestrconsts:srkmcattoolmenu
+msgid "Tools menu commands"
+msgstr "Commandes menu Outils"
+
 #: lazarusidestrconsts:dlgtooltipeval
 msgid "Tooltip expression evaluation"
 msgstr "ToolTip d'évaluation d'expression"
@@ -1958,7 +2669,7 @@ msgstr "Souligné"
 
 #: lazarusidestrconsts:lismenuundo
 msgid "Undo"
-msgstr "Annuler"
+msgstr "Défaire"
 
 #: lazarusidestrconsts:dlgundoaftersave
 msgid "Undo after save"
@@ -1967,6 +2678,10 @@ msgstr "Défaire après enregistrement"
 #: lazarusidestrconsts:dlgundolimit
 msgid "Undo limit:"
 msgstr "Limite défaire:"
+
+#: lazarusidestrconsts:srkmecblockunindent
+msgid "Unindent block"
+msgstr "Désindenté le bloque"
 
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
@@ -1991,6 +2706,14 @@ msgstr "Nom d'unité déjà existant dans le projet"
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
 msgstr "Unités ..."
+
+#: lazarusidestrconsts:srvk_unknown
+msgid "Unknown"
+msgstr "Inconnue"
+
+#: lazarusidestrconsts:srkmecunknown
+msgid "unknown editor command"
+msgstr "Commande inconnue de l'éditeur"
 
 #: lazarusidestrconsts:dlgupword
 msgid "Up"
@@ -2044,6 +2767,10 @@ msgstr "Extension utilisateur"
 msgid "User defined extension (.pp.xxx)"
 msgstr "Extension utilisateur (.pp.xxx)"
 
+#: lazarusidestrconsts:srkmecuserfirst
+msgid "User First"
+msgstr "Premier utilisateur"
+
 #: lazarusidestrconsts:dlgrunouseroverrides
 msgid "User overrides"
 msgstr "Surcharge utilisateur"
@@ -2064,6 +2791,22 @@ msgstr "Préfixe des champs"
 msgid "Verbosity:"
 msgstr "Verbocité"
 
+#: lazarusidestrconsts:srkmectogglebreakpoints
+msgid "View breakpoints"
+msgstr "Voir les points d'arrêts"
+
+#: lazarusidestrconsts:srkmectogglecallstack
+msgid "View call stack"
+msgstr "Voir la pile d'appel"
+
+#: lazarusidestrconsts:srkmectogglecodeexpl
+msgid "View code explorer"
+msgstr "Voir l'explorateur de code"
+
+#: lazarusidestrconsts:srkmectoggledebuggerout
+msgid "View debugger output"
+msgstr "Voir la fenêtre de sortie du débuger"
+
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
 msgstr "Voir les fiches"
@@ -2071,6 +2814,26 @@ msgstr "Voir les fiches"
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
 msgstr "Voir l'historique des déplacement"
+
+#: lazarusidestrconsts:srkmectogglelocals
+msgid "View local variables"
+msgstr "Voir les variables locales"
+
+#: lazarusidestrconsts:srkmcatviewmenu
+msgid "View menu commands"
+msgstr "Commandes menu Voir"
+
+#: lazarusidestrconsts:srkmectogglemessages
+msgid "View messages"
+msgstr "Voir les messages"
+
+#: lazarusidestrconsts:srkmectoggleobjectinsp
+msgid "View Object Inspector"
+msgstr "Voir l'inspecteur d'objet"
+
+#: lazarusidestrconsts:srkmectoggleprojectexpl
+msgid "View project explorer"
+msgstr "Voir l'explorateur de projet"
 
 #: lazarusidestrconsts:dlgmainviewforms
 msgid "View project forms"
@@ -2092,6 +2855,10 @@ msgstr "Voir les dépendances d'unités"
 msgid "View Units"
 msgstr "Voir les unités"
 
+#: lazarusidestrconsts:srkmectogglewatches
+msgid "View watches"
+msgstr "Voir points de suivi"
+
 #: lazarusidestrconsts:dlgvisiblegutter
 msgid "Visible gutter"
 msgstr "Gouttière visible"
@@ -2106,7 +2873,7 @@ msgstr "Erreur de compilation"
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
-msgstr "Observe"
+msgstr "Points de suivi"
 
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"
@@ -2119,6 +2886,10 @@ msgstr "Positions de fenêtre"
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "Mot sous le curseur dans l'éditeur courant"
+
+#: lazarusidestrconsts:srkmecwordcompletion
+msgid "Word completion"
+msgstr "Accomplissement de mot"
 
 #: lazarusidestrconsts:dlgwordspolicies
 msgid "Words"
