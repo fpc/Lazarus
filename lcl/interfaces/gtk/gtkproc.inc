@@ -1416,16 +1416,14 @@ var
   ClientWindow: PGdkWindow;
 begin
   ClientWidget:=GetFixedWidget(TheWidget);
-  if ClientWidget<>nil then begin
+  if ClientWidget<>TheWidget then begin
     ClientWindow:=GetControlWindow(ClientWidget);
     if ClientWindow<>nil then begin
       gdk_window_get_origin(ClientWindow,@Result.X,@Result.Y);
-    end else begin
-      Result:=GetWidgetOrigin(TheWidget);
+      exit;
     end;
-  end else begin
-    Result:=GetWidgetOrigin(TheWidget);
   end;
+  Result:=GetWidgetOrigin(TheWidget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -3447,6 +3445,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.120  2002/10/09 10:22:55  lazarus
+  MG: fixed client origin coordinates
+
   Revision 1.119  2002/10/08 23:44:00  lazarus
   AJ: started GNOME interface & modified gtk interface so everything is public/protected
 
