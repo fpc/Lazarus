@@ -817,14 +817,8 @@ type
   TMethodProperty =         TMethodPropertyEditor;
   TComponentProperty =      TComponentPropertyEditor;
   TComponentNameProperty =  TComponentNamePropertyEditor;
-//  TFontNameProperty =       TFontNamePropertyEditor;
-//  TFontCharsetProperty =    TFontCharsetPropertyEditor;
 //  TImeNameProperty =        TImeNamePropertyEditor;
-//  TColorProperty =          TColorPropertyEditor;
-//  TBrushStyleProperty =     TBrushStylePropertyEditor;
-//  TPenStyleProperty =       TPenStylePropertyEditor;
   TCursorProperty =         TCursorPropertyEditor;
-//  TFontProperty =           TFontPropertyEditor;
   TModalResultProperty =    TModalResultPropertyEditor;
   TShortCutProperty =       TShortCutPropertyEditor;
 //  TMPFilenameProperty =     TMPFilenamePropertyEditor;

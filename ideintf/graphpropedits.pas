@@ -118,6 +118,18 @@ type
 
 
 //==============================================================================
+// Delphi Compatible Property Editor Classnames
+
+type
+  TFontNameProperty =       TFontNamePropertyEditor;
+  //TFontCharsetProperty =    TFontCharsetPropertyEditor;
+  TColorProperty =          TColorPropertyEditor;
+  TBrushStyleProperty =     TBrushStylePropertyEditor;
+  TPenStyleProperty =       TPenStylePropertyEditor;
+  TFontProperty =           TFontPropertyEditor;
+
+
+//==============================================================================
 // XXX
 // This class is a workaround for the missing typeinfo function
 type
