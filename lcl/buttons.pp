@@ -82,6 +82,7 @@ type
     procedure ExecuteCancelAction; override;
     procedure UpdateRolesForForm; override;
   public
+    property Color: TColor default clBtnFace;
     property Default: Boolean read FDefault write SetDefault default false;
     property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
     property Cancel: Boolean read FCancel write SetCancel default false;
@@ -306,7 +307,7 @@ type
     property Margin: integer read FMargin write SetMargin default -1;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Spacing: integer read FSpacing write SetSpacing default 4;
-    property Transparent: Boolean read FTransparent write SetTransparent default false;
+    property Transparent: Boolean read FTransparent write SetTransparent default true;
   end;
   
   
@@ -383,6 +384,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2005/01/04 14:23:37  micha
+  implement transparency (actually, non-transparency)
+
   Revision 1.84  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 

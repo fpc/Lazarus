@@ -48,6 +48,8 @@ begin
   FDragging := False;
   FSpacing := 4;
   FMargin := -1;
+  FTransparent := true;
+  Color := clBtnFace;
 end;
 
 {------------------------------------------------------------------------------
@@ -378,6 +380,12 @@ begin
 
   FLastDrawFlags:=GetDrawFlags;
   //DebugLn('TCustomSpeedButton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
+
+  if not Transparent then
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(PaintRect);
+  end;
   
   // do not draw anything if flat and mouse not in control (simplified)
   if FLastDrawFlags <> 0 then
@@ -761,6 +769,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2005/01/04 14:23:37  micha
+  implement transparency (actually, non-transparency)
+
   Revision 1.61  2004/12/12 23:40:55  mattias
   published TSpeedButton.OnDoubleClick
 
