@@ -60,7 +60,8 @@ type
     procedure EndDebugging; virtual; abstract;
   end;
 
-var DebugBoss: TBaseDebugManager;
+const
+  DebugBoss: TBaseDebugManager = nil;
 
 implementation
 

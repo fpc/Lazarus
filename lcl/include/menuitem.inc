@@ -456,7 +456,8 @@ procedure TMenuItem.SetCaption(const AValue: string);
 begin
   if FCaption = AValue then exit;
   FCaption := AValue;
-  InterfaceObject.IntSendMessage3(LM_SetLabel, Self, PChar(AValue));
+  if HandleAllocated then
+    InterfaceObject.IntSendMessage3(LM_SetLabel, Self, PChar(AValue));
 end;
 
 {------------------------------------------------------------------------------
@@ -751,6 +752,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/08/08 09:38:36  lazarus
+  MG: recent file menus are now updated instantly
+
   Revision 1.20  2002/08/08 09:07:06  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 
@@ -839,6 +843,9 @@ end;
 
 
   $Log$
+  Revision 1.21  2002/08/08 09:38:36  lazarus
+  MG: recent file menus are now updated instantly
+
   Revision 1.20  2002/08/08 09:07:06  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 

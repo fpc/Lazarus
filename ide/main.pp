@@ -257,8 +257,10 @@ type
     // methods for start
     procedure LoadGlobalOptions;
     procedure SetupMainMenu;
-    procedure AddRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
+    procedure SetRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
        OnClickEvent: TNotifyEvent);
+    procedure SetRecentFilesMenu;
+    procedure SetRecentProjectFilesMenu;
     procedure SetupFileMenu;
     procedure SetupEditMenu;
     procedure SetupSearchMenu;
@@ -679,7 +681,7 @@ destructor TMainIDE.Destroy;
 begin
   writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
-  DebugBoss.EndDebugging;
+  if DebugBoss<>nil then DebugBoss.EndDebugging;
 
   FreeThenNil(Project1);
   if TheControlSelection<>nil then begin
@@ -1178,18 +1180,39 @@ begin
   SetupHelpMenu;
 end;
 
-procedure TMainIDE.AddRecentSubMenu(ParentMenuItem: TMenuItem;
+procedure TMainIDE.SetRecentSubMenu(ParentMenuItem: TMenuItem;
   FileList: TStringList; OnClickEvent: TNotifyEvent);
 var i: integer;
-  NewMenuItem: TMenuItem;
+  AMenuItem: TMenuItem;
 begin
-  for i:=0 to FileList.Count-1 do begin
-    NewMenuItem:= TMenuItem.Create(Self);
-    NewMenuItem.Name:=ParentMenuItem.Name+'Recent'+IntToStr(i);
-    NewMenuItem.Caption := FileList[i];
-    NewMenuItem.OnClick := OnClickEvent;
-    ParentMenuItem.Add(NewMenuItem);
+  // create enough menuitems
+  while ParentMenuItem.Count<FileList.Count do begin
+    AMenuItem:=TMenuItem.Create(Self);
+    AMenuItem.Name:=
+      ParentMenuItem.Name+'Recent'+IntToStr(ParentMenuItem.Count);
+    ParentMenuItem.Add(AMenuItem);
   end;
+  // delete unused menuitems
+  while ParentMenuItem.Count>FileList.Count do
+    ParentMenuItem.Items[ParentMenuItem.Count-1].Free;
+  // set captions
+  for i:=0 to FileList.Count-1 do begin
+    AMenuItem:=ParentMenuItem.Items[i];
+    AMenuItem.Caption := FileList[i];
+    AMenuItem.OnClick := OnClickEvent;
+  end;
+end;
+
+procedure TMainIDE.SetRecentFilesMenu;
+begin
+  SetRecentSubMenu(itmFileRecentOpen,EnvironmentOptions.RecentOpenFiles,
+                    @mnuOpenClicked);
+end;
+
+procedure TMainIDE.SetRecentProjectFilesMenu;
+begin
+  SetRecentSubMenu(itmProjectRecentOpen,EnvironmentOptions.RecentProjectFiles,
+                   @mnuOpenProjectClicked);
 end;
 
 procedure TMainIDE.SetupFileMenu;
@@ -1225,8 +1248,7 @@ begin
   itmFileRecentOpen.Caption := lisMenuOpenRecent;
   mnuFile.Add(itmFileRecentOpen);
 
-  AddRecentSubMenu(itmFileRecentOpen,EnvironmentOptions.RecentOpenFiles,
-                    @mnuOpenClicked);
+  SetRecentFilesMenu;
 
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
@@ -1530,8 +1552,7 @@ begin
   itmProjectRecentOpen.Caption := lisMenuOpenRecentProject;
   mnuProject.Add(itmProjectRecentOpen);
 
-  AddRecentSubMenu(itmProjectRecentOpen,EnvironmentOptions.RecentProjectFiles,
-                   @mnuOpenProjectClicked);
+  SetRecentProjectFilesMenu;
 
   itmProjectSave := TMenuItem.Create(Self);
   itmProjectSave.Name:='itmProjectSave';
@@ -1804,6 +1825,13 @@ begin
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
+
+  procedure UpdateEnvironment;
+  begin
+    SetRecentFilesMenu;
+    SaveEnvironment;
+  end;
+
 var OpenDialog: TOpenDialog;
   AFilename: string;
   I  : Integer;
@@ -1821,9 +1849,9 @@ begin
             AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
             if DoOpenEditorFile(AFilename,-1,[])=mrOk then begin
               EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+            end;
           end;
-        end;
-        SaveEnvironment;
+        UpdateEnvironment;
       end;
       InputHistories.StoreFileDialogSettings(OpenDialog);
     finally
@@ -1833,7 +1861,7 @@ begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
     if DoOpenEditorFile(AFilename,-1,[])=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(AFilename);
-      SaveEnvironment;
+      UpdateEnvironment;
     end;
   end;
 end;
@@ -2123,6 +2151,14 @@ end;
 Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 var OpenDialog:TOpenDialog;
   AFileName: string;
+
+  procedure UpdateEnvironment;
+  begin
+    EnvironmentOptions.AddToRecentProjectFiles(AFilename);
+    SetRecentProjectFilesMenu;
+    SaveEnvironment;
+  end;
+
 begin
   if Sender=itmProjectOpen then begin
     OpenDialog:=TOpenDialog.Create(Application);
@@ -2133,8 +2169,7 @@ begin
       if OpenDialog.Execute then begin
         AFilename:=ExpandFilename(OpenDialog.Filename);
         if DoOpenProjectFile(AFilename)=mrOk then begin
-          EnvironmentOptions.AddToRecentProjectFiles(AFilename);
-          SaveEnvironment;
+          UpdateEnvironment;
         end;
       end;
       InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -2144,8 +2179,7 @@ begin
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
     if DoOpenProjectFile(AFilename)=mrOk then begin
-      EnvironmentOptions.AddToRecentProjectFiles(AFilename);
-      SaveEnvironment;
+      UpdateEnvironment;
     end;
   end;
 end;
@@ -2789,6 +2823,7 @@ begin
   NewFilename:=NewSource.Filename;
   NewFilePath:=ExtractFilePath(NewFilename);
   EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
+  SetRecentFilesMenu;
 
   // rename Resource file
   if (ResourceCode<>nil) then begin
@@ -3468,6 +3503,7 @@ begin
   // set new project filename
   Project1.ProjectInfoFile:=NewFilename;
   EnvironmentOptions.AddToRecentProjectFiles(NewFilename);
+  SetRecentProjectFilesMenu;
 
   // set new project directory
   if OldProjectPath<>Project1.ProjectDirectory then begin
@@ -4183,6 +4219,7 @@ begin
     InputHistories.FileDialogSettings.InitialDir:=ExtractFilePath(FName);
     if DoOpenEditorFile(FName,-1,[])=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(FName);
+      SetRecentFilesMenu;
       SaveEnvironment;
     end;
   end;
@@ -6861,6 +6898,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.337  2002/08/08 09:38:34  lazarus
+  MG: recent file menus are now updated instantly
+
   Revision 1.336  2002/08/07 09:55:26  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 
