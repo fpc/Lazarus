@@ -272,11 +272,6 @@ begin
   ByteToStrValid:=true;
 end;
 
-{function UTF8Decode(const S: UTF8String): WideString;
-begin
-
-end;}
-
 procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
   const ResourceName, ResourceType: String);
 { example ResStream:
@@ -719,8 +714,6 @@ type
     dvaNil, dvaCollection, dvaSingle, dvaCurrency, dvaDate, dvaWString,
     dvaInt64, dvaUTF8String);
     
-  //UTF8String = ansistring;
-
   TDelphiReader = class
   private
     FStream: TStream;
@@ -759,23 +752,6 @@ type
     procedure Write(const Buf; Count: Longint);
   end;
   
-{function Utf8Decode(const S: UTF8String): WideString;
-var
-  L: Integer;
-  Temp: WideString;
-begin
-  Result := '';
-  if S = '' then Exit;
-  SetLength(Temp, Length(S));
-
-  L := Utf8ToUnicode(PWideChar(Temp), Length(Temp)+1, PChar(S), Length(S));
-  if L > 0 then
-    SetLength(Temp, L-1)
-  else
-    Temp := '';
-  Result := Temp;
-end;}
-
 { TDelphiReader }
 
 procedure ReadError(Msg: string);
@@ -788,11 +764,6 @@ begin
   ReadError(rsInvalidPropertyValue);
 end;
 
-{procedure PropertyNotFound(const Name: string);
-begin
-  ReadError(Format(rsPropertyDoesNotExist,[Name]));
-end;
-}
 procedure TDelphiReader.SkipBytes(Count: Integer);
 begin
   FStream.Position:=FStream.Position+Count;
@@ -1027,36 +998,6 @@ begin
     Read(Pointer(Result)^, L);
   end;
 end;
-
-{function TDelphiReader.ReadWideString: WideString;
-var
-  L: Integer;
-  Temp: UTF8String;
-begin
-  if NextValue in [dvaString, dvaLString] then
-    Result := ReadString
-  else
-  begin
-    L := 0;
-    case ReadValue of
-      dvaWString:
-        begin
-          Read(L, SizeOf(Integer));
-          SetLength(Result, L);
-          Read(Pointer(Result)^, L * 2);
-        end;
-      dvaUtf8String:
-        begin
-          Read(L, SizeOf(Integer));
-          SetLength(Temp, L);
-          Read(Pointer(Temp)^, L);
-          Result := Utf8Decode(Temp);
-        end;
-    else
-      PropValueError;
-    end;
-  end;
-end;}
 
 function TDelphiReader.ReadInt64: Int64;
 begin

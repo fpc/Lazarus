@@ -55,7 +55,6 @@ type
     niiApplication,// Project: Application
     niiFPCProject, // Project: with hidden main file
     niiCustomProject,// Project: pascal program without any specials
-    niiCGIApplication,// Project: TCGIApplication using package cgilaz
     niiPackage     // standard package
   );
   TNewIDEItemTypes = set of TNewIDEItemType;
@@ -518,10 +517,6 @@ begin
     niiCustomProject:
       Result:=lisNewDlgCreateANewCustomProgram;
 
-    niiCGIApplication:
-      Result:=Format(lisNewCreateANewCgiApplicationTheProgramFileIsMaintained, [
-        #13]);
-
     niiPackage:
       Result:=Format(
         lisNewDlgCreateANewStandardPackageAPackageIsACollectionOfUn, [#13#13]);
@@ -568,10 +563,6 @@ begin
     TNewIDEItemTemplate.Create(niiFPCProject,'FPC Project',niifCopy,[]));
   NewCategory.Add(
     TNewIDEItemTemplate.Create(niiCustomProject,'Custom Project',niifCopy,[]));
-  {$IFDEF HasCGIModules}
-  NewCategory.Add(
-    TNewIDEItemTemplate.Create(niiCGIApplication,'CGI Application',niifCopy,[]));
-  {$ENDIF}
 
   // category package
   NewCategory:=TNewIDEItemCategory.Create('Package');

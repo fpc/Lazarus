@@ -61,14 +61,15 @@ uses
   Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDE
+  ObjectInspector,
   LazConf, LazarusIDEStrConsts,
-  ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
+  ProjectIntf, ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
   {$IFDEF DisablePkgs}
   CompReg, IDEComp,
   {$ELSE}
   ComponentReg,
   {$ENDIF}
-  TransferMacros, ObjectInspector, PropEdits, OutputFilter, IDEDefs, MsgView,
+  TransferMacros, PropEdits, OutputFilter, IDEDefs, MsgView,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, SrcEditorIntf;
 
@@ -199,7 +200,7 @@ type
                         NeededFlags: TIDEFileStateFlags;
                         var ResultFlags: TIDEFileStateFlags); virtual; abstract;
 
-    function DoNewEditorFile(NewUnitType: TNewUnitType;
+    function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
         NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags): TModalResult; virtual; abstract;
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
@@ -291,6 +292,52 @@ const
 function OpenFlagsToString(Flags: TOpenFlags): string;
 function SaveFlagsToString(Flags: TSaveFlags): string;
 
+
+//==============================================================================
+type
+  { TFileDescPascalUnitWithForm }
+
+  TFileDescPascalUnitWithForm = class(TFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+
+  { TFileDescPascalUnitWithDataModule }
+
+  TFileDescPascalUnitWithDataModule = class(TFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+
+  { TFileDescSimplePascalProgram }
+
+  TFileDescSimplePascalProgram = class(TFileDescPascalUnit)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function CreateSource(const Filename, SourceName,
+                          ResourceName: string): string; override;
+  end;
+
+
+  { TFileDescText }
+
+  TFileDescText = class(TProjectFileDescriptor)
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
 implementation
 
 
@@ -336,6 +383,113 @@ destructor TMainIDEInterface.Destroy;
 begin
   inherited Destroy;
   MainIDEInterface:=nil;
+end;
+
+{ TFileDescPascalUnitWithForm }
+
+constructor TFileDescPascalUnitWithForm.Create;
+begin
+  inherited Create;
+  Name:=FileDescNameLCLForm;
+  ResourceClass:=TForm;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileDescPascalUnitWithForm.GetInterfaceUsesSection: string;
+begin
+  Result:='Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs';
+end;
+
+function TFileDescPascalUnitWithForm.GetLocalizedName: string;
+begin
+  Result:='Form';
+end;
+
+function TFileDescPascalUnitWithForm.GetLocalizedDescription: string;
+begin
+  Result:='Create a new unit with a LCL form.';
+end;
+
+{ TFileDescPascalUnitWithDataModule }
+
+constructor TFileDescPascalUnitWithDataModule.Create;
+begin
+  inherited Create;
+  Name:=FileDescNameDatamodule;
+  ResourceClass:=TDataModule;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileDescPascalUnitWithDataModule.GetInterfaceUsesSection: string;
+begin
+  Result:='Classes, SysUtils, LResources, Forms, Controls, Dialogs';
+end;
+
+function TFileDescPascalUnitWithDataModule.GetLocalizedName: string;
+begin
+  Result:='Data Module';
+end;
+
+function TFileDescPascalUnitWithDataModule.GetLocalizedDescription: string;
+begin
+  Result:='Create a new unit with a datamodule.';
+end;
+
+{ TFileDescText }
+
+constructor TFileDescText.Create;
+begin
+  inherited Create;
+  Name:=FileDescNameText;
+  DefaultFilename:='text.txt';
+  AddToProject:=false;
+end;
+
+function TFileDescText.GetLocalizedName: string;
+begin
+  Result:='Text';
+end;
+
+function TFileDescText.GetLocalizedDescription: string;
+begin
+  Result:='Create a new empty text file.';
+end;
+
+{ TFileDescSimplePascalProgram }
+
+constructor TFileDescSimplePascalProgram.Create;
+begin
+  inherited Create;
+  Name:='custom program';
+  DefaultFilename:='project.pas';
+end;
+
+function TFileDescSimplePascalProgram.GetLocalizedName: string;
+begin
+  Result:='Custom Program';
+end;
+
+function TFileDescSimplePascalProgram.GetLocalizedDescription: string;
+begin
+  Result:='Custom Program';
+end;
+
+function TFileDescSimplePascalProgram.CreateSource(const Filename, SourceName,
+  ResourceName: string): string;
+var
+  LE: String;
+begin
+  LE:=LineEnding;
+  Result:='program '+SourceName+';'+LE
+         +LE
+         +'{$mode objfpc}{$H+}'+LE
+         +LE
+         +'uses'+LE
+         +'  Classes, SysUtils;'+LE
+         +LE
+         +'begin'+LE
+         +'end.'+LE
+         +LE;
 end;
 
 end.

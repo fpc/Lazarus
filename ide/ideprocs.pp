@@ -85,7 +85,6 @@ function CompareFilenames(const Filename1, Filename2: string;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 function ConvertSpecialFileChars(const Filename: string): string;
-function FilenameIsPascalUnit(const Filename: string): boolean;
 function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function CreateRelativePath(const Filename, BaseDirectory: string): string;
@@ -303,14 +302,6 @@ begin
     inc(i);
     Result:=PreFix+IntToStr(i)+PostFix;
   until not FileExists(Result);
-end;
-
-function FilenameIsPascalUnit(const Filename: string): boolean;
-var Ext: string;
-begin
-  Ext:=lowercase(ExtractFileExt(Filename));
-  Result:=((Ext='.pp') or (Ext='.pas'))
-          and (ExtractFileNameOnly(Filename)<>'');
 end;
 
 function FilenameIsFormText(const Filename: string): boolean;

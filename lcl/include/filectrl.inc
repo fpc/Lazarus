@@ -118,6 +118,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function FilenameIsPascalUnit(const Filename: string): boolean;
+ ------------------------------------------------------------------------------}
+function FilenameIsPascalUnit(const Filename: string): boolean;
+begin
+  Result:=(CompareFileExt(Filename,'.pp',false)=0)
+       or (CompareFileExt(Filename,'.pas',false)=0);
+end;
+
+{------------------------------------------------------------------------------
   function AppendPathDelim(const Path: string): string;
  ------------------------------------------------------------------------------}
 function AppendPathDelim(const Path: string): string;
@@ -1047,6 +1056,9 @@ end;
 
 {
   $Log$
+  Revision 1.49  2004/09/01 09:43:24  mattias
+  implemented registration of project file types
+
   Revision 1.48  2004/08/23 15:05:09  mattias
   implemented help jump to FPDoc html unit
 

@@ -93,7 +93,6 @@ type
     FComponentLastLRSStreamSize: TStreamSeekType;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
-    FDescriptor: TProjectFileDescriptor;
     fEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
@@ -130,7 +129,6 @@ type
     function GetPrevUnitWithComponent: TUnitInfo;
     function GetPrevUnitWithEditorIndex: TUnitInfo;
     procedure SetBuildFileIfActive(const AValue: boolean);
-    procedure SetDescriptor(const AValue: TProjectFileDescriptor);
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
@@ -158,7 +156,7 @@ type
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
     procedure Clear;
-    procedure CreateStartCode(NewUnitType: TNewUnitType;
+    procedure CreateStartCode(Descriptor: TProjectFileDescriptor;
                               const NewUnitName: string);
     procedure DecreaseAutoRevertLock;
     procedure IgnoreCurrentFileDateOnDisk;
@@ -166,6 +164,7 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ReadUnitNameFromSource(TryCache: boolean);
     function CreateUnitName: string;
+    procedure ImproveUnitNameCache(const NewUnitName: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
     procedure UpdateUsageCount(TheUsage: TUnitUsage; Factor: extended);
@@ -200,7 +199,6 @@ type
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
                                read fCustomHighlighter write fCustomHighlighter;
-    property Descriptor: TProjectFileDescriptor read FDescriptor write SetDescriptor;
     property EditorIndex: integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
@@ -285,7 +283,7 @@ type
   { TProject }
   
   TProjectType =   // for a description see ProjectTypeDescriptions below
-    (ptApplication, ptProgram, ptCustomProgram, ptCGIApplication);
+    (ptApplication, ptProgram, ptCustomProgram);
      
   TProjectFlag = (
     pfSaveClosedUnits,     // save info about closed files (not part of project)
@@ -400,8 +398,9 @@ type
 
     // units
     function UnitCount:integer;
-    function NewUniqueUnitName(NewUnitType:TNewUnitType): string;
-    function NewUniqueComponentName(NewUnitType:TNewUnitType): string;
+    function NewUniqueUnitName(const AnUnitName: string): string;
+    function NewUniqueComponentName(const AComponentPrefix: string): string;
+    function NewUniqueFilename(const Filename: string): string;
     procedure AddUnit(AnUnit: TUnitInfo; AddToProjectFile: boolean);
     procedure RemoveUnit(Index: integer);
     
@@ -417,6 +416,7 @@ type
     function IndexOfFilename(const AFilename: string;
                              SearchFlags: TProjectFileSearchFlags): integer;
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
+    function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     Function UnitWithComponent(AComponent: TComponent): TUnitInfo;
@@ -523,7 +523,7 @@ const
   ResourceFileExt = '.lrs';
 
   ProjectTypeNames : array[TProjectType] of string = (
-      'Application', 'Program', 'Custom program', 'CGI Application'
+      'Application', 'Program', 'Custom program'
     );
 
   ProjectTypeDescriptions : array[TProjectType] of string = (
@@ -540,21 +540,12 @@ const
       // ptCustomProgram
       ,'Custom program:'#13
       +'A freepascal program.'
-
-      // ptCGIApplication
-      ,'CGI Application'#13
-      +'A cgi freepascal program. The program file is '
-      +'automatically maintained by lazarus.'#13
     );
 
   ProjectDefaultExt : array[TProjectType] of string = (
-      '.lpr','.pas','.pas', 'pas'
+      '.lpr','.pas','.pas'
     );
     
-  UnitTypeDefaultExt: array[TNewUnitType] of string = (
-      '.pas', '.pas', '.pas', '.pas', '.pas', '.txt', '.pas'
-    );
-
   DefaultProjectFlags = [pfSaveClosedUnits];
   ProjectFlagNames : array[TProjectFlag] of string = (
       'SaveClosedFiles', 'SaveOnlyProjectUnits'
@@ -724,6 +715,12 @@ begin
   Result:=UnitName;
   if (Result='') and FilenameIsPascalUnit(Filename) then
     Result:=ExtractFilenameOnly(Filename);
+end;
+
+procedure TUnitInfo.ImproveUnitNameCache(const NewUnitName: string);
+begin
+  if (fUnitName='') or (CompareText(fUnitName,NewUnitName)=0) then
+    fUnitName:=NewUnitName;
 end;
 
 {------------------------------------------------------------------------------
@@ -994,10 +991,10 @@ begin
     fSource.ReadOnly:=ReadOnly;
 end;
 
-procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType;
+procedure TUnitInfo.CreateStartCode(Descriptor: TProjectFileDescriptor;
   const NewUnitName: string);
-var AResourceFilename :string;
-  NewSource, LE: string;
+var
+  NewSource: string;
   
   function Beautified(const s: string): string;
   begin
@@ -1007,95 +1004,8 @@ var AResourceFilename :string;
   
 begin
   if fSource=nil then exit;
-  NewSource:='';
-  LE:=LineEnding;
-  if NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule] then begin
-    fUnitName:=NewUnitName;
-    AResourceFilename:=fUnitName+ResourceFileExt;
-    NewSource:=Beautified(
-       'unit '+fUnitName+';'+LE
-      +LE
-      +'{$mode objfpc}{$H+}'+LE
-      +LE
-      +'interface'+LE
-      +LE
-      +'uses'+LE);
-    case NewUnitType of
-
-     nuUnit:
-      begin
-        NewSource:=NewSource+Beautified(
-          '  Classes, SysUtils;'+LE
-          +LE
-          +'implementation'+LE);
-      end;
-
-     nuForm, nuDataModule, nuCGIDataModule:
-      begin
-        if NewUnitType=nuForm then
-          NewSource:=NewSource+Beautified(
-            '  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs;'+LE
-            +LE
-            +'type'+LE)
-        else if NewUnitType=nuDataModule then
-          NewSource:=NewSource+Beautified(
-            '  Classes, SysUtils, LResources, Forms, Controls, Dialogs;'+LE
-            +LE
-            +'type'+LE)
-        else if NewUnitType=nuCGIDataModule then
-          NewSource:=NewSource+Beautified(
-            '  Classes, SysUtils, LResources, cgiModules;'+LE
-            +LE
-            +'type'+LE);
-        if NewUnitType=nuForm then
-          NewSource:=NewSource+Beautified(
-            +'  T'+fComponentName+' = class(TForm)'+LE)
-        else if NewUnitType=nuDataModule then
-          NewSource:=NewSource+Beautified(
-            +'  T'+fComponentName+' = class(TDataModule)'+LE)
-        else if NewUnitType=nuCGIDataModule then
-          NewSource:=NewSource+Beautified(
-            +'  T'+fComponentName+' = class(TCGIDataModule)'+LE);
-        NewSource:=NewSource+Beautified(
-          '  private'+LE);
-        NewSource:=NewSource
-          +'    { private declarations }'+LE;
-        NewSource:=NewSource+Beautified(
-          +'  public'+LE);
-        NewSource:=NewSource
-          +'    { public declarations }'+LE;
-        NewSource:=NewSource+Beautified(
-          +'  end;'+LE
-          +LE
-          +'var'+LE
-          +'  '+fComponentName+': T'+fComponentName+';'+LE
-          +LE
-          +'implementation'+LE
-          +LE
-          +'initialization'+LE);
-        NewSource:=NewSource
-          +'  {$I '+AResourceFilename+'}'+LE;
-      end;
-
-    end;
-    NewSource:=NewSource+Beautified(
-      +LE
-      +'end.'+LE
-      +LE);
-
-  end else if NewUnitType in [nuCustomProgram] then begin
-    NewSource:=NewSource+Beautified(
-      +'program CustomProgram;'+LE
-      +LE
-      +'{$mode objfpc}{$H+}'+LE
-      +LE
-      +'uses'+LE
-      +'  Classes, SysUtils;'+LE
-      +LE
-      +'begin'+LE
-      +'end.'+LE
-      +LE);
-  end;
+  NewSource:=Beautified(
+                  Descriptor.CreateSource(Filename,NewUnitName,fComponentName));
   fSource.Source:=NewSource;
   fModified:=true;
 end;
@@ -1160,12 +1070,6 @@ begin
   if FBuildFileIfActive=AValue then exit;
   FBuildFileIfActive:=AValue;
   Modified:=true;
-end;
-
-procedure TUnitInfo.SetDescriptor(const AValue: TProjectFileDescriptor);
-begin
-  if FDescriptor=AValue then exit;
-  FDescriptor:=AValue;
 end;
 
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
@@ -1288,7 +1192,7 @@ begin
   // create program source
   NewSource:=TStringList.Create;
   case fProjectType of
-   ptProgram, ptApplication, ptCustomProgram, ptCGIApplication:
+   ptProgram, ptApplication, ptCustomProgram:
     begin
       NewPrgBuf:=CodeToolBoss.CreateFile(
         'project1'+ProjectDefaultExt[fProjectType]);
@@ -1315,8 +1219,6 @@ begin
               Add('  Interfaces,');
               Add('  Forms;');
             end;
-          ptCGIApplication:
-            Add('  cgiModules;');
         else
           Add('  { add your units here };');
         end;
@@ -1663,6 +1565,7 @@ var
   NewIndex: integer;
 begin
   if (AnUnit = nil) then exit;
+  //debugln('TProject.AddUnit A ',AnUnit.Filename,' AddToProjectFile=',dbgs(AddToProjectFile));
   BeginUpdate(true);
   NewIndex:=UnitCount;
   fUnitList.Add(AnUnit);
@@ -1836,7 +1739,7 @@ begin
   Result:=fUnitList.Count;
 end;
 
-function TProject.NewUniqueUnitName(NewUnitType:TNewUnitType):string;
+function TProject.NewUniqueUnitName(const AnUnitName: string):string;
 
   function ExpandedUnitname(const AnUnitName:string):string;
   begin
@@ -1857,20 +1760,24 @@ function TProject.NewUniqueUnitName(NewUnitType:TNewUnitType):string;
     Result:=false;
   end;
 
-// NewUniqueUnitName(NewUnitType:TNewUnitType)
-var u:integer;
+var
+  u:integer;
   Prefix: string;
 begin
-  u:=1;
-  case NewUnitType of
-    nuForm,nuUnit,nuDataModule,nuCGIDataModule: Prefix:='unit';
-  else Prefix:='text'
-  end;
-  while (UnitNameExists(Prefix+IntToStr(u))) do inc(u);
-  Result:=Prefix+IntToStr(u);
+  Prefix:=AnUnitName;
+  while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
+    Prefix:=copy(Prefix,1,length(Prefix)-1);
+  if (Prefix='') or (not IsValidIdent(Prefix)) then
+    Prefix:='Unit';
+  u:=0;
+  repeat
+    inc(u);
+    Result:=Prefix+IntToStr(u);
+  until (not UnitNameExists(Result));
 end;
 
-function TProject.NewUniqueComponentName(NewUnitType:TNewUnitType):string;
+function TProject.NewUniqueComponentName(const AComponentPrefix: string
+  ): string;
 
   function FormComponentExists(const AComponentName: string): boolean;
   var i: integer;
@@ -1889,20 +1796,38 @@ function TProject.NewUniqueComponentName(NewUnitType:TNewUnitType):string;
     Result:=false;
   end;
 
-// NewUniqueComponentName(NewUnitType:TNewUnitType)
-var i: integer;
+var
+  u: integer;
   Prefix: string;
 begin
-  i:=1;
-  case NewUnitType of
-    nuForm, nuUnit: Prefix:='Form';
-    nuDataModule:   Prefix:='DataModule';
-    nuCGIDataModule:   Prefix:='CGIDataModule';
-  else
-    Prefix:='form';
-  end;
-  while (FormComponentExists(Prefix+IntToStr(i))) do inc(i);
-  Result:=Prefix+IntToStr(i);
+  Prefix:=AComponentPrefix;
+  while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
+    Prefix:=copy(Prefix,1,length(Prefix)-1);
+  if (Prefix='') or (not IsValidIdent(Prefix)) then
+    Prefix:='Resource';
+  u:=0;
+  repeat
+    inc(u);
+    Result:=Prefix+IntToStr(u);
+  until (not FormComponentExists(Result));
+end;
+
+function TProject.NewUniqueFilename(const Filename: string): string;
+var
+  FileNameOnly: String;
+  FileExt: String;
+  i: Integer;
+begin
+  FileNameOnly:=ExtractFilenameOnly(Filename);
+  while (FileNameOnly<>'')
+  and (FileNameOnly[length(FileNameOnly)] in ['0'..'9']) do
+    FileNameOnly:=copy(FileNameOnly,1,length(FileNameOnly)-1);
+  FileExt:=ExtractFileExt(Filename);
+  i:=0;
+  repeat
+    inc(i);
+    Result:=FileNameOnly+IntToStr(i)+FileExt;
+  until ProjectUnitWithShortFilename(Result)=nil;
 end;
 
 function TProject.AddCreateFormToProjectFile(
@@ -2527,7 +2452,7 @@ begin
       end;
     end;
     if (OldUnitName<>'')
-    and (ProjectType in [ptProgram, ptApplication, ptCGIApplication]) then
+    and (ProjectType in [ptProgram, ptApplication]) then
     begin
       // rename unit in program uses section
       CodeToolBoss.RenameUsedUnit(MainUnitInfo.Source
@@ -2652,6 +2577,17 @@ begin
   Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
     if CompareFileNames(AFilename,Result.Filename)=0 then exit;
+    Result:=Result.fNext[uilPartOfProject];
+  end;
+end;
+
+function TProject.ProjectUnitWithShortFilename(const ShortFilename: string
+  ): TUnitInfo;
+begin
+  Result:=fFirst[uilPartOfProject];
+  while Result<>nil do begin
+    if CompareFileNames(ShortFilename,ExtractFilename(Result.Filename))=0 then
+      exit;
     Result:=Result.fNext[uilPartOfProject];
   end;
 end;
@@ -2866,6 +2802,9 @@ end.
 
 {
   $Log$
+  Revision 1.159  2004/09/01 09:43:24  mattias
+  implemented registration of project file types
+
   Revision 1.158  2004/08/30 16:02:17  mattias
   started project interface
 

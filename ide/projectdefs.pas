@@ -67,8 +67,10 @@ type
   
   TLazProjectFileDescriptors = class(TProjectFileDescriptors)
   private
+    FDefaultPascalFileExt: string;
     fDestroying: boolean;
     fItems: TList; // list of TProjectFileDescriptor
+    procedure SetDefaultPascalFileExt(const AValue: string);
   protected
     function GetItems(Index: integer): TProjectFileDescriptor; override;
   public
@@ -80,52 +82,14 @@ type
     function FindByName(const Name: string): TProjectFileDescriptor; override;
     procedure RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
     procedure UnregisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
+    procedure UpdateDefaultPascalFileExtensions;
+    property DefaultPascalFileExt: string read FDefaultPascalFileExt write SetDefaultPascalFileExt;
   end;
   
 var
   LazProjectFileDescriptors: TLazProjectFileDescriptors;
   
 type
-  { TFileDescPascalUnit }
-  
-  TFileDescPascalUnit = class(TProjectFileDescriptor)
-  public
-    constructor Create;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-  end;
-  
-
-  { TFileDescPascalUnitWithForm }
-
-  TFileDescPascalUnitWithForm = class(TFileDescPascalUnit)
-  public
-    constructor Create;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-  end;
-
-
-  { TFileDescPascalUnitWithDataModule }
-
-  TFileDescPascalUnitWithDataModule = class(TFileDescPascalUnit)
-  public
-    constructor Create;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-  end;
-
-
-  { TFileDescText }
-
-  TFileDescText = class(TProjectFileDescriptor)
-  public
-    constructor Create;
-    function GetLocalizedName: string; override;
-    function GetLocalizedDescription: string; override;
-  end;
-
-
   //---------------------------------------------------------------------------
   // bookmarks of a single file
   TFileBookmark = class
@@ -958,6 +922,14 @@ end;
 
 { TLazProjectFileDescriptors }
 
+procedure TLazProjectFileDescriptors.SetDefaultPascalFileExt(
+  const AValue: string);
+begin
+  if FDefaultPascalFileExt=AValue then exit;
+  FDefaultPascalFileExt:=AValue;
+  UpdateDefaultPascalFileExtensions;
+end;
+
 function TLazProjectFileDescriptors.GetItems(Index: integer): TProjectFileDescriptor;
 begin
   Result:=TProjectFileDescriptor(FItems[Index]);
@@ -1018,10 +990,19 @@ begin
     Result:=nil;
 end;
 
-procedure TLazProjectFileDescriptors.RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor
-  );
+procedure TLazProjectFileDescriptors.RegisterFileDescriptor(
+  FileDescriptor: TProjectFileDescriptor);
+var
+  DefPasExt: String;
 begin
+  if FileDescriptor.Name='' then
+    raise Exception.Create('TLazProjectFileDescriptors.RegisterFileDescriptor FileDescriptor.Name empty');
+  if FileDescriptor.DefaultFilename='' then
+    raise Exception.Create('TLazProjectFileDescriptors.RegisterFileDescriptor FileDescriptor.DefaultFilename empty');
   FileDescriptor.Name:=GetUniqueName(FileDescriptor.Name);
+  DefPasExt:=DefaultPascalFileExt;
+  if DefPasExt<>'' then
+    FileDescriptor.UpdateDefaultPascalFileExtension(DefPasExt);
   FItems.Add(FileDescriptor);
 end;
 
@@ -1038,80 +1019,14 @@ begin
   FileDescriptor.Release;
 end;
 
-{ TFileDescPascalUnit }
-
-constructor TFileDescPascalUnit.Create;
+procedure TLazProjectFileDescriptors.UpdateDefaultPascalFileExtensions;
+var
+  i: Integer;
+  DefPasExt: String;
 begin
-  inherited Create;
-  Name:='unit';
-end;
-
-function TFileDescPascalUnit.GetLocalizedName: string;
-begin
-  Result:='Unit';
-end;
-
-function TFileDescPascalUnit.GetLocalizedDescription: string;
-begin
-  Result:=lisNewDlgCreateANewPascalUnit;
-end;
-
-{ TFileDescPascalUnitWithForm }
-
-constructor TFileDescPascalUnitWithForm.Create;
-begin
-  inherited Create;
-  Name:='form';
-  Persistent:=TForm;
-  UseCreateFormStatements:=true;
-end;
-
-function TFileDescPascalUnitWithForm.GetLocalizedName: string;
-begin
-  Result:='Form';
-end;
-
-function TFileDescPascalUnitWithForm.GetLocalizedDescription: string;
-begin
-  Result:=lisNewDlgCreateANewUnitWithALCLForm;
-end;
-
-{ TFileDescPascalUnitWithDataModule }
-
-constructor TFileDescPascalUnitWithDataModule.Create;
-begin
-  inherited Create;
-  Name:='datamodule';
-  Persistent:=TDataModule;
-  UseCreateFormStatements:=true;
-end;
-
-function TFileDescPascalUnitWithDataModule.GetLocalizedName: string;
-begin
-  Result:='Data Module';
-end;
-
-function TFileDescPascalUnitWithDataModule.GetLocalizedDescription: string;
-begin
-  Result:=lisNewDlgCreateANewUnitWithADataModule;
-end;
-
-{ TFileDescText }
-
-constructor TFileDescText.Create;
-begin
-  inherited Create;
-  Name:='text';
-end;
-
-function TFileDescText.GetLocalizedName: string;
-begin
-  Result:='Text';
-end;
-
-function TFileDescText.GetLocalizedDescription: string;
-begin
-  Result:=lisNewDlgCreateANewEmptyTextFile;
+  DefPasExt:=DefaultPascalFileExt;
+  if DefPasExt='' then exit;
+  for i:=0 to Count-1 do Items[i].UpdateDefaultPascalFileExtension(DefPasExt);
 end;
 
 initialization

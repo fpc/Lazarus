@@ -44,10 +44,13 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  // FCL, LCL
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl, Dialogs, Menus,
+  // codetools
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
+  // IDE
   DialogProcs, LazarusIDEStrConsts, IDEProcs, KeyMapping, ObjectLists,
-  EnvironmentOpts, MiscOptions, ProjectDefs, InputHistory, Project,
+  EnvironmentOpts, MiscOptions, ProjectIntf, ProjectDefs, Project, InputHistory,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
   BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
@@ -385,8 +388,9 @@ begin
     +LE
     +'end.'+LE;
 
-  Result:=MainIDE.DoNewEditorFile(nuUnit,Params.UnitFilename,NewSource,
-                    [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
+  Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,
+     Params.UnitFilename,NewSource,
+     [nfOpenInEditor,nfIsNotPartOfProject,nfSave,nfAddToRecent]);
 end;
 
 function TPkgManager.OnPackageEditorDeleteAmbigiousFiles(Sender: TObject;

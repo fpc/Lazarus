@@ -71,8 +71,8 @@ uses
   // compile
   Compiler, CompilerOptions, CheckCompilerOpts, ImExportCompilerOpts,
   // projects
-  Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
-  ProjectInspector,
+  ProjectIntf, Project, ProjectDefs, NewProjectDlg, ProjectOpts,
+  PublishProjectDlg, ProjectInspector,
   // help manager
   HelpManager,
   // designer
@@ -462,11 +462,11 @@ type
     procedure ReOpenIDEWindows;
 
     // methods for 'new unit'
-    function CreateNewCodeBuffer(NewUnitType:TNewUnitType;
+    function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
         NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
-    function CreateNewForm(NewUnitInfo: TUnitInfo; AncestorType: TComponentClass;
-        ResourceCode: TCodeBuffer): TModalResult;
+    function CreateNewForm(NewUnitInfo: TUnitInfo;
+        AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
 
     // methods for 'save unit'
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
@@ -529,7 +529,7 @@ type
     procedure UpdateDefaultPascalFileExtensions;
 
     // files/units
-    function DoNewEditorFile(NewUnitType: TNewUnitType;
+    function DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
         NewFilename: string; const NewSource: string;
         NewFlags: TNewFlags): TModalResult; override;
     function DoNewOther: TModalResult;
@@ -1525,6 +1525,7 @@ var
   FileDescPascalUnitWithForm: TFileDescPascalUnitWithForm;
   FileDescPascalUnitWithDataModule: TFileDescPascalUnitWithDataModule;
   FileDescText: TFileDescText;
+  FileDescSimplePascalProgram: TFileDescSimplePascalProgram;
 begin
   LazProjectFileDescriptors:=TLazProjectFileDescriptors.Create;
   // basic pascal unit
@@ -1536,6 +1537,9 @@ begin
   // pascal unit with datamodule
   FileDescPascalUnitWithDataModule:=TFileDescPascalUnitWithDataModule.Create;
   LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnitWithDataModule);
+  // simple pascal program
+  FileDescSimplePascalProgram:=TFileDescSimplePascalProgram.Create;
+  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescSimplePascalProgram);
   // empty text file
   FileDescText:=TFileDescText.Create;
   LazProjectFileDescriptors.RegisterFileDescriptor(FileDescText);
@@ -1775,12 +1779,12 @@ end;
 
 procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
 begin
-  DoNewEditorFile(nuUnit,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  DoNewEditorFile(FileDescriptorUnit,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 begin
-  DoNewEditorFile(nuForm,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  DoNewEditorFile(FileDescriptorForm,'','',[nfOpenInEditor,nfCreateDefaultSrc]);
 end;
 
 procedure TMainIDE.mnuNewOtherClicked(Sender: TObject);
@@ -2788,15 +2792,14 @@ begin
 end;
 
 procedure TMainIDE.UpdateDefaultPascalFileExtensions;
-var nut: TNewUnitType;
+var
   npt: TProjectType;
   DefPasExt: string;
 begin
   // change default pascal file extensions
   DefPasExt:=PascalExtension[EnvironmentOptions.PascalFileExtension];
-  for nut:=Low(TNewUnitType) to High(TNewUnitType) do
-    if (UnitTypeDefaultExt[nut]='.pas') or (UnitTypeDefaultExt[nut]='.pp')
-    then UnitTypeDefaultExt[nut]:=DefPasExt;
+  if LazProjectFileDescriptors<>nil then
+    LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
   for npt:=Low(TProjectType) to High(TProjectType) do
     if (ProjectDefaultExt[npt]='.pas') or (ProjectDefaultExt[npt]='.pp')
     then ProjectDefaultExt[npt]:=DefPasExt;
@@ -2956,24 +2959,33 @@ end;
 
 //==============================================================================
 
-function TMainIDE.CreateNewCodeBuffer(NewUnitType:TNewUnitType;
+function TMainIDE.CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
   NewFilename: string;
   var NewCodeBuffer: TCodeBuffer; var NewUnitName: string): TModalResult;
 begin
+  //debugln('TMainIDE.CreateNewCodeBuffer START NewFilename=',NewFilename,' ',Descriptor.DefaultFilename,' ',Descriptor.ClassName);
+  NewUnitName:='';
   if NewFilename='' then begin
-    NewUnitName:=Project1.NewUniqueUnitName(NewUnitType);
-    NewCodeBuffer:=CodeToolBoss.CreateFile(
-                                   NewUnitName+UnitTypeDefaultExt[NewUnitType]);
-  end else begin
-    NewUnitName:=ExtractFileNameOnly(NewFilename);
-    if FilenameIsPascalUnit(NewFilename) then begin
-      if EnvironmentOptions.PascalFileAutoLowerCase
-      or EnvironmentOptions.PascalFileAskLowerCase then
-        NewFilename:=ExtractFilePath(NewFilename)
-                     +lowercase(ExtractFileName(NewFilename));
+    if Descriptor.IsPascalUnit then begin
+      NewUnitName:=Project1.NewUniqueUnitName(Descriptor.DefaultSourceName);
+      NewFilename:=lowercase(NewUnitName)+Descriptor.DefaultFileExt;
+    end else begin
+      NewFilename:=Project1.NewUniqueFilename(
+                                   ExtractFilename(Descriptor.DefaultFilename));
     end;
-    NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
+    if NewFilename='' then
+      RaiseException('');
   end;
+  //debugln('TMainIDE.CreateNewCodeBuffer NewFilename=',NewFilename,' NewUnitName=',NewUnitName);
+  if FilenameIsPascalUnit(NewFilename) then begin
+    if NewUnitName='' then
+      NewUnitName:=ExtractFileNameOnly(NewFilename);
+    if EnvironmentOptions.PascalFileAutoLowerCase
+    or EnvironmentOptions.PascalFileAskLowerCase then
+      NewFilename:=ExtractFilePath(NewFilename)
+                   +lowercase(ExtractFileName(NewFilename));
+  end;
+  NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
   if NewCodeBuffer<>nil then
     Result:=mrOk
   else
@@ -2981,17 +2993,22 @@ begin
 end;
 
 function TMainIDE.CreateNewForm(NewUnitInfo: TUnitInfo;
-  AncestorType: TComponentClass; ResourceCode: TCodeBuffer): TModalResult;
+  AncestorType: TPersistentClass; ResourceCode: TCodeBuffer): TModalResult;
 var
   CInterface : TComponentInterface;
   NewComponent: TComponent;
 begin
+  if not AncestorType.InheritsFrom(TComponent) then
+    RaiseException('TMainIDE.CreateNewForm invalid AncestorType');
+
+  //debugln('TMainIDE.CreateNewForm START ',NewUnitInfo.Filename,' ',AncestorType.ClassName,' ',dbgs(ResourceCode<>nil));
   // create a buffer for the new resource file and for the LFM file
   if ResourceCode=nil then begin
     ResourceCode:=
       CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,
                               ResourceFileExt));
   end;
+  //debugln('TMainIDE.CreateNewForm B ',ResourceCode.Filename);
   ResourceCode.Source:='{ '+lisResourceFileComment+' }';
   CodeToolBoss.CreateFile(ChangeFileExt(NewUnitInfo.Filename,'.lfm'));
 
@@ -3002,7 +3019,7 @@ begin
 
   // create jit component
   CInterface := TComponentInterface(
-    FormEditor1.CreateComponent(nil,AncestorType,
+    FormEditor1.CreateComponent(nil,TComponentClass(AncestorType),
       ObjectInspector1.Left+ObjectInspector1.Width+60,
       MainIDEBar.Top+MainIDEBar.Height+80,
       400,300));
@@ -3656,10 +3673,10 @@ begin
   begin
     // create new file
     if FilenameIsPascalSource(AFilename) then
-      Result:=DoNewEditorFile(nuUnit,AFilename,'',
+      Result:=DoNewEditorFile(FileDescriptorUnit,AFilename,'',
                               [nfOpenInEditor,nfCreateDefaultSrc])
     else
-      Result:=DoNewEditorFile(nuEmpty,AFilename,'',
+      Result:=DoNewEditorFile(FileDescriptorText,AFilename,'',
                               [nfOpenInEditor,nfCreateDefaultSrc]);
   end;
 end;
@@ -4114,7 +4131,7 @@ begin
     AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', #13]);
     Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbOk, mbCancel], 0);
     if Result=mrCancel then exit;
-  end else if Project1.ProjectType in [ptProgram,ptApplication,ptCGIApplication]
+  end else if Project1.ProjectType in [ptProgram,ptApplication]
   then begin
     if FileExists(NewProgramFilename) then begin
       ACaption:=lisOverwriteFile;
@@ -4279,7 +4296,7 @@ begin
   Result:=mrOk;
 end;
 
-function TMainIDE.DoNewEditorFile(NewUnitType:TNewUnitType;
+function TMainIDE.DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
   NewFilename: string; const NewSource: string;
   NewFlags: TNewFlags): TModalResult;
 
@@ -4294,7 +4311,7 @@ var NewUnitInfo:TUnitInfo;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
   OldUnitIndex: Integer;
-  AncestorType: TComponentClass;
+  AncestorType: TPersistentClass;
   NewResBuffer: TCodeBuffer;
 begin
   debugln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
@@ -4309,7 +4326,8 @@ begin
   end;
 
   // create new codebuffer and apply naming conventions
-  Result:=CreateNewCodeBuffer(NewUnitType,NewFilename,NewBuffer,NewUnitName);
+  Result:=CreateNewCodeBuffer(NewFileDescriptor,NewFilename,NewBuffer,
+                              NewUnitName);
   if Result<>mrOk then exit;
 
   NewFilename:=NewBuffer.Filename;
@@ -4323,11 +4341,13 @@ begin
     NewUnitInfo.Source:=NewBuffer;
   end else
     NewUnitInfo:=TUnitInfo.Create(NewBuffer);
+  NewUnitInfo.ImproveUnitNameCache(NewUnitName);
 
   // create source code
   if nfCreateDefaultSrc in NewFlags then begin
-    if NewUnitType in [nuForm,nuDataModule,nuCGIDataModule] then begin
-      NewUnitInfo.ComponentName:=Project1.NewUniqueComponentName(NewUnitType);
+    if (NewFileDescriptor.ResourceClass<>nil) then begin
+      NewUnitInfo.ComponentName:=
+        Project1.NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
       NewUnitInfo.ComponentResourceName:='';
       NewResBuffer:=CodeToolBoss.CreateFile(
                                     ChangeFileExt(NewFilename,ResourceFileExt));
@@ -4335,7 +4355,7 @@ begin
         RaiseException('TMainIDE.DoNewEditorFile Internal error');
       end;
     end;
-    NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
+    NewUnitInfo.CreateStartCode(NewFileDescriptor,NewUnitName);
   end else begin
     if nfBeautifySrc in NewFlags then
       NewBuffer.Source:=BeautifySrc(NewSource)
@@ -4353,17 +4373,13 @@ begin
   end;
   if OldUnitIndex<0 then begin
     Project1.AddUnit(NewUnitInfo,
-                     (NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule])
+                     NewFileDescriptor.AddToProject
                      and NewUnitInfo.IsPartOfProject);
   end;
 
   // syntax highlighter type
-  if NewUnitType in [nuForm,nuUnit,nuDataModule,nuCGIDataModule] then begin
-    NewUnitInfo.SyntaxHighlighter:=lshFreePascal;
-  end else begin
-    NewUnitInfo.SyntaxHighlighter:=
-      ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename))
-  end;
+  NewUnitInfo.SyntaxHighlighter:=
+    ExtensionToLazSyntaxHighlighter(ExtractFileExt(NewFilename));
 
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
@@ -4378,14 +4394,7 @@ begin
     NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
 
     // create component
-    case NewUnitType of
-    nuForm:       AncestorType:=TForm;
-    nuDataModule: AncestorType:=TDataModule;
-    {$IFDEF HasCGIModules}
-    nuCGIDataModule: AncestorType:=TCGIDataModule;
-    {$ENDIF}
-    else          AncestorType:=nil;
-    end;
+    AncestorType:=NewFileDescriptor.ResourceClass;
     if AncestorType<>nil then begin
       Result:=CreateNewForm(NewUnitInfo,AncestorType,nil);
       if Result<>mrOk then exit;
@@ -4426,19 +4435,18 @@ begin
     if Result<>mrOk then exit;
     case NewIDEItem.TheType of
     // files
-    niiText: Result:=DoNewEditorFile(nuText,'','',
+    niiText: Result:=DoNewEditorFile(FileDescriptorText,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
-    niiUnit: Result:=DoNewEditorFile(nuUnit,'','',
+    niiUnit: Result:=DoNewEditorFile(FileDescriptorUnit,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
-    niiForm: Result:=DoNewEditorFile(nuForm,'','',
+    niiForm: Result:=DoNewEditorFile(FileDescriptorForm,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
-    niiDataModule: Result:=DoNewEditorFile(nuDataModule,'','',
+    niiDataModule: Result:=DoNewEditorFile(FileDescriptorDatamodule,'','',
                                      [nfOpenInEditor,nfCreateDefaultSrc]);
     // projects
     niiApplication: DoNewProject(ptApplication);
     niiFPCProject: DoNewProject(ptProgram);
     niiCustomProject: DoNewProject(ptCustomProgram);
-    niiCGIApplication: DoNewProject(ptCGIApplication);
     // packages
     niiPackage: PkgBoss.DoNewPackage;
     else
@@ -4905,6 +4913,7 @@ Begin
   try
     for i:=0 to Project1.UnitCount-1 do begin
       if not Project1.Units[i].IsPartOfProject then continue;
+      //debugln('TMainIDE.DoViewUnitsAndForms OnlyForms=',dbgs(OnlyForms),' CompName=',Project1.Units[i].ComponentName,' UnitName=',Project1.Units[i].UnitName);
       if OnlyForms then begin
         // add all form names of project
         if Project1.Units[i].ComponentName<>'' then begin
@@ -4918,8 +4927,7 @@ Begin
             Project1.Units[i].UnitName,i,Project1.Units[i]=ActiveUnitInfo));
         end else if Project1.MainUnitID=i then begin
           MainUnitInfo:=Project1.MainUnitInfo;
-          if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram,
-            ptCGIApplication]
+          if Project1.ProjectType in [ptProgram,ptApplication,ptCustomProgram]
           then begin
             MainUnitName:=CreateSrcEditPageName(MainUnitInfo.UnitName,
               MainUnitInfo.Filename,MainUnitInfo.EditorIndex);
@@ -5286,17 +5294,12 @@ Begin
 
     ptApplication:
       // create a first form unit
-      DoNewEditorFile(nuForm,'','',
+      DoNewEditorFile(FileDescriptorForm,'','',
                       [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
 
     ptProgram,ptCustomProgram:
       // show program unit
       DoOpenMainUnit(false);
-
-    ptCGIApplication:
-      // create a first datamodule
-      DoNewEditorFile(nuCGIDataModule,'','',
-                      [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
 
     end;
 
@@ -5765,7 +5768,7 @@ begin
         s:='"'+ActiveUnitInfo.Filename+'"'
       else
         s:='"'+ActiveSourceEditor.PageName+'"';
-      if (Project1.ProjectType in [ptProgram, ptApplication, ptCGIApplication])
+      if (Project1.ProjectType in [ptProgram, ptApplication])
       and (ActiveUnitInfo.UnitName<>'')
       and (Project1.IndexOfUnitWithName(ActiveUnitInfo.UnitName,
           true,ActiveUnitInfo)>=0) then
@@ -5783,7 +5786,7 @@ begin
           if Result<>mrOk then exit;
           ActiveUnitInfo.IsPartOfProject:=true;
           if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-          and (Project1.ProjectType in [ptProgram,ptApplication,ptCGIApplication])
+          and (Project1.ProjectType in [ptProgram,ptApplication])
           then begin
             ActiveUnitInfo.ReadUnitNameFromSource(false);
             ShortUnitName:=ActiveUnitInfo.CreateUnitName;
@@ -5831,7 +5834,7 @@ Begin
           AnUnitInfo:=Project1.Units[TViewUnitsEntry(UnitList[i]).ID];
           AnUnitInfo.IsPartOfProject:=false;
           if (Project1.MainUnitID>=0)
-          and (Project1.ProjectType in [ptProgram,ptApplication,ptCGIApplication])
+          and (Project1.ProjectType in [ptProgram,ptApplication])
           then begin
             if (AnUnitInfo.UnitName<>'') then begin
               if CodeToolBoss.RemoveUnitFromAllUsesSections(
@@ -6043,8 +6046,7 @@ begin
   Result := mrCancel;
 
   // Check if we can run this project
-  if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram,
-    ptCGIApplication])
+  if not (Project1.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
   or (Project1.MainUnitID < 0)
   then Exit;
 
@@ -9458,7 +9460,8 @@ begin
   Files.Free;
   if OpenDiffInEditor then begin
     NewDiffFilename:=CreateSrcEditPageName('','diff.txt',-1);
-    Result:=DoNewEditorFile(nuText,NewDiffFilename,DiffText,[nfOpenInEditor]);
+    Result:=DoNewEditorFile(FileDescriptorText,NewDiffFilename,DiffText,
+                            [nfOpenInEditor]);
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
     if ActiveSrcEdit=nil then exit;
   end;
@@ -9983,7 +9986,7 @@ begin
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
   if FilenameIsPascalUnit(AnUnitInfo.Filename)
-  and (Project1.ProjectType in [ptProgram, ptApplication, ptCGIApplication])
+  and (Project1.ProjectType in [ptProgram, ptApplication])
   then begin
     AnUnitInfo.ReadUnitNameFromSource(false);
     ShortUnitName:=AnUnitInfo.UnitName;
@@ -10013,7 +10016,7 @@ begin
   Result:=mrOk;
   AnUnitInfo.IsPartOfProject:=false;
   if (Project1.MainUnitID>=0)
-  and (Project1.ProjectType in [ptProgram, ptApplication, ptCGIApplication])
+  and (Project1.ProjectType in [ptProgram, ptApplication])
   then begin
     BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
     ShortUnitName:=AnUnitInfo.UnitName;
@@ -10635,6 +10638,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.764  2004/09/01 09:43:24  mattias
+  implemented registration of project file types
+
   Revision 1.763  2004/08/30 16:02:17  mattias
   started project interface
 

@@ -162,6 +162,7 @@ function ProgramDirectory: string;
 function ExtractFileNameOnly(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;
+function FilenameIsPascalUnit(const Filename: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
 function TrimFilename(const AFilename: string): string;
@@ -396,6 +397,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2004/09/01 09:43:24  mattias
+  implemented registration of project file types
+
   Revision 1.28  2004/08/22 22:47:43  mattias
   implemented context help for source editor
 
