@@ -241,6 +241,7 @@ type
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
+    function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
     
@@ -3619,6 +3620,16 @@ begin
   Result:=UpAtomIs('FUNCTION');
 end;
 
+function TPascalParserTool.NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then exit;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if UpAtomIs('CLASS') then ReadNextAtom;
+  Result:=UpAtomIs('CONSTRUCTOR');
+end;
+
 function TPascalParserTool.NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode
   ): boolean;
 begin
@@ -3976,10 +3987,12 @@ end;
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
   var FunctionResult: TCodeTreeNode);
 begin
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
+  if ProcNode.Desc<>ctnProcedure then
+    RaiseException('INTERNAL ERROR: TPascalParserTool.BuildSubTreeForProcHead');
   BuildSubTreeForProcHead(ProcNode);
-  FunctionResult:=ProcNode;
-  if FunctionResult.Desc=ctnProcedure then
-    FunctionResult:=FunctionResult.FirstChild;
+  FunctionResult:=ProcNode.FirstChild.FirstChild;
   if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then
     FunctionResult:=FunctionResult.NextBrother;
 end;
