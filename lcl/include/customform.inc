@@ -801,10 +801,16 @@ end;
 {       TCustomForm SetWindowState                                                      }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetWindowState(Value : TWindowState);
-Begin
-  //TODO: Finish SETWINDOWSTATE
-  FWindowState := Value;
-  Assert(False, 'Trace:TODO: [TCustomForm.SetWindowState]');
+const
+  ShowCommands: array[TWindowState] of Integer =
+    (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED);
+begin
+  if FWindowState <> Value then
+  begin
+    FWindowState := Value;
+    if not (csDesigning in ComponentState) and Showing then
+      ShowWindow(Handle, ShowCommands[Value]);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1296,6 +1302,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/02/28 19:54:05  mattias
+  added ShowWindow
+
   Revision 1.85  2003/02/04 11:44:13  mattias
   fixed modified and loading xpms for button glyphs
 

@@ -645,6 +645,22 @@ const
   HWND_TOPMOST = HWND(-1);
   HWND_NOTOPMOST = HWND(-2);
 
+  { ShowWindow() Commands }
+  SW_HIDE           = 0;
+  SW_SHOWNORMAL     = 1;
+  SW_NORMAL         = 1;
+  SW_SHOWMINIMIZED  = 2;
+  SW_SHOWMAXIMIZED  = 3;
+  SW_MAXIMIZE       = 3;
+  SW_SHOWNOACTIVATE = 4;
+  SW_SHOW           = 5;
+  SW_MINIMIZE       = 6;
+  SW_SHOWMINNOACTIVE = 7;
+  SW_SHOWNA         = 8;
+  SW_RESTORE        = 9;
+  SW_SHOWDEFAULT    = 10;
+  SW_MAX            = 10;
+
 const
   { DIB color table identifiers }
 
@@ -1775,6 +1791,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2003/02/28 19:54:05  mattias
+  added ShowWindow
+
   Revision 1.32  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
