@@ -159,7 +159,8 @@ begin
   //FLastResize.Y:= AHeight - FHeight;
 
   //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
-  if (not (csLoading in ComponentState)) then
+  if (not (csLoading in ComponentState))
+  and (not (Self is TWinControl)) then
     InvalidateControl(Visible, False, true);
   //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
   DoSetBounds(ALeft,ATop,AWidth,AHeight);
@@ -178,7 +179,8 @@ begin
     If Parent <> nil then
       Parent.DoAutoSize;
     if SizeChanged
-    and (not (csLoading in ComponentState)) then
+    and (not (csLoading in ComponentState))
+    and (not (Self is TWinControl)) then
       Invalidate;
   finally
     UnlockBaseBounds;
@@ -279,7 +281,7 @@ end;
 
 function TControl.IsAnchorsStored: boolean;
 begin
-  Result:=Anchors=[akLeft,akTop];
+  Result:=Anchors<>[akLeft,akTop];
 end;
 
 {------------------------------------------------------------------------------
@@ -2227,6 +2229,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.129  2003/06/10 15:58:39  mattias
+  started TLabeledEdit
+
   Revision 1.128  2003/06/10 12:28:23  mattias
   fixed anchoring controls
 
