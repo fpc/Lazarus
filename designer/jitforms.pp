@@ -616,7 +616,7 @@ type
   TMethodNameTable = packed record
     Count : DWord;
     // for runtime range checking it is important to give a range
-    Entries : packed array[0..1000000] of TMethodNameRec;
+    Entries : packed array[0..0] of TMethodNameRec;
   end;
 
   PMethodNameTable =  ^TMethodNameTable;
@@ -676,7 +676,9 @@ procedure TJITComponentList.FreevmtCopy(vmtCopy:Pointer);
     if CurCount=BaseCount then exit;
     i:=CurCount;
     while i>BaseCount do begin
+      {$R-}
       CurMethod:=MethodTable^.Entries[i-1];
+      {$R+}
       if CurMethod.Name<>nil then
         FreeMem(CurMethod.Name);
       if CurMethod.Addr<>nil then
@@ -800,8 +802,10 @@ begin
   MethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   if Assigned(MethodTable) then begin
     for a:=0 to MethodTable^.Count-1 do begin
+      {$R-}
       if uppercase(MethodTable^.Entries[a].Name^)=OldName then
         MethodTable^.Entries[a].Name^:=NewName;
+      {$R+}
     end;
   end;
 end;
