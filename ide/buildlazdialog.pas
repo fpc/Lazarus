@@ -321,6 +321,7 @@ end;
 
 procedure TConfigureBuildLazarusDlg.Save(Options: TBuildLazarusOptions);
 begin
+  if Options=nil then exit;
   Options.CleanAll:=CleanAllCheckBox.Checked;
   Options.BuildLCL:=IntToMakeMode(BuildLCLRadioGroup.ItemIndex);
   Options.BuildSynEdit:=IntToMakeMode(BuildSynEditRadioGroup.ItemIndex);

@@ -41,8 +41,6 @@ type
 
 implementation
 
-uses Strings, Math;
-
 type
   TCharType = (ctNone,ctWordBegin,ctWord);
 

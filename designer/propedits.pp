@@ -840,7 +840,7 @@ type
 
 implementation
 
-uses Dialogs, Math, ColumnDlg;
+uses Dialogs, ColumnDlg;
 
 
 const

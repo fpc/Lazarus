@@ -78,8 +78,6 @@ end;
 {------------------------------------------------------------------------------}
 function TCompiler.Compile(AProject: TProject; BuildAll: boolean;
   const DefaultFilename: string): TModalResult;
-const
-  BufSize = 1024;
 var
   CmdLine : String;
   Abort : Boolean;
@@ -181,6 +179,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2002/03/28 00:11:04  lazarus
+  MG: removed unused
+
   Revision 1.28  2002/01/23 20:07:20  lazarus
   MG: added outputfilter
 
