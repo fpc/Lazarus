@@ -12,7 +12,7 @@ packages=fcl regexpr
 
 [target]
 programs=lazarus
-dirs=lcl components ideintf designer packager
+dirs=lcl components packager/registration ideintf designer packager
 exampledirs=examples
 
 [compiler]
@@ -65,7 +65,7 @@ export LAZARUS_CONFIG_DIR
 LAZARUS_IDE_CONFIG=$(LAZARUS_CONFIG_DIR)/idemake.cfg
 
 [rules]
-.PHONY: lcl components ideintf packager ide idepkg tools all clean cleanide
+.PHONY: lcl components packager/registration ideintf packager ide idepkg tools all clean cleanide
 .SUFFIXES: .rc .res
 
 %.res: %.rc
@@ -83,7 +83,7 @@ idepkg:
 tools: lcl components
         $(MAKE) -C tools
 
-all: lcl components ideintf designer packager ide
+all: lcl components packager/registration ideintf designer packager ide
 
 cleanide:
         $(DEL) $(wildcard *$(OEXT))

@@ -15,6 +15,7 @@ unittargetdir=units/$(CPU_TARGET)/$(OS_TARGET)
 options=-gl
 
 [target]
+dirs=../packager/registration
 units=allideintf
 implicitunits=actionseditor \
   columndlg \

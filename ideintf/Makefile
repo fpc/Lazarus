@@ -214,6 +214,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 override PACKAGE_NAME=ideintf
 override PACKAGE_VERSION=0.9b
+override TARGET_DIRS+=../packager/registration
 override TARGET_UNITS+=allideintf
 override TARGET_IMPLICITUNITS+=actionseditor columndlg componenteditors componenttreeview graphpropedits idecommands imagelisteditor listviewpropedit objectinspector objinspstrconsts propedits helpintf texttools actionseditor formeditingintf srceditorintf componentreg
 override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT))
@@ -2070,22 +2071,66 @@ endif
 fpc_makefile_sub2: $(addsuffix _makefile_dirs,$(TARGET_DIRS) $(TARGET_EXAMPLEDIRS))
 fpc_makefile_dirs: fpc_makefile_sub1 fpc_makefile_sub2
 fpc_makefiles: fpc_makefile fpc_makefile_dirs
+TARGET_DIRS_../PACKAGER/REGISTRATION=1
+ifdef TARGET_DIRS_../PACKAGER/REGISTRATION
+../packager/registration_all:
+	$(MAKE) -C ../packager/registration all
+../packager/registration_debug:
+	$(MAKE) -C ../packager/registration debug
+../packager/registration_smart:
+	$(MAKE) -C ../packager/registration smart
+../packager/registration_release:
+	$(MAKE) -C ../packager/registration release
+../packager/registration_examples:
+	$(MAKE) -C ../packager/registration examples
+../packager/registration_shared:
+	$(MAKE) -C ../packager/registration shared
+../packager/registration_install:
+	$(MAKE) -C ../packager/registration install
+../packager/registration_sourceinstall:
+	$(MAKE) -C ../packager/registration sourceinstall
+../packager/registration_exampleinstall:
+	$(MAKE) -C ../packager/registration exampleinstall
+../packager/registration_distinstall:
+	$(MAKE) -C ../packager/registration distinstall
+../packager/registration_zipinstall:
+	$(MAKE) -C ../packager/registration zipinstall
+../packager/registration_zipsourceinstall:
+	$(MAKE) -C ../packager/registration zipsourceinstall
+../packager/registration_zipexampleinstall:
+	$(MAKE) -C ../packager/registration zipexampleinstall
+../packager/registration_zipdistinstall:
+	$(MAKE) -C ../packager/registration zipdistinstall
+../packager/registration_clean:
+	$(MAKE) -C ../packager/registration clean
+../packager/registration_distclean:
+	$(MAKE) -C ../packager/registration distclean
+../packager/registration_cleanall:
+	$(MAKE) -C ../packager/registration cleanall
+../packager/registration_info:
+	$(MAKE) -C ../packager/registration info
+../packager/registration_makefiles:
+	$(MAKE) -C ../packager/registration makefiles
+../packager/registration:
+	$(MAKE) -C ../packager/registration all
+.PHONY: ../packager/registration_all ../packager/registration_debug ../packager/registration_smart ../packager/registration_release ../packager/registration_examples ../packager/registration_shared ../packager/registration_install ../packager/registration_sourceinstall ../packager/registration_exampleinstall ../packager/registration_distinstall ../packager/registration_zipinstall ../packager/registration_zipsourceinstall ../packager/registration_zipexampleinstall ../packager/registration_zipdistinstall ../packager/registration_clean ../packager/registration_distclean ../packager/registration_cleanall ../packager/registration_info ../packager/registration_makefiles ../packager/registration
+endif
 debug: fpc_debug
 smart: fpc_smart
 release: fpc_release
-examples:
-shared:
-install: fpc_install
+examples: $(addsuffix _examples,$(TARGET_DIRS))
+shared: $(addsuffix _shared,$(TARGET_DIRS))
+install: fpc_install $(addsuffix _install,$(TARGET_DIRS))
 sourceinstall: fpc_sourceinstall
-exampleinstall: fpc_exampleinstall
+exampleinstall: fpc_exampleinstall $(addsuffix _exampleinstall,$(TARGET_DIRS))
 distinstall: fpc_distinstall
 zipinstall: fpc_zipinstall
 zipsourceinstall: fpc_zipsourceinstall
-zipexampleinstall: fpc_zipexampleinstall
+zipexampleinstall: fpc_zipexampleinstall $(addsuffix _zipexampleinstall,$(TARGET_DIRS))
 zipdistinstall: fpc_zipdistinstall
-clean: fpc_clean
-distclean: fpc_distclean
-cleanall: fpc_cleanall
+clean: fpc_clean $(addsuffix _clean,$(TARGET_DIRS))
+distclean: fpc_distclean $(addsuffix _distclean,$(TARGET_DIRS))
+cleanall: fpc_cleanall $(addsuffix _cleanall,$(TARGET_DIRS))
 info: fpc_info
 makefiles: fpc_makefiles
 .PHONY: debug smart release examples shared install sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall clean distclean cleanall info makefiles
