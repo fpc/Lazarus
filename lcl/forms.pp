@@ -224,6 +224,7 @@ type
     FOnCloseQuery : TCloseQueryEvent;
     FPosition : TPosition;
     FWindowState : TWindowState;
+    FDummyTextHeight : Longint;
     procedure ClientWndProc(var Message: TLMessage);
     procedure CloseModal;
     procedure DoCreate;
@@ -270,6 +271,7 @@ type
     procedure ValidateRename(AComponent: TComponent;
                              const CurName, NewName: string);override;
     procedure WndProc(var TheMessage : TLMessage); override;
+    property TextHeight : Longint read FDummyTextHeight write FDummyTextHeight stored False;
     {events}
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
     property Icon: TIcon read FIcon write SetIcon stored IsIconStored;
@@ -316,11 +318,13 @@ type
   TForm = class(TCustomForm)
   private
     FClientHandle: HWND;
+    FDummyPPI : longint;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property ClientHandle: HWND read FClientHandle;
   published
+    property PixelsPerInch : Longint read FDummyPPI write FDummyPPI stored False;
     property ActiveCOntrol;
     property Align;
     property AutoSize;
@@ -331,12 +335,15 @@ type
     property ClientWidth;
     property Constraints;
     property Enabled;
+    property Font;
     property FormStyle;
     property Icon;
     property Menu;
+    property ParentFont;
     property PopupMenu;
     property Position;
     property ShowHint;
+    property TextHeight;
     property Visible;
     property WindowState;
     property OnActivate;
@@ -345,6 +352,12 @@ type
     property OnCloseQuery;
     property OnDeactivate;
     property OnDestroy;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnKeyDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseDown;
     property OnShow;
     property OnHide;
     property OnPaint;

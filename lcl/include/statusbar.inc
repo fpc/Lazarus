@@ -146,8 +146,9 @@ Begin
     SingleLine := True;
     Clipping := True;
     ShowPrefix := False;
-    Opaque := False;
+    Opaque := True;
   end;
+  Canvas.Color := Color;
   R := Rect(Left, Top, Left + ClientWidth, Top + ClientHeight);
   if SimplePanel = False then
   Begin

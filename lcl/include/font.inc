@@ -18,7 +18,7 @@
 }
 
 const
-  FontCharsets: array[0..17] of TIdentMapEntry = (
+  FontCharsets: array[0..18] of TIdentMapEntry = (
     (Value: ANSI_CHARSET;        Name: 'ANSI_CHARSET'),
     (Value: DEFAULT_CHARSET;     Name: 'DEFAULT_CHARSET'),
     (Value: SYMBOL_CHARSET;      Name: 'SYMBOL_CHARSET'),
@@ -30,6 +30,7 @@ const
     (Value: CHINESEBIG5_CHARSET; Name: 'CHINESEBIG5_CHARSET'),
     (Value: GREEK_CHARSET;       Name: 'GREEK_CHARSET'),
     (Value: TURKISH_CHARSET;     Name: 'TURKISH_CHARSET'),
+    (Value: VIETNAMESE_CHARSET;  Name: 'VIETNAMESE_CHARSET'),
     (Value: HEBREW_CHARSET;      Name: 'HEBREW_CHARSET'),
     (Value: ARABIC_CHARSET;      Name: 'ARABIC_CHARSET'),
     (Value: BALTIC_CHARSET;      Name: 'BALTIC_CHARSET'),
@@ -854,6 +855,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/10/01 18:00:04  lazarus
+  AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
+
   Revision 1.8  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 

@@ -325,7 +325,7 @@ begin
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox,
           TBevel,TImage]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TTreeView,
-          TProgressBar,TToolBar,TTrackbar,TScrollBox]);
+          TProgressBar,TToolBar,TTrackbar,TScrollBox,TUpDown]);
   RegisterComponents('Additional','ImgList',[TImageList]);
 
   RegisterComponents('Misc','Calendar',[TCalendar]);

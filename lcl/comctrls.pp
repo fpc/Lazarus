@@ -461,7 +461,107 @@ type
 {   property BarTextFormat : string read FBarTextFormat write SetBarTextFormat; }
  end;
 
+{ TUpDown }
+  TUDAlignButton = (udLeft, udRight);
+  TUDOrientation = (udHorizontal, udVertical);
+  TUDBtnType = (btNext, btPrev);
+  TUDClickEvent = procedure (Sender: TObject; Button: TUDBtnType) of object;
+  TUDChangingEvent = procedure (Sender: TObject; var AllowChange: Boolean) of object;
 
+  TCustomUpDown = class(TCustomControl)
+  private
+    MinBtn,
+    MaxBtn : TControl;//TSpeedButton's
+    BTimer : TTimer;
+    BTimerProc : Procedure of Object;
+    BTimerBounds : TRect;
+    InheritedChangeBounds,
+    FArrowKeys: Boolean;
+    FAssociate: TWinControl;
+    FMin: SmallInt;
+    FMax: SmallInt;
+    FIncrement: Integer;
+    FPosition: SmallInt;
+    FThousands: Boolean;
+    FWrap: Boolean;
+    FOnClick: TUDClickEvent;
+    FAlignButton: TUDAlignButton;
+    FOrientation: TUDOrientation;
+    FOnChanging: TUDChangingEvent;
+    procedure SetAssociate(Value: TWinControl);
+    function GetPosition: SmallInt;
+    procedure SetMin(Value: SmallInt);
+    procedure SetMax(Value: SmallInt);
+    procedure SetIncrement(Value: Integer);
+    procedure SetPosition(Value: SmallInt);
+    procedure SetAlignButton(Value: TUDAlignButton);
+    procedure SetOrientation(Value: TUDOrientation);
+    procedure SetArrowKeys(Value: Boolean);
+    procedure SetThousands(Value: Boolean);
+    procedure SetWrap(Value: Boolean);
+    Procedure MinBtnClick;
+    Procedure MaxBtnClick;
+    Procedure MinBtnMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    Procedure MaxBtnMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    Procedure BtnMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    Procedure BTimerExec(Sender : TObject);
+  protected
+    OldKeyDown : TKeyEvent;
+    Procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
+    function CanChange: Boolean; dynamic;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Click(Button: TUDBtnType); dynamic;
+    property AlignButton: TUDAlignButton read FAlignButton write SetAlignButton default udRight;
+    property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
+    property Associate: TWinControl read FAssociate write SetAssociate;
+    property Min: SmallInt read FMin write SetMin;
+    property Max: SmallInt read FMax write SetMax default 100;
+    property Increment: Integer read FIncrement write SetIncrement default 1;
+    property Orientation: TUDOrientation read FOrientation write SetOrientation default udVertical;
+    property Position: SmallInt read GetPosition write SetPosition;
+    property Thousands: Boolean read FThousands write SetThousands default True;
+    property Wrap: Boolean read FWrap write SetWrap;
+    property OnChanging: TUDChangingEvent read FOnChanging write FOnChanging;
+    property OnClick: TUDClickEvent read FOnClick write FOnClick;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; Override;
+  end;
+
+  TUpDown = class(TCustomUpDown)
+  published
+    property AlignButton;
+    property Anchors;
+    property Associate;
+    property ArrowKeys;
+    property Enabled;
+    property Hint;
+    property Min;
+    property Max;
+    property Increment;
+    property Constraints;
+    property Orientation;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Thousands;
+    property Visible;
+    property Wrap;
+    property OnChanging;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+  end;
 
 { TToolBar }
 
@@ -1549,7 +1649,7 @@ procedure CheckCommonControl(CC: Integer);
 Implementation
 
 
-uses Forms,Interfaces;
+uses Forms, Interfaces, Buttons;
 
 const
   ButtonStates: array[TToolButtonState] of Word = (TBSTATE_CHECKED,
@@ -1595,6 +1695,7 @@ end;
 {$I listitems.inc}
 {$I customlistview.inc}
 {$I progressbar.inc}
+{$I customupdown.inc}
 {$I toolbutton.inc}
 {$I toolbar.inc}
 {$I trackbar.inc}
@@ -1605,6 +1706,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/10/01 18:00:02  lazarus
+  AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
+
   Revision 1.48  2002/09/14 14:47:41  lazarus
   MG: fixed icons
 

@@ -18,6 +18,26 @@
  *****************************************************************************
 }
 
+Procedure TCustomEdit.DoAutoSize;
+var
+  TM : TTextMetric;
+  DC : HDC;
+  OldFont : hFont;
+begin
+  //TCustomEdit.AutoSize only affects Height!!
+  If AutoSize and Not AutoSizing then begin
+    AutoSizing := True;
+    DC := GetDC(0);
+    OldFont := SelectObject(DC, Font.Handle);
+    GetTextMetrics(DC, TM);
+    SelectObject(DC, OldFont);
+    ReleaseDC(0, DC);
+    //TextHeight + 5 top space/border + 5 bottom space/border
+    Height := TM.tmHeight + 10;
+    AutoSizing := False;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomEdit.Create
   Params:  none
@@ -254,6 +274,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/10/01 18:00:04  lazarus
+  AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
+
   Revision 1.10  2002/09/07 12:14:50  lazarus
   EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
   behaviour.

@@ -244,9 +244,17 @@ type
     property ItemIndex;
   published
     property Anchors;
+    property Ctl3D;
+    property DropDownCount;
     property Enabled;
+    property Font;
+    property ItemHeight;
     property Items;
     property MaxLength;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property ShowHint;
     property Sorted;
     property Style;
     property TabOrder;
@@ -272,12 +280,14 @@ type
     FBorderStyle : TBorderStyle;
     FExtendedSelect, FMultiSelect : boolean;
     FItems : TStrings;
+    FItemHeight: Integer;
     FSorted : boolean;
     FStyle : TListBoxStyle;
     procedure UpdateSelectionMode;
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
+    function GetItemHeight: Integer;
     function GetItemIndex : integer; virtual;
     function GetSelCount : integer;
     function GetSelected(Index : integer) : boolean;
@@ -285,6 +295,7 @@ type
     procedure SetExtendedSelect(Val : boolean); virtual;
     procedure SetItemIndex(Val : integer); virtual;
     procedure SetItems(Value : TStrings); virtual;
+    procedure SetItemHeight(Value: Integer);
     procedure SetMultiSelect(Val : boolean); virtual;
     procedure SetSelected(Index : integer; Val : boolean);
     procedure SetSorted(Val : boolean); virtual;
@@ -293,6 +304,7 @@ type
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
     property Sorted : boolean read FSorted write SetSorted;
     property Style : TListBoxStyle read FStyle write SetStyle;
+    property ItemHeight: Integer read GetItemHeight write SetItemHeight;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -313,7 +325,15 @@ type
     property BorderStyle;
     property ExtendedSelect;
     property Items;
+    property ItemHeight;
     property MultiSelect;
+    property ParentShowHint;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Visible;
     property OnClick;
     property OnDblClick;
     property OnEnter;
@@ -325,12 +345,7 @@ type
     property OnMouseDown;
     property OnMouseUp;
     property OnResize;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property Visible;
-  end;    
+  end;
 
   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
   TEchoMode = (emNormal, emNone, emPassword);
@@ -350,7 +365,9 @@ type
     procedure SetMaxLength(Value : Integer);
     procedure SetModified(Value : Boolean);
     procedure SetReadOnly(Value : Boolean);
-  protected
+  Protected
+    Procedure DoAutoSize; Override;
+
     procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
     procedure Change; dynamic;
     function GetSelLength : integer; virtual;
@@ -403,13 +420,16 @@ type
 
   TEdit = class(TCustomEdit)
   published
+    property AutoSize;
     property Anchors;
     property CharCase;
     property DragMode;
     property EchoMode;
     property MaxLength;
+    property ParentShowHint;
     property PopupMenu;
     property ReadOnly;
+    property ShowHint;
     property Text;
     property Visible;
     property OnChange;
@@ -1248,6 +1268,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/10/01 18:00:03  lazarus
+  AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
+
   Revision 1.46  2002/09/27 20:52:22  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
