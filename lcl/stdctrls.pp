@@ -113,74 +113,76 @@ type
 
 
 
-   TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
-   public                                                                                      
-     constructor Create(AOwner : TComponent); Override;                                         
-   end;                                                                                        
+  TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
+  public
+    constructor Create(AOwner : TComponent); Override;
+  end;
                                                                                                    
-   TGroupBox = class(TCustomGroupBox)                                                         
-   published
-     property Caption;
-     property Visible;
-   end;                                                                                        
+  TGroupBox = class(TCustomGroupBox)
+  published
+    property Caption;
+    property Visible;
+  end;
 
-  TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed, csOwnerDrawVariable);      
+  TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
+                    csOwnerDrawVariable);
+
 
   TCustomComboBox = class(TWinControl)
-    private
-      FItems: TStrings;
-      FStyle : TComboBoxStyle;
-      FOnChange : TNotifyEvent;
-      FSorted : boolean;
-      procedure SetItems(Value : TStrings);
-      procedure CNDrawItems(var Message : TLMDrawItems) ; message CN_DrawItem;
-    protected
-      procedure CreateHandle; override;
-      procedure DestroyHandle; override;
-      procedure DoChange(var msg); message LM_CHANGED;
-      function GetSelLength : integer;
-      function GetSelStart : integer;
-      function GetSelText : string;
-      function GetItemIndex : integer; virtual;
-      function GetMaxLength : integer; virtual;
-      procedure SetItemIndex(Val : integer); virtual;
-      procedure SetMaxLength(Val : integer); virtual;
-      procedure SetSelLength(Val : integer);
-      procedure SetSelStart(Val : integer);
-      procedure SetSelText(Val : string);
-      procedure SetSorted(Val : boolean); virtual;
-      procedure SetStyle(Val : TComboBoxStyle); virtual;
-      property Items : TStrings read FItems write SetItems;
-      property ItemIndex : integer read GetItemIndex write SetItemIndex;
-      property MaxLength : integer read GetMaxLength write SetMaxLength;
-      property Sorted : boolean read FSorted write SetSorted;
-      property Style : TComboBoxStyle read FStyle write SetStyle;
-      property OnChange : TNotifyEvent read FOnChange write FOnChange;
-    public
-          constructor Create(AOwner : TComponent); Override;
-          destructor Destroy; override;
-          property SelLength : integer read GetSelLength write SetSelLength;
-          property SelStart : integer read GetSelStart write SetSelStart;
-          property SelText : String read GetSelText write SetSelText;
-    end;
+  private
+    FItems: TStrings;
+    FStyle : TComboBoxStyle;
+    FOnChange : TNotifyEvent;
+    FSorted : boolean;
+    procedure SetItems(Value : TStrings);
+    procedure CNDrawItems(var Message : TLMDrawItems) ; message CN_DrawItem;
+  protected
+    procedure CreateHandle; override;
+    procedure DestroyHandle; override;
+    procedure DoChange(var msg); message LM_CHANGED;
+    function GetSelLength : integer;
+    function GetSelStart : integer;
+    function GetSelText : string;
+    function GetItemIndex : integer; virtual;
+    function GetMaxLength : integer; virtual;
+    procedure SetItemIndex(Val : integer); virtual;
+    procedure SetMaxLength(Val : integer); virtual;
+    procedure SetSelLength(Val : integer);
+    procedure SetSelStart(Val : integer);
+    procedure SetSelText(Val : string);
+    procedure SetSorted(Val : boolean); virtual;
+    procedure SetStyle(Val : TComboBoxStyle); virtual;
+    property Items : TStrings read FItems write SetItems;
+    property ItemIndex : integer read GetItemIndex write SetItemIndex;
+    property MaxLength : integer read GetMaxLength write SetMaxLength;
+    property Sorted : boolean read FSorted write SetSorted;
+    property Style : TComboBoxStyle read FStyle write SetStyle;
+    property OnChange : TNotifyEvent read FOnChange write FOnChange;
+  public
+    constructor Create(AOwner : TComponent); Override;
+    destructor Destroy; override;
+    property SelLength : integer read GetSelLength write SetSelLength;
+    property SelStart : integer read GetSelStart write SetSelStart;
+    property SelText : String read GetSelText write SetSelText;
+  end;
 
-    TComboBox = class(TCustomComboBox)
-    public
-      property ItemIndex;
-    published
-      property Enabled;
-      property Items;
-      property MaxLength;
-      property Sorted;
-      property Style;
-      property Text;
-      property Visible;
-      property OnChange;
-      property OnClick;
-      property OnEnter;
-      property OnExit;
-      property OnKeyPress;
-    end;
+  TComboBox = class(TCustomComboBox)
+  public
+    property ItemIndex;
+  published
+    property Enabled;
+    property Items;
+    property MaxLength;
+    property Sorted;
+    property Style;
+    property Text;
+    property Visible;
+    property OnChange;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyPress;
+  end;
     
   TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
 
@@ -579,6 +581,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/04/18 07:53:08  lazarus
+  MG: fixed find declaration of forward def class
+
   Revision 1.22  2002/03/25 17:59:19  lazarus
   GTK Cleanup
   Shane

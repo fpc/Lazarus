@@ -570,10 +570,25 @@ function TFindDeclarationTool.FindDeclaration(CursorPos: TCodeXYPosition;
 var CleanCursorPos: integer;
   CursorNode, ClassNode: TCodeTreeNode;
   Params: TFindDeclarationParams;
-  DirectSearch: boolean;
+  DirectSearch, SkipChecks, SearchForward: boolean;
+  
+  procedure CheckIfCursorOnAForwardDefinedClass;
+  begin
+    if SkipChecks then exit;
+    if CursorNode.Desc=ctnTypeDefinition then begin
+      if (CursorNode.FirstChild<>nil) and (CursorNode.FirstChild.Desc=ctnClass)
+      and ((CursorNode.FirstChild.SubDesc and ctnsForwardDeclaration)>0) then
+      begin
+        DirectSearch:=true;
+        SearchForward:=true;
+        SkipChecks:=true;
+      end;
+    end;
+  end;
   
   procedure CheckIfCursorInClassNode;
   begin
+    if SkipChecks then exit;
     ClassNode:=CursorNode.GetNodeOfType(ctnClass);
     if ClassNode<>nil then begin
       // cursor is in class/object definition
@@ -585,6 +600,7 @@ var CleanCursorPos: integer;
         and (CleanCursorPos<ClassNode.FirstChild.StartPos) then begin
           // identifier is an ancestor/interface identifier
           DirectSearch:=true;
+          SkipChecks:=true;
         end;
       end;
     end;
@@ -592,6 +608,7 @@ var CleanCursorPos: integer;
   
   procedure CheckIfCursorInBeginNode;
   begin
+    if SkipChecks then exit;
     if CursorNode.Desc=ctnBeginBlock then begin
       BuildSubTreeForBeginBlock(CursorNode);
       CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
@@ -601,6 +618,7 @@ var CleanCursorPos: integer;
   procedure CheckIfCursorInProcNode;
   var IsMethod: boolean;
   begin
+    if SkipChecks then exit;
     if CursorNode.Desc=ctnProcedureHead then
       CursorNode:=CursorNode.Parent;
     if CursorNode.Desc=ctnProcedure then begin
@@ -624,6 +642,7 @@ var CleanCursorPos: integer;
           // cursor on proc name
           // -> ignore proc name and search overloaded identifier
           DirectSearch:=true;
+          SkipChecks:=true;
         end;
       end;
       if CursorNode.Desc=ctnProcedureHead then
@@ -633,17 +652,21 @@ var CleanCursorPos: integer;
 
   procedure CheckIfCursorInPropertyNode;
   begin
+    if SkipChecks then exit;
     if CursorNode.Desc=ctnProperty then begin
       MoveCursorToNodeStart(CursorNode);
       ReadNextAtom; // read 'property'
       ReadNextAtom; // read property name
-      if CleanCursorPos<CurPos.EndPos then
+      if CleanCursorPos<CurPos.EndPos then begin
         DirectSearch:=true;
+        SkipChecks:=true;
+      end;
     end;
   end;
   
 begin
   Result:=false;
+  SkipChecks:=false;
   ActivateGlobalWriteLock;
   try
     // build code tree
@@ -673,6 +696,8 @@ begin
                                            NewPos,NewTopLine);
     end else begin
       DirectSearch:=false;
+      SearchForward:=false;
+      CheckIfCursorOnAForwardDefinedClass;
       CheckIfCursorInClassNode;
       CheckIfCursorInBeginNode;
       CheckIfCursorInProcNode;
@@ -693,13 +718,14 @@ begin
           Params.ContextNode:=CursorNode;
           Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
           Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
-                         fdfTopLvlResolving];
-          Params.Flags:=Params.Flags
-                        +[fdfSearchInAncestors]+fdfAllClassVisibilities;
+                         fdfTopLvlResolving,fdfSearchInAncestors]
+                        +fdfAllClassVisibilities;
           if not DirectSearch then begin
             Result:=FindDeclarationOfIdentAtCursor(Params);
           end else begin
             Include(Params.Flags,fdfIgnoreCurContextNode);
+            if SearchForward then
+              Include(Params.Flags,fdfSearchForward);
             Result:=FindIdentifierInContext(Params);
           end;
           if Result then begin

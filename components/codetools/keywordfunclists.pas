@@ -606,12 +606,10 @@ begin
     Add('ARRAY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ASM',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BEGIN',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('BREAK',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CASE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CLASS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('CONTINUE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DO',{$ifdef FPC}@{$endif}AllwaysTrue);
