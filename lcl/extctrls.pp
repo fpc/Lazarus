@@ -541,6 +541,7 @@ type
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
     procedure Paint; override;
+    function ParentColorIsStored: boolean;
   public
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
@@ -550,9 +551,8 @@ type
     property BorderStyle: TControlBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property Color default clBtnFace;
     property Caption read GetText write SetText;
-    property ParentColor default True;
-    constructor Create(AOwner: TComponent); override;
-    procedure Invalidate; override;
+    property ParentColor stored ParentColorIsStored;
+    constructor Create(TheOwner: TComponent); override;
   end;
   
   
@@ -624,6 +624,9 @@ end.
 
  {
   $Log$
+  Revision 1.55  2003/03/31 20:25:19  mattias
+  fixed scrollbars of TIpHtmlPanel
+
   Revision 1.54  2003/03/18 00:00:05  mattias
   added TCheckGroup.CheckEnabled
 
