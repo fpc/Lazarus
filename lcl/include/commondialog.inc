@@ -39,7 +39,7 @@ end;
 
 procedure TCommonDialog.Close;
 begin
-writeln('TCommonDialog.Close-------------------------------------------------------',Name);
+  //writeln('TCommonDialog.Close-------------------------------------------------------',Name);
   CNSendMessage(LM_DESTROY, Self, nil);
   FHandle := 0;
 end;
@@ -76,6 +76,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2003/03/29 19:15:30  mattias
+  fixed untransienting
+
   Revision 1.7  2003/03/17 13:00:35  mattias
   improved but not fixed transient windows
 
