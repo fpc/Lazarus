@@ -37,8 +37,8 @@ interface
 
 
 uses
-  VCLGlobals, Classes, SysUtils, LCLType, Graphics, GraphType, LMessages,
-  Controls, ExtendedStrings, LCLLinux, GraphicsMath, Forms;
+  VCLGlobals, Classes, SysUtils, LCLType, LCLProc, Graphics, GraphType,
+  LMessages, Controls, ExtendedStrings, LCLLinux, GraphicsMath, Forms;
 
 
 type
@@ -887,8 +887,6 @@ type
     property OnMouseUp;
   end;
 
-Function DeleteAmpersands(var Str : String) : Longint;
-
 implementation
 
 uses
@@ -934,38 +932,6 @@ type
 const
   SScrollBarRange = 'ScrollBar property out of range';
 
-Function DeleteAmpersands(var Str : String) : Longint;
-var
-  I : Integer;
-  Tmp : String;
-begin
-  I := 1;
-  Result := -1;
-  SetLength(Tmp,0);
-  While I <= Length(Str) do
-    Case Str[I] of
-      '&' :
-         If I + 1 <= Length(Str) then begin
-           If Str[I+1] = '&' then begin
-             Inc(I,2);
-             Tmp := Tmp + '&';
-           end
-           else begin
-             If Result  < 0 then
-               Result := Length(Tmp) + 1;
-             Inc(I,1);
-           end;
-         end
-         else
-           Inc(I,1);
-      else begin
-        Tmp := Tmp + Str[I];
-        Inc(I,1);
-      end;
-    end;
-  SetLength(Str,0);
-  Str := Tmp;
-end;
 
 {$IFDef NewCheckBox}
 Procedure TCheckbox.DoAutoSize;
@@ -1417,6 +1383,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/10/25 09:47:37  lazarus
+  MG: added inputdialog.inc
+
   Revision 1.62  2002/10/25 08:25:43  lazarus
   MG: broke circle stdctrls.pp <-> forms.pp
 

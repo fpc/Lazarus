@@ -37,7 +37,9 @@ unit Dialogs;
 interface
 
 uses
-  Classes, Forms, Controls, VCLGlobals, LMessages, GraphType, Graphics;
+  Classes, SysUtils, LCLlinux, FileCtrl, LCLStrConsts, LCLType, VCLGlobals,
+  LMessages, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls;
+
 
 //type
 //   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
@@ -253,9 +255,8 @@ type
 
 implementation
 
-
 uses
-  Buttons, StdCtrls, LCLlinux, SysUtils, FileCtrl, LCLStrConsts, LCLType;
+  InterfaceBase;
 
 const
    cMtCaption : array [TMsgDlgType] of string = 
@@ -332,9 +333,11 @@ end;
 
 {$I fontdialog.inc}
 {$I messagedialogs.inc}
+{$I inputdialog.inc}
 
 initialization
   Forms.MessageBoxFunction:=@ShowMessageBox;
+  InterfaceBase.InputDialogFunction:=@ShowInputDialog;
 
 finalization
 
@@ -343,6 +346,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/10/25 09:47:37  lazarus
+  MG: added inputdialog.inc
+
   Revision 1.22  2002/10/24 10:37:04  lazarus
   MG: broke dialogs.pp <-> forms.pp circle
 

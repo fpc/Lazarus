@@ -1,3 +1,5 @@
+// included by dialogs.pp
+
 {******************************************************************************
                                   MessageDialogs
  ******************************************************************************
@@ -530,8 +532,13 @@ begin
   Result := InputQuery(ACaption, APrompt, False, Value);
 end;
 
+// included by dialogs.pp
+
 {
    $Log$
+   Revision 1.19  2002/10/25 09:47:38  lazarus
+   MG: added inputdialog.inc
+
    Revision 1.18  2002/10/23 20:47:26  lazarus
    AJ: Started Form Scrolling
        Started StaticText FocusControl
