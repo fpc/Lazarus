@@ -3714,6 +3714,39 @@ end;
 
 
 {------------------------------------------------------------------------------
+  function TgtkObject.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+
+  Returns the current width of the scrollbar of the widget.
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+var
+  Widget, ScrollWidget, BarWidget: PGtkWidget;
+begin
+  Result:=0;
+  if Handle<>0 then begin
+    Widget:=PGtkWidget(Handle);
+    if GtkWidgetIsA(Widget,GTK_SCROLLED_WINDOW_TYPE) then begin
+      ScrollWidget:=Widget;
+    end else begin
+      ScrollWidget:=PGtkWidget(gtk_object_get_data(
+                                             PGtkObject(Widget),'scroll_area'));
+    end;
+    if ScrollWidget<>nil then begin
+      if BarKind=SM_CYVSCROLL then begin
+        BarWidget:=PGtkScrolledWindow(ScrollWidget)^.vscrollbar;
+        if BarWidget<>nil then
+          Result:=BarWidget^.Requisition.Width;
+      end else begin
+        BarWidget:=PGtkScrolledWindow(ScrollWidget)^.hscrollbar;
+        if BarWidget<>nil then
+          Result:=BarWidget^.Requisition.Height;
+      end;
+      if BarWidget<>nil then
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetScrollInfo
   Params:  Handle, BarFlag, ScrollInfo
   Returns: Nothing
@@ -7500,6 +7533,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.181  2002/10/31 21:29:47  lazarus
+  MG: implemented TControlScrollBar.Size
+
   Revision 1.180  2002/10/31 18:37:30  lazarus
   MG: fixed GetClipBox
 
