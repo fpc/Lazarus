@@ -730,7 +730,30 @@ begin
     gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
 
-{ ------------------------------------------------------------------------------
+{------------------------------------------------------------------------------
+  UpdateNoteBookClientWidget
+  Params: ANoteBook: TObject
+
+  The client widget of a notebook is fixed widget of the current page.
+  This procedure updates the 'Fixed' object data.
+------------------------------------------------------------------------------}
+procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
+var Index: integer;
+  NoteBookWidget, PanelWidget, ClientWidget: PGtkWidget;
+begin
+  if not TCustomNotebook(ANoteBook).HandleAllocated then exit;
+  NoteBookWidget:=PGtkWidget(TCustomNotebook(ANoteBook).Handle);
+  ClientWidget:=nil;
+  Index:=gtk_notebook_get_current_page(PGtkNoteBook(NoteBookWidget));
+  if Index>=0 then begin
+    PanelWidget:=gtk_notebook_get_nth_page(PGtkNoteBook(NoteBookWidget),Index);
+    if PanelWidget<>nil then
+      ClientWidget:=GetFixedWidget(PanelWidget);
+  end;
+  SetFixedWidget(NoteBookWidget,ClientWidget);
+end;
+
+{-------------------------------------------------------------------------------
  Some need the LCLobject which created this widget.
 
 -------------------------------------------------------------------------------}
@@ -743,6 +766,36 @@ end;
 function GetLCLObject(const Widget: Pointer): TObject;
 begin
   Result := TObject(gtk_object_get_data(Widget, 'Class'));
+end;
+
+{-------------------------------------------------------------------------------
+  TranslateGdkPointToClientArea
+
+  Translates SourcePos relative to SourceWindow to a coordinate relative to the
+  client area of the DestinationWidget.
+-------------------------------------------------------------------------------}
+function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
+  SourcePos: TPoint;
+  DestinationWidget: PGtkWidget): TPoint;
+var
+  SrcWindowOrigin: TPoint;
+  ClientWidget: PGtkWidget;
+  ClientAreaWindow: PGdkWindow;
+  ClientAreaWindowOrigin: TPoint;
+  Src2ClientAreaVector: TPoint;
+begin
+  gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
+  ClientWidget:=GetFixedWidget(DestinationWidget);
+  if ClientWidget<>nil then
+    ClientAreaWindow:=ClientWidget^.Window
+  else
+    ClientAreaWindow:=DestinationWidget^.Window;
+  gdk_window_get_origin(ClientAreaWindow,
+                        @ClientAreaWindowOrigin.X,@ClientAreaWindowOrigin.Y);
+  Src2ClientAreaVector.X:=ClientAreaWindowOrigin.X-SrcWindowOrigin.X;
+  Src2ClientAreaVector.Y:=ClientAreaWindowOrigin.Y-SrcWindowOrigin.Y;
+  Result.X:=SourcePos.X-Src2ClientAreaVector.X;
+  Result.Y:=SourcePos.Y-Src2ClientAreaVector.Y;
 end;
 
 // ----------------------------------------------------------------------
@@ -1332,6 +1385,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.45  2002/06/11 13:41:11  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.44  2002/06/09 14:00:42  lazarus
   MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
 
