@@ -1200,8 +1200,8 @@ begin
   if FParent <> nil then
   begin
     FTabOrder := GetTabOrder;
-    if NewTabOrder < 0 then NewTabOrder := 0;
     Count := FParent.FTabList.Count;
+    if NewTabOrder < 0 then NewTabOrder := Count;
     if FTabOrder = -1 then Inc(Count);
     if NewTabOrder >= Count then NewTabOrder := Count - 1;
     if NewTabOrder <> FTabOrder then
@@ -1357,6 +1357,66 @@ Begin
   Result := CanTab and (HandleAllocated and (FindOwnerControl(GetFocus)=Self));
 end;
 
+function TWinControl.PerformTab(ForwardTab: boolean): boolean;
+
+  Function GetHighestParent(TopControl : TControl) : TWinControl;
+  begin
+    Result := nil;
+    If TopControl = nil then exit;
+    If (TopControl.Parent=nil) then begin
+      if TopControl is TWinControl then
+        Result := TWinControl(TopControl)
+    end else
+      Result := GetHighestParent(TopControl.Parent);
+  end;
+
+var
+  I : Integer;
+  List : TList;
+  FirstFocus, OldFocus, NewFocus : TWinControl;
+  TopLevel : TWinControl;
+begin
+  NewFocus := nil;
+  OldFocus := nil;
+  TopLevel := GetHighestParent(Self);
+  If TopLevel = nil then
+    exit;
+  try
+    List := TList.Create;
+    TopLevel.GetTabOrderList(List);
+    FirstFocus := nil;
+    For I := 0 to List.Count - 1 do
+      If List[I] <> nil then begin
+        If I = 0 then
+          FirstFocus := TWinControl(List[I]);
+        If TWinControl(List[I]).Focused then begin
+          OldFocus := TWinControl(List[I]);
+          Break;
+        end;
+      end;
+  Finally
+    List.Free;
+  end;
+
+  if OldFocus<>nil then
+    NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False);
+  //if NewFocus<>nil then
+  //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
+  //else
+  //  DebugLn('TControl.PerformTab B ',Name,':',ClassName,' NewFocus=nil');
+
+  If (NewFocus = nil) then NewFocus:=FirstFocus;
+  If NewFocus = OldFocus then begin
+    Result := True;
+    exit;
+  end;
+  if NewFocus<>nil then begin
+    NewFocus.SetFocus;
+    Result := NewFocus.Focused;
+  end else
+    Result:=true;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl FindChildControl
   
@@ -1434,8 +1494,8 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl FindNextControl                                                 }
 {------------------------------------------------------------------------------}
-Function TWinControl.FindNextControl(CurrentControl: TControl;
-  GoForward, CheckTabStop, CheckParent, OnlyWinControls: Boolean) : TControl;
+function TWinControl.FindNextControl(CurrentControl: TWinControl;
+  GoForward, CheckTabStop, CheckParent: boolean): TWinControl;
 var
   List : TList;
   Next : TWinControl;
@@ -1475,8 +1535,7 @@ begin
           );}
         If (((not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
-        and (Next.Enabled and Next.IsVisible)
-        and ((not OnlyWinControls) or (Next is TWinControl)) then
+        and (Next.Enabled and Next.IsVisible) then
           Result := Next;
       until (Result <> nil);
       //DebugLn('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',dbgs(I));
@@ -1484,17 +1543,6 @@ begin
   finally
     List.Free;
   end;
-end;
-
-{------------------------------------------------------------------------------
-  function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
-    CheckTabStop, CheckParent: Boolean): TWinControl;
-------------------------------------------------------------------------------}
-function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
-  CheckTabStop, CheckParent: Boolean): TWinControl;
-begin
-  Result:=TWinControl(FindNextControl(CurrentControl,
-                                      GoForward,CheckTabStop,CheckParent,true));
 end;
 
 procedure TWinControl.FixupTabList;
@@ -2675,7 +2723,7 @@ begin
       FWinControls.Insert(Index,AControl)
     else
       ListAdd(FWinControls, AControl);
-    if TWinControl(AControl).TabOrder <> -1 then
+    if TWinControl(AControl).TabStop or (csAcceptsControls in AControl.ControlStyle) then
       ListAdd(FTabList, AControl);
 
     if (csDesigning in ComponentState) and (not (csLoading in ComponentState))
@@ -4330,6 +4378,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.303  2005/01/21 11:52:01  micha
+  cleanup focus; fix tabbing
+
   Revision 1.302  2005/01/21 10:34:56  mattias
   implemented streaming of anchorsides
 

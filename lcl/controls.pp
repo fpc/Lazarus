@@ -1055,8 +1055,6 @@ type
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanTab: Boolean; virtual;
-    Function Focused: Boolean; dynamic;
-    Procedure SetFocus; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
@@ -1120,7 +1118,6 @@ type
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
-    function PerformTab(ForwardTab: boolean): Boolean; Virtual;
     procedure EditingDone; virtual;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
@@ -1565,9 +1562,6 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
   protected
-    Function  FindNextControl(CurrentControl: TControl; GoForward,
-                              CheckTabStop, CheckParent, OnlyWinControls
-                             : Boolean): TControl;
     Function  FindNextControl(CurrentControl: TWinControl; GoForward,
                               CheckTabStop, CheckParent: Boolean): TWinControl;
     function  RealGetText: TCaption; override;
@@ -1675,8 +1669,9 @@ type
     Function CanFocus: Boolean;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
+    Function Focused: Boolean; virtual;
+    function PerformTab(ForwardTab: boolean): boolean; virtual;
     function ControlByName(const ControlName: string): TControl;
-    Function Focused: Boolean; override;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
     Procedure BroadCast(var ToAllMessage);
@@ -1695,7 +1690,7 @@ type
     procedure ReCreateWnd;
     procedure Hide;
     procedure Repaint; override;
-    Procedure SetFocus; override;
+    Procedure SetFocus; virtual;
     Function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
     Procedure GetTabOrderList(List: TList);
@@ -2856,6 +2851,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.272  2005/01/21 11:52:01  micha
+  cleanup focus; fix tabbing
+
   Revision 1.271  2005/01/21 10:34:56  mattias
   implemented streaming of anchorsides
 

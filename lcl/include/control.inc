@@ -475,22 +475,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-       TControl.Focused
-------------------------------------------------------------------------------}
-Function TControl.Focused : Boolean;
-Begin
-  Result := False;
-end;
-
-{------------------------------------------------------------------------------}
-{       TControl.SetFocus                                                      }
-{------------------------------------------------------------------------------}
-procedure TControl.SetFocus;
-begin
-  //Implemented by TWinControl, or other descendent
-end;
-
 {------------------------------------------------------------------------------}
 {       TControl.GetClientHeight                                               }
 {------------------------------------------------------------------------------}
@@ -953,66 +937,6 @@ begin
   Message.Result := 0;
   If Self <> nil then WindowProc(Message);
     Result := Message.Result;
-end;
-
-Function TControl.PerformTab(ForwardTab: boolean): Boolean;
-
-  Function GetHighestParent(TopControl : TControl) : TWinControl;
-  begin
-    Result := nil;
-    If TopControl = nil then exit;
-    If (TopControl.Parent=nil) then begin
-      if TopControl is TWinControl then
-        Result := TWinControl(TopControl)
-    end else
-      Result := GetHighestParent(TopControl.Parent);
-  end;
-
-var
-  I : Integer;
-  List : TList;
-  FirstFocus, OldFocus, NewFocus : TControl;
-  TopLevel : TWinControl;
-begin
-  NewFocus := nil;
-  OldFocus := nil;
-  TopLevel := GetHighestParent(Self);
-  If TopLevel = nil then
-    exit;
-  try
-    List := TList.Create;
-    TopLevel.GetTabOrderList(List);
-    FirstFocus := nil;
-    For I := 0 to List.Count - 1 do
-      If List[I] <> nil then begin
-        If I = 0 then
-          FirstFocus := TControl(List[I]);
-        If TControl(List[I]).Focused then begin
-          OldFocus := TControl(List[I]);
-          Break;
-        end;
-      end;
-  Finally
-    List.Free;
-  end;
-
-  if OldFocus<>nil then
-    NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False,False);
-  //if NewFocus<>nil then
-  //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
-  //else
-  //  DebugLn('TControl.PerformTab B ',Name,':',ClassName,' NewFocus=nil');
-
-  If (NewFocus = nil) then NewFocus:=FirstFocus;
-  If NewFocus = OldFocus then begin
-    Result := True;
-    exit;
-  end;
-  if NewFocus<>nil then begin
-    NewFocus.SetFocus;
-    Result := NewFocus.Focused;
-  end else
-    Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -3494,6 +3418,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.239  2005/01/21 11:52:01  micha
+  cleanup focus; fix tabbing
+
   Revision 1.238  2005/01/21 10:34:56  mattias
   implemented streaming of anchorsides
 
