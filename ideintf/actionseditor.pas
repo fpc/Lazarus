@@ -21,18 +21,22 @@
      Radek Cervinka, radek.cervinka@centrum.cz
   
   contributors:
-     Mattias
+     Mattias Gaertner
   
   version:
     0.1 - 26-27.2.2004 - write all from scratch
     0.2 -  3.3.2004 - speed up filling listboxes
                       some ergonomic fixes (like stay in category after ADD)
                       fixed possible language problems
+    0.3 - 27.3.2004 - rename action > actualise editor
+    0.4 - 29.3.2004 - dblclick generate xxx.OnExecute code to editor
                       
   TODO:- after changing action category in Object Inspector
          need sort category to listbox
        - sometimes click in listbox causes selecting last item
-         (maybe listbox error)
+         (it's an strange gtk error. The LCL and the gtk intf do not send any
+          change. Either it is a bug in the gtk1 or we are doing something
+          wrong in the handlers.)
 }
 
 
@@ -44,9 +48,11 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, StdCtrls, Buttons, ActnList, ExtCtrls,
-  Controls, ObjInspStrConsts, ComponentEditors, PropEdits;
+  Controls, Dialogs, ObjInspStrConsts, ComponentEditors, PropEdits;
 
 type
+  { TActionListEditor }
+
   TActionListEditor = class(TForm)
     btnAdd: TButton;
     btnDelete: TButton;
@@ -57,24 +63,29 @@ type
     Panel: TPanel;
     procedure btnAddClick(Sender: TObject);
     procedure btnDeleteClick(Sender: TObject);
-    procedure lstCategoryClick(Sender: TObject);
     procedure lstActionNameClick(Sender: TObject);
+    procedure lstActionNameDblClick(Sender: TObject);
+    procedure lstCategoryClick(Sender: TObject);
   private
-    FActionList:TActionList;
+    FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
   protected
     procedure OnComponentDeleting(AComponent: TComponent);
     procedure OnComponentAdded(AComponent: TComponent; Select: boolean);
+    procedure OnComponentRenamed(AComponent: TComponent);
     procedure CreateActionListEditor; // create form
     function GetSelectedAction: TContainedAction;
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
-    procedure SetActionList(AActionList:TActionList);
+    procedure SetActionList(AActionList: TActionList);
     procedure FillCategories;
-    procedure FillActionByCategory(iIndex:Integer);
+    procedure FillActionByCategory(iIndex: Integer);
     property Designer:TComponentEditorDesigner read FDesigner write FDesigner;
   end;
+
+
+  { TActionListComponentEditor }
 
   TActionListComponentEditor = class(TComponentEditor)
   private
@@ -154,20 +165,19 @@ begin
   lstActionName.Items.Delete(iNameIndex);
   
   OldAction:=FActionList.ActionByName(OldName);
-{  if OldAction=nil then begin
-    // item already deleted -> only update list
-    exit;
-  end;
-}
+
   // be gone
   if assigned(OldAction) then
   begin
     try
-      OldAction.Free;
       FDesigner.PropertyEditorHook.ComponentDeleting(OldAction);
+      OldAction.Free;
     except
-      // rebuild
-//      FillActionByCategory(lstCategory.ItemIndex);
+      on E: Exception do begin
+        MessageDlg('Error deleting action',
+          'Error while deleting action:'#13
+          +E.Message,mtError,[mbOk],0);
+      end;
     end;
   end;
   
@@ -183,7 +193,16 @@ begin
     FDesigner.SelectOnlyThisComponent(
        FActionList.ActionByName(lstActionName.Items[lstActionName.ItemIndex]));
   end;
-//   FDesigner.Modified; // inform object inspector
+end;
+
+procedure TActionListEditor.lstActionNameDblClick(Sender: TObject);
+var
+  CurAction: TContainedAction;
+begin
+  CurAction:=GetSelectedAction;
+  if CurAction=nil then exit;
+  // Add OnExecute for this action
+  CreateComponentEvent(CurAction,'OnExecute');
 end;
 
 procedure TActionListEditor.lstCategoryClick(Sender: TObject);
@@ -228,6 +247,17 @@ begin
   if (AComponent is TAction) then
     // ToDo: only set update flag and do not rebuild everything on every change
     FillCategories;
+end;
+
+procedure TActionListEditor.OnComponentRenamed(AComponent: TComponent);
+var
+  iIndex:Integer;
+begin
+  if not (AComponent is TAction) then Exit;
+  FillActionByCategory(lstCategory.ItemIndex);
+  iIndex:= lstActionName.Items.IndexOf(AComponent.Name);// is new action showed?
+  if iIndex<0 then Exit;
+  lstActionName.ItemIndex:=iIndex; // yes, select is
 end;
 
 constructor TActionListEditor.Create(aOwner: TComponent);
@@ -290,6 +320,7 @@ begin
     Parent:=Self;
     SetBounds(130,72, 160 ,224);
     OnClick:=@lstActionNameClick;
+    OnDblClick:=@lstActionNameDblClick;
   end;
   lblCategory:=TLabel.Create(Self);
   with lblCategory do
@@ -305,11 +336,11 @@ begin
     Parent:=Self;
     Caption:=oisAction;
     SetBounds(130,48, 65 ,17);
-
   end;
 
   GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
   GlobalDesignHook.AddHandlerComponentAdded(@OnComponentAdded);
+  GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
 end;
 
 function TActionListEditor.GetSelectedAction: TContainedAction;
@@ -372,7 +403,7 @@ var
 begin
 
   lstActionName.Items.BeginUpdate;
-
+  if iIndex<0 then iIndex:=1;// all
   try
     lstActionName.Clear;
     // handle all

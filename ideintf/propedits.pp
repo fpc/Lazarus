@@ -912,7 +912,7 @@ procedure GetPersistentProperties(AItem: TPersistent;
   AEditorFilterFunc: TPropertyEditorFilterFunc);
 
 function GetEditorClass(PropInfo:PPropInfo;
-  Obj:TPersistent): TPropertyEditorClass;
+  Obj: TPersistent): TPropertyEditorClass;
 
 //==============================================================================
 
@@ -1279,6 +1279,9 @@ type
 
 var
   GlobalDesignHook: TPropertyEditorHook;
+
+procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
+
 
 implementation
 
@@ -1750,10 +1753,14 @@ end;
 
 constructor TPropertyEditor.Create(Hook: TPropertyEditorHook;
   APersistentList: TPersistentSelectionList; APropCount:Integer);
+var
+  PropListSize: Integer;
 begin
   FPropertyHook:=Hook;
   FComponents:=APersistentList;
-  GetMem(FPropList,APropCount * SizeOf(TInstProp));
+  PropListSize:=APropCount * SizeOf(TInstProp);
+  GetMem(FPropList,PropListSize);
+  FillChar(FPropList^,PropListSize,0);
   FPropCount:=APropCount;
 end;
 
@@ -5299,6 +5306,42 @@ begin
   if (Result<>nil) and (Result is TComponent)
   and (TComponent(Result).Owner<>nil) then
     Result:=TComponent(Result).Owner;
+end;
+
+procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);
+var
+  CurDesigner: TIDesigner;
+  PropInfo: PPropInfo;
+  Hook: TPropertyEditorHook;
+  PersistentList: TPersistentSelectionList;
+  MethodPropEditor: TMethodPropertyEditor;
+begin
+  CurDesigner:=FindRootDesigner(AComponent);
+  if CurDesigner=nil then exit;
+  // search method
+  PropInfo:=GetPropInfo(AComponent,EventName);
+  //writeln('CreateComponentEvent B ',PropInfo<>nil,' ',PropInfo^.PropType<>nil,' ',PropInfo^.PropType^.Kind=tkMethod,' ',(PropInfo^.GetProc<>nil),' ',(PropInfo^.SetProc<>nil));
+  if (PropInfo=nil)
+  or (PropInfo^.PropType=nil)
+  or (PropInfo^.PropType^.Kind<>tkMethod)
+  or (PropInfo^.GetProc=nil)
+  or (PropInfo^.SetProc=nil) then
+    exit;
+  
+  MethodPropEditor:=nil;
+  PersistentList:=nil;
+  try
+    PersistentList:=TPersistentSelectionList.Create;
+    PersistentList.Add(AComponent);
+    Hook:=GlobalDesignHook;
+    MethodPropEditor:=TMethodPropertyEditor.Create(Hook,PersistentList,1);
+    MethodPropEditor.SetPropEntry(0, AComponent, PropInfo);
+    MethodPropEditor.Initialize;
+    MethodPropEditor.Edit;
+  finally
+    MethodPropEditor.Free;
+    PersistentList.Free;
+  end;
 end;
 
 Function ClassTypeInfo(Value: TClass): PTypeInfo;

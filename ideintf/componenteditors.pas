@@ -179,6 +179,7 @@ type
   property to edit }
   TDefaultComponentEditor = class(TComponentEditor)
   private
+    FBestEditEvent: string;
     FFirst: TPropertyEditor;
     FBest: TPropertyEditor;
     FContinue: Boolean;
@@ -187,10 +188,13 @@ type
     procedure EditProperty(const Prop: TPropertyEditor;
       var Continue: Boolean); virtual;
   public
+    constructor Create(AComponent: TComponent;
+      ADesigner: TComponentEditorDesigner); override;
     procedure Edit; override;
     function GetVerbCount: Integer; override;
     function GetVerb(Index: Integer): string; override;
     procedure ExecuteVerb(Index: Integer); override;
+    property BestEditEvent: string read FBestEditEvent write FBestEditEvent;
   end;
   
   
@@ -273,7 +277,6 @@ type
     function(const ATestEditor: TPropertyEditor): Boolean of object;
 
 
-
 implementation
 
 
@@ -335,7 +338,6 @@ begin
     end;
   Result := EditorClass.Create(Component, Designer);
 end;
-
 
 { Component Editors -----------------------------------------------------------}
 
@@ -446,14 +448,21 @@ begin
   PropName := Prop.GetName;
   BestName := '';
   if Assigned(FBest) then BestName := FBest.GetName;
-  if CompareText(PropName, 'ONCREATE') = 0 then
+  if CompareText(PropName, FBestEditEvent) = 0 then
     ReplaceBest
-  else if CompareText(BestName, 'ONCREATE') <> 0 then
+  else if CompareText(BestName, FBestEditEvent) <> 0 then
     if CompareText(PropName, 'ONCHANGE') = 0 then
       ReplaceBest
     else if CompareText(BestName, 'ONCHANGE') <> 0 then
       if CompareText(PropName, 'ONCLICK') = 0 then
         ReplaceBest;
+end;
+
+constructor TDefaultComponentEditor.Create(AComponent: TComponent;
+  ADesigner: TComponentEditorDesigner);
+begin
+  inherited Create(AComponent, ADesigner);
+  FBestEditEvent:='OnCreate';
 end;
 
 procedure TDefaultComponentEditor.Edit;

@@ -433,7 +433,6 @@ procedure TCustomImageList.Draw(Canvas: TCanvas; X, Y, Index: Integer;
 var
   aBitmap: TBitmap;
 begin
-writeln('TCustomImageList.Draw ',Index,' ',FCount);
   if (FCount = 0) or (Index >= FCount) then Exit;
   aBitmap := TBitmap(FImageList[Index]);
   Canvas.Draw(X,Y,aBitmap);
@@ -1182,6 +1181,9 @@ end;
 {
 
   $Log$
+  Revision 1.34  2004/03/29 17:21:52  mattias
+  actionslist editor improved  from Radek
+
   Revision 1.33  2004/03/28 12:57:03  mattias
   fixed 1.0.10 compilation
 
