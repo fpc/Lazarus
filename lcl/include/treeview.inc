@@ -2725,7 +2725,8 @@ begin
     if Node <> nil then FSaveIndex := Node.AbsoluteIndex;
   end;}
   inherited DestroyWnd;
-  TControlCanvas(Canvas).FreeHandle;
+  if Canvas<>nil then
+    TControlCanvas(Canvas).FreeHandle;
 end;
 
 procedure TCustomTreeView.EditWndProc(var Message: TLMessage);
