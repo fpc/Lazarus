@@ -104,7 +104,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomForm.Destroy;
 begin
-  //writeln('[TCustomForm.Destroy] A ',Name,':',ClassName);
+  //DebugLn('[TCustomForm.Destroy] A ',Name,':',ClassName);
   if not (csDestroying in ComponentState) then ;//GlobalNameSpace.BeginWrite;
   try
     // ------
@@ -116,9 +116,9 @@ begin
     FreeThenNil(FIcon);
     Screen.RemoveForm(Self);
     FreeThenNil(FActionLists);
-    //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
+    //DebugLn('[TCustomForm.Destroy] B ',Name,':',ClassName);
     inherited Destroy;
-    //writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
+    //DebugLn('[TCustomForm.Destroy] END ',Name,':',ClassName);
   finally
     //GlobalNameSpace.EndWrite;
   end;
@@ -229,7 +229,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomForm.GetIconHandle: HICON;
 begin
-//writeln('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
+//DebugLn('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
   if (FIcon<>nil) and not Icon.Empty then
     Result := FIcon.Handle
   else
@@ -255,7 +255,7 @@ Procedure TCustomForm.SetFocus;
 
 Begin
   {$IFDEF VerboseFocus}
-  writeln('TCustomForm.SetFocus ',Name,':',ClassName);
+  DebugLn('TCustomForm.SetFocus ',Name,':',ClassName);
   {$ENDIF}
   if not FActive then
   begin
@@ -271,19 +271,19 @@ end;
 Procedure TCustomForm.SetVisible(Value : boolean);
 Begin
   if (Value=(fsVisible in FFormState)) and (Visible=Value) then exit;
-  //writeln('[TCustomForm.SetVisible] START ',Name,':',ClassName,' Old=',Visible,' New=',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+  //DebugLn('[TCustomForm.SetVisible] START ',Name,':',ClassName,' Old=',Visible,' New=',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
   if Value then
     Include(FFormState, fsVisible)
   else
     Exclude(FFormState, fsVisible);
-  //writeln('TCustomForm.SetVisible ',Name,':',ClassName,' FormUpdating=',FormUpdating,' fsCreating=',fsCreating in FFormState);
+  //DebugLn('TCustomForm.SetVisible ',Name,':',ClassName,' FormUpdating=',FormUpdating,' fsCreating=',fsCreating in FFormState);
   if (fsCreating in FFormState) {or FormUpdating} then
     // will be done when finished loading
   else
   begin
     inherited Visible:=Value;
   end;
-  //writeln('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating,' ',Visible);
+  //DebugLn('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating,' ',Visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ begin
   else
     NewFocusControl := Self;
   {$IFDEF VerboseFocus}
-  writeln('TCustomForm.SetWindowFocus ',Name,':',Classname ,
+  DebugLn('TCustomForm.SetWindowFocus ',Name,':',Classname ,
     ' NewFocusControl=',NewFocusControl.Name,':',NewFocusControl.ClassName,
     ' HndAlloc=',NewFocusControl.HandleAllocated);
   {$ENDIF}
@@ -327,7 +327,7 @@ begin
   end else begin
     write(' FActiveControl=nil');
   end;
-  writeln('');
+  DebugLn('');
   {$ENDIF}
   if (fsShowing in FFormState) then exit;
   Include(FFormState, fsShowing);
@@ -336,7 +336,7 @@ begin
       if (FActiveControl<>nil) and FActiveControl.HandleAllocated
       and (FActiveControl.Visible) and (FActiveControl.Enabled) then begin
         {$IFDEF VerboseFocus}
-        writeln('TCustomForm.WMShowWindow B ',FActiveControl.Name,':',FActiveControl.ClassName);
+        DebugLn('TCustomForm.WMShowWindow B ',FActiveControl.Name,':',FActiveControl.ClassName);
         {$ENDIF}
         LCLIntf.SetFocus(FActiveControl.Handle);
       end;
@@ -359,7 +359,7 @@ end;
 procedure TCustomForm.WMActivate(var Message : TLMActivate);
 begin
   {$IFDEF VerboseFocus}
-  writeln('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',Message.Active);
+  DebugLn('TCustomForm.WMActivate A ',Name,':',ClassName,' Msg.Active=',Message.Active);
   {$ENDIF}
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active {<> WA_INACTIVE});
@@ -421,9 +421,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
 begin
-//writeln('[TCustomForm.WMPaint] ',Name,':',ClassName);
+//DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
   inherited WMPaint(Message);
-//writeln('[TCustomForm.WMPaint] END ',Name,':',ClassName);
+//DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;
 
 
@@ -439,7 +439,7 @@ var
   OldState: TWindowState;
 begin
   {$IFDEF CHECK_POSITION}
-  Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
+  DebugLn('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height);
   {$ENDIF}
   Assert(False, 'Trace:WMSIZE in TCustomForm');
   if not (csDesigning in ComponentState) then begin
@@ -604,7 +604,7 @@ begin
 //  FCanvas.Lock;
   try
     FCanvas.Handle := DC;
-//writeln('[TCustomForm.PaintWindow] ',ClassName,' DC=',HexStr(DC,8),'  ',HexStr(FCanvas.Handle,8));
+//DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',HexStr(DC,8),'  ',HexStr(FCanvas.Handle,8));
     try
       if FDesigner <> nil then FDesigner.PaintGrid else Paint;
     finally
@@ -709,7 +709,7 @@ begin
           if FocusHandle <> 0
           then begin
             {$IFDEF VerboseFocus}
-            writeln('[TCustomForm.WndProc] ',Name,':',ClassName);
+            DebugLn('[TCustomForm.WndProc] ',Name,':',ClassName);
             {$ENDIF}
             LCLIntf.SetFocus(FocusHandle);
             Exit;
@@ -1024,13 +1024,13 @@ Begin
     {$IFDEF VerboseFocus}
     write('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',FActive);
     if FActiveControl<>nil then
-      writeln(' OldActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
+      DebugLn(' OldActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
     else
-      writeln(' OldActiveControl=nil');
+      DebugLn(' OldActiveControl=nil');
     if AWinControl<>nil then
-      writeln(' NewActiveControl=',AWinControl.Name,':',AWinControl.ClassName)
+      DebugLn(' NewActiveControl=',AWinControl.Name,':',AWinControl.ClassName)
     else
-      writeln(' NewActiveControl=nil');
+      DebugLn(' NewActiveControl=nil');
     {$ENDIF}
     FActiveControl := AWinControl;
     if not (csLoading in ComponentState) then
@@ -1068,24 +1068,24 @@ end;
 ------------------------------------------------------------------------------}
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
-  //writeln('[TCustomForm.Create] A Class=',Classname);
+  //DebugLn('[TCustomForm.Create] A Class=',Classname);
   try
     BeginFormUpdate;
     CreateNew(AOwner, 1);
-    //writeln('[TCustomForm.Create] B Class=',Classname);
+    //DebugLn('[TCustomForm.Create] B Class=',Classname);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
     begin
       Include(FFormState, fsCreating);
       try
-        //writeln('[TCustomForm.Create] C Class=',Classname);
+        //DebugLn('[TCustomForm.Create] C Class=',Classname);
         if not InitResourceComponent(Self, TForm) then begin
-          //writeln('[TCustomForm.Create] Resource '''+ClassName+''' not found');
-          //Writeln('This is for information purposes only.   This is not critical at this time.');
+          //DebugLn('[TCustomForm.Create] Resource '''+ClassName+''' not found');
+          //DebugLn('This is for information purposes only.   This is not critical at this time.');
           // MG:  Ignoring is best at the moment. (Delphi raises an exception.)
         end;
-        //writeln('[TCustomForm.Create] D Class=',Classname);
+        //DebugLn('[TCustomForm.Create] D Class=',Classname);
         DoCreate;
-        //writeln('[TCustomForm.Create] E Class=',Classname);
+        //DebugLn('[TCustomForm.Create] E Class=',Classname);
       finally
         Exclude(FFormState, fsCreating);
       end;
@@ -1093,7 +1093,7 @@ begin
     EndFormUpdate;
   finally
   end;
-  //writeln('[TCustomForm.Create] END Class=',Classname);
+  //DebugLn('[TCustomForm.Create] END Class=',Classname);
 end;
 
 {------------------------------------------------------------------------------
@@ -1101,7 +1101,7 @@ end;
 ------------------------------------------------------------------------------}
 constructor TCustomForm.CreateNew(AOwner: TComponent; Num : Integer);
 Begin
-  //writeln('[TCustomForm.CreateNew] Class=',Classname);
+  //DebugLn('[TCustomForm.CreateNew] Class=',Classname);
   BeginFormUpdate;
   // set border style before handle is allocated
   if not (fsBorderStyleChanged in FFormState) then
@@ -1247,7 +1247,7 @@ procedure TCustomForm.ShowOnTop;
 begin
   Show;
   BringToFront;
-  //writeln('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
+  //DebugLn('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
   LCLIntf.ShowWindow(Handle,SW_SHOWNORMAL);
 end;
 
@@ -1296,7 +1296,7 @@ begin
   {$IFDEF VerboseFocus}
   write('TCustomForm.SetFocusedControl Self=',Name,':',ClassName,' ');
   write(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',Control.HandleAllocated);
-  writeln();
+  DebugLn();
   {$ENDIF}
 
   Result:=true;
@@ -1388,7 +1388,7 @@ procedure TCustomForm.CreateWnd;
 var
   DC: HDC;
 begin
-  //writeln('TCustomForm.CreateWnd START ',ClassName);
+  //DebugLn('TCustomForm.CreateWnd START ',ClassName);
   FFormState:=FFormState-[fsBorderStyleChanged,fsFormStyleChanged];
   inherited CreateWnd;
   CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
@@ -1408,12 +1408,12 @@ begin
     if (FActiveControl<>nil) and FActiveControl.HandleAllocated
     and FActiveControl.Visible and FActiveControl.Enabled then begin
       {$IFDEF VerboseFocus}
-      writeln('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
+      DebugLn('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
       {$ENDIF}
       LCLIntf.SetFocus(FActiveControl.Handle);
     end;
   end;
-  //writeln('TCustomForm.CreateWnd END ',ClassName);
+  //DebugLn('TCustomForm.CreateWnd END ',ClassName);
 end;
 
 procedure TCustomForm.Loaded;
@@ -1429,7 +1429,7 @@ begin
     FActiveControl := nil;
     if Control.CanFocus then SetActiveControl(Control);
   end;
-  //writeln('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
+  //DebugLn('TCustomForm.Loaded ',Name,':',ClassName,' ',FormUpdating,' ',fsCreating in FFormState,' ',Visible,' ',fsVisible in FormState);
   if fsVisible in FormState then
     Visible:=true;
 end;
@@ -1461,7 +1461,7 @@ var
   X, Y : integer;
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TCustomForm.UpdateShowing] A  Class=',Name,':',Classname,' Pos=',Left,',',Top,' Visible=',Visible);
+  DebugLn('[TCustomForm.UpdateShowing] A  Class=',Name,':',Classname,' Pos=',Left,',',Top,' Visible=',Visible);
   {$ENDIF}
   { If the the form is about to show, calculate its metrics }
   if Visible then begin
@@ -1501,11 +1501,11 @@ begin
     SetBounds(X, Y, Width, Height);
   end;
   {$IFDEF CHECK_POSITION}
-  writeln('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',Left,',',Top);
+  DebugLn('[TCustomForm.UpdateShowing] B  ',Name,':',Classname,' Pos=',Left,',',Top);
   {$ENDIF}
   inherited UpdateShowing;
   {$IFDEF CHECK_POSITION}
-  writeln('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',Left,',',Top);
+  DebugLn('[TCustomForm.UpdateShowing] END  ',Name,':',Classname,' Pos=',Left,',',Top);
   {$ENDIF}
 end;
 
@@ -1516,8 +1516,8 @@ Function TCustomForm.ShowModal: Integer;
 
   procedure RaiseShowModalImpossible;
   begin
-    writeln('TCustomForm.ShowModal Visible=',Visible,' Enabled=',Enabled,
-      ' fsModal=',fsModal in FFormState,' MDIChild=',FormStyle = fsMDIChild);
+    DebugLn('TCustomForm.ShowModal Visible=',dbgs(Visible),' Enabled=',dbgs(Enabled),
+      ' fsModal=',dbgs(fsModal in FFormState),' MDIChild=',dbgs(FormStyle = fsMDIChild));
     raise EInvalidOperation.Create('TCustomForm.ShowModal impossible ');
   end;
 
@@ -1536,7 +1536,7 @@ begin
   CancelDrag;
   // close popupmenus
   if ActivePopupMenu<>nil then ActivePopupMenu.Close;
-  //writeln('[TCustomForm.ShowModal] START ',Classname);
+  //DebugLn('[TCustomForm.ShowModal] START ',Classname);
   if Visible or not Enabled or (fsModal in FFormState)
   or (FormStyle = fsMDIChild) then
     RaiseShowModalImpossible;
@@ -1602,6 +1602,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.135  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.134  2004/04/23 11:18:28  mattias
   fixed unsetting csFocusing
 

@@ -35,7 +35,7 @@ unit GraphMath;
 interface
 
 Uses
-  Classes, SysUtils, Math, FPCAdds;
+  Classes, SysUtils, Math, LCLProc;
 
 Type
   TFloatPoint = Record
@@ -279,8 +279,8 @@ end;
 Operator := (Value : TFloatPoint) : TPoint;
 begin
   With Result do begin
-    X := FPCAdds.RoundToInt(Value.X);
-    Y := RoundToInt(Value.Y);
+    X := LCLProc.RoundToInt(Value.X);
+    Y := LCLProc.RoundToInt(Value.Y);
   end;
 end;
 
@@ -1084,6 +1084,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2004/05/11 11:42:26  mattias
+  replaced writeln by debugln
+
   Revision 1.5  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

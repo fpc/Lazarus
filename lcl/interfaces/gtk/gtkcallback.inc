@@ -180,7 +180,7 @@ end;
     exit;
     {$ENDIF}
     if not (AWinControl is TButton) then exit;
-    writeln('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
+    DebugLn('ModifyWidgetStyle A ',AWinControl.Name,':',AWinControl.ClassName,' AWidget=',HexStr(Cardinal(AWidget),8));
     RCStyle:=gtk_rc_style_new;
     g_free(RCStyle^.font_name);
     RCStyle^.font_name:=g_strdup('-urw-chancery l-medium-i-normal-*-*-140-*-*-p-*-iso8859-2');
@@ -228,7 +228,7 @@ begin
       // define extra events we're interrested in
       //write('GTKRealizeAfterCB ');
       //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
-      //writeln(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
+      //DebugLn(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
       if (TheWinControl<>nil) then begin
         {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
         NewEventMask:=gdk_window_get_events(GetControlWindow(Widget))
@@ -240,7 +240,7 @@ begin
                         or WinWidgetInfo^.EventMask;
           gdk_window_set_events(GetControlWindow(ClientWidget),NewEventMask);
         end;
-        //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
+        //DebugLn('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
         {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       end;
 
@@ -301,7 +301,7 @@ begin
   Mess.Msg := LM_ACTIVATE;
   Mess.Result := 0;
   DeliverMessage(Data, Mess);
-//writeln('gtkactivateCB ',Result);
+//DebugLn('gtkactivateCB ',Result);
 
   Result := CallBackDefaultReturn;
 end;
@@ -399,7 +399,7 @@ begin
     if DesignOnlySignal then exit;
   end else begin
     {$IFDEF VerboseDesignerDraw}
-    writeln('gtkDrawAfter',
+    DebugLn('gtkDrawAfter',
       ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',area^.x,',',area^.y,',',area^.width,',',area^.height,
@@ -425,7 +425,7 @@ begin
     if DesignOnlySignal then exit;
   end else begin
     {$IFDEF VerboseDesignerDraw}
-    writeln('gtkExposeAfter',
+    DebugLn('gtkExposeAfter',
       ' Widget=',HexStr(Cardinal(Widget),8),'=',GetWidgetClassName(Widget),
       ' ',TComponent(Data).Name,
       ' ',Event^.area.x,',',Event^.area.y,',',Event^.area.width,',',Event^.area.height,
@@ -461,7 +461,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  writeln(''); write('    ');
+  DebugLn(''); write('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -477,7 +477,7 @@ begin
   end else begin
     write(' GetFocus=nil');
   end;
-  writeln('');
+  DebugLn('');
   {$ENDIF}
   
   UpdateMouseCaptureControl;
@@ -507,9 +507,9 @@ begin
         ' GetFocus=',HexStr(Cardinal(Widget),8));
   LCLObject:=TControl(GetLCLObject(Widget));
   if LCLObject<>nil then
-    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
   else
-    writeln(' LCLObject=nil');
+    DebugLn(' LCLObject=nil');
   {$ENDIF}
   UpdateMouseCaptureControl;
 
@@ -541,7 +541,7 @@ var
   procedure StopKeyEvent(const AnEventName: PChar);
   begin
     {$IFDEF VerboseKeyboard}
-    writeln('StopKeyEvent AnEventName="',AnEventName,'"');
+    DebugLn('StopKeyEvent AnEventName="',AnEventName,'"');
     {$ENDIF}
     if not EventStopped
     then begin
@@ -608,7 +608,7 @@ begin
   HandledByLCL:=KeyEventWasHandledByLCL(Event,BeforeEvent);
 
   {$IFDEF VerboseKeyboard}
-  writeln('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
+  DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
     ' ',Event^.theType,' Widget=',GetWidgetClassName(Widget),
     ' Before=',BeforeEvent,' HandledByLCL=',HandledByLCL);
   {$ENDIF}
@@ -632,7 +632,7 @@ begin
         FocusedWinControl:=TWinControl(LCLObject);
         if FocusedWidget<>Widget then begin
           {$IFDEF VerboseKeyboard}
-          writeln('[HandleGTKKeyUpDown] REDIRECTING ',
+          DebugLn('[HandleGTKKeyUpDown] REDIRECTING ',
             ' FocusedWidget=',GetWidgetClassName(FocusedWidget),
             ' Control=',FocusedWinControl.Name,':',FocusedWinControl.ClassName);
           {$ENDIF}
@@ -678,7 +678,7 @@ begin
   GDK_KEY_RELEASE:
     begin
       {$IFDEF VerboseKeyboard}
-      writeln('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',VKey.VKey);
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',VKey.VKey);
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
@@ -711,7 +711,7 @@ begin
   GDK_KEY_PRESS:
     begin
       {$IFDEF VerboseKeyboard}
-      writeln('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',VKey.VKey);
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',VKey.VKey);
       {$ENDIF}
 
       Msg.CharCode := VKey.VKey;
@@ -791,7 +791,7 @@ begin
       end;}
     end;
   end;
-//writeln('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
+//DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
 function GTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
@@ -827,7 +827,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  writeln(''); write('    ');
+  DebugLn(''); write('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -843,7 +843,7 @@ begin
   end else begin
     write(' GetFocus=nil');
   end;
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 
   Result:=true;
@@ -871,7 +871,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  writeln(''); write('    ');
+  DebugLn(''); write('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -887,7 +887,7 @@ begin
   end else begin
     write(' GetFocus=nil');
   end;
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 
   UpdateMouseCaptureControl;
@@ -921,7 +921,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  writeln(''); write('    ');
+  DebugLn(''); write('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -937,7 +937,7 @@ begin
   end else begin
     write(' GetFocus=nil');
   end;
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 
   Result:=true;
@@ -965,7 +965,7 @@ begin
     end;
   end else
     write(' LCLObject=nil');
-  writeln(''); write('    ');
+  DebugLn(''); write('    ');
   CurFocusWidget:=PGtkWidget(GetFocus);
   if CurFocusWidget<>nil then begin
     write(' GetFocus=',HexStr(Cardinal(CurFocusWidget),8));
@@ -981,7 +981,7 @@ begin
   end else begin
     write(' GetFocus=nil');
   end;
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 
   UpdateMouseCaptureControl;
@@ -1154,7 +1154,7 @@ begin
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
-  writeln('[GTKMotionNotify] ',
+  DebugLn('[GTKMotionNotify] ',
     TControl(Data).Name,':',TControl(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' DSO=',DesignOnlySignal,
@@ -1189,7 +1189,7 @@ begin
   Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
-  writeln('[GTKMotionNotifyAfter] ',
+  DebugLn('[GTKMotionNotifyAfter] ',
     TControl(Data).Name,':',TControl(Data).ClassName);
   {$ENDIF}
 
@@ -1275,7 +1275,7 @@ var
       (not (gdk_event_get_type(Event) in [gdk_2button_press,gdk_3button_press]))
     then begin
       {$IFDEF VerboseMouseBugfix}
-      writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
+      DebugLn(' NO CLICK: LastMouse.Down=',LastMouse.Down,
               ' Event^.theType=',gdk_event_get_type(Event));
       {$ENDIF}
       Exit;
@@ -1320,7 +1320,7 @@ var
         then begin
           // multi click
           {$IFDEF VerboseMouseBugfix}
-          writeln('  MULTI CLICK: ',now,'-',LastMouse.TheTime,'<= ',
+          DebugLn('  MULTI CLICK: ',now,'-',LastMouse.TheTime,'<= ',
             ((1/86400)*(DblClickTime/1000)));
           {$ENDIF}
         end else begin
@@ -1330,7 +1330,7 @@ var
       end;
     end;
     {$IFDEF VerboseMouseBugfix}
-    writeln('  ClickCount=',LastMouse.ClickCount);
+    DebugLn('  ClickCount=',LastMouse.ClickCount);
     {$ENDIF}
 
     LastMouse.TheTime := Now;
@@ -1357,7 +1357,7 @@ begin
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(AWinControl.Handle));
-  //writeln('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',MappedXY.X,',',MappedXY.Y,' Event=',EventXY.X,',',EventXY.Y);
+  //DebugLn('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',MappedXY.X,',',MappedXY.Y,' Event=',EventXY.X,',',EventXY.Y);
 
   if event^.Button in [4,5] then begin
     // this is a mouse wheel event
@@ -1432,9 +1432,9 @@ begin
   Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
-  writeln('');
+  DebugLn('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
-  writeln('[gtkMouseBtnPress] ',
+  DebugLn('[gtkMouseBtnPress] ',
     TComponent(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
@@ -1442,14 +1442,14 @@ begin
     ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),
     ' Type=',Event^.theType);
   {$ENDIF}
-  //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
+  //DebugLn('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
   //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
   //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
   //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8),
   //' Window=',HexStr(Cardinal(Widget^.Window),8)
   //);
   //if GetFixedWidget(Widget)<>nil then
-  //  writeln('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
+  //  DebugLn('DDD2 ClientWindow=',HexStr(Cardinal(PGtkWidget(GetFixedWidget(Widget))^.Window),8));
 
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -1490,7 +1490,7 @@ begin
   Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
-  {writeln('[gtkMouseBtnPressAfter] ',
+  {DebugLn('[gtkMouseBtnPressAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y));}
@@ -1607,14 +1607,14 @@ begin
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-  writeln('[gtkMouseBtnRelease] A ',
+  DebugLn('[gtkMouseBtnRelease] A ',
     TComponent(Data).Name,':',TObject(Data).ClassName,' ',
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' DSO=',DesignOnlySignal,
     ' ',TruncToInt(Event^.X),',',TruncToInt(Event^.Y),' Btn=',event^.Button);
   {$ENDIF}
 
-  //writeln('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
+  //DebugLn('EEE1 MouseRelease Widget=',HexStr(Cardinal(Widget),8),
   //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
   //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
 
@@ -1651,7 +1651,7 @@ begin
   Result := CallBackDefaultReturn;
 
   {$IFDEF VerboseMouseBugfix}
-  {writeln('[gtkMouseBtnReleaseAfter] ',
+  {DebugLn('[gtkMouseBtnReleaseAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
     TruncToInt(Event^.X),',',TruncToInt(Event^.Y));}
   {$ENDIF}
@@ -1672,7 +1672,7 @@ var
    Mess : TLMessage;
 begin
   Result := CallBackDefaultReturn;
-  //writeln('[gtkclickedCB] ',TObject(Data).ClassName);
+  //DebugLn('[gtkclickedCB] ',TObject(Data).ClassName);
   EventTrace('clicked', data);
   if (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   Mess.Msg := LM_CLICKED;
@@ -1816,7 +1816,7 @@ begin
     gtk_color_selection_get_current_color(colorsel, @newColor);
     TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
     {$IFDEF VerboseColorDialog}
-    writeln('gtkDialogOKclickedCB ',HexStr(Cardinal(TColorDialog(theDialog).Color),8));
+    DebugLn('gtkDialogOKclickedCB ',HexStr(Cardinal(TColorDialog(theDialog).Color),8));
     {$ENDIF}
   end
   else if theDialog is TFontDialog then
@@ -2180,7 +2180,7 @@ begin
   end;
 
   Mess.msg := CM_MOUSEENTER;
-writeln('gtkEnterCB');
+DebugLn('gtkEnterCB');
   Status := DeliverMessage(Data, Mess) = 0;
 
   {$ifdef GTK2}
@@ -2205,7 +2205,7 @@ begin
   end;
 
   Mess.msg := CM_MOUSELEAVE;
-writeln('gtkLeaveCB');
+DebugLn('gtkLeaveCB');
   Status := DeliverMessage(Data, Mess) = 0;
 
   {$ifdef GTK2}
@@ -2238,10 +2238,10 @@ begin
   
   if not (TObject(Data) is TControl) then begin
     // owner is not TControl -> ignore
-    writeln('WARNING: gtksize_allocateCB: Data is not TControl. Data=',
+    DebugLn('WARNING: gtksize_allocateCB: Data is not TControl. Data=',
             HexStr(Cardinal(Data),8),' ',GetWidgetClassName(Widget));
     if Data<>nil then
-      writeln('  Data=',TObject(Data).ClassName);
+      DebugLn('  Data=',TObject(Data).ClassName);
     RaiseException('');
     exit;
   end;
@@ -2254,7 +2254,7 @@ begin
     Therefore all resize messages between lcl and gtk are cached.
   }
   {$IFDEF VerboseSizeMsg}
-  writeln('gtksize_allocateCB: ',
+  DebugLn('gtksize_allocateCB: ',
     TControl(Data).Name,':',TControl(Data).ClassName,
     ' widget=',HexStr(Cardinal(Widget),8),
     ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
@@ -2262,7 +2262,7 @@ begin
   {$ENDIF}
   {$IFDEF VerboseFormPositioning}
   if TControl(Data) is TCustomForm then
-    writeln('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
+    DebugLn('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
   {$ENDIF}
   SaveSizeNotification(Widget);
 end;
@@ -2278,7 +2278,7 @@ begin
   if (Widget=nil) or (Size=nil) then ;
   if (TObject(Data) is TWinControl) then begin
     {$IFDEF VerboseSizeMsg}
-    writeln('gtksize_allocate_client: ',
+    DebugLn('gtksize_allocate_client: ',
       TControl(Data).Name,':',TControl(Data).ClassName,
       ' widget=',HexStr(Cardinal(Widget),8),
       ' NewSize=',Size^.Width,',',Size^.Height,
@@ -2294,7 +2294,7 @@ begin
     SaveClientSizeNotification(ClientWidget);
   end else begin
     // owner is not TWinControl -> ignore
-    writeln('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
+    DebugLn('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
             HexStr(Cardinal(Data),8));
     exit;
   end;
@@ -2538,13 +2538,13 @@ begin
 
   if (FTimerData=nil) or (FTimerData.IndexOf(Data)<0) then begin
     {$IFDEF VerboseTimer}
-    writeln('gtkTimerCB Timer was killed: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    DebugLn('gtkTimerCB Timer was killed: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
     {$ENDIF}
     // timer was killed
     Result:=GdkFalse; // stop timer
   end else begin
     {$IFDEF VerboseTimer}
-    writeln('gtkTimerCB Timer Event: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    DebugLn('gtkTimerCB Timer Event: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
     {$ENDIF}
     if TimerInfo^.TimerFunc <> nil
     then begin
@@ -2565,7 +2565,7 @@ begin
 
   if Result=GdkFalse then begin
     {$IFDEF VerboseTimer}
-    writeln('gtkTimerCB Timer was STOPPED: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
+    DebugLn('gtkTimerCB Timer was STOPPED: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
     {$ENDIF}
     // timer will be stopped
     // -> free timer data, if not already done
@@ -2582,7 +2582,7 @@ var
   MessI : TLMEnter;
 begin
   Result := CallBackDefaultReturn;
-  //writeln('[gtkFocusInNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
+  //DebugLn('[gtkFocusInNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
   
   if (Event=nil) then ;
@@ -2601,7 +2601,7 @@ var
   MessI : TLMExit;
 begin
   Result := CallBackDefaultReturn;
-  //writeln('[gtkFocusOutNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
+  //DebugLn('[gtkFocusOutNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
   EventTrace ('FocusOutNotify (alias Exit)', data);
 
   if (Event=nil) then ;
@@ -2815,7 +2815,7 @@ begin
   if VKey.VKey = $FF
   then begin
     if Pressed
-    then WriteLN(Format('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
+    then DebugLn(Format('[WARNING] Key pressed without VKey: K=0x%x S="%s"', [
       Event^.KeyVal,
       {$IFDEF GTK2} Event^._String {$ELSE} Event^.theString {$ENDIF}
     ]));
@@ -2897,7 +2897,7 @@ begin
     dec(i);
   end;
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[ClipboardSelectionReceivedHandler] A TimeID=',TimeID,' RequestIndex=',i,
+  DebugLn('[ClipboardSelectionReceivedHandler] A TimeID=',TimeID,' RequestIndex=',i,
     ' selection=',SelectionData^.selection,
     ' target=',SelectionData^.Target,
     ' theType=',SelectionData^.theType,
@@ -2913,7 +2913,7 @@ begin
   // copy the raw data to an internal buffer (the gtk buffer will be destroyed
   // right after this event)
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[ClipboardSelectionReceivedHandler] B DataLen=',c^.Data.Length);
+  DebugLn('[ClipboardSelectionReceivedHandler] B DataLen=',c^.Data.Length);
   {$ENDIF}
   if (c^.Data.Data<>nil)
   and (c^.Data.Length>0) then begin
@@ -2921,7 +2921,7 @@ begin
     Move(c^.Data.Data^,TempBuf^,c^.Data.Length);
     c^.Data.Data:=TempBuf;
     {$IFDEF DEBUG_CLIPBOARD}
-    writeln('[ClipboardSelectionReceivedHandler] C FirstCharacter=',ord(PChar(c^.Data.Data)[0]));
+    DebugLn('[ClipboardSelectionReceivedHandler] C FirstCharacter=',ord(PChar(c^.Data.Data)[0]));
     {$ENDIF}
   end else
     c^.Data.Data:=nil;
@@ -2946,7 +2946,7 @@ var ClipboardType: TClipboardType;
   BitCount: integer;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('*** [ClipboardSelectionRequestHandler] START');
+  DebugLn('*** [ClipboardSelectionRequestHandler] START');
   {$ENDIF}
   if (Data=nil) or (TimeID=0) or (Info=0) or (TargetWidget=nil) then ;
   if SelectionData^.Target=0 then exit;
@@ -2957,7 +2957,7 @@ begin
         // now create a stream and find a supported format
         {$IFDEF DEBUG_CLIPBOARD}
         p:=gdk_atom_name(SelectionData^.Target);
-        writeln('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',p,' ID=',SelectionData^.Target);
+        DebugLn('[ClipboardSelectionRequestHandler] ',ClipboardTypeName[ClipboardType],' Format=',p,' ID=',SelectionData^.Target);
         g_free(p);
         {$ENDIF}
         MemStream:=TMemoryStream.Create;
@@ -2975,7 +2975,7 @@ begin
             FormatID:=gdk_atom_intern('text/plain',GdkFalse);
             
           {$IFDEF DEBUG_CLIPBOARD}
-          writeln('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
+          DebugLn('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
           {$ENDIF}
           // get the requested data by calling the handler for this clipboard type
           ClipboardHandler[ClipboardType](FormatID,MemStream);
@@ -3009,7 +3009,7 @@ begin
           end;
           if Buffer=nil then begin
             {$IFDEF DEBUG_CLIPBOARD}
-            writeln('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
+            DebugLn('[ClipboardSelectionRequestHandler] Default MemStream.Size=',MemStream.Size);
             {$ENDIF}
             BufLength:=integer(MemStream.Size);
             if BufLength>0 then begin
@@ -3018,11 +3018,11 @@ begin
               {SetLength(s,MemStream.Size);
               MemStream.Position:=0;
               MemStream.Read(s[1],MemStream.Size);
-              writeln(' >>> "',s,'"');}
+              DebugLn(' >>> "',s,'"');}
             end;
           end;
           {$IFDEF DEBUG_CLIPBOARD}
-          writeln('[ClipboardSelectionRequestHandler] Len=',BufLength);
+          DebugLn('[ClipboardSelectionRequestHandler] Len=',BufLength);
           {$ENDIF}
           gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
             Buffer,BufLength);
@@ -3046,11 +3046,11 @@ function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
 var ClipboardType: TClipboardType;
 begin
   if (Data=nil) or (TargetWidget=nil) then ;
-  //writeln('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
+  //DebugLn('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if EventSelection^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
       {$IFDEF DEBUG_CLIPBOARD}
-      writeln('*** [ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
+      DebugLn('*** [ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
       {$ENDIF}
       if (ClipboardWidget<>nil)
       and (gdk_selection_owner_get(ClipboardTypeAtoms[ClipboardType])
@@ -3058,7 +3058,7 @@ begin
       and Assigned(ClipboardHandler[ClipboardType]) then begin
         // handler found for this type of clipboard
         {$IFDEF DEBUG_CLIPBOARD}
-        writeln('[ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
+        DebugLn('[ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardType]);
         {$ENDIF}
         ClipboardHandler[ClipboardType](0,nil);
         ClipboardHandler[ClipboardType]:=nil;
@@ -3098,6 +3098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.230  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.229  2004/05/11 09:49:46  mattias
   started sending CN_KEYUP
 

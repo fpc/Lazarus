@@ -133,10 +133,10 @@ begin
   if Assigned(MessageBoxFunction) then
     Result:=MessageBoxFunction(Text,Caption,Flags)
   else begin
-    writeln('WARNING: TApplication.MessageBox: no MessageBoxFunction');
-    writeln('  Caption="',Caption,'"');
-    writeln('  Text="',Text,'"');
-    writeln('  Flags=',HexStr(Cardinal(Flags),8));
+    DebugLn('WARNING: TApplication.MessageBox: no MessageBoxFunction');
+    DebugLn('  Caption="',Caption,'"');
+    DebugLn('  Text="',Text,'"');
+    DebugLn('  Flags=',HexStr(Cardinal(Flags),8));
     Result:=0;
   end;
 end;
@@ -216,7 +216,7 @@ begin
 //  or (AnsiCompareText(InterfaceObject.Classname,'TWIDGETSET')=0) 
   or (InterfaceObject.ClassType = TWidgetSet) 
   then begin
-    writeln('ERROR: ',rsNoInterfaceObject);
+    DebugLn('ERROR: ',rsNoInterfaceObject);
     raise Exception.Create(rsNoInterfaceObject);
   end;
   InterfaceObject.AppInit;
@@ -362,16 +362,16 @@ begin
   else
     write(' Old=nil');
   if NewMouseControl<>nil then
-    writeln(' New=',NewMouseControl.Name,':',NewMouseControl.ClassName)
+    DebugLn' New=',NewMouseControl.Name,':',NewMouseControl.ClassName)
   else
-    writeln(' New=nil');}
+    DebugLn' New=nil');}
   if (FMouseControl<>nil) then begin
-    //writeln(' MOUSELEAVE=',FMouseControl.Name,':',FMouseControl.ClassName);
+    //DebugLn' MOUSELEAVE=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
   end;
   FMouseControl := NewMouseControl;
   if (FMouseControl<>nil) then begin
-    //writeln(' MOUSEENTER=',FMouseControl.Name,':',FMouseControl.ClassName);
+    //DebugLn' MOUSEENTER=',FMouseControl.Name,':',FMouseControl.ClassName);
     FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
   end;
 end;
@@ -487,7 +487,7 @@ var
   Info: THintInfoAtMouse;
 begin
   Info:=GetHintInfoAtMouse;
-  //writeln('TApplication.DoOnMouseMove Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
+  //DebugLn'TApplication.DoOnMouseMove Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
   if FHintControl <> Info.Control then
   begin
     if Info.ControlHasHint then
@@ -601,7 +601,7 @@ begin
     StartHintTimer(HintHidePause,ahtHideHint);
   end else
     HideHint;
-  //writeln('TApplication.ShowHintWindow Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
+  //DebugLn'TApplication.ShowHintWindow Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
 end;
 
 {------------------------------------------------------------------------------
@@ -632,7 +632,7 @@ var
   Info: THintInfoAtMouse;
   OldHintTimerType: TAppHintTimerType;
 begin
-  //writeln('TApplication.OnHintTimer Type=',ord(FHintTimerType));
+  //DebugLn'TApplication.OnHintTimer Type=',ord(FHintTimerType));
   OldHintTimerType:=FHintTimerType;
   StopHintTimer;
   case OldHintTimerType of
@@ -722,7 +722,7 @@ begin
   if Self=nil then exit;
   if AppHandlingException in FFlags then begin
     // there was an exception during showing the exception -> break the circle
-    writeln('TApplication.HandleException: ',
+    DebugLn('TApplication.HandleException: ',
       'there was another exception during showing the first exception');
     HaltingProgram:=true;
     Halt;
@@ -732,9 +732,9 @@ begin
     inherited Terminate;
   // before we do anything, write it down
   if ExceptObject is Exception then begin
-    writeln('TApplication.HandleException ',Exception(ExceptObject).Message);
+    DebugLn('TApplication.HandleException ',Exception(ExceptObject).Message);
   end else begin
-    writeln('TApplication.HandleException Strange Exception ');
+    DebugLn('TApplication.HandleException Strange Exception ');
   end;
   // release capture and hide all forms with stay on top, so that
   // a message can be shown
@@ -821,7 +821,7 @@ begin
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
     if AForm.FormStyle=fsStayOnTop then begin
-      writeln('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
+      DebugLn('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
       AForm.Hide;
     end;
   end;
@@ -1179,6 +1179,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2004/05/11 11:42:26  mattias
+  replaced writeln by debugln
+
   Revision 1.78  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 

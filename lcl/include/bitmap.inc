@@ -53,13 +53,13 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
-    //writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
+    //DebugLn('TBitMap.Assign ',ClassName,' ',Source.ClassName);
     // TBitmap can share image data
     // -> check if already shared
     SrcBitmap:=TBitmap(Source);
     if SrcBitmap.FImage=FImage then exit;
 
-    //writeln('TBitMap.Assign A  RefCount=',FImage.RefCount);
+    //DebugLn('TBitMap.Assign A  RefCount=',FImage.RefCount);
     // image is not shared => new image data
     // -> free canvas (interface handles)
     FreeCanvasContext;
@@ -68,7 +68,7 @@ begin
     // share FImage with assign graphic
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
-    //writeln('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
+    //DebugLn('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
   {$IFNDEF DisableFPImage}
   end else if Source is TFPCustomImage then begin
     SrcFPImage:=TFPCustomImage(Source);
@@ -188,11 +188,11 @@ var
   NewRawImage: TRawImage;
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  writeln('TBitmap.CreateFromBitmapHandles A ',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+  DebugLn('TBitmap.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
   if not GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,SrcRect,NewRawImage) then
     raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Get RawImage');
   try
-    writeln('TBitmap.CreateFromBitmapHandles A ',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+    DebugLn('TBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
     if not CreateBitmapFromRawImage(NewRawImage,ImgHandle,ImgMaskHandle,false) then
       raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Create bitmaps');
     Handle:=ImgHandle;
@@ -211,7 +211,7 @@ end;
 
 procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
-  writeln('TBitMap.Mask not implemented');
+  DebugLn('TBitMap.Mask not implemented');
 end;
 
 function TBitmap.GetHandle: HBITMAP;
@@ -235,7 +235,7 @@ end;
 procedure TBitmap.SetHandleType(Value: TBitmapHandleType);
 begin
   if HandleType=Value then exit;
-  writeln('TBitmap.SetHandleType TBitmap.SetHandleType not implemented');
+  DebugLn('TBitmap.SetHandleType TBitmap.SetHandleType not implemented');
 end;
 
 procedure TBitmap.SetMonochrome(const AValue: Boolean);
@@ -317,7 +317,7 @@ begin
     if UseWidth<1 then UseWidth:=1;
     if UseHeight<1 then UseHeight:=1;
     FImage.FHandle:= CreateBitmap(UseWidth, UseHeight, 1, n, nil);
-    //writeln('TBitMap.HandleNeeded Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),' n=',n);
+    //DebugLn('TBitMap.HandleNeeded Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),' n=',n);
     FImage.FDIB.dsbm.bmWidth := Width;
     FImage.FDIB.dsbm.bmHeight := Height;
   end;
@@ -353,12 +353,12 @@ end;
 
 procedure TBitMap.LoadFromResourceName(Instance: THandle; const ResName: String);
 begin
-  writeln('ToDo: TBitMap.LoadFromResourceName');
+  DebugLn('ToDo: TBitMap.LoadFromResourceName');
 end;
 
 procedure TBitMap.LoadFromResourceID(Instance: THandle; ResID: Integer);
 begin
-  writeln('ToDo: TBitMap.LoadFromResourceID');
+  DebugLn('ToDo: TBitMap.LoadFromResourceID');
 end;
 
 procedure TBitmap.GetSupportedSourceMimeTypes(List: TStrings);
@@ -418,7 +418,7 @@ var
   {$ENDIF}
 begin
   if (FImage.RefCount>1) then begin
-    //writeln('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
+    //DebugLn('TBitmap.UnshareImage ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
     // release old FImage and create a new one
     NewImage:=TBitmapImage.Create;
     try
@@ -442,21 +442,21 @@ begin
       FreeCanvasContext;
       OldImage:=FImage;
       FImage:=NewImage;
-      //writeln('TBitMap.UnshareImage Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
+      //DebugLn('TBitMap.UnshareImage Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
       NewImage:=nil; // transaction sucessful
       OldImage.Release;
     finally
       // in case something goes wrong, keep old and free new
       NewImage.Free;
     end;
-    //writeln('TBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
+    //DebugLn('TBitmap.UnshareImage END ',ClassName,' ',Width,',',Height,' ',HexStr(Cardinal(Self),8));
   end;
 end;
 
 procedure TBitmap.FreeSaveStream;
 begin
   if FImage.FSaveStream<>nil then begin
-    //writeln('TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size);
+    //DebugLn('TBitmap.FreeSaveStream A ',ClassName,' ',FImage.FSaveStream.Size);
   end;
   FreeAndNil(FImage.FSaveStream);
   FImage.SaveStreamType:=bnNone;
@@ -807,7 +807,7 @@ begin
     DoWriteOriginal;
     exit;
   end;
-  writeln('TBitmap.WriteStream A Warning: creating BMP does not always work ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType),'. Please use FPImage.');
+  DebugLn('TBitmap.WriteStream A Warning: creating BMP does not always work ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType),'. Please use FPImage.');
 
   // write image in BMP format to temporary stream
   MemStream:=TMemoryStream.Create;
@@ -910,7 +910,7 @@ begin
     ImgSize:=SrcStream.Position-OldStreamPosition;
     if not UseSize then begin
       // now the size is known -> store stream
-      //writeln('TBitmap.ReadStreamWithFPImage SrcStream=',SrcStream.ClassName,' ImgSize=',ImgSize);
+      //DebugLn('TBitmap.ReadStreamWithFPImage SrcStream=',SrcStream.ClassName,' ImgSize=',ImgSize);
       SrcStream.Position:=OldStreamPosition;
       StoreOriginal(SrcStream,integer(ImgSize));
     end else begin
@@ -936,7 +936,7 @@ procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
 
   Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
   begin
-    //writeln('DoWriteStreamSize ',ClassName,' Size=',Size,' WriteSize=',WriteSize);
+    //DebugLn('DoWriteStreamSize ',ClassName,' Size=',Size,' WriteSize=',WriteSize);
     if WriteSize then
       DestStream.WriteBuffer(Size, SizeOf(Size));
   end;
@@ -953,12 +953,12 @@ var
   IntfImg: TLazIntfImage;
   ImgWriter: TFPCustomImageWriter;
 begin
-  //writeln('WriteStreamWithFPImage Self=',HexStr(Cardinal(Self),8),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
+  //DebugLn('WriteStreamWithFPImage Self=',HexStr(Cardinal(Self),8),' ',Width,',',Height,' Using SaveStream=',(FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0));
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0) then begin
     DoWriteOriginal;
     exit;
   end;
-  //writeln('WriteStreamWithFPImage');
+  //DebugLn('WriteStreamWithFPImage');
 
   // write image to temporary stream
   MemStream:=TMemoryStream.Create;
@@ -984,7 +984,7 @@ begin
     {SetLength(s,FImage.SaveStream.Size);
     FImage.SaveStream.Position:=0;
     FImage.SaveStream.Read(s[1],length(s));
-    writeln(s);}
+    DebugLn(s);}
   finally
     MemStream.Free;
     IntfImg.Free;
@@ -1027,7 +1027,7 @@ begin
   FImage.FreeHandle;
   // get the properties from new bitmap
   FImage.FHandle:=Value;
-  //writeln('TBitMap.SetHandle Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
+  //DebugLn('TBitMap.SetHandle Self=',HexStr(Cardinal(Self),8),' FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8));
   FillChar(FImage.FDIB, SizeOf(FImage.FDIB), 0);
   if FImage.FHandle <> 0 then
     GetObject(FImage.FHandle, SizeOf(FImage.FDIB), @FImage.FDIB);
@@ -1048,13 +1048,13 @@ begin
   FImage.FreeMaskHandle;
   // combine (depending on the interface we will end with one or two handles)
   {$IFDEF VerboseImgMasks}
-  writeln('TBitmap.SetMaskHandle Before Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+  DebugLn('TBitmap.SetMaskHandle Before Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
     ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
     ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
   {$ENDIF}
   ReplaceBitmapMask(FImage.FHandle,FImage.FMaskHandle,NewMaskHandle);
   {$IFDEF VerboseImgMasks}
-  writeln('TBitmap.SetMaskHandle After Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
+  DebugLn('TBitmap.SetMaskHandle After Replace FImage.FHandle=',HexStr(Cardinal(FImage.FHandle),8),
     ' FImage.FMaskHandle=',HexStr(Cardinal(FImage.FMaskHandle),8),
     ' NewMaskHandle=',HexStr(Cardinal(NewMaskHandle),8));
   {$ENDIF}
@@ -1191,7 +1191,7 @@ end;
 procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
 begin
   if Value=TransparentMode then exit;
-  writeln('Note: TBitmap.SetTransparentMode not implemented');
+  DebugLn('Note: TBitmap.SetTransparentMode not implemented');
 end;
 
 // included by graphics.pp
@@ -1200,6 +1200,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2004/05/11 11:42:26  mattias
+  replaced writeln by debugln
+
   Revision 1.86  2004/04/23 20:41:11  mattias
   added SetFocus after closing completion form
 

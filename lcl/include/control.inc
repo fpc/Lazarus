@@ -228,7 +228,7 @@ var
 
 begin
   {$IFDEF VerboseSizeMsg}
-  writeln('TControl.ChangeBounds A ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' New=',ALeft,',',ATop,',',AWidth,',',AHeight);
+  DebugLn('TControl.ChangeBounds A ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' New=',ALeft,',',ATop,',',AWidth,',',AHeight);
   {$ENDIF}
   // constraint the size
   DoConstrainedResize(AWidth, AHeight);
@@ -259,11 +259,11 @@ begin
     end;
   end;}
 
-  //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
+  //DebugLn('TControl.ChangeBounds A ',Name,':',ClassName);
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
     InvalidateControl(Visible, False, true);
-  //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
+  //DebugLn('TControl.ChangeBounds B ',Name,':',ClassName);
   DoSetBounds(ALeft,ATop,AWidth,AHeight);
 
   // change base bounds
@@ -286,7 +286,7 @@ begin
       BoundsChanged;
       if UpdatePosSizeChanged then exit;
       //if csDesigning in ComponentState then
-      //  writeln('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      //  DebugLn('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
       // autosize this control and its brothers
       RequestAlign;
       if UpdatePosSizeChanged then exit;
@@ -335,9 +335,9 @@ procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
 
   procedure BoundsOutOfBounds;
   begin
-    writeln('TControl.DoSetBounds ',Name,':',ClassName,
-      ' Old=',Left,',',Top,',',Width,',',Height,
-      ' New=',aLeft,',',aTop,',',aWidth,',',aHeight,
+    DebugLn('TControl.DoSetBounds ',Name,':',ClassName,
+      ' Old=',dbgs(Left,Top,Width,Height),
+      ' New=',dbgs(aLeft,aTop,aWidth,aHeight),
       '');
     RaiseGDBException('TControl.DoSetBounds '+Name+':'+ClassName+' Invalid bounds');
   end;
@@ -347,7 +347,7 @@ begin
     BoundsOutOfBounds;
   {$IFDEF CHECK_POSITION}
   if csDesigning in ComponentState then
-    writeln('TControl.DoSetBounds ',Name,':',ClassName,
+    DebugLn('TControl.DoSetBounds ',Name,':',ClassName,
       ' Old=',Left,',',Top,',',Width,',',Height,
       ' New=',aLeft,',',aTop,',',aWidth,',',aHeight,
       '');
@@ -568,7 +568,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
 Begin
-  //Writeln('[LMCaptureChanged for '+Name+':'+Classname+']');
+  //DebugLn('[LMCaptureChanged for '+Name+':'+Classname+']');
   CaptureChanged;
 End;
 
@@ -594,7 +594,7 @@ end;
 Procedure TControl.CMMouseEnter(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
-  //writeln('TControl.CMMouseEnter ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
+  //DebugLn('TControl.CMMouseEnter ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
   if (Message.LParam=0) and (not FMouseEntered) then begin
     FMouseEntered:=true;
     MouseEnter;
@@ -609,7 +609,7 @@ end;
 Procedure TControl.CMMouseLeave(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
-  //writeln('TControl.CMMouseLeave ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
+  //DebugLn('TControl.CMMouseLeave ',Name,':',ClassName,' ',FMouseEntered,' ',Message.LParam);
   if (Message.LParam=0) and FMouseEntered then begin
     FMouseEntered:=false;
     MouseLeave;
@@ -797,7 +797,7 @@ end;
 procedure TControl.DragCanceled;
 begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DragCanceled');
+  DebugLn('TControl.DragCanceled');
   {$ENDIF}
 end;
 
@@ -808,7 +808,7 @@ end;
 procedure TControl.DoStartDrag(var DragObject: TDragObject);
 begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DoStartDrag ',Name,':',ClassName);
+  DebugLn('TControl.DoStartDrag ',Name,':',ClassName);
   {$ENDIF}
   if Assigned(FOnStartDrag) then FOnStartDrag(Self, DragObject);
 end;
@@ -819,7 +819,7 @@ end;
 Procedure TControl.DoEndDrag(Target: TObject; X,Y: Integer);
 Begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DoEndDrag ',Name,':',ClassName,' XY=',X,',',Y);
+  DebugLn('TControl.DoEndDrag ',Name,':',ClassName,' XY=',X,',',Y);
   {$ENDIF}
   if Assigned(FOnEndDrag) then FOnEndDrag(Self,Target,X,Y);
 end;
@@ -886,9 +886,9 @@ begin
   if OldFocus<>nil then
     NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False,False);
   //if NewFocus<>nil then
-  //  writeln('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
+  //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
   //else
-  //  writeln('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=nil');
+  //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=nil');
 
   If (NewFocus = nil) then NewFocus:=FirstFocus;
   If NewFocus = OldFocus then begin
@@ -1000,12 +1000,12 @@ var
   P: TPoint;
 Begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',ord(DragMsg.DragMessage));
+  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.DragMessage=',ord(DragMsg.DragMessage));
   {$ENDIF}
   Src := DragMsg.Dragrec^.Source;
   P:=ScreenToClient(DragMsg.Dragrec^.Pos);
   {$IFDEF VerboseDrag}
-  writeln('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.Dragrec^.Pos=',DragMsg.Dragrec^.Pos.X,',',DragMsg.Dragrec^.Pos.Y,' -> P=',P.X,P.Y);
+  DebugLn('TControl.DoDragMsg ',Name,':',ClassName,' DragMsg.Dragrec^.Pos=',DragMsg.Dragrec^.Pos.X,',',DragMsg.Dragrec^.Pos.Y,' -> P=',P.X,P.Y);
   if P.X<0 then RaiseGDBException('');
   {$ENDIF}
   case DragMsg.DragMessage of
@@ -1040,7 +1040,7 @@ Procedure TControl.DragOver(Source: TObject; X,Y : Integer; State: TDragState;
   var Accept:Boolean);
 begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DragOver ',Name,':',ClassName,' XY=',X,',',Y);
+  DebugLn('TControl.DragOver ',Name,':',ClassName,' XY=',X,',',Y);
   {$ENDIF}
   Accept := False;
   if Assigned(FOnDragOver) then begin
@@ -1055,7 +1055,7 @@ end;
 Procedure TControl.DragDrop(Source: TObject; X,Y : Integer);
 begin
   {$IFDEF VerboseDrag}
-  writeln('TControl.DragDrop ',Name,':',ClassName,' XY=',X,',',Y);
+  DebugLn('TControl.DragDrop ',Name,':',ClassName,' XY=',X,',',Y);
   {$ENDIF}
   If Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;
@@ -1159,7 +1159,7 @@ begin
   Include(FControlFlags,cfLastAlignedBoundsValid);
 
   //if AnsiCompareText(ClassName,'TSCROLLBAR')=0 then
-  //  writeln('TControl.SetAlignedBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
+  //  DebugLn('TControl.SetAlignedBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
 
   SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight, true);
 end;
@@ -1285,7 +1285,7 @@ procedure TControl.WndProc(var TheMessage : TLMessage);
 Var
   Form : TCustomForm;
 begin
-  //writeln('CCC TControl.WndPRoc ',Name,':',ClassName);
+  //DebugLn('CCC TControl.WndPRoc ',Name,':',ClassName);
   if (csDesigning in ComponentState) then
   begin
     Form := GetParentForm(Self);
@@ -1431,13 +1431,13 @@ begin
   DoBeforeMouseMessage;
   if csCaptureMouse in ControlStyle then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('TControl.WMLButtonDown ',Name,':',ClassName);
+    DebugLn('TControl.WMLButtonDown ',Name,':',ClassName);
     {$ENDIF}
     MouseCapture := True;
   end;
   if csClickEvents in ControlStyle then Include(FControlState, csClicked);
   DoMouseDown(Message, mbLeft, []);
-  //Writeln('TCONTROL WMLBUTTONDOWN B ',Name,':',ClassName);
+  //DebugLn('TCONTROL WMLBUTTONDOWN B ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1479,7 +1479,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('TControl.WMLButtonDblClk ',Name,':',ClassName);
+    DebugLn('TControl.WMLButtonDblClk ',Name,':',ClassName);
     {$ENDIF}
     MouseCapture := True;
   end;
@@ -1528,7 +1528,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('TControl.WMLButtonTripleClk ',Name,':',ClassName);
+    DebugLn('TControl.WMLButtonTripleClk ',Name,':',ClassName);
     {$ENDIF}
     MouseCapture := True;
   end;
@@ -1575,7 +1575,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('TControl.WMLButtonQuadClk ',Name,':',ClassName);
+    DebugLn('TControl.WMLButtonQuadClk ',Name,':',ClassName);
     {$ENDIF}
     MouseCapture := True;
   end;
@@ -1619,10 +1619,10 @@ end;
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
   DoBeforeMouseMessage;
-  //Writeln('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
+  //DebugLn('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
   if csCaptureMouse in ControlStyle then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('TControl.WMLButtonUp ',Name,':',ClassName);
+    DebugLn('TControl.WMLButtonUp ',Name,':',ClassName);
     {$ENDIF}
     MouseCapture := False;
   end;
@@ -1630,15 +1630,15 @@ begin
   if csClicked in ControlState then
   begin
     Exclude(FControlState, csClicked);
-    //writeln('TControl.WMLButtonUp B ',ClientRect.Left,',',ClientRect.Top,',',ClientRect.Right,',',ClientRect.Bottom,' ',Message.Pos.X,',',Message.Pos.Y);
+    //DebugLn('TControl.WMLButtonUp B ',ClientRect.Left,',',ClientRect.Top,',',ClientRect.Right,',',ClientRect.Bottom,' ',Message.Pos.X,',',Message.Pos.Y);
     if PtInRect(ClientRect, SmallPointToPoint(Message.Pos))
     then begin
-      //writeln('TControl.WMLButtonUp C');
+      //DebugLn('TControl.WMLButtonUp C');
       Click;
     end;
   end;
   DoMouseUp(Message, mbLeft);
-  //Writeln('TControl.WMLButtonUp END');
+  //DebugLn('TControl.WMLButtonUp END');
 end;
 
 {------------------------------------------------------------------------------
@@ -1748,7 +1748,7 @@ end;
 Procedure TControl.SetBoundsRect(const ARect : TRect);
 Begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
+  DebugLn('[TControl.SetBoundsRect] ',Name,':',ClassName);
   {$ENDIF}
   with ARect do
     SetBounds(Left,Top,Right - Left, Bottom - Top);
@@ -1833,7 +1833,7 @@ begin
   if MouseCapture <> Value
   then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('TControl.SetMouseCapture ',Name,':',ClassName,' NewValue=',Value);
+    DebugLn('TControl.SetMouseCapture ',Name,':',ClassName,' NewValue=',Value);
     {$ENDIF}
     if Value
     then SetCaptureControl(Self)
@@ -1906,7 +1906,7 @@ begin
   end
   else begin
     // Bummer, we have to do it the compatible way.
-    WriteLN('Note: GetTextBuf is overridden for: ', Classname);
+    DebugLn('Note: GetTextBuf is overridden for: ', Classname);
     
     len := GetTextLen;
     if len = 0 
@@ -2060,7 +2060,7 @@ begin
     begin
       {$IFDEF VerboseDsgnPaintMsg}
       if csDesigning in ComponentState then
-        writeln('TControl.Repaint A ',Name,':',ClassName);
+        DebugLn('TControl.Repaint A ',Name,':',ClassName);
       {$ENDIF}
       DC := GetDC(Parent.Handle);
       try
@@ -2088,7 +2088,7 @@ begin
   or (FLastResizeClientWidth<>ClientWidth)
   or (FLastResizeClientHeight<>ClientHeight) then begin
     //if AnsiCompareText('NOTEBOOK',Name)=0 then
-    {writeln('[TControl.Resize] ',Name,':',ClassName,
+    {DebugLn('[TControl.Resize] ',Name,':',ClassName,
     ' Last=',FLastResizeWidth,',',FLastResizeHeight,
     ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
     ' New=',Width,',',Height,
@@ -2104,7 +2104,7 @@ end;
 procedure TControl.Loaded;
 begin
   inherited Loaded;
-  {writeln('TControl.Loaded A ',Name,':',ClassName,
+  {DebugLn('TControl.Loaded A ',Name,':',ClassName,
     ' CW=',cfClientWidthLoaded in FControlFlags,'=',FLoadedClientSize.X,
     ' CH=',cfClientHeightLoaded in FControlFlags,'=',FLoadedClientSize.Y,
     '');}
@@ -2151,7 +2151,7 @@ end;
 procedure TControl.SetAlign(Value: TAlign);
 begin
   if FAlign = Value then exit;
-  //writeln('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
+  //DebugLn('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
   FAlign := Value;
   RequestAlign;
 end;
@@ -2211,7 +2211,7 @@ begin
   and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
   then exit;
   {if csDesigning in ComponentState then
-  writeln('TControl.UpdateBaseBounds ',Name,':',ClassName,
+  DebugLn('TControl.UpdateBaseBounds ',Name,':',ClassName,
     ' OldBounds=',FBaseBounds.Left,',',FBaseBounds.Top,',',FBaseBounds.Right-FBaseBounds.Left,',',FBaseBounds.Bottom-FBaseBounds.Top,
     ' OldClientSize=',FBaseParentClientSize.X,',',FBaseParentClientSize.Y,
     ' NewBounds=',NewBaseBounds.Left,',',NewBaseBounds.Top,',',NewBaseBounds.Right-NewBaseBounds.Left,',',NewBaseBounds.Bottom-NewBaseBounds.Top,
@@ -2253,7 +2253,7 @@ end;
 procedure TControl.SetLeft(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
@@ -2264,7 +2264,7 @@ end;
 procedure TControl.SetTop(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
@@ -2275,7 +2275,7 @@ end;
 procedure TControl.SetWidth(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
   SetBounds(FLeft, FTop, Value, FHeight);
 end;
@@ -2286,7 +2286,7 @@ end;
 procedure TControl.SetHeight(Value: Integer);
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
+  DebugLn('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
   {$ENDIF}
   SetBounds(FLeft, FTop, FWidth, Value);
 end;
@@ -2388,7 +2388,7 @@ end;
 Procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
 Begin
   {$IFDEF VerboseMouseBugfix}
-  writeln('[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos);
+  DebugLn('[TControl.WMMouseMove] ',Name,':',ClassName,' ',Message.XPos,',',Message.YPos);
   {$ENDIF}
   DoBeforeMouseMessage;
   if not (csNoStdEvents in ControlStyle)
@@ -2445,13 +2445,13 @@ end;
 
 procedure TControl.MouseEnter;
 begin
-  //writeln('TControl.MouseEnter ',Name,':',ClassName,' ',Assigned(FOnMouseEnter));
+  //DebugLn('TControl.MouseEnter ',Name,':',ClassName,' ',Assigned(FOnMouseEnter));
   if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
 end;
 
 procedure TControl.MouseLeave;
 begin
-  //writeln('TControl.MouseLeave ',Name,':',ClassName,' ',Assigned(FOnMouseLeave));
+  //DebugLn('TControl.MouseLeave ',Name,':',ClassName,' ',Assigned(FOnMouseLeave));
   if Assigned(FOnMouseLeave) then FOnMouseLeave(Self);
 end;
 
@@ -2699,7 +2699,7 @@ begin
   end
   else begin
     // Bummer, we have to do it the compatible way.
-    WriteLN('Note: SetTextBuf is overridden for: ', Classname);
+    DebugLn('Note: SetTextBuf is overridden for: ', Classname);
     SetTextBuf(PChar(Value));
   end;
 end;
@@ -2723,16 +2723,16 @@ destructor TControl.Destroy;
 var
   HandlerType: TControlHandlerType;
 begin
-  //writeln('[TControl.Destroy] A ',Name,':',ClassName);
+  //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
   SetParent(nil);
   FreeThenNil(FActionLink);
   FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
   FreeThenNil(FFont);
-  //writeln('[TControl.Destroy] B ',Name,':',ClassName);
+  //DebugLn('[TControl.Destroy] B ',Name,':',ClassName);
   inherited Destroy;
-  //writeln('[TControl.Destroy] END ',Name,':',ClassName);
+  //DebugLn('[TControl.Destroy] END ',Name,':',ClassName);
   for HandlerType:=Low(TControlHandlerType) to High(TControlHandlerType) do
     FreeThenNil(FControlHandlers[HandlerType]);
 end;
@@ -2747,7 +2747,7 @@ end;
 constructor TControl.Create(AOwner : TComponent);
 begin
   //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
-  //  writeln('TControl.Create START ',Name,':',ClassName);
+  //  DebugLn('TControl.Create START ',Name,':',ClassName);
   inherited Create(AOwner);
 
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
@@ -2773,7 +2773,7 @@ begin
   FTabOrder := -1;
   TabStop := False;
   FDragCursor := crDrag;
-  //writeln('TControl.Create END ',Name,':',ClassName);
+  //DebugLn('TControl.Create END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -2836,11 +2836,11 @@ end;
 
 procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);
 begin
-  //writeln('TControl.SetInitialBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
+  //DebugLn('TControl.SetInitialBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
   if (csLoading in ComponentState)
   or ((Owner<>nil) and (csLoading in Owner.ComponentState)) then
     exit;
-  //writeln('TControl.SetInitialBounds B ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
+  //DebugLn('TControl.SetInitialBounds B ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
   SetBounds(aLeft,aTop,aWidth,aHeight);
 end;
 
@@ -2888,7 +2888,7 @@ end;
 procedure TControl.WMSize(Var Message : TLMSize);
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
+  DebugLn('[TControl.WMSize] Name=',Name,':',ClassName,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
   {$ENDIF}
   //Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
 
@@ -2907,7 +2907,7 @@ end;
 procedure TControl.WMMove(var Message: TLMMove);
 begin
   {$IFDEF CHECK_POSITION}
-  writeln('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
+  DebugLn('[TControl.WMMove] Name=',Name,':',ClassName,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' OldLeft=',Left,' OldTop=',Top);
   {$ENDIF}
   { Just sync the coordinates }
   SetBoundsKeepBase(Message.XPos, Message.YPos, Width, Height,Parent<>nil);
@@ -2923,6 +2923,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.185  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.184  2004/05/11 10:53:59  mattias
   replaced writeln by debugln
 

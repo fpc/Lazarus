@@ -93,7 +93,7 @@ Procedure Tarray.Clear;
 Var
    i: Integer;
 Begin
-  {$Ifdef dbgMem}WriteLn('TArray.Clear');{$endif}
+  {$Ifdef dbgMem}DebugLn('TArray.Clear');{$endif}
   For i:=0 to FCols.Count-1 do begin
     ClearCol(TList(FCols[i]), i);
     TList(FCols[i]).Free;
@@ -109,7 +109,7 @@ End;
 
 Destructor Tarray.Destroy;
 Begin
-  {$Ifdef dbgMem}WriteLn('TArray.Destroy FCols.Count=',FCols.Count);{$endif}
+  {$Ifdef dbgMem}DebugLn('TArray.Destroy FCols.Count=',dbgs(FCols.Count));{$endif}
   Clear;
   FCols.free;
   Inherited Destroy;
@@ -120,7 +120,7 @@ var
    i,j: Integer;
    P:Pointer;
 begin
-  //WriteLn('TArray.Aumentar_Rows: Col=',Col,' Rows=',Rows);
+  //DebugLn('TArray.Aumentar_Rows: Col=',Col,' Rows=',Rows);
   i:=L.Count;
   j:=Rows-L.Count;
   While j>0 do begin
@@ -143,7 +143,7 @@ Var
    L: TList;
    //P: Pointer;
 Begin
-  {$IfDef DbgMem}WriteLn('TArray.SetLength: Cols=',Cols,' Rows=',Rows);{$Endif}
+  {$IfDef DbgMem}DebugLn('TArray.SetLength: Cols=',dbgs(Cols),' Rows=',dbgs(Rows));{$Endif}
   //
   // Ajustar columnas
   //
@@ -180,7 +180,7 @@ Var
   L: TList;
 begin
   If IsColumn Then begin
-    {$Ifdef dbgMem}WriteLn('TArray.DeleteColRow Col=',Index);{$endif}
+    {$Ifdef dbgMem}DebugLn('TArray.DeleteColRow Col=',dbgs(Index));{$endif}
     L:=TList(FCols[Index]);
     If L<>nil then begin
       ClearCol(L, Index);
@@ -188,7 +188,7 @@ begin
       L.Free;
     End;
   End Else begin
-    {$Ifdef dbgMem}WriteLn('TArray.DeleteColRow Row=',Index);{$endif}
+    {$Ifdef dbgMem}DebugLn('TArray.DeleteColRow Row=',dbgs(Index));{$endif}
     For i:=0 to fCols.Count-1 do begin
       L:=TList(fcols[i]);
       If L<>nil then Begin

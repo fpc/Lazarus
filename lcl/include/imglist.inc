@@ -70,7 +70,7 @@ begin
     Change;
   except
     on E: Exception do begin
-      writeln('TCustomImageList.Add ',E.Message);
+      DebugLn('TCustomImageList.Add ',E.Message);
       Result := -1; // Ignore exceptions, just return -1
     end;
   end;
@@ -166,7 +166,7 @@ begin
     Change;
   except
     on E: Exception do begin
-      writeln('TCustomImageList.AddMasked ',E.Message);
+      DebugLn('TCustomImageList.AddMasked ',E.Message);
       Result := -1; // Ignore exceptions, just return -1
     end;
   end;
@@ -466,7 +466,7 @@ end;
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
-  //writeln('TCustomImageList.GetBitmap Index=',Index,' Image=',HexStr(Cardinal(Image),8),' Bitmap=',HexStr(Cardinal(FImageList.Items[Index]),8));
+  //DebugLn('TCustomImageList.GetBitmap Index=',Index,' Image=',HexStr(Cardinal(Image),8),' Bitmap=',HexStr(Cardinal(FImageList.Items[Index]),8));
   Image.Assign(TBitMap(FImageList.Items[Index]));
 end;
 
@@ -812,7 +812,7 @@ begin
   for i:=0 to Count-1 do
   begin
     CurImage:=TBitmap(FImageList[i]);
-    //writeln('TCustomImageList.WriteData Position=',AStream.Position,' ',CurImage.Width,',',CurImage.Height);
+    //DebugLn('TCustomImageList.WriteData Position=',AStream.Position,' ',CurImage.Width,',',CurImage.Height);
     CurImage.WriteNativeStream(AStream,true,bnXPixmap);
   end;
   {$ENDIF}
@@ -835,10 +835,10 @@ var
     i, NewCount, Size: Integer;
     bmp: TBitmap;
   begin
-    //writeln('TCustomImageList.ReadData DoReadLaz1');
+    //DebugLn('TCustomImageList.ReadData DoReadLaz1');
     // provided for compatability for earlier lazarus streams
     NewCount := AStream.ReadWord;
-    //writeln('TCustomImageList.ReadData DoReadLaz1 NewCount=',NewCount);
+    //DebugLn('TCustomImageList.ReadData DoReadLaz1 NewCount=',NewCount);
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
@@ -854,17 +854,17 @@ var
     i, NewCount, Size: cardinal;
     bmp: TBitmap;
   begin
-    //writeln('TCustomImageList.ReadData DoReadLaz2');
+    //DebugLn('TCustomImageList.ReadData DoReadLaz2');
     NewCount := AStream.ReadDWord;
     Width := AStream.ReadDWord;
     Height := AStream.ReadDWord;
-    //writeln('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount,' Width=',Width,' Height=',Height);
+    //DebugLn('TCustomImageList.ReadData DoReadLaz2 NewCount=',NewCount,' Width=',Width,' Height=',Height);
     for i := 0 to NewCount - 1 do
     begin
       bmp := TBitMap.Create;
-      //writeln('TCustomImageList.ReadData DoReadLaz2 i=',i,' ',AStream.Position);
+      //DebugLn('TCustomImageList.ReadData DoReadLaz2 i=',i,' ',AStream.Position);
       AStream.Read(Size, SizeOf(Size));
-      //writeln('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
+      //DebugLn('TCustomImageList.ReadData DoReadLaz2 Size=',Size,' ',AStream.Position);
       bmp.ReadStream(AStream, True, Size);
       AddDirect(bmp, nil);
     end;
@@ -899,14 +899,14 @@ var
             false)
           then
             raise EInvalidGraphicOperation.Create('TCustomImageList.CreateImagesFromRawImage Create bitmaps');
-          //writeln('CreateImagesFromRawImage A ',HexStr(Cardinal(SubRawImage.Data),8),' ',SubRawImage.DataSize);
+          //DebugLn('CreateImagesFromRawImage A ',HexStr(Cardinal(SubRawImage.Data),8),' ',SubRawImage.DataSize);
           FreeRawImageData(@SubRawImage);
           Img := TBitmap.Create;
           Img.Handle:=ImgHandle;
           Img.MaskHandle:=MaskHandle;
 
           AddDirect(Img, nil);
-          //writeln('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
+          //DebugLn('CreateImagesFromRawImage B ',Img.Width,',',Img.Height,' ',Count);
           Img := nil;
           Dec(NewCount);
         end;
@@ -962,7 +962,7 @@ var
       Filename:='TCustomImageList'+IntToStr(i)+'.stream';
     until not FileExists(Filename);
     CurStreamPos := AStream.Position;
-    writeln('TCustomImageList.ReadData Saving stream to ',Filename);
+    DebugLn('TCustomImageList.ReadData Saving stream to ',Filename);
     fs:=TFileStream.Create(Filename,fmCreate);
     AStream.Position:=StreamPos;
     fs.CopyFrom(AStream,AStream.Size-AStream.Position);
@@ -1005,13 +1005,13 @@ begin
   then begin
     AStream.ReadWord; //Skip ?
     NewCount := AStream.ReadWord;
-    //writeln('NewCount=',NewCount);
+    //DebugLn('NewCount=',NewCount);
     AStream.ReadWord; //Skip Capacity
     AStream.ReadWord; //Skip Grow
     FWidth := AStream.ReadWord;
-    //writeln('NewWidth=',FWidth);
+    //DebugLn('NewWidth=',FWidth);
     FHeight := AStream.ReadWord;
-    //writeln('NewHeight=',FHeight);
+    //DebugLn('NewHeight=',FHeight);
     FBKColor := TColor(AStream.ReadDWord);
     {$IFNDEF DisableFPImage}
     HasMask := (AStream.ReadWord and 1) = 1;
@@ -1261,6 +1261,9 @@ end;
 {
 
   $Log$
+  Revision 1.39  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.38  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

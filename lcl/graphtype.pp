@@ -248,7 +248,7 @@ begin
   or (RawImage^.Description.Width=0) or (RawImage^.Description.Height=0)
   or (RawImage^.Description.AlphaPrec=0) then begin
     {$IFDEF VerboseRawImage}
-    writeln('RawImageMaskIsEmpty Quicktest: empty');
+    DebugLn'RawImageMaskIsEmpty Quicktest: empty');
     {$ENDIF}
     exit;
   end;
@@ -276,7 +276,7 @@ begin
             if p^<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              writeln('RawImageMaskIsEmpty FullByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2));
+              DebugLn'RawImageMaskIsEmpty FullByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2));
               {$ENDIF}
               exit;
             end;
@@ -287,7 +287,7 @@ begin
             if (p^ or UnusedByteMask)<>$ff then begin
               // not all bits set -> transparent pixels found -> Mask needed
               {$IFDEF VerboseRawImage}
-              writeln('RawImageMaskIsEmpty EdgeByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',UnusedBitsAtEnd);
+              DebugLn'RawImageMaskIsEmpty EdgeByte y=',y,' x=',x,' Byte=',HexStr(Cardinal(p^),2),' UnusedByteMask=',HexStr(Cardinal(UnusedByteMask),2),' UnusedBitsAtEnd=',UnusedBitsAtEnd);
               {$ENDIF}
               exit;
             end;
@@ -297,13 +297,13 @@ begin
       end else begin
         // ToDo: AlphaSeparate and rileTight
         {$IFDEF VerboseRawImage}
-        writeln('RawImageMaskIsEmpty TODO');
+        DebugLn'RawImageMaskIsEmpty TODO');
         {$ENDIF}
         exit;
       end;
     end else begin
       {$IFDEF VerboseRawImage}
-      writeln('RawImageMaskIsEmpty TODO');
+      DebugLn'RawImageMaskIsEmpty TODO');
       {$ENDIF}
       exit;
     end;
@@ -311,7 +311,7 @@ begin
     Result:=true;
   end;
   {$IFDEF VerboseRawImage}
-  writeln('RawImageMaskIsEmpty Empty=',Result);
+  DebugLn'RawImageMaskIsEmpty Empty=',Result);
   {$ENDIF}
 end;
 
@@ -444,7 +444,7 @@ procedure ExtractRawImageRect(SrcRawImage: PRawImage; const SrcRect: TRect;
 var
   SrcMaskDesc, DestMaskDesc: TRawImageDescription;
 begin
-  //writeln('ExtractRawImageRect SrcRawImage=',RawImageDescriptionAsString(@SrcRawImage^.Description),
+  //DebugLn'ExtractRawImageRect SrcRawImage=',RawImageDescriptionAsString(@SrcRawImage^.Description),
   //  ' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
 
   // copy description
@@ -454,12 +454,12 @@ begin
   ExtractRawImageDataRect(@SrcRawImage^.Description,SrcRect,SrcRawImage^.Data,
     @DestRawImage^.Description,DestRawImage^.Data,DestRawImage^.DataSize);
   // extract rectangle from separate Alpha
-  //writeln('ExtractRawImageDataRect data=',HexStr(Cardinal(DestRawImage^.Data),8),' Size=',DestRawImage^.DataSize);
+  //DebugLn'ExtractRawImageDataRect data=',HexStr(Cardinal(DestRawImage^.Data),8),' Size=',DestRawImage^.DataSize);
 
   if SrcRawImage^.Description.AlphaSeparate
   and (SrcRawImage^.Mask<>nil) then begin
     CreateRawImageDescFromMask(@SrcRawImage^.Description,@SrcMaskDesc);
-    //writeln('ExtractRawImageRect Mask SrcRawImage=',RawImageDescriptionAsString(@SrcMaskDesc));
+    //DebugLn'ExtractRawImageRect Mask SrcRawImage=',RawImageDescriptionAsString(@SrcMaskDesc));
     ExtractRawImageDataRect(@SrcMaskDesc,SrcRect,SrcRawImage^.Mask,
       @DestMaskDesc,DestRawImage^.Mask,DestRawImage^.MaskSize);
   end;
@@ -506,10 +506,10 @@ begin
   // allocate Data
   DestRawImageDesc^.Width:=SrcWidth;
   DestRawImageDesc^.Height:=SrcHeight;
-  //writeln('ExtractRawImageDataRect Src=',SrcWidth,',',SrcHeight,' DestData=',HexStr(Cardinal(DestData),8));
+  //DebugLn'ExtractRawImageDataRect Src=',SrcWidth,',',SrcHeight,' DestData=',HexStr(Cardinal(DestData),8));
   CreateRawImageData(SrcWidth,SrcHeight,BitsPerPixel,LineEnd,
                      DestData,DestDataSize);
-  //writeln('ExtractRawImageDataRect data=',HexStr(Cardinal(DestData),8),' Size=',DestDataSize);
+  //DebugLn'ExtractRawImageDataRect data=',HexStr(Cardinal(DestData),8),' Size=',DestDataSize);
   if (SrcWidth=TotalWidth) and (TotalHeight=SrcHeight) then begin
     // copy whole source
     System.Move(SrcData^,DestData^,DestDataSize);
@@ -534,7 +534,7 @@ begin
                           SrcLineEndPosition);
     GetRawImageXYPosition(DestRawImageDesc,DestLineStarts,0,y,
                           DestLineStartPosition);
-    //writeln('ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
+    //DebugLn'ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
     //' DestByte=',DestLineStartPosition.Byte,' DestBit=',DestLineStartPosition.Bit);
     if (SrcLineStartPosition.Bit=0)
     and (DestLineStartPosition.Bit=0) then begin
@@ -542,7 +542,7 @@ begin
       ByteCount:=SrcLineEndPosition.Byte-SrcLineStartPosition.Byte;
       if SrcLineEndPosition.Bit>0 then
         inc(ByteCount);
-      //writeln('ExtractRawImageDataRect B ByteCount=',ByteCount);
+      //DebugLn'ExtractRawImageDataRect B ByteCount=',ByteCount);
       System.Move(
         Pointer(Cardinal(SrcData)+SrcLineStartPosition.Byte)^,
         Pointer(Cardinal(DestData)+DestLineStartPosition.Byte)^,
@@ -561,7 +561,7 @@ begin
         inc(DestPos);
       end;
     end else begin
-      writeln('ToDo: ExtractRawImageRect DestLineStartPosition.Bit>0');
+      DebugLn('ToDo: ExtractRawImageRect DestLineStartPosition.Bit>0');
       break;
     end;
   end;
@@ -676,7 +676,7 @@ begin
   P:=@(TheData[Position.Byte]);
   PrecMask:=(Cardinal(1) shl Prec)-1;
   Bits:=Bits shr (16-Prec);
-  {writeln('WriteDataBits WRITE Position=',Position.Byte,'/',Position.Bit,
+  {DebugLn'WriteDataBits WRITE Position=',Position.Byte,'/',Position.Bit,
     ' Shift=',Shift,' Prec=',Prec,' BitsPerPixel=',BitsPerPixel,
     ' PrecMask=',HexStr(Cardinal(PrecMask),4),
     ' Bits=',HexStr(Cardinal(Bits),4),
@@ -693,7 +693,7 @@ begin
         OneByte:=OneByte and PrecMask; // clear old
         OneByte:=OneByte or (Bits shl ShiftLeft); // set new
         P^:=OneByte;
-        //writeln('WriteDataBits 1,2,4 Result=',HexStr(Cardinal(OneByte),2));
+        //DebugLn'WriteDataBits 1,2,4 Result=',HexStr(Cardinal(OneByte),2));
       end;
   8:  begin
         OneByte:=P^;
@@ -701,7 +701,7 @@ begin
         OneByte:=OneByte and PrecMask; // clear old
         OneByte:=OneByte or (Bits shl Shift); // set new
         P^:=OneByte;
-        //writeln('WriteDataBits 8 Result=',HexStr(Cardinal(OneByte),2));
+        //DebugLn'WriteDataBits 8 Result=',HexStr(Cardinal(OneByte),2));
       end;
   16: begin
         TwoBytes:=PWord(P)^;
@@ -709,7 +709,7 @@ begin
         TwoBytes:=TwoBytes and PrecMask; // clear old
         TwoBytes:=TwoBytes or (Bits shl Shift); // set new
         PWord(P)^:=TwoBytes;
-        //writeln('WriteDataBits 16 Result=',HexStr(Cardinal(TwoBytes),4));
+        //DebugLn'WriteDataBits 16 Result=',HexStr(Cardinal(TwoBytes),4));
       end;
   32: begin
         FourBytes:=PDWord(P)^;
@@ -717,7 +717,7 @@ begin
         FourBytes:=FourBytes and PrecMask; // clear old
         FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
         PDWord(P)^:=FourBytes;
-        //writeln('WriteDataBits 32 Result=',HexStr(Cardinal(FourBytes),8));
+        //DebugLn'WriteDataBits 32 Result=',HexStr(Cardinal(FourBytes),8));
       end;
   end;
 end;
@@ -767,6 +767,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/05/11 11:42:26  mattias
+  replaced writeln by debugln
+
   Revision 1.30  2004/04/02 19:39:46  mattias
   fixed checking empty mask raw image
 

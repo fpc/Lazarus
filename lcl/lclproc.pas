@@ -89,6 +89,13 @@ function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 function ComparePointers(p1, p2: Pointer): integer;
 
 
+function RoundToInt(const e: Extended): integer;
+function RoundToCardinal(const e: Extended): cardinal;
+function TruncToInt(const e: Extended): integer;
+function TruncToCardinal(const e: Extended): cardinal;
+function StrToDouble(const s: string): double;
+
+
 // debugging
 procedure RaiseGDBException(const Msg: string);
 
@@ -107,9 +114,15 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
 procedure DbgOut(const s: string);
 procedure DbgOut(const s1,s2: string);
 
+function DbgS(const c: cardinal): string;
 function DbgS(const i: integer): string;
 function DbgS(const r: TRect): string;
 function DbgS(const p: TPoint): string;
+function DbgS(const p: pointer): string;
+function DbgS(const e: extended): string;
+function DbgS(const b: boolean): string;
+
+function DbgS(const i1,i2,i3,i4: integer): string;
 
 
 implementation
@@ -563,9 +576,49 @@ begin
     Result:=0;
 end;
 
+function RoundToInt(const e: Extended): integer;
+begin
+  Result:=integer(Round(e));
+  {$IFDEF VerboseRound}
+  DebugLn('RoundToInt ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function RoundToCardinal(const e: Extended): cardinal;
+begin
+  Result:=cardinal(Round(e));
+  {$IFDEF VerboseRound}
+  DebugLn('RoundToCardinal ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function TruncToInt(const e: Extended): integer;
+begin
+  Result:=integer(Trunc(e));
+  {$IFDEF VerboseRound}
+  DebugLn('TruncToInt ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function TruncToCardinal(const e: Extended): cardinal;
+begin
+  Result:=cardinal(Trunc(e));
+  {$IFDEF VerboseRound}
+  DebugLn('TruncToCardinal ',e,' ',Result);
+  {$ENDIF}
+end;
+
+function StrToDouble(const s: string): double;
+begin
+  {$IFDEF VerboseRound}
+  DebugLn('StrToDouble "',s,'"');
+  {$ENDIF}
+  Result:=Double(StrToFloat(s));
+end;
+
 procedure DebugLn;
 begin
-  writeln;
+  DebugLn('');
 end;
 
 procedure DebugLn(const s: string);
@@ -575,47 +628,47 @@ end;
 
 procedure DebugLn(const s1, s2: string);
 begin
-  writeln(s1,s2);
+  DebugLn(s1+s2);
 end;
 
 procedure DebugLn(const s1, s2, s3: string);
 begin
-  writeln(s1,s2,s3);
+  writeln(s1+s2+s3);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4: string);
 begin
-  writeln(s1,s2,s3,s4);
+  DebugLn(s1+s2+s3+s4);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5: string);
 begin
-  writeln(s1,s2,s3,s4,s5);
+  DebugLn(s1+s2+s3+s4+s5);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6: string);
 begin
-  writeln(s1,s2,s3,s4,s5,s6);
+  DebugLn(s1+s2+s3+s4+s5+s6);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7: string);
 begin
-  writeln(s1,s2,s3,s4,s5,s6,s7);
+  DebugLn(s1+s2+s3+s4+s5+s6+s7);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8: string);
 begin
-  writeln(s1,s2,s3,s4,s5,s6,s7,s8);
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9: string);
 begin
-  writeln(s1,s2,s3,s4,s5,s6,s7,s8,s9);
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10: string);
 begin
-  writeln(s1,s2,s3,s4,s5,s6,s7,s8,s9,s10);
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10);
 end;
 
 procedure DBGOut(const s: string);
@@ -625,7 +678,12 @@ end;
 
 procedure DBGOut(const s1, s2: string);
 begin
-  write(s1,s2);
+  DbgOut(s1+s2);
+end;
+
+function DbgS(const c: cardinal): string;
+begin
+  Result:=IntToStr(c);
 end;
 
 function DbgS(const i: integer): string;
@@ -642,6 +700,26 @@ end;
 function DbgS(const p: TPoint): string;
 begin
   Result:=' x='+IntToStr(p.x)+',y='+IntToStr(p.y);
+end;
+
+function DbgS(const p: pointer): string;
+begin
+  Result:=HexStr(Cardinal(p),8);
+end;
+
+function DbgS(const e: extended): string;
+begin
+  Result:=FloatToStr(e);
+end;
+
+function DbgS(const b: boolean): string;
+begin
+  if b then Result:='True' else Result:='False';
+end;
+
+function DbgS(const i1, i2, i3, i4: integer): string;
+begin
+  Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
 end;
 
 initialization

@@ -27,7 +27,7 @@ unit EditBtn;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LResources, LCLStrConsts, LCLType, LMessages,
+  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, LCLType, LMessages,
   Graphics, Controls, Forms, Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs;
 
 type

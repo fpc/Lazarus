@@ -37,7 +37,7 @@ unit DBGrids;
 interface
 
 uses
-  Classes, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
+  Classes, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
   Controls;
 
 Type
@@ -230,9 +230,9 @@ end;
 procedure TCustomDbGrid.OnRecordChanged(Field: TField);
 begin
   {$IfDef dbgdbgrid}
-  Write('(',name,') ','TCustomDBGrid.OnRecordChanged(Field=');
-  If Field=nil Then WriteLn('nil)')
-  Else              WriteLn(Field.FieldName,')');
+  DBGOut('(',name,') ','TCustomDBGrid.OnRecordChanged(Field=');
+  If Field=nil Then DebugLn('nil)')
+  Else              DebugLn(Field.FieldName,')');
   {$Endif}
 end;
 
@@ -244,9 +244,9 @@ end;
 procedure TCustomDbGrid.OnDataSetChanged(aDataSet: TDataSet);
 begin
   {$Ifdef dbgdbgrid}
-  Write('(',name,') ','TCustomDBDrid.OnDataSetChanged(aDataSet=');
-  If aDataSet=nil Then WriteLn('nil)')
-  Else WriteLn(aDataSet.Name,')');
+  DBGOut('(',name,') ','TCustomDBDrid.OnDataSetChanged(aDataSet=');
+  If aDataSet=nil Then DebugLn('nil)')
+  Else DebugLn(aDataSet.Name,')');
   {$endif}
   UpdateActive;
 end;
@@ -254,7 +254,7 @@ end;
 procedure TCustomDbGrid.OnDataSetOpen(aDataSet: TDataSet);
 begin
   {$Ifdef dbgdbgrid}
-  WriteLn('(',name,') ','TCustomDBGrid.OnDataSetOpen');
+  DebugLn('(',name,') ','TCustomDBGrid.OnDataSetOpen');
   {$endif}
   LinkActive(True);
   UpdateActive;
@@ -263,7 +263,7 @@ end;
 procedure TCustomDbGrid.OnDataSetClose(aDataSet: TDataSet);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('(',name,') ','TCustomDBGrid.OnDataSetClose');
+  DebugLn('(',name,') ','TCustomDBGrid.OnDataSetClose');
   {$endif}
   LinkActive(False);
 end;
@@ -271,7 +271,7 @@ end;
 procedure TCustomDbGrid.OnInvalidDataSet(aDataSet: TDataSet);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('(',name,') ','TCustomDBGrid.OnInvalidDataSet');
+  DebugLn('(',name,') ','TCustomDBGrid.OnInvalidDataSet');
   {$endif}
   LinkActive(False);
 end;
@@ -279,7 +279,7 @@ end;
 procedure TCustomDbGrid.OnInvalidDataSource(aDataSet: TDataset);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('(',name,') ','TCustomDBGrid.OnInvalidDataSource');
+  DebugLn('(',name,') ','TCustomDBGrid.OnInvalidDataSource');
   {$endif}
   LinkActive(False);
 end;
@@ -287,7 +287,7 @@ end;
 procedure TCustomDbGrid.OnNewDataSet(aDataSet: TDataset);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('(',name,') ','TCustomDBGrid.OnNewDataSet');
+  DebugLn('(',name,') ','TCustomDBGrid.OnNewDataSet');
   {$endif}
   LinkActive(True);
   UpdateActive;
@@ -296,7 +296,7 @@ end;
 procedure TCustomDbGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',Distance,'), Invalidating');
+  DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',Distance,'), Invalidating');
   {$endif}
   UpdateActive;
   If Distance<>0 Then Invalidate;
@@ -317,7 +317,7 @@ begin
     //Else
     //  FDataLink.BufferCount:=0;
     {$ifdef dbgdbgrid}
-    WriteLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=',Fdatalink.BufferCount);
+    DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=',Fdatalink.BufferCount);
     {$endif}
   End;
 end;
@@ -334,14 +334,14 @@ Var
 begin
   Inherited;
   if Not GCache.ValidGrid Then Exit;
-  WriteLn('VSCROLL: Code=',Message.ScrollCode,' Position=', Message.Pos);
+  DebugLn('VSCROLL: Code=',dbgs(Message.ScrollCode),' Position=', dbgs(Message.Pos));
   
   exit;
   C:=Message.Pos+GCache.Fixedheight;
   Num:=(FNumRecords + FixedRows) * DefaultRowHeight;
   TL:= Num div C;
   GCache.TLRowOff:= C - TL*DefaultRowHeight;
-  WriteLn('---- Offset=',C, ' ScrollTo=> TL=',TL, ' TLRowOFf=', GCache.TLRowOff);
+  DebugLn('---- Offset=',dbgs(C), ' ScrollTo=> TL=',dbgs(TL), ' TLRowOFf=', dbgs(GCache.TLRowOff));
 end;
 
 
@@ -373,8 +373,8 @@ begin
 
     FNumRecords:= FDataLink.DataSet.RecordCount;
     {$ifdef dbgdbgrid}
-    WriteLn('(',name,') ','TCustomGrid.LayoutChanged INIT');
-    WriteLn('DataLink.DataSet.recordcount: ',FNumRecords);
+    DebugLn('(',name,') ','TCustomGrid.LayoutChanged INIT');
+    DebugLn('DataLink.DataSet.recordcount: ',FNumRecords);
     {$endif}
 
     FLayoutChanging:=True; // Avoid infinit loop
@@ -387,7 +387,7 @@ begin
     ColWidths[0]:=12;
     FDefs:=FDataLink.DataSet.FieldDefs;
     For i:=0 to FDefs.Count-1 do Begin
-      //WriteLn('Field ',FDefs[i].Name, ' Size= ',FDefs[i].Size);
+      //DebugLn('Field ',FDefs[i].Name, ' Size= ',FDefs[i].Size);
       ColWidths[i+1]:= DefaultFieldColWidth(FDefs[i].DataType);
     End;
     FVisualLock:=False;
@@ -406,12 +406,12 @@ begin
         W:=F.DisplayWidth;
         If W<0 Then W:=0;
         If W=0 Then W:=F.GetDefaultwidth;
-        WriteLn('Field ',F.FieldName,' DisplayWidth=', W);
+        DebugLn('Field ',F.FieldName,' DisplayWidth=', W);
       End;
     End;
     }
     {$ifdef dbgdbgrid}
-    WriteLn('(',name,') ','TCustomGrid.LayoutChanged - DONE');
+    DebugLn('(',name,') ','TCustomGrid.LayoutChanged - DONE');
     {$endif}
     FLayoutChanging:=False;
   End;
@@ -425,7 +425,7 @@ begin
   With FDataLink do begin
     Result:=Active;
     {$ifdef dbgdbgrid}
-    WriteLn('(',name,') ',
+    DebugLn('(',name,') ',
       'BeyondRowCount Hitted here: Count=',Count,
       ' FDataLink.Active=', Result,
       ' FDataLink.EOF=',EOF);
@@ -438,7 +438,7 @@ begin
       If not EOF Then begin
         I:=MoveBy(Count);
         {$Ifdef dbgdbgrid}
-        WriteLn('Scrolled by ',I);
+        DebugLn('Scrolled by ',I);
         {$Endif}
       End;
   End;
@@ -451,7 +451,7 @@ begin
   With FDataLink do Begin
     Result:=Active;
     {$ifdef dbgdbgrid}
-    WriteLn('(',name,') ',
+    DebugLn('(',name,') ',
       'BelowFirstRow Hitted here: Count=',Count,
       ' FDataLink.Active=', Result,
       ' FDataLink.BOF=',BOF);
@@ -462,7 +462,7 @@ begin
       Else begin
         I:=MoveBy(-Count);
         {$Ifdef dbgdbgrid}
-        WriteLn('Scrolled By ', I);
+        DebugLn('Scrolled By ', I);
         {$Endif}
       End;
     End;
@@ -657,7 +657,7 @@ begin
   With FDataLink do begin
     If Not GCache.ValidGrid then Exit;
     If DataSource=nil Then Exit;
-    WriteLn('(',Name,') ActiveRecord=', ActiveRecord, ' FixedRows=',FixedRows, ' Row=', Row);
+    DebugLn('(',Name,') ActiveRecord=', dbgs(ActiveRecord), ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     Row:= FixedRows + ActiveRecord;
     {
     LastRow:=Row;
@@ -735,7 +735,7 @@ end;
 procedure TComponentDataLink.RecordChanged(Field: TField);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('TComponentDataLink.RecordChanged');
+  DebugLn('TComponentDataLink.RecordChanged');
   {$endif}
   If Assigned(OnRecordChanged) Then OnRecordChanged(Field);
 end;
@@ -743,7 +743,7 @@ end;
 procedure TComponentDataLink.DataSetChanged;
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('TComponentDataLink.DataSetChanged');
+  DebugLn('TComponentDataLink.DataSetChanged');
   {$Endif}
   If Assigned(OnDataSetChanged) Then OnDataSetChanged(DataSet);
 end;
@@ -751,7 +751,7 @@ end;
 procedure TComponentDataLink.ActiveChanged;
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('TComponentDataLink.ActiveChanged');
+  DebugLn('TComponentDataLink.ActiveChanged');
   {$endif}
   if Active then begin
     fDataSet := DataSet;
@@ -782,14 +782,14 @@ procedure TComponentDataLink.LayoutChanged;
 begin
   Inherited LayoutChanged;
   {$ifdef dbgdbgrid}
-  WriteLn('TComponentDataLink.LayoutChanged');
+  DebugLn('TComponentDataLink.LayoutChanged');
   {$endif}
 end;
 
 procedure TComponentDataLink.DataSetScrolled(Distance: Integer);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('TComponentDataLink.DataSetScrolled(',Distance,')');
+  DebugLn('TComponentDataLink.DataSetScrolled(',Distance,')');
   {$endif}
   if Assigned(OnDataSetScrolled) Then OnDataSetScrolled(DataSet, Distance);
 end;
@@ -797,7 +797,7 @@ end;
 procedure TComponentDataLink.FocusControl(Field: TFieldRef);
 begin
   {$ifdef dbgdbgrid}
-  WriteLn('TComponentDataLink.FocusControl');
+  DebugLn('TComponentDataLink.FocusControl');
   {$endif}
 end;
 
@@ -805,7 +805,7 @@ procedure TComponentDataLink.CheckBrowseMode;
 begin
   (*
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName,'.CheckBrowseMode');
+  DebugLn(ClassName,'.CheckBrowseMode');
   {$endif}
   *)
   inherited CheckBrowseMode;
@@ -814,7 +814,7 @@ end;
 procedure TComponentDataLink.EditingChanged;
 begin
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName,'.EditingChanged');
+  DebugLn(ClassName,'.EditingChanged');
   {$endif}
   inherited EditingChanged;
 end;
@@ -823,7 +823,7 @@ procedure TComponentDataLink.UpdateData;
 begin
   (*
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName,'.UpdateData');
+  DebugLn(ClassName,'.UpdateData');
   {$endif}
   *)
   inherited UpdateData;
@@ -833,13 +833,13 @@ function TComponentDataLink.MoveBy(Distance: Integer): Integer;
 begin
   (*
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName,'.MoveBy  INIT: Distance=',Distance);
+  DebugLn(ClassName,'.MoveBy  INIT: Distance=',Distance);
   {$endif}
   *)
   Result:=inherited MoveBy(Distance);
   (*
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName,'.MoveBy  END: Distance=',Distance);
+  DebugLn(ClassName,'.MoveBy  END: Distance=',Distance);
   {$endif}
   *)
 end;
@@ -847,7 +847,7 @@ end;
 procedure TComponentDataLink.Modified;
 begin
   {$ifdef dbgdbgrid}
-  WriteLn(ClassName,'.Modified');
+  DebugLn(ClassName,'.Modified');
   {$Endif}
   FModified:=True;
 end;

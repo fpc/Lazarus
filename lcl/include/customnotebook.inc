@@ -36,7 +36,7 @@ end;
  ------------------------------------------------------------------------------}
 function TNBPages.Get(Index: Integer): String;
 begin
-//writeln('TNBPages.Get Index=',Index);
+//DebugLn('TNBPages.Get Index=',Index);
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.Get Index out of bounds');
   Result := TCustomPage(fPageList[Index]).Caption;
@@ -79,11 +79,11 @@ begin
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
     {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TNBPages.Put] A ',fNoteBook.Name,' ',Index,' ',S);
+    DebugLn('[TNBPages.Put] A ',fNoteBook.Name,' ',Index,' ',S);
     {$ENDIF}
     CNSendMessage(LM_SetLabel, fNotebook, @Msg);
     {$IFDEF NOTEBOOK_DEBUG}
-    writeln('[TNBPages.Put] B ',fNoteBook.Name);
+    DebugLn('[TNBPages.Put] B ',fNoteBook.Name);
     {$ENDIF}
   end;
 end;
@@ -96,7 +96,7 @@ var
 begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.RemovePage A ',fNoteBook.Name,' Index=',Index,
+  DebugLn('TNBPages.RemovePage A ',fNoteBook.Name,' Index=',Index,
     ' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   {$ENDIF}
   if (Index >= 0) and
@@ -139,7 +139,7 @@ begin
     end;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  DebugLn('TNBPages.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   {$ENDIF}
 end;
 
@@ -161,8 +161,8 @@ var
 begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
-  //writeln('TNBPages.Delete A Index=',Index);
-  writeln('TNBPages.Delete B ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  //DebugLn('TNBPages.Delete A Index=',Index);
+  DebugLn('TNBPages.Delete B ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   {$ENDIF}
   if (Index >= 0) and
      (Index < fPageList.Count) then
@@ -174,7 +174,7 @@ begin
     APage.Free;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.Delete END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  DebugLn('TNBPages.Delete END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
   {$ENDIF}
 end;
 
@@ -187,7 +187,7 @@ var
   NewOwner: TComponent;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.Insert A ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  DebugLn('TNBPages.Insert A ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
   {$ENDIF}
   NewOwner:=fNotebook.Owner;
   if NewOwner=nil then
@@ -200,11 +200,11 @@ begin
   end;
 
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.Insert B ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  DebugLn('TNBPages.Insert B ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
   {$ENDIF}
   InsertPage(Index,tmpPage);
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.Insert END ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  DebugLn('TNBPages.Insert END ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
   {$ENDIF}
 end;
 
@@ -217,7 +217,7 @@ var
   NewZPosition: integer;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.InsertPage A ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  DebugLn('TNBPages.InsertPage A ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
   {$ENDIF}
   if Index<fPageList.Count then
     NewZPosition:=fNoteBook.GetControlIndex(TCustomPage(fPageList[Index]))
@@ -246,7 +246,7 @@ begin
       fNoteBook.PageIndex := Index;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TNBPages.InsertPage END ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  DebugLn('TNBPages.InsertPage END ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
   {$ENDIF}
 end;
 
@@ -340,7 +340,7 @@ end;
 procedure TCustomNotebook.CreateWnd;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TCustomNotebook.CreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
+  DebugLn('TCustomNotebook.CreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
   {$ENDIF}
   inherited CreateWnd;
   DoCreateWnd;
@@ -357,12 +357,12 @@ var
   Msg: TLMNotebookEvent;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
+  DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' HandleAllocated=',HandleAllocated);
   {$ENDIF}
   fAddingPages:=true;
   for i := 0 to FPageList.Count -1 do begin
     {$IFDEF NOTEBOOK_DEBUG}
-    writeln('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' ',Page[i].Caption,' ',not (pfAdded in Page[i].Flags));
+    DebugLn('TCustomNotebook.DoCreateWnd ',Name,':',ClassName,' ',Page[i].Caption,' ',not (pfAdded in Page[i].Flags));
     {$ENDIF}
     if not (pfAdded in Page[i].Flags) then begin
       Msg.Parent := Self;
@@ -704,7 +704,7 @@ Begin
     else
       begin
         {$IFDEF NOTEBOOK_DEBUG}
-        writeln('[TCustomNotebook.CNNotify] unhandled NMHdr code:', NMHdr^.code);
+        DebugLn('[TCustomNotebook.CNNotify] unhandled NMHdr code:', NMHdr^.code);
         {$ENDIF}
       end;
     end;
@@ -722,11 +722,11 @@ begin
   Msg.fCompStyle := fCompStyle;
   Msg.Page := fPageIndex;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
+  DebugLn('[TCustomNotebook.DoSendPageIndex] A ',Name,' PageIndex=',fPageIndex);
   {$ENDIF}
   CNSendMessage(LM_SETITEMINDEX, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.DoSendPageIndex] B');
+  DebugLn('[TCustomNotebook.DoSendPageIndex] B');
   {$ENDIF}
 end;
 
@@ -742,11 +742,11 @@ begin
   Msg.fCompStyle := fCompStyle;
   Msg.ShowTabs := fShowTabs;
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.DoSendShowTabs] A ',Name);
+  DebugLn('[TCustomNotebook.DoSendShowTabs] A ',Name);
   {$ENDIF}
   CNSendMessage(LM_SHOWTABS, Self, @Msg);
   {$IFDEF NOTEBOOK_DEBUG}
-  writeln('[TCustomNotebook.DoSendShowTabs] B ',Name);
+  DebugLn('[TCustomNotebook.DoSendShowTabs] B ',Name);
   {$ENDIF}
 end;
 
@@ -792,6 +792,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.47  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.46  2004/04/11 11:30:39  vincents
   Reduced output, fixes bug 220
 

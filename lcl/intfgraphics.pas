@@ -959,7 +959,7 @@ begin
   end;
 
   else
-    writeln('WARNING: TLazIntfImage.ChooseRawBitsProc Unsupported BitsPerPixel=',BitsPerPixel);
+    DebugLn('WARNING: TLazIntfImage.ChooseRawBitsProc Unsupported BitsPerPixel=',dbgs(BitsPerPixel));
     ProcReadRawImageBits  := @ReadRawImageBits_NULL;
     ProcWriteRawImageBits := @WriteRawImageBits_NULL;
   end;
@@ -969,7 +969,7 @@ procedure TLazIntfImage.ChooseGetSetColorFunctions;
 
   procedure ChooseRGBAFunctions;
   begin
-    //writeln('ChooseRGBAFunctions ',RawImageDescriptionAsString(@FDataDescription));
+    //DebugLn('ChooseRGBAFunctions ',RawImageDescriptionAsString(@FDataDescription));
     ChooseRawBitsProc(FDataDescription.BitsPerPixel,
                       FDataDescription.ByteOrder,
                       FDataDescription.BitOrder,
@@ -1047,7 +1047,7 @@ begin
   end else begin
     // palette
     // ToDo
-    writeln('WARNING: TLazIntfImage.ChooseGetSetColorFunctions Palette is unsupported');
+    DebugLn('WARNING: TLazIntfImage.ChooseGetSetColorFunctions Palette is unsupported');
   end;
 end;
 
@@ -1401,7 +1401,7 @@ procedure TLazIntfImage.SetInternalColor(x, y: integer; const Value: TFPColor);
 begin
   {if (x=0) and (y=0) then begin
     // a common bug in the readers is that Alpha is reversed
-    writeln('TLazIntfImage.SetInternalColor ',x,',',y,' ',Value.Red,',',Value.Green,',',Value.Blue,',',Value.Alpha);
+    DebugLn('TLazIntfImage.SetInternalColor ',x,',',y,' ',Value.Red,',',Value.Green,',',Value.Blue,',',Value.Alpha);
     if Value.Alpha<>alphaOpaque then
       RaiseGDBException('');
   end;}
@@ -1538,7 +1538,7 @@ function TLazIntfImage.CheckDescription(
   procedure DoError(const Msg: string);
   begin
     if ExceptionOnError then Raise FPImageException.Create(Msg);
-    writeln('TLazIntfImage.CheckDescription: ',Msg);
+    DebugLn('TLazIntfImage.CheckDescription: ',Msg);
   end;
 
 begin
@@ -1750,7 +1750,7 @@ begin
     while ArrNode<>nil do begin
       Entry:=PXPMPixelToColorEntry(ArrNode.Data);
       if Entry<>nil then begin
-        //writeln('TLazReaderXPM.ClearPixelToColorTree A ',HexStr(Cardinal(ArrNode),8),' ',HexStr(Cardinal(Entry),8));
+        //DebugLn('TLazReaderXPM.ClearPixelToColorTree A ',HexStr(Cardinal(ArrNode),8),' ',HexStr(Cardinal(Entry),8));
         Dispose(Entry);
       end;
       ArrNode:=ArrNode.FindNext;
@@ -1828,7 +1828,7 @@ var
             if (Src[SrcPos]='"') and (Src[SrcPos-1]<>'\') then begin
               // string end found
               Line.EndPos:=SrcPos;
-              //writeln('  "',copy(Src,Line.StartPos,SrcPos-Line.StartPos),'"');
+              //DebugLn('  "',copy(Src,Line.StartPos,SrcPos-Line.StartPos),'"');
               inc(SrcPos);
               Result:=true;
               exit;
@@ -1873,7 +1873,7 @@ var
     FCharsPerPixel:=ReadNumber(FirstLine.StartPos,true);
     fXHot:=ReadNumber(FirstLine.StartPos,false);
     fYHot:=ReadNumber(FirstLine.StartPos,fXHot<>0);
-    //writeln('ReadHeader A Width=',FWidth,' Height=',FHeight,' ColorCount=',FColorCount,' CharsPerPixel=',FCharsPerPixel);
+    //DebugLn('ReadHeader A Width=',FWidth,' Height=',FHeight,' ColorCount=',FColorCount,' CharsPerPixel=',FCharsPerPixel);
     // ToDo: parse XPMExt tag
   end;
 
@@ -1998,7 +1998,7 @@ var
     NewEntry: PXPMPixelToColorEntry;
     i: Integer;
   begin
-    {writeln('TLazReaderXPM.InternalRead.AddColor A "',PixelString,'"=',
+    {DebugLn('TLazReaderXPM.InternalRead.AddColor A "',PixelString,'"=',
       HexStr(Cardinal(AColor.Red),4),',',
       HexStr(Cardinal(AColor.Green),4),',',
       HexStr(Cardinal(AColor.Blue),4),',',
@@ -2087,14 +2087,14 @@ var
                         FPixelToColorTree.FindData(IntArray,FCharsPerPixel));
         CurColor:=CurEntry^.Color;
         {if CurEntry2<>CurEntry then begin
-          writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
+          DebugLn('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
             ' RefPixel=',CurEntry^.Pixel,
             ' Color=',
             HexStr(Cardinal(CurColor.Red),4),',',
             HexStr(Cardinal(CurColor.Green),4),',',
             HexStr(Cardinal(CurColor.Blue),4),',',
             HexStr(Cardinal(CurColor.Alpha),4));
-          writeln('Entry2: Pixel=',CurEntry2^.Pixel,
+          DebugLn('Entry2: Pixel=',CurEntry2^.Pixel,
             ' RefPixel=',CurEntry2^.Pixel,
             ' Color=',
             HexStr(Cardinal(CurEntry2^.Color.Red),4),',',
@@ -2103,7 +2103,7 @@ var
             HexStr(Cardinal(CurEntry2^.Color.Alpha),4));
         end;}
 
-        {writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
+        {DebugLn('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
           ' RefPixel=',PXPMPixelToColorEntry(Node.Data)^.Pixel,
           ' Color=',
           HexStr(Cardinal(CurColor.Red),4),',',
@@ -2567,7 +2567,7 @@ end;
 
 constructor TArrayNode.Create;
 begin
-  //writeln('TArrayNode.Create ',Capacity,' Self=',HexStr(Cardinal(Self),8));
+  //DebugLn('TArrayNode.Create ',Capacity,' Self=',HexStr(Cardinal(Self),8));
 end;
 
 destructor TArrayNode.Destroy;
@@ -2640,7 +2640,7 @@ var
   NewCapacity: Integer;
   OldSize: Integer;
 begin
-  //writeln('TArrayNode.Expand A ',ValueToInclude,' Capacity=',Capacity,' StartValue=',StartValue);
+  //DebugLn('TArrayNode.Expand A ',ValueToInclude,' Capacity=',Capacity,' StartValue=',StartValue);
   if Childs=nil then begin
     NewStartValue:=ValueToInclude;
     NewCapacity:=4;
@@ -2856,7 +2856,7 @@ begin
     Root:=TArrayNode.Create;
   Result:=Root;
   for i:=0 to Count-1 do begin
-    //writeln('TArrayNodesTree.SetNode A ',HexStr(Cardinal(Result),8));
+    //DebugLn('TArrayNodesTree.SetNode A ',HexStr(Cardinal(Result),8));
     Result:=Result.GetChildNode(IntArray[i],true);
   end;
   Result.Data:=Data;

@@ -104,14 +104,14 @@ var
 begin
   if FCreatingWnd then exit;
   FCreatingWnd := true;
-  //writeln('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+  //DebugLn('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
 
   // destroy radiobuttons, if there are too many
   while FButtonList.Count>FItems.Count do begin
     TRadioButton(FButtonList[FButtonList.Count-1]).Free;
     FButtonList.Delete(FButtonList.Count-1);
   end;
-  //writeln('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  //DebugLn('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
 
   // create as many TRadioButton as needed
   while (FButtonList.Count<FItems.Count) do begin
@@ -129,12 +129,12 @@ begin
     end;
   end;
     
-  //writeln('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
+  //DebugLn('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated);
   if (FItemIndex>=FItems.Count) then FItemIndex:=FItems.Count-1;
 
-  //writeln('[TCustomRadioGroup.CreateWnd] D ',Name,':',ClassName,' ',FItems.Count);
+  //DebugLn('[TCustomRadioGroup.CreateWnd] D ',Name,':',ClassName,' ',FItems.Count);
   inherited CreateWnd;
-  //writeln('[TCustomRadioGroup.CreateWnd] E ',Name,':',ClassName,' ',FItems.Count,' ',FButtonList.Count);
+  //DebugLn('[TCustomRadioGroup.CreateWnd] E ',Name,':',ClassName,' ',FItems.Count,' ',FButtonList.Count);
 
   if FItems.Count>0 then begin
     for i:=0 to FItems.Count-1 do begin
@@ -158,7 +158,7 @@ begin
     end;
     FHiddenButton.Checked:=(fItemIndex=-1);
   end;
-  //writeln('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+  //DebugLn('[TCustomRadioGroup.CreateWnd] F ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
   
   FCreatingWnd := false;
 end;
@@ -396,6 +396,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.27  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

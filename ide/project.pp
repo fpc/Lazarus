@@ -47,7 +47,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, FPCAdds, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
+  Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
   CompilerOptions, FileCtrl, CodeToolManager, CodeCache, Forms, Controls,
   EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree,
   DefineTemplates, PackageDefs;
@@ -2846,6 +2846,9 @@ end.
 
 {
   $Log$
+  Revision 1.154  2004/05/11 11:42:26  mattias
+  replaced writeln by debugln
+
   Revision 1.153  2004/03/25 23:14:01  vincents
   added Trace: to assert message
 

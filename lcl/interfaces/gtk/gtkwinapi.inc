@@ -58,7 +58,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.Arc] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.Arc] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -107,7 +107,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.AngleChord] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.AngleChord] Uninitialized GC');
       Result := False;
     end
     else
@@ -140,7 +140,7 @@ begin
     PaintWidget:=GetFixedWidget(PGtkWidget(TWinControl(TargetObject).Handle));
     IsDoubleBuffered:=(PaintWidget=Widget);
     //if not IsDoubleBuffered then begin
-    //  writeln('TGtkWidgetSet.BeginPaint Not the paint widget: ',
+    //  DebugLn('TGtkWidgetSet.BeginPaint Not the paint widget: ',
     //    TWinControl(TargetObject).Name,':',TWinControl(TargetObject).ClassName,
     //    ' PaintWidget=',GetWidgetClassName(PaintWidget),
     //    ' Widget=',GetWidgetClassName(Widget));
@@ -197,9 +197,9 @@ begin
   write('TGtkWidgetSet.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
   if LCLObject<>nil then
-    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
   else
-    writeln(' LCLObject=nil');
+    DebugLn(' LCLObject=nil');
   {$ENDIF}
   Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_TYPE_WINDOW);
   if Result then begin
@@ -345,7 +345,7 @@ var FormatAtom, FormatTry: Cardinal;
       Result:=false;
       AllID:=gdk_atom_intern('TARGETS',GdkFalse);
       SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,AllID);
-      {writeln('IsFormatSupported A ',HexStr(Cardinal(SelData.Selection),8),
+      {DebugLn('IsFormatSupported A ',HexStr(Cardinal(SelData.Selection),8),
       ' ',HexStr(Cardinal(ClipboardTypeAtoms[ClipboardType]),8),
       ' SelData.Target=',SelData.Target,' AllID=',AllID,
       ' SelData.TheType=',SelData.TheType,' ',gdk_atom_intern('ATOM',0),
@@ -368,7 +368,7 @@ var FormatAtom, FormatTry: Cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  writeln('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID),' Now=',Now);
+  DebugLn('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Format=',ClipboardFormatToMimeType(FormatID),' Now=',Now);
   {$EndIf}
   Result:=false;
   if (FormatID=0) or (Stream=nil) then exit;
@@ -415,7 +415,7 @@ begin
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TGtkWidgetSet.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',Now);
+    DebugLn('[TGtkWidgetSet.ClipboardGetData] B  Format=',ClipboardFormatToMimeType(FormatAtom),' Now=',Now);
     {$EndIf}
     if FormatAtom=0 then exit;
 
@@ -423,7 +423,7 @@ begin
     SelData:=RequestSelectionData(ClipboardWidget,ClipboardType,FormatAtom);
     try
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TGtkWidgetSet.ClipboardGetData] C  Length=',SelData.Length,' Now=',Now);
+      DebugLn('[TGtkWidgetSet.ClipboardGetData] C  Length=',SelData.Length,' Now=',Now);
       {$EndIf}
       if (SelData.Selection<>ClipboardTypeAtoms[ClipboardType])
       or (SelData.Target<>FormatAtom) then
@@ -438,7 +438,7 @@ begin
             CompoundTextCount:=gdk_text_property_to_text_list(SelData.{$IfDef GTK2}_Type{$Else}theType{$EndIf},
               SelData.Format,SelData.Data,SelData.Length,{$IfDef GTK1}@{$EndIf}CompoundTextList);
             {$IfDef DEBUG_CLIPBOARD}
-            writeln('[TGtkWidgetSet.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount,' Now=',Now);
+            DebugLn('[TGtkWidgetSet.ClipboardGetData] D  CompoundTextCount=',CompoundTextCount,' Now=',Now);
             {$EndIf}
             for i:=0 to CompoundTextCount-1 do
               if (CompoundTextList[i]<>nil) then
@@ -452,7 +452,7 @@ begin
       end;
 
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TGtkWidgetSet.ClipboardGetData] END ',' Now=',Now);
+      DebugLn('[TGtkWidgetSet.ClipboardGetData] END ',' Now=',Now);
       {$EndIf}
     finally
       if SelData.Data<>nil then FreeMem(SelData.Data);
@@ -488,7 +488,7 @@ var AllID: cardinal;
     if Format<>0 then begin
       for a:=0 to Cnt-1 do begin
         {$IfDef DEBUG_CLIPBOARD}
-        writeln('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
+        DebugLn('  IsFormatSupported ',Format,'  ',FormatAtoms[a]);
         {$EndIf}
         if FormatAtoms[a]=Format then begin
           Result:=true;
@@ -516,7 +516,7 @@ var AllID: cardinal;
 
 begin
   {$IfDef DEBUG_CLIPBOARD}
-  writeln('[TGtkWidgetSet.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',Now);
+  DebugLn('[TGtkWidgetSet.ClipboardGetFormats] A ClipboardWidget=',HexStr(Cardinal(ClipboardWidget),8),' Now=',Now);
   {$EndIf}
   Result:=false;
   Count:=0;
@@ -530,7 +530,7 @@ begin
 
   try
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TGtkWidgetSet.ClipboardGetFormats] Checking TARGETS answer ',
+    DebugLn('[TGtkWidgetSet.ClipboardGetFormats] Checking TARGETS answer ',
       ' selection: ',SelData.Selection,'=',ClipboardTypeAtoms[ClipboardType],
                 ' "',gdk_atom_name(SelData.Selection),'"',
       ' target: ',SelData.Target,'=',AllID,
@@ -574,9 +574,9 @@ begin
       i:=0;
       while (i<Cnt) do begin
         {$IfDef DEBUG_CLIPBOARD}
-        writeln('[TGtkWidgetSet.ClipboardGetFormats] Supported formats: ',
+        DebugLn('[TGtkWidgetSet.ClipboardGetFormats] Supported formats: ',
                 i,'/',Cnt,':  ',FormatAtoms[i]);
-        writeln('  MimeType="',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
+        DebugLn('  MimeType="',ClipboardFormatToMimeType(FormatAtoms[i]),'"');
         {$EndIf}
         List[i]:=FormatAtoms[i];
         inc(i);
@@ -631,7 +631,7 @@ var TargetEntries: PGtkTargetEntry;
   procedure AddTargetEntry(var Index: integer; const FormatName: string);
   begin
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('  AddTargetEntry ',FormatName);
+    DebugLn('  AddTargetEntry ',FormatName);
     {$EndIf}
     TargetEntries[Index].Target := StrAlloc(Length(FormatName) + 1);
     StrPCopy(TargetEntries[Index].Target, FormatName);
@@ -651,7 +651,7 @@ begin
   if ClipboardType in [ctPrimarySelection, ctSecondarySelection, ctClipboard] then
   begin
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] A');
+    DebugLn('[TGtkWidgetSet.ClipboardGetOwnerShip] A');
     {$EndIf}
     ClipboardHandler[ClipboardType]:=nil;
     Result:=false;
@@ -679,7 +679,7 @@ begin
     for gtkFormat:=Low(TGtkClipboardFormat) to High(TGtkClipboardFormat) do
       ClipboardExtraGtkFormats[ClipboardType][gtkFormat]:=false;
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] B');
+    DebugLn('[TGtkWidgetSet.ClipboardGetOwnerShip] B');
     {$EndIf}
     if IsFormatSupported(gdk_atom_intern('text/plain',GdkTrue)) then
     begin
@@ -720,19 +720,19 @@ begin
 
     // taking the ownership
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] C');
+    DebugLn('[TGtkWidgetSet.ClipboardGetOwnerShip] C');
     {$EndIf}
     if gtk_selection_owner_set(ClipboardWidget,
       ClipboardTypeAtoms[ClipboardType],0)=GdkFalse
     then begin
       {$IfDef DEBUG_CLIPBOARD}
-      writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] D FAILED');
+      DebugLn('[TGtkWidgetSet.ClipboardGetOwnerShip] D FAILED');
       {$EndIf}
       exit;
     end;
 
     {$IfDef DEBUG_CLIPBOARD}
-    writeln('[TGtkWidgetSet.ClipboardGetOwnerShip] YEAH, got it!');
+    DebugLn('[TGtkWidgetSet.ClipboardGetOwnerShip] YEAH, got it!');
     {$EndIf}
     ClipboardHandler[ClipboardType]:=OnRequestProc;
 
@@ -783,7 +783,7 @@ begin
   if (BitCount < 1) or (Bitcount > 32)
   then begin
     Result := 0;
-    WriteLn(Format('ERROR: [TGtkWidgetSet.CreateBitmap] Illegal depth %d', [BitCount]));
+    DebugLn(Format('ERROR: [TGtkWidgetSet.CreateBitmap] Illegal depth %d', [BitCount]));
     Exit;
   end;
 
@@ -821,7 +821,7 @@ begin
     else begin
       GdiObject^.Visual := gdk_visual_get_best_with_depth(BitCount);
       if GdiObject^.Visual=nil then begin
-        writeln('Warning: [TGtkWidgetSet.CreateBitmap] No visual for depth ',
+        DebugLn('Warning: [TGtkWidgetSet.CreateBitmap] No visual for depth ',
                 BitCount,'. Using default.');
         GdiObject^.Visual := gdk_visual_get_system;
       end;
@@ -860,7 +860,7 @@ begin
   end;}
 
   Result := HBITMAP(GdiObject);
-//writeln('[TGtkWidgetSet.CreateBitmap] ',HexStr(Result,8));
+//DebugLn('[TGtkWidgetSet.CreateBitmap] ',HexStr(Result,8));
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBitmap] --> 0x%x', [Integer(Result)]));
 end;
 
@@ -894,7 +894,7 @@ begin
 
   try
     {$IFDEF VerboseRawImage}
-    writeln('TGtkWidgetSet.CreateBitmapFromRawImage A ',
+    DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage A ',
       ' AlwaysCreateMask=',AlwaysCreateMask,
       ' Depth=',RawImage.Description.Depth,
       ' Width=',RawImage.Description.Width,
@@ -946,7 +946,7 @@ begin
         Visual:=gdk_visual_get_best_with_depth(ImgDepth);
         GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
         {$IFDEF VerboseRawImage}
-        writeln('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
+        DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage GdkImage: ',
           ' BytesPerLine=',GdkImage^.bpl,
           ' BytesPerPixel=',GdkImage^.bpp,
           ' ByteOrder=',GdkImage^.byte_order,
@@ -983,7 +983,7 @@ begin
     if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true)))
     and (RawImage.Mask<>nil) then begin
       {$IFDEF VerboseRawImage}
-      writeln('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
+      DebugLn('TGtkWidgetSet.CreateBitmapFromRawImage creating mask .. ');
       {$ENDIF}
       GdiObject^.GDIBitmapMaskObject :=
           gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
@@ -1029,7 +1029,7 @@ begin
   //write('CreateBrushIndirect->');
   GObject := NewGDIObject(gdiBrush);
   try
-    //writeln('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
+    //DebugLn('[TGtkWidgetSet.CreateBrushIndirect] ',HexStr(Cardinal(GObject),8));
     GObject^.IsNullBrush := False;
     with LogBrush do
     begin
@@ -1112,7 +1112,7 @@ begin
   except
     Result:=0;
     DisposeGDIObject(GObject);
-    writeln('TGtkWidgetSet.CreateBrushIndirect failed');
+    DebugLn('TGtkWidgetSet.CreateBrushIndirect failed');
   end;
   Assert(False, Format('Trace:< [TGtkWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
@@ -1187,7 +1187,7 @@ begin
     if (Depth < 1) or (Depth > 32)
     then begin
       Result := 0;
-      WriteLn(Format('ERROR: [TGtkWidgetSet.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
+      DebugLn(Format('ERROR: [TGtkWidgetSet.CreateCompatibleBitmap] Illegal depth %d', [Depth]));
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
       {$ENDIF}
@@ -1296,7 +1296,7 @@ function TGtkWidgetSet.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 {$IfDef GTK2}
 begin
-  writeln('ToDo: TGtkWidgetSet.CreateFontIndirectEx');
+  DebugLn('ToDo: TGtkWidgetSet.CreateFontIndirectEx');
   Result:=0;
 end;
 {$Else}
@@ -1320,7 +1320,7 @@ var
 
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
     {$IFDEF VerboseFonts}
-    writeln('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
+    DebugLn('  Trying "',S,'" Success=',GdiObject^.GDIFontObject<>nil);
     {$ENDIF}
   end;
 
@@ -1329,7 +1329,7 @@ var
     DisposeGDIObject(GdiObject);
     GdiObject:=CreateDefaultFont;
     {$IFDEF VerboseFonts}
-    writeln('TGtkWidgetSet.CreateFontIndirectEx.LoadDefaultFont');
+    DebugLn('TGtkWidgetSet.CreateFontIndirectEx.LoadDefaultFont');
     {$ENDIF}
   end;
   
@@ -1355,7 +1355,7 @@ begin
   // Lets fill in all the xlfd parts. Assume we have scalable fonts
 
   {$IFDEF VerboseFonts}
-  writeln('TGtkWidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
+  DebugLn('TGtkWidgetSet.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
   {$ENDIF}
 
   Result := 0;
@@ -1385,7 +1385,7 @@ begin
     // This way, the user can set X fonts that are not supported by TFont.
 
     {$IFDEF VerboseFonts}
-    writeln('TGtkWidgetSet.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
+    DebugLn('TGtkWidgetSet.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
     ' Long="',LongFontName,'" IsXLFD=',IsFontNameXLogicalFontDesc(LongFontName)
     ,' ',ord(LogFont.lfFaceName[0]));
     {$ENDIF}
@@ -1426,7 +1426,7 @@ begin
       
       if AnsiCompareText(FamilyName,'default')=0 then begin
         {$IFDEF VerboseFonts}
-        writeln('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
+        DebugLn('TGtkWidgetSet.CreateFontIndirectEx FamilyName="',FamilyName,'" PixelSize=',PixelSize,' LogFont.lfHeight=',LogFont.lfHeight);
         {$ENDIF}
         if (LogFont.lfHeight=0) then begin
           LoadDefaultFont;
@@ -1626,7 +1626,7 @@ begin
     if GdiObject^.GDIFontObject = nil
     then begin
       {$IFDEF VerboseFonts}
-      writeln('[TGtkWidgetSet.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
+      DebugLn('[TGtkWidgetSet.CreateFontIndirect] ',HexStr(Cardinal(GdiObject),8),'  ',FGDIObjects.Count);
       {$ENDIF}
       DisposeGDIObject(GdiObject);
       Result := 0;
@@ -1636,7 +1636,7 @@ begin
     end;
 
     if Result = 0
-    then WriteLn(Format('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <%s>', [S]))
+    then DebugLn(Format('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <%s>', [S]))
     else Assert(False, Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [S]));
   end;
 end;
@@ -1871,7 +1871,7 @@ begin
   gdk_region_destroy(RRGN);
 
   Result := HRGN(GObject);
-  //writeln('TGtkWidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
+  //DebugLn('TGtkWidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 
 {------------------------------------------------------------------------------
@@ -1918,7 +1918,7 @@ begin
   Continue := IsValidGDIObject(Dest) and IsValidGDIObject(Src1)
               and IsValidGDIObject(Src2);
   If Not Continue then begin
-    WriteLn('WARNING: [TGtkWidgetSet.CombineRgn] Invalid HRGN');
+    DebugLn('WARNING: [TGtkWidgetSet.CombineRgn] Invalid HRGN');
     Result := Error;
   end
   else begin
@@ -1928,7 +1928,7 @@ begin
     end;
     S1 := S1Obj^.GDIRegionObject;
     S2 := S2Obj^.GDIRegionObject;
-    //writeln('TGtkWidgetSet.CombineRgn A fnCombineMode=',fnCombineMode);
+    //DebugLn('TGtkWidgetSet.CombineRgn A fnCombineMode=',fnCombineMode);
     Case fnCombineMode of
       RGN_AND :
         D := PGDKRegion(gdk_region_intersect(S1, S2));
@@ -1947,7 +1947,7 @@ begin
     end;
     DObj^.GDIRegionObject := D;
     Result := RegionType(D);
-    //writeln('TGtkWidgetSet.CombineRgn B Mode=',fnCombineMode,
+    //DebugLn('TGtkWidgetSet.CombineRgn B Mode=',fnCombineMode,
     //  ' S1=',GDKRegionAsString(S1),' S2=',GDKRegionAsString(S2),' D=',GDKRegionAsString(D),'');
   end;
 end;
@@ -2183,14 +2183,14 @@ begin
         end;
       else begin
         Result:= false;
-        writeln('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
+        DebugLn('[TGtkWidgetSet.DeleteObject] TODO : Unimplemented GDI type');
         Assert(False, 'Trace:TODO : Unimplemented GDI object in delete object');
       end;
     end;
   end;
 
   { Dispose of the GDI object }
-  //writeln('[TGtkWidgetSet.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
+  //DebugLn('[TGtkWidgetSet.DeleteObject] ',Result,'  ',HexStr(GDIObject,8),'  ',FGDIObjects.Count);
   DisposeGDIObject(PGDIObject(GDIObject));
 end;
 
@@ -2441,11 +2441,11 @@ begin
               DrawCheck;
             end;
         else
-          WriteLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
+          DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown State 0x%x', [uState]));
         end;
       end;
   else
-    WriteLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown type %d', [uType]));
+    DebugLn(Format('ERROR: [TGtkWidgetSet.DrawFrameControl] Unknown type %d', [uType]));
   end;
 end;
 
@@ -2492,7 +2492,7 @@ Var
   R: TRect;
   DCOrigin: TPoint;
 begin
-  //writeln('TGtkWidgetSet.DrawEdge Edge=',HexStr(Cardinal(Edge),8),' grfFlags=',HexStr(Cardinal(grfFlags),8));
+  //DebugLn('TGtkWidgetSet.DrawEdge Edge=',HexStr(Cardinal(Edge),8),' grfFlags=',HexStr(Cardinal(grfFlags),8));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
@@ -2744,7 +2744,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.DrawText] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.DrawText] Uninitialized GC');
       Result := 0;
     end
     else begin
@@ -2877,7 +2877,7 @@ begin
       // copy
       gdk_window_get_size(DCDrawable,@Width,@Height);
       {$IFDEF VerboseDoubleBuffer}
-      writeln('TGtkWidgetSet.EndPaint Copying from buffer to window: ',Width,' ',Height);
+      DebugLn('TGtkWidgetSet.EndPaint Copying from buffer to window: ',Width,' ',Height);
       {$ENDIF}
       gdk_gc_set_clip_region(DevContext.GC, nil);
       gdk_gc_set_clip_rectangle(DevContext.GC, nil);
@@ -2892,7 +2892,7 @@ begin
       if (LCLObject is TPanel)
       and (csDesigning in TPanel(LCLObject).ComponentState) then begin
         gdk_window_get_origin(Widget^.Window,@x,@y);
-        writeln('TGtkWidgetSet.EndPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
+        DebugLn('TGtkWidgetSet.EndPaint ',TPanel(LCLObject).Name,':',TPanel(LCLObject).ClassName,
           ' Widget=',GetWidgetClassName(Widget),
           ' Origin=',x,',',y,
           ' ',Widget^.allocation.x,',',Widget^.allocation.y);
@@ -2927,7 +2927,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.Ellipse] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.Ellipse] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -2999,7 +2999,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.ExcludeClipRect] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.ExcludeClipRect] Uninitialized GC');
       Result := ERROR;
     end
     else
@@ -3049,11 +3049,11 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.ExtSelectClipRGN] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.ExtSelectClipRGN] Uninitialized GC');
       Result := ERROR;
     end
     else begin
-      //writeln('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
+      //DebugLn('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
       //  ' Mode=',Mode,' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
       If ClipRegion=0 then begin
         // there is no clipping region in the DC
@@ -3098,7 +3098,7 @@ function TGtkWidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 {$Ifdef GTK2}
 begin
-  writeln('ToDo: TGtkWidgetSet.ExtTextOut');
+  DebugLn('ToDo: TGtkWidgetSet.ExtTextOut');
   Result:=false;
 end;
 {$Else}
@@ -3166,12 +3166,12 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.ExtTextOut] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Uninitialized GC');
       Result := False;
     end
     else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
-      WriteLn('WARNING: [TGtkWidgetSet.ExtTextOut] Rect=nil');
+      DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Rect=nil');
       Result := False;
     end else begin
       // TODO: implement other parameters.
@@ -3202,7 +3202,7 @@ begin
                               Rect^.Right, Rect^.Bottom);
           end;
         end else begin
-          WriteLn('WARNING: [TGtkWidgetSet.ExtTextOut] Missing Font');
+          DebugLn('WARNING: [TGtkWidgetSet.ExtTextOut] Missing Font');
           Result := False;
         end;
       end;
@@ -3304,7 +3304,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.FillRect] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.FillRect] Uninitialized GC');
       Result := False;
       exit;
     end;
@@ -3319,7 +3319,7 @@ begin
         CurrentBrush := PGdiObject(Brush);
         SelectedColors:=dcscCustom;
       end;
-      //writeln('TGtkWidgetSet.FillRect Color=',HexStr(Cardinal(CurrentBrush^.GDIBrushColor.ColorRef),8));
+      //DebugLn('TGtkWidgetSet.FillRect Color=',HexStr(Cardinal(CurrentBrush^.GDIBrushColor.ColorRef),8));
 
       SelectGDKBrushProps(DC);
       
@@ -3405,7 +3405,7 @@ begin
   if not Result then exit;
   if FrameWidth=0 then exit;
   TheStyle:=GetStyle(lgsButton);
-  //writeln('TGtkWidgetSet.Frame3d A ',HexStr(Cardinal(TheStyle),8));
+  //DebugLn('TGtkWidgetSet.Frame3d A ',HexStr(Cardinal(TheStyle),8));
   if TheStyle=nil then exit;
 
   with TDeviceContext(DC) do
@@ -3447,7 +3447,7 @@ begin
       ShadowType:=GTKThinShadowType[Style]
     else
       ShadowType:=GTKStrongShadowType[Style];
-    //writeln('ShadowType ',ShadowType,
+    //DebugLn('ShadowType ',ShadowType,
     //' dark_gc=',HexStr(Cardinal(TheStyle^.dark_gc[GTK_STATE_NORMAL]),8),
     //' light_gc=',HexStr(Cardinal(TheStyle^.light_gc[GTK_STATE_NORMAL]),8),
     //'');
@@ -3469,7 +3469,7 @@ begin
       gdk_draw_line(Drawable, RightBottomGC,
                  ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
                  ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
-      //writeln('TGtkWidgetSet.Frame3d A TheStyle=',HexStr(Cardinal(TheStyle),8),
+      //DebugLn('TGtkWidgetSet.Frame3d A TheStyle=',HexStr(Cardinal(TheStyle),8),
       //  ' Drawable=',GetDrawableDebugReport(Drawable),
       //  ' ClientWidget=',GetWidgetDebugReport(ClientWidget)
       //  );
@@ -3572,11 +3572,11 @@ begin
         Result := InternalGetDIBits(DC, Bitmap, StartScan, NumScans, -1, Bits,
                                       BitInfo, Usage, True);
       else
-        writeln('WARNING: [TGtkWidgetSet.GetDIBits] not a Bitmap!');
+        DebugLn('WARNING: [TGtkWidgetSet.GetDIBits] not a Bitmap!');
     end;
   end
   else
-    writeln('WARNING: [TGtkWidgetSet.GetDIBits] invalid Bitmap!');
+    DebugLn('WARNING: [TGtkWidgetSet.GetDIBits] invalid Bitmap!');
 end;
 
 {------------------------------------------------------------------------------
@@ -3597,11 +3597,11 @@ begin
       gdiBitmap:
         Result := InternalGetDIBits(0, Bitmap, 0, 0, Count, Bits, BitInfo, 0, False);
       else
-        writeln('WARNING: [TGtkWidgetSet.GetBitmapBits] not a Bitmap!');
+        DebugLn('WARNING: [TGtkWidgetSet.GetBitmapBits] not a Bitmap!');
     end;
   end
   else
-    writeln('WARNING: [TGtkWidgetSet.GetBitmapBits] invalid Bitmap!');
+    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapBits] invalid Bitmap!');
 end;
 
 {------------------------------------------------------------------------------
@@ -3619,7 +3619,7 @@ var
 begin
   Result:=false;
   if not IsValidGDIObject(Bitmap) then begin
-    writeln('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
+    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] invalid Bitmap!');
     exit;
   end;
   GDIObject:=PGDIObject(Bitmap);
@@ -3628,7 +3628,7 @@ begin
   gbPixmap: GdkPixmap:=PGdkPixmap(PGdiObject(Bitmap)^.GDIPixmapObject);
   else
     GdkPixmap:=nil;
-    writeln('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
+    DebugLn('WARNING: [TGtkWidgetSet.GetBitmapRawImageDescription] GDI_RGBImage not implemented');
     exit;
   end;
   Result:=GetWindowRawImageDescription(PGdkWindow(GdkPixmap),Desc);
@@ -3689,7 +3689,7 @@ begin
       Result := False;
     end;
   end
-  else WriteLn('[TGtkWidgetSet.GetCaretPos] got focusObject nil');
+  else DebugLn('[TGtkWidgetSet.GetCaretPos] got focusObject nil');
  }
 
 Assert(False, 'Trace:GetCaretPos');
@@ -3840,13 +3840,13 @@ begin
   end;
   {$IfDef VerboseGetClientRect}
   if ClientWidget<>nil then begin
-    writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
+    DebugLn('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
        ' Client=',HexStr(Cardinal(ClientWidget),8),
        ' WindowSize=',ARect.Right,',',ARect.Bottom,
        ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
        );
   end else begin
-    writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
+    DebugLn('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
        ' Client=',HexStr(Cardinal(ClientWidget),8),
        ' WindowSize=',ARect.Right,',',ARect.Bottom,
        ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
@@ -3972,7 +3972,7 @@ Function TGtkWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
     if GdiObject^.GDIRegionObject<>nil then
       gdk_region_destroy(GdiObject^.GDIRegionObject);
     GdiObject^.GDIRegionObject:=CreateRectGDKRegion(ARect);
-    //writeln('TGtkWidgetSet.GetClipRGN A DC=',HexStr(Cardinal(DC),8),
+    //DebugLn('TGtkWidgetSet.GetClipRGN A DC=',HexStr(Cardinal(DC),8),
     //  ' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject),
     //  ' Result=',Result);
   end;
@@ -3986,7 +3986,7 @@ begin
     Result := ERROR
   else If Not IsValidGDIObject(RGN) then begin
     Result := ERROR;
-    WriteLn('WARNING: [TGtkWidgetSet.GetClipRGN] Invalid HRGN');
+    DebugLn('WARNING: [TGtkWidgetSet.GetClipRGN] Invalid HRGN');
   end
   else if TDeviceContext(DC).ClipRegion=0 then
     Result:=GetDefaultClipRgn
@@ -4008,7 +4008,7 @@ begin
     PGdiObject(RGN)^.GDIRegionObject := ClipRegionWithDCOffset;
 
     Result := RegionType(ClipRegionWithDCOffset);
-    //writeln('TGtkWidgetSet.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
+    //DebugLn('TGtkWidgetSet.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
     //  ' DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',Result);
     If Result = NULLREGION then
       Result := 0
@@ -4059,7 +4059,7 @@ function TGtkWidgetSet.GetCursorPos(var lpPoint: TPoint ): Boolean;
 {$IFDEF GTK2}
 begin
   // TODO: GTK2 GetCursorPos
-  writeln('TGtkWidgetSet.GetCursorPos ToDo');
+  DebugLn('TGtkWidgetSet.GetCursorPos ToDo');
   Result:=false;
 end;
 {$ELSE}
@@ -4207,7 +4207,7 @@ begin
     Result:=0;
 
   else
-    writeln('TGtkWidgetSet.GetDeviceCaps not supported: Type=',Index);
+    DebugLn('TGtkWidgetSet.GetDeviceCaps not supported: Type=',dbgs(Index));
   end;
 end;
 
@@ -4246,7 +4246,7 @@ begin
       {$IFDEF RaiseExceptionOnNilPointers}
       RaiseException('TGtkWidgetSet.GetDeviceSize Window=nil');
       {$ENDIF}
-      writeln('TGtkWidgetSet.GetDeviceSize:',
+      DebugLn('TGtkWidgetSet.GetDeviceSize:',
         ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
         ' Widget=',HexStr(Cardinal(wnd),8));
     end;
@@ -4272,7 +4272,7 @@ function TGtkWidgetSet.GetDCOriginRelativeToWindow(PaintDC: HDC;
     {$IFDEF RaiseExceptionOnNilPointers}
     RaiseException('TGtkWidgetSet.GetDCOriginRelativeToWindow Window=nil');
     {$ENDIF}
-    writeln('TGtkWidgetSet.GetDCOriginRelativeToWindow:',
+    DebugLn('TGtkWidgetSet.GetDCOriginRelativeToWindow:',
       ' WARNING: PaintDC ',HexStr(Cardinal(PaintDC),8),' without gdkwindow.',
       ' Widget=',HexStr(Cardinal(TDeviceContext(PaintDC).wnd),8));
   end;
@@ -4318,7 +4318,7 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 begin
-  //writeln('TGtkWidgetSet.GetDesignerDC A');
+  //DebugLn('TGtkWidgetSet.GetDesignerDC A');
   Result:=CreateDCForWidget(PGtkWidget(WindowHandle),nil,true);
 end;
 
@@ -4632,7 +4632,7 @@ begin
           Assert(False, 'Trace:TODO: [TGtkWidgetSet.GetObject] gdiRegion');
         end;
     else
-      WriteLn(Format('WARNING: [TGtkWidgetSet.GetObject] Unknown type %d', [Integer(PGDIObject(GDIObj)^.GDIType)]));
+      DebugLn(Format('WARNING: [TGtkWidgetSet.GetObject] Unknown type %d', [Integer(PGDIObject(GDIObj)^.GDIType)]));
     end;
   end;
 end;
@@ -4645,7 +4645,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TGtkWidgetSet.GetParent(Handle : HWND): HWND;
 begin
-  //writeln('TGtkWidgetSet.GetParent ',HexStr(Cardinal(Handle),8));
+  //DebugLn('TGtkWidgetSet.GetParent ',HexStr(Cardinal(Handle),8));
   Result:=0;
   if Handle<>0 then
     Result:=HWnd(PGtkWidget(Handle)^.Parent);
@@ -4677,13 +4677,13 @@ var
 begin
   Result:=false;
   if not IsValidDC(SrcDC) then begin
-    writeln('WARNING: TGtkWidgetSet.GetRawImageFromDevice invalid SrcDC');
+    DebugLn('WARNING: TGtkWidgetSet.GetRawImageFromDevice invalid SrcDC');
     exit;
   end;
 
   DCOrigin:=GetDCOffset(TDeviceContext(SrcDC));
   {$IFDEF VerboseRawImage}
-  writeln('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
+  DebugLn('TGtkWidgetSet.GetRawImageFromDevice A DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' SrcRect=',SrcRect.Left,',',SrcRect.Top,',',SrcRect.Right,',',SrcRect.Bottom);
   {$ENDIF}
   ARect:=SrcRect;
   OffSetRect(ARect,DCOrigin.x,DCOrigin.y);
@@ -4706,16 +4706,16 @@ var
 begin
   Result:=false;
   {$IFDEF VerboseRawImage}
-  writeln('TGtkWidgetSet.GetRawImageFromBitmap A');
+  DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A');
   {$ENDIF}
   FillChar(NewRawImage,SizeOf(NewRawImage),0);
 
   if (not IsValidGDIObject(SrcBitmap)) then begin
-    writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid SrcBitmap!');
+    DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid SrcBitmap!');
     exit;
   end;
   if ((SrcMaskBitmap<>0) and not IsValidGDIObject(SrcMaskBitmap)) then begin
-    writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap!');
+    DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap!');
     exit;
   end;
 
@@ -4727,11 +4727,11 @@ begin
     gbBitmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIBitmapObject);
     gbPixmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIPixmapObject);
     else
-      writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] GDI_RGBImage not implemented');
+      DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] GDI_RGBImage not implemented');
       exit;
     end;
     {$IFDEF VerboseRawImage}
-    writeln('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
+    DebugLn('TGtkWidgetSet.GetRawImageFromBitmap A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8),' SrcMaskBitmap=',HexStr(Cardinal(SrcMaskBitmap),8));
     {$ENDIF}
 
     GDIMaskImg:=nil;
@@ -4742,7 +4742,7 @@ begin
       case GDIMaskImg^.GDIBitmapType of
       gbBitmap: GdkMaskBitmap:=GDIMaskImg^.GDIBitmapObject;
       else
-        writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap');
+        DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] invalid MaskBitmap');
         exit;
       end;
     end else if GDIImg^.GDIBitmapMaskObject<>nil then begin
@@ -4755,7 +4755,7 @@ begin
     if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),GdkMaskBitmap,SrcRect,
       NewRawImage)
     then begin
-      writeln('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] unable to GetRawImageFromGdkWindow Image');
+      DebugLn('WARNING: [TGtkWidgetSet.GetRawImageFromBitmap] unable to GetRawImageFromGdkWindow Image');
       exit;
     end;
 
@@ -5011,7 +5011,7 @@ begin
   then begin
     Result := 0;
     //RaiseException('');
-    WriteLn(Format('ERROR: [TGtkWidgetSet.GetSysColor] Bad Value: %8x Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
+    DebugLn(Format('ERROR: [TGtkWidgetSet.GetSysColor] Bad Value: %8x Valid Range between 0 and %d', [nIndex, MAX_SYS_COLORS]));
   end
   else Result := SysColorMap[nIndex];
   //Assert(False, Format('Trace:[TGtkWidgetSet.GetSysColor] Index %d --> %8x', [nIndex, Result]));
@@ -5343,7 +5343,7 @@ function TGtkWidgetSet.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 {$IfDef GTK2}
 begin
-  writeln('TGtkWidgetSet.GetTextExtentPoint ToDo');
+  DebugLn('TGtkWidgetSet.GetTextExtentPoint ToDo');
   Result:=false;
 end;
 {$Else}
@@ -5366,7 +5366,7 @@ begin
       UnRef := False;
     end;
     If UseFont = nil then
-      WriteLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
+      DebugLn('WARNING: [TGtkWidgetSet.GetTextExtentPoint] Missing font')
     else begin
       gdk_text_extents(UseFont, Str, Count,
                        @lbearing, @rBearing, @width, @ascent, @descent);
@@ -5503,7 +5503,7 @@ var
   Widget: PGTKWidget;
   Window: PGdkWindow;
 begin
-  //Writeln('GetWindowRect');
+  //DebugLn('GetWindowRect');
   Result := 0; //default
   if Handle <> 0 then
   begin
@@ -5749,7 +5749,7 @@ var
   GTKObject: PGTKObject;
   WasVisible: boolean;
 begin
-//writeln('[TGtkWidgetSet.HideCaret] A');
+//DebugLn('[TGtkWidgetSet.HideCaret] A');
   Assert(False, Format('Trace:  [TGtkWidgetSet.HideCaret] HWND: 0x%x', [hWnd]));
 //TODO: [TGtkWidgetSet.HideCaret] Finish (in gtkwinapi.inc)
 
@@ -5767,7 +5767,7 @@ begin
       Result := False;
     end;
   end
-  else WriteLn('WARNING: [TGtkWidgetSet.HideCaret] Got null HWND');
+  else DebugLn('WARNING: [TGtkWidgetSet.HideCaret] Got null HWND');
 
 end;
 
@@ -5797,7 +5797,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.IntersectClipRect] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.IntersectClipRect] Uninitialized GC');
       Result := ERROR;
     end
     else begin
@@ -5821,12 +5821,12 @@ var
   Widget, PaintWidget: PGtkWidget;
   LCLObject: TObject;
 begin
-  //  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
+  //  DebugLn(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Widget:=PGtkWidget(aHandle);
   LCLObject:=GetLCLObject(Widget);
   if (LCLObject<>nil) then begin
     if (LCLObject=CurrentSentPaintMessageTarget) then begin
-      writeln('NOTE: TGtkWidgetSet.InvalidateRect during paint message: ',
+      DebugLn('NOTE: TGtkWidgetSet.InvalidateRect during paint message: ',
         LCLObject.ClassName);
       //RaiseException('Double paint');
     end;
@@ -5838,7 +5838,7 @@ begin
       write(LCLObject.ClassName);
       with Rect^ do
         write(' Rect=',Left,',',Top,',',Right,',',Bottom);
-      writeln(' Erase=',bErase);
+      DebugLn(' Erase=',bErase);
     end;
     {$ENDIF}
   end;
@@ -5910,7 +5910,7 @@ begin
       end else
         Result := False;
     end else begin
-      WriteLn('WARNING: [TGtkWidgetSet.LineTo] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.LineTo] Uninitialized GC');
       Result := False;
     end;
   end;
@@ -5929,7 +5929,7 @@ end;
 
 function MessageButtonClicked(Widget : PGtkWidget; data: gPointer) : GBoolean; cdecl;
 begin
-writeln('[MessageButtonClicked] ',Integer(data^),' ',Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
+DebugLn('[MessageButtonClicked] ',dbgs(data),' ',dbgs(gtk_object_get_data(PGtkObject(Widget), 'modal_result')));
   if Integer(data^) = 0 then
     Integer(data^):= Integer(gtk_object_get_data(PGtkObject(Widget), 'modal_result'));
   Result:=false;
@@ -5944,7 +5944,7 @@ begin
     { Don't allow to close if we don't have a default return value }
     Result:= (ModalResult = 0);
     if not Result then Integer(data^):= ModalResult
-    else WriteLn('Do not close !!!');
+    else DebugLn('Do not close !!!');
   end else Result:= false;
 end;
 
@@ -6067,7 +6067,7 @@ begin
   Result:=IsValidDC(DC);
   if Result then
   with TDeviceContext(DC) do begin
-    //writeln('[TGtkWidgetSet.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
+    //DebugLn('[TGtkWidgetSet.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
     //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ');
     inc(Origin.X,dX);
     inc(Origin.Y,dY);
@@ -6106,7 +6106,7 @@ function TGtkWidgetSet.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
-  writeln('WARNING: TGtkWidgetSet.PairSplitterRemoveSide not implemented');
+  DebugLn('WARNING: TGtkWidgetSet.PairSplitterRemoveSide not implemented');
 end;
 
 {------------------------------------------------------------------------------
@@ -6143,7 +6143,7 @@ var
   vlItem : TGtkMessageQueueItem;
 begin
   //TODO Filtering
-  writeln('Peek !!!' );
+  DebugLn('Peek !!!' );
   vlItem := fMessageQueue.FirstMessageItem;
   Result := vlItem <> nil;
 
@@ -6181,7 +6181,7 @@ Begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.PolyBezier] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.PolyBezier] Uninitialized GC');
       Result := False;
     end
     else
@@ -6224,7 +6224,7 @@ begin
     if NumPts<=0 then exit;
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.Polygon] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.Polygon] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -6304,7 +6304,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.Polyline] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.Polyline] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -6459,7 +6459,7 @@ Begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.RadialArc] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.RadialArc] Uninitialized GC');
       Result := False;
     end
     else
@@ -6485,7 +6485,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.RadialChord] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.RadialChord] Uninitialized GC');
       Result := False;
     end
     else
@@ -6511,7 +6511,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.RadialPie] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.RadialPie] Uninitialized GC');
       Result := False;
     end
     else
@@ -6576,7 +6576,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.Rectangle] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.Rectangle] Uninitialized GC');
       Result := False;
     end
     else begin
@@ -6692,7 +6692,7 @@ begin
 
   if not gtk_is_radio_menu_item(Pointer(hndMenu))
   then begin
-    writeln('WARNING: TGtkWidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
+    DebugLn('WARNING: TGtkWidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
     Exit;
   end;
 
@@ -6755,7 +6755,7 @@ end;
       then begin
         Result:=gtk_radio_menu_item_group(
                                  GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
-        //writeln('TGtkWidgetSet.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',HexStr(Cardinal(Result),8));
+        //DebugLn('TGtkWidgetSet.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',HexStr(Cardinal(Result),8));
         exit;
       end;
     end;
@@ -6774,7 +6774,7 @@ begin
     if AMenuItem=nil then exit;
     ParentMenuItem:=AMenuItem.Parent;
     if ParentMenuItem=nil then exit;
-    //writeln('TGtkWidgetSet.RegroupMenuItem A ',AMenuItem.Name,' ',ParentMenuItem.Name,' GroupIndex=',AMenuItem.GroupIndex);
+    //DebugLn('TGtkWidgetSet.RegroupMenuItem A ',AMenuItem.Name,' ',ParentMenuItem.Name,' GroupIndex=',AMenuItem.GroupIndex);
     LastRadioGroupStart:=-1;
     for i:=0 to ParentMenuItem.Count-1 do begin
       if ParentMenuItem[i].RadioItem
@@ -6782,7 +6782,7 @@ begin
       and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
                        GTK_RADIO_MENU_ITEM_TYPE)
       then begin
-        //writeln('TGtkWidgetSet.RegroupMenuItem B i=',i,' ',ParentMenuItem[i].Name,
+        //DebugLn('TGtkWidgetSet.RegroupMenuItem B i=',i,' ',ParentMenuItem[i].Name,
         //' GrpIndex=',ParentMenuItem[i].GroupIndex,
         //' LastRadioGroupStart=',LastRadioGroupStart,
         //' LastGroup=',HexStr(Cardinal(gtk_radio_menu_item_group(
@@ -6815,7 +6815,7 @@ begin
     UpdateRadioGroupChecks(RadioGroup);
     Result:=true;
   end else begin
-    writeln('WARNING: TGtkWidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
+    DebugLn('WARNING: TGtkWidgetSet.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
     Result:=false;
   end;
 end;
@@ -6846,7 +6846,7 @@ function TGtkWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 var
   aDC, pSavedDC: TDeviceContext;
 begin
-//writeln('[TGtkWidgetSet.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
+//DebugLn('[TGtkWidgetSet.ReleaseDC] ',HexStr(DC,8),'  ',FDeviceContexts.Count);
   Assert(False, Format('trace:> [TGtkWidgetSet.ReleaseDC] DC:0x%x', [DC]));
   Result := 0;
 
@@ -6902,7 +6902,7 @@ begin
         on E:Exception do begin
           //Nothing, just try to unref it
           //(it segfaults if the window doesnt exist anymore :-)
-          writeln('TGtkWidgetSet.ReleaseDC: ',E.Message);
+          DebugLn('TGtkWidgetSet.ReleaseDC: ',E.Message);
         end;
       end;
 
@@ -6959,7 +6959,7 @@ begin
     pSavedDC.SavedContext := nil;
     if ClipRegionChanged then
       SelectGDIRegion(HDC(aDC));
-    //writeln('TGtkWidgetSet.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
+    //DebugLn('TGtkWidgetSet.RestoreDC A ',GDKRegionAsString(PGdiObject(aDC.ClipRegion)^.GDIRegionObject));
 
 
     // free saved DC
@@ -7027,7 +7027,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.RoundRect] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.RoundRect] Uninitialized GC');
       Result := False;
     end
     else
@@ -7107,7 +7107,7 @@ Begin
     end;
   end;
 
-  //writeln('[TGtkWidgetSet.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
+  //DebugLn('[TGtkWidgetSet.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
   dec(P.X, X);
   dec(P.Y, Y);
   Result := -1;
@@ -7161,7 +7161,7 @@ begin
   begin
     if (GC = nil) and (RGN <> 0)
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Uninitialized GC');
       Result := ERROR;
     end
     else begin
@@ -7182,12 +7182,12 @@ begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
           gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
           Result := RegionType(RegObj);
-          //writeln('TGtkWidgetSet.SelectClipRGN RGN=',GDKRegionAsString(RegObj),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
+          //DebugLn('TGtkWidgetSet.SelectClipRGN RGN=',GDKRegionAsString(RegObj),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
           SelectGDIRegion(DC);
         end
         else begin
           Result := ERROR;
-          WriteLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Invalid RGN');
+          DebugLn('WARNING: [TGtkWidgetSet.SelectClipRGN] Invalid RGN');
         end;
     end;
   end;
@@ -7211,15 +7211,15 @@ begin
   Result := 0;
 
   {if not IsValidDC(DC) then begin
-    writeln('TGtkWidgetSet.SelectObject invalid DC ',HexStr(Cardinal(DC),8));
+    DebugLn('TGtkWidgetSet.SelectObject invalid DC ',HexStr(Cardinal(DC),8));
   end;
   if not IsValidGDIObject(GDIObj) then begin
-    writeln('TGtkWidgetSet.SelectObject invalid GDIObj ',HexStr(Cardinal(GDIObj),8));
+    DebugLn('TGtkWidgetSet.SelectObject invalid GDIObj ',HexStr(Cardinal(GDIObj),8));
   end;}
 
   if IsValidDC(DC) and IsValidGDIObject(GDIObj)
   then begin
-    //writeln('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIObj=',HexStr(Cardinal(GDIObj),8),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion));
+    //DebugLn('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIObj=',HexStr(Cardinal(GDIObj),8),' GDIType=',ord(PGdiObject(GDIObj)^.GDIType),' ',ord(gdiBitmap),' ',ord(gdiRegion));
     case PGdiObject(GDIObj)^.GDIType of
 
       gdiBitmap:
@@ -7240,7 +7240,7 @@ begin
             else
               Drawable := nil;
             end;
-          //writeln('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIBitmap=',HexStr(Cardinal(CurrentBitmap),8),
+          //DebugLn('TGtkWidgetSet.SelectObject DC=',HexStr(Cardinal(DC),8),' GDIBitmap=',HexStr(Cardinal(CurrentBitmap),8),
           //' GDIBitmapType=',ord(CurrentBitmap^.GDIBitmapType),' Drawable=',HexStr(Cardinal(Drawable),8));
 
           GC := gdk_gc_new(Drawable);
@@ -7307,7 +7307,7 @@ begin
       RaiseInvalidGDIType;
     end;
   end;
-//writeln('[TGtkWidgetSet.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
+//DebugLn('[TGtkWidgetSet.SelectObject] GDI=',HexStr(Cardinal(GDIObj),8)
 // ,'  Old=',Hexstr(Cardinal(Result),8));
 end;
 
@@ -7362,7 +7362,7 @@ var
         if FindPaintMessage(ParentHandle)<>nil then begin
           {$IFDEF VerboseDsgnPaintMsg}
           if (csDesigning in TComponent(Target).ComponentState) then begin
-            writeln('TGtkWidgetSet.SendMessage A ',
+            DebugLn('TGtkWidgetSet.SendMessage A ',
               TComponent(Target).Name,':',Target.ClassName,
               ' Parent Message found: ',ParentControl.Name,':',ParentControl.ClassName
               );
@@ -7394,7 +7394,7 @@ var
           write(' GtkPaintData=nil');
         end;
       end;
-      writeln('');
+      DebugLn('');
     end;
     {$ENDIF}
     if AMessage.Msg=LM_GtkPAINT then begin
@@ -7571,7 +7571,7 @@ begin
 
   if NewWidth<CurWidth then NewWidth:=CurWidth;
   if NewHeight<CurHeight then NewHeight:=CurHeight;
-  //writeln('NewWidth=',NewWidth,' NewHeight=',NewHeight,' CurWidth=',CurWidth,' CurHeight=',CurHeight);
+  //DebugLn('NewWidth=',NewWidth,' NewHeight=',NewHeight,' CurWidth=',CurWidth,' CurHeight=',CurHeight);
   if (NewWidth=CurWidth) and (NewHeight=CurHeight) then exit;
 
   //gtk_widget_set_uposition(DropDownWidget,NewX,NewY);
@@ -7594,7 +7594,7 @@ begin
   Assert(False, Format('Trace:> [TGtkWidgetSet.SetCapture] 0x%x', [Value]));
   Widget:=PGtkWidget(Value);
   {$IfDef VerboseMouseCapture}
-  writeln('TGtkWidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
+  DebugLn('TGtkWidgetSet.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
   {$EndIf}
 
   // return old capture handle
@@ -7685,13 +7685,13 @@ begin
   if hWnd=0 then exit;
   Widget:=PGtkWidget(hWnd);
   {$IfDef VerboseFocus}
-  writeln('');
+  DebugLn('');
   write('[TGtkWidgetSet.SetFocus] A hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TWinControl(GetLCLObject(Widget));
   if LCLObject<>nil then
-    writeln(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
+    DebugLn(' LCLObject=',LCLObject.Name,':',LCLObject.ClassName)
   else
-    writeln(' LCLObject=nil');
+    DebugLn(' LCLObject=nil');
   {$EndIf}
   if hwnd = 0 then begin
     Result:=0;
@@ -7708,7 +7708,7 @@ begin
   write(' HndVisible=',GTK_WIDGET_VISIBLE(Widget));
   write(' HndRealized=',GTK_WIDGET_REALIZED(Widget));
   write(' HndMapped=',GTK_WIDGET_MAPPED(Widget));
-  writeln(''); write('   ');
+  DebugLn(''); write('   ');
   write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
   write(' OldFocus=',HexStr(Cardinal(Result),8));
   AWinControl:=TWinControl(GetNearestLCLObject(PGtkWidget(Result)));
@@ -7716,7 +7716,7 @@ begin
     write(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
   else
     write(' OldLCLParent=nil');
-  writeln('');
+  DebugLn('');
   if not GTK_WIDGET_VISIBLE(Widget) then
     RaiseException('TGtkWidgetSet.SetFocus: Widget is not visible');
   {$EndIf}
@@ -7732,13 +7732,13 @@ begin
       write(' LCLParent=',AWinControl.Name,':',AWinControl.ClassName)
     else
       write(' LCLParent=nil');
-    writeln('');
+    DebugLn('');
     {$EndIf}
     if (NewFocusWidget=nil)
     and GtkWidgetIsA(Widget, gtk_combo_get_type) then begin
       // handle is a gtk combo
       {$IfDef VerboseFocus}
-      writeln('  D taking gtkcombo entry');
+      DebugLn('  D taking gtkcombo entry');
       {$EndIf}
       NewFocusWidget:=PgtkWidget(PGtkCombo(Widget)^.entry);
     end;
@@ -7750,7 +7750,7 @@ begin
         if ImplWidget <> nil then begin
           // handle has a ImplementationWidget
           {$IfDef VerboseFocus}
-          writeln('  E taking ImplementationWidget');
+          DebugLn('  E taking ImplementationWidget');
           {$EndIf}
           NewFocusWidget:=ImplWidget;
         end;
@@ -7759,7 +7759,7 @@ begin
     if (NewFocusWidget=nil) then begin
       NewFocusWidget:=Widget;
       {$IfDef VerboseFocus}
-      writeln('  F taking default ');
+      DebugLn('  F taking default ');
       {$EndIf}
     end;
     {$IfDef VerboseFocus}
@@ -7769,17 +7769,17 @@ begin
     write(' WidMapped=',GTK_WIDGET_MAPPED(PGtkWidget(NewFocusWidget)));
     write(' WidCanfocus=',GTK_WIDGET_CAN_FOCUS(PGtkWidget(NewFocusWidget)));
     write(' TopLvlVisible=',GTK_WIDGET_VISIBLE(PGtkWidget(TopLevel)));
-    writeln('');
+    DebugLn('');
     {$EndIf}
     if (NewFocusWidget<>nil) and GTK_WIDGET_CAN_FOCUS(NewFocusWidget) then begin
       if (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
       then begin
         {$IfDef VerboseFocus}
-        writeln('  H SETTING NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+        DebugLn('  H SETTING NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
         {$EndIf}
         gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
         {$IfDef VerboseFocus}
-        writeln('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget);
+        DebugLn('  I NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8),' Success=',PGtkWindow(TopLevel)^.Focus_Widget=NewFocusWidget);
         {$EndIf}
       end;
     end;
@@ -7795,11 +7795,11 @@ begin
     and (fsModal in Screen.FocusedForm.FormState)
     and (GetNearestLCLObject(TopLevel)<>Screen.FocusedForm) then begin
       {$IFDEF VerboseFocus}
-      writeln('[TGtkWidgetSet.SetFocus] there is a modal form -> not grabbing');
+      DebugLn('[TGtkWidgetSet.SetFocus] there is a modal form -> not grabbing');
       {$ENDIF}
     end else begin
       {$IfDef VerboseFocus}
-      writeln('  J Grabbing focus');
+      DebugLn('  J Grabbing focus');
       {$EndIf}
       gtk_widget_grab_focus(NewFocusWidget);
     end;
@@ -7814,7 +7814,7 @@ begin
     write(' NewLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
   else
     write(' NewLCLParent=nil');
-  writeln('');
+  DebugLn('');
   {$EndIf}
 end;
 
@@ -7848,7 +7848,7 @@ begin
   Result := 0;
   if (Handle = 0) then exit;
 
-  //writeln('TGtkWidgetSet.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
+  //DebugLn('TGtkWidgetSet.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
 
   Adjustment := nil;
   Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
@@ -7888,7 +7888,7 @@ begin
   if Adjustment = nil then exit;
 
   with ScrollInfo, Adjustment^ do begin
-    //writeln('SetScrollInfo Value=',Value);
+    //DebugLn('SetScrollInfo Value=',Value);
     // workaround for strange floating point bug
     for i:=0 to 2 do begin
       try
@@ -7896,12 +7896,12 @@ begin
         break;
       except
         on e: Exception do begin
-          writeln('TGtkWidgetSet.SetScrollInfo Workaround for ',E.Message,' try: ',i);
+          DebugLn('TGtkWidgetSet.SetScrollInfo Workaround for ',E.Message,' try: ',dbgs(i));
           Result:=0;
         end;
       end;
     end;
-    //writeln('SetScrollInfo Result=',Result);
+    //DebugLn('SetScrollInfo Result=',Result);
     if (fMask and SIF_POS) <> 0
     then Value := nPos;
     if (fMask and SIF_RANGE) <> 0
@@ -7915,8 +7915,8 @@ begin
       Page_Increment := nPage;
     end;
 
-    {writeln('');
-    writeln('[TGtkWidgetSet.SetScrollInfo] Result=',Result,
+    {DebugLn('');
+    DebugLn('[TGtkWidgetSet.SetScrollInfo] Result=',Result,
     ' Lower=',RoundToInt(Lower),
     ' Upper=',RoundToInt(Upper),
     ' Page_Size=',RoundToInt(Page_Size),
@@ -7946,8 +7946,8 @@ begin
         else
           gtk_widget_hide(PGTKWidget(Scroll))
       end;
-      {writeln('');
-      writeln('TGtkWidgetSet.SetScrollInfo: ',
+      {DebugLn('');
+      DebugLn('TGtkWidgetSet.SetScrollInfo: ',
       ' lower=',RoundToInt(lower),'/',nMin,
       ' upper=',RoundToInt(upper),'/',nMax,
       ' value=',RoundToInt(value),'/',nPos,
@@ -8091,7 +8091,7 @@ Function TGtkWidgetSet.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
 var
   OldP: TPoint;
 begin
-  //writeln('[TGtkWidgetSet.SetWindowOrgEx] ',NewX,' ',NewY);
+  //DebugLn('[TGtkWidgetSet.SetWindowOrgEx] ',NewX,' ',NewY);
   GetWindowOrgEx(DC,@OldP);
   Result := MoveWindowOrgEx(DC,NewX-OldP.X,NewY-OldP.Y);
   if OldPoint<>nil then
@@ -8126,7 +8126,7 @@ function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   begin
     OldListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),Widget);
     if OldListItem=nil then begin
-      writeln('TGtkWidgetSet.SetWindowPos WARNING: Widget not on parents fixed widget');
+      DebugLn('TGtkWidgetSet.SetWindowPos WARNING: Widget not on parents fixed widget');
       exit;
     end;
     AfterWidget:=nil;
@@ -8142,12 +8142,12 @@ function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       AfterListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),AfterWidget);
     end;
     if (AfterListItem=nil) and (AfterWidget<>nil) then begin
-      writeln('TGtkWidgetSet.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
+      DebugLn('TGtkWidgetSet.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
       exit;
     end;
     if (OldListItem=AfterListItem) or (OldListItem^.next=AfterListItem) then
       exit;
-    //writeln('TGtkWidgetSet.SetWindowPos Moving GList entry');
+    //DebugLn('TGtkWidgetSet.SetWindowPos Moving GList entry');
     
     // reorder
     // This trick does not work properly
@@ -8162,7 +8162,7 @@ function TGtkWidgetSet.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   
   procedure SetZOrderOnLayoutWidget(Widget, LayoutWidget: PGtkWidget);
   begin
-    //writeln('ToDO: SetZOrderOnLayoutWidget');
+    //DebugLn('ToDO: SetZOrderOnLayoutWidget');
   end;
 
 var
@@ -8170,7 +8170,7 @@ var
   FixedWidget: PGtkWidget;
 begin
   Widget:=PGtkWidget(hWnd);
-  {writeln('[TGtkWidgetSet.SetWindowPos] ',GetWidgetDebugReport(Widget),
+  {DebugLn('[TGtkWidgetSet.SetWindowPos] ',GetWidgetDebugReport(Widget),
     ' Top=',hWndInsertAfter=HWND_TOP,
     ' SWP_NOZORDER=',(SWP_NOZORDER and uFlags)<>0,
     ' SWP_NOSIZE=',(SWP_NOSIZE and uFlags)<>0,
@@ -8187,7 +8187,7 @@ begin
     FixedWidget:=Widget^.Parent;
     if FixedWidget=nil then exit;
     
-    //writeln('TGtkWidgetSet.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
+    //DebugLn('TGtkWidgetSet.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
     if GtkWidgetIsA(FixedWidget,GTK_Fixed_Get_Type) then begin
       // parent's client area is a gtk_fixed widget
       SetZOrderOnFixedWidget(Widget,FixedWidget);
@@ -8227,7 +8227,7 @@ begin
       Result := False;
     end;
   end
-  else WriteLn('WARNING: [TGtkWidgetSet.ShowCaret] Got null HWND');
+  else DebugLn('WARNING: [TGtkWidgetSet.ShowCaret] Got null HWND');
 
   Assert(False, Format('Trace:< [TGtkWidgetSet.ShowCaret] HWND: 0x%x --> %s', [hWnd, BOOL_TEXT[Result]]));
 end;
@@ -8325,7 +8325,7 @@ begin
     end;
 
   SW_MINIMIZE, SW_SHOWMAXIMIZED:
-    writeln('TGtkWidgetSet.ShowWindow:  not implemented yet');
+    DebugLn('TGtkWidgetSet.ShowWindow:  not implemented yet');
 
   end;
 
@@ -8405,7 +8405,7 @@ Function TGtkWidgetSet.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 {$IfDef GTK2}
 begin
-  writeln('TGtkWidgetSet.TextOut ToDo');
+  DebugLn('TGtkWidgetSet.TextOut ToDo');
   Result:=false;
 end;
 {$ELSE}
@@ -8429,7 +8429,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtkWidgetSet.TextOut] Uninitialized GC');
+      DebugLn('WARNING: [TGtkWidgetSet.TextOut] Uninitialized GC');
     end
     else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
@@ -8446,12 +8446,12 @@ begin
         StrikeOut := LongBool(CurrentFont^.LogFont.lfStrikeOut);
       end;
       If UseFont = nil then
-        WriteLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
+        DebugLn('WARNING: [TGtkWidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetTextExtentPoint(DC, Str, Count, Sz);
         aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
-        //writeln('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
+        //DebugLn('TGtkWidgetSet.TextOut ',ARect.Left,',',ARect.Top,',',ARect.RIght,',',ARect.Bottom);
         FillRect(DC,aRect,hBrush(CurrentBrush));
         UpdateDCTextMetric(TDeviceContext(DC));
         TxtPt.X := X;
@@ -8697,6 +8697,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.350  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.349  2004/05/07 08:07:57  mattias
   ifdefd UseSimpleJpeg
 

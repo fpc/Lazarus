@@ -42,7 +42,7 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes, LCLType, InterfaceBase;
+  Classes, LCLType, LCLProc, InterfaceBase;
 
 type
   { TWSLCLComponent } 
@@ -231,11 +231,11 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
     ParentWSNode := FindParentWSClassNode(ANode);
     if ParentWSNode = nil then Exit; // nothing to do
     {$IFDEF VerboseWSRegistration}
-    WriteLN('Virtual parent: ', ParentWSNode^.WSClass.ClassName);
+    DebugLn('Virtual parent: ', ParentWSNode^.WSClass.ClassName);
     {$ENDIF}
     CommonClass := FindCommonAncestor(ANode^.WSClass, ParentWSNode^.WSClass);
     {$IFDEF VerboseWSRegistration}
-    WriteLN('Common: ', CommonClass.ClassName);
+    DebugLn('Common: ', CommonClass.ClassName);
     Indent := '';
     {$ENDIF}
     
@@ -249,7 +249,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       if Cmnt <> nil
       then begin
         {$IFDEF VerboseWSRegistration}
-        WriteLN(Indent, '*', CommonClass.Classname, ' method count: ', Cmnt^.Count);
+        DebugLn(Indent, '*', CommonClass.Classname, ' method count: ', Cmnt^.Count);
         Indent := Indent + ' ';
         {$ENDIF}
 
@@ -260,7 +260,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
         for n := 0 to Cmnt^.Count - 1 do
         begin                
           {$IFDEF VerboseWSRegistration}
-          WriteLN(Indent, 'Search: ', Cmnt^.Entries[n].Name^);
+          DebugLn(Indent, 'Search: ', Cmnt^.Entries[n].Name^);
           {$ENDIF}
           
           SearchAddr := Cmnt^.Entries[n].Addr;
@@ -269,13 +269,13 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
             if Cvmt^[idx] = SearchAddr
             then begin
               {$IFDEF VerboseWSRegistration}
-              WriteLN(Indent, 'Found at index: ', idx);
+              DebugLn(Indent, 'Found at index: ', idx);
               {$ENDIF}          
               
               if Processed[idx] 
               then begin
                 {$IFDEF VerboseWSRegistration}
-                WriteLN(Indent, 'Procesed -> skipping');
+                DebugLn(Indent, 'Procesed -> skipping');
                 {$ENDIF}
                 Break;
               end;
@@ -285,7 +285,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
               and (Pvmt^[idx] <> SearchAddr) //overridden by parent
               then begin
                 {$IFDEF VerboseWSRegistration}
-                WriteLN(Indent, Format('Updating %p -> %p', [Vvmt^[idx], Pvmt^[idx]]));
+                DebugLn(Indent, Format('Updating %p -> %p', [Vvmt^[idx], Pvmt^[idx]]));
                 {$ENDIF}
                 Vvmt^[idx] := Pvmt^[idx];
               end;
@@ -294,7 +294,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
             end;
             if idx = VIRTUAL_VMT_COUNT - 1
             then begin
-              WriteLN('[WARNING] VMT entry "', Cmnt^.Entries[n].Name^, '" not found in "', CommonClass.ClassName, '"');
+              DebugLn('[WARNING] VMT entry "', Cmnt^.Entries[n].Name^, '" not found in "', CommonClass.ClassName, '"');
               Break;
             end;
           end;
@@ -323,7 +323,7 @@ procedure RegisterWSComponent(const AComponent: TComponentClass;
       if Node^.WSClass <> nil
       then begin 
         {$IFDEF VerboseWSRegistration}
-        WriteLN('Update VClass for: ', Node^.WSClass.ClassName);
+        DebugLn('Update VClass for: ', Node^.WSClass.ClassName);
         {$ENDIF}
         CreateVClass(Node);
       end;
@@ -343,7 +343,7 @@ begin
   
   Node^.WSClass := AWSComponent;
   {$IFDEF VerboseWSRegistration}
-  WriteLN('Create VClass for: ', Node^.WSClass.ClassName);
+  DebugLn('Create VClass for: ', Node^.WSClass.ClassName);
   {$ENDIF}
   CreateVClass(Node); 
   

@@ -115,7 +115,7 @@ var
     {$IFDEF CHECK_POSITION}
     if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
-      writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
+      DebugLn('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
 
 
@@ -171,7 +171,7 @@ var
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
-      writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
+      DebugLn('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
         ' ',Name,':',ClassName,
         ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
         ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
@@ -241,7 +241,7 @@ var
       //if csDesigning in ComponentState then
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
-        writeln('[TWinControl.AlignControls.DoPosition] After Anchoring',
+        DebugLn('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
           ' Align=',AlignNames[AAlign],
           ' Control=',Name,':',ClassName,
@@ -271,7 +271,7 @@ var
       NewBottom:=NewTop+NewHeight;
       {$IFDEF CHECK_POSITION}
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
-        writeln(' Before aligning  akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
+        DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
                 ' akLeft in Control.Anchors=',akLeft in Control.Anchors,
                 ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,
                 ' New=',NewLeft,',',NewTop,',',NewRight,',',NewBottom);
@@ -341,7 +341,7 @@ var
       //if csDesigning in Control.ComponentState then
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
-        writeln('[TWinControl.AlignControls.DoPosition] After Aligning',
+        DebugLn('[TWinControl.AlignControls.DoPosition] After Aligning',
           ' ',Name,':',ClassName,
           ' Align=',AlignNames[AAlign],
           ' Control=',Name,':',ClassName,
@@ -359,7 +359,7 @@ var
       //if csDesigning in Control.ComponentState then
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
-        writeln('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
+        DebugLn('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
       {$ENDIF}
       // lock the base bounds, so that the new automatic bounds do not override
       // the user settings
@@ -377,7 +377,7 @@ var
       //if csDesigning in Control.ComponentState then
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
       with Control do
-        writeln('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
+        DebugLn('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
       {$ENDIF}
     end;
 
@@ -406,7 +406,7 @@ var
     {$IFDEF CHECK_POSITION}
     if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
     with Control do
-      writeln('[TWinControl.AlignControls.DoPosition] END Control=',
+      DebugLn('[TWinControl.AlignControls.DoPosition] END Control=',
         Name,':',ClassName,
         ' ',Left,',',Top,',',Width,',',Height,
         ' Align=',AlignNames[AAlign],
@@ -490,14 +490,14 @@ begin
 
   try
     //if csDesigning in ComponentState then begin
-      //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork,' ControlCount=',ControlCount);
-      //if AControl<>nil then writeln('  AControl=',AControl.Name,':',AControl.ClassName);
+      //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork,' ControlCount=',ControlCount);
+      //if AControl<>nil then DebugLn('  AControl=',AControl.Name,':',AControl.ClassName);
     //end;
     if AlignWork then
     begin
       AdjustClientRect(ARect);
       FAdjustClientRectRealized:=ARect;
-      //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom);
+      //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom);
       AlignList := TList.Create;
       try
         DoAlign(alTop);
@@ -631,7 +631,7 @@ end;
 Procedure TWinControl.CMDrag(var Message: TCMDrag);
 Begin
   {$IFDEF VerboseDrag}
-  writeln('TWinControl.CMDrag ',Name,':',ClassName,' ',ord(Message.DragMessage));
+  DebugLn('TWinControl.CMDrag ',Name,':',ClassName,' ',ord(Message.DragMessage));
   {$ENDIF}
   DoDragMsg(Message);
 end;
@@ -685,7 +685,7 @@ begin
   if (csLoading in ComponentState) then exit;
   r:=GetClientRect;
   AdjustClientRect(r);
-//writeln(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',r.Right,',',r.Bottom);
+//DebugLn(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',r.Right,',',r.Bottom);
   if (r.Left<>FAdjustClientRectRealized.Left)
   or (r.Top<>FAdjustClientRectRealized.Top)
   or (r.Right<>FAdjustClientRectRealized.Right)
@@ -693,7 +693,7 @@ begin
   then begin
     // client rect changed since last AlignControl
     {$IFDEF VerboseClientRectBugFix}
-    writeln('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
+    DebugLn('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
       ' New=',r.RIght,'x',r.Bottom);
     {$ENDIF}
@@ -725,7 +725,7 @@ var
   I: Integer;
 begin
   {$IFDEF VerboseClientRectBugFix}
-  writeln('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
+  DebugLn('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
   {$ENDIF}
   Include(FFlags,wcfClientRectNeedsUpdate);
 
@@ -774,7 +774,7 @@ begin
     GetClientRect;
   end;
   {$IFDEF VerboseClientRectBugFix}
-  write('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight,
+  DbgOut('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight,
   ' OldHeight=',FHeight,' NewHeight=',AHeight);
   {$ENDIF}
   inc(FClientWidth,AWidth-FWidth);
@@ -782,7 +782,7 @@ begin
   inc(FClientHeight,AHeight-FHeight);
   if (FClientHeight<0) then FClientHeight:=0;
   {$IFDEF VerboseClientRectBugFix}
-  writeln(' NewClient=',FClientWidth,',',FClientHeight);
+  DebugLn(' NewClient=',FClientWidth,',',FClientHeight);
   {$ENDIF}
 
   inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
@@ -817,12 +817,12 @@ begin
   dmFindTarget:
     begin
       {$IFDEF VerboseDrag}
-      Writeln('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',DragMsg.DragRec^.Pos.X,',',DragMsg.DragRec^.Pos.Y);
+      DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' Start DragMsg.DragRec^.Pos=',DragMsg.DragRec^.Pos.X,',',DragMsg.DragRec^.Pos.Y);
       {$ENDIF}
       TargetControl := ControlatPos(ScreentoClient(DragMsg.DragRec^.Pos),False);
       if TargetControl = nil then TargetControl := Self;
       {$IFDEF VerboseDrag}
-      Writeln('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
+      DebugLn('TWinControl.DoDragMsg dmFindTarget ',Name,':',ClassName,' End Result=',TargetControl.Name,':',TargetControl.ClassName);
       {$ENDIF}
       DragMsg.Result:=longint(TargetControl);
     end;
@@ -873,7 +873,7 @@ var
 Begin
   Result.X := 0;
   Result.Y := 0;
-//writeln('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
+//DebugLn('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
   if HandleAllocated then begin
     // get the interface idea where the client area is on the screen
     LCLIntf.ClientToScreen(Handle,Result);
@@ -908,7 +908,7 @@ function TWinControl.GetClientRect: TRect;
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
       {$IFDEF VerboseSizeMsg}
-      writeln('StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight);
+      DebugLn('StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight);
       {$ENDIF}
       if ClientSizeChanged then begin
         for i:=0 to ControlCount-1 do
@@ -941,7 +941,7 @@ begin
     or (r.Top<>Result.Top)
     or (r.Right<>Result.Right)
     or (r.Bottom<>Result.Bottom) then begin
-      //writeln(' TWinControl.GetClientRect ',Name,':',ClassName,
+      //DebugLn(' TWinControl.GetClientRect ',Name,':',ClassName,
       //  ' Old=',r.Left,',',r.Top,',',r.Right,',',r.Bottom,
       //  ' New=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom
       //  );
@@ -1041,7 +1041,7 @@ begin
       Height:= FHeight;
       {$IFDEF CHECK_POSITION}
       if AnsiCompareText(ClassName,'TScrollBar')=0 then
-      writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
+      DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' SizeMsg Width=',Width,' Height=',Height);
       {$ENDIF}
     end;
     WindowProc(TLMessage(SizeMsg));
@@ -1055,7 +1055,7 @@ begin
       YPos:= FTop;
       {$IFDEF CHECK_POSITION}
       if AnsiCompareText(ClassName,'TScrollBar')=0 then
-      writeln(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
+      DebugLn(' [TControl.SendMoveSizeMessages] ',Name,':',ClassName,' MoveMsg XPos=',XPos,' YPos=',YPos);
       {$ENDIF}
     end;
     WindowProc(TLMessage(MoveMsg));
@@ -1083,7 +1083,7 @@ begin
   end;
 
   if HandleAllocated then begin
-    //writeln('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',FShowing,' bShow=',bShow);
+    //DebugLn('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',FShowing,' bShow=',bShow);
     if (not FShowingValid) or (FShowing <> bShow) then begin
       FShowing := bShow;
       FShowingValid := true;
@@ -1229,7 +1229,7 @@ begin
     If List.Count > 0 then begin
       J := List.IndexOf(CurrentControl);
       if J<0 then exit;
-      //writeln('TWinControl.FindNextControl A ',CurrentControl.Name,' ',J,' ',GoForward,',',CheckTabStop,',',CheckParent,',',OnlyWinControls);
+      //DebugLn('TWinControl.FindNextControl A ',CurrentControl.Name,' ',J,' ',GoForward,',',CheckTabStop,',',CheckParent,',',OnlyWinControls);
       I := J;
       Repeat
         If GoForward then begin
@@ -1244,14 +1244,14 @@ begin
         if I=J then exit;
 
         Next := TControl(List[I]);
-        //writeln('TWinControl.FindNextControl B ',Next.Name,' ',I);
+        //DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',I);
         If (((Not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
         and (Next.Enabled and Next.Visible)
         and ((not OnlyWinControls) or (Next is TWinControl)) then
           Result := Next;
       until (Result <> nil);
-      //writeln('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',I);
+      //DebugLn('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',I);
     end;
   finally
     List.Free;
@@ -1349,7 +1349,7 @@ begin
       dec(P.X,ClientBounds.Left);
       dec(P.Y,ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
-      writeln('TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
+      DebugLn('TWinControl.IsControlMouseMsg ',Name,' -> ',Control.Name,
       ' MsgPos=',TheMessage.Pos.X,',',TheMessage.Pos.Y,
       ' Control=',Control.Left,',',Control.Top,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,
@@ -1407,12 +1407,12 @@ var
   PS: TPaintStruct; //defined in LCLIntf.pp
   ControlsNeedsClipping: boolean;
 begin
-//writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
+//DebugLn('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
   if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
-    writeln('TWinControl.PaintHandler A ',Name,':',ClassName);
+    DebugLn('TWinControl.PaintHandler A ',Name,':',ClassName);
   {$ENDIF}
 
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
@@ -1437,7 +1437,7 @@ begin
       for I := 0 to FControls.Count - 1 do
         if ControlMustBeClipped(TControl(FControls[I])) then
           with TControl(FControls[I]) do begin
-            //writeln('TWinControl.PaintHandler Exclude Child ',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName);
+            //DebugLn('TWinControl.PaintHandler Exclude Child ',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName);
             Clip := ExcludeClipRect(DC, Left, Top, Left + Width, Top + Height);
             if Clip = NullRegion then Break;
           end;
@@ -1451,7 +1451,7 @@ begin
     if TheMessage.DC = 0 then EndPaint(Handle, PS);
   end;
   Assert(False, Format('Trace:< [TWinControl.PaintHandler] %s', [ClassName]));
-//writeln('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
+//DebugLn('[TWinControl.PaintHandler] END  ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
 end;
 
 procedure TWinControl.PaintControls(DC: HDC; First: TControl);
@@ -1460,14 +1460,14 @@ var
 //  FrameBrush: HBRUSH;
   TempControl : TCOntrol;
 begin
-//writeln('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
+//DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
-    writeln('TWinControl.PaintControls A ',Name,':',ClassName);
+    DebugLn('TWinControl.PaintControls A ',Name,':',ClassName);
   {$ENDIF}
 
   // Controls that are not TWinControl, have no handle of their own, and so
@@ -1484,7 +1484,7 @@ begin
     while I < Count do
     begin
       TempControl := TControl(FControls.Items[I]);
-      //writeln('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
+      //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
       with (TempControl) do
         if (Visible
         or ((csDesigning in ComponentState)
@@ -1495,7 +1495,7 @@ begin
             Include(FControlState, csPaintCopy);
           SaveIndex := SaveDC(DC);
           MoveWindowOrg(DC, Left, Top);
-          //writeln('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+          //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
           IntersectClipRect(DC, 0, 0, Width, Height);
           Perform(LM_PAINT, WParam(DC), 0);
           RestoreDC(DC, SaveIndex);
@@ -1524,21 +1524,21 @@ begin
           DeleteObject(FrameBrush);
           }
         end;
-//writeln('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',HexStr(DC,8));
+//DebugLn('[TWinControl.PaintControls] END ',Name,':',ClassName,'  DC=',HexStr(DC,8));
 end;
 
 procedure TWinControl.PaintWindow(DC: HDC);
 var
   Message: TLMessage;
 begin
-//writeln('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',HexStr(DC,8));
+//DebugLn('[TWinControl.PaintWindow] ',Name,':',Classname,'  DC=',HexStr(DC,8));
   if (csDestroying in ComponentState)
   or ((DC=0) and (not HandleAllocated)) then
     exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
-    writeln('TWinControl.PaintWindow A ',Name,':',ClassName);
+    DebugLn('TWinControl.PaintWindow A ',Name,':',ClassName);
   {$ENDIF}
 
   Message.Msg := LM_PAINT;
@@ -1656,7 +1656,7 @@ var
                    )
                   );
       {$IFDEF VerboseMouseBugfix}
-      writeln('GetControlAtPos ',Name,':',ClassName,
+      DebugLn('GetControlAtPos ',Name,':',ClassName,
       ' Pos=',Pos.X,',',Pos.Y,
       ' P=',P.X,',',P.Y,
       ' ClientBounds=',ClientBounds.Left,',',ClientBounds.Top,',',ClientBounds.Right,',',ClientBounds.Bottom,
@@ -1734,15 +1734,15 @@ var
   AWinControl: TWinControl;
 begin
   if not HandleAllocated then begin
-    writeln('Warning: TWinControl.DestroyHandle ',Name,':',ClassName,' Handle not Allocated');
+    DebugLn('Warning: TWinControl.DestroyHandle ',Name,':',ClassName,' Handle not Allocated');
     //RaiseGDBException('');
   end;
 
   // First destroy all children handles
   if FWinControls <> nil then begin
     for i:= 0 to FWinControls.Count - 1 do begin
-      //writeln('  i=',i);
-      //writeln('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
+      //DebugLn('  i=',i);
+      //DebugLn('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
       AWinControl:=TWinControl(FWinControls[i]);
       if AWinControl.HandleAllocated then
         AWinControl.DestroyHandle;
@@ -1768,7 +1768,7 @@ Begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
       Form := GetParentForm(Self);
       {$IFDEF VerboseFocus}
-      writeln('TWinControl.WndProc LM_SetFocus ',Name,':',ClassName);
+      DebugLn('TWinControl.WndProc LM_SetFocus ',Name,':',ClassName);
       {$ENDIF}
       if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
       Message.Result:=0;
@@ -1779,7 +1779,7 @@ Begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
       if csFocusing in ControlState then begin
         {$IFDEF VerboseFocus}
-        writeln('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
+        DebugLn('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
         {$ENDIF}
         Exit;
       end;
@@ -1804,12 +1804,12 @@ Begin
   LM_RBUTTONQUADCLK:
      begin
        {$IFDEF VerboseMouseBugfix}
-       writeln('TWinControl.WndPRoc A ',Name,':',ClassName);
+       DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
        {$ENDIF}
        if IsControlMouseMSG(TLMMouse(Message)) then
          Exit;
        {$IFDEF VerboseMouseBugfix}
-       writeln('TWinControl.WndPRoc B ',Name,':',ClassName);
+       DebugLn('TWinControl.WndPRoc B ',Name,':',ClassName);
        {$ENDIF}
      end;
 
@@ -1889,7 +1889,7 @@ var
   Form : TCustomForm;
 begin
   {$IFDEF VerboseFocus}
-  writeln('[TWinControl.SetFocus] ',Name,':',ClassName,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
+  DebugLn('[TWinControl.SetFocus] ',Name,':',ClassName,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
   {$ENDIF}
   Form := GetParentForm(Self);
   if Form <> nil then
@@ -2124,7 +2124,7 @@ Begin
   if (not HandleAllocated) or (csDestroying in ComponentState) then exit;
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
-    writeln('TWinControl.Repaint A ',Name,':',ClassName);
+    DebugLn('TWinControl.Repaint A ',Name,':',ClassName);
   {$ENDIF}
   CNSendMessage(LM_PAINT, Self, nil);
   // Invalidate;
@@ -2220,7 +2220,7 @@ begin
     Include(FFlags,wcfReAlignNeeded);
     exit;
   end;
-  //writeln('TWinControl.ReAlign ',Name,':',ClassName);
+  //DebugLn('TWinControl.ReAlign ',Name,':',ClassName);
   AlignControl(nil);
   Exclude(FFlags,wcfReAlignNeeded);
 end;
@@ -2300,7 +2300,7 @@ begin
       UpdateControlState;
     end else
       if HandleAllocated then AControl.Invalidate;
-    //writeln('TWinControl.InsertControl ',Name,':',ClassName);
+    //DebugLn('TWinControl.InsertControl ',Name,':',ClassName);
   end;
   AControl.RequestAlign;
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
@@ -2336,8 +2336,8 @@ var
   ChildControl: TControl;
 begin
   //if csDesigning in ComponentState then begin
-  //  write('TWinControl.AlignControl ',Name,':',ClassName);
-  //  if AControl<>nil then writeln(' AControl=',AControl.Name,':',AControl.ClassName) else writeln(' AControl=nil');;
+  //  DbgOut('TWinControl.AlignControl ',Name,':',ClassName);
+  //  if AControl<>nil then DebugLn(' AControl=',AControl.Name,':',AControl.ClassName) else DebugLn(' AControl=nil');;
   //end;
   if csDestroying in ComponentState then exit;
 
@@ -2509,23 +2509,23 @@ var
   n: Integer;
   Control: TControl;
 begin
-  //writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
+  //DebugLn('[TWinControl.Destroy] A  ',Name,':',ClassName);
   // prevent parent to try to focus a to be destroyed control
   if Parent <> nil then
     RemoveFocus(true);
   if HandleAllocated then
     DestroyHandle;
-  //writeln('[TWinControl.Destroy] B  ',Name,':',ClassName);
+  //DebugLn('[TWinControl.Destroy] B  ',Name,':',ClassName);
 
   //for n:=0 to ComponentCount-1 do
-  //  writeln('  n=',n,' ',Components[n].ClassName);
+  //  DebugLn('  n=',n,' ',Components[n].ClassName);
 
   n := ControlCount;
 
   while n > 0 do
   begin
     Control := Controls[n - 1];
-    //writeln('[TWinControl.Destroy] C  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
+    //DebugLn('[TWinControl.Destroy] C  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
     Remove(Control);
     // don't free the control just set parent to nil
     // controls are freed by the owner
@@ -2536,9 +2536,9 @@ begin
 
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
-  //writeln('[TWinControl.Destroy] D  ',Name,':',ClassName);
+  //DebugLn('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
-  //writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
+  //DebugLn('[TWinControl.Destroy] END  ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -2623,7 +2623,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 Begin
-  //writeln('TWinControl.WMSetFocus A ',Name,':',ClassName);
+  //DebugLn('TWinControl.WMSetFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
   DoEnter;
 end;
@@ -2637,7 +2637,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
-  //writeln('TWinControl.WMKillFocus A ',Name,':',ClassName);
+  //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
   DoExit;
 end;
@@ -2660,13 +2660,13 @@ var
   PS : TPaintStruct;
   ClientBoundRect: TRect;
 begin
-  //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
+  //DebugLn('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
   if ([csDestroying,csLoading]*ComponentState<>[]) or (not HandleAllocated) then
     exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
   if csDesigning in ComponentState then
-    writeln('TWinControl.WMPaint A ',Name,':',ClassName);
+    DebugLn('TWinControl.WMPaint A ',Name,':',ClassName);
   {$ENDIF}
 
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
@@ -2681,7 +2681,7 @@ begin
   end
   else begin
     // NOTE: not every interface uses this part
-    //writeln('TWinControl.WMPaint Painting doublebuffered ',Name,':',classname);
+    //DebugLn('TWinControl.WMPaint Painting doublebuffered ',Name,':',classname);
 {$ifdef BUFFERED_WMPAINT}
     DC := GetDC(0);
     MemWidth:=Width;
@@ -2728,7 +2728,7 @@ begin
     end;
   end;
   Assert(False, Format('Trace:< [TWinControl.WMPaint] %s', [ClassName]));
-//writeln('[TWinControl.WMPaint] END ',Name,':',ClassName);
+//DebugLn('[TWinControl.WMPaint] END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -2741,7 +2741,7 @@ end;
 procedure TWinControl.WMDestroy(var Message: TLMDestroy);
 begin
   Assert(False, Format('Trace: [TWinControl.LMDestroy] %s', [ClassName]));
-  //writeln('TWinControl.WMDestroy ',Name,':',ClassName);
+  //DebugLn('TWinControl.WMDestroy ',Name,':',ClassName);
   // Our widget/window doesn't exist anymore
   Handle := 0;
 end;
@@ -2758,7 +2758,7 @@ var
   NewWidth, NewHeight: integer;
 begin
   {$IFDEF VerboseSizeMsg}
-  writeln('TWinControl.WMMove A ',Name,':',ClassName,' Message=',Message.XPos,',',Message.YPos,
+  DebugLn('TWinControl.WMMove A ',Name,':',ClassName,' Message=',Message.XPos,',',Message.YPos,
     ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top);
   {$ENDIF}
   NewWidth:=Width;
@@ -2790,7 +2790,7 @@ var
   NewLeft, NewTop: integer;
 begin
   {$IFDEF VerboseSizeMsg}
-  writeln('TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
+  DebugLn('TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
     ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top);
   {$ENDIF}
   NewLeft:=Left;
@@ -2802,7 +2802,7 @@ begin
     NewTop:=FBoundsRealized.Top;
     if HandleAllocated then
       GetWindowRelativePosition(Handle,NewLeft,NewTop);
-    //writeln('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
+    //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     FBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
   end;
 
@@ -2818,7 +2818,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNKeyDown(var Message: TLMKeyDown);
 begin
-  //writeln('TWinControl.CNKeyDown ',Name,':',ClassName);
+  //DebugLn('TWinControl.CNKeyDown ',Name,':',ClassName);
   if not DoKeyDown(Message) then {inherited};  // there is nothing to inherit
 end;
 
@@ -2943,7 +2943,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
 begin
-  //writeln('TWinControl.WMKeyDown ',Name,':',ClassName);
+  //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
   // ToDo: If not WantAllKeys then
   //KeyDown(CharCode, ShiftState);
 end;
@@ -3002,14 +3002,14 @@ var
   begin
     LCLIntf.GetClientRect(Handle,r);
     if csDesigning in ComponentState then
-      writeln('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
+      DebugLn('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
   end;}
 
 begin
-  //writeln('[TWinControl.CreateWnd] START ',Name,':',Classname);
+  //DebugLn('[TWinControl.CreateWnd] START ',Name,':',Classname);
   if (FCompstyle = csNone) then
   begin
-    WriteLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
+    DebugLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
     Exit;
   end;
   
@@ -3024,7 +3024,7 @@ begin
 
   if FCreatingHandle
   then begin
-    WriteLN('[WARNING] Recursive call to CreateWnd for ', ClassName, ' (', Name, ')');
+    DebugLn('[WARNING] Recursive call to CreateWnd for ', ClassName, ' (', Name, ')');
     Exit;
   end;
 
@@ -3045,7 +3045,7 @@ begin
   //WriteClientRect('B');
   InitializeWnd;
 
-  //writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   //WriteClientRect('C');
 
   // realign childs
@@ -3057,7 +3057,7 @@ begin
         if Visible then HandleNeeded;
   end;
 
-  //writeln('[TWinControl.CreateWnd] END ',Name,':',Classname);
+  //DebugLn('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
 end;
 
@@ -3106,7 +3106,7 @@ begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
 
-  //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',Left,',',Top,',',Width,',',Height);
+  //DebugLn('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',Left,',',Top,',',Width,',',Height);
   DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
 
@@ -3330,7 +3330,7 @@ begin
   {$IFDEF CHECK_POSITION}
   //if csDesigning in ComponentState then
   if AnsiCompareText(ClassName,'TScrollBar')=0 then
-  writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
+  DebugLn('[TWinControl.SetBounds] START ',Name,':',ClassName,
   ' Old=',Left,',',Top,',',Width,',',Height,
   ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
   ' Lock=',BoundsLockCount,
@@ -3349,7 +3349,7 @@ begin
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
       if AnsiCompareText(ClassName,'TScrollBar')=0 then
-      writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
+      DebugLn('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
       ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
       ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
       {$ENDIF}
@@ -3416,7 +3416,7 @@ end;
 function TWinControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
 begin
   Result := GetDC(Handle);
-  //writeln('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
+  //DebugLn('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
   if Result = 0
   then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
     ClassName]);
@@ -3452,7 +3452,7 @@ var
   NewBounds: TRect;
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
-  //writeln('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+  //DebugLn('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
   //' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
   FBoundsRealized:=NewBounds;
   CNSendMessage(LM_SetSize, Self, @NewBounds);
@@ -3471,9 +3471,9 @@ begin
     {$IFDEF CHECK_POSITION}
     //if csDesigning in ComponentState then
     if AnsiCompareText(ClassName,'TScrollBar')=0 then
-    writeln('[TWinControl.RealizeBounds] A ',Name,':',ClassName,
-    ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-    ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+    DebugLn('[TWinControl.RealizeBounds] A ',Name,':',ClassName,
+    ' OldRelBounds=',dbgs(FBoundsRealized),
+    ' -> NewBounds=',dbgs(NewBounds));
     {$ENDIF}
     BeginUpdateBounds;
     try
@@ -3519,6 +3519,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.227  2004/05/11 11:42:27  mattias
+  replaced writeln by debugln
+
   Revision 1.226  2004/05/11 10:53:59  mattias
   replaced writeln by debugln
 

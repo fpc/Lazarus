@@ -87,7 +87,7 @@ begin
   r:=Count-1;
   while (l<=r) do begin
     m:=(l+r) shr 1;
-//writeln(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
+//DebugLn(':0 [IndexOfNodeAtTop] m=',m,' y=',y,' ',NodeArray[m].Text,' NodeArray[m].Top=',NodeArray[m].Top,' NodeArray[m].BottomExpanded=',NodeArray[m].BottomExpanded);
     if NodeArray[m].Top>y then
       r:=m-1
     else if NodeArray[m].BottomExpanded<=y then
@@ -195,7 +195,7 @@ destructor TTreeNode.Destroy;
 //  CheckValue: Integer;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  writeln('[TTreeNode.Destroy] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
+  DebugLn('[TTreeNode.Destroy] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
   {$ENDIF}
   FDeleting := True;
   HasChildren := false;
@@ -468,7 +468,7 @@ end;
 
 procedure TTreeNode.DoExpand(ExpandIt: Boolean);
 begin
-//writeln('[TTreeNode.DoExpand] Self=',HexStr(Cardinal(Self),8),' Text=',Text,
+//DebugLn('[TTreeNode.DoExpand] Self=',HexStr(Cardinal(Self),8),' Text=',Text,
 //' HasChildren=',HasChildren,' ExpandIt=',ExpandIt,' Expanded=',Expanded);
   if HasChildren and (Expanded<>ExpandIt) then begin
     if (TreeView<>nil) then begin
@@ -677,7 +677,7 @@ procedure TTreeNode.SetHasChildren(AValue: Boolean);
 //var Item: TTVItem;
 begin
   if AValue=HasChildren then exit;
-  //writeln('[TTreeNode.SetHasChildren] Self=',HexStr(Cardinal(Self),8),
+  //DebugLn('[TTreeNode.SetHasChildren] Self=',HexStr(Cardinal(Self),8),
   //' Self.Text=',Text,' AValue=',AValue);
   if AValue then
     Include(FStates,nsHasChildren)
@@ -1008,7 +1008,7 @@ var OldIndex, i: integer;
   TheTreeView: TCustomTreeView;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  writeln('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
+  DebugLn('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
   {$ENDIF}
   Selected:=false;
   if Owner<>nil then begin
@@ -1087,7 +1087,7 @@ begin
   write('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
   ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
   if ANode<>nil then write(' ANode.Text=',ANode.Text);
-  writeln('');
+  DebugLn('');
   {$ENDIF}
   Unbind;
   // set parent
@@ -1166,7 +1166,7 @@ begin
     taInsert:
       begin
         // insert node in front of ANode
-        //writeln('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',HexStr(Cardinal(ANode),8));
+        //DebugLn('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',HexStr(Cardinal(ANode),8));
         FNextBrother:=ANode;
         FPrevBrother:=ANode.GetPrevSibling;
         if Owner<>nil then begin
@@ -1186,7 +1186,7 @@ begin
   write('[TTreeNode.InternalMove] END Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
   ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
   if ANode<>nil then write(' ANode.Text=',ANode.Text);
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 
 {var
@@ -1692,7 +1692,7 @@ begin
   write('TTreeNode.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
   write(' Consistency=',ConsistencyCheck);
   write(' Text=',Text);
-  writeln('');
+  DebugLn('');
   if Recurse then begin
     for i:=0 to FCount-1 do
       Items[i].WriteDebugReport(Prefix+'  ',true);
@@ -1888,7 +1888,7 @@ begin
   write('[TTreeNodes.InternalAddObject] Node=',Node<>nil,' S=',S,
   ' AddMode=',AddModeNames[AddMode]);
   if Node<>nil then write(' Node.Text=',Node.Text);
-  writeln('');
+  DebugLn('');
   {$ENDIF}
   Result := Owner.CreateNode;
   ok:=false;
@@ -2124,7 +2124,7 @@ procedure TTreeNodes.MoveTopLvlNode(TopLvlFromIndex, TopLvlToIndex: integer;
 var i: integer;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  writeln('[TTreeNodes.MoveTopLvlNode] TopLvlFromIndex=',TopLvlFromIndex,
+  DebugLn('[TTreeNodes.MoveTopLvlNode] TopLvlFromIndex=',TopLvlFromIndex,
   ' TopLvlToIndex=',TopLvlToIndex,' Node.Text=',Node.Text);
   {$ENDIF}
   if (TopLvlFromIndex>=FTopLvlCount) then
@@ -2322,10 +2322,10 @@ begin
       exit;
     end;
     inc(RealCount,Node.SubTreeCount);
-    //writeln(' ConsistencyCheck: B  ',RealCount,',',Node.SubTreeCount);
+    //DebugLn(' ConsistencyCheck: B  ',RealCount,',',Node.SubTreeCount);
     Node:=Node.FNextBrother;
   end;
-  //writeln(' ConsistencyCheck: B  ',RealCount,',',FCount);
+  //DebugLn(' ConsistencyCheck: B  ',RealCount,',',FCount);
   if RealCount<>FCount then exit(-3);
   if (FTopLvlCapacity<=0) and (FTopLvlItems<>nil) then exit(-4);
   if (FTopLvlCapacity>0) and (FTopLvlItems=nil) then exit(-5);
@@ -2337,7 +2337,7 @@ begin
       exit(-9);
     if (i<FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>FTopLvlItems[i+1])
     then begin
-      writeln(' CONSISTENCY i=',i,' FTopLvlCount=',FTopLvlCount,' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
+      DebugLn(' CONSISTENCY i=',dbgs(i),' FTopLvlCount=',dbgs(FTopLvlCount),' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
       exit(-10);
     end;
     if (i=FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>nil) then
@@ -2357,7 +2357,7 @@ begin
   write(Prefix);
   write('TTreeNodes.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
   write(' Consistency=',ConsistencyCheck);
-  writeln('');
+  DebugLn('');
   if AllNodes then begin
     Node:=GetFirstNode;
     while Node<>nil do begin
@@ -2570,7 +2570,7 @@ begin
   write(Prefix);
   write('TTreeStrings.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
   write(' Consistency=',ConsistencyCheck);
-  writeln('');
+  DebugLn('');
 end;
 
 
@@ -2815,7 +2815,7 @@ end;
 
 procedure TCustomTreeView.SetScrolledLeft(AValue: integer);
 begin
-//writeln('@@@@@ ',FScrolledTop,',',AValue);
+//DebugLn('@@@@@ ',FScrolledTop,',',AValue);
   if AValue<0 then AValue:=0;
   if AValue=FScrolledLeft then exit;
   if AValue>GetMaxScrollLeft then AValue:=GetMaxScrollLeft;
@@ -2827,7 +2827,7 @@ end;
 
 procedure TCustomTreeView.SetScrolledTop(AValue: integer);
 begin
-//writeln('$$$$$ ',FScrolledTop,',',AValue);
+//DebugLn('$$$$$ ',FScrolledTop,',',AValue);
   if FScrolledTop=AValue then exit;
   if AValue<0 then AValue:=0;
   if AValue>GetMaxScrollTop then AValue:=GetMaxScrollTop;
@@ -2998,7 +2998,7 @@ end;
 
 procedure TCustomTreeView.UpdateTopItem;
 begin
-//writeln('TCustomTreeView.UpdateTopItem tvsTopItemNeedsUpdate in FStates=',tvsTopItemNeedsUpdate in FStates);
+//DebugLn('TCustomTreeView.UpdateTopItem tvsTopItemNeedsUpdate in FStates=',tvsTopItemNeedsUpdate in FStates);
   if (FStates*[tvsTopItemNeedsUpdate,tvsTopsNeedsUpdate]=[]) then exit;
   FTopItem:=GetNodeAtY(BorderWidth);
   Exclude(FStates,tvsTopItemNeedsUpdate);
@@ -3136,7 +3136,7 @@ begin
   else begin
     Result:=LastVisibleNode.Top+LastVisibleNode.Height
              -(ClientHeight-ScrollBarWidth)+2*BorderWidth;
-//writeln('>>> ',LastVisibleNode.Text,' ',Result);
+//DebugLn('>>> ',LastVisibleNode.Text,' ',Result);
     if Result<0 then Result:=0;
   end;
 end;
@@ -3370,17 +3370,17 @@ end;
 function TCustomTreeView.IsNodeVisible(ANode: TTreeNode): Boolean;
 begin
   Result:=(ANode<>nil) and (ANode.AreParentsExpanded);
-  //writeln('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
+  //DebugLn('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
   //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
-    //writeln('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
+    //DebugLn('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
     //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
     if (FScrolledTop>=ANode.Top+ANode.Height)
     or (FScrolledTop+(ClientHeight-ScrollBarWidth)-2*BorderWidth<ANode.Top)
     then
       Result:=false;
   end;
-  //writeln('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
+  //DebugLn('[TCustomTreeView.IsNodeVisible] END Node=',HexStr(Cardinal(ANode),8),
   //' Node.Text=',ANode.Text,' Visible=',Result);
 end;
 
@@ -3486,7 +3486,7 @@ begin
         ShowScrollBar(Handle,SB_HORZ,True);
       end;
     end;
-    //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
+    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] nMin=',ScrollInfo.nMin,
     //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
     //' nPos=',ScrollInfo.nPos,' GetMaxScrollLeft=',GetMaxScrollLeft,
     //' ClientW=',ClientWidth,
@@ -3519,11 +3519,11 @@ begin
         ShowScrollBar(Handle,SB_VERT,True);
       end;
     end;
-    //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',ScrollInfo.nMin,
+    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',ScrollInfo.nMin,
     //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
     //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
   end else begin
-    //writeln('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
+    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
     FLastVertScrollInfo.cbSize:=0;
     ShowScrollBar(Handle,SB_VERT,false);
   end;
@@ -3978,7 +3978,7 @@ var
   P: TPoint;
 begin
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.DoStartDrag A ',Name,':',ClassName);
+  DebugLn('TCustomTreeView.DoStartDrag A ',Name,':',ClassName);
   {$ENDIF}
   inherited DoStartDrag(DragObject);
   FLastDropTarget := nil;
@@ -3987,9 +3987,9 @@ begin
     with ScreenToClient(P) do FDragNode := GetNodeAt(X, Y);
     {$IFDEF VerboseDrag}
     if FDragNode<>nil then
-      writeln('TCustomTreeView.DoStartDrag DragNode=',FDragNode.Text)
+      DebugLn('TCustomTreeView.DoStartDrag DragNode=',FDragNode.Text)
     else
-      writeln('TCustomTreeView.DoStartDrag DragNode=nil');
+      DebugLn('TCustomTreeView.DoStartDrag DragNode=nil');
     {$ENDIF}
   end;
 end;
@@ -3997,7 +3997,7 @@ end;
 procedure TCustomTreeView.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.DoEndDrag A ',Name,':',ClassName);
+  DebugLn('TCustomTreeView.DoEndDrag A ',Name,':',ClassName);
   {$ENDIF}
   inherited DoEndDrag(Target, X, Y);
   FLastDropTarget := nil;
@@ -4007,7 +4007,7 @@ procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
 begin
   inherited CMDrag(AMessage);
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.CMDrag ',Name,':',ClassName,' ',ord(AMessage.DragMessage));
+  DebugLn('TCustomTreeView.CMDrag ',Name,':',ClassName,' ',ord(AMessage.DragMessage));
   {$ENDIF}
   with AMessage, DragRec^ do
     case DragMessage of
@@ -4035,7 +4035,7 @@ begin
   inherited DragOver(Source,X,Y,State,Accept);
   Node := GetNodeAt(X, Y);
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.DragOver ',Name,':',ClassName,' ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
+  DebugLn('TCustomTreeView.DragOver ',Name,':',ClassName,' ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
   {$ENDIF}
   if (Node <> nil)
   and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
@@ -4067,12 +4067,12 @@ begin
     // draw nodes
     Node:=TopItem;
     //write('[TCustomTreeView.DoPaint] A Node=',HexStr(Cardinal(Node),8));
-    //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
+    //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
     while Node<>nil do begin
       DoPaintNode(Node);
       Node:=Node.GetNextVisible;
       //write('[TCustomTreeView.DoPaint] B Node=',HexStr(Cardinal(Node),8));
-      //if Node<>nil then writeln(' Node.Text=',Node.Text) else writeln('');
+      //if Node<>nil then DebugLn(' Node.Text=',Node.Text) else DebugLn('');
     end;
     // draw insert mark for new root node
     if (InsertMarkType=tvimAsFirstChild)
@@ -4089,11 +4089,11 @@ begin
     Node:=BottomItem;
     if Node<>nil then
       SpaceRect.Top:=Node.Top+Node.Height-FScrolledTop+BorderWidth;
-    //if Node<>nil then writeln('BottomItem=',BottomItem.text) else writeln('NO BOTTOMITEM!!!!!!!!!');
+    //if Node<>nil then DebugLn('BottomItem=',BottomItem.text) else DebugLn('NO BOTTOMITEM!!!!!!!!!');
     // TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
     if (FBackgroundColor<>clNone) and (SpaceRect.Top<SpaceRect.Bottom) then
     begin
-      //writeln('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
+      //DebugLn('  SpaceRect=',SpaceRect.Left,',',SpaceRect.Top,',',SpaceRect.Right,',',SpaceRect.Bottom);
       Brush.Color:=FBackgroundColor;
       FillRect(SpaceRect);
     end;
@@ -4138,7 +4138,7 @@ var
     Blue:=AColor and $ff;
     if Red+Green+Blue>$180 then
       Result:=clBlack;
-    //writeln('[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue);
+    //DebugLn('[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue);
   end;
 
   function DrawTreeLines(CurNode: TTreeNode): integer;
@@ -4324,7 +4324,7 @@ begin
     PaintImages:=true;
   end;
   VertMid:=(NodeRect.Top+NodeRect.Bottom) shr 1;
-  //writeln('[TCustomTreeView.DoPaintNode] Node=',HexStr(Cardinal(Node),8),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
+  //DebugLn('[TCustomTreeView.DoPaintNode] Node=',HexStr(Cardinal(Node),8),' Node.Text=',Node.Text,' NodeRect=',NodeRect.Left,',',NodeRect.Top,',',NodeRect.Right,',',NodeRect.Bottom,' VertMid=',VertMid);
   with Canvas do begin
     // draw background
     if (tvoRowSelect in FOptions) and NodeSelected then
@@ -4530,7 +4530,7 @@ var
   bStartDrag: boolean;
 begin
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
+  DebugLn('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
   {$ENDIF}
   fMouseDownX := X;
   fMouseDownY := Y;
@@ -4561,7 +4561,7 @@ begin
       end else if x>=CursorNode.DisplayTextLeft then begin
         // mousedown occured in text -> select node and begin drag operation
         {$IFDEF VerboseDrag}
-        writeln('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture);
+        DebugLn('TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture);
         {$ENDIF}
         if MouseCapture then
           Include(FStates,tvsMouseCapture);
@@ -4586,7 +4586,7 @@ begin
     end;
     if (bStartDrag) then begin
       {$IFDEF VerboseDrag}
-      writeln('TCustomTreeView.MouseDown A bStartDrag ',Name,':',ClassName,' ');
+      DebugLn('TCustomTreeView.MouseDown A bStartDrag ',Name,':',ClassName,' ');
       {$ENDIF}
       FDragNode:=CursorNode;
       Include(fStates,tvsWaitForDragging);
@@ -4602,7 +4602,7 @@ begin
     or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       {$IFDEF VerboseDrag}
-      writeln('TCustomTreeView.MouseMove A Begindrag ',Name,':',ClassName,' ');
+      DebugLn('TCustomTreeView.MouseMove A Begindrag ',Name,':',ClassName,' ');
       {$ENDIF}
       Exclude(fStates, tvsWaitForDragging);
       BeginDrag(false);
@@ -4803,12 +4803,12 @@ procedure TCustomTreeView.WMLButtonDown(var AMessage: TLMLButtonDown);
   P: TSmallPoint;}
 begin
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.WMLButtonDown A ',Name,':',ClassName,' ');
+  DebugLn('TCustomTreeView.WMLButtonDown A ',Name,':',ClassName,' ');
   {$ENDIF}
   Exclude(FStates,tvsDragged);
   inherited WMLButtonDown(AMessage);
   {$IFDEF VerboseDrag}
-  writeln('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
+  DebugLn('TCustomTreeView.WMLButtonDown END ',Name,':',ClassName,' ');
   {$ENDIF}
   {
   FDragNode := nil;
@@ -5002,7 +5002,7 @@ begin
   write(Prefix);
   write('TCustomTreeView.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
   write(' Consistency=',ConsistencyCheck);
-  writeln('');
+  DebugLn('');
   if AllNodes then begin
     Items.WriteDebugReport(Prefix+'  ',true);
   end;
