@@ -3270,31 +3270,31 @@ end;
 
 Function CreateFormContents(var FormWidget : Pointer) : Pointer;
 var
-  TempWidget,
-  TempWidget2 : Pointer;
+  ScrolledWidget,
+  LayoutWidget: Pointer;
 begin
   // Create the VBox. We need that to place controls outside
-  // the client area (like menu and the statusbar)
+  // the client area (like menu)
   Result := gtk_vbox_new(False, 0);
   If FormWidget = nil then
     FormWidget := Result;
 
   // Create the form client area
-  TempWidget := gtk_scrolled_window_new(nil,nil);
-  gtk_box_pack_end(Result, TempWidget, True, True, 0);
-  gtk_widget_show(TempWidget);
+  ScrolledWidget := gtk_scrolled_window_new(nil,nil);
+  gtk_box_pack_end(Result, ScrolledWidget, True, True, 0);
+  gtk_widget_show(ScrolledWidget);
 
-  gtk_object_set_data(FormWidget,'scroll_area', TempWidget);
+  gtk_object_set_data(FormWidget,'scroll_area', ScrolledWidget);
 
-  TempWidget2 := gtk_layout_new(nil, nil);
-  gtk_container_add(TempWidget, TempWidget2);
-  gtk_widget_show(TempWidget2);
-  SetFixedWidget(FormWidget, TempWidget2);
-  SetMainWidget(FormWidget, TempWidget2);
+  LayoutWidget := gtk_layout_new(nil, nil);
+  gtk_container_add(ScrolledWidget, LayoutWidget);
+  gtk_widget_show(LayoutWidget);
+  SetFixedWidget(FormWidget, LayoutWidget);
+  SetMainWidget(FormWidget, LayoutWidget);
 
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
-  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
-  gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(ScrolledWidget)^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(PGtkScrolledWindow(ScrolledWidget),
                                  GTK_POLICY_NEVER,
                                  GTK_POLICY_NEVER);
 end;
@@ -4102,6 +4102,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.179  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.178  2003/06/03 10:29:22  mattias
   implemented updates between source marks and breakpoints
 
