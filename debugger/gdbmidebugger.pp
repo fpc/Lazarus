@@ -489,7 +489,6 @@ end;
 function TGDBMIDebugger.GDBGetData(const AExpression: String; AValues: array of const): Pointer;
 var
   S: String;
-  n: Integer;
 begin
   if not ExecuteCommand('x/d ' + AExpression, AValues, S, True)
   then Result := nil
@@ -946,7 +945,6 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
   var
     S: String;
     ErrorNo: Integer;
-    ResultList: TStringList;
     Location: TDBGLocationRec;
   begin
     ErrorNo := Integer(GDBGetData('$fp+8', []));
@@ -1747,6 +1745,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.18  2003/05/29 07:25:02  mattias
+  added Destroying flag, debugger now always shuts down
+
   Revision 1.17  2003/05/29 02:32:52  marc
   MWE: + Added GDB version check to exception parser
 
