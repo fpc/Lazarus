@@ -37,6 +37,7 @@ type
   TPrinterCapability  = (pcCopies, pcOrientation, pcCollation);
   TPrinterCapabilities= Set of TPrinterCapability;
   TPrinterState       = (psNoDefine,psReady,psPrinting,psStopped);
+  TPrinterType        = (ptLocal,ptNetWork);
 
   {
    This object it's a base class for TCanvas for TPrinter Object.
@@ -61,13 +62,14 @@ type
     procedure SetPageHeight(const AValue: Integer);
     procedure SetPageWidth(const AValue: Integer);
     procedure SetTitle(const AValue: string);
-  public
-    constructor Create(APrinter: TPrinter); virtual;
-    procedure Changing; override;
-    
+  protected
     procedure BeginDoc; virtual;
     procedure NewPage;  virtual;
     procedure EndDoc; virtual;
+
+  public
+    constructor Create(APrinter: TPrinter); virtual;
+    procedure Changing; override;
 
     property Printer : TPrinter read fPrinter;
     
@@ -143,6 +145,8 @@ type
     procedure SetOrientation(const AValue: TPrinterOrientation);
     procedure SetPrinterIndex(AValue: integer);
   protected
+     procedure SelectCurrentPrinterOrDefault;
+     
      function GetCanvasRef : TPrinterCanvasRef; virtual;
      
      procedure DoBeginDoc; virtual;
@@ -165,6 +169,8 @@ type
      procedure DoSetPaperName(aName : string); virtual;
      function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; virtual;
      function DoGetPrinterState: TPrinterState; virtual;
+     function GetPrinterType : TPrinterType; virtual;
+     function GetCanPrint : Boolean; virtual;
   public
      constructor Create; virtual;
      destructor Destroy; override;
@@ -193,6 +199,8 @@ type
      property Aborted: Boolean read fAborted;
      property Printing: Boolean read FPrinting;
      property Title: string read fTitle write fTitle;
+     property PrinterType : TPrinterType read GetPrinterType;
+     property CanPrint : Boolean read GetCanPrint;
   end;
   
 var
@@ -244,13 +252,15 @@ procedure TPrinter.BeginDoc;
 begin
   //Check if Printer not printing otherwise, exception
   CheckPrinting(False);
+  
+  //If not selected printer, set default printer
+  SelectCurrentPrinterOrDefault;
+  
   Canvas.Refresh;
   fPrinting := True;
   fAborted := False;
   fPageNumber := 1;
-
   TPrinterCanvas(Canvas).BeginDoc;
-  
   //Call the specifique Begindoc
   DoBeginDoc;
 end;
@@ -261,12 +271,13 @@ begin
   //Check if Printer print otherwise, exception
   CheckPrinting(True);
 
+  TPrinterCanvas(Canvas).EndDoc;
+  
   DoEndDoc(fAborted);
 
   fPrinting := False;
   fAborted := False;
   fPageNumber := 0;
-  TPrinterCanvas(Canvas).EndDoc;
 end;
 
 //Create an new page
@@ -309,7 +320,7 @@ begin
     if (aName<>'') then
     begin
       //Printer changed ?
-      if fPrinters.IndexOf(aName)<>PrinterIndex then
+      if fPrinters.IndexOf(aName)<>fPrinterIndex then
       begin
         i:=DoSetPrinter(aName);
         if i<0 then
@@ -331,7 +342,7 @@ begin
     fCanvas:=GetCanvasRef.Create(Self);
   end;
   
-  Result:=nil;
+  Result:=fCanvas;
 end;
 
 //Raise error if Printer.Printing is not Value
@@ -416,6 +427,7 @@ begin
     DoEnumPrinters(fPrinters);
 end;
 
+
 //Set the copies numbers
 procedure TPrinter.SetCopies(AValue: Integer);
 begin
@@ -450,6 +462,13 @@ begin
     SetPrinter(aName);
   end
   else raise EPrinter.Create('zero printer definied !');
+end;
+
+//If not Printer selected, Select the default printer
+procedure TPrinter.SelectCurrentPrinterOrDefault;
+begin
+  if fPrinterIndex<0 then
+    PrinterIndex:=0;
 end;
 
 //Specify here the Canvas class used by your TPrinter object
@@ -579,6 +598,18 @@ function TPrinter.DoGetPrinterState: TPrinterState;
 begin
   //Override this methode
   Result:=psNoDefine;
+end;
+
+//Return the type of selected printer
+function TPrinter.GetPrinterType: TPrinterType;
+begin
+  Result:=ptLocal;
+end;
+
+//Return True if selected printer can printing
+function TPrinter.GetCanPrint: Boolean;
+begin
+  Result:=True;
 end;
 
 { TPaperSize }
