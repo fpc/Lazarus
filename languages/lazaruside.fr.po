@@ -7,6 +7,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
+#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
+msgid "                      primary config directory, where Lazarus stores its config files. Default is "
+msgstr ""
+
+#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
+msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
+msgstr ""
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "    commande 1 \""
@@ -198,14 +206,6 @@ msgstr "(Aucun)"
 #: lazarusidestrconsts:listmunknownmacro
 msgid "(unknown macro: %s)"
 msgstr "(macro inconnue: %s)"
-
-#: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
-msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
-msgstr "--primary-config-path <path>\n                         Répertoire de configuration primaire, où Lazarus\n                         enregistre ses fichiers de configurations. Par défaut c'est \n                         %s\n\n"
-
-#: lazarusidestrconsts:liscmdlinesecondaryconfigpathdesc
-msgid "--secondary-config-path <path>\n                         secondary config directory, where Lazarus\n                         searches for config template files.\n                         Default is %s\n\n"
-msgstr "--secondary-config-path <path>\n                         Répertoire secondaire de configuration, où Lazarus\n                         recherche les modèles de configuration.\n                         Par défaut c'est %s\n\n"
 
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "0.8.5 alpha"
@@ -2195,6 +2195,10 @@ msgstr "Non implementé à ce jour"
 msgid "IDE Integration"
 msgstr "Intégration de l'IDE"
 
+#: lazarusidestrconsts:lisideoptions
+msgid "IDE Options:"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptsidentifier
 msgid "Identifier"
 msgstr "Identificateur"
@@ -2220,8 +2224,8 @@ msgid "If"
 msgstr ""
 
 #: lazarusidestrconsts:uenotimpltext
-msgid "If You can help us to implement this feature, mail to\015lazarus@miraclec.com"
-msgstr "Si vous souhaitez aider à implémenter cette fonctionnalité, mailler à \015lazarus@miraclec.com"
+msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsifdef
 msgid "IfDef"
@@ -2747,9 +2751,9 @@ msgstr "Lancer la cible avec la ligne de commande"
 msgid "Lazarus"
 msgstr "Lazarus"
 
-#: lazarusidestrconsts:liscmdlinehlpheader
-msgid "lazarus [options] <project-filename>\n\nIDE Options:\n\n--help or -?             this help message\n\n"
-msgstr "lazarus [options] <fichier projet>\n\nIDE Options:\n\n--help ou -?             ce message d'aide\n\n"
+#: lazarusidestrconsts:lislazarusoptionsprojectfilename
+msgid "lazarus [options] <project-filename>"
+msgstr ""
 
 #: lazarusidestrconsts:lisconfigdirectory
 msgid "Lazarus config directory"
@@ -5052,11 +5056,11 @@ msgid "The package %s%s%s is marked for installation, but can not be found.%sRem
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sShould lazarus now be rebuilt?"
+msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
-msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sShould lazarus now be rebuilt?"
+msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
@@ -5115,9 +5119,9 @@ msgstr ""
 msgid "The Test Directory could not be found:%s%s%s%s%s(see environment options)"
 msgstr ""
 
-#: lazarusidestrconsts:lisunitnamealreadyexiststext
-msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."
-msgstr "L'unité \"%s\" existe déjà. \nIgnorer pour la renommer,\nAnnuler, Annulera l'enregistrement de ce source."
+#: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
+msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
@@ -5185,6 +5189,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisanunsavedpackageintherequiredpackages
 msgid "There is an unsaved package in the required packages. See package graph."
+msgstr ""
+
+#: lazarusidestrconsts:listhishelpmessage
+msgid "this help message"
 msgstr ""
 
 #: lazarusidestrconsts:lisresourcefilecomment

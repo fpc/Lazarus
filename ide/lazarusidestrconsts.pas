@@ -49,29 +49,17 @@ resourcestring
     +'expression and try again.';
 
   // command line help
-  lisCmdLineHlpHeader = 'lazarus [options] <project-filename>' + LineEnding
-              + LineEnding
-              + 'IDE Options:' + LineEnding
-              + LineEnding
-              + '--help or -?             this help message' + LineEnding
-              + LineEnding;
-
-  lisCmdLinePrimaryConfigPathDesc =
-     '--primary-config-path <path>' + LineEnding
-    +'                         primary config directory, where Lazarus' + LineEnding
-    +'                         stores its config files. Default is ' + LineEnding
-    +'                         %s' + LineEnding
-    + LineEnding;
-    
-  lisCmdLineSecondaryConfigPathDesc =
-     '--secondary-config-path <path>' + LineEnding
-    +'                         secondary config directory, where Lazarus' + LineEnding
-    +'                         searches for config template files.' + LineEnding
-    +'                         Default is %s' + LineEnding
-    + LineEnding;
-    
+  listhisHelpMessage = 'this help message';
+  lisprimaryConfigDirectoryWhereLazarusStoresItsConfig =
+    '                      primary config '
+    +'directory, where Lazarus stores its config files. Default is ';
+  lislazarusOptionsProjectFilename = 'lazarus [options] <project-filename>';
+  lisIDEOptions = 'IDE Options:';
   lisCmdLineLCLInterfaceSpecificOptions =
     'LCL Interface specific options:';
+  lissecondaryConfigDirectoryWhereLazarusSearchesFor =
+    '                      secondary config '
+    +'directory, where Lazarus searches for config template files. Default is ';
 
   // component palette
   lisSelectionTool = 'Selection tool';
@@ -442,7 +430,7 @@ resourcestring
   lisProjectChanged = 'Project changed';
 
   lisFPCSourceDirectoryError = 'FPC Source Directory error';
-  lisPLzCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
+  lisPlzCheckTheFPCSourceDirectory = 'Please check the freepascal source directory';
   lisCompilerError = 'Compiler error';
   lisPlzCheckTheCompilerName = 'Please check the compiler name';
   lisAboutLazarus = 'About Lazarus';
@@ -464,10 +452,9 @@ resourcestring
       +'%s'
       +'As Lazarus is growing we need more developers.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
-  lisUnitNameAlreadyExistsText = 'The unit "%s" already exists.' + LineEnding
-       +'Ignore will force the renaming,' + LineEnding
-       +'Cancel will cancel the saving of this source and' + LineEnding
-       +'Abort will abort the whole saving.';
+  lisTheUnitAlreadyExistsIgnoreWillForceTheRenaming = 'The unit %s%s%s '
+    +'already exists.%sIgnore will force the renaming,%sCancel will cancel '
+    +'the saving of this source and%sAbort will abort the whole saving.';
   lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
   lisInvalidPascalIdentifierText =
     'The name "%s" is not a valid pascal identifier.';
@@ -528,16 +515,12 @@ resourcestring
   ideMisc = 'Misc';
   ideSystem = 'System';
   ideDialogs = 'Dialogs';
-  //I''ve skipped samples as sample components are usually placed there.
-  //Unfortunately, not in lazarus now... It might be a bad idea to have two
-  //palletes, for example 'Примеры' and 'Samples'
   ideDataAccess = 'Data Access';
   ideInterbase = 'Interbase Data Access';
 
   //Environment dialog
   dlgBakDirectory='(no subdirectoy)';
   
-  //dlgEnvOpts = 'Environment Options';  = lisMenuGeneralOptions
   dlgDesktop = 'Desktop';
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
@@ -930,7 +913,7 @@ resourcestring
   uemMoveEditorRight='Move Editor Right';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
-  ueNotImplText='If You can help us to implement this feature, mail to'#13
+  ueNotImplText='If You can help us to implement this feature, mail to '
    +'lazarus@miraclec.com';
   ueNotImplCapAgain='I told You: Not implemented yet';
   ueFileROCap= 'File is readonly';

@@ -10,20 +10,28 @@ msgstr ""
 msgid "Hint: The Make Resourcestring Function expects a string constant.%sPlease select the expression and try again."
 msgstr ""
 
-#: lazarusidestrconsts:liscmdlinehlpheader
-msgid "lazarus [options] <project-filename>\n\nIDE Options:\n\n--help or -?             this help message\n\n"
+#: lazarusidestrconsts:listhishelpmessage
+msgid "this help message"
 msgstr ""
 
-#: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
-msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
+#: lazarusidestrconsts:lisprimaryconfigdirectorywherelazarusstoresitsconfig
+msgid "                      primary config directory, where Lazarus stores its config files. Default is "
 msgstr ""
 
-#: lazarusidestrconsts:liscmdlinesecondaryconfigpathdesc
-msgid "--secondary-config-path <path>\n                         secondary config directory, where Lazarus\n                         searches for config template files.\n                         Default is %s\n\n"
+#: lazarusidestrconsts:lislazarusoptionsprojectfilename
+msgid "lazarus [options] <project-filename>"
+msgstr ""
+
+#: lazarusidestrconsts:lisideoptions
+msgid "IDE Options:"
 msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
 msgid "LCL Interface specific options:"
+msgstr ""
+
+#: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
+msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr ""
 
 #: lazarusidestrconsts:lisselectiontool
@@ -1186,8 +1194,8 @@ msgstr ""
 msgid "Unitname already in project"
 msgstr ""
 
-#: lazarusidestrconsts:lisunitnamealreadyexiststext
-msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."
+#: lazarusidestrconsts:listheunitalreadyexistsignorewillforcetherenaming
+msgid "The unit %s%s%s already exists.%sIgnore will force the renaming,%sCancel will cancel the saving of this source and%sAbort will abort the whole saving."
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiercap
@@ -2771,7 +2779,7 @@ msgid "Not implemented yet"
 msgstr ""
 
 #: lazarusidestrconsts:uenotimpltext
-msgid "If You can help us to implement this feature, mail to\015lazarus@miraclec.com"
+msgid "If You can help us to implement this feature, mail to lazarus@miraclec.com"
 msgstr ""
 
 #: lazarusidestrconsts:uenotimplcapagain
@@ -5419,7 +5427,7 @@ msgid "Rebuild Lazarus?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sShould lazarus now be rebuilt?"
+msgid "The package %s%s%s was marked for installation.%sCurrently lazarus only supports static linked packages. The real installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangpackageisrequired
@@ -5439,7 +5447,7 @@ msgid "Uninstall package %s?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackagewasmarkedcurrentlylazarus
-msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sShould lazarus now be rebuilt?"
+msgid "The package %s%s%s was marked.%sCurrently lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthepackageismarkedforinstallationbutcannotbefound
