@@ -1955,7 +1955,7 @@ NoteBook1 := TNoteBook.Create(Self); // TODO : Add all properties
     Width := 377;
     Name := 'NoteBook1';
     Align := alNone;
-    if Pages.PageCount>0 then
+    if PageCount>0 then
       Pages.Strings[0] := 'Page0'     //Page 0
     else
       Pages.Add('Page0');
@@ -2579,6 +2579,9 @@ END.
 
 {
   $Log$
+  Revision 1.10  2002/09/10 14:08:54  lazarus
+  MG: fixed compiling examples
+
   Revision 1.9  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
