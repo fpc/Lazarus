@@ -164,6 +164,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo;
+  p3: UINT; var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result := 0;
@@ -742,6 +748,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
+  Bits: Pointer): Longint;
+begin
+  Result := 0;
+end;
+
 function TInterfaceBase.GetCapture : HWND;
 begin
   Result := 0;
@@ -813,19 +825,12 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
-  Bits: Pointer): Longint;
-begin
-  Result := 0;
-end;
-
-function TInterfaceBase.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo;
-  p3: UINT; var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
-begin
-  Result := 0;
-end;
-
 function TInterfaceBase.GetFocus: HWND;
+begin
+  Result := 0;
+end;
+
+function TInterfaceBase.GetFontLanguageInfo(DC: HDC): DWord;
 begin
   Result := 0;
 end;
@@ -991,6 +996,11 @@ end;
 
 Function TInterfaceBase.InvalidateRect(aHandle : HWND; ARect : pRect;
   bErase : Boolean) : Boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.IsDBCSLeadByte(TestChar: Byte): BOOL;
 begin
   Result := false;
 end;
@@ -1496,6 +1506,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2002/12/05 22:16:29  mattias
+  double byte char font started
+
   Revision 1.69  2002/11/30 11:22:53  mattias
   statusbar now uses invalidaterect
 

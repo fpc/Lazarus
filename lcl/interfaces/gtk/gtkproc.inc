@@ -3776,6 +3776,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+  
+  This is only a heuristic
+ ------------------------------------------------------------------------------}
+function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+var
+  SingleCharLen, DoubleCharLen: integer;
+begin
+  SingleCharLen:=gdk_text_width(TheFont, 'A', 1);
+  DoubleCharLen:=gdk_text_width(TheFont, 'AA', 2);
+  Result:=(SingleCharLen=0) and (DoubleCharLen>0);
+end;
+
+{------------------------------------------------------------------------------
   Method:   GDKPixel2GDIRGB
   Params:
             Pixel - a GDK Pixel, refers to Index in Colormap/Visual
@@ -3931,6 +3945,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.151  2002/12/05 22:16:32  mattias
+  double byte char font started
+
   Revision 1.150  2002/11/23 13:48:46  mattias
   added Timer patch from Vincent Snijders
 
