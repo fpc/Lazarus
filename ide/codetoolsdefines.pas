@@ -104,7 +104,9 @@ type
 
     // templates
     InsertTemplateMenuItem: TMenuItem;
-    InsertDelphi5TemlateMenuItem: TMenuItem;
+    InsertDelphi5CompilerDefinesTemplateMenuItem: TMenuItem;
+    InsertDelphi5DirectoryTemplateMenuItem: TMenuItem;
+    InsertDelphi5ProjectTemplateMenuItem: TMenuItem;
 
     // define tree
     DefineTreeView: TTreeView;
@@ -161,7 +163,9 @@ type
     procedure OpenPreviewMenuItemClick(Sender: TObject);
     
     // template menu
-    procedure InsertDelphi5TemlateMenuItemClick(Sender: TObject);
+    procedure InsertDelphi5CompilerDefinesTemplateMenuItemClick(Sender: TObject);
+    procedure InsertDelphi5DirectoryTemplateMenuItemClick(Sender: TObject);
+    procedure InsertDelphi5ProjectTemplateMenuItemClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -703,11 +707,25 @@ begin
   BringWindowToTop(DefinePreview.Handle);
 end;
 
-procedure TCodeToolsDefinesEditor.InsertDelphi5TemlateMenuItemClick(
+procedure TCodeToolsDefinesEditor.InsertDelphi5CompilerDefinesTemplateMenuItemClick
+  (Sender: TObject);
+begin
+  InsertTemplate(Boss.DefinePool.CreateDelphi5CompilerDefinesTemplate);
+end;
+
+procedure TCodeToolsDefinesEditor.InsertDelphi5DirectoryTemplateMenuItemClick(
   Sender: TObject);
 begin
-  InsertTemplate(Boss.DefinePool.CreateDelphi5Template(
-                   SetDirSeparators('/Borland')));
+  InsertTemplate(Boss.DefinePool.CreateDelphi5DirectoryTemplate(
+                   SetDirSeparators('/Borland/Delphi5')));
+end;
+
+procedure TCodeToolsDefinesEditor.InsertDelphi5ProjectTemplateMenuItemClick(
+  Sender: TObject);
+begin
+  InsertTemplate(Boss.DefinePool.CreateDelphi5ProjectTemplate(
+                   SetDirSeparators('/YourDelphi5ProjectDir'),
+                   SetDirSeparators('/Borland/Delphi5')));
 end;
 
 procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
@@ -975,9 +993,27 @@ begin
   // templates
   AddMenuItem(InsertTemplateMenuItem,'InsertTemplateMenuItem',
               'Insert Template',nil);
-  AddMenuItem(InsertDelphi5TemlateMenuItem,'InsertDelphi5TemlateMenuItem',
-              'Insert Delphi 5 Template',InsertTemplateMenuItem);
-  InsertDelphi5TemlateMenuItem.OnClick:=@InsertDelphi5TemlateMenuItemClick;
+              
+  AddMenuItem(InsertDelphi5CompilerDefinesTemplateMenuItem,
+              'InsertDelphi5CompilerDefinesTemplateMenuItem',
+              'Insert Delphi 5 Compiler Defines Template',
+              InsertTemplateMenuItem);
+  InsertDelphi5CompilerDefinesTemplateMenuItem.OnClick:=
+              @InsertDelphi5CompilerDefinesTemplateMenuItemClick;
+  
+  AddMenuItem(InsertDelphi5DirectoryTemplateMenuItem,
+              'InsertDelphi5DirectoryTemplateMenuItem',
+              'Insert Delphi 5 Directory Template',
+              InsertTemplateMenuItem);
+  InsertDelphi5DirectoryTemplateMenuItem.OnClick:=
+              @InsertDelphi5DirectoryTemplateMenuItemClick;
+
+  AddMenuItem(InsertDelphi5ProjectTemplateMenuItem,
+              'InsertDelphi5ProjectTemplateMenuItem',
+              'Insert Delphi 5 Project Template',
+              InsertTemplateMenuItem);
+  InsertDelphi5ProjectTemplateMenuItem.OnClick:=
+              @InsertDelphi5ProjectTemplateMenuItemClick;
 
 
   // define tree----------------------------------------------------------------

@@ -269,8 +269,11 @@ type
         const LazarusSrcDir, WidgetType: string): TDefineTemplate;
     function CreateLCLProjectTemplate(const LazarusSrcDir, WidgetType,
         ProjectDir: string): TDefineTemplate;
-    function CreateDelphi5Template(
+    function CreateDelphi5CompilerDefinesTemplate: TDefineTemplate;
+    function CreateDelphi5DirectoryTemplate(
         const DelphiDirectory: string): TDefineTemplate;
+    function CreateDelphi5ProjectTemplate(
+        const ProjectDir, DelphiDirectory: string): TDefineTemplate;
     procedure Clear;
     constructor Create;
     destructor Destroy; override;
@@ -2491,24 +2494,34 @@ begin
   Result.AddChild(DirTempl);
 end;
 
-function TDefinePool.CreateDelphi5Template(const DelphiDirectory: string
-  ): TDefineTemplate;
+function TDefinePool.CreateDelphi5CompilerDefinesTemplate: TDefineTemplate;
+var DefTempl: TDefineTemplate;
+begin
+  DefTempl:=TDefineTemplate.Create('Delphi5 Compiler Defines',
+                                   'Delphi5 DefTempl','','',da_Block);
+  DefTempl.AddChild(TDefineTemplate.Create('Reset','Reset all defines',
+                                               '','',da_UndefineAll));
+  DefTempl.AddChild(TDefineTemplate.Create('Define makro DELPHI',
+      'Define makro DELPHI','DELPHI','',da_DefineRecurse));
+  DefTempl.AddChild(TDefineTemplate.Create('Define makro FPC_DELPHI',
+      'Define makro FPC_DELPHI','FPC_DELPHI','',da_DefineRecurse));
+  DefTempl.AddChild(TDefineTemplate.Create('Define makro VER_130',
+      'Define makro VER_130','VER_130','',da_DefineRecurse));
+  DefTempl.AddChild(TDefineTemplate.Create(
+     'Define '+ExternalMacroStart+'Compiler',
+     'Define '+ExternalMacroStart+'Compiler variable',
+     ExternalMacroStart+'Compiler','DELPHI',da_DefineRecurse));
+
+  Result:=DefTempl;
+end;
+
+function TDefinePool.CreateDelphi5DirectoryTemplate(
+  const DelphiDirectory: string): TDefineTemplate;
 var MainDirTempl: TDefineTemplate;
 begin
   MainDirTempl:=TDefineTemplate.Create('Delphi5 Directory','Delphi5 Directory',
                                        '',DelphiDirectory,da_Directory);
-  MainDirTempl.AddChild(TDefineTemplate.Create('Reset','Reset all defines',
-                                               '','',da_UndefineAll));
-  MainDirTempl.AddChild(TDefineTemplate.Create('Define makro DELPHI',
-      'Define makro DELPHI','DELPHI','',da_DefineRecurse));
-  MainDirTempl.AddChild(TDefineTemplate.Create('Define makro FPC_DELPHI',
-      'Define makro FPC_DELPHI','FPC_DELPHI','',da_DefineRecurse));
-  MainDirTempl.AddChild(TDefineTemplate.Create('Define makro VER_130',
-      'Define makro VER_130','VER_130','',da_DefineRecurse));
-  MainDirTempl.AddChild(TDefineTemplate.Create(
-     'Define '+ExternalMacroStart+'Compiler',
-     'Define '+ExternalMacroStart+'Compiler variable',
-     ExternalMacroStart+'Compiler','DELPHI',da_DefineRecurse));
+  MainDirTempl.AddChild(CreateDelphi5CompilerDefinesTemplate);
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       'Default SrcPath',
       ExternalMacroStart+'SrcPath',
@@ -2519,7 +2532,32 @@ begin
       +'$(#DefinePath)/Source/Vcl;'
       +'$(#SrcPath)'),
       da_DefineRecurse));
-      
+
+  Result:=MainDirTempl;
+end;
+
+function TDefinePool.CreateDelphi5ProjectTemplate(
+  const ProjectDir, DelphiDirectory: string): TDefineTemplate;
+var MainDirTempl: TDefineTemplate;
+begin
+  MainDirTempl:=TDefineTemplate.Create('Delphi5 Project','Delphi5 Project',
+                                       '',ProjectDir,da_Directory);
+  MainDirTempl.AddChild(CreateDelphi5CompilerDefinesTemplate);
+  MainDirTempl.AddChild(TDefineTemplate.Create(
+     'Define '+ExternalMacroStart+'DelphiDir',
+     'Define '+ExternalMacroStart+'DelphiDir variable',
+     ExternalMacroStart+'DelphiDir',DelphiDirectory,da_DefineRecurse));
+  MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
+      'SrcPath addition for Delphi RTL+VCL',
+      ExternalMacroStart+'SrcPath',
+      SetDirSeparators(
+       '$(#DelphiDir)/Source/Rtl/Win;'
+      +'$(#DelphiDir)/Source/Rtl/Sys;'
+      +'$(#DelphiDir)/Source/Rtl/Corba;'
+      +'$(#DelphiDir)/Source/Vcl;'
+      +'$(#SrcPath)'),
+      da_DefineRecurse));
+
   Result:=MainDirTempl;
 end;
 
