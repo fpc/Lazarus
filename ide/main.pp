@@ -6671,23 +6671,33 @@ end;
 
 Procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
   ATopLine: integer; APageIndex: integer; DeleteForwardHistory: boolean);
+{off $DEFINE VerboseJumpHistory}
 var
   ActiveUnitInfo: TUnitInfo;
   NewJumpPoint: TProjectJumpHistoryPosition;
 begin
-  //writeln('');
-  //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  {$IFDEF VerboseJumpHistory}
+  writeln('');
+  writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  {$ENDIF}
   ActiveUnitInfo:=Project1.UnitWithEditorIndex(APageIndex);
   if (ActiveUnitInfo=nil) then exit;
   NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
     ACaretXY,ATopLine);
+  {$IFDEF VerboseJumpHistory}
   //Project1.JumpHistory.WriteDebugReport;
+  {$ENDIF}
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                    NewJumpPoint);
-  //Project1.JumpHistory.WriteDebugReport;
+  {$IFDEF VerboseJumpHistory}
+  writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] B INSERTED');
+  Project1.JumpHistory.WriteDebugReport;
+  {$ENDIF}
   if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
-  //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
-  //Project1.JumpHistory.WriteDebugReport;
+  {$IFDEF VerboseJumpHistory}
+  writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  Project1.JumpHistory.WriteDebugReport;
+  {$ENDIF}
 end;
 
 Procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
@@ -6719,9 +6729,14 @@ var DestIndex, UnitIndex: integer;
   DestJumpPoint: TProjectJumpHistoryPosition;
   CursorPoint, NewJumpPoint: TProjectJumpHistoryPosition;
 begin
-  //writeln('');
-  //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
-  //Project1.JumpHistory.WriteDebugReport;
+  NewPageIndex:=-1;
+  NewCaretXY.Y:=-1;
+  
+  {$IFDEF VerboseJumpHistory}
+  writeln('');
+  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
+  Project1.JumpHistory.WriteDebugReport;
+  {$ENDIF}
 
   // update jump history (e.g. delete jumps to closed editors)
   Project1.JumpHistory.DeleteInvalidPositions;
@@ -6739,8 +6754,10 @@ begin
     if (ASrcEdit<>nil) and (AnUnitInfo<>nil) then begin
       CursorPoint:=TProjectJumpHistoryPosition.Create(AnUnitInfo.Filename,
         ASrcEdit.EditorComponent.CaretXY,ASrcEdit.EditorComponent.TopLine);
-      //writeln('  Current Position: ',CursorPoint.Filename,
-      //        ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y);
+      {$IFDEF VerboseJumpHistory}
+      writeln('  Current Position: ',CursorPoint.Filename,
+              ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y);
+      {$ENDIF}
     end;
   end;
 
@@ -6748,7 +6765,9 @@ begin
   and (CursorPoint<>nil) then begin
     // this is the first back jump
     // -> insert current source position into history
-    //writeln('  First back jump -> add current cursor position');
+    {$IFDEF VerboseJumpHistory}
+    writeln('  First back jump -> add current cursor position');
+    {$ENDIF}
     NewJumpPoint:=TProjectJumpHistoryPosition.Create(CursorPoint);
     Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                      NewJumpPoint);
@@ -6758,23 +6777,25 @@ begin
   DestIndex:=Project1.JumpHistory.HistoryIndex;
   if Action=jhaForward then
     inc(DestIndex);
-  while (DestIndex>=0) or (DestIndex<Project1.JumpHistory.Count) do begin
+  while (DestIndex>=0) and (DestIndex<Project1.JumpHistory.Count) do begin
     DestJumpPoint:=Project1.JumpHistory[DestIndex];
-    //writeln(' DestIndex=',DestIndex);
-    if (CursorPoint=nil)
-    or not DestJumpPoint.IsSimilar(CursorPoint) then begin
+    UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
+    {$IFDEF VerboseJumpHistory}
+    writeln(' DestIndex=',DestIndex,' UnitIndex=',UnitIndex);
+    {$ENDIF}
+    if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0)
+    and ((CursorPoint=nil) or not DestJumpPoint.IsSimilar(CursorPoint)) then
+    begin
       if Action=jhaBack then
         dec(DestIndex);
       Project1.JumpHistory.HistoryIndex:=DestIndex;
-      UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
-      if (UnitIndex>=0) and (Project1.Units[UnitIndex].EditorIndex>=0) then
-      begin
-        NewCaretXY:=DestJumpPoint.CaretXY;
-        NewTopLine:=DestJumpPoint.TopLine;
-        NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
-        //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
-        break;
-      end;
+      NewCaretXY:=DestJumpPoint.CaretXY;
+      NewTopLine:=DestJumpPoint.TopLine;
+      NewPageIndex:=Project1.Units[UnitIndex].EditorIndex;
+      {$IFDEF VerboseJumpHistory}
+      writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
+      {$ENDIF}
+      break;
     end;
     if Action=jhaBack then
       dec(DestIndex)
@@ -6784,8 +6805,11 @@ begin
   
   CursorPoint.Free;
 
-  //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
-  //Project1.JumpHistory.WriteDebugReport;
+  {$IFDEF VerboseJumpHistory}
+  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  Project1.JumpHistory.WriteDebugReport;
+  writeln('');
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,
@@ -7375,6 +7399,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.414  2002/10/14 11:43:05  lazarus
+  MG: fixed double jumping in history
+
   Revision 1.413  2002/10/14 07:59:56  lazarus
   MG: fixed clicking on message view on same selection
 
