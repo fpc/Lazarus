@@ -500,6 +500,30 @@ begin
   end;
 end;
 
+function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
+begin
+  Result:=Color1.ColorRef=Color2.ColorRef;
+end;
+
+function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;
+begin
+  Result:=Fill1=Fill2;
+end;
+
+function CompareGDIBrushes(Brush1, Brush2: PGdiObject): boolean;
+begin
+  Result:=Brush1^.IsNullBrush=Brush2^.IsNullBrush;
+  if Result then begin
+    Result:=CompareGDIColor(Brush1^.GDIBrushColor,Brush2^.GDIBrushColor);
+    if Result then begin
+      Result:=CompareGDIFill(Brush1^.GDIBrushFill,Brush2^.GDIBrushFill);
+      if Result then begin
+        Result:=Brush1^.GDIBrushPixMap=Brush2^.GDIBrushPixMap;
+      end;
+    end;
+  end;
+end;
+
 //-----------------------------------------------------------------------------
 
 { Palette Index<->RGB Hash Functions }
@@ -3991,6 +4015,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.165  2003/03/28 19:39:54  mattias
+  started typeinfo for double extended
+
   Revision 1.164  2003/03/25 13:00:39  mattias
   implemented TMemo.SelLength, improved OI hints
 
