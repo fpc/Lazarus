@@ -1252,7 +1252,7 @@ var
 begin
   Result:=nil;
   if IdentTree=nil then exit;
-  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[],true);
+  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[]);
   BestDiff:=SrcLen+1;
   MoveCursorToCleanPos(1);
   repeat
@@ -1326,7 +1326,7 @@ begin
   StartPos:=CursorPos;
   EndPos:=CursorPos;
   Result:=true;
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   {$IFDEF VerboseGetStringConstBounds}
   writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   {$ENDIF}
@@ -1518,7 +1518,7 @@ var
 begin
   Result:=false;
   //writeln('TStandardCodeTool.GatherResourceStringSections A ');
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   PositionList.Clear;
   ANode:=CursorNode;
@@ -1558,7 +1558,7 @@ begin
   Result:=false;
   if ResStrIdentifier='' then exit;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   // find resource string section
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
@@ -1587,7 +1587,7 @@ begin
   Result:=false;
   if MaxLen<=0 then exit;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[]);
   Dummy:=CaretToCleanPos(EndCursorPos, EndPos);
   if (Dummy<>0) and (Dummy<>-1) then exit;
   // read string constants and extract identifier characters
@@ -1723,7 +1723,7 @@ var
 begin
   Result:=false;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,StartCursorPos,StartPos,[]);
   Dummy:=CaretToCleanPos(EndCursorPos, EndPos);
   if (Dummy<>0) and (Dummy<>-1) then exit;
   // read string constants and convert it
@@ -1809,7 +1809,7 @@ begin
   Result:=false;
   if PositionList=nil then exit;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   // find resource string section
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
@@ -1834,7 +1834,7 @@ begin
   Result:=false;
   IdentTree:=nil;
   // parse source and find clean positions
-  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanCursorPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanCursorPos,[]);
   // find resource string section
   ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   if (ANode=nil) then exit;
@@ -1906,7 +1906,7 @@ begin
   SourceChangeCache.MainScanner:=Scanner;
   // parse source and find clean positions
   //writeln('TStandardCodeTool.AddResourcestring B');
-  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanSectionPos,[],true);
+  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanSectionPos,[]);
   //writeln('TStandardCodeTool.AddResourcestring C');
   // find resource string section
   SectionNode:=FindDeepestNodeAtPos(CleanSectionPos,true);
@@ -2312,7 +2312,7 @@ begin
   Result:=false;
   try
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-             [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}],true);
+             [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
     LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
     LinkIndex:=Scanner.FindParentLink(LinkIndex);
     if LinkIndex<0 then

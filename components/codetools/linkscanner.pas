@@ -663,12 +663,12 @@ begin
   if LinkIndex>=0 then begin
     LastIndex:=LinkIndex;
     while (Result>=0) do begin
-      if Links[Result].Code=Links[LinkIndex].Code then begin
-        if Links[Result].SrcPos>Links[LastIndex].SrcPos then begin
+      if FLinks[Result].Code=FLinks[LinkIndex].Code then begin
+        if Links[Result].SrcPos>FLinks[LastIndex].SrcPos then begin
           // the include file was (in-)directly included by itself
           // -> skip
           Result:=FindParentLink(Result);
-        end else if Links[Result].SrcPos=1 then begin
+        end else if FLinks[Result].SrcPos=1 then begin
           // start found
           exit;
         end;
@@ -741,16 +741,16 @@ begin
   while l<=r do begin
     m:=(l+r) div 2;
     if m<LinkCount-1 then begin
-      if ACleanPos<Links[m].CleanedPos then
+      if ACleanPos<FLinks[m].CleanedPos then
         r:=m-1
-      else if ACleanPos>=Links[m+1].CleanedPos then
+      else if ACleanPos>=FLinks[m+1].CleanedPos then
         l:=m+1
       else begin
         Result:=m;
         exit;
       end;
     end else begin
-      if ACleanPos>=Links[m].CleanedPos then begin
+      if ACleanPos>=FLinks[m].CleanedPos then begin
         Result:=m;
         exit;
       end else
@@ -1326,9 +1326,9 @@ begin
   // links
   for i:=0 to LinkCount-1 do begin
     writeln('  Link ',i,':'
-        ,' CleanedPos=',Links[i].CleanedPos
-        ,' SrcPos=',Links[i].SrcPos
-        ,' Code=',HexStr(Cardinal(Links[i].Code),8)
+        ,' CleanedPos=',FLinks[i].CleanedPos
+        ,' SrcPos=',FLinks[i].SrcPos
+        ,' Code=',HexStr(Cardinal(FLinks[i].Code),8)
       );
   end;
 end;
@@ -1859,7 +1859,6 @@ function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
         
 var
   LinkID, i, BestSrcPos: integer;
-  CurLink: TSourceLink;
   LastCode: Pointer;
   SearchedCodes: TList;
 begin
@@ -1870,9 +1869,8 @@ begin
   BestSrcPos:=0;
   i:=0;
   while i<LinkCount do begin
-    CurLink:=Links[i];
-    if (StartCode=CurLink.Code) and (StartCursorPos>=CurLink.SrcPos) then begin
-      if (LinkID<0) or (BestSrcPos<CurLink.SrcPos) then
+    if (StartCode=FLinks[i].Code) and (StartCursorPos>=FLinks[i].SrcPos) then begin
+      if (LinkID<0) or (BestSrcPos<FLinks[i].SrcPos) then
         LinkID:=i;
     end;
     inc(i);
@@ -1883,17 +1881,17 @@ begin
   SearchedCodes:=TList.Create;
   try
     while LinkId<LinkCount do begin
-      Result:=GuessMisplacedIfdefEndifInCode(Links[LinkID].Code,
+      Result:=GuessMisplacedIfdefEndifInCode(FLinks[LinkID].Code,
         StartCursorPos,StartCode,EndCursorPos,EndCode);
       if Result then exit;
       // search next code
-      LastCode:=Links[LinkID].Code;
+      LastCode:=FLinks[LinkID].Code;
       SearchedCodes.Add(LastCode);
       repeat
         inc(LinkID);
         if LinkID>=LinkCount then exit;
-      until (Links[LinkID].Code<>LastCode)
-      and (SearchedCodes.IndexOf(Links[LinkID].Code)<0);
+      until (FLinks[LinkID].Code<>LastCode)
+      and (SearchedCodes.IndexOf(FLinks[LinkID].Code)<0);
     end;
   finally
     SearchedCodes.Free;
@@ -2627,21 +2625,30 @@ begin
   SkippedCleanPos:=-1;
   while i<LinkCount do begin
     //writeln('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
-    if (Links[i].Code=ACode) and (Links[i].SrcPos<=ACursorPos) then begin
-      ACleanPos:=ACursorPos-Links[i].SrcPos+Links[i].CleanedPos;
+    if (FLinks[i].Code=ACode) and (FLinks[i].SrcPos<=ACursorPos) then begin
+      // link in same code found
+      ACleanPos:=ACursorPos-FLinks[i].SrcPos+FLinks[i].CleanedPos;
       //writeln('[TLinkScanner.CursorToCleanPos] B ACleanPos=',ACleanPos);
       if i+1<LinkCount then begin
+        // link has successor
         //writeln('[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos);
-        if ACleanPos<Links[i+1].CleanedPos then begin
+        if ACleanPos<FLinks[i+1].CleanedPos then begin
+          // link covers the cursor position
           Result:=0;  // valid position
           exit;
         end;
+        // set found cleanpos to end of link
+        ACleanPos:=FLinks[i].CleanedPos+LinkSize(i);
+        // link does not cover the cursor position
+        // find the next link in the same code
         j:=i+1;
-        while (j<LinkCount) and (Links[j].Code<>ACode) do inc(j);
+        while (j<LinkCount) and (FLinks[j].Code<>ACode) do inc(j);
         //writeln('[TLinkScanner.CursorToCleanPos] D j=',j);
-        if (j<LinkCount) and (Links[j].SrcPos>ACursorPos) then begin
+        if (j<LinkCount) and (FLinks[j].SrcPos>ACursorPos) then begin
           if not SkippedPos then begin
             // CursorPos was skipped, CleanPos is between two links
+            // but because include files can be parsed multiple times,
+            // search must continue
             SkippedPos:=true;
             SkippedCleanPos:=ACleanPos;
           end;
@@ -2653,25 +2660,20 @@ begin
       end else begin
         // in last link
         //writeln('[TLinkScanner.CursorToCleanPos] E length(FCleanedSrc)=',length(FCleanedSrc));
-        if ACleanPos<=length(FCleanedSrc) then
-          Result:=0  // valid position
-        else begin
-          if SkippedPos then begin
-            Result:=-1;
-            ACleanPos:=SkippedCleanPos;
-          end else
-            Result:=1; // cursor beyond scanned code
+        if ACleanPos<=length(FCleanedSrc) then begin
+          Result:=0;  // valid position
+          exit;
         end;
-        exit;
+        break;
       end;
     end;
     inc(i);
   end;
   if SkippedPos then begin
     Result:=-1;
-    ACLeanPos:=SkippedCleanPos;
+    ACleanPos:=SkippedCleanPos;
   end else
-    Result:=1;
+    Result:=1; // default: CursorPos beyond/outside scanned code
 end;
 
 function TLinkScanner.CleanedPosToCursor(ACleanedPos: integer;
@@ -2693,19 +2695,19 @@ begin
     while l<=r do begin
       m:=(l+r) div 2;
       if m<LinkCount-1 then begin
-        if ACleanedPos<Links[m].CleanedPos then
+        if ACleanedPos<FLinks[m].CleanedPos then
           r:=m-1
-        else if ACleanedPos>=Links[m+1].CleanedPos then
+        else if ACleanedPos>=FLinks[m+1].CleanedPos then
           l:=m+1
         else begin
-          ACode:=Links[m].Code;
-          ACursorPos:=ACleanedPos-Links[m].CleanedPos+Links[m].SrcPos;
+          ACode:=FLinks[m].Code;
+          ACursorPos:=ACleanedPos-FLinks[m].CleanedPos+FLinks[m].SrcPos;
           exit;
         end;
       end else begin
-        if ACleanedPos>=Links[m].CleanedPos then begin
-          ACode:=Links[m].Code;
-          ACursorPos:=ACleanedPos-Links[m].CleanedPos+Links[m].SrcPos;
+        if ACleanedPos>=FLinks[m].CleanedPos then begin
+          ACode:=FLinks[m].Code;
+          ACursorPos:=ACleanedPos-FLinks[m].CleanedPos+FLinks[m].SrcPos;
           exit;
         end else
           ConsistencyCheckI(2);
@@ -2726,18 +2728,18 @@ begin
   or (CleanEndPos>CleanedLen+1) or (not Assigned(FOnGetSourceStatus)) then exit;
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
   if LinkIndex<0 then exit;
-  ACode:=Links[LinkIndex].Code;
+  ACode:=FLinks[LinkIndex].Code;
   FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
   if CodeIsReadOnly then exit;
   repeat
     inc(LinkIndex);
-    if (LinkIndex>=LinkCount) or (Links[LinkIndex].CleanedPos>CleanEndPos) then
+    if (LinkIndex>=LinkCount) or (FLinks[LinkIndex].CleanedPos>CleanEndPos) then
     begin
       Result:=true;
       exit;
     end;
-    if ACode<>Links[LinkIndex].Code then begin
-      ACode:=Links[LinkIndex].Code;
+    if ACode<>FLinks[LinkIndex].Code then begin
+      ACode:=FLinks[LinkIndex].Code;
       FOnGetSourceStatus(Self,ACode,CodeIsReadOnly);
       if CodeIsReadOnly then exit;
     end;
@@ -2753,14 +2755,14 @@ begin
   or (CleanEndPos>CleanedLen+1) or (UniqueSortedCodeList=nil) then exit;
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
   if LinkIndex<0 then exit;
-  ACode:=Links[LinkIndex].Code;
+  ACode:=FLinks[LinkIndex].Code;
   AddCodeToUniqueList(ACode,UniqueSortedCodeList);
   repeat
     inc(LinkIndex);
-    if (LinkIndex>=LinkCount) or (Links[LinkIndex].CleanedPos>CleanEndPos) then
+    if (LinkIndex>=LinkCount) or (FLinks[LinkIndex].CleanedPos>CleanEndPos) then
       exit;
-    if ACode<>Links[LinkIndex].Code then begin
-      ACode:=Links[LinkIndex].Code;
+    if ACode<>FLinks[LinkIndex].Code then begin
+      ACode:=FLinks[LinkIndex].Code;
       AddCodeToUniqueList(ACode,UniqueSortedCodeList);
     end;
   until false;
@@ -2777,23 +2779,21 @@ procedure TLinkScanner.DeleteRange(CleanStartPos,CleanEndPos: integer);
   ToDo: keep include directives
 }
 var LinkIndex, StartPos, Len, aLinkSize: integer;
-  Link: TSourceLink;
 begin
   if (CleanStartPos<1) or (CleanStartPos>=CleanEndPos)
   or (CleanEndPos>CleanedLen+1) or (not Assigned(FOnDeleteSource)) then exit;
   LinkIndex:=LinkIndexAtCleanPos(CleanEndPos-1);
   while LinkIndex>=0 do begin
-    Link:=Links[LinkIndex];
-    StartPos:=CleanStartPos-Link.CleanedPos;
-    if Startpos<0 then StartPos:=0;
+    StartPos:=CleanStartPos-FLinks[LinkIndex].CleanedPos;
+    if StartPos<0 then StartPos:=0;
     aLinkSize:=LinkSize(LinkIndex);
-    if CleanEndPos<Link.CleanedPos+aLinkSize then
-      Len:=CleanEndPos-Link.CleanedPos-StartPos
+    if CleanEndPos<FLinks[LinkIndex].CleanedPos+aLinkSize then
+      Len:=CleanEndPos-FLinks[LinkIndex].CleanedPos-StartPos
     else
       Len:=aLinkSize-StartPos;
-    inc(StartPos,Link.SrcPos);
-    FOnDeleteSource(Self,Links[LinkIndex].Code,StartPos,Len);
-    if Link.CleanedPos<=CleanStartPos then break;
+    inc(StartPos,FLinks[LinkIndex].SrcPos);
+    FOnDeleteSource(Self,FLinks[LinkIndex].Code,StartPos,Len);
+    if FLinks[LinkIndex].CleanedPos<=CleanStartPos then break;
     dec(LinkIndex);
   end;
 end;

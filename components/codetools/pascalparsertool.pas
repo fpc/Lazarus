@@ -91,7 +91,8 @@ type
   TBuildTreeFlag = (
     btSetIgnoreErrorPos,
     btKeepIgnoreErrorPos,
-    btLoadDirtySource
+    btLoadDirtySource,
+    btCursorPosOutAllowed
     );
   TBuildTreeFlags = set of TBuildTreeFlag;
   
@@ -200,7 +201,7 @@ type
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         const CursorPos: TCodeXYPosition; var CleanCursorPos: integer;
-        BuildTreeFlags: TBuildTreeFlags; ExceptionOnCursorPosOut: boolean);
+        BuildTreeFlags: TBuildTreeFlags);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
@@ -3243,8 +3244,7 @@ end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
   TreeRange: TTreeRange; const CursorPos: TCodeXYPosition;
-  var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags;
-  ExceptionOnCursorPosOut: boolean);
+  var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags);
 var
   CaretType: integer;
   IgnorePos: TCodePosition;
@@ -3297,7 +3297,7 @@ begin
     end;
     exit;
   end;
-  if (CaretType=-2) or ExceptionOnCursorPosOut then
+  if (CaretType=-2) or (not (btCursorPosOutAllowed in BuildTreeFlags)) then
     RaiseException(ctsCursorPosOutsideOfCode);
   // cursor outside of clean code
   CleanCursorPos:=-1;

@@ -813,7 +813,7 @@ begin
     writeln('TIdentCompletionTool.GatherIdentifiers A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-             [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}],true);
+             [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos,{$ENDIF}]);
                   
     // find node at position
     CursorNode:=FindDeepestExpandedNodeAtPos(CleanCursorPos,true);

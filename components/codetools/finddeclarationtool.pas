@@ -925,6 +925,8 @@ var CleanCursorPos: integer;
 
 var
   CleanPosInFront: integer;
+  CursorAtIdentifier: boolean;
+  IdentifierStart: Pchar;
 begin
   Result:=false;
   SkipChecks:=false;
@@ -934,9 +936,10 @@ begin
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
+    if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
-                  [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}],
-                  false);
+                  [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}
+                   btLoadDirtySource,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
     {$ENDIF}
@@ -948,7 +951,8 @@ begin
       CleanPosInFront:=1;
       CursorNode:=nil;
     end;
-    if IsIncludeDirectiveAtPos(CleanCursorPos,CleanPosInFront,NewPos.Code)
+    if (not IsDirtySrcValid)
+    and IsIncludeDirectiveAtPos(CleanCursorPos,CleanPosInFront,NewPos.Code)
     then begin
       // include directive
       NewPos.X:=1;
@@ -965,7 +969,8 @@ begin
     {$IFDEF CTDEBUG}
     writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc));
     {$ENDIF}
-    if CursorNode.Desc=ctnUsesSection then begin
+    if (not IsDirtySrcValid)
+    and (CursorNode.Desc=ctnUsesSection) then begin
       // in uses section
       Result:=FindDeclarationInUsesSection(CursorNode,CleanCursorPos,
                                            NewPos,NewTopLine);
@@ -980,20 +985,29 @@ begin
     CheckIfCursorInBeginNode;
     CheckIfCursorInProcNode;
     CheckIfCursorInPropertyNode;
-    // set cursor
+    // set cursor on identifier
     MoveCursorToCleanPos(CleanCursorPos);
-    GetIdentStartEndAtPosition(Src,CleanCursorPos,
-                               CurPos.StartPos,CurPos.EndPos);
-    if (CurPos.StartPos<CurPos.EndPos) then begin
+    if IsDirtySrcValid then begin
+      DirtySrc.SetCursorToIdentStartEndAtPosition;
+      CursorAtIdentifier:=DirtySrc.CurPos.StartPos<DirtySrc.CurPos.EndPos;
+      IdentifierStart:=DirtySrc.GetCursorSrcPos;
+    end else begin
+      GetIdentStartEndAtPosition(Src,CleanCursorPos,
+                                 CurPos.StartPos,CurPos.EndPos);
+      CursorAtIdentifier:=CurPos.StartPos<CurPos.EndPos;
+      IdentifierStart:=@Src[CurPos.StartPos];
+    end;
+    if CursorAtIdentifier then begin
       // find declaration of identifier
       Params:=TFindDeclarationParams.Create;
       try
         Params.ContextNode:=CursorNode;
-        Params.SetIdentifier(Self,@Src[CurPos.StartPos],@CheckSrcIdentifier);
+        Params.SetIdentifier(Self,IdentifierStart,@CheckSrcIdentifier);
         Params.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound,
                        fdfExceptionOnPredefinedIdent,
                        fdfTopLvlResolving,fdfSearchInAncestors];
         if not DirectSearch then begin
+          // ToDo: DirtySrc
           Result:=FindDeclarationOfIdentAtCursor(Params);
         end else begin
           Include(Params.Flags,fdfIgnoreCurContextNode);
@@ -1021,7 +1035,9 @@ begin
           NewTopLine:=Params.NewTopLine;
           if NewPos.Code=nil then begin
             if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then
-              Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+              Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier)
+            else
+              MoveCursorToCleanPos(CleanCursorPos);
             Params.IdentifierTool.RaiseExceptionFmt(ctsIdentifierNotFound,
                                           [GetIdentifier(Params.Identifier)]);
           end;
@@ -1030,7 +1046,7 @@ begin
         Params.Free;
       end;
     end else begin
-      // find declaration of not identifier, e.g. numeric label
+      // find declaration of non identifier, e.g. numeric label
 
     end;
   finally
@@ -1530,8 +1546,9 @@ function TFindDeclarationTool.FindDeclarationOfIdentAtCursor(
   Result:
     true, if NewPos+NewTopLine valid
 
-  For example:
+  Examples:
     A^.B().C[].Identifier
+    inherited Identifier(p1,p2)
 }
 var
   StartPos, EndPos: integer;
@@ -1544,9 +1561,12 @@ begin
     ' "',copy(Src,Params.ContextNode.StartPos,20),'"');
   {$ENDIF}
   Result:=false;
+  // search in cleaned source
   MoveCursorToCleanPos(Params.Identifier);
-  StartPos:=CurPos.StartPos;
-  if Params.ContextNode.Desc<>ctnIdentifier then StartPos:=-1;
+  if Params.ContextNode.Desc<>ctnIdentifier then
+    StartPos:=-1
+  else
+    StartPos:=GetHybridCursorStart;
   ReadNextAtom;
   EndPos:=CurPos.EndPos;
   ReadNextAtom;

@@ -307,6 +307,9 @@ begin
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:='$(LazarusDir)';
       Tool.CmdLineParams:='cleanall';
+      // append target OS
+      if Options.TargetOS<>'' then
+        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;

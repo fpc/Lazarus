@@ -2823,10 +2823,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
+  // ToDo: do not send this while loading, send it after loading.
   if HandleAllocated then
     CNSendMessage(LM_ShowHide, Self, nil);
 //  SetWindowPos(FHandle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
+
 {------------------------------------------------------------------------------
   Method:  TWinControl.ShowControl
   Params:  AControl: Control to show
@@ -2847,6 +2849,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.143  2003/06/27 22:07:39  mattias
+  fixed targetos for clean all
+
   Revision 1.142  2002/08/17 23:41:34  mattias
   many clipping fixes
 
