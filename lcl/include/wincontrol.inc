@@ -1067,7 +1067,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl IsControlMouseMsg                                               }
 {------------------------------------------------------------------------------}
-function TWinControl.IsControlMouseMsg(var TheMessage : TLMMouse) : Boolean;
+function TWinControl.IsControlMouseMsg(var TheMessage: TLMMouse) : Boolean;
 var
   Control : TControl;
   P : TPoint;
@@ -2800,6 +2800,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.137  2003/06/18 11:21:06  mattias
+  fixed taborder=0, implemented TabOrder Editor
+
   Revision 1.136  2003/06/12 18:55:44  mattias
   improved designer to recognize auto child moves
 

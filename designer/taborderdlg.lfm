@@ -1,0 +1,94 @@
+object TabOrderDialog: TTabOrderDialog
+  CAPTION = 'TabOrderDialog'
+  CLIENTHEIGHT = 387
+  CLIENTWIDTH = 310
+  ONCLOSE = TabOrderDialogCLOSE
+  ONCREATE = TabOrderDialogCREATE
+  HORZSCROLLBAR.PAGE = 311
+  VERTSCROLLBAR.PAGE = 388
+  LEFT = 381
+  HEIGHT = 387
+  TOP = 167
+  WIDTH = 310
+  object UpSpeedbutton: TSPEEDBUTTON
+    ANCHORS = [aktop, akright]
+    NUMGLYPHS = 0
+    ONCLICK = UpSpeedbuttonCLICK
+    SHOWHINT = True
+    PARENTSHOWHINT = False
+    LEFT = 265
+    HEIGHT = 25
+    HINT = 'Move Up'
+    TOP = 119
+    WIDTH = 25
+  end
+  object DownSpeedbutton: TSPEEDBUTTON
+    ANCHORS = [aktop, akright]
+    NUMGLYPHS = 0
+    ONCLICK = DownSpeedbuttonCLICK
+    SHOWHINT = True
+    PARENTSHOWHINT = False
+    LEFT = 265
+    HEIGHT = 25
+    HINT = 'Move Down'
+    TOP = 165
+    WIDTH = 25
+  end
+  object OkButton: TBUTTON
+    ANCHORS = [akright, akbottom]
+    CAPTION = 'Ok'
+    TABSTOP = True
+    ONCLICK = OkButtonCLICK
+    LEFT = 120
+    HEIGHT = 25
+    TOP = 350
+    WIDTH = 75
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [akright, akbottom]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 216
+    HEIGHT = 25
+    TOP = 350
+    WIDTH = 75
+  end
+  object ItemTreeview: TTREEVIEW
+    ANCHORS = [aktop, akleft, akright, akbottom]
+    BACKGROUNDCOLOR = 16777215
+    BORDERWIDTH = 2
+    DEFAULTITEMHEIGHT = 17
+    DRAGCURSOR = 0
+    HIDESELECTION = False
+    INDENT = 15
+    PARENTCTL3D = False
+    RIGHTCLICKSELECT = True
+    SELECTIONCOLOR = -2147483635
+    TABORDER = 2
+    OPTIONS = [tvoautoitemheight, tvokeepcollapsednodes, tvorightclickselect, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    LEFT = 9
+    HEIGHT = 304
+    TOP = 8
+    WIDTH = 238
+  end
+  object ShowOldValuesCheckbox: TCHECKBOX
+    ALLOWGRAYED = True
+    ANCHORS = [akleft, akbottom]
+    AUTOSIZE = True
+    CAPTION = 'ShowOldValuesCheckbox'
+    DRAGCURSOR = 0
+    ONCLICK = ShowOldValuesCheckboxCLICK
+    TABORDER = 3
+    TABSTOP = True
+    LEFT = 15
+    HEIGHT = 20
+    TOP = 320
+    WIDTH = 171
+  end
+  object Imagelist1: TIMAGELIST
+    left = 56
+    top = 260
+  end
+end
