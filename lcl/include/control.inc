@@ -809,9 +809,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then TripleClick;
-  {$IFDEF VER_1_0_6}
   DoMouseDown(Message, mbLeft ,[ssTriple]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -823,9 +821,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
 begin
-  {$IFDEF VER_1_0_6}
   DoMouseDown(Message, mbRight ,[ssTriple]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -837,9 +833,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
 begin
-  {$IFDEF VER_1_0_6}
   DoMouseDown(Message, mbMiddle ,[ssTriple]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -854,9 +848,7 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then QuadClick;
-  {$IFDEF VER_1_0_6}
   DoMouseDown(Message, mbLeft ,[ssQuad]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -868,9 +860,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
 begin
-  {$IFDEF VER_1_0_6}
   DoMouseDown(Message, mbRight ,[ssQuad]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -882,9 +872,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
 begin
-  {$IFDEF VER_1_0_6}
   DoMouseDown(Message, mbMiddle ,[ssQuad]);
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1727,6 +1715,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.50  2002/05/20 07:02:26  lazarus
+  MG: removed 1_0_6 directives
+
   Revision 1.49  2002/05/13 15:26:13  lazarus
   MG: fixed form positioning when show, hide, show
 
