@@ -1200,6 +1200,7 @@ begin
         eoShowScrollHint:SynEditOptName:='ShowScrollHint';
         eoSmartTabs:SynEditOptName:='SmartTabs';
         eoTabsToSpaces:SynEditOptName:='TabsToSpaces';
+        eoTabIndent:SynEditOptName:='TabIndent';
         eoTrimTrailingSpaces:SynEditOptName:='TrimTrailingSpaces';
       else
         SynEditOptName:='';
@@ -1325,6 +1326,7 @@ begin
         eoShowScrollHint:SynEditOptName:='ShowScrollHint';
         eoSmartTabs:SynEditOptName:='SmartTabs';
         eoTabsToSpaces:SynEditOptName:='TabsToSpaces';
+        eoTabIndent:SynEditOptName:='TabIndent';
         eoTrimTrailingSpaces:SynEditOptName:='TrimTrailingSpaces';
       else
         SynEditOptName:='';
