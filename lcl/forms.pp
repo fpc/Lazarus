@@ -40,6 +40,8 @@ interface
 { $DEFINE UseFCLDataModule}
 {$ENDIF}
 
+{$DEFINE UseCustApp  This flag will soon become permanent and be deleted}
+
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
   LCLLinux, InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer,
