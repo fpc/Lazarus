@@ -854,11 +854,9 @@ var
   WidgetInfo: PWidgetInfo;
   ScrollingData: PBaseScrollingWinControlData;
   ListViewData: PCustomListViewData;
-  Allocation: TGTKAllocation;
 
   ScrollWidget: PGtkScrolledWindow;
   CListWidget: PGtkCList;
-  n: Integer;
 begin
   ListView := TLVHack(AWinControl as TCustomListView);
 
@@ -958,11 +956,14 @@ var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
 begin
+  Result:=Rect(0,0,0,0);
   if not WSCheckHandleAllocated(ALV, 'GetBoundingRect')
   then Exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  if CListWidget=nil then exit;
+  
   
   if ALV.ViewStyle in [vsIcon, vsSmallIcon]
   then begin
@@ -978,11 +979,13 @@ var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
 begin
+  Result:=0;
   if not WSCheckHandleAllocated(ALV, 'GetDropTarget')
   then Exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  if CListWidget=nil then exit;
   
   // TODO: implement
   Result := -1;
@@ -1007,11 +1010,13 @@ var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
 begin
+  Result := -1; // = default
   if not WSCheckHandleAllocated(ALV, 'GetHoverTime')
   then Exit;
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
+  if CListWidget=nil then exit;
   
   // TODO: implement
   Result := -1; // = default
@@ -1081,7 +1086,8 @@ begin
   Result := CListWidget^.clist_window_height div (CListWidget^.row_height + 1);
 end;
 
-procedure TGtkWSCustomListView.SetAllocBy(const ALV: TCustomListView; const AValue: Integer);
+procedure TGtkWSCustomListView.SetAllocBy(const ALV: TCustomListView;
+  const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1091,11 +1097,12 @@ begin
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
-  
+  if CListWidget=nil then exit;
   // TODO: implement ?
 end;
 
-procedure TGtkWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer);
+procedure TGtkWSCustomListView.SetDefaultItemHeight(const ALV: TCustomListView;
+  const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1109,7 +1116,8 @@ begin
   gtk_clist_set_row_height(CListWidget, AValue);
 end;
 
-procedure TGtkWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles);
+procedure TGtkWSCustomListView.SetHotTrackStyles(const ALV: TCustomListView;
+  const AValue: TListHotTrackStyles);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1120,10 +1128,12 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
   
+  if CListWidget=nil then exit;
   // TODO: implement ?
 end;
 
-procedure TGtkWSCustomListView.SetHoverTime(const ALV: TCustomListView; const AValue: Integer);
+procedure TGtkWSCustomListView.SetHoverTime(const ALV: TCustomListView;
+  const AValue: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1134,10 +1144,12 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
   
+  if CListWidget=nil then exit;
   // TODO: implement ?
 end;
 
-procedure TGtkWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
+procedure TGtkWSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageList);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1148,10 +1160,13 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
   
+  if CListWidget=nil then exit;
   // TODO: implement
 end;
 
-procedure TGtkWSCustomListView.SetPropertyInternal(const ACListWidget: PGtkCList; const AInfo: PWidgetInfo; const AProp: TListViewProperty; const AIsSet: Boolean);
+procedure TGtkWSCustomListView.SetPropertyInternal(
+  const ACListWidget: PGtkCList; const AInfo: PWidgetInfo;
+  const AProp: TListViewProperty; const AIsSet: Boolean);
 var
   ListViewData: PCustomListViewData;
 begin
@@ -1223,7 +1238,8 @@ begin
   end;
 end;
 
-procedure TGtkWSCustomListView.SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean);
+procedure TGtkWSCustomListView.SetProperty(const ALV: TCustomListView;
+  const AProp: TListViewProperty; const AIsSet: Boolean);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1249,7 +1265,7 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
   
-  for Prop := Low(Prop) to High(Prop) do
+  for Prop := Low(TListViewProperty) to High(TListViewProperty) do
     SetPropertyInternal(CListWidget, WidgetInfo, Prop, Prop in AProps);
 end;
 
@@ -1304,11 +1320,13 @@ begin
 
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
-  
+  if CListWidget=nil then exit;
+
   gtk_adjustment_set_value(CListWidget^.vAdjustment, AValue);
 end;
 
-procedure TGtkWSCustomListView.SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer);
+procedure TGtkWSCustomListView.SetSort(const ALV: TCustomListView;
+  const AType: TSortType; const AColumn: Integer);
 var
   WidgetInfo: PWidgetInfo;
   CListWidget: PGtkCList;
@@ -1319,6 +1337,7 @@ begin
   WidgetInfo := GetWidgetInfo(Pointer(ALV.Handle));
   CListWidget := PGtkCList(WidgetInfo^.CoreWidget);
   
+  if CListWidget=nil then exit;
   // TODO implement
 end;
 

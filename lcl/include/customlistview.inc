@@ -174,7 +174,7 @@ begin
   FColumns.IntfCreateColumns;
   
   // set imagelists and item depending properties
-  for lvil := Low(lvil) to High(lvil) do
+  for lvil := Low(TListViewImageList) to High(TListViewImageList) do
   begin
     if FImages[lvil] <> nil
     then LVC.SetImageList(Self, lvil, FImages[lvil]);
@@ -746,6 +746,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2005/02/26 18:01:19  mattias
+  fixed warnings
+
   Revision 1.43  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 
