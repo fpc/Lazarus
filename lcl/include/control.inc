@@ -809,7 +809,9 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then TripleClick;
+  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbLeft ,[ssTriple]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -821,7 +823,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonTripleClk(var Message: TLMRButtonTripleClk);
 begin
+  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbRight ,[ssTriple]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -833,7 +837,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonTripleClk(var Message: TLMMButtonTripleClk);
 begin
+  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbMiddle ,[ssTriple]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -848,7 +854,9 @@ begin
   //TODO: SendCancelMode(self);
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then QuadClick;
+  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbLeft ,[ssQuad]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -860,7 +868,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonQuadClk(var Message: TLMRButtonQuadClk);
 begin
+  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbRight ,[ssQuad]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -872,7 +882,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMMButtonQuadClk(var Message: TLMMButtonQuadClk);
 begin
+  {$IFDEF VER1_0_7}
   DoMouseDown(Message, mbMiddle ,[ssQuad]);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1715,6 +1727,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.51  2002/05/20 11:25:29  lazarus
+  MG: readded ssTriple/ssQuad compiler directives
+
   Revision 1.50  2002/05/20 07:02:26  lazarus
   MG: removed 1_0_6 directives
 
