@@ -225,14 +225,16 @@ type
 
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
+
   TFormStateType = (
-    fsCreating,
-    fsVisible,
+    fsCreating,  // initializing (form streaming)
+    fsVisible,   // form should be shown
     fsShowing,
-    fsModal,
+    fsModal,     // form is modal
     fsCreatedMDIChild
     );
   TFormState = set of TFormStateType;
+
   TModalResult = low(Integer)..high(Integer);
 
   TCustomForm = class(TScrollingWinControl)
@@ -476,6 +478,20 @@ type
     HideTimeout: Integer;
     HintStr: string;
     HintData: Pointer;
+  end;
+
+  TCMHintShow = record
+    Msg: Cardinal;
+    Reserved: Integer;
+    HintInfo: PHintInfo;
+    Result: Integer;
+  end;
+
+  TCMHintShowPause = record
+    Msg: Cardinal;
+    WasActive: Integer;
+    Pause: PInteger;
+    Result: Integer;
   end;
 
   TAppHintTimerType = (ahtNone, ahtShowHint, ahtHideHint, ahtReshowHint);

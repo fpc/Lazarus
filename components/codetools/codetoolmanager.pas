@@ -337,10 +337,6 @@ var CodeToolBoss: TCodeToolManager;
 implementation
 
 
-type
-  ECodeToolAbort = Exception;
-  
-
 function CompareCodeToolMainSources(Data1, Data2: Pointer): integer;
 var
   Src1, Src2: integer;
@@ -598,10 +594,6 @@ begin
     fErrorCode:=ErrorSrcTool.ErrorPosition.Code;
     fErrorColumn:=ErrorSrcTool.ErrorPosition.X;
     fErrorLine:=ErrorSrcTool.ErrorPosition.Y;
-  end else if (AnException is ECodeToolAbort) then begin
-    // abort
-    FErrorMsg:='Abort';
-    fErrorCode:=nil;
   end else begin
     // unknown exception
     FErrorMsg:=AnException.ClassName+': '+FErrorMsg;
@@ -1549,7 +1541,7 @@ end;
 
 function TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool): boolean;
 begin
-  Result:=false;
+  Result:=true;
   if not FAbortable then exit;
   if not Assigned(OnCheckAbort) then exit;
   Result:=not OnCheckAbort();
@@ -1557,7 +1549,7 @@ end;
 
 function TCodeToolManager.OnScannerProgress(Sender: TLinkScanner): boolean;
 begin
-  Result:=false;
+  Result:=true;
   if not FAbortable then exit;
   if not Assigned(OnCheckAbort) then exit;
   Result:=not OnCheckAbort();
