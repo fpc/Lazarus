@@ -3202,14 +3202,15 @@ begin
       RaiseException('');
   end;
   //debugln('TMainIDE.CreateNewCodeBuffer NewFilename=',NewFilename,' NewUnitName=',NewUnitName);
+
   if FilenameIsPascalUnit(NewFilename) then begin
     if NewUnitName='' then
       NewUnitName:=ExtractFileNameOnly(NewFilename);
-    if EnvironmentOptions.PascalFileAutoLowerCase
-    or EnvironmentOptions.PascalFileAskLowerCase then
+    if EnvironmentOptions.CharcaseFileAction in [ccfaAsk, ccfaAutoRename] then
       NewFilename:=ExtractFilePath(NewFilename)
                    +lowercase(ExtractFileName(NewFilename));
   end;
+
   NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
   if NewCodeBuffer<>nil then
     Result:=mrOk
@@ -3431,19 +3432,21 @@ begin
   if FilenameIsPascalUnit(NewFilename) then begin
     FileWithoutPath:=ExtractFileName(NewFilename);
     // check if file should be auto renamed
-    if EnvironmentOptions.PascalFileAskLowerCase then begin
+
+
+    if EnvironmentOptions.CharcaseFileAction = ccfaAsk then begin
       if lowercase(FileWithoutPath)<>FileWithoutPath
       then begin
         Result:=MessageDlg(lisRenameFile,
-           Format(lisThisLooksLikeAPascalFileFpc10XExpectsPascalFiles, [#13, #13
-             ]),
+           Format(lisThisLooksLikeAPascalFileFpc10XExpectsPascalFiles, [#13, #13]),
           mtWarning,[mbYes,mbNo],0);
         if Result=mrYes then
           NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
         Result:=mrOk;
       end;
     end else begin
-      if EnvironmentOptions.PascalFileAutoLowerCase then
+
+      if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then
         NewFileName:=ExtractFilePath(NewFilename)+lowercase(FileWithoutPath);
     end;
   end;
@@ -4401,7 +4404,8 @@ begin
 
       // apply naming conventions
       NewProgramName:=ExtractFileNameOnly(NewFilename);
-      if EnvironmentOptions.PascalFileAutoLowerCase then
+
+      if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then
         NewFileName:=ExtractFilePath(NewFilename)
                     +lowercase(ExtractFileName(NewFilename));
 
@@ -11418,6 +11422,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.850  2005/02/28 17:24:18  mattias
+  replaced save as auto rename checkboxes with radiogroup  from smace and mg
+
   Revision 1.849  2005/02/28 16:52:24  mattias
   TApplication now frees only its components before finalization, not itself
 

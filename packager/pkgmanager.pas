@@ -827,19 +827,22 @@ begin
       end;
 
       // apply naming conventions
-      if lowercase(NewPkgName)<>NewPkgName then begin
-        LowerFilename:=ExtractFilePath(NewFilename)
-                      +lowercase(ExtractFileName(NewFilename));
-        if EnvironmentOptions.PascalFileAskLowerCase then begin
+      
+      if lowercase(NewPkgName) <> NewPkgName then
+      begin
+        LowerFilename:=ExtractFilePath(NewFilename)+lowercase(ExtractFileName(NewFilename));
+        if EnvironmentOptions.CharcaseFileAction = ccfaAsk then
+        begin
           if MessageDlg(lisPkgMangRenameFileLowercase,
             Format(lisPkgMangShouldTheFileRenamedLowercaseTo, [#13, '"',
               LowerFilename, '"']),
             mtConfirmation,[mbYes,mbNo],0)=mrYes
           then
             NewFileName:=LowerFilename;
-        end else begin
-          if EnvironmentOptions.PascalFileAutoLowerCase then
-            NewFileName:=LowerFilename;
+        end
+        else
+        begin
+          if EnvironmentOptions.CharcaseFileAction = ccfaAutoRename then NewFileName:=LowerFilename;
         end;
       end;
 

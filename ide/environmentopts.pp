@@ -42,7 +42,7 @@ uses
   InputHistory, EditorOptions, Translations;
 
 const
-  EnvOptsVersion: integer = 102;
+  EnvOptsVersion: integer = 103;
 
   //----------------------------------------------------------------------------
   
@@ -95,6 +95,13 @@ type
       afaIgnore
     );
   TAmbigiousFileActions = set of TAmbigiousFileAction;
+  
+  TCharCaseFileAction = (
+      ccfaAsk,
+      ccfaAutoRename,
+      ccfaIgnore
+    );
+  TCharCaseFileActions = set of TCharCaseFileAction;
 
 const
   AmbigiousFileActionNames: array[TAmbigiousFileAction] of string = (
@@ -105,6 +112,11 @@ const
       'Ignore'
     );
 
+  CharCaseFileActionNames: array[TCharCaseFileAction] of string = (
+      'Ask',
+      'AutoRename',
+      'Ignore'
+    );
 
   { Environment Options }
 
@@ -200,10 +212,9 @@ type
     
     // naming conventions
     fPascalFileExtension: TPascalExtType;
-    fPascalFileAutoLowerCase: boolean;
-    fPascalFileAskLowerCase: boolean;
+    fCharcaseFileAction : TCharCaseFileAction;
     fAmbigiousFileAction: TAmbigiousFileAction;
-    
+
     // language ID (see LazarusTranslations in translations.pas)
     fLanguageID: string;
     
@@ -363,13 +374,11 @@ type
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
                                                  write fPascalFileExtension;
-    property PascalFileAutoLowerCase: boolean read fPascalFileAutoLowerCase
-                                              write fPascalFileAutoLowerCase;
-    property PascalFileAskLowerCase: boolean read fPascalFileAskLowerCase
-                                             write fPascalFileAskLowerCase;
     property AmbigiousFileAction: TAmbigiousFileAction read fAmbigiousFileAction
                                                      write fAmbigiousFileAction;
-       
+    property CharcaseFileAction: TCharCaseFileAction read fCharcaseFileAction
+                                                     write fCharcaseFileAction;
+
     // language
     property LanguageID: string read fLanguageID write fLanguageID;
     
@@ -510,8 +519,7 @@ type
     
     // naming conventions
     PascalFileExtRadiogroup: TRadioGroup;
-    PascalFileAutoLowercaseCheckBox: TCheckBox;
-    PascalFileAskLowercaseCheckBox: TCheckBox;
+    CharCaseFileActionRadioGroup: TRadioGroup;
     AmbigiousFileActionRadioGroup: TRadioGroup;
 
     // buttons at bottom
@@ -598,6 +606,7 @@ var
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
+function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
 
 function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
 function CheckExecutable(const OldFilename, NewFilename: string;
@@ -628,7 +637,7 @@ end;
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin
   for Result:=Low(TDebuggerType) to High(TDebuggerType) do
-    if AnsiCompareText(DebuggerName[Result],s)=0 then exit;
+    if CompareText(DebuggerName[Result],s)=0 then exit;
   Result:=dtNone;
 end;
 
@@ -644,11 +653,22 @@ function AmbigiousFileActionNameToType(
   const Action: string): TAmbigiousFileAction;
 begin
   for Result:=Low(TAmbigiousFileAction) to High(TAmbigiousFileAction) do begin
-    if AnsiCompareText(AmbigiousFileActionNames[Result],Action)=0 then
+    if CompareText(AmbigiousFileActionNames[Result],Action)=0 then
       exit;
   end;
   Result:=afaAsk;
 end;
+
+function CharCaseFileActionNameToType(
+  const Action: string): TCharCaseFileAction;
+begin
+  for Result:=Low(TCharCaseFileAction) to High(TCharCaseFileAction) do begin
+    if CompareText(CharCaseFileActionNames[Result],Action)=0 then
+      exit;
+  end;
+  Result:=ccfaAutoRename;
+end;
+
 
 function CheckFileChanged(const OldFilename,
   NewFilename: string): boolean;
@@ -836,8 +856,7 @@ begin
   
   // naming
   fPascalFileExtension:=petPAS;
-  fPascalFileAutoLowerCase:=false;
-  fPascalFileAskLowerCase:=true;
+  fCharcaseFileAction:=ccfaAutoRename;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -1108,10 +1127,20 @@ begin
     
     // naming
     LoadPascalFileExt(Path+'');
-    fPascalFileAutoLowerCase:=XMLConfig.GetValue(
-      Path+'PascalFileAutoLowerCase/Value',false);
-    fPascalFileAskLowerCase:=XMLConfig.GetValue(
-      Path+'PascalFileAskLowerCase/Value',true);
+
+    if FileVersion>=103 then begin
+      fCharcaseFileAction:=CharCaseFileActionNameToType(XMLConfig.GetValue(
+        Path+'CharcaseFileAction/Value',''));
+    end else begin
+      if XMLConfig.GetValue(Path+'PascalFileAskLowerCase/Value',true) then
+        fCharcaseFileAction:=ccfaAsk
+      else if XMLConfig.GetValue(Path+'PascalFileAutoLowerCase/Value',false)
+      then
+        fCharcaseFileAction:=ccfaAutoRename
+      else
+        fCharcaseFileAction:=ccfaIgnore;
+    end;
+
     fAmbigiousFileAction:=AmbigiousFileActionNameToType(XMLConfig.GetValue(
       Path+'AmbigiousFileAction/Value',
         AmbigiousFileActionNames[fAmbigiousFileAction]));
@@ -1308,12 +1337,10 @@ begin
     fExternalTools.Save(XMLConfig,Path+'ExternalTools/');
 
     // naming
-    XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',
-      PascalExtension[fPascalFileExtension],'.pas');
-    XMLConfig.SetDeleteValue(Path+'PascalFileAutoLowerCase/Value',
-      fPascalFileAutoLowerCase,false);
-    XMLConfig.SetDeleteValue(Path+'PascalFileAskLowerCase/Value',
-      fPascalFileAskLowerCase,true);
+    XMLConfig.SetDeleteValue( Path+'Naming/PascalFileExtension', PascalExtension[fPascalFileExtension],'.pas');
+
+    XMLConfig.SetDeleteValue( Path+'CharcaseFileAction/Value', ord(fCharcaseFileAction), ord(ccfaAutoRename));
+
     XMLConfig.SetDeleteValue(Path+'AutoDeleteAmbigiousSources/Value',
       AmbigiousFileActionNames[fAmbigiousFileAction],
       AmbigiousFileActionNames[afaAsk]);
@@ -2667,17 +2694,15 @@ end;
 procedure TEnvironmentOptionsDialog.SetupNamingPage(Page: integer);
 var
   pe: TPascalExtType;
+  Space: Integer;
 begin
   NoteBook.Page[Page].OnResize:=@OnNamingPageResize;
+  Space:=5;
 
   PascalFileExtRadiogroup:=TRadioGroup.Create(Self);
   with PascalFileExtRadiogroup do begin
     Name:='PascalFileExtRadiogroup';
-    Left:=5;
-    Top:=4;
-    Width:=200;
-    Height:=80;
-    Parent:=NoteBook.Page[Page];
+    SetBounds(Space,Space,300,80);
     Caption:=dlgPasExt;
     with Items do begin
       BeginUpdate;
@@ -2686,39 +2711,32 @@ begin
           Add(PascalExtension[pe]);
       EndUpdate;
     end;
-    Visible:=true;
+    Parent:=NoteBook.Page[Page];
+    AnchorParallel(akRight,Space,Parent);
   end;
 
-  PascalFileAutoLowercaseCheckBox:=TCheckBox.Create(Self);
-  with PascalFileAutoLowercaseCheckBox do begin
-    Name:='PascalFileAutoLowercaseCheckBox';
-    Left:=PascalFileExtRadiogroup.Left;
-    Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
-    Width:=300;
+  CharcaseFileActionRadioGroup:=TRadioGroup.Create(Self);
+  with CharcaseFileActionRadioGroup do begin
+    Name:='CharcaseFileActionRadioGroup';
+    Caption:=dlgCharCaseFileAct;
+    with Items do begin
+      BeginUpdate;
+      Add(dlgEnvAsk);
+      Add(dlgAutoRen);
+      Add(dlgnoAutomaticRenaming);
+      EndUpdate;
+    end;
+    Height:=95;
+    AnchorParallel(akLeft,0,PascalFileExtRadiogroup);
+    AnchorParallel(akRight,0,PascalFileExtRadiogroup);
+    AnchorToNeighbour(akTop,Space,PascalFileExtRadiogroup);
     Parent:=NoteBook.Page[Page];
-    Caption:=Format(dlgPasAutoLower,['"','"']);
-    Visible:=true;
-  end;
-  
-  PascalFileAskLowercaseCheckBox:=TCheckBox.Create(Self);
-  with PascalFileAskLowercaseCheckBox do begin
-    Name:='PascalFileAskLowercaseCheckBox';
-    Left:=PascalFileAutoLowercaseCheckBox.Left;
-    Top:=PascalFileAutoLowercaseCheckBox.Top+PascalFileAutoLowercaseCheckBox.Height+10;
-    Width:=300;
-    Parent:=NoteBook.Page[Page];
-    Caption:=Format(dlgPasAskLower,['"','"']);
-    Visible:=true;
   end;
 
   AmbigiousFileActionRadioGroup:=TRadioGroup.Create(Self);
   with AmbigiousFileActionRadioGroup do begin
-    Name:='AmbigiousFileActionRadioGroup';
-    Left:=PascalFileAskLowercaseCheckBox.Left;
-    Top:=PascalFileAskLowercaseCheckBox.Top+PascalFileAskLowercaseCheckBox.Height+15;
-    Width:=200;
-    Height:=130;
-    Parent:=NoteBook.Page[Page];
+    Name := 'AmbigiousFileActionRadioGroup';
+    Height:=150;
     Caption:=dlgAmbigFileAct;
     with Items do begin
       BeginUpdate;
@@ -2729,7 +2747,10 @@ begin
       Add(dlgIgnoreVerb);
       EndUpdate;
     end;
-    Visible:=true;
+    Parent:=NoteBook.Page[Page];
+    AnchorParallel(akLeft,0,CharcaseFileActionRadioGroup);
+    AnchorParallel(akRight,0,CharcaseFileActionRadioGroup);
+    AnchorToNeighbour(akTop,Space,CharcaseFileActionRadioGroup);
   end;
 end;
 
@@ -2998,31 +3019,6 @@ end;
 
 procedure TEnvironmentOptionsDialog.ResizeNamingPage;
 begin
-  with PascalFileExtRadiogroup do begin
-    Left:=5;
-    Top:=4;
-    Width:=200;
-    Height:=80;
-  end;
-
-  with PascalFileAutoLowercaseCheckBox do begin
-    Left:=PascalFileExtRadiogroup.Left;
-    Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
-    Width:=300;
-  end;
-
-  with PascalFileAskLowercaseCheckBox do begin
-    Left:=PascalFileAutoLowercaseCheckBox.Left;
-    Top:=PascalFileAutoLowercaseCheckBox.Top+PascalFileAutoLowercaseCheckBox.Height+10;
-    Width:=300;
-  end;
-
-  with AmbigiousFileActionRadioGroup do begin
-    Left:=PascalFileAskLowercaseCheckBox.Left;
-    Top:=PascalFileAskLowercaseCheckBox.Top+PascalFileAskLowercaseCheckBox.Height+15;
-    Width:=200;
-    Height:=130;
-  end;
 end;
 
 procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
@@ -3730,9 +3726,9 @@ begin
     for i:=0 to PascalFileExtRadiogroup.Items.Count-1 do
       if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
       then PascalFileExtRadiogroup.ItemIndex:=i;
-    PascalFileAutoLowercaseCheckBox.Checked:=PascalFileAutoLowerCase;
-    PascalFileAskLowercaseCheckBox.Checked:=PascalFileAskLowerCase;
-    AmbigiousFileActionRadioGroup.ItemIndex:=ord(AmbigiousFileAction);
+
+    CharCaseFileActionRadioGroup.ItemIndex  := ord(CharCaseFileAction);
+    AmbigiousFileActionRadioGroup.ItemIndex := ord(AmbigiousFileAction);
   end;
 end;
 
@@ -3860,10 +3856,9 @@ begin
         PascalFileExtRadiogroup.Items[PascalFileExtRadiogroup.ItemIndex])
     else
       PascalFileExtension:=petPAS;
-    PascalFileAutoLowerCase:=PascalFileAutoLowercaseCheckBox.Checked;
-    PascalFileAskLowerCase:=PascalFileAskLowercaseCheckBox.Checked;
-    AmbigiousFileAction:=
-      TAmbigiousFileAction(AmbigiousFileActionRadioGroup.ItemIndex);
+
+    CharcaseFileAction  := TCharCaseFileAction(CharcaseFileActionRadioGroup.ItemIndex);
+    AmbigiousFileAction := TAmbigiousFileAction(AmbigiousFileActionRadioGroup.ItemIndex);
   end;
 end;
 

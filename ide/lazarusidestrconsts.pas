@@ -709,12 +709,13 @@ resourcestring
   dlgRubberbandSelectsGrandChilds = 'Select grand childs';
   dlgRubberBandGroup='Rubber band';
   dlgPasExt = 'Default pascal extension';
-  dlgPasAutoLower = '%sSave As%s always saves pascal files lowercase';
-  dlgPasAskLower = '%sSave As%s asks to save pascal files lowercase';
+  dlgCharCaseFileAct = 'Save As - auto rename pascal files lower case';
+  
   dlgAmbigFileAct = 'Ambigious file action:';
   dlgEnvAsk = 'Ask';
   dlgAutoDel = 'Auto delete file';
-  dlgAutoRen = 'Auto rename file';
+  dlgAutoRen = 'Auto rename file lowercase';
+  dlgnoAutomaticRenaming = 'no automatic renaming';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
   dlgBackColor = 'Background color';

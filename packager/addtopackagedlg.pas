@@ -1676,9 +1676,10 @@ begin
 
   // create filename
   NewFileName:=NewUnitName;
-  if EnvironmentOptions.PascalFileAutoLowerCase
-  or EnvironmentOptions.PascalFileAskLowerCase then
+
+  if EnvironmentOptions.CharcaseFileAction in [ccfaAsk, ccfaAutoRename] then
     NewFileName:=lowercase(NewFileName);
+
   // append pascal file extension
   NewFileName:=NewFileName+
        +EnvironmentOpts.PascalExtension[EnvironmentOptions.PascalFileExtension];
