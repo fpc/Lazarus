@@ -33,9 +33,10 @@ unit InterfaceBase;
 
 {$mode objfpc}
 {$LONGSTRINGS ON}
+
 interface
 
-{ $DEFINE ClientRectBugFix}
+{$DEFINE ClientRectBugFix}
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -90,6 +91,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2002/05/20 14:19:03  lazarus
+  MG: activated the clientrect bugfixes
+
   Revision 1.10  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 
