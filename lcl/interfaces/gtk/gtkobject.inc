@@ -4338,6 +4338,8 @@ var
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
   GtkWindow: PGtkWidget;
+  APage: TPage;
+  NoteBookWidget: PGtkNotebook;
   {$IFNDef GTK2}
   Accelerators: PGSlist;
   AccelEntry : PGtkAccelEntry;
@@ -4346,9 +4348,10 @@ begin
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
   Widget:=PGtkWidget(Handle);
-  
-  FixWidget:=GetFixedWidget(Widget);
+  if WidgetIsDestroyingHandle(Widget) then exit;
   SetWidgetIsDestroyingHandle(Widget);
+
+  FixWidget:=GetFixedWidget(Widget);
 
   // if one of its widgets has the focus then unfocus
   GtkWindow:=gtk_widget_get_toplevel(Widget);
@@ -4357,10 +4360,15 @@ begin
   then begin
     gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
   end;
+  
+  //writeln('TGTKObject.DestroyLCLComponent A ',
+  //  ' Widget=',HexStr(Cardinal(Widget),8),
+  //  ' FixWidget=',HexStr(Cardinal(FixWidget),8));
 
   // Remove control accelerators - has to be done due to GTK+ bug?
   {$IFNDef GTK2}
   if Sender is TWinControl then begin
+    //writeln('TGTKObject.DestroyLCLComponent B ',TWinControl(Sender).Name,':',TWinControl(Sender).ClassName);
     Accelerators:= gtk_accel_group_entries_from_object(PGtkObject(Handle));
     while Accelerators <> nil do begin
       AccelEntry:= Accelerators^.data;
@@ -4392,18 +4400,27 @@ begin
         FreeWinWidgetInfo(PGtkCombo(Widget)^.Entry);
         FreeWinWidgetInfo(PGtkCombo(Widget)^.Button);
       end;
+      
+    csPage:
+      begin
+        // a notebook always need at least one page
+        // -> if this is the last page, then add a dummy page
+        APage:=TPage(Sender);
+        if (APage.Parent<>nil) and APage.Parent.HandleAllocated
+        and (APage.Parent is TCustomNoteBook) then begin
+          NoteBookWidget:=PGtkNotebook(TCustomNoteBook(APage.Parent).Handle);
+          if GetGtkNoteBookPageCount(NoteBookWidget)=1 then begin
+            AddDummyNoteBookPage(NoteBookWidget);
+            UpdateNoteBookClientWidget(TCustomNoteBook(APage.Parent));
+          end;
+        end;
+      end;
 
     end;
   end
   else if Sender is TCommonDialog then begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
-
-  // remove pending size messages
-  UnsetResizeRequest(Widget);
-  FWidgetsResized.Remove(Widget);
-  if FixWidget<>Widget then
-    FFixWidgetsResized.Remove(FixWidget);
 
   //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // update mouse capturing
@@ -4429,6 +4446,12 @@ begin
   then
     DestroyCaret(Handle);
     
+  // remove pending size messages
+  UnsetResizeRequest(Widget);
+  FWidgetsResized.Remove(Widget);
+  if FixWidget<>Widget then
+    FFixWidgetsResized.Remove(FixWidget);
+
   // destroy the widget
   DestroyWidget(Widget);
 
@@ -6121,24 +6144,6 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
-  
-  Returns the number of pages in a PGtkNotebook
--------------------------------------------------------------------------------}
-function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
-var
-  AListItem: PGList;
-begin
-  Result:=0;
-  if ANoteBookWidget=nil then exit;
-  AListItem:=ANoteBookWidget^.children;
-  while AListItem<>nil do begin
-    inc(Result);
-    AListItem:=AListItem^.Next;
-  end;
-end;
-
-{-------------------------------------------------------------------------------
   procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);
 
   Adds the dummy page.
@@ -6165,7 +6170,7 @@ begin
     gtk_widget_show(ALabel);
     MenuLabel:=gtk_label_new('');
     gtk_widget_show(MenuLabel);
-    gtk_notebook_prepend_page_menu(NoteBookWidget,DummyWidget,ALabel,MenuLabel);
+    gtk_notebook_append_page_menu(NoteBookWidget,DummyWidget,ALabel,MenuLabel);
     SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
   end;
 end;
@@ -6182,7 +6187,8 @@ var
 begin
   DummyWidget:=GetGtkNoteBookDummyPage(NoteBookWidget);
   if DummyWidget=nil then exit;
-  gtk_notebook_remove_page(NoteBookWidget,0);
+  gtk_notebook_remove_page(NoteBookWidget,
+                           gtk_notebook_page_num(NoteBookWidget,DummyWidget));
   DummyWidget:=nil;
   SetGtkNoteBookDummyPage(NoteBookWidget,DummyWidget);
 end;
@@ -6433,18 +6439,10 @@ end;
        *Note: Remove Notebook Page
 ------------------------------------------------------------------------------}
 procedure TgtkObject.RemoveNBPage(ANoteBook: TObject; Index: Integer);
-var
-  NoteBookWidget: PGtkNotebook;
 begin
-  Assert(false, 'Trace:Removing a notebook page');
-  NoteBookWidget:=PGtkNotebook(TWinControl(ANoteBook).Handle);
-  if GetGtkNoteBookPageCount(NoteBookWidget)>1 then begin
-    gtk_notebook_remove_page(NoteBookWidget, Index);
-  end else begin
-    AddDummyNoteBookPage(NoteBookWidget);
-    gtk_notebook_remove_page(NoteBookWidget, Index+1);
-  end;
-  UpdateNoteBookClientWidget(ANoteBook);
+  // The gtk does not provide a function to remove a page without destroying it.
+  // Luckily the LCL destroys the Handle, when a page is removed, so this
+  // function is not needed.
 end;
 
 {------------------------------------------------------------------------------
@@ -8170,6 +8168,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.416  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.415  2003/09/12 17:40:45  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
   more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)

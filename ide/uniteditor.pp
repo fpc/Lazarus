@@ -3778,7 +3778,7 @@ Begin
       Notebook.PageIndex:=PageIndex-1;
     // delete the page
     Notebook.Pages.Delete(PageIndex);
-    //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
+    //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex,' Notebook.PageCount=',Notebook.PageCount);
     UpdateStatusBar;
   end else begin
     //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);

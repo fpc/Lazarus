@@ -58,7 +58,7 @@ type
 
   { TPage }
 
-  TPageFlag = (pfAdded);
+  TPageFlag = (pfAdded,pfRemoving);
   TPageFlags = set of TPageFlag;
 
   TPage = class(TWinControl)
@@ -72,8 +72,7 @@ type
     property Flags: TPageFlags read FFlags write FFlags;
     procedure CMHitTest(var Message: TLMNCHITTEST); message CM_HITTEST;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
+    constructor Create(TheOwner: TComponent); override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function PageIndex: integer;
     function CanTab: boolean; override;
@@ -168,7 +167,7 @@ type
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function TabIndexAtClientPos(ClientPos: TPoint): integer;
     function CanTab: boolean; override;
@@ -756,6 +755,9 @@ end.
 
  {
   $Log$
+  Revision 1.74  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.73  2003/09/16 11:35:14  mattias
   started TDBCheckBox
 

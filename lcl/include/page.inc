@@ -19,16 +19,16 @@
 {------------------------------------------------------------------------------
   TPage Constructor
  ------------------------------------------------------------------------------}
-constructor TPage.Create(AOwner: TComponent);
+constructor TPage.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   
   fImageIndex:=-1;
   fCompStyle := csPage;
   ControlStyle := ControlStyle + [csAcceptsControls];
 
   // set the default height and width
-  if (AOwner<>nil) and (AOwner is TControl) then begin
+  if (Owner<>nil) and (Owner is TControl) then begin
     Align:=alClient;
   end else begin
     SetInitialBounds(0,0,120,100);
@@ -78,14 +78,23 @@ var
   ParentNotebook: TCustomNotebook;
   i: integer;
 begin
+  if AParent=Parent then exit;
+  
   OldParent:=Parent;
   if (OldParent<>AParent) and (OldParent<>nil)
-  and (OldParent is TCustomNotebook) then begin
+  and (OldParent is TCustomNotebook)
+  and (not (pfRemoving in FFlags)) then begin
     // remove from old pagelist
     ParentNotebook:=TCustomNotebook(OldParent);
     i:=PageIndex;
-    if i>=0 then
-      TNBPages(ParentNotebook.fAccess).RemovePage(i);
+    if i>=0 then begin
+      Include(FFlags,pfRemoving);
+      try
+        TNBPages(ParentNotebook.fAccess).RemovePage(i);
+      finally
+        Exclude(FFlags,pfRemoving);
+      end;
+    end;
   end;
 
   inherited SetParent(AParent);
@@ -113,14 +122,6 @@ begin
     (Parent is TCustomNotebook),' ',
     (TCustomNotebook(Parent).ActivePageComponent<>Self),
     ' Message.Result=',Message.Result);}
-end;
-
-{------------------------------------------------------------------------------
-  TPage Destroy
- ------------------------------------------------------------------------------}
-destructor TPage.Destroy;
-begin
-  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -154,6 +155,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.19  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.18  2003/08/26 14:33:40  mattias
   implemented component tree for OI
 

@@ -339,6 +339,7 @@ function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
   DummyWidget: PGtkWidget);
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
+function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
 
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;

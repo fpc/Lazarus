@@ -1856,6 +1856,24 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
+
+  Returns the number of pages in a PGtkNotebook
+-------------------------------------------------------------------------------}
+function GetGtkNoteBookPageCount(ANoteBookWidget: PGtkNoteBook): integer;
+var
+  AListItem: PGList;
+begin
+  Result:=0;
+  if ANoteBookWidget=nil then exit;
+  AListItem:=ANoteBookWidget^.children;
+  while AListItem<>nil do begin
+    inc(Result);
+    AListItem:=AListItem^.Next;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
  Some need the LCLobject which created this widget.
 
 -------------------------------------------------------------------------------}
@@ -3246,7 +3264,7 @@ end;
   Params: FixWidget: PGtkWidget  A widget that is the fixed widget
                                  of a lcl control.
 
-  When the gtk sends a size signal, it is not send directly to the LCL. All gtk
+  When the gtk sends a size signal, it is not sent directly to the LCL. All gtk
   size/move messages are collected and only the last one for each widget is sent
   to the LCL.
   This is neccessary, because the gtk sends size messages several times and
@@ -3262,17 +3280,27 @@ var
 begin
   {$IFDEF VerboseSizeMsg}
   MainWidget:=GetMainWidget(FixWidget);
-  write('SaveClientSizeNotification',
-    ' FixWidget=',HexStr(Cardinal(FixWidget),8),
-    ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
+  //write('SaveClientSizeNotification',
+  //  ' FixWidget=',HexStr(Cardinal(FixWidget),8),
+  //  ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
   LCLControl:=TWinControl(GetLCLObject(MainWidget));
   if (LCLControl<>nil) then begin
-    if LCLControl is TWinControl then
-      writeln(' ',LCLControl.Name,':',LCLControl.ClassName)
-    else
-      writeln(' ERROR: ',LCLControl.ClassName);
+    if LCLControl is TWinControl then begin
+      //writeln('SaveClientSizeNotification ',LCLControl.Name,':',LCLControl.ClassName,
+      //  ' FixWidget=',HexStr(Cardinal(FixWidget),8),
+      //  ' MainWidget=',HexStr(Cardinal(MainWidget),8));
+    end else begin
+      write('ERROR: SaveClientSizeNotification ',
+        ' LCLControl=',LCLControl.ClassName,
+        ' FixWidget=',HexStr(Cardinal(FixWidget),8),
+        ' MainWidget=',HexStr(Cardinal(MainWidget),8));
+      RaiseGDBException('SaveClientSizeNotification');
+    end;
   end else begin
-    writeln(' ERROR: LCLControl=nil');
+    write('ERROR: SaveClientSizeNotification LCLControl=nil',
+      ' FixWidget=',HexStr(Cardinal(FixWidget),8),
+      ' MainWIdget=',HexStr(Cardinal(MainWidget),8));
+    RaiseGDBException('SaveClientSizeNotification');
   end;
   {$ENDIF}
   if not FFixWidgetsResized.Contains(FixWidget) then
@@ -4679,6 +4707,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.206  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.205  2003/09/12 17:40:46  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
   more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)

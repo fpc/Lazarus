@@ -2057,8 +2057,11 @@ begin
   Result:=true;
 end;
 
-function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
-  data: gPointer) : GBoolean; cdecl;
+function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;
+  data: gPointer): GBoolean; cdecl;
+var
+  MainWidget: PGtkWidget;
+  ClientWidget: PGtkWidget;
 begin
   if (Widget=nil) or (Size=nil) then ;
   if (TObject(Data) is TWinControl) then begin
@@ -2071,6 +2074,12 @@ begin
       ' Requisiton=',widget^.Requisition.Width,',',Widget^.Requisition.Height
       );
     {$ENDIF}
+    if not TWinControl(Data).HandleAllocated then begin
+      exit;
+    end;
+    MainWidget:=PGtkWidget(TWinControl(Data).Handle);
+    ClientWidget:=GetFixedWidget(MainWidget);
+    SaveClientSizeNotification(ClientWidget);
   end else begin
     // owner is not TWinControl -> ignore
     writeln('WARNING: gtksize_allocate_client: Data is not TWinControl. Data=',
@@ -2079,12 +2088,11 @@ begin
     exit;
   end;
   
-  SaveClientSizeNotification(Widget);
   Result:=true;
 end;
 
-function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
-  data: gPointer) : GBoolean; cdecl;
+function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
+  data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMNotify;
   T : tagNMHDR;
@@ -2094,8 +2102,7 @@ begin
   EventTrace('switch-page', data);
   UpdateNoteBookClientWidget(TObject(Data));
   Mess.Msg := LM_NOTIFY;
-  //this is the
-  T.code := TCN_SELCHANGE;//(0-550)-1;
+  T.code := TCN_SELCHANGE;
   T.hwndfrom := longint(widget);
   T.idfrom := pagenum;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @T;
@@ -2847,6 +2854,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.191  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.190  2003/09/13 16:43:01  mattias
   fixed PerformTab call
 

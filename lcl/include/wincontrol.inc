@@ -883,8 +883,8 @@ begin
     if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
     SetZOrderPosition(i);
   end
-  else if FHandle <> 0 then begin
-    SetWindowPos(FHandle, WindowPos[TopMost], 0, 0, 0, 0,
+  else if HandleAllocated then begin
+    SetWindowPos(Handle, WindowPos[TopMost], 0, 0, 0, 0,
       SWP_NOMOVE + SWP_NOSIZE);
   end;
 end;
@@ -971,7 +971,7 @@ end;
 
 procedure TWinControl.Update;
 begin
-  if HandleAllocated then UpdateWindow(FHandle);
+  if HandleAllocated then UpdateWindow(Handle);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1018,7 +1018,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TWinControl.Focused : Boolean;
 Begin
-  Result := CanTab and ((FHandle <> 0) and (GetFocus = FHandle));
+  Result := CanTab and (HandleAllocated and (GetFocus = Handle));
 end;
 
 {------------------------------------------------------------------------------}
@@ -2188,6 +2188,8 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWincontrol.SetHandle(NewHandle: HWND);
 begin
+  //if (NewHandle=0) and (AnsiCompareText(ClassName,'TPAGE')=0) then
+  //  RaiseGDBException('TWincontrol.SetHandle');
   FHandle:=NewHandle;
 end;
 
@@ -2310,7 +2312,7 @@ begin
   
   if HandleAllocated 
   and not (csDesigning in ComponentState) 
-  then EnableWindow(FHandle, Enabled);
+  then EnableWindow(Handle, Enabled);
 end;
 
 {------------------------------------------------------------------------------
@@ -2416,7 +2418,7 @@ begin
   Assert(False, Format('Trace: [TWinControl.LMDestroy] %s', [ClassName]));
   //writeln('TWinControl.WMDestroy ',Name,':',ClassName);
   // Our widget/window doesn't exist anymore
-  FHandle := 0;
+  Handle := 0;
 end;                          
 
 {------------------------------------------------------------------------------
@@ -2788,7 +2790,7 @@ procedure TWinControl.DestroyWnd;
 begin
   if HandleAllocated then begin
     DestroyComponent;
-    FHandle := 0;
+    Handle := 0;
   end;
 end;
 
@@ -2980,7 +2982,7 @@ begin
   then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
     ClassName]);
 
-  WindowHandle := FHandle;
+  WindowHandle := Handle;
 end;
 
 {------------------------------------------------------------------------------
@@ -3055,7 +3057,7 @@ begin
   // ToDo: do not send this while loading, send it after loading.
   if HandleAllocated then
     CNSendMessage(LM_ShowHide, Self, nil);
-//  SetWindowPos(FHandle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
+//  SetWindowPos(Handle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
 
 {------------------------------------------------------------------------------
@@ -3079,6 +3081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.169  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.168  2003/09/13 16:43:01  mattias
   fixed PerformTab call
 

@@ -92,6 +92,7 @@ procedure TNBPages.RemovePage(Index: integer);
 var
   Msg: TLMNotebookEvent;
   NewPageIndex: integer;
+  APage: TPage;
 begin
   // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
@@ -101,6 +102,7 @@ begin
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
+    APage:=TPage(fPageList[Index]);
     NewPageIndex:=fNoteBook.PageIndex;
     if not (csLoading in fNoteBook.ComponentState) then begin
       // If that page is showing, then show the next page before deleting it
@@ -127,9 +129,12 @@ begin
       CNSendMessage(LM_REMOVEPAGE, fNotebook, @Msg);
     end;
     fPageList.Delete(Index);
+    APage.Parent:=nil;
     if not (csLoading in fNoteBook.ComponentState) then begin
       if NewPageIndex>=Index then
-        fNoteBook.PageIndex:=NewPageIndex-1;
+        dec(NewPageIndex);
+      if (NewPageIndex>=0) and (fPageList.Count>0) then
+        fNoteBook.PageIndex:=NewPageIndex;
     end;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
@@ -162,7 +167,9 @@ begin
      (Index < fPageList.Count) then
   begin
     APage:=TPage(fPageList[Index]);
-    RemovePage(Index);
+    // delete handle
+    APage.Parent:=nil;
+    // free the page
     APage.Free;
   end;
   {$IFDEF NOTEBOOK_DEBUG}
@@ -301,9 +308,9 @@ end;
 {------------------------------------------------------------------------------
   TCustomNotebook Constructor
  ------------------------------------------------------------------------------}
-constructor TCustomNotebook.Create(AOwner: TComponent);
+constructor TCustomNotebook.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   {create the control}
   fCompStyle := csNoteBook;
 
@@ -756,6 +763,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.33  2003/09/17 15:26:41  mattias
+  fixed removing TPage
+
   Revision 1.32  2003/08/12 14:02:54  mattias
   fixed keypress/keyup, createcaret on synedit focus
 
