@@ -1534,8 +1534,8 @@ procedure TCustomSynEdit.HideCaret;
 begin
 //writeln('[TCustomSynEdit.HideCaret]');
   if sfCaretVisible in fStateFlags then begin
-    if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
-      Exclude(fStateFlags, sfCaretVisible);
+    {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle);
+    Exclude(fStateFlags, sfCaretVisible);
   end;
 end;
 
@@ -4109,11 +4109,13 @@ end;
 procedure TCustomSynEdit.WMSetFocus(var Msg: TWMSetFocus);
 begin
   LastMouseCaret:=Point(-1,-1);
-//writeln('[TCustomSynEdit.WMSetFocus] A');
+  {$IFDEF VerboseFocus}
+  writeln('[TCustomSynEdit.WMSetFocus] A');
+  {$ENDIF}
   //InitializeCaret;
   //if FHideSelection and SelAvail then
   //  Invalidate;
-//writeln('[TCustomSynEdit.WMSetFocus] END');
+  //writeln('[TCustomSynEdit.WMSetFocus] END');
 end;
 
 procedure TCustomSynEdit.WMSize(var Msg: TWMSize);
