@@ -64,7 +64,8 @@ type
 
   TSaveFlag = (sfSaveAs,
                sfSaveToTestDir,
-               sfProjectSaving
+               sfProjectSaving,
+               sfCheckAmbigiousFiles
                );
   TSaveFlags = set of TSaveFlag;
   

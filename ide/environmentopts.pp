@@ -150,6 +150,7 @@ type
     // naming conventions
     fPascalFileExtension: TPascalExtType;
     fPascalFileLowerCase: boolean;
+    fAutoDeleteAmbigiousSources: boolean;
     
     // language
     fLanguage: TLazarusLanguage;
@@ -265,6 +266,8 @@ type
        read fPascalFileExtension write fPascalFileExtension;
     property PascalFileLowerCase: boolean
        read fPascalFileLowerCase write fPascalFileLowerCase;
+    property AutoDeleteAmbigiousSources: boolean
+       read fAutoDeleteAmbigiousSources write fAutoDeleteAmbigiousSources;
        
     // language
     property Language: TLazarusLanguage read fLanguage write fLanguage;
@@ -373,6 +376,7 @@ type
     // naming conventions
     PascalFileExtRadiogroup: TRadioGroup;
     PascalFileLowercaseCheckBox: TCheckBox;
+    AutoDeleteAmbigiousSourcesCheckBox: TCheckBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -788,6 +792,8 @@ begin
     LoadPascalFileExt('EnvironmentOptions/');
     fPascalFileLowerCase:=XMLConfig.GetValue(
       'EnvironmentOptions/PascalFileLowerCase/Value',true);
+    fAutoDeleteAmbigiousSources:=XMLConfig.GetValue(
+      'EnvironmentOptions/AutoDeleteAmbigiousSources/Value',true);
 
     XMLConfig.Free;
 
@@ -944,6 +950,8 @@ begin
       PascalExtension[fPascalFileExtension]);
     XMLConfig.SetValue('EnvironmentOptions/PascalFileLowerCase/Value',
       fPascalFileLowerCase);
+    XMLConfig.SetValue('EnvironmentOptions/AutoDeleteAmbigiousSources/Value',
+      fAutoDeleteAmbigiousSources);
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -2150,6 +2158,17 @@ begin
     Caption:='Save pascal files lowercase';
     Visible:=true;
   end;
+  
+  AutoDeleteAmbigiousSourcesCheckBox:=TCheckBox.Create(Self);
+  with AutoDeleteAmbigiousSourcesCheckBox do begin
+    Name:='AutoDeleteAmbigiousSourcesCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=PascalFileLowercaseCheckBox.Left;
+    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+10;
+    Width:=300;
+    Caption:='Auto delete ambigious sources';
+    Visible:=true;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeDesktopPage;
@@ -2652,6 +2671,12 @@ begin
     Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
     Width:=300;
   end;
+
+  with AutoDeleteAmbigiousSourcesCheckBox do begin
+    Left:=PascalFileLowercaseCheckBox.Left;
+    Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+10;
+    Width:=300;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
@@ -2900,6 +2925,7 @@ begin
       if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
       then PascalFileExtRadiogroup.ItemIndex:=i;
     PascalFileLowercaseCheckBox.Checked:=PascalFileLowerCase;
+    AutoDeleteAmbigiousSourcesCheckBox.Checked:=AutoDeleteAmbigiousSources;
   end;
 end;
 
@@ -3012,6 +3038,7 @@ begin
     else
       PascalFileExtension:=petPAS;
     PascalFileLowerCase:=PascalFileLowercaseCheckBox.Checked;
+    AutoDeleteAmbigiousSources:=AutoDeleteAmbigiousSourcesCheckBox.Checked;
   end;
 end;
 
