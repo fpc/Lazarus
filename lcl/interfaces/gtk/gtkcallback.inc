@@ -19,18 +19,22 @@
 {$ENDIF}
 
 const
-  DblClickTime = 250;//250 miliseconds or less between clicks is a double click
+  DblClickTime = 250;// 250 miliseconds or less between clicks is a double click
+  DblClickThreshold = 3;// max Movement between two clicks of a DblClick
 
 type
   TLastMouseClick = record
     Down: boolean;
     TheTime: TDateTime;
     Component: TComponent;
+    Window: PGdkWindow;
+    WindowPoint: TPoint;
   end;
 
 const
   EmptyLastMouseClick: TLastMouseClick =
-    (Down: false; TheTime: -1; Component: nil);
+    (Down: false; TheTime: -1; Component: nil;
+     Window: nil; WindowPoint: (X: 0; Y: 0));
 
 
 var
@@ -613,6 +617,7 @@ var
   MessE : TLMMouseEvent;
   ShiftState: TShiftState;
   MappedXY: TPoint;
+  EventXY: TPoint;
   //ShowDebugging : Boolean;
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
   DesignOnlySignal: boolean;
@@ -625,31 +630,57 @@ var
     if (LastMouse.Down) and
       (not (Event^.theType in [gdk_2button_press,gdk_3button_press]))
     then begin
+      {$IFDEF VerboseMouseBugfix}
+      writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
+              ' Event^.theType=',Event^.theType);
+      {$ENDIF}
       Result:=false;
       Exit;
     end;
 
     MessI.Keys := MessI.Keys or BtnKey;
-    if ((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)))
-    and (not (Event^.theType = gdk_3button_press))
-    then
-      Event^.theType := gdk_2Button_press;
+    if (LastMouse.Window<>nil)
+    and (LastMouse.Window=Event^.Window) then begin
+      // clicked into the same gdkwindow
+      // check threshold and time
+      if (Abs(EventXY.X-LastMouse.WindowPoint.X)<=DblClickThreshold)
+      and (Abs(EventXY.Y-LastMouse.WindowPoint.Y)<=DblClickThreshold)
+      and ((now - LastMouse.TheTime) <= ((1/86400)*(DblClickTime/1000)))
+      and (not (Event^.theType = gdk_3button_press))
+      then begin
+        {$IFDEF VerboseMouseBugfix}
+        writeln('  TIME DOUBLE CLICK: ',now,'-',LastMouse.TheTime,'<= ',
+          ((1/86400)*(DblClickTime/1000)));
+        {$ENDIF}
+        Event^.theType := gdk_2Button_press;
+      end;
+    end;
     LastMouse.TheTime := Now;
+    LastMouse.Window := Event^.Window;
+    LastMouse.WindowPoint := EventXY;
 
-    if event^.thetype = gdk_button_press then
-      MessI.Msg := MsgNormal
-    else
-    if event^.thetype = gdk_2button_press then
-    begin
+    if event^.thetype = gdk_button_press then begin
+      MessI.Msg := MsgNormal;
+      {$IFDEF VerboseMouseBugfix}
+      writeln('  NormalClick');
+      {$ENDIF}
+    end else
+    if event^.thetype = gdk_2button_press then begin
       MessI.Msg := MsgDouble;
-      LastMouse.TheTime := -1;
+      LastMouse.Window := nil;
+      {$IFDEF VerboseMouseBugfix}
+      writeln('  DoubleClick');
+      {$ENDIF}
     end
     else
-    if event^.thetype = gdk_3button_press then
-    begin
+    if event^.thetype = gdk_3button_press then begin
       MessI.Msg := MsgTriple;
-      LastMouse.TheTime := -1;
+      LastMouse.Window := nil;
+      {$IFDEF VerboseMouseBugfix}
+      writeln('  TripleClick');
+      {$ENDIF}
     end;
+    
 
     LastMouse.Down := True;
     LastMouse.Component:=TComponent(Data);
@@ -660,12 +691,14 @@ begin
   Result:=true;
   
   {$IFDEF VerboseMouseBugfix}
+  writeln('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
   writeln('[gtkMouseBtnPress] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
     ' DSO=',DesignOnlySignal,
-    ' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+    ' ',Trunc(Event^.X),',',Trunc(Event^.Y),
+    ' Type=',Event^.theType);
   {$ENDIF}
   //writeln('DDD1 MousePress Widget=',HexStr(Cardinal(Widget),8),
   //' ClientWidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
@@ -688,9 +721,9 @@ begin
     if DesignOnlySignal then exit;
   end;
 
+  EventXY:=Point(trunc(Event^.X),trunc(Event^.Y));
   ShiftState := GTKEventState2ShiftState(Event^.State);
-  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
-                                         Point(trunc(Event^.X),trunc(Event^.Y)),
+  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
                                          PGtkWidget(TWinControl(Data).Handle));
 
   if event^.Button in [4,5] then begin
@@ -2139,6 +2172,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2002/08/24 08:07:14  lazarus
+  MG: fixed double click recognition
+
   Revision 1.109  2002/08/24 07:11:56  lazarus
   MG: reduced output
 
