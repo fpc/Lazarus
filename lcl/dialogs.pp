@@ -36,7 +36,7 @@ unit Dialogs;
 
 interface
 
-uses Classes, Forms, Controls, VCLGlobals, LMessages, Graphics;
+uses Classes, Forms, Controls, VCLGlobals, LMessages, GraphType, Graphics;
 
 //type
 //   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
@@ -313,6 +313,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/08/06 09:32:48  lazarus
+  MG: moved TColor definition to graphtype.pp and registered TColor names
+
   Revision 1.16  2002/07/29 13:39:06  lazarus
   MG: removed ambigious TBitmap from LCLType and added Escape key to MessageDlgs
 

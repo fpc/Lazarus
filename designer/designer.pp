@@ -35,7 +35,7 @@ interface
 {$DEFINE VerboseDesigner}
 
 uses
-  Classes, LCLType, LCLLinux, Forms, Controls, LMessages, Graphics,
+  Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
   ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus,
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts;
 

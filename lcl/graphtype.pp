@@ -28,15 +28,18 @@ unit GraphType;
 
 interface
 
-uses Classes, LCLType;
+uses
+  Classes, LCLType;
 
 {$ifdef Trace}
 {$ASSERTIONS ON}
 {$endif}
 
 type
-  TColor = longint;  //Also defined in LMessages.pp
-  
+  PColor = ^TColor;
+  // don't define TColor as longint, or else the RTTI can't distinguish them
+  TColor = -$7FFFFFFF-1..$7FFFFFFF;
+
   TFontPitch = (fpDefault, fpVariable, fpFixed);
   TFontName = string;
   TFontCharSet = 0..255;
@@ -145,6 +148,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/08/06 09:32:48  lazarus
+  MG: moved TColor definition to graphtype.pp and registered TColor names
+
   Revision 1.4  2002/06/04 15:17:21  lazarus
   MG: improved TFont for XLFD font names
 

@@ -641,8 +641,8 @@ type
   // Color / Identifier mapping
   TGetColorStringProc = procedure(const s:ansistring) of object;
   
-function ColorToIdent(Color: Longint; var Ident: AnsiString): Boolean;
-function IdentToColor(const Ident: shortstring; var Color: Longint): Boolean;
+function ColorToIdent(Color: Longint; var Ident: String): Boolean;
+function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function ColorToRGB(Color: TColor): Longint;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
@@ -684,7 +684,8 @@ const  // New TFont instances are initialized with the values in this structure:
 implementation
 
 
-uses Controls, ClipBrd;
+uses
+  Controls, ClipBrd, TypInfo;
 
 const
   GraphicsFinalized: boolean = false;
@@ -754,12 +755,12 @@ const
     (Value: clInfoBk; Name: 'clInfoBk'),
     (Value: clNone; Name: 'clNone'));
 
-function ColorToIdent(Color: Longint; var Ident: AnsiString): Boolean;
+function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 begin
   Result := IntToIdent(Color, Ident, Colors);
 end;
 
-function IdentToColor(const Ident: shortstring; var Color: Longint): Boolean;
+function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 begin
   Result := IdentToInt(Ident, Color, Colors);
 end;
@@ -806,7 +807,9 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 
+
 initialization
+  RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
 
 finalization
   GraphicsFinalized:=true;
@@ -819,6 +822,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/08/06 09:32:48  lazarus
+  MG: moved TColor definition to graphtype.pp and registered TColor names
+
   Revision 1.34  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 

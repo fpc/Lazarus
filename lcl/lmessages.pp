@@ -29,7 +29,7 @@ unit lMessages;
 
 interface
 
-uses Classes, vclGlobals, LCLType;
+uses Classes, vclGlobals, LCLType, GraphType;
 
 const
 
@@ -335,8 +335,6 @@ const
 
 
 type
-
-  TColor = LongInt;  //Also defined in graphics.pp
   UINT = LongWord;
   BOOL = Boolean;
 
@@ -842,6 +840,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2002/08/06 09:32:48  lazarus
+  MG: moved TColor definition to graphtype.pp and registered TColor names
+
   Revision 1.26  2002/06/08 17:16:02  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 
