@@ -41,7 +41,7 @@ unit LCLIntf;
 interface
 
 uses
-  Strings, Math, Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType,
+  Math, Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType,
   InterfaceBase, LResources;
 
 {$ifdef Trace}
@@ -182,6 +182,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2004/05/02 12:01:15  mattias
+  removed unneeded units in uses sections
+
   Revision 1.14  2004/03/06 21:57:14  mattias
   fixed compilation under fpc 1.9.3
 

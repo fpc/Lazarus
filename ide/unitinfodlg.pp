@@ -27,8 +27,8 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls, IDEProcs,
-  LazarusIDEStrConsts, CodeToolsDefPreview, CodeToolManager;
+  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, LazarusIDEStrConsts,
+  CodeToolsDefPreview, CodeToolManager;
 
 type
   TUnitInfoDlg = class(TFORM)

@@ -39,9 +39,9 @@ unit BrokenDependenciesDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, LResources, ExtCtrls, StdCtrls,
-  ComCtrls, FileCtrl, Dialogs, IDEProcs, IDEOptionDefs, LazarusIDEStrConsts,
-  Project, PackageDefs, PackageSystem;
+  Classes, SysUtils, Forms, Controls, Buttons, LResources, StdCtrls, ComCtrls,
+  FileCtrl, Dialogs,
+  IDEOptionDefs, LazarusIDEStrConsts, Project, PackageDefs, PackageSystem;
 
 type
   TBrokenDependenciesDialog = class(TForm)

@@ -58,9 +58,8 @@ uses
   {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType,
   {$ELSE}
-  Windows,
+  Windows, Messages,
   {$ENDIF}
-  Messages,
   Graphics,
   Menus,
 {$ENDIF}
@@ -264,8 +263,10 @@ type
 implementation
 
 uses
+{$IFNDEF SYN_LAZARUS}
   SynEditMiscProcs,
   SynEditTypes,
+{$ENDIF}
 {$IFDEF SYN_CLX}
   QForms,
 {$ELSE}

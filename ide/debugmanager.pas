@@ -42,8 +42,8 @@ uses
   Classes, SysUtils, Forms, Controls, Dialogs, Menus, FileCtrl, Laz_XMLCfg,
   SynEdit, CodeCache, CodeToolManager, LazConf, DebugOptionsFrm,
   CompilerOptions, EditorOptions, EnvironmentOpts, KeyMapping, UnitEditor,
-  Project, IDEProcs, InputHistory, Debugger, RunParamsOpts, ExtToolDialog,
-  IDEOptionDefs, LazarusIDEStrConsts, ProjectDefs, BaseDebugManager, MainBar,
+  Project, IDEProcs, InputHistory, Debugger,
+  IDEOptionDefs, LazarusIDEStrConsts, BaseDebugManager, MainBar,
   SourceMarks,
   DebuggerDlg, Watchesdlg, BreakPointsdlg, LocalsDlg, DBGOutputForm,
   GDBMIDebugger, CallStackDlg, SSHGDBMIDebugger;
@@ -1676,6 +1676,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.68  2004/05/02 12:01:14  mattias
+  removed unneeded units in uses sections
+
   Revision 1.67  2004/02/24 15:30:13  mattias
   added test if debugger filename exists
 

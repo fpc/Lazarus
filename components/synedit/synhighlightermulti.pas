@@ -210,9 +210,10 @@ uses
 {$ENDIF}
 {$IFDEF SYN_LAZARUS}
   GraphType,
+{$ELSE}
+  SynEditMiscProcs,
 {$ENDIF}
   SysUtils,
-  SynEditMiscProcs,
   SynEditStrConst;
 
 const

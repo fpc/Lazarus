@@ -40,9 +40,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
-  StdCodeTools, CodeTemplatesTool, SourceLog, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, StdCodeTools,
+  CodeTemplatesTool, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree;
 
 
 type

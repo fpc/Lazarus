@@ -38,10 +38,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
-  PascalReaderTool, PascalParserTool, SourceLog,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  SourceChanger, CustomCodeTool, CodeToolsStructs, StdCodeTools;
+  Classes, SysUtils, CodeTree, CodeAtom, KeywordFuncLists, BasicCodeTools,
+  LinkScanner, AVL_Tree, SourceChanger, CustomCodeTool, CodeToolsStructs,
+  StdCodeTools;
 
 type
   TCodeTemplateSyntax = (

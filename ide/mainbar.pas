@@ -51,8 +51,8 @@ uses
   {$ENDIF}
   Splash, TransferMacros, ObjectInspector, PropEdits,
   OutputFilter, IDEDefs, MsgView, EnvironmentOpts, EditorOptions,
-  FormEditor, CompilerOptions, KeyMapping, IDEProcs, UnitEditor, Debugger,
-  IDEOptionDefs, CodeToolsDefines, DialogProcs;
+  CompilerOptions, KeyMapping, IDEProcs, UnitEditor, Debugger,
+  IDEOptionDefs, CodeToolsDefines;
 
 type
   // The IDE is at anytime in a specific state:

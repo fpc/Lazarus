@@ -37,7 +37,7 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, Math, LResources, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
   IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
   FindInFilesDlg, Project;

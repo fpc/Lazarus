@@ -52,9 +52,9 @@ uses
   {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType,
   {$ELSE}
-  Windows,
+  Windows, Messages, Registry,
   {$ENDIF}
-  Messages, Classes, Controls, Graphics, Registry,
+  Classes, Controls, Graphics,
   SynEditTypes, SynEditHighlighter;
 
 const

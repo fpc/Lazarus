@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Math, LCLType, LCLIntf, Forms, Controls, LMessages,
-  GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd, IDEProcs,
+  GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,

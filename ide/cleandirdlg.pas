@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   StdCtrls, FileCtrl, Laz_XMLCfg, SynRegExpr,
-  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros, ExtCtrls;
+  LazarusIDEStrConsts, LazConf, IDEProcs, TransferMacros;
 
 type
   TCleanDirectoryDialog = class(TForm)

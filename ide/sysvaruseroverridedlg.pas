@@ -37,7 +37,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, Laz_XMLCfg, DOS, IDEProcs, LazarusIDEStrConsts;
+  LazarusIDEStrConsts, LResources;
 
 type
   TSysVarUserOverrideDialog = class(TForm)

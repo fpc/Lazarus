@@ -39,10 +39,9 @@ unit OpenInstalledPkgDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, ExtCtrls,
+  Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
   FileCtrl, LResources, Dialogs, LCLProc,
-  IDEProcs, PackageDefs, LazarusIDEStrConsts, IDEOptionDefs,
-  PackageSystem;
+  PackageDefs, LazarusIDEStrConsts, IDEOptionDefs, PackageSystem;
 
 type
   TOpenInstalledPackagesDlg = class(TCustomForm)

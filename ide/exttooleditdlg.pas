@@ -43,8 +43,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls,
-  Dialogs, ExtCtrls, LResources, Laz_XMLCfg, KeyMapping, TransferMacros,
-  IDEProcs, LazarusIDEStrConsts;
+  Dialogs, LResources, Laz_XMLCfg, KeyMapping, TransferMacros, IDEProcs,
+  LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

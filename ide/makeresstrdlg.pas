@@ -41,7 +41,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs,
-  ExtCtrls, LResources, LazarusIDEStrConsts, IDEOptionDefs, CodeToolManager,
+  LResources, LazarusIDEStrConsts, IDEOptionDefs, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
   EditorOptions, InputHistory, MiscOptions;
   

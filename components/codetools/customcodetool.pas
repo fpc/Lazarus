@@ -42,9 +42,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, SourceLog,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
-  SourceChanger;
+  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree;
 
 const
   CodeToolPhaseNone  = 0;

@@ -42,8 +42,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
-  CustomCodeTool, MultiKeyWordListTool, SourceLog, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  CustomCodeTool, MultiKeyWordListTool, KeywordFuncLists,
+  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree;
 
 type
   TProcHeadAttribute = (

@@ -42,8 +42,8 @@ interface
 
 uses
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
-  CodeCompletionTool, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, AVL_Tree, SourceChanger, FindDeclarationTool;
+  CodeCompletionTool, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree,
+  SourceChanger, FindDeclarationTool;
   
 type
   { TExtractProcTool }

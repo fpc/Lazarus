@@ -39,7 +39,7 @@ interface
 
 uses
   LazarusPackageIntf,
-  Classes, SysUtils, Process, DB, LazarusIDEStrConsts;
+  Classes, SysUtils, Process, DB;
 
 procedure Register;
 

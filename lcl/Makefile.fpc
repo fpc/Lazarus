@@ -10,6 +10,7 @@ version=0.9b
 [target]
 dirs=interfaces
 units=alllclunits
+# DO NOT ADD alllclunits to implicitunits. It is just a dummy unit used for compiling.
 implicitunits= \
   actnlist \
   arrow \
@@ -31,6 +32,7 @@ implicitunits= \
   extctrls \
   extdlgs \
   extendedstrings \
+  extgraphics \
   filectrl \
   fpcadds \
   forms \
@@ -61,7 +63,6 @@ implicitunits= \
   toolwin \
   utrace \
   vclglobals
-# DO NOT ADD alllclunits. It is just a dummy unit used for compiling.
 
 rsts=lclstrconsts
 

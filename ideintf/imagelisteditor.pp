@@ -44,7 +44,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
   StdCtrls, Buttons, ExtCtrls, Menus, PropEdits, ComponentEditors, LCLProc,
-  LMessages, ObjInspStrConsts,ImgList;
+  ObjInspStrConsts;
 
 
 

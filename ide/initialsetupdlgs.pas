@@ -41,8 +41,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, Dialogs, EnvironmentOpts,
-  FileCtrl, LazarusIDEStrConsts, ExtCtrls, StdCtrls, ComCtrls, LazConf,
-  IDEProcs;
+  FileCtrl, StdCtrls, ComCtrls, LazConf, IDEProcs;
   
 procedure SetupCompilerFilename(var InteractiveSetup: boolean);
 procedure SetupFPCSourceDirectory(var InteractiveSetup: boolean);

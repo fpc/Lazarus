@@ -39,8 +39,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit, IDEProcs,
-  LazarusIdeStrConsts;
+  LResources, Dialogs, SynEditTypes, SynRegExpr, SynEdit, LazarusIdeStrConsts;
 
 type
   TFindDlgComponent = (fdcText, fdcReplace);

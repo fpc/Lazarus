@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, CustomFormEditor, Controls, Forms, Buttons, SysUtils, Graphics,
-  ExtCtrls, ObjectInspector, Designer;
+  ObjectInspector, Designer;
 
 type
   TFormEditor = class(TCustomFormEditor)

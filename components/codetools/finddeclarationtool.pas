@@ -83,8 +83,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, PascalParserTool, PascalReaderTool, FileProcs, DefineTemplates,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
+  PascalParserTool, PascalReaderTool, FileProcs, DefineTemplates,
   FindDeclarationCache;
 
 type

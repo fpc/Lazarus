@@ -40,7 +40,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
-  Dialogs, ExtCtrls, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
+  Dialogs, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
   IDECommands, KeyMapping, TransferMacros, IDEProcs, CompilerOptions,
   OutputFilter, FileCtrl, LazarusIDEStrConsts;
 

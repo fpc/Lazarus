@@ -37,7 +37,7 @@ unit ProjectDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, IDEProcs, SynRegExpr, FileCtrl, PublishModule;
+  Classes, SysUtils, Laz_XMLCfg, SynRegExpr, FileCtrl, PublishModule;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;

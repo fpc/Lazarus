@@ -39,9 +39,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
-  StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
+  StdCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, BrokenDependenciesDlg, PackageDefs, PackageSystem, PackageEditor;
+  Project, PackageDefs, PackageSystem, PackageEditor;
   
 type
   TOnOpenProject =

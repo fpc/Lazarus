@@ -33,7 +33,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLStrConsts, Strings;
+  Classes, SysUtils, FPCAdds, LCLStrConsts;
 
 type
   TLResource = class

@@ -179,7 +179,10 @@ type
 implementation
 
 uses
-  SynEditStrConst, SynEditMiscProcs;
+  {$IFNDEF SYN_LAZARUS}
+  SynEditStrConst,
+  {$ENDIF}
+  SynEditMiscProcs;
 
 { TCustomSynMemo }
 

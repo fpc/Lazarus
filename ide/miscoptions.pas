@@ -30,8 +30,8 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, BuildLazDialog, CodeToolsStructs, LazConf, IDEProcs,
-  Laz_XMLCfg, LazarusIDEStrConsts;
+  Classes, SysUtils, BuildLazDialog, CodeToolsStructs, LazConf, Laz_XMLCfg,
+  LazarusIDEStrConsts;
 
 type
   TSortDirection = (sdAscending, sdDescending);

@@ -44,7 +44,7 @@ uses
   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterMulti, SynHighlighterUNIXShellScript,
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX,
-  SynHighlighterHashEntries, SynHighlighterSQL,
+  SynHighlighterSQL,
   LazarusPackageIntf, LazarusIDEStrConsts;
 
 procedure Register;

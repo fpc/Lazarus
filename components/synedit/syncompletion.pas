@@ -41,14 +41,14 @@ unit SynCompletion;
 interface
 
 uses
-{$IFDEF SYN_LAZARUS}
-  LCLIntf, LMessages, LCLType,
-{$ELSE}
-  Windows,
-{$ENDIF}
-  Classes, Messages, Graphics, Forms, Controls, StdCtrls, Menus,
-  SysUtils, SynEditTypes, SynEditKeyCmds, SynEditHighlighter,
-  {$IFDEF SYN_LAZARUS}SynEditTextBuffer,{$ENDIF} SynEdit;
+  {$IFDEF SYN_LAZARUS}
+  LCLIntf, LCLType, SynEditTextBuffer,
+  {$ELSE}
+  Windows, SynEditTypes, Messages,
+  {$ENDIF}
+  Classes, Graphics, Forms, Controls, StdCtrls, Menus,
+  SysUtils, SynEditKeyCmds, SynEditHighlighter,
+  SynEdit;
 
 type
   TSynBaseCompletionPaintItem =
@@ -285,9 +285,10 @@ procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
 implementation
 
-
+{$IFNDEF SYN_LAZARUS}
 uses
   SynEditStrConst;
+{$ENDIF}
 
 { TSynBaseCompletionForm }
 

@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, Math, Forms, Controls, Dialogs, Buttons, StdCtrls,
   FileCtrl, LResources,
   // IDE
-  IDEProcs, TransferMacros, InputHistory;
+  TransferMacros, InputHistory;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,

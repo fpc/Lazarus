@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Extctrls, Menus, ComCtrls, Debugger, DebuggerDlg, WatchPropertyDlg;
+  Buttons, Menus, ComCtrls, Debugger, DebuggerDlg, WatchPropertyDlg;
 
 type
   TWatchesDlg = class(TDebuggerDlg)
@@ -272,6 +272,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.7  2004/05/02 12:01:15  mattias
+  removed unneeded units in uses sections
+
   Revision 1.6  2003/05/28 09:00:35  mattias
   watches dialog now without DoInitDebugger
 

@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, stdCtrls, GraphType, Graphics, vclGlobals,
-  LMessages, LCLType, LCLIntf;
+  LCLType, LCLIntf;
 
 type
 

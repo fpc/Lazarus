@@ -28,8 +28,8 @@ unit PathEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
-  Dialogs, IDEProcs, LResources, FileCtrl, LazarusIDEStrConsts;
+  Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, Dialogs,
+  LResources, FileCtrl, LazarusIDEStrConsts;
 
 type
   TPathEditorDialog = class(TForm)

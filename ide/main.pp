@@ -59,7 +59,7 @@ uses
   ProjectInspector,
   // designer
   ComponentPalette, ComponentReg,
-  AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
+  Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, AllIDEIntf,
   {$DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
@@ -72,7 +72,7 @@ uses
   // packager
   PkgManager, BasePkgManager,
   // source editing
-  UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
+  UnitEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
   CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
   ViewUnit_dlg,
   // rest of the ide
@@ -10292,6 +10292,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.722  2004/05/02 12:01:14  mattias
+  removed unneeded units in uses sections
+
   Revision 1.721  2004/04/11 00:02:10  mattias
   FindSourceFile now searches in SrcPath and searches in every path only once
 

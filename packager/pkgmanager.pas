@@ -47,12 +47,12 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
   Dialogs, Menus,
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, AVL_Tree,
-  DialogProcs, LazarusIDEStrConsts, IDEProcs, IDEDefs, KeyMapping,
+  DialogProcs, LazarusIDEStrConsts, IDEProcs, KeyMapping,
   EnvironmentOpts, MiscOptions, ProjectDefs, InputHistory, Project,
   ComponentReg, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer,
-  BrokenDependenciesDlg, CompilerOptions, ExtToolDialog, ExtToolEditDlg,
-  EditDefineTree, MsgView, BuildLazDialog, DefineTemplates, LazConf,
+  BrokenDependenciesDlg, CompilerOptions, ExtToolEditDlg,
+  MsgView, BuildLazDialog, DefineTemplates, LazConf,
   ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   LazarusPackageIntf, PublishProjectDlg, BasePkgManager, MainBar;
 

@@ -49,8 +49,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, FileProcs, CodeTree, CodeAtom,
   FindDeclarationTool, IdentCompletionTool, PascalReaderTool, PascalParserTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, LFMTrees, SourceChanger, CustomCodeTool, CodeToolsStructs;
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, LFMTrees,
+  SourceChanger, CustomCodeTool, CodeToolsStructs;
 
 type
   TOnGetDefineProperties = procedure(Sender: TObject;

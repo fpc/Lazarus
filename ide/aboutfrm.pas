@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, ExtCtrls, LazConf, IDEProcs, LazarusIDEStrConsts;
+  Buttons, LazConf, LazarusIDEStrConsts;
 
 type
   TAboutForm = class(TForm)

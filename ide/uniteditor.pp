@@ -41,8 +41,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo,Controls, LCLProc, LCLType, LCLIntf, FileCtrl,
-  LMessages, Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
+  Classes, SysUtils, Controls, LCLProc, LCLType, LCLIntf, FileCtrl,
+  Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Extctrls, Menus,
   // codetools
   CodeToolManager, CodeCache, SourceLog,
@@ -53,8 +53,8 @@ uses
   IDECommands, EditorOptions, KeyMapping, Project,
   FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts,
-  BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts, Compiler,
-  SortSelectionDlg, EncloseSelectionDlg, ClipBoardHistory, DiffDialog,
+  BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts,
+  SortSelectionDlg, EncloseSelectionDlg, DiffDialog,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch;
 
 type

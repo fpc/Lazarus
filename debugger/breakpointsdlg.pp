@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Extctrls, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg;
+  Buttons, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg;
 
 type
   TBreakPointsDlgState = (
@@ -506,6 +506,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.21  2004/05/02 12:01:15  mattias
+  removed unneeded units in uses sections
+
   Revision 1.20  2003/06/04 13:34:58  mattias
   implemented breakpoints hints for source editor
 

@@ -32,7 +32,7 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, SourceLog, KeywordFuncLists;
+  Classes, SysUtils, SourceLog, KeywordFuncLists;
 
 //----------------------------------------------------------------------------
 { These functions are used by the codetools

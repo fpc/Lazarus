@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, LCLIntf, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  Project, LResources, Buttons, Dialogs, IDEProcs, CodeToolManager,
+  Project, LResources, Buttons, Dialogs, CodeToolManager,
   LazarusIDEStrConsts, IDEOptionDefs;
 
 type

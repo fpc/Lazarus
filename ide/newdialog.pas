@@ -40,7 +40,7 @@ unit NewDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ExtCtrls, ComCtrls,
+  Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ComCtrls,
   Dialogs, LResources, IDEOptionDefs, LazarusIDEStrConsts;
   
 type

@@ -36,7 +36,7 @@ unit CallStackDlg;
 interface
 
 uses
-  LResources, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  LResources, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, Debugger, DebuggerDlg;
 
 type
@@ -145,6 +145,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.4  2004/05/02 12:01:15  mattias
+  removed unneeded units in uses sections
+
   Revision 1.3  2003/05/29 23:14:17  mattias
   implemented jump to code on double click for breakpoints and callstack dlg
 

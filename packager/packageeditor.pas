@@ -38,8 +38,8 @@ unit PackageEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, Graphics, LCLType, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
+  Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
+  Graphics, LCLType, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, ComponentReg, PackageDefs, PkgOptionsDlg, AddToPackageDlg,
   PackageSystem;

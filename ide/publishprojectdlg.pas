@@ -38,8 +38,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, LResources, Buttons, StdCtrls,
-  ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, IDEProcs,
-  InputHistory, Dialogs, LazarusIDEStrConsts;
+  ProjectDefs, PackageDefs, PublishModule, IDEOptionDefs, InputHistory, Dialogs,
+  LazarusIDEStrConsts;
 
 type
   { TPublishProjectDialog }

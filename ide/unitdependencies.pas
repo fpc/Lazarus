@@ -47,7 +47,7 @@ uses
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
   Graphics, LCLType, FileCtrl, LResources,
   CodeToolManager, CodeCache,
-  EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory, IDEProcs;
+  EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory;
   
 type
 

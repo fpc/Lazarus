@@ -36,8 +36,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeToolsStrConsts, CodeAtom, CustomCodeTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, CodeCache;
+  Classes, SysUtils, CodeAtom, CustomCodeTool, KeywordFuncLists, BasicCodeTools;
 
 type
   TMultiKeyWordListCodeTool = class(TCustomCodeTool)

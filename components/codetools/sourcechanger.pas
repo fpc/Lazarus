@@ -42,7 +42,7 @@ interface
 { $DEFINE CTDEBUG}
 
 uses
-  Classes, SysUtils, CodeToolsStrConsts, CodeCache, BasicCodeTools, SourceLog,
+  Classes, SysUtils, CodeToolsStrConsts, CodeCache, BasicCodeTools,
   LinkScanner, AVL_Tree, KeywordFuncLists;
   
 type

@@ -156,8 +156,10 @@ uses
 {$ELSE}
   Forms,
 {$ENDIF}
-  SynEditStrConst,
-  SynEditMiscProcs;
+  {$IFNDEF SYN_LAZARUS}
+  SynEditMiscProcs,
+  {$ENDIF}
+  SynEditStrConst;
 
 const
   ecPluginBase = 64000;

@@ -58,9 +58,9 @@ uses
   {$IFDEF SYN_LAZARUS}
   LCLIntf, LCLType,
   {$ELSE}
-  Windows,
+  Windows, Messages, Registry,
   {$ENDIF}
-  Messages, Controls, Graphics, Registry,
+  Controls, Graphics,
   {$ENDIF}
   SynEditTypes, SynEditHighlighter;
 

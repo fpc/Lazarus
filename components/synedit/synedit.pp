@@ -864,12 +864,11 @@ uses
 {$IFDEF SYN_COMPILER_4_UP}
   StdActns,
 {$ENDIF}
-  Clipbrd,
 {$IFNDEF SYN_LAZARUS}
 // ToDo ShellAPI
-  ShellAPI,
+  ShellAPI, SynEditStrConst
 {$ENDIF}
-  SynEditStrConst;
+  Clipbrd;
 
 
 {$IFDEF SYN_LAZARUS}

@@ -38,8 +38,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
-  MultiKeyWordListTool, PascalParserTool, SourceLog, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  PascalParserTool, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree;
 
 type
   TPascalReaderTool = class(TPascalParserTool)

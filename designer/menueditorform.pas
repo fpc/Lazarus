@@ -37,8 +37,8 @@ interface
 
 uses
   Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics, Dialogs,
-  LResources, StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus,
-  GraphType, ComponentEditors, LazarusIDEStrConsts, PropEdits;
+  LResources, StdCtrls, Buttons, ExtCtrls, DesignerMenu, Menus, GraphType,
+  ComponentEditors, LazarusIDEStrConsts, PropEdits;
 
 type
   TMainMenuEditorForm = class(TForm)

@@ -43,9 +43,8 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
-  CodeCompletionTool, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, AVL_Tree, TypInfo, SourceChanger, FindDeclarationTool,
-  ExtractProcTool;
+  CodeCompletionTool, KeywordFuncLists, BasicCodeTools, LinkScanner, AVL_Tree,
+  TypInfo, SourceChanger, FindDeclarationTool, ExtractProcTool;
 
 type
   TGetStringProc = procedure(const s: string) of object;

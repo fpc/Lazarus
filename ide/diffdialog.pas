@@ -39,7 +39,7 @@ unit DiffDialog;
 interface
 
 uses
-  Classes, SysUtils, Math, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
+  Classes, SysUtils, Math, Forms, Controls, Buttons, StdCtrls,
   SynEdit, LResources, LazarusIDEStrConsts, EditorOptions, IDEOptionDefs,
   InputHistory, DiffPatch;
 

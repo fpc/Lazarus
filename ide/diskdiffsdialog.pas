@@ -33,8 +33,8 @@ unit DiskDiffsDialog;
 interface
 
 uses
-  Classes, SysUtils, IDEProcs, Forms, Controls, Buttons, ExtCtrls, StdCtrls,
-  LResources, Project, SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts;
+  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, LResources, Project,
+  SynEdit, LCLType, DiffPatch, LazarusIDEStrConsts;
 
 type
   PDiffItem = ^TDiffItem;
