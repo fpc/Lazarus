@@ -875,11 +875,13 @@ end;
 { ------------------------------------------------------------------------------
  Get the fixed widget of a widget.
  Every LCL control with a clientarea, has at least a main widget for the control
- and a fixed widget for the client area.
+ and a fixed widget for the client area. If the Fixed widget is not set, use
+ the widget itself as a fallback.
 ------------------------------------------------------------------------------ }
 function GetFixedWidget(const Widget: Pointer): Pointer;
 begin
   Result := gtk_object_get_data(Widget, 'Fixed');
+  if Result = nil then Result:= Widget;
 end;
 
 { ------------------------------------------------------------------------------
@@ -889,12 +891,8 @@ end;
 ------------------------------------------------------------------------------ }
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 begin
-//writeln('[gtkproc: SetFixedWidget] Parent=',HexStr(Cardinal(ParentWidget),8),
-//' Fixed=',HexStr(Cardinal(FixedWidget),8));
   if (ParentWidget=nil) then
     raise Exception.Create('SetFixedWidget ParentWidget=nil');
-  if (ParentWidget=FixedWidget) then
-    raise Exception.Create('SetFixedWidget FixedWidget=ParentWidget');
   if (ParentWidget <> nil) then
     gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
@@ -908,10 +906,7 @@ end;
 // ----------------------------------------------------------------------
 function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
 begin
-  if Widget = nil
-  then begin
-    Result := nil;
-  end
+  if Widget = nil then Result:= nil
   else begin
     New(Result);
     FillChar(Result^, SizeOf(Result^), 0);
@@ -919,19 +914,18 @@ begin
   end;
 end;
 
-function GetWidgetInfo(const Widget: Pointer;
-  const Create: Boolean): PWinWidgetInfo;
+function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
 var MainWidget: PGtkObject;
 begin
-  if Widget = nil then begin
-    Result := nil;
-  end
+  if Widget = nil then Result:= nil
   else begin
-    MainWidget:=GetMainWidget(Widget);
-    if MainWidget=nil then MainWidget:=Widget;
-    Result := gtk_object_get_data(MainWidget, 'widgetinfo');
-    if (Result = nil) and Create then
+    MainWidget:= GetMainWidget(Widget);
+    if MainWidget = nil then MainWidget:= Widget;
+    Result:= gtk_object_get_data(MainWidget, 'widgetinfo');
+    if (Result = nil) and Create then begin
       Result := CreateWidgetInfo(MainWidget);
+      Result^.ImplementationWidget:= PGtkWidget(MainWidget);
+    end;  
   end;
 end;
 
@@ -956,24 +950,6 @@ procedure DestroyWidget(Widget: PGtkWidget);
 begin
   FreeWinWidgetInfo(Widget);
   gtk_widget_destroy(Widget);
-end;
-
-
-// ----------------------------------------------------------------------
-// the core_child widget points to the actual widget which implements the 
-// functionality we needed. It is mainly used in composed controls like
-// a listbox. In that case the core_child is the listbox, where a scrolling
-// widget is main.
-// ----------------------------------------------------------------------
-function GetCoreChildWidget(const Widget: Pointer): Pointer;
-begin
-  Result:= gtk_object_get_data(Widget, 'core_child');
-end;
-
-procedure SetCoreChildWidget(const ParentWidget, ChildWidget: Pointer);
-begin
-  if (ParentWidget <> nil) and (ChildWidget <> nil) then
-  gtk_object_set_data(ParentWidget, 'core_child', ChildWidget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -1212,8 +1188,10 @@ var
   AWidget, FixWidget: PGtkWidget;
   AWindow: PGdkWindow;
 begin
-  If not (AWinControl is TWinControl)
-  or (not AWinControl.HandleAllocated)
+//  If not (AWinControl is TWinControl)
+//  or (not AWinControl.HandleAllocated)
+
+  if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
   then exit;
   
   AWidget:=PGtkWidget(AWinControl.Handle);
@@ -2764,6 +2742,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.92  2002/09/06 19:45:11  lazarus
+  Cleanups plus a fix to TPanel parent/drawing problem.
+
   Revision 1.91  2002/09/06 16:46:17  lazarus
   MG: improved GetDCOffset
 
