@@ -37,7 +37,15 @@ resourcestring
   sccsLvEdtBtnAdd         = 'New';
   sccsLvEdtBtnDel         = 'Delete';
   sccsLvEdtBtnAddSub      = 'Sub item';
-  
+
+  //Image editor strings
+  sccsILEdtCaption = 'Image list editor';
+  sccsILCmbImgSel  = ' Selected image ';
+  sccsILCmbImgList = ' Images ';
+  sccsILBtnAdd     = 'Add ...';
+  sccsILBtnClear   = 'Clear';
+  sccsILConfirme   = 'Confirme clear all images ?';
+
 implementation
 
 end.

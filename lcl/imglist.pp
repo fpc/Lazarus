@@ -26,9 +26,18 @@
 @author(TCustomImageList - Marc Weustink <weus@quicknet.nl>)
 @author(TChangeLink - Marc Weustink <weus@quicknet.nl>)
 @created(16-Aug-1999)
-@lastmod(26-Sep-1999)
+@lastmod(26-feb-2003)
 
 Detailed description of the Unit.
+
+History
+  26-feb-2003 Olivier Guilbaud <golivier@free.fr>
+     - Add TCustomImageList.Assign()
+     - Add TCustomImageList.WriteData()
+     - Add TCustomImageList.ReadData()
+     - Add overrite TCustomImageList.DefineProperties()
+       Warning : the delphi or kylix format of datas is not compatible.
+     - Modify Delete and Clear for preserve memory
 }
 unit ImgList;
 
@@ -112,7 +121,12 @@ type
   protected
     procedure GetImages(Index: Integer; const Image, Mask: TBitmap);
     procedure Initialize; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
   public
+    procedure Assign(Source: TPersistent); override;
+    procedure WriteData(Stream: TStream); virtual;
+    procedure ReadData(Stream : TStream); virtual;
+
     function Add(Image, Mask: TBitmap): Integer;
     function AddIcon(Image: TIcon): Integer;
     procedure AddImages(Value: TCustomImageList);
@@ -138,6 +152,7 @@ type
     procedure ReplaceIcon(Index: Integer; Image: TIcon);
     procedure ReplaceMasked(Index: Integer; NewImage: TBitmap; MaskColor: TColor);
     procedure UnRegisterChanges(Value: TChangeLink);
+    
     property AllocBy: Integer read FAllocBy write FAllocBy default 4;
     property BlendColor: TColor read FBlendColor write FBlendColor default clNone;
     property BkColor: TColor read FBkColor write SetBkColor default clNone;
@@ -156,7 +171,15 @@ type
   end;
 
 
+  { TImageList }
+{  TImageList = class(TCustomImageList)
+  published
+    Property Height;
+    Property Width;
+  end;
+}
 implementation
+uses dialogs;
 
 {$I imglist.inc}
 
@@ -164,6 +187,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2003/02/26 23:31:53  mattias
+  added imagelisteditor from Olivier
+
   Revision 1.9  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 

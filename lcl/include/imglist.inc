@@ -201,6 +201,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Clear;
 begin
+  While Count<>0 do
+    Delete(0);
   FCount := 0;
   FImageList.Clear;
   Change;
@@ -247,18 +249,23 @@ end;
   Deletes the image identified by Index. An index of -1 deletes all
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Delete(Index: Integer);
+Var Obj : TObject;
 begin
   if {(Index < 0) or} (Index >= FCount) // !! Delphi4 has no check for < -1
   then raise EInvalidOperation.Create(SInvalidIndex);
 
-  if Index = -1
-  then Clear
-  else begin
-
+  if Index = -1 then
+    Clear
+  else
+  begin
+    Obj:=TObject(fImageList.Items[Index]);
+    If Assigned(Obj) then
+      Obj.Free;
+    fImageList.Items[Index]:=nil;
+    fImageList.Pack;
 //    ShiftImages(FBitmap.Canvas, Index, 1);
 //    ShiftImages(FMaskBitmap.Canvas, Index, 1);
-  FImageList.Delete(Index);  //shane
-  Change;
+    Change;
   end;
 end;
 
@@ -312,13 +319,30 @@ end;
   Fetches the index'th image into a bitmap.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.GetBitmap(Index: Integer; Image: TBitmap);
+Var Stream : TMemoryStream;
+    aBmp   : TbitMap;
 begin
   if (FCount = 0) or (Image = nil) then Exit; 
-  with Image do begin
+  
+  aBmp:=TBitMap(self.FImageList.Items[Index]);
+  if Assigned(aBmp) then
+  begin
+    Stream:=TMemoryStream.Create;
+    try
+      aBmp.SaveToStream(Stream);
+      Stream.Position:=0;
+      Image.LoadFromStream(Stream);
+    finally
+      Stream.Free;
+    end;
+  end;
+  {with Image do
+  begin
     Width := FWidth;
     Height := FHeight;
     Self.Draw(Canvas, 0, 0, Index, True);
   end;
+  }
 end;
 
 {------------------------------------------------------------------------------
@@ -444,6 +468,109 @@ begin
     Monochrome := True;
   end;
 end;
+
+Type
+  THackBitMap = Class(TBitMap)
+  public
+    procedure ReadData(Stream : TStream);
+    procedure WriteData(Stream : TStream);
+
+  end;
+procedure THackBitMap.ReadData(Stream : TStream);
+begin
+  Inherited ReadData(Stream);
+end;
+procedure THackBitMap.WriteData(Stream : TStream);
+begin
+  Inherited WriteData(Stream);
+end;
+
+procedure TCustomImageList.DefineProperties(Filer: TFiler);
+
+  function DoWrite: Boolean;
+  begin
+   { if Filer.Ancestor <> nil then
+    begin
+      Result := (not (Filer.Ancestor is TCustomImageList) or
+        not Equal(TCustomImageList(Filer.Ancestor)));
+    end
+    else
+    }
+      Result := Count > 0;
+  end;
+
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineBinaryProperty('Bitmap', @ReadData, @WriteData, DoWrite);
+end;
+
+//Very simple assign with stream exchange
+procedure TCustomImageList.Assign(Source: TPersistent);
+Var Stream : TMemoryStream;
+    ImgSrc : TCustomImageList;
+begin
+  If Source is TCustomImageList then
+  begin
+    ImgSrc:=TCustomImageList(Source);
+    If (Width=ImgSrc.Width) and (Height=ImgSrc.Height) then
+    begin
+      Clear;
+      Stream:=TMemoryStream.Create;
+      try
+        ImgSrc.WriteData(Stream);
+        Stream.Position:=0;
+        ReadData(Stream);
+      finally
+        Stream.Free;
+      end;
+    end;
+  end
+  else inherited Assign(Source);
+end;
+
+procedure TCustomImageList.WriteData(Stream: TStream);
+Var Bmp     : THackBitMap;
+    i       : Integer;
+begin
+  //Write signature
+  Stream.WriteWord($0001);
+  
+  //Count of image
+  Stream.WriteWord(Count);
+
+  for i:=0 to Count-1 do
+  begin
+    Bmp:=THackBitMap.Create;
+    Bmp.Width:=Width;
+    Bmp.Height:=Height;
+    Try
+      GetBitmap(i,Bmp);
+      Bmp.WriteData(Stream);
+    finally
+      Bmp.Free;
+    end;
+  end;
+end;
+
+procedure TCustomImageList.ReadData(Stream: TStream);
+Var Bmp     : THackBitMap;
+    i       : LongInt;
+    Sign,Nb : Word;
+begin
+  Sign:=Stream.ReadWord;
+  if Sign=$0001 then
+  begin
+      Nb:=Stream.ReadWord;
+      for i:=0 to Nb-1 do
+      begin
+        Bmp:=THackBitMap.Create;
+        Bmp.ReadData(Stream);
+        Bmp.Transparent:=True;
+        Add(Bmp,nil);
+      end;
+  end;
+end;
+
 
 {------------------------------------------------------------------------------
   Method:  TCustomImageList.Insert
@@ -854,6 +981,9 @@ end;
 {
 
   $Log$
+  Revision 1.15  2003/02/26 23:31:53  mattias
+  added imagelisteditor from Olivier
+
   Revision 1.14  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 

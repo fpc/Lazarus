@@ -146,6 +146,7 @@ designer/designermenu.pp svneol=native#text/pascal
 designer/designerprocs.pas svneol=native#text/pascal
 designer/filesystem.pp svneol=native#text/pascal
 designer/graphpropedits.pas svneol=native#text/pascal
+designer/imagelisteditor.pp svneol=native#text/pascal
 designer/jitform/jitform.pas svneol=native#text/pascal
 designer/jitforms.pp svneol=native#text/pascal
 designer/listviewpropedit.pp svneol=native#text/pascal
