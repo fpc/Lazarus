@@ -671,12 +671,12 @@ Var
 
         While Pos(Elem[Length(Elem)],'",')>0 do Elem:=Copy(Elem,1,Length(Elem)-1);
 
-        Idx := Length(Elem)-5;
+        Idx := Pos(Elem, '"')+AliasLen+4;
         New(ColorMap);
         ColorMap^.Alias := Copy(Elem, 1, AliasLen);
-        If Copy(Elem, Length(Elem)-3, 4) <> 'None' Then begin
+        If Copy(Elem, idx, 1) = '#' Then begin
           //ColorMap^.Color :=StrToInt('$'+Copy(Elem,Idx,6));
-          ColorMap^.Color :=RGB(StrToInt('$'+Copy(Elem,Idx,2)),StrToInt('$'+Copy(Elem,Idx+2,2)),StrToInt('$'+Copy(Elem,Idx+4,2)));
+          ColorMap^.Color :=RGB(StrToInt('$'+Copy(Elem,Idx+1,2)),StrToInt('$'+Copy(Elem,Idx+3,2)),StrToInt('$'+Copy(Elem,Idx+5,2)));
         end
         Else
           ColorMap^.Color := TransColor;
@@ -2832,6 +2832,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/12/27 11:03:58  micha
+  fix pixmap color (from vincent)
+
   Revision 1.84  2003/12/19 18:18:47  micha
   better default font handling
 
