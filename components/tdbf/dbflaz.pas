@@ -8,7 +8,7 @@ unit DBFLaz;
 interface
 
 uses
-  RegisterDBF, dbf, LazarusPackageIntf; 
+  RegisterDBF, Dbf, LazarusPackageIntf; 
 
 implementation
 

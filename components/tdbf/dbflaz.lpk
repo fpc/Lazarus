@@ -25,9 +25,9 @@
         <UnitName Value="RegisterDBF"/>
       </Item2>
       <Item3>
-        <Filename Value="dbf.pas"/>
+        <Filename Value="Dbf.pas"/>
         <Type Value="Virtual Unit"/>
-        <UnitName Value="dbf"/>
+        <UnitName Value="Dbf"/>
       </Item3>
     </Files>
     <Type Value="RunAndDesignTime"/>

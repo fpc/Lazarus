@@ -22,7 +22,7 @@ unit RegisterDBF;
 interface
 
 uses
-  Classes, SysUtils, LResources, DBF, LazarusPackageIntf;
+  Classes, SysUtils, LResources, Dbf, LazarusPackageIntf;
 
 procedure Register;
 
@@ -30,7 +30,7 @@ implementation
 
 procedure RegisterUnitDBF;
 begin
-  RegisterComponents('Data Access',[TDBF]);
+  RegisterComponents('Data Access',[TDbf]);
 end;
 
 procedure Register;
