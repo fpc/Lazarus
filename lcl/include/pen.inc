@@ -291,6 +291,7 @@ end;
 procedure TPen.SetColor(const NewColor: TColor; const NewFPColor: TFPColor);
 begin
   if (NewColor=Color) and (NewFPColor=FPColor) then exit;
+  FreeHandle;
   FColor:=NewColor;
   inherited SetFPColor(NewFPColor);
   Changed;
@@ -307,6 +308,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2005/02/04 00:51:06  mattias
+  fixed changing TPen.FPColor
+
   Revision 1.21  2005/01/20 00:31:39  mattias
   fixed fpCanvas TPenStyle to LCL intf pen styles
 
