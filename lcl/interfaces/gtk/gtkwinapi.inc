@@ -2159,26 +2159,24 @@ end;
 Function TGTKObject.GetClientBounds(handle : HWND; var ARect : TRect) : Boolean;
 var
   Widget, ClientWidget: PGtkWidget;
-  ParentOrigin, ClientOrigin: TPoint;
+  MainOrigin, ClientOrigin: TPoint;
+  ClientWindow, MainWindow: PGdkWindow;
 begin
   Result := False;
   if Handle = 0 then Exit;
   Widget := pgtkwidget(Handle);
   ClientWidget := GetFixedWidget(Widget);
   if (ClientWidget <> nil) and (ClientWidget^.Window<>nil) then begin
-
-    gdk_window_get_origin(Widget^.Window,@ParentOrigin.X,@ParentOrigin.Y);
-    gdk_window_get_origin(ClientWidget^.Window,@ClientOrigin.X,@ClientOrigin.Y);
-    ARect.Left:=ClientOrigin.X-ParentOrigin.X;
-    ARect.Top:=ClientOrigin.Y-ParentOrigin.Y;
+    ClientWindow:=ClientWidget^.Window;
+    MainWindow:=Widget^.Window;
+    gdk_window_get_origin(MainWindow,@MainOrigin.X,@MainOrigin.Y);
+    inc(MainOrigin.X,Widget^.Allocation.X);
+    inc(MainOrigin.Y,Widget^.Allocation.Y);
+    gdk_window_get_origin(ClientWindow,@ClientOrigin.X,@ClientOrigin.Y);
+    ARect.Left:=ClientOrigin.X-MainOrigin.X;
+    ARect.Top:=ClientOrigin.Y-MainOrigin.Y;
     ARect.Right:=ARect.Left+ClientWidget^.Allocation.Width;
     ARect.Bottom:=ARect.Top+ClientWidget^.Allocation.Height;
-    {$IFDEF VerboseMouseBugfix}
-    writeln('EEE ',ClientWidget^.Allocation.Y,' ',Widget^.Allocation.Y,
-    ' ',ParentOrigin.Y,' ',ClientOrigin.Y,
-    ' '
-    );
-    {$ENDIF}
   end else begin
     with Widget^.Allocation do
       ARect := Rect(0,0,Width,Height);
@@ -4782,6 +4780,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/06/11 13:41:11  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.76  2002/06/05 12:33:58  lazarus
   MG: fixed fonts in XLFD format and styles
 

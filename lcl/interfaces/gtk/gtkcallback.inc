@@ -28,9 +28,6 @@ var
   LastFileSelectRow : gint;
 
 
-
-
-// temp solution to fill msgqueue
 function DeliverPostMessage(const Target: Pointer; var Message): GBoolean;
 begin
   if TObject(Target) is TWinControl then
@@ -96,6 +93,7 @@ begin
     if TObject(Data) is TWinControl then begin
       if TWinControl(Data) is TCustomForm then begin
         if TCustomForm(Data).BorderStyle=bsNone then begin
+          // remove window decorations
           gdk_window_set_decorations(Widget^.Window,0);
         end;
       end;
@@ -393,40 +391,75 @@ end;
   Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
   Returns: GBoolean
   
-
+  Called whenever the mouse is moved over a widget.
+  The gtk event is translated into a lcl MouseMove message.
+  
+  
+  Mouse coordinate mapping:
+  
+  Why mapping:
+  An lcl control can consists of several gtk widgets, and any message to them is
+  send to the lcl control. The gtk sends the coordinates relative to the
+  emitting gdkwindow (not relative to the gtkwidget). And the area of a lcl
+  control can belong to several gdkwindows. Therefore the mouse coordinates must
+  be mapped.
+  
+  What the lcl expects:
+  For Delphi compatibility the mouse coordinates must be relative to the client
+  area of the control.
+  That means for example if the mouse is over the top-left pixel of the client
+  widget (mostly a gtkfixed widget), then 0,0 is send.
+  If the mouse is on the top-left pixel of the container widget then the
+  coordinates can be negative, if there is frame around the client area.
+  
+  The algorithm:
+  1. the gdkwindow of the message is determined (MsgGdkWindow).
+  2. the gdkwindow of the client area is determined (=ClientGdkWindow).
+  3. the relative position of the client gdkwindow and the message gdkwindow
+     is calculated (MsgClientRelPos).
+  4. Substracting the MsgClientRelPos from the mouse coordinates results in
+     the mouse coordinates relative to the client gdkwindow.
 -------------------------------------------------------------------------------}
 function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
+  
+  function GetGdkWindowOfClientArea(AWinControl: TWinControl): PGdkWindow;
+  var
+    MainWidget, FixedWidget: PGtkWidget;
+  begin
+    MainWidget:=PGtkWidget(AWinControl.Handle);
+    FixedWidget:=GetFixedWidget(MainWidget);
+    if FixedWidget<>nil then begin
+      Result:=FixedWidget^.Window;
+    end else begin
+      Result:=MainWidget^.Window;
+    end;
+  end;
+
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
-  parWindow : PgdkWindow;  //the Parent's GDKWindow
+  MappedXY: TPoint;
 begin
   Result:=true;
   {$IFDEF VerboseMouseBugfix}
-  writeln('[gtkmovecursorCB] ',TControl(Data).Name,':',TControl(Data).ClassName);
+  writeln('[GTKMotionNotify] ',
+    TControl(Data).Name,':',TControl(Data).ClassName,
+    ' Event^.X=',trunc(Event^.X),' Event^.Y=',trunc(Event^.Y)
+    );
   {$ENDIF}
 
-  // stop the signal, so that it is not sent to the parent widgets
-  //gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
+                                         Point(trunc(Event^.X),trunc(Event^.Y)),
+                                         PGtkWidget(TWinControl(Data).Handle));
 
-  // work around:
-  // if the gdkwindow is the same as the parent's gdkwindow,
-  // then adjust the x,y relative to the control.
-  parWindow := gtk_widget_get_parent_window(widget);
-  if (ParWindow = Event^.Window) then
-  Begin
-    Event^.X := Event^.X - TWinControl(data).Left;
-    Event^.Y := Event^.Y - TWinControl(data).Top;
-  end;
-       
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
   begin
     Msg := LM_MouseMove;
 
-    XPos := trunc(Event^.X);
-    YPos := trunc(Event^.Y);
+    XPos := MappedXY.X;
+    YPos := MappedXY.Y;
 
     Keys := 0;
     if ssShift in ShiftState then Keys := Keys or MK_SHIFT;
@@ -451,6 +484,33 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  GTKMotionNotifyAfter
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is moved over a widget as last handler.
+-------------------------------------------------------------------------------}
+function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
+  data: gPointer): GBoolean; cdecl;
+begin
+  Result:=true;
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[GTKMotionNotifyAfter] ',
+    TControl(Data).Name,':',TControl(Data).ClassName);
+  {$ENDIF}
+
+  // stop the signal, so that it is not sent to the parent widgets
+  gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+end;
+
+{-------------------------------------------------------------------------------
+  gtkMouseBtnPress
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is over a widget and a mouse button is pressed.
+-------------------------------------------------------------------------------}
 function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 const
@@ -459,21 +519,24 @@ var
   MessI : TLMMouse;
   MessE : TLMMouseEvent;
   ShiftState: TShiftState;
+  MappedXY: TPoint;
   //ShowDebugging : Boolean;
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
 begin
   Result:=true;
   {$IFDEF VerboseMouseBugfix}
-  writeln('[gtkMouseBtnPress] ',TControl(Data).Name,':',TObject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+  writeln('[gtkMouseBtnPress] ',
+    TControl(Data).Name,':',TObject(Data).ClassName,' ',
+    Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
 
-  // stop the signal, so that it is not sent to the parent widgets
-  //gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
-  
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
   ShiftState := GTKEventState2ShiftState(Event^.State);
-  
+  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
+                                         Point(trunc(Event^.X),trunc(Event^.Y)),
+                                         PGtkWidget(TWinControl(Data).Handle));
+
   {ShowDebugging := False;
   if ShowDebugging then
   Begin
@@ -498,8 +561,8 @@ begin
     // this is a mouse wheel event
     MessE.Msg := LM_MOUSEWHEEL;
     MessE.WheelDelta := WHEEL_DELTA[event^.Button = 4];
-    MessE.X := Trunc(Event^.X);
-    MessE.Y := trunc(Event^.Y);
+    MessE.X := MappedXY.X;
+    MessE.Y := MappedXY.Y;
     MessE.State := ShiftState;
     MessE.UserData := Data;
     DeliverPostMessage(Data, MessE);
@@ -611,8 +674,8 @@ begin
       end;
     end; // case
 
-    MessI.XPos := Trunc(Event^.X);
-    MessI.YPos := Trunc(Event^.Y);
+    MessI.XPos := MappedXY.X;
+    MessI.YPos := MappedXY.Y;
 
     if ssShift in ShiftState then MessI.Keys := MessI.Keys or MK_SHIFT;
     if ssCtrl in ShiftState then MessI.Keys := MessI.Keys or MK_CONTROL;
@@ -625,15 +688,47 @@ begin
   Result:=true;
 end;
 
+{-------------------------------------------------------------------------------
+  gtkMouseBtnPress
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is over a widget and a mouse button is pressed.
+  This is the last handler.
+-------------------------------------------------------------------------------}
+function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; cdecl;
+begin
+  Result:=true;
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[gtkMouseBtnPressAfter] ',
+    TControl(Data).Name,':',TObject(Data).ClassName,' ',
+    Trunc(Event^.X),',',Trunc(Event^.Y));
+  {$ENDIF}
+
+  // stop the signal, so that it is not sent to the parent widgets
+  gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+end;
+
+{-------------------------------------------------------------------------------
+  gtkMouseBtnRelease
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is over a widget and a mouse button is released.
+-------------------------------------------------------------------------------}
 function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   MessI : TLMMouse;
   ShiftState: TShiftState;
+  MappedXY: TPoint;
 begin
   Result:=true;
   {$IFDEF VerboseMouseBugfix}
-  writeln('[gtkMouseBtnRelease] ',TControl(Data).Name,':',TObject(Data).ClassName,' ',Trunc(Event^.X),',',Trunc(Event^.Y));
+  writeln('[gtkMouseBtnRelease] ',
+    TControl(Data).Name,':',TObject(Data).ClassName,' ',
+    Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
 
   // stop the signal, so that it is not sent to the parent widgets
@@ -641,6 +736,9 @@ begin
   
   EventTrace('Mouse button release', data);
   Assert(False, Format('Trace:[gtkMouseBtnRelease] ', []));
+  MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
+                                         Point(trunc(Event^.X),trunc(Event^.Y)),
+                                         PGtkWidget(TWinControl(Data).Handle));
 
   case event^.Button of
   1:
@@ -677,8 +775,8 @@ begin
     end;
   end;
   
-  MessI.XPos := Trunc(Event^.X);
-  MessI.YPos := Trunc(Event^.Y);
+  MessI.XPos := MappedXY.X;
+  MessI.YPos := MappedXY.Y;
   
   ShiftState := gtkeventstate2shiftstate(Event^.State);
   MessI.Keys := 0;
@@ -691,6 +789,28 @@ begin
   if MessI.Msg <> LM_NULL then
     DeliverPostMessage(Data, MessI);
   Result:=true;
+end;
+
+{-------------------------------------------------------------------------------
+  gtkMouseBtnReleaseAfter
+  Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
+  Returns: GBoolean
+
+  Called whenever the mouse is over a widget and a mouse button is released.
+  This is the last handler.
+-------------------------------------------------------------------------------}
+function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
+  data: gPointer) : GBoolean; cdecl;
+begin
+  Result:=true;
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[gtkMouseBtnReleaseAfter] ',
+    TControl(Data).Name,':',TObject(Data).ClassName,' ',
+    Trunc(Event^.X),',',Trunc(Event^.Y));
+  {$ENDIF}
+
+  // stop the signal, so that it is not sent to the parent widgets
+  gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1131,7 +1251,7 @@ end;
   Params: widget: PGtkWidget; data: gPointer
   Result: GBoolean
 
-  This function is called, when the commondialog is destroyed
+  This function is called, when a commondialog is destroyed
 -------------------------------------------------------------------------------}
 function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
@@ -1246,18 +1366,19 @@ end;
 function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
   data: gPointer) : GBoolean; cdecl;
 var
-   Mess : TLMNotify;
-   T : tagNMHDR;
+  Mess : TLMNotify;
+  T : tagNMHDR;
 begin
-   Result := True;
-   EventTrace('switch-page', data);
-   Mess.Msg := LM_NOTIFY;
-   //this is the
-   T.code := TCN_SELCHANGE;//(0-550)-1;
-   T.hwndfrom := longint(widget);
-   T.idfrom := pagenum;  //use this to set pageindex to the correct page.
-   Mess.NMHdr := @T;
-   Result := DeliverMessage(Data, Mess) = 0;
+  Result := True;
+  EventTrace('switch-page', data);
+  UpdateNoteBookClientWidget(TObject(Data));
+  Mess.Msg := LM_NOTIFY;
+  //this is the
+  T.code := TCN_SELCHANGE;//(0-550)-1;
+  T.hwndfrom := longint(widget);
+  T.idfrom := pagenum;  //use this to set pageindex to the correct page.
+  Mess.NMHdr := @T;
+  Result := DeliverMessage(Data, Mess) = 0;
 end;
 
 
@@ -1270,9 +1391,7 @@ begin
   { This signal is emitted for top level controls only, i.e. only controls
     that are not children. Thus, we register this event only for forms.
     This event is fired when the form is sized, moved or changes Z order.
-    TODO : We may yet have to figure a way how not to call the WindowPosChanged
-    twice in some cases. It may also be that this event is called whenever
-    one of the controls of the form gets resized !!! }
+  }
 
   New(Allocation);
   try
@@ -1426,26 +1545,6 @@ begin
   Mess.msg := LM_PASTEFROMCLIP;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
-
-(*
-function gtkMoveResize(widget: PGtkWidget; X,Y,Width,Height : pgInt; data: gPointer) : GBoolean; cdecl;
-var
-  msg : TLMResize;
-begin
-  Result := True;
-  EventTrace('move_resize', data);
-  msg.msg := LM_MOVERESIZE;
-  Msg.Left := X^;
-  Msg.Top := Y^;
-  Msg.Width := Width^;
-  Msg.Height := Height^;
-  Msg.Userdata := Data;
-  
-  if TObject(data) is TControl 
-  then TControl(data).WindowProc(TLMessage(msg))
-  else TObject(data).Dispatch(msg);
-end;
-*)
 
 function gtkValueChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
@@ -1923,6 +2022,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2002/06/11 13:41:09  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.83  2002/06/09 14:00:41  lazarus
   MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
 
