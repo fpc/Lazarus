@@ -83,7 +83,7 @@ end;
   Function: CopyDCData
   Params:  DestinationDC:  a dc to copy data to
            SourceDC: a dc to copy data from
-  Returns: True if succesfu
+  Returns: True if succesful
 
   Creates a copy DC from the given DC
  ------------------------------------------------------------------------------}
@@ -99,8 +99,8 @@ begin
     begin
       hWnd := SourceDC^.hWnd;
       Drawable := SourceDC^.Drawable;
-      if (SourceDC^.GC = nil) or (Drawable = nil)
-      then GC := nil
+      if (SourceDC^.GC = nil) or (Drawable = nil) then
+        GC := nil
       else begin
         gdk_gc_get_values(SourceDC^.GC, @GCValues);
         //GC := gdk_gc_new(Drawable);
@@ -113,10 +113,11 @@ begin
       CurrentBrush := SourceDC^.CurrentBrush;
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
-      DeleteObject(ClipRegion);
+      ClipRegion := SourceDC^.ClipRegion;
+      {DeleteObject(ClipRegion);
       ClipRegion := 0;
       If SourceDC^.ClipRegion <> 0 then
-        SelectClipRGN(hDC(DestinationDC), SourceDC^.ClipRegion);
+        SelectClipRGN(hDC(DestinationDC), SourceDC^.ClipRegion);}
       SavedContext := nil;
     end;
   end;
@@ -2381,6 +2382,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.66  2002/08/21 10:46:37  lazarus
+  MG: fixed unreleased gdiRegions
+
   Revision 1.65  2002/08/19 20:34:48  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
