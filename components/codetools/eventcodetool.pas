@@ -548,19 +548,13 @@ begin
   if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (AMethodName='')
   or (ATypeInfo=nil) or (SourceChangeCache=nil) or (Scanner=nil) then exit;
   {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'"');
+  writeln('[TEventsCodeTool.CreatePublishedMethod] A AMethodName="',AMethodName,'" in "',MainFilename,'"');
   {$ENDIF}
   // search typeinfo in source
   FindContext:=FindMethodTypeInfo(ATypeInfo);
-  {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CreatePublishedMethod] B');
-  {$ENDIF}
   // initialize class for code completion
   CodeCompleteClassNode:=ClassNode;
   CodeCompleteSrcChgCache:=SourceChangeCache;
-  {$IFDEF CTDEBUG}
-  writeln('[TEventsCodeTool.CreatePublishedMethod] C');
-  {$ENDIF}
   // check if method definition already exists in class
   CleanMethodDefinition:=UpperCaseStr(AMethodName)
          +FindContext.Tool.ExtractProcHead(FindContext.Node,

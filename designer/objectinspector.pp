@@ -142,8 +142,9 @@ type
   
   TOIPropertyGrid = class(TCustomControl)
   private
+    FChangeStep: integer;
     FComponentList: TComponentSelectionList;
-    FPropertyEditorHook:TPropertyEditorHook;
+    FPropertyEditorHook: TPropertyEditorHook;
     FFilter: TTypeKinds;
     FItemIndex:integer;
     FRows:TList;
@@ -157,6 +158,7 @@ type
     FNameFont,FValueFont:TFont;
     FCurrentEdit:TWinControl;  // nil or ValueEdit or ValueComboBox
     FCurrentButton:TWinControl; // nil or ValueButton
+    FCurrentEditorLookupRoot: TComponent;
     FDragging:boolean;
     FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
@@ -169,11 +171,8 @@ type
     FLastMouseMovePos : TPoint;
     Procedure HintTimer(sender: TObject);
     Procedure ResetHintTimer(Sender: TObject; Shift: TShiftstate; X,Y: Integer);
-    procedure CurrentEditMouseDown(Sender: TObject; Button:TMouseButton;
-      Shift:TShiftState; X,Y:integer);
 
-
-    Procedure CurrentEditDblClick(Sender : TObject);
+    procedure IncreaseChangeStep;
 
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
@@ -202,6 +201,9 @@ type
 
     procedure SetRowValue;
     procedure RefreshValueEdit;
+    Procedure ValueEditDblClick(Sender : TObject);
+    procedure ValueEditMouseDown(Sender: TObject; Button:TMouseButton;
+      Shift:TShiftState; X,Y:integer);
     procedure ValueEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueEditExit(Sender: TObject);
     procedure ValueEditChange(Sender: TObject);
@@ -355,6 +357,8 @@ begin
   FExpandingRow:=nil;
   FDragging:=false;
   FExpandedProperties:=TStringList.Create;
+  FCurrentEdit:=nil;
+  FCurrentButton:=nil;
 
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds(1,1,200,300);
@@ -375,9 +379,6 @@ begin
   fBorderStyle := bsSingle;
 
   // create sub components
-  FCurrentEdit:=nil;
-  FCurrentButton:=nil;
-
   ValueEdit:=TEdit.Create(Self);
   with ValueEdit do begin
     Name:='ValueEdit';
@@ -385,8 +386,8 @@ begin
     Visible:=false;
     Enabled:=false;
     OnMouseMove := @ResetHintTimer;
-    OnMouseDown := @CurrentEditMouseDown;
-    OnDblClick := @CurrentEditDblClick;
+    OnMouseDown := @ValueEditMouseDown;
+    OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueEditExit;
     OnChange:=@ValueEditChange;
     OnKeyDown:=@ValueEditKeyDown;
@@ -399,8 +400,8 @@ begin
     Enabled:=false;
     Parent:=Self;
     OnMouseMove := @ResetHintTimer;
-    OnMouseDown := @CurrentEditMouseDown;
-    OnDblClick := @CurrentEditDblClick;
+    OnMouseDown := @ValueEditMouseDown;
+    OnDblClick := @ValueEditDblClick;
     OnExit:=@ValueComboBoxExit;
     //OnChange:=@ValueComboBoxChange; the on change event is called even,
                                    // if the user is editing
@@ -531,6 +532,7 @@ var a:integer;
 begin
   OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
+  IncreaseChangeStep;
   for a:=0 to FRows.Count-1 do
     Rows[a].Free;
   FRows.Clear;
@@ -542,10 +544,11 @@ begin
 end;
 
 procedure TOIPropertyGrid.SetPropertyEditorHook(
-NewPropertyEditorHook:TPropertyEditorHook);
+  NewPropertyEditorHook:TPropertyEditorHook);
 begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
   FPropertyEditorHook:=NewPropertyEditorHook;
+  IncreaseChangeStep;
   SetSelections(FComponentList);
 end;
 
@@ -601,19 +604,28 @@ var
   CurRow: TOIPropertyGridRow;
   NewValue: string;
   OldExpanded: boolean;
+  OldChangeStep: integer;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[])
-  and (FCurrentEdit<>nil)
-  and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
-    CurRow:=Rows[FItemIndex];
-    if FCurrentEdit=ValueEdit then
-      NewValue:=ValueEdit.Text
-    else
-      NewValue:=ValueComboBox.Text;
-    if length(NewValue)>CurRow.Editor.GetEditLimit then
-      NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
-    if NewValue<>CurRow.Editor.GetVisualValue then begin
-      Include(FStates,pgsApplyingValue);
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  or (FCurrentEdit=nil)
+  or (FItemIndex<0)
+  or (FItemIndex>=FRows.Count)
+  or ((FCurrentEditorLookupRoot<>nil)
+    and (FPropertyEditorHook<>nil)
+    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
+  then exit;
+  
+  OldChangeStep:=fChangeStep;
+  CurRow:=Rows[FItemIndex];
+  if FCurrentEdit=ValueEdit then
+    NewValue:=ValueEdit.Text
+  else
+    NewValue:=ValueComboBox.Text;
+  if length(NewValue)>CurRow.Editor.GetEditLimit then
+    NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
+  if NewValue<>CurRow.Editor.GetVisualValue then begin
+    Include(FStates,pgsApplyingValue);
+    try
       try
         CurRow.Editor.SetValue(NewValue);
       except
@@ -621,21 +633,31 @@ begin
           MessageDlg('Error',E.Message,mtError,[mbOk],0);
         end;
       end;
-      if (paVolatileSubProperties in CurRow.Editor.GetAttributes)
-      and ((CurRow.Expanded) or (CurRow.ChildCount>0)) then begin
-        OldExpanded:=CurRow.Expanded;
-        ShrinkRow(FitemIndex);
-        if OldExpanded then
-          ExpandRow(FItemIndex);
+      if (OldChangeStep<>FChangeStep) then begin
+        // the selection has changed
+        // => CurRow does not exist any more
+        exit;
       end;
+      
+      // set value in edit control
       if FCurrentEdit=ValueEdit then
         ValueEdit.Text:=CurRow.Editor.GetVisualValue
       else
         ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
+        
+      // update volatile sub properties
+      if (paVolatileSubProperties in CurRow.Editor.GetAttributes)
+      and ((CurRow.Expanded) or (CurRow.ChildCount>0)) then begin
+        OldExpanded:=CurRow.Expanded;
+        ShrinkRow(FItemIndex);
+        if OldExpanded then
+          ExpandRow(FItemIndex);
+      end;
+    finally
       Exclude(FStates,pgsApplyingValue);
-      DoPaint(true);
-      if Assigned(FOnModified) then FOnModified(Self);
     end;
+    DoPaint(true);
+    if Assigned(FOnModified) then FOnModified(Self);
   end;
 end;
 
@@ -721,7 +743,8 @@ procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
 var CurRow:TOIPropertyGridRow;
 begin
 writeln('#################### TOIPropertyGrid.ValueButtonClick');
-  if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
+  if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count)
+  and (FStates*[pgsChangingItemIndex,pgsApplyingValue]=[]) then
   begin
     CurRow:=Rows[FItemIndex];
     if paDialog in CurRow.Editor.GetAttributes then begin
@@ -738,61 +761,66 @@ procedure TOIPropertyGrid.SetItemIndex(NewIndex:integer);
 var NewRow:TOIPropertyGridRow;
   NewValue:string;
 begin
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  or (FItemIndex=NewIndex) then
+    exit;
+    
+  // save old edit value
   SetRowValue;
+  
   Include(FStates,pgsChangingItemIndex);
-  if (FItemIndex<>NewIndex) then begin
-    if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
-      Rows[FItemIndex].Editor.Deactivate;
-    SetCaptureControl(nil);
-    FItemIndex:=NewIndex;
-    if FCurrentEdit<>nil then begin
-      FCurrentEdit.Visible:=false;
-      FCurrentEdit.Enabled:=false;
-      FCurrentEdit:=nil;
-    end;
-    if FCurrentButton<>nil then begin
-      FCurrentButton.Visible:=false;
-      FCurrentButton.Enabled:=false;
-      FCurrentButton:=nil;
-    end;
-    if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
-      NewRow:=Rows[NewIndex];
-      NewRow.Editor.Activate;
+  if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
+    Rows[FItemIndex].Editor.Deactivate;
+  SetCaptureControl(nil);
+  FItemIndex:=NewIndex;
+  if FCurrentEdit<>nil then begin
+    FCurrentEdit.Visible:=false;
+    FCurrentEdit.Enabled:=false;
+    FCurrentEdit:=nil;
+  end;
+  if FCurrentButton<>nil then begin
+    FCurrentButton.Visible:=false;
+    FCurrentButton.Enabled:=false;
+    FCurrentButton:=nil;
+  end;
+  FCurrentEditorLookupRoot:=nil;
+  if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
+    NewRow:=Rows[NewIndex];
+    NewRow.Editor.Activate;
 writeln('  NewRow.Editor.ClassName=',NewRow.Editor.ClassName);
-      if paDialog in NewRow.Editor.GetAttributes then begin
-        FCurrentButton:=ValueButton;
-        FCurrentButton.Visible:=true;
-      end;
-      NewValue:=NewRow.Editor.GetVisualValue;
-      if paValueList in NewRow.Editor.GetAttributes then begin
-        FCurrentEdit:=ValueComboBox;
-        ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
-        ValueComboBox.Items.BeginUpdate;
-        ValueComboBox.Items.Text:='';
-        ValueComboBox.Items.Clear;
-        ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
-        NewRow.Editor.GetValues(@AddStringToComboBox);
-        ValueComboBox.Text:=NewValue;
-        ValueComboBox.Items.EndUpdate;
-        ValueComboBox.Visible:=true;
-      end else begin
-        FCurrentEdit:=ValueEdit;
-        // XXX
-        ValueEdit.ReadOnly:=paReadOnly in NewRow.Editor.GetAttributes;
-        ValueEdit.MaxLength:=NewRow.Editor.GetEditLimit;
-        ValueEdit.Text:=NewValue;
-        ValueEdit.Visible:=true;
-      end;
-      AlignEditComponents;
-      if FCurrentEdit<>nil then begin
-        FCurrentEdit.Enabled:=true;
-        if (FDragging=false) and (FCurrentEdit.Showing) then begin
-          FCurrentEdit.SetFocus;
-        end;
-      end;
-      if FCurrentButton<>nil then
-        FCurrentButton.Enabled:=true;
+    if paDialog in NewRow.Editor.GetAttributes then begin
+      FCurrentButton:=ValueButton;
+      FCurrentButton.Visible:=true;
     end;
+    NewValue:=NewRow.Editor.GetVisualValue;
+    if paValueList in NewRow.Editor.GetAttributes then begin
+      FCurrentEdit:=ValueComboBox;
+      ValueComboBox.MaxLength:=NewRow.Editor.GetEditLimit;
+      ValueComboBox.Items.BeginUpdate;
+      ValueComboBox.Items.Text:='';
+      ValueComboBox.Items.Clear;
+      ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+      NewRow.Editor.GetValues(@AddStringToComboBox);
+      ValueComboBox.Text:=NewValue;
+      ValueComboBox.Items.EndUpdate;
+    end else begin
+      FCurrentEdit:=ValueEdit;
+      ValueEdit.ReadOnly:=paReadOnly in NewRow.Editor.GetAttributes;
+      ValueEdit.MaxLength:=NewRow.Editor.GetEditLimit;
+      ValueEdit.Text:=NewValue;
+    end;
+    AlignEditComponents;
+    if FCurrentEdit<>nil then begin
+      if FPropertyEditorHook<>nil then
+        FCurrentEditorLookupRoot:=FPropertyEditorHook.LookupRoot;
+      FCurrentEdit.Visible:=true;
+      FCurrentEdit.Enabled:=true;
+      if (FDragging=false) and (FCurrentEdit.Showing) then begin
+        FCurrentEdit.SetFocus;
+      end;
+    end;
+    if FCurrentButton<>nil then
+      FCurrentButton.Enabled:=true;
   end;
   Exclude(FStates,pgsChangingItemIndex);
 end;
@@ -1330,6 +1358,7 @@ end;
 procedure TOIPropertyGrid.ClearRows;
 var a:integer;
 begin
+  IncreaseChangeStep;
   for a:=0 to FRows.Count-1 do begin
     Rows[a].Free;
   end;
@@ -1518,14 +1547,22 @@ begin
   ResetHintTimer(self,Shift,Msg.pos.x,Msg.Pos.Y);
 end;
 
-procedure TOIPropertyGrid.CurrentEditMouseDown(Sender : TObject;
+procedure TOIPropertyGrid.ValueEditMouseDown(Sender : TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: integer);
 begin
   //hide the hint window!
   if FHintWindow.Visible then FHintWindow.Visible := False;
 end;
 
-PRocedure TOIPropertyGrid.CurrentEditDblClick(Sender : TObject);
+procedure TOIPropertyGrid.IncreaseChangeStep;
+begin
+  if FChangeStep<>$7fffffff then
+    inc(FChangeStep)
+  else
+    FChangeStep:=-$7fffffff;
+end;
+
+PRocedure TOIPropertyGrid.ValueEditDblClick(Sender : TObject);
 var
   //Rect : TRect;
   Position : TPoint;
