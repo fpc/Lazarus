@@ -148,7 +148,7 @@ type
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
-    procedure DoClicked(var msg); message LM_ACTIVATE;  //'activate';
+    procedure DoClicked(var msg); message LM_ACTIVATE;
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
     procedure SetGroupIndex(AValue: Byte);
@@ -464,6 +464,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2002/10/20 21:49:09  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.28  2002/10/08 22:32:26  lazarus
   MG: fixed cool little bug (menu double attaching bug)
 
