@@ -816,7 +816,6 @@ begin
     FillScreenFonts(Screen.Fonts);
 
   // read gtk rc file
-  FRCFileParsed:=true;
   ParseRCFile;
 
   // Initialize Stringlist for holding styles
@@ -6033,9 +6032,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetRCFilename(const AValue: string);
 begin
-  if FRCFilename=AValue then exit;
+  if (FRCFilename=AValue) then exit;
   FRCFilename:=AValue;
+  FRCFileParsed:=false;
   ParseRCFile;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TgtkObject.CheckRCFilename;
+
+  Sets the gtk resource file and parses it.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.CheckRCFilename;
+begin
+  if FRCFileParsed and (FRCFilename<>'') and FileExists(FRCFilename)
+  and (FileAge(FRCFilename)<>FRCFileAge) then
+    FRCFileParsed:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -6047,10 +6059,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.ParseRCFile;
 begin
-  if (FRCFilename<>'') and FileExists(FRCFilename) and FRCFileParsed then
+  if (not FRCFileParsed)
+  and (FRCFilename<>'') and FileExists(FRCFilename) then
   begin
     gtk_rc_parse(PChar(FRCFilename));
     FRCFileParsed:=true;
+    FRCFileAge:=FileAge(FRCFilename);
   end;
 end;
 
@@ -6512,6 +6526,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.270  2002/10/30 00:08:09  lazarus
+  MG: finished ParseRCFile
+
   Revision 1.269  2002/10/28 18:17:03  lazarus
   MG: impoved focussing, unfocussing on destroy and fixed unit search
 
