@@ -57,7 +57,6 @@ const
   LM_GetLineCount   = LM_ComUser+16;
   LM_CANVASCREATE   = LM_ComUser+19;
   LM_ReDraw         = LM_ComUser+26;
-  LM_ShowTabs       = LM_ComUser+29;
   LM_SetTabPosition = LM_ComUser+30;
   LM_Invalidate     = LM_ComUser+32;
 
@@ -659,7 +658,6 @@ type
     fCompStyle: Integer;
     Str: String;
     Page: Integer;
-    ShowTabs: Boolean;
     TabPosition: Pointer;
   end;
 
@@ -834,7 +832,6 @@ begin
   LM_GetLineCount   :Result:='LM_GetLineCount';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
   LM_ReDraw         :Result:='LM_ReDraw';
-  LM_ShowTabs       :Result:='LM_ShowTabs';
   LM_SetTabPosition :Result:='LM_SetTabPosition';
   LM_Invalidate     :Result:='LM_Invalidate';
 
@@ -976,6 +973,9 @@ end.
 
 {
   $Log$
+  Revision 1.95  2004/09/13 19:57:30  micha
+  convert LM_SHOWTABS message to interface method
+
   Revision 1.94  2004/09/13 19:06:04  micha
   convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
 

@@ -135,8 +135,6 @@ Type
     Procedure ReDraw(Child: TObject);
 
     procedure ChangeActivePage(const Data: TLMNotebookEvent);
-    procedure AddAllNBPages(Notebook: TCustomNotebook);
-    procedure RemoveAllNBPages(Notebook: TCustomNotebook);
     Procedure SetText(Window: HWND; Data: Pointer);
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
@@ -280,6 +278,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.110  2004/09/13 19:57:30  micha
+  convert LM_SHOWTABS message to interface method
+
   Revision 1.109  2004/09/13 19:06:04  micha
   convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
 

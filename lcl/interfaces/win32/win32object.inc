@@ -352,16 +352,6 @@ Begin
             InvalidateRect(TCustomSpeedButton(Sender).Parent.Handle, @SizeRect, True);
           End;
       End;
-      LM_SHOWTABS:
-      Begin
-        Result := Ord(True);
-        if TLMNotebookEvent(Data^).ShowTabs then
-        begin
-          AddAllNBPages(Sender as TCustomNotebook);
-        end else begin
-          RemoveAllNBPages(Sender as TCustomNotebook);
-        end;
-      End;
       LM_SETTABPOSITION :
       Begin
         // VS: not tested
@@ -1937,57 +1927,6 @@ Begin
   End;
 End;
 
-{ -----------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AddAllNBPages
-  Params: Notebook - A notebook control
-  Returns: Nothing
-
-  Adds all pages to notebook (showtabs becomes true)
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.AddAllNBPages(Notebook: TCustomNotebook);
-var
-  TCI: TC_ITEM;
-  I, Res: Integer;
-  lPage: TCustomPage;
-begin
-  for I := 0 to Notebook.PageCount - 1 do
-  begin
-    lPage := Notebook.Page[I];
-    // check if already shown
-    TCI.Mask := TCIF_PARAM;
-    Res := Windows.SendMessage(Notebook.Handle, TCM_GETITEM, I, LPARAM(@TCI));
-    if (Res = 0) or (dword(TCI.lParam) <> lPage.Handle) then
-    begin
-      TCI.Mask := TCIF_TEXT or TCIF_PARAM;
-      TCI.pszText := PChar(lPage.Caption);
-      TCI.lParam := lPage.Handle;
-      Windows.SendMessage(Notebook.Handle, TCM_INSERTITEM, I, LPARAM(@TCI));
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.RemoveAllNBPages
-  Params: Notebook - The notebook control
-  Returns: Nothing
-
-  Removes all pages from a notebook control (showtabs becomes false)
- ------------------------------------------------------------------------------}
-procedure TWin32WidgetSet.RemoveAllNBPages(Notebook: TCustomNotebook);
-var
-  I: Integer;
-  R: TRect;
-begin
-  for I := Notebook.PageCount - 1 downto 0 do
-    Windows.SendMessage(Notebook.Handle, TCM_DELETEITEM, Windows.WPARAM(I), 0);
-  // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
-  Self.GetClientRect(Notebook.Handle, R);
-  R.Right := R.Right - R.Left;
-  R.Bottom := R.Bottom - R.Top;
-  for I := 0 to Notebook.PageCount - 1 do
-    ResizeChild(Notebook.Page[I], R.Left, R.Top, R.Right, R.Bottom);
-end;
-
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.ChangeActivePage
   Params: Data - The notebook setitemindex message
@@ -2397,6 +2336,9 @@ End;
 
 {
   $Log$
+  Revision 1.255  2004/09/13 19:57:30  micha
+  convert LM_SHOWTABS message to interface method
+
   Revision 1.254  2004/09/13 19:06:04  micha
   convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
 

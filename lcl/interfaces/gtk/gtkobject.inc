@@ -3140,12 +3140,6 @@ begin
             TLMNotebookEvent(Data^).Page);
         end;
 
-      LM_ShowTabs :
-      begin
-        gtk_notebook_set_show_tabs(PGtkNotebook(Handle),
-          Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
-      end;
-
       LM_SetTabPosition :
       begin
         case TTabPosition(TLMNotebookEvent(Data^).TabPosition^) of
@@ -8315,6 +8309,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.563  2004/09/13 19:57:30  micha
+  convert LM_SHOWTABS message to interface method
+
   Revision 1.562  2004/09/13 19:06:04  micha
   convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
 

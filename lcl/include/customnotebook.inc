@@ -750,17 +750,12 @@ end;
   procedure TCustomNotebook.DoSendShowTabs;
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.DoSendShowTabs;
-var
-  Msg: TLMNotebookEvent;
 begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
-  Msg.Parent := Self;
-  Msg.fCompStyle := fCompStyle;
-  Msg.ShowTabs := fShowTabs;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendShowTabs] A ',Name);
   {$ENDIF}
-  CNSendMessage(LM_SHOWTABS, Self, @Msg);
+  TWSCustomNotebookClass(WidgetSetClass).ShowTabs(Self, FShowTabs);
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendShowTabs] B ',Name);
   {$ENDIF}
@@ -808,6 +803,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/09/13 19:57:30  micha
+  convert LM_SHOWTABS message to interface method
+
   Revision 1.56  2004/09/13 19:06:04  micha
   convert LM_ADDPAGE and LM_REMOVEPAGE messages to new interface methods
 

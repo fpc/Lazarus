@@ -57,6 +57,7 @@ type
     
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
   { TGtkWSPage }
@@ -347,6 +348,11 @@ function TGtkWSCustomNotebook.GetNotebookMinTabWidth(
   const AWinControl: TWinControl): integer;
 begin
   Result:=inherited GetNotebookMinTabWidth(AWinControl);
+end;
+
+procedure TGtkWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
+begin
+  gtk_notebook_set_show_tabs(PGtkNotebook(ANotebook.Handle), AShowTabs);
 end;
 
 initialization

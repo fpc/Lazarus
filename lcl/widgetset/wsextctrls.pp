@@ -64,6 +64,7 @@ type
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; virtual;
     class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); virtual;
   end;
   TWSCustomNotebookClass = class of TWSCustomNotebook;
 
@@ -215,6 +216,10 @@ end;
 
 procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook;
   const AChild: TCustomPage; const AText: string);
+begin
+end;
+
+procedure TWSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
 begin
 end;
 

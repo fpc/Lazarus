@@ -55,6 +55,7 @@ type
   public
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
   end;
 
   { TWin32WSPage }
@@ -204,6 +205,59 @@ type
 
 implementation
 
+{ -----------------------------------------------------------------------------
+  Method: AddAllNBPages
+  Params: Notebook - A notebook control
+  Returns: Nothing
+
+  Adds all pages to notebook (showtabs becomes true)
+ ------------------------------------------------------------------------------}
+procedure AddAllNBPages(Notebook: TCustomNotebook);
+var
+  TCI: TC_ITEM;
+  I, Res: Integer;
+  lPage: TCustomPage;
+begin
+  for I := 0 to Notebook.PageCount - 1 do
+  begin
+    lPage := Notebook.Page[I];
+    // check if already shown
+    TCI.Mask := TCIF_PARAM;
+    Res := Windows.SendMessage(Notebook.Handle, TCM_GETITEM, I, LPARAM(@TCI));
+    if (Res = 0) or (dword(TCI.lParam) <> lPage.Handle) then
+    begin
+      TCI.Mask := TCIF_TEXT or TCIF_PARAM;
+      TCI.pszText := PChar(lPage.Caption);
+      TCI.lParam := lPage.Handle;
+      Windows.SendMessage(Notebook.Handle, TCM_INSERTITEM, I, LPARAM(@TCI));
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: RemoveAllNBPages
+  Params: Notebook - The notebook control
+  Returns: Nothing
+
+  Removes all pages from a notebook control (showtabs becomes false)
+ ------------------------------------------------------------------------------}
+procedure RemoveAllNBPages(Notebook: TCustomNotebook);
+var
+  I: Integer;
+  R: TRect;
+begin
+  for I := Notebook.PageCount - 1 downto 0 do
+    Windows.SendMessage(Notebook.Handle, TCM_DELETEITEM, Windows.WPARAM(I), 0);
+  // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
+  TWin32WidgetSet(InterfaceObject).GetClientRect(Notebook.Handle, R);
+  R.Right := R.Right - R.Left;
+  R.Bottom := R.Bottom - R.Top;
+  for I := 0 to Notebook.PageCount - 1 do
+    TWin32WidgetSet(InterfaceObject).ResizeChild(Notebook.Page[I], R.Left, R.Top, R.Right, R.Bottom);
+end;
+
+{ TWin32WSCustomNotebook }
+
 procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 
   const AChild: TCustomPage; const AIndex: integer);
 var
@@ -235,6 +289,16 @@ procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook;
   const AIndex: integer);
 begin
   Windows.SendMessage(ANotebook.Handle, TCM_DELETEITEM, Windows.WPARAM(AIndex), 0);
+end;
+
+procedure TWin32WSCustomNotebook.ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean);
+begin
+  if AShowTabs then
+  begin
+    AddAllNBPages(ANotebook);
+  end else begin
+    RemoveAllNBPages(ANotebook);
+  end;
 end;
 
 initialization
