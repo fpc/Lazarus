@@ -5537,8 +5537,8 @@ begin
       // change tool status
       ToolStatus:=itBuilder;
 
-      TheOutputFilter.OnOutputString:=@MessagesView.Add;
-      TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
+      TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
+      TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
 
       // compile
       Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
@@ -5558,8 +5558,8 @@ begin
   
   // add success message
   if Result=mrOk then begin
-    MessagesView.Add(
-      Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']));
+    MessagesView.AddMsg(
+      Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
   end;
 
   // check sources
@@ -6674,6 +6674,7 @@ var MaxMessages: integer;
   MsgType: TErrorType;
   SrcEdit: TSourceEditor;
   OpenFlags: TOpenFlags;
+  CurMsg, CurDir: string;
 begin
   Result:=false;
   MaxMessages:=MessagesView.MessageView.Items.Count;
@@ -6693,8 +6694,12 @@ begin
     if Index>=MaxMessages then exit;
     MessagesView.SelectedMessageIndex:=Index;
   end;
-  if TheOutputFilter.GetSourcePosition(MessagesView.MessageView.Items[Index],
-        Filename,CaretXY,MsgType) then begin
+  MessagesView.GetMessageAt(Index,CurMsg,CurDir);
+  if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
+  then begin
+    if not FilenameIsAbsolute(Filename) then begin
+      Filename:=AppendPathDelim(CurDir)+Filename;
+    end;
 
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if not IsTestUnitFilename(Filename) then
@@ -7717,13 +7722,14 @@ begin
   MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;
   if CodeToolBoss.ErrorCode<>nil then begin
-    MessagesView.Add(Project1.RemoveProjectPathFromFilename(
+    MessagesView.AddMsg(Project1.RemoveProjectPathFromFilename(
        CodeToolBoss.ErrorCode.Filename)
       +'('+IntToStr(CodeToolBoss.ErrorLine)
       +','+IntToStr(CodeToolBoss.ErrorColumn)
-      +') Error: '+CodeToolBoss.ErrorMessage);
+      +') Error: '+CodeToolBoss.ErrorMessage,
+      Project1.ProjectDirectory);
   end else
-    MessagesView.Add(CodeToolBoss.ErrorMessage);
+    MessagesView.AddMsg(CodeToolBoss.ErrorMessage,Project1.ProjectDirectory);
   MessagesView.SelectedMessageIndex:=MessagesView.MsgCount-1;
 
   // jump to error in source editor
@@ -8586,8 +8592,8 @@ begin
   MessagesView.Clear;
   DoArrangeSourceEditorAndMessageView(false);
 
-  TheOutputFilter.OnOutputString:=@MessagesView.Add;
-  TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
+  TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
+  TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
 end;
 
 procedure TMainIDE.OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
@@ -9074,6 +9080,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.586  2003/05/28 21:16:47  mattias
+  added a help and a more button tot he package editor
+
   Revision 1.585  2003/05/26 21:03:27  mattias
   added README, describing how to create a gtk2 lcl application
 
