@@ -160,8 +160,8 @@ type
     procedure ListViewAddItem(TheListView: TObject);
     
     // listbox
-    function GetTopIndex(ListBoxObj: TObject): integer;
-    function SetTopIndex(ListBoxObj: TObject; NewTopIndex: integer): integer;
+    function GetTopIndex(Sender: TObject): integer;
+    function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;
 
     procedure BringFormToFront(Sender: TObject);
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
@@ -322,6 +322,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.115  2002/12/27 10:23:40  mattias
+  implemented TListBox.TopIndex
+
   Revision 1.114  2002/12/27 08:46:32  mattias
   changes for fpc 1.1
 
