@@ -74,11 +74,6 @@ begin
     result := nil;
 end;
 
-Function gtk_notebook_get_tab_label(Notebook : PGtkNotebook; Child : PGTKWidget) : PGTKWidget;
-begin
-  result := PGtkNotebookPage(Child)^.Tab_Label;
-end;
-
 function gtk_window_get_modal(window:PGtkWindow):gboolean;
 begin
   result := (Window^.flag0 and bm_modal)<>0;
@@ -4523,6 +4518,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.195  2003/09/05 19:03:19  ajgenius
+  removed a redundant routine which broke gtk1
+
   Revision 1.194  2003/09/05 18:19:54  ajgenius
   Make GTK2 "compile". linking fails still
   (Makefile.fpc needs pkgconfig libs/GTK2 linking rules,

@@ -489,8 +489,6 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
   Function gtk_bin_get_child(bin : PGTKBin) : PGTKWidget;
 
-  Function gtk_notebook_get_tab_label(Notebook : PGtkNotebook; Child : PGTKWidget) : PGTKWidget;
-
   Function gtk_window_get_modal(window:PGtkWindow):gboolean;
 
   Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
