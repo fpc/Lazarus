@@ -639,7 +639,7 @@ begin
           and (PGtkWindow(TopLevel)^.focus_widget=Widget) then begin
             StopKeyEvent('key_press_event');
             //writeln('GTKKeyUpDown ',TControl(Data).Name,':',TControl(Data).ClassName);
-            {$Ifdef GTk1}result:={$EndIf}TControl(Data).PerformTab(ssShift in ShiftState);
+            {$Ifdef GTk1}Result:={$EndIf}TControl(Data).PerformTab(not (ssShift in ShiftState));
             If Result then begin
               {$IfNDef Win32}
               {$ifdef GTK2}
@@ -2847,6 +2847,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.190  2003/09/13 16:43:01  mattias
+  fixed PerformTab call
+
   Revision 1.189  2003/09/12 17:40:45  ajgenius
   fixes for GTK2(accel groups, menu accel, 'draw'),
   more work toward Pango(DrawText now works, UpdateDCTextMetric mostly works)

@@ -1055,7 +1055,7 @@ begin
     If List.Count > 0 then begin
       J := List.IndexOf(CurrentControl);
       if J<0 then exit;
-      //writeln('TWinControl.FindNextControl A ',CurrentControl.Name,' ',J);
+      //writeln('TWinControl.FindNextControl A ',CurrentControl.Name,' ',J,' ',GoForward,',',CheckTabStop,',',CheckParent,',',OnlyWinControls);
       I := J;
       Repeat
         If GoForward then begin
@@ -1070,13 +1070,14 @@ begin
         if I=J then exit;
           
         Next := TControl(List[I]);
+        //writeln('TWinControl.FindNextControl B ',Next.Name,' ',I);
         If (((Not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
         and (Next.Enabled and Next.Visible)
         and ((not OnlyWinControls) or (Next is TWinControl)) then
           Result := Next;
       until (Result <> nil);
-      //writeln('TWinControl.FindNextControl B ',Result.Name,' ',I);
+      //writeln('TWinControl.FindNextControl END ',Result.Name,' ',I);
     end;
   finally
     List.Free;
@@ -3078,6 +3079,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.168  2003/09/13 16:43:01  mattias
+  fixed PerformTab call
+
   Revision 1.167  2003/09/13 14:01:39  mattias
   fixed taborder dlg
 
