@@ -492,6 +492,7 @@ type
     FProportional: Boolean;
     FTransparent: Boolean;
     FStretch: Boolean;
+    function  GetCanvas: TCanvas;
     procedure SetPicture(const AValue: TPicture);
     procedure SetCenter(Value : Boolean);
     procedure SetProportional(const AValue: Boolean);
@@ -505,6 +506,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    property Canvas: TCanvas read GetCanvas;
   public
     Property Align;
     property AutoSize;
@@ -986,6 +988,9 @@ end.
 
  {
   $Log$
+  Revision 1.129  2005/01/16 19:46:39  micha
+  fix bug 464 and 514: create bitmap handle to back image drawing up
+
   Revision 1.128  2005/01/10 16:35:35  vincents
   made TabVisible public
 

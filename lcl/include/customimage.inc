@@ -38,6 +38,29 @@ begin
   inherited Destroy;
 end;
 
+function TCustomImage.GetCanvas: TCanvas;
+var
+  TempBitmap: TBitmap;
+begin
+  if FPicture.Graphic = nil then
+  begin
+    // make a new bitmap to draw on
+    TempBitmap := TBitmap.Create;
+    try
+      TempBitmap.Width := Width;
+      TempBitmap.Height := Height;
+      FPicture.Graphic := TempBitmap;
+    finally
+      TempBitmap.Free;
+    end;
+  end;
+  // try draw on the bitmap, not on the form's canvas
+  if FPicture.Graphic is TBitmap then
+    Result := TBitmap(FPicture.Graphic).Canvas
+  else
+    Result := inherited Canvas;
+end;
+
 procedure TCustomImage.SetPicture(const AValue: TPicture);
 begin
   if FPicture=AValue then exit;
@@ -167,7 +190,7 @@ Procedure TCustomImage.Paint;
   Procedure DrawFrame;
   begin
     if csDesigning in ComponentState then begin
-      With Canvas do begin
+      With inherited Canvas do begin
         Pen.Color := clBlack;
         Pen.Style := psDash;
         MoveTo(0, 0);
@@ -183,7 +206,7 @@ var
   iRect : TRect;
   BackgroundColor: Integer;
 begin
-  With Canvas do begin
+  With inherited Canvas do begin
     DrawFrame;
     If Picture.Graphic = nil then
       exit;
