@@ -43,7 +43,7 @@ uses
 
 type
   TCodeCache = class;
-
+  
   TCodeBuffer = class(TSourceLog)
   private
     FFilename: string;
@@ -57,6 +57,8 @@ type
     FCodeCache: TCodeCache;
     FIsVirtual: boolean;
     FIsDeleted: boolean;
+    FAutoDiskRevertLock: integer;
+    FGlobalWriteLockStepOnLastLoad: integer;
     function GetLastIncludedByFile: string;
     procedure SetFilename(Value: string);
     procedure SetScanner(const Value: TLinkScanner);
@@ -78,10 +80,15 @@ type
     function FileNeedsUpdate: boolean;
     function FileOnDiskNeedsUpdate: boolean;
     function FileOnDiskHasChanged: boolean;
+    function AutoRevertFromDisk: boolean;
+    procedure LockAutoDiskRevert;
+    procedure UnlockAutoDiskRevert;
     property OnSetScanner: TNotifyEvent read FOnSetScanner write FOnSetScanner;
     property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
     property IsVirtual: boolean read FIsVirtual;
     property IsDeleted: boolean read FIsDeleted write SetIsDeleted;
+    property GlobalWriteLockStepOnLastLoad: integer
+          read FGlobalWriteLockStepOnLastLoad write FGlobalWriteLockStepOnLastLoad;
     property CodeCache: TCodeCache read FCodeCache write FCodeCache;
     constructor Create;
     destructor Destroy;  override;
@@ -103,6 +110,8 @@ type
     FItems: TAVLTree;  // tree of TCodeBuffer
     FIncludeLinks: TAVLTree; // tree of TIncludedByLink
     FExpirationTimeInDays: integer;
+    FGlobalWriteLockIsSet: boolean;
+    FGlobalWriteLockStep: integer;
     function OnScannerGetSource(Sender: TObject; Code: pointer): TSourceLog;
     function OnScannerLoadSource(Sender: TObject; const AFilename: string): pointer;
     function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
@@ -138,6 +147,11 @@ type
     procedure OnBufferSetScanner(Sender: TCodeBuffer);
     procedure OnBufferSetFileName(Sender: TCodeBuffer; 
           const OldFilename: string);
+    property GlobalWriteLockIsSet: boolean
+          read FGlobalWriteLockIsSet write FGlobalWriteLockIsSet;
+    property GlobalWriteLockStep: integer
+          read FGlobalWriteLockStep write FGlobalWriteLockStep;
+          
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
     procedure WriteAllFileNames;
@@ -368,11 +382,30 @@ function TCodeCache.OnScannerLoadSource(Sender: TObject;
   const AFilename: string): pointer;
 begin
   Result:=LoadFile(AFilename);
+  if Result<>nil then
+    OnScannerCheckFileOnDisk(Result);
 end;
 
 function TCodeCache.OnScannerCheckFileOnDisk(Code: pointer): boolean;
+var Buf: TCodeBuffer;
 begin
-  Result:=TCodeBuffer(Code).Reload;
+  Buf:=TCodeBuffer(Code);
+  //writeln('OnScannerCheckFileOnDisk A ',Buf.Filename,' AutoRev=',Buf.AutoUpdateFromDisk,' WriteLock=',GlobalWriteLockIsSet,' DiskChg=',Buf.FileOnDiskHasChanged);
+  if Buf.AutoRevertFromDisk then begin
+    if GlobalWriteLockIsSet then begin
+      if GlobalWriteLockStep<>Buf.GlobalWriteLockStepOnLastLoad then begin
+        Buf.GlobalWriteLockStepOnLastLoad:=GlobalWriteLockStep;
+        if Buf.FileOnDiskHasChanged then
+          writeln('   UpdateFromDisk 1 ',Buf.Filename);
+          //Buf.Revert;
+      end;
+    end else begin
+      if Buf.FileOnDiskHasChanged then
+        writeln('   UpdateFromDisk 2 ',Buf.Filename);
+        //Buf.Revert;
+    end;
+  end;
+  Result:=true;
 end;
 
 procedure TCodeCache.OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
@@ -761,6 +794,21 @@ begin
     Result:=(FileDateOnDisk<>LoadDate)
   else
     Result:=false;
+end;
+
+function TCodeBuffer.AutoRevertFromDisk: boolean;
+begin
+  Result:=FAutoDiskRevertLock=0;
+end;
+
+procedure TCodeBuffer.LockAutoDiskRevert;
+begin
+  inc(FAutoDiskRevertLock);
+end;
+
+procedure TCodeBuffer.UnlockAutoDiskRevert;
+begin
+  if FAutoDiskRevertLock>0 then dec(FAutoDiskRevertLock);
 end;
 
 function TCodeBuffer.ConsistencyCheck: integer; // 0 = ok

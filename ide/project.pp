@@ -92,6 +92,7 @@ type
 
     function GetFileName: string;
     function GetHasResources:boolean;
+    procedure SetLoaded(const AValue: Boolean);
     procedure SetReadOnly(const NewValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
     procedure SetUnitName(const NewUnitName:string);
@@ -123,7 +124,7 @@ type
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
         read fIsPartOfProject write fIsPartOfProject;
-    property Loaded: Boolean read fLoaded write fLoaded;
+    property Loaded: Boolean read fLoaded write SetLoaded;
     property Modified: boolean read fModified write fModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
@@ -334,8 +335,9 @@ begin
   Assert(False, 'Project Unit Info Class Created');
   fBreakPoints:=TProjectBreakPointList.Create;
   Clear;
-  fSource := ACodeBuffer;
-  if fSource<>nil then fFileName:=fSource.Filename else FFileName:='';
+  Source := ACodeBuffer;
+  if Source=nil then
+    FFileName:='';
 end;
 
 {------------------------------------------------------------------------------
@@ -423,7 +425,7 @@ begin
       if Result in [mrAbort,mrIgnore] then
         exit;
     end else begin
-      fSource:=NewSource;
+      Source:=NewSource;
       Result:=mrOk;
     end;
   until Result<>mrRetry;
@@ -452,7 +454,7 @@ begin
   fFormName := '';
   fHasResources := false;
   fIsPartOfProject := false;
-  fLoaded := false;
+  Loaded := false;
   fModified := false;
   fReadOnly := false;
   if fSource<>nil then fSource.Clear;
@@ -547,21 +549,30 @@ end;
 
 function TUnitInfo.IsVirtual: boolean;
 begin
-  if fSource<>nil then Result:=fSource.IsVirtual
-  else Result:=(fFileName<>ExpandFileName(fFileName));
+  if fSource<>nil then
+    Result:=fSource.IsVirtual
+  else
+    Result:=(fFileName<>ExpandFileName(fFileName));
 end;
 
 procedure TUnitInfo.SetSource(ABuffer: TCodeBuffer);
 begin
   if fSource=ABuffer then exit;
+  if (ABuffer<>nil) and Loaded then
+    ABuffer.UnlockAutoDiskRevert;
   fSource:=ABuffer;
-  fFileName:=ABuffer.FileName;
+  if (fSource<>nil) then begin
+    if Loaded then
+      fSource.LockAutoDiskRevert;
+    fFileName:=ABuffer.FileName;
+  end;
 end;
 
 procedure TUnitInfo.SetReadOnly(const NewValue: boolean);
 begin
   fReadOnly:=NewValue;
-  if fSource<>nil then fSource.ReadOnly:=fReadOnly;
+  if fSource<>nil then
+    fSource.ReadOnly:=fReadOnly;
 end;
 
 procedure TUnitInfo.CreateStartCode(NewUnitType: TNewUnitType;
@@ -649,6 +660,18 @@ end;
 function TUnitInfo.GetHasResources:boolean;
 begin
   Result:=fHasResources or (FormName<>'');
+end;
+
+procedure TUnitInfo.SetLoaded(const AValue: Boolean);
+begin
+  if fLoaded=AValue then exit;
+  fLoaded:=AValue;
+  if fSource<>nil then begin
+    if fLoaded then
+      fSource.LockAutoDiskRevert
+    else
+      fSource.UnlockAutoDiskRevert;
+  end;
 end;
 
 
@@ -1458,6 +1481,9 @@ end.
 
 {
   $Log$
+  Revision 1.68  2002/07/31 06:52:17  lazarus
+  MG: started File Access Monitoring for hidden files
+
   Revision 1.67  2002/07/30 06:24:04  lazarus
   MG: added a faster version of TXMLConfig
 

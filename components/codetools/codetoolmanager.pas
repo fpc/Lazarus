@@ -1574,6 +1574,9 @@ begin
       inc(FWriteLockStep)
     else
       FWriteLockStep:=-$7fffffff;
+    SourceCache.GlobalWriteLockIsSet:=true;
+writeln('CCC1 ',SourceCache.GlobalWriteLockIsSet);
+    SourceCache.GlobalWriteLockStep:=FWriteLockStep;
   end;
   inc(FWriteLockCount);
   {$IFDEF CTDEBUG}
@@ -1583,7 +1586,14 @@ end;
 
 procedure TCodeToolManager.DeactivateWriteLock;
 begin
-  if FWriteLockCount>0 then dec(FWriteLockCount);
+  if FWriteLockCount>0 then begin
+    dec(FWriteLockCount);
+    if FWriteLockCount=0 then begin
+      // end the write lock
+      SourceCache.GlobalWriteLockIsSet:=false;
+writeln('CCC2 ',SourceCache.GlobalWriteLockIsSet);
+    end;
+  end;
   {$IFDEF CTDEBUG}
   writeln('[TCodeToolManager.DeactivateWriteLock] FWriteLockCount=',FWriteLockCount,' FWriteLockStep=',FWriteLockStep);
   {$ENDIF}

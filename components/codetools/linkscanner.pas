@@ -1107,7 +1107,7 @@ begin
   Result:=true;
   if FForceUpdateNeeded then exit;
   
-  // for do a quick test: check for the GlobalWriteLockStep
+  // do a quick test: check the GlobalWriteLockStep
   if Assigned(OnGetGlobalWriteLockInfo) then begin
     OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
     if GlobalWriteLockIsSet then begin

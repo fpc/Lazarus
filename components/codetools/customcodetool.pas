@@ -1593,9 +1593,9 @@ end;
 
 function TCustomCodeTool.UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
 begin
-{$IFDEF CTDEBUG}
-writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FForceUpdateNeeded);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FForceUpdateNeeded);
+  {$ENDIF}
   if FForceUpdateNeeded then begin
     Result:=true;
     exit;
@@ -1603,9 +1603,9 @@ writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil,' FForceUpdateNeeded=',FF
   Result:=(FLastScannerChangeStep<>Scanner.ChangeStep)
            or (Scanner.UpdateNeeded(OnlyInterfaceNeeded, CheckFilesOnDisk));
   FForceUpdateNeeded:=Result;
-{$IFDEF CTDEBUG}
-writeln('TCustomCodeTool.UpdateNeeded END  Result=',Result);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCustomCodeTool.UpdateNeeded END  Result=',Result);
+  {$ENDIF}
 end;
 
 function TCustomCodeTool.CompareSrcIdentifier(CleanStartPos: integer;
