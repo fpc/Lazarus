@@ -121,12 +121,40 @@ begin
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if SizeChanged or PosChanged then begin
 
+    //The Following causes TCheckbox's to repaint
+    //ad infinitum. Just TCheckbox. not
+    //TRadioButton, not TPanel.. just TCheckbox.
+    //WHY!?!?!?!?!?!?!
+    
+    {If Self is TWinControl then begin
+      With Self as TWinControl do begin
+        If AutoSize and not AutoSizing then begin
+          DoAutoSize;
+          If SizeChanged then begin
+            AutoSizing := True;
+            If PosChanged then
+              ChangeBounds(ALeft, ATop, Width, Height);
+            AutoSizing := False;
+            exit;
+          end;
+        end;
+        If not AutoSizing then
+          If Parent <> nil then
+            Parent.DoAutoSize;
+      end;
+    end
+    else  }
+      If Parent <> nil then
+        Parent.DoAutoSize;
+
     FLastResize.X:= AWidth - FWidth;
     FLastResize.Y:= AHeight - FHeight;
 
     DoSetBounds(ALeft,ATop,AWidth,AHeight);
     
-    if SizeChanged then Invalidate;
+
+    if SizeChanged then
+      Invalidate;
 //    UpdateAnchorRules;
     BoundsChanged;
     RequestAlign;
@@ -969,11 +997,11 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl SetAutoSize                                                   }
 {------------------------------------------------------------------------------}
-Procedure TControl.SetAutoSize(value : Boolean);
+Procedure TControl.SetAutoSize(const value : Boolean);
 Begin
   if FAutoSize <> value then
   FAutosize := Value;
-//TODO: Finish this by calling gtk and telling it to resize...?
+  //TODO: Finish this by calling gtk and telling it to resize...?
 end;
 
 {------------------------------------------------------------------------------}
@@ -1783,6 +1811,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.74  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.73  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
