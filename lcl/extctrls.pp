@@ -601,10 +601,20 @@ type
 const
   TCN_First = 0-550;
   TCN_SELCHANGE = TCN_FIRST - 1;
+  
+procedure Register;
 
 implementation
 
 uses Math;
+
+procedure Register;
+begin
+  RegisterComponents('Standard',[TRadioGroup,TCheckGroup,TPanel]);
+  RegisterComponents('Additional',[TImage,TShape,TBevel,TPaintBox,TNotebook]);
+  RegisterComponents('System',[TTimer,TIdleTimer]);
+  RegisterNoIcon([TPage]);
+end;
 
 {$I page.inc}
 {$I customnotebook.inc}
@@ -624,6 +634,9 @@ end.
 
  {
   $Log$
+  Revision 1.56  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.55  2003/03/31 20:25:19  mattias
   fixed scrollbars of TIpHtmlPanel
 
