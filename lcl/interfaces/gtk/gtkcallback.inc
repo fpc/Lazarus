@@ -1333,7 +1333,8 @@ writeln('[ClipboardSelectionRequestHandler] Len=',BufLength);
 {$ENDIF}
           gtk_selection_data_set(SelectionData,SelectionData^.Target,BitCount,
             Buffer,BufLength);
-          FreeMem(Buffer);
+          if Buffer<>nil then
+            FreeMem(Buffer);
         finally
           MemStream.Free;
         end;
@@ -1388,6 +1389,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2001/11/12 19:32:23  lazarus
+  MG: fixed empty clipboard stream crashing bug
+
   Revision 1.42  2001/11/12 16:56:08  lazarus
   MG: CLIPBOARD
 
