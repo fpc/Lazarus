@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="2"/>
+    <Version Value="3"/>
     <General>
       <ProjectType Value="Application"/>
       <Flags>
@@ -9,32 +9,30 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="TV_Add_Remove"/>
     </General>
     <Units Count="2">
       <Unit0>
-        <CursorPos X="1" Y="7"/>
-        <EditorIndex Value="0"/>
+        <CursorPos X="6" Y="11"/>
         <Filename Value="TV_Add_Remove.dpr"/>
         <IsPartOfProject Value="True"/>
-        <Loaded Value="True"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="36"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="19" Y="52"/>
-        <EditorIndex Value="1"/>
+        <CursorPos X="1" Y="98"/>
+        <EditorIndex Value="0"/>
         <Filename Value="tv_add_remove_u1.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="tv_add_remove_u1.lrs"/>
-        <TopLine Value="38"/>
+        <TopLine Value="75"/>
         <UnitName Value="TV_Add_Remove_U1"/>
-        <UsageCount Value="20"/>
+        <UsageCount Value="36"/>
       </Unit1>
     </Units>
     <PublishOptions>
@@ -57,10 +55,14 @@
     </RequiredPackages>
   </ProjectOptions>
   <CompilerOptions>
+    <Version Value="2"/>
     <SearchPaths>
       <LCLWidgetType Value="gtk"/>
-      <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
+      <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
     <Other>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

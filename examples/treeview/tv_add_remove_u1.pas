@@ -12,7 +12,7 @@ component can be found here:
 interface
 
 uses
-  Messages, SysUtils, LResources, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, LResources, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, Buttons;
 
 type
@@ -26,6 +26,7 @@ type
     { Private declarations }
   public
     { Public declarations }
+    constructor Create(TheOwner: TComponent); override;
   end;
 
 var
@@ -49,6 +50,7 @@ begin
          with tv_eg1.Items.AddFirst(  nil,  'Root'  ) do
          begin
             Selected := true;
+            writeln('tv_eg1.Selected=',HexStr(Cardinal(tv_eg1.Selected),8));
          end;
       end
       else begin
@@ -94,6 +96,18 @@ begin
 
       {Delete the node}
    tv_eg1.Selected.Delete;
+end;
+
+constructor TForm1.Create(TheOwner: TComponent);
+var
+  RootNode: TTreeNode;
+begin
+  inherited Create(TheOwner);
+  RootNode:=tv_eg1.Items.AddFirst(nil,'Root');
+  tv_eg1.Items.AddChild(RootNode,'Node1');
+  tv_eg1.Items.AddChild(RootNode,'Node2');
+  tv_eg1.Items.AddChild(RootNode,'Node3');
+  RootNode.Expanded:=true;
 end;
 
 Initialization

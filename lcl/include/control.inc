@@ -235,6 +235,8 @@ end;
 
 procedure TControl.SetAction(Value: TBasicAction);
 begin
+  writeln('TControl.SetAction A ',Name,':',ClassName,' ',HexStr(Cardinal(Value),8),' Old=',HexStr(Cardinal(Action),8));
+  if (Value=Action) then exit;
   if Value = nil then begin
     ActionLink.Free;
     ActionLink:=nil;
@@ -3194,6 +3196,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.191  2004/06/15 17:21:01  mattias
+  fixed TTreeNode.Delete and deleting in between node
+
   Revision 1.190  2004/06/14 12:54:02  micha
   fix designer cursor to not set Form.Cursor directly
 

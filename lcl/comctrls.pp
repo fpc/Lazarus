@@ -1619,7 +1619,7 @@ type
     procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); virtual;
     procedure MultiSelectGroup;
     procedure Update;
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; Recurse: boolean);
     property AbsoluteIndex: Integer read GetAbsoluteIndex;
     property Count: Integer read GetCount;
@@ -1727,7 +1727,7 @@ type
     function InsertBehind(PrevNode: TTreeNode; const S: string): TTreeNode;
     function InsertObjectBehind(PrevNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TTreeNode read GetNodeFromIndex; default;
@@ -2032,7 +2032,7 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     function AlphaSort: Boolean;
-    function ConsistencyCheck: integer;
+    procedure ConsistencyCheck;
     function CustomSort(SortProc: TTreeNodeCompare): Boolean;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
@@ -2254,6 +2254,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2004/06/15 17:21:01  mattias
+  fixed TTreeNode.Delete and deleting in between node
+
   Revision 1.131  2004/06/05 10:29:15  mattias
   replaced FindMask by global function   from Vincent
 

@@ -3141,18 +3141,6 @@ begin
   inherited Create(FImage.Width,FImage.Height);
 end;
 
-//------------------------------------------------------------------------------
-procedure InternalInit;
-var
-  c: Char;
-begin
-  for c:=Low(char) to High(char) do begin
-    IsSpaceChar[c]:=c in [' ',#9,#10,#13];
-    IsNumberChar[c]:=c in ['0'..'9'];
-    IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
-  end;
-end;
-
 { TLazReaderPartIcon }
 
 procedure TLazReaderPartIcon.InternalRead(Stream: TStream; Img: TFPCustomImage);
@@ -3278,6 +3266,18 @@ begin
   With IconHeader do
     Result := (idReserved=0) and (idType=1);
   FnIcons := IconHeader.idCount;
+end;
+
+//------------------------------------------------------------------------------
+procedure InternalInit;
+var
+  c: Char;
+begin
+  for c:=Low(char) to High(char) do begin
+    IsSpaceChar[c]:=c in [' ',#9,#10,#13];
+    IsNumberChar[c]:=c in ['0'..'9'];
+    IsHexNumberChar[c]:=c in ['0'..'9','A'..'F','a'..'f'];
+  end;
 end;
 
 initialization

@@ -190,36 +190,22 @@ begin
 end;
 
 destructor TTreeNode.Destroy;
-//var
-//  Node: TTreeNode;
-//  CheckValue: Integer;
 begin
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('[TTreeNode.Destroy] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
   {$ENDIF}
   FDeleting := True;
+  // delete childs
   HasChildren := false;
+  // unbind all references
   Unbind;
   if Owner<>nil then begin
     if Owner.Owner<>nil then
       Owner.Owner.Delete(self);
     dec(Owner.FCount);
   end;
-  {if Owner.Owner.FLastDropTarget = Self then
-    Owner.Owner.FLastDropTarget := nil;
-  Node := Parent;
-  if (Node <> nil) and (not Node.Deleting) then begin
-    if Node.IndexOf(Self) <> -1 then
-      CheckValue := 1
-    else
-      CheckValue := 0;
-    if Node.CompareCount(CheckValue) then begin
-      Expanded := False;
-      Node.HasChildren := False; // delete all childs
-    end;
-  end;
-  if ItemId <> nil then TreeView_DeleteItem(Handle, ItemId);}
   Data := nil;
+  // free data
   if FItems<>nil then begin
     FreeMem(FItems);
     FItems:=nil;
@@ -299,8 +285,10 @@ begin
   and (TreeView.SortType in [stData, stBoth]) and Assigned(TreeView.OnCompare)
   and (not Deleting) and FInTree then
   begin
-    if Parent <> nil then Parent.AlphaSort
-    else TreeView.AlphaSort;
+    if Parent <> nil then
+      Parent.AlphaSort
+    else
+      TreeView.AlphaSort;
   end;
 end;
 
@@ -564,9 +552,11 @@ end;
 procedure TTreeNode.SetSelected(AValue: Boolean);
 begin
   if AValue=GetSelected then exit;
-  if AValue then
-    Include(FStates,nsSelected)
-  else begin
+  if AValue then begin
+    Include(FStates,nsSelected);
+    if (TreeView<>nil) and (TreeView.Selected=nil) then
+      TreeView.Selected:=Self;
+  end else begin
     Exclude(FStates,nsSelected);
     if (TreeView<>nil) and (TreeView.Selected=Self) then
       TreeView.Selected:=nil;
@@ -980,17 +970,8 @@ begin
 end;
 
 function TTreeNode.GetCount: Integer;
-//var Node: TTreeNode;
 begin
   Result:=FCount;
-  {
-  Result := 0;
-  Node := GetFirstChild;
-  while Node <> nil do
-  begin
-    Inc(Result);
-    Node := Node.GetNextChild(Node);
-  end;}
 end;
 
 procedure TTreeNode.EndEdit(Cancel: Boolean);
@@ -1002,7 +983,7 @@ begin
 end;
 
 procedure TTreeNode.Unbind;
-// unbind from parent and neighbor siblings
+// unbind from parent and neighbor siblings, but not from owner
 var OldIndex, i: integer;
   HigherNode: TTreeNode;
   TheTreeView: TCustomTreeView;
@@ -1010,7 +991,9 @@ begin
   {$IFDEF TREEVIEW_DEBUG}
   DebugLn('[TTreeNode.Unbind] Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text);
   {$ENDIF}
+  // remove single select
   Selected:=false;
+  // invalidate caches of TreeView and if root item, remove from TreeView.Items
   if Owner<>nil then begin
     Owner.ClearCache;
     if FParent=nil then
@@ -1025,20 +1008,29 @@ begin
         TheTreeView.FInsertMarkNode:=nil;
     end;
   end;
+  // unselect (multi)
   UnbindFromMultiSelected;
+  // remove from sibling list
   if FPrevBrother<>nil then FPrevBrother.FNextBrother:=FNextBrother;
   if FNextBrother<>nil then FNextBrother.FPrevBrother:=FPrevBrother;
   FPrevBrother:=nil;
   FNextBrother:=nil;
+  // remove from parent
   if FParent<>nil then begin
+    // update all FSubTreeCount
     HigherNode:=FParent;
     while HigherNode<>nil do begin
       dec(HigherNode.FSubTreeCount,FSubTreeCount);
       HigherNode:=HigherNode.Parent;
     end;
     //if TreeNodes<>nil then Dec(TreeNodes.FCount,FSubTreeCount);
-    OldIndex:=Index;
-    for i:=OldIndex to Count-1 do
+    // remove from parents list
+    OldIndex:=FParent.FCount-1;
+    while (OldIndex>=0) and (FParent.FItems[OldIndex]<>Self) do
+      dec(OldIndex);
+    if OldIndex<0 then
+      RaiseGDBException('');
+    for i:=OldIndex to FParent.FCount-2 do
       FParent.FItems[i]:=FParent.FItems[i+1];
     dec(FParent.FCount);
     if (FParent.FCapacity>15) and (FParent.FCount<(FParent.FCapacity shr 2))
@@ -1084,7 +1076,7 @@ var HigherNode: TTreeNode;
   NewIndex, NewParentItemSize, i: integer;
 begin
   {$IFDEF TREEVIEW_DEBUG}
-  write('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
+  DbgOut('[TTreeNode.InternalMove]  Self=',HexStr(Cardinal(Self),8),' Self.Text=',Text
   ,' ANode=',ANode<>nil,' AddMode=',AddModeNames[AddMode]);
   if ANode<>nil then DbgOut(' ANode.Text=',ANode.Text);
   DebugLn('');
@@ -1646,58 +1638,63 @@ begin
     Items[I].WriteDelphiData(Stream, Info);
 end;
 
-function TTreeNode.ConsistencyCheck: integer;
+procedure TTreeNode.ConsistencyCheck;
 var RealSubTreeCount: integer;
   i: integer;
   Node1: TTreeNode;
 begin
   if FOwner<>nil then begin
   end;
-  if FCapacity<0 then exit(-1);
-  if FCapacity<FCount then exit(-2);
-  if FCount<0 then exit(-3);
-  if FHeight<0 then exit(-4);
-  if (FItems<>nil) and (FCapacity<=0) then exit(-5);
-  if (FCapacity>0) and (FItems=nil) then exit(-6);
-  if (FNextBrother<>nil) and (FNextBrother.FPrevBrother<>Self) then exit(-7);
-  if (FPrevBrother<>nil) and (FPrevBrother.FNextBrother<>Self) then exit(-8);
+  if FCapacity<0 then RaiseGDBException('');
+  if FCapacity<FCount then RaiseGDBException('');
+  if FCount<0 then RaiseGDBException('');
+  if FHeight<0 then RaiseGDBException('');
+  if (FItems<>nil) and (FCapacity<=0) then RaiseGDBException('');
+  if (FCapacity>0) and (FItems=nil) then RaiseGDBException('');
+  if (FNextBrother<>nil) and (FNextBrother.FPrevBrother<>Self) then
+    RaiseGDBException('');
+  if (FPrevBrother<>nil) and (FPrevBrother.FNextBrother<>Self) then
+    RaiseGDBException('');
   // check childs
   RealSubTreeCount:=1;
   for i:=0 to FCount-1 do begin
-    if (Items[i]=nil) then exit(-9);
-    if (i=0) and (Items[i].FPrevBrother<>nil) then exit(-10);
-    if (i>0) and (Items[i].FPrevBrother<>Items[i-1]) then exit(-11);
-    if (i<FCount-1) and (Items[i].FNextBrother<>Items[i+1]) then exit(-12);
-    if (i=FCount-1) and (Items[i].FNextBrother<>nil) then exit(-13);
-    if Items[i].FParent<>Self then exit(-14);
-    Result:=Items[i].ConsistencyCheck;
-    if Result<>0 then exit;
+    if (Items[i]=nil) then RaiseGDBException('');
+    if (i=0) and (Items[i].FPrevBrother<>nil) then RaiseGDBException('');
+    if (i>0) and (Items[i].FPrevBrother=nil) then RaiseGDBException('');
+    if (i>0) and (Items[i].FPrevBrother<>Items[i-1]) then RaiseGDBException('');
+    if (i<FCount-1) and (Items[i].FNextBrother=nil) then
+      RaiseGDBException('');
+    if (i<FCount-1) and (Items[i].FNextBrother<>Items[i+1]) then
+      RaiseGDBException('');
+    if (i=FCount-1) and (Items[i].FNextBrother<>nil) then
+      RaiseGDBException('');
+    if Items[i].FParent<>Self then RaiseGDBException('');
+    Items[i].ConsistencyCheck;
     inc(RealSubTreeCount,Items[i].SubTreeCount);
   end;
   if FParent<>nil then begin
-    if FParent.IndexOf(Self)<0 then exit(-15);
+    if FParent.IndexOf(Self)<0 then RaiseGDBException('');
   end;
-  if RealSubTreeCount<>SubTreeCount then exit(-16);
-  if FTop<0 then exit(-17);
+  if RealSubTreeCount<>SubTreeCount then RaiseGDBException('');
+  if FTop<0 then RaiseGDBException('');
   // check for circles
-  if FNextBrother=Self then exit(-18);
-  if FPrevBrother=Self then exit(-19);
-  if FParent=Self then exit(-20);
+  if FNextBrother=Self then RaiseGDBException('');
+  if FPrevBrother=Self then RaiseGDBException('');
+  if FParent=Self then RaiseGDBException('');
   Node1:=FParent;
   while Node1<>nil do begin
-    if (Node1=Self) then exit(-21);
+    if (Node1=Self) then RaiseGDBException('');
     Node1:=Node1.FParent;
   end;
-  Result:=0;
 end;
 
 procedure TTreeNode.WriteDebugReport(const Prefix: string; Recurse: boolean);
 var i: integer;
 begin
-  write(Prefix);
-  write('TTreeNode.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
-  write(' Consistency=',ConsistencyCheck);
-  write(' Text=',Text);
+  DbgOut(Prefix);
+  DbgOut('TTreeNode.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
+  ConsistencyCheck;
+  DbgOut(' Text=',Text);
   DebugLn('');
   if Recurse then begin
     for i:=0 to FCount-1 do
@@ -2313,48 +2310,51 @@ begin
   FNodeCache.CacheNode := nil;
 end;
 
-function TTreeNodes.ConsistencyCheck: integer;
+procedure TTreeNodes.ConsistencyCheck;
 var Node: TTreeNode;
   RealCount, i: integer;
   OldCache: TNodeCache;
 begin
-  if FUpdateCount<0 then exit(-1);
+  if FUpdateCount<0 then
+    RaiseGDBException('FUpdateCount<0');
   RealCount:=0;
   Node:=GetFirstNode;
   while Node<>nil do begin
-    Result:=Node.ConsistencyCheck;
-    if Result<>0 then begin
-      dec(Result,100);
-      exit;
-    end;
+    Node.ConsistencyCheck;
     inc(RealCount,Node.SubTreeCount);
     //DebugLn(' ConsistencyCheck: B  ',RealCount,',',Node.SubTreeCount);
     Node:=Node.FNextBrother;
   end;
   //DebugLn(' ConsistencyCheck: B  ',RealCount,',',FCount);
-  if RealCount<>FCount then exit(-3);
-  if (FTopLvlCapacity<=0) and (FTopLvlItems<>nil) then exit(-4);
-  if (FTopLvlCapacity>0) and (FTopLvlItems=nil) then exit(-5);
-  if FTopLvlCapacity<FTopLvlCount then exit(-6);
-  if (FTopLvlCount<0) then exit(-7);
+  if RealCount<>FCount then
+    RaiseGDBException('RealCount<>FCount');
+  if (FTopLvlCapacity<=0) and (FTopLvlItems<>nil) then
+    RaiseGDBException('');
+  if (FTopLvlCapacity>0) and (FTopLvlItems=nil) then
+    RaiseGDBException('');
+  if FTopLvlCapacity<FTopLvlCount then
+    RaiseGDBException('');
+  if (FTopLvlCount<0) then
+    RaiseGDBException('');
   for i:=0 to FTopLvlCount-1 do begin
-    if (i=0) and (FTopLvlItems[i].FPrevBrother<>nil) then exit(-8);
+    if (i=0) and (FTopLvlItems[i].FPrevBrother<>nil) then
+      RaiseGDBException('');
     if (i>0) and (FTopLvlItems[i].FPrevBrother<>FTopLvlItems[i-1]) then
-      exit(-9);
+      RaiseGDBException('');
     if (i<FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>FTopLvlItems[i+1])
     then begin
       DebugLn(' CONSISTENCY i=',dbgs(i),' FTopLvlCount=',dbgs(FTopLvlCount),' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
-      exit(-10);
+      RaiseGDBException('');
     end;
     if (i=FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>nil) then
-      exit(-11);
+      RaiseGDBException('');
   end;
   if FNodeCache.CacheNode<>nil then begin
     OldCache:=FNodeCache;
     ClearCache;
-    if GetNodeFromIndex(OldCache.CacheIndex)<>OldCache.CacheNode then exit(-12);
+    if GetNodeFromIndex(OldCache.CacheIndex)<>OldCache.CacheNode then
+      RaiseGDBException('');
   end;
-  Result:=0;
 end;
 
 procedure TTreeNodes.WriteDebugReport(const Prefix: string; AllNodes: boolean);
@@ -2362,7 +2362,7 @@ var Node: TTreeNode;
 begin
   write(Prefix);
   write('TTreeNodes.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
-  write(' Consistency=',ConsistencyCheck);
+  ConsistencyCheck;
   DebugLn('');
   if AllNodes then begin
     Node:=GetFirstNode;
@@ -4959,57 +4959,67 @@ begin
     FOnAdvancedCustomDrawItem(Self, Node, State, Stage, PaintImages, Result);
 end;
 
-function TCustomTreeView.ConsistencyCheck: integer;
+procedure TCustomTreeView.ConsistencyCheck;
 var OldMaxRight, OldLastTop, OldMaxLvl: integer;
   OldTopItem, OldBottomItem: TTreeNode;
 begin
-  if Canvas=nil then exit(-1);
-  if (fExpandSignSize<0) then exit(-2);
-  if FDefItemHeight<0 then exit(-3);
-  if FIndent<0 then exit(-4);
-  if FMaxRight<0 then exit(-5);
-  if FTreeNodes=nil then exit(-6);
-  Result:=FTreeNodes.ConsistencyCheck;
-  if Result<>0 then begin
-    dec(Result,1000);
-    exit;
-  end;
-  if FUpdateCount<0 then exit(-7);
+  if Canvas=nil then
+    RaiseGDBException('Canvas=nil');
+  if (fExpandSignSize<0) then
+    RaiseGDBException('fExpandSignSize='+IntToStr(fExpandSignSize));
+  if FDefItemHeight<0 then
+    RaiseGDBException('FDefItemHeight='+IntToStr(FDefItemHeight));
+  if FIndent<0 then
+    RaiseGDBException('FIndent='+IntToStr(FIndent));
+  if FMaxRight<0 then
+    RaiseGDBException('FMaxRight='+IntToStr(FMaxRight));
+  if FTreeNodes=nil then
+    RaiseGDBException('FTreeNodes=nil');
+  FTreeNodes.ConsistencyCheck;
+  if FUpdateCount<0 then
+    RaiseGDBException('FUpdateCount='+IntToStr(FUpdateCount));
   if (not (tvsTopsNeedsUpdate in FStates)) then begin
     if Items.GetLastSubNode<>nil then begin
       OldLastTop:=Items.GetLastSubNode.Top;
       Include(FStates,tvsTopsNeedsUpdate);
       UpdateAllTops;
-      if OldLastTop<>Items.GetLastSubNode.Top then exit(-8);
+      if OldLastTop<>Items.GetLastSubNode.Top then
+        RaiseGDBException('OldLastTop='+HexStr(Cardinal(OldLastTop),8)
+        +'<>Items.GetLastSubNode.Top='+HexStr(Cardinal(Items.GetLastSubNode.Top),8));
     end;
   end;
   if not (tvsMaxRightNeedsUpdate in FStates) then begin
     OldMaxRight:=FMaxRight;
     Include(FStates,tvsMaxRightNeedsUpdate);
     UpdateMaxRight;
-    if OldMaxRight<>FMaxRight then exit(-9);
+    if OldMaxRight<>FMaxRight then
+      RaiseGDBException('OldMaxRight<>FMaxRight');
   end;
   if not (tvsMaxLvlNeedsUpdate in FStates) then begin
     OldMaxLvl:=FMaxLvl;
     Include(FStates,tvsMaxLvlNeedsUpdate);
     UpdateMaxLvl;
-    if OldMaxLvl<>FMaxLvl then exit(-10);
+    if OldMaxLvl<>FMaxLvl then
+      RaiseGDBException('OldMaxLvl<>FMaxLvl');
   end;
-  if (tvsIsEditing in FStates) and (FSelectedNode=nil) then exit(-11);
+  if (tvsIsEditing in FStates) and (FSelectedNode=nil) then
+    RaiseGDBException('');
   if (FSelectedNode<>nil) then begin
-    if not FSelectedNode.IsVisible then exit(-12);
+    if not FSelectedNode.IsVisible then
+      RaiseGDBException('not FSelectedNode.IsVisible');
   end;
   if not (tvsTopItemNeedsUpdate in FStates) then begin
     OldTopItem:=FTopItem;
     UpdateTopItem;
-    if FTopItem<>OldTopItem then exit(-13);
+    if FTopItem<>OldTopItem then
+      RaiseGDBException('FTopItem<>OldTopItem');
   end;
   if not (tvsBottomItemNeedsUpdate in FStates) then begin
     OldBottomItem:=FBottomItem;
     UpdateBottomItem;
-    if FBottomItem<>OldBottomItem then exit(-14);
+    if FBottomItem<>OldBottomItem then
+      RaiseGDBException('FBottomItem<>OldBottomItem');
   end;
-  Result:=0;
 end;
 
 procedure TCustomTreeView.WriteDebugReport(const Prefix: string;
@@ -5017,7 +5027,7 @@ procedure TCustomTreeView.WriteDebugReport(const Prefix: string;
 begin
   write(Prefix);
   write('TCustomTreeView.WriteDebugReport Self=',HexStr(Cardinal(Self),8));
-  write(' Consistency=',ConsistencyCheck);
+  ConsistencyCheck;
   DebugLn('');
   if AllNodes then begin
     Items.WriteDebugReport(Prefix+'  ',true);
