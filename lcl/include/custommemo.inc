@@ -37,11 +37,11 @@ end;
  ------------------------------------------------------------------------------}
 constructor TCustomMemo.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
-   fCompStyle := csMemo;
-   FWordWrap := True;
-   FFont := TFont.Create;
-   FLines := TMemoStrings.Create(Self);
+  inherited Create(AOwner);
+  fCompStyle := csMemo;
+  FWordWrap := True;
+  FFont := TFont.Create;
+  FLines := TMemoStrings.Create(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -53,8 +53,9 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomMemo.Destroy;
 begin
-   FLines.Free;
-   inherited destroy;
+  FLines.Free;
+  FFont.Free;
+  inherited destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -86,6 +87,9 @@ end; }
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/11/12 07:56:56  lazarus
+  MG: free FFont on destroy
+
   Revision 1.2  2001/01/10 20:12:29  lazarus
   Added the Nudge feature to the IDE.
   Shane
