@@ -89,17 +89,31 @@ type
     FOldWidth: integer;
     FOldHeight: integer;
     FOldFormRelativeLeftTop: TPoint;
+    FCachedLeft: integer;
+    FCachedTop: integer;
+    FCachedWidth: integer;
+    FCachedHeight: integer;
+    FCachedFormRelativeLeftTop: TPoint;
+    FUseCache: boolean;
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
     function GetTop: integer;
     procedure SetTop(ATop: integer);
     function GetWidth: integer;
+    procedure SetUseCache(const AValue: boolean);
     procedure SetWidth(AWidth: integer);
     function GetHeight: integer;
     procedure SetHeight(AHeight: integer);
   public
     constructor Create(AComponent:TComponent);
     destructor Destroy; override;
+    function ParentForm: TCustomForm;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SaveBounds;
+    procedure UpdateCache;
+    function IsTopLvl: boolean;
+
     property Component:TComponent read FComponent write FComponent;
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
@@ -111,11 +125,7 @@ type
     property OldHeight:integer read FOldHeight write FOldHeight;
     property OldFormRelativeLeftTop: TPoint
       read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
-    function ParentForm: TCustomForm;
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
-    procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
-    procedure SaveBounds;
-    function IsTopLvl: boolean;
+    property UseCache: boolean read FUseCache write SetUseCache;
   end;
 
   TComponentAlignment = (csaNone, csaSides1, csaCenters, csaSides2,
@@ -129,7 +139,8 @@ type
   TControlSelState = (cssOnlyNonVisualNeedsUpdate,
                       cssOnlyVisualNeedsUpdate,
                       cssBoundsNeedsUpdate,
-                      cssBoundsNeedsSaving);
+                      cssBoundsNeedsSaving
+                      );
   TControlSelStates = set of TControlSelState;
   
   TNearestInt = record
@@ -137,6 +148,14 @@ type
     Nearest: integer;
     Valid: boolean;
   end;
+  
+  TGuideLineCache = record
+    CacheValid: boolean;
+    LineValid: boolean;
+    Line: TRect;
+  end;
+  
+  TGuideLineType = (glLeft, glTop, glRight, glBottom);
   
   TControlSelection = class(TObject)
   private
@@ -165,6 +184,9 @@ type
     FOldTop: integer;
     FOldWidth: integer;
     FOldHeight: integer;
+    // caches
+    FCacheGuideLines: boolean;
+    FGuideLinesCache: array[TGuideLineType] of TGuideLineCache;
 
     FCustomForm: TCustomForm;
     FGrabbers: array[TGrabIndex] of TGrabber;
@@ -186,6 +208,7 @@ type
 
     FOnChange: TNotifyEvent;
 
+    procedure SetCacheGuideLines(const AValue: boolean);
     procedure SetCustomForm;
     function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
     procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
@@ -270,6 +293,8 @@ type
     procedure ScaleComponents(Percent: integer);
     property Snapping: boolean read FSnapping write SetSnapping;
     procedure DrawGuideLines(DC: TDesignerDeviceContext);
+    property CacheGuideLines: boolean read FCacheGuideLines write SetCacheGuideLines;
+    procedure InvalidGuideLinesCache;
 
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
@@ -404,6 +429,12 @@ begin
 //  ,'  ',FOldLeft,',',FOldTop);
 end;
 
+procedure TSelectedControl.UpdateCache;
+begin
+  GetComponentBounds(FComponent,FCachedLeft,FCachedTop,FCachedWidth,FCachedHeight);
+  FCachedFormRelativeLeftTop:=GetParentFormRelativeTopLeft(FComponent);
+end;
+
 function TSelectedControl.IsTopLvl: boolean;
 begin
   Result:=(FComponent is TControl) and (TControl(FComponent).Parent=nil);
@@ -411,7 +442,10 @@ end;
 
 function TSelectedControl.GetLeft: integer;
 begin
-  Result:=GetComponentLeft(FComponent);
+  if FUseCache then
+    Result:=FCachedLeft
+  else
+    Result:=GetComponentLeft(FComponent);
 end;
 
 procedure TSelectedControl.SetLeft(ALeft: integer);
@@ -420,11 +454,15 @@ begin
     TControl(FComponent).Left:=Aleft
   else
     LongRec(FComponent.DesignInfo).Lo:=ALeft;
+  FCachedLeft:=ALeft;
 end;
 
 function TSelectedControl.GetTop: integer;
 begin
-  Result:=GetComponentTop(FComponent);
+  if FUseCache then
+    Result:=FCachedTop
+  else
+    Result:=GetComponentTop(FComponent);
 end;
 
 procedure TSelectedControl.SetTop(ATop: integer);
@@ -433,11 +471,22 @@ begin
     TControl(FComponent).Top:=ATop
   else
     LongRec(FComponent.DesignInfo).Hi:=ATop;
+  FCachedTop:=ATop;
 end;
 
 function TSelectedControl.GetWidth: integer;
 begin
-  Result:=GetComponentWidth(FComponent);
+  if FUseCache then
+    Result:=FCachedWidth
+  else
+    Result:=GetComponentWidth(FComponent);
+end;
+
+procedure TSelectedControl.SetUseCache(const AValue: boolean);
+begin
+  if FUseCache=AValue then exit;
+  FUseCache:=AValue;
+  if FUseCache then UpdateCache;
 end;
 
 procedure TSelectedControl.SetWidth(AWidth: integer);
@@ -446,6 +495,7 @@ begin
     TControl(FComponent).Width:=AWidth
   else
     ;
+  FCachedWidth:=AWidth;
 end;
 
 function TSelectedControl.GetHeight: integer;
@@ -459,6 +509,7 @@ begin
     TControl(FComponent).Height:=AHeight
   else
     ;
+  FCachedHeight:=AHeight;
 end;
 
 
@@ -486,6 +537,7 @@ begin
   FRubberbandActive:=false;
   FNotSaveBounds:=false;
   FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
+  fCacheGuideLines:=true;
 end;
 
 destructor TControlSelection.Destroy;
@@ -527,6 +579,13 @@ begin
   dec(FResizeLockCount);
   if FResizeLockCount>0 then exit;
   EndUpdate;
+end;
+
+procedure TControlSelection.SetCacheGuideLines(const AValue: boolean);
+begin
+  if FCacheGuideLines=AValue then exit;
+  FCacheGuideLines:=AValue;
+  InvalidGuideLinesCache;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -622,6 +681,7 @@ begin
       Abs(FWidth),
       Abs(FHeight)
     );
+    InvalidGuideLinesCache;
   end else if Count>1 then begin
     // multi selection
     {$IFDEF VerboseDesigner}
@@ -654,6 +714,7 @@ begin
         ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
         {$ENDIF}
       end;
+      InvalidGuideLinesCache;
     end;
   end;
   UpdateRealBounds;
@@ -915,29 +976,40 @@ function TControlSelection.GetLeftGuideLine(var ALine: TRect): boolean;
 var i, LineTop, LineBottom: integer;
   CRect: TRect;
 begin
-  Result:=false;
-  if FCustomForm=nil then exit;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    if IsSelected(FCustomForm.Components[i]) then continue;
-    CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
-    if CRect.Left=FRealLeft then begin
-      ALine.Left:=FRealLeft;
-      ALine.Right:=ALine.Left;
-      LineTop:=Min(Min(Min(FRealTop,
-                           FRealTop+FRealHeight),
-                           CRect.Top),
-                           CRect.Bottom);
-      LineBottom:=Max(Max(Max(FRealTop,
-                              FRealTop+FRealHeight),
-                              CRect.Top),
-                              CRect.Bottom);
-      if Result then begin
-        LineTop:=Min(ALine.Top,LineTop);
-        LineBottom:=Max(ALine.Bottom,LineBottom);
-      end else
-        Result:=true;
-      ALine.Top:=LineTop;
-      ALine.Bottom:=LineBottom;
+  if CacheGuideLines and FGuideLinesCache[glLeft].CacheValid then begin
+    Result:=FGuideLinesCache[glLeft].LineValid;
+    if Result then
+      ALine:=FGuideLinesCache[glLeft].Line;
+  end else begin
+    Result:=false;
+    if FCustomForm=nil then exit;
+    for i:=0 to FCustomForm.ComponentCount-1 do begin
+      if IsSelected(FCustomForm.Components[i]) then continue;
+      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+      if CRect.Left=FRealLeft then begin
+        ALine.Left:=FRealLeft;
+        ALine.Right:=ALine.Left;
+        LineTop:=Min(Min(Min(FRealTop,
+                             FRealTop+FRealHeight),
+                             CRect.Top),
+                             CRect.Bottom);
+        LineBottom:=Max(Max(Max(FRealTop,
+                                FRealTop+FRealHeight),
+                                CRect.Top),
+                                CRect.Bottom);
+        if Result then begin
+          LineTop:=Min(ALine.Top,LineTop);
+          LineBottom:=Max(ALine.Bottom,LineBottom);
+        end else
+          Result:=true;
+        ALine.Top:=LineTop;
+        ALine.Bottom:=LineBottom;
+      end;
+    end;
+    if CacheGuideLines then begin
+      FGuideLinesCache[glLeft].LineValid:=Result;
+      FGuideLinesCache[glLeft].Line:=ALine;
+      FGuideLinesCache[glLeft].CacheValid:=true;
     end;
   end;
 end;
@@ -946,29 +1018,40 @@ function TControlSelection.GetRightGuideLine(var ALine: TRect): boolean;
 var i, LineTop, LineBottom: integer;
   CRect: TRect;
 begin
-  Result:=false;
-  if FCustomForm=nil then exit;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    if IsSelected(FCustomForm.Components[i]) then continue;
-    CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
-    if (CRect.Right=FRealLeft+FRealWidth) then begin
-      ALine.Left:=CRect.Right;
-      ALine.Right:=ALine.Left;
-      LineTop:=Min(Min(Min(FRealTop,
-                           FRealTop+FRealHeight),
-                           CRect.Top),
-                           CRect.Bottom);
-      LineBottom:=Max(Max(Max(FRealTop,
-                              FRealTop+FRealHeight),
-                              CRect.Top),
-                              CRect.Bottom);
-      if Result then begin
-        LineTop:=Min(ALine.Top,LineTop);
-        LineBottom:=Max(ALine.Bottom,LineBottom);
-      end else
-        Result:=true;
-      ALine.Top:=LineTop;
-      ALine.Bottom:=LineBottom;
+  if CacheGuideLines and FGuideLinesCache[glRight].CacheValid then begin
+    Result:=FGuideLinesCache[glRight].LineValid;
+    if Result then
+      ALine:=FGuideLinesCache[glRight].Line;
+  end else begin
+    Result:=false;
+    if FCustomForm=nil then exit;
+    for i:=0 to FCustomForm.ComponentCount-1 do begin
+      if IsSelected(FCustomForm.Components[i]) then continue;
+      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+      if (CRect.Right=FRealLeft+FRealWidth) then begin
+        ALine.Left:=CRect.Right;
+        ALine.Right:=ALine.Left;
+        LineTop:=Min(Min(Min(FRealTop,
+                             FRealTop+FRealHeight),
+                             CRect.Top),
+                             CRect.Bottom);
+        LineBottom:=Max(Max(Max(FRealTop,
+                                FRealTop+FRealHeight),
+                                CRect.Top),
+                                CRect.Bottom);
+        if Result then begin
+          LineTop:=Min(ALine.Top,LineTop);
+          LineBottom:=Max(ALine.Bottom,LineBottom);
+        end else
+          Result:=true;
+        ALine.Top:=LineTop;
+        ALine.Bottom:=LineBottom;
+      end;
+    end;
+    if CacheGuideLines then begin
+      FGuideLinesCache[glRight].LineValid:=Result;
+      FGuideLinesCache[glRight].Line:=ALine;
+      FGuideLinesCache[glRight].CacheValid:=true;
     end;
   end;
 end;
@@ -977,29 +1060,40 @@ function TControlSelection.GetTopGuideLine(var ALine: TRect): boolean;
 var i, LineLeft, LineRight: integer;
   CRect: TRect;
 begin
-  Result:=false;
-  if FCustomForm=nil then exit;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    if IsSelected(FCustomForm.Components[i]) then continue;
-    CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
-    if CRect.Top=FRealTop then begin
-      ALine.Top:=FRealTop;
-      ALine.Bottom:=ALine.Top;
-      LineLeft:=Min(Min(Min(FRealLeft,
-                              FRealLeft+FRealWidth),
-                              CRect.Left),
-                              CRect.Right);
-      LineRight:=Max(Max(Max(FRealLeft,
-                               FRealLeft+FRealWidth),
-                               CRect.Left),
-                               CRect.Right);
-      if Result then begin
-        LineLeft:=Min(ALine.Left,LineLeft);
-        LineRight:=Max(ALine.Right,LineRight);
-      end else
-        Result:=true;
-      ALine.Left:=LineLeft;
-      ALine.Right:=LineRight;
+  if CacheGuideLines and FGuideLinesCache[glTop].CacheValid then begin
+    Result:=FGuideLinesCache[glTop].LineValid;
+    if Result then
+      ALine:=FGuideLinesCache[glTop].Line;
+  end else begin
+    Result:=false;
+    if FCustomForm=nil then exit;
+    for i:=0 to FCustomForm.ComponentCount-1 do begin
+      if IsSelected(FCustomForm.Components[i]) then continue;
+      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+      if CRect.Top=FRealTop then begin
+        ALine.Top:=FRealTop;
+        ALine.Bottom:=ALine.Top;
+        LineLeft:=Min(Min(Min(FRealLeft,
+                                FRealLeft+FRealWidth),
+                                CRect.Left),
+                                CRect.Right);
+        LineRight:=Max(Max(Max(FRealLeft,
+                                 FRealLeft+FRealWidth),
+                                 CRect.Left),
+                                 CRect.Right);
+        if Result then begin
+          LineLeft:=Min(ALine.Left,LineLeft);
+          LineRight:=Max(ALine.Right,LineRight);
+        end else
+          Result:=true;
+        ALine.Left:=LineLeft;
+        ALine.Right:=LineRight;
+      end;
+    end;
+    if CacheGuideLines then begin
+      FGuideLinesCache[glTop].LineValid:=Result;
+      FGuideLinesCache[glTop].Line:=ALine;
+      FGuideLinesCache[glTop].CacheValid:=true;
     end;
   end;
 end;
@@ -1008,31 +1102,50 @@ function TControlSelection.GetBottomGuideLine(var ALine: TRect): boolean;
 var i, LineLeft, LineRight: integer;
   CRect: TRect;
 begin
-  Result:=false;
-  if FCustomForm=nil then exit;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    if IsSelected(FCustomForm.Components[i]) then continue;
-    CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
-    if CRect.Bottom=FRealTop+FRealHeight then begin
-      ALine.Top:=CRect.Bottom;
-      ALine.Bottom:=ALine.Top;
-      LineLeft:=Min(Min(Min(FRealLeft,
-                              FRealLeft+FRealWidth),
-                              CRect.Left),
-                              CRect.Right);
-      LineRight:=Max(Max(Max(FRealLeft,
-                               FRealLeft+FRealWidth),
-                               CRect.Left),
-                               CRect.Right);
-      if Result then begin
-        LineLeft:=Min(ALine.Left,LineLeft);
-        LineRight:=Max(ALine.Right,LineRight);
-      end else
-        Result:=true;
-      ALine.Left:=LineLeft;
-      ALine.Right:=LineRight;
+  if CacheGuideLines and FGuideLinesCache[glBottom].CacheValid then begin
+    Result:=FGuideLinesCache[glBottom].LineValid;
+    if Result then
+      ALine:=FGuideLinesCache[glBottom].Line;
+  end else begin
+    Result:=false;
+    if FCustomForm=nil then exit;
+    for i:=0 to FCustomForm.ComponentCount-1 do begin
+      if IsSelected(FCustomForm.Components[i]) then continue;
+      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+      if CRect.Bottom=FRealTop+FRealHeight then begin
+        ALine.Top:=CRect.Bottom;
+        ALine.Bottom:=ALine.Top;
+        LineLeft:=Min(Min(Min(FRealLeft,
+                                FRealLeft+FRealWidth),
+                                CRect.Left),
+                                CRect.Right);
+        LineRight:=Max(Max(Max(FRealLeft,
+                                 FRealLeft+FRealWidth),
+                                 CRect.Left),
+                                 CRect.Right);
+        if Result then begin
+          LineLeft:=Min(ALine.Left,LineLeft);
+          LineRight:=Max(ALine.Right,LineRight);
+        end else
+          Result:=true;
+        ALine.Left:=LineLeft;
+        ALine.Right:=LineRight;
+      end;
+    end;
+    if CacheGuideLines then begin
+      FGuideLinesCache[glBottom].LineValid:=Result;
+      FGuideLinesCache[glBottom].Line:=ALine;
+      FGuideLinesCache[glBottom].CacheValid:=true;
     end;
   end;
+end;
+
+procedure TControlSelection.InvalidGuideLinesCache;
+var
+  t: TGuideLineType;
+begin
+  for t:=Low(TGuideLineType) to High(TGuideLineType) do
+    FGuideLinesCache[t].CacheValid:=false;
 end;
 
 procedure TControlSelection.FindNearestGridX(var NearestInt: TNearestInt);

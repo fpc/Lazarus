@@ -147,6 +147,7 @@ type
     procedure ExpectWhitespace;
     procedure ExpectString(const s: String);
     function  CheckFor(s: PChar): Boolean;
+    function  CheckForChar(c: Char): Boolean;
     procedure SkipString(const ValidChars: TSetOfChar);
     function  GetString(const ValidChars: TSetOfChar): String;
     function  GetString(BufPos: PChar; Len: integer): String;
@@ -261,15 +262,25 @@ end;
 
 function TXMLReader.CheckFor(s: PChar): Boolean;
 begin
-  if buf[0] = #0 then begin
+  if buf[0] <> #0 then begin
+    if (buf[0]=s[0]) and (StrLComp(buf, s, StrLen(s)) = 0) then begin
+      Inc(buf, StrLen(s));
+      Result := True;
+    end else
+      Result := False;
+  end else begin
     Result := False;
-    exit;
   end;
-  if StrLComp(buf, s, StrLen(s)) = 0 then begin
-    Inc(buf, StrLen(s));
-    Result := True;
-  end else
-    Result := False;
+end;
+
+function TXMLReader.CheckForChar(c: Char): Boolean;
+begin
+  if (buf[0]=c) and (c<>#0) then begin
+    inc(buf);
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
 end;
 
 procedure TXMLReader.SkipString(const ValidChars: TSetOfChar);
@@ -352,8 +363,8 @@ end;
 function TXMLReader.GetName(var s: String): Boolean;    // [5]
 var OldBuf: PChar;
 begin
-  SetLength(s, 0);
   if not (buf[0] in (Letter + ['_', ':'])) then begin
+    SetLength(s, 0);
     Result := False;
     exit;
   end;
@@ -415,25 +426,23 @@ var
   end;
 
 var
-  StrDel: array[0..1] of Char;	// String delimiter
+  StrDel: char;
 begin
   if (buf[0] <> '''') and (buf[0] <> '"') then
     RaiseExc('Expected quotation marks');
-  StrDel[0] := buf[0];
-  StrDel[1] := #0;
+  StrDel:=buf[0];
   Inc(buf);
   OldBuf := buf;
-  while not CheckFor(StrDel) do
-    if buf[0] = '&' then
+  while (buf[0]<>StrDel) and (buf[0]<>#0) do begin
+    if buf[0] <> '&' then begin
+      Inc(buf);
+    end else
     begin
       if OldBuf<>buf then FlushStringBuffer;
       ParseReference(attr);
       OldBuf := buf;
-    end else
-    begin
-      Inc(buf);
     end;
-  dec(buf);
+  end;
   if OldBuf<>buf then FlushStringBuffer;
   inc(buf);
   ResolveEntities(Attr);
@@ -442,10 +451,10 @@ end;
 function TXMLReader.ExpectPubidLiteral: String;
 begin
   SetLength(Result, 0);
-  if CheckFor('''') then begin
+  if CheckForChar('''') then begin
     SkipString(PubidChars - ['''']);
     ExpectString('''');
-  end else if CheckFor('"') then begin
+  end else if CheckForChar('"') then begin
     SkipString(PubidChars - ['"']);
     ExpectString('"');
   end else
@@ -454,10 +463,10 @@ end;
 
 procedure TXMLReader.SkipPubidLiteral;
 begin
-  if CheckFor('''') then begin
+  if CheckForChar('''') then begin
     SkipString(PubidChars - ['''']);
     ExpectString('''');
-  end else if CheckFor('"') then begin
+  end else if CheckForChar('"') then begin
     SkipString(PubidChars - ['"']);
     ExpectString('"');
   end else
@@ -576,16 +585,16 @@ begin
     SkipWhitespace;
     DocType.Name := ExpectName;
     SkipWhitespace;
-    if CheckFor('[') then
+    if CheckForChar('[') then
     begin
       ParseDoctypeDecls;
       SkipWhitespace;
       ExpectString('>');
-    end else if not CheckFor('>') then
+    end else if not CheckForChar('>') then
     begin
       ParseExternalID;
       SkipWhitespace;
-      if CheckFor('[') then
+      if CheckForChar('[') then
       begin
         ParseDoctypeDecls;
         SkipWhitespace;
@@ -637,13 +646,13 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
 
       procedure ExpectCP;    // [48]
       begin
-        if CheckFor('(') then
+        if CheckForChar('(') then
           ExpectChoiceOrSeq
         else
           SkipName;
-        if CheckFor('?') then
-        else if CheckFor('*') then
-        else if CheckFor('+') then;
+        if CheckForChar('?') then
+        else if CheckForChar('*') then
+        else if CheckForChar('+') then;
       end;
 
     var
@@ -653,7 +662,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
       ExpectCP;
       SkipWhitespace;
       delimiter := #0;
-      while not CheckFor(')') do begin
+      while not CheckForChar(')') do begin
         if delimiter = #0 then begin
           if (buf[0] = '|') or (buf[0] = ',') then
             delimiter := buf[0]
@@ -677,12 +686,12 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
 
       if CheckFor('EMPTY') then
       else if CheckFor('ANY') then
-      else if CheckFor('(') then begin
+      else if CheckForChar('(') then begin
         SkipWhitespace;
         if CheckFor('#PCDATA') then begin
           // Parse Mixed section [51]
           SkipWhitespace;
-          if not CheckFor(')') then
+          if not CheckForChar(')') then
             repeat
               ExpectString('|');
               SkipWhitespace;
@@ -693,9 +702,9 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
 
           ExpectChoiceOrSeq;
 
-          if CheckFor('?') then
-          else if CheckFor('*') then
-          else if CheckFor('+') then;
+          if CheckForChar('?') then
+          else if CheckForChar('*') then
+          else if CheckForChar('+') then;
         end;
       end else
         RaiseExc('Invalid content specification');
@@ -715,7 +724,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
       ExpectWhitespace;
       SkipName;
       SkipWhitespace;
-      while not CheckFor('>') do begin
+      while not CheckForChar('>') do begin
         SkipName;
         ExpectWhitespace;
 
@@ -734,17 +743,17 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
           SkipWhitespace;
           SkipName;
           SkipWhitespace;
-          while not CheckFor(')') do begin
+          while not CheckForChar(')') do begin
             ExpectString('|');
             SkipWhitespace;
             SkipName;
             SkipWhitespace;
           end;
-        end else if CheckFor('(') then begin    // [59]
+        end else if CheckForChar('(') then begin    // [59]
           SkipWhitespace;
           SkipString(Nmtoken);
           SkipWhitespace;
-          while not CheckFor(')') do begin
+          while not CheckForChar(')') do begin
             ExpectString('|');
             SkipWhitespace;
             SkipString(Nmtoken);
@@ -778,16 +787,15 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
 
     function ParseEntityValue: Boolean;    // [9]
     var
-      strdel: array[0..1] of Char;
+      strdel: Char;
     begin
       if (buf[0] <> '''') and (buf[0] <> '"') then begin
         Result := False;
         exit;
       end;
-      strdel[0] := buf[0];
-      strdel[1] := #0;
+      strdel := buf[0];
       Inc(buf);
-      while not CheckFor(strdel) do
+      while not CheckForChar(strdel) do
         if ParsePEReference then
         else if ParseReference(NewEntity) then
         else begin
@@ -799,7 +807,7 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
   begin
     if CheckFor('<!ENTITY') then begin
       ExpectWhitespace;
-      if CheckFor('%') then begin    // [72]
+      if CheckForChar('%') then begin    // [72]
         ExpectWhitespace;
         NewEntity := doc.CreateEntity(ExpectName);
         ExpectWhitespace;
@@ -952,7 +960,7 @@ var
         IsEmpty := True;
         break;
       end;
-      if CheckFor('>') then
+      if CheckForChar('>') then
         break;
 
       // Get Attribute [41]
@@ -988,7 +996,7 @@ var
   OldBuf: PChar;
 begin
   OldBuf := Buf;
-  if CheckFor('<') then
+  if CheckForChar('<') then
   begin
     {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLReader.ParseElement A');{$ENDIF}
     if not CheckName then
@@ -1012,7 +1020,7 @@ end;
 
 function TXMLReader.ParsePEReference: Boolean;    // [69]
 begin
-  if CheckFor('%') then begin
+  if CheckForChar('%') then begin
     SkipName;
     ExpectString(';');
     Result := True;
@@ -1022,12 +1030,12 @@ end;
 
 function TXMLReader.ParseReference(AOwner: TDOMNode): Boolean;    // [67] [68]
 begin
-  if not CheckFor('&') then begin
+  if not CheckForChar('&') then begin
     Result := False;
     exit;
   end;
-  if CheckFor('#') then begin    // Test for CharRef [66]
-    if CheckFor('x') then begin
+  if CheckForChar('#') then begin    // Test for CharRef [66]
+    if CheckForChar('x') then begin
       // !!!: there must be at least one digit
       while buf[0] in ['0'..'9', 'a'..'f', 'A'..'F'] do Inc(buf);
     end else
@@ -1052,7 +1060,6 @@ function TXMLReader.ParseExternalID: Boolean;    // [75]
   var
     OldBuf: PChar;
   begin
-    SetLength(Result, 0);
     if buf[0] = '''' then begin
       Inc(buf);
       OldBuf := buf;
@@ -1069,7 +1076,8 @@ function TXMLReader.ParseExternalID: Boolean;    // [75]
       end;
       Result := GetString(OldBuf,buf-OldBuf);
       ExpectString('"');
-    end;
+    end else
+      Result:='';
   end;
 
   procedure SkipSystemLiteral;
@@ -1343,6 +1351,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/10/05 14:03:58  lazarus
+  MG: accelerated calculating guidelines
+
   Revision 1.5  2002/10/01 08:27:35  lazarus
   MG: fixed parsing textnodes
 
