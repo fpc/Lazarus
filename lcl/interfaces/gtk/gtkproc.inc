@@ -136,7 +136,7 @@ end;
 {------------------------------------------------------------------------------
   function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 
-  Tets if Destruction Mark is set.
+  Tests if Destruction Mark is set.
  ------------------------------------------------------------------------------}
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 begin
@@ -1486,10 +1486,33 @@ begin
   if OldMouseCaptureWidget<>CurMouseCaptureWidget then begin
     // notify the new capture control
     MouseCaptureWidget:=CurMouseCaptureWidget;
+    MouseCapureByLCL:=false;
     if MouseCaptureWidget<>nil then
       SendMessage(HWnd(MouseCaptureWidget), LM_CAPTURECHANGED, 0,
         HWnd(OldMouseCaptureWidget));
   end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure ReleaseLCLMouseCapture;
+
+  If the current mouse capture was captured by the LCL, release the capture.
+ ------------------------------------------------------------------------------}
+procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
+var
+  OldCaptureWidget: PGtkWidget;
+begin
+  if OnlyIfCapturedByLCL and not MouseCapureByLCL then exit;
+  {$IfDef NoMouseCapture}
+  exit;
+  {$EndIf}
+  repeat
+    OldCaptureWidget:=gtk_grab_get_current;
+    if OldCaptureWidget<>nil then
+      gtk_grab_remove(OldCaptureWidget)
+    else
+      break;
+  until false;
 end;
 
 {------------------------------------------------------------------------------
@@ -1851,36 +1874,226 @@ end;
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
-procedure SetAccelGroup(const Widget: Pointer; const AnAccelGroup: Pointer);
+function GetAccelGroup(const Widget: PGtkWidget;
+  CreateIfNotExists: boolean): PGTKAccelGroup;
 begin
-  if (Widget <> nil) then
-  gtk_object_set_data(Widget, 'AccelGroup', AnAccelGroup);
+  Result := PGTKAccelGroup(gtk_object_get_data(PGtkObject(Widget),'AccelGroup'));
+  if (Result=nil) and CreateIfNotExists then begin
+    {$IFDEF VerboseAccelerator}
+    writeln('GetAccelGroup CREATING  Widget=',HexStr(Cardinal(Widget),8),' CreateIfNotExists=',CreateIfNotExists);
+    {$ENDIF}
+    Result:=gtk_accel_group_new;
+    SetAccelGroup(Widget,Result);
+  end;
 end;
 
-function GetAccelGroup(const Widget: Pointer): Pointer;
+procedure SetAccelGroup(const Widget: PGtkWidget;
+  const AnAccelGroup: PGTKAccelGroup);
 begin
-  Result := gtk_object_get_data(Widget, 'AccelGroup');
+  if (Widget = nil) then exit;
+  gtk_object_set_data(PGtkObject(Widget), 'AccelGroup', AnAccelGroup);
+  if AnAccelGroup<>nil then begin
+    // attach group to widget
+    {$IFDEF VerboseAccelerator}
+    writeln('SetAccelGroup AnAccelGroup=',HexStr(Cardinal(AnAccelGroup),8),' IsMenu=',GtkWidgetIsA(Widget,GTK_MENU_TYPE));
+    {$ENDIF}
+    if GtkWidgetIsA(Widget,GTK_MENU_TYPE) then
+      gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
+    else
+      gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
+  end;
 end;
 
-procedure SetAccelKey(const Widget: Pointer; const AKey: Integer);
+procedure FreeAccelGroup(const Widget: PGtkWidget);
+var
+  AccelGroup: PGTKAccelGroup;
 begin
-  if (Widget <> nil) then
-  gtk_object_set_data(Widget, 'AccelKey', Pointer(AKey));
+  AccelGroup:=GetAccelGroup(Widget,false);
+  if AccelGroup<>nil then begin
+    {$IFDEF VerboseAccelerator}
+    writeln('FreeAccelGroup  AccelGroup=',HexStr(Cardinal(AccelGroup),8));
+    {$ENDIF}
+    gtk_accel_group_unref(AccelGroup);
+    SetAccelGroup(Widget,nil);
+  end;
 end;
 
-function GetAccelKey(const Widget: Pointer): Integer;
+function GetAccelGroupForComponent(Component: TComponent;
+  CreateIfNotExists: boolean): PGTKAccelGroup;
+var
+  Control: TControl;
+  MenuItem: TMenuItem;
+  Form: TCustomForm;
+  Menu: TMenu;
 begin
-  Result := Integer(gtk_object_get_data(Widget, 'AccelKey'));
+  Result:=nil;
+  if Component=nil then exit;
+  
+  if Component is TMenuItem then begin
+    MenuItem:=TMenuItem(Component);
+    Menu:=MenuItem.GetParentMenu;
+    if (Menu=nil) or (Menu.Parent=nil) then exit;
+    {$IFDEF VerboseAccelerator}
+    writeln('GetAccelGroupForComponent A ',Component.Name,':',Component.ClassName);
+    {$ENDIF}
+    Result:=GetAccelGroupForComponent(Menu.Parent,CreateIfNotExists);
+  end else if Component is TControl then begin
+    Control:=TControl(Component);
+    while Control.Parent<>nil do Control:=Control.Parent;
+    if Control is TCustomForm then begin
+      Form:=TCustomForm(Control);
+      if Form.HandleAllocated then begin
+        Result:=GetAccelGroup(PGtkWidget(Form.Handle),CreateIfNotExists);
+        {$IFDEF VerboseAccelerator}
+        writeln('GetAccelGroupForComponent C ',Component.Name,':',Component.ClassName);
+        {$ENDIF}
+      end;
+    end;
+  end;
+  {$IFDEF VerboseAccelerator}
+  writeln('GetAccelGroupForComponent END ',Component.Name,':',Component.ClassName,' Result=',HexStr(Cardinal(Result),8));
+  {$ENDIF}
 end;
 
-procedure Accelerate(const Widget : Pointer; const Msg : TLMShortCut;
-  const Signal : string);
-var GDKModifier : integer;
-    GDKKey : word;
+function GetAccelKey(Widget: PGtkWidget): PAcceleratorKey;
 begin
-  if Msg.OldKey <> 0 then
-    gtk_widget_remove_accelerators(Widget, PChar(Signal), false);
+  Result := PAcceleratorKey(gtk_object_get_data(PGtkObject(Widget),'AccelKey'));
+end;
 
+function SetAccelKey(const Widget: PGtkWidget;
+  Key: guint; Mods: TGdkModifierType; const Signal: string): PAcceleratorKey;
+begin
+  if (Widget = nil) then exit;
+  Result:=GetAccelKey(Widget);
+  if Result=nil then begin
+    if Key<>GDK_VOIDSYMBOL then begin
+      New(Result);
+      FillChar(Result^,SizeOf(Result),0);
+    end;
+  end else begin
+    if Key=GDK_VOIDSYMBOL then begin
+      Dispose(Result);
+      Result:=nil;
+    end;
+  end;
+  if (Result<>nil) then begin
+    Result^.Key:=Key;
+    Result^.Mods:=Mods;
+    Result^.Signal:=Signal;
+    Result^.Realized:=false;
+  end;
+  {$IFDEF VerboseAccelerator}
+  writeln('SetAccelKey Widget=',HexStr(Cardinal(Widget),8),
+    ' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),
+    ' Signal="',Signal,'" Result=',HexStr(Cardinal(Result),8));
+  {$ENDIF}
+  gtk_object_set_data(PGtkObject(Widget), 'AccelKey', Result);
+end;
+
+procedure ClearAccelKey(Widget: PGtkWidget);
+begin
+  SetAccelKey(Widget,GDK_VOIDSYMBOL,0,'');
+end;
+
+procedure RealizeAccelerator(Component: TComponent; Widget : PGtkWidget);
+var
+  AccelKey: PAcceleratorKey;
+  AccelGroup: PGTKAccelGroup;
+begin
+  if (Component=nil) or (Widget=nil) then
+    RaiseException('RealizeAccelerate: invalid input');
+
+  // Set the accelerator
+  AccelKey:=GetAccelKey(Widget);
+  if (AccelKey=nil) or (AccelKey^.Realized) then exit;
+  
+  if AccelKey^.Key<>GDK_VOIDSYMBOL then begin
+    AccelGroup:=GetAccelGroupForComponent(Component,true);
+    if AccelGroup<>nil then begin
+      {$IFDEF VerboseAccelerator}
+      writeln('RealizeAccelerator Add Accelerator ',
+        Component.Name,':',Component.ClassName,
+        ' Widget=',HexStr(Cardinal(Widget),8),
+        ' Signal=',AccelKey^.Signal,
+        ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
+        '');
+      {$ENDIF}
+      gtk_widget_add_accelerator(Widget, PChar(AccelKey^.Signal),
+        AccelGroup, AccelKey^.Key, AccelKey^.Mods, GTK_ACCEL_VISIBLE);
+      AccelKey^.Realized:=true;
+    end else begin
+      AccelKey^.Realized:=false;
+    end;
+  end else begin
+    AccelKey^.Realized:=true;
+  end;
+end;
+
+procedure UnrealizeAccelerator(Widget : PGtkWidget);
+var
+  AccelKey: PAcceleratorKey;
+begin
+  if (Widget=nil) then
+    RaiseException('UnrealizeAccelerate: invalid input');
+    
+  AccelKey:=GetAccelKey(Widget);
+  if (AccelKey=nil) or (not AccelKey^.Realized) then exit;
+
+  if AccelKey^.Signal<>'' then begin
+    {$IFDEF VerboseAccelerator}
+    writeln('UnrealizeAccelerator  ',
+      ' Widget=',HexStr(Cardinal(Widget),8),
+      ' Signal=',AccelKey^.Signal,
+      ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
+      '');
+    {$ENDIF}
+    gtk_widget_remove_accelerators(Widget, PChar(AccelKey^.Signal), false);
+  end;
+  AccelKey^.Realized:=false;
+end;
+
+procedure RegroupAccelerator(Widget: PGtkWidget);
+begin
+  UnrealizeAccelerator(Widget);
+  RealizeAccelerator(TComponent(GetLCLObject(Widget)),Widget);
+end;
+
+procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
+  const Key: guint; Mods: TGdkModifierType; const Signal : string);
+var
+  OldAccelKey: PAcceleratorKey;
+begin
+  if (Component=nil) or (Widget=nil) or (Signal='') then
+    RaiseException('Accelerate: invalid input');
+  {$IFDEF VerboseAccelerator}
+  writeln('Accelerate ',Component.Name,':',Component.ClassName,' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),' Signal=',Signal);
+  {$ENDIF}
+  
+  // delete old accelerator key
+  OldAccelKey:=GetAccelKey(Widget);
+  if (OldAccelKey <> nil) then begin
+    if (OldAccelKey^.Key=Key) and (OldAccelKey^.Mods=Mods)
+    and (OldAccelKey^.Signal=Signal)
+    then begin
+      // no change
+      exit;
+    end;
+      
+    UnrealizeAccelerator(Widget);
+  end;
+
+  // Set the accelerator
+  SetAccelKey(Widget,Key,Mods,Signal);
+  if Key<>GDK_VOIDSYMBOL then
+    RealizeAccelerator(Component,Widget);
+end;
+
+procedure Accelerate(Component: TComponent; const Widget : PGtkWidget;
+  const Msg: TLMShortCut; const Signal : string);
+var
+  GDKModifier: TGdkModifierType;
+  GDKKey: guint;
+begin
   { Map the shift states }
   GDKModifier:= 0;
   if ssShift in Msg.NewModifier then GDKModifier:= GDK_SHIFT_MASK;
@@ -1888,11 +2101,9 @@ begin
   if ssCtrl in Msg.NewModifier then GDKModifier:= GDKModifier + GDK_CONTROL_MASK;
   GDKKey:= VK2GDK(Msg.NewKey);
 
-  { Set the accelerator }
-  // ToDo: use accelerator group of Form
-  gtk_widget_add_accelerator(Widget, PChar(Signal),
-    gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
+  Accelerate(Component,Widget,GDKKey,GDKModifier,Signal);
 end;
+
 
 {------------------------------------------------------------------------------
   procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
@@ -2149,8 +2360,27 @@ begin
   s:=LCLMenuItem.Caption;
   ShortCutPos := pos('&', s);
   if ShortCutPos <> 0 then begin
-    s[ShortCutPos] := '_';
-    SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,PChar(s)));
+    if (LCLMenuItem.Parent<>nil)
+    and (LCLMenuItem.Parent.HandleAllocated)
+    and GtkWidgetIsA(PGtkWidget(LCLMenuItem.Parent.Handle),GTK_MENU_BAR_TYPE)
+    then begin
+      // this is a menu item in the main bar of a form
+      // -> accelerator should be Alt+Key
+      s[ShortCutPos] := '_';
+      Accelerate(LCLMenuItem,MenuItemWidget,
+        gtk_label_parse_uline(LabelWidget,PChar(s)),
+        GDK_MOD1_MASK,'activate_item');
+    end else begin
+      // Because gnome changes menuitem shortcuts via keyboard, we can't
+      // set the accelerator.
+      // It would be cool, to know if a window manager with the gnome feature
+      // is running, but there is probably no reliable code to do that, so we
+      // simply delete all ampersands and don't set the letter shortcut.
+      DeleteAmpersands(s);
+      gtk_label_set_text(LabelWidget,PChar(s));
+      {Accelerate(LCLMenuItem,MenuItemWidget,
+        gtk_label_parse_uline(LabelWidget,PChar(s)),0,'activate_item');}
+    end;
   end
   else begin
     gtk_label_set_text(LabelWidget,PChar(s));
@@ -2680,19 +2910,19 @@ var
   
 begin
   Result:=true;
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.WaitForClipboardAnswer] A');
-{$ENDIF}
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('[TgtkObject.WaitForClipboardAnswer] A');
+  {$ENDIF}
   if (c^.Data.Selection<>0) then begin
-//writeln('[TgtkObject.WaitForClipboardAnswer] B');
+    //writeln('[TgtkObject.WaitForClipboardAnswer] B');
     exit;
   end;
   DateTimeToSystemTime(Time,StartTime);
-//writeln('[TgtkObject.WaitForClipboardAnswer] C');
+  //writeln('[TgtkObject.WaitForClipboardAnswer] C');
   Application.ProcessMessages;
-//writeln('[TgtkObject.WaitForClipboardAnswer] D');
+  //writeln('[TgtkObject.WaitForClipboardAnswer] D');
   if (c^.Data.Selection<>0) then begin
-//writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+    //writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
     exit;
   end;
 //writeln('[TgtkObject.WaitForClipboardAnswer] F');
@@ -2701,22 +2931,22 @@ writeln('[TgtkObject.WaitForClipboardAnswer] A');
   try
     repeat
       // just wait ...
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.WaitForClipboardAnswer] G');
-{$ENDIF}
+      {$IFDEF DEBUG_CLIPBOARD}
+      writeln('[TgtkObject.WaitForClipboardAnswer] G');
+      {$ENDIF}
       Application.HandleMessage;
       if (c^.Data.Selection<>0) then begin
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
-{$ENDIF}
+        {$IFDEF DEBUG_CLIPBOARD}
+        writeln('[TgtkObject.WaitForClipboardAnswer] E  Yeah, Response received');
+        {$ENDIF}
         exit;
       end;
       DateTimeToSystemTime(Time,CurTime);
     until (CurTime.Second-StartTime.Second>1);
   finally
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.WaitForClipboardAnswer] H');
-{$ENDIF}
+    {$IFDEF DEBUG_CLIPBOARD}
+    writeln('[TgtkObject.WaitForClipboardAnswer] H');
+    {$ENDIF}
     // stop the timer
     gtk_timeout_remove(Timer);
 //writeln('[TgtkObject.WaitForClipboardAnswer] END');
@@ -3211,36 +3441,46 @@ begin
 end;
 
 Function DeleteAmpersands(var Str : String) : Longint;
+// convert double ampersands to single & and delete single &
+// return the position of the letter after the first deleted single ampersand
+// in the new string
 var
-  I : Integer;
   Tmp : String;
+  SrcPos, DestPos, SrcLen: integer;
 begin
-  I := 1;
   Result := -1;
-  SetLength(Tmp,0);
-  While I <= Length(Str) do
-    Case Str[I] of
-      '&' :
-         If I + 1 <= Length(Str) then begin
-           If Str[I+1] = '&' then begin
-             Inc(I,2);
-             Tmp := Tmp + '&';
-           end
-           else begin
-             If Result  < 0 then
-               Result := Length(Tmp) + 1;
-             Inc(I,1);
-           end;
-         end
-         else
-           Inc(I,1);
-      else begin
-        Tmp := Tmp + Str[I];
-        Inc(I,1);
+  
+  // for speedup reasons check if Str must be changed
+  SrcLen:=length(Str);
+  SrcPos:=SrcLen;
+  while (SrcPos>=1) and (Str[SrcPos]<>'&') do dec(SrcPos);
+  if SrcPos<1 then exit;
+
+  // copy Str to Tmp and convert ampersands on the fly
+  SetLength(Tmp,SrcLen);
+  SrcPos:=1;
+  DestPos:=1;
+  while (SrcPos<=SrcLen) do begin
+    if Str[SrcPos]<>'&' then begin
+      // copy normal char
+      Tmp[DestPos]:=Str[SrcPos];
+      inc(SrcPos);
+      inc(DestPos);
+    end else begin
+      inc(SrcPos);
+      if (SrcPos<=SrcLen) and (Str[SrcPos]='&') then begin
+        // double ampersand
+        Tmp[DestPos]:='&';
+        inc(DestPos);
+        inc(SrcPos);
+      end else begin
+        // single ampersand
+        if Result<1 then Result:=DestPos;
       end;
     end;
-  SetLength(Str,0);
-  Str := Tmp;
+  end;
+  SetLength(Tmp,DestPos-1);
+  Str:=Tmp;
 end;
 
 {-------------------------------------------------------------------------------
@@ -3523,6 +3763,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.132  2002/10/20 21:49:11  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.131  2002/10/20 19:03:57  lazarus
   AJ: minor fixes for FPC 1.1
 

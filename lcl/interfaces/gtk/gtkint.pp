@@ -63,7 +63,6 @@ type
     FRCFileParsed: boolean;
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
-    FAccelGroup: PgtkAccelGroup;
     FDefaultFont : PGdkFont;
     FNoteBookCloseBtnPixmapImg: PGdkPixmap;
     FNoteBookCloseBtnPixmapMask: PGdkPixmap;
@@ -201,6 +200,7 @@ begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 
   MouseCaptureWidget := nil;
+  MouseCapureByLCL := false;
   
   LastLeft:=EmptyLastMouseClick;
   LastMiddle:=EmptyLastMouseClick;
@@ -260,6 +260,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2002/10/20 21:49:10  lazarus
+  MG: fixes for fpc1.1
+
   Revision 1.91  2002/10/17 21:00:17  lazarus
   MG: fixed uncapturing of mouse
 
