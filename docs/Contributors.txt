@@ -4,6 +4,7 @@ Alexander Shiyan
 Andreas Hausladen
 Andrew Haines
 Andrew Johnson
+A. J. Venter
 Bob Wingard
 Boris Arko
 Christian Iversen
@@ -25,6 +26,7 @@ Joost van der Sluis
 Karl Brandt
 Keith Bowes
 Ladislav Michl
+Lagunov Aleksey
 Luis R. Hilario B.
 Marc Weustink
 Martin Patik

@@ -905,19 +905,18 @@ type
 
   { TCanvas }
 
+  { $IFDEF UseFPCanvas}
+  //TCanvas = class(TFPCustomCanvas)
+  { $ELSE}
   TCanvas = class(TPersistent)
+  { $ENDIF}
   private
     FAutoRedraw: Boolean;
     FState: TCanvasState;
-    FFont: TFont;
     FSavedFontHandle: HFont;
-    FPen: TPen;
     FSavedPenHandle: HPen;
-    FBrush: TBrush;
     FSavedBrushHandle: HBrush;
-    FRegion: TRegion;
     FSavedRegionHandle: HRGN;
-    FPenPos: TPoint;
     FCopyMode: TCopyMode;
     FHandle: HDC;
     FOnChange: TNotifyEvent;
@@ -925,6 +924,11 @@ type
     FTextStyle: TTextStyle;
     FLock: TCriticalSection;
     FLockCount: Integer;
+    FRegion: TRegion;
+    FPen: TPen;
+    FFont: TFont;
+    FBrush: TBrush;
+    FPenPos: TPoint;
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
     procedure PenChanged(APen: TObject);
@@ -1902,6 +1906,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.169  2005/01/08 10:43:07  mattias
+  added Lagunov Aleksey to Contributors.txt
+
   Revision 1.168  2005/01/07 21:02:59  mattias
   TFont, TBrush, TPen can now be used with fpCanvas
 

@@ -11,7 +11,7 @@
  *                                                                           *
  *****************************************************************************
 
-  Author: Andrew Haines
+  Author: Lagunov Aleksey
 
   Abstract:
     Property Editors for Database components of FCL and LCL.
