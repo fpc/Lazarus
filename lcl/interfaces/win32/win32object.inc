@@ -385,12 +385,24 @@ Begin
     LM_SETPROPERTIES:
       Result := SetProperties(Sender);
     LM_SETDESIGNING:
-      EnableWindow((Sender As TWinControl).Handle, False);
+      if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
     LM_RECREATEWND:
       Result := RecreateWnd(Sender);
     LM_ATTACHMENU:
       AttachMenu(Sender);
         //SH: think of TBitmap.handle!!!!
+    LM_SCREENINIT:
+    Begin
+      if Sender=nil then Handle := GetDesktopWindow
+      else Handle := ObjectToHwnd(Sender);
+      DC := GetDC(Handle);
+      //WriteLn('LM_SCREENINIT called --> should go to TWin32Object.Init');
+      //WriteLn('TODO: check this');
+      PLMScreenInit(Data)^.PixelsPerInchX := GetDeviceCaps(DC, LogPixelsX);
+      PLMScreenInit(Data)^.PixelsPerInchY := GetDeviceCaps(DC, LogPixelsY);
+      PLMScreenInit(Data)^.ColorDepth := GetDeviceCaps(DC, BitsPixel);
+      ReleaseDC(Handle, DC);
+    End;  
     LM_LOADXPM:
       Begin
         If (Sender is TBitmap) Then
@@ -587,8 +599,7 @@ activate_time :	the time at which the activation event occurred.
               begin
                  R.Right:=Left + Right;
                  R.Bottom:=Top + Bottom;
-                 if (Sender is TCustomForm) and ((Sender as TCustomForm).Menu<>nil) then Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,true)
-                 else Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
+                 Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW, (Sender as TCustomForm).Menu<>nil);
                  R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top)
               end
             else if TControl(Sender).FCompStyle = csPage then
@@ -738,16 +749,6 @@ activate_time :	the time at which the activation event occurred.
         Begin
           SetClassLong(Handle, GCL_HIcon, (Sender As TForm).GetIconHandle);
         End;
-        LM_SCREENINIT:
-        Begin
-          DC := GetDC(Handle);
-          WriteLn('LM_SCREENINIT called --> should go to TWin32Object.Init');
-          WriteLn('TODO: check this');
-          PLMScreenInit(Data)^.PixelsPerInchX := GetDeviceCaps(DC, LogPixelsX);
-          PLMScreenInit(Data)^.PixelsPerInchY := GetDeviceCaps(DC, LogPixelsY);
-          PLMScreenInit(Data)^.ColorDepth := GetDeviceCaps(DC, BitsPixel);
-          ReleaseDC(Handle, DC);
-        End;  
         LM_GETITEMS :
         Begin
           If (Sender as TControl).fCompStyle = csCListBox Then
@@ -1388,7 +1389,7 @@ Begin
   Assert(False, Format('Trace:TWin32Object.CreateCommonDialog - class name --> ', [Sender.ClassName]));
   If Sender Is TColorDialog Then
   Begin
-    CC := LPChooseColor(@Sender)^;
+    //CC := LPChooseColor(@Sender)^;
     ZeroMemory(@CC, SizeOf(TChooseColor));
     With CC Do
     Begin
@@ -1405,10 +1406,10 @@ Begin
     {TODO: set correctly Sender.FileName and Sender.Files when more files are selected}
     If Sender Is TOpenDialog Then
     Begin
-      FName[0]:=#0;
+      FName:=(Sender As TOpenDialog).FileName+#0;
       FFilter := (Sender As TOpenDialog).Filter;
       ReplacePipe(FFilter);
-      FFilter := FFilter+#0;
+      FFilter := FFilter+#0#0;
       ZeroMemory(@OpenFile, SizeOf(OpenFileName));
       With OpenFile Do
       Begin
@@ -1434,7 +1435,7 @@ Begin
   End
   Else If Sender Is TFontDialog Then
   Begin
-    CF := LPChooseFont(@Sender)^;
+    //CF := LPChooseFont(@Sender)^;
     ZeroMemory(@CF, SizeOf(TChooseFont));
     LF.LFFaceName := (Sender As TFontDialog).Font.Name;
     With CF Do
@@ -2631,6 +2632,9 @@ End;
 
 {
   $Log$
+  Revision 1.48  2003/03/06 17:15:49  mattias
+  applied patch from Martin Smat fixing LM_SETSIZE, LM_SETDESIGNING, LM_SCREENINIT
+
   Revision 1.47  2003/02/16 00:43:55  mattias
   fix from Martin Smat for TFileDialogs
 

@@ -84,6 +84,7 @@ Function GetClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
 Function GetClipBox(DC : hDC; lpRect : PRect) : Longint; Override;
 Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 Function GetDC(HWnd: HWND): HDC; Override;
+function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 Function GetFocus: HWND; Override;
@@ -172,6 +173,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2003/03/06 17:15:49  mattias
+  applied patch from Martin Smat fixing LM_SETSIZE, LM_SETDESIGNING, LM_SCREENINIT
+
   Revision 1.21  2003/03/01 17:54:53  mattias
   added ShowWindow function
 

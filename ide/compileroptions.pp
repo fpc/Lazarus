@@ -765,6 +765,7 @@ begin
   if (TargetFilename <> '') then begin
     Result:=ExtractFilePath(MainSourceFileName)+TargetFilename;
   end else begin
+    // fpc creates lowercase executables as default
     Result:=lowercase(ExtractFileNameOnly(MainSourceFileName));
     if Result<>'' then begin
       Result:=ExtractFilePath(MainSourceFileName)+Result;

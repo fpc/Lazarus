@@ -1098,6 +1098,18 @@ Begin
   Assert(False, Format('Trace:< [TWin32Object.GetDC] Got 0x%x', [Result]));
 End;
 
+{------------------------------------------------------------------------------
+  Method: GetDeviceCaps
+  Params: DC - display device context
+          Index - index of needed capability
+
+  Returns device specific information
+ ------------------------------------------------------------------------------}
+function TWin32Object.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+begin
+  Result := Windows.GetDeviceCaps(DC, Index);
+end;  
+
 function TWin32Object.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := Windows.GetDIBits(DC, Bitmap, StartScan, NumScans, Bits, Windows.PBitmapInfo(@BitInfo)^, Usage)
@@ -2301,6 +2313,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/03/06 17:15:49  mattias
+  applied patch from Martin Smat fixing LM_SETSIZE, LM_SETDESIGNING, LM_SCREENINIT
+
   Revision 1.30  2003/03/01 17:54:53  mattias
   added ShowWindow function
 
