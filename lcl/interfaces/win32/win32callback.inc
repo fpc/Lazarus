@@ -538,7 +538,9 @@ Begin
       // transparently
       // only static and button controls have transparent parts
       // others need to erased with their window color
-      if ((Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)) then
+      // scrollbar also has buttons
+      if (Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)
+          or (Msg = WM_CTLCOLORSCROLLBAR) then
       begin
         if WindowInfo^.isGroupBox then
         begin
@@ -546,18 +548,11 @@ Begin
         end else
         if GetWindowInfo(LParam)^.hasTabParent then
         begin
-          // comboboxes send WM_CTLCOLORSTATIC to their parent, but:
-          // 1) they are opaque, so don't need transparent background
-          // 2) we will overwrite combobox control, erasing the image!
-          GetClassName(LParam, winClassName, 10);
-          if not CompareMem(@winClassName, @ComboboxClsName, High(ComboBoxClsName)+1) then
-          begin
-            // need to draw transparently, draw background
-            GetWin32ControlPos(LParam, Window, P.X, P.Y);
-            MoveWindowOrgEx(WParam, -P.X, -P.Y);
-            SendMessage(Window, WM_PAINT, WParam, 0);
-            MoveWindowOrgEx(WParam, P.X, P.Y);
-          end;
+          // need to draw transparently, draw background
+          GetWin32ControlPos(LParam, Window, P.X, P.Y);
+          MoveWindowOrgEx(WParam, -P.X, -P.Y);
+          SendMessage(Window, WM_PAINT, WParam, 0);
+          MoveWindowOrgEx(WParam, P.X, P.Y);
           LMessage.Result := GetStockObject(HOLLOW_BRUSH);
           SetBkMode(WParam, TRANSPARENT);
           WinProcess := false;
@@ -1441,6 +1436,9 @@ end;
 
 {
   $Log$
+  Revision 1.153  2004/11/03 16:32:54  micha
+  fix drawing of listbox, combobox, edit to be non-transparent even in winxp tabpage (fixes black background upon scroll)
+
   Revision 1.152  2004/10/29 18:55:30  micha
   speed up menu creation
 

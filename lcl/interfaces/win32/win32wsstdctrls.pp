@@ -433,6 +433,8 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  // listbox is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.hasTabParent := false;
   Result := Params.Window;
 end;
 
@@ -586,6 +588,8 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  // combobox is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.hasTabParent := false;
   // get edit window within
   with Params do
   begin
@@ -761,6 +765,8 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  // edit is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.hasTabParent := false;
   Result := Params.Window;
 end;
 
@@ -870,6 +876,8 @@ begin
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
+  // memo is not a transparent control -> no need for parentpainting
+  Params.WindowInfo^.hasTabParent := false;
   Result := Params.Window;
 end;
 
