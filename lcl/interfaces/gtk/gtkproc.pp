@@ -231,6 +231,9 @@ Procedure AllocGDIColor(DC : hDC; var GDIColor : TGDIColor);
 procedure SetGDIColorRef(var GDIColor : TGDIColor; NewColorRef: TColorRef);
 Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush: Boolean; AsBackground: Boolean);
+function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
+function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;
+function CompareGDIBrushes(Brush1, Brush2: PGdiObject): boolean;
 
 function GetIndexAsKey(p: pointer): pointer;
 function GetRGBAsKey(p: pointer): pointer;
