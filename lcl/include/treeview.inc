@@ -2595,8 +2595,7 @@ begin
   FTreeNodes := TTreeNodes.Create(Self);
   FBorderStyle := bsSingle;
   BorderWidth := 2;
-  FOptions := [tvoShowRoot, tvoShowLines, tvoShowButtons, tvoHideSelection,
-               tvoToolTips, tvoKeepCollapsedNodes, tvoAutoItemHeight];
+  FOptions := DefaultTreeViewOptions;
   Items.KeepCollapsedNodes:=KeepCollapsedNodes;
   FScrollBars:=ssBoth;
   FDragImage := TDragImageList.CreateSize(32, 32);

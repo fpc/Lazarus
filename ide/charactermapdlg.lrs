@@ -1,127 +1,124 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TCharacterMapDialog','FORMDATA',[
-  'TPF0'#19'TCharacterMapDialog'#18'CharacterMapDialog'#7'CAPTION'#6#18'Charact'
-  +'erMapDialog'#12'CLIENTHEIGHT'#3#149#1#11'CLIENTWIDTH'#3#156#1#10'KEYPREVIEW'
-  +#9#8'ONCREATE'#7#24'CharacterMapDialogCREATE'#9'ONDESTROY'#7#25'CharacterMap'
-  +'DialogDESTROY'#9'ONKEYDOWN'#7#25'CharacterMapDialogKEYDOWN'#8'POSITION'#7#14
-  +'poscreencenter'#18'HORZSCROLLBAR.PAGE'#3#157#1#18'VERTSCROLLBAR.PAGE'#3#150
-  +#1#4'LEFT'#3'{'#1#6'HEIGHT'#3#149#1#3'TOP'#3#22#1#5'WIDTH'#3#156#1#0#7'TBUTT'
-  +'ON'#8'OkButton'#7'ANCHORS'#11#6'akleft'#8'akbottom'#0#11'MODALRESULT'#2#1#7
-  +'CAPTION'#6#2'Ok'#7'TABSTOP'#9#8'TABORDER'#2#0#4'LEFT'#2'p'#6'HEIGHT'#2#25#3
-  +'TOP'#3'v'#1#5'WIDTH'#2'K'#0#0#7'TBUTTON'#12'CancelButton'#7'ANCHORS'#11#6'a'
-  +'kleft'#8'akbottom'#0#11'MODALRESULT'#2#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9
-  +#8'TABORDER'#2#1#4'LEFT'#3#224#0#6'HEIGHT'#2#25#3'TOP'#3'v'#1#5'WIDTH'#2'K'#0
-  +#0#9'TGROUPBOX'#18'CharactersGroupbox'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'ak'
-  +'right'#8'akbottom'#0#7'CAPTION'#6#10'Characters'#12'CLIENTHEIGHT'#3#15#1#11
-  +'CLIENTWIDTH'#3#137#1#11'PARENTCTL3D'#8#8'TABORDER'#2#2#4'LEFT'#2#8#6'HEIGHT'
-  +#3' '#1#3'TOP'#2#8#5'WIDTH'#3#141#1#0#8'TSYNEDIT'#14'CharMapSynedit'#5'ALIGN'
-  +#7#5'altop'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'#8'akbottom'#0#5'COLO'
-  +'R'#4#255#255#255#0#11'FONT.HEIGHT'#2#241#9'FONT.NAME'#6#7'courier'#6'HEIGHT'
-  +#3#248#0#4'NAME'#6#14'CharMapSynedit'#11'PARENTCTL3D'#8#8'TABORDER'#2#0#5'WI'
-  +'DTH'#3#137#1#11'ONMOUSEDOWN'#7#23'CharMapSyneditMOUSEDOWN'#11'ONMOUSEMOVE'#7
-  +#23'CharMapSyneditMOUSEMOVE'#24'BOOKMARKOPTIONS.ONCHANGE'#13#14'GUTTER.VISIB'
-  +'LE'#8#15'GUTTER.ONCHANGE'#13#10'KEYSTROKES'#14#1#7'COMMAND'#2#3#8'SHORTCUT'
-  +#2'&'#0#1#7'COMMAND'#2'g'#8'SHORTCUT'#3'& '#0#1#7'COMMAND'#3#211#0#8'SHORTCU'
-  +'T'#3'&@'#0#1#7'COMMAND'#2#4#8'SHORTCUT'#2'('#0#1#7'COMMAND'#2'h'#8'SHORTCUT'
-  +#3'( '#0#1#7'COMMAND'#3#212#0#8'SHORTCUT'#3'(@'#0#1#7'COMMAND'#2#1#8'SHORTCU'
-  +'T'#2'%'#0#1#7'COMMAND'#2'e'#8'SHORTCUT'#3'% '#0#1#7'COMMAND'#2#5#8'SHORTCUT'
-  +#3'%@'#0#1#7'COMMAND'#2'i'#8'SHORTCUT'#3'%`'#0#1#7'COMMAND'#2#2#8'SHORTCUT'#2
-  +''''#0#1#7'COMMAND'#2'f'#8'SHORTCUT'#3''' '#0#1#7'COMMAND'#2#6#8'SHORTCUT'#3
-  +'''@'#0#1#7'COMMAND'#2'j'#8'SHORTCUT'#3'''`'#0#1#7'COMMAND'#2#10#8'SHORTCUT'
-  +#2'"'#0#1#7'COMMAND'#2'n'#8'SHORTCUT'#3'" '#0#1#7'COMMAND'#2#14#8'SHORTCUT'#3
-  +'"@'#0#1#7'COMMAND'#2'r'#8'SHORTCUT'#3'"`'#0#1#7'COMMAND'#2#9#8'SHORTCUT'#2
-  +'!'#0#1#7'COMMAND'#2'm'#8'SHORTCUT'#3'! '#0#1#7'COMMAND'#2#13#8'SHORTCUT'#3
-  +'!@'#0#1#7'COMMAND'#2'q'#8'SHORTCUT'#3'!`'#0#1#7'COMMAND'#2#7#8'SHORTCUT'#2
-  +'$'#0#1#7'COMMAND'#2'k'#8'SHORTCUT'#3'$ '#0#1#7'COMMAND'#2#15#8'SHORTCUT'#3
-  +'$@'#0#1#7'COMMAND'#2's'#8'SHORTCUT'#3'$`'#0#1#7'COMMAND'#2#8#8'SHORTCUT'#2
-  +'#'#0#1#7'COMMAND'#2'l'#8'SHORTCUT'#3'# '#0#1#7'COMMAND'#2#16#8'SHORTCUT'#3
-  +'#@'#0#1#7'COMMAND'#2't'#8'SHORTCUT'#3'#`'#0#1#7'COMMAND'#3#223#0#8'SHORTCUT'
-  +#2'-'#0#1#7'COMMAND'#3#201#0#8'SHORTCUT'#3'-@'#0#1#7'COMMAND'#3'\'#2#8'SHORT'
-  +'CUT'#3'- '#0#1#7'COMMAND'#3#246#1#8'SHORTCUT'#2'.'#0#1#7'COMMAND'#3'['#2#8
-  +'SHORTCUT'#3'. '#0#1#7'COMMAND'#3#245#1#8'SHORTCUT'#2#8#0#1#7'COMMAND'#3#245
-  +#1#8'SHORTCUT'#3#8' '#0#1#7'COMMAND'#3#248#1#8'SHORTCUT'#3#8'@'#0#1#7'COMMAN'
-  +'D'#3'Y'#2#8'SHORTCUT'#4#8#128#0#0#0#1#7'COMMAND'#3'Z'#2#8'SHORTCUT'#4#8#160
-  +#0#0#0#1#7'COMMAND'#3#253#1#8'SHORTCUT'#2#13#0#1#7'COMMAND'#3#199#0#8'SHORTC'
-  +'UT'#3'A@'#0#1#7'COMMAND'#3#201#0#8'SHORTCUT'#3'C@'#0#1#7'COMMAND'#3'b'#2#8
-  +'SHORTCUT'#3'I`'#0#1#7'COMMAND'#3#253#1#8'SHORTCUT'#3'M@'#0#1#7'COMMAND'#3
-  +#254#1#8'SHORTCUT'#3'N@'#0#1#7'COMMAND'#3#247#1#8'SHORTCUT'#3'T@'#0#1#7'COMM'
-  +'AND'#3'c'#2#8'SHORTCUT'#3'U`'#0#1#7'COMMAND'#3'\'#2#8'SHORTCUT'#3'V@'#0#1#7
-  +'COMMAND'#3'['#2#8'SHORTCUT'#3'X@'#0#1#7'COMMAND'#3#251#1#8'SHORTCUT'#3'Y@'#0
-  +#1#7'COMMAND'#3#250#1#8'SHORTCUT'#3'Y`'#0#1#7'COMMAND'#3'Y'#2#8'SHORTCUT'#3
-  +'Z@'#0#1#7'COMMAND'#3'Z'#2#8'SHORTCUT'#3'Z`'#0#1#7'COMMAND'#3'-'#1#8'SHORTCU'
-  +'T'#3'0@'#0#1#7'COMMAND'#3'.'#1#8'SHORTCUT'#3'1@'#0#1#7'COMMAND'#3'/'#1#8'SH'
-  +'ORTCUT'#3'2@'#0#1#7'COMMAND'#3'0'#1#8'SHORTCUT'#3'3@'#0#1#7'COMMAND'#3'1'#1
-  +#8'SHORTCUT'#3'4@'#0#1#7'COMMAND'#3'2'#1#8'SHORTCUT'#3'5@'#0#1#7'COMMAND'#3
-  +'3'#1#8'SHORTCUT'#3'6@'#0#1#7'COMMAND'#3'4'#1#8'SHORTCUT'#3'7@'#0#1#7'COMMAN'
-  +'D'#3'5'#1#8'SHORTCUT'#3'8@'#0#1#7'COMMAND'#3'6'#1#8'SHORTCUT'#3'9@'#0#1#7'C'
-  +'OMMAND'#3'_'#1#8'SHORTCUT'#3'0`'#0#1#7'COMMAND'#3'`'#1#8'SHORTCUT'#3'1`'#0#1
-  +#7'COMMAND'#3'a'#1#8'SHORTCUT'#3'2`'#0#1#7'COMMAND'#3'b'#1#8'SHORTCUT'#3'3`'
-  +#0#1#7'COMMAND'#3'c'#1#8'SHORTCUT'#3'4`'#0#1#7'COMMAND'#3'd'#1#8'SHORTCUT'#3
-  +'5`'#0#1#7'COMMAND'#3'e'#1#8'SHORTCUT'#3'6`'#0#1#7'COMMAND'#3'f'#1#8'SHORTCU'
-  +'T'#3'7`'#0#1#7'COMMAND'#3'g'#1#8'SHORTCUT'#3'8`'#0#1#7'COMMAND'#3'h'#1#8'SH'
-  +'ORTCUT'#3'9`'#0#1#7'COMMAND'#3#231#0#8'SHORTCUT'#3'N`'#0#1#7'COMMAND'#3#232
-  +#0#8'SHORTCUT'#3'C`'#0#1#7'COMMAND'#3#233#0#8'SHORTCUT'#3'L`'#0#1#7'COMMAND'
-  +#3'd'#2#8'SHORTCUT'#2#9#0#1#7'COMMAND'#3'e'#2#8'SHORTCUT'#3#9' '#0#1#7'COMMA'
-  +'ND'#3#250#0#8'SHORTCUT'#3'B`'#0#0#13'LINES.Strings'#1#6#14'CharMapSynedit'#0
-  +#7'OPTIONS'#11#12'eoautoindent'#9'eonocaret'#13'eonoselection'#15'eoscrollpa'
+  'TPF0'#19'TCharacterMapDialog'#18'CharacterMapDialog'#7'Caption'#6#18'Charact'
+  +'erMapDialog'#12'ClientHeight'#3#149#1#11'ClientWidth'#3#156#1#10'KeyPreview'
+  +#9#8'OnCreate'#7#24'CharacterMapDialogCREATE'#9'OnDestroy'#7#25'CharacterMap'
+  +'DialogDESTROY'#9'OnKeyDown'#7#25'CharacterMapDialogKEYDOWN'#8'Position'#7#14
+  +'poscreencenter'#18'HorzScrollBar.Page'#3#157#1#18'VertScrollBar.Page'#3#150
+  +#1#4'Left'#3'{'#1#6'Height'#3#149#1#3'Top'#3#22#1#5'Width'#3#156#1#0#7'TButt'
+  +'on'#8'OkButton'#7'Anchors'#11#6'akleft'#8'akbottom'#0#11'ModalResult'#2#1#7
+  +'Caption'#6#2'Ok'#7'TabStop'#9#8'TabOrder'#2#0#4'Left'#2'p'#6'Height'#2#25#3
+  +'Top'#3'v'#1#5'Width'#2'K'#0#0#7'TButton'#12'CancelButton'#7'Anchors'#11#6'a'
+  +'kleft'#8'akbottom'#0#11'ModalResult'#2#2#7'Caption'#6#6'Cancel'#7'TabStop'#9
+  +#8'TabOrder'#2#1#4'Left'#3#224#0#6'Height'#2#25#3'Top'#3'v'#1#5'Width'#2'K'#0
+  +#0#9'TGroupBox'#18'CharactersGroupbox'#7'Anchors'#11#5'aktop'#6'akleft'#7'ak'
+  +'right'#8'akbottom'#0#7'Caption'#6#10'Characters'#12'ClientHeight'#3#15#1#11
+  +'ClientWidth'#3#137#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#2#4
+  +'Left'#2#8#6'Height'#3' '#1#3'Top'#2#8#5'Width'#3#141#1#0#8'TSynEdit'#14'Cha'
+  +'rMapSynedit'#5'Align'#7#5'altop'#7'Anchors'#11#5'aktop'#6'akleft'#7'akright'
+  +#8'akbottom'#0#11'Font.Height'#2#241#9'Font.Name'#6#7'courier'#6'Height'#3
+  +#248#0#4'Name'#6#14'CharMapSynedit'#11'ParentCtl3D'#8#8'TabOrder'#2#0#5'Widt'
+  +'h'#3#137#1#11'OnMouseDown'#7#23'CharMapSyneditMOUSEDOWN'#11'OnMouseMove'#7
+  +#23'CharMapSyneditMOUSEMOVE'#24'BookMarkOptions.OnChange'#13#14'Gutter.Visib'
+  +'le'#8#15'Gutter.OnChange'#13#10'Keystrokes'#14#1#7'Command'#2#3#8'ShortCut'
+  +#2'&'#0#1#7'Command'#2'g'#8'ShortCut'#3'& '#0#1#7'Command'#3#211#0#8'ShortCu'
+  +'t'#3'&@'#0#1#7'Command'#2#4#8'ShortCut'#2'('#0#1#7'Command'#2'h'#8'ShortCut'
+  +#3'( '#0#1#7'Command'#3#212#0#8'ShortCut'#3'(@'#0#1#7'Command'#2#1#8'ShortCu'
+  +'t'#2'%'#0#1#7'Command'#2'e'#8'ShortCut'#3'% '#0#1#7'Command'#2#5#8'ShortCut'
+  +#3'%@'#0#1#7'Command'#2'i'#8'ShortCut'#3'%`'#0#1#7'Command'#2#2#8'ShortCut'#2
+  +''''#0#1#7'Command'#2'f'#8'ShortCut'#3''' '#0#1#7'Command'#2#6#8'ShortCut'#3
+  +'''@'#0#1#7'Command'#2'j'#8'ShortCut'#3'''`'#0#1#7'Command'#2#10#8'ShortCut'
+  +#2'"'#0#1#7'Command'#2'n'#8'ShortCut'#3'" '#0#1#7'Command'#2#14#8'ShortCut'#3
+  +'"@'#0#1#7'Command'#2'r'#8'ShortCut'#3'"`'#0#1#7'Command'#2#9#8'ShortCut'#2
+  +'!'#0#1#7'Command'#2'm'#8'ShortCut'#3'! '#0#1#7'Command'#2#13#8'ShortCut'#3
+  +'!@'#0#1#7'Command'#2'q'#8'ShortCut'#3'!`'#0#1#7'Command'#2#7#8'ShortCut'#2
+  +'$'#0#1#7'Command'#2'k'#8'ShortCut'#3'$ '#0#1#7'Command'#2#15#8'ShortCut'#3
+  +'$@'#0#1#7'Command'#2's'#8'ShortCut'#3'$`'#0#1#7'Command'#2#8#8'ShortCut'#2
+  +'#'#0#1#7'Command'#2'l'#8'ShortCut'#3'# '#0#1#7'Command'#2#16#8'ShortCut'#3
+  +'#@'#0#1#7'Command'#2't'#8'ShortCut'#3'#`'#0#1#7'Command'#3#223#0#8'ShortCut'
+  +#2'-'#0#1#7'Command'#3#201#0#8'ShortCut'#3'-@'#0#1#7'Command'#3'\'#2#8'Short'
+  +'Cut'#3'- '#0#1#7'Command'#3#246#1#8'ShortCut'#2'.'#0#1#7'Command'#3'['#2#8
+  +'ShortCut'#3'. '#0#1#7'Command'#3#245#1#8'ShortCut'#2#8#0#1#7'Command'#3#245
+  +#1#8'ShortCut'#3#8' '#0#1#7'Command'#3#248#1#8'ShortCut'#3#8'@'#0#1#7'Comman'
+  +'d'#3'Y'#2#8'ShortCut'#4#8#128#0#0#0#1#7'Command'#3'Z'#2#8'ShortCut'#4#8#160
+  +#0#0#0#1#7'Command'#3#253#1#8'ShortCut'#2#13#0#1#7'Command'#3#199#0#8'ShortC'
+  +'ut'#3'A@'#0#1#7'Command'#3#201#0#8'ShortCut'#3'C@'#0#1#7'Command'#3'b'#2#8
+  +'ShortCut'#3'I`'#0#1#7'Command'#3#253#1#8'ShortCut'#3'M@'#0#1#7'Command'#3
+  +#254#1#8'ShortCut'#3'N@'#0#1#7'Command'#3#247#1#8'ShortCut'#3'T@'#0#1#7'Comm'
+  +'and'#3'c'#2#8'ShortCut'#3'U`'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'V@'#0#1#7
+  +'Command'#3'['#2#8'ShortCut'#3'X@'#0#1#7'Command'#3#251#1#8'ShortCut'#3'Y@'#0
+  +#1#7'Command'#3#250#1#8'ShortCut'#3'Y`'#0#1#7'Command'#3'Y'#2#8'ShortCut'#3
+  +'Z@'#0#1#7'Command'#3'Z'#2#8'ShortCut'#3'Z`'#0#1#7'Command'#3'-'#1#8'ShortCu'
+  +'t'#3'0@'#0#1#7'Command'#3'.'#1#8'ShortCut'#3'1@'#0#1#7'Command'#3'/'#1#8'Sh'
+  +'ortCut'#3'2@'#0#1#7'Command'#3'0'#1#8'ShortCut'#3'3@'#0#1#7'Command'#3'1'#1
+  +#8'ShortCut'#3'4@'#0#1#7'Command'#3'2'#1#8'ShortCut'#3'5@'#0#1#7'Command'#3
+  +'3'#1#8'ShortCut'#3'6@'#0#1#7'Command'#3'4'#1#8'ShortCut'#3'7@'#0#1#7'Comman'
+  +'d'#3'5'#1#8'ShortCut'#3'8@'#0#1#7'Command'#3'6'#1#8'ShortCut'#3'9@'#0#1#7'C'
+  +'ommand'#3'_'#1#8'ShortCut'#3'0`'#0#1#7'Command'#3'`'#1#8'ShortCut'#3'1`'#0#1
+  +#7'Command'#3'a'#1#8'ShortCut'#3'2`'#0#1#7'Command'#3'b'#1#8'ShortCut'#3'3`'
+  +#0#1#7'Command'#3'c'#1#8'ShortCut'#3'4`'#0#1#7'Command'#3'd'#1#8'ShortCut'#3
+  +'5`'#0#1#7'Command'#3'e'#1#8'ShortCut'#3'6`'#0#1#7'Command'#3'f'#1#8'ShortCu'
+  +'t'#3'7`'#0#1#7'Command'#3'g'#1#8'ShortCut'#3'8`'#0#1#7'Command'#3'h'#1#8'Sh'
+  +'ortCut'#3'9`'#0#1#7'Command'#3#231#0#8'ShortCut'#3'N`'#0#1#7'Command'#3#232
+  +#0#8'ShortCut'#3'C`'#0#1#7'Command'#3#233#0#8'ShortCut'#3'L`'#0#1#7'Command'
+  +#3'd'#2#8'ShortCut'#2#9#0#1#7'Command'#3'e'#2#8'ShortCut'#3#9' '#0#1#7'Comma'
+  +'nd'#3#250#0#8'ShortCut'#3'B`'#0#0#13'Lines.Strings'#1#6#14'CharMapSynedit'#0
+  +#7'Options'#11#12'eoautoindent'#9'eonocaret'#13'eonoselection'#15'eoscrollpa'
   ,'steol'#16'eoshowscrollhint'#11'eosmarttabs'#14'eotabstospaces'#20'eotrimtra'
-  +'ilingspaces'#0#8'READONLY'#9#22'SELECTEDCOLOR.ONCHANGE'#13#6'CURSOR'#4#252
-  +#255#0#0#6'HEIGHT'#3#248#0#5'WIDTH'#3#137#1#0#0#6'TLABEL'#13'CharInfoLabel'#5
-  +'ALIGN'#7#8'albottom'#7'ANCHORS'#11#6'akleft'#7'akright'#8'akbottom'#0#7'CAP'
-  +'TION'#6#13'CharInfoLabel'#6'LAYOUT'#7#5'tltop'#6'HEIGHT'#2#20#3'TOP'#3#251#0
-  +#5'WIDTH'#3#137#1#0#0#0#9'TGROUPBOX'#12'TextGroupbox'#7'ANCHORS'#11#6'akleft'
-  +#7'akright'#8'akbottom'#0#7'CAPTION'#6#4'Text'#12'CLIENTHEIGHT'#2'5'#11'CLIE'
-  +'NTWIDTH'#3#137#1#11'PARENTCTL3D'#8#8'TABORDER'#2#3#4'LEFT'#2#8#6'HEIGHT'#2
-  +'F'#3'TOP'#3'('#1#5'WIDTH'#3#141#1#0#8'TSYNEDIT'#11'TextSynedit'#5'ALIGN'#7#8
-  +'alclient'#5'COLOR'#4#255#255#255#0#11'FONT.HEIGHT'#2#241#9'FONT.NAME'#6#7'c'
-  +'ourier'#6'HEIGHT'#2'5'#4'NAME'#6#11'TextSynedit'#11'PARENTCTL3D'#8#8'TABORD'
-  +'ER'#2#0#5'WIDTH'#3#137#1#24'BOOKMARKOPTIONS.ONCHANGE'#13#14'GUTTER.VISIBLE'
-  +#8#15'GUTTER.ONCHANGE'#13#10'KEYSTROKES'#14#1#7'COMMAND'#2#3#8'SHORTCUT'#2'&'
-  +#0#1#7'COMMAND'#2'g'#8'SHORTCUT'#3'& '#0#1#7'COMMAND'#3#211#0#8'SHORTCUT'#3
-  +'&@'#0#1#7'COMMAND'#2#4#8'SHORTCUT'#2'('#0#1#7'COMMAND'#2'h'#8'SHORTCUT'#3'('
-  +' '#0#1#7'COMMAND'#3#212#0#8'SHORTCUT'#3'(@'#0#1#7'COMMAND'#2#1#8'SHORTCUT'#2
-  +'%'#0#1#7'COMMAND'#2'e'#8'SHORTCUT'#3'% '#0#1#7'COMMAND'#2#5#8'SHORTCUT'#3'%'
-  +'@'#0#1#7'COMMAND'#2'i'#8'SHORTCUT'#3'%`'#0#1#7'COMMAND'#2#2#8'SHORTCUT'#2
-  +''''#0#1#7'COMMAND'#2'f'#8'SHORTCUT'#3''' '#0#1#7'COMMAND'#2#6#8'SHORTCUT'#3
-  +'''@'#0#1#7'COMMAND'#2'j'#8'SHORTCUT'#3'''`'#0#1#7'COMMAND'#2#10#8'SHORTCUT'
-  +#2'"'#0#1#7'COMMAND'#2'n'#8'SHORTCUT'#3'" '#0#1#7'COMMAND'#2#14#8'SHORTCUT'#3
-  +'"@'#0#1#7'COMMAND'#2'r'#8'SHORTCUT'#3'"`'#0#1#7'COMMAND'#2#9#8'SHORTCUT'#2
-  +'!'#0#1#7'COMMAND'#2'm'#8'SHORTCUT'#3'! '#0#1#7'COMMAND'#2#13#8'SHORTCUT'#3
-  +'!@'#0#1#7'COMMAND'#2'q'#8'SHORTCUT'#3'!`'#0#1#7'COMMAND'#2#7#8'SHORTCUT'#2
-  +'$'#0#1#7'COMMAND'#2'k'#8'SHORTCUT'#3'$ '#0#1#7'COMMAND'#2#15#8'SHORTCUT'#3
-  +'$@'#0#1#7'COMMAND'#2's'#8'SHORTCUT'#3'$`'#0#1#7'COMMAND'#2#8#8'SHORTCUT'#2
-  +'#'#0#1#7'COMMAND'#2'l'#8'SHORTCUT'#3'# '#0#1#7'COMMAND'#2#16#8'SHORTCUT'#3
-  +'#@'#0#1#7'COMMAND'#2't'#8'SHORTCUT'#3'#`'#0#1#7'COMMAND'#3#223#0#8'SHORTCUT'
-  +#2'-'#0#1#7'COMMAND'#3#201#0#8'SHORTCUT'#3'-@'#0#1#7'COMMAND'#3'\'#2#8'SHORT'
-  +'CUT'#3'- '#0#1#7'COMMAND'#3#246#1#8'SHORTCUT'#2'.'#0#1#7'COMMAND'#3'['#2#8
-  +'SHORTCUT'#3'. '#0#1#7'COMMAND'#3#245#1#8'SHORTCUT'#2#8#0#1#7'COMMAND'#3#245
-  +#1#8'SHORTCUT'#3#8' '#0#1#7'COMMAND'#3#248#1#8'SHORTCUT'#3#8'@'#0#1#7'COMMAN'
-  +'D'#3'Y'#2#8'SHORTCUT'#4#8#128#0#0#0#1#7'COMMAND'#3'Z'#2#8'SHORTCUT'#4#8#160
-  +#0#0#0#1#7'COMMAND'#3#253#1#8'SHORTCUT'#2#13#0#1#7'COMMAND'#3#199#0#8'SHORTC'
-  +'UT'#3'A@'#0#1#7'COMMAND'#3#201#0#8'SHORTCUT'#3'C@'#0#1#7'COMMAND'#3'b'#2#8
-  +'SHORTCUT'#3'I`'#0#1#7'COMMAND'#3#253#1#8'SHORTCUT'#3'M@'#0#1#7'COMMAND'#3
-  +#254#1#8'SHORTCUT'#3'N@'#0#1#7'COMMAND'#3#247#1#8'SHORTCUT'#3'T@'#0#1#7'COMM'
-  +'AND'#3'c'#2#8'SHORTCUT'#3'U`'#0#1#7'COMMAND'#3'\'#2#8'SHORTCUT'#3'V@'#0#1#7
-  +'COMMAND'#3'['#2#8'SHORTCUT'#3'X@'#0#1#7'COMMAND'#3#251#1#8'SHORTCUT'#3'Y@'#0
-  +#1#7'COMMAND'#3#250#1#8'SHORTCUT'#3'Y`'#0#1#7'COMMAND'#3'Y'#2#8'SHORTCUT'#3
-  +'Z@'#0#1#7'COMMAND'#3'Z'#2#8'SHORTCUT'#3'Z`'#0#1#7'COMMAND'#3'-'#1#8'SHORTCU'
-  +'T'#3'0@'#0#1#7'COMMAND'#3'.'#1#8'SHORTCUT'#3'1@'#0#1#7'COMMAND'#3'/'#1#8'SH'
-  +'ORTCUT'#3'2@'#0#1#7'COMMAND'#3'0'#1#8'SHORTCUT'#3'3@'#0#1#7'COMMAND'#3'1'#1
-  +#8'SHORTCUT'#3'4@'#0#1#7'COMMAND'#3'2'#1#8'SHORTCUT'#3'5@'#0#1#7'COMMAND'#3
-  +'3'#1#8'SHORTCUT'#3'6@'#0#1#7'COMMAND'#3'4'#1#8'SHORTCUT'#3'7@'#0#1#7'COMMAN'
-  +'D'#3'5'#1#8'SHORTCUT'#3'8@'#0#1#7'COMMAND'#3'6'#1#8'SHORTCUT'#3'9@'#0#1#7'C'
-  +'OMMAND'#3'_'#1#8'SHORTCUT'#3'0`'#0#1#7'COMMAND'#3'`'#1#8'SHORTCUT'#3'1`'#0#1
-  +#7'COMMAND'#3'a'#1#8'SHORTCUT'#3'2`'#0#1#7'COMMAND'#3'b'#1#8'SHORTCUT'#3'3`'
-  +#0#1#7'COMMAND'#3'c'#1#8'SHORTCUT'#3'4`'#0#1#7'COMMAND'#3'd'#1#8'SHORTCUT'#3
-  +'5`'#0#1#7'COMMAND'#3'e'#1#8'SHORTCUT'#3'6`'#0#1#7'COMMAND'#3'f'#1#8'SHORTCU'
-  +'T'#3'7`'#0#1#7'COMMAND'#3'g'#1#8'SHORTCUT'#3'8`'#0#1#7'COMMAND'#3'h'#1#8'SH'
-  +'ORTCUT'#3'9`'#0#1#7'COMMAND'#3#231#0#8'SHORTCUT'#3'N`'#0#1#7'COMMAND'#3#232
-  +#0#8'SHORTCUT'#3'C`'#0#1#7'COMMAND'#3#233#0#8'SHORTCUT'#3'L`'#0#1#7'COMMAND'
-  +#3'd'#2#8'SHORTCUT'#2#9#0#1#7'COMMAND'#3'e'#2#8'SHORTCUT'#3#9' '#0#1#7'COMMA'
-  +'ND'#3#250#0#8'SHORTCUT'#3'B`'#0#0#13'LINES.Strings'#1#6#11'TextSynedit'#0#7
-  +'OPTIONS'#11#12'eoautoindent'#18'eobrackethighlight'#17'eodragdropediting'#15
-  +'eoscrollpasteol'#16'eoshowscrollhint'#11'eosmarttabs'#14'eotabstospaces'#20
-  +'eotrimtrailingspaces'#0#22'SELECTEDCOLOR.ONCHANGE'#13#6'CURSOR'#4#252#255#0
-  +#0#6'HEIGHT'#2'5'#5'WIDTH'#3#137#1#0#0#0#0
+  +'ilingspaces'#0#8'ReadOnly'#9#22'SelectedColor.OnChange'#13#6'Cursor'#4#252
+  +#255#0#0#6'Height'#3#248#0#5'Width'#3#137#1#0#0#6'TLabel'#13'CharInfoLabel'#5
+  +'Align'#7#8'albottom'#7'Anchors'#11#6'akleft'#7'akright'#8'akbottom'#0#7'Cap'
+  +'tion'#6#13'CharInfoLabel'#6'Layout'#7#5'tltop'#6'Height'#2#20#3'Top'#3#251#0
+  +#5'Width'#3#137#1#0#0#0#9'TGroupBox'#12'TextGroupbox'#7'Anchors'#11#6'akleft'
+  +#7'akright'#8'akbottom'#0#7'Caption'#6#4'Text'#12'ClientHeight'#2'5'#11'Clie'
+  +'ntWidth'#3#137#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#4'Left'
+  +#2#8#6'Height'#2'F'#3'Top'#3'('#1#5'Width'#3#141#1#0#8'TSynEdit'#11'TextSyne'
+  +'dit'#5'Align'#7#8'alclient'#11'Font.Height'#2#241#9'Font.Name'#6#7'courier'
+  +#6'Height'#2'5'#4'Name'#6#11'TextSynedit'#11'ParentCtl3D'#8#8'TabOrder'#2#0#5
+  +'Width'#3#137#1#24'BookMarkOptions.OnChange'#13#14'Gutter.Visible'#8#15'Gutt'
+  +'er.OnChange'#13#10'Keystrokes'#14#1#7'Command'#2#3#8'ShortCut'#2'&'#0#1#7'C'
+  +'ommand'#2'g'#8'ShortCut'#3'& '#0#1#7'Command'#3#211#0#8'ShortCut'#3'&@'#0#1
+  +#7'Command'#2#4#8'ShortCut'#2'('#0#1#7'Command'#2'h'#8'ShortCut'#3'( '#0#1#7
+  +'Command'#3#212#0#8'ShortCut'#3'(@'#0#1#7'Command'#2#1#8'ShortCut'#2'%'#0#1#7
+  +'Command'#2'e'#8'ShortCut'#3'% '#0#1#7'Command'#2#5#8'ShortCut'#3'%@'#0#1#7
+  +'Command'#2'i'#8'ShortCut'#3'%`'#0#1#7'Command'#2#2#8'ShortCut'#2''''#0#1#7
+  +'Command'#2'f'#8'ShortCut'#3''' '#0#1#7'Command'#2#6#8'ShortCut'#3'''@'#0#1#7
+  +'Command'#2'j'#8'ShortCut'#3'''`'#0#1#7'Command'#2#10#8'ShortCut'#2'"'#0#1#7
+  +'Command'#2'n'#8'ShortCut'#3'" '#0#1#7'Command'#2#14#8'ShortCut'#3'"@'#0#1#7
+  +'Command'#2'r'#8'ShortCut'#3'"`'#0#1#7'Command'#2#9#8'ShortCut'#2'!'#0#1#7'C'
+  +'ommand'#2'm'#8'ShortCut'#3'! '#0#1#7'Command'#2#13#8'ShortCut'#3'!@'#0#1#7
+  +'Command'#2'q'#8'ShortCut'#3'!`'#0#1#7'Command'#2#7#8'ShortCut'#2'$'#0#1#7'C'
+  +'ommand'#2'k'#8'ShortCut'#3'$ '#0#1#7'Command'#2#15#8'ShortCut'#3'$@'#0#1#7
+  +'Command'#2's'#8'ShortCut'#3'$`'#0#1#7'Command'#2#8#8'ShortCut'#2'#'#0#1#7'C'
+  +'ommand'#2'l'#8'ShortCut'#3'# '#0#1#7'Command'#2#16#8'ShortCut'#3'#@'#0#1#7
+  +'Command'#2't'#8'ShortCut'#3'#`'#0#1#7'Command'#3#223#0#8'ShortCut'#2'-'#0#1
+  +#7'Command'#3#201#0#8'ShortCut'#3'-@'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'- '
+  +#0#1#7'Command'#3#246#1#8'ShortCut'#2'.'#0#1#7'Command'#3'['#2#8'ShortCut'#3
+  +'. '#0#1#7'Command'#3#245#1#8'ShortCut'#2#8#0#1#7'Command'#3#245#1#8'ShortCu'
+  +'t'#3#8' '#0#1#7'Command'#3#248#1#8'ShortCut'#3#8'@'#0#1#7'Command'#3'Y'#2#8
+  +'ShortCut'#4#8#128#0#0#0#1#7'Command'#3'Z'#2#8'ShortCut'#4#8#160#0#0#0#1#7'C'
+  +'ommand'#3#253#1#8'ShortCut'#2#13#0#1#7'Command'#3#199#0#8'ShortCut'#3'A@'#0
+  +#1#7'Command'#3#201#0#8'ShortCut'#3'C@'#0#1#7'Command'#3'b'#2#8'ShortCut'#3
+  +'I`'#0#1#7'Command'#3#253#1#8'ShortCut'#3'M@'#0#1#7'Command'#3#254#1#8'Short'
+  +'Cut'#3'N@'#0#1#7'Command'#3#247#1#8'ShortCut'#3'T@'#0#1#7'Command'#3'c'#2#8
+  +'ShortCut'#3'U`'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'V@'#0#1#7'Command'#3'['
+  +#2#8'ShortCut'#3'X@'#0#1#7'Command'#3#251#1#8'ShortCut'#3'Y@'#0#1#7'Command'
+  +#3#250#1#8'ShortCut'#3'Y`'#0#1#7'Command'#3'Y'#2#8'ShortCut'#3'Z@'#0#1#7'Com'
+  +'mand'#3'Z'#2#8'ShortCut'#3'Z`'#0#1#7'Command'#3'-'#1#8'ShortCut'#3'0@'#0#1#7
+  +'Command'#3'.'#1#8'ShortCut'#3'1@'#0#1#7'Command'#3'/'#1#8'ShortCut'#3'2@'#0
+  +#1#7'Command'#3'0'#1#8'ShortCut'#3'3@'#0#1#7'Command'#3'1'#1#8'ShortCut'#3'4'
+  +'@'#0#1#7'Command'#3'2'#1#8'ShortCut'#3'5@'#0#1#7'Command'#3'3'#1#8'ShortCut'
+  +#3'6@'#0#1#7'Command'#3'4'#1#8'ShortCut'#3'7@'#0#1#7'Command'#3'5'#1#8'Short'
+  +'Cut'#3'8@'#0#1#7'Command'#3'6'#1#8'ShortCut'#3'9@'#0#1#7'Command'#3'_'#1#8
+  +'ShortCut'#3'0`'#0#1#7'Command'#3'`'#1#8'ShortCut'#3'1`'#0#1#7'Command'#3'a'
+  +#1#8'ShortCut'#3'2`'#0#1#7'Command'#3'b'#1#8'ShortCut'#3'3`'#0#1#7'Command'#3
+  +'c'#1#8'ShortCut'#3'4`'#0#1#7'Command'#3'd'#1#8'ShortCut'#3'5`'#0#1#7'Comman'
+  +'d'#3'e'#1#8'ShortCut'#3'6`'#0#1#7'Command'#3'f'#1#8'ShortCut'#3'7`'#0#1#7'C'
+  +'ommand'#3'g'#1#8'ShortCut'#3'8`'#0#1#7'Command'#3'h'#1#8'ShortCut'#3'9`'#0#1
+  +#7'Command'#3#231#0#8'ShortCut'#3'N`'#0#1#7'Command'#3#232#0#8'ShortCut'#3'C'
+  +'`'#0#1#7'Command'#3#233#0#8'ShortCut'#3'L`'#0#1#7'Command'#3'd'#2#8'ShortCu'
+  +'t'#2#9#0#1#7'Command'#3'e'#2#8'ShortCut'#3#9' '#0#1#7'Command'#3#250#0#8'Sh'
+  +'ortCut'#3'B`'#0#0#13'Lines.Strings'#1#6#11'TextSynedit'#0#22'SelectedColor.'
+  +'OnChange'#13#6'Cursor'#4#252#255#0#0#6'Height'#2'5'#5'Width'#3#137#1#0#0#0#0
 ]);

@@ -168,11 +168,6 @@ Begin
   end;
 End;
 
-function TStatusBar.ColorIsStored: boolean;
-begin
-  Result:=(Color<>clBtnFace);
-end;
-
 Procedure TStatusBar.DrawDivider(X : Integer);
 Begin
   Canvas.Pen.Width:=1;

@@ -598,6 +598,7 @@ type
     property OnTextChange: TNotifyEvent read FOnTextChange write FOnTextChange;
     property OnCalcKey: TKeyPressEvent read FOnCalcKey write FOnCalcKey;
     property OnDisplayChange: TNotifyEvent read FOnDisplayChange write FOnDisplayChange;
+    property Color default clBtnFace;
   end;
 
 constructor TCalculatorPanel.CreateLayout(AOwner: TComponent;

@@ -1,47 +1,44 @@
 object Form1: TForm1
-  CAPTION = 'TreeView Example 1'
-  CLIENTHEIGHT = 427
-  CLIENTWIDTH = 455
-  FONT.HEIGHT = -11
-  FONT.NAME = 'MS Sans Serif'
-  TEXTHEIGHT = 13
-  HORZSCROLLBAR.PAGE = 456
-  VERTSCROLLBAR.PAGE = 428
-  LEFT = 570
-  HEIGHT = 427
-  TOP = 249
-  WIDTH = 455
-  object tv_eg1: TTREEVIEW
-    ALIGN = alleft
-    BACKGROUNDCOLOR = 16777215
-    BORDERWIDTH = 2
-    DEFAULTITEMHEIGHT = 17
-    DRAGCURSOR = 0
-    HIDESELECTION = False
-    INDENT = 19
-    PARENTCTL3D = False
-    SELECTIONCOLOR = -2147483635
-    TABORDER = 0
-    OPTIONS = [tvoautoitemheight, tvokeepcollapsednodes, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
-    HEIGHT = 427
-    WIDTH = 196
+  Caption = 'TreeView Example 1'
+  ClientHeight = 427
+  ClientWidth = 455
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  TextHeight = 13
+  HorzScrollBar.Page = 456
+  VertScrollBar.Page = 428
+  Left = 570
+  Height = 427
+  Top = 249
+  Width = 455
+  object tv_eg1: TTreeView
+    Align = alleft
+    DefaultItemHeight = 17
+    DragCursor = crDefault
+    HideSelection = False
+    Indent = 19
+    ParentCtl3D = False
+    TabOrder = 0
+    Options = [tvoautoitemheight, tvokeepcollapsednodes, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
+    Height = 427
+    Width = 196
   end
-  object but_Add: TBUTTON
-    CAPTION = 'Add'
-    TABORDER = 1
-    ONCLICK = but_AddClick
-    LEFT = 208
-    HEIGHT = 25
-    TOP = 8
-    WIDTH = 75
+  object but_Add: TButton
+    Caption = 'Add'
+    TabOrder = 1
+    OnClick = but_AddClick
+    Left = 208
+    Height = 25
+    Top = 8
+    Width = 75
   end
-  object but_Remove: TBUTTON
-    CAPTION = 'Remove'
-    TABORDER = 2
-    ONCLICK = but_RemoveClick
-    LEFT = 208
-    HEIGHT = 25
-    TOP = 40
-    WIDTH = 75
+  object but_Remove: TButton
+    Caption = 'Remove'
+    TabOrder = 2
+    OnClick = but_RemoveClick
+    Left = 208
+    Height = 25
+    Top = 40
+    Width = 75
   end
 end

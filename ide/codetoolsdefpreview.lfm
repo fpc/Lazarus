@@ -1,419 +1,423 @@
 object CodeToolsDefinesDialog: TCodeToolsDefinesDialog
-  CAPTION = 'CodeToolsDefinesDialog'
-  CLIENTHEIGHT = 451
-  CLIENTWIDTH = 463
-  ONCLOSE = CodeToolsDefinesDialogCLOSE
-  ONCREATE = CodeToolsDefinesDialogCREATE
-  HORZSCROLLBAR.PAGE = 464
-  VERTSCROLLBAR.PAGE = 452
-  LEFT = 423
-  HEIGHT = 451
-  TOP = 228
-  WIDTH = 463
-  object DirectoryGroupbox: TGROUPBOX
-    ALIGN = altop
-    CAPTION = 'DirectoryGroupbox'
-    CLIENTHEIGHT = 31
-    CLIENTWIDTH = 459
-    PARENTCTL3D = False
-    TABORDER = 0
-    ONRESIZE = DirectoryGroupboxRESIZE
-    HEIGHT = 48
-    WIDTH = 463
-    object DirectoryCombobox: TCOMBOBOX
-      MAXLENGTH = 0
-      PARENTCTL3D = False
-      TABORDER = 0
-      TABSTOP = True
-      TEXT = 'DirectoryCombobox'
-      ONCHANGE = DirectoryComboboxCHANGE
-      LEFT = 6
-      HEIGHT = 25
-      TOP = 1
-      WIDTH = 360
+  Caption = 'CodeToolsDefinesDialog'
+  ClientHeight = 451
+  ClientWidth = 463
+  OnClose = CodeToolsDefinesDialogCLOSE
+  OnCreate = CodeToolsDefinesDialogCREATE
+  HorzScrollBar.Page = 464
+  VertScrollBar.Page = 452
+  Left = 423
+  Height = 451
+  Top = 228
+  Width = 463
+  object DirectoryGroupbox: TGroupBox
+    Align = altop
+    Caption = 'DirectoryGroupbox'
+    ClientHeight = 31
+    ClientWidth = 459
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 0
+    OnResize = DirectoryGroupboxRESIZE
+    Height = 48
+    Width = 463
+    object DirectoryCombobox: TComboBox
+      MaxLength = 0
+      OnChange = DirectoryComboboxCHANGE
+      ParentCtl3D = False
+      TabOrder = 0
+      TabStop = True
+      Text = 'DirectoryCombobox'
+      Left = 6
+      Height = 25
+      Top = 1
+      Width = 360
     end
-    object DirectoryBrowseButton: TBUTTON
-      CAPTION = '...'
-      TABSTOP = True
-      TABORDER = 1
-      ONCLICK = DirectoryBrowseButtonCLICK
-      LEFT = 375
-      HEIGHT = 26
-      TOP = 1
-      WIDTH = 31
+    object DirectoryBrowseButton: TButton
+      Caption = '...'
+      TabStop = True
+      TabOrder = 1
+      OnClick = DirectoryBrowseButtonCLICK
+      Left = 375
+      Height = 26
+      Top = 1
+      Width = 31
     end
   end
-  object ValuesListview: TLISTVIEW
-    ALIGN = alclient
-    COLUMNS = <>
-    VIEWSTYLE = vsreport
-    ONSELECTITEM = ValuesListviewSELECTITEM
-    HEIGHT = 272
-    TOP = 48
-    WIDTH = 463
+  object ValuesListview: TListView
+    Align = alclient
+    Columns = <>
+    ViewStyle = vsreport
+    OnSelectItem = ValuesListviewSELECTITEM
+    Height = 272
+    Top = 48
+    Width = 463
   end
-  object ValueGroupbox: TGROUPBOX
-    ALIGN = albottom
-    ANCHORS = [akleft, akbottom]
-    CAPTION = 'Value'
-    CLIENTHEIGHT = 85
-    CLIENTWIDTH = 459
-    PARENTCTL3D = False
-    TABORDER = 2
-    HEIGHT = 102
-    TOP = 320
-    WIDTH = 463
-    object ValueSynedit: TSYNEDIT
-      ALIGN = alclient
-      COLOR = 16777215
-      FONT.HEIGHT = -15
-      FONT.NAME = 'courier'
-      HEIGHT = 85
-      NAME = 'ValueSynedit'
-      PARENTCTL3D = False
-      TABORDER = 0
-      WIDTH = 459
-      GUTTER.VISIBLE = False
-      KEYSTROKES = <      
+  object ValueGroupbox: TGroupBox
+    Align = albottom
+    Anchors = [akleft, akbottom]
+    Caption = 'Value'
+    ClientHeight = 85
+    ClientWidth = 459
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 2
+    Height = 102
+    Top = 320
+    Width = 463
+    object ValueSynedit: TSynEdit
+      Align = alclient
+      Font.Height = -15
+      Font.Name = 'courier'
+      Height = 85
+      Name = 'ValueSynedit'
+      ParentCtl3D = False
+      TabOrder = 0
+      Width = 459
+      BookMarkOptions.OnChange = nil
+      Gutter.Visible = False
+      Gutter.OnChange = nil
+      Keystrokes = <      
         item
-          COMMAND = 3
-          SHORTCUT = 38
+          Command = 3
+          ShortCut = 38
         end      
         item
-          COMMAND = 103
-          SHORTCUT = 8230
+          Command = 103
+          ShortCut = 8230
         end      
         item
-          COMMAND = 211
-          SHORTCUT = 16422
+          Command = 211
+          ShortCut = 16422
         end      
         item
-          COMMAND = 4
-          SHORTCUT = 40
+          Command = 4
+          ShortCut = 40
         end      
         item
-          COMMAND = 104
-          SHORTCUT = 8232
+          Command = 104
+          ShortCut = 8232
         end      
         item
-          COMMAND = 212
-          SHORTCUT = 16424
+          Command = 212
+          ShortCut = 16424
         end      
         item
-          COMMAND = 1
-          SHORTCUT = 37
+          Command = 1
+          ShortCut = 37
         end      
         item
-          COMMAND = 101
-          SHORTCUT = 8229
+          Command = 101
+          ShortCut = 8229
         end      
         item
-          COMMAND = 5
-          SHORTCUT = 16421
+          Command = 5
+          ShortCut = 16421
         end      
         item
-          COMMAND = 105
-          SHORTCUT = 24613
+          Command = 105
+          ShortCut = 24613
         end      
         item
-          COMMAND = 2
-          SHORTCUT = 39
+          Command = 2
+          ShortCut = 39
         end      
         item
-          COMMAND = 102
-          SHORTCUT = 8231
+          Command = 102
+          ShortCut = 8231
         end      
         item
-          COMMAND = 6
-          SHORTCUT = 16423
+          Command = 6
+          ShortCut = 16423
         end      
         item
-          COMMAND = 106
-          SHORTCUT = 24615
+          Command = 106
+          ShortCut = 24615
         end      
         item
-          COMMAND = 10
-          SHORTCUT = 34
+          Command = 10
+          ShortCut = 34
         end      
         item
-          COMMAND = 110
-          SHORTCUT = 8226
+          Command = 110
+          ShortCut = 8226
         end      
         item
-          COMMAND = 14
-          SHORTCUT = 16418
+          Command = 14
+          ShortCut = 16418
         end      
         item
-          COMMAND = 114
-          SHORTCUT = 24610
+          Command = 114
+          ShortCut = 24610
         end      
         item
-          COMMAND = 9
-          SHORTCUT = 33
+          Command = 9
+          ShortCut = 33
         end      
         item
-          COMMAND = 109
-          SHORTCUT = 8225
+          Command = 109
+          ShortCut = 8225
         end      
         item
-          COMMAND = 13
-          SHORTCUT = 16417
+          Command = 13
+          ShortCut = 16417
         end      
         item
-          COMMAND = 113
-          SHORTCUT = 24609
+          Command = 113
+          ShortCut = 24609
         end      
         item
-          COMMAND = 7
-          SHORTCUT = 36
+          Command = 7
+          ShortCut = 36
         end      
         item
-          COMMAND = 107
-          SHORTCUT = 8228
+          Command = 107
+          ShortCut = 8228
         end      
         item
-          COMMAND = 15
-          SHORTCUT = 16420
+          Command = 15
+          ShortCut = 16420
         end      
         item
-          COMMAND = 115
-          SHORTCUT = 24612
+          Command = 115
+          ShortCut = 24612
         end      
         item
-          COMMAND = 8
-          SHORTCUT = 35
+          Command = 8
+          ShortCut = 35
         end      
         item
-          COMMAND = 108
-          SHORTCUT = 8227
+          Command = 108
+          ShortCut = 8227
         end      
         item
-          COMMAND = 16
-          SHORTCUT = 16419
+          Command = 16
+          ShortCut = 16419
         end      
         item
-          COMMAND = 116
-          SHORTCUT = 24611
+          Command = 116
+          ShortCut = 24611
         end      
         item
-          COMMAND = 223
-          SHORTCUT = 45
+          Command = 223
+          ShortCut = 45
         end      
         item
-          COMMAND = 201
-          SHORTCUT = 16429
+          Command = 201
+          ShortCut = 16429
         end      
         item
-          COMMAND = 604
-          SHORTCUT = 8237
+          Command = 604
+          ShortCut = 8237
         end      
         item
-          COMMAND = 502
-          SHORTCUT = 46
+          Command = 502
+          ShortCut = 46
         end      
         item
-          COMMAND = 603
-          SHORTCUT = 8238
+          Command = 603
+          ShortCut = 8238
         end      
         item
-          COMMAND = 501
-          SHORTCUT = 8
+          Command = 501
+          ShortCut = 8
         end      
         item
-          COMMAND = 501
-          SHORTCUT = 8200
+          Command = 501
+          ShortCut = 8200
         end      
         item
-          COMMAND = 504
-          SHORTCUT = 16392
+          Command = 504
+          ShortCut = 16392
         end      
         item
-          COMMAND = 601
-          SHORTCUT = 32776
+          Command = 601
+          ShortCut = 32776
         end      
         item
-          COMMAND = 602
-          SHORTCUT = 40968
+          Command = 602
+          ShortCut = 40968
         end      
         item
-          COMMAND = 509
-          SHORTCUT = 13
+          Command = 509
+          ShortCut = 13
         end      
         item
-          COMMAND = 199
-          SHORTCUT = 16449
+          Command = 199
+          ShortCut = 16449
         end      
         item
-          COMMAND = 201
-          SHORTCUT = 16451
+          Command = 201
+          ShortCut = 16451
         end      
         item
-          COMMAND = 610
-          SHORTCUT = 24649
+          Command = 610
+          ShortCut = 24649
         end      
         item
-          COMMAND = 509
-          SHORTCUT = 16461
+          Command = 509
+          ShortCut = 16461
         end      
         item
-          COMMAND = 510
-          SHORTCUT = 16462
+          Command = 510
+          ShortCut = 16462
         end      
         item
-          COMMAND = 503
-          SHORTCUT = 16468
+          Command = 503
+          ShortCut = 16468
         end      
         item
-          COMMAND = 611
-          SHORTCUT = 24661
+          Command = 611
+          ShortCut = 24661
         end      
         item
-          COMMAND = 604
-          SHORTCUT = 16470
+          Command = 604
+          ShortCut = 16470
         end      
         item
-          COMMAND = 603
-          SHORTCUT = 16472
+          Command = 603
+          ShortCut = 16472
         end      
         item
-          COMMAND = 507
-          SHORTCUT = 16473
+          Command = 507
+          ShortCut = 16473
         end      
         item
-          COMMAND = 506
-          SHORTCUT = 24665
+          Command = 506
+          ShortCut = 24665
         end      
         item
-          COMMAND = 601
-          SHORTCUT = 16474
+          Command = 601
+          ShortCut = 16474
         end      
         item
-          COMMAND = 602
-          SHORTCUT = 24666
+          Command = 602
+          ShortCut = 24666
         end      
         item
-          COMMAND = 301
-          SHORTCUT = 16432
+          Command = 301
+          ShortCut = 16432
         end      
         item
-          COMMAND = 302
-          SHORTCUT = 16433
+          Command = 302
+          ShortCut = 16433
         end      
         item
-          COMMAND = 303
-          SHORTCUT = 16434
+          Command = 303
+          ShortCut = 16434
         end      
         item
-          COMMAND = 304
-          SHORTCUT = 16435
+          Command = 304
+          ShortCut = 16435
         end      
         item
-          COMMAND = 305
-          SHORTCUT = 16436
+          Command = 305
+          ShortCut = 16436
         end      
         item
-          COMMAND = 306
-          SHORTCUT = 16437
+          Command = 306
+          ShortCut = 16437
         end      
         item
-          COMMAND = 307
-          SHORTCUT = 16438
+          Command = 307
+          ShortCut = 16438
         end      
         item
-          COMMAND = 308
-          SHORTCUT = 16439
+          Command = 308
+          ShortCut = 16439
         end      
         item
-          COMMAND = 309
-          SHORTCUT = 16440
+          Command = 309
+          ShortCut = 16440
         end      
         item
-          COMMAND = 310
-          SHORTCUT = 16441
+          Command = 310
+          ShortCut = 16441
         end      
         item
-          COMMAND = 351
-          SHORTCUT = 24624
+          Command = 351
+          ShortCut = 24624
         end      
         item
-          COMMAND = 352
-          SHORTCUT = 24625
+          Command = 352
+          ShortCut = 24625
         end      
         item
-          COMMAND = 353
-          SHORTCUT = 24626
+          Command = 353
+          ShortCut = 24626
         end      
         item
-          COMMAND = 354
-          SHORTCUT = 24627
+          Command = 354
+          ShortCut = 24627
         end      
         item
-          COMMAND = 355
-          SHORTCUT = 24628
+          Command = 355
+          ShortCut = 24628
         end      
         item
-          COMMAND = 356
-          SHORTCUT = 24629
+          Command = 356
+          ShortCut = 24629
         end      
         item
-          COMMAND = 357
-          SHORTCUT = 24630
+          Command = 357
+          ShortCut = 24630
         end      
         item
-          COMMAND = 358
-          SHORTCUT = 24631
+          Command = 358
+          ShortCut = 24631
         end      
         item
-          COMMAND = 359
-          SHORTCUT = 24632
+          Command = 359
+          ShortCut = 24632
         end      
         item
-          COMMAND = 360
-          SHORTCUT = 24633
+          Command = 360
+          ShortCut = 24633
         end      
         item
-          COMMAND = 231
-          SHORTCUT = 24654
+          Command = 231
+          ShortCut = 24654
         end      
         item
-          COMMAND = 232
-          SHORTCUT = 24643
+          Command = 232
+          ShortCut = 24643
         end      
         item
-          COMMAND = 233
-          SHORTCUT = 24652
+          Command = 233
+          ShortCut = 24652
         end      
         item
-          COMMAND = 612
-          SHORTCUT = 9
+          Command = 612
+          ShortCut = 9
         end      
         item
-          COMMAND = 613
-          SHORTCUT = 8201
+          Command = 613
+          ShortCut = 8201
         end      
         item
-          COMMAND = 250
-          SHORTCUT = 24642
+          Command = 250
+          ShortCut = 24642
         end>
-      LINES.Strings = (
+      Lines.Strings = (
         'ValueSynedit'
       )
-      OPTIONS = [eoautoindent, eobrackethighlight, eoshowctrlmouselinks, eodragdropediting, eoscrollpasteol, eoshowscrollhint, eosmarttabs, eotabstospaces, eotrimtrailingspaces]
-      READONLY = True
-      CURSOR = 65532
-      HEIGHT = 85
-      WIDTH = 459
+      Options = [eoautoindent, eobrackethighlight, eoshowctrlmouselinks, eodragdropediting, eoscrollpasteol, eoshowscrollhint, eosmarttabs, eotabstospaces, eotrimtrailingspaces]
+      ReadOnly = True
+      SelectedColor.OnChange = nil
+      Cursor = 65532
+      Height = 85
+      Width = 459
     end
   end
-  object CloseButton: TBUTTON
-    ANCHORS = [akleft, akbottom]
-    ALIGN = albottom
-    MODALRESULT = 2
-    CAPTION = 'CloseButton'
-    TABSTOP = True
-    TABORDER = 3
-    HEIGHT = 29
-    TOP = 422
-    WIDTH = 463
+  object CloseButton: TButton
+    Anchors = [akleft, akbottom]
+    Align = albottom
+    ModalResult = 2
+    Caption = 'CloseButton'
+    TabStop = True
+    TabOrder = 3
+    Height = 29
+    Top = 422
+    Width = 463
   end
 end

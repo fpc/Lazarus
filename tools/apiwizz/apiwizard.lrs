@@ -1,39 +1,35 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TApiWizForm','FORMDATA',[
-  'TPF0'#11'TApiWizForm'#10'ApiWizForm'#7'CAPTION'#6#7'ApiWiZZ'#12'CLIENTHEIGHT'
-  +#3#17#1#11'CLIENTWIDTH'#3#248#1#8'ONCREATE'#7#16'ApiWizFormCreate'#8'POSITIO'
-  +'N'#7#16'podefaultposonly'#18'HORZSCROLLBAR.PAGE'#3#249#1#18'VERTSCROLLBAR.P'
-  +'AGE'#3#18#1#4'LEFT'#3'f'#1#6'HEIGHT'#3#17#1#3'TOP'#3#185#0#5'WIDTH'#3#248#1
-  +#0#6'TLABEL'#10'lblDeclare'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6
-  +#12'Declaration:'#5'COLOR'#4#15#0#0#128#6'LAYOUT'#7#5'tltop'#4'LEFT'#2#4#6'H'
-  +'EIGHT'#2#16#3'TOP'#2'D'#5'WIDTH'#2'x'#0#0#6'TLABEL'#10'lblLazarus'#7'ANCHOR'
-  +'S'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#12'Lazarus dir:'#5'COLOR'#4#15#0#0
-  +#128#6'LAYOUT'#7#5'tltop'#4'LEFT'#2#4#6'HEIGHT'#2#16#3'TOP'#2#16#5'WIDTH'#2
-  +'x'#0#0#5'TEDIT'#10'txtDeclare'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'#0
-  +#7'TABSTOP'#9#8'TABORDER'#2#0#4'LEFT'#2#4#6'HEIGHT'#2#24#3'TOP'#2'X'#5'WIDTH'
-  +#3#236#1#0#0#7'TBUTTON'#11'cmdGenerate'#7'ANCHORS'#11#7'akright'#8'akbottom'
-  +#0#7'CAPTION'#6#8'Generate'#7'TABSTOP'#9#8'TABORDER'#2#2#7'ONCLICK'#7#16'cmd'
-  +'GenerateClick'#4'LEFT'#3#165#1#6'HEIGHT'#2#28#3'TOP'#3#238#0#5'WIDTH'#2'K'#0
-  +#0#5'TEDIT'#10'txtLazarus'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'#0#7'T'
-  +'ABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#2#4#6'HEIGHT'#2#24#3'TOP'#2'$'#5'WIDTH'#3
-  +#236#1#3'TAG'#3#237#1#0#0#11'TRADIOGROUP'#10'rdgApiType'#7'ANCHORS'#11#5'akt'
-  +'op'#6'akleft'#0#7'CAPTION'#6#8'Api type'#9'ITEMINDEX'#2#0#13'ITEMS.Strings'
-  +#1#6#19'win32 compatibility'#6#13'LCL interface'#0#7'ONCLICK'#7#15'rdgApiTyp'
-  +'eClick'#4'LEFT'#3#176#0#6'HEIGHT'#2'H'#3'TOP'#3#128#0#5'WIDTH'#3#158#0#0#0#9
-  +'TGROUPBOX'#9'Groupbox1'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#12
-  +'LCL Platform'#12'CLIENTHEIGHT'#2's'#11'CLIENTWIDTH'#3#160#0#5'COLOR'#4#15#0
-  +#0#128#11'PARENTCOLOR'#9#11'PARENTCTL3D'#8#8'TABORDER'#2#6#4'LEFT'#2#4#6'HEI'
-  +'GHT'#3#138#0#3'TOP'#3#128#0#5'WIDTH'#3#164#0#0#11'TCHECKGROUP'#14'cbgLCLPla'
-  +'tform'#7'ENABLED'#8#13'ITEMS.Strings'#1#6#3'gtk'#6#4'gtk2'#6#5'win32'#0#4'L'
-  +'EFT'#2#26#6'HEIGHT'#2'P'#3'TOP'#2#30#5'WIDTH'#3#128#0#4'Data'#10#7#0#0#0#3#0
-  +#0#0#2#2#2#0#0#12'TRADIOBUTTON'#13'rbIndependent'#7'ANCHORS'#11#5'aktop'#6'a'
-  +'kleft'#0#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'CAPTION'#6#11'Independent'#7'CHE'
-  +'CKED'#9#5'STATE'#7#9'cbchecked'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#1#7'TABSTO'
-  +'P'#9#7'ONCLICK'#7#25'rbPlatformDependencyClick'#4'LEFT'#2#10#6'HEIGHT'#2#20
-  +#3'TOP'#2#3#5'WIDTH'#2's'#0#0#12'TRADIOBUTTON'#11'rbDependent'#7'ANCHORS'#11
-  +#5'aktop'#6'akleft'#0#8'AUTOSIZE'#9#11'ALLOWGRAYED'#9#7'CAPTION'#6#9'Depende'
-  +'nt'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#2#7'TABSTOP'#9#7'ONCLICK'#7#25'rbPlatf'
-  +'ormDependencyClick'#4'LEFT'#2#10#6'HEIGHT'#2#20#3'TOP'#2#30#5'WIDTH'#2'j'#0
-  +#0#0#0
+  'TPF0'#11'TApiWizForm'#10'ApiWizForm'#7'Caption'#6#7'ApiWiZZ'#12'ClientHeight'
+  +#3#17#1#11'ClientWidth'#3#248#1#8'OnCreate'#7#16'ApiWizFormCreate'#8'Positio'
+  +'n'#7#16'podefaultposonly'#18'HorzScrollBar.Page'#3#249#1#18'VertScrollBar.P'
+  +'age'#3#18#1#4'Left'#3'f'#1#6'Height'#3#17#1#3'Top'#3#185#0#5'Width'#3#248#1
+  +#0#6'TLabel'#10'lblDeclare'#7'Caption'#6#12'Declaration:'#6'Layout'#7#5'tlto'
+  +'p'#4'Left'#2#4#6'Height'#2#16#3'Top'#2'D'#5'Width'#2'x'#0#0#6'TLabel'#10'lb'
+  +'lLazarus'#7'Caption'#6#12'Lazarus dir:'#6'Layout'#7#5'tltop'#4'Left'#2#4#6
+  +'Height'#2#16#3'Top'#2#16#5'Width'#2'x'#0#0#5'TEdit'#10'txtDeclare'#7'Anchor'
+  +'s'#11#5'aktop'#6'akleft'#7'akright'#0#7'TabStop'#9#8'TabOrder'#2#0#4'Left'#2
+  +#4#6'Height'#2#24#3'Top'#2'X'#5'Width'#3#236#1#0#0#7'TButton'#11'cmdGenerate'
+  +#7'Anchors'#11#7'akright'#8'akbottom'#0#7'Caption'#6#8'Generate'#7'TabStop'#9
+  +#8'TabOrder'#2#2#7'OnClick'#7#16'cmdGenerateClick'#4'Left'#3#165#1#6'Height'
+  +#2#28#3'Top'#3#238#0#5'Width'#2'K'#0#0#5'TEdit'#10'txtLazarus'#7'Anchors'#11
+  +#5'aktop'#6'akleft'#7'akright'#0#7'TabStop'#9#8'TabOrder'#2#1#4'Left'#2#4#6
+  +'Height'#2#24#3'Top'#2'$'#5'Width'#3#236#1#3'Tag'#3#237#1#0#0#11'TRadioGroup'
+  +#10'rdgApiType'#7'Caption'#6#8'Api type'#9'ItemIndex'#2#0#13'Items.Strings'#1
+  +#6#19'win32 compatibility'#6#13'LCL interface'#0#7'OnClick'#7#15'rdgApiTypeC'
+  +'lick'#4'Left'#3#176#0#6'Height'#2'H'#3'Top'#3#128#0#5'Width'#3#158#0#0#0#9
+  +'TGroupBox'#9'Groupbox1'#7'Caption'#6#12'LCL Platform'#12'ClientHeight'#2'y'
+  +#11'ClientWidth'#3#160#0#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#6
+  +#4'Left'#2#4#6'Height'#3#138#0#3'Top'#3#128#0#5'Width'#3#164#0#0#11'TCheckGr'
+  +'oup'#14'cbgLCLPlatform'#7'Enabled'#8#13'Items.Strings'#1#6#3'gtk'#6#4'gtk2'
+  +#6#5'win32'#0#4'Left'#2#26#6'Height'#2'P'#3'Top'#2#30#5'Width'#3#128#0#4'Dat'
+  +'a'#10#7#0#0#0#3#0#0#0#2#2#2#0#0#12'TRadioButton'#13'rbIndependent'#8'AutoSi'
+  +'ze'#9#11'AllowGrayed'#9#7'Caption'#6#11'Independent'#7'Checked'#9#5'State'#7
+  +#9'cbchecked'#10'DragCursor'#7#9'crDefault'#8'TabOrder'#2#1#7'TabStop'#9#7'O'
+  +'nClick'#7#25'rbPlatformDependencyClick'#4'Left'#2#10#6'Height'#2#20#3'Top'#2
+  +#3#5'Width'#2's'#0#0#12'TRadioButton'#11'rbDependent'#8'AutoSize'#9#11'Allow'
+  +'Grayed'#9#7'Caption'#6#9'Dependent'#10'DragCursor'#7#9'crDefault'#8'TabOrde'
+  +'r'#2#2#7'TabStop'#9#7'OnClick'#7#25'rbPlatformDependencyClick'#4'Left'#2#10
+  +#6'Height'#2#20#3'Top'#2#30#5'Width'#2'j'#0#0#0#0
 ]);

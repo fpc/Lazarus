@@ -492,7 +492,7 @@ type
     property Caption;
     property ClientHeight;
     property ClientWidth;
-    property Color default clBtnFace;
+    property Color;
     property Constraints;
     property Enabled;
     property Font;

@@ -1,23 +1,20 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TExtractProcDialog','FORMDATA',[
-  'TPF0'#18'TExtractProcDialog'#17'ExtractProcDialog'#7'CAPTION'#6#17'ExtractPr'
-  +'ocDialog'#12'CLIENTHEIGHT'#3#230#0#11'CLIENTWIDTH'#3#190#1#8'ONCREATE'#7#23
-  +'ExtractProcDialogCREATE'#18'HORZSCROLLBAR.PAGE'#3#191#1#18'VERTSCROLLBAR.PA'
-  +'GE'#3#231#0#4'LEFT'#3'f'#1#6'HEIGHT'#3#230#0#3'TOP'#3#247#0#5'WIDTH'#3#190#1
-  +#0#11'TRADIOGROUP'#14'TypeRadiogroup'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'C'
-  +'APTION'#6#14'TypeRadiogroup'#12'COLUMNLAYOUT'#7#24'clverticalthenhorizontal'
-  +#4'LEFT'#2#8#6'HEIGHT'#2'x'#3'TOP'#2#8#5'WIDTH'#3#174#1#0#0#7'TBUTTON'#8'OkB'
-  +'utton'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#8'OkButton'#7'TABSTO'
-  +'P'#9#8'TABORDER'#2#1#7'ONCLICK'#7#13'OkButtonCLICK'#4'LEFT'#2'p'#6'HEIGHT'#2
-  +#25#3'TOP'#3#192#0#5'WIDTH'#2'c'#0#0#7'TBUTTON'#12'CancelButton'#7'ANCHORS'
-  +#11#5'aktop'#6'akleft'#0#11'MODALRESULT'#2#2#7'CAPTION'#6#12'CancelButton'#7
-  +'TABSTOP'#9#8'TABORDER'#2#2#4'LEFT'#3#240#0#6'HEIGHT'#2#25#3'TOP'#3#192#0#5
-  +'WIDTH'#2'^'#0#0#9'TGROUPBOX'#12'NameGroupbox'#7'ANCHORS'#11#5'aktop'#6'akle'
-  +'ft'#0#7'CAPTION'#6#12'NameGroupbox'#12'CLIENTHEIGHT'#2#27#11'CLIENTWIDTH'#3
-  +#170#1#5'COLOR'#4#15#0#0#128#11'PARENTCOLOR'#9#11'PARENTCTL3D'#8#8'TABORDER'
-  +#2#3#4'LEFT'#2#8#6'HEIGHT'#2','#3'TOP'#3#135#0#5'WIDTH'#3#174#1#0#5'TEDIT'#8
-  +'NameEdit'#5'ALIGN'#7#5'altop'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#4'TEXT'#6#8
-  +'NameEdit'#7'TABSTOP'#9#8'TABORDER'#2#0#6'HEIGHT'#2#23#5'WIDTH'#3#170#1#0#0#0
-  +#0
+  'TPF0'#18'TExtractProcDialog'#17'ExtractProcDialog'#7'Caption'#6#17'ExtractPr'
+  +'ocDialog'#12'ClientHeight'#3#230#0#11'ClientWidth'#3#190#1#8'OnCreate'#7#23
+  +'ExtractProcDialogCREATE'#18'HorzScrollBar.Page'#3#191#1#18'VertScrollBar.Pa'
+  +'ge'#3#231#0#4'Left'#3'f'#1#6'Height'#3#230#0#3'Top'#3#247#0#5'Width'#3#190#1
+  +#0#11'TRadioGroup'#14'TypeRadiogroup'#7'Caption'#6#14'TypeRadiogroup'#12'Col'
+  +'umnLayout'#7#24'clverticalthenhorizontal'#4'Left'#2#8#6'Height'#2'x'#3'Top'
+  +#2#8#5'Width'#3#174#1#0#0#7'TButton'#8'OkButton'#7'Caption'#6#8'OkButton'#7
+  +'TabStop'#9#8'TabOrder'#2#1#7'OnClick'#7#13'OkButtonCLICK'#4'Left'#2'p'#6'He'
+  +'ight'#2#25#3'Top'#3#192#0#5'Width'#2'c'#0#0#7'TButton'#12'CancelButton'#11
+  +'ModalResult'#2#2#7'Caption'#6#12'CancelButton'#7'TabStop'#9#8'TabOrder'#2#2
+  +#4'Left'#3#240#0#6'Height'#2#25#3'Top'#3#192#0#5'Width'#2'^'#0#0#9'TGroupBox'
+  +#12'NameGroupbox'#7'Caption'#6#12'NameGroupbox'#12'ClientHeight'#2#27#11'Cli'
+  +'entWidth'#3#170#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#3#4'Lef'
+  +'t'#2#8#6'Height'#2','#3'Top'#3#135#0#5'Width'#3#174#1#0#5'TEdit'#8'NameEdit'
+  +#5'Align'#7#5'altop'#4'Text'#6#8'NameEdit'#7'TabStop'#9#8'TabOrder'#2#0#6'He'
+  +'ight'#2#23#5'Width'#3#170#1#0#0#0#0
 ]);

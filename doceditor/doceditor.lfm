@@ -1,47 +1,42 @@
 object DocEditorWnd: TDocEditorWnd
-  CAPTION = 'DocEditorWnd'
-  CLIENTHEIGHT = 396
-  CLIENTWIDTH = 598
-  ONCREATE = DocEditorWndCREATE
-  HORZSCROLLBAR.PAGE = 599
-  VERTSCROLLBAR.PAGE = 397
-  LEFT = 291
-  HEIGHT = 396
-  TOP = 167
-  WIDTH = 598
-  object ButtonsPanel: TPANEL
-    ALIGN = altop
-    CAPTION = 'ButtonsPanel'
-    CLIENTHEIGHT = 28
-    CLIENTWIDTH = 598
-    TABORDER = 0
-    TABSTOP = True
-    HEIGHT = 28
-    WIDTH = 598
+  Caption = 'DocEditorWnd'
+  ClientHeight = 396
+  ClientWidth = 598
+  OnCreate = DocEditorWndCREATE
+  HorzScrollBar.Page = 599
+  VertScrollBar.Page = 397
+  Left = 291
+  Height = 396
+  Top = 167
+  Width = 598
+  object ButtonsPanel: TPanel
+    Align = altop
+    Caption = 'ButtonsPanel'
+    ClientHeight = 28
+    ClientWidth = 598
+    TabOrder = 0
+    TabStop = True
+    Height = 28
+    Width = 598
   end
-  object ContextTreeview: TTREEVIEW
-    ALIGN = alleft
-    BACKGROUNDCOLOR = 16777215
-    BORDERWIDTH = 2
-    DEFAULTITEMHEIGHT = 17
-    DRAGCURSOR = 0
-    INDENT = 15
-    PARENTCTL3D = False
-    SELECTIONCOLOR = -2147483635
-    TABORDER = 1
-    OPTIONS = [tvoautoitemheight, tvohideselection, tvokeepcollapsednodes, tvoshowbuttons, tvoshowlines, tvoshowroot, tvotooltips]
-    HEIGHT = 368
-    TOP = 28
-    WIDTH = 121
+  object ContextTreeview: TTreeView
+    Align = alleft
+    DefaultItemHeight = 17
+    DragCursor = crDefault
+    ParentCtl3D = False
+    TabOrder = 1
+    Height = 368
+    Top = 28
+    Width = 121
   end
-  object FilesNotebook: TNOTEBOOK
-    ALIGN = alclient
-    LEFT = 121
-    HEIGHT = 368
-    TOP = 28
-    WIDTH = 477
+  object FilesNotebook: TNotebook
+    Align = alclient
+    Left = 121
+    Height = 368
+    Top = 28
+    Width = 477
   end
-  object ButtonImagelist: TIMAGELIST
+  object ButtonImagelist: TImageList
     left = 56
     top = 40
   end

@@ -14,7 +14,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Caption = 'Filter Set:'
     ClientHeight = 95
     ClientWidth = 530
-    Color = clBtnFace
     ParentColor = True
     ParentCtl3D = False
     TabOrder = 0
@@ -65,7 +64,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Caption = 'ActiveFilterSetGroupBox'
     ClientHeight = 162
     ClientWidth = 531
-    Color = clBtnFace
     ParentColor = True
     ParentCtl3D = False
     TabOrder = 1
@@ -75,7 +73,6 @@ object MsgViewEditorDlg: TMsgViewEditorDlg
     Width = 535
     object RulesListView: TListView
       Align = alclient
-      Color = clBtnFace
       Columns = <      
         item
           Caption = 'Rule'

@@ -678,6 +678,8 @@ end;
 function TControl.ColorIsStored: boolean;
 begin
   Result:=(Color<>clWindow);
+  if Result and ParentColor and (Parent<>nil) then
+    Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -2457,6 +2459,7 @@ begin
   FHelpType := htContext;
   FTabOrder := -1;
   TabStop := False;
+  FDragCursor := crDrag;
   //writeln('TControl.Create END ',Name,':',ClassName);
 end;
 
@@ -2607,6 +2610,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.160  2003/12/28 02:40:50  mattias
+  set colors to default values
+
   Revision 1.159  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -1,48 +1,46 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TCleanDirectoryDialog','FORMDATA',[
-  'TPF0'#21'TCleanDirectoryDialog'#20'CleanDirectoryDialog'#7'CAPTION'#6#15'Cle'
-  +'an Directory'#12'CLIENTHEIGHT'#3'Y'#1#11'CLIENTWIDTH'#3#246#1#8'ONCREATE'#7
-  +#26'CleanDirectoryDialogCreate'#18'HORZSCROLLBAR.PAGE'#3#247#1#18'VERTSCROLL'
-  +'BAR.PAGE'#3'Z'#1#4'LEFT'#3'<'#1#6'HEIGHT'#3'Y'#1#3'TOP'#3#212#0#5'WIDTH'#3
-  +#246#1#0#7'TBUTTON'#8'OkButton'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'
-  +#6#2'Ok'#7'TABSTOP'#9#8'TABORDER'#2#0#7'ONCLICK'#7#13'OkButtonClick'#4'LEFT'
-  +#3#128#0#6'HEIGHT'#2#25#3'TOP'#3'8'#1#5'WIDTH'#2'a'#0#0#7'TBUTTON'#12'Cancel'
-  +'Button'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'MODALRESULT'#2#2#7'CAPTION'#6
-  +#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#3#13#1#6'HEIGHT'#2#25#3'TOP'
-  +#3'8'#1#5'WIDTH'#2'a'#0#0#9'TGROUPBOX'#11'DirGroupbox'#7'ANCHORS'#11#5'aktop'
-  +#6'akleft'#7'akright'#0#7'CAPTION'#6#9'Directory'#12'CLIENTHEIGHT'#2'?'#11'C'
-  +'LIENTWIDTH'#3#226#1#5'COLOR'#4#15#0#0#128#11'PARENTCOLOR'#9#11'PARENTCTL3D'
-  +#8#8'TABORDER'#2#2#4'LEFT'#2#8#6'HEIGHT'#2'P'#3'TOP'#2#8#5'WIDTH'#3#230#1#0#9
-  +'TCOMBOBOX'#11'DirCombobox'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'#0#9
-  +'MAXLENGTH'#2#0#11'PARENTCTL3D'#8#8'TABORDER'#2#0#7'TABSTOP'#9#4'TEXT'#6#11
-  +'DirCombobox'#4'LEFT'#2#6#6'HEIGHT'#2#25#3'TOP'#2#9#5'WIDTH'#3#212#1#0#0#9'T'
-  +'CHECKBOX'#15'SubDirsCheckbox'#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'ak'
-  +'left'#7'akright'#0#8'AUTOSIZE'#9#7'CAPTION'#6#21'Clean sub directories'#10
-  +'DRAGCURSOR'#2#0#8'TABORDER'#2#1#7'TABSTOP'#9#4'LEFT'#2#6#6'HEIGHT'#2#20#3'T'
-  +'OP'#2''''#5'WIDTH'#3#212#1#0#0#0#9'TGROUPBOX'#14'RemoveGroupbox'#7'ANCHORS'
-  +#11#5'aktop'#6'akleft'#7'akright'#0#7'CAPTION'#6#29'Remove files matching fi'
-  +'lter:'#12'CLIENTHEIGHT'#2'D'#11'CLIENTWIDTH'#3#226#1#5'COLOR'#4#15#0#0#128
-  +#11'PARENTCOLOR'#9#11'PARENTCTL3D'#8#8'TABORDER'#2#3#4'LEFT'#2#8#6'HEIGHT'#2
-  +'U'#3'TOP'#2'`'#5'WIDTH'#3#230#1#0#9'TCOMBOBOX'#14'RemoveCombobox'#7'ANCHORS'
-  +#11#5'aktop'#6'akleft'#7'akright'#0#9'MAXLENGTH'#2#0#11'PARENTCTL3D'#8#8'TAB'
-  +'ORDER'#2#0#7'TABSTOP'#9#4'TEXT'#6#14'RemoveCombobox'#4'LEFT'#2#6#6'HEIGHT'#2
-  +#25#3'TOP'#2#8#5'WIDTH'#3#212#1#0#0#9'TCHECKBOX'#26'SimpleSyntaxRemoveCheckb'
-  +'ox'#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akleft'#0#8'AUTOSIZE'#9#7'CA'
-  +'PTION'#6'$Simple syntax (e.g. * instead of .*)'#10'DRAGCURSOR'#2#0#8'TABORD'
-  +'ER'#2#1#7'TABSTOP'#9#4'LEFT'#2#6#6'HEIGHT'#2#20#3'TOP'#2'%'#5'WIDTH'#3#212#1
-  +#0#0#0#9'TGROUPBOX'#12'KeepGroupbox'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akri'
-  +'ght'#0#7'CAPTION'#6#27'Keep files matching filter:'#12'CLIENTHEIGHT'#2'Y'#11
-  +'CLIENTWIDTH'#3#226#1#5'COLOR'#4#15#0#0#128#11'PARENTCOLOR'#9#11'PARENTCTL3D'
-  +#8#8'TABORDER'#2#4#4'LEFT'#2#8#6'HEIGHT'#2'j'#3'TOP'#3#190#0#5'WIDTH'#3#230#1
-  +#0#9'TCOMBOBOX'#12'KeepCombobox'#7'ANCHORS'#11#5'aktop'#6'akleft'#7'akright'
-  +#0#9'MAXLENGTH'#2#0#11'PARENTCTL3D'#8#8'TABORDER'#2#0#7'TABSTOP'#9#4'TEXT'#6
-  +#12'KeepCombobox'#4'LEFT'#2#6#6'HEIGHT'#2#25#3'TOP'#2#8#5'WIDTH'#3#212#1#0#0
-  +#9'TCHECKBOX'#24'SimpleSyntaxKeepCheckbox'#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5
-  +'aktop'#6'akleft'#0#8'AUTOSIZE'#9#7'CAPTION'#6'$Simple syntax (e.g. * instea'
-  +'d of .*)'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#1#7'TABSTOP'#9#4'LEFT'#2#6#6'HEI'
-  +'GHT'#2#20#3'TOP'#2'#'#5'WIDTH'#3#212#1#0#0#9'TCHECKBOX'#21'KeepTextFilesChe'
-  +'ckbox'#11'ALLOWGRAYED'#9#7'ANCHORS'#11#5'aktop'#6'akleft'#0#8'AUTOSIZE'#9#7
-  +'CAPTION'#6#15'Keep Text Files'#10'DRAGCURSOR'#2#0#8'TABORDER'#2#2#7'TABSTOP'
-  +#9#4'LEFT'#2#6#6'HEIGHT'#2#20#3'TOP'#2'='#5'WIDTH'#3#212#1#0#0#0#0
+  'TPF0'#21'TCleanDirectoryDialog'#20'CleanDirectoryDialog'#7'Caption'#6#15'Cle'
+  +'an Directory'#12'ClientHeight'#3'Y'#1#11'ClientWidth'#3#246#1#8'OnCreate'#7
+  +#26'CleanDirectoryDialogCreate'#18'HorzScrollBar.Page'#3#247#1#18'VertScroll'
+  +'Bar.Page'#3'Z'#1#4'Left'#3'<'#1#6'Height'#3'Y'#1#3'Top'#3#212#0#5'Width'#3
+  +#246#1#0#7'TButton'#8'OkButton'#7'Caption'#6#2'Ok'#7'TabStop'#9#8'TabOrder'#2
+  +#0#7'OnClick'#7#13'OkButtonClick'#4'Left'#3#128#0#6'Height'#2#25#3'Top'#3'8'
+  +#1#5'Width'#2'a'#0#0#7'TButton'#12'CancelButton'#11'ModalResult'#2#2#7'Capti'
+  +'on'#6#6'Cancel'#7'TabStop'#9#8'TabOrder'#2#1#4'Left'#3#13#1#6'Height'#2#25#3
+  +'Top'#3'8'#1#5'Width'#2'a'#0#0#9'TGroupBox'#11'DirGroupbox'#7'Anchors'#11#5
+  +'aktop'#6'akleft'#7'akright'#0#7'Caption'#6#9'Directory'#12'ClientHeight'#2
+  +'?'#11'ClientWidth'#3#226#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2
+  +#2#4'Left'#2#8#6'Height'#2'P'#3'Top'#2#8#5'Width'#3#230#1#0#9'TComboBox'#11
+  +'DirCombobox'#7'Anchors'#11#5'aktop'#6'akleft'#7'akright'#0#9'MaxLength'#2#0
+  +#11'ParentCtl3D'#8#8'TabOrder'#2#0#7'TabStop'#9#4'Text'#6#11'DirCombobox'#4
+  +'Left'#2#6#6'Height'#2#25#3'Top'#2#9#5'Width'#3#212#1#0#0#9'TCheckBox'#15'Su'
+  +'bDirsCheckbox'#11'AllowGrayed'#9#7'Anchors'#11#5'aktop'#6'akleft'#7'akright'
+  +#0#8'AutoSize'#9#7'Caption'#6#21'Clean sub directories'#10'DragCursor'#7#9'c'
+  +'rDefault'#8'TabOrder'#2#1#7'TabStop'#9#4'Left'#2#6#6'Height'#2#20#3'Top'#2
+  +''''#5'Width'#3#212#1#0#0#0#9'TGroupBox'#14'RemoveGroupbox'#7'Anchors'#11#5
+  +'aktop'#6'akleft'#7'akright'#0#7'Caption'#6#29'Remove files matching filter:'
+  +#12'ClientHeight'#2'D'#11'ClientWidth'#3#226#1#11'ParentColor'#9#11'ParentCt'
+  +'l3D'#8#8'TabOrder'#2#3#4'Left'#2#8#6'Height'#2'U'#3'Top'#2'`'#5'Width'#3#230
+  +#1#0#9'TComboBox'#14'RemoveCombobox'#7'Anchors'#11#5'aktop'#6'akleft'#7'akri'
+  +'ght'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#7'TabStop'#9#4'Te'
+  +'xt'#6#14'RemoveCombobox'#4'Left'#2#6#6'Height'#2#25#3'Top'#2#8#5'Width'#3
+  +#212#1#0#0#9'TCheckBox'#26'SimpleSyntaxRemoveCheckbox'#11'AllowGrayed'#9#8'A'
+  +'utoSize'#9#7'Caption'#6'$Simple syntax (e.g. * instead of .*)'#10'DragCurso'
+  +'r'#7#9'crDefault'#8'TabOrder'#2#1#7'TabStop'#9#4'Left'#2#6#6'Height'#2#20#3
+  +'Top'#2'%'#5'Width'#3#212#1#0#0#0#9'TGroupBox'#12'KeepGroupbox'#7'Anchors'#11
+  +#5'aktop'#6'akleft'#7'akright'#0#7'Caption'#6#27'Keep files matching filter:'
+  +#12'ClientHeight'#2'Y'#11'ClientWidth'#3#226#1#11'ParentColor'#9#11'ParentCt'
+  +'l3D'#8#8'TabOrder'#2#4#4'Left'#2#8#6'Height'#2'j'#3'Top'#3#190#0#5'Width'#3
+  +#230#1#0#9'TComboBox'#12'KeepCombobox'#7'Anchors'#11#5'aktop'#6'akleft'#7'ak'
+  +'right'#0#9'MaxLength'#2#0#11'ParentCtl3D'#8#8'TabOrder'#2#0#7'TabStop'#9#4
+  +'Text'#6#12'KeepCombobox'#4'Left'#2#6#6'Height'#2#25#3'Top'#2#8#5'Width'#3
+  +#212#1#0#0#9'TCheckBox'#24'SimpleSyntaxKeepCheckbox'#11'AllowGrayed'#9#8'Aut'
+  +'oSize'#9#7'Caption'#6'$Simple syntax (e.g. * instead of .*)'#10'DragCursor'
+  +#7#9'crDefault'#8'TabOrder'#2#1#7'TabStop'#9#4'Left'#2#6#6'Height'#2#20#3'To'
+  +'p'#2'#'#5'Width'#3#212#1#0#0#9'TCheckBox'#21'KeepTextFilesCheckbox'#11'Allo'
+  +'wGrayed'#9#8'AutoSize'#9#7'Caption'#6#15'Keep Text Files'#10'DragCursor'#7#9
+  +'crDefault'#8'TabOrder'#2#2#7'TabStop'#9#4'Left'#2#6#6'Height'#2#20#3'Top'#2
+  +'='#5'Width'#3#212#1#0#0#0#0
 ]);

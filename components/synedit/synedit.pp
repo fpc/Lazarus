@@ -656,7 +656,7 @@ type
     property CaretXY: TPoint read GetCaretXY write SetCaretXY;
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
-    property Color;
+    property Color default clWhite;
     {$IFDEF SYN_LAZARUS}
     property CtrlMouseActive: boolean read fCtrlMouseActive;
     {$ENDIF}

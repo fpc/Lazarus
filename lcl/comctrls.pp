@@ -113,8 +113,6 @@ type
     Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     Procedure DrawDivider(X : Integer);
     Procedure DrawBevel(xLeft, PanelNum : Integer);
-  protected
-    function ColorIsStored: boolean; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1470,7 +1468,13 @@ type
     tvoToolTips
     );
   TTreeViewOptions = set of TTreeViewOption;
+  
+const
+  DefaultTreeViewOptions = [tvoShowRoot, tvoShowLines, tvoShowButtons,
+                            tvoHideSelection, tvoToolTips,
+                            tvoKeepCollapsedNodes, tvoAutoItemHeight];
 
+type
   TTreeViewExpandSignType = (tvestPlusMinus, tvestArrow);
   TTreeViewInsertMarkType = (
     tvimNone,
@@ -1672,7 +1676,7 @@ type
       read GetHideSelection write SetHideSelection default True;
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
     property Images: TCustomImageList read FImages write SetImages;
-    property Indent: Integer read fIndent write SetIndent;
+    property Indent: Integer read fIndent write SetIndent default 15;
     property Items: TTreeNodes read FTreeNodes write SetTreeNodes;
     property OnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent
       read FOnAdvancedCustomDraw write FOnAdvancedCustomDraw;
@@ -1740,27 +1744,27 @@ type
     procedure MakeSelectionVisible;
   public
     property BackgroundColor: TColor
-      read FBackgroundColor write SetBackgroundColor;
-    property BorderWidth;
+      read FBackgroundColor write SetBackgroundColor default clWhite;
+    property BorderWidth default 2;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property Canvas: TCanvas read FCanvas;
     property DefaultItemHeight: integer
-      read FDefItemHeight write SetDefaultItemHeight;
+      read FDefItemHeight write SetDefaultItemHeight default 20;
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignType: TTreeViewExpandSignType
-      read FExpandSignType write SetExpandSignType;
+      read FExpandSignType write SetExpandSignType default tvestPlusMinus;
     property InsertMarkNode: TTreeNode read FInsertMarkNode write SetInsertMarkNode;
     property InsertMarkType: TTreeViewInsertMarkType read FInsertMarkType write SetInsertMarkType;
     property KeepCollapsedNodes: boolean
       read GetKeepCollapsedNodes write SetKeepCollapsedNodes;
-    property Options: TTreeViewOptions read FOptions write SetOptions;
+    property Options: TTreeViewOptions read FOptions write SetOptions default DefaultTreeViewOptions;
     property ScrollBars: TScrollStyle
       read FScrollBars write SetScrollBars default ssBoth;
     property Selected: TTreeNode read GetSelection write SetSelection;
-    property SelectionColor: TColor read FSelectedColor write SetSelectedColor;
-    property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor;
+    property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
+    property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
-    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor;
+    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
   end;
   
   
@@ -1942,6 +1946,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2003/12/28 02:40:50  mattias
+  set colors to default values
+
   Revision 1.96  2003/12/26 15:23:29  mattias
   started message editor and fixed some range checks
 

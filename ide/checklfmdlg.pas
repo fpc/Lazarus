@@ -166,7 +166,7 @@ begin
       end;
       CurError:=CurError.PrevError;
     end;
-    
+
     if ApplyReplacements(Replacements) then
       ModalResult:=mrOk;
   finally

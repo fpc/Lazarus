@@ -36,7 +36,6 @@ object CheckLFMDialog: TCheckLFMDialog
     Caption = 'LFM file'
     ClientHeight = 266
     ClientWidth = 442
-    Color = -2147483633
     ParentColor = True
     ParentCtl3D = False
     TabOrder = 2
@@ -46,7 +45,6 @@ object CheckLFMDialog: TCheckLFMDialog
     Width = 446
     object LFMSynEdit: TSynEdit
       Align = alclient
-      Color = 16777215
       Font.Height = -15
       Font.Name = 'courier'
       Height = 266
@@ -54,6 +52,8 @@ object CheckLFMDialog: TCheckLFMDialog
       ParentCtl3D = False
       TabOrder = 0
       Width = 442
+      BookMarkOptions.OnChange = nil
+      Gutter.OnChange = nil
       Highlighter = SynLFMSyn1
       Keystrokes = <      
         item
@@ -379,6 +379,7 @@ object CheckLFMDialog: TCheckLFMDialog
       Lines.Strings = (
         'LFMSynEdit'
       )
+      SelectedColor.OnChange = nil
       OnSpecialLineColors = LFMSynEditSpecialLineColors
       Cursor = 65532
       Height = 266
@@ -390,7 +391,6 @@ object CheckLFMDialog: TCheckLFMDialog
     Caption = 'Errors'
     ClientHeight = 87
     ClientWidth = 442
-    Color = -2147483633
     ParentColor = True
     ParentCtl3D = False
     TabOrder = 3
@@ -410,7 +410,6 @@ object CheckLFMDialog: TCheckLFMDialog
   end
   object NoteLabel: TLabel
     Caption = 'NoteLabel'
-    Color = -2147483633
     Layout = tltop
     WordWrap = True
     Left = 8
