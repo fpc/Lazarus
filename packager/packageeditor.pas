@@ -170,6 +170,7 @@ type
     function CreateNewFile(Sender: TObject;
                            const Params: TAddToPkgResult): TModalResult;
     function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
+    procedure UpdateAllEditors;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -201,6 +202,7 @@ var
   ImageIndexRegisterUnit: integer;
   ImageIndexText: integer;
   ImageIndexBinary: integer;
+  ImageIndexConflict: integer;
 
 
 { TPackageEditorForm }
@@ -270,8 +272,8 @@ begin
     if (Dependency<>nil) and (Removed) then begin
       // re-add dependency
       if not CheckAddingDependency(LazPackage,Dependency) then exit;
-      LazPackage.UnremoveRequiredPkg(Dependency);
-      UpdateAll;
+      LazPackage.DeleteRemoveRequiredPkg(Dependency);
+      PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
     end;
   end;
 end;
@@ -605,7 +607,7 @@ begin
   d2ptRequiredPkg:
     begin
       // add dependency
-      LazPackage.AddRequiredDependency(AddParams.Dependency);
+      PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
     end;
     
   end;
@@ -620,44 +622,47 @@ var
   Removed: boolean;
   NewDependency: TPkgDependency;
 begin
-  NewDependency:=TPkgDependency.Create;
-  
-  // read minimum version
-  if UseMinVersionCheckBox.Checked then begin
-    NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
-    if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
-      MessageDlg('Invalid minimum version',
-        'The minimum version "'+MinVersionEdit.Text+'" '
-        +'is not a valid package version.'#13
-        +'(good example 1.2.3.4)',
-        mtError,[mbCancel],0);
-      exit;
-    end;
-  end else begin
-    NewDependency.Flags:=NewDependency.Flags-[pdfMinVersion];
-  end;
-  
-  // read maximum version
-  if UseMaxVersionCheckBox.Checked then begin
-    NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
-    if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
-      MessageDlg('Invalid maximum version',
-        'The maximum version "'+MaxVersionEdit.Text+'" '
-        +'is not a valid package version.'#13
-        +'(good example 1.2.3.4)',
-        mtError,[mbCancel],0);
-      exit;
-    end;
-  end else begin
-    NewDependency.Flags:=NewDependency.Flags-[pdfMaxVersion];
-  end;
-  
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency=nil) or Removed then exit;
-  
-  PackageGraph.ChangeDependency(CurDependency,NewDependency);
 
-  NewDependency.Free;
+  NewDependency:=TPkgDependency.Create;
+  try
+    NewDependency.Assign(CurDependency);
+
+    // read minimum version
+    if UseMinVersionCheckBox.Checked then begin
+      NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
+      if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
+        MessageDlg('Invalid minimum version',
+          'The minimum version "'+MinVersionEdit.Text+'" '
+          +'is not a valid package version.'#13
+          +'(good example 1.2.3.4)',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end else begin
+      NewDependency.Flags:=NewDependency.Flags-[pdfMinVersion];
+    end;
+
+    // read maximum version
+    if UseMaxVersionCheckBox.Checked then begin
+      NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
+      if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
+        MessageDlg('Invalid maximum version',
+          'The maximum version "'+MaxVersionEdit.Text+'" '
+          +'is not a valid package version.'#13
+          +'(good example 1.2.3.4)',
+          mtError,[mbCancel],0);
+        exit;
+      end;
+    end else begin
+      NewDependency.Flags:=NewDependency.Flags-[pdfMaxVersion];
+    end;
+
+    PackageGraph.ChangeDependency(CurDependency,NewDependency);
+  finally
+    NewDependency.Free;
+  end;
 end;
 
 procedure TPackageEditorForm.CallRegisterProcCheckBoxClick(Sender: TObject);
@@ -771,6 +776,8 @@ begin
     AddResImg('pkg_text');
     ImageIndexBinary:=Count;
     AddResImg('pkg_binary');
+    ImageIndexConflict:=Count;
+    AddResImg('pkg_conflict');
   end;
   
   SaveBitBtn:=TBitBtn.Create(Self);
@@ -1086,7 +1093,10 @@ begin
     if CurNode=nil then
       CurNode:=FilesTreeView.Items.AddChild(RequiredPackagesNode,'');
     CurNode.Text:=CurDependency.AsString;
-    CurNode.ImageIndex:=RequiredPackagesNode.ImageIndex;
+    if CurDependency.LoadPackageResult=lprSuccess then
+      CurNode.ImageIndex:=ImageIndexRequired
+    else
+      CurNode.ImageIndex:=ImageIndexConflict;
     CurNode.SelectedIndex:=CurNode.ImageIndex;
     CurNode:=CurNode.GetNextSibling;
     CurDependency:=CurDependency.NextRequiresDependency;
@@ -1415,6 +1425,13 @@ function TPackageEditors.SavePackage(APackage: TLazPackage;
   SaveAs: boolean): TModalResult;
 begin
   if Assigned(OnSavePackage) then Result:=OnSavePackage(Self,APackage,SaveAs);
+end;
+
+procedure TPackageEditors.UpdateAllEditors;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do Editors[i].UpdateAll;
 end;
 
 initialization

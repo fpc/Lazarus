@@ -51,8 +51,6 @@ type
     PkgListLabel: TLabel;
     PkgListBox: TListBox;
     InfoMemo: TMemo;
-    procedure PackageGraphBeginUpdate(Sender: TObject);
-    procedure PkgGraphExplorerEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgListBoxClick(Sender: TObject);
@@ -227,18 +225,6 @@ begin
   
   with InfoMemo do
     SetBounds(x,y,Parent.ClientWidth-2*x,Max(10,Parent.ClientHeight-y-x));
-end;
-
-procedure TPkgGraphExplorer.PackageGraphBeginUpdate(Sender: TObject);
-begin
-  BeginUpdate;
-end;
-
-procedure TPkgGraphExplorer.PkgGraphExplorerEndUpdate(Sender: TObject;
-  GraphChanged: boolean);
-begin
-  if GraphChanged then UpdateAll;
-  EndUpdate;
 end;
 
 procedure TPkgGraphExplorer.PkgGraphExplorerShow(Sender: TObject);
@@ -493,9 +479,6 @@ begin
   OnResize:=@PkgGraphExplorerResize;
   OnResize(Self);
   OnShow:=@PkgGraphExplorerShow;
-  
-  PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
-  PackageGraph.OnEndUpdate:=@PkgGraphExplorerEndUpdate;
 end;
 
 destructor TPkgGraphExplorer.Destroy;

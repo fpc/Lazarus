@@ -66,6 +66,7 @@ type
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
                                         SaveAs: boolean): TModalResult;
+    procedure PackageGraphBeginUpdate(Sender: TObject);
     procedure PackageGraphChangePackageName(APackage: TLazPackage;
                                             const OldName: string);
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
@@ -73,6 +74,7 @@ type
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     procedure PkgManagerAddPackage(Pkg: TLazPackage);
+    procedure PkgManagerEndUpdate(Sender: TObject; GraphChanged: boolean);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuPkgOpenPackageClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
@@ -235,6 +237,11 @@ begin
     Result:=DoSavePackage(APackage,[]);
 end;
 
+procedure TPkgManager.PackageGraphBeginUpdate(Sender: TObject);
+begin
+  if PackageGraphExplorer<>nil then PackageGraphExplorer.BeginUpdate;
+end;
+
 procedure TPkgManager.PackageGraphChangePackageName(APackage: TLazPackage;
   const OldName: string);
 begin
@@ -272,6 +279,18 @@ procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
 begin
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
+end;
+
+procedure TPkgManager.PkgManagerEndUpdate(Sender: TObject; GraphChanged: boolean);
+begin
+  if PackageGraphExplorer<>nil then begin
+    if GraphChanged then PackageGraphExplorer.UpdateAll;
+    PackageGraphExplorer.EndUpdate;
+  end;
+  if GraphChanged then begin
+    if PackageEditors<>nil then
+      PackageEditors.UpdateAllEditors;
+  end;
 end;
 
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
@@ -498,7 +517,9 @@ begin
   PackageGraph.OnAddPackage:=@PkgManagerAddPackage;
   PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
   PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
-  
+  PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
+  PackageGraph.OnEndUpdate:=@PkgManagerEndUpdate;
+
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
   PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;

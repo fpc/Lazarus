@@ -392,7 +392,7 @@ type
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure RemoveFile(PkgFile: TPkgFile);
     procedure UnremovePkgFile(PkgFile: TPkgFile);
-    procedure UnremoveRequiredPkg(Dependency: TPkgDependency);
+    procedure DeleteRemoveRequiredPkg(Dependency: TPkgDependency);
     procedure AddRequiredDependency(Dependency: TPkgDependency);
     procedure RemoveRequiredDependency(Dependency: TPkgDependency);
     function CreateDependencyForThisPkg: TPkgDependency;
@@ -881,7 +881,7 @@ procedure TPkgDependency.SetPackageName(const AValue: string);
 begin
   if FPackageName=AValue then exit;
   if (PackageDependencies<>nil) and (FPackageName<>'') then
-    PackageDependencies.Remove(Self);
+    PackageDependencies.RemovePointer(Self);
   FPackageName:=AValue;
   if (PackageDependencies<>nil) and (FPackageName<>'') then
     PackageDependencies.Add(Self);
@@ -984,7 +984,13 @@ begin
   if Result<>0 then exit;
   Result:=MinVersion.Compare(Dependency2.MinVersion);
   if Result<>0 then exit;
+  Result:=CompareBoolean(pdfMinVersion in Flags,
+                         pdfMinVersion in Dependency2.Flags);
+  if Result<>0 then exit;
   Result:=MaxVersion.Compare(Dependency2.MaxVersion);
+  if Result<>0 then exit;
+  Result:=CompareBoolean(pdfMaxVersion in Flags,
+                         pdfMaxVersion in Dependency2.Flags);
 end;
 
 procedure TPkgDependency.Assign(Source: TPkgDependency);
@@ -1784,10 +1790,9 @@ begin
   PkgFile.Removed:=false;
 end;
 
-procedure TLazPackage.UnremoveRequiredPkg(Dependency: TPkgDependency);
+procedure TLazPackage.DeleteRemoveRequiredPkg(Dependency: TPkgDependency);
 begin
   Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
-  Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Removed:=false;
 end;
 
@@ -1795,6 +1800,7 @@ procedure TLazPackage.AddRequiredDependency(Dependency: TPkgDependency);
 begin
   Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Owner:=Self;
+  Modified:=true;
 end;
 
 procedure TLazPackage.RemoveRequiredDependency(Dependency: TPkgDependency);

@@ -45,8 +45,8 @@ uses
 
 type
   TBrokenDependenciesDialog = class(TForm)
-    DependencyListView: TListView;
     NoteLabel: TLabel;
+    DependencyListView: TListView;
     procedure BrokenDependenciesDialogClose(Sender: TObject;
       var Action: TCloseAction);
     procedure BrokenDependenciesDialogResize(Sender: TObject);
@@ -122,15 +122,16 @@ var
   CurButton: TBitBtn;
 begin
   x:=ClientWidth;
-  NoteLabel.SetBounds(5,5,x-10,100);
+  NoteLabel.SetBounds(5,5,x-10,80);
   y:=NoteLabel.Top+NoteLabel.Height+2;
   with DependencyListView do
-    SetBounds(0,y,x,ClientHeight-y-40);
+    SetBounds(0,y,x,Parent.ClientHeight-y-40);
   y:=ClientHeight-35;
   for i:=fButtons.Count-1 downto 0 do begin
     CurButton:=TBitBtn(fButtons[i]);
     dec(x,CurButton.Width+10);
-    CurButton.SetBounds(x,y,Width,Height);
+    with CurButton do
+      SetBounds(x,y,80,Height);
   end;
 end;
 
@@ -161,29 +162,27 @@ procedure TBrokenDependenciesDialog.SetupComponents;
 var
   NewColumn: TListColumn;
 begin
+  NoteLabel:=TLabel.Create(Self);
+  with NoteLabel do begin
+    Name:='NoteLabel';
+    Parent:=Self;
+    WordWrap:=true;
+    Caption:='Changing the package name or version breaks dependencies. '
+      +'Should these dependencies be changed as well?'#13
+      +'Select Yes to change all listed dependencies.'#13
+      +'Select Ignore to break the dependencies and continue.';
+  end;
+
   DependencyListView:=TListView.Create(Self);
   with DependencyListView do begin
     Name:='DependencyListView';
     Parent:=Self;
     ViewStyle:=vsReport;
     NewColumn:=Columns.Add;
-    NewColumn.Width:=170;
+    NewColumn.Width:=200;
     NewColumn.Caption:='Package/Project';
     NewColumn:=Columns.Add;
     NewColumn.Caption:='Dependency';
-  end;
-  
-  NoteLabel:=TLabel.Create(Self);
-  with NoteLabel do begin
-    Name:='NoteLabel';
-    Parent:=Self;
-    WordWrap:=true;
-    Caption:='Changing the package name or version would result in breaking'
-      +' the dependencies listed below. Should they be changed as well?'#13
-      +'Select Yes to change all listed dependencies.'#13
-      +'Select Ignore to keep the dependencies untouched and continue.'#13
-      +'Select Cancel to cancel the renaming and/or changing the version.'#13
-      +'Select Abort to abort the current command.';
   end;
 end;
 
@@ -204,7 +203,7 @@ begin
   SetupComponents;
   OnResize:=@BrokenDependenciesDialogResize;
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,350,300);
+  IDEDialogLayoutList.ApplyLayout(Self,500,300);
   OnResize(Self);
   OnClose:=@BrokenDependenciesDialogClose;
 end;
@@ -229,6 +228,7 @@ begin
       NewBitBtn.Name:='BitBtn'+IntToStr(fButtons.Count+1);
       NewBitBtn.Kind:=MsgDlgBtnToBitBtnKind[Btn];
       NewBitBtn.Parent:=Self;
+      if Btn=mbYes then NewBitBtn.Default:=true;
       fButtons.Add(NewBitBtn);
     end;
   end;
