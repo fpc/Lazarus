@@ -61,14 +61,30 @@ type
   
   TTextLayout = (tlTop, tlCenter, tlBottom);
   TTextStyle = packed record
-    Alignment : TAlignment;		// vertical alignment
-    Layout : TTextLayout;		// horizontal alignment
-    SingleLine : boolean;		// ignored
-    Clipping : boolean;			// if set text will be clipped
-    ExpandTabs : boolean;		// ignored
-    ShowPrefix : boolean;		// ignored
-    Wordbreak : boolean;		// ignored
-    Opaque : boolean;			// text should have opaque background
+    Alignment  : TAlignment;  // TextRect Only : vertical alignment
+
+    Layout     : TTextLayout; // TextRect Only : horizontal alignment
+
+    SingleLine : boolean;     // If WordBreak is false then process #13, #10 as
+                              // standard chars and perform no Line breaking.
+
+    Clipping   : boolean;     // TextRect Only : Clip Text to passed Rectangle
+
+    ExpandTabs : boolean;     // ignored
+
+    ShowPrefix : boolean;     // TextRect Only : Process first single '&' per
+                              //    line as an underscore and draw '&&' as '&'
+
+    Wordbreak  : boolean;     // TextRect Only : If line of text is too long
+                              //    too fit between left and right boundaries
+                              //    try to break into multiple lines between
+                              //    words
+
+    Opaque     : boolean;     // TextRect : Fills background with current Brush
+                              // TextOut  : Fills background with current
+                              //            foreground color
+
+    SystemFont : Boolean;     // Use the system font instead of Canvas Font
   end;
 
   TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear, psInsideframe);
@@ -148,6 +164,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/09/03 08:07:19  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.5  2002/08/06 09:32:48  lazarus
   MG: moved TColor definition to graphtype.pp and registered TColor names
 
