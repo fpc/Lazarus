@@ -63,23 +63,14 @@ var
   LastLeft, LastMiddle, LastRight: TLastMouseClick;
   LastFileSelectRow : gint;
 
-
   // mouse cursors
-  Cursor_Watch    : pGDKCursor;
-  Cursor_Arrow    : pGDKCursor;
-  Cursor_Cross    : pGDKCursor;
-  Cursor_Hand1    : pGDKCursor;
-  Cursor_XTerm    : pGDKCursor;
-  Cursor_StdArrow : pGDKCursor;
-  Cursor_HSplit   : pGDKCursor;
-  Cursor_VSplit   : pGDKCursor;
-  Cursor_SizeNWSE : pGDKCursor;
-  Cursor_SizeNS   : pGDKCursor;
-  Cursor_SizeNESW : pGDKCursor;
-  Cursor_SizeWE   : pGDKCursor;
-  Cursor_SizeAll  : pGDKCursor;
-  Cursor_Help     : pGDKCursor;
+var
+  GDKMouseCursors:   array[crLow..crHigh] of pGDKCursor;
+  // mapping from TCursor to gdk cursor index
+  CursorToGDKCursor: array[crLow..crHigh] of integer;
 
+  // styles
+var
   Styles : TStrings;
 
 const
@@ -145,7 +136,6 @@ const
     0, // bsToolWindow
     1  // bsSizeToolWin
   );
-//unused:  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);
 
 type
 
