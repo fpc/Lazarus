@@ -3046,33 +3046,33 @@ Procedure TSourceNotebook.UpdateStatusBar;
 var
   tempEditor : TSourceEditor;
 begin
-   if not Visible then exit;
-   TempEditor := GetActiveSE;
-   if TempEditor = nil then Exit;
-   if (TempEditor.EditorComponent.CaretY<>TempEditor.ErrorLine)
-   or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
-     TempEditor.ErrorLine:=-1;
-   Statusbar.Panels[3].Text := TempEditor.Filename;
+  if not Visible then exit;
+  TempEditor := GetActiveSE;
+  if TempEditor = nil then Exit;
+  if (TempEditor.EditorComponent.CaretY<>TempEditor.ErrorLine)
+  or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
+    TempEditor.ErrorLine:=-1;
+  Statusbar.Panels[3].Text := TempEditor.Filename;
 
-   If TempEditor.Modified then
-     StatusBar.Panels[1].Text := 'Modified'
-   else
-     StatusBar.Panels[1].Text := '';
+  If TempEditor.Modified then
+    StatusBar.Panels[1].Text := 'Modified'
+  else
+    StatusBar.Panels[1].Text := '';
 
-   If TempEditor.ReadOnly then
-     if StatusBar.Panels[1].Text <> '' then
-       StatusBar.Panels[1].Text := StatusBar.Panels[1].Text + '/ReadOnly'
-     else
-       StatusBar.Panels[1].Text := 'Readonly';
+  If TempEditor.ReadOnly then
+    if StatusBar.Panels[1].Text <> '' then
+      StatusBar.Panels[1].Text := StatusBar.Panels[1].Text + '/ReadOnly'
+    else
+      StatusBar.Panels[1].Text := 'Readonly';
 
 
-   Statusbar.Panels[0].Text :=
-     Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
+  Statusbar.Panels[0].Text :=
+    Format(' %6d:%4d',[TempEditor.CurrentCursorYLine,TempEditor.CurrentCursorXLine]);
 
-   if GetActiveSE.InsertMode then
-     Statusbar.Panels[2].Text := 'INS'
-   else
-     Statusbar.Panels[2].Text := 'OVR';
+  if GetActiveSE.InsertMode then
+    Statusbar.Panels[2].Text := 'INS'
+  else
+    Statusbar.Panels[2].Text := 'OVR';
 End;
 
 function TSourceNotebook.FindBookmark(BookmarkID: integer): TSourceEditor;
