@@ -146,7 +146,8 @@ type
       Color: TColor);virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
-
+    function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
+      ProcessAmpersands : Boolean) : PChar;
     function HashPaintMessage(p: pointer): integer;virtual;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;virtual;
     
@@ -258,6 +259,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2002/10/15 22:28:05  lazarus
+  AJ: added forcelinebreaks
+
   Revision 1.89  2002/10/15 07:01:29  lazarus
   MG: fixed timer checking
 
