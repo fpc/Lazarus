@@ -282,7 +282,7 @@ begin
   Result:=true;
   Sender.Dispatch(Message);
   if (ControlSelection.IsSelected(Sender)) then begin
-    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+//    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
     ControlSelection.AdjustSize;
     if Assigned(FOnPropertiesChanged) then
       FOnPropertiesChanged(Self);
