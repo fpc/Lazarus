@@ -4583,7 +4583,11 @@ var
             l := BB.X;
             r := BE.X;
             MBCSGetSelRangeInLineWhenColumnSelectionMode(TempString, l, r);
+{$IFDEF USE_UTF8BIDI_LCL}
+            VDelete(TempString, l, r - 1);
+{$ELSE USE_UTF8BIDI_LCL}
             Delete(TempString, l, r - l);
+{$ENDIF USE_UTF8BIDI_LCL}
 {$ENDIF}
             TrimmedSetLine(x, TempString);
           end;
@@ -7005,7 +7009,11 @@ begin
 {$ENDIF}
                 CaretX := CaretX - counter;
                 Helper := Copy(Temp, CaretX, counter);
+{$IFDEF USE_UTF8BIDI_LCL}
+                VDelete(Temp, CaretX, counter, drLTR);
+{$ELSE USE_UTF8BIDI_LCL}
                 Delete(Temp, CaretX, counter);
+{$ENDIF USE_UTF8BIDI_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);
               end;
             end;
@@ -7040,7 +7048,11 @@ begin
                 Helper := Copy(Temp, LogCaretXY.X, Counter);
                 Caret.X := LogicalToPhysicalCol(Temp,LogCaretXY.X+Counter);
                 Caret.Y := CaretY;
+{$IFDEF USE_UTF8BIDI_LCL}
+                VDelete(Temp, LogCaretXY.X, Counter, drLTR);
+{$ELSE USE_UTF8BIDI_LCL}
                 System.Delete(Temp, LogCaretXY.X, Counter);
+{$ENDIF USE_UTF8BIDI_LCL}
                 TrimmedSetLine(CaretY - 1, Temp);
               {$ELSE}
                 counter := 1;
