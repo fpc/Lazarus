@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, LResources, Buttons, StdCtrls,
-  ProjectDefs, IDEOptionDefs, IDEProcs, InputHistory;
+  ProjectDefs, IDEOptionDefs, IDEProcs, InputHistory, Dialogs;
 
 type
   { TPublishProjectDialog }
@@ -50,10 +50,17 @@ type
     CommandAfterCombobox: TCOMBOBOX;
 
     FilesGroupbox: TGROUPBOX;
-    UseIncludeFilterCheckbox: TCHECKBOX;
-    IncludeFileFilterCombobox: TCOMBOBOX;
+    IgnoreBinariesCheckbox: TCHECKBOX;
+
+    ExcludeFilterCombobox: TCOMBOBOX;
+    ExcFilterSimpleSyntaxCheckbox: TCHECKBOX;
     UseExcludeFilterCheckbox: TCHECKBOX;
-    ExcludeFileFilterCombobox: TCOMBOBOX;
+    ExcludeFilterGroupbox: TGROUPBOX;
+
+    IncludeFilterCombobox: TCOMBOBOX;
+    IncFilterSimpleSyntaxCheckbox: TCHECKBOX;
+    UseIncludeFilterCheckbox: TCHECKBOX;
+    IncludeFilterGroupbox: TGROUPBOX;
 
     ProjectInfoGroupbox: TGROUPBOX;
     SaveEditorInfoOfNonProjectFilesCheckbox: TCHECKBOX;
@@ -63,7 +70,9 @@ type
     SaveSettingsButton: TBUTTON;
     CancelButton: TBUTTON;
     procedure DestDirGroupBoxRESIZE(Sender: TObject);
+    procedure ExcludeFilterGroupboxRESIZE(Sender: TObject);
     procedure FilesGroupboxRESIZE(Sender: TObject);
+    procedure IncludeFilterGroupboxRESIZE(Sender: TObject);
     procedure OkButtonCLICK(Sender: TObject);
     procedure ProjectInfoGroupboxResize(Sender: TObject);
     procedure PublishProjectDialogResize(Sender: TObject);
@@ -75,6 +84,7 @@ type
     procedure LoadHistoryLists;
     procedure SaveHistoryLists;
     procedure SetOptions(const AValue: TPublishProjectOptions);
+    function CheckFilter: boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -116,6 +126,12 @@ begin
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
 end;
 
+procedure TPublishProjectDialog.ExcludeFilterGroupboxRESIZE(Sender: TObject);
+begin
+  with ExcludeFilterCombobox do
+    Width:=ExcludeFilterGroupbox.ClientWidth-2*Left;
+end;
+
 procedure TPublishProjectDialog.FilesGroupboxRESIZE(Sender: TObject);
 begin
   with FilesGroupbox do
@@ -124,16 +140,23 @@ begin
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with UseIncludeFilterCheckbox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with IncludeFileFilterCombobox do
+  with IncludeFilterCombobox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with UseExcludeFilterCheckbox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
-  with ExcludeFileFilterCombobox do
+  with ExcludeFilterCombobox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
+end;
+
+procedure TPublishProjectDialog.IncludeFilterGroupboxRESIZE(Sender: TObject);
+begin
+  with IncludeFilterCombobox do
+    Width:=IncludeFilterGroupbox.ClientWidth-2*Left;
 end;
 
 procedure TPublishProjectDialog.OkButtonCLICK(Sender: TObject);
 begin
+  if not CheckFilter then exit;
   if Options<>nil then SaveToOptions(Options);
 end;
 
@@ -153,12 +176,16 @@ begin
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
   with ProjectInfoGroupbox do
     SetBounds(Left,Top,Parent.ClientWidth-2*Left,Height);
+  with IncludeFilterGroupbox do
+    Width:=Parent.ClientWidth-2*Left;
+  with ExcludeFilterGroupbox do
+    Width:=Parent.ClientWidth-2*Left;
 end;
 
 procedure TPublishProjectDialog.SaveSettingsButtonClick(Sender: TObject);
 begin
-  if Options<>nil then
-    SaveToOptions(Options);
+  if not CheckFilter then exit;
+  if Options<>nil then SaveToOptions(Options);
 end;
 
 procedure TPublishProjectDialog.SetComboBox(AComboBox: TComboBox;
@@ -189,15 +216,15 @@ begin
   // file filter
   List:=InputHistories.HistoryLists.GetList(PublishProjectIncludeFileFilter,true);
   if List.Count=0 then begin
-    List.Add('*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}');
+    List.Add(DefPublProjIncFilter);
   end;
-  IncludeFileFilterCombobox.Items.Assign(List);
+  IncludeFilterCombobox.Items.Assign(List);
 
   List:=InputHistories.HistoryLists.GetList(PublishProjectExcludeFileFilter,true);
   if List.Count=0 then begin
-    List.Add('*.{bak,ppu,ppw,o,so};*~;backup');
+    List.Add(DefPublProjExcFilter);
   end;
-  ExcludeFileFilterCombobox.Items.Assign(List);
+  ExcludeFilterCombobox.Items.Assign(List);
 end;
 
 procedure TPublishProjectDialog.SaveHistoryLists;
@@ -213,12 +240,12 @@ begin
     CommandAfterCombobox.Items);
 
   // file filter
-  SetComboBox(IncludeFileFilterCombobox,IncludeFileFilterCombobox.Text,20);
+  SetComboBox(IncludeFilterCombobox,IncludeFilterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(PublishProjectIncludeFileFilter,true).Assign(
-    IncludeFileFilterCombobox.Items);
-  SetComboBox(ExcludeFileFilterCombobox,ExcludeFileFilterCombobox.Text,20);
+    IncludeFilterCombobox.Items);
+  SetComboBox(ExcludeFilterCombobox,ExcludeFilterCombobox.Text,20);
   InputHistories.HistoryLists.GetList(PublishProjectExcludeFileFilter,true).Assign(
-    ExcludeFileFilterCombobox.Items);
+    ExcludeFilterCombobox.Items);
 end;
 
 procedure TPublishProjectDialog.SetOptions(const AValue: TPublishProjectOptions
@@ -229,13 +256,30 @@ begin
   LoadFromOptions(FOptions);
 end;
 
+function TPublishProjectDialog.CheckFilter: boolean;
+begin
+  Result:=false;
+  if Options<>nil then begin
+    if not Options.IncludeFilterValid then begin
+      if MessageDlg('Invalid Include filter',mtError,[mbIgnore,mbCancel],0)
+        =mrCancel
+      then exit;
+    end;
+    if not Options.ExcludeFilterValid then begin
+      if MessageDlg('Invalid Exclude filter',mtError,[mbIgnore,mbCancel],0)
+        =mrCancel
+      then exit;
+    end;
+  end;
+  Result:=true;
+end;
+
 constructor TPublishProjectDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500,405);
+  IDEDialogLayoutList.ApplyLayout(Self,500,470);
   LoadHistoryLists;
-  FilesGroupbox.Enabled:=false;
 end;
 
 destructor TPublishProjectDialog.Destroy;
@@ -252,10 +296,13 @@ begin
   SetComboBox(CommandAfterCombobox,SrcOpts.CommandAfter,20);
 
   // file filter
+  IgnoreBinariesCheckbox.Checked:=SrcOpts.IgnoreBinaries;
   UseIncludeFilterCheckbox.Checked:=SrcOpts.UseIncludeFileFilter;
-  SetComboBox(IncludeFileFilterCombobox,SrcOpts.IncludeFileFilter,20);
+  IncFilterSimpleSyntaxCheckbox.Checked:=SrcOpts.IncludeFilterSimpleSyntax;
+  SetComboBox(IncludeFilterCombobox,SrcOpts.IncludeFileFilter,20);
   UseExcludeFilterCheckbox.Checked:=SrcOpts.UseExcludeFileFilter;
-  SetComboBox(ExcludeFileFilterCombobox,SrcOpts.ExcludeFileFilter,20);
+  ExcFilterSimpleSyntaxCheckbox.Checked:=SrcOpts.ExcludeFilterSimpleSyntax;
+  SetComboBox(ExcludeFilterCombobox,SrcOpts.ExcludeFileFilter,20);
 
   // project info
   SaveEditorInfoOfNonProjectFilesCheckbox.Checked:=
@@ -272,10 +319,13 @@ begin
   DestOpts.CommandAfter:=CommandAfterCombobox.Text;
   
   // file filter
+  DestOpts.IgnoreBinaries:=IgnoreBinariesCheckbox.Checked;
   DestOpts.UseIncludeFileFilter:=UseIncludeFilterCheckbox.Checked;
-  DestOpts.IncludeFileFilter:=IncludeFileFilterCombobox.Text;
+  DestOpts.IncludeFilterSimpleSyntax:=IncFilterSimpleSyntaxCheckbox.Checked;
+  DestOpts.IncludeFileFilter:=IncludeFilterCombobox.Text;
   DestOpts.UseExcludeFileFilter:=UseExcludeFilterCheckbox.Checked;
-  DestOpts.ExcludeFileFilter:=ExcludeFileFilterCombobox.Text;
+  DestOpts.ExcludeFilterSimpleSyntax:=ExcFilterSimpleSyntaxCheckbox.Checked;
+  DestOpts.ExcludeFileFilter:=ExcludeFilterCombobox.Text;
   
   // project info
   DestOpts.SaveEditorInfoOfNonProjectFiles:=

@@ -53,8 +53,10 @@ function FileIsExecutable(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;
 
 // directories
-function DirectoryExists(const Name: String): Boolean;
+function DirectoryExists(const FileName: String): Boolean;
 function ForceDirectory(DirectoryName: string): boolean;
+function DeleteDirectory(const DirectoryName: string;
+  OnlyChilds: boolean): boolean;
 
 // filename parts
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -104,6 +106,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/12/17 19:49:34  mattias
+  finished publish project
+
   Revision 1.6  2002/12/12 17:47:44  mattias
   new constants for compatibility
 

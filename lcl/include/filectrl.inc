@@ -19,15 +19,14 @@
 {------------------------------------------------------------------------------
   DirectoryExists
  ------------------------------------------------------------------------------}
-function DirectoryExists(const Name: String): Boolean;
+function DirectoryExists(const FileName: String): Boolean;
 var
   F: Longint;
   dirExist: Boolean;
 begin
-  //Result := FileExist(Name);
-  dirExist := false; 
+  dirExist := false;
 
-  F := FileGetAttr(Name);
+  F := FileGetAttr(FileName);
   if F <> -1 then
     if (F and faDirectory) <> 0 then
       dirExist := true;
@@ -490,6 +489,42 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function DeleteDirectory(const DirectoryName: string;
+    OnlyChilds: boolean): boolean;
+ ------------------------------------------------------------------------------}
+function DeleteDirectory(const DirectoryName: string;
+  OnlyChilds: boolean): boolean;
+const
+  {$IFDEF Win32}
+  FindMask = '*.*';
+  {$ELSE}
+  FindMask = '*';
+  {$ENDIF}
+var
+  FileInfo: TSearchRec;
+  CurSrcDir: String;
+  CurFilename: String;
+begin
+  Result:=false;
+  CurSrcDir:=CleanAndExpandDirectory(DirectoryName);
+  if SysUtils.FindFirst(CurSrcDir+FindMask,faAnyFile,FileInfo)=0 then begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      CurFilename:=CurSrcDir+FileInfo.Name;
+      if (FileInfo.Attr and faDirectory)>0 then begin
+        if not DeleteDirectory(CurFilename,false) then exit;
+      end else begin
+        if not DeleteFile(CurFilename) then exit;
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
+  if (not OnlyChilds) and (not RemoveDir(DirectoryName)) then exit;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   function CleanAndExpandFilename(const Filename: string): string;
  ------------------------------------------------------------------------------}
 function CleanAndExpandFilename(const Filename: string): string;
@@ -596,6 +631,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2002/12/17 19:49:34  mattias
+  finished publish project
+
   Revision 1.5  2002/12/12 17:47:46  mattias
   new constants for compatibility
 

@@ -37,7 +37,7 @@ unit ProjectDefs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, IDEProcs;
+  Classes, SysUtils, Laz_XMLCfg, IDEProcs, SynRegExpr, FileProcs;
 
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
@@ -249,7 +249,14 @@ type
     FCommandAfter: string;
     FDestinationDirectory: string;
     FExcludeFileFilter: string;
+    FExcludeFilterRegExpr: TRegExpr;
+    FExcludeFilterSimpleSyntax: boolean;
+    FExcludeFilterValid: boolean;
+    FIgnoreBinaries: boolean;
     FIncludeFileFilter: string;
+    FIncludeFilterRegExpr: TRegExpr;
+    FIncludeFilterSimpleSyntax: boolean;
+    FIncludeFilterValid: boolean;
     FSaveClosedEditorFilesInfo: boolean;
     FSaveEditorInfoOfNonProjectFiles: boolean;
     FUseExcludeFileFilter: boolean;
@@ -257,11 +264,16 @@ type
     procedure SetCommandAfter(const AValue: string);
     procedure SetDestinationDirectory(const AValue: string);
     procedure SetExcludeFileFilter(const AValue: string);
+    procedure SetExcludeFilterSimpleSyntax(const AValue: boolean);
+    procedure SetIgnoreBinaries(const AValue: boolean);
     procedure SetIncludeFileFilter(const AValue: string);
+    procedure SetIncludeFilterSimpleSyntax(const AValue: boolean);
     procedure SetSaveClosedEditorFilesInfo(const AValue: boolean);
     procedure SetSaveEditorInfoOfNonProjectFiles(const AValue: boolean);
     procedure SetUseExcludeFileFilter(const AValue: boolean);
     procedure SetUseIncludeFileFilter(const AValue: boolean);
+    procedure UpdateIncludeFilter;
+    procedure UpdateExcludeFilter;
   public
     constructor Create;
     destructor Destroy; override;
@@ -271,22 +283,30 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string);
     function FileCanBePublished(const AFilename: string): boolean;
     function WriteFlags: TProjectWriteFlags;
-
+    
+  public
     // destination
     property DestinationDirectory: string
                 read FDestinationDirectory write SetDestinationDirectory;
     property CommandAfter: string read FCommandAfter write SetCommandAfter;
 
     // file filter
+    property IgnoreBinaries: boolean read FIgnoreBinaries write SetIgnoreBinaries;
     property UseIncludeFileFilter: boolean
                 read FUseIncludeFileFilter write SetUseIncludeFileFilter;
+    property IncludeFilterSimpleSyntax: boolean
+                read FIncludeFilterSimpleSyntax write SetIncludeFilterSimpleSyntax;
     property IncludeFileFilter: string
                 read FIncludeFileFilter write SetIncludeFileFilter;
+    property IncludeFilterValid: boolean read FIncludeFilterValid;
     property UseExcludeFileFilter: boolean
                 read FUseExcludeFileFilter write SetUseExcludeFileFilter;
+    property ExcludeFilterSimpleSyntax: boolean
+                read FExcludeFilterSimpleSyntax write SetExcludeFilterSimpleSyntax;
     property ExcludeFileFilter: string
                 read FExcludeFileFilter write SetExcludeFileFilter;
-                
+    property ExcludeFilterValid: boolean read FExcludeFilterValid;
+
     // project info
     property SaveEditorInfoOfNonProjectFiles: boolean
                 read FSaveEditorInfoOfNonProjectFiles
@@ -298,6 +318,11 @@ type
 
 
   //---------------------------------------------------------------------------
+
+const
+  PublishProjectOptsVersion = 2;
+  DefPublProjIncFilter = '*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)';
+  DefPublProjExcFilter = '*.(bak|ppu|ppw|o|so);*~;backup';
 
 function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
 
@@ -961,12 +986,36 @@ procedure TPublishProjectOptions.SetExcludeFileFilter(const AValue: string);
 begin
   if FExcludeFileFilter=AValue then exit;
   FExcludeFileFilter:=AValue;
+  UpdateExcludeFilter;
+end;
+
+procedure TPublishProjectOptions.SetExcludeFilterSimpleSyntax(
+  const AValue: boolean);
+begin
+  if FExcludeFilterSimpleSyntax=AValue then exit;
+  FExcludeFilterSimpleSyntax:=AValue;
+  UpdateExcludeFilter;
+end;
+
+procedure TPublishProjectOptions.SetIgnoreBinaries(const AValue: boolean);
+begin
+  if FIgnoreBinaries=AValue then exit;
+  FIgnoreBinaries:=AValue;
 end;
 
 procedure TPublishProjectOptions.SetIncludeFileFilter(const AValue: string);
 begin
   if FIncludeFileFilter=AValue then exit;
   FIncludeFileFilter:=AValue;
+  UpdateIncludeFilter;
+end;
+
+procedure TPublishProjectOptions.SetIncludeFilterSimpleSyntax(
+  const AValue: boolean);
+begin
+  if FIncludeFilterSimpleSyntax=AValue then exit;
+  FIncludeFilterSimpleSyntax:=AValue;
+  UpdateIncludeFilter;
 end;
 
 procedure TPublishProjectOptions.SetSaveClosedEditorFilesInfo(
@@ -997,6 +1046,48 @@ begin
   FUseIncludeFileFilter:=AValue;
 end;
 
+procedure TPublishProjectOptions.UpdateIncludeFilter;
+var
+  Expr: string;
+begin
+  if FIncludeFilterRegExpr=nil then
+    FIncludeFilterRegExpr:=TRegExpr.Create;
+  if IncludeFilterSimpleSyntax then
+    Expr:=SimpleSyntaxToRegExpr(FIncludeFileFilter)
+  else
+    Expr:=FIncludeFileFilter;
+  try
+    FIncludeFilterRegExpr.Expression:=Expr;
+    FIncludeFilterValid:=true;
+  except
+    on E: Exception do begin
+      writeln('Invalid Include File Expression ',Expr,' ',E.Message);
+      FIncludeFilterValid:=false;
+    end;
+  end;
+end;
+
+procedure TPublishProjectOptions.UpdateExcludeFilter;
+var
+  Expr: string;
+begin
+  if FExcludeFilterRegExpr=nil then
+    FExcludeFilterRegExpr:=TRegExpr.Create;
+  if ExcludeFilterSimpleSyntax then
+    Expr:=SimpleSyntaxToRegExpr(FExcludeFileFilter)
+  else
+    Expr:=FExcludeFileFilter;
+  try
+    FExcludeFilterRegExpr.Expression:=Expr;
+    FExcludeFilterValid:=true;
+  except
+    on E: Exception do begin
+      writeln('Invalid Exclude File Expression ',Expr,' ',E.Message);
+      FExcludeFilterValid:=false;
+    end;
+  end;
+end;
+
 constructor TPublishProjectOptions.Create;
 begin
   LoadDefaults;
@@ -1005,6 +1096,8 @@ end;
 destructor TPublishProjectOptions.Destroy;
 begin
   Clear;
+  FIncludeFilterRegExpr.Free;
+  FExcludeFilterRegExpr.Free;
   inherited Destroy;
 end;
 
@@ -1017,29 +1110,42 @@ procedure TPublishProjectOptions.LoadDefaults;
 begin
   FDestinationDirectory:='$(TestDir)/publishedproject/';
   FCommandAfter:='';
-  FUseIncludeFileFilter:=true;
-  FIncludeFileFilter:='*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}';
-  FUseExcludeFileFilter:=false;
-  FExcludeFileFilter:='*.{bak,ppu,ppw,o,so};*~;backup';
+  UseIncludeFileFilter:=true;
+  IncludeFilterSimpleSyntax:=true;
+  IncludeFileFilter:=DefPublProjIncFilter;
+  UseExcludeFileFilter:=false;
+  ExcludeFilterSimpleSyntax:=true;
+  ExcludeFileFilter:=DefPublProjExcFilter;
   FSaveClosedEditorFilesInfo:=false;
   FSaveEditorInfoOfNonProjectFiles:=false;
 end;
 
 procedure TPublishProjectOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const APath: string);
+var
+  XMLVersion: integer;
 begin
   LoadDefaults;
+  XMLVersion:=XMLConfig.GetValue(APath+'Version/Value',0);
   FDestinationDirectory:=XMLConfig.GetValue(APath+'DestinationDirectory/Value',
                                             DestinationDirectory);
   FCommandAfter:=XMLConfig.GetValue(APath+'CommandAfter/Value',CommandAfter);
-  FUseIncludeFileFilter:=XMLConfig.GetValue(APath+'UseIncludeFileFilter/Value',
+  UseIncludeFileFilter:=XMLConfig.GetValue(APath+'UseIncludeFileFilter/Value',
                                             UseIncludeFileFilter);
-  FIncludeFileFilter:=XMLConfig.GetValue(APath+'IncludeFileFilter/Value',
-                                         IncludeFileFilter);
-  FUseExcludeFileFilter:=XMLConfig.GetValue(APath+'UseExcludeFileFilter/Value',
+  IncludeFilterSimpleSyntax:=
+    XMLConfig.GetValue(APath+'IncludeFilterSimpleSyntax/Value',
+                       IncludeFilterSimpleSyntax);
+  if XMLVersion>=2 then
+    IncludeFileFilter:=XMLConfig.GetValue(APath+'IncludeFileFilter/Value',
+                                           IncludeFileFilter);
+  UseExcludeFileFilter:=XMLConfig.GetValue(APath+'UseExcludeFileFilter/Value',
                                             UseExcludeFileFilter);
-  FExcludeFileFilter:=XMLConfig.GetValue(APath+'ExcludeFileFilter/Value',
-                                         ExcludeFileFilter);
+  ExcludeFilterSimpleSyntax:=
+    XMLConfig.GetValue(APath+'ExcludeFilterSimpleSyntax/Value',
+                       ExcludeFilterSimpleSyntax);
+  if XMLVersion>=2 then
+    ExcludeFileFilter:=XMLConfig.GetValue(APath+'ExcludeFileFilter/Value',
+                                           ExcludeFileFilter);
   FSaveClosedEditorFilesInfo:=XMLConfig.GetValue(
              APath+'SaveClosedEditorFilesInfo/Value',SaveClosedEditorFilesInfo);
   FSaveEditorInfoOfNonProjectFiles:=XMLConfig.GetValue(
@@ -1050,11 +1156,14 @@ end;
 procedure TPublishProjectOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const APath: string);
 begin
+  XMLConfig.SetValue(APath+'Version/Value',PublishProjectOptsVersion);
   XMLConfig.SetValue(APath+'DestinationDirectory/Value',DestinationDirectory);
   XMLConfig.SetValue(APath+'CommandAfter/Value',CommandAfter);
   XMLConfig.SetValue(APath+'UseIncludeFileFilter/Value',UseIncludeFileFilter);
+  XMLConfig.SetValue(APath+'IncludeFilterSimpleSyntax/Value',IncludeFilterSimpleSyntax);
   XMLConfig.SetValue(APath+'IncludeFileFilter/Value',IncludeFileFilter);
   XMLConfig.SetValue(APath+'UseExcludeFileFilter/Value',UseExcludeFileFilter);
+  XMLConfig.SetValue(APath+'ExcludeFilterSimpleSyntax/Value',ExcludeFilterSimpleSyntax);
   XMLConfig.SetValue(APath+'ExcludeFileFilter/Value',ExcludeFileFilter);
   XMLConfig.SetValue(APath+'SaveClosedEditorFilesInfo/Value',
                      SaveClosedEditorFilesInfo);
@@ -1065,19 +1174,23 @@ end;
 function TPublishProjectOptions.FileCanBePublished(
   const AFilename: string): boolean;
 begin
-  {Result:=false;
-
+  Result:=false;
+  
   // check include filter
   if UseIncludeFileFilter
-  and not FilenameIsMatching(IncludeFileFilter,ExtractFilename(AFilename),true)
-  then
+  and (FIncludeFilterRegExpr<>nil)
+  and (not FIncludeFilterRegExpr.Exec(ExtractFilename(AFilename))) then
     exit;
+
   // check exclude filter
   if UseExcludeFileFilter
-  and FilenameIsMatching(ExcludeFileFilter,ExtractFilename(AFilename),true)
-  then
-    exit;}
-    
+  and (FExcludeFilterRegExpr<>nil)
+  and (FExcludeFilterRegExpr.Exec(ExtractFilename(AFilename))) then
+    exit;
+
+  // check binaries
+  if IgnoreBinaries and (not FileIsText(AFilename)) then exit;
+
   Result:=true;
 end;
 

@@ -1,12 +1,13 @@
 object PublishProjectDialog: TPublishProjectDialog
   CAPTION = 'Publish Project'
-  COLOR = -2147483633
-  CLIENTHEIGHT = 403
+  CLIENTHEIGHT = 462
   CLIENTWIDTH = 469
   POSITION = poscreencenter
   ONRESIZE = PublishProjectDialogRESIZE
+  HORZSCROLLBAR.PAGE = 470
+  VERTSCROLLBAR.PAGE = 463
   LEFT = 343
-  HEIGHT = 403
+  HEIGHT = 462
   TOP = 289
   WIDTH = 469
   object OkButton: TBUTTON
@@ -15,9 +16,9 @@ object PublishProjectDialog: TPublishProjectDialog
     CAPTION = 'Ok'
     TABSTOP = True
     ONCLICK = OkButtonCLICK
-    LEFT = 76
+    LEFT = 72
     HEIGHT = 25
-    TOP = 368
+    TOP = 432
     WIDTH = 75
   end
   object CancelButton: TBUTTON
@@ -26,9 +27,9 @@ object PublishProjectDialog: TPublishProjectDialog
     CAPTION = 'Cancel'
     TABSTOP = True
     TABORDER = 1
-    LEFT = 375
+    LEFT = 371
     HEIGHT = 25
-    TOP = 368
+    TOP = 432
     WIDTH = 75
   end
   object DestDirGroupBox: TGROUPBOX
@@ -44,6 +45,7 @@ object PublishProjectDialog: TPublishProjectDialog
     WIDTH = 450
     object DestDirComboBox: TCOMBOBOX
       ANCHORS = [aktop, akleft]
+      MAXLENGTH = 0
       PARENTCTL3D = False
       TABSTOP = True
       TEXT = 'DestDirComboBox'
@@ -69,6 +71,7 @@ object PublishProjectDialog: TPublishProjectDialog
     end
     object CommandAfterCombobox: TCOMBOBOX
       ANCHORS = [aktop, akleft]
+      MAXLENGTH = 0
       PARENTCTL3D = False
       TABORDER = 2
       TABSTOP = True
@@ -97,57 +100,21 @@ object PublishProjectDialog: TPublishProjectDialog
     TABORDER = 3
     ONRESIZE = FilesGroupboxRESIZE
     LEFT = 8
-    HEIGHT = 139
+    HEIGHT = 44
     TOP = 128
     WIDTH = 450
-    object UseIncludeFilterCheckbox: TCHECKBOX
+    object IgnoreBinariesCheckbox: TCHECKBOX
       AUTOSIZE = True
       ALLOWGRAYED = True
       ANCHORS = [aktop, akleft]
-      CAPTION = 'Use include filter'
+      CAPTION = 'Ignore binaries'
       DRAGCURSOR = 0
       TABSTOP = True
       TABSTOP = True
-      LEFT = 4
+      LEFT = 6
       HEIGHT = 20
-      WIDTH = 171
-    end
-    object IncludeFileFilterCombobox: TCOMBOBOX
-      ANCHORS = [aktop, akleft]
-      PARENTCTL3D = False
-      TABORDER = 1
-      TABSTOP = True
-      TEXT = 'IncludeFileFilterCombobox'
-      LEFT = 4
-      HEIGHT = 25
-      TOP = 24
-      WIDTH = 432
-    end
-    object UseExcludeFilterCheckbox: TCHECKBOX
-      AUTOSIZE = True
-      ALLOWGRAYED = True
-      ANCHORS = [aktop, akleft]
-      CAPTION = 'Use exclude filter'
-      DRAGCURSOR = 0
-      TABORDER = 2
-      TABSTOP = True
-      TABORDER = 2
-      TABSTOP = True
-      LEFT = 4
-      HEIGHT = 20
-      TOP = 64
-      WIDTH = 175
-    end
-    object ExcludeFileFilterCombobox: TCOMBOBOX
-      ANCHORS = [aktop, akleft]
-      PARENTCTL3D = False
-      TABORDER = 3
-      TABSTOP = True
-      TEXT = 'ExcludeFileFilterCombobox'
-      LEFT = 4
-      HEIGHT = 25
-      TOP = 88
-      WIDTH = 432
+      TOP = 1
+      WIDTH = 161
     end
   end
   object ProjectInfoGroupbox: TGROUPBOX
@@ -159,7 +126,7 @@ object PublishProjectDialog: TPublishProjectDialog
     ONRESIZE = ProjectInfoGroupboxRESIZE
     LEFT = 8
     HEIGHT = 69
-    TOP = 280
+    TOP = 344
     WIDTH = 450
     object SaveClosedEditorFilesInfoCheckbox: TCHECKBOX
       AUTOSIZE = True
@@ -196,9 +163,115 @@ object PublishProjectDialog: TPublishProjectDialog
     TABSTOP = True
     TABORDER = 5
     ONCLICK = SaveSettingsButtonCLICK
-    LEFT = 202
+    LEFT = 198
     HEIGHT = 25
-    TOP = 368
+    TOP = 432
     WIDTH = 120
+  end
+  object IncludeFilterGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Include Filter'
+    COLOR = -2147483643
+    PARENTCTL3D = False
+    TABORDER = 6
+    TABSTOP = True
+    ONRESIZE = IncludeFilterGroupboxRESIZE
+    LEFT = 8
+    HEIGHT = 75
+    TOP = 176
+    WIDTH = 450
+    object UseIncludeFilterCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Use Include Filter'
+      DRAGCURSOR = 0
+      TABSTOP = True
+      TABSTOP = True
+      LEFT = 6
+      HEIGHT = 20
+      TOP = 1
+      WIDTH = 171
+    end
+    object IncFilterSimpleSyntaxCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Simple Syntax'
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      TABORDER = 1
+      TABSTOP = True
+      LEFT = 196
+      HEIGHT = 20
+      TOP = 2
+      WIDTH = 201
+    end
+    object IncludeFilterCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft]
+      MAXLENGTH = 0
+      PARENTCTL3D = False
+      TABORDER = 2
+      TABSTOP = True
+      TEXT = 'IncludeFilterCombobox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 25
+      WIDTH = 430
+    end
+  end
+  object ExcludeFilterGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Exclude Filter'
+    COLOR = -2147483643
+    PARENTCTL3D = False
+    TABORDER = 7
+    TABSTOP = True
+    ONRESIZE = ExcludeFilterGroupboxRESIZE
+    LEFT = 8
+    HEIGHT = 79
+    TOP = 256
+    WIDTH = 448
+    object UseExcludeFilterCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Use Exclude Filter'
+      DRAGCURSOR = 0
+      TABSTOP = True
+      TABSTOP = True
+      LEFT = 6
+      HEIGHT = 20
+      TOP = 5
+      WIDTH = 151
+    end
+    object ExcFilterSimpleSyntaxCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Simple Syntax'
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      TABORDER = 1
+      TABSTOP = True
+      LEFT = 199
+      HEIGHT = 20
+      TOP = 6
+      WIDTH = 212
+    end
+    object ExcludeFilterCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft]
+      MAXLENGTH = 0
+      PARENTCTL3D = False
+      TABORDER = 2
+      TABSTOP = True
+      TEXT = 'ExcludeFilterCombobox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 30
+      WIDTH = 430
+    end
   end
 end
