@@ -29,6 +29,13 @@ interface
 {$ASSERTIONS ON}
 {$endif}
  
+{ $DEFINE ClientRectBugFix}
+{$IFDEF ClientRectBugFix}
+  {$DEFINE VerboseResizeChild}
+  {$DEFINE VerboseSizeMsg}
+  {$DEFINE VerboseGetClientRect}
+{$ENDIF}
+
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
   ExtCtrls,Forms,Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
@@ -327,6 +334,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/05/06 08:50:36  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.35  2002/03/31 22:01:38  lazarus
   MG: fixed unreleased/unpressed Ctrl/Alt/Shift
 
