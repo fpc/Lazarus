@@ -28,7 +28,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls, IDEProcs,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, CodeToolsDefPreview, CodeToolManager;
 
 type
   TUnitInfoDlg = class(TFORM)
@@ -55,6 +55,8 @@ type
     IncludePathEdit: TEdit;
     SrcPathLabel: TLabel;
     SrcPathEdit: TEdit;
+    CodeToolsDefsButton: TButton;
+    procedure CodeToolsDefsButtonClick(Sender: TObject);
     procedure PathsGroupBoxResize(Sender: TObject);
     procedure UnitInfoDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender:TObject);
@@ -337,14 +339,26 @@ begin
       Width:=Parent.ClientWidth-Left-2;
     end;
 
+    CodeToolsDefsButton:=TButton.Create(Self);
+    with CodeToolsDefsButton do begin
+      Name:='CodeToolsDefsButton';
+      Parent:=Self;
+      Left:=Parent.ClientWidth-260;
+      Top:=Parent.ClientHeight-33;
+      Width:=150;
+      Height:=25;
+      Caption:=lisUIShowCodeToolsValues;
+      OnClick:=@CodeToolsDefsButtonClick;
+    end;
+
     OkButton:=TButton.Create(Self);
     with OkButton do begin
       Name:='OkButton';
       Parent:=Self;
-      Top:=Parent.ClientHeight-33;
+      Top:=CodeToolsDefsButton.Top;
       Width:=75;
       Height:=25;
-      Left:=(Self.ClientWidth-Width) div 2;
+      Left:=Parent.ClientWidth-100;
       Caption:=lisUIDOk;
       Default:=true;
       OnClick:=@OkButtonClick;
@@ -376,12 +390,12 @@ end;
 
 procedure TUnitInfoDlg.setLines(const str:string);
 begin
-    outlines.caption:=str;
+  outlines.caption:=str;
 end;
 
 procedure TUnitInfoDlg.setPath(const str:string);
 begin
-    outpath.caption:=str;
+  outpath.caption:=str;
 end;
 
 procedure TUnitInfoDlg.setIncludedBy(const IncludedBy: string);
@@ -494,11 +508,18 @@ begin
     Width:=Self.ClientWidth-2*Left;
   end;
 
-  with OkButton do begin
+  with CodeToolsDefsButton do begin
+    Left:=Parent.ClientWidth-260;
     Top:=Parent.ClientHeight-33;
+    Width:=150;
+    Height:=25;
+  end;
+
+  with OkButton do begin
+    Top:=CodeToolsDefsButton.Top;
     Width:=75;
     Height:=25;
-    Left:=(Self.ClientWidth-Width) div 2;
+    Left:=Parent.ClientWidth-100;
   end;
 end;
 
@@ -536,6 +557,12 @@ begin
     Top:=52;
     Width:=Parent.ClientWidth-Left-2;
   end;
+end;
+
+procedure TUnitInfoDlg.CodeToolsDefsButtonClick(Sender: TObject);
+begin
+  ShowCodeToolsDefinesValuesDialog(CodeToolBoss.DefineTree,
+                                   ExtractFilePath(FFilePath));
 end;
 
 procedure TUnitInfoDlg.OkButtonClick(Sender:TObject);

@@ -156,7 +156,6 @@ type
     procedure ValueNoteBookResize(Sender: TObject);
     procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
                                     Shift: TShiftState;  X,Y: integer);
-    procedure RefreshPreview;
 
     // exit menu
     procedure SaveAndExitMenuItemClick(Sender: TObject);
@@ -581,13 +580,7 @@ end;
 
 procedure TCodeToolsDefinesEditor.OpenPreviewMenuItemClick(Sender: TObject);
 begin
-  //if DefinePreview=nil then begin
-  //  DefinePreview:=TCodeToolsDefinesPreview.Create(Self);
-  //  DefinePreview.DefineTree:=DefineTree;
-  //  DefinePreview.Show;
-  //end;
-  //RefreshPreview;
-  //BringWindowToTop(DefinePreview.Handle);
+  ShowCodeToolsDefinesValuesDialog(DefineTree,'');
 end;
 
 procedure TCodeToolsDefinesEditor.InsertFPCProjectDefinesTemplateMenuItemClick(
@@ -957,12 +950,6 @@ begin
   end;
 end;
 
-procedure TCodeToolsDefinesEditor.RefreshPreview;
-begin
-  //if DefinePreview=nil then exit;
-  //DefinePreview.ShowDefines;
-end;
-
 procedure TCodeToolsDefinesEditor.CreateComponents;
 
   procedure CreateWinControl(var AWinControl: TWinControl;
@@ -1227,12 +1214,12 @@ begin
       ConvertActionMenuItem[i].OnClick:=@ConvertActionMenuItemClick;
 
   // tools
-  {AddMenuItem(ToolsMenuItem,'ToolsMenuItem','Tools',nil);
-  AddMenuItem(OpenPreviewMenuItem,'OpenPreviewMenuItem','Open Preview',
+  AddMenuItem(ToolsMenuItem, 'ToolsMenuItem', lisCTDefsTools, nil);
+  AddMenuItem(OpenPreviewMenuItem, 'OpenPreviewMenuItem', lisCTDefsOpenPreview,
               ToolsMenuItem);
   OpenPreviewMenuItem.OnClick:=@OpenPreviewMenuItemClick;
               
-  AddMenuItem(ShowMacroListMenuItem,'ShowMacroListMenuItem','Show Macros',
+  {AddMenuItem(ShowMacroListMenuItem,'ShowMacroListMenuItem','Show Macros',
               ToolsMenuItem);}
 
   // templates

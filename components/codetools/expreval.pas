@@ -73,6 +73,8 @@ type
     property ErrorPosition:integer read ErrorPos;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
     function Items(Index: integer): string;
+    function Names(Index: integer): string;
+    function Values(Index: integer): string;
     procedure Append(const Variable, Value: string);
     procedure Prepend(const Variable, Value: string);
     procedure Clear;
@@ -218,6 +220,16 @@ end;
 function TExpressionEvaluator.Items(Index: integer): string;
 begin
   Result:=FNames[Index]+'='+FValues[Index];
+end;
+
+function TExpressionEvaluator.Names(Index: integer): string;
+begin
+  Result:=FNames[Index];
+end;
+
+function TExpressionEvaluator.Values(Index: integer): string;
+begin
+  Result:=FValues[Index];
 end;
 
 procedure TExpressionEvaluator.Append(const Variable, Value: string);

@@ -47,6 +47,7 @@ const
   hlMakeResourceStringSections = 'MakeResourceStringSections';
   hlMakeResourceStringPrefixes = 'MakeResourceStringPrefixes';
   hlMakeResourceStringLengths = 'MakeResourceStringLengths';
+  hlCodeToolsDirectories = 'CodeToolsDirectories';
 
 type
   TFileDialogSettings = record

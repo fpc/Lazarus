@@ -28,7 +28,7 @@
  ***************************************************************************
 }
 {
-  Note: All resource strings should be prefixed with 'lis'
+  Note: All resource strings should be prefixed with 'lis' (Lazarus IDE String)
 
 }
 unit LazarusIDEStrConsts;
@@ -1384,6 +1384,8 @@ resourcestring
   lisCodeToolsDefsIfNDef = 'IfNDef';
   lisCodeToolsDefsElseIf = 'ElseIf';
   lisCodeToolsDefsElse = 'Else';
+  lisCTDefsTools = 'Tools';
+  lisCTDefsOpenPreview = 'Open Preview';
   lisCodeToolsDefsInsertTemplate = 'Insert Template';
   lisCodeToolsDefsInsertFreePascalProjectTe = 'Insert Free Pascal Project '
     +'Template';
@@ -1506,6 +1508,7 @@ resourcestring
   lisUIDPathsReadOnly = 'Paths (Read Only)';
   lisUIDSrc = 'Src';
   lisUIDOk = 'Ok';
+  lisUIShowCodeToolsValues = 'Show CodeTools Values';
   
   // unit editor
   lisUEErrorInRegularExpression = 'Error in regular expression';
@@ -2170,11 +2173,7 @@ resourcestring
   lisProjInspRemovedRequiredPackages = 'Removed required packages';
   lisProjInspProjectInspector = 'Project Inspector - %s';
   
-  
-  // --------------------------------------------------------//
-  // Menu editor -> form captions, labels and context menu --//
-  // --------------------------------------------------------//
-
+  // menu editor
   lisMenuEditorMenuEditor = 'Menu Editor';
   lisMenuEditorSelectMenu = 'Select Menu:';
   lisMenuEditorSelectTemplate = 'Select Template:';
@@ -2192,11 +2191,7 @@ resourcestring
   lisMenuEditorSaveAsTemplate = 'Save As Template...';
   lisMenuEditorDeleteFromTemplate = 'Delete From Template...';
 
-  // --------------------------------//
-  // Menu editor -> menu templates --//
-  // --------------------------------//
-
-  //Standard File menu
+  // Standard File menu
   lisMenuTemplateDescriptionStandardFileMenu = 'Standard File Menu';
   lisMenuTemplateFile = 'File';
   lisMenuTemplateNew = 'New';
@@ -2207,7 +2202,7 @@ resourcestring
   lisMenuTemplateClose = 'Close';
   lisMenuTemplateExit = 'Exit';
 
-  //Standard Edit menu
+  // Standard Edit menu
   lisMenuTemplateDescriptionStandardEditMenu = 'Standard Edit Menu';
   lisMenuTemplateEdit = 'Edit';
   lisMenuTemplateUndo = 'Undo';
@@ -2218,13 +2213,22 @@ resourcestring
   lisMenuTemplateFind = 'Find';
   lisMenuTemplateFindNext = 'Find Next';
 
-  //Standard Help menu
+  // Standard Help menu
   lisMenuTemplateDescriptionStandardHelpMenu = 'Standard Help Menu';
   lisMenuTemplateHelp = 'Help';
   lisMenuTemplateContents = 'Contents';
   lisMenuTemplateTutorial = 'Tutorial';
   lisMenuTemplateAbout = 'About';
+
+  // character map
   lisCharacterMap = 'Character Map';
+  
+  // codetools defines value dialog
+  lisCTDefChooseDirectory = 'Choose Directory';
+  lisCTDefCodeToolsDirectoryValues = 'CodeTools Directory Values';
+  lisCTDefVariable = 'Variable: %s';
+  lisCTDefnoVariableSelected = '<no variable selected>';
+  lisCTDefVariableName = 'Variable Name';
 
 implementation
 end.
