@@ -114,7 +114,6 @@ type
     procedure SetModified(NewValue:boolean);
     Function GetInsertMode : Boolean;
     Function GetReadonly : Boolean;
-    Function TextUnderCursor : String;
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -175,7 +174,6 @@ type
 
     //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
-
     Function GetWordAtCurrentCaret: String;
 
     //used to get the x,y of the caret if the caret was where the mouse is
@@ -505,39 +503,6 @@ begin
   GotoDialog.Edit1.Text:='';
   if (GotoDialog.ShowModal = mrOK) then
     GotoLine(StrToIntDef(GotoDialog.Edit1.Text,1));
-end;
-
-{--------------------------TEXT UNDER CURSOR-----------------------------------}
-Function TSourceEditor.TextUnderCursor : String;
-var
-  Texts : String;
-  EditorLine : String;
-  X : Integer;
-Begin
-  //get the text by the cursor.
-  EditorLine := FEditor.Lines.Strings[GetCurrentCursorYLine-1];
-  X := GetCurrentCursorXLine-1;
-
-  //walk backwards to a space or non-standard character.
-  while (ord(upcase(EditorLine[x])) >= 65)
-  and (ord(upcase(EditorLine[x])) <= 90) and (X>1) do
-    dec(x);
-  if (X > 1) then Inc(x);
-
-  Texts := Copy(EditorLine,X,length(EditorLine));  //chop off the beginning
-
-  X := 1;
-  while (ord(upcase(Texts[x])) >= 65) and (ord(upcase(Texts[x])) <= 90)
-  and (X< length(Texts)) do
-   inc(x);
-
-  if (X < Length(Texts) ) and (X >1)  then dec(x);
-
-  if not(((ord(upcase(Texts[x])) >= 65) and (ord(upcase(Texts[x])) <= 90))) then
-    dec(x);
-  Texts := Copy(Texts,1,X);
-
-  Result := Texts;
 end;
 
 Procedure TSourceEditor.OpenAtCursorClicked(Sender : TObject);
