@@ -41,12 +41,12 @@ Type
     FIniSection: String;
   protected
     Function IniFileClass: TIniFileClass; virtual;
-    procedure StorageNeeded(ReadOnly: Boolean);override;
-    procedure FreeStorage; override;
     Function GetIniFileName: string; virtual;
     Function RootSection: String; Override;
     Property IniFile: TCustomIniFile Read FIniFile;
   public
+    procedure StorageNeeded(ReadOnly: Boolean); override;
+    procedure FreeStorage; override;
     function  DoReadString(const Section, Ident, Default: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
     procedure DoEraseSections(const ARootSection : String);override;

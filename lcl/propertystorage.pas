@@ -137,8 +137,6 @@ Type
     procedure SetStoredValue(const AName: string; Value: TStoredType);
   protected
     function GetRoot: TComponent; virtual;
-    procedure StorageNeeded(ReadOnly: Boolean);Virtual;
-    procedure FreeStorage; Virtual;
     Function  RootSection: String; Virtual;
     procedure SaveProperties; virtual;
     procedure RestoreProperties; virtual;
@@ -155,6 +153,8 @@ Type
     procedure Save; virtual;
     procedure Restore; virtual;
     // Public Read/Write methods
+    procedure StorageNeeded(ReadOnly: Boolean);Virtual;
+    procedure FreeStorage; Virtual;
     Function  ReadString(const Ident, Default: string): string;
     Function  ReadInteger(const Ident: string; Default: Longint): Longint;
     procedure WriteString(const Ident, Value: string);

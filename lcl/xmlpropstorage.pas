@@ -43,13 +43,13 @@ type
     FRootNode: String;
     FRootNodePath: String;
   protected
-    procedure StorageNeeded(ReadOnly: Boolean);override;
-    procedure FreeStorage; override;
     Function GetXMLFileName: string; virtual;
     Function RootSection: String; Override;
     Function FixPath(const APath: String): String; virtual;
     Property XMLConfig: TPropStorageXMLConfig Read FXML;
   public
+    procedure StorageNeeded(ReadOnly: Boolean);override;
+    procedure FreeStorage; override;
     function  DoReadString(const Section, Ident, TheDefault: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
     Procedure DoEraseSections(const ARootSection: String);override;
