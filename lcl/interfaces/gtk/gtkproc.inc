@@ -186,6 +186,18 @@ end;
 
 
 {------------------------------------------------------------------------------
+ ------------------------------------------------------------------------------}
+function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
+begin
+  if VirtKeyCode = VK_UNKNOWN then
+    Result := KEYMAP_VKUNKNOWN and KeyCode
+  else
+    Result := VirtKeyCode;
+  if Extended then
+    Result := Result or KEYMAP_EXTENDED;
+end;
+
+{------------------------------------------------------------------------------
   Procedure: GetGTKKeyInfo
   Params:  Event:      Requested info  
            KeyCode:    the ASCII key code of the eventkey
@@ -199,17 +211,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
   var SysKey, Extended, Toggle: Boolean);
-var
-  CtrlDown: Boolean;
+var ShiftState: TShiftState;
 begin
   VirtualKey := VK_UNKNOWN;
   KeyCode := $FFFF;
   SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
-  CtrlDown := (Event^.State and GDK_CONTROL_MASK) <> 0;
+  ShiftState := GTKEventState2ShiftState(Event^.State);
   Extended := False;
   Toggle := False;
-  
-//writeln('[GetGTKKeyInfo] Event^.KeyVal=',Event^.KeyVal);
+
   case Event^.KeyVal of
     // Normal ASCII chars
     32..255:
@@ -219,6 +229,7 @@ begin
         
         //TODO: create VK_ code --> [*] and [8] have a different KeyCode but same VK_ code
         case Chr(KeyCode) of
+          '@': VirtualKey:=VK_AT;
           'A'..'Z', 
           '0'..'9', 
           ' ':      VirtualKey := KeyCode;
@@ -229,8 +240,8 @@ begin
         end;
         
         { look for control code }
-        if CtrlDown and (Chr(KeyCode) in ['@'..'Z'])
-        then Dec(KeyCode, Ord('@'));
+        if (ssCtrl in ShiftState) and (Chr(KeyCode) in ['@'..'Z']) then
+          Dec(KeyCode, Ord('@'));
       end;
       
     GDK_dead_circumflex:
@@ -335,17 +346,17 @@ begin
     GDK_KP_Equal:      
       begin
         VirtualKey := VK_EQUAL;
-        if not CtrlDown then KeyCode := Ord('=');
+        if not (ssCtrl in ShiftState) then KeyCode := Ord('=');
       end;
     GDK_KP_Multiply:      
       begin
         VirtualKey := VK_MULTIPLY;
-        if not CtrlDown then KeyCode := Ord('*');
+        if not (ssCtrl in ShiftState) then KeyCode := Ord('*');
       end;
     GDK_KP_Add:      
       begin
         VirtualKey := VK_ADD;
-        if not CtrlDown then KeyCode := Ord('+');
+        if not (ssCtrl in ShiftState) then KeyCode := Ord('+');
       end;
     GDK_KP_Separator:      
       begin
@@ -355,23 +366,24 @@ begin
     GDK_KP_Subtract:      
       begin
         VirtualKey := VK_SUBTRACT;
-        if not CtrlDown then KeyCode := Ord('-');
+        if not (ssCtrl in ShiftState) then KeyCode := Ord('-');
       end;
     GDK_KP_Decimal:      
       begin
         VirtualKey := VK_DECIMAL;
-        if not CtrlDown then KeyCode := Ord('.');
+        if not (ssCtrl in ShiftState) then KeyCode := Ord('.');
       end;
     GDK_KP_Divide:      
       begin
         VirtualKey := VK_DIVIDE;
         Extended := True;
-        if not CtrlDown then KeyCode := Ord('/');
+        if not (ssCtrl in ShiftState) then KeyCode := Ord('/');
       end;
     GDK_KP_0..GDK_KP_9: 
       begin
         VirtualKey := VK_NUMPAD0 + (Event^.KeyVal - GDK_KP_0);
-        if not CtrlDown then KeyCode := Ord('0') + (Event^.KeyVal - GDK_KP_0);
+        if not (ssCtrl in ShiftState) then
+          KeyCode := Ord('0') + (Event^.KeyVal - GDK_KP_0);
       end;
 
     GDK_BackSpace:      VirtualKey := VK_BACK;
@@ -452,7 +464,8 @@ begin
       begin
         SysKey := True;
         VirtualKey:= VK_MENU; 
-      end; 
+        Extended := True;
+      end;
     
     // Function keys
     GDK_F1..GDK_F24:    VirtualKey := VK_F1 + (Event^.KeyVal - GDK_F1);
@@ -465,7 +478,6 @@ begin
     else
       VirtualKey := VK_IRREGULAR;
   end;
-
 end;
 
 {------------------------------------------------------------------------------
@@ -899,6 +911,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.31  2002/03/31 22:01:38  lazarus
+  MG: fixed unreleased/unpressed Ctrl/Alt/Shift
+
   Revision 1.30  2002/03/25 17:59:23  lazarus
   GTK Cleanup
   Shane
