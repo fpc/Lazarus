@@ -145,7 +145,7 @@ type
   {$ENDIF}
 
 var
-  MParentClass: PGtkFixedClass = nil;   
+  MParentClass: PGtkFixedClass;
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): GTKEventResult; cdecl; forward;
 procedure GTKAPIWidgetClient_Realize(AWidget: PGTKWidget); cdecl; forward;
@@ -1131,12 +1131,17 @@ begin
     PGTKAPIWidgetClient(APIWidget^.Client), ShowHideOnFocus);
 end;
 
-
+initialization
+  MParentClass := nil;
+  
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/04/04 01:42:31  vincents
+  Fixed 1.0.x compilation
+
   Revision 1.54  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 
