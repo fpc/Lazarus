@@ -265,7 +265,7 @@ const
   //
   cBitmapX  = 10;      // x-position for bitmap in messagedialog
   cBitmapY  = 10;      // y-position for bitmap in messagedialog
-  cLabelSpacing= 10;   // distance between icon & label
+  cLabelSpacing = 10;   // distance between icon & label
 
 
 function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
@@ -333,6 +333,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/10/25 15:27:02  lazarus
+  AJ: Moved form contents creation to gtkproc for code
+      reuse between GNOME and GTK, and to make GNOME MDI
+      programming easier later on.
+
   Revision 1.25  2002/10/25 14:59:11  lazarus
   AJ: MessageDlgs -> PromptUser, better Cancel/Default order
 
