@@ -965,6 +965,12 @@ var
       LParam := 0;
       Result := longint(OldMouseCaptureHandle); // ToDo: 64bit faulty
     end;
+    {$IFDEF VerboseMouseCapture}
+    writeln('UpdateMouseCaptureControl NotifyCurCaptureControl',
+    ' Old=',HexStr(Cardinal(OldMouseCaptureHandle),8),
+    ' New=',HexStr(Cardinal(MCaptureHandle),8)
+    );
+    {$ENDIF}
     DeliverMessage(CurControl,CaptureChangedMsg);
   end;
 
@@ -2429,6 +2435,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.70  2002/08/22 16:22:39  lazarus
+  MG: started debugging of mouse capturing
+
   Revision 1.69  2002/08/22 07:30:16  lazarus
   MG: freeing more unused GCs
 
