@@ -104,10 +104,14 @@ begin
   Result := InterfaceObject.ClipboardRegisterFormat(AMimeType);
 end;
 
-
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
 begin
   Result := InterfaceObject.CombineRgn(Dest, Src1, Src2, fnCombineMode);
+end;
+
+function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+begin
+  Result := InterfaceObject.ComboBoxDropDown(Handle,DropDown);
 end;
 
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
@@ -1580,6 +1584,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/04/11 17:10:20  mattias
+  added but not implemented ComboBoxDropDown
+
   Revision 1.80  2003/03/29 23:52:25  mattias
   IpHtmlPanel can show simple HTML pages, but there are mem bugs
 

@@ -126,11 +126,16 @@ begin
   Result := 0;
 end;
 
-
 Function TInterfaceBase.CombineRgn(Dest, Src1, Src2 : HRGN;
   fnCombineMode : Longint) : Longint;
 begin
   Result := ERROR;
+end;
+
+function TInterfaceBase.ComboBoxDropDown(Handle: HWND;
+  DropDown: boolean): boolean;
+begin
+  Result := false;
 end;
 
 constructor TInterfaceBase.Create;
@@ -1666,6 +1671,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/04/11 17:10:20  mattias
+  added but not implemented ComboBoxDropDown
+
   Revision 1.86  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 
