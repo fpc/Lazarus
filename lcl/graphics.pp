@@ -349,6 +349,7 @@ type
   private
     FGraphic: TGraphic;
     FOnChange: TNotifyEvent;
+    //FNotify: IChangeNotifier;
     FOnProgress: TProgressEvent;
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
@@ -746,6 +747,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/03/11 20:36:34  lazarus
+  MG: fixed parser for multiple variant identifiers
+
   Revision 1.26  2002/03/09 12:03:41  lazarus
   MG: started real graphics
 

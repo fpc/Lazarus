@@ -2768,9 +2768,13 @@ begin
     if AtomIsChar(')') or UpAtomIs('END') then break;
     CreateChildNode;
     CurNode.Desc:=ctnRecordVariant;
-    ReadConstant(true,false,[]);
-    if not AtomIsChar(':') then
-      RaiseException(': expected, but '+GetAtom+' found');
+    repeat
+      ReadConstant(true,false,[]);
+      if AtomIsChar(':') then break;
+      if not AtomIsChar(',') then
+        RaiseException(': expected, but '+GetAtom+' found');
+      ReadNextAtom;
+    until false;
     ReadNextAtom;  // read '('
     if not AtomIsChar('(') then
       RaiseException('( expected, but '+GetAtom+' found');

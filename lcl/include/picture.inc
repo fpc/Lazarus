@@ -1,16 +1,19 @@
-{ TPicture }
+// included by graphics.pp
+
+{ TPicture and help classes TPictureFileFormatList}
 
 type
-  PFileFormat = ^TFileFormat;
-  TFileFormat = record
+  PPicFileFormat = ^TPicFileFormat;
+  TPicFileFormat = record
     GraphicClass: TGraphicClass;
     Extension: string;
     Description: string;
   end;
 
-  TFileFormatsList = class(TList)
+  TPicFileFormatsList = class(TList)
   public
     constructor Create;
+    procedure Clear;
     destructor Destroy; override;
     procedure Add(const Ext, Desc: String; AClass: TGraphicClass);
     function FindExt(Ext: string): TGraphicClass;
@@ -20,17 +23,18 @@ type
       var Descriptions, Filters: string);
   end;
 
-constructor TFileFormatsList.Create;
+constructor TPicFileFormatsList.Create;
 begin
   inherited Create;
   Add('bmp', 'Bitmaps', TBitmap);
   Add('xpm', 'Pixmap', TPixmap);
+  Add('ico', 'Icon', TIcon);
 end;
 
-destructor TFileFormatsList.Destroy;
+destructor TPicFileFormatsList.Destroy;
 var
   I: Integer;
-  p: PFileFormat;
+  p: PPicFileFormat;
 begin
   for I := 0 to Count-1 do begin
     p:=PFileFormat(Pointer(Items[I]));
@@ -39,14 +43,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TFileFormatsList.Add(const Ext, Desc: String;
+procedure TPicFileFormatsList.Add(const Ext, Desc: String;
   AClass: TGraphicClass);
 var
-  NewRec: PFileFormat;
+  NewRec: PPicFileFormat;
 begin
   New(NewRec);
-  with NewRec^ do
-  begin
+  with NewRec^ do begin
     Extension := AnsiLowerCase(Ext);
     GraphicClass := AClass;
     Description := Desc;
@@ -54,7 +57,7 @@ begin
   inherited Add(NewRec);
 end;
 
-function TFileFormatsList.FindExt(Ext: string): TGraphicClass;
+function TPicFileFormatsList.FindExt(Ext: string): TGraphicClass;
 var
   I: Integer;
 begin
@@ -69,7 +72,8 @@ begin
   Result := nil;
 end;
 
-function TFileFormatsList.FindClassName(const AClassName: string): TGraphicClass;
+function TPicFileFormatsList.FindClassName(
+  const AClassName: string): TGraphicClass;
 var
   I: Integer;
 begin
@@ -82,7 +86,7 @@ begin
   Result := nil;
 end;
 
-procedure TFileFormatsList.Remove(AClass: TGraphicClass);
+procedure TPicFileFormatsList.Remove(AClass: TGraphicClass);
 var
   I: Integer;
   P: PFileFormat;
@@ -98,7 +102,7 @@ begin
   end;
 end;
 
-procedure TFileFormatsList.BuildFilterStrings(GraphicClass: TGraphicClass;
+procedure TPicFileFormatsList.BuildFilterStrings(GraphicClass: TGraphicClass;
   var Descriptions, Filters: string);
 var
   C, I: Integer;
@@ -131,18 +135,28 @@ end;
 const
   PictureFileFormats: TFileFormatsList = nil;
 
-function GetFileFormats: TFileFormatsList;
+function GetPicFileFormats: TFileFormatsList;
 begin
   if PictureFileFormats = nil then 
-    PictureFileFormats := TFileFormatsList.Create;
+    PictureFileFormats := TPicFileFormatsList.Create;
   Result := PictureFileFormats;
 end;
+
+function GetPicClipboardFormats: TPicClipboardFormats;
+begin
+  if PicClipboardFormats = nil then
+    PicClipboardFormats := TPicClipboardFormats.Create;
+  Result := PicClipboardFormats;
+end;
+
+//--TPicture--------------------------------------------------------------------
+
 
 constructor TPicture.Create;
 begin
   inherited Create;
   GetFileFormats;
-  //GetClipboardFormats;
+  GetClipboardFormats;
 end;
 
 destructor TPicture.Destroy;
@@ -426,4 +440,6 @@ begin
   else
     Result := 0;
 end;
+
+// included by graphics.pp
 
