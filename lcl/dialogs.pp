@@ -35,16 +35,20 @@ interface
 
 uses classes, Forms, Controls, vclGlobals, lmessages;
 
+//type
+//   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
+//                    mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
+//   TDialogButtonsSet = set of TDialogButtons;
 type
-   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
-                    mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
-   TDialogButtonsSet = set of TDialogButtons;
+   TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation, mtCustom);
+   TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
+   TMsgDlgButtons = set of TMsgDlgBtn;
+
    
 const
    mbYesNoCancel = [mbYes, mbNo, mbCancel];
    mbOKCancel = [mbOK, mbCancel];
    mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];
-
 
 type
    TCommonDialog = class(TComponent)
@@ -106,20 +110,99 @@ type
       property FontName : String read FFontName write FFontName;
    end;
 
+   function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): TForm;
+   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+   function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
+   function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer;
+   procedure ShowMessage(const aMsg: string);
+   procedure ShowMessageFmt(const aMsg: string; Params: array of const);
+   procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
+
 implementation
 
 uses
-  SysUtils;
+   buttons, stdctrls, LCLlinux, graphics, sysutils;
+//  SysUtils;
+
+resourcestring
+   rsMbYes    = 'Yes';
+   rsMbNo     = 'No';
+   rsMbOK     = 'OK';
+   rsMbCancel = 'Cancel';
+   rsMbAbort  = 'Abort';
+   rsMbRetry  = 'Retry';
+   rsMbIgnore = 'Ignore';
+   rsMbAll      = 'All?';
+   rsMbNoToAll  = 'No to all';
+   rsMbYesToAll = 'Yes to all';
+   rsMbHelp     = 'Help';
+   rsMtWarning      = 'Warning';
+   rsMtError        = 'Error';
+   rsMtInformation  = 'Information';
+   rsMtConfirmation = 'Confirmation';
+   rsMtCustom       = 'Custom';
+
+const
+   cMtCaption : array [TMsgDlgType] of string = 
+        (rsMtWarning, rsMtError, rsMtInformation, rsMtConfirmation, rsMtCustom);
+   cMbCaption : array [TMsgDlgbtn] of string = 
+        (rsMbYes,    rsMbNo,  rsMbOK,      rsMbCancel,   rsMbAbort, rsMbRetry,
+         rsMbIgnore, rsMbAll, rsMbNoToAll, rsMbYesToAll, rsMbHelp);
+   cMbResult : array [TMsgDlgbtn] of TModalResult = 
+//TODO: think of more modalresults!
+        (mrYes, mrNo, mrOK, mrCAncel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll, mrYesToAll, 0);
+
+type
+   PCharArray32x32 = Array [0..35]  of PChar;
+
+var
+   mtImages   : Array [TMsgDlgType] of PCharArray32x32;
+   mbImages   : array [TMsgDlgBtn] of PCharArray;
+
 
 {$I commondialog.inc}
 {$I filedialog.inc}
 {$I colordialog.inc}
 {$I fontdialog.inc}
+{$I messagedialogpixmaps.inc}
+{$I messagedialogs.inc}
+
+procedure InitImages;
+begin
+   mbImages[mbYes]    := IMGOK_Check;
+   mbImages[mbNo]     := IMGCancel_X;
+   mbImages[mbOK]     := IMGOK_Check;
+   mbImages[mbCancel] := IMGCancel_X;
+   mbImages[mbAbort]  := IMGCancel_X; 
+   mbImages[mbRetry]  := IMGClose;
+   mbImages[mbIgnore] := IMGClose;
+   mbImages[mbAll]    := IMGAll_Check;
+   mbImages[mbNoToAll]:= IMGAll_Check;
+   mbImages[mbYesToAll]:= IMGAll_Check;
+   mbImages[mbHelp]   := IMGHELP;
+
+   mtImages [MtWarning     ] := IMGWarning;
+   mtImages [MtError       ] := IMGError;
+   mtImages [MtInformation ] := IMGInfo;
+   mtImages [MtConfirmation] := IMGInfo;
+   mtImages [MtCustom      ] := IMGInfo;
+end;
+
+initialization
+
+   InitImages;
+
+finalization
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/03/03 00:48:03  lazarus
+  + added support for message dialogs
+  stoppok
+
   Revision 1.3  2000/08/10 10:55:45  lazarus
   Changed TCustomDialog to TCommonDialog
   Shane
