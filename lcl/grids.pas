@@ -2795,8 +2795,13 @@ begin
       //InvalidateSelection;
       Invalidate
     end else begin
-      InvalidateCell(FCol, FRow);
-      InvalidateCell(DCol, DRow);
+      if goRowSelect in Options then begin
+        InvalidateRow(FRow);
+        InvalidateRow(DRow);
+      end else begin
+        InvalidateCell(FCol, FRow);
+        InvalidateCell(DCol, DRow);
+      end;
     end;
 
 

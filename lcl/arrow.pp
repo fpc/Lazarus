@@ -114,6 +114,7 @@ end;
 procedure TArrow.Paint;
 begin
   InterfaceObject.DrawArrow(Self, Canvas);
+  inherited Paint;
 end;
 
 procedure TArrow.InitializeWnd;
