@@ -40,9 +40,9 @@ interface
 {$ASSERTIONS ON}
 
 
-uses classes, forms, buttons, StdCtrls, controls, menus, ExtCtrls, CListBox,
-     ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, clipbrd,
-     LCLIntf, registry, lresources;
+uses Classes, Forms, Buttons, StdCtrls, Controls, Menus, ExtCtrls, CListBox,
+     ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, ClipBrd,
+     LCLIntf, LResources;
 
 type
    TForm1 = class(TForm)
@@ -2585,6 +2585,9 @@ END.
 
 {
   $Log$
+  Revision 1.15  2003/12/08 14:27:16  mattias
+  fixed WaitForHandles
+
   Revision 1.14  2003/11/25 09:15:55  mattias
   fixed testall
 

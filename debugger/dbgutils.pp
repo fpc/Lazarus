@@ -62,10 +62,47 @@ function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String; con
 function ConvertToCString(const AText: String): String;
 function DeleteEscapeChars(const AText: String; const AEscapeChar: Char): String;
 
+procedure SmartWriteln(const s: string);
+
 implementation
 
 uses
   SysUtils;
+
+{ SmartWriteln: }
+var
+  LastSmartWritelnStr: string;
+  LastSmartWritelnCount: integer;
+  LastSmartWritelnTime: double;
+
+procedure SmartWriteln(const s: string);
+var
+  TimeDiff: TTimeStamp;
+  i: Integer;
+begin
+  if (LastSmartWritelnCount>0) and (s=LastSmartWritelnStr) then begin
+    TimeDiff:=DateTimeToTimeStamp(Now-LastSmartWritelnTime);
+    if TimeDiff.Time<1000 then begin
+      // repeating too fast
+      inc(LastSmartWritelnCount);
+      // write every 2nd, 4th, 8th, 16th, ... time
+      i:=LastSmartWritelnCount;
+      while (i>0) and ((i and 1)=0) do begin
+        i:=i shr 1;
+        if i=1 then begin
+          writeln('Last message repeated ',LastSmartWritelnCount,' times:',
+                  ' "',LastSmartWritelnStr,'"');
+          break;
+        end;
+      end;
+      exit;
+    end;
+  end;
+  LastSmartWritelnTime:=Now;
+  LastSmartWritelnStr:=s;
+  LastSmartWritelnCount:=1;
+  writeln(LastSmartWritelnStr);
+end;
 
 function GetLine(var ABuffer: String): String;
 var
@@ -278,9 +315,15 @@ begin
   end;
 end;
 
+initialization
+  LastSmartWritelnCount:=0;
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.10  2003/12/08 14:27:16  mattias
+  fixed WaitForHandles
+
   Revision 1.9  2003/08/15 14:28:48  mattias
   clean up win32 ifdefs
 

@@ -106,10 +106,9 @@ end;
 {------------------------------------------------------------------------------
   Function: WaitForHandles
   Params:  AHandles:              A set of handles to wait for (max 32)
-  Returns: BitArray of handles set, 0 when an error ocoured
+  Returns: BitArray of handles set, 0 when an error occoured
  ------------------------------------------------------------------------------}
 function WaitForHandles(const AHandles: array of Integer): Integer;
-{.$IFDEF Linux}
 {$IFDEF UNIX}
 var
   n, R, Max, Count: Integer;
@@ -121,35 +120,54 @@ begin
   Count := High(AHandles);
   if Count < 0 then Exit;
   if Count > 31 then Count := 31;
+  
+  // zero the whole bit set of handles
   {$IFDEF Ver1_0}FD_ZERO{$ELSE}FpFD_ZERO{$ENDIF}(FDS);
 
+  // set bits for all waiting handles
   for n := 0 to Count do   
   begin
     if Max < AHandles[n] then Max := AHandles[n];
-    if AHandles[n] <> 0
-    then {$IFDEF Ver1_0}FD_Set{$ELSE}FpFD_Set{$ENDIF}(AHandles[n], FDS);
+    if AHandles[n] <> 0 then
+      {$IFDEF Ver1_0}FD_Set{$ELSE}FpFD_Set{$ENDIF}(AHandles[n], FDS);
+  end;
+  if Max=0 then begin
+    // no valid handle, so no change possible
+    writeln('WaitForHandles: Error: no handles');
+    exit;
   end;
 
+  // wait for all handles
   repeat
     FDSWait := FDS;
     TimeOut := 10;
-    R := {$IFDEF Ver1_0}Select{$ELSE}FpSelect{$ENDIF}(Max + 1, @FDSWait, nil, nil, TimeOut);
+    // Select:
+    // R = -1 on error, 0 on timeout, >0 on success and is number of handles
+    // FDSWait is changed, and indicates what descriptors have changed
+    R := {$IFDEF Ver1_0}Select{$ELSE}FpSelect{$ENDIF}(Max + 1, @FDSWait,
+                                                      nil, nil, TimeOut);
     Application.ProcessMessages;
   until R <> 0;
-  
+
+  // set bits for all changed handles
   if R > 0 
   then begin
     for n := 0 to Count do   
       if  (AHandles[n] <> 0) 
-      and ({$IFDEF Ver1_0}FD_ISSET{$ELSE}(FpFD_ISSET{$ENDIF}(AHandles[n], FDSWait){$IFNDEF Ver1_0}=0){$ENDIF})
+      and {$IFDEF Ver1_0}
+          FD_ISSET(AHandles[n],FDSWait)
+          {$ELSE}
+          (FpFD_ISSET(AHandles[n],FDSWait)=1)
+          {$ENDIF}
       then begin
         Result := Result or 1 shl n;
         Dec(R);
         if R=0 then Break;
       end;
-  end;
+end;
 {$ELSE}
 begin
+  writeln('ToDo: implement WaitForHandles for this OS');
   Result := 0;
 {$ENDIF}
 end;
@@ -310,7 +328,7 @@ begin
     WaitSet := WaitForHandles([FDbgProcess.Output.Handle]);
     if WaitSet = 0
     then begin
-      WriteLN('[TCmdLineDebugger.Getoutput] Error waiting ');
+      SmartWriteln('[TCmdLineDebugger.Getoutput] Error waiting ');
       SetState(dsError);
       Break;
     end;
@@ -371,6 +389,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.25  2003/12/08 14:27:16  mattias
+  fixed WaitForHandles
+
   Revision 1.24  2003/10/31 15:14:43  mazen
   + added some paranthesis to avoid operators precedence problems
 
