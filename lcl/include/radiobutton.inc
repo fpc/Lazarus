@@ -31,8 +31,11 @@
 
     - check for Delphi compatibility
     * Who's responsible for the fGroup - pointer and who'll free the
-      memory allocated for it??????
+      memory allocated for it?????? - automatically managed by GTK+ when
+      destroying widget, no worry (MB)
     * make serious tests
+    
+    - GTK interface : handle reparenting
       
   Bugs:
 
@@ -44,107 +47,13 @@
   Params:  aOwner : owner of this object
   Returns: Nothing
 
-  Create a new TradioButton
+  Create a new TRadioButton
  ------------------------------------------------------------------------------}
 constructor TRadioButton.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csRadioButton;
-  Visible := False;
-  Hint := 'Radiobutton';
-  ShowHint := True;
-  fGroup := 0;
   AutoSize := True;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TRadioButton.CreateWnd
-  Params:  none
-  Returns: Nothing
-
-  Create the visual component of a TradioButton.
-
-  HINT: Since every Radiobutton has to belong to a group, we'll search
-        our owners componentlist for other radiobuttons. If one is found 
-	with it's group property assigned, this instance will get the
-	handle of that one as it's fGroup property, otherwise the group 
-	property will be 0.
-	In the interface we can then use the group property to decide if
-	a new group has to be created or which radiobutton is the
-	predecessor. The first radiobutton, which handle is created, will get as Group
-  the group handle.
-	This behaviour is especially neccessary for the GTK bindings.
- ------------------------------------------------------------------------------}
-procedure TRadioButton.CreateWnd;
-var
-  i : integer;
-  temp : TComponent;
-begin
-  fGroup:=0;
-  i :=  Owner.ComponentCount-1;
-  while (i >= 0) and (fGroup = 0) do
-  begin  // search for radiobutton which is predecessor
-    Temp := Owner.Components [i];
-    if (Temp is TRadioButton) and (TRadioButton (temp).fGroup <> 0) then
-      fGroup := THandle (TRadioButton(Temp).Handle); // set group to our predecessor
-    dec (i);
-  end;
-  inherited CreateWnd;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TRadioButton.DestroyWnd
-  Params:  none
-  Returns: Nothing
-
-  The handle is destroyed, and therefore the radiobutton does not belong any
-  longer to a group. The Group property is the handle of the predecessor
-  TRadioButton.
-  -> Bind the successor TRadioButton to our predecessor
- ------------------------------------------------------------------------------}
-procedure TRadioButton.DestroyWnd;
-var
-  i: integer;
-  ARadioButton: TRadioButton;
-begin
-  if fGroup<>0 then begin
-    if HandleAllocated then begin
-      for i:=0 to Owner.ComponentCount-1 do
-        if (Owner.Components[i] is TRadioButton) then begin
-          ARadioButton:=TRadioButton(Owner.Components[i]);
-          if ARadioButton.fGroup=Handle then
-            ARadioButton.fGroup:=fGroup;
-        end;
-    end;
-    fGroup:=0;
-  end;
-  inherited DestroyWnd;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TRadioButton.SetGroup
-  Params:  value : group this radiobutton belongs to
-  Returns: Nothing
-
-  Assign this radiobutton to a group of radiobuttons.
- ------------------------------------------------------------------------------}
-procedure TRadioButton.SetGroup(Value : THandle);
-begin
-  Assert(False, 'Trace:IN SETGROUP.  Caption = '+ Self.Caption);
-  FGroup := Value;
-  RecreateWnd;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TRadioButton.GetGroup
-  Params:  none
-  Returns: Handle of the group this button belongs to
-
-  Return handle to the group the radiobutton belongs to.
- ------------------------------------------------------------------------------}
-function TRadioButton.GetGroup : THandle;
-begin
-  GetGroup := FGroup;
 end;
 
 {------------------------------------------------------------------------------
@@ -162,7 +71,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCheckbox.DoAutoSize
+  Method: TRadioButton.DoAutoSize
   Params:  Value : Boolean
   Returns: nothing
 
@@ -196,6 +105,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2002/09/08 19:09:55  lazarus
+  Fixed and simplified TRadioButton
+
   Revision 1.7  2002/09/03 08:07:19  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 

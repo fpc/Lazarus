@@ -589,18 +589,11 @@ type
   {TRadioButton}
    
   TRadioButton = class(TCustomCheckBox)
-  private
-    fGroup : THandle; // handle to the previous button in the group this button belongs to
-    procedure SetGroup (Value : THandle);
-    function GetGroup : THandle;
   protected
-    procedure DoAutoSize; Override;
-    procedure CreateWnd; override;
-    procedure DestroyWnd; override;
-    procedure SetText(const Value: TCaption); Override;
+    procedure DoAutoSize; override;
+    procedure SetText(const Value: TCaption); override;
   public
     constructor Create (AOwner: TComponent); override;
-    property group : THandle read GetGroup write SetGroup;
   published
     property Anchors;
     property AutoSize;
@@ -734,6 +727,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/09/08 19:09:55  lazarus
+  Fixed and simplified TRadioButton
+
   Revision 1.42  2002/09/07 12:14:50  lazarus
   EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
   behaviour.
