@@ -479,6 +479,8 @@ begin
   end;
   writeln('');
   {$ENDIF}
+  
+  UpdateMouseCaptureControl;
   Mess.Msg := LM_ACTIVATE;
   Status := DeliverPostMessage(Data, Mess);
 
@@ -509,6 +511,8 @@ begin
   else
     writeln(' LCLObject=nil');
   {$ENDIF}
+  UpdateMouseCaptureControl;
+
   Mess.Msg := LM_DEACTIVATE;
   Status := DeliverPostMessage(Data, Mess);
 
@@ -850,6 +854,8 @@ begin
   writeln('');
   {$ENDIF}
 
+  UpdateMouseCaptureControl;
+
   //TODO: fill in old focus
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SETFOCUS;
@@ -942,6 +948,9 @@ begin
   end;
   writeln('');
   {$ENDIF}
+
+  UpdateMouseCaptureControl;
+
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
 
@@ -1418,16 +1427,9 @@ begin
     if DesignOnlySignal then exit;
     if not ControlGetsMouseDownBefore(TControl(Data)) then exit;
 
-    // grabbing for TSplitter and our special widgets -> Maybe ths is the key for drag&drop
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
-    if (GtkWidgetIsA(CaptureWidget,GTKAPIWidget_GetType))
-    or (TWinControl(Data) is TCustomSplitter)
-    or (TWinControl(Data) is TToolButton) then begin
-      CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
-      if not gtk_widget_has_focus(CaptureWidget) then
-        gtk_widget_grab_focus(CaptureWidget);
-      if Event^.button=1 then
-        gtk_grab_add(CaptureWidget);
+    if Event^.button=1 then begin
+      CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end;
 
   end else begin
@@ -1566,7 +1568,6 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
-  CaptureWidget: PGtkWidget;
 begin
   Result := CallBackDefaultReturn;
 
@@ -1588,19 +1589,9 @@ begin
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
     
-    CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
-    if GtkWidgetIsA(CaptureWidget,GTKAPIWidget_GetType)
-    or (TWinControl(Data) is TCustomSplitter)
-    or (TWinControl(Data) is TToolButton)
-    then begin
-      CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
-      if Event^.button=1 then
-        gtk_grab_remove(CaptureWidget);
-    end;
-
+    ReleaseMouseCapture;
     if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
     begin
-      ReleaseMouseCapture(false);
       exit;
     end;
   end else begin
@@ -3074,6 +3065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.221  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.220  2004/02/22 15:39:44  mattias
   fixed error handling on saving lpi file
 

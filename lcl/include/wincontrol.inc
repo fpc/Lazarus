@@ -490,16 +490,14 @@ begin
 
   try
     //if csDesigning in ComponentState then begin
-      //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
+      //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork,' ControlCount=',ControlCount);
       //if AControl<>nil then writeln('  AControl=',AControl.Name,':',AControl.ClassName);
     //end;
     if AlignWork then
     begin
       AdjustClientRect(ARect);
       FAdjustClientRectRealized:=ARect;
-      {$IFDEF VerboseClientRectBugFix}
-      writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
-      {$ENDIF}
+      //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom);
       AlignList := TList.Create;
       try
         DoAlign(alTop);
@@ -1311,7 +1309,7 @@ var
   P : TPoint;
   ClientBounds: TRect;
 begin
-  if GetCapture = Handle
+  if FindOwnerControl(GetCapture) = Self
   then begin
     Control := nil;
     if (CaptureControl <> nil)
@@ -1792,7 +1790,7 @@ Begin
     if Dragging then Exit;
 
   LM_CANCELMODE:
-    if (GetCapture = Handle)
+    if (FindOwnerControl(GetCapture) = Self)
     and (CaptureControl <> nil)
     and (CaptureControl.Parent = Self)
     then CaptureControl.Perform(LM_CANCELMODE,0,0);
@@ -3388,6 +3386,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.207  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.206  2004/02/23 08:19:04  micha
   revert intf split
 

@@ -262,7 +262,10 @@ type
     csReflector,
     csActionClient,
     csMenuEvents,
-    csNoFocus);
+    csNoFocus,
+    csDesignNoSmoothResize, // no WYSIWYG resizing in designer
+    csDesignFixedBounds // control can not be moved nor resized in designer
+    );
   TControlStyle = set of TControlStyleType;
 
 const
@@ -632,7 +635,7 @@ type
 
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
   TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint; var Handled: Boolean) of object;
-
+  
   TControlFlag = (
     cfRequestAlignNeeded,
     cfClientWidthLoaded,
@@ -805,8 +808,8 @@ type
     procedure LockBaseBounds;
     procedure UnlockBaseBounds;
     procedure UpdateAnchorRules;
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure ChangeScale(M,D : Integer); dynamic;
     Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
@@ -881,6 +884,9 @@ type
     procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); Dynamic;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
+    procedure MouseEnter; virtual;
+    procedure MouseLeave; virtual;
+    procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanTab: Boolean; virtual;
     Function Focused : Boolean; dynamic;
@@ -974,6 +980,7 @@ type
     Procedure SetZOrder(TopMost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
     procedure InitiateAction; virtual;
+    property MouseEntered: Boolean read FMouseEntered;
   public
     // Event lists
     procedure RemoveAllControlHandlersOfObject(AnObject: TObject);
@@ -1287,7 +1294,7 @@ type
     procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent; virtual;
     procedure DoConstraintsChange(Sender : TObject); override;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; Override;
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
@@ -1682,7 +1689,6 @@ procedure SetCaptureControl(Control : TControl);
 function GetCaptureControl : TControl;
 procedure CancelDrag;
 
-
 var
   NewStyleControls : Boolean;
   Mouse : TMouse;
@@ -2023,32 +2029,51 @@ begin
 end;
 
 procedure SetCaptureControl(Control : TControl);
+var
+  OldCaptureWinControl: TWinControl;
+  NewCaptureWinControl: TWinControl;
 begin
-  {$IFDEF VerboseMouseCapture}
-  write('SetCaptureControl');
-  if CaptureControl<>nil then
-    write(' Old=',CaptureControl.Name,':',CaptureControl.ClassName)
-  else
-    write(' Old=nil');
-  if Control<>nil then
-    write(' New=',Control.Name,':',Control.ClassName)
-  else
-    write(' New=nil');
-  writeln('');
-  {$ENDIF}
-  ReleaseCapture;
-  CaptureControl := nil;
-  if Control <> nil
-  then begin
-    if not (Control is TWinControl)
-    then begin
-      if Control.Parent = nil then Exit;
-
-      CaptureControl := Control;
-      Control := Control.Parent;
-    end;
-    SetCapture(TWinControl(Control).Handle);
+  if CaptureControl=Control then exit;
+  if Control=nil then begin
+    {$IFDEF VerboseMouseCapture}
+    write('SetCaptureControl Only ReleaseCapture');
+    {$ENDIF}
+    // just unset the capturing, intf call not needed
+    CaptureControl:=nil;
+    ReleaseCapture;
+    exit;
   end;
+  OldCaptureWinControl:=FindOwnerControl(GetCapture);
+  if Control is TWinControl then
+    NewCaptureWinControl:=TWinControl(Control)
+  else
+    NewCaptureWinControl:=Control.Parent;
+  if NewCaptureWinControl=nil then begin
+    {$IFDEF VerboseMouseCapture}
+    write('SetCaptureControl Only ReleaseCapture');
+    {$ENDIF}
+    // just unset the capturing, intf call not needed
+    CaptureControl:=nil;
+    ReleaseCapture;
+    exit;
+  end;
+  if NewCaptureWinControl=OldCaptureWinControl then begin
+    {$IFDEF VerboseMouseCapture}
+    write('SetCaptureControl Keep WinControl ',NewCaptureWinControl.Name,':',NewCaptureWinControl.ClassName,
+    ' switch Control ',Control.Name,':',Control.ClassName);
+    {$ENDIF}
+    // just change the CaptureControl, intf call not needed
+    CaptureControl:=Control;
+    exit;
+  end;
+  // switch capture control
+  {$IFDEF VerboseMouseCapture}
+    write('SetCaptureControl Switch to WinControl=',NewCaptureWinControl.Name,':',NewCaptureWinControl.ClassName,
+    ' and Control=',Control.Name,':',Control.ClassName);
+  {$ENDIF}
+  CaptureControl:=Control;
+  ReleaseCapture;
+  SetCapture(TWinControl(NewCaptureWinControl).Handle);
 end;
 
 procedure CancelDrag;
@@ -2366,6 +2391,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.182  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.181  2004/02/23 08:19:04  micha
   revert intf split
 

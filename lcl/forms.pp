@@ -778,6 +778,8 @@ type
     procedure IconChanged(Sender: TObject);
     procedure Idle;
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
+    function GetControlAtMouse: TControl;
+    procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure MouseIdle(const CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
     procedure SetHint(const AValue: string);

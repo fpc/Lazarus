@@ -213,6 +213,8 @@ type
     cssOnlyVisualNeedsSelected,
     cssOnlyInvisibleNeedsUpdate,
     cssOnlyInvisibleSelected,
+    cssOnlyBoundLessNeedsUpdate,
+    cssOnlyBoundLessSelected,
     cssBoundsNeedsUpdate,
     cssBoundsNeedsSaving,
     cssParentLevelNeedsUpdate,
@@ -364,6 +366,7 @@ type
     function OnlyNonVisualComponentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
     function OnlyInvisibleComponentsSelected: boolean;
+    function OnlyBoundLessComponentsSelected: boolean;
     function LookupRootSelected: boolean;
 
     // resizing, moving, aligning, mirroring, ...
@@ -721,7 +724,7 @@ begin
   FActiveGrabber:=nil;
   FUpdateLock:=0;
   FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-            cssOnlyInvisibleNeedsUpdate,
+            cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
             cssParentLevelNeedsUpdate,cssCacheGuideLines];
   FRubberbandType:=rbtSelection;
   FRubberbandCreationColor:=clMaroon;
@@ -1762,7 +1765,7 @@ begin
   if NewSelectedControl.DesignerForm<>FForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssOnlyInvisibleNeedsUpdate,
+                    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
                     cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
   if Count=1 then SetCustomForm;
   if AComponent=FLookupRoot then Include(FStates,cssLookupRootSelected);
@@ -1803,7 +1806,7 @@ begin
   Items[Index].Free;
   FControls.Delete(Index);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssOnlyInvisibleNeedsUpdate,
+                    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
                     cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
 
   if Count=0 then SetCustomForm;
@@ -1822,7 +1825,7 @@ begin
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssOnlyInvisibleNeedsUpdate,
+                    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
                     cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate]
                   -[cssLookupRootSelected];
   FForm:=nil;
@@ -2013,7 +2016,7 @@ var
 begin
   if (Count=0) or (FForm=nil)
   or LookupRootSelected
-  or OnlyInvisibleComponentsSelected then exit;
+  or OnlyBoundLessComponentsSelected then exit;
 
   Diff:=DC.FormOrigin;
 
@@ -2371,6 +2374,26 @@ begin
     Exclude(FStates,cssOnlyInvisibleNeedsUpdate);
   end else
     Result:=cssOnlyInvisibleSelected in FStates;
+end;
+
+function TControlSelection.OnlyBoundLessComponentsSelected: boolean;
+var
+  i: Integer;
+begin
+  if cssOnlyBoundLessNeedsUpdate in FStates then begin
+    Result:=true;
+    for i:=0 to FControls.Count-1 do
+      if ComponentBoundsDesignable(Items[i].Component) then begin
+        Result:=false;
+        break;
+      end;
+    if Result then
+      Include(FStates,cssOnlyBoundLessSelected)
+    else
+      Exclude(FStates,cssOnlyBoundLessSelected);
+    Exclude(FStates,cssOnlyBoundLessNeedsUpdate);
+  end else
+    Result:=cssOnlyBoundLessSelected in FStates;
 end;
 
 function TControlSelection.LookupRootSelected: boolean;

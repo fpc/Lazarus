@@ -24,7 +24,7 @@ begin
 
   fImageIndex:=-1;
   fCompStyle := csPage;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds];
 
   // set the default height and width
   if (Owner<>nil) and (Owner is TControl) then begin

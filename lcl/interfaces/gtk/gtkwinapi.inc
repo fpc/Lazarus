@@ -2415,8 +2415,33 @@ end;
   Draws one or more edges of a rectangle. The rectangle is the area
   Left to Right-1 and Top to Bottom-1.
  ------------------------------------------------------------------------------}
-function TgtkObject.DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal;
+function TgtkObject.DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal;
   grfFlags: Cardinal): Boolean;
+  
+  procedure DrawEdges(var R: TRect; GC: pgdkGC; Drawable:PGdkDrawable;
+    const TopLeftColor, BottomRightColor: TGDKColor);
+  begin
+    gdk_gc_set_foreground(GC, @TopLeftColor);
+    if (grfFlags and BF_TOP) = BF_TOP then begin
+      gdk_draw_line(Drawable, GC, R.Left, R.Top, R.Right, R.Top);
+      inc(R.Top);
+    end;
+    if (grfFlags and BF_LEFT) = BF_LEFT then begin
+      gdk_draw_line(Drawable, GC, R.Left, R.Top, R.Left, R.Bottom);
+      inc(R.Left);
+    end;
+
+    gdk_gc_set_foreground(GC, @BottomRightColor);
+    if (grfFlags and BF_BOTTOM) = BF_BOTTOM then begin
+      gdk_draw_line(Drawable, GC, R.Left, R.Bottom-1, R.Right, R.Bottom-1);
+      dec(R.Bottom);
+    end;
+    if (grfFlags and BF_RIGHT) = BF_RIGHT then begin
+      gdk_draw_line(Drawable, GC, R.Right-1, R.Top, R.Right-1, R.Bottom);
+      dec(R.Right);
+    end;
+  end;
+  
 Var
   InnerTL, OuterTL,
   InnerBR, OuterBR: TGDKColor;
@@ -2425,7 +2450,7 @@ Var
   R: TRect;
   DCOrigin: TPoint;
 begin
-  Assert(False, Format('trace:> [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
+  //writeln('TgtkObject.DrawEdge Edge=',HexStr(Cardinal(Edge),8),' grfFlags=',HexStr(Cardinal(grfFlags),8));
   Result := IsValidDC(DC);
   if Result
   then with TDeviceContext(DC) do
@@ -2436,90 +2461,50 @@ begin
       Result := False;
     end
     else begin
-      R := Rect;
-      Dec(R.Right);
-      Dec(R.Bottom);
+      R := ARect;
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      OffsetRect(R,DCOrigin.X,DCOrigin.Y);
 
       // try to use the gdk functions, so that the current theme is used
       BInner := False;
       BOuter := False;
 
-      // TODO: changeThis to real colors
+      // TODO: change this to real colors
       if (edge and BDR_RAISEDINNER) = BDR_RAISEDINNER
       then begin
         InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
         InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
-//        gdk_color_white(gdk_colormap_get_system, @InnerTL);
-//        gdk_color_black(gdk_colormap_get_system, @InnerBR);
         BInner := True;
       end;
       if (edge and BDR_SUNKENINNER) = BDR_SUNKENINNER
       then begin
         InnerTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
         InnerBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
-//        gdk_color_black(gdk_colormap_get_system, @InnerTL);
-//        gdk_color_white(gdk_colormap_get_system, @InnerBR);
         BInner := True;
       end;
       if (edge and BDR_RAISEDOUTER) = BDR_RAISEDOUTER
       then begin
-        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
-        OuterBR := AllocGDKColor(GetSysColor(COLOR_WINDOWFRAME));
-//        gdk_color_white(gdk_colormap_get_system, @OuterTL);
-//        gdk_color_black(gdk_colormap_get_system, @OuterBR);
+        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
+        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
         BOuter := True;
       end;
       if (edge and BDR_SUNKENOUTER) = BDR_SUNKENOUTER
       then begin
-        OuterTL := AllocGDKColor(GetSysColor(COLOR_WINDOWFRAME));
-        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNFACE));
-//        gdk_color_black(gdk_colormap_get_system, @OuterTL);
-//        gdk_color_white(gdk_colormap_get_system, @OuterBR);
+        OuterTL := AllocGDKColor(GetSysColor(COLOR_BTNSHADOW));
+        OuterBR := AllocGDKColor(GetSysColor(COLOR_BTNHIGHLIGHT));
         BOuter := True;
       end;
 
+      gdk_gc_set_fill(GC, GDK_SOLID);
       SelectedColors := dcscCustom;
 
-      BeginGDKErrorTrap;
-      gdk_gc_set_fill(GC, GDK_SOLID);
-
       // Draw outer rect
-      if Bouter
-      then with R do
-      begin
-        gdk_gc_set_foreground(GC, @OuterTL);
-        if (grfFlags and BF_TOP) = BF_TOP
-        then gdk_draw_line(Drawable, GC, Left, Top, Right, Top);
-        if (grfFlags and BF_LEFT) = BF_LEFT
-        then gdk_draw_line(Drawable, GC, Left, Top, Left, Bottom);
-
-        gdk_gc_set_foreground(GC, @OuterBR);
-        if (grfFlags and BF_BOTTOM) = BF_BOTTOM
-        then gdk_draw_line(Drawable, GC, Left, Bottom, Right + 1, Bottom);
-        if (grfFlags and BF_RIGHT) = BF_RIGHT
-        then gdk_draw_line(Drawable, GC, Right, Top, Right, Bottom + 1);
-
-        InflateRect(R, -1, -1);
-      end;
+      if Bouter then
+        DrawEdges(R,GC,Drawable,OuterTL,OuterBR);
 
       // Draw inner rect
-      if BInner
-      then with R do
-      begin
-        gdk_gc_set_foreground(GC, @InnerTL);
-        if (grfFlags and BF_TOP) = BF_TOP
-        then gdk_draw_line(Drawable, GC, Left, Top, Right, Top);
-        if (grfFlags and BF_LEFT) = BF_LEFT
-        then gdk_draw_line(Drawable, GC, Left, Top, Left, Bottom);
-
-        gdk_gc_set_foreground(GC, @InnerBR);
-        if (grfFlags and BF_BOTTOM) = BF_BOTTOM
-        then gdk_draw_line(Drawable, GC, Left, Bottom, Right + 1, Bottom);
-        if (grfFlags and BF_RIGHT) = BF_RIGHT
-        then gdk_draw_line(Drawable, GC, Right, Top, Right, Bottom + 1);
-
-        InflateRect(R, -1, -1);
-      end;
+      if BInner then
+        DrawEdges(R,GC,Drawable,InnerTL,InnerBR);
 
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterTL, 1);
 //      gdk_colormap_free_colors(gdk_colormap_get_system, @OuterBR, 1);
@@ -2533,26 +2518,23 @@ begin
         Width := R.Right - R.Left + 1;
         Height := R.Bottom - R.Top + 1;
         SelectGDKBrushProps(DC);
-        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         If not CurrentBrush^.IsNullBrush then
           if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
-          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
+          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef)))
+          then
             StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef,
-                               R.Left+DCOrigin.X, R.Top+DCOrigin.Y, Width, Height)
+                               R.Left, R.Top, Width, Height)
           else
-   	    gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
-                               Width, Height);
+            gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
       end;
 
-      EndGDKErrorTrap;
       // adjust rect if needed
       if (grfFlags and BF_ADJUST) = BF_ADJUST
-      then Rect := R;
+      then ARect := R;
 
       Result := True;
     end;
   end;
-  Assert(False, Format('trace:< [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7596,58 +7578,20 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
-{$IfDef VerboseMouseCapture}
 var
-  Sender : TObject;
-  CurMouseCaptureHandle: PGtkWidget;
-{$EndIf}
+  Widget: PGtkWidget;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
+  Widget:=PGtkWidget(Value);
   {$IfDef VerboseMouseCapture}
-  if Value<>0 then
-    Sender:=GetLCLObject(Pointer(Value))
-  else
-    Sender:=nil;
-  write('TgtkObject.SetCapture New=',HexStr(Cardinal(Value),8),' ');
-  if Sender=nil then
-    writeln('Sender=nil')
-  else
-    writeln('Sender=',TControl(Sender).Name,':',Sender.ClassName);
-
-  CurMouseCaptureHandle:=gtk_grab_get_current;
-  writeln('  gtk=',HexStr(Cardinal(CurMouseCaptureHandle),8),
-    ' MouseCaptureWidget=',HexStr(Cardinal(MouseCaptureWidget),8));
+  writeln('TgtkObject.SetCapture NewValue=[',GetWidgetDebugReport(Widget),']');
   {$EndIf}
 
   // return old capture handle
   Result := GetCapture;
-
-  // check that the widget is a widget with a LCL control
-  if (Value<>0) and (GetLCLObject(Pointer(Value))=nil) then exit;
-
-  if Result<>Value then begin
-    // capture changes
-
-    // If the gtk-interface has grabbed the mouse, it is somewhere in the stack
-    // of grabs. The gtk uses a grab stack to handle parent-child chains of
-    // mouse events. But we stop this chain anyway, the LCL can set and release
-    // mouse captures at any time and X can freeze, when a grab is not realeased
-    // and the window is destroyed.
-    // -> remove all grabs
-    ReleaseMouseCapture(true);
-
-    // grab
-    if (Value<>0) then begin
-      {$IfDef ActivateMouseCapture}
-      gtk_grab_add(PgtkWidget(Value));
-      {$EndIf}
-    end;
-    {$IfDef VerboseMouseCapture}
-    writeln('TgtkObject.SetCapture RESULT: gtk=',HexStr(Cardinal(gtk_grab_get_current),8));
-    {$EndIf}
-  end;
-
-  UpdateMouseCaptureControl;
+  
+  // capture
+  CaptureMouseForWidget(Widget,mctLCL);
 end;
 
 {------------------------------------------------------------------------------
@@ -8745,6 +8689,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.333  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.332  2004/02/21 01:01:03  mattias
   added uninstall popupmenuitem to package graph explorer
 

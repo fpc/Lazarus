@@ -344,7 +344,7 @@ begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 
   MouseCaptureWidget := nil;
-  MouseCapureByLCL := false;
+  MouseCaptureType := mctGTK;
 
   LastLeft:=EmptyLastMouseClick;
   LastMiddle:=EmptyLastMouseClick;
@@ -423,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.169  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.168  2004/02/21 15:37:33  mattias
   moved compiler options to project menu, added -CX for smartlinking
 

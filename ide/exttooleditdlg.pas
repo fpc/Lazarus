@@ -506,7 +506,6 @@ begin
       Height:=Self.ClientHeight-50-Top;
       Caption:=lisEdtExtToolMacros;
       OnResize:=@MacrosGroupboxResize;
-      Visible:=true; 
     end;
     
     MacrosListbox:=TListbox.Create(Self);
@@ -516,7 +515,6 @@ begin
       SetBounds(5,5,MacrosGroupbox.ClientWidth-120,
                    MacrosGroupbox.ClientHeight-30);
       OnClick:=@MacrosListboxClick;
-      Visible:=true; 
     end;
     
     MacrosInsertButton:=TButton.Create(Self);
@@ -527,7 +525,6 @@ begin
       Caption:=lisEdtExtToolInsert;
       OnClick:=@MacrosInsertButtonClick;
       Enabled:=false;
-      Visible:=true; 
     end;
     
     OkButton:=TButton.Create(Self);
@@ -537,7 +534,6 @@ begin
       SetBounds(270,Self.ClientHeight-40,100,25);
       Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
-      Visible:=true;
     end;
     
     CancelButton:=TButton.Create(Self);
@@ -547,10 +543,10 @@ begin
       SetBounds(390,OkButton.Top,100,25);
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
-      Visible:=true;
     end;
     
     OnResize:=@ExternalToolOptionDlgResize;
+    KeyPreview:=true;
     OnKeyUp:=@FormKeyUp;
   end;
   fOptions:=TExternalToolOptions.Create;

@@ -27,7 +27,8 @@ unit ComponentEditors;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls, Menus, ExtCtrls, Grids, Buttons,
+  Classes, SysUtils, TypInfo,
+  Forms, Controls, Menus, ExtCtrls, Grids, Buttons, ComCtrls,
   PropEdits, ObjInspStrConsts;
 
 
@@ -192,6 +193,7 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
   
+  
 { TNotebookComponentEditor
   The default component editor for TCustomNotebook. }
   TNotebookComponentEditor = class(TDefaultComponentEditor)
@@ -212,6 +214,7 @@ type
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
     function Notebook: TCustomNotebook; virtual;
   end;
+  
   
 { TPageComponentEditor
   The default component editor for TCustomPage. }
@@ -234,6 +237,19 @@ type
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
+  end;
+
+
+{ TToolBarComponentEditor
+  The default componenteditor fo TToolBar}
+
+  TToolBarComponentEditor = class(TDefaultComponentEditor)
+  protected
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    function ToolBar: TToolBar; virtual;
   end;
 
 
@@ -815,6 +831,55 @@ begin
   Result:=1;
 end;
 
+{ TToolBarComponentEditor }
+
+procedure TToolBarComponentEditor.ExecuteVerb(Index: Integer);
+var
+  NewStyle: TToolButtonStyle;
+  Hook: TPropertyEditorHook;
+  NewToolButton: TToolButton;
+  NewName: string;
+  CurToolBar: TToolBar;
+begin
+  Hook:=nil;
+  if not GetHook(Hook) then exit;
+  case Index of
+  0: NewStyle:=tbsButton;
+  1: NewStyle:=tbsCheck;
+  2: NewStyle:=tbsSeparator;
+  else exit;
+  end;
+  CurToolBar:=ToolBar;
+  NewToolButton:=TToolButton.Create(CurToolBar.Owner);
+  NewName:=GetDesigner.CreateUniqueComponentName(NewToolButton.ClassName);
+  NewToolButton.Caption:=NewName;
+  NewToolButton.Name:=NewName;
+  NewToolButton.Style:=NewStyle;
+  NewToolButton.Parent:=CurToolBar;
+  Hook.ComponentAdded(NewToolButton,true);
+  GetDesigner.Modified;
+end;
+
+function TToolBarComponentEditor.GetVerb(Index: Integer): string;
+begin
+  case Index of
+  0: Result:='New Button';
+  1: Result:='New Checkbutton';
+  2: Result:='New Separator';
+  else Result:='';
+  end;
+end;
+
+function TToolBarComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=3;
+end;
+
+function TToolBarComponentEditor.ToolBar: TToolBar;
+begin
+  Result:=TToolBar(GetComponent);
+end;
+
 //------------------------------------------------------------------------------
 
 procedure InternalFinal;
@@ -836,6 +901,7 @@ initialization
   RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
   RegisterComponentEditor(TCustomPage,TPageComponentEditor);
   RegisterComponentEditor(TStringGrid,TStringGridComponentEditor);
+  RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
 
 finalization
   InternalFinal;

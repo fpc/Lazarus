@@ -686,14 +686,14 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.CMMouseEnter
-  Params: Message:
+  Method: TSpeedButton.MouseEnter
+  Params:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.CMMouseEnter(var Message :TLMessage);
+procedure TSpeedButton.MouseEnter;
 begin
-  inherited CMMouseEnter(Message);
+  inherited MouseEnter;
   if csDesigning in ComponentState then exit;
 
   if not FMouseInControl
@@ -705,14 +705,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.CMMouseLeave
-  Params: Message:
+  Method: TSpeedButton.MouseLeave
+  Params:
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.CMMouseLeave(var Message :TLMessage);
+procedure TSpeedButton.MouseLeave;
 begin
-  inherited CMMouseLeave(Message);
+  inherited MouseLeave;
   if csDesigning in ComponentState then exit;
 
   if FMouseInControl
@@ -773,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.48  2004/02/11 11:34:15  mattias
   started new TToolBar
 

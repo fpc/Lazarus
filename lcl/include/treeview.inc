@@ -4669,7 +4669,8 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
-  MouseCapture := False;
+  if Button=mbLeft then
+    MouseCapture := False;
   Exclude(fStates, tvsWaitForDragging);
   if (Button=mbLeft)
   and (fStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked,

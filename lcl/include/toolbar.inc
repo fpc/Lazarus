@@ -20,6 +20,29 @@
 
 {$IFDEF NewToolBar}
 
+function CompareToolBarControl(Control1, Control2: TControl): integer;
+var
+  ToolBar: TToolBar;
+  Row1: Integer;
+  Row2: Integer;
+  BtnHeight: Integer;
+begin
+  Result:=0;
+  if not (Control1.Parent is TToolBar) then exit;
+  ToolBar:=TToolBar(Control1.Parent);
+  BtnHeight:=ToolBar.FRealizedButtonHeight;
+  Row1:=(Control1.Top+(BtnHeight div 2)) div ToolBar.FRealizedButtonHeight;
+  Row2:=(Control2.Top+(BtnHeight div 2)) div ToolBar.FRealizedButtonHeight;
+  if Row1<Row2 then
+    Result:=-1
+  else if Row1>Row2 then
+    Result:=1
+  else if Control1.Left<Control2.Left then
+    Result:=-1
+  else if Control1.Left>Control2.Left then
+    Result:=1;
+end;
+
 {------------------------------------------------------------------------------
   Method: TToolbar.Create
   Params:  AOwner: the owner of the class
@@ -48,7 +71,7 @@ begin
   FHotImageChangeLink := TChangeLink.Create;
   FHotImageChangeLink.OnChange := @HotImageListChange;
   EdgeBorders := [ebTop];
-  SetInitialBounds(1,1,150,32);
+  SetInitialBounds(0,0,150,26);
   Align := alTop;
 end;
 
@@ -135,10 +158,6 @@ procedure TToolBar.ControlsAligned;
 var
   NewWidth, NewHeight: integer;
 begin
-  if FUpdateCount>0 then begin
-    UpdateVisibleBar;
-    exit;
-  end;
   if tbfPlacingControls in FToolBarFlags then exit;
   Include(FToolBarFlags,tbfPlacingControls);
   try
@@ -160,48 +179,13 @@ begin
 end;
 
 procedure TToolBar.SetButtonHeight(const AValue: Integer);
-var
-  i: Integer;
 begin
-  if AValue = FButtonHeight then exit;
-  FButtonHeight := AValue;
-  if ([csLoading,csDestroying]*ComponentState<>[]) or (FUpdateCount > 0) then
-    Exit;
-  // set all childs to buttonheight
-  BeginUpdate;
-  try
-    for i:=ControlCount-1 downto 0 do Controls[i].Height:=FButtonHeight;
-  finally
-    EndUpdate;
-  end;
+  SetButtonSize(ButtonWidth,AValue);
 end;
 
 procedure TToolBar.SetButtonWidth(const AValue: Integer);
-var
-  i: Integer;
-  CurControl: TControl;
-  CurButton: TToolButton;
 begin
-  if AValue = FButtonWidth then exit;
-  FButtonWidth := AValue;
-  if ([csLoading,csDestroying]*ComponentState<>[]) or (FUpdateCount > 0) then
-    Exit;
-  // set all toolbuttons to buttonwidth
-  BeginUpdate;
-  try
-    for i:=ControlCount-1 downto 0 do begin
-      CurControl:=Controls[i];
-      if (CurControl is TToolButton) then begin
-        CurButton:=TToolButton(CurControl);
-        case CurButton.Style of
-        tbsButton,tbsCheck,tbsDropDown:
-          CurButton.Width:=FButtonWidth;
-        end;
-      end;
-    end;
-  finally
-    EndUpdate;
-  end;
+  SetButtonSize(AValue,ButtonHeight);
 end;
 
 procedure TToolBar.ToolButtonDown(AButton: TToolButton; NewDown: Boolean);
@@ -396,6 +380,52 @@ begin
   end;
 end;
 
+procedure TToolBar.Paint;
+begin
+  if csDesigning in ComponentState then begin
+    Canvas.Pen.Color:=clRed;
+    Canvas.FrameRect(Clientrect);
+  end;
+  inherited Paint;
+end;
+
+procedure TToolBar.SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
+var
+  CurControl: TControl;
+  NewWidth: Integer;
+  NewHeight: Integer;
+  i: Integer;
+  CurButton: TToolButton;
+begin
+  if (FButtonWidth=NewButtonWidth) and (FButtonHeight=NewButtonHeight) then
+    exit;
+  FButtonWidth:=NewButtonWidth;
+  FButtonHeight:=NewButtonHeight;
+  if ([csLoading,csDestroying]*ComponentState<>[]) or (FUpdateCount > 0) then
+    Exit;
+  // set all childs to ButtonWidth ButtonHeight
+  BeginUpdate;
+  try
+    for i:=ControlCount-1 downto 0 do begin
+      CurControl:=Controls[i];
+      if CurControl.Align<>alNone then continue;
+      NewWidth:=CurControl.Width;
+      NewHeight:=FButtonHeight;
+      if (CurControl is TToolButton) then begin
+        CurButton:=TToolButton(CurControl);
+        case CurButton.Style of
+        tbsButton,tbsCheck,tbsDropDown:
+          NewWidth:=FButtonWidth;
+        end;
+      end;
+      CurControl.SetBounds(CurControl.Left,CurControl.Top,
+                           NewWidth,NewHeight);
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
 function TToolBar.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
   Result := WrapButtons(NewWidth, NewHeight);
@@ -411,14 +441,6 @@ end;
   If Wrapable=false, then the row is wrapped after the first button with
   Wrap=true.
 
-  Wrapable
-  Indent
-  EdgeInner
-  EdgeOuter
-  EdgeBorders
-  BorderWidth
-  Button.Wrap
-
 ------------------------------------------------------------------------------}
 function TToolBar.WrapButtons(var NewWidth, NewHeight: Integer): Boolean;
 var
@@ -426,36 +448,106 @@ var
   ARect: TRect;
   x: Integer;
   y: Integer;
+  NewControlWidth: Integer;
   CurControl: TControl;
   AlignedControls: TList;
+  StartX: Integer;
+  OrderedControls: TList;
+
+  procedure CalculatePosition;
+  var
+    AlignedControl: TControl;
+    NewBounds: TRect;
+    CurBounds: TRect;
+    j: Integer;
+  begin
+    if (CurControl is TToolButton)
+    and (TToolButton(CurControl).Style in [tbsButton,tbsDropDown,tbsCheck])
+    then
+      NewControlWidth:=ButtonWidth
+    else
+      NewControlWidth:=CurControl.Width;
+    NewBounds:=Bounds(x,y,NewControlWidth,ButtonHeight);
+    repeat
+      // move control to the right, until it does not overlap
+      for j:=0 to AlignedControls.Count-1 do begin
+        AlignedControl:=TControl(AlignedControls[j]);
+        CurBounds:=Bounds(AlignedControl.Left,AlignedControl.Top,
+                          AlignedControl.Width,AlignedControl.Height);
+        if (CurBounds.Right>NewBounds.Left)
+        and (CurBounds.Left<NewBounds.Right)
+        and (CurBounds.Bottom>NewBounds.Top)
+        and (CurBounds.Top<NewBounds.Bottom) then begin
+          //writeln('CalculatePosition Move ',NewBounds.Left,'->',CurBounds.Right);
+          NewBounds.Left:=CurBounds.Right;
+          NewBounds.Right:=NewBounds.Left+NewControlWidth;
+        end;
+      end;
+      if (not Wrapable) or (NewBounds.Right<=ARect.Right)
+      or (NewBounds.Left=StartX) then begin
+        // control fits into the row
+        x:=NewBounds.Left;
+        y:=NewBounds.Top;
+        exit;
+      end;
+      // try next row
+      NewBounds.Left:=StartX;
+      NewBounds.Right:=NewBounds.Left+NewControlWidth;
+      inc(NewBounds.Top,ButtonHeight);
+      inc(NewBounds.Bottom,ButtonHeight);
+      //writeln('CalculatePosition Next Row ',NewBounds.Left,',',NewBounds.Top);
+    until false;
+  end;
+
 begin
+  //writeln('WrapButtons ');
   Result:=true;
+  BeginUpdate;
   NewWidth:=0;
   NewHeight:=0;
-  BeginUpdate;
   AlignedControls:=TList.Create;
+  OrderedControls:=TList.Create;
   try
     for i:=0 to ControlCount-1 do begin
       CurControl:=Controls[i];
-      if CurControl.Align<>alNone then
-        AlignedControls.Add(CurControl);
-      ARect:=ClientRect;
-      AdjustClientRect(ARect);
-      x:=ARect.Left+Indent;
-      y:=ARect.Top;
-      i:=0;
-      while i<ControlCount do begin
-        CurControl:=Controls[i];
-        if CurControl.Align=alNone then begin
-          // wrap
-          CurControl.SetBounds(x,y,CurControl.Width,CurControl.Height);
-          inc(x,CurControl.Width);
-        end;
-        inc(i);
-      end;
+      if CurControl.Align=alNone then
+        OrderedControls.Add(CurControl)
+      else
+        AlignedControls.Add(CurControl)
     end;
+    // sort OrderedControls
+    if FRealizedButtonHeight=0 then FRealizedButtonHeight:=FButtonHeight;
+    OrderedControls.Sort(@CompareToolBarControl);
+    
+    // position OrderedControls
+    ARect:=ClientRect;
+    AdjustClientRect(ARect);
+    StartX:=ARect.Left+Indent;
+    x:=StartX;
+    y:=ARect.Top;
+    NewControlWidth:=ButtonWidth;
+    i:=0;
+    while i<OrderedControls.Count do begin
+      CurControl:=TControl(OrderedControls[i]);
+      if CurControl.Align=alNone then begin
+        CalculatePosition;
+        //writeln('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
+        CurControl.SetBounds(x,y,NewControlWidth,ButtonHeight);
+        inc(x,CurControl.Width);
+        
+        if (not Wrapable) and (CurControl is TToolButton)
+        and (TToolButton(CurControl).Wrap) then begin
+          // user forced wrap -> start new line
+          x:=StartX;
+          inc(y,ButtonHeight);
+        end;
+      end;
+      inc(i);
+    end;
+    FRealizedButtonHeight:=FButtonHeight;
   finally
     AlignedControls.Free;
+    OrderedControls.Free;
     EndUpdate;
   end;
 end;
@@ -2001,6 +2093,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.23  2004/02/23 08:19:04  micha
   revert intf split
 

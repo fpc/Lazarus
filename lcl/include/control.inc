@@ -569,6 +569,7 @@ end;
 Procedure TControl.LMCaptureChanged(Var Message: TLMessage);
 Begin
   //Writeln('[LMCaptureChanged for '+Name+':'+Classname+']');
+  CaptureChanged;
 End;
 
 {------------------------------------------------------------------------------}
@@ -590,12 +591,12 @@ end;
 {------------------------------------------------------------------------------
        TControl.CMMouseEnter
 ------------------------------------------------------------------------------}
-Procedure TControl.CMMouseEnter(var Message :TLMessage);
+Procedure TControl.CMMouseEnter(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
-  if not FMouseEntered then begin
+  if (Message.LParam=0) and (not FMouseEntered) then begin
     FMouseEntered:=true;
-    if Assigned(OnMouseEnter) then OnMouseEnter(Self);
+    MouseEnter;
     if FParent <> nil then
       FParent.Perform(CM_MOUSEENTER, 0, LParam(Self));
   end;
@@ -604,12 +605,12 @@ end;
 {------------------------------------------------------------------------------
        TControl.CMMouseLeave
 ------------------------------------------------------------------------------}
-Procedure TControl.CMMouseLeave(var Message :TLMessage);
+Procedure TControl.CMMouseLeave(var Message: TLMessage);
 Begin
   // this is a LCL based mouse message, so don't call DoBeforeMouseMessage
-  if FMouseEntered then begin
+  if (Message.LParam=0) and FMouseEntered then begin
     FMouseEntered:=false;
-    if Assigned(OnMouseLeave) then OnMouseLeave(Self);
+    MouseLeave;
     if FParent <> nil then
       FParent.Perform(CM_MOUSELEAVE, 0, LParam(Self));
   end;
@@ -1408,11 +1409,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonDown(var Message: TLMLButtonDown);
 begin
-  {$IFDEF VerboseMouseBugfix}
-  Writeln('TCONTROL WMLBUTTONDOWN A ',Name,':',ClassName);
-  {$ENDIF}
   DoBeforeMouseMessage;
-  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csCaptureMouse in ControlStyle then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('TControl.WMLButtonDown ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   if csClickEvents in ControlStyle then Include(FControlState, csClicked);
   DoMouseDown(Message, mbLeft, []);
   //Writeln('TCONTROL WMLBUTTONDOWN B ',Name,':',ClassName);
@@ -1455,7 +1458,12 @@ procedure TControl.WMLButtonDblClk(var Message: TLMLButtonDblClk);
 begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
-  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csCaptureMouse in ControlStyle then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('TControl.WMLButtonDblClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   // first send a mouse down
   DoMouseDown(Message, mbLeft ,[ssDouble]);
   // then send the double click
@@ -1499,7 +1507,12 @@ procedure TControl.WMLButtonTripleClk(var Message: TLMLButtonTripleClk);
 begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
-  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csCaptureMouse in ControlStyle then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('TControl.WMLButtonTripleClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   if csClickEvents in ControlStyle then TripleClick;
   DoMouseDown(Message, mbLeft ,[ssTriple]);
 end;
@@ -1541,7 +1554,12 @@ procedure TControl.WMLButtonQuadClk(var Message: TLMLButtonQuadClk);
 begin
   DoBeforeMouseMessage;
   //TODO: SendCancelMode(self);
-  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csCaptureMouse in ControlStyle then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('TControl.WMLButtonQuadClk ',Name,':',ClassName);
+    {$ENDIF}
+    MouseCapture := True;
+  end;
   if csClickEvents in ControlStyle then QuadClick;
   DoMouseDown(Message, mbLeft ,[ssQuad]);
 end;
@@ -1583,8 +1601,12 @@ procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
   DoBeforeMouseMessage;
   //Writeln('TControl.WMLButtonUp A ',Name,':',ClassName,' csCaptureMouse=',csCaptureMouse in ControlStyle,' csClicked=',csClicked in ControlState);
-  if csCaptureMouse in ControlStyle then
+  if csCaptureMouse in ControlStyle then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('TControl.WMLButtonUp ',Name,':',ClassName);
+    {$ENDIF}
     MouseCapture := False;
+  end;
 
   if csClicked in ControlState then
   begin
@@ -2344,31 +2366,47 @@ begin
   if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl MouseMove
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl MouseMove
 
+------------------------------------------------------------------------------}
 Procedure TControl.MouseMove(Shift:TShiftState; X, Y: Integer);
 begin
   if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl MouseUp
-}
-{------------------------------------------------------------------------------}
-
+{------------------------------------------------------------------------------
+  TControl MouseUp
+------------------------------------------------------------------------------}
 Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 begin
   if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetShowHint
-}
-{------------------------------------------------------------------------------}
+procedure TControl.MouseEnter;
+begin
+  if Assigned(FOnMouseEnter) then FOnMouseEnter(Self);
+end;
+
+procedure TControl.MouseLeave;
+begin
+  if Assigned(FOnMouseLeave) then FOnMouseLeave(Self);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.CaptureChanged;
+
+------------------------------------------------------------------------------}
+procedure TControl.CaptureChanged;
+begin
+  // anything to do here?
+end;
+
+{------------------------------------------------------------------------------
+  TControl SetShowHint
+
+------------------------------------------------------------------------------}
 procedure TControl.SetShowHint(Value : Boolean);
 begin
   if FShowHint <> Value then
@@ -2798,6 +2836,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.174  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.173  2004/02/23 08:19:04  micha
   revert intf split
 

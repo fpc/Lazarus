@@ -42,6 +42,7 @@ Begin
   {$ENDIF}
   FCapture := Value;
   if Value = 0 then ReleaseCapture else LCLIntf.SetCapture(Value);
+  FCapture := GetCapture;
 end;
 
 Procedure TMouse.SetCursorPos(Value : Tpoint);

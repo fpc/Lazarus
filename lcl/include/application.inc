@@ -237,21 +237,9 @@ end;
   Handles mouse Idle
  ------------------------------------------------------------------------------}
 procedure TApplication.MouseIdle(const CurrentControl: TControl);
-var
-  CaptureControl: TControl;
-  IsOther: Boolean;
 begin
-  CaptureControl := GetCaptureControl;
-  if FMouseControl <> CurrentControl then
-  begin
-    IsOther:=((FMouseControl <> nil) and (CaptureControl = nil)) or
-      ((CaptureControl <> nil) and (FMouseControl = CaptureControl));
-
-    if IsOther and (FMouseControl<>nil) then
-      FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
-    FMouseControl := CurrentControl;
-    if IsOther and (FMouseControl<>nil) then
-      FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
+  if FMouseControl <> CurrentControl then begin
+    UpdateMouseControl(CurrentControl);
   end;
 end;
 
@@ -284,17 +272,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.Idle;
 var
-  P: TPoint;
   Done: Boolean;
-  CurrentControl: TControl;
 begin
-  GetCursorPos(P);
-  CurrentControl := FindDragTarget(P, True);
-  if (CurrentControl <> nil)
-  and (csDesigning in CurrentControl.ComponentState)
-  then CurrentControl := nil;
-
-  MouseIdle(CurrentControl);
+  MouseIdle(GetControlAtMouse);
 
   Done := True;
   if Assigned(FOnIdle) then FOnIdle(Self, Done);
@@ -350,6 +330,34 @@ begin
       //  PostMessage(FHandle, CM_INVOKEHELP, Command, Data);
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  function TApplication.GetControlAtMouse: TControl;
+
+ ------------------------------------------------------------------------------}
+function TApplication.GetControlAtMouse: TControl;
+var
+  P: TPoint;
+begin
+  GetCursorPos(P);
+  Result := FindDragTarget(P, True);
+  if (Result <> nil) and (csDesigning in Result.ComponentState) then
+    Result := nil;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
+
+ ------------------------------------------------------------------------------}
+procedure TApplication.UpdateMouseControl(NewMouseControl: TControl);
+begin
+  if FMouseControl=NewMouseControl then exit;
+  if (FMouseControl<>nil) then
+    FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
+  FMouseControl := NewMouseControl;
+  if (FMouseControl<>nil) then
+    FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -1081,13 +1089,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.DoBeforeMouseMessage(CurMouseControl: TControl);
 begin
-  if (FMouseControl<>CurMouseControl) then begin
-    if (FMouseControl<>nil) then
-      FMouseControl.Perform(CM_MOUSELEAVE, 0, 0);
-    FMouseControl := CurMouseControl;
-    if (FMouseControl<>nil) then
-      FMouseControl.Perform(CM_MOUSEENTER, 0, 0);
-  end;
+  UpdateMouseControl(GetControlAtMouse);
 end;
 
 {------------------------------------------------------------------------------
@@ -1161,6 +1163,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.73  2004/02/23 08:19:04  micha
   revert intf split
 

@@ -401,9 +401,13 @@ function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
   SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
-procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
-procedure UpdateMouseCaptureControl;
 procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
+
+// mouse capturing
+procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
+function GetDefaultMouseCaptureWidget(Widget: PGtkWidget): PGtkWidget;
+procedure ReleaseMouseCapture;
+procedure UpdateMouseCaptureControl;
 
 {$IFNDEF GTK2_2}
 // MWE:

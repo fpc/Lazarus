@@ -430,6 +430,8 @@ procedure TgtkObject.ShowModal(Sender: TObject);
 var
   GtkWindow: PGtkWindow;
 begin
+  ReleaseMouseCapture;
+   
   if Sender is TCommonDialog then
   begin
     GtkWindow:=PGtkWindow(TCommonDialog(Sender).Handle);
@@ -1128,7 +1130,7 @@ begin
   if GtkWidgetIsA(Widget,gtk_toolbar_get_type) then begin
     FixedWidget:=GetFixedWidget(Widget);
     if (FixedWidget<>nil) and (FixedWidget<>Widget) then begin
-      writeln('WARNING: ToDo TgtkObject.RealizeWidgetSize ',NewWidth,',',NewHeight);
+      //writeln('WARNING: ToDo TgtkObject.RealizeWidgetSize for TToolBar ',NewWidth,',',NewHeight);
       gtk_widget_set_usize(FixedWidget,NewWidth,NewHeight);
     end;
   end;
@@ -3265,6 +3267,7 @@ begin
 
       LM_POPUPSHOW :
         Begin
+          ReleaseMouseCapture;
           gtk_menu_popup(PgtkMenu(TPopupMenu(Sender).Handle),
                          nil,
                          nil,
@@ -6261,7 +6264,6 @@ begin
   SetMainWidget(Result,ClientWidget);
   gtk_toolbar_set_space_size(PGTKToolbar(Result),0);
   gtk_toolbar_set_space_style(PGTKToolbar(Result),GTK_TOOLBAR_SPACE_EMPTY);
-  writeln('TgtkObject.CreateToolBar ',PGTKToolbar(Result)^.button_maxw,',',PGTKToolbar(Result)^.button_maxh);
   {$ENDIF}
   gtk_widget_show(Result);
 end;
@@ -6909,6 +6911,11 @@ begin
         gdk_window_set_functions(AWindow, func);
       end;
       ShareWindowAccelGroups(SenderWidget);
+      
+      // capturing is always gtkwindow dependent. On showing a new window
+      // the gtk will put a new widget on the grab stack.
+      // -> release our capture
+      ReleaseMouseCapture;
     end;
 
     gtk_widget_show(SenderWidget);
@@ -9225,6 +9232,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.472  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.471  2004/02/22 10:43:20  mattias
   added child-parent checks
 

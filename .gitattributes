@@ -686,6 +686,7 @@ images/components/ttogglebox.ico -text svneol=unset#image/x-icon
 images/components/ttogglebox.xpm -text svneol=native#image/x-xpixmap
 images/components/ttoolbar.ico -text svneol=unset#image/x-icon
 images/components/ttoolbar.xpm -text svneol=native#image/x-xpixmap
+images/components/ttoolbutton.xpm -text svneol=native#image/x-xpixmap
 images/components/ttrackbar.ico -text svneol=unset#image/x-icon
 images/components/ttrackbar.xpm -text svneol=native#image/x-xpixmap
 images/components/ttreeview.xpm -text svneol=native#image/x-xpixmap

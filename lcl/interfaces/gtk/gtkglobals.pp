@@ -36,6 +36,13 @@ var
   UpdatingTransientWindows: boolean;
 
   // mouse --------------------------------------------------------------------
+type
+  TMouseCaptureType = (
+    mctGTK,     // gtk is handling capturing
+    mctGTKIntf, // gtk interface has captured the mouse
+    mctLCL      // a LCL control has captured the mouse
+    );
+  
 var
   //drag icons
   //TrashCan_Open : PgdkPixmap;
@@ -48,7 +55,8 @@ var
   //Dragging : Boolean;
 
   MouseCaptureWidget: PGtkWidget;
-  MouseCapureByLCL: boolean;
+  MouseCaptureType: TMouseCaptureType;
+  MouseCaptureIndex: cardinal;
 
 const
   DblClickTime = 250;// 250 miliseconds or less between clicks is a double click

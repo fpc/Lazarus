@@ -42,7 +42,7 @@ begin
   if ebRight in FEdgeBorders then
     dec(ARect.Right,EdgeWidth);
   if ebBottom in FEdgeBorders then
-    inc(ARect.Bottom,EdgeWidth);
+    dec(ARect.Bottom,EdgeWidth);
 end;
 
 procedure TToolWindow.SetEdgeBorders(Value: TEdgeBorders);
@@ -79,13 +79,13 @@ var
 begin
   FEdgeBorderType := 0;
   if (ebTOP in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(ebTOP);
+  FEdgeBorderType := FEdgeBorderType or longint(BF_TOP);
   if (ebBottom in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(ebBottom);
+  FEdgeBorderType := FEdgeBorderType or longint(BF_BOTTOM);
   if (ebLeft in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(ebLeft);
+  FEdgeBorderType := FEdgeBorderType or longint(BF_LEFT);
   if (ebRight in FEdgeBorders)  then
-  FEdgeBorderType := FEdgeBorderType or longint(ebRight);
+  FEdgeBorderType := FEdgeBorderType or longint(BF_RIGHT);
   ARect:=ClientRect;
   DrawEdge(Canvas.Handle,ARect,
            InnerStyles[FEdgeInner] or OuterStyles[FEdgeOuter],FEdgeBorderType);

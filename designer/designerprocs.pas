@@ -89,6 +89,7 @@ var
 function GetParentLevel(AControl: TControl): integer;
 function ControlIsInDesignerVisible(AControl: TControl): boolean;
 function ComponentIsInvisible(AComponent: TComponent): boolean;
+function ComponentBoundsDesignable(AComponent: TComponent): boolean;
 
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 function GetParentFormRelativeBounds(Component: TComponent): TRect;
@@ -290,6 +291,17 @@ begin
     OnComponentIsInvisible(AComponent,Result)
   else
     Result:=false;
+end;
+
+function ComponentBoundsDesignable(AComponent: TComponent): boolean;
+begin
+  Result:=(not ComponentIsInvisible(AComponent));
+  if Result and (AComponent is TControl) then begin
+    if [csDesignFixedBounds,csNoDesignVisible]*TControl(AComponent).ControlStyle
+      <>[]
+    then
+      Result:=false;
+  end;
 end;
 
 { TDesignerDeviceContext }

@@ -66,7 +66,7 @@ function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
 Function DrawFrameControl(DC: HDC; var Rect : TRect; uType, uState : Cardinal) : Boolean; override;
-function DrawEdge(DC: HDC; var Rect: TRect; edge: Cardinal; grfFlags: Cardinal): Boolean; override;
+function DrawEdge(DC: HDC; var ARect: TRect; Edge: Cardinal; grfFlags: Cardinal): Boolean; override;
 function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; Override;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean; override;
@@ -213,6 +213,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.88  2004/02/19 05:07:17  mattias
   CreateBitmapFromRawImage now creates mask only if needed
 

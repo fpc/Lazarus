@@ -41,8 +41,6 @@ end;
  ------------------------------------------------------------------------------}
 destructor TGraphicControl.Destroy;
 begin
-{  if CaptureControl = Self then
-    SetCaptureControl(nil); }
   FCanvas.Free;
   inherited Destroy;
 end;
@@ -91,6 +89,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.7  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 

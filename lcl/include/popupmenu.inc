@@ -50,6 +50,7 @@ Procedure TPopupMenu.PopUp(X,Y : Integer);
 begin
   if ActivePopupMenu<>nil then ActivePopupMenu.Close;
   FPopupPoint := Point(X, Y);
+  ReleaseCapture;
   DoPopup(Self);
   if Items.Count=0 then exit;
   ActivePopupMenu:=Self;
@@ -74,6 +75,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.8  2003/05/12 13:40:50  mattias
   fixed clsing popupmenu on showmodal
 

@@ -63,20 +63,14 @@ type
     FCancel : Boolean;
     FDefault : Boolean;
     FModalResult : TModalResult;
-    FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FShortCut : TLMShortcut;
     Procedure SetDefault(Value : Boolean);
-    procedure CMMouseEnter(var Message: TLMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TLMessage); message CM_MOUSELEAVE;
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
 
-    property OnMouseEnter : TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave : TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
@@ -229,8 +223,8 @@ type
     procedure SetLayout(const Value: TButtonLayout);
     procedure SetTransparent(const Value: boolean);
     procedure CMButtonPressed(var Message: TLMessage); message CM_BUTTONPRESSED;
-    procedure CMMouseEnter(var Message: TLMessage); message CM_MouseEnter;
-    procedure CMMouseLeave(var Message: TLMessage); message CM_MouseLeave;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   protected
     FState: TButtonState;
@@ -332,6 +326,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.59  2004/02/22 10:43:20  mattias
   added child-parent checks
 

@@ -3104,35 +3104,119 @@ begin
   CurMouseCaptureWidget:=gtk_grab_get_current;
 
   if OldMouseCaptureWidget<>CurMouseCaptureWidget then begin
+    // the mouse grab changed
+    // -> this means the gtk itself has changed the mouse grab
+    {$IFDEF VerboseMouseCapture}
+    writeln('UpdateMouseCaptureControl Capture changed from ',
+      '[',GetWidgetDebugReport(OldMouseCaptureWidget),']',
+      ' to [',GetWidgetDebugReport(CurMouseCaptureWidget),']');
+    {$ENDIF}
+
     // notify the new capture control
     MouseCaptureWidget:=CurMouseCaptureWidget;
-    MouseCapureByLCL:=false;
-    if MouseCaptureWidget<>nil then
+    MouseCaptureType:=mctGTK;
+    if MouseCaptureWidget<>nil then begin
+      // the MouseCaptureWidget is probably not a main widget
       SendMessage(HWnd(MouseCaptureWidget), LM_CAPTURECHANGED, 0,
         HWnd(OldMouseCaptureWidget));
+    end;
+  end;
+end;
+
+procedure IncreaseMouseCaptureIndex;
+begin
+  if MouseCaptureIndex<$ffffffff then
+    inc(MouseCaptureIndex)
+  else
+    MouseCaptureIndex:=0;
+end;
+
+procedure CaptureMouseForWidget(Widget: PGtkWidget; Owner: TMouseCaptureType);
+var
+  CaptureWidget: PGtkWidget;
+  NowIndex: Cardinal;
+begin
+  {$IFDEF VerboseMouseCapture}
+  writeln('CaptureMouseForWidget START ',GetWidgetDebugReport(Widget));
+  {$ENDIF}
+  if not (Owner in [mctGTKIntf,mctLCL]) then exit;
+  // not every widget can capture the mouse
+  CaptureWidget:=GetDefaultMouseCaptureWidget(Widget);
+  if CaptureWidget=nil then exit;
+
+  UpdateMouseCaptureControl;
+  if (MouseCaptureType<>mctGTK) then begin
+    // we are capturing
+    if (MouseCaptureWidget=CaptureWidget) then begin
+      // we are already capturing this widget
+      exit;
+    end;
+    // release old capture
+    ReleaseMouseCapture;
+  end;
+
+  {$IFDEF VerboseMouseCapture}
+  writeln('CaptureMouseForWidget Start Capturing for ',GetWidgetDebugReport(CaptureWidget));
+  {$ENDIF}
+  IncreaseMouseCaptureIndex;
+  NowIndex:=MouseCaptureIndex;
+  if not gtk_widget_has_focus(CaptureWidget) then
+    gtk_widget_grab_focus(CaptureWidget);
+  if NowIndex=MouseCaptureIndex then begin
+    {$IFDEF VerboseMouseCapture}
+    writeln('CaptureMouseForWidget Commit Capturing for ',GetWidgetDebugReport(CaptureWidget));
+    {$ENDIF}
+    MouseCaptureWidget:=CaptureWidget;
+    MouseCaptureType:=Owner;
+    gtk_grab_add(CaptureWidget);
+  end;
+end;
+
+function GetDefaultMouseCaptureWidget(Widget: PGtkWidget
+  ): PGtkWidget;
+var
+  WidgetInfo: PWinWidgetInfo;
+  LCLObject: TObject;
+begin
+  Result:=nil;
+  if Widget=nil then exit;
+  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
+    WidgetInfo:=GetWidgetInfo(Widget,false);
+    if WidgetInfo<>nil then
+      Result:=WidgetInfo^.ImplementationWidget;
+    exit;
+  end;
+  LCLObject:=GetNearestLCLObject(Widget);
+  if LCLObject=nil then exit;
+  if ((TWinControl(LCLObject) is TCustomSplitter)
+  or (TWinControl(LCLObject) is TToolButton))
+  and (TWinControl(LCLObject).HandleAllocated)
+  then begin
+    WidgetInfo:=GetWidgetInfo(PGtkWidget(TWinControl(LCLObject).Handle),false);
+    if WidgetInfo<>nil then
+      Result:=WidgetInfo^.ImplementationWidget;
   end;
 end;
 
 {------------------------------------------------------------------------------
-  procedure ReleaseLCLMouseCapture;
+  procedure ReleaseMouseCapture;
 
-  If the current mouse capture was captured by the LCL, release the capture.
+  If the current mouse capture was captured by the LCL or the gtk intf, release
+  the capture. Don't release mouse captures of the gtk, because captures must
+  be balanced and this is already done by the gtk.
  ------------------------------------------------------------------------------}
-procedure ReleaseMouseCapture(OnlyIfCapturedByLCL: boolean);
+procedure ReleaseMouseCapture;
 var
-  OldCaptureWidget: PGtkWidget;
+  OldMouseCaptureWidget: PGtkWidget;
 begin
-  if OnlyIfCapturedByLCL and (not MouseCapureByLCL) then exit;
-  {$IfNDef ActivateMouseCapture}
-  exit;
-  {$EndIf}
-  repeat
-    OldCaptureWidget:=gtk_grab_get_current;
-    if OldCaptureWidget<>nil then
-      gtk_grab_remove(OldCaptureWidget)
-    else
-      break;
-  until false;
+  {$IFDEF VerboseMouseCapture}
+  writeln('ReleaseMouseCapture ',ord(MouseCaptureType),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
+  {$ENDIF}
+  if MouseCaptureType=mctGTK then exit;
+  OldMouseCaptureWidget:=MouseCaptureWidget;
+  MouseCaptureWidget:=nil;
+  MouseCaptureType:=mctGTK;
+  gtk_grab_remove(OldMouseCaptureWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -6320,6 +6404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.260  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.259  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 

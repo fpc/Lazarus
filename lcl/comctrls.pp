@@ -816,8 +816,6 @@ type
     procedure SetWrap(Value: Boolean);
     procedure SetMouseInControl(NewMouseInControl: Boolean);
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
-    procedure CMMouseEnter(var Message: TLMessage); message CM_MouseEnter;
-    procedure CMMouseLeave(var Message: TLMessage); message CM_MouseLeave;
   protected
     FToolBar: TToolBar;
     function GetActionLinkClass: TControlActionLinkClass; override;
@@ -828,6 +826,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseEnter; override;
+    procedure MouseLeave; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure RefreshControl; virtual;
@@ -837,6 +837,7 @@ type
     procedure SetParent(AParent: TWinControl); override;
     procedure UpdateVisibleToolbar;
     function GroupAllUpAllowed: boolean;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
@@ -893,6 +894,7 @@ type
   TToolBar = class(TToolWindow)
   private
     FButtonHeight: Integer;
+    FRealizedButtonHeight: integer;
     FButtons: TList;
     FButtonWidth: Integer;
     FDisabledImageChangeLink: TChangeLink;
@@ -958,6 +960,8 @@ type
     procedure FlipChildren(AllLevels: Boolean); override;
     procedure BeginUpdate; virtual;
     procedure EndUpdate; virtual;
+    procedure Paint; override;
+    procedure SetButtonSize(NewButtonWidth, NewButtonHeight: integer);
   public
     property ButtonCount: Integer read GetButtonCount;
     property Buttons[Index: Integer]: TToolButton read GetButton;
@@ -2235,6 +2239,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.115  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.114  2004/02/22 16:22:53  mattias
   fixed old toolbar compilation
 

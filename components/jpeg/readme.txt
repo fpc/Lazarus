@@ -1,4 +1,15 @@
 
+WARNING  WARNING  WARNING  WARNING  WARNING
+
+This package is broken. Read further.
+
+The pasjpeg code in the current fpc sources have a bug.
+If you want jpeg, then you must use an older fpc and the jpeg from lazarus-ccr
+on sourceforge. Not this package.
+
+-------------------------------------------------------------------------------
+
+
 The lazarus TJPEGImage is in lazjpeg.pas
 
 It uses the pasjpeg and fpimage libs provided by FreePascal. See there for in

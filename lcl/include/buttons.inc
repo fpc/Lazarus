@@ -104,36 +104,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TButton.CMMouseEnter
-  Params:  None
-  Returns: Nothing
-
-  Handles the event when the button is entered
- ------------------------------------------------------------------------------}
-procedure TButton.CMMouseEnter(var Message: TLMessage);
-begin
-  Assert(False,'Trace:[TButton.CMMouseEnter]');
-  inherited CMMouseEnter(Message);
-  If assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-{------------------------------------------------------------------------------
-  Method:  TButton.CMMouseLeave
-  Params:  None
-  Returns: Nothing
-
-  Handles the event when the mouse leaves the button
- ------------------------------------------------------------------------------}
-procedure TButton.CMMouseLeave(var Message: TLMessage);
-begin
-  Assert(False,'Trace:[TButton.CMMouseLeave]');
-  inherited CMMouseLeave(Message);
-  If assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-{------------------------------------------------------------------------------
   Method:  TButton.CMDefaultClicked
   Params:  None
   Returns: Nothing
@@ -173,6 +143,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.19  2004/02/23 08:19:04  micha
   revert intf split
 

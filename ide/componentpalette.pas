@@ -38,9 +38,9 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, Dialogs, Graphics, ExtCtrls, Buttons, Menus, LResources,
-  AVL_Tree, LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs,
-  PackageDefs;
+  Classes, SysUtils, Controls, Dialogs, Graphics, ExtCtrls, Buttons, Menus,
+  LResources, AVL_Tree, LazarusIDEStrConsts, ComponentReg, DesignerProcs,
+  IDEProcs, PackageDefs;
 
 const
   ComponentPaletteBtnWidth  = 25;
@@ -76,8 +76,8 @@ type
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
                                      Component: TRegisteredComponent); override;
     procedure Update; override;
-    procedure CheckComponentHasIcon(AComponent: TComponent;
-                                    var Invisible: boolean);
+    procedure CheckComponentDesignerVisible(AComponent: TComponent;
+                                            var Invisible: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -273,25 +273,31 @@ begin
   UpdateNoteBookButtons;
 end;
 
-procedure TComponentPalette.CheckComponentHasIcon(AComponent: TComponent;
-  var Invisible: boolean);
+procedure TComponentPalette.CheckComponentDesignerVisible(
+  AComponent: TComponent; var Invisible: boolean);
 var
   RegComp: TRegisteredComponent;
+  AControl: TControl;
 begin
-  RegComp:=FindComponent(AComponent.ClassName);
-  Invisible:=(RegComp<>nil) and (RegComp.PageName='');
+  if (AComponent is TControl) then begin
+    AControl:=TControl(AComponent);
+    Invisible:=(csNoDesignVisible in AControl.ControlStyle)
+  end else begin
+    RegComp:=FindComponent(AComponent.ClassName);
+    Invisible:=(RegComp<>nil) and (RegComp.PageName='');
+  end;
 end;
 
 constructor TComponentPalette.Create;
 begin
   inherited Create;
   fComponents:=TAVLTree.Create(@CompareRegisteredComponents);
-  OnComponentIsInvisible:=@CheckComponentHasIcon;
+  OnComponentIsInvisible:=@CheckComponentDesignerVisible;
 end;
 
 destructor TComponentPalette.Destroy;
 begin
-  if OnComponentIsInvisible=@CheckComponentHasIcon then
+  if OnComponentIsInvisible=@CheckComponentDesignerVisible then
     OnComponentIsInvisible:=nil;
   NoteBook:=nil;
   fComponents.Free;

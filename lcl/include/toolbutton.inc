@@ -1,3 +1,5 @@
+// included by comctrls.pp
+
 { TToolButton
 
  *****************************************************************************
@@ -55,23 +57,29 @@ begin
   fCompStyle := csToolButton;
   FImageIndex := -1;
   FStyle := tbsButton;
-  ControlStyle := [csCaptureMouse, csSetCaption];
+  ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
   SetInitialBounds(0,0,23,22);
 end;
 
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  writeln('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
-  SetMouseInControl(true);
+  //writeln('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
+  SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
   if (Button=mbLeft) and (not (tbfPressed in FToolButtonFlags)) then begin
     Include(FToolButtonFlags,tbfPressed);
     Invalidate;
   end;
-  if (Style=tbsDropDown) and (Button=mbLeft) and Enabled then
-    // switch
-    Down := not Down;
+
   inherited MouseDown(Button,Shift,X,Y);
+
+  if (Style=tbsDropDown) and (Button=mbLeft) and Enabled then begin
+    if (FToolBar<>nil) and (X>ClientWidth-FToolBar.FDropDownWidth) then begin
+    
+    end else begin
+      Down := true;
+    end;
+  end;
 end;
 
 procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -79,26 +87,35 @@ begin
   //writeln('TToolButton.MouseMove ',Name,':',ClassName,' ',X,',',Y);
   SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
   inherited MouseMove(Shift, X, Y);
-  if (Style=tbsDropDown) and MouseCapture then
-    // while dragging: down when mouse in, and up, when mouse out of control
-    Down := FMouseInControl;
 end;
 
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
+  //writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
   if (Button=mbLeft) and (tbfPressed in FToolButtonFlags) then begin
     Exclude(FToolButtonFlags,tbfPressed);
     Invalidate;
   end;
-  SetMouseInControl(true);
+  SetMouseInControl((X>=0) and (X<ClientWidth) and (Y>=0) and (Y<ClientHeight));
+  
   inherited MouseUp(Button, Shift, X, Y);
-  if (Button=mbLeft) and FMouseInControl then begin
-  writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
-    if Style=tbsDropDown then Down:=False;
-    if Style=tbsCheck then Down:=not Down;
-    Click;
+  
+  if (Button=mbLeft) then begin
+    //writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
+    if (Style=tbsButton) then Down:=false;
+    if (Style=tbsDropDown) then begin
+      if (FToolBar<>nil) and FMouseInControl
+      and (X>ClientWidth-FToolBar.FDropDownWidth) then begin
+        CheckMenuDropdown;
+      end;
+      Down:=false;
+    end;
+
+    if FMouseInControl then begin
+      if (Style=tbsCheck) then Down:=not Down;
+      Click;
+    end;
   end;
   Invalidate;
 end;
@@ -148,7 +165,7 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
-  writeln('TToolButton.Paint A ',Name,' FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
+  //writeln('TToolButton.Paint A ',Name,' FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
     PaintRect:=ClientRect; // the whole paint area
 
@@ -186,9 +203,9 @@ begin
       if IconSize.X>0 then begin
         if FToolBar.List then begin
           // icon left of text
-          IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cy-2) div 2;
+          IconPos.X:=(ButtonRect.Left+ButtonRect.Right-IconSize.x-TextSize.cx-2) div 2;
           IconPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-IconSize.y) div 2;
-          TextPos.X:=IconPos.X+2;
+          TextPos.X:=IconPos.X+IconSize.X+2;
           TextPos.Y:=(ButtonRect.Top+ButtonRect.Bottom-TextSize.cy) div 2;
         end else begin
           // icon above text
@@ -237,13 +254,15 @@ begin
     and (csDesigning in ComponentState) then begin
       Canvas.Brush.Color:=clBackground;
       Canvas.Pen.Color:=clBlack;
+      dec(PaintRect.Right);
+      dec(PaintRect.Bottom);
       Canvas.FrameRect(PaintRect);
     end;
     
     // draw divider
     if (Style in [tbsDivider]) then begin
-      DividerRect.Left:=((ButtonRect.Left+ButtonRect.Right) div 2)-2;
-      DividerRect.Right:=DividerRect.Left+4;
+      DividerRect.Left:=((ButtonRect.Left+ButtonRect.Right) div 2)-1;
+      DividerRect.Right:=DividerRect.Left+2;
       DividerRect.Top:=2;
       DividerRect.Bottom:=Max(DividerRect.Top,PaintRect.Bottom-2);
       DrawEdge(Canvas.Handle,DividerRect,EDGE_ETCHED,BF_LEFT);
@@ -293,14 +312,21 @@ begin
     Message.Result := 0;
 end;
 
-procedure TToolButton.CMMouseEnter(var Message: TLMessage);
+procedure TToolButton.MouseEnter;
 begin
+  //writeln('TToolButton.MouseEnter ',Name);
+  inherited MouseEnter;
   SetMouseInControl(true);
 end;
 
-procedure TToolButton.CMMouseLeave(var Message: TLMessage);
+procedure TToolButton.MouseLeave;
 begin
+  //writeln('TToolButton.MouseLeave ',Name);
+  inherited MouseLeave;
   SetMouseInControl(false);
+  if (not MouseCapture) and (tbfPressed in FToolButtonFlags) then begin
+    Exclude(FToolButtonFlags,tbfPressed);
+  end;
 end;
 
 procedure TToolButton.SetDown(Value: Boolean);
@@ -315,7 +341,7 @@ begin
     exit;
   end;
   
-  writeln('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
+  //writeln('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
   if (Style=tbsCheck) and FDown and (not GroupAllUpAllowed) then
     exit;
 
@@ -339,8 +365,6 @@ begin
   Invalidate;
   if FToolBar <> nil then
     FToolBar.ToolButtonDown(Self,FDown);
-  if (Style=tbsDropDown) and Down and Enabled then
-    CheckMenuDropdown;
 end;
 
 procedure TToolButton.SetDropdownMenu(Value: TPopupMenu);
@@ -451,6 +475,8 @@ procedure TToolButton.SetMouseInControl(NewMouseInControl: Boolean);
 begin
   if FMouseInControl=NewMouseInControl then exit;
   FMouseInControl:=NewMouseInControl;
+  if (Style in [tbsDropDown,tbsButton]) and (not FMouseInControl) then
+    Down:=false;
   Invalidate;
 end;
 
@@ -580,7 +606,9 @@ end;
 function TToolButton.GetButtonDrawFlags: integer;
 begin
   Result:=DFCS_BUTTONPUSH;
-  if FDown or (tbfPressed in FToolButtonFlags) then inc(Result,DFCS_PUSHED);
+  if FDown
+  or ((tbfPressed in FToolButtonFlags) and FMouseInControl) then
+    inc(Result,DFCS_PUSHED);
   if not Enabled then inc(Result,DFCS_INACTIVE);
 
   if (FToolBar<>nil) and FToolBar.Flat
@@ -653,6 +681,40 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TToolButton.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+var
+  NewButtonWidth: Integer;
+  NewButtonHeight: Integer;
+  OldLeft: Integer;
+  OldTop: Integer;
+  OldWidth: Integer;
+  OldHeight: Integer;
+begin
+  if ([csDesigning,csLoading,csDestroying]*ComponentState=[csDesigning])
+  and (FToolBar<>nil)
+  and (not (tbfPlacingControls in FToolBar.FToolBarFlags))
+  and (FToolBar.FUpdateCount=0)
+  and (AWidth>0) and (AHeight>0) then begin
+    if Style in [tbsButton,tbsDropDown,tbsCheck] then
+      NewButtonWidth:=AWidth
+    else
+      NewButtonWidth:=FToolBar.ButtonWidth;
+    NewButtonHeight:=AHeight;
+    //writeln('TToolButton.DoSetBounds NewButtonSize=',NewButtonWidth,',',NewButtonHeight);
+    OldLeft:=Left;
+    OldTop:=Top;
+    OldWidth:=Width;
+    OldHeight:=Height;
+    FToolBar.SetButtonSize(NewButtonWidth,NewButtonHeight);
+    if (OldLeft<>Left) or (OldTop<>Top)
+    or (OldWidth<>Width) or (OldHeight<>Height) then
+      // button was auto aligned -> ignore setbounds
+      exit;
+  end;
+  
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 {$ELSE NewToolBar}
@@ -1126,9 +1188,13 @@ end;
 
 {$ENDIF}
 
+// included by comctrls.pp
 
 {
   $Log$
+  Revision 1.14  2004/02/23 18:24:38  mattias
+  completed new TToolBar
+
   Revision 1.13  2004/02/22 16:22:53  mattias
   fixed old toolbar compilation
 
