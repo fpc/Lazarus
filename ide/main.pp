@@ -3212,21 +3212,21 @@ begin
   Project1.Bookmarks.Clear;
   for i:=0 to Project1.UnitCount-1 do begin
     AnUnitInfo:=Project1.Units[i];
-    if AnUnitInfo.Loaded then begin
-      {$IFDEF IDE_DEBUG}
-      writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',AnUnitInfo.Filename);
-      {$ENDIF}
-      ASrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
-         AnUnitInfo.EditorIndex);
-      AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
-      AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
-      for BookmarkID:=0 to 9 do begin
-        if (ASrcEdit.EditorComponent.GetBookMark(
-             BookmarkID,BookmarkX,BookmarkY))
-        and (Project1.Bookmarks.IndexOfID(BookmarkID)<0) then begin
-          Project1.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkY,
-              AnUnitInfo.EditorIndex,BookmarkID));
-        end;
+    if (not AnUnitInfo.Loaded) or (AnUnitInfo.EditorIndex<0) then continue;
+    {$IFDEF IDE_DEBUG}
+    writeln('TMainIDE.SaveSourceEditorProjectSpecificSettings AnUnitInfo.Filename=',AnUnitInfo.Filename);
+    {$ENDIF}
+    ASrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
+       AnUnitInfo.EditorIndex);
+    if ASrcEdit=nil then continue;
+    AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
+    AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
+    for BookmarkID:=0 to 9 do begin
+      if (ASrcEdit.EditorComponent.GetBookMark(
+           BookmarkID,BookmarkX,BookmarkY))
+      and (Project1.Bookmarks.IndexOfID(BookmarkID)<0) then begin
+        Project1.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkY,
+            AnUnitInfo.EditorIndex,BookmarkID));
       end;
     end;
   end;
@@ -7197,6 +7197,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.393  2002/09/20 14:41:34  lazarus
+  MG: cleanup
+
   Revision 1.392  2002/09/20 11:40:05  lazarus
   MG: added Move Page Left/Right for sourcenotebook
 
