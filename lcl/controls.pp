@@ -1050,7 +1050,7 @@ function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
 function GetKeyShiftState: TShiftState;
 
-
+procedure Register;
 
 implementation
 
@@ -1068,6 +1068,11 @@ var
   DragStartPos : TPoint;
   //DragThreshold : Integer;
   
+procedure Register;
+begin
+  RegisterComponents('Common Control',[TImageList]);
+end;
+
 {------------------------------------------------------------------------------}
 {  CNSendMessage                                                               }
 {------------------------------------------------------------------------------}
@@ -1448,6 +1453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.113  2003/04/04 16:35:24  mattias
+  started package registration
+
   Revision 1.112  2003/04/04 09:19:22  mattias
   activated TDataSource
 
