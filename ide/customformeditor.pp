@@ -1209,6 +1209,7 @@ Var
   ParentComponent: TComponent;
   JITList: TJITComponentList;
   AControl: TControl;
+  AParent: TWinControl;
   NewComponentName: String;
   DesignForm: TCustomForm;
 Begin
@@ -1248,25 +1249,20 @@ Begin
       
       // create component interface
       Temp := TComponentInterface.Create(NewComponent);
-      // set parent
-      if Temp.IsTControl then begin
-        if (ParentComponent is TWinControl)
-        and (csAcceptsControls in TWinControl(ParentComponent).ControlStyle) then
-        begin
-          TWinControl(Temp.Component).Parent :=
-            TWinControl(ParentComponent);
-          DebugLn('Parent is '''+TWinControl(Temp.Component).Parent.Name+'''');
-        end
-        else begin
-          TControl(Temp.Component).Parent :=
-            TControl(ParentComponent).Parent;
-          DebugLn('Parent is '''+TControl(Temp.Component).Parent.Name+'''');
-        end;
+      // calc parent
+      if (ParentComponent is TWinControl)
+      and (csAcceptsControls in TWinControl(ParentComponent).ControlStyle) then
+      begin
+        AParent := TWinControl(ParentComponent);
+      end else begin
+        AParent := TControl(ParentComponent).Parent;
       end;
+      DebugLn('Parent is '''+AParent.Name+'''');
     end else begin
       // create a toplevel component
       // -> a form or a datamodule or a custom component
       ParentComponent:=nil;
+      AParent:=nil;
       JITList:=GetJITListOfType(TypeClass);
       if JITList=nil then
         RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
@@ -1298,28 +1294,31 @@ Begin
       CompTop:=Y;
       CompWidth:=W;
       CompHeight:=H;
-      if (Temp.Component is TControl) then
+      if (Temp.IsTControl) then
       Begin
         AControl:=TControl(Temp.Component);
+        // calc bounds
         if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
         if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
         if CompLeft<0 then begin
-          if AControl.Parent<>nil then
-            CompLeft:=(AControl.Parent.Width - CompWidth) div 2
+          if AParent<>nil then
+            CompLeft:=(AParent.Width - CompWidth) div 2
           else if AControl is TCustomForm then
             CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
           else
             CompLeft:=0;
         end;
         if CompTop<0 then begin
-          if AControl.Parent<>nil then
-            CompTop:=(AControl.Parent.Height - CompHeight) div 2
+          if AParent<>nil then
+            CompTop:=(AParent.Height - CompHeight) div 2
           else if AControl is TCustomForm then
             CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
           else
             CompTop:=0;
         end;
+        // set parent after placing control to prevent display at (0,0)
         AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+        TControl(Temp.Component).Parent := AParent;
       end
       else if (Temp.Component is TDataModule) then begin
         // data module
