@@ -31,7 +31,7 @@ uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
-  GraphicsMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
+  GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
   CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs,
   FileCtrl, LResources, Math, GTKGlobals;
 
