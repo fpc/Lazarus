@@ -27,6 +27,33 @@
 
   ToDo:
     - many things, search for 'ToDo'
+
+    - Difficulties:
+       1. Searching recursively
+            - ParentNodes
+            - Ancestor Classes/Objects/Interfaces
+            - with statements
+            - operators: '.', '()', 'A()', '^', 'inherited'
+       2. Searching enums must be searched in sub nodes
+            -> all classes node trees must be built
+       3. Searching in used units (interface USES and implementation USES)
+       4. Searching forward for pointer types e.g. ^Tralala
+       5. Mass Search: searching a compatible proc will result
+          in searching every parameter type of every reachable proc
+            (implementation section + interface section
+    	    + used interface sections + class and ancestor methods)
+          How can this be achieved in good time?
+            -> Caching
+    - Caching:
+       Where:
+         For each section node (Interface, Implementation, ...)
+         For each BeginBlock
+       Entries: (What, Declaration Pos)
+         What: Identifier -> Ansistring (to reduce memory usage,
+           maintain a list of all identifier ansistrings)
+         Pos: Code+SrcPos
+           1. Source: TCodeTreeNode
+           2. PPU, PPW, DFU, ...:
 }
 unit FindDeclarationTool;
 
@@ -101,6 +128,8 @@ type
       Node: TCodeTreeNode): TCodeTreeNode;
     function FindIdentifierInProcContext(ProcContextNode: TCodeTreeNode;
       Params: TFindDeclarationParams): boolean;
+    function FindClassOfMethod(ProcNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
   public
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
@@ -482,35 +511,6 @@ writeln('[TFindDeclarationTool.FindDeclarationOfIdentifier] Identifier=',
     Include(Params.Flags,fdfSearchInParentNodes);
   Params.ContextNode:=NewContextNode;
   Result:=FindIdentifierInContext(Params);
-  { ToDo:
-
-  - Difficulties:
-     1. Searching recursively
-          - ParentNodes
-          - Ancestor Classes/Objects/Interfaces
-          - with statements
-          - operators: '.', '()', 'A()', '^', 'inherited'
-     2. Searching enums must be searched in sub nodes
-          -> all classes node trees must be built
-     3. Searching in used units (interface USES and implementation USES)
-     4. Searching forward for pointer types e.g. ^Tralala
-     5. Mass Search: searching a compatible proc will result
-        in searching every parameter type of every reachable proc
-          (implementation section + interface section
-  	    + used interface sections + class and ancestor methods)
-        How can this be achieved in good time?
-          -> Caching
-  - Caching:
-     Where:
-       For each section node (Interface, Implementation, ...)
-       For each BeginBlock
-     Entries: (What, Declaration Pos)
-       What: Identifier -> Ansistring (to reduce memory usage,
-         maintain a list of all identifier ansistrings)
-       Pos: Code+SrcPos
-         1. Source: TCodeTreeNode
-         2. PPU, PPW, DFU, ...:
-  }
 end;
 
 function TFindDeclarationTool.FindIdentifierInContext(
@@ -530,9 +530,6 @@ begin
   ContextNode:=Params.ContextNode;
   StartContextNode:=ContextNode;
   Result:=false;
-  
-  // ToDo: identifier 'SELF'
-  
   if ContextNode<>nil then begin
     repeat
 {$IFDEF CTDEBUG}
@@ -823,11 +820,13 @@ const
   end;
 
 
-var CurAtom: TAtomPosition;
+var CurAtom, NextAtom: TAtomPosition;
   OldInput: TFindDeclarationInput;
   NextAtomType, CurAtomType: TAtomType;
+  ProcNode: TCodeTreeNode;
 begin
   // start parsing the expression from right to left
+  NextAtom:=CurPos;
   NextAtomType:=GetCurrentAtomType;
   ReadPriorAtom;
   CurAtom:=CurPos;
@@ -861,8 +860,25 @@ writeln('');
       if not (NextAtomType in [atSpace,atPoint,atUp,atAS,atRoundBracketOpen,
         atEdgedBracketOpen]) then
       begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
         RaiseException('syntax error: "'+GetAtom+'" found');
+      end;
+      if (Result=Params.ContextNode)
+      and (CompareSrcIdentifier(CurAtom.StartPos,'SELF')) then begin
+        // SELF in a method is the object itself
+        // -> check if in a proc
+        ProcNode:=Params.ContextNode;
+        while (ProcNode<>nil) do begin
+          if (ProcNode.Desc=ctnProcedure) then begin
+            // in a proc -> find the class context
+            if FindClassOfMethod(ProcNode,Params,true) then begin
+              Result:=Params.NewNode;
+              exit;
+            end;
+          end;
+          ProcNode:=ProcNode.Parent;
+        end;
       end;
       Params.Save(OldInput);
       try
@@ -887,11 +903,14 @@ writeln('');
   atPoint:
     begin
       if (not (NextAtomType in [atSpace,atIdentifier])) then begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
         ReadNextAtom;
         RaiseException('syntax error: identifier expected, but '
                         +GetAtom+' found');
       end;
     end;
+
+  // ToDo: atAS, atINHERITED, atUp, atRoundBracketClose, atEdgedBracketClose
 
   else
     Result:=Params.ContextNode;
@@ -999,32 +1018,23 @@ begin
 writeln('  searching class of method   class="',copy(Src,ClassNameAtom.StartPos,ClassNameAtom.EndPos-ClassNameAtom.StartPos),'"');
 {$ENDIF}
         if FindIdentifierInContext(Params) then begin
-          Params.NewNode:=FindBaseTypeOfNode(Params,Params.NewNode);
-          if (Params.NewNode=nil)
-          or (Params.NewNode.Desc<>ctnClass) then begin
+          ClassContextNode:=FindBaseTypeOfNode(Params,Params.NewNode);
+          if (ClassContextNode=nil)
+          or (ClassContextNode.Desc<>ctnClass) then begin
             MoveCursorToCleanPos(ClassNameAtom.StartPos);
             RaiseException('class identifier expected');
           end;
           // class of method found
-          // -> find class type node
-          BuildSubTreeForClass(Params.NewNode);
-          ClassContextNode:=FindTypeNodeOfDefinition(Params.NewNode);
-          if Params.ContextNode<>nil then begin
-            // class context found -> search identifier
-            Params.Load(OldInput);
-            Params.Flags:=[fdfSearchInAncestors]+fdfAllClassVisibilities;
-            Params.ContextNode:=ClassContextNode;
+          BuildSubTreeForClass(ClassContextNode);
+          // class context found -> search identifier
+          Params.Load(OldInput);
+          Params.Flags:=[fdfSearchInAncestors]+fdfAllClassVisibilities;
+          Params.ContextNode:=ClassContextNode;
 {$IFDEF CTDEBUG}
 writeln('  searching identifier in class of method');
 {$ENDIF}
-            Result:=FindIdentifierInContext(Params);
-            if Result then exit;
-          end else begin
-            // class context not found -> cancel the search
-            MoveCursorToCleanPos(Params.NewNode.StartPos);
-            RaiseException('class context not found');
-            exit;
-          end;
+          Result:=FindIdentifierInContext(Params);
+          if Result then exit;
         end else begin
           // class not found -> cancel the search
           MoveCursorToCleanPos(ClassNameAtom.StartPos);
@@ -1049,6 +1059,62 @@ writeln('  searching identifier in class of method');
     end;
   end;
 end;
+
+function TFindDeclarationTool.FindClassOfMethod(ProcNode: TCodeTreeNode;
+  Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+var
+  ClassNameAtom: TAtomPosition;
+  OldInput: TFindDeclarationInput;
+begin
+{$IFDEF CTDEBUG}
+writeln('[TFindDeclarationTool.FindClassOfMethod] A');
+{$ENDIF}
+  Result:=false;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom; // read keyword
+  ReadNextAtom; // read classname
+  ClassNameAtom:=CurPos;
+  ReadNextAtom;
+  if AtomIsChar('.') then begin
+    // proc is a method
+    // -> search the class
+    Params.Save(OldInput);
+    try
+      Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes];
+      Params.ContextNode:=ProcNode;
+      Params.IdentifierStartPos:=ClassNameAtom.StartPos;
+      Params.IdentifierEndPos:=ClassNameAtom.EndPos;
+{$IFDEF CTDEBUG}
+writeln('  searching class of method   class="',copy(Src,ClassNameAtom.StartPos,ClassNameAtom.EndPos-ClassNameAtom.StartPos),'"');
+{$ENDIF}
+      if FindIdentifierInContext(Params) then begin
+        if FindClassContext then begin
+          // parse class and return class node
+          Params.NewNode:=FindBaseTypeOfNode(Params,Params.NewNode);
+          if (Params.NewNode=nil)
+          or (Params.NewNode.Desc<>ctnClass) then begin
+            MoveCursorToCleanPos(ClassNameAtom.StartPos);
+            RaiseException('class identifier expected');
+          end;
+          // class of method found
+          // parse class and return class node
+          BuildSubTreeForClass(Params.NewNode);
+        end;
+        Result:=true;
+      end else begin
+        // class not found -> cancel the search
+        MoveCursorToCleanPos(ClassNameAtom.StartPos);
+        RaiseException('class not found');
+        exit;
+      end;
+    finally
+      Params.Load(OldInput);
+    end;
+  end else begin
+    // proc is not a method
+  end;
+end;
+
 
 
 { TFindDeclarationParams }

@@ -122,6 +122,8 @@ type
         const ASource: string): integer;
     function CompareSrcIdentifiers(
       CleanStartPos1, CleanStartPos2: integer): boolean;
+    function CompareSrcIdentifier(CleanStartPos: integer;
+      const Identifier: string): boolean;
     procedure ReadPriorAtom;
 
     procedure CreateChildNode;
@@ -1196,6 +1198,25 @@ writeln('TCustomCodeTool.UpdateNeeded A ',Scanner<>nil);
 {$IFDEF CTDEBUG}
 writeln('TCustomCodeTool.UpdateNeeded END');
 {$ENDIF}
+end;
+
+function TCustomCodeTool.CompareSrcIdentifier(CleanStartPos: integer;
+  const Identifier: string): boolean;
+var IdentPos, Len: integer;
+begin
+  Result:=false;
+  Len:=length(Identifier);
+  if (CleanStartPos<1) or (CleanStartPos>SrcLen-Len+1) or (Identifier='') then
+    exit;
+  IdentPos:=1;
+  while (IdentPos<=Len) and (IsIdentChar[Src[CleanStartPos]]) do begin
+    if UpChars[Identifier[IdentPos]]<>UpperSrc[CleanStartPos] then
+      exit;
+    inc(IdentPos);
+    inc(CleanStartPos);
+  end;
+  Result:=(IdentPos>Len)
+    and ((CleanStartPos>Srclen) or (not IsIdentChar[Src[CleanStartPos]]));
 end;
 
 
