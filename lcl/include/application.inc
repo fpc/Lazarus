@@ -297,11 +297,17 @@ end;
   Returns: title of application
  ------------------------------------------------------------------------------}
 function TApplication.GetTitle: string;
+var
+  ext : string;
 begin
-  if FMainForm<>nil then
-    Result:=FMainForm.Caption
+  If FTitle = '' then begin
+    Result := ExtractFileName(GetExeName);
+    Ext := ExtractFileExt(Result);
+    If Ext <> '' then
+      Delete(Result, Length(Result) - Length(Ext) - 1, Length(Ext) + 1);
+  end
   else
-    Result:='';
+    Result := FTitle;
 end;
 
 {------------------------------------------------------------------------------
@@ -411,6 +417,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/10/23 20:47:26  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.25  2002/08/31 11:37:09  lazarus
   MG: fixed destroying combobox
 
