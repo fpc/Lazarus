@@ -369,6 +369,7 @@ var
 
 constructor TSourceEditor.Create(AOwner : TComponent; AParent : TWinControl);
 Begin
+writeln('TSourceEditor.Create A ',AOwner.Classname,' ',AParent.Classname);
   inherited Create;
   FAOwner := AOwner;
 
@@ -377,14 +378,18 @@ Begin
   FExecutionLine:=-1;
 
   FControl := nil;
+writeln('TSourceEditor.Create B ');
   CreateEditor(AOwner,AParent);
+writeln('TSourceEditor.Create END ');
 end;
 
 destructor TSourceEditor.Destroy;
 begin
-writeln('TSourceEditor.Destroy ',FEditor.Name);
+writeln('TSourceEditor.Destroy A ',FEditor.Name);
   FEditor.Free;
+writeln('TSourceEditor.Destroy B ');
   inherited Destroy;
+writeln('TSourceEditor.Destroy END ');
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
@@ -628,6 +633,7 @@ End;
 procedure TSourceEditor.DoFindAndReplace;
 var OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
+  TopLine: integer;
 begin
   OldCaretXY:=EditorComponent.CaretXY;
   EditorComponent.SearchReplace(
@@ -638,6 +644,10 @@ begin
     ACaption:='Message';
     AText:='Search string '''+FindReplaceDlg.FindText+''' not found!';
     Application.MessageBox(PChar(AText),PChar(ACaption),MB_OK);
+  end else begin
+    TopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
+    if TopLine < 1 then TopLine:=1;
+    EditorComponent.TopLine := TopLine;
   end;
 end;
 
@@ -1836,13 +1846,14 @@ Function TSourceNotebook.NewSe(PageNum : Integer) : TSourceEditor;
 Begin
 writeln('TSourceNotebook.NewSe A');
   if CreateNotebook then Pagenum := 0;
-
-  if Pagenum < 0 then begin //add a new page right to the current
+  if Pagenum < 0 then begin
+    // add a new page right to the current
     Pagenum := Notebook.PageIndex+1;
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
   end;
+writeln('TSourceNotebook.NewSe B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
-writeln('TSourceNotebook.NewSe B');
+writeln('TSourceNotebook.NewSe C');
   FSourceEditorList.Add(Result);
   Result.FUnitName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
@@ -2019,8 +2030,7 @@ Procedure TSourceNotebook.FindAgainClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSe;
-  if TempEditor <> nil then
-    TempEditor.FindAgain;
+  if TempEditor <> nil then TempEditor.FindAgain;
 End;
 
 
@@ -2132,7 +2142,7 @@ end;
 Procedure TSourceNotebook.CloseFile(PageIndex:integer);
 var TempEditor: TSourceEditor;
 Begin
-writeln('TSourceNotebook.CloseFile 1  PageIndex=',PageIndex);
+writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
   TempEditor:= FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   TempEditor.Close;
@@ -2140,6 +2150,7 @@ writeln('TSourceNotebook.CloseFile 1  PageIndex=',PageIndex);
   TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
     Notebook.Pages.Delete(PageIndex);
+writeln('TSourceNotebook.CloseFile G  PageIndex=',PageIndex);
     UpdateStatusBar;
   end else begin
     Notebook.Free;

@@ -108,8 +108,8 @@ type
   }
   TCustomNotebook = class(TCustomControl)
   private
-    fPageList: TList;
-    fAccess: TStrings;
+    fPageList: TList;  // TList of TPage
+    fAccess: TStrings; // TNBPages
     fPageIndex: Integer;
     fOnPageChanged: TNotifyEvent;
 
@@ -332,6 +332,9 @@ end.
 
  {
   $Log$
+  Revision 1.11  2001/06/12 18:31:01  lazarus
+  MG: small bugfixes
+
   Revision 1.10  2001/04/17 21:39:17  lazarus
   + added working OnClick support for TCustomRadiogroup, stoppok
 

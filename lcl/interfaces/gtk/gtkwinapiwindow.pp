@@ -25,17 +25,17 @@
 @lastmod(2000)
 }
 unit GTKWinapiWindow;
-{$mode objfpc}
+{$mode objfpc}{$H+}
+
 interface
 
 uses
   glib,gdk,gtk;
 
 type
-  
-
   PGTKAPIWidget = ^TGTKAPIWidget;
   TGTKAPIWidget = record
+    // ! the ScrolledWindow must be the first attribute of this record !
     ScrolledWindow: TGTKScrolledWindow;
     Client: PGTKWidget;
   end;
@@ -47,7 +47,8 @@ type
 
 function GTKAPIWidget_GetType : guint;
 function GTKAPIWidget_New : PGTKWidget;
-procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget; AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
+procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
+                                 AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
 procedure GTKAPIWidget_HideCaret(APIWidget: PGTKAPIWidget); 
 procedure GTKAPIWidget_ShowCaret(APIWidget: PGTKAPIWidget); 
 procedure GTKAPIWidget_SetCaretPos(APIWidget: PGTKAPIWidget; X, Y: Integer); 
@@ -67,9 +68,9 @@ type
     Y: Integer;
     Width: Integer;
     Height: Integer; 	    
-    Visible: Boolean;
-    IsDrawn: Boolean;
-    BlinkHide: Boolean;
+    Visible: Boolean;  // Caret is on
+    IsDrawn: Boolean;  // Caret is visible at the moment
+    Blinking: Boolean; // Caret should blink
     Pixmap: PGDKPixMap;
     BackPixmap: PGDKPixMap;
     Timer: guint;
@@ -77,6 +78,7 @@ type
 
   PGTKAPIWidgetClient = ^TGTKAPIWidgetClient;
   TGTKAPIWidgetClient = record
+    // ! the Widget must be the first attribute of the record !
     Widget: TGTKWidget;
     OtherWindow: PGDKWindow;
     Caret: TCaretInfo;
@@ -85,14 +87,14 @@ type
   PGTKAPIWidgetClientClass = ^TGTKAPIWidgetClientClass;
   TGTKAPIWidgetClientClass = record
     ParentClass: TGTKWidgetClass;
-    set_scroll_adjustments: procedure(Widget: PGTKWidget; HAdjustment, VAdjustment: PGTKAdjustment); cdecl;
+    set_scroll_adjustments: procedure(Widget: PGTKWidget;
+                               HAdjustment, VAdjustment: PGTKAdjustment); cdecl;
   end;
 
 procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient); forward;
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
 begin
-  with PGTKAPIWidgetClient(Client)^.Caret do BlinkHide := not BlinkHide;
   GTKAPIWidgetClient_DrawCaret(Client);
   Result := 1;   { returning 0 would stop the timer, 1 will restart it }
 end;
@@ -127,7 +129,8 @@ begin
   end;
   AttributesMask := GDK_WA_X or GDK_WA_Y or GDK_WA_VISUAL or GDK_WA_COLORMAP;
 
-  Widget^.Window := gdk_window_new(gtk_widget_get_parent_window(Widget), @Attributes, AttributesMask);
+  Widget^.Window := gdk_window_new(gtk_widget_get_parent_window(Widget),
+                                   @Attributes, AttributesMask);
 
   gdk_window_set_user_data(Widget^.Window, Client);
 
@@ -154,17 +157,22 @@ end;
 procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl;
 begin
   with PGTKAPIWidgetClient(Widget)^.Caret do 
-    if Timer <> 0 then gtk_timeout_remove(Timer);
+    if Timer <> 0 then begin
+      gtk_timeout_remove(Timer);
+      Timer:=0;
+    end;
 end;
   
-function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget; Event: PGDKEventKey): gint; cdecl;
+function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
+  Event: PGDKEventKey): gint; cdecl;
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_KeyPress]');
   // supress further processing
   Result := gtk_True;
 end;
 
-function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget; Event: PGDKEventButton): gint; cdecl;
+function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
+  Event: PGDKEventButton): gint; cdecl;
 begin
   if not gtk_widget_has_focus(Widget)
   then gtk_widget_grab_focus(Widget);
@@ -172,7 +180,8 @@ begin
   Result := gtk_False;
 end;
 
-function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget; Event: PGdkEventFocus): gint; cdecl;
+function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
+  Event: PGdkEventFocus): gint; cdecl;
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_FocusIn]');
   gtk_widget_set_flags(Widget, GTK_HAS_FOCUS);
@@ -180,7 +189,8 @@ begin
   Result := gtk_False;
 end;
 
-function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget; Event: PGdkEventFocus): gint; cdecl;
+function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
+  Event: PGdkEventFocus): gint; cdecl;
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_FocusOut]');
   gtk_widget_unset_flags(Widget, GTK_HAS_FOCUS);
@@ -188,7 +198,7 @@ begin
   Result := gtk_False;
 end;
 
-procedure GTKAPIWidgetClient_ClassInit(theClass: PGTKAPIWidgetClientClass); cdecl;
+procedure GTKAPIWidgetClient_ClassInit(theClass: PGTKAPIWidgetClientClass);cdecl;
 var 
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
@@ -221,15 +231,15 @@ begin
   theClass^.set_scroll_adjustments := nil;
 end;
 
-procedure GTKAPIWidgetClient_Init(Client: PGTKAPIWidgetClient; theClass: PGTKAPIWidgetClientClass); cdecl;
+procedure GTKAPIWidgetClient_Init(Client: PGTKAPIWidgetClient;
+  theClass: PGTKAPIWidgetClientClass); cdecl;
 begin
   gtk_widget_set_flags(PGTKWidget(Client), GTK_CAN_FOCUS);
 
-  with Client^.Caret do
-  begin
+  with Client^.Caret do begin
     Visible := False;
     IsDrawn := False;
-    BlinkHide := False;
+    Blinking := True;
     X := 0;
     Y := 0;
     Width := 1;
@@ -245,8 +255,8 @@ const
   TheType: Guint = 0;
   Info: TGTKTypeInfo = (
     type_name: 'LCLWinapiClient';
-    object_size: SizeOf(TGTKAPIWidgetClient);
-    class_size: SizeOf(TGTKAPIWidgetClientClass);
+    object_size: SizeOf(TGTKAPIWidgetClient)+100;
+    class_size: SizeOf(TGTKAPIWidgetClientClass)+100;
     class_init_func: @GTKAPIWidgetClient_ClassInit;
     object_init_func : @GTKAPIWidgetClient_Init;
   );
@@ -269,57 +279,60 @@ begin
     WriteLn('WARNING: [GTKAPIWidgetClient_HideCaret] Got nil client');
     Exit;
   end;
-    
+
   Client^.Caret.Visible := False;
   GTKAPIWidgetClient_DrawCaret(Client);
 end;
 
 procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient); 
 const
-  GC_STATE: array[Boolean] of TGtkStateType = (GTK_STATE_INSENSITIVE, GTK_STATE_NORMAL);
+  GC_STATE: array[Boolean] of TGtkStateType =
+                                 (GTK_STATE_INSENSITIVE, GTK_STATE_NORMAL);
 var
   Widget: PGTKWidget;
 begin
+  if Client = nil then begin
+    WriteLn('WARNING: [GTKAPIWidgetClient_DrawCaret] Got nil client');
+    Exit;
+  end;
   Widget := PGTKWidget(Client);
   
-  with Client^.Caret do
-  begin
-    //hide
-    if IsDrawn 
-    then begin
-      if (Timer <> 0) and not BlinkHide 
-      then begin
-         gtk_timeout_remove(Timer);
-         Timer := 0;
-      end;
-      IsDrawn := False;
-      if (BackPixmap <> nil) and (Widget^.theStyle<>nil)
+  with Client^.Caret do begin
+    if (Timer <> 0) and ((not Blinking) or (not Visible)) then begin
+      gtk_timeout_remove(Timer);
+      Timer := 0;
+    end;
+    
+    if IsDrawn and ((not Visible) or Blinking) then begin
+      // hide caret
+      if (BackPixmap <> nil) and (Widget<>nil) and (Widget^.theStyle<>nil)
       then gdk_draw_pixmap(
         Widget^.Window, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
         BackPixmap, 0, 0, X, Y, Width, Height
       );
-    end;
-
-   
+      IsDrawn := False;
+    end
+    else
     if Visible
-    and not BlinkHide 
-    and gtk_widget_has_focus(PGTKWidget(Client)) 
-    and not IsDrawn 
+    and gtk_widget_has_focus(PGTKWidget(Client))
+    and (not IsDrawn)
     then begin
-      if Pixmap <> nil then Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_ShowCaret] Implement bitmap');
+      if Pixmap <> nil then
+        Assert(False, 'Trace:TODO: [GTKAPIWidgetClient_ShowCaret] Implement bitmap');
       
       //Create backbitmap if needed
       if BackPixmap = nil 
       then BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
       
-      if (BackPixmap <> nil) and (Widget<>nil) and (PGTKStyle(Widget^.theStyle)<>nil)
+      if (BackPixmap <> nil) and (Widget<>nil) and ((Widget^.theStyle)<>nil)
       then gdk_draw_pixmap(
         BackPixmap, 
         PGTKStyle(Widget^.theStyle)^.bg_gc[GTK_STATE_NORMAL], 
         Widget^.Window, X, Y, 0, 0, Width, Height
       );
 
+      // draw caret
       if PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil then
         gdk_draw_rectangle(
           PGTKWidget(Client)^.Window, 
@@ -327,9 +340,10 @@ begin
           1, X, Y, Width, Height
         );
       IsDrawn := True;
-      
-      if Timer = 0 then Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
     end;
+    
+    if Visible and Blinking and (Timer = 0) then
+      Timer := gtk_timeout_add(500, @GTKAPIWidgetClient_Timer, Client);
   end;
 end;
 
@@ -345,7 +359,8 @@ begin
   GTKAPIWidgetClient_DrawCaret(Client);
 end;
 
-procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient; AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
+procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
+  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
 var
   IsVisible: Boolean;
 begin
@@ -374,7 +389,8 @@ begin
   end;
 end;
 
-procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient; AX, AY: Integer);
+procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
+  AX, AY: Integer);
 var
   IsVisible: Boolean;
 begin
@@ -388,7 +404,7 @@ begin
   
   with Client^.Caret do
   begin
-    IsVisible := Visible; //use redraw, visible is changed
+    IsVisible := Visible;
     if IsVisible then GTKAPIWidgetClient_HideCaret(Client);
     X := AX;
     Y := AY;
@@ -396,7 +412,8 @@ begin
   end;
 end;
 
-procedure GTKAPIWidgetClient_GetCaretPos(Client: PGTKAPIWidgetClient; var X, Y: Integer); 
+procedure GTKAPIWidgetClient_GetCaretPos(Client: PGTKAPIWidgetClient;
+  var X, Y: Integer); 
 begin
   if Client = nil 
   then begin
@@ -471,8 +488,8 @@ const
   wawType: Guint = 0;
   wawInfo: TGTKTypeInfo = (
     type_name: 'LCLWinapiWidget';
-    object_size: SizeOf(TGTKAPIWidget);
-    class_size: SizeOf(TGTKAPIWidgetClass);
+    object_size: SizeOf(TGTKAPIWidget)+100;
+    class_size: SizeOf(TGTKAPIWidgetClass)+100;
     class_init_func: @GTKAPIWidget_ClassInit;
     object_init_func : @GTKAPIWidget_Init;
   );
@@ -552,6 +569,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/06/12 18:31:01  lazarus
+  MG: small bugfixes
+
   Revision 1.7  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

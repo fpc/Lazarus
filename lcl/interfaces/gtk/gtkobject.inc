@@ -662,18 +662,18 @@ activate_time :	the time at which the activation event occurred.
 
       LM_AddPage :
       begin
-         Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-         AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, TLMNotebookEvent(Data^).Page);
+        Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
+        AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, TLMNotebookEvent(Data^).Page);
       end;
 
       LM_RemovePage :
       begin
-         RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
+        RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
       end;
 
       LM_ShowTabs :
       begin
-         gtk_notebook_set_show_tabs(PGtkNotebook(Handle), Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
+        gtk_notebook_set_show_tabs(PGtkNotebook(Handle), Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
       end;
 
       LM_SetTabPosition :
@@ -814,15 +814,18 @@ activate_time :	the time at which the activation event occurred.
           
       LM_SETITEMINDEX :
       begin
-         case (Sender as TControl).fCompStyle of
-            csComboBox: gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list), Integer(Data));
-            csListBox : gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data));
-            csCListBox: gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data), 1);    // column
-            csNotebook: begin
-                           Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-                          gtk_notebook_set_page(PGtkNotebook(Handle), TLMNotebookEvent(Data^).Page);
-                        end;
-         end;
+        case (Sender as TControl).fCompStyle of
+          csComboBox: gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list), Integer(Data));
+          csListBox : gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data));
+          csCListBox: gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data), 1);    // column
+          csNotebook:
+          begin
+            Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
+writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
+            gtk_notebook_set_page(PGtkNotebook(Handle), TLMNotebookEvent(Data^).Page);
+writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
+          end;
+        end;
       end;
           
       LM_GETSELSTART :
@@ -2272,9 +2275,7 @@ begin
   finally
     strDispose(pStr);
   end;
-
 //   gtk_object_set_data(PGtkObject(TPage(Child).Handle), 'Owner', pgtkwidget(TWinControl(Parent).handle));
-
 end;
 
 {------------------------------------------------------------------------------}
@@ -2283,8 +2284,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.RemoveNBPage(Parent: TObject; Index: Integer);
 begin
-   Assert(false, 'Trace:Removing a notebook page');
-   gtk_notebook_remove_page(PGtkNotebook(TWinControl(Parent).Handle), Index);
+  Assert(false, 'Trace:Removing a notebook page');
+  gtk_notebook_remove_page(PGtkNotebook(TWinControl(Parent).Handle), Index);
 end;
 
 
@@ -2868,6 +2869,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.48  2001/06/12 18:31:01  lazarus
+  MG: small bugfixes
+
   Revision 1.47  2001/06/05 10:32:05  lazarus
   MG: small bugfixes for bitbtn, handles
 

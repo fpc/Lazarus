@@ -79,17 +79,21 @@ begin
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
-    { Make sure there are pages to delete }
     { If that page is showing, then show the previous page before deleting it }
-    if (fPageList.Count > 0) and (Index = fNoteBook.PageIndex) then begin
+    if (Index = fNoteBook.PageIndex) then begin
       if fNoteBook.PageIndex>0 then
+        // switch current page to prior (left) page
         fNoteBook.PageIndex := fNoteBook.PageIndex - 1
+      else if fPageList.Count>1 then
+        // switch to next (right) page
+        fNoteBook.PageIndex := 1
       else
-        fNoteBook.PageIndex := 1;
+        // deleting last page
+        // TODO: delete contents but not last page
+        exit;
     end;
 
-    if FNoteBook.HandleAllocated
-    then begin
+    if FNoteBook.HandleAllocated then begin
       Msg.Parent := fNotebook;
       Msg.fCompStyle := fNotebook.fCompStyle;
       Msg.Page := Index;
@@ -266,8 +270,7 @@ var
   Msg: TLMNotebookEvent;
 begin
   fPageIndex := Value;
-  if HandleAllocated
-  then begin
+  if HandleAllocated then begin
     Msg.Parent := Self;
     Msg.fCompStyle := fCompStyle;
     Msg.Page := Value;
@@ -432,6 +435,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/06/12 18:31:01  lazarus
+  MG: small bugfixes
+
   Revision 1.5  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

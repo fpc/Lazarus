@@ -3428,7 +3428,7 @@ begin
         PgdkDrawable(pixmapwid^.window),
         XSrc, YSrc, X, Y, SrcWidth, SrcHeight);}
       gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
-        PDeviceContext(SrcDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
+        PDeviceContext(DestDC)^.GC, PDeviceContext(SrcDC)^.Drawable,
         XSrc, YSrc, X, Y, SrcWidth, SrcHeight);
     end else begin
       gdk_draw_pixmap(PDeviceContext(DestDC)^.Drawable,
@@ -3520,8 +3520,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.34  2001/06/06 12:30:41  lazarus
-  MG: bugfixes
+  Revision 1.35  2001/06/12 18:31:01  lazarus
+  MG: small bugfixes
 
   Revision 1.33  2001/04/13 13:22:23  lazarus
 
