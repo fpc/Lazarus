@@ -443,7 +443,7 @@ type
     function ItemFullyVisible(Index: Integer): boolean;
     procedure MakeCurrentVisible;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
-    procedure Clear;
+    procedure Clear; virtual;
     procedure LockSelectionChange;
     procedure UnlockSelectionChange;
   public
@@ -1218,6 +1218,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.193  2005/02/19 18:23:27  mattias
+  made TListBox.Clear virtual
+
   Revision 1.192  2005/02/11 16:26:26  micha
   select index of item in list, if text occurs in list
 
