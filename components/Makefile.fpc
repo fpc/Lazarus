@@ -5,7 +5,7 @@
 
 [package]
 name=lazarus-components
-version=0.8
+version=0.8a
 
 [target]
 #dirs=synedit mwedit

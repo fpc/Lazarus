@@ -5,7 +5,7 @@
      
 [package]
 name=lazarus
-version=0.7a
+version=0.8a
 
 [require]
 packages=rtl fcl

@@ -6,7 +6,7 @@
 [package]
 #name=lazarus-gtkglarea
 name=lazarus
-version=0.7a
+version=0.8a
 
 [target]
 units=gtkglarea_int nvgl gtkglarea exampleform gtkglarea_demo

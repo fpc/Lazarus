@@ -6,7 +6,7 @@
 [package]
 name=lazarus
 #name=lazarus-lcl
-version=0.7a
+version=0.8a
 
 [target]                                 
 dirs=interfaces

@@ -5,7 +5,7 @@
 
 [package]
 name=lazarus-interface
-version=0.7a
+version=0.8a
 
 [target]
 dirs=gtk win32

@@ -22,7 +22,8 @@ units=avl_tree basiccodetools codecache codetoolmanager sourcelog \
 options=-gl  
 unittargetdir=../units
 #targetdir=../units
-unitdir=. $(COMPILER_UNITTARGETDIR)     
+#unitdir=. $(COMPILER_UNITTARGETDIR)     
+unitdir=$(COMPILER_UNITTARGETDIR)     
 
 
 [require]
