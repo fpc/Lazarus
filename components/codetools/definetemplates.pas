@@ -209,7 +209,7 @@ type
   // TDefineTree caches the define values for directories
   TOnReadValue = procedure(Sender: TObject; const VariableName: string;
                           var Value: string) of object;
-  
+
   TDefineTreeSavePolicy = (
       dtspAll,             // save all DefineTemplates
       dtspProjectSpecific, // save all (not auto) and project specific nodes
@@ -223,6 +223,12 @@ type
     
   TOnGetVirtualDirectoryAlias = procedure(Sender: TObject;
     var RealDir: string) of object;
+    
+  TReadFunctionData = record
+    Param: string;
+    Result: string;
+  end;
+  PReadFunctionData = ^TReadFunctionData;
 
   TDefineTree = class
   private
@@ -231,6 +237,7 @@ type
     FChangeStep: integer;
     FErrorDescription: string;
     FErrorTemplate: TDefineTemplate;
+    FMacroFunctions: TKeyWordFunctionList;
     FOnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias;
     FOnGetVirtualDirectoryDefines: TOnGetVirtualDirectoryDefines;
     FOnReadValue: TOnReadValue;
@@ -239,59 +246,64 @@ type
     procedure IncreaseChangeStep;
   protected
     function FindDirectoryInCache(const Path: string): TDirectoryDefines;
+    function MacroFuncExtractFileExt(Data: Pointer): boolean;
+    function MacroFuncExtractFilePath(Data: Pointer): boolean;
+    function MacroFuncExtractFileName(Data: Pointer): boolean;
+    function MacroFuncExtractFileNameOnly(Data: Pointer): boolean;
   public
     property RootTemplate: TDefineTemplate
-        read FFirstDefineTemplate write FFirstDefineTemplate;
+                           read FFirstDefineTemplate write FFirstDefineTemplate;
     property ChangeStep: integer read FChangeStep;
     property ErrorTemplate: TDefineTemplate read FErrorTemplate;
     property ErrorDescription: string read FErrorDescription;
     property OnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias
-      read FOnGetVirtualDirectoryAlias write FOnGetVirtualDirectoryAlias;
+             read FOnGetVirtualDirectoryAlias write FOnGetVirtualDirectoryAlias;
     property OnGetVirtualDirectoryDefines: TOnGetVirtualDirectoryDefines
-      read FOnGetVirtualDirectoryDefines write FOnGetVirtualDirectoryDefines;
+         read FOnGetVirtualDirectoryDefines write FOnGetVirtualDirectoryDefines;
     property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
+    property MacroFunctions: TKeyWordFunctionList read FMacroFunctions;
   public
-    function  GetDefinesForDirectory(const Path: string;
-        WithVirtualDir: boolean): TExpressionEvaluator;
-    function  GetDefinesForVirtualDirectory: TExpressionEvaluator;
-    procedure AddFirst(ADefineTemplate: TDefineTemplate);
-    procedure Add(ADefineTemplate: TDefineTemplate);
-    function  FindDefineTemplateByName(const AName: string;
-        OnlyRoots: boolean): TDefineTemplate;
-    procedure ReplaceRootSameName(const Name: string;
-        ADefineTemplate: TDefineTemplate);
-    procedure ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
-    procedure ReplaceRootSameNameAddFirst(ADefineTemplate: TDefineTemplate);
-    procedure RemoveRootDefineTemplateByName(const AName: string);
-    procedure ReplaceChild(ParentTemplate, NewDefineTemplate: TDefineTemplate;
-        const ChildName: string);
-    procedure AddChild(ParentTemplate, NewDefineTemplate: TDefineTemplate);
-    function  LoadFromXMLConfig(XMLConfig: TXMLConfig;
-        const Path: string; Policy: TDefineTreeLoadPolicy;
-        const NewNamePrefix: string): boolean;
-    function  SaveToXMLConfig(XMLConfig: TXMLConfig;
-        const Path: string; Policy: TDefineTreeSavePolicy): boolean;
-    procedure ClearCache;
-    procedure Clear;
-    function  IsEqual(SrcDefineTree: TDefineTree): boolean;
-    procedure Assign(SrcDefineTree: TDefineTree);
-    procedure RemoveMarked;
-    procedure RemoveGlobals;
-    procedure RemoveProjectSpecificOnly;
-    procedure RemoveProjectSpecificAndParents;
-    procedure RemoveNonAutoCreated;
-    function  GetUnitPathForDirectory(const Directory: string): string;
-    function  GetIncludePathForDirectory(const Directory: string): string;
-    function  GetSrcPathForDirectory(const Directory: string): string;
-    function  GetPPUSrcPathForDirectory(const Directory: string): string;
-    function  GetPPWSrcPathForDirectory(const Directory: string): string;
-    function  GetDCUSrcPathForDirectory(const Directory: string): string;
-    function  GetCompiledSrcPathForDirectory(const Directory: string): string;
-    procedure ReadValue(const DirDef: TDirectoryDefines;
-                   const PreValue, CurDefinePath: string; var NewValue: string);
     constructor Create;
     destructor Destroy; override;
     function  ConsistencyCheck: integer; // 0 = ok
+    function  FindDefineTemplateByName(const AName: string;
+                                       OnlyRoots: boolean): TDefineTemplate;
+    function  GetCompiledSrcPathForDirectory(const Directory: string): string;
+    function  GetDCUSrcPathForDirectory(const Directory: string): string;
+    function  GetDefinesForDirectory(const Path: string;
+                                 WithVirtualDir: boolean): TExpressionEvaluator;
+    function  GetDefinesForVirtualDirectory: TExpressionEvaluator;
+    function  GetIncludePathForDirectory(const Directory: string): string;
+    function  GetPPUSrcPathForDirectory(const Directory: string): string;
+    function  GetPPWSrcPathForDirectory(const Directory: string): string;
+    function  GetSrcPathForDirectory(const Directory: string): string;
+    function  GetUnitPathForDirectory(const Directory: string): string;
+    function  IsEqual(SrcDefineTree: TDefineTree): boolean;
+    function  LoadFromXMLConfig(XMLConfig: TXMLConfig;
+                              const Path: string; Policy: TDefineTreeLoadPolicy;
+                              const NewNamePrefix: string): boolean;
+    function  SaveToXMLConfig(XMLConfig: TXMLConfig;
+                    const Path: string; Policy: TDefineTreeSavePolicy): boolean;
+    procedure Add(ADefineTemplate: TDefineTemplate);
+    procedure AddChild(ParentTemplate, NewDefineTemplate: TDefineTemplate);
+    procedure AddFirst(ADefineTemplate: TDefineTemplate);
+    procedure Assign(SrcDefineTree: TDefineTree);
+    procedure Clear;
+    procedure ClearCache;
+    procedure ReadValue(const DirDef: TDirectoryDefines;
+                   const PreValue, CurDefinePath: string; var NewValue: string);
+    procedure RemoveGlobals;
+    procedure RemoveMarked;
+    procedure RemoveNonAutoCreated;
+    procedure RemoveProjectSpecificAndParents;
+    procedure RemoveProjectSpecificOnly;
+    procedure RemoveRootDefineTemplateByName(const AName: string);
+    procedure ReplaceChild(ParentTemplate, NewDefineTemplate: TDefineTemplate;
+                           const ChildName: string);
+    procedure ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
+    procedure ReplaceRootSameName(const Name: string;
+                                  ADefineTemplate: TDefineTemplate);
+    procedure ReplaceRootSameNameAddFirst(ADefineTemplate: TDefineTemplate);
     procedure WriteDebugReport;
   end;
 
@@ -1200,11 +1212,17 @@ begin
   inherited Create;
   FFirstDefineTemplate:=nil;
   FCache:=TAVLTree.Create(@CompareDirectoryDefines);
+  FMacroFunctions:=TKeyWordFunctionList.Create;
+  FMacroFunctions.AddExtended('Ext',nil,@MacroFuncExtractFileExt);
+  FMacroFunctions.AddExtended('PATH',nil,@MacroFuncExtractFilePath);
+  FMacroFunctions.AddExtended('NAME',nil,@MacroFuncExtractFileName);
+  FMacroFunctions.AddExtended('NAMEONLY',nil,@MacroFuncExtractFileNameOnly);
 end;
 
 destructor TDefineTree.Destroy;
 begin
   Clear;
+  FMacroFunctions.Free;
   FCache.Free;
   inherited Destroy;
 end;
@@ -1228,6 +1246,42 @@ begin
     Result:=TDirectoryDefines(ANode.Data)
   else
     Result:=nil;
+end;
+
+function TDefineTree.MacroFuncExtractFileExt(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  FuncData^.Result:=ExtractFileExt(FuncData^.Param);
+  Result:=true;
+end;
+
+function TDefineTree.MacroFuncExtractFilePath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  FuncData^.Result:=ExtractFilePath(FuncData^.Param);
+  Result:=true;
+end;
+
+function TDefineTree.MacroFuncExtractFileName(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  FuncData^.Result:=ExtractFileName(FuncData^.Param);
+  Result:=true;
+end;
+
+function TDefineTree.MacroFuncExtractFileNameOnly(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+begin
+  FuncData:=PReadFunctionData(Data);
+  FuncData^.Result:=ExtractFileNameOnly(FuncData^.Param);
+  Result:=true;
 end;
 
 procedure TDefineTree.RemoveMarked;
@@ -1530,21 +1584,13 @@ var
   end;
 
   function ExecuteMacroFunction(const FuncName, Params: string): string;
-  var UpFuncName, Ext: string;
+  var
+    FuncData: TReadFunctionData;
   begin
-    UpFuncName:=UpperCaseStr(FuncName);
-    if UpFuncName='EXT' then begin
-      Result:=ExtractFileExt(Params);
-    end else if UpFuncName='PATH' then begin
-      Result:=ExtractFilePath(Params);
-    end else if UpFuncName='NAME' then begin
-      Result:=ExtractFileName(Params);
-    end else if UpFuncName='NAMEONLY' then begin
-      Result:=ExtractFileName(Params);
-      Ext:=ExtractFileExt(Result);
-      Result:=copy(Result,1,length(Result)-length(Ext));
-    end else
-      Result:='<'+Format(ctsUnknownFunction,[FuncName])+'>';
+    FuncData.Param:=Params;
+    FuncData.Result:='';
+    FMacroFunctions.DoDataFunction(@FuncName[1],length(FuncName),@FuncData);
+    Result:=FuncData.Result;
   end;
 
   procedure GrowBuffer(MinSize: integer);
@@ -1594,7 +1640,7 @@ var
     if MacroFuncNameLen>0 then begin
       MacroFuncName:=copy(CurValue,MacroStart+1,MacroFuncNameLen);
       // Macro function -> substitute macro parameter first
-      ReadValue(DirDef,copy(MacroStr,MacroFuncNameLen+2
+      ReadValue(DirDef,copy(MacroStr,MacroNameEnd+1
           ,MacroLen-MacroFuncNameLen-3),CurDefinePath,MacroParam);
       // execute the macro function
       MacroStr:=ExecuteMacroFunction(MacroFuncName,MacroParam);

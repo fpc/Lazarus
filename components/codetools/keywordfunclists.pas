@@ -39,17 +39,21 @@ uses
 
 type
   TKeyWordFunction = function: boolean of object;
+  TKeyWordDataFunction = function(Data: Pointer): boolean of object;
 
-  TKeyWordFunctionListItem = class
-  private
+  TKeyWordFunctionListItem = record
     IsLast: boolean;
     KeyWord: shortstring;
     DoIt: TKeyWordFunction;
+    DoDataFunction: TKeyWordDataFunction;
   end;
+  PKeyWordFunctionListItem = ^TKeyWordFunctionListItem;
 
   TKeyWordFunctionList = class
   private
-    FItems: TList; // list of TKeyWordFunctionListItem;
+    FItems: PKeyWordFunctionListItem;
+    FCount: integer;
+    FCapacity: integer;
     FSorted: boolean;
     FBucketStart: {$ifdef FPC}^{$else}array of {$endif}integer;
     FMaxHashIndex: integer;
@@ -57,6 +61,7 @@ type
     function KeyWordToHashIndex(const ASource: string;
        AStart, ALen: integer): integer;
     function KeyWordToHashIndex(Identifier: PChar): integer;
+    function KeyWordToHashIndex(Start: PChar; Len: integer): integer;
   public
     DefaultKeyWordFunction: TKeyWordFunction;
     function DoIt(const AKeyWord: shortstring): boolean;
@@ -66,8 +71,13 @@ type
     function DoItUppercase(const AnUpperSource: string;
        KeyWordStart, KeyWordLen: integer): boolean;
     function DoItCaseInsensitive(const AKeyWord: shortstring): boolean;
+    function DoDataFunction(Start: PChar; Len: integer; Data: pointer): boolean;
     procedure Clear;
-    procedure Add(const AKeyWord: shortstring; AFunction: TKeyWordFunction);
+    procedure Add(const AKeyWord: shortstring;
+                  const AFunction: TKeyWordFunction);
+    procedure AddExtended(const AKeyWord: shortstring;
+                          const AFunction: TKeyWordFunction;
+                          const ADataFunction: TKeyWordDataFunction);
     procedure Sort;
     property Sorted: boolean read FSorted;
     procedure WriteDebugListing;
@@ -146,7 +156,9 @@ end;
 constructor TKeyWordFunctionList.Create;
 begin
   inherited Create;
-  FItems:=TList.Create; // list of TKeyWordFunctionListItem;
+  FItems:=nil;
+  FCount:=0;
+  FCapacity:=0;
   FSorted:=true;
   FBucketStart:=nil;
   FMaxHashIndex:=-1;
@@ -156,15 +168,17 @@ end;
 destructor TKeyWordFunctionList.Destroy;
 begin
   Clear;
-  FItems.Free;
   inherited Destroy;
 end;
 
 procedure TKeyWordFunctionList.Clear;
-var i: integer;
 begin
-  for i:=0 to FItems.Count-1 do TKeyWordFunctionListItem(FItems[i]).Free;
-  FItems.Clear;
+  if FItems<>nil then begin
+    FreeMem(FItems);
+    FItems:=nil;
+  end;
+  FCount:=0;
+  FCapacity:=0;
   if FBucketStart<>nil then begin
     FreeMem(FBucketStart);
     FBucketStart:=nil;
@@ -210,8 +224,23 @@ begin
   if Result>FMaxHashIndex then Result:=-1;
 end;
 
+function TKeyWordFunctionList.KeyWordToHashIndex(Start: PChar; Len: integer
+  ): integer;
+begin
+  Result:=0;
+  if Len>20 then Len:=20;
+  while (Len>0) do begin
+    inc(Result,CharToHash[Start^]);
+    dec(Len);
+    inc(Start);
+  end;
+  if Result>FMaxHashIndex then Result:=-1;
+end;
+
 function TKeyWordFunctionList.DoIt(const AKeyWord: shortstring): boolean;
-var i: integer;
+var
+  i: integer;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
 begin
   if not FSorted then Sort;
   i:=KeyWordToHashIndex(AKeyWord);
@@ -219,14 +248,15 @@ begin
     i:=FBucketStart[i];
     if i>=0 then begin
       repeat
-        if (TKeyWordFunctionListItem(FItems[i]).KeyWord=AKeyWord) then begin
-          if Assigned(TKeyWordFunctionListItem(FItems[i]).DoIt) then
-            Result:=TKeyWordFunctionListItem(FItems[i]).DoIt()
+        KeyWordFuncItem:=@FItems[i];
+        if (KeyWordFuncItem^.KeyWord=AKeyWord) then begin
+          if Assigned(KeyWordFuncItem^.DoIt) then
+            Result:=KeyWordFuncItem^.DoIt()
           else
             Result:=DefaultKeyWordFunction();
           exit;  
         end;
-        if (TKeyWordFunctionListItem(FItems[i])).IsLast then break;
+        if KeyWordFuncItem^.IsLast then break;
         inc(i);
       until false;
     end;
@@ -238,7 +268,7 @@ function TKeyWordFunctionList.DoIt(const ASource: string;
   KeyWordStart, KeyWordLen: integer): boolean;
 // ! does not test if length(ASource) >= KeyWordStart+KeyWordLen -1
 var i, KeyPos, WordPos: integer;
-  KeyWordFuncItem: TKeyWordFunctionListItem;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
 begin
   if not FSorted then Sort;
   i:=KeyWordToHashIndex(ASource,KeyWordStart,KeyWordLen);
@@ -247,25 +277,25 @@ begin
     if i>=0 then begin
       dec(KeyWordStart);
       repeat
-        KeyWordFuncItem:=TKeyWordFunctionListItem(FItems[i]);
-        if length(KeyWordFuncItem.KeyWord)=KeyWordLen then begin
+        KeyWordFuncItem:=@FItems[i];
+        if length(KeyWordFuncItem^.KeyWord)=KeyWordLen then begin
           KeyPos:=KeyWordLen;
           WordPos:=KeyWordStart+KeyWordLen;
           while (KeyPos>=1) 
-          and (KeyWordFuncItem.KeyWord[KeyPos]=UpChars[ASource[WordPos]]) do
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=UpChars[ASource[WordPos]]) do
           begin
             dec(KeyPos);
             dec(WordPos);
           end;
           if KeyPos<1 then begin
-            if Assigned(KeyWordFuncItem.DoIt) then
-              Result:=KeyWordFuncItem.DoIt()
+            if Assigned(KeyWordFuncItem^.DoIt) then
+              Result:=KeyWordFuncItem^.DoIt()
             else
               Result:=DefaultKeyWordFunction();
             exit;
           end;
         end;
-        if (KeyWordFuncItem.IsLast) then break;
+        if (KeyWordFuncItem^.IsLast) then break;
         inc(i);
       until false;
     end;
@@ -276,7 +306,7 @@ end;
 function TKeyWordFunctionList.DoIt(Identifier: PChar): boolean;
 // checks
 var i, KeyPos, KeyWordLen: integer;
-  KeyWordFuncItem: TKeyWordFunctionListItem;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
   IdentifierEnd, WordPos: PChar;
 begin
   if not FSorted then Sort;
@@ -289,25 +319,25 @@ begin
     i:=FBucketStart[i];
     if i>=0 then begin
       repeat
-        KeyWordFuncItem:=TKeyWordFunctionListItem(FItems[i]);
-        if length(KeyWordFuncItem.KeyWord)=KeyWordLen then begin
+        KeyWordFuncItem:=@FItems[i];
+        if length(KeyWordFuncItem^.KeyWord)=KeyWordLen then begin
           KeyPos:=KeyWordLen;
           WordPos:=IdentifierEnd;
           while (KeyPos>=1)
-          and (KeyWordFuncItem.KeyWord[KeyPos]=UpChars[WordPos[0]]) do
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=UpChars[WordPos[0]]) do
           begin
             dec(KeyPos);
             dec(WordPos);
           end;
           if KeyPos<1 then begin
-            if Assigned(KeyWordFuncItem.DoIt) then
-              Result:=KeyWordFuncItem.DoIt()
+            if Assigned(KeyWordFuncItem^.DoIt) then
+              Result:=KeyWordFuncItem^.DoIt()
             else
               Result:=DefaultKeyWordFunction();
             exit;
           end;
         end;
-        if (KeyWordFuncItem.IsLast) then break;
+        if (KeyWordFuncItem^.IsLast) then break;
         inc(i);
       until false;
     end;
@@ -320,7 +350,7 @@ function TKeyWordFunctionList.DoItUppercase(const AnUpperSource: string;
   KeyWordStart, KeyWordLen: integer): boolean;
 // ! does not test if length(AnUpperSource) >= KeyWordStart+KeyWordLen -1
 var i, KeyPos, WordPos: integer;
-  KeyWordFuncItem: TKeyWordFunctionListItem;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
 begin
   if not FSorted then Sort;
   i:=KeyWordToHashIndex(AnUpperSource,KeyWordStart,KeyWordLen);
@@ -329,25 +359,25 @@ begin
     if i>=0 then begin
       dec(KeyWordStart);
       repeat
-        KeyWordFuncItem:=TKeyWordFunctionListItem(FItems[i]);
-        if length(KeyWordFuncItem.KeyWord)=KeyWordLen then begin
+        KeyWordFuncItem:=@FItems[i];
+        if length(KeyWordFuncItem^.KeyWord)=KeyWordLen then begin
           KeyPos:=KeyWordLen;
           WordPos:=KeyWordStart+KeyWordLen;
           while (KeyPos>=1) 
-          and (KeyWordFuncItem.KeyWord[KeyPos]=AnUpperSource[WordPos]) do
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=AnUpperSource[WordPos]) do
           begin
             dec(KeyPos);
             dec(WordPos);
           end;
           if KeyPos<1 then begin
-            if Assigned(KeyWordFuncItem.DoIt) then
-              Result:=KeyWordFuncItem.DoIt()
+            if Assigned(KeyWordFuncItem^.DoIt) then
+              Result:=KeyWordFuncItem^.DoIt()
             else
               Result:=DefaultKeyWordFunction();
             exit;
           end;
         end;
-        if (KeyWordFuncItem.IsLast) then break;
+        if (KeyWordFuncItem^.IsLast) then break;
         inc(i);
       until false;
     end;
@@ -356,22 +386,34 @@ begin
 end;
 
 procedure TKeyWordFunctionList.Add(const AKeyWord: shortstring;
-  AFunction: TKeyWordFunction);
-var NewKeyWordFunction: TKeyWordFunctionListItem;
+  const AFunction: TKeyWordFunction);
+begin
+  AddExtended(AKeyWord,AFunction,nil);
+end;
+
+procedure TKeyWordFunctionList.AddExtended(const AKeyWord: shortstring;
+  const AFunction: TKeyWordFunction; const ADataFunction: TKeyWordDataFunction
+    );
 begin
   FSorted:=false;
-  NewKeyWordFunction:=TKeyWordFunctionListItem.Create;
-  with NewKeyWordFunction do begin
+  if FCount=FCapacity then begin
+    FCapacity:=FCapacity*2+10;
+    ReAllocMem(FItems,SizeOf(TKeyWordFunctionListItem)*FCapacity);
+  end;
+  FillChar(FItems[FCount],SizeOF(TKeyWordFunctionListItem),0);
+  with FItems[FCount] do begin
     KeyWord:=AKeyWord;
     DoIt:=AFunction;
+    DoDataFunction:=ADataFunction;
   end;
-  FItems.Add(NewKeyWordFunction);
+  inc(FCount);
 end;
 
 procedure TKeyWordFunctionList.Sort;
 // bucketsort
 var i, h, NewMaxHashIndex: integer;
-  UnsortedItems: {$ifdef fpc}^{$else}array of {$endif}pointer;
+  UnsortedItems: PKeyWordFunctionListItem;
+  Size: Integer;
 begin
   if FSorted then exit;
   if FBucketStart<>nil then begin
@@ -381,8 +423,8 @@ begin
   // find maximum hash index
   FMaxHashIndex:=99999;
   NewMaxHashIndex:=0;
-  for i:=0 to FItems.Count-1 do begin
-    h:=KeyWordToHashIndex(TKeyWordFunctionListItem(FItems[i]).KeyWord);
+  for i:=0 to FCount-1 do begin
+    h:=KeyWordToHashIndex(FItems[i].KeyWord);
     if h>NewMaxHashIndex then NewMaxHashIndex:=h;
   end;
   FMaxHashIndex:=NewMaxHashIndex;
@@ -390,8 +432,8 @@ begin
   GetMem(FBucketStart,(FMaxHashIndex+1) * SizeOf(integer));
   // compute every hash value count
   for i:=0 to FMaxHashIndex do FBucketStart[i]:=0;
-  for i:=0 to FItems.Count-1 do begin
-    h:=KeyWordToHashIndex(TKeyWordFunctionListItem(FItems[i]).KeyWord);
+  for i:=0 to FCount-1 do begin
+    h:=KeyWordToHashIndex(FItems[i].KeyWord);
     if h>=0 then inc(FBucketStart[h]);
   end;
   // change hash-count-index to bucket-end-index
@@ -404,27 +446,30 @@ begin
       FBucketStart[i]:=h;
   end;
   inc(FBucketStart[FMaxHashIndex],h);
-  // copy all items
-  GetMem(UnsortedItems,sizeof(pointer)*FItems.Count);
-  for i:=0 to FItems.Count-1 do
-    UnsortedItems[i]:=FItems[i];
+  // copy all items (just the data, not the string contents)
+  Size:=sizeof(TKeyWordFunctionListItem)*FCount;
+  GetMem(UnsortedItems,Size);
+  Move(FItems^,UnsortedItems^,Size);
   // copy unsorted items to Items back and do the bucket sort
-  for i:=FItems.Count-1 downto 0 do begin
-    h:=KeyWordToHashIndex(TKeyWordFunctionListItem(UnsortedItems[i]).KeyWord);
+  for i:=FCount-1 downto 0 do begin
+    h:=KeyWordToHashIndex(UnsortedItems[i].KeyWord);
     if h>=0 then begin
       dec(FBucketStart[h]);
-      FItems[FBucketStart[h]]:=UnsortedItems[i];
+      // copy item back (just the data, not the string contents)
+      Move(UnsortedItems[i],FItems[FBucketStart[h]],
+           SizeOf(TKeyWordFunctionListItem));
     end;
   end;
+  // free UnsortedItems
+  FreeMem(UnsortedItems);
   // set IsLast
-  if FItems.Count>0 then begin
+  if FCount>0 then begin
     for i:=1 to FMaxHashIndex do
       if FBucketStart[i]>0 then
-        TKeyWordFunctionListItem(FItems[FBucketStart[i]-1]).IsLast:=true;
-    TKeyWordFunctionListItem(FItems[FItems.Count-1]).IsLast:=true;
+        FItems[FBucketStart[i]-1].IsLast:=true;
+    FItems[FCount-1].IsLast:=true;
   end;
   // tidy up
-  FreeMem(UnsortedItems);
   FSorted:=true;
 end;
 
@@ -433,11 +478,11 @@ var i: integer;
 begin
   Sort;
   writeln('[TKeyWordFunctionList.WriteDebugListing]');
-  writeln('  ItemsCount=',FItems.Count,'  MaxHash=',FMaxHashIndex
+  writeln('  ItemsCount=',FCount,'  MaxHash=',FMaxHashIndex
      ,'  Sorted=',FSorted);
-  for i:=0 to FItems.Count-1 do begin
+  for i:=0 to FCount-1 do begin
     write('    ',i,':');
-    with TKeyWordFunctionListItem(FItems[i]) do begin
+    with FItems[i] do begin
       write(' "',KeyWord,'"');
       write(' Hash=',KeyWordToHashIndex(KeyWord));
       write(' IsLast=',IsLast);
@@ -473,16 +518,55 @@ begin
     i:=FBucketStart[i];
     if i>=0 then begin
       repeat
-        if AnsiCompareText(TKeyWordFunctionListItem(FItems[i]).KeyWord,
-          AKeyWord)=0
+        if AnsiCompareText(FItems[i].KeyWord,AKeyWord)=0
         then begin
-          if Assigned(TKeyWordFunctionListItem(FItems[i]).DoIt) then
-            Result:=TKeyWordFunctionListItem(FItems[i]).DoIt()
+          if Assigned(FItems[i].DoIt) then
+            Result:=FItems[i].DoIt()
           else
             Result:=DefaultKeyWordFunction();
           exit;
         end;
-        if (TKeyWordFunctionListItem(FItems[i])).IsLast then break;
+        if FItems[i].IsLast then break;
+        inc(i);
+      until false;
+    end;
+  end;
+  Result:=DefaultKeyWordFunction();
+end;
+
+function TKeyWordFunctionList.DoDataFunction(Start: PChar; Len: integer;
+  Data: pointer): boolean;
+var i, KeyPos: integer;
+  KeyWordFuncItem: PKeyWordFunctionListItem;
+  WordPos: PChar;
+  KeyWordEnd: PChar;
+begin
+  if not FSorted then Sort;
+  i:=KeyWordToHashIndex(Start,Len);
+  if i>=0 then begin
+    i:=FBucketStart[i];
+    if i>=0 then begin
+      KeyWordEnd:=PChar(integer(Start)+Len);
+      repeat
+        KeyWordFuncItem:=@FItems[i];
+        if length(KeyWordFuncItem^.KeyWord)=Len then begin
+          KeyPos:=Len;
+          WordPos:=KeyWordEnd;
+          while (KeyPos>=1)
+          and (KeyWordFuncItem^.KeyWord[KeyPos]=UpChars[WordPos[0]]) do
+          begin
+            dec(KeyPos);
+            dec(WordPos);
+          end;
+          if KeyPos<1 then begin
+            if Assigned(KeyWordFuncItem^.DoDataFunction) then
+              Result:=KeyWordFuncItem^.DoDataFunction(Data)
+            else
+              Result:=DefaultKeyWordFunction();
+            exit;
+          end;
+        end;
+        if (KeyWordFuncItem^.IsLast) then break;
         inc(i);
       until false;
     end;
@@ -512,6 +596,7 @@ begin
     UpWords[w]:=ord(UpChars[chr(w and $ff)])+(ord(UpChars[chr(w shr 8)]) shl 8);
 
   KeyWordLists:=TList.Create;
+  
   IsKeyWordMethodSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordMethodSpecifier);
   with IsKeyWordMethodSpecifier do begin
@@ -530,6 +615,7 @@ begin
     Add('DEPRECATED' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PLATFORM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureSpecifier);
   with IsKeyWordProcedureSpecifier do begin
@@ -553,6 +639,7 @@ begin
     Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['            ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureTypeSpecifier);
   with IsKeyWordProcedureTypeSpecifier do begin
@@ -566,6 +653,7 @@ begin
     Add('DEPRECATED' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PLATFORM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureBracketSpecifier);
   with IsKeyWordProcedureBracketSpecifier do begin
@@ -577,6 +665,7 @@ begin
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   IsKeyWordSection:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordSection);
   with IsKeyWordSection do begin
@@ -589,6 +678,7 @@ begin
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   IsKeyWordInConstAllowed:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordInConstAllowed);
   with IsKeyWordInConstAllowed do begin
@@ -606,6 +696,7 @@ begin
     Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsKeyWord:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsKeyWord);
   with WordIsKeyWord do begin
@@ -673,6 +764,7 @@ begin
     Add('WITH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsDelphiKeyWord:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsDelphiKeyWord);
   with WordIsDelphiKeyWord do begin
@@ -740,6 +832,7 @@ begin
     Add('WITH',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   IsKeyWordBuiltInFunc:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordBuiltInFunc);
   with IsKeyWordBuiltInFunc do begin
@@ -750,6 +843,7 @@ begin
     Add('SUCC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LENGTH',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsTermOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsTermOperator);
   with WordIsTermOperator do begin
@@ -767,6 +861,7 @@ begin
     Add('AS',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsPropertySpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPropertySpecifier);
   with WordIsPropertySpecifier do begin
@@ -778,6 +873,7 @@ begin
     Add('DEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NODEFAULT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsBlockKeyWord:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsBlockKeyWord);
   with WordIsBlockKeyWord do begin
@@ -796,6 +892,7 @@ begin
     Add('FINALLY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXCEPT',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   EndKeyWordFuncList:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(EndKeyWordFuncList);
   with EndKeyWordFuncList do begin
@@ -805,6 +902,7 @@ begin
     Add('TRY',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   PackedTypesKeyWordFuncList:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(PackedTypesKeyWordFuncList);
   with PackedTypesKeyWordFuncList do begin
@@ -815,6 +913,7 @@ begin
     Add('SET',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   BlockStatementStartKeyWordFuncList:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(BlockStatementStartKeyWordFuncList);
   with BlockStatementStartKeyWordFuncList do begin
@@ -824,6 +923,7 @@ begin
     Add('ASM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CASE'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   UnexpectedKeyWordInBeginBlock:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(UnexpectedKeyWordInBeginBlock);
   with UnexpectedKeyWordInBeginBlock do begin
@@ -848,6 +948,7 @@ begin
     Add('VAR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('THREADVAR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsLogicalBlockStart:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLogicalBlockStart);
   with WordIsLogicalBlockStart do begin
@@ -880,6 +981,7 @@ begin
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FINALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsBinaryOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsBinaryOperator);
   with WordIsBinaryOperator do begin
@@ -904,12 +1006,14 @@ begin
     Add('IS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsLvl1Operator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLvl1Operator);
   with WordIsLvl1Operator do begin
     Add('NOT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('@'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsLvl2Operator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLvl2Operator);
   with WordIsLvl2Operator do begin
@@ -922,6 +1026,7 @@ begin
     Add('SHR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('AS' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsLvl3Operator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLvl3Operator);
   with WordIsLvl3Operator do begin
@@ -930,6 +1035,7 @@ begin
     Add('OR' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('XOR',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsLvl4Operator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsLvl4Operator);
   with WordIsLvl4Operator do begin
@@ -942,6 +1048,7 @@ begin
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsBooleanOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsBooleanOperator);
   with WordIsBooleanOperator do begin
@@ -954,6 +1061,7 @@ begin
     Add('IN',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('IS',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsOrdNumberOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsOrdNumberOperator);
   with WordIsOrdNumberOperator do begin
@@ -965,6 +1073,7 @@ begin
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('MOD',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsNumberOperator:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsNumberOperator);
   with WordIsNumberOperator do begin
@@ -972,6 +1081,7 @@ begin
     Add('-' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('*' ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsPredefinedFPCIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedFPCIdentifier);
   with WordIsPredefinedFPCIdentifier do begin
@@ -1009,6 +1119,7 @@ begin
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
+  
   WordIsPredefinedDelphiIdentifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(WordIsPredefinedDelphiIdentifier);
   with WordIsPredefinedDelphiIdentifier do begin

@@ -93,6 +93,7 @@ type
                                         IgnoreErrors: boolean): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage): TModalResult;
     procedure UpdateCodeToolsDefinesForPackage(APackage: TLazPackage);
+    function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -793,12 +794,35 @@ begin
       'Output directory','',APackage.GetOutputDirectory,da_Directory);
     CompiledSrcPathDefTempl:=TDefineTemplate.Create('CompiledSrcPath',
       'CompiledSrcPath addition',CompiledSrcPathMacroName,
-      '$PkgUnitPath('+APackage.IDAsString+');$('+CompiledSrcPathMacroName+')',
+      '$PkgSrcPath('+APackage.IDAsString+');$('+CompiledSrcPathMacroName+')',
       da_Define);
     OutPutDirDefTempl.AddChild(CompiledSrcPathDefTempl);
+    PkgDefTempl.AddChild(OutPutDirDefTempl);
+    CodeToolBoss.DefineTree.ClearCache;
   end else begin
-
+  
+    // ToDo: update Package ID if needed
+    
   end;
+end;
+
+function TPkgManager.MacroFunctionPkgSrcPath(Data: Pointer): boolean;
+var
+  FuncData: PReadFunctionData;
+  PkgID: TLazPackageID;
+  APackage: TLazPackage;
+begin
+  FuncData:=PReadFunctionData(Data);
+  PkgID:=TLazPackageID.Create;
+  Result:=false;
+  if PkgID.StringToID(FuncData^.Param) then begin
+    APackage:=PackageGraph.FindPackageWithID(PkgID);
+    if APackage<>nil then begin
+      FuncData^.Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles;
+      Result:=true;
+    end;
+  end;
+  PkgID.Free;
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -826,6 +850,9 @@ begin
   PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnSavePackage:=@OnPackageEditorSavePackage;
   PackageEditors.OnCompilePackage:=@OnPackageEditorCompilePackage;
+  
+  CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
+    'PKGSRCPATH',nil,@MacroFunctionPkgSrcPath);
 
   Application.AddOnIdleHandler(@OnApplicationIdle);
 end;
