@@ -104,7 +104,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCommonDialog, TWSCommonDialog);
+  RegisterWSComponent(TCommonDialog, TWSCommonDialog);
 //  RegisterWSComponent(TFileDialog, TWSFileDialog);
 //  RegisterWSComponent(TOpenDialog, TWSOpenDialog);
 //  RegisterWSComponent(TSaveDialog, TWSSaveDialog);
