@@ -22,7 +22,7 @@
 }
 
 const
-  DefaultFPCSrcDirs: array[1..12] of string = (
+  DefaultFPCSrcDirs: array[1..13] of string = (
     '/usr/share/fpcsrc',
     '/usr/fpcsrc',
     '/usr/share/fpc/src',
@@ -30,6 +30,7 @@ const
     '/usr/src/fpc',
     '/usr/local/fpc/src',
     '/usr/local/share/fpc/src',
+    '/usr/local/src/fpc',
     '/usr/lib/fpc/src',
     '/usr/local/lib/fpc/src',
     '/vol/fpc/src',
