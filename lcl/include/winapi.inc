@@ -1528,10 +1528,39 @@ begin
   Result := R or (G shl 8) or (B Shl 16);
 end;
 
+Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
+begin
+  writeln('InitializeCriticalSection(TRTLCriticalSection) Not implemented yet');
+end;
+
+Procedure EnterCriticalSection(var CritSection: TRTLCriticalSection);
+begin
+  writeln('EnterCriticalSection(TRTLCriticalSection) Not implemented yet');
+end;
+
+Procedure LeaveCriticalSection(var CritSection: TRTLCriticalSection);
+begin
+  writeln('LeaveCriticalSection(TRTLCriticalSection) Not implemented yet');
+end;
+
+Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
+begin
+  writeln('DeleteCriticalSection(TRTLCriticalSection) Not implemented yet');
+end;
+
+procedure RaiseLastOSError;
+begin
+  writeln('ToDo: RaiseLastOSError');
+  RaiseGDBException('ToDo: RaiseLastOSError');
+end;
+
 //##apiwiz##epi##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.71  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.70  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
