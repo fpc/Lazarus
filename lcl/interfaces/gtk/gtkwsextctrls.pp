@@ -53,8 +53,12 @@ type
   private
   protected
   public
-    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure AddPage(const ANotebook: TCustomNotebook; 
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook; 
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook; 
+      const AIndex: integer); override;
     
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
@@ -535,6 +539,16 @@ begin
     TabWidget, MenuWidget, AIndex);
 
   UpdateNotebookPageTab(ANoteBook, AChild);
+  UpdateNoteBookClientWidget(ANoteBook);
+end;
+
+procedure TGtkWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
+  const AChild: TCustomPage; const NewIndex: integer);
+var
+  NoteBookWidget: PGtkNotebook;
+begin
+  NoteBookWidget:=PGtkNotebook(ANoteBook.Handle);
+  gtk_notebook_reorder_child(NoteBookWidget, PGtkWidget(AChild.Handle), NewIndex);
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 

@@ -3030,22 +3030,10 @@ begin
   LM_Create   : CreateComponent(Sender);
 
   else
-    begin
-      Case LM_Message of
-
-      LM_MovePage :
-        if Sender is TCustomNoteBook then begin
-          MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
-            TLMNotebookEvent(Data^).Page);
-        end;
-
-      else
+         // unhandled message
         if Sender<>nil then
           Assert(True, Format('WARNING: Unhandled message %d in IntSendMessage3'
              +'send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
-         // unhandled message
-      end; // end of 2nd case
-    end;   // end of else-part of 1st case
   end;   // end of 1st case
 end;
 
@@ -5738,21 +5726,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
-
-  Move a notebook page.
-------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
-var
-  NoteBookWidget: PGtkNotebook;
-begin
-  NoteBookWidget:=PGtkNotebook(TWinControl(ANoteBook).Handle);
-  gtk_notebook_reorder_child(NoteBookWidget,
-                             PGtkWidget(TWinControl(APage).Handle),NewIndex);
-  UpdateNoteBookClientWidget(ANoteBook);
-end;
-
-{------------------------------------------------------------------------------
   Method: TGtkWidgetSet.SetPixel
   Params:  Sender : the lcl object which called this func via SendMessage
            Data   : pointer to a TLMSetGetPixel record
@@ -7003,6 +6976,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.602  2004/09/24 19:02:38  micha
+  convert LM_MOVEPAGE message to interface method
+
   Revision 1.601  2004/09/24 18:00:52  micha
   convert LM_NB_UPDATETAB message to interface method
 

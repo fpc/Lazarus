@@ -576,20 +576,6 @@ type
   TLMRButtonUp = TLMMouse;
   TLMMButtonUp = TLMMouse;
 
-  TLMNotebookEvent = record
-    Parent: TObject;
-    Child: TObject;
-    fCompStyle: Integer;
-    Str: String;
-    Page: Integer;
-    TabPosition: Pointer;
-  end;
-
-  TLMSetChecked = record
-    Index : integer;
-    Checked : boolean;
-  end;
-
   TLMSetFocus = packed record
     Msg: Cardinal;
     FocusedWnd: HWND;
@@ -817,6 +803,9 @@ end.
 
 {
   $Log$
+  Revision 1.123  2004/09/24 19:02:38  micha
+  convert LM_MOVEPAGE message to interface method
+
   Revision 1.122  2004/09/24 18:00:51  micha
   convert LM_NB_UPDATETAB message to interface method
 

@@ -60,6 +60,7 @@ type
 
   TWSCustomNotebook = class(TWSWinControl)
     class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); virtual;
+    class procedure MovePage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const NewIndex: integer); virtual;
     class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); virtual;
 
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; virtual;
@@ -182,6 +183,20 @@ end;
   Adds a new page to a notebook
  ------------------------------------------------------------------------------}
 procedure TWSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer);
+begin
+end;
+
+{------------------------------------------------------------------------------
+  Method: TWSCustomNotebook.MovePage
+  Params: ANotebook - The notebook control
+          AChild    - The page to move
+          NewIndex  - The new index of the page
+  Returns: Nothing
+
+  Moves a page in a notebook control
+ ------------------------------------------------------------------------------}
+procedure TWSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
+  const AChild: TCustomPage; const NewIndex: integer);
 begin
 end;
 

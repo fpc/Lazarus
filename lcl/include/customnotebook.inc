@@ -142,7 +142,6 @@ end;
 procedure TNBPages.Move(CurIndex, NewIndex: Integer);
 var
   APage: TCustomPage;
-  Msg: TLMNotebookEvent;
   NewControlIndex, NewPageIndex: integer;
 begin
   if CurIndex=NewIndex then exit;
@@ -177,12 +176,7 @@ begin
   if FNoteBook.HandleAllocated
   and (not (csLoading in FNoteBook.ComponentState))
   then begin
-    Msg.Parent := TControl(fNotebook);
-    Msg.Child := APage;
-    Msg.fCompStyle := fNotebook.fCompStyle;
-    Msg.Page := NewIndex;
-
-    CNSendMessage(LM_MOVEPAGE, fNotebook, @Msg);
+    TWSCustomNotebookClass(FNotebook.WidgetSetClass).MovePage(FNotebook, APage, NewIndex);
   end;
 
   // update PageIndex
@@ -788,6 +782,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/09/24 19:02:38  micha
+  convert LM_MOVEPAGE message to interface method
+
   Revision 1.62  2004/09/24 18:00:51  micha
   convert LM_NB_UPDATETAB message to interface method
 

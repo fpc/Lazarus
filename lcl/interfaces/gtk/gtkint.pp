@@ -206,7 +206,6 @@ type
 
     // notebook
     procedure AddDummyNoteBookPage(NoteBookWidget: PGtkNoteBook);virtual;
-    procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
@@ -433,6 +432,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.215  2004/09/24 19:02:38  micha
+  convert LM_MOVEPAGE message to interface method
+
   Revision 1.214  2004/09/24 18:00:51  micha
   convert LM_NB_UPDATETAB message to interface method
 

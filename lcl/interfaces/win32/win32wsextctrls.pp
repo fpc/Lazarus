@@ -54,8 +54,13 @@ type
   private
   protected
   public
-    class procedure AddPage(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AIndex: integer); override;
-    class procedure RemovePage(const ANotebook: TCustomNotebook; const AIndex: integer); override;
+    class procedure AddPage(const ANotebook: TCustomNotebook; 
+      const AChild: TCustomPage; const AIndex: integer); override;
+    class procedure MovePage(const ANotebook: TCustomNotebook; 
+      const AChild: TCustomPage; const NewIndex: integer); override;
+    class procedure RemovePage(const ANotebook: TCustomNotebook; 
+      const AIndex: integer); override;
+
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -293,6 +298,12 @@ begin
     if (OldPageIndex >= 0) and (OldPageIndex <> AChild.PageIndex) then 
       ShowWindow(Page[OldPageIndex].Handle, SW_HIDE);
   End;
+end;
+
+procedure TWin32WSCustomNotebook.MovePage(const ANotebook: TCustomNotebook; 
+  const AChild: TCustomPage; const NewIndex: integer);
+begin
+  // TODO: implement me!
 end;
 
 procedure TWin32WSCustomNotebook.RemovePage(const ANotebook: TCustomNotebook; 
