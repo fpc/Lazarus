@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <General>
+      <ProjectType Value="Program"/>
+      <Flags>
+        <SaveClosedFiles Value="False"/>
+        <SaveOnlyProjectUnits Value="True"/>
+      </Flags>
+      <MainUnit Value="0"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+      <IconPath Value=""/>
+      <TargetFileExt Value=""/>
+      <Title Value="lazres"/>
+      <OutputDirectory Value="."/>
+      <UnitOutputDirectory Value="."/>
+      <SrcPath Value="$(LazarusDir)/lcl"/>
+    </General>
+    <Bookmarks Count="0"/>
+    <JumpHistory Count="1" HistoryIndex="0">
+      <Position1>
+        <Filename Value="lazres.pp"/>
+        <Caret Line="37" Column="29" TopLine="22"/>
+      </Position1>
+    </JumpHistory>
+    <Units Count="1">
+      <Unit0>
+        <CursorPos X="18" Y="30"/>
+        <EditorIndex Value="0"/>
+        <Filename Value="lazres.pp"/>
+        <FormName Value=""/>
+        <HasResources Value="False"/>
+        <IsPartOfProject Value="True"/>
+        <Loaded Value="True"/>
+        <ReadOnly Value="False"/>
+        <ResourceFilename Value=""/>
+        <SyntaxHighlighter Value="FreePascal"/>
+        <TopLine Value="1"/>
+        <UnitName Value="LazRes"/>
+        <BreakPoints Count="0"/>
+      </Unit0>
+    </Units>
+    <PublishOptions>
+      <DestinationDirectory Value="$(TestDir)/publishedproject/"/>
+      <CommandAfter Value=""/>
+      <UseIncludeFileFilter Value="True"/>
+      <IncludeFileFilter Value="*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}"/>
+      <UseExcludeFileFilter Value="False"/>
+      <ExcludeFileFilter Value="*.{bak,ppu,ppw,o,so};*~;backup"/>
+      <SaveClosedEditorFilesInfo Value="False"/>
+      <SaveEditorInfoOfNonProjectFiles Value="False"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <HostApplicationFilename Value=""/>
+        <CommandLineParams Value=""/>
+        <LaunchingApplication Use="False" PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e bash -i -c '$(TargetCmdLine)'"/>
+        <WorkingDirectory Value=""/>
+        <Display Use="False" Value=":0"/>
+      </local>
+      <environment>
+        <UserOverrides Count="0"/>
+        <IncludeSystemVariables Value="False"/>
+      </environment>
+    </RunParams>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Target>
+      <Filename Value=""/>
+    </Target>
+    <Parsing>
+      <Style Value="1"/>
+      <SymantecChecking>
+        <D2Extensions Value="True"/>
+        <CStyleOperator Value="True"/>
+        <IncludeAssertionCode Value="False"/>
+        <AllowLabel Value="True"/>
+        <CPPInline Value="True"/>
+        <CStyleMacros Value="False"/>
+        <TPCompatible Value="False"/>
+        <InitConstructor Value="False"/>
+        <StaticKeyword Value="False"/>
+        <DelphiCompat Value="False"/>
+        <UseAnsiStrings Value="False"/>
+        <GPCCompat Value="False"/>
+      </SymantecChecking>
+    </Parsing>
+    <CodeGeneration>
+      <UnitStyle Value="1"/>
+      <Checks>
+        <IOChecks Value="False"/>
+        <RangeChecks Value="False"/>
+        <OverflowChecks Value="False"/>
+        <StackChecks Value="False"/>
+      </Checks>
+      <HeapSize Value="8000000"/>
+      <Generate Value="1"/>
+      <TargetProcessor Value="1"/>
+      <Optimizations>
+        <VariablesInRegisters Value="False"/>
+        <UncertainOptimizations Value="False"/>
+        <OptimizationLevel Value="1"/>
+      </Optimizations>
+      <TargetOS Value="linux"/>
+      <LinkStyle Value="1"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+        <GenerateDebugDBX Value="False"/>
+        <UseLineInfoUnit Value="False"/>
+        <UseHeaptrc Value="False"/>
+        <GenGProfCode Value="False"/>
+        <StripSymbols Value="False"/>
+      </Debugging>
+      <Options>
+        <PassLinkerOptions Value="False"/>
+        <LinkerOptions Value=""/>
+      </Options>
+    </Linking>
+    <Other>
+      <Verbosity>
+        <ShowErrors Value="True"/>
+        <ShowWarn Value="True"/>
+        <ShowNotes Value="True"/>
+        <ShowHints Value="True"/>
+        <ShowGenInfo Value="True"/>
+        <ShoLineNum Value="False"/>
+        <ShowAll Value="False"/>
+        <ShowAllProcsOnError Value="False"/>
+        <ShowDebugInfo Value="False"/>
+        <ShowUsedFiles Value="False"/>
+        <ShowTriedFiles Value="False"/>
+        <ShowDefMacros Value="False"/>
+        <ShowCompProc Value="False"/>
+        <ShowCond Value="False"/>
+        <ShowNothing Value="False"/>
+        <ShowHintsForUnusedProjectUnits Value="False"/>
+      </Verbosity>
+      <WriteFPCLogo Value="True"/>
+      <ConfigFile>
+        <DontUseConfigFile Value="False"/>
+        <AdditionalConfigFile Value="False"/>
+        <ConfigFilePath Value="./fpc.cfg"/>
+        <StopAfterErrCount Value="1"/>
+      </ConfigFile>
+    </Other>
+    <SearchPaths>
+      <IncludeFiles Value=""/>
+      <Libraries Value=""/>
+      <OtherUnitFiles Value="$(LazarusDir)/lcl/units"/>
+      <CompilerPath Value="$(CompPath)"/>
+      <UnitOutputDirectory Value=""/>
+      <LCLWidgetType Value="gtk"/>
+    </SearchPaths>
+  </CompilerOptions>
+  <ProjectSpecificCodeToolsDefines>
+    <Count Value="0"/>
+  </ProjectSpecificCodeToolsDefines>
+</CONFIG>
