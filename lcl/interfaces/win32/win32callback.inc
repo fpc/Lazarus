@@ -1091,9 +1091,9 @@ Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
-        If (Windows.GetParent(Window) = 0)
-        and (lWinControl is TCustomForm)
-        and (TCustomForm(lWinControl).Parent=nil) then begin
+        if (lWinControl is TCustomForm)
+        and (TCustomForm(lWinControl).Parent=nil) then 
+        begin
           if Windows.GetWindowRect(Window,@R) then
           begin
             XPos := R.Left;
@@ -1101,8 +1101,7 @@ Begin
           end else begin
             Msg := LM_NULL;
           end;
-        end
-        Else begin
+        end else begin
           if GetWindowRelativePosition(Window,NewLeft,NewTop) then
           begin
             XPos := NewLeft;
@@ -1454,6 +1453,10 @@ end;
 
 {
   $Log$
+  Revision 1.161  2004/11/15 08:00:05  micha
+  forms with WS_POPUP style have a parent, GetParent(...)=0 is not reliable, and here redundant
+  tidy code a bit
+
   Revision 1.160  2004/11/12 15:33:13  vincents
   fix changing key in OnKeyPress event.
 
