@@ -1096,7 +1096,8 @@ end;
 function ControlGetsMouseUpBefore(AControl: TControl): boolean;
 begin
   case AControl.fCompStyle of
-  csCheckBox:
+  csCheckBox,
+  csRadioButton:
     Result:=false;
   else
     Result:=true;
@@ -2537,6 +2538,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.155  2002/10/23 15:59:25  lazarus
+  MG: fixed radiobutton mousedown after
+
   Revision 1.154  2002/10/22 12:12:08  lazarus
   MG: accelerators are now shared between non modal forms
 
