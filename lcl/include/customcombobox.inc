@@ -29,7 +29,6 @@
 procedure TCustomComboBox.CreateHandle;
 var
   NewStrings: TStrings;
-  OldText: string;
 begin
   inherited CreateHandle;
   
@@ -37,9 +36,7 @@ begin
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // then delete internal list
   if (FItems<>NewStrings) and (FItems<>nil) then begin
-    OldText:=Text;
     NewStrings.Assign(FItems);
-    Text:=OldText;
     FItems.Free;
   end;
   // and use the interface based list
@@ -727,6 +724,9 @@ end;
 
 {
   $Log$
+  Revision 1.23  2002/11/17 11:10:04  mattias
+  TComboBox and TListBox accelerated and now supports objects
+
   Revision 1.22  2002/11/17 00:18:11  mattias
   fixed combobox createhandle
 

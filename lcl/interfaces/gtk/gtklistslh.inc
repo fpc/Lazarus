@@ -18,35 +18,47 @@
  *****************************************************************************
 }
 
-{$IFOPT H+} 
-  {$DEFINE H_PLUS} 
-{$ELSE}
-  {$H+}
-{$ENDIF} 
 type
+  TGtkListStringsState = (glsItemCacheNeedsUpdate);
+  TGtkListStringsStates = set of TGtkListStringsState;
+  
+  PPGtkListItem = ^PGtkListItem;
 
   TGtkListStringList = class(TStrings)
   private
     FGtkList : PGtkList;
     FOwner: TWinControl;
     FSorted : boolean;
+    FStates: TGtkListStringsStates;
+    FCachedCount: integer;
+    FCachedItems: PPGtkListItem;
+    FUpdateCount: integer;
   protected
-    function Get(Index : Integer) : string; override;
     function GetCount : integer; override;
+    function Get(Index : Integer) : string; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure PutObject(Index: Integer; AnObject: TObject); override;
     procedure SetSorted(Val : boolean); virtual;
     procedure ConnectItemCallbacks(Index: integer);
     procedure ConnectItemCallbacks(Li: PGtkListItem); virtual;
     procedure ConnectAllCallbacks; virtual;
     procedure RemoveItemCallbacks(Index: integer); virtual;
     procedure RemoveAllCallbacks; virtual;
+    procedure UpdateItemCache;
   public
     constructor Create(List : PGtkList; TheOwner: TWinControl);
     destructor Destroy; override;
+    function Add(const S: string): Integer; override;
     procedure Assign(Source : TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
+    function IndexOf(const S: string): Integer; override;
     procedure Insert(Index : integer; const S: string); override;
     procedure Sort; virtual;
+    function IsEqual(List: TStrings): boolean;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  public
     property Sorted : boolean read FSorted write SetSorted;
     property Owner: TWinControl read FOwner;
   end;
@@ -71,15 +83,12 @@ type
     property Sorted : boolean read FSorted write SetSorted;
   end;
 
-{$IFDEF H_PLUS}
-  {$UNDEF H_PLUS}
-{$ELSE}
-  {$H-}
-{$ENDIF}
-
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/11/17 11:10:04  mattias
+  TComboBox and TListBox accelerated and now supports objects
+
   Revision 1.5  2002/10/04 14:24:15  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
