@@ -94,6 +94,8 @@ const
   csArrow = 50;
   csPanel = 51;
   csScrollBox = 52;
+  
+  csNonLCL = 53; // for non LCL controls, that create their own handles
 
 const
   {Mouse message key states}
