@@ -225,6 +225,8 @@ type
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
     procedure InsertGPLNotice(CommentType: TCommentType);
+    procedure InsertUsername;
+    procedure InsertDateTime;
 
 
     // editor commands
@@ -916,6 +918,12 @@ Begin
   ecInsertGPLNotice:
     InsertGPLNotice(comtDefault);
 
+  ecInsertUserName:
+    InsertUsername;
+
+  ecInsertDateTime:
+    InsertDateTime;
+
   else
     begin
       Handled:=false;
@@ -1146,6 +1154,16 @@ var
 begin
   Txt:=CommentText(lisGPLNotice,CommentType);
   FEditor.SelText:=Txt;
+end;
+
+procedure TSourceEditor.InsertUsername;
+begin
+  FEditor.SelText:=GetCurrentUserName;
+end;
+
+procedure TSourceEditor.InsertDateTime;
+begin
+  FEditor.SelText:=DateTimeToStr(now);
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
