@@ -871,6 +871,7 @@ begin
   if (cardinal(p)>=cardinal(@_start)) and
      (cardinal(p)<=cardinal(heaporg)) then exit;
 {$ifdef cpui386}
+{$asmmode att}
   asm
     movl %ebp, get_ebp
   end;
@@ -2560,6 +2561,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2003/05/05 11:47:04  mazen
+  + explicit override of inline assembler type to AT&T (fpc.cfg specify other?)
+
   Revision 1.20  2003/04/28 11:44:58  mattias
   implemented showing auto installed packages
 

@@ -1591,6 +1591,7 @@ end;
 
 Function CallSingleFunc(s : Pointer; Address : Pointer;
   Index, IValue : Longint) : Single; assembler;
+{$asmmode att}
   asm
      movl S,%esi
      movl Address,%edi
