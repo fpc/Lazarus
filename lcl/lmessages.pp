@@ -470,7 +470,7 @@ type
      end;
 
 
-  TLMMouseMove = TLMMOuse;
+  TLMMouseMove = TLMMouse;
 
   TLMMove = record
     Msg: Cardinal;
@@ -848,6 +848,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2002/09/16 08:54:03  lazarus
+  MG: gtk mlouse events can now be fetched before or after
+
   Revision 1.31  2002/09/10 10:00:27  lazarus
   MG: TListView now works handleless and SetSelection implemented
 

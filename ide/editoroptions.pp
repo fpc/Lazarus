@@ -2194,16 +2194,14 @@ begin
       end;
     end;
     if Sender=TextBoldCheckBox then begin
-      if TextBoldCheckBox.Checked then begin
-        if not (fsBold in CurHighlightElement.Style) then begin
-          CurHighlightElement.Style:=CurHighlightElement.Style+[fsBold];
-          InvalidatePreviews;
-        end;
-      end else begin
-        if (fsBold in CurHighlightElement.Style) then begin
+      if TextBoldCheckBox.Checked
+      xor (fsBold in CurHighlightElement.Style) then
+      begin
+        if TextBoldCheckBox.Checked then
+          CurHighlightElement.Style:=CurHighlightElement.Style+[fsBold]
+        else
           CurHighlightElement.Style:=CurHighlightElement.Style-[fsBold];
-          InvalidatePreviews;
-        end;
+        InvalidatePreviews;
       end;
     end;
     if Sender=TextItalicCheckBox then begin
