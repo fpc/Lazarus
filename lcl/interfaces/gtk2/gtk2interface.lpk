@@ -3,11 +3,15 @@
   <Package Version="2">
     <Name Value="GTK2Interface"/>
     <CompilerOptions>
+      <Version Value="2"/>
       <SearchPaths>
         <OtherUnitFiles Value="../gtk/;../../units/$(TargetCPU)/$(TargetOS)/"/>
         <UnitOutputDirectory Value="../../units/$(TargetCPU)/$(TargetOS)/gtk2"/>
-        <LCLWidgetType Value="gtk"/>
+        <LCLWidgetType Value="gtk2"/>
       </SearchPaths>
+      <CodeGeneration>
+        <Generate Value="Faster"/>
+      </CodeGeneration>
       <Other>
         <CustomOptions Value="-dGTK2"/>
         <CompilerPath Value="$(CompPath)"/>

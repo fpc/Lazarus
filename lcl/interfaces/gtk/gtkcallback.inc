@@ -384,9 +384,6 @@ begin
   {$endif}
 end;
 
-
-{$Ifdef GTK1}
-
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 var
   Mess : TLMessage;
@@ -404,6 +401,7 @@ begin
   Result := CallBackDefaultReturn;
 end;
 
+{$Ifdef GTK1}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
@@ -3105,6 +3103,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.234  2004/06/24 20:49:10  marc
+  * Applied patch from Ido
+
   Revision 1.233  2004/05/30 14:02:30  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 

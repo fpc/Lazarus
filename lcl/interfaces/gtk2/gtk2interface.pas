@@ -8,8 +8,8 @@ unit GTK2Interface;
 interface
 
 uses
-
-      Interfaces, Gtk2Int, GTKGlobals, GtkMsgQueue, GTKDef, GtkInt, GTKProc, GTKWinapiWindow, LazarusPackageIntf; 
+  Gtk2Int, Interfaces, GTKDef, GTKGlobals, GtkInt, GtkMsgQueue, GTKProc, 
+    GTKWinapiWindow, LazarusPackageIntf; 
 
 implementation
 
@@ -18,5 +18,5 @@ begin
 end; 
 
 initialization
-  RegisterPackage ( 'GTK2Interface', @Register )
+  RegisterPackage('GTK2Interface', @Register)
 end.
