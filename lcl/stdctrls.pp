@@ -281,6 +281,7 @@ type
     procedure SetSelText(const Val: string); virtual;
     procedure SetSorted(Val: boolean); virtual;
     procedure SetStyle(Val: TComboBoxStyle); virtual;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
@@ -1217,6 +1218,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.192  2005/02/11 16:26:26  micha
+  select index of item in list, if text occurs in list
+
   Revision 1.191  2005/02/04 15:36:50  mattias
   published TComboBox.ItemIndex  from Sergios
 

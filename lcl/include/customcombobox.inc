@@ -694,6 +694,25 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomComboBox.RealSetText
+  Params: AValue -
+  Returns: nothing
+
+  If the text AValue occurs in the list of strings, then sets the itemindex,
+  otherwise does the default action
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.RealSetText(const AValue: TCaption);
+var
+  I: integer;
+begin
+  I := FItems.IndexOf(AValue);
+  if I >= 0 then
+    ItemIndex := I
+  else
+    inherited;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomComboBox.SetItemIndex
   Params: Val -
   Returns: nothing
@@ -778,6 +797,9 @@ end;
 
 {
   $Log$
+  Revision 1.54  2005/02/11 16:26:26  micha
+  select index of item in list, if text occurs in list
+
   Revision 1.53  2005/02/06 20:43:57  micha
   remember text of combobox in case one sets itemindex (fixes bug 536)
 
