@@ -31,7 +31,7 @@ uses
   classes,LclLinux,compiler, stdctrls,forms,buttons,menus,comctrls,
   Spin, project,sysutils, global,
   compileroptions,Controls,graphics,extctrls, Dialogs,dlgMEssage,
-  designerform,process,idecomp;
+  designerform,process,idecomp,Find_dlg;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -43,6 +43,7 @@ type
     Savedialog1   : TSaveDialog;
     FontDialog1   : TFontDialog;
     ColorDialog1  : TColorDialog;
+    FindDialog1   : TFindDialog;
     ToolBar1      : TToolBar;
     Toolbutton1   : TToolButton;
     Toolbutton2   : TToolButton;
@@ -151,6 +152,8 @@ private
     Procedure ReAssignEditorLines(SList : TUnitInfo);
     Procedure ReAssignSourcefromEditor(var SList : TUnitInfo);
 protected
+    procedure DoFind(Sender : TObject);
+
     procedure FormShow(Sender : TObject);
     procedure ButtonCLick(Sender : TObject);
     procedure ToolButtonCLick(Sender : TObject);
@@ -183,7 +186,7 @@ Form1 : TForm1;
 Taginc : Integer;
 implementation
 uses
-  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg,Find_dlg;
+  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg;
 
 constructor TForm1.Create(AOwner: TComponent);  
 var
@@ -592,7 +595,9 @@ begin
   SaveDialog1 := TSaveDialog.Create(self);
   FontDialog1 := TFontDialog.Create(self);
   ColorDialog1 := TColorDialog.Create(self);
-  
+  FindDialog1 := TFindDialog.Create(self);
+  FindDialog1.OnFind := @DoFind;
+
   //?? dont need these handlers.
   // Form will kill itself
   //OnDestroy := @FormKill;
@@ -1778,9 +1783,56 @@ Begin
   Messagedlg.Show;
 End;
 
+Procedure TForm1.DoFind(Sender : TObject);
+var
+Source : TStrings;
+Str : String;
+CaseSensitive : Boolean;
+I : Integer;
+Findtext : String;
+CharCount : Integer;
+Found : Boolean;
+Begin
+Found := False;
+if (IDeEditor1.Visible) then
+   begin
+   IDEEditor1.BringToFront;
+   CaseSensitive := TFindDialog(Sender).cbCaseSensitive.Checked;
+   FindText := TFindDialog(Sender).FindText;
+   if CaseSensitive then
+   FindText := Uppercase(FindText);
+   Source := IDEEditor1.CurrentSource;
+   if Source <> nil then
+      begin
+      CharCount := 0;
+      for I := 0 to Source.Count -1 do
+               Begin
+               Str := Source.Strings[i];
+               //check to see if you should be checking CASE
+               if CaseSensitive then Str := UpperCase(str);
+               if pos(FindText,Str) <> 0 then
+                  begin
+                  IDEEditor1.CurrentCursorYLine := I+1;
+                  IDEEditor1.CurrentCursorXLine := pos(FindText,Str);
+
+                  IdeEditor1.SelectText(CharCount+1,CharCount +length(FindText));
+                  Found := True;
+                  Break;
+                  end;
+                  CharCount := CharCount + Length(Str);
+               end;
+      end;
+
+
+   end;
+if not found then
+   Application.Messagebox('Text not found','Error',MB_OK);
+
+end;
+
 Procedure TForm1.mnuSearchFindClicked(Sender : TObject);
 Begin
-  dlgFind1.Show;
+FindDialog1.ShowModal;
 End;
 
 
@@ -2188,8 +2240,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.3  2000/08/08 18:52:14  lazarus
-  Started a FIND dialog box.
+  Revision 1.4  2000/08/09 18:32:10  lazarus
+  Added more code for the find function.
   Shane
 
   Revision 1.2  2000/08/07 19:15:05  lazarus

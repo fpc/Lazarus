@@ -35,8 +35,8 @@ uses
   compileroptions,
   IdeEditor,
   viewunit_dlg,  //dialog used to list the units in a project
-  viewform_dlg,  //dialog to display the forms in the project
-  Find_dlg;
+  viewform_dlg;  //dialog to display the forms in the project
+
 
 var
   SplashForm: TSplashForm;
@@ -58,7 +58,6 @@ begin
    Application.CreateForm(TIDEEditor, IdeEditor1);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TViewForms1, ViewForms1);
-   Application.CreateForm(TFind, dlgFind1);
 
    SplashForm.StartTimer;
    Application.Run;
@@ -67,6 +66,10 @@ end.
 
 {
   $Log$
+  Revision 1.3  2000/08/09 18:32:10  lazarus
+  Added more code for the find function.
+  Shane
+
   Revision 1.2  2000/08/08 18:52:14  lazarus
   Started a FIND dialog box.
   Shane

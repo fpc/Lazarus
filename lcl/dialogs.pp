@@ -47,7 +47,9 @@ const
 
 
 type
-   TCustomDialog = class(TComponent)
+//   TCustomDialog = class(TComponent)
+//   TCustomDialog = class(TWinControl)
+   TCustomDialog = class(TCustomForm)
    private
      FHandle : integer;
      FOnShow, FOnClose : TNotifyEvent;
@@ -55,7 +57,7 @@ type
      FUserChoice: integer;
    protected
    public
-      FCompStyle : LongInt;
+//      FCompStyle : LongInt;
       constructor Create (AOwner : TComponent); override;
       function DoExecute : boolean; virtual;
       function Execute : boolean; virtual;
@@ -120,6 +122,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/08/09 18:32:10  lazarus
+  Added more code for the find function.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 

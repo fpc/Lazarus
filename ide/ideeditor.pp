@@ -36,7 +36,15 @@ type
   private
     FEmpty : Boolean;
     FHighlighter: TmwPasSyn;
+    FCurrentSource : TStrings;
+    FCurrentCursorXLine : Integer;
+    FCurrentCursorYLine : Integer;
     function CreateNewEditor(const AParent: TWinControl): TmwCustomEdit;
+    Function GetCurrentSource : TStrings;
+    Function GetCurrentCursorXLine : Integer;
+    Procedure SetCurrentCursorXLine(num : Integer);
+    Function GetCurrentCursorYLine : Integer;
+    Procedure SetCurrentCursorYLine(num : Integer);
   protected
     Procedure IDEEditorPaint(Sender : TObject);
   public
@@ -45,6 +53,10 @@ type
     Function AddPage(title: String; Lines : TStringList) : TmwCustomEdit;
     Procedure DeletePage(Value : Integer);
     Function GetEditorfromPage(Value : Integer) : TmwCustomEdit;
+    Procedure SelectText(SelStart,SelEnd : Integer);
+    property CurrentSource : TStrings read GetCurrentSource;
+    property CurrentCursorXLine : Integer read GetCurrentCursorXLine write SetCurrentCursorXLine;
+    property CurrentCursorYLine : Integer read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property Empty : Boolean read FEmpty write FEmpty;
   end;
 
@@ -223,5 +235,79 @@ with Notebook1.Page[Value] do
    end;
 
 end;
+
+Function TIdeEditor.GetCurrentSource : TStrings;
+var
+temp : TmwCustomEdit;
+begin
+Temp := GetEditorFromPage(Notebook1.PageIndex);
+if Temp <> nil then
+Result := Temp.Lines
+else
+Result := nil;
+end;
+
+Function TIdeEditor.GetCurrentCursorYLine : Integer;
+var
+temp : TmwCustomEdit;
+begin
+Temp := GetEditorFromPage(Notebook1.PageIndex);
+if Temp <> nil then
+Result := Temp.CaretY
+else
+Result := 0;
+end;
+
+Procedure TIdeEditor.SetCurrentCursorYLine(num : Integer);
+var
+temp : TmwCustomEdit;
+begin
+FCurrentCursorYLine := Num;
+
+Temp := GetEditorFromPage(Notebook1.PageIndex);
+if Temp <> nil then
+   Temp.CaretY := Num;
+
+end;
+
+Function TIdeEditor.GetCurrentCursorXLine : Integer;
+var
+temp : TmwCustomEdit;
+begin
+Temp := GetEditorFromPage(Notebook1.PageIndex);
+if Temp <> nil then
+Result := Temp.CaretX
+else
+Result := 0;
+end;
+
+Procedure TIdeEditor.SetCurrentCursorXLine(num : Integer);
+var
+temp : TmwCustomEdit;
+begin
+FCurrentCursorXLine := Num;
+
+Temp := GetEditorFromPage(Notebook1.PageIndex);
+if Temp <> nil then
+   Temp.CaretX := Num;
+
+end;
+
+Procedure TideEditor.SelectText(SelStart,SelEnd : Integer);
+var
+temp : TmwCustomEdit;
+begin
+Temp := GetEditorFromPage(Notebook1.PageIndex);
+Writeln('In SelectText');
+Writeln(Format('SelStart and SelEnd are %d,%d',[SelStart,SelEnd]));
+if Temp <> nil then
+   Begin
+   Temp.SetSelStart(SelStart);
+   Temp.SetSelEnd(SelEnd);
+
+   end;
+
+end;
+
 
 end.

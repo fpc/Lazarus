@@ -459,8 +459,6 @@ begin
          gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
          gtk_widget_show(PGtkWidget(handle));
          gtk_window_set_modal(PGtkWindow(handle), true);
-               { Don't grab anything - this is done by gtk_window_set_modal }
-         //gtk_grab_add(PgtkWidget(Handle));
       end;
 
 //SH: think of TCanvas.handle!!!!
@@ -2621,6 +2619,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.6  2000/08/09 18:32:10  lazarus
+  Added more code for the find function.
+  Shane
+
   Revision 1.5  2000/07/30 21:48:33  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

@@ -27,12 +27,12 @@ interface
 
 uses
   classes,LclLinux, stdctrls,forms,buttons,comctrls,
-  Controls,graphics,extctrls;
+  Controls,graphics,extctrls,Dialogs,VCLGlobals,LMessages;
 
 
 type
 
- TFind = class(TFORM)
+ TFindDialog = class(TCustomForm)
     lblTexttofind : TLabel;
     edtTexttoFind: TEdit;
     btnOK : TButton;
@@ -45,31 +45,29 @@ type
     cbRegularExpressions : TCheckBox;
 
     rgForwardBack : TRadioGroup;
-
 { event handlers }
     procedure btnOKClicked(Sender : TObject);
     procedure btnCancelClicked(Sender : TObject);
     procedure btnHelpClicked(Sender : TObject);
 private
+    FFindText : String;
+    FOnFind : TNotifyEvent;
 protected
 public
-    constructor Create(AOwner: TComponent); override; 
+    constructor Create(AOwner: TComponent); override;
+    property OnFind : TNotifyEvent read FonFind write FOnFind;
+    property FIndText : String read FFindText write FFindText;
 end;
-
-var
-dlgFind1 : TFind;
 
 implementation
 
-constructor TFind.Create(AOwner: TComponent);
+constructor TFindDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  fCompStyle := csForm;
 
   Caption := 'Find';
-  Left := 0;
-  Top := 0;
-  Width := 450;
-  height := 395;
+  Setbounds(0,0,450,250);
   Position:= poScreenCenter;
 
   lblTextToFind := TLabel.Create(self);
@@ -87,6 +85,7 @@ begin
     Begin
     parent := Self;
     Left := lblTextToFind.LEft+lblTextToFind.Width+5;
+    Width := Self.Width - Left - 5;
     Top := 5;
     Visible := True;
     end;
@@ -99,7 +98,7 @@ begin
     Left := 10;
     Top := 35;
     Width :=(Self.Width div 2) - 10;
-    Height := (Self.Height div 3) -35;
+    Height := (Self.Height div 2) -35;
     Caption := 'Options';
     Visible := True;
    end;
@@ -141,7 +140,7 @@ begin
      parent := self;
      left := (Self.Width div 2) +5;
      top := 35;
-     Height := (Self.Height div 3) -35;
+     Height := (Self.Height div 2) -35;
      width := (Self.Width div 2) -10;
      Caption := 'Direction';
      Items.Add('Forward');
@@ -149,18 +148,60 @@ begin
      visible := True;
     end;
 
+   btnOK := TButton.create(self);
+   with btnOK do
+     begin
+     parent := self;
+     left := (Self.Width div 2);
+     top := Self.Height -30;
+     Height := 25;
+     Caption := 'OK';
+     ModalResult := mrOK;
+     visible := True;
+     OnCLick := @BTnOKClicked;
+     end;
+
+   btnCancel := TButton.create(self);
+   with btnCancel do
+     begin
+     parent := self;
+     left := (Self.Width div 2) + ((Self.Width div 2) div 3);
+     top := Self.Height -30;
+     Height := 25;
+     Caption := 'Cancel';
+     ModalResult := mrCancel;
+     visible := True;
+     OnCLick := @BTnCancelClicked;
+     end;
+
+   btnHelp := TButton.create(self);
+   with btnHelp do
+     begin
+     parent := self;
+     left := (Self.Width div 2) + (2*((Self.Width div 2) div 3));
+     top := Self.Height -30;
+     Height := 25;
+     Caption := 'Help';
+//     ModalResult := mrHelp;
+     visible := True;
+     OnCLick := @BTnHelpClicked;
+     end;
 end;
 
-procedure TFind.btnOKClicked(Sender : TObject);
+procedure TFindDialog.btnOKClicked(Sender : TObject);
 Begin
+FFIndText := edtTexttoFind.Text;
+if Assigned(FOnFind) then FOnFind(self);
 end;
 
-procedure TFind.btnCancelClicked(Sender : TObject);
+procedure TFindDialog.btnCancelClicked(Sender : TObject);
 Begin
+FFIndText := '';
 End;
 
-procedure TFInd.btnHelpClicked(Sender : TObject);
+procedure TFindDialog.btnHelpClicked(Sender : TObject);
 Begin
 end;
+
 
 end.
